@@ -11,25 +11,31 @@ from ruqqus.classes.user import User
 from .get import *
 import requests
 
-from ruqqus.__main__ import app, cache
+from ruqqus.__main__ import app, cache, db_session
 
 
-post_regex = re.compile("^https?://[a-zA-Z0-9_.-]+/\+\w+/post/(\w+)(/[a-zA-Z0-9_-]+/?)?$")
+post_regex = re.compile(r"^https?://[a-zA-Z0-9_.-]+/\+\w+/post/(\w+)(/[a-zA-Z0-9_-]+/?)?$")
 
 
 @app.template_filter("total_users")
 @cache.memoize(timeout=60)
 def total_users(x):
-
+    db = db_session()
     return db.query(User).filter_by(is_banned=0).count()
 
 
 @app.template_filter("source_code")
 @cache.memoize(timeout=60 * 60 * 24)
 def source_code(file_name):
-
-    return open(path.expanduser('~') + '/ruqqus/' +
-                file_name, mode="r+").read()
+    # Use a path relative to the project root, not the home directory
+    import os
+    base_dir = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
+    abs_path = os.path.join(base_dir, file_name)
+    try:
+        with open(abs_path, mode="r") as f:
+            return f.read()
+    except Exception as e:
+        return f"[Error loading source: {e}]"
 
 
 @app.template_filter("full_link")

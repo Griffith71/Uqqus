@@ -602,7 +602,7 @@ def admin_ban_domain(v):
     if not reason:
         abort(400)
 
-    d_query=domain.replace("_","\_")
+    d_query=domain.replace("_",r"\_")
     d=g.db.query(Domain).filter_by(domain=d_query).first()
     if d:
         d.can_submit=False

@@ -4,13 +4,14 @@ gevent.monkey.patch_all()
 #import eventlet
 #eventlet.monkey_patch()
 
-#import psycogreen.gevent
-#psycogreen.gevent.patch_psycopg()
+import psycogreen.gevent
+psycogreen.gevent.patch_psycopg()
 
 import os
 from os import environ
 import secrets
-from flask import *
+from flask import Flask, request, redirect, jsonify, abort, make_response, render_template, g
+from flask import session as flask_session  # Explicit alias for Flask's session
 from flask_caching import Cache
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
@@ -20,10 +21,9 @@ from time import sleep
 from collections import deque
 import psycopg2
 
-from flaskext.markdown import Markdown
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.exc import OperationalError, StatementError, InternalError
-from sqlalchemy.orm import Session, sessionmaker, scoped_session, Query as _Query
+from sqlalchemy.orm import Session as SQLAlchemySession, sessionmaker, scoped_session, Query as _Query
 from sqlalchemy import *
 from sqlalchemy.pool import QueuePool
 import threading
@@ -185,8 +185,15 @@ app.config["BOT_DISABLE"]=bool(int(environ.get("BOT_DISABLE", False)))
 
 app.config["TENOR_KEY"]=environ.get("TENOR_KEY",'').lstrip().rstrip()
 
+import markdown
+from markupsafe import Markup
 
-Markdown(app)
+def markdown_filter(text):
+    html = markdown.markdown(text, extensions=['fenced_code', 'tables', 'sane_lists'])
+    return Markup(html)
+
+app.jinja_env.filters['markdown'] = markdown_filter
+
 cache = Cache(app)
 Compress(app)
 
@@ -225,14 +232,13 @@ def limiter_key_func():
 
 
 limiter = Limiter(
-    app,
     key_func=limiter_key_func,
     default_limits=["100/minute"],
-    headers_enabled=True,
+    # headers_enabled=True, # We'll rely on app.config["RATELIMIT_HEADERS_ENABLED"]
     strategy="fixed-window",
-    storage_options={'max_connections':100}
-    #storage_options={'connection_pool':redispool}
+    storage_options={'max_connections':100} # These are likely still constructor arguments
 )
+limiter.init_app(app) # Initialize the app with the limiter instance
 
 # setup db
                          
@@ -385,7 +391,7 @@ def before_request():
 
     g.timestamp = int(time.time())
 
-    session.permanent = True
+    flask_session.permanent = True
 
     ua_banned, response_tuple = get_useragent_ban_response(
         request.headers.get("User-Agent", "NoAgent"))
@@ -397,8 +403,8 @@ def before_request():
         url = request.url.replace("http://", "https://", 1)
         return redirect(url, code=301)
 
-    if not session.get("session_id"):
-        session["session_id"] = secrets.token_hex(16)
+    if not flask_session.get("session_id"):
+        flask_session["session_id"] = secrets.token_hex(16)
 
     ua=request.headers.get("User-Agent","")
     if "CriOS/" in ua:

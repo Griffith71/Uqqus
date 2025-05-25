@@ -19,7 +19,9 @@ from ruqqus.classes import *
 from ruqqus.classes.domains import reasons as REASONS
 from ruqqus.routes.admin_api import create_plot, user_stat_data
 from ruqqus.classes.categories import CATEGORIES
-from flask import *
+from flask import (
+    request, session, g, abort, jsonify, make_response, redirect, render_template
+)
 
 import ruqqus.helpers.aws as aws
 from ruqqus.__main__ import app
@@ -646,7 +648,7 @@ def admin_paypaltxns(v):
 @admin_level_required(4)
 def admin_domain_domain(domain_name, v):
 
-    d_query=domain_name.replace("_","\_")
+    d_query = domain_name.replace("_", r"\_")
     domain=g.db.query(Domain).filter_by(domain=d_query).first()
 
     if not domain:
@@ -1329,7 +1331,7 @@ def admin_siege_guild(v):
 @admin_level_required(4)
 def user_by_email(email, v):
     
-    email=email.replace('_', '\_')
+    email=email.replace('_', r'\_')
     
     user=g.db.query(User).filter(User.email.ilike(email)).first()
     
@@ -1337,5 +1339,5 @@ def user_by_email(email, v):
         abort(404)
     
     return redirect(user.permalink)
-    
-    
+
+

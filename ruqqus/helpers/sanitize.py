@@ -138,11 +138,12 @@ _clean_wo_links = bleach.Cleaner(tags=_allowed_tags,
                                  attributes=_allowed_attributes,
                                  protocols=_allowed_protocols,
                                  )
-_clean_w_links = bleach.Cleaner(tags=_allowed_tags_with_links,
-                                attributes=_allowed_attributes,
-                                protocols=_allowed_protocols,
-                                styles=_allowed_styles,
-                                filters=[partial(LinkifyFilter,
+_clean_w_links = bleach.Cleaner(
+    tags=_allowed_tags_with_links,
+    attributes=_allowed_attributes,
+    protocols=_allowed_protocols,
+    strip=True,
+    filters=[partial(LinkifyFilter,
                                                  skip_tags=["pre"],
                                                  parse_email=False,
                                                  callbacks=[a_modify]
@@ -227,7 +228,7 @@ def sanitize(text, bio=False, linkgen=False, noimages=False):
         #disguised link preventer
         for tag in soup.find_all("a"):
 
-            if re.match("https?://\S+", str(tag.string)):
+            if re.match(r"https?://\S+", str(tag.string)):
                 try:
                     tag.string = tag["href"]
                 except:

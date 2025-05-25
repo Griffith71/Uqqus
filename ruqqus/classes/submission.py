@@ -181,9 +181,8 @@ class Submission(Base, Stndrd, Age_times, Scores, Fuzzing):
 
         output = self.title.lower()
 
-        output = re.sub('&\w{2,3};', '', output)
-
-        output = [re.sub('\W', '', word) for word in output.split()]
+        output = re.sub(r'&\w{2,3};', '', output)
+        output = [re.sub(r'\W', '', word) for word in output.split()]
         output = [x for x in output if x][0:6]
 
         output = '-'.join(output)
@@ -338,7 +337,7 @@ class Submission(Base, Stndrd, Age_times, Scores, Fuzzing):
     @property
     @lazy
     def is_crosspost(self):
-        return bool((self.domain==app.config["SERVER_NAME"]) and re.match("^https?://[a-zA-Z0-9_.-]+/\+\w+/post/(\w+)(/[a-zA-Z0-9_-]+/?)?$", self.url))
+        return bool((self.domain==app.config["SERVER_NAME"]) and re.match(r"^https?://[a-zA-Z0-9_.-]+/\+\w+/post/(\w+)(/[a-zA-Z0-9_-]+/?)?$", self.url))
     
 
     @property

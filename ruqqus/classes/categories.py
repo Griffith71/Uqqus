@@ -6,6 +6,7 @@ from sqlalchemy.orm import relationship
 from ruqqus.__main__ import db_session, Base, cache
 from .mix_ins import *
 import time
+import re
 
 
 class Category(Base, Stndrd):
@@ -75,3 +76,5 @@ db.close()
 #     def __init__(self, *args, **kwargs):
 #         if "created_utc" not in kwargs:
 #             kwargs["created_utc"] = int(time.time())
+
+re.compile(r"\w+")

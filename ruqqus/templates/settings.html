@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<head>
+<he{% if v and flask_session.get("dark_mode_enabled") %}
+<link id="css-link" rel="stylesheet" href="/assets/style/main_dark.css">>
 
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">

@@ -1,4 +1,7 @@
-from flask import *
+from flask import (
+    request, g, abort, jsonify, make_response, redirect, render_template
+)
+from flask import session as flask_session
 from os import environ
 import requests
 from werkzeug.wrappers.response import Response as RespObj
@@ -9,6 +12,7 @@ from ruqqus.classes import *
 from .get import *
 from .alerts import send_notification
 from ruqqus.__main__ import Base, app, db_session
+from ruqqus.helpers.session_helpers import *
 
 
 def get_logged_in_user(db=None):
@@ -17,20 +21,8 @@ def get_logged_in_user(db=None):
         db=g.db
 
     if request.path.startswith("/api/v1"):
-
         token = request.headers.get("Authorization")
         if not token:
-
-            #let admins hit api/v1 from browser
-            # x=request.session.get('user_id')
-            # nonce=request.session.get('login_nonce')
-            # if not x or not nonce:
-            #     return None, None
-            # user=g.db.query(User).filter_by(id=x).first()
-            # if not user:
-            #     return None, None
-            # if user.admin_level >=3 and nonce>=user.login_nonce:
-            #     return user, None
             return None, None
 
         token = token.split()
@@ -48,32 +40,30 @@ def get_logged_in_user(db=None):
 
         x = (client.user, client) if client else (None, None)
 
-
-    elif "user_id" in session:
-
-        uid = session.get("user_id")
-        nonce = session.get("login_nonce", 0)
+    elif 'user_id' in flask_session:
+        uid = flask_session.get("user_id")
+        nonce = flask_session.get("login_nonce", 0)
         if not uid:
-            x= (None, None)
-        v = db.query(User).options(
-            joinedload(User.moderates).joinedload(ModRelationship.board), #joinedload(Board.reports),
-            joinedload(User.subscriptions).joinedload(Subscription.board)
-        #    joinedload(User.notifications)
+            x = (None, None)
+        else:
+            v = db.query(User).options(
+                joinedload(User.moderates).joinedload(ModRelationship.board),
+                joinedload(User.subscriptions).joinedload(Subscription.board)
             ).filter_by(
-            id=uid,
-            is_deleted=False
+                id=uid,
+                is_deleted=False
             ).first()
 
-        if v and (nonce < v.login_nonce):
-            x= (None, None)
-        else:
-            x=(v, None)
+            if v and (nonce < v.login_nonce):
+                x = (None, None)
+            else:
+                x = (v, None)
 
     else:
-        x=(None, None)
+        x = (None, None)
 
     if x[0]:
-        x[0].client=x[1]
+        x[0].client = x[1]
 
     return x
 
@@ -281,7 +271,7 @@ def no_negative_balance(s):
 
             if v.negative_balance_cents:
                 if s=="toast":
-                    return jsonify({"error":"You can't do that while your account balance is negative. Visit your account settings to bring your balance up to zero."}), 402
+                    return (jsonify({"error":"You can't do that while your account balance is negative. Visit your account settings to bring your balance up to zero."}), 402)
                 elif s=="html":
                     raise(PaymentRequired)
                 else:

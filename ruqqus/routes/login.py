@@ -1,4 +1,5 @@
 from flask import *
+from flask import session as flask_session
 import time
 import hmac
 from os import environ
@@ -19,9 +20,9 @@ from secrets import token_hex
 from ruqqus.mail import *
 from ruqqus.__main__ import app, limiter
 
-valid_username_regex = re.compile("^[a-zA-Z0-9_]{3,25}$")
-valid_password_regex = re.compile("^.{8,100}$")
-# valid_email_regex=re.compile("(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)")
+valid_username_regex = re.compile(r"^[a-zA-Z0-9_]{3,25}$")
+valid_password_regex = re.compile(r"^.{8,100}$")
+# valid_email_regex=re.compile(r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)")
 
 # login form
 
@@ -43,12 +44,12 @@ def login_get(v):
 
 def check_for_alts(current_id):
     # account history
-    past_accs = set(session.get("history", []))
+    past_accs = set(flask_session.get("history", []))
     past_accs.add(current_id)
-    session["history"] = list(past_accs)
+    flask_session["history"] = list(past_accs)
 
     # record alts
-    for past_id in session["history"]:
+    for past_id in flask_session["history"]:
 
         if past_id == current_id:
             continue
@@ -145,10 +146,10 @@ def login_post():
         abort(400)
 
     # set session and user id
-    session["user_id"] = account.id
-    session["session_id"] = token_hex(16)
-    session["login_nonce"] = account.login_nonce
-    session.permanent = True
+    flask_session["user_id"] = account.id
+    flask_session["session_id"] = token_hex(16)
+    flask_session["login_nonce"] = account.login_nonce
+    flask_session.permanent = True
 
     check_for_alts(account.id)
 
@@ -174,10 +175,10 @@ def me(v):
 @validate_formkey
 def logout(v):
         
-    session["user_id"]=None
-    session["session_id"]=None
+    flask_session["user_id"]=None
+    flask_session["session_id"]=None
 
-    session.modified=True
+    flask_session.modified=True
 
     return redirect("/")
 
@@ -204,7 +205,7 @@ def sign_up_get(v):
     else:
         ref_user = None
 
-    if ref_user and (ref_user.id in session.get("history", [])):
+    if ref_user and (ref_user.id in flask_session.get("history", [])):
         return render_template("sign_up_failed_ref.html",
                                i=random_image())
 
@@ -217,7 +218,7 @@ def sign_up_get(v):
     # Make a unique form key valid for one account creation
     now = int(time.time())
     token = token_hex(16)
-    session["signup_token"] = token
+    flask_session["signup_token"] = token
     ip = request.remote_addr
 
     formkey_hashstr = str(now) + token + agent
@@ -266,7 +267,7 @@ def sign_up_post(v):
     form_timestamp = request.form.get("now", '0')
     form_formkey = request.form.get("formkey", "none")
 
-    submitted_token = session.get("signup_token", "")
+    submitted_token = flask_session.get("signup_token", "")
     if not submitted_token:
         abort(400)
 
@@ -372,7 +373,7 @@ def sign_up_post(v):
             return new_signup("Unable to verify captcha [2].")
 
     # kill tokens
-    session.pop("signup_token")
+    flask_session.pop("signup_token")
 
     # get referral
     ref_id = int(request.form.get("referred_by", 0))
@@ -397,7 +398,7 @@ def sign_up_post(v):
             referred_by=ref_id or None,
             tos_agreed_utc=int(time.time()),
             creation_region=request.headers.get("cf-ipcountry"),
-            ban_evade =  int(any([x.is_suspended for x in g.db.query(User).filter(User.id.in_(tuple(session.get("history", [])))).all() if x]))
+            ban_evade =  int(any([x.is_suspended for x in g.db.query(User).filter(User.id.in_(tuple(flask_session.get("history", [])))).all() if x]))
             )
 
     except Exception as e:
@@ -452,7 +453,7 @@ def post_forgot():
     username = request.form.get("username").lstrip('@')
     email = request.form.get("email",'').lstrip().rstrip()
 
-    email=email.replace("_","\_")
+    email=email.replace("_", r"\_")
 
     user = g.db.query(User).filter(
         User.username.ilike(username),

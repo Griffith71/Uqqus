@@ -6,6 +6,7 @@ import random
 
 from ruqqus.helpers.wrappers import *
 from ruqqus.helpers.get import *
+from flask import session as flask_session
 
 from ruqqus.__main__ import app, cache
 from ruqqus.classes.submission import Submission
@@ -408,7 +409,7 @@ Optional query parameters:
     ignore_pinned = bool(request.args.get("ignore_pinned", False))
 
 
-    cats=session.get("catids")
+    cats=flask_session.get("catids")
     new_cats=request.args.get('cats','')
     if not cats and not new_cats and not request.path.startswith('/api/'):
         return make_response(
@@ -423,15 +424,15 @@ Optional query parameters:
     if new_cats:
         #print('overwrite cats')
         new_cats=[int(x) for x in new_cats.split(',')]
-        session['catids']=new_cats
+        flask_session['catids']=new_cats
         cats=new_cats
-        session.modified=True
+        flask_session.modified=True
 
     #handle group cookie
     groups = request.args.get("groups")
     if groups:
-        session['groupids']=[int(x) for x in groups.split(',')]
-        session.modified=True
+        flask_session['groupids']=[int(x) for x in groups.split(',')]
+        flask_session.modified=True
 
     #print(cats)
 

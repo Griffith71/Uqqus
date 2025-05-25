@@ -9,7 +9,7 @@ from flask import g
 
 #preprocess re
 
-enter_re=re.compile("(\n\r?\w+){3,}")
+enter_re = re.compile(r"(\n\r?\w+){3,}")
 
 
 
@@ -18,7 +18,7 @@ enter_re=re.compile("(\n\r?\w+){3,}")
 
 class UserMention(SpanToken):
 
-    pattern = re.compile("(^|\s|\n)@(\w{3,25})")
+    pattern = re.compile(r"(^|\s|\n)@(\w{3,25})")
     parse_inner = False
 
     def __init__(self, match_obj):
@@ -27,7 +27,7 @@ class UserMention(SpanToken):
 
 class BoardMention(SpanToken):
 
-    pattern = re.compile("(^|\s|\n)\+(\w{3,25})")
+    pattern = re.compile(r"(^|\s|\n)\+(\w{3,25})")
     parse_inner = False
 
     def __init__(self, match_obj):
@@ -36,7 +36,7 @@ class BoardMention(SpanToken):
 
 class ChatMention(SpanToken):
 
-    pattern = re.compile("(^|\s|\n)#(\w{3,25})")
+    pattern = re.compile(r"(^|\s|\n)#(\w{3,25})")
     parse_inner = False
 
     def __init__(self, match_obj):
@@ -45,21 +45,21 @@ class ChatMention(SpanToken):
         
 class Emoji(SpanToken):
     
-    pattern=re.compile(":([A-Za-z0-9_-]+):")
-    parse_inner=False
+    pattern = re.compile(r":([A-Za-z0-9_-]+):")
+    parse_inner = False
     
     def __init__(self, match_obj):
-        self.target=match_obj.group(1)
+        self.target = match_obj.group(1)
 
 
 class Spoiler(SpanToken):
 
-    pattern=re.compile("(>!|<s>|\|\|)(.+?)(\|\||</s>|!<)")
-    parse_inner=True
+    pattern = re.compile(r"(>!|<s>|\|\|)(.+?)(\|\||</s>|!<)")
+    parse_inner = True
 
     def __init__(self, match_obj):
 
-        self.target=match_obj.group(2)
+        self.target = match_obj.group(2)
 
 
 
@@ -170,4 +170,4 @@ def preprocess(text):
     text=re.sub("(\u200b|\u200c|\u200d)",'', text)
     
     return text
-    
+

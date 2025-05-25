@@ -2,20 +2,15 @@ import re
 from urllib.parse import *
 import requests
 from os import environ
-from flask import *
 from bs4 import BeautifulSoup
 import json
 from ruqqus.__main__ import app
 from .get import *
 
-youtube_regex = re.compile(
-    "^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*")
-
-ruqqus_regex = re.compile("^https?://.*ruqqus\.com/\+\w+/post/(\w+)(/[a-zA-Z0-9_-]+/(\w+))?")
-
-twitter_regex=re.compile("/status/(\d+)")
-
-rumble_regex=re.compile("/embed/(\w+)-/")
+youtube_regex = re.compile(r"^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*")
+ruqqus_regex = re.compile(r"^https?://.*ruqqus\.com/\+\w+/post/(\w+)(/[a-zA-Z0-9_-]+/(\w+))?")
+twitter_regex = re.compile(r"/status/(\d+)")
+rumble_regex = re.compile(r"/embed/(\w+)-/")
 
 FACEBOOK_TOKEN=environ.get("FACEBOOK_TOKEN","").lstrip().rstrip()
 

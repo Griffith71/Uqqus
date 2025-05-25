@@ -1,4 +1,3 @@
-from flask import *
 from ruqqus.__main__ import app
 
 class PaymentRequired(Exception):
@@ -10,6 +9,6 @@ class PaymentRequired(Exception):
 
 class DatabaseOverload(Exception):
     status_code=500
-    def __init(self):
+    def __init__(self):
         Exception.__init__(self)
         self.status_code=500

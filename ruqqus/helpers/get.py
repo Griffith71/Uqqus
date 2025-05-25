@@ -12,7 +12,7 @@ import re
 def get_user(username, v=None, nSession=None, graceful=False):
 
     username = username.replace('\\', '')
-    username = username.replace('_', '\_')
+    username = username.replace('_', r'\_')
     username = username.replace('%', '')
 
     if not nSession:
@@ -943,7 +943,7 @@ def get_guild(name, v=None, graceful=False, db=None):
     name = name.lstrip('+')
 
     name = name.replace('\\', '')
-    name = name.replace('_', '\_')
+    name = name.replace('_', r'\_')
     name = name.replace('%', '')
 
     if v:
@@ -1050,19 +1050,19 @@ def get_from_permalink(link, v=None):
 
     if "@" in link:
 
-        name = re.search("/@(\w+)", link)
+        name = re.search(r"/@(\w+)", link)
         if name:
             name=name.group(1)
             return get_user(name, v=v)
 
     if "+" in link:
 
-        x = re.search("/\+(\w+)$", link)
+        x = re.search(r"/\+(\w+)$", link)
         if x:
             name=x.group(1)
             return get_guild(name, v=v)
 
-    ids = re.search("/\+\w+/post/(\w+)/[^/]+(/(\w+))?", link)
+    ids = re.search(r"/\+\w+/post/(\w+)/[^/]+(/(\w+))?", link)
 
     post_id = ids.group(1)
     comment_id = ids.group(3)
@@ -1120,7 +1120,7 @@ def get_txid(txid):
 def get_promocode(code):
 
     code = code.replace('\\', '')
-    code = code.replace("_", "\_")
+    code = code.replace("_", r"\_")
 
     code = g.db.query(PromoCode).filter(PromoCode.code.ilike(code)).first()
 

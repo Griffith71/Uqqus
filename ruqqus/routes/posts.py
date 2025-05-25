@@ -19,13 +19,13 @@ from ruqqus.helpers.embed import *
 from ruqqus.helpers.markdown import *
 from ruqqus.helpers.get import *
 from ruqqus.helpers.thumbs import *
-from ruqqus.helpers.session import *
+from ruqqus.helpers.session_helpers import *
 from ruqqus.helpers.aws import *
 from ruqqus.helpers.alerts import send_notification
 from ruqqus.classes import *
 from .front import frontlist
-from flask import *
 from ruqqus.__main__ import app, limiter, cache, db_session
+from flask import session as flask_session
 
 
 BAN_REASONS = ['',  #placeholder
@@ -888,7 +888,7 @@ Optional file data:
     notify_users = set()
 	
     soup = BeautifulSoup(body_html, features="html.parser")
-    for mention in soup.find_all("a", href=re.compile("^/@(\w+)"), limit=3):
+    for mention in soup.find_all("a", href=re.compile(r"^/@(\w+)") , limit=3):
         username = mention["href"].split("@")[1]
         user = g.db.query(User).filter_by(username=username).first()
         if user and not v.any_block_exists(user) and user.id != v.id: 

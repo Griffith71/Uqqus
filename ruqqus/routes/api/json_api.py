@@ -1,5 +1,6 @@
 import time
-from flask import *
+from flask import jsonify
+
 from sqlalchemy import *
 
 from ruqqus.helpers.wrappers import *

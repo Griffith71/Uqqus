@@ -1,5 +1,4 @@
 from werkzeug.security import generate_password_hash, check_password_hash
-from flask import *
 import time
 from sqlalchemy import *
 from sqlalchemy.orm import relationship, deferred, joinedload, lazyload, contains_eager, aliased, Load
@@ -1437,4 +1436,4 @@ class User(Base, Stndrd, Age_times):
             text=f"{days}d {hours:02d}h {minutes:02d}m"
 
         return f"Unban in {text}"
-    
+

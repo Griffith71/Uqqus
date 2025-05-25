@@ -1,16 +1,18 @@
-FROM ubuntu:18.04
+FROM ubuntu:24.04
 
 COPY supervisord.conf /etc/supervisord.conf
 
 RUN apt update \
-    && apt install -y python3.7 python3-pip supervisor
+    && apt install -y python3.12 python3-pip python3-venv supervisor
 
 RUN mkdir -p /opt/ruqqus/service
+WORKDIR /opt/ruqqus/service
 
-COPY requirements.txt /opt/ruqqus/service/requirements.txt
+COPY requirements.txt .
 
-RUN cd /opt/ruqqus/service \
-    && pip3 install -r requirements.txt
+RUN python3 -m venv /opt/ruqqus/service/venv \
+    && /opt/ruqqus/service/venv/bin/pip install -r requirements.txt
+COPY . .
 
 EXPOSE 80/tcp
 

@@ -6,7 +6,7 @@ import time
 from ruqqus.helpers.base36 import *
 from ruqqus.helpers.security import *
 from ruqqus.helpers.lazy import *
-from ruqqus.helpers.session import *
+from ruqqus.helpers.session_helpers import *
 import ruqqus.helpers.aws as aws
 from .userblock import *
 from .submission import *

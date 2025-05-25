@@ -11,7 +11,7 @@ from ruqqus.__main__ import app, cache
 
 
 
-query_regex=re.compile("(\w+):(\S+)")
+query_regex = re.compile(r"(\w+):(\S+)")
 valid_params=[
     'author',
     'domain',
@@ -74,8 +74,8 @@ def searchlisting(criteria, v=None, page=1, t="None", sort="top", b=None):
 
     if 'url' in criteria:
         url=criteria['url']
-        url=url.replace('%','\%')
-        url=url.replace('_','\_')
+        url=url.replace('%', r'\%')
+        url=url.replace('_', r'\_')
         posts=posts.filter(
             SubmissionAux.url.ilike("%"+criteria['url']+"%")
             )
@@ -85,13 +85,13 @@ def searchlisting(criteria, v=None, page=1, t="None", sort="top", b=None):
 
         #sanitize domain by removing anything that isn't [a-z0-9.]
         domain=domain.lower()
-        domain=re.sub("[^a-z0-9.]","", domain)
+        domain=re.sub(r"[^a-z0-9.]","", domain)
         #escape periods
-        domain=domain.replace(".","\.")
+        domain=domain.replace(".", r"\.")
 
         posts=posts.filter(
             SubmissionAux.url.op('~')(
-                "https?://([^/]*\.)?"+domain+"(/|$)"
+                r"https?://([^/]*\.)?"+domain+"(/|$)"
                 )
             )
 
@@ -214,7 +214,7 @@ def search(v, search_type="posts"):
     
         term=query.lstrip('+')
         term=term.replace('\\','')
-        term=term.replace('_','\_')
+        term=term.replace('_', r'\_')
 
         boards = g.db.query(Board).filter(
             Board.name.ilike(f'%{term}%'))
@@ -226,7 +226,7 @@ def search(v, search_type="posts"):
             boards = boards.filter_by(is_banned=False)
 
         if v:
-            joined = g.db.query(Subscription).filter_by(user_id=v.id, is_active=True).subquery()
+            joined = g.db.query(Submission).filter_by(user_id=v.id, is_active=True).subquery()
 
             boards=boards.join(
                 joined,
@@ -271,7 +271,7 @@ def search(v, search_type="posts"):
             
         term=query.lstrip('@')
         term=term.replace('\\','')
-        term=term.replace('_','\_')
+        term=term.replace('_', r'\_')
         
         now=int(time.time())
         users=g.db.query(User).filter(

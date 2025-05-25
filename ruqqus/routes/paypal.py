@@ -6,7 +6,7 @@ import pprint
 import time
 import pprint
 
-from flask import *
+from flask import request, jsonify, redirect, render_template, abort
 
 from ruqqus.classes import *
 from ruqqus.helpers.wrappers import *

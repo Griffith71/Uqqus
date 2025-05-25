@@ -1,4 +1,4 @@
-from flask import *
+from flask import request, jsonify
 from os import environ
 import requests
 

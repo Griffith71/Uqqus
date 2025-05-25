@@ -15,10 +15,11 @@ from ruqqus.helpers.aws import *
 from ruqqus.mail import *
 from .front import frontlist
 from ruqqus.__main__ import app, cache
+from flask import session as flask_session
 
 
-valid_username_regex = re.compile("^[a-zA-Z0-9_]{3,25}$")
-valid_password_regex = re.compile("^.{8,100}$")
+valid_username_regex = re.compile(r"^[a-zA-Z0-9_]{3,25}$")
+valid_password_regex = re.compile(r"^.{8,100}$")
 
 
 @app.route("/settings/profile", methods=["POST"])
@@ -296,14 +297,14 @@ def settings_dark_mode(x, v):
         abort(400)
 
     if not v.can_use_darkmode:
-        session["dark_mode_enabled"] = False
+        flask_session["dark_mode_enabled"] = False
         abort(403)
     else:
-        # print(f"current cookie is {session.get('dark_mode_enabled')}")
-        session["dark_mode_enabled"] = x
+        # print(f"current cookie is {flask_session.get('dark_mode_enabled')}")
+        flask_session["dark_mode_enabled"] = x
         # print(f"set dark mode @{v.username} to {x}")
-        # print(f"cookie is now {session.get('dark_mode_enabled')}")
-        session.modified = True
+        # print(f"cookie is now {flask_session.get('dark_mode_enabled')}")
+        flask_session.modified = True
         return "", 204
 
 
@@ -322,7 +323,7 @@ def settings_log_out_others(v):
     v.login_nonce += 1
 
     # update cookie accordingly
-    session["login_nonce"] = v.login_nonce
+    flask_session["login_nonce"] = v.login_nonce
 
     g.db.add(v)
 
@@ -415,7 +416,7 @@ def settings_delete_banner(v):
 @validate_formkey
 def settings_toggle_collapse(v):
 
-    session["sidebar_collapsed"] = not session.get("sidebar_collapsed", False)
+    flask_session["sidebar_collapsed"] = not flask_session.get("sidebar_collapsed", False)
 
     return "", 204
 
@@ -479,8 +480,8 @@ def delete_account(v):
             b.all_opt_out = False
             g.db.add(b)
 
-    session.pop("user_id", None)
-    session.pop("session_id", None)
+    flask_session.pop("user_id", None)
+    flask_session.pop("session_id", None)
 
     #deal with throwaway spam - auto nuke content if account age below threshold
     if int(time.time()) - v.created_utc < 60*60*12:
@@ -717,7 +718,7 @@ def settings_name_change(v):
                            error=f"That isn't a valid username.")
 
     #verify availability
-    name=new_name.replace('_','\_')
+    name=new_name.replace('_',r'\_')
 
     x= g.db.query(User).options(
         lazyload('*')

@@ -14,7 +14,7 @@ from ruqqus.helpers.sanitize import *
 from ruqqus.helpers.markdown import *
 from ruqqus.helpers.get import *
 from ruqqus.helpers.alerts import *
-from ruqqus.helpers.session import *
+from ruqqus.helpers.session_helpers import *
 from ruqqus.helpers.aws import check_csam_url
 from ruqqus.classes import *
 from .front import guild_ids
@@ -1196,9 +1196,9 @@ def mod_bid_settings_private(bid, board, v):
     g.db.commit()
 
     ma=ModAction(
-        kind="update_settings",
         user_id=v.id,
         board_id=board.id,
+        kind="update_settings",
         note=f"private={board.is_private}"
         )
     g.db.add(ma)
@@ -2343,9 +2343,9 @@ def board_mod_perms_change(guildname, board, v):
 #         return jsonify({"error": "You can't chatban other guildmasters."}), 409
 
 #     new_ban = BanRelationship(user_id=user.id,
-#                               board_id=board.id,
-#                               banning_mod_id=v.id,
-#                               is_active=True)
+#                                                                                                                                                                                                                                                                                                                         board_id=board.id,
+#                                banning_mod_id=v.id,
+#                                is_active=True)
 #     g.db.add(new_ban)
 
 #     ma=ModAction(

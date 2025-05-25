@@ -4,7 +4,10 @@ import pyotp
 import pprint
 import sass
 import mistletoe
-from flask import *
+
+from flask import (
+    request, session, g, abort, jsonify, make_response, redirect, render_template, send_file
+)
 
 from ruqqus.helpers.wrappers import *
 from ruqqus.helpers.markdown import *
@@ -255,8 +258,8 @@ def info_image_hosts():
 @app.route("/dismiss_mobile_tip", methods=["POST"])
 def dismiss_mobile_tip():
 
-	session["tooltip_last_dismissed"]=int(time.time())
-	session.modified=True
+	flask_session["tooltip_last_dismissed"]=int(time.time())
+	flask_session.modified=True
 
 	return "", 204
 

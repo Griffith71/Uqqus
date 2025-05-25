@@ -1,7 +1,10 @@
+from flask import (
+    request, g, abort, jsonify, make_response, redirect, render_template
+)
+from flask import session as flask_session
 from ruqqus.helpers.wrappers import *
-from ruqqus.helpers.session import *
+from ruqqus.helpers.session_helpers import *
 from ruqqus.classes.custom_errors import *
-from flask import *
 from urllib.parse import quote, urlencode
 import time
 from ruqqus.__main__ import app, r, cache
@@ -131,7 +134,7 @@ def error_429(e, v):
         #if you exceed 30x 429 without a 60s break, you get IP banned for 1 hr:
         if count_429s>=30:
             try:
-                print("triggering IP ban", request.remote_addr, session.get("user_id"), session.get("history"))
+                print("triggering IP ban", request.remote_addr, flask_session.get("user_id"), flask_session.get("history"))
             except:
                 pass
             
@@ -190,10 +193,10 @@ def allow_nsfw_logged_in(bid, v):
 
     cutoff = int(time.time()) + 3600
 
-    if not session.get("over_18", None):
-        session["over_18"] = {}
+    if not flask_session.get("over_18", None):
+        flask_session["over_18"] = {}
 
-    session["over_18"][bid] = cutoff
+    flask_session["over_18"][bid] = cutoff
 
     return redirect(request.form.get("redir"))
 
@@ -212,11 +215,11 @@ def allow_nsfw_logged_out(bid, v):
                                        ):
         abort(403)
 
-    if not session.get("over_18", None):
-        session["over_18"] = {}
+    if not flask_session.get("over_18", None):
+        flask_session["over_18"] = {}
 
     cutoff = int(time.time()) + 3600
-    session["over_18"][bid] = cutoff
+    flask_session["over_18"][bid] = cutoff
 
     return redirect(request.form.get("redir"))
 
@@ -228,10 +231,10 @@ def allow_nsfl_logged_in(bid, v):
 
     cutoff = int(time.time()) + 3600
 
-    if not session.get("show_nsfl", None):
-        session["show_nsfl"] = {}
+    if not flask_session.get("show_nsfl", None):
+        flask_session["show_nsfl"] = {}
 
-    session["show_nsfl"][bid] = cutoff
+    flask_session["show_nsfl"][bid] = cutoff
 
     return redirect(request.form.get("redir"))
 
@@ -250,11 +253,11 @@ def allow_nsfl_logged_out(bid, v):
                                        ):
         abort(403)
 
-    if not session.get("show_nsfl", None):
-        session["show_nsfl"] = {}
+    if not flask_session.get("show_nsfl", None):
+        flask_session["show_nsfl"] = {}
 
     cutoff = int(time.time()) + 3600
-    session["show_nsfl"][bid] = cutoff
+    flask_session["show_nsfl"][bid] = cutoff
 
     return redirect(request.form.get("redir"))
 
