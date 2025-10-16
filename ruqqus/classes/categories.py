@@ -45,7 +45,7 @@ class SubCategory(Base, Stndrd):
     description = Column(String(250), default="")
     _visible = Column(Boolean, default=0)
 
-    category = relationship("Category", lazy="joined")
+    category = relationship("Category", lazy="joined", overlaps="_subcats")
 
     @property
     def visible(self):

@@ -17,11 +17,17 @@ class UserBlock(Base, Stndrd, Age_times):
     user = relationship(
         "User",
         innerjoin=True,
-        primaryjoin="User.id==UserBlock.user_id")
+        primaryjoin="User.id==UserBlock.user_id",
+        back_populates="blocking",
+        overlaps="user,blocking"
+    )
     target = relationship(
         "User",
         innerjoin=True,
-        primaryjoin="User.id==UserBlock.target_id")
+        primaryjoin="User.id==UserBlock.target_id",
+        back_populates="blocked",
+        overlaps="target,blocked"
+    )
 
     def __repr__(self):
 

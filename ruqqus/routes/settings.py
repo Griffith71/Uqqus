@@ -1,7 +1,7 @@
 from flask import *
 from sqlalchemy import func
 import time
-import threading
+import gevent
 import mistletoe
 import re
 from ruqqus.classes import *
@@ -339,12 +339,11 @@ def settings_images_profile(v):
         v.set_profile(request.files["profile"])
 
         # anti csam
-        new_thread = threading.Thread(target=check_csam_url,
-                                      args=(v.profile_url,
+        new_thread = gevent.spawn(check_csam_url,
+                                      v.profile_url,
                                             v,
                                             lambda: board.del_profile()
                                             )
-                                      )
         new_thread.start()
 
         return render_template("settings_profile.html",
@@ -362,12 +361,11 @@ def settings_images_banner(v):
         v.set_banner(request.files["banner"])
 
         # anti csam
-        new_thread = threading.Thread(target=check_csam_url,
-                                      args=(v.banner_url,
+        new_thread = gevent.spawn(check_csam_url,
+                                      v.banner_url,
                                             v,
                                             lambda: board.del_banner()
                                             )
-                                      )
         new_thread.start()
 
         return render_template("settings_profile.html",

@@ -15,8 +15,18 @@ class Subscription(Base):
     is_active = Column(Boolean, default=True)
     get_notifs=Column(Boolean, default=False)
 
-    user = relationship("User", uselist=False)
-    board = relationship("Board", uselist=False)
+    user = relationship(
+        "User",
+        uselist=False,
+        back_populates="subscriptions",
+        overlaps="subscriptions,user"
+    )
+    board = relationship(
+        "Board",
+        uselist=False,
+        back_populates="subscribers",
+        overlaps="subscribers,board"
+    )
 
     def __init__(self, *args, **kwargs):
         if "created_utc" not in kwargs:

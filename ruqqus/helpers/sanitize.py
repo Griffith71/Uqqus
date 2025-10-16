@@ -89,7 +89,7 @@ _allowed_tags_in_bio = [
 _allowed_attributes = {
     'a': ['href', 'title', "rel", "data-original-name"],
     'i': [],
-    'span': ['style', 'class', 'data-toggle', 'title'],
+    'span': ['class', 'data-toggle', 'title'],  # removed 'style'
     'img': ['src', 'class']
     }
 
@@ -137,6 +137,7 @@ def a_modify(attrs, new=False):
 _clean_wo_links = bleach.Cleaner(tags=_allowed_tags,
                                  attributes=_allowed_attributes,
                                  protocols=_allowed_protocols,
+                                 css_sanitizer=None
                                  )
 _clean_w_links = bleach.Cleaner(
     tags=_allowed_tags_with_links,
@@ -148,7 +149,8 @@ _clean_w_links = bleach.Cleaner(
                                                  parse_email=False,
                                                  callbacks=[a_modify]
                                                  )
-                                         ]
+                                         ],
+    css_sanitizer=None
                                 )
 
 _clean_bio = bleach.Cleaner(tags=_allowed_tags_in_bio,
@@ -159,7 +161,8 @@ _clean_bio = bleach.Cleaner(tags=_allowed_tags_in_bio,
                                              parse_email=False,
                                              callbacks=[a_modify]
                                              )
-                                     ]
+                                     ],
+                            css_sanitizer=None
                             )
 
 
@@ -170,7 +173,6 @@ def sanitize(text, bio=False, linkgen=False, noimages=False):
         text = bleach.Cleaner(tags=no_images,
                               attributes=_allowed_attributes,
                               protocols=_allowed_protocols,
-                              styles=_allowed_styles,
                               filters=[partial(LinkifyFilter,
                                                skip_tags=["pre"],
                                                parse_email=False,

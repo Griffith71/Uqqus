@@ -1,10 +1,8 @@
 from urllib.parse import urlparse
-import mistletoe
 from sqlalchemy import func, literal
 from bs4 import BeautifulSoup
 from datetime import datetime
-import secrets
-import threading
+import gevent
 from os import environ
 
 from ruqqus.helpers.wrappers import *
@@ -169,13 +167,10 @@ Optional query parameters:
             ).select_from(Comment).options(
                 lazyload('*'),
                 joinedload(Comment.comment_aux),
-                joinedload(Comment.author),
-                Load(User).lazyload('*'),
-                Load(User).joinedload(User.title),
-                joinedload(Comment.post),
-                Load(Submission).lazyload('*'),
-                Load(Submission).joinedload(Submission.submission_aux),
-                Load(Submission).joinedload(Submission.board),
+                joinedload(Comment.author).joinedload(User.title),
+                joinedload(Comment.post).lazyload('*'),
+                joinedload(Comment.post).joinedload(Submission.submission_aux),
+                joinedload(Comment.post).joinedload(Submission.board),
                 Load(CommentVote).lazyload('*'),
                 Load(UserBlock).lazyload('*'),
                 Load(ModAction).lazyload('*')
@@ -514,7 +509,7 @@ Optional file data:
                 g.db.add(c)
                 g.db.commit()
                 
-            csam_thread=threading.Thread(target=check_csam_url, 
+            csam_thread=gevent.spawn(check_csam_url, 
                                          args=(f"https://{BUCKET}/{name}", 
                                                v, 
                                                del_function

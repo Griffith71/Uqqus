@@ -55,13 +55,13 @@ class Board(Base, Stndrd, Age_times):
     css=deferred(Column(String(65536), default=''))
 
     subcat=relationship("SubCategory")
-    moderators=relationship("ModRelationship")
-    subscribers=relationship("Subscription", lazy="dynamic")
-    submissions=relationship("Submission", primaryjoin="Board.id==Submission.board_id")
-    contributors=relationship("ContributorRelationship", lazy="dynamic")
-    bans=relationship("BanRelationship", lazy="dynamic")
-    chatbans=relationship("ChatBan", lazy="dynamic")
-    postrels=relationship("PostRelationship", lazy="dynamic")
+    moderators=relationship("ModRelationship", overlaps="board,moderators")
+    subscribers=relationship("Subscription", lazy="dynamic", overlaps="board,subscribers")
+    submissions=relationship("Submission", primaryjoin="Board.id==Submission.board_id", overlaps="board,submissions")
+    contributors=relationship("ContributorRelationship", lazy="dynamic", overlaps="board,contributors")
+    bans=relationship("BanRelationship", lazy="dynamic", overlaps="board,bans")
+    chatbans=relationship("ChatBan", lazy="dynamic", overlaps="board,chatbans")
+    postrels=relationship("PostRelationship", lazy="dynamic", overlaps="board,postrels")
 
     trending_rank=deferred(Column(Float, server_default=FetchedValue()))
 

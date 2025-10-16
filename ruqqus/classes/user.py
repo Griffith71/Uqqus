@@ -6,6 +6,7 @@ from os import environ
 from secrets import token_hex
 import random
 import pyotp
+from flask import session, g, request
 
 from ruqqus.helpers.base36 import *
 from ruqqus.helpers.security import *
@@ -46,20 +47,33 @@ class User(Base, Stndrd, Age_times):
         "Submission",
         lazy="dynamic",
         primaryjoin="Submission.author_id==User.id",
-        backref="author_rel")
+        backref="author_rel",
+        overlaps="author,author_rel"
+    )
     comments = relationship(
         "Comment",
         lazy="dynamic",
-        primaryjoin="Comment.author_id==User.id")
-    votes = relationship("Vote", lazy="dynamic", backref="users")
-    commentvotes = relationship("CommentVote", lazy="dynamic", backref="users")
+        primaryjoin="Comment.author_id==User.id",
+        back_populates="author",
+        overlaps="author,comments"
+    )
+    votes = relationship("Vote", lazy="dynamic", back_populates="user", overlaps="user,votes")
+    commentvotes = relationship("CommentVote", lazy="dynamic", back_populates="user", overlaps="user,commentvotes")
+    notifications = relationship(
+        "Notification",
+        lazy="dynamic",
+        back_populates="user",
+        overlaps="user,notifications"
+    )
     bio = Column(String, default="")
     bio_html = Column(String, default="")
-    _badges = relationship("Badge", lazy="dynamic", backref="user")
+    _badges = relationship("Badge", lazy="dynamic", backref="user", overlaps="_badges,user")
     real_id = Column(String, default=None)
     notifications = relationship(
         "Notification",
-        lazy="dynamic")
+        lazy="dynamic",
+        overlaps="user"
+    )
 
     #unread_notifications_relationship=relationship(
     #    "Notification",
@@ -127,42 +141,37 @@ class User(Base, Stndrd, Age_times):
     name_changed_utc=deferred(Column(Integer, default=0))
 
 
-    moderates = relationship("ModRelationship")
-    banned_from = relationship("BanRelationship",
-                               primaryjoin="BanRelationship.user_id==User.id")
+    moderates = relationship(
+        "ModRelationship",
+        primaryjoin="ModRelationship.user_id==User.id",
+        overlaps="user"
+    )
+    banned_from = relationship(
+        "BanRelationship",
+        primaryjoin="BanRelationship.user_id==User.id",
+        overlaps="user"
+    )
     subscriptions = relationship("Subscription")
     boards_created = relationship("Board", lazy="dynamic")
     contributes = relationship(
         "ContributorRelationship",
         lazy="dynamic",
-        primaryjoin="ContributorRelationship.user_id==User.id")
-    board_blocks = relationship("BoardBlock", lazy="dynamic")
-
-    following = relationship("Follow", primaryjoin="Follow.user_id==User.id")
-    followers = relationship("Follow", primaryjoin="Follow.target_id==User.id")
-
-    blocking = relationship(
-        "UserBlock",
-        lazy="dynamic",
-        primaryjoin="User.id==UserBlock.user_id")
-    blocked = relationship(
-        "UserBlock",
-        lazy="dynamic",
-        primaryjoin="User.id==UserBlock.target_id")
-
-    _applications = relationship("OauthApp", lazy="dynamic")
-    authorizations = relationship("ClientAuth", lazy="dynamic")
-    #notification_subscriptions = relationship("PostNotificationSubscriptions", lazy="dynamic")
-
-    saved_posts=relationship(
-        "SaveRelationship",
-        lazy="dynamic",
-        primaryjoin="User.id==SaveRelationship.user_id")
-
+        primaryjoin="ContributorRelationship.user_id==User.id",
+        overlaps="user,contributes"
+    )
+    board_blocks = relationship("BoardBlock", lazy="dynamic", overlaps="user,board_blocks")
+    following = relationship("Follow", primaryjoin="Follow.user_id==User.id", overlaps="user,following")
+    followers = relationship("Follow", primaryjoin="Follow.target_id==User.id", overlaps="target,followers")
+    blocking = relationship("UserBlock", lazy="dynamic", primaryjoin="UserBlock.user_id==User.id", overlaps="user,blocking")
+    blocked = relationship("UserBlock", lazy="dynamic", primaryjoin="UserBlock.target_id==User.id", overlaps="target,blocked")
+    _applications = relationship("OauthApp", lazy="dynamic", overlaps="author,_applications")
+    authorizations = relationship("ClientAuth", lazy="dynamic", overlaps="user,authorizations")
     _transactions = relationship(
         "PayPalTxn",
         lazy="dynamic",
-        primaryjoin="PayPalTxn.user_id==User.id")
+        primaryjoin="PayPalTxn.user_id==User.id",
+        overlaps="user,_transactions"
+    )
 
     # properties defined as SQL server-side functions
     energy = deferred(Column(Integer, server_default=FetchedValue()))
@@ -533,11 +542,7 @@ class User(Base, Stndrd, Age_times):
     @property
     @cache.memoize(timeout=3600)
     def true_score(self):
-
-        self.stored_karma=max((self.karma + self.comment_karma), -5)
-
-        g.db.add(self)
-        g.db.commit()
+        self.stored_karma = max((self.karma + self.comment_karma), -5)
         return self.stored_karma
 
     @property
@@ -643,66 +648,55 @@ class User(Base, Stndrd, Age_times):
 
     def notification_commentlisting(self, page=1, all_=False, replies_only=False, mentions_only=False, system_only=False):
 
-
         notifications = self.notifications.options(
-            lazyload('*'),
-            joinedload(Notification.comment).lazyload('*'),
             joinedload(Notification.comment).joinedload(Comment.comment_aux)
-            ).join(
+        ).join(
             Notification.comment
-            ).filter(
+        ).filter(
             Comment.is_banned == False,
-            Comment.deleted_utc == 0)
-
-
+            Comment.deleted_utc == 0
+        )
 
         if replies_only:
-            cs=g.db.query(Comment.id).filter(Comment.author_id==self.id).subquery()
-            ps=g.db.query(Submission.id).filter(Submission.author_id==self.id).subquery()
-            notifications=notifications.filter(
+            cs = g.db.query(Comment.id).filter(Comment.author_id == self.id).subquery()
+            ps = g.db.query(Submission.id).filter(Submission.author_id == self.id).subquery()
+            notifications = notifications.filter(
                 or_(
                     Comment.parent_comment_id.in_(cs),
                     and_(
-                        Comment.level==1,
+                        Comment.level == 1,
                         Comment.parent_submission.in_(ps)
-                        )
                     )
                 )
-
+            )
         elif mentions_only:
-            cs=g.db.query(Comment.id).filter(Comment.author_id==self.id).subquery()
-            ps=g.db.query(Submission.id).filter(Submission.author_id==self.id).subquery()
-            notifications=notifications.filter(
+            cs = g.db.query(Comment.id).filter(Comment.author_id == self.id).subquery()
+            ps = g.db.query(Submission.id).filter(Submission.author_id == self.id).subquery()
+            notifications = notifications.filter(
                 and_(
                     Comment.parent_comment_id.notin_(cs),
                     or_(
-                        Comment.level>1,
+                        Comment.level > 1,
                         Comment.parent_submission.notin_(ps)
-                        )
                     )
                 )
+            )
         elif system_only:
-            notifications=notifications.filter(Comment.author_id==1)
-
+            notifications = notifications.filter(Comment.author_id == 1)
         elif not all_:
             notifications = notifications.filter(Notification.read == False)
 
-
-        notifications = notifications.options(
-            contains_eager(Notification.comment)
-        )
-
         notifications = notifications.order_by(
-            Notification.id.desc()).offset(25 * (page - 1)).limit(26)
+            Notification.id.desc()
+        ).offset(25 * (page - 1)).limit(26)
 
         output = []
-        for x in notifications[0:25]:
+        results = notifications.all()
+        for x in results[0:25]:
             x.read = True
             g.db.add(x)
             output.append(x.comment_id)
-
         g.db.commit()
-
         return output
 
     def notification_postlisting(self, all_=False, page=1):
@@ -789,7 +783,7 @@ class User(Base, Stndrd, Age_times):
             Submission.id==Notification.submission_id
             ).filter(
             Submission.is_banned==False,
-            Submission.deleted_utc==0,
+            Submission.deleted_utc==0
             ).count()
 
     @property
@@ -1156,7 +1150,6 @@ class User(Base, Stndrd, Age_times):
                 self.del_banner()
             if self.has_profile:
                 self.del_profile()
-
             add_role(self, "banned")
             delete_role(self, "member")
 

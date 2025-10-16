@@ -64,7 +64,9 @@ class Submission(Base, Stndrd, Age_times, Scores, Fuzzing):
         "Comment",
         lazy="dynamic",
         primaryjoin="Comment.parent_submission==Submission.id",
-        backref="submissions")
+        backref="submissions",
+        overlaps="post"
+    )
     domain_ref = Column(Integer, ForeignKey("domains.id"))
     domain_obj = relationship("Domain")
     flags = relationship("Flag", backref="submission")
@@ -91,12 +93,16 @@ class Submission(Base, Stndrd, Age_times, Scores, Fuzzing):
         "Board",
         lazy="joined",
         innerjoin=True,
-        primaryjoin="Submission.board_id==Board.id")
+        primaryjoin="Submission.board_id==Board.id",
+        overlaps="submissions"
+    )
     author = relationship(
         "User",
         lazy="joined",
         innerjoin=True,
-        primaryjoin="Submission.author_id==User.id")
+        primaryjoin="Submission.author_id==User.id",
+        overlaps="submissions,author"
+    )
     is_pinned = Column(Boolean, default=False)
     score_best = Column(Float, default=0)
     reports = relationship("Report", backref="submission")
@@ -135,6 +141,8 @@ class Submission(Base, Stndrd, Age_times, Scores, Fuzzing):
     rank_fiery = deferred(Column(Float, server_default=FetchedValue()))
     rank_activity = deferred(Column(Float, server_default=FetchedValue()))
     rank_best = deferred(Column(Float, server_default=FetchedValue()))
+
+    votes = relationship("Vote", back_populates="post", overlaps="post,votes")
 
     def __init__(self, *args, **kwargs):
 

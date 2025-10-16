@@ -1,12 +1,8 @@
 from urllib.parse import urlparse
-import mistletoe
-import re
-import sass
-import threading
-import time
-import os.path
+import gevent
 from bs4 import BeautifulSoup 
 import cssutils
+import sass
 
 from ruqqus.helpers.wrappers import *
 from ruqqus.helpers.base36 import *
@@ -499,7 +495,7 @@ URL path parameters:
     post.is_pinned = False
     g.db.add(post)
 
-    cache.delete_memoized(Board.idlist, board)
+    cache.delete_memoized(Board.idlist, post.board)
 
     ma=ModAction(
         kind="kick_post",
@@ -1269,7 +1265,7 @@ def mod_settings_toggle_banner(bid, board, v):
             "hidebanner",
             False) == 'true')
 
-    g.db.add(board)
+    g.db
     return "", 204
 
 
@@ -1334,14 +1330,13 @@ def mod_edit_rule(bid, board, v):
 @app.route("/+<guildname>/mod/settings", methods=["GET"])
 @auth_required
 @is_guildmaster("config")
-def board_about_settings(guildname, board, v):
-
+def board_about(guildname, board, v):
     return render_template(
         "guild/settings.html",
         v=v,
         b=board,
         categories=CATEGORIES
-        )
+    )
 
 
 @app.route("/+<guildname>/mod/appearance", methods=["GET"])
@@ -1785,12 +1780,11 @@ def mod_board_images_profile(bid, board, v):
     board.set_profile(request.files["profile"])
 
     # anti csam
-    new_thread = threading.Thread(target=check_csam_url,
-                                  args=(board.profile_url,
-                                        v,
-                                        lambda: board.del_profile()
+    new_thread = gevent.spawn(check_csam_url,
+                                  board.profile_url,
+                                  v,
+                                  lambda: board.del_profile()
                                         )
-                                  )
     new_thread.start()
 
     ma=ModAction(
@@ -1816,12 +1810,11 @@ def mod_board_images_banner(bid, board, v):
     board.set_banner(request.files["banner"])
 
     # anti csam
-    new_thread = threading.Thread(target=check_csam_url,
-                                  args=(board.banner_url,
-                                        v,
-                                        lambda: board.del_banner()
+    new_thread = gevent.spawn(check_csam_url,
+                                  board.banner_url,
+                                  v,
+                                  lambda: board.del_banner()
                                         )
-                                  )
     new_thread.start()
 
     ma=ModAction(
@@ -2155,14 +2148,18 @@ Optional query parameters:
 
     comments = get_comments(idlist, v=v)
 
-    return {"html": lambda: render_template("board_comments.html",
-                                            v=v,
-                                            b=b,
-                                            page=page,
-                                            comments=comments,
-                                            standalone=True,
-                                            next_exists=next_exists),
-            "api": lambda: jsonify({"data": [x.json for x in comments]})}
+    return {
+        "html": lambda: render_template(
+            "board_comments.html",
+            v=v,
+            b=b,
+            page=page,
+            comments=comments,
+            standalone=True,
+            next_exists=next_exists
+        ),
+        "api": lambda: jsonify({"data": [x.json for x in comments]})
+    }
 
 
 @app.route("/mod/<bid>/category/<category>", methods=["POST"])
@@ -2223,7 +2220,7 @@ Optional query parameters
 
     actions=g.db.query(ModAction).options(
         joinedload(ModAction.target_post).lazyload('*'),
-        Load(Submission).joinedload(Submission.submission_aux),
+        joinedload(ModAction.target_post).joinedload(Submission.submission_aux),
         joinedload(ModAction.target_comment).lazyload('*'),
         joinedload(ModAction.target_user).lazyload('*'),
         joinedload(ModAction.user).lazyload('*'),
@@ -2324,30 +2321,29 @@ def board_mod_perms_change(guildname, board, v):
 # @api("guildmaster")
 # @validate_formkey
 # def mod_chatban_bid_user(bid, board, v):
-
+#
 #     user = get_user(request.values.get("username"), graceful=True)
-
+#
 #     if not user:
 #         return jsonify({"error": "That user doesn't exist."}), 404
-
+#
 #     if user.id == v.id:
 #         return jsonify({"error": "You can't chatban yourself."}), 409
-
+#
 #     if g.db.query(ChatBan).filter_by(user_id=user.id, board_id=board.id, is_active=True).first():
 #         return jsonify({"error": f"@{user.username} is already chatbanned from +{board.name}."}), 409
-
+#
 #     if board.has_contributor(user):
 #         return jsonify({"error": f"@{user.username} is an approved contributor to +{board.name} and can't currently be chatbanned."}), 409
-
+#
 #     if board.has_mod(user):
 #         return jsonify({"error": "You can't chatban other guildmasters."}), 409
-
 #     new_ban = BanRelationship(user_id=user.id,
-#                                                                                                                                                                                                                                                                                                                         board_id=board.id,
-#                                banning_mod_id=v.id,
-#                                is_active=True)
+#                               board_id=board.id,
+#                               banning_mod_id=v.id,
+#                                                             is_active=True)
 #     g.db.add(new_ban)
-
+#
 #     ma=ModAction(
 #         kind="chatban_user",
 #         user_id=v.id,
@@ -2355,10 +2351,9 @@ def board_mod_perms_change(guildname, board, v):
 #         board_id=board.id
 #         )
 #     g.db.add(ma)
-
+#
 #     g.db.commit()
-
-
+#
 #     if request.args.get("toast"):
 #         return jsonify({"message": f"@{user.username} was exiled from +{board.name}"})
 #     else:
@@ -2642,7 +2637,7 @@ URL path parameters:
 
     sub=g.db.query(Subscription).filter_by(user_id=v.id, board_id=guild.id, is_active=True).first()
     if not sub:
-        return jsonify({"error": f"You aren't a member of +{guild.name}"}), 404
+        return jsonify({"error": f"You aren't a member of +{board.name}"}), 404
 
     sub.get_notifs = not sub.get_notifs
     g.db.add(sub)

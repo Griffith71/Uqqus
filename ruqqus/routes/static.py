@@ -14,7 +14,7 @@ from ruqqus.helpers.markdown import *
 import ruqqus.classes
 from ruqqus.classes import *
 from ruqqus.mail import *
-from ruqqus.__main__ import app, limiter
+from ruqqus.__main__ import app, limiter, db_session
 
 # take care of misc pages that never really change (much)
 
@@ -72,10 +72,11 @@ def robots_txt():
 
 @app.route("/slurs.txt", methods=["GET"])
 def slurs():
-	resp = make_response('\n'.join([x.keyword for x in g.db.query(
-		BadWord).order_by(BadWord.keyword.asc()).all()]))
-	resp.headers.add("Content-Type", "text/plain")
-	return resp
+    db = db_session()
+    resp = make_response('\n'.join([x.keyword for x in db.query(
+        BadWord).order_by(BadWord.keyword.asc()).all()]))
+    resp.headers.add("Content-Type", "text/plain")
+    return resp
 
 
 @app.route("/settings", methods=["GET"])
@@ -94,8 +95,9 @@ def settings_profile(v):
 @app.route("/help/titles", methods=["GET"])
 @auth_desired
 def titles(v):
-	titles = [x for x in g.db.query(Title).order_by(text("id asc")).all()]
-	return render_template("/help/titles.html",
+    db = db_session()
+    titles = [x for x in db.query(Title).order_by(text("id asc")).all()]
+    return render_template("/help/titles.html",
 						   v=v,
 						   titles=titles)
 
@@ -114,10 +116,11 @@ def help_terms(v):
 @app.route("/help/badges", methods=["GET"])
 @auth_desired
 def badges(v):
-	badges = [
-		x for x in g.db.query(BadgeDef).order_by(
-			text("rank asc, id asc")).all()]
-	return render_template("help/badges.html",
+    db = db_session()
+    badges = [
+        x for x in db.query(BadgeDef).order_by(
+            text("rank asc, id asc")).all()]
+    return render_template("help/badges.html",
 						   v=v,
 						   badges=badges)
 
@@ -125,19 +128,17 @@ def badges(v):
 @app.route("/help/admins", methods=["GET"])
 @auth_desired
 def help_admins(v):
-
-	admins = g.db.query(User).filter(
-		User.admin_level > 1,
-		User.id > 1).order_by(
-		User.id.asc()).all()
-	admins = [x for x in admins]
-
-	exadmins = g.db.query(User).filter_by(
-		admin_level=1).order_by(
-		User.id.asc()).all()
-	exadmins = [x for x in exadmins]
-
-	return render_template("help/admins.html",
+    db = db_session()
+    admins = db.query(User).filter(
+        User.admin_level > 1,
+        User.id > 1).order_by(
+        User.id.asc()).all()
+    admins = [x for x in admins]
+    exadmins = db.query(User).filter_by(
+        admin_level=1).order_by(
+        User.id.asc()).all()
+    exadmins = [x for x in exadmins]
+    return render_template("help/admins.html",
 						   v=v,
 						   admins=admins,
 						   exadmins=exadmins

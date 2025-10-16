@@ -71,24 +71,41 @@ class Comment(Base, Age_times, Scores, Stndrd, Fuzzing):
     app_id = Column(Integer, ForeignKey("oauth_apps.id"), default=None)
     oauth_app=relationship("OauthApp")
 
-    post = relationship("Submission")
-    flags = relationship("CommentFlag", backref="comment")
+    post = relationship("Submission", overlaps="submissions,post")
+    flags = relationship("CommentFlag", backref="comment", overlaps="flags,comment")
     author = relationship(
         "User",
         lazy="joined",
         innerjoin=True,
-        primaryjoin="User.id==Comment.author_id")
+        primaryjoin="User.id==Comment.author_id",
+        overlaps="comments,author"
+    )
     board = association_proxy("post", "board")
     original_board = relationship(
-        "Board", primaryjoin="Board.id==Comment.original_board_id")
+        "Board", primaryjoin="Board.id==Comment.original_board_id", overlaps="original_board,board"
+    )
 
     upvotes = Column(Integer, default=1)
     downvotes = Column(Integer, default=0)
 
-    parent_comment = relationship("Comment", remote_side=[id])
-    child_comments = relationship("Comment", remote_side=[parent_comment_id])
+    commentvotes = relationship(
+        "CommentVote",
+        back_populates="comment",
+        overlaps="comment,commentvotes"
+    )
 
-    awards = relationship("AwardRelationship", lazy="joined")
+    parent_comment = relationship(
+        "Comment",
+        remote_side=[id],
+        overlaps="child_comments,parent_comment"
+    )
+    child_comments = relationship(
+        "Comment",
+        primaryjoin="Comment.parent_comment_id==Comment.id",
+        overlaps="parent_comment,child_comments"
+    )
+
+    awards = relationship("AwardRelationship", lazy="joined", overlaps="awards")
 
     # These are virtual properties handled as postgres functions server-side
     # There is no difference to SQLAlchemy, but they cannot be written to

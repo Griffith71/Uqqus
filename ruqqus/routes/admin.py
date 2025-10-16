@@ -1,14 +1,9 @@
 from urllib.parse import urlparse
-import time
-import calendar
 from sqlalchemy import func
 from sqlalchemy.orm import lazyload
-import threading
-import subprocess
-import imagehash
+import gevent
 from os import remove
 from PIL import Image as IMAGE
-import gevent
 
 from ruqqus.helpers.wrappers import *
 from ruqqus.helpers.alerts import *
@@ -845,7 +840,7 @@ def admin_siege_count(v):
 #         time.sleep(3)
 #         subprocess.run(". ~/go.sh", shell=True)
 
-#     thread=threading.Thread(target=reload_function, daemon=True)
+#     thread=gevent.spawn(reload_function)
 #     thread.start()
 
 #     return 'Reloading!'

@@ -4,6 +4,7 @@ from sqlalchemy.orm import relationship
 
 from ruqqus.helpers.base36 import *
 from ruqqus.__main__ import Base
+from flask import request, g, abort
 
 
 class Vote(Base):
@@ -18,15 +19,15 @@ class Vote(Base):
     creation_ip = Column(String, default=None)
     app_id = Column(Integer, ForeignKey("oauth_apps.id"), default=None)
 
-    user = relationship("User", lazy="subquery")
-    post = relationship("Submission", lazy="subquery")
+    user = relationship("User", lazy="subquery", back_populates="votes", overlaps="user,votes")
+    post = relationship("Submission", lazy="subquery", back_populates="votes", overlaps="post,votes")
 
     def __init__(self, *args, **kwargs):
 
         if "created_utc" not in kwargs:
             kwargs["created_utc"] = int(time())
 
-        kwargs["creation_ip"]=request.remote_addr
+        kwargs["creation_ip"] = request.remote_addr
 
         super().__init__(*args, **kwargs)
 
@@ -80,14 +81,14 @@ class CommentVote(Base):
     creation_ip = Column(String, default=None)
     app_id = Column(Integer, ForeignKey("oauth_apps.id"), default=None)
 
-    user = relationship("User", lazy="subquery")
-    comment = relationship("Comment", lazy="subquery")
+    user = relationship("User", lazy="subquery", back_populates="commentvotes", overlaps="user,commentvotes")
+    comment = relationship("Comment", lazy="subquery", back_populates="commentvotes", overlaps="comment,commentvotes")
 
     def __init__(self, *args, **kwargs):
         if "created_utc" not in kwargs:
             kwargs["created_utc"] = int(time())
 
-        kwargs["creation_ip"]=request.remote_addr
+        kwargs["creation_ip"] = request.remote_addr
 
         super().__init__(*args, **kwargs)
 

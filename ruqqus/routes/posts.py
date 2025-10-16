@@ -1,15 +1,13 @@
 from urllib.parse import urlparse, ParseResult, urlunparse, urlencode
-import mistletoe
 from sqlalchemy import func
 from sqlalchemy.orm import aliased
 from bs4 import BeautifulSoup
-import secrets
-import threading
 import requests
 import re
 import bleach
 import time
 import gevent
+import mistletoe
 
 from ruqqus.helpers.wrappers import *
 from ruqqus.helpers.base36 import *
@@ -861,12 +859,12 @@ Optional file data:
             db.close()
 
             
-        csam_thread=threading.Thread(target=check_csam_url, 
-                                     args=(f"https://{BUCKET}/{name}", 
-                                           v, 
-                                           del_function
-                                          )
-                                    )
+        csam_thread=gevent.spawn(
+            check_csam_url, 
+            f"https://{BUCKET}/{name}", 
+            v, 
+            del_function
+          )
         csam_thread.start()
     
     g.db.commit()

@@ -12,6 +12,7 @@ from os import remove
 from ruqqus.classes.images import BadPic
 from ruqqus.__main__ import db_session
 from .base36 import hex2bin
+import gevent
 
 BUCKET = environ.get("S3_BUCKET_NAME",'i.ruqqus.com').lstrip().rstrip()
 CF_KEY = environ.get("CLOUDFLARE_KEY").lstrip().rstrip()

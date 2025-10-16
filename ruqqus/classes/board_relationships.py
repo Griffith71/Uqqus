@@ -26,8 +26,8 @@ class ModRelationship(Base, Age_times):
     #permTitles = Column(Boolean, default=False)
     #permLodges = Column(Boolean, default=False)
 
-    user = relationship("User", lazy="joined")
-    board = relationship("Board", lazy="joined")
+    user = relationship("User", lazy="joined", overlaps="user")
+    board = relationship("Board", lazy="joined", overlaps="board")
 
     def __init__(self, *args, **kwargs):
         if "created_utc" not in kwargs:
@@ -202,7 +202,9 @@ class ContributorRelationship(Base, Stndrd, Age_times):
     user = relationship(
         "User",
         lazy="joined",
-        primaryjoin="User.id==ContributorRelationship.user_id")
+        primaryjoin="User.id==ContributorRelationship.user_id",
+        overlaps="contributes,user"
+    )
     approving_mod = relationship(
         "User",
         lazy='joined',
@@ -259,7 +261,7 @@ class BoardBlock(Base, Stndrd, Age_times):
     board_id = Column(Integer, ForeignKey("boards.id"))
     created_utc = Column(Integer)
 
-    user = relationship("User")
+    user = relationship("User", overlaps="board_blocks,user")
     board = relationship("Board")
 
     def __repr__(self):

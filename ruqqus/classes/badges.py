@@ -47,7 +47,7 @@ class Badge(Base):
     description = Column(String(64))
     url = Column(String(256))
     created_utc = Column(Integer)
-    badge = relationship("BadgeDef", lazy="joined", innerjoin=True)
+    badge = relationship("BadgeDef", lazy="joined", innerjoin=True, overlaps="badge")
 
     def __repr__(self):
 

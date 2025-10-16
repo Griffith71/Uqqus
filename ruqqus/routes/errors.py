@@ -17,9 +17,15 @@ def error_wrapper(f):
 
     def wrapper(*args, **kwargs):
 
-        resp=make_response(f(*args, **kwargs))
-        g.db.rollback()
-        g.db.close()
+        resp = make_response(f(*args, **kwargs))
+        # g.db may not be set for requests that bypass DB (static files). Be
+        # defensive when rolling back/closing.
+        try:
+            if hasattr(g, 'db') and g.db is not None:
+                g.db.rollback()
+                g.db.close()
+        except Exception:
+            pass
         return resp
 
     wrapper.__name__=f.__name__
@@ -43,80 +49,72 @@ def error_401(e):
 
 @app.errorhandler(PaymentRequired)
 @error_wrapper
-@auth_desired
 @api()
-def error_402(e, v):
-    return{"html": lambda: (render_template('errors/402.html', v=v), 402),
-           "api": lambda: (jsonify({"error": "402 Payment Required"}), 402)
-           }
+def error_402(e):
+    return {"html": lambda: (render_template('errors/402.html', v=None), 402),
+            "api": lambda: (jsonify({"error": "402 Payment Required"}), 402)
+            }
 
 @app.errorhandler(403)
 @error_wrapper
-@auth_desired
 @api()
-def error_403(e, v):
-    return{"html": lambda: (render_template('errors/403.html', v=v), 403),
-           "api": lambda: (jsonify({"error": "403 Forbidden"}), 403)
-           }
+def error_403(e):
+    return {"html": lambda: (render_template('errors/403.html', v=None), 403),
+            "api": lambda: (jsonify({"error": "403 Forbidden"}), 403)
+            }
 
 
 @app.errorhandler(404)
 @error_wrapper
-@auth_desired
 @api()
-def error_404(e, v):
-    return{"html": lambda: (render_template('errors/404.html', v=v), 404),
-           "api": lambda: (jsonify({"error": "404 Not Found"}), 404)
-           }
+def error_404(e):
+    return {"html": lambda: (render_template('errors/404.html', v=None), 404),
+            "api": lambda: (jsonify({"error": "404 Not Found"}), 404)
+            }
 
 
 @app.errorhandler(405)
 @error_wrapper
-@auth_desired
 @api()
-def error_405(e, v):
-    return{"html": lambda: (render_template('errors/405.html', v=v), 405),
-           "api": lambda: (jsonify({"error": "405 Method Not Allowed"}), 405)
-           }
+def error_405(e):
+    return {"html": lambda: (render_template('errors/405.html', v=None), 405),
+            "api": lambda: (jsonify({"error": "405 Method Not Allowed"}), 405)
+            }
 
 
 @app.errorhandler(409)
 @error_wrapper
-@auth_desired
 @api()
-def error_409(e, v):
-    return{"html": lambda: (render_template('errors/409.html', v=v), 409),
-           "api": lambda: (jsonify({"error": "409 Conflict"}), 409)
-           }
+def error_409(e):
+    return {"html": lambda: (render_template('errors/409.html', v=None), 409),
+            "api": lambda: (jsonify({"error": "409 Conflict"}), 409)
+            }
 
 
 @app.errorhandler(413)
 @error_wrapper
-@auth_desired
 @api()
-def error_413(e, v):
-    return{"html": lambda: (render_template('errors/413.html', v=v), 413),
-           "api": lambda: (jsonify({"error": "413 Request Payload Too Large"}), 413)
-           }
+def error_413(e):
+    return {"html": lambda: (render_template('errors/413.html', v=None), 413),
+            "api": lambda: (jsonify({"error": "413 Request Payload Too Large"}), 413)
+            }
 
 
 @app.errorhandler(422)
 @error_wrapper
-@auth_desired
 @api()
-def error_422(e, v):
-    return{"html": lambda: (render_template('errors/422.html', v=v), 422),
-           "api": lambda: (jsonify({"error": "422 Unprocessable Entity"}), 422)
-           }
+def error_422(e):
+    return {"html": lambda: (render_template('errors/422.html', v=None), 422),
+            "api": lambda: (jsonify({"error": "422 Unprocessable Entity"}), 422)
+            }
 
 
 @app.errorhandler(429)
 @error_wrapper
-@auth_desired
 @api()
-def error_429(e, v):
+def error_429(e):
 
-    ip=request.remote_addr
+    ip = request.remote_addr
 
     #get recent violations
     if r:
@@ -144,47 +142,47 @@ def error_429(e, v):
 
 
 
-    return{"html": lambda: (render_template('errors/429.html', v=v), 429),
-           "api": lambda: (jsonify({"error": "429 Too Many Requests"}), 429)
-           }
+    return {"html": lambda: (render_template('errors/429.html', v=None), 429),
+        "api": lambda: (jsonify({"error": "429 Too Many Requests"}), 429)
+        }
 
 
 @app.errorhandler(451)
 @error_wrapper
-@auth_desired
 @api()
-def error_451(e, v):
-    return{"html": lambda: (render_template('errors/451.html', v=v), 451),
-           "api": lambda: (jsonify({"error": "451 Unavailable For Legal Reasons"}), 451)
-           }
+def error_451(e):
+    return {"html": lambda: (render_template('errors/451.html', v=None), 451),
+            "api": lambda: (jsonify({"error": "451 Unavailable For Legal Reasons"}), 451)
+            }
 
 
 @app.errorhandler(500)
 @error_wrapper
-@auth_desired
 @api()
-def error_500(e, v):
+def error_500(e):
     try:
-        g.db.rollback()
-    except AttributeError:
+        if hasattr(g, 'db') and g.db is not None:
+            g.db.rollback()
+    except Exception:
         pass
 
-    return{"html": lambda: (render_template('errors/500.html', v=v), 500),
-           "api": lambda: (jsonify({"error": "500 Internal Server Error"}), 500)
-           }
+    return {"html": lambda: (render_template('errors/500.html', v=None), 500),
+            "api": lambda: (jsonify({"error": "500 Internal Server Error"}), 500)
+            }
 
 @app.errorhandler(503)
 @error_wrapper
 @api()
 def error_503(e):
     try:
-        g.db.rollback()
-    except AttributeError:
+        if hasattr(g, 'db') and g.db is not None:
+            g.db.rollback()
+    except Exception:
         pass
 
-    return{"html": lambda: (render_template('errors/503.html'), 503),
-           "api": lambda: (jsonify({"error": "503 Service Unavailable"}), 503)
-           }
+    return {"html": lambda: (render_template('errors/503.html'), 503),
+            "api": lambda: (jsonify({"error": "503 Service Unavailable"}), 503)
+            }
 
 @app.route("/allow_nsfw_logged_in/<bid>", methods=["POST"])
 @auth_required

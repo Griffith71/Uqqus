@@ -1,7 +1,4 @@
 from os import environ
-import requests
-import threading
-
 DOMAIN=environ.get("SERVER_NAME",environ.get("domain")).lstrip().rstrip()
 
 SERVER_ID = environ.get("DISCORD_SERVER_ID",'').rstrip()
@@ -33,8 +30,7 @@ def discord_wrap(f):
             return
 
 
-        thread=threading.Thread(target=f, args=args, kwargs=kwargs)
-        thread.start()
+        gevent.spawn(f, *args, **kwargs)
 
     wrapper.__name__=f.__name__
     return wrapper
@@ -43,8 +39,7 @@ def req_wrap(f):
 
     def wrapper(*args, **kwargs):
 
-        thread=threading.Thread(target=f, args=args, kwargs=kwargs)
-        thread.start()
+        gevent.spawn(f, *args, **kwargs)
 
     wrapper.__name__=f.__name__
     return wrapper

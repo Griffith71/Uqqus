@@ -1,12 +1,12 @@
+# IMPORTANT: gevent monkey patching MUST be performed before any other imports.
+# This prevents KeyError and threading/socket issues with gevent.
 import gevent.monkey
 gevent.monkey.patch_all()
-
-#import eventlet
-#eventlet.monkey_patch()
 
 import psycogreen.gevent
 psycogreen.gevent.patch_psycopg()
 
+# All other imports and code follow below
 import os
 from os import environ
 import secrets
@@ -26,7 +26,6 @@ from sqlalchemy.exc import OperationalError, StatementError, InternalError
 from sqlalchemy.orm import Session as SQLAlchemySession, sessionmaker, scoped_session, Query as _Query
 from sqlalchemy import *
 from sqlalchemy.pool import QueuePool
-import threading
 import requests
 import random
 import redis
@@ -34,7 +33,6 @@ import gevent
 import sys
 
 from redis import BlockingConnectionPool, ConnectionPool
-
 from werkzeug.middleware.proxy_fix import ProxyFix
 
 
@@ -219,7 +217,7 @@ class CorsMatch(str):
 
 
 # app.config["CACHE_REDIS_URL"]
-app.config["RATELIMIT_STORAGE_URL"] = environ.get("REDIS_URL").lstrip().rstrip() if environ.get("REDIS_URL") else 'memory://'
+app.config["RATELIMIT_STORAGE_URL"] = environ.get("REDIS_URL", "redis://redis").lstrip().rstrip()
 app.config["RATELIMIT_KEY_PREFIX"] = "flask_limiting_"
 app.config["RATELIMIT_ENABLED"] = True
 app.config["RATELIMIT_DEFAULTS_DEDUCT_WHEN"]=lambda x:True
@@ -234,9 +232,9 @@ def limiter_key_func():
 limiter = Limiter(
     key_func=limiter_key_func,
     default_limits=["100/minute"],
-    # headers_enabled=True, # We'll rely on app.config["RATELIMIT_HEADERS_ENABLED"]
     strategy="fixed-window",
-    storage_options={'max_connections':100} # These are likely still constructor arguments
+    storage_uri=app.config["RATELIMIT_STORAGE_URL"],
+    storage_options={'max_connections':100}
 )
 limiter.init_app(app) # Initialize the app with the limiter instance
 
@@ -478,8 +476,8 @@ def after_request(response):
     # if request.method == "POST" and response.status_code in [
     #         301, 302] and request.path == "/signup":
     #     link = f'https://{app.config["SERVER_NAME"]}/@{request.form.get("username")}'
-    #     thread = threading.Thread(
-    #         target=lambda: log_event(
+    #     thread = gevent.spawn(
+    #         lambda: log_event(
     #             name="Account Signup", link=link))
     #     thread.start()
 

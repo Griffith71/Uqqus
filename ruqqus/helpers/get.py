@@ -140,8 +140,8 @@ def get_post(pid, v=None, graceful=False, nSession=None, no_text=False, **kwargs
             user_id=v.id, accepted=True, invite_rescinded=False).subquery()
         boardblocks = nSession.query(
             BoardBlock).filter_by(user_id=v.id).subquery()
-        blocking = v.blocking.subquery()
-        blocked = v.blocked.subquery()
+        blocking = g.db.query(UserBlock).filter_by(user_id=v.id).subquery()
+        blocked = g.db.query(UserBlock).filter_by(target_id=v.id).subquery()
         sub = nSession.query(Subscription).filter_by(user_id=v.id, is_active=True).subquery()
 
         items = nSession.query(
@@ -156,8 +156,6 @@ def get_post(pid, v=None, graceful=False, nSession=None, no_text=False, **kwargs
         ).options(
             lazyload('*'),
             joinedload(Submission.submission_aux),
-            joinedload(Submission.author),
-            Load(User).lazyload('*'),
             joinedload(Submission.author).joinedload(User.title),
             Load(Board).lazyload('*'),
             joinedload(Submission.board),
@@ -225,8 +223,6 @@ def get_post(pid, v=None, graceful=False, nSession=None, no_text=False, **kwargs
         ).options(
             lazyload('*'),
             joinedload(Submission.submission_aux),
-            joinedload(Submission.author),
-            Load(User).lazyload('*'),
             joinedload(Submission.author).joinedload(User.title),
             Load(Board).lazyload('*'),
             joinedload(Submission.board),
@@ -276,8 +272,8 @@ def get_posts(pids, sort="hot", v=None):
 
         boardblocks = g.db.query(BoardBlock).filter_by(
             user_id=v.id).subquery()
-        blocking = v.blocking.subquery()
-        blocked = v.blocked.subquery()
+        blocking = g.db.query(UserBlock).filter_by(user_id=v.id).subquery()
+        blocked = g.db.query(UserBlock).filter_by(target_id=v.id).subquery()
         subs = g.db.query(Subscription).filter_by(user_id=v.id, is_active=True).subquery()
 
         query = g.db.query(
@@ -408,15 +404,12 @@ def get_post_with_comments(pid, sort_type="top", v=None):
         ).options(
             lazyload('*'),
             joinedload(Comment.comment_aux),
-            joinedload(Comment.author),
+            joinedload(Comment.author).joinedload(User.title),
             joinedload(Comment.distinguished_board),
             joinedload(Comment.awards),
-            Load(User).lazyload('*'),
-            Load(User).joinedload(User.title),
-            joinedload(Comment.post),
-            Load(Submission).lazyload('*'),
-            Load(Submission).joinedload(Submission.submission_aux),
-            Load(Submission).joinedload(Submission.board),
+            joinedload(Comment.post).lazyload('*'),
+            joinedload(Comment.post).joinedload(Submission.submission_aux),
+            joinedload(Comment.post).joinedload(Submission.board),
             Load(CommentVote).lazyload('*'),
             Load(UserBlock).lazyload('*'),
             Load(ModAction).lazyload('*'),
@@ -484,13 +477,10 @@ def get_post_with_comments(pid, sort_type="top", v=None):
         ).options(
             lazyload('*'),
             joinedload(Comment.comment_aux),
-            joinedload(Comment.author),
-            Load(User).lazyload('*'),
-            Load(User).joinedload(User.title),
-            joinedload(Comment.post),
-            Load(Submission).lazyload('*'),
-            Load(Submission).joinedload(Submission.submission_aux),
-            Load(Submission).joinedload(Submission.board),
+            joinedload(Comment.author).joinedload(User.title),
+            joinedload(Comment.post).lazyload('*'),
+            joinedload(Comment.post).joinedload(Submission.submission_aux),
+            joinedload(Comment.post).joinedload(Submission.board),
             Load(CommentVote).lazyload('*'),
             Load(UserBlock).lazyload('*'),
             Load(ModAction).lazyload('*'),
@@ -578,10 +568,9 @@ def get_comment(cid, nSession=None, v=None, graceful=False, no_text=False, **kwa
             joinedload(Comment.author),
             Load(User).lazyload('*'),
             Load(User).joinedload(User.title),
-            joinedload(Comment.post),
-            Load(Submission).lazyload('*'),
-            Load(Submission).joinedload(Submission.submission_aux),
-            Load(Submission).joinedload(Submission.board),
+            joinedload(Comment.post).lazyload('*'),
+            joinedload(Comment.post).joinedload(Submission.submission_aux),
+            joinedload(Comment.post).joinedload(Submission.board),
             Load(CommentVote).lazyload('*'),
             Load(UserBlock).lazyload('*'),
             Load(ModAction).lazyload('*'),
@@ -698,13 +687,10 @@ def get_comments(cids, v=None, nSession=None, sort_type=None,
         ).options(
             lazyload('*'),
             joinedload(Comment.comment_aux),
-            joinedload(Comment.author),
-            joinedload(Comment.post),
-            Load(User).lazyload('*'),
-            Load(User).joinedload(User.title),
-            Load(Submission).lazyload('*'),
-            Load(Submission).joinedload(Submission.submission_aux),
-            Load(Submission).joinedload(Submission.board),
+            joinedload(Comment.author).joinedload(User.title),
+            joinedload(Comment.post).lazyload('*'),
+            joinedload(Comment.post).joinedload(Submission.submission_aux),
+            joinedload(Comment.post).joinedload(Submission.board),
             Load(CommentVote).lazyload('*'),
             Load(UserBlock).lazyload('*'),
             Load(ModAction).lazyload('*'),
@@ -777,14 +763,11 @@ def get_comments(cids, v=None, nSession=None, sort_type=None,
             aliased(ModAction, alias=exile)
         ).options(
             lazyload('*'),
-            joinedload(Comment.post),
+            joinedload(Comment.post).lazyload('*'),
+            joinedload(Comment.post).joinedload(Submission.submission_aux),
+            joinedload(Comment.post).joinedload(Submission.board),
             joinedload(Comment.comment_aux),
-            joinedload(Comment.author),
-            Load(User).lazyload('*'),
-            Load(User).joinedload(User.title),
-            Load(Submission).lazyload('*'),
-            Load(Submission).joinedload(Submission.submission_aux),
-            Load(Submission).joinedload(Submission.board),
+            joinedload(Comment.author).joinedload(User.title),
             Load(CommentVote).lazyload('*'),
             Load(UserBlock).lazyload('*'),
             Load(ModAction).lazyload('*'),
