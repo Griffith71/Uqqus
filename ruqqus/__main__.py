@@ -22,7 +22,7 @@ from collections import deque
 import psycopg2
 
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.exc import OperationalError, StatementError, InternalError
+from sqlalchemy.exc import OperationalError, StatementError, InternalError, DatabaseError
 from sqlalchemy.orm import Session as SQLAlchemySession, sessionmaker, scoped_session, Query as _Query
 from sqlalchemy import *
 from sqlalchemy.pool import QueuePool
@@ -31,6 +31,8 @@ import random
 import redis
 import gevent
 import sys
+import traceback
+import time
 
 from redis import BlockingConnectionPool, ConnectionPool
 from werkzeug.middleware.proxy_fix import ProxyFix
@@ -84,7 +86,7 @@ app.url_map.strict_slashes = False
 
 app.config["SITE_NAME"]=environ.get("SITE_NAME", "Ruqqus").lstrip().rstrip()
 
-app.config["SITE_COLOR"]=environ.get("SITE_COLOR", "805ad5").lstrip().rstrip()
+app.config["SITE_COLOR"]=environ.get("SITE_COLOR", "14a9ff").lstrip().rstrip()
 
 app.config["RUQQUSPATH"]=environ.get("RUQQUSPATH", os.path.dirname(os.path.realpath(__file__)))
 
@@ -248,7 +250,8 @@ _engine=create_engine(
     app.config['DATABASE_URL'],
     poolclass=QueuePool,
     pool_size=int(environ.get("PG_POOL_SIZE",10)),
-    pool_use_lifo=True
+    pool_use_lifo=True,
+    pool_pre_ping=True
 )
 
 
@@ -273,7 +276,7 @@ def retry(f):
     def wrapper(self, *args, **kwargs):
         try:
             return f(self, *args, **kwargs)
-        except OperationalError as e:
+        except (OperationalError, DatabaseError) as e:
             #self.session.rollback()
             raise(DatabaseOverload)
         except:
@@ -384,8 +387,30 @@ def before_request():
 
     g.db = db_session()
 
-    if g.db.query(IP).filter_by(addr=request.remote_addr).first():
-        abort(503)
+    # Check IP ban with transient-retry and better logging. If the DB
+    # is temporarily unavailable we'll recreate the scoped session and
+    # retry a few times before treating it as overload.
+    addr = request.remote_addr
+    import logging
+    for attempt in range(3):
+        try:
+            if g.db.query(IP).filter_by(addr=addr).first():
+                abort(503)
+            break
+        except DatabaseError as e:
+            logging.warning("DB error checking IP ban (attempt %d): %s", attempt+1, repr(e))
+            logging.debug(traceback.format_exc())
+            try:
+                db_session.remove()
+                g.db = db_session()
+            except Exception:
+                logging.exception("Failed to recreate DB session during IP ban check")
+            # small backoff
+            time.sleep(0.2 * (attempt + 1))
+    else:
+        # all attempts failed
+        logging.exception("DB error during IP ban check after retries")
+        raise(DatabaseOverload)
 
     g.timestamp = int(time.time())
 
