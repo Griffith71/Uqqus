@@ -19,13 +19,15 @@ def get_user(username, v=None, nSession=None, graceful=False):
         nSession = g.db
 
     if v:
-        isblocking = nSession.query(UserBlock).filter(
-            UserBlock.user_id == v.id).subquery()
+        isblocking = select(UserBlock).filter(
+            UserBlock.user_id == v.id
+        ).subquery()
 
-        isblocked =  nSession.query(UserBlock).filter(
-            UserBlock.target_id==v.id).subquery()
+        isblocked = select(UserBlock).filter(
+            UserBlock.target_id == v.id
+        ).subquery()
 
-        follow=nSession.query(Follow).filter_by(user_id=v.id).subquery()
+        follow = select(Follow).filter_by(user_id=v.id).subquery()
 
         items=nSession.query(
             User,
@@ -134,15 +136,16 @@ def get_post(pid, v=None, graceful=False, nSession=None, no_text=False, **kwargs
     #     ).subquery()
 
     if v:
-        vt = nSession.query(Vote).filter_by(
-            user_id=v.id, submission_id=i).subquery()
-        mod = nSession.query(ModRelationship).filter_by(
-            user_id=v.id, accepted=True, invite_rescinded=False).subquery()
-        boardblocks = nSession.query(
-            BoardBlock).filter_by(user_id=v.id).subquery()
-        blocking = g.db.query(UserBlock).filter_by(user_id=v.id).subquery()
-        blocked = g.db.query(UserBlock).filter_by(target_id=v.id).subquery()
-        sub = nSession.query(Subscription).filter_by(user_id=v.id, is_active=True).subquery()
+        vt = select(Vote).filter_by(
+            user_id=v.id, submission_id=i
+        ).subquery()
+        mod = select(ModRelationship).filter_by(
+            user_id=v.id, accepted=True, invite_rescinded=False
+        ).subquery()
+        boardblocks = select(BoardBlock).filter_by(user_id=v.id).subquery()
+        blocking = select(UserBlock).filter_by(user_id=v.id).subquery()
+        blocked = select(UserBlock).filter_by(target_id=v.id).subquery()
+        sub = select(Subscription).filter_by(user_id=v.id, is_active=True).subquery()
 
         items = nSession.query(
             Submission,
@@ -262,19 +265,21 @@ def get_posts(pids, sort="hot", v=None):
     #     ).subquery()
 
     if v:
-        vt = g.db.query(Vote).filter(
-            Vote.submission_id.in_(pids), 
-            Vote.user_id==v.id
-            ).subquery()
+        vt = select(Vote).filter(
+            Vote.submission_id.in_(pids),
+            Vote.user_id == v.id
+        ).subquery()
 
-        mod = g.db.query(ModRelationship).filter_by(
-            user_id=v.id, accepted=True, invite_rescinded=False).subquery()
+        mod = select(ModRelationship).filter_by(
+            user_id=v.id, accepted=True, invite_rescinded=False
+        ).subquery()
 
-        boardblocks = g.db.query(BoardBlock).filter_by(
-            user_id=v.id).subquery()
-        blocking = g.db.query(UserBlock).filter_by(user_id=v.id).subquery()
-        blocked = g.db.query(UserBlock).filter_by(target_id=v.id).subquery()
-        subs = g.db.query(Subscription).filter_by(user_id=v.id, is_active=True).subquery()
+        boardblocks = select(BoardBlock).filter_by(
+            user_id=v.id
+        ).subquery()
+        blocking = select(UserBlock).filter_by(user_id=v.id).subquery()
+        blocked = select(UserBlock).filter_by(target_id=v.id).subquery()
+        subs = select(Subscription).filter_by(user_id=v.id, is_active=True).subquery()
 
         query = g.db.query(
             Submission,
@@ -288,8 +293,7 @@ def get_posts(pids, sort="hot", v=None):
         ).options(
             lazyload('*'),
             joinedload(Submission.submission_aux),
-            joinedload(Submission.author),
-            Load(User).lazyload('*'),
+            joinedload(Submission.submission_aux),
             joinedload(Submission.author).joinedload(User.title),
             Load(Board).lazyload('*'),
             joinedload(Submission.board),
@@ -348,8 +352,6 @@ def get_posts(pids, sort="hot", v=None):
         ).options(
             lazyload('*'),
             joinedload(Submission.submission_aux),
-            joinedload(Submission.author),
-            Load(User).lazyload('*'),
             joinedload(Submission.author).joinedload(User.title),
             Load(Board).lazyload('*'),
             joinedload(Submission.board),
@@ -381,15 +383,14 @@ def get_post_with_comments(pid, sort_type="top", v=None):
 
     post = get_post(pid, v=v)
 
-    exile=g.db.query(ModAction
-        ).options(
+    exile = select(ModAction).options(
         lazyload('*')
-        ).filter_by(
+    ).filter_by(
         kind="exile_user"
-        ).distinct(ModAction.target_comment_id).subquery()
+    ).distinct(ModAction.target_comment_id).subquery()
 
     if v:
-        votes = g.db.query(CommentVote).filter_by(user_id=v.id).subquery()
+        votes = select(CommentVote).filter_by(user_id=v.id).subquery()
 
         blocking = v.blocking.subquery()
 
@@ -565,9 +566,7 @@ def get_comment(cid, nSession=None, v=None, graceful=False, no_text=False, **kwa
         ).options(
             lazyload('*'),
             joinedload(Comment.comment_aux),
-            joinedload(Comment.author),
-            Load(User).lazyload('*'),
-            Load(User).joinedload(User.title),
+            joinedload(Comment.author).joinedload(User.title),
             joinedload(Comment.post).lazyload('*'),
             joinedload(Comment.post).joinedload(Submission.submission_aux),
             joinedload(Comment.post).joinedload(Submission.board),
