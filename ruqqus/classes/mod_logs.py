@@ -361,7 +361,7 @@ ACTIONTYPES={
     },
     "update_stylesheet":{
         "str": 'updated the stylesheet',
-        "icon": "fa-pencil-paintbrush",
+        "icon": "fa-pen",
         "color": "bg-info",
         "title": 'updated the stylesheet'
     }
