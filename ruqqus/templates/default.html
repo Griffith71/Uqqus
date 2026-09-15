@@ -34,6 +34,9 @@
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
   integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 
+  <!-- Font Awesome (free) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
   <!-- iOS webapp -->
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-touch-fullscreen" content="yes">
@@ -44,13 +47,13 @@
   <!---<link rel="icon" type="image/png" sizes="32x32" href="/assets/images/favicons/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="/assets/images/favicons/favicon-16x16.png">--->
     <link rel="manifest" href="/assets/manifest.json">
-    <link rel="mask-icon" href="/assets/images/favicons/safari-pinned-tab.svg" color="#805ad5">
+    <link rel="mask-icon" href="/assets/images/favicons/safari-pinned-tab.svg" color="#2ca1ea">
     <link rel="shortcut icon" href="/assets/images/favicons/favicon.ico">
     <meta name="apple-mobile-web-app-title" content="{{ 'SITE_NAME' | app_config }}">
     <meta name="application-name" content="{{ 'SITE_NAME' | app_config }}">
-    <meta name="msapplication-TileColor" content="#805ad5">
+    <meta name="msapplication-TileColor" content="#2ca1ea">
     <meta name="msapplication-config" content="/assets/images/favicons/browserconfig.xml">
-    <meta name="theme-color" content="#805ad5">
+    <meta name="theme-color" content="#2ca1ea">
 
 
 
@@ -194,6 +197,31 @@
 
     {% endblock %}
 
+    <!-- Animated logo gradient (scoped) -->
+    <style>
+    .logo-gradient .brand-main {
+      font-family: Impact, Haettenschweiler, "Arial Black", sans-serif;
+      font-weight: 700;
+      font-size: 1.9rem;
+      background: linear-gradient(90deg,#91deff, #1a7fba,#17a6ff,#2ca1ea);
+      background-size: 300% 100%;
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      color: transparent;
+      animation: gradient-move 15s linear infinite;
+      display: inline-block;
+    }
+    @keyframes gradient-move {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .logo-gradient .brand-main { animation: none; background-size: 100% 100%; }
+    }
+    </style>
+
     <!-- Font Awesome -->
     <link href="https://fa.ruqqus.com/assets/fontawesome/css/all.css" rel="stylesheet"> <!--load all styles -->
 
@@ -230,7 +258,7 @@
   <!-- Navigation -->
   <nav class="navbar navbar-expand-md navbar-light shadow shadow-md fixed-top" id="navbar">
     <div class="container-fluid">
-      <div class="flex-grow-1"><a href="/" class="navbar-brand text-purple">{{ "SITE_NAME" | app_config | lower }}<span class="text-small-extra text-uppercase text-gray-400"> Beta</span></a></div>
+      <div class="flex-grow-1"><a href="/" class="navbar-brand text-purple logo-gradient"><span class="brand-main">ɸlaba</span><span class="text-small-extra text-uppercase text-gray-400"> Beta</span></a></div>
       <div class="flex-grow-1 d-fl d-none d-md-block">
         <form id="searchform" class="form-inline search flex-nowrap mx-0 mx-lg-auto" action="{% if b %}/+{{ b.name }}{% endif %}/search" method="get">
           <input class="form-control w-100" type="search" placeholder="Search posts{% if b %} in +{{ b.name }}{% else %}, +guilds, and @users{% endif %}" aria-label="Search posts{% if b %} in +{{ b.name }}{% else %}, +guilds, and @users{% endif %}" name="q" value="{{ request.args.get('q', '') }}">
@@ -248,7 +276,7 @@
       {% endif %}
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive"
       aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon {% if v and v.notifications_count %}position-relative{% endif %}"><i class="fal fa-bars text-gray-500"></i>
+      <span class="navbar-toggler-icon {% if v and v.notifications_count %}position-relative{% endif %}"><i class="fas fa-bars text-gray-500"></i>
         {% if v and v.notifications_count %}
         <i class="fas fa-circle text-danger text-small-extra position-absolute" style="right: -6px; top: -4px;"></i>
         {% endif %}
@@ -289,7 +317,7 @@
               <i class="fas fa-random"></i>
             </a>
             <div class="dropdown-menu border-0 shadow fade px-0 mt-2" aria-labelledby="dropdownMenuButton">
-              <h6 class="dropdown-header text-white">View random</h6>
+              <h6 class="dropdown-header">View random</h6>
               <div class="px-2">
                 <a class="dropdown-item" href="/random/guild"><i class="fas fa-chess-rook fa-fw text-center mr-3"></i>Guild</a>
                 <a class="dropdown-item" href="/random/post"><i class="fas fa-feather-alt fa-fw text-center mr-3"></i>Post</a>
@@ -307,7 +335,7 @@
               <div><img src="{{ v.profile_url }}" class="profile-pic-35"></div>
               <div class="text-left pl-2">
                 <div class="text-small font-weight-bold">{{ v.username }}</div>
-                <div class="text-small-extra text-purple"><i class="fad fa-diamond mr-1"></i>{{ v.true_score }} Rep</div>
+                <div class="text-small-extra text-purple"><i class="fas fa-diamond mr-1"></i>{{ v.true_score }} Rep</div>
               </div>
             </div>
           </a>
@@ -316,7 +344,7 @@
           <div class="px-2">
             <div class="dropdown-meta">
               <div class="font-weight-bold mb-2">{{ v.username }}</div>
-              <div class="text-small text-purple"><i class="fad fa-diamond mr-1"></i>{{ v.true_score }} Rep</div>
+              <div class="text-small text-purple"><i class="fas fa-diamond mr-1"></i>{{ v.true_score }} Rep</div>
             </div>
           </div>
           <hr class="my-2">
@@ -335,17 +363,17 @@
 
               {% block darkswitch %}
               {% if v and v.can_use_darkmode and session.get("dark_mode_enabled")%}
-              <a class="dropdown-item" href="javascript:void(0)" onclick="switch_css()"><i class="fad fa-toggle-on fa-fw text-left mr-3" id="dark-switch"></i>Dark mode</a>
+              <a class="dropdown-item" href="javascript:void(0)" onclick="switch_css()"><i class="fas fa-toggle-on fa-fw text-left mr-3" id="dark-switch"></i>Dark mode</a>
               {% elif v and v.can_use_darkmode %}
-              <a class="dropdown-item" href="javascript:void(0)" onclick="switch_css()"><i class="fad fa-toggle-off fa-fw text-left mr-3" id="dark-switch"></i>Dark mode</a>
+              <a class="dropdown-item" href="javascript:void(0)" onclick="switch_css()"><i class="fas fa-toggle-off fa-fw text-left mr-3" id="dark-switch"></i>Dark mode</a>
               {% else %}
-              <a class="dropdown-item" href="/settings/profile#referral"><i class="fad fa-toggle-off fa-fw text-left mr-3"></i>Dark mode</a>
+              <a class="dropdown-item" href="/settings/profile#referral"><i class="fas fa-toggle-off fa-fw text-left mr-3"></i>Dark mode</a>
               {% endif %}
               {% endblock %}
             </div>
             <hr class="my-2">
             <div class="px-2">
-              <button class="dropdown-item copy-link" data-clipboard-text="{{ ('/signup?ref='+v.username) | full_link }}"><i class="fad fa-user-friends fa-fw text-left mr-3"></i>Invite friends</button>
+              <button class="dropdown-item copy-link" data-clipboard-text="{{ ('/signup?ref='+v.username) | full_link }}"><i class="fas fa-user-friends fa-fw text-left mr-3"></i>Invite friends</button>
             </div>
             <hr class="my-2">
             <div class="px-2">
@@ -558,7 +586,7 @@
         <div class="title"><i class="fas fa-user-shield mr-2"></i>Admin Panel</div>
         <div class="body">
           {% block adminpanel %}
-          <div class="text-center mb-2" style=""><i class="fad fa-ghost text-muted" style="font-size: 2.5rem"></i></div>
+          <div class="text-center mb-2" style=""><i class="fas fa-ghost text-muted" style="font-size: 2.5rem"></i></div>
           <p class="text-center text-small text-muted mb-0">No admin actions available</p>
           {% endblock %}
         </div>
@@ -657,6 +685,26 @@
 		})
 		console.log(e);
 	});
+</script>
+
+<script>
+  (function(){
+    const nav = document.getElementById('navbar');
+    function updateNavHeight(){
+      if(!nav) return;
+      // Measure and set CSS variable on root
+      const h = nav.offsetHeight || 49;
+      document.documentElement.style.setProperty('--navbar-height', h + 'px');
+    }
+    // Initial set and delayed re-check for fonts/layout
+    document.addEventListener('DOMContentLoaded', function(){ requestAnimationFrame(updateNavHeight); setTimeout(updateNavHeight, 250); });
+    window.addEventListener('resize', function(){ requestAnimationFrame(updateNavHeight); });
+    // Observe changes inside navbar (e.g., text size changes)
+    if(window.MutationObserver && nav){
+      const obs = new MutationObserver(function(){ requestAnimationFrame(updateNavHeight); });
+      obs.observe(nav, { childList: true, subtree: true, characterData: true, attributes: true });
+    }
+  })();
 </script>
 
 <!-- Mobile "install the app" tooltip -->
