@@ -150,13 +150,22 @@ html {
     font-size: 14px;
 }
 
+:root {
+    --navbar-height: 55px;
+}
+
+.navbar {
+    padding-top: 0.7rem;
+    padding-bottom: 0.7rem;
+}
+
 @supports (font-variation-settings: normal) {
     html { font-family: 'Inter var', sans-serif; }
   }
 
 body {
     color: $black;
-    padding-top: 49px;
+    padding-top: var(--navbar-height, 55px);
     background-color: $gray-300;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
@@ -190,7 +199,7 @@ body.using-mouse :focus {
 }
 
 #page {
-    padding-top: 49px;
+    padding-top: var(--navbar-height, 55px);
     background-color: $white;
 }
 
@@ -256,7 +265,7 @@ body.using-mouse :focus {
 .sticky {
     position: -webkit-sticky;
     position: sticky;
-    top: 49px;
+    top: 55px;
     height: auto;
     overflow-y: auto;
     z-index: 4;
@@ -1361,9 +1370,9 @@ color: $dark;
 .sidebar.sidebar-left {
     position: -webkit-sticky;
     position: sticky;
-    top: 49px;
+    top: 55px;
     z-index: 1000;
-    height: calc(100vh - 49px);
+    height: calc(100vh - 55px);
     overflow-y: auto;
     overflow-x: hidden;
 }
@@ -3352,7 +3361,7 @@ pre .clo, pre .opn, pre .pun, code .clo, code .opn, code .pun {
 // Medium devices (tablets, less than 992px)
 @media (max-width: 991.98px) {
     #frontpage, #search {
-        padding-top: 49px;
+        padding-top: 55px;
     }
 }
 
@@ -3368,7 +3377,7 @@ html {
 }
 
 body, #settings, #notifications, #submit{
-    padding-top: 49px;
+    padding-top: 55px;
     background-color: $white;
 }
 

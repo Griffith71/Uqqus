@@ -153,13 +153,22 @@ html {
     font-size: 14px;
 }
 
+:root {
+    --navbar-height: 55px;
+}
+
+.navbar {
+    padding-top: 0.7rem;
+    padding-bottom: 0.7rem;
+}
+
 @supports (font-variation-settings: normal) {
     html { font-family: 'Inter var', sans-serif; }
   }
 
 body {
     color: $black;
-    padding-top: 49px;
+    padding-top: var(--navbar-height, 55px);
     background-color: $gray-700;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
@@ -193,7 +202,7 @@ body.using-mouse :focus {
 }
 
 #page {
-    padding-top: 49px;
+    padding-top: var(--navbar-height, 55px);
     background-color: $gray-700;
 }
 
@@ -258,7 +267,7 @@ body.using-mouse :focus {
 .sticky {
     position: -webkit-sticky;
     position: sticky;
-    top: 49px;
+    top: 55px;
     height: auto;
     overflow-y: auto;
     z-index: 4;
@@ -887,6 +896,10 @@ label.terms {
     background-color: $gray-600;
 }
 
+.dropdown-header {
+    color: $muted;
+}
+
 .user-profile > .dropdown-toggle::after {
     display:none;
 }
@@ -1380,9 +1393,9 @@ color: $dark;
 .sidebar.sidebar-left {
     position: -webkit-sticky;
     position: sticky;
-    top: 49px;
+    top: 55px;
     z-index: 1000;
-    height: calc(100vh - 49px);
+    height: calc(100vh - 55px);
     overflow-y: auto;
     overflow-x: hidden;
     background-color: $gray-600!important;
@@ -1459,7 +1472,7 @@ color: $dark;
 .filter-list .filter-item .fa, .filter-list .filter-item .fas, .filter-list .filter-item .far, .filter-list .filter-item .fab, .filter-list .filter-item .fal {
     font-size: $small-font-size;
     margin-right: 0.5rem;
-    color: $gray-600;
+    color: $muted;
     text-align: center;
 }
 
@@ -1515,7 +1528,7 @@ color: $dark;
 
 .guild-recommendations-list .guild-recommendations-item .fa, .guild-recommendations-list .guild-recommendations-item .fas, .guild-recommendations-list .guild-recommendations-item .far, .guild-recommendations-list .guild-recommendations-item .fab, .guild-recommendations-list .guild-recommendations-item .fal {
     margin-right: 0.5rem;
-    color: $gray-600;
+    color: $muted;
     text-align: center;
 }
 
@@ -1579,7 +1592,7 @@ color: $dark;
 .dashboard-list .dashboard-item .fa, .dashboard-list .dashboard-item .fas, .dashboard-list .dashboard-item .far, .dashboard-list .dashboard-item .fab, .dashboard-list .dashboard-item .fal {
     font-size: $small-font-size;
     margin-right: 0.5rem;
-    color: $gray-600;
+    color: $muted;
     text-align: center;
 }
 
@@ -1850,7 +1863,7 @@ a.bg-dark:hover, a.bg-dark:focus, button.bg-dark:hover, button.bg-dark:focus {
 .toggle-view .fa, .toggle-view .fas, .toggle-view .far, .toggle-view .fab, .toggle-view .fal {
     font-size: $small-font-size;
     margin-right: .5rem;
-    color: $gray-600;
+    color: $muted;
 }
 
 .toggle-view .nav-link:hover, .toggle-view .nav-link:focus {
@@ -2766,7 +2779,7 @@ ul.comment-section {
 
 .sidebar-post-meta .score-percent {
     font-size: $extra-small-font-size;
-    color: $gray-600;
+    color: $muted;
     font-weight: $font-weight-normal;
 }
 
@@ -3412,7 +3425,7 @@ pre .clo, pre .opn, pre .pun, code .clo, code .opn, code .pun {
 // Medium devices (tablets, less than 992px)
 @media (max-width: 991.98px) {
     #frontpage, #search {
-        padding-top: 49px;
+        padding-top: 55px;
     }
 }
 
@@ -3428,7 +3441,7 @@ html {
 }
 
 body, #settings, #notifications, #submit {
-    padding-top: 49px;
+    padding-top: 55px;
     background-color: $gray-700;
 }
 
