@@ -128,16 +128,16 @@ Optional query parameters:
 
     current_ids = [comment.id]
 
-    exile=g.db.query(ModAction
-        ).filter_by(
+    exile = select(ModAction).filter_by(
         kind="exile_user"
-        ).distinct(ModAction.target_comment_id).subquery()
+    ).distinct(ModAction.target_comment_id).subquery()
 
     for i in range(6 - context):
         if v:
 
-            votes = g.db.query(CommentVote).filter(
-                CommentVote.user_id == v.id).subquery()
+            votes = select(CommentVote).filter(
+                CommentVote.user_id == v.id
+            ).subquery()
 
             blocking = v.blocking.subquery()
             blocked = v.blocked.subquery()
