@@ -24,7 +24,7 @@ $gray-400: #CBD5E0;
 $gray-500: #A0AEC0;
 $gray-600: #718096;
 
-$upvote: #805AD5;
+$upvote: #2ca1ea;
 $downvote: #38B2AC;
 $admin: #E53E3E;
 $banned: #FEB2B2;
@@ -149,13 +149,17 @@ html {
     font-size: 14px;
 }
 
+:root {
+    --navbar-height: 49px;
+}
+
 @supports (font-variation-settings: normal) {
     html { font-family: 'Inter var', sans-serif; }
   }
 
 body {
     color: $black;
-    padding-top: 49px;
+    padding-top: var(--navbar-height, 49px);
     background-color: $gray-300;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
@@ -189,7 +193,7 @@ body.using-mouse :focus {
 }
 
 #page {
-    padding-top: 49px;
+    padding-top: var(--navbar-height, 49px);
     background-color: $white;
 }
 
@@ -512,6 +516,10 @@ ol > li::before {
 .navbar-brand, .navbar-light .navbar-brand {
     color: $purple;
     font-weight: $font-weight-bold;
+    /* slightly thicker vertical padding (~5px) */
+    padding-top: 0.3125rem;
+    padding-bottom: 0.3125rem;
+    line-height: 1;
 }
 
 .tab-bar {
