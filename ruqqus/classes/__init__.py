@@ -8,6 +8,7 @@ from .comment import *
 from .custom_errors import *
 from .domains import Domain
 from .flags import *
+from .history import *
 from .user import *
 from .userblock import *
 from .submission import *

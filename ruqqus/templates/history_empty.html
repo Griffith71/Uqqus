@@ -1,0 +1,28 @@
+<div class="text-center px-3 my-5">
+  <span class="fa-stack fa-2x text-muted mb-4">
+    <i class="fas fa-square text-gray-500 opacity-25 fa-stack-2x"></i>
+    {% if active_tab == 'bookmarked' %}
+    <i class="fas text-gray-500 fa-bookmark fa-stack-1x text-lg"></i>
+    {% elif active_tab == 'viewed' %}
+    <i class="fas text-gray-500 fa-history fa-stack-1x text-lg"></i>
+    {% elif active_tab == 'upvoted' %}
+    <i class="fas text-gray-500 fa-arrow-up fa-stack-1x text-lg"></i>
+    {% else %}
+    <i class="fas text-gray-500 fa-arrow-down fa-stack-1x text-lg"></i>
+    {% endif %}
+  </span>
+
+  {% if active_tab == 'bookmarked' %}
+  <h2 class="h5">Nothing bookmarked yet</h2>
+  <p class="text-muted">Posts you save will show up here.</p>
+  {% elif active_tab == 'viewed' %}
+  <h2 class="h5">No browsing history yet</h2>
+  <p class="text-muted">Posts you view will show up here.</p>
+  {% elif active_tab == 'upvoted' %}
+  <h2 class="h5">Nothing upvoted yet{% if content_type and content_type != 'all' %} ({{ content_type }}){% endif %}</h2>
+  <p class="text-muted">Posts and comments you upvote will show up here.</p>
+  {% else %}
+  <h2 class="h5">Nothing downvoted yet{% if content_type and content_type != 'all' %} ({{ content_type }}){% endif %}</h2>
+  <p class="text-muted">Posts and comments you downvote will show up here.</p>
+  {% endif %}
+</div>

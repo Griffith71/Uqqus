@@ -8,6 +8,7 @@ from .errors import *
 from .flagging import *
 from .front import *
 from .giphy import *
+from .history import *
 from .legal import *
 from .login import *
 from .oauth import *

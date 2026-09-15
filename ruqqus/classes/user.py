@@ -14,11 +14,12 @@ from ruqqus.helpers.lazy import lazy
 import ruqqus.helpers.aws as aws
 from ruqqus.helpers.discord import add_role, delete_role, discord_log_event
 #from ruqqus.helpers.alerts import send_notification
-from .votes import Vote
+from .votes import Vote, CommentVote
 from .alts import Alt
 from .titles import Title
 from .submission import Submission, SubmissionAux, SaveRelationship
 from .comment import Comment, Notification
+from .history import ViewHistory
 from .boards import Board
 from .board_relationships import *
 from .mix_ins import *
@@ -1271,8 +1272,189 @@ class User(Base, Stndrd, Age_times):
             )
 
         posts=posts.order_by(Submission.created_utc.desc())
-        
+
         return [x[0] for x in posts.offset(25 * (page - 1)).limit(26).all()]
+
+
+    def history_idlist(self, page=1):
+        """Posts viewed by this user, most recently viewed first - for the History tab."""
+
+        vh = select(ViewHistory).filter_by(user_id=self.id).subquery()
+
+        posts = g.db.query(Submission).options(lazyload('*')).filter_by(
+            is_banned=False,
+            deleted_utc=0
+        ).join(vh, vh.c.submission_id == Submission.id)
+
+        if not self.over_18:
+            posts = posts.filter(Submission.over_18 == False)
+
+        if self.admin_level < 4:
+            m = g.db.query(
+                ModRelationship.board_id).filter_by(
+                user_id=self.id,
+                invite_rescinded=False).subquery()
+            c = g.db.query(
+                ContributorRelationship.board_id).filter_by(
+                user_id=self.id).subquery()
+            posts = posts.filter(
+                or_(
+                    Submission.author_id == self.id,
+                    Submission.post_public == True,
+                    Submission.board_id.in_(m),
+                    Submission.board_id.in_(c)
+                )
+            )
+
+            blocking = g.db.query(
+                UserBlock.target_id).filter_by(
+                user_id=self.id).subquery()
+            blocked = g.db.query(
+                UserBlock.user_id).filter_by(
+                target_id=self.id).subquery()
+
+            posts = posts.filter(
+                Submission.author_id.notin_(blocking),
+                Submission.author_id.notin_(blocked)
+            )
+
+        posts = posts.order_by(vh.c.viewed_utc.desc())
+
+        return [x.id for x in posts.offset(25 * (page - 1)).limit(26).all()]
+
+
+    def _voted_post_idlist(self, vote_type, page=1, exclude_self=False):
+        """Posts this user upvoted/downvoted, most recently voted first."""
+
+        vt = select(Vote).filter_by(user_id=self.id, vote_type=vote_type).subquery()
+
+        posts = g.db.query(Submission).options(lazyload('*')).filter_by(
+            is_banned=False,
+            deleted_utc=0
+        ).join(vt, vt.c.submission_id == Submission.id)
+
+        if exclude_self:
+            posts = posts.filter(Submission.author_id != self.id)
+
+        if not self.over_18:
+            posts = posts.filter(Submission.over_18 == False)
+
+        if self.admin_level < 4:
+            m = g.db.query(
+                ModRelationship.board_id).filter_by(
+                user_id=self.id,
+                invite_rescinded=False).subquery()
+            c = g.db.query(
+                ContributorRelationship.board_id).filter_by(
+                user_id=self.id).subquery()
+            posts = posts.filter(
+                or_(
+                    Submission.author_id == self.id,
+                    Submission.post_public == True,
+                    Submission.board_id.in_(m),
+                    Submission.board_id.in_(c)
+                )
+            )
+
+            blocking = g.db.query(
+                UserBlock.target_id).filter_by(
+                user_id=self.id).subquery()
+            blocked = g.db.query(
+                UserBlock.user_id).filter_by(
+                target_id=self.id).subquery()
+
+            posts = posts.filter(
+                Submission.author_id.notin_(blocking),
+                Submission.author_id.notin_(blocked)
+            )
+
+        posts = posts.order_by(vt.c.created_utc.desc())
+
+        return [x.id for x in posts.offset(25 * (page - 1)).limit(26).all()]
+
+
+    def upvoted_idlist(self, page=1):
+        return self._voted_post_idlist(1, page=page, exclude_self=True)
+
+
+    def downvoted_idlist(self, page=1):
+        return self._voted_post_idlist(-1, page=page)
+
+
+    def _voted_comment_idlist(self, vote_type, page=1, exclude_self=False):
+        """Comments this user upvoted/downvoted, most recently voted first."""
+
+        posts = g.db.query(Submission).options(
+            lazyload('*')).join(Submission.board)
+
+        if not self.over_18:
+            posts = posts.filter_by(over_18=False)
+
+        posts = posts.filter_by(is_nsfl=False)
+
+        if self.admin_level >= 4:
+            pass
+        else:
+            m = g.db.query(ModRelationship.board_id).filter_by(
+                user_id=self.id, invite_rescinded=False).subquery()
+            c = g.db.query(
+                ContributorRelationship.board_id).filter_by(
+                user_id=self.id).subquery()
+
+            posts = posts.filter(
+                or_(
+                    Submission.author_id == self.id,
+                    Submission.post_public == True,
+                    Submission.board_id.in_(m),
+                    Submission.board_id.in_(c),
+                    Board.is_private == False
+                )
+            )
+
+        posts = posts.subquery()
+
+        cv = select(CommentVote).filter_by(user_id=self.id, vote_type=vote_type).subquery()
+
+        comments = g.db.query(Comment).options(lazyload('*')).join(
+            cv, cv.c.comment_id == Comment.id
+        ).join(posts, Comment.parent_submission == posts.c.id)
+
+        if exclude_self:
+            comments = comments.filter(Comment.author_id != self.id)
+
+        if self.hide_offensive:
+            comments = comments.filter(Comment.is_offensive == False)
+
+        if self.hide_bot:
+            comments = comments.filter(Comment.is_bot == False)
+
+        if self.admin_level <= 3:
+            blocking = g.db.query(
+                UserBlock.target_id).filter_by(
+                user_id=self.id).subquery()
+            blocked = g.db.query(
+                UserBlock.user_id).filter_by(
+                target_id=self.id).subquery()
+
+            comments = comments.filter(
+                Comment.author_id.notin_(blocking),
+                Comment.author_id.notin_(blocked)
+            )
+
+        if self.admin_level < 3:
+            comments = comments.filter(Comment.is_banned == False).filter(Comment.deleted_utc == 0)
+
+        comments = comments.order_by(cv.c.created_utc.desc())
+
+        return [x.id for x in comments.offset(25 * (page - 1)).limit(26).all()]
+
+
+    def upvoted_comment_idlist(self, page=1):
+        return self._voted_comment_idlist(1, page=page, exclude_self=True)
+
+
+    def downvoted_comment_idlist(self, page=1):
+        return self._voted_comment_idlist(-1, page=page)
 
 
 

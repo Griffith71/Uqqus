@@ -1,0 +1,150 @@
+{% extends "default.html" %}
+
+{% block title %}
+<title>History - {{ "SITE_NAME" | app_config }}</title>
+{% endblock %}
+
+{% block desktopBanner %}
+
+<div class="row border-bottom bg-white sticky d-none d-md-block guild-border-top" style="overflow: visible;">
+  <div class="col">
+    <div class="d-flex justify-content-between align-items-center">
+      <div class="font-weight-bold py-3">History</div>
+    </div>
+  </div>
+</div>
+
+<div class="container-fluid bg-white box-shadow-bottom d-none d-md-block">
+  <div class="row">
+    <div class="col">
+      <div class="d-flex flex-row-reverse justify-content-end">
+        <ul class="nav settings-nav" style="margin-left: -15px;">
+          <li class="nav-item">
+            <a class="nav-link{% if active_tab=='bookmarked' %} active{% endif %}" href="/history"><i class="fas fa-bookmark"></i>Bookmarked</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link{% if active_tab=='viewed' %} active{% endif %}" href="/history/viewed"><i class="fas fa-history"></i>History</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link{% if active_tab=='upvoted' %} active{% endif %}" href="/history/upvoted"><i class="fas fa-arrow-up"></i>Upvoted</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link{% if active_tab=='downvoted' %} active{% endif %}" href="/history/downvoted"><i class="fas fa-arrow-down"></i>Downvoted</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% if active_tab in ('upvoted', 'downvoted') %}
+<div class="container-fluid bg-light box-shadow-bottom">
+  <div class="row py-2">
+    <div class="col">
+      <div class="d-flex align-items-center">
+        <span class="text-small text-muted mr-2">Show:</span>
+        <div class="btn-group btn-group-sm" role="group">
+          <a href="{{ request.path }}?type=all" class="btn btn-sm {% if content_type=='all' %}btn-secondary{% else %}btn-link text-muted{% endif %}">All</a>
+          <a href="{{ request.path }}?type=posts" class="btn btn-sm {% if content_type=='posts' %}btn-secondary{% else %}btn-link text-muted{% endif %}">Posts</a>
+          <a href="{{ request.path }}?type=comments" class="btn btn-sm {% if content_type=='comments' %}btn-secondary{% else %}btn-link text-muted{% endif %}">Comments</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endif %}
+
+<!-- Mobile tab bar -->
+<div class="container-fluid bg-white box-shadow-bottom d-block d-md-none">
+  <div class="row">
+    <div class="col">
+      <div class="d-flex justify-content-center">
+        <ul class="nav settings-nav">
+          <li class="nav-item">
+            <a class="nav-link{% if active_tab=='bookmarked' %} active{% endif %}" href="/history"><i class="fas fa-bookmark"></i></a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link{% if active_tab=='viewed' %} active{% endif %}" href="/history/viewed"><i class="fas fa-history"></i></a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link{% if active_tab=='upvoted' %} active{% endif %}" href="/history/upvoted"><i class="fas fa-arrow-up"></i></a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link{% if active_tab=='downvoted' %} active{% endif %}" href="/history/downvoted"><i class="fas fa-arrow-down"></i></a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
+
+{% block leftSidebarBlock %}
+{% include "sidebar-left.html" %}
+{% endblock %}
+
+{% block content %}
+
+<div class="row no-gutters mt-md-3">
+  <div class="col-12">
+    <div class="posts" id="posts">
+
+      {% if mixed_listing is not none %}
+
+        {% if mixed_listing %}
+          {% for kind, item, ts in mixed_listing %}
+            {% if kind == 'post' %}
+              {% with listing=[item] %}{% include "submission_listing.html" %}{% endwith %}
+            {% else %}
+              {% with comments=[item] %}{% include "comments.html" %}{% endwith %}
+            {% endif %}
+          {% endfor %}
+        {% else %}
+          {% include "history_empty.html" %}
+        {% endif %}
+
+      {% elif content_type == 'comments' %}
+
+        {% if listing %}
+          {% with comments=listing %}{% include "comments.html" %}{% endwith %}
+        {% else %}
+          {% include "history_empty.html" %}
+        {% endif %}
+
+      {% else %}
+
+        {% if listing %}
+          {% include "submission_listing.html" %}
+        {% else %}
+          {% include "history_empty.html" %}
+        {% endif %}
+
+      {% endif %}
+
+    </div>
+  </div>
+</div>
+
+{% endblock %}
+
+{% block pagenav %}
+<nav aria-label="Page navigation">
+  <ul class="pagination pagination-sm py-3 pl-3 mb-0">
+    {% if page>1 %}
+    <li class="page-item">
+      <small><a class="page-link" href="?page={{ page-1 }}{% if content_type and content_type != 'all' %}&type={{ content_type }}{% endif %}" tabindex="-1">Prev</a></small>
+    </li>
+    {% else %}
+    <li class="page-item disabled"><span class="page-link">Prev</span></li>
+    {% endif %}
+    {% if next_exists %}
+    <li class="page-item">
+      <small><a class="page-link" href="?page={{ page+1 }}{% if content_type and content_type != 'all' %}&type={{ content_type }}{% endif %}">Next</a></small>
+    </li>
+    {% else %}
+    <li class="page-item disabled"><span class="page-link">Next</span></li>
+    {% endif %}
+  </ul>
+</nav>
+{% endblock %}

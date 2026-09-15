@@ -2372,6 +2372,38 @@ ALTER SEQUENCE public.save_relationship_id_seq OWNED BY public.save_relationship
 
 
 --
+-- Name: view_history; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.view_history (
+    id integer NOT NULL,
+    user_id integer,
+    submission_id integer,
+    viewed_utc integer
+);
+
+
+--
+-- Name: view_history_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.view_history_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: view_history_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.view_history_id_seq OWNED BY public.view_history.id;
+
+
+--
 -- Name: subcategories; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -2956,6 +2988,13 @@ ALTER TABLE ONLY public.save_relationship ALTER COLUMN id SET DEFAULT nextval('p
 
 
 --
+-- Name: view_history id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.view_history ALTER COLUMN id SET DEFAULT nextval('public.view_history_id_seq'::regclass);
+
+
+--
 -- Name: subcategories id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -3487,6 +3526,22 @@ ALTER TABLE ONLY public.save_relationship
 
 ALTER TABLE ONLY public.save_relationship
     ADD CONSTRAINT save_relationship_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: view_history view_history_constraint; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.view_history
+    ADD CONSTRAINT view_history_constraint UNIQUE (user_id, submission_id);
+
+
+--
+-- Name: view_history view_history_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.view_history
+    ADD CONSTRAINT view_history_pkey PRIMARY KEY (id);
 
 
 --

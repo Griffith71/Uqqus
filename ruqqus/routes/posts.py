@@ -154,6 +154,9 @@ Optional query parameters:
     
     post.tree_comments()
 
+    if v:
+        record_view(v, post)
+
     return {
         "html":lambda:post.rendered_page(v=v),
         "api":lambda:jsonify({"data":[x.json for x in post.replies]})
