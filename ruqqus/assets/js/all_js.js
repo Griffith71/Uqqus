@@ -732,30 +732,102 @@ function switch_css() {
   if (css.href.includes("/assets/style/main.css")) {
     post("/settings/dark_mode/1",
       callback=function(){
+        try{ console.log('[switch_css] callback dark enabled branch'); }catch(e){}
         css.href="/assets/style/main_dark.css?v=2.38.0";
-        dswitch.classList.remove("fa-toggle-off");
-        dswitch.classList.add("fa-toggle-on");
-        dswitchmobile.classList.remove("fa-toggle-off");
-        dswitchmobile.classList.add("fa-toggle-on");
+        localStorage.setItem('dark_mode_enabled', 'true');
+        // Update all dark-switch icons
+        document.querySelectorAll('[id="dark-switch"]').forEach(function(d){
+          d.classList.remove("fa-toggle-off");
+          d.classList.add("fa-toggle-on");
+        });
+        if(dswitchmobile) {
+          dswitchmobile.classList.remove("fa-toggle-off");
+          dswitchmobile.classList.add("fa-toggle-on");
+        }
 	$('body').toggleClass('light');
 	$('body').toggleClass('dark');
+        // set labels based on the new icon state
+        // update global toggle anchors for switch_css directly (avoid helper)
+        document.querySelectorAll('[onclick]').forEach(function(a){
+          var onclick = a.getAttribute && a.getAttribute('onclick');
+          if(!onclick || onclick.indexOf('switch_css') === -1) return;
+          var icon = a.querySelector('i');
+          if(!icon) return;
+          try { a.innerHTML = icon.outerHTML + 'Light mode'; } catch(e){}
+        });
       }
       );
   }
   else {
     post("/settings/dark_mode/0",
       callback=function(){
+        try{ console.log('[switch_css] callback dark disabled branch'); }catch(e){}
         css.href="/assets/style/main.css?v=2.38.0";
-        dswitch.classList.remove("fa-toggle-on");
-        dswitch.classList.add("fa-toggle-off");
-        dswitchmobile.classList.remove("fa-toggle-on");
-        dswitchmobile.classList.add("fa-toggle-off");
+        localStorage.setItem('dark_mode_enabled', 'false');
+        // Update all dark-switch icons
+        document.querySelectorAll('[id="dark-switch"]').forEach(function(d){
+          d.classList.remove("fa-toggle-on");
+          d.classList.add("fa-toggle-off");
+        });
+        if(dswitchmobile) {
+          dswitchmobile.classList.remove("fa-toggle-on");
+          dswitchmobile.classList.add("fa-toggle-off");
+        }
 	$('body').toggleClass('light');
 	$('body').toggleClass('dark');
+        document.querySelectorAll('[onclick]').forEach(function(a){
+          var onclick = a.getAttribute && a.getAttribute('onclick');
+          if(!onclick || onclick.indexOf('switch_css') === -1) return;
+          var icon = a.querySelector('i');
+          if(!icon) return;
+          try { a.innerHTML = icon.outerHTML + 'Dark mode'; } catch(e){}
+        });
       }
       );
   }
 }
+
+// Initialize dark mode toggle text on page load
+document.addEventListener('DOMContentLoaded', function() {
+  var css = document.getElementById("css-link");
+  if(!css) return;
+  
+  var isDarkMode = css.href.includes("/assets/style/main_dark.css");
+  var localStorageDarkMode = localStorage.getItem('dark_mode_enabled');
+  
+  // If localStorage differs from server state, update the CSS and sync
+  if(localStorageDarkMode !== null && ((localStorageDarkMode === 'true') !== isDarkMode)) {
+    isDarkMode = localStorageDarkMode === 'true';
+    if(isDarkMode) {
+      css.href="/assets/style/main_dark.css?v=2.38.0";
+      $('body').addClass('dark').removeClass('light');
+    } else {
+      css.href="/assets/style/main.css?v=2.38.0";
+      $('body').addClass('light').removeClass('dark');
+    }
+  }
+  
+  // Update toggle icons and text
+  document.querySelectorAll('[id="dark-switch"]').forEach(function(d){
+    if(isDarkMode) {
+      d.classList.remove("fa-toggle-off");
+      d.classList.add("fa-toggle-on");
+    } else {
+      d.classList.remove("fa-toggle-on");
+      d.classList.add("fa-toggle-off");
+    }
+  });
+  
+  document.querySelectorAll('[onclick]').forEach(function(a){
+    var onclick = a.getAttribute && a.getAttribute('onclick');
+    if(!onclick || onclick.indexOf('switch_css') === -1) return;
+    var icon = a.querySelector('i');
+    if(!icon) return;
+    try { 
+      a.innerHTML = icon.outerHTML + (isDarkMode ? 'Light mode' : 'Dark mode'); 
+    } catch(e){}
+  });
+});
 
 // Delete Post
 
@@ -1493,6 +1565,23 @@ function vote(post_id, direction) {
 
     }
   }
+
+// helper: update anchor text for toggle links that call switch_css()
+function _set_switch_css_text(text) {
+  try { console.log('[_set_switch_css_text] called with', text); } catch(e) {}
+  // look for any element with an onclick attribute that references switch_css
+  document.querySelectorAll('[onclick]').forEach(function(a){
+    var onclick = a.getAttribute && a.getAttribute('onclick');
+    if(!onclick || onclick.indexOf('switch_css') === -1) return;
+    var icon = a.querySelector('i');
+    if(!icon) return;
+    // replace anchor content with icon + single text node
+    try { a.innerHTML = icon.outerHTML + ' ' + text; } catch (e) {}
+  });
+}
+
+// expose helper to the global window object for debugging and direct calls
+try { window._set_switch_css_text = _set_switch_css_text; } catch(e) {}
 
   post(url, callback, "Unable to vote at this time. Please try again later.");
 };
