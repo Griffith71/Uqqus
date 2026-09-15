@@ -6,8 +6,10 @@
 
 {% if v %}
 {% set voted= p.voted %}
+{% set saved= p.saved %}
 {% else %}
 {% set voted=-2 %}
+{% set saved=false %}
 {% endif %}
 
 
@@ -163,6 +165,11 @@
 
             <li class="list-inline-item"><a href="javascript:void(0);" role="button" class="copy-link" data-clipboard-text="{{ p.permalink | full_link }}"><i class="fas fa-copy"></i>Copy link</a></li>
 
+            {% if v %}
+            <li class="list-inline-item"><a id="bookmark-{{ p.base36id }}" href="javascript:void(0)" class="{% if saved %}d-none{% endif %}" onclick="post_toast('/save_post/{{ p.base36id }}', callback=function(){document.getElementById('bookmark-{{ p.base36id }}').classList.toggle('d-none');document.getElementById('unbookmark-{{ p.base36id }}').classList.toggle('d-none');})"><i class="far fa-bookmark"></i>Bookmark</a></li>
+            <li class="list-inline-item"><a id="unbookmark-{{ p.base36id }}" href="javascript:void(0)" class="text-purple{% if not saved %} d-none{% endif %}" onclick="post_toast('/unsave_post/{{ p.base36id }}', callback=function(){document.getElementById('bookmark-{{ p.base36id }}').classList.toggle('d-none');document.getElementById('unbookmark-{{ p.base36id }}').classList.toggle('d-none');})"><i class="fas fa-bookmark"></i>Bookmarked</a></li>
+            {% endif %}
+
             {% if v and not v.id==p.author_id and not p.author.is_deleted %}
             <li class="list-inline-item"><a href="javascript:void(0)" data-toggle="modal" data-dismiss="modal" data-target="#tipModal" onclick="tipModal2('{{ p.base36id }}','post','{{ p.permalink }}','{{ p.author.username }}','{{ p.author.profile_url }}')"><i class="fas fa-star"></i>Tip</a></li>
             {% endif %}
@@ -240,6 +247,8 @@
                 <div class="dropdown-divider"></div>
                 <a class="dropdown-item" href="{{ p.permalink }}"><i class="fas fa-external-link-alt fa-fw"></i>View post</a>
                 <a class="dropdown-item copy-link" href="javascript:void(0)" data-clipboard-text="{{ p.permalink | full_link }}"><i class="fas fa-copy fa-fw"></i>Copy link</a>
+                <a id="bookmark-menu-{{ p.base36id }}" class="dropdown-item{% if saved %} d-none{% endif %}" href="javascript:void(0)" onclick="post_toast('/save_post/{{ p.base36id }}', callback=function(){document.getElementById('bookmark-{{ p.base36id }}').classList.toggle('d-none');document.getElementById('unbookmark-{{ p.base36id }}').classList.toggle('d-none');document.getElementById('bookmark-menu-{{ p.base36id }}').classList.toggle('d-none');document.getElementById('unbookmark-menu-{{ p.base36id }}').classList.toggle('d-none');})"><i class="far fa-bookmark fa-fw"></i>Bookmark</a>
+                <a id="unbookmark-menu-{{ p.base36id }}" class="dropdown-item text-purple{% if not saved %} d-none{% endif %}" href="javascript:void(0)" onclick="post_toast('/unsave_post/{{ p.base36id }}', callback=function(){document.getElementById('bookmark-{{ p.base36id }}').classList.toggle('d-none');document.getElementById('unbookmark-{{ p.base36id }}').classList.toggle('d-none');document.getElementById('bookmark-menu-{{ p.base36id }}').classList.toggle('d-none');document.getElementById('unbookmark-menu-{{ p.base36id }}').classList.toggle('d-none');})"><i class="fas fa-bookmark fa-fw"></i>Remove bookmark</a>
               </div>
             </div>
           </li>
@@ -350,7 +359,10 @@
       </div>
       <div class="modal-body">
         <ul class="list-group post-actions">
-          <li class="list-group-item d-none"><a href="#" class="d-block"><i class="fas fa-save"></i>Save</a></li>
+          {% if v %}
+          <button id="bookmark-modal-{{ p.base36id }}" class="btn btn-link btn-block btn-lg text-left text-muted{% if saved %} d-none{% endif %}" data-dismiss="modal" onclick="post_toast('/save_post/{{ p.base36id }}', callback=function(){document.getElementById('bookmark-{{ p.base36id }}').classList.toggle('d-none');document.getElementById('unbookmark-{{ p.base36id }}').classList.toggle('d-none');document.getElementById('bookmark-modal-{{ p.base36id }}').classList.toggle('d-none');document.getElementById('unbookmark-modal-{{ p.base36id }}').classList.toggle('d-none');})"><i class="far fa-bookmark fa-fw text-center text-muted mr-3"></i>Bookmark</button>
+          <button id="unbookmark-modal-{{ p.base36id }}" class="btn btn-link btn-block btn-lg text-left text-purple{% if not saved %} d-none{% endif %}" data-dismiss="modal" onclick="post_toast('/unsave_post/{{ p.base36id }}', callback=function(){document.getElementById('bookmark-{{ p.base36id }}').classList.toggle('d-none');document.getElementById('unbookmark-{{ p.base36id }}').classList.toggle('d-none');document.getElementById('bookmark-modal-{{ p.base36id }}').classList.toggle('d-none');document.getElementById('unbookmark-modal-{{ p.base36id }}').classList.toggle('d-none');})"><i class="fas fa-bookmark fa-fw text-center text-purple mr-3"></i>Remove bookmark</button>
+          {% endif %}
           {% if v and not v.id==p.author_id and not p.author.is_deleted %}
           <button class="btn btn-link btn-block btn-lg text-left text-warning" data-dismiss="modal" data-toggle="modal" data-target="#tipModal" onclick="tipModal2('{{ p.base36id }}','post','{{ p.permalink }}','{{ p.author.username }}','{{ p.author.profile_url }}')"><i class="far fa-star fa-fw text-center text-warning mr-3"></i>Tip</button>
           {% endif %}

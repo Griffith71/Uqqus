@@ -1159,18 +1159,21 @@ def save_post(base36id, v):
 
     post=get_post(base36id)
 
-    new_save=SaveRelationship(
-        user_id=v.id,
-        submission_id=post.id)
+    existing=g.db.query(SaveRelationship).filter_by(user_id=v.id, submission_id=post.id).first()
 
-    g.db.add(new_save)
+    if not existing:
+        new_save=SaveRelationship(
+            user_id=v.id,
+            submission_id=post.id)
 
-    try:
-        g.db.flush()
-    except:
-        abort(422)
+        g.db.add(new_save)
 
-    return "", 204
+        try:
+            g.db.flush()
+        except:
+            abort(422)
+
+    return jsonify({"message": "Post bookmarked."})
 
 
 @app.route("/unsave_post/<base36id>", methods=["POST"])
@@ -1183,6 +1186,7 @@ def unsave_post(base36id, v):
 
     save=g.db.query(SaveRelationship).filter_by(user_id=v.id, submission_id=post.id).first()
 
-    g.db.delete(save)
+    if save:
+        g.db.delete(save)
 
-    return "", 204
+    return jsonify({"message": "Bookmark removed."})

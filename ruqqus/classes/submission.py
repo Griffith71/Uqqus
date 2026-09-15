@@ -441,11 +441,18 @@ class Submission(Base, Stndrd, Age_times, Scores, Fuzzing):
         if "_voted" in self.__dict__:
             data["voted"] = self._voted
 
+        if "_saved" in self.__dict__:
+            data["saved"] = bool(self._saved)
+
         return data
 
     @property
     def voted(self):
         return self._voted if "_voted" in self.__dict__ else 0
+
+    @property
+    def saved(self):
+        return bool(self._saved) if "_saved" in self.__dict__ else False
 
     @property
     def user_title(self):

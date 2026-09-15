@@ -146,6 +146,7 @@ def get_post(pid, v=None, graceful=False, nSession=None, no_text=False, **kwargs
         blocking = select(UserBlock).filter_by(user_id=v.id).subquery()
         blocked = select(UserBlock).filter_by(target_id=v.id).subquery()
         sub = select(Subscription).filter_by(user_id=v.id, is_active=True).subquery()
+        st = select(SaveRelationship).filter_by(user_id=v.id, submission_id=i).subquery()
 
         items = nSession.query(
             Submission,
@@ -154,7 +155,8 @@ def get_post(pid, v=None, graceful=False, nSession=None, no_text=False, **kwargs
             boardblocks.c.id,
             blocking.c.id,
             blocked.c.id,
-            aliased(Subscription, alias=sub)
+            aliased(Subscription, alias=sub),
+            st.c.id
             # aliased(ModAction, alias=exile)
         ).options(
             lazyload('*'),
@@ -201,6 +203,10 @@ def get_post(pid, v=None, graceful=False, nSession=None, no_text=False, **kwargs
             sub,
             sub.c.board_id == Submission.board_id,
             isouter=True
+        ).join(
+            st,
+            st.c.submission_id == Submission.id,
+            isouter=True
         # ).join(
         #     exile,
         #     and_(exile.c.target_submission_id==Submission.id, exile.c.board_id==Submission.original_board_id),
@@ -217,6 +223,7 @@ def get_post(pid, v=None, graceful=False, nSession=None, no_text=False, **kwargs
         x._is_blocking = items[4] or 0
         x._is_blocked = items[5] or 0
         x.board._is_subscribed=items[6] or 0
+        x._saved = items[7] or 0
         # x._is_exiled_for=items[5] or 0
 
     else:
@@ -280,6 +287,10 @@ def get_posts(pids, sort="hot", v=None):
         blocking = select(UserBlock).filter_by(user_id=v.id).subquery()
         blocked = select(UserBlock).filter_by(target_id=v.id).subquery()
         subs = select(Subscription).filter_by(user_id=v.id, is_active=True).subquery()
+        st = select(SaveRelationship).filter(
+            SaveRelationship.submission_id.in_(pids),
+            SaveRelationship.user_id == v.id
+        ).subquery()
 
         query = g.db.query(
             Submission,
@@ -289,6 +300,7 @@ def get_posts(pids, sort="hot", v=None):
             blocking.c.id,
             blocked.c.id,
             subs.c.id,
+            st.c.id
             # aliased(ModAction, alias=exile)
         ).options(
             lazyload('*'),
@@ -324,8 +336,12 @@ def get_posts(pids, sort="hot", v=None):
             blocked.c.user_id == Submission.author_id, 
             isouter=True
         ).join(
-            subs, 
-            subs.c.board_id == Submission.board_id, 
+            subs,
+            subs.c.board_id == Submission.board_id,
+            isouter=True
+        ).join(
+            st,
+            st.c.submission_id == Submission.id,
             isouter=True
         # ).join(
         #     exile,
@@ -344,6 +360,7 @@ def get_posts(pids, sort="hot", v=None):
             output[i]._is_blocked = posts[i][5] or 0
             output[i]._is_subscribed = posts[i][6] or 0
             output[i].board._is_subscribed=posts[i][6] or 0
+            output[i]._saved = posts[i][7] or 0
             # output[i]._is_exiled_for=posts[i][7] or 0
     else:
         query = g.db.query(
