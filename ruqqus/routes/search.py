@@ -127,11 +127,14 @@ def searchlisting(criteria, v=None, page=1, t="None", sort="top", b=None):
     if v and v.admin_level >= 4:
         pass
     elif v:
-        m = g.db.query(ModRelationship.board_id).filter_by(
-            user_id=v.id, invite_rescinded=False).subquery()
-        c = g.db.query(
-            ContributorRelationship.board_id).filter_by(
-            user_id=v.id).subquery()
+        m = select(ModRelationship.board_id).filter_by(
+            user_id=v.id, invite_rescinded=False
+        ).subquery()
+        c = select(
+            ContributorRelationship.board_id
+        ).filter_by(
+            user_id=v.id
+        ).subquery()
         posts = posts.filter(
             or_(
                 Submission.author_id == v.id,
@@ -141,12 +144,12 @@ def searchlisting(criteria, v=None, page=1, t="None", sort="top", b=None):
             )
         )
 
-        blocking = g.db.query(
-            UserBlock.target_id).filter_by(
-            user_id=v.id).subquery()
-        blocked = g.db.query(
-            UserBlock.user_id).filter_by(
-            target_id=v.id).subquery()
+        blocking = select(UserBlock.target_id).filter_by(
+            user_id=v.id
+        ).subquery()
+        blocked = select(UserBlock.user_id).filter_by(
+            target_id=v.id
+        ).subquery()
 
         posts = posts.filter(
             Submission.author_id.notin_(blocking),
@@ -226,7 +229,7 @@ def search(v, search_type="posts"):
             boards = boards.filter_by(is_banned=False)
 
         if v:
-            joined = g.db.query(Submission).filter_by(user_id=v.id, is_active=True).subquery()
+            joined = select(Submission).filter_by(user_id=v.id, is_active=True).subquery()
 
             boards=boards.join(
                 joined,

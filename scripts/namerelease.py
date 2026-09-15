@@ -21,18 +21,16 @@ deleted_accounts = db.query(User).filter_by(is_deleted=True)
 
 print()
 
-displayed_post_owners = db.query(
-    Submission.author_id).filter_by(
+displayed_post_owners = select(Submission.author_id).filter_by(
         is_deleted=False,
-    is_banned=False).distinct().subquery()
-displayed_comment_owners = db.query(
-    Comment.author_id
-    ).filter_by(
+        is_banned=False
+    ).distinct().subquery()
+displayed_comment_owners = select(Comment.author_id).filter_by(
     is_deleted=False,
-    is_banned=False).distinct().subquery()
+    is_banned=False
+).distinct().subquery()
 
-modaction_owners = db.query(
-	ModAction.user_id).distinct().subquery()
+modaction_owners = select(ModAction.user_id).distinct().subquery()
 
 banned_accounts = db.query(User).filter(
         User.is_banned > 0,

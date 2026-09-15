@@ -101,6 +101,7 @@ class Submission(Base, Stndrd, Age_times, Scores, Fuzzing):
         lazy="joined",
         innerjoin=True,
         primaryjoin="Submission.author_id==User.id",
+        back_populates="submissions",
         overlaps="submissions,author"
     )
     is_pinned = Column(Boolean, default=False)
