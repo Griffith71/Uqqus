@@ -150,17 +150,18 @@ def frontlist(v=None, sort=None, page=1, nsfw=False,
         posts = posts.filter(Submission.is_bot==False)
 
     if v and v.admin_level >= 4:
-        board_blocks = g.db.query(
-            BoardBlock.board_id).filter_by(
-            user_id=v.id).subquery()
+        board_blocks = select(BoardBlock.board_id).filter_by(
+            user_id=v.id
+        ).subquery()
 
         posts = posts.filter(Submission.board_id.notin_(board_blocks))
     elif v:
-        m = g.db.query(ModRelationship.board_id).filter_by(
-            user_id=v.id, invite_rescinded=False).subquery()
-        c = g.db.query(
-            ContributorRelationship.board_id).filter_by(
-            user_id=v.id).subquery()
+        m = select(ModRelationship.board_id).filter_by(
+            user_id=v.id, invite_rescinded=False
+        ).subquery()
+        c = select(ContributorRelationship.board_id).filter_by(
+            user_id=v.id
+        ).subquery()
 
         posts = posts.filter(
             or_(
@@ -171,9 +172,9 @@ def frontlist(v=None, sort=None, page=1, nsfw=False,
             )
         )
 
-        blocking = g.db.query(
-            UserBlock.target_id).filter_by(
-            user_id=v.id).subquery()
+        blocking = select(UserBlock.target_id).filter_by(
+            user_id=v.id
+        ).subquery()
         # blocked = g.db.query(
         #     UserBlock.user_id).filter_by(
         #     target_id=v.id).subquery()
@@ -182,9 +183,9 @@ def frontlist(v=None, sort=None, page=1, nsfw=False,
         #    Submission.author_id.notin_(blocked)
         )
 
-        board_blocks = g.db.query(
-            BoardBlock.board_id).filter_by(
-            user_id=v.id).subquery()
+        board_blocks = select(BoardBlock.board_id).filter_by(
+            user_id=v.id
+        ).subquery()
 
         posts = posts.filter(Submission.board_id.notin_(board_blocks))
     else:
@@ -196,10 +197,10 @@ def frontlist(v=None, sort=None, page=1, nsfw=False,
             or_(
                 Board.all_opt_out == False,
                 Submission.board_id.in_(
-                    g.db.query(
-                        Subscription.board_id).filter_by(
+                    select(Subscription.board_id).filter_by(
                         user_id=v.id,
-                        is_active=True).subquery()
+                        is_active=True
+                    ).subquery()
                 )
             )
         )
@@ -653,9 +654,9 @@ Optional query parameters:
 
     b = g.db.query(Board)
 
-    contribs = g.db.query(ContributorRelationship.board_id).filter_by(user_id=v.id, is_active=True).subquery()
-    m = g.db.query(ModRelationship.board_id).filter_by(user_id=v.id, accepted=True).subquery()
-    s = g.db.query(Subscription.board_id).filter_by(user_id=v.id, is_active=True).subquery()
+    contribs = select(ContributorRelationship.board_id).filter_by(user_id=v.id, is_active=True).subquery()
+    m = select(ModRelationship.board_id).filter_by(user_id=v.id, accepted=True).subquery()
+    s = select(Subscription.board_id).filter_by(user_id=v.id, is_active=True).subquery()
 
     content = b.filter(
         or_(

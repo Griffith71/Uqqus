@@ -48,7 +48,7 @@ class User(Base, Stndrd, Age_times):
         "Submission",
         lazy="dynamic",
         primaryjoin="Submission.author_id==User.id",
-        backref="author_rel",
+        back_populates="author",
         overlaps="author,author_rel"
     )
     comments = relationship(
@@ -282,13 +282,13 @@ class User(Base, Stndrd, Age_times):
         if self.admin_level < 4:
             # admins can see everything
 
-            m = g.db.query(
-                ModRelationship.board_id).filter_by(
+            m = select(ModRelationship.board_id).filter_by(
                 user_id=self.id,
-                invite_rescinded=False).subquery()
-            c = g.db.query(
-                ContributorRelationship.board_id).filter_by(
-                user_id=self.id).subquery()
+                invite_rescinded=False
+            )
+            c = select(ContributorRelationship.board_id).filter_by(
+                user_id=self.id
+            )
             posts = posts.filter(
                 or_(
                     Submission.author_id == self.id,
@@ -298,9 +298,9 @@ class User(Base, Stndrd, Age_times):
                 )
             )
 
-            blocking = g.db.query(
-                UserBlock.target_id).filter_by(
-                user_id=self.id).subquery()
+            blocking = select(UserBlock.target_id).filter_by(
+                user_id=self.id
+            )
             # blocked = g.db.query(
             #     UserBlock.user_id).filter_by(
             #     target_id=self.id).subquery()
@@ -556,14 +556,14 @@ class User(Base, Stndrd, Age_times):
     #@cache.memoize(timeout=60)
     @lazy
     def has_report_queue(self):
-        board_ids = g.db.query(ModRelationship.board_id).options(lazyload('*')).filter(
-                ModRelationship.user_id==self.id,
-                ModRelationship.accepted==True,
-                or_(
-                    ModRelationship.perm_full==True,
-                    ModRelationship.perm_content==True
-                )
-                ).subquery()
+        board_ids = select(ModRelationship.board_id).options(lazyload('*')).filter(
+            ModRelationship.user_id == self.id,
+            ModRelationship.accepted == True,
+            or_(
+                ModRelationship.perm_full == True,
+                ModRelationship.perm_content == True
+            )
+        ).subquery()
         
         posts=g.db.query(Submission).options(lazyload('*')).filter(
             Submission.board_id.in_(
