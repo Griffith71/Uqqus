@@ -39,8 +39,14 @@
   <link id="css-link" rel="stylesheet" href="/assets/style/main.css">
   {% endif %}
 
-  <!-- Font Awesome -->
-  <link href="https://fa.ruqqus.com/assets/fontawesome/css/all.css" rel="stylesheet"> <!--load all styles -->
+  <!-- Font Awesome (match main site) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <style>
+    /* ensure navbar item spacing matches main layout */
+    .navbar-nav .nav-item { margin-left: .25rem; margin-right: .25rem; }
+    .navbar-nav .nav-link { padding-left: .5rem; padding-right: .5rem; }
+  </style>
 
   <script>
     function formkey() {
@@ -52,6 +58,18 @@
 <body id="settings">
 
   {% include "header.html" %}
+  <script>
+    // Ensure header dropdowns are closed on the settings page so they match main page appearance
+    document.addEventListener('DOMContentLoaded', function(){
+      document.querySelectorAll('.dropdown.show').forEach(function(d){
+        d.classList.remove('show');
+        var menu = d.querySelector('.dropdown-menu');
+        if(menu) menu.classList.remove('show');
+        var toggle = d.querySelector('[data-toggle="dropdown"]');
+        if(toggle) toggle.setAttribute('aria-expanded','false');
+      });
+    });
+  </script>
   <!-- Page Content -->
   <div class="container">
 
