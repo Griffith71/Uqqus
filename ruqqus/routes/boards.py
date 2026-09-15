@@ -65,8 +65,7 @@ def multiboard(name, v):
     if v and v.hide_bot:
         posts = posts.filter_by(is_bot=False)
 
-    if v and not v.show_nsfl:
-        posts = posts.filter_by(is_nsfl=False)
+    posts = posts.filter_by(is_nsfl=False)
 
     if t:
         now = int(time.time())
@@ -2138,7 +2137,6 @@ Optional query parameters:
     idlist = b.comment_idlist(v=v,
                               page=page,
                               nsfw=v and v.over_18,
-                              nsfl=v and v.show_nsfl,
                               hide_offensive=(v and v.hide_offensive) or not v,
                               hide_bot=v and v.hide_bot)
 

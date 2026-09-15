@@ -98,21 +98,6 @@ Optional query parameters:
 
                 }
 
-    if post.is_nsfl and not (
-            v and v.show_nsfl) and not session_isnsfl(comment.board):
-        t = int(time.time())
-        return {'html': lambda: render_template("errors/nsfl.html",
-                                                v=v,
-                                                t=t,
-                                                lo_formkey=make_logged_out_formkey(
-                                                    t),
-                                                board=comment.board
-                                                ),
-
-                'api': lambda: {'error': f'This content is not suitable for some users and situations.'}
-
-                }
-
     # check guild ban
     board = post.board
     if board.is_banned and v.admin_level < 3:

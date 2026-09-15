@@ -153,8 +153,7 @@ class Board(Base, Stndrd, Age_times):
         if v and v.hide_bot and not self.has_mod(v, "content"):
             posts = posts.filter_by(is_bot=False)
 
-        if v and not v.show_nsfl:
-            posts = posts.filter_by(is_nsfl=False)
+        posts = posts.filter_by(is_nsfl=False)
 
         if self.is_private:
             if v and (self.can_view(v) or v.admin_level >= 4):
@@ -555,8 +554,7 @@ class Board(Base, Stndrd, Age_times):
         if not nsfw:
             posts = posts.filter_by(over_18=False)
 
-        if v and not v.show_nsfl:
-            posts = posts.filter_by(is_nsfl=False)
+        posts = posts.filter_by(is_nsfl=False)
 
         if self.is_private:
             if v and (self.can_view(v) or v.admin_level >= 4):

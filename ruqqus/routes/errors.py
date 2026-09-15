@@ -226,38 +226,15 @@ def allow_nsfw_logged_out(bid, v):
 @auth_required
 @validate_formkey
 def allow_nsfl_logged_in(bid, v):
-
-    cutoff = int(time.time()) + 3600
-
-    if not flask_session.get("show_nsfl", None):
-        flask_session["show_nsfl"] = {}
-
-    flask_session["show_nsfl"][bid] = cutoff
-
-    return redirect(request.form.get("redir"))
+    # NSFL tagging has been disabled.
+    abort(404)
 
 
 @app.route("/allow_nsfl_logged_out/<bid>", methods=["POST"])
 @auth_desired
 def allow_nsfl_logged_out(bid, v):
-
-    if v:
-        return redirect('/')
-
-    t = int(request.form.get('time'))
-
-    if not validate_logged_out_formkey(t,
-                                       request.form.get("formkey")
-                                       ):
-        abort(403)
-
-    if not flask_session.get("show_nsfl", None):
-        flask_session["show_nsfl"] = {}
-
-    cutoff = int(time.time()) + 3600
-    flask_session["show_nsfl"][bid] = cutoff
-
-    return redirect(request.form.get("redir"))
+    # NSFL tagging has been disabled.
+    abort(404)
 
 
 @app.route("/error/<eid>", methods=["GET"])

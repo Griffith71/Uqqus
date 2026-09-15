@@ -258,19 +258,18 @@ class User(Base, Stndrd, Age_times):
         if self.hide_bot:
             posts = posts.filter_by(is_bot=False)
 
-        if not self.show_nsfl:
-            posts = posts.filter_by(is_nsfl=False)
+        posts = posts.filter_by(is_nsfl=False)
 
-        board_ids = g.db.query(
-            Subscription.board_id).filter_by(
+        board_ids = select(Subscription.board_id).filter_by(
             user_id=self.id,
-            is_active=True).subquery()
-        user_ids = g.db.query(
-            Follow.user_id).filter_by(
-            user_id=self.id).join(
-            Follow.target).filter(
-                User.is_private == False,
-            User.is_nofollow == False).subquery()
+            is_active=True
+        )
+        user_ids = select(Follow.user_id).filter_by(
+            user_id=self.id
+        ).join(Follow.target).where(
+            User.is_private == False,
+            User.is_nofollow == False
+        )
 
         posts = posts.filter(
             or_(
@@ -443,8 +442,7 @@ class User(Base, Stndrd, Age_times):
         if v and v.hide_bot:
             comments = comments.filter(Comment.is_bot == False)
 
-        if v and not v.show_nsfl:
-            comments = comments.filter(Submission.is_nsfl == False)
+        comments = comments.filter(Submission.is_nsfl == False)
 
         if (not v) or v.admin_level < 3:
             comments = comments.filter(Comment.deleted_utc == 0)

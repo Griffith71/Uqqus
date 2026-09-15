@@ -104,7 +104,7 @@ def notifications_posts(v):
             }
 
 @cache.memoize(timeout=900)
-def frontlist(v=None, sort=None, page=1, nsfw=False, nsfl=False,
+def frontlist(v=None, sort=None, page=1, nsfw=False,
               t=None, categories=[], filter_words='', **kwargs):
 
     # cutoff=int(time.time())-(60*60*24*30)
@@ -140,9 +140,8 @@ def frontlist(v=None, sort=None, page=1, nsfw=False, nsfl=False,
 
     if not nsfw:
         posts = posts.filter_by(over_18=False)
-    
-    if not nsfl:
-        posts = posts.filter_by(is_nsfl=False)
+
+    posts = posts.filter_by(is_nsfl=False)
 
     if (v and v.hide_offensive) or not v:
         posts = posts.filter_by(is_offensive=False)
@@ -439,7 +438,6 @@ Optional query parameters:
     ids = frontlist(sort=sort,
                     page=page,
                     nsfw=(v and v.over_18 and not v.filter_nsfw),
-                    nsfl=(v and v.show_nsfl),
                     t=t,
                     v=v,
                     hide_offensive=(v and v.hide_offensive) or not v,
@@ -508,7 +506,6 @@ def subcat(name, v):
             ids += frontlist(sort=sort,
                             page=page,
                             nsfw=(v and v.over_18 and not v.filter_nsfw),
-                            nsfl=(v and v.show_nsfl),
                             t=t,
                             v=v,
                             hide_offensive=(v and v.hide_offensive) or not v,
@@ -522,7 +519,6 @@ def subcat(name, v):
         ids = frontlist(sort=sort,
                         page=page,
                         nsfw=(v and v.over_18 and not v.filter_nsfw),
-                        nsfl=(v and v.show_nsfl),
                         t=t,
                         v=v,
                         hide_offensive=(v and v.hide_offensive) or not v,
@@ -747,8 +743,7 @@ def random_post(v):
     if not (v and v.over_18):
         x = x.filter_by(over_18=False)
 
-    if not (v and v.show_nsfl):
-        x = x.filter_by(is_nsfl=False)
+    x = x.filter_by(is_nsfl=False)
 
     if v and v.hide_offensive:
         x = x.filter_by(is_offensive=False)
@@ -838,8 +833,7 @@ def comment_idlist(page=1, v=None, nsfw=False, **kwargs):
     if not nsfw:
         posts = posts.filter_by(over_18=False)
 
-    if v and not v.show_nsfl:
-        posts = posts.filter_by(is_nsfl=False)
+    posts = posts.filter_by(is_nsfl=False)
 
     if v and v.admin_level >= 4:
         pass
@@ -916,7 +910,6 @@ Optional query parameters:
     idlist = comment_idlist(v=v,
                             page=page,
                             nsfw=v and v.over_18,
-                            nsfl=v and v.show_nsfl,
                             hide_offensive=v and v.hide_offensive,
                             hide_bot=v and v.hide_bot)
 

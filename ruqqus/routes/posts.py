@@ -1109,36 +1109,10 @@ URL path parameters:
 @validate_formkey
 def toggle_post_nsfl(pid, v):
     """
-Toggle "NSFL" status on a post.
-
-URL path parameters:
-* `pid` - The base 36 post id.
+NSFL tagging has been disabled.
 """
 
-    post = get_post(pid)
-
-    mod=post.board.has_mod(v)
-
-    if not post.author_id == v.id and not v.admin_level >= 3 and not mod:
-        abort(403)
-
-    if post.board.is_nsfl and post.is_nsfl:
-        abort(403)
-
-    post.is_nsfl = not post.is_nsfl
-    g.db.add(post)
-
-    if post.author_id!=v.id:
-        ma=ModAction(
-            kind="set_nsfl" if post.is_nsfl else "unset_nsfl",
-            user_id=v.id,
-            target_submission_id=post.id,
-            board_id=post.board.id,
-            note = None if mod else "admin action"
-            )
-        g.db.add(ma)
-
-    return "", 204
+    abort(404)
 
 
 @app.route("/retry_thumb/<pid>", methods=["POST"])
