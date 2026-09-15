@@ -17,12 +17,15 @@
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
   integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 
+  <!-- Font Awesome (free) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
   <!-- Ruqqus CSS -->
 
   {% if v and v.can_use_darkmode and session.get("dark_mode_enabled") %}
-  <link id="css-link" rel="stylesheet" href="/assets/style/main_dark.css">
+  <link id="css-link" rel="stylesheet" href="/assets/style/main_dark.css?v=2.38.0">
   {% else %}
-  <link id="css-link" rel="stylesheet" href="/assets/style/main.css">
+  <link id="css-link" rel="stylesheet" href="/assets/style/main.css?v=2.38.0">
   {% endif %}
 
   <!-- Font Awesome -->
@@ -177,6 +180,42 @@
               <a class="nav-link{% if request.path.endswith('/mod/chatbans') %} active{% endif %}" href="/+{{ b.name }}/mod/chatbans"><i class="fas fa-comments-alt text-lg mr-0"></i></a>
             </li>
             {% endif %}
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% else %}
+  <!-- Site-wide guildmaster tools (no single guild in scope) -->
+  <!-- Desktop -->
+  <div class="container-fluid bg-white sticky d-none d-md-block">
+    <div class="row box-shadow-bottom">
+      <div class="col">
+        <div class="container">
+          <div class="row box-shadow-bottom bg-white">
+            <div class="col">
+              <div class="d-flex flex-row-reverse justify-content-end">
+                <ul class="nav settings-nav" style="margin-left: -15px;">
+                  <li class="nav-item">
+                    <a class="nav-link{% if request.path.endswith('/mod/queue') %} active{% endif %}" href="/mod/queue"><i class="fas fa-flag"></i>Reports</a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Mobile -->
+  <div class="container-fluid bg-white sticky d-block d-md-none">
+    <div class="row box-shadow-bottom">
+      <div class="col">
+        <div class="d-flex flex-row-reverse justify-content-center">
+          <ul class="nav settings-nav">
+            <li class="nav-item">
+              <a class="nav-link{% if request.path.endswith('/mod/queue') %} active{% endif %}" href="/mod/queue"><i class="fas fa-flag text-lg mr-0"></i></a>
+            </li>
           </ul>
         </div>
       </div>
