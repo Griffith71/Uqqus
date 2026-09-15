@@ -53,16 +53,16 @@
                 <h1 class="h3 mb-0">{{ u.username }}</h1>
                 {% if u.username != u.original_username %}
                 <span>
-                  <i class="fad fa-user-tag text-info align-middle ml-2" data-toggle="tooltip" data-placement="bottom" title="Original Username: @{{ u.original_username }}"></i>
+                  <i class="fas fa-user-tag text-info align-middle ml-2" data-toggle="tooltip" data-placement="bottom" title="Original Username: @{{ u.original_username }}"></i>
                 </span>
                 {% endif %}
                 {% if u.admin_level > 1 %}
                 <span>
-                  <i class="fad fa-shield text-admin align-middle ml-2" data-toggle="tooltip" data-placement="bottom" title="Admin"></i>
+                  <i class="fas fa-shield text-admin align-middle ml-2" data-toggle="tooltip" data-placement="bottom" title="Admin"></i>
                 </span>
                 {% elif u.admin_level == 1 %}
                 <span>
-                  <i class="fad fa-shield align-middle ml-2" data-toggle="tooltip" data-placement="bottom" title="Former Admin"></i>
+                  <i class="fas fa-shield align-middle ml-2" data-toggle="tooltip" data-placement="bottom" title="Former Admin"></i>
                 </span>
                 {% endif %}
                 {% if u.real_id %}<span class="badge badge-pill text-white badge-info ml-2">{{ u.real_id }}</span>
@@ -75,7 +75,7 @@
                  <div class="dropdown show d-none">
                   <a href="#" role="button" id="dropdownProfileActionsLink" data-toggle="dropdown"
                   aria-haspopup="true" aria-expanded="false">
-                  <i class="far fa-ellipsis-h text-lg align-middle text-gray-600"></i>
+                  <i class="fas fa-ellipsis-h text-lg align-middle text-gray-600"></i>
                 </a>
 
                 <div class="dropdown-menu dropdown-menu-right border-0 shadow" aria-labelledby="dropdownMoreLink">
@@ -88,7 +88,7 @@
               <div class="dropdown show d-none">
                 <a href="#" role="button" id="dropdownProfileActionsLink" data-toggle="dropdown"
                 aria-haspopup="true" aria-expanded="false">
-                <i class="far fa-ellipsis-h text-lg align-middle text-gray-600"></i>
+                <i class="fas fa-ellipsis-h text-lg align-middle text-gray-600"></i>
               </a>
 
               <div class="dropdown-menu dropdown-menu-right border-0 shadow" aria-labelledby="dropdownMoreLink">
@@ -168,7 +168,7 @@
           <h1 class="h5 d-inline-block">{{ u.username }}
             {% if u.username != u.original_username %}
             <span>
-              <i class="fad fa-user-tag text-info align-middle ml-2" data-toggle="tooltip" data-placement="bottom" title="Original Username: @{{ u.original_username }}"></i>
+              <i class="fas fa-user-tag text-info align-middle ml-2" data-toggle="tooltip" data-placement="bottom" title="Original Username: @{{ u.original_username }}"></i>
             </span>
             {% endif %}
             <!--{% if u.over_18 %}
@@ -278,10 +278,10 @@
       </span>Donate Cash or Crypto
     </a>
 
-    <a href="/settings/premium" target="blank" class="btn btn-block btn-link text-left text-decoration-none px-1 mt-0" style="color: #805ad5!important">
+    <a href="/settings/premium" target="blank" class="btn btn-block btn-link text-left text-decoration-none px-1 mt-0" style="color: #2ca1ea!important">
       <span class="fa-stack fa-1x ml-n1 mr-2">
         <i class="fas fa-square fa-stack-2x" style="color: #dabef9!important; font-size: 2rem!important;"></i>
-        <i class="fas fa-coins fa-stack-1x text-base fa-inverse" style="color: #805ad5!important;"></i>
+        <i class="fas fa-coins fa-stack-1x text-base fa-inverse" style="color: #2ca1ea!important;"></i>
       </span>Ruqqus Premium
     </a>
     <div data-toggle="tooltip" data-placement="bottom" title="Based on coins redeemed in the last 7 days">
