@@ -732,7 +732,7 @@ Optional query parameters:
 def random_post(v):
 
     x = g.db.query(Submission).options(
-        lazyload('board')).filter_by(
+        lazyload(Submission.board)).filter_by(
         is_banned=False,
         ).filter(Submission.deleted_utc == 0)
 
