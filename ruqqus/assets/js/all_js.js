@@ -427,7 +427,7 @@ $('#new_email').on('input', function () {
 					return response.json();
 				})
 				.then(json => {
-					let results = json.results.map(function(obj) {
+					let results = Array.isArray(json.results) ? json.results.map(function(obj) {
 						return {
 							id: obj.id,
 							preview: obj.media[0].tinygif.url,
@@ -435,8 +435,8 @@ $('#new_email').on('input', function () {
 							source: obj.url,
 							bgColor: obj.bg_color
 						}
-					});
-					
+					}) : [];
+
 					gifs = results
 
 					// loop for fetching mutliple GIFs and creating the card divs
@@ -452,7 +452,11 @@ $('#new_email').on('input', function () {
 						loadGIFs.innerHTML = null;
 					}
 				})
-				.catch(err => alert(err));
+				.catch(err => {
+					noGIFs.innerHTML = '<div class="text-center py-3 mt-3"><div class="mb-3"><i class="fad fa-frown text-gray-500" style="font-size: 3.5rem;"></i></div><p class="font-weight-bold text-gray-500 mb-0">Aw shucks. No GIFs found...</p></div>';
+					container.innerHTML = null;
+					loadGIFs.innerHTML = null;
+				});
 			};
 		}
 
