@@ -73,8 +73,8 @@
       <i class="fas fa-filter"data-toggle="tooltip" data-placement="bottom" title="Category: {% if b.subcat %}{{ b.subcat.category.name }} / {{ b.subcat.name }}{% else %}Uncategorized{% endif %}"></i>
       {% if b.is_private %}<i class="fas fa-eye-slash"data-toggle="tooltip" data-placement="bottom" title="Private mode."></i>{% endif %}
       {% if b.restricted_posting %}<i class="fas fa-user-lock"data-toggle="tooltip" data-placement="bottom" title="Restricted posting mode."></i>{% endif %}
-      {% if b.over_18 %}<i class="fas fa-eye-evil" data-toggle="tooltip" data-placement="bottom" title="NSFW"></i>{% endif %}
-      {% if b.all_opt_out %}<i class="fad fa-list" data-toggle="tooltip" data-placement="bottom" title="Opted out of All/Trending"></i>{% endif %}        
+      {% if b.over_18 %}<i class="fas fa-eye-slash" data-toggle="tooltip" data-placement="bottom" title="NSFW"></i>{% endif %}
+      {% if b.all_opt_out %}<i class="fas fa-list" data-toggle="tooltip" data-placement="bottom" title="Opted out of All/Trending"></i>{% endif %}        
     </div>
 
   </div>
@@ -101,8 +101,8 @@
       {% if mod.perm_config %}<li class="mb-2"><a class="text-muted" href="/+{{ b.name }}/mod/settings"><i class="fas fa-cog fa-fw text-center mr-2"></i>Settings</a></li>{% endif %}
       {% if mod.perm_appearance %}<li class="mb-2"><a class="text-muted" href="/+{{ b.name }}/mod/appearance"><i class="fas fa-palette fa-fw text-center mr-2"></i>Appearance</a></li>{% endif %}
       <li class="mb-2"><a class="text-muted" href="/+{{ b.name }}/mod/mods"><i class="fas fa-crown fa-fw text-center mr-2"></i>Guildmasters</a></li>
-      <li class="mb-2"><a class="text-muted" href="/+{{ b.name }}/mod/log"><i class="fas fa-scroll-old fa-fw text-center mr-2"></i>Mod Log</a></li>
-      <li class="mb-2"><a class="text-muted" href="/+{{ b.name }}/mod/css"><i class="fas fa-pencil-paintbrush fa-fw text-center mr-2"></i>CSS</a></li>
+      <li class="mb-2"><a class="text-muted" href="/+{{ b.name }}/mod/log"><i class="fas fa-scroll fa-fw text-center mr-2"></i>Mod Log</a></li>
+      <li class="mb-2"><a class="text-muted" href="/+{{ b.name }}/mod/css"><i class="fas fa-pen fa-fw text-center mr-2"></i>CSS</a></li>
       {% if mod.perm_access %}<li class="mb-2"><a class="text-muted" href="/+{{ b.name }}/mod/exiled"><i class="fas fa-user-slash fa-fw text-center mr-2"></i>Exiles</a></li>{% endif %}
       {% if mod.perm_content %}<li class="mb-2"><a class="text-muted" href="/+{{ b.name }}/mod/queue"><i class="fas fa-flag fa-fw text-center mr-2"></i>Reports</a></li>{% endif %}
       {% if mod.perm_access and (b.restricted_posting or b.is_private) %}<li class="mb-2"><a class="text-muted" href="/+{{ b.name }}/mod/contributors"><i class="fas fa-user-check fa-fw text-center mr-2"></i>Approved users</a></li>{% endif %}
@@ -123,18 +123,35 @@
 
       post("/settings/dark_mode/1",
         callback=function(){
+          try{ console.log('[switch_css_board] callback dark enabled branch'); }catch(e){}
           css.href="{{ b.css_dark_url }}?v=2.38.0";
           dswitch.classList.remove("fa-toggle-off");
           dswitch.classList.add("fa-toggle-on");
+          // update any toggle anchors on this page
+          document.querySelectorAll('[onclick]').forEach(function(a){
+            var onclick = a.getAttribute && a.getAttribute('onclick');
+            if(!onclick || onclick.indexOf('switch_css_board') === -1) return;
+            var icon = a.querySelector('i');
+            if(!icon) return;
+            try { a.innerHTML = icon.outerHTML + 'Light mode'; } catch (e) {}
+          });
         }
         );
     }
     else {
       post("/settings/dark_mode/0",
         callback=function(){
+          try{ console.log('[switch_css_board] callback dark disabled branch'); }catch(e){}
           css.href="{{ b.css_url }}?v=2.38.0";
           dswitch.classList.remove("fa-toggle-on");
           dswitch.classList.add("fa-toggle-off");
+          document.querySelectorAll('[onclick]').forEach(function(a){
+            var onclick = a.getAttribute && a.getAttribute('onclick');
+            if(!onclick || onclick.indexOf('switch_css_board') === -1) return;
+            var icon = a.querySelector('i');
+            if(!icon) return;
+            try { a.innerHTML = icon.outerHTML + 'Dark mode'; } catch (e) {}
+          });
         }
         );
 
@@ -142,11 +159,11 @@
   }
 </script>
 {% if v and v.can_use_darkmode and session.get("dark_mode_enabled")%}
-<a class="dropdown-item" href="javascript:void(0)" onclick="switch_css_board()"><i class="fad fa-toggle-on fa-width-rem text-left mr-3" id="dark-switch"></i>Dark mode</a>
+<a class="dropdown-item" href="javascript:void(0)" onclick="switch_css_board()"><i class="fas fa-toggle-on fa-width-rem text-left mr-3" id="dark-switch"></i>Dark mode</a>
 {% elif v and v.can_use_darkmode %}
-<a class="dropdown-item" href="javascript:void(0)" onclick="switch_css_board()"><i class="fad fa-toggle-off fa-width-rem text-left mr-3" id="dark-switch"></i>Dark mode</a>
+<a class="dropdown-item" href="javascript:void(0)" onclick="switch_css_board()"><i class="fas fa-toggle-off fa-width-rem text-left mr-3" id="dark-switch"></i>Dark mode</a>
 {% else %}
-<a class="dropdown-item" href="/settings/profile#referral"><i class="fad fa-toggle-off fa-width-rem text-left mr-3"></i>Dark mode</a>
+<a class="dropdown-item" href="/settings/profile#referral"><i class="fas fa-toggle-off fa-width-rem text-left mr-3"></i>Dark mode</a>
 {% endif %}
 {% endblock %}
 
@@ -216,7 +233,7 @@
           <a href="{{ b.permalink }}">
             <span class="h6 text-black mb-0">+{{ b.name }}
               {% if v and v.has_blocked_guild(b) %}
-              <i class="fas fa-eye-slash text-danger align-middle ml-2" data-toggle="tooltip" data-placement="bottom" data-html="true" title="You have hidden this guild from /all. Visit your settings or click the <i class='far fa-ellipsis-h text-small'></i> icon to adjust its visibility."></i>
+              <i class="fas fa-eye-slash text-danger align-middle ml-2" data-toggle="tooltip" data-placement="bottom" data-html="true" title="You have hidden this guild from /all. Visit your settings or click the <i class='fas fa-ellipsis-h text-small'></i> icon to adjust its visibility."></i>
               {% endif %}
             </span>
             {% if b.over_18 %}
@@ -239,12 +256,12 @@
         <div class="dropdown dropdown-actions">
           <a href="#" role="button" id="dropdownMoreLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="line-height: 0;
           ">
-          <i class="far fa-ellipsis-h text-base text-black"></i>
+          <i class="fas fa-ellipsis-h text-base text-black"></i>
         </a>
         <div class="dropdown-menu border-0 shadow dropdown-menu-right mt-2" aria-labelledby="dropdownMoreLink" x-placement="bottom-end"
         style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(21px, 18px, 0px);">
         <button class="dropdown-item" data-toggle="modal" data-target="#guildDetailsModal"><i class="fas fa-info-circle"></i>Guild details</button>
-        <a class="dropdown-item" href="{{ b.permalink }}/mod/log"><i class="fas fa-scroll-old"></i>Moderation log</a>
+        <a class="dropdown-item" href="{{ b.permalink }}/mod/log"><i class="fas fa-scroll"></i>Moderation log</a>
         {% if b.has_mod(v) %}
         <a class="dropdown-item" href="{{ b.permalink }}/mod/settings"><i class="fas fa-cog"></i>Guild settings</a>
         {% endif %}
@@ -285,7 +302,7 @@
         <button class="btn btn-secondary dropdown-toggle mr-2" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           {% if sort_method=="hot" %}<i class="fas fa-fire mr-1"></i>{% endif %}
           {% if sort_method=="top" %}<i class="fas fa-arrow-alt-circle-up mr-1"></i>{% endif %}
-          {% if sort_method=="new" %}<i class="fas fa-sparkles mr-1"></i>{% endif %}
+          {% if sort_method=="new" %}<i class="fas fa-star mr-1"></i>{% endif %}
           {% if sort_method=="old" %}<i class="fas fa-book mr-1"></i>{% endif %}
           {% if sort_method=="disputed" %}<i class="fas fa-bullhorn mr-1"></i>{% endif %}
           {% if sort_method=="activity" %}<i class="fas fa-comments mr-1"></i>{% endif %}
@@ -294,7 +311,7 @@
         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 31px, 0px);">
           {% if not sort_method=="hot" %}<a class="dropdown-item" href="?sort=hot&t={{time_filter}}"><i class="fas fa-fire mr-2"></i>Hot</a>{% endif %}
           {% if not sort_method=="top" %}<a class="dropdown-item" href="?sort=top&t={{time_filter}}"><i class="fas fa-arrow-alt-circle-up mr-2"></i>Top</a>{% endif %}
-          {% if not sort_method=="new" %}<a class="dropdown-item" href="?sort=new&t={{time_filter}}"><i class="fas fa-sparkles mr-2"></i>New</a>{% endif %}
+          {% if not sort_method=="new" %}<a class="dropdown-item" href="?sort=new&t={{time_filter}}"><i class="fas fa-star mr-2"></i>New</a>{% endif %}
           {% if not sort_method=="old" %}<a class="dropdown-item" href="?sort=old&t={{time_filter}}"><i class="fas fa-book mr-2"></i>Old</a>{% endif %}
           {% if not sort_method=="disputed" %}<a class="dropdown-item" href="?sort=disputed&t={{time_filter}}"><i class="fas fa-bullhorn mr-2"></i>Disputed</a>{% endif %}
           {% if not sort_method=="activity" %}<a class="dropdown-item" href="?sort=activity&t={{time_filter}}"><i class="fas fa-comments mr-2"></i>Activity</a>{% endif %}
