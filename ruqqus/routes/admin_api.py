@@ -150,6 +150,48 @@ def unban_post(post_id, v):
     return (redirect(post.permalink), post)
 
 
+@app.route("/api/purge_post/<post_id>", methods=["POST"])
+@admin_level_required(3)
+@validate_formkey
+def purge_post(post_id, v):
+    """
+Permanently erase a post's title/body/url text.
+
+Unlike ban (which keeps the content intact for admin review) or an
+author's own delete (which anonymizes the author but keeps the content
+visible), this is irreversible - the original text is not recoverable.
+The row, its id, its votes, and its comment thread all stay intact so
+nothing that references it breaks; only the text itself is gone.
+"""
+
+    post = g.db.query(Submission).filter_by(id=base36decode(post_id)).first()
+
+    if not post:
+        abort(400)
+
+    post.purged_utc = int(time.time())
+    post.is_pinned = False
+    post.stickied = False
+    post.title = ""
+    post.body = ""
+    post.body_html = ""
+    post.url = ""
+
+    g.db.add(post)
+
+    cache.delete_memoized(Board.idlist, post.board)
+
+    ma=ModAction(
+        kind="purge_post",
+        user_id=v.id,
+        target_submission_id=post.id,
+        board_id=post.board_id,
+        note="admin action"
+        )
+    g.db.add(ma)
+    return (redirect(post.permalink), post)
+
+
 @app.route("/api/distinguish/<post_id>", methods=["POST"])
 @admin_level_required(1)
 @validate_formkey
@@ -246,6 +288,39 @@ def api_unban_comment(c_id, v):
     comment.approved_utc = int(time.time())
 
 
+    return "", 204
+
+
+@app.route("/api/purge_comment/<c_id>", methods=["post"])
+@admin_level_required(3)
+def purge_comment(c_id, v):
+    """
+Permanently erase a comment's body text.
+
+Unlike ban (which keeps the content intact for admin review) or an
+author's own delete (which anonymizes the author but keeps the content
+visible), this is irreversible - the original text is not recoverable.
+The row, its id, its votes, and any replies to it all stay intact so
+nothing that references it breaks; only the text itself is gone.
+"""
+
+    comment = g.db.query(Comment).filter_by(id=base36decode(c_id)).first()
+    if not comment:
+        abort(404)
+
+    comment.purged_utc = int(time.time())
+    comment.body = ""
+    comment.body_html = ""
+
+    g.db.add(comment)
+    ma=ModAction(
+        kind="purge_comment",
+        user_id=v.id,
+        target_comment_id=comment.id,
+        board_id=comment.post.board_id,
+        note="admin action"
+        )
+    g.db.add(ma)
     return "", 204
 
 

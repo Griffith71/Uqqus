@@ -149,6 +149,30 @@ ACTIONTYPES={
         "color": "bg-danger",
         "title": 'kicked post {self.target_post.title}'
     },
+    "hide_post_from_guild":{
+        "str":'hid post {self.target_link} from this guild',
+        "icon":"fa-eye-slash",
+        "color": "bg-danger",
+        "title": 'hid post {self.target_post.title} from this guild'
+    },
+    "unhide_post_from_guild":{
+        "str":'unhid post {self.target_link} in this guild',
+        "icon":"fa-eye",
+        "color": "bg-muted",
+        "title": 'unhid post {self.target_post.title} in this guild'
+    },
+    "hide_comment_from_guild":{
+        "str":'hid a {self.target_link} from this guild',
+        "icon":"fa-eye-slash",
+        "color": "bg-danger",
+        "title": 'hid a comment from this guild'
+    },
+    "unhide_comment_from_guild":{
+        "str":'unhid a {self.target_link} in this guild',
+        "icon":"fa-eye",
+        "color": "bg-muted",
+        "title": 'unhid a comment in this guild'
+    },
     "approve_post":{
         "str":'approved post {self.target_link}',
         "icon":"fa-check",
@@ -340,6 +364,18 @@ ACTIONTYPES={
         "icon":"fa-comment",
         "color": "bg-muted",
         "title": "reinstated comment"
+    },
+    "purge_post":{
+        "str": 'permanently purged post {self.target_link}',
+        "icon":"fa-fire",
+        "color": "bg-danger",
+        "title": "permanently purged a post"
+    },
+    "purge_comment":{
+        "str": 'permanently purged {self.target_link}',
+        "icon":"fa-fire",
+        "color": "bg-danger",
+        "title": "permanently purged a comment"
     },
     "change_perms":{
         "str": 'changed permissions on guildmaster {self.target_link}',

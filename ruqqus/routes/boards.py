@@ -191,6 +191,13 @@ Optional form data:
                                description=description
                                )
 
+    if board_name.lower() == PROFILE_BOARD_NAME:
+        return render_template("make_board.html",
+                               v=v,
+                               error="That name is reserved.",
+                               description=description
+                               )
+
     # check name
     if get_guild(board_name, graceful=True):
         return render_template("make_board.html",
@@ -478,7 +485,9 @@ URL path parameters:
 @validate_formkey
 def mod_kick_bid_pid(guildname, pid, board, v):
     """
-Kick a post from your guild.
+Hide a post from your guild. The post itself is untouched - it stays
+visible on the author's profile and in any other guild it's forwarded
+to; only your guild's copy is hidden from public view here.
 
 URL path parameters:
 * `guildname` - The guild in which you are a guildmaster
@@ -489,15 +498,56 @@ URL path parameters:
     if not post.board_id == board.id:
         abort(400)
 
-    post.board_id = 1
-    #post.guild_name = "general"
+    post.hidden_by_guild = True
     post.is_pinned = False
     g.db.add(post)
 
     cache.delete_memoized(Board.idlist, post.board)
 
     ma=ModAction(
-        kind="kick_post",
+        kind="hide_post_from_guild",
+        user_id=v.id,
+        target_submission_id=post.id,
+        board_id=board.id
+        )
+    g.db.add(ma)
+    g.db.commit()
+
+    return jsonify({
+        'data':render_template(
+            "submission_listing.html",
+            v=v,
+            listing=[post])
+        })
+
+
+@app.route("/mod/unhide/<guildname>/<pid>", methods=["POST"])
+@app.route("/api/v1/unhide/<guildname>/<pid>", methods=["POST"])
+@app.patch("/api/v2/guilds/<guildname>/submissions/<pid>/unhide")
+@auth_required
+@is_guildmaster('content')
+@api("guildmaster")
+@validate_formkey
+def mod_unhide_bid_pid(guildname, pid, board, v):
+    """
+Un-hide a post that was previously hidden from your guild.
+
+URL path parameters:
+* `guildname` - The guild in which you are a guildmaster
+* `pid` - The base 36 post ID
+"""
+    post = get_post(pid)
+
+    if not post.board_id == board.id:
+        abort(400)
+
+    post.hidden_by_guild = False
+    g.db.add(post)
+
+    cache.delete_memoized(Board.idlist, post.board)
+
+    ma=ModAction(
+        kind="unhide_post_from_guild",
         user_id=v.id,
         target_submission_id=post.id,
         board_id=board.id
@@ -688,155 +738,6 @@ URL path parameters:
         kind="unexile_user",
         user_id=v.id,
         target_user_id=user.id,
-        board_id=board.id
-        )
-    g.db.add(ma)
-
-    return "", 204
-
-
-@app.route("/user/kick/<pid>", methods=["POST"])
-@app.patch("/api/v2/me/submissions/<pid>/unyank")
-@auth_required
-@api("update")
-@validate_formkey
-def user_kick_pid(pid, v):
-    """
-Un-yank your post back to +general
-
-URL path parameters:
-* `pid` - The base 36 id of the post to un-yank
-"""
-
-    post = get_post(pid)
-
-    current_board = post.board
-
-    if not post.author_id == v.id:
-        abort(403)
-
-    if post.board_id == post.original_board_id:
-        abort(403)
-
-    if post.board_id == 1:
-        abort(400)
-
-    # block further yanks to the same board
-    new_rel = PostRelationship(post_id=post.id,
-                               board_id=post.board.id)
-    g.db.add(new_rel)
-
-    post.board_id = 1
-    post.is_pinned = False
-
-    g.db.add(post)
-
-    #un-pin any comments
-    pinned_comments = g.db.query(Comment).filter_by(
-        is_pinned=True,
-        parent_submission=post.id
-        ).all()
-    for comment in pinned_comments:
-        comment.is_pinned=False
-        g.db.add(comment)
-
-    g.db.commit()
-
-    # clear board's listing caches
-    cache.delete_memoized(Board.idlist, current_board)
-
-    return "", 204
-
-
-@app.route("/mod/take/<pid>", methods=["POST"])
-@app.post("/api/v1/mod/take/<pid>")
-#@app.patch("/api/v2/guilds/<guildname>/submissions/<pid>/yank")
-@auth_required
-@is_guildmaster("content")
-@validate_formkey
-@api("guildmaster")
-def mod_take_pid(pid, board, v):
-
-    bid = request.form.get("board_id", request.form.get("guild", None))
-    if not bid:
-        abort(400)
-
-    post = get_post(pid, graceful=True)
-    if not post:
-        return jsonify({"error": "invalid post id"}), 404
-
-    #check cooldowns
-    now=int(time.time())
-    if post.original_board_id != board.id and post.author_id != v.id:
-        #look for modlog action with either board or user
-
-        recent_yank = g.db.query(ModAction).filter(
-            #yank records for the guild or user within the last hour..
-            ModAction.kind=="yank_post",
-            ModAction.created_utc>now-3600,
-            or_(
-                ModAction.user_id==v.id,
-                ModAction.board_id==board.id
-                )
-            ).join(
-            ModAction.target_post
-            #...which were not originally from the user or guild
-            ).filter(
-                Submission.original_board_id!=board.id,
-                Submission.author_id!=v.id
-            ).order_by(
-                ModAction.user_id==v.id,
-                ModAction.created_utc.desc()
-            ).options(
-                contains_eager(ModAction.target_post)
-            ).first()
-
-
-        if recent_yank:
-            if recent_yank.user_id==v.id:
-                return jsonify({'error':f"You've yanked a post recently. You need to wait 1 hour between yanks."}), 401
-            else:
-                return jsonify({'error':f"+{board.name} has yanked a post recently. The Guild needs to wait 1 hour between yanks."}), 401
-
-
-    if board.is_banned:
-        return jsonify({'error': f"+{board.name} is banned. You can't yank anything there."}), 403
-
-    if not post.board_id == 1:
-        return jsonify({'error': f"This post is no longer in +general"}), 403
-
-    if not board.has_mod(v):
-        return jsonify({'error': f"You are no longer a guildmaster of +{board.name}"}), 403
-
-    if board.has_ban(post.author):
-        return jsonify({'error': f"@{post.author.username} is exiled from +{board.name}, so you can't yank their post there."}), 403
-
-    if post.author.any_block_exists(v):
-        return jsonify({'error': f"You can't yank @{post.author.username}'s content."}), 403
-
-    if not board.can_take(post):
-        return jsonify({'error': f"You can't yank this particular post to +{board.name}."}), 403
-
-    if board.is_private and post.original_board_id != board.id:
-        return jsonify({'error': f"+{board.name} is private, so you can only yank content that started there."}), 403
-
-    post.board_id = board.id
-    post.guild_name = board.name
-    g.db.add(post)
-
-    if post.original_board_id != board.id and post.author_id != v.id:
-
-        notif_text=f"Your post [{post.title}]({post.permalink}) has been Yanked from +general to +{board.name}.\n\nIf you don't want it there, just click `Remove from +{board.name}` on the post."
-        send_notification(post.author, notif_text)
-        g.db.commit()
-
-    # clear board's listing caches
-    cache.delete_memoized(Board.idlist, board)
-
-    ma=ModAction(
-        kind="yank_post",
-        user_id=v.id,
-        target_submission_id=post.id,
         board_id=board.id
         )
     g.db.add(ma)
@@ -1613,6 +1514,9 @@ URL path parameters:
 
     board = get_guild(guildname, v=v)
 
+    if board.name.lower() == PROFILE_BOARD_NAME:
+        return jsonify({"error": "That guild doesn't exist."}), 404
+
     # check for existing subscription, canceled or otherwise
     sub = g.db.query(Subscription).filter_by(
         user_id=v.id, board_id=board.id).first()
@@ -1656,6 +1560,9 @@ URL path parameters:
 """
 
     board = get_guild(guildname, v=v)
+
+    if board.name.lower() == PROFILE_BOARD_NAME:
+        return jsonify({"error": "That guild doesn't exist."}), 404
 
     # check for existing subscription
     sub = g.db.query(Subscription).filter_by(
