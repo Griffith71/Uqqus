@@ -151,7 +151,8 @@ CREATE TABLE public.comments (
     is_pinned boolean DEFAULT false,
     app_id integer,
     creation_region character(2) DEFAULT NULL::bpchar,
-    purged_utc integer DEFAULT 0
+    purged_utc integer DEFAULT 0,
+    hidden_by_guild boolean DEFAULT false
 );
 
 
@@ -207,7 +208,8 @@ CREATE TABLE public.submissions (
     app_id integer,
     creation_region character(2) DEFAULT NULL::bpchar,
     purged_utc integer DEFAULT 0,
-    is_bot boolean DEFAULT false
+    is_bot boolean DEFAULT false,
+    hidden_by_guild boolean DEFAULT false
 );
 
 
@@ -2284,6 +2286,73 @@ ALTER SEQUENCE public.postrels_id_seq OWNED BY public.postrels.id;
 
 
 --
+-- Name: forwardrels; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.forwardrels (
+    id integer NOT NULL,
+    primary_submission_id integer,
+    board_id integer,
+    forward_submission_id integer,
+    forwarded_by_id integer,
+    created_utc integer DEFAULT 0
+);
+
+
+--
+-- Name: forwardrels_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.forwardrels_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: forwardrels_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.forwardrels_id_seq OWNED BY public.forwardrels.id;
+
+
+--
+-- Name: comment_forwardrels; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.comment_forwardrels (
+    id bigint NOT NULL,
+    comment_id integer,
+    board_id integer,
+    promoted_submission_id integer,
+    promoted_by_id integer,
+    created_utc integer DEFAULT 0
+);
+
+
+--
+-- Name: comment_forwardrels_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.comment_forwardrels_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: comment_forwardrels_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.comment_forwardrels_id_seq OWNED BY public.comment_forwardrels.id;
+
+
+--
 -- Name: promocodes; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -2347,7 +2416,8 @@ ALTER SEQUENCE public.reports_id_seq OWNED BY public.reports.id;
 CREATE TABLE public.save_relationship (
     id integer NOT NULL,
     submission_id integer,
-    user_id integer
+    user_id integer,
+    created_utc integer DEFAULT 0
 );
 
 
@@ -2369,6 +2439,102 @@ CREATE SEQUENCE public.save_relationship_id_seq
 --
 
 ALTER SEQUENCE public.save_relationship_id_seq OWNED BY public.save_relationship.id;
+
+
+--
+-- Name: repost_relationship; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.repost_relationship (
+    id integer NOT NULL,
+    user_id integer,
+    submission_id integer,
+    created_utc integer DEFAULT 0
+);
+
+
+--
+-- Name: repost_relationship_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.repost_relationship_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: repost_relationship_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.repost_relationship_id_seq OWNED BY public.repost_relationship.id;
+
+
+--
+-- Name: comment_save_relationship; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.comment_save_relationship (
+    id integer NOT NULL,
+    user_id integer,
+    comment_id integer,
+    created_utc integer DEFAULT 0
+);
+
+
+--
+-- Name: comment_save_relationship_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.comment_save_relationship_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: comment_save_relationship_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.comment_save_relationship_id_seq OWNED BY public.comment_save_relationship.id;
+
+
+--
+-- Name: comment_repost_relationship; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.comment_repost_relationship (
+    id integer NOT NULL,
+    user_id integer,
+    comment_id integer,
+    created_utc integer DEFAULT 0
+);
+
+
+--
+-- Name: comment_repost_relationship_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.comment_repost_relationship_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: comment_repost_relationship_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.comment_repost_relationship_id_seq OWNED BY public.comment_repost_relationship.id;
 
 
 --
@@ -2444,8 +2610,8 @@ CREATE TABLE public.submissions_aux (
     id integer,
     title character varying(500),
     url character varying(2083),
-    body character varying(10000),
-    body_html character varying(20000),
+    body character varying(25000),
+    body_html character varying(50000),
     embed_url character varying(10000),
     ban_reason character varying(128),
     key_id integer NOT NULL,
@@ -2967,6 +3133,20 @@ ALTER TABLE ONLY public.postrels ALTER COLUMN id SET DEFAULT nextval('public.pos
 
 
 --
+-- Name: forwardrels id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.forwardrels ALTER COLUMN id SET DEFAULT nextval('public.forwardrels_id_seq'::regclass);
+
+
+--
+-- Name: comment_forwardrels id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.comment_forwardrels ALTER COLUMN id SET DEFAULT nextval('public.comment_forwardrels_id_seq'::regclass);
+
+
+--
 -- Name: promocodes id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -2985,6 +3165,27 @@ ALTER TABLE ONLY public.reports ALTER COLUMN id SET DEFAULT nextval('public.repo
 --
 
 ALTER TABLE ONLY public.save_relationship ALTER COLUMN id SET DEFAULT nextval('public.save_relationship_id_seq'::regclass);
+
+
+--
+-- Name: repost_relationship id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.repost_relationship ALTER COLUMN id SET DEFAULT nextval('public.repost_relationship_id_seq'::regclass);
+
+
+--
+-- Name: comment_save_relationship id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.comment_save_relationship ALTER COLUMN id SET DEFAULT nextval('public.comment_save_relationship_id_seq'::regclass);
+
+
+--
+-- Name: comment_repost_relationship id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.comment_repost_relationship ALTER COLUMN id SET DEFAULT nextval('public.comment_repost_relationship_id_seq'::regclass);
 
 
 --
@@ -3497,6 +3698,38 @@ ALTER TABLE ONLY public.postrels
 
 
 --
+-- Name: forwardrels forward_unique; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.forwardrels
+    ADD CONSTRAINT forward_unique UNIQUE (primary_submission_id, board_id);
+
+
+--
+-- Name: forwardrels forwardrels_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.forwardrels
+    ADD CONSTRAINT forwardrels_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: comment_forwardrels comment_forward_unique; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.comment_forwardrels
+    ADD CONSTRAINT comment_forward_unique UNIQUE (comment_id, board_id);
+
+
+--
+-- Name: comment_forwardrels comment_forwardrels_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.comment_forwardrels
+    ADD CONSTRAINT comment_forwardrels_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: promocodes promocodes_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -3526,6 +3759,54 @@ ALTER TABLE ONLY public.save_relationship
 
 ALTER TABLE ONLY public.save_relationship
     ADD CONSTRAINT save_relationship_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: repost_relationship repost_unique; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.repost_relationship
+    ADD CONSTRAINT repost_unique UNIQUE (user_id, submission_id);
+
+
+--
+-- Name: repost_relationship repost_relationship_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.repost_relationship
+    ADD CONSTRAINT repost_relationship_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: comment_save_relationship comment_save_constraint; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.comment_save_relationship
+    ADD CONSTRAINT comment_save_constraint UNIQUE (user_id, comment_id);
+
+
+--
+-- Name: comment_save_relationship comment_save_relationship_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.comment_save_relationship
+    ADD CONSTRAINT comment_save_relationship_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: comment_repost_relationship comment_repost_unique; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.comment_repost_relationship
+    ADD CONSTRAINT comment_repost_unique UNIQUE (user_id, comment_id);
+
+
+--
+-- Name: comment_repost_relationship comment_repost_relationship_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.comment_repost_relationship
+    ADD CONSTRAINT comment_repost_relationship_pkey PRIMARY KEY (id);
 
 
 --
@@ -4735,6 +5016,80 @@ ALTER TABLE ONLY public.postrels
 
 ALTER TABLE ONLY public.postrels
     ADD CONSTRAINT postrels_post_id_fkey FOREIGN KEY (post_id) REFERENCES public.submissions(id);
+
+
+--
+-- Name: forwardrels forwardrels_board_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.forwardrels
+    ADD CONSTRAINT forwardrels_board_id_fkey FOREIGN KEY (board_id) REFERENCES public.boards(id);
+
+
+--
+-- Name: forwardrels forwardrels_primary_submission_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.forwardrels
+    ADD CONSTRAINT forwardrels_primary_submission_id_fkey FOREIGN KEY (primary_submission_id) REFERENCES public.submissions(id);
+
+
+--
+-- Name: forwardrels forwardrels_forward_submission_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.forwardrels
+    ADD CONSTRAINT forwardrels_forward_submission_id_fkey FOREIGN KEY (forward_submission_id) REFERENCES public.submissions(id);
+
+
+--
+-- Name: comment_forwardrels comment_forwardrels_comment_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.comment_forwardrels
+    ADD CONSTRAINT comment_forwardrels_comment_id_fkey FOREIGN KEY (comment_id) REFERENCES public.comments(id);
+
+
+--
+-- Name: comment_forwardrels comment_forwardrels_board_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.comment_forwardrels
+    ADD CONSTRAINT comment_forwardrels_board_id_fkey FOREIGN KEY (board_id) REFERENCES public.boards(id);
+
+
+--
+-- Name: comment_forwardrels comment_forwardrels_promoted_submission_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.comment_forwardrels
+    ADD CONSTRAINT comment_forwardrels_promoted_submission_id_fkey FOREIGN KEY (promoted_submission_id) REFERENCES public.submissions(id);
+
+
+--
+-- Name: repost_relationship repost_relationship_submission_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.repost_relationship
+    ADD CONSTRAINT repost_relationship_submission_id_fkey FOREIGN KEY (submission_id) REFERENCES public.submissions(id);
+
+
+--
+-- Name: comment_save_relationship comment_save_relationship_comment_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.comment_save_relationship
+    ADD CONSTRAINT comment_save_relationship_comment_id_fkey FOREIGN KEY (comment_id) REFERENCES public.comments(id);
+
+
+--
+-- Name: comment_repost_relationship comment_repost_relationship_comment_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.comment_repost_relationship
+    ADD CONSTRAINT comment_repost_relationship_comment_id_fkey FOREIGN KEY (comment_id) REFERENCES public.comments(id);
+
+
 
 
 --

@@ -349,6 +349,21 @@ if first or envs["DATABASE_URL"]!=environ.get("DATABASE_URL"):
     except:
         "+general already exists"
 
+    profile_guild=Board(
+        name="systemprofile",
+        description="Reserved system guild for profile-primary posts. Not user-joinable.",
+        description_html="<p>Reserved system guild for profile-primary posts. Not user-joinable.</p>",
+        over_18=False,
+        created_utc=int(time.time()),
+        creator_id=1
+        )
+
+    try:
+        db.add(profile_guild)
+        db.commit()
+    except:
+        "+systemprofile already exists"
+
 start_script=f"""
 killall gunicorn
 killall Python
