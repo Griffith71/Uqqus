@@ -34,26 +34,80 @@ def _mixed_listing(v, post_ids, comment_ids, post_times, comment_times, page):
 @auth_required
 @api("read")
 def history_bookmarked(v):
-    """The Bookmarked tab of the History page - posts you've saved."""
+    """The Bookmarked tab of the History page - posts and replies you've
+    saved, with the same All/Posts/Comments filter as Upvoted/Downvoted."""
 
     page = int(request.args.get("page", 1))
+    content_type = request.args.get("type", "all")
+    if content_type not in ("all", "posts", "comments"):
+        content_type = "all"
 
-    ids = v.saved_idlist(page=page)
-    next_exists = len(ids) == 26
-    ids = ids[0:25]
+    post_ids = []
+    comment_ids = []
+    next_exists = False
+    listing = []
+    mixed_listing = None
 
-    listing = get_posts(ids, v=v)
+    if content_type in ("all", "posts"):
+        post_ids = v.saved_idlist(page=page)
+
+    if content_type in ("all", "comments"):
+        comment_ids = v.saved_comment_idlist(page=page)
+
+    if content_type == "posts":
+        next_exists = len(post_ids) == 26
+        listing = get_posts(post_ids[0:25], v=v)
+
+    elif content_type == "comments":
+        next_exists = len(comment_ids) == 26
+        listing = get_comments(comment_ids[0:25], v=v)
+        listing = sorted(listing, key=lambda c: comment_ids[0:25].index(c.id))
+
+    else:
+        # "all" - merge posts and comments by bookmark time
+        post_times = {pid: t for pid, t in zip(
+            post_ids, _save_times(v, "post", post_ids))}
+        comment_times = {cid: t for cid, t in zip(
+            comment_ids, _save_times(v, "comment", comment_ids))}
+
+        mixed_listing, next_exists = _mixed_listing(
+            v, post_ids[0:26], comment_ids[0:26], post_times, comment_times, page)
 
     return {"html": lambda: render_template("history.html",
                                             v=v,
                                             active_tab="bookmarked",
+                                            content_type=content_type,
                                             listing=listing,
-                                            mixed_listing=None,
-                                            content_type=None,
+                                            mixed_listing=mixed_listing,
                                             page=page,
                                             next_exists=next_exists),
-            "api": lambda: jsonify({"data": [x.json for x in listing]})
+            "api": lambda: jsonify({"data": [
+                x.json for x in (listing if listing else
+                                 [item[1] for item in (mixed_listing or [])])
+            ]})
             }
+
+
+def _save_times(v, kind, ids):
+    """Looks up bookmark-time timestamps for a set of already-fetched ids,
+    used only to sort the merged "all" feed on the Bookmarked tab."""
+
+    if not ids:
+        return []
+
+    if kind == "post":
+        rows = g.db.query(SaveRelationship.submission_id, SaveRelationship.created_utc).filter(
+            SaveRelationship.user_id == v.id,
+            SaveRelationship.submission_id.in_(ids)
+        ).all()
+    else:
+        rows = g.db.query(CommentSaveRelationship.comment_id, CommentSaveRelationship.created_utc).filter(
+            CommentSaveRelationship.user_id == v.id,
+            CommentSaveRelationship.comment_id.in_(ids)
+        ).all()
+
+    times = {row[0]: row[1] for row in rows}
+    return [times.get(i, 0) for i in ids]
 
 
 @app.route("/history/viewed", methods=["GET"])
