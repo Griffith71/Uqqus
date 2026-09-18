@@ -166,13 +166,19 @@ Optional query parameters:
 
     listing = get_posts(ids, v=v)
 
+    reposted_ids = {r.submission_id for r in g.db.query(RepostRelationship).filter(
+        RepostRelationship.user_id == u.id,
+        RepostRelationship.submission_id.in_(ids)
+    ).all()} if ids else set()
+
     return {'html': lambda: render_template("userpage.html",
                                             u=u,
                                             v=v,
                                             listing=listing,
                                             page=page,
                                             next_exists=next_exists,
-                                            is_following=(v and u.has_follower(v))),
+                                            is_following=(v and u.has_follower(v)),
+                                            reposted_ids=reposted_ids),
             'api': lambda: jsonify({"data": [x.json for x in listing]})
             }
 
@@ -267,6 +273,11 @@ Optional query parameters:
 
     is_following = (v and user.has_follower(v))
 
+    comment_reposted_ids = {r.comment_id for r in g.db.query(CommentRepostRelationship).filter(
+        CommentRepostRelationship.user_id == user.id,
+        CommentRepostRelationship.comment_id.in_(ids)
+    ).all()} if ids else set()
+
     return {"html": lambda: render_template("userpage_comments.html",
                                             u=user,
                                             v=v,
@@ -274,9 +285,99 @@ Optional query parameters:
                                             page=page,
                                             next_exists=next_exists,
                                             is_following=is_following,
-                                            standalone=True),
+                                            standalone=True,
+                                            comment_reposted_ids=comment_reposted_ids),
             "api": lambda: jsonify({"data": [c.json for c in listing]})
             }
+
+
+@app.route("/@<username>/forwarded", methods=["GET"])
+@app.route("/api/v1/user/<username>/forwarded", methods=["GET"])
+@auth_desired
+@api("read")
+def u_username_forwarded(username, v=None):
+    """
+Get posts another user has forwarded to a guild, or replies they've
+promoted into a new post - as the actor, regardless of who authored the
+original content.
+
+URL path parameters:
+* `username` - The user whose forwarding activity is being fetched.
+
+Optional query parameters:
+* `page` - Page of results to return. Default `1`.
+"""
+
+    user = get_user(username, v=v)
+
+    if username != user.username:
+        return redirect(f'{user.url}/forwarded')
+
+    u = user
+
+    if u.reserved:
+        return {'html': lambda: render_template("userpage_reserved.html",
+                                                u=u,
+                                                v=v),
+                'api': lambda: {"error": f"That username is reserved for: {u.reserved}"}
+                }
+
+    if u.is_suspended and not (v and (v.admin_level >=3 or v.id==u.id)):
+        return {'html': lambda: render_template("userpage_banned.html",
+                                                u=u,
+                                                v=v),
+                'api': lambda: {"error": "That user is banned"}
+                }
+
+    if u.is_deleted and not (v and v.admin_level >= 3):
+        return {'html': lambda: render_template("userpage_deleted.html",
+                                                u=u,
+                                                v=v),
+                'api': lambda: {"error": "That user deactivated their account."}
+                }
+
+    if u.is_private and not (v and (v.admin_level >=3 or v.id==u.id)):
+        return {'html': lambda: render_template("userpage_private.html",
+                                                u=u,
+                                                v=v),
+                'api': lambda: {"error": "That userpage is private"}
+                }
+
+    if u.is_blocking and not (v and v.admin_level >= 3):
+        return {'html': lambda: render_template("userpage_blocking.html",
+                                                u=u,
+                                                v=v),
+                'api': lambda: {"error": f"You are blocking @{u.username}."}
+                }
+
+    if u.is_blocked and not (v and v.admin_level >= 3):
+        return {'html': lambda: render_template("userpage_blocked.html",
+                                                u=u,
+                                                v=v),
+                'api': lambda: {"error": "This person is blocking you."}
+                }
+
+    page = int(request.args.get("page", "1"))
+
+    ids = user.forwarded_idlist(v=v, page=page)
+
+    next_exists = (len(ids) == 26)
+    ids = ids[0:25]
+
+    listing = get_posts(ids, v=v)
+
+    is_following = (v and user.has_follower(v))
+
+    return {"html": lambda: render_template("userpage_forwarded.html",
+                                            u=user,
+                                            v=v,
+                                            listing=listing,
+                                            page=page,
+                                            next_exists=next_exists,
+                                            is_following=is_following),
+            "api": lambda: jsonify({"data": [x.json for x in listing]})
+            }
+
 
 @app.route("/api/v1/user/<username>/info", methods=["GET"])
 @app.get("/api/v2/users/<username>")
@@ -383,37 +484,6 @@ def user_profile(username):
 def user_profile_uid(uid):
     x=get_account(uid)
     return redirect(x.profile_url)
-
-
-@app.route("/saved", methods=["GET"])
-@app.route("/api/v1/saved", methods=["GET"])
-#@app.get("/api/v2/me/saved")
-@auth_required
-@api("read")
-def saved_listing(v):
-
-    print("saved listing")
-
-    page=int(request.args.get("page",1))
-
-    ids=v.saved_idlist(page=page)
-
-    next_exists=len(ids)==26
-
-    ids=ids[0:25]
-
-    print(ids)
-
-    listing = get_posts(ids, v=v, sort="new")
-
-    return {'html': lambda: render_template("home.html",
-                                            v=v,
-                                            listing=listing,
-                                            page=page,
-                                            next_exists=next_exists
-                                            ),
-            'api': lambda: jsonify({"data": [x.json for x in listing]})
-            }
 
 
 @app.post("/@<username>/toggle_bell")

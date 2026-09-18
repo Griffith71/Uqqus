@@ -29,8 +29,8 @@ class SubmissionAux(Base):
     id = Column(BigInteger, ForeignKey("submissions.id"))
     title = Column(String(500), default=None)
     url = Column(String(500), default=None)
-    body = Column(String(10000), default="")
-    body_html = Column(String(20000), default="")
+    body = Column(String(25000), default="")
+    body_html = Column(String(50000), default="")
     ban_reason = Column(String(128), default="")
     embed_url = Column(String(256), default="")
     meta_title=Column(String(512), default="")
@@ -89,6 +89,7 @@ class Submission(Base, Stndrd, Age_times, Scores, Fuzzing):
     score_activity = Column(Float, default=0)
     is_offensive = Column(Boolean, default=False)
     is_nsfl = Column(Boolean, default=False)
+    hidden_by_guild = Column(Boolean, default=False)
     board = relationship(
         "Board",
         lazy="joined",
@@ -176,6 +177,72 @@ class Submission(Base, Stndrd, Age_times, Scores, Fuzzing):
         return bool(self.repost_id)
 
     @property
+    def is_profile_post(self):
+        # deferred import - boards.py imports from this module, so this
+        # can't be a top-level import without a circular-import error
+        from .boards import get_profile_board_id
+        return self.board_id == get_profile_board_id()
+
+    @property
+    def forwards(self):
+        """Independent per-guild copies of this primary post, each with its
+        own votes/comments (see ForwardRelationship). Empty for a post that
+        is itself a forward (only primary posts can be forwarded further)."""
+        return g.db.query(Submission).filter_by(
+            repost_id=self.id).order_by(Submission.created_utc.asc()).all()
+
+    @property
+    def is_forward_copy(self):
+        """True if this row was created by the Forward feature (as opposed
+        to a legacy pre-Forward resubmit, which also sets repost_id but
+        keeps its own frozen "repost" badge/behavior)."""
+        from .board_relationships import ForwardRelationship
+        return g.db.query(ForwardRelationship).filter_by(
+            forward_submission_id=self.id).first() is not None
+
+    @property
+    def forwarded_by(self):
+        """The user who forwarded this into its guild, if that was someone
+        other than the post's own author - so the byline can read "X
+        forwarded Y's post" and X carries responsibility for it being in
+        this guild. Returns None for primaries, legacy reposts, and
+        forwards the author made themselves (plain "by <author>" byline)."""
+        from .board_relationships import ForwardRelationship
+        from .user import User
+        rel = g.db.query(ForwardRelationship).filter_by(
+            forward_submission_id=self.id).first()
+        if not rel or rel.forwarded_by_id == self.author_id:
+            return None
+        return g.db.query(User).filter_by(id=rel.forwarded_by_id).first()
+
+    @property
+    def is_promoted_from_comment(self):
+        from .board_relationships import CommentForwardRelationship
+        return g.db.query(CommentForwardRelationship).filter_by(
+            promoted_submission_id=self.id).first() is not None
+
+    @property
+    def promoted_from_comment(self):
+        """The original Comment this post was promoted from, or None."""
+        from .board_relationships import CommentForwardRelationship
+        rel = g.db.query(CommentForwardRelationship).filter_by(
+            promoted_submission_id=self.id).first()
+        return rel.comment if rel else None
+
+    @property
+    def promoted_by(self):
+        """Mirrors forwarded_by: the user who promoted this reply into a
+        post, if different from the post's own author (who stays the
+        original comment's author, preserving their delete rights)."""
+        from .board_relationships import CommentForwardRelationship
+        from .user import User
+        rel = g.db.query(CommentForwardRelationship).filter_by(
+            promoted_submission_id=self.id).first()
+        if not rel or rel.promoted_by_id == self.author_id:
+            return None
+        return g.db.query(User).filter_by(id=rel.promoted_by_id).first()
+
+    @property
     def is_archived(self):
         return int(time.time()) - self.created_utc > 60 * 60 * 24 * 180
 
@@ -199,6 +266,9 @@ class Submission(Base, Stndrd, Age_times, Scores, Fuzzing):
         if not output:
             output = '-'
 
+        if self.is_profile_post:
+            return f"/post/{self.base36id}/{output}"
+
         return f"/+{self.board.name}/post/{self.base36id}/{output}"
 
     @property
@@ -213,7 +283,7 @@ class Submission(Base, Stndrd, Age_times, Scores, Fuzzing):
     def rendered_page(self, comment=None, comment_info=None, v=None):
 
         # check for banned
-        if self.deleted_utc > 0:
+        if self.purged_utc > 0 or self.deleted_utc > 0:
             template = "submission_deleted.html"
         elif v and v.admin_level >= 3:
             template = "submission.html"
@@ -252,7 +322,7 @@ class Submission(Base, Stndrd, Age_times, Scores, Fuzzing):
                                comment_info=comment_info,
                                is_allowed_to_comment=is_allowed_to_comment,
                                render_replies=True,
-                               b=self.board
+                               b=None if self.is_profile_post else self.board
                                )
 
     @property
@@ -317,6 +387,10 @@ class Submission(Base, Stndrd, Age_times, Scores, Fuzzing):
             return f"https://i.ruqqus.com/posts/{self.base36id}/thumb.png"
         elif self.is_image:
             return self.url
+        elif self.is_repost:
+            # a forward's thumbnail generation isn't run separately -
+            # inherit the primary post's once it's ready
+            return self.reposts.thumb_url
         else:
             return None
 
@@ -453,6 +527,10 @@ class Submission(Base, Stndrd, Age_times, Scores, Fuzzing):
     @property
     def saved(self):
         return bool(self._saved) if "_saved" in self.__dict__ else False
+
+    @property
+    def reposted(self):
+        return bool(self._reposted) if "_reposted" in self.__dict__ else False
 
     @property
     def user_title(self):
@@ -647,3 +725,22 @@ class SaveRelationship(Base, Stndrd):
     id=Column(Integer, primary_key=true)
     user_id=Column(Integer, ForeignKey("users.id"))
     submission_id=Column(Integer, ForeignKey("submissions.id"))
+    created_utc = Column(Integer, default=0)
+
+
+class RepostRelationship(Base, Stndrd):
+    """Records that `user` reposted `submission` to their own profile,
+    Twitter-retweet style. Unlike Forward, this creates no independent
+    copy - votes/comments/authorship all stay on the one shared
+    submission. The row exists only so the reposter's profile can show
+    the post (ordered by when they reposted it, not when it was
+    originally posted) with an inline "Repost" tag next to its normal
+    "by <author>" byline, and so it can be un-reposted."""
+
+    __tablename__ = "repost_relationship"
+    __table_args__ = (UniqueConstraint('user_id', 'submission_id', name='repost_unique'),)
+
+    id = Column(Integer, primary_key=True)
+    user_id = Column(Integer, ForeignKey("users.id"))
+    submission_id = Column(Integer, ForeignKey("submissions.id"))
+    created_utc = Column(Integer, default=0)

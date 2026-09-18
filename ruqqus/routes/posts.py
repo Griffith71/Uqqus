@@ -20,6 +20,7 @@ from ruqqus.helpers.thumbs import *
 from ruqqus.helpers.session_helpers import *
 from ruqqus.helpers.aws import *
 from ruqqus.helpers.alerts import send_notification
+from ruqqus.helpers.text import split_title_body
 from ruqqus.classes import *
 from .front import frontlist
 from ruqqus.__main__ import app, limiter, cache, db_session
@@ -162,18 +163,41 @@ Optional query parameters:
         "api":lambda:jsonify({"data":[x.json for x in post.replies]})
         }
 
-#if the guild name is missing from the url, add it and redirect
+#profile-primary posts render here directly (no guild in the URL to redirect
+#into); anything else redirects to add the guild name into the url
 @app.route("/post/<base36id>", methods=["GET"])
 @app.route("/post/<base36id>/", methods=["GET"])
 @app.route("/post/<base36id>/<anything>", methods=["GET"])
 @auth_desired
 @api("read")
 def post_base36id_noboard(base36id, anything=None, v=None):
-    
+
     post=get_post_with_comments(base36id, v=v, sort_type=request.args.get("sort","top"))
 
-    #board=post.board
-    return redirect(post.permalink)
+    if not post.is_profile_post:
+        return redirect(post.permalink)
+
+    if post.over_18 and not (v and v.over_18) and not session_over18(post.board):
+        t = int(time.time())
+        return {"html":lambda:render_template("errors/nsfw.html",
+                               v=v,
+                               t=t,
+                               lo_formkey=make_logged_out_formkey(t),
+                               board=post.board
+
+                               ),
+                "api":lambda:(jsonify({"error":"Must be 18+ to view"}), 451)
+                }
+
+    post.tree_comments()
+
+    if v:
+        record_view(v, post)
+
+    return {
+        "html":lambda:post.rendered_page(v=v),
+        "api":lambda:jsonify({"data":[x.json for x in post.replies]})
+        }
 
 
 
@@ -188,7 +212,8 @@ def submit_get(v):
 
     return render_template("submit.html",
                            v=v,
-                           b=b
+                           b=b,
+                           forward_guild_names=[]
                            )
 
 
@@ -323,6 +348,132 @@ def get_post_title(v):
         return jsonify({"error": f"Could not find a title"}), 400
 
 
+def _build_standalone_submission(author_id, target, title, body, body_html,
+                                  url=None, embed_url=None, domain_ref=None,
+                                  over_18=False, is_offensive=False, app_id=None,
+                                  creation_region=None, is_bot=False,
+                                  auto_upvote=True, repost_id=0):
+    """Create + flush one independent new Submission (own votes, own
+    comments) in `target`, with its own SubmissionAux row and an optional
+    author auto-upvote. Shared by post-Forward (create_forward_post) and
+    comment-Promote (create_forward_post_from_comment)."""
+
+    new_post = Submission(
+        author_id=author_id,
+        domain_ref=domain_ref,
+        board_id=target.id,
+        original_board_id=target.id,
+        over_18=(over_18 or target.over_18),
+        post_public=not target.is_private,
+        repost_id=repost_id,
+        is_offensive=is_offensive,
+        app_id=app_id,
+        creation_region=creation_region,
+        is_bot=is_bot
+    )
+    g.db.add(new_post)
+    g.db.flush()
+
+    new_post_aux = SubmissionAux(id=new_post.id,
+                                  url=url,
+                                  body=body,
+                                  body_html=body_html,
+                                  embed_url=embed_url,
+                                  title=title
+                                  )
+    g.db.add(new_post_aux)
+
+    if auto_upvote:
+        g.db.add(Vote(user_id=author_id, vote_type=1, submission_id=new_post.id))
+
+    return new_post
+
+
+def create_forward_post(primary, target, forwarded_by):
+    """Create one independent per-guild copy (own votes, own comments) of
+    `primary`'s content in `target`, linked back via repost_id, and record
+    the ForwardRelationship. Used both when forwarding at submit time and
+    when forwarding an already-existing primary post afterward."""
+
+    forward_post = _build_standalone_submission(
+        author_id=primary.author_id,
+        target=target,
+        title=primary.title,
+        body=primary.body,
+        body_html=primary.body_html,
+        url=primary.url,
+        embed_url=primary.embed_url,
+        domain_ref=primary.domain_ref,
+        over_18=primary.over_18,
+        is_offensive=primary.is_offensive,
+        app_id=primary.app_id,
+        creation_region=primary.creation_region,
+        is_bot=primary.is_bot,
+        repost_id=primary.id
+    )
+
+    g.db.add(ForwardRelationship(
+        primary_submission_id=primary.id,
+        board_id=target.id,
+        forward_submission_id=forward_post.id,
+        forwarded_by_id=forwarded_by.id
+    ))
+
+    return forward_post
+
+
+def create_forward_post_from_comment(comment, target, promoted_by):
+    """Promote a reply's text into a brand-new, independent post in
+    `target` (its own votes/comment thread) - the comment/reply-forward
+    equivalent of create_forward_post(). The new post's author_id stays
+    the comment's original author (matching post-Forward's delete-rights
+    convention); CommentForwardRelationship tracks provenance and who
+    triggered the promotion when different from the author.
+
+    The title is not user-editable - it's the exact first 280 characters
+    of the reply's own text (the same split used for the reply's own
+    preview/overflow display, see Comment.is_long), so the promoted post
+    looks structurally identical to how the reply already presented:
+    title = what was visible, body = what was collapsed. No duplication."""
+
+    title_raw, body_raw = split_title_body(comment.body or "", max_title=280)
+
+    title = title_raw.replace("\n", "").replace("\r", "").replace("\t", "")
+    title = bleach.clean(title, tags=[])
+    if not title:
+        title = "Untitled"
+
+    if body_raw:
+        body = preprocess(body_raw)
+        with CustomRenderer() as renderer:
+            body_md = renderer.render(mistletoe.Document(body))
+        body_html = sanitize(body_md, linkgen=True)
+    else:
+        body, body_html = "", ""
+
+    new_post = _build_standalone_submission(
+        author_id=comment.author_id,
+        target=target,
+        title=title,
+        body=body,
+        body_html=body_html,
+        over_18=comment.over_18,
+        is_offensive=comment.is_offensive,
+        app_id=comment.app_id,
+        creation_region=comment.creation_region,
+        is_bot=comment.is_bot
+    )
+
+    g.db.add(CommentForwardRelationship(
+        comment_id=comment.id,
+        board_id=target.id,
+        promoted_submission_id=new_post.id,
+        promoted_by_id=promoted_by.id
+    ))
+
+    return new_post
+
+
 @app.route("/submit", methods=['POST'])
 @app.route("/api/v1/submit", methods=["POST"])
 @app.route("/api/vue/submit", methods=["POST"])
@@ -337,33 +488,70 @@ def submit_post(v):
     """
 Create a post
 
+A post always lives on your profile first. Optionally forward it to up to
+5 guilds for community-scoped discussion - each forward is its own
+independent post (own votes, own comments) linked back to this one.
+
 Required form data:
-* `title` - The post title
-* `guild` - The name of the guild to submit to
+* `content` - The post text. The first 280 characters become the title;
+  anything past that becomes the collapsed body, exactly like a reply.
+  For backwards compatibility, `title` and `body` (submitted separately)
+  are still accepted when `content` is absent.
+
+Optional form data:
+* `forward_guilds` - Guild name(s) to forward this post to (repeat the
+  field for multiple guilds, e.g. forward_guilds=foo&forward_guilds=bar).
+  Maximum 5.
 
 At least one of the following form items is required:
 * `url` - The link being submitted. Uploading an image file counts as a url.
-* `body` - The text body of the post
+* `content` (or `body`, in the legacy form) - The text body of the post
 
 Optional file data:
 * `file` - An image to upload as the post target. Requires premium or 500 Rep.
 """
 
-    title = request.form.get("title", "").lstrip().rstrip()
+    content = request.form.get("content")
+
+    if content is not None:
+        title, body = split_title_body(content, max_title=280)
+        text_for_redisplay = content
+    else:
+        title = request.form.get("title", "")
+        body = request.form.get("body", "")
+        text_for_redisplay = title + ("\n\n" + body if body else "")
 
     title = title.lstrip().rstrip()
     title = title.replace("\n", "")
     title = title.replace("\r", "")
     title = title.replace("\t", "")
-    
+
     # sanitize title
     title = bleach.clean(title)
 
     url = request.form.get("url", "")
 
-    board = get_guild(request.form.get('board', request.form.get("guild")), graceful=True)
-    if not board:
-        board = get_guild('general')
+    forward_guild_names = [
+        x.strip().lstrip('+') for x in request.form.getlist("forward_guilds") if x.strip()
+    ]
+    # de-dupe, case-insensitive, preserving order
+    seen_names = set()
+    forward_guild_names = [
+        x for x in forward_guild_names
+        if not (x.lower() in seen_names or seen_names.add(x.lower()))
+    ]
+
+    if len(forward_guild_names) > 5:
+        return {"html": lambda: (render_template("submit.html",
+                                                 v=v,
+                                                 error="You can forward to a maximum of 5 guilds.",
+                                                 title=title,
+                                                 url=url,
+                                                 text=text_for_redisplay,
+                                                 b=None, forward_guild_names=forward_guild_names
+                                                 ), 400),
+                "api": lambda: ({"error": "Maximum of 5 forward guilds"}, 400)
+                }
 
     if not title:
         return {"html": lambda: (render_template("submit.html",
@@ -371,9 +559,8 @@ Optional file data:
                                                  error="Please enter a better title.",
                                                  title=title,
                                                  url=url,
-                                                 body=request.form.get(
-                                                     "body", ""),
-                                                 b=board
+                                                 text=text_for_redisplay,
+                                                 b=None, forward_guild_names=forward_guild_names
                                                  ), 400),
                 "api": lambda: ({"error": "Please enter a better title"}, 400)
                 }
@@ -384,35 +571,37 @@ Optional file data:
     #                            error="Please enter a better title.",
     #                            title=title,
     #                            url=url,
-    #                            body=request.form.get("body",""),
-    #                            b=board
+    #                            text=text_for_redisplay,
+    #                            b=None, forward_guild_names=forward_guild_names
     #                            )
 
 
-    elif len(title) > 250:
+    elif len(title) > 280:
         return {"html": lambda: (render_template("submit.html",
                                                  v=v,
-                                                 error="250 character limit for titles.",
-                                                 title=title[0:250],
+                                                 error="280 character limit for titles.",
+                                                 title=title[0:280],
                                                  url=url,
-                                                 body=request.form.get(
-                                                     "body", ""),
-                                                 b=board
+                                                 text=text_for_redisplay,
+                                                 b=None, forward_guild_names=forward_guild_names
                                                  ), 400),
-                "api": lambda: ({"error": "250 character limit for titles"}, 400)
+                "api": lambda: ({"error": "280 character limit for titles"}, 400)
                 }
 
     parsed_url = urlparse(url)
-    if not (parsed_url.scheme and parsed_url.netloc) and not request.form.get(
-            "body") and not request.files.get("file", None):
+    # in the single-box composer, the title alone (already confirmed
+    # non-empty above) counts as "content" - a short post has no body
+    # by construction, since split_title_body only fills body past 280
+    # characters
+    has_content = bool(body) or content is not None
+    if not (parsed_url.scheme and parsed_url.netloc) and not has_content and not request.files.get("file", None):
         return {"html": lambda: (render_template("submit.html",
                                                  v=v,
                                                  error="Please enter a url or some text.",
                                                  title=title,
                                                  url=url,
-                                                 body=request.form.get(
-                                                     "body", ""),
-                                                 b=board
+                                                 text=text_for_redisplay,
+                                                 b=None, forward_guild_names=forward_guild_names
                                                  ), 400),
                 "api": lambda: ({"error": "`url` or `body` parameter required."}, 400)
                 }
@@ -433,13 +622,12 @@ Optional file data:
     else:
         url = ""
 
-    body = request.form.get("body", "")
-    # check for duplicate
+    # check for duplicate (exact resubmission of the same primary post)
     dup = g.db.query(Submission).join(Submission.submission_aux).filter(
 
         Submission.author_id == v.id,
         Submission.deleted_utc == 0,
-        Submission.board_id == board.id,
+        Submission.repost_id == None,
         SubmissionAux.title == title,
         SubmissionAux.url == url,
         SubmissionAux.body == body
@@ -475,7 +663,7 @@ Optional file data:
             #                                          url=url,
             #                                          body=request.form.get(
             #                                              "body", ""),
-            #                                          b=board
+            #                                          b=None, forward_guild_names=forward_guild_names
             #                                          ), 400),
             #         "api": lambda: ({"error": BAN_REASONS[domain_obj.reason]}, 400)
             #         }
@@ -494,72 +682,78 @@ Optional file data:
 
         embed = ""
 
-    # board
-    board_name = request.form.get("board", "general")
-    board_name = board_name.lstrip("+")
-    board_name = board_name.rstrip()
+    # A post always lives on the author's profile first.
+    board = get_guild(PROFILE_BOARD_NAME)
 
-    board = get_guild(board_name, graceful=True)
+    # Validate every guild the author wants to forward to. All-or-nothing:
+    # if any target guild is invalid, reject the whole submission up front
+    # rather than partially forwarding.
+    forward_boards = []
+    for forward_name in forward_guild_names:
 
-    if not board:
+        target = get_guild(forward_name, graceful=True)
 
-        return {"html": lambda: (render_template("submit.html",
-                                                 v=v,
-                                                 error=f"Please enter a Guild to submit to.",
-                                                 title=title,
-                                                 url=url, body=request.form.get(
-                                                     "body", ""),
-                                                 b=None
-                                                 ), 403),
-                "api": lambda: (jsonify({"error": f"403 Forbidden - +{board.name} has been banned."}))
-                }
+        if not target or target.name.lower() == PROFILE_BOARD_NAME:
+            return {"html": lambda fn=forward_name: (render_template("submit.html",
+                                                     v=v,
+                                                     error=f"+{fn} doesn't exist.",
+                                                     title=title,
+                                                     url=url, text=text_for_redisplay,
+                                                     b=None, forward_guild_names=forward_guild_names
+                                                     ), 400),
+                    "api": lambda fn=forward_name: ({"error": f"+{fn} doesn't exist."}, 400)
+                    }
 
-    if board.is_banned:
+        if target.is_banned:
+            return {"html": lambda: (render_template("submit.html",
+                                                     v=v,
+                                                     error=f"+{target.name} has been banned.",
+                                                     title=title,
+                                                     url=url, text=text_for_redisplay,
+                                                     b=None, forward_guild_names=forward_guild_names
+                                                     ), 403),
+                    "api": lambda: ({"error": f"403 Forbidden - +{target.name} has been banned."}, 403)
+                    }
 
-        return {"html": lambda: (render_template("submit.html",
-                                                 v=v,
-                                                 error=f"+{board.name} has been banned.",
-                                                 title=title,
-                                                 url=url, body=request.form.get(
-                                                     "body", ""),
-                                                 b=None
-                                                 ), 403),
-                "api": lambda: (jsonify({"error": f"403 Forbidden - +{board.name} has been banned."}))
-                }
+        if target.has_ban(v):
+            return {"html": lambda: (render_template("submit.html",
+                                                     v=v,
+                                                     error=f"You are exiled from +{target.name}.",
+                                                     title=title,
+                                                     url=url, text=text_for_redisplay,
+                                                     b=None, forward_guild_names=forward_guild_names
+                                                     ), 403),
+                    "api": lambda: ({"error": f"403 Not Authorized - You are exiled from +{target.name}"}, 403)
+                    }
 
-    if board.has_ban(v):
-        return {"html": lambda: (render_template("submit.html",
-                                                 v=v,
-                                                 error=f"You are exiled from +{board.name}.",
-                                                 title=title,
-                                                 url=url, body=request.form.get(
-                                                     "body", ""),
-                                                 b=None
-                                                 ), 403),
-                "api": lambda: (jsonify({"error": f"403 Not Authorized - You are exiled from +{board.name}"}), 403)
-                }
+        if (target.restricted_posting or target.is_private) and not (
+                target.can_submit(v)):
+            return {"html": lambda: (render_template("submit.html",
+                                                     v=v,
+                                                     error=f"You are not an approved contributor for +{target.name}.",
+                                                     title=title,
+                                                     url=url,
+                                                     text=text_for_redisplay,
+                                                     b=None, forward_guild_names=forward_guild_names
+                                                     ), 403),
+                    "api": lambda: ({"error": f"403 Not Authorized - You are not an approved contributor for +{target.name}"}, 403)
+                    }
 
-    if (board.restricted_posting or board.is_private) and not (
-            board.can_submit(v)):
-        return {"html": lambda: (render_template("submit.html",
-                                                 v=v,
-                                                 error=f"You are not an approved contributor for +{board.name}.",
-                                                 title=title,
-                                                 url=url,
-                                                 body=request.form.get(
-                                                     "body", ""),
-                                                 b=None
-                                                 ), 403),
-                "api": lambda: (jsonify({"error": f"403 Not Authorized - You are not an approved contributor for +{board.name}"}), 403)
-                }
+        if target.disallowbots and request.headers.get("X-User-Type")=="Bot":
+            return {"api": lambda: ({"error": f"403 Not Authorized - +{target.name} disallows bots from posting and commenting!"}, 403)}
 
-    if board.disallowbots and request.headers.get("X-User-Type")=="Bot":
-        return {"api": lambda: (jsonify({"error": f"403 Not Authorized - +{board.name} disallows bots from posting and commenting!"}), 403)}
+        forward_boards.append(target)
 
     # similarity check
     now = int(time.time())
     cutoff = now - 60 * 60 * 24
 
+    # A single Forward action can create up to 5 rows sharing the exact
+    # same title/url across different guilds - those aren't independently
+    # authored content, so they shouldn't multiply against this user's
+    # spam-similarity count (which would otherwise make heavy Forward use
+    # look identical to actual repeated spam-posting).
+    forward_copies = g.db.query(ForwardRelationship.forward_submission_id).subquery()
 
     similar_posts = g.db.query(Submission).options(
         lazyload('*')
@@ -569,6 +763,7 @@ Optional file data:
             #or_(
             #    and_(
                     Submission.author_id == v.id,
+                    Submission.id.notin_(forward_copies),
                     SubmissionAux.title.op('<->')(title) < app.config["SPAM_SIMILARITY_THRESHOLD"],
                     Submission.created_utc > cutoff
             #    ),
@@ -588,6 +783,7 @@ Optional file data:
             #or_(
             #    and_(
                     Submission.author_id == v.id,
+                    Submission.id.notin_(forward_copies),
                     SubmissionAux.url.op('<->')(url) < app.config["SPAM_URL_SIMILARITY_THRESHOLD"],
                     Submission.created_utc > cutoff
             #    ),
@@ -635,18 +831,17 @@ Optional file data:
         return redirect("/notifications")
 
     # catch too-long body
-    if len(str(body)) > 10000:
+    if len(str(body)) > 25000:
 
         return {"html": lambda: (render_template("submit.html",
                                                  v=v,
-                                                 error="10000 character limit for text body.",
+                                                 error="25000 character limit for text body.",
                                                  title=title,
                                                  url=url,
-                                                 body=request.form.get(
-                                                     "body", ""),
-                                                 b=board
+                                                 text=text_for_redisplay,
+                                                 b=None, forward_guild_names=forward_guild_names
                                                  ), 400),
-                "api": lambda: ({"error": "10000 character limit for text body."}, 400)
+                "api": lambda: ({"error": "25000 character limit for text body."}, 400)
                 }
 
     if len(url) > 2048:
@@ -656,9 +851,8 @@ Optional file data:
                                                  error="2048 character limit for URLs.",
                                                  title=title,
                                                  url=url,
-                                                 body=request.form.get(
-                                                     "body", ""),
-                                                 b=board
+                                                 text=text_for_redisplay,
+                                                 b=None, forward_guild_names=forward_guild_names
                                                  ), 400),
                 "api": lambda: ({"error": "2048 character limit for URLs."}, 400)
                 }
@@ -689,9 +883,8 @@ Optional file data:
                                                  error=reason,
                                                  title=title,
                                                  url=url,
-                                                 body=request.form.get(
-                                                     "body", ""),
-                                                 b=board
+                                                 text=text_for_redisplay,
+                                                 b=None, forward_guild_names=forward_guild_names
                                                  ), 403),
                 "api": lambda: ({"error": reason}, 403)
                 }
@@ -730,9 +923,8 @@ Optional file data:
                                                          error=f"The link `{badlink.link}` is not allowed. Reason: {badlink.reason}.",
                                                          title=title,
                                                          url=url,
-                                                         body=request.form.get(
-                                                             "body", ""),
-                                                         b=board
+                                                         text=text_for_redisplay,
+                                                         b=None, forward_guild_names=forward_guild_names
                                                          ), 400),
                         "api": lambda: ({"error": f"The link `{badlink.link}` is not allowed. Reason: {badlink.reason}"}, 400)
                         }
@@ -740,21 +932,23 @@ Optional file data:
     # check for embeddable video
     domain = parsed_url.netloc
 
+    # unrelated to Forward - just a "you already posted this exact link"
+    # spam guard, scoped to this author's own content site-wide
     if url:
-        repost = g.db.query(Submission).join(Submission.submission_aux).filter(
+        existing_dup_url = g.db.query(Submission).join(Submission.submission_aux).filter(
             SubmissionAux.url.ilike(url),
-            Submission.board_id == board.id,
+            Submission.author_id == v.id,
             Submission.deleted_utc == 0,
             Submission.is_banned == False
         ).order_by(
             Submission.id.asc()
         ).first()
     else:
-        repost = None
+        existing_dup_url = None
 
-    if repost and request.values.get("no_repost"):
-        return {'html':lambda:redirect(repost.permalink),
-		'api': lambda:({"error":"This content has already been posted", "repost":repost.json}, 409)
+    if existing_dup_url and request.values.get("no_repost"):
+        return {'html':lambda:redirect(existing_dup_url.permalink),
+		'api': lambda:({"error":"This content has already been posted", "repost":existing_dup_url.json}, 409)
 	       }
 
     if request.files.get('file') and not v.can_submit_image:
@@ -772,15 +966,9 @@ Optional file data:
         domain_ref=domain_obj.id if domain_obj else None,
         board_id=board.id,
         original_board_id=board.id,
-        over_18=(
-            bool(
-                request.form.get(
-                    "over_18",
-                    "")
-                ) or board.over_18
-            ),
+        over_18=bool(request.form.get("over_18", "")),
         post_public=not board.is_private,
-        repost_id=repost.id if repost else None,
+        repost_id=None,
         is_offensive=is_offensive,
         app_id=v.client.application.id if v.client else None,
         creation_region=request.headers.get("cf-ipcountry"),
@@ -823,9 +1011,8 @@ Optional file data:
                                                          v=v,
                                                          error=f"Image files only.",
                                                          title=title,
-                                                         body=request.form.get(
-                                                             "body", ""),
-                                                         b=board
+                                                         text=text_for_redisplay,
+                                                         b=None, forward_guild_names=forward_guild_names
                                                          ), 400),
                         "api": lambda: ({"error": f"Image files only"}, 400)
                         }
@@ -869,7 +1056,15 @@ Optional file data:
             del_function
           )
         csam_thread.start()
-    
+
+    # Forward to each validated guild: each is its own independent post
+    # (own votes, own comments) with the same content, linked back to the
+    # primary post via repost_id.
+    forward_posts = [
+        create_forward_post(new_post, target, v)
+        for target in forward_boards
+    ]
+
     g.db.commit()
 
     # spin off thumbnail generation and csam detection as  new threads
@@ -883,6 +1078,8 @@ Optional file data:
     cache.delete_memoized(frontlist)
     g.db.commit()
     cache.delete_memoized(Board.idlist, board, sort="new")
+    for target in forward_boards:
+        cache.delete_memoized(Board.idlist, target, sort="new")
     
     
     # queue up notifications for username mentions
@@ -980,6 +1177,68 @@ Optional file data:
             "api": lambda: jsonify(new_post.json)
             }
 
+
+@app.route("/post/<pid>/forward", methods=["POST"])
+@auth_required
+@validate_formkey
+def forward_post(pid, v):
+    """
+Forward a post into one more guild. Usable by anyone logged in, whether
+or not they authored the post - the resulting guild copy stays authored
+by (and deletable by) the original creator, never the person who
+forwarded it. The target guild's own posting rules (bans,
+restricted-posting/private-guild contributor lists) are checked against
+the person doing the forwarding, same as if they were submitting there
+themselves.
+
+`pid` may be either a primary (profile) post or one of its existing
+guild-forward copies - forwarding always acts on the underlying primary
+post either way, since a forward-of-a-forward isn't allowed (this keeps
+the graph a strict one-hop star, matching every "p.reposts.permalink"
+single-hop dereference elsewhere).
+
+URL path parameters:
+* `pid` - The base 36 id of the post to forward (primary or forward-copy)
+
+Required form data:
+* `board` - Name of the guild to forward into
+"""
+
+    post = get_post(pid, v=v)
+    primary = post.reposts if post.is_repost else post
+
+    target = get_guild(request.form.get("board", ""), graceful=True)
+    if not target or target.name.lower() == PROFILE_BOARD_NAME:
+        return {"error": "That guild doesn't exist."}, 400
+
+    if target.is_banned:
+        return {"error": f"+{target.name} has been banned."}, 403
+
+    if target.has_ban(v):
+        return {"error": f"Exiled from +{target.name}."}, 403
+
+    if (target.restricted_posting or target.is_private) and not target.can_submit(v):
+        return {"error": f"Not an approved contributor for +{target.name}."}, 403
+
+    existing_count = g.db.query(ForwardRelationship).filter_by(
+        primary_submission_id=primary.id).count()
+    if existing_count >= 5:
+        return {"error": "This post has already been forwarded to the maximum of 5 guilds."}, 400
+
+    already = g.db.query(ForwardRelationship).filter_by(
+        primary_submission_id=primary.id, board_id=target.id).first()
+    if already:
+        return {"error": f"Already forwarded to +{target.name}."}, 409
+
+    new_forward = create_forward_post(primary, target, v)
+    g.db.commit()
+
+    cache.delete_memoized(frontlist)
+    cache.delete_memoized(Board.idlist, target, sort="new")
+
+    return jsonify(new_forward.json)
+
+
 # @app.route("/api/nsfw/<pid>/<x>", methods=["POST"])
 # @auth_required
 # @validate_formkey
@@ -1019,11 +1278,13 @@ URL path parameters:
     post = get_post(pid)
     if not post.author_id == v.id:
         abort(403)
-        
+
     if post.is_deleted:
         abort(404)
-        
-    post.deleted_utc = int(time.time())
+
+    now = int(time.time())
+
+    post.deleted_utc = now
     post.is_pinned = False
     post.stickied = False
 
@@ -1037,7 +1298,7 @@ URL path parameters:
         cache.delete_memoized(Board.idlist, post.board, sort="new")
         cache.delete_memoized(frontlist, sort="new")
 
-    # delete i.ruqqus.com
+    # delete i.ruqqus.com - only the primary's copy, forwards share the same url
     if post.domain == "i.ruqqus.com":
 
         segments = post.url.split("/")
@@ -1048,6 +1309,22 @@ URL path parameters:
             delete_file(key)
             post.is_image = False
             g.db.add(post)
+
+    # deleting a primary post cascades to every guild it was forwarded to -
+    # deleting one specific forward copy (post.is_repost==True) stays scoped
+    # to just that row and doesn't touch the primary or its other forwards
+    if not post.is_repost:
+        forwards = g.db.query(Submission).filter_by(repost_id=post.id).all()
+        for forward in forwards:
+            if forward.is_deleted:
+                continue
+            forward.deleted_utc = now
+            forward.is_pinned = False
+            forward.stickied = False
+            g.db.add(forward)
+            cache.delete_memoized(Board.idlist, forward.board)
+            if forward.age >= 3600 * 6:
+                cache.delete_memoized(Board.idlist, forward.board, sort="new")
 
     return "", 204
 
@@ -1164,7 +1441,8 @@ def save_post(base36id, v):
     if not existing:
         new_save=SaveRelationship(
             user_id=v.id,
-            submission_id=post.id)
+            submission_id=post.id,
+            created_utc=int(time.time()))
 
         g.db.add(new_save)
 
@@ -1190,3 +1468,59 @@ def unsave_post(base36id, v):
         g.db.delete(save)
 
     return jsonify({"message": "Bookmark removed."})
+
+
+@app.route("/post/<base36id>/repost", methods=["POST"])
+@auth_required
+@validate_formkey
+def repost_post(base36id, v):
+    """Repost a post to your own profile, Twitter-retweet style - your
+    own posts included, same as retweeting your own tweet to resurface
+    it. This creates no independent copy - votes/comments/authorship
+    all stay on the shared primary post; this just records that it should
+    also appear (with an inline "Repost" tag next to its byline) on the
+    reposter's profile.
+
+    `base36id` may be either a primary (profile) post or one of its
+    existing guild-forward copies - reposting always acts on the
+    underlying primary post either way, matching Forward's convention, so
+    the option isn't effectively hidden on every forward-copy (which is
+    most of what shows up in guild feeds)."""
+
+    post = get_post(base36id, v=v)
+    primary = post.reposts if post.is_repost else post
+
+    existing = g.db.query(RepostRelationship).filter_by(
+        user_id=v.id, submission_id=primary.id).first()
+    if existing:
+        return {"error": "You've already reposted this."}, 409
+
+    g.db.add(RepostRelationship(
+        user_id=v.id,
+        submission_id=primary.id,
+        created_utc=int(time.time())
+    ))
+    g.db.commit()
+
+    cache.delete_memoized(User.userpagelisting, v)
+
+    return jsonify({"message": "Reposted to your profile."})
+
+
+@app.route("/post/<base36id>/unrepost", methods=["POST"])
+@auth_required
+@validate_formkey
+def unrepost_post(base36id, v):
+
+    post = get_post(base36id, v=v)
+    primary = post.reposts if post.is_repost else post
+
+    existing = g.db.query(RepostRelationship).filter_by(
+        user_id=v.id, submission_id=primary.id).first()
+
+    if existing:
+        g.db.delete(existing)
+        g.db.commit()
+        cache.delete_memoized(User.userpagelisting, v)
+
+    return jsonify({"message": "Repost removed."})

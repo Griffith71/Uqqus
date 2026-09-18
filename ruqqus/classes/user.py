@@ -17,8 +17,8 @@ from ruqqus.helpers.discord import add_role, delete_role, discord_log_event
 from .votes import Vote, CommentVote
 from .alts import Alt
 from .titles import Title
-from .submission import Submission, SubmissionAux, SaveRelationship
-from .comment import Comment, Notification
+from .submission import Submission, SubmissionAux, SaveRelationship, RepostRelationship
+from .comment import Comment, Notification, CommentSaveRelationship, CommentRepostRelationship
 from .history import ViewHistory
 from .boards import Board
 from .board_relationships import *
@@ -362,27 +362,32 @@ class User(Base, Stndrd, Age_times):
     @cache.memoize(300)
     def userpagelisting(self, v=None, page=1, sort="new", t="all"):
 
-        submissions = g.db.query(Submission.id).options(
-            lazyload('*')).filter_by(author_id=self.id)
+        now = int(time.time())
+        if t == 'day':
+            cutoff = now - 86400
+        elif t == 'week':
+            cutoff = now - 604800
+        elif t == 'month':
+            cutoff = now - 2592000
+        elif t == 'year':
+            cutoff = now - 31536000
+        else:
+            cutoff = 0
 
-        if not (v and v.over_18):
-            submissions = submissions.filter_by(over_18=False)
+        if sort == "hot":
+            sort_col = Submission.score_best
+        elif sort == "disputed":
+            sort_col = Submission.score_disputed
+        elif sort == "top":
+            sort_col = Submission.score_top
+        elif sort == "activity":
+            sort_col = Submission.score_activity
+        elif sort in ("new", "old"):
+            sort_col = None
+        else:
+            abort(422)
 
-        if v and v.hide_offensive and v.id!=self.id:
-            submissions = submissions.filter_by(is_offensive=False)
-
-        if v and v.hide_bot:
-            submissions = submissions.filter_by(is_bot=False)
-
-        if not (v and (v.admin_level >= 3)):
-            submissions = submissions.filter_by(deleted_utc=0)
-
-        if not (v and (v.admin_level >= 3 or v.id == self.id)):
-            submissions = submissions.filter_by(is_banned=False).join(Submission.board).filter(Board.is_banned==False)
-
-        if v and v.admin_level >= 4:
-            pass
-        elif v:
+        if v and v.admin_level < 4:
             m = g.db.query(
                 ModRelationship.board_id).filter_by(
                 user_id=v.id,
@@ -390,7 +395,40 @@ class User(Base, Stndrd, Age_times):
             c = g.db.query(
                 ContributorRelationship.board_id).filter_by(
                 user_id=v.id).subquery()
-            submissions = submissions.filter(
+
+        def apply_common_filters(q):
+            if not (v and v.over_18):
+                q = q.filter(Submission.over_18 == False)
+            if v and v.hide_offensive and v.id != self.id:
+                q = q.filter(Submission.is_offensive == False)
+            if v and v.hide_bot:
+                q = q.filter(Submission.is_bot == False)
+            if not (v and (v.admin_level >= 3)):
+                q = q.filter(Submission.deleted_utc == 0)
+            return q.filter(Submission.created_utc >= cutoff)
+
+        forward_copies = g.db.query(ForwardRelationship.forward_submission_id).subquery()
+
+        authored_sort_expr = sort_col if sort_col is not None else Submission.created_utc
+        reposted_sort_expr = sort_col if sort_col is not None else RepostRelationship.created_utc
+
+        # ---- Posts authored by this user ----
+        authored = g.db.query(
+            Submission.id,
+            authored_sort_expr
+        ).options(lazyload('*')).filter(
+            Submission.author_id == self.id,
+            Submission.id.notin_(forward_copies)
+        )
+        authored = apply_common_filters(authored)
+
+        if not (v and (v.admin_level >= 3 or v.id == self.id)):
+            authored = authored.filter_by(is_banned=False).join(Submission.board).filter(Board.is_banned == False)
+
+        if v and v.admin_level >= 4:
+            pass
+        elif v:
+            authored = authored.filter(
                 or_(
                     Submission.author_id == v.id,
                     Submission.post_public == True,
@@ -399,95 +437,60 @@ class User(Base, Stndrd, Age_times):
                 )
             )
         else:
-            submissions = submissions.filter(Submission.post_public == True)
-        if sort == "hot":
-            submissions = submissions.order_by(Submission.score_best.desc())
-        elif sort == "new":
-            submissions = submissions.order_by(Submission.created_utc.desc())
-        elif sort == "old":
-            submissions = submissions.order_by(Submission.created_utc.asc())
-        elif sort == "disputed":
-            submissions = submissions.order_by(Submission.score_disputed.desc())
-        elif sort == "top":
-            submissions = submissions.order_by(Submission.score_top.desc())
-        elif sort == "activity":
-            submissions = submissions.order_by(Submission.score_activity.desc())
+            authored = authored.filter(Submission.post_public == True)
 
-        now = int(time.time())
-        if t == 'day':
-            cutoff = now - 86400
-        elif t == 'week':
-            cutoff = now - 604800
-        elif t == 'month':
-            cutoff = now - 2592000
-        elif t == 'year':
-            cutoff = now - 31536000
-        else:
-            cutoff = 0
-        submissions = submissions.filter(Submission.created_utc >= cutoff)
+        # ---- Posts this user has reposted to their own profile (Twitter-
+        # retweet style - no independent copy is made, so the same
+        # underlying Submission is reused; ordered by when THIS user
+        # reposted it for "new"/"old", or by the post's own metric for
+        # every other sort mode, same as an authored post would be) ----
+        reposted = g.db.query(
+            Submission.id,
+            reposted_sort_expr
+        ).join(
+            RepostRelationship, RepostRelationship.submission_id == Submission.id
+        ).filter(RepostRelationship.user_id == self.id)
+        reposted = apply_common_filters(reposted)
 
-        listing = [x[0] for x in submissions.offset(25 * (page - 1)).limit(26)]
-        return listing
-
-    @cache.memoize(300)
-    def commentlisting(self, v=None, page=1, sort="new", t="all"):
-        comments = self.comments.options(
-            lazyload('*')).filter(Comment.parent_submission is not None).join(Comment.post)
-
-        if not (v and v.over_18):
-            comments = comments.filter(Submission.over_18 == False)
-
-        if v and v.hide_offensive and v.id != self.id:
-            comments = comments.filter(Comment.is_offensive == False)
-
-        if v and v.hide_bot:
-            comments = comments.filter(Comment.is_bot == False)
-
-        comments = comments.filter(Submission.is_nsfl == False)
-
-        if (not v) or v.admin_level < 3:
-            comments = comments.filter(Comment.deleted_utc == 0)
-
-        if not (v and (v.admin_level >= 3 or v.id == self.id)):
-            comments = comments.filter(Comment.is_banned == False)
+        if not (v and v.admin_level >= 3):
+            reposted = reposted.filter(Submission.is_banned == False).join(
+                Submission.board).filter(Board.is_banned == False)
 
         if v and v.admin_level >= 4:
             pass
         elif v:
-            m = g.db.query(ModRelationship).filter_by(user_id=v.id, invite_rescinded=False).subquery()
-            c = v.contributes.subquery()
-
-            comments = comments.join(m,
-                                     m.c.board_id == Submission.board_id,
-                                     isouter=True
-                                     ).join(c,
-                                            c.c.board_id == Submission.board_id,
-                                            isouter=True
-                                            ).join(Board, Board.id == Submission.board_id)
-            comments = comments.filter(or_(Comment.author_id == v.id,
-                                           Submission.post_public == True,
-                                           Board.is_private == False,
-                                           m.c.board_id != None,
-                                           c.c.board_id != None),
-                                      Board.is_banned==False
-                                      )
+            reposted = reposted.filter(
+                or_(
+                    Submission.post_public == True,
+                    Submission.board_id.in_(m),
+                    Submission.board_id.in_(c)
+                )
+            )
         else:
-            comments = comments.join(Board, Board.id == Submission.board_id).filter(
-                or_(Submission.post_public == True, Board.is_private == False), Board.is_banned==False)
+            reposted = reposted.filter(Submission.post_public == True)
 
-        comments = comments.options(contains_eager(Comment.post))
+        # Two different source tables can't be paginated with a single SQL
+        # OFFSET/LIMIT, so a generous bounded candidate set from each is
+        # merge-sorted in Python instead - correct at this site's scale,
+        # though a profile with 1000s of posts+reposts could in theory miss
+        # items past this cap on very deep pages.
+        CANDIDATE_CAP = 300
+        authored_rows = authored.order_by(
+            authored_sort_expr.desc() if sort != "old" else authored_sort_expr.asc()
+        ).limit(CANDIDATE_CAP).all()
+        reposted_rows = reposted.order_by(
+            reposted_sort_expr.desc() if sort != "old" else reposted_sort_expr.asc()
+        ).limit(CANDIDATE_CAP).all()
 
+        combined = list(authored_rows) + list(reposted_rows)
+        combined.sort(key=lambda row: row[1], reverse=(sort != "old"))
 
-        if sort == "hot":
-            comments = comments.order_by(Comment.score_hot.desc())
-        elif sort == "new":
-            comments = comments.order_by(Comment.created_utc.desc())
-        elif sort == "old":
-            comments = comments.order_by(Comment.created_utc.asc())
-        elif sort == "disputed":
-            comments = comments.order_by(Comment.score_disputed.desc())
-        elif sort == "top":
-            comments = comments.order_by(Comment.score_top.desc())
+        ids = [row[0] for row in combined]
+        listing = ids[25 * (page - 1):25 * (page - 1) + 26]
+        return listing
+
+    @cache.memoize(300)
+    def commentlisting(self, v=None, page=1, sort="new", t="all"):
 
         now = int(time.time())
         if t == 'day':
@@ -500,11 +503,91 @@ class User(Base, Stndrd, Age_times):
             cutoff = now - 31536000
         else:
             cutoff = 0
-        comments = comments.filter(Comment.created_utc >= cutoff)
 
-        comments = comments.offset(25 * (page - 1)).limit(26)
+        if sort == "hot":
+            sort_col = Comment.score_hot
+        elif sort == "disputed":
+            sort_col = Comment.score_disputed
+        elif sort == "top":
+            sort_col = Comment.score_top
+        elif sort in ("new", "old"):
+            sort_col = None
+        else:
+            abort(422)
 
-        listing = [c.id for c in comments]
+        if v and v.admin_level < 4:
+            m = g.db.query(ModRelationship).filter_by(user_id=v.id, invite_rescinded=False).subquery()
+            c = v.contributes.subquery()
+
+        def apply_common_filters(q):
+            if not (v and v.over_18):
+                q = q.filter(Submission.over_18 == False)
+            if v and v.hide_offensive and v.id != self.id:
+                q = q.filter(Comment.is_offensive == False)
+            if v and v.hide_bot:
+                q = q.filter(Comment.is_bot == False)
+            q = q.filter(Submission.is_nsfl == False)
+            if (not v) or v.admin_level < 3:
+                q = q.filter(Comment.deleted_utc == 0)
+            return q.filter(Comment.created_utc >= cutoff)
+
+        def apply_visibility(q):
+            if v and v.admin_level >= 4:
+                return q
+            elif v:
+                q = q.join(m, m.c.board_id == Submission.board_id, isouter=True
+                    ).join(c, c.c.board_id == Submission.board_id, isouter=True
+                    ).join(Board, Board.id == Submission.board_id)
+                return q.filter(or_(Comment.author_id == v.id,
+                                     Submission.post_public == True,
+                                     Board.is_private == False,
+                                     m.c.board_id != None,
+                                     c.c.board_id != None),
+                                 Board.is_banned == False)
+            else:
+                return q.join(Board, Board.id == Submission.board_id).filter(
+                    or_(Submission.post_public == True, Board.is_private == False), Board.is_banned == False)
+
+        authored_sort_expr = sort_col if sort_col is not None else Comment.created_utc
+        reposted_sort_expr = sort_col if sort_col is not None else CommentRepostRelationship.created_utc
+
+        # ---- Replies authored by this user ----
+        authored = self.comments.options(lazyload('*')).join(Comment.post)
+        if not (v and (v.admin_level >= 3 or v.id == self.id)):
+            authored = authored.filter(Comment.is_banned == False)
+        authored = apply_common_filters(authored)
+        authored = apply_visibility(authored)
+        authored = authored.with_entities(Comment.id, authored_sort_expr)
+
+        # ---- Replies this user has reposted to their own profile
+        # (Twitter-retweet style - no independent copy, so the same
+        # underlying Comment is reused; ordered by when THIS user
+        # reposted it for "new"/"old", or by the reply's own metric for
+        # every other sort mode, same as an authored reply would be) ----
+        reposted = g.db.query(Comment.id, reposted_sort_expr).join(
+            CommentRepostRelationship, CommentRepostRelationship.comment_id == Comment.id
+        ).filter(CommentRepostRelationship.user_id == self.id).join(Comment.post)
+        if not (v and v.admin_level >= 3):
+            reposted = reposted.filter(Comment.is_banned == False)
+        reposted = apply_common_filters(reposted)
+        reposted = apply_visibility(reposted)
+
+        # Two different source tables can't be paginated with a single SQL
+        # OFFSET/LIMIT, so a generous bounded candidate set from each is
+        # merge-sorted in Python instead (mirrors userpagelisting()).
+        CANDIDATE_CAP = 300
+        authored_rows = authored.order_by(
+            authored_sort_expr.desc() if sort != "old" else authored_sort_expr.asc()
+        ).limit(CANDIDATE_CAP).all()
+        reposted_rows = reposted.order_by(
+            reposted_sort_expr.desc() if sort != "old" else reposted_sort_expr.asc()
+        ).limit(CANDIDATE_CAP).all()
+
+        combined = list(authored_rows) + list(reposted_rows)
+        combined.sort(key=lambda row: row[1], reverse=(sort != "old"))
+
+        ids = [row[0] for row in combined]
+        listing = ids[25 * (page - 1):25 * (page - 1) + 26]
         return listing
 
     @property
@@ -1234,11 +1317,9 @@ class User(Base, Stndrd, Age_times):
         if not self.over_18:
             posts = posts.filter_by(over_18=False)
 
-
-        saved=g.db.query(SaveRelationship.submission_id).filter(SaveRelationship.user_id==self.id).subquery()
-        posts=posts.filter(Submission.id.in_(saved))
-
-
+        posts = posts.join(
+            SaveRelationship, SaveRelationship.submission_id == Submission.id
+        ).filter(SaveRelationship.user_id == self.id)
 
         if self.admin_level < 4:
             # admins can see everything
@@ -1271,9 +1352,115 @@ class User(Base, Stndrd, Age_times):
                 Submission.author_id.notin_(blocked)
             )
 
-        posts=posts.order_by(Submission.created_utc.desc())
+        posts=posts.order_by(SaveRelationship.created_utc.desc())
 
         return [x[0] for x in posts.offset(25 * (page - 1)).limit(26).all()]
+
+
+    def saved_comment_idlist(self, page=1):
+
+        comments = g.db.query(Comment.id).options(lazyload('*')).join(Comment.post).filter(
+            Comment.is_banned == False,
+            Comment.deleted_utc == 0
+        )
+
+        if not self.over_18:
+            comments = comments.filter(Submission.over_18 == False)
+
+        comments = comments.join(
+            CommentSaveRelationship, CommentSaveRelationship.comment_id == Comment.id
+        ).filter(CommentSaveRelationship.user_id == self.id)
+
+        if self.admin_level < 4:
+            # admins can see everything
+
+            m = g.db.query(
+                ModRelationship.board_id).filter_by(
+                user_id=self.id,
+                invite_rescinded=False).subquery()
+            c = g.db.query(
+                ContributorRelationship.board_id).filter_by(
+                user_id=self.id).subquery()
+            comments = comments.filter(
+                or_(
+                    Comment.author_id == self.id,
+                    Submission.post_public == True,
+                    Submission.board_id.in_(m),
+                    Submission.board_id.in_(c)
+                )
+            )
+
+            blocking = g.db.query(
+                UserBlock.target_id).filter_by(
+                user_id=self.id).subquery()
+            blocked = g.db.query(
+                UserBlock.user_id).filter_by(
+                target_id=self.id).subquery()
+
+            comments = comments.filter(
+                Comment.author_id.notin_(blocking),
+                Comment.author_id.notin_(blocked)
+            )
+
+        comments = comments.order_by(CommentSaveRelationship.created_utc.desc())
+
+        return [x[0] for x in comments.offset(25 * (page - 1)).limit(26).all()]
+
+
+    def forwarded_idlist(self, v=None, page=1):
+        """Posts this user has personally forwarded to a guild, or replies
+        they've promoted into a new post - as the actor, regardless of who
+        authored the original content. Ordered by when they did it, most
+        recent first. Public activity, visible to any viewer subject to
+        the same content-visibility rules as any other listing."""
+
+        fwd = g.db.query(
+            ForwardRelationship.forward_submission_id.label('sid'),
+            ForwardRelationship.created_utc.label('ts')
+        ).filter(ForwardRelationship.forwarded_by_id == self.id)
+
+        promoted = g.db.query(
+            CommentForwardRelationship.promoted_submission_id.label('sid'),
+            CommentForwardRelationship.created_utc.label('ts')
+        ).filter(CommentForwardRelationship.promoted_by_id == self.id)
+
+        activity = fwd.union_all(promoted).subquery()
+
+        posts = g.db.query(Submission, activity.c.ts).join(
+            activity, activity.c.sid == Submission.id
+        )
+
+        if not (v and v.over_18):
+            posts = posts.filter(Submission.over_18 == False)
+
+        if not (v and v.admin_level >= 3):
+            posts = posts.filter(Submission.deleted_utc == 0, Submission.is_banned == False)
+            posts = posts.join(Board, Board.id == Submission.board_id).filter(Board.is_banned == False)
+
+        if v and v.admin_level >= 4:
+            pass
+        elif v:
+            m = g.db.query(
+                ModRelationship.board_id).filter_by(
+                user_id=v.id,
+                invite_rescinded=False).subquery()
+            c = g.db.query(
+                ContributorRelationship.board_id).filter_by(
+                user_id=v.id).subquery()
+            posts = posts.filter(
+                or_(
+                    Submission.author_id == v.id,
+                    Submission.post_public == True,
+                    Submission.board_id.in_(m),
+                    Submission.board_id.in_(c)
+                )
+            )
+        else:
+            posts = posts.filter(Submission.post_public == True)
+
+        posts = posts.order_by(activity.c.ts.desc())
+
+        return [row[0].id for row in posts.offset(25 * (page - 1)).limit(26).all()]
 
 
     def history_idlist(self, page=1):

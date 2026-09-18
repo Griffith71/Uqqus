@@ -16,6 +16,26 @@ from .comment import Comment
 from .mix_ins import *
 from ruqqus.__main__ import Base, cache, app
 
+# Reserved system guild that "profile primary" posts belong to (board_id
+# can't be NULL - Submission.board is an inner-joined relationship, and
+# several listing queries do explicit inner joins on it too). This name is
+# blocked from user guild-creation in routes/boards.py.
+PROFILE_BOARD_NAME = "systemprofile"
+
+_profile_board_id = None
+
+def get_profile_board_id():
+    """Id of the reserved 'profile' guild, looked up (and cached in-process)
+    by name rather than hardcoded, since it's seeded once via a migration
+    and its id depends on insertion order in a given database."""
+
+    global _profile_board_id
+    if _profile_board_id is None:
+        _profile_board_id = g.db.query(Board.id).filter_by(
+            name=PROFILE_BOARD_NAME).scalar()
+    return _profile_board_id
+
+
 class Board(Base, Stndrd, Age_times):
 
     __tablename__ = "boards"
@@ -137,7 +157,10 @@ class Board(Base, Stndrd, Age_times):
         posts = g.db.query(Submission.id).options(lazyload('*')).filter_by(is_banned=False,
                                                                            #is_pinned=False,
                                                                            board_id=self.id
-                                                                           ).filter(Submission.deleted_utc == 0)
+                                                                           ).filter(
+            Submission.deleted_utc == 0,
+            Submission.hidden_by_guild == False
+        )
 
         if not nsfw:
             posts = posts.filter_by(over_18=False)
@@ -593,6 +616,8 @@ class Board(Base, Stndrd, Age_times):
 
         if not v or not v.admin_level >= 3:
             comments = comments.filter_by(is_banned=False).filter(Comment.deleted_utc == 0)
+
+        comments = comments.filter(Comment.hidden_by_guild == False)
 
         comments = comments.join(
             posts, Comment.parent_submission == posts.c.id)

@@ -651,11 +651,8 @@
 {% include "delete_comment_modal.html" %}
 {% include "delete_post_modal.html" %}
 {% include "tip_modal.html" %}
-{% endif %}
-
-{% if v and v.mods_anything %}
-{% include "kick_post_modal.html" %}
-{% include "yank_post_modal.html" %}
+{% include "forward_post_modal.html" %}
+{% include "forward_comment_modal.html" %}
 {% endif %}
 
 {% include "expanded_image_modal.html" %}

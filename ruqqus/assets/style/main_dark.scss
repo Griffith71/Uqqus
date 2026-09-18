@@ -2441,7 +2441,15 @@ div:hover .thumb-img-link-overlay {
 .comment {
     display: flex;
     position: relative;
-    margin-top: 2rem;
+    margin-top: 1rem;
+    border: 1px solid $border-color;
+    border-radius: 0.25rem;
+    padding: 0.75rem;
+    background-color: $gray-700;
+}
+
+.comment:hover {
+    background-color: $gray-600;
 }
 
 #notifications .comment, #userpage .comment {

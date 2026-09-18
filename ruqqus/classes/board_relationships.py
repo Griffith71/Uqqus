@@ -234,6 +234,64 @@ class PostRelationship(Base):
     def __repr__(self):
         return f"<PostRel(id={self.id}, pid={self.post_id}, board_id={self.board_id})>"
 
+
+class ForwardRelationship(Base):
+    """Tracks which guilds a primary (profile) post has been Forwarded to.
+    Each forward is also its own independent Submission row (own votes,
+    own comments) linked back via Submission.repost_id - this table exists
+    so the 5-guild cap and duplicate-guild prevention can be enforced with
+    a DB-level unique constraint rather than just an application count."""
+
+    __tablename__ = "forwardrels"
+    __table_args__ = (UniqueConstraint('primary_submission_id', 'board_id', name='forward_unique'),)
+    id = Column(BigInteger, primary_key=True)
+    primary_submission_id = Column(Integer, ForeignKey("submissions.id"))
+    board_id = Column(Integer, ForeignKey("boards.id"))
+    forward_submission_id = Column(Integer, ForeignKey("submissions.id"))
+    forwarded_by_id = Column(Integer, ForeignKey("users.id"))
+    created_utc = Column(Integer, default=0)
+
+    primary_submission = relationship(
+        "Submission", lazy="subquery", foreign_keys=[primary_submission_id])
+    forward_submission = relationship(
+        "Submission", lazy="subquery", foreign_keys=[forward_submission_id])
+    board = relationship("Board", lazy="subquery")
+
+    def __init__(self, **kwargs):
+        kwargs["created_utc"] = int(time.time())
+        super().__init__(**kwargs)
+
+    def __repr__(self):
+        return f"<ForwardRel(id={self.id}, primary={self.primary_submission_id}, board_id={self.board_id})>"
+
+
+class CommentForwardRelationship(Base):
+    """Tracks which guilds a reply/comment has been promoted into as an
+    independent new post (its own votes/comment thread), quote-tweet
+    style. Unlike ForwardRelationship this has no "primary" content row
+    to point back to on the comment side - comment_id IS the source of
+    truth, and the new Submission carries a link back via this table."""
+
+    __tablename__ = "comment_forwardrels"
+    __table_args__ = (UniqueConstraint('comment_id', 'board_id', name='comment_forward_unique'),)
+    id = Column(BigInteger, primary_key=True)
+    comment_id = Column(Integer, ForeignKey("comments.id"))
+    board_id = Column(Integer, ForeignKey("boards.id"))
+    promoted_submission_id = Column(Integer, ForeignKey("submissions.id"))
+    promoted_by_id = Column(Integer, ForeignKey("users.id"))
+    created_utc = Column(Integer, default=0)
+
+    comment = relationship("Comment", lazy="subquery")
+    promoted_submission = relationship("Submission", lazy="subquery")
+    board = relationship("Board", lazy="subquery")
+
+    def __init__(self, **kwargs):
+        kwargs["created_utc"] = int(time.time())
+        super().__init__(**kwargs)
+
+    def __repr__(self):
+        return f"<CommentForwardRel(id={self.id}, comment={self.comment_id}, board_id={self.board_id})>"
+
 """class PostNotificationSubscriptions(Base):
 
     __tablename__ = "post_notification_subscriptions"

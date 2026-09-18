@@ -18,6 +18,7 @@ from ruqqus.helpers.aws import *
 from ruqqus.classes import *
 from flask import *
 from ruqqus.__main__ import app, limiter
+from .front import frontlist
 
 
 BUCKET=app.config["S3_BUCKET"]
@@ -44,6 +45,8 @@ def comment_cid_api_redirect(cid=None, pid=None):
 
 @app.route("/api/v1/comment/<cid>", methods=["GET"])
 @app.route("/+<guildname>/post/<pid>/<anything>/<cid>", methods=["GET"])
+@app.route("/post/<pid>/<anything>/<cid>", methods=["GET"])
+@app.route("/api/v1/post/<pid>/comment/<cid>", methods=["GET"])
 @app.get("/api/vue/comment/<cid>")
 @app.get("/api/v2/comments/<cid>")
 @auth_desired
@@ -60,19 +63,27 @@ Optional query parameters:
 """
 
     comment = get_comment(cid, v=v)
-    
+
     # prevent api shenanigans
     if not pid:
         pid = base36encode(comment.parent_submission)
-    
+
     post = get_post(pid, v=v)
     board = post.board
-    
+
+    guildname_provided = guildname is not None
     if not guildname:
         guildname = board.name
-    
-    # fix incorrect guildname and pid
-    if (board.name != guildname or comment.parent_submission != post.id) and not request.path.startswith("/api/"):
+
+    # fix incorrect guildname/pid; profile-only posts have no guild segment
+    # in their canonical URL, so a guild-less request for one is already
+    # canonical and must not be redirected (that redirect would just
+    # recompute the same guild-less URL forever)
+    mismatch = comment.parent_submission != post.id
+    wrong_guild = guildname_provided and board.name != guildname
+    missing_guild = not guildname_provided and not post.is_profile_post
+
+    if (mismatch or wrong_guild or missing_guild) and not request.path.startswith("/api/"):
         return redirect(comment.permalink)
 
     if board.is_banned and not (v and v.admin_level > 3):
@@ -253,17 +264,6 @@ Optional query parameters:
     return {'html': lambda: post.rendered_page(v=v, comment=top_comment, comment_info=comment_info),
             'api': lambda: top_comment.json
             }
-
-#if the guild name is missing, add it to the url and redirect
-@app.route("/post/<pid>/<anything>/<cid>", methods=["GET"])
-@app.route("/api/v1/post/<pid>/comment/<cid>", methods=["GET"])
-@auth_desired
-@api("read")
-def post_pid_comment_cid_noboard(pid, cid, anything=None, v=None):
-    comment=get_comment(cid, v=v)
-    
-    return redirect(comment.permalink)
-
 
 @app.route("/api/comment", methods=["POST"])
 @app.route("/api/v1/comment", methods=["POST"])
@@ -735,15 +735,172 @@ URL path parameters:
     if not c.author_id == v.id:
         abort(403)
 
-    c.deleted_utc = int(time.time())
+    now = int(time.time())
+    c.deleted_utc = now
 
     g.db.add(c)
 
+    for promoted in c.promoted_posts:
+        if promoted.is_deleted:
+            continue
+        promoted.deleted_utc = now
+        promoted.is_pinned = False
+        promoted.stickied = False
+        g.db.add(promoted)
+        cache.delete_memoized(Board.idlist, promoted.board)
+        if promoted.age >= 3600 * 6:
+            cache.delete_memoized(Board.idlist, promoted.board, sort="new")
 
     cache.delete_memoized(User.commentlisting, v)
 
     return {"html": lambda: ("", 204),
             "api": lambda: ("", 204)}
+
+
+@app.route("/save_comment/<cid>", methods=["POST"])
+@auth_required
+@validate_formkey
+def save_comment(cid, v):
+
+    comment = get_comment(cid)
+
+    existing = g.db.query(CommentSaveRelationship).filter_by(
+        user_id=v.id, comment_id=comment.id).first()
+
+    if not existing:
+        g.db.add(CommentSaveRelationship(user_id=v.id, comment_id=comment.id, created_utc=int(time.time())))
+        try:
+            g.db.flush()
+        except:
+            abort(422)
+
+    return jsonify({"message": "Reply bookmarked."})
+
+
+@app.route("/unsave_comment/<cid>", methods=["POST"])
+@auth_required
+@validate_formkey
+def unsave_comment(cid, v):
+
+    comment = get_comment(cid)
+
+    existing = g.db.query(CommentSaveRelationship).filter_by(
+        user_id=v.id, comment_id=comment.id).first()
+
+    if existing:
+        g.db.delete(existing)
+
+    return jsonify({"message": "Bookmark removed."})
+
+
+@app.route("/comment/<cid>/repost", methods=["POST"])
+@auth_required
+@validate_formkey
+def repost_comment(cid, v):
+    """Repost a reply to your own profile, Twitter-retweet style - your
+    own replies included, same as retweeting your own tweet to resurface
+    it. This creates no independent copy - votes/thread/authorship all
+    stay on the shared original comment; this just records that it should
+    also appear (with an inline "Repost" tag next to its byline) on the
+    reposter's Replies tab."""
+
+    comment = get_comment(cid)
+
+    if comment.is_banned or comment.deleted_utc or comment.purged_utc:
+        return {"error": "This reply can't be reposted."}, 400
+
+    existing = g.db.query(CommentRepostRelationship).filter_by(
+        user_id=v.id, comment_id=comment.id).first()
+    if existing:
+        return {"error": "You've already reposted this."}, 409
+
+    g.db.add(CommentRepostRelationship(
+        user_id=v.id,
+        comment_id=comment.id,
+        created_utc=int(time.time())
+    ))
+    g.db.commit()
+
+    cache.delete_memoized(User.commentlisting, v)
+
+    return jsonify({"message": "Reposted to your profile."})
+
+
+@app.route("/comment/<cid>/unrepost", methods=["POST"])
+@auth_required
+@validate_formkey
+def unrepost_comment(cid, v):
+
+    comment = get_comment(cid)
+
+    existing = g.db.query(CommentRepostRelationship).filter_by(
+        user_id=v.id, comment_id=comment.id).first()
+
+    if existing:
+        g.db.delete(existing)
+        g.db.commit()
+        cache.delete_memoized(User.commentlisting, v)
+
+    return jsonify({"message": "Repost removed."})
+
+
+@app.route("/comment/<cid>/forward", methods=["POST"])
+@auth_required
+@validate_formkey
+def forward_comment(cid, v):
+    """Promote a reply's text into a brand-new, independent post in a
+    guild (its own votes/comment thread), quote-tweet style - usable by
+    anyone logged in, whether or not they authored the reply. The new
+    post's author stays the reply's original author (they keep delete
+    rights); the target guild's own posting rules are checked against the
+    person doing the promoting, same as forwarding a post.
+
+    URL path parameters:
+    * `cid` - The base 36 id of the reply to promote
+
+    Required form data:
+    * `board` - Name of the guild to promote into
+
+    The new post's title is generated automatically from the reply's own
+    text - there is no user-editable title for a promoted post.
+    """
+    from .posts import create_forward_post_from_comment
+
+    comment = get_comment(cid)
+
+    if comment.is_banned or comment.deleted_utc or comment.purged_utc:
+        return {"error": "This reply can't be promoted."}, 400
+
+    target = get_guild(request.form.get("board", ""), graceful=True)
+    if not target or target.name.lower() == PROFILE_BOARD_NAME:
+        return {"error": "That guild doesn't exist."}, 400
+
+    if target.is_banned:
+        return {"error": f"+{target.name} has been banned."}, 403
+
+    if target.has_ban(v):
+        return {"error": f"Exiled from +{target.name}."}, 403
+
+    if (target.restricted_posting or target.is_private) and not target.can_submit(v):
+        return {"error": f"Not an approved contributor for +{target.name}."}, 403
+
+    existing_count = g.db.query(CommentForwardRelationship).filter_by(
+        comment_id=comment.id).count()
+    if existing_count >= 5:
+        return {"error": "This reply has already been promoted to the maximum of 5 guilds."}, 400
+
+    already = g.db.query(CommentForwardRelationship).filter_by(
+        comment_id=comment.id, board_id=target.id).first()
+    if already:
+        return {"error": f"Already promoted to +{target.name}."}, 409
+
+    new_post = create_forward_post_from_comment(comment, target, v)
+    g.db.commit()
+
+    cache.delete_memoized(frontlist)
+    cache.delete_memoized(Board.idlist, target, sort="new")
+
+    return jsonify(new_post.json)
 
 
 @app.route("/embed/comment/<cid>", methods=["GET"])
@@ -810,6 +967,96 @@ URL path parameters:
         target_comment_id=comment.id
     )
     g.db.add(ma)
+
+    html=render_template(
+                "comments.html",
+                v=v,
+                comments=[comment],
+                render_replies=False,
+                is_allowed_to_comment=True
+                )
+
+    html=str(BeautifulSoup(html, features="html.parser").find(id=f"comment-{comment.base36id}-only"))
+
+    return jsonify({"html":html})
+
+
+@app.route("/mod/hide_comment/<guildname>/<cid>", methods=["POST"])
+@auth_required
+@is_guildmaster("content")
+@api("guildmaster")
+@validate_formkey
+def mod_hide_comment(guildname, cid, board, v):
+    """
+Hide a reply from your guild. The reply itself is untouched - it stays
+visible wherever else its parent post is forwarded; only your guild's
+view of it is hidden here.
+
+URL path parameters:
+* `guildname` - The guild in which you are a guildmaster
+* `cid` - The base 36 comment id
+"""
+
+    comment = get_comment(cid, v=v)
+
+    if comment.post.board_id != board.id:
+        abort(400)
+
+    comment.hidden_by_guild = True
+    g.db.add(comment)
+
+    ma=ModAction(
+        kind="hide_comment_from_guild",
+        user_id=v.id,
+        board_id=board.id,
+        target_comment_id=comment.id
+    )
+    g.db.add(ma)
+    g.db.commit()
+
+    html=render_template(
+                "comments.html",
+                v=v,
+                comments=[comment],
+                render_replies=False,
+                is_allowed_to_comment=True
+                )
+
+    html=str(BeautifulSoup(html, features="html.parser").find(id=f"comment-{comment.base36id}-only"))
+
+    return jsonify({"html":html})
+
+
+@app.route("/mod/unhide_comment/<guildname>/<cid>", methods=["POST"])
+@auth_required
+@is_guildmaster("content")
+@api("guildmaster")
+@validate_formkey
+def mod_unhide_comment(guildname, cid, board, v):
+    """
+Un-hide a reply that was previously hidden from your guild.
+
+URL path parameters:
+* `guildname` - The guild in which you are a guildmaster
+* `cid` - The base 36 comment id
+"""
+
+    comment = get_comment(cid, v=v)
+
+    if comment.post.board_id != board.id:
+        abort(400)
+
+    comment.hidden_by_guild = False
+    g.db.add(comment)
+
+    ma=ModAction(
+        kind="unhide_comment_from_guild",
+        user_id=v.id,
+        board_id=board.id,
+        target_comment_id=comment.id
+    )
+    g.db.add(ma)
+    g.db.commit()
 
     html=render_template(
                 "comments.html",

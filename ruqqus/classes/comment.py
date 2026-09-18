@@ -14,6 +14,20 @@ from .flags import CommentFlag
 from .badwords import *
 
 
+def _render_comment_markdown(raw):
+    """Render a raw markdown fragment through the same pipeline used for
+    posts/comments (deferred imports - these helpers pull in ruqqus.classes
+    via .get, which would circular-import if done at module load time)."""
+    from ruqqus.helpers.markdown import preprocess, CustomRenderer
+    from ruqqus.helpers.sanitize import sanitize
+    import mistletoe
+
+    text = preprocess(raw)
+    with CustomRenderer() as renderer:
+        md = renderer.render(mistletoe.Document(text))
+    return sanitize(md, linkgen=True)
+
+
 class CommentAux(Base):
 
     __tablename__ = "comments_aux"
@@ -66,6 +80,7 @@ class Comment(Base, Age_times, Scores, Stndrd, Fuzzing):
     is_nsfl = Column(Boolean, default=False)
     is_bot = Column(Boolean, default=False)
     is_pinned = Column(Boolean, default=False)
+    hidden_by_guild = Column(Boolean, default=False)
     creation_region=Column(String(2), default=None)
 
     app_id = Column(Integer, ForeignKey("oauth_apps.id"), default=None)
@@ -189,6 +204,15 @@ class Comment(Base, Age_times, Scores, Stndrd, Fuzzing):
     def permalink(self):
 
         return f"{self.post.permalink}/{self.base36id}"
+
+    @property
+    def promoted_posts(self):
+        """Independent posts created by promoting this reply (see
+        CommentForwardRelationship), one per guild it's been promoted to."""
+        from .board_relationships import CommentForwardRelationship
+        rels = g.db.query(CommentForwardRelationship).filter_by(
+            comment_id=self.id).order_by(CommentForwardRelationship.created_utc.asc()).all()
+        return [r.promoted_submission for r in rels]
 
     @property
     def any_descendants_live(self):
@@ -370,6 +394,14 @@ class Comment(Base, Age_times, Scores, Stndrd, Fuzzing):
         return self.__dict__.get('_is_blocked', 0)
 
     @property
+    def saved(self):
+        return bool(self.__dict__.get('_saved', False))
+
+    @property
+    def reposted(self):
+        return bool(self.__dict__.get('_reposted', False))
+
+    @property
     def body(self):
         return self.comment_aux.body
 
@@ -386,6 +418,31 @@ class Comment(Base, Age_times, Scores, Stndrd, Fuzzing):
     def body_html(self, x):
         self.comment_aux.body_html = x
         g.db.add(self.comment_aux)
+
+    @property
+    @lazy
+    def is_long(self):
+        from bs4 import BeautifulSoup
+        plain = BeautifulSoup(self.body_html or "", "html.parser").get_text()
+        return len(plain) > 280
+
+    @property
+    @lazy
+    def preview_body_html(self):
+        if not self.is_long:
+            return self.body_html
+        from ruqqus.helpers.text import split_title_body
+        preview_raw, _ = split_title_body(self.body or "", max_title=280)
+        return _render_comment_markdown(preview_raw)
+
+    @property
+    @lazy
+    def overflow_body_html(self):
+        if not self.is_long:
+            return None
+        from ruqqus.helpers.text import split_title_body
+        _, overflow_raw = split_title_body(self.body or "", max_title=280)
+        return _render_comment_markdown(overflow_raw) if overflow_raw else None
 
     @property
     def ban_reason(self):
@@ -535,3 +592,30 @@ class Notification(Base):
     @property
     def created_utc(self):
         return self.target.created_utc
+
+
+class CommentSaveRelationship(Base, Stndrd):
+
+    __tablename__ = "comment_save_relationship"
+    __table_args__ = (UniqueConstraint('user_id', 'comment_id', name='comment_save_constraint'),)
+
+    id = Column(Integer, primary_key=True)
+    user_id = Column(Integer, ForeignKey("users.id"))
+    comment_id = Column(Integer, ForeignKey("comments.id"))
+    created_utc = Column(Integer, default=0)
+
+
+class CommentRepostRelationship(Base, Stndrd):
+    """Comment analog of Submission's RepostRelationship - Twitter-retweet
+    style pointer, no independent copy. Lets a reposted comment appear
+    on the reposter's Replies tab (with an inline "Repost" tag next to its
+    normal "by <author>" byline), ordered by repost time, and be
+    un-reposted."""
+
+    __tablename__ = "comment_repost_relationship"
+    __table_args__ = (UniqueConstraint('user_id', 'comment_id', name='comment_repost_unique'),)
+
+    id = Column(Integer, primary_key=True)
+    user_id = Column(Integer, ForeignKey("users.id"))
+    comment_id = Column(Integer, ForeignKey("comments.id"))
+    created_utc = Column(Integer, default=0)

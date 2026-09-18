@@ -530,6 +530,17 @@ function collapse_comment(comment_id) {
 
 };
 
+// Toggle a long comment's collapsed overflow text
+function toggleCommentOverflow(comment_id, linkEl) {
+
+  var overflow = document.getElementById("comment-overflow-" + comment_id);
+  var expanded = !overflow.classList.contains("d-none");
+
+  overflow.classList.toggle("d-none");
+  linkEl.textContent = expanded ? "Show more" : "Show less";
+
+};
+
 // Text Area Input handling
 
 function textAreaOnKeyDown(e, func){
@@ -989,6 +1000,156 @@ $('#reportPostModal').on('hidden.bs.modal', function () {
 
 });
 
+// Forward Post
+
+forward_postModal = function(id) {
+
+  var input = document.getElementById('forward-guild-name');
+  input.value = '';
+
+  var errorBox = document.getElementById('forwardPostError');
+  errorBox.classList.add('d-none');
+  errorBox.textContent = '';
+
+  var submitbutton = document.getElementById("forwardPostButton");
+  submitbutton.disabled = false;
+  submitbutton.innerHTML = 'Forward';
+
+  submitbutton.onclick = function() {
+
+    var name = input.value.trim().replace(/^\+/, '');
+    if (!name) { return; }
+
+    this.innerHTML='<span class="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true"></span>Forwarding';
+    this.disabled = true;
+
+    var xhr = new XMLHttpRequest();
+    xhr.open("POST", '/post/'+id+'/forward', true);
+    var form = new FormData();
+    form.append("formkey", formkey());
+    form.append("board", name);
+    xhr.withCredentials = true;
+
+    var thisButton = this;
+
+    xhr.onload = function() {
+      if (xhr.status >= 200 && xhr.status < 300) {
+        document.getElementById("forwardPostFormBefore").classList.add('d-none');
+        document.getElementById("forwardPostFormAfter").classList.remove('d-none');
+        window.location.reload(true);
+      } else {
+        var data;
+        try { data = JSON.parse(xhr.response); } catch(e) { data = {}; }
+        errorBox.textContent = data.error || 'Unable to forward this post.';
+        errorBox.classList.remove('d-none');
+        thisButton.disabled = false;
+        thisButton.innerHTML = 'Forward';
+      }
+    };
+    xhr.onerror = function() {
+      errorBox.textContent = 'Unable to forward this post.';
+      errorBox.classList.remove('d-none');
+      thisButton.disabled = false;
+      thisButton.innerHTML = 'Forward';
+    };
+    xhr.send(form);
+  };
+};
+
+$('#forwardPostModal').on('hidden.bs.modal', function () {
+
+  var button = document.getElementById("forwardPostButton");
+
+  var beforeModal = document.getElementById("forwardPostFormBefore");
+  var afterModal = document.getElementById("forwardPostFormAfter");
+
+  button.innerHTML='Forward';
+  button.disabled= false;
+
+  afterModal.classList.add('d-none');
+
+  if ( beforeModal.classList.contains('d-none') ) {
+    beforeModal.classList.remove('d-none');
+  }
+
+  document.getElementById('forwardPostError').classList.add('d-none');
+
+});
+
+forward_commentModal = function(id) {
+
+  var guildInput = document.getElementById('promote-guild-name');
+  guildInput.value = '';
+
+  var errorBox = document.getElementById('forwardCommentError');
+  errorBox.classList.add('d-none');
+  errorBox.textContent = '';
+
+  var submitbutton = document.getElementById("forwardCommentButton");
+  submitbutton.disabled = false;
+  submitbutton.innerHTML = 'Promote';
+
+  submitbutton.onclick = function() {
+
+    var name = guildInput.value.trim().replace(/^\+/, '');
+    if (!name) { return; }
+
+    this.innerHTML='<span class="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true"></span>Promoting';
+    this.disabled = true;
+
+    var xhr = new XMLHttpRequest();
+    xhr.open("POST", '/comment/'+id+'/forward', true);
+    var form = new FormData();
+    form.append("formkey", formkey());
+    form.append("board", name);
+    xhr.withCredentials = true;
+
+    var thisButton = this;
+
+    xhr.onload = function() {
+      if (xhr.status >= 200 && xhr.status < 300) {
+        document.getElementById("forwardCommentFormBefore").classList.add('d-none');
+        document.getElementById("forwardCommentFormAfter").classList.remove('d-none');
+        window.location.reload(true);
+      } else {
+        var data;
+        try { data = JSON.parse(xhr.response); } catch(e) { data = {}; }
+        errorBox.textContent = data.error || 'Unable to promote this reply.';
+        errorBox.classList.remove('d-none');
+        thisButton.disabled = false;
+        thisButton.innerHTML = 'Promote';
+      }
+    };
+    xhr.onerror = function() {
+      errorBox.textContent = 'Unable to promote this reply.';
+      errorBox.classList.remove('d-none');
+      thisButton.disabled = false;
+      thisButton.innerHTML = 'Promote';
+    };
+    xhr.send(form);
+  };
+};
+
+$('#forwardCommentModal').on('hidden.bs.modal', function () {
+
+  var button = document.getElementById("forwardCommentButton");
+
+  var beforeModal = document.getElementById("forwardCommentFormBefore");
+  var afterModal = document.getElementById("forwardCommentFormAfter");
+
+  button.innerHTML='Promote';
+  button.disabled = false;
+
+  afterModal.classList.add('d-none');
+
+  if ( beforeModal.classList.contains('d-none') ) {
+    beforeModal.classList.remove('d-none');
+  }
+
+  document.getElementById('forwardCommentError').classList.add('d-none');
+
+});
+
 //enlarge thumbs
 // Enlarge submissionlisting thumbnail
 
@@ -1045,48 +1206,14 @@ function kExec(){
  $('input').addClass('ruckus');
 };
 
-//Post kick
-
-kick_postModal = function(id) {
-
-  document.getElementById("kickPostButton").onclick = function() {
-
-    this.innerHTML='<span class="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true"></span>kicking post';
-    this.disabled = true;
-    post('/api/flag/post/' + id,
-      callback = function() {
-
-        location.reload();
-      }
-      )
-  }
-};
-
-$('#kickPostModal').on('hidden.bs.modal', function () {
-
-  var button = document.getElementById("kickPostButton");
-
-  var beforeModal = document.getElementById("kickPostFormBefore");
-  var afterModal = document.getElementById("kickPostFormAfter");
-
-  button.innerHTML='kick post';
-  button.disabled= false;
-
-  afterModal.classList.add('d-none');
-
-  if ( beforeModal.classList.contains('d-none') ) {
-    beforeModal.classList.remove('d-none');
-  }
-
-});
-
 $('.kick-button-listing').click(function(event) {
   if (event.which != 1) {return}
 
   boardname=$(this).data('boardname')
   pid=$(this).data('pid')
+  action=$(this).data('hidden')=='true' ? 'unhide' : 'kick'
 
-  post_response('/mod/kick/'+ boardname+'/'+pid, callback=function(xhr){
+  post_response('/mod/'+action+'/'+ boardname+'/'+pid, callback=function(xhr){
     $("#post-"+pid).replaceWith(JSON.parse(xhr.response)['data'])
       }
     )
@@ -1631,55 +1758,6 @@ function vote_comment(comment_id, direction) {
   post(url, callback, "Unable to vote at this time. Please try again later.");
 }
 
-// Yank Post
-
-function yank_postModal(id, author, comments, title, author_link, domain, timestamp) {
-
-  // Passed data for modal
-
-  document.getElementById("post-author-url").innerText = author;
-
-  document.getElementById("post-comments").textContent = comments;
-
-  document.getElementById("post-title").textContent = title;
-
-  document.getElementById("post-author-url").href = author_link;
-
-  document.getElementById("post-domain").textContent = domain;
-
-  document.getElementById("post-timestamp").textContent = timestamp;
-
-
-  document.getElementById("yank-post-form").action="/mod/take/"+id;
-  
-
-  document.getElementById("yankPostButton").onclick = function() {  
-
-
-    var yankError = document.getElementById("toast-error-message");
-
-
-
-    var xhr = new XMLHttpRequest();
-    xhr.open("post", "/mod/take/"+id);
-    xhr.withCredentials=true;
-    f=new FormData();
-    f.append("formkey", formkey());
-    f.append("board_id", document.getElementById('yank-type-dropdown').value)
-    xhr.onload=function(){
-      if (xhr.status==204) {
-        window.location.reload(true);
-      }
-      else {
-        $('#toast-invite-error').toast('dispose');
-        $('#toast-invite-error').toast('show');
-        yankError.textContent = JSON.parse(xhr.response)["error"];
-      }
-    }
-    xhr.send(f);
-  }
-};
-
 //yt embed
 
 function getId(url) {
@@ -1843,6 +1921,43 @@ function charLimit(form, text) {
 
 }
 
+// Two-stage character counter for the single-box post composer: counts
+// down toward the 280-character title cutoff first, then switches to
+// counting down the remaining body budget (25000) once past it.
+function submitCharLimit() {
+
+  var content = document.getElementById("content");
+
+  var counter = document.getElementById("character-count-submit-form");
+
+  var length = content.value.length;
+
+  if (length <= 280) {
+
+    var remaining = 280 - length;
+
+    counter.innerText = remaining;
+
+    counter.style.color = remaining <= 280 * .28 ? "#FFC107" : "#A0AEC0";
+
+  } else {
+
+    var bodyRemaining = 25000 - (length - 280);
+
+    counter.innerText = bodyRemaining;
+
+    if (bodyRemaining <= 0) {
+      counter.style.color = "#E53E3E";
+    } else if (bodyRemaining <= 25000 * .28) {
+      counter.style.color = "#FFC107";
+    } else {
+      counter.style.color = "#A0AEC0";
+    }
+
+  }
+
+}
+
 // Mobile bottom navigation bar
 
 window.onload = function () {
@@ -1938,59 +2053,35 @@ function checkForRequired() {
 
 // Divs
 
-var title = document.getElementById("post-title");
+var content = document.getElementById("content");
 
 var url = document.getElementById("post-URL");
 
-var text = document.getElementById("post-text");
-
 var button = document.getElementById("create_button");
-
-var image = document.getElementById("file-upload");
-
-// Toggle reuqired attribute
-
-if (url.value.length > 0 || image.value.length > 0) {
-  text.required = false;
-  url.required=false;
-} else if (text.value.length > 0 || image.value.length > 0) {
-  url.required = false;
-} else {
-  text.required = true;
-  url.required = true;
-}
 
 // Validity check
 
-var isValidTitle = title.checkValidity();
+var isValidContent = content.checkValidity();
 
 var isValidURL = url.checkValidity();
 
-var isValidText = text.checkValidity();
-
 // Disable submit button if invalid inputs
 
-if (isValidTitle && (isValidURL || image.value.length>0)) {
-  button.disabled = false;
-} else if (isValidTitle && isValidText) {
-  button.disabled = false;
-} else {
-  button.disabled = true;
-}
+button.disabled = !(isValidContent && isValidURL);
 
 }
 
-// Auto-suggest title given URL
+// Auto-suggest content given URL
 
 function autoSuggestTitle()  {
 
   var urlField = document.getElementById("post-URL");
 
-  var titleField = document.getElementById("post-title");
+  var contentField = document.getElementById("content");
 
   var isValidURL = urlField.checkValidity();
 
-  if (isValidURL && urlField.value.length > 0 && titleField.value === "") {
+  if (isValidURL && urlField.value.length > 0 && contentField.value === "") {
 
     var x = new XMLHttpRequest();
     x.withCredentials=true;
@@ -1998,8 +2089,9 @@ function autoSuggestTitle()  {
       if (x.readyState == 4 && x.status == 200) {
 
         title=JSON.parse(x.responseText)["title"];
-        titleField.value=title;
+        contentField.value=title;
 
+        submitCharLimit();
         checkForRequired()
       }
     }

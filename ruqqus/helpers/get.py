@@ -147,6 +147,10 @@ def get_post(pid, v=None, graceful=False, nSession=None, no_text=False, **kwargs
         blocked = select(UserBlock).filter_by(target_id=v.id).subquery()
         sub = select(Subscription).filter_by(user_id=v.id, is_active=True).subquery()
         st = select(SaveRelationship).filter_by(user_id=v.id, submission_id=i).subquery()
+        # not filtered to `i` like the others - a repost is recorded against
+        # the primary post's id, but `i` may be one of its forward-copies, so
+        # the join below resolves through repost_id to match either way
+        rp = select(RepostRelationship).filter_by(user_id=v.id).subquery()
 
         items = nSession.query(
             Submission,
@@ -156,11 +160,12 @@ def get_post(pid, v=None, graceful=False, nSession=None, no_text=False, **kwargs
             blocking.c.id,
             blocked.c.id,
             aliased(Subscription, alias=sub),
-            st.c.id
+            st.c.id,
+            rp.c.id
             # aliased(ModAction, alias=exile)
         ).options(
             lazyload('*'),
-            joinedload(Submission.submission_aux),
+            lazyload(Submission.submission_aux) if no_text else joinedload(Submission.submission_aux),
             joinedload(Submission.author).joinedload(User.title),
             Load(Board).lazyload('*'),
             joinedload(Submission.board),
@@ -171,9 +176,6 @@ def get_post(pid, v=None, graceful=False, nSession=None, no_text=False, **kwargs
             joinedload(Submission.reposts).lazyload('*'),
             Load(AwardRelationship).lazyload('*')
         )
-        
-        if no_text:
-            items=items.options(lazyload(Submission.submission_aux))
 
         if v.admin_level>=4:
             items=items.options(joinedload(Submission.oauth_app))
@@ -207,6 +209,10 @@ def get_post(pid, v=None, graceful=False, nSession=None, no_text=False, **kwargs
             st,
             st.c.submission_id == Submission.id,
             isouter=True
+        ).join(
+            rp,
+            rp.c.submission_id == func.coalesce(func.nullif(Submission.repost_id, 0), Submission.id),
+            isouter=True
         # ).join(
         #     exile,
         #     and_(exile.c.target_submission_id==Submission.id, exile.c.board_id==Submission.original_board_id),
@@ -224,6 +230,7 @@ def get_post(pid, v=None, graceful=False, nSession=None, no_text=False, **kwargs
         x._is_blocked = items[5] or 0
         x.board._is_subscribed=items[6] or 0
         x._saved = items[7] or 0
+        x._reposted = items[8] or 0
         # x._is_exiled_for=items[5] or 0
 
     else:
@@ -291,6 +298,13 @@ def get_posts(pids, sort="hot", v=None):
             SaveRelationship.submission_id.in_(pids),
             SaveRelationship.user_id == v.id
         ).subquery()
+        # not filtered to `pids` like the others - a repost is recorded
+        # against the primary post's id, but a pid here may be one of its
+        # forward-copies, so the join below resolves through repost_id to
+        # match either way
+        rp = select(RepostRelationship).filter(
+            RepostRelationship.user_id == v.id
+        ).subquery()
 
         query = g.db.query(
             Submission,
@@ -300,7 +314,8 @@ def get_posts(pids, sort="hot", v=None):
             blocking.c.id,
             blocked.c.id,
             subs.c.id,
-            st.c.id
+            st.c.id,
+            rp.c.id
             # aliased(ModAction, alias=exile)
         ).options(
             lazyload('*'),
@@ -343,6 +358,10 @@ def get_posts(pids, sort="hot", v=None):
             st,
             st.c.submission_id == Submission.id,
             isouter=True
+        ).join(
+            rp,
+            rp.c.submission_id == func.coalesce(func.nullif(Submission.repost_id, 0), Submission.id),
+            isouter=True
         # ).join(
         #     exile,
         #     and_(exile.c.target_submission_id==Submission.id, exile.c.board_id==Submission.original_board_id),
@@ -361,6 +380,7 @@ def get_posts(pids, sort="hot", v=None):
             output[i]._is_subscribed = posts[i][6] or 0
             output[i].board._is_subscribed=posts[i][6] or 0
             output[i]._saved = posts[i][7] or 0
+            output[i]._reposted = posts[i][8] or 0
             # output[i]._is_exiled_for=posts[i][7] or 0
     else:
         query = g.db.query(
@@ -413,12 +433,17 @@ def get_post_with_comments(pid, sort_type="top", v=None):
 
         blocked = v.blocked.subquery()
 
+        st = select(CommentSaveRelationship).filter_by(user_id=v.id).subquery()
+        rp = select(CommentRepostRelationship).filter_by(user_id=v.id).subquery()
+
         comms = g.db.query(
             Comment,
             votes.c.vote_type,
             blocking.c.id,
             blocked.c.id,
-            aliased(ModAction, alias=exile)
+            aliased(ModAction, alias=exile),
+            st.c.id,
+            rp.c.id
         ).options(
             lazyload('*'),
             joinedload(Comment.comment_aux),
@@ -459,6 +484,14 @@ def get_post_with_comments(pid, sort_type="top", v=None):
             exile,
             and_(exile.c.target_comment_id==Comment.id, exile.c.board_id==Comment.original_board_id),
             isouter=True
+        ).join(
+            st,
+            st.c.comment_id == Comment.id,
+            isouter=True
+        ).join(
+            rp,
+            rp.c.comment_id == Comment.id,
+            isouter=True
         )
 
         if sort_type == "hot":
@@ -485,6 +518,8 @@ def get_post_with_comments(pid, sort_type="top", v=None):
             comment._is_blocked = c[3] or 0
             comment._is_guildmaster=post._is_guildmaster
             comment._is_exiled_for=c[4]
+            comment._saved = c[5] or 0
+            comment._reposted = c[6] or 0
             output.append(comment)
         post._preloaded_comments = output
 
@@ -574,15 +609,21 @@ def get_comment(cid, nSession=None, v=None, graceful=False, no_text=False, **kwa
             accepted=True
             ).subquery()
 
+        st = nSession.query(CommentSaveRelationship).filter_by(
+            user_id=v.id, comment_id=i).subquery()
+        rp = nSession.query(CommentRepostRelationship).filter_by(
+            user_id=v.id, comment_id=i).subquery()
 
         items = nSession.query(
-            Comment, 
+            Comment,
             vt.c.vote_type,
             aliased(ModRelationship, alias=mod),
-            aliased(ModAction, alias=exile)
+            aliased(ModAction, alias=exile),
+            st.c.id,
+            rp.c.id
         ).options(
             lazyload('*'),
-            joinedload(Comment.comment_aux),
+            lazyload(Comment.comment_aux) if no_text else joinedload(Comment.comment_aux),
             joinedload(Comment.author).joinedload(User.title),
             joinedload(Comment.post).lazyload('*'),
             joinedload(Comment.post).joinedload(Submission.submission_aux),
@@ -595,9 +636,6 @@ def get_comment(cid, nSession=None, v=None, graceful=False, no_text=False, **kwa
             Load(Board).lazyload('*'),
             Load(AwardRelationship).lazyload('*')
         )
-        
-        if no_text:
-            items=items.options(lazyload(Comment.comment_aux))
 
         if v.admin_level >=4:
             items=items.options(joinedload(Comment.oauth_app))
@@ -619,6 +657,14 @@ def get_comment(cid, nSession=None, v=None, graceful=False, no_text=False, **kwa
             exile,
             and_(exile.c.target_comment_id==Comment.id, exile.c.board_id==Comment.original_board_id),
             isouter=True
+        ).join(
+            st,
+            st.c.comment_id == Comment.id,
+            isouter=True
+        ).join(
+            rp,
+            rp.c.comment_id == Comment.id,
+            isouter=True
         ).first()
 
         if not items and not graceful:
@@ -628,6 +674,8 @@ def get_comment(cid, nSession=None, v=None, graceful=False, no_text=False, **kwa
         x._voted = items[1] or 0
         x._is_guildmaster=items[2] or 0
         x._is_exiled_for=items[3] or 0
+        x._saved = items[4] or 0
+        x._reposted = items[5] or 0
 
         block = nSession.query(UserBlock).filter(
             or_(
@@ -693,13 +741,24 @@ def get_comments(cids, v=None, nSession=None, sort_type=None,
 
         mod = g.db.query(ModRelationship).filter_by(user_id=v.id, accepted=True).subquery()
 
+        st = nSession.query(CommentSaveRelationship).filter(
+            CommentSaveRelationship.comment_id.in_(cids),
+            CommentSaveRelationship.user_id == v.id
+        ).subquery()
+        rp = nSession.query(CommentRepostRelationship).filter(
+            CommentRepostRelationship.comment_id.in_(cids),
+            CommentRepostRelationship.user_id == v.id
+        ).subquery()
+
         comms = nSession.query(
             Comment,
             votes.c.vote_type,
             blocking.c.id,
             blocked.c.id,
             aliased(ModAction, alias=exile),
-            aliased(ModRelationship, alias=mod)
+            aliased(ModRelationship, alias=mod),
+            st.c.id,
+            rp.c.id
         ).options(
             lazyload('*'),
             joinedload(Comment.comment_aux),
@@ -744,6 +803,14 @@ def get_comments(cids, v=None, nSession=None, sort_type=None,
             mod,
             mod.c.board_id==Comment.original_board_id,
             isouter=True
+        ).join(
+            st,
+            st.c.comment_id == Comment.id,
+            isouter=True
+        ).join(
+            rp,
+            rp.c.comment_id == Comment.id,
+            isouter=True
         )
 
         if sort_type == "hot":
@@ -768,9 +835,11 @@ def get_comments(cids, v=None, nSession=None, sort_type=None,
             comment._voted = c[1] or 0
             comment._is_blocking = c[2] or 0
             comment._is_blocked = c[3] or 0
-            
+
             comment._is_exiled_for=c[4]
             comment._is_guildmaster=c[5] or None
+            comment._saved = c[6] or 0
+            comment._reposted = c[7] or 0
             output.append(comment)
 
     else:
