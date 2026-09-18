@@ -1,4 +1,6 @@
 from os import environ
+import gevent
+import requests
 DOMAIN=environ.get("SERVER_NAME",environ.get("domain")).lstrip().rstrip()
 
 SERVER_ID = environ.get("DISCORD_SERVER_ID",'').rstrip()
