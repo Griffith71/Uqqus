@@ -88,10 +88,28 @@
 
                         <input type="hidden" name="formkey" value="{{ v.formkey }}">
 
-                        <div id="urlblock">
-                            <label for="URL">URL</label>
-                            <input class="form-control" id="post-URL" aria-describedby="URLHelp" type="url" name="url" placeholder="Optional" value="{{ request.args.get('url','') }}" oninput="checkForRequired();hide_image()" onchange="autoSuggestTitle();">
-                            <small class="form-text text-muted">To post an image, use a direct image link such as i.imgur.com</small>
+                        <label for="post-title" class="sr-only">Title</label>
+                        <div class="position-relative">
+                            <textarea id="post-title" name="title" class="form-control rounded title-writer" rows="1" wrap="off" placeholder="Title" aria-label="Post title" oninput="syncTitleOverflow();checkForRequired()" onkeydown="if(event.key==='Enter'){event.preventDefault();openBody();}" minlength="1" required>{{ title }}</textarea>
+                            <span class="position-absolute text-small font-weight-bold" id="character-count-title" style="right: 0; top: 0.5rem;"></span>
+                        </div>
+
+                        {% set prefill_url = url if url is defined else request.args.get('url','') %}
+                        <div class="mt-2">
+                            <input type="text" id="post-URL" name="url" class="d-none" value="{{ prefill_url }}">
+                            <button type="button" id="title-link-btn" class="btn btn-sm btn-secondary{% if prefill_url %} d-none{% endif %}" onclick="attachLink()">
+                                <i class="fas fa-link mr-1"></i>Add link
+                            </button>
+                            <span id="title-link-chip" class="badge badge-pill badge-light border p-2{% if not prefill_url %} d-none{% endif %}">
+                                <i class="fas fa-link mr-1"></i><span id="title-link-chip-text">{{ prefill_url }}</span>
+                                <a href="javascript:void(0)" class="text-muted ml-2" onclick="removeAttachedLink()"><i class="fas fa-times"></i></a>
+                            </span>
+                            <button type="button" class="btn btn-sm btn-secondary" id="gif-title-btn" onclick="getGif();commentForm('post-title')" data-toggle="modal" data-target="#gifModal">
+                                <span class="font-weight-bolder text-uppercase">GIF</span>
+                            </button>
+                            <button type="button" class="btn btn-sm btn-secondary" id="emoji-title-btn" onclick="commentForm('post-title');loadEmojis()" data-toggle="modal" data-target="#emojiModal">
+                                <i class="fas fa-smile-beam"></i>
+                            </button>
                         </div>
 
                         <div {% if not v.can_submit_image %} class="d-none"{% else %} ondrop="event.preventDefault();let input=document.getElementById('file-upload');input.files=event.dataTransfer.files;input.onchange();" ondragover="event.preventDefault();"{% endif %}>
@@ -123,19 +141,40 @@
                         {% endif %}
                         </div>
 
-                        <label for="content" class="mt-3">Post<i class="fas fa-info-circle text-gray-400 ml-1" data-toggle="tooltip" data-placement="top" title="Uses markdown. The first 280 characters become your post's title; anything past that is the collapsed body, just like a reply."></i></label>
+                        <a href="javascript:void(0)" id="add-body-link" class="d-inline-block mt-3 text-muted{% if body %} d-none{% endif %}" onclick="openBody()">
+                            <i class="fas fa-plus mr-1"></i>Add body text
+                        </a>
 
-                        <div class="input-group">
+                        <div id="body-write" class="comment-write mt-2{% if not body %} d-none{% endif %}{% if body %} collapsed{% endif %}">
+                            <div class="input-group">
 
-                            <textarea form="submitform" id="content" class="form-control rounded" aria-label="With textarea" placeholder="What's happening?" rows="5" name="content" oninput="submitCharLimit();checkForRequired()" minlength="1" maxlength="25280" required>{{ text }}</textarea>
+                                <textarea form="submitform" id="post-body" name="body" class="comment-box form-control rounded" aria-label="Post body" placeholder="Say more..." rows="5" oninput="charLimit('post-body','character-count-body');checkForRequired()" maxlength="25000">{{ body }}</textarea>
 
-                            <span class="position-absolute text-small font-weight-bold" id="character-count-submit-form" style="right: 1rem; bottom: 0.5rem; z-index: 3;"></span>
+                                <span class="position-absolute text-small font-weight-bold" id="character-count-body" style="right: 1rem; bottom: 0.5rem; z-index: 3;"></span>
 
-                            <div class="bg-light text-format d-none">
-                                <small class="format"><i class="fas fa-bold"></i></small>
-                                <small class="format"><i class="fas fa-italic"></i></small>
-                                <small class="format"><i class="fas fa-quote-right"></i></small>
-                                <small class="format"><i class="fas fa-link"></i></small>
+                                <div class="comment-format">
+                                    <small class="format pl-0"><i class="fas fa-bold" onclick="makeBold('post-body')" data-toggle="tooltip" data-placement="bottom" title="Bold"></i></small>
+                                    <small class="format"><i class="fas fa-italic" onclick="makeItalics('post-body')" data-toggle="tooltip" data-placement="bottom" title="Italicize"></i></small>
+                                    <small class="format"><i class="fas fa-strikethrough" onclick="makeStrikethrough('post-body')" data-toggle="tooltip" data-placement="bottom" title="Strikethrough"></i></small>
+                                    <small class="format"><i class="fas fa-quote-right" onclick="makeQuote('post-body')" data-toggle="tooltip" data-placement="bottom" title="Quote"></i></small>
+                                    <small class="format"><i class="fas fa-link" onclick="makeLink('post-body')" data-toggle="tooltip" data-placement="bottom" title="Link"></i></small>
+                                    <small class="format"><i class="fas fa-list-ul" onclick="makeBulletList('post-body')" data-toggle="tooltip" data-placement="bottom" title="Bulleted list"></i></small>
+                                    <small class="format"><i class="fas fa-list-ol" onclick="makeNumberedList('post-body')" data-toggle="tooltip" data-placement="bottom" title="Numbered list"></i></small>
+                                    <small class="format"><i class="fas fa-code" onclick="makeCode('post-body')" data-toggle="tooltip" data-placement="bottom" title="Code"></i></small>
+                                    <small class="format"><i class="fas fa-eye-slash" onclick="makeSpoiler('post-body')" data-toggle="tooltip" data-placement="bottom" title="Spoiler"></i></small>
+                                    <label class="btn btn-secondary format d-inline-block m-0" for="gif-post-btn">
+                                        <span id="gif-post-btn" class="font-weight-bolder text-uppercase" onclick="getGif();commentForm('post-body')" data-toggle="modal" data-target="#gifModal" data-placement="bottom" title="Add GIF">GIF</span>
+                                    </label>
+                                    &nbsp;
+                                    <label class="btn btn-secondary format d-inline-block m-0" for="emoji-post-btn">
+                                        <i id="emoji-post-btn" class="fas fa-smile-beam" onclick="commentForm('post-body');loadEmojis()" data-toggle="modal" data-target="#emojiModal" data-placement="bottom" title="Add EMOJI"></i>
+                                    </label>
+                                    &nbsp;
+                                    <label class="format btn btn-secondary m-0 ml-1 {% if v.can_upload_comment_image %}d-inline-block{% else %}d-none{% endif %}" for="body-image-upload">
+                                        <div id="body-image-filename-show"><i class="far fa-image"></i></div>
+                                        <input id="body-image-upload" type="file" name="body_image" accept="image/*" onchange="document.getElementById('body-image-filename-show').innerHTML=this.files[0].name;" hidden>
+                                    </label>
+                                </div>
                             </div>
                         </div>
 
@@ -151,11 +190,11 @@
                             </div>
                         </div>
 
-                        <label for="over_18" class="text-danger mt-3">NSFW?</label>
+                        <label for="sensitive" class="text-warning mt-3">Sensitive Content?<i class="fas fa-info-circle text-gray-400 ml-1" data-toggle="tooltip" data-placement="top" title="Not a rule violation - just something that could be upsetting. Shown blurred with a click-to-reveal instead of being blocked."></i></label>
 
                         <div class="custom-control custom-checkbox">
-                            <input type="checkbox" class="custom-control-input" id="nsfwCheck" name="over_18"{% if b and b.over_18 %} checked disabled {% endif %}>
-                            <label class="custom-control-label" for="nsfwCheck">This post contains adult material.</label>
+                            <input type="checkbox" class="custom-control-input" id="sensitiveCheck" name="sensitive"{% if b and b.is_sensitive %} checked disabled {% endif %}>
+                            <label class="custom-control-label" for="sensitiveCheck">Blur this post until viewers click to reveal it.</label>
                         </div>
 
 
@@ -248,7 +287,7 @@
 
     <!-- Ruqqus JS -->
 
-    <script src="/assets/js/all_js.js?v=2.38.0"></script>
+    <script src="/assets/js/all_js.js?v=2.39.0"></script>
 
     <!-- ClipboardJS -->
 
@@ -327,9 +366,20 @@
     {% elif b %}
     forwardGuilds.push("{{ b.name | js_str_escape }}");
     {% endif %}
-    renderForwardGuildChips();
-    submitCharLimit();
-    checkForRequired();
+
+    // This whole init block is specific to the post-composer fields below -
+    // make_board.html extends this template but overrides the form with its
+    // own guild-creation fields, so none of these elements exist there.
+    if (document.getElementById('post-title')) {
+        renderForwardGuildChips();
+        syncTitleOverflow();
+        checkForRequired();
+        if (document.getElementById('post-URL').value) {
+            showAttachedLinkChip(document.getElementById('post-URL').value);
+            hide_image();
+            autoSuggestTitle();
+        }
+    }
     </script>
 
     {% if v.can_submit_image %}
@@ -344,7 +394,6 @@
         {
             f.files = files;
             $('#filename-show').text(filename);
-            $('#urlblock').addClass('d-none');
 
             var fileReader = new FileReader();
             fileReader.readAsDataURL(f.files[0]);
@@ -360,7 +409,6 @@
 
     $('#file-upload').on('change', function(e){
         f=document.getElementById('file-upload');
-        $('#urlblock').addClass('d-none');
         $('#filename-show').text($('#file-upload')[0].files[0].name);
 
         var fileReader = new FileReader();
@@ -372,6 +420,11 @@
         checkForRequired();
     })
     </script>
+    {% endif %}
+
+    {% if v %}
+    {% include "gif_modal.html" %}
+    {% include "emoji_modal.html" %}
     {% endif %}
 
 </body>

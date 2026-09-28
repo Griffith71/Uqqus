@@ -450,27 +450,30 @@ def submit_post(v):
     """
 Create a post
 
-A post always lives on your profile first. Optionally forward it to up to
-5 guilds for community-scoped discussion - each forward is its own
+A post always lives on your profile first. Optionally forward it to other
+guilds for community-scoped discussion - each forward is its own
 independent post (own votes, own comments) linked back to this one.
+Forwarding to several guilds in one request costs proportionally more of
+your posting-rate budget (see the boil/gear throttle), rather than being
+capped at a fixed guild count.
 
 Required form data:
-* `content` - The post text. The first 280 characters become the title;
-  anything past that becomes the collapsed body, exactly like a reply.
-  For backwards compatibility, `title` and `body` (submitted separately)
-  are still accepted when `content` is absent.
+* `title` - The post title. 280 character limit. A title alone, with no
+  body/url/image, is a complete, valid post.
 
 Optional form data:
+* `body` - The text body of the post. Uses markdown. 25000 character limit.
+* `url` - A link to attach to the post.
 * `forward_guilds` - Guild name(s) to forward this post to (repeat the
   field for multiple guilds, e.g. forward_guilds=foo&forward_guilds=bar).
-  Maximum 5.
-
-At least one of the following form items is required:
-* `url` - The link being submitted. Uploading an image file counts as a url.
-* `content` (or `body`, in the legacy form) - The text body of the post
+* `content` - Legacy combined-field form, retained for API clients: the
+  first 280 characters become the title, anything past that becomes the
+  body. Only used when `title`/`body` are absent.
 
 Optional file data:
 * `file` - An image to upload as the post target. Requires premium or 500 Rep.
+* `body_image` - An image to embed inline in the body. Requires the same
+  access level as inline comment images.
 """
 
     content = request.form.get("content")
@@ -521,6 +524,7 @@ Optional file data:
                                                  error="Please enter a better title.",
                                                  title=title,
                                                  url=url,
+                                                 body=body,
                                                  text=text_for_redisplay,
                                                  b=None, forward_guild_names=forward_guild_names
                                                  ), 400),
@@ -544,6 +548,7 @@ Optional file data:
                                                  error="280 character limit for titles.",
                                                  title=title[0:280],
                                                  url=url,
+                                                 body=body,
                                                  text=text_for_redisplay,
                                                  b=None, forward_guild_names=forward_guild_names
                                                  ), 400),
@@ -551,22 +556,6 @@ Optional file data:
                 }
 
     parsed_url = urlparse(url)
-    # in the single-box composer, the title alone (already confirmed
-    # non-empty above) counts as "content" - a short post has no body
-    # by construction, since split_title_body only fills body past 280
-    # characters
-    has_content = bool(body) or content is not None
-    if not (parsed_url.scheme and parsed_url.netloc) and not has_content and not request.files.get("file", None):
-        return {"html": lambda: (render_template("submit.html",
-                                                 v=v,
-                                                 error="Please enter a url or some text.",
-                                                 title=title,
-                                                 url=url,
-                                                 text=text_for_redisplay,
-                                                 b=None, forward_guild_names=forward_guild_names
-                                                 ), 400),
-                "api": lambda: ({"error": "`url` or `body` parameter required."}, 400)
-                }
 
     # sanitize title
     title = bleach.clean(title, tags=[])
@@ -660,7 +649,7 @@ Optional file data:
                                                      v=v,
                                                      error=f"+{fn} doesn't exist.",
                                                      title=title,
-                                                     url=url, text=text_for_redisplay,
+                                                     url=url, body=body, text=text_for_redisplay,
                                                      b=None, forward_guild_names=forward_guild_names
                                                      ), 400),
                     "api": lambda fn=forward_name: ({"error": f"+{fn} doesn't exist."}, 400)
@@ -671,7 +660,7 @@ Optional file data:
                                                      v=v,
                                                      error=f"+{target.name} has been banned.",
                                                      title=title,
-                                                     url=url, text=text_for_redisplay,
+                                                     url=url, body=body, text=text_for_redisplay,
                                                      b=None, forward_guild_names=forward_guild_names
                                                      ), 403),
                     "api": lambda: ({"error": f"403 Forbidden - +{target.name} has been banned."}, 403)
@@ -682,7 +671,7 @@ Optional file data:
                                                      v=v,
                                                      error=f"You are exiled from +{target.name}.",
                                                      title=title,
-                                                     url=url, text=text_for_redisplay,
+                                                     url=url, body=body, text=text_for_redisplay,
                                                      b=None, forward_guild_names=forward_guild_names
                                                      ), 403),
                     "api": lambda: ({"error": f"403 Not Authorized - You are exiled from +{target.name}"}, 403)
@@ -695,6 +684,7 @@ Optional file data:
                                                      error=f"You are not an approved contributor for +{target.name}.",
                                                      title=title,
                                                      url=url,
+                                                     body=body,
                                                      text=text_for_redisplay,
                                                      b=None, forward_guild_names=forward_guild_names
                                                      ), 403),
@@ -800,6 +790,7 @@ Optional file data:
                                                  error="25000 character limit for text body.",
                                                  title=title,
                                                  url=url,
+                                                 body=body,
                                                  text=text_for_redisplay,
                                                  b=None, forward_guild_names=forward_guild_names
                                                  ), 400),
@@ -813,6 +804,7 @@ Optional file data:
                                                  error="2048 character limit for URLs.",
                                                  title=title,
                                                  url=url,
+                                                 body=body,
                                                  text=text_for_redisplay,
                                                  b=None, forward_guild_names=forward_guild_names
                                                  ), 400),
@@ -845,6 +837,7 @@ Optional file data:
                                                  error=reason,
                                                  title=title,
                                                  url=url,
+                                                 body=body,
                                                  text=text_for_redisplay,
                                                  b=None, forward_guild_names=forward_guild_names
                                                  ), 403),
@@ -885,6 +878,7 @@ Optional file data:
                                                          error=f"The link `{badlink.link}` is not allowed. Reason: {badlink.reason}.",
                                                          title=title,
                                                          url=url,
+                                                         body=body,
                                                          text=text_for_redisplay,
                                                          b=None, forward_guild_names=forward_guild_names
                                                          ), 400),
@@ -973,6 +967,8 @@ Optional file data:
                                                          v=v,
                                                          error=f"Image files only.",
                                                          title=title,
+                                                         url=url,
+                                                         body=body,
                                                          text=text_for_redisplay,
                                                          b=None, forward_guild_names=forward_guild_names
                                                          ), 400),
@@ -1012,12 +1008,44 @@ Optional file data:
 
             
         csam_thread=gevent.spawn(
-            check_csam_url, 
-            f"https://{BUCKET}/{name}", 
-            v, 
+            check_csam_url,
+            f"https://{BUCKET}/{name}",
+            v,
             del_function
           )
         csam_thread.start()
+
+    # Inline image dropped into the body via the body toolbar's Image
+    # button - mirrors comments.py's own comment-image-upload pattern.
+    if v.can_upload_comment_image and request.files.get('body_image'):
+        bfile = request.files['body_image']
+        if bfile.content_type.startswith('image/'):
+            bname = f'post/{new_post.base36id}/{secrets.token_urlsafe(8)}'
+            upload_file(bname, bfile)
+
+            new_post_aux.body = (new_post_aux.body or "") + f"\n\n![](https://{BUCKET}/{bname})"
+            with CustomRenderer() as renderer:
+                body_md = renderer.render(mistletoe.Document(preprocess(new_post_aux.body)))
+            new_post_aux.body_html = sanitize(body_md, linkgen=True)
+            g.db.add(new_post_aux)
+            g.db.commit()
+
+            #csam detection
+            def del_body_image_function():
+                db = db_session()
+                delete_file(bname)
+                new_post.is_banned = True
+                db.add(new_post)
+                db.commit()
+                db.close()
+
+            body_csam_thread = gevent.spawn(
+                check_csam_url,
+                f"https://{BUCKET}/{bname}",
+                v,
+                del_body_image_function
+              )
+            body_csam_thread.start()
 
     # Forward to each validated guild: each is its own independent post
     # (own votes, own comments) with the same content, linked back to the

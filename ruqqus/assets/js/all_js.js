@@ -49,12 +49,17 @@ $('#new_email').on('input', function () {
   function getEmoji(searchTerm) {
 
     var emoji = ' :'+searchTerm+': '
-    
+
     var commentBox = document.getElementById(commentFormID);
 
     var old = commentBox.value;
 
     commentBox.value = old + emoji;
+
+    // Fire the target field's own oninput handler (e.g. the title's
+    // overflow sync, or checkForRequired) since setting .value directly
+    // doesn't trigger it the way real typing would.
+    commentBox.dispatchEvent(new Event('input', { bubbles: true }));
 
   }
 
@@ -362,13 +367,14 @@ $('#new_email').on('input', function () {
     ]
 
     for (i=0; i < emojis.length; i++) {
-      
+
       let container = document.getElementById(`EMOJIS_${emojis[i].type}`);
+      if (!container) continue; // no matching tab for this category
       let str = '';
       let arr = emojis[i].emojis;
       let dir = emojis[i].folder;
 
-      for (j=0; j < arr.length; j++) { 
+      for (j=0; j < arr.length; j++) {
         str += `<button class="btn btn-white m-1 p-0" onclick="getEmoji(\'${arr[j]}\')" style="width:45px; height:45px; overflow: hidden;"><img width=35 src="/assets/images/${dir}/${arr[j]}" alt="${arr[j]}-emoji"/></button>`;
       }
 
@@ -472,6 +478,11 @@ $('#new_email').on('input', function () {
 
     commentBox.value = old + gif;
 
+    // Fire the target field's own oninput handler (e.g. the title's
+    // overflow sync, or checkForRequired) since setting .value directly
+    // doesn't trigger it the way real typing would.
+    commentBox.dispatchEvent(new Event('input', { bubbles: true }));
+
   }
 
   // When GIF keyboard is hidden, hide all GIFs
@@ -538,6 +549,15 @@ function toggleCommentOverflow(comment_id, linkEl) {
 
   overflow.classList.toggle("d-none");
   linkEl.textContent = expanded ? "Show more" : "Show less";
+
+};
+
+// Reveal a blurred sensitive-content wrapper for this page view only -
+// pure client-side state, no server call, so it re-blurs on reload.
+function revealSensitive(wrapId) {
+
+  var wrap = document.getElementById(wrapId);
+  if (wrap) wrap.classList.add("revealed");
 
 };
 
@@ -730,6 +750,10 @@ function autoExpand (field) {
 
 document.addEventListener('input', function (event) {
   if (event.target.tagName.toLowerCase() !== 'textarea') return;
+  // The post composer's title (fixed single-line, horizontal-scroll) and
+  // body (fixed initial size, its own scrollbar) are deliberately NOT
+  // auto-growing - only comment reply/edit boxes use this behavior.
+  if (event.target.id === 'post-title' || event.target.id === 'post-body') return;
   autoExpand(event.target);
 }, false);
 
@@ -1895,6 +1919,135 @@ makeQuote = function (form) {
   }
 }
 
+// Strikethrough Comment Text
+
+makeStrikethrough = function (form) {
+  var text = document.getElementById(form);
+  var startIndex = text.selectionStart,
+  endIndex = text.selectionEnd;
+  var selectedText = text.value.substring(startIndex, endIndex);
+
+  var format = '~~'
+
+  if (selectedText.includes('~~')) {
+    text.value = text.value.substring(0, startIndex) + selectedText.replace(/~~/g, '') + text.value.substring(endIndex);
+  }
+  else if (selectedText.length == 0) {
+    text.value = text.value.substring(0, startIndex) + selectedText + text.value.substring(endIndex);
+  }
+  else {
+    text.value = text.value.substring(0, startIndex) + format + selectedText + format + text.value.substring(endIndex);
+  }
+}
+
+// Spoiler-tag Comment Text (Reddit-style >!text!< delimiter)
+
+makeSpoiler = function (form) {
+  var text = document.getElementById(form);
+  var startIndex = text.selectionStart,
+  endIndex = text.selectionEnd;
+  var selectedText = text.value.substring(startIndex, endIndex);
+
+  if (selectedText.length == 0) {
+    text.value = text.value.substring(0, startIndex) + selectedText + text.value.substring(endIndex);
+  }
+  else if (selectedText.startsWith('>!') && selectedText.endsWith('!<')) {
+    text.value = text.value.substring(0, startIndex) + selectedText.slice(2, -2) + text.value.substring(endIndex);
+  }
+  else {
+    text.value = text.value.substring(0, startIndex) + '>!' + selectedText + '!<' + text.value.substring(endIndex);
+  }
+}
+
+// Inline or fenced Code for Comment Text
+
+makeCode = function (form) {
+  var text = document.getElementById(form);
+  var startIndex = text.selectionStart,
+  endIndex = text.selectionEnd;
+  var selectedText = text.value.substring(startIndex, endIndex);
+
+  if (selectedText.length == 0) {
+    text.value = text.value.substring(0, startIndex) + selectedText + text.value.substring(endIndex);
+  }
+  else if (selectedText.includes('\n')) {
+    if (selectedText.startsWith('```\n') && selectedText.endsWith('\n```')) {
+      text.value = text.value.substring(0, startIndex) + selectedText.slice(4, -4) + text.value.substring(endIndex);
+    } else {
+      text.value = text.value.substring(0, startIndex) + '```\n' + selectedText + '\n```' + text.value.substring(endIndex);
+    }
+  }
+  else if (selectedText.startsWith('`') && selectedText.endsWith('`') && selectedText.length > 1) {
+    text.value = text.value.substring(0, startIndex) + selectedText.slice(1, -1) + text.value.substring(endIndex);
+  }
+  else {
+    text.value = text.value.substring(0, startIndex) + '`' + selectedText + '`' + text.value.substring(endIndex);
+  }
+}
+
+// Bulleted / numbered lists for Comment Text - every line needs its own
+// marker for mistletoe to render it as a real multi-item list, unlike
+// Bold/Italic/Quote which only ever wrap the whole selection once.
+
+makeBulletList = function (form) {
+  var text = document.getElementById(form);
+  var startIndex = text.selectionStart,
+  endIndex = text.selectionEnd;
+  var selectedText = text.value.substring(startIndex, endIndex);
+
+  if (selectedText.length == 0) {
+    text.value = text.value.substring(0, startIndex) + selectedText + text.value.substring(endIndex);
+    return;
+  }
+
+  var lines = selectedText.split('\n');
+  var alreadyList = lines.every(function (line) { return line.startsWith('* '); });
+  var newLines = alreadyList
+    ? lines.map(function (line) { return line.slice(2); })
+    : lines.map(function (line) { return '* ' + line; });
+
+  text.value = text.value.substring(0, startIndex) + newLines.join('\n') + text.value.substring(endIndex);
+}
+
+makeNumberedList = function (form) {
+  var text = document.getElementById(form);
+  var startIndex = text.selectionStart,
+  endIndex = text.selectionEnd;
+  var selectedText = text.value.substring(startIndex, endIndex);
+
+  if (selectedText.length == 0) {
+    text.value = text.value.substring(0, startIndex) + selectedText + text.value.substring(endIndex);
+    return;
+  }
+
+  var lines = selectedText.split('\n');
+  var alreadyList = lines.every(function (line) { return /^\d+\.\s/.test(line); });
+  var newLines = alreadyList
+    ? lines.map(function (line) { return line.replace(/^\d+\.\s/, ''); })
+    : lines.map(function (line, i) { return (i + 1) + '. ' + line; });
+
+  text.value = text.value.substring(0, startIndex) + newLines.join('\n') + text.value.substring(endIndex);
+}
+
+// Insert a markdown link, prompting for the URL - selected text (if any)
+// becomes the link label, otherwise the URL itself is used as the label.
+
+makeLink = function (form) {
+  var text = document.getElementById(form);
+  var startIndex = text.selectionStart,
+  endIndex = text.selectionEnd;
+  var selectedText = text.value.substring(startIndex, endIndex);
+
+  var url = window.prompt("Enter a URL", "https://");
+  if (url === null) return;
+  url = url.trim();
+  if (!url) return;
+
+  var label = selectedText.length ? selectedText : url;
+  var markdown = '[' + label + '](' + url + ')';
+  text.value = text.value.substring(0, startIndex) + markdown + text.value.substring(endIndex);
+}
+
 // Character Count
 
 function charLimit(form, text) {
@@ -1921,41 +2074,121 @@ function charLimit(form, text) {
 
 }
 
-// Two-stage character counter for the single-box post composer: counts
-// down toward the 280-character title cutoff first, then switches to
-// counting down the remaining body budget (25000) once past it.
-function submitCharLimit() {
+// Reveal the collapsed body writing-space (and its toolbar) without
+// stealing keyboard focus - used when overflow spills in while the
+// user is still actively typing in the title field.
+function revealBody() {
+  var bodyWrite = document.getElementById("body-write");
+  bodyWrite.classList.remove("d-none");
+  bodyWrite.classList.add("collapsed");
+  document.getElementById("add-body-link").classList.add("d-none");
+}
 
-  var content = document.getElementById("content");
+// Manual "+ Add body text" affordance - reveals the body AND focuses it,
+// since this is a deliberate user action to start typing there.
+function openBody() {
+  revealBody();
+  document.getElementById("post-body").focus();
+}
 
-  var counter = document.getElementById("character-count-submit-form");
+// Title/body overflow spillover: the title field has no native maxlength
+// (so pasted text can trigger spillover too, unlike a maxlength attribute
+// which would silently truncate pastes before any input event fires).
+// Text typed past the 280-character title budget is pushed into the body
+// field. titleOverflowBuffer tracks exactly what was most recently pushed,
+// so backspacing back under 280 pulls it back live - but the moment the
+// body's content no longer starts with that buffer (the user has actually
+// edited the body themselves), syncing stops permanently rather than
+// clobbering their own writing.
+var titleOverflowBuffer = null;
+var TITLE_MAX = 280;
 
-  var length = content.value.length;
+function syncTitleOverflow() {
 
-  if (length <= 280) {
+  var title = document.getElementById("post-title");
+  var body = document.getElementById("post-body");
+  var t = title.value;
 
-    var remaining = 280 - length;
+  if (t.length > TITLE_MAX) {
 
-    counter.innerText = remaining;
+    var stillSynced = titleOverflowBuffer !== null && body.value.startsWith(titleOverflowBuffer);
+    // Each keystroke past the boundary only pushes the single newly-typed
+    // character out of the title, but that character belongs *after* the
+    // overflow already sitting in the body - so it has to be appended to
+    // the existing buffer, not treated as the whole overflow on its own,
+    // or repeated keystrokes would just clobber each other one at a time.
+    var overflow = stillSynced ? titleOverflowBuffer + t.slice(TITLE_MAX) : t.slice(TITLE_MAX);
+    title.value = t.slice(0, TITLE_MAX);
 
-    counter.style.color = remaining <= 280 * .28 ? "#FFC107" : "#A0AEC0";
-
-  } else {
-
-    var bodyRemaining = 25000 - (length - 280);
-
-    counter.innerText = bodyRemaining;
-
-    if (bodyRemaining <= 0) {
-      counter.style.color = "#E53E3E";
-    } else if (bodyRemaining <= 25000 * .28) {
-      counter.style.color = "#FFC107";
+    if (stillSynced) {
+      body.value = overflow + body.value.slice(titleOverflowBuffer.length);
     } else {
-      counter.style.color = "#A0AEC0";
+      body.value = overflow + body.value;
+    }
+    titleOverflowBuffer = overflow;
+    revealBody();
+
+  } else if (titleOverflowBuffer !== null) {
+
+    if (body.value.startsWith(titleOverflowBuffer)) {
+      var room = TITLE_MAX - t.length;
+      var pullBack = titleOverflowBuffer.slice(0, room);
+      var remaining = titleOverflowBuffer.slice(room);
+      title.value = t + pullBack;
+      body.value = remaining + body.value.slice(titleOverflowBuffer.length);
+      titleOverflowBuffer = remaining.length ? remaining : null;
+    } else {
+      titleOverflowBuffer = null;
     }
 
   }
 
+  charLimit("post-body", "character-count-body");
+  document.getElementById("character-count-title").innerText = TITLE_MAX - title.value.length;
+
+}
+
+// Attach-a-link toolbar action for the title. Validation happens here in
+// JS (not via native constraint validation) since #post-URL is a
+// display:none field. Exactly one URL is enforced structurally - there is
+// only one url-named field, and the UI toggles between the "Add link"
+// button and the chip, never both.
+function attachLink() {
+  var current = document.getElementById("post-URL").value;
+  var input = window.prompt("Attach a link to this post", current || "https://");
+  if (input === null) return;
+  input = input.trim();
+  if (!input) return;
+  var parsed;
+  try {
+    parsed = new URL(input);
+  } catch (e) {
+    alert("Please enter a valid URL (including http:// or https://).");
+    return;
+  }
+  if (parsed.protocol !== "http:" && parsed.protocol !== "https:") {
+    alert("Links must start with http:// or https://.");
+    return;
+  }
+  document.getElementById("post-URL").value = parsed.href;
+  showAttachedLinkChip(parsed.href);
+  hide_image();
+  checkForRequired();
+  autoSuggestTitle();
+}
+
+function removeAttachedLink() {
+  document.getElementById("post-URL").value = "";
+  document.getElementById("title-link-chip").classList.add("d-none");
+  document.getElementById("title-link-btn").classList.remove("d-none");
+  hide_image();
+  checkForRequired();
+}
+
+function showAttachedLinkChip(url) {
+  document.getElementById("title-link-chip-text").textContent = url;
+  document.getElementById("title-link-chip").classList.remove("d-none");
+  document.getElementById("title-link-btn").classList.add("d-none");
 }
 
 // Mobile bottom navigation bar
@@ -2040,6 +2273,8 @@ document.addEventListener('paste', function (event) {
     else if (url.test(clipText) && window.location.pathname == '/submit' && guild == undefined) {
 
       document.getElementById("post-URL").value = clipText;
+      showAttachedLinkChip(clipText);
+      hide_image();
 
       autoSuggestTitle()
 
@@ -2051,62 +2286,45 @@ document.addEventListener('paste', function (event) {
 
 function checkForRequired() {
 
-// Divs
+// A title alone is a complete, valid post - body/url/image are all
+// optional additions on top of it, not requirements.
 
-var content = document.getElementById("content");
-
-var url = document.getElementById("post-URL");
+var title = document.getElementById("post-title");
 
 var button = document.getElementById("create_button");
 
-// Validity check
-
-var isValidContent = content.checkValidity();
-
-var isValidURL = url.checkValidity();
-
-// Disable submit button if invalid inputs
-
-button.disabled = !(isValidContent && isValidURL);
+button.disabled = !title.checkValidity();
 
 }
 
-// Auto-suggest content given URL
+// Auto-suggest title given URL - only fills the title if it's still empty,
+// so it never clobbers deliberately-typed text.
 
 function autoSuggestTitle()  {
 
   var urlField = document.getElementById("post-URL");
 
-  var contentField = document.getElementById("content");
+  var titleField = document.getElementById("post-title");
 
-  var isValidURL = urlField.checkValidity();
-
-  if (isValidURL && urlField.value.length > 0 && contentField.value === "") {
+  if (urlField.value.length > 0 && titleField.value.trim() === "") {
 
     var x = new XMLHttpRequest();
     x.withCredentials=true;
     x.onreadystatechange = function() {
       if (x.readyState == 4 && x.status == 200) {
 
-        title=JSON.parse(x.responseText)["title"];
-        contentField.value=title;
+        titleField.value = JSON.parse(x.responseText)["title"].slice(0, TITLE_MAX);
 
-        submitCharLimit();
+        syncTitleOverflow();
         checkForRequired()
       }
     }
-    x.open('get','/submit/title?url=' + urlField.value);
+    x.open('get','/submit/title?url=' + encodeURIComponent(urlField.value));
     x.send(null);
 
   };
 
 };
-
-// Run AutoSuggestTitle function on load
-
-if (window.location.pathname=='/submit') {
-  window.onload = autoSuggestTitle();
-}
 
 // Exile Member
 
@@ -2262,6 +2480,8 @@ post_comment=function(fullname){
   form.append('submission', document.getElementById('reply-form-submission-'+fullname).value);
   form.append('body', document.getElementById('reply-form-body-'+fullname).value);
   form.append('file', document.getElementById('file-upload-reply-'+fullname).files[0]);
+  var sensitiveBox = document.getElementById('reply-sensitive-'+fullname);
+  form.append('sensitive', (sensitiveBox && sensitiveBox.checked) ? 'true' : '');
 
 
   var xhr = new XMLHttpRequest();
