@@ -75,6 +75,7 @@ def check_for_alts(current_id):
 @no_cors
 @app.route("/login", methods=["POST"])
 @limiter.limit("6/minute")
+@throttle_check_ip('login')
 def login_post():
 
     username = request.form.get("username")
@@ -249,6 +250,7 @@ def sign_up_get(v):
 @app.route("/signup", methods=["POST"])
 @no_cors
 @auth_desired
+@throttle_check_ip('signup')
 def sign_up_post(v):
 
     if v:
@@ -449,6 +451,7 @@ def get_forgot():
 
 
 @app.route("/forgot", methods=["POST"])
+@throttle_check_ip('password_reset')
 def post_forgot():
 
     username = request.form.get("username").lstrip('@')

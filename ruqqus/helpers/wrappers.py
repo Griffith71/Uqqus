@@ -285,6 +285,88 @@ def no_negative_balance(s):
 
     return wrapper_maker
 
+
+def _response_status(resp):
+    if isinstance(resp, tuple):
+        return resp[1] if len(resp) > 1 else 200
+    if isinstance(resp, RespObj):
+        return resp.status_code
+    return 200
+
+
+def throttle_check(f):
+    """Enforces the boil/gear escalating spam cooldown for the combined
+    account+IP content-action namespace (post/comment/forward/repost).
+    Use directly under @auth_required/@is_not_banned (needs kwargs['v']).
+    Does not apply to votes."""
+
+    def wrapper(*args, **kwargs):
+
+        from .throttle import content_cooldown_remaining, content_register_action
+
+        v = kwargs["v"]
+        ip = request.remote_addr
+
+        remaining = content_cooldown_remaining(v.id, ip)
+        if remaining > 0:
+            m, s = divmod(int(remaining) + 1, 60)
+            return jsonify({"error": f"Slow down - cooldown active for another {m}:{s:02d}."}), 429
+
+        resp = f(*args, **kwargs)
+
+        # Success in this codebase's HTML-facing routes is often a 3xx
+        # redirect (e.g. submit_post redirects to the new post), not a
+        # 2xx body - so "not a 4xx/5xx" is the right success test here,
+        # not a strict 200-299 range.
+        if _response_status(resp) < 400:
+            # A route can set g.throttle_weight to charge more than one
+            # action's worth of heat for a single request that did more
+            # than one action's worth of work (e.g. submit_post forwarding
+            # to several guilds at once) - defaults to a plain 1.
+            content_register_action(v.id, ip, weight=getattr(g, "throttle_weight", 1))
+
+        return resp
+
+    wrapper.__name__ = f.__name__
+    wrapper.__doc__ = f.__doc__
+    return wrapper
+
+
+def throttle_check_ip(namespace):
+    """Enforces the boil/gear escalating spam cooldown for an IP-only
+    namespace (login/signup/password-reset - no account exists yet at
+    this point, so there's nothing to combine with the IP). Unlike
+    throttle_check, heat is added on every attempt regardless of outcome
+    - the threat model here (credential brute-forcing, mass account
+    creation, reset-email harassment) is driven by failed/repeated
+    attempts, not successful ones, so gating heat on success would let an
+    attacker retry indefinitely without ever tripping the cooldown."""
+
+    def wrapper_maker(f):
+
+        def wrapper(*args, **kwargs):
+
+            from .throttle import cooldown_remaining, register_action
+
+            ip = request.remote_addr
+
+            remaining = cooldown_remaining(namespace, ip)
+            if remaining > 0:
+                m, s = divmod(int(remaining) + 1, 60)
+                return jsonify({"error": f"Slow down - try again in {m}:{s:02d}."}), 429
+
+            resp = f(*args, **kwargs)
+            register_action(namespace, ip)
+
+            return resp
+
+        wrapper.__name__ = f.__name__
+        wrapper.__doc__ = f.__doc__
+        return wrapper
+
+    return wrapper_maker
+
+
 def is_guildmaster(*perms):
     # decorator that enforces guildmaster status and verifies permissions
     # use under auth_required

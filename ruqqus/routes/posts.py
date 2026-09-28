@@ -440,8 +440,8 @@ def create_forward_post_from_comment(comment, target, promoted_by):
 @app.route("/api/v1/submit", methods=["POST"])
 @app.route("/api/vue/submit", methods=["POST"])
 @app.post("/api/v2/submissions")
-@limiter.limit("6/minute")
 @is_not_banned
+@throttle_check
 @no_negative_balance('html')
 @tos_agreed
 @validate_formkey
@@ -1151,6 +1151,12 @@ Optional file data:
     g.db.commit()
 
 
+    # Charge one action's worth of heat for the post itself, plus one
+    # more per guild actually forwarded to - so bulk-forwarding several
+    # guilds in a single request costs proportionally more of the same
+    # posting-rate budget instead of registering as a single free action.
+    g.throttle_weight = 1 + len(forward_boards)
+
     return {"html": lambda: redirect(new_post.permalink),
             "api": lambda: jsonify(new_post.json)
             }
@@ -1158,6 +1164,7 @@ Optional file data:
 
 @app.route("/post/<pid>/forward", methods=["POST"])
 @auth_required
+@throttle_check
 @validate_formkey
 def forward_post(pid, v):
     """
@@ -1410,6 +1417,7 @@ def unsave_post(base36id, v):
 
 @app.route("/post/<base36id>/repost", methods=["POST"])
 @auth_required
+@throttle_check
 @validate_formkey
 def repost_post(base36id, v):
     """Repost a post to your own profile, Twitter-retweet style - your

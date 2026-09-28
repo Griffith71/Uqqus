@@ -254,8 +254,8 @@ Optional query parameters:
 @app.route("/api/comment", methods=["POST"])
 @app.route("/api/v1/comment", methods=["POST"])
 @app.post("/api/v2/comments")
-@limiter.limit("6/minute")
 @is_not_banned
+@throttle_check
 @no_negative_balance('toast')
 @tos_agreed
 @validate_formkey
@@ -819,6 +819,7 @@ URL path parameters:
 
 @app.route("/comment/<cid>/repost", methods=["POST"])
 @auth_required
+@throttle_check
 @validate_formkey
 def repost_comment(cid, v):
     """Repost a reply to your own profile, Twitter-retweet style - your
@@ -870,6 +871,7 @@ def unrepost_comment(cid, v):
 
 @app.route("/comment/<cid>/forward", methods=["POST"])
 @auth_required
+@throttle_check
 @validate_formkey
 def forward_comment(cid, v):
     """Promote a reply's text into a brand-new, independent post in a

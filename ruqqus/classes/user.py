@@ -889,7 +889,13 @@ class User(Base, Stndrd, Age_times):
                 )
             ).count()
 
-
+    @property
+    def throttle_state(self):
+        # Deliberately not cached (unlike true_score) - the boil/gear
+        # throttle state has to reflect current Redis state on every
+        # render, not an hourly snapshot.
+        from ruqqus.helpers import throttle
+        return throttle.get_display_state(self.id, request.remote_addr)
 
 
     @property

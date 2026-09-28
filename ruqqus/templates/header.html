@@ -99,11 +99,21 @@
         <div class="dropdown">
           <a class="nav-link bg-transparent py-0 pr-0" href="{{ v.permalink }}" role="button" id="dropdownMenuLink" data-toggle="dropdown"
           aria-haspopup="true" aria-expanded="false">
+          {% set throttle_state = v.throttle_state %}
           <div class="d-flex">
             <div><img src="{{ v.profile_url }}" class="profile-pic-35"></div>
-            <div class="text-left pl-2">
+            <div class="text-left pl-2 position-relative">
               <div class="text-small font-weight-bold">{{ v.username }}</div>
               <div class="text-small-extra text-purple"><i class="fas fa-diamond mr-1"></i>{{ v.true_score }} Rep</div>
+              {% if throttle_state.in_cooldown %}
+              <div class="progress" style="height:3px; border-radius:2px; position:absolute; top:100%; left:0; right:0; margin-top:2px;" data-toggle="tooltip" data-placement="bottom" title="Cooldown: {{ '%d:%02d'|format(throttle_state.cooldown_remaining // 60, throttle_state.cooldown_remaining % 60) }} remaining">
+                <div class="progress-bar bg-danger" role="progressbar" style="width: 100%;" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+              </div>
+              {% else %}
+              <div class="progress" style="height:3px; border-radius:2px; position:absolute; top:100%; left:0; right:0; margin-top:2px;" data-toggle="tooltip" data-placement="bottom" title="~{{ throttle_state.remaining_actions }} action{{ 's' if throttle_state.remaining_actions != 1 else '' }} left before a cooldown">
+                <div class="progress-bar bg-warning" role="progressbar" style="width: {{ throttle_state.boil_pct }}%;" aria-valuenow="{{ throttle_state.boil_pct }}" aria-valuemin="0" aria-valuemax="100"></div>
+              </div>
+              {% endif %}
             </div>
           </div>
         </a>
@@ -113,6 +123,15 @@
           <div class="dropdown-meta">
             <div class="font-weight-bold mb-2">{{ v.username }}</div>
             <div class="text-small text-purple"><i class="fas fa-diamond mr-1"></i>{{ v.true_score }} Rep</div>
+            {% if throttle_state.in_cooldown %}
+            <div class="progress mt-1" style="height:4px; border-radius:2px;" data-toggle="tooltip" data-placement="bottom" title="Cooldown: {{ '%d:%02d'|format(throttle_state.cooldown_remaining // 60, throttle_state.cooldown_remaining % 60) }} remaining">
+              <div class="progress-bar bg-danger" role="progressbar" style="width: 100%;" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+            </div>
+            {% else %}
+            <div class="progress mt-1" style="height:4px; border-radius:2px;" data-toggle="tooltip" data-placement="bottom" title="~{{ throttle_state.remaining_actions }} action{{ 's' if throttle_state.remaining_actions != 1 else '' }} left before a cooldown">
+              <div class="progress-bar bg-warning" role="progressbar" style="width: {{ throttle_state.boil_pct }}%;" aria-valuenow="{{ throttle_state.boil_pct }}" aria-valuemin="0" aria-valuemax="100"></div>
+            </div>
+            {% endif %}
           </div>
         </div>
         <hr class="my-2">

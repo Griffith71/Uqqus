@@ -1325,14 +1325,43 @@ def admin_siege_guild(v):
 @app.get('/admin/email/<email>')
 @admin_level_required(4)
 def user_by_email(email, v):
-    
+
     email=email.replace('_', r'\_')
-    
+
     user=g.db.query(User).filter(User.email.ilike(email)).first()
-    
+
     if not user:
         abort(404)
-    
+
     return redirect(user.permalink)
+
+
+@app.route("/admin/throttle_settings", methods=["GET"])
+@admin_level_required(4)
+def admin_throttle_settings_get(v):
+
+    from ruqqus.helpers import throttle
+
+    return render_template("admin/throttle_settings.html",
+                           v=v,
+                           sensitivity=throttle.get_sensitivity(),
+                           gear_base_seconds=int(throttle.get_gear_base_seconds()),
+                           msg=request.args.get("msg")
+                           )
+
+
+@app.route("/admin/throttle_settings", methods=["POST"])
+@admin_level_required(4)
+@validate_formkey
+def admin_throttle_settings_post(v):
+
+    from ruqqus.helpers import throttle
+
+    if request.form.get("sensitivity"):
+        throttle.set_sensitivity(request.form.get("sensitivity"))
+    if request.form.get("gear_base_seconds"):
+        throttle.set_gear_base_seconds(request.form.get("gear_base_seconds"))
+
+    return redirect("/admin/throttle_settings?msg=Saved.")
 
 

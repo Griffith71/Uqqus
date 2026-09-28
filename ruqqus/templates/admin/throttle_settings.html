@@ -1,0 +1,40 @@
+{% extends "default.html" %}
+
+{% block title %}
+<title>Throttle Settings</title>
+{% endblock %}
+
+{% block pagetype %}message{% endblock %}
+
+{% block sidebarblock %}{% endblock %}
+
+{% block content %}
+
+    {% if msg %}
+    <div class="alert alert-success alert-dismissible fade show my-3" role="alert">
+      <i class="fas fa-check-circle my-auto" aria-hidden="true"></i>
+      <span>
+        {{ msg }}
+      </span>
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true"><i class="far fa-times"></i></span>
+      </button>
+    </div>
+    {% endif %}
+
+<h1>Throttle Settings</h1>
+<p>Adjusts the boil/gear escalating spam throttle sitewide, without a redeploy. Sensitivity above 1.0 makes the throttle trip sooner (tighten during a raid); below 1.0 relaxes it. Gear base is the starting cooldown length for a first offense, in seconds.</p>
+
+<form action="/admin/throttle_settings" method="post">
+<input type="hidden" name="formkey" value="{{ v.formkey }}">
+
+<label for="input-sensitivity">Sensitivity (default 1.0)</label><br>
+<input id="input-sensitivity" class="form-control" type="number" step="0.1" min="0.1" name="sensitivity" value="{{ sensitivity }}"><br>
+
+<label for="input-gear-base">Gear base cooldown, seconds (default 300)</label><br>
+<input id="input-gear-base" class="form-control" type="number" step="1" min="30" name="gear_base_seconds" value="{{ gear_base_seconds }}"><br><br>
+
+<input class="btn btn-primary" type="submit" value="Save">
+
+</form>
+{% endblock %}
