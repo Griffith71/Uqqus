@@ -563,9 +563,63 @@ CREATE FUNCTION public.energy(public.users) RETURNS bigint
       FROM submissions
       WHERE submissions.author_id=$1.id
         AND submissions.is_banned=false
+        AND NOT (
+          submissions.score_top < 0
+          AND (
+            EXISTS (
+              SELECT 1 FROM forwardrels
+              WHERE forwardrels.forward_submission_id = submissions.id
+                AND forwardrels.forwarded_by_id <> submissions.author_id
+            )
+            OR EXISTS (
+              SELECT 1 FROM comment_forwardrels
+              WHERE comment_forwardrels.promoted_submission_id = submissions.id
+                AND comment_forwardrels.promoted_by_id <> submissions.author_id
+            )
+          )
+        )
       ),
       0
       )
+    $_$;
+
+
+--
+
+-- Forwarder rep bonus/penalty: a fixed 25% bonus of a forward copy's
+-- positive score, or the full negative score, credited to whoever
+-- forwarded/promoted it (not the original author, who is excluded from
+-- negative forward-copy scores by energy() above). Self-forwards (the
+-- author forwarding their own content) are excluded here to match
+-- energy()'s unchanged behavior for that case.
+
+CREATE FUNCTION public.forward_bonus_energy(public.users) RETURNS bigint
+    LANGUAGE sql IMMUTABLE STRICT
+    AS $_$
+     SELECT COALESCE(SUM(bonus), 0)::bigint
+     FROM (
+       SELECT CASE WHEN s.score_top >= 0
+                   THEN FLOOR(s.score_top * 0.25)
+                   ELSE s.score_top
+              END AS bonus
+       FROM forwardrels fr
+       JOIN submissions s ON s.id = fr.forward_submission_id
+       WHERE fr.forwarded_by_id = $1.id
+         AND fr.forwarded_by_id <> s.author_id
+         AND s.is_banned = false
+
+       UNION ALL
+
+       SELECT CASE WHEN s.score_top >= 0
+                   THEN FLOOR(s.score_top * 0.25)
+                   ELSE s.score_top
+              END AS bonus
+       FROM comment_forwardrels cfr
+       JOIN submissions s ON s.id = cfr.promoted_submission_id
+       WHERE cfr.promoted_by_id = $1.id
+         AND cfr.promoted_by_id <> s.author_id
+         AND s.is_banned = false
+     ) AS bonus_rows
     $_$;
 
 
@@ -4921,6 +4975,34 @@ CREATE INDEX votes_submission_id_index ON public.votes USING btree (submission_i
 --
 
 CREATE INDEX votes_type_index ON public.votes USING btree (vote_type);
+
+
+--
+-- Name: forwardrels_forward_submission_id_idx; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX forwardrels_forward_submission_id_idx ON public.forwardrels USING btree (forward_submission_id);
+
+
+--
+-- Name: forwardrels_forwarded_by_id_idx; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX forwardrels_forwarded_by_id_idx ON public.forwardrels USING btree (forwarded_by_id);
+
+
+--
+-- Name: comment_forwardrels_promoted_submission_id_idx; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX comment_forwardrels_promoted_submission_id_idx ON public.comment_forwardrels USING btree (promoted_submission_id);
+
+
+--
+-- Name: comment_forwardrels_promoted_by_id_idx; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX comment_forwardrels_promoted_by_id_idx ON public.comment_forwardrels USING btree (promoted_by_id);
 
 
 --

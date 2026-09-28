@@ -908,11 +908,6 @@ def forward_comment(cid, v):
     if (target.restricted_posting or target.is_private) and not target.can_submit(v):
         return {"error": f"Not an approved contributor for +{target.name}."}, 403
 
-    existing_count = g.db.query(CommentForwardRelationship).filter_by(
-        comment_id=comment.id).count()
-    if existing_count >= 5:
-        return {"error": "This reply has already been promoted to the maximum of 5 guilds."}, 400
-
     already = g.db.query(CommentForwardRelationship).filter_by(
         comment_id=comment.id, board_id=target.id).first()
     if already:

@@ -506,18 +506,6 @@ Optional file data:
         if not (x.lower() in seen_names or seen_names.add(x.lower()))
     ]
 
-    if len(forward_guild_names) > 5:
-        return {"html": lambda: (render_template("submit.html",
-                                                 v=v,
-                                                 error="You can forward to a maximum of 5 guilds.",
-                                                 title=title,
-                                                 url=url,
-                                                 text=text_for_redisplay,
-                                                 b=None, forward_guild_names=forward_guild_names
-                                                 ), 400),
-                "api": lambda: ({"error": "Maximum of 5 forward guilds"}, 400)
-                }
-
     if not title:
         return {"html": lambda: (render_template("submit.html",
                                                  v=v,
@@ -700,7 +688,7 @@ Optional file data:
     now = int(time.time())
     cutoff = now - 60 * 60 * 24
 
-    # A single Forward action can create up to 5 rows sharing the exact
+    # A single Forward action can create multiple rows sharing the exact
     # same title/url across different guilds - those aren't independently
     # authored content, so they shouldn't multiply against this user's
     # spam-similarity count (which would otherwise make heavy Forward use
@@ -1209,11 +1197,6 @@ Required form data:
 
     if (target.restricted_posting or target.is_private) and not target.can_submit(v):
         return {"error": f"Not an approved contributor for +{target.name}."}, 403
-
-    existing_count = g.db.query(ForwardRelationship).filter_by(
-        primary_submission_id=primary.id).count()
-    if existing_count >= 5:
-        return {"error": "This post has already been forwarded to the maximum of 5 guilds."}, 400
 
     already = g.db.query(ForwardRelationship).filter_by(
         primary_submission_id=primary.id, board_id=target.id).first()

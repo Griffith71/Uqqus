@@ -239,8 +239,8 @@ class ForwardRelationship(Base):
     """Tracks which guilds a primary (profile) post has been Forwarded to.
     Each forward is also its own independent Submission row (own votes,
     own comments) linked back via Submission.repost_id - this table exists
-    so the 5-guild cap and duplicate-guild prevention can be enforced with
-    a DB-level unique constraint rather than just an application count."""
+    so duplicate-guild prevention can be enforced with a DB-level unique
+    constraint rather than just an application check."""
 
     __tablename__ = "forwardrels"
     __table_args__ = (UniqueConstraint('primary_submission_id', 'board_id', name='forward_unique'),)

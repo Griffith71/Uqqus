@@ -180,7 +180,7 @@
 
                         <div class="form-text text-small"><a href="/help/formatting" target="_blank">Formatting help</a></div>
 
-                        <label for="forward_guild_input" class="mt-3">Forward to guilds (optional, up to 5)<i class="fas fa-info-circle text-gray-400 ml-1" data-toggle="tooltip" data-placement="top" title="Your post always appears on your profile first. Optionally forward it into up to 5 guilds for community discussion - each guild gets its own independent copy with its own votes and comments."></i></label>
+                        <label for="forward_guild_input" class="mt-3">Forward to guilds (optional)<i class="fas fa-info-circle text-gray-400 ml-1" data-toggle="tooltip" data-placement="top" title="Your post always appears on your profile first. Optionally forward it into other guilds for community discussion - each guild gets its own independent copy with its own votes and comments."></i></label>
                         <div id="forward-guild-chips" class="mb-2"></div>
                         <div id="forward_guild_inputs"></div>
                         <div class="input-group">
@@ -344,7 +344,6 @@
         var input = document.getElementById('forward_guild_input');
         var name = input.value.trim().replace(/^\+/, '');
         if (!name) return;
-        if (forwardGuilds.length >= 5) { alert('Maximum of 5 guilds.'); return; }
         if (forwardGuilds.map(function(x){return x.toLowerCase();}).indexOf(name.toLowerCase()) !== -1) {
             input.value = '';
             return;
