@@ -95,20 +95,6 @@ Optional query parameters:
 
                 }
 
-    if post.over_18 and not (
-            v and v.over_18) and not session_over18(comment.board):
-        t = int(time.time())
-        return {'html': lambda: render_template("errors/nsfw.html",
-                                                v=v,
-                                                t=t,
-                                                lo_formkey=make_logged_out_formkey(
-                                                    t),
-                                                board=comment.board
-                                                ),
-                'api': lambda: {'error': f'This content is not suitable for some users and situations.'}
-
-                }
-
     # check guild ban
     board = post.board
     if board.is_banned and v.admin_level < 3:
@@ -459,8 +445,7 @@ Optional file data:
                 #parent_fullname=parent.fullname,
                 parent_comment_id=parent_comment_id,
                 level=level,
-                over_18=post.over_18,
-                is_nsfl=post.is_nsfl,
+                is_sensitive=(bool(request.form.get("sensitive", "")) or post.is_sensitive),
                 is_offensive=is_offensive,
                 original_board_id=parent_post.board_id,
                 is_bot=is_bot,
@@ -791,6 +776,45 @@ def unsave_comment(cid, v):
         g.db.delete(existing)
 
     return jsonify({"message": "Bookmark removed."})
+
+
+@app.route("/comment/<cid>/toggle_sensitive", methods=["POST"])
+@auth_required
+@validate_formkey
+def toggle_comment_sensitive(cid, v):
+    """
+Toggle "Sensitive Content" status on a reply - an author-discretionary
+blur-until-clicked flag for material that isn't a rule violation but
+could be upsetting.
+
+URL path parameters:
+* `cid` - The base 36 comment id.
+"""
+
+    comment = get_comment(cid, v=v)
+
+    mod = comment.board.has_mod(v)
+
+    if not comment.author_id == v.id and not v.admin_level >= 3 and not mod:
+        abort(403)
+
+    if comment.board.is_sensitive and comment.is_sensitive:
+        abort(403)
+
+    comment.is_sensitive = not comment.is_sensitive
+    g.db.add(comment)
+
+    if comment.author_id != v.id:
+        ma = ModAction(
+            kind="set_sensitive_comment" if comment.is_sensitive else "unset_sensitive_comment",
+            user_id=v.id,
+            target_comment_id=comment.id,
+            board_id=comment.board.id,
+            note=None if mod else "admin action"
+            )
+        g.db.add(ma)
+
+    return "", 204
 
 
 @app.route("/comment/<cid>/repost", methods=["POST"])

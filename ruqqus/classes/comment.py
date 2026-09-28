@@ -75,9 +75,8 @@ class Comment(Base, Age_times, Scores, Stndrd, Fuzzing):
     parent_comment_id = Column(Integer, ForeignKey("comments.id"))
     original_board_id = Column(Integer, ForeignKey("boards.id"))
 
-    over_18 = Column(Boolean, default=False)
     is_offensive = Column(Boolean, default=False)
-    is_nsfl = Column(Boolean, default=False)
+    is_sensitive = Column(Boolean, default=False)
     is_bot = Column(Boolean, default=False)
     is_pinned = Column(Boolean, default=False)
     hidden_by_guild = Column(Boolean, default=False)
@@ -306,9 +305,8 @@ class Comment(Base, Age_times, Scores, Stndrd, Fuzzing):
             'edited_utc': self.edited_utc or 0,
             'is_banned': bool(self.is_banned),
             'is_deleted': self.is_deleted,
-            'is_nsfw': self.over_18,
             'is_offensive': self.is_offensive,
-            'is_nsfl': self.is_nsfl,
+            'is_sensitive': self.is_sensitive,
             'is_distinguished': bool(self.distinguish_level),
             'is_heralded': bool(self.gm_distinguish),
             'herald_guild': self.distinguished_board.name if self.gm_distinguish else None,

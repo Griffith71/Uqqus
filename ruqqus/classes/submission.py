@@ -74,7 +74,6 @@ class Submission(Base, Stndrd, Age_times, Scores, Fuzzing):
     approved_utc = Column(Integer, default=0)
     board_id = Column(Integer, ForeignKey("boards.id"), default=None)
     original_board_id = Column(Integer, ForeignKey("boards.id"), default=None)
-    over_18 = Column(Boolean, default=False)
     original_board = relationship(
         "Board", primaryjoin="Board.id==Submission.original_board_id")
     creation_ip = Column(String(64), default="")
@@ -88,7 +87,7 @@ class Submission(Base, Stndrd, Age_times, Scores, Fuzzing):
     score_top = Column(Float, default=1)
     score_activity = Column(Float, default=0)
     is_offensive = Column(Boolean, default=False)
-    is_nsfl = Column(Boolean, default=False)
+    is_sensitive = Column(Boolean, default=False)
     hidden_by_guild = Column(Boolean, default=False)
     board = relationship(
         "Board",
@@ -434,8 +433,7 @@ class Submission(Base, Stndrd, Age_times, Scores, Fuzzing):
                 'id': self.base36id,
                 'fullname': self.fullname,
                 'title': self.title,
-                'is_nsfw': self.over_18,
-                'is_nsfl': self.is_nsfl,
+                'is_sensitive': self.is_sensitive,
                 'is_bot': self.is_bot,
                 'thumb_url': self.thumb_url,
                 'domain': self.domain,

@@ -114,7 +114,6 @@ def dmca_post(v):
                           domain_ref=None,
                           board_id=1000,
                           original_board_id=1000,
-                          over_18=False,
                           post_public=True,
                           repost_id=None,
                           is_offensive=False
@@ -144,8 +143,7 @@ def dmca_post(v):
                 parent_fullname=new_post.fullname,
                 parent_comment_id=None,
                 level=1,
-                over_18=False,
-                is_nsfl=False,
+                is_sensitive=False,
                 is_op=True,
                 is_offensive=False,
                 original_board_id=1000,

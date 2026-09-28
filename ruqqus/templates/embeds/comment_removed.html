@@ -20,7 +20,7 @@
 
         <div id="comment-{{ c.base36id }}-only" class="">
 
-            <div class="user-info">{% if c.over_18 %}<span class="badge badge-danger">NSFW</span> {% endif %}
+            <div class="user-info">{% if c.is_sensitive %}<span class="badge badge-warning">Sensitive Content</span> {% endif %}
                 {% if c.is_banned %}[Removed by administrators]{% else %}[Deleted by author]{% endif %}
             </div>
 

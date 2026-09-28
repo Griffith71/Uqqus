@@ -88,20 +88,6 @@ URL path parameters:
                                b=board,
                                p=True)
 
-    if post.over_18 and not (v and v.over_18) and not session_over18(board):
-        t = int(time.time())
-        return {"html":lambda:render_template("errors/nsfw.html",
-                               v=v,
-                               t=t,
-                               lo_formkey=make_logged_out_formkey(t),
-                               board=post.board
-
-                               ),
-                "api":lambda:(jsonify({"error":"Must be 18+ to view"}), 451)
-                }
-
-
-
     return {
         "html":lambda:post.rendered_page(v=v),
         "api":lambda:jsonify(post.json)
@@ -141,18 +127,6 @@ Optional query parameters:
                                b=board,
                                p=True)
 
-    if post.over_18 and not (v and v.over_18) and not session_over18(board):
-        t = int(time.time())
-        return {"html":lambda:render_template("errors/nsfw.html",
-                               v=v,
-                               t=t,
-                               lo_formkey=make_logged_out_formkey(t),
-                               board=post.board
-
-                               ),
-                "api":lambda:(jsonify({"error":"Must be 18+ to view"}), 451)
-                }
-    
     post.tree_comments()
 
     if v:
@@ -176,18 +150,6 @@ def post_base36id_noboard(base36id, anything=None, v=None):
 
     if not post.is_profile_post:
         return redirect(post.permalink)
-
-    if post.over_18 and not (v and v.over_18) and not session_over18(post.board):
-        t = int(time.time())
-        return {"html":lambda:render_template("errors/nsfw.html",
-                               v=v,
-                               t=t,
-                               lo_formkey=make_logged_out_formkey(t),
-                               board=post.board
-
-                               ),
-                "api":lambda:(jsonify({"error":"Must be 18+ to view"}), 451)
-                }
 
     post.tree_comments()
 
@@ -350,8 +312,8 @@ def get_post_title(v):
 
 def _build_standalone_submission(author_id, target, title, body, body_html,
                                   url=None, embed_url=None, domain_ref=None,
-                                  over_18=False, is_offensive=False, app_id=None,
-                                  creation_region=None, is_bot=False,
+                                  is_offensive=False, is_sensitive=False,
+                                  app_id=None, creation_region=None, is_bot=False,
                                   auto_upvote=True, repost_id=0):
     """Create + flush one independent new Submission (own votes, own
     comments) in `target`, with its own SubmissionAux row and an optional
@@ -363,10 +325,10 @@ def _build_standalone_submission(author_id, target, title, body, body_html,
         domain_ref=domain_ref,
         board_id=target.id,
         original_board_id=target.id,
-        over_18=(over_18 or target.over_18),
         post_public=not target.is_private,
         repost_id=repost_id,
         is_offensive=is_offensive,
+        is_sensitive=(is_sensitive or target.is_sensitive),
         app_id=app_id,
         creation_region=creation_region,
         is_bot=is_bot
@@ -404,8 +366,8 @@ def create_forward_post(primary, target, forwarded_by):
         url=primary.url,
         embed_url=primary.embed_url,
         domain_ref=primary.domain_ref,
-        over_18=primary.over_18,
         is_offensive=primary.is_offensive,
+        is_sensitive=primary.is_sensitive,
         app_id=primary.app_id,
         creation_region=primary.creation_region,
         is_bot=primary.is_bot,
@@ -457,8 +419,8 @@ def create_forward_post_from_comment(comment, target, promoted_by):
         title=title,
         body=body,
         body_html=body_html,
-        over_18=comment.over_18,
         is_offensive=comment.is_offensive,
+        is_sensitive=comment.is_sensitive,
         app_id=comment.app_id,
         creation_region=comment.creation_region,
         is_bot=comment.is_bot
@@ -966,7 +928,7 @@ Optional file data:
         domain_ref=domain_obj.id if domain_obj else None,
         board_id=board.id,
         original_board_id=board.id,
-        over_18=bool(request.form.get("over_18", "")),
+        is_sensitive=bool(request.form.get("sensitive", "")),
         post_public=not board.is_private,
         repost_id=None,
         is_offensive=is_offensive,
@@ -1239,28 +1201,6 @@ Required form data:
     return jsonify(new_forward.json)
 
 
-# @app.route("/api/nsfw/<pid>/<x>", methods=["POST"])
-# @auth_required
-# @validate_formkey
-# def api_nsfw_pid(pid, x, v):
-
-#     try:
-#         x=bool(int(x))
-#     except:
-#         abort(400)
-
-#     post=get_post(pid)
-
-#     if not v.admin_level >=3 and not post.author_id==v.id and not post.board.has_mod(v):
-#         abort(403)
-
-#     post.over_18=x
-#     g.db.add(post)
-#
-
-#     return "", 204
-
-
 @app.route("/delete_post/<pid>", methods=["POST"])
 @app.route("/api/v1/delete_post/<pid>", methods=["POST"])
 @app.delete("/api/v2/submissions/<pid>")
@@ -1340,59 +1280,46 @@ def embed_post_pid(pid):
     return render_template("embeds/submission.html", p=post)
 
 
-@app.route("/api/toggle_post_nsfw/<pid>", methods=["POST"])
-@app.route("/api/v1/toggle_post_nsfw/<pid>", methods=["POST"])
-@app.patch("/api/v2/submissions/<pid>/toggle_nsfw")
+@app.route("/api/toggle_post_sensitive/<pid>", methods=["POST"])
+@app.route("/api/v1/toggle_post_sensitive/<pid>", methods=["POST"])
+@app.patch("/api/v2/submissions/<pid>/toggle_sensitive")
 @is_not_banned
 @api("update")
 @validate_formkey
-def toggle_post_nsfw(pid, v):
+def toggle_post_sensitive(pid, v):
     """
-Toggle "NSFW" status on a post.
+Toggle "Sensitive Content" status on a post - an author-discretionary
+blur-until-clicked flag for material that isn't a rule violation but
+could be upsetting.
 
 URL path parameters:
 * `pid` - The base 36 post id.
 """
 
-
     post = get_post(pid)
 
-    mod=post.board.has_mod(v)
+    mod = post.board.has_mod(v)
 
     if not post.author_id == v.id and not v.admin_level >= 3 and not mod:
         abort(403)
 
-    if post.board.over_18 and post.over_18:
+    if post.board.is_sensitive and post.is_sensitive:
         abort(403)
 
-    post.over_18 = not post.over_18
+    post.is_sensitive = not post.is_sensitive
     g.db.add(post)
 
-    if post.author_id!=v.id:
-        ma=ModAction(
-            kind="set_nsfw" if post.over_18 else "unset_nsfw",
+    if post.author_id != v.id:
+        ma = ModAction(
+            kind="set_sensitive" if post.is_sensitive else "unset_sensitive",
             user_id=v.id,
             target_submission_id=post.id,
             board_id=post.board.id,
-            note = None if mod else "admin action"
+            note=None if mod else "admin action"
             )
         g.db.add(ma)
 
     return "", 204
-
-
-@app.route("/api/toggle_post_nsfl/<pid>", methods=["POST"])
-@app.route("/api/v1/toggle_post_nsfl/<pid>", methods=["POST"])
-@app.patch("/api/v2/submissions/<pid>/toggle_nsfl")
-@is_not_banned
-@api("update")
-@validate_formkey
-def toggle_post_nsfl(pid, v):
-    """
-NSFL tagging has been disabled.
-"""
-
-    abort(404)
 
 
 @app.route("/retry_thumb/<pid>", methods=["POST"])

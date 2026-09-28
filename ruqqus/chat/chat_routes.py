@@ -55,17 +55,6 @@ def guild_chat(guildname, v):
 
     board=get_guild(guildname)
 
-
-    if board.over_18 and not (v and v.over_18) and not session_over18(board):
-        t = int(time.time())
-        return render_template(
-            "errors/nsfw.html",
-            v=v,
-            t=t,
-            lo_formkey=make_logged_out_formkey(t),
-            board=board
-            )
-
     return render_template(
         "chat/chat.html", 
         b=board, 

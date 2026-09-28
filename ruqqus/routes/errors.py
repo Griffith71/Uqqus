@@ -184,59 +184,6 @@ def error_503(e):
             "api": lambda: (jsonify({"error": "503 Service Unavailable"}), 503)
             }
 
-@app.route("/allow_nsfw_logged_in/<bid>", methods=["POST"])
-@auth_required
-@validate_formkey
-def allow_nsfw_logged_in(bid, v):
-
-    cutoff = int(time.time()) + 3600
-
-    if not flask_session.get("over_18", None):
-        flask_session["over_18"] = {}
-
-    flask_session["over_18"][bid] = cutoff
-
-    return redirect(request.form.get("redir"))
-
-
-@app.route("/allow_nsfw_logged_out/<bid>", methods=["POST"])
-@auth_desired
-def allow_nsfw_logged_out(bid, v):
-
-    if v:
-        return redirect('/')
-
-    t = int(request.form.get('time'))
-
-    if not validate_logged_out_formkey(t,
-                                       request.form.get("formkey")
-                                       ):
-        abort(403)
-
-    if not flask_session.get("over_18", None):
-        flask_session["over_18"] = {}
-
-    cutoff = int(time.time()) + 3600
-    flask_session["over_18"][bid] = cutoff
-
-    return redirect(request.form.get("redir"))
-
-
-@app.route("/allow_nsfl_logged_in/<bid>", methods=["POST"])
-@auth_required
-@validate_formkey
-def allow_nsfl_logged_in(bid, v):
-    # NSFL tagging has been disabled.
-    abort(404)
-
-
-@app.route("/allow_nsfl_logged_out/<bid>", methods=["POST"])
-@auth_desired
-def allow_nsfl_logged_out(bid, v):
-    # NSFL tagging has been disabled.
-    abort(404)
-
-
 @app.route("/error/<eid>", methods=["GET"])
 @auth_desired
 def error_all_preview(eid, v):

@@ -46,7 +46,7 @@ class Board(Base, Stndrd, Age_times):
     description = Column(String)
 
     description_html=Column(String)
-    over_18=Column(Boolean, default=False)
+    is_sensitive=Column(Boolean, default=False)
     is_nsfl=Column(Boolean, default=False)
     is_banned=Column(Boolean, default=False)
     has_banner=Column(Boolean, default=False)
@@ -152,7 +152,7 @@ class Board(Base, Stndrd, Age_times):
 
     @cache.memoize(timeout=60)
     def idlist(self, sort=None, page=1, t=None,
-               hide_offensive=True, hide_bot=False, v=None, nsfw=False, **kwargs):
+               hide_offensive=True, hide_bot=False, v=None, **kwargs):
 
         posts = g.db.query(Submission.id).options(lazyload('*')).filter_by(is_banned=False,
                                                                            #is_pinned=False,
@@ -162,9 +162,6 @@ class Board(Base, Stndrd, Age_times):
             Submission.hidden_by_guild == False
         )
 
-        if not nsfw:
-            posts = posts.filter_by(over_18=False)
-
         if v and v.hide_offensive:
             posts = posts.filter(
                 or_(
@@ -172,11 +169,9 @@ class Board(Base, Stndrd, Age_times):
                     Submission.author_id==v.id
                 )
             )
-			
+
         if v and v.hide_bot and not self.has_mod(v, "content"):
             posts = posts.filter_by(is_bot=False)
-
-        posts = posts.filter_by(is_nsfl=False)
 
         if self.is_private:
             if v and (self.can_view(v) or v.admin_level >= 4):
@@ -489,7 +484,7 @@ class Board(Base, Stndrd, Age_times):
         if self.has_profile:
             return f"https://{app.config['S3_BUCKET']}/board/{self.name.lower()}/profile-{self.profile_nonce}.png"
         else:
-            if self.over_18:
+            if self.is_sensitive:
                 return "/assets/images/icons/nsfw_guild_icon.png"
             else:
                 return "/assets/images/guilds/default-guild-icon.png"
@@ -536,7 +531,7 @@ class Board(Base, Stndrd, Age_times):
                 'permalink': self.permalink,
                 'description': self.description,
                 'description_html': self.description_html,
-                'over_18': self.over_18,
+                'is_sensitive': self.is_sensitive,
                 'is_banned': False,
                 'is_private': self.is_private,
                 'is_restricted': self.restricted_posting,
@@ -566,18 +561,13 @@ class Board(Base, Stndrd, Age_times):
 
     @property
     def show_settings_icons(self):
-        return self.is_private or self.restricted_posting or self.over_18 or self.all_opt_out
+        return self.is_private or self.restricted_posting or self.is_sensitive or self.all_opt_out
 
     @cache.memoize(600)
-    def comment_idlist(self, page=1, v=None, nsfw=False, **kwargs):
+    def comment_idlist(self, page=1, v=None, **kwargs):
 
         posts = g.db.query(Submission).options(
             lazyload('*')).filter_by(board_id=self.id)
-
-        if not nsfw:
-            posts = posts.filter_by(over_18=False)
-
-        posts = posts.filter_by(is_nsfl=False)
 
         if self.is_private:
             if v and (self.can_view(v) or v.admin_level >= 4):

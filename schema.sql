@@ -73,7 +73,7 @@ CREATE TABLE public.boards (
     created_utc integer,
     description character varying(1500),
     description_html character varying(5000),
-    over_18 boolean,
+    is_sensitive boolean,
     creator_id integer,
     has_banner boolean NOT NULL,
     has_profile boolean NOT NULL,
@@ -139,10 +139,9 @@ CREATE TABLE public.comments (
     level integer,
     parent_comment_id integer,
     title_id integer,
-    over_18 boolean,
     is_op boolean,
     is_offensive boolean,
-    is_nsfl boolean,
+    is_sensitive boolean,
     original_board_id integer,
     upvotes integer,
     downvotes integer,
@@ -176,7 +175,6 @@ CREATE TABLE public.submissions (
     author_id integer,
     created_utc integer NOT NULL,
     is_banned boolean,
-    over_18 boolean,
     distinguish_level integer,
     created_str character varying(255),
     stickied boolean,
@@ -199,7 +197,7 @@ CREATE TABLE public.submissions (
     score_disputed double precision,
     is_offensive boolean,
     is_pinned boolean,
-    is_nsfl boolean,
+    is_sensitive boolean,
     repost_id integer,
     score_best double precision,
     upvotes integer,
@@ -235,7 +233,6 @@ CREATE TABLE public.users (
     passhash character varying(255) NOT NULL,
     created_utc integer NOT NULL,
     admin_level integer,
-    over_18 boolean,
     creation_ip character varying(255),
     hide_offensive boolean,
     is_activated boolean,
@@ -267,7 +264,6 @@ CREATE TABLE public.users (
     is_deleted boolean,
     delete_reason character varying(1000),
     is_enrolled boolean,
-    filter_nsfw boolean,
     is_nofollow boolean DEFAULT false,
     coin_balance integer DEFAULT 0,
     premium_expires_utc integer DEFAULT 0,
@@ -4163,10 +4159,10 @@ CREATE INDEX boards_name_trgm_idx ON public.boards USING gin (name public.gin_tr
 
 
 --
--- Name: boards_over18_idx; Type: INDEX; Schema: public; Owner: -
+-- Name: boards_sensitive_idx; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX boards_over18_idx ON public.boards USING btree (over_18);
+CREATE INDEX boards_sensitive_idx ON public.boards USING btree (is_sensitive);
 
 
 --
@@ -4548,13 +4544,6 @@ CREATE INDEX paypaltxn_status_idx ON public.paypal_txns USING btree (status);
 
 
 --
--- Name: post_18_index; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX post_18_index ON public.submissions USING btree (over_18);
-
-
---
 -- Name: post_app_id_idx; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -4595,12 +4584,6 @@ CREATE INDEX reports_post_index ON public.reports USING btree (post_id);
 
 CREATE INDEX sub_active_index ON public.subscriptions USING btree (is_active);
 
-
---
--- Name: subimssion_binary_group_idx; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX subimssion_binary_group_idx ON public.submissions USING btree (is_banned, deleted_utc, over_18);
 
 
 --
@@ -4656,14 +4639,14 @@ CREATE INDEX submission_best_sort_idx ON public.submissions USING btree (score_b
 -- Name: submission_disputed_sort_idx; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX submission_disputed_sort_idx ON public.submissions USING btree (is_banned, deleted_utc, score_disputed DESC, over_18);
+CREATE INDEX submission_disputed_sort_idx ON public.submissions USING btree (is_banned, deleted_utc, score_disputed DESC);
 
 
 --
 -- Name: submission_hot_sort_idx; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX submission_hot_sort_idx ON public.submissions USING btree (is_banned, deleted_utc, score_hot DESC, over_18);
+CREATE INDEX submission_hot_sort_idx ON public.submissions USING btree (is_banned, deleted_utc, score_hot DESC);
 
 
 --
@@ -4691,7 +4674,7 @@ CREATE INDEX submission_isdeleted_idx ON public.submissions USING btree (deleted
 -- Name: submission_new_sort_idx; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX submission_new_sort_idx ON public.submissions USING btree (is_banned, deleted_utc, created_utc DESC, over_18);
+CREATE INDEX submission_new_sort_idx ON public.submissions USING btree (is_banned, deleted_utc, created_utc DESC);
 
 
 --
@@ -4763,12 +4746,6 @@ CREATE INDEX submissions_created_utc_desc_idx ON public.submissions USING btree 
 
 CREATE INDEX submissions_offensive_index ON public.submissions USING btree (is_offensive);
 
-
---
--- Name: submissions_over18_index; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX submissions_over18_index ON public.submissions USING btree (over_18);
 
 
 --

@@ -44,7 +44,6 @@ def multiboard(name, v):
     for name in name.split("+"):
         board = get_guild(name)
         if board.is_banned and not (v and v.admin_level >= 3): continue
-        if board.over_18 and not (v and v.over_18) and not session_over18(board): continue
         if not board.can_view(v): continue
 
         board_ids.append(board.id)
@@ -56,16 +55,11 @@ def multiboard(name, v):
         blocking = select(UserBlock.target_id).filter_by(user_id=v.id).subquery()
         posts = posts.filter(Submission.author_id.notin_(blocking))
 
-    if v and not v.over_18:
-        posts = posts.filter_by(over_18=False)
-
     if v and v.hide_offensive:
         posts = posts.filter_by(is_offensive=False)
-        
+
     if v and v.hide_bot:
         posts = posts.filter_by(is_bot=False)
-
-    posts = posts.filter_by(is_nsfl=False)
 
     if t:
         now = int(time.time())
@@ -237,7 +231,7 @@ Optional form data:
     new_board = Board(name=board_name,
                       description=description,
                       description_html=description_html,
-                      over_18=bool(request.form.get("over_18", "")),
+                      is_sensitive=bool(request.form.get("sensitive", "")),
                       creator_id=v.id,
                       subcat_id=subcat.id
                       )
@@ -314,18 +308,6 @@ Optional query parameters:
                                                  ), 410),
                 'api': lambda: (jsonify({'error': f'410 Gone - +{board.name} is banned.'}), 410)
                 }
-    if board.over_18 and not (v and v.over_18) and not session_over18(board):
-        t = int(time.time())
-        return {'html': lambda: render_template("errors/nsfw.html",
-                                                v=v,
-                                                t=t,
-                                                lo_formkey=make_logged_out_formkey(
-                                                    t),
-                                                board=board
-                                                ),
-                'api': lambda: jsonify({'error': f'+{board.name} is NSFW.'})
-                }
-
     if v:
         defaultsorting = v.defaultsorting
         defaulttime = v.defaulttime
@@ -341,7 +323,6 @@ Optional query parameters:
     ids = board.idlist(sort=sort,
                        t=t,
                        page=page,
-                       nsfw=(v and v.over_18) or session_over18(board),
                        v=v,
                        gt=int(request.args.get("utc_greater_than", 0)),
                        lt=int(request.args.get("utc_less_than", 0))
@@ -351,17 +332,10 @@ Optional query parameters:
     ids = ids[0:25]
 
     if page == 1 and sort != "new" and sort != "old" and not ignore_pinned:
-        if (v and v.over_18) or session_over18(board):
-            stickies = g.db.query(Submission.id).filter_by(board_id=board.id,
-                                                        is_banned=False,
-                                                        is_pinned=True,
-                                                        deleted_utc=0).order_by(Submission.id.asc()).limit(4)
-        else:
-            stickies = g.db.query(Submission.id).filter_by(board_id=board.id,
-                                                       is_banned=False,
-                                                       is_pinned=True,
-                                                       over_18=False,
-                                                       deleted_utc=0).order_by(Submission.id.asc()).limit(4)
+        stickies = g.db.query(Submission.id).filter_by(board_id=board.id,
+                                                    is_banned=False,
+                                                    is_pinned=True,
+                                                    deleted_utc=0).order_by(Submission.id.asc()).limit(4)
         stickies = [x[0] for x in stickies]
         ids = stickies + ids
 
@@ -970,14 +944,13 @@ def mod_is_banned_board_username(bid, username, board, v):
     return jsonify(result)
 
 
-@app.route("/mod/<bid>/settings/over_18", methods=["POST"])
+@app.route("/mod/<bid>/settings/sensitive", methods=["POST"])
 @auth_required
 @is_guildmaster("config")
 @validate_formkey
-def mod_bid_settings_nsfw(bid, board, v):
+def mod_bid_settings_sensitive(bid, board, v):
 
-    # nsfw
-    board.over_18 = bool(request.form.get("over_18", False) == 'true')
+    board.is_sensitive = bool(request.form.get("sensitive", False) == 'true')
 
     g.db.add(board)
 
@@ -985,7 +958,7 @@ def mod_bid_settings_nsfw(bid, board, v):
         kind="update_settings",
         user_id=v.id,
         board_id=board.id,
-        note=f"over_18={board.over_18}"
+        note=f"is_sensitive={board.is_sensitive}"
         )
     g.db.add(ma)
     return "", 204
@@ -1607,9 +1580,6 @@ URL path parameters:
                                               deleted_utc=0
                                               ).join(Report, Report.post_id == Submission.id)
 
-    if not v.over_18:
-        ids = ids.filter(Submission.over_18 == False)
-
     ids = ids.order_by(Submission.id.desc()).offset((page - 1) * 25).limit(26).all()
 
     ids = [x[0] for x in ids]
@@ -1651,11 +1621,8 @@ def all_mod_queue(v):
                                                                   Submission.deleted_utc==0
                                                                   ).join(Report, Report.post_id == Submission.id)
 
-    if not v.over_18:
-        ids = ids.filter(Submission.over_18 == False)
-
     ids = ids.order_by(Submission.id.desc()).offset((page - 1) * 25).limit(26).all()
-    
+
     ids = [x[0] for x in ids]
    
     next_exists = (len(ids) == 26)
@@ -1970,7 +1937,7 @@ Required form data:
 def guild_profile(guild):
     x = get_guild(guild)
 
-    if x.over_18:
+    if x.is_sensitive:
         return redirect("/assets/images/icons/nsfw_guild_icon.png")
     else:
         return redirect(x.profile_url)
@@ -2043,7 +2010,6 @@ Optional query parameters:
 
     idlist = b.comment_idlist(v=v,
                               page=page,
-                              nsfw=v and v.over_18,
                               hide_offensive=(v and v.hide_offensive) or not v,
                               hide_bot=v and v.hide_bot)
 

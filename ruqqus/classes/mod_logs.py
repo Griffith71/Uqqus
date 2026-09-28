@@ -329,17 +329,29 @@ ACTIONTYPES={
         "color": "bg-muted",
         "title": 'un-set nsfw on post {self.target_post.title}'
     },
-    "set_nsfl":{
-        "str":'set nsfl on post {self.target_link}',
-        "icon":"fa-skull",
-        "color": "bg-black",
-        "title": 'set nsfl on post {self.target_post.title}'
+    "set_sensitive":{
+        "str":'marked post {self.target_link} as sensitive content',
+        "icon":"fa-eye-slash",
+        "color": "bg-warning",
+        "title": 'marked post {self.target_post.title} as sensitive content'
     },
-    "unset_nsfl":{
-        "str":'un-set nsfl on post {self.target_link}',
-        "icon":"fa-skull",
+    "unset_sensitive":{
+        "str":'un-marked post {self.target_link} as sensitive content',
+        "icon":"fa-eye-slash",
         "color": "bg-muted",
-        "title": 'un-set nsfw on post {self.target_post.title}'
+        "title": 'un-marked post {self.target_post.title} as sensitive content'
+    },
+    "set_sensitive_comment":{
+        "str":'marked reply {self.target_link} as sensitive content',
+        "icon":"fa-eye-slash",
+        "color": "bg-warning",
+        "title": 'marked a reply as sensitive content'
+    },
+    "unset_sensitive_comment":{
+        "str":'un-marked reply {self.target_link} as sensitive content',
+        "icon":"fa-eye-slash",
+        "color": "bg-muted",
+        "title": 'un-marked a reply as sensitive content'
     },
     "ban_post":{
         "str": 'removed post {self.target_link}',

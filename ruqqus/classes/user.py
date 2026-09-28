@@ -42,7 +42,6 @@ class User(Base, Stndrd, Age_times):
     created_utc = Column(Integer, default=0)
     admin_level = Column(Integer, default=0)
     is_activated = Column(Boolean, default=False)
-    over_18 = Column(Boolean, default=False)
     creation_ip = Column(String, default=None)
     submissions = relationship(
         "Submission",
@@ -106,7 +105,6 @@ class User(Base, Stndrd, Age_times):
     unban_utc = Column(Integer, default=0)
     is_deleted = Column(Boolean, default=False)
     delete_reason = Column(String(500), default='')
-    filter_nsfw = Column(Boolean, default=False)
     stored_karma = Column(Integer, default=0)
     stored_subscriber_count=Column(Integer, default=0)
     """posts_last_checked_utc = Column(Integer, default=0)
@@ -250,16 +248,11 @@ class User(Base, Stndrd, Age_times):
                                                                            stickied=False
                                                                            )
 
-        if not self.over_18:
-            posts = posts.filter_by(over_18=False)
-
         if self.hide_offensive:
             posts = posts.filter_by(is_offensive=False)
 
         if self.hide_bot:
             posts = posts.filter_by(is_bot=False)
-
-        posts = posts.filter_by(is_nsfl=False)
 
         board_ids = select(Subscription.board_id).filter_by(
             user_id=self.id,
@@ -397,8 +390,6 @@ class User(Base, Stndrd, Age_times):
                 user_id=v.id).subquery()
 
         def apply_common_filters(q):
-            if not (v and v.over_18):
-                q = q.filter(Submission.over_18 == False)
             if v and v.hide_offensive and v.id != self.id:
                 q = q.filter(Submission.is_offensive == False)
             if v and v.hide_bot:
@@ -520,13 +511,11 @@ class User(Base, Stndrd, Age_times):
             c = v.contributes.subquery()
 
         def apply_common_filters(q):
-            if not (v and v.over_18):
-                q = q.filter(Submission.over_18 == False)
             if v and v.hide_offensive and v.id != self.id:
                 q = q.filter(Comment.is_offensive == False)
             if v and v.hide_bot:
                 q = q.filter(Comment.is_bot == False)
-            q = q.filter(Submission.is_nsfl == False)
+            q = q.filter(Submission.is_sensitive == False)
             if (not v) or v.admin_level < 3:
                 q = q.filter(Comment.deleted_utc == 0)
             return q.filter(Comment.created_utc >= cutoff)
@@ -656,10 +645,7 @@ class User(Base, Stndrd, Age_times):
             Submission.is_banned == False,
             Submission.deleted_utc==0
             ).join(Report, Report.post_id==Submission.id)
-        
-        if not self.over_18:
-            posts=posts.filter(Submission.over_18==False)
-            
+
         return bool(posts.first())
            
 
@@ -1314,9 +1300,6 @@ class User(Base, Stndrd, Age_times):
                                                                            deleted_utc=0
                                                                            )
 
-        if not self.over_18:
-            posts = posts.filter_by(over_18=False)
-
         posts = posts.join(
             SaveRelationship, SaveRelationship.submission_id == Submission.id
         ).filter(SaveRelationship.user_id == self.id)
@@ -1363,9 +1346,6 @@ class User(Base, Stndrd, Age_times):
             Comment.is_banned == False,
             Comment.deleted_utc == 0
         )
-
-        if not self.over_18:
-            comments = comments.filter(Submission.over_18 == False)
 
         comments = comments.join(
             CommentSaveRelationship, CommentSaveRelationship.comment_id == Comment.id
@@ -1430,9 +1410,6 @@ class User(Base, Stndrd, Age_times):
             activity, activity.c.sid == Submission.id
         )
 
-        if not (v and v.over_18):
-            posts = posts.filter(Submission.over_18 == False)
-
         if not (v and v.admin_level >= 3):
             posts = posts.filter(Submission.deleted_utc == 0, Submission.is_banned == False)
             posts = posts.join(Board, Board.id == Submission.board_id).filter(Board.is_banned == False)
@@ -1472,9 +1449,6 @@ class User(Base, Stndrd, Age_times):
             is_banned=False,
             deleted_utc=0
         ).join(vh, vh.c.submission_id == Submission.id)
-
-        if not self.over_18:
-            posts = posts.filter(Submission.over_18 == False)
 
         if self.admin_level < 4:
             m = g.db.query(
@@ -1523,9 +1497,6 @@ class User(Base, Stndrd, Age_times):
         if exclude_self:
             posts = posts.filter(Submission.author_id != self.id)
 
-        if not self.over_18:
-            posts = posts.filter(Submission.over_18 == False)
-
         if self.admin_level < 4:
             m = g.db.query(
                 ModRelationship.board_id).filter_by(
@@ -1573,11 +1544,6 @@ class User(Base, Stndrd, Age_times):
 
         posts = g.db.query(Submission).options(
             lazyload('*')).join(Submission.board)
-
-        if not self.over_18:
-            posts = posts.filter_by(over_18=False)
-
-        posts = posts.filter_by(is_nsfl=False)
 
         if self.admin_level >= 4:
             pass

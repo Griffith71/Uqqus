@@ -338,7 +338,6 @@ if first or envs["DATABASE_URL"]!=environ.get("DATABASE_URL"):
         name="general",
         description="All topics. Content posted here may be yanked to other guilds.",
         description_html="<p>All topics. Content posted here may be yanked to other guilds.</p>",
-        over_18=False,
         created_utc=int(time.time()),
         creator_id=1
         )
@@ -353,7 +352,6 @@ if first or envs["DATABASE_URL"]!=environ.get("DATABASE_URL"):
         name="systemprofile",
         description="Reserved system guild for profile-primary posts. Not user-joinable.",
         description_html="<p>Reserved system guild for profile-primary posts. Not user-joinable.</p>",
-        over_18=False,
         created_utc=int(time.time()),
         creator_id=1
         )

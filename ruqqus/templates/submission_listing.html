@@ -16,7 +16,7 @@
 {% set can_moderate = v and v.admin_level>=3 %}
 {% set can_pin = v and p.is_guildmaster('content') %}
 
-<div id="post-{{ p.base36id }}" class="card{% if p.is_banned %} banned{% endif %}{% if p.deleted_utc > 0 %} deleted{% endif %}{% if p.stickied %} stickied{% endif %}{% if voted==1 %} upvoted{% elif voted==-1 %} downvoted{% endif %}{% if p.over_18 %} nsfw{% endif %}{% if '/post/' in request.path and loop.length==1 %} border rounded{% endif %}">
+<div id="post-{{ p.base36id }}" class="card{% if p.is_banned %} banned{% endif %}{% if p.deleted_utc > 0 %} deleted{% endif %}{% if p.stickied %} stickied{% endif %}{% if voted==1 %} upvoted{% elif voted==-1 %} downvoted{% endif %}{% if p.is_sensitive %} sensitive{% endif %}{% if '/post/' in request.path and loop.length==1 %} border rounded{% endif %}">
 
   <div class="d-flex flex-row-reverse flex-md-row flex-nowrap justify-content-end">
 
@@ -61,7 +61,8 @@
 
     <div class="card-header bg-transparent border-0 d-flex flex-row flex-nowrap pl-2 pl-md-0 p-0 mr-md-2">
 
-      <div class="position-relative d-none d-md-block" style="z-index: 3;">
+      <div class="position-relative d-none d-md-block{% if p.is_sensitive %} sensitive-content-wrap{% endif %}" style="z-index: 3;" id="sensitive-thumb-desktop-{{ p.base36id }}">
+        <div class="{% if p.is_sensitive %}sensitive-blur{% endif %}">
         {% if p.thumb_url and p.is_image %}
         <a href="javascript:void(0)" rel="nofollow noopener" class="expandable-image" data-toggle="modal" data-target="#expandImageModal" data-url="{{ p.url }}">
           <img src="{{ p.thumb_url }}" class="post-img">
@@ -91,10 +92,19 @@
           <img src="/assets/images/icons/default_thumb_link.png" class="post-img border-0" alt="generic link post thumbnail">
         </a>
         {% endif %}
+        </div>
+        {% if p.is_sensitive %}
+        <div class="sensitive-overlay" onclick="revealSensitive('sensitive-thumb-desktop-{{ p.base36id }}')">
+          <i class="fas fa-eye-slash"></i>
+          <span class="text-small font-weight-bold">Sensitive Content</span>
+          <span class="btn btn-sm btn-light">View anyway</span>
+        </div>
+        {% endif %}
       </div>
 
 
-      <div class="d-block d-md-none" style="z-index: 3;">
+      <div class="d-block d-md-none{% if p.is_sensitive %} sensitive-content-wrap{% endif %}" style="z-index: 3;" id="sensitive-thumb-mobile-{{ p.base36id }}">
+        <div class="{% if p.is_sensitive %}sensitive-blur{% endif %}">
         {% if p.thumb_url and not p.is_image %}
         <a href="{{ p.url }}" rel="nofollow noopener">
           <img src="{{ p.thumb_url }}" class="post-img" alt="link post thumbnail">
@@ -106,6 +116,14 @@
             {% endif %}
 
           </div>
+        {% if p.is_sensitive %}
+        <div class="sensitive-overlay" onclick="revealSensitive('sensitive-thumb-mobile-{{ p.base36id }}')">
+          <i class="fas fa-eye-slash"></i>
+          <span class="text-small font-weight-bold">Sensitive Content</span>
+          <span class="btn btn-sm btn-light">View anyway</span>
+        </div>
+        {% endif %}
+        </div>
 
         </div>
 
@@ -116,7 +134,7 @@
             <div class="post-meta text-left x-scroll" style="overflow-x: scroll;">{% if not b and not p.is_profile_post %}<a href="{{ p.board.permalink }}">+{{ p.board.name }}</a> · {% endif %}
               {% if p.stickied %}<i class="fas fa-thumbtack text-admin fa-rotate--45" data-toggle="tooltip" data-placement="bottom" title="Sticky post"></i> · {% endif %}
               {% if p.is_pinned %}<i class="fas fa-thumbtack text-info fa-rotate--45" data-toggle="tooltip" data-placement="bottom" title="Pinned to +{{ p.board.name }}"></i> · {% endif %}
-              {% if p.over_18 %}<span class="text-danger"><i class="far fa-exclamation-triangle text-small mr-1"></i>nsfw</span> · {% endif %}
+              {% if p.is_sensitive %}<span class="text-warning"><i class="far fa-exclamation-triangle text-small mr-1"></i>sensitive content</span> · {% endif %}
               {% if p.is_repost and not p.is_forward_copy %}<span class="text-warning"><i class="far fa-sync text-small mr-1"></i><a class="text-warning" href="{{ p.reposts.permalink }}">repost</a></span> · {% endif %} <span data-toggle="tooltip" data-placement="bottom" data-delay='{"show":"700", "hide":"300"}' title="{{ p.created_date }}">{{ p.age_string }}</span> {% if p.promoted_by %}<a href="/@{{ p.promoted_by.username }}" class="user-name"><img src="{{ p.promoted_by.profile_url }}" class="profile-pic-20 mr-1"/><span class="user-name-inner">{{ p.promoted_by.username }}</span></a> forwarded {% if p.promoted_from_comment.author.is_deleted %}[deleted account]{% else %}<a href="/@{{ p.promoted_from_comment.author.username }}" class="user-name">{{ p.promoted_from_comment.author.username }}</a>{% endif %}'s <a href="{{ p.promoted_from_comment.permalink }}">reply</a>{% elif p.forwarded_by %}<a href="/@{{ p.forwarded_by.username }}" class="user-name"><img src="{{ p.forwarded_by.profile_url }}" class="profile-pic-20 mr-1"/><span class="user-name-inner">{{ p.forwarded_by.username }}</span></a> forwarded {% if p.author.is_deleted %}[deleted account]{% else %}<a href="/@{{ p.author.username }}" class="user-name">{{ p.author.username }}</a>{% endif %}'s post{% else %}by {% if p.author.is_deleted %}[deleted account]{% else %}<a href="/@{{ p.author.username }}" class="user-name"><img src="{{ p.author.profile_url }}" class="profile-pic-20 mr-1"/><span class="user-name-inner">{{ p.author.username }}</span></a>{% if p.author.title %}{{ p.author.title.rendered | safe }}{% endif %}{% if p.distinguish_level %} <i class="fas fa-shield text-admin" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Ruqqus Administrator, speaking officially"></i>{% endif %}{% if p.gm_distinguish %} <i class="fas fa-crown {% if p.gm_distinguish==p.board_id %}text-warning{% else %}text-muted{% endif %}" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Guildmaster of +{{ p.distinguished_board.name }}"></i>{% endif %}{% endif %}{% endif %}{% if reposted_ids is defined and p.id in reposted_ids %} · <span class="text-muted"><i class="fas fa-retweet fa-fw"></i>Repost</span>{% endif %}{% if p.award_count %} · <span><img src="/assets/images/icons/ruqqus-coin.png" style="width: 15px; margin-bottom: 3px;"/><span class="pl-1 text-warning font-weight-bold">{{ p.award_count }}</span></span>{% endif %} · ({{ p.domain }})
               {% if not p.is_public %} · <i class="fas fa-eye-slash text-warning" data-toggle="tooltip" data-placement="bottom" title="Private post, visible to you because {{ p.visibility_reason(v) }}"></i>{% endif %}
               {% if p.is_bot %} <i class="fas fa-robot text-info" data-toggle="tooltip" data-placement="bottom"  data-original-title="Automaton"></i>
@@ -133,7 +151,7 @@
           {% if p.stickied %}<i class="fas fa-thumbtack text-admin fa-rotate--45" data-toggle="tooltip" data-placement="bottom" title="Sticky post"></i> · {% endif %}
           {% if p.is_pinned %}<i class="fas fa-thumbtack text-info fa-rotate--45" data-toggle="tooltip" data-placement="bottom" title="Pinned to +{{ p.board.name }}"></i> · {% endif %}
           <span data-toggle="tooltip" data-placement="bottom" data-delay='{"show":"700", "hide":"300"}' title="{{ p.created_datetime }}">{{ p.age_string }}</span> {% if p.promoted_by %}<a href="/@{{ p.promoted_by.username }}" class="user-name"><img src="{{ p.promoted_by.profile_url }}" class="profile-pic-20 mr-1"/><span class="user-name-inner">{{ p.promoted_by.username }}</span></a> forwarded {% if p.promoted_from_comment.author.is_deleted %}[deleted account]{% else %}<a href="/@{{ p.promoted_from_comment.author.username }}" class="user-name">{{ p.promoted_from_comment.author.username }}</a>{% endif %}'s <a href="{{ p.promoted_from_comment.permalink }}">reply</a>{% elif p.forwarded_by %}<a href="/@{{ p.forwarded_by.username }}" class="user-name"><img src="{{ p.forwarded_by.profile_url }}" class="profile-pic-20 mr-1"/><span class="user-name-inner">{{ p.forwarded_by.username }}</span></a> forwarded {% if p.author.is_deleted %}[deleted account]{% else %}<a href="/@{{ p.author.username }}" class="user-name">{{ p.author.username }}</a>{% endif %}'s post{% else %}by {% if p.author.is_deleted %}[deleted account]{% else %}<a href="/@{{ p.author.username }}" class="user-name"><img src="{{ p.author.profile_url }}" class="profile-pic-20 mr-1"/><span class="user-name-inner">{{ p.author.username }}</span></a>{% if p.author.title %}{{ p.author.title.rendered | safe }}{% endif %}{% if p.gm_distinguish %} <i class="fas fa-crown {% if p.gm_distinguish==p.board_id %}text-warning{% else %}text-muted{% endif %}" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Guildmaster of +{{ p.distinguished_board.name }}"></i>{% endif %}{% endif %}{% endif %} {% if p.distinguish_level %}<i class="fas fa-shield text-admin" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Ruqqus Administrator, speaking officially"></i>{% endif %}{% if reposted_ids is defined and p.id in reposted_ids %} · <span class="text-muted"><i class="fas fa-retweet fa-fw"></i>Repost</span>{% endif %}{% if p.award_count %} · <span><img src="/assets/images/icons/ruqqus-coin.png" style="width: 15px; margin-bottom: 3px;"/><span class="pl-1 text-warning font-weight-bold">{{ p.award_count }}</span></span>{% endif %} · ({% if p.url %}<a href="/search?q=domain%3A{{ p.domain }}&sort=new&t=all" target="_blank">{{ p.domain }}</a>{% else %}text post{% endif %})
-          {% if not p.is_public %} · <i class="fas fa-eye-slash text-warning" data-toggle="tooltip" data-placement="bottom" title="Private post, visible because {{ p.visibility_reason(v) }}"></i>{% endif %}{% if p.over_18 %} · <span class="badge text-danger border-danger border-1 text-small-extra">nsfw</span>{% endif %}
+          {% if not p.is_public %} · <i class="fas fa-eye-slash text-warning" data-toggle="tooltip" data-placement="bottom" title="Private post, visible because {{ p.visibility_reason(v) }}"></i>{% endif %}{% if p.is_sensitive %} · <span class="badge text-warning border-warning border-1 text-small-extra">sensitive content</span>{% endif %}
           {% if p.is_bot %} <i class="fas fa-robot text-info" data-toggle="tooltip" data-placement="bottom"  data-original-title="Automaton"></i>
           {% endif %}
           {% if p.is_blocking %}<i class="fas fa-user-minus text-warning" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="You're blocking this user."></i>{% endif %}

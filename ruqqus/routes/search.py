@@ -109,9 +109,6 @@ def searchlisting(criteria, v=None, page=1, t="None", sort="top", b=None):
             # not_(SubmissionAux.url.ilike("http://%/%"+domain))
 
 
-    if not (v and v.over_18):
-        posts = posts.filter(Submission.over_18 == False)
-
     if v and v.hide_offensive:
         posts = posts.filter(Submission.is_offensive == False)
 		
@@ -221,9 +218,6 @@ def search(v, search_type="posts"):
 
         boards = g.db.query(Board).filter(
             Board.name.ilike(f'%{term}%'))
-
-        if not(v and v.over_18):
-            boards = boards.filter_by(over_18=False)
 
         if not (v and v.admin_level >= 3):
             boards = boards.filter_by(is_banned=False)

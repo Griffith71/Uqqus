@@ -31,11 +31,6 @@ def settings_profile_post(v):
 
     updated = False
 
-    if request.values.get("over18", v.over_18) != v.over_18:
-        updated = True
-        v.over_18 = request.values.get("over18", None) == 'true'
-        cache.delete_memoized(User.idlist, v)
-
     if request.values.get("hide_offensive",
                           v.hide_offensive) != v.hide_offensive:
         updated = True
@@ -46,11 +41,6 @@ def settings_profile_post(v):
                           v.hide_bot) != v.hide_bot:
         updated = True
         v.hide_bot = request.values.get("hide_bot", None) == 'true'
-        cache.delete_memoized(User.idlist, v)
-
-    if request.values.get("filter_nsfw", v.filter_nsfw) != v.filter_nsfw:
-        updated = True
-        v.filter_nsfw = not request.values.get("filter_nsfw", None) == 'true'
         cache.delete_memoized(User.idlist, v)
 
     if request.values.get("private", v.is_private) != v.is_private:

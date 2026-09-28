@@ -7,7 +7,7 @@
 			<div class="d-flex flex-wrap align-items-center mb-2">
 				<img src="{{ b.profile_url }}" class="profile-pic-40 mr-2">
 
-				<a class="card-title text-break stretched-link h5 mb-0" href="{{ b.permalink }}">+{{ b.name }} {% if b.over_18 %}<span class="badge badge-danger">NSFW</span>{% endif %}</a>
+				<a class="card-title text-break stretched-link h5 mb-0" href="{{ b.permalink }}">+{{ b.name }} {% if b.is_sensitive %}<span class="badge badge-warning">Sensitive Content</span>{% endif %}</a>
 
 			</div>
 			<p class="card-text text-small text-muted">{{ b.description|truncate(72, True) }}</p>
@@ -31,7 +31,7 @@
         <img src="{{ b.profile_url }}" class="profile-pic-50 mr-2">
 
         <div>
-         <div class="text-black" style="font-size: 16px;">+{{ b.name }} {% if b.over_18 %}<span class="badge badge-danger">NSFW</span>{% endif %}</div>
+         <div class="text-black" style="font-size: 16px;">+{{ b.name }} {% if b.is_sensitive %}<span class="badge badge-warning">Sensitive Content</span>{% endif %}</div>
          {% if request.path=="/browse" %}<div class="text-small text-muted">{{ b.description|truncate(24, True) }}</div>{% endif %}
        </div>
 
