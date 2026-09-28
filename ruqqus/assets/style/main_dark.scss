@@ -3973,6 +3973,55 @@ img.emoji {
   font-weight: 600 !important;
 }
 
-.spoiler:hover { 
+.spoiler:hover {
   color: black;
+}
+
+/* Sensitive content blur - author-discretionary, click-to-reveal,
+   distinct from the NSFW full-page gate: content still renders, just
+   obscured until the viewer clicks through. */
+.sensitive-content-wrap {
+  position: relative;
+  overflow: hidden;
+}
+
+.sensitive-content-wrap .sensitive-blur {
+  filter: blur(24px);
+  transition: filter 0.15s ease;
+}
+
+.sensitive-content-wrap.sensitive-text .sensitive-blur {
+  filter: blur(6px);
+  user-select: none;
+}
+
+.sensitive-content-wrap.revealed .sensitive-blur {
+  filter: none;
+}
+
+.sensitive-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  background-color: rgba(0, 0, 0, 0.6);
+  color: $white;
+  text-align: center;
+  padding: 0.75rem;
+  cursor: pointer;
+  z-index: 2;
+}
+
+.sensitive-content-wrap.revealed .sensitive-overlay {
+  display: none;
+}
+
+.sensitive-overlay .btn {
+  pointer-events: none;
 }
