@@ -35,6 +35,7 @@ class SubmissionAux(Base):
     embed_url = Column(String(256), default="")
     meta_title=Column(String(512), default="")
     meta_description=Column(String(1024), default="")
+    preview_image_url=Column(String(1024), default="")
 
 
 class Submission(Base, Stndrd, Age_times, Scores, Fuzzing):
@@ -79,7 +80,7 @@ class Submission(Base, Stndrd, Age_times, Scores, Fuzzing):
     creation_ip = Column(String(64), default="")
     mod_approved = Column(Integer, default=None)
     accepted_utc = Column(Integer, default=0)
-    #is_image = Column(Boolean, default=False)
+    _own_is_image = Column("is_image", Boolean, default=False)
     has_thumb = Column(Boolean, default=False)
     post_public = Column(Boolean, default=True)
     score_hot = Column(Float, default=0)
@@ -590,7 +591,7 @@ class Submission(Base, Stndrd, Age_times, Scores, Fuzzing):
 
     @property
     def meta_title(self):
-        return self.submission_aux.meta_title
+        return self.submission_aux.meta_title or (self.reposts.meta_title if self.is_repost else "")
 
     @meta_title.setter
     def meta_title(self, x):
@@ -599,13 +600,22 @@ class Submission(Base, Stndrd, Age_times, Scores, Fuzzing):
 
     @property
     def meta_description(self):
-        return self.submission_aux.meta_description
+        return self.submission_aux.meta_description or (self.reposts.meta_description if self.is_repost else "")
 
     @meta_description.setter
     def meta_description(self, x):
         self.submission_aux.meta_description=x
         g.db.add(self.submission_aux)
-    
+
+    @property
+    def preview_image_url(self):
+        return self.submission_aux.preview_image_url or (self.reposts.preview_image_url if self.is_repost else "")
+
+    @preview_image_url.setter
+    def preview_image_url(self, x):
+        self.submission_aux.preview_image_url=x
+        g.db.add(self.submission_aux)
+
 
     def is_guildmaster(self, perm=None):
         mod=self.__dict__.get('_is_guildmaster', False)
@@ -642,6 +652,10 @@ class Submission(Base, Stndrd, Age_times, Scores, Fuzzing):
     @property
     def flag_count(self):
         return len(self.flags)
+
+    @property
+    def repost_count(self):
+        return g.db.query(RepostRelationship).filter_by(submission_id=self.id).count()
 
     @property
     def report_count(self):
@@ -700,11 +714,11 @@ class Submission(Base, Stndrd, Age_times, Scores, Fuzzing):
 
     @property
     def is_image(self):
-        return self.has_thumb and self.domain_obj and self.domain_obj.show_thumbnail
+        return bool(self._own_is_image) or bool(self.is_repost and self.reposts.is_image)
 
     @is_image.setter
     def is_image(self, other):
-        pass
+        self._own_is_image = bool(other)
     
     @property
     def shortlink(self):

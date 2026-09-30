@@ -871,14 +871,17 @@ def admin_purge_guild_images(boardname, v):
     if board.has_banner:
         board.del_banner()
 
-    posts = g.db.query(Submission).options(lazyload('*')).filter_by(board_id=board.id, has_thumb=True)
+    posts = g.db.query(Submission).options(lazyload('*')).filter(
+        Submission.board_id == board.id,
+        or_(Submission.has_thumb == True, Submission.is_image == True)
+    )
 
 
     def del_function(post):
 
         del_function
-        aws.delete_file(urlparse(post.thumb_url).path.lstrip('/'))
-        #post.has_thumb=False
+        if post.has_thumb:
+            aws.delete_file(urlparse(post.thumb_url).path.lstrip('/'))
 
         if post.url and post.domain=="i.ruqqus.com":
             aws.delete_file(urlparse(post.url).path.lstrip('/'))
@@ -889,6 +892,7 @@ def admin_purge_guild_images(boardname, v):
         i+=1
         threads.append(gevent.spawn(del_function, post))
         post.has_thumb=False
+        post.is_image=False
         g.db.add(post)
 
     gevent.joinall(threads)

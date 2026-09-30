@@ -1,5 +1,4 @@
 import requests
-from os import environ, remove
 from urllib.parse import urlparse
 from bs4 import BeautifulSoup
 from PIL import Image as PILimage
@@ -45,22 +44,7 @@ def thumbnail_thread(pid, debug=False):
         post = get_post(pid, session=db)
 
 
-    #First, determine the url to go off of
-    #This is the embed url, if the post is allowed to be embedded, and the embedded url starts with http
-
-    # if post.domain_obj and post.domain_obj.show_thumbnail:
-    #     print_("Post is likely hosted image")
-    #     fetch_url=post.url
-    # elif post.embed_url and post.embed_url.startswith("https://"):
-    #     print_("Post is likely embedded content")
-    #     fetch_url=post.embed_url
-    # else:
-    #     print_("Post is article content")
-    #     fetch_url=post.url
-
     fetch_url=post.url
-
-
 
     #get the content
 
@@ -182,7 +166,8 @@ def thumbnail_thread(pid, debug=False):
                 print_("image too small, next")
                 continue
 
-            print_("Image is good, upload it")
+            print_("Found a usable preview image")
+            post.submission_aux.preview_image_url = url
             break
 
         else:
@@ -191,14 +176,10 @@ def thumbnail_thread(pid, debug=False):
             db.close()
             return False, "No usable images"
 
-
-
-
     elif x.headers.get("Content-Type","").startswith("image/"):
-        #image is originally loaded fetch_url
+        #post url is itself a direct image - display it hotlinked, never re-hosted
         print_("post url is direct image")
-        image_req=x
-        image = PILimage.open(BytesIO(x.content))
+        post.is_image = True
 
     else:
 
@@ -206,27 +187,9 @@ def thumbnail_thread(pid, debug=False):
         db.close()
         return False, f'Unknown content type {x.headers.get("Content-Type")} for submitted content'
 
-
-    print_(f"Have image, uploading")
-
-    name = f"posts/{post.base36id}/thumb.png"
-    tempname = name.replace("/", "_")
-
-    with open(tempname, "wb") as file:
-        for chunk in image_req.iter_content(1024):
-            file.write(chunk)
-
-    aws.upload_from_file(name, tempname, resize=(375, 227))
-    post.has_thumb = True
     db.add(post)
-
+    db.add(post.submission_aux)
     db.commit()
-
     db.close()
-
-    try:
-        remove(tempname)
-    except FileNotFoundError:
-        pass
 
     return True, "Success"

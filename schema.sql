@@ -2666,7 +2666,8 @@ CREATE TABLE public.submissions_aux (
     ban_reason character varying(128),
     key_id integer NOT NULL,
     meta_title character varying(512),
-    meta_description character varying(1024)
+    meta_description character varying(1024),
+    preview_image_url character varying(1024) DEFAULT ''::character varying
 );
 
 
