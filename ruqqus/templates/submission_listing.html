@@ -18,12 +18,10 @@
 
 <div id="post-{{ p.base36id }}" class="card{% if p.is_banned %} banned{% endif %}{% if p.deleted_utc > 0 %} deleted{% endif %}{% if p.stickied %} stickied{% endif %}{% if voted==1 %} upvoted{% elif voted==-1 %} downvoted{% endif %}{% if p.is_sensitive %} sensitive{% endif %}{% if '/post/' in request.path and loop.length==1 %} border rounded{% endif %}">
 
-  <div class="d-flex flex-row-reverse flex-md-row flex-nowrap justify-content-end">
-
-    <!-- Voting on "medium" devices or larger, hidden on smaller devices -->
+  <div class="d-flex flex-row flex-nowrap justify-content-end">
 
     {% if not (loop.length==1 and '/post/' in request.path) %}
-    <div class="voting my-2 d-none d-md-block pr-2">
+    <div class="voting my-2 pr-2">
       {% if v and request.path.startswith(('/@',)) %}
 
       {% if voted==1 %}
@@ -58,74 +56,6 @@
 
     </div>
     {% endif %}
-
-    <div class="card-header bg-transparent border-0 d-flex flex-row flex-nowrap pl-2 pl-md-0 p-0 mr-md-2">
-
-      <div class="position-relative d-none d-md-block{% if p.is_sensitive %} sensitive-content-wrap{% endif %}" style="z-index: 3;" id="sensitive-thumb-desktop-{{ p.base36id }}">
-        <div class="{% if p.is_sensitive %}sensitive-blur{% endif %}">
-        {% if p.thumb_url and p.is_image %}
-        <a href="javascript:void(0)" rel="nofollow noopener" class="expandable-image" data-toggle="modal" data-target="#expandImageModal" data-url="{{ p.url }}">
-          <img src="{{ p.thumb_url }}" class="post-img">
-        </a>
-
-
-        {% elif p.thumb_url and not p.embed_url %}
-        <a href="{{ p.url }}" rel="nofollow noopener" target="_blank">
-          <img src="{{ p.thumb_url }}" class="post-img" alt="">
-        </a>
-        {% endif %}
-
-        {% if p.embed_url %}
-        <a href="{{ p.url }}" target="_blank" rel="nofollow noopener">
-          <img src="{{ p.thumb_url if p.has_thumb else '/assets/images/icons/default_thumb_yt.png' }}" class="post-img border-0" alt="generic youtube embed thumbnail">
-        </a>
-        {% endif %}
-
-        {% if not p.url %}
-        <a href="{{ p.permalink }}" target="_blank" rel="{% if p.author.is_private %}nofollow {% endif %}noopener">
-          <img src="/assets/images/icons/default_thumb_text.png" class="post-img border-0" alt="text post thumbnail">
-        </a>
-        {% endif %}
-
-        {% if p.url and not p.thumb_url and not p.embed_url %}
-        <a href="{{ p.url }}" rel="nofollow noopener" target="_blank">
-          <img src="/assets/images/icons/default_thumb_link.png" class="post-img border-0" alt="generic link post thumbnail">
-        </a>
-        {% endif %}
-        </div>
-        {% if p.is_sensitive %}
-        <div class="sensitive-overlay" onclick="revealSensitive('sensitive-thumb-desktop-{{ p.base36id }}')">
-          <i class="fas fa-eye-slash"></i>
-          <span class="text-small font-weight-bold">Sensitive Content</span>
-          <span class="btn btn-sm btn-light">View anyway</span>
-        </div>
-        {% endif %}
-      </div>
-
-
-      <div class="d-block d-md-none{% if p.is_sensitive %} sensitive-content-wrap{% endif %}" style="z-index: 3;" id="sensitive-thumb-mobile-{{ p.base36id }}">
-        <div class="{% if p.is_sensitive %}sensitive-blur{% endif %}">
-        {% if p.thumb_url and not p.is_image %}
-        <a href="{{ p.url }}" rel="nofollow noopener">
-          <img src="{{ p.thumb_url }}" class="post-img" alt="link post thumbnail">
-        </a>
-        {% elif p.thumb_url and p.is_image %}
-        <a href="javascript:void(0)" rel="nofollow noopener" class="expandable-image" data-toggle="modal" data-target="#expandImageModal" data-url="{{ p.url }}">
-          <img src="{{ p.thumb_url }}" class="post-img">
-          <a>
-            {% endif %}
-
-          </div>
-        {% if p.is_sensitive %}
-        <div class="sensitive-overlay" onclick="revealSensitive('sensitive-thumb-mobile-{{ p.base36id }}')">
-          <i class="fas fa-eye-slash"></i>
-          <span class="text-small font-weight-bold">Sensitive Content</span>
-          <span class="btn btn-sm btn-light">View anyway</span>
-        </div>
-        {% endif %}
-        </div>
-
-        </div>
 
         <div class="card-block text-left x-scroll-parent my-md-auto w-100">
 
@@ -164,47 +94,92 @@
       <h5 class="card-title post-title text-left w-lg-75 mb-0 pb-0 pb-md-1"><a href="{{ p.permalink }}" class="stretched-link" {% if p.author.is_private %} rel="nofollow"{% endif %}>{{ p.title | safe }}</a></h5>
 
 
-      {% if p.thumb_url %}
-      <div class="row post-img-lg mb-3">
-        <div class="col px-0">
-          <a target="_blank" href="{{ p.permalink }}" rel="{% if p.author.is_private %}nofollow {% endif %} noopener"><img src="{{ p.thumb_url }}" class="img-fluid" alt="post image"></a>
+      {% if p.is_image or p.embed_url or (p.url and not p.is_crosspost) %}
+      <div class="position-relative{% if p.is_sensitive %} sensitive-content-wrap{% endif %}" style="z-index: 3;" id="sensitive-media-{{ p.base36id }}">
+        <div class="{% if p.is_sensitive %}sensitive-blur{% endif %}">
+
+        {% if p.is_image %}
+        <div class="post-media-frame mb-3">
+          <div class="post-img-lg">
+            <a href="javascript:void(0)" rel="nofollow noopener" class="expandable-image" data-toggle="modal" data-target="#expandImageModal" data-url="{{ p.url }}">
+              <img src="{{ p.url }}" class="img-fluid" alt="post image" loading="lazy" onerror="hideBrokenMedia(this)">
+            </a>
+            <div class="post-img-overlay">{{ p.domain }} <a href="{{ p.url }}" target="_blank" rel="nofollow noopener" class="text-white"><i class="fas fa-external-link-alt text-small ml-1"></i></a></div>
+          </div>
         </div>
+
+        {% elif p.embed_url %}
+        <a href="{{ p.permalink }}" rel="{% if p.author.is_private %}nofollow {% endif %}noopener" class="embed-lg mb-3 d-block">
+          {% if p.preview_image_url %}<img src="{{ p.preview_image_url }}" alt="video preview" loading="lazy" onerror="hideBrokenMedia(this)">{% endif %}
+          <div class="embed-lg-play"><i class="fas fa-play-circle"></i></div>
+          <div class="post-img-overlay">{{ p.domain }}</div>
+        </a>
+
+        {% elif p.url and not p.is_crosspost %}
+        <a href="{{ p.url }}" target="_blank" rel="nofollow noopener" class="post-preview-lg mb-3 d-block">
+          {% if p.preview_image_url %}<img src="{{ p.preview_image_url }}" alt="link preview" loading="lazy" onerror="hideBrokenMedia(this)">{% endif %}
+          {% if p.meta_title or p.meta_description %}
+          <div class="post-body">
+            <div class="font-weight-bold">{{ (p.meta_title if p.meta_title else p.domain)|truncate(120, True) }}</div>
+            {% if p.meta_description %}<div class="text-muted text-small">{{ p.meta_description|truncate(160, True) }}</div>{% endif %}
+            <div class="text-muted text-small-extra">{{ p.domain }}</div>
+          </div>
+          {% else %}
+          <div class="d-flex justify-content-between align-items-center border rounded p-2">
+            <span>{{ p.domain|truncate(30, True) }}</span>
+            <i class="fas fa-external-link-alt text-small"></i>
+          </div>
+          {% endif %}
+        </a>
+        {% endif %}
+
+        </div>
+        {% if p.is_sensitive %}
+        <div class="sensitive-overlay" onclick="revealSensitive('sensitive-media-{{ p.base36id }}')">
+          <i class="fas fa-eye-slash"></i>
+          <span class="text-small font-weight-bold">Sensitive Content</span>
+          <span class="btn btn-sm btn-light">View anyway</span>
+        </div>
+        {% endif %}
       </div>
+      {% endif %}
+
+      {% if p.body_html %}
+      <div class="d-none card rounded border pb-0 pt-3 my-2 expandable-post-text" id="post-text-{{ p.base36id }}">
+        {{ p.body_html | safe }}
+      </div>
+      <a href="javascript:void(0)" class="text-expand show-more-link" data-id="{{ p.base36id }}">
+        <span class="text-expand-label-{{ p.base36id }}">Show more <i class="fas fa-chevron-down text-small"></i></span>
+        <span class="text-expand-label-{{ p.base36id }} d-none">Show less <i class="fas fa-chevron-up text-small"></i></span>
+      </a>
       {% endif %}
 
       <div class="post-actions mt-2 d-none d-md-block">
         <ul class="list-inline text-right d-flex">
-          
-          {% if p.body_html %}
-          <li class="list-inline-item"><a href="javascript:void(0)" class="text-expand" data-id="{{ p.base36id }}"><i class="fas fa-expand-alt mr-0 text-expand-icon-{{ p.base36id }}"></i></a></li>
-          {% endif %}
-          
+
           {% if loop.length == 1 and '/post/' in request.path %}
             <li class="list-inline-item"><a href="{{ p.permalink }}"{% if p.author.is_private %} rel="nofollow"{% endif %}>{{ p.comment_count }} comment{{ '' if p.comment_count==1 else 's' }} · {{ score }} point{{ '' if score==1 else 's' }}</a></li>
           {% else %}
 
-            <li class="list-inline-item"><a href="{{ p.permalink }}"{% if p.author.is_private %} rel="nofollow"{% endif %}><i class="fas fa-comment-dots"></i>Reply · {{ p.comment_count }}</a></li>
+            <li class="list-inline-item"><a href="{{ p.permalink }}"{% if p.author.is_private %} rel="nofollow"{% endif %}><i class="fas fa-comment-dots mr-1"></i>{{ p.comment_count }}</a></li>
 
             <li class="list-inline-item">
               <div class="dropdown show d-inline">
-                <a href="#" role="button" id="shareDropdownLink-{{ p.base36id }}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-share-alt"></i>Share</a>
+                <a href="#" role="button" id="shareDropdownLink-{{ p.base36id }}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-share-alt mr-1"></i>{{ p.repost_count }}</a>
                 <div class="dropdown-menu border-0 shadow" aria-labelledby="shareDropdownLink-{{ p.base36id }}">
                   <a class="dropdown-item copy-link" href="javascript:void(0);" role="button" data-clipboard-text="{{ p.permalink | full_link }}"><i class="fas fa-copy fa-fw"></i>Copy link</a>
                   {% if v %}
                   <a class="dropdown-item" href="javascript:void(0)" data-toggle="modal" data-target="#forwardPostModal" onclick="forward_postModal('{{ p.base36id }}')"><i class="fas fa-share fa-fw"></i>Forward</a>
+                  <a id="repost-{{ p.base36id }}" class="dropdown-item{% if p.reposted %} d-none{% endif %}" href="javascript:void(0)" onclick="post_toast('/post/{{ p.base36id }}/repost', callback=function(){document.getElementById('repost-{{ p.base36id }}').classList.toggle('d-none');document.getElementById('unrepost-{{ p.base36id }}').classList.toggle('d-none');})"><i class="fas fa-retweet fa-fw"></i>Repost</a>
+                  <a id="unrepost-{{ p.base36id }}" class="dropdown-item text-success{% if not p.reposted %} d-none{% endif %}" href="javascript:void(0)" onclick="post_toast('/post/{{ p.base36id }}/unrepost', callback=function(){document.getElementById('repost-{{ p.base36id }}').classList.toggle('d-none');document.getElementById('unrepost-{{ p.base36id }}').classList.toggle('d-none');})"><i class="fas fa-retweet fa-fw"></i>Reposted</a>
                   {% endif %}
                 </div>
               </div>
             </li>
 
             {% if v %}
-            <li class="list-inline-item"><a id="bookmark-{{ p.base36id }}" href="javascript:void(0)" class="{% if saved %}d-none{% endif %}" onclick="post_toast('/save_post/{{ p.base36id }}', callback=function(){document.getElementById('bookmark-{{ p.base36id }}').classList.toggle('d-none');document.getElementById('unbookmark-{{ p.base36id }}').classList.toggle('d-none');})"><i class="far fa-bookmark"></i>Bookmark</a></li>
-            <li class="list-inline-item"><a id="unbookmark-{{ p.base36id }}" href="javascript:void(0)" class="text-purple{% if not saved %} d-none{% endif %}" onclick="post_toast('/unsave_post/{{ p.base36id }}', callback=function(){document.getElementById('bookmark-{{ p.base36id }}').classList.toggle('d-none');document.getElementById('unbookmark-{{ p.base36id }}').classList.toggle('d-none');})"><i class="fas fa-bookmark"></i>Bookmarked</a></li>
-            {% endif %}
-
-            {% if v %}
-            <li class="list-inline-item"><a id="repost-{{ p.base36id }}" href="javascript:void(0)" class="{% if p.reposted %}d-none{% endif %}" onclick="post_toast('/post/{{ p.base36id }}/repost', callback=function(){document.getElementById('repost-{{ p.base36id }}').classList.toggle('d-none');document.getElementById('unrepost-{{ p.base36id }}').classList.toggle('d-none');document.getElementById('repost-modal-{{ p.base36id }}').classList.toggle('d-none');document.getElementById('unrepost-modal-{{ p.base36id }}').classList.toggle('d-none');})"><i class="fas fa-retweet"></i>Repost</a></li>
-            <li class="list-inline-item"><a id="unrepost-{{ p.base36id }}" href="javascript:void(0)" class="text-success{% if not p.reposted %} d-none{% endif %}" onclick="post_toast('/post/{{ p.base36id }}/unrepost', callback=function(){document.getElementById('repost-{{ p.base36id }}').classList.toggle('d-none');document.getElementById('unrepost-{{ p.base36id }}').classList.toggle('d-none');document.getElementById('repost-modal-{{ p.base36id }}').classList.toggle('d-none');document.getElementById('unrepost-modal-{{ p.base36id }}').classList.toggle('d-none');})"><i class="fas fa-retweet"></i>Reposted</a></li>
+            <li class="list-inline-item"><a id="bookmark-{{ p.base36id }}" href="javascript:void(0)" class="{% if saved %}d-none{% endif %}" onclick="post_toast('/save_post/{{ p.base36id }}', callback=function(){document.getElementById('bookmark-{{ p.base36id }}').classList.toggle('d-none');document.getElementById('unbookmark-{{ p.base36id }}').classList.toggle('d-none');})"><i class="far fa-bookmark mr-0"></i></a></li>
+            <li class="list-inline-item"><a id="unbookmark-{{ p.base36id }}" href="javascript:void(0)" class="text-purple{% if not saved %} d-none{% endif %}" onclick="post_toast('/unsave_post/{{ p.base36id }}', callback=function(){document.getElementById('bookmark-{{ p.base36id }}').classList.toggle('d-none');document.getElementById('unbookmark-{{ p.base36id }}').classList.toggle('d-none');})"><i class="fas fa-bookmark mr-0"></i></a></li>
             {% endif %}
 
             {% if v %}
@@ -231,7 +206,7 @@
                 {% endif %}
                 {% endif %}
 
-                {% if p.url and p.has_thumb==False and (can_edit or can_moderate) %}
+                {% if p.url and not p.is_image and not p.preview_image_url and (can_edit or can_moderate) %}
                 <a class="dropdown-item" href="javascript:void(0)" onclick="post_toast('/retry_thumb/{{ p.base36id }}')"><i class="fas fa-image fa-fw"></i>Retry Thumb</a>
                 {% endif %}
 
@@ -287,11 +262,6 @@
       </ul>
     </div>
 
-{% if p.body_html %}
-      <div class="d-none card rounded border pb-0 pt-3 my-2" id="post-text-{{ p.base36id }}">
-        {{ p.body_html | safe }}
-      </div>
-{% endif %}
           
   </div>
 
@@ -301,69 +271,35 @@
   <div class="post-actions">
     <ul class="list-inline text-right d-flex">
       {% if loop.length == 1 and '/post/' in request.path %}
-        {% if p.body_html %}
-            <li class="list-inline-item"><a href="javascript:void(0)" class="text-expand" data-id="{{ p.base36id }}"><i class="fas fa-expand-alt mr-0 text-expand-icon-{{ p.base36id }}"></i></a></li>
-        {% endif %}
         <li class="list-inline-item mr-auto"><a href="{{ p.permalink }}"{% if p.author.is_private %} rel="nofollow"{% endif %}>{{ p.comment_count }} comment{{ '' if p.comment_count==1 else 's' }} · {{ score }} point{{ '' if score==1 else 's' }}</a></li>
 
       {% else %}
-        <li class="list-inline-item mr-auto"><a href="{{ p.permalink }}"{% if p.author.is_private %} rel="nofollow"{% endif %}><i class="fas fa-comment-dots"></i>Reply · {{ p.comment_count }}</a></li>
+        <li class="list-inline-item mr-auto"><a href="{{ p.permalink }}"{% if p.author.is_private %} rel="nofollow"{% endif %}><i class="fas fa-comment-dots mr-1"></i>{{ p.comment_count }}</a></li>
 
-        {% if p.body_html %}
-            <li class="list-inline-item"><a href="javascript:void(0)" class="text-expand" data-id="{{ p.base36id }}"><i class="fas fa-expand-alt mr-0 text-expand-icon-{{ p.base36id }}"></i></a></li>
+        <li class="list-inline-item">
+          <div class="dropdown show d-inline">
+            <a href="#" role="button" id="shareDropdownLinkMobile-{{ p.base36id }}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-share-alt mr-1"></i>{{ p.repost_count }}</a>
+            <div class="dropdown-menu dropdown-menu-right border-0 shadow" aria-labelledby="shareDropdownLinkMobile-{{ p.base36id }}">
+              <a class="dropdown-item copy-link" href="javascript:void(0);" role="button" data-clipboard-text="{{ p.permalink | full_link }}"><i class="fas fa-copy fa-fw"></i>Copy link</a>
+              {% if v %}
+              <a class="dropdown-item" href="javascript:void(0)" data-toggle="modal" data-target="#forwardPostModal" onclick="forward_postModal('{{ p.base36id }}')"><i class="fas fa-share fa-fw"></i>Forward</a>
+              <a id="repost-mobile-{{ p.base36id }}" class="dropdown-item{% if p.reposted %} d-none{% endif %}" href="javascript:void(0)" onclick="post_toast('/post/{{ p.base36id }}/repost', callback=function(){document.getElementById('repost-mobile-{{ p.base36id }}').classList.toggle('d-none');document.getElementById('unrepost-mobile-{{ p.base36id }}').classList.toggle('d-none');})"><i class="fas fa-retweet fa-fw"></i>Repost</a>
+              <a id="unrepost-mobile-{{ p.base36id }}" class="dropdown-item text-success{% if not p.reposted %} d-none{% endif %}" href="javascript:void(0)" onclick="post_toast('/post/{{ p.base36id }}/unrepost', callback=function(){document.getElementById('repost-mobile-{{ p.base36id }}').classList.toggle('d-none');document.getElementById('unrepost-mobile-{{ p.base36id }}').classList.toggle('d-none');})"><i class="fas fa-retweet fa-fw"></i>Reposted</a>
+              {% endif %}
+            </div>
+          </div>
+        </li>
+
+        {% if v %}
+        <li class="list-inline-item"><a id="bookmark-mobile-{{ p.base36id }}" href="javascript:void(0)" class="{% if saved %}d-none{% endif %}" onclick="post_toast('/save_post/{{ p.base36id }}', callback=function(){document.getElementById('bookmark-mobile-{{ p.base36id }}').classList.toggle('d-none');document.getElementById('unbookmark-mobile-{{ p.base36id }}').classList.toggle('d-none');})"><i class="far fa-bookmark mr-0"></i></a></li>
+        <li class="list-inline-item"><a id="unbookmark-mobile-{{ p.base36id }}" href="javascript:void(0)" class="text-purple{% if not saved %} d-none{% endif %}" onclick="post_toast('/unsave_post/{{ p.base36id }}', callback=function(){document.getElementById('bookmark-mobile-{{ p.base36id }}').classList.toggle('d-none');document.getElementById('unbookmark-mobile-{{ p.base36id }}').classList.toggle('d-none');})"><i class="fas fa-bookmark mr-0"></i></a></li>
         {% endif %}
-        
 
-        <li class="list-inline-item"><a href="javascript:void(0);" role="button" class="copy-link" data-clipboard-text="{{ p.permalink | full_link}}"><i class="fas fa-link"></i>Share</a></li>
         {% if v %}
         <li class="list-inline-item">
           <a href="#" data-toggle="modal" data-target="#actionsModal-{{ p.base36id }}">
             <i class="fas fa-ellipsis-h"></i>
           </a>
-        </li>
-        {% endif %}
-
-
-        {% if v and request.path.startswith(('/@',)) %}
-        <li id="voting-{{ p.base36id }}-mobile" class="voting list-inline-item d-md-none">
-
-          {% if voted==1 %}
-          <span class="mr-2 arrow-up post-{{ p.base36id }}-up active">
-          </span>
-          {% endif %}
-
-          <span id="post-score-{{ p.base36id }}-mobile" class="score post-score-{{ p.base36id }} {% if voted==1 %}score-up{% elif voted==-1%}score-down{% endif %}"{% if not p.is_banned %} data-toggle="tooltip" data-placement="top" data-original-title="+{{ ups }} | -{{ downs }}"{% endif %}>{% if p.is_banned %}✖{% else %}{{ score }}{% endif %}</span>
-
-          {% if voted==-1 %}
-          <span class="ml-2 my-0 arrow-down post-{{ p.base36id }}-down active">
-          </span>
-          {% endif %}
-
-
-        </li>
-        {% elif v %}
-        <li id="voting-{{ p.base36id }}-mobile" class="voting list-inline-item d-md-none">
-
-          <span id="post-{{ p.base36id }}-up-mobile" tabindex="0" data-id-up="{{ p.base36id }}" data-content-type="post" class="mr-2 arrow-up upvote-button post-{{ p.base36id }}-up {% if voted==1 %}active{% endif %}">
-          </span>
-
-          <span id="post-score-{{ p.base36id }}-mobile" class="score post-score-{{ p.base36id }} {% if voted==1 %}score-up{% elif voted==-1%}score-down{% endif %}"{% if not p.is_banned %} data-toggle="tooltip" data-placement="top" data-original-title="+{{ ups }} | -{{ downs }}"{% endif %}>{% if p.is_banned %}✖{% else %}{{ score }}{% endif %}</span>
-
-          <span id="post-{{ p.base36id }}-down-mobile" tabindex="0" data-id-down="{{ p.base36id }}" data-content-type="post" class="ml-2 my-0 arrow-down downvote-button post-{{ p.base36id }}-down {% if voted==-1 %}active{% endif %}">
-          </span>
-
-        </li>
-        {% else %}
-        <li id="voting-{{ p.base36id }}-mobile" class="voting list-inline-item d-md-none">
-          <span id="arrow-{{ p.base36id }}-mobile-up" tabindex="0" class="mr-2 arrow-mobile-up" onclick="location.href='/login';">
-            <i class="fas fa-arrow-alt-up mx-0" aria-hidden="true"></i>
-          </span>
-
-          <span id="post-score-{{ p.base36id }}-mobile" class="score"{% if not p.is_banned %} data-toggle="tooltip" data-placement="top" data-original-title="+{{ ups }} | -{{ downs }}"{% endif %}>{{ score }}</span>
-
-          <span id="arrow-{{ p.base36id }}-mobile-down" tabindex="0" class="arrow-mobile-down ml-2 my-0" onclick="location.href='/login';">
-            <i class="fas fa-arrow-alt-down mx-0" aria-hidden="true"></i>
-          </span>
         </li>
         {% endif %}
 
@@ -389,26 +325,7 @@
       <div class="modal-body">
         <ul class="list-group post-actions">
 
-          <a class="btn btn-link btn-block btn-lg text-left text-muted" data-dismiss="modal" href="{{ p.permalink }}"><i class="far fa-comment-dots text-center text-muted mr-3"></i>Reply · {{ p.comment_count }}</a>
-
-          <button class="btn btn-link btn-block btn-lg text-left text-muted copy-link" data-dismiss="modal" data-clipboard-text="{{ p.permalink | full_link }}"><i class="fas fa-copy text-center text-muted mr-3"></i>Copy link</button>
-
           {% if v %}
-          <button class="btn btn-link btn-block btn-lg text-left text-muted" data-dismiss="modal" data-toggle="modal" data-target="#forwardPostModal" onclick="forward_postModal('{{ p.base36id }}')"><i class="far fa-share-square fa-fw text-center text-muted mr-3"></i>Forward</button>
-          {% endif %}
-
-          {% if v %}
-          <button id="bookmark-modal-{{ p.base36id }}" class="btn btn-link btn-block btn-lg text-left text-muted{% if saved %} d-none{% endif %}" data-dismiss="modal" onclick="post_toast('/save_post/{{ p.base36id }}', callback=function(){document.getElementById('bookmark-{{ p.base36id }}').classList.toggle('d-none');document.getElementById('unbookmark-{{ p.base36id }}').classList.toggle('d-none');document.getElementById('bookmark-modal-{{ p.base36id }}').classList.toggle('d-none');document.getElementById('unbookmark-modal-{{ p.base36id }}').classList.toggle('d-none');})"><i class="far fa-bookmark fa-fw text-center text-muted mr-3"></i>Bookmark</button>
-          <button id="unbookmark-modal-{{ p.base36id }}" class="btn btn-link btn-block btn-lg text-left text-purple{% if not saved %} d-none{% endif %}" data-dismiss="modal" onclick="post_toast('/unsave_post/{{ p.base36id }}', callback=function(){document.getElementById('bookmark-{{ p.base36id }}').classList.toggle('d-none');document.getElementById('unbookmark-{{ p.base36id }}').classList.toggle('d-none');document.getElementById('bookmark-modal-{{ p.base36id }}').classList.toggle('d-none');document.getElementById('unbookmark-modal-{{ p.base36id }}').classList.toggle('d-none');})"><i class="fas fa-bookmark fa-fw text-center text-purple mr-3"></i>Remove bookmark</button>
-          {% endif %}
-
-          {% if v %}
-          <button id="repost-modal-{{ p.base36id }}" class="btn btn-link btn-block btn-lg text-left text-muted{% if p.reposted %} d-none{% endif %}" data-dismiss="modal" onclick="post_toast('/post/{{ p.base36id }}/repost', callback=function(){document.getElementById('repost-{{ p.base36id }}').classList.toggle('d-none');document.getElementById('unrepost-{{ p.base36id }}').classList.toggle('d-none');document.getElementById('repost-modal-{{ p.base36id }}').classList.toggle('d-none');document.getElementById('unrepost-modal-{{ p.base36id }}').classList.toggle('d-none');})"><i class="fas fa-retweet fa-fw text-center text-muted mr-3"></i>Repost</button>
-          <button id="unrepost-modal-{{ p.base36id }}" class="btn btn-link btn-block btn-lg text-left text-success{% if not p.reposted %} d-none{% endif %}" data-dismiss="modal" onclick="post_toast('/post/{{ p.base36id }}/unrepost', callback=function(){document.getElementById('repost-{{ p.base36id }}').classList.toggle('d-none');document.getElementById('unrepost-{{ p.base36id }}').classList.toggle('d-none');document.getElementById('repost-modal-{{ p.base36id }}').classList.toggle('d-none');document.getElementById('unrepost-modal-{{ p.base36id }}').classList.toggle('d-none');})"><i class="fas fa-retweet fa-fw text-center text-success mr-3"></i>Reposted</button>
-          {% endif %}
-
-          {% if v %}
-          <div class="dropdown-divider"></div>
 
           {% if v.id != p.author_id and not p.author.is_deleted %}
           <button class="btn btn-link btn-block btn-lg text-left text-warning" data-dismiss="modal" data-toggle="modal" data-target="#tipModal" onclick="tipModal2('{{ p.base36id }}','post','{{ p.permalink }}','{{ p.author.username }}','{{ p.author.profile_url }}')"><i class="far fa-star fa-fw text-center text-warning mr-3"></i>Tip</button>

@@ -162,6 +162,14 @@ html {
     padding-bottom: 0.7rem;
 }
 
+// Cap the search form's width so its mx-auto margins can actually center
+// it in the leftover space between the logo and the icon row, instead of
+// stretching to fill (and visually leaning toward) whichever side has less
+// competing content.
+#searchform {
+    max-width: 500px;
+}
+
 @supports (font-variation-settings: normal) {
     html { font-family: 'Inter var', sans-serif; }
   }
@@ -2359,8 +2367,101 @@ a.bg-dark:hover, a.bg-dark:focus, button.bg-dark:hover, button.bg-dark:focus {
     background-color: $gray-300;
 }
 
-.post-img-lg, .mobile-thumb-enlarged {
+.mobile-thumb-enlarged {
     display: none;
+}
+
+.embed-lg, .post-preview-lg {
+    position: relative;
+    display: block;
+    overflow: hidden;
+    border-radius: $border-radius;
+}
+
+.post-media-frame {
+    position: relative;
+    display: block;
+    overflow: hidden;
+    border-radius: $border-radius;
+    background-color: $gray-700;
+}
+
+.post-img-lg {
+    position: relative;
+    display: block;
+    width: -webkit-fit-content;
+    width: -moz-fit-content;
+    width: fit-content;
+    max-width: 100%;
+    margin: 0 auto;
+}
+
+.post-img-lg img, .embed-lg img {
+    max-width: 100%;
+    max-height: 480px;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    display: block;
+    margin: 0 auto;
+}
+
+.embed-lg {
+    background-color: rgba(0, 0, 0, 0.85);
+    min-height: 200px;
+}
+
+.embed-lg-play {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: $white;
+    font-size: 4rem;
+    opacity: 0.85;
+    pointer-events: none;
+}
+
+.post-preview-lg {
+    border: 1px solid $gray-300;
+    text-decoration: none;
+}
+
+.post-preview-lg:hover {
+    text-decoration: none;
+    border-color: $primary;
+}
+
+.post-preview-lg img {
+    width: 100%;
+    max-height: 260px;
+    object-fit: cover;
+    display: block;
+}
+
+.post-preview-lg .post-body {
+    padding: .5rem .75rem;
+}
+
+.expandable-post-text {
+    position: relative;
+    z-index: 2;
+}
+
+.show-more-link {
+    position: relative;
+    z-index: 2;
+    display: inline-block;
+    color: $muted;
+    font-size: 13px;
+    font-weight: 600;
+    margin-top: .25rem;
+    margin-bottom: .5rem;
+}
+
+.show-more-link:hover {
+    color: $primary;
+    text-decoration: none;
 }
 
 .post-img-overlay {
@@ -2391,14 +2492,6 @@ div:hover .thumb-img-link-overlay {
     font-size: 11px;
 }
 
-.embed-lg {
-    display: none;
-}
-
-.post-preview-lg {
-    display: none;
-}
-
 // Small devices (landscape phones, less than 768px)
 @media (max-width: 767.98px) {
     .post-img {
@@ -2413,6 +2506,22 @@ div:hover .thumb-img-link-overlay {
     text-align: right;
     width: 100%;
     color: $white;
+}
+
+.post-img-lg img, .embed-lg img {
+    max-height: 320px;
+}
+
+.embed-lg {
+    min-height: 140px;
+}
+
+.embed-lg-play {
+    font-size: 3rem;
+}
+
+.post-preview-lg img {
+    max-height: 200px;
 }
 }
 
@@ -3455,6 +3564,47 @@ pre .clo, pre .opn, pre .pun, code .clo, code .opn, code .pun {
     }
 }
 
+// Keep the full desktop navbar icon row (mod tools, notifications, create
+// post, random, profile menu) visible at every width instead of collapsing
+// it behind the hamburger; fall back to horizontal scroll rather than
+// wrapping/overflow if it's ever too tight to fit.
+#navbar-icon-row {
+    flex-direction: row;
+    align-items: center;
+    flex-wrap: nowrap;
+    height: auto;
+}
+
+// Bootstrap's own navbar CSS makes .navbar-nav .dropdown-menu position:static
+// below the navbar-expand-md breakpoint (768px), assuming everything outside
+// that breakpoint lives inside the collapsible hamburger menu where inline
+// expansion makes sense. This row is always a horizontal bar regardless of
+// width, so its dropdowns must always overlay, not push layout around.
+#navbar-icon-row .dropdown-menu {
+    position: absolute;
+}
+
+// On mobile, the account/profile dropdown should take over the screen the
+// same way the old hamburger menu does (still true today for logged-out
+// visitors) rather than appear as a small popover - a two-ID selector to
+// outrank the position:absolute rule above, which would otherwise win.
+@media (max-width: 767.98px) {
+    #navbar-icon-row #accountDropdownMenu {
+        position: fixed;
+        top: var(--navbar-height, 55px);
+        left: 0;
+        right: 0;
+        margin: 0;
+        width: 100%;
+        max-width: 100%;
+        height: calc(100vh - var(--navbar-height, 55px));
+        overflow-y: auto;
+        background-color: $gray-600;
+        border-radius: 0;
+        z-index: 1040;
+    }
+}
+
 // Small devices (landscape phones, less than 768px)
 @media (max-width: 767.98px) {
 
@@ -3488,11 +3638,11 @@ body, #settings, #notifications, #submit {
     background-color: $dark!important;
 }
 
-.navbar-nav {
+#navbarResponsive .navbar-nav {
     height: 100vh;
 }
 
-.navbar-nav .nav-link, .navbar-expand-md .navbar-nav .nav-link {
+#navbarResponsive .navbar-nav .nav-link {
     padding: 0.5rem;
 }
 
@@ -3510,7 +3660,7 @@ body, #settings, #notifications, #submit {
     font-size: $font-size-base;
 }
 
-.navbar-light .navbar-nav .nav-link .fa, .navbar-light .navbar-nav .nav-link .fas, .navbar-light .navbar-nav .nav-link .far, .navbar-light .navbar-nav .nav-link .fab {
+#navbarResponsive .navbar-light .navbar-nav .nav-link .fa, #navbarResponsive .navbar-light .navbar-nav .nav-link .fas, #navbarResponsive .navbar-light .navbar-nav .nav-link .far, #navbarResponsive .navbar-light .navbar-nav .nav-link .fab {
     color: $purple;
     font-size: $font-size-lg;
 }
@@ -3521,6 +3671,16 @@ body, #settings, #notifications, #submit {
 
 .mobile-nav-icon {
     padding: 0.25rem 0.75rem;
+}
+
+// The desktop search form is hidden below md by default; toggling this
+// class (via the mobile search icon button) forces it open as its own
+// full-width row rather than squeezing inline with the icon row.
+#navbar-search-wrap.search-open {
+    display: block !important;
+    width: 100%;
+    order: 10;
+    margin-top: 0.5rem;
 }
 
 #thread, #submit, #error-401, #error-403, #error-404, #error-405, #error-409, #error-410, #error-422, #error-429, #error-451, #error-500 {
@@ -3864,6 +4024,22 @@ textarea, input[type=text] {
     appearance: none;
 }
 
+}
+
+// Cap the feed/post column to Reddit's actual reading width (756px is
+// Reddit's own fixed feed-column size once its sidebar appears; it does
+// not grow further on wider screens) instead of stretching to fill all
+// remaining space between the sidebars. Below the sidebar's own
+// breakpoint (lg / 992px, matching .sidebar's d-none d-lg-block) the
+// column stays fluid/full-width, matching Reddit's single-column mobile
+// and tablet layout.
+@media (min-width: 992px) {
+    #frontpage #main-content-col, #userpage #main-content-col, #search #main-content-col, #guild #main-content-col, #settings-guild #main-content-col, #thread #main-content-col {
+        max-width: 756px;
+        margin-left: auto;
+        margin-right: auto;
+        float: none;
+    }
 }
 
 // Dark Mode

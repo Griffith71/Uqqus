@@ -561,6 +561,25 @@ function revealSensitive(wrapId) {
 
 };
 
+// Hide a hotlinked media block whose image failed to load (broken link,
+// hotlink protection, deleted source) rather than showing a broken-image glyph.
+function hideBrokenMedia(imgEl) {
+  var wrap = imgEl.closest('.post-media-frame, .embed-lg, .post-preview-lg');
+  if (wrap) wrap.style.display = 'none';
+};
+
+// Expand the navbar's desktop search form into its own row on mobile,
+// where it's normally hidden in favor of a compact search icon.
+function toggleMobileSearch() {
+  var wrap = document.getElementById('navbar-search-wrap');
+  if (!wrap) return;
+  wrap.classList.toggle('search-open');
+  if (wrap.classList.contains('search-open')) {
+    var input = wrap.querySelector('input[type=search]');
+    if (input) input.focus();
+  }
+};
+
 // Text Area Input handling
 
 function textAreaOnKeyDown(e, func){
@@ -2888,9 +2907,8 @@ $('.text-expand').click(function(event){
 
 
   $('#post-text-'+id).toggleClass('d-none');
-  $('.text-expand-icon-'+id).toggleClass('fa-expand-alt');
-  $('.text-expand-icon-'+id).toggleClass('fa-compress-alt');
-  
+  $('.text-expand-label-'+id).toggleClass('d-none');
+
 })
 
 
