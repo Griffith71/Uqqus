@@ -10,10 +10,14 @@ Two decaying accumulators per (namespace, key):
   get progressively longer cooldowns while a quiet user drifts back to
   the base tier.
 
-The content-action namespace additionally combines a per-user and a
-per-IP accumulator into one score, so it catches both a single spammy
-account and many throwaway accounts sharing one IP - see
-content_register_action()/content_cooldown_remaining() below.
+The content-action namespace (posts, comments, forwards, reposts) uses a
+separate token bucket per user and per IP instead of a decaying
+accumulator: a slot frees up steadily every few minutes rather than the
+whole allowance cooling down in the background. It still combines both
+buckets, so it catches both a single spammy account and many throwaway
+accounts sharing one IP - see content_register_action()/
+content_cooldown_remaining() below. Every other namespace uses the
+boil/gear decay model described above unchanged.
 """
 
 import time
@@ -22,12 +26,6 @@ from ruqqus.__main__ import r
 
 
 HEAT_PER_ACTION = 20
-# 20 actions is the actual allowance, at any pace: for the content
-# namespace, a solo user's own action heats both their user-key and their
-# ip-key by HEAT_PER_ACTION, so their combined score rises by 2x that per
-# action (see CONTENT_THRESHOLD_MULTIPLIER below) - 400 * 2 / (2*20) = 20
-# actions before the 21st trips it, holding regardless of how bunched
-# together they are (no meaningful decay happens within a normal burst).
 BOILING_POINT = 400
 # 1 hour half-life: a still-fresh (untripped) boil level decays back by
 # about half every hour, so "20 per hour" is also true as a sustainable
@@ -51,11 +49,14 @@ NAMESPACE_OVERRIDES = {
     },
 }
 
-# Content-action namespace uses a combined (user + ip) score, so its
-# effective threshold is doubled to keep a solo user's calibration the
-# same as every other namespace - see the plan for the worked math.
 CONTENT_NAMESPACE = "content"
-CONTENT_THRESHOLD_MULTIPLIER = 2
+
+# The content namespace's allowance is a token bucket instead of a
+# decaying accumulator: a slot frees up steadily every REFILL_SECONDS
+# rather than the whole meter cooling down in the background, so "20 per
+# hour" also means "the next slot is never more than 3 minutes away."
+CONTENT_TOKEN_CAPACITY = 20
+CONTENT_TOKEN_REFILL_SECONDS = 180.0  # 60min / 20 = one token every 3 minutes
 
 
 def _config(namespace, name):
@@ -99,6 +100,37 @@ def _read_decaying(key, half_life, now, floor=0.0):
 def _write_decaying(key, value, now, ttl):
     r.hset(key, mapping={"val": value, "ts": now})
     r.expire(key, ttl)
+
+
+def _token_key(namespace, key):
+    return f"throttle:{namespace}:tokens:{key}"
+
+
+def _peek_tokens(key, capacity, refill_seconds, now):
+    """Current token count (after refill), without writing anything."""
+    if not r:
+        return capacity
+    data = r.hgetall(key)
+    if not data:
+        return capacity
+    try:
+        tokens, ts = float(data.get("tokens", capacity)), float(data.get("ts", now))
+    except (TypeError, ValueError):
+        return capacity
+    elapsed = max(0.0, now - ts)
+    return min(capacity, tokens + elapsed / refill_seconds)
+
+
+def _consume_tokens(key, capacity, refill_seconds, now, amount):
+    """Refill by elapsed time, then subtract amount. Allowed to go
+    negative - the caller uses a negative result to detect an over-budget
+    action and pick the culprit, without a second read."""
+    if not r:
+        return capacity - amount
+    current = _peek_tokens(key, capacity, refill_seconds, now) - amount
+    r.hset(key, mapping={"tokens": current, "ts": now})
+    r.expire(key, int(capacity * refill_seconds * 2))
+    return current
 
 
 def _boil_key(namespace, key):
@@ -164,16 +196,12 @@ def current_boil_pct(namespace, key):
     return int(min(100, round(100 * current / threshold)))
 
 
-# --- Content-action namespace: combined user+IP score ---
+# --- Content-action namespace: combined user+IP token bucket ---
 #
-# Every action heats BOTH a per-user and a per-IP accumulator under the
-# same namespace. A solo user acting from a stable IP feeds both
-# identically (so their combined score is ~2x a single meter's value) -
-# CONTENT_THRESHOLD_MULTIPLIER compensates so a lone user's calibration
-# matches every other namespace's. Many low-volume accounts sharing one
-# IP each keep their own user-score low, but all drive the *same*
-# ip-score up, so the combined sum still trips even though no single
-# account looks suspicious alone.
+# Every action draws down BOTH a per-user and a per-IP token bucket under
+# the same namespace. Many low-volume accounts sharing one IP each keep
+# their own bucket healthy, but all drive down the *same* ip-bucket, so
+# it still trips even though no single account looks suspicious alone.
 
 def _content_user_key(uid):
     return f"user:{uid}"
@@ -193,45 +221,41 @@ def content_cooldown_remaining(uid, ip):
 def content_register_action(uid, ip, weight=1):
     """weight lets a single request that did the work of several actions
     (e.g. one /submit call that forwarded to N guilds at once) cost N+1
-    times the heat of a plain post, instead of registering as just one
-    action regardless of how much it actually did."""
+    tokens instead of registering as just one action regardless of how
+    much it actually did."""
 
     if not r:
         return
 
     now = time.time()
-    heat = _config(CONTENT_NAMESPACE, "HEAT_PER_ACTION") * weight
-    threshold = (BOILING_POINT * CONTENT_THRESHOLD_MULTIPLIER) / _get_sensitivity()
+    capacity = CONTENT_TOKEN_CAPACITY / _get_sensitivity()
+    refill = CONTENT_TOKEN_REFILL_SECONDS
 
-    user_key = _boil_key(CONTENT_NAMESPACE, _content_user_key(uid))
-    ip_key = _boil_key(CONTENT_NAMESPACE, _content_ip_key(ip))
+    user_key = _token_key(CONTENT_NAMESPACE, _content_user_key(uid))
+    ip_key = _token_key(CONTENT_NAMESPACE, _content_ip_key(ip))
 
-    new_user_boil = _read_decaying(user_key, BOIL_HALF_LIFE, now) + heat
-    new_ip_boil = _read_decaying(ip_key, BOIL_HALF_LIFE, now) + heat
+    user_tokens = _consume_tokens(user_key, capacity, refill, now, weight)
+    ip_tokens = _consume_tokens(ip_key, capacity, refill, now, weight)
 
-    _write_decaying(user_key, new_user_boil, now, ttl=int(BOIL_HALF_LIFE * 10))
-    _write_decaying(ip_key, new_ip_boil, now, ttl=int(BOIL_HALF_LIFE * 10))
-
-    if new_user_boil + new_ip_boil >= threshold:
-        # Whichever identity (account or IP) contributed more heat takes
-        # the escalating gear penalty and gets its cooldown flag set.
-        # content_cooldown_remaining() checks both the user's and the
-        # IP's cooldown flags (taking the max), so setting it on just the
-        # culprit is enough to block every account sharing that IP too
-        # when the IP is the culprit, without needing to duplicate the
-        # flag onto the other key.
+    if user_tokens < 0 or ip_tokens < 0:
+        # Whichever identity (account or IP) ran further into deficit
+        # takes the escalating gear penalty and gets its cooldown flag
+        # set. content_cooldown_remaining() checks both the user's and
+        # the IP's cooldown flags (taking the max), so setting it on just
+        # the culprit is enough to block every account sharing that IP
+        # too when the IP is the culprit, without needing to duplicate
+        # the flag onto the other key.
         culprit_key = (
-            _content_user_key(uid) if new_user_boil >= new_ip_boil
+            _content_user_key(uid) if user_tokens <= ip_tokens
             else _content_ip_key(ip)
         )
         _trigger_cooldown(CONTENT_NAMESPACE, culprit_key, now)
-        # _trigger_cooldown only clears the culprit's own boil key - the
-        # pot boiling over has to cool BOTH sides back down together, or
-        # the non-culprit side's leftover heat would carry over into the
+        # The bucket overflowing has to reset BOTH sides together, or the
+        # non-culprit side's leftover deficit would carry over into the
         # next burst and flip which identity looks like the culprit next
         # time, silently bypassing that identity's own escalated gear.
-        r.delete(_boil_key(CONTENT_NAMESPACE, _content_user_key(uid)))
-        r.delete(_boil_key(CONTENT_NAMESPACE, _content_ip_key(ip)))
+        r.hset(user_key, mapping={"tokens": 0, "ts": now})
+        r.hset(ip_key, mapping={"tokens": 0, "ts": now})
 
 
 def get_display_state(uid, ip):
@@ -242,23 +266,17 @@ def get_display_state(uid, ip):
         return {"in_cooldown": True, "cooldown_remaining": remaining, "boil_pct": 100, "remaining_actions": 0}
 
     now = time.time()
-    threshold = (BOILING_POINT * CONTENT_THRESHOLD_MULTIPLIER) / _get_sensitivity()
-    user_boil = _read_decaying(
-        _boil_key(CONTENT_NAMESPACE, _content_user_key(uid)), BOIL_HALF_LIFE, now)
-    ip_boil = _read_decaying(
-        _boil_key(CONTENT_NAMESPACE, _content_ip_key(ip)), BOIL_HALF_LIFE, now)
-    combined = user_boil + ip_boil
-    pct = int(min(100, round(100 * combined / threshold)))
+    capacity = CONTENT_TOKEN_CAPACITY / _get_sensitivity()
+    refill = CONTENT_TOKEN_REFILL_SECONDS
 
-    # A solo user's own next action heats BOTH their user-key and their
-    # ip-key by HEAT_PER_ACTION, raising the combined score by 2x that -
-    # so that (not the single-meter HEAT_PER_ACTION) is the right divisor
-    # here. Worst-case estimate (assumes no decay between actions), so it
-    # never overpromises - real gaps between actions only buy more room
-    # than this shows, never less.
-    heat_per_action = _config(CONTENT_NAMESPACE, "HEAT_PER_ACTION")
-    remaining_heat = max(0.0, threshold - combined)
-    remaining_actions = int(remaining_heat // (2 * heat_per_action))
+    user_tokens = _peek_tokens(
+        _token_key(CONTENT_NAMESPACE, _content_user_key(uid)), capacity, refill, now)
+    ip_tokens = _peek_tokens(
+        _token_key(CONTENT_NAMESPACE, _content_ip_key(ip)), capacity, refill, now)
+    available = max(0.0, min(user_tokens, ip_tokens))
+
+    remaining_actions = int(available)
+    pct = max(0, min(100, int(round(100 * (1 - available / capacity))))) if capacity > 0 else 100
 
     return {"in_cooldown": False, "cooldown_remaining": 0, "boil_pct": pct, "remaining_actions": remaining_actions}
 
