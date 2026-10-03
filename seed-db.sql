@@ -224,6 +224,43 @@ INSERT INTO public.titles VALUES (3, false, ', Gold Recruiter', 'v.referral_coun
 
 
 --
+-- Data for Name: regions; Type: TABLE DATA; Schema: public; Owner: -
+--
+
+INSERT INTO public.regions VALUES (1, 'eastern_europe_russia', 'East Slavia', 'East Slavia', '#cc3333');
+INSERT INTO public.regions VALUES (2, 'central_asia', 'Turanian Steppe', 'Turanian Steppe', '#4d004b');
+INSERT INTO public.regions VALUES (3, 'iran_afghanistan', 'Aryan Highlands', 'Aryan Highlands', '#00441b');
+INSERT INTO public.regions VALUES (4, 'east_asia', 'Amurian Orient', 'Amurian Orient', '#8c510a');
+INSERT INTO public.regions VALUES (5, 'maritime_southeast_asia', 'Austronesian Archipelagic', 'Austronesian Archipelagic', '#94346e');
+INSERT INTO public.regions VALUES (6, 'mainland_southeast_asia', 'Vassa Continuum', 'Vassa Continuum', '#01665e');
+INSERT INTO public.regions VALUES (7, 'south_asia', 'Indus Subcontinent', 'Indus Subcontinent', '#feb24c');
+INSERT INTO public.regions VALUES (8, 'arabian_peninsula', 'Arabian Peninsula', 'Arabian Peninsula', '#f781bf');
+INSERT INTO public.regions VALUES (9, 'caucasus_turkiye', 'Teshubian Highlands', 'Teshubian Highlands', '#9f81f7');
+INSERT INTO public.regions VALUES (10, 'oceania', 'Oceania', 'Oceania', '#ca562c');
+INSERT INTO public.regions VALUES (11, 'north_africa', 'Saharan Belt', 'Saharan Belt', '#e17a05');
+INSERT INTO public.regions VALUES (12, 'balkans', 'Balkans', 'Balkans', '#b2df8a');
+INSERT INTO public.regions VALUES (13, 'central_europe', 'West Slavia', 'West Slavia', '#16c3d0');
+INSERT INTO public.regions VALUES (14, 'finland_baltics', 'East Baltics', 'East Baltics', '#19d016');
+INSERT INTO public.regions VALUES (15, 'scandinavia', 'Scandinavia', 'Scandinavia', '#d0164e');
+INSERT INTO public.regions VALUES (16, 'british_isles', 'Atlantic Isles', 'Atlantic Isles', '#00ebc4');
+INSERT INTO public.regions VALUES (17, 'southwestern_europe', 'Roman West', 'Roman West', '#ebd700');
+INSERT INTO public.regions VALUES (18, 'west_africa', 'Guinea Coast', 'Guinea Coast', '#a95c30');
+INSERT INTO public.regions VALUES (19, 'sahel', 'West Sahel', 'West Sahel', '#3d7bd9');
+INSERT INTO public.regions VALUES (20, 'central_southeastern_africa', 'Bantu Corridor', 'Bantu Corridor', '#e0d321');
+INSERT INTO public.regions VALUES (21, 'southern_africa', 'Veld Plateau', 'Veld Plateau', '#20d2df');
+INSERT INTO public.regions VALUES (22, 'horn_of_africa', 'Sahelo-Horn', 'Sahelo-Horn', '#cc20df');
+INSERT INTO public.regions VALUES (23, 'north_america', 'Nearctic Realm', 'Nearctic Realm', '#a09a40');
+INSERT INTO public.regions VALUES (24, 'caribbean', 'Caribbean', 'Caribbean', '#2da96d');
+INSERT INTO public.regions VALUES (25, 'central_america', 'Greater Isthmus', 'Greater Isthmus', '#897f70');
+INSERT INTO public.regions VALUES (26, 'andean_north', 'Central Andes', 'Central Andes', '#e4ff00');
+INSERT INTO public.regions VALUES (27, 'southern_cone', 'Southern Cone', 'Southern Cone', '#d0b69f');
+INSERT INTO public.regions VALUES (28, 'northern_south_america', 'Amazonian Shield', 'Amazonian Shield', '#9fd0ce');
+INSERT INTO public.regions VALUES (29, 'levant_mesopotamia', 'Fertile Crescent', 'Fertile Crescent', '#023858');
+INSERT INTO public.regions VALUES (30, 'western_central_europe', 'Rhine Expanse', 'Rhine Expanse', '#fbb4ae');
+INSERT INTO public.regions VALUES (31, 'danubian_steppe', 'Danubian Steppe', 'Danubian Steppe', '#c9a227');
+
+
+--
 -- Name: badge_list_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
@@ -242,6 +279,13 @@ SELECT pg_catalog.setval('public.categories_id_seq', 15, true);
 --
 
 SELECT pg_catalog.setval('public.images_id_seq', 19, true);
+
+
+--
+-- Name: regions_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
+--
+
+SELECT pg_catalog.setval('public.regions_id_seq', 31, true);
 
 
 --

@@ -207,7 +207,8 @@ CREATE TABLE public.submissions (
     creation_region character(2) DEFAULT NULL::bpchar,
     purged_utc integer DEFAULT 0,
     is_bot boolean DEFAULT false,
-    hidden_by_guild boolean DEFAULT false
+    hidden_by_guild boolean DEFAULT false,
+    language_code character varying(5) DEFAULT NULL
 );
 
 
@@ -267,7 +268,11 @@ CREATE TABLE public.users (
     is_nofollow boolean DEFAULT false,
     coin_balance integer DEFAULT 0,
     premium_expires_utc integer DEFAULT 0,
+    premium_first_purchased_utc integer DEFAULT 0,
     negative_balance_cents integer DEFAULT 0,
+    display_region character varying(32),
+    region_settled_utc integer DEFAULT 0,
+    region_suspicion_flag boolean DEFAULT false,
     custom_filter_list character varying(1000) DEFAULT ''::character varying,
     discord_id character varying(64),
     last_yank_utc integer DEFAULT 0,
@@ -2280,7 +2285,8 @@ CREATE TABLE public.paypal_txns (
     usd_cents integer,
     status integer DEFAULT 0,
     coin_count integer DEFAULT 1 NOT NULL,
-    promo_id integer
+    promo_id integer,
+    payer_country character(2)
 );
 
 
@@ -5198,6 +5204,301 @@ ALTER TABLE ONLY public.subscriptions
 
 ALTER TABLE ONLY public.users
     ADD CONSTRAINT users_title_fkey FOREIGN KEY (title_id) REFERENCES public.titles(id);
+
+
+--
+-- Ruqqus "About this Account" / Region feature additions
+--
+
+--
+-- Name: login_events; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.login_events (
+    id integer NOT NULL,
+    user_id integer,
+    created_utc integer DEFAULT 0,
+    ip character varying(255),
+    cf_country character(2),
+    region_code character varying(32)
+);
+
+CREATE SEQUENCE public.login_events_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE public.login_events_id_seq OWNED BY public.login_events.id;
+
+ALTER TABLE ONLY public.login_events ALTER COLUMN id SET DEFAULT nextval('public.login_events_id_seq'::regclass);
+
+ALTER TABLE ONLY public.login_events
+    ADD CONSTRAINT login_events_pkey PRIMARY KEY (id);
+
+CREATE INDEX login_event_user_created_idx ON public.login_events USING btree (user_id, created_utc DESC);
+
+--
+-- Name: regions; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.regions (
+    id integer NOT NULL,
+    code character varying(32) NOT NULL,
+    default_name character varying(64),
+    current_name character varying(64),
+    color character(7)
+);
+
+CREATE SEQUENCE public.regions_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE public.regions_id_seq OWNED BY public.regions.id;
+
+ALTER TABLE ONLY public.regions ALTER COLUMN id SET DEFAULT nextval('public.regions_id_seq'::regclass);
+
+ALTER TABLE ONLY public.regions
+    ADD CONSTRAINT regions_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY public.regions
+    ADD CONSTRAINT regions_code_key UNIQUE (code);
+
+--
+-- Name: region_name_proposals; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.region_name_proposals (
+    id integer NOT NULL,
+    region_id integer,
+    proposed_name character varying(64),
+    created_by_id integer,
+    created_utc integer DEFAULT 0,
+    vote_count integer DEFAULT 0
+);
+
+CREATE SEQUENCE public.region_name_proposals_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE public.region_name_proposals_id_seq OWNED BY public.region_name_proposals.id;
+
+ALTER TABLE ONLY public.region_name_proposals ALTER COLUMN id SET DEFAULT nextval('public.region_name_proposals_id_seq'::regclass);
+
+ALTER TABLE ONLY public.region_name_proposals
+    ADD CONSTRAINT region_name_proposals_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY public.region_name_proposals
+    ADD CONSTRAINT region_name_proposals_region_id_fkey FOREIGN KEY (region_id) REFERENCES public.regions(id);
+
+CREATE INDEX region_name_proposals_region_id_idx ON public.region_name_proposals USING btree (region_id);
+
+--
+-- Name: region_name_votes; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.region_name_votes (
+    id integer NOT NULL,
+    region_id integer,
+    proposal_id integer,
+    user_id integer,
+    created_utc integer DEFAULT 0
+);
+
+CREATE SEQUENCE public.region_name_votes_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE public.region_name_votes_id_seq OWNED BY public.region_name_votes.id;
+
+ALTER TABLE ONLY public.region_name_votes ALTER COLUMN id SET DEFAULT nextval('public.region_name_votes_id_seq'::regclass);
+
+ALTER TABLE ONLY public.region_name_votes
+    ADD CONSTRAINT region_name_votes_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY public.region_name_votes
+    ADD CONSTRAINT uq_region_name_votes_region_user UNIQUE (region_id, user_id);
+
+ALTER TABLE ONLY public.region_name_votes
+    ADD CONSTRAINT region_name_votes_proposal_id_fkey FOREIGN KEY (proposal_id) REFERENCES public.region_name_proposals(id);
+
+ALTER TABLE ONLY public.region_name_votes
+    ADD CONSTRAINT region_name_votes_region_id_fkey FOREIGN KEY (region_id) REFERENCES public.regions(id);
+
+
+--
+-- Ruqqus "Curations" feature additions
+--
+
+--
+-- Name: curations; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.curations (
+    id bigint NOT NULL,
+    owner_id bigint,
+    name character varying(100),
+    slug character varying(25),
+    description character varying(500) DEFAULT ''::character varying,
+    is_private boolean DEFAULT true,
+    created_utc bigint DEFAULT 0,
+    forked_from_id bigint,
+    region_filter character varying(500) DEFAULT ''::character varying,
+    language_filter character varying(500) DEFAULT ''::character varying,
+    category_filter character varying(500) DEFAULT ''::character varying
+);
+
+CREATE SEQUENCE public.curations_id_seq
+    AS bigint
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE public.curations_id_seq OWNED BY public.curations.id;
+
+ALTER TABLE ONLY public.curations ALTER COLUMN id SET DEFAULT nextval('public.curations_id_seq'::regclass);
+
+ALTER TABLE ONLY public.curations
+    ADD CONSTRAINT curations_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY public.curations
+    ADD CONSTRAINT curations_slug_key UNIQUE (slug);
+
+-- Note: no FK on owner_id -> users(id); users' primary key is on username,
+-- not id (pre-existing schema quirk), so id has no unique constraint for a
+-- real FK to target - matches the existing sparse-FK convention already used
+-- throughout this schema (e.g. paypal_txns.user_id has no FK either).
+ALTER TABLE ONLY public.curations
+    ADD CONSTRAINT curations_forked_from_id_fkey FOREIGN KEY (forked_from_id) REFERENCES public.curations(id);
+
+CREATE INDEX curations_owner_id_idx ON public.curations USING btree (owner_id);
+
+--
+-- Name: curation_guilds; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.curation_guilds (
+    id bigint NOT NULL,
+    curation_id bigint,
+    board_id bigint,
+    created_utc bigint DEFAULT 0
+);
+
+CREATE SEQUENCE public.curation_guilds_id_seq
+    AS bigint
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE public.curation_guilds_id_seq OWNED BY public.curation_guilds.id;
+
+ALTER TABLE ONLY public.curation_guilds ALTER COLUMN id SET DEFAULT nextval('public.curation_guilds_id_seq'::regclass);
+
+ALTER TABLE ONLY public.curation_guilds
+    ADD CONSTRAINT curation_guilds_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY public.curation_guilds
+    ADD CONSTRAINT uq_curation_guilds_curation_board UNIQUE (curation_id, board_id);
+
+ALTER TABLE ONLY public.curation_guilds
+    ADD CONSTRAINT curation_guilds_curation_id_fkey FOREIGN KEY (curation_id) REFERENCES public.curations(id);
+
+ALTER TABLE ONLY public.curation_guilds
+    ADD CONSTRAINT curation_guilds_board_id_fkey FOREIGN KEY (board_id) REFERENCES public.boards(id);
+
+CREATE INDEX curation_guilds_curation_id_idx ON public.curation_guilds USING btree (curation_id);
+
+--
+-- Name: curation_users; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.curation_users (
+    id bigint NOT NULL,
+    curation_id bigint,
+    target_user_id bigint,
+    created_utc bigint DEFAULT 0
+);
+
+CREATE SEQUENCE public.curation_users_id_seq
+    AS bigint
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE public.curation_users_id_seq OWNED BY public.curation_users.id;
+
+ALTER TABLE ONLY public.curation_users ALTER COLUMN id SET DEFAULT nextval('public.curation_users_id_seq'::regclass);
+
+ALTER TABLE ONLY public.curation_users
+    ADD CONSTRAINT curation_users_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY public.curation_users
+    ADD CONSTRAINT uq_curation_users_curation_user UNIQUE (curation_id, target_user_id);
+
+ALTER TABLE ONLY public.curation_users
+    ADD CONSTRAINT curation_users_curation_id_fkey FOREIGN KEY (curation_id) REFERENCES public.curations(id);
+
+-- no FK on target_user_id -> users(id), same reason as curations.owner_id above
+
+CREATE INDEX curation_users_curation_id_idx ON public.curation_users USING btree (curation_id);
+CREATE INDEX curation_users_target_user_id_idx ON public.curation_users USING btree (target_user_id);
+
+--
+-- Name: curation_follows; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.curation_follows (
+    id bigint NOT NULL,
+    curation_id bigint,
+    user_id bigint,
+    created_utc bigint DEFAULT 0
+);
+
+CREATE SEQUENCE public.curation_follows_id_seq
+    AS bigint
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE public.curation_follows_id_seq OWNED BY public.curation_follows.id;
+
+ALTER TABLE ONLY public.curation_follows ALTER COLUMN id SET DEFAULT nextval('public.curation_follows_id_seq'::regclass);
+
+ALTER TABLE ONLY public.curation_follows
+    ADD CONSTRAINT curation_follows_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY public.curation_follows
+    ADD CONSTRAINT uq_curation_follows_curation_user UNIQUE (curation_id, user_id);
+
+ALTER TABLE ONLY public.curation_follows
+    ADD CONSTRAINT curation_follows_curation_id_fkey FOREIGN KEY (curation_id) REFERENCES public.curations(id);
+
+-- no FK on user_id -> users(id), same reason as curations.owner_id above
+
+CREATE INDEX curation_follows_curation_id_idx ON public.curation_follows USING btree (curation_id);
+CREATE INDEX curation_follows_user_id_idx ON public.curation_follows USING btree (user_id);
 
 
 --
