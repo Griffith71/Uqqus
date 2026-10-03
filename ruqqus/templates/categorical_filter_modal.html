@@ -1,0 +1,17 @@
+{% import "_sidebar_filter_macros.html" as filters %}
+<!-- Categorical filter - mobile equivalent of the desktop sidebar's Categorical panel -->
+<div class="modal fade modal-sm-bottom" id="categoricalFilterModal" tabindex="-1" role="dialog" aria-labelledby="categoricalFilterModalTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="categoricalFilterModalTitle">Categorical</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true"><i class="far fa-times"></i></span>
+        </button>
+      </div>
+      <div class="modal-body" style="overflow-y: scroll;">
+        {{ filters.filter_panel_body('mobile-categorical-options', categorical_catalog, active_subcats, 'Search categories…', '/categorical', 'cats') }}
+      </div>
+    </div>
+  </div>
+</div>

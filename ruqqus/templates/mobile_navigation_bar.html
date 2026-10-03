@@ -13,22 +13,6 @@
             </a>
         </div>
 {% endif %}
-        <div class="col px-0">
-            <a href="/all?sort=new" class="text-decoration-none" role="button">
-                <div class="text-center {% if request.path=='/all' and sort_method=='new' %}text-purple{% else %}text-muted{% endif %}">
-                    <i class="fas fa-globe-americas text-lg d-block"></i>
-                    <div class="text-small">New</div>
-                </div>
-            </a>
-        </div>
-        <div class="col px-0">
-            <a href="/all?sort=hot" class="text-decoration-none" role="button">
-                <div class="text-center {% if request.path=='/all' and sort_method=='hot' %}text-purple{% else %}text-muted{% endif %}">
-                    <i class="fas fa-fire text-lg d-block"></i>
-                    <div class="text-small">Trending</div>
-                </div>
-            </a>
-        </div>
 {% if v %}
         <div class="col px-0">
             <a href="/mine/guilds" class="text-decoration-none" role="button">

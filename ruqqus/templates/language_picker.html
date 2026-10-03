@@ -1,0 +1,26 @@
+{% extends "home.html" %}
+
+{% block PseudoSubmitForm %}{% endblock %}
+{% block sidebar %}{% endblock %}
+{% block leftSidebarBlock %}{% endblock %}
+{% block navbar %}{% endblock %}
+{% block mobilenavbar %}{% endblock %}
+{% block mobileFeedTabs %}{% endblock %}
+
+{% block content %}
+<div class="col col-md-8 col-xl-6 mx-auto mt-n5 mt-md-0">
+  <div class="mt-4 text-center">
+    <h1>Select a Language</h1>
+    <p class="text-muted">Pick a language to see posts auto-detected as being written in it. Posts made before this feature existed, or too short to detect, won't appear in any language feed.</p>
+  </div>
+  <div class="bg-white p-md-4 pb-md-3 rounded">
+    <div class="row">
+      {% for code, name in languages.items() | sort(attribute='1') %}
+      <div class="col-6 col-md-4 col-lg-3 mb-2">
+        <a href="/language?codes={{ code }}" class="btn btn-outline-primary btn-block text-truncate" title="{{ name }}">{{ name }}</a>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -2715,17 +2715,17 @@ var tipModal2 = function(id, content, link, recipient, recipientPFP) {
   console.log(recipientPFP, id, content, link, recipient)
 }
 
-var togglecat = function(sort, reload=false, delay=1000, page="/all") {
+var togglecat = function(sort, reload=false, delay=1000, page="/all", inpage="/inpage/all") {
   var cbs = document.getElementsByClassName('cat-check');
   var l = []
   for (var i=0; i< cbs.length; i++) {
     l.push(cbs[i].checked)
   }
-  setTimeout(function(){triggercat(sort, l, reload, page)}, delay)
+  setTimeout(function(){triggercat(sort, l, reload, page, inpage)}, delay)
   return l;
 }
 
-var triggercat=function(sort, cats, reload, page) {
+var triggercat=function(sort, cats, reload, page, inpage="/inpage/all") {
 
   var cbs = document.getElementsByClassName('cat-check');
   var l = []
@@ -2759,7 +2759,7 @@ var triggercat=function(sort, cats, reload, page) {
     }
   }
 
-  var url='/inpage/all?sort='+ sort +'&cats=' + catlist.join(',') + '&groups=' + grouplist.join(',');
+  var url=inpage+'?sort='+ sort +'&cats=' + catlist.join(',') + '&groups=' + grouplist.join(',');
   
 
   xhr = new XMLHttpRequest();
@@ -2833,19 +2833,135 @@ var cattoggle=function(id){
   card.classList.toggle('selected');
 }
 
-var all_cats=function(page) {
+var all_cats=function(page, inpage="/inpage/all") {
+  // "Show all" means "no category filter" (matches the empty-selection = no
+  // filter semantics every other sidebar filter uses) - so this unchecks
+  // everything and submits an explicit empty cats= list, rather than
+  // checking every box and submitting all of them.
   var x=document.getElementsByClassName('cat-check');
   for(i=0;i<x.length;i++){
-    x[i].checked=true;
-  };
-  
-  var y=document.getElementsByClassName('cat-group');
-  for(i=0;i<y.length;i++){
-    y[i].checked=true;
+    x[i].checked=false;
   };
 
-  togglecat('hot', reload=true, delay=0, page=page)  
+  var y=document.getElementsByClassName('cat-group');
+  for(i=0;i<y.length;i++){
+    y[i].checked=false;
+  };
+
+  togglecat('hot', reload=true, delay=0, page=page, inpage=inpage)
 }
+
+var filterSidebarList = function(input, listId) {
+  var query = input.value.trim().toLowerCase();
+  var list = document.getElementById(listId);
+  if (!list) return;
+  var rows = list.querySelectorAll('[data-filter-row]');
+  var anyVisible = false;
+  for (var i = 0; i < rows.length; i++) {
+    var row = rows[i];
+    var text = (row.getAttribute('data-filter-text') || row.textContent || '').toLowerCase();
+    var match = (query === '' || text.indexOf(query) !== -1);
+    row.classList.toggle('d-none', !match);
+    if (match) anyVisible = true;
+  }
+  var emptyEl = document.getElementById(listId + '-empty');
+  if (emptyEl) emptyEl.classList.toggle('d-none', anyVisible);
+};
+
+var resortSidebarFilterList = function(listId) {
+  var list = document.getElementById(listId);
+  if (!list) return;
+  var rows = Array.prototype.slice.call(list.querySelectorAll('[data-filter-row]'));
+  rows.sort(function(a, b) {
+    var aSel = a.classList.contains('is-selected');
+    var bSel = b.classList.contains('is-selected');
+    if (aSel !== bSel) return aSel ? -1 : 1;
+    var aText = (a.getAttribute('data-filter-text') || '').toLowerCase();
+    var bText = (b.getAttribute('data-filter-text') || '').toLowerCase();
+    return aText < bText ? -1 : (aText > bText ? 1 : 0);
+  });
+  rows.forEach(function(row) { list.appendChild(row); });
+};
+
+var updateSidebarFilterCount = function(listId) {
+  var list = document.getElementById(listId);
+  var countEl = document.getElementById(listId + '-count');
+  if (!list || !countEl) return;
+  var n = list.querySelectorAll('[data-filter-row].is-selected').length;
+  countEl.textContent = n + ' selected';
+  countEl.classList.toggle('d-none', n === 0);
+};
+
+var toggleSidebarFilterOption = function(li, listId) {
+  var selected = li.classList.toggle('is-selected');
+  var link = li.querySelector('a');
+  var icon = li.querySelector('i');
+  if (link) link.classList.toggle('text-purple', selected);
+  if (link) link.classList.toggle('font-weight-bold', selected);
+  if (link) link.classList.toggle('text-black', !selected);
+  if (icon) icon.classList.toggle('invisible', !selected);
+  resortSidebarFilterList(listId);
+  updateSidebarFilterCount(listId);
+};
+
+var deselectAllSidebarFilter = function(listId) {
+  var list = document.getElementById(listId);
+  if (!list) return;
+  var rows = list.querySelectorAll('[data-filter-row].is-selected');
+  for (var i = 0; i < rows.length; i++) {
+    var li = rows[i];
+    li.classList.remove('is-selected');
+    var link = li.querySelector('a');
+    var icon = li.querySelector('i');
+    if (link) { link.classList.remove('text-purple', 'font-weight-bold'); link.classList.add('text-black'); }
+    if (icon) icon.classList.add('invisible');
+  }
+  resortSidebarFilterList(listId);
+  updateSidebarFilterCount(listId);
+};
+
+var applySidebarFilter = function(listId, baseUrl, paramName) {
+  var list = document.getElementById(listId);
+  if (!list) return;
+  var values = Array.prototype.map.call(
+    list.querySelectorAll('[data-filter-row].is-selected'),
+    function(row) { return row.getAttribute('data-value'); }
+  );
+  // Always navigate, even with zero selected - an explicit empty param is
+  // how the backend knows "clear this filter" rather than "leave it as-is".
+  window.location.href = baseUrl + '?' + paramName + '=' + values.join(',');
+};
+
+var applyCurationFilter = function(listId, hiddenInputId, formId) {
+  // Curation-filter variant of applySidebarFilter: this mutates a shared,
+  // owner-only resource rather than the viewer's own session preference, so
+  // it submits a real formkey-protected POST instead of a plain GET.
+  var list = document.getElementById(listId);
+  var hidden = document.getElementById(hiddenInputId);
+  var form = document.getElementById(formId);
+  if (!list || !hidden || !form) return;
+  var values = Array.prototype.map.call(
+    list.querySelectorAll('[data-filter-row].is-selected'),
+    function(row) { return row.getAttribute('data-value'); }
+  );
+  hidden.value = values.join(',');
+  form.submit();
+};
+
+var startSidebarFilterMarquee = function(el) {
+  var overflow = el.scrollWidth - el.clientWidth;
+  if (overflow > 2) {
+    el.style.textOverflow = 'clip';
+    el.style.transitionDuration = Math.max(1.2, overflow / 40) + 's';
+    el.style.transform = 'translateX(-' + overflow + 'px)';
+  }
+};
+
+var stopSidebarFilterMarquee = function(el) {
+  el.style.transitionDuration = '0s';
+  el.style.transform = 'translateX(0)';
+  el.style.textOverflow = 'ellipsis';
+};
 
 
 //mobile prompt

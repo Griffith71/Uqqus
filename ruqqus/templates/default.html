@@ -525,6 +525,9 @@
       {% block desktopBanner %}
       {% endblock %}
 
+      {% block mobileFeedTabs %}
+      {% endblock %}
+
       {% block PseudoSubmitForm %}
       {% endblock %}
 
@@ -675,6 +678,10 @@
 {% endif %}
 
 {% include "expanded_image_modal.html" %}
+
+{% include "regional_filter_modal.html" %}
+{% include "language_filter_modal.html" %}
+{% include "categorical_filter_modal.html" %}
 
 {% include "bootstrap.html" %}
 

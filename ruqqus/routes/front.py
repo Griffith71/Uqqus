@@ -11,6 +11,8 @@ from flask import session as flask_session
 from ruqqus.__main__ import app, cache
 from ruqqus.classes.submission import Submission
 from ruqqus.classes.categories import CATEGORIES
+from ruqqus.helpers.languages import LANGUAGE_NAMES
+from ruqqus.helpers.regions import REGION_CENTROIDS
 
 
 @app.route("/post/", methods=["GET"])
@@ -105,7 +107,7 @@ def notifications_posts(v):
 
 @cache.memoize(timeout=900)
 def frontlist(v=None, sort=None, page=1,
-              t=None, categories=[], filter_words='', **kwargs):
+              t=None, categories=[], filter_words='', region=None, language=None, **kwargs):
 
     # cutoff=int(time.time())-(60*60*24*30)
 
@@ -208,7 +210,16 @@ def frontlist(v=None, sort=None, page=1,
     
     if categories:
         posts=posts.filter(Board.subcat_id.in_(tuple(categories)))
-        
+
+    if region:
+        region_list = region if isinstance(region, (list, tuple)) else [region]
+        posts = posts.filter(region_filter_condition(region_list))
+
+    if language:
+        language_list = language if isinstance(language, (list, tuple)) else [language]
+        posts = posts.filter(Submission.language_code.in_(language_list))
+
+
     if (v and v.hide_offensive) or not v:
         posts=posts.filter(
             Board.subcat_id.notin_([44, 108]) 
@@ -267,22 +278,166 @@ def frontlist(v=None, sort=None, page=1,
         abort(400)
 
     return [x.id for x in posts.offset(25 * (page - 1)).limit(26).all()]
-    
 
-@app.route("/", methods=["GET"])
+
+@cache.memoize(timeout=3600)
+def sidebar_regions():
+    """All regions ordered by display name, for the left-sidebar Regional
+    filter panel. Cached since region renames (ruqqus/routes/regions.py's
+    proposal/voting system) are rare, but this needs to run on every page
+    view that renders sidebar-left.html - i.e. virtually every page."""
+    return g.db.query(Region).order_by(Region.current_name).all()
+
+
+# All (name, id, parent-category-name) subcategory rows, including the
+# synthetic "Uncategorized" = 0, computed once at import time like CATEGORIES
+# itself - the single source of truth for the Categorical catalog and for
+# resolving ids back to display names for the "Showing posts in X" notice.
+ALL_SUBCATS = sorted(
+    [(subcat.name, subcat.id, cat.name) for cat in CATEGORIES for subcat in cat.subcats]
+    + [("Uncategorized", 0, "")],
+    key=lambda x: x[0]
+)
+SUBCAT_NAME_BY_ID = {id_: name for name, id_, catname in ALL_SUBCATS}
+
+# Used to detect and self-heal sessions saved before "Show all" meant "empty
+# filter" (it used to check every single box and save the full id list
+# explicitly).
+ALL_SUBCAT_IDS = set(SUBCAT_NAME_BY_ID.keys())
+
+
+def _resolve_active_filters(v):
+    """The combined set of active Regional/Language/Categorical selections,
+    shared by all three filter routes so that landing on any one of them
+    applies all three dimensions together, not just its own."""
+    region_codes = flask_session.get('selected_regions') or ([v.display_region] if v and v.display_region else [])
+    language_codes = flask_session.get('langcodes') or []
+    subcat_ids = flask_session.get('catids') or []
+    return region_codes, language_codes, subcat_ids
+
+
+def _filter_display_context(region_codes, language_codes, subcat_ids):
+    """The display-name context vars the 'Showing posts from/detected as/in
+    X' notices in home.html need, shared by All/For You/Following now that
+    region/language/category are ambient modifiers on all three rather than
+    dedicated pages of their own."""
+    region_objs = g.db.query(Region).filter(Region.code.in_(region_codes)).all() if region_codes else []
+    return {
+        "current_regions": region_codes,
+        "region_names": [r.current_name for r in region_objs],
+        "current_languages": language_codes,
+        "language_names_list": [LANGUAGE_NAMES.get(c) for c in language_codes],
+        "current_subcats": subcat_ids,
+        "subcat_names": [SUBCAT_NAME_BY_ID[i] for i in subcat_ids if i in SUBCAT_NAME_BY_ID],
+    }
+
+
+def region_filter_condition(region_list):
+    """A Submission matches a region filter if ANY of these is true:
+    - its own author is in one of region_list (the common case - also
+      covers Forward copies, which keep the ORIGINAL author's author_id);
+    - it was forwarded by someone in region_list (ForwardRelationship;
+      tracked separately from authorship - see create_forward_post());
+    - it was reposted (Twitter-retweet-style, via RepostRelationship - no
+      new Submission row, any number of distinct users) by anyone in
+      region_list.
+    Pure filter expression (correlated EXISTS subqueries) - adds no joins
+    to the caller's query, so it composes safely regardless of what's
+    already been joined."""
+
+    author_match = Submission.author_id.in_(
+        select(User.id).where(User.display_region.in_(region_list))
+    )
+    forwarder_match = exists(
+        select(ForwardRelationship.id)
+        .join(User, User.id == ForwardRelationship.forwarded_by_id)
+        .where(
+            ForwardRelationship.forward_submission_id == Submission.id,
+            User.display_region.in_(region_list)
+        )
+    )
+    reposter_match = exists(
+        select(RepostRelationship.id)
+        .join(User, User.id == RepostRelationship.user_id)
+        .where(
+            RepostRelationship.submission_id == Submission.id,
+            User.display_region.in_(region_list)
+        )
+    )
+    return or_(author_match, forwarder_match, reposter_match)
+
+
+@app.context_processor
+def inject_sidebar_filter_data():
+    """Makes CATEGORIES/the three filter catalogs/the three active-selection
+    sets available to every rendered template without requiring every route
+    across the whole codebase to remember to pass them explicitly -
+    sidebar-left.html (desktop) and the mobile filter modals are included
+    unconditionally, and both need the exact same data. Flask only invokes
+    context processors when a template is actually rendered, so this has
+    zero cost for pure-JSON/API responses. Explicit render_template() kwargs
+    of the same name still take precedence over these defaults."""
+
+    stored_catids = flask_session.get('catids')
+    if stored_catids and set(stored_catids) == ALL_SUBCAT_IDS:
+        flask_session['catids'] = []
+        flask_session.modified = True
+
+    categorical_catalog = [
+        {"value": id_, "label": name, "search": f"{name} {catname}".strip()}
+        for name, id_, catname in ALL_SUBCATS
+    ]
+
+    regions_catalog = [
+        {"value": r.code, "label": r.current_name, "search": r.current_name}
+        for r in sidebar_regions()
+    ]
+
+    sorted_languages = sorted(LANGUAGE_NAMES.items(), key=lambda x: x[1])
+    languages_catalog = [
+        {"value": code, "label": name, "search": name}
+        for code, name in sorted_languages
+    ]
+
+    v = getattr(g, 'v', None)
+    active_regions, active_languages, active_subcats = _resolve_active_filters(v)
+
+    return {
+        "CATEGORIES": CATEGORIES,
+        "regions_catalog": regions_catalog,
+        "languages_catalog": languages_catalog,
+        "categorical_catalog": categorical_catalog,
+        "active_regions": active_regions,
+        "active_languages": active_languages,
+        "active_subcats": active_subcats,
+    }
+
+
+@app.route("/following", methods=["GET"])
 @app.route("/api/v1/front/listing", methods=["GET"])
 @app.route("/api/v2/me/submissions")
 @auth_desired
 @api("read")
-def home(v):
+def following(v):
     """
-Get personalized home page based on subscriptions and personal settings.
+Get the Following feed: posts from subscribed guilds and followed accounts,
+narrowed by whichever Regional/Language/Categorical filters are currently
+active (ambient modifiers shared with All and For You - see
+_resolve_active_filters()).
+
+Pre-existing quirk, preserved as-is: only engages when the viewer has at
+least one *active guild subscription* specifically (not just follows) and
+otherwise falls through to All.
 
 Optional query parameters:
 * `sort` - One of `hot`, `new`, `top`, `disputed`, `activity`. Default `hot`.
 * `t` - One of `day`, `week`, `month`, `year`, `all`. Default `all`.
 * `page` - Page of results to return. Default `1`.
 """
+
+    if not request.path.startswith(('/api/', '/inpage/')):
+        flask_session['base_feed'] = 'following'
+        flask_session.modified = True
 
     if v and [i for i in v.subscriptions if i.is_active]:
 
@@ -300,7 +455,8 @@ Optional query parameters:
         page=max(int(request.args.get("page",1)),0)
         ignore_pinned = bool(request.args.get("ignore_pinned", False))
 
-        
+        region_codes, language_codes, subcat_ids = _resolve_active_filters(v)
+
         ids=v.idlist(sort=sort,
                      page=page,
                      only=only,
@@ -315,6 +471,10 @@ Optional query parameters:
                      #greater/less than
                      gt=int(request.args.get("utc_greater_than",0)),
                      lt=int(request.args.get("utc_less_than",0)),
+
+                     region=region_codes,
+                     language=language_codes,
+                     categories=subcat_ids,
 
                      )
 
@@ -339,7 +499,9 @@ Optional query parameters:
                                                 sort_method=sort,
                                                 time_filter=t,
                                                 page=page,
-                                                only=only),
+                                                only=only,
+                                                **_filter_display_context(region_codes, language_codes, subcat_ids)
+                                                ),
                 'api': lambda: jsonify({"data": [x.json for x in posts],
                                         "next_exists": next_exists
                                         }
@@ -347,6 +509,94 @@ Optional query parameters:
                 }
     else:
         return front_all()
+
+
+@app.route("/", methods=["GET"])
+@app.route("/for_you", methods=["GET"])
+@auth_desired
+@api("read")
+def for_you(v):
+    """
+Get the For You feed: a heuristic, non-ML personalized feed based on
+category affinity from the viewer's subscriptions/follows/upvote history
+(see User.for_you_idlist()), narrowed by whichever Regional/Language/
+Categorical filters are currently active (ambient modifiers shared with All
+and Following - see _resolve_active_filters()). Anonymous visitors, and
+logged-in viewers with no affinity signals yet, see the same content as All.
+
+Optional query parameters:
+* `sort` - One of `hot`, `new`, `top`, `disputed`, `activity`. Default `hot`.
+* `t` - One of `day`, `week`, `month`, `year`, `all`. Default `all`.
+* `page` - Page of results to return. Default `1`.
+"""
+
+    if not request.path.startswith(('/api/', '/inpage/')):
+        flask_session['base_feed'] = 'for_you'
+        flask_session.modified = True
+
+    if v:
+        defaultsorting = v.defaultsorting
+        defaulttime = v.defaulttime
+    else:
+        defaultsorting = "hot"
+        defaulttime = "all"
+
+    sort = request.args.get("sort", defaultsorting)
+    t = request.args.get('t', defaulttime)
+    page = max(int(request.args.get("page", 1)), 1)
+    ignore_pinned = bool(request.args.get("ignore_pinned", False))
+
+    region_codes, language_codes, subcat_ids = _resolve_active_filters(v)
+
+    if v and v.interest_subcats():
+        ids = v.for_you_idlist(
+            sort=sort, page=page, t=t,
+            filter_words=v.filter_words,
+            gt=int(request.args.get("utc_greater_than", 0)),
+            lt=int(request.args.get("utc_less_than", 0)),
+            region=region_codes,
+            language=language_codes,
+            categories=subcat_ids,
+        )
+    else:
+        # zero-signal accounts (and anonymous visitors) fall back to All
+        ids = frontlist(
+            sort=sort, page=page, t=t, v=v,
+            hide_offensive=(v and v.hide_offensive) or not v,
+            hide_bot=(v and v.hide_bot),
+            filter_words=v.filter_words if v else [],
+            gt=int(request.args.get("utc_greater_than", 0)),
+            lt=int(request.args.get("utc_less_than", 0)),
+            region=region_codes,
+            language=language_codes,
+            categories=subcat_ids,
+        )
+
+    next_exists = (len(ids) == 26)
+    ids = ids[0:25]
+
+    if page == 1 and not ignore_pinned:
+        sticky = g.db.query(Submission.id).filter_by(stickied=True).first()
+        if sticky:
+            ids = [sticky.id] + ids
+
+    posts = get_posts(ids, sort=sort, v=v)
+
+    return {'html': lambda: render_template("home.html",
+                                            v=v,
+                                            listing=posts,
+                                            next_exists=next_exists,
+                                            sort_method=sort,
+                                            time_filter=t,
+                                            page=page,
+                                            CATEGORIES=CATEGORIES,
+                                            **_filter_display_context(region_codes, language_codes, subcat_ids)
+                                            ),
+            'api': lambda: jsonify({"data": [x.json for x in posts],
+                                    "next_exists": next_exists
+                                    }
+                                   )
+            }
 
 
 def default_cat_cookie():
@@ -378,13 +628,19 @@ def categories_select(v):
 @api("read")
 def front_all(v):
     """
-Get all posts, minus filtered content based on personal settings.
+Get all posts, minus filtered content based on personal settings. Genuinely
+sitewide/unfiltered by category - see categorical() for the category-scoped
+equivalent of what this route used to do before the nav restructure.
 
 Optional query parameters:
 * `sort` - One of `hot`, `new`, `top`, `disputed`, `activity`. Default `hot`.
 * `t` - One of `day`, `week`, `month`, `year`, `all`. Default `all`.
 * `page` - Page of results to return. Default `1`.
 """
+
+    if not request.path.startswith(('/api/', '/inpage/')):
+        flask_session['base_feed'] = 'all'
+        flask_session.modified = True
 
     page = int(request.args.get("page") or 1)
 
@@ -402,33 +658,7 @@ Optional query parameters:
     t=request.args.get('t', defaulttime)
     ignore_pinned = bool(request.args.get("ignore_pinned", False))
 
-
-    cats=flask_session.get("catids")
-    new_cats=request.args.get('cats','')
-    if not cats and not new_cats and not request.path.startswith('/api/'):
-        return make_response(
-            render_template(
-                "categorylisting.html",
-                v=v,
-                categories=CATEGORIES
-                )
-            )
-
-
-    if new_cats:
-        #print('overwrite cats')
-        new_cats=[int(x) for x in new_cats.split(',')]
-        flask_session['catids']=new_cats
-        cats=new_cats
-        flask_session.modified=True
-
-    #handle group cookie
-    groups = request.args.get("groups")
-    if groups:
-        flask_session['groupids']=[int(x) for x in groups.split(',')]
-        flask_session.modified=True
-
-    #print(cats)
+    region_codes, language_codes, subcat_ids = _resolve_active_filters(v)
 
     ids = frontlist(sort=sort,
                     page=page,
@@ -439,7 +669,9 @@ Optional query parameters:
                     gt=int(request.args.get("utc_greater_than", 0)),
                     lt=int(request.args.get("utc_less_than", 0)),
                     filter_words=v.filter_words if v else [],
-                    categories=[] if request.path.startswith("/api/") else cats
+                    categories=[] if request.path.startswith("/api/") else subcat_ids,
+                    region=region_codes,
+                    language=language_codes,
                     )
 
     # check existence of next page
@@ -462,7 +694,8 @@ Optional query parameters:
                                             sort_method=sort,
                                             time_filter=t,
                                             page=page,
-                                            CATEGORIES=CATEGORIES
+                                            CATEGORIES=CATEGORIES,
+                                            **_filter_display_context(region_codes, language_codes, subcat_ids)
                                             ),
             'inpage': lambda: render_template("submission_listing.html",
                                               v=v,
@@ -473,6 +706,184 @@ Optional query parameters:
                                     }
                                    )
             }
+
+
+@app.route("/categorical", methods=["GET"])
+@app.route("/inpage/categorical")
+@auth_desired
+@api("read")
+def categorical(v):
+    """
+Set the viewer's Categorical filter (session key "catids") - Categorical is
+no longer its own destination, it's an ambient modifier shared by All/For
+You/Following (see _resolve_active_filters()). Once resolved, redirects back
+to whichever of those three the viewer was last using. Same first-time
+picker-page gating as before when nothing has ever been chosen.
+
+/inpage/categorical keeps rendering a partial directly (no redirect) for any
+future AJAX-refresh use.
+
+Optional query parameters:
+* `cats` - Comma-separated subcategory ids to select/remember.
+* `sort` - One of `hot`, `new`, `top`, `disputed`, `activity`. Default `hot`.
+* `t` - One of `day`, `week`, `month`, `year`, `all`. Default `all`.
+* `page` - Page of results to return. Default `1`.
+"""
+
+    page = int(request.args.get("page") or 1)
+    page = max(page, 1)
+
+    if v:
+        defaultsorting = v.defaultsorting
+        defaulttime = v.defaulttime
+    else:
+        defaultsorting = "hot"
+        defaulttime = "all"
+
+    sort=request.args.get("sort",defaultsorting)
+    t=request.args.get('t', defaulttime)
+    ignore_pinned = bool(request.args.get("ignore_pinned", False))
+
+    cats_param_present = 'cats' in request.args
+    new_cats=request.args.get('cats','')
+    ever_chosen = 'catids' in flask_session
+    cats = flask_session.get('catids', [])
+
+    if not ever_chosen and not cats_param_present and not request.path.startswith('/api/'):
+        return make_response(
+            render_template(
+                "categorylisting.html",
+                v=v,
+                categories=CATEGORIES
+                )
+            )
+
+    if cats_param_present:
+        cats = [int(x) for x in new_cats.split(',') if x] if new_cats else []
+        flask_session['catids']=cats
+        flask_session.modified=True
+
+    groups = request.args.get("groups")
+    if groups:
+        flask_session['groupids']=[int(x) for x in groups.split(',')]
+        flask_session.modified=True
+
+    if request.path == "/categorical":
+        base_feed = flask_session.get('base_feed', 'for_you')
+        return redirect({'all': '/all', 'for_you': '/for_you', 'following': '/following'}.get(base_feed, '/for_you'))
+
+    region_codes, language_codes, _ = _resolve_active_filters(v)
+    cats_for_filter = [] if request.path.startswith("/api/") else cats
+
+    ids = frontlist(sort=sort,
+                    page=page,
+                    t=t,
+                    v=v,
+                    hide_offensive=(v and v.hide_offensive) or not v,
+                    hide_bot=(v and v.hide_bot),
+                    gt=int(request.args.get("utc_greater_than", 0)),
+                    lt=int(request.args.get("utc_less_than", 0)),
+                    filter_words=v.filter_words if v else [],
+                    categories=cats_for_filter,
+                    region=region_codes,
+                    language=language_codes,
+                    )
+
+    next_exists = (len(ids) == 26)
+    ids = ids[0:25]
+
+    if page == 1 and not ignore_pinned:
+        sticky = g.db.query(Submission.id).filter_by(stickied=True).first()
+        if sticky:
+            ids = [sticky.id] + ids
+    posts = get_posts(ids, sort=sort, v=v)
+
+    # only /inpage/categorical (partial refresh) and /api/ variants ever
+    # reach this point - the plain page always redirects above
+    return {'inpage': lambda: render_template("submission_listing.html",
+                                              v=v,
+                                              listing=posts
+                                              ),
+            'api': lambda: jsonify({"data": [x.json for x in posts],
+                                    "next_exists": next_exists
+                                    }
+                                   )
+            }
+
+
+@app.route("/regional", methods=["GET"])
+def regional():
+    """
+Set the viewer's Regional filter (session key "selected_regions") - Regional
+is no longer its own destination, it's an ambient modifier shared by All/For
+You/Following (see _resolve_active_filters()). Redirects back to whichever
+of those three the viewer was last using.
+
+Optional query parameters:
+* `region` - Comma-separated region code(s) to switch to/remember (see
+  REGION_CENTROIDS, or the human-readable list at GET /regions). An explicit
+  empty value (`?region=`) clears the region filter entirely. 404s if any
+  code is unrecognized.
+"""
+
+    if "region" in request.args:
+        # checked for presence, not truthiness - an explicit ?region= (empty)
+        # means "clear my region selection", not "leave it as-is"
+        requested_region = request.args.get("region", "")
+        requested_codes = [x for x in requested_region.split(",") if x]
+        for code in requested_codes:
+            if code not in REGION_CENTROIDS:
+                abort(404)
+        flask_session['selected_regions'] = requested_codes
+        flask_session.modified = True
+
+    base_feed = flask_session.get('base_feed', 'for_you')
+    return redirect({'all': '/all', 'for_you': '/for_you', 'following': '/following'}.get(base_feed, '/for_you'))
+
+
+@app.route("/language/<code>", methods=["GET"])
+def language_feed_legacy_redirect(code):
+    """Old path-style language URL (/language/en,fr) - kept as a thin
+    redirect to the current query-param form so any existing links/bookmarks
+    from before this route shape changed still work."""
+    return redirect(f"/language?codes={code}")
+
+
+@app.route("/language", methods=["GET"])
+@auth_desired
+def language_feed(v):
+    """
+Set the viewer's Language filter (session key "langcodes") - Language is no
+longer its own destination, it's an ambient modifier shared by All/For You/
+Following (see _resolve_active_filters()). Same first-time picker-page
+gating as before when nothing has ever been chosen; once resolved,
+redirects back to whichever of the three base feeds the viewer was last
+using.
+
+Optional query parameters:
+* `codes` - Comma-separated language code(s) to select/remember. An explicit
+  empty value (`?codes=`) clears the language filter entirely. 404s if any
+  code is unrecognized.
+"""
+
+    codes_param_present = 'codes' in request.args
+    new_codes = request.args.get('codes', '')
+    ever_chosen = 'langcodes' in flask_session
+
+    if not ever_chosen and not codes_param_present:
+        return render_template("language_picker.html", v=v, languages=LANGUAGE_NAMES)
+
+    if codes_param_present:
+        codes = [x for x in new_codes.split(',') if x]
+        for c in codes:
+            if c not in LANGUAGE_NAMES:
+                abort(404)
+        flask_session['langcodes'] = codes
+        flask_session.modified = True
+
+    base_feed = flask_session.get('base_feed', 'for_you')
+    return redirect({'all': '/all', 'for_you': '/for_you', 'following': '/following'}.get(base_feed, '/for_you'))
+
 
 @app.route("/subcat/<name>", methods=["GET"])
 @auth_desired
@@ -526,7 +937,7 @@ def subcat(name, v):
     ids = ids[0:25]
 
     # check if ids exist
-    posts = get_posts(ids, sort=sort_method, v=v)
+    posts = get_posts(ids, sort=sort, v=v)
 
     return {'html': lambda: render_template("home.html",
                                             v=v,

@@ -1396,9 +1396,23 @@ color: $dark;
 
 @media (min-width: 1199.98px) {
     .sidebar.sidebar-left {
-        -ms-flex: 0 0 240px;
-        flex: 0 0 240px;
+        -ms-flex: 0 0 300px;
+        flex: 0 0 300px;
     }
+}
+
+// Sidebar left filter panels (Regional/Language/Categorical) - truncate long
+// names instead of wrapping, with a hover-triggered sliding reveal of the
+// full text (see startSidebarFilterMarquee/stopSidebarFilterMarquee in
+// all_js.js, which measure the real overflow and drive this via transform).
+.sidebar-filter-text {
+    display: inline-block;
+    min-width: 0;
+    flex: 1 1 auto;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    transition: transform linear;
 }
 
 .sidebar-left .sidebar-section {

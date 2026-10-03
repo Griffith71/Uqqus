@@ -1,0 +1,17 @@
+{% import "_sidebar_filter_macros.html" as filters %}
+<!-- Language filter - mobile equivalent of the desktop sidebar's Language panel -->
+<div class="modal fade modal-sm-bottom" id="languageFilterModal" tabindex="-1" role="dialog" aria-labelledby="languageFilterModalTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="languageFilterModalTitle">Language</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true"><i class="far fa-times"></i></span>
+        </button>
+      </div>
+      <div class="modal-body" style="overflow-y: scroll;">
+        {{ filters.filter_panel_body('mobile-language-options', languages_catalog, active_languages, 'Search languages…', '/language', 'codes') }}
+      </div>
+    </div>
+  </div>
+</div>

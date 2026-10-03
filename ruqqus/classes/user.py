@@ -310,6 +310,22 @@ class User(Base, Stndrd, Age_times):
                 #Submission.author_id.notin_(blocked)
             ).join(Submission.board).filter(Board.is_banned==False)
 
+        categories = kwargs.get("categories")
+        if categories:
+            board_ids_in_cats = select(Board.id).where(Board.subcat_id.in_(tuple(categories)))
+            posts = posts.filter(Submission.board_id.in_(board_ids_in_cats))
+
+        region = kwargs.get("region")
+        if region:
+            from ruqqus.routes.front import region_filter_condition
+            region_list = region if isinstance(region, (list, tuple)) else [region]
+            posts = posts.filter(region_filter_condition(region_list))
+
+        language = kwargs.get("language")
+        if language:
+            language_list = language if isinstance(language, (list, tuple)) else [language]
+            posts = posts.filter(Submission.language_code.in_(language_list))
+
         if filter_words:
             posts=posts.join(Submission.submission_aux)
             for word in filter_words:
@@ -358,6 +374,217 @@ class User(Base, Stndrd, Age_times):
             abort(422)
 
         return [x[0] for x in posts.offset(25 * (page - 1)).limit(26).all()]
+
+    @cache.memoize(timeout=3600)
+    def interest_subcats(self):
+        """
+        Heuristic, non-ML category-affinity scoring for the For You feed:
+        tallies subcats the user has already shown signal towards via
+        subscriptions, followed accounts' subscriptions, and recent upvotes.
+        Returns up to the top 10 subcat ids with positive affinity, ranked
+        descending - or [] for a zero-signal account (for_you_idlist() then
+        falls back to plain frontlist() at the route level).
+        """
+
+        scores = {}
+
+        def add_scores(subcat_ids, weight):
+            for subcat_id in subcat_ids:
+                if subcat_id is None:
+                    continue
+                scores[subcat_id] = scores.get(subcat_id, 0) + weight
+
+        sub_subcats = g.db.query(Board.subcat_id).join(
+            Subscription, Subscription.board_id == Board.id
+        ).filter(
+            Subscription.user_id == self.id,
+            Subscription.is_active == True
+        ).all()
+        add_scores([x[0] for x in sub_subcats], 3)
+
+        followed_ids = select(Follow.target_id).filter_by(user_id=self.id)
+        follow_subcats = g.db.query(Board.subcat_id).join(
+            Subscription, Subscription.board_id == Board.id
+        ).filter(
+            Subscription.user_id.in_(followed_ids),
+            Subscription.is_active == True
+        ).all()
+        add_scores([x[0] for x in follow_subcats], 2)
+
+        CANDIDATE_CAP = 500
+        recent_upvoted_submissions = select(Vote.submission_id).filter(
+            Vote.user_id == self.id,
+            Vote.vote_type == 1
+        ).order_by(Vote.created_utc.desc()).limit(CANDIDATE_CAP)
+        vote_subcats = g.db.query(Board.subcat_id).join(
+            Submission, Submission.board_id == Board.id
+        ).filter(
+            Submission.id.in_(recent_upvoted_submissions)
+        ).all()
+        add_scores([x[0] for x in vote_subcats], 1)
+
+        ranked = sorted(scores.items(), key=lambda kv: kv[1], reverse=True)
+        return [subcat_id for subcat_id, score in ranked if score > 0][:10]
+
+    @cache.memoize(timeout=300)
+    def for_you_idlist(self, sort=None, page=1, t=None, filter_words='', **kwargs):
+        """
+        The For You feed: discovery content from subcats the viewer has
+        shown affinity towards (see interest_subcats()), excluding anything
+        Following already covers (subscribed guilds / followed accounts) so
+        For You stays additive rather than duplicating Following. Mirrors
+        frontlist()'s visibility/mod/contributor/block/offensive/bot/opt-out
+        filtering, with self in place of v. Callers should check
+        interest_subcats() themselves first and fall back to frontlist() for
+        a zero-signal account - this method assumes a non-empty subcat list.
+        """
+
+        subcats = self.interest_subcats()
+        if not subcats:
+            return []
+
+        if sort == None:
+            sort = self.defaultsorting or "hot"
+
+        posts = g.db.query(Submission).options(
+            lazyload('*'),
+            Load(Board).lazyload('*')
+        ).filter_by(
+            is_banned=False,
+            stickied=False
+        ).filter(Submission.deleted_utc == 0)
+
+        if self.hide_offensive:
+            posts = posts.filter_by(is_offensive=False)
+
+        if self.hide_bot:
+            posts = posts.filter(Submission.is_bot == False)
+
+        if self.admin_level >= 4:
+            board_blocks = select(BoardBlock.board_id).filter_by(
+                user_id=self.id
+            ).subquery()
+            posts = posts.filter(Submission.board_id.notin_(board_blocks))
+        else:
+            m = select(ModRelationship.board_id).filter_by(
+                user_id=self.id, invite_rescinded=False
+            ).subquery()
+            c = select(ContributorRelationship.board_id).filter_by(
+                user_id=self.id
+            ).subquery()
+
+            posts = posts.filter(
+                or_(
+                    Submission.author_id == self.id,
+                    Submission.post_public == True,
+                    Submission.board_id.in_(m),
+                    Submission.board_id.in_(c)
+                )
+            )
+
+            blocking = select(UserBlock.target_id).filter_by(
+                user_id=self.id
+            ).subquery()
+            posts = posts.filter(Submission.author_id.notin_(blocking))
+
+            board_blocks = select(BoardBlock.board_id).filter_by(
+                user_id=self.id
+            ).subquery()
+            posts = posts.filter(Submission.board_id.notin_(board_blocks))
+
+        posts = posts.join(Submission.board).filter(
+            or_(
+                Board.all_opt_out == False,
+                Submission.board_id.in_(
+                    select(Subscription.board_id).filter_by(
+                        user_id=self.id,
+                        is_active=True
+                    ).subquery()
+                )
+            )
+        )
+
+        posts = posts.filter(Board.subcat_id.in_(tuple(subcats)))
+
+        # explicit Categorical filter narrows the heuristic affinity set
+        # further (intersects), rather than replacing it
+        explicit_categories = kwargs.get("categories")
+        if explicit_categories:
+            posts = posts.filter(Board.subcat_id.in_(tuple(explicit_categories)))
+
+        region = kwargs.get("region")
+        if region:
+            from ruqqus.routes.front import region_filter_condition
+            region_list = region if isinstance(region, (list, tuple)) else [region]
+            posts = posts.filter(region_filter_condition(region_list))
+
+        language = kwargs.get("language")
+        if language:
+            language_list = language if isinstance(language, (list, tuple)) else [language]
+            posts = posts.filter(Submission.language_code.in_(language_list))
+
+        if self.hide_offensive:
+            posts = posts.filter(Board.subcat_id.notin_([44, 108]))
+
+        posts = posts.filter(Submission.board_id != 1)
+
+        # Following already covers subscribed guilds + followed accounts -
+        # keep For You additive/discovery-oriented rather than duplicating it
+        subscribed_board_ids = select(Subscription.board_id).filter_by(
+            user_id=self.id, is_active=True
+        )
+        followed_user_ids = select(Follow.target_id).filter_by(user_id=self.id)
+        posts = posts.filter(
+            Submission.board_id.notin_(subscribed_board_ids),
+            Submission.author_id.notin_(followed_user_ids)
+        )
+
+        posts = posts.options(contains_eager(Submission.board))
+
+        if filter_words:
+            posts = posts.join(Submission.submission_aux)
+            for word in filter_words:
+                posts = posts.filter(not_(SubmissionAux.title.ilike(f'%{word}%')))
+
+        if t == None:
+            t = self.defaulttime
+        if t:
+            now = int(time.time())
+            if t == 'day':
+                cutoff = now - 86400
+            elif t == 'week':
+                cutoff = now - 604800
+            elif t == 'month':
+                cutoff = now - 2592000
+            elif t == 'year':
+                cutoff = now - 31536000
+            else:
+                cutoff = 0
+            posts = posts.filter(Submission.created_utc >= cutoff)
+
+        gt = kwargs.get("gt")
+        lt = kwargs.get("lt")
+        if gt:
+            posts = posts.filter(Submission.created_utc > gt)
+        if lt:
+            posts = posts.filter(Submission.created_utc < lt)
+
+        if sort == "hot":
+            posts = posts.order_by(Submission.score_best.desc())
+        elif sort == "new":
+            posts = posts.order_by(Submission.created_utc.desc())
+        elif sort == "old":
+            posts = posts.order_by(Submission.created_utc.asc())
+        elif sort == "disputed":
+            posts = posts.order_by(Submission.score_disputed.desc())
+        elif sort == "top":
+            posts = posts.order_by(Submission.score_top.desc())
+        elif sort == "activity":
+            posts = posts.order_by(Submission.score_activity.desc())
+        else:
+            abort(400)
+
+        return [x.id for x in posts.offset(25 * (page - 1)).limit(26).all()]
 
     @cache.memoize(300)
     def userpagelisting(self, v=None, page=1, sort="new", t="all"):

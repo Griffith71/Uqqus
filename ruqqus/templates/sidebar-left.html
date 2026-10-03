@@ -1,3 +1,4 @@
+{% import "_sidebar_filter_macros.html" as filters %}
 <div class="col sidebar sidebar-left hide-scrollbar bg-white border-right d-none d-lg-block pt-3{% if session.get('sidebar_collapsed',False) %} sidebar-collapsed{%endif %}" id="sidebar-left" style="overflow-y: auto; height: calc(100vh - 49px);">
 
   <div class="sidebar-section sidebar-trending" style="word-break: break-word">
@@ -20,35 +21,35 @@
         </div>
         <ul class="no-bullets guild-recommendations-list pl-0 sidebar-collapsed-hidden">
           <li class="guild-recommendations-item">
-            <a href="/">
+            <a href="/all">
               <div class="d-flex">
                 <span class="fa-stack">
                   <i class="fa-2x fas fa-circle text-purple fa-stack-2x" style=""></i>
-                  <i class="fa-stack-1x fas fa-home fa-inverse d-inline-block text-white"></i>
+                  <i class="fa-stack-1x fas fa-globe-americas fa-inverse d-inline-block text-white"></i>
                 </span>
-                <span class="my-auto ml-2 text-black font-weight-normal">Home</span>
+                <span class="my-auto ml-2 text-black font-weight-normal">All</span>
               </div>
               </a>
             </li>
             <li class="guild-recommendations-item">
-              <a href="/all?sort=new">
+              <a href="/for_you">
                 <div class="d-flex">
                   <span class="fa-stack">
                     <i class="fa-2x fas fa-circle text-purple fa-stack-2x" style=""></i>
-                    <i class="fa-stack-1x fas fa-globe-americas fa-inverse d-inline-block text-white"></i>
+                    <i class="fa-stack-1x fas fa-star fa-inverse d-inline-block text-white"></i>
                   </span>
-                  <span class="my-auto ml-2 text-black font-weight-normal">All</span>
+                  <span class="my-auto ml-2 text-black font-weight-normal">For You</span>
                 </div>
               </a>
             </li>
             <li class="guild-recommendations-item">
-              <a href="/all?sort=hot">
+              <a href="/following">
                 <div class="d-flex">
                   <span class="fa-stack">
                     <i class="fa-2x fas fa-circle text-purple fa-stack-2x" style=""></i>
-                    <i class="fa-stack-1x fas fa-fire fa-inverse d-inline-block text-white"></i>
+                    <i class="fa-stack-1x fas fa-user-friends fa-inverse d-inline-block text-white"></i>
                   </span>
-                  <span class="my-auto ml-2 text-black font-weight-normal">Trending</span>
+                  <span class="my-auto ml-2 text-black font-weight-normal">Following</span>
                 </div>
               </a>
               </li>
@@ -56,28 +57,102 @@
               <!-- Show this list when sidebar is collapsed-->
               <ul class="no-bullets guild-recommendations-list pl-0 sidebar-collapsed-visible">
                 <li class="guild-recommendations-item">
-                  <a href="/">
+                  <a href="/all">
                     <span class="fa-stack">
                       <i class="fa-2x fas fa-circle text-purple fa-stack-2x" style=""></i>
-                      <i class="fa-stack-1x fas fa-home fa-inverse d-inline-block text-white"></i>
+                      <i class="fa-stack-1x fas fa-globe-americas fa-inverse d-inline-block text-white"></i>
                     </span>
                   </a>
                 </li>
                 <li class="guild-recommendations-item">
-                  <a href="/all?sort=new">
+                  <a href="/for_you">
                     <span class="fa-stack">
                       <i class="fa-2x fas fa-circle text-purple fa-stack-2x" style=""></i>
-                      <i class="fa-stack-1x fas fa-globe-americas fa-inverse d-inline-block text-white"></i>
+                      <i class="fa-stack-1x fas fa-star fa-inverse d-inline-block text-white"></i>
                   </span>
                   </a>
                 </li>
                 <li class="guild-recommendations-item">
-                  <a href="/all?sort=hot">
+                  <a href="/following">
                     <span class="fa-stack">
                       <i class="fa-2x fas fa-circle text-purple fa-stack-2x" style=""></i>
-                      <i class="fa-stack-1x fas fa-fire fa-inverse d-inline-block text-white"></i>
+                      <i class="fa-stack-1x fas fa-user-friends fa-inverse d-inline-block text-white"></i>
                     </span>
                   </a>
+                </li>
+                <li class="guild-recommendations-item">
+                  <a href="/regional">
+                    <span class="fa-stack">
+                      <i class="fa-2x fas fa-circle text-purple fa-stack-2x" style=""></i>
+                      <i class="fa-stack-1x fas fa-map-marker-alt fa-inverse d-inline-block text-white"></i>
+                    </span>
+                  </a>
+                </li>
+                <li class="guild-recommendations-item">
+                  <a href="/language">
+                    <span class="fa-stack">
+                      <i class="fa-2x fas fa-circle text-purple fa-stack-2x" style=""></i>
+                      <i class="fa-stack-1x fas fa-language fa-inverse d-inline-block text-white"></i>
+                    </span>
+                  </a>
+                </li>
+                <li class="guild-recommendations-item">
+                  <a href="/categorical">
+                    <span class="fa-stack">
+                      <i class="fa-2x fas fa-circle text-purple fa-stack-2x" style=""></i>
+                      <i class="fa-stack-1x fas fa-layer-group fa-inverse d-inline-block text-white"></i>
+                    </span>
+                  </a>
+                </li>
+              </ul>
+
+              <hr class="my-3 sidebar-collapsed-hidden">
+              <div class="d-flex justify-content-between align-items-center mb-2 sidebar-collapsed-hidden">
+                <div class="text-small font-weight-bold text-muted text-uppercase" style="letter-spacing: 0.025rem;">Filters</div>
+              </div>
+
+              <ul class="no-bullets guild-recommendations-list pl-0 sidebar-collapsed-hidden" id="sidebar-filters-list">
+                <li class="guild-recommendations-item">
+                  <a href="javascript:void(0)" data-toggle="collapse" data-target="#sidebar-filter-regional" role="button" aria-expanded="false" aria-controls="sidebar-filter-regional">
+                    <div class="d-flex">
+                      <span class="fa-stack">
+                        <i class="fa-2x fas fa-circle text-purple fa-stack-2x" style=""></i>
+                        <i class="fa-stack-1x fas fa-map-marker-alt fa-inverse d-inline-block text-white"></i>
+                      </span>
+                      <span class="my-auto ml-2 text-black font-weight-normal">Regional</span>
+                    </div>
+                  </a>
+                  <div class="collapse mt-2 ml-2 mr-2" id="sidebar-filter-regional">
+                    {{ filters.filter_panel_body('sidebar-regional-options', regions_catalog, active_regions, 'Search regions…', '/regional', 'region') }}
+                  </div>
+                </li>
+                <li class="guild-recommendations-item">
+                  <a href="javascript:void(0)" data-toggle="collapse" data-target="#sidebar-filter-language" role="button" aria-expanded="false" aria-controls="sidebar-filter-language">
+                    <div class="d-flex">
+                      <span class="fa-stack">
+                        <i class="fa-2x fas fa-circle text-purple fa-stack-2x" style=""></i>
+                        <i class="fa-stack-1x fas fa-language fa-inverse d-inline-block text-white"></i>
+                      </span>
+                      <span class="my-auto ml-2 text-black font-weight-normal">Language</span>
+                    </div>
+                  </a>
+                  <div class="collapse mt-2 ml-2 mr-2" id="sidebar-filter-language">
+                    {{ filters.filter_panel_body('sidebar-language-options', languages_catalog, active_languages, 'Search languages…', '/language', 'codes') }}
+                  </div>
+                </li>
+                <li class="guild-recommendations-item">
+                  <a href="javascript:void(0)" data-toggle="collapse" data-target="#sidebar-filter-categorical" role="button" aria-expanded="false" aria-controls="sidebar-filter-categorical">
+                    <div class="d-flex">
+                      <span class="fa-stack">
+                        <i class="fa-2x fas fa-circle text-purple fa-stack-2x" style=""></i>
+                        <i class="fa-stack-1x fas fa-layer-group fa-inverse d-inline-block text-white"></i>
+                      </span>
+                      <span class="my-auto ml-2 text-black font-weight-normal">Categorical</span>
+                    </div>
+                  </a>
+                  <div class="collapse mt-2 ml-2 mr-2" id="sidebar-filter-categorical">
+                    {{ filters.filter_panel_body('sidebar-categorical-options', categorical_catalog, active_subcats, 'Search categories…', '/categorical', 'cats') }}
+                  </div>
                 </li>
               </ul>
             </div>
@@ -173,6 +248,92 @@
               </li>
               {% endfor %}
             </ul>
+            {% endif %}
+
+            {% if v and v.curations_anything %}
+            <div class="mb-4 mt-4">
+              <div class="sidebar-collapsed-hidden">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                  <div class="text-small font-weight-bold text-muted text-uppercase" style="letter-spacing: 0.025rem;">My Curations</div>
+                  <span><a href="/curations" class="btn btn-link text-small-extra font-weight-normal text-purple px-0">Discover Curations</a></span>
+                </div>
+              </div>
+              <div class="sidebar-collapsed-visible">
+                <span class="fa-stack">
+                  <i class="fas fa-stream text-muted mb-3" style="font-size: 1rem;"></i>
+                </span>
+              </div>
+
+              {% if v.curations_owned %}
+              <div class="sidebar-collapsed-hidden text-small-extra text-muted font-weight-bold mb-1">Owned</div>
+              <ul class="no-bullets guild-recommendations-list pl-0 sidebar-collapsed-hidden">
+                {% for curation in v.curations_owned[0:10] %}
+                <li class="guild-recommendations-item">
+                  <a href="{{ curation.permalink }}">
+                    <div class="d-flex">
+                      <span class="fa-stack">
+                        <i class="fa-2x fas fa-circle text-purple fa-stack-2x"></i>
+                        <i class="fa-stack-1x fas fa-stream fa-inverse d-inline-block text-white"></i>
+                      </span>
+                      <div class="my-auto ml-2">
+                        <div class="text-black font-weight-normal">
+                          {{ curation.name }}
+                          {% if curation.is_private %}<span class="badge badge-secondary">Private</span>{% else %}<span class="badge badge-info">Public</span>{% endif %}
+                        </div>
+                      </div>
+                    </div>
+                  </a>
+                </li>
+                {% endfor %}
+              </ul>
+              {% endif %}
+
+              {% if v.curations_followed %}
+              <div class="sidebar-collapsed-hidden text-small-extra text-muted font-weight-bold mb-1 mt-2">Following</div>
+              <ul class="no-bullets guild-recommendations-list pl-0 sidebar-collapsed-hidden">
+                {% for curation in v.curations_followed[0:10] %}
+                <li class="guild-recommendations-item">
+                  <a href="{{ curation.permalink }}">
+                    <div class="d-flex">
+                      <span class="fa-stack">
+                        <i class="fa-2x fas fa-circle text-purple fa-stack-2x"></i>
+                        <i class="fa-stack-1x fas fa-stream fa-inverse d-inline-block text-white"></i>
+                      </span>
+                      <div class="my-auto ml-2">
+                        <div class="text-black font-weight-normal">
+                          {{ curation.name }}
+                          {% if curation.is_private %}<span class="badge badge-secondary">Private</span>{% else %}<span class="badge badge-info">Public</span>{% endif %}
+                        </div>
+                      </div>
+                    </div>
+                  </a>
+                </li>
+                {% endfor %}
+              </ul>
+              {% endif %}
+
+              <!-- Show this list when sidebar is collapsed -->
+              <ul class="no-bullets guild-recommendations-list pl-0 sidebar-collapsed-visible">
+                {% for curation in (v.curations_owned + v.curations_followed)[0:10] %}
+                <li class="guild-recommendations-item">
+                  <a href="{{ curation.permalink }}">
+                    <span class="fa-stack">
+                      <i class="fa-2x fas fa-circle text-purple fa-stack-2x"></i>
+                      <i class="fa-stack-1x fas fa-stream fa-inverse d-inline-block text-white"></i>
+                    </span>
+                  </a>
+                </li>
+                {% endfor %}
+              </ul>
+            </div>
+            {% elif v and not v.curations_anything %}
+            <div class="sidebar-collapsed-hidden mt-4">
+              <div class="mb-3">
+                <div class="text-small font-weight-bold text-muted text-uppercase" style="letter-spacing: 0.025rem;">My Curations</div>
+              </div>
+              <p>You haven't created or followed any curations yet.</p>
+              <a href="/curations" class="btn btn-outline-gray-300 text-muted btn-block btn-sm text-small sidebar-collapsed-hidden">Discover Curations</a>
+            </div>
             {% endif %}
           </div>
         </div>
