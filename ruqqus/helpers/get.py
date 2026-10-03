@@ -956,6 +956,23 @@ def get_board(bid,v=None, graceful=False):
     return board
 
 
+def get_curation(slug, v=None, graceful=False):
+
+    slug = slug.lstrip('&')
+    slug = slug.replace('\\', '')
+    slug = slug.replace('_', r'\_')
+    slug = slug.replace('%', '')
+
+    curation = g.db.query(Curation).filter(Curation.slug.ilike(slug)).first()
+
+    if not curation:
+        if graceful:
+            return None
+        else:
+            abort(404)
+    return curation
+
+
 def get_boards(bids, v=None, graceful=False):
         
     if v:

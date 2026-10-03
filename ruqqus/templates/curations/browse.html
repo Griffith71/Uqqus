@@ -1,0 +1,50 @@
+{% extends "home.html" %}
+
+{% block pagetype %}curations{% endblock %}
+
+{% block title %}
+<title>Curations - {{ 'SITE_NAME' | app_config }}</title>
+{% endblock %}
+
+{% macro curation_card(c) %}
+<div class="col-md-4 mb-3">
+  <div class="card h-100">
+    <div class="card-body">
+      <h6 class="mb-1"><a href="{{ c.permalink }}">{{ c.name }}</a></h6>
+      <div class="text-muted text-small mb-2">by @{{ c.owner.username }}</div>
+      {% if c.description %}<p class="text-small">{{ c.description }}</p>{% endif %}
+    </div>
+  </div>
+</div>
+{% endmacro %}
+
+{% block content %}
+<div class="col px-md-4 py-4">
+
+  <div class="d-flex align-items-center justify-content-between mb-3">
+    <h1 class="h3 mb-0">Curations</h1>
+    {% if v %}<a href="/curations/create" class="btn btn-primary btn-sm">Create a Curation</a>{% endif %}
+  </div>
+  <p class="text-muted">
+    Curations are custom feeds - named collections of guilds and accounts, made by users like you.
+  </p>
+
+  {% if v %}
+  <h2 class="h5 mt-4">Your Curations</h2>
+  <div class="row">
+    {% for c in owned %}{{ curation_card(c) }}{% else %}<div class="col-12 text-muted text-small">You haven't created any curations yet.</div>{% endfor %}
+  </div>
+
+  <h2 class="h5 mt-4">Following</h2>
+  <div class="row">
+    {% for c in followed %}{{ curation_card(c) }}{% else %}<div class="col-12 text-muted text-small">You're not following any curations yet.</div>{% endfor %}
+  </div>
+  {% endif %}
+
+  <h2 class="h5 mt-4">Public Curations</h2>
+  <div class="row">
+    {% for c in public_curations %}{{ curation_card(c) }}{% else %}<div class="col-12 text-muted text-small">No public curations yet - be the first!</div>{% endfor %}
+  </div>
+
+</div>
+{% endblock %}

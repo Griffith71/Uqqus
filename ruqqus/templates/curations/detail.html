@@ -1,0 +1,77 @@
+{% extends "home.html" %}
+
+{% block pagetype %}curations{% endblock %}
+
+{% block title %}
+<title>{{ curation.name }} - {{ 'SITE_NAME' | app_config }}</title>
+{% endblock %}
+
+{% block content %}
+<div class="col px-md-4 py-4">
+
+  <div class="d-flex align-items-start justify-content-between flex-wrap mb-2">
+    <div>
+      <h1 class="h3 mb-0">
+        {{ curation.name }}
+        {% if curation.is_private %}<span class="badge badge-secondary">Private</span>{% else %}<span class="badge badge-info">Public</span>{% endif %}
+      </h1>
+      <div class="text-muted text-small">&{{ curation.slug }}</div>
+      <div class="text-muted text-small">by <a href="{{ curation.owner.permalink }}">@{{ curation.owner.username }}</a></div>
+      {% if curation.description %}<p class="mt-2">{{ curation.description }}</p>{% endif %}
+    </div>
+
+    <div class="mt-2">
+      {% if is_owner %}
+      <a href="{{ curation.permalink }}/edit" class="btn btn-secondary btn-sm">Edit</a>
+      {% elif v and not curation.is_private %}
+        {% if is_following %}
+        <form method="post" action="{{ curation.permalink }}/unfollow" class="d-inline">
+          <input type="hidden" name="formkey" value="{{ v.formkey }}">
+          <button type="submit" class="btn btn-secondary btn-sm">Unfollow</button>
+        </form>
+        {% else %}
+        <form method="post" action="{{ curation.permalink }}/follow" class="d-inline">
+          <input type="hidden" name="formkey" value="{{ v.formkey }}">
+          <button type="submit" class="btn btn-primary btn-sm">Follow</button>
+        </form>
+        {% endif %}
+        <form method="post" action="{{ curation.permalink }}/fork" class="d-inline">
+          <input type="hidden" name="formkey" value="{{ v.formkey }}">
+          <button type="submit" class="btn btn-outline-secondary btn-sm">Fork</button>
+        </form>
+      {% endif %}
+    </div>
+  </div>
+
+  <div class="text-small text-muted mb-3">
+    {{ guilds | length }} guild{{ 's' if guilds | length != 1 else '' }}
+    &middot;
+    {{ accounts | length }} account{{ 's' if accounts | length != 1 else '' }}
+    {% if curation.forked_from_id %}&middot; forked from another curation{% endif %}
+  </div>
+
+  {% include "submission_listing.html" %}
+
+  {% if not listing %}
+  <p class="text-muted">No posts yet from this curation's guilds or accounts.</p>
+  {% endif %}
+
+</div>
+{% endblock %}
+
+{% block pagenav %}
+<nav aria-label="Page navigation">
+  <ul class="pagination pagination-sm mb-0">
+    {% if page>1 %}
+    <li class="page-item"><small><a class="page-link" href="?page={{ page-1 }}">Prev</a></small></li>
+    {% else %}
+    <li class="page-item disabled"><span class="page-link">Prev</span></li>
+    {% endif %}
+    {% if next_exists %}
+    <li class="page-item"><small><a class="page-link" href="?page={{ page+1 }}">Next</a></small></li>
+    {% else %}
+    <li class="page-item disabled"><span class="page-link">Next</span></li>
+    {% endif %}
+  </ul>
+</nav>
+{% endblock %}

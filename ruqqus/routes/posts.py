@@ -21,6 +21,7 @@ from ruqqus.helpers.session_helpers import *
 from ruqqus.helpers.aws import *
 from ruqqus.helpers.alerts import send_notification
 from ruqqus.helpers.text import split_title_body
+from ruqqus.helpers.languages import detect_language
 from ruqqus.classes import *
 from .front import frontlist
 from ruqqus.__main__ import app, limiter, cache, db_session
@@ -314,7 +315,7 @@ def _build_standalone_submission(author_id, target, title, body, body_html,
                                   url=None, embed_url=None, domain_ref=None,
                                   is_offensive=False, is_sensitive=False,
                                   app_id=None, creation_region=None, is_bot=False,
-                                  auto_upvote=True, repost_id=0):
+                                  auto_upvote=True, repost_id=0, language_code=None):
     """Create + flush one independent new Submission (own votes, own
     comments) in `target`, with its own SubmissionAux row and an optional
     author auto-upvote. Shared by post-Forward (create_forward_post) and
@@ -331,7 +332,8 @@ def _build_standalone_submission(author_id, target, title, body, body_html,
         is_sensitive=(is_sensitive or target.is_sensitive),
         app_id=app_id,
         creation_region=creation_region,
-        is_bot=is_bot
+        is_bot=is_bot,
+        language_code=language_code
     )
     g.db.add(new_post)
     g.db.flush()
@@ -371,7 +373,8 @@ def create_forward_post(primary, target, forwarded_by):
         app_id=primary.app_id,
         creation_region=primary.creation_region,
         is_bot=primary.is_bot,
-        repost_id=primary.id
+        repost_id=primary.id,
+        language_code=primary.language_code
     )
 
     g.db.add(ForwardRelationship(
@@ -423,7 +426,8 @@ def create_forward_post_from_comment(comment, target, promoted_by):
         is_sensitive=comment.is_sensitive,
         app_id=comment.app_id,
         creation_region=comment.creation_region,
-        is_bot=comment.is_bot
+        is_bot=comment.is_bot,
+        language_code=detect_language(title, body)
     )
 
     g.db.add(CommentForwardRelationship(
@@ -916,7 +920,8 @@ Optional file data:
         is_offensive=is_offensive,
         app_id=v.client.application.id if v.client else None,
         creation_region=request.headers.get("cf-ipcountry"),
-        is_bot = request.headers.get("X-User-Type","").lower()=="bot"
+        is_bot = request.headers.get("X-User-Type","").lower()=="bot",
+        language_code=detect_language(title, body)
     )
 
     g.db.add(new_post)

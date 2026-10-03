@@ -30,6 +30,7 @@ from .clients import *
 from .paypal import PayPalTxn
 from .flags import Report
 from .regions import Region
+from .curations import Curation, CurationFollow
 from ruqqus.__main__ import Base, cache, app
 
 
@@ -824,6 +825,24 @@ class User(Base, Stndrd, Age_times):
     @lazy
     def subscribed_to_anything(self):
         return bool([i for i in self.subscriptions if i.is_active])
+
+    @property
+    @lazy
+    def curations_owned(self):
+        return g.db.query(Curation).filter_by(
+            owner_id=self.id
+        ).order_by(Curation.created_utc.desc()).all()
+
+    @property
+    @lazy
+    def curations_followed(self):
+        followed_ids = select(CurationFollow.curation_id).filter_by(user_id=self.id)
+        return g.db.query(Curation).filter(Curation.id.in_(followed_ids)).all()
+
+    @property
+    @lazy
+    def curations_anything(self):
+        return bool(self.curations_owned or self.curations_followed)
 
     @property
     def boards_modded(self):

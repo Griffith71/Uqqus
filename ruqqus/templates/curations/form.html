@@ -1,0 +1,116 @@
+{% extends "home.html" %}
+{% import "_sidebar_filter_macros.html" as filters %}
+
+{% block pagetype %}curations{% endblock %}
+
+{% block title %}
+<title>{% if curation %}Edit {{ curation.name }}{% else %}Create a Curation{% endif %} - {{ 'SITE_NAME' | app_config }}</title>
+{% endblock %}
+
+{% block content %}
+<div class="col px-md-4 py-4" style="max-width: 600px;">
+
+  <h1 class="h3">{% if curation %}Edit Curation{% else %}Create a Curation{% endif %}</h1>
+  <p class="text-muted">
+    A Curation is your own named collection of guilds and accounts - like a custom feed. Keep it private just for
+    yourself, or make it public so others can follow or fork it.
+  </p>
+
+  <form method="post" action="{% if curation %}{{ curation.permalink }}/edit{% else %}/curations/create{% endif %}">
+    <input type="hidden" name="formkey" value="{{ v.formkey }}">
+
+    <div class="form-group">
+      <label for="curation-name">Name</label>
+      <input type="text" class="form-control" id="curation-name" name="name" maxlength="100" required
+             value="{{ curation.name if curation else '' }}">
+    </div>
+
+    <div class="form-group">
+      <label for="curation-description">Description (optional)</label>
+      <textarea class="form-control" id="curation-description" name="description" maxlength="500" rows="3">{{ curation.description if curation else '' }}</textarea>
+    </div>
+
+    <div class="form-group">
+      <label for="curation-privacy">Visibility</label>
+      <select class="form-control" id="curation-privacy" name="is_private">
+        <option value="true" {% if not curation or curation.is_private %}selected{% endif %}>Private - only visible to you</option>
+        <option value="false" {% if curation and not curation.is_private %}selected{% endif %}>Public - anyone can view, follow, or fork it</option>
+      </select>
+    </div>
+
+    <button type="submit" class="btn btn-primary">{% if curation %}Save changes{% else %}Create Curation{% endif %}</button>
+    {% if curation %}<a href="{{ curation.permalink }}" class="btn btn-secondary">Cancel</a>{% endif %}
+  </form>
+
+  {% if curation %}
+  <hr class="my-4">
+
+  <h2 class="h5">Guilds</h2>
+  <ul class="list-unstyled">
+    {% for board in guilds %}
+    <li class="d-flex align-items-center justify-content-between mb-1">
+      <span>+{{ board.name }}</span>
+      <form method="post" action="{{ curation.permalink }}/remove_guild/{{ board.id }}" class="d-inline">
+        <input type="hidden" name="formkey" value="{{ v.formkey }}">
+        <button type="submit" class="btn btn-sm btn-outline-danger">Remove</button>
+      </form>
+    </li>
+    {% else %}
+    <li class="text-muted text-small">No guilds added yet.</li>
+    {% endfor %}
+  </ul>
+  <form method="post" action="{{ curation.permalink }}/add_guild" class="input-group input-group-sm mb-4">
+    <input type="hidden" name="formkey" value="{{ v.formkey }}">
+    <input type="text" name="guildname" class="form-control" placeholder="Guild name (without the +)" required>
+    <div class="input-group-append">
+      <button type="submit" class="btn btn-outline-primary">Add guild</button>
+    </div>
+  </form>
+
+  <h2 class="h5">Accounts</h2>
+  <ul class="list-unstyled">
+    {% for account in accounts %}
+    <li class="d-flex align-items-center justify-content-between mb-1">
+      <span>@{{ account.username }}</span>
+      <form method="post" action="{{ curation.permalink }}/remove_user/{{ account.id }}" class="d-inline">
+        <input type="hidden" name="formkey" value="{{ v.formkey }}">
+        <button type="submit" class="btn btn-sm btn-outline-danger">Remove</button>
+      </form>
+    </li>
+    {% else %}
+    <li class="text-muted text-small">No accounts added yet.</li>
+    {% endfor %}
+  </ul>
+  <form method="post" action="{{ curation.permalink }}/add_user" class="input-group input-group-sm mb-4">
+    <input type="hidden" name="formkey" value="{{ v.formkey }}">
+    <input type="text" name="username" class="form-control" placeholder="Username (without the @)" required>
+    <div class="input-group-append">
+      <button type="submit" class="btn btn-outline-primary">Add account</button>
+    </div>
+  </form>
+
+  <h2 class="h5">Filters</h2>
+  <p class="text-muted text-small">
+    Optional - narrow this curation to specific regions, languages, or categories. These are part of the curation
+    itself, not your own personal browsing filters, so anyone who views or follows it sees the same result.
+  </p>
+
+  <h3 class="h6">Regional</h3>
+  {{ filters.filter_panel_body('curation-regional-options', regions_catalog, curation.region_filter_list, 'Search regions…', curation.permalink + '/set_region_filter', 'region', apply_mode='form', formkey=v.formkey) }}
+
+  <h3 class="h6 mt-4">Language</h3>
+  {{ filters.filter_panel_body('curation-language-options', languages_catalog, curation.language_filter_list, 'Search languages…', curation.permalink + '/set_language_filter', 'codes', apply_mode='form', formkey=v.formkey) }}
+
+  <h3 class="h6 mt-4">Categorical</h3>
+  {{ filters.filter_panel_body('curation-categorical-options', categorical_catalog, curation.category_filter_list, 'Search categories…', curation.permalink + '/set_category_filter', 'cats', apply_mode='form', formkey=v.formkey) }}
+
+  <hr class="my-4">
+
+  <form method="post" action="{{ curation.permalink }}/delete" onsubmit="return confirm('Delete this curation? This cannot be undone.');">
+    <input type="hidden" name="formkey" value="{{ v.formkey }}">
+    <button type="submit" class="btn btn-outline-danger">Delete this curation</button>
+  </form>
+  {% endif %}
+
+</div>
+{% endblock %}
