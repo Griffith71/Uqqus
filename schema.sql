@@ -151,7 +151,8 @@ CREATE TABLE public.comments (
     app_id integer,
     creation_region character(2) DEFAULT NULL::bpchar,
     purged_utc integer DEFAULT 0,
-    hidden_by_guild boolean DEFAULT false
+    hidden_by_guild boolean DEFAULT false,
+    author_hidden boolean DEFAULT false
 );
 
 
@@ -1677,6 +1678,7 @@ CREATE TABLE public.comments_aux (
     body_html character varying(20000),
     ban_reason character varying(128),
     hidden_reason character varying(256) DEFAULT ''::character varying,
+    author_hidden_reason character varying(256) DEFAULT ''::character varying,
     key_id integer NOT NULL
 );
 

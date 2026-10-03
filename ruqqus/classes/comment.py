@@ -38,6 +38,7 @@ class CommentAux(Base):
     body_html = Column(String(20000))
     ban_reason = Column(String(256), default='')
     hidden_reason = Column(String(256), default='')
+    author_hidden_reason = Column(String(256), default='')
 
 
 class Comment(Base, Age_times, Scores, Stndrd, Fuzzing):
@@ -81,6 +82,7 @@ class Comment(Base, Age_times, Scores, Stndrd, Fuzzing):
     is_bot = Column(Boolean, default=False)
     is_pinned = Column(Boolean, default=False)
     hidden_by_guild = Column(Boolean, default=False)
+    author_hidden = Column(Boolean, default=False)
     creation_region=Column(String(2), default=None)
 
     app_id = Column(Integer, ForeignKey("oauth_apps.id"), default=None)
@@ -459,6 +461,15 @@ class Comment(Base, Age_times, Scores, Stndrd, Fuzzing):
     @hidden_reason.setter
     def hidden_reason(self, x):
         self.comment_aux.hidden_reason = x
+        g.db.add(self.comment_aux)
+
+    @property
+    def author_hidden_reason(self):
+        return self.comment_aux.author_hidden_reason
+
+    @author_hidden_reason.setter
+    def author_hidden_reason(self, x):
+        self.comment_aux.author_hidden_reason = x
         g.db.add(self.comment_aux)
 
     @property

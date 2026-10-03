@@ -47,7 +47,7 @@
 </div>
 
 
-{% elif ((c.is_banned or (c.hidden_by_guild and not (v and v.id==c.author_id) and not (c.is_guildmaster('content') and c.original_board_id==c.post.board_id))) or ((c.is_blocking) and not (c.is_guildmaster('content') and c.original_board_id==c.post.board_id))) and not c.distinguish_level and not (v and v.admin_level>=3) %}
+{% elif ((c.is_banned or (c.hidden_by_guild and not (v and v.id==c.author_id) and not (c.is_guildmaster('content') and c.original_board_id==c.post.board_id)) or (c.author_hidden and not (v and v.id==c.author_id) and not (v and c.post and v.id==c.post.author_id))) or ((c.is_blocking) and not (c.is_guildmaster('content') and c.original_board_id==c.post.board_id))) and not c.distinguish_level and not (v and v.admin_level>=3) %}
 
 
 
@@ -61,12 +61,12 @@
         <div id="comment-{{ c.base36id }}-only">
 
             <div class="user-info">{% if standalone and c.is_sensitive %}<span class="badge badge-warning">Sensitive Content<span> {% endif %}
-                [{% if c.is_banned %}Removed by administrators{% elif c.hidden_by_guild %}Removed by guildmasters{% elif c.is_blocking %}You are blocking @{{ c.author.username }}{% elif c.is_blocked %}This user has blocked you{% endif %}]
+                [{% if c.is_banned %}Removed by administrators{% elif c.hidden_by_guild %}Removed by guildmasters{% elif c.author_hidden %}Removed by the post's author{% elif c.is_blocking %}You are blocking @{{ c.author.username }}{% elif c.is_blocked %}This user has blocked you{% endif %}]
             </div>
 
 
             <div id="comment-banned-warning" class="comment-text text-danger text-small">
-                {% if c.is_banned and c.ban_reason %}Reason: {{ c.ban_reason }}{% elif c.hidden_by_guild and c.hidden_reason %}Reason: {{ c.hidden_reason }}{% endif %}
+                {% if c.is_banned and c.ban_reason %}Reason: {{ c.ban_reason }}{% elif c.hidden_by_guild and c.hidden_reason %}Reason: {{ c.hidden_reason }}{% elif c.author_hidden and c.author_hidden_reason %}Reason: {{ c.author_hidden_reason }}{% endif %}
             </div>
          </div>
 
@@ -106,6 +106,7 @@
 {% set can_edit = v and c.parent_submission and c.author_id==v.id %}
 {% set can_moderate = v and v.admin_level>=3 %}
 {% set can_pin = v and c.post and c.is_guildmaster('content') %}
+{% set can_author_prune = v and c.post and c.post.is_profile_post and v.id==c.post.author_id %}
 
 {% if standalone and level==1 %}
 <div class="post-info mt-5 mb-1">
@@ -359,6 +360,14 @@
               {% endif %}
               {% endif %}
 
+              {% if can_author_prune %}
+              {% if c.author_hidden %}
+              <a class="dropdown-item" href="javascript:void(0)" onclick="post_toast('/author/unhide_comment/{{ c.base36id }}', callback=function(){window.location.reload(true);})"><i class="fas fa-eye fa-fw"></i>Restore</a>
+              {% else %}
+              <a class="dropdown-item text-danger" href="javascript:void(0)" onclick="post_toast_with_reason('/author/hide_comment/{{ c.base36id }}', callback=function(){window.location.reload(true);})"><i class="fas fa-eye-slash fa-fw text-danger"></i>Remove</a>
+              {% endif %}
+              {% endif %}
+
               {% if can_moderate %}
               {% if not c.is_banned %}
               <a class="dropdown-item" id="moderate-{{ c.base36id }}" href="javascript:void(0)" onclick="removeComment('{{ c.base36id }}')"><i class="fas fa-comment-times fa-fw"></i>Remove</a>
@@ -561,6 +570,14 @@
           <li class="list-group-item"><a class="d-block" href="javascript:void(0)" onclick="post_toast('/mod/unhide_comment/{{ c.board.name }}/{{ c.base36id }}', callback=function(){window.location.reload(true);})"><i class="fas fa-eye"></i>Unhide from +{{ c.board.name }}</a></li>
           {% else %}
           <li class="list-group-item"><a class="d-block text-danger" href="javascript:void(0)" onclick="post_toast_with_reason('/mod/hide_comment/{{ c.board.name }}/{{ c.base36id }}', callback=function(){window.location.reload(true);})"><i class="fas fa-eye-slash text-danger"></i>Hide from +{{ c.board.name }}</a></li>
+          {% endif %}
+          {% endif %}
+
+          {% if can_author_prune %}
+          {% if c.author_hidden %}
+          <li class="list-group-item"><a class="d-block" href="javascript:void(0)" onclick="post_toast('/author/unhide_comment/{{ c.base36id }}', callback=function(){window.location.reload(true);})"><i class="fas fa-eye"></i>Restore</a></li>
+          {% else %}
+          <li class="list-group-item"><a class="d-block text-danger" href="javascript:void(0)" onclick="post_toast_with_reason('/author/hide_comment/{{ c.base36id }}', callback=function(){window.location.reload(true);})"><i class="fas fa-eye-slash text-danger"></i>Remove</a></li>
           {% endif %}
           {% endif %}
 

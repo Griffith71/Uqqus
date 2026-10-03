@@ -1171,3 +1171,103 @@ URL path parameters:
     html=str(BeautifulSoup(html, features="html.parser").find(id=f"comment-{comment.base36id}-only"))
 
     return jsonify({"html":html})
+
+
+@app.route("/author/hide_comment/<cid>", methods=["POST"])
+@is_not_banned
+@validate_formkey
+def author_hide_comment(cid, v):
+    """
+Remove a reply from your own post's comment thread for breaking your
+own rules for it. Only works on your post's own profile copy - replies
+on a copy forwarded to a guild are pruned by that guild's guildmasters
+instead (see /mod/hide_comment). The reply itself is untouched - just
+replaced with a notice showing your reason here. Reversible via
+/author/unhide_comment.
+
+URL path parameters:
+* `cid` - The base 36 comment id
+
+Required form data:
+* `reason` - Why you're removing this reply
+"""
+
+    comment = get_comment(cid, v=v)
+
+    if not comment.post.is_profile_post:
+        return jsonify({"error": "This reply is on a copy forwarded to a guild - ask that guild's guildmasters to remove it instead."}), 403
+
+    if comment.post.author_id != v.id:
+        abort(403)
+
+    reason = request.form.get("reason", "").strip()
+    if not reason:
+        return jsonify({"error": "A reason is required."}), 400
+
+    comment.author_hidden = True
+    comment.author_hidden_reason = reason
+    g.db.add(comment)
+
+    g.db.add(ContentEditHistory(
+        actor_id=v.id,
+        target_comment_id=comment.id,
+        action="author_hide",
+        reason=reason,
+        previous_body=comment.body,
+        previous_body_html=comment.body_html
+    ))
+    g.db.commit()
+
+    html=render_template(
+                "comments.html",
+                v=v,
+                comments=[comment],
+                render_replies=False,
+                is_allowed_to_comment=True
+                )
+
+    html=str(BeautifulSoup(html, features="html.parser").find(id=f"comment-{comment.base36id}-only"))
+
+    return jsonify({"html":html})
+
+
+@app.route("/author/unhide_comment/<cid>", methods=["POST"])
+@is_not_banned
+@validate_formkey
+def author_unhide_comment(cid, v):
+    """
+Undo a previous /author/hide_comment.
+
+URL path parameters:
+* `cid` - The base 36 comment id
+"""
+
+    comment = get_comment(cid, v=v)
+
+    if not comment.post.is_profile_post:
+        abort(403)
+
+    if comment.post.author_id != v.id:
+        abort(403)
+
+    comment.author_hidden = False
+    g.db.add(comment)
+
+    g.db.add(ContentEditHistory(
+        actor_id=v.id,
+        target_comment_id=comment.id,
+        action="author_restore"
+    ))
+    g.db.commit()
+
+    html=render_template(
+                "comments.html",
+                v=v,
+                comments=[comment],
+                render_replies=False,
+                is_allowed_to_comment=True
+                )
+
+    html=str(BeautifulSoup(html, features="html.parser").find(id=f"comment-{comment.base36id}-only"))
+
+    return jsonify({"html":html})
