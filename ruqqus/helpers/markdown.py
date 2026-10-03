@@ -34,6 +34,17 @@ class BoardMention(SpanToken):
 
         self.target = (match_obj.group(1), match_obj.group(2))
 
+
+class CurationMention(SpanToken):
+
+    pattern = re.compile(r"(^|\s|\n)&(\w{3,25})")
+    parse_inner = False
+
+    def __init__(self, match_obj):
+
+        self.target = (match_obj.group(1), match_obj.group(2))
+
+
 class ChatMention(SpanToken):
 
     pattern = re.compile(r"(^|\s|\n)#(\w{3,25})")
@@ -78,6 +89,7 @@ class CustomRenderer(HTMLRenderer):
     def __init__(self, **kwargs):
         super().__init__(UserMention,
                          BoardMention,
+                         CurationMention,
                          #ChatMention,
                          Emoji,
                          Spoiler #,
@@ -115,6 +127,24 @@ class CustomRenderer(HTMLRenderer):
             return f"{space}+{target}"
         else:
             return f'{space}<a href="{board.permalink}" class="d-inline-block"><img src="/+{board.name}/pic/profile" class="profile-pic-20 mr-1">+{board.name}</a>'
+
+    def render_curation_mention(self, token):
+        space = token.target[0]
+        target = token.target[1]
+
+        curation = get_curation(target, graceful=True)
+
+        if not curation:
+            return f"{space}&{target}"
+
+        try:
+            if curation.is_private and g.v.id != curation.owner_id:
+                return f"{space}&{target}"
+        except BaseException:
+            if curation.is_private:
+                return f"{space}&{target}"
+
+        return f'{space}<a href="{curation.permalink}" class="d-inline-block">&{curation.slug}</a>'
 
     def render_chat_mention(self, token):
         space = token.target[0]

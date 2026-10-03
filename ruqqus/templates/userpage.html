@@ -50,7 +50,10 @@
             </div>
             <div class="ml-3 w-100">
               <div class="d-flex align-items-center mt-1 mb-2">
-                <h1 class="h3 mb-0">{{ u.username }}</h1>
+                <div>
+                  <h1 class="h3 mb-0">{{ u.username }}</h1>
+                  <div class="text-muted text-small">@{{ u.username }}</div>
+                </div>
                 {% if u.username != u.original_username %}
                 <span>
                   <i class="fas fa-user-tag text-info align-middle ml-2" data-toggle="tooltip" data-placement="bottom" title="Original Username: @{{ u.original_username }}"></i>
@@ -70,6 +73,9 @@
                 {% if v and v.has_follower(u) %}
                 <span class="badge badge-secondary text-small align-middle ml-2">Follows you</span>
                 {% endif %}
+                <span>
+                  <i class="fas fa-info-circle text-muted align-middle ml-2" data-toggle="modal" data-target="#aboutAccountModal" title="About this account" style="cursor: pointer;"></i>
+                </span>
                 <div class="profile-actions align-middle d-none ml-2">
                  {% if v and v.id != u.id %}
                  <div class="dropdown show d-none">
@@ -165,7 +171,7 @@
       </div>
       <div class="mt-n3 py-3">
         <a href="{{ u.permalink }}" class="text-black">
-          <h1 class="h5 d-inline-block">{{ u.username }}
+          <h1 class="h5 d-inline-block mb-0">{{ u.username }}
             {% if u.username != u.original_username %}
             <span>
               <i class="fas fa-user-tag text-info align-middle ml-2" data-toggle="tooltip" data-placement="bottom" title="Original Username: @{{ u.original_username }}"></i>
@@ -174,7 +180,11 @@
             {% if v and v.has_follower(u) and not v.is_nofollow %}
             <span class="badge badge-secondary text-small align-middle mx-1">Follows you</span>
             {% endif %}
+            <span>
+              <i class="fas fa-info-circle text-muted align-middle ml-2" data-toggle="modal" data-target="#aboutAccountModal" title="About this account" style="cursor: pointer;"></i>
+            </span>
           </h1>
+          <div class="text-muted text-small">@{{ u.username }}</div>
         </a>
         <div class="text-small mb-2">{{ u.true_score }} Rep</div>
         {% if u.bio_html %}
@@ -409,4 +419,8 @@
 {% if v %}
 {% include "gif_modal.html" %}
 {% endif %}
+{% endblock %}
+
+{% block aboutAccountModal %}
+{% include "about_account_modal.html" %}
 {% endblock %}

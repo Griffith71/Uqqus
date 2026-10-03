@@ -74,7 +74,7 @@
       {% if b.is_private %}<i class="fas fa-eye-slash"data-toggle="tooltip" data-placement="bottom" title="Private mode."></i>{% endif %}
       {% if b.restricted_posting %}<i class="fas fa-user-lock"data-toggle="tooltip" data-placement="bottom" title="Restricted posting mode."></i>{% endif %}
       {% if b.is_sensitive %}<i class="fas fa-eye-slash" data-toggle="tooltip" data-placement="bottom" title="Sensitive Content"></i>{% endif %}
-      {% if b.all_opt_out %}<i class="fas fa-list" data-toggle="tooltip" data-placement="bottom" title="Opted out of All/Trending"></i>{% endif %}        
+      {% if b.all_opt_out %}<i class="fas fa-list" data-toggle="tooltip" data-placement="bottom" title="Opted out of All"></i>{% endif %}
     </div>
 
   </div>
@@ -231,16 +231,17 @@
         </div>
         <div>
           <a href="{{ b.permalink }}">
-            <span class="h6 text-black mb-0">+{{ b.name }}
+            <div class="h6 text-black mb-0 d-inline-block">{{ b.name }}
               {% if v and v.has_blocked_guild(b) %}
               <i class="fas fa-eye-slash text-danger align-middle ml-2" data-toggle="tooltip" data-placement="bottom" data-html="true" title="You have hidden this guild from /all. Visit your settings or click the <i class='fas fa-ellipsis-h text-small'></i> icon to adjust its visibility."></i>
               {% endif %}
-            </span>
+            </div>
             {% if b.is_sensitive %}
             <span class="badge badge-warning text-small ml-2" data-toggle="tooltip" data-placement="bottom" title="This guild discusses sensitive topics">Sensitive Content</span>
             {% endif %}
             {% if b.is_private %}
             <span class="badge badge-warning text-small ml-2" data-toggle="tooltip" data-placement="bottom" title="This guild is private. Content posted prior to the guild being set to private is visible to everyone.">private</span>{% endif %}
+            <div class="text-muted text-small">+{{ b.name }}</div>
           </a>
         </div>
       </div>
@@ -356,7 +357,7 @@
       </div>
       <div class="mt-n3 py-3">
         <a href="{{ b.permalink }}" class="text-black">
-          <h1 class="h5 d-inline-block">+{{ b.name }}
+          <h1 class="h5 d-inline-block mb-0">{{ b.name }}
             {% if b.is_sensitive %}
             <span class="badge badge-warning text-small align-top">Sensitive Content</span>
             {% endif %}
@@ -364,6 +365,7 @@
             <span class="badge badge-warning text-small align-top" data-toggle="tooltip" data-placement="bottom" title="This guild is private. Content posted prior to the guild being set to private is visible to everyone.">private</span>
             {% endif %}
           </h1>
+          <div class="text-muted text-small">+{{ b.name }}</div>
         </a>
 
         {% block mobile_description %}
