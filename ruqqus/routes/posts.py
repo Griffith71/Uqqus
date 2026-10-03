@@ -259,9 +259,24 @@ Required form data:
                 return {"error": f"The link `{badlink.link}` is not allowed. Reason: {badlink.reason}"}
 
 
+    now = int(time.time())
+
+    # edits within 90s of the post's own creation are treated as part of
+    # drafting the original, not a tracked edit - no history row, no
+    # edited_utc bump
+    if now - p.created_utc > 90:
+        g.db.add(ContentEditHistory(
+            actor_id=v.id,
+            target_submission_id=p.id,
+            board_id=p.board_id,
+            action="edit",
+            previous_body=p.body,
+            previous_body_html=p.body_html
+        ))
+        p.edited_utc = now
+
     p.body = body
     p.body_html = body_html
-    p.edited_utc = int(time.time())
 
     # offensive
     p.is_offensive = False
@@ -273,6 +288,37 @@ Required form data:
     g.db.add(p)
 
     return redirect(p.permalink)
+
+
+@app.route("/post/<pid>/history", methods=["GET"])
+@auth_desired
+def post_history(pid, v):
+    """
+View the edit/removal history of a post - every edit, self-delete, and
+guild hide/unhide, each showing who, when, and (except for restores) what
+the content looked like immediately before that action. If the post was
+later obliterated by an admin, only a metadata-only notice is shown -
+no content.
+"""
+
+    post = get_post(pid)
+
+    entries = g.db.query(ContentEditHistory).filter_by(
+        target_submission_id=post.id
+    ).order_by(ContentEditHistory.id.asc()).all()
+
+    obliteration = g.db.query(ObliterationRecord).filter_by(
+        target_submission_id=post.id
+    ).first()
+
+    return render_template(
+        "content_history.html",
+        v=v,
+        target=post,
+        target_type="post",
+        entries=entries,
+        obliteration=obliteration
+    )
 
 
 @app.route("/submit/title", methods=['GET'])
@@ -1252,6 +1298,16 @@ URL path parameters:
     post.stickied = False
 
     g.db.add(post)
+
+    g.db.add(ContentEditHistory(
+        actor_id=v.id,
+        target_submission_id=post.id,
+        board_id=post.board_id,
+        action="delete",
+        previous_title=post.title,
+        previous_body=post.body,
+        previous_body_html=post.body_html
+    ))
 
     # clear cache
     cache.delete_memoized(User.userpagelisting, v, sort="new")

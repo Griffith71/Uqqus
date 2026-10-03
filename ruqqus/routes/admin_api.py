@@ -324,6 +324,188 @@ nothing that references it breaks; only the text itself is gone.
     return "", 204
 
 
+@app.route("/admin/obliterate_post/<pid>", methods=["POST"])
+@admin_level_required(4)
+@validate_formkey
+def admin_obliterate_post(pid, v):
+    """
+Permanently and structurally destroy a post's content - title, body,
+url, embed/meta fields - for itself, every Forward/repost copy, and
+every comment underneath all of them.
+
+Unlike purge_post, this cascades fully to comments and forward copies,
+and it also scrubs any pre-existing content_edit_history snapshots for
+all of those rows, so no earlier edited-out or hidden version of the
+content can resurface there either. Only a reason and the periphery
+metadata (who authored it, who obliterated it, when, why) survive, in
+obliteration_records - a table with no content-bearing columns at all.
+This cannot be undone, even by an admin.
+
+Required form data:
+* `reason_category` - "illegal_content" | "legal_takedown" | "other"
+* `reason` - free-text detail
+"""
+
+    post = g.db.query(Submission).filter_by(id=base36decode(pid)).first()
+    if not post:
+        abort(404)
+
+    reason = request.form.get("reason", "").strip()
+    reason_category = request.form.get("reason_category", "").strip()
+    if not reason or reason_category not in ("illegal_content", "legal_takedown", "other"):
+        abort(400)
+
+    author_id = post.author_id
+    board_id = post.board_id
+    now = int(time.time())
+
+    # resolve the full target set: the post itself, plus every forward/
+    # repost copy of it - unless the target IS itself a forward copy, in
+    # which case scope stays to just that one row (mirrors delete_post_pid)
+    if post.is_repost:
+        targets = [post]
+    else:
+        targets = [post] + g.db.query(Submission).filter_by(repost_id=post.id).all()
+
+    target_ids = [t.id for t in targets]
+
+    comments = g.db.query(Comment).filter(
+        Comment.parent_submission.in_(target_ids)
+    ).all()
+    comment_ids = [c.id for c in comments]
+
+    # scrub pre-existing history snapshots FIRST, before touching live
+    # rows, so a failure partway through never leaves an old snapshot as
+    # the only surviving copy of destroyed text
+    g.db.query(ContentEditHistory).filter(
+        ContentEditHistory.target_submission_id.in_(target_ids)
+    ).update({
+        ContentEditHistory.previous_title: None,
+        ContentEditHistory.previous_url: None,
+        ContentEditHistory.previous_body: None,
+        ContentEditHistory.previous_body_html: None
+    }, synchronize_session=False)
+
+    if comment_ids:
+        g.db.query(ContentEditHistory).filter(
+            ContentEditHistory.target_comment_id.in_(comment_ids)
+        ).update({
+            ContentEditHistory.previous_body: None,
+            ContentEditHistory.previous_body_html: None
+        }, synchronize_session=False)
+
+    # blank live content + clean up hosted media, for every target post
+    for t in targets:
+        if t.domain == "i.ruqqus.com" and t.url:
+            segments = t.url.split("/")
+            if len(segments) > 5:
+                tpid, rand = segments[4], segments[5]
+                if tpid == t.base36id:
+                    delete_file(f"post/{tpid}/{rand}")
+                    t.is_image = False
+
+        t.purged_utc = now
+        t.is_pinned = False
+        t.stickied = False
+        t.title = ""
+        t.body = ""
+        t.body_html = ""
+        t.url = ""
+        t.embed_url = ""
+        t.meta_title = ""
+        t.meta_description = ""
+        t.preview_image_url = ""
+        g.db.add(t)
+        cache.delete_memoized(Board.idlist, t.board)
+
+    # blank every comment under every target post
+    for c in comments:
+        c.purged_utc = now
+        c.body = ""
+        c.body_html = ""
+        g.db.add(c)
+
+    g.db.add(ObliterationRecord(
+        actor_id=v.id,
+        author_id=author_id,
+        target_submission_id=post.id,
+        board_id=board_id,
+        reason_category=reason_category,
+        reason=reason
+    ))
+
+    g.db.add(ModAction(
+        kind="obliterate_post",
+        user_id=v.id,
+        target_submission_id=post.id,
+        board_id=board_id,
+        note="admin action"
+    ))
+
+    g.db.commit()
+
+    return redirect(post.permalink)
+
+
+@app.route("/admin/obliterate_comment/<cid>", methods=["POST"])
+@admin_level_required(4)
+@validate_formkey
+def admin_obliterate_comment(cid, v):
+    """
+Permanently and structurally destroy a single comment's body text. Does
+NOT cascade to its own replies (same scoping purge_comment already
+uses) - child replies are independently authored content.
+
+Required form data:
+* `reason_category` - "illegal_content" | "legal_takedown" | "other"
+* `reason` - free-text detail
+"""
+
+    comment = g.db.query(Comment).filter_by(id=base36decode(cid)).first()
+    if not comment:
+        abort(404)
+
+    reason = request.form.get("reason", "").strip()
+    reason_category = request.form.get("reason_category", "").strip()
+    if not reason or reason_category not in ("illegal_content", "legal_takedown", "other"):
+        abort(400)
+
+    author_id = comment.author_id
+    board_id = comment.post.board_id
+    now = int(time.time())
+
+    g.db.query(ContentEditHistory).filter_by(target_comment_id=comment.id).update({
+        ContentEditHistory.previous_body: None,
+        ContentEditHistory.previous_body_html: None
+    }, synchronize_session=False)
+
+    comment.purged_utc = now
+    comment.body = ""
+    comment.body_html = ""
+    g.db.add(comment)
+
+    g.db.add(ObliterationRecord(
+        actor_id=v.id,
+        author_id=author_id,
+        target_comment_id=comment.id,
+        board_id=board_id,
+        reason_category=reason_category,
+        reason=reason
+    ))
+
+    g.db.add(ModAction(
+        kind="obliterate_comment",
+        user_id=v.id,
+        target_comment_id=comment.id,
+        board_id=board_id,
+        note="admin action"
+    ))
+
+    g.db.commit()
+
+    return "", 204
+
+
 @app.route("/api/distinguish_comment/<c_id>", methods=["post"])
 @admin_level_required(1)
 def admin_distinguish_comment(c_id, v):

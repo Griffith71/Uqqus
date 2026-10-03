@@ -459,30 +459,51 @@ URL path parameters:
 @validate_formkey
 def mod_kick_bid_pid(guildname, pid, board, v):
     """
-Hide a post from your guild. The post itself is untouched - it stays
-visible on the author's profile and in any other guild it's forwarded
-to; only your guild's copy is hidden from public view here.
+Hide a post from your guild for breaking its rules. The post itself is
+untouched - it stays visible on the author's profile and in any other
+guild it's forwarded to; only your guild's copy is replaced with a
+notice showing your reason here. Reversible via /mod/unhide.
 
 URL path parameters:
 * `guildname` - The guild in which you are a guildmaster
 * `pid` - The base 36 post ID
+
+Required form data:
+* `reason` - Why this post breaks +guildname's rules
 """
     post = get_post(pid)
 
     if not post.board_id == board.id:
         abort(400)
 
+    reason = request.form.get("reason", "").strip()
+    if not reason:
+        return jsonify({"error": "A reason is required."}), 400
+
     post.hidden_by_guild = True
+    post.hidden_reason = reason
     post.is_pinned = False
     g.db.add(post)
 
     cache.delete_memoized(Board.idlist, post.board)
 
+    g.db.add(ContentEditHistory(
+        actor_id=v.id,
+        target_submission_id=post.id,
+        board_id=board.id,
+        action="guild_hide",
+        reason=reason,
+        previous_title=post.title,
+        previous_body=post.body,
+        previous_body_html=post.body_html
+    ))
+
     ma=ModAction(
         kind="hide_post_from_guild",
         user_id=v.id,
         target_submission_id=post.id,
-        board_id=board.id
+        board_id=board.id,
+        note=reason
         )
     g.db.add(ma)
     g.db.commit()
@@ -519,6 +540,13 @@ URL path parameters:
     g.db.add(post)
 
     cache.delete_memoized(Board.idlist, post.board)
+
+    g.db.add(ContentEditHistory(
+        actor_id=v.id,
+        target_submission_id=post.id,
+        board_id=board.id,
+        action="guild_unhide"
+    ))
 
     ma=ModAction(
         kind="unhide_post_from_guild",

@@ -683,10 +683,24 @@ Required form data:
         g.db.commit()
         return jsonify({"error": "Too much spam!"}), 403
 
+    now = int(time.time())
+
+    # edits within 90s of the comment's own creation are treated as part
+    # of drafting the original, not a tracked edit - no history row, no
+    # edited_utc bump
+    if now - c.created_utc > 90:
+        g.db.add(ContentEditHistory(
+            actor_id=v.id,
+            target_comment_id=c.id,
+            board_id=c.post.board_id,
+            action="edit",
+            previous_body=c.body,
+            previous_body_html=c.body_html
+        ))
+        c.edited_utc = now
+
     c.body = body
     c.body_html = body_html
-
-    c.edited_utc = int(time.time())
 
     g.db.add(c)
 
@@ -725,6 +739,15 @@ URL path parameters:
 
     g.db.add(c)
 
+    g.db.add(ContentEditHistory(
+        actor_id=v.id,
+        target_comment_id=c.id,
+        board_id=c.post.board_id,
+        action="delete",
+        previous_body=c.body,
+        previous_body_html=c.body_html
+    ))
+
     for promoted in c.promoted_posts:
         if promoted.is_deleted:
             continue
@@ -740,6 +763,37 @@ URL path parameters:
 
     return {"html": lambda: ("", 204),
             "api": lambda: ("", 204)}
+
+
+@app.route("/comment/<cid>/history", methods=["GET"])
+@auth_desired
+def comment_history(cid, v):
+    """
+View the edit/removal history of a comment - every edit, self-delete,
+and guild hide/unhide, each showing who, when, and (except for restores)
+what the content looked like immediately before that action. If the
+comment was later obliterated by an admin, only a metadata-only notice
+is shown - no content.
+"""
+
+    comment = get_comment(cid, v=v)
+
+    entries = g.db.query(ContentEditHistory).filter_by(
+        target_comment_id=comment.id
+    ).order_by(ContentEditHistory.id.asc()).all()
+
+    obliteration = g.db.query(ObliterationRecord).filter_by(
+        target_comment_id=comment.id
+    ).first()
+
+    return render_template(
+        "content_history.html",
+        v=v,
+        target=comment,
+        target_type="comment",
+        entries=entries,
+        obliteration=obliteration
+    )
 
 
 @app.route("/save_comment/<cid>", methods=["POST"])
@@ -1009,13 +1063,17 @@ URL path parameters:
 @validate_formkey
 def mod_hide_comment(guildname, cid, board, v):
     """
-Hide a reply from your guild. The reply itself is untouched - it stays
-visible wherever else its parent post is forwarded; only your guild's
-view of it is hidden here.
+Hide a reply from your guild for breaking its rules. The reply itself is
+untouched - it stays visible wherever else its parent post is forwarded;
+only your guild's view of it is hidden here, replaced with a notice
+showing your reason. Reversible via /mod/unhide_comment.
 
 URL path parameters:
 * `guildname` - The guild in which you are a guildmaster
 * `cid` - The base 36 comment id
+
+Required form data:
+* `reason` - Why this reply breaks +guildname's rules
 """
 
     comment = get_comment(cid, v=v)
@@ -1023,14 +1081,30 @@ URL path parameters:
     if comment.post.board_id != board.id:
         abort(400)
 
+    reason = request.form.get("reason", "").strip()
+    if not reason:
+        return jsonify({"error": "A reason is required."}), 400
+
     comment.hidden_by_guild = True
+    comment.hidden_reason = reason
     g.db.add(comment)
+
+    g.db.add(ContentEditHistory(
+        actor_id=v.id,
+        target_comment_id=comment.id,
+        board_id=board.id,
+        action="guild_hide",
+        reason=reason,
+        previous_body=comment.body,
+        previous_body_html=comment.body_html
+    ))
 
     ma=ModAction(
         kind="hide_comment_from_guild",
         user_id=v.id,
         board_id=board.id,
-        target_comment_id=comment.id
+        target_comment_id=comment.id,
+        note=reason
     )
     g.db.add(ma)
     g.db.commit()
@@ -1069,6 +1143,13 @@ URL path parameters:
 
     comment.hidden_by_guild = False
     g.db.add(comment)
+
+    g.db.add(ContentEditHistory(
+        actor_id=v.id,
+        target_comment_id=comment.id,
+        board_id=board.id,
+        action="guild_unhide"
+    ))
 
     ma=ModAction(
         kind="unhide_comment_from_guild",

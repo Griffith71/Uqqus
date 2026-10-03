@@ -513,6 +513,28 @@ def admin_removed(v):
                            next_exists=next_exists
                            )
 
+
+@app.route("/admin/obliterations", methods=["GET"])
+@admin_level_required(4)
+def admin_obliterations(v):
+
+    page = int(request.args.get("page", 1))
+
+    records = g.db.query(ObliterationRecord).order_by(
+        ObliterationRecord.id.desc()
+    ).offset(25 * (page - 1)).limit(26).all()
+
+    next_exists = len(records) == 26
+    records = records[0:25]
+
+    return render_template("admin/obliterations.html",
+                           v=v,
+                           records=records,
+                           page=page,
+                           next_exists=next_exists
+                           )
+
+
 @app.route("/admin/gm", methods=["GET"])
 @admin_level_required(3)
 def admin_gm(v):

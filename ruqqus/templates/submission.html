@@ -388,6 +388,8 @@
           <button class="btn btn-link btn-block btn-lg text-left text-muted" data-toggle="modal" data-dismiss="modal" data-target="#reportPostModal" onclick="report_postModal('{{ p.base36id }}','{{ '@'+p.author.username if not p.author.is_deleted else '[deleted account]'}}','{{ p.board.name }}')"><i class="far fa-flag text-center text-muted mr-3"></i>Flag</button>
           {% endif %}
 
+          <a class="btn btn-link btn-block btn-lg text-left text-muted" href="/post/{{ p.base36id }}/history"><i class="far fa-history text-center text-muted mr-3"></i>History</a>
+
           {% if can_edit %}
           <button class="btn btn-link btn-block btn-lg text-left text-muted" data-dismiss="modal" onclick="togglePostEdit('{{ p.base36id }}')"><i class="far fa-edit text-center text-muted mr-3"></i>Edit</button>
           <button class="btn btn-link btn-block btn-lg text-left text-muted" data-toggle="modal" data-dismiss="modal" data-target="#deletePostModal" onclick="delete_postModal('{{ p.base36id }}')"><i class="far fa-trash-alt text-center text-muted mr-3"></i>{{ "Remove from +"+p.board.name if p.is_repost else "Delete" }}</button>
@@ -416,7 +418,7 @@
           {% if p.hidden_by_guild %}
           <button class="btn btn-link btn-block btn-lg text-left" id="kick-post-{{ p.base36id }}" href="javascript:void(0)" onclick="post('/mod/unhide/{{ p.board.name }}/{{ p.base36id }}', callback=function(){window.location.reload(true)})"><i class="far fa-eye text-center mr-3"></i>Unhide</button>
           {% else %}
-          <button class="btn btn-link btn-block btn-lg text-danger text-left" id="kick-post-{{ p.base36id }}" href="javascript:void(0)" onclick="post('/mod/kick/{{ p.board.name }}/{{ p.base36id }}', callback=function(){window.location.reload(true)})"><i class="far fa-eye-slash text-center text-danger mr-3"></i>Hide</button>
+          <button class="btn btn-link btn-block btn-lg text-danger text-left" id="kick-post-{{ p.base36id }}" href="javascript:void(0)" onclick="post_with_reason('/mod/kick/{{ p.board.name }}/{{ p.base36id }}', callback=function(){window.location.reload(true)})"><i class="far fa-eye-slash text-center text-danger mr-3"></i>Hide</button>
           {% endif %}
           {% endif %}
 
@@ -658,6 +660,8 @@
                         <a class="dropdown-item" href="javascript:void(0)" data-toggle="modal" data-dismiss="modal" data-target="#reportPostModal" onclick="report_postModal('{{ p.base36id }}', '{{ p.author.username }}','{{ p.board.name }}')"><i class="fas fa-flag fa-fw"></i>Flag</a>
                         {% endif %}
 
+                        <a class="dropdown-item" href="/post/{{ p.base36id }}/history"><i class="fas fa-history fa-fw"></i>History</a>
+
                         {% if can_edit %}
                         <a class="dropdown-item" href="javascript:void(0)" onclick="togglePostEdit('{{ p.base36id }}')"><i class="fas fa-edit fa-fw"></i>Edit</a>
                         <a class="dropdown-item" href="javascript:void(0)" data-toggle="modal" data-dismiss="modal" data-target="#deletePostModal" onclick="delete_postModal('{{ p.base36id }}')"><i class="fas fa-trash-alt fa-fw"></i>{{ "Remove from +"+p.board.name if p.is_repost else "Delete" }}</a>
@@ -686,7 +690,7 @@
                         {% if p.hidden_by_guild %}
                         <a class="dropdown-item" href="javascript:void(0)" onclick="post('/mod/unhide/{{ p.board.name }}/{{ p.base36id }}', callback=function(){window.location.reload(true)})"><i class="fas fa-eye fa-fw"></i>Unhide</a>
                         {% else %}
-                        <a class="dropdown-item text-danger" href="javascript:void(0)" onclick="post('/mod/kick/{{ p.board.name }}/{{ p.base36id }}', callback=function(){window.location.reload(true)})"><i class="fas fa-eye-slash fa-fw text-danger"></i>Hide</a>
+                        <a class="dropdown-item text-danger" href="javascript:void(0)" onclick="post_with_reason('/mod/kick/{{ p.board.name }}/{{ p.base36id }}', callback=function(){window.location.reload(true)})"><i class="fas fa-eye-slash fa-fw text-danger"></i>Hide</a>
                         {% endif %}
                         {% endif %}
 

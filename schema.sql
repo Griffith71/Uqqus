@@ -1676,6 +1676,7 @@ CREATE TABLE public.comments_aux (
     body character varying(10000),
     body_html character varying(20000),
     ban_reason character varying(128),
+    hidden_reason character varying(256) DEFAULT ''::character varying,
     key_id integer NOT NULL
 );
 
@@ -2673,7 +2674,8 @@ CREATE TABLE public.submissions_aux (
     key_id integer NOT NULL,
     meta_title character varying(512),
     meta_description character varying(1024),
-    preview_image_url character varying(1024) DEFAULT ''::character varying
+    preview_image_url character varying(1024) DEFAULT ''::character varying,
+    hidden_reason character varying(128) DEFAULT ''::character varying
 );
 
 
@@ -5499,6 +5501,83 @@ ALTER TABLE ONLY public.curation_follows
 
 CREATE INDEX curation_follows_curation_id_idx ON public.curation_follows USING btree (curation_id);
 CREATE INDEX curation_follows_user_id_idx ON public.curation_follows USING btree (user_id);
+
+
+--
+-- Ruqqus content removal/edit audit trail additions
+--
+
+--
+-- Name: content_edit_history; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.content_edit_history (
+    id bigint NOT NULL,
+    actor_id integer,
+    target_submission_id integer DEFAULT 0,
+    target_comment_id integer DEFAULT 0,
+    board_id integer DEFAULT 0,
+    action character varying(32),
+    reason character varying(256),
+    previous_title character varying(500),
+    previous_url character varying(500),
+    previous_body character varying(25000),
+    previous_body_html character varying(50000),
+    created_utc integer DEFAULT 0
+);
+
+CREATE SEQUENCE public.content_edit_history_id_seq
+    AS bigint
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE public.content_edit_history_id_seq OWNED BY public.content_edit_history.id;
+
+ALTER TABLE ONLY public.content_edit_history ALTER COLUMN id SET DEFAULT nextval('public.content_edit_history_id_seq'::regclass);
+
+ALTER TABLE ONLY public.content_edit_history
+    ADD CONSTRAINT content_edit_history_pkey PRIMARY KEY (id);
+
+CREATE INDEX content_edit_history_sid_idx ON public.content_edit_history USING btree (target_submission_id);
+CREATE INDEX content_edit_history_cid_idx ON public.content_edit_history USING btree (target_comment_id);
+CREATE INDEX content_edit_history_board_idx ON public.content_edit_history USING btree (board_id);
+
+--
+-- Name: obliteration_records; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.obliteration_records (
+    id bigint NOT NULL,
+    actor_id integer,
+    author_id integer,
+    target_submission_id integer DEFAULT 0,
+    target_comment_id integer DEFAULT 0,
+    board_id integer DEFAULT 0,
+    reason_category character varying(32),
+    reason character varying(512),
+    created_utc integer DEFAULT 0
+);
+
+CREATE SEQUENCE public.obliteration_records_id_seq
+    AS bigint
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE public.obliteration_records_id_seq OWNED BY public.obliteration_records.id;
+
+ALTER TABLE ONLY public.obliteration_records ALTER COLUMN id SET DEFAULT nextval('public.obliteration_records_id_seq'::regclass);
+
+ALTER TABLE ONLY public.obliteration_records
+    ADD CONSTRAINT obliteration_records_pkey PRIMARY KEY (id);
+
+CREATE INDEX obliteration_records_sid_idx ON public.obliteration_records USING btree (target_submission_id);
+CREATE INDEX obliteration_records_cid_idx ON public.obliteration_records USING btree (target_comment_id);
 
 
 --

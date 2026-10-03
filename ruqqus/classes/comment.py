@@ -37,6 +37,7 @@ class CommentAux(Base):
     body = Column(String(10000), default=None)
     body_html = Column(String(20000))
     ban_reason = Column(String(256), default='')
+    hidden_reason = Column(String(256), default='')
 
 
 class Comment(Base, Age_times, Scores, Stndrd, Fuzzing):
@@ -449,6 +450,15 @@ class Comment(Base, Age_times, Scores, Stndrd, Fuzzing):
     @ban_reason.setter
     def ban_reason(self, x):
         self.comment_aux.ban_reason = x
+        g.db.add(self.comment_aux)
+
+    @property
+    def hidden_reason(self):
+        return self.comment_aux.hidden_reason
+
+    @hidden_reason.setter
+    def hidden_reason(self, x):
+        self.comment_aux.hidden_reason = x
         g.db.add(self.comment_aux)
 
     @property

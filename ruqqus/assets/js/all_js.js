@@ -1256,10 +1256,15 @@ $('.kick-button-listing').click(function(event) {
   pid=$(this).data('pid')
   action=$(this).data('hidden')=='true' ? 'unhide' : 'kick'
 
-  post_response('/mod/'+action+'/'+ boardname+'/'+pid, callback=function(xhr){
+  var replaceCallback = function(xhr){
     $("#post-"+pid).replaceWith(JSON.parse(xhr.response)['data'])
-      }
-    )
+  }
+
+  if (action == 'kick') {
+    post_with_reason('/mod/kick/'+ boardname+'/'+pid, replaceCallback)
+  } else {
+    post_response('/mod/'+action+'/'+ boardname+'/'+pid, replaceCallback)
+  }
   }
 )
 
@@ -1275,6 +1280,28 @@ function post(url, callback, errortext) {
   xhr.onload = function() {
     if (xhr.status >= 200 && xhr.status < 300) {
       callback();
+    } else {
+      xhr.onerror();
+    }
+  };
+  xhr.send(form);
+};
+
+function post_with_reason(url, callback, errortext) {
+  var reason = window.prompt("Why does this break your guild's rules? This will be shown to anyone who looks up this post/reply's history.");
+  if (reason == null || reason.trim() == "") {
+    return;
+  }
+  var xhr = new XMLHttpRequest();
+  xhr.open("POST", url, true);
+  var form = new FormData()
+  form.append("formkey", formkey());
+  form.append("reason", reason.trim());
+  xhr.withCredentials=true;
+  xhr.onerror=function() { alert(errortext); };
+  xhr.onload = function() {
+    if (xhr.status >= 200 && xhr.status < 300) {
+      callback(xhr);
     } else {
       xhr.onerror();
     }
@@ -1309,6 +1336,44 @@ function toggleSub(){
   document.getElementById('button-unsub-mobile').classList.toggle('d-none');
   document.getElementById('button-sub-mobile').classList.toggle('d-none');
 }
+
+function post_toast_with_reason(url, callback) {
+  var reason = window.prompt("Why does this break your guild's rules? This will be shown to anyone who looks up this reply's history.");
+  if (reason == null || reason.trim() == "") {
+    return;
+  }
+  var xhr = new XMLHttpRequest();
+  xhr.open("POST", url, true);
+  var form = new FormData()
+  form.append("formkey", formkey());
+  form.append("reason", reason.trim());
+  xhr.withCredentials=true;
+
+  xhr.onload = function() {
+    if (xhr.status==204) {}
+      else if (xhr.status >= 200 && xhr.status < 300) {
+        $('#toast-post-success').toast('dispose');
+        $('#toast-post-success').toast('show');
+        document.getElementById('toast-post-success-text').innerText = JSON.parse(xhr.response)["message"];
+        callback(xhr)
+        return true
+
+      } else if (xhr.status >= 300 && xhr.status < 400) {
+        window.location.href = JSON.parse(xhr.response)["redirect"]
+      } else {
+        data=JSON.parse(xhr.response);
+
+        $('#toast-post-error').toast('dispose');
+        $('#toast-post-error').toast('show');
+        document.getElementById('toast-post-error-text').innerText = data["error"];
+        return false
+
+      }
+    };
+
+    xhr.send(form);
+
+  }
 
 function post_toast(url, callback) {
   var xhr = new XMLHttpRequest();

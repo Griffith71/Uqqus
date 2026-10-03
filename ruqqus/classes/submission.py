@@ -32,6 +32,7 @@ class SubmissionAux(Base):
     body = Column(String(25000), default="")
     body_html = Column(String(50000), default="")
     ban_reason = Column(String(128), default="")
+    hidden_reason = Column(String(128), default="")
     embed_url = Column(String(256), default="")
     meta_title=Column(String(512), default="")
     meta_description=Column(String(1024), default="")
@@ -289,6 +290,8 @@ class Submission(Base, Stndrd, Age_times, Scores, Fuzzing):
         elif v and v.admin_level >= 3:
             template = "submission.html"
         elif self.is_banned:
+            template = "submission_banned.html"
+        elif self.hidden_by_guild and not (v and self.board.has_mod(v, 'content')):
             template = "submission_banned.html"
         else:
             template = "submission.html"
@@ -579,6 +582,15 @@ class Submission(Base, Stndrd, Age_times, Scores, Fuzzing):
     @ban_reason.setter
     def ban_reason(self, x):
         self.submission_aux.ban_reason = x
+        g.db.add(self.submission_aux)
+
+    @property
+    def hidden_reason(self):
+        return self.submission_aux.hidden_reason
+
+    @hidden_reason.setter
+    def hidden_reason(self, x):
+        self.submission_aux.hidden_reason = x
         g.db.add(self.submission_aux)
 
     @property

@@ -1,0 +1,71 @@
+{% extends "home.html" %}
+
+{% block pagetype %}content_history{% endblock %}
+
+{% block title %}
+<title>History - {{ 'SITE_NAME' | app_config }}</title>
+{% endblock %}
+
+{% block content %}
+<div class="col px-md-4 py-4">
+
+  <h1 class="h4 mb-3">
+    History of this {{ "post" if target_type=="post" else "reply" }}
+    <a href="{{ target.permalink }}" class="text-small font-weight-normal">(view current)</a>
+  </h1>
+
+  {% if not entries and not obliteration %}
+  <p class="text-muted">No edits or removals recorded for this {{ "post" if target_type=="post" else "reply" }} yet.</p>
+  {% endif %}
+
+  {% for entry in entries %}
+  <div class="card mb-3 p-3">
+    <div class="mb-1">
+      <strong>
+        {% if entry.action == "edit" %}
+        Edited by <a href="{{ entry.actor.permalink }}">@{{ entry.actor.username }}</a>
+        {% elif entry.action == "delete" %}
+        Deleted by <a href="{{ entry.actor.permalink }}">@{{ entry.actor.username }}</a>
+        {% elif entry.action == "guild_hide" %}
+        Removed by guildmasters of <a href="{{ entry.board.permalink }}">+{{ entry.board.name }}</a>
+        {% elif entry.action == "guild_unhide" %}
+        Restored by guildmasters of <a href="{{ entry.board.permalink }}">+{{ entry.board.name }}</a>
+        {% elif entry.action == "author_hide" %}
+        Removed by the post's author, <a href="{{ entry.actor.permalink }}">@{{ entry.actor.username }}</a>
+        {% elif entry.action == "author_restore" %}
+        Restored by the post's author, <a href="{{ entry.actor.permalink }}">@{{ entry.actor.username }}</a>
+        {% endif %}
+      </strong>
+      <span class="text-muted text-small">&middot; {{ entry.created_date }}</span>
+    </div>
+
+    {% if entry.reason %}
+    <div class="text-danger text-small mb-2">Reason: {{ entry.reason }}</div>
+    {% endif %}
+
+    {% if entry.previous_body_html or entry.previous_title %}
+    <div class="text-muted text-small mb-1">Content immediately before this action:</div>
+    <div class="border rounded p-2">
+      {% if target_type == "post" and entry.previous_title %}
+      <div class="font-weight-bold mb-1">{{ entry.previous_title }}</div>
+      {% endif %}
+      {% if entry.previous_body_html %}
+      <div>{{ entry.previous_body_html | safe }}</div>
+      {% endif %}
+    </div>
+    {% endif %}
+  </div>
+  {% endfor %}
+
+  {% if obliteration %}
+  <div class="card mb-3 p-3 border-danger">
+    <strong class="text-danger">Permanently removed by site administrators</strong>
+    <span class="text-muted text-small">&middot; {{ obliteration.created_date }}</span>
+    <div class="text-small mt-1">Category: {{ obliteration.reason_category }}</div>
+    <div class="text-small">Reason: {{ obliteration.reason }}</div>
+    <div class="text-muted text-small mt-2">The original content is not retained anywhere, including in this history.</div>
+  </div>
+  {% endif %}
+
+</div>
+{% endblock %}

@@ -1,0 +1,57 @@
+{% extends "docs_default.html" %}
+
+{% block sidebarblock %}{% endblock %}
+{% block sidebarLeftblock %}{% endblock %}
+
+{% block title %}
+<title>Obliteration Records</title>
+<meta name="description" content="Ruqqus Admin">
+{% endblock %}
+
+{% block content %}
+<h1>Obliteration Records</h1>
+<p>Permanently destroyed posts/comments - metadata only, the destroyed content itself is not retained anywhere.</p>
+
+<table class="table table-striped mb-5">
+	<thead class="bg-primary text-white">
+		<tr>
+			<th>When</th>
+			<th>Guild</th>
+			<th>Author</th>
+			<th>Obliterated by</th>
+			<th>Target</th>
+			<th>Category</th>
+			<th>Reason</th>
+		</tr>
+	</thead>
+	{% for record in records %}
+	<tr>
+		<td>{{ record.created_date }}</td>
+		<td>{% if record.board %}<a href="{{ record.board.permalink }}">+{{ record.board.name }}</a>{% endif %}</td>
+		<td>{% if record.author %}<a href="{{ record.author.permalink }}">@{{ record.author.username }}</a>{% else %}[unknown]{% endif %}</td>
+		<td>{% if record.actor %}<a href="{{ record.actor.permalink }}">@{{ record.actor.username }}</a>{% else %}[unknown]{% endif %}</td>
+		<td>
+			{% if record.target_submission_id %}<a href="{{ record.target_post.permalink }}">post</a>{% elif record.target_comment_id %}<a href="{{ record.target_comment.permalink }}">comment</a>{% endif %}
+		</td>
+		<td>{{ record.reason_category }}</td>
+		<td>{{ record.reason }}</td>
+	</tr>
+	{% endfor %}
+</table>
+
+<nav aria-label="Page navigation">
+  <ul class="pagination pagination-sm py-3 mb-0">
+    {% if page>1 %}
+    <li class="page-item"><small><a class="page-link" href="?page={{ page-1 }}">Prev</a></small></li>
+    {% else %}
+    <li class="page-item disabled"><span class="page-link">Prev</span></li>
+    {% endif %}
+    {% if next_exists %}
+    <li class="page-item"><small><a class="page-link" href="?page={{ page+1 }}">Next</a></small></li>
+    {% else %}
+    <li class="page-item disabled"><span class="page-link">Next</span></li>
+    {% endif %}
+  </ul>
+</nav>
+
+{% endblock %}

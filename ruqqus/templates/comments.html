@@ -47,7 +47,7 @@
 </div>
 
 
-{% elif ((c.is_banned or (c.hidden_by_guild and not (v and v.id==c.author_id))) or ((c.is_blocking) and not (c.is_guildmaster('content') and c.original_board_id==c.post.board_id))) and not c.distinguish_level and not (v and v.admin_level>=3) %}
+{% elif ((c.is_banned or (c.hidden_by_guild and not (v and v.id==c.author_id) and not (c.is_guildmaster('content') and c.original_board_id==c.post.board_id))) or ((c.is_blocking) and not (c.is_guildmaster('content') and c.original_board_id==c.post.board_id))) and not c.distinguish_level and not (v and v.admin_level>=3) %}
 
 
 
@@ -61,12 +61,12 @@
         <div id="comment-{{ c.base36id }}-only">
 
             <div class="user-info">{% if standalone and c.is_sensitive %}<span class="badge badge-warning">Sensitive Content<span> {% endif %}
-                [{% if c.is_banned %}Removed by administrators{% elif c.hidden_by_guild %}Hidden by guildmasters{% elif c.is_blocking %}You are blocking @{{ c.author.username }}{% elif c.is_blocked %}This user has blocked you{% endif %}]
+                [{% if c.is_banned %}Removed by administrators{% elif c.hidden_by_guild %}Removed by guildmasters{% elif c.is_blocking %}You are blocking @{{ c.author.username }}{% elif c.is_blocked %}This user has blocked you{% endif %}]
             </div>
 
 
             <div id="comment-banned-warning" class="comment-text text-danger text-small">
-                {% if c.is_banned and c.ban_reason %}Reason: {{ c.ban_reason }}{% endif %}
+                {% if c.is_banned and c.ban_reason %}Reason: {{ c.ban_reason }}{% elif c.hidden_by_guild and c.hidden_reason %}Reason: {{ c.hidden_reason }}{% endif %}
             </div>
          </div>
 
@@ -327,6 +327,8 @@
               <a class="dropdown-item" href="javascript:void(0)" data-toggle="modal" data-target="#reportCommentModal" onclick="report_commentModal('{{ c.base36id }}','{{ c.author.username if not c.author.is_deleted else '[is_deleted]' }}',)"><i class="fas fa-flag fa-fw"></i>Flag</a>
               {% endif %}
 
+              <a class="dropdown-item" href="/comment/{{ c.base36id }}/history"><i class="fas fa-history fa-fw"></i>History</a>
+
               {% if can_edit %}
               <a class="dropdown-item" href="javascript:void(0)" onclick="toggleEdit('{{ c.base36id }}')"><i class="fas fa-edit fa-fw"></i>Edit</a>
               {% if c.deleted_utc == 0 %}
@@ -353,7 +355,7 @@
               {% if c.hidden_by_guild %}
               <a class="dropdown-item" href="javascript:void(0)" onclick="post_toast('/mod/unhide_comment/{{ c.board.name }}/{{ c.base36id }}', callback=function(){window.location.reload(true);})"><i class="fas fa-eye fa-fw"></i>Unhide from +{{ c.board.name }}</a>
               {% else %}
-              <a class="dropdown-item text-danger" href="javascript:void(0)" onclick="post_toast('/mod/hide_comment/{{ c.board.name }}/{{ c.base36id }}', callback=function(){window.location.reload(true);})"><i class="fas fa-eye-slash fa-fw text-danger"></i>Hide from +{{ c.board.name }}</a>
+              <a class="dropdown-item text-danger" href="javascript:void(0)" onclick="post_toast_with_reason('/mod/hide_comment/{{ c.board.name }}/{{ c.base36id }}', callback=function(){window.location.reload(true);})"><i class="fas fa-eye-slash fa-fw text-danger"></i>Hide from +{{ c.board.name }}</a>
               {% endif %}
               {% endif %}
 
@@ -507,6 +509,8 @@
 
           <li class="list-group-item"><a href="javascript:void(0);" role="button" class="d-block copy-link" data-dismiss="modal" data-clipboard-text="{{ c.permalink | full_link}}"><i class="fas fa-copy"></i><span>Copy Link</span></a></li>
 
+          <li class="list-group-item"><a class="d-block" href="/comment/{{ c.base36id }}/history"><i class="fas fa-history"></i><span>History</span></a></li>
+
           {% if v %}
           <li class="list-group-item"><a href="javascript:void(0)" class="d-block" data-dismiss="modal" data-toggle="modal" data-target="#forwardCommentModal" onclick="forward_commentModal('{{ c.base36id }}')"><i class="fas fa-share-square"></i><span>Forward</span></a></li>
 
@@ -556,7 +560,7 @@
           {% if c.hidden_by_guild %}
           <li class="list-group-item"><a class="d-block" href="javascript:void(0)" onclick="post_toast('/mod/unhide_comment/{{ c.board.name }}/{{ c.base36id }}', callback=function(){window.location.reload(true);})"><i class="fas fa-eye"></i>Unhide from +{{ c.board.name }}</a></li>
           {% else %}
-          <li class="list-group-item"><a class="d-block text-danger" href="javascript:void(0)" onclick="post_toast('/mod/hide_comment/{{ c.board.name }}/{{ c.base36id }}', callback=function(){window.location.reload(true);})"><i class="fas fa-eye-slash text-danger"></i>Hide from +{{ c.board.name }}</a></li>
+          <li class="list-group-item"><a class="d-block text-danger" href="javascript:void(0)" onclick="post_toast_with_reason('/mod/hide_comment/{{ c.board.name }}/{{ c.base36id }}', callback=function(){window.location.reload(true);})"><i class="fas fa-eye-slash text-danger"></i>Hide from +{{ c.board.name }}</a></li>
           {% endif %}
           {% endif %}
 

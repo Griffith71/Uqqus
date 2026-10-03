@@ -20,6 +20,7 @@ from .ips import *
 from .titles import *
 from .paypal import *
 from .mod_logs import *
+from .content_history import *
 from .categories import *
 from .login_events import *
 from .regions import *

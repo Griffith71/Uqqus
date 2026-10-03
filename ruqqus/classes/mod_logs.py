@@ -389,6 +389,18 @@ ACTIONTYPES={
         "color": "bg-danger",
         "title": "permanently purged a comment"
     },
+    "obliterate_post":{
+        "str": 'permanently obliterated post {self.target_link}',
+        "icon":"fa-radiation",
+        "color": "bg-danger",
+        "title": "permanently obliterated a post"
+    },
+    "obliterate_comment":{
+        "str": 'permanently obliterated {self.target_link}',
+        "icon":"fa-radiation",
+        "color": "bg-danger",
+        "title": "permanently obliterated a comment"
+    },
     "change_perms":{
         "str": 'changed permissions on guildmaster {self.target_link}',
         "icon":"fa-user-cog",
