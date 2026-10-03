@@ -1,11 +1,20 @@
 from ruqqus.__main__ import db_session
 from ruqqus.classes import *
+from ruqqus.helpers.regions import compute_region_state
 
 import time
 import gevent
 import daemon
 
 db = db_session()
+
+# This script's own loop has no sleep between cycles, so the region/VPN
+# recompute below (which scans each active user's full login history) is
+# gated on its own wall-clock interval instead of running every tight-loop
+# cycle - the multi-month settling windows it decides on don't need to be
+# re-evaluated more often than this anyway.
+REGION_RECOMPUTE_INTERVAL = 60 * 60 * 24  # 24h
+last_region_recompute_utc = 0
 
 def print_(x):
 
@@ -16,6 +25,8 @@ def print_(x):
 
 
 def recompute():
+
+    global last_region_recompute_utc
 
     cycle=0
 
@@ -189,6 +200,46 @@ def recompute():
         db.commit()
 
         print_(f"deleted {count} old mod actions")
+
+        if now - last_region_recompute_utc >= REGION_RECOMPUTE_INTERVAL:
+            print_("beginning region/VPN-suspicion recompute")
+
+            region_cutoff = now - REGION_RECOMPUTE_INTERVAL
+            user_ids = [
+                row[0] for row in db.query(LoginEvent.user_id).filter(
+                    LoginEvent.created_utc >= region_cutoff
+                ).distinct().all()
+            ]
+            print_(f"{len(user_ids)} users with recent logins to recompute")
+
+            updated = 0
+            for user_id in user_ids:
+                user = db.query(User).filter_by(id=user_id).first()
+                if not user:
+                    continue
+
+                state = compute_region_state(user, db=db)
+                changed = False
+
+                if state["suspicious"] != user.region_suspicion_flag:
+                    user.region_suspicion_flag = state["suspicious"]
+                    changed = True
+
+                if state["migrate_to"] and state["migrate_to"] != user.display_region:
+                    user.display_region = state["migrate_to"]
+                    user.region_settled_utc = now
+                    changed = True
+
+                if changed:
+                    db.add(user)
+                    updated += 1
+
+                    if not updated % 100:
+                        db.commit()
+
+            db.commit()
+            last_region_recompute_utc = now
+            print_(f"Updated region/suspicion state for {updated} users")
 
 
 

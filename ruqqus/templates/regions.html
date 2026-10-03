@@ -1,0 +1,200 @@
+{% extends "default.html" %}
+
+{% block pagetype %}regions{% endblock %}
+
+{% block title %}
+<title>Regions - {{ 'SITE_NAME' | app_config }}</title>
+{% endblock %}
+
+{% block stylesheets %}
+{{ super() }}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jsvectormap@1.5.3/dist/css/jsvectormap.min.css">
+<style>
+  #world-map { width: 100%; aspect-ratio: 2 / 1; min-height: 300px; max-height: 650px; background: transparent; }
+  #world-map svg { width: 100%; height: 100%; }
+  .region-card.is-mine { border-color: var(--primary, #805ad5) !important; border-width: 2px !important; }
+  /* jsvectormap renders the +/- as a literal text character, but that glyph's
+     own font metrics sit visibly above the font's line-box center (a normal
+     quirk of +/- glyphs aligning to the font's math axis, not flexbox's doing)
+     - no amount of flex/line-height centering fixes that. Instead, hide the
+     text glyph and draw the +/- as pixel-exact CSS bars, centered with
+     top/left:50% + transform, which is exact regardless of any font. */
+  .jvm-zoom-btn { font-size: 0 !important; }
+  .jvm-zoom-btn::before,
+  .jvm-zoom-btn::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    background: #fff;
+    transform: translate(-50%, -50%);
+  }
+  .jvm-zoom-btn::before { width: 7px; height: 1px; }
+  .jvm-zoom-btn.jvm-zoomin::after { width: 1px; height: 7px; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="col px-md-4 py-4">
+
+  <h1 class="h3">Regions</h1>
+  <p class="text-muted">
+    Every account's "Account Based In" field shows one of these broad regions instead of an exact country, so nobody's
+    real location is exposed. If you're a member of a region, you can propose and vote on a better name for it below.
+  </p>
+
+  <div class="d-flex justify-content-end mb-2">
+    <a href="javascript:void(0)" id="reset-map-view" class="text-small text-muted"><i class="fas fa-expand"></i> Reset view</a>
+  </div>
+  <div id="world-map" class="mb-4 border rounded"></div>
+
+  <div class="row">
+    {% for region in regions %}
+    <div class="col-md-4 col-lg-3 col-xl-2 mb-3" id="region-{{ region.code }}">
+      <div class="card h-100 region-card{% if v and v.display_region == region.code %} is-mine{% endif %}">
+        <div class="card-body">
+          <div class="d-flex align-items-center mb-2">
+            <span class="rounded-circle d-inline-block mr-2" style="width: 14px; height: 14px; background-color: {{ region.color }}; flex-shrink: 0;"></span>
+            <h6 class="mb-0">{{ region.current_name }}</h6>
+          </div>
+          <a class="text-muted text-small d-inline-block mb-2" data-toggle="collapse" href="#countries-{{ region.code }}" role="button" aria-expanded="false" aria-controls="countries-{{ region.code }}">
+            {{ region_countries.get(region.code, []) | length }} territories <i class="fas fa-caret-down"></i>
+          </a>
+          <div class="collapse" id="countries-{{ region.code }}">
+            <ul class="list-unstyled text-small text-muted mb-2 mt-1">
+              {% for name in region_country_names.get(region.code, []) %}
+              <li>{{ name }}</li>
+              {% endfor %}
+            </ul>
+          </div>
+
+          {% if v and v.display_region == region.code %}
+          <hr>
+          <div class="font-weight-bold text-small text-uppercase text-muted mb-2">Vote on this region's name</div>
+
+          {% set proposals = proposals_by_region.get(region.id, []) %}
+          {% if proposals %}
+            {% for proposal in proposals %}
+            <form method="post" action="/regions/{{ region.code }}/vote/{{ proposal.id }}" class="d-flex align-items-center mb-1">
+              <input type="hidden" name="formkey" value="{{ v.formkey }}">
+              <button type="submit" class="btn btn-sm {% if my_vote_by_region.get(region.id) == proposal.id %}btn-primary{% else %}btn-outline-secondary{% endif %} mr-2" style="min-width: 2.5rem;">{{ proposal.vote_count }}</button>
+              <span class="text-break">{{ proposal.proposed_name }}</span>
+            </form>
+            {% endfor %}
+          {% else %}
+          <div class="text-muted text-small mb-2">No name proposals yet - be the first!</div>
+          {% endif %}
+
+          <form method="post" action="/regions/{{ region.code }}/propose" class="mt-2">
+            <input type="hidden" name="formkey" value="{{ v.formkey }}">
+            <div class="input-group input-group-sm">
+              <input type="text" name="proposed_name" maxlength="64" class="form-control" placeholder="Propose a name" required>
+              <div class="input-group-append">
+                <button type="submit" class="btn btn-outline-primary">Propose</button>
+              </div>
+            </div>
+          </form>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/jsvectormap@1.5.3/dist/js/jsvectormap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jsvectormap@1.5.3/dist/maps/world.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  var countryColors = {{ country_colors | tojson }};
+  var regionCountries = {{ region_countries | tojson }};
+
+  // jsVectorMap defers its own SVG rendering to DOMContentLoaded if the
+  // document is still parsing when constructed (true here, since this
+  // script runs mid-body) - constructing it inside our own listener
+  // guarantees document.readyState is no longer "loading", so it renders
+  // its <path> elements synchronously and they exist by the next line.
+  var map = new jsVectorMap({
+    selector: '#world-map',
+    map: 'world',
+    zoomButtons: true,
+    zoomOnScroll: false,
+    regionsSelectable: false,
+    regionStyle: {
+      initial: { fill: '#d1dbdd', stroke: '#ffffff', strokeWidth: 0.05 },
+      hover: { fillOpacity: 0.8 }
+    }
+  });
+
+  // jsvectormap renders each country as an SVG <path data-code="XX">;
+  // we set exact per-region hex fills ourselves rather than using its
+  // numeric gradient-scale "series" feature, since our 30 region colors
+  // are categorical, not a gradient.
+  document.querySelectorAll('#world-map path[data-code]').forEach(function(path) {
+    var code = path.getAttribute('data-code');
+    var color = countryColors[code];
+    if (color) {
+      path.style.fill = color;
+    }
+  });
+
+  // Trackpad pinch-to-zoom: browsers represent a trackpad pinch gesture as a
+  // wheel event with ctrlKey set (trackpads don't fire TouchEvents), distinct
+  // from plain two-finger scrolling - safe to handle separately from
+  // zoomOnScroll (left disabled so normal page scrolling isn't hijacked).
+  // Reuses jsvectormap's own public _setScale(), but NOT its native scroll
+  // handler's deltaY math - that flattens every event to a fixed +/-75 step,
+  // which is fine for one discrete mouse-wheel notch but wildly oversensitive
+  // for a pinch gesture (which fires dozens of small continuous wheel events
+  // per second) - every tiny tick was getting treated as a full-size step.
+  // Using the raw deltaY directly instead makes the response proportional to
+  // how fast/far the fingers actually move.
+  map.container.addEventListener('wheel', function(event) {
+    if (!event.ctrlKey) return;
+    event.preventDefault();
+    var rect = map.container.getBoundingClientRect();
+    var offsetX = event.pageX - rect.left - window.pageXOffset;
+    var offsetY = event.pageY - rect.top - window.pageYOffset;
+    var zoomStep = Math.pow(1 + map.params.zoomOnScrollSpeed / 1000, -1.5 * event.deltaY);
+    map._setScale(map.scale * zoomStep, offsetX, offsetY);
+  }, { passive: false });
+
+  document.querySelectorAll('#world-map path[data-code]').forEach(function(path) {
+    path.addEventListener('click', function() {
+      var code = path.getAttribute('data-code');
+      var regionCode = null;
+      for (var r in regionCountries) {
+        if (regionCountries[r].indexOf(code) !== -1) {
+          regionCode = r;
+          break;
+        }
+      }
+      if (regionCode) {
+        var el = document.getElementById('region-' + regionCode);
+        if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    });
+  });
+
+  var resetBtn = document.getElementById('reset-map-view');
+  if (resetBtn) {
+    resetBtn.addEventListener('click', function() {
+      map.reset();
+    });
+  }
+
+  // jsvectormap has no built-in resize/orientation-change handling at all
+  // (confirmed in its source) - without this, the map stays sized for
+  // whatever the viewport was on first render and goes stale the moment the
+  // window resizes, rotates, or the right sidebar appears/disappears at the
+  // 992px breakpoint. Debounced since resize fires continuously while dragging.
+  var resizeTimer = null;
+  window.addEventListener('resize', function() {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(function() {
+      map.updateSize();
+    }, 150);
+  });
+});
+</script>
+{% endblock %}

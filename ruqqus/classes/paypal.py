@@ -142,6 +142,7 @@ class PayPalClient():
 			status=x["status"]
 			if status=="COMPLETED":
 				txn.status=3
+				txn.payer_country=x.get("payer", {}).get("address", {}).get("country_code")
 		except KeyError:
 			abort(403)
 			
@@ -159,6 +160,7 @@ class PayPalTxn(Base, Stndrd, Age_times):
 	usd_cents=Column(Integer)
 	coin_count=Column(Integer)
 	promo_id=Column(Integer, ForeignKey("promocodes.id"))
+	payer_country=Column(String(2), default=None)
 
 	status=Column(Integer, default=0) #0=initialized 1=created, 2=authorized, 3=captured, -1=failed, -2=reversed 
 

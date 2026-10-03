@@ -13,6 +13,7 @@ from ruqqus.helpers.base36 import *
 from ruqqus.helpers.security import *
 from ruqqus.helpers.alerts import *
 from ruqqus.helpers.get import *
+from ruqqus.helpers.regions import resolve_region
 from ruqqus.mail import send_verification_email
 from secrets import token_hex
 
@@ -151,6 +152,16 @@ def login_post():
     flask_session["session_id"] = token_hex(16)
     flask_session["login_nonce"] = account.login_nonce
     flask_session.permanent = True
+
+    cf_country = request.headers.get("cf-ipcountry")
+    g.db.add(LoginEvent(
+        user_id=account.id,
+        created_utc=int(time.time()),
+        ip=request.remote_addr,
+        cf_country=cf_country,
+        region_code=resolve_region(cf_country),
+    ))
+    g.db.commit()
 
     check_for_alts(account.id)
 
@@ -390,17 +401,23 @@ def sign_up_post(v):
             g.db.add(ref_user)
 
     # make new user
+    signup_utc = int(time.time())
+    cf_country = request.headers.get("cf-ipcountry")
+    signup_region = resolve_region(cf_country)
+
     try:
         new_user = User(
             username=username,
             original_username = username,
             password=request.form.get("password"),
             email=email,
-            created_utc=int(time.time()),
+            created_utc=signup_utc,
             creation_ip=request.remote_addr,
             referred_by=ref_id or None,
-            tos_agreed_utc=int(time.time()),
-            creation_region=request.headers.get("cf-ipcountry"),
+            tos_agreed_utc=signup_utc,
+            creation_region=cf_country,
+            display_region=signup_region,
+            region_settled_utc=signup_utc,
             ban_evade =  int(any([x.is_suspended for x in g.db.query(User).filter(User.id.in_(tuple(flask_session.get("history", [])))).all() if x]))
             )
 
@@ -409,6 +426,15 @@ def sign_up_post(v):
         return new_signup("Please enter a valid email")
 
     g.db.add(new_user)
+    g.db.commit()
+
+    g.db.add(LoginEvent(
+        user_id=new_user.id,
+        created_utc=signup_utc,
+        ip=request.remote_addr,
+        cf_country=cf_country,
+        region_code=signup_region,
+    ))
     g.db.commit()
 
     # check alts

@@ -14,6 +14,7 @@ from .login import *
 from .oauth import *
 from .paypal import *
 from .posts import *
+from .regions import *
 from .search import *
 from .settings import *
 from .static import *

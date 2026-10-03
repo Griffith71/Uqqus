@@ -1,0 +1,51 @@
+<div class="modal fade" id="aboutAccountModal" tabindex="-1" role="dialog" aria-labelledby="aboutAccountModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title h4" id="aboutAccountModalLabel">About @{{ u.username }}</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true"><i class="far fa-times"></i></span>
+        </button>
+      </div>
+      <div class="modal-body">
+
+        <div class="mb-3">
+          <div class="font-weight-bold text-small text-uppercase text-muted mb-1" style="letter-spacing: 0.025rem;">Date Joined</div>
+          <div data-toggle="tooltip" data-placement="bottom" title="{{ u.created_datetime }}">{{ u.created_date }}</div>
+        </div>
+
+        <div class="mb-3">
+          <div class="font-weight-bold text-small text-uppercase text-muted mb-1" style="letter-spacing: 0.025rem;">Account Based In</div>
+          <div>
+            {{ u.display_region_name }}
+            {% if u.region_suspicion_flag %}
+            <i class="fas fa-exclamation-triangle text-warning ml-1" data-toggle="tooltip" data-placement="bottom"
+               title="We can't confirm this account's region with confidence - it may use a VPN or travel frequently."></i>
+            {% endif %}
+          </div>
+          {% set region_countries = u.display_region | region_country_list %}
+          {% if region_countries %}
+          <a class="text-muted text-small d-inline-block mt-1" data-toggle="collapse" href="#aboutAccountCountries" role="button" aria-expanded="false" aria-controls="aboutAccountCountries">
+            {{ region_countries | length }} possible territories <i class="fas fa-caret-down"></i>
+          </a>
+          <div class="collapse" id="aboutAccountCountries">
+            <ul class="list-unstyled text-small text-muted mb-0 mt-1">
+              {% for name in region_countries %}
+              <li>{{ name }}</li>
+              {% endfor %}
+            </ul>
+          </div>
+          {% endif %}
+        </div>
+
+        {% if u.premium_first_purchased_utc %}
+        <div class="mb-3">
+          <div class="font-weight-bold text-small text-uppercase text-muted mb-1" style="letter-spacing: 0.025rem;">Date Got Premium</div>
+          <div>{{ u.premium_first_purchased_date }}</div>
+        </div>
+        {% endif %}
+
+      </div>
+    </div>
+  </div>
+</div>

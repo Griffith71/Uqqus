@@ -29,6 +29,7 @@ from .badges import *
 from .clients import *
 from .paypal import PayPalTxn
 from .flags import Report
+from .regions import Region
 from ruqqus.__main__ import Base, cache, app
 
 
@@ -115,7 +116,12 @@ class User(Base, Stndrd, Age_times):
 
     coin_balance=Column(Integer, default=0)
     premium_expires_utc=Column(Integer, default=0)
+    premium_first_purchased_utc=Column(Integer, default=0)
     negative_balance_cents=Column(Integer, default=0)
+
+    display_region=Column(String(32), default=None)
+    region_settled_utc=Column(Integer, default=0)
+    region_suspicion_flag=Column(Boolean, default=False)
 
     is_nofollow = Column(Boolean, default=False)
     custom_filter_list=Column(String(1000), default="")
@@ -1666,6 +1672,9 @@ class User(Base, Stndrd, Age_times):
             self.coin_balance -=1
             self.premium_expires_utc = now + 60*60*24*7
 
+            if not self.premium_first_purchased_utc:
+                self.premium_first_purchased_utc = now
+
             add_role(self, "premium")
 
             g.db.add(self)
@@ -1700,7 +1709,19 @@ class User(Base, Stndrd, Age_times):
     def renew_premium_time(self):
         return time.strftime("%d %b %Y at %H:%M:%S",
                              time.gmtime(self.premium_expires_utc))
-    
+
+    @property
+    def premium_first_purchased_date(self):
+        if not self.premium_first_purchased_utc:
+            return None
+        return time.strftime("%d %B %Y", time.gmtime(self.premium_first_purchased_utc))
+
+    @property
+    def display_region_name(self):
+        if not self.display_region:
+            return "Unknown"
+        region = g.db.query(Region).filter_by(code=self.display_region).first()
+        return region.current_name if region else "Unknown"
 
     @property
     def filter_words(self):

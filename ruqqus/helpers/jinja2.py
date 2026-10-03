@@ -9,6 +9,7 @@ from urllib.parse import quote_plus
 
 from ruqqus.classes.user import User
 from .get import *
+from .regions import REGION_COUNTRIES, COUNTRY_NAMES
 import requests
 
 from ruqqus.__main__ import app, cache, db_session
@@ -22,6 +23,14 @@ post_regex = re.compile(r"^https?://[a-zA-Z0-9_.-]+/\+\w+/post/(\w+)(/[a-zA-Z0-9
 def total_users(x):
     db = db_session()
     return db.query(User).filter_by(is_banned=0).count()
+
+
+@app.template_filter("region_country_list")
+def region_country_list(region_code):
+    if not region_code:
+        return []
+    codes = REGION_COUNTRIES.get(region_code, [])
+    return sorted(COUNTRY_NAMES.get(c, c) for c in codes)
 
 
 @app.template_filter("source_code")
