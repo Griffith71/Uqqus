@@ -780,3 +780,9 @@ graphify-out/.graphify_python
 
 # local npm cache workaround (broken global ~/.npm cache)
 /.npm-cache
+
+# chat bundle build output/deps - built by the Dockerfile's node build
+# stage from ruqqus/assets/chat_src/, never checked in
+ruqqus/assets/chat_src/node_modules/
+ruqqus/assets/js/chat_bundle.js
+ruqqus/assets/js/matrix_sdk_crypto_wasm_bg.wasm

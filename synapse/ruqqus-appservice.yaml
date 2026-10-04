@@ -1,0 +1,22 @@
+# Application Service registration for Ruqqus's Chat backend. Lets Ruqqus
+# (via the as_token below) register/log in as, and masquerade as, any user
+# in the @ruqqus_* namespace with no password - see
+# ruqqus/helpers/matrix_client.py. The hs_token is what Synapse uses to
+# authenticate its event-push webhook calls back to Ruqqus
+# (PUT /matrix/appservice/_matrix/app/v1/transactions/<txn_id> in
+# ruqqus/routes/chat.py) - both tokens must match the MATRIX_AS_TOKEN /
+# MATRIX_HS_TOKEN values set on the ruqqus service in docker-compose.yml.
+
+id: ruqqus_chat
+url: "http://ruqqus/matrix/appservice"
+as_token: "2d8d208dcdf2251e95bf57897e56c44470440c3c036b8b252da4b5cbe98895b3"
+hs_token: "62a0da2386561349c2dacd4a27e2b07bb85f41fe6e91a24f92d0cbc3a06e14d3"
+sender_localpart: ruqqus_bot
+rate_limited: false
+
+namespaces:
+  users:
+    - exclusive: true
+      regex: "@ruqqus_.*"
+  aliases: []
+  rooms: []

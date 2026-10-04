@@ -145,6 +145,13 @@
             {% else %}
             <a class="dropdown-item" href="/notifications?all=true"><i class="fas fa-inbox fa-fw text-left mr-3"></i>Inbox</a>
             {% endif %}
+            {% set chat_badge = (v.chat_unread_count + v.chat_requests_count) %}
+            {% if chat_badge %}
+            <a class="dropdown-item" href="/chat"><i class="fas fa-comment-dots fa-fw text-left mr-3"></i>Chat<span
+              class="badge badge-danger rounded-circle align-top ml-1">{{ chat_badge }}</span></a>
+              {% else %}
+              <a class="dropdown-item" href="/chat"><i class="fas fa-comment-dots fa-fw text-left mr-3"></i>Chat</a>
+              {% endif %}
             <a class="dropdown-item" href="/settings"><i class="fas fa-cog fa-fw text-left mr-3"></i>Settings</a>
             <a class="dropdown-item d-lg-none" href="/categories"><i class="fas fa-shapes fa-fw text-left mr-3" id="dark-switch"></i>Categories</a>
 
@@ -205,6 +212,14 @@
     <a class="nav-link {% if v.notifications_count %}position-relative{% endif %}" href="/notifications{% if not v.notifications_count %}?all=true{% endif %}">
       <i class="fas fa-envelope fa-fw mr-3"></i>Inbox
       {% if v.notifications_count %}
+      <i class="fas fa-circle text-danger position-absolute" style="left: 19px; top: 5px; font-size: 10px;"></i>
+      {% endif %}
+    </a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link {% if (v.chat_unread_count + v.chat_requests_count) %}position-relative{% endif %}" href="/chat">
+      <i class="fas fa-comment-dots fa-fw mr-3"></i>Chat
+      {% if (v.chat_unread_count + v.chat_requests_count) %}
       <i class="fas fa-circle text-danger position-absolute" style="left: 19px; top: 5px; font-size: 10px;"></i>
       {% endif %}
     </a>

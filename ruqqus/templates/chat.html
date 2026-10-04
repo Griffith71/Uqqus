@@ -1,0 +1,58 @@
+{% extends "default.html" %}
+
+{% block title %}
+<title>Chat - {{ "SITE_NAME" | app_config }}</title>
+{% endblock %}
+
+{% block pagetype %}chat{% endblock %}
+
+{% block sidebar %}{% endblock %}
+
+{% block customPadding %}p-0{% endblock %}
+
+{% block content %}
+
+<div id="chat-app" class="d-flex" style="height: calc(100vh - 56px);">
+
+  <div id="chat-list-pane" class="h-100 border-right d-flex flex-column" style="width: 360px; min-width: 280px; flex-shrink: 0;">
+
+    <div class="font-weight-bold h5 px-3 pt-3 pb-2 mb-0">Chat</div>
+
+    <ul class="nav px-2" id="chat-tabs">
+      <li class="nav-item">
+        <a href="#" class="nav-link py-2 px-3 active" data-chat-tab="inbox">
+          Inbox<span id="chat-inbox-badge" class="badge badge-danger rounded-circle align-top ml-1 d-none"></span>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a href="#" class="nav-link py-2 px-3" data-chat-tab="request">
+          Requests<span id="chat-requests-badge" class="badge badge-danger rounded-circle align-top ml-1 d-none"></span>
+        </a>
+      </li>
+    </ul>
+
+    <div id="chat-conversation-list" class="flex-grow-1 overflow-auto border-top">
+      <div class="text-muted text-center p-4" id="chat-list-empty">Loading…</div>
+    </div>
+
+  </div>
+
+  <div id="chat-thread-pane" class="h-100 flex-grow-1 d-flex flex-column">
+    <div class="d-flex align-items-center justify-content-center h-100 text-muted" id="chat-thread-placeholder">
+      Select a conversation
+    </div>
+  </div>
+
+</div>
+
+<script>
+  window.RUQQUS_CHAT_BOOT = {
+    formkey: "{{ v.formkey }}",
+    userId: {{ v.id }},
+    username: "{{ v.username }}",
+    initialRoom: {{ (request.args.get('room') | tojson) if request.args.get('room') else 'null' }}
+  };
+</script>
+<script type="module" src="/assets/js/chat_bundle.js"></script>
+
+{% endblock %}

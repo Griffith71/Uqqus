@@ -62,6 +62,11 @@ def static_service(path):
 
 	if request.path.endswith('.css'):
 		resp.headers.add("Content-Type", "text/css")
+	elif request.path.endswith('.wasm'):
+		# needed for the chat bundle's E2EE crypto WASM asset to get
+		# streaming-compiled by the browser rather than fetched as an
+		# opaque octet-stream
+		resp.headers.set("Content-Type", "application/wasm")
 	return resp
 
 

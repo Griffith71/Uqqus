@@ -2,6 +2,7 @@ from .admin import *
 from .admin_api import *
 from .api import *
 from .boards import *
+from .chat import *
 from .comments import *
 from .curations import *
 from .discord import *

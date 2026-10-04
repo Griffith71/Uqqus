@@ -118,7 +118,7 @@
         {% endif %}
 
         <div class="d-flex justify-content-between align-items-center">
-          <div>
+          <div class="d-flex align-items-center">
            {% if v and v.id != u.id and not u.is_private and not u.is_nofollow %}
            <div id="button-sub" {% if is_following %}class="d-none"{% endif %}>
             <button class="btn btn-primary" onclick="post('/api/follow/{{ u.username }}', callback=toggleSub)">
@@ -135,6 +135,13 @@
           </div>
           {% elif v and v.id == u.id %}
           <a href="/settings/profile" class="btn btn-secondary">Edit profile</a>
+          {% endif %}
+          {% if v and v.id != u.id %}
+          <form method="POST" action="/api/chat/start" class="d-inline ml-2">
+            <input type="hidden" name="username" value="{{ u.username }}">
+            <input type="hidden" name="formkey" value="{{ v.formkey }}">
+            <button type="submit" class="btn btn-secondary">Message</button>
+          </form>
           {% endif %}
         </div>
 
@@ -202,9 +209,10 @@
         {% if v and v.id == u.id %}
         <a href="/settings/profile" class="btn btn-secondary btn-sm">Edit profile</a>
         {% endif %}
+        <div class="d-flex align-items-center">
         {% if v and v.id != u.id and not u.is_nofollow %}
         <div id="button-unsub-mobile" {% if not is_following %}class="d-none"{% endif %}>
-          <button class="btn btn-secondary btn-block" onclick="post('/api/unfollow/{{ u.username }}', callback=function(){document.getElementById('button-unsub-mobile').classList.toggle('d-none');document.getElementById('button-sub-mobile').classList.toggle('d-none');})">Unfollow
+          <button class="btn btn-secondary" onclick="post('/api/unfollow/{{ u.username }}', callback=function(){document.getElementById('button-unsub-mobile').classList.toggle('d-none');document.getElementById('button-sub-mobile').classList.toggle('d-none');})">Unfollow
           </button>
           <button class="btn btn-transparent bell-button" data-url="/@{{ u.username }}/toggle_bell">
             <i class="fas bell-icon fa-fw {% if u.is_following and u.is_following.get_notifs %}fa-bell-on text-purple{% else %}fa-bell{% endif %}"></i>
@@ -216,6 +224,14 @@
           </button>
         </div>
         {% endif %}
+        {% if v and v.id != u.id %}
+        <form method="POST" action="/api/chat/start" class="d-inline ml-2">
+          <input type="hidden" name="username" value="{{ u.username }}">
+          <input type="hidden" name="formkey" value="{{ v.formkey }}">
+          <button type="submit" class="btn btn-secondary btn-sm">Message</button>
+        </form>
+        {% endif %}
+        </div>
       </div>
     </div>
   </div>

@@ -118,6 +118,19 @@ class DomainMatcher(str):
 
 app.config["SERVER_NAME"] = SERVER_NAME #DomainMatcher(SERVER_NAME, ONION_NAME)
 
+# Matrix-backed chat - the homeserver is a separate, internal-only
+# service (see docker-compose.yml's `synapse` service); the app talks to
+# it server-side via an Application Service token (never exposed to the
+# browser). MATRIX_PUBLIC_URL is what the browser's matrix-js-sdk client
+# connects to directly for sync/send/E2EE - a different, publicly
+# reachable homeserver URL than MATRIX_INTERNAL_URL.
+app.config["MATRIX_INTERNAL_URL"] = environ.get("MATRIX_INTERNAL_URL", "http://synapse:8008")
+app.config["MATRIX_PUBLIC_URL"] = environ.get("MATRIX_PUBLIC_URL", "http://localhost:8008")
+app.config["MATRIX_SERVER_NAME"] = environ.get("MATRIX_SERVER_NAME", "chat.localhost")
+app.config["MATRIX_AS_TOKEN"] = environ.get("MATRIX_AS_TOKEN")
+app.config["MATRIX_HS_TOKEN"] = environ.get("MATRIX_HS_TOKEN")
+app.config["MATRIX_USER_PREFIX"] = environ.get("MATRIX_USER_PREFIX", "ruqqus_")
+
 #environ.get(
 #    "domain", environ.get(
 #        "SERVER_NAME", "")).lstrip().rstrip()

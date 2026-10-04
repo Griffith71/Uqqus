@@ -5581,6 +5581,80 @@ ALTER TABLE ONLY public.obliteration_records
 CREATE INDEX obliteration_records_sid_idx ON public.obliteration_records USING btree (target_submission_id);
 CREATE INDEX obliteration_records_cid_idx ON public.obliteration_records USING btree (target_comment_id);
 
+--
+-- Name: chat_identities; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.chat_identities (
+    user_id integer NOT NULL,
+    matrix_user_id character varying(255) NOT NULL,
+    provisioned_utc integer DEFAULT 0,
+    recovery_key_encrypted text
+);
+
+ALTER TABLE ONLY public.chat_identities
+    ADD CONSTRAINT chat_identities_pkey PRIMARY KEY (user_id);
+
+CREATE UNIQUE INDEX chat_identities_matrix_user_id_idx ON public.chat_identities USING btree (matrix_user_id);
+
+--
+-- Name: chat_conversations; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.chat_conversations (
+    id bigint NOT NULL,
+    user_a_id integer NOT NULL,
+    user_b_id integer NOT NULL,
+    initiator_id integer NOT NULL,
+    matrix_room_id character varying(255) NOT NULL,
+    status character varying(16) DEFAULT 'request'::character varying NOT NULL,
+    created_utc integer DEFAULT 0,
+    last_activity_utc integer DEFAULT 0,
+    CONSTRAINT chat_conversations_pair_order CHECK (user_a_id < user_b_id)
+);
+
+CREATE SEQUENCE public.chat_conversations_id_seq
+    AS bigint
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE public.chat_conversations_id_seq OWNED BY public.chat_conversations.id;
+
+ALTER TABLE ONLY public.chat_conversations ALTER COLUMN id SET DEFAULT nextval('public.chat_conversations_id_seq'::regclass);
+
+ALTER TABLE ONLY public.chat_conversations
+    ADD CONSTRAINT chat_conversations_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY public.chat_conversations
+    ADD CONSTRAINT uq_chat_conversations_pair UNIQUE (user_a_id, user_b_id);
+
+CREATE UNIQUE INDEX chat_conversations_room_id_idx ON public.chat_conversations USING btree (matrix_room_id);
+CREATE INDEX chat_conversations_user_a_idx ON public.chat_conversations USING btree (user_a_id);
+CREATE INDEX chat_conversations_user_b_idx ON public.chat_conversations USING btree (user_b_id);
+CREATE INDEX chat_conversations_status_idx ON public.chat_conversations USING btree (status);
+
+--
+-- Name: chat_unread; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.chat_unread (
+    conversation_id bigint NOT NULL,
+    user_id integer NOT NULL,
+    unread_count integer DEFAULT 0,
+    last_read_utc integer DEFAULT 0
+);
+
+ALTER TABLE ONLY public.chat_unread
+    ADD CONSTRAINT chat_unread_pkey PRIMARY KEY (conversation_id, user_id);
+
+ALTER TABLE ONLY public.chat_unread
+    ADD CONSTRAINT chat_unread_conversation_id_fkey FOREIGN KEY (conversation_id) REFERENCES public.chat_conversations(id);
+
+CREATE INDEX chat_unread_user_id_idx ON public.chat_unread USING btree (user_id);
+
 
 --
 -- PostgreSQL database dump complete

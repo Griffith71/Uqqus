@@ -1,0 +1,56 @@
+# Synapse homeserver config for Ruqqus's Chat feature. This homeserver
+# exists purely as the messaging backend behind Chat - every account on
+# it is a Ruqqus website user provisioned via the Application Service
+# registered below (see ruqqus-appservice.yaml), never a human signing up
+# directly. Federation is intentionally disabled: there is never a
+# legitimate reason for a Ruqqus-internal conversation to talk to another
+# homeserver, so no federation listener/port is configured at all.
+
+server_name: "ruqqus.local"
+pid_file: /data/homeserver.pid
+public_baseurl: "http://localhost:8008/"
+
+listeners:
+  - port: 8008
+    tls: false
+    type: http
+    x_forwarded: true
+    bind_addresses: ["0.0.0.0"]
+    resources:
+      - names: [client]
+        compress: false
+
+# No `federation` resource/listener above, and an empty whitelist as a
+# second layer - this homeserver never federates.
+federation_domain_whitelist: []
+
+database:
+  name: psycopg2
+  args:
+    user: synapse
+    password: synapse
+    database: synapse
+    host: postgres_synapse
+    port: 5432
+    cp_min: 5
+    cp_max: 10
+
+media_store_path: /data/media_store
+
+# Only the Application Service can create accounts - see
+# ruqqus-appservice.yaml's exclusive @ruqqus_* namespace. No human ever
+# registers directly against this homeserver.
+enable_registration: false
+registration_requires_token: false
+
+app_service_config_files:
+  - /data/ruqqus-appservice.yaml
+
+signing_key_path: /data/keys/homeserver.signing.key
+
+trusted_key_servers: []
+
+report_stats: false
+
+# Rooms are 1:1 only - these are default Matrix content-repo/history
+# limits, left at their sane defaults, not tuned here.

@@ -22,14 +22,54 @@ services:
       - TENOR_KEY=5436ertfgcvbnfgcy
       - MAILGUN_KEY=5436ertfgcvbnfgcy
       - CLOUDFLARE_ZONE=5436ertfgcvbnfgcy
+
+      - MATRIX_INTERNAL_URL=${MATRIX_INTERNAL_URL:-http://synapse:8008}
+      - MATRIX_PUBLIC_URL=${MATRIX_PUBLIC_URL:-http://localhost:8008}
+      - MATRIX_SERVER_NAME=${MATRIX_SERVER_NAME:-ruqqus.local}
+      - MATRIX_AS_TOKEN=${MATRIX_AS_TOKEN:-2d8d208dcdf2251e95bf57897e56c44470440c3c036b8b252da4b5cbe98895b3}
+      - MATRIX_HS_TOKEN=${MATRIX_HS_TOKEN:-62a0da2386561349c2dacd4a27e2b07bb85f41fe6e91a24f92d0cbc3a06e14d3}
+      - MATRIX_USER_PREFIX=${MATRIX_USER_PREFIX:-ruqqus_}
     links:
       - "redis"
       - "postgres"
+      - "synapse"
     ports:
       - "80:80"
     depends_on:
       - redis
       - postgres
+      - synapse
+
+  synapse:
+    image: matrixdotorg/synapse:latest
+    entrypoint: ["sh", "-c"]
+    command:
+      - >
+        python -m synapse.app.homeserver --generate-keys -c /data/homeserver.yaml &&
+        exec python -m synapse.app.homeserver -c /data/homeserver.yaml
+    volumes:
+      - "./synapse/homeserver.yaml:/data/homeserver.yaml"
+      - "./synapse/ruqqus-appservice.yaml:/data/ruqqus-appservice.yaml"
+      - "synapse-signing-key:/data/keys"
+      - "synapse-media:/data/media_store"
+    ports:
+      - "8008:8008"
+    depends_on:
+      - postgres_synapse
+
+  postgres_synapse:
+    image: postgres:15
+    command:
+      - "postgres"
+      - "-c"
+      - "shared_buffers=128MB"
+    environment:
+      - POSTGRES_USER=synapse
+      - POSTGRES_PASSWORD=synapse
+      - POSTGRES_DB=synapse
+      - POSTGRES_INITDB_ARGS=--locale=C --encoding=UTF8
+    volumes:
+      - "postgres-synapse-data:/var/lib/postgresql/data"
 
   redis:
     image: redis
@@ -47,3 +87,8 @@ services:
       - POSTGRES_HOST_AUTH_METHOD=trust
     ports:
       - "5432:5432"
+
+volumes:
+  synapse-media:
+  synapse-signing-key:
+  postgres-synapse-data:

@@ -12,6 +12,7 @@ from ruqqus.helpers.filters import filter_comment_html
 from ruqqus.helpers.markdown import *
 from ruqqus.helpers.discord import remove_user, set_nick
 from ruqqus.helpers.aws import *
+from ruqqus.helpers.chat_permissions import on_block_created
 from ruqqus.mail import *
 from .front import frontlist
 from ruqqus.__main__ import app, cache
@@ -546,6 +547,9 @@ def settings_block_user(v):
                           created_utc=int(time.time())
                           )
     g.db.add(new_block)
+    g.db.commit()
+
+    on_block_created(v, user)
 
     cache.delete_memoized(v.idlist)
     #cache.delete_memoized(Board.idlist, v=v)

@@ -25,4 +25,5 @@ from .categories import *
 from .login_events import *
 from .regions import *
 from .curations import *
+from .chat import *
 #from lodges import *

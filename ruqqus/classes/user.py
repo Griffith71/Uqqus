@@ -31,6 +31,7 @@ from .paypal import PayPalTxn
 from .flags import Report
 from .regions import Region
 from .curations import Curation, CurationFollow
+from .chat import ChatConversation, ChatUnread
 from ruqqus.__main__ import Base, cache, app
 
 
@@ -843,6 +844,28 @@ class User(Base, Stndrd, Age_times):
     @lazy
     def curations_anything(self):
         return bool(self.curations_owned or self.curations_followed)
+
+    @property
+    @lazy
+    def chat_requests_count(self):
+        """Number of pending message-request CONVERSATIONS (not messages)
+        where self is the recipient, not the initiator."""
+        return g.db.query(ChatConversation).filter(
+            ChatConversation.status == "request",
+            ChatConversation.initiator_id != self.id,
+            or_(ChatConversation.user_a_id == self.id, ChatConversation.user_b_id == self.id)
+        ).count()
+
+    @property
+    @lazy
+    def chat_unread_count(self):
+        """Number of Inbox CONVERSATIONS with at least one unread message
+        (not a sum of unread message counts) - matches the "Requests (N)"
+        conversation-count convention and X's own DM badge behavior."""
+        return g.db.query(ChatUnread).filter(
+            ChatUnread.user_id == self.id,
+            ChatUnread.unread_count > 0
+        ).count()
 
     @property
     def boards_modded(self):

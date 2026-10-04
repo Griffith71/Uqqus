@@ -1,0 +1,15 @@
+{
+  "name": "ruqqus-chat-bundle",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Browser bundle for Ruqqus's X.com-style DM UI, backed by Matrix via matrix-js-sdk. Not published - built into ruqqus/assets/js/chat_bundle.js by the Dockerfile's build stage.",
+  "scripts": {
+    "build": "esbuild src/index.js --bundle --format=esm --minify --sourcemap --outfile=../js/chat_bundle.js && cp node_modules/@matrix-org/matrix-sdk-crypto-wasm/pkg/matrix_sdk_crypto_wasm_bg.wasm ../js/matrix_sdk_crypto_wasm_bg.wasm"
+  },
+  "dependencies": {
+    "matrix-js-sdk": "^43.0.0"
+  },
+  "devDependencies": {
+    "esbuild": "^0.24.0"
+  }
+}
