@@ -108,6 +108,22 @@
           </div>
         </div>
 
+        {% elif p.embed_kind in ('video', 'iframe', 'iframe_untrusted') %}
+        {# 'widget' (X/Instagram/TikTok script cards) falls through to the
+           plain thumbnail+play-button branch below instead - embed_url for
+           those is an html snippet, not a URL, and loading a live
+           interactive widget per card isn't practical across a scrolling
+           feed with dozens of posts the way a muted <video>/<iframe> is #}
+        <div class="embed-lg mb-3" data-embed-kind="{{ p.embed_kind }}" data-embed-src="{{ p.embed_url }}">
+          <div class="feed-video-thumb">
+            {% if p.preview_image_url %}<img src="{{ p.preview_image_url }}" alt="video preview" loading="lazy" onerror="hideBrokenMedia(this)">{% endif %}
+            <div class="embed-lg-play"><i class="fas fa-play-circle"></i></div>
+            <div class="post-img-overlay">{{ p.domain }}
+              <a href="{{ p.permalink }}" rel="{% if p.author.is_private %}nofollow {% endif %}noopener" class="text-white" onclick="event.stopPropagation()"><i class="fas fa-external-link-alt text-small ml-1"></i></a>
+            </div>
+          </div>
+        </div>
+
         {% elif p.embed_url %}
         <a href="{{ p.permalink }}" rel="{% if p.author.is_private %}nofollow {% endif %}noopener" class="embed-lg mb-3 d-block">
           {% if p.preview_image_url %}<img src="{{ p.preview_image_url }}" alt="video preview" loading="lazy" onerror="hideBrokenMedia(this)">{% endif %}

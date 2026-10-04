@@ -33,7 +33,8 @@ class SubmissionAux(Base):
     body_html = Column(String(50000), default="")
     ban_reason = Column(String(128), default="")
     hidden_reason = Column(String(128), default="")
-    embed_url = Column(String(256), default="")
+    embed_url = Column(String(10000), default="")
+    embed_type = Column(String(16), default=None)
     meta_title=Column(String(512), default="")
     meta_description=Column(String(1024), default="")
     preview_image_url=Column(String(1024), default="")
@@ -681,6 +682,26 @@ class Submission(Base, Stndrd, Age_times, Scores, Fuzzing):
     @property
     def embed_template(self):
         return f"site_embeds/{self.domain_obj.embed_template}.html"
+
+    @property
+    def embed_kind(self):
+        """Unifies the legacy per-domain embed system with the generic
+        detection in ruqqus.helpers.embed.detect_video_embed for
+        rendering: 'video' (native <video> tag), 'iframe' (bare iframe
+        src - trusted, either a named platform from KNOWN_PROVIDER_HANDLERS
+        or an allowlisted oEmbed provider discovered generically),
+        'iframe_untrusted' (bare iframe src scraped from an arbitrary
+        page's own og:video tag - render with a strict sandbox), 'widget'
+        (a trusted first-party script/card snippet - X, Instagram, TikTok -
+        rendered via site_embeds/widget.html, not autoplayed), or None (no
+        embed at all, or a domain with a manually-configured legacy
+        Domain.embed_template not covered by either system above).
+        """
+        if self.submission_aux.embed_type:
+            return self.submission_aux.embed_type
+        if self.domain_obj and self.domain_obj.embed_template in ("youtube", "bitchute", "rumble_embed"):
+            return "iframe"
+        return None
 
     @property
     def self_download_json(self):

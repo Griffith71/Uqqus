@@ -2672,6 +2672,7 @@ CREATE TABLE public.submissions_aux (
     body character varying(25000),
     body_html character varying(50000),
     embed_url character varying(10000),
+    embed_type character varying(16),
     ban_reason character varying(128),
     key_id integer NOT NULL,
     meta_title character varying(512),

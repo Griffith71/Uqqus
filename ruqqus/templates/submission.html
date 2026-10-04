@@ -566,7 +566,35 @@
             {{ p.body_html | safe }}
             {% endif %}
 
-            {% if p.embed_url and p.domain_obj and p.domain_obj.embed_template %}
+            {% if p.embed_kind %}
+            <div class="position-relative{% if p.is_sensitive %} sensitive-content-wrap{% endif %}" id="sensitive-embed-{{ p.base36id }}">
+              <div class="{% if p.is_sensitive %}sensitive-blur{% endif %}">
+                {% if p.embed_kind == 'video' %}
+                <div class="embed-responsive embed-responsive-16by9 mb-3">
+                  <video src="{{ p.embed_url }}" controls autoplay muted playsinline class="w-100 h-100"></video>
+                </div>
+                {% elif p.embed_kind in ('iframe', 'iframe_untrusted') %}
+                <div class="embed-responsive embed-responsive-16by9 mb-3">
+                  {% if 'autoplay=' in p.embed_url %}
+                  {# some providers (Twitch, Bilibili) need their own autoplay/mute param names and already bake them in - appending YouTube-style autoplay=1&mute=1 on top would just be ignored or conflict #}
+                  <iframe src="{{ p.embed_url }}" frameborder="0" referrerpolicy="strict-origin-when-cross-origin" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" {% if p.embed_kind == 'iframe_untrusted' %}sandbox="allow-scripts"{% endif %} allowfullscreen></iframe>
+                  {% else %}
+                  <iframe src="{{ p.embed_url }}{{ '&' if '?' in p.embed_url else '?' }}autoplay=1&mute=1" frameborder="0" referrerpolicy="strict-origin-when-cross-origin" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" {% if p.embed_kind == 'iframe_untrusted' %}sandbox="allow-scripts"{% endif %} allowfullscreen></iframe>
+                  {% endif %}
+                </div>
+                {% elif p.embed_kind == 'widget' %}
+                {% include 'site_embeds/widget.html' %}
+                {% endif %}
+              </div>
+              {% if p.is_sensitive %}
+              <div class="sensitive-overlay" onclick="revealSensitive('sensitive-embed-{{ p.base36id }}')">
+                <i class="fas fa-eye-slash"></i>
+                <span class="text-small font-weight-bold">Sensitive Content</span>
+                <span class="btn btn-sm btn-light">View anyway</span>
+              </div>
+              {% endif %}
+            </div>
+            {% elif p.embed_url and p.domain_obj and p.domain_obj.embed_template %}
               {% include p.embed_template %}
             {% endif %}
 

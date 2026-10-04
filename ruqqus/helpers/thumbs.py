@@ -8,6 +8,7 @@ import time
 import gevent
 
 from .get import *
+from .embed import detect_video_embed, known_provider_embed
 from ruqqus.__main__ import app, db_session
 
 def expand_url(post_url, fragment_url):
@@ -51,9 +52,32 @@ def thumbnail_thread(pid, debug=False):
     #mimic chrome browser agent
     headers={"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.72 Safari/537.36"}
 
+    # Named-platform embeds (YouTube, Vimeo, TikTok, etc - see
+    # KNOWN_PROVIDER_HANDLERS in embed.py) are checked before fetching
+    # fetch_url at all, not just before parsing it. These call their own
+    # dedicated API/URL directly and don't need fetch_url's page content -
+    # which matters because several platforms' own web pages (TikTok
+    # confirmed; likely others) sit behind bot-detection that blocks this
+    # plain requests.get() outright, even though their independent oEmbed
+    # endpoint (a different host) answers it just fine. Checking fetch_url's
+    # fetchability first would make those platforms fail for a reason
+    # that has nothing to do with whether the embed itself actually works.
+    if not post.embed_url:
+        known_type, known_src, known_thumb = known_provider_embed(fetch_url)
+        if known_type:
+            post.submission_aux.embed_url = known_src
+            post.submission_aux.embed_type = known_type
+            if known_thumb:
+                post.submission_aux.preview_image_url = known_thumb
+            db.add(post)
+            db.add(post.submission_aux)
+            db.commit()
+            db.close()
+            return True, "Success"
+
     try:
         print_(f"loading {fetch_url}")
-        x=requests.get(fetch_url, headers=headers)
+        x=requests.get(fetch_url, headers=headers, timeout=10)
     except:
         print_(f"unable to connect to {fetch_url}")
         db.close()
@@ -62,11 +86,11 @@ def thumbnail_thread(pid, debug=False):
     if x.status_code != 200:
         db.close()
         return False, f"Source returned status {x.status_code}."
-    
+
     #detect if there was a redirect
     # requested_domain = post.domain
     # fetched_domain = urlparse(x.url).netloc
-    
+
     # if requested_domain.lower() != fetched_domain.lower() and not post.domain_obj:
     #     post.is_banned=True
     #     post.ban_reason="No redirection services"
@@ -75,12 +99,29 @@ def thumbnail_thread(pid, debug=False):
     #     g.db.commit()
     #     return
 
+    content_type = x.headers.get("Content-Type", "")
+
     #if content is image, stick with that. Otherwise, parse html.
 
-    if x.headers.get("Content-Type","").startswith("text/html"):
+    if content_type.startswith("text/html"):
         #parse html, find image, load image
         soup=BeautifulSoup(x.content, 'html.parser')
         #parse html
+
+        # Generic video detection (oEmbed/og:video/direct-file fallback for
+        # domains with no Domain.embed_function configured) - skipped if a
+        # domain-specific embed was already set synchronously at submit
+        # time (ruqqus/routes/posts.py), which always takes priority.
+        embed_thumb = None
+        if not post.embed_url:
+            embed_type, embed_src, embed_thumb = detect_video_embed(post.url, x, soup)
+            if embed_type:
+                # Writing submission_aux directly, not the Submission.embed_url
+                # property setter - that setter calls g.db.add(...), which
+                # breaks here since this greenlet has no active Flask
+                # request/app context (it manages its own db session above).
+                post.submission_aux.embed_url = embed_src
+                post.submission_aux.embed_type = embed_type
 
         #first, set metadata
         try:
@@ -100,8 +141,10 @@ def thumbnail_thread(pid, debug=False):
             print(f"Error while parsing for metadata: {e}")
             pass
 
-        #create list of urls to check
-        thumb_candidate_urls=[]
+        #create list of urls to check - an oEmbed-provided thumbnail (if
+        #any) goes first since it's generally higher quality than a
+        #scraped <img> tag
+        thumb_candidate_urls=[embed_thumb] if embed_thumb else []
 
         #iterate through desired meta tags
         meta_tags = [
@@ -144,7 +187,7 @@ def thumbnail_thread(pid, debug=False):
             print_(f"Trying url {url}")
 
             try:
-                image_req=requests.get(url, headers=headers)
+                image_req=requests.get(url, headers=headers, timeout=10)
             except:
                 print_(f"Unable to connect to candidate url {url}")
                 continue
@@ -171,19 +214,32 @@ def thumbnail_thread(pid, debug=False):
             break
 
         else:
-            #getting here means we are out of candidate urls (or there never were any)
+            #getting here means we are out of candidate urls (or there never were any).
+            #Not a hard failure if we already have a video embed - the
+            #.embed-lg placeholder background covers the no-thumbnail case.
             print_("Unable to find image")
-            db.close()
-            return False, "No usable images"
+            if not post.embed_url:
+                db.close()
+                return False, "No usable images"
 
-    elif x.headers.get("Content-Type","").startswith("image/"):
+    elif content_type.startswith("video/"):
+        #direct video file - no html to scrape for a thumbnail; handled by
+        #detect_video_embed below, the .embed-lg placeholder background
+        #covers the no-thumbnail case same as any other missing thumbnail.
+        if not post.embed_url:
+            embed_type, embed_src, _ = detect_video_embed(post.url, x, None)
+            if embed_type:
+                post.submission_aux.embed_url = embed_src
+                post.submission_aux.embed_type = embed_type
+
+    elif content_type.startswith("image/"):
         #post url is itself a direct image - display it hotlinked, never re-hosted
         print_("post url is direct image")
         post.is_image = True
 
     else:
 
-        print_(f'Unknown content type {x.headers.get("Content-Type")}')
+        print_(f'Unknown content type {content_type}')
         db.close()
         return False, f'Unknown content type {x.headers.get("Content-Type")} for submitted content'
 
