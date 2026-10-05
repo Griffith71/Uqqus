@@ -2386,14 +2386,15 @@ a.bg-dark:hover, a.bg-dark:focus, button.bg-dark:hover, button.bg-dark:focus {
     background-color: transparent;
 }
 
+// Consistent presentation: every image/thumbnail fills the full width of the
+// post's media area whatever its pixel size (small ones scale up). Height
+// follows the aspect ratio up to the cap below; taller images are letterboxed
+// (object-fit: contain) inside a full-width box instead of changing its width.
 .post-img-lg {
     position: relative;
     display: block;
-    width: -webkit-fit-content;
-    width: -moz-fit-content;
-    width: fit-content;
-    max-width: 100%;
-    margin: 0 auto;
+    width: 100%;
+    margin: 0;
 }
 
 .post-img-lg img, .embed-lg img, .embed-lg video, .embed-lg iframe {
@@ -2404,6 +2405,10 @@ a.bg-dark:hover, a.bg-dark:focus, button.bg-dark:hover, button.bg-dark:focus {
     object-fit: contain;
     display: block;
     margin: 0 auto;
+}
+
+.post-img-lg img, .embed-lg img {
+    width: 100%;
 }
 
 // No tinted box behind media that doesn't fill the width: it shows the card
