@@ -282,13 +282,13 @@
         </div>
         {% endif %}
 
-        {% if p.replies %}
+        {% if p.nested_comments %}
     <div class="comment-section">
-     {% with comments=p.replies %}
+     {% with comments=p.nested_comments %}
       {% include "comments.html" %}
      {% endwith %}
    </div>
-       {% elif not p.replies and p.deleted_utc == 0 %}
+       {% elif not p.nested_comments and p.deleted_utc == 0 %}
        <div class="comment-section text-center py-7">
         <i class="fas fa-ghost text-gray-500 mb-4" style="
         font-size: 3.5rem;"></i>

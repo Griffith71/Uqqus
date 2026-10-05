@@ -135,7 +135,7 @@ Optional query parameters:
 
     return {
         "html":lambda:post.rendered_page(v=v),
-        "api":lambda:jsonify({"data":[x.json for x in post.replies]})
+        "api":lambda:jsonify({"data":[x.json for x in post.nested_comments]})
         }
 
 #profile-primary posts render here directly (no guild in the URL to redirect
@@ -159,7 +159,7 @@ def post_base36id_noboard(base36id, anything=None, v=None):
 
     return {
         "html":lambda:post.rendered_page(v=v),
-        "api":lambda:jsonify({"data":[x.json for x in post.replies]})
+        "api":lambda:jsonify({"data":[x.json for x in post.nested_comments]})
         }
 
 
@@ -365,7 +365,7 @@ def _build_standalone_submission(author_id, target, title, body, body_html,
     """Create + flush one independent new Submission (own votes, own
     comments) in `target`, with its own SubmissionAux row and an optional
     author auto-upvote. Shared by post-Forward (create_forward_post) and
-    comment-Promote (create_forward_post_from_comment)."""
+    comment-Forward (create_forward_post_from_comment)."""
 
     new_post = Submission(
         author_id=author_id,
@@ -433,7 +433,7 @@ def create_forward_post(primary, target, forwarded_by):
     return forward_post
 
 
-def create_forward_post_from_comment(comment, target, promoted_by):
+def create_forward_post_from_comment(comment, target, comment_forwarded_by):
     """Forward a comment's text into a brand-new, independent post in
     `target` (its own votes/comment thread) - the comment-forward
     equivalent of create_forward_post(). The new post's author_id stays
@@ -479,8 +479,8 @@ def create_forward_post_from_comment(comment, target, promoted_by):
     g.db.add(CommentForwardRelationship(
         comment_id=comment.id,
         board_id=target.id,
-        promoted_submission_id=new_post.id,
-        promoted_by_id=promoted_by.id
+        forwarded_submission_id=new_post.id,
+        forwarded_by_id=comment_forwarded_by.id
     ))
 
     return new_post
@@ -715,8 +715,8 @@ Optional file data:
                     "api": lambda: ({"error": f"403 Not Authorized - You are exiled from +{target.name}"}, 403)
                     }
 
-        if (target.restricted_posting or target.is_private) and not (
-                target.can_submit(v)):
+        if (target.restricted_forwarding or target.is_private) and not (
+                target.can_forward(v)):
             return {"html": lambda: (render_template("submit.html",
                                                      v=v,
                                                      error=f"You can't forward to +{target.name}: it only accepts forwards from approved contributors.",
@@ -1253,7 +1253,7 @@ Required form data:
     if target.has_ban(v):
         return {"error": f"Exiled from +{target.name}."}, 403
 
-    if (target.restricted_posting or target.is_private) and not target.can_submit(v):
+    if (target.restricted_forwarding or target.is_private) and not target.can_forward(v):
         return {"error": f"+{target.name} only accepts forwards from approved contributors."}, 403
 
     if target.disallowbots and (request.headers.get("X-User-Type", "").lower() == "bot" or primary.is_bot):

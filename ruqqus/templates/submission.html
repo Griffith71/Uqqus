@@ -122,7 +122,7 @@
     <div class="text-primary">
       <i class="fas fa-filter"data-toggle="tooltip" data-placement="bottom" title="Category: {% if b.subcat %}{{ b.subcat.category.name }} / {{ b.subcat.name }}{% else %}Uncategorized{% endif %}"></i>
       {% if b.is_private %}<i class="fas fa-eye-slash"data-toggle="tooltip" data-placement="bottom" title="Private mode."></i>{% endif %}
-      {% if b.restricted_posting %}<i class="fas fa-user-lock"data-toggle="tooltip" data-placement="bottom" title="Restricted posting mode."></i>{% endif %}
+      {% if b.restricted_forwarding %}<i class="fas fa-user-lock"data-toggle="tooltip" data-placement="bottom" title="Restricted forwarding mode."></i>{% endif %}
       {% if b.is_sensitive %}<i class="fas fa-eye-slash" data-toggle="tooltip" data-placement="bottom" title="Sensitive Content"></i>{% endif %}
       {% if b.all_opt_out %}<i class="fas fa-list" data-toggle="tooltip" data-placement="bottom" title="Opted out of All"></i>{% endif %}
     </div>
@@ -384,7 +384,7 @@
           {% if v.id != p.author_id %}
           <button class="btn btn-link btn-block btn-lg text-left text-muted" data-dismiss="modal" data-toggle="modal" data-target="#tipModal" onclick="tipModal2('{{ p.base36id }}','post','{{ p.permalink }}','{{ p.author.username }}','{{ p.author.profile_url }}')"><i class="far fa-star text-center text-muted mr-3"></i>Tip</button>
           {% endif %}
-          {% if v.id != p.author_id or p.is_repost or p.is_promoted_from_comment %}
+          {% if v.id != p.author_id or p.is_repost or p.is_comment_forward %}
           <button class="btn btn-link btn-block btn-lg text-left text-muted" data-toggle="modal" data-dismiss="modal" data-target="#reportPostModal" onclick="report_postModal('{{ p.base36id }}','{{ '@'+p.author.username if not p.author.is_deleted else '[deleted account]'}}','{{ p.board.name }}')"><i class="far fa-flag text-center text-muted mr-3"></i>Flag</button>
           {% endif %}
 
@@ -416,9 +416,9 @@
           {% endif %}
 
           {% if p.hidden_by_guild %}
-          <button class="btn btn-link btn-block btn-lg text-left" id="kick-post-{{ p.base36id }}" href="javascript:void(0)" onclick="post('/mod/unhide/{{ p.board.name }}/{{ p.base36id }}', callback=function(){window.location.reload(true)})"><i class="far fa-eye text-center mr-3"></i>Unhide</button>
+          <button class="btn btn-link btn-block btn-lg text-left" id="hide-post-{{ p.base36id }}" href="javascript:void(0)" onclick="post('/mod/unhide/{{ p.board.name }}/{{ p.base36id }}', callback=function(){window.location.reload(true)})"><i class="far fa-eye text-center mr-3"></i>Unhide</button>
           {% else %}
-          <button class="btn btn-link btn-block btn-lg text-danger text-left" id="kick-post-{{ p.base36id }}" href="javascript:void(0)" onclick="post_with_reason('/mod/kick/{{ p.board.name }}/{{ p.base36id }}', callback=function(){window.location.reload(true)})"><i class="far fa-eye-slash text-center text-danger mr-3"></i>Hide</button>
+          <button class="btn btn-link btn-block btn-lg text-danger text-left" id="hide-post-{{ p.base36id }}" href="javascript:void(0)" onclick="post_with_reason('/mod/kick/{{ p.board.name }}/{{ p.base36id }}', callback=function(){window.location.reload(true)})"><i class="far fa-eye-slash text-center text-danger mr-3"></i>Hide</button>
           {% endif %}
           {% endif %}
 
@@ -471,7 +471,7 @@
           <div class="post-meta text-left d-none d-md-block mb-md-2">
             {% if p.stickied %}<i class="fas fa-thumbtack fa-fw text-admin fa-rotate--45" data-toggle="tooltip" data-placement="bottom" title="Sticky post"></i> · {% endif %}
             {% if p.is_pinned %}<i class="fas fa-thumbtack fa-fw text-info fa-rotate--45" data-toggle="tooltip" data-placement="bottom" title="Pinned to +{{ p.board.name }}"></i> · {% endif %}
-            {% if p.is_archived %}<i class="fas fa-archive text-warning" data-toggle="tooltip" data-placement="bottom" title="Archived post"></i> · {% endif %}<span data-toggle="tooltip" data-placement="bottom" data-delay='{"show":"700", "hide":"300"}' title="{{ p.created_datetime }}">{{ p.age_string }}</span> {% if p.promoted_by %}<a href="{{ p.promoted_by.permalink }}" class="user-name"><img src="{{ p.promoted_by.profile_url }}" class="profile-pic-20 mr-1"/><span class="user-name-inner">{{ p.promoted_by.username }}</span></a> forwarded {% if p.promoted_from_comment.author.is_deleted %}[deleted account]{% else %}<a href="{{ p.promoted_from_comment.author.permalink }}" class="user-name">{{ p.promoted_from_comment.author.username }}</a>{% endif %}'s <a href="{{ p.promoted_from_comment.permalink }}">comment</a>{% elif p.forwarded_by %}<a href="{{ p.forwarded_by.permalink }}" class="user-name"><img src="{{ p.forwarded_by.profile_url }}" class="profile-pic-20 mr-1"/><span class="user-name-inner">{{ p.forwarded_by.username }}</span></a> forwarded {% if p.author.is_deleted %}[deleted account]{% else %}<a href="{{ p.author.permalink }}" class="user-name">{{ p.author.username }}</a>{% endif %}'s post{% else %}by {% if p.author.is_deleted %}[deleted account]{% else %}<a href="{{ p.author.permalink }}" class="user-name"><img src="{{ p.author.profile_url }}" class="profile-pic-20 mr-1"/><span class="user-name-inner">{{ p.author.username }}</span></a>{% if p.author.title %}{{ p.author.title.rendered | safe }}{% endif %}{% endif %}{% endif %}
+            {% if p.is_archived %}<i class="fas fa-archive text-warning" data-toggle="tooltip" data-placement="bottom" title="Archived post"></i> · {% endif %}<span data-toggle="tooltip" data-placement="bottom" data-delay='{"show":"700", "hide":"300"}' title="{{ p.created_datetime }}">{{ p.age_string }}</span> {% if p.comment_forwarded_by %}<a href="{{ p.comment_forwarded_by.permalink }}" class="user-name"><img src="{{ p.comment_forwarded_by.profile_url }}" class="profile-pic-20 mr-1"/><span class="user-name-inner">{{ p.comment_forwarded_by.username }}</span></a> forwarded {% if p.forwarded_from_comment.author.is_deleted %}[deleted account]{% else %}<a href="{{ p.forwarded_from_comment.author.permalink }}" class="user-name">{{ p.forwarded_from_comment.author.username }}</a>{% endif %}'s <a href="{{ p.forwarded_from_comment.permalink }}">comment</a>{% elif p.forwarded_by %}<a href="{{ p.forwarded_by.permalink }}" class="user-name"><img src="{{ p.forwarded_by.profile_url }}" class="profile-pic-20 mr-1"/><span class="user-name-inner">{{ p.forwarded_by.username }}</span></a> forwarded {% if p.author.is_deleted %}[deleted account]{% else %}<a href="{{ p.author.permalink }}" class="user-name">{{ p.author.username }}</a>{% endif %}'s post{% else %}by {% if p.author.is_deleted %}[deleted account]{% else %}<a href="{{ p.author.permalink }}" class="user-name"><img src="{{ p.author.profile_url }}" class="profile-pic-20 mr-1"/><span class="user-name-inner">{{ p.author.username }}</span></a>{% if p.author.title %}{{ p.author.title.rendered | safe }}{% endif %}{% endif %}{% endif %}
             {% if p.is_exiled_for %} <i class="fas fa-gavel text-danger" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="User was exiled from +{{ p.original_board.name }} for this post."></i>{% endif %}
             {% if p.is_bot %} <i class="fas fa-robot text-info" data-toggle="tooltip" data-placement="bottom"  data-original-title="Automaton"></i>
             {% endif %}
@@ -534,7 +534,7 @@
           {% endif %}
 
           <div class="post-meta text-left d-block d-md-none mb-3">
-            {% if p.stickied %}<i class="fas fa-thumbtack fa-fw text-admin fa-rotate--45" data-toggle="tooltip" data-placement="bottom" title="Sticky post"></i> · {% endif %}{% if p.is_pinned %}<i class="fas fa-thumbtack fa-fw text-info fa-rotate--45" data-toggle="tooltip" data-placement="bottom" title="Pinned to +{{ p.board.name }}"></i> · {% endif %}{% if p.is_archived %}<i class="fas fa-archive text-warning" data-toggle="tooltip" data-placement="bottom" title="Archived post"></i> · {% endif %}{% if p.is_sensitive %}<span class="text-warning"><i class="far fa-exclamation-triangle text-small mr-1"></i>sensitive content</span> · {% endif %}{% if p.is_repost and not p.is_forward_copy %}<span class="text-warning"><i class="far fa-sync text-small mr-1"></i><a class="text-warning" href="{{ p.reposts.permalink }}">repost</a></span> · {% endif %}<span data-toggle="tooltip" data-placement="bottom" data-delay='{"show":"700", "hide":"300"}' title="{{ p.created_datetime }}">{{ p.age_string }}</span> {% if p.promoted_by %}<a href="{{ p.promoted_by.permalink }}" class="user-name"><img src="{{ p.promoted_by.profile_url }}" class="profile-pic-25 mr-1"/><span class="user-name-inner">{{ p.promoted_by.username }}</span></a> forwarded {% if p.promoted_from_comment.author.is_deleted %}[deleted account]{% else %}<a href="{{ p.promoted_from_comment.author.permalink }}" class="user-name">{{ p.promoted_from_comment.author.username }}</a>{% endif %}'s <a href="{{ p.promoted_from_comment.permalink }}">comment</a>{% elif p.forwarded_by %}<a href="{{ p.forwarded_by.permalink }}" class="user-name"><img src="{{ p.forwarded_by.profile_url }}" class="profile-pic-25 mr-1"/><span class="user-name-inner">{{ p.forwarded_by.username }}</span></a> forwarded {% if p.author.is_deleted %}[deleted account]{% else %}<a href="{{ p.author.permalink }}" class="user-name">{{ p.author.username }}</a>{% endif %}'s post{% else %}by {% if p.author.is_deleted %}[deleted account]{% else %}<a href="{{ p.author.permalink }}" class="user-name"><img src="{{ p.author.profile_url }}" class="profile-pic-25 mr-1"/><span class="user-name-inner">{{ p.author.username }}</span></a>{% if p.author.title %}{{ p.author.title.rendered | safe }}{% endif %}{% endif %}{% endif %}
+            {% if p.stickied %}<i class="fas fa-thumbtack fa-fw text-admin fa-rotate--45" data-toggle="tooltip" data-placement="bottom" title="Sticky post"></i> · {% endif %}{% if p.is_pinned %}<i class="fas fa-thumbtack fa-fw text-info fa-rotate--45" data-toggle="tooltip" data-placement="bottom" title="Pinned to +{{ p.board.name }}"></i> · {% endif %}{% if p.is_archived %}<i class="fas fa-archive text-warning" data-toggle="tooltip" data-placement="bottom" title="Archived post"></i> · {% endif %}{% if p.is_sensitive %}<span class="text-warning"><i class="far fa-exclamation-triangle text-small mr-1"></i>sensitive content</span> · {% endif %}{% if p.is_repost and not p.is_forward_copy %}<span class="text-warning"><i class="far fa-sync text-small mr-1"></i><a class="text-warning" href="{{ p.reposts.permalink }}">repost</a></span> · {% endif %}<span data-toggle="tooltip" data-placement="bottom" data-delay='{"show":"700", "hide":"300"}' title="{{ p.created_datetime }}">{{ p.age_string }}</span> {% if p.comment_forwarded_by %}<a href="{{ p.comment_forwarded_by.permalink }}" class="user-name"><img src="{{ p.comment_forwarded_by.profile_url }}" class="profile-pic-25 mr-1"/><span class="user-name-inner">{{ p.comment_forwarded_by.username }}</span></a> forwarded {% if p.forwarded_from_comment.author.is_deleted %}[deleted account]{% else %}<a href="{{ p.forwarded_from_comment.author.permalink }}" class="user-name">{{ p.forwarded_from_comment.author.username }}</a>{% endif %}'s <a href="{{ p.forwarded_from_comment.permalink }}">comment</a>{% elif p.forwarded_by %}<a href="{{ p.forwarded_by.permalink }}" class="user-name"><img src="{{ p.forwarded_by.profile_url }}" class="profile-pic-25 mr-1"/><span class="user-name-inner">{{ p.forwarded_by.username }}</span></a> forwarded {% if p.author.is_deleted %}[deleted account]{% else %}<a href="{{ p.author.permalink }}" class="user-name">{{ p.author.username }}</a>{% endif %}'s post{% else %}by {% if p.author.is_deleted %}[deleted account]{% else %}<a href="{{ p.author.permalink }}" class="user-name"><img src="{{ p.author.profile_url }}" class="profile-pic-25 mr-1"/><span class="user-name-inner">{{ p.author.username }}</span></a>{% if p.author.title %}{{ p.author.title.rendered | safe }}{% endif %}{% endif %}{% endif %}
             {% if p.is_exiled_for %}<i class="fas fa-gavel text-danger" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="User was exiled from +{{ p.original_board.name }} for this post."></i>
             {% endif %}
             {% if p.is_bot %} <i class="fas fa-robot text-info" data-toggle="tooltip" data-placement="bottom"  data-original-title="Automaton"></i>
@@ -684,7 +684,7 @@
                         {% if v.id != p.author_id %}
                         <a class="dropdown-item" href="javascript:void(0)" data-toggle="modal" data-target="#tipModal" onclick="tipModal2('{{ p.base36id }}','post','{{ p.permalink }}','{{ p.author.username }}','{{ p.author.profile_url }}')"><i class="fas fa-star fa-fw"></i>Tip</a>
                         {% endif %}
-                        {% if v.id != p.author_id or p.is_repost or p.is_promoted_from_comment %}
+                        {% if v.id != p.author_id or p.is_repost or p.is_comment_forward %}
                         <a class="dropdown-item" href="javascript:void(0)" data-toggle="modal" data-dismiss="modal" data-target="#reportPostModal" onclick="report_postModal('{{ p.base36id }}', '{{ p.author.username }}','{{ p.board.name }}')"><i class="fas fa-flag fa-fw"></i>Flag</a>
                         {% endif %}
 
@@ -862,33 +862,33 @@
 
   {% if not p.is_banned and is_allowed_to_comment and ((not p.is_blocking and not p.is_blocked) or v.admin_level>=3) %}
   <div id="comment-form-space-{{ p.fullname }}" class="comment-write mb-3">
-    <form id="reply-to-{{ p.fullname }}" class="input-group" action="/api/comment" method="post">
+    <form id="comment-on-{{ p.fullname }}" class="input-group" action="/api/comment" method="post">
       <input type="hidden" name="formkey" value="{{ v.formkey }}">
       <input type="hidden" name="parent_fullname" value="t2_{{ p.base36id }}">
-      <input id="reply-form-submission-{{ p.fullname }}" type="hidden" name="submission" value="{{ p.base36id }}">
+      <input id="comment-form-submission-{{ p.fullname }}" type="hidden" name="submission" value="{{ p.base36id }}">
       {% if v %}
-      <textarea id="reply-form-body-{{ p.fullname }}" class="comment-box form-control rounded" id="comment-form" onkeydown="textAreaOnKeyDown(event, (fullname = '{{ p.fullname }}') => post_comment(fullname))" name="body" form="reply-to-{{ p.fullname }}" aria-label="With textarea" placeholder="Add your comment..." rows="1"></textarea>
+      <textarea id="comment-form-body-{{ p.fullname }}" class="comment-box form-control rounded" id="comment-form" onkeydown="textAreaOnKeyDown(event, (fullname = '{{ p.fullname }}') => post_comment(fullname))" name="body" form="comment-on-{{ p.fullname }}" aria-label="With textarea" placeholder="Add your comment..." rows="1"></textarea>
       {% endif %}
       <div class="comment-format">
-        <small class="format pl-0"><i class="fas fa-bold" onclick="makeBold('reply-form-body-{{ p.fullname }}')" data-toggle="tooltip" data-placement="bottom" data-delay='{"show":"700", "hide":"300"}' title="Bold"></i></small>
-        <small class="format"><i class="fas fa-italic" onclick="makeItalics('reply-form-body-{{ p.fullname }}')" data-toggle="tooltip" data-placement="bottom" data-delay='{"show":"700", "hide":"300"}' title="Italicize"></i></small>
-        <small class="format"><i class="fas fa-quote-right" onclick="makeQuote('reply-form-body-{{ p.fullname }}')" data-toggle="tooltip" data-placement="bottom" data-delay='{"show":"700", "hide":"300"}' title="Quote"></i></small>
-          <label class="btn btn-secondary format d-inline-block m-0" for="gif-reply-btn-{{ p.fullname }}">
-            <span id="gif-reply-btn-{{ p.fullname }}" class="font-weight-bolder text-uppercase" onclick="getGif();commentForm('reply-form-body-{{ p.fullname }}')" aria-hidden="true" data-toggle="modal" data-target="#gifModal" data-toggle="tooltip" data-placement="bottom" title="Add GIF">GIF</span>
+        <small class="format pl-0"><i class="fas fa-bold" onclick="makeBold('comment-form-body-{{ p.fullname }}')" data-toggle="tooltip" data-placement="bottom" data-delay='{"show":"700", "hide":"300"}' title="Bold"></i></small>
+        <small class="format"><i class="fas fa-italic" onclick="makeItalics('comment-form-body-{{ p.fullname }}')" data-toggle="tooltip" data-placement="bottom" data-delay='{"show":"700", "hide":"300"}' title="Italicize"></i></small>
+        <small class="format"><i class="fas fa-quote-right" onclick="makeQuote('comment-form-body-{{ p.fullname }}')" data-toggle="tooltip" data-placement="bottom" data-delay='{"show":"700", "hide":"300"}' title="Quote"></i></small>
+          <label class="btn btn-secondary format d-inline-block m-0" for="gif-comment-btn-{{ p.fullname }}">
+            <span id="gif-comment-btn-{{ p.fullname }}" class="font-weight-bolder text-uppercase" onclick="getGif();commentForm('comment-form-body-{{ p.fullname }}')" aria-hidden="true" data-toggle="modal" data-target="#gifModal" data-toggle="tooltip" data-placement="bottom" title="Add GIF">GIF</span>
           </label> 
           &nbsp;
-          <label class="btn btn-secondary format d-inline-block m-0" for="emoji-reply-btn-{{p.fullname}}">
-            <div id="emoji-reply-btn-{{p.fullname}}" onclick="commentForm('reply-form-body-{{p.fullname}}');loadEmojis()" aria-hidden="true" data-toggle="modal" data-target="#emojiModal" data-toggle="tooltip" data-placement="bottom" title="Add EMOJI"><i class="fas fa-smile-beam"></i></div>
+          <label class="btn btn-secondary format d-inline-block m-0" for="emoji-comment-btn-{{p.fullname}}">
+            <div id="emoji-comment-btn-{{p.fullname}}" onclick="commentForm('comment-form-body-{{p.fullname}}');loadEmojis()" aria-hidden="true" data-toggle="modal" data-target="#emojiModal" data-toggle="tooltip" data-placement="bottom" title="Add EMOJI"><i class="fas fa-smile-beam"></i></div>
           </label> 
-          <label class="format btn btn-secondary m-0 ml-1 {% if v.has_premium %}d-inline-block{% else %}d-none{% endif %}" for="file-upload-reply-{{ p.fullname }}">
-                <div id="filename-show-reply-{{ p.base36id }}"><i class="far fa-image"></i></div>
-                <input id="file-upload-reply-{{ p.fullname }}" type="file" name="file" accept="image/*" onchange="document.getElementById('filename-show-reply-{{ p.base36id }}').innerHTML=document.getElementById('file-upload-reply-{{ p.fullname }}').files[0].name;" hidden>
+          <label class="format btn btn-secondary m-0 ml-1 {% if v.has_premium %}d-inline-block{% else %}d-none{% endif %}" for="file-upload-comment-{{ p.fullname }}">
+                <div id="filename-show-comment-{{ p.base36id }}"><i class="far fa-image"></i></div>
+                <input id="file-upload-comment-{{ p.fullname }}" type="file" name="file" accept="image/*" onchange="document.getElementById('filename-show-comment-{{ p.base36id }}').innerHTML=document.getElementById('file-upload-comment-{{ p.fullname }}').files[0].name;" hidden>
           </label>
-          <label id="reply-sensitive-label-{{ p.fullname }}" class="format btn btn-secondary m-0 ml-1 d-inline-block" for="reply-sensitive-{{ p.fullname }}" data-toggle="tooltip" data-placement="bottom" title="Mark as Sensitive Content (blurred until clicked)" onclick="document.getElementById('reply-sensitive-label-{{ p.fullname }}').classList.toggle('text-warning')">
-                <input id="reply-sensitive-{{ p.fullname }}" type="checkbox" hidden>
+          <label id="comment-sensitive-label-{{ p.fullname }}" class="format btn btn-secondary m-0 ml-1 d-inline-block" for="comment-sensitive-{{ p.fullname }}" data-toggle="tooltip" data-placement="bottom" title="Mark as Sensitive Content (blurred until clicked)" onclick="document.getElementById('comment-sensitive-label-{{ p.fullname }}').classList.toggle('text-warning')">
+                <input id="comment-sensitive-{{ p.fullname }}" type="checkbox" hidden>
                 <i class="fas fa-eye-slash"></i>
           </label>
-        <a id="save-reply-to-{{ p.fullname }}" href="javascript:void(0)" form="reply-to-{{ p.fullname }}" class="btn btn-primary text-whitebtn ml-auto" onclick="post_comment('{{ p.fullname }}')">Reply</a>
+        <a id="save-comment-on-{{ p.fullname }}" href="javascript:void(0)" form="comment-on-{{ p.fullname }}" class="btn btn-primary text-whitebtn ml-auto" onclick="post_comment('{{ p.fullname }}')">Comment</a>
       </div>
     </form>
   </div>
@@ -912,13 +912,13 @@
   {% endif %}
   {% endif %}
 
-  {% if p.replies %}
+  {% if p.nested_comments %}
   <div class="comment-section">
-   {% with comments=p.replies %}
+   {% with comments=p.nested_comments %}
    {% include "comments.html" %}
    {% endwith %}
  </div>
- {% elif not p.replies and p.deleted_utc == 0 %}
+ {% elif not p.nested_comments and p.deleted_utc == 0 %}
  <div class="comment-section text-center py-7">
   <span class="fa-stack fa-2x text-muted mb-4">
     <i class="fas fa-square text-gray-500 opacity-25 fa-stack-2x"></i>

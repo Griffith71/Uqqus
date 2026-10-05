@@ -1121,7 +1121,7 @@ $('#forwardPostModal').on('hidden.bs.modal', function () {
 
 forward_commentModal = function(id) {
 
-  var guildInput = document.getElementById('promote-guild-name');
+  var guildInput = document.getElementById('forward-comment-guild-name');
   guildInput.value = '';
 
   var errorBox = document.getElementById('forwardCommentError');
@@ -1249,18 +1249,18 @@ function kExec(){
  $('input').addClass('ruckus');
 };
 
-$('.kick-button-listing').click(function(event) {
+$('.hide-button-listing').click(function(event) {
   if (event.which != 1) {return}
 
   boardname=$(this).data('boardname')
   pid=$(this).data('pid')
-  action=$(this).data('hidden')=='true' ? 'unhide' : 'kick'
+  action=$(this).data('hidden')=='true' ? 'unhide' : 'hide'
 
   var replaceCallback = function(xhr){
     $("#post-"+pid).replaceWith(JSON.parse(xhr.response)['data'])
   }
 
-  if (action == 'kick') {
+  if (action == 'hide') {
     post_with_reason('/mod/kick/'+ boardname+'/'+pid, replaceCallback)
   } else {
     post_response('/mod/'+action+'/'+ boardname+'/'+pid, replaceCallback)
@@ -2561,10 +2561,10 @@ post_comment=function(fullname){
 
   form.append('formkey', formkey());
   form.append('parent_fullname', fullname);
-  form.append('submission', document.getElementById('reply-form-submission-'+fullname).value);
-  form.append('body', document.getElementById('reply-form-body-'+fullname).value);
-  form.append('file', document.getElementById('file-upload-reply-'+fullname).files[0]);
-  var sensitiveBox = document.getElementById('reply-sensitive-'+fullname);
+  form.append('submission', document.getElementById('comment-form-submission-'+fullname).value);
+  form.append('body', document.getElementById('comment-form-body-'+fullname).value);
+  form.append('file', document.getElementById('file-upload-comment-'+fullname).files[0]);
+  var sensitiveBox = document.getElementById('comment-sensitive-'+fullname);
   form.append('sensitive', (sensitiveBox && sensitiveBox.checked) ? 'true' : '');
 
 
@@ -2589,7 +2589,7 @@ post_comment=function(fullname){
   }
   xhr.send(form)
 
-  document.getElementById('save-reply-to-'+fullname).classList.add('disabled');
+  document.getElementById('save-comment-on-'+fullname).classList.add('disabled');
 
 }
 

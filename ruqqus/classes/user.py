@@ -1040,7 +1040,7 @@ class User(Base, Stndrd, Age_times):
     def __repr__(self):
         return f"<User(username={self.username})>"
 
-    def notification_commentlisting(self, page=1, all_=False, replies_only=False, mentions_only=False, system_only=False):
+    def notification_commentlisting(self, page=1, all_=False, comments_only=False, mentions_only=False, system_only=False):
 
         notifications = self.notifications.options(
             joinedload(Notification.comment).joinedload(Comment.comment_aux)
@@ -1051,7 +1051,7 @@ class User(Base, Stndrd, Age_times):
             Comment.deleted_utc == 0
         )
 
-        if replies_only:
+        if comments_only:
             cs = g.db.query(Comment.id).filter(Comment.author_id == self.id).subquery()
             ps = g.db.query(Submission.id).filter(Submission.author_id == self.id).subquery()
             notifications = notifications.filter(
@@ -1146,7 +1146,7 @@ class User(Base, Stndrd, Age_times):
 
     @property
     @lazy
-    def replies_count(self):
+    def comment_notifications_count(self):
         cs=g.db.query(Comment.id).filter(Comment.author_id==self.id).subquery()
         ps=g.db.query(Submission.id).filter(Submission.author_id==self.id).subquery()
         return self.notifications.options(
@@ -1557,7 +1557,7 @@ class User(Base, Stndrd, Age_times):
             for b in self.boards_modded:
                 if b.mods_count == 0:
                     b.is_private = False
-                    b.restricted_posting = False
+                    b.restricted_forwarding = False
                     #b.all_opt_out = False
                     g.db.add(b)
 
@@ -1732,9 +1732,9 @@ class User(Base, Stndrd, Age_times):
         ).filter(ForwardRelationship.forwarded_by_id == self.id)
 
         promoted = g.db.query(
-            CommentForwardRelationship.promoted_submission_id.label('sid'),
+            CommentForwardRelationship.forwarded_submission_id.label('sid'),
             CommentForwardRelationship.created_utc.label('ts')
-        ).filter(CommentForwardRelationship.promoted_by_id == self.id)
+        ).filter(CommentForwardRelationship.forwarded_by_id == self.id)
 
         activity = fwd.union_all(promoted).subquery()
 

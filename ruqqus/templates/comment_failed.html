@@ -30,21 +30,21 @@
 
 	<div>
 		<div class="comment-write collapsed child p-4">
-			<form id="reply" action="{{ action }}" method="post" class="input-group">
+			<form id="comment-failed-form" action="{{ action }}" method="post" class="input-group">
 
 				<input type="hidden" name="formkey" value="{{ v.formkey }}">
 
 				{% if parent_fullname %}<input type="hidden" name="parent_fullname" value="{{ parent_fullname }}">{% endif %}
 				{% if parent_submission %}<input type="hidden" name="submission" value="{{ parent_submission }}">{% endif %}
 
-				<textarea name="body" form="reply" class="comment-box form-control rounded" id="reply-form" aria-label="With textarea" placeholder="Add your comment..." rows="3">{{ body }}</textarea> 
+				<textarea name="body" form="comment-failed-form" class="comment-box form-control rounded" id="comment-failed-body" aria-label="With textarea" placeholder="Add your comment..." rows="3">{{ body }}</textarea> 
 
 				<div class="comment-format"> 
-					<small class="format pl-0"><i class="fas fa-bold" aria-hidden="true" onclick="makeReplyBold()" data-toggle="tooltip" data-placement="bottom" title="Bold"></i></small> 
-					<small class="format"><i class="fas fa-italic" aria-hidden="true" onclick="makeReplyItalics()" data-toggle="tooltip" data-placement="bottom" title="Italicize"></i></small> 
-					<small class="format"><i class="fas fa-quote-right" aria-hidden="true" onclick="makeReplyQuote()" data-toggle="tooltip" data-placement="bottom" title="Quote"></i></small> 
+					<small class="format pl-0"><i class="fas fa-bold" aria-hidden="true" onclick="makeBold('comment-failed-body')" data-toggle="tooltip" data-placement="bottom" title="Bold"></i></small> 
+					<small class="format"><i class="fas fa-italic" aria-hidden="true" onclick="makeItalics('comment-failed-body')" data-toggle="tooltip" data-placement="bottom" title="Italicize"></i></small> 
+					<small class="format"><i class="fas fa-quote-right" aria-hidden="true" onclick="makeQuote('comment-failed-body')" data-toggle="tooltip" data-placement="bottom" title="Quote"></i></small> 
 					<small class="format"><i class="fas fa-link" aria-hidden="true"></i></small> 
-					<button form="reply" class="btn btn-primary ml-auto">Comment</button> 
+					<button form="comment-failed-form" class="btn btn-primary ml-auto">Comment</button> 
 				</div> 
 			</form> 
 		</div>

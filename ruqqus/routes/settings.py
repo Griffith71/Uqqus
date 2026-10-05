@@ -460,7 +460,7 @@ def delete_account(v):
     for b in v.boards_modded:
         if b.mods_count == 0:
             b.is_private = False
-            b.restricted_posting = False
+            b.restricted_forwarding = False
             b.all_opt_out = False
             g.db.add(b)
 

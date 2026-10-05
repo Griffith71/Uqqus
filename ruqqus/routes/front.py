@@ -37,7 +37,7 @@ def notifications(v):
     cids = v.notification_commentlisting(page=page,
                                          all_=request.path=="/notifications/all",
                                          mentions_only=request.path=="/notifications/mentions",
-                                         replies_only=request.path=="/notifications/replies",
+                                         comments_only=request.path=="/notifications/replies",
                                          system_only=request.path=="/notifications/system"
                                          )
     next_exists = (len(cids) == 26)
@@ -49,22 +49,22 @@ def notifications(v):
     for c in comments:
         c._is_blocked = False
         c._is_blocking = False
-        c.replies = []
+        c.nested_comments = []
         if c.author_id == 1:
             c._is_system = True
             listing.append(c)
         elif c.level > 1 and c.parent_comment and c.parent_comment.author_id == v.id:
-            c._is_comment_reply = True
+            c._is_comment_on_comment = True
             parent = c.parent_comment
 
             if parent in listing:
-                parent.replies = parent.replies + [c]
+                parent.nested_comments = parent.nested_comments + [c]
             else:
-                parent.replies = [c]
+                parent.nested_comments = [c]
                 listing.append(parent)
 
         elif c.level == 1 and c.post.author_id == v.id:
-            c._is_post_reply = True
+            c._is_comment_on_post = True
             listing.append(c)
         else:
             c._is_username_mention = True
@@ -76,7 +76,7 @@ def notifications(v):
                             next_exists=next_exists,
                             page=page,
                             standalone=True,
-                            render_replies=True,
+                            render_child_comments=True,
                             is_notification_page=True),
             'api': lambda: jsonify({"data": [x.json for x in listing]})}
 

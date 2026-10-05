@@ -442,7 +442,7 @@ URL path parameters:
                 "comments.html",
                 v=v,
                 comments=[comment],
-                render_replies=False,
+                render_child_comments=False,
                 is_allowed_to_comment=True
                 )
 
@@ -457,7 +457,7 @@ URL path parameters:
 @is_guildmaster('content')
 @api("guildmaster")
 @validate_formkey
-def mod_kick_bid_pid(guildname, pid, board, v):
+def mod_hide_bid_pid(guildname, pid, board, v):
     """
 Hide a post from your guild for breaking its rules. The post itself is
 untouched - it stays visible on the author's profile and in any other
@@ -907,7 +907,7 @@ def mod_step_down(bid, board, v):
 
     if board.mods_count == 0:
         board.is_private = False
-        board.restricted_posting = False
+        board.restricted_forwarding = False
         board.all_opt_out = False
         g.db.add(board)
 
@@ -1060,7 +1060,7 @@ def mod_bid_settings_public_chat(bid, board, v):
 def mod_bid_settings_restricted(bid, board, v):
 
     # toggle restricted setting
-    board.restricted_posting = bool(
+    board.restricted_forwarding = bool(
         request.form.get(
             "restrictswitch",
             False) == 'true')
@@ -1071,7 +1071,7 @@ def mod_bid_settings_restricted(bid, board, v):
         kind="update_settings",
         user_id=v.id,
         board_id=board.id,
-        note=f"restricted={board.restricted_posting}"
+        note=f"restricted={board.restricted_forwarding}"
         )
     g.db.add(ma)
     return "", 204

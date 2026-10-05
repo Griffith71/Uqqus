@@ -27,16 +27,16 @@
 
 
 
-    {% if render_replies %}
+    {% if render_child_comments %}
     {% if level<5 %}
-      <div id="replies-of-{{ c.base36id }}" class="">
+      <div id="comments-of-{{ c.base36id }}" class="">
         {% set standalone=False %}
-        {% for reply in c.replies %}
-          {{ single_comment(reply, level=level+1) }}
+        {% for child in c.nested_comments %}
+          {{ single_comment(child, level=level+1) }}
         {% endfor %}
       </div>
     {% else %}
-      {% if c.replies %}
+      {% if c.nested_comments %}
         <div id="morecomment-{{ c.base36id }}" class="mt-2 more-comments text-small">
           <a href="{{ c.permalink }}"{% if c.author.is_private %} rel="nofollow"{% endif %}>More comments <i class="fas fa-long-arrow-right ml-1"></i></a>
         </div>
@@ -72,16 +72,16 @@
 
 
 
-    {% if render_replies %}
+    {% if render_child_comments %}
     {% if level<5 %}
-      <div id="replies-of-{{ c.base36id }}" class="">
+      <div id="comments-of-{{ c.base36id }}" class="">
         {% set standalone=False %}
-        {% for reply in c.replies %}
-          {{ single_comment(reply, level=level+1) }}
+        {% for child in c.nested_comments %}
+          {{ single_comment(child, level=level+1) }}
         {% endfor %}
       </div>
     {% else %}
-      {% if c.replies %}
+      {% if c.nested_comments %}
         <div id="morecomment-{{ c.base36id }}" class="mt-2 more-comments text-small">
           <a href="{{ c.permalink }}"{% if c.author.is_private %} rel="nofollow"{% endif %}>More comments <i class="fas fa-long-arrow-right ml-1"></i></a>
         </div>
@@ -112,8 +112,8 @@
 <div class="post-info mt-5 mb-1">
   <span class="align-top">
   {% if c.parent_submission %}
-    {% if c.author_id==v.id and c.replies and is_notification_page%}
-      <span class="font-weight-bold">{{ 'Comments' if (c.replies | length)>1 else 'Comment' }} on your comment: <a href="{{ c.post.permalink }}">{{ c.post.title | safe }}</a></span> in <a href="{{ c.post.board.permalink }}">+{{ c.post.board.name }}</a>
+    {% if c.author_id==v.id and c.nested_comments and is_notification_page%}
+      <span class="font-weight-bold">{{ 'Comments' if (c.nested_comments | length)>1 else 'Comment' }} on your comment: <a href="{{ c.post.permalink }}">{{ c.post.title | safe }}</a></span> in <a href="{{ c.post.board.permalink }}">+{{ c.post.board.name }}</a>
     {% elif c.post.author_id==v.id and c.is_top_level and is_notification_page%}
       <span class="font-weight-bold">Comment on your post: <a href="{{ c.post.permalink }}">{{ c.post.title | safe }}</a></span> in <a href="{{ c.post.board.permalink }}">+{{ c.post.board.name }}</a>
     {% elif is_notification_page %}
@@ -203,14 +203,14 @@
         {% endif %}
       </div>
 
-      {% if c.promoted_posts %}
+      {% if c.forwarded_posts %}
       <div class="mb-2">
-        <a class="text-small text-muted" data-toggle="collapse" href="#promoted-{{ c.base36id }}" role="button" aria-expanded="false" aria-controls="promoted-{{ c.base36id }}">
-          <i class="fas fa-share fa-fw"></i>Forwarded to {{ c.promoted_posts | length }} guild{{ '' if c.promoted_posts | length == 1 else 's' }} <i class="fas fa-caret-down"></i>
+        <a class="text-small text-muted" data-toggle="collapse" href="#forwarded-{{ c.base36id }}" role="button" aria-expanded="false" aria-controls="forwarded-{{ c.base36id }}">
+          <i class="fas fa-share fa-fw"></i>Forwarded to {{ c.forwarded_posts | length }} guild{{ '' if c.forwarded_posts | length == 1 else 's' }} <i class="fas fa-caret-down"></i>
         </a>
-        <div class="collapse" id="promoted-{{ c.base36id }}">
+        <div class="collapse" id="forwarded-{{ c.base36id }}">
           <ul class="list-unstyled mb-0 mt-1 pl-3">
-            {% for pp in c.promoted_posts %}
+            {% for pp in c.forwarded_posts %}
             <li class="text-small"><a href="{{ pp.permalink }}">+{{ pp.board.name }}</a> &middot; {{ pp.comment_count }} comment{{ '' if pp.comment_count == 1 else 's' }} &middot; {{ pp.score }} point{{ '' if pp.score == 1 else 's' }}</li>
             {% endfor %}
           </ul>
@@ -280,7 +280,7 @@
 
           {% if v %}
           {% if (standalone or is_allowed_to_comment) and (c.is_guildmaster('content') or not c.is_blocked) %}
-          <li class="list-inline-item text-muted"><a href="javascript:void(0)" onclick="document.getElementById('reply-to-{{ c.base36id }}').classList.remove('d-none')"><i class="fas fa-reply"
+          <li class="list-inline-item text-muted"><a href="javascript:void(0)" onclick="document.getElementById('comment-on-{{ c.base36id }}').classList.remove('d-none')"><i class="fas fa-reply"
             aria-hidden="true"></i><span class="d-none d-md-inline-block">Comment</span></a>
           </li>
           {% endif %}
@@ -437,40 +437,40 @@
   </div>
 
 
-  <div id="reply-to-{{ c.base36id }}" class="d-none">
+  <div id="comment-on-{{ c.base36id }}" class="d-none">
     
     <div id="comment-form-space-{{ c.fullname }}" class="comment-write collapsed child">
-      <form id="reply-to-t3_{{ c.base36id }}" action="/api/comment" method="post" class="input-group" enctype="multipart/form-data"> 
+      <form id="comment-on-t3_{{ c.base36id }}" action="/api/comment" method="post" class="input-group" enctype="multipart/form-data"> 
         <input type="hidden" name="formkey" value="{{ v.formkey }}"> 
         <input type="hidden" name="parent_fullname" value="{{ c.fullname }}"> 
-        <input id="reply-form-submission-{{ c.fullname }}" type="hidden" name="submission" value="{{ c.post.base36id }}"> 
-        <textarea name="body" form="reply-to-t3_{{ c.base36id }}" class="comment-box form-control rounded" id="reply-form-body-{{ c.fullname }}" onkeydown="textAreaOnKeyDown(event, (fullname = '{{ c.fullname }}') => post_comment(fullname))" aria-label="With textarea" placeholder="Add your comment..." rows="3"></textarea> 
+        <input id="comment-form-submission-{{ c.fullname }}" type="hidden" name="submission" value="{{ c.post.base36id }}"> 
+        <textarea name="body" form="comment-on-t3_{{ c.base36id }}" class="comment-box form-control rounded" id="comment-form-body-{{ c.fullname }}" onkeydown="textAreaOnKeyDown(event, (fullname = '{{ c.fullname }}') => post_comment(fullname))" aria-label="With textarea" placeholder="Add your comment..." rows="3"></textarea> 
         <div class="comment-format" id="comment-format-bar-{{ c.base36id }}"> 
           <small class="format pl-0">
-            <i class="fas fa-bold" aria-hidden="true" onclick="makeBold('reply-form-body-{{ c.fullname }}')" data-toggle="tooltip" data-placement="bottom" title="Bold"></i>
+            <i class="fas fa-bold" aria-hidden="true" onclick="makeBold('comment-form-body-{{ c.fullname }}')" data-toggle="tooltip" data-placement="bottom" title="Bold"></i>
           </small> 
-          <small class="format"><i class="fas fa-italic" aria-hidden="true" onclick="makeItalics('reply-form-body-{{ c.fullname }}')" data-toggle="tooltip" data-placement="bottom" title="Italicize"></i>
+          <small class="format"><i class="fas fa-italic" aria-hidden="true" onclick="makeItalics('comment-form-body-{{ c.fullname }}')" data-toggle="tooltip" data-placement="bottom" title="Italicize"></i>
           </small> 
           <small class="format">
-            <i class="fas fa-quote-right" aria-hidden="true" onclick="makeQuote('reply-form-body-{{ c.fullname }}')" data-toggle="tooltip" data-placement="bottom" title="Quote"></i>
+            <i class="fas fa-quote-right" aria-hidden="true" onclick="makeQuote('comment-form-body-{{ c.fullname }}')" data-toggle="tooltip" data-placement="bottom" title="Quote"></i>
           </small> 
-          <label class="btn btn-secondary format d-inline-block m-0" for="gif-reply-btn-{{ c.fullname }}">
-            <span id="gif-reply-btn-{{ c.fullname }}" class="font-weight-bolder text-uppercase" onclick="getGif();commentForm('reply-form-body-{{ c.fullname }}')" aria-hidden="true" data-toggle="modal" data-target="#gifModal" data-toggle="tooltip" data-placement="bottom" title="Add GIF">GIF</span>
+          <label class="btn btn-secondary format d-inline-block m-0" for="gif-comment-btn-{{ c.fullname }}">
+            <span id="gif-comment-btn-{{ c.fullname }}" class="font-weight-bolder text-uppercase" onclick="getGif();commentForm('comment-form-body-{{ c.fullname }}')" aria-hidden="true" data-toggle="modal" data-target="#gifModal" data-toggle="tooltip" data-placement="bottom" title="Add GIF">GIF</span>
           </label> 
 
           &nbsp;
-          <label class="btn btn-secondary format d-inline-block m-0" for="gif-reply-btn-{{c.fullname}}">
-             <i id="emoji-reply-btn-{{c.fullname}}" class="fas fa-smile-beam" onclick="commentForm('reply-form-body-{{c.fullname}}');loadEmojis()" aria-hidden="true" data-toggle="modal" data-target="#emojiModal" data-toggle="tooltip" data-placement="bottom" title="Add EMOJI"></i>
+          <label class="btn btn-secondary format d-inline-block m-0" for="gif-comment-btn-{{c.fullname}}">
+             <i id="emoji-comment-btn-{{c.fullname}}" class="fas fa-smile-beam" onclick="commentForm('comment-form-body-{{c.fullname}}');loadEmojis()" aria-hidden="true" data-toggle="modal" data-target="#emojiModal" data-toggle="tooltip" data-placement="bottom" title="Add EMOJI"></i>
           </label>
           &nbsp;
 
-          <label class="format btn btn-secondary m-0 ml-1 {% if v.can_upload_comment_image %}d-inline-block{% else %}d-none{% endif %}" for="file-upload-reply-{{ c.fullname }}">
-                <div id="filename-show-reply-{{ c.base36id }}"><i class="far fa-image"></i></div>
-                <input id="file-upload-reply-{{ c.fullname }}" type="file" name="file" accept="image/*" onchange="document.getElementById('filename-show-reply-{{ c.base36id }}').innerHTML=document.getElementById('file-upload-reply-{{ c.fullname }}').files[0].name;" hidden>
+          <label class="format btn btn-secondary m-0 ml-1 {% if v.can_upload_comment_image %}d-inline-block{% else %}d-none{% endif %}" for="file-upload-comment-{{ c.fullname }}">
+                <div id="filename-show-comment-{{ c.base36id }}"><i class="far fa-image"></i></div>
+                <input id="file-upload-comment-{{ c.fullname }}" type="file" name="file" accept="image/*" onchange="document.getElementById('filename-show-comment-{{ c.base36id }}').innerHTML=document.getElementById('file-upload-comment-{{ c.fullname }}').files[0].name;" hidden>
           </label>
 
-          <a href="javascript:void(0)" onclick="document.getElementById('reply-to-{{ c.base36id }}').classList.add('d-none')" class="btn btn-link text-muted ml-auto cancel-form">Cancel</a> 
-          <a id="save-reply-to-{{ c.fullname }}" class="btn btn-primary text-white ml-2" onclick="post_comment('{{ c.fullname }}');" href="javascript:void(0)">Comment</a> 
+          <a href="javascript:void(0)" onclick="document.getElementById('comment-on-{{ c.base36id }}').classList.add('d-none')" class="btn btn-link text-muted ml-auto cancel-form">Cancel</a> 
+          <a id="save-comment-on-{{ c.fullname }}" class="btn btn-primary text-white ml-2" onclick="post_comment('{{ c.fullname }}');" href="javascript:void(0)">Comment</a> 
         </div> 
       </form> 
     </div>
@@ -480,15 +480,15 @@
  
 
 
-  {% if render_replies %} 
+  {% if render_child_comments %} 
     {% if level<5 %}
-        <div id="replies-of-{{ c.base36id }}" class="">
-          {% for reply in c.replies %}
-              {{ single_comment(reply, level=level+1) }}
+        <div id="comments-of-{{ c.base36id }}" class="">
+          {% for child in c.nested_comments %}
+              {{ single_comment(child, level=level+1) }}
           {% endfor %}
         </div>
     {% else %}
-      {% if c.replies %}
+      {% if c.nested_comments %}
         <div id="morecomment-{{ c.base36id }}" class="mt-2 more-comments text-small">
           <a href="{{ c.permalink }}"{% if c.author.is_private %} rel="nofollow"{% endif %}>More comments <i class="fas fa-long-arrow-right ml-1"></i></a>
         </div>
@@ -513,7 +513,7 @@
         <ul class="list-group comment-actions">
 
           {% if v and c.parent_submission and (standalone or is_allowed_to_comment) and (c.is_guildmaster('content') or not c.is_blocked) %}
-          <li class="list-group-item"><a href="javascript:void(0)" data-dismiss="modal" onclick="document.getElementById('reply-to-{{ c.base36id }}').classList.remove('d-none')" class="d-block"><i class="fas fa-reply"></i><span>Comment</span></a></li>
+          <li class="list-group-item"><a href="javascript:void(0)" data-dismiss="modal" onclick="document.getElementById('comment-on-{{ c.base36id }}').classList.remove('d-none')" class="d-block"><i class="fas fa-reply"></i><span>Comment</span></a></li>
           {% endif %}
 
           <li class="list-group-item"><a href="javascript:void(0);" role="button" class="d-block copy-link" data-dismiss="modal" data-clipboard-text="{{ c.permalink | full_link}}"><i class="fas fa-copy"></i><span>Copy Link</span></a></li>

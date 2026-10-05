@@ -72,7 +72,7 @@
     <div class="text-primary">
       <i class="fas fa-filter"data-toggle="tooltip" data-placement="bottom" title="Category: {% if b.subcat %}{{ b.subcat.category.name }} / {{ b.subcat.name }}{% else %}Uncategorized{% endif %}"></i>
       {% if b.is_private %}<i class="fas fa-eye-slash"data-toggle="tooltip" data-placement="bottom" title="Private mode."></i>{% endif %}
-      {% if b.restricted_posting %}<i class="fas fa-user-lock"data-toggle="tooltip" data-placement="bottom" title="Restricted posting mode."></i>{% endif %}
+      {% if b.restricted_forwarding %}<i class="fas fa-user-lock"data-toggle="tooltip" data-placement="bottom" title="Restricted forwarding mode."></i>{% endif %}
       {% if b.is_sensitive %}<i class="fas fa-eye-slash" data-toggle="tooltip" data-placement="bottom" title="Sensitive Content"></i>{% endif %}
       {% if b.all_opt_out %}<i class="fas fa-list" data-toggle="tooltip" data-placement="bottom" title="Opted out of All"></i>{% endif %}
     </div>
@@ -105,7 +105,7 @@
       <li class="mb-2"><a class="text-muted" href="/+{{ b.name }}/mod/css"><i class="fas fa-pen fa-fw text-center mr-2"></i>CSS</a></li>
       {% if mod.perm_access %}<li class="mb-2"><a class="text-muted" href="/+{{ b.name }}/mod/exiled"><i class="fas fa-user-slash fa-fw text-center mr-2"></i>Exiles</a></li>{% endif %}
       {% if mod.perm_content %}<li class="mb-2"><a class="text-muted" href="/+{{ b.name }}/mod/queue"><i class="fas fa-flag fa-fw text-center mr-2"></i>Reports</a></li>{% endif %}
-      {% if mod.perm_access and (b.restricted_posting or b.is_private) %}<li class="mb-2"><a class="text-muted" href="/+{{ b.name }}/mod/contributors"><i class="fas fa-user-check fa-fw text-center mr-2"></i>Approved users</a></li>{% endif %}
+      {% if mod.perm_access and (b.restricted_forwarding or b.is_private) %}<li class="mb-2"><a class="text-muted" href="/+{{ b.name }}/mod/contributors"><i class="fas fa-user-check fa-fw text-center mr-2"></i>Approved users</a></li>{% endif %}
     </ul>
   </div>
 </div>
@@ -169,7 +169,7 @@
 
 {% block PseudoSubmitForm %}
 
-{% if b.can_submit(v) %}
+{% if b.can_forward(v) %}
 <!-- Forward to this guild: opens the composer with the guild pre-selected -->
 <div class="row no-gutters mt-3">
   <div class="col">

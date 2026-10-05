@@ -54,7 +54,7 @@ class Board(Base, Stndrd, Age_times):
     creator_id=Column(Integer, ForeignKey("users.id"))
     ban_reason=Column(String(256), default=None)
     color=Column(String(8), default=app.config.get("SITE_COLOR","805ad5"))
-    restricted_posting=Column(Boolean, default=False)
+    restricted_forwarding=Column("restricted_posting", Boolean, default=False)
     disallowbots=Column(Boolean, default=False)
     hide_banner_data=Column(Boolean, default=False)
     profile_nonce=Column(Integer, default=0)
@@ -363,7 +363,7 @@ class Board(Base, Stndrd, Age_times):
         return g.db.query(ContributorRelationship).filter_by(
             user_id=user.id, board_id=self.id, is_active=True).first()
 
-    def can_submit(self, user):
+    def can_forward(self, user):
 
         if user is None:
             return False
@@ -377,7 +377,7 @@ class Board(Base, Stndrd, Age_times):
         if self.has_contributor(user) or self.has_mod(user):
             return True
 
-        if self.is_private or self.restricted_posting:
+        if self.is_private or self.restricted_forwarding:
             return False
 
         return True
@@ -534,7 +534,7 @@ class Board(Base, Stndrd, Age_times):
                 'is_sensitive': self.is_sensitive,
                 'is_banned': False,
                 'is_private': self.is_private,
-                'is_restricted': self.restricted_posting,
+                'is_restricted': self.restricted_forwarding,
                 'disallowbots': self.disallowbots,
                 'id': self.base36id,
                 'fullname': self.fullname,
@@ -561,7 +561,7 @@ class Board(Base, Stndrd, Age_times):
 
     @property
     def show_settings_icons(self):
-        return self.is_private or self.restricted_posting or self.is_sensitive or self.all_opt_out
+        return self.is_private or self.restricted_forwarding or self.is_sensitive or self.all_opt_out
 
     @cache.memoize(600)
     def comment_idlist(self, page=1, v=None, **kwargs):

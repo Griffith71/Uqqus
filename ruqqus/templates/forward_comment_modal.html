@@ -14,7 +14,7 @@
             <div class="h6">Forward to a guild as a new post</div>
             <small class="form-text text-muted">This creates a new, independent post in that guild with its own votes and comments. The title is generated from the comment's text. A link back to the original comment will be shown on the new post.</small>
             <input type="hidden" name="formkey" value="{{ v.formkey }}">
-            <input class="form-control mt-3" id="promote-guild-name" type="text" placeholder="Guild name (without +)" onkeydown="if(event.key==='Enter'){event.preventDefault();document.getElementById('forwardCommentButton').click();}">
+            <input class="form-control mt-3" id="forward-comment-guild-name" type="text" placeholder="Guild name (without +)" onkeydown="if(event.key==='Enter'){event.preventDefault();document.getElementById('forwardCommentButton').click();}">
           </div>
           <div id="forwardCommentError" class="text-danger px-3 pb-2 d-none small"></div>
           <div class="modal-footer">

@@ -212,7 +212,7 @@
               <div class="body w-lg-100">
 
                 <div class="custom-control custom-switch">
-                  <input type="checkbox" class="custom-control-input" id="restrictswitch" name="restrictswitch"{% if b.restricted_posting %} checked{% endif %} onchange="mod_post('/mod/{{ b.base36id }}/settings/restricted','restrictswitch')">
+                  <input type="checkbox" class="custom-control-input" id="restrictswitch" name="restrictswitch"{% if b.restricted_forwarding %} checked{% endif %} onchange="mod_post('/mod/{{ b.base36id }}/settings/restricted','restrictswitch')">
                   <label class="custom-control-label" for="restrictswitch"></label>
                 </div>
 

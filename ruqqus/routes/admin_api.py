@@ -524,7 +524,7 @@ def admin_distinguish_comment(c_id, v):
                 "comments.html",
                 v=v,
                 comments=[comment],
-                render_replies=False,
+                render_child_comments=False,
                 is_allowed_to_comment=True
                 )
 

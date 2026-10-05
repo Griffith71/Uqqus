@@ -219,31 +219,31 @@ class Submission(Base, Stndrd, Age_times, Scores, Fuzzing):
         return g.db.query(User).filter_by(id=rel.forwarded_by_id).first()
 
     @property
-    def is_promoted_from_comment(self):
+    def is_comment_forward(self):
         from .board_relationships import CommentForwardRelationship
         return g.db.query(CommentForwardRelationship).filter_by(
-            promoted_submission_id=self.id).first() is not None
+            forwarded_submission_id=self.id).first() is not None
 
     @property
-    def promoted_from_comment(self):
+    def forwarded_from_comment(self):
         """The original Comment this post was promoted from, or None."""
         from .board_relationships import CommentForwardRelationship
         rel = g.db.query(CommentForwardRelationship).filter_by(
-            promoted_submission_id=self.id).first()
+            forwarded_submission_id=self.id).first()
         return rel.comment if rel else None
 
     @property
-    def promoted_by(self):
+    def comment_forwarded_by(self):
         """Mirrors forwarded_by: the user who forwarded this comment into a
         post, if different from the post's own author (who stays the
         original comment's author, preserving their delete rights)."""
         from .board_relationships import CommentForwardRelationship
         from .user import User
         rel = g.db.query(CommentForwardRelationship).filter_by(
-            promoted_submission_id=self.id).first()
-        if not rel or rel.promoted_by_id == self.author_id:
+            forwarded_submission_id=self.id).first()
+        if not rel or rel.forwarded_by_id == self.author_id:
             return None
-        return g.db.query(User).filter_by(id=rel.promoted_by_id).first()
+        return g.db.query(User).filter_by(id=rel.forwarded_by_id).first()
 
     @property
     def is_archived(self):
@@ -303,12 +303,12 @@ class Submission(Base, Stndrd, Age_times, Scores, Fuzzing):
         if private and (not v or not self.author_id == v.id):
             abort(403)
         elif private:
-            self.__dict__["replies"] = []
+            self.__dict__["nested_comments"] = []
         else:
             # load and tree comments
             # calling this function with a comment object will do a comment
             # permalink thing
-            if "replies" not in self.__dict__ and "_preloaded_comments" in self.__dict__:
+            if "nested_comments" not in self.__dict__ and "_preloaded_comments" in self.__dict__:
                 self.tree_comments(comment=comment)
 
         # return template
@@ -316,7 +316,7 @@ class Submission(Base, Stndrd, Age_times, Scores, Fuzzing):
             v) and not self.is_archived
         
     #    if request.args.get("sort", "Hot") != "new":
-    #        self.replies = [x for x in self.replies if x.is_pinned] + [x for x in self.replies if not x.is_pinned]
+    #        self.nested_comments = [x for x in self.nested_comments if x.is_pinned] + [x for x in self.nested_comments if not x.is_pinned]
 
         return render_template(template,
                                v=v,
@@ -326,7 +326,7 @@ class Submission(Base, Stndrd, Age_times, Scores, Fuzzing):
                                linked_comment=comment,
                                comment_info=comment_info,
                                is_allowed_to_comment=is_allowed_to_comment,
-                               render_replies=True,
+                               render_child_comments=True,
                                b=None if self.is_profile_post else self.board
                                )
 
@@ -362,12 +362,12 @@ class Submission(Base, Stndrd, Age_times, Scores, Fuzzing):
                 index[c.parent_fullname] = [c]
 
         for c in comments:
-            c.__dict__["replies"] = index.get(c.fullname, [])
+            c.__dict__["nested_comments"] = index.get(c.fullname, [])
 
         if comment:
-            self.__dict__["replies"] = [comment]
+            self.__dict__["nested_comments"] = [comment]
         else:
-            self.__dict__["replies"] = pinned_comment + index.get(self.fullname, [])
+            self.__dict__["nested_comments"] = pinned_comment + index.get(self.fullname, [])
 
     @property
     def active_flags(self):
@@ -513,8 +513,8 @@ class Submission(Base, Stndrd, Age_times, Scores, Fuzzing):
         data["comment_count"]: self.comment_count
 
     
-        if "replies" in self.__dict__:
-            data["replies"]=[x.json_core for x in self.replies]
+        if "nested_comments" in self.__dict__:
+            data["replies"]=[x.json_core for x in self.nested_comments]
 
         if "_voted" in self.__dict__:
             data["voted"] = self._voted

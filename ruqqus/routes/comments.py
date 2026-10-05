@@ -245,7 +245,7 @@ Optional query parameters:
 
     post.tree_comments()
 
-    post.replies=[top_comment]
+    post.nested_comments=[top_comment]
 
     return {'html': lambda: post.rendered_page(v=v, comment=top_comment, comment_info=comment_info),
             'api': lambda: top_comment.json
@@ -546,7 +546,7 @@ Optional file data:
     return {"html": lambda: jsonify({"html": render_template("comments.html",
                                                              v=v,
                                                              comments=[c],
-                                                             render_replies=False,
+                                                             render_child_comments=False,
                                                              is_allowed_to_comment=True
                                                              )}),
             "api": lambda: c.json
@@ -748,7 +748,7 @@ URL path parameters:
         previous_body_html=c.body_html
     ))
 
-    for promoted in c.promoted_posts:
+    for promoted in c.forwarded_posts:
         if promoted.is_deleted:
             continue
         promoted.deleted_utc = now
@@ -961,7 +961,7 @@ def forward_comment(cid, v):
     if target.has_ban(v):
         return {"error": f"Exiled from +{target.name}."}, 403
 
-    if (target.restricted_posting or target.is_private) and not target.can_submit(v):
+    if (target.restricted_forwarding or target.is_private) and not target.can_forward(v):
         return {"error": f"+{target.name} only accepts forwards from approved contributors."}, 403
 
     if target.disallowbots and (request.headers.get("X-User-Type", "").lower() == "bot" or comment.is_bot):
@@ -1050,7 +1050,7 @@ URL path parameters:
                 "comments.html",
                 v=v,
                 comments=[comment],
-                render_replies=False,
+                render_child_comments=False,
                 is_allowed_to_comment=True
                 )
 
@@ -1116,7 +1116,7 @@ Required form data:
                 "comments.html",
                 v=v,
                 comments=[comment],
-                render_replies=False,
+                render_child_comments=False,
                 is_allowed_to_comment=True
                 )
 
@@ -1167,7 +1167,7 @@ URL path parameters:
                 "comments.html",
                 v=v,
                 comments=[comment],
-                render_replies=False,
+                render_child_comments=False,
                 is_allowed_to_comment=True
                 )
 
@@ -1225,7 +1225,7 @@ Required form data:
                 "comments.html",
                 v=v,
                 comments=[comment],
-                render_replies=False,
+                render_child_comments=False,
                 is_allowed_to_comment=True
                 )
 
@@ -1267,7 +1267,7 @@ URL path parameters:
                 "comments.html",
                 v=v,
                 comments=[comment],
-                render_replies=False,
+                render_child_comments=False,
                 is_allowed_to_comment=True
                 )
 

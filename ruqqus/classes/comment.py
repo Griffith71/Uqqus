@@ -190,16 +190,16 @@ class Comment(Base, Age_times, Scores, Stndrd, Fuzzing):
         return g.db.query(Comment).filter_by(parent_comment_id=self.id).all()
 
     @property
-    def replies(self):
+    def nested_comments(self):
 
-        r = self.__dict__.get("replies", None)
+        r = self.__dict__.get("nested_comments", None)
         if r is None:
             r = self.child_comments
         return r
 
-    @replies.setter
-    def replies(self, value):
-        self.__dict__["replies"] = value
+    @nested_comments.setter
+    def nested_comments(self, value):
+        self.__dict__["nested_comments"] = value
 
     @property
     @lazy
@@ -208,27 +208,27 @@ class Comment(Base, Age_times, Scores, Stndrd, Fuzzing):
         return f"{self.post.permalink}/{self.base36id}"
 
     @property
-    def promoted_posts(self):
+    def forwarded_posts(self):
         """Independent posts created by forwarding this comment (see
         CommentForwardRelationship), one per guild it's been promoted to."""
         from .board_relationships import CommentForwardRelationship
         rels = g.db.query(CommentForwardRelationship).filter_by(
             comment_id=self.id).order_by(CommentForwardRelationship.created_utc.asc()).all()
-        return [r.promoted_submission for r in rels]
+        return [r.forwarded_submission for r in rels]
 
     @property
     def any_descendants_live(self):
 
-        if self.replies == []:
+        if self.nested_comments == []:
             return False
 
-        if any([not x.is_banned and x.deleted_utc == 0 for x in self.replies]):
+        if any([not x.is_banned and x.deleted_utc == 0 for x in self.nested_comments]):
             return True
 
         else:
-            return any([x.any_descendants_live for x in self.replies])
+            return any([x.any_descendants_live for x in self.nested_comments])
 
-    def rendered_comment(self, v=None, render_replies=True,
+    def rendered_comment(self, v=None, render_child_comments=True,
                          standalone=False, level=1, **kwargs):
 
         kwargs["post_base36id"] = kwargs.get(
@@ -239,7 +239,7 @@ class Comment(Base, Age_times, Scores, Stndrd, Fuzzing):
                 return render_template("single_comment.html",
                                        v=v,
                                        c=self,
-                                       render_replies=render_replies,
+                                       render_child_comments=render_child_comments,
                                        standalone=standalone,
                                        level=level,
                                        **kwargs)
@@ -247,7 +247,7 @@ class Comment(Base, Age_times, Scores, Stndrd, Fuzzing):
             elif self.any_descendants_live:
                 return render_template("single_comment_removed.html",
                                        c=self,
-                                       render_replies=render_replies,
+                                       render_child_comments=render_child_comments,
                                        standalone=standalone,
                                        level=level,
                                        **kwargs)
@@ -257,7 +257,7 @@ class Comment(Base, Age_times, Scores, Stndrd, Fuzzing):
         return render_template("single_comment.html",
                                v=v,
                                c=self,
-                               render_replies=render_replies,
+                               render_child_comments=render_child_comments,
                                standalone=standalone,
                                level=level,
                                **kwargs)
@@ -353,8 +353,8 @@ class Comment(Base, Age_times, Scores, Stndrd, Fuzzing):
             if self.level>=2:
                 data['parent_comment_id']= base36encode(self.parent_comment_id),
 
-        if "replies" in self.__dict__:
-            data['replies']=[x.json_core for x in self.replies]
+        if "nested_comments" in self.__dict__:
+            data['replies']=[x.json_core for x in self.nested_comments]
 
         return data
 

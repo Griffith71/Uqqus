@@ -277,12 +277,12 @@ class CommentForwardRelationship(Base):
     id = Column(BigInteger, primary_key=True)
     comment_id = Column(Integer, ForeignKey("comments.id"))
     board_id = Column(Integer, ForeignKey("boards.id"))
-    promoted_submission_id = Column(Integer, ForeignKey("submissions.id"))
-    promoted_by_id = Column(Integer, ForeignKey("users.id"))
+    forwarded_submission_id = Column("promoted_submission_id", Integer, ForeignKey("submissions.id"))
+    forwarded_by_id = Column("promoted_by_id", Integer, ForeignKey("users.id"))
     created_utc = Column(Integer, default=0)
 
     comment = relationship("Comment", lazy="subquery")
-    promoted_submission = relationship("Submission", lazy="subquery")
+    forwarded_submission = relationship("Submission", lazy="subquery")
     board = relationship("Board", lazy="subquery")
 
     def __init__(self, **kwargs):
