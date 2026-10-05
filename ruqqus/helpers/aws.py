@@ -149,6 +149,19 @@ def delete_file(name):
     x = requests.post(url, headers=headers, json=data)
 
 
+def _load_post_and_author(db, post):
+
+    # `post` (and `post.author`) belong to the caller's session, which may be
+    # another thread/greenlet's still-open session: db.add() on them would
+    # raise "already attached to session". Re-load the rows into `db` so the
+    # ban is written and committed by this session. Imported here because
+    # ruqqus.classes.user/submission import this module.
+    from ruqqus.classes.submission import Submission
+    from ruqqus.classes.user import User
+
+    return db.get(Submission, post.id), db.get(User, post.author_id)
+
+
 def check_csam(post):
 
     # Relies on Cloudflare's photodna implementation
@@ -176,11 +189,13 @@ def check_csam(post):
 
     if x.status_code == 451:
 
+        post, author = _load_post_and_author(db, post)
+
         # ban user and alts
-        post.author.ban_reason="Sexualizing Minors"
-        post.author.is_banned=1
-        db.add(v)  # noqa: F821  FIXME: `v` is undefined (NameError) - ban is never persisted
-        for alt in post.author.alts_threaded(db):
+        author.ban_reason="Sexualizing Minors"
+        author.is_banned=1
+        db.add(author)
+        for alt in author.alts_threaded(db):
             alt.ban_reason="Sexualizing Minors"
             alt.is_banned=1
             db.add(alt)
@@ -208,12 +223,14 @@ def check_csam(post):
 
         now=int(time.time())
         unban=now+60*60*24*h.ban_time if h.ban_time else 0
+        post, author = _load_post_and_author(db, post)
+
         # ban user and alts
-        post.author.ban_reason=h.ban_reason
-        post.author.is_banned=1
-        post.author.unban_utc = unban
-        db.add(v)  # noqa: F821  FIXME: `v` is undefined (NameError) - ban is never persisted
-        for alt in post.author.alts_threaded(db):
+        author.ban_reason=h.ban_reason
+        author.is_banned=1
+        author.unban_utc = unban
+        db.add(author)
+        for alt in author.alts_threaded(db):
             alt.ban_reason=h.ban_reason
             alt.is_banned=1
             alt.unban_utc = unban
