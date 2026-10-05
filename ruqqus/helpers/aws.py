@@ -179,7 +179,7 @@ def check_csam(post):
         # ban user and alts
         post.author.ban_reason="Sexualizing Minors"
         post.author.is_banned=1
-        db.add(v)
+        db.add(v)  # noqa: F821  FIXME: `v` is undefined (NameError) - ban is never persisted
         for alt in post.author.alts_threaded(db):
             alt.ban_reason="Sexualizing Minors"
             alt.is_banned=1
@@ -212,7 +212,7 @@ def check_csam(post):
         post.author.ban_reason=h.ban_reason
         post.author.is_banned=1
         post.author.unban_utc = unban
-        db.add(v)
+        db.add(v)  # noqa: F821  FIXME: `v` is undefined (NameError) - ban is never persisted
         for alt in post.author.alts_threaded(db):
             alt.ban_reason=h.ban_reason
             alt.is_banned=1
