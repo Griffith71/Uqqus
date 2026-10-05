@@ -303,6 +303,37 @@ SELECT pg_catalog.setval('public.titles_id_seq', 73, true);
 
 
 --
+-- Baseline guilds (same rows scripts/wizard.py creates). "systemprofile" is
+-- the reserved guild every post is attached to first (see
+-- ruqqus/classes/boards.py, PROFILE_BOARD_NAME): without it every
+-- POST /submit returns 404. creator_id is NULL because no users exist yet
+-- when this seed runs.
+--
+
+INSERT INTO public.boards
+    (id, name, description, description_html, created_utc, creator_id,
+     is_banned, is_sensitive, is_nsfl, has_banner, has_profile, color,
+     restricted_posting, disallowbots, hide_banner_data, profile_nonce,
+     banner_nonce, is_private, color_nonce, rank_trending,
+     stored_subscriber_count, all_opt_out, is_siegable, is_locked_category)
+VALUES
+    (1, 'general',
+     'All topics. Content posted here may be yanked to other guilds.',
+     '<p>All topics. Content posted here may be yanked to other guilds.</p>',
+     EXTRACT(EPOCH FROM now())::int, NULL,
+     false, false, false, false, false, '805ad5',
+     false, false, false, 0, 0, false, 0, 0, 1, false, true, false),
+    (2, 'systemprofile',
+     'Reserved system guild for profile-primary posts. Not user-joinable.',
+     '<p>Reserved system guild for profile-primary posts. Not user-joinable.</p>',
+     EXTRACT(EPOCH FROM now())::int, NULL,
+     false, false, false, false, false, '805ad5',
+     false, false, false, 0, 0, false, 0, 0, 1, false, true, false);
+
+SELECT pg_catalog.setval('public.boards_id_seq', 2, true);
+
+
+--
 -- PostgreSQL database dump complete
 --
 
