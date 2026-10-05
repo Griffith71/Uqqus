@@ -2,11 +2,24 @@
 # Fast checks on staged files only. The full suite (tests, build, audit) runs in CI.
 set -e
 
+# Loud on purpose: a silently skipped check means unchecked commits on your machine.
+skipped() {
+  {
+    echo ""
+    echo "################################################################"
+    echo "## WARNING: pre-commit check SKIPPED - $1 is not installed"
+    echo "## $2"
+    echo "## CI will still run it, but THIS COMMIT WAS NOT CHECKED LOCALLY."
+    echo "################################################################"
+    echo ""
+  } >&2
+}
+
 # 1. Secrets
 if command -v gitleaks >/dev/null 2>&1; then
   gitleaks git --pre-commit --staged --redact --no-banner
 else
-  echo "pre-commit: gitleaks not installed, skipping local secret scan (CI still runs it)"
+  skipped gitleaks "Install: winget install Gitleaks.Gitleaks (or brew install gitleaks)"
 fi
 
 # 2. Python (legacy app): ruff, errors-only rules from pyproject.toml
@@ -19,7 +32,7 @@ if [ -n "$PY_FILES" ]; then
   if [ -n "$RUFF" ]; then
     echo "$PY_FILES" | xargs "$RUFF" check
   else
-    echo "pre-commit: ruff not installed, skipping Python lint (CI still runs it)"
+    skipped ruff "Install: pip install -r requirements-dev.txt (into .venv)"
   fi
 fi
 
