@@ -1,6 +1,6 @@
 # Builds the chat page's browser bundle (matrix-js-sdk + E2EE). This is the
 # only place Node.js is needed - the runtime image below stays Node-free.
-FROM node:20-slim AS chat-bundle
+FROM node:22-slim AS chat-bundle
 
 WORKDIR /opt/build/ruqqus/assets/chat_src
 COPY ruqqus/assets/chat_src/package.json ./
