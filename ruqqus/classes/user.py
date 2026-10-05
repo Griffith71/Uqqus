@@ -911,6 +911,13 @@ class User(Base, Stndrd, Age_times):
         ).count()
 
     @property
+    @lazy
+    def chat_unread_messages(self):
+        """Total unread chat MESSAGES across all conversations (the number
+        on the navbar chat button), unlike chat_unread_count above."""
+        return ChatUnread.total_for_user(g.db, self.id)
+
+    @property
     def boards_modded(self):
 
         z = [x.board for x in self.moderates if x and x.board and x.accepted and not x.board.is_banned]

@@ -108,5 +108,15 @@ class ChatUnread(Base):
 
     conversation = relationship("ChatConversation")
 
+    @staticmethod
+    def total_for_user(db, user_id):
+        """Total unread MESSAGES (sum of unread_count) across all of a
+        user's conversations - what the navbar chat badge shows."""
+        total = db.query(func.coalesce(func.sum(ChatUnread.unread_count), 0)).filter(
+            ChatUnread.user_id == user_id,
+            ChatUnread.unread_count > 0
+        ).scalar()
+        return int(total or 0)
+
     def __repr__(self):
         return f"<ChatUnread(conversation_id={self.conversation_id}, user_id={self.user_id})>"

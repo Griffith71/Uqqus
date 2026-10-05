@@ -186,6 +186,14 @@ def chat_conversations(v):
     return jsonify({"conversations": out})
 
 
+@app.route("/api/chat/unread_count", methods=["GET"])
+@auth_required
+def chat_unread_count(v):
+    # Polled by the navbar chat badge (assets/js/chat_badge.js). Read-only:
+    # unlike /notifications it never marks anything as read.
+    return jsonify({"unread": v.chat_unread_messages})
+
+
 @app.route("/api/chat/conversations/<int:cid>/accept", methods=["POST"])
 @auth_required
 @validate_formkey
