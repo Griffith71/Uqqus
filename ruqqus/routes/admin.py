@@ -11,6 +11,11 @@ from ruqqus.helpers.base36 import *
 from ruqqus.helpers.sanitize import *
 from ruqqus.helpers.get import *
 from ruqqus.classes import *
+import time
+from sqlalchemy import or_
+from ruqqus.helpers.wordfilter import WordFilter
+from ruqqus.helpers import wordfilter_seed
+from ruqqus.helpers.word_filter_store import get_filter, rescan
 from ruqqus.classes.domains import reasons as REASONS
 from ruqqus.routes.admin_api import create_plot, user_stat_data
 from ruqqus.classes.categories import CATEGORIES
@@ -19,7 +24,7 @@ from flask import (
 )
 
 import ruqqus.helpers.aws as aws
-from ruqqus.__main__ import app
+from ruqqus.__main__ import app, db_session
 
 
 @app.route("/admin/flagged/posts", methods=["GET"])
@@ -1391,3 +1396,164 @@ def admin_throttle_settings_post(v):
     return redirect("/admin/throttle_settings?msg=Saved.")
 
 
+# --------------------------------------------------------------- word filter
+# The list behind the Standard / Child word filter (helpers/wordfilter.py).
+# Admins enter plain words; the engine handles spellings that dodge it.
+
+def _word_filter_redirect(msg=None, error=None):
+    from urllib.parse import quote
+    if error:
+        return redirect("/admin/word_filter?error=" + quote(error))
+    return redirect("/admin/word_filter?msg=" + quote(msg or "Saved."))
+
+
+@app.route("/admin/word_filter", methods=["GET"])
+@admin_level_required(4)
+def admin_word_filter(v):
+
+    entries = g.db.query(WordFilterEntry).order_by(
+        WordFilterEntry.severity.desc(), WordFilterEntry.word.asc()).all()
+    word_filter = get_filter(force=True)
+
+    stale = g.db.query(Submission.id).filter(
+        or_(Submission.word_filter_version.is_(None), Submission.word_filter_version != word_filter.version)
+    ).count() + g.db.query(Comment.id).filter(
+        or_(Comment.word_filter_version.is_(None), Comment.word_filter_version != word_filter.version)
+    ).count()
+
+    test_text = request.args.get("test", "")
+
+    return render_template(
+        "admin/word_filter.html",
+        v=v,
+        entries=entries,
+        using_starter=not entries,
+        starter_count=len(wordfilter_seed.ENTRIES),
+        version=word_filter.version,
+        stale=stale,
+        test_text=test_text,
+        test_matches=word_filter.explain(test_text) if test_text else [],
+        test_severity=word_filter.severity(test_text) if test_text else 0,
+        msg=request.args.get("msg"),
+        error=request.args.get("error")
+    )
+
+
+@app.route("/admin/word_filter/add", methods=["POST"])
+@admin_level_required(4)
+@validate_formkey
+def admin_word_filter_add(v):
+
+    # entries are plain letters (digits and symbols in text are read as
+    # stand-ins for letters), so store the word the way it will be matched
+    word = " ".join(filter(None, (WordFilter._letters(part) for part in request.form.get("word", "").split())))[:64]
+    if not word:
+        return _word_filter_redirect(error="Enter a word made of letters.")
+
+    severity = request.form.get("severity", "1")
+    if severity not in ("0", "1", "2"):
+        abort(400)
+    mode = request.form.get("mode", "word")
+    if mode not in ("word", "anywhere"):
+        abort(400)
+
+    if g.db.query(WordFilterEntry).filter_by(word=word).first():
+        return _word_filter_redirect(error="That word is already on the list.")
+
+    # endings: "default" uses the engine's usual ones, otherwise the given list (may be empty)
+    suffixes = None if request.form.get("suffix_mode", "default") == "default" else \
+        ",".join(x.strip().lower() for x in request.form.get("suffixes", "").split(",") if x.strip())[:512]
+
+    g.db.add(WordFilterEntry(
+        word=word,
+        severity=int(severity),
+        mode=mode,
+        variants=",".join(x.strip().lower() for x in request.form.get("variants", "").split(",") if x.strip())[:512],
+        suffixes=suffixes,
+        enabled=True,
+        note=request.form.get("note", "")[:256],
+        created_utc=int(time.time())
+    ))
+    g.db.commit()
+    get_filter(force=True)
+
+    return _word_filter_redirect("Added. Re-scan to apply it to existing content.")
+
+
+@app.route("/admin/word_filter/<int:eid>/toggle", methods=["POST"])
+@admin_level_required(4)
+@validate_formkey
+def admin_word_filter_toggle(eid, v):
+
+    entry = g.db.query(WordFilterEntry).filter_by(id=eid).first()
+    if not entry:
+        abort(404)
+    entry.enabled = not entry.enabled
+    g.db.add(entry)
+    g.db.commit()
+    get_filter(force=True)
+
+    return _word_filter_redirect("Updated. Re-scan to apply it to existing content.")
+
+
+@app.route("/admin/word_filter/<int:eid>/delete", methods=["POST"])
+@admin_level_required(4)
+@validate_formkey
+def admin_word_filter_delete(eid, v):
+
+    entry = g.db.query(WordFilterEntry).filter_by(id=eid).first()
+    if not entry:
+        abort(404)
+    g.db.delete(entry)
+    g.db.commit()
+    get_filter(force=True)
+
+    return _word_filter_redirect("Deleted. Re-scan to apply it to existing content.")
+
+
+@app.route("/admin/word_filter/starter", methods=["POST"])
+@admin_level_required(4)
+@validate_formkey
+def admin_word_filter_starter(v):
+    """Copy the built-in starter list into the table so it can be edited."""
+
+    if g.db.query(WordFilterEntry).first():
+        return _word_filter_redirect(error="The list already has entries.")
+
+    now = int(time.time())
+    for entry in wordfilter_seed.ENTRIES:
+        g.db.add(WordFilterEntry(
+            word=entry["word"],
+            severity=entry["severity"],
+            mode=entry["mode"],
+            variants=",".join(entry["variants"]),
+            suffixes=None if entry["suffixes"] is None else ",".join(entry["suffixes"]),
+            enabled=True,
+            note="starter list",
+            created_utc=now
+        ))
+    for phrase in wordfilter_seed.ALLOW_PHRASES:
+        g.db.add(WordFilterEntry(word=phrase, severity=0, mode="word", variants="", suffixes="",
+                                 enabled=True, note="starter list: allowed phrase", created_utc=now))
+    g.db.commit()
+    get_filter(force=True)
+
+    return _word_filter_redirect("Starter list copied in. You can edit it now.")
+
+
+@app.route("/admin/word_filter/rescan", methods=["POST"])
+@admin_level_required(4)
+@validate_formkey
+def admin_word_filter_rescan(v):
+    """Re-rate existing posts, comments, usernames and guild names in the background."""
+
+    def run():
+        db = db_session()
+        try:
+            rescan(db)
+        finally:
+            db.close()
+
+    gevent.spawn(run)
+
+    return _word_filter_redirect("Re-scan started. Refresh in a moment to see what is left.")

@@ -1,0 +1,104 @@
+{% extends "docs_default.html" %}
+
+{% block sidebarblock %}{% endblock %}
+{% block sidebarLeftblock %}{% endblock %}
+
+{% block title %}
+<title>Ruqqus - Word filter</title>
+{% endblock %}
+
+{% block content %}
+
+<h1>Word filter</h1>
+
+<p class="text-muted">Content containing a listed word is hidden from viewers according to their own word filter setting; nothing is removed. <strong>Extreme</strong> words are hidden for the Standard and Child filters, <strong>Profanity</strong> for the Child filter only. Enter plain words: capitals, accents, repeated letters, digits or symbols for letters, look-alike alphabets, punctuation or spaces between letters are all caught automatically.</p>
+
+{% if msg %}<div class="alert alert-success">{{ msg }}</div>{% endif %}
+{% if error %}<div class="alert alert-danger">{{ error }}</div>{% endif %}
+
+<p>List version <code>{{ version }}</code> &middot; {{ stale }} post(s)/comment(s) not yet rated with this version.</p>
+<form action="/admin/word_filter/rescan" method="post" class="mb-4">
+  <input type="hidden" name="formkey" value="{{ v.formkey }}">
+  <button class="btn btn-secondary">Re-scan existing content</button>
+</form>
+
+<h2>Try a phrase</h2>
+<form action="/admin/word_filter" method="get" class="mb-2">
+  <input type="text" name="test" class="form-control mb-2" maxlength="500" placeholder="Type something to see how it is rated" value="{{ test_text }}">
+  <button class="btn btn-primary">Check</button>
+</form>
+{% if test_text %}
+<p>Rated <strong>{{ ["clean - shown to everyone", "profanity - hidden for Child", "extreme - hidden for Standard and Child"][test_severity] }}</strong>.
+{% if test_matches %}Matched: {% for token, word, severity in test_matches %}<code>{{ token }}</code> &rarr; <em>{{ word }}</em>{{ ", " if not loop.last }}{% endfor %}{% endif %}</p>
+{% endif %}
+
+<h2 class="mt-4">Add a word</h2>
+<form action="/admin/word_filter/add" method="post" class="mb-4">
+  <input type="hidden" name="formkey" value="{{ v.formkey }}">
+  <div class="form-row">
+    <div class="col-md-3 mb-2"><input type="text" name="word" class="form-control" maxlength="64" placeholder="word" required></div>
+    <div class="col-md-3 mb-2">
+      <select name="severity" class="form-control">
+        <option value="2">Extreme (Standard + Child)</option>
+        <option value="1" selected>Profanity (Child only)</option>
+        <option value="0">Allowed (never hidden)</option>
+      </select>
+    </div>
+    <div class="col-md-3 mb-2">
+      <select name="mode" class="form-control">
+        <option value="word" selected>Whole word only</option>
+        <option value="anywhere">Also inside longer words</option>
+      </select>
+    </div>
+    <div class="col-md-3 mb-2"><input type="text" name="note" class="form-control" maxlength="256" placeholder="note (optional)"></div>
+  </div>
+  <div class="form-row">
+    <div class="col-md-6 mb-2"><input type="text" name="variants" class="form-control" maxlength="512" placeholder="other spellings, comma separated (optional)"></div>
+    <div class="col-md-3 mb-2">
+      <select name="suffix_mode" class="form-control">
+        <option value="default" selected>Usual endings (s, es, ed, er, ers, ing, in)</option>
+        <option value="custom">Only the endings I list</option>
+      </select>
+    </div>
+    <div class="col-md-3 mb-2"><input type="text" name="suffixes" class="form-control" maxlength="512" placeholder="endings, comma separated"></div>
+  </div>
+  <button class="btn btn-primary">Add</button>
+  <span class="text-small text-muted ml-2">"Also inside longer words" can hide innocent words that contain it; use it sparingly. An allowed entry with spaces is an allowed phrase.</span>
+</form>
+
+<h2>Current list</h2>
+{% if using_starter %}
+<div class="alert alert-info">No entries yet, so the built-in starter list ({{ starter_count }} entries) is in use. Copy it in to edit it.</div>
+<form action="/admin/word_filter/starter" method="post">
+  <input type="hidden" name="formkey" value="{{ v.formkey }}">
+  <button class="btn btn-secondary">Copy the starter list into the table</button>
+</form>
+{% else %}
+<table class="table table-sm">
+  <thead><tr><th>Word</th><th>Level</th><th>Match</th><th>Other spellings</th><th>Endings</th><th>Note</th><th></th></tr></thead>
+  <tbody>
+  {% for e in entries %}
+    <tr{% if not e.enabled %} class="text-muted"{% endif %}>
+      <td><code>{{ e.word }}</code>{% if not e.enabled %} (off){% endif %}</td>
+      <td>{{ ["Allowed", "Profanity", "Extreme"][e.severity] }}</td>
+      <td>{{ "anywhere" if e.mode == "anywhere" else "whole word" }}</td>
+      <td>{{ e.variants }}</td>
+      <td>{{ "usual" if e.suffixes is none else (e.suffixes or "none") }}</td>
+      <td>{{ e.note }}</td>
+      <td class="text-nowrap">
+        <form action="/admin/word_filter/{{ e.id }}/toggle" method="post" class="d-inline">
+          <input type="hidden" name="formkey" value="{{ v.formkey }}">
+          <button class="btn btn-link btn-sm p-0 mr-2">{{ "Turn off" if e.enabled else "Turn on" }}</button>
+        </form>
+        <form action="/admin/word_filter/{{ e.id }}/delete" method="post" class="d-inline" onsubmit="return confirm('Delete this entry?')">
+          <input type="hidden" name="formkey" value="{{ v.formkey }}">
+          <button class="btn btn-link btn-sm p-0 text-danger">Delete</button>
+        </form>
+      </td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+{% endif %}
+
+{% endblock %}

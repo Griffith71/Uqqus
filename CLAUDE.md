@@ -26,16 +26,27 @@ The pre-commit hook (Husky) runs only staged-file checks: gitleaks, ruff, eslint
 
 ## Terminology (applies to both apps, UI text and code names)
 
-| Say | Never say |
-| --- | --- |
-| **post**: always created first on the author's own profile. You cannot post to a guild. | "post to/in a guild", "submit to a guild" |
-| **comment**: anything that is a reply, whether on a post or on another comment. | reply, replies, replied |
+| Say                                                                                                                                 | Never say                                  |
+| ----------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------ |
+| **post**: always created first on the author's own profile. You cannot post to a guild.                                             | "post to/in a guild", "submit to a guild"  |
+| **comment**: anything that is a reply, whether on a post or on another comment.                                                     | reply, replies, replied                    |
 | **forward** (forwarded, forwarding): sharing a post or comment with a guild. A forwarded comment becomes its own post in the guild. | promote, yank, crosspost, "share to guild" |
-| **repost**: putting someone's post or comment on your own profile (a different feature from forwarding). | |
+| **repost**: putting someone's post or comment on your own profile (a different feature from forwarding).                            |                                            |
 
-Guilds only ever receive forwards, so guild settings and errors talk about *forwarding* (e.g. "Restrict forwarding", "disallows bots from forwarding and commenting").
+Guilds only ever receive forwards, so guild settings and errors talk about _forwarding_ (e.g. "Restrict forwarding", "disallows bots from forwarding and commenting").
 External contracts keep their old names on purpose: the URL `/notifications/replies`, the JSON field `replies`, DB columns such as `restricted_posting` and `promoted_by_id` (Python attributes use the new names), the `/mod/kick/...` URLs, and legacy mod-log kinds (`yank_post`, `kick_post`).
 `tests/test_terminology.py` enforces this; extend its allowlist only for a real external contract.
+
+## Word filter (legacy app)
+
+Viewers browse at a level (`User.filter_level`: 0 Off, 1 Standard - the default and what logged-out visitors get, 2 Child). Content is never removed; it is hidden per viewer.
+
+- Posts and comments get a stored rating when written (`word_severity`: 0 clean, 1 profanity, 2 extreme) from `ruqqus/helpers/wordfilter.py` (the matching engine, stdlib only) via `helpers/word_filter_store.py`. Standard hides 2; Child hides 1 and 2 plus anything `is_sensitive` and sensitive guilds.
+- **Every new listing or page must go through `ruqqus/helpers/visibility.py`**: `filter_posts` / `filter_comments` / `filter_boards` / `filter_users` on queries, `post_hidden` / `comment_hidden` / `board_hidden` / `user_hidden` for one object, `hidden_notice(v)` for a direct link. Do not read `hide_offensive` or `is_offensive`.
+- Memoized id-lists must include `filter_level=viewer_level(v)` in their arguments (it is the cache key). Caching is off on localhost, so this cannot be noticed in dev.
+- Anything that writes a title, body, bio, description, username or guild name must re-stamp it (`apply_post_severity`, `apply_comment_severity`, `apply_user_severity`, `apply_board_severity`).
+- The word list lives in `word_filter_entries` and is edited at `/admin/word_filter` (plain words, never regex); an empty table means the built-in list in `helpers/wordfilter_seed.py`. After changing the list, re-scan (admin button or `PYTHONPATH=. python scripts/rescan_word_filter.py`).
+- Schema changes are manual: `scripts/migrations/*.sql` for existing databases, mirrored in `schema.sql`.
 
 ## Rules
 
