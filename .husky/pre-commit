@@ -1,0 +1,29 @@
+#!/usr/bin/env sh
+# Fast checks on staged files only. The full suite (tests, build, audit) runs in CI.
+set -e
+
+# 1. Secrets
+if command -v gitleaks >/dev/null 2>&1; then
+  gitleaks git --pre-commit --staged --redact --no-banner
+else
+  echo "pre-commit: gitleaks not installed, skipping local secret scan (CI still runs it)"
+fi
+
+# 2. Python (legacy app): ruff, errors-only rules from pyproject.toml
+PY_FILES=$(git diff --cached --name-only --diff-filter=ACMR -- '*.py' | grep -v '^web/' || true)
+if [ -n "$PY_FILES" ]; then
+  if [ -f .venv/Scripts/ruff.exe ]; then RUFF=.venv/Scripts/ruff.exe
+  elif [ -x .venv/bin/ruff ]; then RUFF=.venv/bin/ruff
+  elif command -v ruff >/dev/null 2>&1; then RUFF=ruff
+  else RUFF=""; fi
+  if [ -n "$RUFF" ]; then
+    echo "$PY_FILES" | xargs "$RUFF" check
+  else
+    echo "pre-commit: ruff not installed, skipping Python lint (CI still runs it)"
+  fi
+fi
+
+# 3. web/: eslint + prettier + typecheck on staged files
+if git diff --cached --name-only -- web | grep -q .; then
+  (cd web && npx lint-staged --concurrent false)
+fi
