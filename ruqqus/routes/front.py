@@ -5,6 +5,7 @@ from sqlalchemy.orm import lazyload
 import random
 
 from ruqqus.helpers.wrappers import *
+from ruqqus.helpers.visibility import filter_posts, filter_comments, filter_boards, viewer_level
 from ruqqus.helpers.get import *
 from flask import session as flask_session
 
@@ -141,8 +142,7 @@ def frontlist(v=None, sort=None, page=1,
             stickied=False
         ).filter(Submission.deleted_utc == 0)
 
-    if (v and v.hide_offensive) or not v:
-        posts = posts.filter_by(is_offensive=False)
+    posts = filter_posts(posts, v)
     
     if v and v.hide_bot:
         posts = posts.filter(Submission.is_bot==False)
@@ -221,7 +221,7 @@ def frontlist(v=None, sort=None, page=1,
         posts = posts.filter(Submission.language_code.in_(language_list))
 
 
-    if (v and v.hide_offensive) or not v:
+    if viewer_level(v) > 0:
         posts=posts.filter(
             Board.subcat_id.notin_([44, 108]) 
             )
@@ -466,7 +466,7 @@ Optional query parameters:
 
                      # these arguments don't really do much but they exist for
                      # cache memoization differentiation
-                     hide_offensive=v.hide_offensive,
+                     filter_level=viewer_level(v),
                      hide_bot=v.hide_bot,
 
                      #greater/less than
@@ -552,6 +552,7 @@ Optional query parameters:
     if v and v.interest_subcats():
         ids = v.for_you_idlist(
             sort=sort, page=page, t=t,
+            filter_level=viewer_level(v),
             filter_words=v.filter_words,
             gt=int(request.args.get("utc_greater_than", 0)),
             lt=int(request.args.get("utc_less_than", 0)),
@@ -563,7 +564,7 @@ Optional query parameters:
         # zero-signal accounts (and anonymous visitors) fall back to All
         ids = frontlist(
             sort=sort, page=page, t=t, v=v,
-            hide_offensive=(v and v.hide_offensive) or not v,
+            filter_level=viewer_level(v),
             hide_bot=(v and v.hide_bot),
             filter_words=v.filter_words if v else [],
             gt=int(request.args.get("utc_greater_than", 0)),
@@ -688,7 +689,7 @@ Optional query parameters:
                     page=page,
                     t=t,
                     v=v,
-                    hide_offensive=(v and v.hide_offensive) or not v,
+                    filter_level=viewer_level(v),
                     hide_bot=(v and v.hide_bot),
                     gt=int(request.args.get("utc_greater_than", 0)),
                     lt=int(request.args.get("utc_less_than", 0)),
@@ -803,7 +804,7 @@ Optional query parameters:
                     page=page,
                     t=t,
                     v=v,
-                    hide_offensive=(v and v.hide_offensive) or not v,
+                    filter_level=viewer_level(v),
                     hide_bot=(v and v.hide_bot),
                     gt=int(request.args.get("utc_greater_than", 0)),
                     lt=int(request.args.get("utc_less_than", 0)),
@@ -936,7 +937,7 @@ def subcat(name, v):
                             page=page,
                             t=t,
                             v=v,
-                            hide_offensive=(v and v.hide_offensive) or not v,
+                            filter_level=viewer_level(v),
                             hide_bot=(v and v.hide_bot),
                             gt=int(request.args.get("utc_greater_than", 0)),
                             lt=int(request.args.get("utc_less_than", 0)),
@@ -948,7 +949,7 @@ def subcat(name, v):
                         page=page,
                         t=t,
                         v=v,
-                        hide_offensive=(v and v.hide_offensive) or not v,
+                        filter_level=viewer_level(v),
                         hide_bot=(v and v.hide_bot),
                         gt=int(request.args.get("utc_greater_than", 0)),
                         lt=int(request.args.get("utc_less_than", 0)),
@@ -981,12 +982,13 @@ def subcat(name, v):
 
 
 @cache.memoize(600)
-def guild_ids(sort="subs", page=1, cats=[]):
+def guild_ids(sort="subs", page=1, cats=[], filter_level=1):
     # cutoff=int(time.time())-(60*60*24*30)
 
     guilds = g.db.query(Board).filter_by(is_banned=False).filter(
         Board.subcat_id != 108
     )
+    guilds = filter_boards(guilds, None, level=filter_level)
 
     if cats:
         guilds=guilds.filter(Board.subcat.in_(tuple(cats)))
@@ -1032,6 +1034,7 @@ Optional query parameters:
     ids = guild_ids(
         sort=sort_method,
         page=page,
+        filter_level=viewer_level(v),
         cats=request.args.get("cats").split(',') if request.args.get("cats") else None
         )
 
@@ -1163,8 +1166,7 @@ def random_post(v):
     cutoff = now - (60 * 60 * 24 * 180)
     x = x.filter(Submission.created_utc >= cutoff)
 
-    if v and v.hide_offensive:
-        x = x.filter_by(is_offensive=False)
+    x = filter_posts(x, v)
         
     if v and v.hide_bot:
         x = x.filter_by(is_bot=False)
@@ -1192,6 +1194,7 @@ def random_guild(v):
         is_banned=False,
         is_private=False,
         is_nsfl=False)
+    x = filter_boards(x, v)
 
     if v:
         bans = g.db.query(BanRelationship.id).filter_by(user_id=v.id).all()
@@ -1210,8 +1213,8 @@ def random_guild(v):
 def random_comment(v):
 
     x = g.db.query(Comment).filter_by(is_banned=False,
-                                      is_offensive=False,
                                       is_bot=False).filter(Comment.parent_submission.isnot(None))
+    x = filter_comments(x, v)
     if v:
         bans = g.db.query(BanRelationship.id).filter_by(user_id=v.id).all()
         x = x.filter(Comment.board_id.notin_([i[0] for i in bans]))
@@ -1271,8 +1274,7 @@ def comment_idlist(page=1, v=None, **kwargs):
 
     comments = g.db.query(Comment).options(lazyload('*'))
 
-    if v and v.hide_offensive:
-        comments = comments.filter_by(is_offensive=False)
+    comments = filter_comments(comments, v)
         
     if v and v.hide_bot:
         comments = comments.filter_by(is_bot=False)
@@ -1319,7 +1321,7 @@ Optional query parameters:
 
     idlist = comment_idlist(v=v,
                             page=page,
-                            hide_offensive=v and v.hide_offensive,
+                            filter_level=viewer_level(v),
                             hide_bot=v and v.hide_bot)
 
     comments = get_comments(idlist, v=v)

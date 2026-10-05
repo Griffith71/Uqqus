@@ -11,6 +11,7 @@ from flask import session, g, request
 from ruqqus.helpers.base36 import *
 from ruqqus.helpers.security import *
 from ruqqus.helpers.lazy import lazy
+from ruqqus.helpers.visibility import filter_posts, filter_comments, viewer_level, text_hidden
 import ruqqus.helpers.aws as aws
 from ruqqus.helpers.discord import add_role, delete_role, discord_log_event
 #from ruqqus.helpers.alerts import send_notification
@@ -262,8 +263,7 @@ class User(Base, Stndrd, Age_times):
                                                                            stickied=False
                                                                            )
 
-        if self.hide_offensive:
-            posts = posts.filter_by(is_offensive=False)
+        posts = filter_posts(posts, self)
 
         if self.hide_bot:
             posts = posts.filter_by(is_bot=False)
@@ -467,8 +467,7 @@ class User(Base, Stndrd, Age_times):
             stickied=False
         ).filter(Submission.deleted_utc == 0)
 
-        if self.hide_offensive:
-            posts = posts.filter_by(is_offensive=False)
+        posts = filter_posts(posts, self)
 
         if self.hide_bot:
             posts = posts.filter(Submission.is_bot == False)
@@ -540,7 +539,7 @@ class User(Base, Stndrd, Age_times):
             language_list = language if isinstance(language, (list, tuple)) else [language]
             posts = posts.filter(Submission.language_code.in_(language_list))
 
-        if self.hide_offensive:
+        if viewer_level(self) > 0:
             posts = posts.filter(Board.subcat_id.notin_([44, 108]))
 
         posts = posts.filter(Submission.board_id != 1)
@@ -606,7 +605,7 @@ class User(Base, Stndrd, Age_times):
         return [x.id for x in posts.offset(25 * (page - 1)).limit(26).all()]
 
     @cache.memoize(300)
-    def userpagelisting(self, v=None, page=1, sort="new", t="all"):
+    def userpagelisting(self, v=None, page=1, sort="new", t="all", **kwargs):
 
         now = int(time.time())
         if t == 'day':
@@ -643,8 +642,7 @@ class User(Base, Stndrd, Age_times):
                 user_id=v.id).subquery()
 
         def apply_common_filters(q):
-            if v and v.hide_offensive and v.id != self.id:
-                q = q.filter(Submission.is_offensive == False)
+            q = filter_posts(q, v)
             if v and v.hide_bot:
                 q = q.filter(Submission.is_bot == False)
             if not (v and (v.admin_level >= 3)):
@@ -734,7 +732,7 @@ class User(Base, Stndrd, Age_times):
         return listing
 
     @cache.memoize(300)
-    def commentlisting(self, v=None, page=1, sort="new", t="all"):
+    def commentlisting(self, v=None, page=1, sort="new", t="all", **kwargs):
 
         now = int(time.time())
         if t == 'day':
@@ -764,11 +762,9 @@ class User(Base, Stndrd, Age_times):
             c = v.contributes.subquery()
 
         def apply_common_filters(q):
-            if v and v.hide_offensive and v.id != self.id:
-                q = q.filter(Comment.is_offensive == False)
+            q = filter_comments(q, v)
             if v and v.hide_bot:
                 q = q.filter(Comment.is_bot == False)
-            q = q.filter(Submission.is_sensitive == False)
             if (not v) or v.admin_level < 3:
                 q = q.filter(Comment.deleted_utc == 0)
             return q.filter(Comment.created_utc >= cutoff)
@@ -1055,6 +1051,7 @@ class User(Base, Stndrd, Age_times):
             Comment.is_banned == False,
             Comment.deleted_utc == 0
         )
+        notifications = filter_comments(notifications, self)
 
         if comments_only:
             cs = g.db.query(Comment.id).filter(Comment.author_id == self.id).subquery()
@@ -1106,6 +1103,7 @@ class User(Base, Stndrd, Age_times):
             Submission.is_banned==False, 
             Submission.deleted_utc==0
             )
+        notifications=filter_posts(notifications, self)
 
         if not all_:
             notifications=notifications.filter(Notification.read==False)
@@ -1154,7 +1152,7 @@ class User(Base, Stndrd, Age_times):
     def comment_notifications_count(self):
         cs=g.db.query(Comment.id).filter(Comment.author_id==self.id).subquery()
         ps=g.db.query(Submission.id).filter(Submission.author_id==self.id).subquery()
-        return self.notifications.options(
+        q = self.notifications.options(
             lazyload('*')
             ).join(
             Notification.comment
@@ -1170,12 +1168,13 @@ class User(Base, Stndrd, Age_times):
                     Comment.parent_submission.in_(ps)
                     )
                 )
-            ).count()
+            )
+        return filter_comments(q, self).count()
 
     @property
     @lazy
     def post_notifications_count(self):
-        return self.notifications.filter(
+        q = self.notifications.filter(
             Notification.read==False
             ).join(
             Submission,
@@ -1183,7 +1182,8 @@ class User(Base, Stndrd, Age_times):
             ).filter(
             Submission.is_banned==False,
             Submission.deleted_utc==0
-            ).count()
+            )
+        return filter_posts(q, self).count()
 
     @property
     @lazy
@@ -1200,24 +1200,18 @@ class User(Base, Stndrd, Age_times):
     @property
     @lazy
     def notifications_count(self):
-        return self.notifications.options(
-            lazyload('*')
-            ).filter(
-                Notification.read==False
-            ).join(Notification.comment, isouter=True
-            ).join(Notification.post, isouter=True
-            ).filter(
-                or_(
-                    and_(
-                        Comment.is_banned==False,
-                        Comment.deleted_utc==0
-                    ),
-                    and_(
-                        Submission.is_banned==False,
-                        Submission.deleted_utc==0
-                    )
-                )
-            ).count()
+        # comment notifications and post notifications are counted apart so
+        # each can have the word filter applied (same rule as the listings)
+        unread = self.notifications.options(lazyload('*')).filter(Notification.read==False)
+        comments = unread.join(Notification.comment).filter(
+            Comment.is_banned==False,
+            Comment.deleted_utc==0
+        )
+        posts = unread.join(Notification.post).filter(
+            Submission.is_banned==False,
+            Submission.deleted_utc==0
+        )
+        return filter_comments(comments, self).count() + filter_posts(posts, self).count()
 
     @property
     def throttle_state(self):
@@ -1471,6 +1465,13 @@ class User(Base, Stndrd, Age_times):
         return data
     
 
+    def bio_html_for(self, v):
+        """The bio as HTML - empty when the viewer's word filter hides it."""
+        return "" if text_hidden(self.bio_severity, v, owner_id=self.id) else (self.bio_html or "")
+
+    def bio_for(self, v):
+        return "" if text_hidden(self.bio_severity, v, owner_id=self.id) else (self.bio or "")
+
     @property
     def json_core(self):
 
@@ -1640,6 +1641,7 @@ class User(Base, Stndrd, Age_times):
         posts = posts.join(
             SaveRelationship, SaveRelationship.submission_id == Submission.id
         ).filter(SaveRelationship.user_id == self.id)
+        posts = filter_posts(posts, self)
 
         if self.admin_level < 4:
             # admins can see everything
@@ -1687,6 +1689,7 @@ class User(Base, Stndrd, Age_times):
         comments = comments.join(
             CommentSaveRelationship, CommentSaveRelationship.comment_id == Comment.id
         ).filter(CommentSaveRelationship.user_id == self.id)
+        comments = filter_comments(comments, self)
 
         if self.admin_level < 4:
             # admins can see everything
@@ -1746,6 +1749,7 @@ class User(Base, Stndrd, Age_times):
         posts = g.db.query(Submission, activity.c.ts).join(
             activity, activity.c.sid == Submission.id
         )
+        posts = filter_posts(posts, v)
 
         if not (v and v.admin_level >= 3):
             posts = posts.filter(Submission.deleted_utc == 0, Submission.is_banned == False)
@@ -1786,6 +1790,7 @@ class User(Base, Stndrd, Age_times):
             is_banned=False,
             deleted_utc=0
         ).join(vh, vh.c.submission_id == Submission.id)
+        posts = filter_posts(posts, self)
 
         if self.admin_level < 4:
             m = g.db.query(
@@ -1830,6 +1835,7 @@ class User(Base, Stndrd, Age_times):
             is_banned=False,
             deleted_utc=0
         ).join(vt, vt.c.submission_id == Submission.id)
+        posts = filter_posts(posts, self)
 
         if exclude_self:
             posts = posts.filter(Submission.author_id != self.id)
@@ -1912,8 +1918,7 @@ class User(Base, Stndrd, Age_times):
         if exclude_self:
             comments = comments.filter(Comment.author_id != self.id)
 
-        if self.hide_offensive:
-            comments = comments.filter(Comment.is_offensive == False)
+        comments = filter_comments(comments, self)
 
         if self.hide_bot:
             comments = comments.filter(Comment.is_bot == False)

@@ -18,19 +18,29 @@
               <div class="d-lg-flex border-bottom">
 
                 <div class="title w-lg-25">
-                  <label for="hideoffensive">Hide offensive speech</label>
+                  <label for="filterlevel">Word filter</label>
                 </div>
 
                 <div class="body w-lg-100">
 
-                  <div class="custom-control custom-switch">
-                    <input type="checkbox" class="custom-control-input" id="hideoffensive" name="hide_offensive"{% if v.hide_offensive %} checked{% endif %} onchange="post_toast('/settings/profile?hide_offensive='+document.getElementById('hideoffensive').checked)">
-                    <label class="custom-control-label" for="hideoffensive"></label>
+                  {% set level = 1 if v.filter_level is none else v.filter_level %}
+                  <select class="form-control" id="filterlevel" data-current="{{ level }}" onchange="filter_level_changed()">
+                    <option value="0"{% if level == 0 %} selected{% endif %}>Off - show everything</option>
+                    <option value="1"{% if level == 1 %} selected{% endif %}>Standard - hide extremely offensive language</option>
+                    <option value="2"{% if level == 2 %} selected{% endif %}>Child - also hide profanity and sensitive content</option>
+                  </select>
+
+                  <div id="filterlevel-password-row" class="mt-2 d-none">
+                    <input type="password" class="form-control" id="filterlevel-password" autocomplete="current-password" placeholder="Account password (needed to turn the Child filter down)">
                   </div>
 
-                  <span class="text-small-extra text-muted">Hide posts or collapse comments that include racial slurs. A full list of words can be found <a href="/slurs.txt" target="_blank">here</a>.</span>
+                  <button type="button" class="btn btn-primary mt-2 d-none" id="filterlevel-save" onclick="save_filter_level()">Save word filter</button>
+
+                  <span class="d-block mt-2 text-small-extra text-muted">Posts and comments that contain filtered words are hidden from you entirely - they are not removed for anyone else. Content from a user or guild whose name contains a filtered word is hidden too. Your own posts and comments are always shown to you. Turning the Child filter down again needs your account password.</span>
 
                 </div>
+
+              </div>
 
               </div>
 			  

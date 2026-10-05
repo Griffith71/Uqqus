@@ -22,7 +22,7 @@
         </div>
 
         {% if not hide_bios %}
-        <div class="card-text">{{ u.bio_html | safe }}</div>
+        <div class="card-text">{{ u.bio_html_for(v) | safe }}</div>
         {% endif %}
       </div>
     </div>

@@ -33,11 +33,21 @@ def settings_profile_post(v):
 
     updated = False
 
-    if request.values.get("hide_offensive",
-                          v.hide_offensive) != v.hide_offensive:
-        updated = True
-        v.hide_offensive = request.values.get("hide_offensive", None) == 'true'
-        cache.delete_memoized(User.idlist, v)
+    # word filter: 0 Off, 1 Standard, 2 Child (see helpers/visibility.py)
+    new_level = request.values.get("filter_level")
+    if new_level not in (None, ""):
+        if new_level not in ("0", "1", "2"):
+            abort(400)
+        new_level = int(new_level)
+        current_level = 1 if v.filter_level is None else v.filter_level
+        if new_level != current_level:
+            # the Child filter is a lock: lowering it takes the account password
+            if current_level >= 2 and new_level < 2 and not v.verifyPass(request.values.get("password", "")):
+                return jsonify({"error": "Enter your account password to turn the Child filter down."}), 403
+            v.filter_level = new_level
+            v.hide_offensive = new_level > 0   # legacy column, no longer read
+            updated = True
+            cache.delete_memoized(User.idlist, v)
 		
     if request.values.get("hide_bot",
                           v.hide_bot) != v.hide_bot:

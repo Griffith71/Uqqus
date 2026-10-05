@@ -7,6 +7,7 @@ import gevent
 from os import environ
 
 from ruqqus.helpers.wrappers import *
+from ruqqus.helpers.visibility import post_hidden, comment_thread_hidden, hidden_notice
 from ruqqus.helpers.base36 import *
 from ruqqus.helpers.sanitize import *
 from ruqqus.helpers.filters import *
@@ -72,6 +73,9 @@ Optional query parameters:
 
     post = get_post(pid, v=v)
     board = post.board
+
+    if post_hidden(post, v) or comment_thread_hidden(comment, v):
+        return hidden_notice(v)
 
     guildname_provided = guildname is not None
     if not guildname:
@@ -245,7 +249,7 @@ Optional query parameters:
         current_ids = [x.id for x in output]
 
 
-    post.tree_comments()
+    post.tree_comments(v=v)
 
     post.nested_comments=[top_comment]
 
@@ -984,6 +988,9 @@ def embed_comment_cid(cid, pid=None):
 
     if comment.board.is_banned:
         abort(410)
+
+    if post_hidden(comment.post, None) or comment_thread_hidden(comment, None):
+        abort(403)
 
     return render_template("embeds/comment.html", c=comment)
 

@@ -1440,6 +1440,44 @@ function post_toast_with_reason(url, callback) {
 
   }
 
+// Word filter setting (settings_filters.html). Turning the Child filter down
+// asks for the account password; the server enforces it either way.
+function filter_level_changed() {
+  var select = document.getElementById('filterlevel');
+  var lowering = select.dataset.current == '2' && select.value != '2';
+  document.getElementById('filterlevel-password-row').classList.toggle('d-none', !lowering);
+  document.getElementById('filterlevel-save').classList.toggle('d-none', select.value == select.dataset.current);
+}
+
+function save_filter_level() {
+  var select = document.getElementById('filterlevel');
+  var form = new FormData();
+  form.append('formkey', formkey());
+  form.append('filter_level', select.value);
+  form.append('password', document.getElementById('filterlevel-password').value);
+
+  var xhr = new XMLHttpRequest();
+  xhr.open('POST', '/settings/profile', true);
+  xhr.withCredentials = true;
+  xhr.onload = function() {
+    var data = {};
+    try { data = JSON.parse(xhr.response); } catch (e) {}
+    if (xhr.status >= 200 && xhr.status < 300) {
+      select.dataset.current = select.value;
+      document.getElementById('filterlevel-password').value = '';
+      filter_level_changed();
+      $('#toast-post-success').toast('dispose');
+      $('#toast-post-success').toast('show');
+      document.getElementById('toast-post-success-text').innerText = data.message || 'Your settings have been updated.';
+    } else {
+      $('#toast-post-error').toast('dispose');
+      $('#toast-post-error').toast('show');
+      document.getElementById('toast-post-error-text').innerText = data.error || "That couldn't be saved.";
+    }
+  };
+  xhr.send(form);
+}
+
 function post_toast(url, callback) {
   var xhr = new XMLHttpRequest();
   xhr.open("POST", url, true);

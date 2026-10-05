@@ -7,6 +7,7 @@ from sqlalchemy import *
 from sqlalchemy.orm import lazyload
 
 from ruqqus.helpers.wrappers import *
+from ruqqus.helpers.visibility import filter_posts, viewer_level
 from ruqqus.helpers.get import *
 from ruqqus.classes import *
 from ruqqus.__main__ import app, cache
@@ -50,8 +51,7 @@ def curation_idlist(curation_id, v=None, sort=None, page=1, t=None, filter_words
         is_banned=False, deleted_utc=0, stickied=False
     )
 
-    if (v and v.hide_offensive) or not v:
-        posts = posts.filter_by(is_offensive=False)
+    posts = filter_posts(posts, v)
     if v and v.hide_bot:
         posts = posts.filter_by(is_bot=False)
 
@@ -254,6 +254,7 @@ def curation_detail(slug, v):
     page = int(request.args.get("page") or 1)
 
     ids = curation_idlist(curation.id, v=v, sort=sort, page=page, t=t,
+                           filter_level=viewer_level(v),
                            filter_words=v.filter_words if v else [])
     next_exists = (len(ids) == 26)
     ids = ids[0:25]

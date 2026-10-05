@@ -1,5 +1,6 @@
 from ruqqus.classes import *
 from ruqqus.helpers.wrappers import *
+from ruqqus.helpers.visibility import filter_posts, filter_boards, filter_users, viewer_level
 from urllib.parse import quote
 import re
 
@@ -39,7 +40,7 @@ def searchparse(text):
 
 
 @cache.memoize(300)
-def searchlisting(criteria, v=None, page=1, t="None", sort="top", b=None):
+def searchlisting(criteria, v=None, page=1, t="None", sort="top", b=None, filter_level=None):
 
     posts = g.db.query(Submission).options(
                 lazyload('*')
@@ -109,8 +110,7 @@ def searchlisting(criteria, v=None, page=1, t="None", sort="top", b=None):
             # not_(SubmissionAux.url.ilike("http://%/%"+domain))
 
 
-    if v and v.hide_offensive:
-        posts = posts.filter(Submission.is_offensive == False)
+    posts = filter_posts(posts, v)
 		
     if v and v.hide_bot:
         posts = posts.filter(Submission.is_bot == False)
@@ -218,6 +218,7 @@ def search(v, search_type="posts"):
 
         boards = g.db.query(Board).filter(
             Board.name.ilike(f'%{term}%'))
+        boards = filter_boards(boards, v)
 
         if not (v and v.admin_level >= 3):
             boards = boards.filter_by(is_banned=False)
@@ -273,6 +274,7 @@ def search(v, search_type="posts"):
         now=int(time.time())
         users=g.db.query(User).filter(
             User.username.ilike(f'%{term}%'))
+        users=filter_users(users, v)
         
         
         if not (v and v.admin_level >= 3):
@@ -320,7 +322,7 @@ def search(v, search_type="posts"):
         # posts search
 
         criteria=searchparse(query)
-        total, ids = searchlisting(criteria, v=v, page=page, t=t, sort=sort)
+        total, ids = searchlisting(criteria, v=v, page=page, t=t, sort=sort, filter_level=viewer_level(v))
 
         next_exists = (len(ids) == 26)
         ids = ids[0:25]
@@ -377,7 +379,7 @@ def search_guild(name, v, search_type="posts"):
 
     #posts search
 
-    total, ids = searchlisting(searchparse(query), v=v, page=page, t=t, sort=sort, b=b)
+    total, ids = searchlisting(searchparse(query), v=v, page=page, t=t, sort=sort, b=b, filter_level=viewer_level(v))
 
     next_exists=(len(ids)==26)
     ids=ids[0:25]

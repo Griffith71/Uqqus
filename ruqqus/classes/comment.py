@@ -477,9 +477,6 @@ class Comment(Base, Age_times, Scores, Stndrd, Fuzzing):
         if not v:
             return False
 
-        if self.is_offensive and v.hide_offensive:
-            return True
-			
         if self.is_bot and v.hide_bot:
             return True
 

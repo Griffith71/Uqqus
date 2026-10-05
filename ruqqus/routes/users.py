@@ -8,6 +8,7 @@ import io
 import gevent
 
 from ruqqus.helpers.wrappers import *
+from ruqqus.helpers.visibility import viewer_level, user_hidden, hidden_notice
 from ruqqus.helpers.base36 import *
 from ruqqus.helpers.sanitize import *
 from ruqqus.helpers.filters import *
@@ -106,6 +107,10 @@ Optional query parameters:
 
     u = get_user(username, v=v)
 
+    # a filtered word in the username hides the whole profile from this viewer
+    if user_hidden(u, v):
+        return hidden_notice(v)
+
     # check for wrong cases
 
     #if username != u.username:
@@ -158,7 +163,7 @@ Optional query parameters:
     page = int(request.args.get("page", "1"))
     page = max(page, 1)
 
-    ids = u.userpagelisting(v=v, page=page, sort=sort, t=t)
+    ids = u.userpagelisting(v=v, page=page, sort=sort, t=t, filter_level=viewer_level(v))
 
     # we got 26 items just to see if a next page exists
     next_exists = (len(ids) == 26)
@@ -206,6 +211,10 @@ Optional query parameters:
     # case insensitive search
 
     user = get_user(username, v=v)
+
+    # a filtered word in the username hides the whole profile from this viewer
+    if user_hidden(user, v):
+        return hidden_notice(v)
 
     # check for wrong cases
 
@@ -260,6 +269,7 @@ Optional query parameters:
 
     ids = user.commentlisting(
         v=v, 
+        filter_level=viewer_level(v),
         page=page,
         sort=request.args.get("sort","new"),
         t=request.args.get("t","all")
@@ -309,6 +319,10 @@ Optional query parameters:
 """
 
     user = get_user(username, v=v)
+
+    # a filtered word in the username hides the whole profile from this viewer
+    if user_hidden(user, v):
+        return hidden_notice(v)
 
     if username != user.username:
         return redirect(f'{user.url}/forwarded')
@@ -392,6 +406,10 @@ URL path parameters:
 """
 
     user=get_user(username, v=v)
+
+    # a filtered word in the username hides the whole profile from this viewer
+    if user_hidden(user, v):
+        return hidden_notice(v)
 
     if user.is_blocking:
         return jsonify({"error": "You're blocking this user."}), 401

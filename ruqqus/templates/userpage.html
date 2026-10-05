@@ -14,7 +14,7 @@
 <meta property="og:article:author" content="@{{ u.username }}" />
 <meta property="article:section" content="{{ u.username }}'s profile - Ruqqus" />
 <meta property="article:published_time" content="{{ u.created_date }}" />
-<meta property="og:description" name="description" content="{{ u.true_score }} Rep · Joined {{ u.created_date }} · {% if u.stored_subscriber_count >=1 and not u.is_private and not u.is_nofollow %}{{ u.stored_subscriber_count }} Subscribers · {% endif %}{% if not u.is_private %}{{ u.post_count }} Posts · {{ u.comment_count }} Comments · {% endif %}{{u.bio}}" />
+<meta property="og:description" name="description" content="{{ u.true_score }} Rep · Joined {{ u.created_date }} · {% if u.stored_subscriber_count >=1 and not u.is_private and not u.is_nofollow %}{{ u.stored_subscriber_count }} Subscribers · {% endif %}{% if not u.is_private %}{{ u.post_count }} Posts · {{ u.comment_count }} Comments · {% endif %}{{u.bio_for(v)}}" />
 <meta property="og:author" name="author" content="@{{ u.username }}" />
 <meta property="og:title" content="{{ u.username }}" />
 <meta property="og:image" content="{% if u.has_banner %}{{ u.banner_url }}{% else %}{{ '/assets/images/preview-images/ruqqus_og_image.png' | full_link }}{% endif %}" />
@@ -25,7 +25,7 @@
 <meta name="twitter:site" content="@ruqqus">
 <meta name="twitter:title" content="{{ u.username }}'s profile - Ruqqus" />
 <meta name="twitter:creator" content="@{{ u.username }}">
-<meta name="twitter:description" content="{{ u.true_score }} Rep · Joined {{ u.created_date }} ·{% if u.stored_subscriber_count >=1 and not u.is_private and not u.is_nofollow %}{{ u.stored_subscriber_count }} Subscribers ·{% endif %} {% if not u.is_private %} {{ u.post_count }} Posts · {{ u.comment_count }} Comments ·{% endif %} {{u.bio}}" />
+<meta name="twitter:description" content="{{ u.true_score }} Rep · Joined {{ u.created_date }} ·{% if u.stored_subscriber_count >=1 and not u.is_private and not u.is_nofollow %}{{ u.stored_subscriber_count }} Subscribers ·{% endif %} {% if not u.is_private %} {{ u.post_count }} Posts · {{ u.comment_count }} Comments ·{% endif %} {{u.bio_for(v)}}" />
 <meta name="twitter:image" content="{% if u.has_banner %}{{ u.banner_url }}{% else %}{{ '/assets/images/preview-images/ruqqus_og_image.png' | full_link }}{% endif %}" />
 <meta name="twitter:url" content="{{ u.permalink | full_link}}" />
 {% endblock %}
@@ -109,12 +109,12 @@
         <div class="font-weight-normal">
           <span class="font-weight-bold">{{ u.true_score }}</span> rep · {% if u.stored_subscriber_count >=1 and not u.is_nofollow %}<span class="font-weight-bold">{{ u.stored_subscriber_count }}</span> subscriber{{ 's' if u.stored_subscriber_count != 1 else '' }} · {% endif %}joined <span data-toggle="tooltip" data-placement="bottom" title="" data-original-title="{{ u.created_datetime }}" class="font-weight-bold">{{ u.created_date }}</span>
         </div>
-        {% if u.bio_html %}
-        <p class="text-muted">{{ u.bio_html | safe }}</p>
+        {% if u.bio_html_for(v) %}
+        <p class="text-muted">{{ u.bio_html_for(v) | safe }}</p>
         {% else %}
         <p class="text-muted">No bio...</p>
         {% endif %}
-        {% if u.bio_html and v %}
+        {% if u.bio_html_for(v) and v %}
         {% endif %}
 
         <div class="d-flex justify-content-between align-items-center">
@@ -194,8 +194,8 @@
           <div class="text-muted text-small">@{{ u.username }}</div>
         </a>
         <div class="text-small mb-2">{{ u.true_score }} Rep</div>
-        {% if u.bio_html %}
-        <p class="text-muted text-break">{{ u.bio_html | safe }}</p>
+        {% if u.bio_html_for(v) %}
+        <p class="text-muted text-break">{{ u.bio_html_for(v) | safe }}</p>
         {% endif %}
         {% if u.stored_subscriber_count >=1 and not u.is_nofollow %}
         <p class="font-weight-bold">{{ u.stored_subscriber_count }} subscriber{{ 's' if u.stored_subscriber_count != 1 else '' }}</p>

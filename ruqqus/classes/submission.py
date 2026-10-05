@@ -351,6 +351,12 @@ class Submission(Base, Stndrd, Age_times, Scores, Fuzzing):
         if not comments:
             return
 
+        # the word filter hides a comment together with everything under it:
+        # a hidden comment is simply never attached, so neither is its subtree
+        from ruqqus.helpers.visibility import comment_hidden
+        viewer = v if v is not None else getattr(g, 'v', None)
+        comments = [c for c in comments if not comment_hidden(c, viewer)]
+
         pinned_comment=[]
 
         index = {}

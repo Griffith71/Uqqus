@@ -6,6 +6,7 @@ import cssutils
 import sass
 
 from ruqqus.helpers.wrappers import *
+from ruqqus.helpers.visibility import filter_posts, filter_boards, viewer_level, board_hidden, hidden_notice
 from ruqqus.helpers.base36 import *
 from ruqqus.helpers.sanitize import *
 from ruqqus.helpers.markdown import *
@@ -57,8 +58,7 @@ def multiboard(name, v):
         blocking = select(UserBlock.target_id).filter_by(user_id=v.id).subquery()
         posts = posts.filter(Submission.author_id.notin_(blocking))
 
-    if v and v.hide_offensive:
-        posts = posts.filter_by(is_offensive=False)
+    posts = filter_posts(posts, v)
 
     if v and v.hide_bot:
         posts = posts.filter_by(is_bot=False)
@@ -298,6 +298,10 @@ Optional query parameters:
 
     board = get_guild(guildname, v=v)
 
+    # hidden for this viewer's word filter (guildmasters still reach their own guild)
+    if board_hidden(board, v) and not (v and board.has_mod(v)):
+        return hidden_notice(v)
+
     #print(board.is_subscribed)
 
     #if not board.name == name and not request.path.startswith('/api/v1'):
@@ -327,6 +331,7 @@ Optional query parameters:
                        t=t,
                        page=page,
                        v=v,
+                       filter_level=viewer_level(v),
                        gt=int(request.args.get("utc_greater_than", 0)),
                        lt=int(request.args.get("utc_less_than", 0))
                        )
@@ -2038,11 +2043,14 @@ Optional query parameters:
 
     b = get_guild(guildname, v=v)
 
+    if board_hidden(b, v) and not (v and b.has_mod(v)):
+        return hidden_notice(v)
+
     page = int(request.args.get("page", 1))
 
     idlist = b.comment_idlist(v=v,
                               page=page,
-                              hide_offensive=(v and v.hide_offensive) or not v,
+                              filter_level=viewer_level(v),
                               hide_bot=v and v.hide_bot)
 
     next_exists = len(idlist) == 26

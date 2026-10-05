@@ -10,6 +10,7 @@ import gevent
 import mistletoe
 
 from ruqqus.helpers.wrappers import *
+from ruqqus.helpers.visibility import post_hidden, hidden_notice
 from ruqqus.helpers.base36 import *
 from ruqqus.helpers.sanitize import *
 from ruqqus.helpers.filters import *
@@ -83,6 +84,8 @@ URL path parameters:
         pid,
         v=v
         )
+    if post_hidden(post, v):
+        return hidden_notice(v)
     board = post.board
 
     if board.is_banned and not (v and v.admin_level > 3):
@@ -118,6 +121,9 @@ Optional query parameters:
         pid, v=v, sort_type=request.args.get(
             "sort", "top"))
 
+    if post_hidden(post, v):
+        return hidden_notice(v)
+
     board = post.board
     #if the guild name is incorrect, fix the link and redirect
 
@@ -130,7 +136,7 @@ Optional query parameters:
                                b=board,
                                p=True)
 
-    post.tree_comments()
+    post.tree_comments(v=v)
 
     if v:
         record_view(v, post)
@@ -154,7 +160,10 @@ def post_base36id_noboard(base36id, anything=None, v=None):
     if not post.is_profile_post:
         return redirect(post.permalink)
 
-    post.tree_comments()
+    if post_hidden(post, v):
+        return hidden_notice(v)
+
+    post.tree_comments(v=v)
 
     if v:
         record_view(v, post)
@@ -1516,6 +1525,9 @@ def embed_post_pid(pid):
 
     if post.is_banned or post.board.is_banned:
         abort(410)
+
+    if post_hidden(post, None):
+        abort(403)
 
     return render_template("embeds/submission.html", p=post)
 

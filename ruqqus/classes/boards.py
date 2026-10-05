@@ -6,6 +6,7 @@ import time
 from ruqqus.helpers.base36 import *
 from ruqqus.helpers.security import *
 from ruqqus.helpers.lazy import *
+from ruqqus.helpers.visibility import filter_posts, filter_comments, viewer_level, text_hidden
 from ruqqus.helpers.session_helpers import *
 import ruqqus.helpers.aws as aws
 from .userblock import *
@@ -165,13 +166,7 @@ class Board(Base, Stndrd, Age_times):
             Submission.hidden_by_guild == False
         )
 
-        if v and v.hide_offensive:
-            posts = posts.filter(
-                or_(
-                    Submission.is_offensive==False,
-                    Submission.author_id==v.id
-                )
-            )
+        posts = filter_posts(posts, v)
 
         if v and v.hide_bot and not self.has_mod(v, "content"):
             posts = posts.filter_by(is_bot=False)
@@ -517,6 +512,13 @@ class Board(Base, Stndrd, Age_times):
 
         return self.n_pins < 4
 
+    def description_html_for(self, v):
+        """The description as HTML - empty when the viewer's word filter hides it."""
+        return "" if text_hidden(self.description_severity, v) else (self.description_html or "")
+
+    def description_for(self, v):
+        return "" if text_hidden(self.description_severity, v) else (self.description or "")
+
     @property
     def json_core(self):
 
@@ -587,8 +589,7 @@ class Board(Base, Stndrd, Age_times):
 
         comments = g.db.query(Comment).options(lazyload('*'))
 
-        if v and v.hide_offensive:
-            comments = comments.filter_by(is_offensive=False)
+        comments = filter_comments(comments, v)
 			
         if v and v.hide_bot and not self.has_mod(v, "content"):
             comments = comments.filter_by(is_bot=False)

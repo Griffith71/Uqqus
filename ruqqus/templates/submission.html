@@ -96,7 +96,7 @@
 <div class="sidebar-section sidebar-guildmake">
   <div class="title"><i class="fas fa-info-circle mr-2"></i>About Guild</div>
   <div class="body">
-    {{ b.description_html | safe }}
+    {{ b.description_html_for(v) | safe }}
 
     <div class="text-small font-weight-bold text-muted text-uppercase mb-1" style="letter-spacing: 0.025rem;">Founded</div>
     <p>{{ b.created_date }}</p>
