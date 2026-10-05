@@ -59,17 +59,18 @@ or config between them.
 
 ## npm scripts
 
-| Script | When to run it |
-| --- | --- |
-| `npm run dev` | Local development server. |
-| `npm run build` | Production build; also what Playwright's `webServer` runs. |
-| `npm run start` | Serve a production build (after `build`). |
-| `npm run lint` | ESLint. Run before finishing any task. |
-| `npm run typecheck` | `tsc --noEmit`. Run before finishing any task. |
-| `npm run test` | Vitest unit/component tests. Run before finishing any task. |
-| `npm run test:e2e` | Playwright end-to-end tests (builds + serves the app first). |
-| `npm run db:migrate` | Create/apply a Prisma migration in dev (`prisma migrate dev`). |
-| `npm run db:studio` | Open Prisma Studio to inspect the database. |
+| Script               | When to run it                                                                   |
+| -------------------- | -------------------------------------------------------------------------------- |
+| `npm run dev`        | Local development server.                                                        |
+| `npm run build`      | Production build; also what Playwright's `webServer` runs.                       |
+| `npm run start`      | Serve a production build (after `build`).                                        |
+| `npm run check`      | Typecheck + lint + prettier check + test + build. Run before finishing any task. |
+| `npm run lint`       | ESLint. Run before finishing any task.                                           |
+| `npm run typecheck`  | `tsc --noEmit`. Run before finishing any task.                                   |
+| `npm run test`       | Vitest unit/component tests. Run before finishing any task.                      |
+| `npm run test:e2e`   | Playwright end-to-end tests (builds + serves the app first).                     |
+| `npm run db:migrate` | Create/apply a Prisma migration in dev (`prisma migrate dev`).                   |
+| `npm run db:studio`  | Open Prisma Studio to inspect the database.                                      |
 
 ## Rules
 
@@ -95,4 +96,3 @@ or config between them.
 4. Voting and ranking
 5. Moderation
 6. Search and notifications
-
