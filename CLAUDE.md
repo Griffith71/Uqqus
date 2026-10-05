@@ -24,6 +24,19 @@ Env vars: copy `.env.example` (legacy) and `web/.env.example` (web) to `.env`; n
 Ruff on the legacy app is errors-only (`pyproject.toml`); there is no Python type checker.
 The pre-commit hook (Husky) runs only staged-file checks: gitleaks, ruff, eslint, prettier, typecheck. CI runs the full suite.
 
+## Terminology (applies to both apps, UI text and code names)
+
+| Say | Never say |
+| --- | --- |
+| **post**: always created first on the author's own profile. You cannot post to a guild. | "post to/in a guild", "submit to a guild" |
+| **comment**: anything that is a reply, whether on a post or on another comment. | reply, replies, replied |
+| **forward** (forwarded, forwarding): sharing a post or comment with a guild. A forwarded comment becomes its own post in the guild. | promote, yank, crosspost, "share to guild" |
+| **repost**: putting someone's post or comment on your own profile (a different feature from forwarding). | |
+
+Guilds only ever receive forwards, so guild settings and errors talk about *forwarding* (e.g. "Restrict forwarding", "disallows bots from forwarding and commenting").
+External contracts keep their old names on purpose: the URL `/notifications/replies`, the JSON field `replies`, DB columns such as `restricted_posting` and `promoted_by_id` (Python attributes use the new names), the `/mod/kick/...` URLs, and legacy mod-log kinds (`yank_post`, `kick_post`).
+`tests/test_terminology.py` enforces this; extend its allowlist only for a real external contract.
+
 ## Rules
 
 - Run the check command before declaring any task done.

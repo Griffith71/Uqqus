@@ -88,6 +88,10 @@ or config between them.
   `npm run test` (and `npm run build` for anything touching routing/config),
   and fix anything that fails.
 
+## Terminology
+
+Follow the site vocabulary in the root `CLAUDE.md` ("Terminology"): posts are first posted on your own profile (never to a guild), anything that is a reply is a **comment**, and sharing with a guild is **forwarding**. Use these words in UI text, API names, Prisma models and routes.
+
 ## Roadmap
 
 1. Schema and auth (this phase — foundation only, no domain models yet)
