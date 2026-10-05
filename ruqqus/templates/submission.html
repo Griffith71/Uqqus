@@ -3,7 +3,7 @@
 {% set ups=p.upvotes_fuzzed %}
 {% set downs=p.downvotes_fuzzed %}
 {% set score=ups-downs %}
-{% set can_edit = v and v.id==p.author_id %}
+{% set can_edit = v and v.id==p.author_id and not v.is_banned %}
 {% set can_moderate = v and v.admin_level>=3 %}
 {% set can_pin = v and p.is_guildmaster('content') %}
 
@@ -615,21 +615,61 @@
           </div>
           {% endif %}
 
-          {% if v and v.id==p.author_id and not v.is_banned %}
+          {% if can_edit %}
+          {# Values come from the original post: a forwarded copy is edited through its original. #}
+          {% set edit_src = p.reposts if (p.is_forward_copy and p.reposts) else p %}
           <div id="edit-post-body-{{ p.base36id }}" class="d-none comment-write collapsed child">
-            <form id="post-edit-form-{{ p.base36id }}" action="/edit_post/{{ p.base36id }}" method="post" class="input-group">
+            <form id="post-edit-form-{{ p.base36id }}" action="/edit_post/{{ p.base36id }}" method="post" enctype="multipart/form-data" onsubmit="post_edit('{{ p.base36id }}'); return false;">
               <input type="hidden" name="formkey" value="{{ v.formkey }}">
-              <input type="hidden" name="current_page" value="{{ request.path }}">
-              <textarea name="body" id="post-edit-box-{{ p.base36id }}" form="post-edit-form-{{ p.base36id }}" class="comment-box form-control rounded" onkeydown="textAreaOnKeyDown(event, ()=>{document.getElementById('post-edit-form-{{ p.base36id }}').submit()})" aria-label="With textarea" placeholder="Add text to your post..." rows="3">{{ p.body }}</textarea> 
-              <div class="comment-format"> 
+              {% if p.is_forward_copy %}
+              <div class="text-small text-muted mb-2"><i class="fas fa-share fa-fw"></i>Editing updates this post everywhere it has been forwarded.</div>
+              {% elif p.forwards %}
+              <div class="text-small text-muted mb-2"><i class="fas fa-share fa-fw"></i>Editing also updates the copies of this post forwarded to guilds.</div>
+              {% endif %}
+
+              <label class="text-small font-weight-bold mb-1" for="post-edit-title-{{ p.base36id }}">Title</label>
+              <textarea name="title" id="post-edit-title-{{ p.base36id }}" class="form-control rounded mb-2" maxlength="280" rows="2" required>{{ edit_src.title | safe }}</textarea>
+
+              {% if edit_src.has_uploaded_image %}
+              <label class="text-small font-weight-bold mb-1">Image</label>
+              <div class="mb-2">
+                <div class="custom-control custom-checkbox">
+                  <input type="checkbox" class="custom-control-input" id="post-edit-remove-image-{{ p.base36id }}" name="remove_image" value="true">
+                  <label class="custom-control-label" for="post-edit-remove-image-{{ p.base36id }}">Remove the image</label>
+                </div>
+                {% if v.can_submit_image %}
+                <label class="text-small text-muted mt-2 mb-1" for="post-edit-file-{{ p.base36id }}">Or replace it with another image</label>
+                <input type="file" class="form-control-file" id="post-edit-file-{{ p.base36id }}" name="file" accept="image/*">
+                {% endif %}
+              </div>
+              {% else %}
+              <label class="text-small font-weight-bold mb-1" for="post-edit-url-{{ p.base36id }}">Link</label>
+              <input type="text" name="url" id="post-edit-url-{{ p.base36id }}" class="form-control rounded mb-2" maxlength="2048" placeholder="https://... (leave empty for no link)" value="{{ edit_src.url or '' }}">
+              {% if v.can_submit_image %}
+              <label class="text-small text-muted mb-1" for="post-edit-file-{{ p.base36id }}">Or upload an image instead of a link</label>
+              <input type="file" class="form-control-file mb-2" id="post-edit-file-{{ p.base36id }}" name="file" accept="image/*">
+              {% endif %}
+              {% endif %}
+
+              <label class="text-small font-weight-bold mb-1" for="post-edit-box-{{ p.base36id }}">Text</label>
+              <textarea name="body" id="post-edit-box-{{ p.base36id }}" class="comment-box form-control rounded" maxlength="25000" onkeydown="textAreaOnKeyDown(event, ()=>{post_edit('{{ p.base36id }}')})" aria-label="With textarea" placeholder="Add text to your post..." rows="3">{{ edit_src.body or '' }}</textarea>
+
+              <div class="custom-control custom-checkbox mt-2">
+                <input type="hidden" name="sensitive" value="">
+                <input type="checkbox" class="custom-control-input" id="post-edit-sensitive-{{ p.base36id }}" name="sensitive" value="true"{% if edit_src.is_sensitive %} checked{% endif %}>
+                <label class="custom-control-label" for="post-edit-sensitive-{{ p.base36id }}">Sensitive content</label>
+              </div>
+
+              <div id="post-edit-error-{{ p.base36id }}" class="text-danger text-small mt-2 d-none" role="alert"></div>
+
+              <div class="comment-format">
                 <small class="format pl-0"><i class="fas fa-bold" aria-hidden="true" onclick="makeBold('post-edit-box-{{ p.base36id }}')" data-toggle="tooltip" data-placement="bottom" title="Bold"></i></small> 
                 <small class="format"><i class="fas fa-italic" aria-hidden="true" onclick="makeItalics('post-edit-box-{{ p.base36id }}')" data-toggle="tooltip" data-placement="bottom" title="Italicize"></i></small> 
                 <small class="format"><i class="fas fa-quote-right" aria-hidden="true" onclick="makeQuote('post-edit-box-{{ p.base36id }}')" data-toggle="tooltip" data-placement="bottom" title="Quote"></i></small>
                 <small class="format"><span class="font-weight-bolder text-uppercase" onclick="getGif();commentForm('post-edit-box-{{ p.base36id }}')" aria-hidden="true" data-toggle="modal" data-target="#gifModal" data-toggle="tooltip" data-placement="bottom" data-delay='{"show":"700", "hide":"300"}' title="Add GIF">GIF</span></small> 
                 <small class="format"><i class="fas fa-smile-beam" onclick="commentForm('post-edit-box-{{p.base36id}}');loadEmojis()" aria-hidden="true" data-toggle="modal" data-target="#emojiModal" data-toggle="tooltip" data-placement="bottom"  title="Add EMOJI"></i></small>
-                <small class="format d-none"><i class="fas fa-link" aria-hidden="true"></i></small> 
-                <a href="javascript:void(0)" onclick="togglePostEdit('{{ p.base36id }}')" class="btn btn-link text-muted ml-auto cancel-form">Cancel</a> 
-                <button form="post-edit-form-{{ p.base36id }}" class="btn btn-primary ml-2">Save Edit</button>
+                <a href="javascript:void(0)" onclick="togglePostEdit('{{ p.base36id }}')" class="btn btn-link text-muted ml-auto cancel-form">Cancel</a>
+                <button type="submit" id="post-edit-save-{{ p.base36id }}" class="btn btn-primary ml-2">Save Edit</button>
               </div>
             </form>
           </div>

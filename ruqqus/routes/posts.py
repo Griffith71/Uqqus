@@ -22,6 +22,7 @@ from ruqqus.helpers.aws import *
 from ruqqus.helpers.alerts import send_notification
 from ruqqus.helpers.text import split_title_body
 from ruqqus.helpers.languages import detect_language
+from ruqqus.helpers.post_fields import clean_title, check_body, normalize_url, PostFieldError
 from ruqqus.classes import *
 from .front import frontlist
 from ruqqus.__main__ import app, limiter, cache, db_session
@@ -180,6 +181,19 @@ def submit_get(v):
                            )
 
 
+def _own_image_key(post):
+    """Storage key of the image this post uploaded to our bucket, or None
+    (no link, or a link to something hosted elsewhere)."""
+    bucket_root = f"https://{BUCKET}/"
+    if post.url and post.url.startswith(f"{bucket_root}post/{post.base36id}/"):
+        return post.url[len(bucket_root):]
+    return None
+
+
+def _edit_error(message, code=400):
+    return jsonify({"error": message}), code
+
+
 @app.route("/edit_post/<pid>", methods=["POST"])
 @app.patch("/api/v2/submissions/<pid>")
 @is_not_banned
@@ -188,13 +202,23 @@ def submit_get(v):
 @validate_formkey
 def edit_post(pid, v):
     """
-Edit your post text.
+Edit your post. Every field is optional - anything you leave out stays as
+it is. A post that has been forwarded to guilds is one post: editing it
+updates every forwarded copy, and editing from a forwarded copy edits the
+original.
 
 URL path parameters:
 * `pid` - The base 36 id of the post to edit
 
-Required form data:
-* `body` - The new raw comment text
+Optional form data:
+* `title` - The new title. 280 character limit.
+* `body` - The new raw text body. 25000 character limit.
+* `url` - The new link. Send it empty to remove the link.
+* `sensitive` - `true` to mark the post sensitive, empty to unmark it.
+* `remove_image` - `true` to remove the post's uploaded image.
+
+Optional file data:
+* `file` - An image to replace the post's link/image with.
 """
 
     p = get_post(pid)
@@ -208,31 +232,87 @@ Required form data:
     if p.board.has_ban(v):
         abort(403)
 
-    body = request.form.get("body", "")
-    body=preprocess(body)
-    with CustomRenderer() as renderer:
-        body_md = renderer.render(mistletoe.Document(body))
-    body_html = sanitize(body_md, linkgen=True)
+    # A forwarded copy has no content of its own: edit the original, which
+    # carries the change to every copy (including the one being looked at).
+    primary = p.reposts if (p.is_forward_copy and p.reposts) else p
+    if primary.author_id != v.id or primary.is_banned:
+        abort(403)
 
+    form = request.form
+    old_url = primary.url or ""
+    old_body = primary.body or ""
 
-    # Run safety filter
-    bans = filter_comment_html(body_html)
-    if bans:
-        ban = bans[0]
-        reason = f"Remove the {ban.domain} link from your post and try again."
-        if ban.reason:
-            reason += f" {ban.reason_text}"
-            
-        #auto ban for digitally malicious content
-        if any([x.reason==4 for x in bans]):
-            v.ban(days=30, reason="Digitally malicious content is not allowed.")
+    try:
+        title = clean_title(form["title"]) if "title" in form else primary.title
+        url = normalize_url(form["url"]) if "url" in form else old_url
+        body = preprocess(check_body(form["body"])) if "body" in form else old_body
+    except PostFieldError as e:
+        return _edit_error(str(e))
+
+    sensitive = any(form.getlist("sensitive")) if "sensitive" in form else bool(primary.is_sensitive)
+
+    # image: replace it with an upload, or remove it
+    old_image_key = _own_image_key(primary)
+    upload = request.files.get("file")
+    if not (upload and upload.filename):
+        upload = None
+
+    if upload:
+        if not v.can_submit_image:
             abort(403)
-            
-        return {"error": reason}, 403
+        if (request.content_length or 0) > 16 * 1024 * 1024 and not v.has_premium:
+            abort(413)
+        if not (upload.content_type or "").startswith("image/"):
+            return _edit_error("Image files only.")
+    elif form.get("remove_image") and old_image_key and url == old_url:
+        url = ""
+
+    body_changed = body != old_body
+    url_changed = bool(upload) or url != old_url
+
+    if body_changed:
+        with CustomRenderer() as renderer:
+            body_md = renderer.render(mistletoe.Document(body))
+        body_html = sanitize(body_md, linkgen=True)
+
+        # Run safety filter
+        bans = filter_comment_html(body_html)
+        if bans:
+            ban = bans[0]
+            reason = f"Remove the {ban.domain} link from your post and try again."
+            if ban.reason:
+                reason += f" {ban.reason_text}"
+
+            #auto ban for digitally malicious content
+            if any([x.reason==4 for x in bans]):
+                v.ban(days=30, reason="Digitally malicious content is not allowed.")
+                abort(403)
+
+            return _edit_error(reason, 403)
+    else:
+        body_html = primary.body_html
+
+    # the same link checks a new post gets
+    domain_obj = None
+    embed = None
+    if url_changed and url and not upload:
+        domain_obj = get_domain(urlparse(url).netloc)
+        if domain_obj and not domain_obj.can_submit:
+            reason = BAN_REASONS[domain_obj.reason] if 0 < (domain_obj.reason or 0) < len(BAN_REASONS) else ""
+            return _edit_error(reason or "Links to that site aren't allowed.", 403)
+        if domain_obj and domain_obj.embed_function:
+            try:
+                embed = eval(domain_obj.embed_function)(url)
+            except BaseException:
+                embed = None
 
     # check spam
-    soup = BeautifulSoup(body_html, features="html.parser")
-    links = [x['href'] for x in soup.find_all('a') if x.get('href')]
+    links = []
+    if body_changed:
+        soup = BeautifulSoup(body_html, features="html.parser")
+        links = [x['href'] for x in soup.find_all('a') if x.get('href')]
+    if url_changed and url and not upload:
+        links = [url] + links
 
     for link in links:
         parse_link = urlparse(link)
@@ -256,36 +336,121 @@ Required form data:
                 return redirect('/notifications')
             else:
 
-                return {"error": f"The link `{badlink.link}` is not allowed. Reason: {badlink.reason}"}
+                return _edit_error(f"The link `{badlink.link}` is not allowed. Reason: {badlink.reason}", 403)
 
+    unchanged = (title == primary.title and not body_changed and not url_changed
+                 and sensitive == bool(primary.is_sensitive))
 
-    now = int(time.time())
+    if not unchanged:
 
-    # edits within 90s of the post's own creation are treated as part of
-    # drafting the original, not a tracked edit - no history row, no
-    # edited_utc bump
-    if now - p.created_utc > 90:
-        g.db.add(ContentEditHistory(
-            actor_id=v.id,
-            target_submission_id=p.id,
-            board_id=p.board_id,
-            action="edit",
-            previous_body=p.body,
-            previous_body_html=p.body_html
-        ))
-        p.edited_utc = now
+        if upload:
+            image_name = f'post/{primary.base36id}/{secrets.token_urlsafe(8)}'
+            upload_file(image_name, upload)
+            url = f'https://{BUCKET}/{image_name}'
 
-    p.body = body
-    p.body_html = body_html
+        # offensive
+        is_offensive = False
+        for x in g.db.query(BadWord).all():
+            if (body and x.check(body)) or x.check(title):
+                is_offensive = True
+                break
 
-    # offensive
-    p.is_offensive = False
-    for x in g.db.query(BadWord).all():
-        if (p.body and x.check(p.body)) or x.check(p.title):
-            p.is_offensive = True
-            break
+        language_code = detect_language(title, body)
 
-    g.db.add(p)
+        now = int(time.time())
+
+        # edits within 90s of the post's own creation are treated as part of
+        # drafting the original, not a tracked edit - no history row, no
+        # edited_utc bump
+        tracked = now - primary.created_utc > 90
+
+        # the original plus every live forwarded copy; a copy in a guild
+        # that has since exiled the author is left as it was
+        rows = [primary] + [f for f in primary.forwards
+                            if not f.is_banned and not f.is_deleted and not f.board.has_ban(v)]
+
+        for row in rows:
+            if tracked:
+                g.db.add(ContentEditHistory(
+                    actor_id=v.id,
+                    target_submission_id=row.id,
+                    board_id=row.board_id,
+                    action="edit",
+                    previous_title=row.title,
+                    previous_url=(row.url or "")[:500] or None,
+                    previous_body=row.body,
+                    previous_body_html=row.body_html
+                ))
+                row.edited_utc = now
+
+            row.title = title
+            row.body = body
+            row.body_html = body_html
+
+            if url_changed:
+                aux = row.submission_aux
+                aux.url = url
+                # copies read the original's embed/preview (see
+                # Submission.embed_url), so only the original carries one
+                aux.embed_url = (embed or None) if row is primary else None
+                aux.embed_type = None
+                aux.meta_title = None
+                aux.meta_description = None
+                aux.preview_image_url = None
+                g.db.add(aux)
+                row.domain_ref = 1 if upload else (domain_obj.id if domain_obj else None)
+                row.is_image = bool(upload) and row is primary
+                row.has_thumb = False
+
+            row.is_offensive = is_offensive
+            row.language_code = language_code
+            # same rule as forwarding: a sensitive guild keeps its copy marked
+            row.is_sensitive = sensitive or (row is not primary and row.board.is_sensitive)
+            g.db.add(row)
+
+        # the image scan and the thumbnail/embed worker read from their own
+        # sessions, so the edit has to be committed before they start
+        g.db.commit()
+
+        if url_changed:
+            if old_image_key:
+                # the edit is already saved: a storage problem must not turn it
+                # into an error for the author (worst case the old file lingers)
+                try:
+                    delete_file(old_image_key)
+                except Exception as e:
+                    app.logger.warning(f"edit_post: could not delete replaced image {old_image_key}: {e}")
+
+            if upload:
+                row_ids = [row.id for row in rows]
+
+                def del_function():
+                    db = db_session()
+                    delete_file(image_name)
+                    for row_id in row_ids:
+                        banned = db.query(Submission).filter_by(id=row_id).first()
+                        if banned:
+                            banned.is_banned = True
+                            db.add(banned)
+                    db.add(ModAction(
+                        kind="ban_post",
+                        user_id=1,
+                        note="banned image",
+                        target_submission_id=row_ids[0]
+                    ))
+                    db.commit()
+                    db.close()
+
+                gevent.spawn(check_csam_url, url, v, del_function)
+
+            if url:
+                gevent.spawn(thumbnail_thread, primary.base36id)
+
+        cache.delete_memoized(frontlist)
+
+    # the edit form saves in the background and then loads this address
+    if request.headers.get("X-Requested-With") == "XMLHttpRequest":
+        return jsonify({"redirect": p.permalink})
 
     return redirect(p.permalink)
 

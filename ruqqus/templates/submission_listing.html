@@ -12,7 +12,7 @@
 {% set saved=false %}
 {% endif %}
 
-{% set can_edit = v and v.id==p.author_id %}
+{% set can_edit = v and v.id==p.author_id and not v.is_banned %}
 {% set can_moderate = v and v.admin_level>=3 %}
 {% set can_pin = v and p.is_guildmaster('content') %}
 
@@ -217,7 +217,7 @@
                 {% endif %}
 
                 {% if can_edit %}
-                <a class="dropdown-item" href="javascript:void(0)" onclick="togglePostEdit('{{ p.base36id }}')"><i class="fas fa-edit fa-fw"></i>Edit</a>
+                <a class="dropdown-item" href="{{ p.permalink }}#edit"><i class="fas fa-edit fa-fw"></i>Edit</a>
                 {% if p.deleted_utc == 0 %}
                 <a class="dropdown-item" href="javascript:void(0)" data-toggle="modal" data-target="#deletePostModal" onclick="delete_postModal('{{ p.base36id }}')"><i class="fas fa-trash-alt fa-fw"></i>{{ "Remove from +"+p.board.name if p.is_repost else "Delete" }}</a>
                 {% endif %}
@@ -349,6 +349,10 @@
           {% endif %}
           {% if (v.id != p.author_id or p.is_repost or p.is_comment_forward) and not p.author.is_deleted %}
           <button class="btn btn-link btn-block btn-lg text-left text-muted" data-toggle="modal" data-dismiss="modal" data-target="#reportPostModal" onclick="report_postModal('{{ p.base36id }}','{{ p.author.username }}','{{ p.board.name }}')"><i class="far fa-flag fa-fw text-center text-muted mr-3"></i>Flag</button>
+          {% endif %}
+
+          {% if can_edit %}
+          <a class="btn btn-link btn-block btn-lg text-left text-muted" href="{{ p.permalink }}#edit"><i class="far fa-edit fa-fw text-center text-muted mr-3"></i>Edit</a>
           {% endif %}
 
           {% if can_edit and p.deleted_utc == 0 %}

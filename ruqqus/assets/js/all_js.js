@@ -623,29 +623,94 @@ $('.comment-box').blur(function () {
 // Comment edit form
 
 toggleEdit=function(id){
-  comment=document.getElementById("comment-text-"+id);
-  form=document.getElementById("comment-edit-"+id);
-  box=document.getElementById('edit-box-comment-'+id);
-  actions = document.getElementById('comment-' + id +'-actions');
+  var comment=document.getElementById("comment-text-"+id);
+  var form=document.getElementById("comment-edit-"+id);
+  var box=document.getElementById('comment-edit-body-'+id);
+  var actions = document.getElementById('comment-' + id +'-actions');
+
+  // no editor on this page for this comment: leave the comment visible
+  if (!comment || !form) return;
 
   comment.classList.toggle("d-none");
   form.classList.toggle("d-none");
-  actions.classList.toggle("d-none");
-  autoExpand(box);
+  if (actions) actions.classList.toggle("d-none");
+  if (box) autoExpand(box);
 };
 
 // Post edit form
 
 togglePostEdit=function(id){
 
-  body=document.getElementById("post-body");
-  form=document.getElementById("edit-post-body-"+id);
-  box=document.getElementById("post-edit-box-"+id);
+  var body=document.getElementById("post-body");
+  var form=document.getElementById("edit-post-body-"+id);
+  var box=document.getElementById("post-edit-box-"+id);
+
+  // the editor only exists on the post's own page
+  if (!body || !form) return;
 
   body.classList.toggle("d-none");
   form.classList.toggle("d-none");
-  autoExpand(box);
+  if (box) autoExpand(box);
 };
+
+// Save the post editor (title, link, image, text, sensitive) in the
+// background, so a rejected edit shows its reason in the form instead of
+// replacing the page.
+post_edit=function(id){
+
+  var formEl=document.getElementById('post-edit-form-'+id);
+  var errorBox=document.getElementById('post-edit-error-'+id);
+  var saveButton=document.getElementById('post-edit-save-'+id);
+  if (!formEl || (saveButton && saveButton.disabled)) return;
+
+  var showError=function(message){
+    if (errorBox) {
+      errorBox.textContent=message;
+      errorBox.classList.remove('d-none');
+    }
+    if (saveButton) saveButton.disabled=false;
+  };
+
+  if (errorBox) errorBox.classList.add('d-none');
+  if (saveButton) saveButton.disabled=true;
+
+  var xhr = new XMLHttpRequest();
+  xhr.open("post", formEl.getAttribute('action'));
+  xhr.withCredentials=true;
+  xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+  xhr.onload=function(){
+    var data={};
+    try { data=JSON.parse(xhr.response); } catch (e) {}
+    if (xhr.status>=200 && xhr.status<300 && data.redirect) {
+      // same page (e.g. arrived via "#edit"): drop the hash and reload,
+      // since navigating to the same address wouldn't refresh it
+      if (new URL(data.redirect, window.location.origin).pathname===window.location.pathname) {
+        history.replaceState(null, '', data.redirect);
+        window.location.reload();
+      } else {
+        window.location.href=data.redirect;
+      }
+    }
+    else if (xhr.status>=200 && xhr.status<300) {
+      window.location.reload();
+    }
+    else {
+      showError(data.error || "Your edit couldn't be saved. Please try again.");
+    }
+  };
+  xhr.onerror=function(){ showError("Your edit couldn't be saved. Please check your connection and try again."); };
+  xhr.send(new FormData(formEl));
+};
+
+// Listings link to "<post>#edit": open the editor on arrival.
+window.addEventListener('load', function () {
+  if (window.location.hash !== '#edit') return;
+  var form = document.querySelector('[id^="edit-post-body-"]');
+  if (form && form.classList.contains('d-none')) {
+    togglePostEdit(form.id.replace('edit-post-body-', ''));
+    form.scrollIntoView({block: 'center'});
+  }
+});
 
 //comment modding
 function removeComment(post_id) {
@@ -2573,8 +2638,8 @@ post_comment=function(fullname){
   xhr.withCredentials=true;
   xhr.onload=function(){
     if (xhr.status==200) {
-      commentForm=document.getElementById('comment-form-space-'+fullname);
-      commentForm.innerHTML=JSON.parse(xhr.response)["html"];
+      var formSpace=document.getElementById('comment-form-space-'+fullname);
+      formSpace.innerHTML=JSON.parse(xhr.response)["html"];
       $('#toast-comment-success').toast('dispose');
       $('#toast-comment-error').toast('dispose');
       $('#toast-comment-success').toast('show');
@@ -2680,8 +2745,8 @@ comment_edit=function(id){
   xhr.withCredentials=true;
   xhr.onload=function(){
     if (xhr.status==200) {
-      commentForm=document.getElementById('comment-text-'+id);
-      commentForm.innerHTML=JSON.parse(xhr.response)["html"];
+      var commentText=document.getElementById('comment-text-'+id);
+      commentText.innerHTML=JSON.parse(xhr.response)["html"];
       document.getElementById('cancel-edit-'+id).click()
       $('#toast-comment-success').toast('dispose');
       $('#toast-comment-error').toast('dispose');

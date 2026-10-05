@@ -43,11 +43,14 @@
     <div class="text-danger text-small mb-2">Reason: {{ entry.reason }}</div>
     {% endif %}
 
-    {% if entry.previous_body_html or entry.previous_title %}
+    {% if entry.previous_body_html or entry.previous_title or entry.previous_url %}
     <div class="text-muted text-small mb-1">Content immediately before this action:</div>
     <div class="border rounded p-2">
       {% if target_type == "post" and entry.previous_title %}
       <div class="font-weight-bold mb-1">{{ entry.previous_title }}</div>
+      {% endif %}
+      {% if target_type == "post" and entry.previous_url %}
+      <div class="text-small mb-1">Link: <span class="text-break">{{ entry.previous_url }}</span></div>
       {% endif %}
       {% if entry.previous_body_html %}
       <div>{{ entry.previous_body_html | safe }}</div>

@@ -600,7 +600,9 @@ class Submission(Base, Stndrd, Age_times, Scores, Fuzzing):
 
     @property
     def embed_url(self):
-        return self.submission_aux.embed_url
+        # a forwarded copy shows the original's embed (the embed is detected
+        # in the background for the original only, and changes with its link)
+        return self.submission_aux.embed_url or (self.reposts.embed_url if self.is_repost and self.reposts else None)
 
     @embed_url.setter
     def embed_url(self, x):
@@ -703,6 +705,8 @@ class Submission(Base, Stndrd, Age_times, Scores, Fuzzing):
         """
         if self.submission_aux.embed_type:
             return self.submission_aux.embed_type
+        if self.is_repost and self.reposts and not self.submission_aux.embed_url:
+            return self.reposts.embed_kind
         if self.domain_obj and self.domain_obj.embed_template in ("youtube", "bitchute", "rumble_embed"):
             return "iframe"
         return None
@@ -749,6 +753,13 @@ class Submission(Base, Stndrd, Age_times, Scores, Fuzzing):
     @property
     def is_exiled_for(self):
         return self.__dict__.get('_is_exiled_for', None)
+
+    @property
+    def has_uploaded_image(self):
+        """True when the post's link is an image uploaded to our own bucket
+        (it can be replaced or removed), not a link to somewhere else."""
+        bucket = app.config.get("S3_BUCKET", "i.ruqqus.com")
+        return bool(self.url) and self.url.startswith(f"https://{bucket}/post/")
 
     @property
     def is_image(self):

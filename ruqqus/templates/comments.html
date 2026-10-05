@@ -223,7 +223,7 @@
       <div id="comment-edit-{{ c.base36id }}" class="d-none comment-write collapsed child">
        <form id="comment-edit-form-{{ c.base36id }}" action="/edit_comment/{{ c.base36id }}" method="post" class="input-group">
         <input type="hidden" name="formkey" value="{{ v.formkey }}">
-        <textarea id="comment-edit-body-{{ c.base36id }}" name="body" form="comment-edit-form-{{ c.base36id }}" class="comment-box form-control rounded" id="edit-box-comment-{{ c.base36id }}" onkeydown="textAreaOnKeyDown(event, (id = '{{ c.base36id }}') => comment_edit(id))" aria-label="With textarea" placeholder="Add your comment..." rows="3">{{ c.body }}</textarea> 
+        <textarea id="comment-edit-body-{{ c.base36id }}" name="body" form="comment-edit-form-{{ c.base36id }}" class="comment-box form-control rounded" onkeydown="textAreaOnKeyDown(event, (id = '{{ c.base36id }}') => comment_edit(id))" aria-label="With textarea" placeholder="Add your comment..." rows="3">{{ c.body }}</textarea> 
         <div class="comment-format"> 
          <small class="format pl-0"><i class="fas fa-bold" aria-hidden="true" onclick="makeBold('comment-edit-body-{{ c.base36id }}')" data-toggle="tooltip" data-placement="bottom" title="Bold"></i></small> 
          <small class="format"><i class="fas fa-italic" aria-hidden="true" onclick="makeItalics('comment-edit-body-{{ c.base36id }}')" data-toggle="tooltip" data-placement="bottom" title="Italicize"></i></small> 
@@ -331,7 +331,9 @@
               <a class="dropdown-item" href="/comment/{{ c.base36id }}/history"><i class="fas fa-history fa-fw"></i>History</a>
 
               {% if can_edit %}
+              {% if standalone or is_allowed_to_comment %}{# same condition as the editor itself #}
               <a class="dropdown-item" href="javascript:void(0)" onclick="toggleEdit('{{ c.base36id }}')"><i class="fas fa-edit fa-fw"></i>Edit</a>
+              {% endif %}
               {% if c.deleted_utc == 0 %}
               <a class="dropdown-item" href="javascript:void(0)" data-toggle="modal" data-target="#deleteCommentModal" onclick="delete_commentModal('{{ c.base36id }}')"><i class="fas fa-trash-alt fa-fw"></i>Delete</a>
               {% endif %}
@@ -544,7 +546,9 @@
           {% endif %}
 
           {% if can_edit %}
+          {% if standalone or is_allowed_to_comment %}
           <li class="list-group-item"><a href="javascript:void(0)" data-dismiss="modal" onclick="toggleEdit('{{ c.base36id }}')" class="d-block"><i class="fas fa-edit"></i>Edit</a></li>
+          {% endif %}
           {% if c.deleted_utc == 0 %}
           <li class="list-group-item"><a class="d-block" href="javascript:void(0)" data-toggle="modal" data-target="#deleteCommentModal" onclick="delete_commentModal('{{ c.base36id }}')"><i class="fas fa-trash-alt"></i>Delete</a></li>
           {% endif %}
