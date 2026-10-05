@@ -64,7 +64,9 @@ function renderActiveThread() {
     if (last) {
       state.client.sendReadReceipt(last, ReceiptType.Read).catch(() => {});
     }
-    markRead(boot.formkey, conversation.conversation_id).catch(() => {});
+    markRead(boot.formkey, conversation.conversation_id)
+      .then(() => window.refreshChatBadge?.()) // navbar chat badge (assets/js/chat_badge.js)
+      .catch(() => {});
   }
 }
 
@@ -144,6 +146,7 @@ async function refreshLists() {
 
   setTabBadge(document.getElementById("chat-inbox-badge"), inbox.filter((c) => c.unread_count > 0).length);
   setTabBadge(document.getElementById("chat-requests-badge"), request.length);
+  window.refreshChatBadge?.();
 
   setTab(state.tab);
 }
