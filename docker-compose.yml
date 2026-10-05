@@ -7,7 +7,7 @@ services:
       - REDIS_URL=redis://redis
       - DATABASE_URL=postgresql://postgres@postgres:5432/postgres
       - DATABASE_CONNECTION_POOL_URL=postgresql://postgres@postgres:5432/postgres
-      - MASTER_KEY=${MASTER_KEY:-KTVciAUQFpFh2WdJ/oiHJlxl6FvzRZp8kYzAAv3l2OA=}
+      - MASTER_KEY=${MASTER_KEY:?run python scripts/gen_dev_env.py}
       - SESSION_COOKIE_SECURE=false
       - FLASK_DEBUG=1
       - FLASK_ENV=development
@@ -26,8 +26,8 @@ services:
       - MATRIX_INTERNAL_URL=${MATRIX_INTERNAL_URL:-http://synapse:8008}
       - MATRIX_PUBLIC_URL=${MATRIX_PUBLIC_URL:-http://localhost:8008}
       - MATRIX_SERVER_NAME=${MATRIX_SERVER_NAME:-ruqqus.local}
-      - MATRIX_AS_TOKEN=${MATRIX_AS_TOKEN:-2d8d208dcdf2251e95bf57897e56c44470440c3c036b8b252da4b5cbe98895b3}
-      - MATRIX_HS_TOKEN=${MATRIX_HS_TOKEN:-62a0da2386561349c2dacd4a27e2b07bb85f41fe6e91a24f92d0cbc3a06e14d3}
+      - MATRIX_AS_TOKEN=${MATRIX_AS_TOKEN:?run python scripts/gen_dev_env.py}
+      - MATRIX_HS_TOKEN=${MATRIX_HS_TOKEN:?run python scripts/gen_dev_env.py}
       - MATRIX_USER_PREFIX=${MATRIX_USER_PREFIX:-ruqqus_}
     links:
       - "redis"

@@ -6,11 +6,15 @@
 # (PUT /matrix/appservice/_matrix/app/v1/transactions/<txn_id> in
 # ruqqus/routes/chat.py) - both tokens must match the MATRIX_AS_TOKEN /
 # MATRIX_HS_TOKEN values set on the ruqqus service in docker-compose.yml.
+#
+# THIS IS A TEMPLATE. Do not put real tokens here (they would land in git).
+# `python scripts/gen_dev_env.py` writes untracked .env and renders the real
+# synapse/ruqqus-appservice.yaml from this file.
 
 id: ruqqus_chat
 url: "http://ruqqus/matrix/appservice"
-as_token: "2d8d208dcdf2251e95bf57897e56c44470440c3c036b8b252da4b5cbe98895b3"
-hs_token: "62a0da2386561349c2dacd4a27e2b07bb85f41fe6e91a24f92d0cbc3a06e14d3"
+as_token: "__MATRIX_AS_TOKEN__"
+hs_token: "__MATRIX_HS_TOKEN__"
 sender_localpart: ruqqus_bot
 rate_limited: false
 
