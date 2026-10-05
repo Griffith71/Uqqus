@@ -1,9 +1,9 @@
-<!-- Forward (Promote) Comment Modal -->
+<!-- Forward Comment Modal -->
 <div class="modal fade" id="forwardCommentModal" tabindex="-1" role="dialog" aria-labelledby="forwardCommentModalTitle" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">Promote this reply</h5>
+        <h5 class="modal-title">Forward this comment</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true"><i class="far fa-times"></i></span>
         </button>
@@ -11,21 +11,21 @@
       <div id="forwardCommentFormBefore">
         <form id="forward-comment-form" method="post">
           <div class="modal-body">
-            <div class="h6">Promote to a guild as a new post</div>
-            <small class="form-text text-muted">This creates a new, independent post in that guild with its own votes and replies. The title is generated from your reply's text. A link back to your original reply will be shown on the new post.</small>
+            <div class="h6">Forward to a guild as a new post</div>
+            <small class="form-text text-muted">This creates a new, independent post in that guild with its own votes and comments. The title is generated from the comment's text. A link back to the original comment will be shown on the new post.</small>
             <input type="hidden" name="formkey" value="{{ v.formkey }}">
             <input class="form-control mt-3" id="promote-guild-name" type="text" placeholder="Guild name (without +)" onkeydown="if(event.key==='Enter'){event.preventDefault();document.getElementById('forwardCommentButton').click();}">
           </div>
           <div id="forwardCommentError" class="text-danger px-3 pb-2 d-none small"></div>
           <div class="modal-footer">
             <button type="button" class="btn btn-link text-muted" data-dismiss="modal">Cancel</button>
-            <button type="button" id="forwardCommentButton" class="btn btn-primary">Promote</button>
+            <button type="button" id="forwardCommentButton" class="btn btn-primary">Forward</button>
           </div>
         </form>
       </div>
       <div class="d-none" id="forwardCommentFormAfter">
         <div class="modal-body">
-          <div class="h6">Promoted!</div>
+          <div class="h6">Forwarded!</div>
           <small class="form-text text-muted">Reloading...</small>
         </div>
       </div>

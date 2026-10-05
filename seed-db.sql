@@ -318,8 +318,8 @@ INSERT INTO public.boards
      stored_subscriber_count, all_opt_out, is_siegable, is_locked_category)
 VALUES
     (1, 'general',
-     'All topics. Content posted here may be yanked to other guilds.',
-     '<p>All topics. Content posted here may be yanked to other guilds.</p>',
+     'All topics. Posts and comments forwarded here from members'' profiles.',
+     '<p>All topics. Posts and comments forwarded here from members'' profiles.</p>',
      EXTRACT(EPOCH FROM now())::int, NULL,
      false, false, false, false, false, '805ad5',
      false, false, false, 0, 0, false, 0, 0, 1, false, true, false),

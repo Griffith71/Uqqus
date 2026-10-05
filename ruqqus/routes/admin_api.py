@@ -300,7 +300,7 @@ Permanently erase a comment's body text.
 Unlike ban (which keeps the content intact for admin review) or an
 author's own delete (which anonymizes the author but keeps the content
 visible), this is irreversible - the original text is not recoverable.
-The row, its id, its votes, and any replies to it all stay intact so
+The row, its id, its votes, and any comments to it all stay intact so
 nothing that references it breaks; only the text itself is gone.
 """
 
@@ -453,8 +453,8 @@ Required form data:
 def admin_obliterate_comment(cid, v):
     """
 Permanently and structurally destroy a single comment's body text. Does
-NOT cascade to its own replies (same scoping purge_comment already
-uses) - child replies are independently authored content.
+NOT cascade to its own comments (same scoping purge_comment already
+uses) - child comments are independently authored content.
 
 Required form data:
 * `reason_category` - "illegal_content" | "legal_takedown" | "other"

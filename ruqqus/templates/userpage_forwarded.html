@@ -10,7 +10,7 @@
           <a class="nav-link" href="/@{{ u.username}}">Posts</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="/@{{ u.username}}/comments">Replies</a>
+          <a class="nav-link" href="/@{{ u.username}}/comments">Comments</a>
         </li>
         <li class="nav-item">
           <a class="nav-link active" href="/@{{ u.username}}/forwarded">Forwarded</a>
@@ -36,7 +36,7 @@
       </span>
       {% if v and v.id == u.id %}
       <h2 class="h5">You haven't forwarded anything yet</h2>
-      <p class="text-muted mb-md-5">Posts you forward to a guild, and replies you promote into a new post, will show here.</p>
+      <p class="text-muted mb-md-5">Posts you forward to a guild, and comments you forward into a new post, will show here.</p>
       {% else %}
       <h2 class="h5">@{{ u.username }} hasn't forwarded anything yet</h2>
       <p class="text-muted">Their forwarding activity will show here.</p>

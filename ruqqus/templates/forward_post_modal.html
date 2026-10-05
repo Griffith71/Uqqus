@@ -12,7 +12,7 @@
         <form id="forward-post-form" method="post">
           <div class="modal-body">
             <div class="h6">Forward to a guild for community discussion</div>
-            <small class="form-text text-muted">This creates an independent copy of the post with its own votes and replies in that guild. You can forward to any guild you moderate, or - if this is your own post - to any guild at all.</small>
+            <small class="form-text text-muted">This creates an independent copy of the post with its own votes and comments in that guild. You can forward to any guild that accepts forwards from you.</small>
             <input type="hidden" name="formkey" value="{{ v.formkey }}">
             <input class="form-control mt-3" id="forward-guild-name" type="text" placeholder="Guild name (without +)" onkeydown="if(event.key==='Enter'){event.preventDefault();document.getElementById('forwardPostButton').click();}">
           </div>

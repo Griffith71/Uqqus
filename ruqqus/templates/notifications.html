@@ -38,7 +38,7 @@
       </li>
       <li class="nav-item">
         <a class="nav-link py-3{% if request.path=='/notifications/replies' %} active{% endif %}" href="/notifications/replies">
-          Replies{% if v.replies_count %} <span class="text-purple font-weight-bold">{{ v.replies_count }}</span>{% endif %}
+          Comments{% if v.replies_count %} <span class="text-purple font-weight-bold">{{ v.replies_count }}</span>{% endif %}
         </a>
       </li>
       <li class="nav-item">
@@ -74,7 +74,7 @@
     </span>
 
     <div class="h5">No unread messages</div>
-    <div class="text-small text-muted mb-3">When you receive new posts, replies, or mentions, they will show up here.</div>
+    <div class="text-small text-muted mb-3">When you receive new posts, comments, or mentions, they will show up here.</div>
     <a href="/notifications/all" class="btn btn-outline-primary">View all</a>
   </div>
 

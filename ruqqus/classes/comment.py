@@ -209,7 +209,7 @@ class Comment(Base, Age_times, Scores, Stndrd, Fuzzing):
 
     @property
     def promoted_posts(self):
-        """Independent posts created by promoting this reply (see
+        """Independent posts created by forwarding this comment (see
         CommentForwardRelationship), one per guild it's been promoted to."""
         from .board_relationships import CommentForwardRelationship
         rels = g.db.query(CommentForwardRelationship).filter_by(
@@ -279,7 +279,7 @@ class Comment(Base, Age_times, Scores, Stndrd, Fuzzing):
         elif self.board.has_contributor(v):
             return f"you are an approved contributor in +{self.board.name}."
         elif self.parent.author_id == v.id:
-            return "this is a reply to your content."
+            return "this is a comment on your content."
         elif v.admin_level >= 4:
             return "you are a Ruqqus admin."
 
@@ -572,7 +572,7 @@ class Comment(Base, Age_times, Scores, Stndrd, Fuzzing):
         if self.author_id==1:
             return 1 
         
-        #reply
+        #comment
         if g.v and self.parent.author_id==g.v.id:
             return 2
         
@@ -627,7 +627,7 @@ class CommentSaveRelationship(Base, Stndrd):
 class CommentRepostRelationship(Base, Stndrd):
     """Comment analog of Submission's RepostRelationship - Twitter-retweet
     style pointer, no independent copy. Lets a reposted comment appear
-    on the reposter's Replies tab (with an inline "Repost" tag next to its
+    on the reposter's Comments tab (with an inline "Repost" tag next to its
     normal "by <author>" byline), ordered by repost time, and be
     un-reposted."""
 

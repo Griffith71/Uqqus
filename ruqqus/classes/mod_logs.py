@@ -342,16 +342,16 @@ ACTIONTYPES={
         "title": 'un-marked post {self.target_post.title} as sensitive content'
     },
     "set_sensitive_comment":{
-        "str":'marked reply {self.target_link} as sensitive content',
+        "str":'marked comment {self.target_link} as sensitive content',
         "icon":"fa-eye-slash",
         "color": "bg-warning",
-        "title": 'marked a reply as sensitive content'
+        "title": 'marked a comment as sensitive content'
     },
     "unset_sensitive_comment":{
-        "str":'un-marked reply {self.target_link} as sensitive content',
+        "str":'un-marked comment {self.target_link} as sensitive content',
         "icon":"fa-eye-slash",
         "color": "bg-muted",
-        "title": 'un-marked a reply as sensitive content'
+        "title": 'un-marked a comment as sensitive content'
     },
     "ban_post":{
         "str": 'removed post {self.target_link}',

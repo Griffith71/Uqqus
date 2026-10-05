@@ -10,12 +10,12 @@
 <div class="col px-md-4 py-4">
 
   <h1 class="h4 mb-3">
-    History of this {{ "post" if target_type=="post" else "reply" }}
+    History of this {{ "post" if target_type=="post" else "comment" }}
     <a href="{{ target.permalink }}" class="text-small font-weight-normal">(view current)</a>
   </h1>
 
   {% if not entries and not obliteration %}
-  <p class="text-muted">No edits or removals recorded for this {{ "post" if target_type=="post" else "reply" }} yet.</p>
+  <p class="text-muted">No edits or removals recorded for this {{ "post" if target_type=="post" else "comment" }} yet.</p>
   {% endif %}
 
   {% for entry in entries %}

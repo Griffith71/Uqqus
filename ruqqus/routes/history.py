@@ -34,7 +34,7 @@ def _mixed_listing(v, post_ids, comment_ids, post_times, comment_times, page):
 @auth_required
 @api("read")
 def history_bookmarked(v):
-    """The Bookmarked tab of the History page - posts and replies you've
+    """The Bookmarked tab of the History page - posts and comments you've
     saved, with the same All/Posts/Comments filter as Upvoted/Downvoted."""
 
     page = int(request.args.get("page", 1))

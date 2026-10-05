@@ -297,7 +297,7 @@ Optional query parameters:
 @api("read")
 def u_username_forwarded(username, v=None):
     """
-Get posts another user has forwarded to a guild, or replies they've
+Get posts another user has forwarded to a guild, or comments they've
 promoted into a new post - as the actor, regardless of who authored the
 original content.
 

@@ -336,8 +336,8 @@ if first or envs["DATABASE_URL"]!=environ.get("DATABASE_URL"):
     general_guild=Board(
         id=1,
         name="general",
-        description="All topics. Content posted here may be yanked to other guilds.",
-        description_html="<p>All topics. Content posted here may be yanked to other guilds.</p>",
+        description="All topics. Posts and comments forwarded here from members' profiles.",
+        description_html="<p>All topics. Posts and comments forwarded here from members' profiles.</p>",
         created_utc=int(time.time()),
         creator_id=1
         )

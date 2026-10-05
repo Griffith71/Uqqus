@@ -24,7 +24,7 @@ Ruqqus is an open-source platform for independent internet communities.
 
 ## Why Ruqqus?
 
-A moderator has the power to "kick" a user-submitted post from their community (guild) but never delete it off the platform entirely. Kicked posts end up in a catch-all guild called [+general](https://ruqqus.com/+general). Content that violates the [site-wide policy](https://ruqqus.com/help/terms) is removed by the core team.
+Every post is first posted on its author's own profile. Authors (and anyone else) can then forward a post or comment into a community (guild) for discussion there. A moderator can hide forwarded content from their guild, but never delete it off the platform entirely - it stays on the author's profile. Content that violates the [site-wide policy](https://ruqqus.com/help/terms) is removed by the core team.
 
 Moderators, called guild masters, can only moderate a maximum of 10 guilds.
 

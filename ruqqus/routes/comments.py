@@ -265,7 +265,7 @@ def api_comment(v):
 Create a comment
 
 Required form data:
-* `parent_fullname` - The fullname of the post or comment that is being replied to
+* `parent_fullname` - The fullname of the post or comment that is being commented on
 * `body` - Raw comment text
 
 Optional file data:
@@ -342,12 +342,12 @@ Optional file data:
 
     if parent.is_blocking and not v.admin_level>=3 and not parent.board.has_mod(v, "content"):
         return jsonify(
-            {"error": "You can't reply to users that you're blocking."}
+            {"error": "You can't comment on content from users that you're blocking."}
             ), 403
 
     if parent.is_blocked and not v.admin_level>=3 and not parent.board.has_mod(v, "content"):
         return jsonify(
-            {"error": "You can't reply to users that are blocking you."}
+            {"error": "You can't comment on content from users that are blocking you."}
             ), 403
 
     # check for archive and ban state
@@ -813,7 +813,7 @@ def save_comment(cid, v):
         except:
             abort(422)
 
-    return jsonify({"message": "Reply bookmarked."})
+    return jsonify({"message": "Comment bookmarked."})
 
 
 @app.route("/unsave_comment/<cid>", methods=["POST"])
@@ -837,7 +837,7 @@ def unsave_comment(cid, v):
 @validate_formkey
 def toggle_comment_sensitive(cid, v):
     """
-Toggle "Sensitive Content" status on a reply - an author-discretionary
+Toggle "Sensitive Content" status on a comment - an author-discretionary
 blur-until-clicked flag for material that isn't a rule violation but
 could be upsetting.
 
@@ -876,17 +876,17 @@ URL path parameters:
 @throttle_check
 @validate_formkey
 def repost_comment(cid, v):
-    """Repost a reply to your own profile, Twitter-retweet style - your
-    own replies included, same as retweeting your own tweet to resurface
+    """Repost a comment to your own profile, Twitter-retweet style - your
+    own comments included, same as retweeting your own tweet to resurface
     it. This creates no independent copy - votes/thread/authorship all
     stay on the shared original comment; this just records that it should
     also appear (with an inline "Repost" tag next to its byline) on the
-    reposter's Replies tab."""
+    reposter's Comments tab."""
 
     comment = get_comment(cid)
 
     if comment.is_banned or comment.deleted_utc or comment.purged_utc:
-        return {"error": "This reply can't be reposted."}, 400
+        return {"error": "This comment can't be reposted."}, 400
 
     existing = g.db.query(CommentRepostRelationship).filter_by(
         user_id=v.id, comment_id=comment.id).first()
@@ -928,20 +928,20 @@ def unrepost_comment(cid, v):
 @throttle_check
 @validate_formkey
 def forward_comment(cid, v):
-    """Promote a reply's text into a brand-new, independent post in a
+    """Forward a comment's text into a brand-new, independent post in a
     guild (its own votes/comment thread), quote-tweet style - usable by
-    anyone logged in, whether or not they authored the reply. The new
-    post's author stays the reply's original author (they keep delete
+    anyone logged in, whether or not they authored the comment. The new
+    post's author stays the comment's original author (they keep delete
     rights); the target guild's own posting rules are checked against the
     person doing the promoting, same as forwarding a post.
 
     URL path parameters:
-    * `cid` - The base 36 id of the reply to promote
+    * `cid` - The base 36 id of the comment to forward
 
     Required form data:
     * `board` - Name of the guild to promote into
 
-    The new post's title is generated automatically from the reply's own
+    The new post's title is generated automatically from the comment's own
     text - there is no user-editable title for a promoted post.
     """
     from .posts import create_forward_post_from_comment
@@ -949,7 +949,7 @@ def forward_comment(cid, v):
     comment = get_comment(cid)
 
     if comment.is_banned or comment.deleted_utc or comment.purged_utc:
-        return {"error": "This reply can't be promoted."}, 400
+        return {"error": "This comment can't be forwarded."}, 400
 
     target = get_guild(request.form.get("board", ""), graceful=True)
     if not target or target.name.lower() == PROFILE_BOARD_NAME:
@@ -967,7 +967,7 @@ def forward_comment(cid, v):
     already = g.db.query(CommentForwardRelationship).filter_by(
         comment_id=comment.id, board_id=target.id).first()
     if already:
-        return {"error": f"Already promoted to +{target.name}."}, 409
+        return {"error": f"Already forwarded to +{target.name}."}, 409
 
     new_post = create_forward_post_from_comment(comment, target, v)
     g.db.commit()
@@ -1063,7 +1063,7 @@ URL path parameters:
 @validate_formkey
 def mod_hide_comment(guildname, cid, board, v):
     """
-Hide a reply from your guild for breaking its rules. The reply itself is
+Hide a comment from your guild for breaking its rules. The comment itself is
 untouched - it stays visible wherever else its parent post is forwarded;
 only your guild's view of it is hidden here, replaced with a notice
 showing your reason. Reversible via /mod/unhide_comment.
@@ -1073,7 +1073,7 @@ URL path parameters:
 * `cid` - The base 36 comment id
 
 Required form data:
-* `reason` - Why this reply breaks +guildname's rules
+* `reason` - Why this comment breaks +guildname's rules
 """
 
     comment = get_comment(cid, v=v)
@@ -1129,7 +1129,7 @@ Required form data:
 @validate_formkey
 def mod_unhide_comment(guildname, cid, board, v):
     """
-Un-hide a reply that was previously hidden from your guild.
+Un-hide a comment that was previously hidden from your guild.
 
 URL path parameters:
 * `guildname` - The guild in which you are a guildmaster
@@ -1178,10 +1178,10 @@ URL path parameters:
 @validate_formkey
 def author_hide_comment(cid, v):
     """
-Remove a reply from your own post's comment thread for breaking your
-own rules for it. Only works on your post's own profile copy - replies
+Remove a comment from your own post's comment thread for breaking your
+own rules for it. Only works on your post's own profile copy - comments
 on a copy forwarded to a guild are pruned by that guild's guildmasters
-instead (see /mod/hide_comment). The reply itself is untouched - just
+instead (see /mod/hide_comment). The comment itself is untouched - just
 replaced with a notice showing your reason here. Reversible via
 /author/unhide_comment.
 
@@ -1189,13 +1189,13 @@ URL path parameters:
 * `cid` - The base 36 comment id
 
 Required form data:
-* `reason` - Why you're removing this reply
+* `reason` - Why you're removing this comment
 """
 
     comment = get_comment(cid, v=v)
 
     if not comment.post.is_profile_post:
-        return jsonify({"error": "This reply is on a copy forwarded to a guild - ask that guild's guildmasters to remove it instead."}), 403
+        return jsonify({"error": "This comment is on a copy forwarded to a guild - ask that guild's guildmasters to remove it instead."}), 403
 
     if comment.post.author_id != v.id:
         abort(403)

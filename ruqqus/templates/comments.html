@@ -113,9 +113,9 @@
   <span class="align-top">
   {% if c.parent_submission %}
     {% if c.author_id==v.id and c.replies and is_notification_page%}
-      <span class="font-weight-bold">Comment {{ 'Replies' if (c.replies | length)>1 else 'Reply' }}: <a href="{{ c.post.permalink }}">{{ c.post.title | safe }}</a></span> in <a href="{{ c.post.board.permalink }}">+{{ c.post.board.name }}</a>
+      <span class="font-weight-bold">{{ 'Comments' if (c.replies | length)>1 else 'Comment' }} on your comment: <a href="{{ c.post.permalink }}">{{ c.post.title | safe }}</a></span> in <a href="{{ c.post.board.permalink }}">+{{ c.post.board.name }}</a>
     {% elif c.post.author_id==v.id and c.is_top_level and is_notification_page%}
-      <span class="font-weight-bold">Post Reply: <a href="{{ c.post.permalink }}">{{ c.post.title | safe }}</a></span> in <a href="{{ c.post.board.permalink }}">+{{ c.post.board.name }}</a>
+      <span class="font-weight-bold">Comment on your post: <a href="{{ c.post.permalink }}">{{ c.post.title | safe }}</a></span> in <a href="{{ c.post.board.permalink }}">+{{ c.post.board.name }}</a>
     {% elif is_notification_page %}
       <span class="font-weight-bold">Username Mention: <a href="{{ c.post.permalink }}">{{ c.post.title | safe }}</a></span> in <a href="{{ c.post.board.permalink }}">+{{ c.post.board.name }}</a>
     {% else %}
@@ -206,7 +206,7 @@
       {% if c.promoted_posts %}
       <div class="mb-2">
         <a class="text-small text-muted" data-toggle="collapse" href="#promoted-{{ c.base36id }}" role="button" aria-expanded="false" aria-controls="promoted-{{ c.base36id }}">
-          <i class="fas fa-share fa-fw"></i>Promoted to {{ c.promoted_posts | length }} guild{{ '' if c.promoted_posts | length == 1 else 's' }} <i class="fas fa-caret-down"></i>
+          <i class="fas fa-share fa-fw"></i>Forwarded to {{ c.promoted_posts | length }} guild{{ '' if c.promoted_posts | length == 1 else 's' }} <i class="fas fa-caret-down"></i>
         </a>
         <div class="collapse" id="promoted-{{ c.base36id }}">
           <ul class="list-unstyled mb-0 mt-1 pl-3">
@@ -223,7 +223,7 @@
       <div id="comment-edit-{{ c.base36id }}" class="d-none comment-write collapsed child">
        <form id="comment-edit-form-{{ c.base36id }}" action="/edit_comment/{{ c.base36id }}" method="post" class="input-group">
         <input type="hidden" name="formkey" value="{{ v.formkey }}">
-        <textarea id="comment-edit-body-{{ c.base36id }}" name="body" form="comment-edit-form-{{ c.base36id }}" class="comment-box form-control rounded" id="edit-box-comment-{{ c.base36id }}" onkeydown="textAreaOnKeyDown(event, (id = '{{ c.base36id }}') => comment_edit(id))" aria-label="With textarea" placeholder="Add your reply..." rows="3">{{ c.body }}</textarea> 
+        <textarea id="comment-edit-body-{{ c.base36id }}" name="body" form="comment-edit-form-{{ c.base36id }}" class="comment-box form-control rounded" id="edit-box-comment-{{ c.base36id }}" onkeydown="textAreaOnKeyDown(event, (id = '{{ c.base36id }}') => comment_edit(id))" aria-label="With textarea" placeholder="Add your comment..." rows="3">{{ c.body }}</textarea> 
         <div class="comment-format"> 
          <small class="format pl-0"><i class="fas fa-bold" aria-hidden="true" onclick="makeBold('comment-edit-body-{{ c.base36id }}')" data-toggle="tooltip" data-placement="bottom" title="Bold"></i></small> 
          <small class="format"><i class="fas fa-italic" aria-hidden="true" onclick="makeItalics('comment-edit-body-{{ c.base36id }}')" data-toggle="tooltip" data-placement="bottom" title="Italicize"></i></small> 
@@ -281,7 +281,7 @@
           {% if v %}
           {% if (standalone or is_allowed_to_comment) and (c.is_guildmaster('content') or not c.is_blocked) %}
           <li class="list-inline-item text-muted"><a href="javascript:void(0)" onclick="document.getElementById('reply-to-{{ c.base36id }}').classList.remove('d-none')"><i class="fas fa-reply"
-            aria-hidden="true"></i><span class="d-none d-md-inline-block">Reply</span></a>
+            aria-hidden="true"></i><span class="d-none d-md-inline-block">Comment</span></a>
           </li>
           {% endif %}
           {% endif %}
@@ -444,7 +444,7 @@
         <input type="hidden" name="formkey" value="{{ v.formkey }}"> 
         <input type="hidden" name="parent_fullname" value="{{ c.fullname }}"> 
         <input id="reply-form-submission-{{ c.fullname }}" type="hidden" name="submission" value="{{ c.post.base36id }}"> 
-        <textarea name="body" form="reply-to-t3_{{ c.base36id }}" class="comment-box form-control rounded" id="reply-form-body-{{ c.fullname }}" onkeydown="textAreaOnKeyDown(event, (fullname = '{{ c.fullname }}') => post_comment(fullname))" aria-label="With textarea" placeholder="Add your reply..." rows="3"></textarea> 
+        <textarea name="body" form="reply-to-t3_{{ c.base36id }}" class="comment-box form-control rounded" id="reply-form-body-{{ c.fullname }}" onkeydown="textAreaOnKeyDown(event, (fullname = '{{ c.fullname }}') => post_comment(fullname))" aria-label="With textarea" placeholder="Add your comment..." rows="3"></textarea> 
         <div class="comment-format" id="comment-format-bar-{{ c.base36id }}"> 
           <small class="format pl-0">
             <i class="fas fa-bold" aria-hidden="true" onclick="makeBold('reply-form-body-{{ c.fullname }}')" data-toggle="tooltip" data-placement="bottom" title="Bold"></i>
@@ -470,7 +470,7 @@
           </label>
 
           <a href="javascript:void(0)" onclick="document.getElementById('reply-to-{{ c.base36id }}').classList.add('d-none')" class="btn btn-link text-muted ml-auto cancel-form">Cancel</a> 
-          <a id="save-reply-to-{{ c.fullname }}" class="btn btn-primary text-white ml-2" onclick="post_comment('{{ c.fullname }}');" href="javascript:void(0)">Reply</a> 
+          <a id="save-reply-to-{{ c.fullname }}" class="btn btn-primary text-white ml-2" onclick="post_comment('{{ c.fullname }}');" href="javascript:void(0)">Comment</a> 
         </div> 
       </form> 
     </div>
@@ -513,7 +513,7 @@
         <ul class="list-group comment-actions">
 
           {% if v and c.parent_submission and (standalone or is_allowed_to_comment) and (c.is_guildmaster('content') or not c.is_blocked) %}
-          <li class="list-group-item"><a href="javascript:void(0)" data-dismiss="modal" onclick="document.getElementById('reply-to-{{ c.base36id }}').classList.remove('d-none')" class="d-block"><i class="fas fa-reply"></i><span>Reply</span></a></li>
+          <li class="list-group-item"><a href="javascript:void(0)" data-dismiss="modal" onclick="document.getElementById('reply-to-{{ c.base36id }}').classList.remove('d-none')" class="d-block"><i class="fas fa-reply"></i><span>Comment</span></a></li>
           {% endif %}
 
           <li class="list-group-item"><a href="javascript:void(0);" role="button" class="d-block copy-link" data-dismiss="modal" data-clipboard-text="{{ c.permalink | full_link}}"><i class="fas fa-copy"></i><span>Copy Link</span></a></li>
@@ -632,7 +632,7 @@
 
 <div class="toast" id="toast-comment-success" style="position: fixed; bottom: 1.5rem; margin: 0 auto; left: 0; right: 0; width: 275px; z-index: 1000" role="alert" aria-live="assertive" aria-atomic="true" data-animation="true" data-autohide="true" data-delay="5000">
   <div class="toast-body bg-success text-center text-white">
-    <i class="fas fa-comment-alt-smile mr-2"></i>Reply posted!
+    <i class="fas fa-comment-alt-smile mr-2"></i>Comment posted!
   </div>
 </div>
 <div class="toast" id="toast-comment-error" style="position: fixed; bottom: 1.5rem; margin: 0 auto; left: 0; right: 0; width: 275px; z-index: 1000" role="alert" aria-live="assertive" aria-atomic="true" data-animation="true" data-autohide="true" data-delay="5000">

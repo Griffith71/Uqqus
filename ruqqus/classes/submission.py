@@ -234,7 +234,7 @@ class Submission(Base, Stndrd, Age_times, Scores, Fuzzing):
 
     @property
     def promoted_by(self):
-        """Mirrors forwarded_by: the user who promoted this reply into a
+        """Mirrors forwarded_by: the user who forwarded this comment into a
         post, if different from the post's own author (who stays the
         original comment's author, preserving their delete rights)."""
         from .board_relationships import CommentForwardRelationship

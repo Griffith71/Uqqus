@@ -788,7 +788,7 @@ class User(Base, Stndrd, Age_times):
         authored_sort_expr = sort_col if sort_col is not None else Comment.created_utc
         reposted_sort_expr = sort_col if sort_col is not None else CommentRepostRelationship.created_utc
 
-        # ---- Replies authored by this user ----
+        # ---- Comments authored by this user ----
         authored = self.comments.options(lazyload('*')).join(Comment.post)
         if not (v and (v.admin_level >= 3 or v.id == self.id)):
             authored = authored.filter(Comment.is_banned == False)
@@ -796,11 +796,11 @@ class User(Base, Stndrd, Age_times):
         authored = apply_visibility(authored)
         authored = authored.with_entities(Comment.id, authored_sort_expr)
 
-        # ---- Replies this user has reposted to their own profile
+        # ---- Comments this user has reposted to their own profile
         # (Twitter-retweet style - no independent copy, so the same
         # underlying Comment is reused; ordered by when THIS user
-        # reposted it for "new"/"old", or by the reply's own metric for
-        # every other sort mode, same as an authored reply would be) ----
+        # reposted it for "new"/"old", or by the comment's own metric for
+        # every other sort mode, same as an authored comment would be) ----
         reposted = g.db.query(Comment.id, reposted_sort_expr).join(
             CommentRepostRelationship, CommentRepostRelationship.comment_id == Comment.id
         ).filter(CommentRepostRelationship.user_id == self.id).join(Comment.post)
@@ -1720,7 +1720,7 @@ class User(Base, Stndrd, Age_times):
 
 
     def forwarded_idlist(self, v=None, page=1):
-        """Posts this user has personally forwarded to a guild, or replies
+        """Posts this user has personally forwarded to a guild, or comments
         they've promoted into a new post - as the actor, regardless of who
         authored the original content. Ordered by when they did it, most
         recent first. Public activity, visible to any viewer subject to

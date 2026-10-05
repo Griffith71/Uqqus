@@ -704,7 +704,7 @@ admin_comment=function(cid){
 
 
 
-//comment replies
+//comment forms
 
 // https://stackoverflow.com/a/42183824/11724748
 
@@ -771,7 +771,7 @@ document.addEventListener('input', function (event) {
   if (event.target.tagName.toLowerCase() !== 'textarea') return;
   // The post composer's title (fixed single-line, horizontal-scroll) and
   // body (fixed initial size, its own scrollbar) are deliberately NOT
-  // auto-growing - only comment reply/edit boxes use this behavior.
+  // auto-growing - only comment/edit boxes use this behavior.
   if (event.target.id === 'post-title' || event.target.id === 'post-body') return;
   autoExpand(event.target);
 }, false);
@@ -1130,14 +1130,14 @@ forward_commentModal = function(id) {
 
   var submitbutton = document.getElementById("forwardCommentButton");
   submitbutton.disabled = false;
-  submitbutton.innerHTML = 'Promote';
+  submitbutton.innerHTML = 'Forward';
 
   submitbutton.onclick = function() {
 
     var name = guildInput.value.trim().replace(/^\+/, '');
     if (!name) { return; }
 
-    this.innerHTML='<span class="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true"></span>Promoting';
+    this.innerHTML='<span class="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true"></span>Forwarding';
     this.disabled = true;
 
     var xhr = new XMLHttpRequest();
@@ -1157,17 +1157,17 @@ forward_commentModal = function(id) {
       } else {
         var data;
         try { data = JSON.parse(xhr.response); } catch(e) { data = {}; }
-        errorBox.textContent = data.error || 'Unable to promote this reply.';
+        errorBox.textContent = data.error || 'Unable to forward this comment.';
         errorBox.classList.remove('d-none');
         thisButton.disabled = false;
-        thisButton.innerHTML = 'Promote';
+        thisButton.innerHTML = 'Forward';
       }
     };
     xhr.onerror = function() {
-      errorBox.textContent = 'Unable to promote this reply.';
+      errorBox.textContent = 'Unable to forward this comment.';
       errorBox.classList.remove('d-none');
       thisButton.disabled = false;
-      thisButton.innerHTML = 'Promote';
+      thisButton.innerHTML = 'Forward';
     };
     xhr.send(form);
   };
@@ -1180,7 +1180,7 @@ $('#forwardCommentModal').on('hidden.bs.modal', function () {
   var beforeModal = document.getElementById("forwardCommentFormBefore");
   var afterModal = document.getElementById("forwardCommentFormAfter");
 
-  button.innerHTML='Promote';
+  button.innerHTML='Forward';
   button.disabled = false;
 
   afterModal.classList.add('d-none');
@@ -1288,7 +1288,7 @@ function post(url, callback, errortext) {
 };
 
 function post_with_reason(url, callback, errortext) {
-  var reason = window.prompt("Why does this break your guild's rules? This will be shown to anyone who looks up this post/reply's history.");
+  var reason = window.prompt("Why does this break your guild's rules? This will be shown to anyone who looks up this post/comment's history.");
   if (reason == null || reason.trim() == "") {
     return;
   }
@@ -1338,7 +1338,7 @@ function toggleSub(){
 }
 
 function post_toast_with_reason(url, callback) {
-  var reason = window.prompt("Why does this break your guild's rules? This will be shown to anyone who looks up this reply's history.");
+  var reason = window.prompt("Why does this break your guild's rules? This will be shown to anyone who looks up this comment's history.");
   if (reason == null || reason.trim() == "") {
     return;
   }

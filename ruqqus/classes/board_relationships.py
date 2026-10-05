@@ -266,7 +266,7 @@ class ForwardRelationship(Base):
 
 
 class CommentForwardRelationship(Base):
-    """Tracks which guilds a reply/comment has been promoted into as an
+    """Tracks which guilds a comment has been forwarded into as an
     independent new post (its own votes/comment thread), quote-tweet
     style. Unlike ForwardRelationship this has no "primary" content row
     to point back to on the comment side - comment_id IS the source of

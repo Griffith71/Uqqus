@@ -33,7 +33,7 @@
 
       <div>
         <h2 class="h5" name="guild_name">Users you block</h2>
-        <p class="text-small text-muted mb-md-0">You have blocked the following users. They cannot reply to your content or notify you with a username mention.</p>
+        <p class="text-small text-muted mb-md-0">You have blocked the following users. They cannot comment on your content or notify you with a username mention.</p>
       </div>
       <div class="mt-auto">
         <button class="btn btn-primary" data-toggle="modal" data-target="#guildmasterExileModal">Block user</button>
@@ -102,7 +102,7 @@
           </button>
         </div>
         <div class="modal-body">
-          <p>Users you block will not be told, but they may figure it out if they try to reply to your content.</p>
+          <p>Users you block will not be told, but they may figure it out if they try to comment on your content.</p>
           <input type="hidden" name="formkey" value="{{ v.formkey }}">
           <input type="text" name="username" placeholder="enter username" id="exile-username" class="form-control" maxlength=25 required>
         </div>

@@ -434,17 +434,17 @@ def create_forward_post(primary, target, forwarded_by):
 
 
 def create_forward_post_from_comment(comment, target, promoted_by):
-    """Promote a reply's text into a brand-new, independent post in
-    `target` (its own votes/comment thread) - the comment/reply-forward
+    """Forward a comment's text into a brand-new, independent post in
+    `target` (its own votes/comment thread) - the comment-forward
     equivalent of create_forward_post(). The new post's author_id stays
     the comment's original author (matching post-Forward's delete-rights
     convention); CommentForwardRelationship tracks provenance and who
     triggered the promotion when different from the author.
 
     The title is not user-editable - it's the exact first 280 characters
-    of the reply's own text (the same split used for the reply's own
+    of the comment's own text (the same split used for the comment's own
     preview/overflow display, see Comment.is_long), so the promoted post
-    looks structurally identical to how the reply already presented:
+    looks structurally identical to how the comment already presented:
     title = what was visible, body = what was collapsed. No duplication."""
 
     title_raw, body_raw = split_title_body(comment.body or "", max_title=280)
