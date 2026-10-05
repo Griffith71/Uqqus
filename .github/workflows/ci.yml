@@ -39,11 +39,10 @@ jobs:
       - run: npm run format:check
       - run: npm test
       - run: npm run build
-      # TODO: known high-severity advisories (prisma > @prisma/config > deepmerge-ts);
-      # make this blocking once they are upgraded.
+      # Blocking at high/critical for production deps. Dev-toolchain advisories
+      # (shadcn, eslint-config-next) are tracked separately and not gated here.
       - name: npm audit (production deps)
         run: npm audit --omit=dev --audit-level=high
-        continue-on-error: true
 
   e2e:
     name: web (playwright smoke)
