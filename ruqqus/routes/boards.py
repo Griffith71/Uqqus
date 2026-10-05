@@ -1,3 +1,4 @@
+import re
 from urllib.parse import urlparse
 import gevent
 from bs4 import BeautifulSoup 
@@ -12,6 +13,7 @@ from ruqqus.helpers.get import *
 from ruqqus.helpers.alerts import *
 from ruqqus.helpers.session_helpers import *
 from ruqqus.helpers.aws import check_csam_url
+from ruqqus.helpers.word_filter_store import apply_board_severity
 from ruqqus.classes import *
 from .front import guild_ids
 from ruqqus.classes.rules import *
@@ -235,6 +237,7 @@ Optional form data:
                       creator_id=v.id,
                       subcat_id=subcat.id
                       )
+    apply_board_severity(new_board)
 
     g.db.add(new_board)
 
@@ -1142,6 +1145,7 @@ def mod_bid_settings_description(bid, board, v):
 
     board.description = description
     board.description_html = description_html
+    apply_board_severity(board)
 
     g.db.add(board)
 

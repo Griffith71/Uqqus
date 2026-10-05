@@ -48,6 +48,9 @@ class Board(Base, Stndrd, Age_times):
     description_html=Column(String)
     is_sensitive=Column(Boolean, default=False)
     is_nsfl=Column(Boolean, default=False)
+    # word filter rating of the guild name / its description
+    name_severity=Column(SmallInteger, default=0)
+    description_severity=Column(SmallInteger, default=0)
     is_banned=Column(Boolean, default=False)
     has_banner=Column(Boolean, default=False)
     has_profile=Column(Boolean, default=False)

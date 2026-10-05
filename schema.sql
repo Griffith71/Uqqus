@@ -100,7 +100,9 @@ CREATE TABLE public.boards (
     motd character varying(1000) DEFAULT ''::character varying,
     disallowbots boolean DEFAULT false,
     css_nonce integer DEFAULT 0,
-    css character varying(65536) DEFAULT ''::character varying
+    css character varying(65536) DEFAULT ''::character varying,
+    name_severity smallint DEFAULT 0 NOT NULL,
+    description_severity smallint DEFAULT 0 NOT NULL
 );
 
 
@@ -152,7 +154,9 @@ CREATE TABLE public.comments (
     creation_region character(2) DEFAULT NULL::bpchar,
     purged_utc integer DEFAULT 0,
     hidden_by_guild boolean DEFAULT false,
-    author_hidden boolean DEFAULT false
+    author_hidden boolean DEFAULT false,
+    word_severity smallint DEFAULT 0 NOT NULL,
+    word_filter_version character varying(12)
 );
 
 
@@ -209,7 +213,9 @@ CREATE TABLE public.submissions (
     purged_utc integer DEFAULT 0,
     is_bot boolean DEFAULT false,
     hidden_by_guild boolean DEFAULT false,
-    language_code character varying(5) DEFAULT NULL
+    language_code character varying(5) DEFAULT NULL,
+    word_severity smallint DEFAULT 0 NOT NULL,
+    word_filter_version character varying(12)
 );
 
 
@@ -299,7 +305,10 @@ CREATE TABLE public.users (
     color character(6) DEFAULT '805ad5'::bpchar,
     secondary_color character(6) DEFAULT 'ffff00'::bpchar,
     signature character varying(280),
-    signature_html character varying(512)
+    signature_html character varying(512),
+    filter_level smallint DEFAULT 1 NOT NULL,
+    name_severity smallint DEFAULT 0 NOT NULL,
+    bio_severity smallint DEFAULT 0 NOT NULL
 );
 
 
@@ -5661,3 +5670,23 @@ CREATE INDEX chat_unread_user_id_idx ON public.chat_unread USING btree (user_id)
 -- PostgreSQL database dump complete
 --
 
+--
+-- Word filter list (see ruqqus/classes/word_filter.py). An empty table means
+-- "use the built-in starter list" (ruqqus/helpers/wordfilter_seed.py).
+--
+
+CREATE TABLE public.word_filter_entries (
+    id SERIAL PRIMARY KEY,
+    word character varying(64) NOT NULL,
+    severity smallint DEFAULT 1 NOT NULL,
+    mode character varying(16) DEFAULT 'word'::character varying NOT NULL,
+    variants character varying(512) DEFAULT ''::character varying,
+    suffixes character varying(512) DEFAULT NULL,
+    enabled boolean DEFAULT true NOT NULL,
+    note character varying(256) DEFAULT ''::character varying,
+    created_utc integer DEFAULT 0,
+    CONSTRAINT word_filter_entries_word_key UNIQUE (word)
+);
+
+CREATE INDEX submissions_word_severity_index ON public.submissions USING btree (word_severity);
+CREATE INDEX comments_word_severity_index ON public.comments USING btree (word_severity);

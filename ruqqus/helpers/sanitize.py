@@ -1,3 +1,4 @@
+import re
 import bleach
 from bs4 import BeautifulSoup
 from bleach.linkifier import LinkifyFilter

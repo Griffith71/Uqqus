@@ -7,6 +7,7 @@ import re
 import random
 from urllib.parse import urlencode
 
+from ruqqus.helpers.word_filter_store import apply_user_severity
 from ruqqus.classes import *
 from ruqqus.helpers.wrappers import *
 from ruqqus.helpers.base36 import *
@@ -420,6 +421,7 @@ def sign_up_post(v):
             region_settled_utc=signup_utc,
             ban_evade =  int(any([x.is_suspended for x in g.db.query(User).filter(User.id.in_(tuple(flask_session.get("history", [])))).all() if x]))
             )
+        apply_user_severity(new_user)
 
     except Exception as e:
         #print(e)

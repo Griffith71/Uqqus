@@ -4,6 +4,7 @@ import time
 import gevent
 import mistletoe
 import re
+from ruqqus.helpers.word_filter_store import apply_user_severity
 from ruqqus.classes import *
 from ruqqus.helpers.wrappers import *
 from ruqqus.helpers.security import *
@@ -89,6 +90,7 @@ def settings_profile_post(v):
 
         v.bio = bio
         v.bio_html=bio_html
+        apply_user_severity(v)
         g.db.add(v)
         
         #seo profile spam
@@ -742,6 +744,7 @@ def settings_name_change(v):
     v=g.db.query(User).with_for_update().options(lazyload('*')).filter_by(id=v.id).first()
 
     v.username=new_name
+    apply_user_severity(v)
     v.coin_balance-=20
     v.name_changed_utc=int(time.time())
 

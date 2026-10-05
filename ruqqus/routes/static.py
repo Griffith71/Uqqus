@@ -76,10 +76,14 @@ def robots_txt():
 
 
 @app.route("/slurs.txt", methods=["GET"])
-def slurs():
-    db = db_session()
-    resp = make_response('\n'.join([x.keyword for x in db.query(
-        BadWord).order_by(BadWord.keyword.asc()).all()]))
+@admin_level_required(3)
+def slurs(v):
+    # The word filter's list, for admins only: publishing it would hand
+    # every Child-filter user the exact words it exists to keep from them.
+    rows = g.db.query(WordFilterEntry).filter(
+        WordFilterEntry.enabled == True, WordFilterEntry.severity > 0
+    ).order_by(WordFilterEntry.severity.desc(), WordFilterEntry.word.asc()).all()
+    resp = make_response('\n'.join(f"{x.severity}\t{x.word}" for x in rows))
     resp.headers.add("Content-Type", "text/plain")
     return resp
 

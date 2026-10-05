@@ -1,4 +1,5 @@
 from flask import render_template, request, abort, g
+import re
 import time
 from sqlalchemy import *
 from sqlalchemy.orm import relationship, deferred
@@ -15,7 +16,6 @@ from ruqqus.__main__ import Base, cache, app
 from .votes import Vote, CommentVote
 from .domains import Domain
 from .flags import Flag
-from .badwords import *
 from .comment import Comment
 from .titles import Title
 
@@ -91,6 +91,10 @@ class Submission(Base, Stndrd, Age_times, Scores, Fuzzing):
     score_activity = Column(Float, default=0)
     is_offensive = Column(Boolean, default=False)
     is_sensitive = Column(Boolean, default=False)
+    # word filter rating of the title + text: 0 clean, 1 profanity, 2 extreme
+    # (see helpers/word_filter_store.py); the version says which list rated it
+    word_severity = Column(SmallInteger, default=0)
+    word_filter_version = Column(String(12), default=None)
     hidden_by_guild = Column(Boolean, default=False)
     board = relationship(
         "Board",
@@ -412,15 +416,6 @@ class Submission(Base, Stndrd, Age_times, Scores, Fuzzing):
             return f"you are an approved contributor in +{self.board.name}."
         elif v.admin_level >= 4:
             return "you are a Ruqqus admin."
-
-    def determine_offensive(self):
-
-        for x in g.db.query(BadWord).all():
-            if (self.body and x.check(self.body)) or x.check(self.title):
-                self.is_offensive = True
-                break
-        else:
-            self.is_offensive = False
 
     @property
     @lazy

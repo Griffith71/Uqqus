@@ -23,6 +23,7 @@ from ruqqus.helpers.alerts import send_notification
 from ruqqus.helpers.text import split_title_body
 from ruqqus.helpers.languages import detect_language
 from ruqqus.helpers.post_fields import clean_title, check_body, normalize_url, PostFieldError
+from ruqqus.helpers.word_filter_store import post_severity, apply_post_severity
 from ruqqus.classes import *
 from .front import frontlist
 from ruqqus.__main__ import app, limiter, cache, db_session
@@ -348,12 +349,7 @@ Optional file data:
             upload_file(image_name, upload)
             url = f'https://{BUCKET}/{image_name}'
 
-        # offensive
-        is_offensive = False
-        for x in g.db.query(BadWord).all():
-            if (body and x.check(body)) or x.check(title):
-                is_offensive = True
-                break
+        word_severity, word_filter_version = post_severity(title, body_html)
 
         language_code = detect_language(title, body)
 
@@ -402,7 +398,9 @@ Optional file data:
                 row.is_image = bool(upload) and row is primary
                 row.has_thumb = False
 
-            row.is_offensive = is_offensive
+            row.word_severity = word_severity
+            row.word_filter_version = word_filter_version
+            row.is_offensive = word_severity >= 2
             row.language_code = language_code
             # same rule as forwarding: a sensitive guild keeps its copy marked
             row.is_sensitive = sensitive or (row is not primary and row.board.is_sensitive)
@@ -557,6 +555,7 @@ def _build_standalone_submission(author_id, target, title, body, body_html,
                                   title=title
                                   )
     g.db.add(new_post_aux)
+    apply_post_severity(new_post, title, body_html)
 
     if auto_upvote:
         g.db.add(Vote(user_id=author_id, vote_type=1, submission_id=new_post.id))
@@ -1113,13 +1112,6 @@ Optional file data:
     if request.files.get('file') and not v.can_submit_image:
         abort(403)
 
-    # offensive
-    is_offensive = False
-    for x in g.db.query(BadWord).all():
-        if (body and x.check(body)) or x.check(title):
-            is_offensive = True
-            break
-
     new_post = Submission(
         author_id=v.id,
         domain_ref=domain_obj.id if domain_obj else None,
@@ -1128,7 +1120,6 @@ Optional file data:
         is_sensitive=bool(request.form.get("sensitive", "")),
         post_public=not board.is_private,
         repost_id=None,
-        is_offensive=is_offensive,
         app_id=v.client.application.id if v.client else None,
         creation_region=request.headers.get("cf-ipcountry"),
         is_bot = request.headers.get("X-User-Type","").lower()=="bot",
@@ -1146,6 +1137,7 @@ Optional file data:
                                  title=title
                                  )
     g.db.add(new_post_aux)
+    apply_post_severity(new_post, title, body_html)
     g.db.flush()
 
     vote = Vote(user_id=v.id,
@@ -1232,6 +1224,7 @@ Optional file data:
                 body_md = renderer.render(mistletoe.Document(preprocess(new_post_aux.body)))
             new_post_aux.body_html = sanitize(body_md, linkgen=True)
             g.db.add(new_post_aux)
+            apply_post_severity(new_post, title, new_post_aux.body_html)
             g.db.commit()
 
             #csam detection

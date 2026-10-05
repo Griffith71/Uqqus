@@ -1,3 +1,4 @@
+import re
 from urllib.parse import urlparse
 from sqlalchemy import func, literal
 from bs4 import BeautifulSoup
@@ -15,6 +16,7 @@ from ruqqus.helpers.get import *
 from ruqqus.helpers.session_helpers import *
 from ruqqus.helpers.alerts import *
 from ruqqus.helpers.aws import *
+from ruqqus.helpers.word_filter_store import apply_comment_severity
 from ruqqus.classes import *
 from flask import *
 from ruqqus.__main__ import app, limiter
@@ -407,17 +409,6 @@ Optional file data:
             g.db.commit()
             return jsonify({"error": "Too much spam!"}), 403
 
-    badwords=g.db.query(BadWord).all()
-    if badwords:
-        for x in badwords:
-            if x.check(body):
-                is_offensive = True
-                break
-            else:
-                is_offensive = False
-    else:
-        is_offensive=False
-
     # check badlinks
     soup = BeautifulSoup(body_html, features="html.parser")
     links = [x['href'] for x in soup.find_all('a') if x.get('href')]
@@ -446,7 +437,6 @@ Optional file data:
                 parent_comment_id=parent_comment_id,
                 level=level,
                 is_sensitive=(bool(request.form.get("sensitive", "")) or post.is_sensitive),
-                is_offensive=is_offensive,
                 original_board_id=parent_post.board_id,
                 is_bot=is_bot,
                 app_id=v.client.application.id if v.client else None,
@@ -496,6 +486,7 @@ Optional file data:
     )
 
     g.db.add(c_aux)
+    apply_comment_severity(c, body_html)
     g.db.flush()
 
     notify_users = set()
@@ -615,13 +606,7 @@ Required form data:
                 'api': lambda: ({'error': f'A blacklisted domain was used.'}, 400)
                 }
 
-    for x in g.db.query(BadWord).all():
-        if x.check(body):
-            c.is_offensive = True
-            break
-
-        else:
-            c.is_offensive = False
+    apply_comment_severity(c, body_html)
 
     # check badlinks
     soup = BeautifulSoup(body_html, features="html.parser")

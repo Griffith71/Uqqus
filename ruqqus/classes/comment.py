@@ -11,7 +11,6 @@ from ruqqus.helpers.lazy import lazy
 from ruqqus.__main__ import Base, cache
 from .votes import CommentVote
 from .flags import CommentFlag
-from .badwords import *
 
 
 def _render_comment_markdown(raw):
@@ -79,6 +78,9 @@ class Comment(Base, Age_times, Scores, Stndrd, Fuzzing):
 
     is_offensive = Column(Boolean, default=False)
     is_sensitive = Column(Boolean, default=False)
+    # word filter rating of the text (see Submission.word_severity)
+    word_severity = Column(SmallInteger, default=0)
+    word_filter_version = Column(String(12), default=None)
     is_bot = Column(Boolean, default=False)
     is_pinned = Column(Boolean, default=False)
     hidden_by_guild = Column(Boolean, default=False)
@@ -282,16 +284,6 @@ class Comment(Base, Age_times, Scores, Stndrd, Fuzzing):
             return "this is a comment on your content."
         elif v.admin_level >= 4:
             return "you are a Ruqqus admin."
-
-    def determine_offensive(self):
-
-        for x in g.db.query(BadWord).all():
-            if x.check(self.body):
-                self.is_offensive = True
-
-                break
-        else:
-            self.is_offensive = False
 
     @property
     def json_raw(self):

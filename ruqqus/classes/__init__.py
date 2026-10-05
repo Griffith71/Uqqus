@@ -1,6 +1,5 @@
 from .alts import *
 from .badges import *
-from .badwords import *
 from .boards import *
 from .board_relationships import *
 from .clients import *
@@ -26,4 +25,5 @@ from .login_events import *
 from .regions import *
 from .curations import *
 from .chat import *
+from .word_filter import *
 #from lodges import *
