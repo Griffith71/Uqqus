@@ -432,18 +432,24 @@ class User(Base, Stndrd, Age_times):
     def for_you_idlist(self, sort=None, page=1, t=None, filter_words='', **kwargs):
         """
         The For You feed: discovery content from subcats the viewer has
-        shown affinity towards (see interest_subcats()), excluding anything
-        Following already covers (subscribed guilds / followed accounts) so
-        For You stays additive rather than duplicating Following. Mirrors
-        frontlist()'s visibility/mod/contributor/block/offensive/bot/opt-out
-        filtering, with self in place of v. Callers should check
-        interest_subcats() themselves first and fall back to frontlist() for
-        a zero-signal account - this method assumes a non-empty subcat list.
+        shown affinity towards (see interest_subcats()), plus posts outside
+        those subcats that the viewer's friends/followed accounts have
+        upvoted enough to matter (see social_proof_post_ids()) - ranked
+        with that same social proof as a tiebreaker-first boost. Excludes
+        anything Following already covers (subscribed guilds / followed
+        accounts) so For You stays additive rather than duplicating
+        Following. Mirrors frontlist()'s visibility/mod/contributor/block/
+        offensive/bot/opt-out filtering, with self in place of v. Callers
+        should check interest_subcats() themselves first and fall back to
+        frontlist() for a zero-signal account - this method assumes a
+        non-empty subcat list.
         """
 
         subcats = self.interest_subcats()
         if not subcats:
             return []
+
+        social_proof_ids = self.social_proof_post_ids()
 
         if sort == None:
             sort = self.defaultsorting or "hot"
@@ -506,10 +512,14 @@ class User(Base, Stndrd, Age_times):
             )
         )
 
-        posts = posts.filter(Board.subcat_id.in_(tuple(subcats)))
+        posts = posts.filter(or_(
+            Board.subcat_id.in_(tuple(subcats)),
+            Submission.id.in_(social_proof_ids)
+        ))
 
         # explicit Categorical filter narrows the heuristic affinity set
-        # further (intersects), rather than replacing it
+        # (and anything let in via social proof) further - intersects
+        # rather than replaces either
         explicit_categories = kwargs.get("categories")
         if explicit_categories:
             posts = posts.filter(Board.subcat_id.in_(tuple(explicit_categories)))
@@ -571,18 +581,20 @@ class User(Base, Stndrd, Age_times):
         if lt:
             posts = posts.filter(Submission.created_utc < lt)
 
+        social_proof_boost = Submission.id.in_(social_proof_ids)
+
         if sort == "hot":
-            posts = posts.order_by(Submission.score_best.desc())
+            posts = posts.order_by(social_proof_boost.desc(), Submission.score_best.desc())
         elif sort == "new":
-            posts = posts.order_by(Submission.created_utc.desc())
+            posts = posts.order_by(social_proof_boost.desc(), Submission.created_utc.desc())
         elif sort == "old":
-            posts = posts.order_by(Submission.created_utc.asc())
+            posts = posts.order_by(social_proof_boost.desc(), Submission.created_utc.asc())
         elif sort == "disputed":
-            posts = posts.order_by(Submission.score_disputed.desc())
+            posts = posts.order_by(social_proof_boost.desc(), Submission.score_disputed.desc())
         elif sort == "top":
-            posts = posts.order_by(Submission.score_top.desc())
+            posts = posts.order_by(social_proof_boost.desc(), Submission.score_top.desc())
         elif sort == "activity":
-            posts = posts.order_by(Submission.score_activity.desc())
+            posts = posts.order_by(social_proof_boost.desc(), Submission.score_activity.desc())
         else:
             abort(400)
 
@@ -844,6 +856,37 @@ class User(Base, Stndrd, Age_times):
     @lazy
     def curations_anything(self):
         return bool(self.curations_owned or self.curations_followed)
+
+    @property
+    @lazy
+    def following_ids(self):
+        return set(x[0] for x in g.db.query(Follow.target_id).filter_by(user_id=self.id).all())
+
+    @property
+    @lazy
+    def friend_ids(self):
+        """Mutual follows - accounts self follows that also follow self back."""
+        follower_ids = select(Follow.user_id).filter_by(target_id=self.id)
+        return set(x[0] for x in g.db.query(Follow.target_id).filter(
+            Follow.user_id == self.id,
+            Follow.target_id.in_(follower_ids)
+        ).all())
+
+    @cache.memoize(timeout=300)
+    def social_proof_post_ids(self):
+        """Posts self's friends or followed accounts have upvoted enough
+        (3+) to matter as a discovery signal in For You - see
+        for_you_idlist()."""
+        qualifying = set()
+        for id_set in (self.friend_ids, self.following_ids - self.friend_ids):
+            if not id_set:
+                continue
+            rows = g.db.query(Vote.submission_id).filter(
+                Vote.vote_type == 1,
+                Vote.user_id.in_(id_set)
+            ).group_by(Vote.submission_id).having(func.count(Vote.user_id) >= 3).all()
+            qualifying |= {r[0] for r in rows}
+        return qualifying
 
     @property
     @lazy

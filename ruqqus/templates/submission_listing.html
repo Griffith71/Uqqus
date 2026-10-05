@@ -72,6 +72,7 @@
               {% if p.is_blocking %}<i class="fas fa-user-minus text-warning" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="You're blocking this user."></i>{% endif %}
               {% if p.is_blocked %}<i class="fas fa-user-minus text-danger" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="This user is blocking you."></i>{% endif %}
               {% if p.hidden_by_guild %} · <span class="badge badge-danger text-small-extra">hidden from +{{ p.board.name }}</span>{% endif %}
+              {% if p.social_proof_label == 'followed' %} · <span class="badge badge-info text-small-extra"><i class="fas fa-user text-small mr-1"></i>People you follow liked</span>{% elif p.social_proof_label == 'friends' %} · <span class="badge badge-info text-small-extra"><i class="fas fa-user-friends text-small mr-1"></i>Friends liked</span>{% endif %}
               {% if v and v.admin_level >=3 and p.active_flags %} · <span class="text-danger">{{ p.active_flags }} Flags</span>{% endif %}{% if "/mod/queue" in request.path and p.active_reports %} · <span class="text-danger">{{ p.active_reports }} Reports</span>{% endif %}
           </div>
         </div>
@@ -86,7 +87,7 @@
           {% endif %}
           {% if p.is_blocking %}<i class="fas fa-user-minus text-warning" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="You're blocking this user."></i>{% endif %}
           {% if p.is_blocked %}<i class="fas fa-user-minus text-danger" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="This user is blocking you."></i>{% endif %}
-          {% if p.is_repost and not p.is_forward_copy %} · <span class="badge border-warning border-1 text-small-extra"><a class="text-warning" href="{{ p.reposts.permalink }}">repost</a></span>{% endif %}{% if p.hidden_by_guild %} · <span class="badge badge-danger text-small-extra">hidden from +{{ p.board.name }}</span>{% endif %}{% if v and v.admin_level >=3 and p.active_flags %}<span class="text-danger">{{ p.active_flags }} Flags</span>{% endif %}
+          {% if p.is_repost and not p.is_forward_copy %} · <span class="badge border-warning border-1 text-small-extra"><a class="text-warning" href="{{ p.reposts.permalink }}">repost</a></span>{% endif %}{% if p.hidden_by_guild %} · <span class="badge badge-danger text-small-extra">hidden from +{{ p.board.name }}</span>{% endif %}{% if p.social_proof_label == 'followed' %} · <span class="badge badge-info text-small-extra"><i class="fas fa-user text-small mr-1"></i>People you follow liked</span>{% elif p.social_proof_label == 'friends' %} · <span class="badge badge-info text-small-extra"><i class="fas fa-user-friends text-small mr-1"></i>Friends liked</span>{% endif %}{% if v and v.admin_level >=3 and p.active_flags %}<span class="text-danger">{{ p.active_flags }} Flags</span>{% endif %}
           {% if "/mod/queue" in request.path and p.active_reports %} · <span class="text-danger">{{ p.active_reports }} Reports</span>{% endif %}
 
       </div>

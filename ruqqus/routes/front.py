@@ -11,6 +11,7 @@ from flask import session as flask_session
 from ruqqus.__main__ import app, cache
 from ruqqus.classes.submission import Submission
 from ruqqus.classes.categories import CATEGORIES
+from ruqqus.classes.votes import Vote
 from ruqqus.helpers.languages import LANGUAGE_NAMES
 from ruqqus.helpers.regions import REGION_CENTROIDS
 
@@ -581,6 +582,29 @@ Optional query parameters:
             ids = [sticky.id] + ids
 
     posts = get_posts(ids, sort=sort, v=v)
+
+    if v:
+        friend_ids = v.friend_ids
+        followed_ids = v.following_ids - friend_ids
+        page_ids = [p.id for p in posts]
+
+        def _like_counts(id_set):
+            if not id_set or not page_ids:
+                return {}
+            return dict(g.db.query(Vote.submission_id, func.count(Vote.user_id)).filter(
+                Vote.submission_id.in_(page_ids),
+                Vote.vote_type == 1,
+                Vote.user_id.in_(id_set)
+            ).group_by(Vote.submission_id).all())
+
+        friend_counts = _like_counts(friend_ids)
+        followed_counts = _like_counts(followed_ids)
+
+        for p in posts:
+            if followed_counts.get(p.id, 0) >= 3:
+                p.__dict__['_social_proof_label'] = 'followed'
+            elif friend_counts.get(p.id, 0) >= 3:
+                p.__dict__['_social_proof_label'] = 'friends'
 
     return {'html': lambda: render_template("home.html",
                                             v=v,

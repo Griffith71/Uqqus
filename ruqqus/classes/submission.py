@@ -537,6 +537,10 @@ class Submission(Base, Stndrd, Age_times, Scores, Fuzzing):
         return bool(self._reposted) if "_reposted" in self.__dict__ else False
 
     @property
+    def social_proof_label(self):
+        return self.__dict__.get('_social_proof_label', None)
+
+    @property
     def user_title(self):
         return self._title if "_title" in self.__dict__ else self.author.title
 
