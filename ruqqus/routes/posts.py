@@ -1256,6 +1256,9 @@ Required form data:
     if (target.restricted_posting or target.is_private) and not target.can_submit(v):
         return {"error": f"+{target.name} only accepts forwards from approved contributors."}, 403
 
+    if target.disallowbots and (request.headers.get("X-User-Type", "").lower() == "bot" or primary.is_bot):
+        return {"error": f"403 Not Authorized - +{target.name} disallows bots from forwarding and commenting!"}, 403
+
     already = g.db.query(ForwardRelationship).filter_by(
         primary_submission_id=primary.id, board_id=target.id).first()
     if already:

@@ -2536,7 +2536,7 @@ URL path parameters:
 
     sub=g.db.query(Subscription).filter_by(user_id=v.id, board_id=guild.id, is_active=True).first()
     if not sub:
-        return jsonify({"error": f"You aren't a member of +{board.name}"}), 404
+        return jsonify({"error": f"You aren't a member of +{guild.name}"}), 404
 
     sub.get_notifs = not sub.get_notifs
     g.db.add(sub)
