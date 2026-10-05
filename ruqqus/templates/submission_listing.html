@@ -100,7 +100,7 @@
         <div class="{% if p.is_sensitive %}sensitive-blur{% endif %}">
 
         {% if p.is_image %}
-        <div class="post-media-frame mb-3">
+        <div class="post-media-frame mb-2">
           <div class="post-img-lg">
             <a href="javascript:void(0)" rel="nofollow noopener" class="expandable-image" data-toggle="modal" data-target="#expandImageModal" data-url="{{ p.url }}">
               <img src="{{ p.url }}" class="img-fluid" alt="post image" loading="lazy" onerror="hideBrokenMedia(this)">
@@ -171,7 +171,7 @@
       </a>
       {% endif %}
 
-      <div class="post-actions mt-2 d-none d-md-block">
+      <div class="post-actions mt-1 d-none d-md-block">
         <ul class="list-inline text-right d-flex">
 
           {% if loop.length == 1 and '/post/' in request.path %}

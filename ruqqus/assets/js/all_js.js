@@ -787,7 +787,7 @@ function switch_css() {
     post("/settings/dark_mode/1",
       callback=function(){
         try{ console.log('[switch_css] callback dark enabled branch'); }catch(e){}
-        css.href="/assets/style/main_dark.css?v=2.38.0";
+        css.href="/assets/style/main_dark.css?v=2.39.0";
         localStorage.setItem('dark_mode_enabled', 'true');
         // Update all dark-switch icons
         document.querySelectorAll('[id="dark-switch"]').forEach(function(d){
@@ -816,7 +816,7 @@ function switch_css() {
     post("/settings/dark_mode/0",
       callback=function(){
         try{ console.log('[switch_css] callback dark disabled branch'); }catch(e){}
-        css.href="/assets/style/main.css?v=2.38.0";
+        css.href="/assets/style/main.css?v=2.39.0";
         localStorage.setItem('dark_mode_enabled', 'false');
         // Update all dark-switch icons
         document.querySelectorAll('[id="dark-switch"]').forEach(function(d){
@@ -853,10 +853,10 @@ document.addEventListener('DOMContentLoaded', function() {
   if(localStorageDarkMode !== null && ((localStorageDarkMode === 'true') !== isDarkMode)) {
     isDarkMode = localStorageDarkMode === 'true';
     if(isDarkMode) {
-      css.href="/assets/style/main_dark.css?v=2.38.0";
+      css.href="/assets/style/main_dark.css?v=2.39.0";
       $('body').addClass('dark').removeClass('light');
     } else {
-      css.href="/assets/style/main.css?v=2.38.0";
+      css.href="/assets/style/main.css?v=2.39.0";
       $('body').addClass('light').removeClass('dark');
     }
   }

@@ -177,7 +177,7 @@ html {
 body {
     color: $black;
     padding-top: var(--navbar-height, 55px);
-    background-color: $gray-700;
+    background-color: $gray-600;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
 }
@@ -220,7 +220,7 @@ body.using-mouse :focus {
 }
 
 #thread, #userpage {
-    background-color: $gray-700;
+    background-color: $gray-600;
 }
 
 // Docs
@@ -2383,7 +2383,7 @@ a.bg-dark:hover, a.bg-dark:focus, button.bg-dark:hover, button.bg-dark:focus {
     display: block;
     overflow: hidden;
     border-radius: $border-radius;
-    background-color: $gray-700;
+    background-color: transparent;
 }
 
 .post-img-lg {
@@ -2398,7 +2398,7 @@ a.bg-dark:hover, a.bg-dark:focus, button.bg-dark:hover, button.bg-dark:focus {
 
 .post-img-lg img, .embed-lg img, .embed-lg video, .embed-lg iframe {
     max-width: 100%;
-    max-height: 480px;
+    max-height: 512px;
     width: auto;
     height: auto;
     object-fit: contain;
@@ -2406,9 +2406,15 @@ a.bg-dark:hover, a.bg-dark:focus, button.bg-dark:hover, button.bg-dark:focus {
     margin: 0 auto;
 }
 
+// No tinted box behind media that doesn't fill the width: it shows the card
+// colour. Playing video/iframes keep their own black background.
 .embed-lg {
-    background-color: rgba(0, 0, 0, 0.85);
+    background-color: transparent;
     min-height: 200px;
+}
+
+.embed-lg video, .embed-lg iframe {
+    background-color: #000;
 }
 
 .embed-lg-play {
@@ -4026,18 +4032,26 @@ textarea, input[type=text] {
 
 }
 
-// Cap the feed/post column to Reddit's actual reading width (756px is
-// Reddit's own fixed feed-column size once its sidebar appears; it does
-// not grow further on wider screens) instead of stretching to fill all
-// remaining space between the sidebars. Below the sidebar's own
-// breakpoint (lg / 992px, matching .sidebar's d-none d-lg-block) the
-// column stays fluid/full-width, matching Reddit's single-column mobile
-// and tablet layout.
+// Reddit-style proportions: the feed/post column is capped at 726px (696px
+// of card, 640px of media) and the left sidebar (300px), main column and
+// right sidebar (300px) form ONE block centered on the page, so the
+// sidebars sit right next to the content instead of at the screen edges.
+// justify-content needs !important to beat the markup's
+// .justify-content-around. Below the sidebar breakpoint (lg / 992px,
+// matching .sidebar's d-none d-lg-block) the column stays fluid/full-width.
 @media (min-width: 992px) {
+    #frontpage #main-content-row, #userpage #main-content-row, #search #main-content-row, #guild #main-content-row, #settings-guild #main-content-row, #thread #main-content-row {
+        justify-content: center !important;
+        // never wrap the right sidebar below the content (guild pages used to
+        // at 1200-1325px because the column's min-content equals its cap)
+        flex-wrap: nowrap;
+    }
+
     #frontpage #main-content-col, #userpage #main-content-col, #search #main-content-col, #guild #main-content-col, #settings-guild #main-content-col, #thread #main-content-col {
-        max-width: 756px;
-        margin-left: auto;
-        margin-right: auto;
+        max-width: 726px;
+        min-width: 0;
+        margin-left: 0;
+        margin-right: 0;
         float: none;
     }
 }

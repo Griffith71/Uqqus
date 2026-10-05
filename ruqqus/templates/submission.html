@@ -9,9 +9,9 @@
 
 {% block stylesheets %}
 {% if v and v.can_use_darkmode and session.get("dark_mode_enabled") %}
-<link id="css-link" rel="stylesheet" href="{{ p.board.css_dark_url }}?v=2.38.0">
+<link id="css-link" rel="stylesheet" href="{{ p.board.css_dark_url }}?v=2.39.0">
 {% else %}
-<link id="css-link" rel="stylesheet" href="{{ p.board.css_url }}?v=2.38.0">
+<link id="css-link" rel="stylesheet" href="{{ p.board.css_url }}?v=2.39.0">
 {% endif %}
 <link id="board-css" rel="stylesheet" href="{{ p.board.custom_css_url }}">
 {% endblock %}
@@ -495,7 +495,7 @@
             <div class="{% if p.is_sensitive %}sensitive-blur{% endif %}">
 
             {% if p.is_image %}
-            <div class="post-media-frame mb-3">
+            <div class="post-media-frame mb-2">
               <div class="post-img-lg">
                 <a href="javascript:void(0)" rel="nofollow noopener" class="expandable-image" data-toggle="modal" data-target="#expandImageModal" data-url="{{ p.url }}">
                   <img src="{{ p.url }}" class="img-fluid" alt="post image" loading="lazy" onerror="hideBrokenMedia(this)">
