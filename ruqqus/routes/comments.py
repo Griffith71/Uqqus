@@ -299,7 +299,7 @@ Optional file data:
         return jsonify({"error":"You need to actually write something!"}), 400
     
     if parent_post.board.disallowbots and request.headers.get("X-User-Type")=="Bot":
-        return jsonify({"error":f"403 Not Authorized - +{board.name} disallows bots from posting and commenting!"}), 403
+        return jsonify({"error":f"403 Not Authorized - +{board.name} disallows bots from forwarding and commenting!"}), 403
 
     body=preprocess(body)
     with CustomRenderer(post_id=parent_id) as renderer:
@@ -962,7 +962,7 @@ def forward_comment(cid, v):
         return {"error": f"Exiled from +{target.name}."}, 403
 
     if (target.restricted_posting or target.is_private) and not target.can_submit(v):
-        return {"error": f"Not an approved contributor for +{target.name}."}, 403
+        return {"error": f"+{target.name} only accepts forwards from approved contributors."}, 403
 
     already = g.db.query(CommentForwardRelationship).filter_by(
         comment_id=comment.id, board_id=target.id).first()

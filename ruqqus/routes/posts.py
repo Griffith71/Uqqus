@@ -719,18 +719,18 @@ Optional file data:
                 target.can_submit(v)):
             return {"html": lambda: (render_template("submit.html",
                                                      v=v,
-                                                     error=f"You are not an approved contributor for +{target.name}.",
+                                                     error=f"You can't forward to +{target.name}: it only accepts forwards from approved contributors.",
                                                      title=title,
                                                      url=url,
                                                      body=body,
                                                      text=text_for_redisplay,
                                                      b=None, forward_guild_names=forward_guild_names
                                                      ), 403),
-                    "api": lambda: ({"error": f"403 Not Authorized - You are not an approved contributor for +{target.name}"}, 403)
+                    "api": lambda: ({"error": f"403 Not Authorized - +{target.name} only accepts forwards from approved contributors"}, 403)
                     }
 
         if target.disallowbots and request.headers.get("X-User-Type")=="Bot":
-            return {"api": lambda: ({"error": f"403 Not Authorized - +{target.name} disallows bots from posting and commenting!"}, 403)}
+            return {"api": lambda: ({"error": f"403 Not Authorized - +{target.name} disallows bots from forwarding and commenting!"}, 403)}
 
         forward_boards.append(target)
 
@@ -1254,7 +1254,7 @@ Required form data:
         return {"error": f"Exiled from +{target.name}."}, 403
 
     if (target.restricted_posting or target.is_private) and not target.can_submit(v):
-        return {"error": f"Not an approved contributor for +{target.name}."}, 403
+        return {"error": f"+{target.name} only accepts forwards from approved contributors."}, 403
 
     already = g.db.query(ForwardRelationship).filter_by(
         primary_submission_id=primary.id, board_id=target.id).first()

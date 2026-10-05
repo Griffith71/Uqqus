@@ -1236,7 +1236,7 @@ def admin_siege_guild(v):
             return render_template("message.html",
                                    v=v,
                                    title=f"Siege against +{guild.name} Failed",
-                                   error=f"One of the guildmasters created a post in +{guild.name} within the last 60 days. You may try again in 7 days.",
+                                   error=f"One of the guildmasters had a post forwarded to +{guild.name} within the last 60 days. You may try again in 7 days.",
                                    link=post.permalink,
                                    link_text="View post"
                                    ), 403

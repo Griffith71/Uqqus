@@ -197,16 +197,16 @@
 
         <div id="restricted">
 
-          <h2 class="h5">Restricted Posting</h2>
+          <h2 class="h5">Restricted Forwarding</h2>
 
-          <p class="text-small text-muted">Restrict submission posting in +{{ b.name }} to approved contributors only.</p>
+          <p class="text-small text-muted">Only approved contributors can forward posts and comments to +{{ b.name }}.</p>
 
           <div class="settings-section rounded">
 
             <div class="d-lg-flex">
 
               <div class="title w-lg-25">
-                <label for="restrictswitch">Restrict Posting</label>
+                <label for="restrictswitch">Restrict Forwarding</label>
               </div>
 
               <div class="body w-lg-100">
@@ -216,7 +216,7 @@
                   <label class="custom-control-label" for="restrictswitch"></label>
                 </div>
 
-                <span class="text-small-extra text-muted">Restrict posting in +{{ b.name }} to approved users only. (Anyone will still be able to comment).</span>
+                <span class="text-small-extra text-muted">Restrict forwarding to +{{ b.name }} to approved users only. (Anyone will still be able to comment).</span>
 
               </div>
 
@@ -230,7 +230,7 @@
 
           <h2 class="h5">Guild Privacy</h2>
 
-          <p class="text-small text-muted">Make submissions to +{{ b.name }} private. Posts will only be visible to approved Guild Members.</p>
+          <p class="text-small text-muted">Make +{{ b.name }} private. Forwarded posts will only be visible to approved Guild Members.</p>
 
           <div class="settings-section rounded">
 
@@ -247,7 +247,7 @@
                   <label class="custom-control-label" for="guildprivacy"></label>
                 </div>
 
-                <span class="text-small-extra text-muted">Restrict viewing, posting, and commenting in +{{ b.name }} to approved members only.</span>
+                <span class="text-small-extra text-muted">Restrict viewing, forwarding, and commenting in +{{ b.name }} to approved members only.</span>
 
               </div>
 
@@ -292,7 +292,7 @@
 
           <h2 class="h5">Disallow Bots</h2>
 
-          <p class="text-small text-muted">Disallow bots from posting and commenting in +{{ b.name }}.</p>
+          <p class="text-small text-muted">Disallow bots from forwarding to and commenting in +{{ b.name }}.</p>
 
           <div class="settings-section rounded">
 
@@ -309,7 +309,7 @@
                   <label class="custom-control-label" for="disallowbots"></label>
                 </div>
 
-                <span class="text-small-extra text-muted">Disallow bots from posting and commenting in +{{ b.name }}.</span>
+                <span class="text-small-extra text-muted">Disallow bots from forwarding to and commenting in +{{ b.name }}.</span>
 
               </div>
 

@@ -681,7 +681,7 @@ Optional form data:
                                   is_active=True)
         g.db.add(new_ban)
 
-        text = f"You have been exiled from +{board.name}.\n\nNone of your existing posts or comments have been removed, however, you will not be able to make any new posts or comments in +{board.name}."
+        text = f"You have been exiled from +{board.name}.\n\nNone of your existing posts or comments have been removed, however, you will not be able to forward posts to +{board.name} or comment in it."
         if item:
             text+= "\n\nYou were exiled for [this "
             text+= "comment" if isinstance(item, Comment) else "post"
@@ -2391,7 +2391,7 @@ def siege_guild(v):
             return render_template("message.html",
                                    v=v,
                                    title=f"Siege against +{guild.name} Failed",
-                                   error=f"Your siege failed. One of the guildmasters created or edited a post in +{guild.name} within the last 60 days. You may try again in 7 days.",
+                                   error=f"Your siege failed. One of the guildmasters had a post forwarded to +{guild.name}, or edited one there, within the last 60 days. You may try again in 7 days.",
                                    link=post.permalink,
                                    link_text="View post"
                                    ), 403

@@ -50,7 +50,7 @@ In order to successfully siege a guild you must meet the following requirements:
 
 Additionally, no current Guildmaster (or no Guildmaster above you, if you are a Guildmaster already) may have done any of the following in the past 60 days:
 
-* Create a post in the guild being sieged
+* Have a post forwarded to the guild being sieged
 * Create a comment in the guild being sieged
 * Perform a mod action in the guild being sieged
 
@@ -74,7 +74,7 @@ Finally, you may not Siege a guild with the intention of vandalizing it or subve
   {% endif %}
   {% if v.can_siege %}
 
-    <p>If automated siege does not work, you can make a post in +SiegeGuild to request manual intervention.</p>
+    <p>If automated siege does not work, you can forward a post to +SiegeGuild to request manual intervention.</p>
 
     <label>Your name:</label>
     <input class="form-control" type="text" name="username" value="{{ v.username }}" readonly="readonly">

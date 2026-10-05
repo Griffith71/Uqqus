@@ -33,7 +33,7 @@
 
 			<div>
 				<h2 class="h5" name="guild_name">Approved contributors for +{{ b.name }}</h2>
-				<p class="text-small text-muted mb-md-0">The following users are approved to post in +{{ b.name }}.</p>
+				<p class="text-small text-muted mb-md-0">The following users are approved to forward to +{{ b.name }}.</p>
 			</div>
 			<div class="mt-auto">
 				<button class="btn btn-primary" data-toggle="modal" data-target="#guildmasterApproveModal"><i class="far fa-plus mr-2"></i>Add user</button>
@@ -109,7 +109,7 @@
 		{% else %}
 		<div class="text-center border-md rounded py-7">
 			<i class="fas fa-ghost text-gray-500 mb-3" style="font-size: 3.5rem;"></i>
-			<p class="font-weight-bold text-gray-500 mb-0">No users approved for posting in +{{ b.name }}</p>
+			<p class="font-weight-bold text-gray-500 mb-0">No users approved to forward to +{{ b.name }}</p>
 		</div>
 		{% endif %}
 
