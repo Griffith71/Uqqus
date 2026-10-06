@@ -1,0 +1,21 @@
+{#
+  Option controls shared by "Create a post" and the post edit form, so the
+  wording lives in one place.
+
+  comment_permission_field(selected, prefix): "Who can comment?" radios for a
+  post on the author's own profile (helpers/comment_permission.py). `selected`
+  is the current mode (0 everyone, 1 accounts you follow, 2 Premium accounts);
+  `prefix` keeps the input ids unique when the field is on a page twice.
+#}
+
+{% macro comment_permission_field(selected, prefix) %}
+<label class="mt-3 d-block">Who can comment?<i class="fas fa-info-circle text-gray-400 ml-1" data-toggle="tooltip" data-placement="top" title="Applies to this post on your profile. A copy forwarded to a guild follows that guild's rules instead. You and site admins can always comment."></i></label>
+<div class="comment-permission">
+  {% for value, label in [(0, "Everyone"), (1, "Accounts you follow"), (2, "Premium accounts")] %}
+  <div class="custom-control custom-radio custom-control-inline">
+    <input type="radio" class="custom-control-input" id="{{ prefix }}-{{ value }}" name="comment_permission" value="{{ value }}"{% if selected == value %} checked{% endif %}>
+    <label class="custom-control-label" for="{{ prefix }}-{{ value }}">{{ label }}</label>
+  </div>
+  {% endfor %}
+</div>
+{% endmacro %}

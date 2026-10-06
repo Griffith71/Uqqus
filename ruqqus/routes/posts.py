@@ -24,6 +24,7 @@ from ruqqus.helpers.alerts import send_notification
 from ruqqus.helpers.text import split_title_body
 from ruqqus.helpers.languages import detect_language
 from ruqqus.helpers.post_fields import clean_title, check_body, normalize_url, PostFieldError
+from ruqqus.helpers import comment_permission as cperm
 from ruqqus.helpers.word_filter_store import post_severity, apply_post_severity
 from ruqqus.classes import *
 from .front import frontlist
@@ -225,6 +226,9 @@ Optional form data:
 * `body` - The new raw text body. 25000 character limit.
 * `url` - The new link. Send it empty to remove the link.
 * `sensitive` - `true` to mark the post sensitive, empty to unmark it.
+* `comment_permission` - Who can comment: `0` everyone, `1` accounts you follow,
+  `2` Premium accounts. Only applies to the post on your profile (forwarded
+  copies follow their guild's rules).
 * `remove_image` - `true` to remove the post's uploaded image.
 
 Optional file data:
@@ -260,6 +264,12 @@ Optional file data:
         return _edit_error(str(e))
 
     sensitive = any(form.getlist("sensitive")) if "sensitive" in form else bool(primary.is_sensitive)
+
+    comment_permission = cperm.mode_of(primary)
+    if "comment_permission" in form:
+        comment_permission = cperm.parse(form["comment_permission"])
+        if comment_permission is None:
+            return _edit_error("Choose who can comment.")
 
     # image: replace it with an upload, or remove it
     old_image_key = _own_image_key(primary)
@@ -347,6 +357,10 @@ Optional file data:
             else:
 
                 return _edit_error(f"The link `{badlink.link}` is not allowed. Reason: {badlink.reason}", 403)
+
+    if primary.is_profile_post and comment_permission != cperm.mode_of(primary):
+        primary.comment_permission = comment_permission
+        g.db.add(primary)
 
     unchanged = (title == primary.title and not body_changed and not url_changed
                  and sensitive == bool(primary.is_sensitive))
@@ -689,6 +703,9 @@ Optional form data:
 * `url` - A link to attach to the post.
 * `forward_guilds` - Guild name(s) to forward this post to (repeat the
   field for multiple guilds, e.g. forward_guilds=foo&forward_guilds=bar).
+* `comment_permission` - Who can comment on the post on your profile: `0`
+  everyone (default), `1` accounts you follow, `2` Premium accounts.
+  Forwarded copies follow their guild's rules instead.
 * `content` - Legacy combined-field form, retained for API clients: the
   first 280 characters become the title, anything past that becomes the
   body. Only used when `title`/`body` are absent.
@@ -728,6 +745,21 @@ Optional file data:
         x for x in forward_guild_names
         if not (x.lower() in seen_names or seen_names.add(x.lower()))
     ]
+
+    raw_permission = request.form.get("comment_permission", "")
+    comment_permission = cperm.EVERYONE if raw_permission.strip() == "" else cperm.parse(raw_permission)
+    if comment_permission is None:
+        return {"html": lambda: (render_template("submit.html",
+                                                 v=v,
+                                                 error="Choose who can comment.",
+                                                 title=title,
+                                                 url=url,
+                                                 body=body,
+                                                 text=text_for_redisplay,
+                                                 b=None, forward_guild_names=forward_guild_names
+                                                 ), 400),
+                "api": lambda: ({"error": "Choose who can comment."}, 400)
+                }
 
     if not title:
         return {"html": lambda: (render_template("submit.html",
@@ -1127,6 +1159,7 @@ Optional file data:
         board_id=board.id,
         original_board_id=board.id,
         is_sensitive=bool(request.form.get("sensitive", "")),
+        comment_permission=comment_permission,
         post_public=not board.is_private,
         repost_id=None,
         app_id=v.client.application.id if v.client else None,

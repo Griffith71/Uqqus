@@ -215,7 +215,8 @@ CREATE TABLE public.submissions (
     hidden_by_guild boolean DEFAULT false,
     language_code character varying(5) DEFAULT NULL,
     word_severity smallint DEFAULT 0 NOT NULL,
-    word_filter_version character varying(12)
+    word_filter_version character varying(12),
+    comment_permission smallint DEFAULT 0 NOT NULL
 );
 
 

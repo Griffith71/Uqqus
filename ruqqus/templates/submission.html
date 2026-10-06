@@ -654,6 +654,11 @@
               <label class="text-small font-weight-bold mb-1" for="post-edit-box-{{ p.base36id }}">Text</label>
               <textarea name="body" id="post-edit-box-{{ p.base36id }}" class="comment-box form-control rounded" maxlength="25000" onkeydown="textAreaOnKeyDown(event, ()=>{post_edit('{{ p.base36id }}')})" aria-label="With textarea" placeholder="Add text to your post..." rows="3">{{ edit_src.body or '' }}</textarea>
 
+              {% if p.is_profile_post %}
+              {% import "partials/post_options.html" as post_options %}
+              {{ post_options.comment_permission_field(p.comment_permission or 0, "post-edit-cp-" ~ p.base36id) }}
+              {% endif %}
+
               <div class="custom-control custom-checkbox mt-2">
                 <input type="hidden" name="sensitive" value="">
                 <input type="checkbox" class="custom-control-input" id="post-edit-sensitive-{{ p.base36id }}" name="sensitive" value="true"{% if edit_src.is_sensitive %} checked{% endif %}>
@@ -900,7 +905,11 @@
     </div>
   </div>
 
-  {% if not p.is_banned and is_allowed_to_comment and ((not p.is_blocking and not p.is_blocked) or v.admin_level>=3) %}
+  {% if not p.is_banned and is_allowed_to_comment and comment_restriction %}
+  <div class="text-muted text-small border rounded p-3 mb-3" id="comment-restriction"><i class="fas fa-lock fa-fw mr-1"></i>{{ comment_restriction }}</div>
+  {% endif %}
+
+  {% if not p.is_banned and is_allowed_to_comment and not comment_restriction and ((not p.is_blocking and not p.is_blocked) or v.admin_level>=3) %}
   <div id="comment-form-space-{{ p.fullname }}" class="comment-write mb-3">
     <form id="comment-on-{{ p.fullname }}" class="input-group" action="/api/comment" method="post">
       <input type="hidden" name="formkey" value="{{ v.formkey }}">

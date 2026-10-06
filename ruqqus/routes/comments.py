@@ -18,6 +18,7 @@ from ruqqus.helpers.session_helpers import *
 from ruqqus.helpers.alerts import *
 from ruqqus.helpers.aws import *
 from ruqqus.helpers.word_filter_store import apply_comment_severity
+from ruqqus.helpers import comment_permission as cperm
 from ruqqus.classes import *
 from flask import *
 from ruqqus.__main__ import app, limiter
@@ -361,6 +362,11 @@ Optional file data:
     if post.is_archived or not post.board.can_comment(v):
 
         return jsonify({"error": "You can't comment on this."}), 403
+
+    # the author may limit who can comment on the post on their profile
+    limited = cperm.restriction(post, v)
+    if limited:
+        return jsonify({"error": limited}), 403
 
     # get bot status
     is_bot = request.headers.get("X-User-Type","").lower()=="bot"

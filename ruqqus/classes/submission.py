@@ -11,6 +11,7 @@ import requests
 from .mix_ins import *
 from ruqqus.helpers.base36 import *
 from ruqqus.helpers.lazy import lazy
+from ruqqus.helpers import comment_permission as cperm
 import ruqqus.helpers.aws as aws
 from ruqqus.__main__ import Base, cache, app
 from .votes import Vote, CommentVote
@@ -95,6 +96,10 @@ class Submission(Base, Stndrd, Age_times, Scores, Fuzzing):
     # (see helpers/word_filter_store.py); the version says which list rated it
     word_severity = Column(SmallInteger, default=0)
     word_filter_version = Column(String(12), default=None)
+    # who may comment (helpers/comment_permission.py): 0 everyone, 1 accounts the
+    # author follows, 2 Premium accounts. Only read on a post on the author's
+    # own profile; forwarded copies follow their guild's rules.
+    comment_permission = Column(SmallInteger, default=0)
     hidden_by_guild = Column(Boolean, default=False)
     board = relationship(
         "Board",
@@ -318,6 +323,9 @@ class Submission(Base, Stndrd, Age_times, Scores, Fuzzing):
         # return template
         is_allowed_to_comment = self.board.can_comment(
             v) and not self.is_archived
+        # why a signed-in viewer may not write a comment here although the
+        # guild allows it: the author limited the post (None when they may)
+        comment_restriction = cperm.restriction(self, v) if v else None
         
     #    if request.args.get("sort", "Hot") != "new":
     #        self.nested_comments = [x for x in self.nested_comments if x.is_pinned] + [x for x in self.nested_comments if not x.is_pinned]
@@ -330,6 +338,7 @@ class Submission(Base, Stndrd, Age_times, Scores, Fuzzing):
                                linked_comment=comment,
                                comment_info=comment_info,
                                is_allowed_to_comment=is_allowed_to_comment,
+                               comment_restriction=comment_restriction,
                                render_child_comments=True,
                                b=None if self.is_profile_post else self.board
                                )
@@ -441,6 +450,7 @@ class Submission(Base, Stndrd, Age_times, Scores, Fuzzing):
                 'fullname': self.fullname,
                 'title': self.title,
                 'is_sensitive': self.is_sensitive,
+                'comment_permission': cperm.mode_of(self),
                 'is_bot': self.is_bot,
                 'thumb_url': self.thumb_url,
                 'domain': self.domain,

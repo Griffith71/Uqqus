@@ -37,6 +37,11 @@ Guilds only ever receive forwards, so guild settings and errors talk about _forw
 External contracts keep their old names on purpose: the URL `/notifications/replies`, the JSON field `replies`, DB columns such as `restricted_posting` and `promoted_by_id` (Python attributes use the new names), the `/mod/kick/...` URLs, and legacy mod-log kinds (`yank_post`, `kick_post`).
 `tests/test_terminology.py` enforces this; extend its allowlist only for a real external contract.
 
+## Post options (legacy app)
+
+- **Who can comment?** (`submissions.comment_permission`: 0 everyone, 1 accounts the author follows, 2 Premium accounts) is set by the author on the post on their own profile. The rule lives in `ruqqus/helpers/comment_permission.py`: `api_comment` enforces it (the author and admins are exempt) and `rendered_page` passes `comment_restriction` to the templates, which show a notice instead of the comment box. A forwarded copy never reads it: copies follow their guild's rules (`Board.can_comment`). Do not copy the column onto a forward.
+- The option controls shared by the composer and the edit form live in `templates/partials/post_options.html`; the rules text in `templates/partials/posting_rules.html` (keep `help/rules.html` in step: `tests/test_posting_rules.py`).
+
 ## Word filter (legacy app)
 
 Viewers browse at a level (`User.filter_level`: 0 Off, 1 Standard - the default and what logged-out visitors get, 2 Child). Content is never removed; it is hidden per viewer.

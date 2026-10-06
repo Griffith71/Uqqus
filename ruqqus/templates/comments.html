@@ -279,7 +279,7 @@
           {% endif %}
 
           {% if v %}
-          {% if (standalone or is_allowed_to_comment) and (c.is_guildmaster('content') or not c.is_blocked) %}
+          {% if (standalone or is_allowed_to_comment) and not comment_restriction and (c.is_guildmaster('content') or not c.is_blocked) %}
           <li class="list-inline-item text-muted"><a href="javascript:void(0)" onclick="document.getElementById('comment-on-{{ c.base36id }}').classList.remove('d-none')"><i class="fas fa-reply"
             aria-hidden="true"></i><span class="d-none d-md-inline-block">Comment</span></a>
           </li>
@@ -514,7 +514,7 @@
       <div class="modal-body">
         <ul class="list-group comment-actions">
 
-          {% if v and c.parent_submission and (standalone or is_allowed_to_comment) and (c.is_guildmaster('content') or not c.is_blocked) %}
+          {% if v and c.parent_submission and (standalone or is_allowed_to_comment) and not comment_restriction and (c.is_guildmaster('content') or not c.is_blocked) %}
           <li class="list-group-item"><a href="javascript:void(0)" data-dismiss="modal" onclick="document.getElementById('comment-on-{{ c.base36id }}').classList.remove('d-none')" class="d-block"><i class="fas fa-reply"></i><span>Comment</span></a></li>
           {% endif %}
 
