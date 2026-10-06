@@ -89,6 +89,15 @@
                     <div class="body">
 
                         <input type="hidden" name="formkey" value="{{ v.formkey }}">
+                        <input type="hidden" name="draft_id" id="draft-id" value="{{ draft.id if draft else request.form.get('draft_id', '') }}">
+
+                        {% if draft and draft.status == "scheduled" %}
+                        <div id="draft-banner" class="alert alert-info text-small py-2">Scheduled for <span class="js-local-time" data-utc="{{ draft.publish_utc }}"></span>. Saving a draft unschedules it; Schedule changes the time.</div>
+                        {% elif draft and draft.status == "failed" %}
+                        <div id="draft-banner" class="alert alert-danger text-small py-2">This scheduled post could not be published: {{ draft.error }} Fix it, then post it or schedule it again.</div>
+                        {% elif draft %}
+                        <div id="draft-banner" class="alert alert-light border text-small py-2">Editing a draft. Post it now, or schedule it.</div>
+                        {% endif %}
 
                         <label for="post-title" class="sr-only">Title</label>
                         <div class="position-relative">
@@ -177,14 +186,14 @@
                             </div>
                         </div>
 
-                        {{ post_options.comment_permission_field(request.form.get("comment_permission", 0) | int, "post-cp") }}
+                        {{ post_options.comment_permission_field((draft.option("comment_permission", 0) if draft else request.form.get("comment_permission", 0)) | int, "post-cp") }}
 
-                        {{ post_options.disclosure_field(request.form.getlist("paid_partnership") | select | list | length > 0, request.form.getlist("made_with_ai") | select | list | length > 0, "post-disc") }}
+                        {{ post_options.disclosure_field(draft.option("paid_partnership", false) if draft else request.form.getlist("paid_partnership") | select | list | length > 0, draft.option("made_with_ai", false) if draft else request.form.getlist("made_with_ai") | select | list | length > 0, "post-disc") }}
 
                         <label for="sensitive" class="text-warning mt-3">Sensitive Content?<i class="fas fa-info-circle text-gray-400 ml-1" data-toggle="tooltip" data-placement="top" title="Not a rule violation - just something that could be upsetting. Shown blurred with a click-to-reveal instead of being blocked."></i></label>
 
                         <div class="custom-control custom-checkbox">
-                            <input type="checkbox" class="custom-control-input" id="sensitiveCheck" name="sensitive"{% if b and b.is_sensitive %} checked disabled {% endif %}>
+                            <input type="checkbox" class="custom-control-input" id="sensitiveCheck" name="sensitive"{% if b and b.is_sensitive %} checked disabled {% elif draft and draft.option("sensitive") %} checked{% endif %}>
                             <label class="custom-control-label" for="sensitiveCheck">Blur this post until viewers click to reveal it.</label>
                         </div>
 
@@ -232,12 +241,47 @@
                 </div>
                 <div class="col text-right">
                     {% if error %}<span class="text-danger mr-2">{{ error }}</span>{% endif %}
+                    <span id="draft-status" class="text-small text-muted mr-2 d-none d-md-inline" role="status"></span>
+                    <button type="button" class="btn btn-link text-muted px-2" id="drafts-open" data-toggle="modal" data-target="#draftsModal" title="Your drafts and scheduled posts" aria-label="Drafts">
+                        <i class="far fa-folder-open"></i><span class="d-none d-md-inline ml-1">Drafts</span><span class="badge badge-pill badge-secondary ml-1 d-none" id="drafts-count"></span>
+                    </button>
+                    <button type="button" class="btn btn-secondary" id="save-draft" title="Save as a draft" aria-label="Save draft">
+                        <i class="far fa-save"></i><span class="d-none d-md-inline ml-1">Save draft</span>
+                    </button>
+                    <button type="button" class="btn btn-secondary" id="schedule-open" title="Schedule this post" aria-label="Schedule" aria-haspopup="dialog" aria-expanded="false">
+                        <i class="far fa-clock"></i><span class="d-none d-md-inline ml-1">Schedule</span>
+                    </button>
                     <button class="btn btn-purple" id="create_button" type="submit" disabled>Post</button>
                 </div>
             </div>
         </div>
 
     </form>
+
+    <div id="schedule-panel" class="schedule-panel card d-none" role="dialog" aria-label="Schedule this post">
+        <div class="card-body">
+            <label for="schedule-at" class="font-weight-bold mb-1">Publish on</label>
+            <input type="datetime-local" id="schedule-at" class="form-control">
+            <small class="text-muted d-block mt-1" id="schedule-hint"></small>
+            <div id="schedule-error" class="text-danger text-small mt-1" role="alert"></div>
+            <div class="d-flex justify-content-end mt-2">
+                <button type="button" class="btn btn-link text-muted" id="schedule-cancel">Cancel</button>
+                <button type="button" class="btn btn-primary ml-2" id="schedule-confirm">Schedule post</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="draftsModal" tabindex="-1" role="dialog" aria-labelledby="draftsModalTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="draftsModalTitle">Drafts and scheduled posts</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                </div>
+                <div class="modal-body" id="drafts-list"><p class="text-muted mb-0">Loading...</p></div>
+            </div>
+        </div>
+    </div>
 
     {% endblock %}
 
@@ -247,6 +291,7 @@
 
     <script src="/assets/js/all_js.js?v=2.39.0"></script>
     <script src="/assets/js/post_editor.js?v=1"></script>
+    <script src="/assets/js/post_drafts.js?v=1"></script>
 
     <!-- ClipboardJS -->
 

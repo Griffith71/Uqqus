@@ -25,6 +25,7 @@ from ruqqus.helpers.text import split_title_body
 from ruqqus.helpers.languages import detect_language
 from ruqqus.helpers.post_fields import clean_title, check_body, normalize_url, flag, PostFieldError
 from ruqqus.helpers import comment_permission as cperm
+from ruqqus.helpers import post_drafts
 from ruqqus.helpers.word_filter_store import post_severity, apply_post_severity
 from ruqqus.classes import *
 from .front import frontlist
@@ -184,12 +185,41 @@ def submit_get(v):
     board = request.args.get("guild")
     b = get_guild(board, graceful=True) if board else None
 
+    # ?draft=<id> reopens a saved draft or scheduled post of your own
+    draft = None
+    raw_draft = request.args.get("draft", "")
+    if raw_draft.isdigit():
+        draft = g.db.query(PostDraft).filter(
+            PostDraft.id == int(raw_draft),
+            PostDraft.user_id == v.id,
+            PostDraft.status.in_(post_drafts.EDITABLE)).first()
+
+    if draft:
+        return render_template("submit.html",
+                               v=v,
+                               b=b,
+                               draft=draft,
+                               title=draft.title,
+                               url=draft.url,
+                               body=draft.body,
+                               forward_guild_names=draft.forward_guild_list
+                               )
 
     return render_template("submit.html",
                            v=v,
                            b=b,
                            forward_guild_names=[]
                            )
+
+
+def _discard_draft(v, raw_id):
+    """A post made from a saved draft uses it up: delete it (unless the
+    scheduler is publishing it at this very moment)."""
+    if not (raw_id or "").strip().isdigit():
+        return
+    draft = g.db.query(PostDraft).filter_by(id=int(raw_id), user_id=v.id).first()
+    if draft and draft.status in post_drafts.EDITABLE:
+        g.db.delete(draft)
 
 
 def _own_image_key(post):
@@ -719,6 +749,7 @@ Optional form data:
 * `url` - A link to attach to the post.
 * `forward_guilds` - Guild name(s) to forward this post to (repeat the
   field for multiple guilds, e.g. forward_guilds=foo&forward_guilds=bar).
+* `draft_id` - The saved draft this post was made from; it is deleted once the post exists.
 * `paid_partnership` - `true` to mark the post as a paid partnership.
 * `made_with_ai` - `true` to mark the post as made with AI.
 * `comment_permission` - Who can comment on the post on your profile: `0`
@@ -1427,6 +1458,8 @@ Optional file data:
     # guilds in a single request costs proportionally more of the same
     # posting-rate budget instead of registering as a single free action.
     g.throttle_weight = 1 + len(forward_boards)
+
+    _discard_draft(v, request.form.get("draft_id"))
 
     return {"html": lambda: redirect(new_post.permalink),
             "api": lambda: jsonify(new_post.json)

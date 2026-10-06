@@ -4411,6 +4411,47 @@ a.post-button:hover {
     margin-top: 0.5rem !important;
 }
 
+// Schedule panel and the drafts list on Create a post (assets/js/post_drafts.js)
+.schedule-panel {
+    position: fixed;
+    right: 1rem;
+    bottom: 5.25rem;
+    z-index: 1030;
+    width: 20rem;
+    max-width: calc(100vw - 2rem);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.6);
+}
+
+.draft-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding: 0.625rem 0;
+    border-bottom: 1px solid $gray-300;
+}
+
+.draft-row:last-child {
+    border-bottom: 0;
+}
+
+.draft-main {
+    min-width: 0;
+}
+
+.draft-title {
+    overflow: hidden;
+    font-weight: 600;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.draft-actions {
+    display: flex;
+    flex: 0 0 auto;
+    align-items: center;
+}
+
 // Dark Mode
 
 .bg-white {

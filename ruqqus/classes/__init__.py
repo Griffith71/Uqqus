@@ -27,4 +27,5 @@ from .curations import *
 from .chat import *
 from .word_filter import *
 from .post_template import *
+from .post_draft import *
 #from lodges import *

@@ -5703,5 +5703,29 @@ CREATE TABLE public.post_templates (
 
 CREATE INDEX post_templates_user_id_index ON public.post_templates USING btree (user_id);
 
+CREATE TABLE public.post_drafts (
+    id SERIAL PRIMARY KEY,
+    user_id integer NOT NULL,
+    title character varying(300) DEFAULT '' NOT NULL,
+    url character varying(2048) DEFAULT '' NOT NULL,
+    body text DEFAULT '' NOT NULL,
+    forward_guilds text DEFAULT '[]' NOT NULL,
+    options text DEFAULT '{}' NOT NULL,
+    status character varying(12) DEFAULT 'draft' NOT NULL,
+    publish_utc integer,
+    attempts smallint DEFAULT 0 NOT NULL,
+    claimed_utc integer,
+    error character varying(512) DEFAULT '' NOT NULL,
+    published_post_id integer,
+    creation_ip character varying(64) DEFAULT '' NOT NULL,
+    creation_region character varying(2),
+    created_utc integer DEFAULT 0 NOT NULL,
+    updated_utc integer DEFAULT 0 NOT NULL
+);
+
+CREATE INDEX post_drafts_user_id_index ON public.post_drafts USING btree (user_id);
+
+CREATE INDEX post_drafts_due_index ON public.post_drafts USING btree (publish_utc) WHERE status = 'scheduled';
+
 CREATE INDEX submissions_word_severity_index ON public.submissions USING btree (word_severity);
 CREATE INDEX comments_word_severity_index ON public.comments USING btree (word_severity);
