@@ -4124,6 +4124,59 @@ textarea, input[type=text] {
     }
 }
 
+// Rules and guidelines (templates/partials/posting_rules.html)
+// The global "ol > li::before" draws the number. The li is a wrapping flex row
+// (number, title + chevron, then the collapsed text on its own row) so a long
+// title wraps beside its number instead of pushing the chevron down a line.
+.posting-rules > li {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+}
+
+.posting-rules > li > .collapse {
+    -ms-flex: 0 0 100%;
+    flex: 0 0 100%;
+}
+
+.rules-toggle {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.posting-rules > li > .rules-toggle {
+    -ms-flex: 1 1 0;
+    flex: 1 1 0;
+    min-width: 0;
+}
+
+.rules-toggle > span:first-of-type {
+    -ms-flex: 1 1 auto;
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+.rules-toggle .rules-chevron {
+    -ms-flex: 0 0 auto;
+    flex: 0 0 auto;
+    margin-left: 0.5rem;
+}
+
+.posting-rules .rule-body {
+    padding: 0 0 0.5rem 22px;
+}
+
+.posting-rules .rule-body p,
+.posting-rules .rule-body li {
+    font-size: 14px;
+}
+
+.posting-rules .rule-body ul {
+    padding-left: 1.1rem;
+    margin-bottom: 0.5rem;
+}
+
 // Dark Mode
 
 .bg-white {

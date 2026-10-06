@@ -1,0 +1,86 @@
+{#
+  Rules and guidelines shown on "Create a post" and "Create a guild" (the full
+  policy is help/rules.html - keep the two in step).
+
+  rules_card(prefix) is the desktop sidebar card, rules_list(prefix) is the bare
+  list for the collapsible panel on small screens. The prefix keeps the
+  collapse ids unique when both are on the page.
+#}
+
+{% macro rule(prefix, n, title) %}
+<li>
+  <a class="rules-toggle text-black font-weight-bold collapsed" data-toggle="collapse" href="#{{ prefix }}Rule{{ n }}" role="button" aria-expanded="false" aria-controls="{{ prefix }}Rule{{ n }}"><span>{{ title }}</span><span class="rules-chevron"><i class="fa"></i></span></a>
+  <div id="{{ prefix }}Rule{{ n }}" class="collapse">
+    <div class="rule-body">{{ caller() }}</div>
+  </div>
+</li>
+{% endmacro %}
+
+{% macro rules_list(prefix) %}
+<ol class="posting-rules pl-0 mb-0">
+
+  {% call rule(prefix, 1, "Free speech, not bad faith") %}
+  <p>Free speech does not protect insincere or bad-faith expression: speech driven by undisclosed, harmful motives.</p>
+  <p>Harassment, scams (including gambling schemes), misinformation, spam and violence are banned, and so is any promotion of them or of a group or person complicit in them.</p>
+  {% endcall %}
+
+  {% call rule(prefix, 2, "No illegal content") %}
+  <p><strong>Intellectual property.</strong> Copyright is protected. Do not post copyrighted material you are not authorized to distribute, or content that spreads it, such as links to pirated copies.</p>
+  <p><strong>Unsafe products and services.</strong> Selling or promoting unsafe or unregulated products or services is banned.</p>
+  <p>Do not post anything that is not legal to publish within, or export from, the United States of America.</p>
+  {% endcall %}
+
+  {% call rule(prefix, 3, "General anti-degen policy") %}
+  <p>Content made purely for entertainment is banned when it is:</p>
+  <ul>
+    <li>purely erotic material</li>
+    <li>purely violent material</li>
+    <li>purely grotesque material</li>
+  </ul>
+  {% endcall %}
+
+  {% call rule(prefix, 4, "No unnecessary duplicate posting") %}
+  <p>Check that what you are posting has not been posted before. Posting the same thing again without good reason is banned.</p>
+  {% endcall %}
+
+  {% call rule(prefix, 5, "Personal information and impersonation") %}
+  <p>Do not share or publish personal information, yours or anyone else's. Do not impersonate other people or {{ 'SITE_NAME' | app_config }} staff.</p>
+  {% endcall %}
+
+  {% call rule(prefix, 6, "Protect minors") %}
+  <p>Sexual or sexually suggestive material involving anyone under 18, including fictitious content, is never allowed, whatever label it carries.</p>
+  {% endcall %}
+
+  {% call rule(prefix, 7, "Digital safety") %}
+  <p>No malware, phishing or other attacks, and no URL shorteners.</p>
+  {% endcall %}
+
+  {% call rule(prefix, 8, "Be upfront") %}
+  <p>Mark sensitive content as sensitive. Disclose paid partnerships and content made with AI. Bots must identify themselves as bots.</p>
+  {% endcall %}
+
+  {% call rule(prefix, 9, "Play fair") %}
+  <p>No evading bans or blocks with other accounts, no vote manipulation, and no coordinated harassment.</p>
+  {% endcall %}
+
+</ol>
+<a href="/help/rules" class="d-inline-block text-small mt-2" target="_blank">Read the full content policy</a>
+{% endmacro %}
+
+{% macro rules_card(prefix) %}
+<div class="sidebar-section sidebar-rules">
+  <div class="title bg-purple"><span><i class="fas fa-scroll mr-2"></i>Rules and guidelines</span></div>
+  <div class="body">
+    {{ rules_list(prefix) }}
+  </div>
+</div>
+{% endmacro %}
+
+{% macro rules_panel(prefix) %}
+<div class="d-lg-none mt-4">
+  <a class="rules-toggle text-black font-weight-bold collapsed" data-toggle="collapse" href="#{{ prefix }}Panel" role="button" aria-expanded="false" aria-controls="{{ prefix }}Panel"><span><i class="fas fa-scroll mr-2"></i>Rules and guidelines</span><span class="rules-chevron"><i class="fa"></i></span></a>
+  <div id="{{ prefix }}Panel" class="collapse mt-2">
+    {{ rules_list(prefix) }}
+  </div>
+</div>
+{% endmacro %}
