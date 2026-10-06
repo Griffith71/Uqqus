@@ -1422,8 +1422,8 @@ color: $dark;
 
 @media (min-width: 1199.98px) {
     .sidebar.sidebar-left {
-        -ms-flex: 0 0 240px;
-        flex: 0 0 240px;
+        -ms-flex: 0 0 300px;
+        flex: 0 0 300px;
     }
 }
 
@@ -4045,7 +4045,7 @@ textarea, input[type=text] {
 // .justify-content-around. Below the sidebar breakpoint (lg / 992px,
 // matching .sidebar's d-none d-lg-block) the column stays fluid/full-width.
 @media (min-width: 992px) {
-    #frontpage #main-content-row, #userpage #main-content-row, #search #main-content-row, #guild #main-content-row, #settings-guild #main-content-row, #thread #main-content-row, #notifications #main-content-row, #curations #main-content-row, #content_history #main-content-row {
+    #frontpage #main-content-row, #userpage #main-content-row, #search #main-content-row, #guild #main-content-row, #settings-guild #main-content-row, #thread #main-content-row, #notifications #main-content-row, #curations #main-content-row, #content_history #main-content-row, #chat #main-content-row {
         justify-content: center !important;
         // never wrap the right sidebar below the content (guild pages used to
         // at 1200-1325px because the column's min-content equals its cap)
@@ -4058,6 +4058,69 @@ textarea, input[type=text] {
         margin-left: 0;
         margin-right: 0;
         float: none;
+    }
+}
+
+// Chat: the left sidebar (300px) plus the conversation list (300px) and the
+// thread (726px) form one 1326px block, centered like the feeds.
+@media (min-width: 992px) {
+    #chat #main-content-col {
+        max-width: 1026px;
+        min-width: 0;
+        margin-left: 0;
+        margin-right: 0;
+        float: none;
+    }
+}
+
+// Settings: one centered column as wide as a feed card column (726px,
+// 696px of content) with the tab bar above it. The pages' own col-lg-8
+// would squeeze the content to two thirds of that, so it takes the full width.
+#settings .container {
+    max-width: 726px;
+}
+
+#settings .col-lg-8 {
+    -ms-flex: 0 0 100%;
+    flex: 0 0 100%;
+    max-width: 100%;
+}
+
+// the banner preview (572px wide) shrinks to leave room for its caption in
+// the narrower card instead of overlapping it
+#settings .banner-preview {
+    -ms-flex: 0 1 60%;
+    flex: 0 1 60%;
+    min-width: 0;
+}
+
+#settings .banner-preview .banner-pic-135 {
+    width: 100%;
+    max-width: 572px;
+}
+
+// Create a post / create a guild: a 726px form column and a 300px rules
+// column, centered (the same widths as the feed and its right sidebar).
+@media (min-width: 992px) {
+    #submit .container {
+        max-width: 1026px;
+    }
+
+    // let the form column shrink instead of pushing the rules below it
+    #submit .container > .row:not(.fixed-bottom) {
+        flex-wrap: nowrap;
+    }
+
+    #submit .submit-main-col {
+        -ms-flex: 0 1 726px;
+        flex: 0 1 726px;
+        max-width: 726px;
+    }
+
+    #submit .submit-side-col {
+        -ms-flex: 0 0 300px;
+        flex: 0 0 300px;
+        max-width: 300px;
     }
 }
 

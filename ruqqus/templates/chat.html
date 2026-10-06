@@ -8,13 +8,17 @@
 
 {% block sidebar %}{% endblock %}
 
+{% block leftSidebarBlock %}
+{% include "sidebar-left.html" %}
+{% endblock %}
+
 {% block customPadding %}p-0{% endblock %}
 
 {% block content %}
 
 <div id="chat-app" class="d-flex" style="height: calc(100vh - 56px);">
 
-  <div id="chat-list-pane" class="h-100 border-right d-flex flex-column" style="width: 360px; min-width: 280px; flex-shrink: 0;">
+  <div id="chat-list-pane" class="h-100 border-right d-flex flex-column" style="width: 300px; min-width: 280px; flex-shrink: 0;">
 
     <div class="font-weight-bold h5 px-3 pt-3 pb-2 mb-0">Chat</div>
 
