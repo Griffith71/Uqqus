@@ -72,6 +72,14 @@ def test_op_mark_is_unchanged_when_nothing_is_anonymous():
     assert an.op_badge(item(bob, anonymous=False), post, user(id=3)) is False
 
 
+def test_a_comment_with_no_post_has_no_op_mark():
+    # system notifications (ban notices, "could not be published") are comments with no post;
+    # the notifications page asks about every one of them
+    notice = item(user(id=1), anonymous=False)
+    for viewer in (user(id=1), user(id=3), user(id=3, admin=3), None):
+        assert an.op_badge(notice, None, viewer) is False
+
+
 def test_an_anonymous_comment_by_the_author_of_a_public_post_has_no_op_mark():
     alice = user(id=1)
     post, comment = item(alice, anonymous=False), item(alice, anonymous=True)

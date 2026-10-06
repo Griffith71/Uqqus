@@ -83,8 +83,9 @@ def label_of(item, viewer):
 
 def op_badge(comment, post, viewer):
     """Show the "OP" mark on a comment by the post's author - unless that would
-    give away an anonymous commenter on a post that is not anonymous."""
-    if comment.author_id != post.author_id:
+    give away an anonymous commenter on a post that is not anonymous.
+    System notifications are comments with no post: nothing to be the submitter of."""
+    if post is None or comment.author_id != post.author_id:
         return False
     if identity_hidden(comment, viewer):
         return identity_hidden(post, viewer)   # both anonymous: the same unnamed person
