@@ -4045,14 +4045,14 @@ textarea, input[type=text] {
 // .justify-content-around. Below the sidebar breakpoint (lg / 992px,
 // matching .sidebar's d-none d-lg-block) the column stays fluid/full-width.
 @media (min-width: 992px) {
-    #frontpage #main-content-row, #userpage #main-content-row, #search #main-content-row, #guild #main-content-row, #settings-guild #main-content-row, #thread #main-content-row {
+    #frontpage #main-content-row, #userpage #main-content-row, #search #main-content-row, #guild #main-content-row, #settings-guild #main-content-row, #thread #main-content-row, #notifications #main-content-row, #curations #main-content-row, #content_history #main-content-row {
         justify-content: center !important;
         // never wrap the right sidebar below the content (guild pages used to
         // at 1200-1325px because the column's min-content equals its cap)
         flex-wrap: nowrap;
     }
 
-    #frontpage #main-content-col, #userpage #main-content-col, #search #main-content-col, #guild #main-content-col, #settings-guild #main-content-col, #thread #main-content-col {
+    #frontpage #main-content-col, #userpage #main-content-col, #search #main-content-col, #guild #main-content-col, #settings-guild #main-content-col, #thread #main-content-col, #notifications #main-content-col, #curations #main-content-col, #content_history #main-content-col {
         max-width: 726px;
         min-width: 0;
         margin-left: 0;
