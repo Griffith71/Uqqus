@@ -18,6 +18,7 @@ CORE = (
     "purely violent",
     "purely grotesque",
     "duplicate posting",
+    "anonymous posts and comments follow",
 )
 
 

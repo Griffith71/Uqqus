@@ -346,15 +346,19 @@ def region_filter_condition(region_list):
     to the caller's query, so it composes safely regardless of what's
     already been joined."""
 
-    author_match = Submission.author_id.in_(
-        select(User.id).where(User.display_region.in_(region_list))
+    # an anonymous post does not match through its author, or the filter would tell where they live
+    author_match = and_(
+        Submission.author_id.in_(select(User.id).where(User.display_region.in_(region_list))),
+        not_(Submission.is_anonymous)
     )
     forwarder_match = exists(
         select(ForwardRelationship.id)
         .join(User, User.id == ForwardRelationship.forwarded_by_id)
         .where(
             ForwardRelationship.forward_submission_id == Submission.id,
-            User.display_region.in_(region_list)
+            User.display_region.in_(region_list),
+            # an author who forwarded their own anonymous post is not a region match either
+            or_(not_(Submission.is_anonymous), ForwardRelationship.forwarded_by_id != Submission.author_id)
         )
     )
     reposter_match = exists(

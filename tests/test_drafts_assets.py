@@ -60,9 +60,9 @@ def test_the_script_sends_the_fields_the_server_reads():
     assert sent >= {"formkey", "title", "url", "body", "forward_guilds", "comment_permission",
                     "sensitive", "draft_id", "publish_utc"}
     # the two disclosure boxes are sent from one loop over their names
-    assert "['paid_partnership', 'made_with_ai'].forEach" in js
+    assert "['paid_partnership', 'made_with_ai', 'anonymous'].forEach" in js
     server = read("ruqqus", "helpers", "post_drafts.py")
-    for name in ("title", "url", "body", "forward_guilds", "comment_permission", "paid_partnership", "made_with_ai", "sensitive"):
+    for name in ("title", "url", "body", "forward_guilds", "comment_permission", "paid_partnership", "made_with_ai", "anonymous", "sensitive"):
         assert f'"{name}"' in server, name
 
 

@@ -61,6 +61,6 @@ def test_the_forms_and_the_comment_js_use_the_same_names():
 
 def test_the_labels_show_wherever_a_post_or_comment_is_listed():
     for name in ("submission.html", "submission_listing.html"):
-        assert "disclosure_row(p)" in read("ruqqus", "templates", name), name
+        assert "disclosure_row(p, v)" in read("ruqqus", "templates", name), name
     for name in ("comments.html", "embeds/comment.html"):
-        assert "disclosure_badges(c)" in read("ruqqus", "templates", *name.split("/")), name
+        assert "disclosure_badges(c, v)" in read("ruqqus", "templates", *name.split("/")), name

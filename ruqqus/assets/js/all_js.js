@@ -2677,6 +2677,9 @@ post_comment=function(fullname){
   var aiBox = document.getElementById('comment-disc-'+fullname+'-ai');
   form.append('paid_partnership', (paidBox && paidBox.checked) ? 'true' : '');
   form.append('made_with_ai', (aiBox && aiBox.checked) ? 'true' : '');
+  // anonymous: the server also forces it on your own anonymous post, so a locked toggle needs no value
+  var anonBox = document.getElementById('comment-disc-'+fullname+'-anon');
+  form.append('anonymous', (anonBox && anonBox.checked) ? 'true' : '');
 
 
   var xhr = new XMLHttpRequest();

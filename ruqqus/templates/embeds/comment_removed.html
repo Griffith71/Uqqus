@@ -1,7 +1,7 @@
 {% extends "embeds/embed_default.html" %}
 
 {% block title %}
-{<title>@{{ c.author.username }} comments in +{{ c.board.name }} on "{{ c.post.title }}"</title>
+{<title>@{{ author_of(c, v).username }} comments in +{{ c.board.name }} on "{{ c.post.title }}"</title>
 <meta name="description" content="{{ c.body }}">
 {% endblock %}
 

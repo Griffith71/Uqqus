@@ -158,7 +158,8 @@ CREATE TABLE public.comments (
     word_severity smallint DEFAULT 0 NOT NULL,
     word_filter_version character varying(12),
     paid_partnership boolean DEFAULT false NOT NULL,
-    made_with_ai boolean DEFAULT false NOT NULL
+    made_with_ai boolean DEFAULT false NOT NULL,
+    is_anonymous boolean DEFAULT false NOT NULL
 );
 
 
@@ -220,7 +221,8 @@ CREATE TABLE public.submissions (
     word_filter_version character varying(12),
     comment_permission smallint DEFAULT 0 NOT NULL,
     paid_partnership boolean DEFAULT false NOT NULL,
-    made_with_ai boolean DEFAULT false NOT NULL
+    made_with_ai boolean DEFAULT false NOT NULL,
+    is_anonymous boolean DEFAULT false NOT NULL
 );
 
 

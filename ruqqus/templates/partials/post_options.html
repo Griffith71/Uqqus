@@ -15,8 +15,11 @@
   in a comment form's toolbar. The inputs are `<prefix>-paid` and
   `<prefix>-ai`; all_js.js (post_comment, comment_edit) reads them.
 
-  disclosure_badges(item) / disclosure_row(item): the labels on a post or a
-  comment that carries a disclosure.
+  anonymous_field(checked, prefix): the "Post anonymously" checkbox (helpers/anonymity.py).
+
+  disclosure_badges(item, v) / disclosure_row(item, v): the labels on a post or a
+  comment that carries a disclosure, and, for its author and admins, a note that
+  it is anonymous.
 #}
 
 {% macro comment_permission_field(selected, prefix) %}
@@ -47,7 +50,7 @@
 </div>
 {% endmacro %}
 
-{% macro disclosure_toggles(prefix, paid=false, ai=false) %}
+{% macro disclosure_toggles(prefix, paid=false, ai=false, anonymous_option=false, anonymous_locked=false) %}
 <label class="format btn btn-secondary m-0 ml-1 d-inline-block{% if paid %} text-info{% endif %}" for="{{ prefix }}-paid" data-toggle="tooltip" data-placement="bottom" title="Paid partnership">
   <input id="{{ prefix }}-paid" type="checkbox" hidden{% if paid %} checked{% endif %} onchange="this.parentNode.classList.toggle('text-info', this.checked)">
   <i class="fas fa-handshake"></i>
@@ -56,13 +59,30 @@
   <input id="{{ prefix }}-ai" type="checkbox" hidden{% if ai %} checked{% endif %} onchange="this.parentNode.classList.toggle('text-info', this.checked)">
   <i class="fas fa-robot"></i>
 </label>
+{% if anonymous_option %}
+<label class="format btn btn-secondary m-0 ml-1 d-inline-block{% if anonymous_locked %} text-info{% endif %}" for="{{ prefix }}-anon" data-toggle="tooltip" data-placement="bottom" title="{{ 'Comments on your anonymous post are anonymous' if anonymous_locked else 'Comment anonymously: other users will not see your name' }}">
+  <input id="{{ prefix }}-anon" type="checkbox" hidden{% if anonymous_locked %} checked disabled{% endif %} onchange="this.parentNode.classList.toggle('text-info', this.checked)">
+  <i class="fas fa-user-secret"></i>
+</label>
+{% endif %}
 {% endmacro %}
 
-{% macro disclosure_badges(item) %}
+{% macro disclosure_badges(item, v=none) %}
 {%- if item.paid_partnership %}<span class="badge badge-pill bg-white border text-muted text-small-extra mr-1" data-toggle="tooltip" data-placement="bottom" title="The author says this is a paid partnership"><i class="fas fa-handshake fa-fw mr-1"></i>Paid partnership</span>{% endif -%}
 {%- if item.made_with_ai %}<span class="badge badge-pill bg-white border text-muted text-small-extra mr-1" data-toggle="tooltip" data-placement="bottom" title="The author says this was made with AI"><i class="fas fa-robot fa-fw mr-1"></i>Made with AI</span>{% endif -%}
+{%- if item.is_anonymous and not anon_hidden(item, v) %}<span class="badge badge-pill bg-white border text-muted text-small-extra mr-1" data-toggle="tooltip" data-placement="bottom" title="Other users see this as Anonymous. Only you and site admins see your name."><i class="fas fa-user-secret fa-fw mr-1"></i>Anonymous</span>{% endif -%}
 {% endmacro %}
 
-{% macro disclosure_row(item) %}
-{%- if item.paid_partnership or item.made_with_ai %}<div class="disclosure-badges mb-2">{{ disclosure_badges(item) }}</div>{% endif -%}
+{% macro disclosure_row(item, v=none) %}
+{%- if item.paid_partnership or item.made_with_ai or (item.is_anonymous and not anon_hidden(item, v)) %}<div class="disclosure-badges mb-2">{{ disclosure_badges(item, v) }}</div>{% endif -%}
+{% endmacro %}
+
+{% macro anonymous_field(checked, prefix) %}
+<label class="mt-3 d-block">Anonymity<i class="fas fa-info-circle text-gray-400 ml-1" data-toggle="tooltip" data-placement="top" title="Other users see Anonymous instead of your name. You and site admins can still see it, it follows the same rules as any post, and it cannot be undone after posting. It is not listed on your profile."></i></label>
+<div class="anonymity">
+  <div class="custom-control custom-checkbox">
+    <input type="checkbox" class="custom-control-input" id="{{ prefix }}" name="anonymous" value="true"{% if checked %} checked{% endif %}>
+    <label class="custom-control-label" for="{{ prefix }}">Post anonymously</label>
+  </div>
+</div>
 {% endmacro %}

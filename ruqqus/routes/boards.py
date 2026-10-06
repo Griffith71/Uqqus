@@ -390,6 +390,10 @@ URL path parameters:
     if not post.board_id==board.id:
         abort(400)
 
+    # heralding would name the author
+    if post.is_anonymous:
+        abort(403)
+
     if post.author_id != v.id:
         abort(403)
 
@@ -429,6 +433,9 @@ URL path parameters:
         abort(400)
 
     if comment.author_id != v.id:
+        abort(403)
+
+    if comment.is_anonymous:
         abort(403)
 
     if comment.gm_distinguish:

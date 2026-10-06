@@ -12,6 +12,7 @@ from .mix_ins import *
 from ruqqus.helpers.base36 import *
 from ruqqus.helpers.lazy import lazy
 from ruqqus.helpers import comment_permission as cperm
+from ruqqus.helpers import anonymity
 import ruqqus.helpers.aws as aws
 from ruqqus.__main__ import Base, cache, app
 from .votes import Vote, CommentVote
@@ -103,6 +104,9 @@ class Submission(Base, Stndrd, Age_times, Scores, Fuzzing):
     # content disclosure, set by the author (and copied onto forwards)
     paid_partnership = Column(Boolean, default=False)
     made_with_ai = Column(Boolean, default=False)
+    # posted anonymously: author_id stays, but only the author and admins are
+    # told who it is. Never changes after creation. See helpers/anonymity.py.
+    is_anonymous = Column(Boolean, default=False)
     hidden_by_guild = Column(Boolean, default=False)
     board = relationship(
         "Board",
@@ -444,7 +448,8 @@ class Submission(Base, Stndrd, Age_times, Scores, Fuzzing):
     @property
 
     def json_raw(self):
-        data = {'author_name': self.author.username if not self.author.is_deleted else None,
+        data = {'author_name': None if (self.author.is_deleted or anonymity.identity_hidden(self, anonymity.current_viewer())) else self.author.username,
+                'is_anonymous': bool(self.is_anonymous),
                 'permalink': self.permalink,
                 'is_banned': bool(self.is_banned),
                 'is_deleted': self.is_deleted,
@@ -523,7 +528,7 @@ class Submission(Base, Stndrd, Age_times, Scores, Fuzzing):
         if self.deleted_utc > 0 or self.is_banned:
             return data
 
-        data["author"]=self.author.json_core
+        data["author"]=None if anonymity.identity_hidden(self, anonymity.current_viewer()) else self.author.json_core
         data["guild"]=self.board.json_core
         data["original_guild"]=self.original_board.json_core if not self.board_id==self.original_board_id else None
         data["comment_count"]: self.comment_count

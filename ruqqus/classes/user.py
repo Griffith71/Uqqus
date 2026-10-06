@@ -9,6 +9,7 @@ import pyotp
 from flask import session, g, request
 
 from ruqqus.helpers.base36 import *
+from ruqqus.helpers import anonymity
 from ruqqus.helpers.security import *
 from ruqqus.helpers.lazy import lazy
 from ruqqus.helpers.visibility import filter_posts, filter_comments, viewer_level, text_hidden
@@ -272,7 +273,8 @@ class User(Base, Stndrd, Age_times):
             user_id=self.id,
             is_active=True
         )
-        user_ids = select(Follow.user_id).filter_by(
+        # the accounts this user follows (this used to select Follow.user_id: the viewer's own id)
+        user_ids = select(Follow.target_id).filter_by(
             user_id=self.id
         ).join(Follow.target).where(
             User.is_private == False,
@@ -282,7 +284,7 @@ class User(Base, Stndrd, Age_times):
         posts = posts.filter(
             or_(
                 Submission.board_id.in_(board_ids),
-                Submission.author_id.in_(user_ids)
+                and_(Submission.author_id.in_(user_ids), not_(Submission.is_anonymous))
             )
         )
 
@@ -313,7 +315,7 @@ class User(Base, Stndrd, Age_times):
             #     target_id=self.id).subquery()
 
             posts = posts.filter(
-                Submission.author_id.notin_(blocking) #,
+                or_(Submission.author_id.notin_(blocking), Submission.is_anonymous) #,
                 #Submission.author_id.notin_(blocked)
             ).join(Submission.board).filter(Board.is_banned==False)
 
@@ -497,7 +499,7 @@ class User(Base, Stndrd, Age_times):
             blocking = select(UserBlock.target_id).filter_by(
                 user_id=self.id
             ).subquery()
-            posts = posts.filter(Submission.author_id.notin_(blocking))
+            posts = posts.filter(or_(Submission.author_id.notin_(blocking), Submission.is_anonymous))
 
             board_blocks = select(BoardBlock.board_id).filter_by(
                 user_id=self.id
@@ -552,7 +554,7 @@ class User(Base, Stndrd, Age_times):
         followed_user_ids = select(Follow.target_id).filter_by(user_id=self.id)
         posts = posts.filter(
             Submission.board_id.notin_(subscribed_board_ids),
-            Submission.author_id.notin_(followed_user_ids)
+            or_(Submission.author_id.notin_(followed_user_ids), Submission.is_anonymous)
         )
 
         posts = posts.options(contains_eager(Submission.board))
@@ -663,6 +665,8 @@ class User(Base, Stndrd, Age_times):
             Submission.id.notin_(forward_copies)
         )
         authored = apply_common_filters(authored)
+        # a profile does not list the user's anonymous posts (to anyone but them and admins)
+        authored = authored.filter(anonymity.hide_anonymous(Submission, v))
 
         if not (v and (v.admin_level >= 3 or v.id == self.id)):
             authored = authored.filter_by(is_banned=False).join(Submission.board).filter(Board.is_banned == False)
@@ -794,6 +798,7 @@ class User(Base, Stndrd, Age_times):
         if not (v and (v.admin_level >= 3 or v.id == self.id)):
             authored = authored.filter(Comment.is_banned == False)
         authored = apply_common_filters(authored)
+        authored = authored.filter(anonymity.hide_anonymous(Comment, v))
         authored = apply_visibility(authored)
         authored = authored.with_entities(Comment.id, authored_sort_expr)
 
@@ -1228,6 +1233,16 @@ class User(Base, Stndrd, Age_times):
         return self.submissions.filter_by(is_banned=False).count()
 
     @property
+    def public_post_count(self):
+        """What a profile shows: anonymous posts are not counted."""
+        return self.submissions.filter_by(is_banned=False, is_anonymous=False).count()
+
+    @property
+    def public_comment_count(self):
+        return self.comments.filter(Comment.parent_submission!=None).filter_by(
+            is_banned=False, deleted_utc=0, is_anonymous=False).count()
+
+    @property
     def comment_count(self):
 
         return self.comments.filter(Comment.parent_submission!=None).filter_by(
@@ -1505,8 +1520,8 @@ class User(Base, Stndrd, Age_times):
         data["badges"]=[x.json_core for x in self.badges]
         data['post_rep']= int(self.karma)
         data['comment_rep']= int(self.comment_karma)
-        data['post_count']=self.post_count
-        data['comment_count']=self.comment_count
+        data['post_count']=self.public_post_count
+        data['comment_count']=self.public_comment_count
 
         return data
     
@@ -1750,6 +1765,8 @@ class User(Base, Stndrd, Age_times):
             activity, activity.c.sid == Submission.id
         )
         posts = filter_posts(posts, v)
+        # forwarding your own anonymous post makes a copy that would list under your name
+        posts = posts.filter(anonymity.hide_anonymous(Submission, v))
 
         if not (v and v.admin_level >= 3):
             posts = posts.filter(Submission.deleted_utc == 0, Submission.is_banned == False)

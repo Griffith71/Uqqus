@@ -585,7 +585,7 @@ def get_post_title(v):
 def _build_standalone_submission(author_id, target, title, body, body_html,
                                   url=None, embed_url=None, domain_ref=None,
                                   is_offensive=False, is_sensitive=False,
-                                  paid_partnership=False, made_with_ai=False,
+                                  paid_partnership=False, made_with_ai=False, is_anonymous=False,
                                   app_id=None, creation_region=None, is_bot=False,
                                   auto_upvote=True, repost_id=0, language_code=None):
     """Create + flush one independent new Submission (own votes, own
@@ -604,6 +604,7 @@ def _build_standalone_submission(author_id, target, title, body, body_html,
         is_sensitive=(is_sensitive or target.is_sensitive),
         paid_partnership=paid_partnership,
         made_with_ai=made_with_ai,
+        is_anonymous=is_anonymous,
         app_id=app_id,
         creation_region=creation_region,
         is_bot=is_bot,
@@ -647,6 +648,7 @@ def create_forward_post(primary, target, forwarded_by):
         is_sensitive=primary.is_sensitive,
         paid_partnership=primary.paid_partnership,
         made_with_ai=primary.made_with_ai,
+        is_anonymous=primary.is_anonymous,
         app_id=primary.app_id,
         creation_region=primary.creation_region,
         is_bot=primary.is_bot,
@@ -703,6 +705,7 @@ def create_forward_post_from_comment(comment, target, comment_forwarded_by):
         is_sensitive=comment.is_sensitive,
         paid_partnership=comment.paid_partnership,
         made_with_ai=comment.made_with_ai,
+        is_anonymous=comment.is_anonymous,
         app_id=comment.app_id,
         creation_region=comment.creation_region,
         is_bot=comment.is_bot,
@@ -752,6 +755,8 @@ Optional form data:
 * `draft_id` - The saved draft this post was made from; it is deleted once the post exists.
 * `paid_partnership` - `true` to mark the post as a paid partnership.
 * `made_with_ai` - `true` to mark the post as made with AI.
+* `anonymous` - `true` to post anonymously: other users are not told who wrote it
+  (the author and site admins are). It cannot be changed afterwards.
 * `comment_permission` - Who can comment on the post on your profile: `0`
   everyone (default), `1` accounts you follow, `2` Premium accounts.
   Forwarded copies follow their guild's rules instead.
@@ -1211,6 +1216,7 @@ Optional file data:
         comment_permission=comment_permission,
         paid_partnership=flag(request.form, "paid_partnership"),
         made_with_ai=flag(request.form, "made_with_ai"),
+        is_anonymous=flag(request.form, "anonymous"),
         post_public=not board.is_private,
         repost_id=None,
         app_id=v.client.application.id if v.client else None,
@@ -1442,7 +1448,9 @@ Optional file data:
                 )
             )
 
-    uids=list(set([x[0] for x in board_uids.all()] + [x[0] for x in follow_uids.all()]).union(notify_users))
+    # an anonymous post does not notify the author's followers: only they would get it
+    follower_ids = [] if new_post.is_anonymous else [x[0] for x in follow_uids.all()]
+    uids=list(set([x[0] for x in board_uids.all()] + follower_ids).union(notify_users))
 
     for uid in uids:
         new_notif=Notification(
@@ -1755,6 +1763,9 @@ def repost_post(base36id, v):
 
     post = get_post(base36id, v=v)
     primary = post.reposts if post.is_repost else post
+
+    if primary.is_anonymous and primary.author_id == v.id:
+        return {"error": "You can't repost your own anonymous post: it would put it on your profile."}, 400
 
     existing = g.db.query(RepostRelationship).filter_by(
         user_id=v.id, submission_id=primary.id).first()

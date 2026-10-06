@@ -67,6 +67,7 @@ def clean_fields(form):
             "comment_permission": permission,
             "paid_partnership": flag(form, "paid_partnership"),
             "made_with_ai": flag(form, "made_with_ai"),
+            "anonymous": flag(form, "anonymous"),
             "sensitive": flag(form, "sensitive"),
         },
     }
@@ -106,7 +107,7 @@ def publish_form(fields, formkey):
         "comment_permission": str(options.get("comment_permission", cperm.EVERYONE)),
         "formkey": formkey,
     }
-    for name in ("sensitive", "paid_partnership", "made_with_ai"):
+    for name in ("sensitive", "paid_partnership", "made_with_ai", "anonymous"):
         if options.get(name):
             data[name] = "true"
     return data

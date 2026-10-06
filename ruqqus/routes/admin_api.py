@@ -205,6 +205,10 @@ def api_distinguish_post(post_id, v):
     if not post.author_id == v.id:
         abort(403)
 
+    # speaking officially would name the author
+    if post.is_anonymous:
+        abort(403)
+
     if post.distinguish_level:
         post.distinguish_level = 0
     else:
@@ -513,6 +517,9 @@ def admin_distinguish_comment(c_id, v):
     comment = get_comment(c_id, v=v)
 
     if comment.author_id != v.id:
+        abort(403)
+
+    if comment.is_anonymous:
         abort(403)
 
     comment.distinguish_level = 0 if comment.distinguish_level else v.admin_level

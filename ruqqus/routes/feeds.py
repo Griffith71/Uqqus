@@ -7,6 +7,7 @@ from ruqqus.classes import *
 from ruqqus.helpers.security import *
 from ruqqus.helpers.jinja2 import full_link
 from ruqqus.helpers.get import *
+from ruqqus.helpers import anonymity
 from yattag import Doc
 
 from ruqqus.__main__ import app, limiter
@@ -96,10 +97,15 @@ def feeds_user(sort=None, username=None, key=None):
                 doc.stag("link", href=post.url)
 
                 with tag("author"):
-                    with tag("name"):
-                        text(post.author.username)
-                    with tag("uri"):
-                        text(f'https://{domain}/@{post.author.username}')
+                    # the feed is public: an anonymous post is by "Anonymous"
+                    if anonymity.identity_hidden(post, None):
+                        with tag("name"):
+                            text(anonymity.LABEL)
+                    else:
+                        with tag("name"):
+                            text(post.author.username)
+                        with tag("uri"):
+                            text(f'https://{domain}/@{post.author.username}')
 
                 doc.stag("link", href=full_link(post.permalink))
 

@@ -190,6 +190,8 @@
 
                         {{ post_options.disclosure_field(draft.option("paid_partnership", false) if draft else request.form.getlist("paid_partnership") | select | list | length > 0, draft.option("made_with_ai", false) if draft else request.form.getlist("made_with_ai") | select | list | length > 0, "post-disc") }}
 
+                        {{ post_options.anonymous_field(draft.option("anonymous", false) if draft else request.form.getlist("anonymous") | select | list | length > 0, "post-anon") }}
+
                         <label for="sensitive" class="text-warning mt-3">Sensitive Content?<i class="fas fa-info-circle text-gray-400 ml-1" data-toggle="tooltip" data-placement="top" title="Not a rule violation - just something that could be upsetting. Shown blurred with a click-to-reveal instead of being blocked."></i></label>
 
                         <div class="custom-control custom-checkbox">

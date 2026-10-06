@@ -7,6 +7,7 @@ from random import randint
 import math
 from .mix_ins import *
 from ruqqus.helpers.base36 import *
+from ruqqus.helpers import anonymity
 from ruqqus.helpers.lazy import lazy
 from ruqqus.__main__ import Base, cache
 from .votes import CommentVote
@@ -84,6 +85,8 @@ class Comment(Base, Age_times, Scores, Stndrd, Fuzzing):
     # content disclosure, set by the author
     paid_partnership = Column(Boolean, default=False)
     made_with_ai = Column(Boolean, default=False)
+    # commented anonymously (see helpers/anonymity.py); never changes after creation
+    is_anonymous = Column(Boolean, default=False)
     is_bot = Column(Boolean, default=False)
     is_pinned = Column(Boolean, default=False)
     hidden_by_guild = Column(Boolean, default=False)
@@ -294,7 +297,8 @@ class Comment(Base, Age_times, Scores, Stndrd, Fuzzing):
             'id': self.base36id,
             'fullname': self.fullname,
             'level': self.level,
-            'author_name': self.author.username if not self.author.is_deleted else None,
+            'author_name': None if (self.author.is_deleted or anonymity.identity_hidden(self, anonymity.current_viewer())) else self.author.username,
+            'is_anonymous': bool(self.is_anonymous),
             'body': self.body,
             'body_html': self.body_html,
             'is_archived': self.is_archived,
@@ -363,7 +367,7 @@ class Comment(Base, Age_times, Scores, Stndrd, Fuzzing):
         if self.deleted_utc > 0 or self.is_banned:
             return data
 
-        data["author"]=self.author.json_core
+        data["author"]=None if anonymity.identity_hidden(self, anonymity.current_viewer()) else self.author.json_core
         data["post"]=self.post.json_core
         data["guild"]=self.post.board.json_core
         data["voted"]=self.voted

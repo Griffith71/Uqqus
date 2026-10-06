@@ -13,7 +13,7 @@
 
 {% block title %}
 {% if comment_info and not comment_info.is_banned and linked_comment.deleted_utc == 0 %}
-<title>@{{ comment_info.author.username }} comments {% if not p.is_profile_post %}in +{{ p.board.name }} {% endif %}on "{{ p.title }}"</title>
+<title>@{{ author_of(comment_info, v).username }} comments {% if not p.is_profile_post %}in +{{ p.board.name }} {% endif %}on "{{ p.title }}"</title>
 <meta name="description" content="{{ comment_info.body }}">
 {% else %}
 <title>{{ p.title | safe}}</title>
@@ -104,7 +104,7 @@
 {% endblock %}
 
 {% block adminpanel %}
-<p>Author: <a href="{{ p.author.permalink }}">@{{ p.author.username }}</a></p>
+<p>Author: <a href="{{ author_of(p, v).permalink }}">@{{ author_of(p, v).username }}</a></p>
 <p>Score: +{{ p.ups }}/-{{ p.downs }}</p>
 {% if v.admin_level >=3 and not p.purged_utc %}
 <form action="/api/purge_post/{{ p.base36id }}" method="post" onsubmit="return confirm('This permanently erases the post title/body/url. It cannot be undone, even by an admin. Continue?');">

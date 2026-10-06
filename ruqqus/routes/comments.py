@@ -20,6 +20,7 @@ from ruqqus.helpers.aws import *
 from ruqqus.helpers.word_filter_store import apply_comment_severity
 from ruqqus.helpers.post_fields import flag
 from ruqqus.helpers import comment_permission as cperm
+from ruqqus.helpers import anonymity
 from ruqqus.classes import *
 from flask import *
 from ruqqus.__main__ import app, limiter
@@ -279,6 +280,8 @@ Required form data:
 Optional form data:
 * `paid_partnership` - `true` to mark the comment as a paid partnership.
 * `made_with_ai` - `true` to mark the comment as made with AI.
+* `anonymous` - `true` to comment anonymously: other users are not told who wrote it
+  (the author and site admins are). It cannot be changed afterwards.
 
 Optional file data:
 * `file` - An image to upload and append to the comment body. Requires premium.
@@ -352,12 +355,13 @@ Optional file data:
         return jsonify(
             {"error": "You can't comment on things that have been deleted."}), 403
 
-    if parent.is_blocking and not v.admin_level>=3 and not parent.board.has_mod(v, "content"):
+    # an anonymous author is not "blocking" anyone: the refusal would say who they are
+    if parent.is_blocking and not parent.is_anonymous and not v.admin_level>=3 and not parent.board.has_mod(v, "content"):
         return jsonify(
             {"error": "You can't comment on content from users that you're blocking."}
             ), 403
 
-    if parent.is_blocked and not v.admin_level>=3 and not parent.board.has_mod(v, "content"):
+    if parent.is_blocked and not parent.is_anonymous and not v.admin_level>=3 and not parent.board.has_mod(v, "content"):
         return jsonify(
             {"error": "You can't comment on content from users that are blocking you."}
             ), 403
@@ -454,6 +458,9 @@ Optional file data:
                 is_sensitive=(bool(request.form.get("sensitive", "")) or post.is_sensitive),
                 paid_partnership=flag(request.form, "paid_partnership"),
                 made_with_ai=flag(request.form, "made_with_ai"),
+                # commenting on your own anonymous post is anonymous, or your name
+                # next to the "OP" mark would undo it
+                is_anonymous=flag(request.form, "anonymous") or anonymity.must_be_anonymous(parent_post, v),
                 original_board_id=parent_post.board_id,
                 is_bot=is_bot,
                 app_id=v.client.application.id if v.client else None,
@@ -895,6 +902,9 @@ def repost_comment(cid, v):
 
     if comment.is_banned or comment.deleted_utc or comment.purged_utc:
         return {"error": "This comment can't be reposted."}, 400
+
+    if comment.is_anonymous and comment.author_id == v.id:
+        return {"error": "You can't repost your own anonymous comment: it would put it on your profile."}, 400
 
     existing = g.db.query(CommentRepostRelationship).filter_by(
         user_id=v.id, comment_id=comment.id).first()

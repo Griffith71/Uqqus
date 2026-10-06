@@ -22,7 +22,7 @@ def test_a_draft_saves_the_composers_fields():
     assert f["title"] == "A titlewith breaks"          # one line, like the real title
     assert f["url"] == "https://example.com/x" and f["body"] == "some **text**"
     assert f["forward_guilds"] == ["general", "Test"]  # leading + dropped, case-insensitive duplicates dropped
-    assert f["options"] == {"comment_permission": 2, "paid_partnership": True, "made_with_ai": False, "sensitive": True}
+    assert f["options"] == {"comment_permission": 2, "paid_partnership": True, "made_with_ai": False, "anonymous": False, "sensitive": True}
 
 
 def test_an_empty_draft_is_valid_but_flagged_empty():
@@ -79,10 +79,10 @@ def test_scheduling_needs_a_title():
 
 def test_the_publisher_submits_the_same_form_the_composer_would():
     fields = pd.clean_fields(form(("title", "T"), ("forward_guilds", "general"), ("forward_guilds", "test"),
-                                  ("comment_permission", "1"), ("made_with_ai", "true")))
+                                  ("comment_permission", "1"), ("made_with_ai", "true"), ("anonymous", "true")))
     data = pd.publish_form(fields, "KEY")
     assert data == {"title": "T", "url": "", "body": "", "forward_guilds": ["general", "test"],
-                    "comment_permission": "1", "formkey": "KEY", "made_with_ai": "true"}
+                    "comment_permission": "1", "formkey": "KEY", "made_with_ai": "true", "anonymous": "true"}
     assert "sensitive" not in data and "paid_partnership" not in data   # unticked boxes are not sent
 
 

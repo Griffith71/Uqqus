@@ -23,17 +23,17 @@
     <div class="mb-1">
       <strong>
         {% if entry.action == "edit" %}
-        Edited by <a href="{{ entry.actor.permalink }}">@{{ entry.actor.username }}</a>
+        Edited by {% if anon_hidden(target, v) and entry.actor_id == target.author_id %}Anonymous{% else %}<a href="{{ entry.actor.permalink }}">@{{ entry.actor.username }}</a>{% endif %}
         {% elif entry.action == "delete" %}
-        Deleted by <a href="{{ entry.actor.permalink }}">@{{ entry.actor.username }}</a>
+        Deleted by {% if anon_hidden(target, v) and entry.actor_id == target.author_id %}Anonymous{% else %}<a href="{{ entry.actor.permalink }}">@{{ entry.actor.username }}</a>{% endif %}
         {% elif entry.action == "guild_hide" %}
         Removed by guildmasters of <a href="{{ entry.board.permalink }}">+{{ entry.board.name }}</a>
         {% elif entry.action == "guild_unhide" %}
         Restored by guildmasters of <a href="{{ entry.board.permalink }}">+{{ entry.board.name }}</a>
         {% elif entry.action == "author_hide" %}
-        Removed by the post's author, <a href="{{ entry.actor.permalink }}">@{{ entry.actor.username }}</a>
+        Removed by the post's author, {% if anon_hidden(target, v) and entry.actor_id == target.author_id %}Anonymous{% else %}<a href="{{ entry.actor.permalink }}">@{{ entry.actor.username }}</a>{% endif %}
         {% elif entry.action == "author_restore" %}
-        Restored by the post's author, <a href="{{ entry.actor.permalink }}">@{{ entry.actor.username }}</a>
+        Restored by the post's author, {% if anon_hidden(target, v) and entry.actor_id == target.author_id %}Anonymous{% else %}<a href="{{ entry.actor.permalink }}">@{{ entry.actor.username }}</a>{% endif %}
         {% endif %}
       </strong>
       <span class="text-muted text-small">&middot; {{ entry.created_date }}</span>

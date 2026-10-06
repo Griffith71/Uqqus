@@ -1,6 +1,7 @@
 from ruqqus.classes import *
 from ruqqus.helpers.wrappers import *
 from ruqqus.helpers.visibility import filter_posts, filter_boards, filter_users, viewer_level
+from ruqqus.helpers import anonymity
 from urllib.parse import quote
 import re
 
@@ -62,7 +63,9 @@ def searchlisting(criteria, v=None, page=1, t="None", sort="top", b=None, filter
         posts=posts.filter(
                 Submission.author_id==get_user(criteria['author']).id,
                 User.is_private==False,
-                User.is_deleted==False
+                User.is_deleted==False,
+                # a search by author does not find their anonymous posts
+                anonymity.hide_anonymous(Submission, v)
             )
 
     if b:
