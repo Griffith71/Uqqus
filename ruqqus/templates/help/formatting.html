@@ -132,6 +132,54 @@ We also have some custom hooks for mentioning users and guilds. Note that these 
   </tr>
 </table>
 
+{% filter markdown %}
+
+## Colour, highlight, alignment and buttons
+
+These work in posts. You pick from a fixed set of names, so there is no way to write your own colours or styles. The post editor's toolbar writes them for you.
+
+{% endfilter %}
+
+<table class="table table-striped mb-5">
+  <thead class="bg-primary text-white">
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Displays as</th>
+    </tr>
+  </thead>
+  <tr>
+    <td>Text colour<br><span class="text-small text-muted">red, orange, green, blue, purple, pink, gray</span></td>
+    <td>{c:red}text{/c}</td>
+    <td><span class="tc-red">text</span></td>
+  </tr>
+  <tr>
+    <td>Highlight<br><span class="text-small text-muted">yellow, green, blue, pink</span></td>
+    <td>==text==<br>{h:blue}text{/h}</td>
+    <td><mark class="hl-yellow">text</mark><br><mark class="hl-blue">text</mark></td>
+  </tr>
+  <tr>
+    <td>Superscript and subscript</td>
+    <td>x&lt;sup&gt;2&lt;/sup&gt;<br>H&lt;sub&gt;2&lt;/sub&gt;O</td>
+    <td>x<sup>2</sup><br>H<sub>2</sub>O</td>
+  </tr>
+  <tr>
+    <td>Spoiler</td>
+    <td>||text||</td>
+    <td><span class="spoiler">text</span></td>
+  </tr>
+  <tr>
+    <td>Alignment<br><span class="text-small text-muted">left, center, right</span></td>
+    <td>::: center<br>Any text, lists or quotes<br>:::</td>
+    <td><div class="ta-center">Any text, lists or quotes</div></td>
+  </tr>
+  <tr>
+    <td>Button</td>
+    <td>[Read more](https://ruqqus.com){.button}</td>
+    <td><a class="post-button" href="https://ruqqus.com">Read more</a></td>
+  </tr>
+</table>
+
 {% include "expanded_image_modal.html" %}
 
 <script src="/assets/js/all_js.js"></script>

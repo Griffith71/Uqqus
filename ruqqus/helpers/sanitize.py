@@ -6,6 +6,7 @@ from bleach.linkifier import LinkifyFilter
 from urllib.parse import urlparse, ParseResult, urlunparse
 from functools import partial
 from .get import *
+from .post_formatting import allowed_classes
 import os.path
 
 _allowed_tags = tags = ['b',
@@ -13,6 +14,7 @@ _allowed_tags = tags = ['b',
                         'br',
                         'code',
                         'del',
+                        'div',
                         'em',
                         'h1',
                         'h2',
@@ -23,6 +25,7 @@ _allowed_tags = tags = ['b',
                         'hr',
                         'i',
                         'li',
+                        'mark',
                         'ol',
                         'p',
                         'pre',
@@ -42,6 +45,7 @@ no_images = ['b',
             'br',
             'code',
             'del',
+            'div',
             'em',
             'h1',
             'h2',
@@ -52,6 +56,7 @@ no_images = ['b',
             'hr',
             'i',
             'li',
+            'mark',
             'ol',
             'p',
             'pre',
@@ -89,8 +94,10 @@ _allowed_tags_in_bio = [
 ]
 
 _allowed_attributes = {
-    'a': ['href', 'title', "rel", "data-original-name"],
+    'a': ['href', 'title', "rel", "data-original-name", 'class'],
     'i': [],
+    'div': ['class'],
+    'mark': ['class'],
     'span': ['class', 'data-toggle', 'title'],  # removed 'style'
     'img': ['src', 'class']
     }
@@ -251,9 +258,17 @@ def sanitize(text, bio=False, linkgen=False, noimages=False):
             if not any([x in tag.attrs.get("class","") for x in ['emoji', 'profile-pic-20']]):
                 tag.attrs['class']="in-comment-image rounded-sm my-2"
 
-        #same goes for span
-        for tag in soup.find_all("span"):
-            tag.attrs['class']='spoiler' if 'spoiler' in tag.attrs.get('class','') else ''
+        #and every other tag keeps only the classes helpers/post_formatting.py allows for it
+        for tag_name, allowed in allowed_classes().items():
+            for tag in soup.find_all(tag_name):
+                classes = tag.attrs.get('class', [])
+                if isinstance(classes, str):
+                    classes = classes.split()
+                kept = [x for x in classes if x in allowed]
+                if kept:
+                    tag.attrs['class'] = kept
+                else:
+                    tag.attrs.pop('class', None)
 
         #table format
         for tag in soup.find_all("table"):

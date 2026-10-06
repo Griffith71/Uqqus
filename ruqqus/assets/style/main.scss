@@ -4111,6 +4111,47 @@ textarea, input[type=text] {
     margin-bottom: 0.5rem;
 }
 
+// Formatting extras in posts and comments: text colour, highlight, alignment, button.
+// helpers/post_formatting.py is the list of classes (the sanitizer keeps no others);
+// these are the light-mode colours, picked to read on this stylesheet's background.
+.tc-red { color: #c53030; }
+.tc-orange { color: #c05621; }
+.tc-green { color: #2f855a; }
+.tc-blue { color: #2b6cb0; }
+.tc-purple { color: #6b46c1; }
+.tc-pink { color: #b83280; }
+.tc-gray { color: #718096; }
+
+mark {
+    color: inherit;
+    padding: 0 0.15em;
+    border-radius: 3px;
+}
+
+.hl-yellow { background-color: #fefcbf; }
+.hl-green { background-color: #c6f6d5; }
+.hl-blue { background-color: #bee3f8; }
+.hl-pink { background-color: #fed7e2; }
+
+.ta-left { text-align: left; }
+.ta-center { text-align: center; }
+.ta-right { text-align: right; }
+
+a.post-button {
+    display: inline-block;
+    padding: 0.5rem 1.25rem;
+    margin: 0.25rem 0;
+    border-radius: 0.375rem;
+    background-color: $primary;
+    color: #fff !important;
+    font-weight: 600;
+    text-decoration: none !important;
+}
+
+a.post-button:hover {
+    opacity: 0.9;
+}
+
 // Scroll bar
 
 .hide-scrollbar::-webkit-scrollbar {

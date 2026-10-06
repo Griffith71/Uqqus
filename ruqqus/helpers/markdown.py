@@ -1,7 +1,10 @@
 from .get import *
 
+from mistletoe import block_token, block_tokenizer
+from mistletoe.block_token import BlockToken
 from mistletoe.span_token import SpanToken
 from mistletoe.html_renderer import HTMLRenderer
+from .post_formatting import TEXT_COLORS, HIGHLIGHT_COLORS, ALIGNMENTS, BUTTON_CLASS
 import os.path
 import re
 
@@ -78,6 +81,84 @@ class Spoiler(SpanToken):
 
 
 
+
+# Formatting extras. Authors only ever pick from fixed names (see
+# helpers/post_formatting.py): the tokens below accept nothing else, and the
+# sanitizer drops every CSS class that is not on its list.
+
+def _names(names):
+    return "|".join(names)
+
+
+class TextColor(SpanToken):
+    """{c:red}coloured text{/c}"""
+
+    pattern = re.compile(r"\{c:(" + _names(TEXT_COLORS) + r")\}(.+?)\{/c\}", re.DOTALL)
+    parse_group = 2
+
+    def __init__(self, match_obj):
+        self.color = match_obj.group(1)
+
+
+class Highlight(SpanToken):
+    """{h:yellow}highlighted text{/h}"""
+
+    pattern = re.compile(r"\{h:(" + _names(HIGHLIGHT_COLORS) + r")\}(.+?)\{/h\}", re.DOTALL)
+    parse_group = 2
+
+    def __init__(self, match_obj):
+        self.color = match_obj.group(1)
+
+
+class Mark(SpanToken):
+    """==highlighted text== - the default (yellow) highlight. Needs text
+    right against both pairs of equals signs, so "a == b == c" is untouched."""
+
+    pattern = re.compile(r"(?<!\\)==(?=\S)(.+?)(?<=\S)==", re.DOTALL)
+
+
+class AlignBlock(BlockToken):
+    """A block of paragraphs, lists, quotes... aligned left, centre or right:
+
+        ::: center
+        Any markdown, parsed as usual.
+        :::
+
+    An alignment block that is never closed runs to the end of the text."""
+
+    _open = re.compile(r"^ {0,3}:::[ \t]*(" + _names(ALIGNMENTS) + r")[ \t]*$")
+    _close = re.compile(r"^ {0,3}:::[ \t]*$")
+
+    def __init__(self, result):
+        self.align, parse_buffer = result
+        self.children = block_tokenizer.make_tokens(parse_buffer)
+
+    @classmethod
+    def start(cls, line):
+        return bool(cls._open.match(line.rstrip("\r\n")))
+
+    @classmethod
+    def check_interrupts_paragraph(cls, lines):
+        return cls.start(lines.peek())
+
+    @classmethod
+    def read(cls, lines):
+        align = cls._open.match(next(lines).rstrip("\r\n")).group(1)
+        start_line = lines.line_number()
+        inner = []
+        while lines.peek() is not None:
+            line = next(lines)
+            if cls._close.match(line.rstrip("\r\n")):
+                break
+            inner.append(line)
+        return align, block_tokenizer.tokenize_block(inner, block_token._token_types, start_line=start_line)
+
+
+# a link followed by {.button} becomes a button; the link itself was already
+# parsed (and its address escaped) by the renderer, so this only adds the class
+button_re = re.compile(r'<a href="([^"]*)"((?: title="[^"]*")?)>(.*?)</a>\{\.button\}', re.DOTALL)
+
+
 # class OpMention(SpanToken):
 
 #     pattern = re.compile("(^|\W|\s)@([Oo][Pp])\b")
@@ -95,7 +176,11 @@ class CustomRenderer(HTMLRenderer):
                          CurationMention,
                          #ChatMention,
                          Emoji,
-                         Spoiler #,
+                         Spoiler,
+                         TextColor,
+                         Highlight,
+                         Mark,
+                         AlignBlock #,
                          #OpMention
                          )
 
@@ -178,6 +263,28 @@ class CustomRenderer(HTMLRenderer):
     def render_spoiler(self, token):
 
         return f'<span class="spoiler">{token.target}</span>'
+
+    def render_text_color(self, token):
+
+        return f'<span class="tc-{token.color}">{self.render_inner(token)}</span>'
+
+    def render_highlight(self, token):
+
+        return f'<mark class="hl-{token.color}">{self.render_inner(token)}</mark>'
+
+    def render_mark(self, token):
+
+        return f'<mark class="hl-yellow">{self.render_inner(token)}</mark>'
+
+    def render_align_block(self, token):
+
+        return f'<div class="ta-{token.align}">\n{self.render_inner(token)}</div>'
+
+    def render_document(self, token):
+
+        html = super().render_document(token)
+        return button_re.sub(
+            lambda m: f'<a class="{BUTTON_CLASS}" href="{m.group(1)}"{m.group(2)}>{m.group(3)}</a>', html)
 
     # def render_op_mention(self, token):
 
