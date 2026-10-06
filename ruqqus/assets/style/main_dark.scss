@@ -1918,12 +1918,14 @@ a.bg-dark:hover, a.bg-dark:focus, button.bg-dark:hover, button.bg-dark:focus {
     border-bottom: 1px solid $input-border-color;
 }
 
+// Cards (posts in a feed, boxes on a page) share the page colour, as they do in
+// light mode; the border and the hover step set them apart.
 .card {
-    background-color: $gray-900;
+    background-color: $gray-600;
 }
 
 #thread .card {
-    background-color: $gray-700;
+    background-color: $gray-600;
 }
 
 #frontpage .posts .card:first-of-type, #userpage .posts .card:first-of-type, #search .posts .card:first-of-type, #guild .posts .card:first-of-type, #settings-guild .posts .card:first-of-type {
@@ -1946,7 +1948,7 @@ a.bg-dark:hover, a.bg-dark:focus, button.bg-dark:hover, button.bg-dark:focus {
 }
 
 #frontpage .posts .card:hover, #userpage .posts .card:hover, #search .posts .card:hover, #guild .posts .card:hover, #settings-guild .posts .card:hover {
-    background-color: $gray-600;
+    background-color: $gray-500;
 }
 
 .post-title {
@@ -4413,6 +4415,7 @@ a.post-button:hover {
 
 // Schedule panel and the drafts list on Create a post (assets/js/post_drafts.js)
 .schedule-panel {
+    background-color: $gray-700;
     position: fixed;
     right: 1rem;
     bottom: 5.25rem;
