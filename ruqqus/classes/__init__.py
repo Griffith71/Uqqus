@@ -26,4 +26,5 @@ from .regions import *
 from .curations import *
 from .chat import *
 from .word_filter import *
+from .post_template import *
 #from lodges import *

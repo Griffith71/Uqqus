@@ -23,3 +23,4 @@ from .static import *
 from .users import *
 from .votes import *
 from .feeds import *
+from .post_editor import *

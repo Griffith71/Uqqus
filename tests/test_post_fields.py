@@ -99,3 +99,37 @@ def test_an_edit_form_sends_a_hidden_empty_value_next_to_the_checkbox():
     ticked = MultiDict([("made_with_ai", ""), ("made_with_ai", "true")])
     assert flag(unticked, "made_with_ai", default=True) is False
     assert flag(ticked, "made_with_ai") is True
+
+
+# --- saved templates ----------------------------------------------------------
+
+def test_template_names_are_one_line_and_trimmed():
+    assert post_fields.clean_template_name("  Weekly \n\t update  ") == "Weekly update"
+
+
+@pytest.mark.parametrize("bad", ["", "   ", None, "\n\t"])
+def test_a_template_needs_a_name(bad):
+    with pytest.raises(PostFieldError):
+        post_fields.clean_template_name(bad)
+
+
+def test_template_names_have_a_length_limit():
+    assert len(post_fields.clean_template_name("x" * post_fields.TEMPLATE_NAME_MAX)) == post_fields.TEMPLATE_NAME_MAX
+    with pytest.raises(PostFieldError):
+        post_fields.clean_template_name("x" * (post_fields.TEMPLATE_NAME_MAX + 1))
+
+
+def test_template_text_keeps_its_inner_formatting():
+    text = "::: center\n\n**Hello**\n\n:::"
+    assert post_fields.check_template_body("\n" + text + "\n\n") == text
+
+
+@pytest.mark.parametrize("bad", ["", "  \n ", None])
+def test_a_template_needs_text(bad):
+    with pytest.raises(PostFieldError):
+        post_fields.check_template_body(bad)
+
+
+def test_template_text_is_limited_like_a_post_body():
+    with pytest.raises(PostFieldError):
+        post_fields.check_template_body("x" * (post_fields.BODY_MAX + 1))

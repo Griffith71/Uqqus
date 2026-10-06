@@ -70,3 +70,27 @@ def flag(form, name, default=False):
     if name not in form:
         return bool(default)
     return any(str(value).strip().lower() not in _NO for value in form.getlist(name))
+
+
+# --- saved templates (the Template button in the post editor) ----------------
+
+TEMPLATE_NAME_MAX = 60
+TEMPLATE_LIMIT = 20   # per user
+
+
+def clean_template_name(raw):
+    """One line, single spaces, 1-60 characters."""
+    name = " ".join((raw or "").split())
+    if not name:
+        raise PostFieldError("Give the template a name.")
+    if len(name) > TEMPLATE_NAME_MAX:
+        raise PostFieldError(f"{TEMPLATE_NAME_MAX} character limit for template names.")
+    return name
+
+
+def check_template_body(raw):
+    """The template text as written (inner formatting kept), within the post body limit."""
+    body = (raw or "").strip("\r\n")
+    if not body.strip():
+        raise PostFieldError("A template needs some text.")
+    return check_body(body)

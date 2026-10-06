@@ -4152,6 +4152,199 @@ a.post-button:hover {
     opacity: 0.9;
 }
 
+// Post editor toolbar (assets/js/post_editor.js), light mode.
+.post-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.125rem;
+    padding: 0.25rem 0.375rem;
+    background-color: $gray-100;
+    border: 1px solid $gray-300;
+    border-bottom: 0;
+    border-radius: 0.25rem 0.25rem 0 0;
+}
+
+.post-toolbar + .input-group textarea {
+    border-top-left-radius: 0 !important;
+    border-top-right-radius: 0 !important;
+}
+
+.post-tb-group {
+    display: inline-flex;
+    align-items: center;
+}
+
+.post-tb-group + .post-tb-group {
+    margin-left: 0.25rem;
+    padding-left: 0.25rem;
+    border-left: 1px solid $gray-300;
+}
+
+.post-tb-btn {
+    padding: 0.3rem 0.4rem;
+    line-height: 1;
+    color: $muted;
+    background-color: transparent;
+    border: 0;
+    border-radius: 0.25rem;
+}
+
+.post-tb-btn:hover:not(:disabled),
+.post-tb-btn:focus-visible {
+    color: $black;
+    background-color: $gray-200;
+}
+
+.post-tb-btn:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+}
+
+.post-tb-tabs,
+.post-tb-group.post-tb-tabs {
+    margin-left: 0;
+    padding-left: 0;
+    border-left: 0;
+}
+
+.post-tb-tab {
+    font-size: 0.8125rem;
+    font-weight: 600;
+    padding: 0.3rem 0.55rem;
+}
+
+.post-tb-tab.active {
+    color: $black;
+    background-color: $white;
+    box-shadow: inset 0 0 0 1px $gray-300;
+}
+
+.post-tb-spacer {
+    flex: 1 1 auto;
+}
+
+.post-tb-status {
+    flex: 0 0 100%;
+    padding: 0.125rem 0.25rem 0;
+}
+
+.post-tb-status:empty {
+    display: none;
+}
+
+.post-tb-menuwrap {
+    position: relative;
+    display: inline-block;
+}
+
+.post-tb-menu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    z-index: 1050;
+    min-width: 11rem;
+    max-width: calc(100vw - 2rem);
+    margin-top: 0.125rem;
+    padding: 0.25rem 0;
+    background-color: $white;
+    border: 1px solid $gray-300;
+    border-radius: 0.25rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.post-tb-item {
+    display: block;
+    width: 100%;
+    padding: 0.375rem 0.75rem;
+    font-size: 0.875rem;
+    text-align: left;
+    white-space: nowrap;
+    color: $black;
+    background-color: transparent;
+    border: 0;
+}
+
+.post-tb-item:hover,
+.post-tb-item:focus-visible {
+    background-color: $gray-200;
+}
+
+.post-tb-swatches {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem;
+    max-width: 12rem;
+    padding: 0.375rem 0.5rem;
+}
+
+.post-tb-swatch {
+    width: 1.75rem;
+    height: 1.75rem;
+    padding: 0;
+    font-weight: 700;
+    line-height: 1;
+    background-color: $white;
+    border: 1px solid $gray-300;
+    border-radius: 0.25rem;
+}
+
+.post-tb-rule {
+    height: 1px;
+    margin: 0.25rem 0;
+    background-color: $gray-300;
+}
+
+.post-tb-note {
+    padding: 0.25rem 0.75rem;
+}
+
+.post-tb-saved-row {
+    display: flex;
+    align-items: center;
+}
+
+.post-tb-saved-row .post-tb-item {
+    flex: 1 1 auto;
+}
+
+.post-tb-delete {
+    flex: 0 0 auto;
+    margin-right: 0.25rem;
+}
+
+.post-tb-dialog {
+    display: flex;
+    flex: 0 0 100%;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.375rem;
+    padding: 0.375rem 0.125rem 0.125rem;
+}
+
+.post-tb-dialog .form-control {
+    flex: 1 1 10rem;
+    min-width: 8rem;
+    width: auto;
+}
+
+.post-tb-dialog-error {
+    flex: 1 1 100%;
+}
+
+.post-preview {
+    min-height: 84px;
+    padding: 0.75rem;
+    overflow-wrap: anywhere;
+    background-color: $white;
+    border: 1px solid $gray-300;
+    border-radius: 0 0 0.25rem 0.25rem;
+}
+
+.post-editor-attach label {
+    margin-top: 0.5rem !important;
+}
+
 // Scroll bar
 
 .hide-scrollbar::-webkit-scrollbar {

@@ -5693,5 +5693,15 @@ CREATE TABLE public.word_filter_entries (
     CONSTRAINT word_filter_entries_word_key UNIQUE (word)
 );
 
+CREATE TABLE public.post_templates (
+    id SERIAL PRIMARY KEY,
+    user_id integer NOT NULL,
+    name character varying(60) NOT NULL,
+    body text NOT NULL,
+    created_utc integer DEFAULT 0
+);
+
+CREATE INDEX post_templates_user_id_index ON public.post_templates USING btree (user_id);
+
 CREATE INDEX submissions_word_severity_index ON public.submissions USING btree (word_severity);
 CREATE INDEX comments_word_severity_index ON public.comments USING btree (word_severity);

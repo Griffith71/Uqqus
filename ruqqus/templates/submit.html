@@ -147,36 +147,21 @@
                             <i class="fas fa-plus mr-1"></i>Add body text
                         </a>
 
-                        <div id="body-write" class="comment-write mt-2{% if not body %} d-none{% endif %}{% if body %} collapsed{% endif %}">
+                        <div id="body-write" class="comment-write post-editor mt-2{% if not body %} d-none{% endif %}{% if body %} collapsed{% endif %}">
+                            <div class="post-toolbar" data-target="post-body"></div>
                             <div class="input-group">
 
                                 <textarea form="submitform" id="post-body" name="body" class="comment-box form-control rounded" aria-label="Post body" placeholder="Say more..." rows="5" oninput="charLimit('post-body','character-count-body');checkForRequired()" maxlength="25000">{{ body }}</textarea>
 
                                 <span class="position-absolute text-small font-weight-bold" id="character-count-body" style="right: 1rem; bottom: 0.5rem; z-index: 3;"></span>
 
-                                <div class="comment-format">
-                                    <small class="format pl-0"><i class="fas fa-bold" onclick="makeBold('post-body')" data-toggle="tooltip" data-placement="bottom" title="Bold"></i></small>
-                                    <small class="format"><i class="fas fa-italic" onclick="makeItalics('post-body')" data-toggle="tooltip" data-placement="bottom" title="Italicize"></i></small>
-                                    <small class="format"><i class="fas fa-strikethrough" onclick="makeStrikethrough('post-body')" data-toggle="tooltip" data-placement="bottom" title="Strikethrough"></i></small>
-                                    <small class="format"><i class="fas fa-quote-right" onclick="makeQuote('post-body')" data-toggle="tooltip" data-placement="bottom" title="Quote"></i></small>
-                                    <small class="format"><i class="fas fa-link" onclick="makeLink('post-body')" data-toggle="tooltip" data-placement="bottom" title="Link"></i></small>
-                                    <small class="format"><i class="fas fa-list-ul" onclick="makeBulletList('post-body')" data-toggle="tooltip" data-placement="bottom" title="Bulleted list"></i></small>
-                                    <small class="format"><i class="fas fa-list-ol" onclick="makeNumberedList('post-body')" data-toggle="tooltip" data-placement="bottom" title="Numbered list"></i></small>
-                                    <small class="format"><i class="fas fa-code" onclick="makeCode('post-body')" data-toggle="tooltip" data-placement="bottom" title="Code"></i></small>
-                                    <small class="format"><i class="fas fa-eye-slash" onclick="makeSpoiler('post-body')" data-toggle="tooltip" data-placement="bottom" title="Spoiler"></i></small>
-                                    <label class="btn btn-secondary format d-inline-block m-0" for="gif-post-btn">
-                                        <span id="gif-post-btn" class="font-weight-bolder text-uppercase" onclick="getGif();commentForm('post-body')" data-toggle="modal" data-target="#gifModal" data-placement="bottom" title="Add GIF">GIF</span>
-                                    </label>
-                                    &nbsp;
-                                    <label class="btn btn-secondary format d-inline-block m-0" for="emoji-post-btn">
-                                        <i id="emoji-post-btn" class="fas fa-smile-beam" onclick="commentForm('post-body');loadEmojis()" data-toggle="modal" data-target="#emojiModal" data-placement="bottom" title="Add EMOJI"></i>
-                                    </label>
-                                    &nbsp;
+                            </div>
+                            <div class="post-preview d-none"></div>
+                            <div class="post-editor-attach">
                                     <label class="format btn btn-secondary m-0 ml-1 {% if v.can_upload_comment_image %}d-inline-block{% else %}d-none{% endif %}" for="body-image-upload">
                                         <div id="body-image-filename-show"><i class="far fa-image"></i></div>
                                         <input id="body-image-upload" type="file" name="body_image" accept="image/*" onchange="document.getElementById('body-image-filename-show').innerHTML=this.files[0].name;" hidden>
                                     </label>
-                                </div>
                             </div>
                         </div>
 
@@ -261,6 +246,7 @@
     <!-- Ruqqus JS -->
 
     <script src="/assets/js/all_js.js?v=2.39.0"></script>
+    <script src="/assets/js/post_editor.js?v=1"></script>
 
     <!-- ClipboardJS -->
 
