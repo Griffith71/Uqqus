@@ -1,3 +1,4 @@
+import json
 import re
 import bleach
 from bs4 import BeautifulSoup
@@ -215,7 +216,10 @@ def sanitize(text, bio=False, linkgen=False, noimages=False):
                     link["rel"] = "nofollow noopener"
                     link["target"] = "_blank"
 
-                    link["onclick"] = f"expandDesktopImage('{tag['src']}');"
+                    # the address is user-controlled: pass it as a JSON string (double
+                    # quoted, quotes and backslashes escaped) so it cannot end the
+                    # argument and run its own script
+                    link["onclick"] = f"expandDesktopImage({json.dumps(tag['src'])});"
                     link["data-toggle"] = "modal"
                     link["data-target"] = "#expandImageModal"
 

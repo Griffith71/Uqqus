@@ -44,22 +44,27 @@ $('#new_email').on('input', function () {
 
   function commentForm(form) {
     commentFormID = form;
+
+    // a field nobody has clicked into yet has its caret at the start: put it
+    // at the end, where someone who has not typed there yet expects the emoji
+    var field = document.getElementById(form);
+    if (field && !field.dataset.hadFocus) {
+      field.setSelectionRange(field.value.length, field.value.length);
+    }
   };
+
+  document.addEventListener('focusin', function (event) {
+    if (event.target && event.target.dataset) event.target.dataset.hadFocus = '1';
+  });
 
   function getEmoji(searchTerm) {
 
     var emoji = ' :'+searchTerm+': '
 
-    var commentBox = document.getElementById(commentFormID);
-
-    var old = commentBox.value;
-
-    commentBox.value = old + emoji;
-
-    // Fire the target field's own oninput handler (e.g. the title's
-    // overflow sync, or checkForRequired) since setting .value directly
-    // doesn't trigger it the way real typing would.
-    commentBox.dispatchEvent(new Event('input', { bubbles: true }));
+    // at the caret, replacing any selection; insertAtCaret fires the field's
+    // own oninput handler (the title's overflow sync, checkForRequired) the
+    // way real typing would
+    insertAtCaret(document.getElementById(commentFormID), emoji);
 
   }
 
@@ -472,16 +477,7 @@ $('#new_email').on('input', function () {
 
     var gif = "![](" + url +")";
 
-    var commentBox = document.getElementById(form);
-
-    var old  = commentBox.value;
-
-    commentBox.value = old + gif;
-
-    // Fire the target field's own oninput handler (e.g. the title's
-    // overflow sync, or checkForRequired) since setting .value directly
-    // doesn't trigger it the way real typing would.
-    commentBox.dispatchEvent(new Event('input', { bubbles: true }));
+    insertAtCaret(document.getElementById(form), gif);
 
   }
 
@@ -2039,191 +2035,199 @@ $('#expandImageModal').on('hidden.bs.modal', function (e) {
 });
 
 // Text Formatting
+//
+// Every formatting button goes through editorReplace(), so the browser's own
+// undo/redo keeps working and "input" events fire (the character counters and
+// the Post button's required-field check listen for them).
+
+// Replace el.value[start, end) with text, then select [selStart, selEnd)
+// (default: put the caret after the new text). execCommand keeps the edit in
+// the undo history; setRangeText is the fallback where it is unavailable.
+function editorReplace(el, start, end, text, selStart, selEnd) {
+  el.focus();
+  el.setSelectionRange(start, end);
+  var done = false;
+  try { done = document.execCommand('insertText', false, text); } catch (err) { done = false; }
+  if (!done) {
+    el.setRangeText(text, start, end, 'end');
+    el.dispatchEvent(new Event('input', { bubbles: true }));
+  }
+  var from = selStart === undefined ? start + text.length : selStart;
+  el.setSelectionRange(from, selEnd === undefined ? from : selEnd);
+}
+
+// Insert text at the caret (replacing any selection) without taking focus -
+// used by the emoji and GIF pickers, which run while a modal has the focus.
+function insertAtCaret(el, text) {
+  el.setRangeText(text, el.selectionStart, el.selectionEnd, 'end');
+  el.dispatchEvent(new Event('input', { bubbles: true }));
+}
+
+function editorMarkerRun(str, ch, fromEnd) {
+  var n = 0;
+  if (fromEnd) {
+    for (var i = str.length - 1; i >= 0 && str.charAt(i) === ch; i--) n++;
+  } else {
+    for (var j = 0; j < str.length && str.charAt(j) === ch; j++) n++;
+  }
+  return n;
+}
+
+// Is [s, e) already wrapped in open/close - either inside the selection
+// ("**bold**" selected) or just outside it? Bold (**) and italic (*) share the
+// asterisk, so for those the runs of asterisks are counted: an odd run means
+// italic is on, two or more means bold is on.
+function editorFindWrap(v, s, e, open, close) {
+  var sel = v.substring(s, e);
+  if (open.charAt(0) === '*' && open === close) {
+    var inside = true;
+    var n = Math.min(editorMarkerRun(sel, '*', false), editorMarkerRun(sel, '*', true));
+    if (n === 0) {
+      inside = false;
+      n = Math.min(editorMarkerRun(v.substring(0, s), '*', true), editorMarkerRun(v.substring(e), '*', false));
+    }
+    var on = open.length === 2 ? n >= 2 : n % 2 === 1;
+    return on ? { inside: inside, o: open.length, c: close.length } : null;
+  }
+  if (sel.length >= open.length + close.length && sel.startsWith(open) && sel.endsWith(close)) {
+    return { inside: true, o: open.length, c: close.length };
+  }
+  if (s >= open.length && v.substring(s - open.length, s) === open && v.substr(e, close.length) === close) {
+    return { inside: false, o: open.length, c: close.length };
+  }
+  return null;
+}
+
+// Toggle an inline marker pair around the selection (bold, italic, ...).
+// With nothing selected an empty pair is dropped in and the caret stands
+// between the markers.
+function editorToggleWrap(form, open, close) {
+  var el = document.getElementById(form);
+  var s = el.selectionStart, e = el.selectionEnd, v = el.value;
+  var w = editorFindWrap(v, s, e, open, close);
+  if (w && w.inside) {
+    var inner = v.substring(s + w.o, e - w.c);
+    editorReplace(el, s, e, inner, s, s + inner.length);
+  } else if (w) {
+    editorReplace(el, s - w.o, e + w.c, v.substring(s, e), s - w.o, e - w.o);
+  } else if (s === e) {
+    editorReplace(el, s, e, open + close, s + open.length, s + open.length);
+  } else {
+    editorReplace(el, s, e, open + v.substring(s, e) + close, s + open.length, e + open.length);
+  }
+}
+
+// The whole lines the selection touches (or the caret's line): [start, end).
+function editorLineRange(el) {
+  var v = el.value, s = el.selectionStart, e = el.selectionEnd;
+  var start = v.lastIndexOf('\n', s - 1) + 1;
+  var ref = (e > s && v.charAt(e - 1) === '\n') ? e - 1 : e;
+  var nl = v.indexOf('\n', ref);
+  return { start: start, end: nl === -1 ? v.length : nl };
+}
+
+// Prefix every non-empty line of the selection, or strip the prefix when they
+// all have it. add(line, n) builds the new line (n counts non-empty lines).
+function editorPrefixLines(form, isPrefixed, add, strip, blank) {
+  var el = document.getElementById(form);
+  var r = editorLineRange(el);
+  var lines = el.value.substring(r.start, r.end).split('\n');
+  var filled = lines.filter(function (l) { return l.trim().length; });
+  var already = filled.length > 0 && filled.every(isPrefixed);
+  var n = 0;
+  var out = lines.map(function (l) {
+    if (!l.trim().length) return already || blank === undefined ? l : blank;
+    n++;
+    return already ? strip(l) : add(l, n);
+  }).join('\n');
+  editorReplace(el, r.start, r.end, out, r.start, r.start + out.length);
+}
 
 // Bold Text
 
 makeBold = function (form) {
-  var text = document.getElementById(form);
-  var startIndex = text.selectionStart,
-  endIndex = text.selectionEnd;
-  var selectedText = text.value.substring(startIndex, endIndex);
-
-  var format = '**'
-
-  if (selectedText.includes('**')) {
-    text.value = selectedText.replace(/\*/g, '');
-    
-  }
-  else if (selectedText.length == 0) {
-    text.value = text.value.substring(0, startIndex) + selectedText + text.value.substring(endIndex);
-  }
-  else {
-    text.value = text.value.substring(0, startIndex) + format + selectedText + format + text.value.substring(endIndex);
-  }
+  editorToggleWrap(form, '**', '**');
 }
 
 // Italicize Comment Text
 
 makeItalics = function (form) {
-  var text = document.getElementById(form);
-  var startIndex = text.selectionStart,
-  endIndex = text.selectionEnd;
-  var selectedText = text.value.substring(startIndex, endIndex);
-
-  var format = '*'
-
-  if (selectedText.includes('*')) {
-    text.value = selectedText.replace(/\*/g, '');
-    
-  }
-  else if (selectedText.length == 0) {
-    text.value = text.value.substring(0, startIndex) + selectedText + text.value.substring(endIndex);
-  }
-  else {
-    text.value = text.value.substring(0, startIndex) + format + selectedText + format + text.value.substring(endIndex);
-  }
+  editorToggleWrap(form, '*', '*');
 }
 
-// Quote Comment Text
+// Quote Comment Text - every line of the selection gets its own ">"
 
 makeQuote = function (form) {
-  var text = document.getElementById(form);
-  var startIndex = text.selectionStart,
-  endIndex = text.selectionEnd;
-  var selectedText = text.value.substring(startIndex, endIndex);
-
-  var format = '>'
-
-  if (selectedText.includes('>')) {
-    text.value = text.value.substring(0, startIndex) + selectedText.replace(/\>/g, '') + text.value.substring(endIndex);
-    
-  }
-  else if (selectedText.length == 0) {
-    text.value = text.value.substring(0, startIndex) + selectedText + text.value.substring(endIndex);
-  }
-  else {
-    text.value = text.value.substring(0, startIndex) + format + selectedText + text.value.substring(endIndex);
-  }
+  editorPrefixLines(form,
+    function (l) { return /^>/.test(l); },
+    function (l) { return '> ' + l; },
+    function (l) { return l.replace(/^>\s?/, ''); },
+    '>');
 }
 
 // Strikethrough Comment Text
 
 makeStrikethrough = function (form) {
-  var text = document.getElementById(form);
-  var startIndex = text.selectionStart,
-  endIndex = text.selectionEnd;
-  var selectedText = text.value.substring(startIndex, endIndex);
-
-  var format = '~~'
-
-  if (selectedText.includes('~~')) {
-    text.value = text.value.substring(0, startIndex) + selectedText.replace(/~~/g, '') + text.value.substring(endIndex);
-  }
-  else if (selectedText.length == 0) {
-    text.value = text.value.substring(0, startIndex) + selectedText + text.value.substring(endIndex);
-  }
-  else {
-    text.value = text.value.substring(0, startIndex) + format + selectedText + format + text.value.substring(endIndex);
-  }
+  editorToggleWrap(form, '~~', '~~');
 }
 
-// Spoiler-tag Comment Text (Reddit-style >!text!< delimiter)
+// Spoiler-tag Comment Text. Written as ||text||: the Reddit-style >!text!<
+// turns into a blockquote when it starts a line, so it is only recognised
+// (and removed) here, never written.
 
 makeSpoiler = function (form) {
-  var text = document.getElementById(form);
-  var startIndex = text.selectionStart,
-  endIndex = text.selectionEnd;
-  var selectedText = text.value.substring(startIndex, endIndex);
-
-  if (selectedText.length == 0) {
-    text.value = text.value.substring(0, startIndex) + selectedText + text.value.substring(endIndex);
-  }
-  else if (selectedText.startsWith('>!') && selectedText.endsWith('!<')) {
-    text.value = text.value.substring(0, startIndex) + selectedText.slice(2, -2) + text.value.substring(endIndex);
-  }
-  else {
-    text.value = text.value.substring(0, startIndex) + '>!' + selectedText + '!<' + text.value.substring(endIndex);
+  var el = document.getElementById(form);
+  var sel = el.value.substring(el.selectionStart, el.selectionEnd);
+  if (sel.startsWith('>!') && sel.endsWith('!<')) {
+    editorToggleWrap(form, '>!', '!<');
+  } else {
+    editorToggleWrap(form, '||', '||');
   }
 }
 
-// Inline or fenced Code for Comment Text
+// Inline code, or a fenced block when the selection spans lines
 
 makeCode = function (form) {
-  var text = document.getElementById(form);
-  var startIndex = text.selectionStart,
-  endIndex = text.selectionEnd;
-  var selectedText = text.value.substring(startIndex, endIndex);
-
-  if (selectedText.length == 0) {
-    text.value = text.value.substring(0, startIndex) + selectedText + text.value.substring(endIndex);
-  }
-  else if (selectedText.includes('\n')) {
-    if (selectedText.startsWith('```\n') && selectedText.endsWith('\n```')) {
-      text.value = text.value.substring(0, startIndex) + selectedText.slice(4, -4) + text.value.substring(endIndex);
-    } else {
-      text.value = text.value.substring(0, startIndex) + '```\n' + selectedText + '\n```' + text.value.substring(endIndex);
-    }
-  }
-  else if (selectedText.startsWith('`') && selectedText.endsWith('`') && selectedText.length > 1) {
-    text.value = text.value.substring(0, startIndex) + selectedText.slice(1, -1) + text.value.substring(endIndex);
-  }
-  else {
-    text.value = text.value.substring(0, startIndex) + '`' + selectedText + '`' + text.value.substring(endIndex);
+  var el = document.getElementById(form);
+  var s = el.selectionStart, e = el.selectionEnd, v = el.value;
+  var sel = v.substring(s, e);
+  if (sel.indexOf('\n') === -1) {
+    editorToggleWrap(form, '`', '`');
+  } else if (sel.startsWith('```\n') && sel.endsWith('\n```')) {
+    var inner = sel.slice(4, -4);
+    editorReplace(el, s, e, inner, s, s + inner.length);
+  } else {
+    // a fence has to start its own line
+    var lead = (s > 0 && v.charAt(s - 1) !== '\n') ? '\n' : '';
+    var block = lead + '```\n' + sel + '\n```';
+    editorReplace(el, s, e, block, s + lead.length, s + block.length);
   }
 }
 
-// Bulleted / numbered lists for Comment Text - every line needs its own
-// marker for mistletoe to render it as a real multi-item list, unlike
-// Bold/Italic/Quote which only ever wrap the whole selection once.
+// Bulleted / numbered lists - every line needs its own marker for mistletoe
+// to render a real multi-item list.
 
 makeBulletList = function (form) {
-  var text = document.getElementById(form);
-  var startIndex = text.selectionStart,
-  endIndex = text.selectionEnd;
-  var selectedText = text.value.substring(startIndex, endIndex);
-
-  if (selectedText.length == 0) {
-    text.value = text.value.substring(0, startIndex) + selectedText + text.value.substring(endIndex);
-    return;
-  }
-
-  var lines = selectedText.split('\n');
-  var alreadyList = lines.every(function (line) { return line.startsWith('* '); });
-  var newLines = alreadyList
-    ? lines.map(function (line) { return line.slice(2); })
-    : lines.map(function (line) { return '* ' + line; });
-
-  text.value = text.value.substring(0, startIndex) + newLines.join('\n') + text.value.substring(endIndex);
+  editorPrefixLines(form,
+    function (l) { return /^[*-]\s/.test(l); },
+    function (l) { return '* ' + l; },
+    function (l) { return l.replace(/^[*-]\s/, ''); });
 }
 
 makeNumberedList = function (form) {
-  var text = document.getElementById(form);
-  var startIndex = text.selectionStart,
-  endIndex = text.selectionEnd;
-  var selectedText = text.value.substring(startIndex, endIndex);
-
-  if (selectedText.length == 0) {
-    text.value = text.value.substring(0, startIndex) + selectedText + text.value.substring(endIndex);
-    return;
-  }
-
-  var lines = selectedText.split('\n');
-  var alreadyList = lines.every(function (line) { return /^\d+\.\s/.test(line); });
-  var newLines = alreadyList
-    ? lines.map(function (line) { return line.replace(/^\d+\.\s/, ''); })
-    : lines.map(function (line, i) { return (i + 1) + '. ' + line; });
-
-  text.value = text.value.substring(0, startIndex) + newLines.join('\n') + text.value.substring(endIndex);
+  editorPrefixLines(form,
+    function (l) { return /^\d+\.\s/.test(l); },
+    function (l, n) { return n + '. ' + l; },
+    function (l) { return l.replace(/^\d+\.\s/, ''); });
 }
 
 // Insert a markdown link, prompting for the URL - selected text (if any)
 // becomes the link label, otherwise the URL itself is used as the label.
 
 makeLink = function (form) {
-  var text = document.getElementById(form);
-  var startIndex = text.selectionStart,
-  endIndex = text.selectionEnd;
-  var selectedText = text.value.substring(startIndex, endIndex);
+  var el = document.getElementById(form);
+  var s = el.selectionStart, e = el.selectionEnd;
+  var selectedText = el.value.substring(s, e);
 
   var url = window.prompt("Enter a URL", "https://");
   if (url === null) return;
@@ -2231,8 +2235,7 @@ makeLink = function (form) {
   if (!url) return;
 
   var label = selectedText.length ? selectedText : url;
-  var markdown = '[' + label + '](' + url + ')';
-  text.value = text.value.substring(0, startIndex) + markdown + text.value.substring(endIndex);
+  editorReplace(el, s, e, '[' + label + '](' + url + ')');
 }
 
 // Character Count

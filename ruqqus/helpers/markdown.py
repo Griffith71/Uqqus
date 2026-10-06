@@ -11,6 +11,9 @@ from flask import g
 
 enter_re = re.compile(r"(\n\r?\w+){3,}")
 
+# fenced code (``` or ~~~ at the start of a line, closed or not) is never touched
+fence_re = re.compile(r"^(?:```|~~~).*?(?:^(?:```|~~~)|\Z)", re.S | re.M)
+
 
 
 # add token/rendering for @username mentions
@@ -191,13 +194,29 @@ class CustomRenderer(HTMLRenderer):
     #     return f'{space}<a href="{user.permalink}" class="d-inline-block"><img src="/@{user.username}/pic/profile" class="profile-pic-20 mr-1">@{user.username}</a>'
 
     
+def _stack_to_paragraph(match):
+    # three or more one-word lines in a row would make a tall column of single
+    # words: put them on one line, as their own paragraph, and keep the words
+    return "\n\n" + " ".join(match.group(0).split())
+
+
+def _outside_fences(text, fn):
+    out, last = [], 0
+    for m in fence_re.finditer(text):
+        out.append(fn(text[last:m.start()]))
+        out.append(m.group(0))
+        last = m.end()
+    out.append(fn(text[last:]))
+    return "".join(out)
+
+
 def preprocess(text):
 
     text=text.lstrip().rstrip()
-    
-    text=re.sub(enter_re, "\n\n", text)
+
+    text=_outside_fences(text, lambda part: enter_re.sub(_stack_to_paragraph, part))
 
     text=re.sub("(\u200b|\u200c|\u200d)",'', text)
-    
+
     return text
 
