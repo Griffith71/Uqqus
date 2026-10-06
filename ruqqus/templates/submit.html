@@ -194,6 +194,8 @@
 
                         {{ post_options.comment_permission_field(request.form.get("comment_permission", 0) | int, "post-cp") }}
 
+                        {{ post_options.disclosure_field(request.form.getlist("paid_partnership") | select | list | length > 0, request.form.getlist("made_with_ai") | select | list | length > 0, "post-disc") }}
+
                         <label for="sensitive" class="text-warning mt-3">Sensitive Content?<i class="fas fa-info-circle text-gray-400 ml-1" data-toggle="tooltip" data-placement="top" title="Not a rule violation - just something that could be upsetting. Shown blurred with a click-to-reveal instead of being blocked."></i></label>
 
                         <div class="custom-control custom-checkbox">

@@ -23,7 +23,7 @@ from ruqqus.helpers.aws import *
 from ruqqus.helpers.alerts import send_notification
 from ruqqus.helpers.text import split_title_body
 from ruqqus.helpers.languages import detect_language
-from ruqqus.helpers.post_fields import clean_title, check_body, normalize_url, PostFieldError
+from ruqqus.helpers.post_fields import clean_title, check_body, normalize_url, flag, PostFieldError
 from ruqqus.helpers import comment_permission as cperm
 from ruqqus.helpers.word_filter_store import post_severity, apply_post_severity
 from ruqqus.classes import *
@@ -229,6 +229,8 @@ Optional form data:
 * `comment_permission` - Who can comment: `0` everyone, `1` accounts you follow,
   `2` Premium accounts. Only applies to the post on your profile (forwarded
   copies follow their guild's rules).
+* `paid_partnership` - `true` if the post is a paid partnership, empty to unmark it.
+* `made_with_ai` - `true` if the post was made with AI, empty to unmark it.
 * `remove_image` - `true` to remove the post's uploaded image.
 
 Optional file data:
@@ -264,6 +266,9 @@ Optional file data:
         return _edit_error(str(e))
 
     sensitive = any(form.getlist("sensitive")) if "sensitive" in form else bool(primary.is_sensitive)
+
+    paid_partnership = flag(form, "paid_partnership", primary.paid_partnership)
+    made_with_ai = flag(form, "made_with_ai", primary.made_with_ai)
 
     comment_permission = cperm.mode_of(primary)
     if "comment_permission" in form:
@@ -363,7 +368,9 @@ Optional file data:
         g.db.add(primary)
 
     unchanged = (title == primary.title and not body_changed and not url_changed
-                 and sensitive == bool(primary.is_sensitive))
+                 and sensitive == bool(primary.is_sensitive)
+                 and paid_partnership == bool(primary.paid_partnership)
+                 and made_with_ai == bool(primary.made_with_ai))
 
     if not unchanged:
 
@@ -427,6 +434,8 @@ Optional file data:
             row.language_code = language_code
             # same rule as forwarding: a sensitive guild keeps its copy marked
             row.is_sensitive = sensitive or (row is not primary and row.board.is_sensitive)
+            row.paid_partnership = paid_partnership
+            row.made_with_ai = made_with_ai
             g.db.add(row)
 
         # the image scan and the thumbnail/embed worker read from their own
@@ -546,6 +555,7 @@ def get_post_title(v):
 def _build_standalone_submission(author_id, target, title, body, body_html,
                                   url=None, embed_url=None, domain_ref=None,
                                   is_offensive=False, is_sensitive=False,
+                                  paid_partnership=False, made_with_ai=False,
                                   app_id=None, creation_region=None, is_bot=False,
                                   auto_upvote=True, repost_id=0, language_code=None):
     """Create + flush one independent new Submission (own votes, own
@@ -562,6 +572,8 @@ def _build_standalone_submission(author_id, target, title, body, body_html,
         repost_id=repost_id,
         is_offensive=is_offensive,
         is_sensitive=(is_sensitive or target.is_sensitive),
+        paid_partnership=paid_partnership,
+        made_with_ai=made_with_ai,
         app_id=app_id,
         creation_region=creation_region,
         is_bot=is_bot,
@@ -603,6 +615,8 @@ def create_forward_post(primary, target, forwarded_by):
         domain_ref=primary.domain_ref,
         is_offensive=primary.is_offensive,
         is_sensitive=primary.is_sensitive,
+        paid_partnership=primary.paid_partnership,
+        made_with_ai=primary.made_with_ai,
         app_id=primary.app_id,
         creation_region=primary.creation_region,
         is_bot=primary.is_bot,
@@ -657,6 +671,8 @@ def create_forward_post_from_comment(comment, target, comment_forwarded_by):
         body_html=body_html,
         is_offensive=comment.is_offensive,
         is_sensitive=comment.is_sensitive,
+        paid_partnership=comment.paid_partnership,
+        made_with_ai=comment.made_with_ai,
         app_id=comment.app_id,
         creation_region=comment.creation_region,
         is_bot=comment.is_bot,
@@ -703,6 +719,8 @@ Optional form data:
 * `url` - A link to attach to the post.
 * `forward_guilds` - Guild name(s) to forward this post to (repeat the
   field for multiple guilds, e.g. forward_guilds=foo&forward_guilds=bar).
+* `paid_partnership` - `true` to mark the post as a paid partnership.
+* `made_with_ai` - `true` to mark the post as made with AI.
 * `comment_permission` - Who can comment on the post on your profile: `0`
   everyone (default), `1` accounts you follow, `2` Premium accounts.
   Forwarded copies follow their guild's rules instead.
@@ -1160,6 +1178,8 @@ Optional file data:
         original_board_id=board.id,
         is_sensitive=bool(request.form.get("sensitive", "")),
         comment_permission=comment_permission,
+        paid_partnership=flag(request.form, "paid_partnership"),
+        made_with_ai=flag(request.form, "made_with_ai"),
         post_public=not board.is_private,
         repost_id=None,
         app_id=v.client.application.id if v.client else None,

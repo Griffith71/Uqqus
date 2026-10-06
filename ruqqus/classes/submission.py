@@ -100,6 +100,9 @@ class Submission(Base, Stndrd, Age_times, Scores, Fuzzing):
     # author follows, 2 Premium accounts. Only read on a post on the author's
     # own profile; forwarded copies follow their guild's rules.
     comment_permission = Column(SmallInteger, default=0)
+    # content disclosure, set by the author (and copied onto forwards)
+    paid_partnership = Column(Boolean, default=False)
+    made_with_ai = Column(Boolean, default=False)
     hidden_by_guild = Column(Boolean, default=False)
     board = relationship(
         "Board",
@@ -451,6 +454,8 @@ class Submission(Base, Stndrd, Age_times, Scores, Fuzzing):
                 'title': self.title,
                 'is_sensitive': self.is_sensitive,
                 'comment_permission': cperm.mode_of(self),
+                'paid_partnership': bool(self.paid_partnership),
+                'made_with_ai': bool(self.made_with_ai),
                 'is_bot': self.is_bot,
                 'thumb_url': self.thumb_url,
                 'domain': self.domain,

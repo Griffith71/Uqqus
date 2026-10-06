@@ -4,6 +4,7 @@
 {% set downs=p.downvotes_fuzzed %}
 {% set score=ups-downs %}
 {% set can_edit = v and v.id==p.author_id and not v.is_banned %}
+{% import "partials/post_options.html" as post_options %}
 {% set can_moderate = v and v.admin_level>=3 %}
 {% set can_pin = v and p.is_guildmaster('content') %}
 
@@ -486,8 +487,10 @@
 
           {% if p.url %}
           <h1 class="card-title post-title text-left mb-md-2 pb-md-1"><a target="_blank" href="{{ p.url }}" rel="nofollow noopener">{{ p.title | safe }}</a></h1>
+          {{ post_options.disclosure_row(p) }}
           {% else %}
           <h1 class="card-title post-title text-left mb-md-2 pb-md-1">{{ p.title | safe }}</h1>
+          {{ post_options.disclosure_row(p) }}
           {% endif %}
 
           {% if p.is_image or (p.url and not p.embed_url and not p.is_crosspost) %}
@@ -655,9 +658,9 @@
               <textarea name="body" id="post-edit-box-{{ p.base36id }}" class="comment-box form-control rounded" maxlength="25000" onkeydown="textAreaOnKeyDown(event, ()=>{post_edit('{{ p.base36id }}')})" aria-label="With textarea" placeholder="Add text to your post..." rows="3">{{ edit_src.body or '' }}</textarea>
 
               {% if p.is_profile_post %}
-              {% import "partials/post_options.html" as post_options %}
               {{ post_options.comment_permission_field(p.comment_permission or 0, "post-edit-cp-" ~ p.base36id) }}
               {% endif %}
+              {{ post_options.disclosure_field(edit_src.paid_partnership, edit_src.made_with_ai, "post-edit-disc-" ~ p.base36id) }}
 
               <div class="custom-control custom-checkbox mt-2">
                 <input type="hidden" name="sensitive" value="">
@@ -937,6 +940,7 @@
                 <input id="comment-sensitive-{{ p.fullname }}" type="checkbox" hidden>
                 <i class="fas fa-eye-slash"></i>
           </label>
+        {{ post_options.disclosure_toggles("comment-disc-" ~ p.fullname) }}
         <a id="save-comment-on-{{ p.fullname }}" href="javascript:void(0)" form="comment-on-{{ p.fullname }}" class="btn btn-primary text-whitebtn ml-auto" onclick="post_comment('{{ p.fullname }}')">Comment</a>
       </div>
     </form>

@@ -81,6 +81,9 @@ class Comment(Base, Age_times, Scores, Stndrd, Fuzzing):
     # word filter rating of the text (see Submission.word_severity)
     word_severity = Column(SmallInteger, default=0)
     word_filter_version = Column(String(12), default=None)
+    # content disclosure, set by the author
+    paid_partnership = Column(Boolean, default=False)
+    made_with_ai = Column(Boolean, default=False)
     is_bot = Column(Boolean, default=False)
     is_pinned = Column(Boolean, default=False)
     hidden_by_guild = Column(Boolean, default=False)
@@ -302,6 +305,8 @@ class Comment(Base, Age_times, Scores, Stndrd, Fuzzing):
             'is_deleted': self.is_deleted,
             'is_offensive': self.is_offensive,
             'is_sensitive': self.is_sensitive,
+            'paid_partnership': bool(self.paid_partnership),
+            'made_with_ai': bool(self.made_with_ai),
             'is_distinguished': bool(self.distinguish_level),
             'is_heralded': bool(self.gm_distinguish),
             'herald_guild': self.distinguished_board.name if self.gm_distinguish else None,

@@ -40,7 +40,8 @@ External contracts keep their old names on purpose: the URL `/notifications/repl
 ## Post options (legacy app)
 
 - **Who can comment?** (`submissions.comment_permission`: 0 everyone, 1 accounts the author follows, 2 Premium accounts) is set by the author on the post on their own profile. The rule lives in `ruqqus/helpers/comment_permission.py`: `api_comment` enforces it (the author and admins are exempt) and `rendered_page` passes `comment_restriction` to the templates, which show a notice instead of the comment box. A forwarded copy never reads it: copies follow their guild's rules (`Board.can_comment`). Do not copy the column onto a forward.
-- The option controls shared by the composer and the edit form live in `templates/partials/post_options.html`; the rules text in `templates/partials/posting_rules.html` (keep `help/rules.html` in step: `tests/test_posting_rules.py`).
+- **Content disclosure** (`paid_partnership`, `made_with_ai` on `submissions` and `comments`) is set by the author when writing or editing a post or comment, copied onto forwards (post and comment forwards), and shown as labels from the `disclosure_badges` / `disclosure_row` macros. Read the form fields with `post_fields.flag()` (an absent field keeps the stored value; "false" means off). `tests/test_content_disclosure.py` keeps schema, models, routes, templates and JS agreeing.
+- The option controls shared by the composer, the edit form and the comment forms live in `templates/partials/post_options.html`; the rules text in `templates/partials/posting_rules.html` (keep `help/rules.html` in step: `tests/test_posting_rules.py`).
 
 ## Word filter (legacy app)
 

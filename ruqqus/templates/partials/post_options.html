@@ -1,11 +1,22 @@
 {#
-  Option controls shared by "Create a post" and the post edit form, so the
-  wording lives in one place.
+  Option controls shared by "Create a post", the post edit form and the comment
+  forms, and the labels they set, so the wording lives in one place.
 
   comment_permission_field(selected, prefix): "Who can comment?" radios for a
   post on the author's own profile (helpers/comment_permission.py). `selected`
   is the current mode (0 everyone, 1 accounts you follow, 2 Premium accounts);
   `prefix` keeps the input ids unique when the field is on a page twice.
+
+  disclosure_field(paid, ai, prefix): "Content disclosure" checkboxes (paid
+  partnership, made with AI) for a post. The hidden empty inputs make an
+  unticked box arrive as "off" on edit forms (helpers/post_fields.flag).
+
+  disclosure_toggles(prefix, paid, ai): the same two options as icon toggles
+  in a comment form's toolbar. The inputs are `<prefix>-paid` and
+  `<prefix>-ai`; all_js.js (post_comment, comment_edit) reads them.
+
+  disclosure_badges(item) / disclosure_row(item): the labels on a post or a
+  comment that carries a disclosure.
 #}
 
 {% macro comment_permission_field(selected, prefix) %}
@@ -18,4 +29,40 @@
   </div>
   {% endfor %}
 </div>
+{% endmacro %}
+
+{% macro disclosure_field(paid, ai, prefix) %}
+<label class="mt-3 d-block">Content disclosure<i class="fas fa-info-circle text-gray-400 ml-1" data-toggle="tooltip" data-placement="top" title="Be upfront with readers. The labels show next to the title."></i></label>
+<div class="content-disclosure">
+  <div class="custom-control custom-checkbox custom-control-inline">
+    <input type="hidden" name="paid_partnership" value="">
+    <input type="checkbox" class="custom-control-input" id="{{ prefix }}-paid" name="paid_partnership" value="true"{% if paid %} checked{% endif %}>
+    <label class="custom-control-label" for="{{ prefix }}-paid">Paid partnership</label>
+  </div>
+  <div class="custom-control custom-checkbox custom-control-inline">
+    <input type="hidden" name="made_with_ai" value="">
+    <input type="checkbox" class="custom-control-input" id="{{ prefix }}-ai" name="made_with_ai" value="true"{% if ai %} checked{% endif %}>
+    <label class="custom-control-label" for="{{ prefix }}-ai">Made with AI</label>
+  </div>
+</div>
+{% endmacro %}
+
+{% macro disclosure_toggles(prefix, paid=false, ai=false) %}
+<label class="format btn btn-secondary m-0 ml-1 d-inline-block{% if paid %} text-info{% endif %}" for="{{ prefix }}-paid" data-toggle="tooltip" data-placement="bottom" title="Paid partnership">
+  <input id="{{ prefix }}-paid" type="checkbox" hidden{% if paid %} checked{% endif %} onchange="this.parentNode.classList.toggle('text-info', this.checked)">
+  <i class="fas fa-handshake"></i>
+</label>
+<label class="format btn btn-secondary m-0 ml-1 d-inline-block{% if ai %} text-info{% endif %}" for="{{ prefix }}-ai" data-toggle="tooltip" data-placement="bottom" title="Made with AI">
+  <input id="{{ prefix }}-ai" type="checkbox" hidden{% if ai %} checked{% endif %} onchange="this.parentNode.classList.toggle('text-info', this.checked)">
+  <i class="fas fa-robot"></i>
+</label>
+{% endmacro %}
+
+{% macro disclosure_badges(item) %}
+{%- if item.paid_partnership %}<span class="badge badge-pill bg-white border text-muted text-small-extra mr-1" data-toggle="tooltip" data-placement="bottom" title="The author says this is a paid partnership"><i class="fas fa-handshake fa-fw mr-1"></i>Paid partnership</span>{% endif -%}
+{%- if item.made_with_ai %}<span class="badge badge-pill bg-white border text-muted text-small-extra mr-1" data-toggle="tooltip" data-placement="bottom" title="The author says this was made with AI"><i class="fas fa-robot fa-fw mr-1"></i>Made with AI</span>{% endif -%}
+{% endmacro %}
+
+{% macro disclosure_row(item) %}
+{%- if item.paid_partnership or item.made_with_ai %}<div class="disclosure-badges mb-2">{{ disclosure_badges(item) }}</div>{% endif -%}
 {% endmacro %}

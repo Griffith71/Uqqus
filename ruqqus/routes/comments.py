@@ -18,6 +18,7 @@ from ruqqus.helpers.session_helpers import *
 from ruqqus.helpers.alerts import *
 from ruqqus.helpers.aws import *
 from ruqqus.helpers.word_filter_store import apply_comment_severity
+from ruqqus.helpers.post_fields import flag
 from ruqqus.helpers import comment_permission as cperm
 from ruqqus.classes import *
 from flask import *
@@ -275,6 +276,10 @@ Required form data:
 * `parent_fullname` - The fullname of the post or comment that is being commented on
 * `body` - Raw comment text
 
+Optional form data:
+* `paid_partnership` - `true` to mark the comment as a paid partnership.
+* `made_with_ai` - `true` to mark the comment as made with AI.
+
 Optional file data:
 * `file` - An image to upload and append to the comment body. Requires premium.
 """
@@ -447,6 +452,8 @@ Optional file data:
                 parent_comment_id=parent_comment_id,
                 level=level,
                 is_sensitive=(bool(request.form.get("sensitive", "")) or post.is_sensitive),
+                paid_partnership=flag(request.form, "paid_partnership"),
+                made_with_ai=flag(request.form, "made_with_ai"),
                 original_board_id=parent_post.board_id,
                 is_bot=is_bot,
                 app_id=v.client.application.id if v.client else None,
@@ -569,6 +576,10 @@ URL path parameters:
 
 Required form data:
 * `body` - The new raw comment text
+
+Optional form data (left out: unchanged):
+* `paid_partnership` - `true` if the comment is a paid partnership, empty to unmark it.
+* `made_with_ai` - `true` if the comment was made with AI, empty to unmark it.
 """
 
     c = get_comment(cid, v=v)
@@ -696,6 +707,8 @@ Required form data:
 
     c.body = body
     c.body_html = body_html
+    c.paid_partnership = flag(request.form, "paid_partnership", c.paid_partnership)
+    c.made_with_ai = flag(request.form, "made_with_ai", c.made_with_ai)
 
     g.db.add(c)
 

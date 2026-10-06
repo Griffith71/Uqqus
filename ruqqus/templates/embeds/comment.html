@@ -1,6 +1,7 @@
 {% extends "embeds/embed_default.html" %}
 
 {% set score=c.score_fuzzed %}
+{% import "partials/post_options.html" as post_options %}
 
 {% block title %}
 <title>@{{ c.author.username }} comments in +{{ c.board.name }} on "{{ c.post.title }}"</title>
@@ -23,7 +24,7 @@
 
         <div id="comment-{{ c.base36id }}-only">
 
-            <div class="user-info">{% if c.is_sensitive %}<span class="badge badge-warning">sensitive content</span> {% endif %}{% if c.author.title and c.author.title.is_before %}<span style="color:#{{ c.author.title.color }}">{{ c.author.title.text }}</span> {% endif %}<a href="{{ c.author.permalink }}" class="user-name {% if c.post.author_id==c.author_id %}text-info{% endif %}">{{ c.author.username }}</a>{% if c.author.title and not c.author.title.is_before %}<span style="color:#{{ c.author.title.color }}">{{ c.author.title.text }}</span>{% endif %}
+            <div class="user-info">{% if c.is_sensitive %}<span class="badge badge-warning">sensitive content</span> {% endif %}{{ post_options.disclosure_badges(c) }}{% if c.author.title and c.author.title.is_before %}<span style="color:#{{ c.author.title.color }}">{{ c.author.title.text }}</span> {% endif %}<a href="{{ c.author.permalink }}" class="user-name {% if c.post.author_id==c.author_id %}text-info{% endif %}">{{ c.author.username }}</a>{% if c.author.title and not c.author.title.is_before %}<span style="color:#{{ c.author.title.color }}">{{ c.author.title.text }}</span>{% endif %}
 		{% if c.distinguish_level or c.author_id==c.post.author_id %}
 		<span> </span>
 			{% if c.distinguish_level %}
@@ -34,9 +35,9 @@
 			{% endif %}
 			<span> </span>
 		{% endif %}
-                <span class="time-stamp" data-toggle="tooltip" data-placement="bottom" data-delay='{"show":"700", "hide":"300"}' title="{{ p.created_datetime }}"><span>&#183;</span> {{ c.age_string }}</span>
+                <span class="time-stamp" data-toggle="tooltip" data-placement="bottom" data-delay='{"show":"700", "hide":"300"}' title="{{ c.created_datetime }}"><span>&#183;</span> {{ c.age_string }}</span>
 		{% if c.edited_utc %}
-		<span class="time-edited" data-toggle="tooltip" data-placement="bottom" data-delay='{"show":"700", "hide":"300"}' title="{{ p.edited_datetime }}"><span>&#183;</span> <span class="font-italic">Edited {{ c.edited_string }}</span></span>
+		<span class="time-edited" data-toggle="tooltip" data-placement="bottom" data-delay='{"show":"700", "hide":"300"}' title="{{ c.edited_datetime }}"><span>&#183;</span> <span class="font-italic">Edited {{ c.edited_string }}</span></span>
 		{% endif %}
 
         <span class="comment-collapse d-md-none" onclick="collapse_comment('{{ c.base36id }}')"></span>

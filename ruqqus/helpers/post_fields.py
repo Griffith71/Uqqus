@@ -55,3 +55,18 @@ def normalize_url(raw):
                                   params=parsed.params,
                                   query=parsed.query,
                                   fragment=parsed.fragment))
+
+
+_NO = {"", "0", "false", "off", "no", "none", "null"}
+
+
+def flag(form, name, default=False):
+    """A yes/no form field (content disclosure: paid partnership, made with AI).
+
+    `default` when the field is absent, so an edit that leaves it out keeps
+    what is stored. Otherwise true unless every value sent says no. A ticked
+    checkbox is sent as "true" and an unticked one not at all, so edit forms
+    send an empty hidden field next to the checkbox for "unticked" to arrive."""
+    if name not in form:
+        return bool(default)
+    return any(str(value).strip().lower() not in _NO for value in form.getlist(name))

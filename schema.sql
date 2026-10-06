@@ -156,7 +156,9 @@ CREATE TABLE public.comments (
     hidden_by_guild boolean DEFAULT false,
     author_hidden boolean DEFAULT false,
     word_severity smallint DEFAULT 0 NOT NULL,
-    word_filter_version character varying(12)
+    word_filter_version character varying(12),
+    paid_partnership boolean DEFAULT false NOT NULL,
+    made_with_ai boolean DEFAULT false NOT NULL
 );
 
 
@@ -216,7 +218,9 @@ CREATE TABLE public.submissions (
     language_code character varying(5) DEFAULT NULL,
     word_severity smallint DEFAULT 0 NOT NULL,
     word_filter_version character varying(12),
-    comment_permission smallint DEFAULT 0 NOT NULL
+    comment_permission smallint DEFAULT 0 NOT NULL,
+    paid_partnership boolean DEFAULT false NOT NULL,
+    made_with_ai boolean DEFAULT false NOT NULL
 );
 
 

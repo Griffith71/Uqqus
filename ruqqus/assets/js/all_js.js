@@ -2672,6 +2672,11 @@ post_comment=function(fullname){
   form.append('file', document.getElementById('file-upload-comment-'+fullname).files[0]);
   var sensitiveBox = document.getElementById('comment-sensitive-'+fullname);
   form.append('sensitive', (sensitiveBox && sensitiveBox.checked) ? 'true' : '');
+  // content disclosure toggles in the form's toolbar (partials/post_options.html)
+  var paidBox = document.getElementById('comment-disc-'+fullname+'-paid');
+  var aiBox = document.getElementById('comment-disc-'+fullname+'-ai');
+  form.append('paid_partnership', (paidBox && paidBox.checked) ? 'true' : '');
+  form.append('made_with_ai', (aiBox && aiBox.checked) ? 'true' : '');
 
 
   var xhr = new XMLHttpRequest();
@@ -2780,6 +2785,14 @@ comment_edit=function(id){
   form.append('formkey', formkey());
   form.append('body', document.getElementById('comment-edit-body-'+id).value);
 
+  // content disclosure toggles; the labels are drawn in the comment header, so
+  // the page is reloaded when one of them changed
+  var paidBox = document.getElementById('comment-edit-disc-'+id+'-paid');
+  var aiBox = document.getElementById('comment-edit-disc-'+id+'-ai');
+  if (paidBox) form.append('paid_partnership', paidBox.checked ? 'true' : '');
+  if (aiBox) form.append('made_with_ai', aiBox.checked ? 'true' : '');
+  var flagsChanged = !!((paidBox && paidBox.checked !== paidBox.defaultChecked) || (aiBox && aiBox.checked !== aiBox.defaultChecked));
+
 
   var xhr = new XMLHttpRequest();
   xhr.open("post", "/edit_comment/"+id);
@@ -2788,6 +2801,7 @@ comment_edit=function(id){
     if (xhr.status==200) {
       var commentText=document.getElementById('comment-text-'+id);
       commentText.innerHTML=JSON.parse(xhr.response)["html"];
+      if (flagsChanged) { window.location.reload(); return; }
       document.getElementById('cancel-edit-'+id).click()
       $('#toast-comment-success').toast('dispose');
       $('#toast-comment-error').toast('dispose');
