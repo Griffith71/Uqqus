@@ -3986,24 +3986,21 @@ textarea, input[type=text] {
         flex-wrap: nowrap;
     }
 
-    #frontpage #main-content-col, #userpage #main-content-col, #search #main-content-col, #guild #main-content-col, #settings-guild #main-content-col, #thread #main-content-col, #notifications #main-content-col, #curations #main-content-col, #content_history #main-content-col {
+    #frontpage #main-content-col, #userpage #main-content-col, #search #main-content-col, #guild #main-content-col, #settings-guild #main-content-col, #thread #main-content-col, #notifications #main-content-col, #curations #main-content-col, #content_history #main-content-col, #chat #main-content-col {
         max-width: 726px;
         min-width: 0;
         margin-left: 0;
         margin-right: 0;
         float: none;
     }
-}
 
-// Chat: the left sidebar (300px) plus the conversation list (300px) and the
-// thread (726px) form one 1326px block, centered like the feeds.
-@media (min-width: 992px) {
-    #chat #main-content-col {
-        max-width: 1026px;
-        min-width: 0;
-        margin-left: 0;
-        margin-right: 0;
-        float: none;
+    // Chat has no right sidebar. Its 300px stays empty, so the chat (the
+    // conversation list and the thread inside one 726px column) sits exactly
+    // where the feed column does. The border is the sidebar's own divider.
+    #chat #main-content-row::after {
+        content: "";
+        flex: 0 0 300px;
+        border-left: 1px solid $border-color;
     }
 }
 
