@@ -367,6 +367,50 @@ function wireGlobalEvents(client) {
   });
 }
 
+// --- sending on behalf of another page --------------------------------------------------
+// The share sheet (assets/js/share_chat.js) keeps this page in a hidden frame and asks it to send a
+// post's link into a chat. The message has to be encrypted here, where the keys are. Only this
+// site's own parent page is listened to, and only into a chat the member can already write in.
+let isReady = false;
+
+function tellParent(message) {
+  if (window.parent && window.parent !== window) window.parent.postMessage(message, window.location.origin);
+}
+
+async function sendShared({ room_id: roomId, text }) {
+  if (!isReady) throw new Error("Chat is still starting.");
+  if (typeof roomId !== "string" || typeof text !== "string" || !text.trim() || text.length > 2000) {
+    throw new Error("That message can't be sent.");
+  }
+  const find = () => state.conversations.inbox.find((c) => c.room_id === roomId);
+  let convo = find();
+  if (!convo) {
+    await refreshLists();          // a chat that was just started from the share sheet
+    convo = find();
+  }
+  // the inbox holds every chat you can write in, including the ones you started yourself;
+  // a request waiting for you to accept it is not in it
+  if (!convo) throw new Error("You can't send to that chat.");
+  await state.client.sendTextMessage(roomId, text);
+}
+
+window.addEventListener("message", async (event) => {
+  if (window.parent === window || event.origin !== window.location.origin || event.source !== window.parent) return;
+  const data = event.data;
+  if (!data || typeof data.type !== "string") return;
+  if (data.type === "ruqqus-chat-ping") {
+    if (isReady) tellParent({ type: "ruqqus-chat-ready" });
+    return;
+  }
+  if (data.type !== "ruqqus-chat-send") return;
+  try {
+    await sendShared(data);
+    tellParent({ type: "ruqqus-chat-sent", id: data.id, ok: true });
+  } catch (e) {
+    tellParent({ type: "ruqqus-chat-sent", id: data.id, ok: false, error: e && e.message ? e.message : "Could not send." });
+  }
+});
+
 async function main() {
   if (!boot) return;
 
@@ -412,6 +456,9 @@ async function main() {
   }
 
   await refreshLists();
+
+  isReady = true;
+  tellParent({ type: "ruqqus-chat-ready" });
 
   if (boot.initialRoom) {
     const match = state.conversations.inbox.find((c) => c.room_id === boot.initialRoom)

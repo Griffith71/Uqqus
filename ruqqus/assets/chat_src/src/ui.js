@@ -21,6 +21,80 @@ function timeLabel(ms) {
   return d.toLocaleDateString([], { month: "short", day: "numeric" });
 }
 
+// A message that holds a link to one of this site's posts gets a small card under it (made for the
+// reader by /api/chat/post_preview: their own visibility rules, and never the author). The links are
+// recognised by the page's own host name (a copied link always says https), so a link to another site is
+// just text.
+const POST_LINK = new RegExp(
+  "https?://" + window.location.host.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + "(?:/\\+\\w+)?/post/([0-9a-z]{1,10})(?:/[^\\s]*)?"
+);
+const previews = new Map();      // post id -> what the server said about it
+const asking = new Set();        // post ids being asked about
+
+function fillPostCard(card, data) {
+  card.textContent = "";
+  if (!data || !data.ok) {
+    const notice = document.createElement("div");
+    notice.className = "small text-muted p-2";
+    notice.textContent = data && data.notice ? data.notice : "This post can't be shown.";
+    card.appendChild(notice);
+    return;
+  }
+  const link = document.createElement("a");
+  link.className = "d-flex align-items-center text-decoration-none text-body";
+  link.href = typeof data.url === "string" && data.url.startsWith("/") ? data.url : `/post/${card.dataset.postId}`;
+  if (typeof data.thumb === "string" && data.thumb.startsWith("https://")) {
+    const img = document.createElement("img");
+    img.src = data.thumb;
+    img.alt = "";
+    img.width = img.height = 56;
+    img.className = "chat-post-thumb";
+    link.appendChild(img);
+  }
+  const text = document.createElement("div");
+  text.className = "p-2 overflow-hidden";
+  const title = document.createElement("div");
+  title.className = "font-weight-bold chat-post-title";
+  title.textContent = data.title || "(untitled post)";
+  const meta = document.createElement("div");
+  meta.className = "small text-muted text-truncate";
+  const count = Number(data.comments) || 0;
+  meta.textContent = `${data.guild ? "+" + data.guild + " · " : ""}${count} comment${count === 1 ? "" : "s"}`;
+  text.appendChild(title);
+  text.appendChild(meta);
+  link.appendChild(text);
+  card.appendChild(link);
+}
+
+function postCard(id) {
+  const card = document.createElement("div");
+  card.className = "chat-post-card mt-1";
+  card.dataset.postId = id;
+  if (previews.has(id)) {
+    fillPostCard(card, previews.get(id));
+    return card;
+  }
+  card.innerHTML = '<div class="small text-muted p-2">Loading post…</div>';
+  if (!asking.has(id)) {
+    asking.add(id);
+    fetch(`/api/chat/post_preview/${id}`, { credentials: "same-origin" })
+      .then((r) => (r.ok ? r.json() : { ok: false, notice: "This post can't be shown." }))
+      .catch(() => ({ ok: false, notice: "This post can't be shown." }))
+      .then((data) => {
+        previews.set(id, data);
+        asking.delete(id);
+        document.querySelectorAll(`.chat-post-card[data-post-id="${id}"]`).forEach((el) => {
+          // the card is taller than "Loading…": someone reading the newest message stays at the bottom
+          const box = el.closest("#chat-messages");
+          const atBottom = box && box.scrollHeight - box.scrollTop - box.clientHeight < 80;
+          fillPostCard(el, data);
+          if (atBottom) box.scrollTop = box.scrollHeight;
+        });
+      });
+  }
+  return card;
+}
+
 // the emoji offered under "React"
 export const REACTION_CHOICES = ["👍", "❤️", "😂", "😮", "😢", "🙏"];
 
@@ -180,11 +254,13 @@ function buildMessage(item, handlers) {
   const bubble = document.createElement("div");
   bubble.className = `px-3 py-2 rounded chat-bubble ${item.mine ? "bg-primary text-white" : "bg-light"}`;
   if (item.status) bubble.style.opacity = "0.6";
+  const shared = !item.deleted && item.body ? POST_LINK.exec(item.body) : null;
   if (item.deleted) {
     bubble.classList.add("font-italic");
     bubble.textContent = "Message deleted";
   } else {
-    bubble.textContent = item.body;
+    // a shared post: the words around the link (if any), and the card under the message
+    bubble.textContent = shared ? item.body.replace(shared[0], "").trim() || "Shared a post" : item.body;
     if (item.edited) {
       const mark = document.createElement("span");
       mark.className = "small ml-2 chat-edited";
@@ -230,6 +306,8 @@ function buildMessage(item, handlers) {
     }
   }
   column.appendChild(line);
+
+  if (shared) column.appendChild(postCard(shared[1]));
 
   if (item.reactions && item.reactions.length) {
     const chips = document.createElement("div");

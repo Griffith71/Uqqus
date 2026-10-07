@@ -83,6 +83,16 @@ Ruqqus keeps no copy of an uploaded picture, sound or video. A member links an a
 
 `ruqqus/helpers/languages.py` holds the one list of languages (`LANGUAGE_NAMES`: filters, curations, trending) and detects a post's language when it is written (`detect_language`, `py3langid`). Only languages people speak in daily life are listed: Ancient Greek, Ancient Hebrew, Latin and Volapük were taken off on purpose (`REMOVED_LANGUAGES`; Sanskrit and Esperanto stay). The detector is restricted to the list the first time it is used, so it can only answer a listed language (Latin text reads as the nearest living one); a saved choice that is no longer listed is dropped with `known_codes`. To remove another language: take it out of `LANGUAGE_NAMES`, add it to `REMOVED_LANGUAGES` and to a data migration like `scripts/migrations/2026-10-08_languages.sql` (untags its posts, strips it from curations). `tests/test_languages.py`.
 
+## Send a post to a chat (legacy app)
+
+The share menu of a post has **Send in chat**: a sheet with your chats and the people you follow, an optional message and one tap on Send. **Chats are end-to-end encrypted and only the browser's chat client holds the keys, so the server can never write a message for someone.** The message is sent by the chat page itself:
+
+- `assets/js/share_chat.js` keeps `/chat?embed=1` in a frame (the side panel's own chat frame, `window.RuqqusPanels.chatFrame()`, so there is only ever one chat client per page), pings it until it says it is ready and asks it to send (`postMessage`, own origin only). `assets/chat_src/src/index.js` answers only its own parent, only into a chat in the member's **inbox** (a request waiting to be accepted is not writable), at most 2,000 characters.
+- Routes (`routes/chat.py`): `GET /api/chat/share_targets?q=` (your chats, then people you follow; never anyone blocked either way, a request not yet accepted, or a name the word filter hides), `POST /api/chat/start?json=1` (the room, for someone with no chat yet; its block check and inbox-or-request rule are unchanged) and `GET /api/chat/post_preview/<id>`.
+- **The card under a message** (`ui.js`): a message holding a link to one of this site's posts (matched by the page's host, either scheme) shows a card made for the **reader** by `post_preview`: their word filter, private guilds, removed and deleted posts, a notice when they may not see it, and **never the author** (an anonymous post stays anonymous). Everything is set with `textContent`. Needs a rebuild of the chat bundle (`docker compose build ruqqus`).
+- "Send in chat" is hidden inside the side-panel frames (`body.embedded`). Not built: sharing a comment, sharing to a group (chats are pairs only).
+- Tests: `tests/test_share_chat_assets.py`.
+
 ## Community notes (legacy app)
 
 From the flag menu a member can **request a community note** on a post or comment ("This may be misleading or needs context"); an admin may then write a note that is shown under it to everyone. Start with `ruqqus/helpers/community_notes.py`.

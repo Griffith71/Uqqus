@@ -59,7 +59,9 @@ def test_edits_replace_the_text_and_quotes_point_at_the_original():
 def test_message_text_is_never_put_in_through_innerhtml():
     build = UI[UI.index("function buildMessage"):UI.index("export function setTabBadge")]
     assert "innerHTML" not in build.replace('b.innerHTML = `<i class="${iconClass}"></i>`;', "")
-    assert "bubble.textContent = item.body" in build and "quote.textContent = item.quote" in build
+    # still text: the words around a shared post's link, or the message as it is
+    assert 'bubble.textContent = shared ? item.body.replace(shared[0], "").trim() || "Shared a post" : item.body' in build
+    assert "quote.textContent = item.quote" in build
 
 
 def test_the_wording_says_quote_not_the_banned_word():

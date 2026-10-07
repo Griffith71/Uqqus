@@ -712,6 +712,7 @@
                       <a href="#" role="button" id="shareDropdownLink-{{ p.base36id }}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-share-alt mr-1"></i>{{ p.repost_count }}</a>
                       <div class="dropdown-menu border-0 shadow" aria-labelledby="shareDropdownLink-{{ p.base36id }}">
                         <a class="dropdown-item copy-link" href="javascript:void(0);" role="button" data-clipboard-text="{{ p.permalink | full_link }}"><i class="fas fa-copy fa-fw"></i>Copy link</a>
+                        {% if v %}<a class="dropdown-item share-chat-item" href="javascript:void(0);" role="button" data-share-url="{{ p.permalink | full_link }}"><i class="fas fa-paper-plane fa-fw"></i>Send in chat</a>{% endif %}
                         {% if v %}
                         <a class="dropdown-item" href="javascript:void(0)" data-toggle="modal" data-target="#forwardPostModal" onclick="forward_postModal('{{ p.base36id }}')"><i class="fas fa-share fa-fw"></i>Forward</a>
                         <a id="repost-{{ p.base36id }}" class="dropdown-item{% if p.reposted %} d-none{% endif %}" href="javascript:void(0)" onclick="post_toast('/post/{{ p.base36id }}/repost', callback=function(){document.getElementById('repost-{{ p.base36id }}').classList.toggle('d-none');document.getElementById('unrepost-{{ p.base36id }}').classList.toggle('d-none');})"><i class="fas fa-retweet fa-fw"></i>Repost</a>
@@ -866,6 +867,7 @@
             <a href="#" role="button" id="shareDropdownLinkMobile-{{ p.base36id }}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-share-alt mr-1"></i>{{ p.repost_count }}</a>
             <div class="dropdown-menu dropdown-menu-right border-0 shadow" aria-labelledby="shareDropdownLinkMobile-{{ p.base36id }}">
               <a class="dropdown-item copy-link" href="javascript:void(0);" role="button" data-clipboard-text="{{ p.permalink | full_link }}"><i class="fas fa-copy fa-fw"></i>Copy link</a>
+              {% if v %}<a class="dropdown-item share-chat-item" href="javascript:void(0);" role="button" data-share-url="{{ p.permalink | full_link }}"><i class="fas fa-paper-plane fa-fw"></i>Send in chat</a>{% endif %}
               {% if v %}
               <a class="dropdown-item" href="javascript:void(0)" data-toggle="modal" data-target="#forwardPostModal" onclick="forward_postModal('{{ p.base36id }}')"><i class="fas fa-share fa-fw"></i>Forward</a>
               <a id="repost-mobile-{{ p.base36id }}" class="dropdown-item{% if p.reposted %} d-none{% endif %}" href="javascript:void(0)" onclick="post_toast('/post/{{ p.base36id }}/repost', callback=function(){document.getElementById('repost-mobile-{{ p.base36id }}').classList.toggle('d-none');document.getElementById('unrepost-mobile-{{ p.base36id }}').classList.toggle('d-none');})"><i class="fas fa-retweet fa-fw"></i>Repost</a>

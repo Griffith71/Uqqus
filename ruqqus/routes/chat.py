@@ -1,3 +1,5 @@
+import html
+import re
 import time
 from flask import *
 from sqlalchemy import or_, func, text
@@ -6,6 +8,7 @@ from ruqqus.helpers.wrappers import *
 from ruqqus.helpers.get import *
 from ruqqus.helpers.chat_permissions import can_message_directly, is_blocked
 from ruqqus.helpers.chat_events import is_new_message
+from ruqqus.helpers.visibility import filter_users, post_hidden, user_hidden
 from ruqqus.helpers.secret_box import encrypt_secret, decrypt_secret
 from ruqqus.classes import *
 import ruqqus.helpers.matrix_client as matrix
@@ -108,6 +111,13 @@ def chat_recovery_key_reveal(v):
                            revealed_recovery_key=decrypt_secret(identity.recovery_key_encrypted))
 
 
+def _started(room_id, status):
+    """The answer to starting a chat: the chat page for a link, the room for the share sheet (?json=1)."""
+    if request.values.get("json"):
+        return jsonify({"room_id": room_id, "status": status})
+    return redirect(f"/chat?room={room_id}")
+
+
 @app.route("/api/chat/start", methods=["POST"])
 @auth_required
 @validate_formkey
@@ -121,7 +131,7 @@ def chat_start(v):
     a_id, b_id = min(v.id, target.id), max(v.id, target.id)
     existing = g.db.query(ChatConversation).filter_by(user_a_id=a_id, user_b_id=b_id).first()
     if existing:
-        return redirect(f"/chat?room={existing.matrix_room_id}")
+        return _started(existing.matrix_room_id, existing.tab_for(v.id))
 
     v_mxid = _ensure_provisioned(v)
     t_mxid = _mxid_for_user_id(target.id)
@@ -144,10 +154,10 @@ def chat_start(v):
         g.db.rollback()
         existing = g.db.query(ChatConversation).filter_by(user_a_id=a_id, user_b_id=b_id).first()
         if existing:
-            return redirect(f"/chat?room={existing.matrix_room_id}")
+            return _started(existing.matrix_room_id, existing.tab_for(v.id))
         raise
 
-    return redirect(f"/chat?room={room_id}")
+    return _started(room_id, convo.tab_for(v.id))
 
 
 @app.route("/api/chat/conversations", methods=["GET"])
@@ -185,6 +195,80 @@ def chat_conversations(v):
             break
 
     return jsonify({"conversations": out})
+
+
+SHARE_TARGETS = 40
+SHARE_RECENT = 25
+POST_ID = re.compile(r"^[0-9a-z]{1,10}$")
+
+
+@app.route("/api/chat/share_targets", methods=["GET"])
+@auth_required
+def chat_share_targets(v):
+    """Who a post can be sent to from the share sheet: the chats you can already write in
+    (newest first), then people you follow, narrowed by ?q=. Never someone you block or who
+    blocks you, and never a chat still waiting for you to accept it."""
+    q = (request.args.get("q") or "").strip().lstrip("@")[:40].lower()
+
+    blocked = {b if a == v.id else a for a, b in g.db.query(UserBlock.user_id, UserBlock.target_id).filter(
+        or_(UserBlock.user_id == v.id, UserBlock.target_id == v.id)).all()}
+
+    out, seen = [], set()
+    rows = g.db.query(ChatConversation).filter(
+        or_(ChatConversation.user_a_id == v.id, ChatConversation.user_b_id == v.id)
+    ).order_by(ChatConversation.last_activity_utc.desc()).limit(100).all()
+    for convo in rows:
+        other = convo.other_user(v.id)
+        if other is None or other.id in blocked or other.is_deleted or user_hidden(other, v):
+            continue
+        if convo.tab_for(v.id) != "inbox" or (q and q not in other.username.lower()):
+            continue
+        out.append({"username": other.username, "profile_url": other.profile_url, "room_id": convo.matrix_room_id, "recent": True})
+        seen.add(other.id)
+        if len(out) >= SHARE_RECENT:
+            break
+
+    follows = [i for i in v.following_ids if i not in seen and i not in blocked]
+    if follows and len(out) < SHARE_TARGETS:
+        people = g.db.query(User).filter(User.id.in_(follows), User.is_deleted == False, User.is_banned == 0)
+        if q:
+            people = people.filter(User.username.ilike("%" + q.replace("\\", "").replace("%", "\\%").replace("_", "\\_") + "%"))
+        people = filter_users(people, v).order_by(User.username.asc()).limit(SHARE_TARGETS - len(out)).all()
+        out += [{"username": u.username, "profile_url": u.profile_url, "room_id": None, "recent": False} for u in people]
+
+    return jsonify({"targets": out})
+
+
+@app.route("/api/chat/post_preview/<pid>", methods=["GET"])
+@auth_required
+def chat_post_preview(pid, v):
+    """The small card under a message that links to a post, made for the person reading it:
+    the same visibility rules as opening the post, and never the author (so an anonymous post
+    stays anonymous). When they may not see it the card says so instead."""
+    if not POST_ID.match(pid):
+        return jsonify({"ok": False, "notice": "This post does not exist."})
+    post = get_post(pid, v=v, graceful=True)
+    if post is None:
+        return jsonify({"ok": False, "notice": "This post does not exist."})
+
+    admin = v.admin_level >= 3
+    if (post.is_banned or post.board.is_banned) and not admin:
+        return jsonify({"ok": False, "notice": "This post was removed."})
+    if post.deleted_utc and not admin:
+        return jsonify({"ok": False, "notice": "This post was deleted."})
+    if post_hidden(post, v):
+        return jsonify({"ok": False, "notice": "Hidden by your word filter."})
+    if not post.post_public and not post.board.can_view(v) and post.author_id != v.id:
+        return jsonify({"ok": False, "notice": "Not available to you."})
+
+    return jsonify({
+        "ok": True,
+        "title": html.unescape(post.title or "")[:200],
+        "guild": None if post.is_profile_post else post.board.name,
+        "url": post.permalink,
+        "thumb": post.thumb_url if (post.has_thumb and not post.is_sensitive) else None,
+        "comments": post.comment_count,
+    })
 
 
 @app.route("/api/chat/unread_count", methods=["GET"])

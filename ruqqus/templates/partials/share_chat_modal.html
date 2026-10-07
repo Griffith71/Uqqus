@@ -1,0 +1,25 @@
+{#
+  "Send in chat": the sheet that opens from the share menu of a post (assets/js/share_chat.js).
+  One copy per page, for a logged-in member, not inside the side-panel frames. The list is
+  filled from /api/chat/share_targets; every name and message goes in as text.
+#}
+<div class="modal fade" id="shareChatModal" tabindex="-1" role="dialog" aria-labelledby="shareChatTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="shareChatTitle">Send in chat</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true"><i class="far fa-times"></i></span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <label class="sr-only" for="share-chat-search">Search people</label>
+        <input type="search" id="share-chat-search" class="form-control mb-2" placeholder="Search people" autocomplete="off">
+        <div id="share-chat-list" class="share-chat-list" aria-live="polite"></div>
+        <label class="sr-only" for="share-chat-note">Add a message</label>
+        <textarea id="share-chat-note" class="form-control mt-2" rows="2" maxlength="500" placeholder="Add a message (optional)"></textarea>
+        <div id="share-chat-status" class="text-small mt-2" role="status"></div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -81,6 +81,10 @@
     markActive(null);
   }
 
+  // the share sheet (share_chat.js) sends through this same chat frame, so there is only ever one chat
+  // client on a page; made on first use, and shown only when the panel is opened
+  window.RuqqusPanels = { chatFrame: function () { return frameFor('chat'); } };
+
   triggers.forEach(function (trigger) {
     trigger.addEventListener('click', function (event) {
       var name = trigger.getAttribute('data-side-panel');
