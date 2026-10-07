@@ -3,14 +3,16 @@
   post straight from the feed instead of opening "Create a post".
 
   inline_composer(v, board, panel): `board` is the guild whose page this is, or none.
-  With `panel` it is the Create post side panel (composer_panel.html): always shown,
-  open, and there is no feed to add the new card to, so it links to the post instead. A
-  post is always made on your own profile first; on a guild page it is also
-  forwarded to that guild (the hidden `forward_guilds` field). The form posts to
-  /api/vue/submit, the same route the Create a post page uses, so every posting
-  rule, throttle and ban applies the same way.
+  With `panel` it is the Create post side panel (composer_panel.html): always shown and
+  open, and there is no feed to add the new card to, so it links to the post instead.
 
-  The options are the shared ones in partials/post_options.html.
+  A post is always made on your own profile first. "Forward to guilds" in Options works
+  like the one on Create a post: the script writes one hidden `forward_guilds` field per
+  guild into #ic-forward-inputs. On a guild page that guild starts as a removable
+  "Forwarding to" chip. The form posts to /api/vue/submit, the same route the Create a
+  post page uses, so every posting rule, throttle and ban applies the same way.
+
+  The other options are the shared ones in partials/post_options.html.
 #}
 {% from "partials/post_options.html" import comment_permission_field, disclosure_field, anonymous_field %}
 
@@ -19,9 +21,9 @@
   <div class="col">
     <div class="card pseudo-submit-form inline-composer-card">
       {% if v %}
-      <form id="inline-composer" class="inline-composer card-body" autocomplete="off" novalidate{% if panel %} data-open="true"{% endif %}>
+      <form id="inline-composer" class="inline-composer card-body" autocomplete="off" novalidate{% if panel %} data-open="true"{% endif %}{% if board %} data-guild="{{ board.name }}"{% endif %}>
         <input type="hidden" name="formkey" value="{{ v.formkey }}">
-        {% if board %}<input type="hidden" id="ic-forward" name="forward_guilds" value="{{ board.name }}">{% endif %}
+        <div id="ic-forward-inputs"></div>
         <div class="d-flex">
           <img src="{{ v.profile_url }}" class="profile-pic-35 mr-3 align-self-start" alt="">
           <div class="flex-grow-1 ic-main">
@@ -29,8 +31,18 @@
 
             <div id="ic-more" class="ic-more"{% if not panel %} hidden{% endif %}>
               <textarea id="ic-body" name="body" rows="3" class="form-control mt-2" placeholder="Add more (optional, markdown works)" aria-label="Post text"></textarea>
+              <div id="ic-forward-chips" class="ic-forward-chips mt-2" hidden>
+                <span class="text-small text-muted mr-1">Forwarding to</span><span id="ic-forward-chip-list"></span>
+              </div>
               <div id="ic-options" class="ic-options mt-2" hidden>
-                <input type="url" id="ic-url" name="url" class="form-control" placeholder="Link (optional)" aria-label="Link">
+                <label for="ic-forward-input" class="d-block">Forward to guilds (optional)<i class="fas fa-info-circle text-gray-400 ml-1" data-toggle="tooltip" data-placement="top" title="Your post always appears on your profile first. Optionally forward it into other guilds for community discussion - each guild gets its own independent copy with its own votes and comments."></i></label>
+                <div class="input-group">
+                  <input class="form-control" id="ic-forward-input" type="text" maxlength="50" placeholder="Type a guild name and press Enter" autocomplete="off">
+                  <div class="input-group-append">
+                    <button class="btn btn-secondary" id="ic-forward-add" type="button">Add</button>
+                  </div>
+                </div>
+                <input type="url" id="ic-url" name="url" class="form-control mt-3" placeholder="Link (optional)" aria-label="Link">
                 {{ comment_permission_field(0, "ic-permission") }}
                 {{ disclosure_field(false, false, "ic-disclosure") }}
                 {{ anonymous_field(false, "ic-anonymous") }}
@@ -43,11 +55,6 @@
             </div>
 
             <div id="ic-bar" class="ic-bar d-flex align-items-center mt-2"{% if not panel %} hidden{% endif %}>
-              {% if board %}
-              <span id="ic-forward-chip" class="badge badge-pill badge-primary mr-2 ic-chip" title="Posted on your profile first, then forwarded to this guild">
-                Forwarding to +{{ board.name }}<button type="button" id="ic-forward-remove" class="ic-chip-remove" aria-label="Do not forward to +{{ board.name }}">&times;</button>
-              </span>
-              {% endif %}
               {% if v.can_submit_image %}
               <label class="btn btn-link btn-sm text-muted px-1 mb-0" for="ic-file" title="Add an image"><i class="far fa-image"></i><span class="sr-only">Add an image</span></label>
               <input type="file" id="ic-file" name="file" accept="image/*" hidden>

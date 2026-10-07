@@ -3,9 +3,10 @@
  *
  * It posts to /api/vue/submit, the route the Create a post page uses, so every
  * posting rule, throttle and ban applies the same way. A post is made on your
- * own profile; on a guild page the hidden `forward_guilds` field also forwards
- * it to that guild. On success the new post's card is fetched
- * (/inpage/post_card/<id>) and added to the top of the feed.
+ * own profile and forwarded to the guilds in "Forward to guilds" (one hidden
+ * `forward_guilds` field each; on a guild page that guild is there from the start).
+ * On success the new post's card is fetched (/inpage/post_card/<id>) and added to
+ * the top of the feed.
  */
 (function () {
   'use strict';
@@ -23,7 +24,13 @@
   var count = el('ic-count');
   var post = el('ic-post');
   var errorBox = el('ic-error');
-  var forward = el('ic-forward');
+  var forwardInput = el('ic-forward-input');
+  var forwardChips = el('ic-forward-chips');
+  var forwardChipList = el('ic-forward-chip-list');
+  var forwardFields = el('ic-forward-inputs');
+  var presetGuild = form.getAttribute('data-guild');      // the guild whose page this is
+  var forwards = presetGuild ? [presetGuild] : [];        // the guilds the post is forwarded to
+  var FORWARD_MAX = 20;                                   // helpers/post_drafts.py FORWARD_GUILDS_MAX
   var file = el('ic-file');
   var posted = el('ic-posted');
   var busy = false;
@@ -67,13 +74,55 @@
     optionsToggle.setAttribute('aria-expanded', String(show));
   });
 
-  var removeForward = el('ic-forward-remove');
-  if (removeForward) {
-    removeForward.addEventListener('click', function () {
-      forward.disabled = true;           // a disabled field is not sent: the post stays on your profile
-      el('ic-forward-chip').hidden = true;
-    });
+  // --- Forward to guilds: the same chips and fields as on Create a post --------------
+  function hasGuild(name) {
+    return forwards.some(function (x) { return x.toLowerCase() === name.toLowerCase(); });
   }
+
+  function renderForwards() {
+    forwardChipList.textContent = '';
+    forwardFields.textContent = '';
+    forwards.forEach(function (name, i) {
+      var chip = document.createElement('span');
+      chip.className = 'badge badge-pill badge-primary ic-chip mr-1';
+      chip.textContent = '+' + name;
+      var remove = document.createElement('button');
+      remove.type = 'button';
+      remove.className = 'ic-chip-remove';
+      remove.setAttribute('aria-label', 'Do not forward to +' + name);
+      remove.innerHTML = '&times;';
+      remove.addEventListener('click', function () {
+        forwards.splice(i, 1);
+        renderForwards();
+      });
+      chip.appendChild(remove);
+      forwardChipList.appendChild(chip);
+
+      var field = document.createElement('input');
+      field.type = 'hidden';
+      field.name = 'forward_guilds';
+      field.value = name;
+      forwardFields.appendChild(field);
+    });
+    forwardChips.hidden = !forwards.length;
+  }
+
+  function addForward() {
+    var name = forwardInput.value.trim().replace(/^\+/, '');
+    forwardInput.value = '';
+    if (!name || hasGuild(name)) return;
+    if (forwards.length >= FORWARD_MAX) { fail('Forward to at most ' + FORWARD_MAX + ' guilds.'); return; }
+    errorBox.hidden = true;
+    forwards.push(name);
+    renderForwards();
+  }
+
+  el('ic-forward-add').addEventListener('click', addForward);
+  forwardInput.addEventListener('keydown', function (event) {
+    if (event.key !== 'Enter') return;
+    event.preventDefault();             // Enter adds the guild; it does not post
+    addForward();
+  });
 
   if (file) {
     file.addEventListener('change', function () {
@@ -89,7 +138,8 @@
   function reset() {
     form.reset();
     var keepOpen = form.getAttribute('data-open') === 'true';
-    if (forward) { forward.disabled = false; el('ic-forward-chip').hidden = false; }
+    forwards = presetGuild ? [presetGuild] : [];
+    renderForwards();
     if (file) el('ic-file-name').textContent = '';
     options.hidden = true;
     optionsToggle.setAttribute('aria-expanded', 'false');
@@ -103,11 +153,12 @@
   }
 
   // The new post's card, ready to add to the feed. On a guild page it is the
-  // copy forwarded to that guild, which is what the guild's feed lists.
+  // copy forwarded to that guild, which is what the guild's feed lists (unless
+  // the guild was taken off the list, then it is the post on your profile).
   function addCard(id) {
     if (!document.querySelector('.posts')) return Promise.resolve();   // no feed here (the side panel)
     var url = '/inpage/post_card/' + encodeURIComponent(id);
-    if (forward && !forward.disabled) url += '?guild=' + encodeURIComponent(forward.value);
+    if (presetGuild && hasGuild(presetGuild)) url += '?guild=' + encodeURIComponent(presetGuild);
     return fetch(url, { credentials: 'same-origin' })
       .then(function (r) { return r.ok ? r.text() : Promise.reject(new Error(String(r.status))); })
       .then(function (html) {
@@ -171,6 +222,7 @@
   }
 
   if (form.getAttribute('data-open') === 'true') open();
+  renderForwards();
   autosize();
   update();
 })();
