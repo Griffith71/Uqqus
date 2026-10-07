@@ -4061,14 +4061,14 @@ textarea, input[type=text] {
         margin-right: 0;
         float: none;
     }
+}
 
-    // Chat has no right sidebar. Its 300px stays empty, so the chat (the
-    // conversation list and the thread inside one 726px column) sits exactly
-    // where the feed column does. The border is the sidebar's own divider.
-    #chat #main-content-row::after {
-        content: "";
-        flex: 0 0 300px;
+// Chat has no sidebars: just the conversation list and the thread, in one
+// 726px column centered on the page.
+@media (min-width: 992px) {
+    #chat #chat-app {
         border-left: 1px solid $border-color;
+        border-right: 1px solid $border-color;
     }
 }
 
