@@ -1,0 +1,8 @@
+{# The first posts an unsaved algorithm would show (/&<slug>/preview_algorithm, drawn by curation_algorithm.js). #}
+{% if listing %}
+<div class="posts">
+  {% include "submission_listing.html" %}
+</div>
+{% else %}
+<p class="text-muted text-small mb-0">No posts match these rules right now.</p>
+{% endif %}

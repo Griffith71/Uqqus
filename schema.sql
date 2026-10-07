@@ -5380,7 +5380,8 @@ CREATE TABLE public.curations (
     forked_from_id bigint,
     region_filter character varying(500) DEFAULT ''::character varying,
     language_filter character varying(500) DEFAULT ''::character varying,
-    category_filter character varying(500) DEFAULT ''::character varying
+    category_filter character varying(500) DEFAULT ''::character varying,
+    algorithm text DEFAULT '{}' NOT NULL
 );
 
 CREATE SEQUENCE public.curations_id_seq

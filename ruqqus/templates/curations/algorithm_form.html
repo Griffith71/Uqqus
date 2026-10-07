@@ -1,0 +1,171 @@
+{#
+  The "Algorithm" section of the curation form (included by curations/form.html).
+
+  Ordinary form fields, posted to /&<slug>/set_algorithm: it saves without script.
+  assets/js/curation_algorithm.js adds the ready-made starting points, the numbers
+  beside the sliders and the live preview (/&<slug>/preview_algorithm).
+
+  Every field name here is read by feed_algorithm.from_form, and every value it can
+  send is one of that module's fixed names (tests/test_curation_algorithm_assets.py).
+  `spec` is the curation's cleaned algorithm, `algorithm` the feed_algorithm module.
+#}
+{% set mix = spec.mix %}
+<h2 class="h5" id="algorithm">Algorithm</h2>
+<p class="text-muted text-small">
+  Choose which posts this curation shows and in what order. Everyone who can see the curation can read these rules.
+</p>
+
+{% if alg_msg %}<div class="alert alert-success" role="status">{{ alg_msg }}</div>{% endif %}
+{% if alg_error %}<div class="alert alert-danger" role="alert">{{ alg_error }}</div>{% endif %}
+
+<form method="post" action="{{ curation.permalink }}/set_algorithm" id="curation-algorithm" class="curation-algorithm mb-4"
+      data-preview="{{ curation.permalink }}/preview_algorithm">
+  <input type="hidden" name="formkey" value="{{ v.formkey }}">
+  <input type="hidden" name="mode" value="rules">
+
+  <div class="alg-presets mb-3" id="alg-presets" hidden>
+    <div class="text-small font-weight-bold mb-1">Start from</div>
+    {% for name, preset in presets.items() %}
+    <button type="button" class="btn btn-sm btn-outline-secondary mr-1 mb-1 alg-preset" data-spec='{{ preset_specs[name] | tojson }}' title="{{ preset[1] }}">{{ preset[0] }}</button>
+    {% endfor %}
+  </div>
+
+  <fieldset class="form-group">
+    <legend class="h6">Where posts come from</legend>
+    <div class="form-check">
+      <input class="form-check-input" type="radio" name="source" id="alg-source-members" value="members"{% if spec.source == "members" %} checked{% endif %}>
+      <label class="form-check-label" for="alg-source-members">This curation's guilds and accounts</label>
+    </div>
+    <div class="form-check">
+      <input class="form-check-input" type="radio" name="source" id="alg-source-site" value="site"{% if spec.source == "site" %} checked{% endif %}>
+      <label class="form-check-label" for="alg-source-site">The whole site <span class="text-muted">(needs an age limit of a month or less)</span></label>
+    </div>
+  </fieldset>
+
+  <div class="form-group">
+    <label for="alg-age">No older than</label>
+    <select class="form-control form-control-sm" name="age" id="alg-age">
+      <option value=""{% if not spec.age %} selected{% endif %}>Any age</option>
+      {% for value, label in [("day", "A day"), ("week", "A week"), ("month", "A month"), ("year", "A year")] %}
+      <option value="{{ value }}"{% if spec.age == value %} selected{% endif %}>{{ label }}</option>
+      {% endfor %}
+    </select>
+  </div>
+
+  <fieldset class="form-group">
+    <legend class="h6">Which posts</legend>
+
+    <div class="form-group">
+      <label for="alg-any">Mentions any of</label>
+      <input type="text" class="form-control form-control-sm" id="alg-any" name="any_words" value="{{ spec.any | join(', ') }}" placeholder="words or phrases, separated by commas" autocomplete="off">
+    </div>
+    <div class="form-group">
+      <label for="alg-all">Mentions all of</label>
+      <input type="text" class="form-control form-control-sm" id="alg-all" name="all_words" value="{{ spec.all | join(', ') }}" autocomplete="off">
+    </div>
+    <div class="form-group">
+      <label for="alg-none">Never mentions</label>
+      <input type="text" class="form-control form-control-sm" id="alg-none" name="none_words" value="{{ spec.none | join(', ') }}" autocomplete="off">
+      <small class="form-text text-muted">Plain words, up to {{ algorithm.MAX_WORDS }} in each box. They are looked for in a post's title and text.</small>
+    </div>
+
+    <div class="form-group">
+      <div class="mb-1">Kinds of post <span class="text-muted">(none ticked means every kind)</span></div>
+      {% for value, label in [("text", "Text posts"), ("link", "Links"), ("image", "Pictures"), ("video", "Video"), ("audio", "Sound")] %}
+      <div class="form-check form-check-inline">
+        <input class="form-check-input" type="checkbox" name="kinds" id="alg-kind-{{ value }}" value="{{ value }}"{% if value in spec.kinds %} checked{% endif %}>
+        <label class="form-check-label" for="alg-kind-{{ value }}">{{ label }}</label>
+      </div>
+      {% endfor %}
+    </div>
+
+    <div class="form-group">
+      <label for="alg-only-sites">Only links to these sites</label>
+      <input type="text" class="form-control form-control-sm" id="alg-only-sites" name="only_sites" value="{{ spec.only_sites | join(', ') }}" placeholder="example.org, news.example.com" autocomplete="off" spellcheck="false">
+    </div>
+    <div class="form-group">
+      <label for="alg-never-sites">Never links to these sites</label>
+      <input type="text" class="form-control form-control-sm" id="alg-never-sites" name="never_sites" value="{{ spec.never_sites | join(', ') }}" autocomplete="off" spellcheck="false">
+    </div>
+
+    <div class="form-row">
+      <div class="form-group col-6">
+        <label for="alg-min-votes">At least this many votes</label>
+        <input type="number" class="form-control form-control-sm" id="alg-min-votes" name="min_votes" min="0" max="{{ algorithm.MAX_COUNT }}" value="{{ spec.min_votes }}" inputmode="numeric">
+      </div>
+      <div class="form-group col-6">
+        <label for="alg-min-comments">At least this many comments</label>
+        <input type="number" class="form-control form-control-sm" id="alg-min-comments" name="min_comments" min="0" max="{{ algorithm.MAX_COUNT }}" value="{{ spec.min_comments }}" inputmode="numeric">
+      </div>
+    </div>
+
+    <div class="form-group mb-0">
+      <div class="mb-1">Leave out</div>
+      {% for value, label in [("bots", "Bots"), ("ai", "Made with AI"), ("paid", "Paid partnerships"), ("forwards", "Forwarded copies")] %}
+      <div class="form-check form-check-inline">
+        <input class="form-check-input" type="checkbox" name="hide" id="alg-hide-{{ value }}" value="{{ value }}"{% if value in spec.hide %} checked{% endif %}>
+        <label class="form-check-label" for="alg-hide-{{ value }}">{{ label }}</label>
+      </div>
+      {% endfor %}
+    </div>
+  </fieldset>
+
+  <fieldset class="form-group">
+    <legend class="h6">Order</legend>
+    <div class="form-group">
+      <label for="alg-rank" class="sr-only">Order posts by</label>
+      <select class="form-control form-control-sm" name="rank" id="alg-rank">
+        {% for value, label in [("hot", "Hot - the site's usual order"), ("new", "Newest first"), ("top", "Most votes first"), ("activity", "Most discussed first"), ("mix", "Your own mix")] %}
+        <option value="{{ value }}"{% if spec.rank == value %} selected{% endif %}>{{ label }}</option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <div class="alg-mix" id="alg-mix">
+      <p class="text-muted text-small mb-2">Your own mix ranks the newest {{ algorithm.MIX_POOL }} matching posts. 0 switches a part off, 10 makes it count the most.</p>
+      {% for name, label in [("votes", "Votes"), ("comments", "Comments")] %}
+      <div class="form-group alg-slider">
+        <label for="alg-mix-{{ name }}">{{ label }} <output class="alg-value" id="alg-mix-{{ name }}-value" for="alg-mix-{{ name }}">{{ mix[name] }}</output></label>
+        <input type="range" class="custom-range" id="alg-mix-{{ name }}" name="mix_{{ name }}" min="0" max="10" step="1" value="{{ mix[name] }}">
+      </div>
+      {% endfor %}
+      <div class="form-group">
+        <label for="alg-mix-fade">A post loses half its weight in</label>
+        <select class="form-control form-control-sm" name="mix_fade" id="alg-mix-fade">
+          {% for hours, label in [(6, "6 hours"), (12, "12 hours"), (24, "A day"), (72, "3 days"), (168, "A week")] %}
+          <option value="{{ hours }}"{% if mix.fade == hours %} selected{% endif %}>{{ label }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="form-group alg-slider">
+        <label for="alg-mix-members">Boost for this curation's guilds and accounts <output class="alg-value" id="alg-mix-members-value" for="alg-mix-members">{{ mix.members }}</output></label>
+        <input type="range" class="custom-range" id="alg-mix-members" name="mix_members" min="0" max="10" step="1" value="{{ mix.members }}">
+        <small class="form-text text-muted">Only does something with "The whole site".</small>
+      </div>
+      <div class="form-group alg-slider">
+        <label for="alg-mix-media">Boost for posts with a picture, sound or video <output class="alg-value" id="alg-mix-media-value" for="alg-mix-media">{{ mix.media }}</output></label>
+        <input type="range" class="custom-range" id="alg-mix-media" name="mix_media" min="0" max="10" step="1" value="{{ mix.media }}">
+      </div>
+      <div class="form-group mb-0">
+        <label for="alg-mix-variety">On one page, from the same author or guild</label>
+        <select class="form-control form-control-sm" name="mix_variety" id="alg-mix-variety">
+          <option value="0"{% if mix.variety == 0 %} selected{% endif %}>Any number of posts</option>
+          {% for n in range(1, 6) %}
+          <option value="{{ n }}"{% if mix.variety == n %} selected{% endif %}>At most {{ n }} post{{ '' if n == 1 else 's' }}</option>
+          {% endfor %}
+        </select>
+      </div>
+    </div>
+  </fieldset>
+
+  <button type="button" class="btn btn-secondary" id="alg-preview-button" hidden>Preview</button>
+  <button type="submit" class="btn btn-primary">Save algorithm</button>
+
+  <div class="alg-summary mt-3" aria-live="polite">
+    <div class="text-small font-weight-bold" id="alg-summary-title">What it does now</div>
+    <ul class="text-small mb-0 pl-3" id="alg-summary">
+      {% for line in curation.algorithm_summary %}<li>{{ line }}</li>{% endfor %}
+    </ul>
+  </div>
+  <div class="alg-preview mt-3" id="alg-preview" aria-live="polite"></div>
+</form>

@@ -11,7 +11,7 @@
   <div class="card h-100">
     <div class="card-body">
       <h6 class="mb-1"><a href="{{ c.permalink }}">{{ c.name }}</a></h6>
-      <div class="text-muted text-small mb-2">by @{{ c.owner.username }}</div>
+      <div class="text-muted text-small mb-2">by @{{ c.owner.username }}{% if c.has_own_algorithm %} &middot; <span class="curation-own-algorithm">own algorithm</span>{% endif %}</div>
       {% if c.description %}<p class="text-small">{{ c.description }}</p>{% endif %}
     </div>
   </div>

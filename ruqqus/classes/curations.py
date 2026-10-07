@@ -2,6 +2,7 @@ from sqlalchemy import *
 from sqlalchemy.orm import relationship
 
 from .mix_ins import *
+from ruqqus.helpers import feed_algorithm
 from ruqqus.__main__ import Base
 
 
@@ -34,7 +35,29 @@ class Curation(Base, Stndrd, Age_times):
     language_filter = Column(String(500), default="")
     category_filter = Column(String(500), default="")
 
+    # The curation's own algorithm: which posts it shows and how it orders them, as
+    # JSON. Only ever written from feed_algorithm.dump() and read with .algorithm_spec
+    # (see helpers/feed_algorithm.py); empty means today's behaviour.
+    algorithm = Column(Text, nullable=False, default="{}")
+
     owner = relationship("User", primaryjoin="User.id==Curation.owner_id")
+
+    @property
+    def algorithm_spec(self):
+        return feed_algorithm.load(self.algorithm)
+
+    @property
+    def algorithm_summary(self):
+        """What the algorithm does, as sentences (shown to everyone who can see the curation)."""
+        return feed_algorithm.describe(self.algorithm_spec)
+
+    @property
+    def has_own_algorithm(self):
+        return not feed_algorithm.is_default(self.algorithm_spec)
+
+    @property
+    def uses_feed_server(self):
+        return feed_algorithm.is_server(self.algorithm_spec)
 
     @property
     def permalink(self):

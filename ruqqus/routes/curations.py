@@ -15,6 +15,10 @@ from ruqqus.routes.front import region_filter_condition, ALL_SUBCAT_IDS
 from ruqqus.helpers.regions import REGION_CENTROIDS
 from ruqqus.helpers.languages import LANGUAGE_NAMES
 from ruqqus.helpers.base36 import base36decode
+from ruqqus.helpers import curation_feed, feed_algorithm
+from urllib.parse import quote
+
+PREVIEW_POSTS = 10
 
 
 def _generate_curation_slug(name):
@@ -38,34 +42,34 @@ def _generate_curation_slug(name):
     return slug
 
 
-@cache.memoize(timeout=120)
-def curation_idlist(curation_id, v=None, sort=None, page=1, t=None, filter_words='', **kwargs):
-    """Posts from a curation's member guilds OR member accounts - same
-    boards-or-authors union shape as User.idlist(), just sourced from
-    CurationGuild/CurationUser membership instead of Subscription/Follow.
-    Shorter TTL than frontlist()'s 900s since curation membership can change
-    more often; membership-mutating routes below explicitly invalidate this
-    so follows "live update" rather than waiting out the TTL."""
+def _curation_ids(curation, spec, v=None, sort=None, page=1, t=None, filter_words='', **kwargs):
+    """Post ids of one page (plus one) of a curation's feed.
 
-    posts = g.db.query(Submission.id).options(lazyload('*')).filter_by(
-        is_banned=False, deleted_utc=0, stickied=False
+    Who may see what is decided here (the word filter, private guilds, blocks), the same
+    for every curation. Which posts the curation wants and how it orders them comes from
+    its algorithm, `spec` (helpers/feed_algorithm.py, applied by helpers/curation_feed.py):
+    by default the posts of its member guilds OR member accounts - the same
+    boards-or-authors union shape as User.idlist(), just sourced from
+    CurationGuild/CurationUser membership instead of Subscription/Follow."""
+
+    now = int(time.time())
+
+    posts = g.db.query(Submission.id).options(lazyload('*')).join(
+        SubmissionAux, SubmissionAux.id == Submission.id
+    ).filter(
+        Submission.is_banned == False,
+        Submission.deleted_utc == 0,
+        Submission.stickied == False
     )
 
     posts = filter_posts(posts, v)
     if v and v.hide_bot:
-        posts = posts.filter_by(is_bot=False)
+        posts = posts.filter(Submission.is_bot == False)
 
-    board_ids = select(CurationGuild.board_id).filter_by(curation_id=curation_id)
-    user_ids = select(CurationUser.target_user_id).filter_by(curation_id=curation_id)
-
-    # an anonymous post never matches through its author (a curation can hold one
-    # account, which would name them); it still shows through a member guild
-    posts = posts.filter(
-        or_(
-            Submission.board_id.in_(board_ids),
-            and_(Submission.author_id.in_(user_ids), not_(Submission.is_anonymous))
-        )
-    )
+    if spec["source"] == feed_algorithm.SITE:
+        posts = curation_feed.site_pool(posts, v, viewer_level(v))
+    else:
+        posts = posts.filter(curation_feed.member_condition(curation.id))
 
     if v and v.admin_level >= 4:
         board_blocks = select(BoardBlock.board_id).filter_by(user_id=v.id)
@@ -91,23 +95,21 @@ def curation_idlist(curation_id, v=None, sort=None, page=1, t=None, filter_words
     # Regional/Language/Categorical filters intrinsic to the curation itself
     # (never the viewing session's own personal filters - a curation is a
     # fixed, shareable feed definition, same for everyone who views it)
-    curation = g.db.query(Curation).filter_by(id=curation_id).first()
-    if curation:
-        if curation.region_filter_list:
-            posts = posts.filter(region_filter_condition(curation.region_filter_list))
-        if curation.language_filter_list:
-            posts = posts.filter(Submission.language_code.in_(curation.language_filter_list))
-        if curation.category_filter_list:
-            board_ids_in_cats = select(Board.id).where(Board.subcat_id.in_(tuple(curation.category_filter_list)))
-            posts = posts.filter(Submission.board_id.in_(board_ids_in_cats))
+    if curation.region_filter_list:
+        posts = posts.filter(region_filter_condition(curation.region_filter_list))
+    if curation.language_filter_list:
+        posts = posts.filter(Submission.language_code.in_(curation.language_filter_list))
+    if curation.category_filter_list:
+        board_ids_in_cats = select(Board.id).where(Board.subcat_id.in_(tuple(curation.category_filter_list)))
+        posts = posts.filter(Submission.board_id.in_(board_ids_in_cats))
+
+    posts = curation_feed.apply(posts, spec, now)
 
     if filter_words:
-        posts = posts.join(Submission.submission_aux)
         for word in filter_words:
             posts = posts.filter(not_(SubmissionAux.title.ilike(f'%{word}%')))
 
     if t:
-        now = int(time.time())
         if t == 'day':
             cutoff = now - 86400
         elif t == 'week':
@@ -127,8 +129,17 @@ def curation_idlist(curation_id, v=None, sort=None, page=1, t=None, filter_words
     if lt:
         posts = posts.filter(Submission.created_utc < lt)
 
+    # a sort the viewer asked for wins; otherwise the curation's own order, and a
+    # curation with no algorithm of its own keeps the viewer's usual sort
     if sort is None:
-        sort = v.defaultsorting if v else "hot"
+        if not feed_algorithm.is_default(spec):
+            sort = spec["rank"]
+        else:
+            sort = v.defaultsorting if v else "hot"
+
+    if sort == feed_algorithm.MIX_RANK:
+        ids = curation_feed.mix_ids(g.db, posts, spec, curation.id, now)
+        return ids[25 * (page - 1):25 * (page - 1) + 26]
 
     if sort == "hot":
         posts = posts.order_by(Submission.score_best.desc())
@@ -146,6 +157,26 @@ def curation_idlist(curation_id, v=None, sort=None, page=1, t=None, filter_words
         abort(422)
 
     return [x[0] for x in posts.offset(25 * (page - 1)).limit(26).all()]
+
+
+@cache.memoize(timeout=120)
+def curation_idlist(curation_id, v=None, sort=None, page=1, t=None, filter_words='', **kwargs):
+    """One page of a curation's feed, cached. Shorter TTL than frontlist()'s 900s since
+    curation membership can change more often; the routes below that change a curation
+    explicitly invalidate this so follows "live update" rather than waiting out the TTL.
+    A curation with rules of its own runs under a time limit (FeedTooSlow)."""
+
+    curation = g.db.query(Curation).filter_by(id=curation_id).first()
+    if not curation:
+        return []
+    spec = curation.algorithm_spec
+
+    def run():
+        return _curation_ids(curation, spec, v=v, sort=sort, page=page, t=t, filter_words=filter_words, **kwargs)
+
+    if feed_algorithm.is_default(spec):
+        return run()
+    return curation_feed.limited(g.db, run)
 
 
 def _invalidate_curation_feed(curation_id):
@@ -195,7 +226,7 @@ def curations_browse(v):
 @app.route("/curations/create", methods=["GET"])
 @auth_required
 def curations_create_get(v):
-    return render_template("curations/form.html", v=v, curation=None)
+    return render_template("curations/form.html", v=v, curation=None, presets=feed_algorithm.PRESETS)
 
 
 @app.route("/curations/create", methods=["POST"])
@@ -217,11 +248,14 @@ def curations_create_post(v):
         description=description[:500],
         is_private=is_private,
         created_utc=int(time.time()),
+        # "Start from": one of the ready-made algorithms, or none (the usual behaviour)
+        algorithm=feed_algorithm.dump(feed_algorithm.preset(request.form.get("preset", ""))),
     )
     g.db.add(curation)
     g.db.commit()
 
-    return redirect(curation.permalink)
+    # the guilds, accounts and algorithm are added on the edit page
+    return redirect(curation.permalink + "/edit")
 
 
 @app.route("/curation/<b36id>", methods=["GET"])
@@ -253,11 +287,18 @@ def curation_detail(slug, v):
 
     sort = request.args.get("sort")
     t = request.args.get("t")
-    page = int(request.args.get("page") or 1)
+    try:
+        page = max(1, int(request.args.get("page") or 1))
+    except ValueError:
+        abort(400)
 
-    ids = curation_idlist(curation.id, v=v, sort=sort, page=page, t=t,
-                           filter_level=viewer_level(v),
-                           filter_words=v.filter_words if v else [])
+    feed_notice = None
+    try:
+        ids = curation_idlist(curation.id, v=v, sort=sort, page=page, t=t,
+                               filter_level=viewer_level(v),
+                               filter_words=v.filter_words if v else [])
+    except curation_feed.FeedTooSlow as slow:
+        ids, feed_notice = [], str(slow)
     next_exists = (len(ids) == 26)
     ids = ids[0:25]
     posts = get_posts(ids, v=v, sort=sort or "hot")
@@ -286,6 +327,8 @@ def curation_detail(slug, v):
         listing=posts,
         next_exists=next_exists,
         page=page,
+        sort_method=sort or "",
+        feed_notice=feed_notice,
     )
 
 
@@ -302,7 +345,12 @@ def curation_edit_get(slug, v):
         CurationUser, CurationUser.target_user_id == User.id
     ).filter(CurationUser.curation_id == curation.id).all()
 
-    return render_template("curations/form.html", v=v, curation=curation, guilds=guilds, accounts=accounts)
+    return render_template(
+        "curations/form.html", v=v, curation=curation, guilds=guilds, accounts=accounts,
+        spec=curation.algorithm_spec, algorithm=feed_algorithm, presets=feed_algorithm.PRESETS,
+        preset_specs={name: feed_algorithm.preset(name) for name in feed_algorithm.PRESETS},
+        alg_msg=request.args.get("alg_msg"), alg_error=request.args.get("alg_error"),
+    )
 
 
 @app.route("/&<slug>/edit", methods=["POST"])
@@ -338,6 +386,9 @@ def curation_delete(slug, v):
     g.db.query(CurationGuild).filter_by(curation_id=curation.id).delete()
     g.db.query(CurationUser).filter_by(curation_id=curation.id).delete()
     g.db.query(CurationFollow).filter_by(curation_id=curation.id).delete()
+    # forks are independent copies: they stay, and only forget where they came from
+    # (the database refuses to delete a curation a fork still points at)
+    g.db.query(Curation).filter_by(forked_from_id=curation.id).update({"forked_from_id": None})
     g.db.delete(curation)
     g.db.commit()
 
@@ -472,6 +523,62 @@ def curation_set_category_filter(slug, v):
     return redirect(curation.permalink + "/edit")
 
 
+def _posted_algorithm():
+    """The algorithm a posted curation form describes (AlgorithmError when it cannot be)."""
+    spec = feed_algorithm.from_form(request.form)
+    if feed_algorithm.is_server(spec):
+        raise feed_algorithm.AlgorithmError("Outside feed servers are not available.")
+    return spec
+
+
+@app.route("/&<slug>/set_algorithm", methods=["POST"])
+@auth_required
+@validate_formkey
+def curation_set_algorithm(slug, v):
+    """Save the curation's algorithm from the form's fields. Nothing the member typed is
+    stored as it came: feed_algorithm.clean keeps fixed names, bounded numbers and plain words."""
+
+    curation = _owned_curation_or_404(slug, v)
+    try:
+        spec = _posted_algorithm()
+    except feed_algorithm.AlgorithmError as error:
+        return redirect(f"{curation.permalink}/edit?alg_error={quote(error.message)}#algorithm")
+
+    curation.algorithm = feed_algorithm.dump(spec)
+    g.db.add(curation)
+    g.db.commit()
+    _invalidate_curation_feed(curation.id)
+
+    return redirect(f"{curation.permalink}/edit?alg_msg={quote('Algorithm saved.')}#algorithm")
+
+
+@app.route("/&<slug>/preview_algorithm", methods=["POST"])
+@auth_required
+@validate_formkey
+def curation_preview_algorithm(slug, v):
+    """What the form's algorithm would show, without saving it: its plain-language summary
+    and the first posts, through the same query as the real feed."""
+
+    curation = _owned_curation_or_404(slug, v)
+    try:
+        spec = _posted_algorithm()
+    except feed_algorithm.AlgorithmError as error:
+        return jsonify({"error": error.message}), 400
+
+    try:
+        ids = curation_feed.limited(g.db, lambda: _curation_ids(
+            curation, spec, v=v, sort=spec["rank"], page=1, filter_words=v.filter_words))
+    except curation_feed.FeedTooSlow as slow:
+        return jsonify({"error": str(slow), "summary": feed_algorithm.describe(spec)}), 400
+
+    posts = get_posts(ids[:PREVIEW_POSTS], v=v)
+    return jsonify({
+        "summary": feed_algorithm.describe(spec),
+        "count": len(posts),
+        "html": render_template("curations/preview.html", v=v, listing=posts),
+    })
+
+
 @app.route("/&<slug>/follow", methods=["POST"])
 @auth_required
 @validate_formkey
@@ -541,6 +648,10 @@ def curation_fork(slug, v):
         is_private=True,
         created_utc=int(time.time()),
         forked_from_id=original.id,
+        region_filter=original.region_filter,
+        language_filter=original.language_filter,
+        category_filter=original.category_filter,
+        algorithm=feed_algorithm.dump(original.algorithm_spec),
     )
     g.db.add(fork)
     g.db.flush()

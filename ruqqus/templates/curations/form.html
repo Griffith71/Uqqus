@@ -12,8 +12,8 @@
 
   <h1 class="h3">{% if curation %}Edit Curation{% else %}Create a Curation{% endif %}</h1>
   <p class="text-muted">
-    A Curation is your own named collection of guilds and accounts - like a custom feed. Keep it private just for
-    yourself, or make it public so others can follow or fork it.
+    A Curation is your own named collection of guilds and accounts - like a custom feed, with an algorithm you choose.
+    Keep it private just for yourself, or make it public so others can follow or fork it.
   </p>
 
   <form method="post" action="{% if curation %}{{ curation.permalink }}/edit{% else %}/curations/create{% endif %}">
@@ -37,6 +37,19 @@
         <option value="false" {% if curation and not curation.is_private %}selected{% endif %}>Public - anyone can view, follow, or fork it</option>
       </select>
     </div>
+
+    {% if not curation %}
+    <div class="form-group">
+      <label for="curation-preset">Start from</label>
+      <select class="form-control" id="curation-preset" name="preset">
+        <option value="">The usual order - everything from the guilds and accounts you add</option>
+        {% for name, preset in presets.items() %}
+        <option value="{{ name }}">{{ preset[0] }} - {{ preset[1] }}</option>
+        {% endfor %}
+      </select>
+      <small class="form-text text-muted">A starting point for the curation's algorithm. You add guilds and accounts, and can change every part of it, on the next page.</small>
+    </div>
+    {% endif %}
 
     <button type="submit" class="btn btn-primary">{% if curation %}Save changes{% else %}Create Curation{% endif %}</button>
     {% if curation %}<a href="{{ curation.permalink }}" class="btn btn-secondary">Cancel</a>{% endif %}
@@ -89,6 +102,8 @@
     </div>
   </form>
 
+  {% include "curations/algorithm_form.html" %}
+
   <h2 class="h5">Filters</h2>
   <p class="text-muted text-small">
     Optional - narrow this curation to specific regions, languages, or categories. These are part of the curation
@@ -110,6 +125,8 @@
     <input type="hidden" name="formkey" value="{{ v.formkey }}">
     <button type="submit" class="btn btn-outline-danger">Delete this curation</button>
   </form>
+
+  <script src="/assets/js/curation_algorithm.js?v=1"></script>
   {% endif %}
 
 </div>

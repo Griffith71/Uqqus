@@ -91,6 +91,18 @@ A top 10 of what an unusual number of different accounts posted about in the las
 - A topic's label goes through the word filter per level; the pages only ever show a count of accounts, never who posted.
 - Tests: `tests/test_trending.py` (the rules), `tests/test_trending_assets.py` (store, job, schema, pages, both stylesheets).
 
+## Curation algorithms (legacy app)
+
+A curation can have its own algorithm: which posts it shows and in what order (`curations.algorithm`, JSON). Start with `ruqqus/helpers/feed_algorithm.py` (the rules, stdlib only).
+
+- **Members never write code, patterns or SQL.** A spec is only ever made by `feed_algorithm.clean` (fixed names, bounded numbers, plain words) and stored with `feed_algorithm.dump`; read it with `curation.algorithm_spec`. `helpers/curation_feed.py` turns a spec into the query: words become LIKE text with their wildcards escaped (`like_pattern`), sites are checked host names. A new option needs: the name in `feed_algorithm` (`DEFAULT`, `clean`, `from_form`, `describe`), its condition in `curation_feed.apply`, and the field in `templates/curations/algorithm_form.html`.
+- **What a spec holds**: source (`members`: the curation's guilds and accounts; `site`: every public post as All, with an age limit of a month or less), words a post must / must not mention (title and text), kinds of post, sites linked to, minimum votes / comments, age, things left out (bots, made with AI, paid partnership, forwarded copies), and the order: Hot, New, Top, Most discussed or the member's own mix (`MIX`: weights for votes and comments, how fast posts fade, boosts, at most N posts per author or guild on a page).
+- **Who may see what is not the algorithm's business**: `_curation_ids` in `routes/curations.py` applies the word filter, private guilds and blocks before `curation_feed.apply`, for every curation. An account's anonymous posts never match through the account (`curation_feed.member_condition`), and the "per author" limit treats every anonymous post as nobody's (`feed_algorithm.spread`).
+- **Rules of one's own run under a 3 second limit** inside a savepoint (`curation_feed.limited`); a slow one shows a notice (`FeedTooSlow`), never a hung page. An own mix ranks the newest 1,000 matching posts (`MIX_POOL`).
+- **Everyone who can see a curation can read its rules**: `feed_algorithm.describe` is shown on the curation page ("How this curation picks posts"). A fork copies the algorithm and the filters. Creating a curation offers "Start from" (`PRESETS`) and lands on the edit page; the form saves without script, `assets/js/curation_algorithm.js` adds the starting points and the live preview (`/&<slug>/preview_algorithm`, which saves nothing).
+- A sort the viewer asks for (`?sort=`) wins over the curation's order; a curation with no algorithm of its own behaves as before.
+- Tests: `tests/test_feed_algorithm.py` (the rules), `tests/test_curation_algorithm_assets.py` (query, routes, owner-only, form, script, schema, both stylesheets).
+
 ## Rules
 
 - Run the check command before declaring any task done.

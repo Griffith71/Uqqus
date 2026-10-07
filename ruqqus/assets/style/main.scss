@@ -1269,6 +1269,46 @@ color: $dark;
     padding-bottom: 0.75rem;
 }
 
+// A curation's own algorithm (templates/curations/algorithm_form.html, detail.html)
+.curation-algorithm fieldset {
+    border-top: 1px solid $border-color;
+    padding-top: 0.75rem;
+}
+
+.curation-algorithm legend {
+    width: auto;
+    margin-bottom: 0.5rem;
+}
+
+.curation-algorithm .alg-mix {
+    border-left: 2px solid $primary;
+    padding-left: 0.75rem;
+}
+
+.curation-algorithm .alg-value {
+    display: inline-block;
+    min-width: 1.5rem;
+    margin-left: 0.25rem;
+    font-weight: $font-weight-bold;
+    font-variant-numeric: tabular-nums;
+    color: $primary;
+}
+
+.curation-algorithm .alg-summary, .curation-how {
+    border: 1px solid $border-color;
+    border-radius: 0.35rem;
+    padding: 0.5rem 0.75rem;
+}
+
+.curation-how summary {
+    cursor: pointer;
+    font-weight: $font-weight-bold;
+}
+
+.curation-own-algorithm {
+    color: $primary;
+}
+
 // Trending (templates/partials/trending_box.html, trending.html)
 // the rows draw their own rank, not the global "ol > li::before" number
 .trend-list > li {

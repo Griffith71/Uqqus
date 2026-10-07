@@ -67,9 +67,12 @@ def test_every_list_scoped_to_an_author_leaves_anonymous_rows_out():
 
 def test_a_curation_does_not_list_its_accounts_anonymous_posts():
     # a curation can hold a single account: its feed is then a list of one author's posts
-    feed = read("ruqqus", "routes", "curations.py").split("def curation_idlist")[1].split("def _invalidate_curation_feed")[0]
-    assert "and_(Submission.author_id.in_(user_ids), not_(Submission.is_anonymous))" in feed
-    assert "Submission.author_id.in_(user_ids)\n" not in feed       # never the bare account match
+    member = read("ruqqus", "helpers", "curation_feed.py").split("def member_condition(")[1].split("\ndef ")[0]
+    assert "and_(Submission.author_id.in_(user_ids), not_(Submission.is_anonymous))" in member
+    assert "Submission.author_id.in_(user_ids)\n" not in member     # never the bare account match
+    # and the feed takes its accounts from nowhere else
+    routes = read("ruqqus", "routes", "curations.py")
+    assert "curation_feed.member_condition(curation.id)" in routes and "CurationUser.target_user_id)" not in routes
 
 
 def test_public_counts_exclude_anonymous_items():

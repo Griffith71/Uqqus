@@ -50,10 +50,22 @@
     {% if curation.forked_from_id %}&middot; forked from another curation{% endif %}
   </div>
 
-  {% include "submission_listing.html" %}
+  {# what this feed shows and how it is ordered, for everyone who can see it #}
+  <details class="curation-how text-small mb-3">
+    <summary>How this curation picks posts</summary>
+    <ul class="mb-0 mt-1 pl-3">
+      {% for line in curation.algorithm_summary %}<li>{{ line }}</li>{% endfor %}
+    </ul>
+  </details>
 
-  {% if not listing %}
-  <p class="text-muted">No posts yet from this curation's guilds or accounts.</p>
+  {% if feed_notice %}<div class="alert alert-warning" role="status">{{ feed_notice }}</div>{% endif %}
+
+  <div class="posts" id="posts">
+    {% include "submission_listing.html" %}
+  </div>
+
+  {% if not listing and not feed_notice %}
+  <p class="text-muted">{% if curation.has_own_algorithm %}No posts match this curation's rules right now.{% else %}No posts yet from this curation's guilds or accounts.{% endif %}</p>
   {% endif %}
 
 </div>
@@ -63,12 +75,12 @@
 <nav aria-label="Page navigation">
   <ul class="pagination pagination-sm mb-0">
     {% if page>1 %}
-    <li class="page-item"><small><a class="page-link" href="?page={{ page-1 }}">Prev</a></small></li>
+    <li class="page-item"><small><a class="page-link" href="?page={{ page-1 }}{% if sort_method %}&sort={{ sort_method }}{% endif %}">Prev</a></small></li>
     {% else %}
     <li class="page-item disabled"><span class="page-link">Prev</span></li>
     {% endif %}
     {% if next_exists %}
-    <li class="page-item"><small><a class="page-link" href="?page={{ page+1 }}">Next</a></small></li>
+    <li class="page-item"><small><a class="page-link" href="?page={{ page+1 }}{% if sort_method %}&sort={{ sort_method }}{% endif %}">Next</a></small></li>
     {% else %}
     <li class="page-item disabled"><span class="page-link">Next</span></li>
     {% endif %}
