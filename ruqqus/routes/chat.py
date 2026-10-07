@@ -5,6 +5,7 @@ from sqlalchemy import or_, func, text
 from ruqqus.helpers.wrappers import *
 from ruqqus.helpers.get import *
 from ruqqus.helpers.chat_permissions import can_message_directly, is_blocked
+from ruqqus.helpers.chat_events import is_new_message
 from ruqqus.helpers.secret_box import encrypt_secret, decrypt_secret
 from ruqqus.classes import *
 import ruqqus.helpers.matrix_client as matrix
@@ -250,6 +251,8 @@ def matrix_appservice_transaction(txn_id):
     body = request.get_json(silent=True, force=True) or {}
     for event in body.get("events", []):
         if event.get("type") not in ("m.room.message", "m.room.encrypted"):
+            continue
+        if not is_new_message(event):     # a reaction to, or an edit of, an earlier message
             continue
         room_id = event.get("room_id")
         sender_mxid = event.get("sender")
