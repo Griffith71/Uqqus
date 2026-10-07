@@ -102,4 +102,10 @@ class MediaAsset(Base):
             elif self.kind == rules.AUDIO:
                 # a link the sanitizer turns into a player (helpers/sanitize.py)
                 data["markdown"] = f"[audio]({self.path})"
+        elif self.provider_ref:
+            # on a site that plays it itself (YouTube): the post links to it
+            from ruqqus.helpers.media import registry
+            provider = registry.PROVIDERS.get(self.provider)
+            if provider is not None:
+                data["link"] = provider.link(self)
         return data

@@ -32,6 +32,11 @@ def _error(message, code=400, **extra):
     return jsonify({"error": message, **extra}), code
 
 
+def _media_error(e):
+    extra = {"need": e.need, "settings": e.settings} if e.need else {}
+    return _error(e.message, e.code, **extra)
+
+
 def _accounts(v):
     return g.db.query(MediaAccount).filter_by(user_id=v.id).order_by(MediaAccount.id).all()
 
@@ -90,6 +95,7 @@ def settings_media(v):
     return render_template("settings_media.html", v=v, accounts=accounts, expired=expired,
                            offered=registry.account_kinds(),
                            google_video=bool(google) and google_oauth.SCOPE_YOUTUBE in google.scopes.split(),
+                           video_visibility=rules.video_visibility(google.setting("youtube_visibility") if google else None),
                            error=request.args.get("error"), msg=request.args.get("msg"))
 
 
@@ -219,7 +225,11 @@ def _unlink(account):
 def media_status(v):
     """What this member can upload right now, for the upload buttons."""
     kinds = [k for k in rules.KINDS if _account_for(v, k)[1] is not None]
+    google = next((a for a in _accounts(v) if a.is_active and a.provider == "google"), None)
     return jsonify({"offered": bool(registry.account_kinds()), "kinds": kinds,
+                    "video": registry.get("youtube") is not None,       # the site can take video at all
+                    # video is offered with a Google account; the first upload asks for YouTube access
+                    "video_visibility": rules.video_visibility(google.setting("youtube_visibility") if google else None),
                     "limits": {k: rules.SIZE_MAX[k] for k in kinds if k in rules.SIZE_MAX},
                     "settings": "/settings/media"})
 
@@ -231,7 +241,8 @@ def media_status(v):
 def media_upload_begin(v):
     """Start an upload into the member's linked account.
 
-Form data: `kind` (image, audio or video), `filename`, `size` (bytes).
+Form data: `kind` (image, audio or video), `filename`, `size` (bytes); for a video also
+`title` and `visibility` (unlisted or public; left out: the member's setting).
 Answers with where the browser sends the bytes (`upload.url`, `upload.method`,
 `upload.headers`) and the asset's `id`. Then call `/api/media/uploads/<id>/complete`.
 """
@@ -258,11 +269,13 @@ Answers with where the browser sends the bytes (`upload.url`, `upload.method`,
                        status=rules.PENDING, created_utc=now, updated_utc=now)
     g.db.add(asset)
     g.db.flush()
+    details = {"title": request.form.get("title") or request.form.get("filename"),
+               "visibility": request.form.get("visibility"), "site": app.config.get("SITE_NAME")}
     try:
-        upload = provider.begin_upload(account, asset, request.host_url.rstrip("/"))
+        upload = provider.begin_upload(account, asset, request.host_url.rstrip("/"), details)
     except rules.MediaError as e:
         g.db.rollback()
-        return _error(e.message, e.code)
+        return _media_error(e)
     except AccountLost:
         g.db.rollback()
         _lost(account)
@@ -296,11 +309,13 @@ def media_upload_complete(aid, v):
         return _error("Your media storage is no longer connected.", 409, need="storage", settings="/settings/media")
 
     temp = None
+    restricted = False
     try:
         info = provider.finish_upload(account, asset)
         asset.provider_ref = info["ref"]
         asset.size = int(info["size"])
         asset.checksum = info["checksum"]
+        restricted = bool(info.get("restricted"))
         if provider.served:
             head = b"".join(provider.open(account, asset, (0, min(asset.size, 64) - 1)).chunks)
             asset.ext = rules.check_uploaded(asset.kind, head, asset.size)
@@ -317,7 +332,7 @@ def media_upload_complete(aid, v):
     except rules.MediaError as e:
         _set_status(asset, rules.REMOVED)
         g.db.commit()
-        return _error(e.message, e.code)
+        return _media_error(e)
     except AccountLost:
         g.db.rollback()
         _lost(account)
@@ -333,9 +348,32 @@ def media_upload_complete(aid, v):
         if temp:
             safety.discard(temp)
 
+    if restricted:
+        # the hosting site took the file but will not show it to anyone else
+        _set_status(asset, rules.RESTRICTED)
+        g.db.commit()
+        return _error("Your video was uploaded to YouTube, but YouTube is keeping it private because this site's "
+                      "access is still waiting for YouTube's approval. It cannot be shown in a post yet.", 409,
+                      restricted=True, asset=asset.json)
+
     _set_status(asset, rules.READY)
     g.db.commit()
     return jsonify(asset.json)
+
+
+@app.post("/settings/media/google/video")
+@auth_required
+@validate_formkey
+def settings_media_google_video(v):
+    """How the member's videos show on their YouTube channel by default."""
+    account = g.db.query(MediaAccount).filter_by(user_id=v.id, provider="google").first()
+    if not account or not account.is_active:
+        return redirect("/settings/media")
+    account.set_setting("youtube_visibility", rules.video_visibility(request.form.get("visibility")))
+    account.updated_utc = int(time.time())
+    g.db.add(account)
+    g.db.commit()
+    return redirect("/settings/media?msg=Saved.")
 
 
 @app.put("/api/media/dev_upload/<aid>/<token>")

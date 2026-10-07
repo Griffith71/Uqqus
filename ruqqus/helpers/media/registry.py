@@ -1,9 +1,10 @@
 """The providers this site has, by name. See base.py for how to add one."""
-from . import dev, gdrive, google_oauth
+from . import dev, gdrive, google_oauth, youtube
 
 PROVIDERS = {
     "dev": dev.DevProvider(),
     "gdrive": gdrive.DriveProvider(),
+    "youtube": youtube.YouTubeProvider(),
 }
 # which kind of linked account each provider belongs to
 ACCOUNT_OF = {"dev": "dev", "gdrive": "google", "youtube": "google"}

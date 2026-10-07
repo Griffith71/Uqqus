@@ -46,16 +46,18 @@ class Provider:
     name = ""
     served = False
 
-    def begin_upload(self, account, asset, origin):
+    def begin_upload(self, account, asset, origin, details=None):
         """Start an upload of `asset` (kind, ext, size are set) into `account`.
         Returns {"url": ..., "method": "PUT", "headers": {...}} for the browser.
-        `origin` is the site's origin (scheme://host), which the browser will send."""
+        `origin` is the site's origin (scheme://host), which the browser will send.
+        `details` is what a hosting site wants to know (title, visibility, site name)."""
         raise NotImplementedError
 
     def finish_upload(self, account, asset):
         """The browser says it is done. Confirm with the provider and return
-        {"ref": provider id, "size": bytes, "checksum": str}. Raise MediaError if the
-        upload is not there or not complete."""
+        {"ref": provider id, "size": bytes, "checksum": str}. A hosting provider may add
+        "restricted": True when the site will not show the file publicly. Raise MediaError
+        if the upload is not there or not complete."""
         raise NotImplementedError
 
     def open(self, account, asset, byte_range=None):

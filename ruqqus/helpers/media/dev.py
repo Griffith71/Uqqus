@@ -35,7 +35,7 @@ class DevProvider(Provider):
     name = "dev"
     served = True
 
-    def begin_upload(self, account, asset, origin):
+    def begin_upload(self, account, asset, origin, details=None):
         asset.provider_ref = f"{int(asset.id)}-{asset.token}"
         return {"url": f"/api/media/dev_upload/{rules.b36(asset.id)}/{asset.token}", "method": "PUT", "headers": {}}
 

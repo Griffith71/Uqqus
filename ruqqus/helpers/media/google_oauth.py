@@ -160,6 +160,25 @@ def _cache(key, value, seconds):
     _local_tokens[key] = (value, time.time() + seconds)
 
 
+def remember(key, value, seconds):
+    """Keep a small value for a while (an upload session's address)."""
+    _cache(key, value, seconds)
+
+
+def recall(key):
+    return _cached(key)
+
+
+def forget_key(key):
+    _local_tokens.pop(key, None)
+    store = _redis()
+    if store is not None:
+        try:
+            store.delete(key)
+        except Exception:
+            pass
+
+
 def forget(account):
     key = f"media:google:access:{account.id}"
     _local_tokens.pop(key, None)
@@ -201,10 +220,20 @@ def api(account, method, url, **kwargs):
     for attempt in (1, 2):
         headers["Authorization"] = f"Bearer {access_token(account)}"
         response = _http(method, url, headers=headers, **kwargs)
-        if response.status_code != 401:
+        if response.status_code != 401 or not _token_refused(response):
             return response
         forget(account)
     raise AccountLost()
+
+
+# 401 answers that are about the account, not about the token: the caller explains them
+_NOT_THE_TOKEN = {"youtubeSignupRequired"}
+
+
+def _token_refused(response):
+    error = _json(response).get("error")
+    reasons = {e.get("reason") for e in (error.get("errors") or []) if isinstance(e, dict)} if isinstance(error, dict) else set()
+    return not (reasons & _NOT_THE_TOKEN)
 
 
 def revoke(refresh_token):

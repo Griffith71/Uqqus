@@ -64,12 +64,15 @@ SERVED = ("gdrive", "dev")
 
 
 class MediaError(Exception):
-    """A message that is safe to show the member."""
+    """A message that is safe to show the member. `need` says what would fix it
+    ("storage": link an account; "video": allow video uploads) and `settings` where."""
 
-    def __init__(self, message, code=400):
+    def __init__(self, message, code=400, need=None, settings=None):
         super().__init__(message)
         self.message = message
         self.code = code
+        self.need = need
+        self.settings = settings
 
 
 def can_change(status, new):
@@ -159,6 +162,37 @@ def check_uploaded(kind, head, size):
     if size is not None and int(size) > SIZE_MAX[kind]:
         raise MediaError(f"That file is too big. The limit for {kind} files is {SIZE_MAX[kind] // MIB} MB.", 413)
     return ext
+
+
+# --- video (lives on the hosting site) -------------------------------------------------
+
+VIDEO_VISIBILITY = ("unlisted", "public")       # the first is the default
+VIDEO_TITLE_MAX = 100
+
+_YOUTUBE_ID = re.compile(
+    r"^https?://(?:www\.|m\.)?(?:youtube\.com/(?:watch\?(?:[^#]*&)?v=|shorts/|embed/|live/)|youtu\.be/)([A-Za-z0-9_-]{11})(?![A-Za-z0-9_-])")
+
+
+def video_visibility(value):
+    """How a video shows on the member's channel. Anything unknown is the default, unlisted:
+    it plays here and by link, but is not listed on the channel or in search."""
+    return value if value in VIDEO_VISIBILITY else VIDEO_VISIBILITY[0]
+
+
+def video_title(text, fallback="Video"):
+    """A title YouTube accepts: one line, no < or >, at most 100 characters."""
+    title = " ".join((text or "").replace("<", "").replace(">", "").split())
+    return (title or fallback)[:VIDEO_TITLE_MAX]
+
+
+def video_description(site):
+    return f"Uploaded from {site}." if site else ""
+
+
+def youtube_id(url):
+    """The video id in a YouTube link, or None."""
+    m = _YOUTUBE_ID.match((url or "").strip())
+    return m.group(1) if m else None
 
 
 # --- addresses -----------------------------------------------------------------------

@@ -73,7 +73,8 @@
     return fetch(url, { method: 'POST', body: data, credentials: 'same-origin' }).then(function (r) {
       return r.json().catch(function () { return {}; }).then(function (body) {
         if (r.ok) return body;
-        throw fail(body.error || 'The upload could not be started. Try again.', { need: body.need, settings: body.settings, code: r.status });
+        throw fail(body.error || 'The upload could not be started. Try again.',
+                   { need: body.need, settings: body.settings, code: r.status, restricted: body.restricted });
       });
     });
   }
@@ -101,7 +102,9 @@
   function upload(file, kind, options) {
     options = options || {};
     return prepare(file, kind).then(function (ready) {
-      return post('/api/media/uploads', { kind: kind, filename: ready.name, size: ready.size }).then(function (begun) {
+      var fields = { kind: kind, filename: ready.name, size: ready.size };
+      Object.keys(options.fields || {}).forEach(function (k) { fields[k] = options.fields[k]; });
+      return post('/api/media/uploads', fields).then(function (begun) {
         var finish = function () { return post('/api/media/uploads/' + begun.id + '/complete'); };
         return send(begun.upload, ready, options.onProgress, options.handle).then(finish, function (sendError) {
           if (sendError.cancelled) throw sendError;
@@ -147,7 +150,8 @@
     node.textContent = '';
     node.classList.remove('text-danger');
     node.classList.add('text-muted');
-    node.appendChild(document.createTextNode('To add ' + (kind === 'image' ? 'pictures' : kind) + ', turn on media storage once: '));
+    var what = { image: 'pictures', audio: 'audio', video: 'videos' }[kind] || kind;
+    node.appendChild(document.createTextNode('To add ' + what + ', turn on media storage once: '));
     var link = document.createElement('a');
     link.href = '/settings/media';
     link.target = '_blank';
@@ -156,8 +160,21 @@
     node.appendChild(link);
   }
 
+  function askForVideo(node, settings) {
+    node.textContent = '';
+    node.classList.remove('text-danger');
+    node.classList.add('text-muted');
+    node.appendChild(document.createTextNode('Videos go to your own YouTube channel. Allow that once, then add the video again: '));
+    var link = document.createElement('a');
+    link.href = settings || '/settings/media/google/connect?want=video';
+    link.target = '_blank';
+    link.rel = 'noopener';
+    link.textContent = 'Allow video uploads to YouTube';
+    node.appendChild(link);
+  }
+
   // Upload `file`, reporting in `node`. Resolves with the asset, or null when nothing was added.
-  function run(file, kind, node) {
+  function run(file, kind, node, fields) {
     var handle = {};
     var cancel = document.createElement('button');
     cancel.type = 'button';
@@ -167,6 +184,7 @@
     say(node, 'Preparing…');
     return upload(file, kind, {
       handle: handle,
+      fields: fields,
       onProgress: function (part) {
         say(node, 'Uploading ' + Math.round(part * 100) + '%');
         node.appendChild(cancel);
@@ -177,6 +195,7 @@
       return asset;
     }, function (error) {
       if (error.need === 'storage') askForStorage(node, kind);
+      else if (error.need === 'video') askForVideo(node, error.settings);
       else say(node, error.cancelled ? '' : error.message, !error.cancelled);
       return null;
     });
@@ -212,7 +231,78 @@
         pickInto(kind, ctx.textarea, function (markdown) { insertAtCaret(ctx.textarea, markdown); });
       });
     });
+    if (s.video) window.PostEditor.register('video', function (ctx) { pickVideo(ctx.textarea); });
   });
+
+  // Video: it goes to the member's own channel on a video site and the post links to it.
+  // Before sending, the member chooses how it shows on their channel.
+  function chooseVisibility(node, file, preset) {
+    return new Promise(function (resolve) {
+      node.textContent = '';
+      node.classList.remove('text-danger');
+      node.classList.add('text-muted');
+      node.appendChild(document.createTextNode('Upload "' + file.name + '" to your YouTube channel as '));
+      var select = document.createElement('select');
+      select.className = 'custom-select custom-select-sm d-inline-block w-auto mx-1';
+      select.setAttribute('aria-label', 'Who can find the video on YouTube');
+      [['unlisted', 'Unlisted (only here and by link)'], ['public', 'Public (on your channel)']].forEach(function (o) {
+        var option = document.createElement('option');
+        option.value = o[0];
+        option.textContent = o[1];
+        if (o[0] === preset) option.selected = true;
+        select.appendChild(option);
+      });
+      node.appendChild(select);
+      var go = document.createElement('button');
+      go.type = 'button';
+      go.className = 'btn btn-primary btn-sm ml-1';
+      go.textContent = 'Upload';
+      go.addEventListener('click', function () { resolve(select.value); });
+      var no = document.createElement('button');
+      no.type = 'button';
+      no.className = 'btn btn-link btn-sm';
+      no.textContent = 'Cancel';
+      no.addEventListener('click', function () { say(node, ''); resolve(null); });
+      node.appendChild(go);
+      node.appendChild(no);
+    });
+  }
+
+  // Put the video's address where this form keeps the post's link.
+  function attachLink(textarea, link) {
+    var form = textarea.form || textarea.closest('form');
+    var hidden = document.getElementById('post-URL');
+    if (hidden && (!form || hidden.form === form)) {           // Create a post
+      hidden.value = link;
+      if (typeof showAttachedLinkChip === 'function') showAttachedLinkChip(link);
+      if (typeof hide_image === 'function') hide_image();
+      return;
+    }
+    var field = form ? form.querySelector('input[name="url"]') : null;
+    if (field) { field.value = link; field.dispatchEvent(new Event('input', { bubbles: true })); return; }
+    insertAtCaret(textarea, link);
+  }
+
+  function pickVideo(textarea) {
+    var node = statusNode(textarea);
+    status().then(function (s) {
+      if (s.kinds.indexOf('video') === -1) { askForStorage(node, 'video'); return; }
+      choose('video').then(function (file) {
+        if (!file) return;
+        chooseVisibility(node, file, s.video_visibility).then(function (visibility) {
+          if (!visibility) return;
+          var form = textarea.form || textarea.closest('form');
+          var titleField = form ? form.querySelector('[name="title"]') : null;
+          run(file, 'video', node, { title: (titleField && titleField.value.trim()) || file.name, visibility: visibility })
+            .then(function (asset) {
+              if (!asset || !asset.link) return;
+              attachLink(textarea, asset.link);
+              say(node, 'Video added. YouTube may take a few minutes before it plays.');
+            });
+        });
+      });
+    });
+  }
 
   // 2. image buttons in comment forms
   document.addEventListener('click', function (event) {

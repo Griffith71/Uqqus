@@ -55,6 +55,33 @@ def is_media_url(url, server_name):
     return parsed.netloc in ("", server_name) and rules.parse_path(parsed.path) is not None
 
 
+def own_video(db, author_id, url):
+    """The author's own uploaded video this link points at, or None. Such a video plays
+    with the author's channel name on it, so it cannot go on an anonymous post."""
+    MediaAsset, _, _ = _models()
+    video_id = rules.youtube_id(url)
+    if not video_id:
+        return None
+    return db.query(MediaAsset).filter_by(user_id=author_id, provider="youtube", provider_ref=video_id).first()
+
+
+ANONYMOUS_VIDEO = ("A video uploaded to your YouTube channel shows your channel's name, "
+                   "so it cannot be added to an anonymous post.")
+
+
+def link_refusal(db, author_id, hides_author, url):
+    """Why this link may not go on the post, or None. `hides_author`: the post is one that
+    does not say who wrote it."""
+    if hides_author and own_video(db, author_id, url):
+        return ANONYMOUS_VIDEO
+    return None
+
+
+def link_refusal_for(db, post, url):
+    """The same question for a link being put on an existing post (an edit)."""
+    return link_refusal(db, post.author_id, bool(post.is_anonymous), url)
+
+
 def attached_paths(db, submission_id=None, comment_id=None):
     """The addresses of the files a post (or comment) shows: what a CDN must forget when
     the post is removed."""

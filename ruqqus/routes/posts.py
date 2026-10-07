@@ -327,6 +327,11 @@ Optional file data:
     body_changed = body != old_body
     url_changed = bool(upload) or url != old_url
 
+    # a link that would name the author of a post that does not (helpers/media/attach.py)
+    link_refusal = media_attach.link_refusal_for(g.db, primary, url) if url_changed else None
+    if link_refusal:
+        return _edit_error(link_refusal)
+
     if body_changed:
         with CustomRenderer() as renderer:
             body_md = renderer.render(mistletoe.Document(body))
@@ -1213,6 +1218,14 @@ Optional file data:
 
     if request.files.get('file') and not v.can_submit_image:
         abort(403)
+
+    link_refusal = media_attach.link_refusal(g.db, v.id, flag(request.form, "anonymous"), url)
+    if link_refusal:
+        return {"html": lambda: (render_template("submit.html", v=v, error=link_refusal,
+                                                 title=title, url=url, body=body, text=text_for_redisplay,
+                                                 b=None, forward_guild_names=forward_guild_names), 400),
+                "api": lambda: ({"error": link_refusal}, 400)
+                }
 
     new_post = Submission(
         author_id=v.id,

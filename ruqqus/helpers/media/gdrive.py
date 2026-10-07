@@ -68,7 +68,7 @@ class DriveProvider(Provider):
 
     # --- uploading -------------------------------------------------------------------
 
-    def begin_upload(self, account, asset, origin):
+    def begin_upload(self, account, asset, origin, details=None):
         r = google_oauth.api(account, "GET", f"{API}/files/generateIds", params={"count": 1, "space": "drive", "type": "files"})
         ids = _json(r).get("ids") or []
         if r.status_code != 200 or not ids:

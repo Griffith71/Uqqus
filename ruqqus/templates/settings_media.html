@@ -39,10 +39,23 @@
             <p><span class="badge badge-success mr-2">On</span>Pictures and audio you upload are kept in a
               <strong>{{ 'SITE_NAME' | app_config }}</strong> folder in your Google Drive. They stay private there:
               {{ 'SITE_NAME' | app_config }} shows them in your posts, and can only see the files it created itself.</p>
-            <p class="text-small text-muted mb-2">
-              {% if google_video %}Videos you upload go to your YouTube channel.
-              {% else %}Video is not connected. You will be asked the first time you add a video.{% endif %}
-            </p>
+            {% if google_video %}
+            <form action="/settings/media/google/video" method="post" class="form-inline mb-3" id="media-video-form">
+              <input type="hidden" name="formkey" value="{{ v.formkey }}">
+              <label class="mr-2 mb-0" for="media-video-visibility">Videos go to your YouTube channel as</label>
+              <select class="custom-select custom-select-sm mr-2" name="visibility" id="media-video-visibility">
+                <option value="unlisted"{% if video_visibility == "unlisted" %} selected{% endif %}>Unlisted (only here and by link)</option>
+                <option value="public"{% if video_visibility == "public" %} selected{% endif %}>Public (on your channel)</option>
+              </select>
+              <button type="submit" class="btn btn-secondary btn-sm">Save</button>
+            </form>
+            <p class="text-small text-muted mb-2">You can change this for each video when you add it. Videos are uploaded as not made for kids.
+              A video shows your channel's name, so it cannot go on an anonymous post.</p>
+            {% else %}
+            <p class="mb-2">Video is not connected yet.
+              <a href="/settings/media/google/connect?want=video" id="media-video-connect">Allow video uploads to your YouTube channel</a>
+              (you need a channel on this Google account).</p>
+            {% endif %}
             <a href="/settings/media/google/connect" class="btn btn-secondary mr-2 mb-2">Use a different Google account</a>
             <form action="/settings/media/google/disconnect" method="post" class="d-inline"
                   onsubmit="return confirm('Disconnect Google? Pictures and audio stored in your Google Drive will stop showing in your posts. Videos on YouTube keep playing.');">
@@ -50,7 +63,9 @@
               <button type="submit" class="btn btn-secondary mb-2">Disconnect</button>
             </form>
             <p class="text-small text-muted mt-2 mb-0">Deleting a file in your Drive, or disconnecting, removes it from your posts.
-              You can also remove this site's access any time in your Google account, under Security, Third-party access.</p>
+              You can also remove this site's access any time in your Google account, under Security, Third-party access.
+              Videos are subject to the <a href="https://www.youtube.com/t/terms" target="_blank" rel="noopener">YouTube Terms of Service</a>;
+              Google's use of your data is described in the <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">Google Privacy Policy</a>.</p>
             {% else %}
             {% if "google" in expired %}
             <div class="alert alert-warning text-small" role="alert">Google is no longer accepting this site's access to your account, so your pictures and audio are not showing. Connect again to bring them back.</div>
