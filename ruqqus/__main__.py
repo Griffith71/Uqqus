@@ -11,6 +11,7 @@ import os
 from os import environ
 import secrets
 from flask import Flask, request, redirect, jsonify, abort, make_response, render_template, g
+from flask.sessions import SecureCookieSessionInterface
 from flask import session as flask_session  # Explicit alias for Flask's session
 from flask_caching import Cache
 from flask_limiter import Limiter
@@ -145,6 +146,19 @@ app.config["SESSION_COOKIE_SAMESITE"] = "Lax"
 
 app.config["PERMANENT_SESSION_LIFETIME"] = 60 * 60 * 24 * 365
 app.config["SESSION_REFRESH_EACH_REQUEST"] = True
+
+
+class _SessionInterface(SecureCookieSessionInterface):
+    # An answer that everyone shares (a media file that is part of a post, kept by the CDN
+    # in front of the site) must not carry one visitor's session cookie. A view marks such
+    # an answer with g.skip_session_cookie (routes/media.py).
+    def save_session(self, app, session, response):
+        if g.get("skip_session_cookie"):
+            return
+        super().save_session(app, session, response)
+
+
+app.session_interface = _SessionInterface()
 
 app.config["FORCE_HTTPS"] = int(environ.get("FORCE_HTTPS", 1)) if ("localhost" not in app.config["SERVER_NAME"] and "127.0.0.1" not in app.config["SERVER_NAME"]) else 0
 app.config["DISABLE_SIGNUPS"]=int(environ.get("DISABLE_SIGNUPS",0))
@@ -499,8 +513,11 @@ def after_request(response):
     response.headers.add('Access-Control-Allow-Headers',
                          "Origin, X-Requested-With, Content-Type, Accept, x-auth"
                          )
-    response.headers.add("Cache-Control",
-                         "maxage=600")
+    # /media/... sets its own: a file that is part of a post is kept by the CDN for good,
+    # one that is not is never stored (routes/media.py)
+    if not request.path.startswith("/media/"):
+        response.headers.add("Cache-Control",
+                             "maxage=600")
     response.headers.add("Strict-Transport-Security", "max-age=31536000")
     response.headers.add("Referrer-Policy", "same-origin")
     # response.headers.add("X-Content-Type-Options","nosniff")

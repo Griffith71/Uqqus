@@ -5729,5 +5729,46 @@ CREATE INDEX post_drafts_user_id_index ON public.post_drafts USING btree (user_i
 
 CREATE INDEX post_drafts_due_index ON public.post_drafts USING btree (publish_utc) WHERE status = 'scheduled';
 
+CREATE TABLE public.media_accounts (
+    id SERIAL PRIMARY KEY,
+    user_id integer NOT NULL,
+    provider character varying(16) NOT NULL,
+    external_id character varying(128) DEFAULT '' NOT NULL,
+    scopes text DEFAULT '' NOT NULL,
+    refresh_token_encrypted text DEFAULT '' NOT NULL,
+    status character varying(12) DEFAULT 'active' NOT NULL,
+    settings text DEFAULT '{}' NOT NULL,
+    created_utc integer DEFAULT 0 NOT NULL,
+    updated_utc integer DEFAULT 0 NOT NULL
+);
+
+CREATE TABLE public.media_assets (
+    id SERIAL PRIMARY KEY,
+    user_id integer NOT NULL,
+    account_id integer NOT NULL,
+    provider character varying(16) NOT NULL,
+    kind character varying(8) NOT NULL,
+    provider_ref character varying(255) DEFAULT '' NOT NULL,
+    token character varying(64) NOT NULL,
+    ext character varying(8) DEFAULT '' NOT NULL,
+    size bigint DEFAULT 0 NOT NULL,
+    checksum character varying(128) DEFAULT '' NOT NULL,
+    width integer,
+    height integer,
+    status character varying(12) DEFAULT 'pending' NOT NULL,
+    submission_id integer,
+    comment_id integer,
+    created_utc integer DEFAULT 0 NOT NULL,
+    updated_utc integer DEFAULT 0 NOT NULL
+);
+
+CREATE UNIQUE INDEX media_accounts_user_provider_index ON public.media_accounts USING btree (user_id, provider);
+
+CREATE INDEX media_assets_user_id_index ON public.media_assets USING btree (user_id, created_utc);
+
+CREATE INDEX media_assets_submission_id_index ON public.media_assets USING btree (submission_id) WHERE submission_id IS NOT NULL;
+
+CREATE INDEX media_assets_comment_id_index ON public.media_assets USING btree (comment_id) WHERE comment_id IS NOT NULL;
+
 CREATE INDEX submissions_word_severity_index ON public.submissions USING btree (word_severity);
 CREATE INDEX comments_word_severity_index ON public.comments USING btree (word_severity);

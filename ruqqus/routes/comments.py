@@ -7,6 +7,7 @@ import gevent
 from os import environ
 
 from ruqqus.helpers.wrappers import *
+from ruqqus.helpers.media import attach as media_attach
 from ruqqus.helpers.visibility import post_hidden, comment_thread_hidden, hidden_notice
 from ruqqus.helpers.base36 import *
 from ruqqus.helpers.sanitize import *
@@ -550,6 +551,9 @@ Optional file data:
     c.post.score_activity = c.post.rank_activity
     g.db.add(c.post)
 
+    # files from the author's linked storage that this comment shows (helpers/media)
+    media_attach.sync(g.db, v.id, (body,), comment_id=c.id)
+
     g.db.commit()
 
     c=get_comment(c.id, v=v)
@@ -718,6 +722,8 @@ Optional form data (left out: unchanged):
     c.made_with_ai = flag(request.form, "made_with_ai", c.made_with_ai)
 
     g.db.add(c)
+
+    media_attach.sync(g.db, v.id, (body,), comment_id=c.id)
 
     g.db.commit()
 

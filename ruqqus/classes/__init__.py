@@ -28,4 +28,5 @@ from .chat import *
 from .word_filter import *
 from .post_template import *
 from .post_draft import *
+from .media import *
 #from lodges import *

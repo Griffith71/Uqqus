@@ -1,0 +1,60 @@
+{% extends "settings.html" %}
+
+{# Media storage: the account a member's uploads go into (routes/media.py, helpers/media). #}
+
+{% block title %}
+<title>{{ 'SITE_NAME' | app_config }} - Media storage</title>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+  <div class="col col-lg-8">
+    <div class="settings">
+
+      <h2 class="h5">Media storage</h2>
+      <p class="text-small text-muted">
+        {{ 'SITE_NAME' | app_config }} does not keep the images, audio or video you upload. They go into
+        an account of your own that you link here once, and your posts show them from there.
+      </p>
+
+      {% if error %}<div class="alert alert-danger text-small" role="alert">{{ error }}</div>{% endif %}
+      {% if msg %}<div class="alert alert-success text-small" role="status">{{ msg }}</div>{% endif %}
+
+      {% if not offered %}
+      <div class="settings-section rounded">
+        <div class="body">
+          <p class="mb-0">Media storage is not set up on this site yet.</p>
+        </div>
+      </div>
+      {% endif %}
+
+      {% if "dev" in offered %}
+      <div class="settings-section rounded" id="media-dev">
+        <div class="d-lg-flex">
+          <div class="title w-lg-25">
+            <label>Test storage</label>
+          </div>
+          <div class="body w-lg-100">
+            {% if accounts.get("dev") %}
+            <p><span class="badge badge-success mr-2">On</span>Images and audio you upload go to this server's test storage.</p>
+            <form action="/settings/media/dev/disconnect" method="post"
+                  onsubmit="return confirm('Disconnect? Images and audio from this storage will stop showing in your posts.');">
+              <input type="hidden" name="formkey" value="{{ v.formkey }}">
+              <button type="submit" class="btn btn-secondary">Disconnect</button>
+            </form>
+            {% else %}
+            <p>For developers: keeps uploads on this machine so the upload flow can be tried without a real account. Never available on the live site.</p>
+            <form action="/settings/media/dev/enable" method="post">
+              <input type="hidden" name="formkey" value="{{ v.formkey }}">
+              <button type="submit" class="btn btn-primary" id="media-dev-enable">Enable media storage</button>
+            </form>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+      {% endif %}
+
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -12,6 +12,8 @@ services:
       - FLASK_DEBUG=1
       - FLASK_ENV=development
       - FORCE_HTTPS=0
+      # stand-in media storage for local testing only (ruqqus/helpers/media/dev.py)
+      - MEDIA_DEV_PROVIDER=${MEDIA_DEV_PROVIDER:-1}
 
       - HCAPTCHA_SECRET=5436ertfgcvbnfgcy
       - CLOUDFLARE_KEY=5436ertfgcvbnfgcy

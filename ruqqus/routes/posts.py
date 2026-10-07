@@ -26,6 +26,7 @@ from ruqqus.helpers.languages import detect_language
 from ruqqus.helpers.post_fields import clean_title, check_body, normalize_url, flag, PostFieldError
 from ruqqus.helpers import comment_permission as cperm
 from ruqqus.helpers import post_drafts
+from ruqqus.helpers.media import attach as media_attach
 from ruqqus.helpers.word_filter_store import post_severity, apply_post_severity
 from ruqqus.classes import *
 from .front import frontlist
@@ -467,6 +468,10 @@ Optional file data:
             row.paid_partnership = paid_partnership
             row.made_with_ai = made_with_ai
             g.db.add(row)
+
+        # files from the author's linked storage: attach the ones the post shows now,
+        # let go of the ones it no longer does (helpers/media)
+        media_attach.sync(g.db, v.id, (url, body), submission_id=primary.id)
 
         # the image scan and the thumbnail/embed worker read from their own
         # sessions, so the edit has to be committed before they start
@@ -1466,6 +1471,10 @@ Optional file data:
     # guilds in a single request costs proportionally more of the same
     # posting-rate budget instead of registering as a single free action.
     g.throttle_weight = 1 + len(forward_boards)
+
+    # files from the author's linked storage that this post shows (helpers/media)
+    media_attach.sync(g.db, v.id, (new_post.url, new_post_aux.body), submission_id=new_post.id)
+    g.db.commit()
 
     _discard_draft(v, request.form.get("draft_id"))
 
