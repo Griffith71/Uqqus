@@ -58,10 +58,12 @@ def curation_idlist(curation_id, v=None, sort=None, page=1, t=None, filter_words
     board_ids = select(CurationGuild.board_id).filter_by(curation_id=curation_id)
     user_ids = select(CurationUser.target_user_id).filter_by(curation_id=curation_id)
 
+    # an anonymous post never matches through its author (a curation can hold one
+    # account, which would name them); it still shows through a member guild
     posts = posts.filter(
         or_(
             Submission.board_id.in_(board_ids),
-            Submission.author_id.in_(user_ids)
+            and_(Submission.author_id.in_(user_ids), not_(Submission.is_anonymous))
         )
     )
 
