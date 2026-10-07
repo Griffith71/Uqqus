@@ -79,6 +79,18 @@ Ruqqus keeps no copy of an uploaded picture, sound or video. A member links an a
 - The Google and YouTube code is tested with Google's side faked (`tests/test_media_google.py`, `tests/test_media_youtube.py`); it has not been run against the real services. The first thing to check with real credentials is that the browser's PUT to the upload session is allowed across origins (the session is opened with the site's `Origin`).
 - Tests: `tests/test_media_*.py`.
 
+## Trending topics (legacy app)
+
+A top 10 of what an unusual number of different accounts posted about in the last day. Start with `ruqqus/helpers/trending.py` (the rules, stdlib only).
+
+- **How a topic is found**: every post gives terms (`terms_of`): runs of one to three words from its title and the start of its text, names (capitalised runs) and the link it shares. There are no hashtags. A term's score is its burst (`burst`): accounts posting about it today against what the week before predicts, so steady talk does not trend. **Every account counts once per term** and a term needs `TRENDING_MIN_AUTHORS` accounts (default 3, never under 2). `tidy` keeps one topic where several say the same thing.
+- **Which posts count** (`trending_store._load`): live, public, by accounts in good standing, not bots, not forwarded copies (`repost_id`), not guilds that are private or opted out of All.
+- **Lists are stored** in `trending_topics` per scope (`all`, `lang:<code>`, `region:<code>`) and per word-filter level (0, 1, 2), so reading one is a single query. A region list never counts an anonymous post (`scopes_of`), as the region filter. A viewer gets the lists their active region / language filters name (`_resolve_active_filters`), otherwise the site's; a region or language with fewer than 3 topics has no list.
+- **The job**: `scripts/compute_trending.py`, its own supervisord program, every 5 minutes, replaces every row in one transaction. Run it by hand with `PYTHONPATH=. python scripts/compute_trending.py --once`. A list older than an hour is not shown (the job is not running).
+- **Pages** (`routes/trending.py`): the box in the right sidebar (`/inpage/trending`, loaded by `assets/js/trending.js`, also for visitors, never the left sidebar), `/trending` (how phones reach it; `?scope=all` for the whole site), `/trending/<slug>` (a topic's posts through `filter_posts` and the viewer's blocks) and `/admin/trending` (hide a topic: it and every phrase holding it leave every list at once, `trending_blocked`).
+- A topic's label goes through the word filter per level; the pages only ever show a count of accounts, never who posted.
+- Tests: `tests/test_trending.py` (the rules), `tests/test_trending_assets.py` (store, job, schema, pages, both stylesheets).
+
 ## Rules
 
 - Run the check command before declaring any task done.

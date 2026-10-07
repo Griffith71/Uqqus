@@ -18,6 +18,8 @@ services:
       # linked media storage with Google (ruqqus/helpers/media/google_oauth.py): put these in .env
       - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID:-}
       - GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET:-}
+      # trending topics (ruqqus/helpers/trending.py): accounts a topic needs
+      - TRENDING_MIN_AUTHORS=${TRENDING_MIN_AUTHORS:-3}
 
       - HCAPTCHA_SECRET=5436ertfgcvbnfgcy
       - CLOUDFLARE_KEY=5436ertfgcvbnfgcy

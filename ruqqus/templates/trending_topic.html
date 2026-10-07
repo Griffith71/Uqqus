@@ -1,0 +1,61 @@
+{% extends "home.html" %}
+
+{% block pagetype %}curations{% endblock %}
+
+{% block title %}
+<title>{{ label or 'Trending' }} - {{ 'SITE_NAME' | app_config }}</title>
+{% endblock %}
+
+{% block desktopBanner %}{% endblock %}
+{% block PseudoSubmitForm %}{% endblock %}
+
+{% set scope_query = '&scope=all' if scope_all else '' %}
+
+{% block content %}
+<div class="col px-md-4 py-4">
+
+  <div class="text-small"><a href="/trending{% if scope_all %}?scope=all{% endif %}"><i class="fas fa-chart-line mr-1"></i>Trending</a></div>
+
+  {% if label %}
+  <h1 class="h3 mb-3">{{ label }}</h1>
+
+  <ul class="nav settings-nav mb-3">
+    {% for key, name in [("new", "Latest"), ("top", "Top")] %}
+    <li class="nav-item"><a class="nav-link{% if sort_method == key %} active{% endif %}" href="?sort={{ key }}{{ scope_query }}"{% if sort_method == key %} aria-current="page"{% endif %}>{{ name }}</a></li>
+    {% endfor %}
+  </ul>
+
+  <div class="posts" id="posts">
+    {% include "submission_listing.html" %}
+  </div>
+
+  {% if not listing %}
+  <p class="text-muted">No posts on this topic that you can see.</p>
+  {% endif %}
+
+  {% else %}
+  <h1 class="h3 mb-1">Not trending any more</h1>
+  <p class="text-muted">This topic has dropped off the list. <a href="/trending">See what is trending now</a>.</p>
+  {% endif %}
+
+</div>
+{% endblock %}
+
+{% block pagenav %}
+{% if label and listing %}
+<nav aria-label="Page navigation">
+  <ul class="pagination pagination-sm mb-0">
+    {% if page>1 %}
+    <li class="page-item"><small><a class="page-link" href="?sort={{ sort_method }}&page={{ page-1 }}{{ scope_query }}">Prev</a></small></li>
+    {% else %}
+    <li class="page-item disabled"><span class="page-link">Prev</span></li>
+    {% endif %}
+    {% if next_exists %}
+    <li class="page-item"><small><a class="page-link" href="?sort={{ sort_method }}&page={{ page+1 }}{{ scope_query }}">Next</a></small></li>
+    {% else %}
+    <li class="page-item disabled"><span class="page-link">Next</span></li>
+    {% endif %}
+  </ul>
+</nav>
+{% endif %}
+{% endblock %}

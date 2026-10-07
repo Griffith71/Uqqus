@@ -5770,5 +5770,35 @@ CREATE INDEX media_assets_submission_id_index ON public.media_assets USING btree
 
 CREATE INDEX media_assets_comment_id_index ON public.media_assets USING btree (comment_id) WHERE comment_id IS NOT NULL;
 
+CREATE TABLE public.trending_topics (
+    id SERIAL PRIMARY KEY,
+    scope character varying(48) NOT NULL,
+    filter_level smallint DEFAULT 1 NOT NULL,
+    rank smallint NOT NULL,
+    key character varying(320) NOT NULL,
+    slug character varying(64) NOT NULL,
+    kind character varying(8) NOT NULL,
+    label character varying(120) NOT NULL,
+    score double precision DEFAULT 0 NOT NULL,
+    post_count integer DEFAULT 0 NOT NULL,
+    author_count integer DEFAULT 0 NOT NULL,
+    post_ids text DEFAULT '[]' NOT NULL,
+    computed_utc integer DEFAULT 0 NOT NULL
+);
+
+CREATE TABLE public.trending_blocked (
+    id SERIAL PRIMARY KEY,
+    key character varying(320) NOT NULL,
+    label character varying(120) DEFAULT '' NOT NULL,
+    admin_id integer,
+    created_utc integer DEFAULT 0 NOT NULL
+);
+
+CREATE INDEX trending_topics_list_index ON public.trending_topics USING btree (scope, filter_level, rank);
+
+CREATE INDEX trending_topics_slug_index ON public.trending_topics USING btree (slug);
+
+CREATE UNIQUE INDEX trending_blocked_key_index ON public.trending_blocked USING btree (key);
+
 CREATE INDEX submissions_word_severity_index ON public.submissions USING btree (word_severity);
 CREATE INDEX comments_word_severity_index ON public.comments USING btree (word_severity);

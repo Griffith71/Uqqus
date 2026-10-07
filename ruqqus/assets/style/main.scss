@@ -1269,6 +1269,56 @@ color: $dark;
     padding-bottom: 0.75rem;
 }
 
+// Trending (templates/partials/trending_box.html, trending.html)
+// the rows draw their own rank, not the global "ol > li::before" number
+.trend-list > li {
+    margin-bottom: 0;
+}
+
+.trend-list > li::before {
+    content: none;
+}
+
+.trend-row + .trend-row {
+    border-top: 1px solid $border-color;
+}
+
+.trend-link {
+    padding: 0.5rem 0;
+    color: inherit;
+}
+
+.trend-link:hover, .trend-link:focus {
+    text-decoration: none;
+}
+
+.trend-link:hover .trend-label, .trend-link:focus .trend-label {
+    color: $primary;
+}
+
+.trend-rank {
+    flex: 0 0 1.75rem;
+    font-variant-numeric: tabular-nums;
+}
+
+.trend-main {
+    min-width: 0;
+    flex: 1 1 auto;
+}
+
+.trend-label {
+    color: $black;
+}
+
+.sidebar .trending-box .body {
+    padding-top: 0.25rem;
+    padding-bottom: 0.75rem;
+}
+
+.trend-list-full .trend-link {
+    padding: 0.75rem 0;
+}
+
 // Side panels: Notifications, Chat and Create post replace the right sidebar
 // on a wide screen (assets/js/side_panels.js)
 #side-panel {

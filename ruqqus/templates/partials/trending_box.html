@@ -1,0 +1,26 @@
+{#
+  The "Trending" box in the right sidebar: the top 10 topics for this viewer
+  (routes/trending.py /inpage/trending, loaded by assets/js/trending.js).
+  Nothing is rendered when nothing is trending.
+#}
+{% if topics %}
+<div class="sidebar-section trending-box">
+  <div class="title"><i class="fas fa-chart-line mr-2"></i>{{ heading }}</div>
+  <div class="body">
+    <ol class="trend-list list-unstyled mb-0">
+      {% for t in topics %}
+      <li class="trend-row">
+        <a href="{{ t.permalink }}" class="trend-link d-flex align-items-baseline">
+          <span class="trend-rank text-muted">{{ loop.index }}</span>
+          <span class="trend-main">
+            <span class="trend-label d-block font-weight-bold text-truncate">{{ t.label }}</span>
+            <span class="trend-count d-block text-small text-muted">{{ t.post_count }} post{{ '' if t.post_count == 1 else 's' }}</span>
+          </span>
+        </a>
+      </li>
+      {% endfor %}
+    </ol>
+    <a href="/trending" class="d-block mt-2 text-small">How this list is made</a>
+  </div>
+</div>
+{% endif %}

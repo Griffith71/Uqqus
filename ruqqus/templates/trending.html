@@ -1,0 +1,46 @@
+{% extends "home.html" %}
+
+{# shares the Curations page layout (the same 726px column and sidebars) #}
+{% block pagetype %}curations{% endblock %}
+
+{% block title %}
+<title>{{ heading }} - {{ 'SITE_NAME' | app_config }}</title>
+{% endblock %}
+
+{% block desktopBanner %}{% endblock %}
+{% block PseudoSubmitForm %}{% endblock %}
+{% block pagenav %}{% endblock %}
+
+{% block content %}
+<div class="col px-md-4 py-4">
+
+  <h1 class="h3 mb-1">{{ heading }}</h1>
+  <p class="text-muted">
+    What an unusual number of different people have posted about in the last day, compared with the week before.
+    Every account counts once, so one account cannot make a topic.
+    {% if place %}<a href="/trending?scope=all">See the whole site's list</a>{% endif %}
+  </p>
+
+  {% if topics %}
+  <ol class="trend-list trend-list-full list-unstyled mb-0">
+    {% for t in topics %}
+    <li class="trend-row">
+      <a href="{{ t.permalink }}{% if not place %}?scope=all{% endif %}" class="trend-link d-flex align-items-baseline">
+        <span class="trend-rank text-muted">{{ loop.index }}</span>
+        <span class="trend-main">
+          <span class="trend-label d-block font-weight-bold">{{ t.label }}</span>
+          <span class="trend-count d-block text-small text-muted">
+            {% if t.kind == "link" %}Shared link &middot; {% endif %}{{ t.post_count }} post{{ '' if t.post_count == 1 else 's' }}
+            by {{ t.author_count }} {{ 'person' if t.author_count == 1 else 'people' }}
+          </span>
+        </span>
+      </a>
+    </li>
+    {% endfor %}
+  </ol>
+  {% else %}
+  <p class="text-muted">Nothing is trending right now. Topics appear here when several people post about the same thing.</p>
+  {% endif %}
+
+</div>
+{% endblock %}

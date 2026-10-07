@@ -28,3 +28,4 @@ from .post_drafts import *
 from .anonymity import *
 from .suggestions import *
 from .media import *
+from .trending import *

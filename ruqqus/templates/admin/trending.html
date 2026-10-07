@@ -1,0 +1,77 @@
+{% extends "docs_default.html" %}
+
+{% block sidebarblock %}{% endblock %}
+{% block sidebarLeftblock %}{% endblock %}
+
+{% block title %}
+<title>Ruqqus - Trending topics</title>
+{% endblock %}
+
+{% block content %}
+
+<h1>Trending topics</h1>
+
+<p class="text-muted">A topic is something an unusual number of different accounts posted about in the last day, compared with the week before. The lists are worked out again every few minutes; a topic needs at least <strong>{{ min_authors }}</strong> different accounts (<code>TRENDING_MIN_AUTHORS</code>). Hiding a topic takes it, and every phrase holding it, off every list at once.</p>
+
+{% if msg %}<div class="alert alert-success">{{ msg }}</div>{% endif %}
+{% if error %}<div class="alert alert-danger">{{ error }}</div>{% endif %}
+
+<h2>Hide a topic</h2>
+<form action="/admin/trending/hide" method="post" class="mb-4">
+  <input type="hidden" name="formkey" value="{{ v.formkey }}">
+  <div class="form-row">
+    <div class="col-md-5 mb-2"><input type="text" name="key" class="form-control" maxlength="320" placeholder="a word or phrase, as plain words" aria-label="Topic to hide" required></div>
+    <div class="col-md-2 mb-2"><button class="btn btn-primary">Hide</button></div>
+  </div>
+</form>
+
+{% if blocked %}
+<h2>Hidden topics</h2>
+<table class="table table-sm mb-4">
+  <tbody>
+    {% for b in blocked %}
+    <tr>
+      <td>{{ b.label }}{% if b.label != b.key %} <code>{{ b.key }}</code>{% endif %}</td>
+      <td class="text-right">
+        <form action="/admin/trending/{{ b.id }}/unhide" method="post" class="d-inline">
+          <input type="hidden" name="formkey" value="{{ v.formkey }}">
+          <button class="btn btn-sm btn-secondary">Show again</button>
+        </form>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endif %}
+
+<h2>Current lists</h2>
+{% for scope, level, rows in lists %}
+<h3 class="h5 mt-4">{{ "Whole site" if scope == "all" else scope }} &middot; word filter {{ levels[level] }}</h3>
+<table class="table table-sm">
+  <thead><tr><th>#</th><th>Topic</th><th>Kind</th><th>Score</th><th>Posts</th><th>Accounts</th><th></th></tr></thead>
+  <tbody>
+    {% for t in rows %}
+    <tr>
+      <td>{{ t.rank }}</td>
+      <td><a href="{{ t.permalink }}?scope=all">{{ t.label }}</a><br><code class="text-small">{{ t.key }}</code></td>
+      <td>{{ t.kind }}</td>
+      <td>{{ "%.2f" | format(t.score) }}</td>
+      <td>{{ t.post_count }}</td>
+      <td>{{ t.author_count }}</td>
+      <td class="text-right">
+        <form action="/admin/trending/hide" method="post" class="d-inline">
+          <input type="hidden" name="formkey" value="{{ v.formkey }}">
+          <input type="hidden" name="key" value="{{ t.key }}">
+          <input type="hidden" name="label" value="{{ t.label }}">
+          <button class="btn btn-sm btn-outline-danger">Hide</button>
+        </form>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% else %}
+<p class="text-muted">No list is stored. Either nothing is trending or the job is not running (<code>scripts/compute_trending.py</code>).</p>
+{% endfor %}
+
+{% endblock %}
