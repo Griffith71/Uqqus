@@ -1,0 +1,17 @@
+{#
+  A community note under a post or comment (helpers/community_notes.py): context an admin
+  wrote after people asked for it. Plain text (escaped; line breaks kept by the stylesheet),
+  and it names the site's moderators, never the admin.
+
+  community_note(item): `item` is a post or a comment; nothing is drawn when it has no live note.
+#}
+{% macro community_note(item) %}
+{% set note = community_note_of(item) %}
+{% if note %}
+<div class="community-note my-2" role="note">
+  <div class="community-note-title"><i class="fas fa-info-circle mr-1" aria-hidden="true"></i>Community note</div>
+  <div class="community-note-body">{{ note.body }}</div>
+  <div class="community-note-by text-small text-muted">Added by {{ 'SITE_NAME' | app_config }} moderators after members asked for context</div>
+</div>
+{% endif %}
+{% endmacro %}

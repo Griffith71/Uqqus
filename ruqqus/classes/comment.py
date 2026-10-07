@@ -8,6 +8,7 @@ import math
 from .mix_ins import *
 from ruqqus.helpers.base36 import *
 from ruqqus.helpers import anonymity
+from ruqqus.helpers import community_notes
 from ruqqus.helpers.lazy import lazy
 from ruqqus.__main__ import Base, cache
 from .votes import CommentVote
@@ -311,6 +312,7 @@ class Comment(Base, Age_times, Scores, Stndrd, Fuzzing):
             'is_sensitive': self.is_sensitive,
             'paid_partnership': bool(self.paid_partnership),
             'made_with_ai': bool(self.made_with_ai),
+            'community_note': community_notes.text_of(self),
             'is_distinguished': bool(self.distinguish_level),
             'is_heralded': bool(self.gm_distinguish),
             'herald_guild': self.distinguished_board.name if self.gm_distinguish else None,

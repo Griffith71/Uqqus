@@ -30,3 +30,4 @@ from .muting import *
 from .suggestions import *
 from .media import *
 from .trending import *
+from .community_notes import *

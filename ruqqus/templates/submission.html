@@ -1,4 +1,5 @@
 {% extends "default.html" %}
+{% from "partials/community_note.html" import community_note %}
 
 {% set ups=p.upvotes_fuzzed %}
 {% set downs=p.downvotes_fuzzed %}
@@ -572,6 +573,8 @@
             {% else %}
             {{ p.body_html | safe }}
             {% endif %}
+
+            {{ community_note(p) }}
 
             {% if p.embed_kind %}
             <div class="position-relative{% if p.is_sensitive %} sensitive-content-wrap{% endif %}" id="sensitive-embed-{{ p.base36id }}">

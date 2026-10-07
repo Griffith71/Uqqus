@@ -1,0 +1,74 @@
+{% extends "docs_default.html" %}
+
+{% block sidebarblock %}{% endblock %}
+{% block sidebarLeftblock %}{% endblock %}
+
+{% block title %}
+<title>Ruqqus - Community note requests</title>
+{% endblock %}
+
+{% block content %}
+
+<h1>Community note requests</h1>
+
+<p class="text-muted">Members ask for a community note from the flag menu when a post or comment may be misleading or needs context. A request is not a policy flag. Write a note only when it helps: it is shown under the post or comment to everyone, signed by the moderators (never by you), and the people who asked are told. Otherwise dismiss the requests. A request on a forwarded copy counts for the post it was copied from, and the note shows on every copy.</p>
+
+{% if msg %}<div class="alert alert-success">{{ msg }}</div>{% endif %}
+{% if error %}<div class="alert alert-danger">{{ error }}</div>{% endif %}
+
+<h2>Asked for, most first</h2>
+{% for r in requested %}
+<div class="card mb-3">
+  <div class="card-body">
+    <div class="d-flex justify-content-between align-items-start flex-wrap">
+      <div class="mr-3">
+        <span class="badge badge-secondary">{{ r.kind }}</span>
+        <a href="{{ r.link }}" target="_blank" rel="noopener">{{ r.text or "(no text)" }}</a>
+      </div>
+      <div class="text-muted text-small">{{ r.count }} request{{ '' if r.count == 1 else 's' }}</div>
+    </div>
+    {% if r.note %}
+    <div class="community-note my-2"><div class="community-note-title">Current note</div><div class="community-note-body">{{ r.note.body }}</div></div>
+    {% endif %}
+    <form action="/admin/note/{{ r.kind }}/{{ r.id }}" method="post" class="mt-2">
+      <input type="hidden" name="formkey" value="{{ v.formkey }}">
+      <label class="sr-only" for="note-{{ r.kind }}-{{ r.id }}">Note</label>
+      <textarea id="note-{{ r.kind }}-{{ r.id }}" name="body" class="form-control" rows="3" maxlength="{{ limit }}" placeholder="{{ 'Replace the note' if r.note else 'Write the note' }} (up to {{ limit }} characters, plain text)"></textarea>
+      <div class="mt-2">
+        <button class="btn btn-primary btn-sm">{{ 'Replace note' if r.note else 'Add note' }}</button>
+      </div>
+    </form>
+    <form action="/admin/note_requests/dismiss/{{ r.kind }}/{{ r.id }}" method="post" class="d-inline">
+      <input type="hidden" name="formkey" value="{{ v.formkey }}">
+      <button class="btn btn-link btn-sm text-muted px-0">Dismiss the requests, no note</button>
+    </form>
+  </div>
+</div>
+{% else %}
+<p class="text-muted">Nobody is waiting for a note.</p>
+{% endfor %}
+
+<h2 class="mt-4">Notes shown now</h2>
+{% if live %}
+<table class="table table-sm">
+  <thead><tr><th>On</th><th>Note</th><th></th></tr></thead>
+  <tbody>
+    {% for row in live %}
+    <tr>
+      <td><span class="badge badge-secondary">{{ row.kind }}</span> {% if row.link %}<a href="{{ row.link }}" target="_blank" rel="noopener">{{ row.text }}</a>{% else %}{{ row.text }}{% endif %}</td>
+      <td class="community-note-body">{{ row.note.body }}</td>
+      <td class="text-right">
+        <form action="/admin/note/{{ row.note.id }}/remove" method="post" onsubmit="return confirm('Take this note down?');">
+          <input type="hidden" name="formkey" value="{{ v.formkey }}">
+          <button class="btn btn-sm btn-outline-danger">Remove</button>
+        </form>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% else %}
+<p class="text-muted">No community note is shown anywhere.</p>
+{% endif %}
+
+{% endblock %}

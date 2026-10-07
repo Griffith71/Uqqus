@@ -24,6 +24,9 @@
                 </option>
                 <option id="report-post-to-guild-dropdown-option" value="guild">
                 </option>
+                <option value="note">
+                  This may be misleading or needs context (request a community note)
+                </option>
               </select>
           </div>
           <div class="modal-footer">
@@ -35,8 +38,8 @@
       <!-- After report is made, show this -->
       <div class="d-none" id="reportPostFormAfter">
         <div class="modal-body">
-          <div class="h6">Thank you for reporting this post!</div>
-          <small class="form-text text-muted">We'll take it from here.</small>
+          <div class="h6" id="reportPostAfterTitle">Thank you for reporting this post!</div>
+          <small class="form-text text-muted" id="reportPostAfterText">We'll take it from here.</small>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-link text-secondary" data-dismiss="modal">Close</button>

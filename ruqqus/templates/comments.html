@@ -1,5 +1,6 @@
 {% macro single_comment(c, level=1) %}
 {% import "partials/post_options.html" as post_options %}
+{% from "partials/community_note.html" import community_note %}
 <!---beginning of comment {{ c.id }}--->
 
 {% set ups=c.upvotes_fuzzed %}
@@ -204,6 +205,7 @@
         </div>
         {% endif %}
       </div>
+      {{ community_note(c) }}
 
       {% if c.forwarded_posts %}
       <div class="mb-2">

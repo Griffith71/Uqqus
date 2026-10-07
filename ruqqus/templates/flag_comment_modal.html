@@ -10,31 +10,34 @@
       </div>
       <!-- Before report is made, show this -->
       <div class="" id="reportCommentFormBefore">
-        <form>
+        <form onsubmit="return false;">
           <div class="modal-body">
             <div class="h6">We're sorry something here is wrong.</div>
             <small class="form-text text-muted">Please select a reason for flagging below.</small>
             <input type="hidden" name="formkey" value="{{ v.formkey }}">
-              <select name="report_type" class="custom-select mt-3">
-                <option disabled selected>
+              <select id="report-comment-type-dropdown" name="report_type" class="custom-select mt-3" onchange="document.getElementById('reportCommentButton').disabled=false;">
+                <option disabled selected value="reason_not_selected">
                   Reason for flagging?
                 </option>
                 <option value="admin">
                   This comment breaks {{ 'SITE_NAME' | app_config }} policy
                 </option>
+                <option value="note">
+                  This may be misleading or needs context (request a community note)
+                </option>
               </select>
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-link text-muted" data-dismiss="modal">Cancel</button>
-            <button id="reportCommentButton" class="btn btn-danger">Report comment</button>
+            <button type="button" id="reportCommentButton" class="btn btn-danger" disabled>Report comment</button>
           </div>
         </form>
       </div>
       <!-- After report is made, show this -->
       <div class="d-none" id="reportCommentFormAfter">
         <div class="modal-body">
-          <div class="h6">Thank you for reporting this comment!</div>
-          <small class="form-text text-muted">We'll take it from here.</small>
+          <div class="h6" id="reportCommentAfterTitle">Thank you for reporting this comment!</div>
+          <small class="form-text text-muted" id="reportCommentAfterText">We'll take it from here.</small>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-link text-secondary" data-dismiss="modal">Close</button>

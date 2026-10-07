@@ -13,6 +13,7 @@ from ruqqus.helpers.base36 import *
 from ruqqus.helpers.lazy import lazy
 from ruqqus.helpers import comment_permission as cperm
 from ruqqus.helpers import anonymity
+from ruqqus.helpers import community_notes
 import ruqqus.helpers.aws as aws
 from ruqqus.__main__ import Base, cache, app
 from .votes import Vote, CommentVote
@@ -461,6 +462,7 @@ class Submission(Base, Stndrd, Age_times, Scores, Fuzzing):
                 'comment_permission': cperm.mode_of(self),
                 'paid_partnership': bool(self.paid_partnership),
                 'made_with_ai': bool(self.made_with_ai),
+                'community_note': community_notes.text_of(self),
                 'is_bot': self.is_bot,
                 'thumb_url': self.thumb_url,
                 'domain': self.domain,

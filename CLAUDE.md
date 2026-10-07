@@ -83,6 +83,16 @@ Ruqqus keeps no copy of an uploaded picture, sound or video. A member links an a
 
 `ruqqus/helpers/languages.py` holds the one list of languages (`LANGUAGE_NAMES`: filters, curations, trending) and detects a post's language when it is written (`detect_language`, `py3langid`). Only languages people speak in daily life are listed: Ancient Greek, Ancient Hebrew, Latin and Volapük were taken off on purpose (`REMOVED_LANGUAGES`; Sanskrit and Esperanto stay). The detector is restricted to the list the first time it is used, so it can only answer a listed language (Latin text reads as the nearest living one); a saved choice that is no longer listed is dropped with `known_codes`. To remove another language: take it out of `LANGUAGE_NAMES`, add it to `REMOVED_LANGUAGES` and to a data migration like `scripts/migrations/2026-10-08_languages.sql` (untags its posts, strips it from curations). `tests/test_languages.py`.
 
+## Community notes (legacy app)
+
+From the flag menu a member can **request a community note** on a post or comment ("This may be misleading or needs context"); an admin may then write a note that is shown under it to everyone. Start with `ruqqus/helpers/community_notes.py`.
+
+- **A request is not a flag.** It is a `note_requests` row, never a `Flag`/`Report`/`CommentFlag` (those are policy reports in the admins' queue). Once per person per target, not on your own post or comment (409), at most 20 a day (429). Both flag routes now require the form key.
+- **A note belongs to the primary post** (`primary_post_id`: `repost_id or id`), so a forwarded copy's requests count for the original and the note shows on every copy. Comments are kept by their own id. One live note per target (unique partial index); replacing one marks the old `removed_utc` and keeps it.
+- **Admins (level 3)** use `/admin/note_requests` (most requested first; write, replace, dismiss, remove). Notes are plain text up to 600 characters, drawn escaped under the post (`submission.html`), the feed card and the comment through `partials/community_note.html`. A note says "added by <site> moderators", never which admin; the page never shows who asked; requesters get a notification with a link only. `post.json` and `comment.json` carry `community_note`.
+- Which items have a note is read once per `TTL` seconds per worker (`_live_ids`), so a page of posts with no notes costs no extra query; the admin routes call `community_notes.forget()`, other workers catch up within 30 seconds.
+- Tests: `tests/test_community_notes.py`, `tests/test_community_notes_assets.py`.
+
 ## Muting (legacy app)
 
 A member can mute an account (`usermutes`, `helpers/muting.py`): its posts and comments leave their feeds, searches and threads and its notifications stop. It is quiet and one-way: the account is not told and can still follow, comment and message. **A mute is not a block**: nothing that checks blocks (`any_block_exists`, comment and chat permissions) reads `usermutes`, and the two tables stay apart.

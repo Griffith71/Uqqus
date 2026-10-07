@@ -1269,6 +1269,25 @@ color: $dark;
     padding-bottom: 0.75rem;
 }
 
+// Community notes (templates/partials/community_note.html)
+.community-note {
+    border: 1px solid $border-color;
+    border-left: 4px solid $primary;
+    border-radius: 0.35rem;
+    padding: 0.5rem 0.75rem;
+}
+
+.community-note-title {
+    font-weight: $font-weight-bold;
+    font-size: $small-font-size;
+    color: $primary;
+}
+
+.community-note-body {
+    white-space: pre-line;
+    word-break: break-word;
+}
+
 // A curation's own algorithm (templates/curations/algorithm_form.html, detail.html)
 .curation-algorithm fieldset {
     border-top: 1px solid $border-color;

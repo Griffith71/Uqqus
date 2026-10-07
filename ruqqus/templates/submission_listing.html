@@ -1,4 +1,5 @@
 {% import "partials/post_options.html" as post_options %}
+{% from "partials/community_note.html" import community_note %}
 {% for p in listing %}
 
 {% set ups=p.upvotes_fuzzed %}
@@ -172,6 +173,8 @@
         <span class="text-expand-label-{{ p.base36id }} d-none">Show less <i class="fas fa-chevron-up text-small"></i></span>
       </a>
       {% endif %}
+
+      {{ community_note(p) }}
 
       <div class="post-actions mt-1 d-none d-md-block">
         <ul class="list-inline text-right d-flex">

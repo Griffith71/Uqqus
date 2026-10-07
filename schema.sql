@@ -5809,5 +5809,32 @@ CREATE TABLE public.usermutes (
     CONSTRAINT usermutes_pair_key UNIQUE (user_id, target_id)
 );
 
+CREATE TABLE public.note_requests (
+    id SERIAL PRIMARY KEY,
+    post_id integer,
+    comment_id integer,
+    user_id integer NOT NULL,
+    created_utc integer DEFAULT 0 NOT NULL,
+    CONSTRAINT note_requests_one_target CHECK ((post_id IS NULL) <> (comment_id IS NULL))
+);
+
+CREATE TABLE public.community_notes (
+    id SERIAL PRIMARY KEY,
+    post_id integer,
+    comment_id integer,
+    body character varying(600) NOT NULL,
+    admin_id integer NOT NULL,
+    created_utc integer DEFAULT 0 NOT NULL,
+    removed_utc integer DEFAULT 0 NOT NULL,
+    CONSTRAINT community_notes_one_target CHECK ((post_id IS NULL) <> (comment_id IS NULL))
+);
+
+CREATE UNIQUE INDEX note_requests_post_user_index ON public.note_requests USING btree (user_id, post_id) WHERE post_id IS NOT NULL;
+CREATE UNIQUE INDEX note_requests_comment_user_index ON public.note_requests USING btree (user_id, comment_id) WHERE comment_id IS NOT NULL;
+CREATE INDEX note_requests_post_index ON public.note_requests USING btree (post_id) WHERE post_id IS NOT NULL;
+CREATE INDEX note_requests_comment_index ON public.note_requests USING btree (comment_id) WHERE comment_id IS NOT NULL;
+CREATE UNIQUE INDEX community_notes_post_live_index ON public.community_notes USING btree (post_id) WHERE post_id IS NOT NULL AND removed_utc = 0;
+CREATE UNIQUE INDEX community_notes_comment_live_index ON public.community_notes USING btree (comment_id) WHERE comment_id IS NOT NULL AND removed_utc = 0;
+
 CREATE INDEX submissions_word_severity_index ON public.submissions USING btree (word_severity);
 CREATE INDEX comments_word_severity_index ON public.comments USING btree (word_severity);
