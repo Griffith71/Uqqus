@@ -1474,6 +1474,26 @@ Optional file data:
             }
 
 
+@app.get("/inpage/post_card/<pid>")
+@auth_required
+def post_card_fragment(pid, v):
+    """
+One of your own posts as the card a feed shows, so the inline composer can add
+it to the top of the feed without reloading the page. With `guild`, the card of
+the copy forwarded to that guild (what a guild's feed lists) when there is one.
+"""
+    post = get_post(pid, v=v)
+    if post.author_id != v.id:
+        abort(403)
+
+    shown = post
+    board = get_guild(request.args.get("guild", ""), graceful=True)
+    if board:
+        shown = g.db.query(Submission).filter_by(repost_id=post.id, board_id=board.id).first() or post
+
+    return render_template("submission_listing.html", v=v, listing=get_posts([shown.id], v=v))
+
+
 @app.route("/post/<pid>/forward", methods=["POST"])
 @auth_required
 @throttle_check

@@ -1190,6 +1190,57 @@ color: $dark;
     background-color: $white;
 }
 
+// Inline composer at the top of feeds (assets/js/inline_composer.js)
+// The title is a plain, borderless text area; the old card rules above give
+// every .form-control in the card a fill, so these repeat their selectors.
+#frontpage .pseudo-submit-form.card .inline-composer .form-control.ic-title, #guild .pseudo-submit-form.card .inline-composer .form-control.ic-title {
+    background: transparent !important;
+    border-color: transparent !important;
+    box-shadow: none !important;
+    resize: none;
+    overflow: hidden;
+    min-height: 2.5rem;
+    padding-left: 0;
+    padding-right: 0;
+    font-size: 1.1rem;
+}
+
+.inline-composer .ic-main {
+    min-width: 0;
+}
+
+.inline-composer .ic-bar {
+    padding-top: 0.5rem;
+    border-top: 1px solid $border-color;
+}
+
+.inline-composer .ic-options {
+    padding-bottom: 0.25rem;
+}
+
+.inline-composer .ic-chip {
+    font-size: $small-font-size;
+    font-weight: $font-weight-bold;
+}
+
+.inline-composer .ic-chip-remove {
+    margin-left: 0.4rem;
+    padding: 0;
+    border: 0;
+    background: none;
+    color: inherit;
+    line-height: 1;
+    opacity: 0.8;
+}
+
+.inline-composer .ic-chip-remove:hover {
+    opacity: 1;
+}
+
+.inline-composer .ic-file-name {
+    max-width: 9rem;
+}
+
 .post-filter {
     display: inline-block;
     font-size: $small-font-size;

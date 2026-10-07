@@ -168,24 +168,11 @@
 {% endblock %}
 
 {% block PseudoSubmitForm %}
-
+{% from "partials/inline_composer.html" import inline_composer %}
+{# only guilds you may forward to get one: it posts on your profile and forwards here #}
 {% if b.can_forward(v) %}
-<!-- Forward to this guild: opens the composer with the guild pre-selected -->
-<div class="row no-gutters mt-3">
-  <div class="col">
-    <div class="card pseudo-submit-form">
-      <div class="card-header bg-gray-100">
-        <div class="mb-0">Forward to +{{ b.name }}</div>
-      </div>
-      <div class="card-body">
-        <p class="text-small text-muted">Posts are first posted on your own profile. Write one and forward it here.</p>
-        <a href="{% if v %}/submit?guild={{ b.name | urlencode }}{% else %}/signup{% endif %}" class="btn btn-primary btn-block"><i class="fas fa-share fa-fw mr-2"></i>Forward to +{{ b.name }}</a>
-      </div>
-    </div>
-  </div>
-</div>
+{{ inline_composer(v, b) }}
 {% endif %}
-
 {% endblock %}
 
 {% block desktopBanner %}
