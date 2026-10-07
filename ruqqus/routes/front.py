@@ -13,7 +13,7 @@ from ruqqus.__main__ import app, cache
 from ruqqus.classes.submission import Submission
 from ruqqus.classes.categories import CATEGORIES
 from ruqqus.classes.votes import Vote
-from ruqqus.helpers.languages import LANGUAGE_NAMES
+from ruqqus.helpers.languages import LANGUAGE_NAMES, known_codes
 from ruqqus.helpers.regions import REGION_CENTROIDS
 
 
@@ -312,7 +312,7 @@ def _resolve_active_filters(v):
     shared by all three filter routes so that landing on any one of them
     applies all three dimensions together, not just its own."""
     region_codes = flask_session.get('selected_regions') or ([v.display_region] if v and v.display_region else [])
-    language_codes = flask_session.get('langcodes') or []
+    language_codes = known_codes(flask_session.get('langcodes'))
     subcat_ids = flask_session.get('catids') or []
     return region_codes, language_codes, subcat_ids
 

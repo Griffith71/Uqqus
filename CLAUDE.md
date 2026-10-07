@@ -79,6 +79,10 @@ Ruqqus keeps no copy of an uploaded picture, sound or video. A member links an a
 - The Google and YouTube code is tested with Google's side faked (`tests/test_media_google.py`, `tests/test_media_youtube.py`); it has not been run against the real services. The first thing to check with real credentials is that the browser's PUT to the upload session is allowed across origins (the session is opened with the site's `Origin`).
 - Tests: `tests/test_media_*.py`.
 
+## Languages (legacy app)
+
+`ruqqus/helpers/languages.py` holds the one list of languages (`LANGUAGE_NAMES`: filters, curations, trending) and detects a post's language when it is written (`detect_language`, `py3langid`). Only languages people speak in daily life are listed: Ancient Greek, Ancient Hebrew, Latin and Volapük were taken off on purpose (`REMOVED_LANGUAGES`; Sanskrit and Esperanto stay). The detector is restricted to the list the first time it is used, so it can only answer a listed language (Latin text reads as the nearest living one); a saved choice that is no longer listed is dropped with `known_codes`. To remove another language: take it out of `LANGUAGE_NAMES`, add it to `REMOVED_LANGUAGES` and to a data migration like `scripts/migrations/2026-10-08_languages.sql` (untags its posts, strips it from curations). `tests/test_languages.py`.
+
 ## Trending topics (legacy app)
 
 A top 10 of what an unusual number of different accounts posted about in the last day. Start with `ruqqus/helpers/trending.py` (the rules, stdlib only).
