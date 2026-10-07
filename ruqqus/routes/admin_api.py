@@ -9,6 +9,7 @@ from sqlalchemy import func
 from ruqqus.classes import *
 from ruqqus.helpers.wrappers import *
 from ruqqus.helpers.aws import delete_file
+from ruqqus.helpers.media import attach as media_attach, cdn as media_cdn
 from ruqqus.helpers.base36 import *
 from ruqqus.helpers.alerts import *
 from ruqqus.helpers.sanitize import *
@@ -107,6 +108,7 @@ def ban_post(post_id, v):
     post.ban_reason = ban_reason
 
     g.db.add(post)
+    media_cdn.purge(media_attach.attached_paths(g.db, submission_id=post.id))
 
     cache.delete_memoized(Board.idlist, post.board)
 
@@ -257,6 +259,7 @@ def api_ban_comment(c_id, v):
     comment.approved_utc = 0
 
     g.db.add(comment)
+    media_cdn.purge(media_attach.attached_paths(g.db, comment_id=comment.id))
     ma=ModAction(
         kind="ban_comment",
         user_id=v.id,

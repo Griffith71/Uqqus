@@ -5,6 +5,7 @@ every place that saves a post's link or text, or a comment's text, calls `sync` 
 """
 import hmac
 import time
+from urllib.parse import urlparse
 
 from . import rules
 
@@ -32,6 +33,39 @@ def claimed_assets(db, author_id, texts):
     return out
 
 
+def own_asset(db, author_id, raw_id, kinds=(rules.IMAGE, rules.AUDIO)):
+    """The author's own ready, site-served asset with this (base 36) id, or None. For a
+    post's main attachment, which is named by id (the `media` form field)."""
+    MediaAsset, _, _ = _models()
+    try:
+        asset_id = int((raw_id or "").strip(), 36)
+    except ValueError:
+        return None
+    asset = db.query(MediaAsset).filter_by(id=asset_id, user_id=author_id).first()
+    if asset is None or asset.status != rules.READY or asset.kind not in kinds or asset.provider not in rules.SERVED:
+        return None
+    return asset
+
+
+def is_media_url(url, server_name):
+    """Is this link one of this site's own media addresses?"""
+    if not url:
+        return False
+    parsed = urlparse(url)
+    return parsed.netloc in ("", server_name) and rules.parse_path(parsed.path) is not None
+
+
+def attached_paths(db, submission_id=None, comment_id=None):
+    """The addresses of the files a post (or comment) shows: what a CDN must forget when
+    the post is removed."""
+    MediaAsset, _, _ = _models()
+    if not (submission_id or comment_id):
+        return []
+    column = MediaAsset.submission_id if submission_id else MediaAsset.comment_id
+    rows = db.query(MediaAsset).filter(column == (submission_id or comment_id)).all()
+    return [a.path for a in rows if a.provider in rules.SERVED and a.ext]
+
+
 def is_live(db, asset):
     """Is the asset part of a post or comment that is still up?"""
     _, Submission, Comment = _models()
@@ -47,7 +81,7 @@ def is_live(db, asset):
 def sync(db, author_id, texts, submission_id=None, comment_id=None):
     """Make the assets attached to this post (or comment) match what its link and text
     mention now: attach the newly mentioned ones, let go of the ones no longer there.
-    Returns the attached assets. The caller commits."""
+    Returns the attached assets. The caller commits, then calls safety.scan_later on them."""
     MediaAsset, _, _ = _models()
     if not (submission_id or comment_id):
         return []
@@ -57,12 +91,18 @@ def sync(db, author_id, texts, submission_id=None, comment_id=None):
 
     column = MediaAsset.submission_id if submission_id else MediaAsset.comment_id
     target = submission_id or comment_id
+    dropped = []
     for asset in db.query(MediaAsset).filter(column == target).all():
         if asset.id not in wanted_ids:
             asset.submission_id = None
             asset.comment_id = None
             asset.updated_utc = now
             db.add(asset)
+            if asset.provider in rules.SERVED and asset.ext:
+                dropped.append(asset.path)
+    if dropped:
+        from . import cdn
+        cdn.purge(dropped)          # no longer public: the CDN must not keep serving it
 
     for asset in wanted:
         here = (asset.submission_id == submission_id) if submission_id else (asset.comment_id == comment_id)

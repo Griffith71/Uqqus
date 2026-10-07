@@ -230,6 +230,15 @@
     {% block fixedMobileBarJS %}
     {% endblock %}
 
+    <script>
+      // Called from onerror on post media. Defined here, before any image can fail to load
+      // (all_js.js, which also has it, only loads at the end of the page).
+      function hideBrokenMedia(imgEl) {
+        var wrap = imgEl.closest('.post-media-frame, .embed-lg, .post-preview-lg');
+        if (wrap) wrap.style.display = 'none';
+      }
+    </script>
+
     {% if v %}
 
     <script>
@@ -726,7 +735,8 @@
 {% if not request.args.get('embed') %}<script src="/assets/js/nav_align.js?v=1"></script>{% endif %}
 {% if request.args.get('embed') %}<script src="/assets/js/embedded.js?v=1"></script>{% endif %}
 {% if v %}<script src="/assets/js/inline_composer.js?v=1"></script>
-<script src="/assets/js/who_to_follow.js?v=1"></script>{% endif %}
+<script src="/assets/js/who_to_follow.js?v=1"></script>
+<script src="/assets/js/media_upload.js?v=1"></script>{% endif %}
 {% if v %}<script src="/assets/js/chat_badge.js?v=1"></script>{% endif %}
 
 <!-- ClipboardJS -->

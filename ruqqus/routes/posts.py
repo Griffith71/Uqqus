@@ -26,7 +26,7 @@ from ruqqus.helpers.languages import detect_language
 from ruqqus.helpers.post_fields import clean_title, check_body, normalize_url, flag, PostFieldError
 from ruqqus.helpers import comment_permission as cperm
 from ruqqus.helpers import post_drafts
-from ruqqus.helpers.media import attach as media_attach
+from ruqqus.helpers.media import attach as media_attach, cdn as media_cdn, safety as media_safety
 from ruqqus.helpers.word_filter_store import post_severity, apply_post_severity
 from ruqqus.classes import *
 from .front import frontlist
@@ -320,7 +320,8 @@ Optional file data:
             abort(413)
         if not (upload.content_type or "").startswith("image/"):
             return _edit_error("Image files only.")
-    elif form.get("remove_image") and old_image_key and url == old_url:
+    elif (form.get("remove_image") and url == old_url
+          and (old_image_key or media_attach.is_media_url(old_url, app.config["SERVER_NAME"]))):
         url = ""
 
     body_changed = body != old_body
@@ -471,11 +472,12 @@ Optional file data:
 
         # files from the author's linked storage: attach the ones the post shows now,
         # let go of the ones it no longer does (helpers/media)
-        media_attach.sync(g.db, v.id, (url, body), submission_id=primary.id)
+        attached_media = media_attach.sync(g.db, v.id, (url, body), submission_id=primary.id)
 
         # the image scan and the thumbnail/embed worker read from their own
         # sessions, so the edit has to be committed before they start
         g.db.commit()
+        media_safety.scan_later(attached_media)
 
         if url_changed:
             if old_image_key:
@@ -1253,6 +1255,26 @@ Optional file data:
 
     g.db.refresh(new_post)
 
+    # the post's main picture, already uploaded to the author's linked storage
+    # (helpers/media): the `media` field names it. Nothing is stored here, so no
+    # thumbnail is made either: the picture itself is the thumbnail.
+    main_media = None
+    if request.form.get("media") and not request.files.get('file'):
+        main_media = media_attach.own_asset(g.db, v.id, request.form.get("media"), kinds=("image",))
+        if main_media is None:
+            g.db.rollback()
+            return {"html": lambda: (render_template("submit.html", v=v, error="That upload can no longer be used. Add it again.",
+                                                     title=title, url=url, body=body, text=text_for_redisplay,
+                                                     b=None, forward_guild_names=forward_guild_names), 400),
+                    "api": lambda: ({"error": "That upload can no longer be used. Add it again."}, 400)
+                    }
+        new_post.url = media_cdn.absolute(main_media.path)
+        new_post.is_image = True
+        new_post.domain_ref = None
+        g.db.add(new_post)
+        g.db.add(new_post.submission_aux)
+        g.db.commit()
+
     # check for uploaded image
     if request.files.get('file'):
 
@@ -1359,7 +1381,7 @@ Optional file data:
     g.db.commit()
 
     # spin off thumbnail generation and csam detection as  new threads
-    if (new_post.url or request.files.get('file')) and (v.is_activated or request.headers.get('cf-ipcountry')!="T1"):
+    if (new_post.url or request.files.get('file')) and main_media is None and (v.is_activated or request.headers.get('cf-ipcountry')!="T1"):
         new_thread = gevent.spawn(
             thumbnail_thread,
             new_post.base36id
@@ -1473,8 +1495,9 @@ Optional file data:
     g.throttle_weight = 1 + len(forward_boards)
 
     # files from the author's linked storage that this post shows (helpers/media)
-    media_attach.sync(g.db, v.id, (new_post.url, new_post_aux.body), submission_id=new_post.id)
+    attached_media = media_attach.sync(g.db, v.id, (new_post.url, new_post_aux.body), submission_id=new_post.id)
     g.db.commit()
+    media_safety.scan_later(attached_media)
 
     _discard_draft(v, request.form.get("draft_id"))
 
@@ -1598,6 +1621,7 @@ URL path parameters:
     post.stickied = False
 
     g.db.add(post)
+    media_cdn.purge(media_attach.attached_paths(g.db, submission_id=post.id))
 
     g.db.add(ContentEditHistory(
         actor_id=v.id,

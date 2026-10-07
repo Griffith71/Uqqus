@@ -55,9 +55,11 @@
             </div>
 
             <div id="ic-bar" class="ic-bar d-flex align-items-center mt-2"{% if not panel %} hidden{% endif %}>
-              {% if v.can_submit_image %}
+              {# with linked storage (helpers/media) the picture goes to the member's own account and the form carries its id #}
+              {% if v.can_submit_image or media_offered() %}
               <label class="btn btn-link btn-sm text-muted px-1 mb-0" for="ic-file" title="Add an image"><i class="far fa-image"></i><span class="sr-only">Add an image</span></label>
-              <input type="file" id="ic-file" name="file" accept="image/*" hidden>
+              <input type="file" id="ic-file" name="file" accept="image/*" hidden{% if media_offered() %} data-media-main="ic-media"{% endif %}>
+              {% if media_offered() %}<input type="hidden" name="media" id="ic-media" value="">{% endif %}
               <span id="ic-file-name" class="text-small text-muted text-truncate ic-file-name"></span>
               {% endif %}
               <button type="button" id="ic-options-toggle" class="btn btn-link btn-sm text-muted px-1" aria-expanded="false" aria-controls="ic-options">Options</button>

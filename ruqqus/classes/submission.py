@@ -780,7 +780,13 @@ class Submission(Base, Stndrd, Age_times, Scores, Fuzzing):
         """True when the post's link is an image uploaded to our own bucket
         (it can be replaced or removed), not a link to somewhere else."""
         bucket = app.config.get("S3_BUCKET", "i.ruqqus.com")
-        return bool(self.url) and self.url.startswith(f"https://{bucket}/post/")
+        if not self.url:
+            return False
+        if self.url.startswith(f"https://{bucket}/post/"):
+            return True
+        # or a picture in the author's linked storage (helpers/media)
+        from ruqqus.helpers.media.attach import is_media_url
+        return bool(self._own_is_image) and is_media_url(self.url, app.config["SERVER_NAME"])
 
     @property
     def is_image(self):

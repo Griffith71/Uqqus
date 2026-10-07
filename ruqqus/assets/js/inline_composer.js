@@ -124,7 +124,8 @@
     addForward();
   });
 
-  if (file) {
+  // with linked storage, assets/js/media_upload.js uploads the picture and says so itself
+  if (file && !file.hasAttribute('data-media-main')) {
     file.addEventListener('change', function () {
       el('ic-file-name').textContent = file.files.length ? file.files[0].name : '';
     });
@@ -141,6 +142,11 @@
     forwards = presetGuild ? [presetGuild] : [];
     renderForwards();
     if (file) el('ic-file-name').textContent = '';
+    // a hidden field keeps a value set by script through form.reset(): clear the picture by hand
+    var media = el('ic-media');
+    if (media) media.value = '';
+    var mediaNote = form.querySelector('.media-upload-status');
+    if (mediaNote) mediaNote.textContent = '';
     options.hidden = true;
     optionsToggle.setAttribute('aria-expanded', 'false');
     if (!keepOpen) {

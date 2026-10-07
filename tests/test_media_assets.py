@@ -127,3 +127,103 @@ def test_the_settings_tab_is_reachable():
     nav = read("ruqqus", "templates", "settings.html")
     assert nav.count('href="/settings/media"') == 2      # desktop and phone tab rows
     assert '@app.get("/settings/media")' in ROUTES
+
+
+# --- the browser side ----------------------------------------------------------------
+
+UPLOADER = read("ruqqus", "assets", "js", "media_upload.js")
+SUBMIT = read("ruqqus", "templates", "submit.html")
+COMPOSER = read("ruqqus", "templates", "partials", "inline_composer.html")
+POSTS = read("ruqqus", "routes", "posts.py")
+
+
+def test_the_uploader_talks_to_the_routes_that_exist():
+    for address in ("/api/media/status", "/api/media/uploads"):
+        assert f"'{address}'" in UPLOADER
+        assert f'"{address}"' in ROUTES
+    assert "'/api/media/uploads/' + begun.id + '/complete'" in UPLOADER
+    assert '"/api/media/uploads/<aid>/complete"' in ROUTES
+    # the status answer carries what the script reads
+    for key in ('"offered"', '"kinds"'):
+        assert key in ROUTES[ROUTES.index("def media_status("):ROUTES.index("def media_upload_begin(")]
+
+
+def test_the_uploader_is_loaded_wherever_someone_can_write():
+    assert "/assets/js/media_upload.js" in read("ruqqus", "templates", "default.html")
+    assert SUBMIT.index("post_editor.js") < SUBMIT.index("media_upload.js")     # Create a post is a page of its own
+
+
+def test_a_pictures_camera_data_never_leaves_the_browser():
+    # the server used to strip EXIF (location); now the bytes go straight to the member's storage,
+    # so the browser re-draws the picture first and never falls back to the original
+    prepare = UPLOADER[UPLOADER.index("function prepare("):UPLOADER.index("function post(")]
+    assert "createImageBitmap(file" in prepare and "canvas.toBlob(" in prepare
+    assert "REDRAW.test(file.type)" in prepare and "jpeg|png|webp" in UPLOADER
+    assert "resolve(file)" not in prepare[prepare.index("createImageBitmap(file"):]
+    assert "could not be prepared" in prepare
+
+
+def test_a_providers_address_never_gets_the_session():
+    assert "xhr.withCredentials = upload.url.charAt(0) === '/'" in UPLOADER
+
+
+def test_the_post_picture_is_named_by_id_and_checked_as_the_authors_own():
+    for template, field in ((SUBMIT, "post-media"), (COMPOSER, "ic-media")):
+        assert f'data-media-main="{field}"' in template
+        assert f'name="media" id="{field}"' in template
+    assert 'media_attach.own_asset(g.db, v.id, request.form.get("media"), kinds=("image",))' in POSTS
+    # nothing is stored for it, so no thumbnail is made
+    assert "main_media is None and (v.is_activated" in POSTS
+
+
+def test_a_form_is_not_sent_while_its_picture_is_still_uploading():
+    assert "data-media-busy" in UPLOADER
+    tail = UPLOADER[UPLOADER.index("document.addEventListener('submit'"):]
+    assert "event.preventDefault();" in tail and "}, true);" in tail      # capture: before the form's own handler
+
+
+def test_comment_forms_offer_the_picture_button_only_with_linked_storage():
+    for name in ("comments.html", "submission.html"):
+        html = read("ruqqus", "templates", name)
+        assert 'data-media-upload="image" data-target="comment-form-body-' in html, name
+        button = html[:html.index('data-media-upload="image"')]
+        assert button.rstrip().endswith("<button type=\"button\" class=\"format btn btn-secondary m-0 ml-1 d-inline-block\"")
+        assert "{% if media_offered() %}" in button[-400:], name
+
+
+def test_removal_tells_the_cdn_to_forget_the_files():
+    for path, marker in (("posts.py", "submission_id=post.id"), ("comments.py", "comment_id=c.id"),
+                         ("admin_api.py", "submission_id=post.id"), ("admin_api.py", "comment_id=comment.id")):
+        src = read("ruqqus", "routes", path)
+        assert f"media_cdn.purge(media_attach.attached_paths(g.db, {marker}))" in src, (path, marker)
+
+
+def test_every_save_point_attaches_and_then_scans():
+    for path, count in (("posts.py", 2), ("comments.py", 2)):
+        src = read("ruqqus", "routes", path)
+        assert src.count("attached_media = media_attach.sync(") == count, path
+        assert src.count("media_safety.scan_later(attached_media)") == count, path
+        for chunk in src.split("attached_media = media_attach.sync(")[1:]:
+            assert chunk.index("g.db.commit()") < chunk.index("media_safety.scan_later(attached_media)"), path
+
+
+def test_a_banned_picture_is_refused_at_upload_with_the_old_consequence():
+    complete = ROUTES[ROUTES.index("def media_upload_complete("):ROUTES.index("def media_dev_upload(")]
+    assert "safety.banned_match(g.db, temp)" in complete
+    assert "safety.ban_uploader(g.db, v, match.ban_reason, match.ban_time or 0)" in complete
+    assert complete.index("safety.banned_match(") < complete.index("_set_status(asset, rules.READY)")
+
+
+def test_the_preview_only_shows_a_picture_that_is_really_stored():
+    # the page's own instant preview would show a picture that was never added (no storage, refused file)
+    assert 'data-media-preview="image-preview" data-media-label="filename-show"' in SUBMIT
+    handler = SUBMIT[SUBMIT.index("$('#file-upload').on('change'"):]
+    assert handler.index("f.hasAttribute('data-media-main')") < handler.index("new FileReader()")
+    assert "image.src = asset.path" in UPLOADER and "image.removeAttribute('src')" in UPLOADER
+
+
+def test_a_picture_that_is_gone_hides_cleanly_however_early_it_fails():
+    # a file its owner removed answers 410; the listing's onerror handler must already exist then
+    shell = read("ruqqus", "templates", "default.html")
+    assert shell.index("function hideBrokenMedia(imgEl)") < shell.index("</head>")
+    assert 'onerror="hideBrokenMedia(this)"' in read("ruqqus", "templates", "submission_listing.html")

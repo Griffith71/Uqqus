@@ -640,7 +640,8 @@
                   <input type="checkbox" class="custom-control-input" id="post-edit-remove-image-{{ p.base36id }}" name="remove_image" value="true">
                   <label class="custom-control-label" for="post-edit-remove-image-{{ p.base36id }}">Remove the image</label>
                 </div>
-                {% if v.can_submit_image %}
+                {# replacing by upload is the old site-storage path; with linked storage, remove it and add a new one #}
+                {% if v.can_submit_image and not media_offered() %}
                 <label class="text-small text-muted mt-2 mb-1" for="post-edit-file-{{ p.base36id }}">Or replace it with another image</label>
                 <input type="file" class="form-control-file" id="post-edit-file-{{ p.base36id }}" name="file" accept="image/*">
                 {% endif %}
@@ -930,7 +931,10 @@
           <label class="btn btn-secondary format d-inline-block m-0" for="emoji-comment-btn-{{p.fullname}}">
             <div id="emoji-comment-btn-{{p.fullname}}" onclick="commentForm('comment-form-body-{{p.fullname}}');loadEmojis()" aria-hidden="true" data-toggle="modal" data-target="#emojiModal" data-toggle="tooltip" data-placement="bottom" title="Add EMOJI"><i class="fas fa-smile-beam"></i></div>
           </label> 
-          <label class="format btn btn-secondary m-0 ml-1 {% if v.has_premium %}d-inline-block{% else %}d-none{% endif %}" for="file-upload-comment-{{ p.fullname }}">
+          {% if media_offered() %}
+          <button type="button" class="format btn btn-secondary m-0 ml-1 d-inline-block" data-media-upload="image" data-target="comment-form-body-{{ p.fullname }}" data-toggle="tooltip" data-placement="bottom" title="Add an image" aria-label="Add an image"><i class="far fa-image"></i></button>
+          {% endif %}
+          <label class="format btn btn-secondary m-0 ml-1 {% if v.has_premium and not media_offered() %}d-inline-block{% else %}d-none{% endif %}" for="file-upload-comment-{{ p.fullname }}">
                 <div id="filename-show-comment-{{ p.base36id }}"><i class="far fa-image"></i></div>
                 <input id="file-upload-comment-{{ p.fullname }}" type="file" name="file" accept="image/*" onchange="document.getElementById('filename-show-comment-{{ p.base36id }}').innerHTML=document.getElementById('file-upload-comment-{{ p.fullname }}').files[0].name;" hidden>
           </label>

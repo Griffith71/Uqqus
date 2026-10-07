@@ -20,7 +20,8 @@ def enabled():
 
 
 def folder():
-    path = os.path.join(tempfile.gettempdir(), "ruqqus_media_dev")
+    # MEDIA_DEV_DIR lets a dev setup keep the files across restarts (docker-compose.yml mounts a volume there)
+    path = os.environ.get("MEDIA_DEV_DIR", "").strip() or os.path.join(tempfile.gettempdir(), "ruqqus_media_dev")
     os.makedirs(path, exist_ok=True)
     return path
 

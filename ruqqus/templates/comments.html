@@ -468,7 +468,10 @@
           </label>
           &nbsp;
 
-          <label class="format btn btn-secondary m-0 ml-1 {% if v.can_upload_comment_image %}d-inline-block{% else %}d-none{% endif %}" for="file-upload-comment-{{ c.fullname }}">
+          {% if media_offered() %}
+          <button type="button" class="format btn btn-secondary m-0 ml-1 d-inline-block" data-media-upload="image" data-target="comment-form-body-{{ c.fullname }}" data-toggle="tooltip" data-placement="bottom" title="Add an image" aria-label="Add an image"><i class="far fa-image"></i></button>
+          {% endif %}
+          <label class="format btn btn-secondary m-0 ml-1 {% if v.can_upload_comment_image and not media_offered() %}d-inline-block{% else %}d-none{% endif %}" for="file-upload-comment-{{ c.fullname }}">
                 <div id="filename-show-comment-{{ c.base36id }}"><i class="far fa-image"></i></div>
                 <input id="file-upload-comment-{{ c.fullname }}" type="file" name="file" accept="image/*" onchange="document.getElementById('filename-show-comment-{{ c.base36id }}').innerHTML=document.getElementById('file-upload-comment-{{ c.fullname }}').files[0].name;" hidden>
           </label>

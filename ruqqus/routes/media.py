@@ -17,6 +17,9 @@ from ruqqus.helpers.media import attach, dev, registry, rules, safety
 from ruqqus.helpers.media.base import MediaGone
 from ruqqus.helpers.wrappers import auth_required, get_logged_in_user, validate_formkey
 
+# templates ask this to decide between the linked-storage upload controls and the old ones
+app.jinja_env.globals["media_offered"] = lambda: bool(registry.account_kinds())
+
 NO_STORE = "private, no-store"
 FOREVER = "public, max-age=31536000, immutable"
 
@@ -144,7 +147,8 @@ def _unlink(account):
 def media_status(v):
     """What this member can upload right now, for the upload buttons."""
     kinds = [k for k in rules.KINDS if _account_for(v, k)[1] is not None]
-    return jsonify({"kinds": kinds, "limits": {k: rules.SIZE_MAX[k] for k in kinds if k in rules.SIZE_MAX},
+    return jsonify({"offered": bool(registry.account_kinds()), "kinds": kinds,
+                    "limits": {k: rules.SIZE_MAX[k] for k in kinds if k in rules.SIZE_MAX},
                     "settings": "/settings/media"})
 
 
@@ -223,6 +227,13 @@ def media_upload_complete(aid, v):
             if asset.kind == rules.IMAGE:
                 temp = safety.fetch_to_temp(provider, account, asset, rules.SIZE_MAX[rules.IMAGE])
                 asset.width, asset.height = safety.image_size(temp)
+                match = safety.banned_match(g.db, temp)
+                if match is not None:
+                    # a picture on the site's banned list: same consequence as the old upload path
+                    safety.ban_uploader(g.db, v, match.ban_reason, match.ban_time or 0)
+                    _set_status(asset, rules.REMOVED)
+                    g.db.commit()
+                    return _error("That image is not allowed here.", 403)
     except rules.MediaError as e:
         _set_status(asset, rules.REMOVED)
         g.db.commit()

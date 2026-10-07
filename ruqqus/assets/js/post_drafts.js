@@ -100,7 +100,8 @@
 
   saveButton.addEventListener('click', function () {
     var file = el('file-upload');
-    var hasFile = file && file.files && file.files.length;
+    var media = el('post-media');      // a picture already uploaded to linked storage
+    var hasFile = (file && file.files && file.files.length) || (media && media.value);
     save(null).then(function (data) {
       if (!data) return;
       say(hasFile ? 'Draft saved. Images are not kept in drafts, so add it again later.' : 'Draft saved.');

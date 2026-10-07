@@ -123,9 +123,10 @@
                             </button>
                         </div>
 
-                        <div {% if not v.can_submit_image %} class="d-none"{% else %} ondrop="event.preventDefault();let input=document.getElementById('file-upload');input.files=event.dataTransfer.files;input.onchange();" ondragover="event.preventDefault();"{% endif %}>
+                        {# with linked storage (helpers/media) everyone can add a picture: it goes to the member's own account #}
+                        <div {% if not (v.can_submit_image or media_offered()) %} class="d-none"{% else %} ondrop="event.preventDefault();let input=document.getElementById('file-upload');input.files=event.dataTransfer.files;input.onchange();" ondragover="event.preventDefault();"{% endif %}>
 
-                        {% if v.can_submit_image %}
+                        {% if v.can_submit_image or media_offered() %}
                         <div id="image-upload-block">
                             <div><label class="mt-3">Image Upload</label></div>
 
@@ -133,8 +134,9 @@
 
                             <label class="btn btn-secondary m-0" for="file-upload">
                                 <div id="filename-show">Select Image</div>
-                                <input id="file-upload" type="file" name="file" accept="image/*" hidden>
+                                <input id="file-upload" type="file" name="file" accept="image/*" hidden{% if media_offered() %} data-media-main="post-media" data-media-preview="image-preview" data-media-label="filename-show"{% endif %}>
                             </label>
+                            {% if media_offered() %}<input type="hidden" name="media" id="post-media" value="">{% endif %}
 
                             <small class="form-text text-muted">Images uploaded will be public. Optional if you have text.</small>
                         </div>
@@ -294,6 +296,7 @@
     <script src="/assets/js/all_js.js?v=2.39.0"></script>
     <script src="/assets/js/post_editor.js?v=1"></script>
     <script src="/assets/js/post_drafts.js?v=1"></script>
+    <script src="/assets/js/media_upload.js?v=1"></script>
 
     <!-- ClipboardJS -->
 
@@ -387,7 +390,7 @@
     }
     </script>
 
-    {% if v.can_submit_image %}
+    {% if v.can_submit_image or media_offered() %}
     <script>
     document.onpaste = function(event) {
 
@@ -398,6 +401,14 @@
         if (filename.endsWith(".jpg") || filename.endsWith(".jpeg") || filename.endsWith(".png") || filename.endsWith(".gif"))
         {
             f.files = files;
+
+            // with linked storage the picture is uploaded there now, and assets/js/media_upload.js
+            // shows it once it is really stored
+            if (f.hasAttribute('data-media-main')) {
+                f.dispatchEvent(new Event('change', { bubbles: true }));
+                return;
+            }
+
             $('#filename-show').text(filename);
 
             var fileReader = new FileReader();
@@ -414,6 +425,7 @@
 
     $('#file-upload').on('change', function(e){
         f=document.getElementById('file-upload');
+        if (f.hasAttribute('data-media-main') || !f.files.length) return;   // media_upload.js takes it from here
         $('#filename-show').text($('#file-upload')[0].files[0].name);
 
         var fileReader = new FileReader();

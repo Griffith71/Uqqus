@@ -7,7 +7,7 @@ import gevent
 from os import environ
 
 from ruqqus.helpers.wrappers import *
-from ruqqus.helpers.media import attach as media_attach
+from ruqqus.helpers.media import attach as media_attach, cdn as media_cdn, safety as media_safety
 from ruqqus.helpers.visibility import post_hidden, comment_thread_hidden, hidden_notice
 from ruqqus.helpers.base36 import *
 from ruqqus.helpers.sanitize import *
@@ -552,9 +552,10 @@ Optional file data:
     g.db.add(c.post)
 
     # files from the author's linked storage that this comment shows (helpers/media)
-    media_attach.sync(g.db, v.id, (body,), comment_id=c.id)
+    attached_media = media_attach.sync(g.db, v.id, (body,), comment_id=c.id)
 
     g.db.commit()
+    media_safety.scan_later(attached_media)
 
     c=get_comment(c.id, v=v)
 
@@ -723,9 +724,10 @@ Optional form data (left out: unchanged):
 
     g.db.add(c)
 
-    media_attach.sync(g.db, v.id, (body,), comment_id=c.id)
+    attached_media = media_attach.sync(g.db, v.id, (body,), comment_id=c.id)
 
     g.db.commit()
+    media_safety.scan_later(attached_media)
 
     path = request.form.get("current_page", "/")
 
@@ -759,6 +761,7 @@ URL path parameters:
     c.deleted_utc = now
 
     g.db.add(c)
+    media_cdn.purge(media_attach.attached_paths(g.db, comment_id=c.id))
 
     g.db.add(ContentEditHistory(
         actor_id=v.id,

@@ -14,6 +14,7 @@ services:
       - FORCE_HTTPS=0
       # stand-in media storage for local testing only (ruqqus/helpers/media/dev.py)
       - MEDIA_DEV_PROVIDER=${MEDIA_DEV_PROVIDER:-1}
+      - MEDIA_DEV_DIR=/var/lib/ruqqus-media-dev
 
       - HCAPTCHA_SECRET=5436ertfgcvbnfgcy
       - CLOUDFLARE_KEY=5436ertfgcvbnfgcy
@@ -31,6 +32,9 @@ services:
       - MATRIX_AS_TOKEN=${MATRIX_AS_TOKEN:?run python scripts/gen_dev_env.py}
       - MATRIX_HS_TOKEN=${MATRIX_HS_TOKEN:?run python scripts/gen_dev_env.py}
       - MATRIX_USER_PREFIX=${MATRIX_USER_PREFIX:-ruqqus_}
+    volumes:
+      # the stand-in media storage, kept across rebuilds so test pictures do not vanish
+      - "media-dev:/var/lib/ruqqus-media-dev"
     links:
       - "redis"
       - "postgres"
@@ -91,6 +95,7 @@ services:
       - "5432:5432"
 
 volumes:
+  media-dev:
   synapse-media:
   synapse-signing-key:
   postgres-synapse-data:
