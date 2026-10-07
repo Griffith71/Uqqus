@@ -150,3 +150,11 @@ def test_every_kind_has_a_row_and_a_button_route_that_exists():
                        ("/api/follow_curation/", '"/api/follow_curation/<slug>"')):
         assert url in row, url
         assert route in routes, route
+
+
+def test_who_to_follow_is_only_in_the_right_sidebar():
+    # the box in the right sidebar links to the full page; the left navigation does not
+    left = (ROOT / "templates" / "sidebar-left.html").read_text(encoding="utf-8")
+    assert "who_to_follow" not in left and "Who to follow" not in left
+    for sidebar in ("home.html", "default.html"):
+        assert 'id="who-to-follow"' in (ROOT / "templates" / sidebar).read_text(encoding="utf-8"), sidebar
