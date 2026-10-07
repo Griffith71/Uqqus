@@ -1310,7 +1310,7 @@ function kExec(){
  $('input').addClass('ruckus');
 };
 
-$('.hide-button-listing').click(function(event) {
+function onHideButtonListingClick(event) {
   if (event.which != 1) {return}
 
   boardname=$(this).data('boardname')
@@ -1326,8 +1326,9 @@ $('.hide-button-listing').click(function(event) {
   } else {
     post_response('/mod/'+action+'/'+ boardname+'/'+pid, replaceCallback)
   }
-  }
-)
+}
+
+$('.hide-button-listing').click(onHideButtonListingClick)
 
 //POST
 
@@ -1797,10 +1798,13 @@ var downvote = function(event) {
   
 }
 
-var register_votes = function() {
-  var upvoteButtons = document.getElementsByClassName('upvote-button')
+// With a root, only the buttons inside it are bound (cards appended later by
+// infinite scroll); without one, every button on the page.
+var register_votes = function(root) {
+  var scope = root || document
+  var upvoteButtons = scope.getElementsByClassName('upvote-button')
 
-  var downvoteButtons = document.getElementsByClassName('downvote-button')
+  var downvoteButtons = scope.getElementsByClassName('downvote-button')
 
   var voteDirection = 0
 
@@ -3191,7 +3195,7 @@ $('.mention-user').click(function (event) {
 
 });
 
-$('.expandable-image').click( function(event) {
+function onExpandableImageClick(event) {
 
   if (event.which != 1) {
     return
@@ -3201,9 +3205,9 @@ $('.expandable-image').click( function(event) {
   var url= $(this).data('url');
 
   expandDesktopImage(url);
-})
+}
 
-$('.text-expand').click(function(event){
+function onTextExpandClick(event){
   if (event.which != 1) {
     return
   };
@@ -3213,7 +3217,24 @@ $('.text-expand').click(function(event){
   $('#post-text-'+id).toggleClass('d-none');
   $('.text-expand-label-'+id).toggleClass('d-none');
 
-})
+}
+
+$('.expandable-image').click(onExpandableImageClick)
+
+$('.text-expand').click(onTextExpandClick)
+
+// Bind the behaviours of post cards that were added to the page after load
+// (infinite scroll). `root` is the element holding only the NEW cards, so
+// nothing is bound twice. The inline onclick handlers, the Bootstrap data-API
+// and the delegated ClipboardJS handler already work on added markup.
+function bindPostCards(root) {
+  register_votes(root)
+  $(root).find('.hide-button-listing').click(onHideButtonListingClick)
+  $(root).find('.expandable-image').click(onExpandableImageClick)
+  $(root).find('.text-expand').click(onTextExpandClick)
+  $(root).find('[data-toggle="tooltip"]').tooltip()
+  if (window.observeFeedVideos) window.observeFeedVideos()
+}
 
 
 
