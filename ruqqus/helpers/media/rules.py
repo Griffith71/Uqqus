@@ -79,6 +79,12 @@ def can_change(status, new):
     return new in _NEXT.get(status, set())
 
 
+def in_order(account_providers):
+    """The member's linked account kinds in the order to try them: a real account before
+    the stand-in test storage, whichever was linked first."""
+    return sorted(account_providers, key=lambda name: name == "dev")
+
+
 def provider_for(account_provider, kind):
     """The provider module name for this kind on this linked account, or None."""
     return PROVIDERS.get(account_provider, {}).get(kind)

@@ -43,9 +43,8 @@ def _accounts(v):
 
 def _account_for(v, kind):
     """The member's linked account that takes this kind, with its provider."""
-    for account in _accounts(v):
-        if not account.is_active:
-            continue
+    by_kind = {a.provider: a for a in _accounts(v) if a.is_active}
+    for account in (by_kind[name] for name in rules.in_order(by_kind)):
         name = rules.provider_for(account.provider, kind)
         provider = registry.get(name) if name else None
         if provider is not None:

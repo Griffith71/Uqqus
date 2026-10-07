@@ -184,3 +184,13 @@ def test_ranges(header, expected):
 def test_a_range_needs_a_known_size():
     assert mr.parse_range("bytes=0-10", 0) is None
     assert mr.parse_range("bytes=0-10", None) is None
+
+
+def test_a_real_account_is_used_before_the_test_storage():
+    # someone who tried the test storage and then linked Google must get Google
+    assert mr.in_order(["dev", "google"]) == ["google", "dev"]
+    assert mr.in_order(["google", "dev"]) == ["google", "dev"]
+    assert mr.in_order(["dev"]) == ["dev"] and mr.in_order([]) == []
+    from pathlib import Path
+    routes = (Path(__file__).resolve().parent.parent / "ruqqus" / "routes" / "media.py").read_text(encoding="utf-8")
+    assert "rules.in_order(by_kind)" in routes[routes.index("def _account_for("):routes.index("def _my_asset(")]
