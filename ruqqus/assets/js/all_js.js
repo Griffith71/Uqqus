@@ -2698,11 +2698,20 @@ post_comment=function(fullname){
       $('#toast-comment-success').toast('show');
     }
     else {
+      var message = 'Your comment could not be posted. Try again.';
+      try { message = JSON.parse(xhr.response)["error"] || message; } catch (e) { /* not JSON */ }
+      // the error toast is drawn with the comment list, which a post with no comments does not have
       var commentError = document.getElementById("comment-error-text");
-      $('#toast-comment-success').toast('dispose');
-      $('#toast-comment-error').toast('dispose');
-      $('#toast-comment-error').toast('show');
-      commentError.textContent = JSON.parse(xhr.response)["error"];
+      if (commentError) {
+        $('#toast-comment-success').toast('dispose');
+        $('#toast-comment-error').toast('dispose');
+        $('#toast-comment-error').toast('show');
+        commentError.textContent = message;
+      } else {
+        alert(message);
+      }
+      // nothing was posted: the member can fix it and try again
+      document.getElementById('save-comment-on-'+fullname).classList.remove('disabled');
     }
   }
   xhr.send(form)
