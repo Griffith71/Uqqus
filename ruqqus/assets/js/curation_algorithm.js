@@ -7,6 +7,7 @@
  * - the number beside each slider, and the mix settings only while "Your own mix" is chosen;
  * - Preview: posts the fields to the form's data-preview address and shows what the
  *   algorithm does in plain language and the first posts it would show. Nothing is saved.
+ * - "Who decides": the rules, or an outside feed server (then only its address is shown).
  */
 (function () {
   'use strict';
@@ -31,6 +32,26 @@
     });
   }
 
+  // --- the rules, or an outside feed server
+  var rulesPanel = document.getElementById('alg-rules');
+  var serverPanel = document.getElementById('alg-server');
+
+  function mode() {
+    var picked = form.querySelector('input[name="mode"]:checked');
+    return picked ? picked.value : 'rules';
+  }
+
+  function showMode() {
+    if (!serverPanel) return;
+    serverPanel.hidden = mode() !== 'server';
+    rulesPanel.hidden = mode() === 'server';
+  }
+
+  form.addEventListener('change', function (event) {
+    if (event.target && event.target.name === 'mode') showMode();
+  });
+  showMode();
+
   rank.addEventListener('change', showMix);
   form.addEventListener('input', function (event) {
     if (event.target && event.target.type === 'range') drawSliders();
@@ -46,6 +67,8 @@
   }
 
   function fill(spec) {
+    setChecks('mode', ['rules']);
+    showMode();
     setChecks('source', [spec.source]);
     form.elements.age.value = spec.age;
     form.elements.any_words.value = spec.any.join(', ');
@@ -106,6 +129,12 @@
         if (data.summary) drawSummary(data.summary, 'What it would do (not saved yet)');
         if (!answer.ok) { say(data.error || 'Could not preview that. Try again.', true); return; }
         preview.innerHTML = data.html;
+        if (data.note) {
+          var note = document.createElement('p');
+          note.className = 'text-small text-muted';
+          note.textContent = data.note;
+          preview.insertBefore(note, preview.firstChild);
+        }
         if (typeof bindPostCards === 'function') bindPostCards(preview);
       })
       .catch(function () { say('Could not preview that. Try again.', true); })

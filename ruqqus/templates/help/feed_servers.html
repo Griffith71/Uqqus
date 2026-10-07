@@ -1,0 +1,87 @@
+{% extends "docs_default.html" %}
+
+{# How to run an outside feed server for a curation (helpers/feed_server.py holds the limits shown here). #}
+
+{% block title %}
+<title>Feed servers for curations - {{ 'SITE_NAME' | app_config }}</title>
+<meta name="description" content="Rank a curation with your own server.">
+{% endblock %}
+
+{% block content %}
+
+{% filter markdown %}
+
+# Feed servers for curations
+
+A curation normally picks and orders its posts with rules its owner sets on the site. Instead, a curation can name a **feed server**: a small web service that you (or someone you trust) run, which answers with the posts to show and the order to show them in. How your server decides is up to you.
+
+Set it in a curation's edit page, under **Algorithm**, **An outside feed server**.
+
+## What your server is asked
+
+One plain request, whenever a list is needed:
+
+```
+GET https://feeds.example.org/my-feed?limit={{ limits.LIMIT }}
+GET https://feeds.example.org/my-feed?limit={{ limits.LIMIT }}&cursor=<what your last answer gave>
+```
+
+Nothing else is sent. In particular **nothing about the person looking at the curation**: no account, no IP address, no cookie, no language. Your server gives one list, for everyone.
+
+## What it answers
+
+A JSON object with the posts, best first, and optionally a cursor to ask for more:
+
+```
+{"posts": ["2k1", "2jz", "2jx"], "cursor": "page-2"}
+```
+
+* `posts`: up to {{ limits.LIMIT }} post ids. A post's id is the short code in its address: `/post/2k1/a-title` is `2k1`.
+* `cursor`: any text up to {{ limits.CURSOR_CHARS }} characters that lets you continue. Leave it out when there is nothing more.
+
+## What the site does with it
+
+* **Your server only orders.** Every post it names goes through the same rules as any feed before it is shown: removed posts, private guilds, each viewer's word filter and blocks. A post a viewer may not see is simply left out.
+* The curation's page says plainly that an outside server ranks it, and names the server.
+* The list is kept for {{ (limits.CACHE_SECONDS / 60) | int }} minutes, so your server is not asked on every page view. At most {{ limits.MAX_IDS }} posts are used.
+* If your server fails {{ limits.FAILS_BEFORE_PAUSE }} times in a row it is left alone for {{ (limits.PAUSE_SECONDS / 60) | int }} minutes, and its last good list is shown meanwhile.
+
+## Rules for the address
+
+* It must start with `https://` and use a public server name with a valid certificate.
+* It must answer within 3 seconds, with status 200, at most 64 KB, and without a redirect.
+
+## A complete example
+
+```
+import json
+from http.server import BaseHTTPRequestHandler, HTTPServer
+from urllib.parse import parse_qs, urlsplit
+
+POSTS = ["2k1", "2jz", "2jx"]        # post ids, best first: build this list however you like
+
+
+class Feed(BaseHTTPRequestHandler):
+    def do_GET(self):
+        query = parse_qs(urlsplit(self.path).query)
+        start = int(query.get("cursor", ["0"])[0])
+        limit = min(int(query.get("limit", ["100"])[0]), 100)
+        answer = {"posts": POSTS[start:start + limit]}
+        if start + limit < len(POSTS):
+            answer["cursor"] = str(start + limit)
+        body = json.dumps(answer).encode()
+        self.send_response(200)
+        self.send_header("Content-Type", "application/json")
+        self.send_header("Content-Length", str(len(body)))
+        self.end_headers()
+        self.wfile.write(body)
+
+
+HTTPServer(("0.0.0.0", 8099), Feed).serve_forever()
+```
+
+Put it behind https (any web server or hosting service that gives you a certificate will do). Your server needs its own way to know which posts exist, for example the site's API; see the [developer help](/help/developers).
+
+{% endfilter %}
+
+{% endblock %}

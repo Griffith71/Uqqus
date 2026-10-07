@@ -111,6 +111,14 @@ def titles(v):
 						   titles=titles)
 
 
+@app.route("/help/feed_servers", methods=["GET"])
+@auth_desired
+def help_feed_servers(v):
+    """How to run a feed server for a curation (helpers/feed_server.py)."""
+    from ruqqus.helpers import feed_server
+    return render_template("help/feed_servers.html", v=v, limits=feed_server)
+
+
 @app.route("/help/terms", methods=["GET"])
 @auth_desired
 def help_terms(v):

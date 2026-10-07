@@ -15,10 +15,11 @@ from ruqqus.routes.front import region_filter_condition, ALL_SUBCAT_IDS
 from ruqqus.helpers.regions import REGION_CENTROIDS
 from ruqqus.helpers.languages import LANGUAGE_NAMES
 from ruqqus.helpers.base36 import base36decode
-from ruqqus.helpers import curation_feed, feed_algorithm
+from ruqqus.helpers import curation_feed, feed_algorithm, feed_server, safe_fetch
 from urllib.parse import quote
 
 PREVIEW_POSTS = 10
+SERVER_SPARE = 76       # ids asked of a feed server beyond the page, for the ones a viewer may not see
 
 
 def _generate_curation_slug(name):
@@ -42,21 +43,11 @@ def _generate_curation_slug(name):
     return slug
 
 
-def _curation_ids(curation, spec, v=None, sort=None, page=1, t=None, filter_words='', **kwargs):
-    """Post ids of one page (plus one) of a curation's feed.
+def _viewable(posts, v):
+    """Who may see what, for every curation whatever its algorithm: live posts, the word
+    filter, private guilds, the viewer's blocks. `posts` is a query over Submission."""
 
-    Who may see what is decided here (the word filter, private guilds, blocks), the same
-    for every curation. Which posts the curation wants and how it orders them comes from
-    its algorithm, `spec` (helpers/feed_algorithm.py, applied by helpers/curation_feed.py):
-    by default the posts of its member guilds OR member accounts - the same
-    boards-or-authors union shape as User.idlist(), just sourced from
-    CurationGuild/CurationUser membership instead of Subscription/Follow."""
-
-    now = int(time.time())
-
-    posts = g.db.query(Submission.id).options(lazyload('*')).join(
-        SubmissionAux, SubmissionAux.id == Submission.id
-    ).filter(
+    posts = posts.filter(
         Submission.is_banned == False,
         Submission.deleted_utc == 0,
         Submission.stickied == False
@@ -65,11 +56,6 @@ def _curation_ids(curation, spec, v=None, sort=None, page=1, t=None, filter_word
     posts = filter_posts(posts, v)
     if v and v.hide_bot:
         posts = posts.filter(Submission.is_bot == False)
-
-    if spec["source"] == feed_algorithm.SITE:
-        posts = curation_feed.site_pool(posts, v, viewer_level(v))
-    else:
-        posts = posts.filter(curation_feed.member_condition(curation.id))
 
     if v and v.admin_level >= 4:
         board_blocks = select(BoardBlock.board_id).filter_by(user_id=v.id)
@@ -92,9 +78,14 @@ def _curation_ids(curation, spec, v=None, sort=None, page=1, t=None, filter_word
     else:
         posts = posts.filter(Submission.post_public == True)
 
-    # Regional/Language/Categorical filters intrinsic to the curation itself
-    # (never the viewing session's own personal filters - a curation is a
-    # fixed, shareable feed definition, same for everyone who views it)
+    return posts
+
+
+def _own_filters(posts, curation):
+    """Regional/Language/Categorical filters intrinsic to the curation itself
+    (never the viewing session's own personal filters - a curation is a
+    fixed, shareable feed definition, same for everyone who views it)."""
+
     if curation.region_filter_list:
         posts = posts.filter(region_filter_condition(curation.region_filter_list))
     if curation.language_filter_list:
@@ -102,7 +93,32 @@ def _curation_ids(curation, spec, v=None, sort=None, page=1, t=None, filter_word
     if curation.category_filter_list:
         board_ids_in_cats = select(Board.id).where(Board.subcat_id.in_(tuple(curation.category_filter_list)))
         posts = posts.filter(Submission.board_id.in_(board_ids_in_cats))
+    return posts
 
+
+def _curation_ids(curation, spec, v=None, sort=None, page=1, t=None, filter_words='', **kwargs):
+    """Post ids of one page (plus one) of a curation's feed.
+
+    Who may see what is `_viewable`, the same for every curation. Which posts the
+    curation wants and how it orders them comes from its algorithm, `spec`
+    (helpers/feed_algorithm.py, applied by helpers/curation_feed.py): by default the
+    posts of its member guilds OR member accounts - the same boards-or-authors union
+    shape as User.idlist(), just sourced from CurationGuild/CurationUser membership
+    instead of Subscription/Follow."""
+
+    now = int(time.time())
+
+    posts = g.db.query(Submission.id).options(lazyload('*')).join(
+        SubmissionAux, SubmissionAux.id == Submission.id
+    )
+    posts = _viewable(posts, v)
+
+    if spec["source"] == feed_algorithm.SITE:
+        posts = curation_feed.site_pool(posts, v, viewer_level(v))
+    else:
+        posts = posts.filter(curation_feed.member_condition(curation.id))
+
+    posts = _own_filters(posts, curation)
     posts = curation_feed.apply(posts, spec, now)
 
     if filter_words:
@@ -177,6 +193,30 @@ def curation_idlist(curation_id, v=None, sort=None, page=1, t=None, filter_words
     if feed_algorithm.is_default(spec):
         return run()
     return curation_feed.limited(g.db, run)
+
+
+def _seen_among(curation, ids, v):
+    """Which of these post ids this viewer may see in this curation."""
+    if not ids:
+        return set()
+    posts = g.db.query(Submission.id).options(lazyload('*')).filter(Submission.id.in_(ids))
+    posts = _own_filters(_viewable(posts, v), curation)
+    return {x[0] for x in posts.all()}
+
+
+def _server_ids(curation, spec, v=None, page=1):
+    """(post ids of one page plus one, a notice or None) for a curation ranked by an
+    outside feed server. The server only orders: every id it names goes through
+    `_viewable` before anything is shown, and nothing about the viewer is sent to it
+    (helpers/feed_server.py keeps one list for everyone)."""
+
+    if not feed_server.enabled():
+        return [], feed_server.OFF
+
+    # some of what the server names will be hidden from this viewer: ask for spare
+    ids, notice = feed_server.ids_for(curation.id, spec["server"], 25 * page + SERVER_SPARE)
+    ordered = feed_server.keep_order(ids, _seen_among(curation, ids, v))
+    return ordered[25 * (page - 1):25 * (page - 1) + 26], notice
 
 
 def _invalidate_curation_feed(curation_id):
@@ -293,12 +333,18 @@ def curation_detail(slug, v):
         abort(400)
 
     feed_notice = None
-    try:
-        ids = curation_idlist(curation.id, v=v, sort=sort, page=page, t=t,
-                               filter_level=viewer_level(v),
-                               filter_words=v.filter_words if v else [])
-    except curation_feed.FeedTooSlow as slow:
-        ids, feed_notice = [], str(slow)
+    spec = curation.algorithm_spec
+    if feed_algorithm.is_server(spec):
+        # the server's order is the feed: a sort or a time filter in the address does not apply
+        ids, feed_notice = _server_ids(curation, spec, v=v, page=page)
+        sort = None
+    else:
+        try:
+            ids = curation_idlist(curation.id, v=v, sort=sort, page=page, t=t,
+                                   filter_level=viewer_level(v),
+                                   filter_words=v.filter_words if v else [])
+        except curation_feed.FeedTooSlow as slow:
+            ids, feed_notice = [], str(slow)
     next_exists = (len(ids) == 26)
     ids = ids[0:25]
     posts = get_posts(ids, v=v, sort=sort or "hot")
@@ -350,6 +396,7 @@ def curation_edit_get(slug, v):
         spec=curation.algorithm_spec, algorithm=feed_algorithm, presets=feed_algorithm.PRESETS,
         preset_specs={name: feed_algorithm.preset(name) for name in feed_algorithm.PRESETS},
         alg_msg=request.args.get("alg_msg"), alg_error=request.args.get("alg_error"),
+        feed_servers=feed_server.enabled(),
     )
 
 
@@ -527,7 +574,13 @@ def _posted_algorithm():
     """The algorithm a posted curation form describes (AlgorithmError when it cannot be)."""
     spec = feed_algorithm.from_form(request.form)
     if feed_algorithm.is_server(spec):
-        raise feed_algorithm.AlgorithmError("Outside feed servers are not available.")
+        if not feed_server.enabled():
+            raise feed_algorithm.AlgorithmError(feed_server.OFF)
+        try:
+            # the address itself and where its name leads (helpers/safe_fetch.py)
+            safe_fetch.check(spec["server"])
+        except safe_fetch.FetchError as error:
+            raise feed_algorithm.AlgorithmError(error.message)
     return spec
 
 
@@ -543,6 +596,10 @@ def curation_set_algorithm(slug, v):
         spec = _posted_algorithm()
     except feed_algorithm.AlgorithmError as error:
         return redirect(f"{curation.permalink}/edit?alg_error={quote(error.message)}#algorithm")
+
+    before = curation.algorithm_spec
+    if feed_algorithm.is_server(before) and before["server"] != spec["server"]:
+        feed_server.forget(curation.id, before["server"])
 
     curation.algorithm = feed_algorithm.dump(spec)
     g.db.add(curation)
@@ -565,18 +622,55 @@ def curation_preview_algorithm(slug, v):
     except feed_algorithm.AlgorithmError as error:
         return jsonify({"error": error.message}), 400
 
-    try:
-        ids = curation_feed.limited(g.db, lambda: _curation_ids(
-            curation, spec, v=v, sort=spec["rank"], page=1, filter_words=v.filter_words))
-    except curation_feed.FeedTooSlow as slow:
-        return jsonify({"error": str(slow), "summary": feed_algorithm.describe(spec)}), 400
+    note = None
+    if feed_algorithm.is_server(spec):
+        # asks the server once, now, so the owner sees what it really answers
+        try:
+            named = feed_server.try_server(spec["server"])
+        except safe_fetch.FetchError as error:
+            return jsonify({"error": error.message, "summary": feed_algorithm.describe(spec)}), 400
+        ids = feed_server.keep_order(named, _seen_among(curation, named, v))
+        note = f"The server named {len(named)} post{'' if len(named) == 1 else 's'}; you can see {len(ids)} of them."
+    else:
+        try:
+            ids = curation_feed.limited(g.db, lambda: _curation_ids(
+                curation, spec, v=v, sort=spec["rank"], page=1, filter_words=v.filter_words))
+        except curation_feed.FeedTooSlow as slow:
+            return jsonify({"error": str(slow), "summary": feed_algorithm.describe(spec)}), 400
 
     posts = get_posts(ids[:PREVIEW_POSTS], v=v)
     return jsonify({
         "summary": feed_algorithm.describe(spec),
         "count": len(posts),
+        "note": note,
         "html": render_template("curations/preview.html", v=v, listing=posts),
     })
+
+
+@app.route("/&<slug>/remove_feed_server", methods=["POST"])
+@admin_level_required(4)
+@validate_formkey
+def curation_remove_feed_server(slug, v):
+    """An admin takes a curation off its outside server. Its own rules are kept, so it
+    goes back to them."""
+
+    curation = get_curation(slug, graceful=True)
+    if not curation:
+        abort(404)
+
+    spec = curation.algorithm_spec
+    if feed_algorithm.is_server(spec):
+        feed_server.forget(curation.id, spec["server"])
+        try:
+            curation.algorithm = feed_algorithm.dump(dict(spec, mode=feed_algorithm.RULES, server=""))
+        except feed_algorithm.AlgorithmError:
+            # the rules kept beside the server were never complete: the usual behaviour then
+            curation.algorithm = feed_algorithm.dump({})
+        g.db.add(curation)
+        g.db.commit()
+        _invalidate_curation_feed(curation.id)
+
+    return redirect(curation.permalink)
 
 
 @app.route("/&<slug>/follow", methods=["POST"])

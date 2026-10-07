@@ -20,6 +20,10 @@ services:
       - GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET:-}
       # trending topics (ruqqus/helpers/trending.py): accounts a topic needs
       - TRENDING_MIN_AUTHORS=${TRENDING_MIN_AUTHORS:-3}
+      # outside feed servers for curations (ruqqus/helpers/feed_server.py). ALLOW_LOCAL lets a
+      # test server on this machine be used: local testing only, never on a live site
+      - FEED_SERVERS_ENABLED=${FEED_SERVERS_ENABLED:-1}
+      - FEED_SERVER_ALLOW_LOCAL=${FEED_SERVER_ALLOW_LOCAL:-1}
 
       - HCAPTCHA_SECRET=5436ertfgcvbnfgcy
       - CLOUDFLARE_KEY=5436ertfgcvbnfgcy

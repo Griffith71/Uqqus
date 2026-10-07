@@ -50,6 +50,18 @@
     {% if curation.forked_from_id %}&middot; forked from another curation{% endif %}
   </div>
 
+  {% if curation.uses_feed_server %}
+  {# never collapsed: everyone is told when Ruqqus does not decide what a feed shows #}
+  <div class="curation-server-note text-small mb-3" role="note">
+    <i class="fas fa-server mr-1" aria-hidden="true"></i>{{ curation.algorithm_summary | join(" ") }}
+    {% if v and v.admin_level >= 4 %}
+    <form method="post" action="{{ curation.permalink }}/remove_feed_server" class="d-inline ml-2" onsubmit="return confirm('Take this curation off its outside server?');">
+      <input type="hidden" name="formkey" value="{{ v.formkey }}">
+      <button type="submit" class="btn btn-sm btn-outline-danger">Remove the server</button>
+    </form>
+    {% endif %}
+  </div>
+  {% else %}
   {# what this feed shows and how it is ordered, for everyone who can see it #}
   <details class="curation-how text-small mb-3">
     <summary>How this curation picks posts</summary>
@@ -57,6 +69,7 @@
       {% for line in curation.algorithm_summary %}<li>{{ line }}</li>{% endfor %}
     </ul>
   </details>
+  {% endif %}
 
   {% if feed_notice %}<div class="alert alert-warning" role="status">{{ feed_notice }}</div>{% endif %}
 
@@ -65,7 +78,7 @@
   </div>
 
   {% if not listing and not feed_notice %}
-  <p class="text-muted">{% if curation.has_own_algorithm %}No posts match this curation's rules right now.{% else %}No posts yet from this curation's guilds or accounts.{% endif %}</p>
+  <p class="text-muted">{% if curation.uses_feed_server %}Its feed server has not named any posts you can see.{% elif curation.has_own_algorithm %}No posts match this curation's rules right now.{% else %}No posts yet from this curation's guilds or accounts.{% endif %}</p>
   {% endif %}
 
 </div>

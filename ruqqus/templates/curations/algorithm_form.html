@@ -7,7 +7,8 @@
 
   Every field name here is read by feed_algorithm.from_form, and every value it can
   send is one of that module's fixed names (tests/test_curation_algorithm_assets.py).
-  `spec` is the curation's cleaned algorithm, `algorithm` the feed_algorithm module.
+  `spec` is the curation's cleaned algorithm, `algorithm` the feed_algorithm module,
+  `feed_servers` whether outside feed servers are offered (helpers/feed_server.py).
 #}
 {% set mix = spec.mix %}
 <h2 class="h5" id="algorithm">Algorithm</h2>
@@ -21,8 +22,36 @@
 <form method="post" action="{{ curation.permalink }}/set_algorithm" id="curation-algorithm" class="curation-algorithm mb-4"
       data-preview="{{ curation.permalink }}/preview_algorithm">
   <input type="hidden" name="formkey" value="{{ v.formkey }}">
-  <input type="hidden" name="mode" value="rules">
 
+  {% if feed_servers or spec.mode == "server" %}
+  <fieldset class="form-group">
+    <legend class="h6">Who decides</legend>
+    <div class="form-check">
+      <input class="form-check-input" type="radio" name="mode" id="alg-mode-rules" value="rules"{% if spec.mode == "rules" %} checked{% endif %}>
+      <label class="form-check-label" for="alg-mode-rules">The rules below</label>
+    </div>
+    <div class="form-check">
+      <input class="form-check-input" type="radio" name="mode" id="alg-mode-server" value="server"{% if spec.mode == "server" %} checked{% endif %}>
+      <label class="form-check-label" for="alg-mode-server">An outside feed server <span class="text-muted">(a server you or someone else runs)</span></label>
+    </div>
+  </fieldset>
+
+  <div class="alg-server" id="alg-server">
+    <div class="form-group">
+      <label for="alg-server-address">Feed server address</label>
+      <input type="url" class="form-control form-control-sm" id="alg-server-address" name="server" value="{{ spec.server }}" maxlength="{{ algorithm.SERVER_CHARS }}" placeholder="https://feeds.example.org/my-feed" autocomplete="off" spellcheck="false">
+      <small class="form-text text-muted">
+        The server answers with the posts to show and their order; {{ 'SITE_NAME' | app_config }} still hides anything a viewer may not see,
+        and tells the server nothing about who is looking. Everyone is told that an outside server ranks this curation.
+        <a href="/help/feed_servers">How to run one</a>
+      </small>
+    </div>
+  </div>
+  {% else %}
+  <input type="hidden" name="mode" value="rules">
+  {% endif %}
+
+  <div id="alg-rules">
   <div class="alg-presets mb-3" id="alg-presets" hidden>
     <div class="text-small font-weight-bold mb-1">Start from</div>
     {% for name, preset in presets.items() %}
@@ -157,6 +186,7 @@
       </div>
     </div>
   </fieldset>
+  </div>
 
   <button type="button" class="btn btn-secondary" id="alg-preview-button" hidden>Preview</button>
   <button type="submit" class="btn btn-primary">Save algorithm</button>

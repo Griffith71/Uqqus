@@ -39,9 +39,10 @@ def test_the_model_the_schema_and_the_migration_have_the_column():
 
 def test_an_algorithm_is_only_ever_stored_through_the_cleaner():
     assert "def algorithm_spec(self):\n        return feed_algorithm.load(self.algorithm)" in read("ruqqus", "classes", "curations.py")
-    # every place a curation's algorithm is set: create, save, fork (not the template's module argument)
+    # every place a curation's algorithm is set: create, save, an admin taking a server off (two ways),
+    # fork (not the template's module argument)
     writes = [w for w in re.findall(r"\balgorithm\s*=\s*([^\n]+)", ROUTES) if not w.startswith("feed_algorithm,")]
-    assert len(writes) == 3, writes
+    assert len(writes) == 5, writes
     assert all(w.startswith("feed_algorithm.dump(") for w in writes), writes
     assert "request.form" not in route("curation_set_algorithm").split("def curation_set_algorithm(")[1]
 
@@ -96,13 +97,85 @@ def test_a_forked_curation_can_still_be_deleted():
 # --- the feed --------------------------------------------------------------------------
 
 def test_who_may_see_what_stays_in_the_route_for_every_algorithm():
-    ids = ROUTES.split("def _curation_ids(")[1].split("\n@cache.memoize")[0]
+    viewable = ROUTES.split("def _viewable(")[1].split("\ndef ")[0]
     for rule in ("Submission.is_banned == False", "Submission.deleted_utc == 0", "posts = filter_posts(posts, v)",
                  "Submission.post_public == True", "UserBlock.target_id", "BoardBlock.board_id"):
-        assert rule in ids, rule
+        assert rule in viewable, rule
     # the curation's wishes come after, and cannot widen any of that
-    assert ids.index("posts = filter_posts(posts, v)") < ids.index("posts = curation_feed.apply(posts, spec, now)")
+    ids = ROUTES.split("def _curation_ids(")[1].split("\n@cache.memoize")[0]
+    assert ids.index("posts = _viewable(posts, v)") < ids.index("posts = curation_feed.apply(posts, spec, now)")
     assert "filter_level=viewer_level(v)" in route("curation_detail")          # the cache key
+
+
+# --- an outside feed server ------------------------------------------------------------
+
+def test_a_server_only_orders_what_the_viewer_may_see():
+    seen = ROUTES.split("def _seen_among(")[1].split("\ndef ")[0]
+    assert "_own_filters(_viewable(posts, v), curation)" in seen
+    server = ROUTES.split("def _server_ids(")[1].split("\ndef ")[0]
+    assert "feed_server.keep_order(ids, _seen_among(curation, ids, v))" in server
+    # the ids go nowhere else: the page is drawn from what survived
+    assert server.count("return ") == 2 and "return ordered[" in server and "return [], feed_server.OFF" in server
+    preview = route("curation_preview_algorithm")
+    assert "feed_server.keep_order(named, _seen_among(curation, named, v))" in preview
+
+
+def test_nothing_about_the_viewer_reaches_the_server():
+    server = ROUTES.split("def _server_ids(")[1].split("\ndef ")[0]
+    call = re.search(r"feed_server\.ids_for\(([^\n]+)\)", server).group(1)
+    assert call == 'curation.id, spec["server"], 25 * page + SERVER_SPARE'       # no viewer, no request
+    assert 'feed_server.try_server(spec["server"])' in route("curation_preview_algorithm")
+    fetch = read("ruqqus", "helpers", "safe_fetch.py").split("def get_json(")[1]
+    assert 'headers={"Accept": "application/json", "User-Agent": USER_AGENT, "Connection": "close"}' in fetch
+    assert "flask" not in read("ruqqus", "helpers", "safe_fetch.py") and "flask" not in read("ruqqus", "helpers", "feed_server.py").split('"""', 2)[2]
+
+
+def test_a_server_address_is_judged_before_it_is_stored_and_fetched_only_through_the_guard():
+    posted = ROUTES.split("def _posted_algorithm(")[1].split("\n@app.route(")[0]
+    assert 'safe_fetch.check(spec["server"])' in posted and "if not feed_server.enabled():" in posted
+    assert posted.index("feed_server.enabled()") < posted.index("safe_fetch.check(")
+    for name in ("curation_set_algorithm", "curation_preview_algorithm"):
+        assert "spec = _posted_algorithm()" in route(name), name
+    # the app's only way out to a member's address
+    server = read("ruqqus", "helpers", "feed_server.py")
+    assert "fetch = safe_fetch.get_json if fetch is None else fetch" in server
+    for banned in ("import requests", "urllib.request", "urlopen", "http.client"):
+        assert banned not in server and banned not in ROUTES, banned
+    guard = read("ruqqus", "helpers", "safe_fetch.py")
+    assert "_Pinned(host, port, address, timeout, context)" in guard          # the checked address, not a second lookup
+    assert "allow_redirects" not in guard and "follow" not in guard.split('"""', 2)[2].replace("not followed", "")
+
+
+def test_an_outside_server_is_said_plainly_and_an_admin_can_take_it_off():
+    note = PAGE[PAGE.index("{% if curation.uses_feed_server %}"):PAGE.index("{% else %}", PAGE.index("{% if curation.uses_feed_server %}"))]
+    assert "curation-server-note" in note and "<details" not in note            # never collapsed
+    assert "curation.algorithm_summary" in note
+    assert "{% if v and v.admin_level >= 4 %}" in note and "/remove_feed_server" in note
+    remove = route("curation_remove_feed_server")
+    assert "@admin_level_required(4)" in remove and "@validate_formkey" in remove and 'methods=["POST"]' in remove
+    assert "outside server" in read("ruqqus", "templates", "curations", "browse.html")
+    assert "{{ feed_notice }}" in PAGE
+    for sheet in ("main.scss", "main_dark.scss"):
+        assert ".curation-server-note" in read("ruqqus", "assets", "style", sheet), sheet
+
+
+def test_the_local_switch_is_only_set_for_local_docker_and_documented_as_such():
+    compose, example = read("docker-compose.yml"), read(".env.example")
+    assert "FEED_SERVER_ALLOW_LOCAL=${FEED_SERVER_ALLOW_LOCAL:-1}" in compose and "never on a live site" in compose
+    assert "FEED_SERVER_ALLOW_LOCAL=\n" in example and "never on a live site" in example
+    assert 'os.environ.get("FEED_SERVER_ALLOW_LOCAL") == "1"' in read("ruqqus", "helpers", "safe_fetch.py")
+
+
+def test_the_help_page_states_the_protocol_the_code_keeps():
+    from ruqqus.helpers import feed_server
+
+    page = read("ruqqus", "templates", "help", "feed_servers.html")
+    for part in ("limits.LIMIT", "limits.CURSOR_CHARS", "limits.CACHE_SECONDS", "limits.MAX_IDS", "limits.FAILS_BEFORE_PAUSE",
+                 '{"posts": ["2k1", "2jz", "2jx"], "cursor": "page-2"}', "nothing about the person looking", "https://"):
+        assert part in page, part
+    assert feed_server.parse_answer({"posts": ["2k1", "2jz", "2jx"], "cursor": "page-2"})[1] == "page-2"
+    assert 'render_template("help/feed_servers.html", v=v, limits=feed_server)' in read("ruqqus", "routes", "static.py")
+    assert '<a href="/help/feed_servers">' in FORM
 
 
 def test_rules_of_ones_own_run_under_a_time_limit_and_a_slow_one_is_a_notice():
@@ -146,7 +219,7 @@ def test_the_sql_mix_is_the_documented_mix():
 def test_the_form_sends_exactly_the_fields_the_server_reads():
     read_by_server = set(re.findall(r'form\.get(?:list)?\("(\w+)"', read("ruqqus", "helpers", "feed_algorithm.py")))
     read_by_server |= {f"mix_{name}" for name in fa.MIX}
-    read_by_server.discard("server")            # outside feed servers have their own field
+    assert {"mode", "server"} <= read_by_server
     in_form = set(re.findall(r'name="(\w+)"', FORM)) | {f"mix_{name}" for name in re.findall(r'name="mix_\{\{ name \}\}"', FORM) and ("votes", "comments")}
     assert in_form - {"formkey"} >= read_by_server, read_by_server - in_form
     assert in_form - {"formkey"} - read_by_server == set()
@@ -166,6 +239,7 @@ def test_every_choice_the_form_offers_is_a_name_the_rules_know():
     assert tuple(choices('{% if spec.age == value %}')) == tuple(fa.AGES)
     assert tuple(int(x) for x in choices('<option value="{{ hours }}"', var="hours")) == fa.FADES
     assert 'value="members"' in FORM and 'value="site"' in FORM and fa.SOURCES == ("members", "site")
+    assert set(re.findall(r'name="mode"[^>]*value="(\w+)"', FORM)) == set(fa.MODES)
     assert "range(1, 6)" in FORM and fa.MIX["variety"][1] == 5
 
 
