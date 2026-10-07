@@ -1487,6 +1487,31 @@ body.embedded #chat-app {
     min-height: 1.25rem;
 }
 
+// The navbar lines up with the page's columns (assets/js/nav_align.js): the logo
+// with the left sidebar's content, the account section with the right sidebar's,
+// and the search box with the feed. The page is a block of sidebar + feed (726px)
+// + sidebar, 1326px, centered; each side adds the 15px column gutter. These are the
+// values for that default block; the script replaces them with the real column edges
+// when the left sidebar is collapsed or a side panel is open.
+@media (min-width: 992px) {
+    .navbar {
+        padding-left: 0;
+        padding-right: 0;
+    }
+
+    #navbar > .container-fluid {
+        padding-left: var(--nav-inset-left, #{"max(15px, calc((100% - 1326px) / 2 + 15px))"});
+        padding-right: var(--nav-inset-right, #{"max(15px, calc((100% - 1326px) / 2 + 15px))"});
+    }
+
+    // .mx-auto is !important
+    #navbar #searchform {
+        margin-left: var(--nav-search-left, auto) !important;
+        margin-right: auto !important;
+        width: var(--nav-search-width, 100%);
+    }
+}
+
 .post-filter {
     display: inline-block;
     font-size: $small-font-size;
