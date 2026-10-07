@@ -1653,6 +1653,75 @@ body.embedded #chat-app {
     }
 }
 
+// Bookmark folders (templates/history.html, partials/bookmark_folder_modal.html, assets/js/bookmark_folders.js)
+.folder-chip {
+    display: inline-flex;
+    align-items: center;
+    margin: 0.15rem 0.35rem 0.15rem 0;
+    padding: 0.2rem 0.75rem;
+    border: 1px solid $border-color;
+    border-radius: 2rem;
+    background: transparent;
+    color: $muted;
+    font-size: $small-font-size;
+    font-weight: $font-weight-bold;
+    line-height: 1.5;
+    cursor: pointer;
+}
+
+.folder-chip:hover,
+.folder-chip:focus {
+    color: $primary;
+    border-color: $primary;
+    text-decoration: none;
+    outline: none;
+}
+
+.folder-chip.active,
+.folder-chip.active:hover {
+    background-color: $primary;
+    border-color: $primary;
+    color: #ffffff;
+}
+
+.folder-chip-new {
+    border-style: dashed;
+}
+
+.bookmark-folder-list {
+    max-height: 45vh;
+    overflow-y: auto;
+    border: 1px solid $border-color;
+    border-radius: 0.35rem;
+}
+
+.bookmark-folder-row {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    padding: 0.6rem 0.9rem;
+    border: 0;
+    background: transparent;
+    color: $black;
+    text-align: left;
+    cursor: pointer;
+}
+
+.bookmark-folder-row + .bookmark-folder-row {
+    border-top: 1px solid $border-color;
+}
+
+.bookmark-folder-row:hover,
+.bookmark-folder-row:focus {
+    background-color: rgba($primary, 0.1);
+    outline: none;
+}
+
+.bookmark-folder-row.active {
+    color: $primary;
+    font-weight: $font-weight-bold;
+}
+
 // A continuous feed (assets/js/infinite_scroll.js): while the script runs the browser's own
 // pull-to-reload gives way to the page's pull indicator, the "Show N new posts" pill is
 // pinned under the sticky feed header, and the end of the feed has a note instead of buttons.

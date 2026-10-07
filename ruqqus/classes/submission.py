@@ -816,6 +816,8 @@ class SaveRelationship(Base, Stndrd):
     user_id=Column(Integer, ForeignKey("users.id"))
     submission_id=Column(Integer, ForeignKey("submissions.id"))
     created_utc = Column(Integer, default=0)
+    # the member's folder for this bookmark (classes/bookmark_folder.py), or none: unsorted
+    folder_id = Column(Integer, ForeignKey("bookmark_folders.id", ondelete="SET NULL"), nullable=True)
 
 
 class RepostRelationship(Base, Stndrd):

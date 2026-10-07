@@ -1664,7 +1664,9 @@ class User(Base, Stndrd, Age_times):
             OauthApp.id.asc()).all()]
 
 
-    def saved_idlist(self, page=1):
+    def saved_idlist(self, page=1, folder=None):
+        """Ids of the posts this member bookmarked, newest bookmark first. `folder`: None for all of
+        them, 0 for the unsorted ones, or one of their folder ids (helpers/bookmark_folders.py)."""
 
         posts = g.db.query(Submission.id).options(lazyload('*')).filter_by(is_banned=False,
                                                                            deleted_utc=0
@@ -1673,6 +1675,9 @@ class User(Base, Stndrd, Age_times):
         posts = posts.join(
             SaveRelationship, SaveRelationship.submission_id == Submission.id
         ).filter(SaveRelationship.user_id == self.id)
+        if folder is not None:
+            posts = posts.filter(SaveRelationship.folder_id.is_(None) if folder == 0
+                                 else SaveRelationship.folder_id == folder)
         posts = filter_posts(posts, self)
 
         if self.admin_level < 4:
@@ -1711,7 +1716,8 @@ class User(Base, Stndrd, Age_times):
         return [x[0] for x in posts.offset(25 * (page - 1)).limit(26).all()]
 
 
-    def saved_comment_idlist(self, page=1):
+    def saved_comment_idlist(self, page=1, folder=None):
+        """The comment twin of saved_idlist (same `folder`)."""
 
         comments = g.db.query(Comment.id).options(lazyload('*')).join(Comment.post).filter(
             Comment.is_banned == False,
@@ -1721,6 +1727,9 @@ class User(Base, Stndrd, Age_times):
         comments = comments.join(
             CommentSaveRelationship, CommentSaveRelationship.comment_id == Comment.id
         ).filter(CommentSaveRelationship.user_id == self.id)
+        if folder is not None:
+            comments = comments.filter(CommentSaveRelationship.folder_id.is_(None) if folder == 0
+                                       else CommentSaveRelationship.folder_id == folder)
         comments = filter_comments(comments, self)
 
         if self.admin_level < 4:

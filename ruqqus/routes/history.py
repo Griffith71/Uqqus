@@ -2,6 +2,8 @@ from ruqqus.helpers.wrappers import *
 from ruqqus.helpers.base36 import *
 from ruqqus.helpers.get import *
 from ruqqus.classes import *
+from sqlalchemy import func
+from ruqqus.helpers import bookmark_folders as folder_rules
 from ruqqus.__main__ import app
 
 
@@ -42,6 +44,16 @@ def history_bookmarked(v):
     if content_type not in ("all", "posts", "comments"):
         content_type = "all"
 
+    # ?folder= : all the bookmarks (absent), the unsorted ones (none) or one of the member's folders
+    folders = g.db.query(BookmarkFolder).filter_by(user_id=v.id).order_by(func.lower(BookmarkFolder.name)).all()
+    folder_kind, folder_id = folder_rules.parse_filter(request.args.get("folder"))
+    folder = None
+    if folder_kind == "folder":
+        folder = next((f for f in folders if f.id == folder_id), None)
+        if folder is None:
+            abort(404)
+    saved_folder = {folder_rules.ALL: None, folder_rules.UNSORTED: 0}.get(folder_kind, folder_id)
+
     post_ids = []
     comment_ids = []
     next_exists = False
@@ -49,10 +61,10 @@ def history_bookmarked(v):
     mixed_listing = None
 
     if content_type in ("all", "posts"):
-        post_ids = v.saved_idlist(page=page)
+        post_ids = v.saved_idlist(page=page, folder=saved_folder)
 
     if content_type in ("all", "comments"):
-        comment_ids = v.saved_comment_idlist(page=page)
+        comment_ids = v.saved_comment_idlist(page=page, folder=saved_folder)
 
     if content_type == "posts":
         next_exists = len(post_ids) == 26
@@ -80,7 +92,11 @@ def history_bookmarked(v):
                                             listing=listing,
                                             mixed_listing=mixed_listing,
                                             page=page,
-                                            next_exists=next_exists),
+                                            next_exists=next_exists,
+                                            folders=folders,
+                                            folder_kind=folder_kind,
+                                            folder=folder,
+                                            folder_query=folder_rules.query_value(folder_kind, folder_id)),
             "api": lambda: jsonify({"data": [
                 x.json for x in (listing if listing else
                                  [item[1] for item in (mixed_listing or [])])

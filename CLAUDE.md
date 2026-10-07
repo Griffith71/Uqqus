@@ -114,6 +114,15 @@ A member can mute an account (`usermutes`, `helpers/muting.py`): its posts and c
 - `POST /settings/mute` and `/settings/unmute` (`routes/muting.py`) clear the per-viewer feed caches (`muting.clear_cached_feeds`); per-guild lists catch up within 60 seconds. Mute is offered in the post and comment menus, on profiles and in `/settings/blocks` ("Block & Mute"). Muting for a limited time is not built.
 - Tests: `tests/test_muting.py`, `tests/test_muting_assets.py`.
 
+## Bookmark folders (legacy app)
+
+A member sorts their bookmarks into folders of their own (`bookmark_folders`, rules in `helpers/bookmark_folders.py`, routes in `routes/bookmark_folders.py`). A bookmark (`save_relationship` for a post, `comment_save_relationship` for a comment) is in **one** folder (`folder_id`) or none (unsorted); folders are private and a folder or bookmark of another member is a 404.
+
+- **Deleting a folder never deletes a bookmark**: the routes set `folder_id` to NULL on both tables for the caller first (and the foreign keys are `ON DELETE SET NULL`). A name is unique per member ignoring case (a functional index), 40 characters, never `all` or `none` (those are views), 30 folders at most. Ids are read with `parse_id` (ASCII digits only; `str.isdigit()` also accepts other scripts' digits).
+- **The Bookmarked tab** (`/history`, `routes/history.py`) takes `?folder=` (absent: all, `none`: unsorted, or an id; an id that is not the caller's is a 404) and passes it to `User.saved_idlist` / `saved_comment_idlist(folder=...)`, which filter before the usual word filter, block and mute rules. Every link on that tab (All / Posts / Comments, Prev, Next) keeps the folder: the continuous feed follows the Next link.
+- **Filing**: "Add to folder" in the "…" menu of a post (desktop and the phone's actions sheet) and in a comment's menus opens `partials/bookmark_folder_modal.html` (`assets/js/bookmark_folders.js`): pick Unsorted or a folder, or make one. `POST /bookmarks/move` bookmarks the item as it files it, but only something the caller may see (`post_hidden` / `comment_hidden`) that is not removed or deleted. The script switches the item's bookmark icons on (`bookmark-` / `unbookmark-` ids, with the `mobile-` and `modal-` forms). New places that draw a bookmark control need the same menu item (`tests/test_bookmark_folders_assets.py` counts them).
+- Tests: `tests/test_bookmark_folders.py` (the rules), `tests/test_bookmark_folders_assets.py` (schema, routes, ownership, listings, templates, both stylesheets).
+
 ## Trending topics (legacy app)
 
 A top 10 of what an unusual number of different accounts posted about in the last day. Start with `ruqqus/helpers/trending.py` (the rules, stdlib only).

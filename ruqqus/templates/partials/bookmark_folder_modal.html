@@ -1,0 +1,32 @@
+{#
+  "Add to folder": the sheet a member opens from the menu of a post or comment
+  (assets/js/bookmark_folders.js). It lists their folders (and "Unsorted"), makes a new one, and
+  files the item, bookmarking it first if it isn't yet. One copy per page, for a logged-in member,
+  not inside the side-panel frames. Folder names go in as text.
+#}
+<div class="modal fade" id="bookmarkFolderModal" tabindex="-1" role="dialog" aria-labelledby="bookmarkFolderTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="bookmarkFolderTitle">Add to folder</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true"><i class="far fa-times"></i></span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p class="text-small text-muted">Pick a folder for this bookmark. It is bookmarked if it isn't yet. Only you see your folders.</p>
+        <div id="bookmark-folder-list" class="bookmark-folder-list mb-3" aria-live="polite"></div>
+        <form id="bookmark-folder-form" onsubmit="return false;">
+          <label class="sr-only" for="bookmark-folder-input">New folder</label>
+          <div class="input-group">
+            <input type="text" id="bookmark-folder-input" class="form-control" maxlength="40" placeholder="New folder" autocomplete="off">
+            <div class="input-group-append">
+              <button type="submit" id="bookmark-folder-create" class="btn btn-primary">Create &amp; add</button>
+            </div>
+          </div>
+        </form>
+        <div id="bookmark-folder-status" class="text-small mt-2" role="status"></div>
+      </div>
+    </div>
+  </div>
+</div>

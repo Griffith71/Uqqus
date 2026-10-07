@@ -622,6 +622,7 @@ class CommentSaveRelationship(Base, Stndrd):
     user_id = Column(Integer, ForeignKey("users.id"))
     comment_id = Column(Integer, ForeignKey("comments.id"))
     created_utc = Column(Integer, default=0)
+    folder_id = Column(Integer, ForeignKey("bookmark_folders.id", ondelete="SET NULL"), nullable=True)
 
 
 class CommentRepostRelationship(Base, Stndrd):

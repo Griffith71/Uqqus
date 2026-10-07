@@ -2492,7 +2492,8 @@ CREATE TABLE public.save_relationship (
     id integer NOT NULL,
     submission_id integer,
     user_id integer,
-    created_utc integer DEFAULT 0
+    created_utc integer DEFAULT 0,
+    folder_id integer
 );
 
 
@@ -2556,7 +2557,8 @@ CREATE TABLE public.comment_save_relationship (
     id integer NOT NULL,
     user_id integer,
     comment_id integer,
-    created_utc integer DEFAULT 0
+    created_utc integer DEFAULT 0,
+    folder_id integer
 );
 
 
@@ -5849,6 +5851,25 @@ CREATE TABLE public.post_coauthors (
 );
 
 CREATE INDEX post_coauthors_user_index ON public.post_coauthors USING btree (user_id, status);
+
+CREATE TABLE public.bookmark_folders (
+    id SERIAL PRIMARY KEY,
+    user_id integer NOT NULL,
+    name character varying(40) NOT NULL,
+    created_utc integer DEFAULT 0 NOT NULL
+);
+
+CREATE UNIQUE INDEX bookmark_folders_name_key ON public.bookmark_folders USING btree (user_id, lower((name)::text));
+
+ALTER TABLE ONLY public.save_relationship
+    ADD CONSTRAINT save_relationship_folder_fkey FOREIGN KEY (folder_id) REFERENCES public.bookmark_folders(id) ON DELETE SET NULL;
+
+ALTER TABLE ONLY public.comment_save_relationship
+    ADD CONSTRAINT comment_save_relationship_folder_fkey FOREIGN KEY (folder_id) REFERENCES public.bookmark_folders(id) ON DELETE SET NULL;
+
+CREATE INDEX save_relationship_folder_index ON public.save_relationship USING btree (user_id, folder_id);
+
+CREATE INDEX comment_save_relationship_folder_index ON public.comment_save_relationship USING btree (user_id, folder_id);
 
 CREATE INDEX submissions_word_severity_index ON public.submissions USING btree (word_severity);
 CREATE INDEX comments_word_severity_index ON public.comments USING btree (word_severity);

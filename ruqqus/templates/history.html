@@ -44,10 +44,34 @@
       <div class="d-flex align-items-center">
         <span class="text-small text-muted mr-2">Show:</span>
         <div class="btn-group btn-group-sm" role="group">
-          <a href="{{ request.path }}?type=all" class="btn btn-sm {% if content_type=='all' %}btn-secondary{% else %}btn-link text-muted{% endif %}">All</a>
-          <a href="{{ request.path }}?type=posts" class="btn btn-sm {% if content_type=='posts' %}btn-secondary{% else %}btn-link text-muted{% endif %}">Posts</a>
-          <a href="{{ request.path }}?type=comments" class="btn btn-sm {% if content_type=='comments' %}btn-secondary{% else %}btn-link text-muted{% endif %}">Comments</a>
+          <a href="{{ request.path }}?type=all{% if active_tab == 'bookmarked' and folder_query %}&folder={{ folder_query }}{% endif %}" class="btn btn-sm {% if content_type=='all' %}btn-secondary{% else %}btn-link text-muted{% endif %}">All</a>
+          <a href="{{ request.path }}?type=posts{% if active_tab == 'bookmarked' and folder_query %}&folder={{ folder_query }}{% endif %}" class="btn btn-sm {% if content_type=='posts' %}btn-secondary{% else %}btn-link text-muted{% endif %}">Posts</a>
+          <a href="{{ request.path }}?type=comments{% if active_tab == 'bookmarked' and folder_query %}&folder={{ folder_query }}{% endif %}" class="btn btn-sm {% if content_type=='comments' %}btn-secondary{% else %}btn-link text-muted{% endif %}">Comments</a>
         </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endif %}
+
+{% if active_tab == 'bookmarked' %}
+<div class="container-fluid bg-white box-shadow-bottom" id="bookmark-folders" data-type="{{ content_type }}" data-folder-kind="{{ folder_kind }}" data-folder-id="{{ folder.id if folder else '' }}" data-folder-name="{{ folder.name if folder else '' }}">
+  <div class="row py-2">
+    <div class="col">
+      <div class="folder-chips d-flex flex-wrap align-items-center">
+        <span class="text-small text-muted mr-2">Folder:</span>
+        <a class="folder-chip{% if folder_kind == 'all' %} active{% endif %}" href="/history?type={{ content_type }}">All</a>
+        <a class="folder-chip{% if folder_kind == 'none' %} active{% endif %}" href="/history?type={{ content_type }}&folder=none">Unsorted</a>
+        {% for f in folders %}
+        <a class="folder-chip{% if folder and folder.id == f.id %} active{% endif %}" href="/history?type={{ content_type }}&folder={{ f.id }}"><i class="fas fa-folder fa-fw mr-1"></i>{{ f.name }}</a>
+        {% endfor %}
+        <button type="button" class="folder-chip folder-chip-new" id="folder-new"><i class="fas fa-plus fa-fw mr-1"></i>New folder</button>
+        {% if folder %}
+        <span class="folder-tools ml-auto">
+          <button type="button" class="btn btn-link btn-sm text-muted" id="folder-rename">Rename</button>
+          <button type="button" class="btn btn-link btn-sm text-danger" id="folder-delete">Delete folder</button>
+        </span>
+        {% endif %}
       </div>
     </div>
   </div>
@@ -133,14 +157,14 @@
   <ul class="pagination pagination-sm py-3 pl-3 mb-0">
     {% if page>1 %}
     <li class="page-item">
-      <small><a class="page-link" href="?page={{ page-1 }}{% if content_type and content_type != 'all' %}&type={{ content_type }}{% endif %}" tabindex="-1">Prev</a></small>
+      <small><a class="page-link" href="?page={{ page-1 }}{% if content_type and content_type != 'all' %}&type={{ content_type }}{% endif %}{% if active_tab == 'bookmarked' and folder_query %}&folder={{ folder_query }}{% endif %}" tabindex="-1">Prev</a></small>
     </li>
     {% else %}
     <li class="page-item disabled"><span class="page-link">Prev</span></li>
     {% endif %}
     {% if next_exists %}
     <li class="page-item">
-      <small><a class="page-link" href="?page={{ page+1 }}{% if content_type and content_type != 'all' %}&type={{ content_type }}{% endif %}">Next</a></small>
+      <small><a class="page-link" href="?page={{ page+1 }}{% if content_type and content_type != 'all' %}&type={{ content_type }}{% endif %}{% if active_tab == 'bookmarked' and folder_query %}&folder={{ folder_query }}{% endif %}">Next</a></small>
     </li>
     {% else %}
     <li class="page-item disabled"><span class="page-link">Next</span></li>

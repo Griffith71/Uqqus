@@ -730,6 +730,7 @@
 {% include "bootstrap.html" %}
 
 {% if v and not request.args.get('embed') %}{% include "partials/share_chat_modal.html" %}{% include "partials/coauthors_modal.html" %}{% endif %}
+{% if v and not request.args.get('embed') %}{% include "partials/bookmark_folder_modal.html" %}{% endif %}
 
 <script src="/assets/js/all_js.js?v=2.39.0" importance="high" ></script>
 <script src="/assets/js/feed_video_autoplay.js"></script>
@@ -743,6 +744,7 @@
 <script src="/assets/js/media_upload.js?v=1"></script>
 {% if not request.args.get('embed') %}<script src="/assets/js/share_chat.js?v=1"></script>
 <script src="/assets/js/coauthors.js?v=1"></script>{% endif %}{% endif %}
+{% if v and not request.args.get('embed') %}<script src="/assets/js/bookmark_folders.js?v=1"></script>{% endif %}
 {% if v %}<script src="/assets/js/chat_badge.js?v=1"></script>{% endif %}
 
 <!-- ClipboardJS -->
