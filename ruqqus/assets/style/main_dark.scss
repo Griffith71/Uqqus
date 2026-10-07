@@ -6,7 +6,7 @@ $secondary: #383838;
 $danger: #E53E3E;
 $white: #FFFFFF;
 $black: #CFCFCF;
-$light: #35363e;
+$light: #16181c;
 $success: #38A169;
 $muted: #AAAAAA;
 $info: #168EEA;
@@ -18,13 +18,13 @@ $green: #38A169;
 
 $gray-100: #AAAAAA;
 $gray-200: #8f8f90;
-$gray-300: #383838;
-$gray-400: #303030;
-$gray-500: #272727;
-$gray-600: #1f2023;
-$gray-700: #181818;
-$gray-800: #121212;
-$gray-900: #0f0f0f;
+$gray-300: #202327;
+$gray-400: #2f3336;
+$gray-500: #16181c;
+$gray-600: #000000;
+$gray-700: #16181c;
+$gray-800: #16181c;
+$gray-900: #0a0a0a;
 
 $upvote: #2ca1ea;
 $downvote: #38B2AC;
@@ -211,12 +211,12 @@ body.using-mouse :focus {
 
 #page {
     padding-top: var(--navbar-height, 55px);
-    background-color: $gray-700;
+    background-color: $gray-600;
 }
 
 #article {
     padding-top: 0;
-    background-color: $gray-700;
+    background-color: $gray-600;
 }
 
 #thread, #userpage {
@@ -498,8 +498,8 @@ ol > li::before {
 // Navbar and tab Bar
 
 .navbar-light {
-    background-color: $gray-500!important;
-    box-shadow: 0 1px 2px rgba(0,0,0,.15),0 0 2px rgba(0,0,0,.1)!important;
+    background-color: $gray-600!important;
+    box-shadow: 0 1px 0 $border-color!important;
 }
 
 .navbar-toggler-icon {
@@ -551,7 +551,7 @@ ol > li::before {
     border-top-left-radius: $border-radius;
     border-top-right-radius: $border-radius;
     padding: .75rem 1rem 0 1rem;
-    background-color: $light;
+    background-color: $gray-600;
     z-index: 5;
 }
 
@@ -575,7 +575,7 @@ ol > li::before {
 }
 
 .navbar-light .navbar-nav .nav-link:focus {
-    background-color: rgba(0, 0, 0, 0.15);
+    background-color: $gray-500;
     border-radius: $border-radius;
 }
 
@@ -608,7 +608,7 @@ ol > li::before {
 }
 
 .navbar-dark .navbar-nav .nav-link:hover {
-    background-color: rgba(0, 0, 0, 0.15);
+    background-color: $gray-500;
     border-radius: $border-radius;
 }
 
@@ -905,7 +905,8 @@ label.terms {
 .dropdown-menu {
     padding: 0.5rem;
     color: $white;
-    background-color: $gray-600;
+    background-color: $gray-500;
+    border: 1px solid $border-color;
 }
 
 .dropdown-header {
@@ -1048,7 +1049,7 @@ th {
     border-left: 0.45rem solid transparent;
     border-right: 0.45rem solid transparent;
     border-bottom: 0.7rem solid currentColor;
-    color: $gray-400;
+    color: $gray-200;
     cursor: pointer;
     font-size: $font-size-base;
 }
@@ -1070,7 +1071,7 @@ th {
     border-left: 0.45rem solid transparent;
     border-right: 0.45rem solid transparent;
     border-top: 0.7rem solid currentColor;
-    color: $gray-400;
+    color: $gray-200;
     cursor: pointer;
     font-size: $font-size-base;
 }
@@ -1322,7 +1323,7 @@ color: $dark;
 
 .sidebar-section {
     margin-bottom: 1rem;
-    background-color: $gray-700;
+    background-color: $gray-500;
     //border: 1px solid $border-color;
     //box-shadow: $box-shadow-sm;
     border-radius: $border-radius;
@@ -1330,7 +1331,7 @@ color: $dark;
     word-break: break-word;
 
     & .profile-pic.profile-stacked {
-        box-shadow: 0 0 0px 3px $gray-700;
+        box-shadow: 0 0 0px 3px $gray-500;
     }
 }
 
@@ -1679,7 +1680,7 @@ a.bg-dark:hover, a.bg-dark:focus, button.bg-dark:hover, button.bg-dark:focus {
     text-align: center;
     object-fit: cover;
     color: $white;
-    background-color: #1f2023;
+    background-color: $gray-300;
 }
 
 .profile-pic .letter {
@@ -2003,12 +2004,12 @@ a.bg-dark:hover, a.bg-dark:focus, button.bg-dark:hover, button.bg-dark:focus {
 
 .modal-backdrop.show {
     opacity: 1;
-    background-color:rgba(30,30,30,0.9);
+    background-color: rgba(91, 112, 131, 0.4);
 }
 
 .modal-header {
     border-bottom: none;
-    background-color: $gray-400;
+    background-color: $gray-500;
     border-top-left-radius: $border-radius;
     border-top-right-radius: $border-radius;
     padding: 0.5rem 1rem;
@@ -2020,24 +2021,24 @@ a.bg-dark:hover, a.bg-dark:focus, button.bg-dark:hover, button.bg-dark:focus {
 }
 
 .modal-content {
-    border: none;
-    background-color: $gray-400;
+    border: 1px solid $border-color;
+    background-color: $gray-500;
     border-radius: $border-radius;
     box-shadow: $box-shadow;
 }
 
 .modal-footer {
     border: none;
-    background-color: $gray-400;
+    background-color: $gray-500;
     border-bottom-right-radius: $border-radius;
     border-bottom-left-radius: $border-radius;
-    background-image: linear-gradient(180deg, #ffffff00 25%, $gray-400 100%)!important;
+    background-image: linear-gradient(180deg, #ffffff00 25%, $gray-500 100%)!important;
 }
 
 .modal .post-actions .list-group-item {
     border: none;
     border-radius: $border-radius;
-    background-color: $gray-400;
+    background-color: $gray-500;
 }
 
 .modal .post-actions .list-group-item:focus, .modal .post-actions .list-group-item:hover {
@@ -2169,7 +2170,7 @@ a.bg-dark:hover, a.bg-dark:focus, button.bg-dark:hover, button.bg-dark:focus {
     }
     #frontpage, #search, #guild {
         padding-top: 98px;
-        background-color: $gray-700;
+        background-color: $gray-600;
     }
 }
 
@@ -3631,7 +3632,7 @@ html {
 
 body, #settings, #notifications, #submit {
     padding-top: 55px;
-    background-color: $gray-700;
+    background-color: $gray-600;
 }
 
 #thread, #userpage {
@@ -3697,12 +3698,12 @@ body, #settings, #notifications, #submit {
 }
 
 #thread, #submit, #error-401, #error-403, #error-404, #error-405, #error-409, #error-410, #error-422, #error-429, #error-451, #error-500 {
-    background-color: $light;
+    background-color: $gray-600;
 }
 
 #frontpage, #search, #guild {
     padding-top: 98px;
-    background-color: $light;
+    background-color: $gray-600;
 }
 
 #search .search-results.card  {
@@ -4418,7 +4419,8 @@ a.post-button:hover {
 
 // Schedule panel and the drafts list on Create a post (assets/js/post_drafts.js)
 .schedule-panel {
-    background-color: $gray-700;
+    background-color: $gray-500;
+    border: 1px solid $border-color;
     position: fixed;
     right: 1rem;
     bottom: 5.25rem;
