@@ -7,6 +7,7 @@ from ruqqus.helpers.base36 import *
 from ruqqus.helpers.security import *
 from ruqqus.helpers.lazy import *
 from ruqqus.helpers.visibility import filter_posts, filter_comments, viewer_level, text_hidden
+from ruqqus.helpers.muting import hide_muted
 from ruqqus.helpers.session_helpers import *
 import ruqqus.helpers.aws as aws
 from .userblock import *
@@ -195,6 +196,8 @@ class Board(Base, Stndrd, Age_times):
                 Submission.author_id.notin_(blocking) #,
             #    Submission.author_id.notin_(blocked)
             )
+
+        posts = hide_muted(posts, v, Submission)
 
         if t == None and v: t = v.defaulttime
         if t:
@@ -607,6 +610,8 @@ class Board(Base, Stndrd, Age_times):
                 Comment.author_id.notin_(blocking),
                 Comment.author_id.notin_(blocked)
             )
+
+        comments = hide_muted(comments, v, Comment)
 
         if not v or not v.admin_level >= 3:
             comments = comments.filter_by(is_banned=False).filter(Comment.deleted_utc == 0)

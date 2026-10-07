@@ -6,6 +6,7 @@ import random
 
 from ruqqus.helpers.wrappers import *
 from ruqqus.helpers.visibility import filter_posts, filter_comments, filter_boards, viewer_level
+from ruqqus.helpers.muting import hide_muted
 from ruqqus.helpers.get import *
 from flask import session as flask_session
 
@@ -143,6 +144,7 @@ def frontlist(v=None, sort=None, page=1,
         ).filter(Submission.deleted_utc == 0)
 
     posts = filter_posts(posts, v)
+    posts = hide_muted(posts, v, Submission)
     
     if v and v.hide_bot:
         posts = posts.filter(Submission.is_bot==False)
@@ -1279,6 +1281,7 @@ def comment_idlist(page=1, v=None, **kwargs):
     comments = g.db.query(Comment).options(lazyload('*'))
 
     comments = filter_comments(comments, v)
+    comments = hide_muted(comments, v, Comment)
         
     if v and v.hide_bot:
         comments = comments.filter_by(is_bot=False)

@@ -518,8 +518,11 @@ def settings_blockedpage(v):
 
     #users=[x.target for x in v.blocked]
 
+    from .muting import muted_accounts
+
     return render_template("settings_blocks.html",
-                           v=v)
+                           v=v,
+                           muted=muted_accounts(v))
 
 
 @app.route("/settings/filters", methods=["GET"])

@@ -1491,6 +1491,9 @@ Optional file data:
     # an anonymous post does not notify the author's followers: only they would get it
     follower_ids = [] if new_post.is_anonymous else [x[0] for x in follow_uids.all()]
     uids=list(set([x[0] for x in board_uids.all()] + follower_ids).union(notify_users))
+    if not new_post.is_anonymous:
+        muters = {x[0] for x in g.db.query(UserMute.user_id).filter_by(target_id=v.id).all()}
+        uids = [uid for uid in uids if uid not in muters]
 
     for uid in uids:
         new_notif=Notification(

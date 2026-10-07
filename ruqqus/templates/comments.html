@@ -48,7 +48,7 @@
 </div>
 
 
-{% elif ((c.is_banned or (c.hidden_by_guild and not (v and v.id==c.author_id) and not (c.is_guildmaster('content') and c.original_board_id==c.post.board_id)) or (c.author_hidden and not (v and v.id==c.author_id) and not (v and c.post and v.id==c.post.author_id))) or ((c.is_blocking and not anon_hidden(c, v)) and not (c.is_guildmaster('content') and c.original_board_id==c.post.board_id))) and not c.distinguish_level and not (v and v.admin_level>=3) %}
+{% elif ((c.is_banned or (c.hidden_by_guild and not (v and v.id==c.author_id) and not (c.is_guildmaster('content') and c.original_board_id==c.post.board_id)) or (c.author_hidden and not (v and v.id==c.author_id) and not (v and c.post and v.id==c.post.author_id))) or ((c.is_blocking and not anon_hidden(c, v)) and not (c.is_guildmaster('content') and c.original_board_id==c.post.board_id)) or is_muted(c, v)) and not c.distinguish_level and not (v and v.admin_level>=3) %}
 
 
 
@@ -62,7 +62,8 @@
         <div id="comment-{{ c.base36id }}-only">
 
             <div class="user-info">{% if standalone and c.is_sensitive %}<span class="badge badge-warning">Sensitive Content<span> {% endif %}
-                [{% if c.is_banned %}Removed by administrators{% elif c.hidden_by_guild %}Removed by guildmasters{% elif c.author_hidden %}Removed by the post's author{% elif c.is_blocking and not anon_hidden(c, v) %}You are blocking @{{ author_of(c, v).username }}{% elif c.is_blocked and not anon_hidden(c, v) %}This user has blocked you{% endif %}]
+                [{% if c.is_banned %}Removed by administrators{% elif c.hidden_by_guild %}Removed by guildmasters{% elif c.author_hidden %}Removed by the post's author{% elif c.is_blocking and not anon_hidden(c, v) %}You are blocking @{{ author_of(c, v).username }}{% elif c.is_blocked and not anon_hidden(c, v) %}This user has blocked you{% elif is_muted(c, v) %}You muted @{{ author_of(c, v).username }}{% endif %}]
+                {% if is_muted(c, v) and not c.is_banned and not c.hidden_by_guild and not c.author_hidden and not c.is_blocking %}<a href="javascript:void(0)" class="ml-1" onclick="post_toast('/settings/unmute?username={{ author_of(c, v).username }}', callback=function(){window.location.reload()})">Unmute</a>{% endif %}
             </div>
 
 
@@ -393,6 +394,10 @@
 
               {% if v.id != c.author_id %}
               <div class="dropdown-divider"></div>
+              {% if not anon_hidden(c, v) %}
+              <a class="dropdown-item" href="javascript:void(0)" onclick="post_toast('/settings/mute?username={{ author_of(c, v).username }}')"
+              ><i class="fas fa-volume-mute fa-fw"></i>Mute user</a>
+              {% endif %}
               <a class="dropdown-item text-danger" href="javascript:void(0)" onclick="post_toast('/settings/block?username={{ author_of(c, v).username }}')"
               ><i class="fas fa-user-slash text-danger fa-fw"></i>Block user</a>
               {% endif %}
@@ -612,6 +617,11 @@
           {% endif %}
 
           {% if v.id != c.author_id %}
+          {% if not anon_hidden(c, v) %}
+          <li class="list-group-item">
+            <a class="d-block" href="javascript:void(0)" onclick="post_toast('/settings/mute?username={{ author_of(c, v).username }}')"><i class="fas fa-volume-mute"></i>Mute user</a>
+          </li>
+          {% endif %}
           <li class="list-group-item">
             <a class="d-block" href="javascript:void(0)" onclick="post_toast('/settings/block?username={{ author_of(c, v).username }}')"><i class="fas fa-user-slash text-danger"></i>Block user</a>
           </li>

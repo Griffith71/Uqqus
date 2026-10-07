@@ -22,6 +22,7 @@ from ruqqus.classes.categories import CATEGORIES
 from flask import *
 
 from ruqqus.__main__ import app, limiter, cache
+from ruqqus.helpers.muting import hide_muted
 
 valid_board_regex = re.compile("^[a-zA-Z0-9][a-zA-Z0-9_]{2,24}$")
 
@@ -57,6 +58,7 @@ def multiboard(name, v):
     if v:
         blocking = select(UserBlock.target_id).filter_by(user_id=v.id).subquery()
         posts = posts.filter(Submission.author_id.notin_(blocking))
+    posts = hide_muted(posts, v, Submission)
 
     posts = filter_posts(posts, v)
 

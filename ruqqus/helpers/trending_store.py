@@ -21,6 +21,7 @@ from sqlalchemy import and_, func, or_, select
 
 from ruqqus.helpers import trending as tr
 from ruqqus.helpers.visibility import filter_posts
+from ruqqus.helpers.muting import hide_muted
 from ruqqus.helpers.wordfilter import is_hidden
 
 SITE = "all"
@@ -238,6 +239,7 @@ def visible_post_ids(db, v, post_ids, sort="new", page=1):
         Submission.post_public == True,
     )
     posts = filter_posts(posts, v)
+    posts = hide_muted(posts, v, Submission)
     if v:
         if v.hide_bot:
             posts = posts.filter(Submission.is_bot == False)

@@ -240,11 +240,14 @@ def curation_candidates(viewer_id):
 # --- what a member is shown (live eligibility on the cached ranking) -----------
 
 def _blocked_user_ids(viewer_id):
+    """Accounts never suggested to the viewer: blocked either way, and muted by them."""
     from flask import g
     from ruqqus.classes.userblock import UserBlock
+    from ruqqus.classes.usermute import UserMute
     rows = g.db.query(UserBlock.user_id, UserBlock.target_id).filter(
         (UserBlock.user_id == viewer_id) | (UserBlock.target_id == viewer_id)).all()
-    return {b if a == viewer_id else a for a, b in rows}
+    muted = {t for (t,) in g.db.query(UserMute.target_id).filter_by(user_id=viewer_id).all()}
+    return {b if a == viewer_id else a for a, b in rows} | muted
 
 
 def users_for(v, limit=PAGE_COUNT):

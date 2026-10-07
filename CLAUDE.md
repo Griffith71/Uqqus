@@ -83,6 +83,16 @@ Ruqqus keeps no copy of an uploaded picture, sound or video. A member links an a
 
 `ruqqus/helpers/languages.py` holds the one list of languages (`LANGUAGE_NAMES`: filters, curations, trending) and detects a post's language when it is written (`detect_language`, `py3langid`). Only languages people speak in daily life are listed: Ancient Greek, Ancient Hebrew, Latin and Volapük were taken off on purpose (`REMOVED_LANGUAGES`; Sanskrit and Esperanto stay). The detector is restricted to the list the first time it is used, so it can only answer a listed language (Latin text reads as the nearest living one); a saved choice that is no longer listed is dropped with `known_codes`. To remove another language: take it out of `LANGUAGE_NAMES`, add it to `REMOVED_LANGUAGES` and to a data migration like `scripts/migrations/2026-10-08_languages.sql` (untags its posts, strips it from curations). `tests/test_languages.py`.
 
+## Muting (legacy app)
+
+A member can mute an account (`usermutes`, `helpers/muting.py`): its posts and comments leave their feeds, searches and threads and its notifications stop. It is quiet and one-way: the account is not told and can still follow, comment and message. **A mute is not a block**: nothing that checks blocks (`any_block_exists`, comment and chat permissions) reads `usermutes`, and the two tables stay apart.
+
+- **Wherever a feed already leaves out blocked authors it leaves out muted ones too**: `hide_muted(query, v, Model)` (All, Following, For You, guild lists, curations and what a feed server may name, search, a trending topic's posts, the notification lists and their counts). Not on a profile, a saved list or a history, and not on a search for one author: going there is a choice. A new listing needs the same line (`tests/test_muting_assets.py` checks the existing ones).
+- **An anonymous post or comment is never hidden by a mute** (hiding only those would tell the muter which ones the account wrote; blocks do the same). In a thread a muted account's comment becomes "[You muted @x] Unmute" and the replies under it stay (`is_muted(item, v)` in templates).
+- Bell notifications of a post skip the people who muted its author, unless the post is anonymous. Who to follow never suggests a muted account.
+- `POST /settings/mute` and `/settings/unmute` (`routes/muting.py`) clear the per-viewer feed caches (`muting.clear_cached_feeds`); per-guild lists catch up within 60 seconds. Mute is offered in the post and comment menus, on profiles and in `/settings/blocks` ("Block & Mute"). Muting for a limited time is not built.
+- Tests: `tests/test_muting.py`, `tests/test_muting_assets.py`.
+
 ## Trending topics (legacy app)
 
 A top 10 of what an unusual number of different accounts posted about in the last day. Start with `ruqqus/helpers/trending.py` (the rules, stdlib only).

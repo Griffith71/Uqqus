@@ -26,6 +26,7 @@ from .feeds import *
 from .post_editor import *
 from .post_drafts import *
 from .anonymity import *
+from .muting import *
 from .suggestions import *
 from .media import *
 from .trending import *

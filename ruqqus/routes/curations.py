@@ -8,6 +8,7 @@ from sqlalchemy.orm import lazyload
 
 from ruqqus.helpers.wrappers import *
 from ruqqus.helpers.visibility import filter_posts, viewer_level
+from ruqqus.helpers.muting import hide_muted
 from ruqqus.helpers.get import *
 from ruqqus.classes import *
 from ruqqus.__main__ import app, cache
@@ -54,6 +55,7 @@ def _viewable(posts, v):
     )
 
     posts = filter_posts(posts, v)
+    posts = hide_muted(posts, v, Submission)
     if v and v.hide_bot:
         posts = posts.filter(Submission.is_bot == False)
 

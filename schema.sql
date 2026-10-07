@@ -5801,5 +5801,13 @@ CREATE INDEX trending_topics_slug_index ON public.trending_topics USING btree (s
 
 CREATE UNIQUE INDEX trending_blocked_key_index ON public.trending_blocked USING btree (key);
 
+CREATE TABLE public.usermutes (
+    id SERIAL PRIMARY KEY,
+    user_id integer NOT NULL,
+    target_id integer NOT NULL,
+    created_utc integer DEFAULT 0 NOT NULL,
+    CONSTRAINT usermutes_pair_key UNIQUE (user_id, target_id)
+);
+
 CREATE INDEX submissions_word_severity_index ON public.submissions USING btree (word_severity);
 CREATE INDEX comments_word_severity_index ON public.comments USING btree (word_severity);

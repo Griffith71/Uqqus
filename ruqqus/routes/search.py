@@ -2,6 +2,7 @@ from ruqqus.classes import *
 from ruqqus.helpers.wrappers import *
 from ruqqus.helpers.visibility import filter_posts, filter_boards, filter_users, viewer_level
 from ruqqus.helpers import anonymity
+from ruqqus.helpers.muting import hide_muted
 from urllib.parse import quote
 import re
 
@@ -114,6 +115,8 @@ def searchlisting(criteria, v=None, page=1, t="None", sort="top", b=None, filter
 
 
     posts = filter_posts(posts, v)
+    if 'author' not in criteria:
+        posts = hide_muted(posts, v, Submission)
 		
     if v and v.hide_bot:
         posts = posts.filter(Submission.is_bot == False)

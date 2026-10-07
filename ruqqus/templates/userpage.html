@@ -142,6 +142,8 @@
             <input type="hidden" name="formkey" value="{{ v.formkey }}">
             <button type="submit" class="btn btn-secondary">Message</button>
           </form>
+          <button id="mute-profile" type="button" class="btn btn-secondary ml-2{% if has_muted(u, v) %} d-none{% endif %}" onclick="post_toast('/settings/mute?username={{ u.username }}', callback=function(){document.getElementById('mute-profile').classList.toggle('d-none');document.getElementById('unmute-profile').classList.toggle('d-none');})"><i class="fas fa-volume-mute mr-1"></i>Mute</button>
+          <button id="unmute-profile" type="button" class="btn btn-secondary ml-2{% if not has_muted(u, v) %} d-none{% endif %}" onclick="post_toast('/settings/unmute?username={{ u.username }}', callback=function(){document.getElementById('mute-profile').classList.toggle('d-none');document.getElementById('unmute-profile').classList.toggle('d-none');})"><i class="fas fa-volume-up mr-1"></i>Unmute</button>
           {% endif %}
         </div>
 
@@ -230,6 +232,8 @@
           <input type="hidden" name="formkey" value="{{ v.formkey }}">
           <button type="submit" class="btn btn-secondary btn-sm">Message</button>
         </form>
+        <button id="mute-profile-mobile" type="button" class="btn btn-secondary btn-sm ml-2{% if has_muted(u, v) %} d-none{% endif %}" onclick="post_toast('/settings/mute?username={{ u.username }}', callback=function(){document.getElementById('mute-profile-mobile').classList.toggle('d-none');document.getElementById('unmute-profile-mobile').classList.toggle('d-none');})"><i class="fas fa-volume-mute mr-1"></i>Mute</button>
+        <button id="unmute-profile-mobile" type="button" class="btn btn-secondary btn-sm ml-2{% if not has_muted(u, v) %} d-none{% endif %}" onclick="post_toast('/settings/unmute?username={{ u.username }}', callback=function(){document.getElementById('mute-profile-mobile').classList.toggle('d-none');document.getElementById('unmute-profile-mobile').classList.toggle('d-none');})"><i class="fas fa-volume-up mr-1"></i>Unmute</button>
         {% endif %}
         </div>
       </div>

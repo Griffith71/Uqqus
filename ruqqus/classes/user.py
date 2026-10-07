@@ -10,6 +10,7 @@ from flask import session, g, request
 
 from ruqqus.helpers.base36 import *
 from ruqqus.helpers import anonymity
+from ruqqus.helpers.muting import hide_muted
 from ruqqus.helpers.security import *
 from ruqqus.helpers.lazy import lazy
 from ruqqus.helpers.visibility import filter_posts, filter_comments, viewer_level, text_hidden
@@ -265,6 +266,7 @@ class User(Base, Stndrd, Age_times):
                                                                            )
 
         posts = filter_posts(posts, self)
+        posts = hide_muted(posts, self, Submission)
 
         if self.hide_bot:
             posts = posts.filter_by(is_bot=False)
@@ -470,6 +472,7 @@ class User(Base, Stndrd, Age_times):
         ).filter(Submission.deleted_utc == 0)
 
         posts = filter_posts(posts, self)
+        posts = hide_muted(posts, self, Submission)
 
         if self.hide_bot:
             posts = posts.filter(Submission.is_bot == False)
@@ -1057,6 +1060,7 @@ class User(Base, Stndrd, Age_times):
             Comment.deleted_utc == 0
         )
         notifications = filter_comments(notifications, self)
+        notifications = hide_muted(notifications, self, Comment)
 
         if comments_only:
             cs = g.db.query(Comment.id).filter(Comment.author_id == self.id).subquery()
@@ -1109,6 +1113,7 @@ class User(Base, Stndrd, Age_times):
             Submission.deleted_utc==0
             )
         notifications=filter_posts(notifications, self)
+        notifications=hide_muted(notifications, self, Submission)
 
         if not all_:
             notifications=notifications.filter(Notification.read==False)
@@ -1133,7 +1138,7 @@ class User(Base, Stndrd, Age_times):
     def mentions_count(self):
         cs=g.db.query(Comment.id).filter(Comment.author_id==self.id).subquery()
         ps=g.db.query(Submission.id).filter(Submission.author_id==self.id).subquery()
-        return self.notifications.options(
+        return hide_muted(self.notifications.options(
             lazyload('*')
             ).join(
             Notification.comment
@@ -1149,7 +1154,7 @@ class User(Base, Stndrd, Age_times):
                         Comment.parent_submission.notin_(ps)
                     )
                 )
-            ).count()
+            ), self, Comment).count()
 
 
     @property
@@ -1174,7 +1179,7 @@ class User(Base, Stndrd, Age_times):
                     )
                 )
             )
-        return filter_comments(q, self).count()
+        return hide_muted(filter_comments(q, self), self, Comment).count()
 
     @property
     @lazy
@@ -1188,7 +1193,7 @@ class User(Base, Stndrd, Age_times):
             Submission.is_banned==False,
             Submission.deleted_utc==0
             )
-        return filter_posts(q, self).count()
+        return hide_muted(filter_posts(q, self), self, Submission).count()
 
     @property
     @lazy
@@ -1216,7 +1221,8 @@ class User(Base, Stndrd, Age_times):
             Submission.is_banned==False,
             Submission.deleted_utc==0
         )
-        return filter_comments(comments, self).count() + filter_posts(posts, self).count()
+        return (hide_muted(filter_comments(comments, self), self, Comment).count()
+                + hide_muted(filter_posts(posts, self), self, Submission).count())
 
     @property
     def throttle_state(self):
