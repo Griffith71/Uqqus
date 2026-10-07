@@ -1,0 +1,17 @@
+{#
+  The "Who to follow" box in the right sidebar: one suggestion of each kind
+  (routes/suggestions.py /inpage/who_to_follow, loaded by assets/js/who_to_follow.js).
+  Nothing is rendered when there is nobody to suggest.
+#}
+{% from "partials/suggestion_row.html" import suggestion_row with context %}
+{% if picks %}
+<div class="sidebar-section who-to-follow">
+  <div class="title"><i class="fas fa-user-plus mr-2"></i>Who to follow</div>
+  <div class="body">
+    {% for kind, item, reason in picks %}
+    {{ suggestion_row(kind, item, reason) }}
+    {% endfor %}
+    <a href="/who_to_follow" class="d-block mt-3 text-small">Show more</a>
+  </div>
+</div>
+{% endif %}

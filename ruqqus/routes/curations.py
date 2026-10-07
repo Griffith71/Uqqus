@@ -487,6 +487,25 @@ def curation_follow(slug, v):
     return redirect(curation.permalink)
 
 
+@app.route("/api/follow_curation/<slug>", methods=["POST"])
+@auth_required
+@validate_formkey
+def curation_follow_inline(slug, v):
+    """The same follow as /&<slug>/follow for buttons that stay on the page
+    (Who to follow): answers JSON instead of redirecting."""
+
+    curation = get_curation(slug, graceful=True)
+    if not curation or curation.is_private:
+        abort(404)
+
+    exists = g.db.query(CurationFollow).filter_by(curation_id=curation.id, user_id=v.id).first()
+    if not exists:
+        g.db.add(CurationFollow(curation_id=curation.id, user_id=v.id, created_utc=int(time.time())))
+        g.db.commit()
+
+    return jsonify({"following": True})
+
+
 @app.route("/&<slug>/unfollow", methods=["POST"])
 @auth_required
 @validate_formkey

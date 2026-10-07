@@ -566,6 +566,7 @@
     {% block sidebar %}
     <div class="col sidebar text-left d-none d-lg-block pt-3 bg-white border-left">
       {% block sidebarblock %}
+      {% if v %}<div id="who-to-follow" data-src="/inpage/who_to_follow"></div>{% endif %}
       <div class="sidebar-section">
         <div class="title">
           <i class="fas fa-heart mr-2"></i>Support {{ "SITE_NAME" | app_config }}
@@ -707,7 +708,8 @@
 <script src="/assets/js/all_js.js?v=2.39.0" importance="high" ></script>
 <script src="/assets/js/feed_video_autoplay.js"></script>
 <script src="/assets/js/infinite_scroll.js?v=1"></script>
-{% if v %}<script src="/assets/js/inline_composer.js?v=1"></script>{% endif %}
+{% if v %}<script src="/assets/js/inline_composer.js?v=1"></script>
+<script src="/assets/js/who_to_follow.js?v=1"></script>{% endif %}
 {% if v %}<script src="/assets/js/chat_badge.js?v=1"></script>{% endif %}
 
 <!-- ClipboardJS -->

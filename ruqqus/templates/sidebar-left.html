@@ -53,6 +53,19 @@
                 </div>
               </a>
               </li>
+            {% if v %}
+            <li class="guild-recommendations-item">
+              <a href="/who_to_follow">
+                <div class="d-flex">
+                  <span class="fa-stack">
+                    <i class="fa-2x fas fa-circle text-purple fa-stack-2x" style=""></i>
+                    <i class="fa-stack-1x fas fa-user-plus fa-inverse d-inline-block text-white"></i>
+                  </span>
+                  <span class="my-auto ml-2 text-black font-weight-normal">Who to follow</span>
+                </div>
+              </a>
+            </li>
+            {% endif %}
             </ul>
               <!-- Show this list when sidebar is collapsed-->
               <ul class="no-bullets guild-recommendations-list pl-0 sidebar-collapsed-visible">

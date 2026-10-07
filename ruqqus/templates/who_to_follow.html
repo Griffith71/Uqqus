@@ -1,0 +1,36 @@
+{% extends "home.html" %}
+{% from "partials/suggestion_row.html" import suggestion_row with context %}
+
+{# shares the Curations page layout (the same 726px column and sidebars) #}
+{% block pagetype %}curations{% endblock %}
+
+{% block title %}
+<title>Who to follow - {{ 'SITE_NAME' | app_config }}</title>
+{% endblock %}
+
+{% block desktopBanner %}{% endblock %}
+{% block PseudoSubmitForm %}{% endblock %}
+{% block pagenav %}{% endblock %}
+
+{% block content %}
+<div class="col px-md-4 py-4">
+
+  <h1 class="h3 mb-1">Who to follow</h1>
+  <p class="text-muted">Suggested from the accounts you follow, the guilds you joined and what you read and vote on.</p>
+
+  <ul class="nav settings-nav mb-3">
+    {% for k, label in [("users", "Users"), ("guilds", "Guilds"), ("curations", "Curations")] %}
+    <li class="nav-item"><a class="nav-link{% if kind == k %} active{% endif %}" href="/who_to_follow?kind={{ k }}"{% if kind == k %} aria-current="page"{% endif %}>{{ label }}</a></li>
+    {% endfor %}
+  </ul>
+
+  <div id="who-to-follow-list">
+    {% for item, reason in items %}
+    {{ suggestion_row(kind, item, reason, full=true) }}
+    {% else %}
+    <p class="text-muted">Nothing to suggest here yet. Follow a few accounts or join a guild and suggestions will appear.</p>
+    {% endfor %}
+  </div>
+
+</div>
+{% endblock %}

@@ -268,6 +268,7 @@
     {% endblock %}
 
     {% block sidebarblock %}
+    {% if v %}<div id="who-to-follow" data-src="/inpage/who_to_follow"></div>{% endif %}
     {% if v and v.can_make_guild %}
     <div class="sidebar-section sidebar-guildmake">
       <div class="title"><i class="fas fa-chess-rook mr-2"></i>Guilds</div>

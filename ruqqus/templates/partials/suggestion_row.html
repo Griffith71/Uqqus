@@ -1,0 +1,40 @@
+{#
+  One suggestion in "Who to follow" (helpers/suggestions.py, assets/js/who_to_follow.js).
+
+  suggestion_row(kind, item, reason, full): `kind` is users, guilds or curations;
+  `reason` is the short line saying why it is suggested. With `full`, a
+  description is shown under it (the full page, not the sidebar).
+
+  The button follows (an account, a curation) or joins (a guild) without leaving
+  the page: assets/js/who_to_follow.js posts to its data-url.
+#}
+{% macro suggestion_row(kind, item, reason, full=false) %}
+<div class="wtf-row d-flex align-items-center" id="wtf-{{ kind }}-{{ item.id }}">
+  {% if kind == "curations" %}
+  <span class="wtf-icon profile-pic-40 mr-2 d-flex align-items-center justify-content-center"><i class="fas fa-layer-group"></i></span>
+  {% else %}
+  <img src="{{ item.profile_url }}" class="profile-pic-40 mr-2" alt="">
+  {% endif %}
+  <div class="wtf-main flex-grow-1">
+    {% if kind == "users" %}
+    <a href="{{ item.permalink }}" class="wtf-name d-block text-truncate font-weight-bold">@{{ item.username }}</a>
+    {% elif kind == "guilds" %}
+    <a href="{{ item.permalink }}" class="wtf-name d-block text-truncate font-weight-bold">+{{ item.name }}</a>
+    {% else %}
+    <a href="{{ item.permalink }}" class="wtf-name d-block text-truncate font-weight-bold">{{ item.name }}</a>
+    {% endif %}
+    <div class="wtf-reason text-small text-muted text-truncate">{{ reason }}</div>
+    {% if full %}
+      {% if kind == "guilds" and item.description %}<div class="text-small">{{ item.description_for(v) | truncate(120, True) }}</div>{% endif %}
+      {% if kind == "curations" and item.description %}<div class="text-small">{{ item.description | truncate(120, True) }}</div>{% endif %}
+    {% endif %}
+  </div>
+  {% if kind == "users" %}
+  <button type="button" class="btn btn-primary btn-sm wtf-action ml-2" data-url="/api/follow/{{ item.username }}" data-done="Following">Follow</button>
+  {% elif kind == "guilds" %}
+  <button type="button" class="btn btn-primary btn-sm wtf-action ml-2" data-url="/api/subscribe/{{ item.name }}" data-done="Joined">Join</button>
+  {% else %}
+  <button type="button" class="btn btn-primary btn-sm wtf-action ml-2" data-url="/api/follow_curation/{{ item.slug }}" data-done="Following">Follow</button>
+  {% endif %}
+</div>
+{% endmacro %}
