@@ -31,3 +31,4 @@ from .suggestions import *
 from .media import *
 from .trending import *
 from .community_notes import *
+from .coauthors import *

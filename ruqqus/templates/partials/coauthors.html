@@ -1,0 +1,11 @@
+{#
+  The names a co-authored post carries next to its author's (helpers/coauthors.py).
+
+  coauthor_line(p, v, dot): " · with <names>" for a post whose co-authors accepted, nothing for any
+  other post. Names are links; a name the viewer's word filter hides is left out. `dot` false drops the
+  leading dot, for the bar at the top of a post page.
+#}
+{% macro coauthor_line(p, v, dot=true) %}
+{%- set people = coauthors_of(p, v) -%}
+{%- if people %}{{ ' · ' if dot else '' }}<span class="coauthors">with {% for u in people %}<a href="{{ u.permalink }}" class="user-name"><img src="{{ u.profile_url }}" class="profile-pic-20 mr-1" alt=""><span class="user-name-inner">{{ u.username }}</span></a>{% if not loop.last %}, {% endif %}{% endfor %}</span>{% endif -%}
+{% endmacro %}

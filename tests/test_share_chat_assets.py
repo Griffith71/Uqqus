@@ -37,7 +37,8 @@ def test_every_share_menu_of_a_post_offers_send_in_chat_for_a_member():
 
 
 def test_the_sheet_and_its_script_are_on_every_page_but_not_in_the_panel_frames():
-    assert "{% if v and not request.args.get('embed') %}{% include \"partials/share_chat_modal.html\" %}{% endif %}" in SHELL
+    assert ("{% if v and not request.args.get('embed') %}{% include \"partials/share_chat_modal.html\" %}"
+            "{% include \"partials/coauthors_modal.html\" %}{% endif %}") in SHELL
     line = next(x for x in SHELL.splitlines() if "/assets/js/share_chat.js" in x)
     assert "not request.args.get('embed')" in line
     assert "body.embedded .share-chat-item" in read("ruqqus", "assets", "style", "main.scss")

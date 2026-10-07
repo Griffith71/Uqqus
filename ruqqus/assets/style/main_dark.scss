@@ -1339,6 +1339,15 @@ body.embedded .share-chat-item {
     word-break: break-word;
 }
 
+// Co-authored posts (templates/partials/coauthors.html, coauthors_modal.html, coauthor_invite.html)
+.coauthors .user-name {
+    white-space: nowrap;
+}
+
+.coauthor-row + .coauthor-row {
+    border-top: 1px solid $border-color;
+}
+
 // Community notes (templates/partials/community_note.html)
 .community-note {
     border: 1px solid $border-color;

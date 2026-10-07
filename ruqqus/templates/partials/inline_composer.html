@@ -14,7 +14,7 @@
 
   The other options are the shared ones in partials/post_options.html.
 #}
-{% from "partials/post_options.html" import comment_permission_field, disclosure_field, anonymous_field %}
+{% from "partials/post_options.html" import comment_permission_field, disclosure_field, anonymous_field, coauthors_field %}
 
 {% macro inline_composer(v, board=none, panel=false) %}
 <div class="row no-gutters {% if panel %}d-flex{% else %}d-none d-lg-flex mt-3{% endif %}{% if not v %} mb-3{% endif %}">
@@ -46,6 +46,7 @@
                 {{ comment_permission_field(0, "ic-permission") }}
                 {{ disclosure_field(false, false, "ic-disclosure") }}
                 {{ anonymous_field(false, "ic-anonymous") }}
+                {{ coauthors_field("", "ic-coauthors") }}
                 <label class="mt-3 d-block">Sensitive content</label>
                 <div class="custom-control custom-checkbox">
                   <input type="checkbox" class="custom-control-input" id="ic-sensitive" name="sensitive"{% if board and board.is_sensitive %} checked disabled{% endif %}>

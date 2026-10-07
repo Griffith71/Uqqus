@@ -17,6 +17,9 @@
 
   anonymous_field(checked, prefix): the "Post anonymously" checkbox (helpers/anonymity.py).
 
+  coauthors_field(value, prefix): usernames to invite as co-authors (helpers/coauthors.py), read by
+  submit_post as `coauthors`.
+
   disclosure_badges(item, v) / disclosure_row(item, v): the labels on a post or a
   comment that carries a disclosure, and, for its author and admins, a note that
   it is anonymous.
@@ -75,6 +78,11 @@
 
 {% macro disclosure_row(item, v=none) %}
 {%- if item.paid_partnership or item.made_with_ai or (item.is_anonymous and not anon_hidden(item, v)) %}<div class="disclosure-badges mb-2">{{ disclosure_badges(item, v) }}</div>{% endif -%}
+{% endmacro %}
+
+{% macro coauthors_field(value, prefix) %}
+<label class="mt-3 d-block" for="{{ prefix }}">Co-authors (optional)<i class="fas fa-info-circle text-gray-400 ml-1" data-toggle="tooltip" data-placement="top" title="Invite up to 5 people to share this post. Once they accept it carries their name and is listed on their profile. You still edit, delete and forward it. Not for anonymous posts."></i></label>
+<input type="text" class="form-control" id="{{ prefix }}" name="coauthors" value="{{ value }}" maxlength="200" placeholder="@username, @username" autocomplete="off">
 {% endmacro %}
 
 {% macro anonymous_field(checked, prefix) %}

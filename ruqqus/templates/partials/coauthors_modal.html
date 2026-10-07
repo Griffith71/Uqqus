@@ -1,0 +1,31 @@
+{#
+  "Co-authors": the sheet an author opens from a post's menu (assets/js/coauthors.js). It lists who
+  co-authors the post and who has been invited, and invites more. One copy per page, for a logged-in
+  member, not inside the side-panel frames. Names go in as text.
+#}
+<div class="modal fade" id="coauthorsModal" tabindex="-1" role="dialog" aria-labelledby="coauthorsTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="coauthorsTitle">Co-authors</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true"><i class="far fa-times"></i></span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p class="text-small text-muted">Invite people to share this post. Once they accept it carries their name and is listed on their profile. You still edit, delete and forward it. Not for anonymous posts.</p>
+        <div id="coauthors-list" class="mb-3" aria-live="polite"></div>
+        <form id="coauthors-form" onsubmit="return false;">
+          <label class="sr-only" for="coauthors-input">Usernames</label>
+          <div class="input-group">
+            <input type="text" id="coauthors-input" class="form-control" maxlength="200" placeholder="@username, @username" autocomplete="off">
+            <div class="input-group-append">
+              <button type="submit" id="coauthors-invite" class="btn btn-primary">Invite</button>
+            </div>
+          </div>
+        </form>
+        <div id="coauthors-status" class="text-small mt-2" role="status"></div>
+      </div>
+    </div>
+  </div>
+</div>

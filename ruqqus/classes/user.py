@@ -10,6 +10,7 @@ from flask import session, g, request
 
 from ruqqus.helpers.base36 import *
 from ruqqus.helpers import anonymity
+from .coauthors import PostCoauthor
 from ruqqus.helpers.muting import hide_muted
 from ruqqus.helpers.security import *
 from ruqqus.helpers.lazy import lazy
@@ -283,10 +284,13 @@ class User(Base, Stndrd, Age_times):
             User.is_nofollow == False
         )
 
+        # a post a followed account co-authors counts as theirs (helpers/coauthors.py)
+        coauthored = select(PostCoauthor.post_id).where(PostCoauthor.user_id.in_(user_ids), PostCoauthor.status == "accepted")
+
         posts = posts.filter(
             or_(
                 Submission.board_id.in_(board_ids),
-                and_(Submission.author_id.in_(user_ids), not_(Submission.is_anonymous))
+                and_(or_(Submission.author_id.in_(user_ids), Submission.id.in_(coauthored)), not_(Submission.is_anonymous))
             )
         )
 
@@ -660,11 +664,14 @@ class User(Base, Stndrd, Age_times):
         reposted_sort_expr = sort_col if sort_col is not None else RepostRelationship.created_utc
 
         # ---- Posts authored by this user ----
+        # a post this account co-authors (helpers/coauthors.py) is listed here too, once they accepted
+        coauthored = select(PostCoauthor.post_id).where(PostCoauthor.user_id == self.id, PostCoauthor.status == "accepted")
+
         authored = g.db.query(
             Submission.id,
             authored_sort_expr
         ).options(lazyload('*')).filter(
-            Submission.author_id == self.id,
+            or_(Submission.author_id == self.id, Submission.id.in_(coauthored)),
             Submission.id.notin_(forward_copies)
         )
         authored = apply_common_filters(authored)
@@ -1240,8 +1247,12 @@ class User(Base, Stndrd, Age_times):
 
     @property
     def public_post_count(self):
-        """What a profile shows: anonymous posts are not counted."""
-        return self.submissions.filter_by(is_banned=False, is_anonymous=False).count()
+        """What a profile shows: no anonymous posts; co-authored ones count."""
+        own = self.submissions.filter_by(is_banned=False, is_anonymous=False).count()
+        shared = g.db.query(PostCoauthor.id).join(Submission, Submission.id == PostCoauthor.post_id).filter(
+            PostCoauthor.user_id == self.id, PostCoauthor.status == "accepted",
+            Submission.is_banned == False, Submission.is_anonymous == False, Submission.deleted_utc == 0).count()
+        return own + shared
 
     @property
     def public_comment_count(self):

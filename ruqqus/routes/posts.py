@@ -29,6 +29,7 @@ from ruqqus.helpers import post_drafts
 from ruqqus.helpers.media import attach as media_attach, cdn as media_cdn, safety as media_safety
 from ruqqus.helpers.word_filter_store import post_severity, apply_post_severity
 from ruqqus.classes import *
+from ruqqus.helpers import coauthors       # after the star-import: ruqqus.classes has a module of this name too
 from .front import frontlist
 from ruqqus.__main__ import app, limiter, cache, db_session
 from flask import session as flask_session
@@ -1227,6 +1228,21 @@ Optional file data:
                 "api": lambda: ({"error": link_refusal}, 400)
                 }
 
+    # co-authors named in the composer (helpers/coauthors.py): a name that cannot be invited stops the post
+    # here, before anything is made, so it never vanishes quietly afterwards
+    try:
+        coauthor_names = coauthors.parse_names(request.form.get("coauthors"))
+        coauthor_error = (coauthors.check_names(g.db, v, coauthor_names, anonymous=flag(request.form, "anonymous"))
+                          if coauthor_names else None)
+    except coauthors.CoauthorError as error:
+        coauthor_names, coauthor_error = [], error.message
+    if coauthor_error:
+        return {"html": lambda: (render_template("submit.html", v=v, error=coauthor_error,
+                                                 title=title, url=url, body=body, text=text_for_redisplay,
+                                                 b=None, forward_guild_names=forward_guild_names), 400),
+                "api": lambda: ({"error": coauthor_error}, 400)
+                }
+
     new_post = Submission(
         author_id=v.id,
         domain_ref=domain_obj.id if domain_obj else None,
@@ -1514,6 +1530,9 @@ Optional file data:
     attached_media = media_attach.sync(g.db, v.id, (new_post.url, new_post_aux.body), submission_id=new_post.id)
     g.db.commit()
     media_safety.scan_later(attached_media)
+
+    if coauthor_names:
+        coauthors.invite_names(g.db, v, new_post, coauthor_names)
 
     _discard_draft(v, request.form.get("draft_id"))
 

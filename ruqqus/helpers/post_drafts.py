@@ -10,6 +10,7 @@ pressed Post.
 """
 import re
 
+from . import coauthors
 from . import comment_permission as cperm
 from .post_fields import BODY_MAX, TITLE_MAX, URL_MAX, PostFieldError, check_body, flag
 
@@ -58,12 +59,18 @@ def clean_fields(form):
     if permission is None:
         raise PostFieldError("Choose who can comment.")
 
+    try:
+        names = coauthors.parse_names(form.get("coauthors"))
+    except coauthors.CoauthorError as error:
+        raise PostFieldError(error.message)
+
     return {
         "title": title,
         "url": url,
         "body": body,
         "forward_guilds": guilds,
         "options": {
+            "coauthors": ", ".join(names),
             "comment_permission": permission,
             "paid_partnership": flag(form, "paid_partnership"),
             "made_with_ai": flag(form, "made_with_ai"),
@@ -110,6 +117,8 @@ def publish_form(fields, formkey):
     for name in ("sensitive", "paid_partnership", "made_with_ai", "anonymous"):
         if options.get(name):
             data[name] = "true"
+    if options.get("coauthors"):
+        data["coauthors"] = options["coauthors"]
     return data
 
 

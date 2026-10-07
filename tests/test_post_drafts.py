@@ -22,7 +22,7 @@ def test_a_draft_saves_the_composers_fields():
     assert f["title"] == "A titlewith breaks"          # one line, like the real title
     assert f["url"] == "https://example.com/x" and f["body"] == "some **text**"
     assert f["forward_guilds"] == ["general", "Test"]  # leading + dropped, case-insensitive duplicates dropped
-    assert f["options"] == {"comment_permission": 2, "paid_partnership": True, "made_with_ai": False, "anonymous": False, "sensitive": True}
+    assert f["options"] == {"coauthors": "", "comment_permission": 2, "paid_partnership": True, "made_with_ai": False, "anonymous": False, "sensitive": True}
 
 
 def test_an_empty_draft_is_valid_but_flagged_empty():

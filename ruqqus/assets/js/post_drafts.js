@@ -67,6 +67,8 @@
     ['paid_partnership', 'made_with_ai', 'anonymous'].forEach(function (name) {
       if (form.querySelector('input[type="checkbox"][name="' + name + '"]:checked')) data.append(name, 'true');
     });
+    var coauthors = form.querySelector('input[name="coauthors"]');
+    if (coauthors && coauthors.value.trim()) data.append('coauthors', coauthors.value.trim());
     var sensitive = el('sensitiveCheck');
     if (sensitive && sensitive.checked) data.append('sensitive', 'true');
     if (idField.value) data.append('draft_id', idField.value);

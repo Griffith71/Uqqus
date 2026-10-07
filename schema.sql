@@ -5836,5 +5836,19 @@ CREATE INDEX note_requests_comment_index ON public.note_requests USING btree (co
 CREATE UNIQUE INDEX community_notes_post_live_index ON public.community_notes USING btree (post_id) WHERE post_id IS NOT NULL AND removed_utc = 0;
 CREATE UNIQUE INDEX community_notes_comment_live_index ON public.community_notes USING btree (comment_id) WHERE comment_id IS NOT NULL AND removed_utc = 0;
 
+CREATE TABLE public.post_coauthors (
+    id SERIAL PRIMARY KEY,
+    post_id integer NOT NULL,
+    user_id integer NOT NULL,
+    invited_by_id integer NOT NULL,
+    status character varying(8) DEFAULT 'pending' NOT NULL,
+    created_utc integer DEFAULT 0 NOT NULL,
+    accepted_utc integer DEFAULT 0 NOT NULL,
+    CONSTRAINT post_coauthors_pair_key UNIQUE (post_id, user_id),
+    CONSTRAINT post_coauthors_status CHECK (status IN ('pending', 'accepted'))
+);
+
+CREATE INDEX post_coauthors_user_index ON public.post_coauthors USING btree (user_id, status);
+
 CREATE INDEX submissions_word_severity_index ON public.submissions USING btree (word_severity);
 CREATE INDEX comments_word_severity_index ON public.comments USING btree (word_severity);

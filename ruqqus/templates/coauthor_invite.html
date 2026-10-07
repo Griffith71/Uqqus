@@ -1,0 +1,48 @@
+{% extends "home.html" %}
+
+{# shares the Curations page layout (the same 726px column and sidebars) #}
+{% block pagetype %}curations{% endblock %}
+
+{% block title %}
+<title>Co-author invitation - {{ 'SITE_NAME' | app_config }}</title>
+{% endblock %}
+
+{% block desktopBanner %}{% endblock %}
+{% block PseudoSubmitForm %}{% endblock %}
+{% block pagenav %}{% endblock %}
+
+{% block content %}
+<div class="col px-md-4 py-4">
+
+  <h1 class="h3 mb-3">{% if accepted %}You co-author this post{% else %}Co-author invitation{% endif %}</h1>
+
+  <div class="card mb-3">
+    <div class="card-body">
+      <a href="{{ post.permalink }}" class="h5 d-block mb-1">{{ post.title | safe }}</a>
+      <div class="text-muted text-small">by <a href="{{ author_of(post, v).permalink }}">@{{ author_of(post, v).username }}</a></div>
+    </div>
+  </div>
+
+  {% if accepted %}
+  <p class="text-muted">The post carries your name and is listed on your profile. Votes, comments and forwards are shared with its author, who edits and deletes it. You can step off at any time: the post stays, without your name.</p>
+  <form method="post" action="/api/coauthor/{{ post.base36id }}/leave" onsubmit="return confirm('Step off as co-author of this post?');">
+    <input type="hidden" name="formkey" value="{{ v.formkey }}">
+    <button type="submit" class="btn btn-outline-danger">Step off</button>
+    <a href="{{ post.permalink }}" class="btn btn-link">Back to the post</a>
+  </form>
+  {% else %}
+  <p class="text-muted">@{{ author_of(post, v).username }} invited you to share this post. If you accept, it carries your name and appears on your profile too. Votes, comments and forwards stay shared, and only its author edits or deletes it. You can step off at any time.</p>
+  <div class="d-flex">
+    <form method="post" action="/api/coauthor/{{ post.base36id }}/accept" class="mr-2">
+      <input type="hidden" name="formkey" value="{{ v.formkey }}">
+      <button type="submit" class="btn btn-primary">Accept</button>
+    </form>
+    <form method="post" action="/api/coauthor/{{ post.base36id }}/decline">
+      <input type="hidden" name="formkey" value="{{ v.formkey }}">
+      <button type="submit" class="btn btn-secondary">Decline</button>
+    </form>
+  </div>
+  {% endif %}
+
+</div>
+{% endblock %}
