@@ -506,7 +506,13 @@ def after_request(response):
     # response.headers.add("X-Content-Type-Options","nosniff")
     response.headers.add("Feature-Policy",
                          "geolocation 'none'; midi 'none'; notifications 'none'; push 'none'; sync-xhr 'none'; microphone 'none'; camera 'none'; magnetometer 'none'; gyroscope 'none'; vibrate 'none'; fullscreen 'none'; payment 'none';")
-    if not request.path.startswith("/embed/"):
+    if request.path.startswith("/embed/"):
+        pass
+    elif request.args.get("embed") and request.path.startswith(("/notifications", "/chat", "/composer")):
+        # the side panels (assets/js/side_panels.js) show these pages in a frame of the
+        # site itself; no other site may frame them
+        response.headers.add("X-Frame-Options", "sameorigin")
+    else:
         response.headers.add("X-Frame-Options",
                              "deny")
 

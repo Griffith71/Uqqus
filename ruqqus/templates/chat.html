@@ -14,6 +14,11 @@
 
 <div id="chat-app" class="d-flex" style="height: calc(100vh - 56px);">
 
+  <!-- narrow screens (phones, the chat side panel) show the list OR the conversation -->
+  <div id="chat-mobile-bar" class="border-bottom px-2 py-1">
+    <button type="button" id="chat-back" class="btn btn-link btn-sm"><i class="fas fa-chevron-left mr-1"></i>Chats</button>
+  </div>
+
   <div id="chat-list-pane" class="h-100 border-right d-flex flex-column" style="width: 250px; min-width: 220px; flex-shrink: 0;">
 
     <div class="font-weight-bold h5 px-3 pt-3 pb-2 mb-0">Chat</div>
@@ -52,6 +57,17 @@
     username: "{{ v.username }}",
     initialRoom: {{ (request.args.get('room') | tojson) if request.args.get('room') else 'null' }}
   };
+</script>
+<script>
+  (function () {
+    var app = document.getElementById('chat-app');
+    var show = function (open) { app.classList.toggle('chat-has-room', open); };
+    document.getElementById('chat-conversation-list').addEventListener('click', function (event) {
+      if (event.target.closest('.chat-list-row')) show(true);
+    });
+    document.getElementById('chat-back').addEventListener('click', function () { show(false); });
+    if (window.RUQQUS_CHAT_BOOT.initialRoom) show(true);
+  })();
 </script>
 <script type="module" src="/assets/js/chat_bundle.js"></script>
 

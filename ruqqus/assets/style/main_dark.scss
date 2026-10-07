@@ -1300,6 +1300,133 @@ color: $dark;
     padding-bottom: 0.75rem;
 }
 
+// Side panels: Notifications, Chat and Create post replace the right sidebar
+// on a wide screen (assets/js/side_panels.js)
+#side-panel {
+    display: none;
+}
+
+.nav-link.panel-active .fa, .nav-link.panel-active .fas {
+    color: $primary !important;
+}
+
+@media (min-width: 992px) {
+    #main-content-row.panel-open > .sidebar:not(#sidebar-left) {
+        display: none !important;
+    }
+
+    #main-content-row.panel-open > #side-panel {
+        display: flex;
+        flex-direction: column;
+        flex: 0 0 380px;
+        max-width: 380px;
+        position: sticky;
+        top: var(--navbar-height, 55px);
+        height: calc(100vh - var(--navbar-height, 55px));
+        align-self: flex-start;
+        border-left: 1px solid $border-color;
+    }
+
+    #side-panel .side-panel-head {
+        padding: 0.25rem 0.5rem 0.25rem 1rem;
+        border-bottom: 1px solid $border-color;
+    }
+
+    #side-panel .side-panel-body {
+        position: relative;
+        flex: 1 1 auto;
+        min-height: 0;
+    }
+
+    #side-panel .side-panel-frame {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        border: 0;
+    }
+
+    #side-panel .side-panel-frame[hidden] {
+        display: none;
+    }
+}
+
+// A page shown inside a panel (?embed=1): no navbar or sidebars
+body.embedded {
+    padding-top: 0 !important;
+}
+
+body.embedded #navbar, body.embedded .sidebar, body.embedded #mobile-bottom-navigation-bar {
+    display: none !important;
+}
+
+body.embedded .embedded-hidden {
+    display: none !important;
+}
+
+body.embedded .sticky {
+    top: 0;
+}
+
+body.embedded #main-content-col {
+    max-width: none !important;
+}
+
+body.embedded #chat-app {
+    height: 100vh !important;
+}
+
+#composer .inline-composer .form-control.ic-title {
+    background: transparent !important;
+    border-color: transparent !important;
+    box-shadow: none !important;
+    resize: none;
+    overflow: hidden;
+    min-height: 2.5rem;
+    padding-left: 0;
+    padding-right: 0;
+    font-size: 1.1rem;
+}
+
+// Chat on a narrow screen (a phone, the chat panel): the list or the conversation, not both
+#chat-mobile-bar {
+    display: none;
+}
+
+@media (max-width: 767.98px) {
+    #chat #chat-app {
+        flex-direction: column;
+    }
+
+    #chat #chat-list-pane {
+        width: 100% !important;
+        min-width: 0 !important;
+        flex: 1 1 0 !important;
+        min-height: 0;
+        border-right: 0 !important;
+    }
+
+    #chat #chat-thread-pane {
+        display: none !important;
+    }
+
+    #chat #chat-app.chat-has-room #chat-list-pane {
+        display: none !important;
+    }
+
+    #chat #chat-app.chat-has-room #chat-thread-pane {
+        display: flex !important;
+        flex: 1 1 0;
+        min-height: 0;
+        height: auto !important;
+    }
+
+    #chat #chat-app.chat-has-room #chat-mobile-bar {
+        display: block;
+    }
+}
+
 .post-filter {
     display: inline-block;
     font-size: $small-font-size;

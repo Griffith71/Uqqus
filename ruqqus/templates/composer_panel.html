@@ -1,0 +1,18 @@
+{% extends "default.html" %}
+{% from "partials/inline_composer.html" import inline_composer %}
+
+{# Only shown in the Create post side panel (a frame of the site, ?embed=1). #}
+
+{% block title %}
+<title>Create post - {{ "SITE_NAME" | app_config }}</title>
+{% endblock %}
+
+{% block pagetype %}composer{% endblock %}
+
+{% block sidebar %}{% endblock %}
+
+{% block customPadding %}p-0{% endblock %}
+
+{% block content %}
+{{ inline_composer(v, none, true) }}
+{% endblock %}

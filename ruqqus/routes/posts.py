@@ -1474,6 +1474,13 @@ Optional file data:
             }
 
 
+@app.get("/composer")
+@auth_required
+def composer_panel(v):
+    """The composer on its own, for the Create post side panel (assets/js/side_panels.js)."""
+    return render_template("composer_panel.html", v=v)
+
+
 @app.get("/inpage/post_card/<pid>")
 @auth_required
 def post_card_fragment(pid, v):

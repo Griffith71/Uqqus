@@ -25,6 +25,7 @@
   var errorBox = el('ic-error');
   var forward = el('ic-forward');
   var file = el('ic-file');
+  var posted = el('ic-posted');
   var busy = false;
 
   function autosize() {
@@ -87,13 +88,16 @@
 
   function reset() {
     form.reset();
+    var keepOpen = form.getAttribute('data-open') === 'true';
     if (forward) { forward.disabled = false; el('ic-forward-chip').hidden = false; }
     if (file) el('ic-file-name').textContent = '';
     options.hidden = true;
     optionsToggle.setAttribute('aria-expanded', 'false');
-    form.classList.remove('is-open');
-    more.hidden = true;
-    bar.hidden = true;
+    if (!keepOpen) {
+      form.classList.remove('is-open');
+      more.hidden = true;
+      bar.hidden = true;
+    }
     autosize();
     update();
   }
@@ -101,6 +105,7 @@
   // The new post's card, ready to add to the feed. On a guild page it is the
   // copy forwarded to that guild, which is what the guild's feed lists.
   function addCard(id) {
+    if (!document.querySelector('.posts')) return Promise.resolve();   // no feed here (the side panel)
     var url = '/inpage/post_card/' + encodeURIComponent(id);
     if (forward && !forward.disabled) url += '?guild=' + encodeURIComponent(forward.value);
     return fetch(url, { credentials: 'same-origin' })
@@ -126,6 +131,7 @@
     if (busy || post.disabled) return;
     busy = true;
     errorBox.hidden = true;
+    posted.hidden = true;
     post.textContent = 'Posting…';
     update();
 
@@ -143,7 +149,14 @@
         fail((result.body && result.body.error) || 'Could not post. Try again, or use the full editor.');
         return;
       }
-      return addCard(result.body.id).then(function () { reset(); }, function () {
+      return addCard(result.body.id).then(function () {
+        reset();
+        // no feed on this page (the side panel): point at the new post instead
+        if (!document.querySelector('.posts')) {
+          el('ic-posted-link').href = result.body.permalink;
+          posted.hidden = false;
+        }
+      }, function () {
         // posted, but the card could not be fetched: the feed just needs a reload to show it
         reset();
         fail('Posted. Reload the page to see it.');
@@ -157,6 +170,7 @@
     });
   }
 
+  if (form.getAttribute('data-open') === 'true') open();
   autosize();
   update();
 })();

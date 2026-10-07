@@ -2,7 +2,9 @@
   The composer at the top of a feed (assets/js/inline_composer.js), desktop only:
   post straight from the feed instead of opening "Create a post".
 
-  inline_composer(v, board): `board` is the guild whose page this is, or none. A
+  inline_composer(v, board, panel): `board` is the guild whose page this is, or none.
+  With `panel` it is the Create post side panel (composer_panel.html): always shown,
+  open, and there is no feed to add the new card to, so it links to the post instead. A
   post is always made on your own profile first; on a guild page it is also
   forwarded to that guild (the hidden `forward_guilds` field). The form posts to
   /api/vue/submit, the same route the Create a post page uses, so every posting
@@ -12,12 +14,12 @@
 #}
 {% from "partials/post_options.html" import comment_permission_field, disclosure_field, anonymous_field %}
 
-{% macro inline_composer(v, board=none) %}
-<div class="row no-gutters d-none d-lg-flex mt-3{% if not v %} mb-3{% endif %}">
+{% macro inline_composer(v, board=none, panel=false) %}
+<div class="row no-gutters {% if panel %}d-flex{% else %}d-none d-lg-flex mt-3{% endif %}{% if not v %} mb-3{% endif %}">
   <div class="col">
     <div class="card pseudo-submit-form inline-composer-card">
       {% if v %}
-      <form id="inline-composer" class="inline-composer card-body" autocomplete="off" novalidate>
+      <form id="inline-composer" class="inline-composer card-body" autocomplete="off" novalidate{% if panel %} data-open="true"{% endif %}>
         <input type="hidden" name="formkey" value="{{ v.formkey }}">
         {% if board %}<input type="hidden" id="ic-forward" name="forward_guilds" value="{{ board.name }}">{% endif %}
         <div class="d-flex">
@@ -25,7 +27,7 @@
           <div class="flex-grow-1 ic-main">
             <textarea id="ic-title" name="title" rows="1" maxlength="280" class="form-control ic-title" placeholder="Share something with the {{ 'SITE_NAME' | app_config }} community..." aria-label="Post title"></textarea>
 
-            <div id="ic-more" class="ic-more" hidden>
+            <div id="ic-more" class="ic-more"{% if not panel %} hidden{% endif %}>
               <textarea id="ic-body" name="body" rows="3" class="form-control mt-2" placeholder="Add more (optional, markdown works)" aria-label="Post text"></textarea>
               <div id="ic-options" class="ic-options mt-2" hidden>
                 <input type="url" id="ic-url" name="url" class="form-control" placeholder="Link (optional)" aria-label="Link">
@@ -40,7 +42,7 @@
               </div>
             </div>
 
-            <div id="ic-bar" class="ic-bar d-flex align-items-center mt-2" hidden>
+            <div id="ic-bar" class="ic-bar d-flex align-items-center mt-2"{% if not panel %} hidden{% endif %}>
               {% if board %}
               <span id="ic-forward-chip" class="badge badge-pill badge-primary mr-2 ic-chip" title="Posted on your profile first, then forwarded to this guild">
                 Forwarding to +{{ board.name }}<button type="button" id="ic-forward-remove" class="ic-chip-remove" aria-label="Do not forward to +{{ board.name }}">&times;</button>
@@ -57,6 +59,7 @@
               <button type="submit" id="ic-post" class="btn btn-primary btn-sm" disabled>Post</button>
             </div>
             <div id="ic-error" class="text-danger text-small mt-2" role="alert" hidden></div>
+            <div id="ic-posted" class="text-small mt-2" role="status" hidden>Posted. <a id="ic-posted-link" href="#" target="_top">View your post</a></div>
           </div>
         </div>
       </form>

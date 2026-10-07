@@ -71,7 +71,7 @@
 {% endblock %}
 
 {% block mobileFeedTabs %}
-<div class="d-lg-none bg-white border-bottom">
+<div class="d-lg-none bg-white border-bottom embedded-hidden">
   <ul class="nav nav-pills flex-nowrap overflow-auto px-2 py-2 mb-0" style="white-space: nowrap;">
     <li class="nav-item"><a class="nav-link {% if request.path=='/all' %}active{% endif %}" href="/all">All</a></li>
     <li class="nav-item"><a class="nav-link {% if request.path=='/' or request.path=='/for_you' %}active{% endif %}" href="/for_you">For You</a></li>
