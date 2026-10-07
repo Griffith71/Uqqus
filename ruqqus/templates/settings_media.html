@@ -28,6 +28,46 @@
       </div>
       {% endif %}
 
+      {% if "google" in offered %}
+      <div class="settings-section rounded" id="media-google">
+        <div class="d-lg-flex">
+          <div class="title w-lg-25">
+            <label>Google account</label>
+          </div>
+          <div class="body w-lg-100">
+            {% if accounts.get("google") %}
+            <p><span class="badge badge-success mr-2">On</span>Pictures and audio you upload are kept in a
+              <strong>{{ 'SITE_NAME' | app_config }}</strong> folder in your Google Drive. They stay private there:
+              {{ 'SITE_NAME' | app_config }} shows them in your posts, and can only see the files it created itself.</p>
+            <p class="text-small text-muted mb-2">
+              {% if google_video %}Videos you upload go to your YouTube channel.
+              {% else %}Video is not connected. You will be asked the first time you add a video.{% endif %}
+            </p>
+            <a href="/settings/media/google/connect" class="btn btn-secondary mr-2 mb-2">Use a different Google account</a>
+            <form action="/settings/media/google/disconnect" method="post" class="d-inline"
+                  onsubmit="return confirm('Disconnect Google? Pictures and audio stored in your Google Drive will stop showing in your posts. Videos on YouTube keep playing.');">
+              <input type="hidden" name="formkey" value="{{ v.formkey }}">
+              <button type="submit" class="btn btn-secondary mb-2">Disconnect</button>
+            </form>
+            <p class="text-small text-muted mt-2 mb-0">Deleting a file in your Drive, or disconnecting, removes it from your posts.
+              You can also remove this site's access any time in your Google account, under Security, Third-party access.</p>
+            {% else %}
+            {% if "google" in expired %}
+            <div class="alert alert-warning text-small" role="alert">Google is no longer accepting this site's access to your account, so your pictures and audio are not showing. Connect again to bring them back.</div>
+            {% endif %}
+            <p>Keep your uploads in your own Google account: pictures and audio in your Google Drive, videos on your YouTube channel.</p>
+            <a href="/settings/media/google/connect" class="btn btn-primary mb-2" id="media-google-connect">{{ "Connect Google again" if "google" in expired else "Enable media storage with Google" }}</a>
+            <p class="text-small text-muted mt-2 mb-0">
+              You choose which Google account to use on the next screen. To keep it separate from your personal account,
+              <a href="https://accounts.google.com/signup" target="_blank" rel="noopener">create a new Google account</a> first, then come back and connect it.
+              {{ 'SITE_NAME' | app_config }} never sees your Google password and can only reach the files it creates.
+            </p>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+      {% endif %}
+
       {% if "dev" in offered %}
       <div class="settings-section rounded" id="media-dev">
         <div class="d-lg-flex">

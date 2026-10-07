@@ -9,12 +9,16 @@ import hmac
 import secrets
 import time
 
+from urllib.parse import urlencode
+
 from flask import Response, g, jsonify, redirect, render_template, request
 
 from ruqqus.__main__ import app, limiter
 from ruqqus.classes import MediaAccount, MediaAsset
-from ruqqus.helpers.media import attach, dev, registry, rules, safety
-from ruqqus.helpers.media.base import MediaGone
+from ruqqus.helpers.media import attach, cdn, dev, google_oauth, registry, rules, safety
+from ruqqus.helpers.media.base import AccountLost, MediaGone, ProviderDown
+from ruqqus.helpers.secret_box import encrypt_secret
+from ruqqus.helpers.security import generate_hash, validate_hash
 from ruqqus.helpers.wrappers import auth_required, get_logged_in_user, validate_formkey
 
 # templates ask this to decide between the linked-storage upload controls and the old ones
@@ -52,6 +56,20 @@ def _my_asset(v, raw_id):
     return g.db.query(MediaAsset).filter_by(id=asset_id, user_id=v.id).first()
 
 
+def _lost(account):
+    """The provider no longer accepts the member's permission: remember it, so the settings
+    page offers to connect again and nothing keeps asking the provider."""
+    if account is not None and account.status == "active":
+        account.status = "error"
+        account.updated_utc = int(time.time())
+        g.db.add(account)
+        g.db.commit()
+
+
+RECONNECT = "Your media storage needs connecting again."
+BUSY = "The storage service is not answering right now. Try again in a moment."
+
+
 def _set_status(asset, status):
     if asset.status != status and rules.can_change(asset.status, status):
         asset.status = status
@@ -64,10 +82,64 @@ def _set_status(asset, status):
 @app.get("/settings/media")
 @auth_required
 def settings_media(v):
-    accounts = {a.provider: a for a in _accounts(v) if a.is_active}
-    return render_template("settings_media.html", v=v, accounts=accounts,
+    rows = _accounts(v)
+    accounts = {a.provider: a for a in rows if a.is_active}
+    # connected before, but the provider stopped accepting it: offer to connect again
+    expired = {a.provider for a in rows if a.status == "error"}
+    google = accounts.get("google")
+    return render_template("settings_media.html", v=v, accounts=accounts, expired=expired,
                            offered=registry.account_kinds(),
+                           google_video=bool(google) and google_oauth.SCOPE_YOUTUBE in google.scopes.split(),
                            error=request.args.get("error"), msg=request.args.get("msg"))
+
+
+def _google_redirect_uri():
+    return cdn.absolute("/settings/media/google/callback")
+
+
+@app.get("/settings/media/google/connect")
+@auth_required
+def settings_media_google_connect(v):
+    """Send the member to Google to approve. `want=video` also asks for uploading to
+    YouTube (only when they first add a video); otherwise only the Drive files this site makes."""
+    if not google_oauth.configured():
+        return redirect("/settings/media?error=Google+storage+is+not+set+up+on+this+site.")
+    want = "video" if request.args.get("want") == "video" else "storage"
+    state = google_oauth.make_state(v.id, want, int(time.time()), generate_hash)
+    return redirect(google_oauth.authorize_url(_google_redirect_uri(), state, want))
+
+
+@app.get("/settings/media/google/callback")
+@auth_required
+def settings_media_google_callback(v):
+    """Google sends the member back here with a code, or with why not."""
+    def back(message, key="error"):
+        return redirect("/settings/media?" + urlencode({key: message}))
+
+    if not google_oauth.configured():
+        return back("Google storage is not set up on this site.")
+    want = google_oauth.read_state(request.args.get("state"), v.id, int(time.time()), validate_hash)
+    if want is None:
+        return back("That connection attempt expired. Try again.")
+    if request.args.get("error") or not request.args.get("code"):
+        return back("Nothing was connected: Google access was not approved.")
+
+    try:
+        granted = google_oauth.exchange(request.args["code"], _google_redirect_uri())
+    except ValueError as e:
+        return back(str(e))
+    except ProviderDown:
+        return back("Google is not answering right now. Try again in a moment.")
+    if google_oauth.SCOPE_DRIVE not in granted["scopes"]:
+        return back("To store your uploads, tick the box that lets this site manage the files it creates in your Google Drive.")
+
+    account = _link(v, "google", external_id=granted["sub"], scopes=" ".join(granted["scopes"]),
+                    refresh_token_encrypted=encrypt_secret(granted["refresh_token"]))
+    google_oauth.forget(account)
+    g.db.commit()
+    if want == "video" and google_oauth.SCOPE_YOUTUBE not in granted["scopes"]:
+        return back("Pictures and audio are connected. Video was not: YouTube access was not approved.", "msg")
+    return back("Media storage is on. Your uploads now go to your Google account.", "msg")
 
 
 @app.post("/settings/media/dev/enable")
@@ -191,6 +263,14 @@ Answers with where the browser sends the bytes (`upload.url`, `upload.method`,
     except rules.MediaError as e:
         g.db.rollback()
         return _error(e.message, e.code)
+    except AccountLost:
+        g.db.rollback()
+        _lost(account)
+        return _error(RECONNECT, 409, need="storage", settings="/settings/media")
+    except ProviderDown:
+        g.db.rollback()
+        return _error(BUSY, 503)
+    g.db.add(account)          # a provider may have remembered something on it (its folders)
     g.db.add(asset)
     g.db.commit()
     return jsonify({"id": rules.b36(asset.id), "upload": upload})
@@ -238,10 +318,17 @@ def media_upload_complete(aid, v):
         _set_status(asset, rules.REMOVED)
         g.db.commit()
         return _error(e.message, e.code)
+    except AccountLost:
+        g.db.rollback()
+        _lost(account)
+        return _error(RECONNECT, 409, need="storage", settings="/settings/media")
     except MediaGone:
         _set_status(asset, rules.REMOVED)
         g.db.commit()
         return _error("The upload did not arrive. Try again.", 400)
+    except ProviderDown:
+        g.db.rollback()
+        return _error(BUSY, 503)          # still pending: the browser may ask again
     finally:
         if temp:
             safety.discard(temp)
@@ -325,10 +412,16 @@ never cached. Anything else is refused, so this is not a file host for other sit
         if not hmac.compare_digest(provider.checksum(account, asset), asset.checksum):
             raise MediaGone()
         stream = provider.open(account, asset, byte_range)
+    except AccountLost:
+        _lost(account)                    # nothing about this one file: the whole account is unreachable
+        return _refuse(410)
     except MediaGone:
         _set_status(asset, rules.GONE)
         g.db.commit()
         return _refuse(410)
+    except ProviderDown:
+        return _refuse(503)               # temporary, and never cached
+    byte_range = stream.byte_range         # the provider may have answered with the whole file
 
     response = Response(stream.chunks, status=206 if byte_range else 200)
     response.headers["Content-Type"] = rules.content_type(asset.ext)

@@ -22,6 +22,15 @@ class MediaGone(Exception):
     """The provider no longer has the file, or the account no longer lets us read it."""
 
 
+class AccountLost(MediaGone):
+    """The member took the site's access away at the provider (or it expired). Nothing in
+    the account can be reached until they connect it again."""
+
+
+class ProviderDown(Exception):
+    """The provider did not answer properly. Temporary: nothing is concluded about the file."""
+
+
 class Stream:
     """Bytes coming back from a provider: `chunks` yields them; `size` is the length of
     what is being sent (the range's, when there is one)."""

@@ -102,8 +102,12 @@
     options = options || {};
     return prepare(file, kind).then(function (ready) {
       return post('/api/media/uploads', { kind: kind, filename: ready.name, size: ready.size }).then(function (begun) {
-        return send(begun.upload, ready, options.onProgress, options.handle).then(function () {
-          return post('/api/media/uploads/' + begun.id + '/complete');
+        var finish = function () { return post('/api/media/uploads/' + begun.id + '/complete'); };
+        return send(begun.upload, ready, options.onProgress, options.handle).then(finish, function (sendError) {
+          if (sendError.cancelled) throw sendError;
+          // The bytes may have arrived even though the browser was not allowed to read the
+          // provider's answer: the server can tell. If they did not, say what went wrong sending.
+          return finish().catch(function () { throw sendError; });
         });
       });
     });

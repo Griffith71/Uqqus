@@ -15,6 +15,9 @@ services:
       # stand-in media storage for local testing only (ruqqus/helpers/media/dev.py)
       - MEDIA_DEV_PROVIDER=${MEDIA_DEV_PROVIDER:-1}
       - MEDIA_DEV_DIR=/var/lib/ruqqus-media-dev
+      # linked media storage with Google (ruqqus/helpers/media/google_oauth.py): put these in .env
+      - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID:-}
+      - GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET:-}
 
       - HCAPTCHA_SECRET=5436ertfgcvbnfgcy
       - CLOUDFLARE_KEY=5436ertfgcvbnfgcy
