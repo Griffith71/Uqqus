@@ -24,7 +24,7 @@ from ruqqus.helpers import comment_permission as cperm
 from ruqqus.helpers import anonymity
 from ruqqus.classes import *
 from flask import *
-from ruqqus.__main__ import app, limiter
+from ruqqus.__main__ import app, limiter, db_session
 from .front import frontlist
 
 
@@ -487,20 +487,23 @@ Optional file data:
                 body_md = renderer.render(mistletoe.Document(body))
             body_html = sanitize(body_md, linkgen=True)
             
-            #csam detection
+            #csam detection. The scan runs after this request is over, so what it does on a
+            #match uses a session of its own and finds the comment again by id.
+            scanned_comment_id = c.id
+
             def del_function():
+                db = db_session()
                 delete_file(name)
-                c.is_banned=True
-                g.db.add(c)
-                g.db.commit()
-                
-            csam_thread=gevent.spawn(check_csam_url, 
-                                         args=(f"https://{BUCKET}/{name}", 
-                                               v, 
-                                               del_function
-                                              )
-                                        )
-            csam_thread.start()
+                banned = db.get(Comment, scanned_comment_id)
+                if banned is not None:
+                    banned.is_banned = True
+                    db.add(banned)
+                    db.commit()
+                db.close()
+
+            # the arguments go to the function itself: passed as args=(...), gevent handed it one
+            # unknown keyword, the greenlet died at once and no comment image was ever scanned
+            gevent.spawn(check_csam_url, f"https://{BUCKET}/{name}", v, del_function)
 
 
 
