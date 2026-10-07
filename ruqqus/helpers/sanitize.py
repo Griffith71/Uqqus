@@ -7,6 +7,7 @@ from urllib.parse import urlparse, ParseResult, urlunparse
 from functools import partial
 from .get import *
 from .post_formatting import allowed_classes
+from .media.rules import audio_address
 import os.path
 
 _allowed_tags = tags = ['b',
@@ -247,6 +248,20 @@ def sanitize(text, bio=False, linkgen=False, noimages=False):
                     tag.string = tag["href"]
                 except:
                     tag.string = ""
+
+        # A link to a sound file in linked storage (helpers/media) plays in place. Only this
+        # site's own /media/ address with an audio extension qualifies, and the player is built
+        # here, after cleaning: no <audio> or attribute a member wrote ever gets through.
+        if not bio:
+            for tag in soup.find_all("a"):
+                src = audio_address(tag.get("href", ""))
+                if src and not tag.find_parent(["code", "pre"]):
+                    player = soup.new_tag("audio")
+                    player["src"] = src
+                    player["controls"] = ""
+                    player["preload"] = "none"
+                    player["class"] = "media-audio"
+                    tag.replace_with(player)
 
         #clean up tags in code
         for tag in soup.find_all("code"):

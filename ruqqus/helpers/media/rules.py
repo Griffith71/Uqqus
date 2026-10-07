@@ -189,6 +189,14 @@ def parse_path(path):
     return (int(m.group(1), 36), m.group(2), m.group(3)) if m else None
 
 
+def audio_address(href):
+    """`href` if it is exactly one of this site's own media addresses for a sound file
+    (site-relative: no host, no query), else None. The sanitizer turns such a link into a
+    player; nothing else may become one."""
+    parsed = parse_path(href)
+    return href if parsed and kind_of(parsed[2]) == AUDIO else None
+
+
 def find_refs(*texts):
     """Every media address mentioned in a post's link or text, in order, once each.
     A match is only a claim: the caller checks the token and the owner."""

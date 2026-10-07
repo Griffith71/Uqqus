@@ -18,7 +18,7 @@
 (function () {
   'use strict';
 
-  var ACCEPT = { image: 'image/jpeg,image/png,image/gif,image/webp', audio: 'audio/*', video: 'video/*' };
+  var ACCEPT = { image: 'image/jpeg,image/png,image/gif,image/webp', audio: 'audio/mpeg,audio/mp4,audio/ogg,audio/wav,audio/flac,.mp3,.m4a,.ogg,.wav,.flac', video: 'video/*' };
   var REDRAW = /^image\/(jpeg|png|webp)$/;
   var statusPromise = null;
 
@@ -207,8 +207,10 @@
   // 1. the post editor's image button
   status().then(function (s) {
     if (!s.offered || !window.PostEditor) return;
-    window.PostEditor.register('image', function (ctx) {
-      pickInto('image', ctx.textarea, function (markdown) { insertAtCaret(ctx.textarea, markdown); });
+    ['image', 'audio'].forEach(function (kind) {
+      window.PostEditor.register(kind, function (ctx) {
+        pickInto(kind, ctx.textarea, function (markdown) { insertAtCaret(ctx.textarea, markdown); });
+      });
     });
   });
 

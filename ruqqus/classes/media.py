@@ -99,4 +99,7 @@ class MediaAsset(Base):
             if self.kind == rules.IMAGE:
                 data["markdown"] = f"![]({self.path})"
                 data["width"], data["height"] = self.width, self.height
+            elif self.kind == rules.AUDIO:
+                # a link the sanitizer turns into a player (helpers/sanitize.py)
+                data["markdown"] = f"[audio]({self.path})"
         return data
