@@ -1557,6 +1557,13 @@ body.embedded #chat-app {
     font-size: 1.1rem;
 }
 
+// The conversation list (wider on a big screen: see "Chat has no sidebars")
+#chat-list-pane {
+    width: 250px;
+    min-width: 220px;
+    flex-shrink: 0;
+}
+
 // Chat on a narrow screen (a phone, the chat panel): the list or the conversation, not both
 #chat-mobile-bar {
     display: none;
@@ -1597,7 +1604,8 @@ body.embedded #chat-app {
 
 // Chat messages: actions on hover, quotes, reactions (assets/chat_src/src/ui.js)
 .chat-msg-column {
-    max-width: 85%;
+    // not wider than a comfortable line, however wide the thread is
+    max-width: #{"min(85%, 640px)"};
 }
 
 .chat-bubble {
@@ -4518,7 +4526,7 @@ textarea, input[type=text] {
         flex-wrap: nowrap;
     }
 
-    #frontpage #main-content-col, #userpage #main-content-col, #search #main-content-col, #guild #main-content-col, #settings-guild #main-content-col, #thread #main-content-col, #notifications #main-content-col, #curations #main-content-col, #content_history #main-content-col, #chat #main-content-col {
+    #frontpage #main-content-col, #userpage #main-content-col, #search #main-content-col, #guild #main-content-col, #settings-guild #main-content-col, #thread #main-content-col, #notifications #main-content-col, #curations #main-content-col, #content_history #main-content-col {
         max-width: 726px;
         min-width: 0;
         margin-left: 0;
@@ -4528,11 +4536,29 @@ textarea, input[type=text] {
 }
 
 // Chat has no sidebars: just the conversation list and the thread, in one
-// 726px column centered on the page.
+// column as wide as the navbar's content (the block's 1326px less the 15px gutter
+// on each side, 1296px), so its edges line up with the logo and the account area
+// (see "The navbar lines up with the page's columns"). The 15px margins keep it
+// on the navbar's inset on screens narrower than the block.
 @media (min-width: 992px) {
+    #chat #main-content-col {
+        max-width: 1296px;
+        min-width: 0;
+        margin-left: 15px;
+        margin-right: 15px;
+        float: none;
+    }
+
     #chat #chat-app {
         border-left: 1px solid $border-color;
         border-right: 1px solid $border-color;
+    }
+}
+
+// the conversation list takes a third of the wide frame
+@media (min-width: 1200px) {
+    #chat #chat-list-pane {
+        width: 340px;
     }
 }
 
@@ -4542,11 +4568,20 @@ textarea, input[type=text] {
     color: $black !important;
 }
 
-// Settings: one centered column as wide as a feed card column (726px,
-// 696px of content) with the tab bar above it. The pages' own col-lg-8
-// would squeeze the content to two thirds of that, so it takes the full width.
+// Settings: one centered column with the tab bar above it. Up to a tablet it is as
+// wide as a feed card column (726px, 696px of content). On desktop it is as wide as
+// the navbar's content: the container's 15px padding leaves 1296px, so the heading,
+// the tab bar and the content line up with the logo and the account area. The pages'
+// own col-lg-8 would squeeze the content to two thirds of that, so it takes the
+// full width.
 #settings .container {
     max-width: 726px;
+}
+
+@media (min-width: 992px) {
+    #settings .container {
+        max-width: 1326px;
+    }
 }
 
 #settings .col-lg-8 {
