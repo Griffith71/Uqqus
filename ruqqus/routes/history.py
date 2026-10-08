@@ -88,6 +88,7 @@ def history_bookmarked(v):
     return {"html": lambda: render_template("history.html",
                                             v=v,
                                             active_tab="bookmarked",
+                                            organise_bookmarks=True,
                                             content_type=content_type,
                                             listing=listing,
                                             mixed_listing=mixed_listing,

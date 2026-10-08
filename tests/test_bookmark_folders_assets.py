@@ -134,18 +134,26 @@ def test_every_link_of_the_bookmarked_tab_keeps_the_folder():
 
 # --- the sheet and the menus -------------------------------------------------------------------------------
 
-def test_the_add_to_folder_item_is_in_every_menu_that_has_a_bookmark():
+def test_move_to_folder_is_only_offered_on_the_bookmarked_tab():
+    # Bookmarks are sorted from History, not from the menus of every post and comment: each of the six
+    # menu items only draws when the History route sets organise_bookmarks.
     for name, spots in (("submission_listing.html", 2), ("submission.html", 2), ("comments.html", 2)):
         html = read("ruqqus", "templates", name)
         assert html.count("bookmark-folder-item") == spots, name
+        assert html.count("organise_bookmarks") == spots, name
+        assert html.count("Move to folder") == spots and "Add to folder" not in html, name
         assert html.count('data-kind="post"') + html.count('data-kind="comment"') == spots, name
     assert read("ruqqus", "templates", "comments.html").count('data-kind="comment"') == 2
+    bookmarked = HISTORY.split('def history_bookmarked(')[1].split("def history_viewed(")[0]
+    assert bookmarked.count("organise_bookmarks=True") == 1
+    assert "organise_bookmarks" not in HISTORY.split("def history_viewed(")[1]
+    assert "To sort a bookmark, open its &hellip; menu and choose <strong>Move to folder</strong>." in HISTORY_PAGE
 
 
-def test_the_sheet_and_the_script_are_in_the_page_shell_but_not_in_a_panel_frame():
+def test_the_sheet_and_the_script_are_only_on_the_bookmarked_tab_and_not_in_a_panel_frame():
     shell = read("ruqqus", "templates", "default.html")
-    assert "{% if v and not request.args.get('embed') %}{% include \"partials/bookmark_folder_modal.html\" %}{% endif %}" in shell
-    assert "{% if v and not request.args.get('embed') %}<script src=\"/assets/js/bookmark_folders.js?v=1\"></script>{% endif %}" in shell
+    assert "{% if v and organise_bookmarks and not request.args.get('embed') %}{% include \"partials/bookmark_folder_modal.html\" %}{% endif %}" in shell
+    assert "{% if v and organise_bookmarks and not request.args.get('embed') %}<script src=\"/assets/js/bookmark_folders.js?v=2\"></script>{% endif %}" in shell
 
 
 def test_every_element_the_script_uses_exists_and_names_are_drawn_as_text():

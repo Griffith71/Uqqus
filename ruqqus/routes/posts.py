@@ -1785,39 +1785,6 @@ URL path parameters:
     return "", 204
 
 
-@app.route("/retry_thumb/<pid>", methods=["POST"])
-@app.put("/api/v2/submissions/<pid>/thumb")
-@is_not_banned
-@api("identity")
-@validate_formkey
-def retry_thumbnail(pid, v):
-    """
-Retry thumbnail scraping on your post.
-
-URL path parameters:
-* `pid` - The base 36 post id.
-"""
-
-    post = get_post(pid, v=v)
-
-    if post.author_id != v.id and v.admin_level < 3:
-        return jsonify({"error": "That isn't your post."}), 403
-
-    if post.is_archived:
-        return jsonify({"error": "Post is archived"}), 409
-
-    try:
-        success, msg = thumbnail_thread(post.base36id, debug=True)
-    except Exception as e:
-        return jsonify({"error":str(e)}), 500
-
-    if not success:
-        return jsonify({"error":msg}), 500
-
-
-    return jsonify({"message": "Success"})
-
-
 @app.route("/save_post/<base36id>", methods=["POST"])
 #@app.post("/api/v2/submissions/<base36id>/save")
 @auth_required

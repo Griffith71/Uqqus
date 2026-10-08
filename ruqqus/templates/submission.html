@@ -395,7 +395,7 @@
 
           <a class="btn btn-link btn-block btn-lg text-left text-muted" href="/post/{{ p.base36id }}/history"><i class="far fa-history text-center text-muted mr-3"></i>History</a>
 
-          {% if v %}<a class="btn btn-link btn-block btn-lg text-left text-muted bookmark-folder-item" href="javascript:void(0)" data-dismiss="modal" data-kind="post" data-id="{{ p.base36id }}"><i class="fas fa-folder fa-fw text-center text-muted mr-3"></i>Add to folder</a>{% endif %}
+          {% if v and organise_bookmarks %}<a class="btn btn-link btn-block btn-lg text-left text-muted bookmark-folder-item" href="javascript:void(0)" data-dismiss="modal" data-kind="post" data-id="{{ p.base36id }}"><i class="fas fa-folder fa-fw text-center text-muted mr-3"></i>Move to folder</a>{% endif %}
           {% if can_edit %}
           <button class="btn btn-link btn-block btn-lg text-left text-muted" data-dismiss="modal" onclick="togglePostEdit('{{ p.base36id }}')"><i class="far fa-edit text-center text-muted mr-3"></i>Edit</button>
           {% if may_invite_coauthors(p, v) %}<a class="btn btn-link btn-block btn-lg text-left text-muted coauthors-item" href="javascript:void(0)" data-dismiss="modal" data-post-id="{{ p.base36id }}"><i class="fas fa-user-friends fa-fw text-center text-muted mr-3"></i>Co-authors</a>{% endif %}
@@ -405,10 +405,6 @@
 
           {% if can_edit or can_moderate or can_pin %}
           <button class="btn btn-link btn-block btn-lg text-left text-muted" onclick="post('/api/toggle_post_sensitive/{{ p.base36id }}', function(){window.location.reload(true);})"><i class="fas fa-eye-slash text-center text-muted mr-3"></i>{{ "Unmark" if p.is_sensitive else "Mark" }} Sensitive Content</button>
-          {% endif %}
-
-          {% if p.url and not p.is_image and not p.preview_image_url and (can_edit or can_moderate) %}
-          <button class="btn btn-link btn-block btn-lg text-left text-muted" onclick="post_toast('/retry_thumb/{{ p.base36id }}',callback=function(){window.location.reload(true);})"><i class="far fa-image text-center text-muted mr-3"></i>Retry Thumbnail</button>
           {% endif %}
 
           {% if can_pin %}
@@ -753,7 +749,7 @@
 
                         <a class="dropdown-item" href="/post/{{ p.base36id }}/history"><i class="fas fa-history fa-fw"></i>History</a>
 
-                        {% if v %}<a class="dropdown-item bookmark-folder-item" href="javascript:void(0)" data-kind="post" data-id="{{ p.base36id }}"><i class="fas fa-folder fa-fw"></i>Add to folder</a>{% endif %}
+                        {% if v and organise_bookmarks %}<a class="dropdown-item bookmark-folder-item" href="javascript:void(0)" data-kind="post" data-id="{{ p.base36id }}"><i class="fas fa-folder fa-fw"></i>Move to folder</a>{% endif %}
                         {% if can_edit %}
                         <a class="dropdown-item" href="javascript:void(0)" onclick="togglePostEdit('{{ p.base36id }}')"><i class="fas fa-edit fa-fw"></i>Edit</a>
                         {% if may_invite_coauthors(p, v) %}<a class="dropdown-item coauthors-item" href="javascript:void(0)" data-post-id="{{ p.base36id }}"><i class="fas fa-user-friends fa-fw"></i>Co-authors</a>{% endif %}
@@ -763,10 +759,6 @@
 
                         {% if can_edit or can_moderate or can_pin %}
                         <a class="dropdown-item" href="javascript:void(0)" onclick="post('/api/toggle_post_sensitive/{{ p.base36id }}', function(){window.location.reload(true);})"><i class="fas fa-eye-slash fa-fw"></i>{{ "Unmark" if p.is_sensitive else "Mark" }} Sensitive Content</a>
-                        {% endif %}
-
-                        {% if p.url and not p.is_image and not p.preview_image_url and (can_edit or can_moderate) %}
-                        <a class="dropdown-item" href="javascript:void(0)" onclick="post_toast('/retry_thumb/{{ p.base36id }}',callback=function(){window.location.reload(true);})"><i class="fas fa-image fa-fw"></i>Retry Thumb</a>
                         {% endif %}
 
                         {% if can_pin %}

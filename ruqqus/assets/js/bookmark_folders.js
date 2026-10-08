@@ -2,9 +2,9 @@
  * Bookmark folders (routes/bookmark_folders.py, helpers/bookmark_folders.py).
  *
  * Two small parts:
- *   - "Add to folder" in the menu of a post or comment opens the sheet
- *     (partials/bookmark_folder_modal.html): pick a folder or Unsorted, or make a new one; the item
- *     is bookmarked as it is filed, and its bookmark icon is switched on;
+ *   - "Move to folder" in the menu of a bookmarked post or comment (History, Bookmarked tab only)
+ *     opens the sheet (partials/bookmark_folder_modal.html): pick a folder or Unsorted, or make a
+ *     new one;
  *   - on the History page's Bookmarked tab the folder row (templates/history.html) makes, renames
  *     and deletes folders.
  * Every name is drawn as text.
@@ -72,7 +72,7 @@
     });
   }
 
-  // --- the "Add to folder" sheet ------------------------------------------------------------
+  // --- the "Move to folder" sheet ------------------------------------------------------------
 
   var modal = document.getElementById('bookmarkFolderModal');
   if (!modal) return;

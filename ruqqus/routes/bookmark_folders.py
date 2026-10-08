@@ -174,6 +174,6 @@ def bookmark_move(v):
         g.db.rollback()
         abort(422)
 
-    where = f"Added to {folder.name}." if folder else "Moved to unsorted."
+    where = f"Moved to {folder.name}." if folder else "Moved to unsorted."
     return jsonify({"message": where, "saved": True, "kind": kind, "id": request.values.get("id"),
                     "folder": {"id": folder.id, "name": folder.name} if folder else None})
