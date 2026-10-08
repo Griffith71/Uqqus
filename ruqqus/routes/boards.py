@@ -23,6 +23,11 @@ from flask import *
 
 from ruqqus.__main__ import app, limiter, cache
 from ruqqus.helpers.muting import hide_muted
+from ruqqus.helpers import guild_limits
+
+# the templates quote the per-person cap (home sidebar, siege help) from the one place that sets it
+app.jinja_env.globals.update(GUILD_LIMIT_PER_PERSON=guild_limits.PER_PERSON)
+
 
 valid_board_regex = re.compile("^[a-zA-Z0-9][a-zA-Z0-9_]{2,24}$")
 
@@ -122,8 +127,15 @@ def create_board_get(v):
     if not v.can_make_guild:
         return render_template("message.html",
                                v=v,
-                               title="You already lead 10 guilds." if not v.can_join_gms else "Unable to make a guild. For now.",
+                               title=f"You already lead {guild_limits.PER_PERSON} guilds." if not v.can_join_gms else "Unable to make a guild. For now.",
                                message="You need to step down from a guild before you can make any more." if not v.can_join_gms else "You need more Reputation.")
+
+    refused = v.gm_limit_refusal()
+    if refused:
+        return render_template("message.html",
+                               v=v,
+                               title="Unable to make a guild. For now.",
+                               message=guild_limits.say(refused))
 
     # check # recent boards made by user
     cutoff = int(time.time()) - 60 * 60 * 24
@@ -174,8 +186,18 @@ Optional form data:
 
     if not v.can_make_guild:
         return render_template("make_board.html",
+                               v=v,
                                title="Unable to make board",
-                               error="You need more Reputation before you can make a Guild."
+                               error=(guild_limits.say(guild_limits.PERSON) if not v.can_join_gms
+                                      else "You need more Reputation before you can make a Guild.")
+                               )
+
+    refused = v.gm_limit_refusal()
+    if refused:
+        return render_template("make_board.html",
+                               v=v,
+                               title="Unable to make board",
+                               error=guild_limits.say(refused)
                                )
 
     board_name = request.form.get("name")
@@ -777,8 +799,9 @@ def mod_invite_username(bid, board, v):
 
     if board.has_ban(user):
         return jsonify({"error": f"@{user.username} is exiled from +{board.name} and can't currently become a guildmaster."}), 409
-    if not user.can_join_gms:
-        return jsonify({"error": f"@{user.username} already leads enough guilds."}), 409
+    refused = user.gm_limit_refusal()
+    if refused:
+        return jsonify({"error": guild_limits.say(refused, user.username)}), 409
         
     if user.is_deleted:
         return jsonify({"error": f"@{user.username} is deleted."}), 409
@@ -878,8 +901,9 @@ def mod_accept_board(bid, v):
     if not x:
         return jsonify({"error":"Unable to find invitation"}), 404
 
-    if not v.can_join_gms:
-        return jsonify({"error": f"You already lead enough guilds."}), 409
+    refused = v.gm_limit_refusal()
+    if refused:
+        return jsonify({"error": guild_limits.say(refused)}), 409
     if board.has_ban(v):
         return jsonify({"error": f"You are exiled from +{board.name} and can't currently become a guildmaster."}), 409
     x.accepted = True
@@ -2331,11 +2355,12 @@ def siege_guild(v):
                                error="You need to wait 7 days between siege attempts."
                                ), 403
     # check guild count
-    if not v.can_join_gms and guild not in v.boards_modded:
+    refused = v.gm_limit_refusal() if guild not in v.boards_modded else None
+    if refused:
         return render_template("message.html",
                                v=v,
                                title=f"Siege against +{guild.name} Failed",
-                               error="You already lead the maximum number of guilds."
+                               error=guild_limits.say(refused)
                                ), 403
                                
     # Cannot siege banned guilds

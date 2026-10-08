@@ -15,6 +15,7 @@ import time
 from sqlalchemy import or_
 from ruqqus.helpers.wordfilter import WordFilter
 from ruqqus.helpers import wordfilter_seed
+from ruqqus.helpers import guild_limits
 from ruqqus.helpers.word_filter_store import get_filter, rescan
 from ruqqus.classes.domains import reasons as REASONS
 from ruqqus.routes.admin_api import create_plot, user_stat_data
@@ -1115,11 +1116,12 @@ def admin_siege_guild(v):
     #                           error=f"@{user.username} needs to wait 7 days between siege attempts."
     #                           ), 403
     # check guild count
-    if not user.can_join_gms and guild not in user.boards_modded:
+    refused = user.gm_limit_refusal() if guild not in user.boards_modded else None
+    if refused:
         return render_template("message.html",
                                v=v,
                                title=f"Siege on +{guild.name} Failed",
-                               error=f"@{user.username} already leads the maximum number of guilds."
+                               error=guild_limits.say(refused, user.username)
                                ), 403
 
     # Can't siege if exiled

@@ -9,7 +9,7 @@ import pyotp
 from flask import session, g, request
 
 from ruqqus.helpers.base36 import *
-from ruqqus.helpers import anonymity
+from ruqqus.helpers import anonymity, guild_limits
 from .coauthors import PostCoauthor
 from ruqqus.helpers.muting import hide_muted
 from ruqqus.helpers.security import *
@@ -1449,7 +1449,15 @@ class User(Base, Stndrd, Age_times):
 
     @property
     def can_join_gms(self):
-        return len([x for x in self.boards_modded if x.is_siegable]) < 10
+        # the cheap, per-person half of the guild limit (helpers/guild_limits.py); every page asks it
+        if self.admin_level >= guild_limits.ADMIN_LEVEL:
+            return True
+        return len([x for x in self.boards_modded if x.is_siegable]) < guild_limits.PER_PERSON
+
+    def gm_limit_refusal(self):
+        """None, or why this account may not lead another guild right now: "person" (it leads enough)
+        or "ip" (accounts on its network lead enough between them). Asked where a guild is added."""
+        return guild_limits.check(g.db, self)
 
     @property
     def can_siege(self):
