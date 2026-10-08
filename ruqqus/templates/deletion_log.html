@@ -1,0 +1,121 @@
+{% extends "default.html" %}
+
+{% block title %}
+<title>Deletion log - {{ 'SITE_NAME' | app_config }}</title>
+{% endblock %}
+
+{% block desktopBanner %}
+<div class="row border-bottom bg-white sticky d-none d-md-block guild-border-top" style="overflow: visible;">
+  <div class="col">
+    <div class="d-flex justify-content-between align-items-center">
+      <div class="font-weight-bold py-3">Deletion log</div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block leftSidebarBlock %}
+{% include "sidebar-left.html" %}
+{% endblock %}
+
+{% block content %}
+{% set keep %}{% if guild %}&guild={{ guild.name | urlencode }}{% endif %}{% if user_filter %}&user={{ user_filter.username | urlencode }}{% endif %}{% endset %}
+<div class="col px-md-4 py-4" id="deletion-log">
+
+  <h1 class="h4 mb-1 d-md-none">Deletion log</h1>
+  <p class="text-muted text-small mb-3">
+    Posts and comments that their authors deleted, newest first. Each entry shows what it said when it was deleted, so deleting something does not take it out of this log.
+    Anonymous items show as Anonymous. Items that were not public, and items removed by moderators or administrators, are not listed.
+    What a guild's moderators hid or removed is in that guild's <strong>Moderation log</strong>.
+  </p>
+
+  <div class="d-flex flex-wrap align-items-center mb-3">
+    <span class="text-small text-muted mr-2">Show:</span>
+    <div class="btn-group btn-group-sm mr-3" role="group">
+      <a href="?type=posts{{ keep }}" class="btn btn-sm {% if tab == 'posts' %}btn-secondary{% else %}btn-link text-muted{% endif %}">Posts</a>
+      <a href="?type=comments{{ keep }}" class="btn btn-sm {% if tab == 'comments' %}btn-secondary{% else %}btn-link text-muted{% endif %}">Comments</a>
+    </div>
+    {% if guild %}
+    <span class="deletion-chip">in +{{ guild.name }} <a href="?type={{ tab }}{% if user_filter %}&user={{ user_filter.username | urlencode }}{% endif %}" aria-label="Clear the guild filter">&times;</a></span>
+    {% endif %}
+    {% if user_filter %}
+    <span class="deletion-chip">by @{{ user_filter.username }} <a href="?type={{ tab }}{% if guild %}&guild={{ guild.name | urlencode }}{% endif %}" aria-label="Clear the user filter">&times;</a></span>
+    {% endif %}
+  </div>
+
+  {% if not entries %}
+  <p class="text-muted">{% if guild or user_filter %}Nothing deleted matches this filter.{% else %}No {{ tab }} have been deleted yet.{% endif %}</p>
+  {% endif %}
+
+  <div class="deletion-log-list">
+  {% for e in entries %}
+    {% if tab == 'posts' %}
+      {% set item = e.target_post %}
+      {% set post = item %}
+    {% else %}
+      {% set item = e.target_comment %}
+      {% set post = item.post %}
+    {% endif %}
+    <div class="card mb-3 p-3 deletion-entry" id="deleted-{{ tab }}-{{ item.base36id }}">
+      <div class="mb-1">
+        <strong>
+          {% if anon_hidden(item, v) %}Anonymous{% elif e.actor.is_deleted %}[deleted user]{% else %}<a href="{{ e.actor.permalink }}">@{{ e.actor.username }}</a>{% endif %}
+        </strong>
+        deleted {% if tab == 'posts' %}a post{% else %}a comment on
+        {% if post.deleted_utc or post.is_banned %}a post that was deleted later{% else %}<a href="{{ post.permalink }}">{{ post.title }}</a>{% endif %}{% endif %}
+        <span class="text-muted text-small">&middot; {{ e.created_date }}{% if tab == 'posts' %} &middot; it had been up for {{ lived(e.created_utc - item.created_utc) }}{% endif %}</span>
+      </div>
+
+      {% if tab == 'posts' %}
+        {% set boards = forwarded.get(item.id, []) %}
+        {% if boards %}
+        <div class="text-small text-muted mb-2">Forwarded to
+          {% for b in boards[:guilds_shown] %}<a href="{{ b.permalink }}">+{{ b.name }}</a>{% if not loop.last %}, {% endif %}{% endfor %}{% if boards | length > guilds_shown %} and {{ boards | length - guilds_shown }} more{% endif %}
+        </div>
+        {% endif %}
+      {% endif %}
+
+      <div class="border rounded p-2 deletion-text">
+        {% if tab == 'posts' and e.previous_title %}
+        <div class="font-weight-bold mb-1">{{ e.previous_title }}</div>
+        {% endif %}
+        {% if tab == 'posts' and e.previous_url %}
+        <div class="text-small mb-1">Link: <span class="text-break">{{ e.previous_url }}</span></div>
+        {% endif %}
+        {% if e.previous_body_html %}
+        <div>{{ media_free(e.previous_body_html) | safe }}</div>
+        {% endif %}
+      </div>
+
+      <div class="text-small mt-2">
+        {% if tab == 'posts' %}
+        <a href="/post/{{ item.base36id }}">View</a>
+        &middot;
+        <a href="/post/{{ item.base36id }}/history">History</a>
+        {% else %}
+        <a href="{{ item.permalink }}">View</a>
+        &middot;
+        <a href="/comment/{{ item.base36id }}/history">History</a>
+        {% endif %}
+      </div>
+    </div>
+  {% endfor %}
+  </div>
+
+  <nav aria-label="Page navigation" class="mb-5">
+    <ul class="pagination pagination-sm mb-0">
+      {% if page > 1 %}
+      <li class="page-item"><small><a class="page-link" href="?type={{ tab }}&page={{ page - 1 }}{{ keep }}" tabindex="-1">Prev</a></small></li>
+      {% else %}
+      <li class="page-item disabled"><span class="page-link">Prev</span></li>
+      {% endif %}
+      {% if next_exists %}
+      <li class="page-item"><small><a class="page-link" href="?type={{ tab }}&page={{ page + 1 }}{{ keep }}">Next</a></small></li>
+      {% else %}
+      <li class="page-item disabled"><span class="page-link">Next</span></li>
+      {% endif %}
+    </ul>
+  </nav>
+
+</div>
+{% endblock %}

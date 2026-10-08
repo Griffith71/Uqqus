@@ -21,10 +21,21 @@
 
       <div>
         <h2 class="h5" name="guild_name">+{{ b.name }} Moderation Log</h2>
-        <p class="text-small text-muted mb-md-0">This is a log of moderator actions performed in +{{ b.name }}.</p>
+        <p class="text-small text-muted mb-md-0">This is a log of moderator actions performed in +{{ b.name }}. What members deleted themselves is in the site-wide <a href="/log/deleted?guild={{ b.name | urlencode }}">deletion log</a>.</p>
       </div>
 
     </div>
+
+    {% if show_labels %}
+    <div class="d-flex flex-wrap align-items-center mb-3" id="modlog-show">
+      <span class="text-small text-muted mr-2">Show:</span>
+      <div class="btn-group btn-group-sm" role="group">
+        {% for key, label in show_labels.items() %}
+        <a href="?show={{ key }}" class="btn btn-sm {% if show == key %}btn-secondary{% else %}btn-link text-muted{% endif %}">{{ label }}</a>
+        {% endfor %}
+      </div>
+    </div>
+    {% endif %}
 
     <div class="rounded border bg-white mx-auto">
       {% for ma in actions %}
@@ -76,14 +87,14 @@
       <ul class="pagination pagination-sm mb-0">
         {% if page>1 %}
         <li class="page-item">
-          <small><a class="page-link" href="?page={{ page-1 }}" tabindex="-1">Prev</a></small>
+          <small><a class="page-link" href="?page={{ page-1 }}{% if show and show != 'all' %}&show={{ show }}{% endif %}" tabindex="-1">Prev</a></small>
         </li>
         {% else %}
         <li class="page-item disabled"><span class="page-link">Prev</span></li>
         {% endif %}
         {% if next_exists %}
         <li class="page-item">
-          <small><a class="page-link" href="?page={{ page+1 }}">Next</a></small>
+          <small><a class="page-link" href="?page={{ page+1 }}{% if show and show != 'all' %}&show={{ show }}{% endif %}">Next</a></small>
         </li>
         {% else %}
         <li class="page-item disabled"><span class="page-link">Next</span></li>

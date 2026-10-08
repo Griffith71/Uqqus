@@ -5567,6 +5567,7 @@ ALTER TABLE ONLY public.content_edit_history
 CREATE INDEX content_edit_history_sid_idx ON public.content_edit_history USING btree (target_submission_id);
 CREATE INDEX content_edit_history_cid_idx ON public.content_edit_history USING btree (target_comment_id);
 CREATE INDEX content_edit_history_board_idx ON public.content_edit_history USING btree (board_id);
+CREATE INDEX content_edit_history_deletes_idx ON public.content_edit_history USING btree (id DESC) WHERE ((action)::text = 'delete'::text);
 
 --
 -- Name: obliteration_records; Type: TABLE; Schema: public; Owner: -

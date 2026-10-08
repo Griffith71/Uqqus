@@ -1997,6 +1997,41 @@ body.embedded #chat-app {
     }
 }
 
+// The deletion log (templates/deletion_log.html): the filter chips and the text each entry kept
+.deletion-chip {
+    display: inline-flex;
+    align-items: center;
+    margin: 0.15rem 0.35rem 0.15rem 0;
+    padding: 0.1rem 0.75rem;
+    border: 1px solid $border-color;
+    border-radius: 2rem;
+    color: $muted;
+    font-size: $small-font-size;
+    font-weight: $font-weight-bold;
+}
+
+.deletion-chip a {
+    margin-left: 0.5rem;
+    color: inherit;
+    text-decoration: none;
+}
+
+.deletion-chip a:hover,
+.deletion-chip a:focus {
+    color: $primary;
+}
+
+.deletion-text {
+    max-height: 28rem;
+    overflow: auto;
+    word-break: break-word;
+}
+
+.deletion-text img {
+    max-width: 100%;
+    height: auto;
+}
+
 // A continuous feed (assets/js/infinite_scroll.js): while the script runs the browser's own
 // pull-to-reload gives way to the page's pull indicator, the "Show N new posts" pill is
 // pinned under the sticky feed header, and the end of the feed has a note instead of buttons.

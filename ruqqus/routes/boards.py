@@ -24,6 +24,7 @@ from flask import *
 from ruqqus.__main__ import app, limiter, cache
 from ruqqus.helpers.muting import hide_muted
 from ruqqus.helpers import guild_limits
+from ruqqus.helpers import deletion_log as log_rules
 
 # the templates quote the per-person cap (home sidebar, siege help) from the one place that sets it
 app.jinja_env.globals.update(GUILD_LIMIT_PER_PERSON=guild_limits.PER_PERSON)
@@ -2151,9 +2152,11 @@ URL path parameters:
 
 Optional query parameters
 * `page` - The page of items to view. Default `1`.
+* `show` - `all` (default), `posts`, `comments` or `exiles`: only that kind of action.
 """
 
-    page=int(request.args.get("page",1))
+    page=log_rules.parse_page(request.args.get("page"))
+    show=log_rules.parse_show(request.args.get("show"))
     board=get_guild(guildname, v=v)
 
     if board.is_banned and not (v and v.admin_level>=4):
@@ -2171,7 +2174,11 @@ Optional query parameters
         joinedload(ModAction.board)
         ).filter_by(
         board_id=board.id
-        ).order_by(
+        )
+    kinds=log_rules.kinds_for(show)
+    if kinds:
+        actions=actions.filter(ModAction.kind.in_(kinds))
+    actions=actions.order_by(
         ModAction.id.desc()
         ).offset(25*(page-1)).limit(26).all()
     actions=[i for i in actions]
@@ -2186,7 +2193,9 @@ Optional query parameters
             b=board,
             actions=actions,
             next_exists=next_exists,
-            page=page
+            page=page,
+            show=show,
+            show_labels=log_rules.SHOW_LABELS
         ),
         "api":lambda:jsonify({"data":[x.json for x in actions]})
         }
