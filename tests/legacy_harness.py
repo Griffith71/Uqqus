@@ -301,6 +301,14 @@ def build_legacy(monkeypatch):
 
     notifications = []
 
+    # ruqqus.helpers.vote_copies (one vote per person across the copies of a post) runs SQL the fake database
+    # can't, so the vote route sees this stand-in: no refusal unless a test sets `copies.result`
+    copies = types.SimpleNamespace(result=None, calls=[])
+
+    def _refusal(db, viewer, post, now):
+        copies.calls.append((viewer.id, post.id))
+        return copies.result
+
     classes = _module(
         "ruqqus.classes",
         ClientAuth=FakeClientAuth, User=FakeUser, Vote=FakeVote,
@@ -322,9 +330,14 @@ def build_legacy(monkeypatch):
             "ruqqus.helpers.alerts",
             send_notification=lambda *a, **k: notifications.append(a)),
         "ruqqus.helpers.sanitize": _module("ruqqus.helpers.sanitize"),
+        "ruqqus.helpers.vote_copies": _module("ruqqus.helpers.vote_copies", refusal=_refusal),
     }
     for name, mod in stubs.items():
         monkeypatch.setitem(sys.modules, name, mod)
+    # `from ruqqus.helpers import vote_copies` reads the attribute of the real package before it looks in
+    # sys.modules, and another test may already have imported the real module: point the attribute at the stand-in too
+    monkeypatch.setattr(importlib.import_module("ruqqus.helpers"), "vote_copies",
+                        stubs["ruqqus.helpers.vote_copies"], raising=False)
     for name in ("ruqqus.helpers.wrappers", "ruqqus.helpers.security",
                  "ruqqus.helpers.session_helpers", "ruqqus.helpers.base36"):
         monkeypatch.delitem(sys.modules, name, raising=False)
@@ -337,7 +350,9 @@ def build_legacy(monkeypatch):
     monkeypatch.setitem(sys.modules, "votes_under_test", votes)
     spec.loader.exec_module(votes)
 
-    return Legacy(app, db, wrappers, votes, notifications)
+    legacy = Legacy(app, db, wrappers, votes, notifications)
+    legacy.copies = copies
+    return legacy
 
 
 class Legacy:

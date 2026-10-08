@@ -6,6 +6,7 @@ from ruqqus.helpers.base36 import *
 from ruqqus.helpers.sanitize import *
 from ruqqus.helpers.get import *
 from ruqqus.classes import *
+from ruqqus.helpers import vote_copies
 from ruqqus.__main__ import app
 
 
@@ -62,6 +63,12 @@ URL path parameters:
         return jsonify({"error":"That post has been deleted."}), 403
     elif post.is_archived:
         return jsonify({"error":"That post is archived and can no longer be voted on."}), 403
+
+    # one vote per person across the copies of a post (helpers/vote_copies.py); taking a vote back is always allowed
+    if x != 0:
+        refused = vote_copies.refusal(g.db, v, post, int(time.time()))
+        if refused:
+            return jsonify(refused), 403
 
     # check for existing vote
     existing = g.db.query(Vote).filter_by(

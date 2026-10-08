@@ -1081,6 +1081,17 @@ th {
     opacity: 0.5;
 }
 
+// An arrow that is locked: the viewer's vote on this post is on another copy of it (helpers/vote_copies.py).
+// More specific than the hover rules above, so hovering does not light it.
+.arrow-up.vote-locked::before,
+.arrow-down.vote-locked::before,
+.arrow-up.vote-locked:hover::before,
+.arrow-down.vote-locked:hover::before {
+    color: $gray-400;
+    opacity: 0.35;
+    cursor: not-allowed;
+}
+
 /* .upvoted .arrow-up::before {
     color: $upvote;
 }

@@ -557,6 +557,12 @@ class Submission(Base, Stndrd, Age_times, Scores, Fuzzing):
         return self._voted if "_voted" in self.__dict__ else 0
 
     @property
+    def voted_elsewhere(self):
+        """Where the viewer's vote in this post's family is, when it is not on this post: None, or
+        {"id", "guild", "label", "message"} (helpers/vote_copies.py). The arrows are drawn locked."""
+        return self.__dict__.get("_voted_elsewhere")
+
+    @property
     def saved(self):
         return bool(self._saved) if "_saved" in self.__dict__ else False
 

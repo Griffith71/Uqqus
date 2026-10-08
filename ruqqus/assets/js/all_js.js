@@ -1509,7 +1509,7 @@ function save_filter_level() {
   xhr.send(form);
 }
 
-function post_toast(url, callback) {
+function post_toast(url, callback, onError) {
   var xhr = new XMLHttpRequest();
   xhr.open("POST", url, true);
   var form = new FormData()
@@ -1533,6 +1533,7 @@ function post_toast(url, callback) {
         $('#toast-post-error').toast('dispose');
         $('#toast-post-error').toast('show');
         document.getElementById('toast-post-error-text').innerText = data["error"];
+        if (onError) onError(data)      // e.g. a vote that was shown at once and then refused: put it back
         return false
 
       }
@@ -1732,10 +1733,49 @@ function toggle_sidebar_expand() {
 
 // Voting
 
+// The arrows and the score change at once, before the server has answered. This remembers how they were
+// and returns the function that puts them back, for a vote the server refuses (blocked, archived, or already
+// voted on another copy of the post).
+function snapshotVote(type, id) {
+  var ups = document.getElementsByClassName(type + '-' + id + '-up');
+  var downs = document.getElementsByClassName(type + '-' + id + '-down');
+  var scores = document.getElementsByClassName(type + '-score-' + id);
+  var saved = [];
+
+  for (var j = 0; j < ups.length && j < downs.length && j < scores.length; j++) {
+    saved.push({
+      up: ups[j], down: downs[j], score: scores[j],
+      upActive: ups[j].classList.contains('active'),
+      downActive: downs[j].classList.contains('active'),
+      text: scores[j].textContent,
+      cls: scores[j].className
+    });
+  }
+
+  return function restore() {
+    saved.forEach(function (s) {
+      s.up.classList.toggle('active', s.upActive);
+      s.down.classList.toggle('active', s.downActive);
+      s.score.textContent = s.text;
+      s.score.className = s.cls;
+    });
+  };
+}
+
+// An arrow that is locked because the viewer's vote on this post is on another copy of it
+// (templates: .vote-locked, helpers/vote_copies.py): say so.
+function voteLocked(el) {
+  var message = el.getAttribute('data-locked-message') || 'You already voted on this post.';
+  $('#toast-post-error').toast('dispose');
+  $('#toast-post-error').toast('show');
+  document.getElementById('toast-post-error-text').innerText = message;
+}
+
 var upvote = function(event) {
 
   var type = event.target.dataset.contentType;
   var id = event.target.dataset.idUp;
+  var restore = snapshotVote(type, id);
 
   var downvoteButton = document.getElementsByClassName(type + '-' + id + '-down');
   var upvoteButton = document.getElementsByClassName(type + '-' + id + '-up');
@@ -1778,7 +1818,7 @@ var upvote = function(event) {
     }
   }
 
-  post_toast("/api/vote/" + type + "/" + id + "/" + voteDirection);
+  post_toast("/api/vote/" + type + "/" + id + "/" + voteDirection, undefined, restore);
   
 }
 
@@ -1786,6 +1826,7 @@ var downvote = function(event) {
 
   var type = event.target.dataset.contentType;
   var id = event.target.dataset.idDown;
+  var restore = snapshotVote(type, id);
 
   var downvoteButton = document.getElementsByClassName(type + '-' + id + '-down');
   var upvoteButton = document.getElementsByClassName(type + '-' + id + '-up');
@@ -1828,7 +1869,7 @@ var downvote = function(event) {
     }
   }
 
-  post_toast("/api/vote/" + type + "/" + id + "/" + voteDirection);
+  post_toast("/api/vote/" + type + "/" + id + "/" + voteDirection, undefined, restore);
   
 }
 

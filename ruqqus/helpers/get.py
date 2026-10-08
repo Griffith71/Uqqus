@@ -7,6 +7,7 @@ from sqlalchemy.orm import *
 from urllib.parse import urlparse
 
 import re
+import time
 
 
 def get_user(username, v=None, nSession=None, graceful=False):
@@ -235,6 +236,10 @@ def get_post(pid, v=None, graceful=False, nSession=None, no_text=False, **kwargs
         x._reposted = items[8] or 0
         # x._is_exiled_for=items[5] or 0
 
+        # where the viewer's vote on this post's other copies is, so the arrows can be locked (helpers/vote_copies.py)
+        from ruqqus.helpers import vote_copies
+        vote_copies.attach(nSession, [x], v, int(time.time()))
+
     else:
         items = nSession.query(
             Submission,
@@ -384,6 +389,10 @@ def get_posts(pids, sort="hot", v=None):
             output[i]._saved = posts[i][7] or 0
             output[i]._reposted = posts[i][8] or 0
             # output[i]._is_exiled_for=posts[i][7] or 0
+
+        # where the viewer's vote on each post's other copies is, in one query for the page (helpers/vote_copies.py)
+        from ruqqus.helpers import vote_copies
+        vote_copies.attach(g.db, output, v, int(time.time()))
     else:
         query = g.db.query(
             Submission,
