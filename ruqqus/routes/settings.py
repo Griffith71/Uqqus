@@ -14,6 +14,7 @@ from ruqqus.helpers.markdown import *
 from ruqqus.helpers.discord import remove_user, set_nick
 from ruqqus.helpers.aws import *
 from ruqqus.helpers.chat_permissions import on_block_created
+from ruqqus.helpers import circle_store
 from ruqqus.mail import *
 from .front import frontlist
 from ruqqus.__main__ import app, cache
@@ -565,6 +566,10 @@ def settings_block_user(v):
     g.db.commit()
 
     on_block_created(v, user)
+
+    # a block takes each of you out of the other's Circle (friends go, subscriptions end; no refund)
+    circle_store.end_between(g.db, v.id, user.id)
+    g.db.commit()
 
     cache.delete_memoized(v.idlist)
     #cache.delete_memoized(Board.idlist, v=v)

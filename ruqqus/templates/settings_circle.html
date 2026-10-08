@@ -1,0 +1,94 @@
+{% extends "settings.html" %}
+
+{# Your Circle: who is in it, what subscribing costs (routes/circles.py, helpers/circles.py). #}
+
+{% block title %}
+<title>{{ 'SITE_NAME' | app_config }} - Your Circle</title>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+  <div class="col col-lg-8">
+    <div class="settings" id="circle-settings">
+
+      <h2 class="h5">Your Circle</h2>
+      <p class="text-small text-muted">
+        Your Circle is a private audience of your own. People are in it as <strong>Close Friends</strong>, whom you add
+        and who pay nothing, or as <strong>Subscribers</strong>, who pay you in coins every 30 days.
+        Close Friends see everything in your Circle; Subscribers see what you share with Subscribers.
+        You can see who is in your Circle here and nobody else can.
+      </p>
+
+      <div class="settings-section rounded" id="circle-price-section">
+        <div class="d-lg-flex">
+          <div class="title w-lg-25"><label for="circle-price">Subscription price</label></div>
+          <div class="body w-lg-100">
+            <div class="input-group" style="max-width: 18rem;">
+              <input type="number" class="form-control" id="circle-price" min="0" max="{{ price_max }}" step="1" value="{{ price }}" aria-describedby="circle-price-help">
+              <div class="input-group-append"><span class="input-group-text">coins</span></div>
+            </div>
+            <button type="button" class="btn btn-primary mt-2" id="circle-price-save"
+              onclick="post_toast('/settings/circle/price?price=' + encodeURIComponent(document.getElementById('circle-price').value), function () { window.location.reload(); })">Save price</button>
+            <span class="d-block mt-2 text-small-extra text-muted" id="circle-price-help">
+              Every 30 days, from 1 to {{ price_max }} coins. Leave it at 0 and nobody can subscribe: your Circle is for Close Friends only.
+              Someone who already subscribed keeps the price they signed up at.
+              {% if price %}Now: <strong>{{ describe_price(price) }}</strong>.{% endif %}
+            </span>
+          </div>
+        </div>
+        <div class="d-lg-flex border-top">
+          <div class="title w-lg-25"><label>Coins received</label></div>
+          <div class="body w-lg-100">
+            <span id="circle-earned">{{ earned_30 }} in the last 30 days &middot; {{ earned_all }} in all.</span>
+            <span class="d-block text-small-extra text-muted">They go straight to your coin balance.</span>
+          </div>
+        </div>
+      </div>
+
+      <h2 class="h5 mt-5" id="circle-friends">Close Friends <span class="text-muted text-small font-weight-normal">{{ friends | length }} of {{ friend_limit }}</span></h2>
+      <div class="settings-section rounded">
+        <div class="d-lg-flex">
+          <div class="title w-lg-25"><label for="circle-friend-name">Add a Close Friend</label></div>
+          <div class="body w-lg-100">
+            <div class="input-group" style="max-width: 24rem;">
+              <div class="input-group-prepend"><span class="input-group-text">@</span></div>
+              <input type="text" class="form-control" id="circle-friend-name" maxlength="25" autocomplete="off" placeholder="username"
+                onkeydown="if (event.key === 'Enter') { event.preventDefault(); document.getElementById('circle-friend-add').click(); }">
+              <div class="input-group-append">
+                <button type="button" class="btn btn-primary" id="circle-friend-add"
+                  onclick="post_toast('/api/circle/friends/add?username=' + encodeURIComponent(document.getElementById('circle-friend-name').value.replace(/^@/, '').trim()), function () { window.location.reload(); })">Add</button>
+              </div>
+            </div>
+            <span class="d-block mt-2 text-small-extra text-muted">They are not told. Anyone you block is taken out of your Circle.</span>
+          </div>
+        </div>
+        {% for f in friends %}
+        <div class="d-flex align-items-center justify-content-between border-top px-3 py-2 circle-person" data-username="{{ f.username }}">
+          <span><a href="/@{{ f.username }}">@{{ f.username }}</a> <span class="text-muted text-small">&middot; since {{ f.since }}</span></span>
+          <button type="button" class="btn btn-link btn-sm text-danger" data-username="{{ f.username }}"
+            onclick="post_toast('/api/circle/friends/remove?username=' + encodeURIComponent(this.dataset.username), function () { window.location.reload(); })">Remove</button>
+        </div>
+        {% else %}
+        <div class="border-top px-3 py-3 text-muted text-small" id="circle-friends-empty">You haven't added anyone yet.</div>
+        {% endfor %}
+      </div>
+
+      <h2 class="h5 mt-5" id="circle-subscribers">Subscribers <span class="text-muted text-small font-weight-normal">{{ subscribers | length }}</span></h2>
+      <div class="settings-section rounded">
+        {% for s in subscribers %}
+        <div class="d-flex align-items-center justify-content-between px-3 py-2 circle-person{% if not loop.first %} border-top{% endif %}">
+          <span><a href="/@{{ s.username }}">@{{ s.username }}</a>
+            <span class="text-muted text-small">&middot; {{ s.price }} coin{{ '' if s.price == 1 else 's' }} a month</span></span>
+          <span class="text-muted text-small">{% if s.cancelled %}ends {{ s.until }}{% else %}renews {{ s.until }}{% endif %}</span>
+        </div>
+        {% else %}
+        <div class="px-3 py-3 text-muted text-small" id="circle-subscribers-empty">{% if price %}No subscribers yet.{% else %}Set a price above to let people subscribe.{% endif %}</div>
+        {% endfor %}
+      </div>
+
+      <p class="mt-4 text-small"><a href="/settings/circles">Circles you are in</a></p>
+
+    </div>
+  </div>
+</div>
+{% endblock %}

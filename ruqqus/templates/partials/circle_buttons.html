@@ -1,0 +1,27 @@
+{#
+  What a profile offers about Circles to a signed-in member looking at someone else's account (routes/circles.py
+  `circle_status`): add or remove them as a Close Friend, and join their Circle when it has a price. Shown on both the
+  desktop and the phone profile. Usernames are letters, digits and underscores; the price is a number.
+#}
+{% macro circle_buttons(u, v, small=False) %}
+{% set st = circle_status(u, v) %}
+{% if st %}
+{% set size = ' btn-sm' if small else '' %}
+{% if st.you_added %}
+<button type="button" class="btn btn-secondary{{ size }} ml-2 my-1 circle-friend-remove"
+  onclick="post_toast('/api/circle/friends/remove?username={{ u.username }}', function () { window.location.reload(); })">Remove from Close Friends</button>
+{% else %}
+<button type="button" class="btn btn-secondary{{ size }} ml-2 my-1 circle-friend-add"
+  onclick="post_toast('/api/circle/friends/add?username={{ u.username }}', function () { window.location.reload(); })">Add to Close Friends</button>
+{% endif %}
+{% if st.tier == 'friend' %}
+<span class="badge badge-secondary ml-2 my-1 align-middle circle-badge">In their Circle</span>
+{% elif st.tier == 'subscriber' and not st.cancelled %}
+<a href="/settings/circles" class="badge badge-secondary ml-2 my-1 align-middle circle-badge">Subscribed</a>
+{% elif st.joinable %}
+<button type="button" class="btn btn-primary{{ size }} ml-2 my-1 circle-join"
+  onclick="if (confirm('Join this Circle for {{ st.price }} coin{{ '' if st.price == 1 else 's' }} every 30 days? It renews from your coins until you cancel.')) { post_toast('/api/circle/{{ u.username }}/subscribe', function () { window.location.reload(); }); }">
+  {% if st.tier == 'subscriber' %}Resume subscription{% else %}Join Circle &middot; {{ st.price }} coin{{ '' if st.price == 1 else 's' }}/month{% endif %}</button>
+{% endif %}
+{% endif %}
+{% endmacro %}

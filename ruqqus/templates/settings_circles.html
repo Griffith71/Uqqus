@@ -1,0 +1,44 @@
+{% extends "settings.html" %}
+
+{# The Circles this account is in, and cancelling a subscription (routes/circles.py). #}
+
+{% block title %}
+<title>{{ 'SITE_NAME' | app_config }} - Circles you are in</title>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+  <div class="col col-lg-8">
+    <div class="settings" id="circles-in">
+
+      <h2 class="h5">Circles you are in</h2>
+      <p class="text-small text-muted">
+        Subscriptions renew every 30 days from your coins. Cancel and you keep access until the day you paid to.
+        <a href="/settings/circle">Your own Circle</a>
+      </p>
+
+      <div class="settings-section rounded">
+        {% for m in memberships %}
+        <div class="d-flex align-items-center justify-content-between px-3 py-3 circle-membership{% if not loop.first %} border-top{% endif %}" data-username="{{ m.username }}">
+          <div>
+            <a href="/@{{ m.username }}" class="font-weight-bold">@{{ m.username }}</a>
+            <div class="text-muted text-small">
+              {% if m.tier == 'friend' %}Close Friend
+              {% elif m.cancelled %}Subscriber &middot; won't renew, access ends {{ m.until }}
+              {% else %}Subscriber &middot; {{ m.price }} coin{{ '' if m.price == 1 else 's' }} every 30 days, renews {{ m.until }}{% endif %}
+            </div>
+          </div>
+          {% if m.tier == 'subscriber' and not m.cancelled %}
+          <button type="button" class="btn btn-secondary btn-sm" data-username="{{ m.username }}"
+            onclick="if (confirm('Cancel your subscription? You keep access until the day you paid to.')) { post_toast('/api/circle/' + encodeURIComponent(this.dataset.username) + '/cancel', function () { window.location.reload(); }); }">Cancel</button>
+          {% endif %}
+        </div>
+        {% else %}
+        <div class="px-3 py-3 text-muted text-small" id="circles-in-empty">You aren't in anyone's Circle yet. A Circle you can join has a Join button on its owner's profile.</div>
+        {% endfor %}
+      </div>
+
+    </div>
+  </div>
+</div>
+{% endblock %}

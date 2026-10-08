@@ -59,7 +59,10 @@ def test_one_poll_per_post_one_vote_per_member_and_a_deleted_poll_takes_its_vote
         assert "CONSTRAINT polls_post_key UNIQUE (post_id)" in sql
         assert "CONSTRAINT poll_votes_one_per_member UNIQUE (poll_id, user_id)" in sql
         assert "CONSTRAINT poll_options_ordinal_key UNIQUE (poll_id, ordinal)" in sql
-        assert sql.count("ON DELETE CASCADE") == 3
+        # counted inside the three poll tables only (other features' tables in the same file have their own cascades)
+        blocks = "".join(re.search(rf"CREATE TABLE (?:IF NOT EXISTS )?(?:public\.)?{table} \((.*?)\n\);", sql, re.S).group(1)
+                         for table in ("polls", "poll_options", "poll_votes"))
+        assert blocks.count("ON DELETE CASCADE") == 3
     model = read("ruqqus", "classes", "poll.py")
     assert 'UniqueConstraint("post_id", name="polls_post_key")' in model
     assert 'UniqueConstraint("poll_id", "user_id", name="poll_votes_one_per_member")' in model

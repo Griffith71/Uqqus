@@ -36,4 +36,5 @@ from .coauthors import *
 from .bookmark_folder import *
 from .poll import *
 from .post_view import *
+from .circle import *
 #from lodges import *

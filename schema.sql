@@ -5049,7 +5049,7 @@ ALTER TABLE ONLY public.badges
 --
 
 ALTER TABLE ONLY public.bans
-    ADD CONSTRAINT bans_board_id_fkey FOREIGN KEY (board_id) REFERENCES public.boards(id);
+    ADD CONSTRAINT bans_board_id_fkey FOREIGN KEY (board_id);
 
 
 --
@@ -5057,7 +5057,7 @@ ALTER TABLE ONLY public.bans
 --
 
 ALTER TABLE ONLY public.contributors
-    ADD CONSTRAINT board_id_fkey FOREIGN KEY (board_id) REFERENCES public.boards(id);
+    ADD CONSTRAINT board_id_fkey FOREIGN KEY (board_id);
 
 
 --
@@ -5081,7 +5081,7 @@ ALTER TABLE ONLY public.flags
 --
 
 ALTER TABLE ONLY public.mods
-    ADD CONSTRAINT mods_board_id_fkey FOREIGN KEY (board_id) REFERENCES public.boards(id);
+    ADD CONSTRAINT mods_board_id_fkey FOREIGN KEY (board_id);
 
 
 --
@@ -5097,7 +5097,7 @@ ALTER TABLE ONLY public.notifications
 --
 
 ALTER TABLE ONLY public.postrels
-    ADD CONSTRAINT postrels_board_id_fkey FOREIGN KEY (board_id) REFERENCES public.boards(id);
+    ADD CONSTRAINT postrels_board_id_fkey FOREIGN KEY (board_id);
 
 
 --
@@ -5113,7 +5113,7 @@ ALTER TABLE ONLY public.postrels
 --
 
 ALTER TABLE ONLY public.forwardrels
-    ADD CONSTRAINT forwardrels_board_id_fkey FOREIGN KEY (board_id) REFERENCES public.boards(id);
+    ADD CONSTRAINT forwardrels_board_id_fkey FOREIGN KEY (board_id);
 
 
 --
@@ -5145,7 +5145,7 @@ ALTER TABLE ONLY public.comment_forwardrels
 --
 
 ALTER TABLE ONLY public.comment_forwardrels
-    ADD CONSTRAINT comment_forwardrels_board_id_fkey FOREIGN KEY (board_id) REFERENCES public.boards(id);
+    ADD CONSTRAINT comment_forwardrels_board_id_fkey FOREIGN KEY (board_id);
 
 
 --
@@ -5203,7 +5203,7 @@ ALTER TABLE ONLY public.subcategories
 --
 
 ALTER TABLE ONLY public.submissions
-    ADD CONSTRAINT submissions_board_id_fkey FOREIGN KEY (board_id) REFERENCES public.boards(id);
+    ADD CONSTRAINT submissions_board_id_fkey FOREIGN KEY (board_id);
 
 
 --
@@ -5211,7 +5211,7 @@ ALTER TABLE ONLY public.submissions
 --
 
 ALTER TABLE ONLY public.submissions
-    ADD CONSTRAINT submissions_original_board_id_fkey FOREIGN KEY (original_board_id) REFERENCES public.boards(id);
+    ADD CONSTRAINT submissions_original_board_id_fkey FOREIGN KEY (original_board_id);
 
 
 --
@@ -5219,7 +5219,7 @@ ALTER TABLE ONLY public.submissions
 --
 
 ALTER TABLE ONLY public.subscriptions
-    ADD CONSTRAINT subscriptions_board_id_fkey FOREIGN KEY (board_id) REFERENCES public.boards(id);
+    ADD CONSTRAINT subscriptions_board_id_fkey FOREIGN KEY (board_id);
 
 
 --
@@ -5447,7 +5447,7 @@ ALTER TABLE ONLY public.curation_guilds
     ADD CONSTRAINT curation_guilds_curation_id_fkey FOREIGN KEY (curation_id) REFERENCES public.curations(id);
 
 ALTER TABLE ONLY public.curation_guilds
-    ADD CONSTRAINT curation_guilds_board_id_fkey FOREIGN KEY (board_id) REFERENCES public.boards(id);
+    ADD CONSTRAINT curation_guilds_board_id_fkey FOREIGN KEY (board_id);
 
 CREATE INDEX curation_guilds_curation_id_idx ON public.curation_guilds USING btree (curation_id);
 
@@ -5909,6 +5909,50 @@ CREATE TABLE public.post_view_days (
 );
 
 CREATE INDEX post_view_days_day_index ON public.post_view_days USING btree (day);
+
+CREATE TABLE public.circles (
+    id SERIAL PRIMARY KEY,
+    user_id integer,
+    board_id integer,
+    price_coins integer DEFAULT 0 NOT NULL,
+    created_utc integer DEFAULT 0 NOT NULL,
+    CONSTRAINT circles_one_owner CHECK ((user_id IS NOT NULL) <> (board_id IS NOT NULL)),
+    CONSTRAINT circles_price_range CHECK (price_coins >= 0 AND price_coins <= 100)
+);
+
+CREATE UNIQUE INDEX circles_user_key ON public.circles USING btree (user_id) WHERE (user_id IS NOT NULL);
+CREATE UNIQUE INDEX circles_board_key ON public.circles USING btree (board_id) WHERE (board_id IS NOT NULL);
+
+CREATE TABLE public.circle_members (
+    id SERIAL PRIMARY KEY,
+    circle_id integer NOT NULL REFERENCES public.circles(id) ON DELETE CASCADE,
+    user_id integer NOT NULL,
+    tier character varying(12) NOT NULL,
+    status character varying(12) DEFAULT 'active' NOT NULL,
+    started_utc integer DEFAULT 0 NOT NULL,
+    renews_utc integer DEFAULT 0 NOT NULL,
+    cancelled boolean DEFAULT false NOT NULL,
+    price_coins integer DEFAULT 0 NOT NULL,
+    created_utc integer DEFAULT 0 NOT NULL,
+    CONSTRAINT circle_members_pair_key UNIQUE (circle_id, user_id),
+    CONSTRAINT circle_members_tier CHECK (tier IN ('friend', 'subscriber')),
+    CONSTRAINT circle_members_status CHECK (status IN ('active', 'ended'))
+);
+
+CREATE INDEX circle_members_user_idx ON public.circle_members USING btree (user_id);
+CREATE INDEX circle_members_due_idx ON public.circle_members USING btree (renews_utc) WHERE (((tier)::text = 'subscriber'::text) AND ((status)::text = 'active'::text));
+
+CREATE TABLE public.circle_payments (
+    id SERIAL PRIMARY KEY,
+    circle_id integer NOT NULL REFERENCES public.circles(id) ON DELETE CASCADE,
+    payer_id integer NOT NULL,
+    owner_id integer NOT NULL,
+    coins integer NOT NULL,
+    kind character varying(12) NOT NULL,
+    created_utc integer DEFAULT 0 NOT NULL
+);
+
+CREATE INDEX circle_payments_owner_idx ON public.circle_payments USING btree (owner_id, created_utc DESC);
 
 CREATE INDEX submissions_word_severity_index ON public.submissions USING btree (word_severity);
 CREATE INDEX comments_word_severity_index ON public.comments USING btree (word_severity);
