@@ -35,3 +35,4 @@ from .coauthors import *
 from .bookmark_folders import *
 from .polls import *
 from .insights import *
+from .voters import *

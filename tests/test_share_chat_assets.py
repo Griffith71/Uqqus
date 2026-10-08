@@ -134,6 +134,14 @@ def test_both_stylesheets_style_the_sheet_and_the_card():
             assert cls in css, (sheet, cls)
 
 
+def test_get_comment_honours_graceful_for_a_missing_comment_for_a_viewer_and_a_visitor():
+    # it used to raise TypeError (items[0] / q[0] on None); the voters and bookmark-folder routes ask gracefully
+    lines = [line.strip() for line in read("ruqqus", "helpers", "get.py").split("def get_comment(")[1].split("def get_comments(")[0].splitlines()]
+    for missing in ("if not items:", "if not q:"):
+        at = lines.index(missing)
+        assert lines[at + 1].startswith("return None"), missing
+
+
 def test_get_post_with_a_viewer_honours_graceful_for_a_missing_post():
     # it used to raise TypeError (items[0] on None), which a card for a deleted link tripped over
     source = read("ruqqus", "helpers", "get.py").split("def get_post(")[1].split("\ndef ")[0]

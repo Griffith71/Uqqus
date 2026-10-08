@@ -686,6 +686,8 @@ def get_comment(cid, nSession=None, v=None, graceful=False, no_text=False, **kwa
 
         if not items and not graceful:
             abort(404)
+        if not items:
+            return None           # graceful: a missing comment is None, not a crash on items[0]
 
         x = items[0]
         x._voted = items[1] or 0
@@ -723,6 +725,8 @@ def get_comment(cid, nSession=None, v=None, graceful=False, no_text=False, **kwa
 
         if not q and not graceful:
             abort(404)
+        if not q:
+            return None           # graceful: a missing comment is None, not a crash on q[0]
 
         x=q[0]
         x._is_exiled_for=q[1]

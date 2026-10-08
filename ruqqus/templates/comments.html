@@ -263,7 +263,7 @@
           {% endif %}
 
           <li class="list-inline-item d-none d-md-inline-block mr-2">
-            <span class="points" data-toggle="tooltip" data-placement="top" data-original-title="+{{ ups }} | -{{ downs }}"><span id="comment-score-{{ c.base36id }}" class="score comment-score-{{ c.base36id }} {% if voted==1 %}score-up{% elif voted==-1%}score-down{% endif %}">{{ score }}</span></span>
+            {% set see_voters = may_see_voters(c, v) %}<span class="points" data-toggle="tooltip" data-placement="top" data-original-title="+{{ ups }} | -{{ downs }}{% if see_voters %} &middot; click to see who upvoted{% endif %}"><span id="comment-score-{{ c.base36id }}" class="score comment-score-{{ c.base36id }}{% if see_voters %} has-voters{% endif %} {% if voted==1 %}score-up{% elif voted==-1%}score-down{% endif %}"{% if see_voters %} data-voters-url="/api/comment/{{ c.base36id }}/voters" role="button" tabindex="0" aria-haspopup="dialog"{% endif %}>{{ score }}</span></span>
           </li>
 
           {% if v and request.path.startswith('/@') %}
@@ -428,7 +428,7 @@
         </li>
         {% endif %}
         <li class="list-inline-item d-inline-block d-md-none mr-2">
-            <span class="points" data-toggle="tooltip" data-placement="top" data-original-title="+{{ ups }} | -{{ downs }}"><span id="comment-score-{{ c.base36id }}" class="score comment-score-{{ c.base36id }} {% if voted==1 %}score-up{% elif voted==-1%}score-down{% endif %}">{{ score }}</span></span>
+            {% set see_voters = may_see_voters(c, v) %}<span class="points" data-toggle="tooltip" data-placement="top" data-original-title="+{{ ups }} | -{{ downs }}{% if see_voters %} &middot; click to see who upvoted{% endif %}"><span id="comment-score-{{ c.base36id }}" class="score comment-score-{{ c.base36id }}{% if see_voters %} has-voters{% endif %} {% if voted==1 %}score-up{% elif voted==-1%}score-down{% endif %}"{% if see_voters %} data-voters-url="/api/comment/{{ c.base36id }}/voters" role="button" tabindex="0" aria-haspopup="dialog"{% endif %}>{{ score }}</span></span>
         </li>
         {% if v and request.path.startswith('/@') %}
         {% if voted==-1 %}
