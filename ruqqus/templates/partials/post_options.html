@@ -17,6 +17,9 @@
 
   anonymous_field(checked, prefix): the "Post anonymously" checkbox (helpers/anonymity.py).
 
+  audience_field(selected, prefix): "Who can see this?" (helpers/circles.py): Public, Subscribers or Close Friends, read
+  by submit_post as `audience`. A Circle post cannot be anonymous, forwarded, reposted or co-authored.
+
   coauthors_field(value, prefix): usernames to invite as co-authors (helpers/coauthors.py), read by
   submit_post as `coauthors`.
 
@@ -27,6 +30,18 @@
   comment that carries a disclosure, and, for its author and admins, a note that
   it is anonymous.
 #}
+
+{% macro audience_field(selected, prefix) %}
+<label class="mt-3 d-block">Who can see this?<i class="fas fa-info-circle text-gray-400 ml-1" data-toggle="tooltip" data-placement="top" title="Public is for everyone. Subscribers and Close Friends are your Circle: Close Friends see everything in it, Subscribers see what you share with them. A Circle post can't be anonymous, forwarded, reposted or co-authored, and it stays off All, search and trending. Choose who is in your Circle in Settings."></i></label>
+<div class="audience">
+  {% for value, label in [(0, "Public"), (1, "Subscribers"), (2, "Close Friends")] %}
+  <div class="custom-control custom-radio custom-control-inline">
+    <input type="radio" class="custom-control-input" id="{{ prefix }}-{{ value }}" name="audience" value="{{ value }}"{% if selected == value %} checked{% endif %}>
+    <label class="custom-control-label" for="{{ prefix }}-{{ value }}">{{ label }}</label>
+  </div>
+  {% endfor %}
+</div>
+{% endmacro %}
 
 {% macro comment_permission_field(selected, prefix) %}
 <label class="mt-3 d-block">Who can comment?<i class="fas fa-info-circle text-gray-400 ml-1" data-toggle="tooltip" data-placement="top" title="Applies to this post on your profile. A copy forwarded to a guild follows that guild's rules instead. You and site admins can always comment."></i></label>

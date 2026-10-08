@@ -156,6 +156,26 @@ def test_a_file_nobody_attached_is_only_its_owners():
     assert mr.access(mr.READY, attached_live=False, is_owner=False) is None
 
 
+def test_a_file_in_a_post_made_for_a_circle_is_private_to_the_people_allowed_to_see_it():
+    # never PUBLIC: a public answer is cached by CDNs and carries no session, so it could not be taken back
+    for audience in (1, 2, 3):
+        assert mr.access(mr.READY, True, False, audience, True) == mr.PRIVATE          # a member of the Circle
+        assert mr.access(mr.READY, True, True, audience, False) == mr.PRIVATE          # its owner, always
+        assert mr.access(mr.READY, True, False, audience, False) is None               # anyone else, and a visitor
+        assert mr.access(mr.READY, True, False, audience) is None                      # allowed defaults to nobody
+
+
+def test_an_audience_of_nothing_still_means_a_public_file():
+    assert mr.access(mr.READY, True, False, 0, False) == mr.PUBLIC
+    assert mr.access(mr.READY, True, False) == mr.PUBLIC
+
+
+def test_allowed_never_opens_a_file_that_is_not_attached_or_not_ready():
+    assert mr.access(mr.READY, False, False, 1, True) is None
+    for status in (mr.PENDING, mr.RESTRICTED, mr.REMOVED, mr.GONE):
+        assert mr.access(status, True, True, 1, True) is None
+
+
 @pytest.mark.parametrize("status", [mr.PENDING, mr.RESTRICTED, mr.REMOVED, mr.GONE])
 def test_a_file_that_is_not_ready_is_nobodys(status):
     assert mr.access(status, attached_live=True, is_owner=True) is None

@@ -1,0 +1,33 @@
+{#
+  "Who can see this": the sheet an author opens from the menu of their own post (assets/js/circle_audience.js). It
+  changes the audience of a post that already exists (routes/circles.py `circle_post_audience`). One copy per page,
+  for a logged-in member, not inside the side-panel frames.
+#}
+<div class="modal fade" id="audienceModal" tabindex="-1" role="dialog" aria-labelledby="audienceTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="audienceTitle">Who can see this</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true"><i class="far fa-times"></i></span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p class="text-small text-muted">Subscribers and Close Friends are your Circle. Close Friends see everything in it, Subscribers see what you share with them. A Circle post can't be forwarded, reposted, anonymous or co-authored, so a post that has been shared or has co-authors can't be moved there.</p>
+        <div id="audience-options">
+          {% for value, label in [(0, "Public"), (1, "Subscribers"), (2, "Close Friends")] %}
+          <div class="custom-control custom-radio">
+            <input type="radio" class="custom-control-input" id="audience-option-{{ value }}" name="audience-choice" value="{{ value }}">
+            <label class="custom-control-label" for="audience-option-{{ value }}">{{ label }}</label>
+          </div>
+          {% endfor %}
+        </div>
+        <div id="audience-status" class="text-small mt-2" role="status"></div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-link text-muted" data-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-primary" id="audience-save">Save</button>
+      </div>
+    </div>
+  </div>
+</div>

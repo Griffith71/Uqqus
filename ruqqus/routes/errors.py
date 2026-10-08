@@ -5,6 +5,7 @@ from flask import session as flask_session
 from ruqqus.helpers.wrappers import *
 from ruqqus.helpers.session_helpers import *
 from ruqqus.classes.custom_errors import *
+from ruqqus.helpers import circles
 from urllib.parse import quote, urlencode
 import time
 from ruqqus.__main__ import app, r, cache
@@ -54,6 +55,25 @@ def error_402(e):
     return {"html": lambda: (render_template('errors/402.html', v=None), 402),
             "api": lambda: (jsonify({"error": "402 Payment Required"}), 402)
             }
+
+@app.errorhandler(CircleOnly)
+@error_wrapper
+@api()
+def error_circle_only(e):
+    """A post made for a Circle, asked for by someone outside it (helpers/circle_guard.py, helpers/get.py). A page
+    gets a gate that names the owner and the audience and nothing of the post; everything else gets a plain 404."""
+
+    def gate():
+        post = e.post
+        response = make_response(render_template("errors/circle_gate.html", v=getattr(g, "v", None), owner=post.author,
+                                                 audience=post.audience, audience_name=circles.NAMES.get(post.audience, "Circle")), 403)
+        response.headers["Cache-Control"] = "private, no-store"
+        return response
+
+    return {"html": gate,
+            "api": lambda: (jsonify({"error": "404 Not Found"}), 404)
+            }
+
 
 @app.errorhandler(403)
 @error_wrapper

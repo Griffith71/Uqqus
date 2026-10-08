@@ -31,6 +31,7 @@ from ruqqus.helpers.word_filter_store import post_severity, apply_post_severity
 from ruqqus.classes import *
 from ruqqus.helpers import coauthors       # after the star-import: ruqqus.classes has a module of this name too
 from ruqqus.helpers import polls as poll_rules, poll_store
+from ruqqus.helpers import circles as circle_rules, circle_guard
 from ruqqus.helpers import insights_store
 from .front import frontlist
 from ruqqus.__main__ import app, limiter, cache, db_session
@@ -1262,6 +1263,21 @@ Optional file data:
                 "api": lambda: ({"error": poll_error}, 400)
                 }
 
+    # who can see it (helpers/circles.py): Public unless the author chose their Circle. A Circle post stays between the
+    # author and the people in it, so what would take it elsewhere (anonymity, co-authors, forwards, an own video) stops it here
+    audience, audience_error = circle_rules.parse_audience(request.form.get("audience"))
+    if audience_error is None:
+        audience_error = circle_rules.post_refusal(
+            audience, anonymous=flag(request.form, "anonymous"), coauthors=bool(coauthor_names),
+            forwards=bool(forward_guild_names),
+            own_video=bool(url and media_attach.own_video(g.db, v.id, url)))
+    if audience_error:
+        return {"html": lambda: (render_template("submit.html", v=v, error=audience_error,
+                                                 title=title, url=url, body=body, text=text_for_redisplay,
+                                                 b=None, forward_guild_names=forward_guild_names), 400),
+                "api": lambda: ({"error": audience_error}, 400)
+                }
+
     new_post = Submission(
         author_id=v.id,
         domain_ref=domain_obj.id if domain_obj else None,
@@ -1272,7 +1288,8 @@ Optional file data:
         paid_partnership=flag(request.form, "paid_partnership"),
         made_with_ai=flag(request.form, "made_with_ai"),
         is_anonymous=flag(request.form, "anonymous"),
-        post_public=not board.is_private,
+        audience=audience,
+        post_public=not audience and not board.is_private,
         repost_id=None,
         app_id=v.client.application.id if v.client else None,
         creation_region=request.headers.get("cf-ipcountry"),
@@ -1491,7 +1508,7 @@ Optional file data:
         User.is_nofollow==False,
         )
 
-    if not new_post.is_public:
+    if not new_post.is_public and not new_post.audience:
 
         contribs=g.db.query(ContributorRelationship).filter_by(board_id=new_post.board_id, is_active=True).subquery()
         mods=g.db.query(ModRelationship).filter_by(board_id=new_post.board_id, accepted=True).subquery()
@@ -1532,6 +1549,10 @@ Optional file data:
     if not new_post.is_anonymous:
         muters = {x[0] for x in g.db.query(UserMute.user_id).filter_by(target_id=v.id).all()}
         uids = [uid for uid in uids if uid not in muters]
+    if new_post.audience:
+        # made for a Circle: only people who may see it are told (followers and mentions alike)
+        eligible = circle_guard.eligible_ids(g.db, v.id, new_post.audience)
+        uids = [uid for uid in uids if uid in eligible]
 
     for uid in uids:
         new_notif=Notification(
@@ -1619,6 +1640,9 @@ Required form data:
 
     post = get_post(pid, v=v)
     primary = post.reposts if post.is_repost else post
+
+    if primary.audience:
+        return {"error": "A post for a Circle can't be forwarded to a guild."}, 403
 
     target = get_guild(request.form.get("board", ""), graceful=True)
     if not target or target.name.lower() == PROFILE_BOARD_NAME:
@@ -1847,6 +1871,9 @@ def repost_post(base36id, v):
 
     post = get_post(base36id, v=v)
     primary = post.reposts if post.is_repost else post
+
+    if primary.audience:
+        return {"error": "A post for a Circle can't be reposted."}, 400
 
     if primary.is_anonymous and primary.author_id == v.id:
         return {"error": "You can't repost your own anonymous post: it would put it on your profile."}, 400

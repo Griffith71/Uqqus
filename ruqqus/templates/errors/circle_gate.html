@@ -1,0 +1,35 @@
+{% extends "errors/default.html" %}
+
+{# A post made for a Circle, asked for by someone outside it (routes/errors.py). It names the owner and who the post is
+   for and shows nothing of the post: no title, no text, no guild. #}
+
+{% block title %}
+<title>Circle post - {{ 'SITE_NAME' | app_config }}</title>
+{% endblock %}
+
+{% block pagetype %}error-circle{% endblock %}
+
+{% block content %}
+{% set st = circle_status(owner, v) %}
+<div class="row justify-content-center">
+  <div class="col-10 col-md-6">
+    <div class="text-center px-3 my-8" id="circle-gate">
+      <a href="{{ owner.permalink }}"><img src="{{ owner.profile_url }}" class="profile-pic profile-pic-65 mb-3" alt=""></a>
+      <h1 class="h5">{{ audience_name }} only</h1>
+      <p class="text-muted mb-4">
+        {% if audience == 2 %}This is for <a href="{{ owner.permalink }}">@{{ owner.username }}</a>'s Close Friends.
+        {% else %}This is for the people in <a href="{{ owner.permalink }}">@{{ owner.username }}</a>'s Circle.{% endif %}
+      </p>
+      {% if not v %}
+      <a href="/login?redirect={{ request.path | urlencode }}" class="btn btn-primary">Sign in</a>
+      {% elif st and st.joinable and audience == 1 %}
+      <button type="button" class="btn btn-primary circle-join"
+        onclick="if (confirm('Join this Circle for {{ st.price }} coin{{ '' if st.price == 1 else 's' }} every 30 days? It renews from your coins until you cancel.')) { post_toast('/api/circle/{{ owner.username }}/subscribe', function () { window.location.reload(); }); }">
+        Join Circle &middot; {{ st.price }} coin{{ '' if st.price == 1 else 's' }}/month</button>
+      {% else %}
+      <a href="{{ owner.permalink }}" class="btn btn-secondary">Go to their profile</a>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}

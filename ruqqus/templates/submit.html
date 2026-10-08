@@ -188,6 +188,8 @@
                             </div>
                         </div>
 
+                        {{ post_options.audience_field((draft.option("audience", 0) if draft else request.form.get("audience", 0)) | int, "post-audience") }}
+
                         {{ post_options.comment_permission_field((draft.option("comment_permission", 0) if draft else request.form.get("comment_permission", 0)) | int, "post-cp") }}
 
                         {{ post_options.disclosure_field(draft.option("paid_partnership", false) if draft else request.form.getlist("paid_partnership") | select | list | length > 0, draft.option("made_with_ai", false) if draft else request.form.getlist("made_with_ai") | select | list | length > 0, "post-disc") }}

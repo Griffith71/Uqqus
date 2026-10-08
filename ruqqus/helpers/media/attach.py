@@ -105,6 +105,22 @@ def is_live(db, asset):
     return False
 
 
+def audience_of(db, asset):
+    """(audience, author id) of the post - or the post a comment is on - this asset is part of. (0, None) when it is
+    part of nothing or of something public: the file is then shown to everyone. Anything else is for a Circle."""
+    _, Submission, Comment = _models()
+    if asset.submission_id:
+        row = db.query(Submission.audience, Submission.author_id).filter(Submission.id == asset.submission_id).first()
+    elif asset.comment_id:
+        row = (db.query(Submission.audience, Submission.author_id)
+               .join(Comment, Comment.parent_submission == Submission.id).filter(Comment.id == asset.comment_id).first())
+    else:
+        row = None
+    if not row or not row.audience:
+        return 0, None
+    return row.audience, row.author_id
+
+
 def sync(db, author_id, texts, submission_id=None, comment_id=None):
     """Make the assets attached to this post (or comment) match what its link and text
     mention now: attach the newly mentioned ones, let go of the ones no longer there.

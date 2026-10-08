@@ -88,6 +88,9 @@ class Submission(Base, Stndrd, Age_times, Scores, Fuzzing):
     _own_is_image = Column("is_image", Boolean, default=False)
     has_thumb = Column(Boolean, default=False)
     post_public = Column(Boolean, default=True)
+    # who can see it (helpers/circles.py): 0 public, 1 subscribers, 2 close friends, 3 a Circle guild. Anything but 0 also
+    # has post_public false, so every list that asks for public posts leaves it out
+    audience = Column(SmallInteger, nullable=False, default=0)
     score_hot = Column(Float, default=0)
     score_disputed = Column(Float, default=0)
     score_top = Column(Float, default=1)
@@ -431,6 +434,8 @@ class Submission(Base, Stndrd, Age_times, Scores, Fuzzing):
 
         if not v or self.author_id == v.id:
             return "this is your content."
+        elif self.audience and v.admin_level < 4:
+            return "you are in their Circle."
         elif self.is_pinned:
             return "a guildmaster has pinned it."
         elif self.board.has_mod(v):
@@ -701,7 +706,14 @@ class Submission(Base, Stndrd, Age_times, Scores, Fuzzing):
 
     @property
     def is_public(self):
-        return self.post_public or not self.board.is_private
+        return not self.audience and (self.post_public or not self.board.is_private)
+
+    def private_label(self, v):
+        """The tooltip of the "private post" eye: who can see it, and why this viewer can."""
+        from ruqqus.helpers import circles
+        if self.audience:
+            return f"{circles.NAMES.get(self.audience, 'Private')} only. Visible to you because {self.visibility_reason(v)}"
+        return f"Private post, visible to you because {self.visibility_reason(v)}"
 
     @property
     def flag_count(self):

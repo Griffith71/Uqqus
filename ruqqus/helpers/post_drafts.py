@@ -12,6 +12,7 @@ import re
 
 from . import coauthors
 from . import comment_permission as cperm
+from . import circles
 from . import polls as poll_rules
 from .post_fields import BODY_MAX, TITLE_MAX, URL_MAX, PostFieldError, check_body, flag
 
@@ -60,6 +61,10 @@ def clean_fields(form):
     if permission is None:
         raise PostFieldError("Choose who can comment.")
 
+    audience, audience_error = circles.parse_audience(form.get("audience"))
+    if audience_error:
+        raise PostFieldError(audience_error)
+
     try:
         names = coauthors.parse_names(form.get("coauthors"))
     except coauthors.CoauthorError as error:
@@ -82,6 +87,7 @@ def clean_fields(form):
             "poll_options": poll_options,
             "poll_hours": poll_hours,
             "comment_permission": permission,
+            "audience": audience,
             "paid_partnership": flag(form, "paid_partnership"),
             "made_with_ai": flag(form, "made_with_ai"),
             "anonymous": flag(form, "anonymous"),
@@ -132,6 +138,8 @@ def publish_form(fields, formkey):
         "comment_permission": str(options.get("comment_permission", cperm.EVERYONE)),
         "formkey": formkey,
     }
+    if options.get("audience"):
+        data["audience"] = str(options["audience"])
     for name in ("sensitive", "paid_partnership", "made_with_ai", "anonymous"):
         if options.get(name):
             data[name] = "true"

@@ -155,3 +155,30 @@ def test_a_price_is_described_in_words():
     assert c.describe_price(0) == "Close Friends only"
     assert c.describe_price(1) == "1 coin every 30 days"
     assert c.describe_price(25) == "25 coins every 30 days"
+
+
+# --- making a post for an audience ----------------------------------------------------------------------
+
+def test_a_public_post_is_never_refused_for_its_audience():
+    assert c.post_refusal(c.PUBLIC, anonymous=True, coauthors=True, forwards=True, own_video=True, shared=True) is None
+
+
+@pytest.mark.parametrize("audience", [c.SUBSCRIBERS, c.FRIENDS])
+def test_what_a_circle_post_cannot_be(audience):
+    assert c.post_refusal(audience) is None
+    assert "anonymous" in c.post_refusal(audience, anonymous=True)
+    assert "co-authors" in c.post_refusal(audience, coauthors=True)
+    assert "forwarded to a guild" in c.post_refusal(audience, forwards=True)
+    assert "already been forwarded or reposted" in c.post_refusal(audience, shared=True)
+    assert "YouTube" in c.post_refusal(audience, own_video=True)
+
+
+def test_the_first_problem_is_the_one_said():
+    assert "anonymous" in c.post_refusal(c.FRIENDS, anonymous=True, coauthors=True, forwards=True, own_video=True, shared=True)
+    assert "co-authors" in c.post_refusal(c.FRIENDS, coauthors=True, forwards=True, own_video=True)
+
+
+def test_the_date_is_written_the_way_the_site_writes_it():
+    assert c.date_text(0) == "01 January 1970"
+    assert c.date_text(NOW) == "18 May 2033"
+    assert c.date_text(None) == "01 January 1970"

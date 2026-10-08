@@ -50,6 +50,8 @@ def coauthor_invite(pid, v):
     """The author invites accounts (`usernames`, separated by commas or spaces)."""
     post = _primary(pid)
     _author_only(post, v)
+    if post.audience:
+        return jsonify({"error": "A post for a Circle can't have co-authors."}), 400
     try:
         names = coauthors.parse_names(request.form.get("usernames"))
     except coauthors.CoauthorError as error:
@@ -181,7 +183,7 @@ def _may_invite(post, v=None):
     """Offer the Co-authors menu item: the author, on a post of their own profile that is not anonymous."""
     v = None if isinstance(v, Undefined) else v
     return bool(v and isinstance(post, Submission) and post.author_id == v.id and not post.is_anonymous
-                and post.repost_id in (0, None))
+                and not post.audience and post.repost_id in (0, None))
 
 
 app.jinja_env.globals.update(coauthors_of=_coauthors_of, is_coauthor=_is_coauthor, may_invite_coauthors=_may_invite)

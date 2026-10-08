@@ -90,6 +90,26 @@ def can_see(audience, *, is_author, tier):
     return False
 
 
+def post_refusal(audience, *, anonymous=False, coauthors=False, forwards=False, own_video=False, shared=False):
+    """Why a post cannot be made for an audience other than Public, or None. A Circle post stays between the author and
+    the people in the Circle: it cannot be anonymous (they know who it is), have co-authors (their audience is not
+    this one), be forwarded to a guild, or carry a video uploaded to the author's own YouTube channel (a link anyone
+    holding it can watch)."""
+    if audience == PUBLIC:
+        return None
+    if anonymous:
+        return "A post for your Circle can't be anonymous: the people in it already know who you are."
+    if coauthors:
+        return "A post for your Circle can't have co-authors."
+    if forwards:
+        return "A post for your Circle can't be forwarded to a guild."
+    if shared:
+        return "This post has already been forwarded or reposted, so it can't be moved to your Circle."
+    if own_video:
+        return "A video uploaded to your YouTube channel can't be kept private to your Circle: anyone with its link can watch it. Share it publicly, or use a picture."
+    return None
+
+
 def refusal_to_add_friend(*, owner_id, target_id, blocked, target_gone, friends, already):
     """Why the owner cannot add this account as a close friend, or None. Never says who blocked whom."""
     if target_id == owner_id:

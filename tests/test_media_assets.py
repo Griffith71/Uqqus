@@ -89,10 +89,12 @@ def test_a_public_file_is_cached_for_good_and_a_private_one_never():
 
 
 def test_a_public_file_never_reads_the_session():
-    # a cached answer is shared by everyone: who is asking is only looked at for a file nobody attached
+    # a cached answer is shared by everyone: who is asking is only looked at for a file nobody attached, or one that
+    # is part of a post made for a Circle (and that answer is never cached: see the Circle tests)
     serve = ROUTES[ROUTES.index("def media_file("):]
     assert "@auth_" not in ROUTES[ROUTES.index("# --- showing"):ROUTES.index("def media_file(")]
-    assert serve.index("if not live:") < serve.index("get_logged_in_user()")
+    assert serve.count("get_logged_in_user()") == 1
+    assert serve.index("if not live or audience:") < serve.index("get_logged_in_user()")
 
 
 def test_a_public_file_carries_nobodys_session_cookie():

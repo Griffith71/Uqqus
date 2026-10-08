@@ -222,7 +222,8 @@ CREATE TABLE public.submissions (
     comment_permission smallint DEFAULT 0 NOT NULL,
     paid_partnership boolean DEFAULT false NOT NULL,
     made_with_ai boolean DEFAULT false NOT NULL,
-    is_anonymous boolean DEFAULT false NOT NULL
+    is_anonymous boolean DEFAULT false NOT NULL,
+    audience smallint DEFAULT 0 NOT NULL
 );
 
 

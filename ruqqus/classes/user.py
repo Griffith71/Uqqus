@@ -9,7 +9,7 @@ import pyotp
 from flask import session, g, request
 
 from ruqqus.helpers.base36 import *
-from ruqqus.helpers import anonymity, guild_limits
+from ruqqus.helpers import anonymity, circle_clause, guild_limits
 from .coauthors import PostCoauthor
 from ruqqus.helpers.muting import hide_muted
 from ruqqus.helpers.security import *
@@ -311,7 +311,8 @@ class User(Base, Stndrd, Age_times):
                     Submission.author_id == self.id,
                     Submission.post_public == True,
                     Submission.board_id.in_(m),
-                    Submission.board_id.in_(c)
+                    Submission.board_id.in_(c),
+                    circle_clause.for_viewer(self)
                 )
             )
 
@@ -691,7 +692,8 @@ class User(Base, Stndrd, Age_times):
                     Submission.author_id == v.id,
                     Submission.post_public == True,
                     Submission.board_id.in_(m),
-                    Submission.board_id.in_(c)
+                    Submission.board_id.in_(c),
+                    circle_clause.for_viewer(v)
                 )
             )
         else:
@@ -1712,7 +1714,8 @@ class User(Base, Stndrd, Age_times):
                     Submission.author_id == self.id,
                     Submission.post_public == True,
                     Submission.board_id.in_(m),
-                    Submission.board_id.in_(c)
+                    Submission.board_id.in_(c),
+                    circle_clause.for_viewer(self)
                 )
             )
 
@@ -1865,7 +1868,8 @@ class User(Base, Stndrd, Age_times):
                     Submission.author_id == self.id,
                     Submission.post_public == True,
                     Submission.board_id.in_(m),
-                    Submission.board_id.in_(c)
+                    Submission.board_id.in_(c),
+                    circle_clause.for_viewer(self)
                 )
             )
 
@@ -1913,7 +1917,8 @@ class User(Base, Stndrd, Age_times):
                     Submission.author_id == self.id,
                     Submission.post_public == True,
                     Submission.board_id.in_(m),
-                    Submission.board_id.in_(c)
+                    Submission.board_id.in_(c),
+                    circle_clause.for_viewer(self)
                 )
             )
 

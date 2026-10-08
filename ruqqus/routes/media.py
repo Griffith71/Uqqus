@@ -15,6 +15,7 @@ from flask import Response, g, jsonify, redirect, render_template, request
 
 from ruqqus.__main__ import app, limiter
 from ruqqus.classes import MediaAccount, MediaAsset
+from ruqqus.helpers import circle_guard
 from ruqqus.helpers.media import attach, cdn, dev, google_oauth, registry, rules, safety
 from ruqqus.helpers.media.base import AccountLost, MediaGone, ProviderDown
 from ruqqus.helpers.secret_box import encrypt_secret
@@ -429,12 +430,16 @@ never cached. Anything else is refused, so this is not a file host for other sit
         return _refuse(410)
 
     live = attach.is_live(g.db, asset)
+    # a file in a post made for a Circle is only for the people who may see that post
+    audience, circle_owner = attach.audience_of(g.db, asset) if live else (0, None)
     is_owner = False
-    if not live:
+    allowed = False
+    if not live or audience:
         # only now does it matter who is asking; a public file never looks at the session
         v, _ = get_logged_in_user()
         is_owner = bool(v) and v.id == asset.user_id
-    mode = rules.access(asset.status, live, is_owner)
+        allowed = bool(audience) and circle_guard.may_see(g.db, audience, circle_owner, v)
+    mode = rules.access(asset.status, live, is_owner, audience, allowed)
     if mode is None:
         return _refuse(404)
 

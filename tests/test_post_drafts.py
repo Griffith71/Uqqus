@@ -22,7 +22,7 @@ def test_a_draft_saves_the_composers_fields():
     assert f["title"] == "A titlewith breaks"          # one line, like the real title
     assert f["url"] == "https://example.com/x" and f["body"] == "some **text**"
     assert f["forward_guilds"] == ["general", "Test"]  # leading + dropped, case-insensitive duplicates dropped
-    assert f["options"] == {"coauthors": "", "poll_options": [], "poll_hours": 24, "comment_permission": 2, "paid_partnership": True, "made_with_ai": False, "anonymous": False, "sensitive": True}
+    assert f["options"] == {"coauthors": "", "poll_options": [], "poll_hours": 24, "comment_permission": 2, "audience": 0, "paid_partnership": True, "made_with_ai": False, "anonymous": False, "sensitive": True}
 
 
 def test_an_empty_draft_is_valid_but_flagged_empty():
@@ -106,3 +106,20 @@ def test_the_failure_notice_names_the_post_and_the_reason():
     text = pd.failure_notice("My post", "+general has been banned.")
     assert '"My post"' in text and "+general has been banned." in text and "drafts" in text
     assert '"Untitled"' in pd.failure_notice("", "x")
+
+
+# --- who can see it (helpers/circles.py) ---------------------------------------
+
+def test_a_draft_keeps_who_it_is_for_and_the_publisher_sends_it_only_when_it_is_not_public():
+    for raw, expected in (("", 0), ("0", 0), ("1", 1), ("2", 2)):
+        f = pd.clean_fields(form(("title", "t"), ("audience", raw)))
+        assert f["options"]["audience"] == expected
+    assert "audience" not in pd.publish_form(pd.clean_fields(form(("title", "t"))), "key")
+    assert "audience" not in pd.publish_form(pd.clean_fields(form(("title", "t"), ("audience", "0"))), "key")
+    assert pd.publish_form(pd.clean_fields(form(("title", "t"), ("audience", "2"))), "key")["audience"] == "2"
+
+
+@pytest.mark.parametrize("raw", ["3", "9", "-1", "x", "1.5"])
+def test_a_draft_for_an_audience_that_is_not_a_choice_is_refused(raw):
+    with pytest.raises(pd.PostFieldError, match="Choose who can see this"):
+        pd.clean_fields(form(("title", "t"), ("audience", raw)))

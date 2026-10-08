@@ -14,7 +14,7 @@
 
   The other options are the shared ones in partials/post_options.html.
 #}
-{% from "partials/post_options.html" import comment_permission_field, disclosure_field, anonymous_field, coauthors_field, poll_field %}
+{% from "partials/post_options.html" import audience_field, comment_permission_field, disclosure_field, anonymous_field, coauthors_field, poll_field %}
 
 {% macro inline_composer(v, board=none, panel=false) %}
 <div class="row no-gutters {% if panel %}d-flex{% else %}d-none d-lg-flex mt-3{% endif %}{% if not v %} mb-3{% endif %}">
@@ -43,6 +43,7 @@
                   </div>
                 </div>
                 <input type="url" id="ic-url" name="url" class="form-control mt-3" placeholder="Link (optional)" aria-label="Link">
+                {{ audience_field(0, "ic-audience") }}
                 {{ comment_permission_field(0, "ic-permission") }}
                 {{ disclosure_field(false, false, "ic-disclosure") }}
                 {{ anonymous_field(false, "ic-anonymous") }}

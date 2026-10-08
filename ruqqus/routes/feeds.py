@@ -62,7 +62,8 @@ def feeds_user(sort=None, username=None, key=None):
     t = request.args.get('t')
 
     ids = user.idlist(sort=sort, page=page, t=t)
-    posts = get_posts(ids, sort=sort, v=user)
+    # a feed address is a secret that is handed to other programs: it carries nothing made for a Circle (helpers/circles.py)
+    posts = [p for p in get_posts(ids, sort=sort, v=user) if not p.audience]
 
     domain = environ.get(
     "domain", environ.get(
@@ -94,7 +95,8 @@ def feeds_user(sort=None, username=None, key=None):
                 with tag("published"):
                     text(datetime.utcfromtimestamp(post.created_utc).isoformat())
                 
-                doc.stag("link", href=post.url)
+                if post.url:
+                    doc.stag("link", href=post.url)
 
                 with tag("author"):
                     # the feed is public: an anonymous post is by "Anonymous"
@@ -114,11 +116,12 @@ def feeds_user(sort=None, username=None, key=None):
                 image_url = post.thumb_url or post.embed_url or post.url
                 #print("IS IMAGE")
 
-                doc.stag("media:thumbnail", url=image_url)
+                if image_url:
+                    doc.stag("media:thumbnail", url=image_url)
 
                 if len(post.body_html) > 0:
                     with tag("content", type="html"):
-                        text(html.escape(f"<img src={image_url}/><br/>{post.body_html}"))
+                        text(html.escape((f"<img src={image_url}/><br/>" if image_url else "") + post.body_html))
 
     return Response( "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"+ doc.getvalue(), mimetype="application/xml")
 

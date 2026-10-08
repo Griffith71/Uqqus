@@ -64,6 +64,8 @@
     });
     var permission = form.querySelector('input[name="comment_permission"]:checked');
     if (permission) data.append('comment_permission', permission.value);
+    var audience = form.querySelector('input[name="audience"]:checked');
+    if (audience) data.append('audience', audience.value);
     ['paid_partnership', 'made_with_ai', 'anonymous'].forEach(function (name) {
       if (form.querySelector('input[type="checkbox"][name="' + name + '"]:checked')) data.append(name, 'true');
     });

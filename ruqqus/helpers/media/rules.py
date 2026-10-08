@@ -255,17 +255,20 @@ def find_refs(*texts):
 PUBLIC, PRIVATE = "public", "private"
 
 
-def access(status, attached_live, is_owner):
+def access(status, attached_live, is_owner, audience=0, allowed=False):
     """How an asset may be fetched right now.
 
-    PUBLIC: it is part of a live post or comment, anyone may see it and a CDN may keep it.
-    PRIVATE: only its owner (the preview while writing), never cached.
+    PUBLIC: it is part of a live post or comment for everyone, anyone may see it and a CDN may keep it.
+    PRIVATE: only its owner (the preview while writing), or - when it is part of a post made for a Circle (`audience`
+    is not 0) - the people allowed to see that post (`allowed`); never cached, and the session is read.
     None: nobody. An asset nobody attached is not served to the public, so the site
     cannot be used as a free image host for somewhere else."""
     if status != READY:
         return None
     if attached_live:
-        return PUBLIC
+        if not audience:
+            return PUBLIC
+        return PRIVATE if (is_owner or allowed) else None
     return PRIVATE if is_owner else None
 
 

@@ -5,6 +5,7 @@ from flask import g
 from sqlalchemy import *
 from sqlalchemy.orm import *
 from urllib.parse import urlparse
+from ruqqus.helpers import circle_guard
 
 import re
 import time
@@ -268,6 +269,13 @@ def get_post(pid, v=None, graceful=False, nSession=None, no_text=False, **kwargs
         x=items
         # x._is_exiled_for=items[1] or 0
 
+    # a post made for a Circle is only for the people in it: a 404 for everyone else (CircleOnly is a 404, so a route
+    # that does not know about Circles fails closed; routes/circles.py draws a gate for a page request)
+    if x is not None and not circle_guard.may_see_post(nSession, x, v):
+        if graceful:
+            return None
+        raise CircleOnly(x)
+
     return x
 
 
@@ -425,6 +433,9 @@ def get_posts(pids, sort="hot", v=None):
         #     output.append(p)
 
     posts = sorted(output, key=lambda x: pids.index(x.id))
+
+    # whatever a list names, a post made for a Circle is shown only to the people in it
+    posts = circle_guard.visible_posts(g.db, posts, v)
 
     # the polls of the page, in a few queries (helpers/poll_store.py)
     from ruqqus.helpers import poll_store
@@ -731,6 +742,11 @@ def get_comment(cid, nSession=None, v=None, graceful=False, no_text=False, **kwa
         x=q[0]
         x._is_exiled_for=q[1]
 
+    # a comment under a post made for a Circle is only for the people who may see the post
+    if x is not None and not circle_guard.may_see_comment(nSession or g.db, x, v):
+        if graceful:
+            return None
+        abort(404)
 
     return x
 
@@ -928,7 +944,7 @@ def get_comments(cids, v=None, nSession=None, sort_type=None,
         for c in output:
             c._parent_comment=parents.get(c.parent_comment_id)
 
-    return output
+    return circle_guard.visible_comments(nSession or g.db, output, v)
 
 
 def get_board(bid,v=None, graceful=False):

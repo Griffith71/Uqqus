@@ -15,6 +15,7 @@ from ruqqus.helpers.filters import *
 from ruqqus.helpers.embed import *
 from ruqqus.helpers.markdown import *
 from ruqqus.helpers.get import *
+from ruqqus.helpers import circle_guard
 from ruqqus.helpers.session_helpers import *
 from ruqqus.helpers.alerts import *
 from ruqqus.helpers.aws import *
@@ -915,6 +916,9 @@ def repost_comment(cid, v):
     if comment.is_banned or comment.deleted_utc or comment.purged_utc:
         return {"error": "This comment can't be reposted."}, 400
 
+    if circle_guard.under_audience(g.db, comment):
+        return {"error": "A comment on a post for a Circle can't be reposted."}, 400
+
     if comment.is_anonymous and comment.author_id == v.id:
         return {"error": "You can't repost your own anonymous comment: it would put it on your profile."}, 400
 
@@ -980,6 +984,9 @@ def forward_comment(cid, v):
 
     if comment.is_banned or comment.deleted_utc or comment.purged_utc:
         return {"error": "This comment can't be forwarded."}, 400
+
+    if circle_guard.under_audience(g.db, comment):
+        return {"error": "A comment on a post for a Circle can't be forwarded to a guild."}, 400
 
     target = get_guild(request.form.get("board", ""), graceful=True)
     if not target or target.name.lower() == PROFILE_BOARD_NAME:

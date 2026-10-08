@@ -6,11 +6,14 @@ import time
 
 from flask import abort, g, jsonify, render_template, request
 
-from ruqqus.helpers import circle_store, circles
+from ruqqus.classes import RepostRelationship, Submission, User
+from ruqqus.helpers import circle_store, circles, coauthors
 from ruqqus.helpers.alerts import send_notification
-from ruqqus.helpers.get import get_user
+from ruqqus.helpers.get import get_post, get_user
+from ruqqus.helpers.media import attach as media_attach, cdn as media_cdn
 from ruqqus.helpers.wrappers import auth_required, is_not_banned, no_negative_balance, validate_formkey
-from ruqqus.__main__ import app
+from ruqqus.__main__ import app, cache
+from ruqqus.routes.front import frontlist
 
 DAY = 24 * 60 * 60
 
@@ -150,3 +153,65 @@ def circle_status(owner, viewer):
 
 
 app.jinja_env.globals.update(circle_status=circle_status)
+
+
+# --- who can see a post that already exists ------------------------------------------------------------
+
+@app.route("/api/post/<pid>/audience", methods=["POST"])
+@is_not_banned
+@validate_formkey
+def circle_post_audience(pid, v):
+    """The author changes who can see one of their posts. Narrowing it to their Circle takes the same refusals as posting
+    it there (it cannot be anonymous, co-authored, forwarded, reposted or carry an own video); making it Public again
+    needs `confirm=1`, because a Circle post becomes visible to everyone (the page asks first)."""
+    post = get_post(pid, v=v)                              # only someone who may see it gets this far
+    if post.author_id != v.id:
+        abort(403)
+    if post.is_deleted or post.is_banned:
+        abort(404)
+    if post.repost_id not in (0, None):
+        return _fail("Only a post on your own profile has an audience.")
+    raw = request.values.get("audience")
+    if raw is None or not raw.strip():
+        return _fail("Choose who can see this.")
+    audience, error = circles.parse_audience(raw)
+    if error:
+        return _fail(error)
+    before = post.audience or 0
+    if audience == before:
+        return jsonify({"message": "Nothing changed."})
+
+    if audience != circles.PUBLIC:
+        shared = bool(g.db.query(Submission.id).filter(Submission.repost_id == post.id).first()
+                      or g.db.query(RepostRelationship.id).filter_by(submission_id=post.id).first())
+        refusal = circles.post_refusal(
+            audience, anonymous=bool(post.is_anonymous), coauthors=bool(coauthors.rows_of(g.db, post.id)),
+            own_video=bool(post.url and media_attach.own_video(g.db, v.id, post.url)), shared=shared)
+        if refusal:
+            return _fail(refusal)
+    elif request.values.get("confirm") != "1":
+        return jsonify({"error": "This post will be visible to everyone. Confirm to make it public.", "confirm": True}), 409
+
+    post.audience = audience
+    post.post_public = not audience and not post.board.is_private
+    g.db.add(post)
+    g.db.commit()
+    if audience != circles.PUBLIC:
+        # a picture that was public may still sit in a CDN: it must not be served from there any more
+        media_cdn.purge(media_attach.attached_paths(g.db, submission_id=post.id))
+
+    cache.delete_memoized(User.userpagelisting, v, sort="new")
+    cache.delete_memoized(frontlist, sort="new")
+    cache.delete_memoized(frontlist)
+    return jsonify({"message": f"{circles.NAMES[audience]} can see this post now." if audience else "This post is public now."})
+
+
+def may_change_audience(post, viewer):
+    """Offer "Who can see this" in a post's menu: the author, on a post of their own profile, not anonymous, still up."""
+    from jinja2 import Undefined
+    viewer = None if isinstance(viewer, Undefined) else viewer
+    return bool(viewer and isinstance(post, Submission) and post.author_id == viewer.id and not post.is_anonymous
+                and not post.is_deleted and not post.is_banned and post.repost_id in (0, None))
+
+
+app.jinja_env.globals.update(may_change_audience=may_change_audience)
