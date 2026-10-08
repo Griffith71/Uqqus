@@ -135,6 +135,16 @@ A post can carry a poll: the post's title is the question, 2 to 4 options (40 ch
 - **A page of posts gets its polls in a few queries**: `poll_store.attach` at the end of `get_posts`; a post loaded another way is looked up on first use (`poll_of` in templates). The poll is drawn by `partials/poll.html` (`poll_block(p, v)`) under the body and community note of a card and of a post page.
 - Tests: `tests/test_polls.py` (the rules), `tests/test_polls_assets.py` (schema, vote guards, primary resolution, word filter sites, drafts, composers, templates, both stylesheets).
 
+## Post insights (legacy app)
+
+Premium authors can see how their posts are doing: `/post/<id>/insights?days=7|28` (and `.json`) for one post, `/insights` for their posts of the last 28 days. Rules in `ruqqus/helpers/insights.py` (no I/O), counting and the report in `helpers/insights_store.py`, pages in `routes/insights.py`.
+
+- **Only counts exist.** `post_view_days` is a count per post and day (`views`); no account, address or user agent is stored. The report adds up the post and its guild forwards (a copy has its own votes and comments, but it is one post to its author) and shows views per day, signed-in viewers (a `COUNT(DISTINCT)` over `view_history`, never the rows), upvotes, comments, bookmarks, forwards, reposts, a row per place (profile and each guild) and the poll's results (through `poll_store.load_one`, the one place that hides names). Nothing names a viewer, a voter or a poll voter, and the JSON drops the poll to labels and counts. A new metric must stay a count.
+- **What counts as a view** (`insights_store.count_view`, called after `record_view` on both post pages, visitors included): not the author, not a robot or link preview or an empty user agent (`is_robot`), not a prefetch, not the same viewer within 30 minutes (`SET NX EX 1800` on `pv:<post>:<key>` in Redis; the key is the account id or a salted hash of address and user agent and lives only there), not a removed post. It is best effort: the write is an upsert inside a savepoint and everything is in a `try`, so a missing table or Redis can never break a post page. Views before the feature are not counted.
+- **Who reads it**: only the ORIGINAL author of a live post (`_mine`: a guild copy's id resolves to the post it copies; anyone else, a visitor aside, gets a 404, anonymous posts included, because a 200 would confirm who wrote one), and only with Premium, checked with `has_premium_no_renew`. Without Premium the author gets the explanation page (the JSON a 403). Note the site's own auto-renew is unchanged: any page that reads `has_premium` (the sidebar does, through `can_make_guild`) renews a lapsed Premium from the account's coins.
+- Entry points: "Insights" beside Co-authors in the post menus (`may_see_insights`, four menus) and a perk line on `/settings/premium`.
+- Tests: `tests/test_insights.py` (the rules), `tests/test_insights_assets.py` (schema, counting rules, the no-names promises, gates, menus, stylesheets).
+
 ## Trending topics (legacy app)
 
 A top 10 of what an unusual number of different accounts posted about in the last day. Start with `ruqqus/helpers/trending.py` (the rules, stdlib only).

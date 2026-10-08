@@ -399,6 +399,7 @@
           {% if can_edit %}
           <button class="btn btn-link btn-block btn-lg text-left text-muted" data-dismiss="modal" onclick="togglePostEdit('{{ p.base36id }}')"><i class="far fa-edit text-center text-muted mr-3"></i>Edit</button>
           {% if may_invite_coauthors(p, v) %}<a class="btn btn-link btn-block btn-lg text-left text-muted coauthors-item" href="javascript:void(0)" data-dismiss="modal" data-post-id="{{ p.base36id }}"><i class="fas fa-user-friends fa-fw text-center text-muted mr-3"></i>Co-authors</a>{% endif %}
+          {% if may_see_insights(p, v) %}<a class="btn btn-link btn-block btn-lg text-left text-muted" href="/post/{{ p.base36id }}/insights"><i class="fas fa-chart-line fa-fw text-center text-muted mr-3"></i>Insights</a>{% endif %}
           <button class="btn btn-link btn-block btn-lg text-left text-muted" data-toggle="modal" data-dismiss="modal" data-target="#deletePostModal" onclick="delete_postModal('{{ p.base36id }}')"><i class="far fa-trash-alt text-center text-muted mr-3"></i>{{ "Remove from +"+p.board.name if p.is_repost else "Delete" }}</button>
           {% endif %}
 
@@ -756,6 +757,7 @@
                         {% if can_edit %}
                         <a class="dropdown-item" href="javascript:void(0)" onclick="togglePostEdit('{{ p.base36id }}')"><i class="fas fa-edit fa-fw"></i>Edit</a>
                         {% if may_invite_coauthors(p, v) %}<a class="dropdown-item coauthors-item" href="javascript:void(0)" data-post-id="{{ p.base36id }}"><i class="fas fa-user-friends fa-fw"></i>Co-authors</a>{% endif %}
+                        {% if may_see_insights(p, v) %}<a class="dropdown-item" href="/post/{{ p.base36id }}/insights"><i class="fas fa-chart-line fa-fw"></i>Insights</a>{% endif %}
                         <a class="dropdown-item" href="javascript:void(0)" data-toggle="modal" data-dismiss="modal" data-target="#deletePostModal" onclick="delete_postModal('{{ p.base36id }}')"><i class="fas fa-trash-alt fa-fw"></i>{{ "Remove from +"+p.board.name if p.is_repost else "Delete" }}</a>
                         {% endif %}
 

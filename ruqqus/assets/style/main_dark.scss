@@ -1856,6 +1856,85 @@ body.embedded #chat-app {
     border-radius: 0.4rem;
 }
 
+// Post insights (templates/insights.html, insights_overview.html)
+.insight-stats {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.5rem;
+}
+
+@media (min-width: 576px) {
+    .insight-stats {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+.insight-stat {
+    padding: 0.6rem 0.75rem;
+    border: 1px solid $border-color;
+    border-radius: 0.4rem;
+}
+
+.insight-value {
+    color: $black;
+    font-size: 1.5rem;
+    font-weight: $font-weight-bold;
+    line-height: 1.2;
+}
+
+.insight-label {
+    color: $muted;
+    font-size: $small-font-size;
+    font-weight: $font-weight-bold;
+}
+
+.insight-sub {
+    color: $muted;
+    font-size: $extra-small-font-size;
+}
+
+.insight-bars {
+    display: flex;
+    align-items: flex-end;
+    height: 7.5rem;
+    border-bottom: 1px solid $border-color;
+}
+
+.insight-bar-col {
+    display: flex;
+    flex: 1 1 0;
+    align-items: flex-end;
+    min-width: 0;
+    height: 100%;
+    padding: 0 1px;
+}
+
+.insight-bar {
+    width: 100%;
+    border-radius: 2px 2px 0 0;
+    background-color: $primary;
+    transform-origin: bottom;
+    animation: insight-grow 0.5s ease-out;
+}
+
+.insight-axis {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 0.25rem;
+}
+
+@keyframes insight-grow {
+    from {
+        transform: scaleY(0);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .insight-bar {
+        animation: none;
+    }
+}
+
 // A continuous feed (assets/js/infinite_scroll.js): while the script runs the browser's own
 // pull-to-reload gives way to the page's pull indicator, the "Show N new posts" pill is
 // pinned under the sticky feed header, and the end of the feed has a note instead of buttons.

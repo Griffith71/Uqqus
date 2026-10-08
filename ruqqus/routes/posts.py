@@ -31,6 +31,7 @@ from ruqqus.helpers.word_filter_store import post_severity, apply_post_severity
 from ruqqus.classes import *
 from ruqqus.helpers import coauthors       # after the star-import: ruqqus.classes has a module of this name too
 from ruqqus.helpers import polls as poll_rules, poll_store
+from ruqqus.helpers import insights_store
 from .front import frontlist
 from ruqqus.__main__ import app, limiter, cache, db_session
 from flask import session as flask_session
@@ -145,6 +146,7 @@ Optional query parameters:
 
     if v:
         record_view(v, post)
+    insights_store.count_view(v, post)
 
     return {
         "html":lambda:post.rendered_page(v=v),
@@ -172,6 +174,7 @@ def post_base36id_noboard(base36id, anything=None, v=None):
 
     if v:
         record_view(v, post)
+    insights_store.count_view(v, post)
 
     return {
         "html":lambda:post.rendered_page(v=v),

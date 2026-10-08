@@ -1,0 +1,113 @@
+{% extends "home.html" %}
+
+{# shares the Curations page layout (the same 726px column and sidebars) #}
+{% block pagetype %}curations{% endblock %}
+
+{% block title %}
+<title>Post insights - {{ 'SITE_NAME' | app_config }}</title>
+{% endblock %}
+
+{% block desktopBanner %}{% endblock %}
+{% block PseudoSubmitForm %}{% endblock %}
+{% block pagenav %}{% endblock %}
+
+{% macro stat(label, value, sub) %}
+<div class="insight-stat">
+  <div class="insight-value">{{ "{:,}".format(value) }}</div>
+  <div class="insight-label">{{ label }}</div>
+  {% if sub %}<div class="insight-sub">{{ sub }}</div>{% endif %}
+</div>
+{% endmacro %}
+
+{# a bar for each day, with the same numbers as a table for anyone who can't see the bars #}
+{% macro chart(items, name) %}
+<div class="insight-bars" role="img" aria-label="{{ name }} per day, {{ items | length }} days">
+  {% for b in items %}
+  <div class="insight-bar-col" title="{{ b.label }}: {{ b.value }}"><div class="insight-bar" style="height: {{ b.height }}%"></div></div>
+  {% endfor %}
+</div>
+<div class="insight-axis text-small text-muted"><span>{{ items[0].label }}</span><span>{{ items[-1].label }}</span></div>
+<details class="mt-2 text-small">
+  <summary>Show as a table</summary>
+  <table class="table table-sm mt-2 mb-0">
+    <thead><tr><th scope="col">Day</th><th scope="col" class="text-right">{{ name }}</th></tr></thead>
+    <tbody>{% for b in items %}<tr><td>{{ b.label }}</td><td class="text-right">{{ b.value }}</td></tr>{% endfor %}</tbody>
+  </table>
+</details>
+{% endmacro %}
+
+{% block content %}
+<div class="col px-md-4 py-4">
+
+  <h1 class="h3 mb-1">Post insights</h1>
+  <p class="text-muted text-small mb-3">Only you can see this. These are counts: nobody who looked, voted or answered a poll is named.</p>
+
+  <div class="card mb-3">
+    <div class="card-body">
+      <a href="{{ post.permalink }}" class="h5 d-block mb-1">{{ post.title | safe }}</a>
+      <div class="text-muted text-small">Posted {{ post.age_string }}{% if data.all_time.forwards %} &middot; forwarded to {{ data.all_time.forwards }} guild{{ '' if data.all_time.forwards == 1 else 's' }}{% endif %}</div>
+    </div>
+  </div>
+
+  <div class="d-flex align-items-center justify-content-between mb-3">
+    <div class="btn-group btn-group-sm" role="group" aria-label="Period">
+      {% for r in ranges %}
+      <a href="?days={{ r }}" class="btn btn-sm {% if r == days %}btn-secondary{% else %}btn-link text-muted{% endif %}"{% if r == days %} aria-current="true"{% endif %}>Last {{ r }} days</a>
+      {% endfor %}
+    </div>
+    <span class="text-muted text-small">{{ data.start }} &ndash; {{ data.end }} (UTC)</span>
+  </div>
+
+  <div class="insight-stats mb-4">
+    {{ stat("Views", data.window.views, "{:,} all time".format(data.all_time.views)) }}
+    {{ stat("Signed-in viewers", data.window.viewers, "{:,} all time".format(data.all_time.viewers)) }}
+    {{ stat("Upvotes", data.window.upvotes, "{:,} net votes all time".format(data.all_time.net)) }}
+    {{ stat("Comments", data.window.comments, "{:,} all time".format(data.all_time.comments)) }}
+    {{ stat("Bookmarks", data.window.bookmarks, "{:,} all time".format(data.all_time.bookmarks)) }}
+    {{ stat("Forwards", data.all_time.forwards, "to guilds, all time") }}
+    {{ stat("Reposts", data.all_time.reposts, "to profiles, all time") }}
+  </div>
+
+  <h2 class="h5">Views per day</h2>
+  <p class="text-muted text-small mb-2">Times the post's page was opened by someone other than you. A repeat from the same visitor within half an hour, robots and link previews are not counted. Views before this feature are not counted either.</p>
+  {{ chart(data.views_chart, "Views") }}
+
+  <h2 class="h5 mt-4">Upvotes, comments and bookmarks per day</h2>
+  {{ chart(data.engagement_chart, "Engagement") }}
+
+  {% if data.poll %}
+  <h2 class="h5 mt-4">Poll</h2>
+  <div class="poll mb-1">
+    {% for o in data.poll.options %}
+    <div class="poll-result">
+      <div class="poll-bar" style="width: {{ o.percent }}%"></div>
+      <span class="poll-label">{{ o.label }}</span>
+      <span class="poll-percent">{{ o.percent }}% &middot; {{ o.votes }}</span>
+    </div>
+    {% endfor %}
+    <div class="poll-meta text-small text-muted">{{ data.poll.total }} vote{{ '' if data.poll.total == 1 else 's' }} &middot; {{ data.poll.time_left }}</div>
+  </div>
+  {% endif %}
+
+  <h2 class="h5 mt-4">Where it is</h2>
+  <div class="table-responsive">
+    <table class="table table-sm">
+      <thead><tr><th scope="col">Place</th><th scope="col" class="text-right">Views</th><th scope="col" class="text-right">Net votes</th><th scope="col" class="text-right">Comments</th></tr></thead>
+      <tbody>
+        {% for place in data.places %}
+        <tr>
+          <td>{% if place.name %}<a href="/+{{ place.name }}">+{{ place.name }}</a>{% else %}Your profile{% endif %}</td>
+          <td class="text-right">{{ "{:,}".format(place.views) }}</td>
+          <td class="text-right">{{ "{:,}".format(place.net) }}</td>
+          <td class="text-right">{{ "{:,}".format(place.comments) }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  <p class="text-muted text-small">All time. A forward to a guild has its own votes and comments; its numbers are added into the totals above.</p>
+
+  <p class="mt-4"><a href="/insights">&larr; All your posts</a></p>
+
+</div>
+{% endblock %}

@@ -1,0 +1,50 @@
+{% extends "home.html" %}
+
+{% block pagetype %}curations{% endblock %}
+
+{% block title %}
+<title>Your post insights - {{ 'SITE_NAME' | app_config }}</title>
+{% endblock %}
+
+{% block desktopBanner %}{% endblock %}
+{% block PseudoSubmitForm %}{% endblock %}
+{% block pagenav %}{% endblock %}
+
+{% block content %}
+<div class="col px-md-4 py-4">
+
+  <h1 class="h3 mb-1">Post insights</h1>
+  <p class="text-muted text-small mb-3">Your posts from the last 28 days, with what each got (a post and its guild forwards added up). Only you can see this; these are counts, never names.</p>
+
+  {% if rows %}
+  <div class="table-responsive">
+    <table class="table table-sm">
+      <thead>
+        <tr>
+          <th scope="col">Post</th>
+          <th scope="col" class="text-right">Views</th>
+          <th scope="col" class="text-right">Net votes</th>
+          <th scope="col" class="text-right">Comments</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for row in rows %}
+        <tr>
+          <td>
+            <a href="/post/{{ row.post.base36id }}/insights">{{ row.post.title | safe }}</a>
+            <div class="text-muted text-small">{{ row.post.age_string }}</div>
+          </td>
+          <td class="text-right">{{ "{:,}".format(row.views) }}</td>
+          <td class="text-right">{{ "{:,}".format(row.net) }}</td>
+          <td class="text-right">{{ "{:,}".format(row.comments) }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+  <p class="text-muted">You haven't posted anything in the last 28 days.</p>
+  {% endif %}
+
+</div>
+{% endblock %}

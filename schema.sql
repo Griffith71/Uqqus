@@ -5898,5 +5898,15 @@ CREATE TABLE public.poll_votes (
 
 CREATE INDEX poll_votes_option_index ON public.poll_votes USING btree (option_id);
 
+CREATE TABLE public.post_view_days (
+    id SERIAL PRIMARY KEY,
+    post_id integer NOT NULL,
+    day integer NOT NULL,
+    views integer DEFAULT 0 NOT NULL,
+    CONSTRAINT post_view_days_key UNIQUE (post_id, day)
+);
+
+CREATE INDEX post_view_days_day_index ON public.post_view_days USING btree (day);
+
 CREATE INDEX submissions_word_severity_index ON public.submissions USING btree (word_severity);
 CREATE INDEX comments_word_severity_index ON public.comments USING btree (word_severity);
