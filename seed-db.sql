@@ -245,10 +245,10 @@ INSERT INTO public.regions VALUES (15, 'scandinavia', 'Scandinavia', 'Scandinavi
 INSERT INTO public.regions VALUES (16, 'british_isles', 'Atlantic Isles', 'Atlantic Isles', '#00ebc4');
 INSERT INTO public.regions VALUES (17, 'southwestern_europe', 'Roman West', 'Roman West', '#ebd700');
 INSERT INTO public.regions VALUES (18, 'west_africa', 'Guinea Coast', 'Guinea Coast', '#a95c30');
-INSERT INTO public.regions VALUES (19, 'sahel', 'West Sahel', 'West Sahel', '#3d7bd9');
+INSERT INTO public.regions VALUES (19, 'sahel', 'The Sahel', 'The Sahel', '#3d7bd9');
 INSERT INTO public.regions VALUES (20, 'central_southeastern_africa', 'Bantu Corridor', 'Bantu Corridor', '#e0d321');
 INSERT INTO public.regions VALUES (21, 'southern_africa', 'Veld Plateau', 'Veld Plateau', '#20d2df');
-INSERT INTO public.regions VALUES (22, 'horn_of_africa', 'Sahelo-Horn', 'Sahelo-Horn', '#cc20df');
+INSERT INTO public.regions VALUES (22, 'horn_of_africa', 'Erythrean Horn', 'Erythrean Horn', '#cc20df');
 INSERT INTO public.regions VALUES (23, 'north_america', 'Nearctic Realm', 'Nearctic Realm', '#a09a40');
 INSERT INTO public.regions VALUES (24, 'caribbean', 'Caribbean', 'Caribbean', '#2da96d');
 INSERT INTO public.regions VALUES (25, 'central_america', 'Greater Isthmus', 'Greater Isthmus', '#897f70');
@@ -258,6 +258,7 @@ INSERT INTO public.regions VALUES (28, 'northern_south_america', 'Amazonian Shie
 INSERT INTO public.regions VALUES (29, 'levant_mesopotamia', 'Fertile Crescent', 'Fertile Crescent', '#023858');
 INSERT INTO public.regions VALUES (30, 'western_central_europe', 'Rhine Expanse', 'Rhine Expanse', '#fbb4ae');
 INSERT INTO public.regions VALUES (31, 'danubian_steppe', 'Danubian Steppe', 'Danubian Steppe', '#c9a227');
+INSERT INTO public.regions VALUES (32, 'equatorial_nile', 'Equatorial Nile', 'Equatorial Nile', '#6a3d9a');
 
 
 --
@@ -285,7 +286,7 @@ SELECT pg_catalog.setval('public.images_id_seq', 19, true);
 -- Name: regions_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.regions_id_seq', 31, true);
+SELECT pg_catalog.setval('public.regions_id_seq', 32, true);
 
 
 --
