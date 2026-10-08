@@ -9,7 +9,7 @@ import pyotp
 from flask import session, g, request
 
 from ruqqus.helpers.base36 import *
-from ruqqus.helpers import anonymity, circle_clause, guild_limits
+from ruqqus.helpers import anonymity, circle_clause, circles, guild_limits
 from .coauthors import PostCoauthor
 from ruqqus.helpers.muting import hide_muted
 from ruqqus.helpers.security import *
@@ -680,6 +680,8 @@ class User(Base, Stndrd, Age_times):
         authored = apply_common_filters(authored)
         # a profile does not list the user's anonymous posts (to anyone but them and admins)
         authored = authored.filter(anonymity.hide_anonymous(Submission, v))
+        # what someone writes inside a Circle guild stays in the guild: it is not on their profile, for anyone
+        authored = authored.filter(Submission.audience != circles.GUILD)
 
         if not (v and (v.admin_level >= 3 or v.id == self.id)):
             authored = authored.filter_by(is_banned=False).join(Submission.board).filter(Board.is_banned == False)
@@ -1612,7 +1614,7 @@ class User(Base, Stndrd, Age_times):
 
             #unprivate guilds if no mods remaining
             for b in self.boards_modded:
-                if b.mods_count == 0:
+                if b.mods_count == 0 and not b.is_circle:
                     b.is_private = False
                     b.restricted_forwarding = False
                     #b.all_opt_out = False

@@ -28,7 +28,7 @@ The pre-commit hook (Husky) runs only staged-file checks: gitleaks, ruff, eslint
 
 | Say                                                                                                                                 | Never say                                  |
 | ----------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------ |
-| **post**: always created first on the author's own profile. You cannot post to a guild.                                             | "post to/in a guild", "submit to a guild"  |
+| **post**: always created first on the author's own profile. You cannot post to a guild, except inside a Circle guild (see below).    | "post to/in a guild", "submit to a guild"  |
 | **comment**: anything that is a reply, whether on a post or on another comment.                                                     | reply, replies, replied                    |
 | **forward** (forwarded, forwarding): sharing a post or comment with a guild. A forwarded comment becomes its own post in the guild. | promote, yank, crosspost, "share to guild" |
 | **repost**: putting someone's post or comment on your own profile (a different feature from forwarding).                            |                                            |
@@ -135,7 +135,7 @@ An account has one **Circle**: a private audience of its own. People are in it a
 - **A block ends both Circles**: `settings_block_user` calls `circle_store.end_between` (friend rows go, subscriptions end, no refund). Messages never say who blocked whom; a renewal that ends because of a block (or a cancel) is **never** notified, only a lapse for lack of coins is, so a notice cannot reveal why.
 - **Renewals**: `scripts/renew_circles.py` (own supervisord program `ruqquscircles`, hourly; `PYTHONPATH=. python scripts/renew_circles.py --once` by hand) settles each due subscriber on its own (`renew_due` commits per member).
 - **UI**: Settings > **Circle** (`/settings/circle`: price, Close Friends, subscribers, coins received) and `/settings/circles` (Circles you are in, cancel); a profile shows "Join Circle", "Add to / Remove from Close Friends" and an "In their Circle" / "Subscribed" badge to a signed-in member looking at someone else (`partials/circle_buttons.html`, `circle_status` Jinja global).
-- Not built yet (next steps): Circle guilds, stories.
+- Not built yet (next step): stories.
 - Tests: `tests/test_circles.py` (rules), `tests/test_circle_store.py` (the SQL on SQLite), `tests/test_circles_assets.py`.
 
 ### Posts made for a Circle
@@ -149,6 +149,16 @@ A post on the author's own profile is made for **Public** (the default), **Subsc
 - **Notifications** (followers and mentions) go only to people who may see the post (`circle_guard.eligible_ids`).
 - A post for a Circle shows the "private post" eye with the audience in its tooltip (`Submission.private_label`); `Submission.is_public` is false for it.
 - Migration `scripts/migrations/2026-10-10_circle_posts.sql`. Tests: `tests/test_circle_guard.py` and `tests/test_circle_clause.py` (real SQL on SQLite), `tests/test_circle_posts_assets.py`.
+
+### Circle guilds
+
+A guild can be a **Circle guild** (`boards.is_circle`, chosen with a checkbox when it is created and **never changed**): it is private for good, only its members see it, and members post **straight in** it. This is the one exception to "a post is made on your own profile first": a post made in a Circle guild (the composer on its page sends `circle_guild`) is a primary post on the guild's board with `audience = 3` and `post_public = false`, no profile copy, no forwards. It is **not on their profile** for anyone (`userpagelisting` leaves `audience = 3` out), it cannot be anonymous, co-authored, forwarded or reposted (`circles.post_refusal`, same as any Circle post), and the author's followers are not told, the guild's members are.
+
+- **Members are approved contributors** (`ContributorRelationship`) and guildmasters, so the private-guild rules (`Board.can_view`, the contributor condition every list already has) do the listing. Membership comes two ways: a guildmaster approves someone (free, the existing Approved Contributors page) or they **pay the founder's price** in coins every 30 days (`circles.board_id`, `circle_store.subscribe_guild`; the coins go to `Board.creator_id`, the founder, who alone sets the price on the guild's **Circle** tab, `/+guild/mod/circle`; 0 means by invitation only). The pay-to-join button is `partials/circle_guild_button.html` on the guild page; `/settings/circles` lists and cancels guild memberships.
+- **The guard asks the guild for audience 3** (`circle_guard.in_guild`: an active contributor or an accepted guildmaster, not exiled; admins always; the author only while they are a member). `hidden_parents` carries the board so comments follow.
+- **A membership ends with its date, with the coins running out, with an exile (`exiled_from`) or when a guildmaster removes the member** (`mod_unapprove_bid_user` calls `end_guild_member`, so they are not charged again); the renewal job (`renew_due`) handles guild rows too and tells a member whose coins did not cover it, naming the guild.
+- **Private for good**: the guild settings' privacy toggle refuses a Circle guild (409), and the three places that make a guild public when its last guildmaster leaves (`boards.py`, `User.ban`, delete account) skip a Circle guild.
+- Migration `scripts/migrations/2026-10-10_circle_guilds.sql`. Tests: `tests/test_circle_guilds.py` (the SQL on SQLite), `tests/test_circle_guilds_assets.py`.
 
 ## Deletion log (legacy app)
 

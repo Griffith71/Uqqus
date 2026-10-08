@@ -949,8 +949,29 @@ Optional file data:
 
         embed = ""
 
-    # A post always lives on the author's profile first.
-    board = get_guild(PROFILE_BOARD_NAME)
+    # A post always lives on the author's profile first - except inside a Circle guild the author belongs to
+    # (helpers/circles.py): there it is made straight in the guild, for its members, and never on the profile.
+    circle_board = None
+    circle_guild_name = request.form.get("circle_guild", "").strip().lstrip("+")
+    if circle_guild_name:
+        circle_board = get_guild(circle_guild_name, graceful=True)
+        if circle_board is None or not circle_board.is_circle or circle_board.is_banned:
+            circle_problem = "That isn't a Circle guild."
+        elif circle_board.has_ban(v):
+            circle_problem = f"You are exiled from +{circle_board.name}."
+        elif not (circle_board.has_contributor(v) or circle_board.has_mod(v)) and v.admin_level < 4:
+            circle_problem = f"Only members of +{circle_board.name} can post in it."
+        elif forward_guild_names:
+            circle_problem = "A post in a Circle guild can't be forwarded to another guild."
+        else:
+            circle_problem = None
+        if circle_problem:
+            return {"html": lambda: (render_template("submit.html", v=v, error=circle_problem,
+                                                     title=title, url=url, body=body, text=text_for_redisplay,
+                                                     b=None, forward_guild_names=forward_guild_names), 400),
+                    "api": lambda: ({"error": circle_problem}, 400)
+                    }
+    board = circle_board or get_guild(PROFILE_BOARD_NAME)
 
     # Validate every guild the author wants to forward to. All-or-nothing:
     # if any target guild is invalid, reject the whole submission up front
@@ -1265,7 +1286,10 @@ Optional file data:
 
     # who can see it (helpers/circles.py): Public unless the author chose their Circle. A Circle post stays between the
     # author and the people in it, so what would take it elsewhere (anonymity, co-authors, forwards, an own video) stops it here
-    audience, audience_error = circle_rules.parse_audience(request.form.get("audience"))
+    if circle_board is not None:
+        audience, audience_error = circle_rules.GUILD, None
+    else:
+        audience, audience_error = circle_rules.parse_audience(request.form.get("audience"))
     if audience_error is None:
         audience_error = circle_rules.post_refusal(
             audience, anonymous=flag(request.form, "anonymous"), coauthors=bool(coauthor_names),
@@ -1545,13 +1569,15 @@ Optional file data:
 
     # an anonymous post does not notify the author's followers: only they would get it
     follower_ids = [] if new_post.is_anonymous else [x[0] for x in follow_uids.all()]
+    if new_post.audience == circle_rules.GUILD:
+        follower_ids = []            # made inside a Circle guild: the guild's members are told (below), the author's followers are not
     uids=list(set([x[0] for x in board_uids.all()] + follower_ids).union(notify_users))
     if not new_post.is_anonymous:
         muters = {x[0] for x in g.db.query(UserMute.user_id).filter_by(target_id=v.id).all()}
         uids = [uid for uid in uids if uid not in muters]
     if new_post.audience:
         # made for a Circle: only people who may see it are told (followers and mentions alike)
-        eligible = circle_guard.eligible_ids(g.db, v.id, new_post.audience)
+        eligible = circle_guard.eligible_ids(g.db, v.id, new_post.audience, board_id=new_post.board_id)
         uids = [uid for uid in uids if uid in eligible]
 
     for uid in uids:

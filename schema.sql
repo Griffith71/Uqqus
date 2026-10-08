@@ -102,7 +102,8 @@ CREATE TABLE public.boards (
     css_nonce integer DEFAULT 0,
     css character varying(65536) DEFAULT ''::character varying,
     name_severity smallint DEFAULT 0 NOT NULL,
-    description_severity smallint DEFAULT 0 NOT NULL
+    description_severity smallint DEFAULT 0 NOT NULL,
+    is_circle boolean DEFAULT false NOT NULL
 );
 
 

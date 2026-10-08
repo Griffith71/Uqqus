@@ -9,9 +9,9 @@ from flask import abort, g, jsonify, render_template, request
 from ruqqus.classes import RepostRelationship, Submission, User
 from ruqqus.helpers import circle_store, circles, coauthors
 from ruqqus.helpers.alerts import send_notification
-from ruqqus.helpers.get import get_post, get_user
+from ruqqus.helpers.get import get_guild, get_post, get_user
 from ruqqus.helpers.media import attach as media_attach, cdn as media_cdn
-from ruqqus.helpers.wrappers import auth_required, is_not_banned, no_negative_balance, validate_formkey
+from ruqqus.helpers.wrappers import auth_required, is_guildmaster, is_not_banned, no_negative_balance, validate_formkey
 from ruqqus.__main__ import app, cache
 from ruqqus.routes.front import frontlist
 
@@ -61,7 +61,9 @@ def settings_circle(v):
 def settings_circles(v):
     rows = [{"username": name, "tier": tier, "until": circles.date_text(until), "cancelled": bool(cancelled), "price": price}
             for _, name, tier, until, cancelled, price in circle_store.memberships(g.db, v.id)]
-    return render_template("settings_circles.html", v=v, memberships=rows)
+    guilds = [{"name": name, "until": circles.date_text(until), "cancelled": bool(cancelled), "price": price}
+              for _, name, until, cancelled, price in circle_store.guild_memberships(g.db, v.id)]
+    return render_template("settings_circles.html", v=v, memberships=rows, guilds=guilds)
 
 
 @app.route("/settings/circle/price", methods=["POST"])
@@ -215,3 +217,99 @@ def may_change_audience(post, viewer):
 
 
 app.jinja_env.globals.update(may_change_audience=may_change_audience)
+
+
+# --- Circle guilds -----------------------------------------------------------------------------------------
+
+def _circle_guild(name):
+    """A live Circle guild by name; anything else is a 404."""
+    board = get_guild(name or "", graceful=True)
+    if board is None or not board.is_circle or board.is_banned:
+        abort(404)
+    return board
+
+
+@app.route("/+<guildname>/mod/circle", methods=["GET"])
+@auth_required
+@is_guildmaster("full")
+def board_circle_settings(guildname, board, v):
+    if not board.is_circle:
+        abort(404)
+    now = int(time.time())
+    circle = circle_store.circle_of_board(g.db, board.id)
+    subscribers = [{"username": s.username, "until": circles.date_text(s.renews_utc), "cancelled": bool(s.cancelled), "price": s.price_coins}
+                   for s in circle_store.guild_subscribers(g.db, board.id, now)]
+    founder = g.db.query(User).filter_by(id=board.creator_id).first()
+    earned_30, earned_all = circle_store.guild_earnings(g.db, board.id, now - 30 * DAY), circle_store.guild_earnings(g.db, board.id)
+    return render_template("guild/circle.html", v=v, b=board, price=circle.price_coins if circle else 0, subscribers=subscribers,
+                           is_founder=board.creator_id == v.id, founder=founder, earned_30=earned_30, earned_all=earned_all,
+                           price_max=circles.PRICE_MAX, describe_price=circles.describe_price)
+
+
+@app.route("/+<guildname>/mod/circle/price", methods=["POST"])
+@auth_required
+@is_guildmaster("full")
+@validate_formkey
+def board_circle_price(guildname, board, v):
+    if not board.is_circle:
+        abort(404)
+    if board.creator_id != v.id:
+        return _fail("Only the guild's founder can set the price.", 403)
+    price, error = circles.parse_price(request.values.get("price"))
+    if error:
+        return _fail(error)
+    circle_store.set_board_price(g.db, board.id, price)
+    g.db.commit()
+    if price == 0:
+        return jsonify({"message": "Nobody can pay to join now: the guild is by invitation only. Current members keep what they paid for."})
+    return jsonify({"message": f"New members pay {price} coins every 30 days. Current members keep their price."})
+
+
+@app.route("/api/circle/guild/<guildname>/subscribe", methods=["POST"])
+@is_not_banned
+@no_negative_balance("toast")
+@validate_formkey
+def circle_guild_subscribe(guildname, v):
+    board = _circle_guild(guildname)
+    g.db.flush()                                   # the payment is raw SQL: write the member's own pending changes first
+    outcome, message = circle_store.subscribe_guild(g.db, board.id, v.id)
+    if outcome == "refused":
+        g.db.rollback()
+        return _fail(message, 403)
+    g.db.commit()
+    g.db.refresh(v)
+    if outcome == "subscribed":
+        founder = g.db.query(User).filter_by(id=board.creator_id).first()
+        if founder is not None and founder.id != v.id:
+            send_notification(founder, f"{_link(v)} joined [+{board.name}](/+{board.name}).")
+    return jsonify({"message": message})
+
+
+@app.route("/api/circle/guild/<guildname>/cancel", methods=["POST"])
+@auth_required
+@validate_formkey
+def circle_guild_cancel(guildname, v):
+    board = _circle_guild(guildname)
+    if not circle_store.cancel_guild(g.db, board.id, v.id):
+        return _fail("You aren't a paying member of that guild.", 404)
+    g.db.commit()
+    return jsonify({"message": "Your membership won't renew. You keep access until the day you paid to."})
+
+
+def circle_guild_status(board, viewer):
+    """What a Circle guild's page shows a signed-in member: the price, whether they pay to be in it, and whether Join is
+    offered (a price, not already a member, not exiled; or a cancelled paying member who can resume). None otherwise."""
+    if viewer is None or not getattr(board, "is_circle", False):
+        return None
+    now = int(time.time())
+    circle = circle_store.circle_of_board(g.db, board.id)
+    price = circle.price_coins if circle else 0
+    paid = next((m for m in circle_store.guild_memberships(g.db, viewer.id, now) if m.board_id == board.id), None)
+    member = circle_store.is_guild_member(g.db, board.id, viewer.id)
+    exiled = circle_store.exiled_from(g.db, board.id, viewer.id)
+    resumable = bool(paid and paid.cancelled)
+    return {"price": price, "paid": bool(paid), "member": member,
+            "joinable": price > 0 and not exiled and (resumable or not member)}
+
+
+app.jinja_env.globals.update(circle_guild_status=circle_guild_status)

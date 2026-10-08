@@ -65,6 +65,8 @@ class Board(Base, Stndrd, Age_times):
     profile_nonce=Column(Integer, default=0)
     banner_nonce=Column(Integer, default=0)
     is_private=Column(Boolean, default=False)
+    # a Circle guild (helpers/circles.py): private, its members post straight into it, a price may be asked to join
+    is_circle=Column(Boolean, nullable=False, default=False)
     color_nonce=Column(Integer, default=0)
     rank_trending=Column(Float, default=0)
     stored_subscriber_count=Column(Integer, default=1)

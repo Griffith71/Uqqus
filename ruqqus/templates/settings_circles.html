@@ -34,9 +34,30 @@
           {% endif %}
         </div>
         {% else %}
-        <div class="px-3 py-3 text-muted text-small" id="circles-in-empty">You aren't in anyone's Circle yet. A Circle you can join has a Join button on its owner's profile.</div>
+        {% if not guilds %}<div class="px-3 py-3 text-muted text-small" id="circles-in-empty">You aren't in anyone's Circle yet. A Circle you can join has a Join button on its owner's profile.</div>{% endif %}
         {% endfor %}
       </div>
+
+      {% if guilds %}
+      <h2 class="h5 mt-5">Circle guilds you pay to be in</h2>
+      <div class="settings-section rounded" id="circle-guilds-in">
+        {% for m in guilds %}
+        <div class="d-flex align-items-center justify-content-between px-3 py-3 circle-guild-membership{% if not loop.first %} border-top{% endif %}" data-name="{{ m.name }}">
+          <div>
+            <a href="/+{{ m.name }}" class="font-weight-bold">+{{ m.name }}</a>
+            <div class="text-muted text-small">
+              {% if m.cancelled %}Won't renew, access ends {{ m.until }}
+              {% else %}{{ m.price }} coin{{ '' if m.price == 1 else 's' }} every 30 days, renews {{ m.until }}{% endif %}
+            </div>
+          </div>
+          {% if not m.cancelled %}
+          <button type="button" class="btn btn-secondary btn-sm" data-name="{{ m.name }}"
+            onclick="if (confirm('Cancel your membership? You keep access until the day you paid to.')) { post_toast('/api/circle/guild/' + encodeURIComponent(this.dataset.name) + '/cancel', function () { window.location.reload(); }); }">Cancel</button>
+          {% endif %}
+        </div>
+        {% endfor %}
+      </div>
+      {% endif %}
 
     </div>
   </div>

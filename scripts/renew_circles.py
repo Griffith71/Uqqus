@@ -17,7 +17,7 @@ import traceback
 from flask import g
 
 from ruqqus.__main__ import app, db_session
-from ruqqus.classes import User
+from ruqqus.classes import Board, User
 from ruqqus.helpers import circle_store
 from ruqqus.helpers.alerts import send_notification
 
@@ -43,15 +43,22 @@ def tick(now=None):
     for event, *_ in events:
         counts[event] = counts.get(event, 0) + 1
 
-    lapsed = [(payer, owner, coins) for event, payer, owner, coins in events if event == "lapsed"]
+    lapsed = [(payer, owner, coins, board) for event, payer, owner, coins, board in events if event == "lapsed"]
     if lapsed:
         with app.test_request_context():
             g.db = db_session()
             try:
-                for payer_id, owner_id, coins in lapsed:
+                for payer_id, owner_id, coins, board_id in lapsed:
                     payer = g.db.query(User).filter_by(id=payer_id).first()
                     owner = g.db.query(User).filter_by(id=owner_id).first()
                     if payer is None or owner is None:
+                        continue
+                    board = g.db.query(Board).filter_by(id=board_id).first() if board_id else None
+                    if board is not None:
+                        send_notification(
+                            payer,
+                            f"Your membership of [+{board.name}](/+{board.name}) ended: "
+                            f"you didn't have the {coins} coins it renews for. You can join again from its page.")
                         continue
                     send_notification(
                         payer,

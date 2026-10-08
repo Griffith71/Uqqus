@@ -369,6 +369,8 @@ class Submission(Base, Stndrd, Age_times, Scores, Fuzzing):
 
         comments = self.__dict__.get('_preloaded_comments',[])
         if not comments:
+            # a post with no comments has an empty tree, not a missing one (the comments API reads it)
+            self.__dict__.setdefault("nested_comments", [])
             return
 
         # the word filter hides a comment together with everything under it:

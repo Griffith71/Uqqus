@@ -1,4 +1,5 @@
 {% extends "home.html" %}
+{% from "partials/circle_guild_button.html" import circle_guild_button %}
 
 {% block stylesheets %}
 {% if v and session.get("dark_mode_enabled") %}
@@ -301,6 +302,7 @@
       {% elif not v %}
       <a class="btn btn-primary" href="/signup">Join guild</a>
       {% endif %}
+      {{ circle_guild_button(b, v) }}
     </div>
   </div>
 </div>
@@ -364,6 +366,7 @@
         {% elif not v %}
         <a class="btn btn-primary btn-block" href="/signup">Join guild</a>
         {% endif %}
+        {{ circle_guild_button(b, v, true) }}
       </div>
     </div>
   </div>

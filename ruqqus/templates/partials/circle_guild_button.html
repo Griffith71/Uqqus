@@ -1,0 +1,17 @@
+{#
+  What a Circle guild's page offers a signed-in member who is not in it (routes/circles.py `circle_guild_status`):
+  Join Circle for the guild's price, or Resume when a paid membership was cancelled; and, for a paying member, a badge.
+  A guild with no price is by invitation, so it offers nothing. The guild name is letters and digits, the price a number.
+#}
+{% macro circle_guild_button(b, v, block=false) %}
+{% set st = circle_guild_status(b, v) %}
+{% if st %}
+{% if st.joinable %}
+<button type="button" class="btn btn-primary circle-guild-join{{ ' btn-block mt-2' if block else ' ml-2' }}"
+  onclick="if (confirm('Join this Circle guild for {{ st.price }} coin{{ '' if st.price == 1 else 's' }} every 30 days? It renews from your coins until you cancel.')) { post_toast('/api/circle/guild/{{ b.name }}/subscribe', function () { window.location.reload(); }); }">
+  {% if st.paid %}Resume membership{% else %}Join Circle &middot; {{ st.price }} coin{{ '' if st.price == 1 else 's' }}/month{% endif %}</button>
+{% elif st.paid %}
+<a href="/settings/circles" class="badge badge-secondary circle-guild-badge{{ ' ml-2' if not block else '' }}">Circle member</a>
+{% endif %}
+{% endif %}
+{% endmacro %}

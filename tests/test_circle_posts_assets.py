@@ -139,7 +139,7 @@ def test_a_post_is_made_for_an_audience_only_after_it_is_checked_and_is_not_publ
 def test_only_people_who_may_see_a_circle_post_are_told_about_it():
     body = func(POSTS, "submit_post", "\n@app.route")
     assert "if not new_post.is_public and not new_post.audience:" in body
-    assert "eligible = circle_guard.eligible_ids(g.db, v.id, new_post.audience)" in body
+    assert "eligible = circle_guard.eligible_ids(g.db, v.id, new_post.audience, board_id=new_post.board_id)" in body
     assert body.index("uids = [uid for uid in uids if uid in eligible]") < body.index("new_notif=Notification(")
 
 

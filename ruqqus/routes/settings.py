@@ -471,7 +471,7 @@ def delete_account(v):
         g.db.delete(block)
 
     for b in v.boards_modded:
-        if b.mods_count == 0:
+        if b.mods_count == 0 and not b.is_circle:
             b.is_private = False
             b.restricted_forwarding = False
             b.all_opt_out = False

@@ -28,6 +28,7 @@ def db():
                           "started_utc integer NOT NULL DEFAULT 0, renews_utc integer NOT NULL DEFAULT 0, "
                           "cancelled boolean NOT NULL DEFAULT 0, price_coins integer NOT NULL DEFAULT 0, "
                           "created_utc integer NOT NULL DEFAULT 0, UNIQUE (circle_id, user_id))"))
+        conn.execute(text("CREATE TABLE boards (id integer PRIMARY KEY, name text, creator_id integer, is_circle boolean DEFAULT 0, is_banned boolean DEFAULT 0)"))
         conn.execute(text("CREATE TABLE circle_payments (id integer PRIMARY KEY AUTOINCREMENT, circle_id integer NOT NULL, "
                           "payer_id integer NOT NULL, owner_id integer NOT NULL, coins integer NOT NULL, kind text NOT NULL, "
                           "created_utc integer NOT NULL DEFAULT 0)"))
@@ -216,7 +217,7 @@ def test_a_cancelled_subscriber_keeps_access_until_the_date_and_is_not_charged_a
     assert store.cancel(db, OWNER, FAN) is True
     assert store.tier_for(db, OWNER, FAN, NOW + 29 * DAY) == c.SUBSCRIBER
     assert store.tier_for(db, OWNER, FAN, NOW + c.PERIOD) is None
-    assert store.renew_due(db, NOW + c.PERIOD) == [("ended", FAN, OWNER, 10)]
+    assert store.renew_due(db, NOW + c.PERIOD) == [("ended", FAN, OWNER, 10, None)]
     assert coins(db, FAN) == 90 and len(payments(db)) == 1
 
 
@@ -261,7 +262,7 @@ def test_a_due_subscriber_is_renewed_from_their_coins(db):
     opened(db, 10)
     store.subscribe(db, OWNER, FAN, NOW)
     assert store.renew_due(db, NOW + c.PERIOD - 1) == []
-    assert store.renew_due(db, NOW + c.PERIOD) == [("renewed", FAN, OWNER, 10)]
+    assert store.renew_due(db, NOW + c.PERIOD) == [("renewed", FAN, OWNER, 10, None)]
     assert (coins(db, FAN), coins(db, OWNER)) == (80, 20)
     assert store.member_row(db, OWNER, FAN).renews_utc == NOW + 2 * c.PERIOD
     assert [p[3] for p in payments(db)] == ["subscribe", "renew"]
@@ -279,7 +280,7 @@ def test_a_subscriber_renews_at_the_price_they_signed_up_for(db):
 def test_a_subscriber_who_cannot_pay_lapses_and_is_not_charged(db):
     opened(db, 5)
     store.subscribe(db, OWNER, POOR, NOW)                              # 5 -> 0
-    assert store.renew_due(db, NOW + c.PERIOD) == [("lapsed", POOR, OWNER, 5)]
+    assert store.renew_due(db, NOW + c.PERIOD) == [("lapsed", POOR, OWNER, 5, None)]
     assert coins(db, POOR) == 0 and store.tier_for(db, OWNER, POOR, NOW + c.PERIOD) is None
     assert store.member_row(db, OWNER, POOR).status == "ended"
 
@@ -288,7 +289,7 @@ def test_a_block_ends_a_renewal_instead_of_charging(db):
     opened(db)
     store.subscribe(db, OWNER, FAN, NOW)
     block(db, OWNER, FAN)
-    assert store.renew_due(db, NOW + c.PERIOD) == [("ended", FAN, OWNER, 10)]
+    assert store.renew_due(db, NOW + c.PERIOD) == [("ended", FAN, OWNER, 10, None)]
     assert coins(db, FAN) == 90
 
 

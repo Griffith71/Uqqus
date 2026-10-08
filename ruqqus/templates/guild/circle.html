@@ -1,0 +1,56 @@
+{% extends "guild/guild_settings.html" %}
+
+{# A Circle guild's membership: its price and who pays (routes/circles.py `board_circle_settings`). #}
+
+{% block pagetitle %}+{{ b.name }} Circle{% endblock %}
+
+{% block content %}
+<div class="row">
+  <div class="col" id="guild-circle">
+
+    <h2 class="h5">+{{ b.name }} is a Circle guild</h2>
+    <p class="text-small text-muted">
+      Only its members see this guild, and they post straight into it, so what they write does not appear on their own profiles.
+      Members are people you approve (<a href="/+{{ b.name }}/mod/contributors">Approved Contributors</a>, free) and people who pay the price below in coins every 30 days.
+      The coins go to the founder, <a href="{{ founder.permalink }}">@{{ founder.username }}</a>.
+    </p>
+
+    <div class="settings-section rounded">
+      <div class="d-lg-flex">
+        <div class="title w-lg-25"><label for="guild-circle-price">Price to join</label></div>
+        <div class="body w-lg-100">
+          {% if is_founder %}
+          <div class="input-group" style="max-width: 18rem;">
+            <input type="number" class="form-control" id="guild-circle-price" min="0" max="{{ price_max }}" step="1" value="{{ price }}">
+            <div class="input-group-append"><span class="input-group-text">coins</span></div>
+          </div>
+          <button type="button" class="btn btn-primary mt-2" id="guild-circle-price-save"
+            onclick="post_toast('/+{{ b.name }}/mod/circle/price?price=' + encodeURIComponent(document.getElementById('guild-circle-price').value), function () { window.location.reload(); })">Save price</button>
+          <span class="d-block mt-2 text-small-extra text-muted">Every 30 days, from 1 to {{ price_max }} coins. At 0 nobody can pay to join: the guild is by invitation only. A member keeps the price they joined at.</span>
+          {% else %}
+          <strong id="guild-circle-price-shown">{{ describe_price(price) }}</strong>
+          <span class="d-block mt-1 text-small-extra text-muted">Only the founder sets the price.</span>
+          {% endif %}
+        </div>
+      </div>
+      <div class="d-lg-flex border-top">
+        <div class="title w-lg-25"><label>Coins received</label></div>
+        <div class="body w-lg-100"><span id="guild-circle-earned">{{ earned_30 }} in the last 30 days &middot; {{ earned_all }} in all.</span></div>
+      </div>
+    </div>
+
+    <h2 class="h5 mt-5">Paying members <span class="text-muted text-small font-weight-normal">{{ subscribers | length }}</span></h2>
+    <div class="settings-section rounded">
+      {% for s in subscribers %}
+      <div class="d-flex align-items-center justify-content-between px-3 py-2{% if not loop.first %} border-top{% endif %}">
+        <span><a href="/@{{ s.username }}">@{{ s.username }}</a> <span class="text-muted text-small">&middot; {{ s.price }} coin{{ '' if s.price == 1 else 's' }} a month</span></span>
+        <span class="text-muted text-small">{% if s.cancelled %}ends {{ s.until }}{% else %}renews {{ s.until }}{% endif %}</span>
+      </div>
+      {% else %}
+      <div class="px-3 py-3 text-muted text-small" id="guild-circle-empty">{% if price %}Nobody has paid to join yet.{% else %}Set a price to let people pay to join.{% endif %}</div>
+      {% endfor %}
+    </div>
+
+  </div>
+</div>
+{% endblock %}

@@ -28,7 +28,8 @@
   var forwardChips = el('ic-forward-chips');
   var forwardChipList = el('ic-forward-chip-list');
   var forwardFields = el('ic-forward-inputs');
-  var presetGuild = form.getAttribute('data-guild');      // the guild whose page this is
+  var circleGuild = form.getAttribute('data-circle-guild'); // a Circle guild: the post is made straight in it, not forwarded
+  var presetGuild = circleGuild ? null : form.getAttribute('data-guild'); // the guild whose page this is (to forward to)
   var forwards = presetGuild ? [presetGuild] : [];        // the guilds the post is forwarded to
   var FORWARD_MAX = 20;                                   // helpers/post_drafts.py FORWARD_GUILDS_MAX
   var file = el('ic-file');
@@ -193,6 +194,11 @@
     update();
 
     var data = new FormData(form);
+    if (circleGuild) {
+      // made in the guild itself: nothing that would take it elsewhere or change who sees it travels with it
+      ['audience', 'anonymous', 'coauthors', 'forward_guilds'].forEach(function (name) { data.delete(name); });
+      data.set('circle_guild', circleGuild);
+    }
     var sent = fetch('/api/vue/submit', { method: 'POST', body: data, credentials: 'same-origin' });
 
     sent.then(function (response) {

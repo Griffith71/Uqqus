@@ -101,6 +101,12 @@
                   <li class="nav-item">
                     <a class="nav-link{% if request.path.endswith('/mod/log') %} active{% endif %}" href="/+{{ b.name }}/mod/log"><i class="fas fa-scroll"></i>Mod Log</a> 
                   </li>
+                  {% if b.is_circle and mod and mod.perm_full %}
+                  <li class="nav-item">
+                    <a class="nav-link{% if request.path.endswith('/mod/circle') %} active{% endif %}" href="/+{{ b.name }}/mod/circle"><i class="fas fa-circle-notch"></i>Circle</a>
+                  </li>
+                  {% endif %}
+
                   {% if mod and mod.perm_access %}
                   <li class="nav-item">
                     <a class="nav-link{% if request.path.endswith('/mod/exiled') %} active{% endif %}" href="/+{{ b.name }}/mod/exiled"><i class="fas fa-user-slash"></i>Exiled Users</a> 
@@ -160,6 +166,12 @@
             <li class="nav-item">
               <a class="nav-link{% if request.path.endswith('/mod/log') %} active{% endif %}" href="/+{{ b.name }}/mod/log"><i class="fas fa-scroll text-lg mr-0"></i></a>
             </li>
+            {% if b.is_circle and mod and mod.perm_full %}
+            <li class="nav-item">
+              <a class="nav-link{% if request.path.endswith('/mod/circle') %} active{% endif %}" href="/+{{ b.name }}/mod/circle" aria-label="Circle"><i class="fas fa-circle-notch text-lg mr-0"></i></a>
+            </li>
+            {% endif %}
+
             {% if mod and mod.perm_access %}
             <li class="nav-item">
               <a class="nav-link{% if request.path.endswith('/mod/exiled') %} active{% endif %}" href="/+{{ b.name }}/mod/exiled"><i class="fas fa-user-slash text-lg mr-0"></i></a>

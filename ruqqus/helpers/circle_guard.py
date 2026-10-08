@@ -48,24 +48,43 @@ def tier(db, owner_id, viewer_id, now=None):
     return cache[key]
 
 
-def may_see(db, audience, author_id, viewer=None, now=None):
-    """May the viewer see something made for `audience` by `author_id`? Public always; the author and admins always;
-    otherwise only a member of the author's Circle in the right tier. A Circle guild's posts (audience 3) are decided
-    by the guild, not here: until a guild asks, nobody else sees them."""
+_IN_GUILD = text("""
+    SELECT 1 WHERE (
+        EXISTS (SELECT 1 FROM contributors WHERE user_id = :u AND board_id = :b AND is_active = :yes)
+        OR EXISTS (SELECT 1 FROM mods WHERE user_id = :u AND board_id = :b AND accepted = :yes AND COALESCE(invite_rescinded, :no) = :no)
+    ) AND NOT EXISTS (SELECT 1 FROM bans WHERE user_id = :u AND board_id = :b AND is_active = :yes)
+""")
+
+
+def in_guild(db, board_id, user_id):
+    """Is this account a member of a Circle guild: an approved contributor or a guildmaster, and not exiled?"""
+    cache = _remember()
+    key = ("guild", board_id, user_id)
+    if key not in cache:
+        cache[key] = bool(board_id and db.execute(_IN_GUILD, {"u": user_id, "b": board_id, "yes": True, "no": False}).fetchone())
+    return cache[key]
+
+
+def may_see(db, audience, author_id, viewer=None, now=None, board_id=None):
+    """May the viewer see something made for `audience` by `author_id`? Public always; admins always; a Circle guild's
+    posts (audience 3, in board `board_id`) only to the guild's members (the author too: leaving or being exiled ends
+    it); anything else to its author and to the right members of the author's Circle."""
     if not audience:
         return True
     viewer = current(viewer)
     if viewer is None:
         return False
-    if viewer.id == author_id or (getattr(viewer, "admin_level", 0) or 0) >= ADMIN_LEVEL:
+    if (getattr(viewer, "admin_level", 0) or 0) >= ADMIN_LEVEL:
         return True
     if audience == circles.GUILD:
-        return False
+        return in_guild(db, board_id, viewer.id)
+    if viewer.id == author_id:
+        return True
     return circles.can_see(audience, is_author=False, tier=tier(db, author_id, viewer.id, now))
 
 
 def may_see_post(db, post, viewer=None, now=None):
-    return may_see(db, post.audience, post.author_id, viewer, now)
+    return may_see(db, post.audience, post.author_id, viewer, now, getattr(post, "board_id", None))
 
 
 def visible_posts(db, posts, viewer=None, now=None):
@@ -75,16 +94,16 @@ def visible_posts(db, posts, viewer=None, now=None):
     return [p for p in posts if may_see_post(db, p, viewer, now)]
 
 
-_PARENTS = text("SELECT id, audience, author_id FROM submissions WHERE id IN :ids AND audience <> 0").bindparams(
+_PARENTS = text("SELECT id, audience, author_id, board_id FROM submissions WHERE id IN :ids AND audience <> 0").bindparams(
     bindparam("ids", expanding=True))
 
 
 def hidden_parents(db, post_ids):
-    """{post id: (audience, author id)} for those of these posts that are made for an audience."""
+    """{post id: (audience, author id, board id)} for those of these posts that are made for an audience."""
     ids = sorted({i for i in post_ids if i})
     if not ids:
         return {}
-    return {row.id: (row.audience, row.author_id) for row in db.execute(_PARENTS, {"ids": ids}).fetchall()}
+    return {row.id: (row.audience, row.author_id, row.board_id) for row in db.execute(_PARENTS, {"ids": ids}).fetchall()}
 
 
 def visible_comments(db, comments, viewer=None, now=None):
@@ -95,7 +114,7 @@ def visible_comments(db, comments, viewer=None, now=None):
     kept = []
     for comment in comments:
         found = parents.get(getattr(comment, "parent_submission", None))
-        if found is None or may_see(db, found[0], found[1], viewer, now):
+        if found is None or may_see(db, found[0], found[1], viewer, now, found[2]):
             kept.append(comment)
     return kept
 
@@ -110,8 +129,20 @@ def may_see_comment(db, comment, viewer=None, now=None):
     return bool(visible_comments(db, [comment], viewer, now))
 
 
-def eligible_ids(db, owner_id, audience, now=None):
+def guild_member_ids(db, board_id):
+    """Account ids of a Circle guild's members (approved contributors and guildmasters, not exiled)."""
+    rows = db.execute(text("""
+        SELECT user_id FROM contributors WHERE board_id = :b AND is_active = :yes
+        UNION SELECT user_id FROM mods WHERE board_id = :b AND accepted = :yes AND COALESCE(invite_rescinded, :no) = :no"""),
+        {"b": board_id, "yes": True, "no": False}).fetchall()
+    exiled = {r[0] for r in db.execute(text("SELECT user_id FROM bans WHERE board_id = :b AND is_active = :yes"), {"b": board_id, "yes": True}).fetchall()}
+    return {r[0] for r in rows} - exiled
+
+
+def eligible_ids(db, owner_id, audience, now=None, board_id=None):
     """Account ids that may see something the owner made for `audience`: for notifying them and nobody else."""
+    if audience == circles.GUILD:
+        return guild_member_ids(db, board_id)
     now = int(now if now is not None else time.time())
     rows = db.execute(text("""
         SELECT m.user_id, m.tier, m.status, m.renews_utc FROM circle_members m

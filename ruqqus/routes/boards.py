@@ -24,6 +24,7 @@ from flask import *
 from ruqqus.__main__ import app, limiter, cache
 from ruqqus.helpers.muting import hide_muted
 from ruqqus.helpers import guild_limits
+from ruqqus.helpers import circle_store
 from ruqqus.helpers import deletion_log as log_rules
 
 # the templates quote the per-person cap (home sidebar, siege help) from the one place that sets it
@@ -255,12 +256,17 @@ Optional form data:
 
     # make the board
 
+    # a Circle guild (helpers/circles.py) is private for good: its members see it, post straight into it, and may pay to join
+    circle = request.form.get("circle", "") == "true"
+
     new_board = Board(name=board_name,
                       description=description,
                       description_html=description_html,
                       is_sensitive=bool(request.form.get("sensitive", "")),
                       creator_id=v.id,
-                      subcat_id=subcat.id
+                      subcat_id=subcat.id,
+                      is_private=circle,
+                      is_circle=circle
                       )
     apply_board_severity(new_board)
 
@@ -947,7 +953,7 @@ def mod_step_down(bid, board, v):
 
     g.db.flush()
 
-    if board.mods_count == 0:
+    if board.mods_count == 0 and not board.is_circle:
         board.is_private = False
         board.restricted_forwarding = False
         board.all_opt_out = False
@@ -1124,6 +1130,9 @@ def mod_bid_settings_restricted(bid, board, v):
 @is_guildmaster("config")
 @validate_formkey
 def mod_bid_settings_private(bid, board, v):
+
+    if board.is_circle:
+        return jsonify({"error": "A Circle guild is always private."}), 409
 
     # toggle privacy setting
     board.is_private = bool(request.form.get("guildprivacy", False) == 'true')
@@ -1992,6 +2001,8 @@ Required form data:
     x.is_active = False
 
     g.db.add(x)
+    # a paying member who is removed is not charged again (no refund)
+    circle_store.end_guild_member(g.db, board.id, user.id)
     g.db.commit()
     ma=ModAction(
         kind="uncontrib_user",

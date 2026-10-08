@@ -14,6 +14,8 @@ from ruqqus.helpers import circles as c
 NOW = 2_000_000_000
 DAY = 86400
 OWNER, FRIEND, FAN, STRANGER, EXPIRED, ENDED, OTHER_OWNER = 1, 2, 3, 4, 5, 6, 7
+GUILD = 9
+MEMBER, GUILD_MOD, EXILED, PENDING_MOD, REMOVED = 20, 21, 22, 23, 24
 PUBLIC_POST, SUBS_POST, FRIENDS_POST, GUILD_POST, OTHERS_POST = 100, 101, 102, 103, 104
 
 
@@ -35,12 +37,21 @@ def db():
                           "started_utc integer NOT NULL DEFAULT 0, renews_utc integer NOT NULL DEFAULT 0, "
                           "cancelled boolean NOT NULL DEFAULT 0, price_coins integer NOT NULL DEFAULT 0, "
                           "created_utc integer NOT NULL DEFAULT 0, UNIQUE (circle_id, user_id))"))
-        conn.execute(text("CREATE TABLE submissions (id integer PRIMARY KEY, author_id integer, audience integer NOT NULL DEFAULT 0)"))
+        conn.execute(text("CREATE TABLE submissions (id integer PRIMARY KEY, author_id integer, audience integer NOT NULL DEFAULT 0, board_id integer)"))
+        conn.execute(text("CREATE TABLE contributors (id integer PRIMARY KEY AUTOINCREMENT, user_id integer, board_id integer, is_active boolean DEFAULT 1)"))
+        conn.execute(text("CREATE TABLE mods (id integer PRIMARY KEY AUTOINCREMENT, user_id integer, board_id integer, accepted boolean DEFAULT 0, invite_rescinded boolean DEFAULT 0)"))
+        conn.execute(text("CREATE TABLE bans (id integer PRIMARY KEY AUTOINCREMENT, user_id integer, board_id integer, is_active boolean DEFAULT 0)"))
         for uid in range(1, 8):
             conn.execute(text("INSERT INTO users (id, username) VALUES (:i, :n)"), {"i": uid, "n": f"u{uid}"})
         for pid, owner, audience in ((PUBLIC_POST, OWNER, 0), (SUBS_POST, OWNER, 1), (FRIENDS_POST, OWNER, 2), (GUILD_POST, OWNER, 3),
                                      (OTHERS_POST, OTHER_OWNER, 1)):
-            conn.execute(text("INSERT INTO submissions (id, author_id, audience) VALUES (:i, :a, :u)"), {"i": pid, "a": owner, "u": audience})
+            conn.execute(text("INSERT INTO submissions (id, author_id, audience, board_id) VALUES (:i, :a, :u, :b)"),
+                         {"i": pid, "a": owner, "u": audience, "b": GUILD if audience == 3 else 2})
+        for uid, active in ((MEMBER, 1), (EXILED, 1), (REMOVED, 0)):
+            conn.execute(text("INSERT INTO contributors (user_id, board_id, is_active) VALUES (:u, :b, :a)"), {"u": uid, "b": GUILD, "a": active})
+        conn.execute(text("INSERT INTO mods (user_id, board_id, accepted) VALUES (:u, :b, 1)"), {"u": GUILD_MOD, "b": GUILD})
+        conn.execute(text("INSERT INTO mods (user_id, board_id, accepted) VALUES (:u, :b, 0)"), {"u": PENDING_MOD, "b": GUILD})
+        conn.execute(text("INSERT INTO bans (user_id, board_id, is_active) VALUES (:u, :b, 1)"), {"u": EXILED, "b": GUILD})
     session = Session(engine)
     circle = store.set_price(session, OWNER, 10, NOW)
     store.add_friend(session, OWNER, FRIEND, NOW)
@@ -52,8 +63,8 @@ def db():
     session.close()
 
 
-def post(pid, owner, audience):
-    return NS(id=pid, author_id=owner, audience=audience)
+def post(pid, owner, audience, board=2):
+    return NS(id=pid, author_id=owner, audience=audience, board_id=board)
 
 
 # --- the single post ----------------------------------------------------------------------------------
@@ -63,10 +74,10 @@ def post(pid, owner, audience):
     (FAN, 0, True), (FAN, 1, True), (FAN, 2, False), (FAN, 3, False),
     (FRIEND, 0, True), (FRIEND, 1, True), (FRIEND, 2, True), (FRIEND, 3, False),
     (EXPIRED, 1, False), (EXPIRED, 2, False), (ENDED, 1, False),
-    (OWNER, 1, True), (OWNER, 2, True), (OWNER, 3, True),
+    (OWNER, 1, True), (OWNER, 2, True), (OWNER, 3, False),
 ])
 def test_what_each_kind_of_account_sees_of_the_owners_posts(db, who, audience, seen):
-    assert guard.may_see(db, audience, OWNER, viewer(who), NOW) is seen
+    assert guard.may_see(db, audience, OWNER, viewer(who), NOW, GUILD if audience == 3 else 2) is seen
 
 
 def test_a_visitor_sees_only_public(db):
@@ -146,7 +157,7 @@ def test_a_single_comment_and_whether_it_is_under_an_audience(db):
 
 
 def test_hidden_parents_lists_only_posts_made_for_an_audience(db):
-    assert guard.hidden_parents(db, [PUBLIC_POST, SUBS_POST, FRIENDS_POST, None, 0]) == {SUBS_POST: (1, OWNER), FRIENDS_POST: (2, OWNER)}
+    assert guard.hidden_parents(db, [PUBLIC_POST, SUBS_POST, FRIENDS_POST, None, 0]) == {SUBS_POST: (1, OWNER, 2), FRIENDS_POST: (2, OWNER, 2)}
     assert guard.hidden_parents(db, []) == {}
 
 
@@ -157,6 +168,38 @@ def test_only_people_who_may_see_it_are_eligible_to_be_told(db):
     assert guard.eligible_ids(db, OWNER, 2, NOW) == {FRIEND}
     assert guard.eligible_ids(db, OWNER, 1, NOW + 400 * DAY) == {FRIEND}          # the subscriptions have run out
     assert guard.eligible_ids(db, OTHER_OWNER, 1, NOW) == set()
+
+
+# --- a Circle guild: its members decide ---------------------------------------------------------------------
+
+@pytest.mark.parametrize("who, seen", [
+    (MEMBER, True), (GUILD_MOD, True), (EXILED, False), (PENDING_MOD, False), (REMOVED, False), (STRANGER, False),
+    (OWNER, False),      # the author of a guild post who is not a member (any more) does not read it
+])
+def test_a_circle_guilds_posts_are_for_its_members_only(db, who, seen):
+    assert guard.may_see(db, 3, OWNER, viewer(who), NOW, GUILD) is seen
+
+
+def test_an_admin_sees_a_circle_guilds_posts_and_a_visitor_never(db):
+    assert guard.may_see(db, 3, OWNER, viewer(STRANGER, admin=4), NOW, GUILD)
+    assert not guard.may_see(db, 3, OWNER, None, NOW, GUILD)
+
+
+def test_a_guild_post_with_no_guild_is_seen_by_nobody_but_admins(db):
+    assert not guard.may_see(db, 3, OWNER, viewer(MEMBER), NOW, None)
+    assert not guard.may_see(db, 3, OWNER, viewer(OWNER), NOW, None)
+
+
+def test_the_guilds_members_are_the_ones_told_about_a_post_in_it(db):
+    assert guard.eligible_ids(db, OWNER, 3, NOW, GUILD) == {MEMBER, GUILD_MOD}
+    assert guard.guild_member_ids(db, 777) == set()
+
+
+def test_comments_under_a_guild_post_follow_membership(db):
+    comments = [comment(1, GUILD_POST), comment(2, PUBLIC_POST)]
+    assert [x.id for x in guard.visible_comments(db, comments, viewer(MEMBER), NOW)] == [1, 2]
+    assert [x.id for x in guard.visible_comments(db, comments, viewer(STRANGER), NOW)] == [2]
+    assert [x.id for x in guard.visible_comments(db, comments, viewer(EXILED), NOW)] == [2]
 
 
 def test_a_lookup_is_remembered_for_the_request_only():
