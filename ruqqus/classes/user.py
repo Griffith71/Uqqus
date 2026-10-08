@@ -111,6 +111,8 @@ class User(Base, Stndrd, Age_times):
     # word filter rating of the username / the bio
     name_severity = Column(SmallInteger, default=0)
     bio_severity = Column(SmallInteger, default=0)
+    # when the member last pressed "Reset For You" in settings (0: never); the feed does not read it yet
+    for_you_reset_utc = Column(Integer, default=0)
     hide_bot = Column(Boolean, default=False)
     show_nsfl = Column(Boolean, default=False)
     is_private = Column(Boolean, default=False)
@@ -1547,6 +1549,13 @@ class User(Base, Stndrd, Age_times):
     def total_karma(self):
 
         return 503 if self.id==1 else max(self.karma + self.comment_karma, -5)
+
+    @property
+    def for_you_reset_date(self):
+        """The day the member last pressed Reset For You, or None if they never did."""
+        if not self.for_you_reset_utc:
+            return None
+        return time.strftime("%d %B %Y", time.gmtime(self.for_you_reset_utc))
 
     @property
     def can_use_darkmode(self):

@@ -123,6 +123,14 @@ A member sorts their bookmarks into folders of their own (`bookmark_folders`, ru
 - **Filing happens on the History page, not in every menu.** You bookmark from a post or comment as always and sort later: on the Bookmarked tab the "…" menu of each item (post card, post page, phone actions sheet, comment menus) has "Move to folder", which opens `partials/bookmark_folder_modal.html` (`assets/js/bookmark_folders.js`): pick Unsorted or a folder, or make one. The six menu items only draw when `organise_bookmarks` is set, and only `history_bookmarked` sets it; `default.html` includes the sheet and the script on that condition too. `POST /bookmarks/move` still bookmarks the item as it files it, but only something the caller may see (`post_hidden` / `comment_hidden`) that is not removed or deleted. Do not add the item back to feeds, profiles or the post page (`tests/test_bookmark_folders_assets.py`).
 - Tests: `tests/test_bookmark_folders.py` (the rules), `tests/test_bookmark_folders_assets.py` (schema, routes, ownership, listings, templates, both stylesheets).
 
+## For You settings (legacy app)
+
+Settings > Content (`/settings/content`, `settings_filters.html`) has a **For You** card with a **Reset For You** button. It saves the moment of the press in `users.for_you_reset_utc` (`POST /settings/for_you/reset`, `routes/settings.py`; login and form key; the member's own row only) and drops the member's memoized `interest_subcats`, `social_proof_post_ids` and `for_you_idlist`.
+
+- **The feed does not read the date yet, on purpose.** The owner asked for the area now and the effect later, when For You has a real algorithm; today it is a heuristic worked out live from guild subscriptions, followed accounts' subscriptions, recent upvotes and friends' upvotes (`User.interest_subcats`, `social_proof_post_ids`, `for_you_idlist`). The card says "It does not change what you see yet." Keep that line true: when the feed starts to honour the reset, make `User.interest_subcats` and `social_proof_post_ids` ignore signals older than `for_you_reset_utc` (a vote's `created_utc`; decide separately whether subscriptions count) and change the card text and `tests/test_for_you_settings_assets.py` in the same commit.
+- Migration `scripts/migrations/2026-10-10_for_you_reset.sql`, mirrored in `schema.sql`.
+- Tests: `tests/test_for_you_settings_assets.py`.
+
 ## Who upvoted (legacy app)
 
 The **author** of a post or comment can click their own score and see which upvoters they are **mutual followers** with. Nobody else is shown anything, and **downvoters are never shown to anyone**. Start with `ruqqus/helpers/voters.py`; the routes are `GET /api/post/<id>/voters` and `GET /api/comment/<id>/voters` (`routes/voters.py`), the panel is `assets/js/voters.js`.

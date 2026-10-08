@@ -670,6 +670,25 @@ def settings_content_get(v):
 
     return render_template("settings_filters.html", v=v)
 
+@app.route("/settings/for_you/reset", methods=["POST"])
+@auth_required
+@validate_formkey
+def settings_for_you_reset(v):
+    """Start the For You feed over. Only the date is saved: For You does not read it yet
+    (User.interest_subcats / social_proof_post_ids are where it will), but the feed lists
+    that are kept for a few minutes per member are dropped so a later change shows at once."""
+
+    v.for_you_reset_utc = int(time.time())
+    g.db.add(v)
+    g.db.commit()
+
+    cache.delete_memoized(v.interest_subcats)
+    cache.delete_memoized(v.social_proof_post_ids)
+    cache.delete_memoized(v.for_you_idlist)
+
+    return jsonify({"message": "Your For You feed has been reset."})
+
+
 @app.route("/settings/purchase_history", methods=["GET"])
 @auth_required
 def settings_purchase_history(v):

@@ -90,6 +90,30 @@
 
             </div>
 
+          <h2 class="h5 mt-5" id="for-you">For You</h2>
+
+            <div class="settings-section rounded">
+
+              <div class="d-lg-flex">
+
+                <div class="title w-lg-25">
+                  <label for="for-you-reset">Reset For You</label>
+                </div>
+
+                <div class="body w-lg-100">
+
+                  <button type="button" class="btn btn-primary" id="for-you-reset" onclick="if (confirm('Reset your For You feed?')) { post_toast('/settings/for_you/reset', function () { window.location.reload(); }); }">Reset For You</button>
+
+                  <span class="d-block mt-2 text-small-extra text-muted">Start your For You feed over. Your reset date is saved on your account; For You will use it once the feed learns from more than the guilds you join and the posts you upvote. It does not change what you see yet.</span>
+
+                  <span class="d-block mt-1 text-small-extra text-muted" id="for-you-reset-date">{% if v.for_you_reset_date %}Last reset: {{ v.for_you_reset_date }}.{% else %}You have not reset it.{% endif %}</span>
+
+                </div>
+
+              </div>
+
+            </div>
+
         </div>
 
     </div>

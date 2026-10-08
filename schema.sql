@@ -315,7 +315,8 @@ CREATE TABLE public.users (
     signature_html character varying(512),
     filter_level smallint DEFAULT 1 NOT NULL,
     name_severity smallint DEFAULT 0 NOT NULL,
-    bio_severity smallint DEFAULT 0 NOT NULL
+    bio_severity smallint DEFAULT 0 NOT NULL,
+    for_you_reset_utc integer DEFAULT 0 NOT NULL
 );
 
 
