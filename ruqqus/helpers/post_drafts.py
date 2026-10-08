@@ -12,6 +12,7 @@ import re
 
 from . import coauthors
 from . import comment_permission as cperm
+from . import polls as poll_rules
 from .post_fields import BODY_MAX, TITLE_MAX, URL_MAX, PostFieldError, check_body, flag
 
 DRAFT_LIMIT = 50                       # per user, published ones do not count
@@ -64,6 +65,13 @@ def clean_fields(form):
     except coauthors.CoauthorError as error:
         raise PostFieldError(error.message)
 
+    # a draft may hold an unfinished poll (one option); scheduling it needs a whole one (require_poll)
+    try:
+        poll_options = poll_rules.clean_options(form.getlist("poll_option"), complete=False)
+        poll_hours = poll_rules.clean_hours(form.get("poll_hours")) if poll_options else poll_rules.DEFAULT_HOURS
+    except poll_rules.PollError as error:
+        raise PostFieldError(error.message)
+
     return {
         "title": title,
         "url": url,
@@ -71,6 +79,8 @@ def clean_fields(form):
         "forward_guilds": guilds,
         "options": {
             "coauthors": ", ".join(names),
+            "poll_options": poll_options,
+            "poll_hours": poll_hours,
             "comment_permission": permission,
             "paid_partnership": flag(form, "paid_partnership"),
             "made_with_ai": flag(form, "made_with_ai"),
@@ -102,6 +112,14 @@ def require_title(fields):
         raise PostFieldError("A scheduled post needs a title.")
 
 
+def require_poll(fields):
+    """A scheduled post is published as it is: a poll in it must be a whole one."""
+    try:
+        poll_rules.clean_options(fields["options"].get("poll_options"), complete=True)
+    except poll_rules.PollError as error:
+        raise PostFieldError(error.message)
+
+
 def publish_form(fields, formkey):
     """The form data the publisher posts to submit_post: the same fields the
     composer would have sent. A tick box is only sent when ticked."""
@@ -119,6 +137,10 @@ def publish_form(fields, formkey):
             data[name] = "true"
     if options.get("coauthors"):
         data["coauthors"] = options["coauthors"]
+    if options.get("poll_options"):
+        # the length counts from the moment of publishing
+        data["poll_option"] = list(options["poll_options"])
+        data["poll_hours"] = str(options.get("poll_hours") or poll_rules.DEFAULT_HOURS)
     return data
 
 

@@ -33,3 +33,4 @@ from .trending import *
 from .community_notes import *
 from .coauthors import *
 from .bookmark_folders import *
+from .polls import *

@@ -1,5 +1,6 @@
 {% extends "default.html" %}
 {% from "partials/community_note.html" import community_note %}
+{% from "partials/poll.html" import poll_block %}
 {% from "partials/coauthors.html" import coauthor_line %}
 
 {% set ups=p.upvotes_fuzzed %}
@@ -579,6 +580,8 @@
             {% endif %}
 
             {{ community_note(p) }}
+
+            {{ poll_block(p, v) }}
 
             {% if p.embed_kind %}
             <div class="position-relative{% if p.is_sensitive %} sensitive-content-wrap{% endif %}" id="sensitive-embed-{{ p.base36id }}">

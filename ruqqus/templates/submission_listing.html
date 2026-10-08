@@ -1,5 +1,6 @@
 {% import "partials/post_options.html" as post_options %}
 {% from "partials/community_note.html" import community_note %}
+{% from "partials/poll.html" import poll_block %}
 {% from "partials/coauthors.html" import coauthor_line %}
 {% for p in listing %}
 
@@ -176,6 +177,8 @@
       {% endif %}
 
       {{ community_note(p) }}
+
+      {{ poll_block(p, v) }}
 
       <div class="post-actions mt-1 d-none d-md-block">
         <ul class="list-inline text-right d-flex">

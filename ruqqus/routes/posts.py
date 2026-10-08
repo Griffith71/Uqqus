@@ -30,6 +30,7 @@ from ruqqus.helpers.media import attach as media_attach, cdn as media_cdn, safet
 from ruqqus.helpers.word_filter_store import post_severity, apply_post_severity
 from ruqqus.classes import *
 from ruqqus.helpers import coauthors       # after the star-import: ruqqus.classes has a module of this name too
+from ruqqus.helpers import polls as poll_rules, poll_store
 from .front import frontlist
 from ruqqus.__main__ import app, limiter, cache, db_session
 from flask import session as flask_session
@@ -417,7 +418,7 @@ Optional file data:
             upload_file(image_name, upload)
             url = f'https://{BUCKET}/{image_name}'
 
-        word_severity, word_filter_version = post_severity(title, body_html)
+        word_severity, word_filter_version = post_severity(title, body_html, extra=poll_store.option_text(g.db, primary.id))
 
         language_code = detect_language(title, body)
 
@@ -600,7 +601,7 @@ def _build_standalone_submission(author_id, target, title, body, body_html,
                                   is_offensive=False, is_sensitive=False,
                                   paid_partnership=False, made_with_ai=False, is_anonymous=False,
                                   app_id=None, creation_region=None, is_bot=False,
-                                  auto_upvote=True, repost_id=0, language_code=None):
+                                  auto_upvote=True, repost_id=0, language_code=None, severity_extra=""):
     """Create + flush one independent new Submission (own votes, own
     comments) in `target`, with its own SubmissionAux row and an optional
     author auto-upvote. Shared by post-Forward (create_forward_post) and
@@ -634,7 +635,7 @@ def _build_standalone_submission(author_id, target, title, body, body_html,
                                   title=title
                                   )
     g.db.add(new_post_aux)
-    apply_post_severity(new_post, title, body_html)
+    apply_post_severity(new_post, title, body_html, extra=severity_extra)
 
     if auto_upvote:
         g.db.add(Vote(user_id=author_id, vote_type=1, submission_id=new_post.id))
@@ -666,7 +667,8 @@ def create_forward_post(primary, target, forwarded_by):
         creation_region=primary.creation_region,
         is_bot=primary.is_bot,
         repost_id=primary.id,
-        language_code=primary.language_code
+        language_code=primary.language_code,
+        severity_extra=poll_store.option_text(g.db, primary.id)
     )
 
     g.db.add(ForwardRelationship(
@@ -1243,6 +1245,20 @@ Optional file data:
                 "api": lambda: ({"error": coauthor_error}, 400)
                 }
 
+    # a poll named in the composer (helpers/polls.py): bad options stop the post here, before anything is made
+    try:
+        poll_options = poll_rules.clean_options(request.form.getlist("poll_option"))
+        poll_hours = poll_rules.clean_hours(request.form.get("poll_hours")) if poll_options else None
+        poll_error = None
+    except poll_rules.PollError as error:
+        poll_options, poll_hours, poll_error = [], None, error.message
+    if poll_error:
+        return {"html": lambda: (render_template("submit.html", v=v, error=poll_error,
+                                                 title=title, url=url, body=body, text=text_for_redisplay,
+                                                 b=None, forward_guild_names=forward_guild_names), 400),
+                "api": lambda: ({"error": poll_error}, 400)
+                }
+
     new_post = Submission(
         author_id=v.id,
         domain_ref=domain_obj.id if domain_obj else None,
@@ -1272,7 +1288,7 @@ Optional file data:
                                  title=title
                                  )
     g.db.add(new_post_aux)
-    apply_post_severity(new_post, title, body_html)
+    apply_post_severity(new_post, title, body_html, extra=poll_rules.option_text(poll_options))
     g.db.flush()
 
     vote = Vote(user_id=v.id,
@@ -1281,6 +1297,9 @@ Optional file data:
                 )
     g.db.add(vote)
     g.db.flush()
+
+    if poll_options:
+        poll_store.create(g.db, new_post, poll_options, poll_hours)
 
     g.db.refresh(new_post)
 
@@ -1379,7 +1398,7 @@ Optional file data:
                 body_md = renderer.render(mistletoe.Document(preprocess(new_post_aux.body)))
             new_post_aux.body_html = sanitize(body_md, linkgen=True)
             g.db.add(new_post_aux)
-            apply_post_severity(new_post, title, new_post_aux.body_html)
+            apply_post_severity(new_post, title, new_post_aux.body_html, extra=poll_rules.option_text(poll_options))
             g.db.commit()
 
             #csam detection

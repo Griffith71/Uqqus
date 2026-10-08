@@ -51,6 +51,7 @@ Form data: the composer's own fields (`title`, `url`, `body`, `forward_guilds`,
         when = None
         if raw_when:
             pd.require_title(fields)
+            pd.require_poll(fields)
             when = pd.schedule_time(raw_when, now)
     except pd.PostFieldError as e:
         return jsonify({"error": str(e)}), 400

@@ -5871,5 +5871,32 @@ CREATE INDEX save_relationship_folder_index ON public.save_relationship USING bt
 
 CREATE INDEX comment_save_relationship_folder_index ON public.comment_save_relationship USING btree (user_id, folder_id);
 
+CREATE TABLE public.polls (
+    id SERIAL PRIMARY KEY,
+    post_id integer NOT NULL,
+    closes_utc integer NOT NULL,
+    created_utc integer DEFAULT 0 NOT NULL,
+    CONSTRAINT polls_post_key UNIQUE (post_id)
+);
+
+CREATE TABLE public.poll_options (
+    id SERIAL PRIMARY KEY,
+    poll_id integer NOT NULL REFERENCES public.polls(id) ON DELETE CASCADE,
+    ordinal smallint NOT NULL,
+    label character varying(40) NOT NULL,
+    CONSTRAINT poll_options_ordinal_key UNIQUE (poll_id, ordinal)
+);
+
+CREATE TABLE public.poll_votes (
+    id SERIAL PRIMARY KEY,
+    poll_id integer NOT NULL REFERENCES public.polls(id) ON DELETE CASCADE,
+    option_id integer NOT NULL REFERENCES public.poll_options(id) ON DELETE CASCADE,
+    user_id integer NOT NULL,
+    created_utc integer DEFAULT 0 NOT NULL,
+    CONSTRAINT poll_votes_one_per_member UNIQUE (poll_id, user_id)
+);
+
+CREATE INDEX poll_votes_option_index ON public.poll_votes USING btree (option_id);
+
 CREATE INDEX submissions_word_severity_index ON public.submissions USING btree (word_severity);
 CREATE INDEX comments_word_severity_index ON public.comments USING btree (word_severity);

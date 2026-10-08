@@ -539,6 +539,11 @@ class Submission(Base, Stndrd, Age_times, Scores, Fuzzing):
         if "nested_comments" in self.__dict__:
             data["replies"]=[x.json_core for x in self.nested_comments]
 
+        from ruqqus.helpers import poll_store
+        poll = poll_store.json_of(self)
+        if poll:
+            data["poll"] = poll
+
         if "_voted" in self.__dict__:
             data["voted"] = self._voted
 

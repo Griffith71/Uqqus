@@ -1722,6 +1722,105 @@ body.embedded #chat-app {
     font-weight: $font-weight-bold;
 }
 
+// Polls (templates/partials/poll.html, partials/post_options.html poll_field, assets/js/poll.js)
+.poll {
+    position: relative;  // above the card's stretched link, so voting is not opening the post
+    z-index: 2;
+    max-width: 32rem;
+    margin: 0.5rem 0;
+}
+
+.poll-option {
+    display: block;
+    width: 100%;
+    margin-bottom: 0.4rem;
+    padding: 0.45rem 0.9rem;
+    border: 1px solid $primary;
+    border-radius: 2rem;
+    background: transparent;
+    color: $primary;
+    font-size: $small-font-size;
+    font-weight: $font-weight-bold;
+    text-align: center;
+    cursor: pointer;
+}
+
+.poll-option:hover:not(:disabled),
+.poll-option:focus {
+    background-color: rgba($primary, 0.1);
+    color: $primary;
+    text-decoration: none;
+    outline: none;
+}
+
+.poll-option:disabled {
+    opacity: 0.6;
+    cursor: default;
+}
+
+.poll-result {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.4rem;
+    padding: 0.45rem 0.9rem;
+    border: 1px solid $border-color;
+    border-radius: 0.4rem;
+    overflow: hidden;
+    color: $black;
+    font-size: $small-font-size;
+}
+
+.poll-bar {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    background-color: rgba($primary, 0.22);
+    animation: poll-grow 0.5s ease-out;
+}
+
+.poll-result.mine .poll-bar {
+    background-color: rgba($primary, 0.4);
+}
+
+.poll-result.mine .poll-label {
+    font-weight: $font-weight-bold;
+}
+
+.poll-label,
+.poll-percent {
+    position: relative;
+}
+
+.poll-percent {
+    margin-left: 0.75rem;
+    font-weight: $font-weight-bold;
+}
+
+.poll-meta {
+    margin-top: 0.25rem;
+}
+
+@keyframes poll-grow {
+    from {
+        width: 0;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .poll-bar {
+        animation: none;
+    }
+}
+
+.poll-composer .poll-panel {
+    padding: 0.75rem;
+    border: 1px solid $border-color;
+    border-radius: 0.4rem;
+}
+
 // A continuous feed (assets/js/infinite_scroll.js): while the script runs the browser's own
 // pull-to-reload gives way to the page's pull indicator, the "Show N new posts" pill is
 // pinned under the sticky feed header, and the end of the feed has a note instead of buttons.

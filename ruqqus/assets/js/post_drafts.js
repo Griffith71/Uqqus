@@ -69,6 +69,11 @@
     });
     var coauthors = form.querySelector('input[name="coauthors"]');
     if (coauthors && coauthors.value.trim()) data.append('coauthors', coauthors.value.trim());
+    Array.prototype.forEach.call(form.querySelectorAll('input[name="poll_option"]'), function (i) {
+      if (!i.disabled && i.value.trim()) data.append('poll_option', i.value.trim());
+    });
+    var pollHours = form.querySelector('select[name="poll_hours"]');
+    if (pollHours && !pollHours.disabled) data.append('poll_hours', pollHours.value);
     var sensitive = el('sensitiveCheck');
     if (sensitive && sensitive.checked) data.append('sensitive', 'true');
     if (idField.value) data.append('draft_id', idField.value);

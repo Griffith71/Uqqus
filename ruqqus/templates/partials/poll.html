@@ -1,0 +1,39 @@
+{#
+  A poll on a post (helpers/polls.py, helpers/poll_store.py, routes/polls.py, assets/js/poll.js).
+
+  poll_block(p, v): the poll of the post `p` (its own, or its primary's when `p` is a guild copy), or
+  nothing. Before you vote: the options as buttons (a plain form, so it works without script; the script
+  votes in place). After you vote, for the author, and once it has ended: bars with the percentages.
+  Labels are plain text, escaped here. Nobody is ever shown who voted.
+#}
+{% macro poll_block(p, v) %}
+{% set poll = poll_of(p, v) %}
+{% if poll %}
+<div class="poll" role="group" aria-label="Poll" data-poll-url="/api/poll/{{ p.base36id }}/vote">
+  {% if poll.results %}
+  {% for o in poll.options %}
+  <div class="poll-result{% if o.mine %} mine{% endif %}">
+    <div class="poll-bar" style="width: {{ o.percent }}%"></div>
+    <span class="poll-label">{{ o.label }}{% if o.mine %}<i class="fas fa-check-circle ml-1" title="Your vote"></i>{% endif %}</span>
+    <span class="poll-percent">{{ o.percent }}%</span>
+  </div>
+  {% endfor %}
+  {% elif poll.can_vote %}
+  <form method="post" action="/api/poll/{{ p.base36id }}/vote" class="poll-form">
+    <input type="hidden" name="formkey" value="{{ v.formkey }}">
+    <input type="hidden" name="back" value="1">
+    {% for o in poll.options %}
+    <button type="submit" name="option" value="{{ o.id }}" class="poll-option">{{ o.label }}</button>
+    {% endfor %}
+  </form>
+  {% else %}
+  {% for o in poll.options %}
+  <a class="poll-option" href="/login?redirect={{ p.permalink | urlencode }}" rel="nofollow">{{ o.label }}</a>
+  {% endfor %}
+  {% endif %}
+  <div class="poll-meta text-small text-muted">
+    {% if poll.results %}{{ poll.total }} vote{{ '' if poll.total == 1 else 's' }} &middot; {% endif %}{{ poll.time_left }}{% if not v and not poll.closed %} &middot; <a href="/login?redirect={{ p.permalink | urlencode }}" rel="nofollow">Log in to vote</a>{% endif %}
+  </div>
+</div>
+{% endif %}
+{% endmacro %}

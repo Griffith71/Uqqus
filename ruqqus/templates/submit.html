@@ -196,6 +196,8 @@
 
                         {{ post_options.coauthors_field(draft.option("coauthors", "") if draft else request.form.get("coauthors", ""), "post-coauthors") }}
 
+                        {{ post_options.poll_field(draft.option("poll_options", []) if draft else request.form.getlist("poll_option") | select | list, draft.option("poll_hours", poll_default_hours) if draft else request.form.get("poll_hours", poll_default_hours), "post-poll") }}
+
                         <label for="sensitive" class="text-warning mt-3">Sensitive Content?<i class="fas fa-info-circle text-gray-400 ml-1" data-toggle="tooltip" data-placement="top" title="Not a rule violation - just something that could be upsetting. Shown blurred with a click-to-reveal instead of being blocked."></i></label>
 
                         <div class="custom-control custom-checkbox">
@@ -298,6 +300,7 @@
     <script src="/assets/js/all_js.js?v=2.39.0"></script>
     <script src="/assets/js/post_editor.js?v=1"></script>
     <script src="/assets/js/post_drafts.js?v=1"></script>
+    <script src="/assets/js/poll_composer.js?v=1"></script>
     <script src="/assets/js/media_upload.js?v=1"></script>
 
     <!-- ClipboardJS -->

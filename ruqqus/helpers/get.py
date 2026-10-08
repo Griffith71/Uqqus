@@ -415,7 +415,13 @@ def get_posts(pids, sort="hot", v=None):
         #     p._is_exiled_for=post[1] or 0
         #     output.append(p)
 
-    return sorted(output, key=lambda x: pids.index(x.id))
+    posts = sorted(output, key=lambda x: pids.index(x.id))
+
+    # the polls of the page, in a few queries (helpers/poll_store.py)
+    from ruqqus.helpers import poll_store
+    poll_store.attach(g.db, posts, v)
+
+    return posts
 
 
 def get_post_with_comments(pid, sort_type="top", v=None):

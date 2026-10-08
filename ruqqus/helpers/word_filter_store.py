@@ -52,14 +52,16 @@ def get_filter(db=None, force=False):
     return _state["filter"]
 
 
-def post_severity(title, body_html, db=None):
+def post_severity(title, body_html, db=None, extra=""):
+    """`extra` is more plain text that belongs to the post: the options of its poll."""
     f = get_filter(db)
     # titles are stored HTML-escaped
-    return max(f.severity(html.unescape(title or "")), f.severity_html(body_html)), f.version
+    return max(f.severity(html.unescape(title or "")), f.severity_html(body_html),
+               f.severity(extra) if extra else 0), f.version
 
 
-def apply_post_severity(post, title, body_html, db=None):
-    severity, version = post_severity(title, body_html, db)
+def apply_post_severity(post, title, body_html, db=None, extra=""):
+    severity, version = post_severity(title, body_html, db, extra)
     post.word_severity = severity
     post.word_filter_version = version
     post.is_offensive = severity >= EXTREME   # kept for API clients
@@ -107,10 +109,14 @@ def rescan(db, batch=500, log=None):
             ).limit(batch).all()
             if not rows:
                 break
+            extras = {}
+            if model is Submission:
+                from ruqqus.helpers import poll_store
+                extras = poll_store.option_texts(db, [row.repost_id or row.id for row in rows])
             for row in rows:
                 before = row.word_severity or 0
                 if model is Submission:
-                    apply_post_severity(row, row.title, row.body_html, db)
+                    apply_post_severity(row, row.title, row.body_html, db, extra=extras.get(row.repost_id or row.id, ""))
                 else:
                     apply_comment_severity(row, row.body_html, db)
                 changed += before != row.word_severity

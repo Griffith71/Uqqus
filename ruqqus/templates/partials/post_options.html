@@ -20,6 +20,9 @@
   coauthors_field(value, prefix): usernames to invite as co-authors (helpers/coauthors.py), read by
   submit_post as `coauthors`.
 
+  poll_field(options, hours, prefix): the "Add a poll" panel (helpers/polls.py): `poll_option` fields and
+  `poll_hours`, read by submit_post.
+
   disclosure_badges(item, v) / disclosure_row(item, v): the labels on a post or a
   comment that carries a disclosure, and, for its author and admins, a note that
   it is anonymous.
@@ -83,6 +86,36 @@
 {% macro coauthors_field(value, prefix) %}
 <label class="mt-3 d-block" for="{{ prefix }}">Co-authors (optional)<i class="fas fa-info-circle text-gray-400 ml-1" data-toggle="tooltip" data-placement="top" title="Invite up to 5 people to share this post. Once they accept it carries their name and is listed on their profile. You still edit, delete and forward it. Not for anonymous posts."></i></label>
 <input type="text" class="form-control" id="{{ prefix }}" name="coauthors" value="{{ value }}" maxlength="200" placeholder="@username, @username" autocomplete="off">
+{% endmacro %}
+
+{% macro poll_field(options, hours, prefix) %}
+{# the options are `poll_option` (up to poll_max_options of them), the length `poll_hours` (helpers/polls.py);
+   assets/js/poll_composer.js opens and closes the panel, and keeps its fields disabled while it is closed #}
+<div class="poll-composer mt-3" data-poll-composer>
+  <label class="d-block">Poll (optional)<i class="fas fa-info-circle text-gray-400 ml-1" data-toggle="tooltip" data-placement="top" title="Your title is the question. 2 to 4 options, one vote each. The poll can be voted from every forward and repost of this post."></i></label>
+  <button type="button" class="btn btn-secondary btn-sm poll-open"{% if options %} hidden{% endif %}><i class="far fa-chart-bar mr-1"></i>Add a poll</button>
+  <div class="poll-panel"{% if not options %} hidden{% endif %}>
+    <p class="text-small text-muted mb-2">Your title is the question. Give 2 to {{ poll_max_options }} options. People can vote from every forward and repost of this post, once each.</p>
+    <div class="poll-rows">
+      {% for i in range(poll_max_options) %}
+      <div class="poll-row input-group mb-2"{% if i >= poll_min_options and i >= options | length %} hidden{% endif %}>
+        <input type="text" class="form-control" name="poll_option" maxlength="40" placeholder="Option {{ i + 1 }}" aria-label="Poll option {{ i + 1 }}" value="{{ options[i] if i < options | length else '' }}" autocomplete="off"{% if not options %} disabled{% endif %}>
+        {% if i >= poll_min_options %}
+        <div class="input-group-append"><button type="button" class="btn btn-outline-secondary poll-row-remove" aria-label="Remove option {{ i + 1 }}">&times;</button></div>
+        {% endif %}
+      </div>
+      {% endfor %}
+    </div>
+    <button type="button" class="btn btn-link btn-sm px-0 poll-more">+ Add option</button>
+    <label class="d-block mt-2" for="{{ prefix }}-hours">Poll length</label>
+    <select class="custom-select" id="{{ prefix }}-hours" name="poll_hours"{% if not options %} disabled{% endif %}>
+      {% for h, label in poll_durations %}
+      <option value="{{ h }}"{% if (hours | int) == h %} selected{% endif %}>{{ label }}</option>
+      {% endfor %}
+    </select>
+    <button type="button" class="btn btn-link btn-sm text-danger px-0 mt-2 poll-remove">Remove poll</button>
+  </div>
+</div>
 {% endmacro %}
 
 {% macro anonymous_field(checked, prefix) %}
