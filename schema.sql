@@ -5766,7 +5766,8 @@ CREATE TABLE public.media_assets (
     submission_id integer,
     comment_id integer,
     created_utc integer DEFAULT 0 NOT NULL,
-    updated_utc integer DEFAULT 0 NOT NULL
+    updated_utc integer DEFAULT 0 NOT NULL,
+    story_id integer
 );
 
 CREATE UNIQUE INDEX media_accounts_user_provider_index ON public.media_accounts USING btree (user_id, provider);
@@ -5955,6 +5956,64 @@ CREATE TABLE public.circle_payments (
 );
 
 CREATE INDEX circle_payments_owner_idx ON public.circle_payments USING btree (owner_id, created_utc DESC);
+
+CREATE TABLE public.stories (
+    id SERIAL PRIMARY KEY,
+    user_id integer NOT NULL,
+    kind character varying(8) NOT NULL,
+    body character varying(300) DEFAULT '' NOT NULL,
+    background character varying(16) DEFAULT '' NOT NULL,
+    video_ref character varying(16) DEFAULT '' NOT NULL,
+    audience smallint DEFAULT 0 NOT NULL,
+    word_severity smallint DEFAULT 0 NOT NULL,
+    created_utc integer NOT NULL,
+    expires_utc integer NOT NULL,
+    deleted_utc integer DEFAULT 0 NOT NULL,
+    CONSTRAINT stories_kind CHECK (kind IN ('image', 'text', 'video')),
+    CONSTRAINT stories_audience CHECK (audience IN (0, 1, 2))
+);
+
+CREATE INDEX stories_user_idx ON public.stories USING btree (user_id, created_utc DESC);
+CREATE INDEX stories_live_idx ON public.stories USING btree (expires_utc) WHERE (deleted_utc = 0);
+
+CREATE TABLE public.story_views (
+    id SERIAL PRIMARY KEY,
+    story_id integer NOT NULL REFERENCES public.stories(id) ON DELETE CASCADE,
+    viewer_id integer NOT NULL,
+    created_utc integer DEFAULT 0 NOT NULL,
+    CONSTRAINT story_views_once UNIQUE (story_id, viewer_id)
+);
+
+CREATE INDEX story_views_viewer_idx ON public.story_views USING btree (viewer_id);
+
+CREATE TABLE public.highlights (
+    id SERIAL PRIMARY KEY,
+    user_id integer NOT NULL,
+    title character varying(30) NOT NULL,
+    position integer DEFAULT 0 NOT NULL,
+    created_utc integer DEFAULT 0 NOT NULL
+);
+
+CREATE INDEX highlights_user_idx ON public.highlights USING btree (user_id, position);
+
+CREATE TABLE public.highlight_stories (
+    highlight_id integer NOT NULL REFERENCES public.highlights(id) ON DELETE CASCADE,
+    story_id integer NOT NULL REFERENCES public.stories(id) ON DELETE CASCADE,
+    position integer DEFAULT 0 NOT NULL,
+    CONSTRAINT highlight_stories_key PRIMARY KEY (highlight_id, story_id)
+);
+
+CREATE TABLE public.story_reports (
+    id SERIAL PRIMARY KEY,
+    story_id integer NOT NULL REFERENCES public.stories(id) ON DELETE CASCADE,
+    reporter_id integer NOT NULL,
+    reason character varying(200) DEFAULT '' NOT NULL,
+    created_utc integer DEFAULT 0 NOT NULL,
+    resolved_utc integer DEFAULT 0 NOT NULL,
+    CONSTRAINT story_reports_once UNIQUE (story_id, reporter_id)
+);
+
+CREATE INDEX media_assets_story_idx ON public.media_assets USING btree (story_id) WHERE (story_id IS NOT NULL);
 
 CREATE INDEX submissions_word_severity_index ON public.submissions USING btree (word_severity);
 CREATE INDEX comments_word_severity_index ON public.comments USING btree (word_severity);

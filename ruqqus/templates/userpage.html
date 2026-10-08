@@ -1,5 +1,7 @@
 {% extends "default.html" %}
 {% from "partials/circle_buttons.html" import circle_buttons %}
+{% from "partials/story_bits.html" import story_avatar, highlights_row %}
+{% set story_ui = true %}
 
 {% block pagetype %}userpage{% endblock %}
 
@@ -46,8 +48,8 @@
       <div class="w-100 my-3">
         <div class="container-fluid">
           <div class="d-md-flex text-center text-md-left">
-            <div>
-              <img src="{{ u.profile_url }}" class="profile-pic profile-pic-100 mb-5">
+            <div class="mb-5">
+              {{ story_avatar(u, v, "profile-pic profile-pic-100") }}
             </div>
             <div class="ml-3 w-100">
               <div class="d-flex align-items-center mt-1 mb-2">
@@ -158,6 +160,8 @@
 
       </div>
 
+      {{ highlights_row(u, v) }}
+
     </div>
   </div>
 </div>
@@ -177,8 +181,8 @@
   </div>
   <div class="row border-bottom">
     <div class="col">
-      <div style="margin-top: -34px;">
-        <a href="{{ u.permalink }}"><img src="{{ u.profile_url }}" class="profile-pic-65 bg-white border-2 border-white mb-2"></a>
+      <div style="margin-top: -34px;" class="mb-2">
+        {{ story_avatar(u, v, "profile-pic-65 bg-white border-2 border-white", "story-avatar-65") }}
       </div>
       <div class="mt-n3 py-3">
         <a href="{{ u.permalink }}" class="text-black">
@@ -239,6 +243,7 @@
         {{ circle_buttons(u, v, small=True) }}
         {% endif %}
         </div>
+        {{ highlights_row(u, v) }}
       </div>
     </div>
   </div>

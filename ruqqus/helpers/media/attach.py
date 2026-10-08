@@ -7,6 +7,9 @@ import hmac
 import time
 from urllib.parse import urlparse
 
+from sqlalchemy import text
+
+from ruqqus.helpers import circles
 from . import rules
 
 
@@ -94,8 +97,14 @@ def attached_paths(db, submission_id=None, comment_id=None):
 
 
 def is_live(db, asset):
-    """Is the asset part of a post or comment that is still up?"""
+    """Is the asset part of a post or comment that is still up, or of a story that is up or kept in a Highlight?"""
     _, Submission, Comment = _models()
+    if asset.story_id:
+        row = db.execute(text("SELECT deleted_utc, expires_utc FROM stories WHERE id = :i"), {"i": asset.story_id}).fetchone()
+        if row is None or row.deleted_utc:
+            return False
+        return row.expires_utc > int(time.time()) or bool(
+            db.execute(text("SELECT 1 FROM highlight_stories WHERE story_id = :i LIMIT 1"), {"i": asset.story_id}).fetchone())
     if asset.submission_id:
         post = db.query(Submission.is_banned, Submission.deleted_utc).filter(Submission.id == asset.submission_id).first()
         return bool(post) and not post.is_banned and not post.deleted_utc
@@ -109,6 +118,12 @@ def audience_of(db, asset):
     """(audience, author id) of the post - or the post a comment is on - this asset is part of. (0, None) when it is
     part of nothing or of something public: the file is then shown to everyone. Anything else is for a Circle."""
     _, Submission, Comment = _models()
+    if asset.story_id:
+        # a story's picture is never public-cached: a public story is shown per viewer (circles.STORY_OPEN), a Circle one to its audience
+        story = db.execute(text("SELECT audience, user_id FROM stories WHERE id = :i"), {"i": asset.story_id}).fetchone()
+        if story is None:
+            return circles.GUILD, None                       # a story that is gone: nobody (fail closed)
+        return (story.audience or circles.STORY_OPEN), story.user_id
     if asset.submission_id:
         row = db.query(Submission.audience, Submission.author_id).filter(Submission.id == asset.submission_id).first()
     elif asset.comment_id:

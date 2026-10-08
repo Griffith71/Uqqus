@@ -37,7 +37,10 @@ def test_the_models_schema_and_migration_have_the_same_columns():
         model = model_columns(class_name)
         assert "status" in model
         assert schema_columns(schema, f"CREATE TABLE public.{table}") == model, table
-        assert schema_columns(migration, f"CREATE TABLE IF NOT EXISTS {table}") == model, table
+        # story_id was added later, by the stories migration (2026-10-10_stories.sql), not by the media one
+        assert schema_columns(migration, f"CREATE TABLE IF NOT EXISTS {table}") == model - {"story_id"}, table
+    assert "ALTER TABLE media_assets ADD COLUMN IF NOT EXISTS story_id integer;" in read("scripts", "migrations", "2026-10-10_stories.sql")
+    assert "story_id" in model_columns("MediaAsset")
     for index in ("media_accounts_user_provider_index", "media_assets_submission_id_index", "media_assets_comment_id_index"):
         assert index in schema and index in migration
 

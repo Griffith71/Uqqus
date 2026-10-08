@@ -21,6 +21,9 @@ PUBLIC = 0
 SUBSCRIBERS = 1
 FRIENDS = 2
 GUILD = 3
+# not a choice, never stored on a post or a story: what a PUBLIC story's picture is treated as when it is served (it must
+# not be cached by a CDN past the story's 24 hours, so it is shown only to a signed-in viewer who is not blocked)
+STORY_OPEN = 8
 
 # what a member may choose for a post on their own profile (GUILD is only for a post inside a Circle guild)
 CHOICES = (PUBLIC, SUBSCRIBERS, FRIENDS)

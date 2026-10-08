@@ -38,3 +38,4 @@ from .insights import *
 from .voters import *
 from .deletion_log import *
 from .circles import *
+from .stories import *

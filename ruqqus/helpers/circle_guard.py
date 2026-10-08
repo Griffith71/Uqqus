@@ -76,6 +76,8 @@ def may_see(db, audience, author_id, viewer=None, now=None, board_id=None):
         return False
     if (getattr(viewer, "admin_level", 0) or 0) >= ADMIN_LEVEL:
         return True
+    if audience == circles.STORY_OPEN:
+        return viewer.id == author_id or not circle_store.blocked_between(db, author_id, viewer.id)
     if audience == circles.GUILD:
         return in_guild(db, board_id, viewer.id)
     if viewer.id == author_id:

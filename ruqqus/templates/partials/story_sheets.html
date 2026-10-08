@@ -1,0 +1,110 @@
+{#
+  The three pieces of Stories that live on every page for a signed-in member (assets/js/stories.js): the viewer that
+  plays a member's stories (or one Highlight), the sheet that makes a story, and the sheet that makes a Highlight from the
+  member's own stories. One copy each per page, not inside the side-panel frames. Everything a member wrote is set with
+  textContent by the script; nothing here holds it.
+#}
+<div id="story-viewer" class="story-viewer" role="dialog" aria-modal="true" aria-label="Story" hidden>
+  <div class="story-stage">
+    <div class="story-bars" id="story-bars" aria-hidden="true"></div>
+    <div class="story-head">
+      <a id="story-user" class="story-user" href="#"><img id="story-avatar" src="" alt=""><span id="story-name"></span></a>
+      <span id="story-meta" class="story-meta"></span>
+      <button type="button" id="story-close" class="story-close" aria-label="Close">&times;</button>
+    </div>
+    <div id="story-card" class="story-card"></div>
+    <button type="button" id="story-prev" class="story-hit story-hit-prev" aria-label="Previous"></button>
+    <button type="button" id="story-next" class="story-hit story-hit-next" aria-label="Next"></button>
+    <div class="story-foot">
+      <span id="story-views" class="story-views"></span>
+      <span id="story-actions" class="story-actions"></span>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="storyComposer" tabindex="-1" role="dialog" aria-labelledby="storyComposerTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="storyComposerTitle">Add to your story</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true"><i class="far fa-times"></i></span></button>
+      </div>
+      <form id="story-form" onsubmit="return false;">
+        <div class="modal-body">
+          <div class="btn-group btn-group-sm btn-group-toggle mb-3" id="story-kinds" role="group" aria-label="Kind of story">
+            <label class="btn btn-secondary active"><input type="radio" name="kind" value="text" checked>Text</label>
+            <label class="btn btn-secondary"><input type="radio" name="kind" value="image">Picture</label>
+            <label class="btn btn-secondary"><input type="radio" name="kind" value="video">Video</label>
+          </div>
+
+          <div id="story-pane-text">
+            <label for="story-text" class="sr-only">What to say</label>
+            <textarea id="story-text" class="form-control" rows="3" maxlength="300" placeholder="What do you want to say?"></textarea>
+            <div class="text-small text-muted mt-1"><span id="story-count">0</span> / 300</div>
+            <div class="story-swatches mt-2" role="radiogroup" aria-label="Background">
+              {% for name in story_backgrounds %}
+              <label class="story-swatch story-bg-{{ name }}" title="{{ name }}"><input type="radio" name="background" value="{{ name }}"{% if loop.first %} checked{% endif %}><span class="sr-only">{{ name }}</span></label>
+              {% endfor %}
+            </div>
+          </div>
+
+          <div id="story-pane-image" hidden>
+            <div id="story-picture-box">
+              <label class="btn btn-secondary btn-sm mb-2" for="story-file"><i class="far fa-image mr-1"></i>Choose a picture</label>
+              <input type="file" id="story-file" accept="image/*" hidden data-media-main="story-media">
+              <input type="hidden" id="story-media" value="">
+            </div>
+            <p class="text-small text-muted mb-0">The picture goes to your own linked storage, not to this site. You can add a few words under it.</p>
+            <label for="story-caption" class="sr-only">A few words (optional)</label>
+            <textarea id="story-caption" class="form-control mt-2" rows="2" maxlength="300" placeholder="A few words (optional)"></textarea>
+          </div>
+
+          <div id="story-pane-video" hidden>
+            <label for="story-video" class="sr-only">YouTube link</label>
+            <input type="url" id="story-video" class="form-control" placeholder="Paste a YouTube link" autocomplete="off">
+            <p class="text-small text-muted mt-1 mb-0">A video can only go on a public story: anyone with its link can watch it.</p>
+          </div>
+
+          <div class="mt-3" role="radiogroup" aria-label="Who can see this">
+            <span class="d-block text-small text-muted mb-1">Who can see this?</span>
+            {% for value, label in [(0, "Public"), (1, "Subscribers"), (2, "Close Friends")] %}
+            <div class="custom-control custom-radio custom-control-inline">
+              <input type="radio" class="custom-control-input" id="story-audience-{{ value }}" name="audience" value="{{ value }}"{% if value == 0 %} checked{% endif %}>
+              <label class="custom-control-label" for="story-audience-{{ value }}">{{ label }}</label>
+            </div>
+            {% endfor %}
+          </div>
+          <div id="story-status" class="text-small mt-2" role="status"></div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-link text-muted" data-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="story-share">Share</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="highlightModal" tabindex="-1" role="dialog" aria-labelledby="highlightTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="highlightTitle">New highlight</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true"><i class="far fa-times"></i></span></button>
+      </div>
+      <form id="highlight-form" onsubmit="return false;">
+        <div class="modal-body">
+          <label for="highlight-name" class="sr-only">Name</label>
+          <input type="text" id="highlight-name" class="form-control" maxlength="30" placeholder="Name" autocomplete="off">
+          <p class="text-small text-muted mt-2 mb-1">Choose the stories to keep under your bio. A highlight keeps its stories after their 24 hours and shows each to the people who could see it then.</p>
+          <div id="highlight-list" class="highlight-list" aria-live="polite"></div>
+          <div id="highlight-status" class="text-small mt-2" role="status"></div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-link text-muted" data-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="highlight-save">Save</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

@@ -75,6 +75,8 @@ class MediaAsset(Base):
     # the post or comment it is part of; an asset nobody attached is shown only to its owner
     submission_id = Column(Integer, default=None)
     comment_id = Column(Integer, default=None)
+    # the story it is part of (helpers/stories.py): a story's picture is only shown to the people who may see the story
+    story_id = Column(Integer, default=None)
     created_utc = Column(Integer, nullable=False, default=0)
     updated_utc = Column(Integer, nullable=False, default=0)
 

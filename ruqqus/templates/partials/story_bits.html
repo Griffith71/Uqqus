@@ -1,0 +1,35 @@
+{#
+  What a profile draws for Stories (routes/stories.py `story_ring`, `profile_highlights`): the avatar with its ring, and the
+  Highlights under the bio. The viewer, the sheets and the script are in partials/story_sheets.html and assets/js/stories.js.
+  Names and titles are escaped here; ids and class names are ours.
+#}
+{% macro story_avatar(u, v, size_class, extra_class="") %}
+{% set ring = story_ring(u, v) %}
+{% set own = v and v.id == u.id %}
+<span class="story-avatar {{ extra_class }}{% if ring %} story-ring story-ring-{{ ring }}{% endif %}"{% if ring %} data-story-owner="{{ u.username }}"{% endif %}>
+  <img src="{{ u.profile_url }}" class="{{ size_class }}"
+    {%- if ring %} data-story-user="{{ u.username }}" role="button" tabindex="0" aria-label="Watch @{{ u.username }}'s story" alt=""{% else %} alt=""{% endif %}>
+  {% if own %}<button type="button" class="story-add" data-story-add aria-label="Add to your story"><i class="fas fa-plus"></i></button>{% endif %}
+</span>
+{% endmacro %}
+
+{% macro highlights_row(u, v) %}
+{% set rows = profile_highlights(u, v) %}
+{% set own = v and v.id == u.id %}
+{% if rows or own %}
+<div class="highlights">
+  {% for h in rows %}
+  <button type="button" class="highlight" data-highlight="{{ h.id }}">
+    <span class="highlight-cover{% if h.background %} story-bg-{{ h.background }}{% endif %}">{% if h.picture %}<img src="{{ h.picture }}" alt="">{% endif %}</span>
+    <span class="highlight-title">{{ h.title }}</span>
+  </button>
+  {% endfor %}
+  {% if own %}
+  <button type="button" class="highlight highlight-new" data-highlight-new>
+    <span class="highlight-cover"><i class="fas fa-plus"></i></span>
+    <span class="highlight-title">New</span>
+  </button>
+  {% endif %}
+</div>
+{% endif %}
+{% endmacro %}

@@ -211,3 +211,25 @@ def test_the_viewer_falls_back_to_nobody_outside_a_request():
     assert guard.current(None) is None
     someone = viewer(5)
     assert guard.current(someone) is someone
+
+
+# --- the public mark of a story's picture (circles.STORY_OPEN) -------------------------------------------
+
+def test_a_public_storys_picture_is_for_any_signed_in_account_and_never_a_visitor(db):
+    for who in (OWNER, FRIEND, FAN, STRANGER, EXPIRED):
+        assert guard.may_see(db, c.STORY_OPEN, OWNER, viewer(who), NOW) is True
+    assert guard.may_see(db, c.STORY_OPEN, OWNER, None, NOW) is False
+
+
+def test_a_block_either_way_takes_a_public_storys_picture_away(db):
+    db.execute(text("INSERT INTO userblocks (user_id, target_id) VALUES (:o, :b)"), {"o": OWNER, "b": STRANGER})        # the owner blocked
+    db.execute(text("INSERT INTO userblocks (user_id, target_id) VALUES (:b, :o)"), {"b": FAN, "o": OWNER})             # the viewer blocked
+    assert guard.may_see(db, c.STORY_OPEN, OWNER, viewer(STRANGER), NOW) is False
+    assert guard.may_see(db, c.STORY_OPEN, OWNER, viewer(FAN), NOW) is False
+    assert guard.may_see(db, c.STORY_OPEN, OWNER, viewer(OWNER), NOW) is True
+    assert guard.may_see(db, c.STORY_OPEN, OWNER, viewer(FRIEND), NOW) is True
+
+
+def test_the_public_mark_is_not_one_a_post_can_carry_or_a_member_can_choose(db):
+    assert c.STORY_OPEN not in c.CHOICES
+    assert c.STORY_OPEN not in (c.PUBLIC, c.SUBSCRIBERS, c.FRIENDS, c.GUILD)

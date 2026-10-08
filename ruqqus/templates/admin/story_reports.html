@@ -1,0 +1,43 @@
+{% extends "docs_default.html" %}
+
+{% block sidebarblock %}{% endblock %}
+{% block sidebarLeftblock %}{% endblock %}
+
+{% block title %}
+<title>Ruqqus - Reported stories</title>
+{% endblock %}
+
+{% block content %}
+
+<h1>Reported stories</h1>
+
+<p class="text-muted">Members report a story from its viewer. A report is a request to look: remove the story only when it breaks the rules. A removed story leaves every Highlight too. A picture made for a Circle only opens for level 4 admins, like Circle posts.</p>
+
+{% for r in reports %}
+<div class="card mb-3 story-report" data-story="{{ r.story_id }}">
+  <div class="card-body">
+    <div class="d-flex justify-content-between align-items-start flex-wrap">
+      <div class="mr-3">
+        <span class="badge badge-secondary">{{ r.kind }}</span>
+        <a href="/@{{ r.username }}" target="_blank" rel="noopener">@{{ r.username }}</a>
+        {% if r.body %}<span class="ml-2">{{ r.body }}</span>{% endif %}
+        {% if r.picture %}<a href="{{ r.picture }}" class="ml-2" target="_blank" rel="noopener">See the picture</a>{% endif %}
+      </div>
+      <div class="text-muted text-small">{{ r.reports }} report{{ '' if r.reports == 1 else 's' }}</div>
+    </div>
+    {% if r.reason %}<div class="text-small text-muted mt-1">Latest reason: {{ r.reason }}</div>{% endif %}
+    <form action="/admin/story_reports/{{ r.story_id }}/remove" method="post" class="d-inline mt-2">
+      <input type="hidden" name="formkey" value="{{ v.formkey }}">
+      <button class="btn btn-danger btn-sm">Remove the story</button>
+    </form>
+    <form action="/admin/story_reports/{{ r.story_id }}/dismiss" method="post" class="d-inline">
+      <input type="hidden" name="formkey" value="{{ v.formkey }}">
+      <button class="btn btn-link btn-sm text-muted">Dismiss the reports</button>
+    </form>
+  </div>
+</div>
+{% else %}
+<p class="text-muted" id="story-reports-empty">No stories are waiting for a look.</p>
+{% endfor %}
+
+{% endblock %}
