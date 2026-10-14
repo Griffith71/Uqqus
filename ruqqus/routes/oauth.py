@@ -246,6 +246,7 @@ def oauth_grant():
 
 @app.route("/help/api_keys", methods=["POST"])
 @is_not_banned
+@validate_formkey
 def request_api_keys(v):
 
     new_app = OauthApp(
@@ -316,6 +317,8 @@ Get information about the currently authenticated user. Does not include email o
 def admin_app_approve(v, aid):
 
     app = g.db.query(OauthApp).filter_by(id=base36decode(aid)).first()
+    if not app:
+        abort(404)
 
     app.is_banned=False
 
@@ -330,6 +333,8 @@ def admin_app_approve(v, aid):
 def admin_app_revoke(v, aid):
 
     app = g.db.query(OauthApp).filter_by(id=base36decode(aid)).first()
+    if not app:
+        abort(404)
 
     app.is_banned=True
 
@@ -355,7 +360,7 @@ def admin_app_id(v, aid):
     if v.id != oauth.author_id and v.admin_level<4:
         abort(403)
 
-    pids=oauth.idlist(page=int(request.args.get("page",1)),
+    pids=oauth.idlist(page=page_number(),
         )
 
     next_exists=len(pids)==101
@@ -381,7 +386,10 @@ def admin_app_id_comments(v, aid):
             OauthApp.author)).filter_by(
         id=aid).first()
 
-    cids=oauth.comments_idlist(page=int(request.args.get("page",1)),
+    if not oauth:
+        abort(404)
+
+    cids=oauth.comments_idlist(page=page_number(),
         )
 
     next_exists=len(cids)==101
@@ -414,6 +422,7 @@ def admin_apps_list(v):
 
 @app.route("/oauth/reroll/<aid>", methods=["POST"])
 @auth_required
+@validate_formkey
 def reroll_oauth_tokens(aid, v):
 
     aid = base36decode(aid)

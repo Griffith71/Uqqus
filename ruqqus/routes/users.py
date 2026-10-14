@@ -160,7 +160,7 @@ Optional query parameters:
 
     sort = request.args.get("sort", "new")
     t = request.args.get("t", "all")
-    page = int(request.args.get("page", "1"))
+    page = page_number()
     page = max(page, 1)
 
     ids = u.userpagelisting(v=v, page=page, sort=sort, t=t, filter_level=viewer_level(v))
@@ -265,7 +265,7 @@ Optional query parameters:
                 'api': lambda: {"error": "This person is blocking you."}
                 }
 
-    page = int(request.args.get("page", "1"))
+    page = page_number()
 
     ids = user.commentlisting(
         v=v, 
@@ -308,7 +308,7 @@ Optional query parameters:
 def u_username_forwarded(username, v=None):
     """
 Get posts another user has forwarded to a guild, or comments they've
-promoted into a new post - as the actor, regardless of who authored the
+forwarded into a new post - as the actor, regardless of who authored the
 original content.
 
 URL path parameters:
@@ -371,7 +371,7 @@ Optional query parameters:
                 'api': lambda: {"error": "This person is blocking you."}
                 }
 
-    page = int(request.args.get("page", "1"))
+    page = page_number()
 
     ids = user.forwarded_idlist(v=v, page=page)
 
@@ -411,17 +411,32 @@ URL path parameters:
     if user_hidden(user, v):
         return hidden_notice(v)
 
-    if user.is_blocking:
-        return jsonify({"error": "You're blocking this user."}), 401
-    elif user.is_blocked:
-        return jsonify({"error": "This user is blocking you."}), 403
+    refused = profile_json_refusal(user, v)
+    if refused:
+        return jsonify({"error": refused}), 403
 
     return jsonify(user.json)
+
+
+def profile_json_refusal(u, v):
+    """Why `v` may not read `u`'s profile as JSON, or None: the same gates as the profile page (userpage)."""
+    if v and (v.id == u.id or v.admin_level >= 3):
+        return None
+    if u.reserved:
+        return f"That username is reserved for: {u.reserved}"
+    if u.is_private:
+        return "That userpage is private"
+    if u.is_blocking:
+        return f"You are blocking @{u.username}."
+    if u.is_blocked:
+        return "This person is blocking you."
+    return None
 
 
 @app.route("/api/follow/<username>", methods=["POST"])
 @app.post("/api/v2/users/<username>/follow")
 @auth_required
+@validate_formkey
 def follow_user(username, v):
     """
 Follow another user.
@@ -434,6 +449,11 @@ URL path parameters:
 
     if target.id==v.id:
         return jsonify({"error": "You can't follow yourself!"}), 400
+
+    # the profile's own gates (userpage); the message never says which, so it cannot reveal a block
+    if (target.is_deleted or target.is_suspended or target.is_nofollow or target.is_private
+            or v.any_block_exists(target)):
+        return jsonify({"error": "You can't follow this account."}), 403
 
     # check for existing follow
     if g.db.query(Follow).filter_by(user_id=v.id, target_id=target.id).first():
@@ -456,6 +476,7 @@ URL path parameters:
 @app.route("/api/unfollow/<username>", methods=["POST"])
 @app.delete("/api/v2/users/<username>/follow")
 @auth_required
+@validate_formkey
 def unfollow_user(username, v):
     """
 Unfollow another user.
@@ -482,6 +503,7 @@ URL path parameters:
 
 @app.route("/api/agree_tos", methods=["POST"])
 @auth_required
+@validate_formkey
 def api_agree_tos(v):
 
     v.tos_agreed_utc = int(time.time())
@@ -508,6 +530,7 @@ def user_profile_uid(uid):
 @app.post("/api/v2/users/<username>/toggle_bell")
 @auth_required
 @api("update")
+@validate_formkey
 def toggle_user_bell(username, v):
     """
 Toggle notifications for new posts by a user. You must be following the user.

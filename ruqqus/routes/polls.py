@@ -36,6 +36,7 @@ app.jinja_env.globals.update(
     poll_default_hours=rules.DEFAULT_HOURS,
     poll_max_options=rules.MAX_OPTIONS,
     poll_min_options=rules.MIN_OPTIONS,
+    poll_option_chars=rules.OPTION_CHARS,
 )
 
 

@@ -49,6 +49,7 @@ def test_post_upvote_creates_vote_and_updates_counts(env):
     assert p.score_top == 1
     # rank_* are taken from the post object (fake constants here)
     assert (p.score_disputed, p.score_best) == (111, 222)
+    assert p.score_hot == 444   # refreshed on a vote too since the 2026-10-10 pass (it was left to the recompute job)
     assert env.db.commits == 1
 
 
@@ -251,6 +252,24 @@ def test_post_blocked_by_author_message(env):
         403, "You can't vote on posts made by users who are blocking you.")
 
 
+@pytest.mark.parametrize("kind", ["post", "comment"])
+@pytest.mark.parametrize("flag", ["is_blocking", "is_blocked"])
+def test_a_block_never_refuses_a_vote_on_an_anonymous_item(env, kind, flag):
+    """Fixed in the 2026-10-09 audit pass: the block message unmasked the author of an anonymous item."""
+    item = getattr(env, kind)
+    setattr(item, flag, True)
+    item.is_anonymous = True
+    assert vote(env, kind, 1).status_code == 204
+
+
+@pytest.mark.parametrize("kind", ["post", "comment"])
+def test_an_item_in_a_guild_the_voter_cant_view_is_403(env, kind):
+    """Fixed in the 2026-10-09 audit pass: a non-member could vote on a private-guild item by id."""
+    env.post.private_guild = True
+    assert vote(env, kind, 1).status_code == 403
+    assert votes_of(env, FakeVote if kind == "post" else FakeCommentVote) == []
+
+
 def test_post_block_checks_precede_removed_check(env):
     env.post.is_blocking = True
     env.post.is_banned = True
@@ -413,11 +432,14 @@ def test_v2_post_route_session_user_gets_oauth_required_401(env):
     assert votes_of(env) == []
 
 
-def test_v2_post_route_with_bearer_token_is_401_abort(env):
+def test_v2_post_route_with_bearer_token_votes(env):
+    """Fixed in the 2026-10-10 pass: the form-key check refused every /api/v2 request signed with an OAuth token
+    (a token in a header cannot be forged by another site, so it is not asked for one, as on /api/v1)."""
     env.add_token(env.user)
     r = env.client.post("/api/v2/submissions/1/votes/1", headers=env.bearer())
-    assert r.status_code == 401
-    assert votes_of(env) == []
+    assert r.status_code == 204
+    [row] = votes_of(env)
+    assert row.vote_type == 1
 
 
 # ------------------------------------------------------------------ comments
@@ -429,6 +451,7 @@ def test_comment_upvote_creates_vote_and_updates_counts(env):
     assert row.creation_ip == "127.0.0.1" and row.app_id is None
     c = env.comment
     assert (c.upvotes, c.downvotes, c.score_top, c.score_hot) == (1, 0, 1, 333)
+    assert c.score_disputed == 555   # refreshed on a vote too since the 2026-10-10 pass
     assert env.db.commits == 1
 
 

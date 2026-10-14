@@ -34,7 +34,7 @@ class Stndrd:
 
     @property
     def permalink_full(self):
-        return f"http{'s' if app['FORCE_HTTPS'] else ''}://{app['SERVER_NAME']}{self.permalink}"
+        return f"http{'s' if app.config['FORCE_HTTPS'] else ''}://{app.config['SERVER_NAME']}{self.permalink}"
     
 
 
@@ -49,13 +49,14 @@ class Age_times:
 
     @property
     def created_date(self):
-
-        return time.strftime("%d %b %Y", time.gmtime(self.created_utc))
+        # the same format as Stndrd.created_date: Submission and Comment list these mix-ins in a different
+        # order, so whichever wins, a post and a comment show their dates alike
+        return time.strftime("%d %B %Y", time.gmtime(self.created_utc))
 
     @property
     def created_datetime(self):
 
-        return time.strftime("%d %b %Y at %H:%M:%S",
+        return time.strftime("%d %B %Y at %H:%M:%S",
                              time.gmtime(self.created_utc))
 
     @property

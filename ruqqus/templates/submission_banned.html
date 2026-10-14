@@ -49,9 +49,6 @@
 <p>Score: +{{ p.ups }}/-{{ p.downs }}</p>
 {% endblock %}
 
-{% block adminscripts %}
-<script src="/assets/js/comment_modding.js"></script>
-{% endblock %}
 
 {% block content %}
 <div class="mb-2 p-3">
@@ -121,38 +118,3 @@
 
 {% endblock %}
 
-{% block mobileactions %}
-<!-- Mobile responsive fixed footer with post actions -->
-
-        <div class="row fixed-top bg-white shadow d-inline-flex d-md-none p-3" id="footer-actions" style="z-index: 3; top: 48px; transition: top cubic-bezier(0, 0, 0.2, 1) 220ms;">
-        
-            <div class="col text-center">
-        
-                <div class="post-actions mx-auto">
-                    <ul class="list-inline">
-                        
-                        <li id="voting-mobile" class="voting list-inline-item{% if voted==1 %} upvoted{% elif voted==-1 %} downvoted{% endif %}">
-                            <span id="arrow-mobile-up" class="mr-2 arrow-mobile-up">
-                                <i class="fas fa-arrow-alt-up mx-0"></i>
-                            </span>
-
-
-                                
-				<span id="post-{{ p.base36id }}-score-mobile-up" class="score-up text-muted{% if voted!=1 %} d-none{% endif %}">✖</span>
-		  		<span id="post-{{ p.base36id }}-score-mobile-none" class="score text-muted{% if voted!=0 and voted!=-2 %} d-none{% endif %}">✖</span>
-		  		<span id="post-{{ p.base36id }}-score-mobile-down" class="score-down text-muted{% if voted!=-1 %} d-none{% endif %}">✖</span>
-
-
-                            <span id="arrow-mobile-down" class="arrow-mobile-down ml-2 my-0">
-                                <i class="fas fa-arrow-alt-down mx-0"></i>
-                            </span>
-                        </li>
-
-                    </ul>
-                </div>
-        
-            </div>
-        
-        </div>
-
-{% endblock %}

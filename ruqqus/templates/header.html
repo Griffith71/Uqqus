@@ -157,10 +157,10 @@
               <a class="dropdown-item" href="/chat"><i class="fas fa-comment-dots fa-fw text-left mr-3"></i>Chat</a>
               {% endif %}
             <a class="dropdown-item" href="/settings"><i class="fas fa-cog fa-fw text-left mr-3"></i>Settings</a>
-            <a class="dropdown-item d-lg-none" href="/categories"><i class="fas fa-shapes fa-fw text-left mr-3" id="dark-switch"></i>Categories</a>
+            <a class="dropdown-item d-lg-none" href="/categories"><i class="fas fa-shapes fa-fw text-left mr-3"></i>Categories</a>
 
             {% block darkswitch %}
-            {% if v and v.can_use_darkmode and session.get("dark_mode_enabled")%}
+            {% if v and v.can_use_darkmode and theme_choice() == "dark" %}
             <a class="dropdown-item" href="javascript:void(0)" onclick="switch_css()"><i class="fas fa-toggle-on fa-fw text-left mr-3" id="dark-switch"></i>Dark mode</a>
             {% elif v and v.can_use_darkmode %}
             <a class="dropdown-item" href="javascript:void(0)" onclick="switch_css()"><i class="fas fa-toggle-off fa-fw text-left mr-3" id="dark-switch"></i>Dark mode</a>
@@ -242,7 +242,7 @@
   </li>
   {% if v %}
   {% block darkswitchMobile %}
-  {% if session.get("dark_mode_enabled")%}
+  {% if theme_choice() == "dark" %}
   <li class="nav-item"><a class="nav-link" href="javascript:void(0)" onclick="switch_css()"><i class="fas fa-toggle-on fa-fw mr-3" id="dark-switch-mobile"></i>Dark mode</a></li>
   {% else %}
   <li class="nav-item"><a class="nav-link" href="javascript:void(0)" onclick="switch_css()"><i class="fas fa-toggle-off fa-fw mr-3" id="dark-switch-mobile"></i>Dark mode</a></li>

@@ -43,7 +43,9 @@
     <div class="text-danger text-small mb-2">Reason: {{ entry.reason }}</div>
     {% endif %}
 
-    {% if entry.previous_body_html or entry.previous_title or entry.previous_url %}
+    {% if not show_text %}
+    {% if loop.first %}<div class="text-muted text-small mb-1">The text isn't shown: this was removed by the site's administrators.</div>{% endif %}
+    {% elif entry.previous_body_html or entry.previous_title or entry.previous_url %}
     <div class="text-muted text-small mb-1">Content immediately before this action:</div>
     <div class="border rounded p-2">
       {% if target_type == "post" and entry.previous_title %}

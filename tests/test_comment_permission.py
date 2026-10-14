@@ -85,3 +85,28 @@ def test_the_post_forms_use_the_same_labels_and_values_as_the_helper():
     macro = (Path(__file__).resolve().parent.parent / "ruqqus" / "templates" / "partials" / "post_options.html").read_text(encoding="utf-8")
     for value, label in cp.CHOICES:
         assert f'({value}, "{label}")' in macro, f"post_options.html is out of step with CHOICES for {label!r}"
+
+
+def test_accounts_you_follow_never_applies_to_an_anonymous_post():
+    """Fixed in the 2026-10-09 audit pass: the notice named the anonymous author, and whether you could comment
+    told you whether they follow you."""
+    p = post(cp.FOLLOWED)
+    p.is_anonymous = True
+    assert cp.mode_of(p) == cp.EVERYONE
+    assert cp.restriction(p, user()) is None
+    assert cp.restriction(p, None) is None
+
+
+def test_premium_still_applies_to_an_anonymous_post():
+    p = post(cp.PREMIUM)
+    p.is_anonymous = True
+    assert cp.restriction(p, user()) == "Only Premium accounts can comment on this post."
+
+
+def test_refusal_only_for_followed_on_an_anonymous_post():
+    assert cp.refusal(cp.FOLLOWED, True) == cp.ANONYMOUS_REFUSAL
+    assert "maker" not in cp.ANONYMOUS_REFUSAL
+    for mode in (cp.EVERYONE, cp.PREMIUM):
+        assert cp.refusal(mode, True) is None
+    for mode in cp.MODES:
+        assert cp.refusal(mode, False) is None

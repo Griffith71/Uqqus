@@ -39,7 +39,7 @@ def history_bookmarked(v):
     """The Bookmarked tab of the History page - posts and comments you've
     saved, with the same All/Posts/Comments filter as Upvoted/Downvoted."""
 
-    page = int(request.args.get("page", 1))
+    page = page_number()
     content_type = request.args.get("type", "all")
     if content_type not in ("all", "posts", "comments"):
         content_type = "all"
@@ -133,7 +133,7 @@ def _save_times(v, kind, ids):
 def history_viewed(v):
     """The History tab of the History page - posts you've viewed."""
 
-    page = int(request.args.get("page", 1))
+    page = page_number()
 
     ids = v.history_idlist(page=page)
     next_exists = len(ids) == 26
@@ -155,7 +155,7 @@ def history_viewed(v):
 
 def _voted_tab(v, direction, tab_name):
 
-    page = int(request.args.get("page", 1))
+    page = page_number()
     content_type = request.args.get("type", "all")
     if content_type not in ("all", "posts", "comments"):
         content_type = "all"

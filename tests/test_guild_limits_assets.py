@@ -60,6 +60,10 @@ def test_the_module_only_reads_and_the_pages_quote_the_one_number():
         assert "GUILD_LIMIT_PER_PERSON" in html, name
         assert "10 guilds" not in html and "9 or fewer" not in html, name
     assert "10 guilds" not in BOARDS and "guilds." in BOARDS
+    terms = read("ruqqus", "templates", "help", "terms.html")
+    assert "{{ GUILD_LIMIT_PER_PERSON }} Guilds" in terms and "{{ GUILD_LIMIT_PER_NETWORK }}" in terms
+    assert "ten Guilds" not in terms and "10 guilds" not in read("README.md")
+    assert "GUILD_LIMIT_PER_NETWORK=guild_limits.PER_IP" in BOARDS
 
 
 def test_claude_md_describes_the_limit_and_its_known_risk():

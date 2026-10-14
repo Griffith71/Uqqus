@@ -31,4 +31,4 @@ class UserBlock(Base, Stndrd, Age_times):
 
     def __repr__(self):
 
-        return f"<UserBlock(user={user.username}, target={target.username})>"
+        return f"<UserBlock(user_id={self.user_id}, target_id={self.target_id})>"

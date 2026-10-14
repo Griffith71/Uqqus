@@ -26,7 +26,12 @@ def hide_muted(query, v, model):
     (anything with author_id and is_anonymous). A visitor has muted nobody."""
     if v is None:
         return query
-    return query.filter(or_(model.author_id.notin_(muted_ids(v)), model.is_anonymous == True))
+    query = query.filter(or_(model.author_id.notin_(muted_ids(v)), model.is_anonymous == True))
+    if getattr(model, "__tablename__", "") == "submissions":
+        # a post co-authored with a muted account carries its name too (helpers/blocks.py does the same for blocks)
+        from ruqqus.helpers.blocks import coauthored_with
+        query = query.filter(~coauthored_with(model, muted_ids(v)))
+    return query
 
 
 def muted_set(v):

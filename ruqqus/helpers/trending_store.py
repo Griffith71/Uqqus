@@ -20,8 +20,9 @@ import time
 from sqlalchemy import and_, func, or_, select
 
 from ruqqus.helpers import trending as tr
-from ruqqus.helpers.visibility import filter_posts
+from ruqqus.helpers.visibility import filter_posts, FILTERED_SUBCATS
 from ruqqus.helpers.muting import hide_muted
+from ruqqus.helpers.blocks import hide_blocked
 from ruqqus.helpers.wordfilter import is_hidden
 
 SITE = "all"
@@ -30,7 +31,7 @@ MAX_POSTS = 20000            # newest posts read per run (the day itself plus th
 SCOPE_MIN_TOPICS = 3         # a region or language with fewer topics falls back to the site's list
 STALE_SECONDS = 3600         # a list this old is not shown: the job is not running
 KEEP_POST_IDS = 300
-HIDDEN_SUBCATS = (44, 108)   # as frontlist(): not on All for a viewer with the word filter on
+HIDDEN_SUBCATS = FILTERED_SUBCATS   # as frontlist(): not on All for a viewer with the word filter on
 PAGE = 25
 
 
@@ -243,8 +244,7 @@ def visible_post_ids(db, v, post_ids, sort="new", page=1):
     if v:
         if v.hide_bot:
             posts = posts.filter(Submission.is_bot == False)
-        posts = posts.filter(
-            Submission.author_id.notin_(select(UserBlock.target_id).filter_by(user_id=v.id)),
+        posts = hide_blocked(posts, v, Submission).filter(   # blocked either way (helpers/blocks.py)
             Submission.board_id.notin_(select(BoardBlock.board_id).filter_by(user_id=v.id)),
         )
     order = Submission.score_top.desc() if sort == "top" else Submission.created_utc.desc()

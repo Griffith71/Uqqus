@@ -1,11 +1,11 @@
 {% extends "embeds/embed_default.html" %}
 
 {% block title %}
-{<title>@{{ author_of(c, v).username }} comments in +{{ c.board.name }} on "{{ c.post.title }}"</title>
-<meta name="description" content="{{ c.body }}">
+<title>Comment in +{{ c.board.name }} on "{{ c.post.title | safe }}"</title>
+<meta name="robots" content="noindex">
 {% endblock %}
 
-{% endblock %}
+{% block content %}
 
 <div class="post-info font-weight-bold">
     <span class="align-top"><a href="{{ c.permalink }}?context=1">{{ c.post.title | safe }}</a></span>
@@ -13,26 +13,24 @@
 
 <div id="comment-{{ c.base36id }}" class="comment rounded">
 
-
     <span class="comment-collapse"></span>
 
     <div class="comment-body">
 
         <div id="comment-{{ c.base36id }}-only" class="">
 
-            <div class="user-info">{% if c.is_sensitive %}<span class="badge badge-warning">Sensitive Content</span> {% endif %}
+            <div class="user-info">
                 {% if c.is_banned %}[Removed by administrators]{% else %}[Deleted by author]{% endif %}
             </div>
-
 
             <div id="comment-banned-warning" class="comment-text text-danger text-small">
                 {% if c.is_banned and c.ban_reason %}Reason: {{ c.ban_reason }}{% endif %}
             </div>
 
-	</div>
+        </div>
+
+    </div>
 
 </div>
 
-
-</div>
-{% block content %}
+{% endblock %}

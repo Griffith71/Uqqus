@@ -114,17 +114,8 @@
 {% endif %}
 {% endblock %}
 
-{% block adminscripts %}
-<script src="/assets/js/comment_modding.js"></script>
-{% endblock %}
 
-{% block embedJS %}
-<script src="/assets/js/yt_embed.js"></script>
-{% endblock %}
 
-{% block formatJS %}
-<script src="/assets/js/txt_formatting.js"></script>
-{% endblock %}
 
 {% block actionsModal %}{% endblock %}
 
@@ -156,7 +147,7 @@
           {% endif %}
           {% endif %}
 
-          <div class="post-meta text-left d-block d-md-none mb-3">{% if p.is_sensitive %}<span class="text-warning"><i class="far fa-exclamation-triangle text-small mr-1"></i>sensitive content</span> · {% endif %}<span data-toggle="tooltip" data-placement="bottom" data-delay='{"show":"700", "hide":"300"}' title="{{ p.created_datetime }}">{{ p.age_string }}</span> by {% if p.purged_utc %}[removed by admin]{% else %}Anon{% endif %}{% if p.edited_utc %} · Edited <span data-toggle="tooltip" data-placement="bottom" data-delay='{"show":"700", "hide":"300"}' title="{{ edited_datetime }}">{{ p.edited_string }}</span>{% endif %}</div>
+          <div class="post-meta text-left d-block d-md-none mb-3">{% if p.is_sensitive %}<span class="text-warning"><i class="fas fa-exclamation-triangle text-small mr-1"></i>sensitive content</span> · {% endif %}<span data-toggle="tooltip" data-placement="bottom" data-delay='{"show":"700", "hide":"300"}' title="{{ p.created_datetime }}">{{ p.age_string }}</span> by {% if p.purged_utc %}[removed by admin]{% else %}Anon{% endif %}{% if p.edited_utc %} · Edited <span data-toggle="tooltip" data-placement="bottom" data-delay='{"show":"700", "hide":"300"}' title="{{ edited_datetime }}">{{ p.edited_string }}</span>{% endif %}</div>
 
 
               <div class="d-none d-md-flex justify-content-between align-items-center mt-2">

@@ -22,6 +22,9 @@ OFF = 0
 STANDARD = 1
 CHILD = 2
 
+# subcategories All leaves out for a viewer whose word filter is on (44: Offensive; 108: kept off All)
+FILTERED_SUBCATS = (44, 108)
+
 NOTICE_TITLE = "Hidden by your word filter"
 NOTICE_TEXT = ("This isn't shown at your current word filter level. "
                "You can review your word filter in your content settings.")
@@ -194,3 +197,14 @@ def comment_thread_hidden(comment, v):
         comment = comment.parent_comment if comment.parent_comment_id else None
         seen += 1
     return False
+
+
+def history_text_shown(item, v):
+    """Whether an item's edit history may show the text it had (/post/<id>/history, /comment/<id>/history).
+    Edits, author deletes and guild removals stay public. Text the site's admins removed is shown only to
+    admins (level 3+, as on the item's page); purged text to nobody, since purging means erasing it."""
+    if (item.purged_utc or 0) > 0:
+        return False
+    if item.is_banned:
+        return bool(v and v.admin_level >= 3)
+    return True

@@ -56,6 +56,7 @@ class ModAction(Base, Stndrd, Age_times):
                 return f'for <a href="{self.target_post.permalink}">post</a>'
             elif self.target_comment:
                 return f'for <a href="{self.target_comment.permalink}">comment</a>'
+            return self._note or ""
         elif self.kind=="chatban_user":
             return f'Reason: {self._note}' if self._note else ''
         else:
@@ -100,14 +101,14 @@ class ModAction(Base, Stndrd, Age_times):
             "mod": self.user.username,
         }
 
-        if self.target_user_id:
+        if self.target_user_id and self.target_user:
             data["target_user_id"]=self.target_user.base36id
             data["target_user"]=self.target_user.username
 
-        if self.target_comment_id:
+        if self.target_comment_id and self.target_comment:
             data["target_comment_id"]=self.target_comment.base36id
 
-        if self.target_submission_id:
+        if self.target_submission_id and self.target_post:
             data["target_submission_id"]=self.target_post.base36id
 
         if self._note:

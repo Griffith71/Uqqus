@@ -1,4 +1,5 @@
 from flask import request, Response
+from ruqqus.helpers.wrappers import page_number
 import hmac
 import html
 from .front import frontlist
@@ -47,9 +48,6 @@ from ruqqus.__main__ import app, limiter
 
 @app.route('/feeds/@<username>/<key>/<sort>', methods=["GET"])
 def feeds_user(sort=None, username=None, key=None):
-    if not username and key:
-        return abort(501)
-
     user = get_user(username)
     if user.is_banned or user.is_deleted:
         abort(403)
@@ -58,12 +56,13 @@ def feeds_user(sort=None, username=None, key=None):
         # invalid feedkey
         abort(403)
 
-    page = int(request.args.get("page", 1))
+    page = page_number()
     t = request.args.get('t')
 
     ids = user.idlist(sort=sort, page=page, t=t)
     # a feed address is a secret that is handed to other programs: it carries nothing made for a Circle (helpers/circles.py)
-    posts = [p for p in get_posts(ids, sort=sort, v=user) if not p.audience]
+    # nor a copy a guild's moderators hid (the page shows "Removed by guildmasters" for it)
+    posts = [p for p in get_posts(ids, sort=sort, v=user) if not p.audience and not p.hidden_by_guild]
 
     domain = environ.get(
     "domain", environ.get(
@@ -103,6 +102,9 @@ def feeds_user(sort=None, username=None, key=None):
                     if anonymity.identity_hidden(post, None):
                         with tag("name"):
                             text(anonymity.LABEL)
+                    elif post.author.is_deleted:
+                        with tag("name"):
+                            text("[deleted account]")
                     else:
                         with tag("name"):
                             text(post.author.username)

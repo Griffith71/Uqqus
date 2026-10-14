@@ -11,6 +11,8 @@ from .history import *
 from .user import *
 from .userblock import *
 from .usermute import *
+from .postfollow import *
+from .postfeedback import *
 from .submission import *
 from .votes import *
 from .images import *

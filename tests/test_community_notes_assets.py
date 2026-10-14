@@ -100,7 +100,7 @@ def test_the_flag_menus_offer_it_and_say_what_happened():
     assert 'id="reportPostAfterTitle"' in post and 'id="reportCommentAfterTitle"' in comment
     assert 'type="button" id="reportCommentButton"' in comment            # it no longer submits the form
     js = read("ruqqus", "assets", "js", "all_js.js")
-    assert "flagAnswer(\"reportComment\", kind, xhr.status, \"comment\")" in js
+    assert "flagAnswer(\"reportComment\", kind, xhr.status, \"comment\", xhr)" in js
     assert "flagAnswer(\"reportPost\"," in js
     assert 'form.append("report_type", kind)' in js
 

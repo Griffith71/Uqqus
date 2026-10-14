@@ -1,10 +1,9 @@
 {% extends "settings.html" %}
 
+{% block pagetitle %}Circles you are in - {{ 'SITE_NAME' | app_config }}{% endblock %}
+
 {# The Circles this account is in, and cancelling a subscription (routes/circles.py). #}
 
-{% block title %}
-<title>{{ 'SITE_NAME' | app_config }} - Circles you are in</title>
-{% endblock %}
 
 {% block content %}
 <div class="row">

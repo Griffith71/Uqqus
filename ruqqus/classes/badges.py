@@ -28,7 +28,7 @@ class BadgeDef(Base):
 
     @property
     def json_core(self):
-        data={
+        return {
             "name": self.name,
             "description": self.description,
             "icon": self.icon
@@ -87,6 +87,6 @@ class Badge(Base):
                 'icon_url':f"https://{app.config['SERVER_NAME']}{self.path}"
                 }
 
-    property
+    @property
     def json(self):
         return self.json_core

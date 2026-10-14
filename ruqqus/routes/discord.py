@@ -46,6 +46,8 @@ def discord_redirect(v):
     #validate state
     now=int(time.time())
     state=request.args.get('state','').split('.')
+    if len(state) != 2 or not (state[0].isascii() and state[0].isdigit()):
+        abort(400)
 
     timestamp=state[0]
 
@@ -165,8 +167,3 @@ def discord_redirect(v):
 
     return redirect(f"https://discord.com/channels/{SERVER_ID}/{WELCOME_CHANNEL}")
 
-
-#guilded redirect
-@app.route("/guilded", methods=["GET"])
-def guilded():
-    return redirect("https://www.guilded.gg/i/Y2VP1L8p")

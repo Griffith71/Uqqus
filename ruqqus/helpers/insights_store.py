@@ -56,7 +56,7 @@ def _copies(db, primary_ids):
     if not primary_ids:
         return []
     return db.query(Submission.id, Submission.repost_id, Board.name).join(Board, Board.id == Submission.board_id).filter(
-        Submission.repost_id.in_(primary_ids), Submission.is_banned == False, Submission.deleted_utc == 0  # noqa: E712
+        Submission.repost_id.in_(primary_ids), Submission.is_banned == False, Submission.deleted_utc == 0
     ).all()
 
 
@@ -67,7 +67,7 @@ def _per_post(db, ids):
     for post_id, vote_type, count in db.query(Vote.submission_id, Vote.vote_type, func.count()).filter(Vote.submission_id.in_(ids)).group_by(Vote.submission_id, Vote.vote_type).all():
         (ups if vote_type == 1 else downs if vote_type == -1 else {})[post_id] = count
     comments = dict(db.query(Comment.parent_submission, func.count()).filter(
-        Comment.parent_submission.in_(ids), Comment.is_banned == False, Comment.deleted_utc == 0  # noqa: E712
+        Comment.parent_submission.in_(ids), Comment.is_banned == False, Comment.deleted_utc == 0
     ).group_by(Comment.parent_submission).all())
     return views, ups, downs, comments
 
@@ -77,8 +77,8 @@ def overview(db, author, now):
     the post and its guild forwards."""
     since = int(now) - 28 * rules.SECONDS_PER_DAY
     posts = db.query(Submission).filter(
-        Submission.author_id == author.id, Submission.is_banned == False, Submission.deleted_utc == 0,  # noqa: E712
-        (Submission.repost_id == None) | (Submission.repost_id == 0), Submission.created_utc >= since  # noqa: E711
+        Submission.author_id == author.id, Submission.is_banned == False, Submission.deleted_utc == 0,
+        (Submission.repost_id == None) | (Submission.repost_id == 0), Submission.created_utc >= since
     ).order_by(Submission.created_utc.desc()).limit(100).all()
     if not posts:
         return []
@@ -122,12 +122,12 @@ def report(db, primary, viewer, days, now):
         view_days[day] = view_days.get(day, 0) + count
 
     up_days = _day_counts(db, Vote.created_utc, [Vote.submission_id.in_(ids), Vote.vote_type == 1, Vote.created_utc >= start_ts])
-    comment_days = _day_counts(db, Comment.created_utc, [Comment.parent_submission.in_(ids), Comment.is_banned == False,  # noqa: E712
+    comment_days = _day_counts(db, Comment.created_utc, [Comment.parent_submission.in_(ids), Comment.is_banned == False,
                                                          Comment.deleted_utc == 0, Comment.created_utc >= start_ts])
     save_days = _day_counts(db, SaveRelationship.created_utc, [SaveRelationship.submission_id.in_(ids), SaveRelationship.created_utc >= start_ts])
     engagement = {day: up_days.get(day, 0) + comment_days.get(day, 0) + save_days.get(day, 0) for day in set(up_days) | set(comment_days) | set(save_days)}
 
-    viewers = lambda since: int(db.query(func.count(func.distinct(ViewHistory.user_id))).filter(  # noqa: E731
+    viewers = lambda since: int(db.query(func.count(func.distinct(ViewHistory.user_id))).filter(
         ViewHistory.submission_id.in_(ids), ViewHistory.user_id != primary.author_id, ViewHistory.viewed_utc >= since).scalar() or 0)
 
     ups, downs = sum(ups_all.values()), sum(downs_all.values())

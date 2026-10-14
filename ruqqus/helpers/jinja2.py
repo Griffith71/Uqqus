@@ -121,7 +121,7 @@ def urlencode(s):
 
 
 @app.template_filter("post_embed")
-def crosspost_embed(url):
+def post_link_embed(url):
 
     matches = re.match(post_regex, url)
 

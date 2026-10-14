@@ -32,13 +32,28 @@ def parse(raw):
     return mode if mode in MODES else None
 
 
+# "Accounts you follow" on an anonymous post would tell each reader whether
+# the author follows them, so it is refused there and never applied
+ANONYMOUS_REFUSAL = ("Accounts you follow can't be chosen for an anonymous post: "
+                     "it would show people whether you follow them.")
+
+
+def refusal(mode, is_anonymous):
+    """Why `mode` can't be chosen for a post, or None when it can."""
+    if is_anonymous and mode == FOLLOWED:
+        return ANONYMOUS_REFUSAL
+    return None
+
+
 def mode_of(post):
     """The setting that applies to a post: EVERYONE unless it is a post on its
     author's own profile with a limit."""
     if not getattr(post, "is_profile_post", False):
         return EVERYONE
     mode = getattr(post, "comment_permission", None) or EVERYONE
-    return mode if mode in MODES else EVERYONE
+    if mode not in MODES or refusal(mode, getattr(post, "is_anonymous", False)):
+        return EVERYONE
+    return mode
 
 
 def restriction(post, viewer):

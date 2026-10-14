@@ -2,15 +2,6 @@
 
 {% block pagetitle %}+{{ b.name }} Settings - Ruqqus Guildmaster Tools{% endblock %}
 
-{% block stylesheets %}
-
-{% if v and v.referral_count and session.get("dark_mode_enabled") %}
-<link id="css-link" rel="stylesheet" href="/+{{ p.board.name }}/dark.css">
-{% else %}
-<link id="css-link" rel="stylesheet" href="/+{{ p.board.name }}/main.css">
-{% endif %}
-
-{% endblock %}
 
 {% block content %}
 <div class="row justify-content-around">
@@ -24,7 +15,7 @@
         {{ error if error else request.args.get('error') }}
       </span>
       <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-        <span aria-hidden="true"><i class="far fa-times"></i></span>
+        <span aria-hidden="true"><i class="fas fa-times"></i></span>
       </button>
     </div>
     {% endif %}
@@ -35,7 +26,7 @@
         {{ msg if msg else request.args.get('msg') }}
       </span>
       <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-        <span aria-hidden="true"><i class="far fa-times"></i></span>
+        <span aria-hidden="true"><i class="fas fa-times"></i></span>
       </button>
     </div>
     {% endif %}
@@ -292,7 +283,7 @@
 
           <h2 class="h5">Disallow Bots</h2>
 
-          <p class="text-small text-muted">Disallow bots from forwarding to and commenting in +{{ b.name }}.</p>
+          <p class="text-small text-muted">Disallow bots from forwarding to +{{ b.name }}. Bots can't comment anywhere on the site.</p>
 
           <div class="settings-section rounded">
 
@@ -309,7 +300,7 @@
                   <label class="custom-control-label" for="disallowbots"></label>
                 </div>
 
-                <span class="text-small-extra text-muted">Disallow bots from forwarding to and commenting in +{{ b.name }}.</span>
+                <span class="text-small-extra text-muted">Disallow bots from forwarding to +{{ b.name }}. Bots can't comment anywhere on the site.</span>
 
               </div>
 
@@ -319,38 +310,7 @@
 
         </div>
 
-<!--
-        <div id="chatsetting">
 
-          <h2 class="h5">Chat Availability</h2>
-
-          <p class="text-small text-muted">Enable Chat for this guild.</p>
-
-          <div class="settings-section rounded">
-
-            <div class="d-lg-flex">
-
-              <div class="title w-lg-25">
-                <label for="public_chat">Turn on Public Chat</label>
-              </div>
-
-              <div class="body w-lg-100">
-
-                <div class="custom-control custom-switch">
-                  <input type="checkbox" class="custom-control-input" id="public_chat" name="public_chat"{% if b.public_chat %} checked{% endif %} onchange="mod_post('/mod/{{ b.base36id }}/settings/public_chat','public_chat')">
-                  <label class="custom-control-label" for="public_chat"></label>
-                </div>
-
-                <span class="text-small-extra text-muted">If off, <a href="{{ b.permalink }}/chat" target="_blank">#{{ b.name }}</a> will only be accessible to moderators and approved contributors.</span>
-
-              </div>
-
-            </div>
-
-          </div>
-
-        </div>
-      -->
 
   </div>
 

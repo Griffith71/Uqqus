@@ -44,7 +44,7 @@
           {{ error if error else request.args.get('error') }}
         </span>
         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-          <span aria-hidden="true"><i class="far fa-times"></i></span>
+          <span aria-hidden="true"><i class="fas fa-times"></i></span>
         </button>
       </div>
       {% endif %}
@@ -56,7 +56,7 @@
           {{ msg if msg else request.args.get('msg') }}
         </span>
         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-          <span aria-hidden="true"><i class="far fa-times"></i></span>
+          <span aria-hidden="true"><i class="fas fa-times"></i></span>
         </button>
       </div>
       {% endif %}
@@ -204,7 +204,7 @@
 				<div class="modal-header">
 					<h5 class="modal-title">Invite user to be guildmaster</h5>
 					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-						<span aria-hidden="true"><i class="far fa-times"></i></span>
+						<span aria-hidden="true"><i class="fas fa-times"></i></span>
 					</button>
 				</div>
 				<div class="modal-body">
@@ -228,7 +228,7 @@
       <div class="modal-header">
         <h5 class="modal-title">Step down as guildmaster</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true"><i class="far fa-times"></i></span>
+          <span aria-hidden="true"><i class="fas fa-times"></i></span>
         </button>
       </div>
       <div class="modal-body">
@@ -251,7 +251,7 @@
       <div class="modal-header">
         <h5 class="modal-title">Edit guildmaster permissions on @<span id="permedit-user"></span></h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true"><i class="far fa-times"></i></span>
+          <span aria-hidden="true"><i class="fas fa-times"></i></span>
         </button>
       </div>
       <div class="modal-body">
@@ -282,14 +282,6 @@
             <span class="custom-control-label">config</span>
           </label>
         </div>
-	      <!---
-        <div class="form-group">
-          <label class="custom-control custom-checkbox" for="check-perm-chat">
-            <input type="checkbox" id="check-perm-chat" class="custom-control-input perm-box" onchange="permother()" data-perm="chat" name="perm_chat" value="chat">
-            <span class="custom-control-label">chat</span>
-          </label>
-        </div>
---->
         <div class="form-group">
           <label class="custom-control custom-checkbox" for="check-perm-content">
             <input type="checkbox" id="check-perm-content" class="custom-control-input perm-box" onchange="permother()" data-perm="content" name="perm_content" value="content">

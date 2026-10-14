@@ -5,9 +5,6 @@
 
 {% block pagetype %}userpage{% endblock %}
 
-{% block enlargeThumbJS %}
-<script src="/assets/js/enlarge_thumb.js"></script>
-{% endblock %}
 
 {% block title %}
 <title>{{ u.username }}'s profile - {{ 'SITE_NAME' | app_config }}</title>
@@ -17,7 +14,7 @@
 <meta property="og:article:author" content="@{{ u.username }}" />
 <meta property="article:section" content="{{ u.username }}'s profile - Ruqqus" />
 <meta property="article:published_time" content="{{ u.created_date }}" />
-<meta property="og:description" name="description" content="{{ u.true_score }} Rep · Joined {{ u.created_date }} · {% if u.stored_subscriber_count >=1 and not u.is_private and not u.is_nofollow %}{{ u.stored_subscriber_count }} Subscribers · {% endif %}{% if not u.is_private %}{{ u.post_count }} Posts · {{ u.comment_count }} Comments · {% endif %}{{u.bio_for(v)}}" />
+<meta property="og:description" name="description" content="{{ u.true_score }} Rep · Joined {{ u.created_date }} · {% if u.stored_subscriber_count >=1 and not u.is_private and not u.is_nofollow %}{{ u.stored_subscriber_count }} Subscribers · {% endif %}{% if not u.is_private %}{{ u.public_post_count }} Posts · {{ u.public_comment_count }} Comments · {% endif %}{{u.bio_for(v)}}" />
 <meta property="og:author" name="author" content="@{{ u.username }}" />
 <meta property="og:title" content="{{ u.username }}" />
 <meta property="og:image" content="{% if u.has_banner %}{{ u.banner_url }}{% else %}{{ '/assets/images/preview-images/ruqqus_og_image.png' | full_link }}{% endif %}" />
@@ -28,7 +25,7 @@
 <meta name="twitter:site" content="@ruqqus">
 <meta name="twitter:title" content="{{ u.username }}'s profile - Ruqqus" />
 <meta name="twitter:creator" content="@{{ u.username }}">
-<meta name="twitter:description" content="{{ u.true_score }} Rep · Joined {{ u.created_date }} ·{% if u.stored_subscriber_count >=1 and not u.is_private and not u.is_nofollow %}{{ u.stored_subscriber_count }} Subscribers ·{% endif %} {% if not u.is_private %} {{ u.post_count }} Posts · {{ u.comment_count }} Comments ·{% endif %} {{u.bio_for(v)}}" />
+<meta name="twitter:description" content="{{ u.true_score }} Rep · Joined {{ u.created_date }} ·{% if u.stored_subscriber_count >=1 and not u.is_private and not u.is_nofollow %}{{ u.stored_subscriber_count }} Subscribers ·{% endif %} {% if not u.is_private %} {{ u.public_post_count }} Posts · {{ u.public_comment_count }} Comments ·{% endif %} {{u.bio_for(v)}}" />
 <meta name="twitter:image" content="{% if u.has_banner %}{{ u.banner_url }}{% else %}{{ '/assets/images/preview-images/ruqqus_og_image.png' | full_link }}{% endif %}" />
 <meta name="twitter:url" content="{{ u.permalink | full_link}}" />
 {% endblock %}
@@ -218,7 +215,7 @@
         <a href="/settings/profile" class="btn btn-secondary btn-sm">Edit profile</a>
         {% endif %}
         <div class="d-flex align-items-center flex-wrap">
-        {% if v and v.id != u.id and not u.is_nofollow %}
+        {% if v and v.id != u.id and not u.is_private and not u.is_nofollow %}
         <div id="button-unsub-mobile" {% if not is_following %}class="d-none"{% endif %}>
           <button class="btn btn-secondary" onclick="post('/api/unfollow/{{ u.username }}', callback=function(){document.getElementById('button-unsub-mobile').classList.toggle('d-none');document.getElementById('button-sub-mobile').classList.toggle('d-none');})">Unfollow
           </button>
@@ -319,7 +316,7 @@
         <i class="fas fa-coins fa-stack-1x text-base fa-inverse" style="color: #2ca1ea!important;"></i>
       </span>Ruqqus Premium
     </a>
-    <div data-toggle="tooltip" data-placement="bottom" title="Based on coins redeemed in the last 7 days">
+    <div data-toggle="tooltip" data-placement="bottom" title="Based on coins redeemed this calendar month">
       <div class="text-center text-small">{{ g.timestamp | coin_goal }}% of goal</div>
       <div class="progress" style="border-radius: 3px;">
         <div class="progress-bar bg-primary" role="progressbar" style="width: {{ g.timestamp | coin_goal }}%;" aria-valuenow="{{ g.timestamp | coin_goal }}" aria-valuemin="0" aria-valuemax="100"></div>
@@ -443,11 +440,7 @@
 {% endif %}
 {% endblock %}
 
-{% block GIFpicker %}
-{% if v %}
-{% include "gif_modal.html" %}
-{% endif %}
-{% endblock %}
+{# the GIF, emoji, delete, tip and forward sheets come once per page from default.html (for a signed-in viewer) #}
 
 {% block aboutAccountModal %}
 {% include "about_account_modal.html" %}

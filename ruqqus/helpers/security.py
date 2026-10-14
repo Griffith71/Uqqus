@@ -26,13 +26,7 @@ def hash_password(password):
         password, method='pbkdf2:sha512', salt_length=8)
 
 def safe_compare(x, y):
-    
-    before=time.time()
-    
-    returnval=(x==y)
-    
-    after=time.time()
-    
-    gevent.sleep(random.uniform(0.0, 0.1)-(after-before))
-    
-    return returnval
+    """Constant-time comparison of two secrets (MFA recovery codes). A missing value never matches."""
+    if not x or not y:
+        return False
+    return hmac.compare_digest(str(x).encode("utf-8"), str(y).encode("utf-8"))

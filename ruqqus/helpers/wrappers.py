@@ -15,12 +15,21 @@ from ruqqus.__main__ import Base, app, db_session
 from ruqqus.helpers.session_helpers import *
 
 
+def page_number():
+    """The request's ?page=: a whole number from 1. Anything else (0, -1, "abc") is page 1, so a list never asks the
+    database for a negative OFFSET."""
+    raw = request.args.get("page", "1") or "1"
+    return max(int(raw), 1) if raw.isascii() and raw.isdigit() else 1
+
+
 def get_logged_in_user(db=None):
 
     if not db:
         db=g.db
 
-    if request.path.startswith("/api/v1"):
+    # /api/v1 is token-only; /api/v2 takes a token when one is sent (help/oauth.html) and the session otherwise
+    if request.path.startswith("/api/v1") or (
+            request.path.startswith("/api/v2") and request.headers.get("Authorization")):
         token = request.headers.get("Authorization")
         if not token:
             return None, None
@@ -398,7 +407,8 @@ def is_guildmaster(*perms):
                         return jsonify({"error":f"Permission `{perm}` required"}), 403
 
 
-            if v.is_banned and not v.unban_utc:
+            # a guildmaster under any ban, temporary or permanent, can't moderate
+            if v.is_suspended:
                 abort(403)
 
             return f(*args, board=board, **kwargs)
@@ -425,7 +435,8 @@ def admin_level_required(x):
             if not v:
                 abort(401)
 
-            if v.is_banned:
+            # an expired temporary ban no longer locks an admin out
+            if v.is_suspended:
                 abort(403)
 
             if v.admin_level < x:
@@ -435,7 +446,10 @@ def admin_level_required(x):
 
             response = f(*args, v=v, **kwargs)
 
-            if isinstance(response, tuple):
+            # (body, status) keeps its status; some routes return (response, the object they changed)
+            if isinstance(response, tuple) and len(response) in (2, 3) and isinstance(response[1], int):
+                resp = make_response(response)
+            elif isinstance(response, tuple):
                 resp = make_response(response[0])
             else:
                 resp = make_response(response)
@@ -458,7 +472,8 @@ def validate_formkey(f):
 
     def wrapper(*args, v, **kwargs):
 
-        if not request.path.startswith("/api/v1"):
+        # a request signed with an OAuth token (the Authorization header) cannot be forged by another site
+        if not request.path.startswith("/api/v1") and not getattr(v, "client", None):
 
             submitted_key = request.values.get("formkey", "none")
 
@@ -505,11 +520,17 @@ def no_cors(f):
 # f should return {'api':lambda:some_func(), 'html':lambda:other_func()}
 
 
-def api(*scopes, no_ban=False):
+def api(*scopes, error_handler=False):
 
     def wrapper_maker(f):
 
         def wrapper(*args, **kwargs):
+
+            # an error page answers JSON on the API with its own status; the
+            # login and token checks below are for routes, not for errors
+            if error_handler and request.path.startswith(('/api/v1','/api/v2')):
+                result = f(*args, **kwargs)
+                return result['api']() if isinstance(result, dict) else result
 
             if request.path.startswith(('/api/v1','/api/v2')):
 
@@ -532,9 +553,6 @@ def api(*scopes, no_ban=False):
                     for scope in scopes:
                         if not client.__dict__.get(f"scope_{scope}"):
                             return jsonify({"error": f"401 Not Authorized. Scope `{scope}` is required."}), 403
-
-                    if (request.method == "POST" or no_ban) and v.is_suspended:
-                        return jsonify({"error": f"403 Forbidden. The user account is suspended."}), 403
 
                 if not v:
                     return jsonify({"error": f"401 Not Authorized. You must log in."}), 401
@@ -571,7 +589,8 @@ def api(*scopes, no_ban=False):
 
                 try:
                     if request.path.startswith('/inpage/'):
-                        return result['inpage']()
+                        # error handlers only answer html/api
+                        return (result.get('inpage') or result['html'])()
                     elif request.path.startswith(('/api/vue/','/test/')):
                         return result['api']()
                     else:

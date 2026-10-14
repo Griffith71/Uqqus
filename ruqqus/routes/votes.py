@@ -51,9 +51,13 @@ URL path parameters:
 
     post = get_post(pid, v=v, no_text=True)
 
-    if post.is_blocking:
+    if post.in_private_guild_for(v):
+        abort(403)
+
+    # an anonymous post is never refused for a block: the message would say who wrote it
+    if post.is_blocking and not post.is_anonymous:
         return jsonify({"error":"You can't vote on posts made by users who you are blocking."}), 403
-    if post.is_blocked:
+    if post.is_blocked and not post.is_anonymous:
         return jsonify({"error":"You can't vote on posts made by users who are blocking you."}), 403
 
 
@@ -100,7 +104,7 @@ URL path parameters:
     g.db.add(post)
     g.db.flush()
 
-    #post.score_hot = post.rank_hot
+    post.score_hot = post.rank_hot
     post.score_disputed = post.rank_fiery
     post.score_top = post.score
     # post.score_activity=post.rank_activity
@@ -143,9 +147,13 @@ URL path parameters:
 
     comment = get_comment(cid, v=v, no_text=True)
 
-    if comment.is_blocking:
+    if comment.post and comment.post.in_private_guild_for(v):
+        abort(403)
+
+    # an anonymous comment is never refused for a block: the message would say who wrote it
+    if comment.is_blocking and not comment.is_anonymous:
         return jsonify({"error":"You can't vote on comments made by users who you are blocking."}), 403
-    if comment.is_blocked:
+    if comment.is_blocked and not comment.is_anonymous:
         return jsonify({"error":"You can't vote on comments made by users who are blocking you."}), 403
 
     if comment.is_banned:
@@ -181,7 +189,7 @@ URL path parameters:
     g.db.add(comment)
     g.db.flush()
 
-    # comment.score_disputed=comment.rank_fiery
+    comment.score_disputed = comment.rank_fiery
     comment.score_hot = comment.rank_hot
     comment.score_top = comment.score
 

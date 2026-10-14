@@ -119,6 +119,35 @@ def test_v1_path_uses_token_not_session_and_passes_c_kwarg(app_):
     assert (r.status_code, r.get_data(as_text=True)) == (200, "alice:abc")
 
 
+def test_v2_path_takes_a_token_when_sent_and_the_session_otherwise(app_):
+    """Fixed in the 2026-10-09 audit pass: /api/v2 ignored a valid Bearer token (help/oauth.html documents it)."""
+    app_.add_route("/api/v2/req", app_.wrappers.auth_required(
+        lambda v, c=None: f"{v.username}:{c.access_token if c else '-'}"))
+    app_.add_token(app_.user, token="abc")
+    r = app_.client.get("/api/v2/req", headers=app_.bearer("abc"))
+    assert (r.status_code, r.get_data(as_text=True)) == (200, "alice:abc")
+    assert app_.client.get("/api/v2/req", headers=app_.bearer("nope")).status_code == 401
+    app_.login(app_.user)
+    r = app_.client.get("/api/v2/req")
+    assert (r.status_code, r.get_data(as_text=True)) == (200, "alice:-")
+
+
+def test_an_error_handler_answers_json_with_its_own_status_on_the_api(app_):
+    """Fixed in the 2026-10-09 audit pass: error handlers wrapped in @api() were called without a user, so on
+    /api/v1 and /api/v2 every error (403, 404, ...) came back as "401 You must log in"."""
+    w = app_.wrappers
+
+    @w.api(error_handler=True)
+    def not_found(e):
+        return {"html": lambda: ("page", 404), "api": lambda: ({"error": "404 Not Found"}, 404)}
+
+    app_.app.register_error_handler(404, not_found)
+    app_.add_route("/api/v2/gone", w.auth_desired(lambda v: w.abort(404)))
+    app_.login(app_.user)
+    r = app_.client.get("/api/v2/gone")
+    assert (r.status_code, r.get_json()) == (404, {"error": "404 Not Found"})
+
+
 def test_non_v1_path_ignores_authorization_header(app_):
     app_.add_token(app_.user)
     assert app_.client.get("/req", headers=app_.bearer()).status_code == 401
@@ -288,15 +317,16 @@ def test_admin_success_headers_and_kwargs(app_):
     assert r.headers["Access-Control-Allow-Origin"] == "localhost"
 
 
-def test_admin_banned_admin_is_403_even_if_temp_ban_expired(app_):
-    """CURRENT BEHAVIOUR (suspected bug): uses is_banned, not is_suspended,
-    so an admin whose temporary ban already expired stays locked out
-    (is_not_banned would let them through)."""
+def test_admin_temp_ban_locks_out_until_it_expires(app_):
+    """Fixed in the 2026-10-09 audit pass: the gate used is_banned, which kept an admin out after their temporary
+    ban had expired. It now uses is_suspended, like is_not_banned."""
     app_.user.admin_level = 5
     app_.user.is_banned = 1
-    app_.user.unban_utc = int(time.time()) - 100
+    app_.user.unban_utc = int(time.time()) + 100
     app_.login(app_.user)
     assert app_.client.get("/adm").status_code == 403
+    app_.user.unban_utc = int(time.time()) - 100
+    assert app_.client.get("/adm").status_code == 200
     assert app_.client.get("/nb").status_code == 200
 
 
@@ -315,9 +345,9 @@ def test_admin_v1_without_token_is_401(app_):
     assert app_.client.get("/api/v1/adm").status_code == 401
 
 
-def test_admin_tuple_response_status_and_headers_are_dropped(app_):
-    """CURRENT BEHAVIOUR (suspected bug): only response[0] of a returned
-    tuple is used, so a view returning ("x", 404) or ("x", 201) gives 200."""
+def test_admin_tuple_response_keeps_its_status_and_headers(app_):
+    """Fixed in the 2026-10-09 audit pass: only response[0] of a returned tuple was used, so ("", 204) became an
+    empty 200 (post_toast then failed to parse it) and ("x", 404) a 200."""
     app_.user.admin_level = 3
     app_.login(app_.user)
     w = app_.wrappers
@@ -325,9 +355,9 @@ def test_admin_tuple_response_status_and_headers_are_dropped(app_):
     app_.add_route("/adm-hdr", w.admin_level_required(1)(
         lambda v: ("x", 201, {"X-A": "1"})))
     r = app_.client.get("/adm-404")
-    assert (r.status_code, r.get_data(as_text=True)) == (200, "gone")
+    assert (r.status_code, r.get_data(as_text=True)) == (404, "gone")
     r = app_.client.get("/adm-hdr")
-    assert r.status_code == 200 and "X-A" not in r.headers
+    assert r.status_code == 201 and r.headers["X-A"] == "1"
 
 
 def test_admin_level_required_zero_lets_any_logged_in_user(app_):
@@ -448,13 +478,13 @@ def test_guildmaster_permanently_banned_mod_403_after_perm_checks(gm):
     assert r.get_json() == {"error": "Permission `post` required"}
 
 
-def test_guildmaster_temp_banned_mod_is_NOT_blocked(gm):
-    """CURRENT BEHAVIOUR (suspected bug): the ban check is
-    `is_banned and not unban_utc`, so any user with an unban date (even a
-    future one, i.e. currently suspended) keeps guildmaster powers when the
-    route is only under @auth_required."""
+def test_guildmaster_temp_banned_mod_is_blocked(gm):
+    """Fixed in the 2026-10-09 audit pass: a mod under a temporary ban used to keep guildmaster powers (the check
+    was `is_banned and not unban_utc`). The gate is now is_suspended, so it ends with the ban."""
     gm.user.is_banned = 1
     gm.user.unban_utc = int(time.time()) + 10_000
+    assert gm.client.get("/g/testguild/none").status_code == 403
+    gm.user.unban_utc = int(time.time()) - 100
     assert gm.client.get("/g/testguild/none").status_code == 200
 
 

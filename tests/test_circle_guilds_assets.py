@@ -100,7 +100,9 @@ def test_the_guard_asks_the_guilds_members_for_audience_three():
 def test_the_composer_on_a_circle_guild_posts_straight_in_and_hides_what_would_take_it_elsewhere():
     assert "{% set circle_guild = board and board.is_circle %}" in COMPOSER
     assert '{% if circle_guild %} data-circle-guild="{{ board.name }}"{% endif %}{% if board %} data-guild="{{ board.name }}"{% endif %}>' in COMPOSER
-    assert COMPOSER.count("{% if circle_guild %} hidden{% endif %}") == 4          # forward, audience, anonymity, co-authors
+    assert COMPOSER.count("{% if circle_guild %} hidden{% endif %}") == 3          # forward, anonymity, co-authors
+    # the audience is not hidden but never drawn: the pill is inside {% if not circle_guild %}
+    assert re.search(r"\{% if not circle_guild %\}\s*<details class=\"composer-pill\" id=\"composer-audience\">", COMPOSER)
     assert "var presetGuild = circleGuild ? null : form.getAttribute('data-guild');" in COMPOSER_JS
     assert "['audience', 'anonymous', 'coauthors', 'forward_guilds'].forEach(function (name) { data.delete(name); });" in COMPOSER_JS
     assert "data.set('circle_guild', circleGuild);" in COMPOSER_JS

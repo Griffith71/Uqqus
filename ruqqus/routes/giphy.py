@@ -4,19 +4,21 @@ import requests
 
 from ruqqus.__main__ import app
 
-GIPHY_KEY = environ.get('GIPHY_KEY').rstrip()
+GIPHY_KEY = (environ.get('GIPHY_KEY') or '').rstrip()
 
 
 @app.route("/giphy", methods=["GET"])
 @app.route("/giphy<path>", methods=["GET"])
-def giphy():
+def giphy(path=None):
 
     searchTerm = request.args.get("searchTerm", "")
-    limit = int(request.args.get("limit", ""))
-    if searchTerm and limit:
-        url = f"https://api.giphy.com/v1/gifs/search?q={searchTerm}&api_key={GIPHY_KEY}&limit={limit}"
-    elif searchTerm and not limit:
-        url = f"https://api.giphy.com/v1/gifs/search?q={searchTerm}&api_key={GIPHY_KEY}&limit=48"
+    limit = request.args.get("limit", "")
+    limit = min(int(limit), 48) if limit.isascii() and limit.isdigit() else 48
+
+    params = {"api_key": GIPHY_KEY, "limit": limit or 48}
+    if searchTerm:
+        params["q"] = searchTerm
+        url = "https://api.giphy.com/v1/gifs/search"
     else:
-        url = f"https://api.giphy.com/v1/gifs?api_key={GIPHY_KEY}&limit=48"
-    return jsonify(requests.get(url).json())
+        url = "https://api.giphy.com/v1/gifs"
+    return jsonify(requests.get(url, params=params, timeout=5).json())

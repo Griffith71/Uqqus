@@ -15,7 +15,7 @@
         {{ error if error else request.args.get('error') }}
       </span>
       <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-        <span aria-hidden="true"><i class="far fa-times"></i></span>
+        <span aria-hidden="true"><i class="fas fa-times"></i></span>
       </button>
     </div>
     {% endif %}
@@ -26,7 +26,7 @@
         {{ msg if msg else request.args.get('msg') }}
       </span>
       <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-        <span aria-hidden="true"><i class="far fa-times"></i></span>
+        <span aria-hidden="true"><i class="fas fa-times"></i></span>
       </button>
     </div>
     {% endif %}
@@ -43,8 +43,7 @@ You may attempt to siege a guild once every 7 days. Any siege attempt - whether 
 
 In order to successfully siege a guild you must meet the following requirements:
 
-* Have a 30 day old account, and
-* Wait 7 days since your last siege attempt, and
+* Have an account at least 7 days old and wait 7 days since your last siege attempt, and
 * Not be exiled from the guild you are attempting to siege, and
 * Have Rep in the guild you are attempting to siege (exact requirement depends on guild size and age)
 
@@ -94,7 +93,7 @@ Finally, you may not Siege a guild with the intention of vandalizing it or subve
 
   {% else %}
 
-    <p>You cannot siege any Guilds right now. You can only make one siege attempt every 7 days (and your account must be 30 days old).</p>
+    <p>You cannot siege any Guilds right now. You can only make one siege attempt every 7 days, and your account must be at least 7 days old.</p>
   {% endif %}
 {% else %}
   <p>You need to be logged in to siege a Guild.</p>

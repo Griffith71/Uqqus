@@ -1,3 +1,4 @@
+import calendar
 from urllib.parse import urlparse
 from sqlalchemy import func
 from sqlalchemy.orm import lazyload
@@ -32,15 +33,14 @@ from ruqqus.__main__ import app, db_session
 @admin_level_required(3)
 def flagged_posts(v):
 
-    page = max(1, int(request.args.get("page", 1)))
+    page = max(1, page_number())
 
-    posts = g.db.query(Submission).filter_by(
+    # one row per post, however many flags it has (a join gave a row per flag and repeated posts on the page)
+    posts = g.db.query(Submission.id).filter_by(
         is_approved=0,
         purged_utc=0,
         is_banned=False
-    ).join(Submission.flags
-           ).options(contains_eager(Submission.flags)
-                     ).order_by(Submission.id.desc()).offset(25 * (page - 1)).limit(26)
+    ).filter(Submission.flags.any()).order_by(Submission.id.desc()).offset(25 * (page - 1)).limit(26)
 
     listing = [p.id for p in posts]
     next_exists = (len(listing) == 26)
@@ -57,7 +57,7 @@ def flagged_posts(v):
 @api("read")
 def image_posts_listing(v):
 
-    page = int(request.args.get('page', 1))
+    page = page_number()
 
     posts = g.db.query(Submission).filter_by(domain_ref=1).order_by(Submission.id.desc()
                                                                     ).offset(25 * (page - 1)
@@ -84,15 +84,14 @@ def image_posts_listing(v):
 @admin_level_required(3)
 def flagged_comments(v):
 
-    page = max(1, int(request.args.get("page", 1)))
+    page = max(1, page_number())
 
-    posts = g.db.query(Comment
-                       ).filter_by(
+    # one row per comment, however many flags it has
+    posts = g.db.query(Comment.id).filter_by(
         is_approved=0,
         purged_utc=0,
         is_banned=False
-    ).join(Comment.flags).options(contains_eager(Comment.flags)
-                                  ).order_by(Comment.id.desc()).offset(25 * (page - 1)).limit(26).all()
+    ).filter(Comment.flags.any()).order_by(Comment.id.desc()).offset(25 * (page - 1)).limit(26).all()
 
     listing = [p.id for p in posts]
     next_exists = (len(listing) == 26)
@@ -194,7 +193,7 @@ def badge_grant_post(v):
 @admin_level_required(2)
 def users_list(v):
 
-    page = int(request.args.get("page", 1))
+    page = page_number()
 
     users = g.db.query(User)
     
@@ -499,7 +498,7 @@ def admin_tools(v, pagename):
 @admin_level_required(3)
 def admin_removed(v):
 
-    page = int(request.args.get("page", 1))
+    page = page_number()
 
     ids = g.db.query(Submission.id).options(lazyload('*')).filter_by(is_banned=True).order_by(
         Submission.id.desc()).offset(25 * (page - 1)).limit(26).all()
@@ -524,7 +523,7 @@ def admin_removed(v):
 @admin_level_required(4)
 def admin_obliterations(v):
 
-    page = int(request.args.get("page", 1))
+    page = page_number()
 
     records = g.db.query(ObliterationRecord).order_by(
         ObliterationRecord.id.desc()
@@ -642,7 +641,7 @@ def admin_ban_analysis(v):
 @admin_level_required(4)
 def admin_paypaltxns(v):
 
-    page=int(request.args.get("page",1))
+    page=page_number()
     user=request.args.get('user','')
 
     txns = g.db.query(PayPalTxn).filter(PayPalTxn.status!=1)
@@ -671,8 +670,8 @@ def admin_paypaltxns(v):
 @admin_level_required(4)
 def admin_domain_domain(domain_name, v):
 
-    d_query = domain_name.replace("_", r"\_")
-    domain=g.db.query(Domain).filter_by(domain=d_query).first()
+    # an exact match: "_" is only special to LIKE
+    domain=g.db.query(Domain).filter_by(domain=domain_name).first()
 
     if not domain:
         domain=Domain(domain=domain_name)
@@ -742,7 +741,7 @@ def admin_user_data_get(username, v):
     user=get_user(username, graceful=True)
 
     if not user:
-        return render_template("admin/user_data.html", v=v)
+        abort(404)
 
     post_ids = [x[0] for x in g.db.query(Submission.id).filter_by(author_id=user.id).order_by(Submission.created_utc.desc()).all()]
     posts=get_posts(post_ids)
@@ -767,7 +766,7 @@ def admin_account_data_get(username, v):
     user=get_user(username, graceful=True)
 
     if not user:
-        return render_template("admin/user_data.html", v=v)
+        abort(404)
 
     return jsonify(
         {
@@ -828,7 +827,7 @@ def admin_test_ip(v):
 @admin_level_required(3)
 def admin_siege_count(v):
 
-    board=get_guild(request.args.get("board"))
+    board=get_guild(request.args.get("board", ""))
     recent=int(request.args.get("days",0))
 
     now=int(time.time())

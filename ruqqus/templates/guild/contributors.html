@@ -15,7 +15,7 @@
 				{{ error }}
 			</span>
 			<button type="button" class="close" data-dismiss="alert" aria-label="Close">
-				<span aria-hidden="true"><i class="far fa-times"></i></span>
+				<span aria-hidden="true"><i class="fas fa-times"></i></span>
 			</button>
 		</div>
 		{% endif %}
@@ -36,7 +36,7 @@
 				<p class="text-small text-muted mb-md-0">The following users are approved to forward to +{{ b.name }}.</p>
 			</div>
 			<div class="mt-auto">
-				<button class="btn btn-primary" data-toggle="modal" data-target="#guildmasterApproveModal"><i class="far fa-plus mr-2"></i>Add user</button>
+				<button class="btn btn-primary" data-toggle="modal" data-target="#guildmasterApproveModal"><i class="fas fa-plus mr-2"></i>Add user</button>
 			</div>
 		</div>
 
@@ -128,7 +128,7 @@
 				<div class="modal-header">
 					<h5 class="modal-title">Approve user for +{{ b.name }}</h5>
 					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-						<span aria-hidden="true"><i class="far fa-times"></i></span>
+						<span aria-hidden="true"><i class="fas fa-times"></i></span>
 					</button>
 				</div>
 				<div class="modal-body">
@@ -138,7 +138,7 @@
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-link text-muted" data-dismiss="modal">Cancel</button>
-					<button type="button" class="btn btn-primary" id="approveUserButton" onclick="approve_from_guild('{{ b.base36id }}')">Approve user</button>
+					<button type="button" class="btn btn-primary" id="approveUserButton" onclick="approve_from_guild('{{ b.name }}')">Approve user</button>
 				</div>
 			</div>
 		</form>

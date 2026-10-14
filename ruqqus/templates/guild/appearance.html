@@ -2,15 +2,6 @@
 
 {% block pagetitle %}Edit +{{ b.name }} Appearance - Ruqqus Guildmaster Tools{% endblock %}
 
-{% block stylesheets %}
-
-{% if v and v.referral_count and session.get("dark_mode_enabled") %}
-<link id="css-link" rel="stylesheet" href="/+{{ p.board.name }}/dark.css">
-{% else %}
-<link id="css-link" rel="stylesheet" href="/+{{ p.board.name }}/main.css">
-{% endif %}
-
-{% endblock %}
 
 {% block content %}
 <div class="row justify-content-around">
@@ -24,7 +15,7 @@
         {{ error if error else request.args.get('error') }}
       </span>
       <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-        <span aria-hidden="true"><i class="far fa-times"></i></span>
+        <span aria-hidden="true"><i class="fas fa-times"></i></span>
       </button>
     </div>
     {% endif %}
@@ -35,7 +26,7 @@
         {{ msg if msg else request.args.get('msg') }}
       </span>
       <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-        <span aria-hidden="true"><i class="far fa-times"></i></span>
+        <span aria-hidden="true"><i class="fas fa-times"></i></span>
       </button>
     </div>
     {% endif %}

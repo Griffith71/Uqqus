@@ -1,10 +1,9 @@
 {% extends "settings.html" %}
 
+{% block pagetitle %}Your Circle - {{ 'SITE_NAME' | app_config }}{% endblock %}
+
 {# Your Circle: who is in it, what subscribing costs (routes/circles.py, helpers/circles.py). #}
 
-{% block title %}
-<title>{{ 'SITE_NAME' | app_config }} - Your Circle</title>
-{% endblock %}
 
 {% block content %}
 <div class="row">

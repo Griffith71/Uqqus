@@ -11,7 +11,7 @@ from ruqqus.classes import MediaAsset
 from ruqqus.helpers import circles, stories as rules, story_store
 from ruqqus.helpers.get import get_user
 from ruqqus.helpers.media import attach as media_attach, safety as media_safety
-from ruqqus.helpers.visibility import user_hidden
+from ruqqus.helpers.visibility import text_hidden, user_hidden
 from ruqqus.helpers.word_filter_store import get_filter
 from ruqqus.helpers.wrappers import admin_level_required, auth_required, is_not_banned, validate_formkey
 from ruqqus.__main__ import app
@@ -28,12 +28,25 @@ def _private(data, status=200):
     return response
 
 
+def _profile_closed(owner, v):
+    """The profile's own gates (routes/users.py userpage): deleted, suspended (a temporary ban too), private or
+    word-filtered, except for the owner and admins (level 3)."""
+    if v is not None and (v.id == owner.id or v.admin_level >= 3):
+        return owner.is_deleted
+    return owner.is_deleted or owner.is_suspended or owner.is_private or user_hidden(owner, v)
+
+
 def _owner(username, v):
-    """The account whose stories are asked for. Unknown, deleted, banned or word-filtered is a 404 (one answer for all)."""
+    """The account whose stories are asked for. Unknown or closed (see _profile_closed) is a 404 (one answer for all)."""
     owner = get_user(username or "", v=v, graceful=True)
-    if owner is None or owner.is_deleted or (owner.is_banned and not owner.unban_utc) or user_hidden(owner, v):
+    if owner is None or _profile_closed(owner, v):
         abort(404)
     return owner
+
+
+def _title_for(title, owner_id, v):
+    """A Highlight's name through the viewer's word filter, like any text (empty when it hides it)."""
+    return "" if text_hidden(get_filter(g.db).severity(title or ""), v, owner_id=owner_id) else title
 
 
 def _story(row, viewer, seen, counts, now):
@@ -95,14 +108,14 @@ def highlight_of(hid, v):
     if not rows:
         abort(404)
     owner = _owner_by_id(highlight.user_id, v)
-    return _private({"id": highlight.id, "title": highlight.title, "user": _user(owner), "mine": owner.id == v.id,
+    return _private({"id": highlight.id, "title": _title_for(highlight.title, owner.id, v), "user": _user(owner), "mine": owner.id == v.id,
                      "stories": _stories(rows, v, int(time.time()))})
 
 
 def _owner_by_id(user_id, v):
     from ruqqus.classes import User
     owner = g.db.query(User).filter_by(id=user_id).first()
-    if owner is None or owner.is_deleted or user_hidden(owner, v):
+    if owner is None or _profile_closed(owner, v):
         abort(404)
     return owner
 
@@ -221,6 +234,8 @@ def story_ring(owner, viewer):
     """The ring around an avatar for this viewer: "unseen", "seen", "own" (the member's own live stories) or None."""
     if viewer is None:
         return None
+    if viewer.id != owner.id and _profile_closed(owner, viewer):
+        return None
     if viewer.id == owner.id:
         return "own" if story_store.watchable(g.db, owner.id, viewer) else None
     return story_store.rings(g.db, [owner.id], viewer).get(owner.id)
@@ -228,12 +243,12 @@ def story_ring(owner, viewer):
 
 def profile_highlights(owner, viewer):
     """The Highlights under a bio that this viewer may see anything of: id, name and how to draw the cover."""
-    if viewer is None:
+    if viewer is None or (viewer.id != owner.id and _profile_closed(owner, viewer)):
         return []
     out = []
     for hid, title, rows in story_store.highlights(g.db, owner.id, viewer):
         first = rows[0]
-        out.append({"id": hid, "title": title, "picture": story_store.picture_of(g.db, first.id) if first.kind == rules.IMAGE else None,
+        out.append({"id": hid, "title": _title_for(title, owner.id, viewer), "picture": story_store.picture_of(g.db, first.id) if first.kind == rules.IMAGE else None,
                     "background": first.background if first.kind == rules.TEXT else ""})
     return out
 

@@ -9,12 +9,14 @@ import pyotp
 from flask import session, g, request
 
 from ruqqus.helpers.base36 import *
-from ruqqus.helpers import anonymity, circle_clause, circles, guild_limits
+from ruqqus.helpers import anonymity, circle_clause, circles, guild_limits, post_follows
 from .coauthors import PostCoauthor
 from ruqqus.helpers.muting import hide_muted
+from ruqqus.helpers import post_feedback
+from ruqqus.helpers.blocks import hide_blocked
 from ruqqus.helpers.security import *
 from ruqqus.helpers.lazy import lazy
-from ruqqus.helpers.visibility import filter_posts, filter_comments, viewer_level, text_hidden
+from ruqqus.helpers.visibility import filter_posts, filter_comments, viewer_level, text_hidden, FILTERED_SUBCATS
 import ruqqus.helpers.aws as aws
 from ruqqus.helpers.discord import add_role, delete_role, discord_log_event
 #from ruqqus.helpers.alerts import send_notification
@@ -113,6 +115,7 @@ class User(Base, Stndrd, Age_times):
     bio_severity = Column(SmallInteger, default=0)
     # when the member last pressed "Reset For You" in settings (0: never); the feed does not read it yet
     for_you_reset_utc = Column(Integer, default=0)
+    creator_fund_opt_in_utc = Column(Integer, default=0)     # the creator fund (helpers/creator_fund.py); 0 = not taking part
     hide_bot = Column(Boolean, default=False)
     show_nsfl = Column(Boolean, default=False)
     is_private = Column(Boolean, default=False)
@@ -316,17 +319,8 @@ class User(Base, Stndrd, Age_times):
                 )
             )
 
-            blocking = select(UserBlock.target_id).filter_by(
-                user_id=self.id
-            )
-            # blocked = g.db.query(
-            #     UserBlock.user_id).filter_by(
-            #     target_id=self.id).subquery()
-
-            posts = posts.filter(
-                or_(Submission.author_id.notin_(blocking), Submission.is_anonymous) #,
-                #Submission.author_id.notin_(blocked)
-            ).join(Submission.board).filter(Board.is_banned==False)
+            # blocked either way (helpers/blocks.py)
+            posts = hide_blocked(posts, self, Submission).join(Submission.board).filter(Board.is_banned==False)
 
         categories = kwargs.get("categories")
         if categories:
@@ -441,6 +435,9 @@ class User(Base, Stndrd, Age_times):
         ).all()
         add_scores([x[0] for x in vote_subcats], 1)
 
+        # "Show fewer posts like this": each click of the last 60 days lowers its category
+        add_scores(post_feedback.penalties(g.db, self.id).subcat_ids, -post_feedback.SUBCAT_PENALTY)
+
         ranked = sorted(scores.items(), key=lambda kv: kv[1], reverse=True)
         return [subcat_id for subcat_id, score in ranked if score > 0][:10]
 
@@ -480,6 +477,7 @@ class User(Base, Stndrd, Age_times):
 
         posts = filter_posts(posts, self)
         posts = hide_muted(posts, self, Submission)
+        posts = post_feedback.hide_fewer(posts, self, Submission)
 
         if self.hide_bot:
             posts = posts.filter(Submission.is_bot == False)
@@ -506,10 +504,7 @@ class User(Base, Stndrd, Age_times):
                 )
             )
 
-            blocking = select(UserBlock.target_id).filter_by(
-                user_id=self.id
-            ).subquery()
-            posts = posts.filter(or_(Submission.author_id.notin_(blocking), Submission.is_anonymous))
+            posts = hide_blocked(posts, self, Submission)
 
             board_blocks = select(BoardBlock.board_id).filter_by(
                 user_id=self.id
@@ -528,7 +523,7 @@ class User(Base, Stndrd, Age_times):
             )
         )
 
-        posts = posts.filter(or_(
+        posts = posts.filter(Board.is_banned == False, or_(
             Board.subcat_id.in_(tuple(subcats)),
             Submission.id.in_(social_proof_ids)
         ))
@@ -552,7 +547,7 @@ class User(Base, Stndrd, Age_times):
             posts = posts.filter(Submission.language_code.in_(language_list))
 
         if viewer_level(self) > 0:
-            posts = posts.filter(Board.subcat_id.notin_([44, 108]))
+            posts = posts.filter(Board.subcat_id.notin_(FILTERED_SUBCATS))
 
         posts = posts.filter(Submission.board_id != 1)
 
@@ -599,16 +594,21 @@ class User(Base, Stndrd, Age_times):
 
         social_proof_boost = Submission.id.in_(social_proof_ids)
 
+        # a guild, and an author whose posts are not anonymous, that the member asked to see fewer posts of go
+        # behind everything else (helpers/post_feedback.py)
+        sunk = post_feedback.sink_clause(g.db, self.id, Submission)
+        lead = [sunk.asc()] if sunk is not None else []
+
         if sort == "hot":
-            posts = posts.order_by(social_proof_boost.desc(), Submission.score_best.desc())
+            posts = posts.order_by(*lead, social_proof_boost.desc(), Submission.score_best.desc())
         elif sort == "new":
-            posts = posts.order_by(social_proof_boost.desc(), Submission.created_utc.desc())
+            posts = posts.order_by(*lead, social_proof_boost.desc(), Submission.created_utc.desc())
         elif sort == "old":
-            posts = posts.order_by(social_proof_boost.desc(), Submission.created_utc.asc())
+            posts = posts.order_by(*lead, social_proof_boost.desc(), Submission.created_utc.asc())
         elif sort == "disputed":
-            posts = posts.order_by(social_proof_boost.desc(), Submission.score_disputed.desc())
+            posts = posts.order_by(*lead, social_proof_boost.desc(), Submission.score_disputed.desc())
         elif sort == "top":
-            posts = posts.order_by(social_proof_boost.desc(), Submission.score_top.desc())
+            posts = posts.order_by(*lead, social_proof_boost.desc(), Submission.score_top.desc())
         elif sort == "activity":
             posts = posts.order_by(social_proof_boost.desc(), Submission.score_activity.desc())
         else:
@@ -1073,11 +1073,11 @@ class User(Base, Stndrd, Age_times):
             Comment.deleted_utc == 0
         )
         notifications = filter_comments(notifications, self)
-        notifications = hide_muted(notifications, self, Comment)
+        notifications = hide_blocked(hide_muted(notifications, self, Comment), self, Comment)
 
         if comments_only:
             cs = g.db.query(Comment.id).filter(Comment.author_id == self.id).subquery()
-            ps = g.db.query(Submission.id).filter(Submission.author_id == self.id).subquery()
+            ps = post_follows.owned_post_ids(self.id)
             notifications = notifications.filter(
                 or_(
                     Comment.parent_comment_id.in_(cs),
@@ -1089,7 +1089,7 @@ class User(Base, Stndrd, Age_times):
             )
         elif mentions_only:
             cs = g.db.query(Comment.id).filter(Comment.author_id == self.id).subquery()
-            ps = g.db.query(Submission.id).filter(Submission.author_id == self.id).subquery()
+            ps = post_follows.owned_post_ids(self.id)
             notifications = notifications.filter(
                 and_(
                     Comment.parent_comment_id.notin_(cs),
@@ -1126,7 +1126,7 @@ class User(Base, Stndrd, Age_times):
             Submission.deleted_utc==0
             )
         notifications=filter_posts(notifications, self)
-        notifications=hide_muted(notifications, self, Submission)
+        notifications=hide_blocked(hide_muted(notifications, self, Submission), self, Submission)
 
         if not all_:
             notifications=notifications.filter(Notification.read==False)
@@ -1150,8 +1150,8 @@ class User(Base, Stndrd, Age_times):
     @lazy
     def mentions_count(self):
         cs=g.db.query(Comment.id).filter(Comment.author_id==self.id).subquery()
-        ps=g.db.query(Submission.id).filter(Submission.author_id==self.id).subquery()
-        return hide_muted(self.notifications.options(
+        ps = post_follows.owned_post_ids(self.id)
+        return hide_blocked(filter_comments(hide_muted(self.notifications.options(
             lazyload('*')
             ).join(
             Notification.comment
@@ -1167,14 +1167,14 @@ class User(Base, Stndrd, Age_times):
                         Comment.parent_submission.notin_(ps)
                     )
                 )
-            ), self, Comment).count()
+            ), self, Comment), self), self, Comment).count()
 
 
     @property
     @lazy
     def comment_notifications_count(self):
         cs=g.db.query(Comment.id).filter(Comment.author_id==self.id).subquery()
-        ps=g.db.query(Submission.id).filter(Submission.author_id==self.id).subquery()
+        ps = post_follows.owned_post_ids(self.id)
         q = self.notifications.options(
             lazyload('*')
             ).join(
@@ -1192,7 +1192,7 @@ class User(Base, Stndrd, Age_times):
                     )
                 )
             )
-        return hide_muted(filter_comments(q, self), self, Comment).count()
+        return hide_blocked(hide_muted(filter_comments(q, self), self, Comment), self, Comment).count()
 
     @property
     @lazy
@@ -1206,7 +1206,7 @@ class User(Base, Stndrd, Age_times):
             Submission.is_banned==False,
             Submission.deleted_utc==0
             )
-        return hide_muted(filter_posts(q, self), self, Submission).count()
+        return hide_blocked(hide_muted(filter_posts(q, self), self, Submission), self, Submission).count()
 
     @property
     @lazy
@@ -1234,8 +1234,8 @@ class User(Base, Stndrd, Age_times):
             Submission.is_banned==False,
             Submission.deleted_utc==0
         )
-        return (hide_muted(filter_comments(comments, self), self, Comment).count()
-                + hide_muted(filter_posts(posts, self), self, Submission).count())
+        return (hide_blocked(hide_muted(filter_comments(comments, self), self, Comment), self, Comment).count()
+                + hide_blocked(hide_muted(filter_posts(posts, self), self, Submission), self, Submission).count())
 
     @property
     def throttle_state(self):
@@ -1501,8 +1501,9 @@ class User(Base, Stndrd, Age_times):
                 'profile_url': self.profile_url,
                 'banner_url': self.banner_url,
                 'title': self.title.json if self.title else None,
-                'bio': self.bio,
-                'bio_html': self.bio_html
+                # the word filter applies as on the page (bio_for)
+                'bio': self.bio_for(anonymity.current_viewer()),
+                'bio_html': self.bio_html_for(anonymity.current_viewer())
                 }
 
         if self.real_id:
@@ -1577,14 +1578,8 @@ class User(Base, Stndrd, Age_times):
 
     @property
     def is_valid(self):
-        if self.is_banned and self.unban_utc==0:
-            return False
-
-        elif self.is_deleted:
-            return False
-
-        else:
-            return True
+        # a temporary ban that is still running counts too, as in is_suspended
+        return not (self.is_suspended or self.is_deleted)
     
 
     def ban(self, admin=None, reason=None,  days=0):
@@ -1729,8 +1724,8 @@ class User(Base, Stndrd, Age_times):
                 target_id=self.id).subquery()
 
             posts = posts.filter(
-                Submission.author_id.notin_(blocking),
-                Submission.author_id.notin_(blocked)
+                or_(Submission.author_id.notin_(blocking), Submission.is_anonymous == True),
+                or_(Submission.author_id.notin_(blocked), Submission.is_anonymous == True)
             )
 
         posts=posts.order_by(SaveRelationship.created_utc.desc())
@@ -1781,8 +1776,8 @@ class User(Base, Stndrd, Age_times):
                 target_id=self.id).subquery()
 
             comments = comments.filter(
-                Comment.author_id.notin_(blocking),
-                Comment.author_id.notin_(blocked)
+                or_(Comment.author_id.notin_(blocking), Comment.is_anonymous == True),
+                or_(Comment.author_id.notin_(blocked), Comment.is_anonymous == True)
             )
 
         comments = comments.order_by(CommentSaveRelationship.created_utc.desc())
@@ -1792,7 +1787,7 @@ class User(Base, Stndrd, Age_times):
 
     def forwarded_idlist(self, v=None, page=1):
         """Posts this user has personally forwarded to a guild, or comments
-        they've promoted into a new post - as the actor, regardless of who
+        they've forwarded into a new post - as the actor, regardless of who
         authored the original content. Ordered by when they did it, most
         recent first. Public activity, visible to any viewer subject to
         the same content-visibility rules as any other listing."""
@@ -1802,12 +1797,12 @@ class User(Base, Stndrd, Age_times):
             ForwardRelationship.created_utc.label('ts')
         ).filter(ForwardRelationship.forwarded_by_id == self.id)
 
-        promoted = g.db.query(
+        comment_forwards = g.db.query(
             CommentForwardRelationship.forwarded_submission_id.label('sid'),
             CommentForwardRelationship.created_utc.label('ts')
         ).filter(CommentForwardRelationship.forwarded_by_id == self.id)
 
-        activity = fwd.union_all(promoted).subquery()
+        activity = fwd.union_all(comment_forwards).subquery()
 
         posts = g.db.query(Submission, activity.c.ts).join(
             activity, activity.c.sid == Submission.id
@@ -1883,8 +1878,8 @@ class User(Base, Stndrd, Age_times):
                 target_id=self.id).subquery()
 
             posts = posts.filter(
-                Submission.author_id.notin_(blocking),
-                Submission.author_id.notin_(blocked)
+                or_(Submission.author_id.notin_(blocking), Submission.is_anonymous == True),
+                or_(Submission.author_id.notin_(blocked), Submission.is_anonymous == True)
             )
 
         posts = posts.order_by(vh.c.viewed_utc.desc())
@@ -1932,8 +1927,8 @@ class User(Base, Stndrd, Age_times):
                 target_id=self.id).subquery()
 
             posts = posts.filter(
-                Submission.author_id.notin_(blocking),
-                Submission.author_id.notin_(blocked)
+                or_(Submission.author_id.notin_(blocking), Submission.is_anonymous == True),
+                or_(Submission.author_id.notin_(blocked), Submission.is_anonymous == True)
             )
 
         posts = posts.order_by(vt.c.created_utc.desc())
@@ -1999,8 +1994,8 @@ class User(Base, Stndrd, Age_times):
                 target_id=self.id).subquery()
 
             comments = comments.filter(
-                Comment.author_id.notin_(blocking),
-                Comment.author_id.notin_(blocked)
+                or_(Comment.author_id.notin_(blocking), Comment.is_anonymous == True),
+                or_(Comment.author_id.notin_(blocked), Comment.is_anonymous == True)
             )
 
         if self.admin_level < 3:

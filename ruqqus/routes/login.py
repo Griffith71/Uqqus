@@ -132,7 +132,7 @@ def login_post():
         
         if not is_2fa and not is_recovery:
             
-            hash = generate_hash(f"{account.id}+{time}+2fachallenge")
+            hash = generate_hash(f"{account.id}+{now}+2fachallenge")
             return render_template("login_2fa.html",
                                    v=account,
                                    time=now,
@@ -526,11 +526,11 @@ def get_reset():
 
     user = g.db.query(User).filter_by(id=user_id).first()
 
-    if not validate_hash(f"{user_id}+{timestamp}+forgot+{user.login_nonce}", token):
-        abort(400)
-
     if not user:
         abort(404)
+
+    if not validate_hash(f"{user_id}+{timestamp}+forgot+{user.login_nonce}", token):
+        abort(400)
 
     reset_token = generate_hash(f"{user.id}+{timestamp}+reset+{user.login_nonce}")
 
@@ -564,10 +564,10 @@ def post_reset(v):
 
     user = g.db.query(User).filter_by(id=user_id).first()
 
-    if not validate_hash(f"{user_id}+{timestamp}+reset+{user.login_nonce}", token):
-        abort(400)
     if not user:
         abort(404)
+    if not validate_hash(f"{user_id}+{timestamp}+reset+{user.login_nonce}", token):
+        abort(400)
 
     if not password == confirm_password:
         return render_template("reset_password.html",

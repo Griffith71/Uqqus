@@ -10,7 +10,7 @@ import gevent
 import mistletoe
 
 from ruqqus.helpers.wrappers import *
-from ruqqus.helpers.visibility import post_hidden, hidden_notice
+from ruqqus.helpers.visibility import post_hidden, hidden_notice, history_text_shown
 from ruqqus.helpers.base36 import *
 from ruqqus.helpers.sanitize import *
 from ruqqus.helpers.filters import *
@@ -91,6 +91,8 @@ URL path parameters:
         pid,
         v=v
         )
+    if post.in_private_guild_for(v):
+        abort(403)
     if post_hidden(post, v):
         return hidden_notice(v)
     board = post.board
@@ -127,6 +129,9 @@ Optional query parameters:
     post = get_post_with_comments(
         pid, v=v, sort_type=request.args.get(
             "sort", "top"))
+
+    if post.in_private_guild_for(v):
+        abort(403)
 
     if post_hidden(post, v):
         return hidden_notice(v)
@@ -312,6 +317,9 @@ Optional file data:
         comment_permission = cperm.parse(form["comment_permission"])
         if comment_permission is None:
             return _edit_error("Choose who can comment.")
+        refused = cperm.refusal(comment_permission, primary.is_anonymous)
+        if refused:
+            return _edit_error(refused)
 
     # image: replace it with an upload, or remove it
     old_image_key = _own_image_key(primary)
@@ -544,7 +552,12 @@ later obliterated by an admin, only a metadata-only notice is shown -
 no content.
 """
 
-    post = get_post(pid)
+    post = get_post(pid, v=v)
+
+    if post.in_private_guild_for(v):
+        abort(403)
+    if post_hidden(post, v):
+        return hidden_notice(v)["html"]()
 
     entries = g.db.query(ContentEditHistory).filter_by(
         target_submission_id=post.id
@@ -560,7 +573,8 @@ no content.
         target=post,
         target_type="post",
         entries=entries,
-        obliteration=obliteration
+        obliteration=obliteration,
+        show_text=history_text_shown(post, v)
     )
 
 
@@ -691,11 +705,11 @@ def create_forward_post_from_comment(comment, target, comment_forwarded_by):
     equivalent of create_forward_post(). The new post's author_id stays
     the comment's original author (matching post-Forward's delete-rights
     convention); CommentForwardRelationship tracks provenance and who
-    triggered the promotion when different from the author.
+    forwarded it when different from the author.
 
     The title is not user-editable - it's the exact first 280 characters
     of the comment's own text (the same split used for the comment's own
-    preview/overflow display, see Comment.is_long), so the promoted post
+    preview/overflow display, see Comment.is_long), so the forwarded comment's post
     looks structurally identical to how the comment already presented:
     title = what was visible, body = what was collapsed. No duplication."""
 
@@ -821,17 +835,19 @@ Optional file data:
 
     raw_permission = request.form.get("comment_permission", "")
     comment_permission = cperm.EVERYONE if raw_permission.strip() == "" else cperm.parse(raw_permission)
-    if comment_permission is None:
+    permission_error = "Choose who can comment." if comment_permission is None else \
+        cperm.refusal(comment_permission, flag(request.form, "anonymous"))
+    if permission_error:
         return {"html": lambda: (render_template("submit.html",
                                                  v=v,
-                                                 error="Choose who can comment.",
+                                                 error=permission_error,
                                                  title=title,
                                                  url=url,
                                                  body=body,
                                                  text=text_for_redisplay,
                                                  b=None, forward_guild_names=forward_guild_names
                                                  ), 400),
-                "api": lambda: ({"error": "Choose who can comment."}, 400)
+                "api": lambda: ({"error": permission_error}, 400)
                 }
 
     if not title:
@@ -923,17 +939,20 @@ Optional file data:
             elif domain_obj.reason==7:
                 v.ban(reason="Sexualizing minors")
 
-            # return {"html": lambda: (render_template("submit.html",
-            #                                          v=v,
-            #                                          error=BAN_REASONS[domain_obj.reason],
-            #                                          title=title,
-            #                                          url=url,
-            #                                          body=request.form.get(
-            #                                              "body", ""),
-            #                                          b=None, forward_guild_names=forward_guild_names
-            #                                          ), 400),
-            #         "api": lambda: ({"error": BAN_REASONS[domain_obj.reason]}, 400)
-            #         }
+            # the link is refused, as when editing a post (edit_post)
+            reason = BAN_REASONS[domain_obj.reason] if 0 < (domain_obj.reason or 0) < len(BAN_REASONS) else ""
+            reason = reason or "Links to that site aren't allowed."
+            return {"html": lambda: (render_template("submit.html",
+                                                     v=v,
+                                                     error=reason,
+                                                     title=title,
+                                                     url=url,
+                                                     body=request.form.get(
+                                                         "body", ""),
+                                                     b=None, forward_guild_names=forward_guild_names
+                                                     ), 400),
+                    "api": lambda: ({"error": reason}, 400)
+                    }
 
         # check for embeds
         if domain_obj.embed_function:
@@ -1029,7 +1048,7 @@ Optional file data:
                     }
 
         if target.disallowbots and request.headers.get("X-User-Type")=="Bot":
-            return {"api": lambda: ({"error": f"403 Not Authorized - +{target.name} disallows bots from forwarding and commenting!"}, 403)}
+            return {"api": lambda: ({"error": f"403 Not Authorized - +{target.name} disallows bots from forwarding!"}, 403)}
 
         forward_boards.append(target)
 
@@ -1510,8 +1529,12 @@ Optional file data:
         Subscription.is_active==True,
         Subscription.get_notifs==True,
         Subscription.user_id != v.id,
+        # blocked either way, as for followers below
         Subscription.user_id.notin_(
             g.db.query(UserBlock.user_id).filter_by(target_id=v.id).subquery()
+            ),
+        Subscription.user_id.notin_(
+            g.db.query(UserBlock.target_id).filter_by(user_id=v.id).subquery()
             )
         )
 
@@ -1667,6 +1690,12 @@ Required form data:
     post = get_post(pid, v=v)
     primary = post.reposts if post.is_repost else post
 
+    if post.in_private_guild_for(v) or primary.in_private_guild_for(v):
+        abort(403)
+
+    if primary.is_banned or primary.deleted_utc or primary.purged_utc:
+        return {"error": "This post can't be forwarded."}, 400
+
     if primary.audience:
         return {"error": "A post for a Circle can't be forwarded to a guild."}, 403
 
@@ -1684,7 +1713,7 @@ Required form data:
         return {"error": f"+{target.name} only accepts forwards from approved contributors."}, 403
 
     if target.disallowbots and (request.headers.get("X-User-Type", "").lower() == "bot" or primary.is_bot):
-        return {"error": f"403 Not Authorized - +{target.name} disallows bots from forwarding and commenting!"}, 403
+        return {"error": f"403 Not Authorized - +{target.name} disallows bots from forwarding!"}, 403
 
     already = g.db.query(ForwardRelationship).filter_by(
         primary_submission_id=primary.id, board_id=target.id).first()
@@ -1784,7 +1813,11 @@ def embed_post_pid(pid):
 
     post = get_post(pid)
 
-    if post.is_banned or post.board.is_banned:
+    # an embed is shown to anyone, so it is checked as a visitor
+    if post.in_private_guild_for(None):
+        abort(403)
+
+    if post.is_banned or post.board.is_banned or post.deleted_utc > 0 or post.purged_utc > 0:
         abort(410)
 
     if post_hidden(post, None):
@@ -1841,7 +1874,10 @@ URL path parameters:
 @validate_formkey
 def save_post(base36id, v):
 
-    post=get_post(base36id)
+    post=get_post(base36id, v=v)
+
+    if post.in_private_guild_for(v):
+        abort(403)
 
     existing=g.db.query(SaveRelationship).filter_by(user_id=v.id, submission_id=post.id).first()
 
@@ -1897,6 +1933,12 @@ def repost_post(base36id, v):
 
     post = get_post(base36id, v=v)
     primary = post.reposts if post.is_repost else post
+
+    if post.in_private_guild_for(v) or primary.in_private_guild_for(v):
+        abort(403)
+
+    if primary.is_banned or primary.deleted_utc or primary.purged_utc:
+        return {"error": "This post can't be reposted."}, 400
 
     if primary.audience:
         return {"error": "A post for a Circle can't be reposted."}, 400
