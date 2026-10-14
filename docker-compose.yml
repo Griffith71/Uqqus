@@ -31,6 +31,7 @@ services:
       # test server on this machine be used: local testing only, never on a live site
       - FEED_SERVERS_ENABLED=${FEED_SERVERS_ENABLED:-1}
       - FEED_SERVER_ALLOW_LOCAL=${FEED_SERVER_ALLOW_LOCAL:-1}
+      - BOTS_ENABLED=${BOTS_ENABLED:-1}
       # the creator fund (ruqqus/helpers/creator_fund.py): points a member needs to share a month (default 50, never under 10)
       - CREATOR_FUND_MIN_POINTS=${CREATOR_FUND_MIN_POINTS:-}
       # Google AdSense (ruqqus/helpers/ads.py): empty = no ads. Put real ids in .env

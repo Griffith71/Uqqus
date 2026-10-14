@@ -254,6 +254,10 @@ def gift_post_pid(pid, v):
     if post.is_anonymous:
         return jsonify({"error":"You can't give awards to anonymous posts."}), 403
 
+    # nobody spends a bot's coins (helpers/bots.py)
+    if post.author.is_bot:
+        return jsonify({"error":"Bots don't take tips."}), 403
+
     if post.deleted_utc > 0:
         return jsonify({"error":"You can't give awards to deleted posts"}), 403
 
@@ -330,6 +334,9 @@ def gift_comment_pid(cid, v):
 
     if comment.is_anonymous:
         return jsonify({"error":"You can't give awards to anonymous comments."}), 403
+
+    if comment.author.is_bot:
+        return jsonify({"error":"Bots don't take tips."}), 403
 
     if comment.deleted_utc > 0:
         return jsonify({"error":"You can't give awards to deleted posts"}), 403

@@ -143,6 +143,7 @@ class FakeUser(Row):
         "is_deleted": False, "login_nonce": 0, "admin_level": 0,
         "negative_balance_cents": 0, "ban_evade": 0, "alts": list,
         "moderates": list, "client": None, "ban_calls": list,
+        "is_bot": False, "bot_owner_id": None,      # bot accounts (helpers/bots.py)
     }
 
     @property

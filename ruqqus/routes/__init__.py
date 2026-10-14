@@ -46,3 +46,4 @@ from .ads import *
 from .creator_fund import *
 from .profile_lists import *
 from .account_reports import *
+from .bot_accounts import *

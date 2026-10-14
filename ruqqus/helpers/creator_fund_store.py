@@ -67,12 +67,13 @@ SELECT p.author, SUM(CASE WHEN p.n > :cap THEN :cap ELSE p.n END) AS points, COU
 FROM pairs p JOIN networks nw ON nw.author = p.author
 """
 
-# who may share the budget: opted in, established, not banned or deleted, no unpaid balance
+# who may share the budget: opted in, established, not banned or deleted, no unpaid balance, not a bot account
 _ELIGIBLE = """
 JOIN users a ON a.id = p.author
 WHERE COALESCE(a.creator_fund_opt_in_utc, 0) > 0 AND a.created_utc <= :established
   AND COALESCE(a.is_deleted, :no) = :no AND (a.is_banned = 0 OR (a.unban_utc > 0 AND a.unban_utc < :now))
   AND COALESCE(a.negative_balance_cents, 0) = 0
+  AND COALESCE(a.is_bot, :no) = :no
 """
 
 

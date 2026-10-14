@@ -329,7 +329,9 @@ CREATE TABLE public.users (
     following_visibility smallint DEFAULT 2 NOT NULL,
     followers_visibility smallint DEFAULT 2 NOT NULL,
     subscribers_visibility smallint DEFAULT 2 NOT NULL,
-    subscriptions_visibility smallint DEFAULT 2 NOT NULL
+    subscriptions_visibility smallint DEFAULT 2 NOT NULL,
+    is_bot boolean DEFAULT false NOT NULL,
+    bot_owner_id integer
 );
 
 
@@ -6022,6 +6024,67 @@ CREATE TABLE public.user_reports (
 );
 CREATE INDEX user_reports_open_idx ON public.user_reports (user_id) WHERE resolved_utc = 0;
 CREATE INDEX user_reports_reporter_idx ON public.user_reports (reporter_id, created_utc);
+
+-- bot accounts (scripts/migrations/2026-10-15_bots.sql)
+CREATE INDEX users_bot_owner_idx ON public.users (bot_owner_id) WHERE bot_owner_id IS NOT NULL;
+
+CREATE TABLE public.bots (
+    id SERIAL PRIMARY KEY,
+    user_id integer NOT NULL,
+    owner_id integer NOT NULL,
+    username character varying(255) NOT NULL,
+    status character varying(10) DEFAULT 'pending' NOT NULL,
+    purpose character varying(500) DEFAULT '' NOT NULL,
+    forward_guilds text DEFAULT '[]' NOT NULL,
+    created_utc integer DEFAULT 0 NOT NULL,
+    reviewed_by_id integer,
+    reviewed_utc integer DEFAULT 0 NOT NULL,
+    review_note character varying(500) DEFAULT '' NOT NULL,
+    paused_reason character varying(300) DEFAULT '' NOT NULL,
+    paused_by_admin boolean DEFAULT false NOT NULL,
+    day integer DEFAULT 0 NOT NULL,
+    posts_today integer DEFAULT 0 NOT NULL,
+    CONSTRAINT bots_one_per_account UNIQUE (user_id),
+    CONSTRAINT bots_status CHECK (status IN ('pending', 'approved', 'rejected', 'paused'))
+);
+CREATE INDEX bots_owner_idx ON public.bots (owner_id);
+CREATE INDEX bots_pending_idx ON public.bots (created_utc) WHERE status = 'pending';
+
+-- Where a bot's posts come from. A source added after the bot was approved waits for an admin (status 'pending').
+CREATE TABLE public.bot_sources (
+    id SERIAL PRIMARY KEY,
+    bot_id integer NOT NULL,
+    kind character varying(10) DEFAULT 'feed' NOT NULL,
+    url character varying(300) NOT NULL,
+    title character varying(200) DEFAULT '' NOT NULL,
+    status character varying(10) DEFAULT 'pending' NOT NULL,
+    added_utc integer DEFAULT 0 NOT NULL,
+    approved_by_id integer,
+    approved_utc integer DEFAULT 0 NOT NULL,
+    check_minutes integer DEFAULT 30 NOT NULL,
+    last_checked_utc integer DEFAULT 0 NOT NULL,
+    next_check_utc integer DEFAULT 0 NOT NULL,
+    etag character varying(300) DEFAULT '' NOT NULL,
+    last_modified character varying(100) DEFAULT '' NOT NULL,
+    fail_count integer DEFAULT 0 NOT NULL,
+    last_error character varying(300) DEFAULT '' NOT NULL,
+    posted_count integer DEFAULT 0 NOT NULL,
+    read_once boolean DEFAULT false NOT NULL,
+    CONSTRAINT bot_sources_once UNIQUE (bot_id, url),
+    CONSTRAINT bot_sources_status CHECK (status IN ('pending', 'approved', 'rejected', 'paused')),
+    CONSTRAINT bot_sources_kind CHECK (kind IN ('feed'))
+);
+CREATE INDEX bot_sources_due_idx ON public.bot_sources (next_check_utc) WHERE status = 'approved';
+
+-- Which feed items a source has already handled (posted, skipped or refused), so nothing is posted twice.
+CREATE TABLE public.bot_seen (
+    source_id integer NOT NULL,
+    item_key character varying(64) NOT NULL,
+    post_id integer,
+    seen_utc integer DEFAULT 0 NOT NULL,
+    PRIMARY KEY (source_id, item_key)
+);
+CREATE INDEX bot_seen_age_idx ON public.bot_seen (seen_utc);
 
 CREATE INDEX media_assets_story_idx ON public.media_assets USING btree (story_id) WHERE (story_id IS NOT NULL);
 

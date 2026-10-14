@@ -97,6 +97,11 @@ def login_post():
         time.sleep(random.uniform(0, 2))
         return render_template("login.html", failed=True, i=random_image())
 
+    # nobody logs into a bot account (helpers/bots.py): it reads as a wrong password, so it is never anyone's alt
+    if account.is_bot:
+        time.sleep(random.uniform(0, 2))
+        return render_template("login.html", failed=True, i=random_image())
+
     # test password
 
     if request.form.get("password"):

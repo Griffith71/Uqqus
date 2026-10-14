@@ -139,6 +139,15 @@ def test_post_bot_header_is_403_any_case(env):
     assert votes_of(env) == []
 
 
+def test_post_a_bot_account_is_403_whatever_header_it_sends(env):
+    """Bot accounts (helpers/bots.py) never vote: the account decides, not only the header."""
+    env.user.is_bot = True
+    for headers in ({}, {"X-User-Type": "human"}):
+        r = env.client.post(POST.format(x=1), headers=headers, data={"formkey": env.formkey(env.user)})
+        assert r.status_code == 403
+    assert votes_of(env) == []
+
+
 def test_post_non_bot_user_type_header_is_fine(env):
     r = env.client.post(POST.format(x=1), headers={"X-User-Type": "human"},
                         data={"formkey": env.formkey(env.user)})
@@ -486,6 +495,12 @@ def test_comment_invalid_vote_value_is_400(env, x):
 def test_comment_bot_header_403(env):
     r = env.client.post(COMMENT.format(x=1), headers={"X-User-Type": "BOT"},
                         data={"formkey": env.formkey(env.user)})
+    assert r.status_code == 403
+
+
+def test_comment_vote_by_a_bot_account_is_403(env):
+    env.user.is_bot = True
+    r = env.client.post(COMMENT.format(x=1), data={"formkey": env.formkey(env.user)})
     assert r.status_code == 403
 
 

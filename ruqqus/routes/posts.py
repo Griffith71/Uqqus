@@ -33,6 +33,7 @@ from ruqqus.helpers import coauthors       # after the star-import: ruqqus.class
 from ruqqus.helpers import polls as poll_rules, poll_store
 from ruqqus.helpers import circles as circle_rules, circle_guard
 from ruqqus.helpers import insights_store
+from ruqqus.helpers import bots as bot_rules, bot_store
 from .front import frontlist
 from ruqqus.__main__ import app, limiter, cache, db_session
 from flask import session as flask_session
@@ -755,6 +756,15 @@ def create_forward_post_from_comment(comment, target, comment_forwarded_by):
     return new_post
 
 
+def _bot_refusal(v):
+    """(why this bot account may not post now, or None; whether that passes by itself: the daily cap, bots off)."""
+    bot = bot_store.bot_of(g.db, v.id)
+    owner = g.db.query(User).filter_by(id=v.bot_owner_id).first() if v.bot_owner_id else None
+    today = bot_store.posts_today(g.db, v.id, bot_rules.utc_day())
+    message = bot_rules.post_refusal(bot, owner, today)
+    return message, bool(message) and (today >= bot_rules.DAILY_CAP or not bot_rules.enabled())
+
+
 @app.route("/submit", methods=['POST'])
 @app.route("/api/v1/submit", methods=["POST"])
 @app.route("/api/vue/submit", methods=["POST"])
@@ -832,6 +842,28 @@ Optional file data:
         x for x in forward_guild_names
         if not (x.lower() in seen_names or seen_names.add(x.lower()))
     ]
+
+    # a bot account posts only while it is approved and its owner may run it, at most bot_rules.DAILY_CAP a day, and
+    # its posts are public, signed and its own (helpers/bots.py). "bot_refusal" tells scripts/run_bots.py whether to
+    # try again later ("wait") or pause the bot ("stop"); a bot key's script gets the same answer
+    if v.is_bot:
+        bot_error, bot_wait = _bot_refusal(v)
+        if not bot_error:
+            bot_wait = False
+            bot_error = bot_rules.option_refusal(flag(request.form, "anonymous"),
+                                                 (request.form.get("audience") or "").strip() not in ("", "0")
+                                                 or bool(request.form.get("circle_guild")),
+                                                 bool((request.form.get("coauthors") or "").strip()))
+            bot_status = 400 if bot_error else None
+        else:
+            bot_status = 403
+        if bot_error:
+            return {"html": lambda: (render_template("submit.html", v=v, error=bot_error, title=title, url=url,
+                                                     body=body, text=text_for_redisplay, b=None,
+                                                     forward_guild_names=forward_guild_names), bot_status),
+                    "api": lambda: ({"error": bot_error, "bot_refusal": "wait" if bot_wait else "stop"}
+                                    if bot_status == 403 else {"error": bot_error}, bot_status)
+                    }
 
     raw_permission = request.form.get("comment_permission", "")
     comment_permission = cperm.EVERYONE if raw_permission.strip() == "" else cperm.parse(raw_permission)
@@ -1047,7 +1079,7 @@ Optional file data:
                     "api": lambda: ({"error": f"403 Not Authorized - +{target.name} only accepts forwards from approved contributors"}, 403)
                     }
 
-        if target.disallowbots and request.headers.get("X-User-Type")=="Bot":
+        if target.disallowbots and (request.headers.get("X-User-Type", "").lower() == "bot" or v.is_bot):
             return {"api": lambda: ({"error": f"403 Not Authorized - +{target.name} disallows bots from forwarding!"}, 403)}
 
         forward_boards.append(target)
@@ -1336,7 +1368,7 @@ Optional file data:
         repost_id=None,
         app_id=v.client.application.id if v.client else None,
         creation_region=request.headers.get("cf-ipcountry"),
-        is_bot = request.headers.get("X-User-Type","").lower()=="bot",
+        is_bot = request.headers.get("X-User-Type","").lower()=="bot" or bool(v.is_bot),
         language_code=detect_language(title, body)
     )
 
@@ -1632,6 +1664,10 @@ Optional file data:
 
     _discard_draft(v, request.form.get("draft_id"))
 
+    if v.is_bot:
+        bot_store.count_post(g.db, v.id, bot_rules.utc_day())       # the daily cap counts the job and keys alike
+        g.db.commit()
+
     return {"html": lambda: redirect(new_post.permalink),
             "api": lambda: jsonify(new_post.json)
             }
@@ -1716,7 +1752,7 @@ Required form data:
     if (target.restricted_forwarding or target.is_private) and not target.can_forward(v):
         return {"error": f"+{target.name} only accepts forwards from approved contributors."}, 403
 
-    if target.disallowbots and (request.headers.get("X-User-Type", "").lower() == "bot" or primary.is_bot):
+    if target.disallowbots and (request.headers.get("X-User-Type", "").lower() == "bot" or primary.is_bot or v.is_bot):
         return {"error": f"403 Not Authorized - +{target.name} disallows bots from forwarding!"}, 403
 
     already = g.db.query(ForwardRelationship).filter_by(

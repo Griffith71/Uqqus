@@ -142,6 +142,9 @@
         <li class="nav-item">
           <a class="nav-link{% if request.path=='/settings/creator_fund' %} active{% endif %}" href="/settings/creator_fund">Creator fund</a>
         </li>
+        <li class="nav-item">
+          <a class="nav-link{% if request.path.startswith('/settings/bots') %} active{% endif %}" href="/settings/bots">Bots</a>
+        </li>
       </ul>
 
     </div>
@@ -180,6 +183,9 @@
         </li>
         <li class="nav-item">
           <a class="nav-link{% if request.path=='/settings/creator_fund' %} active{% endif %}" href="/settings/creator_fund" aria-label="Creator fund"><i class="fas fa-hand-holding-heart text-lg mr-0"></i></a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link{% if request.path.startswith('/settings/bots') %} active{% endif %}" href="/settings/bots" aria-label="Bots"><i class="fas fa-robot text-lg mr-0"></i></a>
         </li>
       </ul>
 

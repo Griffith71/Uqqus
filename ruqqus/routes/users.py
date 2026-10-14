@@ -111,6 +111,10 @@ Optional query parameters:
     if user_hidden(u, v):
         return hidden_notice(v)
 
+    # a bot that has not been approved is its owner's and the admins' business only (helpers/bots.py)
+    if not u.bot_shown_to(v):
+        abort(404)
+
     # check for wrong cases
 
     #if username != u.username:

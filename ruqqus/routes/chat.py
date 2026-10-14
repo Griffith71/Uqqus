@@ -127,6 +127,8 @@ def chat_start(v):
         abort(400)
     if is_blocked(v, target):
         abort(403)
+    if target.is_bot or v.is_bot:
+        abort(403)                  # nobody reads a bot's chats (helpers/bots.py): no room is ever made with one
 
     a_id, b_id = min(v.id, target.id), max(v.id, target.id)
     existing = g.db.query(ChatConversation).filter_by(user_a_id=a_id, user_b_id=b_id).first()

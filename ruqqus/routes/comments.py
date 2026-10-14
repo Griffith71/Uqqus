@@ -300,7 +300,7 @@ Optional file data:
 * `file` - An image to upload and append to the comment body. Requires premium.
 """
     # bots may post, forward and help moderate, but never comment (or vote, routes/votes.py)
-    if request.headers.get("X-User-Type", "").lower() == "bot":
+    if request.headers.get("X-User-Type", "").lower() == "bot" or v.is_bot:
         return jsonify({"error": "Bots can't comment."}), 403
 
     parent_fullname = request.form.get("parent_fullname")
@@ -1049,7 +1049,7 @@ def forward_comment(cid, v):
     if (target.restricted_forwarding or target.is_private) and not target.can_forward(v):
         return {"error": f"+{target.name} only accepts forwards from approved contributors."}, 403
 
-    if target.disallowbots and (request.headers.get("X-User-Type", "").lower() == "bot" or comment.is_bot):
+    if target.disallowbots and (request.headers.get("X-User-Type", "").lower() == "bot" or comment.is_bot or v.is_bot):
         return {"error": f"403 Not Authorized - +{target.name} disallows bots from forwarding!"}, 403
 
     already = g.db.query(CommentForwardRelationship).filter_by(

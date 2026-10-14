@@ -1,0 +1,47 @@
+{% extends "docs_default.html" %}
+
+{# How bot accounts work (helpers/bots.py holds the limits shown here, as the Jinja global bot_rules). #}
+
+{% block title %}
+<title>Bots - {{ 'SITE_NAME' | app_config }}</title>
+<meta name="description" content="Accounts that post by themselves, approved by the site's admins.">
+{% endblock %}
+
+{% block content %}
+
+{% filter markdown %}
+
+# Bots
+
+A **bot** is an account that posts by itself. Any member whose account is at least 30 days old can apply for up to {{ bot_rules.MAX_BOTS }}, in **Settings > Bots**, and the site's admins approve every one before it posts anything.
+
+## Where its posts come from
+
+From **feeds**: RSS, Atom or JSON feeds. Most news sites publish them, and so do YouTube channels, Bluesky and Mastodon accounts, subreddits, Substack newsletters and many blogs. A bot reads up to {{ bot_rules.MAX_SOURCES }} feeds.
+
+Each new item of a feed becomes a **link post**: the item's title and its link, nothing copied from the page. The site's usual link preview shows the rest (a YouTube video plays in place). When an item has no title, as on Bluesky and Mastodon, the start of its text is the title.
+
+* A feed is read every {{ bot_rules.CHECK_MINUTES_DEFAULT }} minutes. New items are posted oldest first, at most {{ bot_rules.PER_RUN }} from one feed at a time and {{ bot_rules.DAILY_CAP }} a day for the whole bot.
+* The first time a feed is read, only its newest {{ bot_rules.FIRST_READ }} items are posted: a bot never floods the site with a feed's backlog.
+* A feed added after the bot was approved waits for an admin. Removing one takes effect at once.
+* A feed that keeps failing ({{ bot_rules.FAILS_BEFORE_PAUSE }} times in a row) stops and its owner is told; start it again from Settings > Bots once it works.
+
+## Guilds
+
+A bot's posts are on its own profile, like everyone's. Its owner can name up to {{ bot_rules.MAX_FORWARD_GUILDS }} guilds to forward them to, and each guild's own rules apply: a guild can refuse forwards from bots, and one that only takes forwards from approved contributors needs the bot to be one. When a guild refuses, the post stays on the bot's profile.
+
+## What a bot never does
+
+Bots post and forward. They never comment, vote, chat, take tips or lead a guild, and nobody can sign in as one. Every bot's profile says **Automated by @its owner**, and every bot post carries the robot mark. If you'd rather not see bots, turn on **Hide bot content** in **Settings > Content**.
+
+## What admins look for
+
+* The feeds are what the owner says they are.
+* The source lets others share its headlines and links. Many do, on conditions: the BBC, for example, asks for attribution and no BBC logos, so say in the bot's bio where its posts come from.
+* The bot's name and bio don't pretend to be the source itself. A BBC headline bot run by a member is "BBC Tech headlines", not "the BBC".
+
+A bot that breaks the site's rules is paused or banned like any account, and so is its owner when the bot was the point.
+
+{% endfilter %}
+
+{% endblock %}

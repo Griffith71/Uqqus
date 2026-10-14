@@ -1,0 +1,109 @@
+{% extends "docs_default.html" %}
+
+{% block sidebarblock %}{% endblock %}
+{% block sidebarLeftblock %}{% endblock %}
+
+{% block title %}
+<title>Ruqqus - Bots</title>
+{% endblock %}
+
+{% block content %}
+
+<h1>Bots</h1>
+
+<p class="text-muted">Members apply for bot accounts in Settings &gt; Bots (helpers/bots.py). A bot posts the title and link of each new item of its approved feeds, on its own profile; its profile says who runs it. Approve a bot only when its feeds are what its owner says and the source allows reuse of its headlines (for example the BBC asks for attribution and no BBC logos). Approving a bot approves the feeds it applied with; a feed added later waits here on its own.</p>
+
+{% if msg %}<div class="alert alert-success" role="status">{{ msg }}</div>{% endif %}
+
+{% if checked %}
+<div class="card mb-4" id="bot-feed-check">
+  <div class="card-body">
+    <div class="font-weight-bold text-break">{{ checked.title or checked.url }}</div>
+    <div class="text-small text-muted text-break">{{ checked.url }}</div>
+    {% if checked.error %}
+    <p class="text-danger text-small mb-0">{{ checked.error }}</p>
+    {% else %}
+    <ul class="text-small mt-2 mb-0 pl-3">{% for title in checked.titles %}<li>{{ title }}</li>{% else %}<li class="text-muted">The feed has no items.</li>{% endfor %}</ul>
+    {% endif %}
+  </div>
+</div>
+{% endif %}
+
+<h2 class="h4 mt-4">Applications</h2>
+{% for b in pending %}
+<div class="card mb-3 bot-application" data-user="{{ b.user_id }}">
+  <div class="card-body">
+    <div class="d-flex justify-content-between align-items-start flex-wrap">
+      <div><a href="/@{{ b.username }}" target="_blank" rel="noopener" class="font-weight-bold">@{{ b.username }}</a>
+        <span class="text-muted text-small">run by <a href="/@{{ b.owner_name }}" target="_blank" rel="noopener">@{{ b.owner_name }}</a></span></div>
+    </div>
+    <p class="text-small mt-2 mb-2 text-break">{{ b.purpose }}</p>
+    <ul class="text-small mb-2 pl-3">
+      {% for s in sources[b.user_id] %}
+      <li class="text-break">{{ s.title or s.url }} <span class="text-muted">{{ s.url }}</span> <a href="/admin/bots?check={{ s.id }}#bot-feed-check">Check the feed now</a></li>
+      {% endfor %}
+    </ul>
+    {% set g_names = guilds_of(b) %}
+    {% if g_names %}<p class="text-small text-muted mb-2">Forwards to {% for name in g_names %}+{{ name }}{% if not loop.last %}, {% endif %}{% endfor %}</p>{% endif %}
+    <form action="/admin/bots/{{ b.user_id }}/approve" method="post" class="d-inline">
+      <input type="hidden" name="formkey" value="{{ v.formkey }}">
+      <button class="btn btn-primary btn-sm">Approve</button>
+    </form>
+    <form action="/admin/bots/{{ b.user_id }}/reject" method="post" class="d-inline-flex ml-2 align-items-center">
+      <input type="hidden" name="formkey" value="{{ v.formkey }}">
+      <label for="reject-note-{{ b.user_id }}" class="sr-only">Why not</label>
+      <input type="text" class="form-control form-control-sm" id="reject-note-{{ b.user_id }}" name="note" maxlength="{{ rules.NOTE_MAX }}" placeholder="Why not (sent to the owner)" autocomplete="off">
+      <button class="btn btn-outline-danger btn-sm ml-1">Reject</button>
+    </form>
+  </div>
+</div>
+{% else %}
+<p class="text-muted" id="bot-applications-empty">No bots are waiting.</p>
+{% endfor %}
+
+<h2 class="h4 mt-5">Feeds added to running bots</h2>
+{% for s in new_sources %}
+<div class="card mb-2 bot-new-source">
+  <div class="card-body py-2">
+    <div class="text-break"><a href="/@{{ s.username }}" target="_blank" rel="noopener">@{{ s.username }}</a> <span class="text-muted text-small">(run by @{{ s.owner_name }})</span>: {{ s.url }}
+      <a href="/admin/bots?check={{ s.id }}#bot-feed-check" class="text-small">Check the feed now</a></div>
+    <form action="/admin/bots/sources/{{ s.id }}/approve" method="post" class="d-inline"><input type="hidden" name="formkey" value="{{ v.formkey }}"><button class="btn btn-primary btn-sm">Approve</button></form>
+    <form action="/admin/bots/sources/{{ s.id }}/reject" method="post" class="d-inline"><input type="hidden" name="formkey" value="{{ v.formkey }}"><button class="btn btn-outline-danger btn-sm">Reject</button></form>
+  </div>
+</div>
+{% else %}
+<p class="text-muted">No feeds are waiting.</p>
+{% endfor %}
+
+<h2 class="h4 mt-5">Running and paused bots</h2>
+<div class="table-responsive">
+<table class="table table-sm">
+  <thead><tr><th scope="col">Bot</th><th scope="col">Owner</th><th scope="col">State</th><th scope="col">Feeds failing</th><th scope="col"></th></tr></thead>
+  <tbody>
+  {% for b in running %}
+  <tr>
+    <td><a href="/@{{ b.username }}" target="_blank" rel="noopener">@{{ b.username }}</a></td>
+    <td><a href="/@{{ b.owner_name }}" target="_blank" rel="noopener">@{{ b.owner_name }}</a></td>
+    <td>{{ rules.STATUS_LABELS[b.status] }}{% if b.paused_reason %}<div class="text-small text-muted">{{ b.paused_reason }}</div>{% endif %}</td>
+    <td>{{ b.failing }}</td>
+    <td class="text-nowrap">
+      {% if b.status == 'approved' %}
+      <form action="/admin/bots/{{ b.user_id }}/pause" method="post" class="d-inline-flex align-items-center">
+        <input type="hidden" name="formkey" value="{{ v.formkey }}">
+        <label for="pause-reason-{{ b.user_id }}" class="sr-only">Why</label>
+        <input type="text" class="form-control form-control-sm" id="pause-reason-{{ b.user_id }}" name="reason" maxlength="300" placeholder="Why (sent to the owner)" autocomplete="off">
+        <button class="btn btn-outline-secondary btn-sm ml-1">Pause</button>
+      </form>
+      {% else %}
+      <form action="/admin/bots/{{ b.user_id }}/resume" method="post" class="d-inline"><input type="hidden" name="formkey" value="{{ v.formkey }}"><button class="btn btn-outline-primary btn-sm">Resume</button></form>
+      {% endif %}
+    </td>
+  </tr>
+  {% else %}
+  <tr><td colspan="5" class="text-muted">No bots are running.</td></tr>
+  {% endfor %}
+  </tbody>
+</table>
+</div>
+
+{% endblock %}

@@ -62,9 +62,9 @@ def test_the_post_shows_coins_never_who_tipped():
     comments = read("ruqqus/templates/comments.html")
     assert 'class="tip-badge"' in comments and "ruqqus-coin.png\" style" not in comments
     # Tip is in the row (no longer in the "..." menu or the phone sheet), and never on one's own, an anonymous, a
-    # removed or a deleted post, or one whose author's account is deleted
+    # removed or a deleted post, or one whose author's account is deleted or is a bot (helpers/bots.py)
     assert actions.count("tipModal2(") == 1
-    gate = "{% if v and v.id != p.author_id and not p.is_anonymous and not author_of(p, v).is_deleted and not anon_hidden(p, v) and p.deleted_utc == 0 and not p.is_banned %}"
+    gate = "{% if v and v.id != p.author_id and not p.is_anonymous and not author_of(p, v).is_deleted and not author_of(p, v).is_bot and not anon_hidden(p, v) and p.deleted_utc == 0 and not p.is_banned %}"
     assert actions.count(gate) == 2
     for page in ("submission_listing.html", "submission.html"):
         assert "tipModal2(" not in read(f"ruqqus/templates/{page}"), page

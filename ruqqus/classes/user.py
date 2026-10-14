@@ -126,6 +126,9 @@ class User(Base, Stndrd, Age_times):
     followers_visibility = Column(SmallInteger, default=2)
     subscribers_visibility = Column(SmallInteger, default=2)
     subscriptions_visibility = Column(SmallInteger, default=2)
+    # a bot account (helpers/bots.py): nobody logs into it; bot_owner_id is the member who runs it
+    is_bot = Column(Boolean, default=False)
+    bot_owner_id = Column(Integer, default=None)
     hide_bot = Column(Boolean, default=False)
     show_nsfl = Column(Boolean, default=False)
     is_private = Column(Boolean, default=False)
@@ -1501,13 +1504,43 @@ class User(Base, Stndrd, Age_times):
     @property
     def can_join_gms(self):
         # the cheap, per-person half of the guild limit (helpers/guild_limits.py); every page asks it
+        if self.is_bot:
+            return False                    # a bot never leads a guild (helpers/bots.py)
         if self.admin_level >= guild_limits.ADMIN_LEVEL:
             return True
         return len([x for x in self.boards_modded if x.is_siegable]) < guild_limits.PER_PERSON
 
+    @property
+    @lazy
+    def bot_owner(self):
+        """The member who runs this bot account (helpers/bots.py), or None."""
+        if not self.is_bot or not self.bot_owner_id:
+            return None
+        return g.db.query(User).filter_by(id=self.bot_owner_id).first()
+
+    @property
+    @lazy
+    def bot_status(self):
+        """pending / approved / rejected / paused for a bot account, None for anyone else."""
+        if not self.is_bot:
+            return None
+        from ruqqus.helpers import bot_store
+        row = bot_store.bot_of(g.db, self.id)
+        return row.status if row else None
+
+    def bot_shown_to(self, v):
+        """May `v` open this account's profile? Everyone may once the bot was approved (running or paused); before
+        that only its owner and the site's admins."""
+        if not self.is_bot or self.bot_status in ("approved", "paused"):
+            return True
+        return bool(v and (v.id == self.bot_owner_id or (v.admin_level or 0) >= 3))
+
     def gm_limit_refusal(self):
         """None, or why this account may not lead another guild right now: "person" (it leads enough)
-        or "ip" (accounts on its network lead enough between them). Asked where a guild is added."""
+        or "ip" (accounts on its network lead enough between them). Asked where a guild is added.
+        A bot account never leads one, and gets the plain "person" answer (the messages name no reason)."""
+        if self.is_bot:
+            return "person"
         return guild_limits.check(g.db, self)
 
     @property

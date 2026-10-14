@@ -30,8 +30,8 @@ URL path parameters:
     if x not in ["-1", "0", "1"]:
         abort(400)
 
-    # disallow bots
-    if request.headers.get("X-User-Type","").lower()=="bot":
+    # disallow bots: the header, and every bot account whatever it sends (helpers/bots.py)
+    if request.headers.get("X-User-Type","").lower()=="bot" or v.is_bot:
         abort(403)
 
     x = int(x)
@@ -139,8 +139,8 @@ URL path parameters:
     if x not in ["-1", "0", "1"]:
         abort(400)
 
-    # disallow bots
-    if request.headers.get("X-User-Type","").lower()=="bot":
+    # disallow bots: the header, and every bot account whatever it sends (helpers/bots.py)
+    if request.headers.get("X-User-Type","").lower()=="bot" or v.is_bot:
         abort(403)
 
     x = int(x)

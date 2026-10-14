@@ -16,7 +16,7 @@ IN_MONTH = START + 5 * 86400
 TABLES = """
 CREATE TABLE users (id INTEGER PRIMARY KEY, username TEXT, created_utc INTEGER, is_banned INTEGER DEFAULT 0,
     unban_utc INTEGER DEFAULT 0, is_deleted BOOLEAN DEFAULT 0, creator_fund_opt_in_utc INTEGER DEFAULT 0,
-    negative_balance_cents INTEGER DEFAULT 0, coin_balance INTEGER DEFAULT 0);
+    negative_balance_cents INTEGER DEFAULT 0, coin_balance INTEGER DEFAULT 0, is_bot BOOLEAN DEFAULT 0);
 CREATE TABLE submissions (id INTEGER PRIMARY KEY, author_id INTEGER, post_public BOOLEAN DEFAULT 1,
     is_banned BOOLEAN DEFAULT 0, deleted_utc INTEGER DEFAULT 0, repost_id INTEGER DEFAULT 0, is_anonymous BOOLEAN DEFAULT 0);
 CREATE TABLE comments (id INTEGER PRIMARY KEY, author_id INTEGER, parent_submission INTEGER, created_utc INTEGER,

@@ -1,0 +1,115 @@
+{% extends "settings.html" %}
+
+{% block pagetitle %}@{{ account.username }} - Bots - {{ 'SITE_NAME' | app_config }}{% endblock %}
+
+{# One of the member's bots: its feeds, guilds, bio, pause and delete (routes/bot_accounts.py). #}
+
+{% block content %}
+<div class="row">
+  <div class="col col-lg-8">
+    <div class="settings" id="bot-page">
+
+      <p class="text-small mb-2"><a href="/settings/bots">&larr; Your bots</a></p>
+      {% if msg %}<div class="alert alert-success" role="status">{{ msg }}</div>{% endif %}
+      {% if error %}<div class="alert alert-danger" role="alert">{{ error }}</div>{% endif %}
+
+      <h2 class="h5">
+        {% if bot.status == 'pending' %}@{{ account.username }}{% else %}<a href="{{ account.permalink }}">@{{ account.username }}</a>{% endif %}
+        <span class="badge badge-pill {% if bot.status == 'approved' %}badge-success{% elif bot.status == 'pending' %}badge-info{% else %}badge-secondary{% endif %} ml-1" id="bot-status">{{ rules.STATUS_LABELS[bot.status] }}</span>
+      </h2>
+      {% if bot.status == 'pending' %}
+      <p class="text-small text-muted">Waiting for an admin. You will get a notification when they decide; until then the bot's profile is visible to you and the admins only.</p>
+      {% elif bot.status == 'paused' %}
+      <p class="text-small text-muted">{{ bot.paused_reason or "Paused." }}{% if bot.paused_by_admin %} Only an admin can start it again.{% endif %}</p>
+      {% else %}
+      <p class="text-small text-muted">{{ posts_today }} of {{ rules.DAILY_CAP }} posts today. New items are posted oldest first, at most {{ rules.PER_RUN }} from a feed at a time.</p>
+      {% endif %}
+
+      <h3 class="h6 mt-4">Feeds</h3>
+      <div class="settings-section rounded" id="bot-sources">
+        {% for s in sources %}
+        <div class="py-2{% if not loop.first %} border-top{% endif %} bot-source">
+          <div class="d-flex justify-content-between align-items-start flex-wrap">
+            <div class="min-w-0">
+              <div class="font-weight-bold text-break">{{ s.title or s.url }}</div>
+              <div class="text-small text-muted text-break">{{ s.url }}</div>
+              <div class="text-small">
+                <span class="badge badge-pill {% if s.status == 'approved' %}badge-success{% elif s.status == 'pending' %}badge-info{% else %}badge-secondary{% endif %}">{{ {"pending": "Waiting for an admin", "approved": "Read", "paused": "Stopped after failing", "rejected": "Not approved"}[s.status] }}</span>
+                {% if s.posted_count %}<span class="text-muted ml-1">{{ s.posted_count }} posted</span>{% endif %}
+              </div>
+              {% if s.last_error %}<div class="text-small text-danger text-break">{{ s.last_error }}</div>{% endif %}
+            </div>
+            <div class="text-nowrap">
+              {% if s.status == 'paused' %}
+              <form action="/settings/bots/{{ account.username }}/sources/{{ s.id }}/restart" method="post" class="d-inline">
+                <input type="hidden" name="formkey" value="{{ v.formkey }}"><button class="btn btn-link btn-sm">Start again</button>
+              </form>
+              {% endif %}
+              <form action="/settings/bots/{{ account.username }}/sources/{{ s.id }}/remove" method="post" class="d-inline">
+                <input type="hidden" name="formkey" value="{{ v.formkey }}"><button class="btn btn-link btn-sm text-danger">Remove</button>
+              </form>
+            </div>
+          </div>
+        </div>
+        {% else %}
+        <p class="text-muted mb-0">No feeds.</p>
+        {% endfor %}
+      </div>
+      {% if sources | length < rules.MAX_SOURCES %}
+      <form action="/settings/bots/{{ account.username }}/sources/add" method="post" class="mt-2" id="bot-add-source">
+        <input type="hidden" name="formkey" value="{{ v.formkey }}">
+        <label for="bot-new-source" class="text-small font-weight-bold mb-1">Add a feed</label>
+        <div class="input-group">
+          <input type="url" class="form-control" id="bot-new-source" name="url" required spellcheck="false" autocomplete="off" placeholder="https://example.org/feed.xml">
+          <div class="input-group-append"><button type="submit" class="btn btn-primary">Add</button></div>
+        </div>
+        <span class="d-block mt-1 text-small-extra text-muted">A feed added now waits for an admin before it is read. Removing one takes effect at once.</span>
+      </form>
+      {% endif %}
+
+      <h3 class="h6 mt-5">Profile and guilds</h3>
+      <form action="/settings/bots/{{ account.username }}/profile" method="post" class="settings-section rounded" id="bot-profile">
+        <input type="hidden" name="formkey" value="{{ v.formkey }}">
+        <div class="d-lg-flex">
+          <div class="title w-lg-25"><label for="bot-bio">Bio</label></div>
+          <div class="body w-lg-100">
+            <textarea class="form-control" id="bot-bio" name="bio" rows="2" maxlength="{{ rules.BIO_MAX }}" placeholder="Technology headlines from BBC News. Not run by the BBC.">{{ account.bio or '' }}</textarea>
+            <span class="d-block mt-1 text-small-extra text-muted">Plain text, no links. Say where the posts come from.</span>
+          </div>
+        </div>
+        <div class="d-lg-flex border-top">
+          <div class="title w-lg-25"><label for="bot-guilds">Forward to guilds</label></div>
+          <div class="body w-lg-100">
+            <input type="text" class="form-control" id="bot-guilds" name="forward_guilds" value="{% for name in guilds %}+{{ name }}{% if not loop.last %}, {% endif %}{% endfor %}" autocomplete="off" spellcheck="false" placeholder="+technology">
+            <span class="d-block mt-1 text-small-extra text-muted">Each guild's own rules apply. When one refuses, the post stays on the bot's profile and the reason shows above.</span>
+          </div>
+        </div>
+        <div class="border-top pt-3"><button type="submit" class="btn btn-primary">Save</button></div>
+      </form>
+
+      {% if bot.status in ('approved', 'paused') %}
+      <h3 class="h6 mt-5">Running</h3>
+      <div class="settings-section rounded">
+        {% if bot.status == 'approved' %}
+        <form action="/settings/bots/{{ account.username }}/pause" method="post" class="d-inline">
+          <input type="hidden" name="formkey" value="{{ v.formkey }}"><button class="btn btn-secondary">Pause</button>
+        </form>
+        {% elif not bot.paused_by_admin %}
+        <form action="/settings/bots/{{ account.username }}/resume" method="post" class="d-inline">
+          <input type="hidden" name="formkey" value="{{ v.formkey }}"><button class="btn btn-primary">Resume</button>
+        </form>
+        {% endif %}
+      </div>
+      {% endif %}
+
+      <h3 class="h6 mt-5 text-danger">Switch off for good</h3>
+      <form action="/settings/bots/{{ account.username }}/delete" method="post" id="bot-delete"
+            onsubmit="return confirm('Switch @{{ account.username }} off for good? Its posts stay; the bot never posts again.');">
+        <input type="hidden" name="formkey" value="{{ v.formkey }}">
+        <button class="btn btn-outline-danger">Delete @{{ account.username }}</button>
+      </form>
+
+    </div>
+  </div>
+</div>
+{% endblock %}
