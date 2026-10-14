@@ -304,6 +304,37 @@ def curations_for(v, limit=PAGE_COUNT):
     return [(curations[i], reason) for i, _, reason in picked]
 
 
+# --- Similar accounts (a profile's sidebar; the SQL and its rules are in helpers/similar_store.py) ---------------
+
+SIMILAR_COUNT = 3
+
+
+@_memo
+def similar_candidates(owner_id, owner_name):
+    """The ranking for one profile, the same for every viewer (it reads nothing about the viewer)."""
+    from flask import g
+    from ruqqus.helpers import similar_store
+    return similar_store.candidates(g.db, owner_id, owner_name, time.time())
+
+
+def similar_for(owner, v, limit=SIMILAR_COUNT):
+    """[(account, reason)] like `owner` that the viewer (or a visitor, v None) may be shown: never the owner or the
+    viewer, an account the viewer follows, blocks, is blocked by or muted, or a private, nofollow, banned, deleted or
+    word-filtered account."""
+    from flask import g
+    from ruqqus.classes import User
+    from ruqqus.helpers.visibility import filter_users
+
+    rows = [r for r in similar_candidates(owner.id, owner.username) if r[0] != owner.id]
+    viewer_id = v.id if v else None
+    following = v.following_ids if v else set()
+    blocked = _blocked_user_ids(v.id) if v else set()
+    ids = [r[0] for r in rows]
+    users = {u.id: u for u in filter_users(g.db.query(User).filter(User.id.in_(ids)), v).all()} if ids else {}
+    picked = top(rows, lambda i: user_eligible(users.get(i), viewer_id, following, blocked), limit)
+    return [(users[i], reason) for i, _, reason in picked]
+
+
 def sidebar_suggestions(v):
     """One of each kind for the sidebar box: [(kind, item, reason)]."""
     out = []

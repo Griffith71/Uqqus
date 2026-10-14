@@ -1,6 +1,7 @@
 """The right sidebar reads the same on every page with posts (home and the feeds, a profile, a guild, a post): each
 page's own sections, then partials/sidebar_common.html (Trending, Who to follow, the sidebar ad, Guilds, Support).
-A profile once showed only Support, and a guild or a post had no Trending or Who to follow."""
+A profile once showed only Support, and a guild or a post had no Trending or Who to follow. A profile now swaps Who
+to follow for Similar accounts and Support for its About box (tests/test_profile_sidebar_assets.py)."""
 import re
 from pathlib import Path
 

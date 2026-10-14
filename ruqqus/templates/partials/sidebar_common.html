@@ -1,7 +1,9 @@
 {#
   The part of the right sidebar every page with posts shares (home and the feeds, a profile, a guild, a post):
   Trending, Who to follow and the sidebar ad (late_boxes.html), Guilds / Create Guild, and Support. A page puts its own
-  sections first (a guild's info, a profile's guilds) and then includes this, so the sidebar reads the same everywhere.
+  sections first (a guild's info, a profile's About box) and then includes this, so the sidebar reads the same everywhere.
+  A profile sets `profile_user`: Who to follow becomes Similar accounts (late_boxes.html) and Support is left out (its
+  place is the About box at the top, partials/profile_about.html).
   tests/test_sidebar_consistency_assets.py keeps every page on it.
 #}
 {% include "partials/late_boxes.html" %}
@@ -23,9 +25,7 @@
 </div>
 {% endif %}
 
-
-
-
+{% if not profile_user %}
 <div class="sidebar-section">
   <div class="title">
     <i class="fas fa-heart mr-2"></i>Support {{ 'SITE_NAME' | app_config }}
@@ -87,3 +87,4 @@
   </div>
 
 </div>
+{% endif %}

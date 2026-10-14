@@ -1,0 +1,64 @@
+{#
+  "About @name" at the top of a profile's right sidebar: how long the account has existed, its Rep with the counts
+  behind it, its badges, the guilds it leads and its public curations. Rules in helpers/profile_about.py: a guild is
+  listed only to a viewer who may see it, a curation only when it is public and its name passes the viewer's filter.
+#}
+{% set about_guilds = profile_guilds(u, v) %}
+{% set about_curations, about_more = profile_curations(u, v) %}
+{% set about_badges = u.badges %}
+<div class="sidebar-section profile-about">
+  <div class="title"><i class="fas fa-id-card mr-2"></i>About @{{ u.username }}</div>
+  <div class="body">
+    <dl class="profile-about-facts mb-0">
+      <div class="profile-about-fact">
+        <dt>Joined</dt>
+        <dd>{{ u.created_date }}
+          <span class="d-block text-muted text-small">{{ account_age(u) }}</span></dd>
+      </div>
+      <div class="profile-about-fact">
+        <dt>Rep</dt>
+        <dd><span class="rep-count {{ u.rep_class }}" title="{{ u.rep_label }}">{{ u.true_score }}</span>
+          <span class="d-block text-muted text-small">{{ u.rep_label }}</span></dd>
+      </div>
+    </dl>
+
+    {% if about_badges %}
+    <div class="profile-about-heading">Achievements</div>
+    <ul class="profile-about-list">
+      {% for b in about_badges %}
+      <li class="profile-about-item">
+        <img src="{{ b.path }}" alt="" width="24" height="24" class="mr-2">
+        <span>{% if b.url %}<a href="{{ b.url }}">{{ b.name }}</a>{% else %}{{ b.name }}{% endif %}
+          {% if b.text %}<span class="d-block text-muted text-small">{{ b.text }}</span>{% endif %}</span>
+      </li>
+      {% endfor %}
+    </ul>
+    {% endif %}
+
+    {% if about_guilds %}
+    <div class="profile-about-heading">Guilds</div>
+    <ul class="profile-about-list">
+      {% for board, role in about_guilds %}
+      <li class="profile-about-item">
+        <img src="{{ board.profile_url }}" alt="" width="24" height="24" class="profile-pic-25 mr-2">
+        <a href="{{ board.permalink }}" class="text-truncate">+{{ board.name }}</a>
+        <span class="profile-about-role ml-auto">{{ role }}</span>
+      </li>
+      {% endfor %}
+    </ul>
+    {% endif %}
+
+    {% if about_curations %}
+    <div class="profile-about-heading">Curations</div>
+    <ul class="profile-about-list">
+      {% for c in about_curations %}
+      <li class="profile-about-item">
+        <i class="fas fa-layer-group fa-fw text-muted mr-2"></i>
+        <a href="{{ c.permalink }}" class="text-truncate">{{ c.name }}</a>
+      </li>
+      {% endfor %}
+    </ul>
+    {% if about_more %}<div class="text-muted text-small">and {{ about_more }} more</div>{% endif %}
+    {% endif %}
+  </div>
+</div>

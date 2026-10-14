@@ -705,8 +705,8 @@
 {% if v and not request.args.get('embed') %}<script src="{{ asset_url('js/side_panels.js') }}"></script>{% endif %}
 {% if not request.args.get('embed') %}<script src="{{ asset_url('js/nav_align.js') }}"></script>{% endif %}
 {% if request.args.get('embed') %}<script src="{{ asset_url('js/embedded.js') }}"></script>{% endif %}
+{% if v or u is defined %}<script src="{{ asset_url('js/who_to_follow.js') }}"></script>{% endif %}
 {% if v %}<script src="{{ asset_url('js/inline_composer.js') }}"></script>
-<script src="{{ asset_url('js/who_to_follow.js') }}"></script>
 <script src="{{ asset_url('js/media_upload.js') }}"></script>
 {% if not request.args.get('embed') %}<script src="{{ asset_url('js/share_chat.js') }}"></script>
 <script src="{{ asset_url('js/coauthors.js') }}"></script>

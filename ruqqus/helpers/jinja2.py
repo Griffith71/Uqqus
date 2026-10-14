@@ -34,6 +34,26 @@ def ratio_class_global(ups, downs):
     return ratio_class(ups, downs)
 
 
+# The About box of a profile (partials/profile_about.html, helpers/profile_about.py)
+@app.template_global("account_age")
+def account_age(u):
+    from ruqqus.helpers.profile_about import age_text
+    return age_text(u.created_utc)
+
+
+@app.template_global("profile_guilds")
+def profile_guilds(u, v):
+    from ruqqus.helpers.profile_about import guilds_for
+    return guilds_for(u, v)
+
+
+@app.template_global("profile_curations")
+def profile_curations(u, v):
+    from flask import g
+    from ruqqus.helpers.profile_about import curations_for
+    return curations_for(g.db, u, v)
+
+
 @app.template_filter("total_users")
 @cache.memoize(timeout=60)
 def total_users(x):

@@ -1291,6 +1291,65 @@ color: $dark;
     max-width: 9rem;
 }
 
+// A profile's About box (partials/profile_about.html): label and value rows, then short lists (badges, guilds, curations)
+.profile-about {
+    .profile-about-fact {
+        display: flex;
+        padding: 0.25rem 0;
+    }
+
+    dt, .profile-about-heading {
+        color: $muted;
+        font-size: 12px;
+        font-weight: $font-weight-bold;
+        letter-spacing: 0.025rem;
+        text-transform: uppercase;
+    }
+
+    dt {
+        flex-shrink: 0;
+        width: 4.5rem;
+        padding-top: 2px;
+    }
+
+    dd {
+        min-width: 0;
+        margin: 0;
+    }
+
+    .profile-about-heading {
+        margin: 1rem 0 0.25rem;
+    }
+
+    .profile-about-list {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+    }
+
+    .profile-about-item {
+        display: flex;
+        align-items: center;
+        min-width: 0;
+        padding: 0.3rem 0;
+
+        > img, > i {
+            flex-shrink: 0;
+        }
+
+        > a, > span {
+            min-width: 0;
+        }
+    }
+
+    .profile-about-role {
+        flex-shrink: 0;
+        padding-left: 0.5rem;
+        color: $muted;
+        font-size: 12px;
+    }
+}
+
 // Who to follow (assets/js/who_to_follow.js)
 .wtf-row {
     padding: 0.5rem 0;

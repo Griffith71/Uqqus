@@ -1,0 +1,16 @@
+{#
+  "Similar accounts" in a profile's right sidebar, in place of Who to follow: accounts like this one
+  (helpers/similar_store.py, routes/suggestions.py /inpage/similar_accounts/<name>, loaded by assets/js/who_to_follow.js).
+  Nothing is drawn when there is nobody to suggest.
+#}
+{% from "partials/suggestion_row.html" import suggestion_row with context %}
+{% if picks %}
+<div class="sidebar-section who-to-follow similar-accounts">
+  <div class="title"><i class="fas fa-user-friends mr-2"></i>Similar accounts</div>
+  <div class="body">
+    {% for item, reason in picks %}
+    {{ suggestion_row("users", item, reason, login_to=(none if v else u.permalink)) }}
+    {% endfor %}
+  </div>
+</div>
+{% endif %}

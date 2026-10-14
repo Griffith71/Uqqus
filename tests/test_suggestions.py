@@ -140,7 +140,8 @@ def test_the_sidebar_loads_lazily_and_the_page_is_for_members():
         html = (ROOT / "templates" / sidebar).read_text(encoding="utf-8")
         assert '{% include "partials/sidebar_common.html" %}' in html, sidebar     # which includes the late boxes
     late = (ROOT / "templates" / "partials" / "late_boxes.html").read_text(encoding="utf-8")
-    assert '{% if v %}<div id="who-to-follow" class="late-box" data-src="/inpage/who_to_follow"></div>{% endif %}' in late
+    # (a profile has Similar accounts in its place: tests/test_profile_sidebar_assets.py)
+    assert '{% elif v %}<div id="who-to-follow" class="late-box" data-src="/inpage/who_to_follow"></div>{% endif %}' in late
     box = (ROOT / "templates" / "partials" / "who_to_follow_box.html").read_text(encoding="utf-8")
     assert "{% if picks %}" in box and 'href="/who_to_follow"' in box
 
