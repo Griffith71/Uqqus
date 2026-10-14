@@ -224,7 +224,9 @@ CREATE TABLE public.submissions (
     paid_partnership boolean DEFAULT false NOT NULL,
     made_with_ai boolean DEFAULT false NOT NULL,
     is_anonymous boolean DEFAULT false NOT NULL,
-    audience smallint DEFAULT 0 NOT NULL
+    audience smallint DEFAULT 0 NOT NULL,
+    tip_coins integer DEFAULT 0 NOT NULL,
+    tip_boost double precision DEFAULT 0 NOT NULL
 );
 
 
@@ -318,7 +320,8 @@ CREATE TABLE public.users (
     filter_level smallint DEFAULT 1 NOT NULL,
     name_severity smallint DEFAULT 0 NOT NULL,
     bio_severity smallint DEFAULT 0 NOT NULL,
-    for_you_reset_utc integer DEFAULT 0 NOT NULL
+    for_you_reset_utc integer DEFAULT 0 NOT NULL,
+    creator_fund_opt_in_utc integer DEFAULT 0 NOT NULL
 );
 
 
@@ -811,7 +814,7 @@ CREATE FUNCTION public.rank_activity(public.submissions) RETURNS double precisio
 CREATE FUNCTION public.rank_best(public.submissions) RETURNS double precision
     LANGUAGE sql IMMUTABLE STRICT
     AS $_$
-      SELECT 10000000.0*CAST(($1.upvotes - $1.downvotes + 1) AS float)/((CAST(($1.age+3600) AS FLOAT)*cast((select boards.subscriber_count from boards where boards.id=$1.board_id)+10000 as float)/1000.0)^(1.35))
+      SELECT 10000000.0*CAST(($1.upvotes - $1.downvotes + $1.tip_boost + 1) AS float)/((CAST(($1.age+3600) AS FLOAT)*cast((select boards.subscriber_count from boards where boards.id=$1.board_id)+10000 as float)/1000.0)^(1.35))
       $_$;
 
 
@@ -855,7 +858,7 @@ CREATE FUNCTION public.rank_hot(public.comments) RETURNS double precision
 CREATE FUNCTION public.rank_hot(public.submissions) RETURNS double precision
     LANGUAGE sql IMMUTABLE STRICT
     AS $_$
-      SELECT 1000000.0*CAST(($1.upvotes - $1.downvotes) AS float)/((CAST(($1.age+5000) AS FLOAT)/100.0)^(1.5))
+      SELECT 1000000.0*CAST(($1.upvotes - $1.downvotes + $1.tip_boost) AS float)/((CAST(($1.age+5000) AS FLOAT)/100.0)^(1.5))
       $_$;
 
 
@@ -1269,7 +1272,9 @@ CREATE TABLE public.award_relationships (
     id integer NOT NULL,
     user_id integer,
     submission_id integer,
-    comment_id integer
+    comment_id integer,
+    coins integer DEFAULT 1 NOT NULL,
+    created_utc integer DEFAULT 0 NOT NULL
 );
 
 
@@ -3357,30 +3362,6 @@ ALTER TABLE ONLY public.alts
 
 
 --
--- Name: award_relationships award_comment_constraint; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.award_relationships
-    ADD CONSTRAINT award_comment_constraint UNIQUE (user_id, comment_id);
-
-
---
--- Name: award_relationships award_constraint; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.award_relationships
-    ADD CONSTRAINT award_constraint UNIQUE (user_id, submission_id, comment_id);
-
-
---
--- Name: award_relationships award_post_constraint; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.award_relationships
-    ADD CONSTRAINT award_post_constraint UNIQUE (user_id, submission_id);
-
-
---
 -- Name: award_relationships award_relationships_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -4850,6 +4831,13 @@ CREATE INDEX submissions_title_trgm_idx ON public.submissions_aux USING gin (tit
 
 
 --
+-- Name: submissions_body_trgm_idx; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX submissions_body_trgm_idx ON public.submissions_aux USING gin (body public.gin_trgm_ops);
+
+
+--
 -- Name: subscription_board_index; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -5265,6 +5253,8 @@ ALTER TABLE ONLY public.login_events
     ADD CONSTRAINT login_events_pkey PRIMARY KEY (id);
 
 CREATE INDEX login_event_user_created_idx ON public.login_events USING btree (user_id, created_utc DESC);
+
+CREATE INDEX login_events_ip_idx ON public.login_events USING btree (ip, created_utc DESC);
 
 --
 -- Name: regions; Type: TABLE; Schema: public; Owner: -
@@ -6017,3 +6007,76 @@ CREATE INDEX media_assets_story_idx ON public.media_assets USING btree (story_id
 
 CREATE INDEX submissions_word_severity_index ON public.submissions USING btree (word_severity);
 CREATE INDEX comments_word_severity_index ON public.comments USING btree (word_severity);
+
+--
+-- Guild rules (classes/rules.py; migration 2026-10-10_rules_and_login_ip.sql)
+--
+
+CREATE TABLE public.rules (
+    id bigserial PRIMARY KEY,
+    board_id integer REFERENCES public.boards(id) ON DELETE CASCADE,
+    rule_body character varying(256),
+    rule_html character varying,
+    created_utc bigint DEFAULT 0,
+    edited_utc bigint DEFAULT 0
+);
+
+CREATE INDEX rules_board_idx ON public.rules USING btree (board_id);
+
+--
+-- Follow a post and Show fewer posts like this (migration 2026-10-10_post_follows_and_feedback.sql)
+--
+
+CREATE TABLE public.post_follows (
+    id SERIAL PRIMARY KEY,
+    user_id integer NOT NULL,
+    post_id integer NOT NULL,
+    created_utc integer DEFAULT 0 NOT NULL,
+    CONSTRAINT post_follows_pair_key UNIQUE (user_id, post_id)
+);
+
+CREATE INDEX post_follows_post_idx ON public.post_follows USING btree (post_id);
+
+-- post_id is the PRIMARY post (repost_id or id), so the original and its copies leave together.
+-- author_id is NULL for an anonymous post: the author is never recoverable from this row.
+CREATE TABLE public.post_feedback (
+    id SERIAL PRIMARY KEY,
+    user_id integer NOT NULL,
+    post_id integer NOT NULL,
+    board_id integer,
+    author_id integer,
+    created_utc integer DEFAULT 0 NOT NULL,
+    CONSTRAINT post_feedback_pair_key UNIQUE (user_id, post_id)
+);
+
+CREATE INDEX post_feedback_user_idx ON public.post_feedback USING btree (user_id, created_utc DESC);
+
+--
+-- The creator fund (migration 2026-10-12_creator_fund.sql; helpers/creator_fund.py)
+--
+
+CREATE TABLE public.creator_fund_months (
+    id SERIAL PRIMARY KEY,
+    month character(7) NOT NULL,
+    budget_coins integer NOT NULL,
+    total_points integer NOT NULL,
+    paid_coins integer NOT NULL,
+    created_utc integer NOT NULL,
+    paid_by_id integer NOT NULL,
+    CONSTRAINT creator_fund_months_month_key UNIQUE (month)
+);
+
+CREATE TABLE public.creator_fund_payouts (
+    id SERIAL PRIMARY KEY,
+    month character(7) NOT NULL,
+    user_id integer NOT NULL,
+    points integer NOT NULL,
+    coins integer NOT NULL,
+    status character varying(8) NOT NULL,
+    created_utc integer NOT NULL,
+    paid_utc integer DEFAULT 0 NOT NULL,
+    CONSTRAINT creator_fund_payouts_pair_key UNIQUE (month, user_id),
+    CONSTRAINT creator_fund_payouts_status_check CHECK (status IN ('paid', 'held'))
+);
+
+CREATE INDEX creator_fund_payouts_user_idx ON public.creator_fund_payouts USING btree (user_id, month DESC);

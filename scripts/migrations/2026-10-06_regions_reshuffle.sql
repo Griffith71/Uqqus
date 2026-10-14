@@ -5,12 +5,19 @@
 -- Country membership itself lives in ruqqus/helpers/regions.py (COUNTRY_TO_REGION).
 
 -- Votes and proposals for the two regions whose country sets changed no longer
--- mean anything, so clear them before resetting the names.
-DELETE FROM region_name_votes WHERE region_id IN (SELECT id FROM regions WHERE code IN ('sahel', 'horn_of_africa'));
-DELETE FROM region_name_proposals WHERE region_id IN (SELECT id FROM regions WHERE code IN ('sahel', 'horn_of_africa'));
+-- mean anything, so clear them before resetting the names. Only on the first run
+-- (equatorial_nile, added below, records that it ran): a second run must not wipe
+-- the votes and names collected since.
+DO $$
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM regions WHERE code = 'equatorial_nile') THEN
+        DELETE FROM region_name_votes WHERE region_id IN (SELECT id FROM regions WHERE code IN ('sahel', 'horn_of_africa'));
+        DELETE FROM region_name_proposals WHERE region_id IN (SELECT id FROM regions WHERE code IN ('sahel', 'horn_of_africa'));
 
-UPDATE regions SET default_name = 'The Sahel', current_name = 'The Sahel' WHERE code = 'sahel';
-UPDATE regions SET default_name = 'Erythrean Horn', current_name = 'Erythrean Horn' WHERE code = 'horn_of_africa';
+        UPDATE regions SET default_name = 'The Sahel', current_name = 'The Sahel' WHERE code = 'sahel';
+        UPDATE regions SET default_name = 'Erythrean Horn', current_name = 'Erythrean Horn' WHERE code = 'horn_of_africa';
+    END IF;
+END $$;
 
 INSERT INTO regions (code, default_name, current_name, color)
 VALUES ('equatorial_nile', 'Equatorial Nile', 'Equatorial Nile', '#6a3d9a')

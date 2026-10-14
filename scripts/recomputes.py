@@ -14,6 +14,7 @@ db = db_session()
 # cycle - the multi-month settling windows it decides on don't need to be
 # re-evaluated more often than this anyway.
 REGION_RECOMPUTE_INTERVAL = 60 * 60 * 24  # 24h
+CYCLE_PAUSE_SECONDS = 300
 last_region_recompute_utc = 0
 
 def print_(x):
@@ -104,7 +105,7 @@ def recompute():
         print_(f"Done with comment purge. Purged {x} comments")
 
         
-        if not cycle-2 % 10:
+        if (cycle - 2) % 10 == 0:     # was `cycle-2 % 10`, which only ever ran on cycle 2
             print_("beginning guild trend recompute")
             boards = db.query(Board).options(
                 lazyload('*')
@@ -192,14 +193,8 @@ def recompute():
 
         db.commit()
 
-        print_("Deleting old mod actions")
-
-        actions=db.query(ModAction).filter(ModAction.created_utc<int(time.time())-60*60*24*180)
-        count=actions.count()
-        actions.delete()
-        db.commit()
-
-        print_(f"deleted {count} old mod actions")
+        # Mod actions older than 180 days used to be deleted here. Guild moderation logs are public records
+        # (the owner's rule of 2026-10-09), so nothing is deleted until the owner decides how long they are kept.
 
         if now - last_region_recompute_utc >= REGION_RECOMPUTE_INTERVAL:
             print_("beginning region/VPN-suspicion recompute")
@@ -240,6 +235,9 @@ def recompute():
             db.commit()
             last_region_recompute_utc = now
             print_(f"Updated region/suspicion state for {updated} users")
+
+        # a cycle rescans every live post of the last 180 days: once every few minutes is plenty
+        time.sleep(CYCLE_PAUSE_SECONDS)
 
 
 

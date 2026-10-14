@@ -9,3 +9,10 @@ __pycache__/
 logs/
 redis-log/
 redis-logs/
+# local secrets and tooling never go into the image (scripts/gen_dev_env.py writes MASTER_KEY and the Matrix tokens to .env)
+.env
+.env.*
+!.env.example
+.venv
+web/
+synapse/ruqqus-appservice.yaml

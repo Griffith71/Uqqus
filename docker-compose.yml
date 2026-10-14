@@ -1,3 +1,6 @@
+# LOCAL DEVELOPMENT ONLY. This stack turns on test switches (MEDIA_DEV_PROVIDER, FEED_SERVER_ALLOW_LOCAL, plain
+# HTTP with FORCE_HTTPS=0, FLASK_DEBUG) that must never reach a live site: they disable the SSRF guard on feed
+# servers, add a fake media provider and make the session cookie non-Secure.
 services:
   ruqqus:
     build:
@@ -8,7 +11,6 @@ services:
       - DATABASE_URL=postgresql://postgres@postgres:5432/postgres
       - DATABASE_CONNECTION_POOL_URL=postgresql://postgres@postgres:5432/postgres
       - MASTER_KEY=${MASTER_KEY:?run python scripts/gen_dev_env.py}
-      - SESSION_COOKIE_SECURE=false
       - FLASK_DEBUG=1
       - FLASK_ENV=development
       - FORCE_HTTPS=0
@@ -18,12 +20,25 @@ services:
       # linked media storage with Google (ruqqus/helpers/media/google_oauth.py): put these in .env
       - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID:-}
       - GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET:-}
+      - MICROSOFT_CLIENT_ID=${MICROSOFT_CLIENT_ID:-}
+      - MICROSOFT_CLIENT_SECRET=${MICROSOFT_CLIENT_SECRET:-}
+      - MICROSOFT_TENANT=${MICROSOFT_TENANT:-}
+      - DAILYMOTION_API_KEY=${DAILYMOTION_API_KEY:-}
+      - DAILYMOTION_API_SECRET=${DAILYMOTION_API_SECRET:-}
       # trending topics (ruqqus/helpers/trending.py): accounts a topic needs
       - TRENDING_MIN_AUTHORS=${TRENDING_MIN_AUTHORS:-3}
       # outside feed servers for curations (ruqqus/helpers/feed_server.py). ALLOW_LOCAL lets a
       # test server on this machine be used: local testing only, never on a live site
       - FEED_SERVERS_ENABLED=${FEED_SERVERS_ENABLED:-1}
       - FEED_SERVER_ALLOW_LOCAL=${FEED_SERVER_ALLOW_LOCAL:-1}
+      # the creator fund (ruqqus/helpers/creator_fund.py): points a member needs to share a month (default 50, never under 10)
+      - CREATOR_FUND_MIN_POINTS=${CREATOR_FUND_MIN_POINTS:-}
+      # Google AdSense (ruqqus/helpers/ads.py): empty = no ads. Put real ids in .env
+      - ADSENSE_CLIENT=${ADSENSE_CLIENT:-}
+      - ADSENSE_SLOT_FEED=${ADSENSE_SLOT_FEED:-}
+      - ADSENSE_SLOT_POST=${ADSENSE_SLOT_POST:-}
+      - ADSENSE_SLOT_SIDEBAR=${ADSENSE_SLOT_SIDEBAR:-}
+      - ADSENSE_FEED_LAYOUT_KEY=${ADSENSE_FEED_LAYOUT_KEY:-}
 
       - HCAPTCHA_SECRET=5436ertfgcvbnfgcy
       - CLOUDFLARE_KEY=5436ertfgcvbnfgcy

@@ -26,7 +26,7 @@ Ruqqus is an open-source platform for independent internet communities.
 
 Every post is first posted on its author's own profile. Authors (and anyone else) can then forward a post or comment into a community (guild) for discussion there. A moderator can hide forwarded content from their guild, but never delete it off the platform entirely - it stays on the author's profile. Content that violates the [site-wide policy](https://ruqqus.com/help/terms) is removed by the core team.
 
-Moderators, called guild masters, can only moderate a maximum of 10 guilds.
+Moderators, called guild masters, can lead at most 5 guilds, and the accounts on one network at most 5 between them.
 
 We do not serve ads. Put simply, advertisements lead to censorship. Ruqqus is funded out-of-pocket by the core team and through donations from users.
 
@@ -90,20 +90,20 @@ As an open-source project, we are supported by the community. If you would like 
 
 ### Docker Deployment
 
-In order to build your docs, you need to add the following to your hosts file:
+The legacy app runs with Docker Compose (Postgres, Redis, Synapse and the app itself):
 
 ```
-127.0.0.1    ruqqus.localhost
-```
-Before deploying, make sure to compile .scss files in `ruqqus/assets/style/` with a package called "sass" (or ruby-sass)
-
-To deploy the stack with docker, simply use:
-
-```
-docker-compose up
+python3 scripts/gen_dev_env.py     # writes MASTER_KEY and the Matrix tokens to .env (never committed)
+docker compose up --build
 ```
 
-The database will automatically be seeded with an administrator account; user `ruqqie` and password `password`.
+The site is then at http://localhost. The stylesheets are compiled from `ruqqus/assets/style/*.scss` by the
+server, so there is nothing to build first.
+
+A fresh database is created from `schema.sql` and `seed-db.sql`: the categories, the regions and the baseline
+guilds (including `systemprofile`, where every post is first made). No account is seeded: sign up, then make
+yourself an admin with `docker compose exec postgres psql -U postgres -c "UPDATE users SET admin_level=5 WHERE username='you'"`.
+An existing database needs the files in `scripts/migrations/` applied in date order (each is safe to run twice).
 
 ### Mac
 
@@ -131,9 +131,9 @@ Install dependencies
 
 ### [Linux](https://github.com/ruqqus/ruqqus/wiki/Linux-Installation)
 
-Upon installation, trying to submit a post will cause a 404 error. You have to create a guild first (to achieve this perhaps temporarily remove the 250 rep restriction on making guilds). You also need to make sure the badwords table is populated.
-
-Note: When trying to run Ruqqus locally, make sure to use a [tagged release version](https://github.com/ruqqus/ruqqus/releases). The reason this is necessary is that the file schema.txt is not always updated, which will cause Ruqqus to crash. If after first setting up Ruqqus you are getting a 500/Internal Server Error on pages because of database errors, this is most likely why.
+The word filter works out of the box: with an empty `word_filter_entries` table it uses the built-in list
+(`ruqqus/helpers/wordfilter_seed.py`), editable at `/admin/word_filter`. Run every check with `bash scripts/check.sh`
+(see `CLAUDE.md`).
 
 ## API
 

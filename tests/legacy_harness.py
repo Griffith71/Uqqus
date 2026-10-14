@@ -195,7 +195,11 @@ class _Voteable(Row):
     defaults = {"id": 1, "is_blocking": False, "is_blocked": False,
                 "is_banned": False, "deleted_utc": 0, "upvotes": 0,
                 "downvotes": 0, "score_top": None, "board_id": 1,
-                "author_id": 99}
+                "author_id": 99, "is_anonymous": False, "private_guild": False}
+
+    def in_private_guild_for(self, v):
+        # stands in for Submission.in_private_guild_for (a guild the viewer can't view)
+        return self.private_guild
 
     def _count(self, t):
         return sum(1 for r in g.db.rows(self.vote_cls)
@@ -219,17 +223,19 @@ class FakeSubmission(_Voteable):
     fk = "submission_id"
     author_id = Col("author_id")
     is_archived = False
-    score_disputed = score_best = None
+    score_disputed = score_best = score_hot = None
     rank_fiery = 111
     rank_best = 222
+    rank_hot = 444
 
 
 class FakeComment(_Voteable):
     vote_cls = FakeCommentVote
     fk = "comment_id"
     author_id = Col("author_id")
-    score_hot = None
+    score_hot = score_disputed = None
     rank_hot = 333
+    rank_fiery = 555
 
 
 class FakeModAction(Row):

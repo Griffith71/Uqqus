@@ -14,7 +14,8 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent / "ruqqus"
 
 REPLY = re.compile(r"\b(reply|replies|replied|replying)\b", re.I)
-PROMOTE = re.compile(r"\bPromot(e|ed|ing)\b")  # capitalised: UI text (csam.html uses it legitimately)
+PROMOTE = re.compile(r"\bpromot(e|ed|es|ing)\b", re.I)   # "promotion" (a promo code) is a different word
+CROSSPOST = re.compile(r"cross-?post", re.I)
 YANK = re.compile(r"\byank(ed|s)?\b", re.I)
 OLD_PHRASES = (
     "Create post in +", "Share something with this guild", "Be the first to post",
@@ -31,16 +32,20 @@ ALLOW = (
     (None, "noreply"), (None, "lightning fast at replying"),   # email, not comments
     ("routes/front.py", "replies_only"),
     ("classes/mod_logs.py", "yank"),              # legacy mod-log kinds render old rows
+    (None, "'is_crosspost'"),                     # API field name, kept
 )
+# plain English "promoting" harm, not the old name for forwarding
+PROMOTE_PROSE = ("templates/help/csam.html", "templates/partials/posting_rules.html", "templates/help/rules.html")
 SKIP_DIRS = ("chat/",)  # legacy DM chat: "reply" there is a different concept
 SKIP_FILES = ("templates/embeds/comment_removed.html",)
 
 
 def _files():
-    for pattern in ("templates/**/*.html", "**/*.py", "assets/js/all_js.js"):
+    for pattern in ("templates/**/*.html", "**/*.py", "assets/js/*.js"):
         for p in ROOT.glob(pattern):
             rel = p.relative_to(ROOT).as_posix()
-            if rel.startswith(SKIP_DIRS) or rel in SKIP_FILES:
+            # the built chat bundle and vendored libraries are not ours to word
+            if rel.startswith(SKIP_DIRS) or rel in SKIP_FILES or rel.endswith((".min.js", "chat_bundle.js", "js/bootstrap.js")):
                 continue
             yield p, rel
 
@@ -55,7 +60,7 @@ def _violations(regex_or_phrases):
                 continue
             if any((suffix is None or rel.endswith(suffix)) and sub in line for suffix, sub in ALLOW):
                 continue
-            if rel.endswith("help/csam.html") and hasattr(regex_or_phrases, "search") and regex_or_phrases is PROMOTE:
+            if regex_or_phrases is PROMOTE and rel in PROMOTE_PROSE:
                 continue
             out.append(f"{rel}:{n}: {line.strip()[:110]}")
     return out
@@ -75,3 +80,7 @@ def test_no_yank_wording():
 
 def test_no_posting_to_guild_phrases():
     assert not _violations(OLD_PHRASES), "guilds receive forwards, not posts:\n" + "\n".join(_violations(OLD_PHRASES))
+
+
+def test_no_crosspost_wording():
+    assert not _violations(CROSSPOST), "a post shared with a guild is forwarded:\n" + "\n".join(_violations(CROSSPOST))
