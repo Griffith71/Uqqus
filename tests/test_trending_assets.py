@@ -108,7 +108,7 @@ def test_one_account_is_never_enough_whatever_the_setting(monkeypatch):
 
 def test_a_topics_posts_respect_the_viewers_blocks():
     page = STORE.split("def visible_post_ids(")[1].split("\n# --- admin")[0]
-    assert "UserBlock.target_id" in page and "BoardBlock.board_id" in page
+    assert "hide_blocked(posts, v, Submission)" in page and "BoardBlock.board_id" in page  # blocks either way
     assert "Submission.post_public == True" in page and "Submission.deleted_utc == 0" in page
 
 
@@ -122,16 +122,17 @@ def test_the_admin_pages_are_for_admins_and_changes_need_the_form_key():
 
 
 def test_the_box_is_in_the_right_sidebar_of_both_page_shells_for_everyone():
-    slot = '<div id="trending-box" data-src="/inpage/trending"></div>'
+    slot = '<div id="trending-box" class="late-box" data-src="/inpage/trending"></div>'
     for name in ("default.html", "home.html"):
-        html = read("ruqqus", "templates", name)
-        assert slot in html, name
-        assert html.index(slot) < html.index('id="who-to-follow"'), name     # above Who to follow
-        line = next(x for x in html.splitlines() if slot in x)
-        assert "{% if v %}" not in line, f"{name}: visitors see it too"
+        assert '{% include "partials/late_boxes.html" %}' in read("ruqqus", "templates", name), name
+    late = read("ruqqus", "templates", "partials", "late_boxes.html")
+    assert slot in late
+    assert late.index(slot) < late.index('id="who-to-follow"')     # above Who to follow
+    line = next(x for x in late.splitlines() if slot in x)
+    assert "{% if v %}" not in line, "visitors see it too"
     assert slot not in read("ruqqus", "templates", "sidebar-left.html")
     shell = read("ruqqus", "templates", "default.html")
-    line = next(x for x in shell.splitlines() if "/assets/js/trending.js" in x)
+    line = next(x for x in shell.splitlines() if "asset_url('js/trending.js')" in x)
     assert "{% if" not in line
     script = read("ruqqus", "assets", "js", "trending.js")
     assert "getElementById('trending-box')" in script and "'embedded'" in script and "offsetParent === null" in script

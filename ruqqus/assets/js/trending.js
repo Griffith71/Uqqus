@@ -15,6 +15,6 @@
 
   fetch(slot.dataset.src, { credentials: 'same-origin' })
     .then(function (r) { return r.ok ? r.text() : ''; })
-    .then(function (html) { slot.innerHTML = html; })
-    .catch(function () { /* the box is a nicety */ });
+    .then(function (html) { fill_late_box(slot, html); })
+    .catch(function () { fill_late_box(slot, ''); /* the box is a nicety */ });
 })();

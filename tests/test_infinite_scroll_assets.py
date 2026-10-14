@@ -14,7 +14,7 @@ FEEDS = ("home.html", "userpage.html", "search.html", "history.html")
 
 
 def test_the_page_shell_loads_the_script():
-    assert "/assets/js/infinite_scroll.js" in (TEMPLATES / "default.html").read_text(encoding="utf-8")
+    assert "asset_url('js/infinite_scroll.js')" in (TEMPLATES / "default.html").read_text(encoding="utf-8")
 
 
 def test_the_script_uses_the_markers_the_feed_templates_render():

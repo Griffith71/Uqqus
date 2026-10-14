@@ -19,9 +19,9 @@ def _block(css):
 
 
 def test_the_page_shell_loads_the_script_but_not_inside_a_panel():
-    assert "/assets/js/nav_align.js" in DEFAULT
+    assert "asset_url('js/nav_align.js')" in DEFAULT
     # a page shown inside a side panel frame has no navbar
-    assert re.search(r"\{% if not request\.args\.get\('embed'\) %\}<script src=\"/assets/js/nav_align\.js", DEFAULT)
+    assert re.search(r"\{% if not request\.args\.get\('embed'\) %\}<script src=\"\{\{ asset_url\('js/nav_align\.js'\)", DEFAULT)
 
 
 def test_the_script_and_both_stylesheets_use_the_same_variables():
@@ -56,7 +56,9 @@ def test_it_follows_the_sidebar_collapse_and_the_side_panel():
         assert f"'{element_id}'" in SCRIPT
     assert "side-panel" in (ROOT / "assets" / "js" / "side_panels.js").read_text(encoding="utf-8")
     assert "toggle_sidebar_collapse" not in SCRIPT
-    assert "classList.add" not in SCRIPT and "classList.remove" not in SCRIPT
+    # the only class it sets is on <html>, to say the search box is in place (it fades in then)
+    assert SCRIPT.count("classList.add") == 1 and "root.classList.add('nav-aligned')" in SCRIPT
+    assert "classList.remove" not in SCRIPT
 
 
 def test_chat_and_settings_are_as_wide_as_the_navbars_content():

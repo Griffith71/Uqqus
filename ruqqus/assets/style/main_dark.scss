@@ -1691,6 +1691,31 @@ body.embedded #chat-app {
         padding-right: var(--nav-inset-right, #{"max(15px, calc((100% - 1326px) / 2 + 15px))"});
     }
 
+    // left sidebar folded to its 65px rail (the sidebar_pref cookie, html.sidebar-folded): a block of
+    // 65 + 726 + 300 = 1091px, centered, so the first paint is already right
+    html.sidebar-folded #navbar > .container-fluid {
+        padding-left: var(--nav-inset-left, #{"max(15px, calc((100% - 1091px) / 2 + 15px))"});
+        padding-right: var(--nav-inset-right, #{"max(15px, calc((100% - 1091px) / 2 + 15px))"});
+    }
+
+    // the search box is centered over the feed by the script (it depends on the logo's width): it is hidden
+    // until then and fades in where it belongs instead of sliding
+    @media (prefers-reduced-motion: no-preference) {
+        #navbar #searchform {
+            transition: opacity 0.12s ease-out;
+        }
+    }
+
+    html.nav-align:not(.nav-aligned) #navbar #searchform {
+        opacity: 0;
+        // never left hidden if the script does not run
+        animation: nav-search-fallback 0.12s ease-out 1.5s forwards;
+    }
+
+    @keyframes nav-search-fallback {
+        to { opacity: 1; }
+    }
+
     // .mx-auto is !important
     #navbar #searchform {
         margin-left: var(--nav-search-left, auto) !important;
@@ -2065,6 +2090,206 @@ body.embedded #chat-app {
 .deletion-text img {
     max-width: 100%;
     height: auto;
+}
+
+// Search (templates/search.html, help/search.html): a chip per operator with its remove link, the
+// notices of a search that could not run, and the advanced search form (helpers/search_query.py)
+.search-chips {
+    display: flex;
+    flex-wrap: wrap;
+    margin-top: 0.5rem;
+}
+
+.search-chip {
+    display: inline-flex;
+    align-items: center;
+    margin: 0.15rem 0.35rem 0.15rem 0;
+    padding: 0.1rem 0.75rem;
+    border: 1px solid $border-color;
+    border-radius: 2rem;
+    color: $muted;
+    font-size: $small-font-size;
+    font-weight: $font-weight-bold;
+}
+
+.search-chip a {
+    margin: -0.25rem -0.5rem -0.25rem 0.15rem;   // a target big enough to tap, without a bigger chip
+    padding: 0.25rem 0.5rem;
+    color: inherit;
+    text-decoration: none;
+}
+
+.search-chip a:hover,
+.search-chip a:focus {
+    color: $primary;
+}
+
+.search-notice {
+    margin-top: 0.75rem;
+    padding: 0.5rem 0.75rem;
+    border-left: 3px solid $primary;
+    border-radius: 0.25rem;
+    background-color: $gray-300;
+}
+
+.search-notice p {
+    margin: 0;
+}
+
+.search-notice p + p {
+    margin-top: 0.25rem;
+}
+
+.search-tools {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.25rem 1rem;
+    margin-top: 0.75rem;
+    font-size: $small-font-size;
+}
+
+.search-advanced[open] {
+    flex-basis: 100%;
+}
+
+.search-advanced summary {
+    color: $primary;
+    font-weight: $font-weight-bold;
+    cursor: pointer;
+}
+
+.search-advanced-form {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(12rem, 1fr));
+    gap: 0.75rem 1rem;
+    margin-top: 0.75rem;
+    padding: 1rem;
+    border: 1px solid $border-color;
+    border-radius: 0.5rem;
+    font-size: 1rem;
+}
+
+.search-field {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    margin: 0;
+}
+
+// field titles read as the site's form labels (uppercase); the "With" legend is not a label, so it is told
+.search-field > span,
+.search-field > legend {
+    margin-bottom: 0.25rem;
+    color: $muted;
+    font-size: 12px;
+    font-weight: $font-weight-bold;
+    letter-spacing: 0.025rem;
+    text-transform: uppercase;
+}
+
+fieldset.search-field {
+    display: block;
+    padding: 0;
+    border: 0;
+}
+
+.search-field-wide {
+    grid-column: 1 / -1;
+}
+
+// an option, not a title: none of the global label look
+.search-check {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    margin: 0 1rem 0.25rem 0;
+    color: inherit;
+    font-size: 0.9rem;
+    font-weight: normal;
+    letter-spacing: normal;
+    text-transform: none;
+}
+
+.search-help-example {
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+
+.search-help-table code {
+    white-space: nowrap;
+}
+
+// Ads (helpers/ads.py, partials/ad_slot.html): each box keeps its height before the ad arrives ("Painting right the
+// first time"), so a feed or a post never jumps when one loads; assets/js/ads.js folds a box AdSense left empty
+.ad-slot {
+    margin: 0 0 1rem;
+    padding: 0.5rem 0.75rem 0.75rem;
+    border: 1px solid $border-color;
+    border-radius: 0.5rem;
+}
+
+.ad-slot-label {
+    margin-bottom: 0.35rem;
+    color: $muted;
+    font-size: 11px;
+    font-weight: $font-weight-bold;
+    letter-spacing: 0.03rem;
+    text-transform: uppercase;
+}
+
+.ad-slot ins.adsbygoogle {
+    display: block;
+    width: 100%;
+}
+
+.ad-slot-feed ins.adsbygoogle,
+.ad-slot-post ins.adsbygoogle {
+    min-height: 280px;
+}
+
+.ad-slot-sidebar ins.adsbygoogle {
+    min-height: 250px;
+}
+
+.ad-slot-post {
+    margin: 1rem 0;
+}
+
+.ad-slot.ad-slot-empty {
+    display: none;
+}
+
+// The creator fund's agreement tick box reads as a sentence, not as one of the settings' uppercase titles
+.creator-fund-agree {
+    font-size: 0.9rem;
+    font-weight: normal;
+    letter-spacing: normal;
+    text-transform: none;
+}
+
+// A long unbroken word in a post title (the "comment on ..." line of a list of comments) never makes a phone page
+// scroll sideways
+.post-info {
+    overflow-wrap: anywhere;
+}
+
+// Tips (helpers/tips.py): the coins tipped on a comment (a post's are in its action row, partials/post_actions.html), never who tipped
+.tip-badge {
+    display: inline-flex;
+    align-items: center;
+    white-space: nowrap;
+}
+
+.tip-badge img {
+    width: 15px;
+    height: 15px;
+}
+
+.tip-badge-count {
+    padding-left: 0.25rem;
+    color: $gold;
+    font-weight: $font-weight-bold;
 }
 
 // A continuous feed (assets/js/infinite_scroll.js): while the script runs the browser's own
@@ -4465,11 +4690,6 @@ pre .clo, pre .opn, pre .pun, code .clo, code .opn, code .pun {
     height: 110px;
     width: 100%;
     object-fit: cover;
-    -webkit-transition:  all .15s ease;
-    -moz-transition:  all .15s ease;
-    -o-transition:  all .15s ease;
-    -ms-transition: all .15s ease;
-    transition: all .15s ease;
 }
 
 .gif-categories img:hover {
@@ -4482,11 +4702,6 @@ pre .clo, pre .opn, pre .pun, code .clo, code .opn, code .pun {
     height: 100%;
     width: 100%;
     background-color: rgba(0, 0, 0, 0.4);
-    -webkit-transition:  all .15s ease;
-    -moz-transition:  all .15s ease;
-    -o-transition:  all .15s ease;
-    -ms-transition: all .15s ease;
-    transition: all .15s ease;
 }
 
 .gif-categories .card:hover .gif-cat-overlay {
@@ -6054,4 +6269,814 @@ body.story-open {
     flex: 0 0 auto;
     font-size: $small-font-size;
     opacity: 0.7;
+}
+
+// Painting right the first time (templates/partials/theme.html, partials/late_boxes.html, nav_align.js)
+// The scrollbar's room is kept even before the page is long enough to scroll, so the centered layout never
+// moves sideways when it appears.
+html {
+    scrollbar-gutter: stable;
+}
+
+// a right-sidebar box filled after load (fill_late_box in all_js.js) fades into the room kept for it
+@keyframes late-box-in {
+    from { opacity: 0; }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+    .late-box-in {
+        animation: late-box-in 0.15s ease-out;
+    }
+}
+
+// a post's picture keeps its room while it loads: the stored size when it is one of this site's own files
+// (width/height attributes, media.attach.attach_image_sizes), otherwise a placeholder height, so the card grows
+// a little when it arrives instead of from nothing
+.post-img-lg img:not([width]):not([data-loaded]) {
+    min-height: 240px;
+}
+
+// While the page is still arriving the right sidebar (last in the markup, after the whole feed) may not be there
+// yet; the row would center two columns and the feed would jump 150px when the third arrives. The server marks a
+// row that will have one (default.html, expects-right-sidebar) and its room is kept until it is there. A browser
+// without :has() drops this rule and keeps the old behaviour. (No @supports selector(): libsass rejects it.)
+// The same goes for the feed column itself when only the left sidebar has arrived: ::before stands in its slot.
+// The columns get an explicit order so the stand-ins sit where the real columns will be.
+@media (min-width: 992px) {
+    #main-content-row.expects-right-sidebar > #sidebar-left {
+        order: 0;
+    }
+
+    #main-content-row.expects-right-sidebar > #main-content-col {
+        order: 1;
+    }
+
+    #main-content-row.expects-right-sidebar > .sidebar:not(#sidebar-left),
+    #main-content-row.expects-right-sidebar > #side-panel {
+        order: 2;
+    }
+
+    #main-content-row.expects-right-sidebar:not(:has(> #main-content-col))::before {
+        content: "";
+        order: 1;
+        flex: 1 1 0;
+        max-width: 726px;
+    }
+
+    #main-content-row.expects-right-sidebar:not(:has(> .sidebar:not(#sidebar-left)))::after {
+        content: "";
+        order: 2;
+        flex: 0 0 300px;
+    }
+}
+
+// Interface polish (2026-10-10): the design-guidelines audit (design-taste-frontend) and the motion rules of
+// emil-design-eng, on the core surfaces. Motion is feedback only: transform and opacity, under 300ms, a strong
+// ease-out to enter, and nothing moves for prefers-reduced-motion. Hover effects only where a pointer hovers.
+$ease-out-strong: cubic-bezier(0.23, 1, 0.32, 1);
+$ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
+
+// One visible focus ring for the keyboard (body.using-mouse, set by all_js.js, keeps it off after a click).
+// Text fields keep their own focus border.
+body:not(.using-mouse) :focus-visible:not(.form-control) {
+    outline: 2px solid $primary;
+    outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+    // press feedback: the interface heard the tap
+    .btn {
+        transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out,
+            box-shadow 0.15s ease-in-out, transform 160ms $ease-out-strong;
+    }
+
+    .btn:active:not(:disabled):not(.disabled) {
+        transform: scale(0.97);
+    }
+
+    .arrow-up::before, .arrow-down::before {
+        transition: transform 120ms $ease-out-strong;
+    }
+
+    .arrow-up:active::before, .arrow-down:active::before {
+        transform: scale(0.82);
+    }
+
+    // menus fade in (Bootstrap positions them with an inline transform, so they are not scaled)
+    @keyframes menu-fade-in {
+        from { opacity: 0; }
+    }
+
+    .dropdown-menu.show {
+        animation: menu-fade-in 140ms $ease-out-strong;
+    }
+
+    // a dialog grows in from just below its size, from the centre; never from nothing
+    .modal.fade .modal-dialog {
+        transform: scale(0.96);
+        opacity: 0;
+        transition: transform 220ms $ease-out-strong, opacity 220ms $ease-out-strong;
+    }
+
+    .modal.show .modal-dialog {
+        transform: none;
+        opacity: 1;
+    }
+
+    // a toast rises into place as it fades in
+    .toast {
+        transition: opacity 200ms ease, transform 200ms $ease-out-strong;
+    }
+
+    .toast:not(.show) {
+        transform: translateY(8px);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .modal.fade .modal-dialog, .modal.fade.modal-sm-bottom .modal-dialog {
+        transform: none;
+        transition: opacity 150ms ease;
+    }
+}
+
+// phone sheets slide up by their own height on an iOS-like curve (100vh travelled too far, too fast)
+@media (max-width: 767.98px) and (prefers-reduced-motion: no-preference) {
+    .modal.fade.modal-sm-bottom .modal-dialog {
+        transform: translate3d(0, 100%, 0);
+        opacity: 1;
+        transition: transform 300ms $ease-drawer;
+    }
+
+    .modal.show.modal-sm-bottom .modal-dialog {
+        transform: translate3d(0, 0, 0);
+    }
+}
+
+// Hover colour on the vote arrows only where a pointer hovers: on a phone a tapped arrow kept its half-lit
+// hover colour and looked voted after the vote was taken back.
+@media (hover: none) {
+    .arrow-up:hover::before, .arrow-down:hover::before {
+        color: $gray-400;
+        opacity: 1;
+    }
+
+    .active.arrow-up:hover::before {
+        color: $upvote;
+    }
+
+    .active.arrow-down:hover::before {
+        color: $downvote;
+    }
+}
+
+// Touch targets: the card's actions, the vote arrows and the navbar icons are drawn small; on a touch screen
+// each gets an invisible 44px-ish area around it (the drawing does not move).
+@media (pointer: coarse) {
+    .post-actions .list-inline-item > a:not(.dropdown-toggle),
+    .comment-actions .list-inline-item > a:not(.dropdown-toggle),
+    .arrow-up, .arrow-down,
+    #navbar .nav-link:not(.dropdown-toggle) {
+        position: relative;
+    }
+
+    .post-actions .list-inline-item > a:not(.dropdown-toggle)::after,
+    .comment-actions .list-inline-item > a:not(.dropdown-toggle)::after,
+    .arrow-up::after, .arrow-down::after,
+    #navbar .nav-link:not(.dropdown-toggle)::after {
+        content: "";
+        position: absolute;
+        inset: -12px -8px;
+    }
+}
+
+// The GIF picker: a hover ring that does not change the tile's size (a 3px border pushed the grid around)
+.gif-categories img {
+    transition: box-shadow 0.15s ease;
+}
+
+.gif-categories .card .gif-cat-overlay {
+    transition: opacity 0.15s ease, background-color 0.15s ease;
+}
+
+@media (hover: hover) {
+    .gif-categories img:hover {
+        border: 0;
+        box-shadow: inset 0 0 0 3px $primary, 0 0 0 3px $primary;
+    }
+}
+
+// A feed video's thumbnail takes the player's 16:9 box, so the card keeps its height when
+// feed_video_autoplay.js swaps the player in (and while the lazy thumbnail loads). A 4:3 thumbnail
+// (YouTube's hqdefault has black bands) is cropped to it rather than letterboxed.
+.embed-lg[data-embed-kind] {
+    min-height: 0;
+}
+
+.embed-lg[data-embed-kind] .feed-video-thumb {
+    position: relative;
+    aspect-ratio: 16 / 9;
+}
+
+.embed-lg[data-embed-kind] .feed-video-thumb img {
+    width: 100%;
+    height: 100%;
+    max-height: none;
+    object-fit: cover;
+}
+
+// default.html's #navbarResponsive holds only the phone menu (d-md-none), but from 768px Bootstrap lays a
+// .navbar-collapse out as a growing flex box anyway: an empty one took 200-400px after the account area,
+// so the account area never reached its column edge and slid when nav_align.js ran. header.html's
+// collapse holds its desktop icons and has no .navbar-phone-menu.
+@media (min-width: 768px) {
+    #navbar .navbar-phone-menu {
+        display: none !important;
+    }
+}
+
+// A link preview's picture is lazy and has no stored size: it takes the og:image shape (1200 x 630) from
+// the start, so its arrival does not push the title and description below it (it was already cropped
+// with object-fit: cover under a height cap).
+.post-preview-lg img {
+    aspect-ratio: 1.91 / 1;
+    height: auto;
+}
+
+// "Show fewer posts like this" (assets/js/post_feedback.js): the card folds into a one-line note with Undo.
+.card.post-fewer > *:not(.post-fewer-note) {
+    display: none;
+}
+
+.post-fewer-note {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.5rem 1rem;
+    color: $muted;
+    font-size: 0.875rem;
+}
+
+.post-fewer-note .post-fewer-undo {
+    padding: 0.25rem 0.5rem;
+    font-weight: 600;
+}
+
+@media (pointer: coarse) {
+    .post-fewer-note .post-fewer-undo {
+        min-height: 44px;
+    }
+}
+
+// "Add to curation" sheet (assets/js/curation_picker.js)
+.curation-picker-list .curation-picker-row {
+    margin-bottom: 0.5rem;
+}
+
+// Linking an account from the composer (assets/js/media_upload.js): the services offered under an upload
+.media-chooser {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 0.25rem;
+}
+
+.media-chooser-title {
+    flex: 1 1 100%;
+    font-weight: 600;
+    color: $black;
+}
+
+.media-chooser-option {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: flex-start;
+    min-height: 44px;
+    padding: 0.35rem 0.75rem;
+    text-align: left;
+    border-radius: 12px;
+}
+
+.media-chooser-name {
+    font-weight: 600;
+}
+
+.media-chooser-hint {
+    font-size: 0.75rem;
+    color: $muted;
+}
+
+.media-chooser-note {
+    flex: 1 1 100%;
+    font-size: 0.75rem;
+    color: $muted;
+}
+
+// The counted actions under a post (templates/partials/post_actions.html): comments, shares, bookmarks and tips in
+// a row, then the "..." menu at the far end. Icon and count read as one target.
+.post-actions .post-action-item {
+    margin-right: 1.5rem;
+}
+
+.post-actions .post-action-more {
+    margin-left: auto;
+    margin-right: 0;
+}
+
+.post-action {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    color: $muted;
+    line-height: 1.5;
+    white-space: nowrap;
+}
+
+.post-actions .post-action .fa, .post-actions .post-action .fas, .post-actions .post-action .far {
+    margin-right: 0;
+}
+
+.post-action-count {
+    font-variant-numeric: tabular-nums;
+}
+
+.post-action-coin {
+    width: 15px;
+    height: 15px;
+}
+
+.post-action-bookmark.is-on {
+    color: $primary;
+}
+
+@media (hover: hover) {
+    .post-actions a.post-action:hover {
+        color: $primary;
+        text-decoration: none;
+    }
+
+    .post-actions a.post-action:hover .fa, .post-actions a.post-action:hover .fas, .post-actions a.post-action:hover .far {
+        color: inherit;
+    }
+}
+
+// Create post card (templates/submit.html, assets/js/composer_card.js). The look of a social composer
+// (x.com's header and attach row, reddit's large borderless title), on this site's own tokens.
+// One radius scale: 16px card, 12px fields, full pills for controls. Motion is feedback only: transform and
+// opacity, 150-200ms, nothing under prefers-reduced-motion; hover only where a pointer hovers.
+$cc-surface: $gray-500;
+$cc-field: $gray-300;
+$cc-border: $gray-400;
+$cc-hover: $gray-400;
+$cc-text: $black;
+$cc-muted: $muted;
+
+.composer-heading {
+    margin-bottom: 1rem;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+}
+
+.composer-card {
+    padding: 1rem 1.25rem 0.75rem;
+    background: $cc-surface;
+    border: 1px solid $cc-border;
+    border-radius: 16px;
+}
+
+.composer-head {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.75rem;
+}
+
+.composer-avatar {
+    flex: 0 0 auto;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.composer-who {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    min-width: 0;
+    line-height: 1.25;
+}
+
+.composer-name {
+    font-weight: 600;
+    color: $cc-text;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.composer-where {
+    font-size: 0.8125rem;
+    color: $cc-muted;
+}
+
+// the audience pill: a <details>, so it works without script
+.composer-pill {
+    position: relative;
+    flex: 0 0 auto;
+}
+
+.composer-pill > summary,
+.composer-more > summary {
+    list-style: none;
+    cursor: pointer;
+}
+
+.composer-pill > summary::-webkit-details-marker,
+.composer-more > summary::-webkit-details-marker {
+    display: none;
+}
+
+.composer-pill > summary {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    min-height: 36px;
+    padding: 0 0.85rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: $primary;
+    border: 1px solid $cc-border;
+    border-radius: 999px;
+}
+
+.composer-pill-caret {
+    font-size: 0.7rem;
+}
+
+.composer-pill-menu {
+    position: absolute;
+    right: 0;
+    z-index: 10;
+    width: 20rem;
+    max-width: calc(100vw - 3rem);
+    margin-top: 0.4rem;
+    padding: 0.25rem 1rem 0.9rem;
+    background: $cc-surface;
+    border: 1px solid $cc-border;
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.14);
+}
+
+.composer-title-wrap {
+    position: relative;
+}
+
+.composer-card .composer-title-input {
+    padding: 0.25rem 2.5rem 0.25rem 0;
+    font-size: 1.375rem;
+    font-weight: 600;
+    line-height: 1.35;
+    color: $cc-text;
+    background: transparent;
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+}
+
+.composer-card .composer-title-input::placeholder {
+    color: $cc-muted;
+    font-weight: 500;
+}
+
+.composer-count {
+    position: absolute;
+    top: 0.65rem;
+    right: 0;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: $cc-muted;
+}
+
+.composer-chips {
+    margin-top: 0.25rem;
+}
+
+.composer-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    max-width: 100%;
+    margin: 0.25rem 0.5rem 0.25rem 0;
+    padding: 0.35rem 0.75rem;
+    font-size: 0.875rem;
+    color: $cc-text;
+    background: $cc-field;
+    border: 1px solid $cc-border;
+    border-radius: 999px;
+}
+
+.composer-chip-text {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.composer-chip-remove {
+    color: $cc-muted;
+}
+
+// the picture block: the original markup, quieter. The button and the note appear once there is a picture.
+.composer-card #image-upload-block {
+    margin-top: 0.5rem;
+}
+
+.composer-card #image-upload-block > div:first-child {
+    display: none;
+}
+
+.composer-card #image-preview {
+    margin-bottom: 0.5rem;
+    border-radius: 12px;
+}
+
+.composer-card #image-preview:not([src]),
+.composer-card #image-preview:not([src]) ~ label.btn,
+.composer-card #image-preview:not([src]) ~ small {
+    display: none;
+}
+
+.composer-card #body-write {
+    margin-top: 0.5rem;
+}
+
+.composer-card #post-body {
+    background: transparent;
+}
+
+.composer-card #add-body-link {
+    margin-top: 0.5rem !important;
+}
+
+// the attach row
+.composer-tools {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.25rem;
+    margin-top: 0.75rem;
+    padding-top: 0.5rem;
+    border-top: 1px solid $cc-border;
+}
+
+.composer-tool {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    margin: 0;
+    padding: 0;
+    font-size: 1rem;
+    color: $primary;
+    background: transparent;
+    border: 0;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+.composer-tool-text {
+    font-size: 0.75rem;
+    font-weight: 800;
+    letter-spacing: 0.02em;
+}
+
+.composer-forward {
+    margin-top: 0.25rem;
+}
+
+.composer-forward label {
+    font-size: 0.875rem;
+    font-weight: 600;
+}
+
+.composer-more {
+    margin-top: 0.75rem;
+    border-top: 1px solid $cc-border;
+}
+
+.composer-more > summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 44px;
+    font-size: 0.9375rem;
+    font-weight: 600;
+    color: $cc-text;
+}
+
+.composer-more[open] > summary .composer-pill-caret {
+    transform: rotate(180deg);
+}
+
+.composer-more-body {
+    padding-bottom: 0.75rem;
+}
+
+// the bar at the bottom
+.composer-bar {
+    background: $cc-surface;
+    border-top: 1px solid $cc-border;
+}
+
+.composer-bar .btn {
+    min-height: 40px;
+    border-radius: 999px;
+}
+
+.composer-bar #create_button {
+    min-width: 5.5rem;
+    font-weight: 700;
+}
+
+.composer-bar #create_button:disabled {
+    opacity: 0.45;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+    .composer-tool,
+    .composer-pill > summary,
+    .composer-chip,
+    .composer-bar .btn {
+        transition: background-color 0.15s ease-out, transform 0.15s cubic-bezier(0.23, 1, 0.32, 1);
+    }
+
+    .composer-tool:active,
+    .composer-bar .btn:active {
+        transform: scale(0.95);
+    }
+
+    .composer-more[open] > .composer-more-body,
+    .composer-pill[open] > .composer-pill-menu {
+        animation: composer-in 0.18s cubic-bezier(0.23, 1, 0.32, 1);
+    }
+
+    .composer-more > summary .composer-pill-caret {
+        transition: transform 0.18s cubic-bezier(0.23, 1, 0.32, 1);
+    }
+}
+
+@keyframes composer-in {
+    from {
+        opacity: 0;
+        transform: translateY(-4px);
+    }
+
+    to {
+        opacity: 1;
+        transform: none;
+    }
+}
+
+@media (hover: hover) {
+    .composer-tool:hover {
+        background: $cc-hover;
+    }
+
+    .composer-pill > summary:hover {
+        background: $cc-field;
+    }
+}
+
+.composer-tool:focus-visible,
+.composer-pill > summary:focus-visible,
+.composer-more > summary:focus-visible {
+    outline: 2px solid $primary;
+    outline-offset: 2px;
+}
+
+@media (pointer: coarse) {
+    .composer-tool {
+        width: 44px;
+        height: 44px;
+    }
+
+    .composer-pill > summary {
+        min-height: 44px;
+    }
+}
+
+@media (max-width: 767.98px) {
+    .composer-card {
+        padding: 0.75rem 0.875rem 0.5rem;
+        border-radius: 12px;
+    }
+
+    .composer-card .composer-title-input {
+        font-size: 1.25rem;
+    }
+
+    .composer-pill-menu {
+        right: -0.25rem;
+    }
+}
+
+// the help link belongs to the body writing space: no orphan while that is collapsed
+.composer-card #body-write.d-none + .form-text {
+    display: none;
+}
+
+.composer-forward label {
+    font-size: 0.875rem;
+    letter-spacing: 0;
+    text-transform: none;
+}
+
+// the bottom bar stays one row: Cancel on the left, the actions on the right, text labels only when there is room
+.composer-bar {
+    flex-wrap: nowrap;
+    align-items: center;
+}
+
+.composer-bar > .col:first-child {
+    flex: 0 0 auto;
+    width: auto;
+}
+
+.composer-bar > .col:last-child {
+    display: flex;
+    flex: 1 1 auto;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 0.25rem;
+    min-width: 0;
+    white-space: nowrap;
+}
+
+.composer-bar > .col:last-child > .text-danger {
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+// the feed composer and the Create post panel share the card's controls: a pill Post button, round tools
+.inline-composer #ic-post {
+    min-height: 36px;
+    padding-left: 1rem;
+    padding-right: 1rem;
+    border-radius: 999px;
+    font-weight: 700;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+    .inline-composer #ic-post:active {
+        transform: scale(0.97);
+    }
+}
+
+// The feed composer and the Create post panel carry the full editor's controls (inline_composer.html):
+// the audience pill, the tool row, the toolbar and "More options", compact enough for the 380px panel.
+.inline-composer .ic-head {
+    margin-bottom: 0.25rem;
+}
+
+.inline-composer .ic-head .composer-pill > summary {
+    min-height: 32px;
+    padding: 0 0.7rem;
+    font-size: 0.8125rem;
+}
+
+.inline-composer .ic-tools {
+    margin-top: 0.25rem;
+    padding-top: 0;
+    border-top: 0;
+}
+
+.inline-composer .composer-tool {
+    width: 36px;
+    height: 36px;
+}
+
+.inline-composer .ic-bar {
+    flex-wrap: wrap;
+    row-gap: 0.25rem;
+}
+
+.inline-composer .ic-later .btn {
+    margin-right: 0.25rem;
+}
+
+#ic-options-toggle .composer-pill-caret {
+    transition: none;
+}
+
+#ic-options-toggle[aria-expanded="true"] .composer-pill-caret {
+    transform: rotate(180deg);
+}
+
+@media (pointer: coarse) {
+    .inline-composer .composer-tool {
+        width: 44px;
+        height: 44px;
+    }
 }

@@ -1,6 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+{% from "partials/theme.html" import theme_links, body_theme_class, body_theme_script %}
+<html lang="en"{% if request.cookies.get('sidebar_pref') == 'collapsed' %} class="sidebar-folded"{% endif %}>
 <head>
+  {# nav_align.js runs on this page: the search box waits for it (main.scss) #}
+  {% if not request.args.get('embed') %}<script>document.documentElement.classList.add("nav-align")</script>{% endif %}
 
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -29,6 +32,13 @@
   <meta name="twitter:image" content="/assets/images/preview-images/ruqqus_og_image.png" />
   <meta name="twitter:url" content="{{ request.path | full_link }}" />
   {% endblock %}
+
+  <!-- third-party hosts the page needs before it can draw: start the connections at once -->
+  <link rel="preconnect" href="https://maxcdn.bootstrapcdn.com" crossorigin>
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+  <link rel="preconnect" href="https://code.jquery.com" crossorigin>
+  <link rel="preconnect" href="https://stackpath.bootstrapcdn.com" crossorigin>
 
   <!-- Bootstrap core CSS -->
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
@@ -188,13 +198,7 @@
     <!-- Ruqqus CSS -->
     
     {% block stylesheets %}
-
-    {% if v and v.can_use_darkmode and session.get("dark_mode_enabled") %}
-    <link id="css-link" rel="stylesheet" href="/assets/style/main_dark.css?v=2.39.0">
-    {% else %}
-    <link id="css-link" rel="stylesheet" href="/assets/style/main.css?v=2.39.0">
-    {% endif %}
-
+    {{ theme_links(asset_url("style/main.css"), asset_url("style/main_dark.css")) }}
     {% endblock %}
 
     {% if request.args.get('embed') %}<base target="_top">{% endif %}
@@ -224,8 +228,6 @@
     }
     </style>
 
-    <!-- Font Awesome -->
-    <link href="https://fa.ruqqus.com/assets/fontawesome/css/all.css" rel="stylesheet"> <!--load all styles -->
 
     {% block fixedMobileBarJS %}
     {% endblock %}
@@ -253,7 +255,8 @@
 --->
  </head>
 
- <body id="{% block pagetype %}frontpage{% endblock %}" class="{% if v and session.get('dark_mode_enabled') %}dark{% else %}light{% endif %}{% if request.args.get('embed') %} embedded{% endif %}">
+ <body id="{% block pagetype %}frontpage{% endblock %}" class="{{ body_theme_class() }}{% if request.args.get('embed') %} embedded{% endif %}">
+  {{ body_theme_script() }}
 
   {% if request.path=='/' and g.system and g.timestamp>session.get('tooltip_last_dismissed',0)+60*60*24 and (g.system.endswith('/chrome') or g.system.endswith('/other')) %}
   <div class="row fixed-top" style="z-index:2000" id="mobile-prompt-row">
@@ -394,10 +397,10 @@
               <a class="dropdown-item" href="/chat"><i class="fas fa-comment-dots fa-fw text-left mr-3"></i>Chat</a>
               {% endif %}
               <a class="dropdown-item" href="/settings"><i class="fas fa-cog fa-fw text-left mr-3"></i>Settings</a>
-              <a class="dropdown-item d-lg-none" href="/categories"><i class="fas fa-shapes fa-fw text-left mr-3" id="dark-switch"></i>Categories</a>
+              <a class="dropdown-item d-lg-none" href="/categories"><i class="fas fa-shapes fa-fw text-left mr-3"></i>Categories</a>
 
               {% block darkswitch %}
-              {% if v and v.can_use_darkmode and session.get("dark_mode_enabled")%}
+              {% if v and v.can_use_darkmode and theme_choice() == "dark" %}
               <a class="dropdown-item" href="javascript:void(0)" onclick="switch_css()"><i class="fas fa-toggle-on fa-fw text-left mr-3" id="dark-switch"></i>Dark mode</a>
               {% elif v and v.can_use_darkmode %}
               <a class="dropdown-item" href="javascript:void(0)" onclick="switch_css()"><i class="fas fa-toggle-off fa-fw text-left mr-3" id="dark-switch"></i>Dark mode</a>
@@ -431,7 +434,7 @@
    </ul>
 
    {% if not v %}
-   <div class="collapse navbar-collapse" id="navbarResponsive">
+   <div class="collapse navbar-collapse navbar-phone-menu" id="navbarResponsive">
    <!-- Mobile Nav Menu -->
    <ul class="navbar-nav ml-auto d-flex d-md-none mt-3">
      <li class="nav-item pb-3">
@@ -481,7 +484,7 @@
     </li>
     {% if v %}
     {% block darkswitchMobile %}
-    {% if session.get("dark_mode_enabled")%}
+    {% if theme_choice() == "dark" %}
     <li class="nav-item"><a class="nav-link" href="javascript:void(0)" onclick="switch_css()"><i class="fas fa-toggle-on fa-fw mr-3" id="dark-switch-mobile"></i>Dark mode</a></li>
     {% else %}
     <li class="nav-item"><a class="nav-link" href="javascript:void(0)" onclick="switch_css()"><i class="fas fa-toggle-off fa-fw mr-3" id="dark-switch-mobile"></i>Dark mode</a></li>
@@ -542,8 +545,11 @@
 {% block postNav %}
 {% endblock %}
 
+{# the right sidebar, rendered once here so the row can say it is coming (main.scss keeps its room while the page is
+   still arriving, so the feed does not jump sideways when it does); printed in its place below #}
+{% set right_sidebar = self.sidebar() %}
 <div class="container-fluid">
-  <div class="row justify-content-around" id="main-content-row">
+  <div class="row justify-content-around{% if right_sidebar | trim %} expects-right-sidebar{% endif %}" id="main-content-row">
 
     {% block leftSidebar %}
     {% block leftSidebarBlock %}
@@ -577,11 +583,12 @@
 
     <!-- Right Sidebar (hidden on devices smaller than "large") -->
 
+    {{ right_sidebar }}
+    {% if false %}{# the block is only defined here (child templates override it); it is printed above #}
     {% block sidebar %}
     <div class="col sidebar text-left d-none d-lg-block pt-3 bg-white border-left">
       {% block sidebarblock %}
-      <div id="trending-box" data-src="/inpage/trending"></div>
-      {% if v %}<div id="who-to-follow" data-src="/inpage/who_to_follow"></div>{% endif %}
+      {% include "partials/late_boxes.html" %}
       <div class="sidebar-section">
         <div class="title">
           <i class="fas fa-heart mr-2"></i>Support {{ "SITE_NAME" | app_config }}
@@ -651,6 +658,7 @@
 
     </div>
     {% endblock %}
+    {% endif %}
 
     {% if v and not request.args.get('embed') %}
     <!-- Notifications, chat and Create post open here on a wide screen (assets/js/side_panels.js) -->
@@ -717,6 +725,8 @@
 {% include "flag_post_modal.html" %}
 {% include "flag_comment_modal.html" %}
 {% include "gif_modal.html" %}
+{# once per page: every comment box (comments.html) opens the same emoji sheet #}
+{% include "emoji_modal.html" %}
 {% include "delete_comment_modal.html" %}
 {% include "delete_post_modal.html" %}
 {% include "tip_modal.html" %}
@@ -734,27 +744,36 @@
 
 {% if v and not request.args.get('embed') %}{% include "partials/share_chat_modal.html" %}{% include "partials/coauthors_modal.html" %}{% include "partials/audience_modal.html" %}{% endif %}
 {% if v and organise_bookmarks and not request.args.get('embed') %}{% include "partials/bookmark_folder_modal.html" %}{% endif %}
+{% if v and not request.args.get('embed') %}{% include "partials/curation_picker_modal.html" %}{% endif %}
+{# the schedule panel and Drafts list of the feed composer (home.html, which board.html extends, and composer_panel.html set composer_drafts) #}
+{% if v and composer_drafts %}{% include "partials/drafts_ui.html" %}{% endif %}
 {% if v and story_ui and not request.args.get('embed') %}{% include "partials/story_sheets.html" %}{% endif %}
 
-<script src="/assets/js/all_js.js?v=2.39.1" importance="high" ></script>
-<script src="/assets/js/feed_video_autoplay.js"></script>
-<script src="/assets/js/infinite_scroll.js?v=2"></script>
-<script src="/assets/js/trending.js?v=1"></script>
-{% if v and not request.args.get('embed') %}<script src="/assets/js/side_panels.js?v=1"></script>{% endif %}
-{% if not request.args.get('embed') %}<script src="/assets/js/nav_align.js?v=1"></script>{% endif %}
-{% if request.args.get('embed') %}<script src="/assets/js/embedded.js?v=1"></script>{% endif %}
-{% if v %}<script src="/assets/js/inline_composer.js?v=1"></script>
-<script src="/assets/js/who_to_follow.js?v=1"></script>
-<script src="/assets/js/media_upload.js?v=1"></script>
-{% if not request.args.get('embed') %}<script src="/assets/js/share_chat.js?v=1"></script>
-<script src="/assets/js/coauthors.js?v=1"></script>
-<script src="/assets/js/circle_audience.js?v=1"></script>{% endif %}{% endif %}
-{% if v and organise_bookmarks and not request.args.get('embed') %}<script src="/assets/js/bookmark_folders.js?v=2"></script>{% endif %}
-{% if v and story_ui and not request.args.get('embed') %}<script src="/assets/js/stories.js?v=1"></script>{% endif %}
-{% if v %}<script src="/assets/js/poll_composer.js?v=1"></script>{% endif %}
-{% if v %}<script src="/assets/js/voters.js?v=1"></script>{% endif %}
-<script src="/assets/js/poll.js?v=1"></script>
-{% if v %}<script src="/assets/js/chat_badge.js?v=1"></script>{% endif %}
+<script src="{{ asset_url('js/all_js.js') }}" importance="high" ></script>
+<script src="{{ asset_url('js/feed_video_autoplay.js') }}"></script>
+<script src="{{ asset_url('js/infinite_scroll.js') }}"></script>
+<script src="{{ asset_url('js/trending.js') }}"></script>
+{% if v and not request.args.get('embed') %}<script src="{{ asset_url('js/side_panels.js') }}"></script>{% endif %}
+{% if not request.args.get('embed') %}<script src="{{ asset_url('js/nav_align.js') }}"></script>{% endif %}
+{% if request.args.get('embed') %}<script src="{{ asset_url('js/embedded.js') }}"></script>{% endif %}
+{% if v %}<script src="{{ asset_url('js/inline_composer.js') }}"></script>
+<script src="{{ asset_url('js/who_to_follow.js') }}"></script>
+<script src="{{ asset_url('js/media_upload.js') }}"></script>
+{% if not request.args.get('embed') %}<script src="{{ asset_url('js/share_chat.js') }}"></script>
+<script src="{{ asset_url('js/coauthors.js') }}"></script>
+<script src="{{ asset_url('js/circle_audience.js') }}"></script>{% endif %}{% endif %}
+{% if v and organise_bookmarks and not request.args.get('embed') %}<script src="{{ asset_url('js/bookmark_folders.js') }}"></script>{% endif %}
+{% if v and story_ui and not request.args.get('embed') %}<script src="{{ asset_url('js/stories.js') }}"></script>{% endif %}
+{% if v %}<script src="{{ asset_url('js/poll_composer.js') }}"></script>{% endif %}
+{% if v %}<script src="{{ asset_url('js/voters.js') }}"></script>{% endif %}
+{% if v %}<script src="{{ asset_url('js/post_feedback.js') }}"></script>{% endif %}
+{# the feed composer and the Create post panel: toolbar, drafts, pill and poll button (they return early without their elements) #}
+{% if v %}<script src="{{ asset_url('js/post_editor.js') }}"></script>
+<script src="{{ asset_url('js/post_drafts.js') }}"></script>
+<script src="{{ asset_url('js/composer_card.js') }}"></script>{% endif %}
+{% if v and not request.args.get('embed') %}<script src="{{ asset_url('js/curation_picker.js') }}"></script>{% endif %}
+<script src="{{ asset_url('js/poll.js') }}"></script>
+{% if v %}<script src="{{ asset_url('js/chat_badge.js') }}"></script>{% endif %}
 
 <!-- ClipboardJS -->
 
@@ -809,6 +828,7 @@
 </div>
 {% endif %}
 
+{{ ads_script() }}
 </body>
 
 </html>

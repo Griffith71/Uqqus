@@ -153,7 +153,7 @@ def test_move_to_folder_is_only_offered_on_the_bookmarked_tab():
 def test_the_sheet_and_the_script_are_only_on_the_bookmarked_tab_and_not_in_a_panel_frame():
     shell = read("ruqqus", "templates", "default.html")
     assert "{% if v and organise_bookmarks and not request.args.get('embed') %}{% include \"partials/bookmark_folder_modal.html\" %}{% endif %}" in shell
-    assert "{% if v and organise_bookmarks and not request.args.get('embed') %}<script src=\"/assets/js/bookmark_folders.js?v=2\"></script>{% endif %}" in shell
+    assert "{% if v and organise_bookmarks and not request.args.get('embed') %}<script src=\"{{ asset_url('js/bookmark_folders.js') }}\"></script>{% endif %}" in shell
 
 
 def test_every_element_the_script_uses_exists_and_names_are_drawn_as_text():

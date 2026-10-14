@@ -98,7 +98,7 @@ def test_a_locked_arrow_is_not_bound_to_the_vote_handlers_and_says_why_when_clic
 
 def test_a_refused_vote_puts_the_arrow_and_the_score_back():
     assert "function post_toast(url, callback, onError) {" in SCRIPT
-    assert "if (onError) onError(data)" in SCRIPT
+    assert "if (onError) onError(data || {})" in SCRIPT
     assert "function snapshotVote(type, id) {" in SCRIPT and "function voteLocked(el) {" in SCRIPT
     assert SCRIPT.count("var restore = snapshotVote(type, id);") == 2
     assert SCRIPT.count('post_toast("/api/vote/" + type + "/" + id + "/" + voteDirection, undefined, restore);') == 2
@@ -109,8 +109,9 @@ def test_a_refused_vote_puts_the_arrow_and_the_score_back():
 
 
 def test_the_script_is_fetched_afresh():
+    # its address carries a hash of its content (helpers/page_assets.asset_url), so a change is fetched at once
     for name in ("default.html", "submit.html", "sign_up.html"):
-        assert "all_js.js?v=2.39.1" in read("ruqqus", "templates", name), name
+        assert "asset_url('js/all_js.js')" in read("ruqqus", "templates", name), name
 
 
 def test_both_stylesheets_dim_the_locked_arrow_even_on_hover():

@@ -455,16 +455,16 @@ $('#new_email').on('input', function () {
 						for (var i = 0; i < gifs.length; i++) {
 							container.innerHTML += ('<div class="card bg-white" style="overflow: hidden" data-dismiss="modal" aria-label="Close" onclick="insertGIF(\'' + gifs[i].url + '\',\'' + commentFormID + '\')"><div class="gif-cat-overlay"></div><img class="img-fluid" src="' + gifs[i].preview + '"></div>');
 							noGIFs.innerHTML = null;
-							loadGIFs.innerHTML = '<div class="text-center py-3"><div class="mb-3"><i class="fad fa-grin-beam-sweat text-gray-500" style="font-size: 3.5rem;"></i></div><p class="font-weight-bold text-gray-500 mb-0">Thou&#39;ve reached the end of the list!</p></div>';
+							loadGIFs.innerHTML = '<div class="text-center py-3"><div class="mb-3"><i class="far fa-grin-beam-sweat text-gray-500" style="font-size: 3.5rem;"></i></div><p class="font-weight-bold text-gray-500 mb-0">Thou&#39;ve reached the end of the list!</p></div>';
 						}
 					} else {
-						noGIFs.innerHTML = '<div class="text-center py-3 mt-3"><div class="mb-3"><i class="fad fa-frown text-gray-500" style="font-size: 3.5rem;"></i></div><p class="font-weight-bold text-gray-500 mb-0">Aw shucks. No GIFs found...</p></div>';
+						noGIFs.innerHTML = '<div class="text-center py-3 mt-3"><div class="mb-3"><i class="far fa-frown text-gray-500" style="font-size: 3.5rem;"></i></div><p class="font-weight-bold text-gray-500 mb-0">Aw shucks. No GIFs found...</p></div>';
 						container.innerHTML = null;
 						loadGIFs.innerHTML = null;
 					}
 				})
 				.catch(err => {
-					noGIFs.innerHTML = '<div class="text-center py-3 mt-3"><div class="mb-3"><i class="fad fa-frown text-gray-500" style="font-size: 3.5rem;"></i></div><p class="font-weight-bold text-gray-500 mb-0">Aw shucks. No GIFs found...</p></div>';
+					noGIFs.innerHTML = '<div class="text-center py-3 mt-3"><div class="mb-3"><i class="far fa-frown text-gray-500" style="font-size: 3.5rem;"></i></div><p class="font-weight-bold text-gray-500 mb-0">Aw shucks. No GIFs found...</p></div>';
 					container.innerHTML = null;
 					loadGIFs.innerHTML = null;
 				});
@@ -709,31 +709,21 @@ window.addEventListener('load', function () {
 });
 
 //comment modding
-function removeComment(post_id) {
-  url="/api/ban_comment/"+post_id
+function showCommentModeration(cid, removed) {
+  document.querySelectorAll(".mod-approve-c-" + cid).forEach(function(el) { el.classList.toggle("d-none", !removed); });
+  document.querySelectorAll(".mod-remove-c-" + cid).forEach(function(el) { el.classList.toggle("d-none", removed); });
+  var body = document.getElementById("comment-" + cid + "-only");
+  if (body) body.classList.toggle("banned", removed);
+}
 
-  callback=function(){
-    document.getElementById("comment-"+post_id+"-only").classList.add("banned");
+function removeComment(cid) {
+  post("/api/ban_comment/" + cid, function() { showCommentModeration(cid, true); },
+    "Unable to remove the comment at this time. Please try again later.");
+}
 
-    button=document.getElementById("moderate-"+post_id);
-    button.onclick=function(){approveComment(post_id)};
-    button.innerHTML="approve"
-  }
-  post(url, callback, "Unable to remove post at this time. Please try again later.")
-};
-
-function approveComment(post_id) {
-  url="/api/unban_comment/"+post_id
-
-  callback=function(){
-    document.getElementById("comment-"+post_id+"-only").classList.remove("banned");
-
-    button=document.getElementById("moderate-"+post_id);
-    button.onclick=function(){removeComment(post_id)};
-    button.innerHTML="remove"
-  }
-
-  post(url, callback, "Unable to approve post at this time. Please try again later.")
+function approveComment(cid) {
+  post("/api/unban_comment/" + cid, function() { showCommentModeration(cid, false); },
+    "Unable to approve the comment at this time. Please try again later.");
 }
 
 admin_comment=function(cid){
@@ -838,123 +828,97 @@ document.addEventListener('input', function (event) {
 }, false);
 
 //dark mode
+//
+// The server sends the right stylesheet for the first paint (templates/partials/theme.html): the saved
+// choice, or with none both stylesheets with a prefers-color-scheme media query. Nothing here switches the
+// stylesheet on load. #css-link carries data-light / data-dark, so a guild's coloured stylesheets toggle too.
 
-function switch_css() {
-  css = document.getElementById("css-link");
-  dswitch = document.getElementById("dark-switch");
-  dswitchmobile = document.getElementById("dark-switch-mobile");
-
-  if (css.href.includes("/assets/style/main.css")) {
-    post("/settings/dark_mode/1",
-      callback=function(){
-        try{ console.log('[switch_css] callback dark enabled branch'); }catch(e){}
-        css.href="/assets/style/main_dark.css?v=2.39.0";
-        localStorage.setItem('dark_mode_enabled', 'true');
-        // Update all dark-switch icons
-        document.querySelectorAll('[id="dark-switch"]').forEach(function(d){
-          d.classList.remove("fa-toggle-off");
-          d.classList.add("fa-toggle-on");
-        });
-        if(dswitchmobile) {
-          dswitchmobile.classList.remove("fa-toggle-off");
-          dswitchmobile.classList.add("fa-toggle-on");
-        }
-	$('body').toggleClass('light');
-	$('body').toggleClass('dark');
-        // set labels based on the new icon state
-        // update global toggle anchors for switch_css directly (avoid helper)
-        document.querySelectorAll('[onclick]').forEach(function(a){
-          var onclick = a.getAttribute && a.getAttribute('onclick');
-          if(!onclick || onclick.indexOf('switch_css') === -1) return;
-          var icon = a.querySelector('i');
-          if(!icon) return;
-          try { a.innerHTML = icon.outerHTML + 'Light mode'; } catch(e){}
-        });
-      }
-      );
+function current_theme() {
+  var css = document.getElementById("css-link");
+  if (!css) return "light";
+  if (document.getElementById("css-link-auto-dark")) {
+    return window.matchMedia && matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
   }
-  else {
-    post("/settings/dark_mode/0",
-      callback=function(){
-        try{ console.log('[switch_css] callback dark disabled branch'); }catch(e){}
-        css.href="/assets/style/main.css?v=2.39.0";
-        localStorage.setItem('dark_mode_enabled', 'false');
-        // Update all dark-switch icons
-        document.querySelectorAll('[id="dark-switch"]').forEach(function(d){
-          d.classList.remove("fa-toggle-on");
-          d.classList.add("fa-toggle-off");
-        });
-        if(dswitchmobile) {
-          dswitchmobile.classList.remove("fa-toggle-on");
-          dswitchmobile.classList.add("fa-toggle-off");
-        }
-	$('body').toggleClass('light');
-	$('body').toggleClass('dark');
-        document.querySelectorAll('[onclick]').forEach(function(a){
-          var onclick = a.getAttribute && a.getAttribute('onclick');
-          if(!onclick || onclick.indexOf('switch_css') === -1) return;
-          var icon = a.querySelector('i');
-          if(!icon) return;
-          try { a.innerHTML = icon.outerHTML + 'Dark mode'; } catch(e){}
-        });
-      }
-      );
-  }
+  return css.getAttribute("href") == css.getAttribute("data-dark") ? "dark" : "light";
 }
 
-// Initialize dark mode toggle text on page load
-document.addEventListener('DOMContentLoaded', function() {
-  var css = document.getElementById("css-link");
-  if(!css) return;
-  
-  var isDarkMode = css.href.includes("/assets/style/main_dark.css");
-  var localStorageDarkMode = localStorage.getItem('dark_mode_enabled');
-  
-  // If localStorage differs from server state, update the CSS and sync
-  if(localStorageDarkMode !== null && ((localStorageDarkMode === 'true') !== isDarkMode)) {
-    isDarkMode = localStorageDarkMode === 'true';
-    if(isDarkMode) {
-      css.href="/assets/style/main_dark.css?v=2.39.0";
-      $('body').addClass('dark').removeClass('light');
-    } else {
-      css.href="/assets/style/main.css?v=2.39.0";
-      $('body').addClass('light').removeClass('dark');
-    }
-  }
-  
-  // Update toggle icons and text
-  document.querySelectorAll('[id="dark-switch"]').forEach(function(d){
-    if(isDarkMode) {
-      d.classList.remove("fa-toggle-off");
-      d.classList.add("fa-toggle-on");
-    } else {
-      d.classList.remove("fa-toggle-on");
-      d.classList.add("fa-toggle-off");
-    }
+function show_theme_toggles(theme) {
+  document.querySelectorAll('[id="dark-switch"], #dark-switch-mobile').forEach(function(d){
+    d.classList.toggle("fa-toggle-on", theme == "dark");
+    d.classList.toggle("fa-toggle-off", theme != "dark");
   });
-  
-  document.querySelectorAll('[onclick]').forEach(function(a){
-    var onclick = a.getAttribute && a.getAttribute('onclick');
-    if(!onclick || onclick.indexOf('switch_css') === -1) return;
+  document.querySelectorAll('[onclick*="switch_css"]').forEach(function(a){
     var icon = a.querySelector('i');
-    if(!icon) return;
-    try { 
-      a.innerHTML = icon.outerHTML + (isDarkMode ? 'Light mode' : 'Dark mode'); 
-    } catch(e){}
+    if (!icon) return;
+    a.innerHTML = icon.outerHTML + (theme == "dark" ? 'Light mode' : 'Dark mode');
   });
+}
+
+// The other theme's stylesheet is fetched before it replaces this one, so the page never shows unstyled.
+function apply_theme(theme) {
+  var css = document.getElementById("css-link");
+  var auto = document.getElementById("css-link-auto-dark");
+  var href = css.getAttribute(theme == "dark" ? "data-dark" : "data-light");
+  var next = document.createElement("link");
+  next.rel = "stylesheet";
+  next.href = href;
+  next.setAttribute("data-light", css.getAttribute("data-light"));
+  next.setAttribute("data-dark", css.getAttribute("data-dark"));
+  next.onload = function() {
+    css.remove();
+    if (auto) auto.remove();
+    next.id = "css-link";
+    document.body.classList.toggle("dark", theme == "dark");
+    document.body.classList.toggle("light", theme != "dark");
+    document.body.classList.remove("theme-auto");
+    show_theme_toggles(theme);
+  };
+  css.parentNode.insertBefore(next, css.nextSibling);
+}
+
+function switch_css() {
+  var theme = current_theme() == "dark" ? "light" : "dark";
+  post("/settings/dark_mode/" + (theme == "dark" ? 1 : 0), function() { apply_theme(theme); });
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  show_theme_toggles(current_theme());
 });
+
+// With no saved choice the stylesheets follow the device by themselves; keep the body class and labels along.
+if (window.matchMedia) {
+  var deviceDark = matchMedia("(prefers-color-scheme: dark)");
+  (deviceDark.addEventListener ? deviceDark.addEventListener.bind(deviceDark, "change") : deviceDark.addListener.bind(deviceDark))(function() {
+    if (!document.getElementById("css-link-auto-dark")) return;
+    var theme = current_theme();
+    document.body.classList.toggle("dark", theme == "dark");
+    document.body.classList.toggle("light", theme != "dark");
+    show_theme_toggles(theme);
+  });
+}
+
+// The right sidebar's late boxes (templates/partials/late_boxes.html): put the content in, fade it in, and
+// remember its height so the next page reserves exactly that before its first paint.
+function fill_late_box(slot, html) {
+  slot.innerHTML = html;
+  slot.style.minHeight = "";
+  var height = html.trim() ? Math.round(slot.getBoundingClientRect().height) : 0;
+  try { localStorage.setItem("late_box_h:" + slot.id, String(height)); } catch (e) {}
+  if (height) slot.classList.add("late-box-in");
+}
 
 // Delete Post
 
 function delete_postModal(id) {
 
-  // Passed data for modal
+  // Passed data for modal. onclick, not addEventListener: the buttons are shared by every post on the page, and
+  // a listener added per opening stayed after Cancel, so confirming deleted every post opened before too.
 
-  document.getElementById("deletePostButton-mobile").addEventListener("click", delete_post);
+  document.getElementById("deletePostButton-mobile").onclick = delete_post;
 
-  document.getElementById("deletePostButton").addEventListener("click", delete_post);
+  document.getElementById("deletePostButton").onclick = delete_post;
 
-  function delete_post(){  
+  function delete_post(){
 
     this.innerHTML='<span class="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true"></span>Deleting post';  
     this.disabled = true; 
@@ -1000,7 +964,7 @@ function emailVerifyText() {
 // Flag Comment
 
 // What the flag modals say once a report or a community note request went through (or why not)
-flagAnswer = function(prefix, kind, status, noun) {
+flagAnswer = function(prefix, kind, status, noun, xhr) {
 
   var title = document.getElementById(prefix + "AfterTitle");
   var text = document.getElementById(prefix + "AfterText");
@@ -1008,6 +972,11 @@ flagAnswer = function(prefix, kind, status, noun) {
   if (status == 409 || status == 429) {
     title.textContent = status == 409 ? "You already did that" : "Too many requests today";
     text.textContent = status == 429 ? "Try again tomorrow." : (kind == "note" ? "You can ask for a community note once for each " + noun + ", and not on your own " + noun + "." : "You already reported this " + noun + ".");
+  }
+  else if (xhr && !xhrOk(xhr)) {
+    // anything else that isn't a success: never say thank you for a report that didn't go through
+    title.textContent = "That didn't go through";
+    text.textContent = xhrError(xhr, xhrData(xhr));
   }
   else if (kind == "note") {
     title.textContent = "Thank you for asking";
@@ -1043,11 +1012,11 @@ report_commentModal = function(id, author) {
     xhr.open("POST", '/api/flag/comment/' + id, true);
     xhr.withCredentials = true;
     xhr.onload = function() {
-      flagAnswer("reportComment", kind, xhr.status, "comment");
+      flagAnswer("reportComment", kind, xhr.status, "comment", xhr);
       document.getElementById("reportCommentFormBefore").classList.add('d-none');
       document.getElementById("reportCommentFormAfter").classList.remove('d-none');
     };
-    xhr.onerror = function() { alert(errortext) };
+    xhr.onerror = function() { alert(xhrError(xhr, null)) };
     xhr.send(form);
   }
 
@@ -1109,12 +1078,12 @@ report_postModal = function(id, author, board) {
     xhr.withCredentials=true;
 
     xhr.onload=function() {
-      flagAnswer("reportPost", dropdown.options[dropdown.selectedIndex].value, xhr.status, "post");
+      flagAnswer("reportPost", dropdown.options[dropdown.selectedIndex].value, xhr.status, "post", xhr);
       document.getElementById("reportPostFormBefore").classList.add('d-none');
       document.getElementById("reportPostFormAfter").classList.remove('d-none');
     };
 
-    xhr.onerror=function(){alert(errortext)};
+    xhr.onerror=function(){alert(xhrError(xhr, null))};
     xhr.send(form);
 
   }
@@ -1352,7 +1321,12 @@ function onHideButtonListingClick(event) {
   action=$(this).data('hidden')=='true' ? 'unhide' : 'hide'
 
   var replaceCallback = function(xhr){
-    $("#post-"+pid).replaceWith(JSON.parse(xhr.response)['data'])
+    var data = xhrData(xhr);
+    if (!data || !data.data) return;
+    var fresh = $($.parseHTML(data.data.trim(), document, true)).filter("*");
+    $("#post-"+pid).replaceWith(fresh);
+    // the new card's buttons work like the ones drawn with the page
+    fresh.each(function() { bindPostCards(this); });
   }
 
   if (action == 'hide') {
@@ -1366,15 +1340,38 @@ $('.hide-button-listing').click(onHideButtonListingClick)
 
 //POST
 
+// What an answer to one of these requests says, without throwing: abort(4xx) answers an HTML page, and an
+// expired session is redirected to /login, which arrives as a 200 page. xhrData is the JSON or null.
+function xhrData(xhr) {
+  try { return JSON.parse(xhr.response) || {}; } catch (e) { return null; }
+}
+
+function xhrLoggedOut(xhr) {
+  return !!(xhr.responseURL && new URL(xhr.responseURL).pathname == "/login");
+}
+
+function xhrError(xhr, data) {
+  if (data && data.error) return data.error;
+  if (xhrLoggedOut(xhr)) return "Please log in again.";
+  if (xhr.status == 403) return "You can't do that.";
+  if (xhr.status == 404) return "That isn't there any more.";
+  if (xhr.status == 429) return "You're doing that too much. Try again later.";
+  return "Something went wrong. Please try again.";
+}
+
+function xhrOk(xhr) {
+  return xhr.status >= 200 && xhr.status < 300 && !xhrLoggedOut(xhr);
+}
+
 function post(url, callback, errortext) {
   var xhr = new XMLHttpRequest();
   xhr.open("POST", url, true);
   var form = new FormData()
   form.append("formkey", formkey());
   xhr.withCredentials=true;
-  xhr.onerror=function() { alert(errortext); };
+  xhr.onerror=function() { alert(errortext || xhrError(xhr, xhrData(xhr))); };
   xhr.onload = function() {
-    if (xhr.status >= 200 && xhr.status < 300) {
+    if (xhrOk(xhr)) {
       callback();
     } else {
       xhr.onerror();
@@ -1394,9 +1391,9 @@ function post_with_reason(url, callback, errortext) {
   form.append("formkey", formkey());
   form.append("reason", reason.trim());
   xhr.withCredentials=true;
-  xhr.onerror=function() { alert(errortext); };
+  xhr.onerror=function() { alert(errortext || xhrError(xhr, xhrData(xhr))); };
   xhr.onload = function() {
-    if (xhr.status >= 200 && xhr.status < 300) {
+    if (xhrOk(xhr)) {
       callback(xhr);
     } else {
       xhr.onerror();
@@ -1411,9 +1408,9 @@ function post_response(url, callback, errortext) {
   var form = new FormData()
   form.append("formkey", formkey());
   xhr.withCredentials=true;
-  xhr.onerror=function() { alert(errortext); };
+  xhr.onerror=function() { alert(errortext || xhrError(xhr, xhrData(xhr))); };
   xhr.onload = function() {
-    if (xhr.status >= 200 && xhr.status < 300) {
+    if (xhrOk(xhr)) {
       callback(xhr);
     } else {
       xhr.onerror();
@@ -1424,13 +1421,13 @@ function post_response(url, callback, errortext) {
 
 // sub/unsub
 
+// the join/follow buttons a page has (a profile has no modal pair, a guild page may lack the phone pair)
 function toggleSub(){
-  document.getElementById('button-unsub').classList.toggle('d-none');
-  document.getElementById('button-sub').classList.toggle('d-none');
-  document.getElementById('button-unsub-modal').classList.toggle('d-none');
-  document.getElementById('button-sub-modal').classList.toggle('d-none');
-  document.getElementById('button-unsub-mobile').classList.toggle('d-none');
-  document.getElementById('button-sub-mobile').classList.toggle('d-none');
+  ['button-unsub', 'button-sub', 'button-unsub-modal', 'button-sub-modal', 'button-unsub-mobile', 'button-sub-mobile']
+    .forEach(function(id) {
+      var el = document.getElementById(id);
+      if (el) el.classList.toggle('d-none');
+    });
 }
 
 function post_toast_with_reason(url, callback) {
@@ -1446,22 +1443,23 @@ function post_toast_with_reason(url, callback) {
   xhr.withCredentials=true;
 
   xhr.onload = function() {
+    var data = xhrData(xhr);
     if (xhr.status==204) {}
-      else if (xhr.status >= 200 && xhr.status < 300) {
-        $('#toast-post-success').toast('dispose');
-        $('#toast-post-success').toast('show');
-        document.getElementById('toast-post-success-text').innerText = JSON.parse(xhr.response)["message"];
+      else if (xhrOk(xhr) && (data !== null || xhr.response === "")) {
+        if (data && data.message) {
+          $('#toast-post-success').toast('dispose');
+          $('#toast-post-success').toast('show');
+          document.getElementById('toast-post-success-text').innerText = data.message;
+        }
         callback(xhr)
         return true
 
-      } else if (xhr.status >= 300 && xhr.status < 400) {
-        window.location.href = JSON.parse(xhr.response)["redirect"]
+      } else if (xhr.status >= 300 && xhr.status < 400 && data && data.redirect) {
+        window.location.href = data.redirect
       } else {
-        data=JSON.parse(xhr.response);
-
         $('#toast-post-error').toast('dispose');
         $('#toast-post-error').toast('show');
-        document.getElementById('toast-post-error-text').innerText = data["error"];
+        document.getElementById('toast-post-error-text').innerText = xhrError(xhr, data);
         return false
 
       }
@@ -1509,6 +1507,17 @@ function save_filter_level() {
   xhr.send(form);
 }
 
+// A post's bookmark, wherever the page draws it (the card, its phone row, the post page): both states are drawn
+// with their own count (templates/partials/post_actions.html), so this only shows the other one.
+function showBookmarked(id, saved) {
+  ['', 'mobile-', 'modal-'].forEach(function (part) {
+    var off = document.getElementById('bookmark-' + part + id);
+    var on = document.getElementById('unbookmark-' + part + id);
+    if (off) off.classList.toggle('d-none', saved);
+    if (on) on.classList.toggle('d-none', !saved);
+  });
+}
+
 function post_toast(url, callback, onError) {
   var xhr = new XMLHttpRequest();
   xhr.open("POST", url, true);
@@ -1517,23 +1526,24 @@ function post_toast(url, callback, onError) {
   xhr.withCredentials=true;
 
   xhr.onload = function() {
+    var data = xhrData(xhr);
     if (xhr.status==204) {}
-      else if (xhr.status >= 200 && xhr.status < 300) {
-        $('#toast-post-success').toast('dispose');
-        $('#toast-post-success').toast('show');
-        document.getElementById('toast-post-success-text').innerText = JSON.parse(xhr.response)["message"];
+      else if (xhrOk(xhr) && (data !== null || xhr.response === "")) {
+        if (data && data.message) {
+          $('#toast-post-success').toast('dispose');
+          $('#toast-post-success').toast('show');
+          document.getElementById('toast-post-success-text').innerText = data.message;
+        }
         callback(xhr)
         return true
 
-      } else if (xhr.status >= 300 && xhr.status < 400) {
-        window.location.href = JSON.parse(xhr.response)["redirect"]
+      } else if (xhr.status >= 300 && xhr.status < 400 && data && data.redirect) {
+        window.location.href = data.redirect
       } else {
-        data=JSON.parse(xhr.response);
-
         $('#toast-post-error').toast('dispose');
         $('#toast-post-error').toast('show');
-        document.getElementById('toast-post-error-text').innerText = data["error"];
-        if (onError) onError(data)      // e.g. a vote that was shown at once and then refused: put it back
+        document.getElementById('toast-post-error-text').innerText = xhrError(xhr, data);
+        if (onError) onError(data || {})      // e.g. a vote that was shown at once and then refused: put it back
         return false
 
       }
@@ -1562,35 +1572,23 @@ $('.bell-button').click(function (event) {
 
 //Admin post modding
 
+// Every copy of a post's Approve / Remove (desktop menu, phone sheet) carries mod-approve-<id> / mod-remove-<id>;
+// both are always rendered and shown by state, so one action updates all of them.
+function showModeration(post_id, removed) {
+  document.querySelectorAll(".mod-approve-" + post_id).forEach(function(el) { el.classList.toggle("d-none", !removed); });
+  document.querySelectorAll(".mod-remove-" + post_id).forEach(function(el) { el.classList.toggle("d-none", removed); });
+  var card = document.getElementById("post-" + post_id);
+  if (card) card.classList.toggle("banned", removed);
+}
+
 function removePost(post_id) {
-  url="/api/ban_post/"+post_id
-
-  callback=function(){
-    document.getElementById("post-"+post_id).classList.add("banned");
-
-    var button=document.getElementById("moderate-post-"+post_id);
-    button.onclick=function(){approvePost(post_id)};
-    button.classList.remove("removeDropdownItem");
-    button.classList.add("approveDropdownItem");
-    button.innerHTML='<i class="fas fa-clipboard-check"></i>Approve'
-  }
-  post(url, callback, "Unable to remove post at this time. Please try again later.")
+  post("/api/ban_post/" + post_id, function() { showModeration(post_id, true); },
+    "Unable to remove post at this time. Please try again later.");
 }
 
 function approvePost(post_id) {
-  url="/api/unban_post/"+post_id
-
-  callback=function(){
-    document.getElementById("post-"+post_id).classList.remove("banned");
-
-    var button=document.getElementById("moderate-post-"+post_id);
-    button.onclick=function(){removePost(post_id)};
-    button.classList.remove("approveDropdownItem");
-    button.classList.add("removeDropdownItem");
-    button.innerHTML='<i class="fas fa-trash-alt"></i>Remove'
-  }
-
-  post(url, callback, "Unable to approve post at this time. Please try again later.")
+  post("/api/unban_post/" + post_id, function() { showModeration(post_id, false); },
+    "Unable to approve post at this time. Please try again later.");
 }
 
 //Element deleter
@@ -1703,32 +1701,38 @@ $(document).ready(function() {
     });
 });
 
-// Sidebar collapsing
+// Sidebar collapsing (desktop)
+//
+// The choice is a cookie the server reads (sidebar-left.html, and html.sidebar-folded in default.html), so a
+// folded sidebar is drawn folded from the first paint instead of folding after load.
 
-// Desktop
+function set_sidebar_pref(folded) {
+  document.cookie = folded
+    ? "sidebar_pref=collapsed; Max-Age=31536000; Path=/; SameSite=Lax"
+    : "sidebar_pref=; Max-Age=0; Path=/; SameSite=Lax";
+  document.documentElement.classList.toggle('sidebar-folded', folded);
+}
 
-if (document.getElementById("sidebar-left") && localStorage.sidebar_pref == 'collapsed') {
-
-  document.getElementById('sidebar-left').classList.add('sidebar-collapsed');
-
-};
+// once, for a choice saved before the cookie existed: fold now and from the next page on
+try {
+  if (localStorage.sidebar_pref == 'collapsed') {
+    localStorage.removeItem('sidebar_pref');
+    if (document.cookie.indexOf('sidebar_pref=collapsed') == -1) {
+      set_sidebar_pref(true);
+      var sidebarLeft = document.getElementById('sidebar-left');
+      if (sidebarLeft) sidebarLeft.classList.add('sidebar-collapsed');
+    }
+  }
+} catch (e) {}
 
 function toggle_sidebar_collapse() {
-
-  // Store Pref
-  localStorage.setItem('sidebar_pref', 'collapsed');
-
-  document.getElementById('sidebar-left').classList.toggle('sidebar-collapsed');
-
-};
+  set_sidebar_pref(true);
+  document.getElementById('sidebar-left').classList.add('sidebar-collapsed');
+}
 
 function toggle_sidebar_expand() {
-
-  // Remove Pref
-  localStorage.removeItem('sidebar_pref');
-
-  document.getElementById('sidebar-left').classList.toggle('sidebar-collapsed');
-
+  set_sidebar_pref(false);
+  document.getElementById('sidebar-left').classList.remove('sidebar-collapsed');
 }
 
 // Voting
@@ -2952,6 +2956,9 @@ coin_quote = function() {
   var promo=document.getElementById('promo-code')
   var promotext=document.getElementById('promo-text')
 
+  // only the Premium page sells coins (settings_txnlist.html calls this too, on a page with nothing to price)
+  if (!coins || !btn || !promo || !promotext) return;
+
   coin_count = coins.selectedOptions[0].value
 
   var xhr = new XMLHttpRequest();
@@ -3248,7 +3255,8 @@ if (("standalone" in window.navigator) &&       // Check if "standalone" propert
     // (window.navigator.standalone is TRUE if user accesses website via App Mode)
 
 } else {
-  if (window.innerWidth <= 737){
+  // the prompt is only drawn on the front page, for some phones (default.html): elsewhere there is nothing to show
+  if (window.innerWidth <= 737 && document.getElementById('mobile-prompt')){
     try {
       $('#mobile-prompt').tooltip('show')
       $('.tooltip')[0].addEventListener(
@@ -3318,6 +3326,8 @@ function bindPostCards(root) {
   $(root).find('.text-expand').click(onTextExpandClick)
   $(root).find('[data-toggle="tooltip"]').tooltip()
   if (window.observeFeedVideos) window.observeFeedVideos()
+  // in-feed ads (assets/js/ads.js): after the new cards are in the feed, which is just after this runs
+  if (window.placeFeedAds) setTimeout(window.placeFeedAds, 0)
 }
 
 
@@ -3327,8 +3337,8 @@ function mod_post(url, type, id) {
         xhr.open("POST", url, true);
         var form = new FormData()
         form.append("formkey", formkey());
-        item=document.getElementById(type);
-        button=document.getElementById(id);
+        var item=document.getElementById(type);
+        var button=id ? document.getElementById(id) : null;
         if (item.type=="checkbox") {
           form.append(item.name, item.checked)
           if (item.checked) {
@@ -3341,7 +3351,9 @@ function mod_post(url, type, id) {
           form.append(item.name, item.value);
         }
         xhr.withCredentials=true;
+        // the checkbox switches have no Save button (no `id`); only text fields do
         xhr.onprogress=function(){
+          if (!button) return;
           button.classList.add("btn-primary");
           button.disabled = true;
           button.innerHTML = '<span class="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true"></span>Saving';
@@ -3349,15 +3361,23 @@ function mod_post(url, type, id) {
         xhr.onload=function(){
           if (xhr.status >= 400)
           {
-            button.classList.add("btn-primary");
-            button.disabled=false;
-            button.innerHTML="Save"
-            data=JSON.parse(xhr.response);
+            if (button) {
+              button.classList.add("btn-primary");
+              button.disabled=false;
+              button.innerHTML="Save"
+            }
+            // a refused switch goes back to what is saved
+            if (item.type=="checkbox") {
+              item.checked = !item.checked;
+            }
+            var message = "Something went wrong. Please try again.";
+            try { message = JSON.parse(xhr.response)["error"] || message; } catch(e) {}
             $('#toast-post-error').toast('dispose');
             $('#toast-post-error').toast('show');
-            document.getElementById('toast-post-error-text').innerText = data["error"];
+            document.getElementById('toast-post-error-text').innerText = message;
             return;
           }
+          if (!button) return;
           button.classList.remove("btn-danger");
           button.classList.add("btn-success");
           button.innerHTML = `<i class="fas fa-check mr-2"></i>Saved`;

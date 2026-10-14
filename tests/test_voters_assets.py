@@ -135,7 +135,7 @@ def test_the_panel_is_built_from_text_and_opened_only_from_the_authors_own_score
         assert key in SCRIPT, key
     assert "response.status === 403" in SCRIPT                          # said plainly, not as a broken list
     assert "jQuery(target).closest('[data-toggle=\"tooltip\"]').tooltip('hide')" in SCRIPT      # the score's tooltip must not cover the panel
-    assert '<script src="/assets/js/voters.js?v=1"></script>' in read("ruqqus", "templates", "default.html")
+    assert "<script src=\"{{ asset_url('js/voters.js') }}\"></script>" in read("ruqqus", "templates", "default.html")
 
 
 def test_both_stylesheets_style_the_score_button_and_the_panel():

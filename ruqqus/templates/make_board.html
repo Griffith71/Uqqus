@@ -1,19 +1,15 @@
 {% extends "submit.html" %}
 
+{% from "partials/theme.html" import theme_links %}
+
 {% block title %}
-<title>Create a Guild</title>
+<title>Create a Guild - {{ 'SITE_NAME' | app_config }}</title>
 {% endblock %}
 
-{% block pagetitle %}Create a Guild{% endblock %}
-{% block subtitle %}Launch your own guild on {{ 'SITE_NAME' | app_config }}{% endblock %}
 {% block sidebar %}{% endblock %}
 {% block stylesheets %}
 
-{% if v and v.referral_count and session.get("dark_mode_enabled") %}
-<link id="css-link" rel="stylesheet" href="/assets/style/main_dark.css">
-{% else %}
-<link id="css-link" rel="stylesheet" href="/assets/style/main.css">
-{% endif %}
+{{ theme_links(asset_url("style/main.css"), asset_url("style/main_dark.css")) }}
 
 {% endblock %}
 
@@ -62,8 +58,8 @@
 
                     <label for="select-category">Select Category</label>
                     <div class="input-group">
-                      <select id="category-selector" name="category" class="form-control" >
-                        <option value="0" selected disabled>Select a Category</option>
+                      <select id="category-selector" name="category" class="form-control" required>
+                        <option value="" selected disabled>Select a Category</option>
                         {% for category in categories %}
                             <option disabled>{{ category.name }}</option>
 

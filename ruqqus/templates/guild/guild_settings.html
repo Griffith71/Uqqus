@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+{% from "partials/theme.html" import theme_links %}
 <html lang="en">
 
 <head>
@@ -22,14 +23,10 @@
 
   <!-- Ruqqus CSS -->
 
-  {% if v and v.can_use_darkmode and session.get("dark_mode_enabled") %}
-  <link id="css-link" rel="stylesheet" href="/assets/style/main_dark.css?v=2.39.0">
-  {% else %}
-  <link id="css-link" rel="stylesheet" href="/assets/style/main.css?v=2.39.0">
-  {% endif %}
+  {{ theme_links(asset_url("style/main.css"), asset_url("style/main_dark.css")) }}
 
   <!-- Font Awesome -->
-  <link href="https://fa.ruqqus.com/assets/fontawesome/css/all.css" rel="stylesheet"> <!--load all styles -->
+  
 
   <script>
     function formkey() {
@@ -119,13 +116,6 @@
                     {% endif %}
                   {% endif %}
 
-                  <!--
-                  {% if mod and mod.perm_chat %}
-                  <li class="nav-item">
-                    <a class="nav-link{% if request.path.endswith('/mod/chatbans') %} active{% endif %}" href="/+{{ b.name }}/mod/chatbans"><i class="fas fa-comments-alt"></i>Chat Bans</a> 
-                  </li>
-                  {% endif %}
-                -->
 
                   {% if mod and mod.perm_content %}
                   <li class="nav-item">
@@ -185,11 +175,6 @@
             {% if mod and mod.perm_content %}
             <li class="nav-item">
               <a class="nav-link{% if request.path.endswith('/mod/queue') %} active{% endif %}" href="/+{{ b.name }}/mod/queue"><i class="fas fa-flag text-lg mr-0"></i></a>
-            </li>
-            {% endif %}
-            {% if mod and mod.perm_chat %}
-            <li class="nav-item">
-              <a class="nav-link{% if request.path.endswith('/mod/chatbans') %} active{% endif %}" href="/+{{ b.name }}/mod/chatbans"><i class="fas fa-comments-alt text-lg mr-0"></i></a>
             </li>
             {% endif %}
           </ul>
@@ -328,7 +313,7 @@
   });
 </script>
 
-<script src="/assets/js/all_js.js"></script>
+<script src="{{ asset_url('js/all_js.js') }}"></script>
 
   {% block scripts %}
   {% endblock %}

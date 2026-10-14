@@ -1,12 +1,9 @@
 {% extends "home.html" %}
+{% from "partials/theme.html" import theme_links %}
 {% from "partials/circle_guild_button.html" import circle_guild_button %}
 
 {% block stylesheets %}
-{% if v and session.get("dark_mode_enabled") %}
-<link id="css-link" rel="stylesheet" href="{{ b.css_dark_url }}?v=2.39.0">
-{% else %}
-<link id="css-link" rel="stylesheet" href="{{ b.css_url }}?v=2.39.0">
-{% endif %}
+{{ theme_links(b.css_url ~ "?v=" ~ asset_version("style/main.css"), b.css_dark_url ~ "?v=" ~ asset_version("style/main_dark.css")) }}
 <link id="board-css" rel="stylesheet" href="{{ b.custom_css_url }}">
 {% endblock %}
 
@@ -113,60 +110,6 @@
 {% endif %}
 {% endblock %}
 
-{% block darkswitch %}
-
-<script>
-  function switch_css_board() {
-    css = document.getElementById("css-link");
-    dswitch = document.getElementById("dark-switch");
-
-    if (css.href.endsWith("{{ b.css_url }}?v=2.39.0")) {
-
-      post("/settings/dark_mode/1",
-        callback=function(){
-          try{ console.log('[switch_css_board] callback dark enabled branch'); }catch(e){}
-          css.href="{{ b.css_dark_url }}?v=2.39.0";
-          dswitch.classList.remove("fa-toggle-off");
-          dswitch.classList.add("fa-toggle-on");
-          // update any toggle anchors on this page
-          document.querySelectorAll('[onclick]').forEach(function(a){
-            var onclick = a.getAttribute && a.getAttribute('onclick');
-            if(!onclick || onclick.indexOf('switch_css_board') === -1) return;
-            var icon = a.querySelector('i');
-            if(!icon) return;
-            try { a.innerHTML = icon.outerHTML + 'Light mode'; } catch (e) {}
-          });
-        }
-        );
-    }
-    else {
-      post("/settings/dark_mode/0",
-        callback=function(){
-          try{ console.log('[switch_css_board] callback dark disabled branch'); }catch(e){}
-          css.href="{{ b.css_url }}?v=2.39.0";
-          dswitch.classList.remove("fa-toggle-on");
-          dswitch.classList.add("fa-toggle-off");
-          document.querySelectorAll('[onclick]').forEach(function(a){
-            var onclick = a.getAttribute && a.getAttribute('onclick');
-            if(!onclick || onclick.indexOf('switch_css_board') === -1) return;
-            var icon = a.querySelector('i');
-            if(!icon) return;
-            try { a.innerHTML = icon.outerHTML + 'Dark mode'; } catch (e) {}
-          });
-        }
-        );
-
-    }
-  }
-</script>
-{% if v and v.can_use_darkmode and session.get("dark_mode_enabled")%}
-<a class="dropdown-item" href="javascript:void(0)" onclick="switch_css_board()"><i class="fas fa-toggle-on fa-width-rem text-left mr-3" id="dark-switch"></i>Dark mode</a>
-{% elif v and v.can_use_darkmode %}
-<a class="dropdown-item" href="javascript:void(0)" onclick="switch_css_board()"><i class="fas fa-toggle-off fa-width-rem text-left mr-3" id="dark-switch"></i>Dark mode</a>
-{% else %}
-<a class="dropdown-item" href="/settings/profile#referral"><i class="fas fa-toggle-off fa-width-rem text-left mr-3"></i>Dark mode</a>
-{% endif %}
-{% endblock %}
 
 {% block PseudoSubmitForm %}
 {% from "partials/inline_composer.html" import inline_composer %}
@@ -230,7 +173,7 @@
         style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(21px, 18px, 0px);">
         <button class="dropdown-item" data-toggle="modal" data-target="#guildDetailsModal"><i class="fas fa-info-circle"></i>Guild details</button>
         <a class="dropdown-item" href="{{ b.permalink }}/mod/log"><i class="fas fa-scroll"></i>Moderation log</a>
-        {% if b.has_mod(v) %}
+        {% if b.has_mod(v, "config") %}{# the settings page needs the config permission #}
         <a class="dropdown-item" href="{{ b.permalink }}/mod/settings"><i class="fas fa-cog"></i>Guild settings</a>
         {% endif %}
         {% if v and not v.has_blocked_guild(b) %}
@@ -341,7 +284,7 @@
         {% endblock %}
         <p class="font-weight-bold">{{ [b.stored_subscriber_count, 0] | max }} member{{ 's' if b.stored_subscriber_count != 1 else '' }}
         </p>
-        {% if b.has_mod(v) %}
+        {% if b.has_mod(v, "config") %}
         <a class="btn btn-outline-secondary btn-block text-muted mb-2" href="{{ b.permalink }}/mod/settings">Guild settings</a>
         {% endif %}
 
@@ -386,9 +329,6 @@
 <meta name="description" content="{{ b.description_for(v) }}">
 {% endblock %}
 
-{% block enlargeThumbJS %}
-<script src="/assets/js/enlarge_thumb.js"></script>
-{% endblock %}
 
 {% block guildModal %}
 {% include "guild_details_modal.html" %}

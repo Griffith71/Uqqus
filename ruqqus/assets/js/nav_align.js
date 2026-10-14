@@ -96,6 +96,9 @@
   }
 
   align();
+  // the search box is hidden until it stands in its place (main.scss: html.nav-align:not(.nav-aligned), set by default.html), so it fades
+  // in there instead of sliding; the insets have exact CSS defaults for both the open and folded sidebar
+  root.classList.add('nav-aligned');
   setTimeout(schedule, 250);                       // after fonts and late layout
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(schedule);
 })();

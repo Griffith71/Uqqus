@@ -35,10 +35,10 @@
 	integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 
 	<!-- Ruqqus CSS -->
-	<link rel="stylesheet" href="/assets/style/main.css">
+	<link rel="stylesheet" href="{{ asset_url('style/main.css') }}">
 
 	<!-- Font Awesome -->
-	<link href="https://fa.ruqqus.com/assets/fontawesome/css/all.css" rel="stylesheet"> <!--load all styles -->
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
 	<!-- Code Prettify -->
 
@@ -226,7 +226,7 @@
 						aria-hidden="true"></i>Voting</a>
 						<a class="nav-link text-center" id="v-pills-submission-tab" data-toggle="pill"
 						href="#v-pills-submission" role="tab" aria-controls="v-pills-submission"
-						aria-selected="false"><i class="far fa-feather-alt mr-2" aria-hidden="true"></i>Post</a>
+						aria-selected="false"><i class="fas fa-feather-alt mr-2" aria-hidden="true"></i>Post</a>
 						<a class="nav-link text-center" id="v-pills-user-tab" data-toggle="pill"
 						href="#v-pills-user" role="tab" aria-controls="v-pills-user"
 						aria-selected="false"><i class="far fa-user-circle mr-2"
@@ -525,7 +525,7 @@
 
 <!-- Ruqqus JS -->
 
-<script src="/assets/js/all_js.js"></script>
+<script src="{{ asset_url('js/all_js.js') }}"></script>
 
 <!-- AOS Animate -->
 

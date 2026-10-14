@@ -99,7 +99,7 @@ def test_a_forked_curation_can_still_be_deleted():
 def test_who_may_see_what_stays_in_the_route_for_every_algorithm():
     viewable = ROUTES.split("def _viewable(")[1].split("\ndef ")[0]
     for rule in ("Submission.is_banned == False", "Submission.deleted_utc == 0", "posts = filter_posts(posts, v)",
-                 "Submission.post_public == True", "UserBlock.target_id", "BoardBlock.board_id"):
+                 "Submission.post_public == True", "hide_blocked(posts, v, Submission)", "BoardBlock.board_id"):
         assert rule in viewable, rule
     # the curation's wishes come after, and cannot widen any of that
     ids = ROUTES.split("def _curation_ids(")[1].split("\n@cache.memoize")[0]
@@ -262,7 +262,7 @@ def test_the_form_works_without_script_and_the_script_only_adds_to_it():
     assert SCRIPT.count("innerHTML") == 1 and "preview.innerHTML = data.html" in SCRIPT
     assert "item.textContent = line" in SCRIPT and "note.textContent = message" in SCRIPT
     form = read("ruqqus", "templates", "curations", "form.html")
-    assert '{% include "curations/algorithm_form.html" %}' in form and "/assets/js/curation_algorithm.js" in form
+    assert '{% include "curations/algorithm_form.html" %}' in form and "asset_url('js/curation_algorithm.js')" in form
     assert 'name="preset"' in form                      # creating a curation offers a starting point
     assert 'feed_algorithm.preset(request.form.get("preset", ""))' in route("curations_create_post")
 

@@ -132,7 +132,8 @@ def test_watching_viewing_and_reporting_all_ask_the_store_who_may_watch():
 
 def test_a_visitor_is_shown_no_ring_and_no_highlight():
     assert "if viewer is None:\n        return None" in func(ROUTES, "story_ring", "\n\n\ndef ")
-    assert "if viewer is None:\n        return []" in func(ROUTES, "profile_highlights", "\n\n\napp.jinja_env")
+    # and nobody gets them on a profile they can't open (_profile_closed: suspended, private, word-filtered)
+    assert "if viewer is None or (viewer.id != owner.id and _profile_closed(owner, viewer)):\n        return []" in func(ROUTES, "profile_highlights", "\n\n\napp.jinja_env")
 
 
 def test_the_store_decides_in_one_place():
@@ -221,7 +222,7 @@ def test_the_script_and_the_routes_use_the_same_addresses():
 def test_the_picture_uses_the_linked_storage_uploader_not_this_site():
     assert 'data-media-main="story-media"' in SHEETS and 'id="story-media"' in SHEETS
     assert 'accept="image/*"' in SHEETS
-    assert "/assets/js/media_upload.js" in DEFAULT
+    assert "asset_url('js/media_upload.js')" in DEFAULT
 
 
 def test_the_sheets_hold_nothing_a_member_wrote():
@@ -243,7 +244,7 @@ def test_the_profile_draws_the_ring_and_the_highlights_for_the_desktop_and_the_p
 
 def test_the_viewer_and_the_script_are_on_pages_that_need_them_for_signed_in_members():
     assert "{% if v and story_ui and not request.args.get('embed') %}{% include \"partials/story_sheets.html\" %}{% endif %}" in DEFAULT
-    assert "{% if v and story_ui and not request.args.get('embed') %}<script src=\"/assets/js/stories.js?v=1\"></script>{% endif %}" in DEFAULT
+    assert "{% if v and story_ui and not request.args.get('embed') %}<script src=\"{{ asset_url('js/stories.js') }}\"></script>{% endif %}" in DEFAULT
 
 
 def test_the_queue_forms_carry_the_form_key():

@@ -17,14 +17,11 @@
         integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 
     <!-- Font Awesome -->
-    <link href="/assets/fontawesome/css/all.css" rel="stylesheet"> <!--load all styles -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"> <!-- the icons, as default.html loads them -->
 
-    <script data-search-pseudo-elements defer src="https://use.fontawesome.com/releases/latest/js/all.js"
-        integrity="sha384-L469/ELG4Bg9sDQbl0hvjMq8pOcqFgkSpwhwnslzvVVGpDjYJ6wJJyYjvG3u8XW7"
-        crossorigin="anonymous"></script>
 
     <!-- Ruqqus CSS -->
-    <link rel="stylesheet" href="/assets/style/main.css">
+    <link rel="stylesheet" href="{{ asset_url('style/main.css') }}">
 
 </head>
 
@@ -79,7 +76,7 @@
                           {{ error }}
                           </span>
                           <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                            <span aria-hidden="true"><i class="far fa-times"></i></span>
+                            <span aria-hidden="true"><i class="fas fa-times"></i></span>
                         </button>
                 </div>
 			{% endif %}
@@ -90,7 +87,7 @@
                           {{ msg }}
                           </span>
                           <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                            <span aria-hidden="true"><i class="far fa-times"></i></span>
+                            <span aria-hidden="true"><i class="fas fa-times"></i></span>
                         </button>
                 </div>
 			{% endif %}

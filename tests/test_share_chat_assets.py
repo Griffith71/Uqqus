@@ -27,19 +27,24 @@ def route(name):
 # --- the share menus and the sheet ---------------------------------------------------------
 
 def test_every_share_menu_of_a_post_offers_send_in_chat_for_a_member():
-    item = ('{% if v %}<a class="dropdown-item share-chat-item" href="javascript:void(0);" role="button" '
+    # not on a post made for a Circle, which stays between the author and the Circle (2026-10-10)
+    item = ('{% if v and not p.audience %}<a class="dropdown-item share-chat-item" href="javascript:void(0);" role="button" '
             'data-share-url="{{ p.permalink | full_link }}"><i class="fas fa-paper-plane fa-fw"></i>Send in chat</a>{% endif %}')
-    for name, menus in (("submission_listing.html", 2), ("submission.html", 2)):
+    # the share menu of a post is drawn by one partial (partials/post_actions.html), used by the card and the post
+    # page, on desktop and on the phone
+    partial = read("ruqqus", "templates", "partials", "post_actions.html")
+    assert partial.count(item) == 1 == partial.count("Copy link</a>")
+    # always right after Copy link, in the same menu
+    assert len(re.findall(r"Copy link</a>\n\s*" + re.escape(item), partial)) == 1
+    for name in ("submission_listing.html", "submission.html"):
         html = read("ruqqus", "templates", name)
-        assert html.count(item) == menus == html.count("Copy link</a>"), name
-        # always right after Copy link, in the same menu
-        assert len(re.findall(r"Copy link</a>\n\s*" + re.escape(item), html)) == menus, name
+        assert html.count("post_actions.counted_actions(p, v, saved, ") == 2 and "Copy link</a>" not in html, name
 
 
 def test_the_sheet_and_its_script_are_on_every_page_but_not_in_the_panel_frames():
     assert ("{% if v and not request.args.get('embed') %}{% include \"partials/share_chat_modal.html\" %}"
             "{% include \"partials/coauthors_modal.html\" %}{% include \"partials/audience_modal.html\" %}{% endif %}") in SHELL
-    line = next(x for x in SHELL.splitlines() if "/assets/js/share_chat.js" in x)
+    line = next(x for x in SHELL.splitlines() if "asset_url('js/share_chat.js')" in x)
     assert "not request.args.get('embed')" in line
     assert "body.embedded .share-chat-item" in read("ruqqus", "assets", "style", "main.scss")
 

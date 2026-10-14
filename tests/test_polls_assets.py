@@ -221,12 +221,12 @@ def test_the_poll_panel_is_in_both_composers_and_closed_panels_send_nothing():
     # a closed panel's fields are disabled, so they are not in the form that is posted
     macro = OPTIONS.split("{% macro poll_field(")[1].split("{% endmacro %}")[0]
     assert macro.count("{% if not options %} disabled{% endif %}") == 2
-    assert 'name="poll_option"' in macro and 'name="poll_hours"' in macro and 'maxlength="40"' in macro
+    assert 'name="poll_option"' in macro and 'name="poll_hours"' in macro and 'maxlength="{{ poll_option_chars }}"' in macro  # helpers/polls.py OPTION_CHARS
     assert "{% for h, label in poll_durations %}" in macro and "range(poll_max_options)" in macro
     assert "field.disabled = true" in COMPOSER_SCRIPT and "'reset'" in COMPOSER_SCRIPT and "MAX_ROWS = 4" in COMPOSER_SCRIPT
     assert "poll_composer.js" in read("ruqqus", "templates", "default.html")
     # Create a post is a page of its own (not the shared shell), so it loads the script itself
-    assert '<script src="/assets/js/poll_composer.js?v=1"></script>' in read("ruqqus", "templates", "submit.html")
+    assert "<script src=\"{{ asset_url('js/poll_composer.js') }}\"></script>" in read("ruqqus", "templates", "submit.html")
 
 
 # --- the templates and the script -------------------------------------------------------------------------------------------
@@ -259,8 +259,8 @@ def test_the_script_only_votes_and_never_trusts_markup_beyond_the_servers_fragme
     assert '.poll .poll-option[type="submit"]' in SCRIPT
     assert "poll.getAttribute('data-poll-url')" in SCRIPT
     shell = read("ruqqus", "templates", "default.html")
-    assert '<script src="/assets/js/poll.js?v=1"></script>' in shell
-    assert "{% if v %}<script src=\"/assets/js/poll_composer.js?v=1\"></script>{% endif %}" in shell
+    assert "<script src=\"{{ asset_url('js/poll.js') }}\"></script>" in shell
+    assert "{% if v %}<script src=\"{{ asset_url('js/poll_composer.js') }}\"></script>{% endif %}" in shell
 
 
 def test_both_stylesheets_style_the_poll_and_the_panel():

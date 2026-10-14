@@ -1,0 +1,27 @@
+{#
+  The page's theme stylesheet, right at the first paint (helpers/page_assets.py).
+
+  A saved choice (session dark_mode_enabled: members and visitors) gets one stylesheet. With no saved choice
+  the device decides: both stylesheets are listed with a media query, the browser applies the matching one at
+  once and fetches the other at low priority. Nothing switches the stylesheet after load; switch_css() in
+  all_js.js reads data-light / data-dark, so a guild's coloured stylesheets toggle the same way.
+#}
+{% macro theme_links(light, dark) %}
+{% set choice = theme_choice() %}
+{% if choice == "dark" %}
+<link id="css-link" rel="stylesheet" href="{{ dark }}" data-light="{{ light }}" data-dark="{{ dark }}">
+{% elif choice == "light" %}
+<link id="css-link" rel="stylesheet" href="{{ light }}" data-light="{{ light }}" data-dark="{{ dark }}">
+{% else %}
+<link id="css-link" rel="stylesheet" href="{{ light }}" media="not all and (prefers-color-scheme: dark)" data-light="{{ light }}" data-dark="{{ dark }}">
+<link id="css-link-auto-dark" rel="stylesheet" href="{{ dark }}" media="(prefers-color-scheme: dark)">
+{% endif %}
+{% endmacro %}
+
+{# The body's class names the theme in force: "dark" or "light" (side_panels.js reads it). #}
+{% macro body_theme_class() %}{% set choice = theme_choice() %}{{ choice or "theme-auto light" }}{% endmacro %}
+
+{# First thing in <body>: with no saved choice, name the device's theme before anything is drawn. #}
+{% macro body_theme_script() %}
+{% if not theme_choice() %}<script>if (window.matchMedia && matchMedia("(prefers-color-scheme: dark)").matches) { document.body.classList.remove("light"); document.body.classList.add("dark"); }</script>{% endif %}
+{% endmacro %}

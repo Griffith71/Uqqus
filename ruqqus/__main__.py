@@ -367,10 +367,11 @@ UA_BAN_CACHE_TTL = int(environ.get("UA_BAN_CACHE_TTL", 3600))
 import ruqqus.classes
 from ruqqus.routes import *
 import ruqqus.helpers.jinja2
+import ruqqus.helpers.page_assets
+ruqqus.helpers.page_assets.register(app)
 
 #purge css from cache
 cache.delete_memoized(ruqqus.routes.board_css)
-cache.delete_memoized(ruqqus.routes.main_css)
 
 
 @cache.memoize(UA_BAN_CACHE_TTL)
@@ -518,8 +519,15 @@ def after_request(response):
     if not request.path.startswith("/media/"):
         response.headers.add("Cache-Control",
                              "maxage=600")
+    # a versioned asset (helpers/page_assets.asset_url, ?v= is a hash of its content) never changes at that
+    # address: kept for a year, never asked for again
+    if request.path.startswith("/assets/") and request.args.get("v") and response.status_code == 200:
+        response.headers["Cache-Control"] = "public, max-age=31536000, immutable"
     response.headers.add("Strict-Transport-Security", "max-age=31536000")
-    response.headers.add("Referrer-Policy", "same-origin")
+    # Google's consent banner for ads does not serve without a cross-origin referrer (support.google.com/adsense/
+    # answer/14660912): the browsers' default policy only while ads are on (helpers/ads.py), otherwise none at all
+    from ruqqus.helpers import ads
+    response.headers.add("Referrer-Policy", "strict-origin-when-cross-origin" if ads.config() else "same-origin")
     # response.headers.add("X-Content-Type-Options","nosniff")
     response.headers.add("Feature-Policy",
                          "geolocation 'none'; midi 'none'; notifications 'none'; push 'none'; sync-xhr 'none'; microphone 'none'; camera 'none'; magnetometer 'none'; gyroscope 'none'; vibrate 'none'; fullscreen 'none'; payment 'none';")
