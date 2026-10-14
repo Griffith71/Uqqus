@@ -109,14 +109,17 @@
     <ul class="profile-x-details">
       {% if details.job %}<li><i class="fas fa-briefcase fa-fw"></i>{{ details.job }}</li>{% endif %}
       {% if details.location %}<li><i class="fas fa-map-marker-alt fa-fw"></i>{{ details.location }}</li>{% endif %}
-      {% if u.display_region %}
-      <li>
+      {# the region is in the sidebar's About box from 992px; phones (no sidebar) get it here, on every account #}
+      <li class="d-lg-none">
+        {% if u.display_region %}
         <button type="button" class="profile-x-region" data-toggle="modal" data-target="#aboutAccountModal" title="Where this account is based, from where it uses {{ 'SITE_NAME' | app_config }}">
           <i class="fas fa-globe-americas fa-fw"></i>{{ u.display_region_name }}
           {% if u.region_suspicion_flag %}<i class="fas fa-exclamation-triangle text-warning ml-1" aria-label="We can't confirm this account's region"></i>{% endif %}
         </button>
+        {% else %}
+        <i class="fas fa-globe-americas fa-fw"></i>Region not known yet
+        {% endif %}
       </li>
-      {% endif %}
       {% if details.website %}<li><i class="fas fa-link fa-fw"></i><a href="{{ details.website }}" rel="nofollow ugc noopener noreferrer" target="_blank">{{ details.website_label }}</a></li>{% endif %}
       <li><i class="far fa-calendar-alt fa-fw"></i><span data-toggle="tooltip" data-placement="bottom" title="{{ u.created_datetime }}">Joined {{ u.joined_month }}</span></li>
     </ul>

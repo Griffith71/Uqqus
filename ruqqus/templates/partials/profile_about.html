@@ -1,6 +1,8 @@
 {#
-  "About @name" at the top of a profile's right sidebar: its Rep with the counts behind it, its badges and the guilds
-  it leads (the joined date is in the profile header, partials/profile_header.html). Rules in helpers/profile_about.py: the box reads the same to the
+  "About @name" at the top of a profile's right sidebar: the region the account is based in (on every account, from the
+  site's own records: User.display_region), its Rep with the counts behind it, its badges and the guilds it leads (the
+  joined date is in the profile header, partials/profile_header.html; on phones, which have no sidebar, the header
+  shows the region too). Rules in helpers/profile_about.py: the box reads the same to the
   owner as to anyone else, so only guilds a visitor could see are listed. Its public curations have a box of their
   own (partials/profile_curations.html).
 #}
@@ -10,6 +12,20 @@
   <div class="title"><i class="fas fa-id-card mr-2"></i>About @{{ u.username }}</div>
   <div class="body">
     <dl class="profile-about-facts mb-0">
+      <div class="profile-about-fact profile-about-region">
+        <dt>Region</dt>
+        <dd>
+          {% if u.display_region %}
+          <span>{{ u.display_region_name }}</span>
+          {% if u.region_suspicion_flag %}<i class="fas fa-exclamation-triangle text-warning ml-1" data-toggle="tooltip" data-placement="bottom" title="We can't confirm this account's region with confidence - it may use a VPN or travel often." aria-label="We can't confirm this account's region"></i>{% endif %}
+          {% set territories = u.display_region | region_country_list %}
+          <button type="button" class="profile-about-more d-block text-small" data-toggle="modal" data-target="#aboutAccountModal">{% if territories %}{{ territories | length }} possible territories{% else %}About this account{% endif %}</button>
+          {% else %}
+          <span class="text-muted">Not known yet</span>
+          <span class="d-block text-muted text-small">Set from where the account uses {{ 'SITE_NAME' | app_config }}.</span>
+          {% endif %}
+        </dd>
+      </div>
       <div class="profile-about-fact">
         <dt>Rep</dt>
         <dd><span class="rep-count {{ u.rep_class }}" title="{{ u.rep_label }}">{{ u.true_score }}</span>

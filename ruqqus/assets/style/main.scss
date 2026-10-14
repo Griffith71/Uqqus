@@ -1594,6 +1594,19 @@ $profile-x-surface: $white;
         }
     }
 
+    // "N possible territories": opens About this account (about_account_modal.html), drawn as a link
+    .profile-about-more {
+        padding: 0;
+        border: 0;
+        background: none;
+        color: $link-color;
+        cursor: pointer;
+
+        &:hover {
+            text-decoration: underline;
+        }
+    }
+
     .profile-about-role {
         flex-shrink: 0;
         padding-left: 0.5rem;

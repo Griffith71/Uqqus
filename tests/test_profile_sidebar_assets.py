@@ -92,3 +92,15 @@ def test_similar_accounts_on_ones_own_profile_are_the_list_others_get():
     helper = read("ruqqus", "helpers", "suggestions.py").split("def similar_for(")[1].split("\ndef ")[0]
     assert "following = v.following_ids if v and v.id != owner.id else set()" in helper
     assert "blocked = _blocked_user_ids(v.id) if v else set()" in helper
+
+
+def test_every_account_shows_its_region_in_the_about_box_and_phones_in_the_header():
+    about = (TEMPLATES / "partials" / "profile_about.html").read_text(encoding="utf-8")
+    region = about.split('<div class="profile-about-fact profile-about-region">')[1].split('<div class="profile-about-fact">')[0]
+    # drawn for every account: the region when the site has one, "Not known yet" otherwise; never behind a viewer check
+    assert "{% if u.display_region %}" in region and "u.display_region_name" in region and "Not known yet" in region
+    assert "v." not in region and "if v" not in region
+    assert 'data-target="#aboutAccountModal"' in region and "region_country_list" in region
+    header = (TEMPLATES / "partials" / "profile_header.html").read_text(encoding="utf-8")
+    phone = header.split('<li class="d-lg-none">')[1].split("</li>")[0]
+    assert "u.display_region_name" in phone and "Region not known yet" in phone
