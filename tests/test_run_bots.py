@@ -166,3 +166,26 @@ def test_classify():
     assert br.classify(503, "", {}, False).kind == "wait"
     assert br.classify(400, "", {"error": "banned domain"}, False) == br.outcome("refused", "banned domain")
     assert br.classify(401, "", {}, False).kind == "stop"
+
+
+# --- a site bot: run by the site, nobody to ask or tell ----------------------------------------------------------
+
+class SiteWorld(World):
+    def __init__(self):
+        self.db = make()
+        bs.add_bot(self.db, 10, None, "bbc_tech", "Headlines", [], NOW, kind=bots.SITE, proposed_by=1)
+        self.source = bs.add_source(self.db, 10, "https://feeds.example.org/a.xml", NOW)
+        bs.review_bot(self.db, 10, bots.APPROVED, 99, "", NOW)
+        self.body = feed(1)
+        self.fail = None
+        self.posted, self.told, self.answers, self.calls = [], [], [], []
+
+
+def test_a_site_bot_needs_no_owner_and_tells_nobody():
+    w = SiteWorld()
+    assert bs.bot_of(w.db, 10).owner_id is None
+    assert w.run(owner_ok=False).endswith("1 posted")         # no owner to be in good standing
+    w.body = feed(1, 2)
+    w.answers = [br.outcome("stop", "Suspended.")]
+    w.run()
+    assert bs.bot_of(w.db, 10).status == bots.PAUSED and w.told == []

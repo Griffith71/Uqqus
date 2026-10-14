@@ -1,4 +1,12 @@
-"""Bot accounts: a member applies for one, a site admin approves it, and the site then posts to it.
+"""Bot accounts: an account that posts by itself, approved by the site's admins.
+
+Two kinds, by what running it costs:
+* a SITE bot runs on free feeds and costs nobody anything. Anyone may propose one (a member or an admin), with its
+  name, bio, picture and banner; admins may edit all of that before approving it, and once approved it belongs to
+  nobody: the site runs it (`owner_id` NULL), its profile says "Automated by <site>", and only admins manage it.
+* a MEMBER bot needs its member: a bot key for their own script (e.g. for X), an API bill. It stays theirs, its
+  profile says "Automated by @owner", and they manage it (feeds they add still wait for an admin).
+Both are approved by an admin and both post under the same rules (`post_refusal`).
 
 Two ways a bot gets its posts:
 * the site reads the feeds it was approved with (RSS, Atom, JSON Feed; scripts/run_bots.py, helpers/feed_fetch.py,
@@ -6,8 +14,8 @@ Two ways a bot gets its posts:
 * the owner's own script posts through a bot key (an OAuth grant for the bot account), e.g. for X, which has no free
   feed: the owner uses their own X access and posts the tweet's link, which the site draws as X's own embed.
 
-A bot account is an ordinary `users` row with `is_bot` and `bot_owner_id`, whose password hash never verifies, and
-login refuses it too: nobody logs into a bot, so it is never anyone's alt. Its profile says "Automated by @owner".
+A bot account is an ordinary `users` row with `is_bot` (and `bot_owner_id` for a member bot), whose password hash never
+verifies, and login refuses it too: nobody logs into a bot, so it is never anyone's alt.
 Bots post and forward; they never comment, vote, chat, take tips or lead a guild.
 
 Pure rules, stdlib only. The database side is helpers/bot_store.py.
@@ -22,6 +30,13 @@ from urllib.parse import urlsplit
 PENDING, APPROVED, REJECTED, PAUSED = "pending", "approved", "rejected", "paused"
 STATUSES = (PENDING, APPROVED, REJECTED, PAUSED)
 STATUS_LABELS = {PENDING: "Waiting for approval", APPROVED: "Running", REJECTED: "Rejected", PAUSED: "Paused"}
+
+SITE, MEMBER = "site", "member"
+KINDS = (SITE, MEMBER)
+KIND_LABELS = {SITE: "Site bot", MEMBER: "Member bot"}
+
+IMAGE_MAX_BYTES = 8 * 1024 * 1024            # a bot's picture or banner
+IMAGE_FORMATS = ("PNG", "JPEG", "GIF", "WEBP")
 
 USERNAME = re.compile(r"^[a-zA-Z0-9_]{3,25}$")         # the sign-up rule (routes/login.py valid_username_regex)
 GUILD_NAME = re.compile(r"^[a-zA-Z0-9_]{1,25}$")
@@ -66,20 +81,60 @@ def utc_day(now=None):
 
 # --- applying ------------------------------------------------------------------------------------------------
 
+def is_admin(member):
+    return bool(member) and (getattr(member, "admin_level", 0) or 0) >= 3
+
+
 def owner_refusal(owner, bots_owned, now=None):
-    """Why this member may not apply for another bot, or None. `owner` has created_utc, is_bot, is_deleted and
-    is_suspended; `bots_owned` counts their bots that are not rejected."""
+    """Why this member may not propose another bot, or None. `owner` has created_utc, is_bot, is_deleted and
+    is_suspended; `bots_owned` counts their member bots that are not rejected and their site-bot proposals still
+    waiting (`bot_store.active_count`). Admins (who also make site bots) are held to neither the age nor the count."""
     if owner is None or getattr(owner, "is_deleted", False):
         return "Sign in to apply for a bot."
     if getattr(owner, "is_bot", False):
         return "A bot can't run bots."
     if getattr(owner, "is_suspended", False):
         return "You can't apply for a bot while your account is suspended."
+    if is_admin(owner):
+        return None
     if _now(now) - (owner.created_utc or 0) < OWNER_MIN_AGE:
         return "Your account needs to be at least 30 days old to run a bot."
     if bots_owned >= MAX_BOTS:
         return f"You can run at most {MAX_BOTS} bots."
     return None
+
+
+def parse_kind(raw):
+    return raw if raw in KINDS else None
+
+
+def kind_refusal(kind, feed_count):
+    """A site bot is the free kind: it reads feeds, so it needs at least one. A member bot may have none (it posts with
+    its member's key)."""
+    if kind not in KINDS:
+        return "Choose what kind of bot it is."
+    if kind == SITE and not feed_count:
+        return "A site bot reads at least one feed: that is what makes it free to run."
+    return None
+
+
+def may_manage(bot, viewer_id, admin):
+    """May this person change this bot? Admins: any bot. A member: their own member bot, and a site bot they
+    proposed while it is still waiting (after approval a site bot is the site's, run by the admins)."""
+    if bot is None or bot.status == REJECTED:
+        return False
+    if admin:
+        return True
+    if bot.kind == MEMBER:
+        return viewer_id is not None and bot.owner_id == viewer_id
+    return bot.status == PENDING and viewer_id is not None and bot.proposed_by_id == viewer_id
+
+
+def responsible_id(bot):
+    """Who is told about a bot: its member (member bot) or whoever proposed it, for the decision on a site bot."""
+    if bot is None:
+        return None
+    return bot.owner_id if bot.kind == MEMBER else bot.proposed_by_id
 
 
 def parse_username(raw):
@@ -161,12 +216,14 @@ def parse_check_minutes(raw):
 
 def post_refusal(bot, owner, posts_today, is_on=None):
     """Why this bot account may not post now, or None. Asked by submit_post for every bot account, whether the post
-    comes from the job or from a bot key. `bot` is the `bots` row (status), `owner` the member who runs it."""
+    comes from the job or from a bot key. `bot` is the `bots` row (status, kind), `owner` the member who runs a member
+    bot (a site bot has none: the site runs it)."""
     if not (enabled() if is_on is None else is_on):
         return "Bots are switched off on this site for now."
     if bot is None or bot.status != APPROVED:
         return "This bot is not running." if bot is not None and bot.status == PAUSED else "This bot has not been approved."
-    if owner is None or getattr(owner, "is_deleted", False) or getattr(owner, "is_suspended", False):
+    if getattr(bot, "kind", MEMBER) == MEMBER and (
+            owner is None or getattr(owner, "is_deleted", False) or getattr(owner, "is_suspended", False)):
         return "This bot's owner can't run it right now."
     if posts_today >= DAILY_CAP:
         return f"A bot can post at most {DAILY_CAP} times a day."

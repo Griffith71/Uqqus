@@ -2,7 +2,7 @@
 
 {% block pagetitle %}Bots - {{ 'SITE_NAME' | app_config }}{% endblock %}
 
-{# Settings > Bots: the member's bots and the application form (routes/bot_accounts.py, helpers/bots.py). #}
+{# Settings > Bots: the member's bots, the site bots they proposed, and the proposal form (routes/bot_accounts.py). #}
 
 {% block content %}
 <div class="row">
@@ -12,25 +12,26 @@
       {% if msg %}<div class="alert alert-success" role="status">{{ msg }}</div>{% endif %}
       {% if error %}<div class="alert alert-danger" role="alert">{{ error }}</div>{% endif %}
 
-      <h2 class="h5">Your bots</h2>
+      <h2 class="h5">Bots</h2>
       <p class="text-small text-muted">
-        A bot is an account that posts by itself: the site reads the feeds it was approved with (RSS, Atom or JSON
-        feeds from news sites, YouTube channels, Bluesky, Mastodon, Reddit, Substack and many more) and posts each new
-        item as a link, with its title. Its profile says who runs it. Every bot is approved by the site's admins first,
-        and so is every feed added later. Bots post and forward; they never comment, vote, chat or take tips.
-        <a href="/help/bots">How bots work</a>
+        A bot is an account that posts by itself, approved by the site's admins. A <strong>site bot</strong> runs on free
+        feeds (RSS, Atom or JSON feeds from news sites, YouTube channels, Bluesky, Mastodon, Reddit, Substack and many
+        more): anyone can propose one, and once approved it is the site's, run by the admins and linked to nobody. A
+        <strong>member bot</strong> needs its member to run it, with a key for their own script (for example for X) or
+        a paid source: it stays theirs and says who runs it. Bots post and forward; they never comment, vote, chat or
+        take tips. <a href="/help/bots">How bots work</a>
       </p>
 
-      {% if bots_list %}
-      <div class="settings-section rounded" id="bot-list">
-        {% for b in bots_list %}
+      {% set mine = bots_list | selectattr("kind", "equalto", "member") | list %}
+      {% set proposed = bots_list | selectattr("kind", "equalto", "site") | list %}
+      {% if mine %}
+      <h3 class="h6 mt-4">Your bots</h3>
+      <div class="settings-section rounded px-3 py-1" id="bot-list">
+        {% for b in mine %}
         <div class="d-flex justify-content-between align-items-center flex-wrap py-2{% if not loop.first %} border-top{% endif %} bot-row">
           <div class="min-w-0">
-            {% if b.status == 'rejected' %}
-            <span class="font-weight-bold text-muted">@{{ b.username }}</span>
-            {% else %}
-            <a href="/settings/bots/{{ b.username }}" class="font-weight-bold">@{{ b.username }}</a>
-            {% endif %}
+            {% if b.status == 'rejected' %}<span class="font-weight-bold text-muted">@{{ b.username }}</span>
+            {% else %}<a href="/settings/bots/{{ b.username }}" class="font-weight-bold">@{{ b.username }}</a>{% endif %}
             <span class="badge badge-pill {% if b.status == 'approved' %}badge-success{% elif b.status == 'pending' %}badge-info{% else %}badge-secondary{% endif %} ml-1 bot-status">{{ rules.STATUS_LABELS[b.status] }}</span>
             {% if b.status == 'rejected' and b.review_note %}<div class="text-small text-muted text-break">The admins said: {{ b.review_note }}</div>{% endif %}
             {% if b.status == 'paused' and b.paused_reason %}<div class="text-small text-muted text-break">{{ b.paused_reason }}</div>{% endif %}
@@ -39,17 +40,50 @@
         </div>
         {% endfor %}
       </div>
-      {% else %}
-      <p class="text-muted" id="bot-list-empty">You don't run any bots.</p>
       {% endif %}
 
-      <h2 class="h5 mt-5" id="bot-apply">Apply for a bot</h2>
+      {% if proposed %}
+      <h3 class="h6 mt-4">Site bots you proposed</h3>
+      <div class="settings-section rounded px-3 py-1" id="bot-proposals">
+        {% for b in proposed %}
+        <div class="d-flex justify-content-between align-items-center flex-wrap py-2{% if not loop.first %} border-top{% endif %} bot-row">
+          <div class="min-w-0">
+            {% if b.status == 'pending' %}<a href="/settings/bots/{{ b.username }}" class="font-weight-bold">@{{ b.username }}</a>
+            {% elif b.status == 'rejected' %}<span class="font-weight-bold text-muted">@{{ b.username }}</span>
+            {% else %}<a href="/@{{ b.username }}" class="font-weight-bold">@{{ b.username }}</a>{% endif %}
+            <span class="badge badge-pill {% if b.status == 'pending' %}badge-info{% elif b.status == 'rejected' %}badge-secondary{% else %}badge-success{% endif %} ml-1 bot-status">{% if b.status == 'pending' %}Waiting for approval{% elif b.status == 'rejected' %}Rejected{% else %}Approved: run by the site{% endif %}</span>
+            {% if b.status == 'rejected' and b.review_note %}<div class="text-small text-muted text-break">The admins said: {{ b.review_note }}</div>{% endif %}
+          </div>
+          {% if b.status == 'pending' %}<a href="/settings/bots/{{ b.username }}" class="btn btn-link btn-sm">Edit</a>{% endif %}
+        </div>
+        {% endfor %}
+      </div>
+      {% endif %}
+
+      {% if not mine and not proposed %}<p class="text-muted" id="bot-list-empty">You don't run or propose any bots.</p>{% endif %}
+
+      <h2 class="h5 mt-5" id="bot-apply">Propose a bot</h2>
       {% if refusal %}
       <p class="text-muted" id="bot-apply-refused">{{ refusal }}</p>
       {% else %}
-      <form action="/settings/bots/apply" method="post" class="settings-section rounded" id="bot-apply-form">
+      <form action="/settings/bots/apply" method="post" enctype="multipart/form-data" class="settings-section rounded" id="bot-apply-form">
         <input type="hidden" name="formkey" value="{{ v.formkey }}">
-        <div class="d-lg-flex">
+        <fieldset class="d-lg-flex">
+          <legend class="title w-lg-25 h6 font-weight-bold">Kind of bot</legend>
+          <div class="body w-lg-100">
+            <div class="custom-control custom-radio mb-2">
+              <input type="radio" class="custom-control-input" id="bot-kind-site" name="kind" value="site" checked>
+              <label class="custom-control-label" for="bot-kind-site"><strong>Site bot</strong>: free feeds only.
+                Once approved it is the site's: the admins run it and it is not linked to you.</label>
+            </div>
+            <div class="custom-control custom-radio">
+              <input type="radio" class="custom-control-input" id="bot-kind-member" name="kind" value="member">
+              <label class="custom-control-label" for="bot-kind-member"><strong>Member bot</strong>: you run it with
+                your own key or pay for its source (for example X). It stays yours, says "Automated by @{{ v.username }}" and you manage it.</label>
+            </div>
+          </div>
+        </fieldset>
+        <div class="d-lg-flex border-top">
           <div class="title w-lg-25"><label for="bot-username">Bot's name</label></div>
           <div class="body w-lg-100">
             <div class="input-group" style="max-width: 24rem;">
@@ -57,7 +91,7 @@
               <input type="text" class="form-control" id="bot-username" name="username" maxlength="25" required
                      pattern="[a-zA-Z0-9_]{3,25}" autocomplete="off" spellcheck="false" placeholder="bbc_tech">
             </div>
-            <span class="d-block mt-1 text-small-extra text-muted">3 to 25 letters, numbers or underscores. Nobody can sign in as a bot.</span>
+            <span class="d-block mt-1 text-small-extra text-muted">3 to 25 letters, numbers or underscores. The admins may change it before approving. Nobody can sign in as a bot.</span>
           </div>
         </div>
         <div class="d-lg-flex border-top">
@@ -69,12 +103,34 @@
           </div>
         </div>
         <div class="d-lg-flex border-top">
+          <div class="title w-lg-25"><label for="bot-bio">Bio</label></div>
+          <div class="body w-lg-100">
+            <textarea class="form-control" id="bot-bio" name="bio" rows="2" maxlength="{{ rules.BIO_MAX }}"
+                      placeholder="Technology headlines from BBC News. Not run by the BBC."></textarea>
+            <span class="d-block mt-1 text-small-extra text-muted">Shown on its profile. Plain text, no links. Say where the posts come from.</span>
+          </div>
+        </div>
+        <div class="d-lg-flex border-top">
+          <div class="title w-lg-25"><label for="bot-picture">Profile picture</label></div>
+          <div class="body w-lg-100">
+            <input type="file" class="form-control-file" id="bot-picture" name="profile" accept="image/png,image/jpeg,image/gif,image/webp">
+            <span class="d-block mt-1 text-small-extra text-muted">Optional. PNG, JPEG, GIF or WebP, 8 MB at most. Don't use a source's own logo unless it allows that.</span>
+          </div>
+        </div>
+        <div class="d-lg-flex border-top">
+          <div class="title w-lg-25"><label for="bot-banner">Banner</label></div>
+          <div class="body w-lg-100">
+            <input type="file" class="form-control-file" id="bot-banner" name="banner" accept="image/png,image/jpeg,image/gif,image/webp">
+            <span class="d-block mt-1 text-small-extra text-muted">Optional, the same kinds of file.</span>
+          </div>
+        </div>
+        <div class="d-lg-flex border-top">
           <div class="title w-lg-25"><label for="bot-sources">Feeds</label></div>
           <div class="body w-lg-100">
             <textarea class="form-control" id="bot-sources" name="sources" rows="3" spellcheck="false" autocomplete="off"
                       placeholder="https://feeds.bbci.co.uk/news/technology/rss.xml"></textarea>
             <span class="d-block mt-1 text-small-extra text-muted">One address a line, up to {{ rules.MAX_SOURCES }}. Each is read once now to check it is a feed.
-              Leave it empty for a bot that only posts from your own script with a bot key (for X, which has no feeds).</span>
+              A site bot needs at least one; a member bot may have none if it only posts with your key.</span>
           </div>
         </div>
         <div class="d-lg-flex border-top">
@@ -84,9 +140,20 @@
             <span class="d-block mt-1 text-small-extra text-muted">Optional, up to {{ rules.MAX_FORWARD_GUILDS }}. Each guild's own rules apply: some take no forwards from bots.</span>
           </div>
         </div>
-        <div class="border-top pt-3">
-          <button type="submit" class="btn btn-primary">Apply</button>
-          <span class="text-small text-muted ml-2">Up to {{ rules.MAX_BOTS }} bots each. Your account must be 30 days old.</span>
+        {% if admin %}
+        <div class="d-lg-flex border-top">
+          <div class="title w-lg-25"><label for="bot-approve-now">Admin</label></div>
+          <div class="body w-lg-100">
+            <div class="custom-control custom-checkbox">
+              <input type="checkbox" class="custom-control-input" id="bot-approve-now" name="approve_now" value="1">
+              <label class="custom-control-label" for="bot-approve-now">Approve it now (an admin's own bot needs no second look)</label>
+            </div>
+          </div>
+        </div>
+        {% endif %}
+        <div class="border-top p-3">
+          <button type="submit" class="btn btn-primary">Propose</button>
+          {% if not admin %}<span class="d-block d-sm-inline text-small text-muted mt-2 mt-sm-0 ml-sm-2">Up to {{ rules.MAX_BOTS }} at a time. Your account must be 30 days old.</span>{% endif %}
         </div>
       </form>
       {% endif %}

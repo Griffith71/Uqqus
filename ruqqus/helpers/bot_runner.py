@@ -59,7 +59,8 @@ def run_source(db, source_id, now, fetch, submit, notify, owner_ok):
     bot = bot_store.bot_of(db, src.bot_id)
     if bot is None or bot.status != bots.APPROVED:
         return "skipped"
-    if not owner_ok(bot.owner_id):
+    # a site bot belongs to nobody (the site runs it); a member bot stops while its member can't run it
+    if bot.kind == bots.MEMBER and not owner_ok(bot.owner_id):
         bot_store.record_check(db, src.id, now, now + 3600, fail_count=src.fail_count,
                                error="The bot's owner can't run it right now.")
         db.commit()
@@ -109,7 +110,8 @@ def run_source(db, source_id, now, fetch, submit, notify, owner_ok):
         elif answer_of.kind == "stop":
             bot_store.set_running(db, bot.user_id, False, answer_of.message)
             db.commit()
-            notify(bot.owner_id, f"Your bot @{bot.username} has been paused: {answer_of.message}")
+            if bot.owner_id:                           # a site bot's state is on the admins' page
+                notify(bot.owner_id, f"Your bot @{bot.username} has been paused: {answer_of.message}")
             note, result = answer_of.message, "stopped"
             break
         db.commit()
@@ -128,8 +130,9 @@ def _failed(db, src, bot, now, message, notify):
     if fails >= bots.FAILS_BEFORE_PAUSE:
         bot_store.set_source_paused(db, src.id, True, message)
         db.commit()
-        notify(bot.owner_id, f"Your bot @{bot.username} stopped reading {src.url} after {fails} failed tries: "
-                             f"{message} Start it again from Settings > Bots once it works.")
+        if bot.owner_id:
+            notify(bot.owner_id, f"Your bot @{bot.username} stopped reading {src.url} after {fails} failed tries: "
+                                 f"{message} Start it again from Settings > Bots once it works.")
         return "paused"
     db.commit()
     return "failed"

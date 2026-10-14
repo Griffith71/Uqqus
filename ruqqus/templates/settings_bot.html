@@ -2,22 +2,28 @@
 
 {% block pagetitle %}@{{ account.username }} - Bots - {{ 'SITE_NAME' | app_config }}{% endblock %}
 
-{# One of the member's bots: its feeds, guilds, bio, pause and delete (routes/bot_accounts.py). #}
+{# One bot: what a member may change on their own member bot or on a site bot they proposed while it waits, and what
+   an admin may change on any bot (routes/bot_accounts.py, helpers/bots.py may_manage). #}
 
 {% block content %}
+{% set site = bot.kind == 'site' %}
+{% set waiting = bot.status == 'pending' %}
 <div class="row">
   <div class="col col-lg-8">
     <div class="settings" id="bot-page">
 
-      <p class="text-small mb-2"><a href="/settings/bots">&larr; Your bots</a></p>
+      <p class="text-small mb-2"><a href="{{ '/admin/bots' if admin and not is_owner else '/settings/bots' }}">&larr; {{ 'Bots' if admin and not is_owner else 'Your bots' }}</a></p>
       {% if msg %}<div class="alert alert-success" role="status">{{ msg }}</div>{% endif %}
       {% if error %}<div class="alert alert-danger" role="alert">{{ error }}</div>{% endif %}
 
       <h2 class="h5">
-        {% if bot.status == 'pending' %}@{{ account.username }}{% else %}<a href="{{ account.permalink }}">@{{ account.username }}</a>{% endif %}
-        <span class="badge badge-pill {% if bot.status == 'approved' %}badge-success{% elif bot.status == 'pending' %}badge-info{% else %}badge-secondary{% endif %} ml-1" id="bot-status">{{ rules.STATUS_LABELS[bot.status] }}</span>
+        {% if waiting %}@{{ account.username }}{% else %}<a href="{{ account.permalink }}">@{{ account.username }}</a>{% endif %}
+        <span class="badge badge-pill {% if bot.status == 'approved' %}badge-success{% elif waiting %}badge-info{% else %}badge-secondary{% endif %} ml-1" id="bot-status">{{ rules.STATUS_LABELS[bot.status] }}</span>
+        <span class="badge badge-pill badge-light ml-1" id="bot-kind">{{ rules.KIND_LABELS[bot.kind] }}</span>
       </h2>
-      {% if bot.status == 'pending' %}
+      {% if waiting and site %}
+      <p class="text-small text-muted">A site bot waiting for an admin. Its proposer can change it until then; once approved it is run by the site and linked to nobody.</p>
+      {% elif waiting %}
       <p class="text-small text-muted">Waiting for an admin. You will get a notification when they decide; until then the bot's profile is visible to you and the admins only.</p>
       {% elif bot.status == 'paused' %}
       <p class="text-small text-muted">{{ bot.paused_reason or "Paused." }}{% if bot.paused_by_admin %} Only an admin can start it again.{% endif %}</p>
@@ -25,8 +31,81 @@
       <p class="text-small text-muted">{{ posts_today }} of {{ rules.DAILY_CAP }} posts today. New items are posted oldest first, at most {{ rules.PER_RUN }} from a feed at a time.</p>
       {% endif %}
 
+      {% if admin %}
+      <div class="settings-section rounded mb-4 p-3" id="bot-admin">
+        <div class="text-small mb-2">
+          {% if site %}Proposed by {% if names.get(bot.proposed_by_id) %}<a href="/@{{ names[bot.proposed_by_id] }}">@{{ names[bot.proposed_by_id] }}</a>{% else %}a deleted account{% endif %}{% if not waiting %} (not shown anywhere: the site runs it){% endif %}.
+          {% else %}Run by {% if names.get(bot.owner_id) %}<a href="/@{{ names[bot.owner_id] }}">@{{ names[bot.owner_id] }}</a>{% else %}a deleted account{% endif %}.{% endif %}
+        </div>
+        <p class="text-small text-break mb-3"><span class="font-weight-bold">What it posts:</span> {{ bot.purpose }}</p>
+        {% if waiting %}
+        <form action="/admin/bots/{{ bot.user_id }}/rename" method="post" class="d-flex align-items-center flex-wrap mb-2" id="bot-rename">
+          <input type="hidden" name="formkey" value="{{ v.formkey }}">
+          <label for="bot-new-name" class="text-small font-weight-bold mb-0 mr-2">Name</label>
+          <div class="input-group input-group-sm w-auto mr-2"><div class="input-group-prepend"><span class="input-group-text">@</span></div>
+            <input type="text" class="form-control" id="bot-new-name" name="username" value="{{ account.username }}" maxlength="25" pattern="[a-zA-Z0-9_]{3,25}" autocomplete="off" spellcheck="false"></div>
+          <button class="btn btn-outline-primary btn-sm">Rename</button>
+        </form>
+        <form action="/admin/bots/{{ bot.user_id }}/kind" method="post" class="d-flex align-items-center flex-wrap mb-3" id="bot-set-kind">
+          <input type="hidden" name="formkey" value="{{ v.formkey }}">
+          <label for="bot-new-kind" class="text-small font-weight-bold mb-0 mr-2">Kind</label>
+          <select class="form-control form-control-sm w-auto mr-2" id="bot-new-kind" name="kind">
+            <option value="site"{% if site %} selected{% endif %}>Site bot (run by the site)</option>
+            <option value="member"{% if not site %} selected{% endif %}>Member bot (run by its proposer)</option>
+          </select>
+          <button class="btn btn-outline-primary btn-sm">Change</button>
+        </form>
+        <div class="d-flex flex-wrap align-items-center">
+          <form action="/admin/bots/{{ bot.user_id }}/approve" method="post" class="d-inline mr-2 mb-1">
+            <input type="hidden" name="formkey" value="{{ v.formkey }}"><input type="hidden" name="next" value="page">
+            <button class="btn btn-primary btn-sm">Approve</button>
+          </form>
+          <form action="/admin/bots/{{ bot.user_id }}/reject" method="post" class="d-inline-flex align-items-center mb-1"
+                onsubmit="return confirm('Reject @{{ account.username }}? Its account is deleted and its name is free again.');">
+            <input type="hidden" name="formkey" value="{{ v.formkey }}">
+            <label for="bot-reject-note" class="sr-only">Why not</label>
+            <input type="text" class="form-control form-control-sm" id="bot-reject-note" name="note" maxlength="{{ rules.NOTE_MAX }}" placeholder="Why not (they are told)" style="min-width: 12rem;" autocomplete="off">
+            <button class="btn btn-outline-danger btn-sm ml-1">Reject</button>
+          </form>
+        </div>
+        {% endif %}
+      </div>
+      {% endif %}
+
+      <h3 class="h6 mt-4">Picture and banner</h3>
+      <div class="settings-section rounded p-3" id="bot-images">
+        <div class="d-flex align-items-center flex-wrap">
+          <img src="{{ account.profile_url }}" alt="" width="64" height="64" class="rounded-circle mr-3 mb-2 bot-picture-preview">
+          <form action="/settings/bots/{{ account.username }}/image/picture" method="post" enctype="multipart/form-data" class="d-flex align-items-center flex-wrap mb-2">
+            <input type="hidden" name="formkey" value="{{ v.formkey }}">
+            <label for="bot-new-picture" class="sr-only">New profile picture</label>
+            <input type="file" class="form-control-file w-auto mr-2" id="bot-new-picture" name="profile" accept="image/png,image/jpeg,image/gif,image/webp" required>
+            <button class="btn btn-outline-primary btn-sm">Upload picture</button>
+          </form>
+          {% if account.has_profile %}
+          <form action="/settings/bots/{{ account.username }}/image/picture/remove" method="post" class="d-inline ml-2 mb-2">
+            <input type="hidden" name="formkey" value="{{ v.formkey }}"><button class="btn btn-link btn-sm text-danger">Remove</button>
+          </form>
+          {% endif %}
+        </div>
+        <div class="d-flex align-items-center flex-wrap border-top pt-2">
+          <form action="/settings/bots/{{ account.username }}/image/banner" method="post" enctype="multipart/form-data" class="d-flex align-items-center flex-wrap mb-2">
+            <input type="hidden" name="formkey" value="{{ v.formkey }}">
+            <label for="bot-new-banner" class="text-small font-weight-bold mb-0 mr-2">Banner</label>
+            <input type="file" class="form-control-file w-auto mr-2" id="bot-new-banner" name="banner" accept="image/png,image/jpeg,image/gif,image/webp" required>
+            <button class="btn btn-outline-primary btn-sm">Upload banner</button>
+          </form>
+          {% if account.has_banner %}
+          <form action="/settings/bots/{{ account.username }}/image/banner/remove" method="post" class="d-inline ml-2 mb-2">
+            <input type="hidden" name="formkey" value="{{ v.formkey }}"><button class="btn btn-link btn-sm text-danger">Remove</button>
+          </form>
+          {% endif %}
+        </div>
+        <span class="d-block text-small-extra text-muted">PNG, JPEG, GIF or WebP, 8 MB at most.</span>
+      </div>
+
       <h3 class="h6 mt-4">Feeds</h3>
-      <div class="settings-section rounded" id="bot-sources">
+      <div class="settings-section rounded px-3 py-1 mb-2" id="bot-sources">
         {% for s in sources %}
         <div class="py-2{% if not loop.first %} border-top{% endif %} bot-source">
           <div class="d-flex justify-content-between align-items-start flex-wrap">
@@ -40,6 +119,14 @@
               {% if s.last_error %}<div class="text-small text-danger text-break">{{ s.last_error }}</div>{% endif %}
             </div>
             <div class="text-nowrap">
+              {% if admin and s.status == 'pending' and not waiting %}
+              <form action="/admin/bots/sources/{{ s.id }}/approve" method="post" class="d-inline">
+                <input type="hidden" name="formkey" value="{{ v.formkey }}"><input type="hidden" name="next" value="page"><button class="btn btn-link btn-sm">Approve</button>
+              </form>
+              <form action="/admin/bots/sources/{{ s.id }}/reject" method="post" class="d-inline">
+                <input type="hidden" name="formkey" value="{{ v.formkey }}"><input type="hidden" name="next" value="page"><button class="btn btn-link btn-sm text-muted">Reject</button>
+              </form>
+              {% endif %}
               {% if s.status == 'paused' %}
               <form action="/settings/bots/{{ account.username }}/sources/{{ s.id }}/restart" method="post" class="d-inline">
                 <input type="hidden" name="formkey" value="{{ v.formkey }}"><button class="btn btn-link btn-sm">Start again</button>
@@ -63,11 +150,11 @@
           <input type="url" class="form-control" id="bot-new-source" name="url" required spellcheck="false" autocomplete="off" placeholder="https://example.org/feed.xml">
           <div class="input-group-append"><button type="submit" class="btn btn-primary">Add</button></div>
         </div>
-        <span class="d-block mt-1 text-small-extra text-muted">A feed added now waits for an admin before it is read. Removing one takes effect at once.</span>
+        <span class="d-block mt-1 text-small-extra text-muted">{% if admin %}A feed an admin adds is approved at once.{% elif waiting %}It is reviewed with the bot.{% else %}A feed added now waits for an admin before it is read.{% endif %} Removing one takes effect at once.</span>
       </form>
       {% endif %}
 
-      {% if bot.status in ('approved', 'paused') %}
+      {% if not site and bot.status in ('approved', 'paused') and (is_owner or keys) %}
       <h3 class="h6 mt-5" id="bot-keys">Bot keys</h3>
       <p class="text-small text-muted">
         For posting from your own script, for example for X, which has no feeds: use your own X access and post each
@@ -84,11 +171,12 @@
           and the app's <code>client_id</code> and <code>client_secret</code>.</div>
       </div>
       {% endif %}
-      <div class="settings-section rounded" id="bot-key-list">
+      <div class="settings-section rounded px-3 py-1 mb-2" id="bot-key-list">
         {% for key in keys %}
         <div class="d-flex justify-content-between align-items-center flex-wrap py-2{% if not loop.first %} border-top{% endif %} bot-key">
           <span>Key {{ loop.index }} &middot; through <strong>{{ key.application.app_name }}</strong></span>
-          <form action="/settings/bots/{{ account.username }}/keys/{{ key.id }}/revoke" method="post" class="d-inline">
+          <form action="/settings/bots/{{ account.username }}/keys/{{ key.id }}/revoke" method="post" class="d-inline"
+                onsubmit="return confirm('Revoke key {{ loop.index }}? A script using it stops posting at once.');">
             <input type="hidden" name="formkey" value="{{ v.formkey }}"><button class="btn btn-link btn-sm text-danger">Revoke</button>
           </form>
         </div>
@@ -96,7 +184,7 @@
         <p class="text-muted mb-0">No keys.</p>
         {% endfor %}
       </div>
-      {% if keys | length < rules.MAX_KEYS %}
+      {% if is_owner and keys | length < rules.MAX_KEYS %}
         {% if apps %}
         <form action="/settings/bots/{{ account.username }}/keys/create" method="post" class="mt-2 d-flex align-items-center flex-wrap" id="bot-key-create">
           <input type="hidden" name="formkey" value="{{ v.formkey }}">
@@ -129,17 +217,22 @@
             <span class="d-block mt-1 text-small-extra text-muted">Each guild's own rules apply. When one refuses, the post stays on the bot's profile and the reason shows above.</span>
           </div>
         </div>
-        <div class="border-top pt-3"><button type="submit" class="btn btn-primary">Save</button></div>
+        <div class="border-top p-3"><button type="submit" class="btn btn-primary">Save</button></div>
       </form>
 
       {% if bot.status in ('approved', 'paused') %}
       <h3 class="h6 mt-5">Running</h3>
-      <div class="settings-section rounded">
+      <div class="settings-section rounded p-3">
         {% if bot.status == 'approved' %}
-        <form action="/settings/bots/{{ account.username }}/pause" method="post" class="d-inline">
-          <input type="hidden" name="formkey" value="{{ v.formkey }}"><button class="btn btn-secondary">Pause</button>
+        <form action="/settings/bots/{{ account.username }}/pause" method="post" class="d-flex align-items-center flex-wrap">
+          <input type="hidden" name="formkey" value="{{ v.formkey }}">
+          {% if admin and not is_owner %}
+          <label for="bot-pause-reason" class="sr-only">Why</label>
+          <input type="text" class="form-control form-control-sm w-auto mr-2" id="bot-pause-reason" name="reason" maxlength="300" placeholder="Why (shown on the bot's page)" autocomplete="off">
+          {% endif %}
+          <button class="btn btn-secondary">Pause</button>
         </form>
-        {% elif not bot.paused_by_admin %}
+        {% elif admin or not bot.paused_by_admin %}
         <form action="/settings/bots/{{ account.username }}/resume" method="post" class="d-inline">
           <input type="hidden" name="formkey" value="{{ v.formkey }}"><button class="btn btn-primary">Resume</button>
         </form>
@@ -147,11 +240,11 @@
       </div>
       {% endif %}
 
-      <h3 class="h6 mt-5 text-danger">Switch off for good</h3>
+      <h3 class="h6 mt-5 text-danger">{{ 'Withdraw' if waiting else 'Switch off for good' }}</h3>
       <form action="/settings/bots/{{ account.username }}/delete" method="post" id="bot-delete"
-            onsubmit="return confirm('Switch @{{ account.username }} off for good? Its posts stay; the bot never posts again.');">
+            onsubmit="return confirm('{{ ('Withdraw the proposal for @' ~ account.username ~ '?') if waiting else ('Switch @' ~ account.username ~ ' off for good? Its posts stay; the bot never posts again.') }}');">
         <input type="hidden" name="formkey" value="{{ v.formkey }}">
-        <button class="btn btn-outline-danger">Delete @{{ account.username }}</button>
+        <button class="btn btn-outline-danger">{{ 'Withdraw the proposal' if waiting else 'Delete @' ~ account.username }}</button>
       </form>
 
     </div>

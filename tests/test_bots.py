@@ -131,3 +131,59 @@ def test_a_title_is_plain_text_on_one_line_and_cut_to_the_limit():
     long = bots.clean_title("word " * 200)
     assert len(long) == bots.TITLE_MAX and long.endswith("…")
     assert bots.clean_title(None) == ""
+
+
+# --- the two kinds: site bots (free, the site's) and member bots (their member's) --------------------------------
+
+def test_a_site_bot_reads_a_feed_and_a_member_bot_may_not():
+    assert bots.parse_kind("site") == bots.SITE and bots.parse_kind("member") == bots.MEMBER
+    assert bots.parse_kind("admin") is None and bots.parse_kind(None) is None
+    assert "at least one feed" in bots.kind_refusal(bots.SITE, 0)
+    assert bots.kind_refusal(bots.SITE, 1) is None
+    assert bots.kind_refusal(bots.MEMBER, 0) is None             # it may post only with its member's key
+    assert bots.kind_refusal(None, 3)
+
+
+def proposal(kind, status=bots.PENDING, owner=None, proposer=1):
+    return NS(kind=kind, status=status, owner_id=owner, proposed_by_id=proposer)
+
+
+def test_who_may_change_a_bot():
+    mine = proposal(bots.MEMBER, bots.APPROVED, owner=1)
+    assert bots.may_manage(mine, 1, False) and not bots.may_manage(mine, 2, False)
+    assert bots.may_manage(mine, 2, True)                          # an admin, any bot
+    site = proposal(bots.SITE)
+    assert bots.may_manage(site, 1, False)                         # its proposer, while it waits
+    assert not bots.may_manage(site, 2, False)
+    for status in (bots.APPROVED, bots.PAUSED):                    # then it is the site's
+        assert not bots.may_manage(proposal(bots.SITE, status), 1, False)
+        assert bots.may_manage(proposal(bots.SITE, status), 2, True)
+    assert not bots.may_manage(proposal(bots.SITE, bots.REJECTED), 2, True)
+    assert not bots.may_manage(None, 1, True) and not bots.may_manage(site, None, False)
+
+
+def test_who_is_told_about_a_bot():
+    assert bots.responsible_id(proposal(bots.MEMBER, owner=5, proposer=5)) == 5
+    assert bots.responsible_id(proposal(bots.SITE, proposer=7)) == 7
+    assert bots.responsible_id(None) is None
+
+
+def test_admins_propose_without_the_age_or_the_count():
+    admin = member(created=NOW - 60)
+    admin.admin_level = 3
+    assert bots.is_admin(admin) and not bots.is_admin(member()) and not bots.is_admin(None)
+    assert bots.owner_refusal(admin, bots.MAX_BOTS + 5, NOW) is None
+    admin.is_suspended = True
+    assert "suspended" in bots.owner_refusal(admin, 0, NOW)
+
+
+def test_a_site_bot_posts_with_nobody_behind_it():
+    site = NS(status=bots.APPROVED, kind=bots.SITE)
+    assert bots.post_refusal(site, None, 0, is_on=True) is None
+    assert "a day" in bots.post_refusal(site, None, bots.DAILY_CAP, is_on=True)
+    assert "owner" in bots.post_refusal(NS(status=bots.APPROVED, kind=bots.MEMBER), None, 0, is_on=True)
+
+
+def test_a_bot_picture_is_one_of_the_usual_formats():
+    assert set(bots.IMAGE_FORMATS) == {"PNG", "JPEG", "GIF", "WEBP"}             # never SVG
+    assert bots.IMAGE_MAX_BYTES == 8 * 1024 * 1024

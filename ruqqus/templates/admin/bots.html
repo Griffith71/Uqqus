@@ -11,7 +11,9 @@
 
 <h1>Bots</h1>
 
-<p class="text-muted">Members apply for bot accounts in Settings &gt; Bots (helpers/bots.py). A bot posts the title and link of each new item of its approved feeds, on its own profile; its profile says who runs it. Approve a bot only when its feeds are what its owner says and the source allows reuse of its headlines (for example the BBC asks for attribution and no BBC logos). Approving a bot approves the feeds it applied with; a feed added later waits here on its own.</p>
+<p class="text-muted">Bots are proposed in Settings &gt; Bots (helpers/bots.py). A <strong>site bot</strong> runs on free feeds: once approved it belongs to nobody, says "Automated by {{ 'SITE_NAME' | app_config }}" and only admins change it. A <strong>member bot</strong> needs its member to run it (a key for their own script, or a paid source): it stays theirs and says "Automated by @member". Open a proposal to change its name, picture, banner, bio, feeds, guilds or kind before you approve it. Approve a bot only when its feeds are what the proposal says and the source allows reuse of its headlines (for example the BBC asks for attribution and no BBC logos). Approving a bot approves the feeds it was proposed with; a feed a member adds later waits here on its own.</p>
+
+<p><a href="/settings/bots#bot-apply" class="btn btn-outline-primary btn-sm">Make a site bot</a></p>
 
 {% if msg %}<div class="alert alert-success" role="status">{{ msg }}</div>{% endif %}
 
@@ -29,18 +31,27 @@
 </div>
 {% endif %}
 
-<h2 class="h4 mt-4">Applications</h2>
+<h2 class="h4 mt-4">Proposals</h2>
 {% for b in pending %}
 <div class="card mb-3 bot-application" data-user="{{ b.user_id }}">
   <div class="card-body">
     <div class="d-flex justify-content-between align-items-start flex-wrap">
-      <div><a href="/@{{ b.username }}" target="_blank" rel="noopener" class="font-weight-bold">@{{ b.username }}</a>
-        <span class="text-muted text-small">run by <a href="/@{{ b.owner_name }}" target="_blank" rel="noopener">@{{ b.owner_name }}</a></span></div>
+      <div>
+        <a href="/settings/bots/{{ b.username }}" class="font-weight-bold">@{{ b.username }}</a>
+        <span class="badge badge-pill badge-light ml-1 bot-kind">{{ rules.KIND_LABELS[b.kind] }}</span>
+        <span class="text-muted text-small d-block">
+          {% if b.kind == 'site' %}proposed by {% if b.proposer_name %}<a href="/@{{ b.proposer_name }}" target="_blank" rel="noopener">@{{ b.proposer_name }}</a>{% else %}a deleted account{% endif %}, run by the site once approved
+          {% else %}run by {% if b.owner_name %}<a href="/@{{ b.owner_name }}" target="_blank" rel="noopener">@{{ b.owner_name }}</a>{% else %}a deleted account{% endif %}{% endif %}
+        </span>
+      </div>
+      <a href="/settings/bots/{{ b.username }}" class="btn btn-outline-primary btn-sm">Open and edit</a>
     </div>
     <p class="text-small mt-2 mb-2 text-break">{{ b.purpose }}</p>
     <ul class="text-small mb-2 pl-3">
       {% for s in sources[b.user_id] %}
       <li class="text-break">{{ s.title or s.url }} <span class="text-muted">{{ s.url }}</span> <a href="/admin/bots?check={{ s.id }}#bot-feed-check">Check the feed now</a></li>
+      {% else %}
+      <li class="text-muted">No feeds: it posts only with its member's key.</li>
       {% endfor %}
     </ul>
     {% set g_names = guilds_of(b) %}
@@ -49,10 +60,11 @@
       <input type="hidden" name="formkey" value="{{ v.formkey }}">
       <button class="btn btn-primary btn-sm">Approve</button>
     </form>
-    <form action="/admin/bots/{{ b.user_id }}/reject" method="post" class="d-inline-flex ml-2 align-items-center">
+    <form action="/admin/bots/{{ b.user_id }}/reject" method="post" class="d-inline-flex ml-2 align-items-center"
+          onsubmit="return confirm('Reject @{{ b.username }}? Its account is deleted and its name is free again.');">
       <input type="hidden" name="formkey" value="{{ v.formkey }}">
       <label for="reject-note-{{ b.user_id }}" class="sr-only">Why not</label>
-      <input type="text" class="form-control form-control-sm" id="reject-note-{{ b.user_id }}" name="note" maxlength="{{ rules.NOTE_MAX }}" placeholder="Why not (sent to the owner)" autocomplete="off">
+      <input type="text" class="form-control form-control-sm" id="reject-note-{{ b.user_id }}" name="note" maxlength="{{ rules.NOTE_MAX }}" placeholder="Why not (they are told)" style="min-width: 12rem;" autocomplete="off">
       <button class="btn btn-outline-danger btn-sm ml-1">Reject</button>
     </form>
   </div>
@@ -65,7 +77,8 @@
 {% for s in new_sources %}
 <div class="card mb-2 bot-new-source">
   <div class="card-body py-2">
-    <div class="text-break"><a href="/@{{ s.username }}" target="_blank" rel="noopener">@{{ s.username }}</a> <span class="text-muted text-small">(run by @{{ s.owner_name }})</span>: {{ s.url }}
+    <div class="text-break"><a href="/settings/bots/{{ s.username }}">@{{ s.username }}</a>
+      <span class="text-muted text-small">({% if s.kind == 'site' %}site bot{% else %}run by @{{ s.owner_name }}{% endif %})</span>: {{ s.url }}
       <a href="/admin/bots?check={{ s.id }}#bot-feed-check" class="text-small">Check the feed now</a></div>
     <form action="/admin/bots/sources/{{ s.id }}/approve" method="post" class="d-inline"><input type="hidden" name="formkey" value="{{ v.formkey }}"><button class="btn btn-primary btn-sm">Approve</button></form>
     <form action="/admin/bots/sources/{{ s.id }}/reject" method="post" class="d-inline"><input type="hidden" name="formkey" value="{{ v.formkey }}"><button class="btn btn-outline-danger btn-sm">Reject</button></form>
@@ -78,12 +91,12 @@
 <h2 class="h4 mt-5">Running and paused bots</h2>
 <div class="table-responsive">
 <table class="table table-sm">
-  <thead><tr><th scope="col">Bot</th><th scope="col">Owner</th><th scope="col">State</th><th scope="col">Feeds failing</th><th scope="col"></th></tr></thead>
+  <thead><tr><th scope="col">Bot</th><th scope="col">Run by</th><th scope="col">State</th><th scope="col">Feeds failing</th><th scope="col"></th></tr></thead>
   <tbody>
   {% for b in running %}
   <tr>
-    <td><a href="/@{{ b.username }}" target="_blank" rel="noopener">@{{ b.username }}</a></td>
-    <td><a href="/@{{ b.owner_name }}" target="_blank" rel="noopener">@{{ b.owner_name }}</a></td>
+    <td><a href="/settings/bots/{{ b.username }}">@{{ b.username }}</a></td>
+    <td>{% if b.kind == 'site' %}<span class="text-muted">The site</span>{% elif b.owner_name %}<a href="/@{{ b.owner_name }}" target="_blank" rel="noopener">@{{ b.owner_name }}</a>{% else %}<span class="text-muted">A deleted account</span>{% endif %}</td>
     <td>{{ rules.STATUS_LABELS[b.status] }}{% if b.paused_reason %}<div class="text-small text-muted">{{ b.paused_reason }}</div>{% endif %}</td>
     <td>{{ b.failing }}</td>
     <td class="text-nowrap">
@@ -91,8 +104,8 @@
       <form action="/admin/bots/{{ b.user_id }}/pause" method="post" class="d-inline-flex align-items-center">
         <input type="hidden" name="formkey" value="{{ v.formkey }}">
         <label for="pause-reason-{{ b.user_id }}" class="sr-only">Why</label>
-        <input type="text" class="form-control form-control-sm" id="pause-reason-{{ b.user_id }}" name="reason" maxlength="300" placeholder="Why (sent to the owner)" autocomplete="off">
-        <button class="btn btn-outline-secondary btn-sm ml-1">Pause</button>
+        <input type="text" class="form-control form-control-sm" id="pause-reason-{{ b.user_id }}" name="reason" maxlength="300" placeholder="Why{% if b.kind == 'member' %} (sent to its member){% endif %}" autocomplete="off">
+        <button class="btn btn-outline-primary btn-sm ml-1">Pause</button>
       </form>
       {% else %}
       <form action="/admin/bots/{{ b.user_id }}/resume" method="post" class="d-inline"><input type="hidden" name="formkey" value="{{ v.formkey }}"><button class="btn btn-outline-primary btn-sm">Resume</button></form>

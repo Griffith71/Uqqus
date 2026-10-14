@@ -6031,8 +6031,10 @@ CREATE INDEX users_bot_owner_idx ON public.users (bot_owner_id) WHERE bot_owner_
 CREATE TABLE public.bots (
     id SERIAL PRIMARY KEY,
     user_id integer NOT NULL,
-    owner_id integer NOT NULL,
+    owner_id integer,
     username character varying(255) NOT NULL,
+    kind character varying(10) DEFAULT 'member' NOT NULL,
+    proposed_by_id integer,
     status character varying(10) DEFAULT 'pending' NOT NULL,
     purpose character varying(500) DEFAULT '' NOT NULL,
     forward_guilds text DEFAULT '[]' NOT NULL,
@@ -6045,9 +6047,11 @@ CREATE TABLE public.bots (
     day integer DEFAULT 0 NOT NULL,
     posts_today integer DEFAULT 0 NOT NULL,
     CONSTRAINT bots_one_per_account UNIQUE (user_id),
-    CONSTRAINT bots_status CHECK (status IN ('pending', 'approved', 'rejected', 'paused'))
+    CONSTRAINT bots_status CHECK (status IN ('pending', 'approved', 'rejected', 'paused')),
+    CONSTRAINT bots_kind CHECK (kind IN ('site', 'member'))
 );
 CREATE INDEX bots_owner_idx ON public.bots (owner_id);
+CREATE INDEX bots_proposed_idx ON public.bots (proposed_by_id);
 CREATE INDEX bots_pending_idx ON public.bots (created_utc) WHERE status = 'pending';
 
 -- Where a bot's posts come from. A source added after the bot was approved waits for an admin (status 'pending').

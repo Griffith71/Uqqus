@@ -11,7 +11,8 @@ from sqlalchemy import text
 
 from ruqqus.helpers import bots
 
-BOT_COLUMNS = ("id, user_id, owner_id, username, status, purpose, forward_guilds, created_utc, reviewed_by_id, "
+BOT_COLUMNS = ("id, user_id, owner_id, username, kind, proposed_by_id, status, purpose, forward_guilds, created_utc, "
+               "reviewed_by_id, "
                "reviewed_utc, review_note, paused_reason, paused_by_admin, day, posts_today")
 SOURCE_COLUMNS = ("id, bot_id, kind, url, title, status, added_utc, approved_by_id, approved_utc, check_minutes, "
                   "last_checked_utc, next_check_utc, etag, last_modified, fail_count, last_error, posted_count, read_once")
@@ -41,24 +42,41 @@ def bot_named(db, username):
                       {"n": username}).fetchone()
 
 
-def bots_of(db, owner_id):
-    """A member's bots, newest first, rejected ones included (they show the admin's note)."""
-    return db.execute(text(f"SELECT {BOT_COLUMNS} FROM bots WHERE owner_id = :o ORDER BY created_utc DESC, id DESC"),
-                      {"o": owner_id}).fetchall()
+def bots_of(db, member_id):
+    """A member's member bots and the site bots they proposed, newest first, rejected ones included (they show the
+    admin's note). An approved site bot shows as the site's: nothing about it is theirs to change any more."""
+    return db.execute(text(f"SELECT {BOT_COLUMNS} FROM bots WHERE owner_id = :m OR (kind = :site AND proposed_by_id = :m) "
+                           "ORDER BY created_utc DESC, id DESC"), {"m": member_id, "site": bots.SITE}).fetchall()
 
 
-def active_count(db, owner_id):
-    """How many bots count towards the owner's limit: every one that was not rejected."""
-    return db.execute(text("SELECT COUNT(*) FROM bots WHERE owner_id = :o AND status != :r"),
-                      {"o": owner_id, "r": bots.REJECTED}).scalar() or 0
+def active_count(db, member_id):
+    """What counts towards a member's limit: their member bots that were not rejected, and the site bots they
+    proposed that still wait (an approved site bot is the site's, not theirs)."""
+    return db.execute(text("SELECT COUNT(*) FROM bots WHERE (owner_id = :m AND status != :r) "
+                           "OR (kind = :site AND proposed_by_id = :m AND status = :p)"),
+                      {"m": member_id, "r": bots.REJECTED, "site": bots.SITE, "p": bots.PENDING}).scalar() or 0
 
 
-def add_bot(db, user_id, owner_id, username, purpose, guild_names, now=None):
-    db.execute(text("INSERT INTO bots (user_id, owner_id, username, status, purpose, forward_guilds, created_utc) "
-                    "VALUES (:u, :o, :n, :s, :p, :g, :t)"),
-               {"u": user_id, "o": owner_id, "n": username, "s": bots.PENDING, "p": purpose,
+def add_bot(db, user_id, owner_id, username, purpose, guild_names, now=None, kind=bots.MEMBER, proposed_by=None):
+    """A new bot, waiting for an admin. A site bot has no owner (`owner_id` NULL); `proposed_by` is who put it
+    forward (kept for the admins and to tell them of the decision, never shown)."""
+    db.execute(text("INSERT INTO bots (user_id, owner_id, username, kind, proposed_by_id, status, purpose, forward_guilds, "
+                    "created_utc) VALUES (:u, :o, :n, :k, :pb, :s, :p, :g, :t)"),
+               {"u": user_id, "o": owner_id if kind == bots.MEMBER else None, "n": username, "k": kind,
+                "pb": proposed_by if proposed_by is not None else owner_id, "s": bots.PENDING, "p": purpose,
                 "g": json.dumps(list(guild_names)), "t": _now(now)})
     return bot_of(db, user_id)
+
+
+def rename(db, user_id, username):
+    db.execute(text("UPDATE bots SET username = :n WHERE user_id = :u"), {"n": username, "u": user_id})
+
+
+def set_kind(db, user_id, kind, owner_id):
+    """Before approval an admin may decide a proposal is the other kind. A site bot has no owner; a member bot's owner
+    is the member who proposed it."""
+    db.execute(text("UPDATE bots SET kind = :k, owner_id = :o WHERE user_id = :u AND status = :p"),
+               {"k": kind, "o": owner_id if kind == bots.MEMBER else None, "u": user_id, "p": bots.PENDING})
 
 
 def set_forward_guilds(db, user_id, guild_names):
@@ -132,11 +150,14 @@ def source_count(db, bot_id):
     return db.execute(text("SELECT COUNT(*) FROM bot_sources WHERE bot_id = :b"), {"b": bot_id}).scalar() or 0
 
 
-def add_source(db, bot_id, url, now=None, check_minutes=bots.CHECK_MINUTES_DEFAULT):
-    """A new source, waiting for an admin. None when the bot already reads that address."""
-    done = db.execute(text("INSERT INTO bot_sources (bot_id, kind, url, status, added_utc, check_minutes) "
-                           "VALUES (:b, 'feed', :u, :s, :t, :m) ON CONFLICT DO NOTHING"),
-                      {"b": bot_id, "u": url, "s": bots.PENDING, "t": _now(now), "m": check_minutes}).rowcount == 1
+def add_source(db, bot_id, url, now=None, check_minutes=bots.CHECK_MINUTES_DEFAULT, approved_by=None):
+    """A new source, waiting for an admin, or approved at once when an admin adds it (`approved_by`). None when the bot
+    already reads that address."""
+    status = bots.APPROVED if approved_by is not None else bots.PENDING
+    done = db.execute(text("INSERT INTO bot_sources (bot_id, kind, url, status, added_utc, check_minutes, approved_by_id, "
+                           "approved_utc) VALUES (:b, 'feed', :u, :s, :t, :m, :a, :at) ON CONFLICT DO NOTHING"),
+                      {"b": bot_id, "u": url, "s": status, "t": _now(now), "m": check_minutes, "a": approved_by,
+                       "at": _now(now) if approved_by is not None else 0}).rowcount == 1
     if not done:
         return None
     return db.execute(text("SELECT id FROM bot_sources WHERE bot_id = :b AND url = :u"), {"b": bot_id, "u": url}).scalar()
@@ -174,18 +195,19 @@ def set_source_paused(db, source_id, paused, error=""):
 # ------------------------------------------------------------------ the admins' queue
 
 def pending_bots(db, limit=50):
-    """Bots waiting for a decision, oldest first, with their owner's name."""
-    return db.execute(text(f"""
-        SELECT b.user_id, b.username, b.owner_id, o.username AS owner_name, b.purpose, b.forward_guilds, b.created_utc
-        FROM bots b JOIN users o ON o.id = b.owner_id
+    """Bots waiting for a decision, oldest first, with who proposed them (and the owner, for a member bot)."""
+    return db.execute(text("""
+        SELECT b.user_id, b.username, b.kind, b.owner_id, o.username AS owner_name, p.username AS proposer_name,
+               b.purpose, b.forward_guilds, b.created_utc
+        FROM bots b LEFT JOIN users o ON o.id = b.owner_id LEFT JOIN users p ON p.id = b.proposed_by_id
         WHERE b.status = :p ORDER BY b.created_utc, b.id LIMIT :l"""), {"p": bots.PENDING, "l": limit}).fetchall()
 
 
 def pending_sources(db, limit=100):
     """Sources added to bots that were already approved (or paused), waiting for a decision."""
     return db.execute(text("""
-        SELECT s.id, s.url, s.added_utc, b.user_id, b.username, o.username AS owner_name
-        FROM bot_sources s JOIN bots b ON b.user_id = s.bot_id JOIN users o ON o.id = b.owner_id
+        SELECT s.id, s.url, s.added_utc, b.user_id, b.username, b.kind, o.username AS owner_name
+        FROM bot_sources s JOIN bots b ON b.user_id = s.bot_id LEFT JOIN users o ON o.id = b.owner_id
         WHERE s.status = :p AND b.status IN (:a, :z) ORDER BY s.added_utc, s.id LIMIT :l"""),
         {"p": bots.PENDING, "a": bots.APPROVED, "z": bots.PAUSED, "l": limit}).fetchall()
 
@@ -193,10 +215,10 @@ def pending_sources(db, limit=100):
 def running_bots(db, limit=200):
     """Approved and paused bots, paused first, with their owner's name and their sources' newest error."""
     return db.execute(text("""
-        SELECT b.user_id, b.username, b.status, b.paused_reason, b.posts_today, b.day, o.username AS owner_name,
+        SELECT b.user_id, b.username, b.kind, b.status, b.paused_reason, b.posts_today, b.day, o.username AS owner_name,
                (SELECT MAX(s.last_checked_utc) FROM bot_sources s WHERE s.bot_id = b.user_id) AS last_checked,
                (SELECT COUNT(*) FROM bot_sources s WHERE s.bot_id = b.user_id AND s.last_error != '') AS failing
-        FROM bots b JOIN users o ON o.id = b.owner_id
+        FROM bots b LEFT JOIN users o ON o.id = b.owner_id
         WHERE b.status IN (:a, :z)
         ORDER BY CASE WHEN b.status = :z THEN 0 ELSE 1 END, b.username LIMIT :l"""),
         {"a": bots.APPROVED, "z": bots.PAUSED, "l": limit}).fetchall()

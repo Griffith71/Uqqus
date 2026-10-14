@@ -1,5 +1,5 @@
-"""Bot accounts, the SQL (ruqqus/helpers/bot_store.py) on SQLite, with the tables made from the real migration so the
-two can't drift apart."""
+"""Bot accounts, the SQL (ruqqus/helpers/bot_store.py) on SQLite, with the tables made from schema.sql (the shape the
+migrations add up to) so the two can't drift apart."""
 import re
 from pathlib import Path
 
@@ -10,17 +10,24 @@ from ruqqus.helpers import bot_store as bs
 from ruqqus.helpers import bots
 
 NOW = 1_800_000_000
-MIGRATION = (Path(__file__).resolve().parent.parent / "scripts" / "migrations" / "2026-10-15_bots.sql").read_text(encoding="utf-8")
+SCHEMA = (Path(__file__).resolve().parent.parent / "schema.sql").read_text(encoding="utf-8")
+
+
+def bot_tables():
+    """The CREATE TABLE and CREATE INDEX statements of the three bot tables, from schema.sql, for SQLite."""
+    out = []
+    for table in ("bots", "bot_sources", "bot_seen"):
+        out.append(re.search(rf"CREATE TABLE public\.{table} \(.*?\n\);", SCHEMA, re.S).group(0))
+        out += re.findall(rf"CREATE INDEX \w+ ON public\.{table} [^;]*;", SCHEMA)
+    return [re.sub(r"--[^\n]*", "", x).replace("public.", "").replace("SERIAL PRIMARY KEY", "INTEGER PRIMARY KEY AUTOINCREMENT")
+            for x in out]
 
 
 def make():
     db = Session(create_engine("sqlite://"))
     db.execute(text("CREATE TABLE users (id INTEGER PRIMARY KEY, username TEXT, is_bot BOOLEAN DEFAULT 0, bot_owner_id INTEGER)"))
-    for statement in re.sub(r"--[^\n]*", "", MIGRATION).split(";"):
-        statement = statement.strip()
-        if not statement or statement.startswith("ALTER TABLE") or "ON users" in statement:
-            continue
-        db.execute(text(statement.replace("SERIAL PRIMARY KEY", "INTEGER PRIMARY KEY AUTOINCREMENT")))
+    for statement in bot_tables():
+        db.execute(text(statement.rstrip(";")))
     for uid, name in ((1, "owner"), (2, "other"), (10, "bbc_tech"), (11, "spammy"), (12, "quiet")):
         db.execute(text("INSERT INTO users (id, username) VALUES (:i, :n)"), {"i": uid, "n": name})
     return db
@@ -140,3 +147,65 @@ def test_the_running_list_and_forgetting_a_bot():
     assert [r.username for r in bs.running_bots(db)] == ["quiet", "bbc_tech"]      # paused first
     bs.forget_bot(db, 10)
     assert bs.bot_of(db, 10) is None and bs.sources_of(db, 10) == []
+
+
+# --- site bots: nobody's once approved, their proposer's until then ---------------------------------------------
+
+def site_bot(db, uid=10, name="bbc_tech", proposer=1):
+    bs.add_bot(db, uid, None, name, "Headlines.", [], NOW, kind=bots.SITE, proposed_by=proposer)
+    return bs.add_source(db, uid, "https://feeds.example.org/a.xml", NOW)
+
+
+def test_a_site_bot_has_no_owner_and_its_proposer_counts_it_only_while_it_waits():
+    db = make()
+    site_bot(db)
+    row = bs.bot_of(db, 10)
+    assert row.kind == bots.SITE and row.owner_id is None and row.proposed_by_id == 1
+    assert bs.active_count(db, 1) == 1 and [r.username for r in bs.bots_of(db, 1)] == ["bbc_tech"]
+    assert bs.pending_bots(db)[0].proposer_name == "owner" and bs.pending_bots(db)[0].owner_name is None
+    bs.review_bot(db, 10, bots.APPROVED, 99, "", NOW)
+    assert bs.active_count(db, 1) == 0                              # the site's now, not theirs
+    assert bs.running_bots(db)[0].owner_name is None and bs.running_bots(db)[0].kind == bots.SITE
+    assert bs.bots_of(db, 2) == []
+
+
+def test_a_member_bot_is_proposed_by_its_owner():
+    db = make()
+    app_for(db, 10, "bbc_tech")
+    row = bs.bot_of(db, 10)
+    assert row.kind == bots.MEMBER and row.owner_id == 1 and row.proposed_by_id == 1
+    assert bs.pending_bots(db)[0].owner_name == "owner"
+
+
+def test_an_admin_changes_the_kind_and_the_name_only_while_it_waits():
+    db = make()
+    site_bot(db)
+    bs.set_kind(db, 10, bots.MEMBER, 1)
+    assert bs.bot_of(db, 10).kind == bots.MEMBER and bs.bot_of(db, 10).owner_id == 1
+    bs.set_kind(db, 10, bots.SITE, 1)
+    assert bs.bot_of(db, 10).kind == bots.SITE and bs.bot_of(db, 10).owner_id is None   # a site bot never has one
+    bs.rename(db, 10, "bbc_headlines")
+    assert bs.bot_named(db, "bbc_headlines").user_id == 10
+    bs.review_bot(db, 10, bots.APPROVED, 99, "", NOW)
+    bs.set_kind(db, 10, bots.MEMBER, 1)
+    assert bs.bot_of(db, 10).kind == bots.SITE                       # decided at approval
+
+
+def test_a_feed_an_admin_adds_is_approved_at_once():
+    db = make()
+    site_bot(db)
+    bs.review_bot(db, 10, bots.APPROVED, 99, "", NOW)
+    by_admin = bs.add_source(db, 10, "https://feeds.example.org/b.xml", NOW, approved_by=99)
+    by_member = bs.add_source(db, 10, "https://feeds.example.org/c.xml", NOW)
+    statuses = {s.id: s.status for s in bs.sources_of(db, 10)}
+    assert statuses[by_admin] == bots.APPROVED and statuses[by_member] == bots.PENDING
+    assert [s.id for s in bs.pending_sources(db)] == [by_member] and bs.pending_sources(db)[0].kind == bots.SITE
+
+
+def test_the_table_takes_only_the_two_kinds():
+    import pytest
+    from sqlalchemy.exc import IntegrityError
+
+    db = make()
+    with pytest.raises(IntegrityError):
+        bs.add_bot(db, 10, 1, "bbc_tech", "x", [], NOW, kind="robot")

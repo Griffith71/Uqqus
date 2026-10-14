@@ -1520,20 +1520,30 @@ class User(Base, Stndrd, Age_times):
 
     @property
     @lazy
-    def bot_status(self):
-        """pending / approved / rejected / paused for a bot account, None for anyone else."""
+    def bot_row(self):
+        """This bot account's `bots` row (helpers/bot_store.py), or None."""
         if not self.is_bot:
             return None
         from ruqqus.helpers import bot_store
-        row = bot_store.bot_of(g.db, self.id)
-        return row.status if row else None
+        return bot_store.bot_of(g.db, self.id)
+
+    @property
+    def bot_status(self):
+        """pending / approved / rejected / paused for a bot account, None for anyone else."""
+        return self.bot_row.status if self.bot_row else None
+
+    @property
+    def bot_kind(self):
+        """site (run by the site, nobody's) or member (its member runs it), None for anyone else."""
+        return self.bot_row.kind if self.bot_row else None
 
     def bot_shown_to(self, v):
         """May `v` open this account's profile? Everyone may once the bot was approved (running or paused); before
-        that only its owner and the site's admins."""
+        that only the member who owns or proposed it, and the site's admins."""
         if not self.is_bot or self.bot_status in ("approved", "paused"):
             return True
-        return bool(v and (v.id == self.bot_owner_id or (v.admin_level or 0) >= 3))
+        row = self.bot_row
+        return bool(v and ((v.admin_level or 0) >= 3 or (row and v.id in (row.owner_id, row.proposed_by_id))))
 
     def gm_limit_refusal(self):
         """None, or why this account may not lead another guild right now: "person" (it leads enough)
