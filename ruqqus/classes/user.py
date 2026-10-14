@@ -11,7 +11,7 @@ from flask import session, g, request
 from ruqqus.helpers.base36 import *
 from ruqqus.helpers import anonymity, circle_clause, circles, guild_limits, post_follows
 from .coauthors import PostCoauthor
-from ruqqus.helpers.muting import hide_muted
+from ruqqus.helpers.muting import hide_muted, hide_muted_guilds
 from ruqqus.helpers import post_feedback
 from ruqqus.helpers.blocks import hide_blocked
 from ruqqus.helpers.security import *
@@ -283,6 +283,8 @@ class User(Base, Stndrd, Age_times):
 
         posts = filter_posts(posts, self)
         posts = hide_muted(posts, self, Submission)
+        # a guild the member muted leaves Following too, joined or not (helpers/muting.py)
+        posts = hide_muted_guilds(posts, self, Submission)
 
         if self.hide_bot:
             posts = posts.filter_by(is_bot=False)
@@ -416,11 +418,15 @@ class User(Base, Stndrd, Age_times):
                     continue
                 scores[subcat_id] = scores.get(subcat_id, 0) + weight
 
+        # a guild the member muted teaches For You nothing: not its subscription, not its votes
+        muted_boards = select(BoardBlock.board_id).filter_by(user_id=self.id)
+
         sub_subcats = g.db.query(Board.subcat_id).join(
             Subscription, Subscription.board_id == Board.id
         ).filter(
             Subscription.user_id == self.id,
-            Subscription.is_active == True
+            Subscription.is_active == True,
+            Board.id.notin_(muted_boards)
         ).all()
         add_scores([x[0] for x in sub_subcats], 3)
 
@@ -429,7 +435,8 @@ class User(Base, Stndrd, Age_times):
             Subscription, Subscription.board_id == Board.id
         ).filter(
             Subscription.user_id.in_(followed_ids),
-            Subscription.is_active == True
+            Subscription.is_active == True,
+            Board.id.notin_(muted_boards)
         ).all()
         add_scores([x[0] for x in follow_subcats], 2)
 
@@ -441,7 +448,8 @@ class User(Base, Stndrd, Age_times):
         vote_subcats = g.db.query(Board.subcat_id).join(
             Submission, Submission.board_id == Board.id
         ).filter(
-            Submission.id.in_(recent_upvoted_submissions)
+            Submission.id.in_(recent_upvoted_submissions),
+            Board.id.notin_(muted_boards)
         ).all()
         add_scores([x[0] for x in vote_subcats], 1)
 

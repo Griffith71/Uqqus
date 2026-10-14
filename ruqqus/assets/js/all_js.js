@@ -2948,7 +2948,7 @@ filter_guild=function() {
   if (isValidUsername) {
 
     var xhr = new XMLHttpRequest();
-    xhr.open("post", "/settings/block_guild");
+    xhr.open("post", "/settings/mute_guild");
     xhr.withCredentials=true;
     f=new FormData();
     f.append("board", boardname);

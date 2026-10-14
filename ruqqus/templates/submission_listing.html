@@ -261,9 +261,9 @@
                 ><i class="fas fa-user-slash fa-fw text-danger"></i>Unblock user</a>
                 {% endif %}
 
-                {% if request.path=="/all" %}
-                <a id="hide-guild-{{ p.base36id }}" class="dropdown-item text-danger{% if p.is_blocking_guild %} d-none{% endif %}" href="javascript:void(0)" onclick="post_toast('/settings/block_guild?board={{ p.board.name }}', callback=function(){document.getElementById('hide-guild-{{ p.base36id }}').classList.toggle('d-none');document.getElementById('unhide-guild-{{ p.base36id }}').classList.toggle('d-none');})"><i class="fas fa-eye-slash fa-fw text-danger"></i>Hide guild</a>
-                <a id="unhide-guild-{{ p.base36id }}" class="dropdown-item text-danger{% if not p.is_blocking_guild %} d-none{% endif %}" href="javascript:void(0)" onclick="post_toast('/settings/unblock_guild?board={{ p.board.name }}', callback=function(){document.getElementById('hide-guild-{{ p.base36id }}').classList.toggle('d-none');document.getElementById('unhide-guild-{{ p.base36id }}').classList.toggle('d-none');})"><i class="fas fa-eye-slash fa-fw text-danger"></i>Unhide guild</a>
+                {% if v and not p.is_profile_post and not request.path.startswith("/+") %}
+                <a id="hide-guild-{{ p.base36id }}" class="dropdown-item text-danger{% if p.is_blocking_guild %} d-none{% endif %}" href="javascript:void(0)" onclick="post_toast('/settings/mute_guild?board={{ p.board.name }}', callback=function(){document.getElementById('hide-guild-{{ p.base36id }}').classList.toggle('d-none');document.getElementById('unhide-guild-{{ p.base36id }}').classList.toggle('d-none');})"><i class="fas fa-eye-slash fa-fw text-danger"></i>Mute guild</a>
+                <a id="unhide-guild-{{ p.base36id }}" class="dropdown-item text-danger{% if not p.is_blocking_guild %} d-none{% endif %}" href="javascript:void(0)" onclick="post_toast('/settings/unmute_guild?board={{ p.board.name }}', callback=function(){document.getElementById('hide-guild-{{ p.base36id }}').classList.toggle('d-none');document.getElementById('unhide-guild-{{ p.base36id }}').classList.toggle('d-none');})"><i class="fas fa-eye-slash fa-fw text-danger"></i>Unmute guild</a>
                 {% endif %}
 
               </div>
@@ -380,11 +380,11 @@
           ><i class="fas fa-user-slash fa-fw text-danger mr-3"></i>Unblock @{{ author_of(p, v).username }}</button>
           {% endif %}
 
-          {% if request.path=="/all" %}
-          <button id="hide-guild-button-{{ p.base36id }}" class="btn btn-link btn-block btn-lg text-left text-danger{% if p.is_blocking_guild %} d-none{% endif %}" data-dismiss="modal" onclick="post_toast('/settings/block_guild?board={{ p.board.name }}', callback=function(){document.getElementById('hide-guild-button-{{ p.base36id }}').classList.toggle('d-none');document.getElementById('unhide-guild-button-{{ p.base36id }}').classList.toggle('d-none');})"
-          ><i class="fas fa-eye-slash fa-fw text-danger mr-3"></i>Hide guild</button>
-          <button id="unhide-guild-button-{{ p.base36id }}" class="btn btn-link btn-block btn-lg text-left text-danger{% if not p.is_blocking_guild %} d-none{% endif %}" data-dismiss="modal" onclick="post_toast('/settings/unblock_guild?board={{ p.board.name }}', callback=function(){document.getElementById('hide-guild-button-{{ p.base36id }}').classList.toggle('d-none');document.getElementById('unhide-guild-button-{{ p.base36id }}').classList.toggle('d-none');})"
-          ><i class="fas fa-eye-slash fa-fw text-danger mr-3"></i>Unhide guild</button>
+          {% if v and not p.is_profile_post and not request.path.startswith("/+") %}
+          <button id="hide-guild-button-{{ p.base36id }}" class="btn btn-link btn-block btn-lg text-left text-danger{% if p.is_blocking_guild %} d-none{% endif %}" data-dismiss="modal" onclick="post_toast('/settings/mute_guild?board={{ p.board.name }}', callback=function(){document.getElementById('hide-guild-button-{{ p.base36id }}').classList.toggle('d-none');document.getElementById('unhide-guild-button-{{ p.base36id }}').classList.toggle('d-none');})"
+          ><i class="fas fa-eye-slash fa-fw text-danger mr-3"></i>Mute guild</button>
+          <button id="unhide-guild-button-{{ p.base36id }}" class="btn btn-link btn-block btn-lg text-left text-danger{% if not p.is_blocking_guild %} d-none{% endif %}" data-dismiss="modal" onclick="post_toast('/settings/unmute_guild?board={{ p.board.name }}', callback=function(){document.getElementById('hide-guild-button-{{ p.base36id }}').classList.toggle('d-none');document.getElementById('unhide-guild-button-{{ p.base36id }}').classList.toggle('d-none');})"
+          ><i class="fas fa-eye-slash fa-fw text-danger mr-3"></i>Unmute guild</button>
           {% endif %}
 
           {% endif %}

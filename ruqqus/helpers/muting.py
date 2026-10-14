@@ -11,6 +11,13 @@ someone you muted, or to something you saved, is a choice.
 An anonymous post or comment is never hidden by a mute. Hiding only those would
 tell the viewer which anonymous items their muted account wrote (the same reason
 blocks leave anonymous posts in feeds, see helpers/anonymity.py).
+
+MUTING A GUILD is the same idea for a guild (`boardblocks`, the model is still called
+BoardBlock): its posts leave All, For You and Following and the member can still visit it,
+search it and stay joined. `hide_muted_guilds(query, v, model)` is the helper for NEW
+listings; the older ones (All, For You, search, trending, curations, suggestions) carry the
+same subquery inline. The member's own mutes are not a curation's "leave out" list: that
+one belongs to the curation (helpers/feed_algorithm.py) and uses `exclude_authors` below.
 """
 from sqlalchemy import or_, select
 
@@ -21,17 +28,40 @@ def muted_ids(v):
     return select(UserMute.target_id).where(UserMute.user_id == v.id)
 
 
+def exclude_authors(query, ids, model):
+    """`query` without the rows by the accounts in `ids` (a subquery or a list of ids), keeping
+    anonymous rows and dropping a post co-authored with one of them. `model` is Submission or
+    Comment (anything with author_id and is_anonymous). The one rule behind a member's mutes and
+    a curation's "leave out" list."""
+    query = query.filter(or_(model.author_id.notin_(ids), model.is_anonymous == True))
+    if getattr(model, "__tablename__", "") == "submissions":
+        # a post co-authored with such an account carries its name too (helpers/blocks.py does the same for blocks)
+        from ruqqus.helpers.blocks import coauthored_with
+        query = query.filter(~coauthored_with(model, ids))
+    return query
+
+
 def hide_muted(query, v, model):
     """`query` without the rows by accounts `v` muted. `model` is Submission or Comment
     (anything with author_id and is_anonymous). A visitor has muted nobody."""
     if v is None:
         return query
-    query = query.filter(or_(model.author_id.notin_(muted_ids(v)), model.is_anonymous == True))
-    if getattr(model, "__tablename__", "") == "submissions":
-        # a post co-authored with a muted account carries its name too (helpers/blocks.py does the same for blocks)
-        from ruqqus.helpers.blocks import coauthored_with
-        query = query.filter(~coauthored_with(model, muted_ids(v)))
-    return query
+    return exclude_authors(query, muted_ids(v), model)
+
+
+def muted_guild_ids(v):
+    """A subquery of the ids of the guilds `v` muted (the `boardblocks` rows)."""
+    from ruqqus.classes.board_relationships import BoardBlock
+    return select(BoardBlock.board_id).where(BoardBlock.user_id == v.id)
+
+
+def hide_muted_guilds(query, v, model):
+    """`query` without the posts in guilds `v` muted. `model` is Submission (anything with
+    board_id). A visitor has muted nothing. Not on a guild's own page, a profile or a search
+    for that guild: going there is a choice."""
+    if v is None:
+        return query
+    return query.filter(model.board_id.notin_(muted_guild_ids(v)))
 
 
 def muted_set(v):
@@ -77,3 +107,14 @@ def clear_cached_feeds(v):
     cache.delete_memoized(frontlist, v=v)
     cache.delete_memoized(curation_idlist)
     cache.delete_memoized(searchlisting)
+
+
+def clear_guild_mute_caches(v):
+    """After muting or unmuting a guild: the feeds above, and also what For You learns its categories from
+    (`interest_subcats`, an hour) and the All comments list, so nothing keeps showing a muted guild."""
+    from ruqqus.__main__ import cache
+    from ruqqus.routes.front import comment_idlist
+
+    clear_cached_feeds(v)
+    cache.delete_memoized(v.interest_subcats)
+    cache.delete_memoized(comment_idlist, v=v)

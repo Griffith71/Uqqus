@@ -16,6 +16,7 @@ from ruqqus.helpers.aws import *
 from ruqqus.helpers.chat_permissions import on_block_created
 from ruqqus.helpers import circle_store
 from ruqqus.helpers import post_feedback as post_feedback_rules
+from ruqqus.helpers import muting as muting_rules
 from ruqqus.mail import *
 from .front import frontlist
 from ruqqus.__main__ import app, cache
@@ -626,6 +627,9 @@ def settings_unblock_user(v):
     return jsonify({"message": f"@{user.username} unblocked."})
 
 
+# Muting a guild (helpers/muting.py): a `boardblocks` row. The old /settings/block_guild and /settings/unblock_guild
+# addresses still work (they were the "hide from /all" buttons); the pages now use the mute_guild ones.
+@app.route("/settings/mute_guild", methods=["POST"])
 @app.route("/settings/block_guild", methods=["POST"])
 @auth_required
 @validate_formkey
@@ -637,7 +641,7 @@ def settings_block_guild(v):
         return jsonify({"error": "That guild doesn't exist."}), 404
 
     if v.has_blocked_guild(board):
-        return jsonify({"error": f"You have already blocked +{board.name}."}), 409
+        return jsonify({"error": f"You have already muted +{board.name}."}), 409
 
     new_block = BoardBlock(user_id=v.id,
                            board_id=board.id,
@@ -646,13 +650,15 @@ def settings_block_guild(v):
     g.db.add(new_block)
     g.db.commit()
 
-    cache.delete_memoized(v.idlist)
-    #cache.delete_memoized(Board.idlist, v=v)
-    cache.delete_memoized(frontlist, v=v)
+    muting_rules.clear_guild_mute_caches(v)
 
-    return jsonify({"message": f"+{board.name} added to filter"})
+    joined = g.db.query(Subscription.id).filter_by(user_id=v.id, board_id=board.id, is_active=True).first()
+    if joined:
+        return jsonify({"message": f"+{board.name} muted. You are still a member, but its posts stay out of All, For You and Following until you unmute it."})
+    return jsonify({"message": f"+{board.name} muted. Its posts stay out of All, For You and Following."})
 
 
+@app.route("/settings/unmute_guild", methods=["POST"])
 @app.route("/settings/unblock_guild", methods=["POST"])
 @auth_required
 @validate_formkey
@@ -660,18 +666,16 @@ def settings_unblock_guild(v):
 
     board = get_guild(request.values.get("board"), graceful=True)
 
-    x = v.has_blocked_guild(board)
+    x = v.has_blocked_guild(board) if board else None
     if not x:
         abort(409)
 
     g.db.delete(x)
     g.db.commit()
 
-    cache.delete_memoized(v.idlist)
-    #cache.delete_memoized(Board.idlist, v=v)
-    cache.delete_memoized(frontlist, v=v)
+    muting_rules.clear_guild_mute_caches(v)
 
-    return jsonify({"message": f"+{board.name} removed from filter"})
+    return jsonify({"message": f"+{board.name} unmuted."})
 
 
 @app.route("/settings/apps", methods=["GET"])

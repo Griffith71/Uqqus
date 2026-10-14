@@ -189,7 +189,7 @@
           <a href="{{ p.board.permalink }}">
             <span class="h6 text-black mb-0">+{{ p.board.name }}
               {% if v and v.has_blocked_guild(p.board) %}
-                <i class="fas fa-eye-slash text-danger align-middle ml-2" data-toggle="tooltip" data-placement="bottom" data-html="true" title="You have hidden this guild from /all. Visit your settings or click the <i class='fas fa-ellipsis-h text-small'></i> icon to adjust its visibility."></i>
+                <i class="fas fa-eye-slash text-danger align-middle ml-2" data-toggle="tooltip" data-placement="bottom" data-html="true" title="You have muted this guild. Its posts stay out of All, For You and Following. Visit your settings or click the <i class='fas fa-ellipsis-h text-small'></i> icon to unmute it."></i>
               {% endif %}
             </span>
           </a>
@@ -217,9 +217,9 @@
           {% endif %}
 
           {% if v and not v.has_blocked_guild(p.board) %}
-          <a class="dropdown-item text-danger" href="javascript:void(0)" onclick="post_toast('/settings/block_guild?board={{ p.board.name }}')"><i class="fas fa-eye-slash text-danger"></i>Hide from /all</a>
+          <a class="dropdown-item text-danger" href="javascript:void(0)" onclick="post_toast('/settings/mute_guild?board={{ p.board.name }}')"><i class="fas fa-eye-slash text-danger"></i>Mute guild</a>
           {% elif v %}
-          <a class="dropdown-item" href="javascript:void(0)" onclick="post_toast('/settings/unblock_guild?board={{ p.board.name }}')"><i class="fas fa-eye"></i>Show in /all</a>
+          <a class="dropdown-item" href="javascript:void(0)" onclick="post_toast('/settings/unmute_guild?board={{ p.board.name }}')"><i class="fas fa-eye"></i>Unmute guild</a>
           {% endif %}
         </div>
       </div>

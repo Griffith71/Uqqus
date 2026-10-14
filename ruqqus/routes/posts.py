@@ -1529,6 +1529,10 @@ Optional file data:
         Subscription.is_active==True,
         Subscription.get_notifs==True,
         Subscription.user_id != v.id,
+        # a member who muted the guild is not rung for it (helpers/muting.py)
+        Subscription.user_id.notin_(
+            g.db.query(BoardBlock.user_id).filter_by(board_id=new_post.board_id).subquery()
+            ),
         # blocked either way, as for followers below
         Subscription.user_id.notin_(
             g.db.query(UserBlock.user_id).filter_by(target_id=v.id).subquery()

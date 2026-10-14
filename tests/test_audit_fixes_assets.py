@@ -353,7 +353,9 @@ def test_blocks_count_both_ways_in_every_feed_and_spare_anonymous_items():
 
 
 def test_mutes_also_hide_posts_coauthored_with_a_muted_account():
-    assert "coauthored_with(model, muted_ids(v))" in read("helpers", "muting.py")
+    muting = read("helpers", "muting.py")
+    # the rule lives in exclude_authors (a curation's leave-out list uses it too); a member's mutes feed it their ids
+    assert "coauthored_with(model, ids)" in muting and "exclude_authors(query, muted_ids(v), model)" in muting
 
 
 def test_notifications_leave_out_blocked_accounts_and_counts_agree():

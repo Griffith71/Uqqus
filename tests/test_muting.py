@@ -68,3 +68,45 @@ def test_is_muted_follows_the_set_and_never_for_anonymous_items(monkeypatch):
 
 def test_a_visitor_has_an_empty_set():
     assert muting.muted_set(None) == frozenset()
+
+
+# --- exclude_authors: the rule under a member's mutes and a curation's "leave out" list ---------------------
+
+def test_exclude_authors_takes_a_plain_list_and_keeps_anonymous_rows():
+    text = sql(muting.exclude_authors(select(Row.id), [5, 6], Row))
+    assert "rows.author_id NOT IN (5, 6)" in text
+    assert "OR rows.is_anonymous = true" in text
+
+
+def test_exclude_authors_on_a_real_database():
+    from sqlalchemy import create_engine
+    from sqlalchemy.orm import Session
+
+    engine = create_engine("sqlite://")
+    Base.metadata.create_all(engine)
+    with Session(engine) as db:
+        db.add_all([Row(id=1, author_id=5, is_anonymous=False), Row(id=2, author_id=5, is_anonymous=True),
+                    Row(id=3, author_id=6, is_anonymous=False), Row(id=4, author_id=7, is_anonymous=False)])
+        db.commit()
+        left = {i for (i,) in db.execute(muting.exclude_authors(select(Row.id), [5, 6], Row))}
+    assert left == {2, 4}       # the anonymous post of an excluded account stays: it would give the author away
+
+
+# --- muting a guild --------------------------------------------------------------------------------------------
+
+class Posted(Base):
+    __tablename__ = "posted"
+    id = Column(Integer, primary_key=True)
+    board_id = Column(Integer)
+
+
+guild_mutes = Table("boardblocks", MetaData(), Column("user_id", Integer), Column("board_id", Integer))
+
+
+def test_posts_in_a_muted_guild_leave_the_listing_for_the_muter_only(monkeypatch):
+    monkeypatch.setattr(muting, "muted_guild_ids",
+                        lambda v: select(guild_mutes.c.board_id).where(guild_mutes.c.user_id == v.id))
+    text = sql(muting.hide_muted_guilds(select(Posted.id), NS(id=7), Posted))
+    assert "posted.board_id NOT IN (SELECT boardblocks.board_id" in text and "boardblocks.user_id = 7" in text
+    q = select(Posted.id)
+    assert muting.hide_muted_guilds(q, None, Posted) is q       # a visitor has muted nothing
