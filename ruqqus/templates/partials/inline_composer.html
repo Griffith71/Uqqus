@@ -13,6 +13,13 @@
   post page uses, so every posting rule, throttle and ban applies the same way.
 
   The other options are the shared ones in partials/post_options.html.
+
+  It offers what the full editor does, in a compact form: the audience pill (composer_card.js), the
+  formatting toolbar and Write / Preview (post_editor.js), a tool row (image, link, GIF, emoji, poll,
+  a picture in the text), and Save draft / Schedule / Drafts (post_drafts.js, which reads this form by
+  field name). A Circle guild composer has NO drafts controls: a draft keeps no `circle_guild`, so a
+  scheduled copy would be published as a public profile post.
+  tests/test_composers_offer_the_same_options.py keeps this form and templates/submit.html in step.
 #}
 {% from "partials/post_options.html" import audience_field, comment_permission_field, disclosure_field, anonymous_field, coauthors_field, poll_field %}
 
@@ -24,17 +31,57 @@
       {% if v %}
       <form id="inline-composer" class="inline-composer card-body" autocomplete="off" novalidate{% if panel %} data-open="true"{% endif %}{% if circle_guild %} data-circle-guild="{{ board.name }}"{% endif %}{% if board %} data-guild="{{ board.name }}"{% endif %}>
         <input type="hidden" name="formkey" value="{{ v.formkey }}">
+        {% if not circle_guild %}<input type="hidden" name="draft_id" id="draft-id" value="">{% endif %}
         <div id="ic-forward-inputs"></div>
         <div class="d-flex">
           <img src="{{ v.profile_url }}" class="profile-pic-35 mr-3 align-self-start" alt="">
           <div class="flex-grow-1 ic-main">
+            <div id="ic-head" class="ic-head d-flex align-items-center justify-content-between"{% if not panel %} hidden{% endif %}>
+              <span class="composer-where">Posting to {% if circle_guild %}+{{ board.name }}{% else %}your profile{% endif %}</span>
+              {% if not circle_guild %}
+              <details class="composer-pill" id="composer-audience">
+                <summary aria-label="Who can see this post">
+                  <i class="fas fa-globe-americas" id="composer-audience-icon"></i>
+                  <span id="composer-audience-label">Public</span>
+                  <i class="fas fa-chevron-down composer-pill-caret"></i>
+                </summary>
+                <div class="composer-pill-menu">{{ audience_field(0, "ic-audience") }}</div>
+              </details>
+              {% endif %}
+            </div>
             <textarea id="ic-title" name="title" rows="1" maxlength="280" class="form-control ic-title" placeholder="Share something with the {{ 'SITE_NAME' | app_config }} community..." aria-label="Post title"></textarea>
 
             <div id="ic-more" class="ic-more"{% if not panel %} hidden{% endif %}>
-              <textarea id="ic-body" name="body" rows="3" class="form-control mt-2" placeholder="Add more (optional, markdown works)" aria-label="Post text"></textarea>
+              <div class="comment-write post-editor mt-2">
+                <div class="post-toolbar" data-target="ic-body"></div>
+                <div class="input-group">
+                  <textarea id="ic-body" name="body" rows="3" class="form-control" placeholder="Add more (optional, markdown works)" aria-label="Post text"></textarea>
+                </div>
+                <div class="post-preview d-none"></div>
+              </div>
+              <div class="form-text text-small"><a href="/help/formatting" target="_blank" rel="noopener">Formatting help</a></div>
               <div id="ic-forward-chips" class="ic-forward-chips mt-2" hidden>
                 <span class="text-small text-muted mr-1">Forwarding to</span><span id="ic-forward-chip-list"></span>
               </div>
+
+              <div class="composer-tools ic-tools" role="toolbar" aria-label="Add to your post">
+                {# with linked storage (helpers/media) the picture goes to the member's own account and the form carries its id #}
+                {% if v.can_submit_image or media_offered() %}
+                <label class="composer-tool" for="ic-file" title="Add an image"><i class="fas fa-image"></i><span class="sr-only">Add an image</span></label>
+                <input type="file" id="ic-file" name="file" accept="image/*" hidden{% if media_offered() %} data-media-main="ic-media"{% endif %}>
+                {% if media_offered() %}<input type="hidden" name="media" id="ic-media" value="">{% endif %}
+                {% endif %}
+                <button type="button" class="composer-tool" id="ic-link-btn" title="Add a link" aria-label="Add a link"><i class="fas fa-link"></i></button>
+                <button type="button" class="composer-tool composer-tool-text" id="ic-gif-btn" onclick="commentForm('ic-body');getGif()" data-toggle="modal" data-target="#gifModal" title="Add a GIF" aria-label="Add a GIF">GIF</button>
+                <button type="button" class="composer-tool" id="ic-emoji-btn" onclick="commentForm('ic-body');loadEmojis()" data-toggle="modal" data-target="#emojiModal" title="Add an emoji" aria-label="Add an emoji"><i class="fas fa-smile-beam"></i></button>
+                <button type="button" class="composer-tool" id="composer-poll-btn" title="Add a poll" aria-label="Add a poll"><i class="fas fa-chart-bar"></i></button>
+                {% if v.can_upload_comment_image and not circle_guild %}
+                <label class="composer-tool" for="ic-body-image" title="Add a picture to the text"><i class="fas fa-images"></i><span class="sr-only">Add a picture to the text</span></label>
+                <input type="file" id="ic-body-image" name="body_image" accept="image/*" hidden>
+                {% endif %}
+                <span id="ic-file-name" class="text-small text-muted text-truncate ic-file-name"></span>
+              </div>
+
               <div id="ic-options" class="ic-options mt-2" hidden>
                 <div{% if circle_guild %} hidden{% endif %}>
                 <label for="ic-forward-input" class="d-block">Forward to guilds (optional)<i class="fas fa-info-circle text-gray-400 ml-1" data-toggle="tooltip" data-placement="top" title="Your post always appears on your profile first. Optionally forward it into other guilds for community discussion - each guild gets its own independent copy with its own votes and comments."></i></label>
@@ -46,7 +93,6 @@
                 </div>
                 </div>
                 <input type="url" id="ic-url" name="url" class="form-control mt-3" placeholder="Link (optional)" aria-label="Link">
-                <div{% if circle_guild %} hidden{% endif %}>{{ audience_field(0, "ic-audience") }}</div>
                 {{ comment_permission_field(0, "ic-permission") }}
                 {{ disclosure_field(false, false, "ic-disclosure") }}
                 <div{% if circle_guild %} hidden{% endif %}>{{ anonymous_field(false, "ic-anonymous") }}</div>
@@ -57,18 +103,20 @@
                   <input type="checkbox" class="custom-control-input" id="ic-sensitive" name="sensitive"{% if board and board.is_sensitive %} checked disabled{% endif %}>
                   <label class="custom-control-label" for="ic-sensitive">Blur this post until viewers click to reveal it.</label>
                 </div>
+                {% if not circle_guild %}
+                <div class="ic-later mt-3">
+                  <label class="d-block">Save for later</label>
+                  <button type="button" class="btn btn-secondary btn-sm" id="save-draft"><i class="far fa-save mr-1"></i>Save draft</button>
+                  <button type="button" class="btn btn-secondary btn-sm" id="schedule-open" aria-haspopup="dialog" aria-expanded="false"><i class="far fa-clock mr-1"></i>Schedule</button>
+                  <button type="button" class="btn btn-link btn-sm text-muted" id="drafts-open" data-toggle="modal" data-target="#draftsModal"><i class="far fa-folder-open mr-1"></i>Drafts<span class="badge badge-pill badge-secondary ml-1 d-none" id="drafts-count"></span></button>
+                  <span id="draft-status" class="d-block text-small text-muted mt-1" role="status"></span>
+                </div>
+                {% endif %}
               </div>
             </div>
 
             <div id="ic-bar" class="ic-bar d-flex align-items-center mt-2"{% if not panel %} hidden{% endif %}>
-              {# with linked storage (helpers/media) the picture goes to the member's own account and the form carries its id #}
-              {% if v.can_submit_image or media_offered() %}
-              <label class="btn btn-link btn-sm text-muted px-1 mb-0" for="ic-file" title="Add an image"><i class="far fa-image"></i><span class="sr-only">Add an image</span></label>
-              <input type="file" id="ic-file" name="file" accept="image/*" hidden{% if media_offered() %} data-media-main="ic-media"{% endif %}>
-              {% if media_offered() %}<input type="hidden" name="media" id="ic-media" value="">{% endif %}
-              <span id="ic-file-name" class="text-small text-muted text-truncate ic-file-name"></span>
-              {% endif %}
-              <button type="button" id="ic-options-toggle" class="btn btn-link btn-sm text-muted px-1" aria-expanded="false" aria-controls="ic-options">Options</button>
+              <button type="button" id="ic-options-toggle" class="btn btn-link btn-sm text-muted px-1" aria-expanded="false" aria-controls="ic-options">More options<i class="fas fa-chevron-down composer-pill-caret ml-1"></i></button>
               <a href="/submit{% if board %}?guild={{ board.name | urlencode }}{% endif %}" class="btn btn-link btn-sm text-muted px-1">Full editor</a>
               <span id="ic-count" class="ml-auto mr-3 text-small text-muted" aria-live="polite"></span>
               <button type="submit" id="ic-post" class="btn btn-primary btn-sm" disabled>Post</button>

@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+{% from "partials/theme.html" import theme_links %}
 <html lang="en">
 
 <head>
@@ -24,17 +25,9 @@
 
     {% block stylesheets %}
     {% if b %}
-    {% if v and v.can_use_darkmode and session.get("dark_mode_enabled") %}
-    <link id="css-link" rel="stylesheet" href="{{ b.css_dark_url }}">
+    {{ theme_links(b.css_url ~ "?v=" ~ asset_version("style/main.css"), b.css_dark_url ~ "?v=" ~ asset_version("style/main_dark.css")) }}
     {% else %}
-    <link id="css-link" rel="stylesheet" href="{{ b.css_url }}">
-    {% endif %}
-    {% else %}
-    {% if v and v.can_use_darkmode and session.get("dark_mode_enabled") %}
-    <link id="css-link" rel="stylesheet" href="/assets/style/main_dark.css">
-    {% else %}
-    <link id="css-link" rel="stylesheet" href="/assets/style/main.css">
-    {% endif %}
+    {{ theme_links(asset_url("style/main.css"), asset_url("style/main_dark.css")) }}
     {% endif %}
     {% endblock %}
 
@@ -82,11 +75,15 @@
 
                 <div class="col col-md-6 p-3 py-md-0 submit-main-col">
 
-                    <h1 class="d-none d-md-block">Create a post</h1>
+                    <h1 class="d-none d-md-block composer-heading">Create a post</h1>
 
-                    <h2 class="h3 d-md-none">Create a post</h2>
+                    <h2 class="h3 d-md-none composer-heading">Create a post</h2>
 
-                    <div class="body">
+                    {# The card keeps every field name and id the scripts use (post_drafts.js, post_editor.js, poll_composer.js, media_upload.js,
+                       all_js.js). Only the arrangement is new: a header with the audience, the writing space, an attach row,
+                       forwarding, and the rarer options folded under "More options". assets/js/composer_card.js drives the
+                       audience pill and the poll button. #}
+                    <div class="body composer-card">
 
                         <input type="hidden" name="formkey" value="{{ v.formkey }}">
                         <input type="hidden" name="draft_id" id="draft-id" value="{{ draft.id if draft else request.form.get('draft_id', '') }}">
@@ -99,28 +96,38 @@
                         <div id="draft-banner" class="alert alert-light border text-small py-2">Editing a draft. Post it now, or schedule it.</div>
                         {% endif %}
 
+                        {% set audience_now = ((draft.option("audience", 0) if draft else request.form.get("audience", 0)) | int) %}
+                        <div class="composer-head">
+                            <img src="{{ v.profile_url }}" class="composer-avatar" alt="">
+                            <div class="composer-who">
+                                <span class="composer-name">{{ v.username }}</span>
+                                <span class="composer-where">Posting to your profile</span>
+                            </div>
+                            <details class="composer-pill" id="composer-audience">
+                                <summary aria-label="Who can see this post">
+                                    <i class="fas {{ 'fa-globe-americas' if audience_now == 0 else 'fa-user-friends' }}" id="composer-audience-icon"></i>
+                                    <span id="composer-audience-label">{{ ["Public", "Subscribers", "Close Friends"][audience_now] if 0 <= audience_now <= 2 else "Public" }}</span>
+                                    <i class="fas fa-chevron-down composer-pill-caret"></i>
+                                </summary>
+                                <div class="composer-pill-menu">
+                                    {{ post_options.audience_field((draft.option("audience", 0) if draft else request.form.get("audience", 0)) | int, "post-audience") }}
+                                </div>
+                            </details>
+                        </div>
+
                         <label for="post-title" class="sr-only">Title</label>
-                        <div class="position-relative">
-                            <textarea id="post-title" name="title" class="form-control rounded title-writer" rows="1" wrap="off" placeholder="Title" aria-label="Post title" oninput="syncTitleOverflow();checkForRequired()" onkeydown="if(event.key==='Enter'){event.preventDefault();openBody();}" minlength="1" required>{{ title }}</textarea>
-                            <span class="position-absolute text-small font-weight-bold" id="character-count-title" style="right: 0; top: 0.5rem;"></span>
+                        <div class="composer-title-wrap">
+                            <textarea id="post-title" name="title" class="form-control rounded title-writer composer-title-input" rows="1" wrap="off" placeholder="Title" aria-label="Post title" oninput="syncTitleOverflow();checkForRequired()" onkeydown="if(event.key==='Enter'){event.preventDefault();openBody();}" minlength="1" required>{{ title }}</textarea>
+                            <span class="composer-count" id="character-count-title" aria-hidden="true"></span>
                         </div>
 
                         {% set prefill_url = url if url is defined else request.args.get('url','') %}
-                        <div class="mt-2">
-                            <input type="text" id="post-URL" name="url" class="d-none" value="{{ prefill_url }}">
-                            <button type="button" id="title-link-btn" class="btn btn-sm btn-secondary{% if prefill_url %} d-none{% endif %}" onclick="attachLink()">
-                                <i class="fas fa-link mr-1"></i>Add link
-                            </button>
-                            <span id="title-link-chip" class="badge badge-pill badge-light border p-2{% if not prefill_url %} d-none{% endif %}">
-                                <i class="fas fa-link mr-1"></i><span id="title-link-chip-text">{{ prefill_url }}</span>
-                                <a href="javascript:void(0)" class="text-muted ml-2" onclick="removeAttachedLink()"><i class="fas fa-times"></i></a>
+                        <input type="text" id="post-URL" name="url" class="d-none" value="{{ prefill_url }}">
+                        <div class="composer-chips">
+                            <span id="title-link-chip" class="composer-chip{% if not prefill_url %} d-none{% endif %}">
+                                <i class="fas fa-link"></i><span id="title-link-chip-text" class="composer-chip-text">{{ prefill_url }}</span>
+                                <a href="javascript:void(0)" class="composer-chip-remove" onclick="removeAttachedLink()" aria-label="Remove the link"><i class="fas fa-times"></i></a>
                             </span>
-                            <button type="button" class="btn btn-sm btn-secondary" id="gif-title-btn" onclick="getGif();commentForm('post-title')" data-toggle="modal" data-target="#gifModal">
-                                <span class="font-weight-bolder text-uppercase">GIF</span>
-                            </button>
-                            <button type="button" class="btn btn-sm btn-secondary" id="emoji-title-btn" onclick="commentForm('post-title');loadEmojis()" data-toggle="modal" data-target="#emojiModal">
-                                <i class="fas fa-smile-beam"></i>
-                            </button>
                         </div>
 
                         {# with linked storage (helpers/media) everyone can add a picture: it goes to the member's own account #}
@@ -178,7 +185,18 @@
 
                         <div class="form-text text-small"><a href="/help/formatting" target="_blank">Formatting help</a></div>
 
-                        <label for="forward_guild_input" class="mt-3">Forward to guilds (optional)<i class="fas fa-info-circle text-gray-400 ml-1" data-toggle="tooltip" data-placement="top" title="Your post always appears on your profile first. Optionally forward it into other guilds for community discussion - each guild gets its own independent copy with its own votes and comments."></i></label>
+                        <div class="composer-tools" role="toolbar" aria-label="Add to your post">
+                            {% if v.can_submit_image or media_offered() %}
+                            <label class="composer-tool" for="file-upload" title="Add an image"><i class="fas fa-image"></i><span class="sr-only">Add an image</span></label>
+                            {% endif %}
+                            <button type="button" id="title-link-btn" class="composer-tool{% if prefill_url %} d-none{% endif %}" onclick="attachLink()" title="Add a link" aria-label="Add a link"><i class="fas fa-link"></i></button>
+                            <button type="button" class="composer-tool composer-tool-text" id="gif-title-btn" onclick="getGif();commentForm('post-title')" data-toggle="modal" data-target="#gifModal" title="Add a GIF" aria-label="Add a GIF">GIF</button>
+                            <button type="button" class="composer-tool" id="emoji-title-btn" onclick="commentForm('post-title');loadEmojis()" data-toggle="modal" data-target="#emojiModal" title="Add an emoji" aria-label="Add an emoji"><i class="fas fa-smile-beam"></i></button>
+                            <button type="button" class="composer-tool" id="composer-poll-btn" title="Add a poll" aria-label="Add a poll"><i class="fas fa-chart-bar"></i></button>
+                        </div>
+
+                        <div class="composer-forward">
+                            <label for="forward_guild_input" class="mt-3">Forward to guilds (optional)<i class="fas fa-info-circle text-gray-400 ml-1" data-toggle="tooltip" data-placement="top" title="Your post always appears on your profile first. Optionally forward it into other guilds for community discussion - each guild gets its own independent copy with its own votes and comments."></i></label>
                         <div id="forward-guild-chips" class="mb-2"></div>
                         <div id="forward_guild_inputs"></div>
                         <div class="input-group">
@@ -187,30 +205,35 @@
                                 <button class="btn btn-secondary" type="button" onclick="addForwardGuild()">Add</button>
                             </div>
                         </div>
+                        </div>
 
-                        {{ post_options.audience_field((draft.option("audience", 0) if draft else request.form.get("audience", 0)) | int, "post-audience") }}
+                        <details class="composer-more"{% if draft or request.form %} open{% endif %}>
+                            <summary><span>More options</span><i class="fas fa-chevron-down composer-pill-caret"></i></summary>
+                            <div class="composer-more-body">
 
-                        {{ post_options.comment_permission_field((draft.option("comment_permission", 0) if draft else request.form.get("comment_permission", 0)) | int, "post-cp") }}
+                                {{ post_options.comment_permission_field((draft.option("comment_permission", 0) if draft else request.form.get("comment_permission", 0)) | int, "post-cp") }}
 
-                        {{ post_options.disclosure_field(draft.option("paid_partnership", false) if draft else request.form.getlist("paid_partnership") | select | list | length > 0, draft.option("made_with_ai", false) if draft else request.form.getlist("made_with_ai") | select | list | length > 0, "post-disc") }}
+                                {{ post_options.disclosure_field(draft.option("paid_partnership", false) if draft else request.form.getlist("paid_partnership") | select | list | length > 0, draft.option("made_with_ai", false) if draft else request.form.getlist("made_with_ai") | select | list | length > 0, "post-disc") }}
 
-                        {{ post_options.anonymous_field(draft.option("anonymous", false) if draft else request.form.getlist("anonymous") | select | list | length > 0, "post-anon") }}
+                                {{ post_options.anonymous_field(draft.option("anonymous", false) if draft else request.form.getlist("anonymous") | select | list | length > 0, "post-anon") }}
 
-                        {{ post_options.coauthors_field(draft.option("coauthors", "") if draft else request.form.get("coauthors", ""), "post-coauthors") }}
+                                {{ post_options.coauthors_field(draft.option("coauthors", "") if draft else request.form.get("coauthors", ""), "post-coauthors") }}
 
-                        {{ post_options.poll_field(draft.option("poll_options", []) if draft else request.form.getlist("poll_option") | select | list, draft.option("poll_hours", poll_default_hours) if draft else request.form.get("poll_hours", poll_default_hours), "post-poll") }}
+                                {{ post_options.poll_field(draft.option("poll_options", []) if draft else request.form.getlist("poll_option") | select | list, draft.option("poll_hours", poll_default_hours) if draft else request.form.get("poll_hours", poll_default_hours), "post-poll") }}
 
-                        <label for="sensitive" class="text-warning mt-3">Sensitive Content?<i class="fas fa-info-circle text-gray-400 ml-1" data-toggle="tooltip" data-placement="top" title="Not a rule violation - just something that could be upsetting. Shown blurred with a click-to-reveal instead of being blocked."></i></label>
+                                <label for="sensitive" class="text-warning mt-3">Sensitive Content?<i class="fas fa-info-circle text-gray-400 ml-1" data-toggle="tooltip" data-placement="top" title="Not a rule violation - just something that could be upsetting. Shown blurred with a click-to-reveal instead of being blocked."></i></label>
 
                         <div class="custom-control custom-checkbox">
                             <input type="checkbox" class="custom-control-input" id="sensitiveCheck" name="sensitive"{% if b and b.is_sensitive %} checked disabled {% elif draft and draft.option("sensitive") %} checked{% endif %}>
                             <label class="custom-control-label" for="sensitiveCheck">Blur this post until viewers click to reveal it.</label>
                         </div>
 
-                        {{ rules.rules_panel('m') }}
-
+                            </div>
+                        </details>
 
                     </div>
+
+                    {{ rules.rules_panel('m') }}
 
                 </div>
 
@@ -244,10 +267,12 @@
 
         </div>
 
+
+
         <div class="container">
-            <div class="row fixed-bottom bg-white border-top p-3" id="" style="z-index: 100; bottom: 0px; transition: bottom 220ms cubic-bezier(0, 0, 0.2, 1) 0s;">
+            <div class="row fixed-bottom composer-bar p-3" id="" style="z-index: 100; bottom: 0px; transition: bottom 220ms cubic-bezier(0, 0, 0.2, 1) 0s;">
                 <div class="col">
-                    <a href="/" class="btn btn-secondary">Cancel</a>
+                    <a href="/" class="btn btn-link text-muted px-2">Cancel</a>
                 </div>
                 <div class="col text-right">
                     {% if error %}<span class="text-danger mr-2">{{ error }}</span>{% endif %}
@@ -266,32 +291,10 @@
             </div>
         </div>
 
+
     </form>
 
-    <div id="schedule-panel" class="schedule-panel card d-none" role="dialog" aria-label="Schedule this post">
-        <div class="card-body">
-            <label for="schedule-at" class="font-weight-bold mb-1">Publish on</label>
-            <input type="datetime-local" id="schedule-at" class="form-control">
-            <small class="text-muted d-block mt-1" id="schedule-hint"></small>
-            <div id="schedule-error" class="text-danger text-small mt-1" role="alert"></div>
-            <div class="d-flex justify-content-end mt-2">
-                <button type="button" class="btn btn-link text-muted" id="schedule-cancel">Cancel</button>
-                <button type="button" class="btn btn-primary ml-2" id="schedule-confirm">Schedule post</button>
-            </div>
-        </div>
-    </div>
-
-    <div class="modal fade" id="draftsModal" tabindex="-1" role="dialog" aria-labelledby="draftsModalTitle" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-scrollable" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="draftsModalTitle">Drafts and scheduled posts</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                </div>
-                <div class="modal-body" id="drafts-list"><p class="text-muted mb-0">Loading...</p></div>
-            </div>
-        </div>
-    </div>
+    {% include "partials/drafts_ui.html" %}
 
     {% endblock %}
 
@@ -299,11 +302,12 @@
 
     <!-- Ruqqus JS -->
 
-    <script src="/assets/js/all_js.js?v=2.39.1"></script>
-    <script src="/assets/js/post_editor.js?v=1"></script>
-    <script src="/assets/js/post_drafts.js?v=1"></script>
-    <script src="/assets/js/poll_composer.js?v=1"></script>
-    <script src="/assets/js/media_upload.js?v=1"></script>
+    <script src="{{ asset_url('js/all_js.js') }}"></script>
+    <script src="{{ asset_url('js/post_editor.js') }}"></script>
+    <script src="{{ asset_url('js/post_drafts.js') }}"></script>
+    <script src="{{ asset_url('js/poll_composer.js') }}"></script>
+    <script src="{{ asset_url('js/media_upload.js') }}"></script>
+    <script src="{{ asset_url('js/composer_card.js') }}"></script>
 
     <!-- ClipboardJS -->
 

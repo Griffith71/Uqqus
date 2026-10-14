@@ -7,6 +7,13 @@
  * `forward_guilds` field each; on a guild page that guild is there from the start).
  * On success the new post's card is fetched (/inpage/post_card/<id>) and added to
  * the top of the feed.
+ *
+ * What the full editor has is here too, in a compact form: the audience pill and the poll
+ * button (assets/js/composer_card.js), the formatting toolbar and Write / Preview
+ * (assets/js/post_editor.js, on the `.post-toolbar` in the markup), GIF and emoji (the
+ * site's own modals; the buttons say which box they write into), and Save draft /
+ * Schedule / Drafts (assets/js/post_drafts.js reads this form by field name). A picture
+ * for the text is the `body_image` field the post route already reads.
  */
 (function () {
   'use strict';
@@ -18,6 +25,7 @@
   var el = function (id) { return document.getElementById(id); };
   var title = el('ic-title');
   var more = el('ic-more');
+  var head = el('ic-head');
   var bar = el('ic-bar');
   var options = el('ic-options');
   var optionsToggle = el('ic-options-toggle');
@@ -33,6 +41,8 @@
   var forwards = presetGuild ? [presetGuild] : [];        // the guilds the post is forwarded to
   var FORWARD_MAX = 20;                                   // helpers/post_drafts.py FORWARD_GUILDS_MAX
   var file = el('ic-file');
+  var bodyImage = el('ic-body-image');
+  var linkButton = el('ic-link-btn');
   var posted = el('ic-posted');
   var busy = false;
 
@@ -43,8 +53,14 @@
 
   function open() {
     form.classList.add('is-open');
+    head.hidden = false;
     more.hidden = false;
     bar.hidden = false;
+  }
+
+  function showOptions(show) {
+    options.hidden = !show;
+    optionsToggle.setAttribute('aria-expanded', String(show));
   }
 
   function update() {
@@ -70,9 +86,13 @@
   });
 
   optionsToggle.addEventListener('click', function () {
-    var show = options.hidden;
-    options.hidden = !show;
-    optionsToggle.setAttribute('aria-expanded', String(show));
+    showOptions(options.hidden);
+  });
+
+  // the link tool: the Link field lives in More options
+  linkButton.addEventListener('click', function () {
+    showOptions(true);
+    el('ic-url').focus();
   });
 
   // --- Forward to guilds: the same chips and fields as on Create a post --------------
@@ -132,6 +152,13 @@
     });
   }
 
+  // a picture for the text: sent as `body_image`, the field the post route already reads
+  if (bodyImage) {
+    bodyImage.addEventListener('change', function () {
+      el('ic-file-name').textContent = bodyImage.files.length ? bodyImage.files[0].name : '';
+    });
+  }
+
   form.addEventListener('submit', function (event) {
     event.preventDefault();
     submit();
@@ -142,16 +169,27 @@
     var keepOpen = form.getAttribute('data-open') === 'true';
     forwards = presetGuild ? [presetGuild] : [];
     renderForwards();
-    if (file) el('ic-file-name').textContent = '';
+    el('ic-file-name').textContent = '';
+    // a hidden field keeps the value script gave it through form.reset(): the draft just posted is used up
+    var draftId = el('draft-id');
+    if (draftId) draftId.value = '';
+    // a draft's banner and status belong to what was just posted
+    var banner = el('draft-banner');
+    if (banner && banner.parentNode) banner.parentNode.removeChild(banner);
+    var draftStatus = el('draft-status');
+    if (draftStatus) draftStatus.textContent = '';
     // a hidden field keeps a value set by script through form.reset(): clear the picture by hand
     var media = el('ic-media');
     if (media) media.value = '';
     var mediaNote = form.querySelector('.media-upload-status');
     if (mediaNote) mediaNote.textContent = '';
-    options.hidden = true;
-    optionsToggle.setAttribute('aria-expanded', 'false');
+    showOptions(false);
+    // back to Write if the text was being previewed
+    var write = form.querySelector('.post-toolbar .post-tb-tab');
+    if (write && !write.classList.contains('active')) write.click();
     if (!keepOpen) {
       form.classList.remove('is-open');
+      head.hidden = true;
       more.hidden = true;
       bar.hidden = true;
     }

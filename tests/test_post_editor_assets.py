@@ -33,10 +33,16 @@ def test_every_toolbar_class_the_script_uses_is_styled_in_both_stylesheets(sheet
     assert not missing, f"{sheet} has no rule for {missing}"
 
 
-def test_both_forms_have_a_toolbar_a_preview_pane_and_the_script():
+def test_all_three_forms_have_a_toolbar_a_preview_pane_and_the_script():
     submit = (ROOT / "templates" / "submit.html").read_text(encoding="utf-8")
     assert 'class="post-toolbar" data-target="post-body"' in submit
     assert 'class="post-preview d-none"' in submit and "post_editor.js" in submit
+
+    inline = (ROOT / "templates" / "partials" / "inline_composer.html").read_text(encoding="utf-8")
+    assert 'class="post-toolbar" data-target="ic-body"' in inline and 'class="post-preview d-none"' in inline
+    default = (ROOT / "templates" / "default.html").read_text(encoding="utf-8")
+    assert "asset_url('js/post_editor.js')" in default       # the feed composer's page loads it
+    assert "if (window.PostEditor) return;" in JS             # and it is safe to load twice (the edit form's own tag)
 
     page = (ROOT / "templates" / "submission.html").read_text(encoding="utf-8")
     assert 'class="post-toolbar" data-target="post-edit-box-{{ p.base36id }}"' in page

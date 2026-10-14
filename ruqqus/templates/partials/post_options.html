@@ -107,14 +107,14 @@
 {# the options are `poll_option` (up to poll_max_options of them), the length `poll_hours` (helpers/polls.py);
    assets/js/poll_composer.js opens and closes the panel, and keeps its fields disabled while it is closed #}
 <div class="poll-composer mt-3" data-poll-composer>
-  <label class="d-block">Poll (optional)<i class="fas fa-info-circle text-gray-400 ml-1" data-toggle="tooltip" data-placement="top" title="Your title is the question. 2 to 4 options, one vote each. The poll can be voted from every forward and repost of this post."></i></label>
+  <label class="d-block">Poll (optional)<i class="fas fa-info-circle text-gray-400 ml-1" data-toggle="tooltip" data-placement="top" title="Your title is the question. {{ poll_min_options }} to {{ poll_max_options }} options, one vote each. The poll can be voted from every forward and repost of this post."></i></label>
   <button type="button" class="btn btn-secondary btn-sm poll-open"{% if options %} hidden{% endif %}><i class="far fa-chart-bar mr-1"></i>Add a poll</button>
   <div class="poll-panel"{% if not options %} hidden{% endif %}>
-    <p class="text-small text-muted mb-2">Your title is the question. Give 2 to {{ poll_max_options }} options. People can vote from every forward and repost of this post, once each.</p>
+    <p class="text-small text-muted mb-2">Your title is the question. Give {{ poll_min_options }} to {{ poll_max_options }} options. People can vote from every forward and repost of this post, once each.</p>
     <div class="poll-rows">
       {% for i in range(poll_max_options) %}
       <div class="poll-row input-group mb-2"{% if i >= poll_min_options and i >= options | length %} hidden{% endif %}>
-        <input type="text" class="form-control" name="poll_option" maxlength="40" placeholder="Option {{ i + 1 }}" aria-label="Poll option {{ i + 1 }}" value="{{ options[i] if i < options | length else '' }}" autocomplete="off"{% if not options %} disabled{% endif %}>
+        <input type="text" class="form-control" name="poll_option" maxlength="{{ poll_option_chars }}" placeholder="Option {{ i + 1 }}" aria-label="Poll option {{ i + 1 }}" value="{{ options[i] if i < options | length else '' }}" autocomplete="off"{% if not options %} disabled{% endif %}>
         {% if i >= poll_min_options %}
         <div class="input-group-append"><button type="button" class="btn btn-outline-secondary poll-row-remove" aria-label="Remove option {{ i + 1 }}">&times;</button></div>
         {% endif %}

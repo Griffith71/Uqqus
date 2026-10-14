@@ -15,6 +15,9 @@
 (function () {
   'use strict';
 
+  // loaded by default.html for the feed composer and by the post page's own edit form: once is enough
+  if (window.PostEditor) return;
+
   var TEXT_COLORS = ['red', 'orange', 'green', 'blue', 'purple', 'pink', 'gray'];
   var HIGHLIGHTS = ['yellow', 'green', 'blue', 'pink'];
   var ALIGNMENTS = ['left', 'center', 'right'];

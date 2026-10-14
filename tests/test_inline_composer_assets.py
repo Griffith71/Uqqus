@@ -14,6 +14,7 @@ BOARD = (TEMPLATES / "board.html").read_text(encoding="utf-8")
 def test_every_element_the_script_uses_exists_in_the_composer():
     used = set(re.findall(r"el\('([\w-]+)'\)", SCRIPT)) | set(re.findall(r"getElementById\('([\w-]+)'\)", SCRIPT))
     used.discard("posts")   # the feed's own list, not part of the composer
+    used.discard("draft-banner")   # made by the script when a draft is saved (post_drafts.js has the same one)
     assert used, "the script looks up no elements?"
     for element_id in used:
         assert f'id="{element_id}"' in PARTIAL, f"inline_composer.html has no #{element_id}"
@@ -82,3 +83,39 @@ def test_the_wording_is_the_communitys_on_every_page():
     assert "Share something with the {{ 'SITE_NAME' | app_config }} community..." in PARTIAL
     assert "Forwarding to" in PARTIAL and "'+' + name" in SCRIPT
     assert not re.search(r"post(ed)? (to|in) (a |the |this )?guild", PARTIAL, re.I)
+
+
+def test_the_composer_has_what_the_full_editor_has():
+    # toolbar and preview (post_editor.js builds the toolbar for this textarea)
+    assert 'class="post-toolbar" data-target="ic-body"' in PARTIAL
+    assert 'class="post-preview d-none"' in PARTIAL
+    # GIF and emoji write into the body
+    assert "commentForm('ic-body');getGif()" in PARTIAL and "commentForm('ic-body');loadEmojis()" in PARTIAL
+    # the audience pill and the poll button are composer_card.js's
+    assert 'id="composer-audience"' in PARTIAL and 'id="composer-poll-btn"' in PARTIAL
+    # a picture for the text is the field the post route reads, offered only to who may upload one
+    assert 'name="body_image"' in PARTIAL and "v.can_upload_comment_image" in PARTIAL
+    assert "Formatting help" in PARTIAL
+    # its upload goes to the site's bucket: never offered where the post is meant to stay in a Circle guild
+    assert "{% if v.can_upload_comment_image and not circle_guild %}" in PARTIAL
+
+
+def test_drafts_controls_are_in_the_composer_but_never_in_a_circle_guild_composer():
+    # a draft keeps no circle_guild, so a scheduled copy would be published as a public profile post
+    assert re.search(r'\{% if not circle_guild %\}\s*<div class="ic-later', PARTIAL)
+    block = PARTIAL.split('<div class="ic-later')[1].split("{% endif %}")[0]
+    for control in ('id="save-draft"', 'id="schedule-open"', 'id="drafts-open"'):
+        assert control in block, control
+    for control in ('id="save-draft"', 'id="schedule-open"', 'id="drafts-open"'):
+        assert PARTIAL.count(control) == 1, control        # nowhere else
+    assert '{% if not circle_guild %}<input type="hidden" name="draft_id" id="draft-id" value="">{% endif %}' in PARTIAL
+
+
+def test_the_page_flag_brings_the_drafts_panel_and_the_scripts_to_every_composer_page():
+    default = (TEMPLATES / "default.html").read_text(encoding="utf-8")
+    assert '{% if v and composer_drafts %}{% include "partials/drafts_ui.html" %}{% endif %}' in default
+    for script in ("post_editor.js", "post_drafts.js", "composer_card.js"):
+        assert f"asset_url('js/{script}')" in default, script
+    for page in ("home.html", "composer_panel.html"):
+        assert "{% set composer_drafts = true %}" in (TEMPLATES / page).read_text(encoding="utf-8"), page
+    assert BOARD.startswith('{% extends "home.html" %}')     # a guild page gets the flag through home.html

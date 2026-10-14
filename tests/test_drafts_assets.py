@@ -48,10 +48,33 @@ def test_the_scheduler_submits_through_the_real_route():
 
 
 def test_every_element_the_script_uses_exists_in_the_composer():
-    js, page = read("ruqqus", "assets", "js", "post_drafts.js"), read("ruqqus", "templates", "submit.html")
+    js = read("ruqqus", "assets", "js", "post_drafts.js")
+    full = read("ruqqus", "templates", "submit.html") + read("ruqqus", "templates", "partials", "drafts_ui.html")
+    inline = read("ruqqus", "templates", "partials", "inline_composer.html") + read("ruqqus", "templates", "partials", "drafts_ui.html")
     ids = set(re.findall(r"\bel\('([\w-]+)'\)", js)) | set(re.findall(r"getElementById\('([\w-]+)'\)", js))
-    missing = sorted(i for i in ids if f'id="{i}"' not in page)
-    assert not missing, f"post_drafts.js uses ids that submit.html does not have: {missing}"
+    ids.discard("draft-banner")      # made by the script
+    # the script serves two forms: the full editor and the feed composer; the one id that names which is the other's
+    for page, name, other in ((full, "submit.html", "inline-composer"), (inline, "inline_composer.html", "submitform")):
+        missing = sorted(i for i in ids - {other} if f'id="{i}"' not in page)
+        assert not missing, f"post_drafts.js uses ids that {name} does not have: {missing}"
+
+
+def test_the_script_reads_the_fields_by_name_so_both_composers_are_served():
+    js = read("ruqqus", "assets", "js", "post_drafts.js")
+    assert "document.getElementById('submitform') || document.getElementById('inline-composer')" in js
+    for name in ("title", "url", "body"):
+        assert f"named('{name}')" in js
+    # no id of the full editor's fields is read any more
+    for gone in ("el('post-title')", "el('post-URL')", "el('post-body')", "el('sensitiveCheck')", "el('file-upload')"):
+        assert gone not in js, gone
+    # the feed composer is not a page of its own: no /submit?draft= in its address bar
+    assert "if (!inline) {" in js
+
+
+def test_a_draft_never_comes_from_a_circle_guild_composer():
+    inline = read("ruqqus", "templates", "partials", "inline_composer.html")
+    assert inline.count("{% if not circle_guild %}") >= 3
+    assert 'id="save-draft"' in inline.split("{% if not circle_guild %}")[-1]
 
 
 def test_the_script_sends_the_fields_the_server_reads():

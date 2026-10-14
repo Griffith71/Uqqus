@@ -1,0 +1,30 @@
+{#
+  The schedule panel and the Drafts list that assets/js/post_drafts.js drives. Included by the full editor
+  (submit.html) and, on a page that shows the feed composer or the Create post panel, by default.html
+  (`composer_drafts` is set by home.html, board.html and composer_panel.html). One composer per document:
+  the ids are the same in both.
+#}
+<div id="schedule-panel" class="schedule-panel card d-none" role="dialog" aria-label="Schedule this post">
+    <div class="card-body">
+        <label for="schedule-at" class="font-weight-bold mb-1">Publish on</label>
+        <input type="datetime-local" id="schedule-at" class="form-control">
+        <small class="text-muted d-block mt-1" id="schedule-hint"></small>
+        <div id="schedule-error" class="text-danger text-small mt-1" role="alert"></div>
+        <div class="d-flex justify-content-end mt-2">
+            <button type="button" class="btn btn-link text-muted" id="schedule-cancel">Cancel</button>
+            <button type="button" class="btn btn-primary ml-2" id="schedule-confirm">Schedule post</button>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="draftsModal" tabindex="-1" role="dialog" aria-labelledby="draftsModalTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="draftsModalTitle">Drafts and scheduled posts</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            </div>
+            <div class="modal-body" id="drafts-list"><p class="text-muted mb-0">Loading...</p></div>
+        </div>
+    </div>
+</div>

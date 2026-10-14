@@ -1,18 +1,25 @@
 /*
- * Save draft, Schedule and the Drafts list on Create a post.
+ * Save draft, Schedule and the Drafts list on Create a post, and in the feed composer and the
+ * Create post panel (`#inline-composer`, templates/partials/inline_composer.html).
  *
  * A draft is the composer's title, link, text, guilds and options, saved on the
  * server (POST /api/drafts). Scheduling saves it with a publish time; the
  * scheduler (scripts/publish_scheduled.py) posts it then. Times are shown and
  * picked in the browser's time zone and sent as UTC epoch seconds.
  * Uploaded images are not kept in drafts.
+ *
+ * Both composers are read BY FIELD NAME inside their own form (title, url, body, forward_guilds,
+ * comment_permission, audience, ...), so a new option needs its name in `collect()` once.
+ * A Circle guild composer has no draft controls (a draft keeps no `circle_guild`).
  */
 (function () {
   'use strict';
 
-  var form = document.getElementById('submitform');
+  var form = document.getElementById('submitform') || document.getElementById('inline-composer');
   var saveButton = document.getElementById('save-draft');
   if (!form || !saveButton) return;
+  var inline = form.id === 'inline-composer';      // the feed composer: no page of its own to reopen a draft on
+  var named = function (name) { return form.querySelector('[name="' + name + '"]'); };
 
   var MIN_LEAD_MINUTES = 6;      // the server needs 5; leave room for the click
   var MAX_LEAD_DAYS = 365;
@@ -55,11 +62,12 @@
   function collect(publishUtc) {
     var data = new FormData();
     data.append('formkey', formkey());
-    data.append('title', el('post-title').value);
-    data.append('url', el('post-URL').value);
-    var body = el('post-body');
+    data.append('title', named('title').value);
+    var url = named('url');
+    data.append('url', url ? url.value : '');
+    var body = named('body');
     data.append('body', body ? body.value : '');
-    Array.prototype.forEach.call(form.querySelectorAll('#forward_guild_inputs input[name="forward_guilds"]'), function (i) {
+    Array.prototype.forEach.call(form.querySelectorAll('input[name="forward_guilds"]'), function (i) {
       data.append('forward_guilds', i.value);
     });
     var permission = form.querySelector('input[name="comment_permission"]:checked');
@@ -76,7 +84,7 @@
     });
     var pollHours = form.querySelector('select[name="poll_hours"]');
     if (pollHours && !pollHours.disabled) data.append('poll_hours', pollHours.value);
-    var sensitive = el('sensitiveCheck');
+    var sensitive = form.querySelector('input[type="checkbox"][name="sensitive"]');
     if (sensitive && sensitive.checked) data.append('sensitive', 'true');
     if (idField.value) data.append('draft_id', idField.value);
     if (publishUtc) data.append('publish_utc', String(publishUtc));
@@ -89,8 +97,10 @@
     return request('/api/drafts', collect(publishUtc)).then(function (res) {
       if (!res.ok) { say(res.data.error || 'Could not save the draft.', true); return null; }
       idField.value = res.data.id;
-      // a reload (or the back button) reopens this draft
-      try { history.replaceState(null, '', '/submit?draft=' + res.data.id); } catch (err) { /* not important */ }
+      // a reload (or the back button) reopens this draft (the feed composer has no page to reopen it on)
+      if (!inline) {
+        try { history.replaceState(null, '', '/submit?draft=' + res.data.id); } catch (err) { /* not important */ }
+      }
       refreshCount();
       return res.data;
     }).catch(function () { say('Could not save the draft. Check your connection.', true); return null; });
@@ -101,15 +111,16 @@
     if (!banner) {
       banner = document.createElement('div');
       banner.id = 'draft-banner';
-      form.querySelector('.body').insertBefore(banner, form.querySelector('.body').firstChild);
+      var host = form.querySelector('.body') || form.querySelector('.ic-main');
+      host.insertBefore(banner, host.firstChild);
     }
     banner.className = 'alert ' + (kind === 'scheduled' ? 'alert-info' : 'alert-light border') + ' text-small py-2';
     banner.textContent = text;
   }
 
   saveButton.addEventListener('click', function () {
-    var file = el('file-upload');
-    var media = el('post-media');      // a picture already uploaded to linked storage
+    var file = form.querySelector('input[type="file"][name="file"]');
+    var media = form.querySelector('input[name="media"]');      // a picture already uploaded to linked storage
     var hasFile = (file && file.files && file.files.length) || (media && media.value);
     save(null).then(function (data) {
       if (!data) return;
@@ -154,7 +165,7 @@
     var when = new Date(scheduleInput.value);
     if (!scheduleInput.value || isNaN(when.getTime())) { scheduleError.textContent = 'Pick a date and time.'; return; }
     var epoch = Math.floor(when.getTime() / 1000);
-    if (!el('post-title').value.trim()) { scheduleError.textContent = 'A scheduled post needs a title.'; return; }
+    if (!named('title').value.trim()) { scheduleError.textContent = 'A scheduled post needs a title.'; return; }
     scheduleError.textContent = '';
     save(epoch).then(function (data) {
       if (!data) {
@@ -235,7 +246,9 @@
           if (!res.ok) return;
           if (String(draft.id) === idField.value) {
             idField.value = '';
-            try { history.replaceState(null, '', '/submit'); } catch (err) { /* not important */ }
+            if (!inline) {
+              try { history.replaceState(null, '', '/submit'); } catch (err) { /* not important */ }
+            }
             var banner = el('draft-banner');
             if (banner) banner.parentNode.removeChild(banner);
           }
@@ -274,5 +287,6 @@
   });
 
   refreshCount();
-  if (typeof checkForRequired === 'function') checkForRequired();   // a reopened draft already has a title
+  // a reopened draft already has a title (the full editor's own Post button logic)
+  if (!inline && typeof checkForRequired === 'function') checkForRequired();
 })();
