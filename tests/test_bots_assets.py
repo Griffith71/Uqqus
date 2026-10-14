@@ -163,3 +163,31 @@ def test_claude_md_describes_bot_accounts():
     for part in ("helpers/bots.py", "bot_store", "run_bots.py", "feed_fetch", "defusedxml", "Automated by @owner",
                  "/admin/bots", "loopback_for", "BOTS_ENABLED"):
         assert part in section, part
+
+
+# --- bot keys (the owner's own script, e.g. for X) ------------------------------------------------------------
+
+def test_a_bot_key_is_a_grant_for_the_bot_through_one_of_the_owners_own_apps():
+    create = func(ROUTES, "settings_bot_create_key")
+    assert "account, row = _owned(name, v)" in create
+    assert "row.status not in (bots.APPROVED, bots.PAUSED)" in create
+    assert "len(_keys_of(account.id)) >= bots.MAX_KEYS" in create
+    assert "filter_by(id=int(raw), author_id=v.id, is_banned=False)" in create      # never another member's app
+    assert "user_id=account.id, refresh_token=refresh" in create and "oauth_code=None" in create
+    assert 'page.headers["Cache-Control"] = "no-store"' in create                    # the key is shown once
+    scopes = ROUTES.split("KEY_SCOPES = dict(")[1].split(")")[0]
+    assert "scope_vote=False" in scopes and "scope_guildmaster=False" in scopes and "scope_create=True" in scopes
+
+
+def test_a_key_is_revoked_only_from_its_own_bot_and_goes_with_the_bot():
+    revoke = func(ROUTES, "settings_bot_revoke_key")
+    assert "filter_by(id=key_id, user_id=account.id)" in revoke and "abort(404)" in revoke
+    assert "for key in _keys_of(account.id):" in func(ROUTES, "settings_bot_delete")
+
+
+def test_the_help_page_says_how_to_use_a_key_and_why_x_goes_this_way():
+    helpage = read("ruqqus", "templates", "help", "bots.html")
+    assert '<h2 id="keys">' in helpage and "POST /oauth/grant" in helpage and "POST /api/v1/submit" in helpage
+    assert "grant_type=refresh" in helpage and "X" in helpage and "embed" in helpage
+    assert "bot_rules.MAX_KEYS" in helpage
+    assert "Leave it empty for a bot that only posts from your own script" in read("ruqqus", "templates", "settings_bots.html")

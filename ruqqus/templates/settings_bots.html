@@ -71,9 +71,10 @@
         <div class="d-lg-flex border-top">
           <div class="title w-lg-25"><label for="bot-sources">Feeds</label></div>
           <div class="body w-lg-100">
-            <textarea class="form-control" id="bot-sources" name="sources" rows="3" required spellcheck="false" autocomplete="off"
+            <textarea class="form-control" id="bot-sources" name="sources" rows="3" spellcheck="false" autocomplete="off"
                       placeholder="https://feeds.bbci.co.uk/news/technology/rss.xml"></textarea>
-            <span class="d-block mt-1 text-small-extra text-muted">One address a line, up to {{ rules.MAX_SOURCES }}. Each is read once now to check it is a feed.</span>
+            <span class="d-block mt-1 text-small-extra text-muted">One address a line, up to {{ rules.MAX_SOURCES }}. Each is read once now to check it is a feed.
+              Leave it empty for a bot that only posts from your own script with a bot key (for X, which has no feeds).</span>
           </div>
         </div>
         <div class="d-lg-flex border-top">

@@ -67,6 +67,51 @@
       </form>
       {% endif %}
 
+      {% if bot.status in ('approved', 'paused') %}
+      <h3 class="h6 mt-5" id="bot-keys">Bot keys</h3>
+      <p class="text-small text-muted">
+        For posting from your own script, for example for X, which has no feeds: use your own X access and post each
+        tweet's link; the site shows it as X's own embed. A key works through one of your apps
+        (<a href="/settings/apps">Settings &gt; Apps</a>) and may post, edit and delete the bot's posts, never vote or comment.
+        Every bot rule applies, {{ rules.DAILY_CAP }} posts a day included. <a href="/help/bots#keys">How to use a key</a>
+      </p>
+      {% if new_key %}
+      <div class="alert alert-warning text-break" role="status" id="bot-new-key">
+        <div class="font-weight-bold mb-1">Your new key. Copy it now: it is not shown again.</div>
+        <code class="d-block mb-2">{{ new_key.refresh_token }}</code>
+        <div class="text-small">It works through your app <strong>{{ new_key.app_name }}</strong> (client id <code>{{ new_key.client_id }}</code>).
+          Trade it for an access token with <code>POST /oauth/grant</code>: <code>grant_type=refresh</code>, <code>refresh_token</code>,
+          and the app's <code>client_id</code> and <code>client_secret</code>.</div>
+      </div>
+      {% endif %}
+      <div class="settings-section rounded" id="bot-key-list">
+        {% for key in keys %}
+        <div class="d-flex justify-content-between align-items-center flex-wrap py-2{% if not loop.first %} border-top{% endif %} bot-key">
+          <span>Key {{ loop.index }} &middot; through <strong>{{ key.application.app_name }}</strong></span>
+          <form action="/settings/bots/{{ account.username }}/keys/{{ key.id }}/revoke" method="post" class="d-inline">
+            <input type="hidden" name="formkey" value="{{ v.formkey }}"><button class="btn btn-link btn-sm text-danger">Revoke</button>
+          </form>
+        </div>
+        {% else %}
+        <p class="text-muted mb-0">No keys.</p>
+        {% endfor %}
+      </div>
+      {% if keys | length < rules.MAX_KEYS %}
+        {% if apps %}
+        <form action="/settings/bots/{{ account.username }}/keys/create" method="post" class="mt-2 d-flex align-items-center flex-wrap" id="bot-key-create">
+          <input type="hidden" name="formkey" value="{{ v.formkey }}">
+          <label for="bot-key-app" class="text-small font-weight-bold mb-0 mr-2">Through the app</label>
+          <select class="form-control form-control-sm w-auto mr-2" id="bot-key-app" name="app">
+            {% for a in apps %}<option value="{{ a.id }}">{{ a.app_name }}</option>{% endfor %}
+          </select>
+          <button type="submit" class="btn btn-primary btn-sm">Create a key</button>
+        </form>
+        {% else %}
+        <p class="text-small text-muted mt-2">Make an app first in <a href="/settings/apps">Settings &gt; Apps</a>; a key works through it.</p>
+        {% endif %}
+      {% endif %}
+      {% endif %}
+
       <h3 class="h6 mt-5">Profile and guilds</h3>
       <form action="/settings/bots/{{ account.username }}/profile" method="post" class="settings-section rounded" id="bot-profile">
         <input type="hidden" name="formkey" value="{{ v.formkey }}">

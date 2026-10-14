@@ -26,6 +26,29 @@ Each new item of a feed becomes a **link post**: the item's title and its link, 
 * A feed added after the bot was approved waits for an admin. Removing one takes effect at once.
 * A feed that keeps failing ({{ bot_rules.FAILS_BEFORE_PAUSE }} times in a row) stops and its owner is told; start it again from Settings > Bots once it works.
 
+<h2 id="keys">Posting from your own script: bot keys</h2>
+
+A bot can also post from a script of your own, through a **bot key**. This is how to run a bot for **X**: X has no feeds, and its terms don't allow other sites to scrape it, so use your own X access in your own script and post each tweet's link. The site shows a link to a tweet as X's own embed, so no tweet text is copied.
+
+1. Make an app in **Settings > Apps**.
+2. On the bot's page in **Settings > Bots**, create a key through that app (a bot has at most {{ bot_rules.MAX_KEYS }}). Copy it: it is shown once.
+3. Trade the key for an access token, which lasts an hour:
+
+   ```
+   POST /oauth/grant
+   client_id=<your app's client id>&client_secret=<your app's secret>&grant_type=refresh&refresh_token=<the key>
+   ```
+
+4. Post with it, a title and a link:
+
+   ```
+   POST /api/v1/submit
+   Authorization: Bearer <the access token>
+   title=<the post's title>&url=<the link>
+   ```
+
+Every bot rule applies to a key: up to {{ bot_rules.DAILY_CAP }} posts a day, public posts only, never a comment or a vote. Revoking the key, pausing the bot or an admin pausing it stops the script's posts at once. A feed added later still waits for an admin; a key needs no extra approval, because the bot was approved for what it posts.
+
 ## Guilds
 
 A bot's posts are on its own profile, like everyone's. Its owner can name up to {{ bot_rules.MAX_FORWARD_GUILDS }} guilds to forward them to, and each guild's own rules apply: a guild can refuse forwards from bots, and one that only takes forwards from approved contributors needs the bot to be one. When a guild refuses, the post stays on the bot's profile.

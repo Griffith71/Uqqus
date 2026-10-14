@@ -6,12 +6,13 @@ name that is not a bot, is a 404); admins (level 3) decide on applications and s
 owner is told of every decision by a notification.
 """
 import html
+import secrets
 import time
 
-from flask import abort, g, redirect, render_template, request
+from flask import abort, g, make_response, redirect, render_template, request
 from urllib.parse import quote
 
-from ruqqus.classes import User
+from ruqqus.classes import ClientAuth, OauthApp, User
 from ruqqus.helpers import bot_store, bots, feed_fetch, feed_items
 from ruqqus.helpers.alerts import send_notification
 from ruqqus.helpers.get import get_user
@@ -93,9 +94,8 @@ def settings_bots_apply(v):
     error = error or purpose_error
     if not error and get_user(name, graceful=True):
         error = "That name is taken."
+    # feeds are optional: a bot that posts from its owner's own script (a bot key, e.g. for X) has none
     lines = [line for line in (request.form.get("sources") or "").splitlines() if line.strip()]
-    if not error and not lines:
-        error = "Give the bot at least one feed to read."
     if not error and len(lines) > bots.MAX_SOURCES:
         error = f"A bot can read at most {bots.MAX_SOURCES} feeds."
     urls, titles = [], []
@@ -129,14 +129,74 @@ def settings_bots_apply(v):
     return _back(f"/settings/bots/{name}", msg="Thanks. An admin will look at your bot soon; you will get a notification.")
 
 
+def _keys_of(bot_id):
+    """A bot's keys: the OAuth grants made for the bot account (the owner's script uses one)."""
+    return g.db.query(ClientAuth).filter_by(user_id=bot_id).order_by(ClientAuth.id).all()
+
+
+def _bot_page(account, row, v, **extra):
+    return render_template("settings_bot.html", v=v, bot=row, account=account, rules=bots,
+                           sources=bot_store.sources_of(g.db, account.id), guilds=bot_store.guilds_of(row),
+                           posts_today=bot_store.posts_today(g.db, account.id, bots.utc_day()),
+                           keys=_keys_of(account.id),
+                           apps=g.db.query(OauthApp).filter_by(author_id=v.id, is_banned=False).all(),
+                           msg=request.args.get("msg"), error=request.args.get("error"), **extra)
+
+
 @app.get("/settings/bots/<name>")
 @auth_required
 def settings_bot(name, v):
     account, row = _owned(name, v)
-    return render_template("settings_bot.html", v=v, bot=row, account=account, rules=bots,
-                           sources=bot_store.sources_of(g.db, account.id), guilds=bot_store.guilds_of(row),
-                           posts_today=bot_store.posts_today(g.db, account.id, bots.utc_day()),
-                           msg=request.args.get("msg"), error=request.args.get("error"))
+    return _bot_page(account, row, v)
+
+
+# --- bot keys: the owner's own script posts as the bot (e.g. for X, which has no free feed) -------------------
+
+# what a bot key may do: post, read, edit and delete the bot's own posts. Never vote, and never act as a guildmaster.
+KEY_SCOPES = dict(scope_identity=True, scope_read=True, scope_create=True, scope_update=True, scope_delete=True,
+                  scope_vote=False, scope_guildmaster=False)
+
+
+@app.post("/settings/bots/<name>/keys/create")
+@is_not_banned
+@validate_formkey
+def settings_bot_create_key(name, v):
+    """A key for the bot account, made through one of the owner's own apps (Settings > Apps): a grant with a refresh
+    token, shown this once. The script trades it for an hour's access token at POST /oauth/grant (grant_type=refresh)
+    and posts through the API like any app; every bot rule in submit_post applies."""
+    account, row = _owned(name, v)
+    back = f"/settings/bots/{account.username}"
+    if row.status not in (bots.APPROVED, bots.PAUSED):
+        return _back(back, error="A bot gets keys once an admin has approved it.")
+    if len(_keys_of(account.id)) >= bots.MAX_KEYS:
+        return _back(back, error=f"A bot can have at most {bots.MAX_KEYS} keys. Revoke one first.")
+    raw = request.form.get("app", "")
+    owned_app = None
+    if raw.isascii() and raw.isdigit():
+        owned_app = g.db.query(OauthApp).filter_by(id=int(raw), author_id=v.id, is_banned=False).first()
+    if owned_app is None:
+        return _back(back, error="Choose one of your own apps (Settings > Apps).")
+    refresh = secrets.token_urlsafe(128)[0:128]
+    g.db.add(ClientAuth(oauth_client=owned_app.id, oauth_code=None, user_id=account.id, refresh_token=refresh,
+                        access_token=None, access_token_expire_utc=0, **KEY_SCOPES))
+    g.db.commit()
+    page = make_response(_bot_page(account, row, v, new_key={"refresh_token": refresh, "client_id": owned_app.client_id,
+                                                             "app_name": owned_app.app_name}))
+    page.headers["Cache-Control"] = "no-store"
+    return page
+
+
+@app.post("/settings/bots/<name>/keys/<int:key_id>/revoke")
+@auth_required
+@validate_formkey
+def settings_bot_revoke_key(name, key_id, v):
+    account, row = _owned(name, v)
+    key = g.db.query(ClientAuth).filter_by(id=key_id, user_id=account.id).first()
+    if key is None:
+        abort(404)
+    g.db.delete(key)
+    g.db.commit()
+    return _back(f"/settings/bots/{account.username}", msg="Revoked. A script using that key can't post any more.")
 
 
 @app.post("/settings/bots/<name>/sources/add")
@@ -235,6 +295,8 @@ def settings_bot_delete(name, v):
     """The bot stops for good. Its posts stay, under a deactivated account, like any account's."""
     account, row = _owned(name, v)
     bot_store.forget_bot(g.db, account.id)
+    for key in _keys_of(account.id):                # its keys stop working too
+        g.db.delete(key)
     account.is_deleted = True
     g.db.add(account)
     g.db.commit()
