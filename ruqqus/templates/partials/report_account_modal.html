@@ -1,0 +1,28 @@
+{#
+  "Report @name": the sheet a signed-in member opens from a profile's "⋯" menu (assets/js/profile_actions.js,
+  POST /api/user/<name>/report, helpers/user_reports.py). Admins see the reports at /admin/user_reports; nobody tells
+  the account who reported it.
+#}
+<div class="modal fade" id="reportAccountModal" tabindex="-1" role="dialog" aria-labelledby="reportAccountTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <form id="report-account-form">
+        <div class="modal-header">
+          <h5 class="modal-title" id="reportAccountTitle">Report <span id="report-account-name"></span></h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true"><i class="fas fa-times"></i></span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <label for="report-account-reason" class="text-small text-muted">What is wrong with this account? For example spam, impersonation, harassment or ban evasion. To report one post or comment, use its own menu.</label>
+          <textarea id="report-account-reason" class="form-control" rows="3" maxlength="200" required></textarea>
+          <div id="report-account-status" class="text-small text-danger mt-2" role="status" aria-live="polite"></div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-link text-muted" data-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn btn-danger" id="report-account-send">Send report</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

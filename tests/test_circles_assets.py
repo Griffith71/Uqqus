@@ -135,19 +135,19 @@ def test_the_job_runs_as_its_own_supervisord_program():
 def test_the_settings_tab_is_in_both_navs_and_the_pages_draw_nothing_as_html():
     nav = read("ruqqus", "templates", "settings.html")
     assert nav.count('href="/settings/circle"') == 2
-    for name in ("settings_circle.html", "settings_circles.html", "partials/circle_buttons.html"):
+    for name in ("settings_circle.html", "settings_circles.html"):
         html = read("ruqqus", "templates", *name.split("/"))
         assert "| safe" not in html, name
         assert "formkey" not in html, name                      # post_toast adds it
 
 
-def test_the_profile_shows_the_buttons_in_both_blocks_and_the_global_is_registered():
-    page = read("ruqqus", "templates", "userpage.html")
-    assert '{% from "partials/circle_buttons.html" import circle_buttons %}' in page
-    assert "{{ circle_buttons(u, v) }}" in page and "{{ circle_buttons(u, v, small=True) }}" in page
+def test_the_profile_shows_the_buttons_and_the_global_is_registered():
+    # the profile header (one layout for every width): Subscribe in the actions, Close Friends in the "⋯" menu
+    header = read("ruqqus", "templates", "partials", "profile_header.html")
+    assert '{% include "partials/profile_header.html" %}' in read("ruqqus", "templates", "userpage.html")
+    assert "{% set st = circle_status(u, v) %}" in header
     assert "app.jinja_env.globals.update(circle_status=circle_status)" in ROUTES
-    macro = read("ruqqus", "templates", "partials", "circle_buttons.html")
-    assert "circle-join" in macro and "circle-friend-add" in macro and "circle-friend-remove" in macro
+    assert "circle-join" in header and "circle-friend-add" in header and "circle-friend-remove" in header
     # a visitor and the owner of the profile get nothing
     assert "if viewer is None or viewer.id == owner.id:\n        return None" in ROUTES
 

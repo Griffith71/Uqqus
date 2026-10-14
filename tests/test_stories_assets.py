@@ -233,9 +233,11 @@ def test_the_sheets_hold_nothing_a_member_wrote():
 
 
 def test_the_profile_draws_the_ring_and_the_highlights_for_the_desktop_and_the_phone():
-    assert 'from "partials/story_bits.html" import story_avatar, highlights_row' in USERPAGE
-    assert "{% set story_ui = true %}" in USERPAGE
-    assert USERPAGE.count("story_avatar(u, v,") == 2 and USERPAGE.count("highlights_row(u, v)") == 2
+    # one header for every width (partials/profile_header.html)
+    header = read("ruqqus", "templates", "partials", "profile_header.html")
+    assert 'from "partials/story_bits.html" import story_avatar, highlights_row' in header
+    assert "{% set story_ui = true %}" in USERPAGE and '{% include "partials/profile_header.html" %}' in USERPAGE
+    assert header.count("story_avatar(u, v,") == 1 and header.count("highlights_row(u, v)") == 1
     assert "story_ring(u, v)" in BITS and "profile_highlights(u, v)" in BITS
     assert "data-story-add" in BITS and "data-highlight-new" in BITS and "{{ h.title }}" in BITS
     assert "if ring %} data-story-user=" in BITS and 'role="button"' in BITS      # only a ring can be clicked, and the button is the picture

@@ -1,4 +1,4 @@
-"""A profile's right sidebar: the About box at the top (age, Rep and its counts, badges, guilds led), then the shared
+"""A profile's right sidebar: the About box at the top (Rep and its counts, badges, guilds led), then the shared
 part with Similar accounts in place of Who to follow, the account's public curations in place of the Guilds / Create
 Guild box, and no Support. It reads the same to the owner as to anyone else. Other pages are unchanged."""
 import re
@@ -27,8 +27,7 @@ def test_the_profile_sidebar_is_about_then_the_shared_part():
 
 def test_the_about_box_shows_what_was_asked_through_the_rules():
     about = (TEMPLATES / "partials" / "profile_about.html").read_text(encoding="utf-8")
-    for needle in ("account_age(u)", "u.created_date", "u.rep_class", "u.rep_label", "u.true_score",
-                   "profile_guilds(u, v)", "Achievements"):
+    for needle in ("u.rep_class", "u.rep_label", "u.true_score", "profile_guilds(u, v)", "Achievements"):
         assert needle in about, needle
     assert "profile_curations(" not in about        # curations have their own box
     assert about.count("u.badges") == 1          # the property commits: read it once

@@ -58,7 +58,8 @@ def test_the_sheet_is_offered_to_members_outside_the_frames_and_draws_text_only(
     assert '{% if v and not request.args.get(\'embed\') %}{% include "partials/curation_picker_modal.html" %}{% endif %}' in DEFAULT
     assert "asset_url('js/curation_picker.js')" in DEFAULT
     assert "innerHTML" not in JS
-    assert "/^[0-9a-z]{1,10}$/.test(id)" in JS and "closest('[data-curation-post]')" in JS
+    assert "/^[0-9a-z]{1,10}$/.test(id)" in JS and "closest('[data-curation-post], [data-curation-user]')" in JS
+    assert "/^[A-Za-z0-9_]{3,25}$/.test(name)" in JS          # an account from a profile's menu: a username only
     assert 'id="curationPickerModal"' in MODAL
 
 

@@ -1,22 +1,8 @@
-"""A profile's About box (ruqqus/helpers/profile_about.py): the age text, which guilds are listed with which role,
+"""A profile's About box (ruqqus/helpers/profile_about.py): which guilds are listed with which role,
 and which curations are listed (public ones only, whoever looks, and never a name the viewer's filter hides)."""
 from types import SimpleNamespace as NS
 
-from ruqqus.helpers.profile_about import CURATIONS_SHOWN, age_text, guild_roles, shown_curations
-
-DAY = 86400
-NOW = 1_800_000_000
-
-
-def test_age_text_uses_the_largest_whole_unit():
-    assert age_text(NOW, NOW) == "today"
-    assert age_text(NOW - DAY, NOW) == "1 day"
-    assert age_text(NOW - 29 * DAY, NOW) == "29 days"
-    assert age_text(NOW - 30 * DAY, NOW) == "1 month"
-    assert age_text(NOW - 200 * DAY, NOW) == "6 months"
-    assert age_text(NOW - 365 * DAY, NOW) == "1 year"
-    assert age_text(NOW - 800 * DAY, NOW) == "2 years"
-    assert age_text(NOW + DAY, NOW) == "today"            # a clock in the future never reads as negative
+from ruqqus.helpers.profile_about import CURATIONS_SHOWN, guild_roles, shown_curations
 
 
 def guild(id, creator_id, private=False):

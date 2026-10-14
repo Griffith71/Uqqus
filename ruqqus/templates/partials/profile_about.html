@@ -1,6 +1,6 @@
 {#
-  "About @name" at the top of a profile's right sidebar: how long the account has existed, its Rep with the counts
-  behind it, its badges and the guilds it leads. Rules in helpers/profile_about.py: the box reads the same to the
+  "About @name" at the top of a profile's right sidebar: its Rep with the counts behind it, its badges and the guilds
+  it leads (the joined date is in the profile header, partials/profile_header.html). Rules in helpers/profile_about.py: the box reads the same to the
   owner as to anyone else, so only guilds a visitor could see are listed. Its public curations have a box of their
   own (partials/profile_curations.html).
 #}
@@ -10,11 +10,6 @@
   <div class="title"><i class="fas fa-id-card mr-2"></i>About @{{ u.username }}</div>
   <div class="body">
     <dl class="profile-about-facts mb-0">
-      <div class="profile-about-fact">
-        <dt>Joined</dt>
-        <dd>{{ u.created_date }}
-          <span class="d-block text-muted text-small">{{ account_age(u) }}</span></dd>
-      </div>
       <div class="profile-about-fact">
         <dt>Rep</dt>
         <dd><span class="rep-count {{ u.rep_class }}" title="{{ u.rep_label }}">{{ u.true_score }}</span>

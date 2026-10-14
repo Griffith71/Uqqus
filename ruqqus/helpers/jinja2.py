@@ -35,12 +35,6 @@ def ratio_class_global(ups, downs):
 
 
 # The About box of a profile (partials/profile_about.html, helpers/profile_about.py)
-@app.template_global("account_age")
-def account_age(u):
-    from ruqqus.helpers.profile_about import age_text
-    return age_text(u.created_utc)
-
-
 @app.template_global("profile_guilds")
 def profile_guilds(u, v):
     from ruqqus.helpers.profile_about import guilds_for

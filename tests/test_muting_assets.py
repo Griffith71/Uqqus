@@ -125,8 +125,9 @@ def test_a_muted_comment_is_a_notice_and_the_replies_stay():
 
 
 def test_a_profile_and_the_settings_page_can_mute_and_unmute():
-    profile = read("ruqqus", "templates", "userpage.html")
-    for item in ("mute-profile", "unmute-profile", "mute-profile-mobile", "unmute-profile-mobile"):
+    # the profile header's "⋯" menu, one layout for every width
+    profile = read("ruqqus", "templates", "partials", "profile_header.html")
+    for item in ("mute-profile", "unmute-profile"):
         assert profile.count(f'id="{item}"') == 1, item
     settings = read("ruqqus", "templates", "settings_blocks.html")
     assert 'id="muted-accounts"' in settings and "{% for mute in muted %}" in settings
