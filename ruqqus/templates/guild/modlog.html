@@ -2,15 +2,6 @@
 
 {% block pagetitle %}{% if action %}(+{{ b.name }}) {{ action.title_text }}{% else %}+{{ b.name }} Moderation Log{% endif %}{% endblock %}
 
-{% block stylesheets %}
-
-{% if v and v.referral_count and session.get("dark_mode_enabled") %}
-<link id="css-link" rel="stylesheet" href="/+{{ p.board.name }}/dark.css">
-{% else %}
-<link id="css-link" rel="stylesheet" href="/+{{ p.board.name }}/main.css">
-{% endif %}
-
-{% endblock %}
 
 {% block content %}
 <div class="row justify-content-around">
@@ -29,7 +20,7 @@
     {% if show_labels %}
     <div class="d-flex flex-wrap align-items-center mb-3" id="modlog-show">
       <span class="text-small text-muted mr-2">Show:</span>
-      <div class="btn-group btn-group-sm" role="group">
+      <div class="btn-group btn-group-sm flex-wrap" role="group">
         {% for key, label in show_labels.items() %}
         <a href="?show={{ key }}" class="btn btn-sm {% if show == key %}btn-secondary{% else %}btn-link text-muted{% endif %}">{{ label }}</a>
         {% endfor %}
@@ -69,7 +60,7 @@
                <span>{{ ma.string | safe }}</span>
              </div>
 
-             <div class="text-gray-500">{{ ma.age_string }} <a href="{{ ma.permalink }}"><i class="far fa-link ml-1 text-muted"></i></a> <a href="javascript:void(0)" class="copy-link" role="button"data-clipboard-text="{{ ma.permalink | full_link }}"><i class="far fa-copy ml-1 text-muted"></i></a></div>
+             <div class="text-gray-500">{{ ma.age_string }} <a href="{{ ma.permalink }}"><i class="fas fa-link ml-1 text-muted"></i></a> <a href="javascript:void(0)" class="copy-link" role="button"data-clipboard-text="{{ ma.permalink | full_link }}"><i class="far fa-copy ml-1 text-muted"></i></a></div>
 
            </div>
          </div>

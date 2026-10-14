@@ -8,6 +8,7 @@ from ruqqus.classes.custom_errors import *
 from ruqqus.helpers import circles
 from urllib.parse import quote, urlencode
 import time
+import jinja2
 from ruqqus.__main__ import app, r, cache
 import gevent
 
@@ -34,6 +35,18 @@ def error_wrapper(f):
 
 
 
+def _viewer():
+    """The signed-in viewer for a 4xx page, so the page does not look signed out (it used to be drawn with v=None).
+    Whatever the request had changed is rolled back first: an error page writes nothing, and a session the error left
+    broken would otherwise fail the page itself. 5xx pages keep v=None: the database may be what failed."""
+    try:
+        if getattr(g, "db", None) is not None:
+            g.db.rollback()
+    except Exception:
+        return None
+    return getattr(g, "v", None)
+
+
 @app.errorhandler(401)
 @error_wrapper
 def error_401(e):
@@ -43,22 +56,22 @@ def error_401(e):
     argval = quote(f"{path}?{qs}", safe='')
     output = f"/login?redirect={argval}"
 
-    if request.path.startswith("/api/v1/"):
+    if request.path.startswith(("/api/v1/", "/api/v2/")):
         return jsonify({"error": "401 Not Authorized"}), 401
     else:
         return redirect(output)
 
 @app.errorhandler(PaymentRequired)
 @error_wrapper
-@api()
+@api(error_handler=True)
 def error_402(e):
-    return {"html": lambda: (render_template('errors/402.html', v=None), 402),
+    return {"html": lambda: (render_template('errors/402.html', v=_viewer()), 402),
             "api": lambda: (jsonify({"error": "402 Payment Required"}), 402)
             }
 
 @app.errorhandler(CircleOnly)
 @error_wrapper
-@api()
+@api(error_handler=True)
 def error_circle_only(e):
     """A post made for a Circle, asked for by someone outside it (helpers/circle_guard.py, helpers/get.py). A page
     gets a gate that names the owner and the audience and nothing of the post; everything else gets a plain 404."""
@@ -77,61 +90,61 @@ def error_circle_only(e):
 
 @app.errorhandler(403)
 @error_wrapper
-@api()
+@api(error_handler=True)
 def error_403(e):
-    return {"html": lambda: (render_template('errors/403.html', v=None), 403),
+    return {"html": lambda: (render_template('errors/403.html', v=_viewer()), 403),
             "api": lambda: (jsonify({"error": "403 Forbidden"}), 403)
             }
 
 
 @app.errorhandler(404)
 @error_wrapper
-@api()
+@api(error_handler=True)
 def error_404(e):
-    return {"html": lambda: (render_template('errors/404.html', v=None), 404),
+    return {"html": lambda: (render_template('errors/404.html', v=_viewer()), 404),
             "api": lambda: (jsonify({"error": "404 Not Found"}), 404)
             }
 
 
 @app.errorhandler(405)
 @error_wrapper
-@api()
+@api(error_handler=True)
 def error_405(e):
-    return {"html": lambda: (render_template('errors/405.html', v=None), 405),
+    return {"html": lambda: (render_template('errors/405.html', v=_viewer()), 405),
             "api": lambda: (jsonify({"error": "405 Method Not Allowed"}), 405)
             }
 
 
 @app.errorhandler(409)
 @error_wrapper
-@api()
+@api(error_handler=True)
 def error_409(e):
-    return {"html": lambda: (render_template('errors/409.html', v=None), 409),
+    return {"html": lambda: (render_template('errors/409.html', v=_viewer()), 409),
             "api": lambda: (jsonify({"error": "409 Conflict"}), 409)
             }
 
 
 @app.errorhandler(413)
 @error_wrapper
-@api()
+@api(error_handler=True)
 def error_413(e):
-    return {"html": lambda: (render_template('errors/413.html', v=None), 413),
+    return {"html": lambda: (render_template('errors/413.html', v=_viewer()), 413),
             "api": lambda: (jsonify({"error": "413 Request Payload Too Large"}), 413)
             }
 
 
 @app.errorhandler(422)
 @error_wrapper
-@api()
+@api(error_handler=True)
 def error_422(e):
-    return {"html": lambda: (render_template('errors/422.html', v=None), 422),
+    return {"html": lambda: (render_template('errors/422.html', v=_viewer()), 422),
             "api": lambda: (jsonify({"error": "422 Unprocessable Entity"}), 422)
             }
 
 
 @app.errorhandler(429)
 @error_wrapper
-@api()
+@api(error_handler=True)
 def error_429(e):
 
     ip = request.remote_addr
@@ -162,23 +175,23 @@ def error_429(e):
 
 
 
-    return {"html": lambda: (render_template('errors/429.html', v=None), 429),
+    return {"html": lambda: (render_template('errors/429.html', v=_viewer()), 429),
         "api": lambda: (jsonify({"error": "429 Too Many Requests"}), 429)
         }
 
 
 @app.errorhandler(451)
 @error_wrapper
-@api()
+@api(error_handler=True)
 def error_451(e):
-    return {"html": lambda: (render_template('errors/451.html', v=None), 451),
+    return {"html": lambda: (render_template('errors/451.html', v=_viewer()), 451),
             "api": lambda: (jsonify({"error": "451 Unavailable For Legal Reasons"}), 451)
             }
 
 
 @app.errorhandler(500)
 @error_wrapper
-@api()
+@api(error_handler=True)
 def error_500(e):
     try:
         if hasattr(g, 'db') and g.db is not None:
@@ -192,7 +205,7 @@ def error_500(e):
 
 @app.errorhandler(503)
 @error_wrapper
-@api()
+@api(error_handler=True)
 def error_503(e):
     try:
         if hasattr(g, 'db') and g.db is not None:
@@ -205,18 +218,22 @@ def error_503(e):
             }
 
 @app.route("/error/<eid>", methods=["GET"])
-@auth_desired
+@admin_level_required(3)
 def error_all_preview(eid, v):
-
-     eid=int(eid)
-     return render_template(f"errors/{eid}.html", v=v)
+    """A preview of an error page, for admins. Only a page that exists (a bad id was a 500)."""
+    if not (eid.isascii() and eid.isdigit()):
+        abort(404)
+    try:
+        return render_template(f"errors/{int(eid)}.html", v=v)
+    except jinja2.exceptions.TemplateNotFound:
+        abort(404)
 
 
 
 @app.errorhandler(DatabaseOverload)
 @error_wrapper
 @auth_desired
-@api()
+@api(error_handler=True)
 def error_402(e, v):
     return{"html": lambda: (render_template('errors/overload.html', v=v), 500),
            "api": lambda: (jsonify({"error": "500 Internal Server Error (database overload)"}), 500)

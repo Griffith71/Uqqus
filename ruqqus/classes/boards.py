@@ -8,6 +8,8 @@ from ruqqus.helpers.security import *
 from ruqqus.helpers.lazy import *
 from ruqqus.helpers.visibility import filter_posts, filter_comments, viewer_level, text_hidden
 from ruqqus.helpers.muting import hide_muted
+from ruqqus.helpers.blocks import hide_blocked
+from ruqqus.helpers import anonymity
 from ruqqus.helpers.session_helpers import *
 import ruqqus.helpers.aws as aws
 from .userblock import *
@@ -186,18 +188,8 @@ class Board(Base, Stndrd, Age_times):
                 posts = posts.filter_by(post_public=True)
 
         if v and not self.has_mod(v) and v.admin_level <= 3:
-            # blocks
-            blocking = g.db.query(
-                UserBlock.target_id).filter_by(
-                user_id=v.id).subquery()
-            # blocked = g.db.query(
-            #     UserBlock.user_id).filter_by(
-            #     target_id=v.id).subquery()
-
-            posts = posts.filter(
-                Submission.author_id.notin_(blocking) #,
-            #    Submission.author_id.notin_(blocked)
-            )
+            # blocked either way (helpers/blocks.py)
+            posts = hide_blocked(posts, v, Submission)
 
         posts = hide_muted(posts, v, Submission)
 
@@ -229,7 +221,7 @@ class Board(Base, Stndrd, Age_times):
             if v: sort = v.defaultsorting
             else: sort = "hot"
 
-        if sort != "new" and sort != "old": posts.filter_by(is_pinned=False)
+        if sort != "new" and sort != "old": posts = posts.filter_by(is_pinned=False)
 
         if sort == "hot":
             posts = posts.order_by(Submission.score_best.desc())
@@ -258,19 +250,17 @@ class Board(Base, Stndrd, Age_times):
         if self.is_banned:
             return False
 
-        m=self.__dict__.get("_mod")
-        if not m:
-            for x in user.moderates:
-                if x.board_id == self.id and x.accepted and not x.invite_rescinded:
-                    self.__dict__["mod"]=x
-                    m=x
+        m=None
+        for x in user.moderates:
+            if x.board_id == self.id and x.accepted and not x.invite_rescinded:
+                m=x
         
         if not m:
             return False
                     
         if perm:
 
-            return m if (m.perm_full or m.__dict__[f"perm_{perm}"]) else False
+            return m if (m.perm_full or m.__dict__.get(f"perm_{perm}")) else False
 
         else:
             return m
@@ -290,7 +280,7 @@ class Board(Base, Stndrd, Age_times):
             if x.board_id == self.id and not x.invite_rescinded:
                 
                 if perm:
-                    return x if x.__dict__[f"perm_{perm}"] else False
+                    return x if x.__dict__.get(f"perm_{perm}") else False
                 else:
                     return x
 
@@ -539,8 +529,9 @@ class Board(Base, Stndrd, Age_times):
                 'banner_url': self.banner_url,
                 'created_utc': self.created_utc,
                 'permalink': self.permalink,
-                'description': self.description,
-                'description_html': self.description_html,
+                # the word filter applies as on the page (description_for)
+                'description': self.description_for(anonymity.current_viewer()),
+                'description_html': self.description_html_for(anonymity.current_viewer()),
                 'is_sensitive': self.is_sensitive,
                 'is_banned': False,
                 'is_private': self.is_private,
@@ -609,14 +600,14 @@ class Board(Base, Stndrd, Age_times):
                 target_id=v.id).subquery()
 
             comments = comments.filter(
-                Comment.author_id.notin_(blocking),
-                Comment.author_id.notin_(blocked)
+                or_(Comment.author_id.notin_(blocking), Comment.is_anonymous == True),
+                or_(Comment.author_id.notin_(blocked), Comment.is_anonymous == True)
             )
 
         comments = hide_muted(comments, v, Comment)
 
-        if not v or not v.admin_level >= 3:
-            comments = comments.filter_by(is_banned=False).filter(Comment.deleted_utc == 0)
+        # removed and deleted comments belong on the logs, not here, for admins too
+        comments = comments.filter_by(is_banned=False).filter(Comment.deleted_utc == 0)
 
         comments = comments.filter(Comment.hidden_by_guild == False)
 
@@ -641,7 +632,7 @@ class Board(Base, Stndrd, Age_times):
         if not perm:
             return True
 
-        return mod.__dict__[f"perm_{perm}"]
+        return mod.__dict__.get(f"perm_{perm}", False)
 
 
     @property

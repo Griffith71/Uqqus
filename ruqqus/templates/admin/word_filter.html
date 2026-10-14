@@ -74,7 +74,7 @@
   <button class="btn btn-secondary">Copy the starter list into the table</button>
 </form>
 {% else %}
-<table class="table table-sm">
+<div class="table-responsive"><table class="table table-sm">
   <thead><tr><th>Word</th><th>Level</th><th>Match</th><th>Other spellings</th><th>Endings</th><th>Note</th><th></th></tr></thead>
   <tbody>
   {% for e in entries %}
@@ -98,7 +98,7 @@
     </tr>
   {% endfor %}
   </tbody>
-</table>
+</table></div>
 {% endif %}
 
 {% endblock %}

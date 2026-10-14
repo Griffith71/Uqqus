@@ -23,12 +23,14 @@ from flask import *
 
 from ruqqus.__main__ import app, limiter, cache
 from ruqqus.helpers.muting import hide_muted
+from ruqqus.helpers.blocks import hide_blocked
 from ruqqus.helpers import guild_limits
 from ruqqus.helpers import circle_store
 from ruqqus.helpers import deletion_log as log_rules
 
 # the templates quote the per-person cap (home sidebar, siege help) from the one place that sets it
-app.jinja_env.globals.update(GUILD_LIMIT_PER_PERSON=guild_limits.PER_PERSON)
+app.jinja_env.globals.update(GUILD_LIMIT_PER_PERSON=guild_limits.PER_PERSON,
+                              GUILD_LIMIT_PER_NETWORK=guild_limits.PER_IP)
 
 
 valid_board_regex = re.compile("^[a-zA-Z0-9][a-zA-Z0-9_]{2,24}$")
@@ -48,7 +50,7 @@ def multiboard(name, v):
 
     sort = request.args.get("sort", defaultsorting)
     t = request.args.get("t", defaulttime)
-    page = int(request.args.get("page", 1))
+    page = page_number()
 
     board_ids=[]
     
@@ -62,10 +64,11 @@ def multiboard(name, v):
     posts = g.db.query(Submission.id).options(lazyload('*')).filter_by(is_banned=False).filter(Submission.deleted_utc == 0,
                                                                                                                                                 Submission.board_id.in_(tuple(board_ids)))
     
-    if v:
-        blocking = select(UserBlock.target_id).filter_by(user_id=v.id).subquery()
-        posts = posts.filter(Submission.author_id.notin_(blocking))
+    posts = hide_blocked(posts, v, Submission)   # blocked either way (helpers/blocks.py)
     posts = hide_muted(posts, v, Submission)
+    if v:
+        # the guilds the viewer filtered out, as All does
+        posts = posts.filter(Submission.board_id.notin_(select(BoardBlock.board_id).filter_by(user_id=v.id)))
 
     posts = filter_posts(posts, v)
 
@@ -241,12 +244,15 @@ Optional form data:
                                message="You can only create up to 2 guilds per day. Try again later."
                                ), 429
 
-    subcat=int(request.form.get("category",0))
+    raw_category = (request.form.get("category") or "").strip()     # the form's placeholder is ""
+    subcat = int(raw_category) if raw_category.isascii() and raw_category.isdigit() else 0
     subcat=g.db.query(SubCategory).filter_by(id=subcat).first()
     if not subcat:
-        return render_template("message.html",
-                               title="Category required.",
-                               message="You need to select a category."
+        # the form again, with what was typed, rather than a dead-end page
+        return render_template("make_board.html",
+                               v=v,
+                               error="Choose a category for the guild.",
+                               description=description
                                ), 400
 
 
@@ -355,7 +361,7 @@ Optional query parameters:
 
     sort = request.args.get("sort", defaultsorting)
     t = request.args.get("t", defaulttime)
-    page = int(request.args.get("page", 1))
+    page = page_number()
     ignore_pinned = bool(request.args.get("ignore_pinned", False))
 
     ids = board.idlist(sort=sort,
@@ -374,7 +380,10 @@ Optional query parameters:
         stickies = g.db.query(Submission.id).filter_by(board_id=board.id,
                                                     is_banned=False,
                                                     is_pinned=True,
-                                                    deleted_utc=0).order_by(Submission.id.asc()).limit(4)
+                                                    deleted_utc=0)
+        # a pinned post follows the viewer's word filter, mutes and blocks like the rest of the feed
+        stickies = hide_blocked(hide_muted(filter_posts(stickies, v), v, Submission), v, Submission)
+        stickies = stickies.order_by(Submission.id.asc()).limit(4)
         stickies = [x[0] for x in stickies]
         ids = stickies + ids
 
@@ -404,6 +413,7 @@ Optional query parameters:
 @auth_required
 @is_guildmaster("content")
 @api("guildmaster")
+@validate_formkey
 def mod_distinguish_post(guildname, pid, board, v):
 
     """
@@ -450,6 +460,7 @@ URL path parameters:
 @auth_required
 @is_guildmaster('content')
 @api("guildmaster")
+@validate_formkey
 def mod_distinguish_comment(guildname, cid, board, v):
     """
 Toggle Herald status on your comment.
@@ -554,10 +565,12 @@ Required form data:
     g.db.add(ma)
     g.db.commit()
 
+    # the card a guild's feed draws (b: no guild name on it), so it can replace the old one in place
     return jsonify({
         'data':render_template(
             "submission_listing.html",
             v=v,
+            b=board,
             listing=[post])
         })
 
@@ -603,10 +616,12 @@ URL path parameters:
     g.db.add(ma)
     g.db.commit()
 
+    # the card a guild's feed draws (b: no guild name on it), so it can replace the old one in place
     return jsonify({
         'data':render_template(
             "submission_listing.html",
             v=v,
+            b=board,
             listing=[post])
         })
 
@@ -681,6 +696,14 @@ Optional form data:
 
     if not user or user.is_deleted:
         return jsonify({"error": "That user doesn't exist."}), 404
+
+    if item:
+        if item.is_anonymous:
+            # the public mod log would pair the user with the anonymous item: exile without it, whoever wrote it
+            # (a different answer for "not theirs" would itself tell who did)
+            item = None
+        elif item.author_id != user.id:
+            return jsonify({"error": f"That isn't @{user.username}'s."}), 400
 
     if user.id == v.id:
         return jsonify({"error": "You can't exile yourself."}), 409
@@ -988,6 +1011,9 @@ def mod_remove_username(bid, username, board, v):
     if v_mod.id > u_mod.id:
         abort(403)
 
+    if user.id == v.id:
+        return jsonify({"error": "To leave the guild's guildmasters, use Step down."}), 409
+
     g.db.delete(u_mod)
 
     ma=ModAction(
@@ -997,6 +1023,14 @@ def mod_remove_username(bid, username, board, v):
         board_id=board.id
         )
     g.db.add(ma)
+
+    # as in mod_step_down: a guild left with no guildmaster is opened up (a Circle guild stays private for good)
+    g.db.flush()
+    if board.mods_count == 0 and not board.is_circle:
+        board.is_private = False
+        board.restricted_forwarding = False
+        board.all_opt_out = False
+        g.db.add(board)
 
     return "", 204
 
@@ -1218,7 +1252,13 @@ def mod_settings_toggle_banner(bid, board, v):
             "hidebanner",
             False) == 'true')
 
-    g.db
+    g.db.add(board)
+    g.db.add(ModAction(
+        kind="update_appearance",
+        user_id=v.id,
+        board_id=board.id,
+        note=f"hide_banner={board.hide_banner_data}"
+    ))
     return "", 204
 
 
@@ -1228,23 +1268,19 @@ def mod_settings_toggle_banner(bid, board, v):
 @validate_formkey
 def mod_add_rule(bid, board, v):
     # board description
-    rule = request.form.get("rule1")
-    rule2 = request.form.get("rule2")
-    if not rule2:
-        with CustomRenderer() as renderer:
-            rule_md = renderer.render(mistletoe.Document(rule))
-        rule_html = sanitize(rule_md, linkgen=True)
+    rule = (request.form.get("rule1") or "").strip()
+    if request.form.get("rule2"):
+        # adding several rules at once was never built: refuse instead of answering success for nothing
+        return jsonify({"error": "Add one rule at a time."}), 400
+    if not rule:
+        return jsonify({"error": "Write the rule first."}), 400
 
-        new_rule = Rules(board_id=bid, rule_body=rule, rule_html=rule_html)
-        g.db.add(new_rule)
+    with CustomRenderer() as renderer:
+        rule_md = renderer.render(mistletoe.Document(rule))
+    rule_html = sanitize(rule_md, linkgen=True)
 
-    else:
-        """
-        im guessing here we should
-        do a loop for
-        adding multiple rules
-        """
-        pass
+    new_rule = Rules(board_id=board.id, rule_body=rule, rule_html=rule_html)
+    g.db.add(new_rule)
 
     return "", 204
 
@@ -1255,10 +1291,11 @@ def mod_add_rule(bid, board, v):
 @validate_formkey
 def mod_edit_rule(bid, board, v):
     r = base36decode(request.form.get("rid"))
-    r = g.db.query(Rules).filter_by(id=r)
+    # only a rule of this guild: the guildmaster check above is for `bid`
+    r = g.db.query(Rules).filter_by(id=r, board_id=board.id).first()
 
     if not r:
-        abort(500)
+        abort(404)
 
     if board.is_banned:
         abort(403)
@@ -1316,7 +1353,7 @@ URL path parameters:
 
     board = get_guild(guildname, v=v)
 
-    if board.is_banned:
+    if board.is_banned and not (v and v.admin_level >= 3):   # as the guild page (board_name)
         return {
         "html":lambda:(render_template("board_banned.html", v=v, b=board), 403),
         "api":lambda:(jsonify({"error":f"+{board.name} is banned"}), 403)
@@ -1338,7 +1375,7 @@ def board_about_css(guildname, v):
 
     board = get_guild(guildname, v=v)
 
-    if board.is_banned:
+    if board.is_banned and not (v and v.admin_level >= 3):   # as the guild page (board_name)
         return {
         "html":lambda:(render_template("board_banned.html", v=v, b=board), 403),
         "api":lambda:(jsonify({"error":f"+{board.name} is banned"}), 403)
@@ -1355,6 +1392,7 @@ def board_about_css(guildname, v):
 @auth_required
 @is_guildmaster("config", "appearance")
 @api("guildmaster")
+@validate_formkey
 def board_edit_css(bid, board, v):
 
     new_css = request.form.get("css").replace('\\','')
@@ -1456,7 +1494,7 @@ Optional query parameters
 * `page` - The page of items to view. Default `1`.
 """
 
-    page = int(request.args.get("page", 1))
+    page = page_number()
 
     bans = board.bans.filter_by(
         is_active=True
@@ -1489,7 +1527,7 @@ Optional query parameters
 @api("read", "guildmaster")
 def board_about_chatbanned(guildname, board, v):
 
-    page = int(request.args.get("page", 1))
+    page = page_number()
 
     bans = board.chatbans.order_by(
         ChatBan.created_utc.desc()).offset(25 * (page - 1)).limit(26)
@@ -1528,7 +1566,7 @@ Optional query parameters
 * `page` - The page of items to view. Default `1`.
 """
 
-    page = int(request.args.get("page", 1))
+    page = page_number()
 
     contributors = board.contributors.filter_by(is_active=True).order_by(
         ContributorRelationship.created_utc.desc()).offset(25 * (page - 1)).limit(26)
@@ -1557,6 +1595,7 @@ Optional query parameters
 @app.route("/api/subscribe/<guildname>", methods=["POST"])
 @app.post("/api/v2/me/subscriptions/<guildname>")
 @auth_required
+@validate_formkey
 def subscribe_board(guildname, v):
     """
 Subscribe to a Guild.
@@ -1604,6 +1643,7 @@ URL path parameters:
 @app.route("/api/unsubscribe/<guildname>", methods=["POST"])
 @app.delete("/api/v2/me/subscriptions/<guildname>")
 @auth_required
+@validate_formkey
 def unsubscribe_board(guildname, v):
     """
 Unsubscribe from a Guild.
@@ -1652,7 +1692,7 @@ URL path parameters:
 * `guildname` - The name of a guild
 """
 
-    page = int(request.args.get("page", 1))
+    page = page_number()
 
     ids = g.db.query(Submission.id).filter_by(board_id=board.id,
                                               is_banned=False,
@@ -1687,7 +1727,7 @@ URL path parameters:
 def all_mod_queue(v):
     """Get reported posts in all of your guilds."""
 
-    page = int(request.args.get("page", 1))
+    page = page_number()
 
     board_ids = g.db.query(ModRelationship.board_id).filter(
         ModRelationship.user_id==v.id, 
@@ -1819,7 +1859,9 @@ def mod_board_images_delete_banner(bid, board, v):
     return redirect(f"/+{board.name}/mod/appearance?msg=Success#images")
 
 
+# the site's own stylesheets are never rate limited: a page that loses one renders unstyled
 @app.route("/assets/<board_fullname>/<theme>/<x>.css", methods=["GET"])
+@limiter.exempt
 @cache.memoize()
 def board_css(board_fullname, theme, x):
 
@@ -2091,7 +2133,13 @@ Optional query parameters:
     if board_hidden(b, v) and not (v and b.has_mod(v)):
         return hidden_notice(v)
 
-    page = int(request.args.get("page", 1))
+    # the same gate as the guild page (board_name)
+    if b.is_banned and not (v and v.admin_level >= 3):
+        return {'html': lambda: (render_template("board_banned.html", v=v, b=b, p=True), 410),
+                'api': lambda: (jsonify({'error': f'410 Gone - +{b.name} is banned.'}), 410)
+                }
+
+    page = max(page_number(), 1)
 
     idlist = b.comment_idlist(v=v,
                               page=page,
@@ -2170,11 +2218,17 @@ Optional query parameters
     show=log_rules.parse_show(request.args.get("show"))
     board=get_guild(guildname, v=v)
 
-    if board.is_banned and not (v and v.admin_level>=4):
+    if board.is_banned and not (v and v.admin_level>=3):     # one level for a banned guild's read-only pages
         return {
             "html":lambda:(render_template("board_banned.html", v=v, b=board), 403),
             "api":lambda:(jsonify({"error":f"+{board.name} is banned"}), 403)
             }
+
+    # a private (or Circle) guild's log names its members: only those who can view the guild read it
+    if not board.can_view(v):
+        abort(403)
+    if board_hidden(board, v) and not (v and board.has_mod(v)):
+        return hidden_notice(v)
 
     actions=g.db.query(ModAction).options(
         joinedload(ModAction.target_post).lazyload('*'),
@@ -2232,6 +2286,14 @@ URL path parameters:
     if action.board.name.lower() != guildname.lower():
         abort(404)
 
+    board=action.board
+    if board.is_banned and not (v and v.admin_level>=3):
+        abort(403)
+    if not board.can_view(v):
+        abort(403)
+    if board_hidden(board, v) and not (v and board.has_mod(v)):
+        return hidden_notice(v)["html"]()
+
     return render_template("guild/modlog.html",
         v=v,
         b=action.board,
@@ -2251,6 +2313,9 @@ def board_mod_perms_change(guildname, board, v):
 
     v_mod=board.has_mod(v)
     u_mod=board.has_mod_record(user)
+
+    if not u_mod:
+        return jsonify({"error": f"@{user.username} isn't a guildmaster of +{board.name}."}), 400
 
     if v_mod.id > u_mod.id:
         return jsonify({"error":"You can't change perms on guildmasters above you."}), 403
@@ -2588,6 +2653,7 @@ def siege_guild(v):
 @app.patch("/api/v2/guilds/<guildname>/toggle_bell")
 @auth_required
 @api("update")
+@validate_formkey
 def toggle_guild_bell(guildname, v):
     """
 Toggle notifications for new posts in a guild. You must be a member of the guild.

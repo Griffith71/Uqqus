@@ -223,15 +223,18 @@ def api_distinguish_post(post_id, v):
 
 @app.route("/api/sticky/<post_id>", methods=["POST"])
 @admin_level_required(3)
+@validate_formkey
 def api_sticky_post(post_id, v):
 
     post = g.db.query(Submission).filter_by(id=base36decode(post_id)).first()
-    if post:
-        if post.stickied:
-            post.stickied = False
-            g.db.add(post)
+    if not post:
+        abort(404)
 
-            return redirect(post.permalink)
+    if post.stickied:
+        post.stickied = False
+        g.db.add(post)
+
+        return redirect(post.permalink)
 
     already_stickied = g.db.query(Submission).filter_by(stickied=True).first()
 
@@ -247,7 +250,8 @@ def api_sticky_post(post_id, v):
 
 
 @app.route("/api/ban_comment/<c_id>", methods=["post"])
-@admin_level_required(1)
+@admin_level_required(3)
+@validate_formkey
 def api_ban_comment(c_id, v):
 
     comment = g.db.query(Comment).filter_by(id=base36decode(c_id)).first()
@@ -272,7 +276,8 @@ def api_ban_comment(c_id, v):
 
 
 @app.route("/api/unban_comment/<c_id>", methods=["post"])
-@admin_level_required(1)
+@admin_level_required(3)
+@validate_formkey
 def api_unban_comment(c_id, v):
 
     comment = g.db.query(Comment).filter_by(id=base36decode(c_id)).first()
@@ -300,6 +305,7 @@ def api_unban_comment(c_id, v):
 
 @app.route("/api/purge_comment/<c_id>", methods=["post"])
 @admin_level_required(3)
+@validate_formkey
 def purge_comment(c_id, v):
     """
 Permanently erase a comment's body text.
@@ -515,6 +521,7 @@ Required form data:
 
 @app.route("/api/distinguish_comment/<c_id>", methods=["post"])
 @admin_level_required(1)
+@validate_formkey
 def admin_distinguish_comment(c_id, v):
 
     comment = get_comment(c_id, v=v)
@@ -639,9 +646,9 @@ def user_stat_data(v):
 
     user_stats = {'current_users': g.db.query(User).filter_by(is_banned=0, reserved=None).count(),
                   'banned_users': g.db.query(User).filter(User.is_banned != 0).count(),
-                  'reserved_users': g.db.query(User).filter(User.reserved is not None).count(),
+                  'reserved_users': g.db.query(User).filter(User.reserved.isnot(None)).count(),
                   'email_verified_users': g.db.query(User).filter_by(is_banned=0, is_activated=True).count(),
-                  'real_id_verified_users': g.db.query(User).filter(User.reserved is not None, User.real_id is not None).count()
+                  'real_id_verified_users': g.db.query(User).filter(User.reserved.isnot(None), User.real_id.isnot(None)).count()
                   }
 
     post_stats = [{"date": time.strftime("%d %b %Y", time.gmtime(day_cutoffs[i + 1])),
@@ -700,6 +707,16 @@ def user_stat_data(v):
     return jsonify(final)
 
 
+def _publish_plot(name):
+    """Put a chart on the image bucket. Without working S3 keys (a development machine) the stats page still shows
+    its numbers and only the chart is missing, instead of the whole page failing."""
+    try:
+        aws.delete_file(name)
+        aws.upload_from_file(name, name)
+    except Exception as error:
+        print(f"[admin stats] chart {name} not uploaded: {error}", flush=True)
+
+
 def create_plot(**kwargs):
 
     if not kwargs:
@@ -739,8 +756,7 @@ def create_plot(**kwargs):
     single_plot = "single_plot.png"
     plt.savefig(single_plot)
 
-    aws.delete_file(single_plot)
-    aws.upload_from_file(single_plot, single_plot)
+    _publish_plot(single_plot)
 
     return [single_plot, multi_plots]
 
@@ -803,8 +819,7 @@ def multiple_plots(**kwargs):
     plt.savefig(name)
     plt.clf()
 
-    aws.delete_file(name)
-    aws.upload_from_file(name, name)
+    _publish_plot(name)
     return name
 
 
@@ -825,6 +840,7 @@ def admin_csam_nuke(pid, v):
         kind="ban_post",
         note="CSAM detected"
         )
+    g.db.add(ma)
 
     user = post.author
     user.is_banned = v.id
@@ -835,13 +851,11 @@ def admin_csam_nuke(pid, v):
 
     if post.domain == "i.ruqqus.com":
 
-        x = requests.get(url)
-        # load image into PIL
-        # take phash
-        # add phash to db
-
+        # TODO: take a phash of the image and store it before deleting
         name = urlparse(post.url).path.lstrip('/')
         delete_file(name)  # this also dumps cloudflare
+
+    return redirect(post.permalink)
 
 
 @app.route("/admin/dump_cache", methods=["POST"])
@@ -869,8 +883,8 @@ def admin_ban_domain(v):
     if not reason:
         abort(400)
 
-    d_query=domain.replace("_",r"\_")
-    d=g.db.query(Domain).filter_by(domain=d_query).first()
+    # an exact match: "_" is only special to LIKE
+    d=g.db.query(Domain).filter_by(domain=domain).first()
     if d:
         d.can_submit=False
         d.can_comment=False

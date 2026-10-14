@@ -17,7 +17,7 @@ On Ruqqus, you can use Markdown formatting.
 
 {% endfilter %}
 
-<table class="table table-striped mb-5">
+<div class="table-responsive mb-5"><table class="table table-striped mb-0">
   <thead class="bg-primary text-white">
     <tr>
       <th>Name</th>
@@ -55,7 +55,7 @@ On Ruqqus, you can use Markdown formatting.
     <td>![](https://i.ruqqus.com/post/67x/EaNkUiAv7UQ)</td>
     <td><a data-target="#expandImageModal" data-toggle="modal" href="https://i.ruqqus.com/post/67x/EaNkUiAv7UQ" onclick="expandDesktopImage('https://i.ruqqus.com/post/67x/EaNkUiAv7UQ');" rel="nofollow" target="_blank"><img class="in-comment-image rounded-sm my-2" rel="nofollow" src="https://i.ruqqus.com/post/67x/EaNkUiAv7UQ" style="max-height: 100px; max-width: 100%;"></a></td>
   </tr>
-</table>
+</table></div>
 
 <p class="text-small">* We have customized image embeds to add pop-overs and operate on a whitelist system. Embeds from known safe image hosts will use a pop-up display as demonstrated here. Attempted embeds to non-whitelisted sites will be converted into a link. The whitelist may be viewed <a href="/info/image_hosts" target="_blank">here</a>.</p>
 
@@ -65,7 +65,7 @@ On Ruqqus, you can use Markdown formatting.
 
 These Markdown tags format an entire paragraph of text at a time.
 
-<table class="table table-striped mb-5">
+<div class="table-responsive mb-5"><table class="table table-striped mb-0">
   <thead class="bg-primary text-white">
     <tr>
       <th>Name</th>
@@ -103,7 +103,7 @@ Or, indent the lines with four spaces.
 </pre>
     </td>
   </tr>
-</table>
+</table></div>
 
 
 ## Custom Formatting
@@ -112,7 +112,7 @@ We also have some custom hooks for mentioning users and guilds. Note that these 
 
 {% endfilter %}
 
-<table class="table table-striped mb-5">
+<div class="table-responsive mb-5"><table class="table table-striped mb-0">
   <thead class="bg-primary text-white">
     <tr>
       <th>Name</th>
@@ -130,7 +130,7 @@ We also have some custom hooks for mentioning users and guilds. Note that these 
     <td>+general</td>
     <td><a class="d-inline-block" href="/+general"><img src="/+general/pic/profile" class="profile-pic-20 align-middle mr-1">+general</a></td>
   </tr>
-</table>
+</table></div>
 
 {% filter markdown %}
 
@@ -140,7 +140,7 @@ These work in posts. You pick from a fixed set of names, so there is no way to w
 
 {% endfilter %}
 
-<table class="table table-striped mb-5">
+<div class="table-responsive mb-5"><table class="table table-striped mb-0">
   <thead class="bg-primary text-white">
     <tr>
       <th>Name</th>
@@ -178,10 +178,10 @@ These work in posts. You pick from a fixed set of names, so there is no way to w
     <td>[Read more](https://ruqqus.com){.button}</td>
     <td><a class="post-button" href="https://ruqqus.com">Read more</a></td>
   </tr>
-</table>
+</table></div>
 
 {% include "expanded_image_modal.html" %}
 
-<script src="/assets/js/all_js.js"></script>
+{# all_js.js is loaded by docs_default.html, after jQuery: loading it here as well ran it before jQuery existed #}
 
 {% endblock %}
