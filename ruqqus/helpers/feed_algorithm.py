@@ -15,6 +15,10 @@ through it:
     kinds     text, link, image, video, audio
     only_sites / never_sites   host names of a post's link
     min_votes, min_comments, age, hide (bots, ai, paid, forwards)
+    exclude_users / exclude_guilds   account and guild ids this curation leaves out. They are
+              ids (a name can change hands), made from typed names by the route, which can
+              look them up; this module cannot. They belong to the curation: they are not
+              the owner's own mute list (helpers/muting.py), which they never touch.
     rank      hot, new, top, activity, or "mix": the member's own weights (`MIX`)
 
 `describe` says the same thing in plain language; a curation shows it to everyone who
@@ -39,6 +43,7 @@ FADES = (6, 12, 24, 72, 168)                   # hours for a post's weight to ha
 MAX_WORDS = 10
 WORD_CHARS = 40
 MAX_SITES = 10
+MAX_EXCLUDED = 50                              # accounts, and guilds, a curation may leave out
 MAX_COUNT = 100000
 SERVER_CHARS = 300
 MIX_POOL = 1000                                # a mix ranks the newest matching posts, no more
@@ -57,7 +62,7 @@ MIX = {
 DEFAULT = {
     "mode": RULES, "source": MEMBERS, "any": [], "all": [], "none": [], "kinds": [],
     "only_sites": [], "never_sites": [], "min_votes": 0, "min_comments": 0, "age": "", "hide": [],
-    "rank": "hot", "mix": {name: default for name, (_, _, default) in MIX.items()}, "server": "",
+    "exclude_users": [], "exclude_guilds": [], "rank": "hot", "mix": {name: default for name, (_, _, default) in MIX.items()}, "server": "",
 }
 
 # name: (label, what it is for, the parts that differ from DEFAULT)
@@ -131,6 +136,24 @@ def _sites(value, label):
     return out
 
 
+def _ids(value, label):
+    """Whole positive numbers, no repeats, in the order given. Anything else in the list is
+    dropped (the stored spec was made by this function, so it never holds anything else)."""
+    out = []
+    for item in value if isinstance(value, (list, tuple)) else _items(value):
+        if isinstance(item, bool):
+            continue
+        try:
+            number = int(str(item).strip())
+        except ValueError:
+            continue
+        if number > 0 and number not in out:
+            out.append(number)
+    if len(out) > MAX_EXCLUDED:
+        raise AlgorithmError(f"{label}: {MAX_EXCLUDED} at most.")
+    return out
+
+
 def _choices(value, allowed):
     picked = set(_items(value))
     return [name for name in allowed if name in picked]
@@ -166,6 +189,8 @@ def clean(raw):
         "min_comments": _number(raw.get("min_comments"), 0, MAX_COUNT, 0),
         "age": _one_of(raw.get("age"), tuple(AGES), ""),
         "hide": _choices(raw.get("hide"), HIDE),
+        "exclude_users": _ids(raw.get("exclude_users"), "Leave out these accounts"),
+        "exclude_guilds": _ids(raw.get("exclude_guilds"), "Leave out these guilds"),
         "rank": _one_of(raw.get("rank"), RANKS, "hot"),
         "mix": {name: _number(mix.get(name), low, high, default) for name, (low, high, default) in MIX.items()},
         "server": "",
@@ -219,6 +244,8 @@ def from_form(form):
         "min_comments": form.get("min_comments"),
         "age": form.get("age"),
         "hide": form.getlist("hide"),
+        "exclude_users": form.get("exclude_users", ""),
+        "exclude_guilds": form.get("exclude_guilds", ""),
         "rank": form.get("rank"),
         "mix": {name: form.get(f"mix_{name}") for name in MIX},
         "server": form.get("server", ""),
@@ -227,6 +254,12 @@ def from_form(form):
 
 def is_default(spec):
     return spec == DEFAULT
+
+
+def without_left_out(spec):
+    """`spec` with nobody left out: what a fork starts from. A curation's rules are public but its
+    leave-out list is not (`describe` only counts it), so a fork gets the rules and not the names."""
+    return {**spec, "exclude_users": [], "exclude_guilds": []}
 
 
 def is_server(spec):
@@ -305,11 +338,27 @@ def server_host(address):
     return site_name(address) or "an unknown address"
 
 
+def left_out_line(spec):
+    """"Leaves out posts from 2 accounts and 1 guild." or None. Counts only, never names: a
+    curation's rules are read by everyone who can see it, and a name could be a private or
+    Circle guild, something a viewer's word filter hides, or a statement about a person."""
+    accounts, guilds = len(spec["exclude_users"]), len(spec["exclude_guilds"])
+    parts = []
+    if accounts:
+        parts.append(f"{accounts} account{'' if accounts == 1 else 's'}")
+    if guilds:
+        parts.append(f"{guilds} guild{'' if guilds == 1 else 's'}")
+    return "Leaves out posts from " + _listed(parts) + "." if parts else None
+
+
 def describe(spec):
     """What the algorithm does, as sentences anyone can read."""
     if is_server(spec):
-        return [f"Ranked by an outside server ({server_host(spec['server'])}). Ruqqus cannot see how it picks posts.",
-                "It only orders posts you are allowed to see."]
+        lines = [f"Ranked by an outside server ({server_host(spec['server'])}). Ruqqus cannot see how it picks posts.",
+                 "It only orders posts you are allowed to see."]
+        if left_out_line(spec):
+            lines.append(left_out_line(spec))
+        return lines
 
     lines = []
     age = f", no older than {_AGE_WORDS[spec['age']]}" if spec["age"] else ""
@@ -338,6 +387,8 @@ def describe(spec):
         lines.append("At least " + _listed(least) + ".")
     if spec["hide"]:
         lines.append("Leaves out " + _listed(_HIDE_WORDS[h] for h in spec["hide"]) + ".")
+    if left_out_line(spec):
+        lines.append(left_out_line(spec))
 
     if spec["rank"] != MIX_RANK:
         lines.append(_RANK_WORDS[spec["rank"]])

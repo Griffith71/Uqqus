@@ -81,9 +81,12 @@ def test_a_private_curation_is_closed_to_everyone_but_its_owner():
 def test_a_fork_is_a_full_copy():
     fork = route("curation_fork")
     for part in ("region_filter=original.region_filter", "language_filter=original.language_filter",
-                 "category_filter=original.category_filter", "algorithm=feed_algorithm.dump(original.algorithm_spec)",
+                 "category_filter=original.category_filter",
+                 "algorithm=feed_algorithm.dump(feed_algorithm.without_left_out(original.algorithm_spec))",
                  "is_private=True", "owner_id=v.id"):
         assert part in fork, part
+    # the rules are public, the leave-out list is not (describe only counts it): a fork gets the rules, never the names
+    assert fa.without_left_out({**fa.DEFAULT, "exclude_users": [4], "exclude_guilds": [9], "rank": "new"}) == {**fa.DEFAULT, "rank": "new"}
 
 
 def test_a_forked_curation_can_still_be_deleted():

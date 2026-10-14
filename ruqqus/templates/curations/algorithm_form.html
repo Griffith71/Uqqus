@@ -137,6 +137,20 @@
       </div>
       {% endfor %}
     </div>
+
+    <div class="form-group mt-3">
+      <label for="alg-exclude-users">Leave out these accounts</label>
+      <input type="text" class="form-control form-control-sm" id="alg-exclude-users" name="exclude_users" value="{{ left_out.users | join(', ') }}" placeholder="@name, @other" autocomplete="off" spellcheck="false">
+    </div>
+    <div class="form-group mb-0">
+      <label for="alg-exclude-guilds">Leave out these guilds</label>
+      <input type="text" class="form-control form-control-sm" id="alg-exclude-guilds" name="exclude_guilds" value="{{ left_out.guilds | join(', ') }}" placeholder="+guild, +other" autocomplete="off" spellcheck="false">
+      <small class="form-text text-muted">
+        Muted for this curation only: your own mute list is not touched and nobody else's feed changes. Up to {{ algorithm.MAX_EXCLUDED }} of each.
+        Anonymous posts stay, so nobody can tell who wrote them. Everyone who can see the curation is told how many are left out, never which.
+        A fork gets the rules but not this list.
+      </small>
+    </div>
   </fieldset>
 
   <fieldset class="form-group">

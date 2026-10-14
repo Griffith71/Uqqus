@@ -237,3 +237,42 @@ def test_the_summary_keeps_the_sites_vocabulary():
     text = " ".join(" ".join(fa.describe(fa.preset(name))) for name in fa.PRESETS).lower()
     for banned in ("reply", "replies", "crosspost", "promote"):
         assert banned not in text
+
+
+# --- leaving accounts and guilds out ---------------------------------------------------
+
+def test_the_leave_out_lists_are_ids_only_bounded_and_without_repeats():
+    s = fa.clean({"exclude_users": [4, "5", 4, "x", -1, 0, True, 2.5], "exclude_guilds": "7, 8\n8,abc"})
+    assert s["exclude_users"] == [4, 5] and s["exclude_guilds"] == [7, 8]
+    assert fa.DEFAULT["exclude_users"] == [] and fa.DEFAULT["exclude_guilds"] == []
+    # a name is not an id: the route turns names into ids (it can look them up, this module cannot)
+    assert fa.clean({"exclude_users": ["alice"]})["exclude_users"] == []
+    too_many = list(range(1, fa.MAX_EXCLUDED + 2))
+    assert len(fa.clean({"exclude_users": too_many[:-1]})["exclude_users"]) == fa.MAX_EXCLUDED
+    for field in ("exclude_users", "exclude_guilds"):
+        with pytest.raises(fa.AlgorithmError):
+            fa.clean({field: too_many})
+    assert fa.load(fa.dump(s)) == s                      # what is stored comes back the same
+
+
+def test_a_posted_form_reads_the_ids_the_route_resolved():
+    s = fa.from_form(MultiDict([("exclude_users", "12,15"), ("exclude_guilds", "4")]))
+    assert s["exclude_users"] == [12, 15] and s["exclude_guilds"] == [4]
+    assert not fa.is_default(s) and fa.is_default(fa.from_form(MultiDict()))
+
+
+def test_the_summary_counts_what_is_left_out_and_never_names_it():
+    assert "Leaves out posts from 2 accounts and 1 guild." in fa.describe(spec(exclude_users=[3, 4], exclude_guilds=[9]))
+    assert "Leaves out posts from 1 account." in fa.describe(spec(exclude_users=[3]))
+    assert "Leaves out posts from 3 guilds." in fa.describe(spec(exclude_guilds=[1, 2, 3]))
+    assert fa.describe(fa.DEFAULT) == ["Posts from this curation's guilds and accounts.", "Ordered by Hot, the site's usual order."]
+    assert "34567" not in " ".join(fa.describe(spec(exclude_users=[34567], exclude_guilds=[76543])))     # a number, never an id
+    server = fa.describe(spec(mode="server", server="https://feeds.example.org/x", exclude_guilds=[2]))
+    assert "Leaves out posts from 1 guild." in server           # an outside server's list is left out too
+
+
+def test_a_fork_keeps_the_rules_and_drops_only_the_list():
+    s = spec(rank="new", words="x", exclude_users=[1], exclude_guilds=[2])
+    forked = fa.without_left_out(s)
+    assert forked["exclude_users"] == [] and forked["exclude_guilds"] == [] and forked["rank"] == "new"
+    assert s["exclude_users"] == [1]                            # the original is not changed

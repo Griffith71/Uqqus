@@ -106,10 +106,40 @@ def _links_to(host):
     return func.coalesce(SubmissionAux.url, "").op("~*")(r"^https?://([^/]*\.)?" + re.escape(host) + r"(/|:|\?|#|$)")
 
 
+def leave_out(posts, spec):
+    """Without the guilds and accounts this curation leaves out (its own list: the viewer's mutes are
+    `_viewable`'s business). An account is left out through the rule a member's mutes use
+    (`muting.exclude_authors`): an anonymous post stays, since dropping only those would tell the owner
+    which ones the account wrote, and a post co-authored with it goes. A forwarded copy keeps the original
+    author's id, so the account's forwards leave in every guild. Works on any query over Submission."""
+    if not (spec["exclude_guilds"] or spec["exclude_users"]):
+        return posts
+
+    from ruqqus.classes import Submission
+    from ruqqus.helpers import muting
+
+    if spec["exclude_guilds"]:
+        posts = posts.filter(Submission.board_id.notin_(spec["exclude_guilds"]))
+    if spec["exclude_users"]:
+        posts = muting.exclude_authors(posts, spec["exclude_users"], Submission)
+    return posts
+
+
+def drop_left_out(db, ids, spec):
+    """`ids` (post ids in order, as an outside feed server named them) without what the curation leaves out."""
+    from ruqqus.classes import Submission
+
+    if not ids or not (spec["exclude_users"] or spec["exclude_guilds"]):
+        return list(ids)
+    kept = {row[0] for row in leave_out(db.query(Submission.id).filter(Submission.id.in_(ids)), spec).all()}
+    return [i for i in ids if i in kept]
+
+
 def apply(posts, spec, now):
     """The spec's conditions, on a query over Submission that has SubmissionAux joined."""
     from ruqqus.classes import Submission
 
+    posts = leave_out(posts, spec)
     if spec["any"]:
         posts = posts.filter(or_(*[_mentions(w) for w in spec["any"]]))
     for word in spec["all"]:

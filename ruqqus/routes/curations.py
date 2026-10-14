@@ -17,7 +17,7 @@ from ruqqus.routes.front import region_filter_condition, ALL_SUBCAT_IDS
 from ruqqus.helpers.regions import REGION_CENTROIDS
 from ruqqus.helpers.languages import LANGUAGE_NAMES
 from ruqqus.helpers.base36 import base36decode
-from ruqqus.helpers import curation_feed, feed_algorithm, feed_server, safe_fetch
+from ruqqus.helpers import curation_feed, feed_algorithm, feed_server, safe_fetch, search_filters
 from ruqqus.helpers import curation_members
 from urllib.parse import quote
 
@@ -220,6 +220,7 @@ def _server_ids(curation, spec, v=None, page=1):
     # some of what the server names will be hidden from this viewer: ask for spare
     ids, notice = feed_server.ids_for(curation.id, spec["server"], 25 * page + SERVER_SPARE)
     ordered = feed_server.keep_order(ids, _seen_among(curation, ids, v))
+    ordered = curation_feed.drop_left_out(g.db, ordered, spec)      # the curation's own leave-out list
     return ordered[25 * (page - 1):25 * (page - 1) + 26], notice
 
 
@@ -400,7 +401,7 @@ def curation_edit_get(slug, v):
         spec=curation.algorithm_spec, algorithm=feed_algorithm, presets=feed_algorithm.PRESETS,
         preset_specs={name: feed_algorithm.preset(name) for name in feed_algorithm.PRESETS},
         alg_msg=request.args.get("alg_msg"), alg_error=request.args.get("alg_error"),
-        feed_servers=feed_server.enabled(),
+        feed_servers=feed_server.enabled(), left_out=_left_out_names(curation.algorithm_spec),
     )
 
 
@@ -686,9 +687,78 @@ def curation_set_category_filter(slug, v):
     return redirect(curation.permalink + "/edit")
 
 
+class _Resolved:
+    """The posted form with some fields replaced: `feed_algorithm.from_form` reads `.get` and `.getlist`."""
+
+    def __init__(self, form, **replaced):
+        self.form, self.replaced = form, replaced
+
+    def get(self, name, default=None):
+        return self.replaced[name] if name in self.replaced else self.form.get(name, default)
+
+    def getlist(self, name):
+        return self.form.getlist(name)
+
+
+def _typed_names(text):
+    """The names in a typed list ("@a, @b" or one a line; the @ and + are optional), once each."""
+    names = []
+    for item in re.split(r"[,\n\r]+", text or ""):
+        name = item.strip().lstrip("@+").strip()
+        if name and name.lower() not in (n.lower() for n in names):
+            names.append(name)
+    return names
+
+
+def _account_to_leave_out(name, v):
+    """The account a typed name points at, as a search would find it. An account the owner blocked is still theirs
+    to leave out (a search hides it from them, though they know it exists)."""
+    user = search_filters.find_account(name, v)
+    if user is None:
+        user = get_user(name, v=v, graceful=True)
+        if user is None or user.is_deleted or not user.is_blocking:
+            return None
+    return user
+
+
+def _left_out_ids(form, v):
+    """{"exclude_users": "12,15", "exclude_guilds": "4"}: the typed names as ids (feed_algorithm cannot look anything
+    up). A name the owner may not see reads as one that does not exist, as in search: it never confirms a private or
+    Circle guild or a private account. AlgorithmError for the first such name."""
+    limit = feed_algorithm.MAX_EXCLUDED
+    accounts, guilds = _typed_names(form.get("exclude_users")), _typed_names(form.get("exclude_guilds"))
+    if len(accounts) > limit:
+        raise feed_algorithm.AlgorithmError(f"Leave out these accounts: {limit} at most.")
+    if len(guilds) > limit:
+        raise feed_algorithm.AlgorithmError(f"Leave out these guilds: {limit} at most.")
+
+    user_ids, guild_ids = [], []
+    for name in accounts:
+        user = _account_to_leave_out(name, v)
+        if user is None:
+            raise feed_algorithm.AlgorithmError(f"No account called @{name[:30]}.")
+        if user.id not in user_ids:
+            user_ids.append(user.id)
+    for name in guilds:
+        board = search_filters.find_guild(name, v)
+        if board is None:
+            raise feed_algorithm.AlgorithmError(f"No guild called +{name[:30]}.")
+        if board.id not in guild_ids:
+            guild_ids.append(board.id)
+    return {"exclude_users": ",".join(str(i) for i in user_ids), "exclude_guilds": ",".join(str(i) for i in guild_ids)}
+
+
+def _left_out_names(spec):
+    """The names to show the owner in the form: {"users": ["@a"], "guilds": ["+b"]}, in the order stored."""
+    users = dict(g.db.query(User.id, User.username).filter(User.id.in_(spec["exclude_users"])).all()) if spec["exclude_users"] else {}
+    boards = dict(g.db.query(Board.id, Board.name).filter(Board.id.in_(spec["exclude_guilds"])).all()) if spec["exclude_guilds"] else {}
+    return {"users": [f"@{users[i]}" for i in spec["exclude_users"] if i in users],
+            "guilds": [f"+{boards[i]}" for i in spec["exclude_guilds"] if i in boards]}
+
+
 def _posted_algorithm():
     """The algorithm a posted curation form describes (AlgorithmError when it cannot be)."""
-    spec = feed_algorithm.from_form(request.form)
+    spec = feed_algorithm.from_form(_Resolved(request.form, **_left_out_ids(request.form, g.v)))
     if feed_algorithm.is_server(spec):
         if not feed_server.enabled():
             raise feed_algorithm.AlgorithmError(feed_server.OFF)
@@ -746,6 +816,7 @@ def curation_preview_algorithm(slug, v):
         except safe_fetch.FetchError as error:
             return jsonify({"error": error.message, "summary": feed_algorithm.describe(spec)}), 400
         ids = feed_server.keep_order(named, _seen_among(curation, named, v))
+        ids = curation_feed.drop_left_out(g.db, ids, spec)
         note = f"The server named {len(named)} post{'' if len(named) == 1 else 's'}; you can see {len(ids)} of them."
     else:
         try:
@@ -861,7 +932,7 @@ def curation_fork(slug, v):
         region_filter=original.region_filter,
         language_filter=original.language_filter,
         category_filter=original.category_filter,
-        algorithm=feed_algorithm.dump(original.algorithm_spec),
+        algorithm=feed_algorithm.dump(feed_algorithm.without_left_out(original.algorithm_spec)),
     )
     g.db.add(fork)
     g.db.flush()
