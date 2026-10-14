@@ -1,0 +1,61 @@
+{#
+  Items of a post's menu that are the same in the feed card, the phone actions sheet and the post page.
+
+  follow_item(p, v) / follow_button(p, v): "Follow post" / "Unfollow post" (helpers/post_follows.py). Offered to a
+  signed-in viewer on a live post, unless they are told of its comments anyway (`p.follow_state == "own"`: the
+  author, or on a forward copy the person who forwarded it). The two items toggle each other like Hide guild.
+#}
+
+{% macro follow_item(p, v) %}
+{% if v and p.follow_state in ("can_follow", "following") and not p.is_banned and p.deleted_utc == 0 %}
+<a id="follow-post-{{ p.base36id }}" class="dropdown-item{% if p.follow_state == 'following' %} d-none{% endif %}" href="javascript:void(0)" onclick="post_toast('/api/post/{{ p.base36id }}/follow', callback=function(){document.getElementById('follow-post-{{ p.base36id }}').classList.toggle('d-none');document.getElementById('unfollow-post-{{ p.base36id }}').classList.toggle('d-none');})"><i class="fas fa-bell fa-fw"></i>Follow post</a>
+<a id="unfollow-post-{{ p.base36id }}" class="dropdown-item{% if p.follow_state != 'following' %} d-none{% endif %}" href="javascript:void(0)" onclick="post_toast('/api/post/{{ p.base36id }}/unfollow', callback=function(){document.getElementById('follow-post-{{ p.base36id }}').classList.toggle('d-none');document.getElementById('unfollow-post-{{ p.base36id }}').classList.toggle('d-none');})"><i class="fas fa-bell-slash fa-fw"></i>Unfollow post</a>
+{% endif %}
+{% endmacro %}
+
+{% macro follow_button(p, v) %}
+{% if v and p.follow_state in ("can_follow", "following") and not p.is_banned and p.deleted_utc == 0 %}
+<button id="follow-post-button-{{ p.base36id }}" class="btn btn-link btn-block btn-lg text-left text-muted{% if p.follow_state == 'following' %} d-none{% endif %}" data-dismiss="modal" onclick="post_toast('/api/post/{{ p.base36id }}/follow', callback=function(){document.getElementById('follow-post-button-{{ p.base36id }}').classList.toggle('d-none');document.getElementById('unfollow-post-button-{{ p.base36id }}').classList.toggle('d-none');})"><i class="fas fa-bell fa-fw text-center text-muted mr-3"></i>Follow post</button>
+<button id="unfollow-post-button-{{ p.base36id }}" class="btn btn-link btn-block btn-lg text-left text-muted{% if p.follow_state != 'following' %} d-none{% endif %}" data-dismiss="modal" onclick="post_toast('/api/post/{{ p.base36id }}/unfollow', callback=function(){document.getElementById('follow-post-button-{{ p.base36id }}').classList.toggle('d-none');document.getElementById('unfollow-post-button-{{ p.base36id }}').classList.toggle('d-none');})"><i class="fas fa-bell-slash fa-fw text-center text-muted mr-3"></i>Unfollow post</button>
+{% endif %}
+{% endmacro %}
+
+{#
+  fewer_item(p, v) / fewer_button(p, v): "Show fewer posts like this" (helpers/post_feedback.py), for a signed-in
+  viewer on a live post they did not write. assets/js/post_feedback.js handles the click for every card, also
+  the ones the continuous feed adds later.
+#}
+
+{% macro fewer_item(p, v) %}
+{% if v and p.author_id != v.id and not p.is_banned and p.deleted_utc == 0 %}
+<a class="dropdown-item" href="javascript:void(0)" data-fewer-post="{{ p.base36id }}"><i class="fas fa-minus-circle fa-fw"></i>Show fewer posts like this</a>
+{% endif %}
+{% endmacro %}
+
+{% macro fewer_button(p, v) %}
+{% if v and p.author_id != v.id and not p.is_banned and p.deleted_utc == 0 %}
+<button class="btn btn-link btn-block btn-lg text-left text-muted" data-dismiss="modal" data-fewer-post="{{ p.base36id }}"><i class="fas fa-minus-circle fa-fw text-center text-muted mr-3"></i>Show fewer posts like this</button>
+{% endif %}
+{% endmacro %}
+
+{#
+  curation_item(p, v) / curation_button(p, v): "Add to curation" (helpers/curation_members.py), for a signed-in
+  viewer on a live post. Offered when the post's author can be added (the post is not anonymous) or its guild can
+  (the post is in a guild, not on a profile). assets/js/curation_picker.js opens the sheet.
+#}
+
+{% macro _can_curate(p, v) -%}
+{{- "1" if v and not p.is_banned and p.deleted_utc == 0 and ((not p.is_anonymous and not author_of(p, v).is_deleted) or not p.is_profile_post) else "" -}}
+{%- endmacro %}
+
+{% macro curation_item(p, v) %}
+{% if _can_curate(p, v) %}
+<a class="dropdown-item" href="javascript:void(0)" data-curation-post="{{ p.base36id }}"><i class="fas fa-layer-group fa-fw"></i>Add to curation</a>
+{% endif %}
+{% endmacro %}
+
+{% macro curation_button(p, v) %}
+{% if _can_curate(p, v) %}
+<button class="btn btn-link btn-block btn-lg text-left text-muted" data-dismiss="modal" data-curation-post="{{ p.base36id }}"><i class="fas fa-layer-group fa-fw text-center text-muted mr-3"></i>Add to curation</button>
+{% endif %}
+{% endmacro %}

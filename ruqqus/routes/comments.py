@@ -8,7 +8,7 @@ from os import environ
 
 from ruqqus.helpers.wrappers import *
 from ruqqus.helpers.media import attach as media_attach, cdn as media_cdn, safety as media_safety
-from ruqqus.helpers.visibility import post_hidden, comment_thread_hidden, hidden_notice
+from ruqqus.helpers.visibility import post_hidden, comment_hidden, comment_thread_hidden, hidden_notice, history_text_shown
 from ruqqus.helpers.base36 import *
 from ruqqus.helpers.sanitize import *
 from ruqqus.helpers.filters import *
@@ -16,6 +16,7 @@ from ruqqus.helpers.embed import *
 from ruqqus.helpers.markdown import *
 from ruqqus.helpers.get import *
 from ruqqus.helpers import circle_guard
+from ruqqus.helpers import post_follows
 from ruqqus.helpers.session_helpers import *
 from ruqqus.helpers.alerts import *
 from ruqqus.helpers.aws import *
@@ -32,6 +33,22 @@ from .front import frontlist
 BUCKET=app.config["S3_BUCKET"]
 
 
+# the longest comment (the comment boxes say so with maxlength, templates/comments.html and submission.html)
+COMMENT_MAX = 10000
+
+
+def _followers_who_may_read(post, ids):
+    """Of `ids`, the ones that may still read `post`: a Circle post goes only to its audience and a private
+    guild's post only to people who can view the guild (what the post page itself asks)."""
+    ids = set(ids)
+    if post.audience:
+        eligible = circle_guard.eligible_ids(g.db, post.author_id, post.audience, board_id=post.board_id)
+        ids &= eligible | {post.author_id}
+    if ids and not post.is_public and not post.is_pinned:
+        ids = {u.id for u in g.db.query(User).filter(User.id.in_(ids)).all() if not post.in_private_guild_for(u)}
+    return ids
+
+
 @app.route("/comment/<cid>", methods=["GET"])
 @app.route("/post_short/<pid>/<cid>", methods=["GET"])
 @app.route("/post_short/<pid>/<cid>/", methods=["GET"])
@@ -46,10 +63,6 @@ def comment_cid(cid, pid=None):
     if not comment.parent_submission:
         abort(403)
     return redirect(comment.permalink)
-
-@app.route("/api/v1/post/<pid>/comment/<cid>", methods=["GET"])
-def comment_cid_api_redirect(cid=None, pid=None):
-    redirect(f'/api/v1/comment/<cid>')
 
 @app.route("/api/v1/comment/<cid>", methods=["GET"])
 @app.route("/+<guildname>/post/<pid>/<anything>/<cid>", methods=["GET"])
@@ -72,12 +85,20 @@ Optional query parameters:
 
     comment = get_comment(cid, v=v)
 
-    # prevent api shenanigans
+    # every check below runs on the comment's own post, never on the `pid`
+    # in the URL (a /api/ request with another post's id isn't redirected)
     if not pid:
         pid = base36encode(comment.parent_submission)
-
-    post = get_post(pid, v=v)
+    if base36decode(pid) != comment.parent_submission:
+        post = get_post(base36encode(comment.parent_submission), v=v)
+        mismatch = True
+    else:
+        post = get_post(pid, v=v)
+        mismatch = False
     board = post.board
+
+    if post.in_private_guild_for(v):
+        abort(403)
 
     if post_hidden(post, v) or comment_thread_hidden(comment, v):
         return hidden_notice(v)
@@ -90,7 +111,6 @@ Optional query parameters:
     # in their canonical URL, so a guild-less request for one is already
     # canonical and must not be redirected (that redirect would just
     # recompute the same guild-less URL forever)
-    mismatch = comment.parent_submission != post.id
     wrong_guild = guildname_provided and board.name != guildname
     missing_guild = not guildname_provided and not post.is_profile_post
 
@@ -104,15 +124,6 @@ Optional query parameters:
 
                 'api': lambda: {'error': f'+{board.name} is banned.'}
 
-                }
-
-    # check guild ban
-    board = post.board
-    if board.is_banned and v.admin_level < 3:
-        return {'html': lambda: render_template("board_banned.html",
-                                                v=v,
-                                                b=board),
-                'api': lambda: {'error': f'+{board.name} is banned.'}
                 }
 
     post._preloaded_comments = [comment]
@@ -288,6 +299,10 @@ Optional form data:
 Optional file data:
 * `file` - An image to upload and append to the comment body. Requires premium.
 """
+    # bots may post, forward and help moderate, but never comment (or vote, routes/votes.py)
+    if request.headers.get("X-User-Type", "").lower() == "bot":
+        return jsonify({"error": "Bots can't comment."}), 403
+
     parent_fullname = request.form.get("parent_fullname")
 
     # get parent item info
@@ -309,15 +324,13 @@ Optional file data:
         abort(400)
 
     #process and sanitize
-    body = request.form.get("body", "")[0:10000]
-    body = body.lstrip().rstrip()
+    body = request.form.get("body", "").strip()
+    if len(body) > COMMENT_MAX:
+        return jsonify({"error": f"Comments can be {COMMENT_MAX:,} characters at most."}), 400
 
     if not body and not (v.has_premium and request.files.get('file')):
         return jsonify({"error":"You need to actually write something!"}), 400
     
-    if parent_post.board.disallowbots and request.headers.get("X-User-Type")=="Bot":
-        return jsonify({"error":f"403 Not Authorized - +{parent_post.board.name} disallows bots from forwarding and commenting!"}), 403
-
     body=preprocess(body)
     with CustomRenderer(post_id=parent_id) as renderer:
         body_md = renderer.render(mistletoe.Document(body))
@@ -520,13 +533,23 @@ Optional file data:
 
     notify_users = set()
 
-    # queue up notification for parent author
-    if parent.author.id != v.id:
+    if level == 1:
+        # a comment directly on a post: the person responsible for it (on a forward copy the one who
+        # forwarded it, not the original author) and the people who follow it (helpers/post_follows.py)
+        notify_users.update(post_follows.recipients(
+            g.db, parent_post, v.id, anonymous=bool(c.is_anonymous),
+            visible=lambda ids: _followers_who_may_read(parent_post, ids)))
+    elif parent.author.id != v.id:
+        # queue up notification for the parent comment's author
         notify_users.add(parent.author.id)
 
     # queue up notifications for username mentions
     soup = BeautifulSoup(body_html, features="html.parser")
     mentions = soup.find_all("a", href=re.compile(r"^/@(\w+)") , limit=3)
+    # only people who may see the post are told (as submit_post does with circle_guard.eligible_ids):
+    # otherwise the comment is dropped from their inbox and leaves an unread count behind
+    eligible = circle_guard.eligible_ids(g.db, parent_post.author_id, parent_post.audience,
+                                         board_id=parent_post.board_id) if parent_post.audience else None
     for mention in mentions:
         username = mention["href"].split("@")[1]
 
@@ -534,6 +557,10 @@ Optional file data:
 
         if user:
             if v.any_block_exists(user):
+                continue
+            if parent_post.in_private_guild_for(user):
+                continue
+            if eligible is not None and user.id not in eligible and user.id != parent_post.author_id:
                 continue
             if user.id != v.id:
                 notify_users.add(user.id)
@@ -609,7 +636,9 @@ Optional form data (left out: unchanged):
     if c.board.has_ban(v):
         abort(403)
 
-    body = request.form.get("body", "")[0:10000]
+    body = request.form.get("body", "")
+    if len(body.strip()) > COMMENT_MAX:
+        return jsonify({"error": f"Comments can be {COMMENT_MAX:,} characters at most."}), 400
     body=preprocess(body)
     with CustomRenderer(post_id=c.post.base36id) as renderer:
         body_md = renderer.render(mistletoe.Document(body))
@@ -761,6 +790,10 @@ URL path parameters:
     if not c.author_id == v.id:
         abort(403)
 
+    # already deleted: a 404, as for posts (a second delete wrote a second public deletion-log entry)
+    if c.deleted_utc > 0:
+        abort(404)
+
     now = int(time.time())
     c.deleted_utc = now
 
@@ -776,16 +809,16 @@ URL path parameters:
         previous_body_html=c.body_html
     ))
 
-    for promoted in c.forwarded_posts:
-        if promoted.is_deleted:
+    for forward_copy in c.forwarded_posts:
+        if forward_copy.is_deleted:
             continue
-        promoted.deleted_utc = now
-        promoted.is_pinned = False
-        promoted.stickied = False
-        g.db.add(promoted)
-        cache.delete_memoized(Board.idlist, promoted.board)
-        if promoted.age >= 3600 * 6:
-            cache.delete_memoized(Board.idlist, promoted.board, sort="new")
+        forward_copy.deleted_utc = now
+        forward_copy.is_pinned = False
+        forward_copy.stickied = False
+        g.db.add(forward_copy)
+        cache.delete_memoized(Board.idlist, forward_copy.board)
+        if forward_copy.age >= 3600 * 6:
+            cache.delete_memoized(Board.idlist, forward_copy.board, sort="new")
 
     cache.delete_memoized(User.commentlisting, v)
 
@@ -806,6 +839,11 @@ is shown - no content.
 
     comment = get_comment(cid, v=v)
 
+    if comment.post and comment.post.in_private_guild_for(v):
+        abort(403)
+    if comment_hidden(comment, v) or (comment.post and post_hidden(comment.post, v)):
+        return hidden_notice(v)["html"]()
+
     entries = g.db.query(ContentEditHistory).filter_by(
         target_comment_id=comment.id
     ).order_by(ContentEditHistory.id.asc()).all()
@@ -820,7 +858,8 @@ is shown - no content.
         target=comment,
         target_type="comment",
         entries=entries,
-        obliteration=obliteration
+        obliteration=obliteration,
+        show_text=history_text_shown(comment, v)
     )
 
 
@@ -829,7 +868,10 @@ is shown - no content.
 @validate_formkey
 def save_comment(cid, v):
 
-    comment = get_comment(cid)
+    comment = get_comment(cid, v=v)
+
+    if comment.post and comment.post.in_private_guild_for(v):
+        abort(403)
 
     existing = g.db.query(CommentSaveRelationship).filter_by(
         user_id=v.id, comment_id=comment.id).first()
@@ -916,6 +958,9 @@ def repost_comment(cid, v):
     if comment.is_banned or comment.deleted_utc or comment.purged_utc:
         return {"error": "This comment can't be reposted."}, 400
 
+    if comment.post and comment.post.in_private_guild_for(v):
+        abort(403)
+
     if circle_guard.under_audience(g.db, comment):
         return {"error": "A comment on a post for a Circle can't be reposted."}, 400
 
@@ -967,16 +1012,16 @@ def forward_comment(cid, v):
     anyone logged in, whether or not they authored the comment. The new
     post's author stays the comment's original author (they keep delete
     rights); the target guild's own posting rules are checked against the
-    person doing the promoting, same as forwarding a post.
+    person doing the forwarding, same as forwarding a post.
 
     URL path parameters:
     * `cid` - The base 36 id of the comment to forward
 
     Required form data:
-    * `board` - Name of the guild to promote into
+    * `board` - Name of the guild to forward into
 
     The new post's title is generated automatically from the comment's own
-    text - there is no user-editable title for a promoted post.
+    text - there is no user-editable title for a forwarded comment's post.
     """
     from .posts import create_forward_post_from_comment
 
@@ -984,6 +1029,9 @@ def forward_comment(cid, v):
 
     if comment.is_banned or comment.deleted_utc or comment.purged_utc:
         return {"error": "This comment can't be forwarded."}, 400
+
+    if comment.post and comment.post.in_private_guild_for(v):
+        abort(403)
 
     if circle_guard.under_audience(g.db, comment):
         return {"error": "A comment on a post for a Circle can't be forwarded to a guild."}, 400
@@ -1002,7 +1050,7 @@ def forward_comment(cid, v):
         return {"error": f"+{target.name} only accepts forwards from approved contributors."}, 403
 
     if target.disallowbots and (request.headers.get("X-User-Type", "").lower() == "bot" or comment.is_bot):
-        return {"error": f"403 Not Authorized - +{target.name} disallows bots from forwarding and commenting!"}, 403
+        return {"error": f"403 Not Authorized - +{target.name} disallows bots from forwarding!"}, 403
 
     already = g.db.query(CommentForwardRelationship).filter_by(
         comment_id=comment.id, board_id=target.id).first()
@@ -1029,10 +1077,14 @@ def embed_comment_cid(cid, pid=None):
     if not comment.parent:
         abort(403)
 
+    # an embed is shown to anyone, so it is checked as a visitor
+    if comment.post and comment.post.in_private_guild_for(None):
+        abort(403)
+
     if comment.is_banned or comment.deleted_utc > 0:
-        return {'html': lambda: render_template("embeds/comment_removed.html", c=comment),
-                'api': lambda: {'error': f'Comment {cid} has been removed'}
-                }
+        if request.path.startswith("/api/"):
+            return jsonify({'error': f'Comment {cid} has been removed'}), 410
+        return render_template("embeds/comment_removed.html", c=comment), 410
 
     if comment.board.is_banned:
         abort(410)

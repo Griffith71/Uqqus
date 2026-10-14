@@ -74,7 +74,7 @@ def test_the_guard_asks_the_viewer_of_the_request_when_the_caller_names_none():
 
 def test_a_page_request_gets_a_gate_that_shows_nothing_of_the_post_and_an_api_request_a_404():
     body = func(ERRORS, "error_circle_only", "\n@app.errorhandler(403)")
-    assert "@app.errorhandler(CircleOnly)" in ERRORS and "@api()" in ERRORS.split("def error_circle_only")[0][-80:]
+    assert "@app.errorhandler(CircleOnly)" in ERRORS and "@api(error_handler=True)" in ERRORS.split("def error_circle_only")[0][-80:]
     assert 'response.headers["Cache-Control"] = "private, no-store"' in body and ", 403)" in body
     assert '"api": lambda: (jsonify({"error": "404 Not Found"}), 404)' in body
     gate = read("ruqqus", "templates", "errors", "circle_gate.html")
@@ -87,6 +87,12 @@ def test_a_page_request_gets_a_gate_that_shows_nothing_of_the_post_and_an_api_re
 def test_lists_that_ask_for_public_posts_are_the_ones_known_and_each_decision_is_recorded():
     # Every use of post_public decides whether a Circle post may appear. A Circle post has post_public = false, so a list
     # that is not changed leaves it out. Adding another use means deciding here, on purpose.
+    # front.py 4 -> 6 (2026-10-09): /random/post and /random/comment now ask for public posts only (they redirected
+    # into Circle and private-guild items).
+    # helpers/ads.py 1 (2026-10-12): no ad beside a post that is not public (a Circle or private-guild post).
+    # helpers/creator_fund_store.py 3 (2026-10-12): the creator fund counts only votes and comments on public posts.
+    # helpers/post_counts.py 1 (2026-10-13): a post's share count leaves out forward copies that are not public, so the
+    # number never hints at a private guild the post went to.
     counts = {}
     for path in (ROOT / "ruqqus").rglob("*"):
         if path.suffix in (".py", ".html") and "__pycache__" not in path.parts:
@@ -95,9 +101,9 @@ def test_lists_that_ask_for_public_posts_are_the_ones_known_and_each_decision_is
                 counts[str(path.relative_to(ROOT)).replace("\\", "/")] = n
     assert counts == {
         "ruqqus/classes/boards.py": 4, "ruqqus/classes/submission.py": 3, "ruqqus/classes/user.py": 15,
-        "ruqqus/helpers/circle_clause.py": 2, "ruqqus/helpers/circle_guard.py": 1, "ruqqus/helpers/trending_store.py": 2,
+        "ruqqus/helpers/ads.py": 1, "ruqqus/helpers/post_counts.py": 1, "ruqqus/helpers/circle_clause.py": 2, "ruqqus/helpers/creator_fund_store.py": 3, "ruqqus/helpers/circle_guard.py": 1, "ruqqus/helpers/trending_store.py": 2,
         "ruqqus/routes/chat.py": 1, "ruqqus/routes/circles.py": 1, "ruqqus/routes/curations.py": 2,
-        "ruqqus/routes/deletion_log.py": 2, "ruqqus/routes/front.py": 4, "ruqqus/routes/legal.py": 1,
+        "ruqqus/routes/deletion_log.py": 2, "ruqqus/routes/front.py": 6, "ruqqus/routes/legal.py": 1,
         "ruqqus/routes/posts.py": 2, "ruqqus/routes/search.py": 2, "ruqqus/templates/comments.html": 1,
     }, counts
 
@@ -121,7 +127,7 @@ def test_the_circle_condition_is_only_for_posts_made_for_an_account_circle():
 
 def test_the_rss_feed_carries_nothing_made_for_a_circle():
     feeds = read("ruqqus", "routes", "feeds.py")
-    assert "posts = [p for p in get_posts(ids, sort=sort, v=user) if not p.audience]" in feeds
+    assert "posts = [p for p in get_posts(ids, sort=sort, v=user) if not p.audience and not p.hidden_by_guild]" in feeds
     # and a text post (no link, no picture) no longer breaks the whole feed
     assert feeds.index('if post.url:') < feeds.index('doc.stag("link", href=post.url)')
     assert feeds.index('if image_url:') < feeds.index('doc.stag("media:thumbnail", url=image_url)')

@@ -5,8 +5,10 @@ from sqlalchemy.orm import lazyload
 import random
 
 from ruqqus.helpers.wrappers import *
-from ruqqus.helpers.visibility import filter_posts, filter_comments, filter_boards, viewer_level
+from ruqqus.helpers.visibility import filter_posts, filter_comments, filter_boards, filter_users, viewer_level, FILTERED_SUBCATS
 from ruqqus.helpers.muting import hide_muted
+from ruqqus.helpers.post_feedback import hide_fewer
+from ruqqus.helpers.blocks import hide_blocked
 from ruqqus.helpers.get import *
 from flask import session as flask_session
 
@@ -33,7 +35,7 @@ def slash_post():
 @api("read")
 def notifications(v):
 
-    page = int(request.args.get('page', 1))
+    page = page_number()
     all_ = request.args.get('all', False)
 
     cids = v.notification_commentlisting(page=page,
@@ -49,8 +51,7 @@ def notifications(v):
 
     listing = []
     for c in comments:
-        c._is_blocked = False
-        c._is_blocking = False
+        # comments by accounts blocked either way are left out of the list (User.notification_commentlisting)
         c.nested_comments = []
         if c.author_id == 1:
             c._is_system = True
@@ -87,7 +88,7 @@ def notifications(v):
 @api("read")
 def notifications_posts(v):
 
-    page=int(request.args.get("page", 1))
+    page=page_number()
 
     pids=v.notification_postlisting(
         page=page,
@@ -105,8 +106,14 @@ def notifications_posts(v):
                             next_exists=next_exists,
                             page=page,
                             is_notification_page=True),
-            'api': lambda: jsonify({"data": [x.json for x in listing]})
+            'api': lambda: jsonify({"data": [x.json for x in posts]})
             }
+
+def viewer_sticky(v):
+    """The site-wide sticky post, if this viewer's word filter, mutes and blocks let them see it."""
+    q = g.db.query(Submission.id).filter_by(stickied=True, is_banned=False).filter(Submission.deleted_utc == 0)
+    return hide_blocked(hide_muted(filter_posts(q, v), v, Submission), v, Submission).first()
+
 
 @cache.memoize(timeout=900)
 def frontlist(v=None, sort=None, page=1,
@@ -145,6 +152,8 @@ def frontlist(v=None, sort=None, page=1,
 
     posts = filter_posts(posts, v)
     posts = hide_muted(posts, v, Submission)
+    # posts the viewer asked to see fewer of leave All (helpers/post_feedback.py)
+    posts = hide_fewer(posts, v, Submission)
     
     if v and v.hide_bot:
         posts = posts.filter(Submission.is_bot==False)
@@ -172,16 +181,8 @@ def frontlist(v=None, sort=None, page=1,
             )
         )
 
-        blocking = select(UserBlock.target_id).filter_by(
-            user_id=v.id
-        ).subquery()
-        # blocked = g.db.query(
-        #     UserBlock.user_id).filter_by(
-        #     target_id=v.id).subquery()
-        posts = posts.filter(
-            Submission.author_id.notin_(blocking) #,
-        #    Submission.author_id.notin_(blocked)
-        )
+        # blocked either way (helpers/blocks.py)
+        posts = hide_blocked(posts, v, Submission)
 
         board_blocks = select(BoardBlock.board_id).filter_by(
             user_id=v.id
@@ -210,7 +211,9 @@ def frontlist(v=None, sort=None, page=1,
             Submission.board).filter_by(
             all_opt_out=False)
 
-    
+    # a banned guild's posts leave every feed (search, trending and Following already do this)
+    posts = posts.filter(Board.is_banned == False)
+
     if categories:
         posts=posts.filter(Board.subcat_id.in_(tuple(categories)))
 
@@ -225,7 +228,7 @@ def frontlist(v=None, sort=None, page=1,
 
     if viewer_level(v) > 0:
         posts=posts.filter(
-            Board.subcat_id.notin_([44, 108]) 
+            Board.subcat_id.notin_(FILTERED_SUBCATS)
             )
 
     posts=posts.filter(Submission.board_id!=1)
@@ -395,10 +398,12 @@ def inject_sidebar_filter_data():
         for name, id_, catname in ALL_SUBCATS
     ]
 
+    # an error page can render before before_request opened g.db (the rate
+    # limiter answers first); it gets an empty region list instead of a 500
     regions_catalog = [
         {"value": r.code, "label": r.current_name, "search": r.current_name}
         for r in sidebar_regions()
-    ]
+    ] if getattr(g, 'db', None) is not None else []
 
     sorted_languages = sorted(LANGUAGE_NAMES.items(), key=lambda x: x[1])
     languages_catalog = [
@@ -459,7 +464,7 @@ Optional query parameters:
 
         sort=request.args.get("sort",defaultsorting)
         t=request.args.get('t', defaulttime)
-        page=max(int(request.args.get("page",1)),0)
+        page=max(page_number(),0)
         ignore_pinned = bool(request.args.get("ignore_pinned", False))
 
         region_codes, language_codes, subcat_ids = _resolve_active_filters(v)
@@ -490,7 +495,7 @@ Optional query parameters:
 
         # If page 1, check for sticky
         if page == 1 and not ignore_pinned:
-            sticky = g.db.query(Submission.id).filter_by(stickied=True).first()
+            sticky = viewer_sticky(v)
 
 
             if sticky:
@@ -550,7 +555,7 @@ Optional query parameters:
 
     sort = request.args.get("sort", defaultsorting)
     t = request.args.get('t', defaulttime)
-    page = max(int(request.args.get("page", 1)), 1)
+    page = max(page_number(), 1)
     ignore_pinned = bool(request.args.get("ignore_pinned", False))
 
     region_codes, language_codes, subcat_ids = _resolve_active_filters(v)
@@ -584,7 +589,7 @@ Optional query parameters:
     ids = ids[0:25]
 
     if page == 1 and not ignore_pinned:
-        sticky = g.db.query(Submission.id).filter_by(stickied=True).first()
+        sticky = viewer_sticky(v)
         if sticky:
             ids = [sticky.id] + ids
 
@@ -673,7 +678,7 @@ Optional query parameters:
         flask_session['base_feed'] = 'all'
         flask_session.modified = True
 
-    page = int(request.args.get("page") or 1)
+    page = page_number()
 
     # prevent invalid paging
     page = max(page, 1)
@@ -712,7 +717,7 @@ Optional query parameters:
    # If page 1, check for sticky
     if page == 1 and not ignore_pinned:
         sticky = []
-        sticky = g.db.query(Submission.id).filter_by(stickied=True).first()
+        sticky = viewer_sticky(v)
         if sticky:
             ids = [sticky.id] + ids
     # check if ids exist
@@ -761,7 +766,7 @@ Optional query parameters:
 * `page` - Page of results to return. Default `1`.
 """
 
-    page = int(request.args.get("page") or 1)
+    page = page_number()
     page = max(page, 1)
 
     if v:
@@ -824,7 +829,7 @@ Optional query parameters:
     ids = ids[0:25]
 
     if page == 1 and not ignore_pinned:
-        sticky = g.db.query(Submission.id).filter_by(stickied=True).first()
+        sticky = viewer_sticky(v)
         if sticky:
             ids = [sticky.id] + ids
     posts = get_posts(ids, sort=sort, v=v)
@@ -931,11 +936,15 @@ def subcat(name, v):
     sort=request.args.get("sort",defaultsorting)
     t=request.args.get('t', defaulttime)
 
-    page = int(request.args.get("page") or 1)
+    page = page_number()
 
     # prevent invalid paging
     page = max(page, 1)
-    
+
+    # subcategories are numeric ids, joined with "+"
+    if not all(x.isascii() and x.isdigit() for x in name.split("+")):
+        abort(404)
+
     if "+" in name:
         ids = []
         for name in name.split("+"):
@@ -991,8 +1000,10 @@ def subcat(name, v):
 def guild_ids(sort="subs", page=1, cats=[], filter_level=1):
     # cutoff=int(time.time())-(60*60*24*30)
 
-    guilds = g.db.query(Board).filter_by(is_banned=False).filter(
-        Board.subcat_id != 108
+    # a Circle guild is found by invitation, never by browsing (its existence names its members' circle)
+    guilds = g.db.query(Board).filter_by(is_banned=False, is_circle=False).filter(
+        Board.subcat_id != 108,
+        func.lower(Board.name) != PROFILE_BOARD_NAME
     )
     guilds = filter_boards(guilds, None, level=filter_level)
 
@@ -1029,7 +1040,7 @@ Optional query parameters:
 """
 
 
-    page = int(request.args.get("page", 1))
+    page = page_number()
 
     # prevent invalid paging
     page = max(page, 1)
@@ -1080,7 +1091,7 @@ Optional query parameters:
 `page` - Page of results to return. Default `1`
 
 """
-    page = max(int(request.args.get("page", 1)), 1)
+    page = max(page_number(), 1)
 
 
     b = g.db.query(Board)
@@ -1134,7 +1145,7 @@ Optional query parameters:
 `page` - Page of results to return. Default `1`
 
 """
-    page = max(int(request.args.get("page", 1)), 1)
+    page = max(page_number(), 1)
 
     u = g.db.query(User).filter_by(is_banned=0, is_deleted=False)
 
@@ -1183,9 +1194,16 @@ def random_post(v):
             user_id=v.id).subquery()
         x = x.filter(Submission.board_id.notin_(bans))
 
-    x=x.join(Submission.board).filter(Board.is_banned==False)
+    # only what anyone may open: no Circle or private-guild posts (the redirect itself names them)
+    x=x.join(Submission.board).filter(
+        Board.is_banned==False,
+        Board.is_private==False,
+        Submission.post_public==True,
+        Submission.audience==0)
 
     total = x.count()
+    if not total:
+        abort(404)
     n = random.randint(0, total - 1)
 
     post = x.order_by(Submission.id.asc()).offset(n).limit(1).first()
@@ -1203,10 +1221,12 @@ def random_guild(v):
     x = filter_boards(x, v)
 
     if v:
-        bans = g.db.query(BanRelationship.id).filter_by(user_id=v.id).all()
+        bans = g.db.query(BanRelationship.board_id).filter_by(user_id=v.id).all()
         x = x.filter(Board.id.notin_([i[0] for i in bans]))
 
     total = x.count()
+    if not total:
+        abort(404)
     n = random.randint(0, total - 1)
 
     board = x.order_by(Board.id.asc()).offset(n).limit(1).first()
@@ -1219,13 +1239,26 @@ def random_guild(v):
 def random_comment(v):
 
     x = g.db.query(Comment).filter_by(is_banned=False,
-                                      is_bot=False).filter(Comment.parent_submission.isnot(None))
+                                      is_bot=False).filter(Comment.parent_submission.isnot(None),
+                                                           Comment.deleted_utc == 0)
     x = filter_comments(x, v)
     if v:
-        bans = g.db.query(BanRelationship.id).filter_by(user_id=v.id).all()
+        bans = g.db.query(BanRelationship.board_id).filter_by(user_id=v.id).all()
         x = x.filter(Comment.board_id.notin_([i[0] for i in bans]))
 
+    # only comments on posts anyone may open (see random_post)
+    open_posts = select(Submission.id).join(Submission.board).where(
+        Submission.is_banned == False,
+        Submission.deleted_utc == 0,
+        Submission.post_public == True,
+        Submission.audience == 0,
+        Board.is_banned == False,
+        Board.is_private == False)
+    x = x.filter(Comment.parent_submission.in_(open_posts))
+
     total = x.count()
+    if not total:
+        abort(404)
     n = random.randint(0, total - 1)
     comment = x.order_by(Comment.id.asc()).offset(n).limit(1).first()
 
@@ -1238,9 +1271,12 @@ def random_user(v):
     x = g.db.query(User).filter(or_(User.is_banned == 0, and_(
         User.is_banned > 0, User.unban_utc < int(time.time()))))
 
-    x = x.filter_by(is_private=False)
+    x = x.filter_by(is_private=False, is_deleted=False)
+    x = filter_users(x, v)
 
     total = x.count()
+    if not total:
+        abort(404)
     n = random.randint(0, total - 1)
 
     user = x.offset(n).limit(1).first()
@@ -1251,8 +1287,12 @@ def random_user(v):
 @cache.memoize(600)
 def comment_idlist(page=1, v=None, **kwargs):
 
+    # never a banned guild or a post the site's admins removed, nor a guild the viewer filtered out (as All)
     posts = g.db.query(Submission).options(
-        lazyload('*')).join(Submission.board)
+        lazyload('*')).join(Submission.board).filter(
+        Board.is_banned == False, Submission.is_banned == False)
+    if v:
+        posts = posts.filter(Submission.board_id.notin_(select(BoardBlock.board_id).filter_by(user_id=v.id)))
 
     if v and v.admin_level >= 4:
         pass
@@ -1296,12 +1336,12 @@ def comment_idlist(page=1, v=None, **kwargs):
             target_id=v.id).subquery()
 
         comments = comments.filter(
-            Comment.author_id.notin_(blocking),
-            Comment.author_id.notin_(blocked)
+            or_(Comment.author_id.notin_(blocking), Comment.is_anonymous == True),
+            or_(Comment.author_id.notin_(blocked), Comment.is_anonymous == True)
         )
 
-    if not v or not v.admin_level >= 3:
-        comments = comments.filter_by(is_banned=False).filter(Comment.deleted_utc == 0)
+    # removed and deleted comments belong on the logs, not here, for admins too
+    comments = comments.filter_by(is_banned=False).filter(Comment.deleted_utc == 0)
 
     comments = comments.join(posts, Comment.parent_submission == posts.c.id)
 
@@ -1324,7 +1364,7 @@ Optional query parameters:
 * `page` - Page of results to return. Default `1`
 """
 
-    page = int(request.args.get("page", 1))
+    page = page_number()
 
     idlist = comment_idlist(v=v,
                             page=page,

@@ -232,6 +232,7 @@ def get_post(pid, v=None, graceful=False, nSession=None, no_text=False, **kwargs
         x._is_blocking_guild = items[3] or 0
         x._is_blocking = items[4] or 0
         x._is_blocked = items[5] or 0
+        x._is_subscribed = items[6] or 0
         x.board._is_subscribed=items[6] or 0
         x._saved = items[7] or 0
         x._reposted = items[8] or 0
@@ -241,13 +242,17 @@ def get_post(pid, v=None, graceful=False, nSession=None, no_text=False, **kwargs
         from ruqqus.helpers import vote_copies
         vote_copies.attach(nSession, [x], v, int(time.time()))
 
+        # whether the viewer follows it, or already gets its comments (helpers/post_follows.py)
+        from ruqqus.helpers import post_follows
+        post_follows.attach(nSession, [x], v)
+
     else:
         items = nSession.query(
             Submission,
             # aliased(ModAction, alias=exile)
         ).options(
             lazyload('*'),
-            joinedload(Submission.submission_aux),
+            lazyload(Submission.submission_aux) if no_text else joinedload(Submission.submission_aux),   # as for a member
             joinedload(Submission.author).joinedload(User.title),
             Load(Board).lazyload('*'),
             joinedload(Submission.board),
@@ -270,11 +275,16 @@ def get_post(pid, v=None, graceful=False, nSession=None, no_text=False, **kwargs
         # x._is_exiled_for=items[1] or 0
 
     # a post made for a Circle is only for the people in it: a 404 for everyone else (CircleOnly is a 404, so a route
-    # that does not know about Circles fails closed; routes/circles.py draws a gate for a page request)
+    # that does not know about Circles fails closed; routes/errors.py draws a gate for a page request)
     if x is not None and not circle_guard.may_see_post(nSession, x, v):
         if graceful:
             return None
         raise CircleOnly(x)
+
+    if x is not None and x.is_image:
+        from flask import current_app
+        from ruqqus.helpers.media import attach as media_attach
+        media_attach.attach_image_sizes(nSession, [x], current_app.config["SERVER_NAME"])
 
     return x
 
@@ -440,6 +450,19 @@ def get_posts(pids, sort="hot", v=None):
     # the polls of the page, in a few queries (helpers/poll_store.py)
     from ruqqus.helpers import poll_store
     poll_store.attach(g.db, posts, v)
+
+    # whether the viewer follows each post, or already gets its comments (helpers/post_follows.py): two queries
+    from ruqqus.helpers import post_follows
+    post_follows.attach(g.db, posts, v)
+
+    # the shares and bookmarks the action row counts (helpers/post_counts.py): three queries for the page
+    from ruqqus.helpers import post_counts
+    post_counts.attach(g.db, posts)
+
+    # the stored size of linked-media pictures, so their room is kept before they load (one query)
+    from flask import current_app
+    from ruqqus.helpers.media import attach as media_attach
+    media_attach.attach_image_sizes(g.db, posts, current_app.config["SERVER_NAME"])
 
     return posts
 
@@ -625,8 +648,6 @@ def get_comment(cid, nSession=None, v=None, graceful=False, no_text=False, **kwa
          ).subquery()
 
     if v:
-        blocking = v.blocking.subquery()
-        blocked = v.blocked.subquery()
         vt = nSession.query(CommentVote).filter(
             CommentVote.user_id == v.id,
             CommentVote.comment_id == i).subquery()
@@ -634,7 +655,8 @@ def get_comment(cid, nSession=None, v=None, graceful=False, no_text=False, **kwa
         mod=nSession.query(ModRelationship
             ).filter_by(
             user_id=v.id,
-            accepted=True
+            accepted=True,
+            invite_rescinded=False
             ).subquery()
 
         st = nSession.query(CommentSaveRelationship).filter_by(
@@ -727,6 +749,7 @@ def get_comment(cid, nSession=None, v=None, graceful=False, no_text=False, **kwa
             Comment,
             aliased(ModAction, alias=exile)
         ).options(
+            lazyload(Comment.comment_aux) if no_text else joinedload(Comment.comment_aux),   # as for a member
             joinedload(Comment.author).joinedload(User.title),
         ).join(
             exile,
@@ -744,6 +767,13 @@ def get_comment(cid, nSession=None, v=None, graceful=False, no_text=False, **kwa
 
     # a comment under a post made for a Circle is only for the people who may see the post
     if x is not None and not circle_guard.may_see_comment(nSession or g.db, x, v):
+        if graceful:
+            return None
+        abort(404)
+
+    # a comment whose post is no longer in the database (an orphan) has no page to be shown on: every route that
+    # reads comment.post or comment.permalink would crash. A system notification has no post at all and is kept.
+    if x is not None and x.parent_submission and x.post is None:
         if graceful:
             return None
         abort(404)
@@ -776,7 +806,7 @@ def get_comments(cids, v=None, nSession=None, sort_type=None,
 
         blocked = v.blocked.subquery()
 
-        mod = g.db.query(ModRelationship).filter_by(user_id=v.id, accepted=True).subquery()
+        mod = nSession.query(ModRelationship).filter_by(user_id=v.id, accepted=True, invite_rescinded=False).subquery()
 
         st = nSession.query(CommentSaveRelationship).filter(
             CommentSaveRelationship.comment_id.in_(cids),

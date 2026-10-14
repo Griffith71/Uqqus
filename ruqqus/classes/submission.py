@@ -129,6 +129,10 @@ class Submission(Base, Stndrd, Age_times, Scores, Fuzzing):
     )
     is_pinned = Column(Boolean, default=False)
     score_best = Column(Float, default=0)
+    # tips (helpers/tips.py): every coin tipped, shown on the post; and what counts for its ranking (added to its votes
+    # in rank_hot / rank_best only, never to its score or the Top sort)
+    tip_coins = Column(Integer, default=0)
+    tip_boost = Column(Float, default=0)
     reports = relationship("Report", backref="submission")
     is_bot = Column(Boolean, default=False)
 
@@ -215,6 +219,7 @@ class Submission(Base, Stndrd, Age_times, Scores, Fuzzing):
             repost_id=self.id).order_by(Submission.created_utc.asc()).all()
 
     @property
+    @lazy
     def is_forward_copy(self):
         """True if this row was created by the Forward feature (as opposed
         to a legacy pre-Forward resubmit, which also sets repost_id but
@@ -224,6 +229,7 @@ class Submission(Base, Stndrd, Age_times, Scores, Fuzzing):
             forward_submission_id=self.id).first() is not None
 
     @property
+    @lazy
     def forwarded_by(self):
         """The user who forwarded this into its guild, if that was someone
         other than the post's own author - so the byline can read "X
@@ -239,20 +245,23 @@ class Submission(Base, Stndrd, Age_times, Scores, Fuzzing):
         return g.db.query(User).filter_by(id=rel.forwarded_by_id).first()
 
     @property
+    @lazy
     def is_comment_forward(self):
         from .board_relationships import CommentForwardRelationship
         return g.db.query(CommentForwardRelationship).filter_by(
             forwarded_submission_id=self.id).first() is not None
 
     @property
+    @lazy
     def forwarded_from_comment(self):
-        """The original Comment this post was promoted from, or None."""
+        """The original Comment this post was forwarded from, or None."""
         from .board_relationships import CommentForwardRelationship
         rel = g.db.query(CommentForwardRelationship).filter_by(
             forwarded_submission_id=self.id).first()
         return rel.comment if rel else None
 
     @property
+    @lazy
     def comment_forwarded_by(self):
         """Mirrors forwarded_by: the user who forwarded this comment into a
         post, if different from the post's own author (who stays the
@@ -264,10 +273,6 @@ class Submission(Base, Stndrd, Age_times, Scores, Fuzzing):
         if not rel or rel.forwarded_by_id == self.author_id:
             return None
         return g.db.query(User).filter_by(id=rel.forwarded_by_id).first()
-
-    @property
-    def is_archived(self):
-        return int(time.time()) - self.created_utc > 60 * 60 * 24 * 180
 
     @property
     @lazy
@@ -302,6 +307,14 @@ class Submission(Base, Stndrd, Age_times, Scores, Fuzzing):
         cutoff = now - (60 * 60 * 24 * 180)
 
         return self.created_utc < cutoff
+
+    def in_private_guild_for(self, v):
+        """True when `v` may not read this post because it is in a guild they can't view (the rule the
+        post page applies in rendered_page). Every other way of reading or acting on a post by id (JSON,
+        embeds, history, votes, bookmarks, gifts, forwards) asks this too. The author always passes."""
+        if v and v.id == self.author_id:
+            return False
+        return not self.is_public and not self.is_pinned and not self.board.can_view(v)
 
     def rendered_page(self, comment=None, comment_info=None, v=None):
 
@@ -424,7 +437,7 @@ class Submission(Base, Stndrd, Age_times, Scores, Fuzzing):
             return f"https://i.ruqqus.com/posts/{self.base36id}/thumb.png"
         elif self.is_image:
             return self.url
-        elif self.is_repost:
+        elif self.is_repost and self.reposts:
             # a forward's thumbnail generation isn't run separately -
             # inherit the primary post's once it's ready
             return self.reposts.thumb_url
@@ -449,7 +462,7 @@ class Submission(Base, Stndrd, Age_times, Scores, Fuzzing):
 
     @property
     @lazy
-    def is_crosspost(self):
+    def links_to_post(self):
         return bool((self.domain==app.config["SERVER_NAME"]) and re.match(r"^https?://[a-zA-Z0-9_.-]+/\+\w+/post/(\w+)(/[a-zA-Z0-9_-]+/?)?$", self.url))
     
 
@@ -488,13 +501,14 @@ class Submission(Base, Stndrd, Age_times, Scores, Fuzzing):
                 'upvotes': self.upvotes_fuzzed,
                 'downvotes': self.downvotes_fuzzed,
                 'award_count': self.award_count,
+                'tip_coins': self.tip_coins or 0,
                 'is_offensive': self.is_offensive,
                 'meta_title': self.meta_title,
                 'meta_description': self.meta_description,
                 'is_pinned': self.is_pinned,
                 'is_distinguished': bool(self.distinguish_level),
                 'is_heralded': bool(self.gm_distinguish),
-                'is_crosspost': self.is_crosspost,
+                'is_crosspost': self.links_to_post,   # the API's name, kept
                 'herald_guild': self.distinguished_board.name if self.gm_distinguish else None
                 }
         if self.ban_reason:
@@ -526,8 +540,21 @@ class Submission(Base, Stndrd, Age_times, Scores, Fuzzing):
                     'permalink': self.permalink,
                     'guild_name': self.board.name
                     }
+        elif self.hidden_by_guild and not self._guild_hide_lifted_for(anonymity.current_viewer()):
+            # the page shows "Removed by guildmasters" for this copy; the JSON says the same, without its text
+            return {'is_banned': False,
+                    'is_deleted': False,
+                    'hidden_by_guild': True,
+                    'id': self.base36id,
+                    'permalink': self.permalink,
+                    'guild_name': self.board.name
+                    }
 
         return self.json_raw
+
+    def _guild_hide_lifted_for(self, v):
+        """Who still reads a guild-hidden copy: its author and the guild's content moderators."""
+        return bool(v and (v.id == self.author_id or self.board.has_mod(v, "content")))
 
     @property
     def json(self):
@@ -540,7 +567,7 @@ class Submission(Base, Stndrd, Age_times, Scores, Fuzzing):
         data["author"]=None if anonymity.identity_hidden(self, anonymity.current_viewer()) else self.author.json_core
         data["guild"]=self.board.json_core
         data["original_guild"]=self.original_board.json_core if not self.board_id==self.original_board_id else None
-        data["comment_count"]: self.comment_count
+        data["comment_count"] = self.comment_count
 
     
         if "nested_comments" in self.__dict__:
@@ -562,6 +589,13 @@ class Submission(Base, Stndrd, Age_times, Scores, Fuzzing):
     @property
     def voted(self):
         return self._voted if "_voted" in self.__dict__ else 0
+
+    @property
+    def follow_state(self):
+        """What the post menu offers the viewer (helpers/post_follows.py `attach`): None (a visitor),
+        "own" (they are told of its comments anyway: the author, or on a copy the forwarder),
+        "following" or "can_follow"."""
+        return self.__dict__.get("_follow_state")
 
     @property
     def voted_elsewhere(self):
@@ -652,7 +686,7 @@ class Submission(Base, Stndrd, Age_times, Scores, Fuzzing):
 
     @property
     def meta_title(self):
-        return self.submission_aux.meta_title or (self.reposts.meta_title if self.is_repost else "")
+        return self.submission_aux.meta_title or (self.reposts.meta_title if self.is_repost and self.reposts else "")
 
     @meta_title.setter
     def meta_title(self, x):
@@ -661,7 +695,7 @@ class Submission(Base, Stndrd, Age_times, Scores, Fuzzing):
 
     @property
     def meta_description(self):
-        return self.submission_aux.meta_description or (self.reposts.meta_description if self.is_repost else "")
+        return self.submission_aux.meta_description or (self.reposts.meta_description if self.is_repost and self.reposts else "")
 
     @meta_description.setter
     def meta_description(self, x):
@@ -670,7 +704,7 @@ class Submission(Base, Stndrd, Age_times, Scores, Fuzzing):
 
     @property
     def preview_image_url(self):
-        return self.submission_aux.preview_image_url or (self.reposts.preview_image_url if self.is_repost else "")
+        return self.submission_aux.preview_image_url or (self.reposts.preview_image_url if self.is_repost and self.reposts else "")
 
     @preview_image_url.setter
     def preview_image_url(self, x):
@@ -686,9 +720,7 @@ class Submission(Base, Stndrd, Age_times, Scores, Fuzzing):
         elif not perm:
             return True
         else:
-            return mod.perm_full or mod.__dict__[f"perm_{perm}"]
-
-        return output
+            return mod.perm_full or mod.__dict__.get(f"perm_{perm}", False)
 
     @property
     def is_blocking_guild(self):
@@ -720,6 +752,24 @@ class Submission(Base, Stndrd, Age_times, Scores, Fuzzing):
     @property
     def flag_count(self):
         return len(self.flags)
+
+    def _counted(self):
+        """Shares and bookmarks for the action row: attached for a page by get_posts (helpers/post_counts.py), or
+        counted for this post alone on first use."""
+        if "_share_count" not in self.__dict__:
+            from ruqqus.helpers import post_counts
+            post_counts.attach(g.db, [self])
+        return self.__dict__["_share_count"], self.__dict__["_bookmark_count"]
+
+    @property
+    def share_count(self):
+        """Reposts and live public forwards of this post's family (helpers/post_counts.py)."""
+        return self._counted()[0]
+
+    @property
+    def bookmark_count(self):
+        """How many people bookmarked this post (never who)."""
+        return self._counted()[1]
 
     @property
     def repost_count(self):
@@ -816,8 +866,14 @@ class Submission(Base, Stndrd, Age_times, Scores, Fuzzing):
         return bool(self._own_is_image) and is_media_url(self.url, app.config["SERVER_NAME"])
 
     @property
+    def image_size(self):
+        """(width, height) of a linked-media picture, set for a page of posts by get_posts
+        (media.attach.attach_image_sizes); None when unknown."""
+        return self.__dict__.get("_image_size")
+
+    @property
     def is_image(self):
-        return bool(self._own_is_image) or bool(self.is_repost and self.reposts.is_image)
+        return bool(self._own_is_image) or bool(self.is_repost and self.reposts and self.reposts.is_image)
 
     @is_image.setter
     def is_image(self, other):

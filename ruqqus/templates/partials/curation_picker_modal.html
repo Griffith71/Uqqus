@@ -1,0 +1,34 @@
+{#
+  "Add to curation": the sheet a signed-in member opens from a post's menu (assets/js/curation_picker.js).
+  It lists their own curations (GET /api/curations/mine?post=<id>) and, for each, adds the post's author or its
+  guild (POST /api/post/<id>/add_to_curation). The author is offered only when the post is not anonymous.
+  Every name goes in as text. Included once per page, for members, outside the side-panel frames.
+#}
+<div class="modal fade" id="curationPickerModal" tabindex="-1" role="dialog" aria-labelledby="curationPickerTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="curationPickerTitle">Add to curation</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true"><i class="fas fa-times"></i></span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <fieldset id="curation-picker-what" class="mb-3">
+          <legend class="text-small text-muted mb-2">Add</legend>
+          <div class="custom-control custom-radio" id="curation-picker-author-row">
+            <input type="radio" class="custom-control-input" id="curation-picker-author" name="curation-picker-what" value="author">
+            <label class="custom-control-label" for="curation-picker-author" id="curation-picker-author-label">The author</label>
+          </div>
+          <div class="custom-control custom-radio" id="curation-picker-guild-row">
+            <input type="radio" class="custom-control-input" id="curation-picker-guild" name="curation-picker-what" value="guild">
+            <label class="custom-control-label" for="curation-picker-guild" id="curation-picker-guild-label">The guild</label>
+          </div>
+        </fieldset>
+        <div id="curation-picker-list" class="curation-picker-list" aria-live="polite"></div>
+        <a id="curation-picker-create" class="btn btn-link px-0 mt-2" href="/curations/create">Create a curation</a>
+        <div id="curation-picker-status" class="text-small mt-2" role="status"></div>
+      </div>
+    </div>
+  </div>
+</div>

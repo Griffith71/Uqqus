@@ -9,6 +9,7 @@ from sqlalchemy.orm import lazyload
 from ruqqus.helpers.wrappers import *
 from ruqqus.helpers.visibility import filter_posts, viewer_level
 from ruqqus.helpers.muting import hide_muted
+from ruqqus.helpers.blocks import hide_blocked
 from ruqqus.helpers.get import *
 from ruqqus.classes import *
 from ruqqus.__main__ import app, cache
@@ -17,6 +18,7 @@ from ruqqus.helpers.regions import REGION_CENTROIDS
 from ruqqus.helpers.languages import LANGUAGE_NAMES
 from ruqqus.helpers.base36 import base36decode
 from ruqqus.helpers import curation_feed, feed_algorithm, feed_server, safe_fetch
+from ruqqus.helpers import curation_members
 from urllib.parse import quote
 
 PREVIEW_POSTS = 10
@@ -51,7 +53,8 @@ def _viewable(posts, v):
     posts = posts.filter(
         Submission.is_banned == False,
         Submission.deleted_utc == 0,
-        Submission.stickied == False
+        Submission.stickied == False,
+        Submission.board_id.notin_(select(Board.id).where(Board.is_banned == True))
     )
 
     posts = filter_posts(posts, v)
@@ -73,8 +76,7 @@ def _viewable(posts, v):
                 Submission.board_id.in_(c)
             )
         )
-        blocking = select(UserBlock.target_id).filter_by(user_id=v.id)
-        posts = posts.filter(Submission.author_id.notin_(blocking))
+        posts = hide_blocked(posts, v, Submission)   # blocked either way (helpers/blocks.py)
         board_blocks = select(BoardBlock.board_id).filter_by(user_id=v.id)
         posts = posts.filter(Submission.board_id.notin_(board_blocks))
     else:
@@ -330,7 +332,7 @@ def curation_detail(slug, v):
     sort = request.args.get("sort")
     t = request.args.get("t")
     try:
-        page = max(1, int(request.args.get("page") or 1))
+        page = page_number()
     except ValueError:
         abort(400)
 
@@ -457,9 +459,11 @@ def curation_add_guild(slug, v):
     if not board:
         abort(404)
 
-    exists = g.db.query(CurationGuild).filter_by(curation_id=curation.id, board_id=board.id).first()
-    if not exists:
-        g.db.add(CurationGuild(curation_id=curation.id, board_id=board.id, created_utc=int(time.time())))
+    refusal = curation_members.guild_refusal(False, board, curation.is_private)
+    if refusal:
+        return jsonify({"error": refusal}), 409
+
+    if curation_members.add_guild(g.db, curation.id, board.id):
         g.db.commit()
         _invalidate_curation_feed(curation.id)
 
@@ -490,9 +494,11 @@ def curation_add_user(slug, v):
     if not target:
         abort(404)
 
-    exists = g.db.query(CurationUser).filter_by(curation_id=curation.id, target_user_id=target.id).first()
-    if not exists:
-        g.db.add(CurationUser(curation_id=curation.id, target_user_id=target.id, created_utc=int(time.time())))
+    refusal = curation_members.author_refusal(False, target)
+    if refusal:
+        return jsonify({"error": refusal}), 409
+
+    if curation_members.add_user(g.db, curation.id, target.id):
         g.db.commit()
         _invalidate_curation_feed(curation.id)
 
@@ -510,6 +516,74 @@ def curation_remove_user(slug, target_user_id, v):
     _invalidate_curation_feed(curation.id)
 
     return redirect(curation.permalink + "/edit")
+
+
+def _post_for_curation(pid, v):
+    """A post the caller may read (the same checks as every route that loads a post by id)."""
+    from ruqqus.routes.post_follows import _post_or_404
+    return _post_or_404(pid, v)
+
+
+@app.route("/api/curations/mine", methods=["GET"])
+@auth_required
+def curations_mine(v):
+    """The caller's own curations for the "Add to curation" sheet, and what can be added for `?post=<id>`:
+    whether the post's author and guild are in each. The author is named only when it may be added (never for
+    an anonymous post)."""
+    post = _post_for_curation(request.args.get("post", ""), v)
+    board = post.board
+    account = None if post.is_anonymous else post.author
+    can = curation_members.offered(post, board, account)
+
+    curations = g.db.query(Curation).filter_by(owner_id=v.id).order_by(Curation.created_utc.desc()).all()
+    rows = []
+    for curation in curations:
+        rows.append({
+            "slug": curation.slug,
+            "name": curation.name,
+            "private": bool(curation.is_private),
+            "has_author": bool(can["author"] and curation_members.has_user(g.db, curation.id, post.author_id)),
+            "has_guild": bool(can["guild"] and curation_members.has_guild(g.db, curation.id, board.id)),
+            "guild_ok": bool(can["guild"] and not curation_members.guild_refusal(post.is_profile_post, board, curation.is_private)),
+        })
+
+    return jsonify({
+        "curations": rows,
+        "author": {"username": account.username} if can["author"] else None,
+        "guild": {"name": board.name} if can["guild"] else None,
+        "create_url": "/curations/create",
+    })
+
+
+@app.route("/api/post/<pid>/add_to_curation", methods=["POST"])
+@auth_required
+@validate_formkey
+def post_add_to_curation(pid, v):
+    """Add the post's author or its guild to one of the caller's curations."""
+    post = _post_for_curation(pid, v)
+    curation = _owned_curation_or_404(request.form.get("curation", "").strip(), v)
+    what = request.form.get("what", "")
+    if what not in curation_members.WHAT:
+        return jsonify({"error": "Choose the author or the guild."}), 400
+
+    if what == "author":
+        refusal = curation_members.author_refusal(bool(post.is_anonymous), post.author)
+        if refusal:
+            return jsonify({"error": refusal}), 409
+        added = curation_members.add_user(g.db, curation.id, post.author_id)
+        label = f"@{post.author.username}"
+    else:
+        refusal = curation_members.guild_refusal(post.is_profile_post, post.board, curation.is_private)
+        if refusal:
+            return jsonify({"error": refusal}), 409
+        added = curation_members.add_guild(g.db, curation.id, post.board_id)
+        label = f"+{post.board.name}"
+
+    if added:
+        g.db.commit()
+        _invalidate_curation_feed(curation.id)
+        return jsonify({"message": f"{label} added to {curation.name}."})
+    return jsonify({"message": f"{label} is already in {curation.name}."})
 
 
 @app.route("/&<slug>/set_region_filter", methods=["POST"])

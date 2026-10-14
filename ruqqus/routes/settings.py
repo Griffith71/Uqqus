@@ -15,6 +15,7 @@ from ruqqus.helpers.discord import remove_user, set_nick
 from ruqqus.helpers.aws import *
 from ruqqus.helpers.chat_permissions import on_block_created
 from ruqqus.helpers import circle_store
+from ruqqus.helpers import post_feedback as post_feedback_rules
 from ruqqus.mail import *
 from .front import frontlist
 from ruqqus.__main__ import app, cache
@@ -408,16 +409,6 @@ def settings_delete_banner(v):
                            msg="Banner successfully removed.")
 
 
-@app.route("/settings/toggle_collapse", methods=["POST"])
-@auth_required
-@validate_formkey
-def settings_toggle_collapse(v):
-
-    flask_session["sidebar_collapsed"] = not flask_session.get("sidebar_collapsed", False)
-
-    return "", 204
-
-
 @app.route("/settings/read_announcement", methods=["POST"])
 @auth_required
 @validate_formkey
@@ -553,7 +544,7 @@ def settings_block_user(v):
         return jsonify({"error": f"You have already blocked @{user.username}."}), 409
 
     if user.id == 1:
-        return jsonify({"error": "You can't block @{user.username}."}), 409
+        return jsonify({"error": f"You can't block @{user.username}."}), 409
 
     if user.is_deleted:
         return jsonify({"error": "That account has been deactivated"}), 410
@@ -569,6 +560,14 @@ def settings_block_user(v):
 
     # a block takes each of you out of the other's Circle (friends go, subscriptions end; no refund)
     circle_store.end_between(g.db, v.id, user.id)
+
+    # and ends the follows both ways (a blocked account could not follow you again either, routes/users.py)
+    g.db.query(Follow).filter(or_(and_(Follow.user_id == v.id, Follow.target_id == user.id),
+                                  and_(Follow.user_id == user.id, Follow.target_id == v.id))).delete(synchronize_session=False)
+    g.db.flush()
+    for account in (v, user):
+        account.stored_subscriber_count = account.follower_count
+        g.db.add(account)
     g.db.commit()
 
     cache.delete_memoized(v.idlist)
@@ -679,17 +678,20 @@ def settings_content_get(v):
 @auth_required
 @validate_formkey
 def settings_for_you_reset(v):
-    """Start the For You feed over. Only the date is saved: For You does not read it yet
-    (User.interest_subcats / social_proof_post_ids are where it will), but the feed lists
-    that are kept for a few minutes per member are dropped so a later change shows at once."""
+    """Start the For You feed over. The date is saved (For You does not read it yet:
+    User.interest_subcats / social_proof_post_ids are where it will), and what the member asked with
+    "Show fewer posts like this" is forgotten, so those posts and their categories come back. The feed
+    lists that are kept for a few minutes per member are dropped so the change shows at once."""
 
     v.for_you_reset_utc = int(time.time())
     g.db.add(v)
+    post_feedback_rules.clear(g.db, v.id)
     g.db.commit()
 
     cache.delete_memoized(v.interest_subcats)
     cache.delete_memoized(v.social_proof_post_ids)
     cache.delete_memoized(v.for_you_idlist)
+    cache.delete_memoized(frontlist, v=v)
 
     return jsonify({"message": "Your For You feed has been reset."})
 

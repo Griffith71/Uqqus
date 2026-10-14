@@ -1,6 +1,7 @@
-"""The For You area in Settings > Content: a Reset button that saves a date. The feed does not read the date yet
-(the owner asked for the area first and the effect when For You gets a real algorithm), so the card must say so,
-and the model, schema and migration must agree on the one column."""
+"""The For You area in Settings > Content: a Reset button that saves a date and forgets what the member asked
+with "Show fewer posts like this". The feed does not read the date for upvotes and guilds yet (the owner asked for
+the area first and that effect when For You gets a real algorithm), so the card must say so, and the model,
+schema and migration must agree on the one column."""
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -37,12 +38,15 @@ def test_the_route_needs_a_login_and_the_form_key_and_only_saves_the_callers_own
     # the lists kept for a few minutes per member are dropped, so a later change shows at once
     for name in ("interest_subcats", "social_proof_post_ids", "for_you_idlist"):
         assert f"cache.delete_memoized(v.{name})" in body
+    # and what the member asked with "Show fewer posts like this" is forgotten
+    assert "post_feedback_rules.clear(g.db, v.id)" in body
 
 
 def test_the_card_is_on_the_content_settings_page_and_is_honest_about_the_effect():
     assert 'id="for-you"' in CARD and 'id="for-you-reset"' in CARD and 'id="for-you-reset-date"' in CARD
     assert "post_toast('/settings/for_you/reset'" in CARD and "confirm(" in CARD
-    assert "It does not change what you see yet." in CARD
+    assert "Everything you asked for with" in CARD and "Show fewer posts like this" in CARD
+    assert "but For You does not use it for your upvotes and guilds yet." in CARD
     assert "{{ v.for_you_reset_date }}" in CARD and "| safe" not in CARD.split('id="for-you"')[1]
 
 

@@ -1,0 +1,91 @@
+{#
+  The counted actions under a post, the same on the feed card and the post page, desktop and phone:
+  comments, shares, bookmarks and tips, in that order. The "..." menu with everything else follows them in
+  the page's own markup.
+
+  counted_actions(p, v, saved, part): `part` is "" (desktop) or "mobile-" (phone), which keeps the ids of the
+  two rows on one page apart. The ids `bookmark-<part><id>` / `unbookmark-<part><id>` are the ones
+  assets/js/bookmark_folders.js turns on when an item is filed.
+
+  - Comments: `p.comment_count`, a link to the post.
+  - Shares: `p.share_count` (reposts and live public forwards, helpers/post_counts.py), opening the share menu.
+  - Bookmarks: `p.bookmark_count`. Both states are drawn with their own count (without and with the viewer's
+    bookmark), so switching state is only showing the other one: no arithmetic in the page.
+  - Tips: `p.tip_coins`, the coins tipped (helpers/tips.py; never who). Opens the tip sheet where a tip is
+    possible: not your own post, not an anonymous one, not a deleted account (the route refuses those too).
+  Counts only: nothing here says who shared, bookmarked or tipped.
+#}
+
+{% macro _n(count) -%}
+{%- set count = count or 0 -%}
+{%- if count >= 1000000 -%}{{ "%.1f" | format(count / 1000000) | replace(".0", "") }}M
+{%- elif count >= 10000 -%}{{ (count // 1000) }}k
+{%- elif count >= 1000 -%}{{ "%.1f" | format(count / 1000) | replace(".0", "") }}k
+{%- else -%}{{ count }}{%- endif -%}
+{%- endmacro %}
+
+{% macro counted_actions(p, v, saved, part="") %}
+{% set mobile = part == "mobile-" %}
+{% set shares = p.share_count %}
+{% set bookmarks = p.bookmark_count %}
+{% set base = bookmarks - (1 if saved else 0) %}
+{% set coins = p.tip_coins or 0 %}
+
+<li class="list-inline-item post-action-item">
+  <a href="{{ p.permalink }}" class="post-action post-action-comments"{% if author_of(p, v).is_private %} rel="nofollow"{% endif %}
+     title="{{ p.comment_count }} comment{{ '' if p.comment_count == 1 else 's' }}" aria-label="{{ p.comment_count }} comment{{ '' if p.comment_count == 1 else 's' }}">
+    <i class="fas fa-comment-dots" aria-hidden="true"></i><span class="post-action-count">{{ _n(p.comment_count) }}</span>
+  </a>
+</li>
+
+<li class="list-inline-item post-action-item">
+  <div class="dropdown d-inline">
+    <a href="#" role="button" class="post-action post-action-shares" id="shareDropdownLink{{ 'Mobile' if mobile }}-{{ p.base36id }}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+       title="Share ({{ shares }} share{{ '' if shares == 1 else 's' }})" aria-label="Share, {{ shares }} share{{ '' if shares == 1 else 's' }}">
+      <i class="fas fa-share-alt" aria-hidden="true"></i><span class="post-action-count">{{ _n(shares) }}</span>
+    </a>
+    <div class="dropdown-menu border-0 shadow{% if mobile %} dropdown-menu-right{% endif %}" aria-labelledby="shareDropdownLink{{ 'Mobile' if mobile }}-{{ p.base36id }}">
+      <a class="dropdown-item copy-link" href="javascript:void(0);" role="button" data-clipboard-text="{{ p.permalink | full_link }}"><i class="fas fa-copy fa-fw"></i>Copy link</a>
+      {% if v and not p.audience %}<a class="dropdown-item share-chat-item" href="javascript:void(0);" role="button" data-share-url="{{ p.permalink | full_link }}"><i class="fas fa-paper-plane fa-fw"></i>Send in chat</a>{% endif %}
+      {# a post made for a Circle stays between the author and the Circle (circles.post_refusal) #}
+      {% if v and not p.audience %}
+      <a class="dropdown-item" href="javascript:void(0)" data-toggle="modal" data-target="#forwardPostModal" onclick="forward_postModal('{{ p.base36id }}')"><i class="fas fa-share fa-fw"></i>Forward</a>
+      <a id="repost-{{ part }}{{ p.base36id }}" class="dropdown-item{% if p.reposted %} d-none{% endif %}" href="javascript:void(0)" onclick="post_toast('/post/{{ p.base36id }}/repost', callback=function(){document.getElementById('repost-{{ part }}{{ p.base36id }}').classList.toggle('d-none');document.getElementById('unrepost-{{ part }}{{ p.base36id }}').classList.toggle('d-none');})"><i class="fas fa-retweet fa-fw"></i>Repost</a>
+      <a id="unrepost-{{ part }}{{ p.base36id }}" class="dropdown-item text-success{% if not p.reposted %} d-none{% endif %}" href="javascript:void(0)" onclick="post_toast('/post/{{ p.base36id }}/unrepost', callback=function(){document.getElementById('repost-{{ part }}{{ p.base36id }}').classList.toggle('d-none');document.getElementById('unrepost-{{ part }}{{ p.base36id }}').classList.toggle('d-none');})"><i class="fas fa-retweet fa-fw"></i>Reposted</a>
+      {% endif %}
+    </div>
+  </div>
+</li>
+
+<li class="list-inline-item post-action-item">
+  {% if v %}
+  <a id="bookmark-{{ part }}{{ p.base36id }}" href="javascript:void(0)" class="post-action post-action-bookmark{% if saved %} d-none{% endif %}"
+     onclick="post_toast('/save_post/{{ p.base36id }}', callback=function(){showBookmarked('{{ p.base36id }}', true);})"
+     title="Bookmark" aria-label="Bookmark, {{ base }} bookmark{{ '' if base == 1 else 's' }}">
+    <i class="far fa-bookmark" aria-hidden="true"></i><span class="post-action-count">{{ _n(base) }}</span>
+  </a>
+  <a id="unbookmark-{{ part }}{{ p.base36id }}" href="javascript:void(0)" class="post-action post-action-bookmark is-on{% if not saved %} d-none{% endif %}"
+     onclick="post_toast('/unsave_post/{{ p.base36id }}', callback=function(){showBookmarked('{{ p.base36id }}', false);})"
+     title="Remove bookmark" aria-label="Remove bookmark, {{ base + 1 }} bookmark{{ '' if base + 1 == 1 else 's' }}">
+    <i class="fas fa-bookmark" aria-hidden="true"></i><span class="post-action-count">{{ _n(base + 1) }}</span>
+  </a>
+  {% else %}
+  <a href="/login" class="post-action post-action-bookmark" title="Log in to bookmark" aria-label="{{ bookmarks }} bookmark{{ '' if bookmarks == 1 else 's' }}">
+    <i class="far fa-bookmark" aria-hidden="true"></i><span class="post-action-count">{{ _n(bookmarks) }}</span>
+  </a>
+  {% endif %}
+</li>
+
+<li class="list-inline-item post-action-item">
+  {% set tip_label = coins ~ " coin" ~ ("" if coins == 1 else "s") ~ " tipped" %}
+  {% if v and v.id != p.author_id and not p.is_anonymous and not author_of(p, v).is_deleted and not anon_hidden(p, v) and p.deleted_utc == 0 and not p.is_banned %}
+  <a href="javascript:void(0)" class="post-action post-action-tip" data-toggle="modal" data-target="#tipModal"
+     onclick="tipModal2('{{ p.base36id }}','post','{{ p.permalink }}','{{ author_of(p, v).username }}','{{ author_of(p, v).profile_url }}')"
+     title="Tip ({{ tip_label }})" aria-label="Tip, {{ tip_label }}">
+  {% else %}
+  <span class="post-action post-action-tip" title="{{ tip_label }}" aria-label="{{ tip_label }}">
+  {% endif %}
+    <img src="{{ asset_url('images/icons/ruqqus-coin.png') }}" alt="" width="15" height="15" class="post-action-coin"><span class="post-action-count">{{ _n(coins) }}</span>
+  {% if v and v.id != p.author_id and not p.is_anonymous and not author_of(p, v).is_deleted and not anon_hidden(p, v) and p.deleted_utc == 0 and not p.is_banned %}</a>{% else %}</span>{% endif %}
+</li>
+{% endmacro %}
