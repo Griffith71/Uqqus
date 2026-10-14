@@ -16,11 +16,13 @@ def test_rep_is_upvotes_from_others_and_is_shown_with_its_colour_and_counts():
     true_score = user.split("    def true_score(self):")[1].split("\n    @property")[0]
     assert "self.stored_karma = self.rep_upvotes" in true_score
     assert "rep_store.counts(g.db, self.id)" in user
-    for path in (("ruqqus", "templates", "default.html"), ("ruqqus", "templates", "header.html"), ("ruqqus", "templates", "userpage.html")):
+    # the navbar (desktop and phone), the profile's phone banner and its About box (the desktop profile)
+    for path, least in ((("ruqqus", "templates", "default.html"), 2), (("ruqqus", "templates", "header.html"), 2),
+                        (("ruqqus", "templates", "userpage.html"), 1), (("ruqqus", "templates", "partials", "profile_about.html"), 1)):
         src = read(*path)
         for who in re.findall(r"\{\{ (\w)\.true_score \}\}</span>", src):
             assert f'<span class="rep-count {{{{ {who}.rep_class }}}}" title="{{{{ {who}.rep_label }}}}">' in src, path
-        assert src.count("rep-count") >= 2, path
+        assert src.count("rep-count") >= least, path
 
 
 def test_the_downvote_is_red_and_the_ratio_shades_exist_in_both_stylesheets():
