@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+{% from "partials/theme.html" import theme_links %}
 <html lang="en">
 
 <head>
@@ -33,11 +34,7 @@
   integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 
   <!-- Ruqqus CSS -->
-  {% if v and session.get("dark_mode_enabled") %}
-  <link id="css-link" rel="stylesheet" href="/assets/style/main_dark.css">
-  {% else %}
-  <link id="css-link" rel="stylesheet" href="/assets/style/main.css">
-  {% endif %}
+  {{ theme_links(asset_url("style/main.css"), asset_url("style/main_dark.css")) }}
 
   <!-- Font Awesome (match main site) -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -84,7 +81,7 @@
         {{ error }}
       </span>
       <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-        <span aria-hidden="true"><i class="far fa-times"></i></span>
+        <span aria-hidden="true"><i class="fas fa-times"></i></span>
       </button>
     </div>
     {% endif %}
@@ -95,7 +92,7 @@
         {{ msg }}
       </span>
       <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-        <span aria-hidden="true"><i class="far fa-times"></i></span>
+        <span aria-hidden="true"><i class="fas fa-times"></i></span>
       </button>
     </div>
     {% endif %}
@@ -142,6 +139,9 @@
         <li class="nav-item">
           <a class="nav-link{% if request.path in ('/settings/circle', '/settings/circles') %} active{% endif %}" href="/settings/circle">Circle</a>
         </li>
+        <li class="nav-item">
+          <a class="nav-link{% if request.path=='/settings/creator_fund' %} active{% endif %}" href="/settings/creator_fund">Creator fund</a>
+        </li>
       </ul>
 
     </div>
@@ -178,6 +178,9 @@
         <li class="nav-item">
           <a class="nav-link{% if request.path in ('/settings/circle', '/settings/circles') %} active{% endif %}" href="/settings/circle" aria-label="Circle"><i class="fas fa-circle-notch text-lg mr-0"></i></a>
         </li>
+        <li class="nav-item">
+          <a class="nav-link{% if request.path=='/settings/creator_fund' %} active{% endif %}" href="/settings/creator_fund" aria-label="Creator fund"><i class="fas fa-hand-holding-heart text-lg mr-0"></i></a>
+        </li>
       </ul>
 
     </div>
@@ -194,7 +197,7 @@
         {{ error if error else request.args.get('error') }}
       </span>
       <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-        <span aria-hidden="true"><i class="far fa-times"></i></span>
+        <span aria-hidden="true"><i class="fas fa-times"></i></span>
       </button>
     </div>
     {% endif %}
@@ -205,7 +208,7 @@
         {{ msg if msg else request.args.get('msg') }}
       </span>
       <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-        <span aria-hidden="true"><i class="far fa-times"></i></span>
+        <span aria-hidden="true"><i class="fas fa-times"></i></span>
       </button>
     </div>
     {% endif %}
@@ -298,7 +301,7 @@
   </div>
 </div>
 
-<script src="/assets/js/all_js.js"></script>
+<script src="{{ asset_url('js/all_js.js') }}"></script>
 
 {% block onload %}{% endblock %}
 

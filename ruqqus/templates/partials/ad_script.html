@@ -1,0 +1,5 @@
+{# AdSense, and the script that fills the ad boxes and puts in-feed ads between post cards (routes/ads.py ads_script).
+   Google's consent banner for the UK, EEA and Switzerland comes with the AdSense tag (set up in AdSense,
+   Privacy & messaging). #}
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client={{ cfg.client }}" crossorigin="anonymous"></script>
+<script src="{{ asset_url('js/ads.js') }}" defer></script>

@@ -83,6 +83,13 @@
                       <i class="fas fa-chart-line fa-stack-1x text-danger text-base fa-inverse"></i>
                       </span><a href="/insights" class="text-body">Insights on your posts</a>
                       </li>
+                      {% if ads_configured() %}
+                      <li class="py-1"><span class="fa-stack fa-1x mr-2">
+                      <i class="fas fa-square fa-stack-2x" style="color: #c5d4f9!important; font-size: 2rem!important;"></i>
+                      <i class="fas fa-ban fa-stack-1x text-info text-base fa-inverse"></i>
+                      </span>No ads
+                      </li>
+                      {% endif %}
                       <li class="py-1"><span class="fa-stack fa-1x mr-2">
                       <i class="fas fa-square fa-stack-2x" style="color: #bef9cc!important; font-size: 2rem!important;"></i>
                       <i class="fas fa-hand-peace fa-stack-1x text-success text-base fa-inverse"></i>

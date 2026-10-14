@@ -1,0 +1,96 @@
+{% extends "docs_default.html" %}
+
+{# Paying the creator fund (routes/creator_fund.py; rules helpers/creator_fund.py, SQL helpers/creator_fund_store.py).
+   The budget is a number of coins chosen here for each month. It is never worked out from what ads earn. #}
+
+{% block sidebarblock %}{% endblock %}
+{% block sidebarLeftblock %}{% endblock %}
+
+{% block title %}
+<title>Creator fund - {{ 'SITE_NAME' | app_config }}</title>
+{% endblock %}
+
+{% block content %}
+
+<h1>Creator fund</h1>
+
+<p class="text-muted">
+  Members who take part earn a point when an established account upvotes their post or comment, or comments on
+  their post (at most {{ rules.POINTS_PER_ACCOUNT }} points from one account a month). Those with at least
+  {{ min_points }} points (<code>CREATOR_FUND_MIN_POINTS</code>) share the month's budget by points, nobody more than
+  {{ (rules.MAX_SHARE * 100) | int }}% of it. A month is paid once.
+</p>
+
+{% if msg %}<div class="alert alert-success" role="status">{{ msg }}</div>{% endif %}
+{% if error %}<div class="alert alert-danger" role="alert">{{ error }}</div>{% endif %}
+
+<form action="/admin/creator_fund" method="get" class="mb-4">
+  <div class="form-row align-items-end">
+    <div class="col-sm-4 mb-2"><label for="cf-month">Month</label><input type="month" id="cf-month" name="month" class="form-control" value="{{ month }}" required></div>
+    <div class="col-sm-4 mb-2"><label for="cf-budget">Budget (coins)</label><input type="number" id="cf-budget" name="budget" class="form-control" min="1" max="{{ rules.MAX_BUDGET }}" step="1" value="{{ budget or '' }}"></div>
+    <div class="col-sm-4 mb-2"><button type="submit" class="btn btn-secondary">Preview</button></div>
+  </div>
+</form>
+
+<h2 class="h4">{{ month_name }}</h2>
+
+{% if paid %}
+<p>Paid.</p>
+<table class="table table-sm">
+  <thead><tr><th scope="col">Member</th><th scope="col">Points</th><th scope="col">Coins</th><th scope="col">Status</th><th scope="col"></th></tr></thead>
+  <tbody>
+    {% for pid, uid, username, p, c, status in payouts %}
+    <tr>
+      <td><a href="/@{{ username }}">@{{ username }}</a></td><td>{{ p }}</td><td>{{ c }}</td><td>{{ status }}</td>
+      <td class="text-right">{% if status == 'held' %}
+        <form action="/admin/creator_fund/release/{{ pid }}" method="post" class="d-inline">
+          <input type="hidden" name="formkey" value="{{ v.formkey }}"><input type="hidden" name="month" value="{{ month }}">
+          <button type="submit" class="btn btn-sm btn-primary">Release</button>
+        </form>{% endif %}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% elif not over %}
+<p class="text-muted">This month is not over yet: it can be paid from the 1st of the next month.</p>
+{% elif not budget %}
+<p class="text-muted">Choose a budget to see who would be paid.</p>
+{% elif not lines %}
+<p class="text-muted">Nobody taking part earned points this month.</p>
+{% else %}
+<form action="/admin/creator_fund/pay" method="post">
+  <input type="hidden" name="formkey" value="{{ v.formkey }}">
+  <input type="hidden" name="month" value="{{ month }}">
+  <input type="hidden" name="budget" value="{{ budget }}">
+  <table class="table table-sm">
+    <thead><tr><th scope="col">Member</th><th scope="col">Points</th><th scope="col">Accounts</th><th scope="col">Networks</th><th scope="col">Coins</th><th scope="col">Look closer</th><th scope="col">Hold</th></tr></thead>
+    <tbody>
+      {% for line in lines %}
+      <tr{% if line.flags %} class="table-warning"{% endif %}>
+        <td><a href="/@{{ line.username }}">@{{ line.username }}</a></td>
+        <td>{{ line.points }}</td><td>{{ line.engagers }}</td><td>{{ line.networks }}</td>
+        <td>{{ line.coins if line.coins else '-' }}</td>
+        <td class="text-small">{{ line.flags | join('; ') }}</td>
+        <td>{% if line.coins %}<input type="checkbox" name="hold" value="{{ line.user_id }}" aria-label="Hold @{{ line.username }}"{% if line.flags %} checked{% endif %}>{% endif %}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  <p class="text-small text-muted">Held members get nothing until released below once the month is paid. Members flagged to look closer are held unless you untick them.</p>
+  <button type="submit" class="btn btn-primary" onclick="return confirm('Pay {{ month_name }}? This cannot be undone.')">Pay {{ month_name }}</button>
+</form>
+{% endif %}
+
+{% if months %}
+<h2 class="h4 mt-5">Paid months</h2>
+<table class="table table-sm">
+  <thead><tr><th scope="col">Month</th><th scope="col">Budget</th><th scope="col">Paid</th></tr></thead>
+  <tbody>
+    {% for m, b, p, t in months %}
+    <tr><td><a href="/admin/creator_fund?month={{ m }}">{{ m }}</a></td><td>{{ b }}</td><td>{{ p }}</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endif %}
+
+{% endblock %}

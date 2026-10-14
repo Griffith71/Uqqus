@@ -1,0 +1,10 @@
+{#
+  One ad box (routes/ads.py ad_slot; the rules are helpers/ads.py). Its height is kept before the ad arrives
+  (.ad-slot-<page> in both stylesheets), so nothing moves when it does. assets/js/ads.js asks AdSense to fill it
+  and folds the box away when AdSense has nothing to show.
+#}
+<aside class="ad-slot ad-slot-{{ page }}" aria-label="Advertisement">
+  <div class="ad-slot-label">Advertisement</div>
+  <ins class="adsbygoogle" data-ad-client="{{ cfg.client }}" data-ad-slot="{{ cfg.slots[page] }}"
+       {% if page == "feed" and cfg.feed_layout_key %}data-ad-format="fluid" data-ad-layout-key="{{ cfg.feed_layout_key }}"{% else %}data-ad-format="auto" data-full-width-responsive="true"{% endif %}></ins>
+</aside>

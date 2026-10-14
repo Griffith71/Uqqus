@@ -38,9 +38,27 @@ Ruqqus will not release your information to third parties, except:
 ### Anonymous posts and comments
 
 When you post or comment anonymously, other users see "Anonymous" instead of your name, and the post or comment is left out of your public profile, search by author and your followers' feeds. It is anonymous to other users, not to Ruqqus: the account that wrote it stays on record, is visible to you and to site administrators, and is subject to the exceptions above. Anonymity is not guaranteed against being recognised by what you write, when you write it, or by votes and Rep, which still count towards your account.
+
+### Deleting and editing
+
+Deleting a post or comment takes it off your profile, feeds and guilds, but not out of public view: its text, as it was when you deleted it, stays readable in the public [Deletion log](/log/deleted), and the history of a post or comment keeps the versions you edited away. A post or comment that a guild's moderators hide from their guild stays on your profile and is recorded in that guild's public moderation log. Content removed by the site's administrators is not shown to other users.
 {% endfilter %}
 
+{% if ads_configured() %}
+<h2 id="ads">Ads</h2>
+
+<p>{{ 'SITE_NAME' | app_config }} shows ads from Google AdSense on feeds and post pages. Premium members see no ads, and neither do accounts on the Child word filter. No ads are shown beside private, Circle or sensitive posts.</p>
+
+<p>Google and its partners use cookies and similar technology to show ads and to measure them. In the UK, the EEA and Switzerland they ask for your consent first, through Google's consent banner. You can change your choice at any time with <a href="#ads" data-ad-consent>Privacy and cookie settings</a> (also in the page footer). Elsewhere, you can turn off personalised ads in <a href="https://adssettings.google.com" rel="noopener">Google's ad settings</a>.</p>
+
+<p>How Google uses information from sites that use its services: <a href="https://policies.google.com/technologies/partner-sites" rel="noopener">policies.google.com/technologies/partner-sites</a>.</p>
+
+<p>{{ 'SITE_NAME' | app_config }} does not give Google your account, your email address or what you post: the ads see the page you are reading, as any visitor's browser does. While ads are on, a link to another site tells it only which site you came from, never which page.</p>
+{% endif %}
+
 ## 
+
+{{ ads_script(consent=True) }}
 
 <p><sup>The history of this page may be viewed <a href="https://github.com/ruqqus/ruqqus" target="_blank">on GitHub.</a></sup></p>
 

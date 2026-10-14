@@ -4,6 +4,7 @@
           <li class="list-inline-item d-none"><a href="/help/contact" class="text-gray-500">Contact</a></li>
           <li class="list-inline-item"><a href="/help/terms" class="text-gray-500">Terms</a></li>
           <li class="list-inline-item"><a href="/help/privacy" class="text-gray-500">Privacy Policy</a></li>
+          {% if ads_configured() %}<li class="list-inline-item"><a href="/help/privacy#ads" class="text-gray-500" data-ad-consent>Privacy and cookie settings</a></li>{% endif %}
           <li class="list-inline-item"><a href="/help/donate" class="text-gray-500">Donate</a></li>
           <li class="list-inline-item"><a href="/help/press" class="text-gray-500">Press</a></li>
           <li class="list-inline-item"><a href="/help" class="text-gray-500">Help</a></li>

@@ -1,0 +1,84 @@
+{% extends "settings.html" %}
+
+{% block pagetitle %}Creator fund - {{ 'SITE_NAME' | app_config }}{% endblock %}
+
+{# The creator fund, as a member sees it (routes/creator_fund.py; the rules are helpers/creator_fund.py). Only the
+   member's own points and payouts are here: nothing anywhere lists who earned what. #}
+
+{% block content %}
+<div class="row">
+  <div class="col col-lg-8">
+    <div class="settings" id="creator-fund-settings">
+
+      <h2 class="h5">Creator fund</h2>
+      <p class="text-small text-muted">
+        Each month {{ 'SITE_NAME' | app_config }} sets aside a budget of coins and shares it among the members whose posts
+        and comments other people valued most. You earn a point each time an established account upvotes one of your
+        posts or comments, or comments on one of your posts. Members with at least {{ min_points }} points in a month
+        share that month's budget by their points.
+      </p>
+
+      {% if msg %}<div class="alert alert-success" role="status">{{ msg }}</div>{% endif %}
+      {% if error %}<div class="alert alert-danger" role="alert">{{ error }}</div>{% endif %}
+
+      <div class="settings-section rounded">
+        <div class="d-lg-flex">
+          <div class="title w-lg-25"><label>{{ month_name }}</label></div>
+          <div class="body w-lg-100">
+            <span id="creator-fund-points"><strong>{{ points }}</strong> point{{ 's' if points != 1 }} so far, from {{ accounts }} account{{ 's' if accounts != 1 }}.</span>
+            <span class="d-block text-small-extra text-muted">
+              {% if points >= min_points %}Enough to share this month's budget{% if not taking_part %} if you take part{% endif %}.{% else %}{{ min_points - points }} more to share this month's budget.{% endif %}
+              Updated every few minutes.
+            </span>
+          </div>
+        </div>
+
+        <div class="d-lg-flex border-top">
+          <div class="title w-lg-25"><label for="creator-fund-agree">Take part</label></div>
+          <div class="body w-lg-100">
+            <form action="/settings/creator_fund" method="post">
+              <input type="hidden" name="formkey" value="{{ v.formkey }}">
+              {% if taking_part %}
+              <p class="mb-2">You are taking part.</p>
+              <input type="hidden" name="action" value="leave">
+              <button type="submit" class="btn btn-secondary">Leave the creator fund</button>
+              {% else %}
+              <div class="custom-control custom-checkbox mb-2">
+                <input type="checkbox" class="custom-control-input" id="creator-fund-agree" name="agree" value="1" required>
+                <label class="custom-control-label creator-fund-agree" for="creator-fund-agree">I agree to the rules below.</label>
+              </div>
+              <button type="submit" class="btn btn-primary">Take part</button>
+              {% endif %}
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <h3 class="h6 mt-4">The rules</h3>
+      <ul class="text-small creator-fund-rules">
+        <li>A point needs an account at least {{ rules.ACCOUNT_AGE_DAYS }} days old that is not banned or deleted. Your own votes and comments never count.</li>
+        <li>One account gives you at most {{ rules.POINTS_PER_ACCOUNT }} points a month, however much it votes and comments.</li>
+        <li>Only public posts and comments count: not Circle posts or posts in private guilds, and not anything removed or deleted.</li>
+        <li>Anonymous posts and comments count for you like any other. Your points and earnings are shown only to you; the site's admins see the payout list.</li>
+        <li>Nobody gets more than {{ (rules.MAX_SHARE * 100) | int }}% of a month's budget. Shares are rounded down to whole coins.</li>
+        <li>Votes or comments from accounts that are paid, fake, or run by you or for you are not allowed. A payout that relies on them can be held, and you can be taken out of the fund.</li>
+        <li>To be paid you must be taking part, have an account at least {{ rules.ACCOUNT_AGE_DAYS }} days old, and owe nothing to the site.</li>
+        <li>A month is paid after it ends, in coins added to your balance. You get a notification.</li>
+      </ul>
+
+      {% if payouts %}
+      <h3 class="h6 mt-4">Your payouts</h3>
+      <table class="table table-sm text-small">
+        <thead><tr><th scope="col">Month</th><th scope="col">Points</th><th scope="col">Coins</th></tr></thead>
+        <tbody>
+          {% for month, p, c, status in payouts %}
+          <tr><td>{{ month }}</td><td>{{ p }}</td><td>{{ c }}{% if status == 'held' %} <span class="text-muted">(on hold)</span>{% endif %}</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      {% endif %}
+
+    </div>
+  </div>
+</div>
+{% endblock %}
