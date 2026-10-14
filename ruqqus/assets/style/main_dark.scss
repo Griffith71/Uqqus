@@ -27,7 +27,7 @@ $gray-800: #16181c;
 $gray-900: #0a0a0a;
 
 $upvote: #2ca1ea;
-$downvote: #38B2AC;
+$downvote: #e8452c;       // red, as strong as $upvote's blue (was teal #38B2AC)
 $admin: #E53E3E;
 $banned: #960000;
 $deleted: #969600;
@@ -2272,6 +2272,20 @@ fieldset.search-field {
 // scroll sideways
 .post-info {
     overflow-wrap: anywhere;
+}
+
+// Votes (helpers/vote_colour.py): a count coloured by its share of upvotes, from $upvote (all up, blue) to $downvote
+// (all down, red), in eleven steps. An account's Rep, and a score for viewers who read scores as upvotes
+// (submission_listing.html, submission.html, comments.html). The ratio wins over the viewer's own vote colour: the arrows still show that.
+@for $i from 0 through 10 {
+    .vote-ratio-#{$i} {
+        color: mix($upvote, $downvote, $i * 10%) !important;
+    }
+}
+
+.rep-count {
+    cursor: help;
+    font-weight: $font-weight-bold;
 }
 
 // Tips (helpers/tips.py): the coins tipped on a comment (a post's are in its action row, partials/post_actions.html), never who tipped

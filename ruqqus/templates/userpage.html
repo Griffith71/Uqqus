@@ -107,7 +107,7 @@
         </div>
 
         <div class="font-weight-normal">
-          <span class="font-weight-bold">{{ u.true_score }}</span> rep · {% if u.stored_subscriber_count >=1 and not u.is_nofollow %}<span class="font-weight-bold">{{ u.stored_subscriber_count }}</span> subscriber{{ 's' if u.stored_subscriber_count != 1 else '' }} · {% endif %}joined <span data-toggle="tooltip" data-placement="bottom" title="" data-original-title="{{ u.created_datetime }}" class="font-weight-bold">{{ u.created_date }}</span>
+          <span class="font-weight-bold"><span class="rep-count {{ u.rep_class }}" title="{{ u.rep_label }}">{{ u.true_score }}</span></span> Rep · {% if u.stored_subscriber_count >=1 and not u.is_nofollow %}<span class="font-weight-bold">{{ u.stored_subscriber_count }}</span> subscriber{{ 's' if u.stored_subscriber_count != 1 else '' }} · {% endif %}joined <span data-toggle="tooltip" data-placement="bottom" title="" data-original-title="{{ u.created_datetime }}" class="font-weight-bold">{{ u.created_date }}</span>
         </div>
         {% if u.bio_html_for(v) %}
         <p class="text-muted">{{ u.bio_html_for(v) | safe }}</p>
@@ -198,7 +198,7 @@
           </h1>
           <div class="text-muted text-small">@{{ u.username }}</div>
         </a>
-        <div class="text-small mb-2">{{ u.true_score }} Rep</div>
+        <div class="text-small mb-2"><span class="rep-count {{ u.rep_class }}" title="{{ u.rep_label }}">{{ u.true_score }}</span> Rep</div>
         {% if u.bio_html_for(v) %}
         <p class="text-muted text-break">{{ u.bio_html_for(v) | safe }}</p>
         {% endif %}

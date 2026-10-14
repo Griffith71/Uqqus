@@ -959,9 +959,38 @@ class User(Base, Stndrd, Age_times):
             Comment.parent_submission is not None).filter_by(is_banned=False).count()
 
     @property
-    @cache.memoize(timeout=3600)
+    @cache.memoize(timeout=3600)  # 1hr, as Rep always was
+    def rep_counts(self):
+        """(upvotes, downvotes) the account's live posts and comments have had from other accounts
+        (helpers/rep_store.py)."""
+        from ruqqus.helpers import rep_store
+        return rep_store.counts(g.db, self.id)
+
+    @property
+    def rep_upvotes(self):
+        return self.rep_counts[0]
+
+    @property
+    def rep_downvotes(self):
+        return self.rep_counts[1]
+
+    @property
+    def rep_class(self):
+        """The Rep's colour, blue (all up) to red (all down): helpers/vote_colour.py."""
+        from ruqqus.helpers.vote_colour import ratio_class
+        return ratio_class(*self.rep_counts)
+
+    @property
+    def rep_label(self):
+        """What hovering the Rep says: '1,234 upvotes · 56 downvotes (96% up)'."""
+        from ruqqus.helpers.vote_colour import ratio_label
+        return ratio_label(*self.rep_counts)
+
+    @property
     def true_score(self):
-        self.stored_karma = max((self.karma + self.comment_karma), -5)
+        """Rep: the upvotes the account's posts and comments have had from other accounts. Downvotes no longer take
+        it down; they show in its colour (rep_class). The Rep gates (250 to make a guild, ...) read this."""
+        self.stored_karma = self.rep_upvotes
         return self.stored_karma
 
     @property
@@ -1550,8 +1579,9 @@ class User(Base, Stndrd, Age_times):
             return data
 
         data["badges"]=[x.json_core for x in self.badges]
-        data['post_rep']= int(self.karma)
+        data['post_rep']= int(self.karma)              # the old net scores, kept for API clients
         data['comment_rep']= int(self.comment_karma)
+        data['rep'], data['rep_downvotes'] = self.rep_counts      # Rep: upvotes from others (and the downvotes)
         data['post_count']=self.public_post_count
         data['comment_count']=self.public_comment_count
 
