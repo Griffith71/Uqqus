@@ -273,6 +273,12 @@ def delete_oauth_app(v, aid):
     aid = base36decode(aid)
     app = g.db.query(OauthApp).filter_by(id=aid).first()
 
+    # only the app's own author removes it, and with it every grant made through it (bot keys included)
+    if not app:
+        abort(404)
+    if app.author_id != v.id:
+        abort(403)
+
     for auth in g.db.query(ClientAuth).filter_by(oauth_client=app.id).all():
         g.db.delete(auth)
 
@@ -289,6 +295,12 @@ def edit_oauth_app(v, aid):
 
     aid = int(aid)
     app = g.db.query(OauthApp).filter_by(id=aid).first()
+
+    # only the app's own author edits it
+    if not app:
+        abort(404)
+    if app.author_id != v.id:
+        abort(403)
 
     app.redirect_uri = request.form.get('redirect_uri')
     app.app_name = request.form.get('name')
