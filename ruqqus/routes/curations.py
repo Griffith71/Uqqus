@@ -529,7 +529,9 @@ def _post_for_curation(pid, v):
 def curations_mine(v):
     """The caller's own curations for the "Add to curation" sheet, and what can be added for `?post=<id>`:
     whether the post's author and guild are in each. The author is named only when it may be added (never for
-    an anonymous post)."""
+    an anonymous post). With `?user=<name>` instead (a profile's menu), the same for that account."""
+    if request.args.get("user") is not None:
+        return _curations_mine_for_account(request.args.get("user", ""), v)
     post = _post_for_curation(request.args.get("post", ""), v)
     board = post.board
     account = None if post.is_anonymous else post.author
@@ -553,6 +555,44 @@ def curations_mine(v):
         "guild": {"name": board.name} if can["guild"] else None,
         "create_url": "/curations/create",
     })
+
+
+def _account_for_curation(username, v):
+    """An account the caller may add from its profile's menu: one they can see (not hidden by their word filter, no
+    block either way), and one that may be added at all (curation_members.author_refusal: not deleted or suspended)."""
+    from ruqqus.helpers.visibility import user_hidden
+    target = get_user(username, v=v, graceful=True)
+    if not target or user_hidden(target, v) or target.is_blocking or target.is_blocked:
+        abort(404)
+    return target
+
+
+def _curations_mine_for_account(username, v):
+    target = _account_for_curation(username, v)
+    can = curation_members.author_refusal(False, target) is None
+    curations = g.db.query(Curation).filter_by(owner_id=v.id).order_by(Curation.created_utc.desc()).all()
+    rows = [{"slug": c.slug, "name": c.name, "private": bool(c.is_private),
+             "has_author": bool(can and curation_members.has_user(g.db, c.id, target.id)),
+             "has_guild": False, "guild_ok": False} for c in curations]
+    return jsonify({"curations": rows, "author": {"username": target.username} if can else None, "guild": None,
+                    "create_url": "/curations/create"})
+
+
+@app.route("/api/user/<username>/add_to_curation", methods=["POST"])
+@auth_required
+@validate_formkey
+def user_add_to_curation(username, v):
+    """Add an account to one of the caller's curations, from its profile's "⋯" menu."""
+    target = _account_for_curation(username, v)
+    curation = _owned_curation_or_404(request.form.get("curation", "").strip(), v)
+    refusal = curation_members.author_refusal(False, target)
+    if refusal:
+        return jsonify({"error": refusal}), 409
+    if curation_members.add_user(g.db, curation.id, target.id):
+        g.db.commit()
+        _invalidate_curation_feed(curation.id)
+        return jsonify({"message": f"@{target.username} added to {curation.name}."})
+    return jsonify({"message": f"@{target.username} is already in {curation.name}."})
 
 
 @app.route("/api/post/<pid>/add_to_curation", methods=["POST"])

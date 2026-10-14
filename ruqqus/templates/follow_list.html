@@ -1,0 +1,80 @@
+{% extends "home.html" %}
+
+{#
+  One of a profile's lists (routes/profile_lists.py, helpers/follow_lists.py): Following, Followers, Subscribers or
+  Subscriptions. Only accounts that also allow it are listed (each row needs the other account's own setting too), so
+  a page can hold fewer than the count; it says so. A list the viewer may not open says only that it is private.
+#}
+{% block pagetype %}curations{% endblock %}
+
+{% block title %}
+<title>{{ title }} · @{{ u.username }} - {{ 'SITE_NAME' | app_config }}</title>
+<meta name="robots" content="noindex">
+{% endblock %}
+
+{% block desktopBanner %}{% endblock %}
+{% block PseudoSubmitForm %}{% endblock %}
+{% block pagenav %}{% endblock %}
+
+{% block content %}
+<div class="col px-md-4 py-4 follow-list">
+
+  <a href="{{ u.permalink }}" class="d-inline-flex align-items-center text-black mb-3">
+    <img src="{{ u.profile_url }}" alt="" width="40" height="40" class="profile-pic-40 mr-2">
+    <span><span class="d-block font-weight-bold">{{ u.username }}</span><span class="d-block text-muted text-small">@{{ u.username }}</span></span>
+  </a>
+
+  <ul class="nav settings-nav mb-3">
+    {% for key in ("following", "followers", "subscribers", "subscriptions") %}
+    {% if key != "subscribers" or lists.show_subscribers %}
+    <li class="nav-item"><a class="nav-link{% if name == key %} active{% endif %}" href="{{ lists[key].url }}"{% if name == key %} aria-current="page"{% endif %}>{{ {"following": "Following", "followers": "Followers", "subscribers": "Subscribers", "subscriptions": "Subscriptions"}[key] }}</a></li>
+    {% endif %}
+    {% endfor %}
+  </ul>
+
+  {% if closed %}
+  <div class="follow-list-closed text-center py-5">
+    <i class="fas fa-lock fa-2x text-muted mb-3"></i>
+    <h1 class="h5">@{{ u.username }} keeps this list private</h1>
+    <p class="text-muted mb-0">{{ lists[name].count }} {{ title | lower }}. Only the people @{{ u.username }} chose can see who they are.</p>
+  </div>
+  {% else %}
+  <h1 class="sr-only">{{ title }} of @{{ u.username }}</h1>
+  <div class="follow-list-rows">
+    {% for x in users %}
+    <div class="wtf-row d-flex align-items-center" id="list-row-{{ x.id }}">
+      <img src="{{ x.profile_url }}" alt="" width="40" height="40" class="profile-pic-40 mr-2">
+      <div class="wtf-main flex-grow-1">
+        <a href="{{ x.permalink }}" class="wtf-name d-block text-truncate font-weight-bold">@{{ x.username }}</a>
+        {% set bio = x.bio_for(v) %}
+        {% if bio %}<div class="text-small text-muted text-truncate">{{ bio | truncate(120, True) }}</div>{% endif %}
+      </div>
+      {% if v and x.id != v.id %}
+        {% if x.id in following %}
+        <span class="text-small text-muted ml-2">Following</span>
+        {% elif not x.is_nofollow and not x.is_private %}
+        <button type="button" class="btn btn-primary btn-sm wtf-action ml-2" data-url="/api/follow/{{ x.username }}" data-done="Following">Follow</button>
+        {% endif %}
+      {% endif %}
+    </div>
+    {% else %}
+    <p class="text-muted">{% if lists[name].count %}The accounts on this list keep it to themselves.{% else %}Nobody here yet.{% endif %}</p>
+    {% endfor %}
+  </div>
+
+  {% if hidden %}
+  <p class="text-muted text-small mt-3 mb-0"><i class="fas fa-lock mr-1"></i>Some accounts keep this private, so {{ hidden }} {{ 'isn\'t' if hidden == 1 else 'aren\'t' }} listed.</p>
+  {% endif %}
+
+  {% if page > 1 or next_exists %}
+  <nav aria-label="Pages" class="mt-3">
+    <ul class="pagination pagination-sm mb-0">
+      <li class="page-item{% if page <= 1 %} disabled{% endif %}"><a class="page-link" href="?page={{ page - 1 }}">Prev</a></li>
+      <li class="page-item{% if not next_exists %} disabled{% endif %}"><a class="page-link" href="?page={{ page + 1 }}">Next</a></li>
+    </ul>
+  </nav>
+  {% endif %}
+  {% endif %}
+
+</div>
+{% endblock %}

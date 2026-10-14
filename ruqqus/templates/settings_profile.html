@@ -273,6 +273,71 @@
 
               </div>
 
+              {# shown under the bio on your profile (helpers/profile_details.py); the region beside them comes from the site #}
+              <div class="body d-lg-flex border-bottom" id="details">
+
+                <label for="profile-job" class="text-black w-lg-25">Details</label>
+
+                <div class="w-lg-100">
+                  <p>Shown under your bio. Your region ({{ v.display_region_name }}) is shown beside them and comes from where you use {{ 'SITE_NAME' | app_config }}.</p>
+                  <form id="profile-details" action="/settings/profile" method="post">
+                    <input type="hidden" name="formkey" value="{{ v.formkey }}">
+                    <input type="hidden" name="details" value="1">
+                    <div class="form-group mb-2">
+                      <label for="profile-job" class="text-small text-muted mb-1">Job</label>
+                      <input type="text" class="form-control" id="profile-job" name="profile_job" maxlength="60" value="{{ v.profile_job or '' }}" placeholder="What you do" autocomplete="organization-title">
+                    </div>
+                    <div class="form-group mb-2">
+                      <label for="profile-location" class="text-small text-muted mb-1">Location</label>
+                      <input type="text" class="form-control" id="profile-location" name="profile_location" maxlength="60" value="{{ v.profile_location or '' }}" placeholder="Where you are, in your words">
+                    </div>
+                    <div class="form-group mb-2">
+                      <label for="profile-website" class="text-small text-muted mb-1">Website</label>
+                      <input type="text" class="form-control" id="profile-website" name="profile_website" maxlength="200" value="{{ v.profile_website or '' }}" placeholder="https://example.com" autocomplete="url" inputmode="url">
+                    </div>
+                    <div class="d-flex">
+                      <small>Each is optional. Leave one empty to remove it.</small>
+                      <input class="btn btn-primary ml-auto" id="detailsSave" type="submit" value="Save Changes">
+                    </div>
+                  </form>
+                </div>
+
+              </div>
+
+              {# who may open each list on your profile (routes/profile_lists.py, helpers/follow_lists.py) #}
+              <div class="body d-lg-flex border-bottom" id="lists">
+
+                <label for="list-following" class="text-black w-lg-25">Who can see your lists</label>
+
+                <div class="w-lg-100">
+                  <p>The numbers are always shown on your profile. This decides who can open each list and see the accounts on it. An account is only listed where its own setting allows it too.</p>
+                  <form id="list-visibility" action="/settings/list_visibility" method="post">
+                    <input type="hidden" name="formkey" value="{{ v.formkey }}">
+                    <input type="hidden" name="back" value="1">
+                    {% for key, label, help in [
+                      ("following", "Who you follow", "Following"),
+                      ("followers", "Who follows you", "Followers"),
+                      ("subscribers", "Who subscribes to your Circle", "Subscribers"),
+                      ("subscriptions", "Circles you subscribe to", "Subscriptions")] %}
+                    {% set current = v[key ~ '_visibility'] if v[key ~ '_visibility'] is not none else 2 %}
+                    <div class="form-group d-sm-flex align-items-center mb-2">
+                      <label for="list-{{ key }}" class="mb-1 mb-sm-0 flex-grow-1">{{ label }} <span class="text-muted text-small">({{ help }})</span></label>
+                      <select class="form-control w-auto" id="list-{{ key }}" name="{{ key }}">
+                        <option value="0"{{ ' selected' if current == 0 else '' }}>Everyone</option>
+                        <option value="1"{{ ' selected' if current == 1 else '' }}>Your followers</option>
+                        <option value="2"{{ ' selected' if current == 2 else '' }}>Only you</option>
+                      </select>
+                    </div>
+                    {% endfor %}
+                    <div class="d-flex">
+                      <small>Close Friends are never shown on any list.</small>
+                      <input class="btn btn-primary ml-auto" id="listsSave" type="submit" value="Save Changes">
+                    </div>
+                  </form>
+                </div>
+
+              </div>
+
               <div class="body d-lg-flex border-bottom">
                 <label for="bio" class="text-black w-lg-25">Title</label>
 

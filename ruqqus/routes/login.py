@@ -421,6 +421,9 @@ def sign_up_post(v):
             region_settled_utc=signup_utc,
             # how scores read: only 0 (upvotes, coloured; the default) or 1 (upvotes minus downvotes)
             score_display=1 if request.form.get("score_display") == "1" else 0,
+            # a new account's lists start open to everyone, as on X (existing accounts were left at Only me by the
+            # migration); the sign-up page says so and Settings > Profile changes it (helpers/follow_lists.py)
+            following_visibility=0, followers_visibility=0, subscribers_visibility=0, subscriptions_visibility=0,
             ban_evade =  int(any([x.is_suspended for x in g.db.query(User).filter(User.id.in_(tuple(flask_session.get("history", [])))).all() if x]))
             )
         apply_user_severity(new_user)

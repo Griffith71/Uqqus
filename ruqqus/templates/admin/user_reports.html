@@ -1,0 +1,36 @@
+{% extends "docs_default.html" %}
+
+{% block sidebarblock %}{% endblock %}
+{% block sidebarLeftblock %}{% endblock %}
+
+{% block title %}
+<title>Ruqqus - Reported accounts</title>
+{% endblock %}
+
+{% block content %}
+
+<h1>Reported accounts</h1>
+
+<p class="text-muted">Members report an account from the "⋯" menu on its profile (helpers/user_reports.py). A report is a request to look, not a verdict: open the profile and use its admin tools (ban, nuke content) when the account breaks the rules, then dismiss the reports. Reporters are never named, here or to the account.</p>
+
+{% for r in reports %}
+<div class="card mb-3 user-report" data-user="{{ r.user_id }}">
+  <div class="card-body">
+    <div class="d-flex justify-content-between align-items-start flex-wrap">
+      <a href="/@{{ r.username }}" target="_blank" rel="noopener" class="font-weight-bold">@{{ r.username }}</a>
+      <div class="text-muted text-small">{{ r.reports }} report{{ '' if r.reports == 1 else 's' }}</div>
+    </div>
+    <ul class="text-small mt-2 mb-2 pl-3">
+      {% for reason in r.reasons %}<li>{{ reason }}</li>{% endfor %}
+    </ul>
+    <form action="/admin/user_reports/{{ r.user_id }}/dismiss" method="post" class="d-inline">
+      <input type="hidden" name="formkey" value="{{ v.formkey }}">
+      <button class="btn btn-link btn-sm text-muted px-0">Dismiss the reports</button>
+    </form>
+  </div>
+</div>
+{% else %}
+<p class="text-muted" id="user-reports-empty">No accounts are waiting for a look.</p>
+{% endfor %}
+
+{% endblock %}

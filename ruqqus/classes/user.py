@@ -117,6 +117,15 @@ class User(Base, Stndrd, Age_times):
     for_you_reset_utc = Column(Integer, default=0)
     creator_fund_opt_in_utc = Column(Integer, default=0)     # the creator fund (helpers/creator_fund.py); 0 = not taking part
     score_display = Column(SmallInteger, default=0)   # how scores read: 0 upvotes, coloured (default); 1 upvotes minus downvotes
+    # the profile header (partials/profile_header.html): what the member writes about themselves (helpers/profile_details.py)
+    profile_job = Column(String(60), default="")
+    profile_location = Column(String(60), default="")
+    profile_website = Column(String(200), default="")
+    # who may open each list (helpers/follow_lists.py): 0 everyone, 1 followers, 2 only me (existing accounts: 2)
+    following_visibility = Column(SmallInteger, default=2)
+    followers_visibility = Column(SmallInteger, default=2)
+    subscribers_visibility = Column(SmallInteger, default=2)
+    subscriptions_visibility = Column(SmallInteger, default=2)
     hide_bot = Column(Boolean, default=False)
     show_nsfl = Column(Boolean, default=False)
     is_private = Column(Boolean, default=False)
@@ -1548,6 +1557,21 @@ class User(Base, Stndrd, Age_times):
 
     def bio_for(self, v):
         return "" if text_hidden(self.bio_severity, v, owner_id=self.id) else (self.bio or "")
+
+    def details_for(self, v):
+        """The job, location and website on the profile header (helpers/profile_details.py): job and location are
+        rated with the bio and hidden with it; the website is a link, shown unless the bio is hidden."""
+        from ruqqus.helpers.profile_details import website_label
+        if text_hidden(self.bio_severity, v, owner_id=self.id):
+            return {"job": "", "location": "", "website": "", "website_label": ""}
+        site = self.profile_website or ""
+        return {"job": self.profile_job or "", "location": self.profile_location or "",
+                "website": site, "website_label": website_label(site)}
+
+    @property
+    def joined_month(self):
+        """"October 2026", for the profile header's "Joined" line."""
+        return time.strftime("%B %Y", time.gmtime(self.created_utc))
 
     @property
     def json_core(self):

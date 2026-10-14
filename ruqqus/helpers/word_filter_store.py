@@ -85,8 +85,12 @@ def name_severity(name, db=None):
 
 
 def apply_user_severity(user, db=None):
+    from ruqqus.helpers.profile_details import rated_text
+    f = get_filter(db)
     user.name_severity = name_severity(user.username, db)
-    user.bio_severity = get_filter(db).severity_html(user.bio_html or "")
+    # the job and location on the profile header are rated with the bio, and hidden with it (User.details_for)
+    extra = rated_text(getattr(user, "profile_job", "") or "", getattr(user, "profile_location", "") or "")
+    user.bio_severity = max(f.severity_html(user.bio_html or ""), f.severity(extra) if extra else 0)
 
 
 def apply_board_severity(board, db=None):

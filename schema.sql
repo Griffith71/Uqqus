@@ -322,7 +322,14 @@ CREATE TABLE public.users (
     bio_severity smallint DEFAULT 0 NOT NULL,
     for_you_reset_utc integer DEFAULT 0 NOT NULL,
     creator_fund_opt_in_utc integer DEFAULT 0 NOT NULL,
-    score_display smallint DEFAULT 0 NOT NULL
+    score_display smallint DEFAULT 0 NOT NULL,
+    profile_job character varying(60) DEFAULT '' NOT NULL,
+    profile_location character varying(60) DEFAULT '' NOT NULL,
+    profile_website character varying(200) DEFAULT '' NOT NULL,
+    following_visibility smallint DEFAULT 2 NOT NULL,
+    followers_visibility smallint DEFAULT 2 NOT NULL,
+    subscribers_visibility smallint DEFAULT 2 NOT NULL,
+    subscriptions_visibility smallint DEFAULT 2 NOT NULL
 );
 
 
@@ -6003,6 +6010,18 @@ CREATE TABLE public.story_reports (
     resolved_utc integer DEFAULT 0 NOT NULL,
     CONSTRAINT story_reports_once UNIQUE (story_id, reporter_id)
 );
+
+CREATE TABLE public.user_reports (
+    id SERIAL PRIMARY KEY,
+    user_id integer NOT NULL,
+    reporter_id integer NOT NULL,
+    reason character varying(200) DEFAULT '' NOT NULL,
+    created_utc integer DEFAULT 0 NOT NULL,
+    resolved_utc integer DEFAULT 0 NOT NULL,
+    CONSTRAINT user_reports_once UNIQUE (user_id, reporter_id)
+);
+CREATE INDEX user_reports_open_idx ON public.user_reports (user_id) WHERE resolved_utc = 0;
+CREATE INDEX user_reports_reporter_idx ON public.user_reports (reporter_id, created_utc);
 
 CREATE INDEX media_assets_story_idx ON public.media_assets USING btree (story_id) WHERE (story_id IS NOT NULL);
 

@@ -66,5 +66,6 @@ def test_the_choice_at_sign_up_and_in_settings_takes_only_two_values():
 
 def test_schema_and_migration_agree():
     assert "ADD COLUMN IF NOT EXISTS score_display smallint NOT NULL DEFAULT 0;" in read("scripts", "migrations", "2026-10-14_score_display.sql")
-    assert "    score_display smallint DEFAULT 0 NOT NULL\n);" in read("schema.sql")
+    users = read("schema.sql").split("CREATE TABLE public.users (")[1].split(");")[0]
+    assert "    score_display smallint DEFAULT 0 NOT NULL," in users
     assert "score_display = Column(SmallInteger, default=0)" in read("ruqqus", "classes", "user.py")

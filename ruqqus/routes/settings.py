@@ -69,6 +69,35 @@ def settings_profile_post(v):
         updated = True
         v.auto_join_chat = request.values.get("join_chat", None) == 'true'
 
+    if request.values.get("details") is not None:
+        # job, location and website on the profile header (helpers/profile_details.py)
+        from markupsafe import escape
+        from ruqqus.helpers import profile_details
+        try:
+            job = profile_details.clean_text(request.values.get("profile_job", ""), "Job")
+            location = profile_details.clean_text(request.values.get("profile_location", ""), "Location")
+            website = profile_details.clean_website(request.values.get("profile_website", ""))
+        except profile_details.Refused as refused:
+            message = str(refused)      # the except name is gone by the time the lambdas run
+            return {"html": lambda: render_template("settings_profile.html", v=v, error=message),
+                    "api": lambda: (jsonify({"error": message}), 400)}
+
+        if website:
+            # the banned-domain list, as for a link in a bio
+            bans = filter_comment_html(f'<a href="{escape(website)}">x</a>')
+            if bans:
+                reason = f"{bans[0].domain} can't be linked from a profile."
+                if bans[0].reason:
+                    reason += f" {bans[0].reason_text}"
+                return {"html": lambda: render_template("settings_profile.html", v=v, error=reason),
+                        "api": lambda: (jsonify({"error": reason}), 400)}
+
+        v.profile_job, v.profile_location, v.profile_website = job, location, website
+        apply_user_severity(v)
+        g.db.add(v)
+        return {"html": lambda: render_template("settings_profile.html", v=v, msg="Your profile details have been updated."),
+                "api": lambda: jsonify({"message": "Your profile details have been updated."})}
+
     if request.values.get("bio") is not None:
         bio = request.values.get("bio")[0:256]
 
