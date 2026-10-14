@@ -154,7 +154,7 @@ def test_the_uploader_talks_to_the_routes_that_exist():
 
 
 def test_the_uploader_is_loaded_wherever_someone_can_write():
-    assert "/assets/js/media_upload.js" in read("ruqqus", "templates", "default.html")
+    assert "asset_url('js/media_upload.js')" in read("ruqqus", "templates", "default.html")
     assert SUBMIT.index("post_editor.js") < SUBMIT.index("media_upload.js")     # Create a post is a page of its own
 
 

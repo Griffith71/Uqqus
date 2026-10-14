@@ -58,17 +58,40 @@ def is_media_url(url, server_name):
     return parsed.netloc in ("", server_name) and rules.parse_path(parsed.path) is not None
 
 
+def attach_image_sizes(db, posts, server_name):
+    """Set `post._image_size` to the stored (width, height) of a post whose picture is one of this site's own
+    media files, in one query for a page of posts. The template gives the <img> that size, so the browser keeps
+    the picture's room before it has loaded and the card does not jump when it arrives."""
+    MediaAsset, _, _ = _models()
+    wanted = {}
+    for post in posts:
+        url = getattr(post, "url", None)
+        if not url or not is_media_url(url, server_name):
+            continue
+        asset_id, _token, _ext = rules.parse_path(urlparse(url).path)
+        wanted.setdefault(asset_id, []).append(post)
+    if not wanted:
+        return
+    for asset_id, width, height in db.query(MediaAsset.id, MediaAsset.width, MediaAsset.height).filter(
+            MediaAsset.id.in_(list(wanted))).all():
+        if width and height:
+            for post in wanted[asset_id]:
+                post._image_size = (width, height)
+
+
 def own_video(db, author_id, url):
     """The author's own uploaded video this link points at, or None. Such a video plays
-    with the author's channel name on it, so it cannot go on an anonymous post."""
+    with the author's channel name on it (YouTube or Dailymotion), so it cannot go on an
+    anonymous post."""
     MediaAsset, _, _ = _models()
-    video_id = rules.youtube_id(url)
-    if not video_id:
+    found = rules.video_ref(url)
+    if not found:
         return None
-    return db.query(MediaAsset).filter_by(user_id=author_id, provider="youtube", provider_ref=video_id).first()
+    provider, video_id = found
+    return db.query(MediaAsset).filter_by(user_id=author_id, provider=provider, provider_ref=video_id).first()
 
 
-ANONYMOUS_VIDEO = ("A video uploaded to your YouTube channel shows your channel's name, "
+ANONYMOUS_VIDEO = ("A video uploaded to your YouTube or Dailymotion channel shows your channel's name, "
                    "so it cannot be added to an anonymous post.")
 
 

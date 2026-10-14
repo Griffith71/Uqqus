@@ -57,10 +57,31 @@ _NEXT = {
 # which provider module handles which kind, per kind of linked account
 PROVIDERS = {
     "google": {IMAGE: "gdrive", AUDIO: "gdrive", VIDEO: "youtube"},
+    "microsoft": {IMAGE: "onedrive", AUDIO: "onedrive"},
+    "dailymotion": {VIDEO: "dailymotion"},
     "dev": {IMAGE: "dev", AUDIO: "dev"},
 }
 # providers whose files Ruqqus serves at /media/...; the others play on their own site
-SERVED = ("gdrive", "dev")
+SERVED = ("gdrive", "onedrive", "dev")
+# providers that play the file on their own site, with the member's channel name on it
+HOSTED = ("youtube", "dailymotion")
+
+# the order linked-account kinds are offered in, and how the composer names them
+SERVICE_ORDER = ("google", "microsoft", "dailymotion", "dev")
+SERVICE_LABELS = {"google": "Google", "microsoft": "Microsoft", "dailymotion": "Dailymotion", "dev": "Test storage"}
+PROVIDER_LABELS = {"gdrive": "Google Drive", "onedrive": "OneDrive", "youtube": "YouTube",
+                   "dailymotion": "Dailymotion", "dev": "test storage"}
+# what a member gets, said on the button that links the account (each service's own free allowance)
+SERVICE_HINTS = {
+    ("google", IMAGE): "15 GB free in your Google Drive",
+    ("google", AUDIO): "15 GB free in your Google Drive",
+    ("google", VIDEO): "On your own YouTube channel",
+    ("microsoft", IMAGE): "5 GB free in your OneDrive",
+    ("microsoft", AUDIO): "5 GB free in your OneDrive",
+    ("dailymotion", VIDEO): "On your own Dailymotion channel, up to 15 videos a day",
+    ("dev", IMAGE): "On this machine, for testing",
+    ("dev", AUDIO): "On this machine, for testing",
+}
 
 
 class MediaError(Exception):
@@ -79,10 +100,16 @@ def can_change(status, new):
     return new in _NEXT.get(status, set())
 
 
-def in_order(account_providers):
-    """The member's linked account kinds in the order to try them: a real account before
-    the stand-in test storage, whichever was linked first."""
-    return sorted(account_providers, key=lambda name: name == "dev")
+def in_order(account_providers, preferred=None):
+    """The member's linked account kinds in the order to try them: the one they chose for this
+    kind of file first, then a real account before the stand-in test storage, whichever was
+    linked first."""
+    return sorted(account_providers, key=lambda name: (name != preferred, name == "dev"))
+
+
+def services_for(kind, offered):
+    """The linked-account kinds among `offered` that can take this kind of file, in order."""
+    return [s for s in SERVICE_ORDER if s in offered and kind in PROVIDERS.get(s, {})]
 
 
 def provider_for(account_provider, kind):
@@ -199,6 +226,25 @@ def youtube_id(url):
     """The video id in a YouTube link, or None."""
     m = _YOUTUBE_ID.match((url or "").strip())
     return m.group(1) if m else None
+
+
+_DAILYMOTION_ID = re.compile(
+    r"^https?://(?:www\.)?(?:dailymotion\.com/(?:embed/)?video/|dai\.ly/)([A-Za-z0-9]{5,24})(?![A-Za-z0-9])")
+
+
+def dailymotion_id(url):
+    """The video id (or private id) in a Dailymotion link, or None."""
+    m = _DAILYMOTION_ID.match((url or "").strip())
+    return m.group(1) if m else None
+
+
+def video_ref(url):
+    """(hosting provider, video id) for a link to a video on a site members upload to, or None."""
+    for provider, read in (("youtube", youtube_id), ("dailymotion", dailymotion_id)):
+        found = read(url)
+        if found:
+            return provider, found
+    return None
 
 
 # --- addresses -----------------------------------------------------------------------

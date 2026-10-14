@@ -1,10 +1,9 @@
 {% extends "settings.html" %}
 
+{% block pagetitle %}Media storage - {{ 'SITE_NAME' | app_config }}{% endblock %}
+
 {# Media storage: the account a member's uploads go into (routes/media.py, helpers/media). #}
 
-{% block title %}
-<title>{{ 'SITE_NAME' | app_config }} - Media storage</title>
-{% endblock %}
 
 {% block content %}
 <div class="row">
@@ -14,7 +13,8 @@
       <h2 class="h5">Media storage</h2>
       <p class="text-small text-muted">
         {{ 'SITE_NAME' | app_config }} does not keep the images, audio or video you upload. They go into
-        an account of your own that you link here once, and your posts show them from there.
+        an account of your own that you link here once (or the first time you add a file), using that service's
+        free space, and your posts show them from there.
       </p>
 
       {% if error %}<div class="alert alert-danger text-small" role="alert">{{ error }}</div>{% endif %}
@@ -39,6 +39,7 @@
             <p><span class="badge badge-success mr-2">On</span>Pictures and audio you upload are kept in a
               <strong>{{ 'SITE_NAME' | app_config }}</strong> folder in your Google Drive. They stay private there:
               {{ 'SITE_NAME' | app_config }} shows them in your posts, and can only see the files it created itself.</p>
+            {% if space.get("google") is not none %}<p class="text-small text-muted" id="media-google-space">{{ "%.1f" | format(space["google"] / 1073741824) }} GB free in your Google storage.</p>{% endif %}
             {% if google_video %}
             <form action="/settings/media/google/video" method="post" class="form-inline mb-3" id="media-video-form">
               <input type="hidden" name="formkey" value="{{ v.formkey }}">
@@ -78,6 +79,105 @@
               {{ 'SITE_NAME' | app_config }} never sees your Google password and can only reach the files it creates.
             </p>
             {% endif %}
+          </div>
+        </div>
+      </div>
+      {% endif %}
+
+      {% if "microsoft" in offered %}
+      <div class="settings-section rounded" id="media-microsoft">
+        <div class="d-lg-flex">
+          <div class="title w-lg-25">
+            <label>Microsoft OneDrive</label>
+          </div>
+          <div class="body w-lg-100">
+            {% if accounts.get("microsoft") %}
+            <p><span class="badge badge-success mr-2">On</span>Pictures and audio can go to this site's app folder in your
+              OneDrive (Apps, {{ 'SITE_NAME' | app_config }}). They stay private there: {{ 'SITE_NAME' | app_config }} shows them
+              in your posts and cannot see anything else in your OneDrive.</p>
+            {% if space.get("microsoft") is not none %}<p class="text-small text-muted" id="media-microsoft-space">{{ "%.1f" | format(space["microsoft"] / 1073741824) }} GB free in your OneDrive.</p>{% endif %}
+            <a href="/settings/media/microsoft/connect" class="btn btn-secondary mr-2 mb-2">Use a different Microsoft account</a>
+            <form action="/settings/media/microsoft/disconnect" method="post" class="d-inline"
+                  onsubmit="return confirm('Disconnect OneDrive? Pictures and audio stored there will stop showing in your posts.');">
+              <input type="hidden" name="formkey" value="{{ v.formkey }}">
+              <button type="submit" class="btn btn-secondary mb-2">Disconnect</button>
+            </form>
+            <p class="text-small text-muted mt-2 mb-0">Deleting a file there, or disconnecting, removes it from your posts. To take this
+              site's access away at Microsoft, remove it under your Microsoft account's app permissions.</p>
+            {% else %}
+            {% if "microsoft" in expired %}
+            <div class="alert alert-warning text-small" role="alert">Microsoft is no longer accepting this site's access to your OneDrive, so pictures and audio stored there are not showing. Connect again to bring them back.</div>
+            {% endif %}
+            <p>Keep pictures and audio in your own OneDrive: 5 GB free with a Microsoft account (Outlook, Hotmail or Xbox).</p>
+            <a href="/settings/media/microsoft/connect" class="btn btn-primary mb-2" id="media-microsoft-connect">{{ "Connect OneDrive again" if "microsoft" in expired else "Connect OneDrive" }}</a>
+            <p class="text-small text-muted mt-2 mb-0">{{ 'SITE_NAME' | app_config }} only gets a folder of its own in your OneDrive and never sees your password.</p>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+      {% endif %}
+
+      {% if "dailymotion" in offered %}
+      <div class="settings-section rounded" id="media-dailymotion">
+        <div class="d-lg-flex">
+          <div class="title w-lg-25">
+            <label>Dailymotion</label>
+          </div>
+          <div class="body w-lg-100">
+            {% if accounts.get("dailymotion") %}
+            <p><span class="badge badge-success mr-2">On</span>Videos can go to your Dailymotion channel and play in your posts from there.</p>
+            <form action="/settings/media/dailymotion/video" method="post" class="form-inline mb-3" id="media-dailymotion-form">
+              <input type="hidden" name="formkey" value="{{ v.formkey }}">
+              <label class="mr-2 mb-0" for="media-dailymotion-visibility">Videos go to your channel as</label>
+              <select class="custom-select custom-select-sm mr-2" name="visibility" id="media-dailymotion-visibility">
+                <option value="unlisted"{% if dailymotion_visibility == "unlisted" %} selected{% endif %}>Unlisted (only here and by link)</option>
+                <option value="public"{% if dailymotion_visibility == "public" %} selected{% endif %}>Public (on your channel)</option>
+              </select>
+              <button type="submit" class="btn btn-secondary btn-sm">Save</button>
+            </form>
+            <p class="text-small text-muted mb-2">Dailymotion's own limits apply to your account: on a standard account 15 videos and 10 hours a day,
+              each video up to 2 hours. A video shows your channel's name, so it cannot go on an anonymous post or a post for your Circle.</p>
+            <form action="/settings/media/dailymotion/disconnect" method="post" class="d-inline"
+                  onsubmit="return confirm('Disconnect Dailymotion? Videos already on your channel keep playing.');">
+              <input type="hidden" name="formkey" value="{{ v.formkey }}">
+              <button type="submit" class="btn btn-secondary mb-2">Disconnect</button>
+            </form>
+            {% else %}
+            {% if "dailymotion" in expired %}
+            <div class="alert alert-warning text-small" role="alert">Dailymotion is no longer accepting this site's access to your channel. Connect again to upload videos there.</div>
+            {% endif %}
+            <p>Put your videos on your own Dailymotion channel. A free account works, and the daily limits are your account's own.</p>
+            <a href="/settings/media/dailymotion/connect" class="btn btn-primary mb-2" id="media-dailymotion-connect">{{ "Connect Dailymotion again" if "dailymotion" in expired else "Connect Dailymotion" }}</a>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+      {% endif %}
+
+      {% set kind_names = {"image": "Pictures", "audio": "Audio", "video": "Videos"} %}
+      {% set several = [] %}{% for kind in ("image", "audio", "video") %}{% if choices[kind].able | length > 1 %}{% set _ = several.append(kind) %}{% endif %}{% endfor %}
+      {% if several %}
+      <div class="settings-section rounded" id="media-defaults">
+        <div class="d-lg-flex">
+          <div class="title w-lg-25">
+            <label>Where files go</label>
+          </div>
+          <div class="body w-lg-100">
+            <form action="/settings/media/default" method="post">
+              <input type="hidden" name="formkey" value="{{ v.formkey }}">
+              {% for kind in several %}
+              <div class="form-group form-inline mb-2">
+                <label class="mr-2 mb-0" for="media-default-{{ kind }}">{{ kind_names[kind] }} go to</label>
+                <select class="custom-select custom-select-sm" name="{{ kind }}" id="media-default-{{ kind }}">
+                  {% for service in choices[kind].able %}
+                  <option value="{{ service }}"{% if choices[kind].current == service %} selected{% endif %}>{{ provider_labels.get(service_provider(service, kind), labels.get(service, service)) }}</option>
+                  {% endfor %}
+                </select>
+              </div>
+              {% endfor %}
+              <button type="submit" class="btn btn-secondary btn-sm">Save</button>
+            </form>
+            <p class="text-small text-muted mt-2 mb-0">You can also change it from the line under an upload.</p>
           </div>
         </div>
       </div>

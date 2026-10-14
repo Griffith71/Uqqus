@@ -96,8 +96,8 @@ def can_see(audience, *, is_author, tier):
 def post_refusal(audience, *, anonymous=False, coauthors=False, forwards=False, own_video=False, shared=False):
     """Why a post cannot be made for an audience other than Public, or None. A Circle post stays between the author and
     the people in the Circle: it cannot be anonymous (they know who it is), have co-authors (their audience is not
-    this one), be forwarded to a guild, or carry a video uploaded to the author's own YouTube channel (a link anyone
-    holding it can watch)."""
+    this one), be forwarded to a guild, or carry a video uploaded to the author's own YouTube or Dailymotion channel
+    (a link anyone holding it can watch)."""
     if audience == PUBLIC:
         return None
     if anonymous:
@@ -109,7 +109,8 @@ def post_refusal(audience, *, anonymous=False, coauthors=False, forwards=False, 
     if shared:
         return "This post has already been forwarded or reposted, so it can't be moved to your Circle."
     if own_video:
-        return "A video uploaded to your YouTube channel can't be kept private to your Circle: anyone with its link can watch it. Share it publicly, or use a picture."
+        return ("A video uploaded to your YouTube or Dailymotion channel can't be kept private to your Circle: "
+                "anyone with its link can watch it. Share it publicly, or use a picture.")
     return None
 
 

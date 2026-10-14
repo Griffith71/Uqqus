@@ -14,6 +14,17 @@
  *
  * Pictures are re-drawn before upload, which drops what a camera writes into the file
  * (location, device). The server did that for the old uploads.
+ *
+ * Connecting happens where the member is: a file is picked first (the click allows the file
+ * dialog), and when no linked account takes that kind of file yet, the status line offers the
+ * services this site has ("Google Drive, 15 GB free in your Google Drive"). The chosen one opens
+ * in a popup; when the popup says it is done (routes/media.py `_finish`, media_connected.html)
+ * the upload carries on with the same file. Nothing reloads and nothing written is lost.
+ *
+ * How bytes travel depends on the service, as the server's answer says:
+ *   - one PUT of the whole file (Google Drive, YouTube, the test storage);
+ *   - `chunk`: PUTs of that many bytes with a Content-Range each (OneDrive's upload session);
+ *   - `form_field` + `answer`: one form POST whose answer the server needs back (Dailymotion).
  */
 (function () {
   'use strict';
@@ -79,35 +90,93 @@
     });
   }
 
-  function send(upload, file, onProgress, handle) {
+  function newXhr(upload, method, url, handle) {
+    var xhr = new XMLHttpRequest();
+    xhr.open(method, url, true);
+    // our own address (the test storage) needs the session; a provider's address must never get it
+    xhr.withCredentials = upload.url.charAt(0) === '/';
+    Object.keys(upload.headers || {}).forEach(function (k) { xhr.setRequestHeader(k, upload.headers[k]); });
+    if (handle) handle.cancel = function () { xhr.abort(); };
+    return xhr;
+  }
+
+  function sendError(xhr) {
+    return fail(xhr.status === 413 ? 'That file is too big.' : 'The upload did not go through. Try again.');
+  }
+
+  // One request with the whole file; resolves with nothing (the server checks what arrived).
+  function sendWhole(upload, file, onProgress, handle) {
     return new Promise(function (resolve, reject) {
-      var xhr = new XMLHttpRequest();
-      xhr.open(upload.method || 'PUT', upload.url, true);
-      // our own address (the test storage) needs the session; a provider's address must never get it
-      xhr.withCredentials = upload.url.charAt(0) === '/';
-      Object.keys(upload.headers || {}).forEach(function (k) { xhr.setRequestHeader(k, upload.headers[k]); });
+      var xhr = newXhr(upload, upload.method || 'PUT', upload.url, handle);
       xhr.upload.onprogress = function (e) { if (e.lengthComputable && onProgress) onProgress(e.loaded / e.total); };
-      xhr.onload = function () {
-        if (xhr.status >= 200 && xhr.status < 300) resolve();
-        else reject(fail(xhr.status === 413 ? 'That file is too big.' : 'The upload did not go through. Try again.'));
-      };
+      xhr.onload = function () { if (xhr.status >= 200 && xhr.status < 300) resolve(); else reject(sendError(xhr)); };
       xhr.onerror = function () { reject(fail('The upload was interrupted. Check your connection and try again.')); };
       xhr.onabort = function () { reject(fail('Upload cancelled.', { cancelled: true })); };
-      if (handle) handle.cancel = function () { xhr.abort(); };
       xhr.send(file);
     });
   }
 
-  // Upload one file; resolves with the asset ({ id, kind, path, markdown, ... }).
+  // OneDrive's upload session: pieces of `upload.chunk` bytes, each saying where it goes.
+  function sendChunks(upload, file, onProgress, handle) {
+    var size = file.size;
+    var step = Math.max(Number(upload.chunk) || size, 1);
+    function piece(start) {
+      return new Promise(function (resolve, reject) {
+        var end = Math.min(start + step, size);
+        var xhr = newXhr(upload, upload.method || 'PUT', upload.url, handle);
+        xhr.setRequestHeader('Content-Range', 'bytes ' + start + '-' + (end - 1) + '/' + size);
+        xhr.upload.onprogress = function (e) { if (e.lengthComputable && onProgress) onProgress((start + e.loaded) / size); };
+        xhr.onload = function () { if (xhr.status >= 200 && xhr.status < 300) resolve(end); else reject(sendError(xhr)); };
+        xhr.onerror = function () { reject(fail('The upload was interrupted. Check your connection and try again.')); };
+        xhr.onabort = function () { reject(fail('Upload cancelled.', { cancelled: true })); };
+        xhr.send(file.slice(start, end));
+      });
+    }
+    function from(start) { return start >= size ? Promise.resolve() : piece(start).then(from); }
+    return from(0);
+  }
+
+  // Dailymotion: the file as a form; its answer names the uploaded file, which the server needs.
+  function sendForm(upload, file, onProgress, handle) {
+    return new Promise(function (resolve, reject) {
+      var xhr = newXhr(upload, upload.method || 'POST', upload.url, handle);
+      var form = new FormData();
+      form.append(upload.form_field, file, file.name);
+      xhr.upload.onprogress = function (e) { if (e.lengthComputable && onProgress) onProgress(e.loaded / e.total); };
+      xhr.onload = function () {
+        if (xhr.status < 200 || xhr.status >= 300) { reject(sendError(xhr)); return; }
+        var answer = null;
+        try { answer = JSON.parse(xhr.responseText || '{}').url || null; } catch (err) { answer = null; }
+        if (typeof answer === 'string' && /^https:\/\//.test(answer)) resolve(answer);
+        else reject(fail('The video service did not say where the upload went. Try again.'));
+      };
+      xhr.onerror = function () { reject(fail('The upload was interrupted. Check your connection and try again.')); };
+      xhr.onabort = function () { reject(fail('Upload cancelled.', { cancelled: true })); };
+      xhr.send(form);
+    });
+  }
+
+  function send(upload, file, onProgress, handle) {
+    if (upload.form_field) return sendForm(upload, file, onProgress, handle);
+    if (upload.chunk) return sendChunks(upload, file, onProgress, handle);
+    return sendWhole(upload, file, onProgress, handle);
+  }
+
+  // Upload one file; resolves with the asset ({ id, kind, path, markdown, ... } and `to`, where it went).
   function upload(file, kind, options) {
     options = options || {};
     return prepare(file, kind).then(function (ready) {
       var fields = { kind: kind, filename: ready.name, size: ready.size };
       Object.keys(options.fields || {}).forEach(function (k) { fields[k] = options.fields[k]; });
       return post('/api/media/uploads', fields).then(function (begun) {
-        var finish = function () { return post('/api/media/uploads/' + begun.id + '/complete'); };
+        var finish = function (answer) {
+          return post('/api/media/uploads/' + begun.id + '/complete', answer ? { answer: answer } : {}).then(function (asset) {
+            asset.to = begun.to;
+            return asset;
+          });
+        };
         return send(begun.upload, ready, options.onProgress, options.handle).then(finish, function (sendError) {
-          if (sendError.cancelled) throw sendError;
+          if (sendError.cancelled || begun.upload.answer) throw sendError;
           // The bytes may have arrived even though the browser was not allowed to read the
           // provider's answer: the server can tell. If they did not, say what went wrong sending.
           return finish().catch(function () { throw sendError; });
@@ -146,41 +215,200 @@
     node.classList.toggle('text-muted', !isError);
   }
 
-  function askForStorage(node, kind) {
+  var WHAT = { image: 'pictures', audio: 'audio', video: 'videos' };
+
+  function make(tag, className, text) {
+    var node = document.createElement(tag);
+    if (className) node.className = className;
+    if (text !== undefined) node.textContent = text;
+    return node;
+  }
+
+  function quiet(node) {
     node.textContent = '';
     node.classList.remove('text-danger');
     node.classList.add('text-muted');
-    var what = { image: 'pictures', audio: 'audio', video: 'videos' }[kind] || kind;
-    node.appendChild(document.createTextNode('To add ' + what + ', turn on media storage once: '));
-    var link = document.createElement('a');
-    link.href = '/settings/media';
+  }
+
+  function cancelButton(handle, label) {
+    var button = make('button', 'btn btn-link btn-sm p-0 ml-2', label || 'Cancel');
+    button.type = 'button';
+    button.addEventListener('click', function () { if (handle.cancel) handle.cancel(); });
+    return button;
+  }
+
+  // When nothing else works (a blocked popup): the settings page, in a new tab.
+  function settingsLink(node, message, href) {
+    quiet(node);
+    node.appendChild(document.createTextNode(message + ' '));
+    var link = make('a', '', 'Open media settings');
+    link.href = /^\/settings\/media/.test(href || '') ? href : '/settings/media';
     link.target = '_blank';
     link.rel = 'noopener';
-    link.textContent = 'Enable media storage';
     node.appendChild(link);
   }
 
-  function askForVideo(node, settings) {
-    node.textContent = '';
-    node.classList.remove('text-danger');
-    node.classList.add('text-muted');
-    node.appendChild(document.createTextNode('Videos go to your own YouTube channel. Allow that once, then add the video again: '));
-    var link = document.createElement('a');
-    link.href = settings || '/settings/media/google/connect?want=video';
-    link.target = '_blank';
-    link.rel = 'noopener';
-    link.textContent = 'Allow video uploads to YouTube';
-    node.appendChild(link);
+  // --- linking an account without leaving the page ------------------------------------------
+
+  function makeNonce() {
+    var bytes = new Uint8Array(12);
+    window.crypto.getRandomValues(bytes);
+    return Array.prototype.map.call(bytes, function (b) { return ('0' + b.toString(16)).slice(-2); }).join('');
+  }
+
+  // Link `service` for `kind` in a popup. Resolves with the fresh status once it is linked.
+  // The popup's page tells this one on three channels (media_connected.html); only a message
+  // from this origin carrying our own `n` counts. A sign-in page in between may cut the popup off
+  // from this page, so coming back to this tab also asks the server whether it is linked now.
+  function connect(service, kind, handle) {
+    if (service.method === 'post') {        // the test storage: no other site involved
+      return post(service.connect + '?json=1', {}).then(function () { return status(true); });
+    }
+    return new Promise(function (resolve, reject) {
+      var nonce = makeNonce();
+      var url = service.connect + '?' + (service.name === 'google' && kind === 'video' ? 'want=video&' : '') + 'popup=1&n=' + nonce;
+      var popup = window.open(url, 'ruqqus-media-connect', 'width=520,height=700');
+      if (!popup) {
+        reject(fail('Your browser blocked the window for connecting. Allow pop-ups for this site, or connect in the settings.',
+                    { blocked: true, settings: service.connect }));
+        return;
+      }
+      var done = false;
+      var channel = null;
+      function cleanup() {
+        window.removeEventListener('message', onMessage);
+        window.removeEventListener('storage', onStorage);
+        window.removeEventListener('focus', onFocus);
+        if (channel) channel.close();
+      }
+      function settle(ok, value) {
+        if (done) return;
+        done = true;
+        cleanup();
+        if (ok) resolve(value); else reject(value);
+      }
+      function take(message) {
+        if (done || !message || message.type !== 'ruqqus-media-connected' || message.n !== nonce) return;
+        if (message.ok) status(true).then(function (s) { settle(true, s); });
+        else settle(false, fail(message.message || 'Nothing was connected.'));
+      }
+      function onMessage(event) { if (event.origin === window.location.origin) take(event.data); }
+      function onStorage(event) {
+        if (event.key !== 'ruqqus-media-connect' || !event.newValue) return;
+        try { take(JSON.parse(event.newValue).message); } catch (err) { /* not ours */ }
+        try { localStorage.removeItem('ruqqus-media-connect'); } catch (err) { /* storage off */ }
+      }
+      function onFocus() {
+        status(true).then(function (s) {
+          var now = (s.services || []).filter(function (x) { return x.name === service.name; })[0];
+          if (now && now.linked && s.kinds.indexOf(kind) !== -1) settle(true, s);
+        });
+      }
+      try {
+        channel = new BroadcastChannel('ruqqus-media-connect');
+        channel.onmessage = function (event) { take(event.data); };
+      } catch (err) { channel = null; }
+      window.addEventListener('message', onMessage);
+      window.addEventListener('storage', onStorage);
+      window.addEventListener('focus', onFocus);
+      if (handle) handle.cancel = function () { settle(false, fail('', { cancelled: true })); };
+    });
+  }
+
+  // Offer the services that take this kind of file. Resolves with the one picked, or null.
+  function chooser(node, kind, s, intro, exclude) {
+    return new Promise(function (resolve) {
+      quiet(node);
+      var box = make('div', 'media-chooser');
+      box.appendChild(make('div', 'media-chooser-title', intro || ('Where should your ' + WHAT[kind] + ' go?')));
+      var offered = (s.services || []).filter(function (x) { return x.kinds.indexOf(kind) !== -1 && x.name !== exclude; });
+      if (!offered.length) box.appendChild(make('div', 'media-chooser-hint', 'There is nowhere else to send them on this site yet.'));
+      offered.forEach(function (service) {
+        var button = make('button', 'btn btn-secondary btn-sm media-chooser-option');
+        button.type = 'button';
+        button.appendChild(make('span', 'media-chooser-name', service.names[kind] || service.label));
+        var hint = service.linked ? 'Connected' : (service.expired ? 'Connect again' : (service.hints[kind] || ''));
+        if (hint) button.appendChild(make('span', 'media-chooser-hint', hint));
+        button.addEventListener('click', function () { resolve(service); });
+        box.appendChild(button);
+      });
+      var no = make('button', 'btn btn-link btn-sm', 'Cancel');
+      no.type = 'button';
+      no.addEventListener('click', function () { quiet(node); resolve(null); });
+      box.appendChild(no);
+      if (!offered.some(function (x) { return x.linked; })) {
+        box.appendChild(make('div', 'media-chooser-note',
+          'Your files stay in your own account there, using its free space. This site only shows them in your posts.'));
+      }
+      node.appendChild(box);
+    });
+  }
+
+  // Link `service` from the status line. Resolves with the fresh status, or null.
+  function linkWith(node, service, kind) {
+    var handle = {};
+    quiet(node);
+    node.appendChild(document.createTextNode('Connecting ' + (service.names[kind] || service.label) + '. Finish in the window that opened.'));
+    node.appendChild(cancelButton(handle));
+    return connect(service, kind, handle).then(function (s) { quiet(node); return s; }, function (error) {
+      if (error.cancelled) { quiet(node); return null; }
+      if (error.blocked) { settingsLink(node, error.message, error.settings); return null; }
+      say(node, error.message, true);
+      return null;
+    });
+  }
+
+  // From now on this kind of file goes to `service` (already linked).
+  function useService(kind, service) {
+    return post('/api/media/default', { kind: kind, service: service.name }).then(function () { return status(true); });
+  }
+
+  // Make sure a linked account takes this kind of file. Resolves with the status, or null when
+  // the member gave up. `exclude` (a service) asks for another one (that one is full).
+  function ensureAccount(kind, node, intro, exclude) {
+    return status().then(function (s) {
+      if (s.kinds.indexOf(kind) !== -1 && !exclude) return s;
+      return chooser(node, kind, s, intro, exclude).then(function (service) {
+        if (!service) return null;
+        if (service.linked) return useService(kind, service);
+        return linkWith(node, service, kind).then(function (fresh) {
+          // linked to replace a full or lost one: send this kind there from now on
+          return fresh && exclude ? useService(kind, service) : fresh;
+        });
+      });
+    });
+  }
+
+  // "Added to your Google Drive. Change": where it went, and a way to send the next ones elsewhere.
+  function doneLine(node, kind, asset, text) {
+    say(node, text);
+    status().then(function (s) {
+      var able = (s.services || []).filter(function (x) { return x.kinds.indexOf(kind) !== -1; });
+      if (able.length < 2) return;
+      var change = make('button', 'btn btn-link btn-sm p-0 ml-2', 'Change where ' + WHAT[kind] + ' go');
+      change.type = 'button';
+      change.addEventListener('click', function () {
+        var current = asset && asset.to ? asset.to.service : null;
+        chooser(node, kind, s, 'Send your next ' + WHAT[kind] + ' to:', current).then(function (service) {
+          if (!service) return;
+          var linked = service.linked ? Promise.resolve(true) : linkWith(node, service, kind);
+          linked.then(function (ok) {
+            if (!ok) return;
+            useService(kind, service).then(function () {
+              say(node, 'From now on your ' + WHAT[kind] + ' go to your ' + (service.names[kind] || service.label) + '.');
+            }, function (error) { say(node, error.message, true); });
+          });
+        });
+      });
+      node.appendChild(change);
+    });
   }
 
   // Upload `file`, reporting in `node`. Resolves with the asset, or null when nothing was added.
-  function run(file, kind, node, fields) {
+  // An account that is full, lost or missing a permission is fixed in place, then tried again once.
+  function run(file, kind, node, fields, retried) {
     var handle = {};
-    var cancel = document.createElement('button');
-    cancel.type = 'button';
-    cancel.className = 'btn btn-link btn-sm p-0 ml-2';
-    cancel.textContent = 'Cancel';
-    cancel.addEventListener('click', function () { if (handle.cancel) handle.cancel(); });
+    var cancel = cancelButton(handle);
     say(node, 'Preparing…');
     return upload(file, kind, {
       handle: handle,
@@ -194,21 +422,43 @@
       say(node, '');
       return asset;
     }, function (error) {
-      if (error.need === 'storage') askForStorage(node, kind);
-      else if (error.need === 'video') askForVideo(node, error.settings);
-      else say(node, error.cancelled ? '' : error.message, !error.cancelled);
+      if (error.cancelled) { say(node, ''); return null; }
+      var again = function (s) { return s && !retried ? run(file, kind, node, fields, true) : null; };
+      if (error.need === 'storage') {
+        return ensureAccount(kind, node, 'Your storage needs connecting again. Send your ' + WHAT[kind] + ' to:').then(again);
+      }
+      if (error.need === 'video') {
+        // a Google account without YouTube access yet: ask for it, then send the same video
+        return status().then(function (s) {
+          var google = (s.services || []).filter(function (x) { return x.name === 'google'; })[0];
+          if (!google) { say(node, error.message, true); return null; }
+          return linkWith(node, google, 'video').then(again);
+        });
+      }
+      if (error.code === 507) {
+        return status().then(function (s) {
+          var full = s.using && s.using[kind] ? s.using[kind].service : null;
+          return ensureAccount(kind, node, error.message + ' Send it somewhere else:', full).then(again);
+        });
+      }
+      say(node, error.message, true);
       return null;
     });
   }
 
   function pickInto(kind, anchor, insert) {
     var node = statusNode(anchor);
-    return status().then(function (s) {
-      if (s.kinds.indexOf(kind) === -1) { askForStorage(node, kind); return null; }
-      return choose(kind).then(function (file) {
-        if (!file) return null;
+    // the file first: the click that got here is what lets the browser open its file dialog
+    return choose(kind).then(function (file) {
+      if (!file) return null;
+      return ensureAccount(kind, node).then(function (s) {
+        if (!s) return null;
         return run(file, kind, node).then(function (asset) {
-          if (asset && asset.markdown) insert(asset.markdown);
+          if (asset && asset.markdown) {
+            insert(asset.markdown);
+            var where = asset.to && asset.to.label ? ' to your ' + asset.to.label : '';
+            doneLine(node, kind, asset, (kind === 'audio' ? 'Sound' : 'Picture') + ' added' + where + '.');
+          }
           return asset;
         });
       });
@@ -236,32 +486,24 @@
 
   // Video: it goes to the member's own channel on a video site and the post links to it.
   // Before sending, the member chooses how it shows on their channel.
-  function chooseVisibility(node, file, preset) {
+  function chooseVisibility(node, file, preset, site) {
     return new Promise(function (resolve) {
-      node.textContent = '';
-      node.classList.remove('text-danger');
-      node.classList.add('text-muted');
-      node.appendChild(document.createTextNode('Upload "' + file.name + '" to your YouTube channel as '));
-      var select = document.createElement('select');
-      select.className = 'custom-select custom-select-sm d-inline-block w-auto mx-1';
-      select.setAttribute('aria-label', 'Who can find the video on YouTube');
+      quiet(node);
+      node.appendChild(document.createTextNode('Upload "' + file.name + '" to your ' + site + ' channel as '));
+      var select = make('select', 'custom-select custom-select-sm d-inline-block w-auto mx-1');
+      select.setAttribute('aria-label', 'Who can find the video on ' + site);
       [['unlisted', 'Unlisted (only here and by link)'], ['public', 'Public (on your channel)']].forEach(function (o) {
-        var option = document.createElement('option');
+        var option = make('option', '', o[1]);
         option.value = o[0];
-        option.textContent = o[1];
         if (o[0] === preset) option.selected = true;
         select.appendChild(option);
       });
       node.appendChild(select);
-      var go = document.createElement('button');
+      var go = make('button', 'btn btn-primary btn-sm ml-1', 'Upload');
       go.type = 'button';
-      go.className = 'btn btn-primary btn-sm ml-1';
-      go.textContent = 'Upload';
       go.addEventListener('click', function () { resolve(select.value); });
-      var no = document.createElement('button');
+      var no = make('button', 'btn btn-link btn-sm', 'Cancel');
       no.type = 'button';
-      no.className = 'btn btn-link btn-sm';
-      no.textContent = 'Cancel';
       no.addEventListener('click', function () { say(node, ''); resolve(null); });
       node.appendChild(go);
       node.appendChild(no);
@@ -285,11 +527,14 @@
 
   function pickVideo(textarea) {
     var node = statusNode(textarea);
-    status().then(function (s) {
-      if (s.kinds.indexOf('video') === -1) { askForStorage(node, 'video'); return; }
-      choose('video').then(function (file) {
-        if (!file) return;
-        chooseVisibility(node, file, s.video_visibility).then(function (visibility) {
+    choose('video').then(function (file) {
+      if (!file) return;
+      ensureAccount('video', node, 'Where should your videos go?').then(function (s) {
+        if (!s) return;
+        var to = (s.using && s.using.video) || {};
+        var site = to.label || 'video';
+        var preset = (s.video_visibility_by || {})[to.service] || s.video_visibility;
+        chooseVisibility(node, file, preset, site).then(function (visibility) {
           if (!visibility) return;
           var form = textarea.form || textarea.closest('form');
           var titleField = form ? form.querySelector('[name="title"]') : null;
@@ -297,7 +542,8 @@
             .then(function (asset) {
               if (!asset || !asset.link) return;
               attachLink(textarea, asset.link);
-              say(node, 'Video added. YouTube may take a few minutes before it plays.');
+              var where = asset.to && asset.to.label ? asset.to.label : site;
+              doneLine(node, 'video', asset, 'Video added. ' + where + ' may take a few minutes before it plays.');
             });
         });
       });
@@ -343,8 +589,10 @@
       input.value = '';
       field.value = '';
       showPreview(input, null);
-      if (s.kinds.indexOf('image') === -1) { askForStorage(node, 'image'); return; }
+      ensureAccount('image', node).then(function (ready) { if (ready) attachMain(kept); });
+    });
 
+    function attachMain(kept) {
       var buttons = form ? form.querySelectorAll('button[type="submit"], input[type="submit"], #create_button') : [];
       form && form.setAttribute('data-media-busy', '1');
       Array.prototype.forEach.call(buttons, function (b) { b.setAttribute('data-media-was-disabled', b.disabled ? '1' : '0'); b.disabled = true; });
@@ -354,7 +602,7 @@
         if (!asset) return;
         field.value = asset.id;
         showPreview(input, asset, kept.name);
-        say(node, 'Picture added: ' + kept.name);
+        say(node, 'Picture added: ' + kept.name + (asset.to && asset.to.label ? ' (in your ' + asset.to.label + ')' : ''));
         var remove = document.createElement('button');
         remove.type = 'button';
         remove.className = 'btn btn-link btn-sm p-0 ml-2';
@@ -368,7 +616,7 @@
         node.appendChild(remove);
         field.dispatchEvent(new Event('change', { bubbles: true }));
       });
-    });
+    }
   });
 
   // a form whose picture is still uploading is not sent yet
@@ -379,5 +627,5 @@
     }
   }, true);
 
-  window.MediaUpload = { status: status, upload: upload, version: 1 };
+  window.MediaUpload = { status: status, upload: upload, connect: connect, version: 2 };
 })();

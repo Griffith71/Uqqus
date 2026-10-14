@@ -41,6 +41,7 @@ def _json(response):
 
 class DriveProvider(Provider):
     name = "gdrive"
+    label = "Google Drive"
     served = True
 
     # --- folders ---------------------------------------------------------------------
@@ -134,6 +135,15 @@ class DriveProvider(Provider):
             byte_range = None
             size = int(r.headers.get("Content-Length") or asset.size)
         return Stream(r.iter_content(CHUNK), size=size, total=int(asset.size), byte_range=byte_range)
+
+    def space_left(self, account):
+        """Bytes free in the member's Google storage (shared with Gmail and Photos), or None."""
+        r = google_oauth.api(account, "GET", f"{API}/about", params={"fields": "storageQuota"})
+        quota = (_json(r).get("storageQuota") or {}) if r.status_code == 200 else {}
+        try:
+            return max(int(quota["limit"]) - int(quota.get("usage") or 0), 0)
+        except (KeyError, TypeError, ValueError):
+            return None            # no limit given: an unlimited plan, or Google did not say
 
     def revoke(self, account):
         if account.refresh_token_encrypted:

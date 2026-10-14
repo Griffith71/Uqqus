@@ -44,7 +44,9 @@ class Stream:
 
 class Provider:
     name = ""
+    label = ""                 # how the member sees it named ("Google Drive")
     served = False
+    wants_answer = False       # finish_upload(account, asset, answer) gets what the provider answered the browser
 
     def begin_upload(self, account, asset, origin, details=None):
         """Start an upload of `asset` (kind, ext, size are set) into `account`.
@@ -67,6 +69,10 @@ class Provider:
     def checksum(self, account, asset):
         """The provider's current checksum of the file (served providers)."""
         raise NotImplementedError
+
+    def space_left(self, account):
+        """Bytes free in the member's storage (served providers), or None when unknown."""
+        return None
 
     def link(self, asset):
         """The public address of the file on the hosting site (hosting providers)."""

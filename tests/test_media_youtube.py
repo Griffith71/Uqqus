@@ -209,7 +209,9 @@ def test_an_own_uploaded_video_is_kept_off_anonymous_posts():
     assert 'media_attach.link_refusal(g.db, v.id, flag(request.form, "anonymous"), url)' in posts
     assert "media_attach.link_refusal_for(g.db, primary, url) if url_changed else None" in posts
     attach = (root / "helpers" / "media" / "attach.py").read_text(encoding="utf-8")
-    assert 'filter_by(user_id=author_id, provider="youtube", provider_ref=video_id)' in attach
+    # any site that plays the file with the member's channel on it (YouTube, Dailymotion)
+    assert "found = rules.video_ref(url)" in attach
+    assert "filter_by(user_id=author_id, provider=provider, provider_ref=video_id)" in attach
 
 
 def test_only_the_authors_own_video_on_a_post_that_hides_them_is_refused(monkeypatch):

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+{#
+  The end of connecting an account in a popup the composer opened (routes/media.py `_finish`).
+  It tells the composer that opened it, then closes. The composer listens on three channels,
+  because a sign-in page in between can cut the popup off from the page that opened it
+  (Cross-Origin-Opener-Policy): a BroadcastChannel, a localStorage event and window.opener.
+  The composer only takes a message carrying the `n` it made, and only from this origin.
+  `payload` is drawn with |tojson, never as markup.
+#}
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex">
+  <title>{{ "Connected" if ok else "Not connected" }} - {{ 'SITE_NAME' | app_config }}</title>
+  <style>
+    body { margin: 0; font: 16px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif; color: #1a202c; background: #fff; }
+    main { max-width: 26rem; margin: 18vh auto 0; padding: 0 1.25rem; text-align: center; }
+    p { margin: 0 0 1rem; }
+    .muted { color: #5f6e82; font-size: 0.875rem; }
+    @media (prefers-color-scheme: dark) { body { color: #e2e8f0; background: #16181c; } .muted { color: #a0aec0; } }
+  </style>
+</head>
+<body>
+  <main>
+    <p id="media-connected-message">{{ message }}</p>
+    <p class="muted" id="media-connected-close">You can close this window.</p>
+    <p class="muted"><a href="/settings/media">Media settings</a></p>
+  </main>
+  <script>
+    (function () {
+      var message = {{ payload | tojson }};
+      try { new BroadcastChannel('ruqqus-media-connect').postMessage(message); } catch (e) { /* older browser */ }
+      try { localStorage.setItem('ruqqus-media-connect', JSON.stringify({ message: message, at: Date.now() })); } catch (e) { /* storage off */ }
+      try { if (window.opener) window.opener.postMessage(message, window.location.origin); } catch (e) { /* cut off */ }
+      setTimeout(function () { window.close(); }, {{ 600 if ok else 2500 }});
+    })();
+  </script>
+</body>
+</html>

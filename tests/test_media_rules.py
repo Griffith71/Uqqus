@@ -213,4 +213,11 @@ def test_a_real_account_is_used_before_the_test_storage():
     assert mr.in_order(["dev"]) == ["dev"] and mr.in_order([]) == []
     from pathlib import Path
     routes = (Path(__file__).resolve().parent.parent / "ruqqus" / "routes" / "media.py").read_text(encoding="utf-8")
-    assert "rules.in_order(by_kind)" in routes[routes.index("def _account_for("):routes.index("def _my_asset(")]
+    assert "rules.in_order(by_kind, _preferred(by_kind, kind))" in routes[routes.index("def _account_for("):routes.index("def _my_asset(")]
+
+
+def test_the_member_s_choice_for_a_kind_of_file_comes_first():
+    assert mr.in_order(["google", "microsoft"], preferred="microsoft") == ["microsoft", "google"]
+    assert mr.in_order(["dev", "google"], preferred="dev") == ["dev", "google"]      # chosen on purpose
+    assert mr.in_order(["google", "dev"], preferred=None) == ["google", "dev"]
+    assert mr.in_order(["google"], preferred="microsoft") == ["google"]               # not linked: ignored

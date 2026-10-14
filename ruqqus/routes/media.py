@@ -11,12 +11,12 @@ import time
 
 from urllib.parse import urlencode
 
-from flask import Response, g, jsonify, redirect, render_template, request
+from flask import Response, g, jsonify, redirect, render_template, request, session
 
 from ruqqus.__main__ import app, limiter
 from ruqqus.classes import MediaAccount, MediaAsset
 from ruqqus.helpers import circle_guard
-from ruqqus.helpers.media import attach, cdn, dev, google_oauth, registry, rules, safety
+from ruqqus.helpers.media import attach, cdn, dev, google_oauth, oauth, registry, rules, safety
 from ruqqus.helpers.media.base import AccountLost, MediaGone, ProviderDown
 from ruqqus.helpers.secret_box import encrypt_secret
 from ruqqus.helpers.security import generate_hash, validate_hash
@@ -24,6 +24,8 @@ from ruqqus.helpers.wrappers import auth_required, get_logged_in_user, validate_
 
 # templates ask this to decide between the linked-storage upload controls and the old ones
 app.jinja_env.globals["media_offered"] = lambda: bool(registry.account_kinds())
+# the settings page names the provider a kind of file goes to on a linked account ("OneDrive")
+app.jinja_env.globals["service_provider"] = rules.provider_for
 
 NO_STORE = "private, no-store"
 FOREVER = "public, max-age=31536000, immutable"
@@ -42,15 +44,35 @@ def _accounts(v):
     return g.db.query(MediaAccount).filter_by(user_id=v.id).order_by(MediaAccount.id).all()
 
 
-def _account_for(v, kind):
-    """The member's linked account that takes this kind, with its provider."""
+def _preferred(accounts, kind):
+    """The linked-account kind the member chose for this kind of file, if any."""
+    for account in accounts.values():
+        if kind in (account.setting("default_for") or []):
+            return account.provider
+    return None
+
+
+def _account_for(v, kind, wanted=None):
+    """The member's linked account that takes this kind, with its provider: `wanted` (a kind
+    of linked account) when given, else the one they chose for this kind, else the first."""
     by_kind = {a.provider: a for a in _accounts(v) if a.is_active}
-    for account in (by_kind[name] for name in rules.in_order(by_kind)):
+    if wanted:
+        by_kind = {name: a for name, a in by_kind.items() if name == wanted}
+    for account in (by_kind[name] for name in rules.in_order(by_kind, _preferred(by_kind, kind))):
         name = rules.provider_for(account.provider, kind)
         provider = registry.get(name) if name else None
         if provider is not None:
             return account, provider
     return None, None
+
+
+def _keep_rotated(account):
+    """A service that hands out a new refresh token with each use (Microsoft) wrote it onto the
+    row (helpers/media/oauth.py): keep it, or the next request would use a spent one."""
+    if account is not None and getattr(account, "_rotated", False):
+        account._rotated = False
+        g.db.add(account)
+        g.db.commit()
 
 
 def _my_asset(v, raw_id):
@@ -84,6 +106,33 @@ def _set_status(asset, status):
 
 # --- settings ----------------------------------------------------------------------
 
+SPACE_SECONDS = 600        # how long a member's free space is remembered (each check is a request to the service)
+
+
+def _space_left(account, provider):
+    """Bytes free in the member's storage, asked of the service at most every few minutes, or None."""
+    key = f"media:space:{account.id}:{provider.name}"
+    known = oauth.recall(key)
+    if known is not None:
+        return int(known) if known.lstrip("-").isdigit() and int(known) >= 0 else None
+    try:
+        free = provider.space_left(account)
+    except (AccountLost, ProviderDown, MediaGone):
+        return None
+    oauth.remember(key, str(free if free is not None else -1), SPACE_SECONDS)
+    return free
+
+
+def _choices(v, accounts):
+    """For each kind of file: the linked accounts that can take it and the one it goes to now."""
+    out = {}
+    for kind in rules.KINDS:
+        able = [name for name in rules.services_for(kind, accounts) if registry.get(rules.provider_for(name, kind))]
+        current, provider = _account_for(v, kind)
+        out[kind] = {"able": able, "current": current.provider if current else None}
+    return out
+
+
 @app.get("/settings/media")
 @auth_required
 def settings_media(v):
@@ -92,11 +141,51 @@ def settings_media(v):
     # connected before, but the provider stopped accepting it: offer to connect again
     expired = {a.provider for a in rows if a.status == "error"}
     google = accounts.get("google")
+    dailymotion = accounts.get("dailymotion")
+    space = {}
+    for name, account in accounts.items():
+        provider = registry.get(rules.provider_for(name, rules.IMAGE) or "")
+        if provider is not None and provider.served and name != "dev":
+            space[name] = _space_left(account, provider)
+    _keep_rotated_all(accounts.values())
     return render_template("settings_media.html", v=v, accounts=accounts, expired=expired,
                            offered=registry.account_kinds(),
                            google_video=bool(google) and google_oauth.SCOPE_YOUTUBE in google.scopes.split(),
                            video_visibility=rules.video_visibility(google.setting("youtube_visibility") if google else None),
+                           dailymotion_visibility=rules.video_visibility(dailymotion.setting("video_visibility") if dailymotion else None),
+                           choices=_choices(v, accounts), space=space,
+                           labels=rules.SERVICE_LABELS, provider_labels=rules.PROVIDER_LABELS,
                            error=request.args.get("error"), msg=request.args.get("msg"))
+
+
+def _keep_rotated_all(accounts):
+    for account in accounts:
+        _keep_rotated(account)
+
+
+# --- connecting, from the settings page or from a popup the composer opened ----------------
+
+POPUP_SECONDS = 900
+
+
+def _remember_popup():
+    """The composer opened this connection in a popup (`popup=1`) with its own `n`: say so at the
+    end with a page that tells the composer and closes, instead of the settings page."""
+    nonce = request.args.get("n") or ""
+    if request.args.get("popup") == "1" and nonce.isascii() and nonce.isalnum() and 8 <= len(nonce) <= 40:
+        session["media_connect"] = {"n": nonce, "t": int(time.time())}
+    else:
+        session.pop("media_connect", None)
+
+
+def _finish(service, message, ok):
+    """The end of a connection: back to the settings page, or the closing page of a popup."""
+    popup = session.pop("media_connect", None)
+    if isinstance(popup, dict) and int(popup.get("t") or 0) > int(time.time()) - POPUP_SECONDS:
+        return render_template("media_connected.html", ok=ok, message=message, payload={
+            "type": "ruqqus-media-connected", "ok": bool(ok), "message": message,
+            "service": service, "n": popup.get("n")})
+    return redirect("/settings/media?" + urlencode({"msg" if ok else "error": message}))
 
 
 def _google_redirect_uri():
@@ -108,8 +197,9 @@ def _google_redirect_uri():
 def settings_media_google_connect(v):
     """Send the member to Google to approve. `want=video` also asks for uploading to
     YouTube (only when they first add a video); otherwise only the Drive files this site makes."""
+    _remember_popup()
     if not google_oauth.configured():
-        return redirect("/settings/media?error=Google+storage+is+not+set+up+on+this+site.")
+        return _finish("google", "Google storage is not set up on this site.", False)
     want = "video" if request.args.get("want") == "video" else "storage"
     state = google_oauth.make_state(v.id, want, int(time.time()), generate_hash)
     return redirect(google_oauth.authorize_url(_google_redirect_uri(), state, want))
@@ -120,7 +210,7 @@ def settings_media_google_connect(v):
 def settings_media_google_callback(v):
     """Google sends the member back here with a code, or with why not."""
     def back(message, key="error"):
-        return redirect("/settings/media?" + urlencode({key: message}))
+        return _finish("google", message, key == "msg")
 
     if not google_oauth.configured():
         return back("Google storage is not set up on this site.")
@@ -148,15 +238,67 @@ def settings_media_google_callback(v):
     return back("Media storage is on. Your uploads now go to your Google account.", "msg")
 
 
+def _service_redirect_uri(name):
+    return cdn.absolute(f"/settings/media/{name}/callback")
+
+
+@app.get("/settings/media/<any(microsoft, dailymotion):name>/connect")
+@auth_required
+def settings_media_service_connect(name, v):
+    """Send the member to the service to approve (OneDrive for Microsoft, video for Dailymotion)."""
+    _remember_popup()
+    service = registry.SERVICES[name]
+    if not service.configured():
+        return _finish(name, f"{service.label} is not set up on this site.", False)
+    want = next(iter(service.wants))
+    state = service.make_state(v.id, want, int(time.time()), generate_hash)
+    return redirect(service.authorize_url(_service_redirect_uri(name), state, want))
+
+
+@app.get("/settings/media/<any(microsoft, dailymotion):name>/callback")
+@auth_required
+def settings_media_service_callback(name, v):
+    """The service sends the member back here with a code, or with why not."""
+    service = registry.SERVICES[name]
+    if not service.configured():
+        return _finish(name, f"{service.label} is not set up on this site.", False)
+    want = service.read_state(request.args.get("state"), v.id, int(time.time()), validate_hash)
+    if want is None:
+        return _finish(name, "That connection attempt expired. Try again.", False)
+    if request.args.get("error") or not request.args.get("code"):
+        return _finish(name, f"Nothing was connected: {service.label} access was not approved.", False)
+    try:
+        granted = service.exchange(request.args["code"], _service_redirect_uri(name), want)
+    except ValueError as e:
+        return _finish(name, str(e), False)
+    except ProviderDown:
+        return _finish(name, f"{service.label} is not answering right now. Try again in a moment.", False)
+    if not service.has_scope(granted["scopes"], service.required):
+        return _finish(name, f"Nothing was connected: the access this site needs at {service.label} was not approved.", False)
+
+    account = _link(v, name, external_id=granted["sub"], scopes=" ".join(granted["scopes"]),
+                    refresh_token_encrypted=encrypt_secret(granted["refresh_token"]))
+    service.forget(account)
+    g.db.commit()
+    kinds = rules.PROVIDERS.get(name, {})
+    what = "Your videos now go to your Dailymotion channel." if rules.VIDEO in kinds and len(kinds) == 1 else \
+        f"Your pictures and audio can now go to your {rules.PROVIDER_LABELS.get(kinds.get(rules.IMAGE), service.label)}."
+    return _finish(name, f"{service.label} is connected. {what}", True)
+
+
 @app.post("/settings/media/dev/enable")
 @auth_required
 @validate_formkey
 def settings_media_dev_enable(v):
     """Link the stand-in storage (development only, see helpers/media/dev.py)."""
     if not dev.enabled():
+        if request.values.get("json"):
+            return _error("That storage is not available here.", 404)
         return redirect("/settings/media?error=That+storage+is+not+available+here.")
     _link(v, "dev", external_id=f"dev-{v.id}")
     g.db.commit()
+    if request.values.get("json"):            # the composer links it without leaving the page
+        return jsonify({"message": "Test storage is on."})
     return redirect("/settings/media?msg=Media+storage+is+on.")
 
 
@@ -224,14 +366,88 @@ def _unlink(account):
 @auth_required
 def media_status(v):
     """What this member can upload right now, for the upload buttons."""
-    kinds = [k for k in rules.KINDS if _account_for(v, k)[1] is not None]
-    google = next((a for a in _accounts(v) if a.is_active and a.provider == "google"), None)
-    return jsonify({"offered": bool(registry.account_kinds()), "kinds": kinds,
-                    "video": registry.get("youtube") is not None,       # the site can take video at all
-                    # video is offered with a Google account; the first upload asks for YouTube access
+    rows = _accounts(v)
+    accounts = {a.provider: a for a in rows if a.is_active}
+    expired = {a.provider for a in rows if a.status == "error"}
+    offered = registry.account_kinds()
+    kinds, using = [], {}
+    for kind in rules.KINDS:
+        account, provider = _account_for(v, kind)
+        if provider is not None:
+            kinds.append(kind)
+            using[kind] = {"service": account.provider, "label": provider.label}
+    # every service the site offers, per kind: what the composer can offer to connect
+    services = []
+    for name in offered:
+        able = [k for k in rules.KINDS if rules.provider_for(name, k) and registry.get(rules.provider_for(name, k))]
+        if not able:
+            continue
+        services.append({
+            "name": name,
+            "label": rules.SERVICE_LABELS.get(name, name),
+            "kinds": able,
+            "names": {k: rules.PROVIDER_LABELS.get(rules.provider_for(name, k), name) for k in able},
+            "hints": {k: rules.SERVICE_HINTS.get((name, k), "") for k in able},
+            "linked": name in accounts,
+            "expired": name in expired and name not in accounts,
+            "connect": "/settings/media/dev/enable" if name == "dev" else f"/settings/media/{name}/connect",
+            "method": "post" if name == "dev" else "popup",
+        })
+    google = accounts.get("google")
+    dailymotion = accounts.get("dailymotion")
+    return jsonify({"offered": bool(offered), "kinds": kinds, "using": using, "services": services,
+                    # the site can take video at all (a linked account for it is asked for at the first video)
+                    "video": any(registry.get(p) is not None for p in rules.HOSTED),
                     "video_visibility": rules.video_visibility(google.setting("youtube_visibility") if google else None),
+                    "video_visibility_by": {
+                        "google": rules.video_visibility(google.setting("youtube_visibility") if google else None),
+                        "dailymotion": rules.video_visibility(dailymotion.setting("video_visibility") if dailymotion else None)},
                     "limits": {k: rules.SIZE_MAX[k] for k in kinds if k in rules.SIZE_MAX},
                     "settings": "/settings/media"})
+
+
+def _set_default(v, kind, service):
+    """Send this kind of file to this linked account from now on. False when it can't take it."""
+    accounts = {a.provider: a for a in _accounts(v) if a.is_active}
+    target = accounts.get(service)
+    if kind not in rules.KINDS or target is None or not rules.provider_for(service, kind):
+        return False
+    now = int(time.time())
+    for account in accounts.values():
+        chosen = [k for k in (account.setting("default_for") or []) if k in rules.KINDS and k != kind]
+        if account is target:
+            chosen.append(kind)
+        account.set_setting("default_for", chosen)
+        account.updated_utc = now
+        g.db.add(account)
+    return True
+
+
+@app.post("/api/media/default")
+@auth_required
+@validate_formkey
+def media_default(v):
+    """The composer's "Change": where this kind of file goes from now on."""
+    kind, service = request.form.get("kind", ""), request.form.get("service", "")
+    if not _set_default(v, kind, service):
+        return _error("That account can't take this kind of file.", 400)
+    g.db.commit()
+    return jsonify({"message": f"From now on your {kind} files go to your "
+                               f"{rules.PROVIDER_LABELS.get(rules.provider_for(service, kind), service)}."})
+
+
+@app.post("/settings/media/default")
+@auth_required
+@validate_formkey
+def settings_media_default(v):
+    """The settings page's choice of where each kind of file goes."""
+    changed = False
+    for kind in rules.KINDS:
+        service = request.form.get(kind)
+        if service:
+            changed = _set_default(v, kind, service) or changed
+    g.db.commit()
+    return redirect("/settings/media?msg=Saved." if changed else "/settings/media")
 
 
 @app.post("/api/media/uploads")
@@ -255,7 +471,7 @@ Answers with where the browser sends the bytes (`upload.url`, `upload.method`,
     except rules.MediaError as e:
         return _error(e.message, e.code)
 
-    account, provider = _account_for(v, kind)
+    account, provider = _account_for(v, kind, request.form.get("account") or None)
     if provider is None:
         return _error("Turn on media storage to upload.", 409, need="storage", settings="/settings/media")
 
@@ -283,10 +499,12 @@ Answers with where the browser sends the bytes (`upload.url`, `upload.method`,
     except ProviderDown:
         g.db.rollback()
         return _error(BUSY, 503)
-    g.db.add(account)          # a provider may have remembered something on it (its folders)
+    account._rotated = False
+    g.db.add(account)          # a provider may have remembered something on it (its folders, a new refresh token)
     g.db.add(asset)
     g.db.commit()
-    return jsonify({"id": rules.b36(asset.id), "upload": upload})
+    return jsonify({"id": rules.b36(asset.id), "upload": upload,
+                    "to": {"service": account.provider, "label": provider.label}})
 
 
 @app.post("/api/media/uploads/<aid>/complete")
@@ -311,7 +529,10 @@ def media_upload_complete(aid, v):
     temp = None
     restricted = False
     try:
-        info = provider.finish_upload(account, asset)
+        if provider.wants_answer:
+            info = provider.finish_upload(account, asset, (request.form.get("answer") or "")[:2048])
+        else:
+            info = provider.finish_upload(account, asset)
         asset.provider_ref = info["ref"]
         asset.size = int(info["size"])
         asset.checksum = info["checksum"]
@@ -357,8 +578,25 @@ def media_upload_complete(aid, v):
                       restricted=True, asset=asset.json)
 
     _set_status(asset, rules.READY)
+    account._rotated = False
+    g.db.add(account)
     g.db.commit()
     return jsonify(asset.json)
+
+
+@app.post("/settings/media/dailymotion/video")
+@auth_required
+@validate_formkey
+def settings_media_dailymotion_video(v):
+    """How the member's videos show on their Dailymotion channel by default."""
+    account = g.db.query(MediaAccount).filter_by(user_id=v.id, provider="dailymotion").first()
+    if not account or not account.is_active:
+        return redirect("/settings/media")
+    account.set_setting("video_visibility", rules.video_visibility(request.form.get("visibility")))
+    account.updated_utc = int(time.time())
+    g.db.add(account)
+    g.db.commit()
+    return redirect("/settings/media?msg=Saved.")
 
 
 @app.post("/settings/media/google/video")
@@ -454,6 +692,7 @@ never cached. Anything else is refused, so this is not a file host for other sit
         if not hmac.compare_digest(provider.checksum(account, asset), asset.checksum):
             raise MediaGone()
         stream = provider.open(account, asset, byte_range)
+        _keep_rotated(account)
     except AccountLost:
         _lost(account)                    # nothing about this one file: the whole account is unreachable
         return _refuse(410)

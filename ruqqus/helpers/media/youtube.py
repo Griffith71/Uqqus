@@ -43,6 +43,7 @@ def _session_key(asset):
 
 class YouTubeProvider(Provider):
     name = "youtube"
+    label = "YouTube"
     served = False
 
     def can_upload(self, account):

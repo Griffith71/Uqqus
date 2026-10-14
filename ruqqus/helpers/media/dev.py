@@ -33,6 +33,7 @@ def file_path(asset):
 
 class DevProvider(Provider):
     name = "dev"
+    label = "test storage"
     served = True
 
     def begin_upload(self, account, asset, origin, details=None):
