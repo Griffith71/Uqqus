@@ -6,6 +6,7 @@ from bs4 import BeautifulSoup
 import json
 from ruqqus.__main__ import app
 from .get import *
+from .embed_trust import same_provider_player
 
 youtube_regex = re.compile(r"^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*")
 ruqqus_regex = re.compile(r"^https?://.*ruqqus\.com/\+\w+/post/(\w+)(/[a-zA-Z0-9_-]+/(\w+))?")
@@ -226,6 +227,9 @@ KNOWN_PROVIDER_HANDLERS = {
 }
 
 
+IFRAME_PROVIDER_DOMAINS = tuple(d for d, (kind, _) in KNOWN_PROVIDER_HANDLERS.items() if kind == "iframe")
+
+
 def known_provider_embed(url):
     """Returns (embed_type, embed_src, thumbnail_url) for a URL matching
     one of the named platforms above, or (None, None, None) if its domain
@@ -377,6 +381,9 @@ def detect_video_embed(url, response, soup):
         og_video_type = og_video_type_tag["content"] if og_video_type_tag else ""
         if og_video_type.startswith("video/"):
             return "video", og_video, None
+        # a named platform's own page pointing at its own player (its oEmbed call above failed)
+        if same_provider_player(url, og_video, IFRAME_PROVIDER_DOMAINS):
+            return "iframe", og_video, None
         return "iframe_untrusted", og_video, None
 
     return None, None, None

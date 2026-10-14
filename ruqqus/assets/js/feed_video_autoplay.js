@@ -115,11 +115,14 @@
     }
   }
 
+  // The most visible video wins; between equally visible ones (two fully in view, common on a phone) the
+  // higher one does: the map is in page order, so only a strictly better ratio replaces an earlier video.
+  // (It used to be >=, so the lower video won and the top one was skipped.)
   function bestCandidate() {
     var best = null;
     var bestRatio = ACTIVATION_RATIO;
     ratios.forEach(function (ratio, container) {
-      if (ratio >= bestRatio && !isBlurred(container)) {
+      if ((best ? ratio > bestRatio : ratio >= bestRatio) && !isBlurred(container)) {
         best = container;
         bestRatio = ratio;
       }
