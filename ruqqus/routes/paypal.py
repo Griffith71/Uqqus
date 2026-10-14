@@ -15,6 +15,7 @@ from ruqqus.helpers.alerts import send_notification
 from ruqqus.helpers.base36 import *
 from ruqqus.helpers.get import *
 from ruqqus.__main__ import app
+from ruqqus.helpers import tips, tips_store
 
 CLIENT=PayPalClient()
 
@@ -45,7 +46,8 @@ def coins_to_price_cents(n, code=None):
 @app.route("/shop/get_price", methods=["GET"])
 def shop_get_price():
 
-    coins=int(request.args.get("coins"))
+    coins=request.args.get("coins", "")
+    coins=int(coins) if coins.isascii() and coins.isdigit() else 0
 
     if not coins>=1:
         return jsonify({"error": "Must attempt to buy at least one coin"}), 400
@@ -139,7 +141,7 @@ def shop_buy_coins_completed(v):
         abort(400)
 
     if txn.promo and not txn.promo.promo_is_active:
-        return jsonfy({"error":f"The promo code `{txn.promo.code}` is not currently valid. Please begin a new transaction."}), 422
+        return jsonify({"error":f"The promo code `{txn.promo.code}` is not currently valid. Please begin a new transaction."}), 422
 
     if not CLIENT.capture(txn):
         abort(402)
@@ -224,6 +226,16 @@ def paypal_webhook_handler():
     return "", 204
 
 
+def _tip_notification(kind, permalink, coins, recipient):
+    """What the author is told of a tip. Tips are anonymous: never who sent it."""
+    text = f"Someone liked [your {kind}]({permalink}) and has tipped you {coins} coin{'s' if coins != 1 else ''}!\n\n"
+    if (recipient.premium_expires_utc or 0) < int(time.time()):
+        text += "Your coins are used for [Ruqqus Premium](/settings/premium) automatically, a week per coin."
+    else:
+        text += "Since you already have Ruqqus Premium, the coins have been added to your balance. You can keep them, or give them to someone else."
+    return text
+
+
 @app.route("/gift_post/<pid>", methods=["POST"])
 @no_sanctions
 @is_not_banned
@@ -232,6 +244,9 @@ def paypal_webhook_handler():
 def gift_post_pid(pid, v):
 
     post=get_post(pid, v=v)
+
+    if post.in_private_guild_for(v):
+        abort(403)
 
     if post.author_id==v.id:
         return jsonify({"error":"You can't give awards to yourself."}), 403   
@@ -260,13 +275,9 @@ def gift_post_pid(pid, v):
         return jsonify({"error":"You can't give awards to someone that's blocking you."}), 403
 
 
-    coins=int(request.args.get("coins",1))
-
-    if not coins:
-        return jsonify({"error":"You need to actually give coins."}), 400
-
-    if coins <0:
-        return jsonify({"error":"What are you doing, trying to *charge* someone coins?."}), 400
+    coins = tips.parse_coins(request.args.get("coins"))
+    if coins is None:
+        return jsonify({"error": f"A tip is a whole number of coins, from 1 to {tips.MAX_TIP}."}), 400
 
     v=g.db.query(User).with_for_update().options(lazyload('*')).filter_by(id=v.id).first()
     u=g.db.query(User).with_for_update().options(lazyload('*')).filter_by(id=u.id).first()
@@ -285,29 +296,19 @@ def gift_post_pid(pid, v):
         g.db.rollback()
         return jsonify({"error":"You don't have that many coins to give!"}), 403
 
-    if not g.db.query(AwardRelationship).filter_by(user_id=v.id, submission_id=post.id).first():
-        text=f"Someone liked [your post]({post.permalink}) and has given you a Coin!\n\n"
-        if u.premium_expires_utc < int(time.time()):
-            text+="Your Coin has been automatically redeemed for one week of [Ruqqus Premium](/settings/premium)."
-        else:
-            text+="Since you already have Ruqqus Premium, the Coin has been added to your balance. You can keep it for yourself, or give it to someone else."
-        send_notification(u, text)
-
-
-
+    # the tip, the post's totals and its place in the ranked sorts move with the coins, in one transaction
+    # (helpers/tips.py: the boost counts in rank_hot / rank_best, never in the score or the Top sort)
+    tips_store.record(g.db, v.id, coins, post_id=post.id)
+    tips_store.recompute_post(g.db, post.id, post.author_id)
+    g.db.flush()
+    g.db.refresh(post, attribute_names=["tip_coins", "tip_boost", "rank_hot", "rank_best"])
+    post.score_hot = post.rank_hot
+    post.score_best = post.rank_best
+    g.db.add(post)
     g.db.commit()
 
-    #create record - uniqueness constraints prevent duplicate award counting
-    new_rel = AwardRelationship(
-        user_id=v.id,
-        submission_id=post.id
-        )
-    try:
-        g.db.add(new_rel)
-        g.db.flush()
-    except:
-        pass
-    
+    # send_notification commits on its own (helpers/alerts.py): only once the tip is safe
+    send_notification(u, _tip_notification("post", post.permalink, coins, u))
     g.db.commit()
 
     return jsonify({"message":"Tip Successful!"})
@@ -320,6 +321,9 @@ def gift_post_pid(pid, v):
 def gift_comment_pid(cid, v):
 
     comment=get_comment(cid, v=v)
+
+    if comment.post and comment.post.in_private_guild_for(v):
+        abort(403)
 
     if comment.author_id==v.id:
         return jsonify({"error":"You can't give awards to yourself."}), 403      
@@ -347,13 +351,9 @@ def gift_comment_pid(cid, v):
     if u.is_blocked:
         return jsonify({"error":"You can't give awards to someone that's blocking you."}), 403
 
-    coins=int(request.args.get("coins",1))
-
-    if not coins:
-        return jsonify({"error":"You need to actually give coins."}), 400
-
-    if coins <0:
-        return jsonify({"error":"What are you doing, trying to *charge* someone coins?."}), 400
+    coins = tips.parse_coins(request.args.get("coins"))
+    if coins is None:
+        return jsonify({"error": f"A tip is a whole number of coins, from 1 to {tips.MAX_TIP}."}), 400
 
     v=g.db.query(User).with_for_update().options(lazyload('*')).filter_by(id=v.id).first()
     u=g.db.query(User).with_for_update().options(lazyload('*')).filter_by(id=u.id).first()
@@ -370,30 +370,11 @@ def gift_comment_pid(cid, v):
         g.db.rollback()
         return jsonify({"error":"You don't have that many coins to give!"}), 403
 
-    if not g.db.query(AwardRelationship).filter_by(user_id=v.id, comment_id=comment.id).first():
-        text=f"Someone liked [your comment]({comment.permalink}) and has given you a Coin!\n\n"
-        if u.premium_expires_utc < int(time.time()):
-            text+="Your Coin has been automatically redeemed for one week of [Ruqqus Premium](/settings/premium)."
-        else:
-            text+="Since you already have Ruqqus Premium, the Coin has been added to your balance. You can keep it for yourself, or give it to someone else."
-
-        send_notification(u, text)
-
-
-
+    tips_store.record(g.db, v.id, coins, comment_id=comment.id)
     g.db.commit()
 
-    #create record - uniqe prevents duplicates
-    new_rel = AwardRelationship(
-        user_id=v.id,
-        comment_id=comment.id
-        )
-    try:
-        g.db.add(new_rel)
-        g.db.flush()
-    except:
-        pass
-    
+    # send_notification commits on its own (helpers/alerts.py): only once the tip is safe
+    send_notification(u, _tip_notification("comment", comment.permalink, coins, u))
     g.db.commit()
 
     return jsonify({"message":"Tip Successful!"})

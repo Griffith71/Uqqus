@@ -14,8 +14,9 @@ from sqlalchemy import and_, case, exists, func, not_, or_, select, text
 from sqlalchemy.exc import DBAPIError
 
 from ruqqus.helpers import feed_algorithm as fa
+from ruqqus.helpers.visibility import FILTERED_SUBCATS
 
-HIDDEN_SUBCATS = (44, 108)        # as frontlist(): not on All for a viewer with the word filter on
+HIDDEN_SUBCATS = FILTERED_SUBCATS        # as frontlist(): not on All for a viewer with the word filter on
 PROFILE_BOARD = "systemprofile"
 TIME_LIMIT_MS = 3000
 TOO_SLOW = "This curation's rules took too long to run. Its owner can make them narrower."
@@ -146,7 +147,9 @@ def mix_score(spec, curation_id, now):
     from ruqqus.classes import Submission, SubmissionAux
 
     mix = spec["mix"]
-    votes = func.greatest(func.coalesce(Submission.upvotes, 0) - func.coalesce(Submission.downvotes, 0), 0)
+    # tips lift a post as in Hot (helpers/tips.py): its tip_boost counts with its votes
+    votes = func.greatest(func.coalesce(Submission.upvotes, 0) - func.coalesce(Submission.downvotes, 0)
+                          + func.coalesce(Submission.tip_boost, 0), 0)
     score = 1.0 + mix["votes"] * func.ln(1 + votes) + mix["comments"] * func.ln(1 + _comment_count())
     if mix["members"] and spec["source"] == fa.SITE:
         score = score * (1.0 + 0.2 * mix["members"] * case((member_condition(curation_id), 1), else_=0))

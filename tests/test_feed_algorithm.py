@@ -221,7 +221,7 @@ def test_every_part_is_said():
 def test_a_mix_is_described_with_its_numbers():
     s = spec(source="site", age="day", rank="mix", mix={"votes": 2, "comments": 9, "fade": 72, "members": 4, "media": 3, "variety": 1})
     line = fa.describe(s)[-1]
-    assert line == ("Ordered by its own mix: votes 2, comments 9, fading over 3 days, a boost of 4 for this curation's guilds "
+    assert line == ("Ordered by its own mix: votes and tips 2, comments 9, fading over 3 days, a boost of 4 for this curation's guilds "
                     "and accounts, a boost of 3 for posts with media. At most 1 post per author or guild on a page.")
     # the members boost means nothing when everything already comes from the members
     assert "guilds and accounts," not in fa.describe(spec(rank="mix", mix={"members": 4}))[-1]

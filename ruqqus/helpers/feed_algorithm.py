@@ -343,7 +343,8 @@ def describe(spec):
         lines.append(_RANK_WORDS[spec["rank"]])
     else:
         mix = spec["mix"]
-        parts = [f"votes {mix['votes']}", f"comments {mix['comments']}", f"fading over {_FADE_WORDS[mix['fade']]}"]
+        # "votes" in a mix are upvotes less downvotes plus the post's tip boost (helpers/tips.py)
+        parts = [f"votes and tips {mix['votes']}", f"comments {mix['comments']}", f"fading over {_FADE_WORDS[mix['fade']]}"]
         if mix["members"] and spec["source"] == SITE:
             parts.append(f"a boost of {mix['members']} for this curation's guilds and accounts")
         if mix["media"]:

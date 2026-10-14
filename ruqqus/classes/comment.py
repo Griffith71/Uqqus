@@ -106,7 +106,6 @@ class Comment(Base, Age_times, Scores, Stndrd, Fuzzing):
         primaryjoin="User.id==Comment.author_id",
         overlaps="comments,author"
     )
-    board = association_proxy("post", "board")
     original_board = relationship(
         "Board", primaryjoin="Board.id==Comment.original_board_id", overlaps="original_board,board"
     )
@@ -219,7 +218,7 @@ class Comment(Base, Age_times, Scores, Stndrd, Fuzzing):
     @property
     def forwarded_posts(self):
         """Independent posts created by forwarding this comment (see
-        CommentForwardRelationship), one per guild it's been promoted to."""
+        CommentForwardRelationship), one per guild it's been forwarded to."""
         from .board_relationships import CommentForwardRelationship
         rels = g.db.query(CommentForwardRelationship).filter_by(
             comment_id=self.id).order_by(CommentForwardRelationship.created_utc.asc()).all()
@@ -236,40 +235,6 @@ class Comment(Base, Age_times, Scores, Stndrd, Fuzzing):
 
         else:
             return any([x.any_descendants_live for x in self.nested_comments])
-
-    def rendered_comment(self, v=None, render_child_comments=True,
-                         standalone=False, level=1, **kwargs):
-
-        kwargs["post_base36id"] = kwargs.get(
-            "post_base36id", self.post.base36id if self.post else None)
-
-        if self.is_banned or self.deleted_utc > 0:
-            if v and v.admin_level > 1:
-                return render_template("single_comment.html",
-                                       v=v,
-                                       c=self,
-                                       render_child_comments=render_child_comments,
-                                       standalone=standalone,
-                                       level=level,
-                                       **kwargs)
-
-            elif self.any_descendants_live:
-                return render_template("single_comment_removed.html",
-                                       c=self,
-                                       render_child_comments=render_child_comments,
-                                       standalone=standalone,
-                                       level=level,
-                                       **kwargs)
-            else:
-                return ""
-
-        return render_template("single_comment.html",
-                               v=v,
-                               c=self,
-                               render_child_comments=render_child_comments,
-                               standalone=standalone,
-                               level=level,
-                               **kwargs)
 
     @property
     def active_flags(self):
@@ -350,16 +315,33 @@ class Comment(Base, Age_times, Scores, Stndrd, Fuzzing):
                     'level': self.level,
                     'parent': self.parent_fullname
                     }
+        elif self._text_hidden_for(anonymity.current_viewer()):
+            # the thread shows "Removed by guildmasters" / "Removed by the post's author" (comments.html); so does the JSON
+            data= {'hidden_by_guild': bool(self.hidden_by_guild),
+                    'author_hidden': bool(self.author_hidden),
+                    'id': self.base36id,
+                    'post': self.post.base36id,
+                    'level': self.level,
+                    'parent': self.parent_fullname
+                    }
         else:
             data=self.json_raw
 
             if self.level>=2:
-                data['parent_comment_id']= base36encode(self.parent_comment_id),
+                data['parent_comment_id']= base36encode(self.parent_comment_id)
 
         if "nested_comments" in self.__dict__:
             data['replies']=[x.json_core for x in self.nested_comments]
 
         return data
+
+    def _text_hidden_for(self, v):
+        """The comment's text is hidden from `v` by a guild's moderators or by the post's author, as in the thread."""
+        if v and v.id == self.author_id:
+            return False
+        if self.hidden_by_guild and not (v and self.post and self.post.board.has_mod(v, "content")):
+            return True
+        return bool(self.author_hidden and not (v and self.post and v.id == self.post.author_id))
 
     @property
     def json(self):
@@ -481,7 +463,8 @@ class Comment(Base, Age_times, Scores, Stndrd, Fuzzing):
 
     @property
     def award_count(self):
-        return len(self.awards)
+        # the coins tipped (one row per tip, helpers/tips.py), never who tipped
+        return sum(a.coins or 1 for a in self.awards)
 
     def collapse_for_user(self, v):
 
@@ -500,7 +483,7 @@ class Comment(Base, Age_times, Scores, Stndrd, Fuzzing):
     def self_download_json(self):
 
         #This property should never be served to anyone but author and admin
-        if not self.is_banned and not self.is_banned:
+        if not self.is_banned and self.deleted_utc == 0:     # as Submission.self_download_json
             return self.json_core
 
         data= {
@@ -538,9 +521,7 @@ class Comment(Base, Age_times, Scores, Stndrd, Fuzzing):
         elif not perm:
             return True
         else:
-            return mod.perm_full or mod.__dict__[f"perm_{perm}"]
-
-        return output
+            return mod.perm_full or mod.__dict__.get(f"perm_{perm}", False)
 
     @property
     def is_exiled_for(self):

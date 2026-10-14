@@ -224,8 +224,8 @@ class PromoCode(Base):
 			return int(cents * x)
 
 		if self.flat_cents_off:
-			if cents >= self.flat_cents_min:
-				cents -= self.flat_cents_off
+			if cents >= (self.flat_cents_min or 0):
+				cents = max(cents - self.flat_cents_off, 0)
 			return cents
 
 		else:
@@ -274,6 +274,12 @@ class PromoCode(Base):
 		elif self.flat_cents_off and self.flat_cents_min:
 			text= f"Save {self.display_flat_off} on any purchase over {self.display_flat_min} with code {self.code}."
 
+		elif self.flat_cents_off:
+			text= f"Save {self.display_flat_off} on any purchase with code {self.code}."
+
+		else:
+			text= f"Code {self.code} is valid."
+
 		if self.promo_info:
 			text += f" Your purchase will also support {self.promo_info}."
 
@@ -290,3 +296,6 @@ class AwardRelationship(Base):
 	user_id=Column(Integer, ForeignKey("users.id"))
 	submission_id=Column(Integer, ForeignKey("submissions.id"), default=None)
 	comment_id=Column(Integer, ForeignKey("comments.id"), default=None)
+	# one row per tip (helpers/tips.py); rows from before 2026-10-13 count as 1 coin, their amounts were not kept
+	coins=Column(Integer, default=1)
+	created_utc=Column(Integer, default=0)

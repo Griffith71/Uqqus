@@ -6,7 +6,6 @@
 {% set ups=c.upvotes_fuzzed %}
 {% set downs=c.downvotes_fuzzed %}
 {% set score=ups-downs %}
-{% include "emoji_modal.html" %}
 
 <!--conditions under which a comment might be hidden-->
 
@@ -172,7 +171,7 @@
         {% if c.edited_utc %}
         <span class="time-edited"><span>&#183;</span> <span class="font-italic">Edited {{ c.edited_string }}</span></span>
         {% endif %}
-        {% if c.award_count %}<span><img src="/assets/images/icons/ruqqus-coin.png" style="width: 15px; margin-bottom: 3px;"/><span class="pl-1 text-warning font-weight-bold">{{ c.award_count }}</span></span>{% endif %}
+        {% if c.award_count %}<span class="tip-badge" title="{{ c.award_count }} coin{{ 's' if c.award_count != 1 }} tipped"><img src="{{ asset_url('images/icons/ruqqus-coin.png') }}" alt="" width="15" height="15"><span class="tip-badge-count" aria-label="{{ c.award_count }} coin{{ 's' if c.award_count != 1 }} tipped">{{ c.award_count }}</span></span>{% endif %}
         {% if standalone and level==1 and comment_reposted_ids is defined and c.id in comment_reposted_ids %} · <span class="text-muted"><i class="fas fa-retweet fa-fw"></i>Repost</span>{% endif %}
 
         <span class="comment-collapse d-md-none" onclick="collapse_comment('{{ c.base36id }}')"></span>
@@ -227,7 +226,7 @@
       <div id="comment-edit-{{ c.base36id }}" class="d-none comment-write collapsed child">
        <form id="comment-edit-form-{{ c.base36id }}" action="/edit_comment/{{ c.base36id }}" method="post" class="input-group">
         <input type="hidden" name="formkey" value="{{ v.formkey }}">
-        <textarea id="comment-edit-body-{{ c.base36id }}" name="body" form="comment-edit-form-{{ c.base36id }}" class="comment-box form-control rounded" onkeydown="textAreaOnKeyDown(event, (id = '{{ c.base36id }}') => comment_edit(id))" aria-label="With textarea" placeholder="Add your comment..." rows="3">{{ c.body }}</textarea> 
+        <textarea maxlength="10000" id="comment-edit-body-{{ c.base36id }}" name="body" form="comment-edit-form-{{ c.base36id }}" class="comment-box form-control rounded" onkeydown="textAreaOnKeyDown(event, (id = '{{ c.base36id }}') => comment_edit(id))" aria-label="With textarea" placeholder="Add your comment..." rows="3">{{ c.body }}</textarea> 
         <div class="comment-format"> 
          <small class="format pl-0"><i class="fas fa-bold" aria-hidden="true" onclick="makeBold('comment-edit-body-{{ c.base36id }}')" data-toggle="tooltip" data-placement="bottom" title="Bold"></i></small> 
          <small class="format"><i class="fas fa-italic" aria-hidden="true" onclick="makeItalics('comment-edit-body-{{ c.base36id }}')" data-toggle="tooltip" data-placement="bottom" title="Italicize"></i></small> 
@@ -330,8 +329,8 @@
               <a class="dropdown-item" href="javascript:void(0)" data-toggle="modal" data-target="#tipModal" onclick="tipModal2('{{ c.base36id }}','comment','{{ c.permalink }}','{{ author_of(c, v).username }}','{{ author_of(c, v).profile_url }}')"><i class="fas fa-star fa-fw"></i>Tip</a>
               {% endif %}
 
-              {% if c.parent_submission and not c.author_id==v.id and is_allowed_to_comment %}
-              <a class="dropdown-item" href="javascript:void(0)" data-toggle="modal" data-target="#reportCommentModal" onclick="report_commentModal('{{ c.base36id }}','{{ author_of(c, v).username if not author_of(c, v).is_deleted and not anon_hidden(c, v) else '[is_deleted]' }}',)"><i class="fas fa-flag fa-fw"></i>Flag</a>
+              {% if c.parent_submission and not c.author_id==v.id %}{# flagging needs a login only, not the right to comment #}
+              <a class="dropdown-item" href="javascript:void(0)" data-toggle="modal" data-target="#reportCommentModal" onclick="report_commentModal('{{ c.base36id }}','{{ 'Anonymous' if anon_hidden(c, v) else ('[deleted account]' if author_of(c, v).is_deleted else author_of(c, v).username) }}',)"><i class="fas fa-flag fa-fw"></i>Flag</a>
               {% endif %}
 
               <a class="dropdown-item" href="/comment/{{ c.base36id }}/history"><i class="fas fa-history fa-fw"></i>History</a>
@@ -377,12 +376,9 @@
               {% endif %}
 
               {% if can_moderate %}
-              {% if not c.is_banned %}
-              <a class="dropdown-item" id="moderate-{{ c.base36id }}" href="javascript:void(0)" onclick="removeComment('{{ c.base36id }}')"><i class="fas fa-comment-times fa-fw"></i>Remove</a>
-              {% endif %}
-              {% if c.is_banned %}
-              <a class="dropdown-item" id="moderate-{{ c.base36id }}" href="javascript:void(0)" onclick="approveComment('{{ c.base36id }}')"><i class="fas fa-comment-check fa-fw"></i>Approve</a>
-              {% endif %}
+              {# both always rendered, shown by state (showCommentModeration in all_js.js updates every copy) #}
+              <a class="dropdown-item mod-remove-c-{{ c.base36id }}{% if c.is_banned %} d-none{% endif %}" href="javascript:void(0)" onclick="removeComment('{{ c.base36id }}')"><i class="fas fa-comment-times fa-fw"></i>Remove</a>
+              <a class="dropdown-item mod-approve-c-{{ c.base36id }}{% if not c.is_banned %} d-none{% endif %}" href="javascript:void(0)" onclick="approveComment('{{ c.base36id }}')"><i class="fas fa-comment-check fa-fw"></i>Approve</a>
               {% if author_of(c, v).is_deleted %}
               <a class="dropdown-item" href="{{ author_of(c, v).permalink }}"><i class="fas fa-user-minus fa-fw"></i>@{{ author_of(c, v).username }}</a>
               {% endif %}
@@ -397,12 +393,13 @@
 
               {% if v.id != c.author_id %}
               <div class="dropdown-divider"></div>
+              {# never on an anonymous comment: it would act on the stand-in name "Anonymous" #}
               {% if not anon_hidden(c, v) %}
               <a class="dropdown-item" href="javascript:void(0)" onclick="post_toast('/settings/mute?username={{ author_of(c, v).username }}')"
               ><i class="fas fa-volume-mute fa-fw"></i>Mute user</a>
-              {% endif %}
               <a class="dropdown-item text-danger" href="javascript:void(0)" onclick="post_toast('/settings/block?username={{ author_of(c, v).username }}')"
               ><i class="fas fa-user-slash text-danger fa-fw"></i>Block user</a>
+              {% endif %}
               {% endif %}
 
               {% if c.post and c.is_guildmaster('access') and v.id!=c.author_id and not author_of(c, v).is_deleted and not anon_hidden(c, v) and c.original_board_id==c.post.board_id %}
@@ -456,7 +453,7 @@
         <input type="hidden" name="formkey" value="{{ v.formkey }}"> 
         <input type="hidden" name="parent_fullname" value="{{ c.fullname }}"> 
         <input id="comment-form-submission-{{ c.fullname }}" type="hidden" name="submission" value="{{ c.post.base36id }}"> 
-        <textarea name="body" form="comment-on-t3_{{ c.base36id }}" class="comment-box form-control rounded" id="comment-form-body-{{ c.fullname }}" onkeydown="textAreaOnKeyDown(event, (fullname = '{{ c.fullname }}') => post_comment(fullname))" aria-label="With textarea" placeholder="Add your comment..." rows="3"></textarea> 
+        <textarea maxlength="10000" name="body" form="comment-on-t3_{{ c.base36id }}" class="comment-box form-control rounded" id="comment-form-body-{{ c.fullname }}" onkeydown="textAreaOnKeyDown(event, (fullname = '{{ c.fullname }}') => post_comment(fullname))" aria-label="With textarea" placeholder="Add your comment..." rows="3"></textarea> 
         <div class="comment-format" id="comment-format-bar-{{ c.base36id }}"> 
           <small class="format pl-0">
             <i class="fas fa-bold" aria-hidden="true" onclick="makeBold('comment-form-body-{{ c.fullname }}')" data-toggle="tooltip" data-placement="bottom" title="Bold"></i>
@@ -523,7 +520,7 @@
       <div class="modal-header">
         <h5 class="modal-title h6">More options</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true"><i class="far fa-times"></i></span>
+          <span aria-hidden="true"><i class="fas fa-times"></i></span>
         </button>
       </div>
       <div class="modal-body">
@@ -557,8 +554,8 @@
           <li class="list-group-item"><a href="javascript:void(0)" data-toggle="modal" data-dismiss="modal" data-target="#tipModal" onclick="tipModal2('{{ c.base36id }}','comment','{{ c.permalink }}','{{ author_of(c, v).username }}','{{ author_of(c, v).profile_url }}')" class="d-block"><i class="fas fa-star"></i><span>Tip</span></a></li>
           {% endif %}
 
-          {% if c.parent_submission and not v.id==c.author_id and is_allowed_to_comment %}
-          <li class="list-group-item"><a href="javascript:void(0)" data-toggle="modal" data-dismiss="modal" data-target="#reportCommentModal" onclick="report_commentModal('{{ c.base36id }}','{{ author_of(c, v).username if not author_of(c, v).is_deleted and not anon_hidden(c, v) else '[is_deleted]' }}')" class="d-block"><i class="fas fa-flag"></i>Flag</a></li>
+          {% if c.parent_submission and not v.id==c.author_id %}
+          <li class="list-group-item"><a href="javascript:void(0)" data-toggle="modal" data-dismiss="modal" data-target="#reportCommentModal" onclick="report_commentModal('{{ c.base36id }}','{{ 'Anonymous' if anon_hidden(c, v) else ('[deleted account]' if author_of(c, v).is_deleted else author_of(c, v).username) }}')" class="d-block"><i class="fas fa-flag"></i>Flag</a></li>
           {% endif %}
 
           {% if can_edit %}
@@ -602,12 +599,8 @@
           {% endif %}
 
           {% if can_moderate %}
-          {% if not c.is_banned %}
-          <li class="list-group-item"><a class="d-block" id="moderate-{{ c.base36id }}" href="javascript:void(0)" onclick="removeComment('{{ c.base36id }}')"><i class="fas fa-comment-times"></i>Remove</a></li>
-          {% endif %}
-          {% if c.is_banned %}
-          <li class="list-group-item"><a class="d-block" id="moderate-{{ c.base36id }}" href="javascript:void(0)" onclick="approveComment('{{ c.base36id }}')"><i class="fas fa-comment-check"></i>Approve</a></li>
-          {% endif %}
+          <li class="list-group-item mod-remove-c-{{ c.base36id }}{% if c.is_banned %} d-none{% endif %}"><a class="d-block" href="javascript:void(0)" onclick="removeComment('{{ c.base36id }}')"><i class="fas fa-comment-times"></i>Remove</a></li>
+          <li class="list-group-item mod-approve-c-{{ c.base36id }}{% if not c.is_banned %} d-none{% endif %}"><a class="d-block" href="javascript:void(0)" onclick="approveComment('{{ c.base36id }}')"><i class="fas fa-comment-check"></i>Approve</a></li>
           {% if author_of(c, v).is_deleted %}
           <li class="list-group-item"><a class="d-block" href="{{ author_of(c, v).permalink }}"><i class="fas fa-user-minus"></i>@{{ author_of(c, v).username }}</a></li>
           {% endif %}
@@ -625,10 +618,10 @@
           <li class="list-group-item">
             <a class="d-block" href="javascript:void(0)" onclick="post_toast('/settings/mute?username={{ author_of(c, v).username }}')"><i class="fas fa-volume-mute"></i>Mute user</a>
           </li>
-          {% endif %}
           <li class="list-group-item">
             <a class="d-block" href="javascript:void(0)" onclick="post_toast('/settings/block?username={{ author_of(c, v).username }}')"><i class="fas fa-user-slash text-danger"></i>Block user</a>
           </li>
+          {% endif %}
           {% endif %}
 
           {% if c.post and c.is_guildmaster('access') and c.author_id != v.id and not author_of(c, v).is_deleted and not anon_hidden(c, v) and c.original_board_id==c.post.board_id %}
