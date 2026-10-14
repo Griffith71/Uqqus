@@ -90,6 +90,32 @@
 
             </div>
 
+          <h2 class="h5 mt-5" id="scores">Scores</h2>
+
+            <div class="settings-section rounded">
+
+              <div class="d-lg-flex">
+
+                <div class="title w-lg-25">
+                  <label for="score-display">How scores read</label>
+                </div>
+
+                <div class="body w-lg-100">
+
+                  {# users.score_display (helpers/jinja2.py score_mode): the same two choices as when signing up #}
+                  <select class="form-control" id="score-display" onchange="post_toast('/settings/score_display?score_display=' + this.value, function () { window.location.reload(); })">
+                    <option value="0"{% if score_mode(v) == 0 %} selected{% endif %}>Upvotes, coloured by how many were up</option>
+                    <option value="1"{% if score_mode(v) == 1 %} selected{% endif %}>Upvotes minus downvotes</option>
+                  </select>
+
+                  <span class="d-block mt-2 text-small-extra text-muted">Coloured: a post with mostly upvotes shows its upvotes in <span class="font-weight-bold vote-ratio-10">blue</span>, one with mostly downvotes in <span class="font-weight-bold vote-ratio-0">red</span>, and anything between in a shade between. Hover a score to see both counts.</span>
+
+                </div>
+
+              </div>
+
+            </div>
+
           <h2 class="h5 mt-5" id="for-you">For You</h2>
 
             <div class="settings-section rounded">

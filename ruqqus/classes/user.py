@@ -116,6 +116,7 @@ class User(Base, Stndrd, Age_times):
     # when the member last pressed "Reset For You" in settings (0: never); the feed does not read it yet
     for_you_reset_utc = Column(Integer, default=0)
     creator_fund_opt_in_utc = Column(Integer, default=0)     # the creator fund (helpers/creator_fund.py); 0 = not taking part
+    score_display = Column(SmallInteger, default=0)   # how scores read: 0 upvotes, coloured (default); 1 upvotes minus downvotes
     hide_bot = Column(Boolean, default=False)
     show_nsfl = Column(Boolean, default=False)
     is_private = Column(Boolean, default=False)

@@ -321,7 +321,8 @@ CREATE TABLE public.users (
     name_severity smallint DEFAULT 0 NOT NULL,
     bio_severity smallint DEFAULT 0 NOT NULL,
     for_you_reset_utc integer DEFAULT 0 NOT NULL,
-    creator_fund_opt_in_utc integer DEFAULT 0 NOT NULL
+    creator_fund_opt_in_utc integer DEFAULT 0 NOT NULL,
+    score_display smallint DEFAULT 0 NOT NULL
 );
 
 

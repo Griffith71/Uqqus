@@ -67,7 +67,7 @@ def test_earnings_are_shown_only_to_the_member_and_to_admins():
 def test_schema_and_migration_agree():
     migration, schema = read("scripts/migrations/2026-10-12_creator_fund.sql"), read("schema.sql")
     assert "ALTER TABLE users ADD COLUMN IF NOT EXISTS creator_fund_opt_in_utc integer NOT NULL DEFAULT 0;" in migration
-    assert "    creator_fund_opt_in_utc integer DEFAULT 0 NOT NULL\n);" in schema
+    assert "    creator_fund_opt_in_utc integer DEFAULT 0 NOT NULL" in schema.split("CREATE TABLE public.users (")[1].split("\n);")[0]
     for table in ("creator_fund_months", "creator_fund_payouts"):
         body_m = re.search(rf"CREATE TABLE IF NOT EXISTS public\.{table} \((.*?)\n\);", migration, re.S).group(1)
         body_s = re.search(rf"CREATE TABLE public\.{table} \((.*?)\n\);", schema, re.S).group(1)

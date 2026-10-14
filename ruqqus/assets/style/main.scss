@@ -2257,6 +2257,23 @@ fieldset.search-field {
     font-weight: $font-weight-bold;
 }
 
+// The sign-up choice of how scores read: the legend as a form title, the options as sentences (labels are uppercase)
+.score-display-legend {
+    margin-bottom: 0.5rem;
+    color: $muted;
+    font-size: 12px;
+    font-weight: $font-weight-bold;
+    letter-spacing: 0.025rem;
+    text-transform: uppercase;
+}
+
+.score-display-option {
+    font-size: 0.95rem;
+    font-weight: normal;
+    letter-spacing: normal;
+    text-transform: none;
+}
+
 // Tips (helpers/tips.py): the coins tipped on a comment (a post's are in its action row, partials/post_actions.html), never who tipped
 .tip-badge {
     display: inline-flex;

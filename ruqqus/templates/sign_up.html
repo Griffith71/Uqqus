@@ -131,6 +131,22 @@
                             aria-describedby="passwordConfirmHelp" type="password" name="password_confirm"
                             required="">
 
+                            {# how scores read (users.score_display, helpers/jinja2.py score_mode); changeable in Settings > Content #}
+                            <fieldset class="mt-4 score-display-choice">
+                                <legend class="score-display-legend">How should scores read?</legend>
+                                <div class="custom-control custom-radio">
+                                    <input type="radio" class="custom-control-input" id="score-display-0" name="score_display" value="0" checked>
+                                    <label class="custom-control-label score-display-option" for="score-display-0">Upvotes, coloured by how many were up
+                                        <span class="d-block text-muted text-small">e.g. <span class="font-weight-bold vote-ratio-9">128</span>: blue when most votes are up, red when most are down</span></label>
+                                </div>
+                                <div class="custom-control custom-radio mt-2">
+                                    <input type="radio" class="custom-control-input" id="score-display-1" name="score_display" value="1">
+                                    <label class="custom-control-label score-display-option" for="score-display-1">Upvotes minus downvotes
+                                        <span class="d-block text-muted text-small">e.g. <span class="font-weight-bold">120</span> for 128 up and 8 down</span></label>
+                                </div>
+                                <small class="form-text text-muted">You can change this any time in Settings.</small>
+                            </fieldset>
+
                             <div class="custom-control custom-checkbox mt-4">
                                 <input type="checkbox" class="custom-control-input" id="termsCheck" required>
                                 <label class="custom-control-label terms" for="termsCheck">I accept the <a

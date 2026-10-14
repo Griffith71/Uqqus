@@ -674,6 +674,21 @@ def settings_content_get(v):
 
     return render_template("settings_filters.html", v=v)
 
+@app.route("/settings/score_display", methods=["POST"])
+@auth_required
+@validate_formkey
+def settings_score_display(v):
+    """How the member reads scores (helpers/jinja2.py score_mode): 0 upvotes coloured by their share of the votes,
+    1 upvotes minus downvotes. Anything else is refused."""
+    choice = request.values.get("score_display")
+    if choice not in ("0", "1"):
+        return jsonify({"error": "Choose how scores read."}), 400
+    v.score_display = int(choice)
+    g.db.add(v)
+    g.db.commit()
+    return jsonify({"message": "Saved."})
+
+
 @app.route("/settings/for_you/reset", methods=["POST"])
 @auth_required
 @validate_formkey

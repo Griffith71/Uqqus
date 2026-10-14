@@ -1752,7 +1752,9 @@ function snapshotVote(type, id) {
       upActive: ups[j].classList.contains('active'),
       downActive: downs[j].classList.contains('active'),
       text: scores[j].textContent,
-      cls: scores[j].className
+      cls: scores[j].className,
+      ups: scores[j].dataset.ups,
+      downs: scores[j].dataset.downs
     });
   }
 
@@ -1762,8 +1764,25 @@ function snapshotVote(type, id) {
       s.down.classList.toggle('active', s.downActive);
       s.score.textContent = s.text;
       s.score.className = s.cls;
+      if (s.ups !== undefined) { s.score.dataset.ups = s.ups; s.score.dataset.downs = s.downs; }
     });
   };
+}
+
+// A score after a vote (the post card, the post page and comments carry data-ups / data-downs / data-mode): its
+// upvotes and downvotes move by (dUp, dDown) and it is redrawn the way the viewer reads scores: upvotes coloured by
+// their share of the votes (data-mode "0", the default; helpers/vote_colour.py) or upvotes minus downvotes ("1").
+// `fallback` is the plain arithmetic, for markup without the counts.
+function voteCounts(el, dUp, dDown, fallback) {
+  if (el.dataset.ups === undefined) { el.textContent = fallback; return; }
+  var ups = Math.max(Number(el.dataset.ups) + dUp, 0);
+  var downs = Math.max(Number(el.dataset.downs) + dDown, 0);
+  el.dataset.ups = ups;
+  el.dataset.downs = downs;
+  var net = el.dataset.mode === '1';
+  el.textContent = net ? ups - downs : ups;
+  el.className = el.className.replace(/\s*vote-ratio-\d+/g, '');
+  if (!net && ups + downs > 0) el.classList.add('vote-ratio-' + Math.round(ups / (ups + downs) * 10));
 }
 
 // An arrow that is locked because the viewer's vote on this post is on another copy of it
@@ -1794,16 +1813,16 @@ var upvote = function(event) {
 
     if (thisUpvoteButton.classList.contains('active')) {
       thisUpvoteButton.classList.remove('active')
-      thisScoreText.textContent = thisScore - 1
+      voteCounts(thisScoreText, -1, 0, thisScore - 1)
       voteDirection = "0"
     } else if (thisDownvoteButton.classList.contains('active')) {
       thisUpvoteButton.classList.add('active')
       thisDownvoteButton.classList.remove('active')
-      thisScoreText.textContent = thisScore + 2
+      voteCounts(thisScoreText, 1, -1, thisScore + 2)
       voteDirection = "1"
     } else {
       thisUpvoteButton.classList.add('active')
-      thisScoreText.textContent = thisScore + 1
+      voteCounts(thisScoreText, 1, 0, thisScore + 1)
       voteDirection = "1"
     }
 
@@ -1845,16 +1864,16 @@ var downvote = function(event) {
 
     if (thisDownvoteButton.classList.contains('active')) {
       thisDownvoteButton.classList.remove('active')
-      thisScoreText.textContent = thisScore + 1
+      voteCounts(thisScoreText, 0, -1, thisScore + 1)
       voteDirection = "0"
     } else if (thisUpvoteButton.classList.contains('active')) {
       thisDownvoteButton.classList.add('active')
       thisUpvoteButton.classList.remove('active')
-      thisScoreText.textContent = thisScore - 2
+      voteCounts(thisScoreText, -1, 1, thisScore - 2)
       voteDirection = "-1"
     } else {
       thisDownvoteButton.classList.add('active')
-      thisScoreText.textContent = thisScore - 1
+      voteCounts(thisScoreText, 0, 1, thisScore - 1)
       voteDirection = "-1"
     }
 

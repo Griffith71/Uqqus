@@ -419,6 +419,8 @@ def sign_up_post(v):
             creation_region=cf_country,
             display_region=signup_region,
             region_settled_utc=signup_utc,
+            # how scores read: only 0 (upvotes, coloured; the default) or 1 (upvotes minus downvotes)
+            score_display=1 if request.form.get("score_display") == "1" else 0,
             ban_evade =  int(any([x.is_suspended for x in g.db.query(User).filter(User.id.in_(tuple(flask_session.get("history", [])))).all() if x]))
             )
         apply_user_severity(new_user)

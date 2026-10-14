@@ -18,6 +18,22 @@ from ruqqus.__main__ import app, cache, db_session
 post_regex = re.compile(r"^https?://[a-zA-Z0-9_.-]+/\+\w+/post/(\w+)(/[a-zA-Z0-9_-]+/?)?$")
 
 
+# How a viewer reads scores (users.score_display): 0, the default and what visitors get, is upvotes coloured by their
+# share of the votes (helpers/vote_colour.py); 1 is upvotes minus downvotes. Only those two values are ever drawn.
+SCORE_UPVOTES, SCORE_NET = 0, 1
+
+
+@app.template_global("score_mode")
+def score_mode(v):
+    return SCORE_NET if v is not None and getattr(v, "score_display", 0) == SCORE_NET else SCORE_UPVOTES
+
+
+@app.template_global("ratio_class")
+def ratio_class_global(ups, downs):
+    from ruqqus.helpers.vote_colour import ratio_class
+    return ratio_class(ups, downs)
+
+
 @app.template_filter("total_users")
 @cache.memoize(timeout=60)
 def total_users(x):
