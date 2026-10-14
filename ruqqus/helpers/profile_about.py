@@ -1,14 +1,16 @@
 """The "About" box at the top of a profile's right sidebar (templates/partials/profile_about.html).
 
 What it shows is already public elsewhere: the account's age, its Rep and the counts behind it, its badges, the guilds
-it leads (guild pages list their guildmasters) and its public curations. Two rules keep it that way:
-* a guild is listed only to a viewer who may see that guild (private and Circle guilds, the word filter);
+it leads (guild pages list their guildmasters) and, in a box of its own, its public curations. It reads the same to the
+owner as to anyone else, so an owner sees their profile as others do. Two rules keep it that way:
+* a guild is listed only when a visitor could see it (never a private or Circle guild, whoever looks, the owner and its
+  members included), and not when its name trips the viewer's word filter;
 * a curation is listed only when it is public, to its owner too, and when the viewer's word filter allows its name
   (curations keep no stored rating, so the name is rated as it is drawn, as a username or a guild name is).
 """
 import time
 
-CURATIONS_SHOWN = 5
+CURATIONS_SHOWN = 10
 
 _DAY = 86400
 
@@ -46,7 +48,7 @@ def shown_curations(curations, hidden, limit=CURATIONS_SHOWN):
 
 def guilds_for(owner, v):
     from ruqqus.helpers.visibility import board_hidden
-    return guild_roles(owner.boards_modded, owner.id, lambda b: b.can_view(v) and not board_hidden(b, v))
+    return guild_roles(owner.boards_modded, owner.id, lambda b: b.can_view(None) and not board_hidden(b, v))
 
 
 def curations_for(db, owner, v):

@@ -319,15 +319,17 @@ def similar_candidates(owner_id, owner_name):
 
 def similar_for(owner, v, limit=SIMILAR_COUNT):
     """[(account, reason)] like `owner` that the viewer (or a visitor, v None) may be shown: never the owner or the
-    viewer, an account the viewer follows, blocks, is blocked by or muted, or a private, nofollow, banned, deleted or
-    word-filtered account."""
+    viewer, an account the viewer follows (unless the viewer is the owner), blocks, is blocked by or muted, or a
+    private, nofollow, banned, deleted or word-filtered account."""
     from flask import g
     from ruqqus.classes import User
     from ruqqus.helpers.visibility import filter_users
 
     rows = [r for r in similar_candidates(owner.id, owner.username) if r[0] != owner.id]
     viewer_id = v.id if v else None
-    following = v.following_ids if v else set()
+    # on one's own profile the list is the one others get: accounts the owner follows stay in it (blocks and mutes
+    # still leave it, as everywhere)
+    following = v.following_ids if v and v.id != owner.id else set()
     blocked = _blocked_user_ids(v.id) if v else set()
     ids = [r[0] for r in rows]
     users = {u.id: u for u in filter_users(g.db.query(User).filter(User.id.in_(ids)), v).all()} if ids else {}

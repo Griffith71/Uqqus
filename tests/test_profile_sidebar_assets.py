@@ -1,5 +1,6 @@
-"""A profile's right sidebar: the About box at the top (age, Rep and its counts, badges, guilds led, public curations),
-then the shared part with Similar accounts in place of Who to follow and no Support. Other pages are unchanged."""
+"""A profile's right sidebar: the About box at the top (age, Rep and its counts, badges, guilds led), then the shared
+part with Similar accounts in place of Who to follow, the account's public curations in place of the Guilds / Create
+Guild box, and no Support. It reads the same to the owner as to anyone else. Other pages are unchanged."""
 import re
 from pathlib import Path
 
@@ -27,15 +28,17 @@ def test_the_profile_sidebar_is_about_then_the_shared_part():
 def test_the_about_box_shows_what_was_asked_through_the_rules():
     about = (TEMPLATES / "partials" / "profile_about.html").read_text(encoding="utf-8")
     for needle in ("account_age(u)", "u.created_date", "u.rep_class", "u.rep_label", "u.true_score",
-                   "profile_guilds(u, v)", "profile_curations(u, v)", "Achievements", "Curations"):
+                   "profile_guilds(u, v)", "Achievements"):
         assert needle in about, needle
+    assert "profile_curations(" not in about        # curations have their own box
     assert about.count("u.badges") == 1          # the property commits: read it once
     assert ".author" not in about
 
 
 def test_guilds_go_through_the_viewers_rules_and_curations_are_public_only():
     helper = read("ruqqus", "helpers", "profile_about.py")
-    assert "b.can_view(v) and not board_hidden(b, v)" in helper
+    # what a visitor could see, whoever looks: the owner sees their profile as others do
+    assert "b.can_view(None) and not board_hidden(b, v)" in helper and "can_view(v)" not in helper
     assert "Curation.is_private.is_(False)" in helper and "not c.is_private" in helper
     assert "is_hidden(level, name_severity(" in helper
 
@@ -77,3 +80,16 @@ def test_both_stylesheets_style_the_about_box():
     for sheet in ("main.scss", "main_dark.scss"):
         css = read("ruqqus", "assets", "style", sheet)
         assert ".profile-about {" in css and ".profile-about-role {" in css, sheet
+
+
+def test_the_profiles_curations_box_takes_the_guilds_boxs_place():
+    shared = (TEMPLATES / "partials" / "sidebar_common.html").read_text(encoding="utf-8")
+    assert '{% if profile_user %}\n{% include "partials/profile_curations.html" %}\n{% elif v and v.can_make_guild %}' in shared
+    box = (TEMPLATES / "partials" / "profile_curations.html").read_text(encoding="utf-8")
+    assert "profile_curations(profile_user, v)" in box and "{% if shown_curations %}" in box
+
+
+def test_similar_accounts_on_ones_own_profile_are_the_list_others_get():
+    helper = read("ruqqus", "helpers", "suggestions.py").split("def similar_for(")[1].split("\ndef ")[0]
+    assert "following = v.following_ids if v and v.id != owner.id else set()" in helper
+    assert "blocked = _blocked_user_ids(v.id) if v else set()" in helper

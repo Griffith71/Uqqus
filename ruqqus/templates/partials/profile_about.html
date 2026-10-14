@@ -1,10 +1,10 @@
 {#
   "About @name" at the top of a profile's right sidebar: how long the account has existed, its Rep with the counts
-  behind it, its badges, the guilds it leads and its public curations. Rules in helpers/profile_about.py: a guild is
-  listed only to a viewer who may see it, a curation only when it is public and its name passes the viewer's filter.
+  behind it, its badges and the guilds it leads. Rules in helpers/profile_about.py: the box reads the same to the
+  owner as to anyone else, so only guilds a visitor could see are listed. Its public curations have a box of their
+  own (partials/profile_curations.html).
 #}
 {% set about_guilds = profile_guilds(u, v) %}
-{% set about_curations, about_more = profile_curations(u, v) %}
 {% set about_badges = u.badges %}
 <div class="sidebar-section profile-about">
   <div class="title"><i class="fas fa-id-card mr-2"></i>About @{{ u.username }}</div>
@@ -46,19 +46,6 @@
       </li>
       {% endfor %}
     </ul>
-    {% endif %}
-
-    {% if about_curations %}
-    <div class="profile-about-heading">Curations</div>
-    <ul class="profile-about-list">
-      {% for c in about_curations %}
-      <li class="profile-about-item">
-        <i class="fas fa-layer-group fa-fw text-muted mr-2"></i>
-        <a href="{{ c.permalink }}" class="text-truncate">{{ c.name }}</a>
-      </li>
-      {% endfor %}
-    </ul>
-    {% if about_more %}<div class="text-muted text-small">and {{ about_more }} more</div>{% endif %}
     {% endif %}
   </div>
 </div>

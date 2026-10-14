@@ -1,0 +1,25 @@
+{#
+  A profile's public curations, in the right sidebar where other pages have the Guilds / Create Guild box
+  (partials/sidebar_common.html). Only public curations, the same list to the owner as to anyone else
+  (helpers/profile_about.py curations_for); nothing is drawn when there are none.
+#}
+{% set shown_curations, more_curations = profile_curations(profile_user, v) %}
+{% if shown_curations %}
+<div class="sidebar-section profile-about profile-curations">
+  <div class="title"><i class="fas fa-layer-group mr-2"></i>Curations</div>
+  <div class="body">
+    <ul class="profile-about-list">
+      {% for c in shown_curations %}
+      <li class="profile-about-item">
+        <i class="fas fa-layer-group fa-fw text-muted mr-2"></i>
+        <span>
+          <a href="{{ c.permalink }}" class="d-block text-truncate">{{ c.name }}</a>
+          {% if c.description %}<span class="d-block text-muted text-small text-truncate">{{ c.description }}</span>{% endif %}
+        </span>
+      </li>
+      {% endfor %}
+    </ul>
+    {% if more_curations %}<div class="text-muted text-small mt-1">and {{ more_curations }} more</div>{% endif %}
+  </div>
+</div>
+{% endif %}

@@ -2,12 +2,16 @@
   The part of the right sidebar every page with posts shares (home and the feeds, a profile, a guild, a post):
   Trending, Who to follow and the sidebar ad (late_boxes.html), Guilds / Create Guild, and Support. A page puts its own
   sections first (a guild's info, a profile's About box) and then includes this, so the sidebar reads the same everywhere.
-  A profile sets `profile_user`: Who to follow becomes Similar accounts (late_boxes.html) and Support is left out (its
-  place is the About box at the top, partials/profile_about.html).
+  A profile sets `profile_user` and reads the same to its owner as to anyone else: Who to follow becomes Similar
+  accounts (late_boxes.html), the Guilds / Create Guild box (which is about the viewer, not the account) becomes the
+  account's public curations (partials/profile_curations.html), and Support is left out (its place is the About box at
+  the top, partials/profile_about.html).
   tests/test_sidebar_consistency_assets.py keeps every page on it.
 #}
 {% include "partials/late_boxes.html" %}
-{% if v and v.can_make_guild %}
+{% if profile_user %}
+{% include "partials/profile_curations.html" %}
+{% elif v and v.can_make_guild %}
 <div class="sidebar-section sidebar-guildmake">
   <div class="title"><i class="fas fa-chess-rook mr-2"></i>Guilds</div>
   <div class="body">
