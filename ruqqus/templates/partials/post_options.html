@@ -44,9 +44,9 @@
 {% endmacro %}
 
 {% macro comment_permission_field(selected, prefix) %}
-<label class="mt-3 d-block">Who can comment?<i class="fas fa-info-circle text-gray-400 ml-1" data-toggle="tooltip" data-placement="top" title="Applies to this post on your profile. A copy forwarded to a guild follows that guild's rules instead. You and site admins can always comment."></i></label>
+<label class="mt-3 d-block">Who can comment?<i class="fas fa-info-circle text-gray-400 ml-1" data-toggle="tooltip" data-placement="top" title="Applies to this post on your profile. A copy forwarded to a guild follows that guild's rules instead. You and site admins can always comment, unless you choose No one. You can change this later from the post's menu."></i></label>
 <div class="comment-permission">
-  {% for value, label in [(0, "Everyone"), (1, "Accounts you follow"), (2, "Premium accounts")] %}
+  {% for value, label in [(0, "Everyone"), (1, "Accounts you follow"), (2, "Premium accounts"), (3, "No one")] %}
   <div class="custom-control custom-radio custom-control-inline">
     <input type="radio" class="custom-control-input" id="{{ prefix }}-{{ value }}" name="comment_permission" value="{{ value }}"{% if selected == value %} checked{% endif %}>
     <label class="custom-control-label" for="{{ prefix }}-{{ value }}">{{ label }}</label>

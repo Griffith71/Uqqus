@@ -348,8 +348,10 @@ class Submission(Base, Stndrd, Age_times, Scores, Fuzzing):
         is_allowed_to_comment = self.board.can_comment(
             v) and not self.is_archived
         # why a signed-in viewer may not write a comment here although the
-        # guild allows it: the author limited the post (None when they may)
-        comment_restriction = cperm.restriction(self, v) if v else None
+        # guild allows it: the author limited the post (None when they may). A visitor
+        # is only told when comments are off for everyone ("No one"), otherwise
+        # they are still invited to sign in
+        comment_restriction = cperm.restriction(self, v) if v else cperm.closed_notice(self)
         
     #    if request.args.get("sort", "Hot") != "new":
     #        self.nested_comments = [x for x in self.nested_comments if x.is_pinned] + [x for x in self.nested_comments if not x.is_pinned]
@@ -363,6 +365,7 @@ class Submission(Base, Stndrd, Age_times, Scores, Fuzzing):
                                comment_info=comment_info,
                                is_allowed_to_comment=is_allowed_to_comment,
                                comment_restriction=comment_restriction,
+                               comments_off=cperm.closed_notice(self) is not None,
                                render_child_comments=True,
                                b=None if self.is_profile_post else self.board
                                )

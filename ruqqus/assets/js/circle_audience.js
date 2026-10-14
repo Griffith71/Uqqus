@@ -36,7 +36,8 @@
   }
 
   document.addEventListener('click', function (event) {
-    var item = event.target.closest ? event.target.closest('.audience-item') : null;
+    // the menu entries (.audience-item) and the "Change" button in the Edit form (.audience-open)
+    var item = event.target.closest ? event.target.closest('.audience-item, .audience-open') : null;
     if (!item) return;
     event.preventDefault();
     target = { id: item.getAttribute('data-post-id'), audience: item.getAttribute('data-audience') || '0' };
@@ -45,6 +46,21 @@
     say('');
     $('#audienceModal').modal('show');
   });
+
+  function send(fields) {
+    say('');
+    save.disabled = true;
+    post('/api/post/' + encodeURIComponent(target.id) + '/audience', fields).then(function (res) {
+      save.disabled = false;
+      // the server asks first when only the author would see the post (an empty Circle): the answer carries the sentence
+      if (res.status === 409 && res.data.confirm && !fields.confirm) {
+        if (window.confirm(res.data.error + ' Save anyway?')) { fields.confirm = '1'; send(fields); }
+        return;
+      }
+      if (!res.ok) { say(res.data.error || 'Could not change that.', true); return; }
+      window.location.reload();
+    }).catch(function () { save.disabled = false; say('Could not change that. Try again.', true); });
+  }
 
   save.addEventListener('click', function () {
     var value = chosen();
@@ -55,12 +71,6 @@
       if (!window.confirm('Make this post public? Everyone will be able to see it.')) return;
       fields.confirm = '1';
     }
-    say('');
-    save.disabled = true;
-    post('/api/post/' + encodeURIComponent(target.id) + '/audience', fields).then(function (res) {
-      save.disabled = false;
-      if (!res.ok) { say(res.data.error || 'Could not change that.', true); return; }
-      window.location.reload();
-    }).catch(function () { save.disabled = false; say('Could not change that. Try again.', true); });
+    send(fields);
   });
 })();

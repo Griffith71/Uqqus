@@ -32,6 +32,12 @@ def test_an_empty_draft_is_valid_but_flagged_empty():
     assert not pd.is_empty(pd.clean_fields(form(("body", "x"))))
 
 
+def test_a_draft_can_turn_comments_off():
+    fields = pd.clean_fields(form(("title", "T"), ("comment_permission", "3")))
+    assert fields["options"]["comment_permission"] == 3
+    assert pd.publish_form(fields, "KEY")["comment_permission"] == "3"
+
+
 @pytest.mark.parametrize("pairs, message", [
     ([("title", "x" * 281)], "280 character limit"),
     ([("url", "https://e.com/" + "x" * 2048)], "2048 character limit"),

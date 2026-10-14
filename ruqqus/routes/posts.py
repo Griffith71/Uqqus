@@ -269,8 +269,8 @@ Optional form data:
 * `url` - The new link. Send it empty to remove the link.
 * `sensitive` - `true` to mark the post sensitive, empty to unmark it.
 * `comment_permission` - Who can comment: `0` everyone, `1` accounts you follow,
-  `2` Premium accounts. Only applies to the post on your profile (forwarded
-  copies follow their guild's rules).
+  `2` Premium accounts, `3` no one (comments off). Only applies to the post on your
+  profile (forwarded copies follow their guild's rules).
 * `paid_partnership` - `true` if the post is a paid partnership, empty to unmark it.
 * `made_with_ai` - `true` if the post was made with AI, empty to unmark it.
 * `remove_image` - `true` to remove the post's uploaded image.
@@ -791,8 +791,8 @@ Optional form data:
 * `anonymous` - `true` to post anonymously: other users are not told who wrote it
   (the author and site admins are). It cannot be changed afterwards.
 * `comment_permission` - Who can comment on the post on your profile: `0`
-  everyone (default), `1` accounts you follow, `2` Premium accounts.
-  Forwarded copies follow their guild's rules instead.
+  everyone (default), `1` accounts you follow, `2` Premium accounts, `3` no one
+  (comments off). Forwarded copies follow their guild's rules instead.
 * `content` - Legacy combined-field form, retained for API clients: the
   first 280 characters become the title, anything past that becomes the
   body. Only used when `title`/`body` are absent.

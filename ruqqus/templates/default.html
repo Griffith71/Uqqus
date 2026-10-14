@@ -691,7 +691,7 @@
 
 {% include "bootstrap.html" %}
 
-{% if v and not request.args.get('embed') %}{% include "partials/share_chat_modal.html" %}{% include "partials/coauthors_modal.html" %}{% include "partials/audience_modal.html" %}{% endif %}
+{% if v and not request.args.get('embed') %}{% include "partials/share_chat_modal.html" %}{% include "partials/coauthors_modal.html" %}{% include "partials/audience_modal.html" %}{% include "partials/comment_permission_modal.html" %}{% endif %}
 {% if v and organise_bookmarks and not request.args.get('embed') %}{% include "partials/bookmark_folder_modal.html" %}{% endif %}
 {% if v and not request.args.get('embed') %}{% include "partials/curation_picker_modal.html" %}{% endif %}
 {# the schedule panel and Drafts list of the feed composer (home.html, which board.html extends, and composer_panel.html set composer_drafts) #}
@@ -710,7 +710,8 @@
 <script src="{{ asset_url('js/media_upload.js') }}"></script>
 {% if not request.args.get('embed') %}<script src="{{ asset_url('js/share_chat.js') }}"></script>
 <script src="{{ asset_url('js/coauthors.js') }}"></script>
-<script src="{{ asset_url('js/circle_audience.js') }}"></script>{% endif %}{% endif %}
+<script src="{{ asset_url('js/circle_audience.js') }}"></script>
+<script src="{{ asset_url('js/comment_permission.js') }}"></script>{% endif %}{% endif %}
 {% if v and organise_bookmarks and not request.args.get('embed') %}<script src="{{ asset_url('js/bookmark_folders.js') }}"></script>{% endif %}
 {% if v and story_ui and not request.args.get('embed') %}<script src="{{ asset_url('js/stories.js') }}"></script>{% endif %}
 {% if v %}<script src="{{ asset_url('js/poll_composer.js') }}"></script>{% endif %}

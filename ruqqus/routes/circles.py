@@ -159,6 +159,17 @@ app.jinja_env.globals.update(circle_status=circle_status)
 
 # --- who can see a post that already exists ------------------------------------------------------------
 
+def _empty_audience(owner_id, audience):
+    """A sentence when nobody but the author could see a post made for `audience` (their Circle has nobody it
+    would reach yet), else None. Close Friends see Subscribers' posts too; Subscribers do not see Close Friends'."""
+    friends = circle_store.friends(g.db, owner_id)
+    if audience == circles.FRIENDS:
+        return None if friends else "You have no Close Friends yet, so only you would see this post."
+    if friends or circle_store.subscribers(g.db, owner_id):
+        return None
+    return "You have no Close Friends or subscribers yet, so only you would see this post."
+
+
 @app.route("/api/post/<pid>/audience", methods=["POST"])
 @is_not_banned
 @validate_formkey
@@ -173,6 +184,8 @@ def circle_post_audience(pid, v):
         abort(404)
     if post.repost_id not in (0, None):
         return _fail("Only a post on your own profile has an audience.")
+    if (post.audience or 0) == circles.GUILD:
+        return _fail("A post in a Circle guild keeps that guild's audience.")
     raw = request.values.get("audience")
     if raw is None or not raw.strip():
         return _fail("Choose who can see this.")
@@ -191,6 +204,10 @@ def circle_post_audience(pid, v):
             own_video=bool(post.url and media_attach.own_video(g.db, v.id, post.url)), shared=shared)
         if refusal:
             return _fail(refusal)
+        # an empty Circle means only the author would see it: say so before saving (the page asks, `confirm=1` goes on)
+        empty = _empty_audience(v.id, audience)
+        if empty and request.values.get("confirm") != "1":
+            return jsonify({"error": empty, "confirm": True}), 409
     elif request.values.get("confirm") != "1":
         return jsonify({"error": "This post will be visible to everyone. Confirm to make it public.", "confirm": True}), 409
 
