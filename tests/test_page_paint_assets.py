@@ -83,7 +83,9 @@ def test_the_navbar_defaults_fit_the_folded_sidebar_and_the_search_box_fades_in(
 
 def test_late_sidebar_boxes_keep_their_room():
     for name in ("default.html", "home.html"):
-        assert '{% include "partials/late_boxes.html" %}' in read("templates", name), name
+  # the page shells include the shared sidebar (partials/sidebar_common.html), which holds the late boxes
+        assert '{% include "partials/sidebar_common.html" %}' in read("templates", name), name
+    assert '{% include "partials/late_boxes.html" %}' in read("templates", "partials", "sidebar_common.html")
     assert 'localStorage.getItem("late_box_h:" + box.id)' in LATE and "box.style.minHeight" in LATE
     assert 'localStorage.setItem("late_box_h:" + slot.id' in JS
     for name in ("trending.js", "who_to_follow.js"):

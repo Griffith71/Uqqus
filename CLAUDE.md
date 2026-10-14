@@ -266,6 +266,10 @@ The **author** of a post or comment can click their own score and see which upvo
 - **The markup is the permission**: only `may_see_voters(item, v)` adds `has-voters`, `data-voters-url`, `role="button"` and the tooltip hint to a score (card, post page, comment on desktop and phone), so for everyone else the page is unchanged. The route re-checks everything; a 403 says "Only the author can see who upvoted." The panel says what it shows ("Only people you follow who follow you back are listed. Downvotes are never shown.") and never how many other people upvoted.
 - Tests: `tests/test_voters.py` (the SQL on SQLite), `tests/test_voters_route.py` (the harness), `tests/test_voters_assets.py`.
 
+## Right sidebar (legacy app)
+
+Every content page ends its right sidebar with `partials/sidebar_common.html` (Trending, Who to follow and the sidebar ad through `late_boxes.html`, Guilds / Create Guild, Support), after its own sections (a guild's info and guildmasters, a profile's Guildmaster Of). Nothing else copies those boxes. Pages that blank the sidebar on purpose (guild and category lists, banned / blocked / deleted profiles, messages) do not include it. `tests/test_sidebar_consistency_assets.py`.
+
 ## One vote per post across its copies (legacy app)
 
 A forward is an independent copy of a post in a guild (own votes and comments, `repost_id` points at the original). So that one person can't vote on the original and on every copy, a person may hold an **active** vote (`vote_type` 1 or -1) in at most one live member of a post's **family**: the original plus every row whose `repost_id` points at it (forward copies and the legacy pre-Forward resubmits). The original counts as one of the copies; a forwarded comment becomes a new post with no family. Start with `ruqqus/helpers/vote_copies.py`.

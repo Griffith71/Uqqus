@@ -124,7 +124,9 @@ def test_the_admin_pages_are_for_admins_and_changes_need_the_form_key():
 def test_the_box_is_in_the_right_sidebar_of_both_page_shells_for_everyone():
     slot = '<div id="trending-box" class="late-box" data-src="/inpage/trending"></div>'
     for name in ("default.html", "home.html"):
-        assert '{% include "partials/late_boxes.html" %}' in read("ruqqus", "templates", name), name
+  # the page shells include the shared sidebar (partials/sidebar_common.html), which holds the late boxes
+        assert '{% include "partials/sidebar_common.html" %}' in read("ruqqus", "templates", name), name
+    assert '{% include "partials/late_boxes.html" %}' in read("ruqqus", "templates", "partials", "sidebar_common.html")
     late = read("ruqqus", "templates", "partials", "late_boxes.html")
     assert slot in late
     assert late.index(slot) < late.index('id="who-to-follow"')     # above Who to follow

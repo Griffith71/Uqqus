@@ -138,7 +138,7 @@ def test_the_sidebar_loads_lazily_and_the_page_is_for_members():
     # both page shells include the placeholders (partials/late_boxes.html), which load after the page
     for sidebar in ("home.html", "default.html"):
         html = (ROOT / "templates" / sidebar).read_text(encoding="utf-8")
-        assert '{% include "partials/late_boxes.html" %}' in html, sidebar
+        assert '{% include "partials/sidebar_common.html" %}' in html, sidebar     # which includes the late boxes
     late = (ROOT / "templates" / "partials" / "late_boxes.html").read_text(encoding="utf-8")
     assert '{% if v %}<div id="who-to-follow" class="late-box" data-src="/inpage/who_to_follow"></div>{% endif %}' in late
     box = (ROOT / "templates" / "partials" / "who_to_follow_box.html").read_text(encoding="utf-8")
@@ -160,5 +160,6 @@ def test_who_to_follow_is_only_in_the_right_sidebar():
     left = (ROOT / "templates" / "sidebar-left.html").read_text(encoding="utf-8")
     assert "who_to_follow" not in left and "Who to follow" not in left
     for sidebar in ("home.html", "default.html"):
-        assert "partials/late_boxes.html" in (ROOT / "templates" / sidebar).read_text(encoding="utf-8"), sidebar
+        assert "partials/sidebar_common.html" in (ROOT / "templates" / sidebar).read_text(encoding="utf-8"), sidebar
+    assert "partials/late_boxes.html" in (ROOT / "templates" / "partials" / "sidebar_common.html").read_text(encoding="utf-8")
     assert 'id="who-to-follow"' in (ROOT / "templates" / "partials" / "late_boxes.html").read_text(encoding="utf-8")

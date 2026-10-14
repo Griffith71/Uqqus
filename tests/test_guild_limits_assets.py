@@ -55,7 +55,7 @@ def test_the_cheap_per_person_check_is_what_every_page_pays_for():
 def test_the_module_only_reads_and_the_pages_quote_the_one_number():
     assert not re.search(r"\b(INSERT|UPDATE|DELETE)\b", MODULE.split('"""', 2)[2])
     assert "GUILD_LIMIT_PER_PERSON=guild_limits.PER_PERSON" in BOARDS
-    for name in ("home.html", "help/siege.html"):
+    for name in ("partials/sidebar_common.html", "help/siege.html"):     # the sidebar's Guilds box is shared
         html = read("ruqqus", "templates", *name.split("/"))
         assert "GUILD_LIMIT_PER_PERSON" in html, name
         assert "10 guilds" not in html and "9 or fewer" not in html, name
