@@ -7,13 +7,7 @@
 <meta name="description" content="{{ total }} result{{ 's' if total != 1 else '' }}">
 {% endblock %}
 
-{% block enlargeThumbJS %}
-<script src="/assets/js/enlarge_thumb.js"></script>
-{% endblock %}
 
-{% block toggleView %}
-<script src="/assets/js/toggle_view.js"></script>
-{% endblock %}
 
 {% block PseudoSubmitForm %}{% endblock %}
 
@@ -86,6 +80,61 @@
           <h1 class="h4 mb-0">{{ query }}</h1>
           {% if b %}<div class="text-muted text-small mb-1">Showing results in +{{ b.name }}. <a href="/search?q={{ query | urlencode }}">Did you want to search all of {{ 'SITE_NAME' | app_config }} instead?</a></div>{% endif %}
 
+          {% if post_search %}
+          {# the operators of this search (helpers/search_query.py), each with a link to the search without it #}
+          {% if chips %}
+          <div class="search-chips" role="group" aria-label="Filters in this search">
+            {% for chip_label, rest in chips %}
+            <span class="search-chip">{{ chip_label }} <a href="?q={{ rest | urlencode }}&sort={{ sort_method }}&t={{ time_filter }}" aria-label="Remove the filter: {{ chip_label }}">&times;</a></span>
+            {% endfor %}
+          </div>
+          {% endif %}
+
+          {% if notices %}
+          <div class="search-notice" role="status">
+            {% for notice in notices %}<p>{{ notice }}</p>{% endfor %}
+          </div>
+          {% endif %}
+
+          <div class="search-tools">
+            <details class="search-advanced">
+              <summary>Advanced search</summary>
+              <form action="{% if b %}/+{{ b.name }}{% endif %}/search" method="get" class="search-advanced-form">
+                <input type="hidden" name="adv" value="1">
+                <input type="hidden" name="sort" value="{{ sort_method }}">
+                <label class="search-field search-field-wide"><span>Words</span>
+                  <input class="form-control" type="search" name="words" value="{{ form.words }}" placeholder='cats "black cat" -dogs' autocomplete="off"></label>
+                <label class="search-field"><span>From</span>
+                  <input class="form-control" type="text" name="from" value="{{ form['from'] }}" placeholder="Any account" autocomplete="off" autocapitalize="off" spellcheck="false"></label>
+                {% if not b %}
+                <label class="search-field"><span>In guild</span>
+                  <input class="form-control" type="text" name="in" value="{{ form['in'] }}" placeholder="Any guild" autocomplete="off" autocapitalize="off" spellcheck="false"></label>
+                {% endif %}
+                <label class="search-field"><span>Since</span>
+                  <input class="form-control" type="date" name="since" value="{{ form.since }}"></label>
+                <label class="search-field"><span>Until</span>
+                  <input class="form-control" type="date" name="until" value="{{ form.until }}"></label>
+                <label class="search-field"><span>Language</span>
+                  <select class="form-control" name="lang">
+                    <option value="">Any language</option>
+                    {% for code, name in languages %}<option value="{{ code }}"{% if form.lang == code %} selected{% endif %}>{{ name }}</option>{% endfor %}
+                  </select></label>
+                <fieldset class="search-field search-field-wide">
+                  <legend>With</legend>
+                  {% for kind in has_kinds %}
+                  <label class="search-check"><input type="checkbox" name="has" value="{{ kind }}"{% if kind in form.has %} checked{% endif %}> {{ has_labels[kind].split(' ', 1)[1] | capitalize }}</label>
+                  {% endfor %}
+                  <label class="search-check"><input type="checkbox" name="no_forwards" value="1"{% if form.no_forwards %} checked{% endif %}> Leave out forwarded copies</label>
+                </fieldset>
+                <div class="search-field-wide">
+                  <button type="submit" class="btn btn-primary">Search</button>
+                </div>
+              </form>
+            </details>
+            <a class="search-tips-link" href="/help/search">Search tips</a>
+          </div>
+          {% endif %}
+
         </div>
       </div>
     </div>
@@ -112,10 +161,10 @@
       <a class="nav-link{% if sort_method=='old' %} active{% endif %}" href="?sort=old&q={{ query | urlencode }}&t={{ time_filter }}"><i class="fas fa-book"></i>Old</a> 
     </li>
     <li class="nav-item">
-      <a class="nav-link{% if sort_method=='fiery' %} active{% endif %}" href="?sort=fiery&q={{ query | urlencode }}&t={{ time_filter }}"><i class="fas fa-bullhorn"></i>Disputed</a>
+      <a class="nav-link{% if sort_method=='disputed' %} active{% endif %}" href="?sort=disputed&q={{ query | urlencode }}&t={{ time_filter }}"><i class="fas fa-bullhorn"></i>Disputed</a>
     </li>
     <li class="nav-item ">
-      <a class="nav-link {% if sort_method=='activity' %} active{% endif %}" href="/?sort=activity&q={{ query | urlencode }}&t={{ time_filter }}"><i class="fas fa-comments"></i>Activity</a>
+      <a class="nav-link {% if sort_method=='activity' %} active{% endif %}" href="?sort=activity&q={{ query | urlencode }}&t={{ time_filter }}"><i class="fas fa-comments"></i>Activity</a>
     </li>
   </ul>
 

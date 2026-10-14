@@ -50,7 +50,8 @@ def test_the_flag_cannot_be_changed_by_editing():
     posts, comments = read("ruqqus", "routes", "posts.py"), read("ruqqus", "routes", "comments.py")
     edit_post = posts.split("def edit_post")[1].split("\n@app.")[0]
     edit_comment = comments.split("def edit_comment")[1].split("\n@app.")[0]
-    assert "anonymous" not in edit_post.replace("anonymous post", "").replace("anonymous\n", "")
+    # editing may read the flag (cperm.refusal) but never set it or take it from the form
+    assert not re.search(r"is_anonymous\s*=[^=]", edit_post) and '"anonymous"' not in edit_post
     assert "is_anonymous" not in edit_comment and '"anonymous"' not in edit_comment
 
 
@@ -59,7 +60,12 @@ def test_every_list_scoped_to_an_author_leaves_anonymous_rows_out():
     assert "anonymity.hide_anonymous(Submission, v)" in user.split("def userpagelisting")[1].split("def commentlisting")[0]
     assert "anonymity.hide_anonymous(Comment, v)" in user.split("def commentlisting")[1].split("def mods_anything")[0]
     assert "anonymity.hide_anonymous(Submission, v)" in user.split("def forwarded_idlist")[1].split("def history_idlist")[0]
-    assert "anonymity.hide_anonymous(Submission, v)" in search.split("if 'author' in criteria")[1][:600]
+    # the from: operator (helpers/search_filters.py), and -from: never hides an anonymous post either
+    rules = read("ruqqus", "helpers", "search_filters.py")
+    from_part = rules.split('if k == "from":')[1][:400]
+    assert "and_(Submission.author_id == part.ref, anonymity.hide_anonymous(Submission, v))" in from_part
+    assert "not_(and_(Submission.author_id == part.ref, not_(Submission.is_anonymous)))" in from_part
+    assert "search_filters.apply(posts, query, v)" in search
     assert "not_(Submission.is_anonymous)" in user.split("def idlist")[1][:3000]       # the Following feed
     front = read("ruqqus", "routes", "front.py")
     assert front.count("not_(Submission.is_anonymous)") >= 2 or "Submission.is_anonymous" in front  # the region filter

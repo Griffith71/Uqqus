@@ -1,8 +1,8 @@
 from ruqqus.classes import *
 from ruqqus.helpers.wrappers import *
 from ruqqus.helpers.visibility import filter_posts, filter_boards, filter_users, viewer_level
-from ruqqus.helpers import anonymity
 from ruqqus.helpers.muting import hide_muted
+from ruqqus.helpers.blocks import hide_blocked
 from urllib.parse import quote
 import re
 
@@ -11,38 +11,25 @@ from sqlalchemy import *
 from flask import *
 from ruqqus.classes.domains import reasons as REASONS
 from ruqqus.__main__ import app, cache
+from ruqqus.helpers import search_filters, search_query
+from ruqqus.helpers.curation_feed import FeedTooSlow, limited
+from ruqqus.helpers.languages import LANGUAGE_NAMES
 
 
 
-query_regex = re.compile(r"(\w+):(\S+)")
-valid_params=[
-    'author',
-    'domain',
-    'guild',
-    'url'
-]
+# the post search's operators (from:, in:, before:, has:, lang:, ...) are helpers/search_query.py,
+# their conditions helpers/search_filters.py; this module keeps who may see what
+SORTS = ("hot", "top", "new", "old", "disputed", "activity")
+TIME_LIMIT_MS = 5000
 
-def searchparse(text):
 
-    #takes test in filter:term format and returns data
-
-    criteria = {x[0]:x[1] for x in query_regex.findall(text)}
-
-    for x in criteria:
-        if x in valid_params:
-            text = text.replace(f"{x}:{criteria[x]}", "")
-
-    text=text.lstrip().rstrip()
-
-    if text:
-        criteria['q']=text
-
-    return criteria
-
+def sort_of(raw, default):
+    raw = (raw or "").lower()
+    return raw if raw in SORTS else default
 
 
 @cache.memoize(300)
-def searchlisting(criteria, v=None, page=1, t="None", sort="top", b=None, filter_level=None):
+def searchlisting(query, v=None, page=1, t="None", sort="top", b=None, filter_level=None):
 
     posts = g.db.query(Submission).options(
                 lazyload('*')
@@ -53,69 +40,15 @@ def searchlisting(criteria, v=None, page=1, t="None", sort="top", b=None, filter
             ).join(
                 Submission.board
             )
-    
-    if 'q' in criteria:
-        words=criteria['q'].split()
-        words=[SubmissionAux.title.ilike('%'+x+'%') for x in words]
-        words=tuple(words)
-        posts=posts.filter(*words)
-        
-    if 'author' in criteria:
-        posts=posts.filter(
-                Submission.author_id==get_user(criteria['author']).id,
-                User.is_private==False,
-                User.is_deleted==False,
-                # a search by author does not find their anonymous posts
-                anonymity.hide_anonymous(Submission, v)
-            )
+
+    posts = search_filters.apply(posts, query, v)
 
     if b:
         posts=posts.filter(Submission.board_id==b.id)
-    elif 'guild' in criteria:
-        board=get_guild(criteria["guild"])
-        posts=posts.filter(
-                Submission.board_id==board.id,
-            )
-
-    if 'url' in criteria:
-        url=criteria['url']
-        url=url.replace('%', r'\%')
-        url=url.replace('_', r'\_')
-        posts=posts.filter(
-            SubmissionAux.url.ilike("%"+criteria['url']+"%")
-            )
-
-    if 'domain' in criteria:
-        domain=criteria['domain']
-
-        #sanitize domain by removing anything that isn't [a-z0-9.]
-        domain=domain.lower()
-        domain=re.sub(r"[^a-z0-9.]","", domain)
-        #escape periods
-        domain=domain.replace(".", r"\.")
-
-        posts=posts.filter(
-            SubmissionAux.url.op('~')(
-                r"https?://([^/]*\.)?"+domain+"(/|$)"
-                )
-            )
-
-            # or_(
-            #     SubmissionAux.url.ilike("https://"+domain+'/%'),
-            #     SubmissionAux.url.ilike("http://"+domain+'/%'),
-            #     SubmissionAux.url.ilike("https://"+domain),
-            #     SubmissionAux.url.ilike("http://"+domain),
-            #     SubmissionAux.url.ilike("https://%."+domain+'/%'),
-            #     SubmissionAux.url.ilike("http://%."+domain+'/%'),
-            #     SubmissionAux.url.ilike("https://%."+domain),
-            #     SubmissionAux.url.ilike("http://%."+domain)
-            #     ),
-            # not_(SubmissionAux.url.ilike("https://%/%"+domain)),
-            # not_(SubmissionAux.url.ilike("http://%/%"+domain))
-
 
     posts = filter_posts(posts, v)
-    if 'author' not in criteria:
+    # a search for one author is not filtered by mutes: going to their posts is a choice
+    if not query.for_one_author:
         posts = hide_muted(posts, v, Submission)
 		
     if v and v.hide_bot:
@@ -147,18 +80,10 @@ def searchlisting(criteria, v=None, page=1, t="None", sort="top", b=None, filter
             )
         )
 
-        blocking = select(UserBlock.target_id).filter_by(
-            user_id=v.id
-        ).subquery()
-        blocked = select(UserBlock.user_id).filter_by(
-            target_id=v.id
-        ).subquery()
-
-        posts = posts.filter(
-            Submission.author_id.notin_(blocking),
-            #Submission.author_id.notin_(blocked),
-            Board.is_banned==False,
-        )
+        # blocked either way (helpers/blocks.py), and the guilds the viewer filtered out, as All does
+        posts = hide_blocked(posts, v, Submission).filter(Board.is_banned==False)
+        if not b:
+            posts = posts.filter(Submission.board_id.notin_(select(BoardBlock.board_id).filter_by(user_id=v.id)))
     else:
         posts = posts.filter(
             Submission.post_public == True,
@@ -195,11 +120,47 @@ def searchlisting(criteria, v=None, page=1, t="None", sort="top", b=None, filter
         posts = posts.order_by(Submission.score_disputed.desc())
     elif sort == "top":
         posts = posts.order_by(Submission.score_top.desc())
+    elif sort == "activity":
+        posts = posts.order_by(Submission.score_activity.desc())
 
-    total = posts.count()
-    posts = [x for x in posts.offset(25 * (page - 1)).limit(26).all()]
+    def run():
+        return posts.count(), [x.id for x in posts.offset(25 * (page - 1)).limit(26).all()]
 
-    return total, [x.id for x in posts]
+    # what a member types can ask for a slow query: it runs under a time limit (FeedTooSlow)
+    return limited(g.db, run, TIME_LIMIT_MS)
+
+
+def post_search(raw, v, page, t, sort, b=None):
+    """(total, ids, query, notices) for the post search: the problems of the query (an unknown
+    name, a bad date, ...) are notices and the search does not run."""
+    query, notes = search_filters.resolve(search_query.parse(raw), v, b=b)
+    if query.problems:
+        return 0, [], query, list(query.problems) + notes
+    try:
+        total, ids = searchlisting(query, v=v, page=page, t=t, sort=sort, b=b, filter_level=viewer_level(v))
+    except FeedTooSlow:
+        return 0, [], query, [search_query.TOO_SLOW] + notes
+    return total, ids, query, notes
+
+
+def search_page(query):
+    """What the results page shows about the query: a chip per operator with the query
+    without it (its remove link), and the advanced form filled in."""
+    chips = [(search_query.label(p), search_query.without(query, i))
+             for i, p in enumerate(query.parts) if p.kind not in search_query.TEXT]
+    return {"chips": chips, "form": search_query.form_fields(query), "post_search": True,
+            "languages": sorted(LANGUAGE_NAMES.items(), key=lambda x: x[1]),
+            "has_kinds": search_query.FORM_HAS, "has_labels": search_query.HAS_LABELS}
+
+
+def advanced_redirect(base):
+    """The advanced search form, sent back as one search in the box."""
+    a = request.args
+    q = search_query.compose(words=a.get("words", ""), author=a.get("from", ""), guild=a.get("in", ""),
+                             since=a.get("since", ""), until=a.get("until", ""), has=a.getlist("has"),
+                             lang=a.get("lang", ""), no_forwards=bool(a.get("no_forwards")))
+    sort = request.args.get("sort", "")
+    return redirect(f"{base}?q={quote(q)}" + (f"&sort={quote(sort)}" if sort in SORTS else ""))
 
 
 @app.route("/search", methods=["GET"])
@@ -209,9 +170,12 @@ def searchlisting(criteria, v=None, page=1, t="None", sort="top", b=None, filter
 @api("read")
 def search(v, search_type="posts"):
 
+    if request.args.get("adv"):
+        return advanced_redirect("/search")
+
     query = request.args.get("q", '').lstrip().rstrip()
 
-    page = max(1, int(request.args.get("page", 1)))
+    page = page_number()
 
     if query.startswith("+"):
 
@@ -223,14 +187,24 @@ def search(v, search_type="posts"):
         term=term.replace('_', r'\_')
 
         boards = g.db.query(Board).filter(
-            Board.name.ilike(f'%{term}%'))
+            Board.name.ilike(f'%{term}%'),
+            func.lower(Board.name) != PROFILE_BOARD_NAME)
         boards = filter_boards(boards, v)
 
         if not (v and v.admin_level >= 3):
             boards = boards.filter_by(is_banned=False)
 
+        # a Circle guild only for its members (contributors and guildmasters), as everywhere else
+        if not (v and v.admin_level >= 4):
+            member_of = select(ContributorRelationship.board_id).where(
+                ContributorRelationship.user_id == (v.id if v else 0), ContributorRelationship.is_active == True
+            ).union(select(ModRelationship.board_id).where(
+                ModRelationship.user_id == (v.id if v else 0), ModRelationship.accepted == True,
+                ModRelationship.invite_rescinded == False))
+            boards = boards.filter(or_(Board.is_circle == False, Board.id.in_(member_of)))
+
         if v:
-            joined = select(Submission).filter_by(user_id=v.id, is_active=True).subquery()
+            joined = select(Subscription).filter_by(user_id=v.id, is_active=True).subquery()
 
             boards=boards.join(
                 joined,
@@ -320,23 +294,21 @@ def search(v, search_type="posts"):
     
 
     else:
-        sort = request.args.get("sort", "top").lower()
+        sort = sort_of(request.args.get("sort"), "top")
         t = request.args.get('t', 'all').lower()
-
-
 
         # posts search
 
-        criteria=searchparse(query)
-        total, ids = searchlisting(criteria, v=v, page=page, t=t, sort=sort, filter_level=viewer_level(v))
+        total, ids, parsed, notices = post_search(query, v, page, t, sort)
 
         next_exists = (len(ids) == 26)
         ids = ids[0:25]
 
         posts = get_posts(ids, v=v)
 
-        if v and v.admin_level>3 and "domain" in criteria:
-            domain=criteria['domain']
+        site = parsed.first("domain")
+        if v and v.admin_level>3 and site:
+            domain=site.value
             domain_obj=get_domain(domain)
         else:
             domain=None
@@ -351,18 +323,26 @@ def search(v, search_type="posts"):
                                sort_method=sort,
                                time_filter=t,
                                next_exists=next_exists,
+                               notices=notices,
                                domain=domain,
                                domain_obj=domain_obj,
-                               reasons=REASONS
+                               reasons=REASONS,
+                               **search_page(parsed)
                                ),
-                "api":lambda:jsonify({"data":[x.json for x in posts]})
+                "api":lambda:jsonify({"data":[x.json for x in posts], "next_exists": next_exists,
+                                      "notices": notices})
                 }
 
 
 @app.route("/+<name>/search", methods=["GET"])
+@app.get("/api/v2/guilds/<name>/search")
 @auth_desired
+@api("read")
 def search_guild(name, v, search_type="posts"):
 
+
+    if request.args.get("adv"):
+        return advanced_redirect(f"/+{quote(name)}/search")
 
     query=request.args.get("q","").lstrip().rstrip()
 
@@ -376,23 +356,23 @@ def search_guild(name, v, search_type="posts"):
     if b.is_banned:
         return render_template("board_banned.html", v=v, b=b)
 
-    page=max(1, int(request.args.get("page", 1)))
+    page=page_number()
 
-    sort=request.args.get("sort", "hot").lower()
+    sort=sort_of(request.args.get("sort"), "hot")
     
     
     t = request.args.get('t', 'all').lower()
 
     #posts search
 
-    total, ids = searchlisting(searchparse(query), v=v, page=page, t=t, sort=sort, b=b, filter_level=viewer_level(v))
+    total, ids, parsed, notices = post_search(query, v, page, t, sort, b=b)
 
     next_exists=(len(ids)==26)
     ids=ids[0:25]
 
     posts=get_posts(ids, v=v)
 
-    return render_template("search.html",
+    return {"html": lambda: render_template("search.html",
                    v=v,
                    query=query,
                    total=total,
@@ -401,5 +381,9 @@ def search_guild(name, v, search_type="posts"):
                        sort_method=sort,
                            next_exists=next_exists,
                time_filter=t,
-                           b=b
-                   )
+                           notices=notices,
+                           b=b,
+                           **search_page(parsed)
+                   ),
+            "api": lambda: jsonify({"data": [x.json for x in posts], "next_exists": next_exists, "notices": notices})
+            }

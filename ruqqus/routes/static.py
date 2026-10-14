@@ -3,6 +3,7 @@ import jinja2
 import pyotp
 import pprint
 import sass
+import os
 import mistletoe
 
 from flask import (
@@ -18,38 +19,45 @@ from ruqqus.__main__ import app, limiter, db_session
 
 # take care of misc pages that never really change (much)
 
-@app.route("/assets/style/<file>.css", methods=["GET"])
-@cache.memoize()
-def main_css(file):
+# the compiled stylesheets, per worker, until their .scss file changes (in dev too, where the cache is off)
+_compiled_css = {}
 
-	#print(file, color)
+
+# the site's own stylesheets are never rate limited: a page that loses one renders unstyled
+@app.route("/assets/style/<file>.css", methods=["GET"])
+@limiter.exempt
+def main_css(file):
 
 	if file not in ["main", "main_dark"]:
 		abort(404)
 
+	name=f"{app.config['RUQQUSPATH']}/assets/style/{file}.scss"
 	try:
-		name=f"{app.config['RUQQUSPATH']}/assets/style/{file}.scss"
-		#print(name)
-		with open(name, "r") as file:
-			raw = file.read()
-
+		mtime = os.stat(name).st_mtime
 	except FileNotFoundError:
-		#print("unable to find file")
 		return make_response(send_file(f'./assets/style/{file}.css'))
 
+	css = _compiled_css.get(file)
+	if not css or css[0] != mtime:
+		with open(name, "r") as scss_file:
+			raw = scss_file.read()
 
-	# This doesn't use python's string formatting because
-	# of some odd behavior with css files
-	scss = raw.replace("{boardcolor}", app.config["SITE_COLOR"])
-	scss = scss.replace("{maincolor}", app.config["SITE_COLOR"])
-	scss = scss.replace("{ruqquspath}", app.config["RUQQUSPATH"])
+		# This doesn't use python's string formatting because
+		# of some odd behavior with css files
+		scss = raw.replace("{boardcolor}", app.config["SITE_COLOR"])
+		scss = scss.replace("{maincolor}", app.config["SITE_COLOR"])
+		scss = scss.replace("{ruqquspath}", app.config["RUQQUSPATH"])
 
-	try:
-		resp = Response(sass.compile(string=scss), mimetype='text/css')
-	except sass.CompileError as e:
-		#print(e)
-		return make_response(send_file(f'./assets/style/{file}.css'))
+		try:
+			css = (mtime, sass.compile(string=scss))
+		except sass.CompileError as e:
+			# keep serving the last stylesheet that compiled; never an empty one
+			print(f"[main_css] {file}.scss does not compile: {e}", flush=True)
+			if not css:
+				abort(500)
+		_compiled_css[file] = css
 
+	resp = Response(css[1], mimetype='text/css')
 	resp.headers.add("Cache-Control", "public")
 
 	return resp
@@ -117,6 +125,14 @@ def help_feed_servers(v):
     """How to run a feed server for a curation (helpers/feed_server.py)."""
     from ruqqus.helpers import feed_server
     return render_template("help/feed_servers.html", v=v, limits=feed_server)
+
+
+@app.route("/help/search", methods=["GET"])
+@auth_desired
+def help_search(v):
+    """The search operators, drawn from the one list (helpers/search_query.py)."""
+    from ruqqus.helpers import search_query
+    return render_template("help/search.html", v=v, search=search_query)
 
 
 @app.route("/help/terms", methods=["GET"])
@@ -193,7 +209,10 @@ def settings_premium(v):
 						   msg=request.args.get("msg") or None
 						   )
 
+# browsers ask for /favicon.ico on a page with no icon link (the sign-in pages)
+@app.route("/favicon.ico", methods=["GET"])
 @app.route("/assets/favicon.ico", methods=["GET"])
+@limiter.exempt
 def favicon():
 	return send_file("./assets/images/logo/favicon.png")
 

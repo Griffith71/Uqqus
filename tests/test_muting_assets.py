@@ -55,7 +55,10 @@ def test_notifications_and_their_counts_leave_muted_accounts_out():
 
 def test_a_search_for_one_author_is_not_filtered_that_is_going_to_them_on_purpose():
     search = read("ruqqus", "routes", "search.py")
-    assert "if 'author' not in criteria:\n        posts = hide_muted(posts, v, Submission)" in search
+    assert "if not query.for_one_author:\n        posts = hide_muted(posts, v, Submission)" in search
+    # only a search FOR an author: -from:@x still leaves muted accounts out
+    rules = read("ruqqus", "helpers", "search_query.py")
+    assert 'any(p.kind == "from" and not p.negated for p in self.parts)' in rules
 
 
 def test_profiles_saved_lists_and_histories_are_not_filtered():
