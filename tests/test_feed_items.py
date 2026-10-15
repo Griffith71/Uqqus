@@ -114,3 +114,15 @@ def test_an_external_entity_is_never_fetched():
 def test_a_very_long_title_is_cut_to_a_post_title():
     feed = fi.parse(f"<rss><channel><title>x</title><item><title>{'word ' * 200}</title><link>https://e.org/1</link></item></channel></rss>".encode())
     assert len(feed.items[0].title) == bots.TITLE_MAX
+
+
+def test_a_posted_link_drops_its_tracking_but_the_key_is_the_feeds_own():
+    raw = "https://www.bbc.co.uk/news/articles/c1?at_medium=RSS&at_campaign=rss"
+    raw2 = "https://example.org/story?id=4&utm_source=rss"
+    data = (f"<rss><channel><title>BBC News</title>"
+            f"<item><title>With a guid</title><link>{raw.replace('&', '&amp;')}</link><guid>bbc-c1</guid></item>"
+            f"<item><title>No guid</title><link>{raw2.replace('&', '&amp;')}</link></item>"
+            f"</channel></rss>").encode()
+    first, second = fi.parse(data, "application/rss+xml").items
+    assert first.link == "https://www.bbc.co.uk/news/articles/c1" and first.key == bots.item_key("bbc-c1", raw)
+    assert second.link == "https://example.org/story?id=4" and second.key == bots.item_key("", raw2)

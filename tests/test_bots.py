@@ -187,3 +187,24 @@ def test_a_site_bot_posts_with_nobody_behind_it():
 def test_a_bot_picture_is_one_of_the_usual_formats():
     assert set(bots.IMAGE_FORMATS) == {"PNG", "JPEG", "GIF", "WEBP"}             # never SVG
     assert bots.IMAGE_MAX_BYTES == 8 * 1024 * 1024
+
+
+# --- links and dates of feed items --------------------------------------------------------------------------------
+
+def test_a_link_loses_its_tracking_parameters_and_keeps_the_rest():
+    bbc = "https://www.bbc.co.uk/news/articles/c8wy9veedgygo?at_medium=RSS&at_campaign=rss"
+    assert bots.clean_link(bbc) == "https://www.bbc.co.uk/news/articles/c8wy9veedgygo"
+    assert bots.clean_link("https://example.org/a?id=7&utm_source=x&UTM_Medium=y&page=2") == "https://example.org/a?id=7&page=2"
+    assert bots.clean_link("https://www.youtube.com/watch?v=abc&si=share1&fbclid=z") == "https://www.youtube.com/watch?v=abc&si=share1"
+    assert bots.clean_link("https://github.com/o/r/blob/x?ref=main") == "https://github.com/o/r/blob/x?ref=main"
+    assert bots.clean_link("https://example.org/a?gclid=1#part-2") == "https://example.org/a#part-2"
+    assert bots.clean_link("https://example.org/plain") == "https://example.org/plain"
+    assert bots.clean_link("https://example.org/a?flag&utm_id=3") == "https://example.org/a?flag"
+
+
+def test_an_item_dated_more_than_two_days_back_is_stale():
+    assert not bots.is_stale(NOW - bots.STALE_AFTER + 60, NOW)
+    assert bots.is_stale(NOW - bots.STALE_AFTER - 60, NOW)
+    assert bots.is_stale(NOW - 40 * 86400, NOW)                  # a promo the feed keeps
+    assert not bots.is_stale(None, NOW) and not bots.is_stale(0, NOW)   # undated: never stale
+    assert not bots.is_stale(NOW + 3600, NOW)                    # a date ahead of the clock

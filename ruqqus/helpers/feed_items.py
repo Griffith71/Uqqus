@@ -87,7 +87,8 @@ def _item(guid, title, text, link, published):
     title = bots.clean_title(title) or bots.clean_title(text)
     if not title:
         return None
-    return Item(bots.item_key(guid, link), title, link, published)
+    # the key is made from the link as the feed gives it, so items seen before this cleaning keep their keys
+    return Item(bots.item_key(guid, link), title, bots.clean_link(link), published)
 
 
 def _rss_items(container):

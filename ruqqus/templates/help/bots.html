@@ -38,6 +38,7 @@ Each new item of a feed becomes a **link post**: the item's title and its link, 
 
 * A feed is read every {{ bot_rules.CHECK_MINUTES_DEFAULT }} minutes. New items are posted oldest first, at most {{ bot_rules.PER_RUN }} from one feed at a time and {{ bot_rules.DAILY_CAP }} a day for the whole bot.
 * The first time a feed is read, only its newest {{ bot_rules.FIRST_READ }} items are posted: a bot never floods the site with a feed's backlog.
+* Links are posted without tracking tags. An item already more than 2 days old when the bot first sees it is skipped, so the promos some feeds keep (and old stories put back) are never posted.
 * A feed a member adds to a running bot waits for an admin. Removing one takes effect at once.
 * A feed that keeps failing ({{ bot_rules.FAILS_BEFORE_PAUSE }} times in a row) stops and the member running it is told; start it again from Settings > Bots once it works.
 

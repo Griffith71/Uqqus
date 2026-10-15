@@ -252,3 +252,13 @@ def test_the_help_page_says_how_to_use_a_key_and_why_x_goes_this_way():
     assert "Site bots have no keys." in helpage
     assert "{% if not site and bot.status in ('approved', 'paused') and (is_owner or keys) %}" in \
         read("ruqqus", "templates", "settings_bot.html")
+
+
+def test_feed_links_are_cleaned_after_the_key_and_stale_items_are_never_posted():
+    item = func(read("ruqqus", "helpers", "feed_items.py"), "_item")
+    assert "Item(bots.item_key(guid, link), title, bots.clean_link(link), published)" in item   # key from the raw link
+    run = func(read("ruqqus", "helpers", "bot_runner.py"), "run_source")
+    assert run.index("bots.is_stale(item.published, now)") < run.index("if not src.read_once:")
+    assert "bot_store.mark_seen(db, src.id, item.key, None, now)" in run.split("if not src.read_once:")[0]
+    helpage = read("ruqqus", "templates", "help", "bots.html")
+    assert "without tracking tags" in helpage and "more than 2 days old" in helpage

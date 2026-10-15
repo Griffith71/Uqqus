@@ -80,6 +80,10 @@ def run_source(db, source_id, now, fetch, submit, notify, owner_ok):
 
     seen = bot_store.seen_keys(db, src.id, [item.key for item in feed.items])
     fresh = feed_items.newest_first([item for item in feed.items if item.key not in seen])
+    for item in fresh:
+        if bots.is_stale(item.published, now):                # a promo or an old story put back: never posted
+            bot_store.mark_seen(db, src.id, item.key, None, now)
+    fresh = [item for item in fresh if not bots.is_stale(item.published, now)]
     if not src.read_once:
         for item in fresh[bots.FIRST_READ:]:                  # the backlog is never posted
             bot_store.mark_seen(db, src.id, item.key, None, now)

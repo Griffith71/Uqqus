@@ -25,7 +25,7 @@ import html
 import os
 import re
 import time
-from urllib.parse import urlsplit
+from urllib.parse import urlsplit, urlunsplit
 
 PENDING, APPROVED, REJECTED, PAUSED = "pending", "approved", "rejected", "paused"
 STATUSES = (PENDING, APPROVED, REJECTED, PAUSED)
@@ -60,6 +60,11 @@ BACKOFF_MAX = 86400
 SEEN_DAYS = 90
 TITLE_MAX = 280                  # helpers/post_fields.TITLE_MAX
 MAX_KEYS = 2                     # bot keys per bot
+STALE_AFTER = 2 * 86400          # an item dated further back than this when first seen is never posted (promos)
+
+# query parameters that only track who clicked; a bot's link drops them (`clean_link`). Narrower than trending's
+# list on purpose: `ref`, `si`, `feature` and `share` change the page on some sites (GitHub's ?ref=), so they stay.
+_TRACKING_PARAM = re.compile(r"^(?:utm_.*|at_.*|fbclid|gclid|dclid|msclkid|igshid|mc_cid|mc_eid|yclid|_ga)$", re.I)
 
 _TAG = re.compile(r"<[^>]*>")
 _SPACE = re.compile(r"\s+")
@@ -260,6 +265,22 @@ def item_key(guid, link):
     """A feed item's stable key: its guid (or id) when it has one, else its link."""
     basis = (str(guid or "").strip() or str(link or "").strip())
     return hashlib.sha256(basis.encode("utf-8")).hexdigest()
+
+
+def clean_link(url):
+    """A feed item's link without its tracking parameters (the BBC's at_medium / at_campaign, utm_*, click ids).
+    Every other parameter stays, in its order, and so does the fragment; the "?" goes when nothing is left."""
+    parts = urlsplit(url)
+    if not parts.query:
+        return url
+    kept = [pair for pair in parts.query.split("&") if pair and not _TRACKING_PARAM.match(pair.split("=", 1)[0])]
+    return urlunsplit(parts._replace(query="&".join(kept)))
+
+
+def is_stale(published, now=None):
+    """Too old to post when first seen: a promo the feed keeps (BBC's "Sign up now") or an old story put back.
+    An item with no date is never stale."""
+    return bool(published) and published < _now(now) - STALE_AFTER
 
 
 def clean_title(raw, limit=TITLE_MAX):

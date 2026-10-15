@@ -189,3 +189,34 @@ def test_a_site_bot_needs_no_owner_and_tells_nobody():
     w.answers = [br.outcome("stop", "Suspended.")]
     w.run()
     assert bs.bot_of(w.db, 10).status == bots.PAUSED and w.told == []
+
+
+# --- stale items: promos a feed keeps and old stories put back ---------------------------------------------------
+
+def _rss(*items):
+    body = ""
+    for guid, title, when in items:
+        date = f"<pubDate>{_date_at(when)}</pubDate>" if when else ""
+        body += f"<item><title>{title}</title><link>https://news.example/{guid}</link><guid>{guid}</guid>{date}</item>"
+    return f"<rss><channel><title>News</title>{body}</channel></rss>".encode()
+
+
+def _date_at(when):
+    import email.utils
+    return email.utils.formatdate(when, usegmt=True)
+
+
+def test_an_item_dated_long_before_it_was_seen_is_never_posted():
+    w = World()
+    w.body = _rss(("promo", "Sign up now", NOW - 40 * 86400), ("old", "An old story", NOW - 21 * 86400),
+                  ("new", "Today's story", NOW - 3600), ("undated", "No date given", None))
+    w.run()
+    assert w.posted == ["No date given", "Today's story"]          # oldest first; undated after dated in newest_first
+    stale = [bots.item_key(g, "") for g in ("promo", "old")]
+    assert bs.seen_keys(w.db, w.source, stale) == set(stale)       # seen, so never looked at again
+    # a promo put back later under a new guid is skipped too
+    w.posted.clear()
+    w.body = _rss(("promo-2", "Sign up now", NOW - 40 * 86400), ("new", "Today's story", NOW - 3600),
+                  ("newer", "A newer story", NOW))
+    w.run()
+    assert w.posted == ["A newer story"]
