@@ -17,7 +17,7 @@ CARD = read("ruqqus", "templates", "submission_listing.html")
 PAGE = read("ruqqus", "templates", "submission.html")
 BOARD = read("ruqqus", "templates", "board.html")
 BOARD_COMMENTS = read("ruqqus", "templates", "board_comments.html")
-FILTERS = read("ruqqus", "templates", "settings_guildfilter.html")
+FILTERS = read("ruqqus", "templates", "settings_blocks.html")       # Block & Mute, the Guilds segment
 SETTINGS_NAV = read("ruqqus", "templates", "settings.html")
 JS = read("ruqqus", "assets", "js", "all_js.js")
 
@@ -70,7 +70,7 @@ def test_nothing_says_hide_from_all_any_more_and_every_caller_uses_the_new_urls(
         assert "Hide from /all" not in source and "Show in /all" not in source and "Hide guild" not in source, name
         assert "/settings/block_guild" not in source and "/settings/unblock_guild" not in source, name
     assert 'xhr.open("post", "/settings/mute_guild");' in JS
-    assert "Muted Guilds</a>" in SETTINGS_NAV and "Hide Guilds" not in SETTINGS_NAV
+    assert "Block &amp; Mute</a>" in SETTINGS_NAV and "Hide Guilds" not in SETTINGS_NAV
     assert "Guilds you have muted" in FILTERS and "15 minutes" not in FILTERS
 
 

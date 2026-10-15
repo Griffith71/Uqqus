@@ -1,8 +1,12 @@
 {% extends "settings.html" %}
 
-{% block pagetitle %}Block and Mute Settings - {{ 'SITE_NAME' | app_config }}{% endblock %}
+{% block pagetitle %}Block and Mute - {{ 'SITE_NAME' | app_config }}{% endblock %}
 
 {% block content %}
+
+{# One page for everything a member keeps away from them: accounts they block or mute (show=accounts, the default)
+   and guilds they mute (show=guilds; /settings/filters, the old Muted Guilds page, redirects here). Only one segment
+   is drawn per page, so each keeps its own add-dialog and the dialogs' shared ids never meet. #}
 
 <div class="row">
 
@@ -24,69 +28,102 @@
 
 </div>
 
-
 <div class="row">
 
   <div class="col">
 
-    <div class="d-md-flex justify-content-between mb-3">
+    <nav class="btn-group btn-group-sm block-mute-segments mb-4" aria-label="Block and mute">
+      <a href="/settings/blocks?show=accounts" class="btn btn-sm {% if show == 'accounts' %}btn-secondary{% else %}btn-link text-muted{% endif %}"{% if show == 'accounts' %} aria-current="page"{% endif %}><i class="fas fa-user mr-1" aria-hidden="true"></i>Accounts</a>
+      <a href="/settings/blocks?show=guilds" class="btn btn-sm {% if show == 'guilds' %}btn-secondary{% else %}btn-link text-muted{% endif %}"{% if show == 'guilds' %} aria-current="page"{% endif %}><i class="fas fa-users mr-1" aria-hidden="true"></i>Guilds</a>
+    </nav>
 
+    {% if show == 'guilds' %}
+
+    <div class="d-md-flex justify-content-between mb-3" id="muted-guilds">
       <div>
-        <h2 class="h5" name="guild_name">Users you block</h2>
-        <p class="text-small text-muted mb-md-0">You have blocked the following users. They cannot comment on your content or notify you with a username mention.</p>
+        <h2 class="h5">Guilds you have muted</h2>
+        <p class="text-small text-muted mb-md-0">Posts from these guilds stay out of All, For You and Following. You can still visit them, search for them and stay joined. Only you can see this list.</p>
       </div>
-      <div class="mt-auto">
-        <button class="btn btn-primary" data-toggle="modal" data-target="#guildmasterExileModal">Block user</button>
+      <div class="mt-3 mt-md-auto">
+        <button type="button" class="btn btn-primary text-nowrap" data-toggle="modal" data-target="#HideGuildModal">Mute guild</button>
       </div>
     </div>
 
-
-
-  {% if v.blocking %}
-  <div class="card mb-5">
-    <table class="table table-hover rounded mb-0">
-      <thead class="thead-dark">
-        <tr>
-          <th scope="col">User</th>
-          <th scope="col">Blocked since</th>
-          <th scope="col"></th>
-        </tr>
-      </thead>
-      <tbody class="text-muted">
-        {% for block in v.blocking if not block.target.is_deleted and not block.target.is_suspended %}
-        <tr>
-          <td>
-            <a href="{{ block.target.permalink }}">
-              <img src="{{ block.target.profile_url }}" class="profile-pic-20 align-top mr-2">@{{ block.target.username }}</a>
-          </td>
-
-          <td>{{ block.created_date }}</td>
-
-            <td>
-              <div class="dropdown float-right dropdown-actions">
-                <a href="#" role="button" id="dropdownMoreLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="line-height: 0;">
-                  <i class="fas fa-ellipsis-h text-muted"></i>
-                </a>
-                <div class="dropdown-menu border-0 shadow dropdown-menu-right mt-2" aria-labelledby="dropdownMoreLink" x-placement="bottom-end" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(21px, 18px, 0px);">
-                  <a class="dropdown-item" href="javascript:void(0)" onclick="post('/settings/unblock?username={{ block.target.username }}&formkey={{ v.formkey }}', callback=function(){window.location.reload(true)})"><i class="fas fa-check"></i>Unblock</a>
-                </div>
-              </div>
+    {% set guild_mutes = v.board_blocks.all() %}
+    {% if guild_mutes %}
+    <div class="card mb-5">
+      <table class="table table-hover rounded mb-0">
+        <thead class="thead-dark">
+          <tr>
+            <th scope="col">Guild</th>
+            <th scope="col">Muted since</th>
+            <th scope="col"><span class="sr-only">Actions</span></th>
+          </tr>
+        </thead>
+        <tbody class="text-muted">
+          {% for block in guild_mutes %}
+          <tr>
+            <td><a href="{{ block.board.permalink }}"><img src="{{ block.board.profile_url }}" class="profile-pic-20 align-top mr-2" width="20" height="20" alt="">+{{ block.board.name }}</a></td>
+            <td>{{ block.created_date }}</td>
+            <td class="text-right">
+              <button type="button" class="btn btn-sm btn-secondary text-nowrap" aria-label="Unmute +{{ block.board.name }}" onclick="post('/settings/unmute_guild?board={{ block.board.name }}', callback=function(){window.location.reload(true)})">Unmute</button>
             </td>
           </tr>
-          {% else %}
-          <td>There are no blocked users</td>
           {% endfor %}
         </tbody>
       </table>
     </div>
     {% else %}
-    <div class="text-center border-md rounded py-7">
-      <i class="fas fa-ghost text-gray-500 mb-3" style="font-size: 3.5rem;"></i>
-      <p class="font-weight-bold text-gray-500 mb-0">No blocked users</p>
+    <div class="text-center border-md rounded py-5">
+      <i class="fas fa-eye-slash text-gray-500 mb-3" style="font-size: 2.5rem;" aria-hidden="true"></i>
+      <p class="font-weight-bold text-gray-500 mb-0">No muted guilds</p>
     </div>
     {% endif %}
 
-    <div class="mb-3 mt-5" id="muted-accounts">
+    {% else %}
+
+    <div class="d-md-flex justify-content-between mb-3" id="blocked-accounts">
+      <div>
+        <h2 class="h5">Accounts you block</h2>
+        <p class="text-small text-muted mb-md-0">They can't comment on your posts or comments, chat with you or notify you by mentioning you. They are not told, but they may work it out if they try to comment on something of yours.</p>
+      </div>
+      <div class="mt-3 mt-md-auto">
+        <button type="button" class="btn btn-primary text-nowrap" data-toggle="modal" data-target="#guildmasterExileModal">Block account</button>
+      </div>
+    </div>
+
+    {% set blocks = v.blocking | rejectattr('target.is_deleted') | rejectattr('target.is_suspended') | list %}
+    {% if blocks %}
+    <div class="card mb-5">
+      <table class="table table-hover rounded mb-0">
+        <thead class="thead-dark">
+          <tr>
+            <th scope="col">Account</th>
+            <th scope="col">Blocked since</th>
+            <th scope="col"><span class="sr-only">Actions</span></th>
+          </tr>
+        </thead>
+        <tbody class="text-muted">
+          {% for block in blocks %}
+          <tr>
+            <td><a href="{{ block.target.permalink }}"><img src="{{ block.target.profile_url }}" class="profile-pic-20 align-top mr-2" width="20" height="20" alt="">@{{ block.target.username }}</a></td>
+            <td>{{ block.created_date }}</td>
+            <td class="text-right">
+              <button type="button" class="btn btn-sm btn-secondary text-nowrap" aria-label="Unblock @{{ block.target.username }}" onclick="post('/settings/unblock?username={{ block.target.username }}', callback=function(){window.location.reload(true)})">Unblock</button>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% else %}
+    <div class="text-center border-md rounded py-5 mb-5">
+      <i class="fas fa-user-slash text-gray-500 mb-3" style="font-size: 2.5rem;" aria-hidden="true"></i>
+      <p class="font-weight-bold text-gray-500 mb-0">No blocked accounts</p>
+    </div>
+    {% endif %}
+
+    <div class="mb-3" id="muted-accounts">
       <h2 class="h5">Accounts you mute</h2>
       <p class="text-small text-muted mb-0">Their posts and comments are left out of your feeds and threads and they cannot notify you. They are not told, and they can still follow you, comment on your posts and message you. Their anonymous posts and comments are not hidden, as hiding only those would tell you who wrote them. Mute someone from the menu on any of their posts or comments, or from their profile.</p>
     </div>
@@ -96,18 +133,18 @@
       <table class="table table-hover rounded mb-0">
         <thead class="thead-dark">
           <tr>
-            <th scope="col">User</th>
+            <th scope="col">Account</th>
             <th scope="col">Muted since</th>
-            <th scope="col"></th>
+            <th scope="col"><span class="sr-only">Actions</span></th>
           </tr>
         </thead>
         <tbody class="text-muted">
           {% for mute in muted %}
           <tr>
-            <td><a href="{{ mute.target.permalink }}"><img src="{{ mute.target.profile_url }}" class="profile-pic-20 align-top mr-2" alt="">@{{ mute.target.username }}</a></td>
+            <td><a href="{{ mute.target.permalink }}"><img src="{{ mute.target.profile_url }}" class="profile-pic-20 align-top mr-2" width="20" height="20" alt="">@{{ mute.target.username }}</a></td>
             <td>{{ mute.created_date }}</td>
             <td class="text-right">
-              <button type="button" class="btn btn-sm btn-secondary" onclick="post('/settings/unmute?username={{ mute.target.username }}&formkey={{ v.formkey }}', callback=function(){window.location.reload(true)})">Unmute</button>
+              <button type="button" class="btn btn-sm btn-secondary text-nowrap" aria-label="Unmute @{{ mute.target.username }}" onclick="post('/settings/unmute?username={{ mute.target.username }}', callback=function(){window.location.reload(true)})">Unmute</button>
             </td>
           </tr>
           {% endfor %}
@@ -116,43 +153,78 @@
     </div>
     {% else %}
     <div class="text-center border-md rounded py-5">
-      <i class="fas fa-volume-up text-gray-500 mb-3" style="font-size: 2.5rem;"></i>
+      <i class="fas fa-volume-xmark text-gray-500 mb-3" style="font-size: 2.5rem;" aria-hidden="true"></i>
       <p class="font-weight-bold text-gray-500 mb-0">No muted accounts</p>
     </div>
+    {% endif %}
+
     {% endif %}
 
   </div>
 
 </div>
 
-<!-- Guildmaster Exile User Modal -->
-<div class="modal fade" id="guildmasterExileModal" tabindex="-1" role="dialog" aria-labelledby="guildmasterExileModalTitle" aria-hidden="true">
+{% if show == 'guilds' %}
+
+<!-- Mute guild dialog -->
+<div class="modal fade" id="HideGuildModal" tabindex="-1" role="dialog" aria-labelledby="HideGuildModalTitle" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered" role="document">
-    <form action="/settings/block" id="exile-form" method="post" onsubmit="return false;">
+    <form action="/settings/mute_guild" id="exile-form" method="post" onsubmit="filter_guild(); return false;">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title">Block Users</h5>
+          <h5 class="modal-title" id="HideGuildModalTitle">Mute guild</h5>
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true"><i class="fas fa-times"></i></span>
           </button>
         </div>
         <div class="modal-body">
-          <p>Users you block will not be told, but they may figure it out if they try to comment on your content.</p>
+          <p>Its posts leave All, For You and Following straight away. You stay joined if you are a member.</p>
           <input type="hidden" name="formkey" value="{{ v.formkey }}">
-          <input type="text" name="username" placeholder="enter username" id="exile-username" class="form-control" maxlength=25 required>
+          <label for="exile-username" class="sr-only">Guild name</label>
+          <input type="text" name="guildname" placeholder="Guild name, without the +…" id="exile-username" class="form-control" maxlength=25 autocomplete="off" spellcheck="false" required>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-link text-muted" data-dismiss="modal">Cancel</button>
-          <button type="button" class="btn btn-primary" id="exileUserButton" onclick="block_user()">Block user</button>
+          <button type="button" class="btn btn-primary" id="exileUserButton" onclick="filter_guild()">Mute guild</button>
         </div>
       </div>
     </form>
   </div>
 </div>
 
+{% else %}
+
+<!-- Block account dialog -->
+<div class="modal fade" id="guildmasterExileModal" tabindex="-1" role="dialog" aria-labelledby="guildmasterExileModalTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <form action="/settings/block" id="exile-form" method="post" onsubmit="block_user(); return false;">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="guildmasterExileModalTitle">Block account</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true"><i class="fas fa-times"></i></span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <p>Accounts you block are not told, but they may work it out if they try to comment on something of yours.</p>
+          <input type="hidden" name="formkey" value="{{ v.formkey }}">
+          <label for="exile-username" class="sr-only">Username</label>
+          <input type="text" name="username" placeholder="Username, without the @…" id="exile-username" class="form-control" maxlength=25 autocomplete="off" spellcheck="false" required>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-link text-muted" data-dismiss="modal">Cancel</button>
+          <button type="button" class="btn btn-primary" id="exileUserButton" onclick="block_user()">Block account</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+{% endif %}
+
 <div class="toast error" id="toast-exile-error" role="alert" aria-live="assertive" aria-atomic="true" data-animation="true" data-autohide="true" data-delay="5000">
   <div class="toast-body text-center">
-    <i class="fas fa-exclamation-circle text-danger mr-2"></i><span id="toast-error-message">Error. Please try again.</span>
+    <i class="fas fa-exclamation-circle text-danger mr-2" aria-hidden="true"></i><span id="toast-error-message">Error. Please try again.</span>
   </div>
 </div>
 

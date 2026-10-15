@@ -128,9 +128,6 @@
           <a class="nav-link{% if request.path=='/settings/blocks' %} active{% endif %}" href="/settings/blocks">Block &amp; Mute</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link{% if request.path=='/settings/filters' %} active{% endif %}" href="/settings/filters">Muted Guilds</a>
-        </li>
-        <li class="nav-item">
           <a class="nav-link{% if request.path=='/settings/apps' %} active{% endif %}" href="/settings/apps">Apps</a>
         </li>
         <li class="nav-item">
@@ -155,25 +152,22 @@
 
       <ul class="nav settings-nav">
         <li class="nav-item">
-          <a class="nav-link{% if request.path=='/settings/profile' %} active{% endif %}" href="/settings/profile"><i class="fas fa-cog text-lg mr-0"></i></a>
+          <a class="nav-link{% if request.path=='/settings/profile' %} active{% endif %}" href="/settings/profile" title="Profile" aria-label="Profile"><i class="fas fa-cog text-lg mr-0" aria-hidden="true"></i></a>
         </li>
         <li class="nav-item">
-          <a class="nav-link{% if request.path=='/settings/content' %} active{% endif %}" href="/settings/content"><i class="fas fa-filter text-lg mr-0"></i></a>
+          <a class="nav-link{% if request.path=='/settings/content' %} active{% endif %}" href="/settings/content" title="Content" aria-label="Content"><i class="fas fa-filter text-lg mr-0" aria-hidden="true"></i></a>
         </li>
         <li class="nav-item">
-          <a class="nav-link{% if request.path=='/settings/security' %} active{% endif %}" href="/settings/security"><i class="fas fa-lock text-lg mr-0"></i></a>
+          <a class="nav-link{% if request.path=='/settings/security' %} active{% endif %}" href="/settings/security" title="Security" aria-label="Security"><i class="fas fa-lock text-lg mr-0" aria-hidden="true"></i></a>
         </li>
         <li class="nav-item">
-          <a class="nav-link{% if request.path=='/settings/premium' %} active{% endif %}" href="/settings/premium"><i class="fas fa-star text-lg mr-0"></i></a>
+          <a class="nav-link{% if request.path=='/settings/premium' %} active{% endif %}" href="/settings/premium" title="Premium" aria-label="Premium"><i class="fas fa-star text-lg mr-0" aria-hidden="true"></i></a>
         </li>
         <li class="nav-item">
-          <a class="nav-link{% if request.path=='/settings/blocks' %} active{% endif %}" href="/settings/blocks"><i class="fas fa-user-minus text-lg mr-0"></i></a>
+          <a class="nav-link{% if request.path=='/settings/blocks' %} active{% endif %}" href="/settings/blocks" title="Block and mute" aria-label="Block and mute"><i class="fas fa-user-minus text-lg mr-0" aria-hidden="true"></i></a>
         </li>
         <li class="nav-item">
-          <a class="nav-link{% if request.path=='/settings/filters' %} active{% endif %}" href="/settings/filters" title="Muted guilds" aria-label="Muted guilds"><i class="fas fa-eye-slash text-lg mr-0"></i></a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link{% if request.path=='/settings/apps' %} active{% endif %}" href="/settings/apps"><i class="fas fa-code text-lg mr-0"></i></a>
+          <a class="nav-link{% if request.path=='/settings/apps' %} active{% endif %}" href="/settings/apps" title="Apps" aria-label="Apps"><i class="fas fa-code text-lg mr-0" aria-hidden="true"></i></a>
         </li>
         <li class="nav-item">
           <a class="nav-link{% if request.path=='/settings/media' %} active{% endif %}" href="/settings/media" aria-label="Media storage"><i class="fas fa-photo-video text-lg mr-0"></i></a>

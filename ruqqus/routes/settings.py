@@ -566,24 +566,24 @@ def delete_account(v):
 @app.route("/settings/blocks", methods=["GET"])
 @auth_required
 def settings_blockedpage(v):
-
-    #users=[x.target for x in v.blocked]
+    """Block & Mute: the accounts a member blocks and mutes (?show=accounts, the default) or the guilds they mute
+    (?show=guilds). One segment per page, so only it is read."""
 
     from .muting import muted_accounts
 
+    show = "guilds" if request.args.get("show") == "guilds" else "accounts"
+
     return render_template("settings_blocks.html",
                            v=v,
-                           muted=muted_accounts(v))
+                           show=show,
+                           muted=muted_accounts(v) if show == "accounts" else [])
 
 
 @app.route("/settings/filters", methods=["GET"])
 @auth_required
 def settings_blockedguilds(v):
-
-    #users=[x.target for x in v.blocked]
-
-    return render_template("settings_guildfilter.html",
-                           v=v)
+    # the old Muted Guilds page is the Guilds segment of Block & Mute now; old links still land on it
+    return redirect("/settings/blocks?show=guilds")
 
 
 @app.route("/settings/block", methods=["POST"])
