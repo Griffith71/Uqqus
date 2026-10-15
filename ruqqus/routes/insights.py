@@ -70,10 +70,11 @@ def post_insights_json(pid, v):
     return jsonify(data)
 
 
+@app.route("/studio/insights", methods=["GET"])      # its place in the Creator Studio (routes/studio.py)
 @app.route("/insights", methods=["GET"])
 @auth_required
 def insights_overview(v):
     if not v.has_premium_no_renew:
         return render_template("insights_locked.html", v=v, post=None)
 
-    return render_template("insights_overview.html", v=v, rows=insights_store.overview(g.db, v, time.time()))
+    return render_template("insights_overview.html", v=v, studio_tab="insights", rows=insights_store.overview(g.db, v, time.time()))

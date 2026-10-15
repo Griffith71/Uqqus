@@ -3,7 +3,7 @@
 {% block pagetype %}curations{% endblock %}
 
 {% block title %}
-<title>Your post insights - {{ 'SITE_NAME' | app_config }}</title>
+<title>Post insights · Creator Studio - {{ 'SITE_NAME' | app_config }}</title>
 {% endblock %}
 
 {% block desktopBanner %}{% endblock %}
@@ -13,7 +13,9 @@
 {% block content %}
 <div class="col px-md-4 py-4">
 
-  <h1 class="h3 mb-1">Post insights</h1>
+  {% include "partials/studio_nav.html" %}
+
+  <h2 class="h5 mb-1">Post insights</h2>
   <p class="text-muted text-small mb-3">Your posts from the last 28 days, with what each got (a post and its guild forwards added up). Only you can see this; these are counts, never names.</p>
 
   {% if rows %}

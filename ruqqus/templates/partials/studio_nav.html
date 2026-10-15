@@ -1,0 +1,11 @@
+{# The Creator Studio's tabs (routes/studio.py, routes/insights.py). `studio_tab` is the page's own. #}
+<div class="studio-head mb-3">
+  <h1 class="h3 mb-1">Creator Studio</h1>
+  <p class="text-muted text-small mb-3">What you earn and how your posts are doing. Only you can see this: it shows counts, never who.</p>
+  <nav class="nav studio-tabs" aria-label="Creator Studio">
+    <a class="nav-link{% if studio_tab == 'overview' %} active{% endif %}" href="/studio"{% if studio_tab == 'overview' %} aria-current="page"{% endif %}>Overview</a>
+    <a class="nav-link{% if studio_tab == 'insights' %} active{% endif %}" href="/studio/insights"{% if studio_tab == 'insights' %} aria-current="page"{% endif %}>Post insights</a>
+    <a class="nav-link" href="/settings/circle#circle-paid">Paid circles</a>
+    <a class="nav-link" href="/settings/creator_fund">Creator fund</a>
+  </nav>
+</div>

@@ -7065,6 +7065,70 @@ a.circle-row:focus-visible {
     }
 }
 
+// Creator Studio (studio.html, partials/studio_nav.html): the tabs, the earnings and the three cards
+.studio-tabs .nav-link {
+    padding: 0.5rem 0.75rem;
+    white-space: nowrap;
+    color: $muted;
+    border-bottom: 2px solid transparent;
+}
+
+.studio-tabs .nav-link.active {
+    color: $primary;
+    border-bottom-color: $primary;
+}
+
+.studio-tabs {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    border-bottom: 1px solid $audience-border;
+}
+
+.studio-big {
+    font-size: 2rem;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    line-height: 1.2;
+}
+
+.studio-table td,
+.studio-table th {
+    font-variant-numeric: tabular-nums;
+}
+
+.studio-table th {
+    white-space: nowrap;
+}
+
+.studio-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
+    gap: 0.75rem;
+}
+
+a.studio-card {
+    color: inherit;
+    text-decoration: none;
+}
+
+a.studio-card:hover,
+a.studio-card:focus-visible {
+    border-color: $primary;
+    text-decoration: none;
+}
+
+.studio-card-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    margin-bottom: 0.5rem;
+    border-radius: 50%;
+    color: $white;
+    background: $primary;
+}
+
 // Create post card (templates/submit.html, assets/js/composer_card.js). The look of a social composer
 // (x.com's header and attach row, reddit's large borderless title), on this site's own tokens.
 // One radius scale: 16px card, 12px fields, full pills for controls. Motion is feedback only: transform and

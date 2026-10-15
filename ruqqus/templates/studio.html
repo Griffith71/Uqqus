@@ -1,0 +1,80 @@
+{% extends "home.html" %}
+
+{# The Creator Studio's overview (routes/studio.py): coins earned by source, then the way to paid circles, the creator
+   fund and post insights. Counts only, never who; nothing about ad money (helpers/studio.py). #}
+
+{% block pagetype %}curations{% endblock %}
+
+{% block title %}
+<title>Creator Studio - {{ 'SITE_NAME' | app_config }}</title>
+{% endblock %}
+
+{% block desktopBanner %}{% endblock %}
+{% block PseudoSubmitForm %}{% endblock %}
+{% block pagenav %}{% endblock %}
+
+{% block content %}
+<div class="col px-md-4 py-4" id="studio">
+
+  {% include "partials/studio_nav.html" %}
+
+  <section class="card mb-3 studio-earnings" aria-labelledby="studio-earned-title">
+    <div class="card-body">
+      <h2 class="h6 text-muted mb-1" id="studio-earned-title">Earned in the last {{ window }} days</h2>
+      <div class="studio-big">{{ coins(recent) }}</div>
+      <div class="text-muted text-small mb-3">{{ coins(total) }} in all. Coins go straight to your balance.</div>
+      <table class="table table-sm mb-0 studio-table">
+        <thead>
+          <tr>
+            <th scope="col">From</th>
+            <th scope="col" class="text-right">Last {{ window }} days</th>
+            <th scope="col" class="text-right">All time</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for row in rows %}
+          <tr id="studio-source-{{ row.key }}">
+            <td>{{ row.label }}<div class="text-muted text-small">{{ row.hint }}</div></td>
+            <td class="text-right">{{ "{:,}".format(row.recent) }}</td>
+            <td class="text-right">{{ "{:,}".format(row.total) }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <div class="studio-cards">
+    <a class="card studio-card" href="/settings/circle#circle-paid" id="studio-circles">
+      <div class="card-body">
+        <div class="studio-card-icon" aria-hidden="true"><i class="fas fa-circle-notch"></i></div>
+        <h2 class="h6 mb-1">Paid circles</h2>
+        {% if paid_circles %}
+        <p class="text-small text-muted mb-0">{{ paid_circles }} paid circle{{ '' if paid_circles == 1 else 's' }} &middot; {{ "{:,}".format(subscribers) }} subscriber{{ '' if subscribers == 1 else 's' }} now</p>
+        {% else %}
+        <p class="text-small text-muted mb-0">Make a circle people pay to be in, every 30 days, for what you share with it.</p>
+        {% endif %}
+      </div>
+    </a>
+    <a class="card studio-card" href="/settings/creator_fund" id="studio-fund">
+      <div class="card-body">
+        <div class="studio-card-icon" aria-hidden="true"><i class="fas fa-hand-holding-heart"></i></div>
+        <h2 class="h6 mb-1">Creator fund</h2>
+        {% if taking_part %}
+        <p class="text-small text-muted mb-0">Taking part &middot; {{ "{:,}".format(points) }} point{{ '' if points == 1 else 's' }} in {{ month_name }} so far (a share needs {{ min_points }})</p>
+        {% else %}
+        <p class="text-small text-muted mb-0">A monthly budget shared among the members whose posts and comments people valued most. Join from here.</p>
+        {% endif %}
+      </div>
+    </a>
+    <a class="card studio-card" href="/studio/insights" id="studio-insights">
+      <div class="card-body">
+        <div class="studio-card-icon" aria-hidden="true"><i class="fas fa-chart-line"></i></div>
+        <h2 class="h6 mb-1">Post insights</h2>
+        <p class="text-small text-muted mb-0">{{ post_count }} post{{ '' if post_count == 1 else 's' }} in the last 28 days &middot; {{ "{:,}".format(views) }} view{{ '' if views == 1 else 's' }}</p>
+      </div>
+    </a>
+  </div>
+
+</div>
+{% endblock %}
