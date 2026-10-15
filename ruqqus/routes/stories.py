@@ -8,7 +8,7 @@ import time
 from flask import abort, g, jsonify, redirect, render_template, request
 
 from ruqqus.classes import MediaAsset
-from ruqqus.helpers import circles, stories as rules, story_store
+from ruqqus.helpers import circle_guard, circle_store, circles, stories as rules, story_store
 from ruqqus.helpers.get import get_user
 from ruqqus.helpers.media import attach as media_attach, safety as media_safety
 from ruqqus.helpers.visibility import text_hidden, user_hidden
@@ -49,11 +49,24 @@ def _title_for(title, owner_id, v):
     return "" if text_hidden(get_filter(g.db).severity(title or ""), v, owner_id=owner_id) else title
 
 
+def _audience_label(row, viewer):
+    """Who a story is for, as its viewer is told: the circles' names for its owner; "Shared with a circle" (or the paid
+    circle the viewer subscribes to) for anyone else, who is never told the name of a circle they were put in."""
+    if row.audience != circles.CIRCLES:
+        return "Public"
+    ids = circle_guard.story_circles(g.db, [row.id]).get(row.id, ())
+    named = circle_store.names_of(g.db, ids)
+    if viewer is not None and viewer.id == row.user_id:
+        return circles.shared_label([name for _, _, name in named])
+    mine = circle_guard.viewer_circles(g.db, row.user_id, viewer.id) if viewer is not None else frozenset()
+    return circles.viewer_label([name for cid, kind, name in named if kind == circles.PAID and cid in mine])
+
+
 def _story(row, viewer, seen, counts, now):
     data = {
         "id": row.id, "kind": row.kind, "text": row.body, "background": row.background,
         "picture": story_store.picture_of(g.db, row.id) if row.kind == rules.IMAGE else None,
-        "video": row.video_ref or None, "audience": circles.NAMES.get(row.audience, "Public"),
+        "video": row.video_ref or None, "audience": _audience_label(row, viewer),
         "created": row.created_utc, "left": rules.describe_left(row.expires_utc, now),
         "live": rules.is_live(row.expires_utc, row.deleted_utc, now), "seen": row.id in seen,
     }
@@ -129,7 +142,10 @@ def story_create(v):
     kind, error = rules.parse_kind(request.form.get("kind"))
     if error:
         return _fail(error)
-    audience, error = circles.parse_audience(request.form.get("audience"))
+    audience, tokens, error = circles.parse_audience(request.form.get("audience"), request.form.getlist("circles"))
+    if error:
+        return _fail(error)
+    circle_ids, error = circle_store.resolve(g.db, v.id, tokens) if audience == circles.CIRCLES else ([], None)
     if error:
         return _fail(error)
     body, error = rules.clean_text(request.form.get("text"))
@@ -145,6 +161,8 @@ def story_create(v):
 
     severity = get_filter(g.db).severity(body) if body else 0           # the words go through the word filter like any text
     story_id = story_store.create(g.db, v.id, kind, body, rules.parse_background(request.form.get("background")), video_ref, audience, severity)
+    if audience == circles.CIRCLES:
+        circle_store.set_story_circles(g.db, story_id, circle_ids)
     if picture is not None and not story_store.attach_picture(g.db, story_id, picture.id, v.id):
         g.db.rollback()
         return _fail("That picture is already used somewhere else. Upload it again.")

@@ -78,7 +78,7 @@ def test_a_post_can_be_made_straight_in_a_circle_guild_by_a_member_only():
 def test_a_post_in_a_circle_guild_tells_the_guilds_members_and_not_the_authors_followers():
     body = func(POSTS, "submit_post", "\n@app.route")
     assert "if new_post.audience == circle_rules.GUILD:\n        follower_ids = []" in body
-    assert "circle_guard.eligible_ids(g.db, v.id, new_post.audience, board_id=new_post.board_id)" in body
+    assert "circle_guard.eligible_ids(g.db, v.id, new_post.audience, board_id=new_post.board_id, circle_ids=circle_ids)" in body
 
 
 def test_what_members_write_in_a_circle_guild_is_not_on_their_profile():
@@ -91,8 +91,10 @@ def test_the_guard_asks_the_guilds_members_for_audience_three():
     assert GUARD.index("ADMIN_LEVEL") < GUARD.index("return in_guild(db, board_id, viewer.id)")
     for needle in ("is_active = :yes", "accepted = :yes AND COALESCE(invite_rescinded, :no) = :no", "FROM bans WHERE user_id = :u AND board_id = :b AND is_active = :yes"):
         assert needle in GUARD, needle
-    assert "return may_see(db, post.audience, post.author_id, viewer, now, getattr(post, \"board_id\", None))" in GUARD
-    assert "found is None or may_see(db, found[0], found[1], viewer, now, found[2])" in GUARD
+    assert "return may_see(db, audience, post.author_id, viewer, now, getattr(post, \"board_id\", None), circle_ids)" in GUARD
+    assert "found is None or may_see(db, found[0], found[1], viewer, now, found[2], found[3])" in GUARD
+    # a picture in a Circle guild post is judged with its guild (it used to be asked with none, so members were refused)
+    assert "board_id=board_id, circle_ids=circle_ids" in read("ruqqus", "routes", "media.py")
 
 
 # --- the composer and the guild page --------------------------------------------------------------------
@@ -104,7 +106,7 @@ def test_the_composer_on_a_circle_guild_posts_straight_in_and_hides_what_would_t
     # the audience is not hidden but never drawn: the pill is inside {% if not circle_guild %}
     assert re.search(r"\{% if not circle_guild %\}\s*<details class=\"composer-pill\" id=\"composer-audience\">", COMPOSER)
     assert "var presetGuild = circleGuild ? null : form.getAttribute('data-guild');" in COMPOSER_JS
-    assert "['audience', 'anonymous', 'coauthors', 'forward_guilds'].forEach(function (name) { data.delete(name); });" in COMPOSER_JS
+    assert "['audience', 'circles', 'anonymous', 'coauthors', 'forward_guilds'].forEach(function (name) { data.delete(name); });" in COMPOSER_JS
     assert "data.set('circle_guild', circleGuild);" in COMPOSER_JS
 
 
@@ -151,7 +153,7 @@ def test_a_guilds_coins_go_to_its_founder_and_a_lost_membership_takes_the_access
 
 def test_the_job_tells_a_member_whose_guild_membership_lapsed_and_names_the_guild():
     job = read("scripts", "renew_circles.py")
-    assert "for event, payer, owner, coins, board in events if event == \"lapsed\"" in job
+    assert "for event, payer, owner, coins, board, name in events if event == \"lapsed\"" in job
     assert "Your membership of [+{board.name}](/+{board.name}) ended" in job
 
 

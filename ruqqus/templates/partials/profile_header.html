@@ -31,15 +31,11 @@
           {% if own %}
           <a class="dropdown-item" href="/settings/profile"><i class="fas fa-pen fa-fw"></i>Edit profile</a>
           <a class="dropdown-item" href="/settings/profile#lists"><i class="fas fa-user-lock fa-fw"></i>Who can see your lists</a>
-          <a class="dropdown-item" href="/settings/circle"><i class="fas fa-circle-notch fa-fw"></i>Your Circle</a>
+          <a class="dropdown-item" href="/settings/circle"><i class="fas fa-circle-notch fa-fw"></i>Your circles</a>
           {% elif v %}
           <a class="dropdown-item" href="#" data-curation-user="{{ u.username }}"><i class="fas fa-layer-group fa-fw"></i>Add to curation</a>
-          {% if st %}
-            {% if st.you_added %}
-            <a class="dropdown-item circle-friend-remove" href="#" onclick="post_toast('/api/circle/friends/remove?username={{ u.username }}', function () { window.location.reload(); }); return false;"><i class="fas fa-user-minus fa-fw"></i>Remove from Close Friends</a>
-            {% else %}
-            <a class="dropdown-item circle-friend-add" href="#" onclick="post_toast('/api/circle/friends/add?username={{ u.username }}', function () { window.location.reload(); }); return false;"><i class="fas fa-user-friends fa-fw"></i>Add to Close Friends</a>
-            {% endif %}
+          {% if st %}{# your own circles only; nobody is told they are in one (partials/circle_member_modal.html) #}
+          <a class="dropdown-item" href="#" data-circle-member="{{ u.username }}"><i class="fas fa-circle-notch fa-fw"></i>Add to circles</a>
           {% endif %}
           <div class="dropdown-divider"></div>
           {% if u.id != 1 %}{# the site's own account can't be muted or blocked (routes/muting.py, settings_block_user) #}
@@ -62,15 +58,25 @@
         <button type="submit" class="btn profile-x-icon" aria-label="Message @{{ u.username }}" title="Message"><i class="far fa-envelope"></i></button>
       </form>
       {% endif %}
-      {% if st %}
-        {% if st.tier == 'friend' %}
-        <span class="profile-x-pill profile-x-tag circle-badge" title="You are one of @{{ u.username }}'s Close Friends">In their Circle</span>
-        {% elif st.tier == 'subscriber' and not st.cancelled %}
-        <a href="/settings/circles" class="btn profile-x-outline profile-x-pill circle-badge">Subscribed</a>
+      {% if st %}{# paid circles only: what a custom circle holds is never shown to the people in it #}
+        {% if st.joinable | length == 1 %}
+        {% set c = st.joinable[0] %}
+        <button type="button" class="btn btn-outline-primary profile-x-pill circle-join" data-name="{{ c.name }}" data-price="{{ c.price }}"
+          onclick="if (confirm('Subscribe to ' + this.dataset.name + ' by @{{ u.username }} for ' + this.dataset.price + ' coins every 30 days? It renews from your coins until you cancel.')) { post_toast('/api/circles/{{ c.id }}/subscribe', function () { window.location.reload(); }); }">
+          {% if c.cancelled %}Resume{% else %}Subscribe{% endif %}<span class="profile-x-price"> · {{ c.price }} coin{{ '' if c.price == 1 else 's' }}/mo</span></button>
         {% elif st.joinable %}
-        <button type="button" class="btn btn-outline-primary profile-x-pill circle-join"
-          onclick="if (confirm('Subscribe to @{{ u.username }}\'s Circle for {{ st.price }} coin{{ '' if st.price == 1 else 's' }} every 30 days? It renews from your coins until you cancel.')) { post_toast('/api/circle/{{ u.username }}/subscribe', function () { window.location.reload(); }); }">
-          {% if st.tier == 'subscriber' %}Resume{% else %}Subscribe{% endif %}<span class="profile-x-price"> · {{ st.price }} coin{{ '' if st.price == 1 else 's' }}/mo</span></button>
+        <div class="dropdown d-inline-block">
+          <button type="button" class="btn btn-outline-primary profile-x-pill circle-join" id="profile-x-subscribe" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Subscribe <i class="fas fa-chevron-down ml-1" aria-hidden="true"></i></button>
+          <div class="dropdown-menu dropdown-menu-right border-0 shadow profile-x-menu" aria-labelledby="profile-x-subscribe">
+            {% for c in st.joinable %}
+            <button type="button" class="dropdown-item circle-join-choice" data-name="{{ c.name }}" data-price="{{ c.price }}"
+              onclick="if (confirm('Subscribe to ' + this.dataset.name + ' by @{{ u.username }} for ' + this.dataset.price + ' coins every 30 days? It renews from your coins until you cancel.')) { post_toast('/api/circles/{{ c.id }}/subscribe', function () { window.location.reload(); }); }">
+              <span class="font-weight-bold">{{ c.name }}</span> <span class="text-muted">&middot; {% if c.cancelled %}resume, {% endif %}{{ c.price }} coin{{ '' if c.price == 1 else 's' }}/mo</span></button>
+            {% endfor %}
+          </div>
+        </div>
+        {% elif st.subscribed %}
+        <a href="/settings/circles" class="btn profile-x-outline profile-x-pill circle-badge">Subscribed</a>
         {% endif %}
       {% endif %}
       {% if can_follow %}
@@ -149,3 +155,4 @@
   {{ highlights_row(u, v) }}
 
 </section>
+{% if st and not request.args.get('embed') %}{% include "partials/circle_member_modal.html" %}{% endif %}

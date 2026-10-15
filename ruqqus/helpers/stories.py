@@ -74,7 +74,7 @@ def refusal(kind, audience, text, has_picture, video_ref):
         if not video_ref:
             return "Paste a YouTube link."
         if audience != circles.PUBLIC:
-            return "A video can only go on a public story: anyone with its link can watch it, so it can't be kept for your Circle."
+            return "A video can only go on a public story: anyone with its link can watch it, so it can't be kept for your circles."
     return None
 
 

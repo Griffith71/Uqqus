@@ -5,7 +5,7 @@ from flask import session as flask_session
 from ruqqus.helpers.wrappers import *
 from ruqqus.helpers.session_helpers import *
 from ruqqus.classes.custom_errors import *
-from ruqqus.helpers import circles
+from ruqqus.helpers import circle_guard, circle_store, circles
 from urllib.parse import quote, urlencode
 import time
 import jinja2
@@ -73,13 +73,19 @@ def error_402(e):
 @error_wrapper
 @api(error_handler=True)
 def error_circle_only(e):
-    """A post made for a Circle, asked for by someone outside it (helpers/circle_guard.py, helpers/get.py). A page
-    gets a gate that names the owner and the audience and nothing of the post; everything else gets a plain 404."""
+    """A post made for an audience, asked for by someone outside it (helpers/circle_guard.py, helpers/get.py). A page
+    gets a gate that names the owner and nothing of the post; everything else gets a plain 404. It never names a custom
+    circle: only the paid circles the post is for, which anyone may join from the owner's profile anyway."""
 
     def gate():
         post = e.post
+        paid = []
+        if post.audience == circles.CIRCLES:
+            ids = circle_guard.post_circles(g.db, [post.id]).get(post.id, ())
+            paid = [row for row in (circle_store.get(g.db, i) for i in sorted(ids))
+                    if row is not None and row.kind == circles.PAID and row.price_coins > 0]
         response = make_response(render_template("errors/circle_gate.html", v=getattr(g, "v", None), owner=post.author,
-                                                 audience=post.audience, audience_name=circles.NAMES.get(post.audience, "Circle")), 403)
+                                                 audience=post.audience, paid=paid), 403)
         response.headers["Cache-Control"] = "private, no-store"
         return response
 

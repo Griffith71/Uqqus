@@ -41,7 +41,7 @@ def test_the_actions_for_someone_else_the_owner_and_a_visitor():
     assert 'action="/api/chat/start"' in HEADER and "circle-join" in HEADER and "toggleSub" in HEADER
     for item in ('data-curation-user="{{ u.username }}"', 'id="mute-profile"', 'id="unmute-profile"',
                  'data-profile-block="{{ u.username }}"', 'data-profile-report="{{ u.username }}"',
-                 "circle-friend-add", "circle-friend-remove"):
+                 'data-circle-member="{{ u.username }}"'):
         assert item in other, item
     # the site's own account (id 1) can't be muted or blocked, so the menu doesn't offer it
     assert HEADER.index("{% if u.id != 1 %}") < HEADER.index('id="mute-profile"') < HEADER.index("data-profile-block") \

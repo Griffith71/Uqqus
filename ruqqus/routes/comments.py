@@ -43,7 +43,8 @@ def _followers_who_may_read(post, ids):
     guild's post only to people who can view the guild (what the post page itself asks)."""
     ids = set(ids)
     if post.audience:
-        eligible = circle_guard.eligible_ids(g.db, post.author_id, post.audience, board_id=post.board_id)
+        eligible = circle_guard.eligible_ids(g.db, post.author_id, post.audience, board_id=post.board_id,
+                                             circle_ids=circle_guard.post_circles(g.db, [post.id]).get(post.id, ()))
         ids &= eligible | {post.author_id}
     if ids and not post.is_public and not post.is_pinned:
         ids = {u.id for u in g.db.query(User).filter(User.id.in_(ids)).all() if not post.in_private_guild_for(u)}
@@ -549,8 +550,9 @@ Optional file data:
     mentions = soup.find_all("a", href=re.compile(r"^/@(\w+)") , limit=3)
     # only people who may see the post are told (as submit_post does with circle_guard.eligible_ids):
     # otherwise the comment is dropped from their inbox and leaves an unread count behind
-    eligible = circle_guard.eligible_ids(g.db, parent_post.author_id, parent_post.audience,
-                                         board_id=parent_post.board_id) if parent_post.audience else None
+    eligible = circle_guard.eligible_ids(g.db, parent_post.author_id, parent_post.audience, board_id=parent_post.board_id,
+                                         circle_ids=circle_guard.post_circles(g.db, [parent_post.id]).get(parent_post.id, ())
+                                         ) if parent_post.audience else None
     for mention in mentions:
         username = mention["href"].split("@")[1]
 

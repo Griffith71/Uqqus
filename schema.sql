@@ -5921,18 +5921,25 @@ CREATE TABLE public.post_view_days (
 
 CREATE INDEX post_view_days_day_index ON public.post_view_days USING btree (day);
 
+-- an account's circles (Friends: its mutual follows, no stored members; custom; paid) or a Circle guild's (helpers/circles.py)
 CREATE TABLE public.circles (
     id SERIAL PRIMARY KEY,
     user_id integer,
     board_id integer,
     price_coins integer DEFAULT 0 NOT NULL,
     created_utc integer DEFAULT 0 NOT NULL,
+    name character varying(40) DEFAULT '' NOT NULL,
+    kind character varying(12) NOT NULL,
     CONSTRAINT circles_one_owner CHECK ((user_id IS NOT NULL) <> (board_id IS NOT NULL)),
-    CONSTRAINT circles_price_range CHECK (price_coins >= 0 AND price_coins <= 100)
+    CONSTRAINT circles_price_range CHECK (price_coins >= 0 AND price_coins <= 100),
+    CONSTRAINT circles_kind CHECK (kind IN ('friends', 'custom', 'paid', 'guild')),
+    CONSTRAINT circles_kind_owner CHECK ((kind = 'guild') = (board_id IS NOT NULL))
 );
 
-CREATE UNIQUE INDEX circles_user_key ON public.circles USING btree (user_id) WHERE (user_id IS NOT NULL);
 CREATE UNIQUE INDEX circles_board_key ON public.circles USING btree (board_id) WHERE (board_id IS NOT NULL);
+CREATE UNIQUE INDEX circles_friends_key ON public.circles USING btree (user_id) WHERE (kind = 'friends');
+CREATE UNIQUE INDEX circles_name_key ON public.circles USING btree (user_id, lower((name)::text)) WHERE (kind IN ('custom', 'paid'));
+CREATE INDEX circles_user_idx ON public.circles USING btree (user_id) WHERE (user_id IS NOT NULL);
 
 CREATE TABLE public.circle_members (
     id SERIAL PRIMARY KEY,
@@ -5946,7 +5953,7 @@ CREATE TABLE public.circle_members (
     price_coins integer DEFAULT 0 NOT NULL,
     created_utc integer DEFAULT 0 NOT NULL,
     CONSTRAINT circle_members_pair_key UNIQUE (circle_id, user_id),
-    CONSTRAINT circle_members_tier CHECK (tier IN ('friend', 'subscriber')),
+    CONSTRAINT circle_members_tier CHECK (tier IN ('member', 'subscriber')),
     CONSTRAINT circle_members_status CHECK (status IN ('active', 'ended'))
 );
 
@@ -5955,7 +5962,7 @@ CREATE INDEX circle_members_due_idx ON public.circle_members USING btree (renews
 
 CREATE TABLE public.circle_payments (
     id SERIAL PRIMARY KEY,
-    circle_id integer NOT NULL REFERENCES public.circles(id) ON DELETE CASCADE,
+    circle_id integer REFERENCES public.circles(id) ON DELETE SET NULL,
     payer_id integer NOT NULL,
     owner_id integer NOT NULL,
     coins integer NOT NULL,
@@ -5964,6 +5971,23 @@ CREATE TABLE public.circle_payments (
 );
 
 CREATE INDEX circle_payments_owner_idx ON public.circle_payments USING btree (owner_id, created_utc DESC);
+
+-- the circles a post or a story with audience 4 is for (a viewer in any of them sees it)
+CREATE TABLE public.post_circles (
+    post_id integer NOT NULL,
+    circle_id integer NOT NULL REFERENCES public.circles(id) ON DELETE CASCADE,
+    PRIMARY KEY (post_id, circle_id)
+);
+
+CREATE INDEX post_circles_circle_idx ON public.post_circles USING btree (circle_id);
+
+CREATE TABLE public.story_circles (
+    story_id integer NOT NULL,
+    circle_id integer NOT NULL REFERENCES public.circles(id) ON DELETE CASCADE,
+    PRIMARY KEY (story_id, circle_id)
+);
+
+CREATE INDEX story_circles_circle_idx ON public.story_circles USING btree (circle_id);
 
 CREATE TABLE public.stories (
     id SERIAL PRIMARY KEY,
@@ -5978,7 +6002,7 @@ CREATE TABLE public.stories (
     expires_utc integer NOT NULL,
     deleted_utc integer DEFAULT 0 NOT NULL,
     CONSTRAINT stories_kind CHECK (kind IN ('image', 'text', 'video')),
-    CONSTRAINT stories_audience CHECK (audience IN (0, 1, 2))
+    CONSTRAINT stories_audience CHECK (audience IN (0, 4))
 );
 
 CREATE INDEX stories_user_idx ON public.stories USING btree (user_id, created_utc DESC);

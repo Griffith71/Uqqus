@@ -97,6 +97,7 @@
                         {% endif %}
 
                         {% set audience_now = ((draft.option("audience", 0) if draft else request.form.get("audience", 0)) | int) %}
+                        {% set circles_now = (draft.option("circles", []) if draft else request.form.getlist("circles")) %}
                         <div class="composer-head">
                             <img src="{{ v.profile_url }}" class="composer-avatar" alt="">
                             <div class="composer-who">
@@ -105,12 +106,12 @@
                             </div>
                             <details class="composer-pill" id="composer-audience">
                                 <summary aria-label="Who can see this post">
-                                    <i class="fas {{ 'fa-globe-americas' if audience_now == 0 else 'fa-user-friends' }}" id="composer-audience-icon"></i>
-                                    <span id="composer-audience-label">{{ ["Public", "Subscribers", "Close Friends"][audience_now] if 0 <= audience_now <= 2 else "Public" }}</span>
+                                    <i class="fas {{ 'fa-user-friends' if audience_now == 4 else 'fa-globe-americas' }}" id="composer-audience-icon" aria-hidden="true"></i>
+                                    <span id="composer-audience-label">{{ "Circles" if audience_now == 4 else "Public" }}</span>
                                     <i class="fas fa-chevron-down composer-pill-caret"></i>
                                 </summary>
                                 <div class="composer-pill-menu">
-                                    {{ post_options.audience_field((draft.option("audience", 0) if draft else request.form.get("audience", 0)) | int, "post-audience") }}
+                                    {{ post_options.audience_field(audience_now, "post-audience", circles_now, circle_choices(v)) }}
                                 </div>
                             </details>
                         </div>

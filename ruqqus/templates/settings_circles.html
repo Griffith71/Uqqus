@@ -1,8 +1,9 @@
 {% extends "settings.html" %}
 
-{% block pagetitle %}Circles you are in - {{ 'SITE_NAME' | app_config }}{% endblock %}
+{% block pagetitle %}Paid circles you are in - {{ 'SITE_NAME' | app_config }}{% endblock %}
 
-{# The Circles this account is in, and cancelling a subscription (routes/circles.py). #}
+{# The paid circles and Circle guilds this account pays to be in, and cancelling (routes/circles.py). Never the custom
+   circles someone put it in: nobody is told about those. #}
 
 
 {% block content %}
@@ -10,30 +11,30 @@
   <div class="col col-lg-8">
     <div class="settings" id="circles-in">
 
-      <h2 class="h5">Circles you are in</h2>
+      <h2 class="h5">Paid circles you are in</h2>
       <p class="text-small text-muted">
         Subscriptions renew every 30 days from your coins. Cancel and you keep access until the day you paid to.
-        <a href="/settings/circle">Your own Circle</a>
+        <a href="/settings/circle">Your own circles</a>
       </p>
+      <div id="circle-status" class="text-small" role="status"></div>
 
       <div class="settings-section rounded">
         {% for m in memberships %}
         <div class="d-flex align-items-center justify-content-between px-3 py-3 circle-membership{% if not loop.first %} border-top{% endif %}" data-username="{{ m.username }}">
-          <div>
-            <a href="/@{{ m.username }}" class="font-weight-bold">@{{ m.username }}</a>
+          <div class="min-w-0">
+            <div class="text-truncate"><span class="font-weight-bold">{{ m.name }}</span> <span class="text-muted">by <a href="/@{{ m.username }}">@{{ m.username }}</a></span></div>
             <div class="text-muted text-small">
-              {% if m.tier == 'friend' %}Close Friend
-              {% elif m.cancelled %}Subscriber &middot; won't renew, access ends {{ m.until }}
-              {% else %}Subscriber &middot; {{ m.price }} coin{{ '' if m.price == 1 else 's' }} every 30 days, renews {{ m.until }}{% endif %}
+              {% if m.cancelled %}Won't renew, access ends {{ m.until }}
+              {% else %}{{ m.price }} coin{{ '' if m.price == 1 else 's' }} every 30 days, renews {{ m.until }}{% endif %}
             </div>
           </div>
-          {% if m.tier == 'subscriber' and not m.cancelled %}
-          <button type="button" class="btn btn-secondary btn-sm" data-username="{{ m.username }}"
-            onclick="if (confirm('Cancel your subscription? You keep access until the day you paid to.')) { post_toast('/api/circle/' + encodeURIComponent(this.dataset.username) + '/cancel', function () { window.location.reload(); }); }">Cancel</button>
+          {% if not m.cancelled %}
+          <button type="button" class="btn btn-secondary btn-sm ml-2" data-circle-post="/api/circles/{{ m.circle }}/cancel"
+            data-confirm="Cancel your subscription? You keep access until the day you paid to.">Cancel</button>
           {% endif %}
         </div>
         {% else %}
-        {% if not guilds %}<div class="px-3 py-3 text-muted text-small" id="circles-in-empty">You aren't in anyone's Circle yet. A Circle you can join has a Join button on its owner's profile.</div>{% endif %}
+        {% if not guilds %}<div class="px-3 py-3 text-muted text-small" id="circles-in-empty">You don't pay for anyone's circle. A paid circle you can join has a Subscribe button on its owner's profile.</div>{% endif %}
         {% endfor %}
       </div>
 
@@ -61,4 +62,5 @@
     </div>
   </div>
 </div>
+<script src="{{ asset_url('js/circle_settings.js') }}"></script>
 {% endblock %}

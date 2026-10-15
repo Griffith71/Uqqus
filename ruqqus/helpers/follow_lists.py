@@ -53,11 +53,16 @@ def may_open(setting, *, is_owner, follows_owner):
 _SOURCES = {
     "following": "FROM follows r JOIN users o ON o.id = r.target_id WHERE r.user_id = :owner",
     "followers": "FROM follows r JOIN users o ON o.id = r.user_id WHERE r.target_id = :owner",
-    "subscribers": ("FROM circle_members r JOIN circles c ON c.id = r.circle_id JOIN users o ON o.id = r.user_id "
-                    "WHERE c.user_id = :owner AND r.tier = 'subscriber' AND r.status = 'active' AND r.renews_utc > :now"),
-    "subscriptions": ("FROM circle_members r JOIN circles c ON c.id = r.circle_id JOIN users o ON o.id = c.user_id "
-                      "WHERE r.user_id = :owner AND c.user_id IS NOT NULL AND r.tier = 'subscriber' "
-                      "AND r.status = 'active' AND r.renews_utc > :now"),
+    # paid circles only (never a custom circle: nobody is told they are in one), one row per account however many of
+    # the owner's paid circles it pays for
+    "subscribers": ("FROM (SELECT m.user_id AS uid, MIN(m.started_utc) AS started_utc FROM circle_members m "
+                    "JOIN circles c ON c.id = m.circle_id WHERE c.user_id = :owner AND c.kind = 'paid' "
+                    "AND m.tier = 'subscriber' AND m.status = 'active' AND m.renews_utc > :now GROUP BY m.user_id) r "
+                    "JOIN users o ON o.id = r.uid WHERE 1 = 1"),
+    "subscriptions": ("FROM (SELECT c.user_id AS uid, MIN(m.started_utc) AS started_utc FROM circle_members m "
+                      "JOIN circles c ON c.id = m.circle_id WHERE m.user_id = :owner AND c.kind = 'paid' "
+                      "AND m.tier = 'subscriber' AND m.status = 'active' AND m.renews_utc > :now GROUP BY c.user_id) r "
+                      "JOIN users o ON o.id = r.uid WHERE 1 = 1"),
 }
 _ORDER = {"following": "r.created_utc", "followers": "r.created_utc",
           "subscribers": "r.started_utc", "subscriptions": "r.started_utc"}
@@ -112,5 +117,7 @@ def follows(db, follower_id, target_id):
 
 
 def circle_price(db, owner_id):
-    row = db.execute(text("SELECT price_coins FROM circles WHERE user_id = :u"), {"u": owner_id}).first()
-    return int(row[0]) if row else 0
+    """The lowest price of the owner's paid circles that take subscribers (0: none does)."""
+    row = db.execute(text("SELECT MIN(price_coins) FROM circles WHERE user_id = :u AND kind = 'paid' AND price_coins > 0"),
+                     {"u": owner_id}).first()
+    return int(row[0]) if row and row[0] else 0

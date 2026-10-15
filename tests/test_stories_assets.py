@@ -55,8 +55,11 @@ def test_the_tables_are_the_same_in_the_schema_and_the_migration():
 
 
 def test_the_constraints_that_carry_the_promises_are_in_both():
+    many = read("scripts", "migrations", "2026-10-20_many_circles.sql")
+    # 3 and 8 are internal marks, never a choice; 1 and 2 (Subscribers, Close Friends) became circles (4)
+    assert "CONSTRAINT stories_audience CHECK (audience IN (0, 4))" in SCHEMA
+    assert "ADD CONSTRAINT stories_audience CHECK (audience IN (0, 4));" in many
     for sql in (SCHEMA, MIGRATION):
-        assert "CONSTRAINT stories_audience CHECK (audience IN (0, 1, 2))" in sql      # 3 and 8 are internal marks, never a choice
         assert "CONSTRAINT stories_kind CHECK (kind IN ('image', 'text', 'video'))" in sql
         assert "UNIQUE (story_id, viewer_id)" in sql
         assert "UNIQUE (story_id, reporter_id)" in sql
@@ -141,8 +144,11 @@ def test_the_store_decides_in_one_place():
     for needed in ("circle_store.blocked_between(", "is_hidden(viewer_level(viewer), row.word_severity)", "circle_guard.may_see("):
         assert needed in allowed
     assert allowed.index("blocked_between") < allowed.index("may_see(")
+    assert "circle_ids=circle_ids" in allowed and "circle_guard.story_circles(db, [row.id])" in allowed
+    visible = func(STORE, "_visible", "\n\n\ndef ")
+    assert "_allowed(db, row, viewer, now)" in visible and "circle_guard.story_circles(db, [" in visible   # one query a list
     for name in ("watchable", "rings", "highlights", "highlight_stories"):
-        assert "_allowed(" in func(STORE, name, "\n\n\n") or "_allowed(" in func(STORE, name, "\n\ndef "), name
+        assert "_visible(" in func(STORE, name, "\n\n\n") or "_visible(" in func(STORE, name, "\n\ndef "), name
 
 
 def test_nothing_ever_names_a_viewer():
@@ -169,16 +175,21 @@ def test_the_routes_and_the_page_globals_are_registered():
 
 # --- the audiences and the media -----------------------------------------------------------------------------
 
-def test_the_audiences_are_the_circle_ones_plus_one_internal_mark():
-    assert circles.STORY_OPEN == 8 and circles.STORY_OPEN not in circles.CHOICES
-    assert sorted(circles.CHOICES) == [0, 1, 2]
+def test_the_audiences_are_public_and_circles_plus_one_internal_mark():
+    assert circles.STORY_OPEN == 8
+    assert circles.parse_audience(str(circles.STORY_OPEN), ["friends"])[0] is None
+    assert circles.parse_audience("4", ["friends"])[0] == circles.CIRCLES
     assert GUARD.index("circles.STORY_OPEN") < GUARD.index("circles.GUILD", GUARD.index("def may_see("))
+    route = read("ruqqus", "routes", "stories.py")
+    assert 'circles.parse_audience(request.form.get("audience"), request.form.getlist("circles"))' in route
+    assert "circle_store.resolve(g.db, v.id, tokens)" in route and "circle_store.set_story_circles(g.db, story_id, circle_ids)" in route
 
 
 def test_a_storys_picture_is_judged_by_its_story_and_never_public_cached():
-    audience = func(ATTACH, "audience_of", "\n\n\ndef ")
+    audience = func(ATTACH, "audience_context", "\n\n\ndef ")
     assert "asset.story_id" in audience and "story.audience or circles.STORY_OPEN" in audience
-    assert "circles.GUILD, None" in audience                                    # a story that is gone is for nobody
+    assert "circles.GUILD, None, None, ()" in audience                          # a story that is gone is for nobody
+    assert "FROM story_circles WHERE story_id = :i" in audience
     live = func(ATTACH, "is_live", "\n\n\ndef ")
     assert "asset.story_id" in live and "highlight_stories" in live and "deleted_utc" in live
 
@@ -227,6 +238,8 @@ def test_the_picture_uses_the_linked_storage_uploader_not_this_site():
 
 def test_the_sheets_hold_nothing_a_member_wrote():
     expressions = set(re.findall(r"\{\{\s*([^}]*?)\s*\}\}", SHEETS))
+    # the audience field draws the viewer's OWN circle names, escaped (partials/post_options.html)
+    expressions.discard('audience_field(0, "story-audience", (), circle_choices(v))')
     assert expressions <= {"name", "value", "label", "loop.first"} or all(e in ("name", "value", "label") for e in expressions - {"loop.first"}), expressions
     for source in (SHEETS, BITS, QUEUE):
         assert "|safe" not in source and "| safe" not in source

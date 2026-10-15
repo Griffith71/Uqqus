@@ -74,6 +74,11 @@
     if (permission) data.append('comment_permission', permission.value);
     var audience = form.querySelector('input[name="audience"]:checked');
     if (audience) data.append('audience', audience.value);
+    if (audience && audience.value !== '0') {
+      Array.prototype.forEach.call(form.querySelectorAll('input[name="circles"]:checked'), function (i) {
+        data.append('circles', i.value);
+      });
+    }
     ['paid_partnership', 'made_with_ai', 'anonymous'].forEach(function (name) {
       if (form.querySelector('input[type="checkbox"][name="' + name + '"]:checked')) data.append(name, 'true');
     });

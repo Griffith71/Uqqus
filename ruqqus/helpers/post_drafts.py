@@ -61,7 +61,8 @@ def clean_fields(form):
     if permission is None:
         raise PostFieldError("Choose who can comment.")
 
-    audience, audience_error = circles.parse_audience(form.get("audience"))
+    # which circles are the author's own is decided when the post is made (circle_store.resolve in submit_post)
+    audience, circle_tokens, audience_error = circles.parse_audience(form.get("audience"), form.getlist("circles"))
     if audience_error:
         raise PostFieldError(audience_error)
 
@@ -88,6 +89,7 @@ def clean_fields(form):
             "poll_hours": poll_hours,
             "comment_permission": permission,
             "audience": audience,
+            "circles": list(circle_tokens),
             "paid_partnership": flag(form, "paid_partnership"),
             "made_with_ai": flag(form, "made_with_ai"),
             "anonymous": flag(form, "anonymous"),
@@ -140,6 +142,7 @@ def publish_form(fields, formkey):
     }
     if options.get("audience"):
         data["audience"] = str(options["audience"])
+        data["circles"] = [str(c) for c in options.get("circles") or []]
     for name in ("sensitive", "paid_partnership", "made_with_ai", "anonymous"):
         if options.get(name):
             data[name] = "true"

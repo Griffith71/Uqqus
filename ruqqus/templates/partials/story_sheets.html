@@ -4,6 +4,7 @@
   member's own stories. One copy each per page, not inside the side-panel frames. Everything a member wrote is set with
   textContent by the script; nothing here holds it.
 #}
+{% from "partials/post_options.html" import audience_field %}
 <div id="story-viewer" class="story-viewer" role="dialog" aria-modal="true" aria-label="Story" hidden>
   <div class="story-stage">
     <div class="story-bars" id="story-bars" aria-hidden="true"></div>
@@ -65,15 +66,7 @@
             <p class="text-small text-muted mt-1 mb-0">A video can only go on a public story: anyone with its link can watch it.</p>
           </div>
 
-          <div class="mt-3" role="radiogroup" aria-label="Who can see this">
-            <span class="d-block text-small text-muted mb-1">Who can see this?</span>
-            {% for value, label in [(0, "Public"), (1, "Subscribers"), (2, "Close Friends")] %}
-            <div class="custom-control custom-radio custom-control-inline">
-              <input type="radio" class="custom-control-input" id="story-audience-{{ value }}" name="audience" value="{{ value }}"{% if value == 0 %} checked{% endif %}>
-              <label class="custom-control-label" for="story-audience-{{ value }}">{{ label }}</label>
-            </div>
-            {% endfor %}
-          </div>
+          <div class="mt-3" id="story-audience">{{ audience_field(0, "story-audience", (), circle_choices(v)) }}</div>
           <div id="story-status" class="text-small mt-2" role="status"></div>
         </div>
         <div class="modal-footer">

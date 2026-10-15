@@ -18,7 +18,7 @@ from flask import g
 
 from ruqqus.__main__ import app, db_session
 from ruqqus.classes import Board, User
-from ruqqus.helpers import circle_store
+from ruqqus.helpers import circle_store, circles
 from ruqqus.helpers.alerts import send_notification
 
 POLL_SECONDS = 3600
@@ -43,12 +43,12 @@ def tick(now=None):
     for event, *_ in events:
         counts[event] = counts.get(event, 0) + 1
 
-    lapsed = [(payer, owner, coins, board) for event, payer, owner, coins, board in events if event == "lapsed"]
+    lapsed = [(payer, owner, coins, board, name) for event, payer, owner, coins, board, name in events if event == "lapsed"]
     if lapsed:
         with app.test_request_context():
             g.db = db_session()
             try:
-                for payer_id, owner_id, coins, board_id in lapsed:
+                for payer_id, owner_id, coins, board_id, circle_name in lapsed:
                     payer = g.db.query(User).filter_by(id=payer_id).first()
                     owner = g.db.query(User).filter_by(id=owner_id).first()
                     if payer is None or owner is None:
@@ -62,7 +62,7 @@ def tick(now=None):
                         continue
                     send_notification(
                         payer,
-                        f"Your subscription to [@{owner.username}](/@{owner.username})'s Circle ended: "
+                        f"Your subscription to {circles.plain_name(circle_name)} by [@{owner.username}](/@{owner.username}) ended: "
                         f"you didn't have the {coins} coins it renews for. You can subscribe again from their profile.")
             finally:
                 db_session.remove()

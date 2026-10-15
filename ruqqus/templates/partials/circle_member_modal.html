@@ -1,0 +1,28 @@
+{#
+  "Add to circles" from someone's profile (assets/js/circle_members.js): the viewer's own circles, ticked where the
+  account is in one, each tick saved at once (POST /api/circles/<id>/add|remove). Only the viewer's own circles are ever
+  listed; the account is not told. Included once by partials/profile_header.html for a signed-in member on someone
+  else's profile.
+#}
+<div class="modal fade" id="circleMemberModal" tabindex="-1" role="dialog" aria-labelledby="circleMemberTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="circleMemberTitle">Add to circles</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true"><i class="fas fa-times"></i></span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p class="text-small text-muted" id="circle-member-note">Your own circles. <span id="circle-member-name"></span> is not told.</p>
+        <div id="circle-member-list" role="group" aria-labelledby="circleMemberTitle"></div>
+        <div id="circle-member-status" class="text-small mt-2" role="status"></div>
+      </div>
+      <div class="modal-footer">
+        <a href="/settings/circle" class="btn btn-link text-muted mr-auto">Make or change your circles</a>
+        <button type="button" class="btn btn-primary" data-dismiss="modal">Done</button>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="{{ asset_url('js/circle_members.js') }}"></script>

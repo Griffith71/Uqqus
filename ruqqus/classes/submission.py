@@ -88,8 +88,8 @@ class Submission(Base, Stndrd, Age_times, Scores, Fuzzing):
     _own_is_image = Column("is_image", Boolean, default=False)
     has_thumb = Column(Boolean, default=False)
     post_public = Column(Boolean, default=True)
-    # who can see it (helpers/circles.py): 0 public, 1 subscribers, 2 close friends, 3 a Circle guild. Anything but 0 also
-    # has post_public false, so every list that asks for public posts leaves it out
+    # who can see it (helpers/circles.py): 0 public, 3 a Circle guild, 4 the author's circles listed in post_circles.
+    # Anything but 0 also has post_public false, so every list that asks for public posts leaves it out
     audience = Column(SmallInteger, nullable=False, default=0)
     score_hot = Column(Float, default=0)
     score_disputed = Column(Float, default=0)
@@ -460,8 +460,10 @@ class Submission(Base, Stndrd, Age_times, Scores, Fuzzing):
 
         if not v or self.author_id == v.id:
             return "this is your content."
+        elif self.audience == 3 and v.admin_level < 4:
+            return "you are a member of this Circle guild."
         elif self.audience and v.admin_level < 4:
-            return "you are in their Circle."
+            return "it was shared with you."
         elif self.is_pinned:
             return "a guildmaster has pinned it."
         elif self.board.has_mod(v):
@@ -753,9 +755,29 @@ class Submission(Base, Stndrd, Age_times, Scores, Fuzzing):
     def is_public(self):
         return not self.audience and (self.post_public or not self.board.is_private)
 
+    def circle_label(self, v):
+        """Who a post for circles is for, as this viewer is told: the circles' names for its author ("Friends and
+        Family"); for anyone else "Shared with a circle", or the paid circle they subscribe to. The name of a circle
+        someone was put in is never shown to them (helpers/circles.py)."""
+        from ruqqus.helpers import circle_guard, circle_store, circles
+        ids = circle_guard.post_circles(g.db, [self.id]).get(self.id, ())
+        named = circle_store.names_of(g.db, ids)
+        if v and v.id == self.author_id:
+            return circles.shared_label([name for _, _, name in named])
+        mine = circle_guard.viewer_circles(g.db, self.author_id, v.id) if v else frozenset()
+        return circles.viewer_label([name for cid, kind, name in named if kind == circles.PAID and cid in mine])
+
+    def circle_tokens(self):
+        """The circles this post is for as the audience sheet names them (its author's own menu only)."""
+        from ruqqus.helpers import circle_guard, circle_store, circles
+        ids = circle_guard.post_circles(g.db, [self.id]).get(self.id, ()) if self.audience == circles.CIRCLES else ()
+        return ",".join(circles.FRIENDS_TOKEN if kind == circles.FRIENDS else str(cid) for cid, kind, _ in circle_store.names_of(g.db, ids))
+
     def private_label(self, v):
         """The tooltip of the "private post" eye: who can see it, and why this viewer can."""
         from ruqqus.helpers import circles
+        if self.audience == circles.CIRCLES:
+            return f"{self.circle_label(v)}. Visible to you because {self.visibility_reason(v)}"
         if self.audience:
             return f"{circles.NAMES.get(self.audience, 'Private')} only. Visible to you because {self.visibility_reason(v)}"
         return f"Private post, visible to you because {self.visibility_reason(v)}"

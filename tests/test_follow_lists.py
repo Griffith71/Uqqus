@@ -14,7 +14,7 @@ CREATE TABLE users (id INTEGER PRIMARY KEY, is_deleted BOOLEAN DEFAULT 0, is_ban
     subscribers_visibility INTEGER DEFAULT 0, subscriptions_visibility INTEGER DEFAULT 0);
 CREATE TABLE follows (id INTEGER PRIMARY KEY, user_id INTEGER, target_id INTEGER, created_utc INTEGER DEFAULT 0);
 CREATE TABLE userblocks (id INTEGER PRIMARY KEY, user_id INTEGER, target_id INTEGER);
-CREATE TABLE circles (id INTEGER PRIMARY KEY, user_id INTEGER, board_id INTEGER, price_coins INTEGER DEFAULT 0);
+CREATE TABLE circles (id INTEGER PRIMARY KEY, user_id INTEGER, board_id INTEGER, price_coins INTEGER DEFAULT 0, kind TEXT NOT NULL);
 CREATE TABLE circle_members (id INTEGER PRIMARY KEY, circle_id INTEGER, user_id INTEGER, tier TEXT, status TEXT DEFAULT 'active',
     started_utc INTEGER DEFAULT 0, renews_utc INTEGER DEFAULT 0);
 """
@@ -34,9 +34,9 @@ def make(users, follows=(), blocks=(), circles=(), members=()):
         db.execute(text("INSERT INTO follows (user_id, target_id, created_utc) VALUES (:a, :b, :t)"), {"a": a, "b": b, "t": n})
     for a, b in blocks:
         db.execute(text("INSERT INTO userblocks (user_id, target_id) VALUES (:a, :b)"), {"a": a, "b": b})
-    for cid, owner, board, price in circles:
-        db.execute(text("INSERT INTO circles (id, user_id, board_id, price_coins) VALUES (:c, :o, :b, :p)"),
-                   {"c": cid, "o": owner, "b": board, "p": price})
+    for cid, owner, board, price, *kind in circles:
+        db.execute(text("INSERT INTO circles (id, user_id, board_id, price_coins, kind) VALUES (:c, :o, :b, :p, :k)"),
+                   {"c": cid, "o": owner, "b": board, "p": price, "k": kind[0] if kind else ("guild" if board else "paid")})
     for cid, uid, tier, status, renews in members:
         db.execute(text("INSERT INTO circle_members (circle_id, user_id, tier, status, renews_utc, started_utc) "
                         "VALUES (:c, :u, :t, :s, :r, 1)"), {"c": cid, "u": uid, "t": tier, "s": status, "r": renews})
@@ -84,17 +84,18 @@ def test_blocked_banned_deleted_and_filtered_accounts_are_never_listed():
     assert fl.counts(db, OWNER, NOW)["followers"] == 4   # banned and deleted accounts are not counted
 
 
-def test_only_active_subscribers_of_a_persons_circle_count_never_close_friends():
+def test_only_active_subscribers_of_a_persons_paid_circles_count_never_custom_ones():
     users = {OWNER: {}, 2: {}, 3: {}, 4: {}, 5: {}, 6: {"subscriptions_visibility": 2}}
-    circles = [(10, OWNER, None, 5), (11, None, 77, 5), (12, 2, None, 3)]
+    circles = [(10, OWNER, None, 5), (11, None, 77, 5), (12, 2, None, 3), (13, OWNER, None, 0, "custom"), (14, OWNER, None, 8)]
     members = [
         (10, 2, "subscriber", "active", NOW + 99),     # yes
+        (14, 2, "subscriber", "active", NOW + 99),     # and to a second paid circle: still one person
         (10, 3, "subscriber", "active", NOW - 1),      # lapsed
-        (10, 4, "friend", "active", 0),                # a Close Friend: never
+        (13, 4, "member", "active", 0),                # in a custom circle: never (nobody is told)
         (10, 5, "subscriber", "ended", NOW + 99),      # ended
         (10, 6, "subscriber", "active", NOW + 99),     # yes, but keeps their subscriptions to themselves
         (11, OWNER, "subscriber", "active", NOW + 99),  # a guild's Circle: never on a person's list
-        (12, OWNER, "subscriber", "active", NOW + 99),  # the owner subscribes to 2's Circle
+        (12, OWNER, "subscriber", "active", NOW + 99),  # the owner subscribes to 2's paid circle
     ]
     db = make(users, circles=circles, members=members)
     numbers = fl.counts(db, OWNER, NOW)

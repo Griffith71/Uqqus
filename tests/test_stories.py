@@ -86,26 +86,24 @@ def test_a_text_card_needs_words():
 def test_a_picture_story_needs_a_picture_and_may_have_no_words():
     assert s.refusal(s.IMAGE, circles.PUBLIC, "", False, "")
     assert s.refusal(s.IMAGE, circles.PUBLIC, "", True, "") is None
-    assert s.refusal(s.IMAGE, circles.SUBSCRIBERS, "caption", True, "") is None
+    assert s.refusal(s.IMAGE, circles.CIRCLES, "caption", True, "") is None
 
 
 def test_a_video_needs_a_link_and_is_only_ever_public():
     assert s.refusal(s.VIDEO, circles.PUBLIC, "", False, "")
     assert s.refusal(s.VIDEO, circles.PUBLIC, "", False, "dQw4w9WgXcQ") is None
-    assert "public" in s.refusal(s.VIDEO, circles.SUBSCRIBERS, "", False, "dQw4w9WgXcQ")
-    assert "public" in s.refusal(s.VIDEO, circles.FRIENDS, "", False, "dQw4w9WgXcQ")
+    assert "public" in s.refusal(s.VIDEO, circles.CIRCLES, "", False, "dQw4w9WgXcQ")
 
 
 def test_every_circle_audience_may_hold_text_and_pictures():
-    for audience in (circles.PUBLIC, circles.SUBSCRIBERS, circles.FRIENDS):
+    for audience in (circles.PUBLIC, circles.CIRCLES):
         assert s.refusal(s.TEXT, audience, "hi", False, "") is None
         assert s.refusal(s.IMAGE, audience, "", True, "") is None
 
 
 def test_the_internal_marks_are_not_choices_a_member_can_make():
-    assert circles.STORY_OPEN not in circles.CHOICES and circles.GUILD not in circles.CHOICES
-    for audience in (circles.STORY_OPEN, circles.GUILD):
-        assert circles.parse_audience(str(audience))[0] is None
+    for audience in (circles.STORY_OPEN, circles.GUILD, 1, 2):
+        assert circles.parse_audience(str(audience), ["friends"])[0] is None
 
 
 # --- life -------------------------------------------------------------------------------------------------

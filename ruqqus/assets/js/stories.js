@@ -378,9 +378,10 @@
     ['text', 'image', 'video'].forEach(function (name) { field('story-pane-' + name).hidden = name !== kind; });
     // a video is only ever public
     var restricted = kind === 'video';
-    var publicChoice = field('story-audience-0');
-    if (restricted) publicChoice.checked = true;
-    ['story-audience-1', 'story-audience-2'].forEach(function (id) { field(id).disabled = restricted; });
+    var audience = field('story-audience').querySelector('[data-audience-field]');
+    if (restricted && window.AudienceField) window.AudienceField.set(audience, '0', []);
+    Array.prototype.forEach.call(audience.querySelectorAll('input[name="circles"], input[name="audience"][value="4"]'),
+      function (input) { input.disabled = restricted; });
     sayComposer('');
     if (kind === 'image' && window.MediaUpload) {
       window.MediaUpload.status().then(function (s) {
@@ -401,7 +402,8 @@
     Array.prototype.forEach.call(form.querySelectorAll('#story-kinds .btn'), function (label) {
       label.classList.toggle('active', !!label.querySelector('input:checked'));
     });
-    field('story-audience-0').checked = true;
+    var audience = field('story-audience').querySelector('[data-audience-field]');
+    if (window.AudienceField) window.AudienceField.set(audience, '0', []);
     showPane();
   }
 
@@ -419,7 +421,10 @@
     form.addEventListener('submit', function (event) {
       event.preventDefault();
       var kind = checked('kind');
-      var fields = { kind: kind, audience: checked('audience') || '0' };
+      var chosen = window.AudienceField ? window.AudienceField.read(field('story-audience').querySelector('[data-audience-field]'))
+        : { audience: checked('audience') || '0', circles: [] };
+      if (chosen.audience === '4' && !chosen.circles.length) { sayComposer('Choose at least one circle, or make it public.', true); return; }
+      var fields = { kind: kind, audience: chosen.audience, circles: chosen.circles };
       if (kind === 'text') { fields.text = field('story-text').value; fields.background = checked('background'); }
       if (kind === 'image') {
         fields.text = field('story-caption').value;

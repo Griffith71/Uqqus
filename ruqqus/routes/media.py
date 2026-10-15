@@ -668,15 +668,15 @@ never cached. Anything else is refused, so this is not a file host for other sit
         return _refuse(410)
 
     live = attach.is_live(g.db, asset)
-    # a file in a post made for a Circle is only for the people who may see that post
-    audience, circle_owner = attach.audience_of(g.db, asset) if live else (0, None)
+    # a file in a post or story made for an audience is only for the people who may see it
+    audience, circle_owner, board_id, circle_ids = attach.audience_context(g.db, asset) if live else (0, None, None, ())
     is_owner = False
     allowed = False
     if not live or audience:
         # only now does it matter who is asking; a public file never looks at the session
         v, _ = get_logged_in_user()
         is_owner = bool(v) and v.id == asset.user_id
-        allowed = bool(audience) and circle_guard.may_see(g.db, audience, circle_owner, v)
+        allowed = bool(audience) and circle_guard.may_see(g.db, audience, circle_owner, v, board_id=board_id, circle_ids=circle_ids)
     mode = rules.access(asset.status, live, is_owner, audience, allowed)
     if mode is None:
         return _refuse(404)

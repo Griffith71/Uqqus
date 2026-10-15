@@ -1,0 +1,105 @@
+{% extends "settings.html" %}
+
+{% block pagetitle %}{{ circle.name }} - {{ 'SITE_NAME' | app_config }}{% endblock %}
+
+{# One of your own circles or paid circles (routes/circles.py `settings_circle_one`): its name, its people (a circle of
+   your own: added by @name, never told) or its price and subscribers (a paid circle), and deleting it.
+   assets/js/circle_settings.js sends the forms and buttons. #}
+
+{% block content %}
+{% set paid = circle.kind == 'paid' %}
+<div class="row">
+  <div class="col col-lg-8">
+    <div class="settings" id="circle-one" data-circle-id="{{ circle.id }}">
+
+      <a href="/settings/circle" class="text-small"><i class="fas fa-chevron-left mr-1" aria-hidden="true"></i>Your circles</a>
+      <h2 class="h5 mt-2 mb-1 text-break">{{ circle.name }}</h2>
+      <p class="text-small text-muted">
+        {% if paid %}A paid circle: people pay {{ describe_price(circle.price_coins) | lower }} to be in it. They see its name.
+        {% else %}A circle of your own. The people in it are not told, and nothing they see names it: your posts for it show as "Shared with a circle".{% endif %}
+      </p>
+      <div id="circle-status" class="text-small" role="status"></div>
+
+      <div class="settings-section rounded">
+        <form class="d-lg-flex" data-circle-form action="/api/circles/{{ circle.id }}/rename">
+          <div class="title w-lg-25"><label for="circle-name">Name</label></div>
+          <div class="body w-lg-100">
+            <div class="input-group" style="max-width: 24rem;">
+              <input type="text" class="form-control" id="circle-name" name="name" maxlength="{{ name_max }}" value="{{ circle.name }}" autocomplete="off" required>
+              <div class="input-group-append"><button type="submit" class="btn btn-secondary">Rename</button></div>
+            </div>
+            <div data-circle-status class="text-small mt-2" role="status"></div>
+          </div>
+        </form>
+        {% if paid %}
+        <form class="d-lg-flex border-top" data-circle-form action="/api/circles/{{ circle.id }}/price">
+          <div class="title w-lg-25"><label for="circle-price">Price</label></div>
+          <div class="body w-lg-100">
+            <div class="input-group" style="max-width: 18rem;">
+              <input type="number" class="form-control" id="circle-price" name="price" autocomplete="off" min="0" max="{{ price_max }}" step="1" value="{{ circle.price_coins }}" aria-describedby="circle-price-help" required>
+              <div class="input-group-append"><span class="input-group-text">coins</span></div>
+            </div>
+            <button type="submit" class="btn btn-primary mt-2">Save price</button>
+            <span class="d-block mt-2 text-small-extra text-muted" id="circle-price-help">
+              Every 30 days, from 1 to {{ price_max }} coins; 0 takes nobody new. Someone who already subscribed keeps the price they signed up at.
+            </span>
+            <div data-circle-status class="text-small mt-2" role="status"></div>
+          </div>
+        </form>
+        <div class="d-lg-flex border-top">
+          <div class="title w-lg-25"><span class="font-weight-bold">Coins received</span></div>
+          <div class="body w-lg-100">
+            <span id="circle-earned">{{ earned_30 }} in the last 30 days &middot; {{ earned_all }} in all.</span>
+            <span class="d-block text-small-extra text-muted">They go straight to your coin balance.</span>
+          </div>
+        </div>
+        {% endif %}
+      </div>
+
+      {% if paid %}
+      <h2 class="h6 mt-5 mb-2" id="circle-subscribers">Subscribers <span class="text-muted text-small font-weight-normal">{{ subscribers | length }}</span></h2>
+      <div class="settings-section rounded">
+        {% for s in subscribers %}
+        <div class="d-flex align-items-center justify-content-between px-3 py-2 circle-person{% if not loop.first %} border-top{% endif %}">
+          <span class="min-w-0 text-truncate"><a href="/@{{ s.username }}">@{{ s.username }}</a>
+            <span class="text-muted text-small">&middot; {{ s.price }} coin{{ '' if s.price == 1 else 's' }} every 30 days</span></span>
+          <span class="text-muted text-small text-nowrap ml-2">{% if s.cancelled %}ends {{ s.until }}{% else %}renews {{ s.until }}{% endif %}</span>
+        </div>
+        {% else %}
+        <div class="px-3 py-3 text-muted text-small" id="circle-subscribers-empty">{% if circle.price_coins %}No subscribers yet. People subscribe from your profile.{% else %}Set a price to let people subscribe.{% endif %}</div>
+        {% endfor %}
+      </div>
+      {% else %}
+      <h2 class="h6 mt-5 mb-2" id="circle-people">People <span class="text-muted text-small font-weight-normal">{{ people | length }} of {{ member_limit }}</span></h2>
+      <div class="settings-section rounded">
+        <form class="px-3 py-3" data-circle-form action="/api/circles/{{ circle.id }}/add" id="circle-add">
+          <label for="circle-add-name" class="font-weight-bold text-small mb-1">Add someone</label>
+          <div class="input-group" style="max-width: 24rem;">
+            <div class="input-group-prepend"><span class="input-group-text">@</span></div>
+            <input type="text" class="form-control" id="circle-add-name" name="username" maxlength="25" autocomplete="off" spellcheck="false" placeholder="username" required>
+            <div class="input-group-append"><button type="submit" class="btn btn-primary">Add</button></div>
+          </div>
+          <span class="d-block mt-2 text-small-extra text-muted">They are not told. Anyone you block leaves your circles.</span>
+          <div data-circle-status class="text-small mt-2" role="status"></div>
+        </form>
+        {% for p in people %}
+        <div class="d-flex align-items-center justify-content-between border-top px-3 py-2 circle-person" data-username="{{ p.username }}">
+          <span class="min-w-0 text-truncate"><a href="/@{{ p.username }}">@{{ p.username }}</a> <span class="text-muted text-small">&middot; since {{ p.since }}</span></span>
+          <button type="button" class="btn btn-link btn-sm text-danger" data-circle-post="/api/circles/{{ circle.id }}/remove" data-field-username="{{ p.username }}" aria-label="Remove @{{ p.username }}">Remove</button>
+        </div>
+        {% else %}
+        <div class="border-top px-3 py-3 text-muted text-small" id="circle-people-empty">Nobody yet.</div>
+        {% endfor %}
+      </div>
+      {% endif %}
+
+      <div class="mt-5">
+        <button type="button" class="btn btn-outline-danger btn-sm" data-circle-post="/api/circles/{{ circle.id }}/delete"
+          data-confirm="Delete {{ circle.name }}? Posts and stories that were only for it will be for you alone.">Delete this circle</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+<script src="{{ asset_url('js/circle_settings.js') }}"></script>
+{% endblock %}

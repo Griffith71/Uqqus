@@ -31,7 +31,7 @@ from ruqqus.helpers.word_filter_store import post_severity, apply_post_severity
 from ruqqus.classes import *
 from ruqqus.helpers import coauthors       # after the star-import: ruqqus.classes has a module of this name too
 from ruqqus.helpers import polls as poll_rules, poll_store
-from ruqqus.helpers import circles as circle_rules, circle_guard
+from ruqqus.helpers import circles as circle_rules, circle_guard, circle_store
 from ruqqus.helpers import insights_store
 from ruqqus.helpers import bots as bot_rules, bot_store
 from ruqqus.helpers import sensitive as sensitive_rules
@@ -855,6 +855,7 @@ Optional file data:
             bot_wait = False
             bot_error = bot_rules.option_refusal(flag(request.form, "anonymous"),
                                                  (request.form.get("audience") or "").strip() not in ("", "0")
+                                                 or any(c.strip() for c in request.form.getlist("circles"))
                                                  or bool(request.form.get("circle_guild")),
                                                  bool((request.form.get("coauthors") or "").strip()))
             bot_status = 400 if bot_error else None
@@ -1338,12 +1339,16 @@ Optional file data:
                 "api": lambda: ({"error": poll_error}, 400)
                 }
 
-    # who can see it (helpers/circles.py): Public unless the author chose their Circle. A Circle post stays between the
-    # author and the people in it, so what would take it elsewhere (anonymity, co-authors, forwards, an own video) stops it here
+    # who can see it (helpers/circles.py): Public unless the author chose some of their circles (only their own:
+    # circle_store.resolve). A post for circles stays between the author and the people in them, so what would take it
+    # elsewhere (anonymity, co-authors, forwards, an own video) stops it here
+    circle_ids = []
     if circle_board is not None:
         audience, audience_error = circle_rules.GUILD, None
     else:
-        audience, audience_error = circle_rules.parse_audience(request.form.get("audience"))
+        audience, audience_tokens, audience_error = circle_rules.parse_audience(request.form.get("audience"), request.form.getlist("circles"))
+        if audience_error is None and audience == circle_rules.CIRCLES:
+            circle_ids, audience_error = circle_store.resolve(g.db, v.id, audience_tokens)
     if audience_error is None:
         audience_error = circle_rules.post_refusal(
             audience, anonymous=flag(request.form, "anonymous"), coauthors=bool(coauthor_names),
@@ -1377,6 +1382,8 @@ Optional file data:
 
     g.db.add(new_post)
     g.db.flush()
+    if audience == circle_rules.CIRCLES:
+        circle_store.set_post_circles(g.db, new_post.id, circle_ids)
 
     new_post_aux = SubmissionAux(id=new_post.id,
                                  url=url,
@@ -1638,8 +1645,8 @@ Optional file data:
         muters = {x[0] for x in g.db.query(UserMute.user_id).filter_by(target_id=v.id).all()}
         uids = [uid for uid in uids if uid not in muters]
     if new_post.audience:
-        # made for a Circle: only people who may see it are told (followers and mentions alike)
-        eligible = circle_guard.eligible_ids(g.db, v.id, new_post.audience, board_id=new_post.board_id)
+        # made for an audience: only people who may see it are told (followers and mentions alike)
+        eligible = circle_guard.eligible_ids(g.db, v.id, new_post.audience, board_id=new_post.board_id, circle_ids=circle_ids)
         uids = [uid for uid in uids if uid in eligible]
 
     for uid in uids:

@@ -38,7 +38,10 @@ def test_the_column_is_in_the_model_the_schema_and_the_migration():
 
 def test_a_post_for_an_audience_is_not_public_and_says_who_it_is_for():
     assert "return not self.audience and (self.post_public or not self.board.is_private)" in SUBMISSION
-    assert "def private_label(self, v):" in SUBMISSION and "you are in their Circle." in SUBMISSION
+    assert "def private_label(self, v):" in SUBMISSION and "it was shared with you." in SUBMISSION
+    label = SUBMISSION.split("def circle_label(self, v):")[1].split("\n    def ")[0]
+    assert "circles.shared_label(" in label and "circles.viewer_label(" in label   # names for the author, never for others
+    assert "kind == circles.PAID and cid in mine" in label
     for name in ("submission.html", "submission_listing.html"):
         html = read("ruqqus", "templates", name)
         assert "p.private_label(v)" in html and "Private post, visible" not in html, name
@@ -77,9 +80,12 @@ def test_a_page_request_gets_a_gate_that_shows_nothing_of_the_post_and_an_api_re
     assert "@app.errorhandler(CircleOnly)" in ERRORS and "@api(error_handler=True)" in ERRORS.split("def error_circle_only")[0][-80:]
     assert 'response.headers["Cache-Control"] = "private, no-store"' in body and ", 403)" in body
     assert '"api": lambda: (jsonify({"error": "404 Not Found"}), 404)' in body
+    # only paid circles with a price are offered; a custom circle is never named
+    assert "row.kind == circles.PAID and row.price_coins > 0" in body
     gate = read("ruqqus", "templates", "errors", "circle_gate.html")
     assert not re.search(r"\b(post|p)\.(title|body|board|permalink|url)\b", gate)
-    assert "owner.username" in gate and "audience_name" in gate and "| safe" not in gate
+    assert "owner.username" in gate and "Shared with a circle" in gate and "| safe" not in gate
+    assert "/api/circles/{{ c.id }}/subscribe" in gate and "c.id in joinable" in gate
 
 
 # --- lists --------------------------------------------------------------------------------------------
@@ -119,11 +125,12 @@ def test_only_the_viewers_own_lists_add_the_circle_condition():
         assert "circle_clause" not in body, name
 
 
-def test_the_circle_condition_is_only_for_posts_made_for_an_account_circle():
+def test_the_circle_condition_is_only_for_posts_made_for_circles():
     clause = read("ruqqus", "helpers", "circle_clause.py")
-    assert "submission.audience == circles.SUBSCRIBERS" in clause and "submission.audience == circles.FRIENDS" in clause
-    assert "circles.GUILD" not in clause and "member.renews_utc > now" in clause
-    assert "if viewer is None:\n        return false()" in clause
+    assert "submission.audience == circles.CIRCLES" in clause and "circles.GUILD" not in clause
+    assert "member.c.renews_utc > now" in clause and "circle.c.user_id == submission.author_id" in clause
+    assert "~blocked" in clause
+    assert "return false()" in clause.split("def member_clause(")[1].split("now = ")[0]
 
 
 def test_the_rss_feed_carries_nothing_made_for_a_circle():
@@ -138,16 +145,20 @@ def test_the_rss_feed_carries_nothing_made_for_a_circle():
 
 def test_a_post_is_made_for_an_audience_only_after_it_is_checked_and_is_not_public_then():
     body = func(POSTS, "submit_post", "\n@app.route")
-    assert body.index("audience, audience_error = circle_rules.parse_audience(") < body.index("new_post = Submission(")
+    assert body.index("circle_rules.parse_audience(request.form.get(\"audience\"), request.form.getlist(\"circles\"))") < body.index("new_post = Submission(")
+    assert body.index("circle_store.resolve(g.db, v.id, audience_tokens)") < body.index("new_post = Submission(")
     assert "circle_rules.post_refusal(" in body and "own_video=bool(url and media_attach.own_video(g.db, v.id, url))" in body
     assert "audience=audience," in body and "post_public=not audience and not board.is_private," in body
+    assert body.index("circle_store.set_post_circles(g.db, new_post.id, circle_ids)") < body.index("new_notif=Notification(")
 
 
 def test_only_people_who_may_see_a_circle_post_are_told_about_it():
     body = func(POSTS, "submit_post", "\n@app.route")
     assert "if not new_post.is_public and not new_post.audience:" in body
-    assert "eligible = circle_guard.eligible_ids(g.db, v.id, new_post.audience, board_id=new_post.board_id)" in body
+    assert "eligible = circle_guard.eligible_ids(g.db, v.id, new_post.audience, board_id=new_post.board_id, circle_ids=circle_ids)" in body
     assert body.index("uids = [uid for uid in uids if uid in eligible]") < body.index("new_notif=Notification(")
+    comments = read("ruqqus", "routes", "comments.py")
+    assert comments.count("circle_ids=circle_guard.post_circles(g.db, [") == 2      # followers of the post, mentions
 
 
 def test_a_circle_post_cannot_be_forwarded_reposted_or_co_authored_and_neither_can_its_comments():
@@ -165,9 +176,11 @@ def test_only_the_author_changes_who_can_see_a_post_and_going_public_needs_a_con
     body = func(CIRCLES, "circle_post_audience", "\n\ndef may_change_audience")
     head = CIRCLES.split("def circle_post_audience(")[0].rsplit("\n\n\n", 1)[1]
     assert '@app.route("/api/post/<pid>/audience", methods=["POST"])' in head and "@validate_formkey" in head and "@is_not_banned" in head
-    assert body.index("get_post(pid, v=v)") < body.index("if post.author_id != v.id:") < body.index("circles.parse_audience(raw)")
+    assert body.index("get_post(pid, v=v)") < body.index("if post.author_id != v.id:") < body.index("circles.parse_audience(raw, chosen)")
+    assert body.index("circles.parse_audience(raw, chosen)") < body.index("circle_store.resolve(g.db, v.id, tokens)")
     assert 'request.values.get("confirm") != "1"' in body and "409" in body
     assert "post.post_public = not audience and not post.board.is_private" in body
+    assert "circle_store.set_post_circles(g.db, post.id, circle_ids)" in body
     assert "media_cdn.purge(media_attach.attached_paths(g.db, submission_id=post.id))" in body
     assert "post_refusal(" in body and "shared=" not in body          # a shared public post may move (helpers/sharing.py)
     assert "_shared_copies(post, v.id)" in body and "sharing.narrowing_note(" in body
@@ -191,33 +204,38 @@ def test_the_menu_item_the_sheet_and_the_script_agree():
 
 def test_the_composer_the_create_page_and_drafts_all_carry_the_audience():
     options = read("ruqqus", "templates", "partials", "post_options.html")
-    assert "{% macro audience_field(selected, prefix) %}" in options and 'name="audience"' in options
-    assert "post_options.audience_field(" in read("ruqqus", "templates", "submit.html")
-    assert 'audience_field(0, "ic-audience")' in read("ruqqus", "templates", "partials", "inline_composer.html")
+    assert "{% macro audience_field(selected, prefix, chosen=(), choices=()) %}" in options
+    assert 'name="audience"' in options and 'name="circles"' in options
+    assert "post_options.audience_field(audience_now, \"post-audience\", circles_now, circle_choices(v))" in read("ruqqus", "templates", "submit.html")
+    assert 'audience_field(0, "ic-audience", (), circle_choices(v))' in read("ruqqus", "templates", "partials", "inline_composer.html")
     drafts = read("ruqqus", "helpers", "post_drafts.py")
-    assert "circles.parse_audience(form.get(\"audience\"))" in drafts and '"audience": audience,' in drafts
-    assert 'data["audience"] = str(options["audience"])' in drafts
-    assert 'input[name="audience"]:checked' in read("ruqqus", "assets", "js", "post_drafts.js")
+    assert 'circles.parse_audience(form.get("audience"), form.getlist("circles"))' in drafts and '"circles": list(circle_tokens),' in drafts
+    assert 'data["audience"] = str(options["audience"])' in drafts and 'data["circles"] = [str(c) for c in options.get("circles") or []]' in drafts
+    script = read("ruqqus", "assets", "js", "post_drafts.js")
+    assert 'input[name="audience"]:checked' in script and 'input[name="circles"]:checked' in script
+    choices = CIRCLES.split("def circle_choices(")[1].split("\n\n\n")[0]
+    assert "circles.FRIENDS_TOKEN" in choices and "kinds=(circles.CUSTOM, circles.PAID)" in choices
 
 
 # --- media --------------------------------------------------------------------------------------------
 
 def test_a_file_in_a_circle_post_is_served_only_to_the_people_who_may_see_the_post_and_never_cached():
     body = MEDIA_ROUTE.split("def media_file(")[1]
-    assert "attach.audience_of(g.db, asset) if live else (0, None)" in body
-    assert "allowed = bool(audience) and circle_guard.may_see(g.db, audience, circle_owner, v)" in body
+    assert "attach.audience_context(g.db, asset) if live else (0, None, None, ())" in body
+    assert "circle_guard.may_see(g.db, audience, circle_owner, v, board_id=board_id, circle_ids=circle_ids)" in body
     assert "mode = rules.access(asset.status, live, is_owner, audience, allowed)" in body
     # the private answer is the uncached one, and only a public one skips the session cookie
     assert 'response.headers["Cache-Control"] = FOREVER if mode == rules.PUBLIC else NO_STORE' in body
     assert re.search(r"if mode == rules\.PUBLIC:\s+g\.skip_session_cookie = True", body)
     attach = read("ruqqus", "helpers", "media", "attach.py")
-    assert "def audience_of(db, asset):" in attach and "return 0, None" in attach
+    assert "def audience_context(db, asset):" in attach and "return 0, None, None, ()" in attach
+    assert "SELECT circle_id FROM post_circles WHERE post_id = :i" in attach and "SELECT circle_id FROM story_circles WHERE story_id = :i" in attach
 
 
 # --- docs ---------------------------------------------------------------------------------------------
 
 def test_claude_md_describes_posts_made_for_an_audience():
     doc = read("CLAUDE.md")
-    assert "### Posts made for a Circle" in doc
+    assert "### Posts and stories for circles" in doc
     for needle in ("fail closed", "post_public", "CircleOnly", "circle_clause", "get_post", "no-store"):
         assert needle in doc, needle

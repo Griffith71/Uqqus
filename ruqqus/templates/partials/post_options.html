@@ -17,8 +17,11 @@
 
   anonymous_field(checked, prefix): the "Post anonymously" checkbox (helpers/anonymity.py).
 
-  audience_field(selected, prefix): "Who can see this?" (helpers/circles.py): Public, Subscribers or Close Friends, read
-  by submit_post as `audience`. A Circle post cannot be anonymous, forwarded, reposted or co-authored.
+  audience_field(selected, prefix, chosen, choices): "Who can see this?" (helpers/circles.py): Public (`audience` 0) or
+  Circles (`audience` 4) with the circles ticked as `circles` (FRIENDS_TOKEN or a circle id), read by submit_post, the
+  drafts, the "Who can see this" sheet and stories. `chosen` are the ticked tokens, `choices` is circle_choices(v) (an
+  imported macro does not see `v`). A post for circles cannot be anonymous, forwarded, reposted or co-authored.
+  assets/js/composer_card.js keeps the radio and the ticks in step.
 
   coauthors_field(value, prefix): usernames to invite as co-authors (helpers/coauthors.py), read by
   submit_post as `coauthors`.
@@ -31,15 +34,28 @@
   it is anonymous.
 #}
 
-{% macro audience_field(selected, prefix) %}
-<label class="mt-3 d-block">Who can see this?<i class="fas fa-info-circle text-gray-400 ml-1" data-toggle="tooltip" data-placement="top" title="Public is for everyone. Subscribers and Close Friends are your Circle: Close Friends see everything in it, Subscribers see what you share with them. A Circle post can't be anonymous, forwarded, reposted or co-authored, and it stays off All, search and trending. Choose who is in your Circle in Settings."></i></label>
-<div class="audience">
-  {% for value, label in [(0, "Public"), (1, "Subscribers"), (2, "Close Friends")] %}
-  <div class="custom-control custom-radio custom-control-inline">
-    <input type="radio" class="custom-control-input" id="{{ prefix }}-{{ value }}" name="audience" value="{{ value }}"{% if selected == value %} checked{% endif %}>
-    <label class="custom-control-label" for="{{ prefix }}-{{ value }}">{{ label }}</label>
+{% macro audience_field(selected, prefix, chosen=(), choices=()) %}
+{% set for_circles = selected == 4 %}
+<div class="audience" data-audience-field data-mode="{{ 4 if for_circles else 0 }}">
+  <span class="audience-title">Who can see this?</span>
+  <div class="custom-control custom-radio">
+    <input type="radio" class="custom-control-input" id="{{ prefix }}-0" name="audience" value="0"{% if not for_circles %} checked{% endif %}>
+    <label class="custom-control-label" for="{{ prefix }}-0">Public <span class="audience-hint">Anyone</span></label>
   </div>
-  {% endfor %}
+  <div class="custom-control custom-radio">
+    <input type="radio" class="custom-control-input" id="{{ prefix }}-4" name="audience" value="4"{% if for_circles %} checked{% endif %}>
+    <label class="custom-control-label" for="{{ prefix }}-4">Circles <span class="audience-hint">Only the circles you pick</span></label>
+  </div>
+  <div class="audience-circles" role="group" aria-label="Circles">
+    {% for c in choices %}
+    <div class="custom-control custom-checkbox">
+      <input type="checkbox" class="custom-control-input" id="{{ prefix }}-c-{{ c.token }}" name="circles" value="{{ c.token }}" data-circle-name="{{ c.name }}"{% if c.token in chosen %} checked{% endif %}>
+      <label class="custom-control-label" for="{{ prefix }}-c-{{ c.token }}">{{ c.name }}{% if c.hint %} <span class="audience-hint">{{ c.hint }}</span>{% endif %}</label>
+    </div>
+    {% endfor %}
+    <a href="/settings/circle" class="audience-manage">Make or change your circles</a>
+  </div>
+  <p class="audience-note">Only the people in them see it, and nobody is told which of your circles they are in. It can't be anonymous, forwarded, reposted or co-authored, and it stays off All, search and trending.</p>
 </div>
 {% endmacro %}
 

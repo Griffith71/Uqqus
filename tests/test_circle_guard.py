@@ -1,22 +1,23 @@
-"""Who may see something made for an audience (ruqqus/helpers/circle_guard.py): real SQL on in-memory SQLite. The promise
-under test: a post or a comment on a post made for a Circle is shown to the author, an admin and the right members of the
-Circle, and to nobody else, whatever route asked."""
+"""Who may see something made for an audience (ruqqus/helpers/circle_guard.py): real SQL on in-memory SQLite (tables
+in tests/circle_tables.py). The promise under test: a post, or a comment on a post, made for circles is shown to its
+author, an admin and the people in ANY of its circles right now, and to nobody else, whatever route asked."""
 from types import SimpleNamespace as NS
 
 import pytest
 from sqlalchemy import create_engine, text
 from sqlalchemy.orm import Session
 
+from circle_tables import add_users, block, create, follow
 from ruqqus.helpers import circle_guard as guard
 from ruqqus.helpers import circle_store as store
 from ruqqus.helpers import circles as c
 
 NOW = 2_000_000_000
 DAY = 86400
-OWNER, FRIEND, FAN, STRANGER, EXPIRED, ENDED, OTHER_OWNER = 1, 2, 3, 4, 5, 6, 7
+OWNER, FAMILY, WORKER, FAN, MUTUAL, ONE_WAY, STRANGER, EXPIRED, ENDED, OTHER_OWNER = range(1, 11)
 GUILD = 9
 MEMBER, GUILD_MOD, EXILED, PENDING_MOD, REMOVED = 20, 21, 22, 23, 24
-PUBLIC_POST, SUBS_POST, FRIENDS_POST, GUILD_POST, OTHERS_POST = 100, 101, 102, 103, 104
+PUBLIC_POST, FAMILY_POST, MIXED_POST, FRIENDS_POST, GUILD_POST, OTHERS_POST, ORPHAN_POST = 100, 101, 102, 103, 104, 105, 106
 
 
 def viewer(uid, admin=0):
@@ -27,104 +28,128 @@ def viewer(uid, admin=0):
 def db():
     engine = create_engine("sqlite://")
     with engine.begin() as conn:
-        conn.execute(text("CREATE TABLE users (id integer PRIMARY KEY, username text, coin_balance integer DEFAULT 0, "
-                          "is_deleted boolean DEFAULT 0, is_banned integer DEFAULT 0, unban_utc integer DEFAULT 0)"))
-        conn.execute(text("CREATE TABLE userblocks (id integer PRIMARY KEY AUTOINCREMENT, user_id integer, target_id integer)"))
-        conn.execute(text("CREATE TABLE circles (id integer PRIMARY KEY AUTOINCREMENT, user_id integer, board_id integer, "
-                          "price_coins integer NOT NULL DEFAULT 0, created_utc integer NOT NULL DEFAULT 0)"))
-        conn.execute(text("CREATE TABLE circle_members (id integer PRIMARY KEY AUTOINCREMENT, circle_id integer NOT NULL, "
-                          "user_id integer NOT NULL, tier text NOT NULL, status text NOT NULL DEFAULT 'active', "
-                          "started_utc integer NOT NULL DEFAULT 0, renews_utc integer NOT NULL DEFAULT 0, "
-                          "cancelled boolean NOT NULL DEFAULT 0, price_coins integer NOT NULL DEFAULT 0, "
-                          "created_utc integer NOT NULL DEFAULT 0, UNIQUE (circle_id, user_id))"))
+        create(conn)
         conn.execute(text("CREATE TABLE submissions (id integer PRIMARY KEY, author_id integer, audience integer NOT NULL DEFAULT 0, board_id integer)"))
-        conn.execute(text("CREATE TABLE contributors (id integer PRIMARY KEY AUTOINCREMENT, user_id integer, board_id integer, is_active boolean DEFAULT 1)"))
-        conn.execute(text("CREATE TABLE mods (id integer PRIMARY KEY AUTOINCREMENT, user_id integer, board_id integer, accepted boolean DEFAULT 0, invite_rescinded boolean DEFAULT 0)"))
-        conn.execute(text("CREATE TABLE bans (id integer PRIMARY KEY AUTOINCREMENT, user_id integer, board_id integer, is_active boolean DEFAULT 0)"))
-        for uid in range(1, 8):
-            conn.execute(text("INSERT INTO users (id, username) VALUES (:i, :n)"), {"i": uid, "n": f"u{uid}"})
-        for pid, owner, audience in ((PUBLIC_POST, OWNER, 0), (SUBS_POST, OWNER, 1), (FRIENDS_POST, OWNER, 2), (GUILD_POST, OWNER, 3),
-                                     (OTHERS_POST, OTHER_OWNER, 1)):
-            conn.execute(text("INSERT INTO submissions (id, author_id, audience, board_id) VALUES (:i, :a, :u, :b)"),
-                         {"i": pid, "a": owner, "u": audience, "b": GUILD if audience == 3 else 2})
+        add_users(conn, {uid: (f"u{uid}", 50) for uid in list(range(1, 11)) + [MEMBER, GUILD_MOD, EXILED, PENDING_MOD, REMOVED]})
         for uid, active in ((MEMBER, 1), (EXILED, 1), (REMOVED, 0)):
             conn.execute(text("INSERT INTO contributors (user_id, board_id, is_active) VALUES (:u, :b, :a)"), {"u": uid, "b": GUILD, "a": active})
         conn.execute(text("INSERT INTO mods (user_id, board_id, accepted) VALUES (:u, :b, 1)"), {"u": GUILD_MOD, "b": GUILD})
         conn.execute(text("INSERT INTO mods (user_id, board_id, accepted) VALUES (:u, :b, 0)"), {"u": PENDING_MOD, "b": GUILD})
         conn.execute(text("INSERT INTO bans (user_id, board_id, is_active) VALUES (:u, :b, 1)"), {"u": EXILED, "b": GUILD})
     session = Session(engine)
-    circle = store.set_price(session, OWNER, 10, NOW)
-    store.add_friend(session, OWNER, FRIEND, NOW)
-    for uid, when in ((FAN, NOW), (EXPIRED, NOW - 40 * DAY), (ENDED, NOW)):
+    ids = {"friends": store.ensure_friends(session, OWNER, NOW)}
+    ids["family"] = store.create(session, OWNER, c.CUSTOM, "Family", 0, NOW)[0]
+    ids["work"] = store.create(session, OWNER, c.CUSTOM, "Work", 0, NOW)[0]
+    ids["fans"] = store.create(session, OWNER, c.PAID, "Fans", 10, NOW)[0]
+    ids["theirs"] = store.create(session, OTHER_OWNER, c.CUSTOM, "Mates", 0, NOW)[0]
+    store.add_member(session, OWNER, ids["family"], FAMILY, NOW)
+    store.add_member(session, OWNER, ids["work"], WORKER, NOW)
+    store.add_member(session, OTHER_OWNER, ids["theirs"], FAN, NOW)
+    store.subscribe(session, ids["fans"], FAN, NOW)
+    for uid, when, status in ((EXPIRED, NOW - 40 * DAY, "active"), (ENDED, NOW, "ended")):
         session.execute(text("INSERT INTO circle_members (circle_id, user_id, tier, status, renews_utc, price_coins, created_utc) "
-                             "VALUES (:c, :u, 'subscriber', :s, :r, 10, :t)"),
-                        {"c": circle, "u": uid, "s": "ended" if uid == ENDED else "active", "r": when + c.PERIOD, "t": when})
+                             "VALUES (:c, :u, 'subscriber', :s, :r, 10, :t)"), {"c": ids["fans"], "u": uid, "s": status, "r": when + c.PERIOD, "t": when})
+    follow(session, OWNER, MUTUAL)
+    follow(session, MUTUAL, OWNER)
+    follow(session, ONE_WAY, OWNER)
+    for pid, owner, audience, circles_for in (
+            (PUBLIC_POST, OWNER, 0, ()), (FAMILY_POST, OWNER, 4, ("family",)), (MIXED_POST, OWNER, 4, ("family", "fans")),
+            (FRIENDS_POST, OWNER, 4, ("friends",)), (GUILD_POST, OWNER, 3, ()), (OTHERS_POST, OTHER_OWNER, 4, ("theirs",)),
+            (ORPHAN_POST, OWNER, 4, ())):
+        session.execute(text("INSERT INTO submissions (id, author_id, audience, board_id) VALUES (:i, :a, :u, :b)"),
+                        {"i": pid, "a": owner, "u": audience, "b": GUILD if audience == 3 else 2})
+        store.set_post_circles(session, pid, [ids[name] for name in circles_for])
+    session.ids = ids
     yield session
     session.close()
 
 
-def post(pid, owner, audience, board=2):
-    return NS(id=pid, author_id=owner, audience=audience, board_id=board)
+def post(db, pid):
+    row = db.execute(text("SELECT id, author_id, audience, board_id FROM submissions WHERE id = :i"), {"i": pid}).fetchone()
+    return NS(id=row.id, author_id=row.author_id, audience=row.audience, board_id=row.board_id)
+
+
+def sees(db, who, pid, admin=0):
+    return guard.may_see_post(db, post(db, pid), viewer(who, admin) if who else None, NOW)
 
 
 # --- the single post ----------------------------------------------------------------------------------
 
-@pytest.mark.parametrize("who, audience, seen", [
-    (STRANGER, 0, True), (STRANGER, 1, False), (STRANGER, 2, False), (STRANGER, 3, False),
-    (FAN, 0, True), (FAN, 1, True), (FAN, 2, False), (FAN, 3, False),
-    (FRIEND, 0, True), (FRIEND, 1, True), (FRIEND, 2, True), (FRIEND, 3, False),
-    (EXPIRED, 1, False), (EXPIRED, 2, False), (ENDED, 1, False),
-    (OWNER, 1, True), (OWNER, 2, True), (OWNER, 3, False),
+@pytest.mark.parametrize("who, seen", [
+    (STRANGER, {PUBLIC_POST}),
+    (FAMILY, {PUBLIC_POST, FAMILY_POST, MIXED_POST}),
+    (FAN, {PUBLIC_POST, MIXED_POST, OTHERS_POST}),
+    (MUTUAL, {PUBLIC_POST, FRIENDS_POST}),
+    (ONE_WAY, {PUBLIC_POST}),                                 # following without being followed back is not Friends
+    (WORKER, {PUBLIC_POST}),                                  # in a circle none of these posts is for
+    (EXPIRED, {PUBLIC_POST}), (ENDED, {PUBLIC_POST}),
+    (OWNER, {PUBLIC_POST, FAMILY_POST, MIXED_POST, FRIENDS_POST, ORPHAN_POST}),
 ])
-def test_what_each_kind_of_account_sees_of_the_owners_posts(db, who, audience, seen):
-    assert guard.may_see(db, audience, OWNER, viewer(who), NOW, GUILD if audience == 3 else 2) is seen
+def test_what_each_account_sees(db, who, seen):
+    shown = {pid for pid in (PUBLIC_POST, FAMILY_POST, MIXED_POST, FRIENDS_POST, OTHERS_POST, ORPHAN_POST) if sees(db, who, pid)}
+    assert shown == seen
 
 
 def test_a_visitor_sees_only_public(db):
-    assert guard.may_see(db, 0, OWNER, None, NOW) is True
-    for audience in (1, 2, 3):
-        assert guard.may_see(db, audience, OWNER, None, NOW) is False
+    assert sees(db, None, PUBLIC_POST)
+    for pid in (FAMILY_POST, MIXED_POST, FRIENDS_POST, GUILD_POST, ORPHAN_POST):
+        assert not sees(db, None, pid)
 
 
 def test_an_admin_sees_everything_a_moderator_of_the_site_would_need(db):
-    for audience in (1, 2, 3):
-        assert guard.may_see(db, audience, OWNER, viewer(STRANGER, admin=4), NOW)
-        assert not guard.may_see(db, audience, OWNER, viewer(STRANGER, admin=3), NOW)
+    for pid in (FAMILY_POST, MIXED_POST, FRIENDS_POST, GUILD_POST, ORPHAN_POST):
+        assert sees(db, STRANGER, pid, admin=4)
+        assert not sees(db, STRANGER, pid, admin=3)
 
 
-def test_a_membership_in_someone_elses_circle_gives_nothing_here(db):
-    # FRIEND is a close friend of OWNER only; OTHER_OWNER's post for subscribers is not theirs to see
-    assert guard.may_see(db, 1, OTHER_OWNER, viewer(FRIEND), NOW) is False
-    assert guard.may_see(db, 1, OTHER_OWNER, viewer(FAN), NOW) is False
+def test_a_block_either_way_hides_every_circle_post(db):
+    block(db, FAMILY, OWNER)
+    assert not sees(db, FAMILY, FAMILY_POST) and not sees(db, FAMILY, MIXED_POST)
+    block(db, OWNER, FAN)
+    assert not sees(db, FAN, MIXED_POST)
+    assert sees(db, FAN, OTHERS_POST)                         # nobody else's circles are touched
 
 
-def test_an_audience_nobody_knows_is_hidden_from_everyone_but_the_author_and_admins(db):
-    for audience in (9, -1, 4):
-        assert guard.may_see(db, audience, OWNER, viewer(FRIEND), NOW) is False
-        assert guard.may_see(db, audience, OWNER, viewer(OWNER), NOW) is True
+def test_a_post_with_no_circles_left_is_its_authors_alone(db):
+    assert sees(db, OWNER, ORPHAN_POST)
+    for who in (FAMILY, FAN, MUTUAL, WORKER):
+        assert not sees(db, who, ORPHAN_POST)
 
 
-def test_a_posts_own_audience_and_author_are_what_is_asked(db):
-    assert guard.may_see_post(db, post(SUBS_POST, OWNER, 1), viewer(FAN), NOW)
-    assert not guard.may_see_post(db, post(FRIENDS_POST, OWNER, 2), viewer(FAN), NOW)
+def test_removing_someone_or_their_paid_days_running_out_ends_it_at_once(db):
+    store.remove_member(db, OWNER, db.ids["family"], FAMILY)
+    assert not sees(db, FAMILY, FAMILY_POST)
+    assert not guard.may_see_post(db, post(db, MIXED_POST), viewer(FAN), NOW + c.PERIOD)
+
+
+def test_unfollowing_takes_someone_out_of_friends(db):
+    db.execute(text("DELETE FROM follows WHERE user_id = :a AND target_id = :b"), {"a": OWNER, "b": MUTUAL})
+    assert not sees(db, MUTUAL, FRIENDS_POST)
+
+
+@pytest.mark.parametrize("audience", [1, 2, 5, 9, -1])
+def test_an_audience_nobody_knows_is_hidden_from_everyone_but_the_author_and_admins(db, audience):
+    everything = list(db.ids.values())
+    assert guard.may_see(db, audience, OWNER, viewer(FAMILY), NOW, circle_ids=everything) is False
+    assert guard.may_see(db, audience, OWNER, viewer(OWNER), NOW) is True
+    assert guard.may_see(db, audience, OWNER, viewer(STRANGER, admin=4), NOW) is True
 
 
 # --- lists ----------------------------------------------------------------------------------------------
 
 def test_a_list_loses_only_what_the_viewer_may_not_see_and_keeps_its_order(db):
-    posts = [post(SUBS_POST, OWNER, 1), post(PUBLIC_POST, OWNER, 0), post(FRIENDS_POST, OWNER, 2), post(OTHERS_POST, OTHER_OWNER, 1)]
-    assert [p.id for p in guard.visible_posts(db, posts, viewer(FAN), NOW)] == [SUBS_POST, PUBLIC_POST]
-    assert [p.id for p in guard.visible_posts(db, posts, viewer(FRIEND), NOW)] == [SUBS_POST, PUBLIC_POST, FRIENDS_POST]
+    posts = [post(db, pid) for pid in (MIXED_POST, PUBLIC_POST, FAMILY_POST, OTHERS_POST, FRIENDS_POST)]
+    assert [p.id for p in guard.visible_posts(db, posts, viewer(FAN), NOW)] == [MIXED_POST, PUBLIC_POST, OTHERS_POST]
+    assert [p.id for p in guard.visible_posts(db, posts, viewer(FAMILY), NOW)] == [MIXED_POST, PUBLIC_POST, FAMILY_POST]
     assert [p.id for p in guard.visible_posts(db, posts, viewer(STRANGER), NOW)] == [PUBLIC_POST]
     assert [p.id for p in guard.visible_posts(db, posts, None, NOW)] == [PUBLIC_POST]
-    assert [p.id for p in guard.visible_posts(db, posts, viewer(OWNER), NOW)] == [SUBS_POST, PUBLIC_POST, FRIENDS_POST]
 
 
 def test_a_list_with_no_audience_costs_no_query_at_all(db):
     class Explodes:
         def execute(self, *a, **k):
             raise AssertionError("a page of public posts must not cost a query")
-    posts = [post(1, OWNER, 0), post(2, OWNER, 0)]
+    posts = [NS(id=1, author_id=OWNER, audience=0, board_id=2), NS(id=2, author_id=OWNER, audience=0, board_id=2)]
     assert guard.visible_posts(Explodes(), posts, viewer(STRANGER), NOW) is posts
 
 
@@ -135,10 +160,10 @@ def comment(cid, parent):
 
 
 def test_comments_under_a_circle_post_follow_the_post(db):
-    comments = [comment(1, PUBLIC_POST), comment(2, SUBS_POST), comment(3, FRIENDS_POST), comment(4, None)]
+    comments = [comment(1, PUBLIC_POST), comment(2, MIXED_POST), comment(3, FAMILY_POST), comment(4, None), comment(5, FRIENDS_POST)]
     assert [x.id for x in guard.visible_comments(db, comments, viewer(FAN), NOW)] == [1, 2, 4]
-    assert [x.id for x in guard.visible_comments(db, comments, viewer(FRIEND), NOW)] == [1, 2, 3, 4]
-    assert [x.id for x in guard.visible_comments(db, comments, viewer(STRANGER), NOW)] == [1, 4]
+    assert [x.id for x in guard.visible_comments(db, comments, viewer(FAMILY), NOW)] == [1, 2, 3, 4]
+    assert [x.id for x in guard.visible_comments(db, comments, viewer(MUTUAL), NOW)] == [1, 4, 5]
     assert [x.id for x in guard.visible_comments(db, comments, None, NOW)] == [1, 4]      # 4: a system message has no post
 
 
@@ -150,24 +175,29 @@ def test_comments_with_no_parent_post_cost_no_query(db):
 
 
 def test_a_single_comment_and_whether_it_is_under_an_audience(db):
-    assert guard.may_see_comment(db, comment(1, SUBS_POST), viewer(FAN), NOW)
-    assert not guard.may_see_comment(db, comment(1, FRIENDS_POST), viewer(FAN), NOW)
-    assert guard.under_audience(db, comment(1, SUBS_POST)) and guard.under_audience(db, comment(1, GUILD_POST))
+    assert guard.may_see_comment(db, comment(1, MIXED_POST), viewer(FAN), NOW)
+    assert not guard.may_see_comment(db, comment(1, FAMILY_POST), viewer(FAN), NOW)
+    assert guard.under_audience(db, comment(1, FAMILY_POST)) and guard.under_audience(db, comment(1, GUILD_POST))
     assert not guard.under_audience(db, comment(1, PUBLIC_POST)) and not guard.under_audience(db, comment(1, None))
 
 
-def test_hidden_parents_lists_only_posts_made_for_an_audience(db):
-    assert guard.hidden_parents(db, [PUBLIC_POST, SUBS_POST, FRIENDS_POST, None, 0]) == {SUBS_POST: (1, OWNER, 2), FRIENDS_POST: (2, OWNER, 2)}
+def test_hidden_parents_carry_the_circles_of_posts_made_for_them(db):
+    found = guard.hidden_parents(db, [PUBLIC_POST, FAMILY_POST, MIXED_POST, GUILD_POST, None, 0])
+    assert found == {FAMILY_POST: (4, OWNER, 2, frozenset({db.ids["family"]})),
+                     MIXED_POST: (4, OWNER, 2, frozenset({db.ids["family"], db.ids["fans"]})),
+                     GUILD_POST: (3, OWNER, GUILD, frozenset())}
     assert guard.hidden_parents(db, []) == {}
 
 
 # --- who is told ----------------------------------------------------------------------------------------
 
 def test_only_people_who_may_see_it_are_eligible_to_be_told(db):
-    assert guard.eligible_ids(db, OWNER, 1, NOW) == {FRIEND, FAN}
-    assert guard.eligible_ids(db, OWNER, 2, NOW) == {FRIEND}
-    assert guard.eligible_ids(db, OWNER, 1, NOW + 400 * DAY) == {FRIEND}          # the subscriptions have run out
-    assert guard.eligible_ids(db, OTHER_OWNER, 1, NOW) == set()
+    family, fans, friends = db.ids["family"], db.ids["fans"], db.ids["friends"]
+    assert guard.eligible_ids(db, OWNER, 4, NOW, circle_ids=[family, fans]) == {FAMILY, FAN}
+    assert guard.eligible_ids(db, OWNER, 4, NOW, circle_ids=[friends]) == {MUTUAL}
+    assert guard.eligible_ids(db, OWNER, 4, NOW + 400 * DAY, circle_ids=[fans]) == set()    # the subscriptions ran out
+    assert guard.eligible_ids(db, OWNER, 4, NOW, circle_ids=[db.ids["theirs"]]) == set()    # never someone else's circle
+    assert guard.eligible_ids(db, OWNER, 0, NOW) == set()
 
 
 # --- a Circle guild: its members decide ---------------------------------------------------------------------
@@ -216,20 +246,20 @@ def test_the_viewer_falls_back_to_nobody_outside_a_request():
 # --- the public mark of a story's picture (circles.STORY_OPEN) -------------------------------------------
 
 def test_a_public_storys_picture_is_for_any_signed_in_account_and_never_a_visitor(db):
-    for who in (OWNER, FRIEND, FAN, STRANGER, EXPIRED):
+    for who in (OWNER, FAMILY, FAN, STRANGER, EXPIRED):
         assert guard.may_see(db, c.STORY_OPEN, OWNER, viewer(who), NOW) is True
     assert guard.may_see(db, c.STORY_OPEN, OWNER, None, NOW) is False
 
 
 def test_a_block_either_way_takes_a_public_storys_picture_away(db):
-    db.execute(text("INSERT INTO userblocks (user_id, target_id) VALUES (:o, :b)"), {"o": OWNER, "b": STRANGER})        # the owner blocked
-    db.execute(text("INSERT INTO userblocks (user_id, target_id) VALUES (:b, :o)"), {"b": FAN, "o": OWNER})             # the viewer blocked
+    block(db, OWNER, STRANGER)                     # the owner blocked
+    block(db, FAN, OWNER)                          # the viewer blocked
     assert guard.may_see(db, c.STORY_OPEN, OWNER, viewer(STRANGER), NOW) is False
     assert guard.may_see(db, c.STORY_OPEN, OWNER, viewer(FAN), NOW) is False
     assert guard.may_see(db, c.STORY_OPEN, OWNER, viewer(OWNER), NOW) is True
-    assert guard.may_see(db, c.STORY_OPEN, OWNER, viewer(FRIEND), NOW) is True
+    assert guard.may_see(db, c.STORY_OPEN, OWNER, viewer(FAMILY), NOW) is True
 
 
 def test_the_public_mark_is_not_one_a_post_can_carry_or_a_member_can_choose(db):
-    assert c.STORY_OPEN not in c.CHOICES
-    assert c.STORY_OPEN not in (c.PUBLIC, c.SUBSCRIBERS, c.FRIENDS, c.GUILD)
+    assert c.STORY_OPEN not in (c.PUBLIC, c.CIRCLES, c.GUILD)
+    assert c.parse_audience(str(c.STORY_OPEN), [])[0] is None

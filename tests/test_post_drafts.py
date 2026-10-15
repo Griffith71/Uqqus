@@ -22,7 +22,7 @@ def test_a_draft_saves_the_composers_fields():
     assert f["title"] == "A titlewith breaks"          # one line, like the real title
     assert f["url"] == "https://example.com/x" and f["body"] == "some **text**"
     assert f["forward_guilds"] == ["general", "Test"]  # leading + dropped, case-insensitive duplicates dropped
-    assert f["options"] == {"coauthors": "", "poll_options": [], "poll_hours": 24, "comment_permission": 2, "audience": 0, "paid_partnership": True, "made_with_ai": False, "anonymous": False, "sensitive": True}
+    assert f["options"] == {"coauthors": "", "poll_options": [], "poll_hours": 24, "comment_permission": 2, "audience": 0, "circles": [], "paid_partnership": True, "made_with_ai": False, "anonymous": False, "sensitive": True}
 
 
 def test_an_empty_draft_is_valid_but_flagged_empty():
@@ -117,15 +117,23 @@ def test_the_failure_notice_names_the_post_and_the_reason():
 # --- who can see it (helpers/circles.py) ---------------------------------------
 
 def test_a_draft_keeps_who_it_is_for_and_the_publisher_sends_it_only_when_it_is_not_public():
-    for raw, expected in (("", 0), ("0", 0), ("1", 1), ("2", 2)):
+    for raw, expected in (("", 0), ("0", 0)):
         f = pd.clean_fields(form(("title", "t"), ("audience", raw)))
-        assert f["options"]["audience"] == expected
+        assert f["options"]["audience"] == expected and f["options"]["circles"] == []
+    circles = pd.clean_fields(form(("title", "t"), ("audience", "4"), ("circles", "friends"), ("circles", "12")))
+    assert circles["options"]["audience"] == 4 and circles["options"]["circles"] == ["friends", "12"]
     assert "audience" not in pd.publish_form(pd.clean_fields(form(("title", "t"))), "key")
-    assert "audience" not in pd.publish_form(pd.clean_fields(form(("title", "t"), ("audience", "0"))), "key")
-    assert pd.publish_form(pd.clean_fields(form(("title", "t"), ("audience", "2"))), "key")["audience"] == "2"
+    assert "audience" not in pd.publish_form(pd.clean_fields(form(("title", "t"), ("audience", "0"), ("circles", "12"))), "key")
+    sent = pd.publish_form(circles, "key")
+    assert sent["audience"] == "4" and sent["circles"] == ["friends", "12"]       # whose circles they are: submit_post checks
 
 
-@pytest.mark.parametrize("raw", ["3", "9", "-1", "x", "1.5"])
+def test_a_draft_for_circles_without_a_circle_is_refused_never_made_public():
+    with pytest.raises(pd.PostFieldError, match="at least one circle"):
+        pd.clean_fields(form(("title", "t"), ("audience", "4")))
+
+
+@pytest.mark.parametrize("raw", ["1", "2", "3", "9", "-1", "x", "1.5"])
 def test_a_draft_for_an_audience_that_is_not_a_choice_is_refused(raw):
     with pytest.raises(pd.PostFieldError, match="Choose who can see this"):
         pd.clean_fields(form(("title", "t"), ("audience", raw)))

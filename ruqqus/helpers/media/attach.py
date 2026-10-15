@@ -137,26 +137,40 @@ def is_live(db, asset):
     return False
 
 
-def audience_of(db, asset):
-    """(audience, author id) of the post - or the post a comment is on - this asset is part of. (0, None) when it is
-    part of nothing or of something public: the file is then shown to everyone. Anything else is for a Circle."""
+def audience_context(db, asset):
+    """(audience, author id, board id, circle ids) of the story, the post - or the post a comment is on - this asset
+    is part of: what circle_guard.may_see needs. (0, None, None, ()) when it is part of nothing or of something public:
+    the file is then shown to everyone. Anything else is for an audience."""
     _, Submission, Comment = _models()
     if asset.story_id:
-        # a story's picture is never public-cached: a public story is shown per viewer (circles.STORY_OPEN), a Circle one to its audience
-        story = db.execute(text("SELECT audience, user_id FROM stories WHERE id = :i"), {"i": asset.story_id}).fetchone()
+        # a story's picture is never public-cached: a public story is shown per viewer (circles.STORY_OPEN), one for
+        # circles to the people in them
+        story = db.execute(text("SELECT id, audience, user_id FROM stories WHERE id = :i"), {"i": asset.story_id}).fetchone()
         if story is None:
-            return circles.GUILD, None                       # a story that is gone: nobody (fail closed)
-        return (story.audience or circles.STORY_OPEN), story.user_id
+            return circles.GUILD, None, None, ()             # a story that is gone: nobody (fail closed)
+        if story.audience == circles.CIRCLES:
+            found = db.execute(text("SELECT circle_id FROM story_circles WHERE story_id = :i"), {"i": story.id}).fetchall()
+            return circles.CIRCLES, story.user_id, None, tuple(sorted(r[0] for r in found))
+        return (story.audience or circles.STORY_OPEN), story.user_id, None, ()
     if asset.submission_id:
-        row = db.query(Submission.audience, Submission.author_id).filter(Submission.id == asset.submission_id).first()
+        row = db.query(Submission.id, Submission.audience, Submission.author_id, Submission.board_id).filter(
+            Submission.id == asset.submission_id).first()
     elif asset.comment_id:
-        row = (db.query(Submission.audience, Submission.author_id)
+        row = (db.query(Submission.id, Submission.audience, Submission.author_id, Submission.board_id)
                .join(Comment, Comment.parent_submission == Submission.id).filter(Comment.id == asset.comment_id).first())
     else:
         row = None
     if not row or not row.audience:
-        return 0, None
-    return row.audience, row.author_id
+        return 0, None, None, ()
+    found = ()
+    if row.audience == circles.CIRCLES:
+        found = tuple(sorted(r[0] for r in db.execute(text("SELECT circle_id FROM post_circles WHERE post_id = :i"), {"i": row.id}).fetchall()))
+    return row.audience, row.author_id, row.board_id, found
+
+
+def audience_of(db, asset):
+    """(audience, author id) of what this asset is part of (`audience_context` without the guild and the circles)."""
+    return audience_context(db, asset)[:2]
 
 
 def sync(db, author_id, texts, submission_id=None, comment_id=None):

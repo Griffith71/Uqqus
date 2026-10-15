@@ -5,6 +5,7 @@ import pytest
 from sqlalchemy import create_engine, text
 from sqlalchemy.orm import Session
 
+from circle_tables import create
 from ruqqus.helpers import circle_store as store
 from ruqqus.helpers import circles as c
 
@@ -18,25 +19,7 @@ GUILD, PLAIN, BANNED_GUILD = 10, 11, 12
 def db():
     engine = create_engine("sqlite://")
     with engine.begin() as conn:
-        conn.execute(text("CREATE TABLE users (id integer PRIMARY KEY, username text, coin_balance integer DEFAULT 0, "
-                          "is_deleted boolean DEFAULT 0, is_banned integer DEFAULT 0, unban_utc integer DEFAULT 0)"))
-        conn.execute(text("CREATE TABLE userblocks (id integer PRIMARY KEY AUTOINCREMENT, user_id integer, target_id integer)"))
-        conn.execute(text("CREATE TABLE boards (id integer PRIMARY KEY, name text, creator_id integer, is_circle boolean DEFAULT 0, is_banned boolean DEFAULT 0)"))
-        conn.execute(text("CREATE TABLE circles (id integer PRIMARY KEY AUTOINCREMENT, user_id integer, board_id integer, "
-                          "price_coins integer NOT NULL DEFAULT 0, created_utc integer NOT NULL DEFAULT 0)"))
-        conn.execute(text("CREATE UNIQUE INDEX circles_board_key ON circles (board_id) WHERE board_id IS NOT NULL"))
-        conn.execute(text("CREATE TABLE circle_members (id integer PRIMARY KEY AUTOINCREMENT, circle_id integer NOT NULL, "
-                          "user_id integer NOT NULL, tier text NOT NULL, status text NOT NULL DEFAULT 'active', "
-                          "started_utc integer NOT NULL DEFAULT 0, renews_utc integer NOT NULL DEFAULT 0, "
-                          "cancelled boolean NOT NULL DEFAULT 0, price_coins integer NOT NULL DEFAULT 0, "
-                          "created_utc integer NOT NULL DEFAULT 0, UNIQUE (circle_id, user_id))"))
-        conn.execute(text("CREATE TABLE circle_payments (id integer PRIMARY KEY AUTOINCREMENT, circle_id integer NOT NULL, "
-                          "payer_id integer NOT NULL, owner_id integer NOT NULL, coins integer NOT NULL, kind text NOT NULL, "
-                          "created_utc integer NOT NULL DEFAULT 0)"))
-        conn.execute(text("CREATE TABLE contributors (id integer PRIMARY KEY AUTOINCREMENT, user_id integer, board_id integer, "
-                          "created_utc integer DEFAULT 0, is_active boolean DEFAULT 1, approving_mod_id integer)"))
-        conn.execute(text("CREATE TABLE mods (id integer PRIMARY KEY AUTOINCREMENT, user_id integer, board_id integer, accepted boolean DEFAULT 0, invite_rescinded boolean DEFAULT 0)"))
-        conn.execute(text("CREATE TABLE bans (id integer PRIMARY KEY AUTOINCREMENT, user_id integer, board_id integer, is_active boolean DEFAULT 0)"))
+        create(conn)
         for uid, name, coins in ((FOUNDER, "founder", 0), (FAN, "fan", 100), (POOR, "poor", 5), (INVITED, "invited", 50), (EXILED, "exiled", 50),
                                  (BLOCKED, "blocked", 50), (STRANGER, "stranger", 50)):
             conn.execute(text("INSERT INTO users (id, username, coin_balance) VALUES (:i, :n, :c)"), {"i": uid, "n": name, "c": coins})
@@ -151,14 +134,14 @@ def test_a_renewal_pays_the_founder_and_keeps_the_member(db):
     priced(db, 10)
     store.subscribe_guild(db, GUILD, FAN, NOW)
     events = store.renew_due(db, NOW + c.PERIOD)
-    assert events == [("renewed", FAN, FOUNDER, 10, GUILD)]
+    assert events == [("renewed", FAN, FOUNDER, 10, GUILD, "")]
     assert (coins(db, FAN), coins(db, FOUNDER)) == (80, 20) and contributor(db, FAN) is True
 
 
 def test_a_member_who_cannot_pay_loses_access_and_is_reported_with_the_guild(db):
     priced(db, 5)
     store.subscribe_guild(db, GUILD, POOR, NOW)
-    assert store.renew_due(db, NOW + c.PERIOD) == [("lapsed", POOR, FOUNDER, 5, GUILD)]
+    assert store.renew_due(db, NOW + c.PERIOD) == [("lapsed", POOR, FOUNDER, 5, GUILD, "")]
     assert contributor(db, POOR) is False and not store.is_guild_member(db, GUILD, POOR) and coins(db, POOR) == 0
 
 
@@ -166,7 +149,7 @@ def test_a_cancelled_member_leaves_on_the_date(db):
     priced(db, 10)
     store.subscribe_guild(db, GUILD, FAN, NOW)
     store.cancel_guild(db, GUILD, FAN)
-    assert store.renew_due(db, NOW + c.PERIOD) == [("ended", FAN, FOUNDER, 10, GUILD)]
+    assert store.renew_due(db, NOW + c.PERIOD) == [("ended", FAN, FOUNDER, 10, GUILD, "")]
     assert contributor(db, FAN) is False and coins(db, FAN) == 90
 
 
@@ -174,7 +157,7 @@ def test_a_member_exiled_in_the_meantime_is_not_charged_again(db):
     priced(db, 10)
     store.subscribe_guild(db, GUILD, FAN, NOW)
     db.execute(text("INSERT INTO bans (user_id, board_id, is_active) VALUES (:u, :g, 1)"), {"u": FAN, "g": GUILD})
-    assert store.renew_due(db, NOW + c.PERIOD) == [("ended", FAN, FOUNDER, 10, GUILD)]
+    assert store.renew_due(db, NOW + c.PERIOD) == [("ended", FAN, FOUNDER, 10, GUILD, "")]
     assert coins(db, FAN) == 90 and contributor(db, FAN) is False
 
 
@@ -194,8 +177,8 @@ def test_people_invited_free_are_never_touched_by_renewals(db):
 
 
 def test_an_account_circle_and_a_guild_circle_are_both_settled_in_one_pass(db):
-    store.set_price(db, STRANGER, 5, NOW)               # STRANGER has a Circle of their own, FAN subscribes to it
-    store.subscribe(db, STRANGER, FAN, NOW)
+    paid, _ = store.create(db, STRANGER, c.PAID, "Fans", 5, NOW)    # STRANGER has a paid circle of their own, FAN subscribes to it
+    store.subscribe(db, paid, FAN, NOW)
     priced(db, 10)
     store.subscribe_guild(db, GUILD, STRANGER, NOW)     # and STRANGER pays to be in the guild
     events = sorted(store.renew_due(db, NOW + c.PERIOD))

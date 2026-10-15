@@ -1,7 +1,9 @@
 /*
  * "Who can see this" in the menu of one's own post (partials/audience_modal.html, routes/circles.py).
- * The menu item carries the post's id and its current audience; the sheet shows three choices and saves one.
- * Making a Circle post public again asks first (the route needs `confirm=1` for it). Text only, no HTML.
+ * The menu item carries the post's id, its audience (0 Public, 4 Circles) and its circles (`data-circles`, tokens
+ * separated by commas); the sheet shows the same field as the composer (composer_card.js `AudienceField`) and saves it.
+ * The server asks first when something would happen the author should know about (the circles reach nobody yet, or
+ * copies of a public post are taken down); making a post public again asks here. Text only, no HTML.
  */
 (function () {
   'use strict';
@@ -11,6 +13,7 @@
 
   var save = document.getElementById('audience-save');
   var status = document.getElementById('audience-status');
+  var field = modal.querySelector('[data-audience-field]');
   var target = null;
 
   function say(text, isError) {
@@ -21,7 +24,11 @@
   function post(path, fields) {
     var body = new URLSearchParams();
     body.set('formkey', formkey());
-    Object.keys(fields || {}).forEach(function (k) { body.set(k, fields[k]); });
+    Object.keys(fields || {}).forEach(function (k) {
+      var value = fields[k];
+      if (Array.isArray(value)) value.forEach(function (one) { body.append(k, one); });
+      else body.set(k, value);
+    });
     return fetch(path, {
       method: 'POST',
       credentials: 'same-origin',
@@ -30,19 +37,18 @@
     }).then(function (r) { return r.json().then(function (data) { return { ok: r.ok, status: r.status, data: data }; }); });
   }
 
-  function chosen() {
-    var picked = modal.querySelector('input[name="audience-choice"]:checked');
-    return picked ? picked.value : null;
+  function same(a, b) {
+    return a.audience === b.audience && a.circles.slice().sort().join(',') === b.circles.slice().sort().join(',');
   }
 
   document.addEventListener('click', function (event) {
     // the menu entries (.audience-item) and the "Change" button in the Edit form (.audience-open)
     var item = event.target.closest ? event.target.closest('.audience-item, .audience-open') : null;
-    if (!item) return;
+    if (!item || !field || !window.AudienceField) return;
     event.preventDefault();
-    target = { id: item.getAttribute('data-post-id'), audience: item.getAttribute('data-audience') || '0' };
-    var radio = document.getElementById('audience-option-' + target.audience);
-    if (radio) radio.checked = true;
+    var tokens = (item.getAttribute('data-circles') || '').split(',').filter(function (t) { return t; });
+    target = { id: item.getAttribute('data-post-id'), audience: item.getAttribute('data-audience') === '4' ? '4' : '0', circles: tokens };
+    window.AudienceField.set(field, target.audience, target.circles);
     say('');
     $('#audienceModal').modal('show');
   });
@@ -52,7 +58,7 @@
     save.disabled = true;
     post('/api/post/' + encodeURIComponent(target.id) + '/audience', fields).then(function (res) {
       save.disabled = false;
-      // the server asks first when only the author would see the post (an empty Circle): the answer carries the sentence
+      // the server asks first (an empty circle, copies taken down): the answer carries the sentence
       if (res.status === 409 && res.data.confirm && !fields.confirm) {
         if (window.confirm(res.data.error + ' Save anyway?')) { fields.confirm = '1'; send(fields); }
         return;
@@ -63,11 +69,12 @@
   }
 
   save.addEventListener('click', function () {
-    var value = chosen();
-    if (!target || value === null) { say('Choose who can see this.', true); return; }
-    if (value === target.audience) { $('#audienceModal').modal('hide'); return; }
-    var fields = { audience: value };
-    if (value === '0' && target.audience !== '0') {
+    if (!target || !field) { say('Choose who can see this.', true); return; }
+    var chosen = window.AudienceField.read(field);
+    if (chosen.audience === '4' && !chosen.circles.length) { say('Choose at least one circle, or make it public.', true); return; }
+    if (same(chosen, target)) { $('#audienceModal').modal('hide'); return; }
+    var fields = { audience: chosen.audience, circles: chosen.circles };
+    if (chosen.audience === '0' && target.audience !== '0') {
       if (!window.confirm('Make this post public? Everyone will be able to see it.')) return;
       fields.confirm = '1';
     }

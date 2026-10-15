@@ -342,7 +342,7 @@
           {% if can_edit %}
           <button class="btn btn-link btn-block btn-lg text-left text-muted" data-dismiss="modal" onclick="togglePostEdit('{{ p.base36id }}')"><i class="far fa-edit text-center text-muted mr-3"></i>Edit</button>
           {% if may_invite_coauthors(p, v) %}<a class="btn btn-link btn-block btn-lg text-left text-muted coauthors-item" href="javascript:void(0)" data-dismiss="modal" data-post-id="{{ p.base36id }}"><i class="fas fa-user-friends fa-fw text-center text-muted mr-3"></i>Co-authors</a>{% endif %}
-          {% if may_change_audience(p, v) %}<a class="btn btn-link btn-block btn-lg text-left text-muted audience-item" href="javascript:void(0)" data-dismiss="modal" data-post-id="{{ p.base36id }}" data-audience="{{ p.audience or 0 }}"><i class="fas fa-circle-notch fa-fw text-center text-muted mr-3"></i>Who can see this</a>{% endif %}
+          {% if may_change_audience(p, v) %}<a class="btn btn-link btn-block btn-lg text-left text-muted audience-item" href="javascript:void(0)" data-dismiss="modal" data-post-id="{{ p.base36id }}" data-audience="{{ p.audience or 0 }}" data-circles="{{ p.circle_tokens() }}"><i class="fas fa-circle-notch fa-fw text-center text-muted mr-3"></i>Who can see this</a>{% endif %}
           {% if may_change_comment_permission(p, v) %}<a class="btn btn-link btn-block btn-lg text-left text-muted comment-permission-item" href="javascript:void(0)" data-dismiss="modal" data-post-id="{{ p.base36id }}" data-mode="{{ p.comment_permission or 0 }}" data-anonymous="{{ 1 if p.is_anonymous else 0 }}"><i class="fas fa-comment-slash fa-fw text-center text-muted mr-3"></i>Who can comment</a>{% endif %}
           {% if may_see_insights(p, v) %}<a class="btn btn-link btn-block btn-lg text-left text-muted" href="/post/{{ p.base36id }}/insights"><i class="fas fa-chart-line fa-fw text-center text-muted mr-3"></i>Insights</a>{% endif %}
           <button class="btn btn-link btn-block btn-lg text-left text-muted" data-toggle="modal" data-dismiss="modal" data-target="#deletePostModal" onclick="delete_postModal('{{ p.base36id }}')"><i class="far fa-trash-alt text-center text-muted mr-3"></i>{{ "Remove from +"+p.board.name if p.is_repost else "Delete" }}</button>
@@ -621,10 +621,10 @@
               {% if p.is_profile_post %}
               {{ post_options.comment_permission_field(p.comment_permission or 0, "post-edit-cp-" ~ p.base36id) }}
               {% endif %}
-              {% if may_change_audience(p, v) and (p.audience or 0) < 3 %}
+              {% if may_change_audience(p, v) and (p.audience or 0) != 3 %}
               <div class="mt-3 text-small" id="post-edit-audience-{{ p.base36id }}">
-                <span class="font-weight-bold">Who can see this:</span> {{ {0: "Public", 1: "Subscribers", 2: "Close Friends"}[p.audience or 0] }}
-                <button type="button" class="btn btn-link btn-sm audience-open p-0 ml-1 align-baseline" data-post-id="{{ p.base36id }}" data-audience="{{ p.audience or 0 }}">Change</button>
+                <span class="font-weight-bold">Who can see this:</span> {{ p.circle_label(v) if p.audience == 4 else "Public" }}
+                <button type="button" class="btn btn-link btn-sm audience-open p-0 ml-1 align-baseline" data-post-id="{{ p.base36id }}" data-audience="{{ p.audience or 0 }}" data-circles="{{ p.circle_tokens() }}">Change</button>
               </div>
               {% endif %}
               {{ post_options.disclosure_field(edit_src.paid_partnership, edit_src.made_with_ai, "post-edit-disc-" ~ p.base36id) }}
@@ -683,7 +683,7 @@
                         {% if can_edit %}
                         <a class="dropdown-item" href="javascript:void(0)" onclick="togglePostEdit('{{ p.base36id }}')"><i class="fas fa-edit fa-fw"></i>Edit</a>
                         {% if may_invite_coauthors(p, v) %}<a class="dropdown-item coauthors-item" href="javascript:void(0)" data-post-id="{{ p.base36id }}"><i class="fas fa-user-friends fa-fw"></i>Co-authors</a>{% endif %}
-                        {% if may_change_audience(p, v) %}<a class="dropdown-item audience-item" href="javascript:void(0)" data-post-id="{{ p.base36id }}" data-audience="{{ p.audience or 0 }}"><i class="fas fa-circle-notch fa-fw"></i>Who can see this</a>{% endif %}
+                        {% if may_change_audience(p, v) %}<a class="dropdown-item audience-item" href="javascript:void(0)" data-post-id="{{ p.base36id }}" data-audience="{{ p.audience or 0 }}" data-circles="{{ p.circle_tokens() }}"><i class="fas fa-circle-notch fa-fw"></i>Who can see this</a>{% endif %}
                         {% if may_change_comment_permission(p, v) %}<a class="dropdown-item comment-permission-item" href="javascript:void(0)" data-post-id="{{ p.base36id }}" data-mode="{{ p.comment_permission or 0 }}" data-anonymous="{{ 1 if p.is_anonymous else 0 }}"><i class="fas fa-comment-slash fa-fw"></i>Who can comment</a>{% endif %}
                         {% if may_see_insights(p, v) %}<a class="dropdown-item" href="/post/{{ p.base36id }}/insights"><i class="fas fa-chart-line fa-fw"></i>Insights</a>{% endif %}
                         <a class="dropdown-item" href="javascript:void(0)" data-toggle="modal" data-dismiss="modal" data-target="#deletePostModal" onclick="delete_postModal('{{ p.base36id }}')"><i class="fas fa-trash-alt fa-fw"></i>{{ "Remove from +"+p.board.name if p.is_repost else "Delete" }}</a>

@@ -7023,6 +7023,103 @@ body:not(.using-mouse) :focus-visible:not(.form-control) {
     }
 }
 
+// "Who can see this?" (partials/post_options.html audience_field): Public or Circles, then the circles to tick. The
+// ticks are dimmed while Public is chosen (they keep their state, but are not sent: composer_card.js).
+$audience-border: $gray-400;
+$audience-hover: $gray-400;
+
+.audience {
+    padding-top: 0.5rem;
+}
+
+.audience-title {
+    display: block;
+    margin-bottom: 0.35rem;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: $muted;
+}
+
+.audience .custom-control {
+    min-height: 1.75rem;
+}
+
+.audience-hint {
+    margin-left: 0.25rem;
+    font-size: 0.8125rem;
+    color: $muted;
+}
+
+.audience-circles {
+    margin: 0.15rem 0 0.25rem 1.5rem;
+    padding-left: 0.75rem;
+    border-left: 2px solid $audience-border;
+}
+
+.audience[data-mode="0"] .audience-circles {
+    opacity: 0.55;
+}
+
+.audience-manage {
+    display: inline-block;
+    margin-top: 0.25rem;
+    font-size: 0.8125rem;
+}
+
+.audience-note {
+    margin: 0.5rem 0 0;
+    font-size: 0.75rem;
+    line-height: 1.4;
+    color: $muted;
+}
+
+// Settings > Circles (settings_circle.html, settings_circle_one.html)
+.circle-mark {
+    display: inline-flex;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    color: $white;
+    background: $primary;
+}
+
+.circle-tag {
+    display: inline-block;
+    margin-left: 0.35rem;
+    padding: 0 0.45rem;
+    font-size: 0.6875rem;
+    font-weight: 600;
+    line-height: 1.5rem;
+    color: $muted;
+    vertical-align: middle;
+    border: 1px solid $audience-border;
+    border-radius: 999px;
+}
+
+a.circle-row {
+    color: $black;
+    text-decoration: none;
+}
+
+a.circle-row:hover,
+a.circle-row:focus-visible {
+    background: $audience-hover;
+    text-decoration: none;
+}
+
+.circle-member-row {
+    min-height: 2rem;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+    .audience-circles {
+        transition: opacity 0.15s ease-out;
+    }
+}
+
 // Create post card (templates/submit.html, assets/js/composer_card.js). The look of a social composer
 // (x.com's header and attach row, reddit's large borderless title), on this site's own tokens.
 // One radius scale: 16px card, 12px fields, full pills for controls. Motion is feedback only: transform and
@@ -7115,6 +7212,14 @@ $cc-muted: $muted;
 
 .composer-pill-caret {
     font-size: 0.7rem;
+}
+
+// a circle's name can be 40 characters: the pill keeps one line
+#composer-audience-label {
+    max-width: 11rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .composer-pill-menu {

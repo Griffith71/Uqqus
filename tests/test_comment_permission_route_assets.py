@@ -86,16 +86,14 @@ def test_an_empty_thread_of_a_post_with_comments_off_does_not_ask_for_the_first_
 
 def test_the_edit_form_shows_who_can_see_the_post_and_opens_the_same_sheet():
     assert 'class="btn btn-link btn-sm audience-open' in PAGE
-    assert "may_change_audience(p, v) and (p.audience or 0) < 3" in PAGE
+    assert "may_change_audience(p, v) and (p.audience or 0) != 3" in PAGE
     assert ".audience-item, .audience-open" in AUDIENCE_SCRIPT
 
 
 def test_narrowing_to_an_empty_circle_asks_first_and_a_circle_guild_post_is_left_alone():
     body = func(CIRCLES, "circle_post_audience", "\n\n\ndef may_change_audience")
-    assert "circles.GUILD" in body.split("circles.parse_audience(raw)")[0]
-    assert "_empty_audience(v.id, audience)" in body and 'request.values.get("confirm") != "1"' in body
-    helper = func(CIRCLES, "_empty_audience", "\n\n\n@app.route")
-    assert "circle_store.friends(" in helper and "circle_store.subscribers(" in helper
+    assert "circles.GUILD" in body.split("circles.parse_audience(raw, chosen)")[0]
+    assert "circle_store.reaches_nobody(g.db, v.id, circle_ids)" in body and 'request.values.get("confirm") != "1"' in body
     assert "res.status === 409 && res.data.confirm && !fields.confirm" in AUDIENCE_SCRIPT
 
 

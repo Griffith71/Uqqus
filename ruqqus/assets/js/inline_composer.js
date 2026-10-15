@@ -184,6 +184,9 @@
     var mediaNote = form.querySelector('.media-upload-status');
     if (mediaNote) mediaNote.textContent = '';
     showOptions(false);
+    // the audience pill shows the field again (form.reset() changes the radios without a change event)
+    var audience = form.querySelector('input[name="audience"]:checked');
+    if (audience) audience.dispatchEvent(new Event('change', { bubbles: true }));
     // back to Write if the text was being previewed
     var write = form.querySelector('.post-toolbar .post-tb-tab');
     if (write && !write.classList.contains('active')) write.click();
@@ -234,7 +237,7 @@
     var data = new FormData(form);
     if (circleGuild) {
       // made in the guild itself: nothing that would take it elsewhere or change who sees it travels with it
-      ['audience', 'anonymous', 'coauthors', 'forward_guilds'].forEach(function (name) { data.delete(name); });
+      ['audience', 'circles', 'anonymous', 'coauthors', 'forward_guilds'].forEach(function (name) { data.delete(name); });
       data.set('circle_guild', circleGuild);
     }
     var sent = fetch('/api/vue/submit', { method: 'POST', body: data, credentials: 'same-origin' });

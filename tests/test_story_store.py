@@ -1,6 +1,10 @@
 """Stories, the database side (ruqqus/helpers/story_store.py): real SQL on in-memory SQLite. The promise under test: a
-story is watched only by the people it was made for (Public, Subscribers, Close Friends), never across a block, never past
-the viewer's word filter, only while it lives (or a Highlight keeps it), and nothing here ever names a viewer."""
+story is watched only by the people it was made for (Public, or the people in its circles), never across a block, never
+past the viewer's word filter, only while it lives (or a Highlight keeps it), and nothing here ever names a viewer.
+
+`make(db, 1)` and `make(db, 2)` are the two audiences stories had before many circles, made the way
+scripts/migrations/2026-10-20_many_circles.sql converts them: "Subscribers" is for the paid circle Fans and the custom
+circle Close Friends, "Close Friends" for Close Friends only."""
 import time
 from types import SimpleNamespace as NS
 
@@ -8,6 +12,7 @@ import pytest
 from sqlalchemy import create_engine, text
 from sqlalchemy.orm import Session
 
+from circle_tables import create
 from ruqqus.helpers import circle_store as circles_db
 from ruqqus.helpers import circles as c
 from ruqqus.helpers import stories as rules
@@ -29,16 +34,7 @@ def viewer(uid, level=1, admin=0):
 def db():
     engine = create_engine("sqlite://")
     with engine.begin() as conn:
-        conn.execute(text("CREATE TABLE users (id integer PRIMARY KEY, username text, coin_balance integer DEFAULT 0, "
-                          "is_deleted boolean DEFAULT 0, is_banned integer DEFAULT 0, unban_utc integer DEFAULT 0)"))
-        conn.execute(text("CREATE TABLE userblocks (id integer PRIMARY KEY AUTOINCREMENT, user_id integer, target_id integer)"))
-        conn.execute(text("CREATE TABLE circles (id integer PRIMARY KEY AUTOINCREMENT, user_id integer, board_id integer, "
-                          "price_coins integer NOT NULL DEFAULT 0, created_utc integer NOT NULL DEFAULT 0)"))
-        conn.execute(text("CREATE TABLE circle_members (id integer PRIMARY KEY AUTOINCREMENT, circle_id integer NOT NULL, "
-                          "user_id integer NOT NULL, tier text NOT NULL, status text NOT NULL DEFAULT 'active', "
-                          "started_utc integer NOT NULL DEFAULT 0, renews_utc integer NOT NULL DEFAULT 0, "
-                          "cancelled boolean NOT NULL DEFAULT 0, price_coins integer NOT NULL DEFAULT 0, "
-                          "created_utc integer NOT NULL DEFAULT 0, UNIQUE (circle_id, user_id))"))
+        create(conn)
         conn.execute(text("CREATE TABLE stories (id integer PRIMARY KEY AUTOINCREMENT, user_id integer NOT NULL, kind text NOT NULL, "
                           "body text NOT NULL DEFAULT '', background text NOT NULL DEFAULT '', video_ref text NOT NULL DEFAULT '', "
                           "audience integer NOT NULL DEFAULT 0, word_severity integer NOT NULL DEFAULT 0, created_utc integer NOT NULL, "
@@ -59,15 +55,22 @@ def db():
             conn.execute(text("INSERT INTO users (id, username) VALUES (:i, :n)"), {"i": uid, "n": f"u{uid}"})
         conn.execute(text("INSERT INTO userblocks (user_id, target_id) VALUES (:o, :b)"), {"o": OWNER, "b": BLOCKED})
     session = Session(engine)
-    circle = circles_db.set_price(session, OWNER, 10, NOW)
-    circles_db.add_friend(session, OWNER, FRIEND, NOW)
+    session.fans = circles_db.create(session, OWNER, c.PAID, "Fans", 10, NOW)[0]
+    session.close_friends = circles_db.create(session, OWNER, c.CUSTOM, "Close Friends", 0, NOW)[0]
+    circles_db.add_member(session, OWNER, session.close_friends, FRIEND, NOW)
     session.execute(text("INSERT INTO circle_members (circle_id, user_id, tier, status, renews_utc, price_coins, created_utc) "
-                         "VALUES (:c, :u, 'subscriber', 'active', :r, 10, :t)"), {"c": circle, "u": FAN, "r": NOW + c.PERIOD, "t": NOW})
+                         "VALUES (:c, :u, 'subscriber', 'active', :r, 10, :t)"), {"c": session.fans, "u": FAN, "r": NOW + c.PERIOD, "t": NOW})
     yield session
     session.close()
 
 
 def make(db, audience=0, kind="text", body="hello", severity=0, when=NOW, user=OWNER, video=""):
+    if audience in (1, 2):
+        mine = user == OWNER
+        circle_ids = ([db.fans] if audience == 1 and mine else []) + ([db.close_friends] if mine else [])
+        story = store.create(db, user, kind, body, "ocean", video, c.CIRCLES, severity, when)
+        circles_db.set_story_circles(db, story, circle_ids)
+        return story
     return store.create(db, user, kind, body, "ocean", video, audience, severity, when)
 
 
@@ -284,8 +287,12 @@ def story_asset(db, story):
 def test_a_public_storys_picture_is_marked_per_viewer_never_public(db, no_models):
     public, subs, close = make(db, 0), make(db, 1), make(db, 2)
     assert attach.audience_of(db, story_asset(db, public)) == (c.STORY_OPEN, OWNER)
-    assert attach.audience_of(db, story_asset(db, subs)) == (c.SUBSCRIBERS, OWNER)
-    assert attach.audience_of(db, story_asset(db, close)) == (c.FRIENDS, OWNER)
+    assert attach.audience_of(db, story_asset(db, subs)) == (c.CIRCLES, OWNER)
+    assert attach.audience_of(db, story_asset(db, close)) == (c.CIRCLES, OWNER)
+    # what routes/media.py hands the guard: the story's own circles
+    assert attach.audience_context(db, story_asset(db, subs)) == (c.CIRCLES, OWNER, None, tuple(sorted([db.fans, db.close_friends])))
+    assert attach.audience_context(db, story_asset(db, close)) == (c.CIRCLES, OWNER, None, (db.close_friends,))
+    assert attach.audience_context(db, story_asset(db, public)) == (c.STORY_OPEN, OWNER, None, ())
 
 
 def test_the_picture_of_a_story_that_is_gone_is_for_nobody(db, no_models):
@@ -424,3 +431,14 @@ def test_a_resolved_report_does_not_come_back_but_a_new_person_can_report_again(
     assert store.open_reports(db) == []
     store.report(db, story, OTHER, "y", NOW)
     assert [(r.story_id, r.reports) for r in store.open_reports(db)] == [(story, 1)]
+
+
+def test_a_story_for_friends_is_for_mutual_follows_only(db):
+    friends = circles_db.ensure_friends(db, OWNER, NOW)
+    story = store.create(db, OWNER, "text", "hello", "ocean", "", c.CIRCLES, 0, NOW)
+    circles_db.set_story_circles(db, story, [friends])
+    for a, b in ((OWNER, STRANGER), (STRANGER, OWNER), (OTHER, OWNER)):
+        db.execute(text("INSERT INTO follows (user_id, target_id) VALUES (:a, :b)"), {"a": a, "b": b})
+    assert story in ids(store.watchable(db, OWNER, viewer(STRANGER), NOW))
+    assert story not in ids(store.watchable(db, OWNER, viewer(OTHER), NOW))          # follows one way only
+    assert story not in ids(store.watchable(db, OWNER, viewer(FRIEND), NOW))         # Close Friends is another circle

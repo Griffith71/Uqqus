@@ -3,7 +3,7 @@
 Plain SQL (`sqlalchemy.text`) so the same statements run on SQLite in the tests. Nothing here commits: the caller does.
 
 **`watchable` is the one place that decides what a viewer may watch**: not deleted, still live (or, for a Highlight, only
-kept), made for an audience the viewer is in (`circle_guard.may_see`: Public, Subscribers, Close Friends, the author, admins),
+kept), made for an audience the viewer is in (`circle_guard.may_see`: Public, or circles the viewer is in, the author, admins),
 not from an account the viewer has blocked or that blocked them, and not hidden by the viewer's word filter. Every list,
 ring and Highlight is built from it, so a new place that shows a story cannot forget a rule.
 """
@@ -11,7 +11,7 @@ import time
 
 from sqlalchemy import bindparam, text
 
-from ruqqus.helpers import circle_guard, circle_store, stories as rules
+from ruqqus.helpers import circle_guard, circle_store, circles, stories as rules
 from ruqqus.helpers.media import rules as media_rules
 from ruqqus.helpers.visibility import viewer_level
 from ruqqus.helpers.wordfilter import is_hidden
@@ -83,7 +83,15 @@ def _allowed(db, row, viewer, now):
         return False
     if is_hidden(viewer_level(viewer), row.word_severity):
         return False
-    return circle_guard.may_see(db, row.audience, row.user_id, viewer, now)
+    circle_ids = circle_guard.story_circles(db, [row.id]).get(row.id, ()) if row.audience == circles.CIRCLES else ()
+    return circle_guard.may_see(db, row.audience, row.user_id, viewer, now, circle_ids=circle_ids)
+
+
+def _visible(db, rows, viewer, now):
+    """The rows this viewer may see, with the circles of every story for circles asked in one query."""
+    rows = list(rows)
+    circle_guard.story_circles(db, [row.id for row in rows if row.audience == circles.CIRCLES])
+    return [row for row in rows if _allowed(db, row, viewer, now)]
 
 
 def watchable(db, owner_id, viewer, now=None):
@@ -91,7 +99,7 @@ def watchable(db, owner_id, viewer, now=None):
     now = _now(now)
     rows = db.execute(text(f"SELECT {_COLUMNS} FROM stories WHERE user_id = :o AND deleted_utc = 0 AND expires_utc > :n ORDER BY created_utc, id"),
                       {"o": owner_id, "n": now}).fetchall()
-    return [row for row in rows if _allowed(db, row, viewer, now)]
+    return _visible(db, rows, viewer, now)
 
 
 _LIVE_BY_OWNERS = text(f"SELECT {_COLUMNS} FROM stories WHERE user_id IN :owners AND deleted_utc = 0 AND expires_utc > :n ORDER BY created_utc, id"
@@ -113,7 +121,7 @@ def rings(db, owner_ids, viewer, now=None):
     owners = sorted({int(o) for o in owner_ids if o})
     if not owners or viewer is None:
         return {}
-    rows = [row for row in db.execute(_LIVE_BY_OWNERS, {"owners": owners, "n": now}).fetchall() if _allowed(db, row, viewer, now)]
+    rows = _visible(db, db.execute(_LIVE_BY_OWNERS, {"owners": owners, "n": now}).fetchall(), viewer, now)
     seen = seen_ids(db, viewer.id, [row.id for row in rows])
     by_owner = {}
     for row in rows:
@@ -153,7 +161,7 @@ def highlights(db, owner_id, viewer, now=None):
     for h in db.execute(text("SELECT id, title FROM highlights WHERE user_id = :o ORDER BY position, id"), {"o": owner_id}).fetchall():
         rows = db.execute(text(f"SELECT {', '.join('s.' + c.strip() for c in _COLUMNS.split(','))} FROM highlight_stories hs JOIN stories s ON s.id = hs.story_id "
                                "WHERE hs.highlight_id = :h AND s.deleted_utc = 0 ORDER BY hs.position, s.created_utc, s.id"), {"h": h.id}).fetchall()
-        shown = [row for row in rows if _allowed(db, row, viewer, now)]
+        shown = _visible(db, rows, viewer, now)
         if shown:
             out.append((h.id, h.title, shown))
     return out
@@ -171,7 +179,7 @@ def highlight_stories(db, highlight_id, viewer, now=None):
         return None
     rows = db.execute(text(f"SELECT {', '.join('s.' + c.strip() for c in _COLUMNS.split(','))} FROM highlight_stories hs JOIN stories s ON s.id = hs.story_id "
                            "WHERE hs.highlight_id = :h AND s.deleted_utc = 0 ORDER BY hs.position, s.created_utc, s.id"), {"h": highlight_id}).fetchall()
-    return h, [row for row in rows if _allowed(db, row, viewer, now)]
+    return h, _visible(db, rows, viewer, now)
 
 
 def create_highlight(db, user_id, title, story_ids, now=None):

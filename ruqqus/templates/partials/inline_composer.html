@@ -41,11 +41,11 @@
               {% if not circle_guild %}
               <details class="composer-pill" id="composer-audience">
                 <summary aria-label="Who can see this post">
-                  <i class="fas fa-globe-americas" id="composer-audience-icon"></i>
+                  <i class="fas fa-globe-americas" id="composer-audience-icon" aria-hidden="true"></i>
                   <span id="composer-audience-label">Public</span>
                   <i class="fas fa-chevron-down composer-pill-caret"></i>
                 </summary>
-                <div class="composer-pill-menu">{{ audience_field(0, "ic-audience") }}</div>
+                <div class="composer-pill-menu">{{ audience_field(0, "ic-audience", (), circle_choices(v)) }}</div>
               </details>
               {% endif %}
             </div>
