@@ -81,7 +81,7 @@
 
 {% if False %}
 <div class="sidebar-section sidebar-chat">
-  <a href="{{ b.chat_url }}" target="_blank"><div class="title"><i class="fas fa-comments-alt mr-2"></i>Guild Chat (<i class="far fa-user fa-sm mr-1"></i><span class="board-chat-count"></span>)</div></a>
+  <a href="{{ b.chat_url }}" target="_blank"><div class="title"><i class="fas fa-comments mr-2"></i>Guild Chat (<i class="far fa-user fa-sm mr-1"></i><span class="board-chat-count"></span>)</div></a>
   <div class="body">
     {% include "chat/chat_client.html" %}
   </div>
@@ -240,7 +240,7 @@
       <div id="button-unsub" class="{% if not b.is_subscribed %}d-none{% endif %}" role="group" aria-label="Leave guild desktop">
         <button class="btn btn-secondary" onclick="post_toast('/api/unsubscribe/{{ b.name }}', callback=toggleSub)">Leave</button>
         <button class="btn btn-transparent bell-button" data-toggle="tooltip" data-placement="bottom" title="Be notified when this guild has new content." data-url="/+{{ b.name }}/toggle_bell">
-          <i class="fas fa-fw bell-icon {% if b.is_subscribed and b.is_subscribed.get_notifs %}fa-bell-on text-primary{% else %}fa-bell{% endif %}"></i>
+          <i class="fas fa-fw bell-icon {% if b.is_subscribed and b.is_subscribed.get_notifs %}fa-bell text-primary{% else %}fa-bell-slash{% endif %}"></i>
         </button>
       </div>
       {% elif not v %}
@@ -304,7 +304,7 @@
             Leave
           </button>
           <button class="btn btn-transparent bell-button" data-url="/+{{ b.name }}/toggle_bell">
-            <i class="fas bell-icon fa-fw {% if b.is_subscribed and b.is_subscribed.get_notifs %}fa-bell-on text-primary{% else %}fa-bell{% endif %}"></i>
+            <i class="fas bell-icon fa-fw {% if b.is_subscribed and b.is_subscribed.get_notifs %}fa-bell text-primary{% else %}fa-bell-slash{% endif %}"></i>
           </button>
         </div>
         {% elif not v %}

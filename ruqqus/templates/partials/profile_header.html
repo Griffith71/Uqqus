@@ -79,7 +79,7 @@
       </div>
       <div id="button-unsub" class="profile-x-follow{% if not is_following %} d-none{% endif %}">
         <button type="button" class="btn profile-x-icon bell-button" data-toggle="tooltip" data-placement="bottom" title="Be told when @{{ u.username }} posts" data-url="/@{{ u.username }}/toggle_bell" aria-label="Post notifications">
-          <i class="fas fa-fw bell-icon {% if u.is_following and u.is_following.get_notifs %}fa-bell-on text-purple{% else %}fa-bell{% endif %}"></i>
+          <i class="fas fa-fw bell-icon {% if u.is_following and u.is_following.get_notifs %}fa-bell text-purple{% else %}fa-bell-slash{% endif %}"></i>
         </button>
         <button type="button" class="btn profile-x-outline profile-x-pill profile-x-following" onclick="post('/api/unfollow/{{ u.username }}', callback=toggleSub)">
           <span class="profile-x-following-label">Following</span><span class="profile-x-unfollow-label">Unfollow</span>

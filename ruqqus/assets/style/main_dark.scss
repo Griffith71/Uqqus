@@ -2915,7 +2915,9 @@ html.feed-live {
     cursor: pointer;
     font-size: 1rem;
     color: $muted;
-    content: "\25C0"; /* ◀ */
+    content: "\f053";
+    font-family: "Font Awesome 6 Free";
+    font-weight: 900;
     display: inline-block;
     line-height: 1;
 }
@@ -2924,7 +2926,9 @@ html.feed-live {
     cursor: pointer;
     font-size: 1rem;
     color: $black;
-    content: "\25B6"; /* ▶ */
+    content: "\f054";
+    font-family: "Font Awesome 6 Free";
+    font-weight: 900;
     display: inline-block;
     line-height: 1;
 }
@@ -4361,7 +4365,7 @@ ul.comment-section {
 .comment .comment-collapse::before {
     content: "";
     position: absolute;
-    font-family: "Font Awesome 5 Pro";
+    font-family: "Font Awesome 6 Free";
     border-left: 2px solid $gray-100;
     font-size: $font-size-base;
     color: $primary;
@@ -4377,7 +4381,7 @@ ul.comment-section {
 
 .comment.collapsed .comment-collapse::before {
     content: "\f055";
-    font-family: "Font Awesome 5 Pro";
+    font-family: "Font Awesome 6 Free";
     font-weight: 900;
     border-left: none;
     color: $gray-500;

@@ -456,6 +456,7 @@ A page must be right at its first paint: no theme swap, no sidebar folding or na
   widths) and check it visually before finishing.
 - Use the Emil skill (`emil-design-eng`) when polishing animations and micro-interactions.
 - Run the web-design-guidelines audit on changed UI files before committing.
+- **Icons are Font Awesome 6.4 Free and nothing else** (`default.html` loads it from cdnjs). Use only class names in `tests/data/fa_free_6_4_0_names.txt`: a Pro-only name (`fa-telescope`, `fa-bell-on`, `fa-lock-alt`...) draws as nothing, a font the site never loads (`"Font Awesome 5 Pro"`) falls back to whatever each system has, and a symbol character as an icon (arrows and shapes like ◀ ▶, ✖, emoji) is drawn differently on Apple and Windows (Apple colour emoji vs a box). `board_main.scss` and `board_dark.scss` are not served (guild pages are built from `main.scss` / `main_dark.scss` with the colour swapped in). `tests/test_icons_assets.py`.
 
 ## graphify
 

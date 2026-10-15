@@ -68,9 +68,9 @@
                             <div id="voting" class="d-md-block my-auto mr-3 text-center">
                                 <div id="post-{{ p.base36id }}-up" class="arrow-up mx-auto">
                                 </div>
-                                <span id="post-{{ p.base36id }}-score-up" class="score-up text-muted{% if voted!=1 %} d-none{% endif %}">✖</span>
-		  		<span id="post-{{ p.base36id }}-score-none" class="score text-muted{% if voted!=0 and voted!=-2 %} d-none{% endif %}">✖</span>
-		  		<span id="post-{{ p.base36id }}-score-down" class="score-down text-muted{% if voted!=-1 %} d-none{% endif %}">✖</span>
+                                <span id="post-{{ p.base36id }}-score-up" class="score-up text-muted{% if voted!=1 %} d-none{% endif %}"><i class="fas fa-xmark" aria-hidden="true"></i></span>
+		  		<span id="post-{{ p.base36id }}-score-none" class="score text-muted{% if voted!=0 and voted!=-2 %} d-none{% endif %}"><i class="fas fa-xmark" aria-hidden="true"></i></span>
+		  		<span id="post-{{ p.base36id }}-score-down" class="score-down text-muted{% if voted!=-1 %} d-none{% endif %}"><i class="fas fa-xmark" aria-hidden="true"></i></span>
                                 <div id="post-{{ p.base36id }}-down" class="arrow-down mx-auto">
                                 </div>
                             </div>
