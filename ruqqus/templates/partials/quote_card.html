@@ -1,0 +1,52 @@
+{#
+  A quote card (helpers/quote_cards.py): what a post quotes, drawn under the member's own words the way X draws a quoted
+  post: a bordered card, this site's font at the size of the post's own text, who wrote it, when, and what it said.
+
+  quote_card(q, p, v, full): `q` from quote_of(p, v) (helpers/jinja2.py); `p` the post that quotes it; `full` on the post
+  page (the whole text), otherwise a feed card (the text clamped to a few lines). Everything is plain text, escaped,
+  with its addresses turned into links (`urlize`); the one stored HTML is a post's own title, sanitized when written.
+  The card's cover link opens what it quotes; the links in its text sit above the cover.
+#}
+{% macro quote_card(q, p, v, full=False) %}
+{% if q.kind == 'social' %}
+<div class="quote-card{% if full %} quote-card-full{% endif %}" data-quote="{{ q.site }}">
+  <a class="quote-card-cover" href="{{ q.url }}" target="_blank" rel="nofollow noopener noreferrer" aria-label="Open this post on {{ q.label }}"></a>
+  <div class="quote-card-head">
+    <span class="quote-card-mark" aria-hidden="true">{% if q.icon %}<i class="fab fa-{{ q.icon }}"></i>{% else %}{{ q.letter }}{% endif %}</span>
+    {% if q.name %}<span class="quote-card-name">{{ q.name }}</span>{% endif %}
+    {% if q.handle %}<span class="quote-card-handle">{{ q.handle }}</span>{% endif %}
+    {% if not q.name and not q.handle %}<span class="quote-card-name">Post on {{ q.label }}</span>{% endif %}
+    {% if q.when %}<span class="quote-card-dot" aria-hidden="true">&middot;</span><span class="quote-card-when">{{ q.when }}</span>{% endif %}
+  </div>
+  {% if q.text %}<div class="quote-card-text">{{ q.text | urlize(48, true, target="_blank") }}</div>{% endif %}
+  {% if q.thumb and p.preview_image_url %}<img class="quote-card-media" src="{{ p.preview_image_url }}" alt="" loading="lazy" onerror="hideBrokenMedia(this)">{% endif %}
+  <div class="quote-card-foot">
+    {% if q.media %}<span><i class="far fa-image" aria-hidden="true"></i> {{ q.media }}</span><span aria-hidden="true">&middot;</span>{% endif %}
+    {% if q.where %}<span>{{ q.where }}</span><span aria-hidden="true">&middot;</span>{% endif %}
+    <span class="quote-card-open">View on {{ q.label }} <i class="fas fa-arrow-up-right-from-square" aria-hidden="true"></i></span>
+  </div>
+</div>
+{% elif q.kind == 'post' and q.notice %}
+<div class="quote-card quote-card-notice" role="note">{{ q.notice }}</div>
+{% elif q.kind == 'post' %}
+{% set quoted = q.post %}
+{% set who = author_of(quoted, v) %}
+<div class="quote-card{% if full %} quote-card-full{% endif %}" data-quote="post">
+  <a class="quote-card-cover" href="{{ quoted.permalink }}" aria-label="Open the quoted post"></a>
+  <div class="quote-card-head">
+    <img src="{{ who.profile_url }}" class="quote-card-avatar" width="20" height="20" alt="">
+    <span class="quote-card-name">{{ who.shown_name }}</span>{{ handle_tag(who) }}
+    <span class="quote-card-dot" aria-hidden="true">&middot;</span><span class="quote-card-when" title="{{ quoted.created_datetime }}">{{ quoted.age_string }}</span>
+    {% if not quoted.is_profile_post %}<span class="quote-card-dot" aria-hidden="true">&middot;</span><span class="quote-card-where">+{{ quoted.board.name }}</span>{% endif %}
+  </div>
+  <div class="quote-card-text"><span class="quote-card-title">{{ quoted.title | safe }}</span>{% if quoted.body_html %}
+    <span class="quote-card-body">{{ quoted.body_html | striptags | truncate(2000 if full else 400, False, "…", 0) }}</span>{% endif %}</div>
+  {% if quoted.is_sensitive %}
+  <div class="quote-card-foot"><span><i class="fas fa-eye-slash" aria-hidden="true"></i> Sensitive content</span></div>
+  {% elif quoted.preview_image_url or quoted.is_image %}
+  <img class="quote-card-media" src="{{ quoted.url if quoted.is_image else quoted.preview_image_url }}" alt="" loading="lazy" onerror="hideBrokenMedia(this)">
+  {% endif %}
+  {% if q.quoting %}<div class="quote-card-foot"><span><i class="fas fa-quote-left" aria-hidden="true"></i> {{ q.quoting }}</span></div>{% endif %}
+</div>
+{% endif %}
+{% endmacro %}

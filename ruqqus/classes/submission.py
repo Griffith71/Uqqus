@@ -829,8 +829,8 @@ class Submission(Base, Stndrd, Age_times, Scores, Fuzzing):
         or an allowlisted oEmbed provider discovered generically),
         'iframe_untrusted' (bare iframe src scraped from an arbitrary
         page's own og:video tag - render with a strict sandbox), 'widget'
-        (a trusted first-party script/card snippet - X, Instagram, TikTok -
-        rendered via site_embeds/widget.html, not autoplayed), or None (no
+        (a social site's post: its oEmbed snippet, never drawn, read into a
+        quote card by helpers/quote_cards.py), or None (no
         embed at all, or a domain with a manually-configured legacy
         Domain.embed_template not covered by either system above).
         """

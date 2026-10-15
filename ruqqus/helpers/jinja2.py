@@ -34,12 +34,42 @@ def ratio_class_global(ups, downs):
     return ratio_class(ups, downs)
 
 
-@app.template_global("widget_script")
-def widget_script(url, snippet):
-    """The official script a saved social-post snippet needs on the post page (helpers/social_embeds.py SITES), or
-    None when it already loads one. Only ever an address from that fixed list."""
-    from ruqqus.helpers.social_embeds import script_for
-    return script_for(url, snippet)
+@app.template_global("quote_of")
+def quote_of(p, v):
+    """What a post quotes, for its quote card (helpers/quote_cards.py, partials/quote_card.html): a social site's post
+    ({"kind": "social", ...}), a post on this site drawn for this reader ({"kind": "post", "post", "notice"}), or None."""
+    from jinja2 import Undefined
+    from ruqqus.helpers import quote_cards
+
+    v = None if isinstance(v, Undefined) else v
+    url = getattr(p, "url", None)
+    if not url or getattr(p, "is_image", False):
+        return None
+    quoted = quote_cards.quoted_post_id(url, app.config["SERVER_NAME"], app.config.get("SHORT_DOMAIN"))
+    if quoted:
+        return None if quoted == p.base36id else _post_quote(quoted, v)
+    return quote_cards.social_card(url, p.embed_url or "", p.meta_title or "", p.meta_description or "", bool(p.has_thumb))
+
+
+def _post_quote(b36, v):
+    """A post on this site as this reader may see it, asked once per request: the rules of opening it
+    (quote_cards.post_notice). A post the reader may not see at all (a Circle, a private guild) is only "not available"."""
+    from ruqqus.helpers import quote_cards
+    from ruqqus.helpers.muting import is_muted
+    from ruqqus.helpers.visibility import post_hidden
+
+    cache = g.__dict__.setdefault("_quote_posts", {})
+    key = (b36, v.id if v else None)
+    if key not in cache:
+        post = get_post(b36, v=v, graceful=True)
+        missing = post is None or post.in_private_guild_for(v)
+        notice = quote_cards.UNAVAILABLE if missing else quote_cards.post_notice(
+            missing=False, deleted=bool(post.deleted_utc), removed=bool(post.is_banned or post.board.is_banned),
+            filtered=post_hidden(post, v), blocked=bool(v and post.author_id != v.id and v.any_block_exists(post.author)),
+            muted=is_muted(post, v), anonymous=bool(post.is_anonymous))
+        cache[key] = {"kind": "post", "post": None if notice else post, "notice": notice,
+                      "quoting": "" if notice else quote_cards.quoting_line(post.url, app.config["SERVER_NAME"], app.config.get("SHORT_DOMAIN"))}
+    return cache[key]
 
 
 @app.template_global("may_share")
@@ -182,24 +212,6 @@ def app_config(x):
 def urlencode(s):
     return quote_plus(s)
 
-
-@app.template_filter("post_embed")
-def post_link_embed(url):
-
-    matches = re.match(post_regex, url)
-
-    b36id = matches.group(1)
-
-    p = get_post(b36id, v=g.v, graceful=True)
-
-    if not p or p.is_deleted or p.is_banned or not p.is_public:
-        return ""
-
-    return render_template(
-        "submission_listing.html",
-        listing=[p],
-        v=g.v
-        )
 
 # @app.template_filter("general_chat_count")
 # def general_chat_count(x):

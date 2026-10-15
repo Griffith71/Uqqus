@@ -4,6 +4,7 @@
 {% from "partials/community_note.html" import community_note %}
 {% from "partials/poll.html" import poll_block %}
 {% from "partials/coauthors.html" import coauthor_line %}
+{% from "partials/quote_card.html" import quote_card %}
 
 {% set ups=p.upvotes_fuzzed %}
 {% set downs=p.downvotes_fuzzed %}
@@ -446,7 +447,8 @@
           {{ post_options.disclosure_row(p, v) }}
           {% endif %}
 
-          {% if p.is_image or (p.url and not p.embed_url and not p.links_to_post) %}
+          {% set quote = quote_of(p, v) %}
+          {% if p.is_image or (p.url and not quote and (not p.embed_url or p.embed_kind == 'widget')) %}
           <div class="position-relative{% if p.is_sensitive %} sensitive-content-wrap{% endif %}" id="sensitive-media-{{ p.base36id }}">
             <div class="{% if p.is_sensitive %}sensitive-blur{% endif %}">
 
@@ -522,11 +524,25 @@
             {{ p.body_html | safe }}
             {% endif %}
 
+            {% if quote %}
+            {# what the post quotes, right under the member's own words (helpers/quote_cards.py) #}
+            <div class="position-relative{% if p.is_sensitive %} sensitive-content-wrap{% endif %}" id="sensitive-quote-{{ p.base36id }}">
+              <div class="{% if p.is_sensitive %}sensitive-blur{% endif %}">{{ quote_card(quote, p, v, true) }}</div>
+              {% if p.is_sensitive %}
+              <div class="sensitive-overlay" onclick="revealSensitive('sensitive-quote-{{ p.base36id }}')">
+                <i class="fas fa-eye-slash"></i>
+                <span class="text-small font-weight-bold">Sensitive Content</span>
+                <span class="btn btn-sm btn-light">View anyway</span>
+              </div>
+              {% endif %}
+            </div>
+            {% endif %}
+
             {{ community_note(p) }}
 
             {{ poll_block(p, v) }}
 
-            {% if p.embed_kind %}
+            {% if p.embed_kind and p.embed_kind != 'widget' %}
             <div class="position-relative{% if p.is_sensitive %} sensitive-content-wrap{% endif %}" id="sensitive-embed-{{ p.base36id }}">
               <div class="{% if p.is_sensitive %}sensitive-blur{% endif %}">
                 {% if p.embed_kind == 'video' %}
@@ -542,8 +558,6 @@
                   <iframe src="{{ p.embed_url }}{{ '&' if '?' in p.embed_url else '?' }}autoplay=1&mute=1" frameborder="0" referrerpolicy="strict-origin-when-cross-origin" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" {% if p.embed_kind == 'iframe_untrusted' %}sandbox="allow-scripts"{% endif %} allowfullscreen></iframe>
                   {% endif %}
                 </div>
-                {% elif p.embed_kind == 'widget' %}
-                {% include 'site_embeds/widget.html' %}
                 {% endif %}
               </div>
               {% if p.is_sensitive %}
@@ -554,7 +568,7 @@
               </div>
               {% endif %}
             </div>
-            {% elif p.embed_url and p.domain_obj and p.domain_obj.embed_template %}
+            {% elif p.embed_url and p.domain_obj and p.domain_obj.embed_template and not quote %}
               {% include p.embed_template %}
             {% endif %}
 
@@ -646,17 +660,6 @@
           <script src="{{ asset_url('js/post_editor.js') }}"></script>
           {% endif %}
 
-          {% if p.links_to_post %}
-          <div id="post-link-embed">
-            <div class="row no-gutters">
-              <div id="frontpage" class="col-12 pt-0">
-                <div class="posts" id="posts">
-                  {{ p.url | post_embed | safe }}
-                </div>
-              </div>
-            </div>
-          </div>
-          {% endif %}
 
             <div class="d-none d-md-flex justify-content-between align-items-center mt-2">
               <div class="post-actions mt-2 flex-grow-1">

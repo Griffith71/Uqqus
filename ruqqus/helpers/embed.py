@@ -98,8 +98,8 @@ def instagram_embed(url):
 
 
 # The social sites (helpers/social_embeds.py has the rules). Each answers (snippet, thumbnail, card): the site's own
-# oEmbed snippet for the post page, a preview picture when the site gives one, and the (title, text) of the feed's
-# link-preview card. Each calls one fixed, first-party API host, as twitter_embed and instagram_embed always did.
+# oEmbed snippet (saved, never drawn: helpers/quote_cards.py reads it into the quote card), a preview picture when the
+# site gives one, and the (title, text) of the link-preview fields the card falls back to. Each calls one fixed, first-party API host, as twitter_embed and instagram_embed always did.
 # twitter_embed / instagram_embed above stay as they were: the old per-domain Domain.embed_function path calls them
 # by name and wants a plain string.
 def _oembed(endpoint, url, params=None, headers=None):
@@ -112,8 +112,8 @@ def _oembed(endpoint, url, params=None, headers=None):
 
 
 def x_oembed(url):
-    # with X's widgets.js in the snippet this time (omit_script made posts render as a plain quote)
-    return _oembed("https://publish.twitter.com/oembed", url, {"dnt": "true"})
+    # the snippet is only read (helpers/quote_cards.py), so X's script is left out of it
+    return _oembed("https://publish.twitter.com/oembed", url, {"dnt": "true", "omit_script": "true"})
 
 
 def instagram_oembed(url):
@@ -150,15 +150,17 @@ def tumblr_oembed(url):
 
 
 def threads_embed(url):
-    # Threads' own markup, built from the link (no API); its embed.js turns it into the card
+    # Threads has no oEmbed service: its own markup, built from the link, is saved and the card comes from the link
     snippet = social_embeds.threads_snippet(url)
     return (snippet, None, social_embeds.threads_card(url)) if snippet else None
 
 
 def mastodon_embed(url):
-    """A post on any Mastodon server, as a sandboxed frame of that server's own embed page. The server is whatever the
-    member linked, so its oEmbed is fetched through safe_fetch (public addresses only, small, quick), and nothing of its
-    answer is drawn but a checked address (social_embeds.mastodon_iframe_ok) in a frame we write."""
+    """A post on any Mastodon server, saved as a quote (social_embeds.mastodon_quote_snippet, read by
+    helpers/quote_cards.py). The server is whatever the member linked, so both of its answers are fetched through
+    safe_fetch (public addresses only, small, quick): its oEmbed says it is a Mastodon post with its own embed page on the
+    same server (social_embeds.mastodon_iframe_ok), and its public API (`/api/v1/statuses/<id>`) gives the text, the
+    author and the date. Nothing of either answer is drawn as HTML."""
     from ruqqus.helpers import safe_fetch
 
     found = social_embeds.mastodon_post(url)
@@ -174,8 +176,22 @@ def mastodon_embed(url):
     src = social_embeds.mastodon_embed_src(data.get("html") or "")
     if not src or not social_embeds.mastodon_iframe_ok(src, host):
         return None
-    title = f"{social_embeds._plain(data.get('author_name'), 120)} on Mastodon" if data.get("author_name") else "Post on Mastodon"
-    return social_embeds.mastodon_snippet(src), None, (title, "")
+    name = social_embeds._plain(data.get("author_name"), 120)
+    handle, when, text, media = "", "", "", False
+    status_id = social_embeds.mastodon_status_id(url)
+    try:
+        status = safe_fetch.get_json(f"https://{host}/api/v1/statuses/{status_id}") if status_id else None
+    except Exception:
+        status = None
+    if isinstance(status, dict):
+        account = status.get("account") if isinstance(status.get("account"), dict) else {}
+        name = social_embeds._plain(account.get("display_name"), 120) or name
+        handle = social_embeds.mastodon_handle(account.get("acct"), host)
+        when = str(status.get("created_at") or "")[:40]
+        text = social_embeds.mastodon_text(status.get("content"))
+        media = bool(status.get("media_attachments"))
+    title = f"{name} on Mastodon" if name else "Post on Mastodon"
+    return social_embeds.mastodon_quote_snippet(src, name, handle, when, text, media), None, (title, text[:1000])
 
 
 def rumble_embed(url):
@@ -283,10 +299,9 @@ def bilibili_embed(url):
 #
 # embed_type "iframe": participates in the feed/single-post muted-autoplay
 # video pipeline, same as the generic detector's "iframe"/"video" results.
-# embed_type "widget": a trusted first-party script/card snippet (same
-# trust model as twitter_embed/instagram_embed already had - a fixed,
-# hardcoded API host, not something the submitted page gets to redirect),
-# rendered via site_embeds/widget.html, not autoplayed.
+# embed_type "widget": a social site's post, its oEmbed snippet from a fixed,
+# hardcoded API host (not something the submitted page gets to redirect). The
+# snippet is never drawn: helpers/quote_cards.py reads it into a quote card.
 KNOWN_PROVIDER_HANDLERS = {
     "youtube.com": ("iframe", youtube_embed),
     "youtu.be": ("iframe", youtube_embed),
@@ -431,10 +446,9 @@ def detect_video_embed(url, response, soup):
       "iframe_untrusted" - a bare iframe src scraped from the submitted
                             page's own og:video tag - fully attacker-
                             controlled, render with a strict sandbox
-      "widget"           - a trusted first-party script/card snippet (X,
-                            Instagram, TikTok) - not part of the video-
-                            autoplay pipeline, rendered via
-                            site_embeds/widget.html instead
+      "widget"           - a social site's post (X, Instagram, TikTok...): its
+                            oEmbed snippet, never drawn, read into a quote
+                            card (helpers/quote_cards.py)
     or (None, None, None) if nothing could be detected.
     """
     known_type, known_src, known_thumbnail, _card = known_provider_embed(url)

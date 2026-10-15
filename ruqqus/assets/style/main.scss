@@ -7129,6 +7129,177 @@ a.studio-card:focus-visible {
     background: $primary;
 }
 
+// Quote cards (partials/quote_card.html, helpers/quote_cards.py): what a post quotes, drawn as X draws a quoted post.
+// The site's own font at the size of the member's own words: the title in a feed card (16px, 14px on a phone), the body
+// text on the post page (14px); the name, the handle and the date the same size as the text, as on X.
+$quote-hover: rgba(0, 0, 0, 0.03);
+
+.quote-card {
+    position: relative;
+    z-index: 3;                          // above the feed card's stretched link: a click opens what is quoted
+    margin: 0.5rem 0 0.75rem;
+    padding: 0.75rem 0.875rem;
+    color: $black;
+    font-size: 16px;
+    line-height: 1.4;
+    border: 1px solid $border-color;
+    border-radius: 14px;
+}
+
+.quote-card-full {
+    font-size: 14px;
+    line-height: 21px;
+}
+
+.quote-card-cover {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 1;
+    border-radius: inherit;
+}
+
+.quote-card-cover:focus-visible {
+    outline: 2px solid $primary;
+    outline-offset: 2px;
+}
+
+.quote-card-head {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    min-width: 0;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.quote-card-name {
+    min-width: 0;
+    overflow: hidden;
+    font-weight: 700;
+    text-overflow: ellipsis;
+}
+
+.quote-card-handle,
+.quote-card-when,
+.quote-card-where,
+.quote-card-dot,
+.quote-card-head .user-handle {
+    color: $muted;
+}
+
+.quote-card-handle {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.quote-card-head .user-handle {
+    margin-left: 0 !important;
+}
+
+.quote-card-mark,
+.quote-card-avatar {
+    flex: none;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+}
+
+.quote-card-mark {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 800;
+    color: $white;
+    background: $black;
+}
+
+.quote-card-avatar {
+    object-fit: cover;
+}
+
+.quote-card-text {
+    display: -webkit-box;
+    margin-top: 0.2rem;
+    overflow: hidden;
+    white-space: pre-line;
+    overflow-wrap: anywhere;
+    -webkit-line-clamp: 6;
+    -webkit-box-orient: vertical;
+}
+
+.quote-card-full .quote-card-text {
+    display: block;
+    -webkit-line-clamp: unset;
+}
+
+.quote-card-text a,
+.quote-card-foot a {
+    position: relative;
+    z-index: 2;                          // a link in the text opens itself, not the card
+    color: $primary;
+}
+
+.quote-card-title {
+    font-weight: 600;
+}
+
+.quote-card-body {
+    display: block;
+}
+
+.quote-card-media {
+    display: block;
+    width: 100%;
+    max-height: 280px;
+    aspect-ratio: 1.91;                  // a link preview's shape: its room is kept while it loads
+    margin-top: 0.5rem;
+    object-fit: cover;
+    border: 1px solid $border-color;
+    border-radius: 10px;
+}
+
+.quote-card-foot {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+    margin-top: 0.45rem;
+    font-size: 0.8125em;
+    color: $muted;
+}
+
+.quote-card-open {
+    white-space: nowrap;
+}
+
+.quote-card-notice {
+    font-size: 14px;
+    color: $muted;
+    background: $quote-hover;
+}
+
+@media (hover: hover) {
+    .quote-card:not(.quote-card-notice):hover {
+        background: $quote-hover;
+    }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+    .quote-card {
+        transition: background-color 0.15s ease-out;
+    }
+}
+
+@media (max-width: 767.98px) {
+    .quote-card {
+        font-size: 14px;
+    }
+}
+
 // Create post card (templates/submit.html, assets/js/composer_card.js). The look of a social composer
 // (x.com's header and attach row, reddit's large borderless title), on this site's own tokens.
 // One radius scale: 16px card, 12px fields, full pills for controls. Motion is feedback only: transform and

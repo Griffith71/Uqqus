@@ -69,8 +69,8 @@ def thumbnail_thread(pid, debug=False):
             post.submission_aux.embed_type = known_type
             if known_thumb:
                 post.submission_aux.preview_image_url = known_thumb
-            # a social post's feed card ("Elon Musk on X" and its text): these sites send no preview to the page
-            # fetcher below, and the feed shows no live widgets (helpers/social_embeds.py)
+            # a social post's preview fields ("Elon Musk on X" and its text): these sites send no preview to the page
+            # fetcher below, and the quote card falls back to them (helpers/quote_cards.py)
             if known_card:
                 card_title, card_text = known_card
                 if card_title:

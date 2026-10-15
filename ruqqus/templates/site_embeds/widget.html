@@ -1,6 +1,0 @@
-{# A social post's own widget (helpers/embed.py KNOWN_PROVIDER_HANDLERS "widget"): the snippet its site's oEmbed
-   service returned (a fixed, first-party API host) or, for Threads and Mastodon, markup we built from a checked link.
-   Some snippets come without their site's script (X and Instagram posts saved before it was asked for): widget_script
-   adds the one official script for the post's site (helpers/social_embeds.py SITES), never anything else. #}
-{{ p.embed_url | safe }}
-{% set needed = widget_script(p.url, p.embed_url) %}{% if needed %}<script async src="{{ needed }}" charset="utf-8"></script>{% endif %}

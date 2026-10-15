@@ -1,16 +1,14 @@
-"""Posts from the major social sites, drawn on this site: which site a link is, the official script its card needs, the
-card a feed shows for it, and the rules for the sites that are not one fixed host (Mastodon). Pure: no I/O; the calls to
-each site's own oEmbed service are in helpers/embed.py (tests/test_social_embeds.py).
+"""Posts from the major social sites: which site a link is, what the site is called, and the rules for the sites that
+are not one fixed host (Mastodon). Pure: no I/O; the calls to each site's own oEmbed service are in helpers/embed.py,
+and the quote card a post shows is made by helpers/quote_cards.py (tests/test_social_embeds.py).
 
-* The post page shows the site's own widget: the snippet its oEmbed service returns, upgraded by that site's official
-  script. Some snippets come without it (X and Instagram are asked for it now, but posts saved before were not), so the
-  widget template adds the one script on this fixed list for the post's site (`script_for`), never anything else.
-* A feed shows no live widgets (dozens of scripts in a scrolling page): a widget post gets the ordinary link-preview
-  card, made from the oEmbed answer when the post is saved (`card_from_oembed`: "Elon Musk on X" and the post's text),
-  because these sites send no preview to the site's own page fetcher.
+* No page loads a site's script, frame or widget: the oEmbed snippet is saved and read into a quote card in this site's
+  own font. `card_from_oembed` also gives the link-preview fields (`meta_title` "Elon Musk on X", `meta_description`
+  the post's own words), which the card falls back to.
 * Mastodon is any server, so it is never trusted like a fixed host: only a link shaped like a Mastodon post
-  (`mastodon_post`), its oEmbed fetched through helpers/safe_fetch.py, and only that server's own `/embed` page kept
-  (`mastodon_iframe_ok`), drawn in a sandboxed frame we write ourselves (`mastodon_snippet`).
+  (`mastodon_post`), its oEmbed and its public API fetched through helpers/safe_fetch.py, only that server's own
+  `/embed` page accepted as proof (`mastodon_iframe_ok`), and what is saved built and escaped by us
+  (`mastodon_quote_snippet`).
 """
 import html
 import re
@@ -18,25 +16,26 @@ from urllib.parse import parse_qs, urlsplit
 
 CARD_TEXT_MAX = 300
 
-# site -> (what it is called, the official script that turns its snippet into a card)
+# site -> what it is called
 SITES = {
-    "x.com": ("X", "https://platform.twitter.com/widgets.js"),
-    "twitter.com": ("X", "https://platform.twitter.com/widgets.js"),
-    "instagram.com": ("Instagram", "https://www.instagram.com/embed.js"),
-    "facebook.com": ("Facebook", "https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v21.0"),
-    "tiktok.com": ("TikTok", "https://www.tiktok.com/embed.js"),
-    "reddit.com": ("Reddit", "https://embed.reddit.com/widgets.js"),
-    "redd.it": ("Reddit", "https://embed.reddit.com/widgets.js"),
-    "bsky.app": ("Bluesky", "https://embed.bsky.app/static/embed.js"),
-    "threads.net": ("Threads", "https://www.threads.com/embed.js"),
-    "threads.com": ("Threads", "https://www.threads.com/embed.js"),
-    "pinterest.com": ("Pinterest", "https://assets.pinterest.com/js/pinit.js"),
-    "tumblr.com": ("Tumblr", "https://assets.tumblr.com/post.js"),
+    "x.com": "X",
+    "twitter.com": "X",
+    "instagram.com": "Instagram",
+    "facebook.com": "Facebook",
+    "tiktok.com": "TikTok",
+    "reddit.com": "Reddit",
+    "redd.it": "Reddit",
+    "bsky.app": "Bluesky",
+    "threads.net": "Threads",
+    "threads.com": "Threads",
+    "pinterest.com": "Pinterest",
+    "tumblr.com": "Tumblr",
 }
 
 _SPACE = re.compile(r"\s+")
 _YOUTUBE_ID = re.compile(r"^[A-Za-z0-9_-]{6,20}$")
 _MASTODON_PATH = re.compile(r"^/@([A-Za-z0-9_]{1,30})(?:@[A-Za-z0-9.-]{1,253})?/(\d{1,25})/?$")
+_PARAGRAPH_BREAK = chr(10) * 2
 _THREADS_PATH = re.compile(r"^/@([A-Za-z0-9._]{1,30})/post/([A-Za-z0-9_-]{5,40})/?$")
 
 
@@ -58,16 +57,7 @@ def site_of(url):
 
 def label_of(url):
     site = site_of(url)
-    return SITES[site][0] if site else ""
-
-
-def script_for(url, snippet):
-    """The official script a saved widget snippet needs on the post page, or None when the snippet already loads one
-    (Facebook's and TikTok's do) or the link is not one of SITES."""
-    site = site_of(url)
-    if not site or "<script" in str(snippet or "").lower():
-        return None
-    return SITES[site][1]
+    return SITES[site] if site else ""
 
 
 def _plain(text, limit=CARD_TEXT_MAX):
@@ -137,6 +127,50 @@ def mastodon_post(url):
     return host, f"https://{host}/api/oembed"
 
 
+def mastodon_status_id(url):
+    """The id of the post in a Mastodon post link (`/@user/<id>`), for that server's public API, or None."""
+    match = _MASTODON_PATH.match(urlsplit(str(url or "")).path)
+    return match.group(2) if match else None
+
+
+def mastodon_text(content):
+    """A Mastodon post's text from the HTML its API answers: paragraphs kept apart, line breaks kept, tags gone."""
+    try:
+        from bs4 import BeautifulSoup
+        soup = BeautifulSoup(str(content or ""), "html.parser")
+    except Exception:
+        return ""
+    for br in soup.find_all("br"):
+        br.replace_with(chr(10))
+    paragraphs = [p.get_text() for p in soup.find_all("p")] or [soup.get_text()]
+    return _PARAGRAPH_BREAK.join(part.strip() for part in paragraphs if part.strip())[:2000]
+
+
+_ACCT = re.compile(r"^[A-Za-z0-9_]{1,30}(?:@[A-Za-z0-9.-]{1,253})?$")
+
+
+def mastodon_handle(acct, host):
+    """"@user@host" from an account's `acct` (local accounts have no host in it), or "" for anything unexpected."""
+    acct = str(acct or "")
+    if not _ACCT.match(acct):
+        return ""
+    return "@" + acct if "@" in acct else "@" + acct + "@" + host
+
+
+def mastodon_quote_snippet(src, name, handle, when, text, media):
+    """What is saved for a Mastodon post: the quote's own shape (as X and Bluesky send theirs: the text, then
+    "- Name (@handle) date"), built from the server's public API answer and escaped throughout. helpers/quote_cards.py
+    reads it; nothing draws it as HTML."""
+    def escape(value):
+        return html.escape(str(value or ""), quote=True)
+
+    paragraphs = [part for part in str(text or "").split(_PARAGRAPH_BREAK) if part.strip()]
+    body = "".join("<p>" + escape(part) + "</p>" for part in paragraphs) or "<p></p>"
+    media_attr = ' data-media="1"' if media else ""
+    return ('<blockquote class="mastodon-embed" data-embed-url="' + escape(src) + '"' + media_attr + '>' + body
+            + "&mdash; " + escape(name) + " (" + escape(handle) + ') <a href="' + escape(src) + '">' + escape(when) + "</a></blockquote>")
+
+
 def mastodon_iframe_ok(src, host):
     """Is `src` the post's own embed page on the same Mastodon server? Nothing else from that server's answer is kept."""
     parts = urlsplit(str(src or ""))
@@ -165,16 +199,10 @@ def default_card(url):
     return (f"Post on {label}", "") if label else ("", "")
 
 
-def mastodon_snippet(src):
-    """The frame we draw for a Mastodon post (never the server's own markup or script): sandboxed, its address escaped."""
-    return (f'<iframe src="{html.escape(src, quote=True)}" class="mastodon-embed" width="400" height="420" '
-            'style="max-width: 100%; border: 0" loading="lazy" referrerpolicy="no-referrer" '
-            'sandbox="allow-scripts allow-popups allow-popups-to-escape-sandbox" title="Mastodon post"></iframe>')
-
-
 def threads_snippet(url):
-    """Threads' own embed markup for a post link (a blockquote its embed.js turns into the card), or None. Built from
-    the link alone; the only thing taken from it is the escaped address."""
+    """What is saved for a Threads post (Threads has no oEmbed service): its own embed markup for the link, or None.
+    Built from the link alone; the only thing taken from it is the escaped address. Never drawn: the quote card is
+    made from `threads_card`."""
     parts = urlsplit(str(url or ""))
     if site_of(url) not in ("threads.net", "threads.com") or not _THREADS_PATH.match(parts.path):
         return None

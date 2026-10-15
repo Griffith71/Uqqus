@@ -4,6 +4,7 @@
 {% from "partials/community_note.html" import community_note %}
 {% from "partials/poll.html" import poll_block %}
 {% from "partials/coauthors.html" import coauthor_line %}
+{% from "partials/quote_card.html" import quote_card %}
 {% for p in listing %}
 
 {% set ups=p.upvotes_fuzzed %}
@@ -91,11 +92,16 @@
       {{ post_options.disclosure_row(p, v) }}
 
 
-      {% if p.is_image or p.embed_url or (p.url and not p.links_to_post) %}
+      {% set quote = quote_of(p, v) %}
+      {% if quote or p.is_image or p.embed_url or (p.url and not p.links_to_post) %}
       <div class="position-relative{% if p.is_sensitive %} sensitive-content-wrap{% endif %}" style="z-index: 3;" id="sensitive-media-{{ p.base36id }}">
         <div class="{% if p.is_sensitive %}sensitive-blur{% endif %}">
 
-        {% if p.is_image %}
+        {% if quote %}
+        {# a post on a social site or on this site, quoted as X quotes a post (helpers/quote_cards.py) #}
+        {{ quote_card(quote, p, v) }}
+
+        {% elif p.is_image %}
         <div class="post-media-frame mb-2">
           <div class="post-img-lg">
             <a href="javascript:void(0)" rel="nofollow noopener" class="expandable-image" data-toggle="modal" data-target="#expandImageModal" data-url="{{ p.url }}">
@@ -122,8 +128,8 @@
         </div>
 
         {% elif p.embed_url and p.embed_kind != 'widget' %}
-        {# a social post ('widget': X, Instagram, Bluesky...) falls through to the link-preview card below, made from
-           its oEmbed answer ("Elon Musk on X" and its text): no live widget per card, and no empty play box #}
+        {# a social link that is not a post there (a profile, a feed: 'widget' with no quote card) falls through to the
+           link-preview card below #}
         <a href="{{ p.permalink }}" rel="{% if author_of(p, v).is_private %}nofollow {% endif %}noopener" class="embed-lg mb-3 d-block">
           {% if p.preview_image_url %}<img src="{{ p.preview_image_url }}" alt="video preview" loading="lazy" onerror="hideBrokenMedia(this)">{% endif %}
           <div class="embed-lg-play"><i class="fas fa-play-circle"></i></div>
