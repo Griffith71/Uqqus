@@ -95,6 +95,13 @@
           </div>
         </div>
         <div class="d-lg-flex border-top">
+          <div class="title w-lg-25"><label for="bot-display-name">Display name</label></div>
+          <div class="body w-lg-100">
+            <input type="text" class="form-control" id="bot-display-name" name="display_name" maxlength="50" autocomplete="off" placeholder="BBC Top Stories">
+            <span class="d-block mt-1 text-small-extra text-muted">Optional. How its name reads, with the @name beside it. Not the source's own name on its own: say where the posts come from in the bio.</span>
+          </div>
+        </div>
+        <div class="d-lg-flex border-top">
           <div class="title w-lg-25"><label for="bot-purpose">What it posts</label></div>
           <div class="body w-lg-100">
             <textarea class="form-control" id="bot-purpose" name="purpose" rows="3" maxlength="{{ rules.PURPOSE_MAX }}" required

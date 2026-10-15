@@ -53,7 +53,8 @@
     avatar.width = avatar.height = 28;
     if (typeof person.avatar === 'string' && /^(https?:\/\/|\/)/.test(person.avatar)) avatar.src = person.avatar;
     link.appendChild(avatar);
-    link.appendChild(make('span', 'voters-name', '@' + person.username));
+    link.appendChild(make('span', 'voters-name', person.display_name ? person.display_name : '@' + person.username));
+    if (person.display_name) link.appendChild(make('span', 'voters-handle text-muted ml-1', '@' + person.username));
     return link;
   }
 

@@ -3198,6 +3198,12 @@ a.bg-dark:hover, a.bg-dark:focus, button.bg-dark:hover, button.bg-dark:focus {
     color: inherit;
 }
 
+// the @handle after a display name in a byline (helpers/jinja2.py handle_tag): quieter than the name, never bold
+.user-name .user-handle {
+    font-weight: $font-weight-normal;
+    font-size: 0.9em;
+}
+
 .banner-pic-135 {
     object-fit: cover;
     height: 135px;

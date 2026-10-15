@@ -147,7 +147,13 @@
     if (typeof target.profile_url === 'string' && /^(https?:\/\/|\/)/.test(target.profile_url)) avatar.src = target.profile_url;
     var name = document.createElement('div');
     name.className = 'flex-grow-1 text-truncate font-weight-bold';
-    name.textContent = '@' + target.username;
+    name.textContent = target.display_name ? target.display_name : '@' + target.username;
+    if (target.display_name) {
+      var handle = document.createElement('span');
+      handle.className = 'text-muted font-weight-normal ml-1';
+      handle.textContent = '@' + target.username;
+      name.appendChild(handle);
+    }
     var button = document.createElement('button');
     button.type = 'button';
     button.className = 'btn btn-primary btn-sm ml-2';

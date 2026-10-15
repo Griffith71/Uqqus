@@ -69,7 +69,7 @@ def _stories(rows, viewer, now):
 
 
 def _user(owner):
-    return {"username": owner.username, "avatar": owner.profile_url, "permalink": owner.permalink}
+    return {"username": owner.username, "display_name": owner.display_name or "", "avatar": owner.profile_url, "permalink": owner.permalink}
 
 
 # ------------------------------------------------------------------ watching

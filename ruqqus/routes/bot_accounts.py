@@ -18,7 +18,7 @@ from flask import abort, g, make_response, redirect, render_template, request
 from urllib.parse import quote
 
 from ruqqus.classes import ClientAuth, OauthApp, User
-from ruqqus.helpers import bot_store, bots, feed_fetch, feed_items
+from ruqqus.helpers import bot_store, bots, display_name_store, display_names, feed_fetch, feed_items
 from ruqqus.helpers.alerts import send_notification
 from ruqqus.helpers.aws import check_csam_url
 from ruqqus.helpers.get import get_user
@@ -120,6 +120,18 @@ def _set_picture(account, file, which, v):
     return True
 
 
+def _display_name(raw, account_id):
+    """(display name, error) for what a member typed for a bot: the same rules as for a member
+    (helpers/display_names.py), including never being another account's @handle."""
+    try:
+        name = display_names.clean(raw)
+    except display_names.Refused as refused:
+        return "", str(refused)
+    if name and display_name_store.takes_a_handle(g.db, account_id, name):
+        return "", "That is another account's username, so it can't be a display name."
+    return name, None
+
+
 def _set_bio(account, raw):
     """Plain text, no links, so a bot's profile can't be used for link spam."""
     bio = bots.plain_text(raw, bots.BIO_MAX)
@@ -152,7 +164,8 @@ def settings_bots_apply(v):
     kind = bots.parse_kind(request.form.get("kind"))
     name, error = bots.parse_username(request.form.get("username"))
     purpose, purpose_error = bots.parse_purpose(request.form.get("purpose"))
-    error = error or purpose_error
+    display, display_error = _display_name(request.form.get("display_name"), None)
+    error = error or purpose_error or display_error
     if not error and get_user(name, graceful=True):
         error = "That name is taken."
     lines = [line for line in (request.form.get("sources") or "").splitlines() if line.strip()]
@@ -182,7 +195,7 @@ def settings_bots_apply(v):
         return _back("/settings/bots", error=error)
 
     member = kind == bots.MEMBER
-    account = User(username=name, original_username=name, passhash=bots.UNUSABLE_PASSWORD, tos_agreed_utc=now,
+    account = User(username=name, original_username=name, display_name=display, passhash=bots.UNUSABLE_PASSWORD, tos_agreed_utc=now,
                    is_bot=True, bot_owner_id=v.id if member else None, creation_ip=None,
                    following_visibility=0, followers_visibility=0, subscribers_visibility=0, subscriptions_visibility=0)
     _set_bio(account, request.form.get("bio"))
@@ -243,6 +256,8 @@ def settings_bot(name, v):
 def settings_bot_profile(name, v):
     account, row, admin = _manageable(name, v)
     guilds, error = _guild_names(request.form.get("forward_guilds"), v)
+    if not error and request.form.get("display_name") is not None:
+        account.display_name, error = _display_name(request.form.get("display_name"), account.id)
     if error:
         return _back(_page(account), error=error)
     _set_bio(account, request.form.get("bio"))

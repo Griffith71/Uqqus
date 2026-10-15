@@ -87,7 +87,9 @@ def name_severity(name, db=None):
 def apply_user_severity(user, db=None):
     from ruqqus.helpers.profile_details import rated_text
     f = get_filter(db)
-    user.name_severity = name_severity(user.username, db)
+    # the display name has spaces (it is plain text, not a handle), so it is rated as text; it hides the account the
+    # same way a rude username does
+    user.name_severity = max(name_severity(user.username, db), f.severity(getattr(user, "display_name", "") or ""))
     # the job and location on the profile header are rated with the bio, and hidden with it (User.details_for)
     extra = rated_text(getattr(user, "profile_job", "") or "", getattr(user, "profile_location", "") or "")
     user.bio_severity = max(f.severity_html(user.bio_html or ""), f.severity(extra) if extra else 0)

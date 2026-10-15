@@ -70,6 +70,34 @@ def settings_profile_post(v):
         updated = True
         v.auto_join_chat = request.values.get("join_chat", None) == 'true'
 
+    if request.values.get("display_name_form") is not None:
+        # the display name: free text, changed at any time, never an address (helpers/display_names.py)
+        from ruqqus.helpers import display_name_store, display_names
+        try:
+            new_name = display_names.clean(request.values.get("display_name", ""))
+        except display_names.Refused as refused:
+            message = str(refused)      # the except name is gone by the time the lambdas run
+            return {"html": lambda: render_template("settings_profile.html", v=v, error=message),
+                    "api": lambda: (jsonify({"error": message}), 400)}
+
+        if new_name:
+            # nobody can wear another account's @handle as a name (ignoring case, spaces, dots, dashes, underscores)
+            if display_name_store.takes_a_handle(g.db, v.id, new_name):
+                message = "That is another account's username, so it can't be your display name."
+                return {"html": lambda: render_template("settings_profile.html", v=v, error=message),
+                        "api": lambda: (jsonify({"error": message}), 400)}
+
+        if new_name == (v.display_name or ""):
+            return {"html": lambda: render_template("settings_profile.html", v=v, error="You didn't change anything"),
+                    "api": lambda: (jsonify({"error": "You didn't change anything"}), 400)}
+
+        v.display_name = new_name
+        apply_user_severity(v)
+        g.db.add(v)
+        done = "Your display name has been updated." if new_name else "Your display name has been removed."
+        return {"html": lambda: render_template("settings_profile.html", v=v, msg=done),
+                "api": lambda: jsonify({"message": done})}
+
     if request.values.get("details") is not None:
         # job, location and website on the profile header (helpers/profile_details.py)
         from markupsafe import escape
@@ -844,6 +872,27 @@ def settings_name_change(v):
                        v=v,
                        msg=f"Username changed successfully. 20 Coins have been deducted from your balance.")
 
+
+
+@app.route("/admin/display_name/clear", methods=["POST"])
+@admin_level_required(3)
+@validate_formkey
+def admin_clear_display_name(v):
+    """Take an abusive or impersonating display name off an account (its @handle shows again). Only an account
+    with a lower admin level than the admin's own: the same bar as banning (helpers/display_names.py)."""
+    from ruqqus.helpers.alerts import send_notification
+
+    target = get_user(request.form.get("username", ""), graceful=True)
+    if target is None or target.is_deleted or v.admin_level <= (target.admin_level or 0):
+        abort(404)
+    if target.display_name:
+        target.display_name = ""
+        apply_user_severity(target)
+        g.db.add(target)
+        g.db.commit()
+        send_notification(target, "An admin removed your display name because it broke the site's rules. "
+                                  "You can set a new one in Settings > Profile.")
+    return redirect(target.permalink)
 
 
 @app.route("/settings/badges", methods=["POST"])

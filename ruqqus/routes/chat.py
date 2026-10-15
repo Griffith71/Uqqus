@@ -225,7 +225,7 @@ def chat_share_targets(v):
             continue
         if convo.tab_for(v.id) != "inbox" or (q and q not in other.username.lower()):
             continue
-        out.append({"username": other.username, "profile_url": other.profile_url, "room_id": convo.matrix_room_id, "recent": True})
+        out.append({"username": other.username, "display_name": other.display_name or "", "profile_url": other.profile_url, "room_id": convo.matrix_room_id, "recent": True})
         seen.add(other.id)
         if len(out) >= SHARE_RECENT:
             break
@@ -236,7 +236,7 @@ def chat_share_targets(v):
         if q:
             people = people.filter(User.username.ilike("%" + q.replace("\\", "").replace("%", "\\%").replace("_", "\\_") + "%"))
         people = filter_users(people, v).order_by(User.username.asc()).limit(SHARE_TARGETS - len(out)).all()
-        out += [{"username": u.username, "profile_url": u.profile_url, "room_id": None, "recent": False} for u in people]
+        out += [{"username": u.username, "display_name": u.display_name or "", "profile_url": u.profile_url, "room_id": None, "recent": False} for u in people]
 
     return jsonify({"targets": out})
 

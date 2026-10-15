@@ -58,7 +58,8 @@ def test_every_element_the_script_uses_is_in_the_sheet():
 
 def test_names_and_messages_only_ever_go_in_as_text():
     assert "innerHTML" not in SCRIPT
-    assert "name.textContent = '@' + target.username" in SCRIPT
+    assert "name.textContent = target.display_name ? target.display_name : '@' + target.username" in SCRIPT
+    assert "handle.textContent = '@' + target.username" in SCRIPT
     assert "/^(https?:\\/\\/|\\/)/.test(target.profile_url)" in SCRIPT         # an avatar address is checked (http: local dev)
 
 

@@ -121,6 +121,7 @@ class User(Base, Stndrd, Age_times):
     profile_job = Column(String(60), default="")
     profile_location = Column(String(60), default="")
     profile_website = Column(String(200), default="")
+    display_name = Column(String(50), default="")      # free text, set in Settings > Profile (helpers/display_names.py)
     # who may open each list (helpers/follow_lists.py): 0 everyone, 1 followers, 2 only me (existing accounts: 2)
     following_visibility = Column(SmallInteger, default=2)
     followers_visibility = Column(SmallInteger, default=2)
@@ -1533,6 +1534,12 @@ class User(Base, Stndrd, Age_times):
         return self.bot_row.status if self.bot_row else None
 
     @property
+    def shown_name(self):
+        """The name to draw in a byline or a list: the display name when the member set one, else the @handle.
+        The @handle is what links, mentions and search use (helpers/display_names.py)."""
+        return self.display_name or self.username
+
+    @property
     def bot_kind(self):
         """site (run by the site, nobody's) or member (its member runs it), None for anyone else."""
         return self.bot_row.kind if self.bot_row else None
@@ -1582,6 +1589,7 @@ class User(Base, Stndrd, Age_times):
     @property
     def json_raw(self):
         data= {'username': self.username,
+                'display_name': self.display_name or '',
                 'permalink': self.permalink,
                 'is_banned': self.is_suspended,
                 'is_premium': self.has_premium_no_renew,

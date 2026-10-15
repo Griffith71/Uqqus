@@ -95,7 +95,7 @@
 
   <div class="profile-x-body">
     <div class="profile-x-names">
-      <h1 class="profile-x-name" id="profile-x-name">{{ u.username }}
+      <h1 class="profile-x-name" id="profile-x-name">{{ u.shown_name }}
         {% if u.admin_level > 1 %}<i class="fas fa-shield text-admin" data-toggle="tooltip" data-placement="bottom" title="Admin"></i>
         {% elif u.admin_level == 1 %}<i class="fas fa-shield text-muted" data-toggle="tooltip" data-placement="bottom" title="Former Admin"></i>{% endif %}
         {% if u.username != u.original_username %}<i class="fas fa-user-tag text-info" data-toggle="tooltip" data-placement="bottom" title="Original username: @{{ u.original_username }}"></i>{% endif %}

@@ -34,6 +34,18 @@ def ratio_class_global(ups, downs):
     return ratio_class(ups, downs)
 
 
+@app.template_global("handle_tag")
+def handle_tag(u):
+    """The @handle drawn muted after a display name in a byline or a list, as on x.com. Nothing for an account
+    with no display name (its handle is already the name) and for the anonymous stand-in. Hidden on a phone,
+    where a byline has no room for both (the profile always shows the handle)."""
+    from markupsafe import Markup, escape
+
+    if not getattr(u, "display_name", None) or not getattr(u, "username", None):
+        return ""
+    return Markup('<span class="user-handle text-muted ml-1 d-none d-sm-inline">@%s</span>') % escape(u.username)
+
+
 # The About box of a profile (partials/profile_about.html, helpers/profile_about.py)
 @app.template_global("profile_guilds")
 def profile_guilds(u, v):

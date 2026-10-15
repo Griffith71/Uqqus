@@ -203,9 +203,10 @@
     data.stories.forEach(function (story) { if (story.seen) state.seen[story.id] = true; });
     lastFocus = document.activeElement;
     els.avatar.src = data.user.avatar;
-    els.name.textContent = '@' + data.user.username;
+    var who = data.user.display_name ? data.user.display_name : '@' + data.user.username;
+    els.name.textContent = who;
     els.user.href = data.user.permalink;
-    if (kind === 'highlight') els.name.textContent = data.title + ' · @' + data.user.username;
+    if (kind === 'highlight') els.name.textContent = data.title + ' · ' + who;
     buildBars();
     viewer.hidden = false;
     document.body.classList.add('story-open');

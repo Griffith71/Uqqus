@@ -21,7 +21,7 @@
 
   <a href="{{ u.permalink }}" class="d-inline-flex align-items-center text-black mb-3">
     <img src="{{ u.profile_url }}" alt="" width="40" height="40" class="profile-pic-40 mr-2">
-    <span><span class="d-block font-weight-bold">{{ u.username }}</span><span class="d-block text-muted text-small">@{{ u.username }}</span></span>
+    <span><span class="d-block font-weight-bold">{{ u.shown_name }}</span><span class="d-block text-muted text-small">@{{ u.username }}</span></span>
   </a>
 
   <ul class="nav settings-nav mb-3">
@@ -45,7 +45,8 @@
     <div class="wtf-row d-flex align-items-center" id="list-row-{{ x.id }}">
       <img src="{{ x.profile_url }}" alt="" width="40" height="40" class="profile-pic-40 mr-2">
       <div class="wtf-main flex-grow-1">
-        <a href="{{ x.permalink }}" class="wtf-name d-block text-truncate font-weight-bold">@{{ x.username }}</a>
+        <a href="{{ x.permalink }}" class="wtf-name d-block text-truncate font-weight-bold">{% if x.display_name %}{{ x.display_name }}{% else %}@{{ x.username }}{% endif %}</a>
+        {% if x.display_name %}<div class="text-small text-muted text-truncate">@{{ x.username }}</div>{% endif %}
         {% set bio = x.bio_for(v) %}
         {% if bio %}<div class="text-small text-muted text-truncate">{{ bio | truncate(120, True) }}</div>{% endif %}
       </div>

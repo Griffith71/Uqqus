@@ -7,5 +7,5 @@
 #}
 {% macro coauthor_line(p, v, dot=true) %}
 {%- set people = coauthors_of(p, v) -%}
-{%- if people %}{{ ' · ' if dot else '' }}<span class="coauthors">with {% for u in people %}<a href="{{ u.permalink }}" class="user-name"><img src="{{ u.profile_url }}" class="profile-pic-20 mr-1" alt=""><span class="user-name-inner">{{ u.username }}</span></a>{% if not loop.last %}, {% endif %}{% endfor %}</span>{% endif -%}
+{%- if people %}{{ ' · ' if dot else '' }}<span class="coauthors">with {% for u in people %}<a href="{{ u.permalink }}" class="user-name"><img src="{{ u.profile_url }}" class="profile-pic-20 mr-1" alt=""><span class="user-name-inner">{{ u.shown_name }}</span>{{ handle_tag(u) }}</a>{% if not loop.last %}, {% endif %}{% endfor %}</span>{% endif -%}
 {% endmacro %}

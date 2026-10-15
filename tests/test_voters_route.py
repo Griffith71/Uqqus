@@ -11,8 +11,8 @@ from legacy_harness import FakeComment, FakeSubmission, FakeUser
 
 ROOT = Path(__file__).resolve().parent.parent
 
-BOB = NS(username="bob", permalink="/@bob", profile_url="/assets/images/bob.png")
-CAROL = NS(username="carol", permalink="/@carol", profile_url="/assets/images/carol.png")
+BOB = NS(username="bob", display_name="", permalink="/@bob", profile_url="/assets/images/bob.png")
+CAROL = NS(username="carol", display_name="Carol C.", permalink="/@carol", profile_url="/assets/images/carol.png")
 
 
 @pytest.fixture
@@ -51,8 +51,8 @@ def test_the_author_of_a_post_gets_the_list_and_nothing_else(env):
     r = env.client.get("/api/post/1/voters")
     assert r.status_code == 200
     assert r.get_json() == {
-        "people": [{"username": "bob", "permalink": "/@bob", "avatar": "/assets/images/bob.png"},
-                   {"username": "carol", "permalink": "/@carol", "avatar": "/assets/images/carol.png"}],
+        "people": [{"username": "bob", "display_name": "", "permalink": "/@bob", "avatar": "/assets/images/bob.png"},
+                   {"username": "carol", "display_name": "Carol C.", "permalink": "/@carol", "avatar": "/assets/images/carol.png"}],
         "limit": 100,
         "note": "Only people you follow who follow you back are listed. Downvotes are never shown.",
     }

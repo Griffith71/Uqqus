@@ -326,6 +326,7 @@ CREATE TABLE public.users (
     profile_job character varying(60) DEFAULT '' NOT NULL,
     profile_location character varying(60) DEFAULT '' NOT NULL,
     profile_website character varying(200) DEFAULT '' NOT NULL,
+    display_name character varying(50) DEFAULT '' NOT NULL,
     following_visibility smallint DEFAULT 2 NOT NULL,
     followers_visibility smallint DEFAULT 2 NOT NULL,
     subscribers_visibility smallint DEFAULT 2 NOT NULL,

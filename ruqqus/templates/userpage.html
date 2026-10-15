@@ -86,6 +86,13 @@
 </form>
 {% endif %}
 {% endif %}
+{% if v.admin_level >=3 and v.admin_level > u.admin_level and u.display_name %}
+<form action="/admin/display_name/clear" method="post" onsubmit="return confirm('Remove the display name &quot;{{ u.display_name | e }}&quot; from @{{ u.username }}? They are told.');">
+  <input type="hidden" name="formkey" value="{{ v.formkey }}">
+  <input type="hidden" name="username" value="{{ u.username }}">
+  <input type="submit" class="btn btn-outline-danger btn-sm mb-2" value="Remove display name">
+</form>
+{% endif %}
 {% if u.is_suspended %}
 <p>Banned by: <a href="{{ u.banned_by.permalink}}">@{{ u.banned_by.username }}</a></p>
 <p>Reason: {{ u.ban_reason }}</p>

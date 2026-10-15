@@ -55,7 +55,8 @@ def test_the_routes_need_a_login_are_get_only_and_compare_the_authors_id():
 
 def test_nothing_but_name_avatar_and_link_leaves_the_server():
     answer = ROUTES.split("def _answer(")[1].split("@app.route")[0]
-    assert '{"username": u.username, "permalink": u.permalink, "avatar": u.profile_url}' in answer
+    # the name (and the display name they chose to show beside it), the link and the picture: nothing else
+    assert '{"username": u.username, "display_name": u.display_name or "", "permalink": u.permalink, "avatar": u.profile_url}' in answer
     code = ROUTES.split('"""', 2)[2]                                   # below the docstring, which explains the rule in words
     assert "vote_type" not in code and "downvote" not in code.lower()
     assert "from .voters import *" in read("ruqqus", "routes", "__init__.py")
@@ -130,7 +131,8 @@ def test_the_panel_is_built_from_text_and_opened_only_from_the_authors_own_score
     assert "innerHTML" not in SCRIPT
     assert SCRIPT.count("'.has-voters'") == 2
     assert "anchor.getAttribute('data-voters-url')" in SCRIPT
-    assert "make('span', 'voters-name', '@' + person.username)" in SCRIPT
+    assert "make('span', 'voters-name', person.display_name ? person.display_name : '@' + person.username)" in SCRIPT
+    assert "make('span', 'voters-handle text-muted ml-1', '@' + person.username)" in SCRIPT
     assert "/^\\//.test(person.permalink)" in SCRIPT and "/^(https?:\\/\\/|\\/)/.test(person.avatar)" in SCRIPT
     for key in ("event.key === 'Escape'", "event.key === 'Enter'", "aria-expanded"):
         assert key in SCRIPT, key

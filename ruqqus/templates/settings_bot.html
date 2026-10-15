@@ -204,6 +204,13 @@
       <form action="/settings/bots/{{ account.username }}/profile" method="post" class="settings-section rounded" id="bot-profile">
         <input type="hidden" name="formkey" value="{{ v.formkey }}">
         <div class="d-lg-flex">
+          <div class="title w-lg-25"><label for="bot-display-name">Display name</label></div>
+          <div class="body w-lg-100">
+            <input type="text" class="form-control" id="bot-display-name" name="display_name" maxlength="50" value="{{ account.display_name or '' }}" autocomplete="off" placeholder="{{ account.username }}">
+            <span class="d-block mt-1 text-small-extra text-muted">How its name reads, with <code>@{{ account.username }}</code> beside it. Empty shows the @name.</span>
+          </div>
+        </div>
+        <div class="d-lg-flex border-top">
           <div class="title w-lg-25"><label for="bot-bio">Bio</label></div>
           <div class="body w-lg-100">
             <textarea class="form-control" id="bot-bio" name="bio" rows="2" maxlength="{{ rules.BIO_MAX }}" placeholder="Technology headlines from BBC News. Not run by the BBC.">{{ account.bio or '' }}</textarea>

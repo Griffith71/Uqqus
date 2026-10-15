@@ -29,6 +29,8 @@ class AnonymousAuthor:
     id = None
     username = LABEL
     original_username = LABEL
+    display_name = ""
+    shown_name = LABEL
     fullname = LABEL
     permalink = "javascript:void(0)"
     permalink_full = "javascript:void(0)"

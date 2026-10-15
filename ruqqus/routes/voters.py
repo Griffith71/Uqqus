@@ -23,7 +23,7 @@ def _answer(kind, item, v):
 
     people = voter_rules.friends_who_upvoted(g.db, kind, item.id, item.author_id, v)
     response = jsonify({
-        "people": [{"username": u.username, "permalink": u.permalink, "avatar": u.profile_url} for u in people],
+        "people": [{"username": u.username, "display_name": u.display_name or "", "permalink": u.permalink, "avatar": u.profile_url} for u in people],
         "limit": voter_rules.LIMIT,
         "note": voter_rules.NOTE,
     })
