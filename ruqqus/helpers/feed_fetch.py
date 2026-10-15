@@ -10,6 +10,7 @@ must be public), then the connection goes to the address that was checked (`_Pin
 
 Never this site's own address, at any hop. Nothing about any member is ever sent: no cookies, no referrer.
 """
+import email.utils
 import http.client
 import os
 import ssl
@@ -33,7 +34,27 @@ ACCEPT = ("application/rss+xml, application/atom+xml, application/feed+json, app
 REDIRECTS = (301, 302, 303, 307, 308)
 
 # changed: False for a 304 (body empty). url: where the feed was finally read from.
-Answer = namedtuple("Answer", "changed body content_type etag last_modified url")
+# max_age: seconds the server asks us to keep the answer (Cache-Control max-age, or Expires), 0 when it says nothing
+Answer = namedtuple("Answer", "changed body content_type etag last_modified url max_age", defaults=(0,))
+
+
+def _max_age(response):
+    """Seconds from Cache-Control max-age, else from Expires (against the answer's own Date, or our clock)."""
+    control = (response.getheader("Cache-Control", "") or "").lower()
+    for part in control.split(","):
+        name, _, value = part.strip().partition("=")
+        if name == "max-age" and value.strip().isdigit():
+            return int(value.strip())
+    expires = response.getheader("Expires", "") or ""
+    if not expires:
+        return 0
+    try:
+        until = email.utils.parsedate_to_datetime(expires).timestamp()
+        sent = response.getheader("Date", "")
+        start = email.utils.parsedate_to_datetime(sent).timestamp() if sent else time.time()
+    except (TypeError, ValueError, IndexError, AttributeError):
+        return 0
+    return max(0, int(until - start))
 
 
 def user_agent():
@@ -70,7 +91,12 @@ def _once(url, etag, last_modified, allow_local, deadline, max_bytes):
         new_etag = (response.getheader("ETag", "") or "")[:300]
         new_modified = (response.getheader("Last-Modified", "") or "")[:100]
         if response.status == 304:
-            return "answer", Answer(False, b"", "", new_etag or etag, new_modified or last_modified, url)
+            return "answer", Answer(False, b"", "", new_etag or etag, new_modified or last_modified, url, _max_age(response))
+        if response.status in (429, 503):
+            # told to slow down: the runner waits as long as the server asks (bots.retry_wait)
+            busy = FetchError("The feed asked us to slow down." if response.status == 429 else "The feed is unavailable for now.")
+            busy.retry_after = response.getheader("Retry-After", "") or ""
+            raise busy
         if response.status != 200:
             raise FetchError(f"The feed answered with an error ({response.status}).")
         body = b""
@@ -84,7 +110,7 @@ def _once(url, etag, last_modified, allow_local, deadline, max_bytes):
         if len(body) > max_bytes:
             raise FetchError("The feed's answer is too large.")
         content_type = (response.getheader("Content-Type", "") or "")[:200]
-        return "answer", Answer(True, body, content_type, new_etag, new_modified, url)
+        return "answer", Answer(True, body, content_type, new_etag, new_modified, url, _max_age(response))
     except FetchError:
         raise
     except ssl.SSLError:

@@ -70,11 +70,14 @@ def run_source(db, source_id, now, fetch, submit, notify, owner_ok):
         answer = fetch(src.url, src.etag, src.last_modified)
         feed = feed_items.parse(answer.body, answer.content_type) if answer.changed else None
     except (FetchError, feed_items.FeedError) as error:
-        return _failed(db, src, bot, now, error.message, notify)
+        return _failed(db, src, bot, now, error.message, notify, bots.retry_wait(getattr(error, "retry_after", ""), now))
 
     if feed is None:
-        bot_store.record_check(db, src.id, now, bots.next_check(now, src.check_minutes, 0),
-                               etag=answer.etag, last_modified=answer.last_modified)
+        # nothing changed: the feed's own ask is kept from its last full answer (a 304 has no body)
+        asked = max(src.asked_minutes or 0, bots.server_asks(answer.max_age))
+        minutes = bots.next_interval(asked, src.check_minutes, got_new=False)
+        bot_store.record_check(db, src.id, now, bots.next_check(now, minutes, 0), etag=answer.etag,
+                               last_modified=answer.last_modified, check_minutes=minutes)
         db.commit()
         return "unchanged"
 
@@ -84,6 +87,9 @@ def run_source(db, source_id, now, fetch, submit, notify, owner_ok):
         if bots.is_stale(item.published, now):                # a promo or an old story put back: never posted
             bot_store.mark_seen(db, src.id, item.key, None, now)
     fresh = [item for item in fresh if not bots.is_stale(item.published, now)]
+    # as often as it safely can be read: the floor or what the feed and its server ask; longer while it is quiet
+    asked = max(feed.ask_minutes, bots.server_asks(answer.max_age))
+    minutes = bots.next_interval(asked, src.check_minutes, got_new=bool(fresh))
     if not src.read_once:
         for item in fresh[bots.FIRST_READ:]:                  # the backlog is never posted
             bot_store.mark_seen(db, src.id, item.key, None, now)
@@ -120,17 +126,19 @@ def run_source(db, source_id, now, fetch, submit, notify, owner_ok):
             break
         db.commit()
 
-    bot_store.record_check(db, src.id, now, bots.next_check(now, src.check_minutes, 0), fail_count=0, error=note,
+    bot_store.record_check(db, src.id, now, bots.next_check(now, minutes, 0), fail_count=0, error=note,
                            title=feed.title or None, etag=answer.etag, last_modified=answer.last_modified,
-                           read_once=True, posted=posted)
+                           read_once=True, posted=posted, check_minutes=minutes, asked_minutes=asked)
     db.commit()
     return f"{result}: {posted} posted"
 
 
-def _failed(db, src, bot, now, message, notify):
+def _failed(db, src, bot, now, message, notify, retry_after=None):
+    """A read that failed. A server that said how long to wait (Retry-After) is waited for exactly that long; any
+    other failure waits the feed's interval doubled for each failure in a row (bots.next_check)."""
     fails = (src.fail_count or 0) + 1
-    bot_store.record_check(db, src.id, now, bots.next_check(now, src.check_minutes, fails), fail_count=fails,
-                           error=message)
+    when = now + retry_after if retry_after is not None else bots.next_check(now, src.check_minutes, fails)
+    bot_store.record_check(db, src.id, now, when, fail_count=fails, error=message)
     if fails >= bots.FAILS_BEFORE_PAUSE:
         bot_store.set_source_paused(db, src.id, True, message)
         db.commit()

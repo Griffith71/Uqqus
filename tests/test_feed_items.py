@@ -126,3 +126,22 @@ def test_a_posted_link_drops_its_tracking_but_the_key_is_the_feeds_own():
     first, second = fi.parse(data, "application/rss+xml").items
     assert first.link == "https://www.bbc.co.uk/news/articles/c1" and first.key == bots.item_key("bbc-c1", raw)
     assert second.link == "https://example.org/story?id=4" and second.key == bots.item_key("", raw2)
+
+
+
+def test_what_a_feed_asks_for_is_read_from_rss_rdf_and_atom():
+    rss = b"<rss><channel><title>T</title><ttl>15</ttl><item><title>A</title><link>https://e.org/a</link></item></channel></rss>"
+    assert fi.parse(rss).ask_minutes == 15
+    sy = 'xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"'
+    rdf = (f'<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://purl.org/rss/1.0/" {sy}>'
+           '<channel rdf:about="https://e.org/"><title>T</title><sy:updatePeriod>hourly</sy:updatePeriod>'
+           '<sy:updateFrequency>4</sy:updateFrequency></channel>'
+           '<item rdf:about="https://e.org/1"><title>A</title><link>https://e.org/1</link></item></rdf:RDF>').encode()
+    assert fi.parse(rdf).ask_minutes == 15
+    atom = (f'<feed xmlns="http://www.w3.org/2005/Atom" {sy}><title>T</title><sy:updatePeriod>daily</sy:updatePeriod>'
+            '<entry><id>1</id><title>A</title><link href="https://e.org/1"/></entry></feed>').encode()
+    assert fi.parse(atom).ask_minutes == 1440
+    assert fi.parse(RSS, "application/rss+xml").ask_minutes == 0          # says nothing
+    jf = json.dumps({"version": "https://jsonfeed.org/version/1.1", "title": "J",
+                     "items": [{"id": "1", "url": "https://e.org/1", "title": "A"}]}).encode()
+    assert fi.parse(jf, "application/feed+json").ask_minutes == 0         # JSON Feed has no such field

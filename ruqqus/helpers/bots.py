@@ -20,8 +20,10 @@ Bots post and forward; they never comment, vote, chat, take tips or lead a guild
 
 Pure rules, stdlib only. The database side is helpers/bot_store.py.
 """
+import email.utils
 import hashlib
 import html
+import math
 import os
 import re
 import time
@@ -50,8 +52,13 @@ NOTE_MAX = 500
 BIO_MAX = 300
 URL_MAX = 300
 OWNER_MIN_AGE = 30 * 86400       # an owner's account must be this old
-CHECK_MINUTES_DEFAULT = 30
-CHECK_MINUTES_MIN = 15
+# how often a feed is read (next_interval): as often as it safely can be. Never more often than FLOOR_MINUTES, nor
+# than the feed asks (RSS <ttl>, sy:updatePeriod, HTTP max-age); a feed with nothing new is read less and less
+# often, up to QUIET_MAX_MINUTES, and goes back to its shortest as soon as it has something new
+FLOOR_MINUTES = 5
+QUIET_MAX_MINUTES = 60
+QUIET_STRETCH = 1.5
+ASK_MAX_MINUTES = 24 * 60        # a feed asking to be left alone longer than a day is read daily
 PER_RUN = 3                      # posts per source per run of the job
 FIRST_READ = 3                   # a source's first read posts only its newest items: no backlog flood
 DAILY_CAP = 40                   # posts per bot per day, by the job and by keys alike
@@ -213,8 +220,79 @@ def parse_check_minutes(raw):
     try:
         minutes = int(str(raw).strip())
     except (TypeError, ValueError):
-        return CHECK_MINUTES_DEFAULT
-    return max(CHECK_MINUTES_MIN, min(24 * 60, minutes))
+        return FLOOR_MINUTES
+    return max(FLOOR_MINUTES, min(ASK_MAX_MINUTES, minutes))
+
+
+_PERIOD_MINUTES = {"hourly": 60, "daily": 1440, "weekly": 10080, "monthly": 43200, "yearly": 525600}
+
+
+def _whole_minutes(value):
+    try:
+        number = float(str(value).strip())
+    except (TypeError, ValueError):
+        return 0
+    return int(math.ceil(number)) if number > 0 else 0
+
+
+def feed_asks(ttl=None, update_period=None, update_frequency=None):
+    """The minutes a feed asks to be left between reads: RSS <ttl>, or the syndication module's updatePeriod divided
+    by updateFrequency ("hourly" and 2 is every 30 minutes). The longer of the two, at most a day; 0 for nothing."""
+    asks = [_whole_minutes(ttl)]
+    period = _PERIOD_MINUTES.get(str(update_period or "").strip().lower())
+    if period:
+        frequency = _whole_minutes(update_frequency) or 1
+        asks.append(int(math.ceil(period / frequency)))
+    return min(ASK_MAX_MINUTES, max(asks))
+
+
+def server_asks(max_age_seconds):
+    """The minutes the feed's server asks to be left alone (Cache-Control max-age or Expires), at most a day."""
+    return min(ASK_MAX_MINUTES, _whole_minutes((max_age_seconds or 0) / 60))
+
+
+def next_interval(asked, current, got_new):
+    """Minutes until the next read. The shortest allowed is the floor or what the feed asks, whichever is longer. A
+    read that found nothing new stretches the wait by half, up to QUIET_MAX_MINUTES (or the shortest allowed, if that
+    is longer); a read that found something goes straight back to the shortest."""
+    shortest = max(FLOOR_MINUTES, int(asked or 0))
+    if got_new or not current:
+        return shortest
+    stretched = int(math.ceil(int(current) * QUIET_STRETCH))
+    return max(shortest, min(max(QUIET_MAX_MINUTES, shortest), stretched))
+
+
+def cadence_label(check_minutes, asked_minutes, status=APPROVED):
+    """How a feed is being read, for its bot's page: "Read every 15 minutes (the feed asks for at least 15)"."""
+    if status != APPROVED:
+        return ""
+    minutes = max(FLOOR_MINUTES, int(check_minutes or FLOOR_MINUTES))
+    shortest = max(FLOOR_MINUTES, int(asked_minutes or 0))
+    text = f"Read every {minutes} minutes"
+    if minutes > shortest:
+        return text + " (quiet lately)"
+    if shortest > FLOOR_MINUTES:
+        return text + f" (the feed asks for at least {shortest})"
+    return text
+
+
+def retry_wait(header, now=None):
+    """Seconds a 429 or 503 asked us to wait (Retry-After: seconds, or an HTTP date), at most a day. None when the
+    header is missing or unreadable."""
+    raw = str(header or "").strip()
+    if not raw:
+        return None
+    if raw.isdigit():
+        seconds = int(raw)
+    else:
+        try:
+            when = email.utils.parsedate_to_datetime(raw)
+        except (TypeError, ValueError, IndexError):
+            return None
+        if when is None:
+            return None
+        seconds = int(when.timestamp()) - _now(now)
+    return max(0, min(BACKOFF_MAX, seconds))
 
 
 # --- posting -------------------------------------------------------------------------------------------------
@@ -254,8 +332,8 @@ def loopback_for(bot_id):
 
 
 def next_check(now, check_minutes, fail_count):
-    """When to read a source again: its own interval, doubled for each failure in a row, at most a day."""
-    wait = max(CHECK_MINUTES_MIN, int(check_minutes or CHECK_MINUTES_DEFAULT)) * 60
+    """When to read a source again: its interval (next_interval), doubled for each failure in a row, at most a day."""
+    wait = max(FLOOR_MINUTES, int(check_minutes or FLOOR_MINUTES)) * 60
     if fail_count:
         wait = min(BACKOFF_MAX, wait * (2 ** min(int(fail_count), 12)))
     return _now(now) + wait

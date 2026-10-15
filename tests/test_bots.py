@@ -113,10 +113,10 @@ def test_each_bot_posts_from_its_own_loopback_address():
 
 def test_reading_backs_off_after_failures_and_never_waits_more_than_a_day():
     assert bots.next_check(NOW, 30, 0) == NOW + 1800
-    assert bots.next_check(NOW, 1, 0) == NOW + bots.CHECK_MINUTES_MIN * 60
+    assert bots.next_check(NOW, 1, 0) == NOW + bots.FLOOR_MINUTES * 60          # never under the floor
     assert bots.next_check(NOW, 30, 2) == NOW + 1800 * 4
     assert bots.next_check(NOW, 30, 50) == NOW + bots.BACKOFF_MAX
-    assert bots.parse_check_minutes("5") == bots.CHECK_MINUTES_MIN and bots.parse_check_minutes("x") == 30
+    assert bots.parse_check_minutes("1") == bots.FLOOR_MINUTES and bots.parse_check_minutes("x") == bots.FLOOR_MINUTES
 
 
 def test_an_item_key_prefers_the_guid_and_is_stable():
@@ -208,3 +208,55 @@ def test_an_item_dated_more_than_two_days_back_is_stale():
     assert bots.is_stale(NOW - 40 * 86400, NOW)                  # a promo the feed keeps
     assert not bots.is_stale(None, NOW) and not bots.is_stale(0, NOW)   # undated: never stale
     assert not bots.is_stale(NOW + 3600, NOW)                    # a date ahead of the clock
+
+
+# --- how often a feed is read: as often as it safely can be ------------------------------------------------------
+
+def test_what_a_feed_asks_for():
+    assert bots.feed_asks("15") == 15                                    # the BBC's <ttl>
+    assert bots.feed_asks(None, "hourly", "2") == 30                      # sy:updatePeriod / sy:updateFrequency
+    assert bots.feed_asks(None, "Daily") == 1440
+    assert bots.feed_asks("15", "hourly", "1") == 60                      # the longer of the two
+    assert bots.feed_asks("", "", "") == 0 and bots.feed_asks("soon") == 0 and bots.feed_asks("-5") == 0
+    assert bots.feed_asks(None, "yearly") == bots.ASK_MAX_MINUTES         # never left alone more than a day
+
+
+def test_what_its_server_asks_for():
+    assert bots.server_asks(2) == 1                                       # the BBC's max-age=2 rounds up to a minute
+    assert bots.server_asks(900) == 15 and bots.server_asks(0) == 0 and bots.server_asks(None) == 0
+    assert bots.server_asks(10 ** 9) == bots.ASK_MAX_MINUTES
+
+
+def test_the_shortest_allowed_is_the_floor_or_the_ask_whichever_is_longer():
+    assert bots.next_interval(0, 30, got_new=True) == bots.FLOOR_MINUTES
+    assert bots.next_interval(1, 30, got_new=True) == bots.FLOOR_MINUTES   # a tiny max-age can't go under the floor
+    assert bots.next_interval(15, 5, got_new=True) == 15                  # the BBC case
+    assert bots.next_interval(0, 0, got_new=False) == bots.FLOOR_MINUTES  # a first read
+
+
+def test_a_quiet_feed_is_read_less_often_and_comes_back_when_it_has_news():
+    minutes, seen = bots.FLOOR_MINUTES, []
+    for _ in range(12):
+        minutes = bots.next_interval(0, minutes, got_new=False)
+        seen.append(minutes)
+    assert seen[:4] == [8, 12, 18, 27] and seen[-1] == bots.QUIET_MAX_MINUTES and max(seen) == bots.QUIET_MAX_MINUTES
+    assert bots.next_interval(0, minutes, got_new=True) == bots.FLOOR_MINUTES
+    assert bots.next_interval(15, 15, got_new=False) == 23                # stretched from what the feed asks
+    assert bots.next_interval(120, 120, got_new=False) == 120             # an ask longer than the quiet cap is kept
+
+
+def test_retry_after_is_obeyed_in_seconds_or_as_a_date_up_to_a_day():
+    import email.utils
+
+    assert bots.retry_wait("600", NOW) == 600
+    assert bots.retry_wait(email.utils.formatdate(NOW + 120, usegmt=True), NOW) == 120
+    assert bots.retry_wait("999999999", NOW) == bots.BACKOFF_MAX
+    assert bots.retry_wait(email.utils.formatdate(NOW - 50, usegmt=True), NOW) == 0
+    assert bots.retry_wait("", NOW) is None and bots.retry_wait(None, NOW) is None and bots.retry_wait("later", NOW) is None
+
+
+def test_the_bot_page_says_how_a_feed_is_read():
+    assert bots.cadence_label(15, 15) == "Read every 15 minutes (the feed asks for at least 15)"
+    assert bots.cadence_label(5, 0) == "Read every 5 minutes"
+    assert bots.cadence_label(27, 0) == "Read every 27 minutes (quiet lately)"
+    assert bots.cadence_label(5, 0, bots.PENDING) == ""

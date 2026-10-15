@@ -14,7 +14,7 @@ from ruqqus.helpers import bots
 BOT_COLUMNS = ("id, user_id, owner_id, username, kind, proposed_by_id, status, purpose, forward_guilds, created_utc, "
                "reviewed_by_id, "
                "reviewed_utc, review_note, paused_reason, paused_by_admin, day, posts_today")
-SOURCE_COLUMNS = ("id, bot_id, kind, url, title, status, added_utc, approved_by_id, approved_utc, check_minutes, "
+SOURCE_COLUMNS = ("id, bot_id, kind, url, title, status, added_utc, approved_by_id, approved_utc, check_minutes, asked_minutes, "
                   "last_checked_utc, next_check_utc, etag, last_modified, fail_count, last_error, posted_count, read_once")
 
 
@@ -150,7 +150,7 @@ def source_count(db, bot_id):
     return db.execute(text("SELECT COUNT(*) FROM bot_sources WHERE bot_id = :b"), {"b": bot_id}).scalar() or 0
 
 
-def add_source(db, bot_id, url, now=None, check_minutes=bots.CHECK_MINUTES_DEFAULT, approved_by=None):
+def add_source(db, bot_id, url, now=None, check_minutes=bots.FLOOR_MINUTES, approved_by=None):
     """A new source, waiting for an admin, or approved at once when an admin adds it (`approved_by`). None when the bot
     already reads that address."""
     status = bots.APPROVED if approved_by is not None else bots.PENDING
@@ -267,12 +267,13 @@ def mark_seen(db, source_id, key, post_id=None, now=None):
 
 
 def record_check(db, source_id, now, next_check, fail_count=0, error="", title=None, etag=None, last_modified=None,
-                 read_once=None, posted=0):
+                 read_once=None, posted=0, check_minutes=None, asked_minutes=None):
     """What one read of a source found. Fields left as None keep their stored value."""
     sets = ["last_checked_utc = :t", "next_check_utc = :n", "fail_count = :f", "last_error = :e",
             "posted_count = posted_count + :p"]
     params = {"t": now, "n": next_check, "f": fail_count, "e": (error or "")[:300], "p": posted, "i": source_id}
-    for column, value in (("title", title), ("etag", etag), ("last_modified", last_modified), ("read_once", read_once)):
+    for column, value in (("title", title), ("etag", etag), ("last_modified", last_modified), ("read_once", read_once),
+                          ("check_minutes", check_minutes), ("asked_minutes", asked_minutes)):
         if value is not None:
             sets.append(f"{column} = :{column}")
             params[column] = value[:200] if column == "title" else value[:300] if isinstance(value, str) else value

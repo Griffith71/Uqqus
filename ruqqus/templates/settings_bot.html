@@ -115,6 +115,7 @@
               <div class="text-small">
                 <span class="badge badge-pill {% if s.status == 'approved' %}badge-success{% elif s.status == 'pending' %}badge-info{% else %}badge-secondary{% endif %}">{{ {"pending": "Waiting for an admin", "approved": "Read", "paused": "Stopped after failing", "rejected": "Not approved"}[s.status] }}</span>
                 {% if s.posted_count %}<span class="text-muted ml-1">{{ s.posted_count }} posted</span>{% endif %}
+                {% set cadence = rules.cadence_label(s.check_minutes, s.asked_minutes, s.status) %}{% if cadence %}<span class="text-muted ml-1">&middot; {{ cadence }}</span>{% endif %}
               </div>
               {% if s.last_error %}<div class="text-small text-danger text-break">{{ s.last_error }}</div>{% endif %}
             </div>

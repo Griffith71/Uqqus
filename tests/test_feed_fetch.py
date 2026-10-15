@@ -99,3 +99,23 @@ def test_safe_fetch_itself_still_follows_no_redirects():
     source = (sf.__file__)
     text = open(source, encoding="utf-8").read()
     assert "allow_redirects" not in text and "follow" not in text.split('"""', 2)[2].replace("not followed", "")
+
+
+
+def test_the_servers_own_ask_reaches_the_answer():
+    base, _ = serve((200, [("Cache-Control", "public, max-age=900")], FEED))
+    assert ff.fetch(base + "/feed.xml", allow_local=True).max_age == 900
+    base, _ = serve((200, [("Date", "Tue, 14 Oct 2026 10:00:00 GMT"), ("Expires", "Tue, 14 Oct 2026 10:10:00 GMT")], FEED))
+    assert ff.fetch(base + "/feed.xml", allow_local=True).max_age == 600
+    base, _ = serve((304, [("Cache-Control", "max-age=60")], b""))
+    assert ff.fetch(base + "/feed.xml", etag='"v"', allow_local=True).max_age == 60
+    base, _ = serve((200, [], FEED))
+    assert ff.fetch(base + "/feed.xml", allow_local=True).max_age == 0
+
+
+def test_a_server_that_asks_us_to_slow_down_says_for_how_long():
+    for status in (429, 503):
+        base, _ = serve((status, [("Retry-After", "600")], b"busy"))
+        with pytest.raises(sf.FetchError) as err:
+            ff.fetch(base + "/feed.xml", allow_local=True)
+        assert err.value.retry_after == "600", status

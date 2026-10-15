@@ -36,7 +36,7 @@ From **feeds**: RSS, Atom or JSON feeds. Most news sites publish them, and so do
 
 Each new item of a feed becomes a **link post**: the item's title and its link, nothing copied from the page. The site's usual link preview shows the rest (a YouTube video plays in place). When an item has no title, as on Bluesky and Mastodon, the start of its text is the title.
 
-* A feed is read every {{ bot_rules.CHECK_MINUTES_DEFAULT }} minutes. New items are posted oldest first, at most {{ bot_rules.PER_RUN }} from one feed at a time and {{ bot_rules.DAILY_CAP }} a day for the whole bot.
+* A feed is read as often as it safely can be: every {{ bot_rules.FLOOR_MINUTES }} minutes at most, or less often if the feed asks to be (most news feeds say 15 minutes), and less often again while it has nothing new (up to every {{ bot_rules.QUIET_MAX_MINUTES }} minutes). A feed that asks us to slow down is left alone for as long as it says. New items are posted oldest first, at most {{ bot_rules.PER_RUN }} from one feed at a time and {{ bot_rules.DAILY_CAP }} a day for the whole bot.
 * The first time a feed is read, only its newest {{ bot_rules.FIRST_READ }} items are posted: a bot never floods the site with a feed's backlog.
 * Links are posted without tracking tags. An item already more than 2 days old when the bot first sees it is skipped, so the promos some feeds keep (and old stories put back) are never posted.
 * A feed a member adds to a running bot waits for an admin. Removing one takes effect at once.

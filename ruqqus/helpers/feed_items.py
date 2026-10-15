@@ -16,7 +16,8 @@ from ruqqus.helpers import bots
 MAX_ITEMS = 100
 
 Item = namedtuple("Item", "key title link published")       # published: unix time, or None when the feed says none
-Feed = namedtuple("Feed", "title items")
+# ask_minutes: how long the feed asks to be left between reads (RSS <ttl>, sy:updatePeriod), 0 when it says nothing
+Feed = namedtuple("Feed", "title items ask_minutes", defaults=(0,))
 
 
 class FeedError(ValueError):
@@ -121,6 +122,12 @@ def _atom_items(feed):
     return out
 
 
+def _asks(node):
+    """What a channel (RSS) or feed (Atom) asks: <ttl> minutes, or the syndication module's updatePeriod and
+    updateFrequency (matched by local name, whatever prefix the feed gives the namespace)."""
+    return bots.feed_asks(_text(node, "ttl"), _text(node, "updatePeriod"), _text(node, "updateFrequency"))
+
+
 def _parse_xml(data):
     from defusedxml import ElementTree, DefusedXmlException
 
@@ -136,13 +143,13 @@ def _parse_xml(data):
         channel = _child(root, "channel")
         if channel is None:
             raise FeedError(NOT_A_FEED)
-        return Feed(bots.plain_text(_text(channel, "title"), 200), _rss_items(channel))
+        return Feed(bots.plain_text(_text(channel, "title"), 200), _rss_items(channel), _asks(channel))
     if kind == "RDF":
         channel = _child(root, "channel")
         title = _text(channel, "title") if channel is not None else ""
-        return Feed(bots.plain_text(title, 200), _rss_items(root))
+        return Feed(bots.plain_text(title, 200), _rss_items(root), _asks(channel) if channel is not None else 0)
     if kind == "feed":
-        return Feed(bots.plain_text(_text(root, "title"), 200), _atom_items(root))
+        return Feed(bots.plain_text(_text(root, "title"), 200), _atom_items(root), _asks(root))
     raise FeedError(NOT_A_FEED)
 
 
@@ -183,7 +190,7 @@ def parse(data, content_type=""):
             items.append(item)
         if len(items) >= MAX_ITEMS:
             break
-    return Feed(feed.title, items)
+    return Feed(feed.title, items, feed.ask_minutes)
 
 
 def newest_first(items):

@@ -262,3 +262,18 @@ def test_feed_links_are_cleaned_after_the_key_and_stale_items_are_never_posted()
     assert "bot_store.mark_seen(db, src.id, item.key, None, now)" in run.split("if not src.read_once:")[0]
     helpage = read("ruqqus", "templates", "help", "bots.html")
     assert "without tracking tags" in helpage and "more than 2 days old" in helpage
+
+
+def test_feeds_are_read_as_often_as_they_safely_can_be():
+    migration = read("scripts", "migrations", "2026-10-19_feed_intervals.sql")
+    assert "ADD COLUMN IF NOT EXISTS asked_minutes smallint DEFAULT 0 NOT NULL" in migration
+    table = SCHEMA.split("CREATE TABLE public.bot_sources (")[1].split("\n);")[0]
+    assert "asked_minutes smallint DEFAULT 0 NOT NULL" in table and "check_minutes integer DEFAULT 5 NOT NULL" in table
+    assert "asked_minutes" in read("ruqqus", "helpers", "bot_store.py").split("SOURCE_COLUMNS = ")[1].split("\n\n")[0]
+    run = func(read("ruqqus", "helpers", "bot_runner.py"), "run_source")
+    assert "bots.next_interval(asked, src.check_minutes, got_new=bool(fresh))" in run
+    assert "asked = max(src.asked_minutes or 0, bots.server_asks(answer.max_age))" in run          # a 304 keeps the ask
+    assert 'bots.retry_wait(getattr(error, "retry_after", ""), now)' in run
+    assert "CHECK_MINUTES" not in read("ruqqus", "helpers", "bots.py")
+    assert "bot_rules.FLOOR_MINUTES" in read("ruqqus", "templates", "help", "bots.html")
+    assert "rules.cadence_label(s.check_minutes, s.asked_minutes, s.status)" in read("ruqqus", "templates", "settings_bot.html")

@@ -220,3 +220,78 @@ def test_an_item_dated_long_before_it_was_seen_is_never_posted():
                   ("newer", "A newer story", NOW))
     w.run()
     assert w.posted == ["A newer story"]
+
+
+
+# --- how often a feed is read --------------------------------------------------------------------------------------
+
+class PacedWorld(World):
+    """Answers carry what the feed and its server ask, and a fetch can be refused with Retry-After."""
+
+    def __init__(self):
+        super().__init__()
+        self.max_age, self.retry_after = 0, None
+
+    def fetch(self, url, etag, last_modified):
+        if self.retry_after is not None:
+            busy = FetchError("The feed asked us to slow down.")
+            busy.retry_after = self.retry_after
+            raise busy
+        if self.body is None:
+            return Answer(False, b"", "", etag, last_modified, url, self.max_age)
+        return Answer(True, self.body, "application/rss+xml", '"e"', "", url, self.max_age)
+
+
+def _ttl(body, minutes):
+    return body.replace(b"<channel>", f"<channel><ttl>{minutes}</ttl>".encode())
+
+
+def _waits(w):
+    src = bs.source(w.db, w.source)
+    return src.next_check_utc - NOW, src.check_minutes, src.asked_minutes
+
+
+def test_a_feed_that_asks_for_15_minutes_is_read_every_15():
+    w = PacedWorld()
+    w.body = _ttl(feed(1), 15)
+    w.run()
+    assert _waits(w) == (15 * 60, 15, 15)
+
+
+def test_a_feed_that_asks_nothing_is_read_at_the_floor_and_a_tiny_max_age_cannot_go_under_it():
+    w = PacedWorld()
+    w.max_age = 2                                                         # the BBC's own header
+    w.run()
+    assert _waits(w) == (bots.FLOOR_MINUTES * 60, bots.FLOOR_MINUTES, 1)
+
+
+def test_quiet_reads_stretch_the_wait_and_news_brings_it_back():
+    w = PacedWorld()
+    w.run()                                                               # item 1 is new
+    assert _waits(w)[1] == bots.FLOOR_MINUTES
+    w.run()                                                               # nothing new in the same feed
+    assert _waits(w)[1] == 8
+    w.body = None                                                         # a 304
+    w.run()
+    assert _waits(w)[1] == 12
+    w.body = feed(1, 2)
+    w.run()
+    assert _waits(w)[1] == bots.FLOOR_MINUTES and "Item 2" in w.posted
+
+
+def test_a_304_keeps_what_the_feed_asked_last_time():
+    w = PacedWorld()
+    w.body = _ttl(feed(1), 15)
+    w.run()
+    w.body = None
+    w.run()
+    wait, minutes, asked = _waits(w)
+    assert asked == 15 and minutes == 23 and wait == 23 * 60              # stretched from 15, never under it
+
+
+def test_retry_after_is_waited_for_exactly():
+    w = PacedWorld()
+    w.retry_after = "600"
+    assert w.run() == "failed"
+    src = bs.source(w.db, w.source)
+    assert src.next_check_utc - NOW == 600 and src.fail_count == 1 and "slow down" in src.last_error
