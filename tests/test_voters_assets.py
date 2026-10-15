@@ -98,8 +98,9 @@ def test_a_posts_score_is_a_button_only_when_the_viewer_may_see_voters():
         assert 'class="score post-score-abc "' in off and 'data-original-title="+3 | -1"' in off
 
 
-def test_the_card_has_the_feed_and_profile_scores_and_both_are_covered():
-    assert LISTING.count("{% set see_voters = may_see_voters(p, v) %}") == 2
+def test_the_card_has_one_signed_in_score_for_the_feed_and_for_profiles():
+    # a profile card draws the same score as a feed card (tests/test_vote_arrows_assets.py)
+    assert LISTING.count("{% set see_voters = may_see_voters(p, v) %}") == 1
     assert PAGE.count("{% set see_voters = may_see_voters(p, v) %}") == 1
     # a visitor's score (no vote arrows) is a different line and is not touched
     assert 'post-{{ p.base36id }}-score-none' in LISTING and "see_voters" not in LISTING.split("score-none")[1].split("</span>")[0]

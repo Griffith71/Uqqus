@@ -30,20 +30,7 @@
 
     {% if not (loop.length==1 and '/post/' in request.path) %}
     <div class="voting my-2 pr-2">
-      {% if v and request.path.startswith(('/@',)) %}
-
-      {% if voted==1 %}
-      <div class="mx-auto arrow-up post-{{ p.base36id }}-up active"></div>
-      {% endif %}
-
-      {% set see_voters = may_see_voters(p, v) %}<span id="post-score-{{ p.base36id }}" data-ups="{{ ups }}" data-downs="{{ downs }}" data-mode="{{ score_mode_now }}" class="score{% if score_class %} {{ score_class }}{% endif %} post-score-{{ p.base36id }}{% if see_voters %} has-voters{% endif %} {% if voted==1 %}score-up{% elif voted==-1%}score-down{% endif %}"{% if see_voters %} data-voters-url="/api/post/{{ p.base36id }}/voters" role="button" tabindex="0" aria-haspopup="dialog"{% endif %}{% if not p.is_banned %} data-toggle="tooltip" data-placement="right" data-original-title="+{{ ups }} | -{{ downs }}{% if see_voters %} &middot; click to see who upvoted{% endif %}"{% endif %}>{% if p.is_banned %}✖{% else %}{{ score }}{% endif %}</span>
-
-      {% if voted==-1 %}
-      <div class="text-muted mx-auto arrow-down post-{{ p.base36id }}-down active"></div>
-      {% endif %}
-
-      
-      {% elif v %}
+      {% if v %}
 
       {% set locked = p.voted_elsewhere %}<div id="post-{{ p.base36id }}-up" tabindex="0" {% if locked %}role="button" aria-disabled="true" title="{{ locked.message }}" data-locked-message="{{ locked.message }}" onclick="voteLocked(this)"{% else %}data-id-up="{{ p.base36id }}" data-content-type="post"{% endif %} class="mx-auto arrow-up {{ 'vote-locked' if locked else 'upvote-button' }} post-{{ p.base36id }}-up {% if voted==1 %}active{% endif %}"></div>
 
