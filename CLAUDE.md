@@ -89,6 +89,19 @@ Ruqqus keeps no copy of an uploaded picture, sound or video, and **storing media
 
 `ruqqus/helpers/languages.py` holds the one list of languages (`LANGUAGE_NAMES`: filters, curations, trending) and detects a post's language when it is written (`detect_language`, `py3langid`). Only languages people speak in daily life are listed: Ancient Greek, Ancient Hebrew, Latin and Volapük were taken off on purpose (`REMOVED_LANGUAGES`; Sanskrit and Esperanto stay). The detector is restricted to the list the first time it is used, so it can only answer a listed language (Latin text reads as the nearest living one); a saved choice that is no longer listed is dropped with `known_codes`. To remove another language: take it out of `LANGUAGE_NAMES`, add it to `REMOVED_LANGUAGES` and to a data migration like `scripts/migrations/2026-10-08_languages.sql` (untags its posts, strips it from curations). `tests/test_languages.py`.
 
+## Social embeds (legacy app)
+
+A link to a post on a major social site shows **that site's own widget** on the post page and an ordinary **link-preview card** in feeds. Rules (pure) in `ruqqus/helpers/social_embeds.py`; the calls to each site's oEmbed service in `helpers/embed.py` (`KNOWN_PROVIDER_HANDLERS`, kind `widget`: X / Twitter, Instagram, Facebook posts and videos (`facebook_kind`), TikTok, Bluesky, Reddit, Pinterest, Threads, Tumblr), plus **Mastodon** on any server.
+
+- **Post page**: the saved oEmbed snippet (`site_embeds/widget.html`, `| safe`: it comes from a fixed, first-party API host) and, when the snippet lacks it, that site's one official script from `social_embeds.SITES` (`widget_script`). X used to be asked with `omit_script`, so its posts drew as a plain quote; posts saved like that are fixed by the template.
+- **Feeds never load a live widget** (dozens per page): a `widget` post falls through to the link-preview card (`submission_listing.html`), made from the oEmbed answer when the post is saved (`card_from_oembed` -> `meta_title` "Elon Musk on X", `meta_description` the post's text; `default_card` "Post on Instagram" when the site names nobody, as Instagram and Facebook now do without a key). These sites send nothing to the page fetcher, which is why `thumbs.thumbnail_thread` takes the card from `known_provider_embed` (it now answers `(type, content, thumbnail, card)`).
+- **Mastodon is any server, so it is never trusted like a fixed host**: only a link shaped like a post (`mastodon_post`: https, the usual port, `/@user/<digits>`), its oEmbed fetched through `helpers/safe_fetch.py` (never `requests`), and only the post's own `/embed` page on the same server kept (`mastodon_embed_src` reads the 4.3+ `data-embed-url` placeholder or an older `<iframe>`; `mastodon_iframe_ok`), drawn in a sandboxed frame we write (`mastodon_snippet`).
+- **Threads** is its own markup built from the link (`threads_snippet`, no API) for its `embed.js`. **YouTube** Shorts and `/live/` links are videos (`youtube_id`).
+- `twitter_embed`, `instagram_embed`, `facebook_oembed`, `tiktok_oembed` stay as they were: the old per-domain `Domain.embed_function` path calls them by name with `eval` and wants a string.
+- Posts saved before: `PYTHONPATH=. python scripts/backfill_social_embeds.py --once` clears and re-works the embed of every live post on these sites (and Shorts / live) that has no card.
+- Not working from every network: TikTok's oEmbed did not answer from the local container (a timeout), so its posts may stay plain links there.
+- Tests: `tests/test_social_embeds.py`, `tests/test_embed_trust.py`.
+
 ## Send a post to a chat (legacy app)
 
 The share menu of a post has **Send in chat**: a sheet with your chats and the people you follow, an optional message and one tap on Send. **Chats are end-to-end encrypted and only the browser's chat client holds the keys, so the server can never write a message for someone.** The message is sent by the chat page itself:

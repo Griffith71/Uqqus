@@ -34,6 +34,14 @@ def ratio_class_global(ups, downs):
     return ratio_class(ups, downs)
 
 
+@app.template_global("widget_script")
+def widget_script(url, snippet):
+    """The official script a saved social-post snippet needs on the post page (helpers/social_embeds.py SITES), or
+    None when it already loads one. Only ever an address from that fixed list."""
+    from ruqqus.helpers.social_embeds import script_for
+    return script_for(url, snippet)
+
+
 @app.template_global("handle_tag")
 def handle_tag(u):
     """The @handle drawn muted after a display name in a byline or a list, as on x.com. Nothing for an account

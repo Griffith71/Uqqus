@@ -121,7 +121,9 @@
           </div>
         </div>
 
-        {% elif p.embed_url %}
+        {% elif p.embed_url and p.embed_kind != 'widget' %}
+        {# a social post ('widget': X, Instagram, Bluesky...) falls through to the link-preview card below, made from
+           its oEmbed answer ("Elon Musk on X" and its text): no live widget per card, and no empty play box #}
         <a href="{{ p.permalink }}" rel="{% if author_of(p, v).is_private %}nofollow {% endif %}noopener" class="embed-lg mb-3 d-block">
           {% if p.preview_image_url %}<img src="{{ p.preview_image_url }}" alt="video preview" loading="lazy" onerror="hideBrokenMedia(this)">{% endif %}
           <div class="embed-lg-play"><i class="fas fa-play-circle"></i></div>

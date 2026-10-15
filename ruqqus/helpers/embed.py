@@ -7,6 +7,7 @@ import json
 from ruqqus.__main__ import app
 from .get import *
 from .embed_trust import same_provider_player
+from . import social_embeds
 
 youtube_regex = re.compile(r"^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*")
 ruqqus_regex = re.compile(r"^https?://.*ruqqus\.com/\+\w+/post/(\w+)(/[a-zA-Z0-9_-]+/(\w+))?")
@@ -23,11 +24,8 @@ FACEBOOK_TOKEN=environ.get("FACEBOOK_TOKEN","").lstrip().rstrip()
 
 def youtube_embed(url):
 
-    try:
-        yt_id = re.match(youtube_regex, url).group(2)
-    except AttributeError:
-        return "error"
-
+    # watch?v=, youtu.be/, embed/, v/, shorts/ and live/ (social_embeds.youtube_id)
+    yt_id = social_embeds.youtube_id(url)
     if not yt_id or len(yt_id) != 11:
         return "error"
 
@@ -97,6 +95,87 @@ def instagram_embed(url):
     x=requests.get(oembed_url, params=params, headers=headers, timeout=6)
 
     return x.json()["html"]
+
+
+# The social sites (helpers/social_embeds.py has the rules). Each answers (snippet, thumbnail, card): the site's own
+# oEmbed snippet for the post page, a preview picture when the site gives one, and the (title, text) of the feed's
+# link-preview card. Each calls one fixed, first-party API host, as twitter_embed and instagram_embed always did.
+# twitter_embed / instagram_embed above stay as they were: the old per-domain Domain.embed_function path calls them
+# by name and wants a plain string.
+def _oembed(endpoint, url, params=None, headers=None):
+    resp = requests.get(endpoint, params={"url": url, **(params or {})}, headers=headers, timeout=6)
+    data = resp.json()
+    if not data.get("html"):
+        return None
+    card = social_embeds.card_from_oembed(data, url)
+    return data["html"], data.get("thumbnail_url"), card if card[0] else social_embeds.default_card(url)
+
+
+def x_oembed(url):
+    # with X's widgets.js in the snippet this time (omit_script made posts render as a plain quote)
+    return _oembed("https://publish.twitter.com/oembed", url, {"dnt": "true"})
+
+
+def instagram_oembed(url):
+    params = {"access_token": FACEBOOK_TOKEN} if FACEBOOK_TOKEN else {}
+    return _oembed("https://graph.facebook.com/v9.0/instagram_oembed", url, params,
+                   {"User-Agent": "Instagram embedder for Ruqqus"})
+
+
+def facebook_post_oembed(url):
+    # a post and a video are two different services at Facebook; both answer without a token for public posts
+    service = "oembed_video" if social_embeds.facebook_kind(url) == "video" else "oembed_post"
+    params = {"access_token": FACEBOOK_TOKEN} if FACEBOOK_TOKEN else {}
+    return _oembed(f"https://graph.facebook.com/v21.0/{service}", url, params)
+
+
+def tiktok_card_oembed(url):
+    return _oembed("https://www.tiktok.com/oembed", url)
+
+
+def bluesky_oembed(url):
+    return _oembed("https://embed.bsky.app/oembed", url, {"format": "json"})
+
+
+def reddit_oembed(url):
+    return _oembed("https://www.reddit.com/oembed", url, {"format": "json"}, {"User-Agent": "Ruqqus embedder"})
+
+
+def pinterest_oembed(url):
+    return _oembed("https://www.pinterest.com/oembed.json", url)
+
+
+def tumblr_oembed(url):
+    return _oembed("https://www.tumblr.com/oembed/1.0", url)
+
+
+def threads_embed(url):
+    # Threads' own markup, built from the link (no API); its embed.js turns it into the card
+    snippet = social_embeds.threads_snippet(url)
+    return (snippet, None, social_embeds.threads_card(url)) if snippet else None
+
+
+def mastodon_embed(url):
+    """A post on any Mastodon server, as a sandboxed frame of that server's own embed page. The server is whatever the
+    member linked, so its oEmbed is fetched through safe_fetch (public addresses only, small, quick), and nothing of its
+    answer is drawn but a checked address (social_embeds.mastodon_iframe_ok) in a frame we write."""
+    from ruqqus.helpers import safe_fetch
+
+    found = social_embeds.mastodon_post(url)
+    if not found:
+        return None
+    host, endpoint = found
+    try:
+        data = safe_fetch.get_json(endpoint, params={"url": url, "format": "json"})
+    except Exception:
+        return None
+    if not isinstance(data, dict):
+        return None
+    src = social_embeds.mastodon_embed_src(data.get("html") or "")
+    if not src or not social_embeds.mastodon_iframe_ok(src, host):
+        return None
+    title = f"{social_embeds._plain(data.get('author_name'), 120)} on Mastodon" if data.get("author_name") else "Post on Mastodon"
+    return social_embeds.mastodon_snippet(src), None, (title, "")
 
 
 def rumble_embed(url):
@@ -219,11 +298,19 @@ KNOWN_PROVIDER_HANDLERS = {
     "twitch.tv": ("iframe", twitch_embed),
     "clips.twitch.tv": ("iframe", twitch_embed),
     "bilibili.com": ("iframe", bilibili_embed),
-    "facebook.com": ("widget", facebook_oembed),
-    "twitter.com": ("widget", twitter_embed),
-    "x.com": ("widget", twitter_embed),
-    "instagram.com": ("widget", instagram_embed),
-    "tiktok.com": ("widget", tiktok_oembed),
+    "facebook.com": ("widget", facebook_post_oembed),
+    "fb.watch": ("widget", facebook_post_oembed),
+    "twitter.com": ("widget", x_oembed),
+    "x.com": ("widget", x_oembed),
+    "instagram.com": ("widget", instagram_oembed),
+    "tiktok.com": ("widget", tiktok_card_oembed),
+    "bsky.app": ("widget", bluesky_oembed),
+    "reddit.com": ("widget", reddit_oembed),
+    "redd.it": ("widget", reddit_oembed),
+    "pinterest.com": ("widget", pinterest_oembed),
+    "threads.net": ("widget", threads_embed),
+    "threads.com": ("widget", threads_embed),
+    "tumblr.com": ("widget", tumblr_oembed),
 }
 
 
@@ -231,7 +318,7 @@ IFRAME_PROVIDER_DOMAINS = tuple(d for d, (kind, _) in KNOWN_PROVIDER_HANDLERS.it
 
 
 def known_provider_embed(url):
-    """Returns (embed_type, embed_src, thumbnail_url) for a URL matching
+    """Returns (embed_type, embed_src, thumbnail_url, card) for a URL matching
     one of the named platforms above, or (None, None, None) if its domain
     isn't one of them (in which case the caller falls through to the fully
     generic detection below) or the handler itself failed (bad/
@@ -252,17 +339,29 @@ def known_provider_embed(url):
             try:
                 result = handler(url)
             except Exception:
-                return None, None, None
+                return None, None, None, None
+            return _unpack(embed_type, result)
 
-            thumbnail_url = None
-            if isinstance(result, tuple):
-                result, thumbnail_url = result
+    # Mastodon is any server, not a fixed host: only a link shaped like a post, and only through safe_fetch
+    if social_embeds.mastodon_post(url):
+        try:
+            return _unpack("widget", mastodon_embed(url))
+        except Exception:
+            return None, None, None, None
 
-            if not result or result == "error":
-                return None, None, None
-            return embed_type, result, thumbnail_url
+    return None, None, None, None
 
-    return None, None, None
+
+def _unpack(embed_type, result):
+    """A handler's answer as (embed_type, content, thumbnail, card): a plain string (the older handlers), or a
+    (content, thumbnail) or (content, thumbnail, card) tuple. Nothing usable is (None, None, None, None)."""
+    thumbnail_url, card = None, None
+    if isinstance(result, tuple):
+        result, thumbnail_url, *rest = result
+        card = rest[0] if rest else None
+    if not result or result == "error":
+        return None, None, None, None
+    return embed_type, result, thumbnail_url, card
 
 
 # Generic (non-domain-configured) video detection, used as a fallback by
@@ -338,7 +437,7 @@ def detect_video_embed(url, response, soup):
                             site_embeds/widget.html instead
     or (None, None, None) if nothing could be detected.
     """
-    known_type, known_src, known_thumbnail = known_provider_embed(url)
+    known_type, known_src, known_thumbnail, _card = known_provider_embed(url)
     if known_type:
         return known_type, known_src, known_thumbnail
 

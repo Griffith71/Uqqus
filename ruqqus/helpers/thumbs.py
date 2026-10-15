@@ -63,12 +63,20 @@ def thumbnail_thread(pid, debug=False):
     # fetchability first would make those platforms fail for a reason
     # that has nothing to do with whether the embed itself actually works.
     if not post.embed_url:
-        known_type, known_src, known_thumb = known_provider_embed(fetch_url)
+        known_type, known_src, known_thumb, known_card = known_provider_embed(fetch_url)
         if known_type:
             post.submission_aux.embed_url = known_src
             post.submission_aux.embed_type = known_type
             if known_thumb:
                 post.submission_aux.preview_image_url = known_thumb
+            # a social post's feed card ("Elon Musk on X" and its text): these sites send no preview to the page
+            # fetcher below, and the feed shows no live widgets (helpers/social_embeds.py)
+            if known_card:
+                card_title, card_text = known_card
+                if card_title:
+                    post.submission_aux.meta_title = card_title[:500]
+                if card_text:
+                    post.submission_aux.meta_description = card_text[:1000]
             db.add(post)
             db.add(post.submission_aux)
             db.commit()
