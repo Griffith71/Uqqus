@@ -26,6 +26,7 @@ from ruqqus.helpers import comment_permission as cperm
 from ruqqus.helpers import anonymity
 from ruqqus.classes import *
 from flask import *
+from ruqqus.helpers import sharing
 from ruqqus.__main__ import app, limiter, db_session
 from .front import frontlist
 
@@ -961,6 +962,10 @@ def repost_comment(cid, v):
     if comment.post and comment.post.in_private_guild_for(v):
         abort(403)
 
+    refusal = sharing.comment_refusal(comment, v)        # on a post that isn't public: only its author shares it
+    if refusal:
+        return {"error": refusal}, 403
+
     if circle_guard.under_audience(g.db, comment):
         return {"error": "A comment on a post for a Circle can't be reposted."}, 400
 
@@ -1032,6 +1037,10 @@ def forward_comment(cid, v):
 
     if comment.post and comment.post.in_private_guild_for(v):
         abort(403)
+
+    refusal = sharing.comment_refusal(comment, v)        # on a post that isn't public: only its author shares it
+    if refusal:
+        return {"error": refusal}, 403
 
     if circle_guard.under_audience(g.db, comment):
         return {"error": "A comment on a post for a Circle can't be forwarded to a guild."}, 400

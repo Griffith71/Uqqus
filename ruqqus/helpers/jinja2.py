@@ -42,6 +42,19 @@ def widget_script(url, snippet):
     return script_for(url, snippet)
 
 
+@app.template_global("may_share")
+def may_share_global(post, v):
+    """Draw a post's share controls? (helpers/sharing.py: anyone when it is public, only its author otherwise)"""
+    from ruqqus.helpers.sharing import may_share
+    return may_share(post, v)
+
+
+@app.template_global("may_share_comment")
+def may_share_comment_global(comment, v):
+    from ruqqus.helpers.sharing import may_share_comment
+    return may_share_comment(comment, v)
+
+
 @app.template_global("handle_tag")
 def handle_tag(u):
     """The @handle drawn muted after a display name in a byline or a list, as on x.com. Nothing for an account

@@ -218,6 +218,14 @@ class Submission(Base, Stndrd, Age_times, Scores, Fuzzing):
         return g.db.query(Submission).filter_by(
             repost_id=self.id).order_by(Submission.created_utc.asc()).all()
 
+    def forwards_shown_to(self, v):
+        """The copies a post's "Forwarded to" list shows `v`: live ones (not deleted, removed or in a banned guild) in
+        guilds `v` may see. So it never names a private guild to someone outside it (helpers/sharing.py), nor a copy
+        that was taken down, by deleting it or when the author moved the post to a Circle (routes/circles.py)."""
+        return [f for f in self.forwards
+                if not f.deleted_utc and not f.is_banned and not f.hidden_by_guild and not f.board.is_banned
+                and not f.in_private_guild_for(v)]
+
     @property
     @lazy
     def is_forward_copy(self):

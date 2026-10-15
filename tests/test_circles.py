@@ -160,7 +160,7 @@ def test_a_price_is_described_in_words():
 # --- making a post for an audience ----------------------------------------------------------------------
 
 def test_a_public_post_is_never_refused_for_its_audience():
-    assert c.post_refusal(c.PUBLIC, anonymous=True, coauthors=True, forwards=True, own_video=True, shared=True) is None
+    assert c.post_refusal(c.PUBLIC, anonymous=True, coauthors=True, forwards=True, own_video=True) is None
 
 
 @pytest.mark.parametrize("audience", [c.SUBSCRIBERS, c.FRIENDS])
@@ -169,12 +169,11 @@ def test_what_a_circle_post_cannot_be(audience):
     assert "anonymous" in c.post_refusal(audience, anonymous=True)
     assert "co-authors" in c.post_refusal(audience, coauthors=True)
     assert "forwarded to a guild" in c.post_refusal(audience, forwards=True)
-    assert "already been forwarded or reposted" in c.post_refusal(audience, shared=True)
     assert "YouTube" in c.post_refusal(audience, own_video=True)
 
 
 def test_the_first_problem_is_the_one_said():
-    assert "anonymous" in c.post_refusal(c.FRIENDS, anonymous=True, coauthors=True, forwards=True, own_video=True, shared=True)
+    assert "anonymous" in c.post_refusal(c.FRIENDS, anonymous=True, coauthors=True, forwards=True, own_video=True)
     assert "co-authors" in c.post_refusal(c.FRIENDS, coauthors=True, forwards=True, own_video=True)
 
 

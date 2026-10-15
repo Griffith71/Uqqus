@@ -35,6 +35,7 @@ from ruqqus.helpers import circles as circle_rules, circle_guard
 from ruqqus.helpers import insights_store
 from ruqqus.helpers import bots as bot_rules, bot_store
 from ruqqus.helpers import sensitive as sensitive_rules
+from ruqqus.helpers import sharing
 from .front import frontlist
 from ruqqus.__main__ import app, limiter, cache, db_session
 from flask import session as flask_session
@@ -1735,6 +1736,10 @@ Required form data:
     if post.in_private_guild_for(v) or primary.in_private_guild_for(v):
         abort(403)
 
+    refusal = sharing.post_refusal(post, v)              # not public: only its author shares it
+    if refusal:
+        return {"error": refusal}, 403
+
     if primary.is_banned or primary.deleted_utc or primary.purged_utc:
         return {"error": "This post can't be forwarded."}, 400
 
@@ -1978,6 +1983,10 @@ def repost_post(base36id, v):
 
     if post.in_private_guild_for(v) or primary.in_private_guild_for(v):
         abort(403)
+
+    refusal = sharing.post_refusal(post, v)              # not public: only its author shares it
+    if refusal:
+        return {"error": refusal}, 403
 
     if primary.is_banned or primary.deleted_utc or primary.purged_utc:
         return {"error": "This post can't be reposted."}, 400

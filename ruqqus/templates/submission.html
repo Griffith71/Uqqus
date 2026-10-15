@@ -24,15 +24,20 @@
 
 
 {% block sidebarblock %}
+{% set shortlink_shown = may_share(p, v) %}{# only its author shares a post that isn't public (helpers/sharing.py) #}
+{% if shortlink_shown or p.board_id != p.original_board_id %}
 <div class="sidebar-section sidebar-info">
   <div class="title"><i class="fas fa-info-circle mr-2"></i>Post Info</div>
   <div class="body">
     {% if p.board_id != p.original_board_id %}
     <div class="text-small mb-2">Originally in: <a href="{{ p.original_board.permalink }}">+{{ p.original_board.name }}</a></div>
     {% endif %}
+    {% if shortlink_shown %}
     <div class="text-small mb-2">Shortlink: <input readonly="readonly" value="{{ p.shortlink }}" data-clipboard-text="{{ p.shortlink }}" role="button" class="copy-link form-control form-control-sm rounded"></div>
+    {% endif %}
   </div>
 </div>
+{% endif %}
 
 {% if not p.is_profile_post %}
 {% set b=p.board %}
@@ -311,11 +316,12 @@
       </div>
       <div class="modal-body">
         <ul class="list-group post-actions">
-          {% if p.is_profile_post and p.forwards %}
-          <button class="btn btn-link btn-block btn-lg text-left text-muted" data-toggle="collapse" href="#forwards-mobile-{{ p.base36id }}" role="button" aria-expanded="false" aria-controls="forwards-mobile-{{ p.base36id }}"><i class="far fa-share-square text-center text-muted mr-3"></i>Forwarded to {{ p.forwards | length }} guild{{ '' if p.forwards | length == 1 else 's' }}</button>
+          {% set shown_forwards = p.forwards_shown_to(v) if p.is_profile_post else [] %}
+          {% if shown_forwards %}
+          <button class="btn btn-link btn-block btn-lg text-left text-muted" data-toggle="collapse" href="#forwards-mobile-{{ p.base36id }}" role="button" aria-expanded="false" aria-controls="forwards-mobile-{{ p.base36id }}"><i class="far fa-share-square text-center text-muted mr-3"></i>Forwarded to {{ shown_forwards | length }} guild{{ '' if shown_forwards | length == 1 else 's' }}</button>
           <div class="collapse px-3 pb-2" id="forwards-mobile-{{ p.base36id }}">
             <ul class="list-unstyled mb-0">
-              {% for fp in p.forwards %}
+              {% for fp in shown_forwards %}
               <li class="text-small"><a href="{{ fp.permalink }}">+{{ fp.board.name }}</a> &middot; {{ fp.comment_count }} comment{{ '' if fp.comment_count == 1 else 's' }} &middot; {{ fp.score }} point{{ '' if fp.score == 1 else 's' }}</li>
               {% endfor %}
             </ul>
@@ -554,14 +560,15 @@
 
           </div>
 
-          {% if p.is_profile_post and p.forwards %}
+          {% set shown_forwards = p.forwards_shown_to(v) if p.is_profile_post else [] %}
+          {% if shown_forwards %}
           <div class="mb-2">
             <a class="text-small text-muted" data-toggle="collapse" href="#forwards-{{ p.base36id }}" role="button" aria-expanded="false" aria-controls="forwards-{{ p.base36id }}">
-              <i class="fas fa-share fa-fw"></i>Forwarded to {{ p.forwards | length }} guild{{ '' if p.forwards | length == 1 else 's' }} <i class="fas fa-caret-down"></i>
+              <i class="fas fa-share fa-fw"></i>Forwarded to {{ shown_forwards | length }} guild{{ '' if shown_forwards | length == 1 else 's' }} <i class="fas fa-caret-down"></i>
             </a>
             <div class="collapse" id="forwards-{{ p.base36id }}">
               <ul class="list-unstyled mb-0 mt-1 pl-3">
-                {% for fp in p.forwards %}
+                {% for fp in shown_forwards %}
                 <li class="text-small"><a href="{{ fp.permalink }}">+{{ fp.board.name }}</a> &middot; {{ fp.comment_count }} comment{{ '' if fp.comment_count == 1 else 's' }} &middot; {{ fp.score }} point{{ '' if fp.score == 1 else 's' }}</li>
                 {% endfor %}
               </ul>

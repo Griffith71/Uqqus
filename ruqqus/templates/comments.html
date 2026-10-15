@@ -111,6 +111,10 @@
 {% set can_moderate = v and v.admin_level>=3 %}
 {% set can_pin = v and c.post and c.is_guildmaster('content') %}
 {% set can_author_prune = v and c.post and c.post.is_profile_post and v.id==c.post.author_id %}
+{# sharing a comment: anyone's on a public post, only its author's otherwise (helpers/sharing.py); a comment on a
+   post made for a Circle is never forwarded or reposted (circle_guard.under_audience) #}
+{% set can_share = may_share_comment(c, v) %}
+{% set can_forward = v and can_share and not (c.post and c.post.audience) %}
 
 {% if standalone and level==1 %}
 <div class="post-info mt-5 mb-1">
@@ -208,14 +212,15 @@
       </div>
       {{ community_note(c) }}
 
-      {% if c.forwarded_posts %}
+      {% set shown_forwards = c.forwards_shown_to(v) %}
+      {% if shown_forwards %}
       <div class="mb-2">
         <a class="text-small text-muted" data-toggle="collapse" href="#forwarded-{{ c.base36id }}" role="button" aria-expanded="false" aria-controls="forwarded-{{ c.base36id }}">
-          <i class="fas fa-share fa-fw"></i>Forwarded to {{ c.forwarded_posts | length }} guild{{ '' if c.forwarded_posts | length == 1 else 's' }} <i class="fas fa-caret-down"></i>
+          <i class="fas fa-share fa-fw"></i>Forwarded to {{ shown_forwards | length }} guild{{ '' if shown_forwards | length == 1 else 's' }} <i class="fas fa-caret-down"></i>
         </a>
         <div class="collapse" id="forwarded-{{ c.base36id }}">
           <ul class="list-unstyled mb-0 mt-1 pl-3">
-            {% for pp in c.forwarded_posts %}
+            {% for pp in shown_forwards %}
             <li class="text-small"><a href="{{ pp.permalink }}">+{{ pp.board.name }}</a> &middot; {{ pp.comment_count }} comment{{ '' if pp.comment_count == 1 else 's' }} &middot; {{ pp.score }} point{{ '' if pp.score == 1 else 's' }}</li>
             {% endfor %}
           </ul>
@@ -280,25 +285,26 @@
           {% endif %}
           {% endif %}
 
+          {% if can_share %}
           <li class="list-inline-item text-muted d-none d-md-inline-block">
             <div class="dropdown show">
               <a href="javascript:void(0)" role="button" id="shareDropdownLink-{{ c.base36id }}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-share-alt"></i><span class="d-none d-md-inline-block">Share</span></a>
               <div class="dropdown-menu border-0 shadow" aria-labelledby="shareDropdownLink-{{ c.base36id }}">
                 <a class="dropdown-item copy-link" href="javascript:void(0);" role="button" data-clipboard-text="{{ c.permalink | full_link }}"><i class="fas fa-copy fa-fw"></i>Copy link</a>
-                {% if v %}
+                {% if can_forward %}
                 <a class="dropdown-item" href="javascript:void(0)" data-toggle="modal" data-target="#forwardCommentModal" onclick="forward_commentModal('{{ c.base36id }}')"><i class="fas fa-share fa-fw"></i>Forward</a>
-                {% if organise_bookmarks %}<a class="dropdown-item bookmark-folder-item" href="javascript:void(0)" data-kind="comment" data-id="{{ c.base36id }}"><i class="fas fa-folder fa-fw"></i>Move to folder</a>{% endif %}
                 {% endif %}
               </div>
             </div>
           </li>
+          {% endif %}
 
           {% if v %}
           <li class="list-inline-item text-muted d-none d-md-inline-block"><a id="bookmark-{{ c.base36id }}" href="javascript:void(0)" class="{% if c.saved %}d-none{% endif %}" onclick="post_toast('/save_comment/{{ c.base36id }}', callback=function(){document.getElementById('bookmark-{{ c.base36id }}').classList.toggle('d-none');document.getElementById('unbookmark-{{ c.base36id }}').classList.toggle('d-none');})"><i class="far fa-bookmark"></i><span class="d-none d-md-inline-block">Bookmark</span></a></li>
           <li class="list-inline-item text-purple d-none d-md-inline-block"><a id="unbookmark-{{ c.base36id }}" href="javascript:void(0)" class="text-purple{% if not c.saved %} d-none{% endif %}" onclick="post_toast('/unsave_comment/{{ c.base36id }}', callback=function(){document.getElementById('bookmark-{{ c.base36id }}').classList.toggle('d-none');document.getElementById('unbookmark-{{ c.base36id }}').classList.toggle('d-none');})"><i class="fas fa-bookmark"></i><span class="d-none d-md-inline-block">Bookmarked</span></a></li>
           {% endif %}
 
-          {% if v %}
+          {% if can_forward %}
           <li class="list-inline-item text-muted d-none d-md-inline-block"><a id="repost-{{ c.base36id }}" href="javascript:void(0)" class="{% if c.reposted %}d-none{% endif %}" onclick="post_toast('/comment/{{ c.base36id }}/repost', callback=function(){document.getElementById('repost-{{ c.base36id }}').classList.toggle('d-none');document.getElementById('unrepost-{{ c.base36id }}').classList.toggle('d-none');document.getElementById('repost-modal-{{ c.base36id }}').classList.toggle('d-none');document.getElementById('unrepost-modal-{{ c.base36id }}').classList.toggle('d-none');})"><i class="fas fa-retweet"></i><span class="d-none d-md-inline-block">Repost</span></a></li>
           <li class="list-inline-item text-success d-none d-md-inline-block"><a id="unrepost-{{ c.base36id }}" href="javascript:void(0)" class="text-success{% if not c.reposted %} d-none{% endif %}" onclick="post_toast('/comment/{{ c.base36id }}/unrepost', callback=function(){document.getElementById('repost-{{ c.base36id }}').classList.toggle('d-none');document.getElementById('unrepost-{{ c.base36id }}').classList.toggle('d-none');document.getElementById('repost-modal-{{ c.base36id }}').classList.toggle('d-none');document.getElementById('unrepost-modal-{{ c.base36id }}').classList.toggle('d-none');})"><i class="fas fa-retweet"></i><span class="d-none d-md-inline-block">Reposted</span></a></li>
           {% endif %}
@@ -314,6 +320,8 @@
             <div class="dropdown-menu border-0 shadow dropdown-menu-right" aria-labelledby="dropdownMoreLink">
 
               <a class="dropdown-item" target="_blank" href="{{ c.permalink }}?context=3"><i class="fas fa-book-open fa-fw"></i>Context</a>
+
+              {% if organise_bookmarks %}<a class="dropdown-item bookmark-folder-item" href="javascript:void(0)" data-kind="comment" data-id="{{ c.base36id }}"><i class="fas fa-folder fa-fw"></i>Move to folder</a>{% endif %}
 
               {% if v.id != c.author_id and not author_of(c, v).is_deleted and not anon_hidden(c, v) %}
               <a class="dropdown-item" href="javascript:void(0)" data-toggle="modal" data-target="#tipModal" onclick="tipModal2('{{ c.base36id }}','comment','{{ c.permalink }}','{{ author_of(c, v).username }}','{{ author_of(c, v).profile_url }}')"><i class="fas fa-star fa-fw"></i>Tip</a>
@@ -511,19 +519,23 @@
           <li class="list-group-item"><a href="javascript:void(0)" data-dismiss="modal" onclick="document.getElementById('comment-on-{{ c.base36id }}').classList.remove('d-none')" class="d-block"><i class="fas fa-reply"></i><span>Comment</span></a></li>
           {% endif %}
 
+          {% if can_share %}
           <li class="list-group-item"><a href="javascript:void(0);" role="button" class="d-block copy-link" data-dismiss="modal" data-clipboard-text="{{ c.permalink | full_link}}"><i class="fas fa-copy"></i><span>Copy Link</span></a></li>
+          {% endif %}
 
           <li class="list-group-item"><a class="d-block" href="/comment/{{ c.base36id }}/history"><i class="fas fa-history"></i><span>History</span></a></li>
 
           {% if v %}
+          {% if can_forward %}
           <li class="list-group-item"><a href="javascript:void(0)" class="d-block" data-dismiss="modal" data-toggle="modal" data-target="#forwardCommentModal" onclick="forward_commentModal('{{ c.base36id }}')"><i class="fas fa-share-square"></i><span>Forward</span></a></li>
+          {% endif %}
 
           <li class="list-group-item"><a id="bookmark-modal-{{ c.base36id }}" href="javascript:void(0)" class="d-block{% if c.saved %} d-none{% endif %}" data-dismiss="modal" onclick="post_toast('/save_comment/{{ c.base36id }}', callback=function(){document.getElementById('bookmark-{{ c.base36id }}').classList.toggle('d-none');document.getElementById('unbookmark-{{ c.base36id }}').classList.toggle('d-none');document.getElementById('bookmark-modal-{{ c.base36id }}').classList.toggle('d-none');document.getElementById('unbookmark-modal-{{ c.base36id }}').classList.toggle('d-none');})"><i class="far fa-bookmark"></i><span>Bookmark</span></a></li>
           {% if organise_bookmarks %}<li class="list-group-item"><a href="javascript:void(0)" class="d-block bookmark-folder-item" data-dismiss="modal" data-kind="comment" data-id="{{ c.base36id }}"><i class="fas fa-folder"></i><span>Move to folder</span></a></li>{% endif %}
           <li class="list-group-item"><a id="unbookmark-modal-{{ c.base36id }}" href="javascript:void(0)" class="d-block text-purple{% if not c.saved %} d-none{% endif %}" data-dismiss="modal" onclick="post_toast('/unsave_comment/{{ c.base36id }}', callback=function(){document.getElementById('bookmark-{{ c.base36id }}').classList.toggle('d-none');document.getElementById('unbookmark-{{ c.base36id }}').classList.toggle('d-none');document.getElementById('bookmark-modal-{{ c.base36id }}').classList.toggle('d-none');document.getElementById('unbookmark-modal-{{ c.base36id }}').classList.toggle('d-none');})"><i class="fas fa-bookmark"></i><span>Remove bookmark</span></a></li>
           {% endif %}
 
-          {% if v %}
+          {% if can_forward %}
           <li class="list-group-item"><a id="repost-modal-{{ c.base36id }}" href="javascript:void(0)" class="d-block{% if c.reposted %} d-none{% endif %}" data-dismiss="modal" onclick="post_toast('/comment/{{ c.base36id }}/repost', callback=function(){document.getElementById('repost-{{ c.base36id }}').classList.toggle('d-none');document.getElementById('unrepost-{{ c.base36id }}').classList.toggle('d-none');document.getElementById('repost-modal-{{ c.base36id }}').classList.toggle('d-none');document.getElementById('unrepost-modal-{{ c.base36id }}').classList.toggle('d-none');})"><i class="fas fa-retweet"></i><span>Repost</span></a></li>
           <li class="list-group-item"><a id="unrepost-modal-{{ c.base36id }}" href="javascript:void(0)" class="d-block text-success{% if not c.reposted %} d-none{% endif %}" data-dismiss="modal" onclick="post_toast('/comment/{{ c.base36id }}/unrepost', callback=function(){document.getElementById('repost-{{ c.base36id }}').classList.toggle('d-none');document.getElementById('unrepost-{{ c.base36id }}').classList.toggle('d-none');document.getElementById('repost-modal-{{ c.base36id }}').classList.toggle('d-none');document.getElementById('unrepost-modal-{{ c.base36id }}').classList.toggle('d-none');})"><i class="fas fa-retweet"></i><span>Reposted</span></a></li>
           {% endif %}

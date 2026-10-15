@@ -578,8 +578,10 @@ def test_menus_agree_with_the_server():
     assert "and not anon_hidden(p, v) %}\n                <a class=\"dropdown-item\" href=\"javascript:void(0)\" data-toggle=\"modal\" data-target=\"#reportPostModal\"" not in listing
     # the share menus (Send in chat, Forward, Repost) are drawn by partials/post_actions.html for both pages
     actions = read("templates", "partials", "post_actions.html")
-    assert '{% if v %}<a class="dropdown-item share-chat-item"' not in actions
-    assert actions.count("{% if v and not p.audience %}") == 2
+    # drawn only for whoever may share the post (helpers/sharing.py); never forwarded or reposted when made for a Circle
+    menu = actions.split("{% if may_share(p, v) %}")[1].split("{% else %}")[0]
+    assert '{% if v %}<a class="dropdown-item share-chat-item"' in menu
+    assert actions.count("{% if v and not p.audience %}") == 1 and menu.index("share-chat-item") < menu.index("{% if v and not p.audience %}")
     for name in ("submission_listing.html", "submission.html"):
         page = read("templates", name)
         assert '{% if v %}<a class="dropdown-item share-chat-item"' not in page, name

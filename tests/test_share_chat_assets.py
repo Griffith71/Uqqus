@@ -27,8 +27,9 @@ def route(name):
 # --- the share menus and the sheet ---------------------------------------------------------
 
 def test_every_share_menu_of_a_post_offers_send_in_chat_for_a_member():
-    # not on a post made for a Circle, which stays between the author and the Circle (2026-10-10)
-    item = ('{% if v and not p.audience %}<a class="dropdown-item share-chat-item" href="javascript:void(0);" role="button" '
+    # the whole menu is drawn only for whoever may share the post (helpers/sharing.py): anyone when it is public, its
+    # author otherwise, so the author of a Circle post may send it to a chat (its card is drawn for each reader)
+    item = ('{% if v %}<a class="dropdown-item share-chat-item" href="javascript:void(0);" role="button" '
             'data-share-url="{{ p.permalink | full_link }}"><i class="fas fa-paper-plane fa-fw"></i>Send in chat</a>{% endif %}')
     # the share menu of a post is drawn by one partial (partials/post_actions.html), used by the card and the post
     # page, on desktop and on the phone

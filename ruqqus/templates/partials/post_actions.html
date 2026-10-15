@@ -8,7 +8,9 @@
   assets/js/bookmark_folders.js turns on when an item is filed.
 
   - Comments: `p.comment_count`, a link to the post.
-  - Shares: `p.share_count` (reposts and live public forwards, helpers/post_counts.py), opening the share menu.
+  - Shares: `p.share_count` (reposts and live public forwards, helpers/post_counts.py), opening the share menu for
+    whoever may share the post (helpers/sharing.py: anyone when it is public, only its author otherwise); for anyone
+    else the count alone, with no menu.
   - Bookmarks: `p.bookmark_count`. Both states are drawn with their own count (without and with the viewer's
     bookmark), so switching state is only showing the other one: no arithmetic in the page.
   - Tips: `p.tip_coins`, the coins tipped (helpers/tips.py; never who). Opens the tip sheet where a tip is
@@ -39,6 +41,7 @@
 </li>
 
 <li class="list-inline-item post-action-item">
+  {% if may_share(p, v) %}
   <div class="dropdown d-inline">
     <a href="#" role="button" class="post-action post-action-shares" id="shareDropdownLink{{ 'Mobile' if mobile }}-{{ p.base36id }}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
        title="Share ({{ shares }} share{{ '' if shares == 1 else 's' }})" aria-label="Share, {{ shares }} share{{ '' if shares == 1 else 's' }}">
@@ -46,8 +49,8 @@
     </a>
     <div class="dropdown-menu border-0 shadow{% if mobile %} dropdown-menu-right{% endif %}" aria-labelledby="shareDropdownLink{{ 'Mobile' if mobile }}-{{ p.base36id }}">
       <a class="dropdown-item copy-link" href="javascript:void(0);" role="button" data-clipboard-text="{{ p.permalink | full_link }}"><i class="fas fa-copy fa-fw"></i>Copy link</a>
-      {% if v and not p.audience %}<a class="dropdown-item share-chat-item" href="javascript:void(0);" role="button" data-share-url="{{ p.permalink | full_link }}"><i class="fas fa-paper-plane fa-fw"></i>Send in chat</a>{% endif %}
-      {# a post made for a Circle stays between the author and the Circle (circles.post_refusal) #}
+      {% if v %}<a class="dropdown-item share-chat-item" href="javascript:void(0);" role="button" data-share-url="{{ p.permalink | full_link }}"><i class="fas fa-paper-plane fa-fw"></i>Send in chat</a>{% endif %}
+      {# a post made for a Circle is never forwarded or reposted (circles.post_refusal); its author may still send it #}
       {% if v and not p.audience %}
       <a class="dropdown-item" href="javascript:void(0)" data-toggle="modal" data-target="#forwardPostModal" onclick="forward_postModal('{{ p.base36id }}')"><i class="fas fa-share fa-fw"></i>Forward</a>
       <a id="repost-{{ part }}{{ p.base36id }}" class="dropdown-item{% if p.reposted %} d-none{% endif %}" href="javascript:void(0)" onclick="post_toast('/post/{{ p.base36id }}/repost', callback=function(){document.getElementById('repost-{{ part }}{{ p.base36id }}').classList.toggle('d-none');document.getElementById('unrepost-{{ part }}{{ p.base36id }}').classList.toggle('d-none');})"><i class="fas fa-retweet fa-fw"></i>Repost</a>
@@ -55,6 +58,11 @@
       {% endif %}
     </div>
   </div>
+  {% else %}
+  <span class="post-action post-action-shares" title="Only the author can share this post">
+    <i class="fas fa-share-alt" aria-hidden="true"></i><span class="post-action-count">{{ _n(shares) }}</span><span class="sr-only"> share{{ '' if shares == 1 else 's' }}. Only the author can share this post.</span>
+  </span>
+  {% endif %}
 </li>
 
 <li class="list-inline-item post-action-item">

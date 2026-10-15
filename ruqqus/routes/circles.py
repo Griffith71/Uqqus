@@ -6,8 +6,8 @@ import time
 
 from flask import abort, g, jsonify, render_template, request
 
-from ruqqus.classes import RepostRelationship, Submission, User
-from ruqqus.helpers import circle_store, circles, coauthors
+from ruqqus.classes import Board, ForwardRelationship, RepostRelationship, Submission, User
+from ruqqus.helpers import circle_store, circles, coauthors, sharing
 from ruqqus.helpers.alerts import send_notification
 from ruqqus.helpers.get import get_guild, get_post, get_user
 from ruqqus.helpers.media import attach as media_attach, cdn as media_cdn
@@ -170,13 +170,42 @@ def _empty_audience(owner_id, audience):
     return "You have no Close Friends or subscribers yet, so only you would see this post."
 
 
+def _shared_copies(post, author_id):
+    """(the author's own live forward copies, how many live copies others forwarded, whether others reposted it)."""
+    copies = g.db.query(Submission).filter(Submission.repost_id == post.id, Submission.deleted_utc == 0).all()
+    mine = {rel.forward_submission_id for rel in g.db.query(ForwardRelationship).filter_by(
+        primary_submission_id=post.id, forwarded_by_id=author_id)}
+    own = [c for c in copies if c.id in mine]
+    reposted = g.db.query(RepostRelationship.id).filter(RepostRelationship.submission_id == post.id,
+                                                       RepostRelationship.user_id != author_id).first()
+    return own, len(copies) - len(own), bool(reposted)
+
+
+def _withdraw(own, author_id, now):
+    """Take down the forward copies the author made, as deleting the post does, and forget that they were forwarded,
+    so the post can be forwarded there again if it is made public again. Copies others made are not touched."""
+    for copy in own:
+        copy.deleted_utc = now
+        copy.is_pinned = False
+        copy.stickied = False
+        g.db.add(copy)
+        cache.delete_memoized(Board.idlist, copy.board)
+        cache.delete_memoized(Board.idlist, copy.board, sort="new")
+    if own:
+        g.db.query(ForwardRelationship).filter(ForwardRelationship.forwarded_by_id == author_id,
+                                               ForwardRelationship.forward_submission_id.in_([c.id for c in own])
+                                               ).delete(synchronize_session=False)
+
+
 @app.route("/api/post/<pid>/audience", methods=["POST"])
 @is_not_banned
 @validate_formkey
 def circle_post_audience(pid, v):
     """The author changes who can see one of their posts. Narrowing it to their Circle takes the same refusals as posting
-    it there (it cannot be anonymous, co-authored, forwarded, reposted or carry an own video); making it Public again
-    needs `confirm=1`, because a Circle post becomes visible to everyone (the page asks first)."""
+    it there (it cannot be anonymous, co-authored or carry an own video). A post that was public and already shared
+    can still be narrowed: what others did with it stays (their forward copies stay in their guilds; reposts follow
+    the post), the forward copies the author made are taken down, and the page says so first (`confirm=1`, as for
+    an empty Circle). Making it Public again needs `confirm=1` too: everyone will see it."""
     post = get_post(pid, v=v)                              # only someone who may see it gets this far
     if post.author_id != v.id:
         abort(403)
@@ -196,24 +225,27 @@ def circle_post_audience(pid, v):
     if audience == before:
         return jsonify({"message": "Nothing changed."})
 
+    own = []
     if audience != circles.PUBLIC:
-        shared = bool(g.db.query(Submission.id).filter(Submission.repost_id == post.id).first()
-                      or g.db.query(RepostRelationship.id).filter_by(submission_id=post.id).first())
         refusal = circles.post_refusal(
             audience, anonymous=bool(post.is_anonymous), coauthors=bool(coauthors.rows_of(g.db, post.id)),
-            own_video=bool(post.url and media_attach.own_video(g.db, v.id, post.url)), shared=shared)
+            own_video=bool(post.url and media_attach.own_video(g.db, v.id, post.url)))
         if refusal:
             return _fail(refusal)
-        # an empty Circle means only the author would see it: say so before saving (the page asks, `confirm=1` goes on)
-        empty = _empty_audience(v.id, audience)
-        if empty and request.values.get("confirm") != "1":
-            return jsonify({"error": empty, "confirm": True}), 409
+        own, others, reposted = _shared_copies(post, v.id)
+        # say what will happen before saving (the page asks, `confirm=1` goes on): only the author would see it in an
+        # empty Circle, and copies made while it was public are dealt with as `sharing.narrowing_note` says
+        notes = [n for n in (_empty_audience(v.id, audience),
+                             sharing.narrowing_note([c.board.name for c in own], others, reposted)) if n]
+        if notes and request.values.get("confirm") != "1":
+            return jsonify({"error": " ".join(notes), "confirm": True}), 409
     elif request.values.get("confirm") != "1":
         return jsonify({"error": "This post will be visible to everyone. Confirm to make it public.", "confirm": True}), 409
 
     post.audience = audience
     post.post_public = not audience and not post.board.is_private
     g.db.add(post)
+    _withdraw(own, v.id, int(time.time()))
     g.db.commit()
     if audience != circles.PUBLIC:
         # a picture that was public may still sit in a CDN: it must not be served from there any more

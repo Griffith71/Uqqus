@@ -169,7 +169,9 @@ def test_only_the_author_changes_who_can_see_a_post_and_going_public_needs_a_con
     assert 'request.values.get("confirm") != "1"' in body and "409" in body
     assert "post.post_public = not audience and not post.board.is_private" in body
     assert "media_cdn.purge(media_attach.attached_paths(g.db, submission_id=post.id))" in body
-    assert "post_refusal(" in body and "shared=shared" in body
+    assert "post_refusal(" in body and "shared=" not in body          # a shared public post may move (helpers/sharing.py)
+    assert "_shared_copies(post, v.id)" in body and "sharing.narrowing_note(" in body
+    assert body.index("_withdraw(own, v.id, int(time.time()))") < body.index("g.db.commit()")
 
 
 def test_the_menu_item_the_sheet_and_the_script_agree():

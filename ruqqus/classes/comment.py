@@ -224,6 +224,13 @@ class Comment(Base, Age_times, Scores, Stndrd, Fuzzing):
             comment_id=self.id).order_by(CommentForwardRelationship.created_utc.asc()).all()
         return [r.forwarded_submission for r in rels]
 
+    def forwards_shown_to(self, v):
+        """The posts a comment's "Forwarded to" list shows `v`: live ones in guilds `v` may see, so it never names a
+        private guild to someone outside it (as Submission.forwards_shown_to)."""
+        return [f for f in self.forwarded_posts
+                if f and not f.deleted_utc and not f.is_banned and not f.hidden_by_guild and not f.board.is_banned
+                and not f.in_private_guild_for(v)]
+
     @property
     def any_descendants_live(self):
 
