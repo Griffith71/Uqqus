@@ -14,9 +14,7 @@ from sqlalchemy import and_, case, exists, func, not_, or_, select, text
 from sqlalchemy.exc import DBAPIError
 
 from ruqqus.helpers import feed_algorithm as fa
-from ruqqus.helpers.visibility import FILTERED_SUBCATS
 
-HIDDEN_SUBCATS = FILTERED_SUBCATS        # as frontlist(): not on All for a viewer with the word filter on
 PROFILE_BOARD = "systemprofile"
 TIME_LIMIT_MS = 3000
 TOO_SLOW = "This curation's rules took too long to run. Its owner can make them narrower."
@@ -42,20 +40,17 @@ def member_condition(curation_id):
 
 def site_pool(posts, v, level):
     """Every public post, as All shows it (frontlist): not the guilds that opted out of All
-    unless the viewer joined them, and not the categories the word filter keeps off All."""
+    unless the viewer joined them, and not sensitive content unless the viewer chose to see it."""
     from ruqqus.classes import Board, Submission, Subscription
+    from ruqqus.helpers.sensitive import hide_sensitive
 
-    posts = posts.join(Board, Board.id == Submission.board_id).filter(
-        Board.is_banned == False,
-        Submission.board_id != 1,
-    )
+    posts = posts.join(Board, Board.id == Submission.board_id).filter(Board.is_banned == False)
+    posts = hide_sensitive(posts, v, Submission)
     if v:
         joined = select(Subscription.board_id).filter_by(user_id=v.id, is_active=True)
         posts = posts.filter(or_(Board.all_opt_out == False, Submission.board_id.in_(joined)))
     else:
         posts = posts.filter(Board.all_opt_out == False)
-    if level > 0:
-        posts = posts.filter(or_(Board.subcat_id.is_(None), Board.subcat_id.notin_(HIDDEN_SUBCATS)))
     return posts
 
 

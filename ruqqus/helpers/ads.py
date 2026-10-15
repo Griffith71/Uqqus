@@ -72,11 +72,19 @@ def post_allows(post):
         return False
     if post.is_sensitive or (post.word_severity or 0) > 0:
         return False
+    # a sensitive account's post, unless anonymous (never judged by whose it is: helpers/sensitive.py)
+    if not getattr(post, "is_anonymous", False) and not account_allows(getattr(post, "author", None)):
+        return False
     return board_allows(getattr(post, "board", None))
 
 
-def allows(page, viewer, embedded=False, post=None, board=None, cfg=None):
-    """May this place on this page show an ad to this viewer?"""
+def account_allows(account):
+    """A sensitive account's profile and posts get no ads, like a sensitive guild's."""
+    return account is None or not getattr(account, "is_sensitive", False)
+
+
+def allows(page, viewer, embedded=False, post=None, board=None, cfg=None, account=None):
+    """May this place on this page show an ad to this viewer? `account` is the profile the page shows, if any."""
     if cfg is None or page not in cfg["slots"]:
         return False
-    return viewer_allows(viewer, embedded) and post_allows(post) and board_allows(board)
+    return viewer_allows(viewer, embedded) and post_allows(post) and board_allows(board) and account_allows(account)

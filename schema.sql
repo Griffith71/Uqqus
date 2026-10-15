@@ -87,6 +87,7 @@ CREATE TABLE public.boards (
     is_private boolean,
     color_nonce integer,
     is_nsfl boolean,
+    sensitive_forced boolean DEFAULT false NOT NULL,
     rank_trending double precision,
     stored_subscriber_count integer,
     avg_score double precision,
@@ -327,6 +328,9 @@ CREATE TABLE public.users (
     profile_location character varying(60) DEFAULT '' NOT NULL,
     profile_website character varying(200) DEFAULT '' NOT NULL,
     display_name character varying(50) DEFAULT '' NOT NULL,
+    is_sensitive boolean DEFAULT false NOT NULL,
+    sensitive_forced boolean DEFAULT false NOT NULL,
+    all_shows_sensitive boolean DEFAULT false NOT NULL,
     following_visibility smallint DEFAULT 2 NOT NULL,
     followers_visibility smallint DEFAULT 2 NOT NULL,
     subscribers_visibility smallint DEFAULT 2 NOT NULL,
@@ -4242,6 +4246,9 @@ CREATE INDEX boards_name_trgm_idx ON public.boards USING gin (name public.gin_tr
 --
 
 CREATE INDEX boards_sensitive_idx ON public.boards USING btree (is_sensitive);
+
+
+CREATE INDEX users_sensitive_idx ON public.users USING btree (id) WHERE is_sensitive;
 
 
 --

@@ -39,7 +39,8 @@ def ad_slot(context, page):
     if place is None:
         return ""
     post, board = place
-    if not ads.allows(page, context.get("v"), embedded=bool(request.args.get("embed")), post=post, board=board, cfg=cfg):
+    if not ads.allows(page, context.get("v"), embedded=bool(request.args.get("embed")), post=post, board=board, cfg=cfg,
+                      account=context.get("profile_user")):
         return ""
     g.ads_used = True
     return Markup(render_template("partials/ad_slot.html", page=page, cfg=cfg))

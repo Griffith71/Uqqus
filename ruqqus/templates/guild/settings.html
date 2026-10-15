@@ -172,11 +172,11 @@
               <div class="body w-lg-100">
 
                 <div class="custom-control custom-switch">
-                  <input type="checkbox" class="custom-control-input" id="sensitiveGuild" name="sensitive"{% if b.is_sensitive %} checked{% endif %} onchange="mod_post('/mod/{{ b.base36id }}/settings/sensitive','sensitiveGuild')">
+                  <input type="checkbox" class="custom-control-input" id="sensitiveGuild" name="sensitive"{% if b.is_sensitive %} checked{% endif %}{% if b.sensitive_forced %} disabled{% endif %} onchange="mod_post('/mod/{{ b.base36id }}/settings/sensitive','sensitiveGuild')">
                   <label class="custom-control-label" for="sensitiveGuild"></label>
                 </div>
 
-                <span class="text-small-extra text-muted">Enable if your guild discusses topics that could be upsetting (e.g. addiction recovery, grief support) - not a rule violation, just a heads-up. Every post in this guild will be blurred by default.</span>
+                <span class="text-small-extra text-muted">{% if b.sensitive_forced %}The site's admins marked this guild sensitive, so only an admin can change this. {% endif %}A sensitive guild's posts are left out of All and For You for anyone who hasn't chosen to see sensitive content. Enable if your guild discusses topics that could be upsetting (e.g. addiction recovery, grief support) - not a rule violation, just a heads-up. Every post in this guild will be blurred by default.</span>
 
               </div>
 

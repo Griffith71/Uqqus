@@ -16,7 +16,8 @@ from ruqqus.helpers import post_feedback
 from ruqqus.helpers.blocks import hide_blocked
 from ruqqus.helpers.security import *
 from ruqqus.helpers.lazy import lazy
-from ruqqus.helpers.visibility import filter_posts, filter_comments, viewer_level, text_hidden, FILTERED_SUBCATS
+from ruqqus.helpers.visibility import filter_posts, filter_comments, viewer_level, text_hidden
+from ruqqus.helpers.sensitive import hide_sensitive
 import ruqqus.helpers.aws as aws
 from ruqqus.helpers.discord import add_role, delete_role, discord_log_event
 #from ruqqus.helpers.alerts import send_notification
@@ -122,6 +123,11 @@ class User(Base, Stndrd, Age_times):
     profile_location = Column(String(60), default="")
     profile_website = Column(String(200), default="")
     display_name = Column(String(50), default="")      # free text, set in Settings > Profile (helpers/display_names.py)
+    # a sensitive account (helpers/sensitive.py): its posts are left out of All and For You by default, like a
+    # sensitive guild's; sensitive_forced means an admin set it and the member can't switch it off
+    is_sensitive = Column(Boolean, default=False)
+    sensitive_forced = Column(Boolean, default=False)
+    all_shows_sensitive = Column(Boolean, default=False)   # the viewer chose to see sensitive content in All / For You
     # who may open each list (helpers/follow_lists.py): 0 everyone, 1 followers, 2 only me (existing accounts: 2)
     following_visibility = Column(SmallInteger, default=2)
     followers_visibility = Column(SmallInteger, default=2)
@@ -500,6 +506,7 @@ class User(Base, Stndrd, Age_times):
         posts = filter_posts(posts, self)
         posts = hide_muted(posts, self, Submission)
         posts = post_feedback.hide_fewer(posts, self, Submission)
+        posts = hide_sensitive(posts, self, Submission)       # as All (helpers/sensitive.py)
 
         if self.hide_bot:
             posts = posts.filter(Submission.is_bot == False)
@@ -567,11 +574,6 @@ class User(Base, Stndrd, Age_times):
         if language:
             language_list = language if isinstance(language, (list, tuple)) else [language]
             posts = posts.filter(Submission.language_code.in_(language_list))
-
-        if viewer_level(self) > 0:
-            posts = posts.filter(Board.subcat_id.notin_(FILTERED_SUBCATS))
-
-        posts = posts.filter(Submission.board_id != 1)
 
         # Following already covers subscribed guilds + followed accounts -
         # keep For You additive/discovery-oriented rather than duplicating it

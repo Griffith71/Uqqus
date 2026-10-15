@@ -653,11 +653,12 @@ def test_no_lint_suppressions_and_ci_matches_production():
 
 
 def test_one_list_for_numbers_shown_in_two_places():
-    vis = read("helpers", "visibility.py")
-    assert "FILTERED_SUBCATS = (44, 108)" in vis
+    # All, For You, trending and a curation's whole-site pool no longer leave categories out (they leave sensitive
+    # content out instead: helpers/sensitive.py), so the list of kept-off categories is gone, everywhere
+    assert "FILTERED_SUBCATS" not in read("helpers", "visibility.py")
     for path in (("classes", "user.py"), ("routes", "front.py"), ("helpers", "trending_store.py"), ("helpers", "curation_feed.py")):
         src = read(*path)
-        assert "44, 108" not in src and "FILTERED_SUBCATS" in src, path
+        assert "44, 108" not in src and "FILTERED_SUBCATS" not in src and "HIDDEN_SUBCATS" not in src, path
     options = read("templates", "partials", "post_options.html")
     assert 'maxlength="40"' not in options and "2 to 4 options" not in options
 

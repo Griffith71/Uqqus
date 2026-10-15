@@ -52,6 +52,7 @@ class Board(Base, Stndrd, Age_times):
     description_html=Column(String)
     is_sensitive=Column(Boolean, default=False)
     is_nsfl=Column(Boolean, default=False)
+    sensitive_forced=Column(Boolean, default=False)   # an admin marked the guild sensitive; its guildmasters can't undo it
     # word filter rating of the guild name / its description
     name_severity=Column(SmallInteger, default=0)
     description_severity=Column(SmallInteger, default=0)

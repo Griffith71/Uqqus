@@ -5,7 +5,8 @@ from sqlalchemy.orm import lazyload
 import random
 
 from ruqqus.helpers.wrappers import *
-from ruqqus.helpers.visibility import filter_posts, filter_comments, filter_boards, filter_users, viewer_level, FILTERED_SUBCATS
+from ruqqus.helpers.visibility import filter_posts, filter_comments, filter_boards, filter_users, viewer_level
+from ruqqus.helpers.sensitive import hide_sensitive
 from ruqqus.helpers.muting import hide_muted
 from ruqqus.helpers.post_feedback import hide_fewer
 from ruqqus.helpers.blocks import hide_blocked
@@ -154,6 +155,8 @@ def frontlist(v=None, sort=None, page=1,
     posts = hide_muted(posts, v, Submission)
     # posts the viewer asked to see fewer of leave All (helpers/post_feedback.py)
     posts = hide_fewer(posts, v, Submission)
+    # All is everything except sensitive content, unless the viewer chose to see it (helpers/sensitive.py)
+    posts = hide_sensitive(posts, v, Submission)
     
     if v and v.hide_bot:
         posts = posts.filter(Submission.is_bot==False)
@@ -225,13 +228,6 @@ def frontlist(v=None, sort=None, page=1,
         language_list = language if isinstance(language, (list, tuple)) else [language]
         posts = posts.filter(Submission.language_code.in_(language_list))
 
-
-    if viewer_level(v) > 0:
-        posts=posts.filter(
-            Board.subcat_id.notin_(FILTERED_SUBCATS)
-            )
-
-    posts=posts.filter(Submission.board_id!=1)
 
     posts=posts.options(contains_eager(Submission.board))
 

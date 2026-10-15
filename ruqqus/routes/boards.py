@@ -21,6 +21,7 @@ from ruqqus.classes.rules import *
 from ruqqus.classes.categories import CATEGORIES
 from flask import *
 
+from ruqqus.helpers import sensitive as sensitive_rules
 from ruqqus.__main__ import app, limiter, cache
 from ruqqus.helpers.muting import hide_muted
 from ruqqus.helpers.blocks import hide_blocked
@@ -1060,7 +1061,12 @@ def mod_is_banned_board_username(bid, username, board, v):
 @validate_formkey
 def mod_bid_settings_sensitive(bid, board, v):
 
-    board.is_sensitive = bool(request.form.get("sensitive", False) == 'true')
+    wanted = bool(request.form.get("sensitive", False) == 'true')
+    # an admin may have forced it on (helpers/sensitive.py): then only an admin unlocks it
+    refused = sensitive_rules.owner_refusal(board.sensitive_forced, wanted)
+    if refused:
+        return jsonify({"error": refused}), 403
+    board.is_sensitive = wanted
 
     g.db.add(board)
 

@@ -1467,6 +1467,12 @@ $profile-x-surface: $gray-600;
     font-size: 12px;
 }
 
+// a sensitive account (helpers/sensitive.py), drawn like a sensitive guild's "Sensitive Content" badge
+.profile-x-chip.profile-x-sensitive {
+    background-color: $warning;
+    color: #212529;      // dark on yellow in both themes ($black is light in the dark one)
+}
+
 .profile-x-bio {
     margin-top: 0.75rem;
     overflow-wrap: anywhere;

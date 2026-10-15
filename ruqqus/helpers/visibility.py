@@ -22,9 +22,6 @@ OFF = 0
 STANDARD = 1
 CHILD = 2
 
-# subcategories All leaves out for a viewer whose word filter is on (44: Offensive; 108: kept off All)
-FILTERED_SUBCATS = (44, 108)
-
 NOTICE_TITLE = "Hidden by your word filter"
 NOTICE_TEXT = ("This isn't shown at your current word filter level. "
                "You can review your word filter in your content settings.")
@@ -44,11 +41,13 @@ def _cut(level):
 
 
 # ----------------------------------------------------------- single objects
-def user_hidden(user, v):
-    """A user whose NAME trips the viewer's filter (everything of theirs is hidden)."""
+def user_hidden(user, v, account_flag=True):
+    """A user whose NAME trips the viewer's filter, or a sensitive account for a Child-filter viewer (everything of
+    theirs is hidden). `account_flag=False` for an anonymous item: it is never hidden for being that account's."""
     if user is None or (v is not None and user.id == v.id):
         return False
-    return is_hidden(viewer_level(v), getattr(user, "name_severity", 0))
+    sensitive = account_flag and bool(getattr(user, "is_sensitive", False))
+    return is_hidden(viewer_level(v), getattr(user, "name_severity", 0), sensitive)
 
 
 def board_hidden(board, v):
@@ -66,7 +65,7 @@ def post_hidden(post, v):
     if level <= OFF:
         return False
     return (is_hidden(level, post.word_severity, bool(post.is_sensitive))
-            or user_hidden(post.author, v)
+            or user_hidden(post.author, v, account_flag=not getattr(post, "is_anonymous", False))
             or board_hidden(post.board, v))
 
 
@@ -77,7 +76,7 @@ def comment_hidden(comment, v):
     if level <= OFF:
         return False
     return (is_hidden(level, comment.word_severity, bool(comment.is_sensitive))
-            or user_hidden(comment.author, v))
+            or user_hidden(comment.author, v, account_flag=not getattr(comment, "is_anonymous", False)))
 
 
 def text_hidden(severity, v, owner_id=None):
@@ -101,6 +100,12 @@ def _hidden_board_ids(level):
     return select(Board.id).where(or_(*conds))
 
 
+def _not_by_sensitive_account(model):
+    """For the Child filter: an item not by a sensitive account, or anonymous (never hidden for whose it is)."""
+    from ruqqus.helpers.sensitive import sensitive_user_ids
+    return or_(model.is_anonymous.is_(True), model.author_id.notin_(sensitive_user_ids()))
+
+
 def filter_posts(query, v, level=None):
     """Drop posts the viewer's filter hides from a query over Submission."""
     from ruqqus.classes.submission import Submission
@@ -116,6 +121,7 @@ def filter_posts(query, v, level=None):
     ]
     if level >= CHILD:
         conds.append(Submission.is_sensitive.isnot(True))
+        conds.append(_not_by_sensitive_account(Submission))
     visible = and_(*conds)
     if v is not None:
         visible = or_(Submission.author_id == v.id, visible)
@@ -141,7 +147,9 @@ def filter_comments(query, v, level=None):
     ]
     if level >= CHILD:
         conds.append(Comment.is_sensitive.isnot(True))
+        conds.append(_not_by_sensitive_account(Comment))
         hidden_posts.append(Submission.is_sensitive == True)
+        hidden_posts.append(~_not_by_sensitive_account(Submission))
     # system messages have no parent post; NOT IN would drop them (NULL)
     conds.append(or_(Comment.parent_submission.is_(None),
                      Comment.parent_submission.notin_(select(Submission.id).where(or_(*hidden_posts)))))
@@ -172,6 +180,8 @@ def filter_users(query, v, level=None):
     if level <= OFF:
         return query
     visible = User.name_severity < _cut(level)
+    if level >= CHILD:
+        visible = and_(visible, User.is_sensitive.isnot(True))
     if v is not None:
         visible = or_(User.id == v.id, visible)
     return query.filter(visible)

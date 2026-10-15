@@ -34,6 +34,7 @@ from ruqqus.helpers import polls as poll_rules, poll_store
 from ruqqus.helpers import circles as circle_rules, circle_guard
 from ruqqus.helpers import insights_store
 from ruqqus.helpers import bots as bot_rules, bot_store
+from ruqqus.helpers import sensitive as sensitive_rules
 from .front import frontlist
 from ruqqus.__main__ import app, limiter, cache, db_session
 from flask import session as flask_session
@@ -485,7 +486,8 @@ Optional file data:
             row.is_offensive = word_severity >= 2
             row.language_code = language_code
             # same rule as forwarding: a sensitive guild keeps its copy marked
-            row.is_sensitive = sensitive or (row is not primary and row.board.is_sensitive)
+            row.is_sensitive = (sensitive_rules.marks_post(sensitive, primary.author)
+                                or (row is not primary and row.board.is_sensitive))
             row.paid_partnership = paid_partnership
             row.made_with_ai = made_with_ai
             g.db.add(row)
@@ -1358,7 +1360,7 @@ Optional file data:
         domain_ref=domain_obj.id if domain_obj else None,
         board_id=board.id,
         original_board_id=board.id,
-        is_sensitive=bool(request.form.get("sensitive", "")),
+        is_sensitive=sensitive_rules.marks_post(request.form.get("sensitive", ""), v),   # always, for a sensitive account
         comment_permission=comment_permission,
         paid_partnership=flag(request.form, "paid_partnership"),
         made_with_ai=flag(request.form, "made_with_ai"),

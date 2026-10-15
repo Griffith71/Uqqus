@@ -20,7 +20,8 @@ import time
 from sqlalchemy import and_, func, or_, select
 
 from ruqqus.helpers import trending as tr
-from ruqqus.helpers.visibility import filter_posts, FILTERED_SUBCATS
+from ruqqus.helpers.visibility import filter_posts
+from ruqqus.helpers.sensitive import hide_sensitive
 from ruqqus.helpers.muting import hide_muted
 from ruqqus.helpers.blocks import hide_blocked
 from ruqqus.helpers.wordfilter import is_hidden
@@ -31,7 +32,6 @@ MAX_POSTS = 20000            # newest posts read per run (the day itself plus th
 SCOPE_MIN_TOPICS = 3         # a region or language with fewer topics falls back to the site's list
 STALE_SECONDS = 3600         # a list this old is not shown: the job is not running
 KEEP_POST_IDS = 300
-HIDDEN_SUBCATS = FILTERED_SUBCATS   # as frontlist(): not on All for a viewer with the word filter on
 PAGE = 25
 
 
@@ -55,7 +55,8 @@ def _load(db, since, now):
     standing. A forwarded copy is not counted beside its original."""
     from ruqqus.classes import Board, Submission, SubmissionAux, User
 
-    return db.query(
+    # the lists are shown to everyone, visitors included: like All for a visitor, nothing sensitive counts
+    return hide_sensitive(db.query(
         Submission.id, Submission.author_id, Submission.created_utc, Submission.language_code,
         Submission.is_anonymous, Submission.upvotes, Submission.downvotes, SubmissionAux.title,
         func.left(SubmissionAux.body, tr.TEXT_CHARS).label("text"), SubmissionAux.url,
@@ -74,13 +75,12 @@ def _load(db, since, now):
         Submission.post_public == True,
         Submission.is_bot == False,
         func.coalesce(Submission.repost_id, 0) == 0,
-        Submission.board_id != 1,              # as frontlist()
         Board.is_banned == False,
         Board.is_private == False,
         Board.all_opt_out == False,
         User.is_deleted == False,
         or_(User.is_banned == 0, and_(User.unban_utc > 0, User.unban_utc < now)),
-    ).order_by(Submission.id.desc()).limit(MAX_POSTS).all()
+    ), None, Submission).order_by(Submission.id.desc()).limit(MAX_POSTS).all()
 
 
 def _comment_counts(db, post_ids):
@@ -151,7 +151,7 @@ def compute(db, now=None, own_hosts=(), log=None):
         visible = _visible_ids(db, since, level)
 
         def counts(r):
-            return r.id in visible and (level == 0 or r.subcat_id not in HIDDEN_SUBCATS)
+            return r.id in visible
 
         by_scope = {}
         for group, index in ((window, 0), (baseline, 1)):

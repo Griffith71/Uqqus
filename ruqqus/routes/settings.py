@@ -17,6 +17,7 @@ from ruqqus.helpers.chat_permissions import on_block_created
 from ruqqus.helpers import circle_store
 from ruqqus.helpers import post_feedback as post_feedback_rules
 from ruqqus.helpers import muting as muting_rules
+from ruqqus.helpers import sensitive as sensitive_rules
 from ruqqus.mail import *
 from .front import frontlist
 from ruqqus.__main__ import app, cache
@@ -893,6 +894,91 @@ def admin_clear_display_name(v):
         send_notification(target, "An admin removed your display name because it broke the site's rules. "
                                   "You can set a new one in Settings > Profile.")
     return redirect(target.permalink)
+
+
+@app.route("/settings/all_shows_sensitive", methods=["POST"])
+@auth_required
+@validate_formkey
+def settings_all_shows_sensitive(v):
+    """The viewer's choice: show sensitive content in All and For You (helpers/sensitive.py). Off by default; the Child
+    filter hides sensitive content whatever this says. The member's cached feeds are dropped so it shows at once."""
+    v.all_shows_sensitive = request.values.get("on") == "true"
+    g.db.add(v)
+    g.db.commit()
+    muting_rules.clear_cached_feeds(v)
+    return jsonify({"message": "Saved."})
+
+
+@app.route("/settings/sensitive_account", methods=["POST"])
+@auth_required
+@validate_formkey
+def settings_sensitive_account(v):
+    """Mark your own account sensitive (or not): its posts leave All and For You by default and new ones are blurred.
+    Refused while an admin has forced it on (sensitive_forced)."""
+    wanted = request.values.get("on") == "true"
+    refused = sensitive_rules.owner_refusal(v.sensitive_forced, wanted)
+    if refused:
+        return jsonify({"error": refused}), 403
+    v.is_sensitive = wanted
+    g.db.add(v)
+    g.db.commit()
+    muting_rules.clear_cached_feeds(v)
+    return jsonify({"message": "Your account is marked sensitive." if wanted else "Your account is no longer marked sensitive."})
+
+
+@app.route("/admin/sensitive/user", methods=["POST"])
+@admin_level_required(3)
+@validate_formkey
+def admin_sensitive_user(v):
+    """Force an account sensitive (the member can't switch it off), or unlock it (the member decides again). Only an
+    account below the admin's own level, the bar for banning. The account is told."""
+    from ruqqus.helpers.alerts import send_notification
+
+    target = get_user(request.form.get("username", ""), graceful=True)
+    if target is None or target.is_deleted or v.admin_level <= (target.admin_level or 0):
+        abort(404)
+    force = request.form.get("force") == "1"
+    target.sensitive_forced = force
+    if force:
+        target.is_sensitive = True
+    g.db.add(target)
+    g.db.commit()
+    send_notification(target, "An admin marked your account sensitive: your posts are left out of All and For You "
+                              "unless someone chooses to see sensitive content, and your new posts are blurred. "
+                              "Only an admin can change this." if force else
+                              "An admin unlocked the sensitive setting on your account. You can change it in "
+                              "Settings > Content.")
+    return redirect(target.permalink)
+
+
+@app.route("/admin/sensitive/guild", methods=["POST"])
+@admin_level_required(3)
+@validate_formkey
+def admin_sensitive_guild(v):
+    """Force a guild sensitive (its guildmasters can't switch it off), or unlock it. Written to the guild's public mod
+    log; its guildmasters are told."""
+    from ruqqus.helpers.alerts import send_notification
+    from ruqqus.helpers.get import get_guild
+
+    board = get_guild(request.form.get("guild", ""), graceful=True)
+    if board is None:
+        abort(404)
+    force = request.form.get("force") == "1"
+    board.sensitive_forced = force
+    if force:
+        board.is_sensitive = True
+    g.db.add(board)
+    g.db.add(ModAction(kind="update_settings", user_id=v.id, board_id=board.id,
+                       note="sensitive content forced on by the site's admins" if force
+                       else "sensitive content unlocked by the site's admins"))
+    g.db.commit()
+    message = (f"An admin marked +{board.name} sensitive: its posts are left out of All and For You unless someone "
+               "chooses to see sensitive content. Only an admin can change this." if force else
+               f"An admin unlocked the sensitive setting of +{board.name}. Its guildmasters can change it again.")
+    for guildmaster in board.mods:
+        if not guildmaster.is_deleted:
+            send_notification(guildmaster, message)
+    return redirect(board.permalink)
 
 
 @app.route("/settings/badges", methods=["POST"])

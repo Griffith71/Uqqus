@@ -86,6 +86,14 @@
 </form>
 {% endif %}
 {% endif %}
+{% if v.admin_level >=3 and v.admin_level > u.admin_level %}
+<form action="/admin/sensitive/user" method="post" onsubmit="return confirm('{{ 'Unlock the sensitive setting of' if u.sensitive_forced else 'Force sensitive on' }} @{{ u.username }}? They are told.');">
+  <input type="hidden" name="formkey" value="{{ v.formkey }}">
+  <input type="hidden" name="username" value="{{ u.username }}">
+  <input type="hidden" name="force" value="{{ '0' if u.sensitive_forced else '1' }}">
+  <input type="submit" class="btn btn-outline-warning btn-sm mb-2" value="{{ 'Unlock sensitive setting' if u.sensitive_forced else 'Force sensitive (locked)' }}">
+</form>
+{% endif %}
 {% if v.admin_level >=3 and v.admin_level > u.admin_level and u.display_name %}
 <form action="/admin/display_name/clear" method="post" onsubmit="return confirm('Remove the display name &quot;{{ u.display_name | e }}&quot; from @{{ u.username }}? They are told.');">
   <input type="hidden" name="formkey" value="{{ v.formkey }}">

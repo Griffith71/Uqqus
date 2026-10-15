@@ -103,6 +103,7 @@
       </h1>
       <div class="profile-x-handle">@{{ u.username }}
         {% if v and not own and v.has_follower(u) and not v.is_nofollow %}<span class="profile-x-chip">Follows you</span>{% endif %}
+        {% if u.is_sensitive %}<span class="profile-x-chip profile-x-sensitive" data-toggle="tooltip" data-placement="bottom" title="This account posts about sensitive topics">Sensitive content</span>{% endif %}
         {% if u.is_bot %}{% set bot_owner = u.bot_owner %}
         {# a site bot is the site's own (nobody's); a member bot names the member who runs it (helpers/bots.py) #}
         <span class="profile-x-chip profile-x-bot">Automated{% if u.bot_kind == 'site' %} by {{ 'SITE_NAME' | app_config }}{% elif bot_owner and not bot_owner.is_deleted %} by <a href="{{ bot_owner.permalink }}">@{{ bot_owner.username }}</a>{% endif %}</span>
