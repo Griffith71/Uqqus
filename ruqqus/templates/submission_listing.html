@@ -445,6 +445,30 @@
 
 <!-- nothing -->
 
+{% elif following_feed %}
+{# the Following feed with nothing in it (routes/front.py following): never All in its place #}
+<div class="row no-gutters" id="following-empty">
+  <div class="col">
+    <div class="text-center px-3 my-3">
+      <span class="fa-stack fa-2x text-muted mb-4">
+        <i class="fas fa-square text-gray-500 opacity-25 fa-stack-2x"></i>
+        <i class="fas text-gray-500 fa-user-group fa-stack-1x text-lg"></i>
+      </span>
+      {% if v %}
+      <h2 class="h5">Your Following feed is empty</h2>
+      <p class="text-muted">Follow accounts and join guilds, and their posts show here.</p>
+      <a href="/browse" class="btn btn-primary btn-sm">Discover guilds</a>
+      <a href="/all" class="btn btn-outline-primary btn-sm ml-1">See everything in All</a>
+      {% else %}
+      <h2 class="h5">Posts from the accounts and guilds you follow</h2>
+      <p class="text-muted">Sign in to see them here.</p>
+      <a href="/login?redirect=/following" class="btn btn-primary btn-sm">Sign in</a>
+      <a href="/all" class="btn btn-outline-primary btn-sm ml-1">See everything in All</a>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
 {% else %}
 <div class="row no-gutters">   
   <div class="col">      

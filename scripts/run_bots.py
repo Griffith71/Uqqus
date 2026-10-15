@@ -17,6 +17,7 @@ import sys
 import time
 import traceback
 
+import gevent
 from flask import g
 
 from ruqqus.__main__ import app, db_session
@@ -109,6 +110,9 @@ def tick(now=None):
 def main():
     if "--once" in sys.argv:
         print(tick())
+        # each post started background work (its link preview, a CSAM check: gevent greenlets the route spawns). The
+        # forever loop's sleep lets it run; a one-off run must wait for it, or posts are left without a preview
+        gevent.wait(timeout=120)
         return
     log(f"started, checking every {POLL_SECONDS}s")
     while True:

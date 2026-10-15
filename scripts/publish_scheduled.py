@@ -20,6 +20,7 @@ import sys
 import time
 import traceback
 
+import gevent
 from flask import g
 from sqlalchemy import text
 
@@ -174,6 +175,8 @@ def tick(now=None):
 def main():
     if "--once" in sys.argv:
         print(tick())
+        # a published post started background work (its link preview, a CSAM check); wait for it before exiting
+        gevent.wait(timeout=120)
         return
     log(f"started, checking every {POLL_SECONDS}s")
     while True:

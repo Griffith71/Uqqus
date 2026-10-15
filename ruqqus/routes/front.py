@@ -428,14 +428,12 @@ def inject_sidebar_filter_data():
 @api("read")
 def following(v):
     """
-Get the Following feed: posts from subscribed guilds and followed accounts,
-narrowed by whichever Regional/Language/Categorical filters are currently
-active (ambient modifiers shared with All and For You - see
-_resolve_active_filters()).
-
-Pre-existing quirk, preserved as-is: only engages when the viewer has at
-least one *active guild subscription* specifically (not just follows) and
-otherwise falls through to All.
+Get the Following feed: posts by the accounts you follow (and posts they
+co-author) and posts in the guilds you joined, narrowed by whichever
+Regional/Language/Categorical filters are currently active (ambient modifiers
+shared with All and For You - see _resolve_active_filters()). Nothing else:
+a member who follows nothing yet, or a visitor, gets an empty feed (the page
+says how to fill it), never All.
 
 Optional query parameters:
 * `sort` - One of `hot`, `new`, `top`, `disputed`, `activity`. Default `hot`.
@@ -447,22 +445,17 @@ Optional query parameters:
         flask_session['base_feed'] = 'following'
         flask_session.modified = True
 
-    if v and [i for i in v.subscriptions if i.is_active]:
+    only = request.args.get("only", None)
+    sort = request.args.get("sort", v.defaultsorting if v else "hot")
+    t = request.args.get('t', v.defaulttime if v else "all")
+    page = max(page_number(), 0)
+    ignore_pinned = bool(request.args.get("ignore_pinned", False))
 
-        only=request.args.get("only",None)
-
-        if v:
-            defaultsorting = v.defaultsorting
-            defaulttime = v.defaulttime
-        else:
-            defaultsorting = "hot"
-            defaulttime = "all"
-
-        sort=request.args.get("sort",defaultsorting)
-        t=request.args.get('t', defaulttime)
-        page=max(page_number(),0)
-        ignore_pinned = bool(request.args.get("ignore_pinned", False))
-
+    if v is None:
+        # a visitor follows nothing: the page asks them to sign in (it used to show All, labelled Following)
+        region_codes, language_codes, subcat_ids = [], [], []
+        posts, next_exists = [], False
+    else:
         region_codes, language_codes, subcat_ids = _resolve_active_filters(v)
 
         ids=v.idlist(sort=sort,
@@ -490,33 +483,29 @@ Optional query parameters:
         ids=ids[0:25]
 
         # If page 1, check for sticky
-        if page == 1 and not ignore_pinned:
+        if page == 1 and not ignore_pinned and ids:
             sticky = viewer_sticky(v)
-
-
             if sticky:
                 ids=[sticky.id]+ids
 
-
         posts = get_posts(ids, sort=sort, v=v)
 
-        return {'html': lambda: render_template("subscriptions.html",
-                                                v=v,
-                                                listing=posts,
-                                                next_exists=next_exists,
-                                                sort_method=sort,
-                                                time_filter=t,
-                                                page=page,
-                                                only=only,
-                                                **_filter_display_context(region_codes, language_codes, subcat_ids)
-                                                ),
-                'api': lambda: jsonify({"data": [x.json for x in posts],
-                                        "next_exists": next_exists
-                                        }
-                                       )
-                }
-    else:
-        return front_all()
+    return {'html': lambda: render_template("subscriptions.html",
+                                            v=v,
+                                            listing=posts,
+                                            next_exists=next_exists,
+                                            sort_method=sort,
+                                            time_filter=t,
+                                            page=page,
+                                            only=only,
+                                            following_feed=True,
+                                            **_filter_display_context(region_codes, language_codes, subcat_ids)
+                                            ),
+            'api': lambda: jsonify({"data": [x.json for x in posts],
+                                    "next_exists": next_exists
+                                    }
+                                   )
+            }
 
 
 @app.route("/", methods=["GET"])
