@@ -33,19 +33,19 @@ REDDIT_URL = "https://www.reddit.com/r/IAmA/comments/z1c9z/i_am_barack_obama_pre
 
 
 def test_an_x_post_reads_like_a_quoted_post():
-    card = qc.social_card(X_URL, X_SNIPPET, "Elon Musk on X", "Entering Twitter HQ", True)
+    card = qc.social_card(X_URL, X_SNIPPET, "Elon Musk on X", "Entering Twitter HQ")
     assert card["kind"] == "social" and card["site"] == "x.com" and card["label"] == "X" and card["url"] == X_URL
     assert (card["name"], card["handle"], card["when"]) == ("Elon Musk", "@elonmusk", "26 October 2022")
     # the photo is only a pic.twitter.com link in X's text: it leaves the text and the card says there is one
     assert card["text"] == "Entering Twitter HQ – let that sink in!" and card["media"] == "Photo or video"
-    assert card["icon"] == "" and card["letter"] == "X" and card["thumb"] is True
+    assert card["icon"] == "" and card["letter"] == "X" and card["image"] == "" and card["video"] is False
 
 
 def test_a_bluesky_post_keeps_its_paragraphs_and_its_date():
     card = qc.social_card(BSKY_URL, BSKY_SNIPPET, "Bluesky (@bsky.app) on Bluesky", "")
     assert (card["name"], card["handle"], card["when"]) == ("Bluesky", "@bsky.app", "17 October 2024")
     assert card["text"] == "Bluesky is an open social network. We're so excited to have you here!" + NL + NL + "A quick orientation thread"
-    assert card["media"] == "" and card["thumb"] is False
+    assert card["media"] == "" and card["image"] == ""
 
 
 def test_a_reddit_post_names_its_account_and_community():
@@ -191,6 +191,16 @@ PALMER_URL = "https://x.com/tylerpalmer/status/2110761858231935251"
 FIRST_URL = "https://x.com/elonmusk/status/2110715556328579219"
 
 
+PHOTO = "https://pbs.twimg.com/media/GZx1abcWsAA9xyz?format=jpg&name=large"
+STILL = "https://pbs.twimg.com/ext_tw_video_thumb/1585341912877146112/pu/img/DwJ7wlGIe9iryk6N?format=webp&name=large"
+
+
+def _page(card, image):
+    """The link-preview tags X puts on a post's page."""
+    return ('<html><head><meta name="twitter:card" content="' + card + '"/><meta property="og:image" content="'
+            + image + '"/><title>x</title></head></html>')
+
+
 def _saved_quote():
     return se.x_quote_snippet(MAKES_SENSE, PALMER_URL, "https://t.co/qDpOwsUzpY", PALMER, FIRST_URL, "https://t.co/wGKTv1kaBW")
 
@@ -227,7 +237,7 @@ def test_an_x_post_shows_the_post_it_quotes_inside_and_no_deeper():
     assert (inner["name"], inner["handle"], inner["url"], inner["when"]) == ("Tyler Palmer", "@tylerpalmer", PALMER_URL, "15 October 2026")
     assert inner["text"].startswith("imagine an Amazon competitor") and inner["text"].endswith("a huge market for this.")
     # as on X, the post under that one is not drawn: one line says what it quotes
-    assert inner["inner"] is None and inner["quoting"] == "Quoting @elonmusk on X" and inner["thumb"] is False
+    assert inner["inner"] is None and inner["quoting"] == "Quoting @elonmusk on X" and inner["image"] == ""
 
 
 def test_a_quote_with_no_words_of_its_own_stays_without_them():
@@ -250,11 +260,11 @@ def test_what_is_saved_for_a_quoted_post_is_escaped_and_only_an_x_post_is_drawn(
     assert qc.social_card(MAKES_SENSE_URL, odd, "", "")["inner"] is None
 
 
-def test_a_card_inside_a_card_says_what_it_quotes_in_one_line_and_has_no_picture():
-    card = qc.social_card(MAKES_SENSE_URL, _saved_quote(), "Elon Musk on X", "", True)
+def test_a_card_inside_a_card_says_what_it_quotes_in_one_line_and_keeps_its_own_picture():
+    card = qc.social_card(MAKES_SENSE_URL, _saved_quote(), "Elon Musk on X", "", PHOTO)
     inner = qc.inside(card)
-    assert inner["inner"] is None and inner["quoting"] == "Quoting @tylerpalmer on X" and inner["thumb"] is False
-    assert card["inner"] is not None and card["thumb"] is True                  # the cached card is left as it was
+    assert inner["inner"] is None and inner["quoting"] == "Quoting @tylerpalmer on X" and inner["image"] == PHOTO
+    assert card["inner"] is not None and card["quoting"] == ""                  # the cached card is left as it was
     plain = qc.inside(qc.social_card(X_URL, X_SNIPPET, "", ""))
     assert plain["quoting"] == "" and plain["inner"] is None
     assert qc.inside(None) is None
@@ -265,5 +275,41 @@ def test_the_backfill_re_works_x_posts_saved_with_only_a_t_co_link():
     spec = importlib.util.spec_from_file_location("backfill", ROOT / "scripts" / "backfill_social_embeds.py")
     source = spec.loader.get_data(spec.origin).decode("utf-8")
     assert "def wanted(url, no_card=True, framed=False, saved=" in source
-    assert 'social_embeds.x_status_url(url) and "x-quoted" not in (saved or "")' in source
-    assert "social_embeds.last_tco_link(saved)" in source
+    assert 'if "x-quoted" not in saved and social_embeds.last_tco_link(saved):' in source
+    # and X posts with a photo or video but no picture, or a quoted post saved before pictures were read
+    assert 'if not picture and ("pic.twitter.com" in saved or "pic.x.com" in saved):' in source
+    assert 'if "x-quoted" in saved and "data-image=" not in saved:' in source
+
+
+def test_an_x_posts_picture_is_its_photo_or_video_still_never_a_profile_picture():
+    assert se.x_media(_page("summary_large_image", PHOTO)) == PHOTO
+    assert se.x_media(_page("summary_large_image", STILL.replace("&", "&amp;"))) == STILL
+    # a post with no picture: X puts its author's profile picture there, which is not the post's
+    assert se.x_media(_page("summary", "https://pbs.twimg.com/profile_images/2103567689515954176/aR-Kjpp4_400x400.jpg")) == ""
+    assert se.x_media(_page("summary_large_image", "https://pbs.twimg.com/profile_images/1/a.jpg")) == ""
+    assert se.x_media(_page("summary_large_image", "https://evil.example/media/a.jpg")) == ""
+    assert se.x_media(_page("summary_large_image", "http://pbs.twimg.com/media/a.jpg")) == ""
+    assert se.x_media("") == "" and se.x_media(None) == ""
+    assert se.x_media_is_video(STILL) and not se.x_media_is_video(PHOTO)
+    assert se.x_media_is_video("https://pbs.twimg.com/amplify_video_thumb/1/img/a.jpg")
+
+
+def test_a_card_shows_its_posts_picture_and_a_video_as_a_still():
+    photo = qc.social_card(X_URL, X_SNIPPET, "Elon Musk on X", "", PHOTO)
+    assert photo["image"] == PHOTO and photo["video"] is False and photo["media"] == ""   # the picture says it
+    video = qc.social_card(X_URL, X_SNIPPET, "Elon Musk on X", "", STILL)
+    assert video["image"] == STILL and video["video"] is True and video["media"] == ""
+    # any site's preview picture is shown, but only an https address
+    insta = qc.social_card("https://www.instagram.com/p/DAbc_1/", "", "Post on Instagram", "", "https://cdn.example/p.jpg")
+    assert insta["image"] == "https://cdn.example/p.jpg" and insta["video"] is False
+    assert qc.social_card(X_URL, X_SNIPPET, "", "", "javascript:alert(1)")["image"] == ""
+    assert qc.social_card(X_URL, X_SNIPPET, "", "", "http://cdn.example/p.jpg")["image"] == ""
+
+
+def test_the_quoted_post_on_x_carries_its_own_picture():
+    saved = se.x_quote_snippet(MAKES_SENSE, PALMER_URL, "https://t.co/qDpOwsUzpY", PALMER, image=PHOTO)
+    card = qc.social_card(MAKES_SENSE_URL, saved, "Elon Musk on X", "")
+    assert card["image"] == "" and card["inner"]["image"] == PHOTO
+    # only X's own picture host is saved for it
+    odd = se.x_quote_snippet(MAKES_SENSE, PALMER_URL, "https://t.co/qDpOwsUzpY", PALMER, image="https://evil.example/a.jpg")
+    assert 'data-image=""' in odd and qc.social_card(MAKES_SENSE_URL, odd, "", "")["inner"]["image"] == ""

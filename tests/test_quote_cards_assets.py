@@ -39,8 +39,10 @@ def test_nothing_from_the_quoted_site_is_loaded():
     assert not (TEMPLATES / "site_embeds" / "widget.html").exists()
     assert not (TEMPLATES / "site_embeds" / "ruqqus_post.html").exists()
     assert 'template_global("widget_script")' not in JINJA and 'template_filter("post_embed")' not in JINJA
-    # the card's own picture is the post's thumbnail, fetched and served by this site
-    assert '<img class="quote-card-media" src="{{ p.preview_image_url }}"' in PARTIAL
+    # a card's picture is its own post's (q.image), never the picture of the post drawn around it
+    assert '<img class="quote-card-media" src="{{ q.image }}" alt="" loading="lazy" referrerpolicy="no-referrer"' in PARTIAL
+    assert "p.preview_image_url" not in PARTIAL
+    assert 'p.meta_description or "", p.preview_image_url or "")' in JINJA
 
 
 def test_the_card_is_escaped_text_and_opens_what_it_quotes():
@@ -103,3 +105,31 @@ def test_both_stylesheets_draw_the_card_at_the_size_of_the_members_text():
                      ".quote-card-notice {", ".quote-card-media {", ".quote-card-text a,"):
             assert rule in section, (name, rule)
         assert "@media (hover: hover)" in section and "@media (prefers-reduced-motion: no-preference)" in section, name
+
+
+def test_the_title_is_the_members_own_words_when_a_link_is_a_quote():
+    posts = (ROOT / "ruqqus" / "routes" / "posts.py").read_text(encoding="utf-8")
+    route = posts[posts.index("def get_post_title("):posts.index("def _build_standalone_submission(")]
+    quote = route.index('return jsonify({"url": url, "title": "", "quote": True})')
+    assert quote < route.index("requests.get(url")                   # a quoted post's page is not fetched for a title
+    js = (ROOT / "ruqqus" / "assets" / "js" / "all_js.js").read_text(encoding="utf-8")
+    suggest = js[js.index("function autoSuggestTitle()"):js.index("// Exile Member")]
+    # nothing for a quote, and never over what the member typed while the answer was on its way
+    assert 'if (answer.quote || !answer.title || titleField.value.trim() !== "") return;' in suggest
+    # a link pasted into the title is attached instead, in both composers
+    assert "function pastedLink(event)" in js and "event.target !== title || urlField.value) return;" in js
+    inline = (ROOT / "ruqqus" / "assets" / "js" / "inline_composer.js").read_text(encoding="utf-8")
+    assert "title.addEventListener('paste'" in inline and "el('ic-url').value = link;" in inline
+
+
+def test_both_stylesheets_draw_a_video_still_with_a_play_mark():
+    for name, scss in STYLES.items():
+        assert ".quote-card-pic {" in scss and ".quote-card-play {" in scss, name
+        assert "pointer-events: none;" in _block(scss, ".quote-card-play {", "}"), name     # the click opens the post
+    assert '<span class="quote-card-play" aria-hidden="true"><i class="fas fa-play"></i></span>' in PARTIAL
+
+
+def test_a_picture_is_drawn_once_in_a_chain():
+    post = PARTIAL[PARTIAL.index("{% elif q.kind == 'post' %}"):]
+    # a site post's preview picture is its link's: left to the card inside (or the line) that draws what it links to
+    assert "{% elif quoted.is_image or (quoted.preview_image_url and not q.inner and not q.quoting) %}" in post

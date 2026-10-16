@@ -54,7 +54,7 @@ def _quote_for(p, v, depth):
     quoted = quote_cards.quoted_post_id(url, app.config["SERVER_NAME"], app.config.get("SHORT_DOMAIN"))
     if quoted:
         return None if quoted == p.base36id else _post_quote(quoted, v, depth)
-    card = quote_cards.social_card(url, p.embed_url or "", p.meta_title or "", p.meta_description or "", bool(p.has_thumb))
+    card = quote_cards.social_card(url, p.embed_url or "", p.meta_title or "", p.meta_description or "", p.preview_image_url or "")
     return quote_cards.inside(card) if depth else card
 
 

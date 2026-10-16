@@ -120,7 +120,26 @@ def x_oembed(url):
     if not found:
         return found
     snippet, thumbnail, card = found
-    return _with_x_quote(snippet), thumbnail, card
+    return _with_x_quote(snippet), _x_picture(url) or thumbnail, card
+
+
+# X's page as a link preview reads it (the same browser name as helpers/thumbs.py and /submit/title)
+_PREVIEW_AGENT = ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) "
+                  "Chrome/89.0.4389.72 Safari/537.36")
+
+
+def _x_picture(url):
+    """The picture of a post on X, or "": X's oEmbed sends none, so it is read from the link-preview tags X puts on the
+    post's page for every link preview (social_embeds.x_media: a photo or a video's still frame, never a profile
+    picture). Only ever the post's own x.com address."""
+    status = social_embeds.x_status_url(url)
+    if not status:
+        return ""
+    try:
+        page = requests.get(status, headers={"User-Agent": _PREVIEW_AGENT}, timeout=6)
+    except Exception:
+        return ""
+    return social_embeds.x_media(page.text[:500000]) if page.status_code == 200 else ""
 
 
 def _tco_target(link):
@@ -150,7 +169,8 @@ def _with_x_quote(snippet):
         return snippet
     next_link = social_embeds.last_tco_link(quoted)
     next_url = social_embeds.x_status_url(_tco_target(next_link)) if next_link else None
-    return social_embeds.x_quote_snippet(snippet, quoted_url, link, quoted, next_url or "", next_link if next_url else "")
+    return social_embeds.x_quote_snippet(snippet, quoted_url, link, quoted, next_url or "", next_link if next_url else "",
+                                         _x_picture(quoted_url))
 
 
 def instagram_oembed(url):

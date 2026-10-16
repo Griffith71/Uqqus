@@ -2,11 +2,12 @@
 Mastodon) what their quote card is made from now (helpers/social_embeds.py, helpers/quote_cards.py), and YouTube Shorts
 and live links their player. Posts saved before 2026-10-15 have no card (a feed showed an empty play box) or no player,
 Mastodon posts saved before quote cards hold only a frame (no text, handle or date), and X posts saved before
-2026-10-16 that quote another hold only a t.co link to it (now the quoted post is saved with them). Run once:
+2026-10-16 that quote another hold only a t.co link to it (now the quoted post is saved with them) or have a photo or
+video and no picture (now read from the post's link-preview tags). Run once:
 
     PYTHONPATH=. python scripts/backfill_social_embeds.py --once
 
-Only live posts without a feed card, Mastodon posts saved as a frame and X posts quoting one are touched: their saved
+Only live posts without a feed card, Mastodon posts saved as a frame and those X posts are touched: their saved
 embed is cleared and the site's own preview task (helpers/thumbs.thumbnail_thread) works it out again, as for a new post.
 """
 import sys
@@ -20,22 +21,28 @@ from ruqqus.helpers.thumbs import thumbnail_thread
 
 _CANDIDATES = text("""
     SELECT s.id, a.url, COALESCE(a.meta_title, '') = '' AS no_card, COALESCE(a.embed_url, '') LIKE '<iframe%' AS framed,
-           COALESCE(a.embed_url, '') AS saved
+           COALESCE(a.embed_url, '') AS saved, COALESCE(a.preview_image_url, '') AS picture
     FROM submissions s JOIN submissions_aux a ON a.id = s.id
     WHERE s.deleted_utc = 0 AND NOT s.is_banned AND a.url IS NOT NULL AND a.url != ''
       AND (COALESCE(a.meta_title, '') = '' OR COALESCE(a.embed_url, '') LIKE '<iframe%'
-           OR (a.embed_url LIKE '%https://t.co/%' AND a.embed_url NOT LIKE '%x-quoted%')) ORDER BY s.id""")
+           OR a.embed_url LIKE '%twitter-tweet%') ORDER BY s.id""")
 
 
-def wanted(url, no_card=True, framed=False, saved=""):
-    """A post this backfill is for: a Mastodon post saved as a frame, an X post whose saved text ends with the t.co
-    link of a post it quotes but not that post, or one with no card on a social site, a Mastodon post, or a YouTube
-    Short or live link."""
+def wanted(url, no_card=True, framed=False, saved="", picture=""):
+    """A post this backfill is for: a Mastodon post saved as a frame; an X post whose saved text ends with the t.co
+    link of a post it quotes but not that post, that has a photo or video and no picture, or whose quoted post was
+    saved before pictures were read; or one with no card on a social site, a Mastodon post, or a YouTube Short or
+    live link."""
+    saved = saved or ""
     if framed and social_embeds.mastodon_post(url):
         return True
-    if (social_embeds.x_status_url(url) and "x-quoted" not in (saved or "")
-            and social_embeds.last_tco_link(saved)):
-        return True
+    if social_embeds.x_status_url(url):
+        if "x-quoted" not in saved and social_embeds.last_tco_link(saved):
+            return True
+        if not picture and ("pic.twitter.com" in saved or "pic.x.com" in saved):
+            return True
+        if "x-quoted" in saved and "data-image=" not in saved:
+            return True
     if not no_card:
         return False
     if social_embeds.site_of(url) or social_embeds.mastodon_post(url):
@@ -46,8 +53,8 @@ def wanted(url, no_card=True, framed=False, saved=""):
 def run():
     db = db_session()
     try:
-        ids = [pid for pid, url, no_card, framed, saved in db.execute(_CANDIDATES).fetchall()
-               if wanted(url, no_card, framed, saved)]
+        ids = [pid for pid, url, no_card, framed, saved, picture in db.execute(_CANDIDATES).fetchall()
+               if wanted(url, no_card, framed, saved, picture)]
         if ids:
             db.execute(text("UPDATE submissions_aux SET embed_url = '', embed_type = NULL WHERE id = ANY(:ids)"), {"ids": ids})
         db.commit()

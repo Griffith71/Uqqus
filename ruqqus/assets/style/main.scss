@@ -7264,6 +7264,38 @@ $quote-hover: rgba(0, 0, 0, 0.03);
     border-radius: 10px;
 }
 
+// A quoted post's picture (q.image): a video's still frame gets a play mark; the cover link above opens the video on
+// its own site.
+.quote-card-pic {
+    position: relative;
+    margin-top: 0.5rem;
+}
+
+.quote-card-pic .quote-card-media {
+    margin-top: 0;
+}
+
+.quote-card-play {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    margin: -24px 0 0 -24px;
+    font-size: 18px;
+    color: #fff;
+    pointer-events: none;
+    background: rgba(0, 0, 0, 0.6);
+    border-radius: 50%;
+}
+
+.quote-card-play .fa-play {
+    margin-left: 3px;                    // the triangle's weight sits left of its box
+}
+
 .quote-card-foot {
     display: flex;
     flex-wrap: wrap;

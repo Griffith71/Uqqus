@@ -5,8 +5,9 @@ what it said, so whose words are whose is clear. The rules, with no I/O (tests/t
 * **A post on a social site** (X, Bluesky, Reddit, TikTok, Instagram, Facebook, Threads, Pinterest, Tumblr, or any
   Mastodon server): `social_card`, made from what the site's oEmbed service answered when the post was saved (the
   snippet in `embed_url`, `meta_title`, `meta_description`: helpers/embed.py, helpers/thumbs.py). Nothing from the site
-  is loaded on the page: no script, no frame, no picture (the post's own thumbnail, fetched by this site, may be). X's
-  free service sends no photos or videos, so a post that has them says so ("Photo or video") with a link to view it.
+  is loaded on the page: no script, no frame. Its picture is the post's preview picture (`image`, as every link
+  preview on this site shows it; for X a photo or a video's still frame from the post's link-preview tags,
+  social_embeds.x_media), and a post whose picture could not be read says so ("Photo or video").
 * **A post on this site**: `quoted_post_id` reads the link; the card is drawn for each reader (helpers/jinja2.py
   `quote_of`) with the rules of opening the post (`post_notice`): a reader who may not see it is told it isn't
   available, and an anonymous author stays anonymous.
@@ -149,23 +150,24 @@ def _x_quoted(snippet):
         return None
     next_url = box.get("data-next-url") or ""
     return {"url": box.get("data-url"), "link": box.get("data-link") or "", "snippet": "".join(str(part) for part in box.contents),
-            "next_url": next_url if social_embeds.x_status_url(next_url) else "", "next_link": box.get("data-next-link") or ""}
+            "next_url": next_url if social_embeds.x_status_url(next_url) else "", "next_link": box.get("data-next-link") or "",
+            "image": box.get("data-image") if social_embeds.x_media_ok(box.get("data-image")) else ""}
 
 
 @lru_cache(maxsize=4096)
-def social_card(url, snippet="", meta_title="", meta_description="", has_thumb=False):
+def social_card(url, snippet="", meta_title="", meta_description="", image=""):
     """The card of a post on a social site, or None when the link is not a post there (a profile, a feed, another
     site). Plain text only: the template escapes it and turns its addresses into links.
 
     As on X, a post that quotes another shows it inside (`inner`, a card of its own), and no deeper: what that one
     quotes is a line (`quoting` on the inner card). Only X sends what is needed (helpers/embed.py `_with_x_quote`)."""
     quoted = _x_quoted(snippet) if social_embeds.site_of(url) in ("x.com", "twitter.com") else None
-    card = _social(url, snippet, meta_title, meta_description, has_thumb, quoted["link"] if quoted else "")
+    card = _social(url, snippet, meta_title, meta_description, image, quoted["link"] if quoted else "")
     if card is None:
         return None
     card["inner"], card["quoting"] = None, ""
     if quoted:
-        inner = _social(quoted["url"], quoted["snippet"], "", "", False, quoted["next_link"])
+        inner = _social(quoted["url"], quoted["snippet"], "", "", quoted["image"], quoted["next_link"])
         if inner:
             inner["inner"] = None
             inner["quoting"] = quoting_line(quoted["next_url"], "") if quoted["next_url"] else ""
@@ -174,17 +176,16 @@ def social_card(url, snippet="", meta_title="", meta_description="", has_thumb=F
 
 
 def inside(card):
-    """A card drawn inside another card: what it quotes in turn is only its one line, as on X ("Quoting @x on X"), and
-    it has no picture (the thumbnail belongs to the post that linked it, not to the post drawn around it)."""
+    """A card drawn inside another card: what it quotes in turn is only its one line, as on X ("Quoting @x on X")."""
     if not card:
         return card
     inner, line = card.get("inner"), card.get("quoting") or ""
     if inner:
         line = f"Quoting {inner['handle'] or 'a post'} on {inner['label']}" if inner.get("kind") == "social" else "Quoting a post"
-    return dict(card, inner=None, quoting=line, thumb=False)
+    return dict(card, inner=None, quoting=line)
 
 
-def _social(url, snippet, meta_title, meta_description, has_thumb, drop_link=""):
+def _social(url, snippet, meta_title, meta_description, image="", drop_link=""):
     url = str(url or "")
     site = social_embeds.site_of(url)
     mastodon = None if site else social_embeds.mastodon_post(url)
@@ -224,7 +225,12 @@ def _social(url, snippet, meta_title, meta_description, has_thumb, drop_link="")
         card["media"] = _MEDIA_WORD.get(site, "")
         if site == "facebook.com" and social_embeds.facebook_kind(url) == "video":
             card["media"] = "Video"
-    card["thumb"] = bool(has_thumb)
+    # the post's picture: an https address only (the template escapes it); a picture shown needs no "Photo" line
+    image = str(image or "")
+    card["image"] = image if urlsplit(image).scheme == "https" else ""
+    card["video"] = bool(card["image"]) and social_embeds.x_media_is_video(card["image"])
+    if card["image"]:
+        card["media"] = ""
     return card
 
 

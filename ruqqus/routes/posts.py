@@ -594,6 +594,13 @@ def get_post_title(v):
     if not url:
         return abort(400)
 
+    # a link drawn as a quote card (a post on X, Bluesky... or on this site) shows its own words under the member's, as
+    # on X: the title is the member's to write, so nothing is suggested (and the page is not fetched)
+    from ruqqus.helpers import quote_cards
+    if (quote_cards.social_card(url) or
+            quote_cards.quoted_post_id(url, app.config["SERVER_NAME"], app.config.get("SHORT_DOMAIN"))):
+        return jsonify({"url": url, "title": "", "quote": True})
+
     #mimic chrome browser agent
     headers = {"User-Agent": f"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.72 Safari/537.36"}
     try:

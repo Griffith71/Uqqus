@@ -408,6 +408,7 @@
 
         f = document.getElementById('file-upload');
         files = event.clipboardData.files;
+        if (!files || !files.length) return;   // text (a link pasted into the title...): not a picture
         filename = files[0].name.toLowerCase();
 
         if (filename.endsWith(".jpg") || filename.endsWith(".jpeg") || filename.endsWith(".png") || filename.endsWith(".gif"))

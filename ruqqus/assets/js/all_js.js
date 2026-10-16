@@ -2483,6 +2483,34 @@ function showAttachedLinkChip(url) {
   document.getElementById("title-link-btn").classList.add("d-none");
 }
 
+// A link pasted on its own: its http(s) address, or null for anything else
+// (text with spaces or lines, another scheme). Shared with the feed composer.
+function pastedLink(event) {
+  var data = event.clipboardData || window.clipboardData;
+  var text = ((data && data.getData("text")) || "").trim();
+  if (!text || text.indexOf(" ") !== -1 || text.indexOf(String.fromCharCode(10)) !== -1) return null;
+  var parsed;
+  try { parsed = new URL(text); } catch (e) { return null; }
+  return (parsed.protocol === "http:" || parsed.protocol === "https:") ? parsed.href : null;
+}
+
+// Paste a link into the title, as on X where a pasted post link becomes the
+// quoted post: with no link attached yet it is attached (the chip) and the
+// title keeps only the member's own words.
+document.addEventListener("paste", function (event) {
+  var title = document.getElementById("post-title");
+  var urlField = document.getElementById("post-URL");
+  if (!title || !urlField || event.target !== title || urlField.value) return;
+  var link = pastedLink(event);
+  if (!link) return;
+  event.preventDefault();
+  urlField.value = link;
+  showAttachedLinkChip(link);
+  hide_image();
+  checkForRequired();
+  autoSuggestTitle();
+});
+
 // Mobile bottom navigation bar
 
 window.onload = function () {
@@ -2590,7 +2618,10 @@ button.disabled = !title.checkValidity();
 }
 
 // Auto-suggest title given URL - only fills the title if it's still empty,
-// so it never clobbers deliberately-typed text.
+// so it never clobbers deliberately-typed text (checked again when the
+// answer arrives: the member may have started typing while it was on its
+// way). A link drawn as a quote card (a post on X, Bluesky, this site...)
+// suggests nothing: as on X, the title is the member's own words.
 
 function autoSuggestTitle()  {
 
@@ -2605,7 +2636,9 @@ function autoSuggestTitle()  {
     x.onreadystatechange = function() {
       if (x.readyState == 4 && x.status == 200) {
 
-        titleField.value = JSON.parse(x.responseText)["title"].slice(0, TITLE_MAX);
+        var answer = JSON.parse(x.responseText);
+        if (answer.quote || !answer.title || titleField.value.trim() !== "") return;
+        titleField.value = answer.title.slice(0, TITLE_MAX);
 
         syncTitleOverflow();
         checkForRequired()

@@ -194,17 +194,49 @@ def last_tco_link(snippet):
     return href if is_tco(href) and links[-1].get_text().strip() == href else None
 
 
-def x_quote_snippet(snippet, quoted_url, link, quoted_snippet, next_url="", next_link=""):
+def x_quote_snippet(snippet, quoted_url, link, quoted_snippet, next_url="", next_link="", image=""):
     """What is saved for a post on X that quotes another: X's own snippet, then the quoted post's own oEmbed snippet
-    (the same fixed host) in a `div.x-quoted` that says which post it is, which t.co link in the text pointed at it, and
-    what that post quotes in turn (its address only: X shows one quoted post, not the one under it). Never drawn as
-    HTML: helpers/quote_cards.py reads it."""
+    (the same fixed host) in a `div.x-quoted` that says which post it is, which t.co link in the text pointed at it,
+    its picture (`x_media`), and what that post quotes in turn (its address only: X shows one quoted post, not the one
+    under it). Never drawn as HTML: helpers/quote_cards.py reads it."""
     def escape(value):
         return html.escape(str(value or ""), quote=True)
 
     return (str(snippet or "") + '<div class="x-quoted" data-url="' + escape(quoted_url) + '" data-link="' + escape(link)
-            + '" data-next-url="' + escape(next_url) + '" data-next-link="' + escape(next_link) + '">'
-            + str(quoted_snippet or "") + "</div>")
+            + '" data-next-url="' + escape(next_url) + '" data-next-link="' + escape(next_link)
+            + '" data-image="' + escape(image if x_media_ok(image) else "") + '">' + str(quoted_snippet or "") + "</div>")
+
+
+def x_media_ok(url):
+    """Is this the picture of a post on X: https on X's own picture host, never an account's profile picture?"""
+    parts = urlsplit(str(url or ""))
+    return (parts.scheme == "https" and (parts.hostname or "").lower() == "pbs.twimg.com" and parts.port is None
+            and not parts.path.startswith("/profile_images/") and "/" in parts.path.strip("/"))
+
+
+def x_media_is_video(url):
+    """A video's still frame (X keeps them under *_video_thumb/) rather than a photo."""
+    return x_media_ok(url) and "video_thumb/" in urlsplit(str(url)).path
+
+
+def x_media(page):
+    """The picture of a post on X from its page's link-preview tags (what X sends every link preview: Slack, Discord,
+    iMessage), or "": only when X calls it a large-picture card (`twitter:card` "summary_large_image": a photo, or a
+    video's still frame); a post with no picture has its author's profile picture there, which is never taken."""
+    try:
+        from bs4 import BeautifulSoup
+        soup = BeautifulSoup(str(page or ""), "html.parser")
+    except Exception:
+        return ""
+
+    def meta(key):
+        tag = soup.find("meta", attrs={"name": key}) or soup.find("meta", attrs={"property": key})
+        return (tag.get("content") or "").strip() if tag else ""
+
+    if meta("twitter:card") != "summary_large_image":
+        return ""
+    image = meta("og:image") or meta("twitter:image")
+    return image if x_media_ok(image) else ""
 
 
 def mastodon_quote_snippet(src, name, handle, when, text, media):

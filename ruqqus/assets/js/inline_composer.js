@@ -95,6 +95,16 @@
     el('ic-url').focus();
   });
 
+  // a link pasted into the title on its own goes in the Link field instead (as on X, where a pasted post link becomes
+  // the quoted post), so the title keeps only the member's own words; pastedLink is in all_js.js
+  title.addEventListener('paste', function (event) {
+    var link = typeof window.pastedLink === 'function' ? window.pastedLink(event) : null;
+    if (!link || el('ic-url').value) return;
+    event.preventDefault();
+    el('ic-url').value = link;
+    showOptions(true);
+  });
+
   // --- Forward to guilds: the same chips and fields as on Create a post --------------
   function hasGuild(name) {
     return forwards.some(function (x) { return x.toLowerCase() === name.toLowerCase(); });

@@ -159,3 +159,12 @@ def test_a_mastodon_embed_page_is_read_from_a_frame_or_the_new_placeholder():
 def test_a_site_that_names_nobody_still_gets_a_card():
     assert se.default_card("https://www.instagram.com/p/x/") == ("Post on Instagram", "")
     assert se.default_card("https://example.com/x") == ("", "")
+
+
+def test_an_x_posts_picture_is_read_from_its_own_page_only():
+    gap = chr(10) * 3
+    picture = EMBED.split("def _x_picture(")[1].split(gap)[0]
+    assert "status = social_embeds.x_status_url(url)" in picture and "requests.get(status," in picture
+    assert "social_embeds.x_media(page.text[:500000])" in picture
+    assert "_x_picture(url) or thumbnail" in EMBED.split("def x_oembed(")[1].split(gap)[0]
+    assert "_x_picture(quoted_url)" in EMBED.split("def _with_x_quote(")[1].split(gap)[0]
