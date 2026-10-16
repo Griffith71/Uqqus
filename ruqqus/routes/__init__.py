@@ -6,6 +6,8 @@ from .chat import *
 from .live_events import *
 from .chat_groups import *
 from .calls import *
+from .live_comments import *
+from .spaces import *
 from .broadcasts import *
 from .comments import *
 from .curations import *

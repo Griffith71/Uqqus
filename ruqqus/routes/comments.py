@@ -591,6 +591,10 @@ Optional file data:
     g.db.commit()
     media_safety.scan_later(attached_media)
 
+    # pages reading this post live (a Space, a live thread) are told a comment came: only its id
+    from ruqqus.routes.live_comments import announce_comment
+    announce_comment(c)
+
     c=get_comment(c.id, v=v)
 
 

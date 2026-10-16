@@ -2102,6 +2102,68 @@ body.embedded #chat-app {
     .call-ring { animation: none; }
 }
 
+// A Space a post announces (partials/space_card.html): above the card's stretched link, so its buttons work
+.space-card {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin: 0.5rem 0;
+    padding: 0.75rem;
+    border: 1px solid $border-color;
+    border-radius: 0.75rem;
+}
+
+.space-card.space-live {
+    border-color: rgba($primary, 0.5);
+    background-color: rgba($primary, 0.06);
+}
+
+.space-card-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 50%;
+    background-color: rgba($primary, 0.15);
+    color: $primary;
+}
+
+.space-card-text {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+.space-card-state {
+    font-weight: 700;
+}
+
+.space-card-meta, .space-card-rec {
+    font-size: 0.875rem;
+    color: $muted;
+}
+
+.space-card-rec {
+    font-weight: 400;
+}
+
+.space-live-dot {
+    display: inline-block;
+    width: 0.5rem;
+    height: 0.5rem;
+    margin-right: 0.375rem;
+    border-radius: 50%;
+    background-color: #e5484d;
+    vertical-align: middle;
+}
+
+.space-composer .space-options {
+    max-width: 22rem;
+}
+
 .chat-call-bar {
     display: flex;
     align-items: center;

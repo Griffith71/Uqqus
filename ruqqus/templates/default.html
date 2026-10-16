@@ -716,6 +716,7 @@
 {% if v and organise_bookmarks and not request.args.get('embed') %}<script src="{{ asset_url('js/bookmark_folders.js') }}"></script>{% endif %}
 {% if v and story_ui and not request.args.get('embed') %}<script src="{{ asset_url('js/stories.js') }}"></script>{% endif %}
 {% if v %}<script src="{{ asset_url('js/poll_composer.js') }}"></script>{% endif %}
+{% if v %}<script src="{{ asset_url('js/space_composer.js') }}"></script>{% endif %}
 {% if v %}<script src="{{ asset_url('js/voters.js') }}"></script>{% endif %}
 {% if v %}<script src="{{ asset_url('js/post_feedback.js') }}"></script>{% endif %}
 {# the feed composer and the Create post panel: toolbar, drafts, pill and poll button (they return early without their elements) #}
@@ -724,6 +725,7 @@
 <script src="{{ asset_url('js/composer_card.js') }}"></script>{% endif %}
 {% if v and not request.args.get('embed') %}<script src="{{ asset_url('js/curation_picker.js') }}"></script>{% endif %}
 <script src="{{ asset_url('js/poll.js') }}"></script>
+<script src="{{ asset_url('js/space_card.js') }}"></script>
 {% if v %}<script src="{{ asset_url('js/chat_badge.js') }}"></script>{% endif %}
 {# live updates and incoming calls: the top page only (a side-panel frame never rings twice) #}
 {% if v and not request.args.get('embed') %}<script src="{{ asset_url('js/live_events.js') }}"></script>

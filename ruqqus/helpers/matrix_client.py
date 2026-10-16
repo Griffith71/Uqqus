@@ -204,6 +204,38 @@ def leave_room_as(room_id: str, mxid: str):
         raise MatrixError(f"leave_room_as failed: {resp.status_code}")
 
 
+def create_space_room() -> str:
+    """A Space's room (helpers/spaces.py): nothing is ever written in it. Being in it together is how the browsers
+    in a Space learn each other's devices (Matrix tells the members of a room when someone adds a device), which
+    their encrypted signalling needs. Encrypted, so clients track its members' devices; only the bot changes it."""
+    resp = requests.post(
+        f"{app.config['MATRIX_INTERNAL_URL']}/_matrix/client/v3/createRoom",
+        json={
+            "preset": "private_chat",
+            "visibility": "private",
+            "power_level_content_override": group_power_levels(),
+            "initial_state": [
+                {"type": "m.room.encryption", "content": {"algorithm": "m.megolm.v1.aes-sha2"}},
+                {"type": "m.room.history_visibility", "content": {"history_visibility": "joined"}},
+                {"type": "m.room.guest_access", "content": {"guest_access": "forbidden"}},
+            ],
+        },
+        headers=_as_headers(), timeout=10,
+    )
+    if resp.status_code != 200:
+        raise MatrixError(f"create_space_room failed: {resp.status_code}")
+    return resp.json()["room_id"]
+
+
+def put_in_room(room_id: str, mxid: str):
+    """The bot invites, the member joins (an invitation to someone already in it is refused: that is fine)."""
+    try:
+        invite_as_bot(room_id, mxid)
+    except MatrixError:
+        pass
+    join_room_as(room_id, mxid)
+
+
 def channel_power_levels(writer_mxids) -> dict:
     """A broadcast channel (helpers/broadcasts.py): the owner and helpers write (50), members react and take back
     their own reactions (0); the bot (the creator) alone changes the room or who is in it."""

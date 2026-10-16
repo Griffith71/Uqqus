@@ -1,0 +1,39 @@
+{#
+  The Space a post announces (helpers/spaces.py, helpers/space_view.py, routes/spaces.py), under its text on a feed
+  card and on the post page. space_block(p, v): Live (how many are in it now, never who: the Space page shows that
+  to the people in it), Scheduled (the time, in the reader's own time zone by assets/js/space_card.js; UTC without
+  script) or Ended. Join opens the Space in a tab of its own; a visitor is sent to sign in. It sits above the card's
+  stretched link (position, z-index in both stylesheets).
+#}
+{% macro space_block(p, v) %}
+{% set s = space_of(p, v) %}
+{% if s %}
+<div class="space-card space-{{ s.status }}" data-space="{{ s.id }}">
+  <div class="space-card-icon" aria-hidden="true"><i class="fas fa-podcast"></i></div>
+  <div class="space-card-text">
+    <div class="space-card-state">
+      {% if s.status == 'live' %}<span class="space-live-dot" aria-hidden="true"></span>Live Space
+      {% elif s.status == 'scheduled' %}Space · {{ s.label }}
+      {% else %}Space · Ended{% endif %}
+      {% if s.record %}<span class="space-card-rec" title="This Space is recorded">· Recorded</span>{% endif %}
+    </div>
+    <div class="space-card-meta">
+      {% if s.status == 'live' %}{{ s.people }} {{ 'person' if s.people == 1 else 'people' }} in it now
+      {% elif s.status == 'scheduled' %}<time datetime="{{ s.scheduled_utc | space_iso }}" data-space-time="{{ s.scheduled_utc }}">{{ s.scheduled_utc | space_time }}</time>
+      {% elif s.peak %}{{ s.peak }} listened at most{% else %}Nobody listened live{% endif %}
+    </div>
+  </div>
+  <div class="space-card-action">
+    {% if not v %}
+    <a class="btn btn-outline-primary btn-sm" href="/login?redirect={{ request.path | urlencode }}">Sign in to listen</a>
+    {% elif s.status == 'live' %}
+    <a class="btn btn-primary btn-sm" href="/space/{{ s.id }}" target="_blank" rel="noopener"><i class="fas fa-headphones mr-1" aria-hidden="true"></i>Join</a>
+    {% elif s.status == 'scheduled' and s.is_host %}
+    <a class="btn btn-primary btn-sm" href="/space/{{ s.id }}" target="_blank" rel="noopener">Open to start</a>
+    {% elif s.status == 'scheduled' %}
+    <button type="button" class="btn btn-sm {{ 'btn-secondary' if s.reminded else 'btn-outline-primary' }}" data-space-remind="{{ s.id }}" aria-pressed="{{ 'true' if s.reminded else 'false' }}">{{ 'Reminder set' if s.reminded else 'Remind me' }}</button>
+    {% endif %}
+  </div>
+</div>
+{% endif %}
+{% endmacro %}

@@ -31,6 +31,7 @@ from ruqqus.helpers.word_filter_store import post_severity, apply_post_severity
 from ruqqus.classes import *
 from ruqqus.helpers import coauthors       # after the star-import: ruqqus.classes has a module of this name too
 from ruqqus.helpers import polls as poll_rules, poll_store
+from ruqqus.helpers import spaces as space_rules, space_store
 from ruqqus.helpers import circles as circle_rules, circle_guard, circle_store
 from ruqqus.helpers import insights_store
 from ruqqus.helpers import bots as bot_rules, bot_store
@@ -1346,6 +1347,25 @@ Optional file data:
                 "api": lambda: ({"error": poll_error}, 400)
                 }
 
+    # a Space this post announces (helpers/spaces.py): a live audio room. Checked here, before anything is made
+    space_start, space_record, space_error = None, False, None
+    if flag(request.form, "space"):
+        now_space = int(time.time())
+        space_error = space_rules.make_refusal(
+            anonymous=flag(request.form, "anonymous"),
+            bot=bool(v.is_bot) or request.headers.get("X-User-Type", "").lower() == "bot",
+            circle_guild=circle_board is not None,
+            made_today=space_store.made_since(g.db, v.id, now_space - 86400))
+        if space_error is None:
+            space_start, space_error = space_rules.parse_start(request.form.get("space_start"), now_space)
+        space_record = flag(request.form, "space_record")
+    if space_error:
+        return {"html": lambda: (render_template("submit.html", v=v, error=space_error,
+                                                 title=title, url=url, body=body, text=text_for_redisplay,
+                                                 b=None, forward_guild_names=forward_guild_names), 400),
+                "api": lambda: ({"error": space_error}, 400)
+                }
+
     # who can see it (helpers/circles.py): Public unless the author chose some of their circles (only their own:
     # circle_store.resolve). A post for circles stays between the author and the people in them, so what would take it
     # elsewhere (anonymity, co-authors, forwards, an own video) stops it here
@@ -1412,6 +1432,9 @@ Optional file data:
 
     if poll_options:
         poll_store.create(g.db, new_post, poll_options, poll_hours)
+
+    if space_start is not None:
+        space_store.create(g.db, new_post.id, v.id, space_start, space_record, int(time.time()))
 
     g.db.refresh(new_post)
 

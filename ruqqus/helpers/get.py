@@ -451,6 +451,10 @@ def get_posts(pids, sort="hot", v=None):
     from ruqqus.helpers import poll_store
     poll_store.attach(g.db, posts, v)
 
+    # the Spaces the page's posts announce (helpers/space_view.py): one query
+    from ruqqus.helpers import space_view
+    space_view.attach(g.db, posts, v)
+
     # whether the viewer follows each post, or already gets its comments (helpers/post_follows.py): two queries
     from ruqqus.helpers import post_follows
     post_follows.attach(g.db, posts, v)

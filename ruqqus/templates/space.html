@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+{#
+  A Space's own page (routes/spaces.py `space_page`, assets/chat_src/src/space.js). A page of its own, opened in a new
+  tab from the post, so the audio keeps going while the rest of the site reloads page by page; it is allowed the
+  microphone (helpers/device_access.py). The post's comments are its live discussion (routes/live_comments.py).
+  Before joining, the sheet says that everyone in the Space can see who is there (the owner's choice) and, for a
+  recorded Space, that it is recorded. Names go in as text; `boot` is drawn with |tojson.
+#}
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="robots" content="noindex">
+  <title>Space - {{ 'SITE_NAME' | app_config }}</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root { color-scheme: dark; --bg: #0f1114; --panel: #1b1e23; --line: #2c3138; --text: #e8eaed; --muted: #9aa3ad;
+            --accent: #1d9bf0; --danger: #e5484d; --live: #e5484d; --speaking: #36c275; }
+    * { box-sizing: border-box; }
+    [hidden] { display: none !important; }
+    html, body { min-height: 100%; }
+    body { margin: 0; background: var(--bg); color: var(--text); font: 15px/1.45 system-ui, -apple-system, "Segoe UI", sans-serif;
+           -webkit-font-smoothing: antialiased; }
+    a { color: var(--accent); }
+    .space-wrap { max-width: 1100px; margin: 0 auto; padding: 1rem; padding-top: max(1rem, env(safe-area-inset-top));
+                  display: grid; gap: 1rem; grid-template-columns: minmax(0, 1fr) 340px; }
+    @media (max-width: 860px) { .space-wrap { grid-template-columns: minmax(0, 1fr); } }
+    header { grid-column: 1 / -1; display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap; }
+    .space-title { font-size: 1.2rem; font-weight: 700; margin: 0; flex: 1 1 18rem; min-width: 0; overflow-wrap: anywhere; }
+    .space-title a { color: inherit; text-decoration: none; }
+    .space-title a:hover { text-decoration: underline; }
+    .space-meta { color: var(--muted); font-size: 0.875rem; display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; }
+    .space-live { display: inline-flex; align-items: center; gap: 0.375rem; color: #fff; background: var(--live);
+                  border-radius: 6px; padding: 0.0625rem 0.5rem; font-weight: 700; font-size: 0.75rem; letter-spacing: 0.02em; }
+    .panel { background: var(--panel); border-radius: 16px; padding: 1rem; }
+    .space-section-title { color: var(--muted); font-size: 0.8rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; margin: 1rem 0 0.5rem; }
+    .space-grid { display: grid; gap: 0.75rem; grid-template-columns: repeat(auto-fill, minmax(88px, 1fr)); }
+    .space-grid.small { grid-template-columns: repeat(auto-fill, minmax(72px, 1fr)); }
+    .space-person { display: flex; flex-direction: column; align-items: center; gap: 0.25rem; background: none; border: 0; color: inherit;
+                    font: inherit; padding: 0.25rem; border-radius: 10px; cursor: default; min-width: 0; }
+    .space-person:focus-visible { outline: 2px solid var(--accent); }
+    .space-face { position: relative; display: inline-block; border-radius: 50%; outline: 3px solid transparent; outline-offset: 2px;
+                  transition: outline-color 120ms ease-out; }
+    .space-person.speaking .space-face { outline-color: var(--speaking); }
+    .space-face img { display: block; border-radius: 50%; object-fit: cover; background: var(--line); }
+    .space-hand-mark { position: absolute; right: -4px; bottom: -4px; background: #f5b400; color: #111; border-radius: 50%;
+                       font-size: 0.7rem; padding: 0.25rem; }
+    .space-person-name { font-size: 0.8rem; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .space-role { font-size: 0.7rem; color: var(--muted); }
+    .space-controls { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-top: 1rem; }
+    .space-btn { display: inline-flex; align-items: center; gap: 0.375rem; border: 0; border-radius: 999px; padding: 0.5rem 1rem;
+                 background: var(--line); color: var(--text); font: inherit; font-size: 0.9rem; font-weight: 600; cursor: pointer;
+                 touch-action: manipulation; transition: background-color 120ms ease-out, transform 120ms ease-out; }
+    .space-btn:hover { background: #3a4049; }
+    .space-btn:active { transform: scale(0.97); }
+    .space-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+    .space-btn.primary { background: var(--accent); color: #fff; }
+    .space-btn.danger { background: var(--danger); color: #fff; }
+    .space-btn.small { padding: 0.25rem 0.75rem; font-size: 0.8rem; }
+    .space-btn[aria-pressed="true"] { background: var(--text); color: var(--bg); }
+    .space-btn:disabled { opacity: 0.6; cursor: default; }
+    #space-status { min-height: 1.25rem; color: var(--muted); font-size: 0.875rem; margin-top: 0.75rem; }
+    #space-status.bad { color: #ff8a8a; }
+    .space-notice { border: 1px solid var(--line); border-radius: 12px; padding: 0.75rem; color: var(--muted); font-size: 0.875rem; margin: 0.75rem 0; }
+    .space-notice i { color: var(--text); margin-right: 0.375rem; }
+    #space-hands { margin-top: 1rem; }
+    .space-hands-title { font-weight: 700; margin-bottom: 0.5rem; }
+    .space-hand-row { display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; padding: 0.375rem 0; border-top: 1px solid var(--line); }
+    .comments { display: flex; flex-direction: column; max-height: calc(100vh - 7rem); min-height: 22rem; }
+    #space-comments { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 0.75rem; padding-right: 0.25rem; }
+    .space-comment-head { display: flex; align-items: center; gap: 0.5rem; font-size: 0.85rem; }
+    .space-comment-head img { border-radius: 50%; background: var(--line); }
+    .space-comment-name { font-weight: 700; }
+    .space-comment-body { font-size: 0.9rem; overflow-wrap: anywhere; padding-left: 2rem; }
+    .space-comment-body p { margin: 0.125rem 0; }
+    .space-comment-body img { max-width: 100%; height: auto; border-radius: 8px; }
+    #space-comment-form { display: flex; gap: 0.5rem; margin-top: 0.75rem; }
+    #space-comment-input { flex: 1; min-width: 0; border-radius: 999px; border: 1px solid var(--line); background: var(--bg); color: var(--text);
+                           padding: 0.5rem 0.875rem; font: inherit; }
+    #space-comment-input:focus-visible { outline: 2px solid var(--accent); }
+    dialog { background: var(--panel); color: var(--text); border: 1px solid var(--line); border-radius: 16px; padding: 1rem; min-width: 16rem; }
+    dialog::backdrop { background: rgba(0, 0, 0, 0.6); }
+    #space-person-actions { display: flex; flex-direction: column; gap: 0.5rem; margin-top: 0.75rem; }
+    #space-play { position: fixed; left: 50%; transform: translateX(-50%); bottom: 1rem; }
+    .muted { color: var(--muted); }
+    @media (prefers-reduced-motion: reduce) { .space-btn, .space-face { transition: none; } }
+  </style>
+</head>
+<body>
+  <div class="space-wrap">
+    <header>
+      <h1 class="space-title"><a href="{{ boot.permalink }}" target="_blank" rel="noopener" id="space-post-link"></a></h1>
+      <div class="space-meta">
+        <span class="space-live" id="space-live"{% if boot.status != 'live' %} hidden{% endif %}><i class="fas fa-circle-dot" aria-hidden="true"></i>LIVE</span>
+        <span id="space-host"></span>
+        <span id="space-count" aria-live="polite"></span>
+      </div>
+    </header>
+
+    <main class="panel">
+      <section id="space-join-sheet">
+        {% if boot.status == 'live' %}
+        <p class="muted" style="margin-top:0"><i class="fas fa-podcast" aria-hidden="true"></i> This Space is live.</p>
+        {% elif boot.status == 'scheduled' %}
+        <p class="muted" style="margin-top:0"><i class="fas fa-podcast" aria-hidden="true"></i> This Space hasn't started yet.</p>
+        {% else %}
+        <p class="muted" style="margin-top:0"><i class="fas fa-podcast" aria-hidden="true"></i> This Space has ended. Its discussion is still here.</p>
+        {% endif %}
+        {% if boot.status != 'ended' %}
+        <div class="space-notice"><i class="fas fa-users" aria-hidden="true"></i>Everyone in this Space can see who is here, listeners too.</div>
+        {% if boot.record %}<div class="space-notice"><i class="fas fa-circle-dot" aria-hidden="true"></i>This Space is recorded: the host keeps a replay with the post.</div>{% endif %}
+        {% endif %}
+        <div class="space-controls">
+          <button type="button" class="space-btn primary" id="space-join"{% if boot.status != 'live' %} hidden{% endif %}><i class="fas fa-headphones" aria-hidden="true"></i>Join the Space</button>
+          {% if boot.status == 'scheduled' and boot.isHost %}
+          <button type="button" class="space-btn primary" id="space-start"><i class="fas fa-podcast" aria-hidden="true"></i>Start the Space</button>
+          {% endif %}
+          <button type="button" class="space-btn small" id="space-report"><i class="fas fa-flag" aria-hidden="true"></i>Report</button>
+        </div>
+      </section>
+
+      <section id="space-room" hidden>
+        <div class="space-section-title">On stage</div>
+        <div class="space-grid" id="space-stage"></div>
+        <div class="space-section-title" id="space-listener-heading">Listeners</div>
+        <div class="space-grid small" id="space-listeners"></div>
+        <div id="space-hands"></div>
+        <div class="space-controls">
+          <button type="button" class="space-btn" id="space-mute" aria-pressed="false" hidden><i class="fas fa-microphone" aria-hidden="true"></i><span id="space-mute-label">Mute</span></button>
+          <button type="button" class="space-btn" id="space-hand" aria-pressed="false" hidden><i class="fas fa-hand" aria-hidden="true"></i><span id="space-hand-label">Raise hand</span></button>
+          <span id="space-invite" hidden>
+            <span class="muted">You're invited to speak.</span>
+            <button type="button" class="space-btn primary small" id="space-accept-speak">Speak</button>
+            <button type="button" class="space-btn small" id="space-decline-speak">Not now</button>
+          </span>
+          <button type="button" class="space-btn" id="space-step-down" hidden>Move to listeners</button>
+          <button type="button" class="space-btn danger" id="space-end" hidden>End the Space</button>
+          <button type="button" class="space-btn" id="space-leave"><i class="fas fa-right-from-bracket" aria-hidden="true"></i>Leave</button>
+        </div>
+      </section>
+
+      <section id="space-ended" hidden>
+        <p id="space-ended-text"></p>
+        <p><a href="{{ boot.permalink }}">Back to the post</a></p>
+        <div id="space-replay" hidden>
+          <p id="space-replay-text" class="muted" role="status"></p>
+          <a id="space-replay-download" class="space-btn small" hidden><i class="fas fa-headphones" aria-hidden="true"></i>Download the recording</a>
+        </div>
+      </section>
+
+      <div id="space-status" role="status" aria-live="polite"></div>
+      <div id="space-audio" hidden></div>
+    </main>
+
+    <aside class="panel comments" aria-label="Discussion">
+      <div class="space-section-title" style="margin-top:0">Discussion</div>
+      <div id="space-comments"></div>
+      <form id="space-comment-form">
+        <label class="muted" for="space-comment-input" style="position:absolute;left:-9999px">Comment</label>
+        <input id="space-comment-input" type="text" maxlength="2000" autocomplete="off" placeholder="Add a comment">
+        <button type="submit" class="space-btn primary small">Post</button>
+      </form>
+    </aside>
+  </div>
+
+  <dialog id="space-person-sheet">
+    <form method="dialog" style="display:flex;justify-content:space-between;align-items:center;gap:1rem">
+      <strong id="space-person-name"></strong>
+      <button class="space-btn small" aria-label="Close"><i class="fas fa-xmark" aria-hidden="true"></i></button>
+    </form>
+    <div id="space-person-actions"></div>
+  </dialog>
+
+  <button type="button" class="space-btn primary" id="space-play" hidden><i class="fas fa-headphones" aria-hidden="true"></i>Play sound</button>
+
+  <script>
+    window.UQQUS_SPACE_BOOT = {{ boot | tojson }};
+    window.formkey = function () { return window.UQQUS_SPACE_BOOT.formkey; };
+    document.getElementById("space-post-link").textContent = window.UQQUS_SPACE_BOOT.title;
+    document.getElementById("space-host").textContent = "Hosted by " + window.UQQUS_SPACE_BOOT.host.shown_name;
+  </script>
+  <script src="{{ asset_url('js/live_events.js') }}"></script>
+  <script src="{{ asset_url('js/media_upload.js') }}"></script>
+  <script type="module" src="{{ asset_url('js/space_bundle.js') }}"></script>
+</body>
+</html>

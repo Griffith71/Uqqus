@@ -149,6 +149,29 @@
 </div>
 {% endmacro %}
 
+{% macro space_field(prefix) %}
+{# a Space this post announces (helpers/spaces.py): `space` (host one), `space_start` (a Unix time worked out from the
+   member's own clock by assets/js/space_composer.js; empty starts it when the host opens it) and `space_record`.
+   Not kept in drafts: a Space has its own start time. #}
+<div class="space-composer mt-3" data-space-composer>
+  <label class="d-block">Space (optional)<i class="fas fa-info-circle text-gray-400 ml-1" data-toggle="tooltip" data-placement="top" title="A live audio room this post announces. Its comments are the Space's discussion. Everyone in it, listeners too, can see who is there. Not for anonymous posts."></i></label>
+  <div class="custom-control custom-checkbox">
+    <input type="checkbox" class="custom-control-input" id="{{ prefix }}" name="space" value="true" data-space-toggle>
+    <label class="custom-control-label" for="{{ prefix }}"><i class="fas fa-podcast mr-1" aria-hidden="true"></i>Host a Space: a live audio room</label>
+  </div>
+  <div class="space-options pl-4" hidden>
+    <label class="d-block mt-2 text-small" for="{{ prefix }}-when">Start time</label>
+    <input type="datetime-local" class="form-control form-control-sm" id="{{ prefix }}-when" data-space-when>
+    <input type="hidden" name="space_start" value="">
+    <small class="form-text text-muted">Leave it empty to start when you open the Space. Up to {{ space_schedule_days }} days ahead.</small>
+    <div class="custom-control custom-checkbox mt-2">
+      <input type="checkbox" class="custom-control-input" id="{{ prefix }}-record" name="space_record" value="true">
+      <label class="custom-control-label" for="{{ prefix }}-record">Keep a replay, saved to your own linked storage (everyone is told before they join)</label>
+    </div>
+  </div>
+</div>
+{% endmacro %}
+
 {% macro anonymous_field(checked, prefix) %}
 <label class="mt-3 d-block">Anonymity<i class="fas fa-info-circle text-gray-400 ml-1" data-toggle="tooltip" data-placement="top" title="Other users see Anonymous instead of your name. You and site admins can still see it, it follows the same rules as any post, and it cannot be undone after posting. It is not listed on your profile."></i></label>
 <div class="anonymity">

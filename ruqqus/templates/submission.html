@@ -3,6 +3,7 @@
 {% from "partials/theme.html" import theme_links %}
 {% from "partials/community_note.html" import community_note %}
 {% from "partials/poll.html" import poll_block %}
+{% from "partials/space_card.html" import space_block %}
 {% from "partials/coauthors.html" import coauthor_line %}
 {% from "partials/quote_card.html" import quote_card %}
 
@@ -541,6 +542,8 @@
             {{ community_note(p) }}
 
             {{ poll_block(p, v) }}
+
+            {{ space_block(p, v) }}
 
             {% if p.embed_kind and p.embed_kind != 'widget' %}
             <div class="position-relative{% if p.is_sensitive %} sensitive-content-wrap{% endif %}" id="sensitive-embed-{{ p.base36id }}">

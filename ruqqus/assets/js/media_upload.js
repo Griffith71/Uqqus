@@ -29,7 +29,7 @@
 (function () {
   'use strict';
 
-  var ACCEPT = { image: 'image/jpeg,image/png,image/gif,image/webp', audio: 'audio/mpeg,audio/mp4,audio/ogg,audio/wav,audio/flac,.mp3,.m4a,.ogg,.wav,.flac', video: 'video/*' };
+  var ACCEPT = { image: 'image/jpeg,image/png,image/gif,image/webp', audio: 'audio/mpeg,audio/mp4,audio/ogg,audio/wav,audio/flac,audio/webm,.mp3,.m4a,.ogg,.wav,.flac,.webm', video: 'video/*' };
   var REDRAW = /^image\/(jpeg|png|webp)$/;
   var statusPromise = null;
 

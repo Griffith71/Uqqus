@@ -21,7 +21,7 @@
   scheduled copy would be published as a public profile post.
   tests/test_composers_offer_the_same_options.py keeps this form and templates/submit.html in step.
 #}
-{% from "partials/post_options.html" import audience_field, comment_permission_field, disclosure_field, anonymous_field, coauthors_field, poll_field %}
+{% from "partials/post_options.html" import audience_field, comment_permission_field, disclosure_field, anonymous_field, coauthors_field, poll_field, space_field %}
 
 {% macro inline_composer(v, board=none, panel=false) %}
 {% set circle_guild = board and board.is_circle %}
@@ -98,6 +98,7 @@
                 <div{% if circle_guild %} hidden{% endif %}>{{ anonymous_field(false, "ic-anonymous") }}</div>
                 <div{% if circle_guild %} hidden{% endif %}>{{ coauthors_field("", "ic-coauthors") }}</div>
                 {{ poll_field([], poll_default_hours, "ic-poll") }}
+                <div{% if circle_guild %} hidden{% endif %}>{{ space_field("ic-space") }}</div>
                 <label class="mt-3 d-block">Sensitive content</label>
                 <div class="custom-control custom-checkbox">
                   <input type="checkbox" class="custom-control-input" id="ic-sensitive" name="sensitive"{% if board and board.is_sensitive %} checked disabled{% endif %}>

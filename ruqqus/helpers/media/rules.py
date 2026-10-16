@@ -31,6 +31,8 @@ TYPES = {
     "ogg": (AUDIO, "audio/ogg"),
     "wav": (AUDIO, "audio/wav"),
     "flac": (AUDIO, "audio/flac"),
+    # a Space's replay, recorded in the host's browser (MediaRecorder writes WebM/Opus in Chrome and Edge)
+    "webm": (AUDIO, "audio/webm"),
 }
 
 # what Ruqqus serves itself. Video is the hosting site's to limit.
@@ -143,6 +145,8 @@ def sniff(head):
         return "ogg"
     if head[:4] == b"fLaC":
         return "flac"
+    if head[:4] == b"\x1a\x45\xdf\xa3":           # EBML: WebM (sent and played as audio only)
+        return "webm"
     if head[4:8] == b"ftyp" and head[8:12] in (b"M4A ", b"M4B ", b"mp42", b"isom", b"dash"):
         return "m4a"
     if head[:3] == b"ID3" or (len(head) > 1 and head[0] == 0xFF and (head[1] & 0xE0) == 0xE0):

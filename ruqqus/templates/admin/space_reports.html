@@ -1,0 +1,44 @@
+{% extends "docs_default.html" %}
+
+{% block sidebarblock %}{% endblock %}
+{% block sidebarLeftblock %}{% endblock %}
+
+{% block title %}
+<title>Ruqqus - Reported Spaces</title>
+{% endblock %}
+
+{% block content %}
+
+<h1>Reported Spaces</h1>
+
+<p class="text-muted">Members report a Space from its page. A report is a request to look. Ending a Space stops it for everyone at once; its post stays, and can be removed like any post. Nobody is shown who reported, admins included.</p>
+
+{% for r in reports %}
+<div class="card mb-3 space-report" data-space="{{ r.space_id }}">
+  <div class="card-body">
+    <div class="d-flex justify-content-between align-items-start flex-wrap">
+      <div class="mr-3">
+        <span class="badge badge-secondary">{{ r.status }}</span>
+        {% if r.post %}<a href="{{ r.post.permalink }}" target="_blank" rel="noopener">{{ r.post.title }}</a>{% else %}<span class="text-muted">The post is gone</span>{% endif %}
+        <a href="/space/{{ r.space_id }}" class="ml-2" target="_blank" rel="noopener">Open the Space</a>
+      </div>
+      <div class="text-muted text-small">{{ r.count }} report{{ '' if r.count == 1 else 's' }}</div>
+    </div>
+    {% for reason in r.reasons %}<div class="text-small text-muted mt-1">"{{ reason }}"</div>{% endfor %}
+    {% if r.status != 'ended' %}
+    <form action="/admin/space_reports/{{ r.space_id }}/end" method="post" class="d-inline mt-2">
+      <input type="hidden" name="formkey" value="{{ v.formkey }}">
+      <button class="btn btn-danger btn-sm">End the Space</button>
+    </form>
+    {% endif %}
+    <form action="/admin/space_reports/{{ r.space_id }}/dismiss" method="post" class="d-inline">
+      <input type="hidden" name="formkey" value="{{ v.formkey }}">
+      <button class="btn btn-link btn-sm text-muted">Dismiss the reports</button>
+    </form>
+  </div>
+</div>
+{% else %}
+<p class="text-muted" id="space-reports-empty">No Spaces are waiting for a look.</p>
+{% endfor %}
+
+{% endblock %}

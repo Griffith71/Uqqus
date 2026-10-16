@@ -3378,6 +3378,8 @@ function bindPostCards(root) {
   $(root).find('.text-expand').click(onTextExpandClick)
   $(root).find('[data-toggle="tooltip"]').tooltip()
   if (window.observeFeedVideos) window.observeFeedVideos()
+  // a Space's start time in the reader's own time zone (assets/js/space_card.js)
+  if (window.formatSpaceTimes) window.formatSpaceTimes(root)
   // in-feed ads (assets/js/ads.js): after the new cards are in the feed, which is just after this runs
   if (window.placeFeedAds) setTimeout(window.placeFeedAds, 0)
 }

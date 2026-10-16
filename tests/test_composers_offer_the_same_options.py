@@ -20,6 +20,7 @@ MACRO_FIELDS = {
     "anonymous_field": {"anonymous"},
     "coauthors_field": {"coauthors"},
     "poll_field": {"poll_option", "poll_hours"},
+    "space_field": {"space", "space_start", "space_record"},
 }
 
 

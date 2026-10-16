@@ -30,6 +30,7 @@ COPY . .
 
 COPY --from=chat-bundle /opt/build/ruqqus/assets/js/chat_bundle.js ./ruqqus/assets/js/chat_bundle.js
 COPY --from=chat-bundle /opt/build/ruqqus/assets/js/call_bundle.js ./ruqqus/assets/js/call_bundle.js
+COPY --from=chat-bundle /opt/build/ruqqus/assets/js/space_bundle.js ./ruqqus/assets/js/space_bundle.js
 COPY --from=chat-bundle /opt/build/ruqqus/assets/js/matrix_sdk_crypto_wasm_bg.wasm ./ruqqus/assets/js/matrix_sdk_crypto_wasm_bg.wasm
 
 # Ensure FontAwesome and other docs assets are available under ./assets at runtime
