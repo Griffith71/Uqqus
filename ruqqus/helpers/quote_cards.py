@@ -65,9 +65,10 @@ def _soup(snippet):
         return None
 
 
-def _signed_quote(snippet):
+def _signed_quote(snippet, drop_link=""):
     """{name, handle, when, text, media} from an X, Bluesky or saved Mastodon snippet: `<blockquote><p>text</p>&mdash;
-    Name (@handle) <a>date</a></blockquote>`. A photo or video in an X post is only a pic.twitter.com link in the text."""
+    Name (@handle) <a>date</a></blockquote>`. A photo or video in an X post is only a pic.twitter.com link in the text;
+    `drop_link` is the t.co link that pointed at the post it quotes (drawn as a card instead)."""
     soup = _soup(snippet)
     quote = soup.find("blockquote") if soup else None
     if quote is None:
@@ -76,7 +77,9 @@ def _signed_quote(snippet):
     paragraphs = quote.find_all("p", recursive=False)       # one on X and Bluesky, one per paragraph on Mastodon
     for paragraph in paragraphs:
         for link in paragraph.find_all("a"):
-            if _MEDIA_LINK.match(link.get_text().strip()):
+            if drop_link and link.get("href") == drop_link:
+                link.decompose()
+            elif _MEDIA_LINK.match(link.get_text().strip()):
                 found["media"] = "Photo or video"
                 link.decompose()
         for br in paragraph.find_all("br"):
@@ -138,10 +141,50 @@ def _mastodon_handle(url):
     return match.group(1) + (match.group(2) or "@" + (parts.hostname or ""))
 
 
+def _x_quoted(snippet):
+    """What a saved X snippet says about the post it quotes (social_embeds.x_quote_snippet), or None."""
+    soup = _soup(snippet) if "x-quoted" in str(snippet or "") else None
+    box = soup.find("div", class_="x-quoted") if soup else None
+    if box is None or not social_embeds.x_status_url(box.get("data-url")):
+        return None
+    next_url = box.get("data-next-url") or ""
+    return {"url": box.get("data-url"), "link": box.get("data-link") or "", "snippet": "".join(str(part) for part in box.contents),
+            "next_url": next_url if social_embeds.x_status_url(next_url) else "", "next_link": box.get("data-next-link") or ""}
+
+
 @lru_cache(maxsize=4096)
 def social_card(url, snippet="", meta_title="", meta_description="", has_thumb=False):
     """The card of a post on a social site, or None when the link is not a post there (a profile, a feed, another
-    site). Plain text only: the template escapes it and turns its addresses into links."""
+    site). Plain text only: the template escapes it and turns its addresses into links.
+
+    As on X, a post that quotes another shows it inside (`inner`, a card of its own), and no deeper: what that one
+    quotes is a line (`quoting` on the inner card). Only X sends what is needed (helpers/embed.py `_with_x_quote`)."""
+    quoted = _x_quoted(snippet) if social_embeds.site_of(url) in ("x.com", "twitter.com") else None
+    card = _social(url, snippet, meta_title, meta_description, has_thumb, quoted["link"] if quoted else "")
+    if card is None:
+        return None
+    card["inner"], card["quoting"] = None, ""
+    if quoted:
+        inner = _social(quoted["url"], quoted["snippet"], "", "", False, quoted["next_link"])
+        if inner:
+            inner["inner"] = None
+            inner["quoting"] = quoting_line(quoted["next_url"], "") if quoted["next_url"] else ""
+            card["inner"] = inner
+    return card
+
+
+def inside(card):
+    """A card drawn inside another card: what it quotes in turn is only its one line, as on X ("Quoting @x on X"), and
+    it has no picture (the thumbnail belongs to the post that linked it, not to the post drawn around it)."""
+    if not card:
+        return card
+    inner, line = card.get("inner"), card.get("quoting") or ""
+    if inner:
+        line = f"Quoting {inner['handle'] or 'a post'} on {inner['label']}" if inner.get("kind") == "social" else "Quoting a post"
+    return dict(card, inner=None, quoting=line, thumb=False)
+
+
+def _social(url, snippet, meta_title, meta_description, has_thumb, drop_link=""):
     url = str(url or "")
     site = social_embeds.site_of(url)
     mastodon = None if site else social_embeds.mastodon_post(url)
@@ -158,14 +201,17 @@ def social_card(url, snippet="", meta_title="", meta_description="", has_thumb=F
 
     card = {"kind": "social", "site": site, "label": label, "icon": _ICONS.get(site, ""), "letter": label[:1],
             "url": url, "name": "", "handle": "", "when": "", "text": "", "where": "", "media": ""}
+    text_known = False                                    # a quote with no words of its own stays without them
     if site in ("x.com", "twitter.com", "bsky.app", "mastodon"):
-        card.update({k: v for k, v in _signed_quote(snippet).items() if v})
+        signed = _signed_quote(snippet, drop_link)
+        text_known = "text" in signed and bool(drop_link)
+        card.update({k: v for k, v in signed.items() if v})
     elif site in ("reddit.com", "redd.it"):
         card.update({k: v for k, v in _reddit_quote(snippet).items() if v})
 
     if not card["name"]:
         card["name"] = _name_from_meta(meta_title, label)
-    if not card["text"]:
+    if not card["text"] and not text_known:
         card["text"] = _plain(meta_description)
     if not card["handle"]:
         if site == "mastodon":

@@ -6,6 +6,9 @@
   page (the whole text), otherwise a feed card (the text clamped to a few lines). Everything is plain text, escaped,
   with its addresses turned into links (`urlize`); the one stored HTML is a post's own title, sanitized when written.
   The card's cover link opens what it quotes; the links in its text sit above the cover.
+
+  As on X, what the quoted post quotes in turn is drawn inside it (`q.inner`, this macro again), and no deeper: a card
+  inside a card has no `inner`, only the one line `q.quoting` ("Quoting @x on X").
 #}
 {% macro quote_card(q, p, v, full=False) %}
 {% if q.kind == 'social' %}
@@ -20,7 +23,9 @@
   </div>
   {% if q.text %}<div class="quote-card-text">{{ q.text | urlize(48, true, target="_blank") }}</div>{% endif %}
   {% if q.thumb and p.preview_image_url %}<img class="quote-card-media" src="{{ p.preview_image_url }}" alt="" loading="lazy" onerror="hideBrokenMedia(this)">{% endif %}
+  {% if q.inner %}{{ quote_card(q.inner, p, v, full) }}{% endif %}
   <div class="quote-card-foot">
+    {% if q.quoting %}<span><i class="fas fa-quote-left" aria-hidden="true"></i> {{ q.quoting }}</span><span aria-hidden="true">&middot;</span>{% endif %}
     {% if q.media %}<span><i class="far fa-image" aria-hidden="true"></i> {{ q.media }}</span><span aria-hidden="true">&middot;</span>{% endif %}
     {% if q.where %}<span>{{ q.where }}</span><span aria-hidden="true">&middot;</span>{% endif %}
     <span class="quote-card-open">View on {{ q.label }} <i class="fas fa-arrow-up-right-from-square" aria-hidden="true"></i></span>
@@ -46,7 +51,8 @@
   {% elif quoted.preview_image_url or quoted.is_image %}
   <img class="quote-card-media" src="{{ quoted.url if quoted.is_image else quoted.preview_image_url }}" alt="" loading="lazy" onerror="hideBrokenMedia(this)">
   {% endif %}
-  {% if q.quoting %}<div class="quote-card-foot"><span><i class="fas fa-quote-left" aria-hidden="true"></i> {{ q.quoting }}</span></div>{% endif %}
+  {% if q.inner %}{{ quote_card(q.inner, p, v, full) }}
+  {% elif q.quoting %}<div class="quote-card-foot"><span><i class="fas fa-quote-left" aria-hidden="true"></i> {{ q.quoting }}</span></div>{% endif %}
 </div>
 {% endif %}
 {% endmacro %}

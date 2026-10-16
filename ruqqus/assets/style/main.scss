@@ -7191,6 +7191,7 @@ $quote-hover: rgba(0, 0, 0, 0.03);
 }
 
 .quote-card-handle {
+    flex-shrink: 10;                     // as on X, a narrow card shortens the handle before the name
     min-width: 0;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -7280,6 +7281,24 @@ $quote-hover: rgba(0, 0, 0, 0.03);
     font-size: 14px;
     color: $muted;
     background: $quote-hover;
+}
+
+// A card inside a card: what the quoted post quotes, drawn inside it as X does (one level only). The size of the card
+// around it, a little tighter, and its text clamped shorter in a feed.
+.quote-card .quote-card {
+    margin: 0.5rem 0 0.25rem;
+    padding: 0.6rem 0.75rem;
+    font-size: inherit;
+    line-height: inherit;
+    border-radius: 12px;
+}
+
+.quote-card .quote-card .quote-card-text {
+    -webkit-line-clamp: 4;
+}
+
+.quote-card-full .quote-card .quote-card-text {
+    -webkit-line-clamp: unset;
 }
 
 @media (hover: hover) {

@@ -157,6 +157,56 @@ def mastodon_handle(acct, host):
     return "@" + acct if "@" in acct else "@" + acct + "@" + host
 
 
+_X_STATUS = re.compile(r"^/([A-Za-z0-9_]{1,15})/status(?:es)?/(\d{1,25})/?$")
+_TCO_PATH = re.compile(r"^/[A-Za-z0-9]{4,20}$")
+
+
+def x_status_url(url):
+    """The address of a post on X ("https://x.com/<handle>/status/<id>") for an X or Twitter post link, or None for
+    anything else (a profile, an article, another site)."""
+    parts = urlsplit(str(url or ""))
+    if parts.scheme not in ("http", "https") or site_of(url) not in ("x.com", "twitter.com"):
+        return None
+    match = _X_STATUS.match(parts.path)
+    return f"https://x.com/{match.group(1)}/status/{match.group(2)}" if match else None
+
+
+def is_tco(link):
+    """Is this one of X's own t.co short links?"""
+    parts = urlsplit(str(link or ""))
+    return parts.scheme == "https" and (parts.hostname or "").lower() == "t.co" and bool(_TCO_PATH.match(parts.path))
+
+
+def last_tco_link(snippet):
+    """The t.co link that ends the text of an X oEmbed snippet, written out as itself: where X puts the post a post
+    quotes (oEmbed sends nothing else about it). None when the text ends otherwise: a picture's link reads
+    "pic.twitter.com/...", an article's its own address."""
+    try:
+        from bs4 import BeautifulSoup
+        quote = BeautifulSoup(str(snippet or ""), "html.parser").find("blockquote")
+    except Exception:
+        return None
+    paragraph = quote.find("p") if quote else None
+    links = paragraph.find_all("a") if paragraph else []
+    if not links:
+        return None
+    href = links[-1].get("href") or ""
+    return href if is_tco(href) and links[-1].get_text().strip() == href else None
+
+
+def x_quote_snippet(snippet, quoted_url, link, quoted_snippet, next_url="", next_link=""):
+    """What is saved for a post on X that quotes another: X's own snippet, then the quoted post's own oEmbed snippet
+    (the same fixed host) in a `div.x-quoted` that says which post it is, which t.co link in the text pointed at it, and
+    what that post quotes in turn (its address only: X shows one quoted post, not the one under it). Never drawn as
+    HTML: helpers/quote_cards.py reads it."""
+    def escape(value):
+        return html.escape(str(value or ""), quote=True)
+
+    return (str(snippet or "") + '<div class="x-quoted" data-url="' + escape(quoted_url) + '" data-link="' + escape(link)
+            + '" data-next-url="' + escape(next_url) + '" data-next-link="' + escape(next_link) + '">'
+            + str(quoted_snippet or "") + "</div>")
+
+
 def mastodon_quote_snippet(src, name, handle, when, text, media):
     """What is saved for a Mastodon post: the quote's own shape (as X and Bluesky send theirs: the text, then
     "- Name (@handle) date"), built from the server's public API answer and escaped throughout. helpers/quote_cards.py

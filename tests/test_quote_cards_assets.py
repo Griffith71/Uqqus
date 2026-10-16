@@ -66,11 +66,27 @@ def test_a_post_of_this_site_is_read_by_the_rules_of_opening_it():
     assert "post.in_private_guild_for(v)" in quote
     assert "filtered=post_hidden(post, v)" in quote and "v.any_block_exists(post.author)" in quote
     assert "muted=is_muted(post, v)" in quote and "anonymous=bool(post.is_anonymous)" in quote
-    # asked once per post and reader in a request, and a hidden post's object never reaches the template
-    assert 'key = (b36, v.id if v else None)' in quote
+    # asked once per post, reader and level in a request, and a hidden post's object never reaches the template
+    assert "key = (b36, v.id if v else None, depth)" in quote
     assert '"post": None if notice else post' in quote
-    quote_of = JINJA[JINJA.index('@app.template_global("quote_of")'):JINJA.index("def _post_quote(")]
-    assert "return None if quoted == p.base36id else _post_quote(quoted, v)" in quote_of
+    # what it quotes is drawn inside it by the same rules, one level only (a hidden post shows nothing it quotes)
+    assert "inner = None if notice or depth else _quote_for(post, v, 1)" in quote
+    quote_for = JINJA[JINJA.index("def _quote_for("):JINJA.index("def _post_quote(")]
+    assert "return None if quoted == p.base36id else _post_quote(quoted, v, depth)" in quote_for
+    assert "return quote_cards.inside(card) if depth else card" in quote_for
+
+
+def test_a_card_draws_what_its_post_quotes_inside_it_one_level_only():
+    social = _block(PARTIAL, "{% if q.kind == 'social' %}", "{% elif q.kind == 'post' and q.notice %}")
+    post = PARTIAL[PARTIAL.index("{% elif q.kind == 'post' %}"):]
+    for branch in (social, post):
+        assert "{% if q.inner %}{{ quote_card(q.inner, p, v, full) }}" in branch
+        assert "{{ q.quoting }}" in branch
+    for name, scss in STYLES.items():
+        nested = _block(scss, ".quote-card .quote-card {", "}")
+        assert "font-size: inherit;" in nested, name                    # the size of the card around it
+        assert "-webkit-line-clamp: 4;" in _block(scss, ".quote-card .quote-card .quote-card-text {", "}"), name
+        assert ".quote-card-full .quote-card .quote-card-text {" in scss, name
 
 
 def test_both_stylesheets_draw_the_card_at_the_size_of_the_members_text():

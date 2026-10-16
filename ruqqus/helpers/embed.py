@@ -111,9 +111,46 @@ def _oembed(endpoint, url, params=None, headers=None):
     return data["html"], data.get("thumbnail_url"), card if card[0] else social_embeds.default_card(url)
 
 
+_X_OEMBED = "https://publish.x.com/oembed"          # publish.twitter.com answers with a redirect here
+_X_PARAMS = {"dnt": "true", "omit_script": "true"}   # the snippet is only read (helpers/quote_cards.py): no script
+
+
 def x_oembed(url):
-    # the snippet is only read (helpers/quote_cards.py), so X's script is left out of it
-    return _oembed("https://publish.twitter.com/oembed", url, {"dnt": "true", "omit_script": "true"})
+    found = _oembed(_X_OEMBED, url, _X_PARAMS)
+    if not found:
+        return found
+    snippet, thumbnail, card = found
+    return _with_x_quote(snippet), thumbnail, card
+
+
+def _tco_target(link):
+    """Where one of X's own t.co links leads: one HEAD to that fixed host, its Location read, no redirect followed."""
+    if not social_embeds.is_tco(link):
+        return None
+    try:
+        return requests.head(link, allow_redirects=False, timeout=4).headers.get("Location")
+    except Exception:
+        return None
+
+
+def _with_x_quote(snippet):
+    """X's oEmbed gives a quoted post only as a t.co link at the end of the text. When that link leads to a post on X,
+    its own oEmbed snippet is saved with this one (social_embeds.x_quote_snippet), and the address of what IT quotes,
+    so the quote card can show the post the way X does: with the post it quotes inside, and no deeper."""
+    link = social_embeds.last_tco_link(snippet)
+    quoted_url = social_embeds.x_status_url(_tco_target(link)) if link else None
+    if not quoted_url:
+        return snippet
+    try:
+        data = requests.get(_X_OEMBED, params={"url": quoted_url, **_X_PARAMS}, timeout=6).json()
+    except Exception:
+        return snippet
+    quoted = data.get("html") if isinstance(data, dict) else None
+    if not quoted:
+        return snippet
+    next_link = social_embeds.last_tco_link(quoted)
+    next_url = social_embeds.x_status_url(_tco_target(next_link)) if next_link else None
+    return social_embeds.x_quote_snippet(snippet, quoted_url, link, quoted, next_url or "", next_link if next_url else "")
 
 
 def instagram_oembed(url):

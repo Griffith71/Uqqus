@@ -37,29 +37,37 @@ def ratio_class_global(ups, downs):
 @app.template_global("quote_of")
 def quote_of(p, v):
     """What a post quotes, for its quote card (helpers/quote_cards.py, partials/quote_card.html): a social site's post
-    ({"kind": "social", ...}), a post on this site drawn for this reader ({"kind": "post", "post", "notice"}), or None."""
+    ({"kind": "social", ...}), a post on this site drawn for this reader ({"kind": "post", "post", "notice"}), or None.
+    As on X, the card shows what IT quotes inside (`inner`), and no deeper (`quoting`, one line)."""
     from jinja2 import Undefined
+
+    return _quote_for(p, None if isinstance(v, Undefined) else v, 0)
+
+
+def _quote_for(p, v, depth):
+    """The quote of post `p` at `depth` 0 (under the member's words) or 1 (inside that card: no card of its own inside)."""
     from ruqqus.helpers import quote_cards
 
-    v = None if isinstance(v, Undefined) else v
     url = getattr(p, "url", None)
     if not url or getattr(p, "is_image", False):
         return None
     quoted = quote_cards.quoted_post_id(url, app.config["SERVER_NAME"], app.config.get("SHORT_DOMAIN"))
     if quoted:
-        return None if quoted == p.base36id else _post_quote(quoted, v)
-    return quote_cards.social_card(url, p.embed_url or "", p.meta_title or "", p.meta_description or "", bool(p.has_thumb))
+        return None if quoted == p.base36id else _post_quote(quoted, v, depth)
+    card = quote_cards.social_card(url, p.embed_url or "", p.meta_title or "", p.meta_description or "", bool(p.has_thumb))
+    return quote_cards.inside(card) if depth else card
 
 
-def _post_quote(b36, v):
+def _post_quote(b36, v, depth=0):
     """A post on this site as this reader may see it, asked once per request: the rules of opening it
-    (quote_cards.post_notice). A post the reader may not see at all (a Circle, a private guild) is only "not available"."""
+    (quote_cards.post_notice). A post the reader may not see at all (a Circle, a private guild) is only "not available".
+    What it quotes is drawn inside it by the same rules (`inner`), one level only."""
     from ruqqus.helpers import quote_cards
     from ruqqus.helpers.muting import is_muted
     from ruqqus.helpers.visibility import post_hidden
 
     cache = g.__dict__.setdefault("_quote_posts", {})
-    key = (b36, v.id if v else None)
+    key = (b36, v.id if v else None, depth)
     if key not in cache:
         post = get_post(b36, v=v, graceful=True)
         missing = post is None or post.in_private_guild_for(v)
@@ -67,8 +75,9 @@ def _post_quote(b36, v):
             missing=False, deleted=bool(post.deleted_utc), removed=bool(post.is_banned or post.board.is_banned),
             filtered=post_hidden(post, v), blocked=bool(v and post.author_id != v.id and v.any_block_exists(post.author)),
             muted=is_muted(post, v), anonymous=bool(post.is_anonymous))
-        cache[key] = {"kind": "post", "post": None if notice else post, "notice": notice,
-                      "quoting": "" if notice else quote_cards.quoting_line(post.url, app.config["SERVER_NAME"], app.config.get("SHORT_DOMAIN"))}
+        inner = None if notice or depth else _quote_for(post, v, 1)
+        quoting = "" if notice or not depth else quote_cards.quoting_line(post.url, app.config["SERVER_NAME"], app.config.get("SHORT_DOMAIN"))
+        cache[key] = {"kind": "post", "post": None if notice else post, "notice": notice, "inner": inner, "quoting": quoting}
     return cache[key]
 
 

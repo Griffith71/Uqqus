@@ -121,7 +121,14 @@ def test_embed_py_wires_every_site_and_mastodon_goes_through_safe_fetch():
                  "redd.it", "pinterest.com", "threads.net", "threads.com", "tumblr.com"):
         assert f'"{site}": ("widget",' in table, site
     gap = chr(10) * 3
-    assert '"omit_script": "true"' in EMBED.split("def x_oembed(")[1].split(gap)[0]       # the snippet is only read
+    assert '_X_PARAMS = {"dnt": "true", "omit_script": "true"}' in EMBED                 # the snippet is only read
+    assert '_X_OEMBED = "https://publish.x.com/oembed"' in EMBED
+    # a quoted post: its t.co link read from t.co itself (no redirect followed), then X's own oEmbed for it, no deeper
+    x_quote = EMBED.split("def _with_x_quote(")[1].split(gap)[0]
+    assert "requests.head(link, allow_redirects=False, timeout=4)" in EMBED.split("def _tco_target(")[1].split(gap)[0]
+    assert "social_embeds.x_status_url(_tco_target(link))" in x_quote
+    assert "requests.get(_X_OEMBED, params={\"url\": quoted_url, **_X_PARAMS}, timeout=6)" in x_quote
+    assert x_quote.count("requests.get(") == 1                                              # the post under it: its address only
     mastodon = EMBED.split("def mastodon_embed(")[1].split(gap)[0]
     assert "safe_fetch.get_json(endpoint" in mastodon and "social_embeds.mastodon_iframe_ok(src, host)" in mastodon
     assert 'safe_fetch.get_json(f"https://{host}/api/v1/statuses/{status_id}")' in mastodon

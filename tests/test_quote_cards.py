@@ -174,3 +174,96 @@ def test_every_site_icon_is_a_font_awesome_free_brand():
     names = set((ROOT / "tests" / "data" / "fa_free_6_4_0_names.txt").read_text(encoding="utf-8").split())
     assert set(qc._ICONS.values()) <= names
     assert set(qc._POST_PATHS) == set(se.SITES)
+
+
+# A post on X that quotes another (2026-10-16): Elon Musk's "Makes sense" quotes Tyler Palmer's post, which quotes an
+# earlier post of Elon Musk's. X's oEmbed sends each quoted post only as the t.co link that ends the text.
+MAKES_SENSE = ('<blockquote class="twitter-tweet" data-dnt="true"><p lang="en" dir="ltr">Makes sense <a href="https://t.co/'
+               'qDpOwsUzpY">https://t.co/qDpOwsUzpY</a></p>&mdash; Elon Musk (@elonmusk) <a href="https://x.com/elonmusk/'
+               'status/2110832405426933893?ref_src=twsrc%5Etfw">October 15, 2026</a></blockquote>')
+PALMER = ('<blockquote class="twitter-tweet" data-dnt="true"><p lang="en" dir="ltr">imagine an Amazon competitor that is:'
+          '<br><br>1) agent first - built for personal agents <br>2) america first - sells only products from usa<br><br>'
+          'might actually be a huge market for this. <a href="https://t.co/wGKTv1kaBW">https://t.co/wGKTv1kaBW</a></p>'
+          '&mdash; Tyler Palmer (@tylerpalmer) <a href="https://x.com/tylerpalmer/status/2110761858231935251?ref_src=twsrc'
+          '%5Etfw">October 15, 2026</a></blockquote>')
+MAKES_SENSE_URL = "https://x.com/elonmusk/status/2110832405426933893"
+PALMER_URL = "https://x.com/tylerpalmer/status/2110761858231935251"
+FIRST_URL = "https://x.com/elonmusk/status/2110715556328579219"
+
+
+def _saved_quote():
+    return se.x_quote_snippet(MAKES_SENSE, PALMER_URL, "https://t.co/qDpOwsUzpY", PALMER, FIRST_URL, "https://t.co/wGKTv1kaBW")
+
+
+def test_the_quoted_post_on_x_is_the_t_co_link_that_ends_the_text():
+    assert se.last_tco_link(MAKES_SENSE) == "https://t.co/qDpOwsUzpY"
+    assert se.last_tco_link(PALMER) == "https://t.co/wGKTv1kaBW"
+    assert se.last_tco_link(X_SNIPPET) is None                       # a picture: "pic.twitter.com/..."
+    article = MAKES_SENSE.replace('qDpOwsUzpY">https://t.co/qDpOwsUzpY<', 'qDpOwsUzpY">bbc.co.uk/news<')
+    assert se.last_tco_link(article) is None                          # an article's link reads as its own address
+    assert se.last_tco_link("") is None and se.last_tco_link("<p>no quote</p>") is None
+    assert se.is_tco("https://t.co/qDpOwsUzpY") and not se.is_tco("http://t.co/qDpOwsUzpY")
+    assert not se.is_tco("https://t.co.evil.test/qDpOwsUzpY") and not se.is_tco("https://t.co/a/b")
+
+
+@pytest.mark.parametrize("url, status", [
+    ("https://twitter.com/tylerpalmer/status/2110761858231935251", PALMER_URL),
+    ("https://x.com/tylerpalmer/status/2110761858231935251?s=20", PALMER_URL),
+    ("https://mobile.twitter.com/tylerpalmer/statuses/2110761858231935251", PALMER_URL),
+    ("https://x.com/tylerpalmer", None),
+    ("https://x.com/i/spaces/1abc", None),
+    ("https://example.com/tylerpalmer/status/1", None),
+    ("javascript:alert(1)", None),
+    (None, None),
+])
+def test_only_a_post_on_x_counts_as_a_quoted_post(url, status):
+    assert se.x_status_url(url) == status
+
+
+def test_an_x_post_shows_the_post_it_quotes_inside_and_no_deeper():
+    card = qc.social_card(MAKES_SENSE_URL, _saved_quote(), "Elon Musk on X", "Makes sense https://t.co/qDpOwsUzpY")
+    assert (card["name"], card["text"], card["quoting"]) == ("Elon Musk", "Makes sense", "")   # the t.co link is the card
+    inner = card["inner"]
+    assert (inner["name"], inner["handle"], inner["url"], inner["when"]) == ("Tyler Palmer", "@tylerpalmer", PALMER_URL, "15 October 2026")
+    assert inner["text"].startswith("imagine an Amazon competitor") and inner["text"].endswith("a huge market for this.")
+    # as on X, the post under that one is not drawn: one line says what it quotes
+    assert inner["inner"] is None and inner["quoting"] == "Quoting @elonmusk on X" and inner["thumb"] is False
+
+
+def test_a_quote_with_no_words_of_its_own_stays_without_them():
+    bare = MAKES_SENSE.replace("Makes sense ", "")
+    saved = se.x_quote_snippet(bare, PALMER_URL, "https://t.co/qDpOwsUzpY", PALMER)
+    card = qc.social_card(MAKES_SENSE_URL, saved, "Elon Musk on X", "https://t.co/qDpOwsUzpY")
+    assert card["text"] == "" and card["inner"]["name"] == "Tyler Palmer" and card["inner"]["quoting"] == ""
+
+
+def test_a_post_saved_before_keeps_its_link_and_nothing_inside():
+    card = qc.social_card(MAKES_SENSE_URL, MAKES_SENSE, "Elon Musk on X", "")
+    assert card["text"] == "Makes sense https://t.co/qDpOwsUzpY" and card["inner"] is None
+
+
+def test_what_is_saved_for_a_quoted_post_is_escaped_and_only_an_x_post_is_drawn():
+    saved = se.x_quote_snippet(MAKES_SENSE, 'https://x.com/a/status/1"><script>', "https://t.co/x", PALMER)
+    assert "<script>" not in saved.split("x-quoted")[1].split(">")[0] and "&quot;&gt;&lt;script&gt;" in saved
+    # a saved address that is not a post on X is not drawn as a quoted post
+    odd = se.x_quote_snippet(MAKES_SENSE, "https://evil.example/a/status/1", "https://t.co/qDpOwsUzpY", PALMER)
+    assert qc.social_card(MAKES_SENSE_URL, odd, "", "")["inner"] is None
+
+
+def test_a_card_inside_a_card_says_what_it_quotes_in_one_line_and_has_no_picture():
+    card = qc.social_card(MAKES_SENSE_URL, _saved_quote(), "Elon Musk on X", "", True)
+    inner = qc.inside(card)
+    assert inner["inner"] is None and inner["quoting"] == "Quoting @tylerpalmer on X" and inner["thumb"] is False
+    assert card["inner"] is not None and card["thumb"] is True                  # the cached card is left as it was
+    plain = qc.inside(qc.social_card(X_URL, X_SNIPPET, "", ""))
+    assert plain["quoting"] == "" and plain["inner"] is None
+    assert qc.inside(None) is None
+
+
+def test_the_backfill_re_works_x_posts_saved_with_only_a_t_co_link():
+    import importlib.util
+    spec = importlib.util.spec_from_file_location("backfill", ROOT / "scripts" / "backfill_social_embeds.py")
+    source = spec.loader.get_data(spec.origin).decode("utf-8")
+    assert "def wanted(url, no_card=True, framed=False, saved=" in source
+    assert 'social_embeds.x_status_url(url) and "x-quoted" not in (saved or "")' in source
+    assert "social_embeds.last_tco_link(saved)" in source
