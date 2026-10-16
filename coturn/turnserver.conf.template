@@ -1,0 +1,73 @@
+# coturn: the relay every call and Space sends its audio and video through, so members never learn each other's IP
+# addresses (helpers/turn_usage.py, CLAUDE.md "Call relay"). Browsers get short-lived credentials from Synapse
+# (/voip/turnServer, synapse/homeserver.yaml `turn_uris`), made from the shared secret below.
+#
+# THIS IS A TEMPLATE. Do not put the real secret here (it would land in git). `python scripts/gen_dev_env.py` writes
+# the untracked coturn/turnserver.conf from this file. docker-compose.yml adds --relay-ip and --allowed-peer-ip (the
+# container's own address, so two members on this relay can reach each other while every other private address
+# stays refused).
+#
+# On a live site (see CLAUDE.md "Call relay"):
+# - run it with the host's network and `external-ip=<public ip>` (and `<public>/<private>` behind NAT);
+# - a DNS-only hostname, turn.<site>: its UDP ports can't go through Cloudflare, so this reveals the server's
+#   address, and the origin's firewall must accept 80/443 from Cloudflare's addresses only;
+# - TLS for networks that only let 443 through: `tls-listening-port=5349`, `cert=` and `pkey=` for turn.<site>,
+#   `no-tlsv1_2` off only if old clients need it; and remove `no-tls` below;
+# - `realm=turn.<site>`; `bps-capacity` to what the server's uplink can spare;
+# - `prometheus-address` to an address only the site's own server can reach.
+
+listening-port=3478
+no-tls
+no-dtls
+
+realm=uqqus.local
+use-auth-secret
+static-auth-secret=__TURN_SHARED_SECRET__
+fingerprint
+stale-nonce=600
+
+# relay ports (UDP only: WebRTC never needs a TCP relay)
+min-port=50000
+max-port=50999
+no-tcp-relay
+
+# limits: allocations per credential, in all, bytes per second per allocation (1.5 Mbps) and for the whole server
+user-quota=12
+total-quota=1200
+max-bps=187500
+bps-capacity=12500000
+
+no-cli
+no-multicast-peers
+
+# never relay to this server's own network or any other private, reserved or special address (the relay must not
+# be a way into the machine or its neighbours)
+denied-peer-ip=0.0.0.0-0.255.255.255
+denied-peer-ip=10.0.0.0-10.255.255.255
+denied-peer-ip=100.64.0.0-100.127.255.255
+denied-peer-ip=127.0.0.0-127.255.255.255
+denied-peer-ip=169.254.0.0-169.254.255.255
+denied-peer-ip=172.16.0.0-172.31.255.255
+denied-peer-ip=192.0.0.0-192.0.0.255
+denied-peer-ip=192.0.2.0-192.0.2.255
+denied-peer-ip=192.88.99.0-192.88.99.255
+denied-peer-ip=192.168.0.0-192.168.255.255
+denied-peer-ip=198.18.0.0-198.19.255.255
+denied-peer-ip=198.51.100.0-198.51.100.255
+denied-peer-ip=203.0.113.0-203.0.113.255
+denied-peer-ip=240.0.0.0-255.255.255.255
+denied-peer-ip=::1
+denied-peer-ip=64:ff9b::-64:ff9b::ffff:ffff
+denied-peer-ip=::ffff:0.0.0.0-::ffff:255.255.255.255
+denied-peer-ip=100::-100::ffff:ffff:ffff:ffff
+denied-peer-ip=2001::-2001:1ff:ffff:ffff:ffff:ffff:ffff:ffff
+denied-peer-ip=2002::-2002:ffff:ffff:ffff:ffff:ffff:ffff:ffff
+denied-peer-ip=fc00::-fdff:ffff:ffff:ffff:ffff:ffff:ffff:ffff
+denied-peer-ip=fe80::-febf:ffff:ffff:ffff:ffff:ffff:ffff:ffff
+
+# its own counters, read by scripts/turn_usage.py (TURN_METRICS_URL); the port is never published
+prometheus
+prometheus-port=9641
+
+log-file=stdout
+simple-log

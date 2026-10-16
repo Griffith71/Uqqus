@@ -52,5 +52,18 @@ trusted_key_servers: []
 
 report_stats: false
 
+# Calls and Spaces send all their audio and video through the relay (coturn,
+# docker-compose.yml): browsers ask this server for short-lived relay
+# credentials (/voip/turnServer), made from a secret coturn shares. The secret
+# is a file written by scripts/gen_dev_env.py, never in git. On a live site the
+# addresses are turn.<site> (DNS-only, not behind Cloudflare), with a
+# `turns:turn.<site>:5349?transport=tcp` for networks that only let TLS out.
+turn_uris:
+  - "turn:localhost:3478?transport=udp"
+  - "turn:localhost:3478?transport=tcp"
+turn_shared_secret_path: /data/turn_shared_secret
+turn_user_lifetime: 1h
+turn_allow_guests: false
+
 # Rooms are 1:1 only - these are default Matrix content-repo/history
 # limits, left at their sane defaults, not tuned here.

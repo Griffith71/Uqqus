@@ -3,6 +3,7 @@ from .admin_api import *
 from .api import *
 from .boards import *
 from .chat import *
+from .live_events import *
 from .comments import *
 from .curations import *
 from .discord import *

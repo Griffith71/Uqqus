@@ -57,6 +57,9 @@ services:
       - MATRIX_AS_TOKEN=${MATRIX_AS_TOKEN:?run python scripts/gen_dev_env.py}
       - MATRIX_HS_TOKEN=${MATRIX_HS_TOKEN:?run python scripts/gen_dev_env.py}
       - MATRIX_USER_PREFIX=${MATRIX_USER_PREFIX:-ruqqus_}
+      # the call relay's own counters (scripts/turn_usage.py) and its monthly allowance (helpers/turn_usage.py)
+      - TURN_METRICS_URL=${TURN_METRICS_URL:-http://coturn:9641/metrics}
+      - TURN_MONTHLY_GB=${TURN_MONTHLY_GB:-50}
     volumes:
       # the stand-in media storage, kept across rebuilds so test pictures do not vanish
       - "media-dev:/var/lib/ruqqus-media-dev"
@@ -72,7 +75,7 @@ services:
       - synapse
 
   synapse:
-    image: matrixdotorg/synapse:latest
+    image: matrixdotorg/synapse:v1.162.0
     entrypoint: ["sh", "-c"]
     command:
       - >
@@ -81,12 +84,29 @@ services:
     volumes:
       - "./synapse/homeserver.yaml:/data/homeserver.yaml"
       - "./synapse/ruqqus-appservice.yaml:/data/ruqqus-appservice.yaml"
+      - "./synapse/turn_shared_secret:/data/turn_shared_secret:ro"
       - "synapse-signing-key:/data/keys"
       - "synapse-media:/data/media_store"
     ports:
       - "8008:8008"
     depends_on:
       - postgres_synapse
+
+  # the relay calls and Spaces send their media through (coturn/turnserver.conf.template, rendered by
+  # scripts/gen_dev_env.py). Only the client port is published: two members' relayed connections meet inside this
+  # container, so the relay ports and the metrics port (read by the ruqqus service) stay on the compose network.
+  coturn:
+    image: coturn/coturn:4.7.0
+    entrypoint: ["sh", "-c"]
+    command:
+      - >
+        exec turnserver -c /etc/coturn/turnserver.conf
+        --relay-ip=$$(hostname -i) --allowed-peer-ip=$$(hostname -i)
+    volumes:
+      - "./coturn/turnserver.conf:/etc/coturn/turnserver.conf:ro"
+    ports:
+      - "3478:3478/udp"
+      - "3478:3478/tcp"
 
   postgres_synapse:
     image: postgres:15

@@ -90,12 +90,16 @@ As an open-source project, we are supported by the community. If you would like 
 
 ### Docker Deployment
 
-The legacy app runs with Docker Compose (Postgres, Redis, Synapse and the app itself):
+The legacy app runs with Docker Compose (Postgres, Redis, Synapse, the coturn call relay and the app itself):
 
 ```
-python3 scripts/gen_dev_env.py     # writes MASTER_KEY and the Matrix tokens to .env (never committed)
+python3 scripts/gen_dev_env.py     # writes MASTER_KEY, the Matrix tokens and the relay secret to .env and renders
+                                   # the untracked Synapse and coturn files (never committed)
 docker compose up --build
 ```
+
+Run `gen_dev_env.py` again after pulling a change that adds a secret: it only adds what is missing. Without
+`synapse/turn_shared_secret`, Docker mounts an empty directory in its place and Synapse does not start.
 
 The site is then at http://localhost. The stylesheets are compiled from `ruqqus/assets/style/*.scss` by the
 server, so there is nothing to build first.

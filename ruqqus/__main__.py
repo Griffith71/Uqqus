@@ -258,6 +258,15 @@ def limiter_key_func():
     return request.remote_addr
 
 
+def member_limit_key():
+    """The live features' limits (a call's or a Space's heartbeat, live comments and updates, the live stream) are
+    per account, not per address: people sharing one address (a family, an office, a mobile network) would otherwise
+    share one budget, and a busy Space asks often."""
+    from flask import session
+    user_id = session.get("user_id")
+    return f"member:{user_id}" if user_id else request.remote_addr
+
+
 limiter = Limiter(
     key_func=limiter_key_func,
     default_limits=["100/minute"],
@@ -529,8 +538,10 @@ def after_request(response):
     from ruqqus.helpers import ads
     response.headers.add("Referrer-Policy", "strict-origin-when-cross-origin" if ads.config() else "same-origin")
     # response.headers.add("X-Content-Type-Options","nosniff")
-    response.headers.add("Feature-Policy",
-                         "geolocation 'none'; midi 'none'; notifications 'none'; push 'none'; sync-xhr 'none'; microphone 'none'; camera 'none'; magnetometer 'none'; gyroscope 'none'; vibrate 'none'; fullscreen 'none'; payment 'none';")
+    # microphone and camera only on the pages that hold a call or a Space (helpers/device_access.py)
+    from ruqqus.helpers import device_access
+    response.headers.add("Feature-Policy", device_access.feature_policy(request.path))
+    response.headers.add("Permissions-Policy", device_access.permissions_policy(request.path))
     if request.path.startswith("/embed/"):
         pass
     elif request.args.get("embed") and request.path.startswith(("/notifications", "/chat", "/composer")):

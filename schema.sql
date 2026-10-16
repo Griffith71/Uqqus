@@ -6200,3 +6200,16 @@ CREATE TABLE public.creator_fund_payouts (
 );
 
 CREATE INDEX creator_fund_payouts_user_idx ON public.creator_fund_payouts USING btree (user_id, month DESC);
+
+--
+-- The call relay's monthly count (migration 2026-10-21_turn_usage.sql; helpers/turn_usage.py)
+--
+
+CREATE TABLE public.turn_usage (
+    month character(7) PRIMARY KEY,
+    sent_bytes bigint DEFAULT 0 NOT NULL,
+    last_counter bigint,
+    updated_utc integer DEFAULT 0 NOT NULL
+);
+
+--
