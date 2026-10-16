@@ -939,11 +939,12 @@ class User(Base, Stndrd, Age_times):
     def chat_requests_count(self):
         """Number of pending message-request CONVERSATIONS (not messages)
         where self is the recipient, not the initiator."""
+        from ruqqus.helpers import chat_group_store
         return g.db.query(ChatConversation).filter(
             ChatConversation.status == "request",
             ChatConversation.initiator_id != self.id,
             or_(ChatConversation.user_a_id == self.id, ChatConversation.user_b_id == self.id)
-        ).count()
+        ).count() + chat_group_store.invitations(g.db, self.id)      # group invitations wait in Requests too
 
     @property
     @lazy
@@ -951,17 +952,21 @@ class User(Base, Stndrd, Age_times):
         """Number of Inbox CONVERSATIONS with at least one unread message
         (not a sum of unread message counts) - matches the "Requests (N)"
         conversation-count convention and X's own DM badge behavior."""
+        from ruqqus.helpers import chat_group_store
         return g.db.query(ChatUnread).filter(
             ChatUnread.user_id == self.id,
             ChatUnread.unread_count > 0
-        ).count()
+        ).count() + chat_group_store.unread_groups(g.db, self.id)
 
     @property
     @lazy
     def chat_unread_messages(self):
         """Total unread chat MESSAGES across all conversations (the number
         on the navbar chat button), unlike chat_unread_count above."""
-        return ChatUnread.total_for_user(g.db, self.id)
+        from ruqqus.helpers import chat_group_store
+        from ruqqus.helpers import broadcast_store
+        return (ChatUnread.total_for_user(g.db, self.id) + chat_group_store.unread_total(g.db, self.id)
+                + broadcast_store.unread_total(g.db, self.id))
 
     @property
     def boards_modded(self):

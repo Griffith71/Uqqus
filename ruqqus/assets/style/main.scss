@@ -2004,6 +2004,83 @@ body.embedded #chat-app {
     min-height: 1.25rem;
 }
 
+// Group chats (assets/chat_src/src/groups.js, partials/chat_group_sheets.html)
+.chat-group-avatar {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba($primary, 0.15);
+    color: $primary;
+}
+
+.chat-sender {
+    margin: 0 0.75rem 0.125rem;
+}
+
+.chat-people-list {
+    max-height: 16rem;
+    overflow-y: auto;
+}
+
+.chat-person + .chat-person {
+    border-top: 1px solid $border-color;
+}
+
+.chat-chip {
+    border-radius: 1rem;
+}
+
+// Calls (routes/calls.py): the incoming-call card on every page (assets/js/call_ring.js) and the chat's call bar
+.call-ring {
+    position: fixed;
+    right: 1rem;
+    bottom: 1rem;
+    z-index: 1080;
+    width: 20rem;
+    max-width: calc(100vw - 2rem);
+    padding: 0.875rem;
+    border: 1px solid $border-color;
+    border-radius: 0.75rem;
+    background-color: $white;
+    animation: call-ring-in 180ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.call-ring-who {
+    display: flex;
+    align-items: center;
+    min-width: 0;
+    margin-bottom: 0.75rem;
+}
+
+.call-ring-who > div {
+    min-width: 0;
+}
+
+.call-ring-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.5rem;
+}
+
+@keyframes call-ring-in {
+    from { opacity: 0; transform: translateY(0.5rem); }
+    to { opacity: 1; transform: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .call-ring { animation: none; }
+}
+
+.chat-call-bar {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.375rem 1rem;
+    border-bottom: 1px solid $border-color;
+    background-color: rgba($primary, 0.08);
+    font-size: 0.875rem;
+}
+
 // The navbar lines up with the page's columns (assets/js/nav_align.js): the logo
 // with the left sidebar's content, the account section with the right sidebar's,
 // and the search box with the feed. The page is a block of sidebar + feed (726px)

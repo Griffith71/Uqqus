@@ -6213,3 +6213,122 @@ CREATE TABLE public.turn_usage (
 );
 
 --
+-- Group chats (migration 2026-10-22_chat_groups.sql; helpers/chat_groups.py)
+--
+
+CREATE TABLE public.chat_groups (
+    id SERIAL PRIMARY KEY,
+    matrix_room_id character varying(255) NOT NULL,
+    name character varying(50) DEFAULT '' NOT NULL,
+    name_severity smallint DEFAULT 0 NOT NULL,
+    created_by_id integer NOT NULL,
+    created_utc integer NOT NULL,
+    last_activity_utc integer DEFAULT 0 NOT NULL,
+    deleted_utc integer DEFAULT 0 NOT NULL,
+    CONSTRAINT chat_groups_room_key UNIQUE (matrix_room_id)
+);
+
+CREATE TABLE public.chat_group_members (
+    group_id integer NOT NULL REFERENCES public.chat_groups(id) ON DELETE CASCADE,
+    user_id integer NOT NULL,
+    role character varying(8) DEFAULT 'member' NOT NULL,
+    status character varying(8) DEFAULT 'invited' NOT NULL,
+    invited_by_id integer,
+    unread_count integer DEFAULT 0 NOT NULL,
+    last_read_utc integer DEFAULT 0 NOT NULL,
+    joined_utc integer DEFAULT 0 NOT NULL,
+    invited_utc integer DEFAULT 0 NOT NULL,
+    PRIMARY KEY (group_id, user_id),
+    CONSTRAINT chat_group_members_role_check CHECK (role IN ('owner', 'admin', 'member')),
+    CONSTRAINT chat_group_members_status_check CHECK (status IN ('invited', 'joined'))
+);
+
+CREATE INDEX chat_group_members_user_idx ON public.chat_group_members (user_id, status);
+CREATE INDEX chat_groups_creator_idx ON public.chat_groups (created_by_id, created_utc);
+
+
+--
+-- Calls in chats (migration 2026-10-23_chat_calls.sql; helpers/calls.py)
+--
+
+CREATE TABLE public.chat_calls (
+    id SERIAL PRIMARY KEY,
+    room_id character varying(255) NOT NULL,
+    call_id character varying(32) NOT NULL,
+    kind character varying(8) NOT NULL,
+    started_by_id integer NOT NULL,
+    started_utc integer NOT NULL,
+    ended_utc integer DEFAULT 0 NOT NULL,
+    peak smallint DEFAULT 1 NOT NULL,
+    CONSTRAINT chat_calls_call_key UNIQUE (call_id),
+    CONSTRAINT chat_calls_kind_check CHECK (kind IN ('audio', 'video'))
+);
+
+CREATE INDEX chat_calls_starter_idx ON public.chat_calls (started_by_id, started_utc);
+CREATE INDEX chat_calls_room_idx ON public.chat_calls (room_id, started_utc);
+
+
+--
+-- Broadcast channels (migration 2026-10-25_broadcasts.sql; helpers/broadcasts.py)
+--
+
+CREATE TABLE public.broadcasts (
+    id SERIAL PRIMARY KEY,
+    owner_id integer NOT NULL,
+    name character varying(50) NOT NULL,
+    name_severity smallint DEFAULT 0 NOT NULL,
+    audience smallint DEFAULT 0 NOT NULL,
+    matrix_room_id character varying(255) NOT NULL,
+    created_utc integer NOT NULL,
+    deleted_utc integer DEFAULT 0 NOT NULL,
+    CONSTRAINT broadcasts_room_key UNIQUE (matrix_room_id),
+    CONSTRAINT broadcasts_audience_check CHECK (audience IN (0, 4))
+);
+
+CREATE INDEX broadcasts_owner_idx ON public.broadcasts (owner_id);
+
+CREATE TABLE public.broadcast_circles (
+    broadcast_id integer NOT NULL REFERENCES public.broadcasts(id) ON DELETE CASCADE,
+    circle_id integer NOT NULL,
+    PRIMARY KEY (broadcast_id, circle_id)
+);
+
+CREATE TABLE public.broadcast_members (
+    broadcast_id integer NOT NULL REFERENCES public.broadcasts(id) ON DELETE CASCADE,
+    user_id integer NOT NULL,
+    role character varying(8) DEFAULT 'member' NOT NULL,
+    joined_utc integer NOT NULL,
+    unread_count integer DEFAULT 0 NOT NULL,
+    last_read_utc integer DEFAULT 0 NOT NULL,
+    PRIMARY KEY (broadcast_id, user_id),
+    CONSTRAINT broadcast_members_role_check CHECK (role IN ('owner', 'helper', 'member'))
+);
+
+CREATE INDEX broadcast_members_user_idx ON public.broadcast_members (user_id);
+
+CREATE TABLE public.broadcast_posts (
+    id SERIAL PRIMARY KEY,
+    broadcast_id integer NOT NULL REFERENCES public.broadcasts(id) ON DELETE CASCADE,
+    author_id integer NOT NULL,
+    event_id character varying(255) NOT NULL,
+    body text NOT NULL,
+    word_severity smallint DEFAULT 0 NOT NULL,
+    created_utc integer NOT NULL,
+    removed_utc integer DEFAULT 0 NOT NULL
+);
+
+CREATE INDEX broadcast_posts_channel_idx ON public.broadcast_posts (broadcast_id, created_utc);
+CREATE INDEX broadcast_posts_event_idx ON public.broadcast_posts (broadcast_id, event_id);
+
+CREATE TABLE public.broadcast_reports (
+    id SERIAL PRIMARY KEY,
+    broadcast_id integer NOT NULL REFERENCES public.broadcasts(id) ON DELETE CASCADE,
+    post_id integer NOT NULL REFERENCES public.broadcast_posts(id) ON DELETE CASCADE,
+    reporter_id integer NOT NULL,
+    reason character varying(200) DEFAULT '' NOT NULL,
+    created_utc integer NOT NULL,
+    resolved_utc integer DEFAULT 0 NOT NULL,
+    CONSTRAINT broadcast_reports_once UNIQUE (post_id, reporter_id)
+);
+
+

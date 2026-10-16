@@ -8,6 +8,7 @@ from ruqqus.helpers.wrappers import *
 from ruqqus.helpers.get import *
 from ruqqus.helpers.chat_permissions import can_message_directly, is_blocked
 from ruqqus.helpers.chat_events import is_new_message
+from ruqqus.helpers import broadcast_store, chat_group_store
 from ruqqus.helpers.visibility import filter_users, post_hidden, user_hidden
 from ruqqus.helpers.secret_box import encrypt_secret, decrypt_secret
 from ruqqus.classes import *
@@ -42,7 +43,8 @@ def _user_id_for_mxid(mxid):
 @auth_required
 def chat_page(v):
     _ensure_provisioned(v)
-    return render_template("chat.html", v=v)
+    from ruqqus.helpers.chat_groups import MAX_MEMBERS
+    return render_template("chat.html", v=v, chat_group_max=MAX_MEMBERS)
 
 
 @app.route("/api/chat/token", methods=["POST"])
@@ -182,6 +184,8 @@ def chat_conversations(v):
         other = c.other_user(v.id)
         unread = g.db.query(ChatUnread).filter_by(conversation_id=c.id, user_id=v.id).first()
         out.append({
+            "kind": "pair",
+            "key": f"c{c.id}",
             "conversation_id": c.id,
             "room_id": c.matrix_room_id,
             "other_user": {
@@ -196,7 +200,23 @@ def chat_conversations(v):
         if len(out) >= 25:
             break
 
-    return jsonify({"conversations": out})
+    # channels (routes/broadcasts.py) are their own tab
+    if status == "channel":
+        from ruqqus.routes.broadcasts import channel_json
+        rows = broadcast_store.joined_by(g.db, v.id, limit=50)
+        return jsonify({"conversations": [{**channel_json(row[:8], (row[8], row[9], 0), v),
+                                           "last_activity_utc": row[10] or row[6]} for row in rows]})
+
+    # groups: joined ones in Inbox, invitations in Requests (routes/chat_groups.py), merged by last activity
+    from ruqqus.routes.chat_groups import group_json
+    for row in chat_group_store.groups_for(g.db, v.id, "joined" if status == "inbox" else "invited", limit=25):
+        if before and row[6] >= before:
+            continue
+        group = row[:8]
+        out.append(group_json(group, chat_group_store.member(g.db, group[0], v.id), v))
+    out.sort(key=lambda item: item["last_activity_utc"] or 0, reverse=True)
+
+    return jsonify({"conversations": out[:25]})
 
 
 SHARE_TARGETS = 40
@@ -229,6 +249,15 @@ def chat_share_targets(v):
         seen.add(other.id)
         if len(out) >= SHARE_RECENT:
             break
+
+    # the groups you are in (only joined ones: an invitation can't be written in yet)
+    from ruqqus.routes.chat_groups import group_json
+    for row in chat_group_store.groups_for(g.db, v.id, "joined", limit=SHARE_RECENT):
+        group = group_json(row[:8], chat_group_store.member(g.db, row[0], v.id), v)
+        if q and q not in group["label"].lower():
+            continue
+        out.append({"kind": "group", "label": group["label"], "size": group["size"], "room_id": group["room_id"],
+                    "recent": True, "last_activity_utc": group["last_activity_utc"]})
 
     follows = [i for i in v.following_ids if i not in seen and i not in blocked]
     if follows and len(out) < SHARE_TARGETS:
@@ -345,12 +374,19 @@ def matrix_appservice_transaction(txn_id):
         if not room_id or not sender_mxid:
             continue
 
-        convo = g.db.query(ChatConversation).filter_by(matrix_room_id=room_id).first()
-        if not convo:
-            continue
-
         sender_user_id = _user_id_for_mxid(sender_mxid)
         if sender_user_id is None:
+            continue
+
+        convo = g.db.query(ChatConversation).filter_by(matrix_room_id=room_id).first()
+        if not convo:
+            # a group's room: one more unread for each of its other joined members (helpers/chat_group_store.py)
+            if not chat_group_store.note_message(g.db, room_id, sender_user_id, int(time.time())):
+                # a broadcast channel's (helpers/broadcast_store.py): everyone but the writer and whoever muted the owner
+                channel = broadcast_store.by_room(g.db, room_id)
+                if channel is not None:
+                    muted = [uid for (uid,) in g.db.query(UserMute.user_id).filter(UserMute.target_id == channel[1]).all()]
+                    broadcast_store.note_message(g.db, channel[0], sender_user_id, muted)
             continue
         recipient_id = convo.other_id(sender_user_id)
 

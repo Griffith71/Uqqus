@@ -5,27 +5,30 @@
 // device instead of minting a new one every page load.
 
 const STORAGE_KEY = "ruqqus_chat_session";
+// The call window (call.js) is a second device of the same account, with its own crypto store, so a call never
+// fights the chat page over one device's keys.
+export const CALL_STORAGE_KEY = "ruqqus_call_session";
 
-export function loadSession() {
+export function loadSession(storageKey = STORAGE_KEY) {
   try {
-    const raw = localStorage.getItem(STORAGE_KEY);
+    const raw = localStorage.getItem(storageKey);
     return raw ? JSON.parse(raw) : null;
   } catch (e) {
     return null;
   }
 }
 
-function saveSession(session) {
+function saveSession(session, storageKey = STORAGE_KEY) {
   try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(session));
+    localStorage.setItem(storageKey, JSON.stringify(session));
   } catch (e) {
     // localStorage unavailable (private mode / blocked) - session just
     // won't persist across reloads; nothing else to do.
   }
 }
 
-export async function ensureSession(boot) {
-  const existing = loadSession();
+export async function ensureSession(boot, storageKey = STORAGE_KEY) {
+  const existing = loadSession(storageKey);
   if (existing && existing.access_token && existing.user_id) {
     return existing;
   }
@@ -52,6 +55,6 @@ export async function ensureSession(boot) {
     access_token: data.access_token,
     device_id: data.device_id,
   };
-  saveSession(session);
+  saveSession(session, storageKey);
   return session;
 }

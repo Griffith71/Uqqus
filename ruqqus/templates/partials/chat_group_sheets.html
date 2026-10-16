@@ -1,0 +1,64 @@
+{#
+  The chat page's two group sheets, driven by the chat bundle (assets/chat_src/src/groups.js): "New group" (a name
+  and the people to add) and a group's own sheet (its people, adding and removing them, admins, the name, Leave).
+  Every name the script puts in goes in as text. The rules are routes/chat_groups.py's; these only offer them.
+#}
+<div class="modal fade" id="chatGroupNew" tabindex="-1" role="dialog" aria-labelledby="chatGroupNewTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="chatGroupNewTitle">New group</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true"><i class="fas fa-times"></i></span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <label class="text-small font-weight-bold mb-1" for="chat-group-name">Name <span class="text-muted font-weight-normal">(optional)</span></label>
+        <input type="text" id="chat-group-name" class="form-control mb-3" maxlength="50" autocomplete="off" placeholder="Weekend plans">
+        <label class="text-small font-weight-bold mb-1" for="chat-group-search">People</label>
+        <div id="chat-group-chosen" class="chat-chips mb-2" aria-live="polite"></div>
+        <input type="search" id="chat-group-search" class="form-control" maxlength="40" autocomplete="off" placeholder="Search people you follow">
+        <div id="chat-group-results" class="chat-people-list mt-2"></div>
+        <p class="text-small text-muted mt-2 mb-0">People who follow you, or whom you follow, are in at once. Anyone else gets an invitation in their Requests. A group has up to {{ chat_group_max }} people and is end-to-end encrypted.</p>
+        <div id="chat-group-new-status" class="text-small mt-2" role="status"></div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+        <button type="button" id="chat-group-create" class="btn btn-primary" disabled>Create group</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="chatGroupInfo" tabindex="-1" role="dialog" aria-labelledby="chatGroupInfoTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title text-truncate" id="chatGroupInfoTitle">Group</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true"><i class="fas fa-times"></i></span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form id="chat-group-rename" class="d-none mb-3" onsubmit="return false;">
+          <label class="text-small font-weight-bold mb-1" for="chat-group-rename-input">Name</label>
+          <div class="input-group">
+            <input type="text" id="chat-group-rename-input" class="form-control" maxlength="50" autocomplete="off">
+            <div class="input-group-append">
+              <button type="submit" class="btn btn-secondary">Save</button>
+            </div>
+          </div>
+        </form>
+        <div class="text-small font-weight-bold mb-1" id="chat-group-count"></div>
+        <div id="chat-group-members" class="chat-people-list mb-3"></div>
+        <div id="chat-group-add" class="d-none mb-3">
+          <label class="text-small font-weight-bold mb-1" for="chat-group-add-search"><i class="fas fa-user-plus mr-1" aria-hidden="true"></i>Add people</label>
+          <input type="search" id="chat-group-add-search" class="form-control" maxlength="40" autocomplete="off" placeholder="Search people you follow">
+          <div id="chat-group-add-results" class="chat-people-list mt-2"></div>
+        </div>
+        <div id="chat-group-info-status" class="text-small mb-2" role="status"></div>
+        <button type="button" id="chat-group-leave" class="btn btn-outline-danger btn-sm"><i class="fas fa-right-from-bracket mr-1" aria-hidden="true"></i>Leave group</button>
+      </div>
+    </div>
+  </div>
+</div>

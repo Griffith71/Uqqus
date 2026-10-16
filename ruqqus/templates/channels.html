@@ -1,0 +1,99 @@
+{% extends "default.html" %}
+{#
+  An account's broadcast channels (routes/broadcasts.py `profile_channels`): the ones the viewer may join, public
+  ones and those for circles the viewer is in, and, on your own page, the form to make one. Joining opens it in Chat.
+  Names go in escaped; the scripts below send the form key with every change.
+#}
+
+{% block title %}
+<title>{{ owner.shown_name }}'s channels - {{ "SITE_NAME" | app_config }}</title>
+{% endblock %}
+
+{% block content %}
+<div class="channels-page py-3">
+  <h1 class="h4 mb-1">{{ "Your channels" if owner.id == v.id else owner.shown_name ~ "'s channels" }}</h1>
+  <p class="text-muted text-small">A channel is one-to-many: its owner and helpers write, members read and react. A public channel is open to everyone and can be moderated; a channel for circles is end-to-end encrypted and only for the people in them.</p>
+
+  {% for c in channels %}
+  <div class="card mb-2 channel-row" data-channel="{{ c.channel_id }}">
+    <div class="card-body d-flex align-items-center py-2">
+      <span class="chat-group-avatar rounded-circle mr-3 flex-shrink-0" style="width:40px;height:40px" aria-hidden="true"><i class="fas fa-tower-broadcast"></i></span>
+      <div class="flex-grow-1 overflow-hidden">
+        <div class="font-weight-bold text-truncate">{{ c.label }}</div>
+        <div class="text-small text-muted">{{ "Public" if c.public else "For circles · end-to-end encrypted" }} · {{ c.size }} member{{ '' if c.size == 1 else 's' }}</div>
+      </div>
+      {% if c.status == 'joined' %}
+      <a class="btn btn-secondary btn-sm" href="/chat?room={{ c.room_id | urlencode }}">Open</a>
+      {% else %}
+      <button type="button" class="btn btn-primary btn-sm" data-channel-join="{{ c.channel_id }}">Join</button>
+      {% endif %}
+    </div>
+  </div>
+  {% else %}
+  <p class="text-muted" id="channels-empty">{{ "You have no channels yet." if owner.id == v.id else "No channels to show." }}</p>
+  {% endfor %}
+
+  {% if owner.id == v.id and channels | length < max_channels and not v.is_bot %}
+  <form id="channel-new" class="card mt-4" onsubmit="return false;">
+    <div class="card-body">
+      <h2 class="h6">New channel</h2>
+      <label class="text-small font-weight-bold mb-1" for="channel-name">Name</label>
+      <input type="text" class="form-control mb-3" id="channel-name" name="name" maxlength="50" required autocomplete="off">
+      <fieldset>
+        <legend class="text-small font-weight-bold mb-1">Who can join</legend>
+        <div class="custom-control custom-radio">
+          <input type="radio" class="custom-control-input" id="channel-public" name="audience" value="0" checked>
+          <label class="custom-control-label" for="channel-public">Everyone (public, not encrypted)</label>
+        </div>
+        <div class="custom-control custom-radio">
+          <input type="radio" class="custom-control-input" id="channel-circles" name="audience" value="4">
+          <label class="custom-control-label" for="channel-circles">Some of my circles (end-to-end encrypted)</label>
+        </div>
+        <div class="pl-4 mt-1" id="channel-circle-list">
+          {% for choice in circle_choices(v) %}
+          <div class="custom-control custom-checkbox">
+            <input type="checkbox" class="custom-control-input" id="channel-circle-{{ loop.index }}" name="circles" value="{{ choice.token }}">
+            <label class="custom-control-label" for="channel-circle-{{ loop.index }}">{{ choice.name }}</label>
+          </div>
+          {% endfor %}
+        </div>
+      </fieldset>
+      <button type="submit" class="btn btn-primary btn-sm mt-3">Create channel</button>
+      <div id="channel-status" class="text-small mt-2" role="status"></div>
+    </div>
+  </form>
+  {% endif %}
+</div>
+
+<script>
+(function () {
+  function say(text, bad) {
+    var el = document.getElementById('channel-status');
+    if (!el) return;
+    el.textContent = text || '';
+    el.classList.toggle('text-danger', !!bad);
+  }
+  function send(url, body) {
+    body.set('formkey', formkey());
+    return fetch(url, { method: 'POST', credentials: 'same-origin', body: body, headers: { Accept: 'application/json' } })
+      .then(function (r) { return r.json().catch(function () { return {}; }).then(function (d) { if (!r.ok) throw new Error(d.error || 'That didn’t work.'); return d; }); });
+  }
+  document.querySelectorAll('[data-channel-join]').forEach(function (button) {
+    button.addEventListener('click', function () {
+      button.disabled = true;
+      send('/api/broadcasts/' + button.getAttribute('data-channel-join') + '/join', new URLSearchParams())
+        .then(function (c) { window.location.href = '/chat?room=' + encodeURIComponent(c.room_id); })
+        .catch(function (e) { button.disabled = false; window.alert(e.message); });
+    });
+  });
+  var form = document.getElementById('channel-new');
+  if (form) {
+    form.addEventListener('submit', function () {
+      send('/api/broadcasts', new URLSearchParams(new FormData(form)))
+        .then(function (c) { window.location.href = '/chat?room=' + encodeURIComponent(c.room_id); })
+        .catch(function (e) { say(e.message, true); });
+    });
+  }
+})();
+</script>
+{% endblock %}

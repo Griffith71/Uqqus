@@ -725,6 +725,9 @@
 {% if v and not request.args.get('embed') %}<script src="{{ asset_url('js/curation_picker.js') }}"></script>{% endif %}
 <script src="{{ asset_url('js/poll.js') }}"></script>
 {% if v %}<script src="{{ asset_url('js/chat_badge.js') }}"></script>{% endif %}
+{# live updates and incoming calls: the top page only (a side-panel frame never rings twice) #}
+{% if v and not request.args.get('embed') %}<script src="{{ asset_url('js/live_events.js') }}"></script>
+<script src="{{ asset_url('js/call_ring.js') }}"></script>{% endif %}
 
 <!-- ClipboardJS -->
 

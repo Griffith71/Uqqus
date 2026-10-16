@@ -32,10 +32,14 @@
           <a class="dropdown-item" href="/settings/profile"><i class="fas fa-pen fa-fw"></i>Edit profile</a>
           <a class="dropdown-item" href="/settings/profile#lists"><i class="fas fa-user-lock fa-fw"></i>Who can see your lists</a>
           <a class="dropdown-item" href="/settings/circle"><i class="fas fa-circle-notch fa-fw"></i>Your circles</a>
+          <a class="dropdown-item" href="/@{{ u.username }}/channels"><i class="fas fa-tower-broadcast fa-fw"></i>Your channels</a>
           {% elif v %}
           <a class="dropdown-item" href="#" data-curation-user="{{ u.username }}"><i class="fas fa-layer-group fa-fw"></i>Add to curation</a>
           {% if st %}{# your own circles only; nobody is told they are in one (partials/circle_member_modal.html) #}
           <a class="dropdown-item" href="#" data-circle-member="{{ u.username }}"><i class="fas fa-circle-notch fa-fw"></i>Add to circles</a>
+          {% endif %}
+          {% if not u.is_bot %}{# their broadcast channels you may join (routes/broadcasts.py) #}
+          <a class="dropdown-item" href="/@{{ u.username }}/channels"><i class="fas fa-tower-broadcast fa-fw"></i>Channels</a>
           {% endif %}
           <div class="dropdown-divider"></div>
           {% if u.id != 1 %}{# the site's own account can't be muted or blocked (routes/muting.py, settings_block_user) #}

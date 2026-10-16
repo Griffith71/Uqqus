@@ -5,16 +5,21 @@ import { initAsync as initCryptoWasm } from "@matrix-org/matrix-sdk-crypto-wasm"
 import { ensureSession } from "./token.js";
 import { cryptoCallbacks, ensureEncryptionReady } from "./crypto.js";
 import { fetchStoredRecoveryKey } from "./recovery.js";
-import { listConversations, acceptConversation, declineConversation, markRead } from "./api.js";
+import {
+  listConversations, acceptConversation, declineConversation, markRead,
+  groupInfo, acceptGroup, declineGroup, markGroupRead,
+  postToChannel, leaveChannel, markChannelRead, reportChannelMessage,
+} from "./api.js";
 import { renderConversationList, renderThreadShell, renderMessages, setTabBadge } from "./ui.js";
+import { initGroups } from "./groups.js";
 
 const boot = window.RUQQUS_CHAT_BOOT;
 
 const state = {
   client: null,
   tab: "inbox",
-  conversations: { inbox: [], request: [] },
-  active: null, // { conversation, room }
+  conversations: { inbox: [], request: [], channel: [] },
+  active: null, // { conversation, room, isRequest, group } - group: a group's members, for its threads
   thread: null, // { messagesEl, inputEl, setContext, setTyping }
   context: null, // { type: "quote" | "edit", event } - what the box is answering or replacing
   typingSent: 0, // when we last told the room we are typing (0: not typing)
@@ -39,15 +44,39 @@ function otherMxidOf(conversation) {
   return state.client.getUserId().replace(/\d+:/, `${conversation.other_user.id}:`);
 }
 
+// A group as the thread needs it: its members by Matrix id (who wrote each message, who has read it, who
+// is typing, whom the viewer blocked).
+function indexGroup(info) {
+  return { info, byMxid: new Map(info.members.map((m) => [m.mxid, m])) };
+}
+
+function waitForRoom(roomId, ms) {
+  return new Promise((resolve) => {
+    const now = state.client.getRoom(roomId);
+    if (now) return resolve(now);
+    const onRoom = (room) => {
+      if (room.roomId !== roomId) return;
+      state.client.off(ClientEvent.Room, onRoom);
+      resolve(room);
+    };
+    state.client.on(ClientEvent.Room, onRoom);
+    setTimeout(() => {
+      state.client.off(ClientEvent.Room, onRoom);
+      resolve(state.client.getRoom(roomId));
+    }, ms);
+  });
+}
+
 // a message the thread shows as a bubble
 function isShownMessage(event) {
   return isMessageLikeEvent(event) && !isRelationEvent(event);
 }
 
 function textOf(event) {
+  // first: on a failure the SDK puts its own error text in the body ("** Unable to decrypt: …")
+  if (event.isDecryptionFailure()) return "This message can't be read on this device.";
   const body = event.getContent().body;   // an edited message reads as its latest text
   if (body) return body;
-  if (event.isDecryptionFailure()) return "[Unable to decrypt message]";
   if (event.isBeingDecrypted() || event.getType() === EventType.RoomMessageEncrypted) return "Decrypting…";
   return "";
 }
@@ -70,9 +99,19 @@ function myReactionEvent(room, event, key) {
   return mine ? Array.from(mine[1]).find((e) => e.getSender() === state.client.getUserId()) : null;
 }
 
+// a public channel message carries its word-filter rating (routes/broadcasts.py, helpers/broadcasts.SEVERITY_KEY):
+// Standard hides 2, Child hides 1 and 2 (helpers/visibility.py), Off nothing
+function filteredOut(event) {
+  const severity = Number(event.getContent()["org.uqqus.severity"] || 0);
+  const level = Number(boot.filterLevel ?? 1);
+  return severity > 0 && severity >= 3 - Math.min(level, 2);
+}
+
 function renderActiveThread() {
-  const { room, conversation, isRequest } = state.active;
+  const { room, conversation, isRequest, group, channel } = state.active;
   const myMxid = state.client.getUserId();
+  const memberOf = (event) => (group ? group.byMxid.get(event.getSender()) : null);
+  const writerOf = (event) => (channel ? channel.writers.get(event.getSender()) : null);
 
   // Pending (locally-echoed, not-yet-sent) events are already included
   // here: the client is created without an explicit pendingEventOrdering
@@ -86,15 +125,23 @@ function renderActiveThread() {
     .filter(isShownMessage);
   const byId = new Map(events.map((event) => [event.getId(), event]));
 
-  // the last message of mine, and whether the other person has read it
-  const otherMxid = otherMxidOf(conversation);
+  // the last message of mine, and whether the other person (in a group: how many of the others) has read it
   const lastMine = [...events].reverse().find((e) => e.getSender() === myMxid && !e.isRedacted() && !e.status);
-  const seenId = lastMine && room.hasUserReadEvent(otherMxid, lastMine.getId()) ? lastMine.getId() : null;
+  let seenId = null;
+  let seenBy = 0;
+  if (lastMine && group) {
+    seenBy = group.info.members.filter((m) => m.joined && m.mxid !== myMxid && room.hasUserReadEvent(m.mxid, lastMine.getId())).length;
+    if (seenBy) seenId = lastMine.getId();
+  } else if (lastMine && !channel && room.hasUserReadEvent(otherMxidOf(conversation), lastMine.getId())) {
+    seenId = lastMine.getId();
+  }
 
   const items = events.map((event) => {
     const deleted = event.isRedacted();
     const quoted = byId.get(event.getOriginalContent()["m.relates_to"]?.["m.in_reply_to"]?.event_id);
     const mine = event.getSender() === myMxid;
+    const author = !mine ? memberOf(event) : null;
+    const quotedBlocked = quoted && memberOf(quoted)?.blocked;
     return {
       eventId: event.getId(),
       mine,
@@ -102,10 +149,19 @@ function renderActiveThread() {
       status: event.status,
       edited: !deleted && !!event.replacingEventId(),
       deleted,
-      quote: quoted && !quoted.isRedacted() ? textOf(quoted) : null,
+      quote: quoted && !quoted.isRedacted() ? (quotedBlocked ? "A message from someone you blocked" : textOf(quoted)) : null,
       reactions: deleted ? [] : reactionsOf(room, event, myMxid),
       seen: event.getId() === seenId,
+      seenBy: group ? seenBy : 0,
       canEdit: mine && !deleted && event.getContent().msgtype === "m.text",
+      // a line the call window writes when a call ends ("Voice call · 12 min"): drawn as a note, not a bubble
+      notice: !deleted && event.getContent().msgtype === "m.notice",
+      // in a group, who wrote it (someone who has left has no row any more); in a channel, which writer
+      sender: group && !mine ? (author ? author.shown_name : "Someone who left")
+        : channel && !mine ? (writerOf(event) ? writerOf(event).shown_name : "A former helper") : null,
+      blocked: !!(author && author.blocked),
+      filtered: !!(channel && channel.public && !mine && !deleted && filteredOut(event)),
+      reportable: !!(channel && channel.public && !mine && !deleted),
     };
   });
 
@@ -119,7 +175,9 @@ function renderActiveThread() {
   if (!isRequest && last && !last.status && state.active.readUpTo !== last.getId()) {
     state.active.readUpTo = last.getId();
     state.client.sendReadReceipt(last, ReceiptType.Read).catch(() => {});
-    markRead(boot.formkey, conversation.conversation_id)
+    const marked = channel ? markChannelRead(boot.formkey, conversation.channel_id)
+      : group ? markGroupRead(boot.formkey, conversation.group_id) : markRead(boot.formkey, conversation.conversation_id);
+    marked
       .then(() => window.refreshChatBadge?.()) // navbar chat badge (assets/js/chat_badge.js)
       .catch(() => {});
   }
@@ -137,8 +195,22 @@ function scheduleRender() {
 
 function updateTyping() {
   if (!state.active || !state.thread) return;
-  const other = state.active.room.getMember(otherMxidOf(state.active.conversation));
-  state.thread.setTyping(other && other.typing ? state.active.conversation.other_user.username : null);
+  const { room, conversation, group, channel } = state.active;
+  if (channel) return;
+  if (!group) {
+    const other = room.getMember(otherMxidOf(conversation));
+    state.thread.setTyping(other && other.typing ? `@${conversation.other_user.username} is typing…` : null);
+    return;
+  }
+  const me = state.client.getUserId();
+  const typing = group.info.members
+    .filter((m) => m.mxid !== me && !m.blocked && room.getMember(m.mxid)?.typing)
+    .map((m) => m.shown_name);
+  let text = null;
+  if (typing.length === 1) text = `${typing[0]} is typing…`;
+  else if (typing.length === 2) text = `${typing[0]} and ${typing[1]} are typing…`;
+  else if (typing.length > 2) text = "Several people are typing…";
+  state.thread.setTyping(text);
 }
 
 // --- typing: tell the room while there is text in the box ----------------------------
@@ -201,6 +273,17 @@ const messageHandlers = {
       }).catch(() => {});
     }
   },
+  async onReport(item) {
+    const { conversation } = state.active;
+    const reason = window.prompt("What's wrong with this message? (optional)");
+    if (reason === null) return;
+    try {
+      await reportChannelMessage(boot.formkey, conversation.channel_id, item.eventId, reason);
+      window.alert("Thanks: the site's admins will take a look.");
+    } catch (e) {
+      window.alert(e.message);
+    }
+  },
   onDelete(item) {
     if (!window.confirm("Delete this message for everyone?")) return;
     state.client.redactEvent(state.active.room.roomId, item.eventId).catch(() => {});
@@ -209,16 +292,37 @@ const messageHandlers = {
 
 async function openConversation(conversation) {
   const isRequest = state.tab === "request";
-  const room = state.client.getRoom(conversation.room_id);
+  const isGroup = conversation.kind === "group";
+  const isChannel = conversation.kind === "channel";
+  const room = isGroup || isChannel ? await waitForRoom(conversation.room_id, 8000) : state.client.getRoom(conversation.room_id);
   if (!room) return;
+  const channel = isChannel
+    ? { ...conversation, writers: new Map((conversation.writers || []).map((w) => [w.mxid, w])) }
+    : null;
+
+  let group = null;
+  if (isGroup) {
+    try {
+      group = indexGroup(await groupInfo(conversation.group_id));
+    } catch (e) {
+      return;                       // no longer in it: the list is refreshed by the membership change
+    }
+  }
 
   stopTyping();
   state.context = null;
-  state.active = { conversation, room, isRequest };
+  state.active = { conversation, room, isRequest, group, channel };
 
   const pane = document.getElementById("chat-thread-pane");
+  const inviter = isGroup && conversation.invited_by ? `@${conversation.invited_by.username}` : "Someone";
   state.thread = renderThreadShell(pane, {
     otherUser: conversation.other_user,
+    group: group ? { label: group.info.label, size: group.info.size } : null,
+    requestText: isGroup ? `${inviter} added you to this group. Accept to read it and write in it.` : null,
+    onInfo: group ? () => groupSheets.openInfo(state.active.group.info) : null,
+    onCall: isChannel ? null : (kind) => startCall(conversation.room_id, kind),
+    channel,
+    onLeave: isChannel ? () => onLeaveChannel(conversation) : null,
     isRequest,
     onAccept: () => onAccept(conversation, room),
     onDecline: () => onDecline(conversation, room),
@@ -240,9 +344,28 @@ async function openConversation(conversation) {
   }
 
   renderActiveThread();
+  watchCall();
+}
+
+async function onLeaveChannel(conversation) {
+  if (!window.confirm("Leave this channel?")) return;
+  try {
+    await leaveChannel(boot.formkey, conversation.channel_id);
+  } catch (e) {
+    window.alert(e.message);
+    return;
+  }
+  closeThread();
+  refreshLists().catch(() => {});
 }
 
 function onSend(room, text) {
+  if (state.active && state.active.channel && state.active.channel.public) {
+    // a public channel is written through the site (word filter, daily count, bans), which sends it as you
+    setContext(null);
+    postToChannel(boot.formkey, state.active.channel.channel_id, text).catch((e) => window.alert(e.message));
+    return;
+  }
   const context = state.context;
   setContext(null);
   stopTyping();
@@ -273,21 +396,97 @@ function onSend(room, text) {
 }
 
 async function onAccept(conversation, room) {
-  await state.client.joinRoom(room.roomId);
-  await acceptConversation(boot.formkey, conversation.conversation_id);
+  if (conversation.kind === "group") {
+    await acceptGroup(boot.formkey, conversation.group_id);     // the server joins the room for you
+  } else {
+    await state.client.joinRoom(room.roomId);
+    await acceptConversation(boot.formkey, conversation.conversation_id);
+  }
   await refreshLists();
   setTab("inbox");
-  const refreshed = state.conversations.inbox.find((c) => c.conversation_id === conversation.conversation_id);
+  const refreshed = state.conversations.inbox.find((c) => c.key === conversation.key);
   if (refreshed) openConversation(refreshed);
 }
 
-async function onDecline(conversation, room) {
-  await state.client.leave(room.roomId);
-  await declineConversation(boot.formkey, conversation.conversation_id);
+function closeThread() {
+  stopTyping();
   state.active = null;
+  state.thread = null;
   document.getElementById("chat-thread-pane").innerHTML =
     '<div class="d-flex align-items-center justify-content-center h-100 text-muted">Select a conversation</div>';
+  document.getElementById("chat-app")?.classList.remove("chat-has-room");
+}
+
+async function onDecline(conversation, room) {
+  if (conversation.kind === "group") {
+    await declineGroup(boot.formkey, conversation.group_id);    // the server leaves the room for you
+  } else {
+    await state.client.leave(room.roomId);
+    await declineConversation(boot.formkey, conversation.conversation_id);
+  }
+  closeThread();
   await refreshLists();
+}
+
+// --- calls (routes/calls.py): a window of their own, and the bar when one is going on ---------------------
+function startCall(roomId, kind) {
+  const url = `/call/${encodeURIComponent(roomId)}?kind=${kind === "video" ? "video" : "audio"}`;
+  const win = window.open(url, "uqqus-call", "popup,width=960,height=680");
+  if (!win) window.top.location.href = url;          // a blocked popup: open it in this tab
+}
+
+let callTimer = null;
+function watchCall() {
+  clearTimeout(callTimer);
+  const active = state.active;
+  if (!active || active.isRequest) return;
+  fetch(`/api/calls/status?room=${encodeURIComponent(active.room.roomId)}`, { credentials: "same-origin" })
+    .then((r) => (r.ok ? r.json() : null))
+    .then((status) => {
+      if (state.active === active && state.thread && state.thread.setCall) state.thread.setCall(status);
+    })
+    .catch(() => {})
+    .then(() => {
+      if (state.active === active) callTimer = setTimeout(watchCall, 20000);
+    });
+}
+
+// --- groups: the sheets (groups.js) and keeping an open group's members current --------------------
+let groupSheets = null;
+
+async function openByKey(key, roomId) {
+  await refreshLists();
+  const found = state.conversations.inbox.find((c) => c.key === key || c.room_id === roomId);
+  if (!found) return;
+  setTab("inbox");
+  document.getElementById("chat-app")?.classList.add("chat-has-room");
+  openConversation(found);
+}
+
+function onGroupChanged(info) {
+  if (state.active && state.active.group && state.active.group.info.group_id === info.group_id) {
+    state.active.group = indexGroup(info);
+    state.thread?.setGroup(info);
+    scheduleRender();
+  }
+  queueRefresh();
+}
+
+let groupRefreshTimer = null;
+function refreshActiveGroup() {
+  clearTimeout(groupRefreshTimer);
+  groupRefreshTimer = setTimeout(async () => {
+    const active = state.active;
+    if (!active || !active.group) return;
+    try {
+      const info = await groupInfo(active.group.info.group_id);
+      groupSheets?.refresh(info);
+      onGroupChanged(info);
+    } catch (e) {
+      if (state.active === active) closeThread();      // removed from it, or it was closed
+      queueRefresh();
+    }
+  }, 400);
 }
 
 function setTab(tab) {
@@ -298,18 +497,21 @@ function setTab(tab) {
   renderConversationList(
     document.getElementById("chat-conversation-list"),
     state.conversations[tab],
-    state.active ? state.active.conversation.conversation_id : null,
+    state.active ? state.active.conversation.key : null,
     (convo) => openConversation(convo),
   );
 }
 
 async function refreshLists() {
-  const [inbox, request] = await Promise.all([
+  const [inbox, request, channel] = await Promise.all([
     listConversations("inbox"),
     listConversations("request"),
+    listConversations("channel"),
   ]);
   state.conversations.inbox = inbox;
   state.conversations.request = request;
+  state.conversations.channel = channel;
+  setTabBadge(document.getElementById("chat-channels-badge"), channel.filter((c) => c.unread_count > 0).length);
 
   setTabBadge(document.getElementById("chat-inbox-badge"), inbox.filter((c) => c.unread_count > 0).length);
   setTabBadge(document.getElementById("chat-requests-badge"), request.length);
@@ -349,9 +551,16 @@ function wireGlobalEvents(client) {
     }
   });
 
-  client.on(RoomEvent.MyMembership, queueRefresh);
+  client.on(RoomEvent.MyMembership, (room, membership) => {
+    // removed from the group that is open (or it was closed): leave the thread
+    if (inActiveRoom(room) && state.active.group && (membership === "leave" || membership === "ban")) closeThread();
+    queueRefresh();
+  });
   client.on(ClientEvent.Room, queueRefresh);
-  client.on(RoomMemberEvent.Membership, queueRefresh);
+  client.on(RoomMemberEvent.Membership, (event, member) => {
+    if (state.active && state.active.group && member && member.roomId === state.active.room.roomId) refreshActiveGroup();
+    queueRefresh();
+  });
 
   // Encrypted events arrive via Room.timeline before they're actually
   // decrypted - the initial render of a just-arrived event often has an
@@ -411,9 +620,42 @@ window.addEventListener("message", async (event) => {
   }
 });
 
+// One chat client per browser: they would share one device and its crypto store, and two at once can lose keys.
+// The newest tab (or side panel) takes over; the one it took over from stops and says so.
+function holdChatLock() {
+  if (!navigator.locks) return Promise.resolve();
+  return new Promise((resolve) => {
+    navigator.locks
+      .request("uqqus-matrix", { steal: true }, () => {
+        resolve();
+        return new Promise(() => {});              // held for as long as this page lives
+      })
+      .catch(() => {
+        // taken over by another tab
+        if (state.client) state.client.stopClient();
+        isReady = false;
+        const pane = document.getElementById("chat-thread-pane");
+        const list = document.getElementById("chat-conversation-list");
+        const note = document.createElement("div");
+        note.className = "text-center text-muted p-4";
+        const text = document.createElement("p");
+        text.textContent = "Chat is open in another tab.";
+        const again = document.createElement("button");
+        again.type = "button";
+        again.className = "btn btn-primary btn-sm";
+        again.textContent = "Use it here";
+        again.addEventListener("click", () => window.location.reload());
+        note.append(text, again);
+        if (list) list.replaceChildren(note);
+        if (pane) pane.replaceChildren();
+      });
+  });
+}
+
 async function main() {
   if (!boot) return;
 
+  await holdChatLock();
   const session = await ensureSession(boot);
 
   const client = sdk.createClient({
@@ -448,6 +690,16 @@ async function main() {
 
   wireGlobalEvents(client);
 
+  groupSheets = initGroups({
+    boot,
+    onCreated: (made) => openByKey(`g${made.group_id}`, made.room_id),
+    onChanged: onGroupChanged,
+    onLeft: () => {
+      closeThread();
+      refreshLists().catch(() => {});
+    },
+  });
+
   for (const link of document.querySelectorAll("[data-chat-tab]")) {
     link.addEventListener("click", (e) => {
       e.preventDefault();
@@ -462,9 +714,10 @@ async function main() {
 
   if (boot.initialRoom) {
     const match = state.conversations.inbox.find((c) => c.room_id === boot.initialRoom)
-      || state.conversations.request.find((c) => c.room_id === boot.initialRoom);
+      || state.conversations.request.find((c) => c.room_id === boot.initialRoom)
+      || state.conversations.channel.find((c) => c.room_id === boot.initialRoom);
     if (match) {
-      setTab(state.conversations.inbox.includes(match) ? "inbox" : "request");
+      setTab(state.conversations.inbox.includes(match) ? "inbox" : state.conversations.channel.includes(match) ? "channel" : "request");
       openConversation(match);
     }
   }

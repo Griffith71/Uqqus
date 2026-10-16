@@ -21,7 +21,12 @@
 
   <div id="chat-list-pane" class="h-100 border-right d-flex flex-column">
 
-    <div class="font-weight-bold h5 px-3 pt-3 pb-2 mb-0">Chat</div>
+    <div class="d-flex align-items-center px-3 pt-3 pb-2">
+      <div class="font-weight-bold h5 mb-0 flex-grow-1">Chat</div>
+      <button type="button" id="chat-new-group" class="btn btn-link btn-sm px-1" title="New group" aria-label="New group">
+        <i class="fas fa-user-group" aria-hidden="true"></i>
+      </button>
+    </div>
 
     <ul class="nav px-2" id="chat-tabs">
       <li class="nav-item">
@@ -32,6 +37,11 @@
       <li class="nav-item">
         <a href="#" class="nav-link py-2 px-3" data-chat-tab="request">
           Requests<span id="chat-requests-badge" class="badge badge-danger rounded-circle align-top ml-1 d-none"></span>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a href="#" class="nav-link py-2 px-3" data-chat-tab="channel">
+          Channels<span id="chat-channels-badge" class="badge badge-danger rounded-circle align-top ml-1 d-none"></span>
         </a>
       </li>
     </ul>
@@ -55,7 +65,9 @@
     formkey: "{{ v.formkey }}",
     userId: {{ v.id }},
     username: "{{ v.username }}",
-    initialRoom: {{ (request.args.get('room') | tojson) if request.args.get('room') else 'null' }}
+    initialRoom: {{ (request.args.get('room') | tojson) if request.args.get('room') else 'null' }},
+    maxGroupMembers: {{ chat_group_max }},
+    filterLevel: {{ v.filter_level if v.filter_level is not none else 1 }}
   };
 </script>
 <script>
@@ -69,6 +81,7 @@
     if (window.RUQQUS_CHAT_BOOT.initialRoom) show(true);
   })();
 </script>
+{% include "partials/chat_group_sheets.html" %}
 <script type="module" src="{{ asset_url('js/chat_bundle.js') }}"></script>
 
 {% endblock %}

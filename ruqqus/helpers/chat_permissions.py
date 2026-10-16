@@ -55,3 +55,17 @@ def on_block_created(blocker, blocked):
         matrix_client.ban_user_as_bot(convo.matrix_room_id, identity.matrix_user_id)
     except matrix_client.MatrixError:
         pass
+    end_call_in(convo.matrix_room_id)
+
+
+def end_call_in(room_id):
+    """A call in this 1:1 chat ends at once (a block): both windows are told (helpers/call_store.py). Best effort,
+    like the ban above: the block itself never fails because of it."""
+    try:
+        from ruqqus.__main__ import r
+        from ruqqus.helpers import call_store, live_bus
+        info = call_store.end(r, room_id) if r is not None else None
+        if info:
+            live_bus.publish(r, live_bus.topic_channel(f"call:{info['call_id']}"), "call.ended", {"reason": "ended"})
+    except Exception:
+        pass

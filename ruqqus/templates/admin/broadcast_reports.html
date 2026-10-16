@@ -1,0 +1,39 @@
+{% extends "docs_default.html" %}
+
+{% block sidebarblock %}{% endblock %}
+{% block sidebarLeftblock %}{% endblock %}
+
+{% block title %}
+<title>Ruqqus - Reported channel messages</title>
+{% endblock %}
+
+{% block content %}
+
+<h1>Reported channel messages</h1>
+
+<p class="text-muted">Members report a message in a public broadcast channel. Removing it takes it out of the channel for everyone. Channels for circles are end-to-end encrypted: the site can't read them, so they can't be reported here. Nobody is shown who reported, admins included.</p>
+
+{% for r in reports %}
+<div class="card mb-3 broadcast-report">
+  <div class="card-body">
+    <div class="d-flex justify-content-between align-items-start flex-wrap">
+      <div class="mr-3 text-small text-muted">{{ r.channel[2] if r.channel else "A deleted channel" }}</div>
+      <div class="text-muted text-small">{{ r.count }} report{{ '' if r.count == 1 else 's' }}</div>
+    </div>
+    <blockquote class="mt-2 mb-2">{{ r.body }}</blockquote>
+    {% for reason in r.reasons %}<div class="text-small text-muted">"{{ reason }}"</div>{% endfor %}
+    <form action="/admin/broadcast_reports/{{ r.post_id }}/remove" method="post" class="d-inline mt-2">
+      <input type="hidden" name="formkey" value="{{ v.formkey }}">
+      <button class="btn btn-danger btn-sm">Remove the message</button>
+    </form>
+    <form action="/admin/broadcast_reports/{{ r.post_id }}/dismiss" method="post" class="d-inline">
+      <input type="hidden" name="formkey" value="{{ v.formkey }}">
+      <button class="btn btn-link btn-sm text-muted">Dismiss the reports</button>
+    </form>
+  </div>
+</div>
+{% else %}
+<p class="text-muted" id="broadcast-reports-empty">No channel messages are waiting for a look.</p>
+{% endfor %}
+
+{% endblock %}

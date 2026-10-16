@@ -127,3 +127,144 @@ def ban_user_as_bot(room_id: str, target_mxid: str):
     )
     if resp.status_code != 200:
         raise MatrixError(f"ban_user_as_bot failed: {resp.status_code}")
+
+
+def group_power_levels() -> dict:
+    """Only the bot changes who is in a group, or anything else about the room (helpers/chat_groups.py): every
+    change goes through a route and its rules. Members send messages, reactions, edits and their own deletions.
+
+    The bot is the room's creator, so it is not listed: from room version 12 a creator has unlimited power and
+    Synapse refuses a creator in `users`; before it, leaving `users` out keeps Synapse's own {creator: 100}."""
+    return {
+        "users_default": 0,
+        "events_default": 0,
+        "state_default": 100,
+        "invite": 100,
+        "kick": 100,
+        "ban": 100,
+        "redact": 100,              # deleting someone else's message; your own needs no power
+        "events": {
+            "m.room.name": 100, "m.room.avatar": 100, "m.room.topic": 100, "m.room.power_levels": 100,
+            "m.room.history_visibility": 100, "m.room.encryption": 100, "m.room.join_rules": 100,
+            "m.room.canonical_alias": 100, "m.room.tombstone": 100, "m.room.server_acl": 100,
+        },
+    }
+
+
+def create_group_room(invitee_mxids) -> str:
+    """A group's room: made by the bot (which stays in it, silent, as in a 1:1 chat), encrypted, invite-only,
+    and each invited person can read it from their invitation on (history_visibility 'invited')."""
+    resp = requests.post(
+        f"{app.config['MATRIX_INTERNAL_URL']}/_matrix/client/v3/createRoom",
+        json={
+            "preset": "private_chat",
+            "visibility": "private",
+            "is_direct": False,
+            "invite": list(invitee_mxids),
+            "power_level_content_override": group_power_levels(),
+            "initial_state": [
+                {"type": "m.room.encryption", "content": {"algorithm": "m.megolm.v1.aes-sha2"}},
+                {"type": "m.room.history_visibility", "content": {"history_visibility": "invited"}},
+                {"type": "m.room.guest_access", "content": {"guest_access": "forbidden"}},
+            ],
+        },
+        headers=_as_headers(), timeout=10,
+    )
+    if resp.status_code != 200:
+        raise MatrixError(f"create_group_room failed: {resp.status_code}")
+    return resp.json()["room_id"]
+
+
+def invite_as_bot(room_id: str, target_mxid: str):
+    resp = requests.post(
+        f"{app.config['MATRIX_INTERNAL_URL']}/_matrix/client/v3/rooms/{room_id}/invite",
+        json={"user_id": target_mxid}, headers=_as_headers(), timeout=10,
+    )
+    if resp.status_code != 200:
+        raise MatrixError(f"invite_as_bot failed: {resp.status_code}")
+
+
+def kick_as_bot(room_id: str, target_mxid: str, reason: str = ""):
+    """Out of the room (they may be added again later: a kick, not a ban). Also withdraws an invitation."""
+    resp = requests.post(
+        f"{app.config['MATRIX_INTERNAL_URL']}/_matrix/client/v3/rooms/{room_id}/kick",
+        json={"user_id": target_mxid, "reason": reason}, headers=_as_headers(), timeout=10,
+    )
+    if resp.status_code not in (200, 403):      # 403: they were not in it any more
+        raise MatrixError(f"kick_as_bot failed: {resp.status_code}")
+
+
+def leave_room_as(room_id: str, mxid: str):
+    """AS-masqueraded leave: the member leaves, or turns down an invitation."""
+    resp = requests.post(
+        f"{app.config['MATRIX_INTERNAL_URL']}/_matrix/client/v3/rooms/{room_id}/leave?user_id={mxid}",
+        json={}, headers=_as_headers(), timeout=10,
+    )
+    if resp.status_code not in (200, 403, 404):
+        raise MatrixError(f"leave_room_as failed: {resp.status_code}")
+
+
+def channel_power_levels(writer_mxids) -> dict:
+    """A broadcast channel (helpers/broadcasts.py): the owner and helpers write (50), members react and take back
+    their own reactions (0); the bot (the creator) alone changes the room or who is in it."""
+    levels = group_power_levels()
+    levels["events_default"] = 50
+    levels["users"] = {mxid: 50 for mxid in writer_mxids}
+    levels["events"] = {**levels["events"], "m.reaction": 0, "m.room.redaction": 0}
+    return levels
+
+
+def create_channel_room(owner_mxid: str, encrypted: bool) -> str:
+    state = [
+        {"type": "m.room.history_visibility", "content": {"history_visibility": "shared"}},
+        {"type": "m.room.guest_access", "content": {"guest_access": "forbidden"}},
+    ]
+    if encrypted:
+        state.insert(0, {"type": "m.room.encryption", "content": {"algorithm": "m.megolm.v1.aes-sha2"}})
+    resp = requests.post(
+        f"{app.config['MATRIX_INTERNAL_URL']}/_matrix/client/v3/createRoom",
+        json={"preset": "private_chat", "visibility": "private", "invite": [owner_mxid],
+              "power_level_content_override": channel_power_levels([owner_mxid]), "initial_state": state},
+        headers=_as_headers(), timeout=10,
+    )
+    if resp.status_code != 200:
+        raise MatrixError(f"create_channel_room failed: {resp.status_code}")
+    room_id = resp.json()["room_id"]
+    join_room_as(room_id, owner_mxid)
+    return room_id
+
+
+def set_writers(room_id: str, writer_mxids):
+    """Who may write in a channel: the room's power levels as they are, with exactly these people at 50 (anyone
+    else at 50 goes back to 0; the creator and anyone above 50 are left alone)."""
+    url = f"{app.config['MATRIX_INTERNAL_URL']}/_matrix/client/v3/rooms/{room_id}/state/m.room.power_levels"
+    current = requests.get(url, headers=_as_headers(), timeout=10)
+    if current.status_code != 200:
+        raise MatrixError(f"set_writers read failed: {current.status_code}")
+    levels = current.json()
+    users = {k: v for k, v in (levels.get("users") or {}).items() if v != 50}
+    users.update({mxid: 50 for mxid in writer_mxids})
+    levels["users"] = users
+    resp = requests.put(url, json=levels, headers=_as_headers(), timeout=10)
+    if resp.status_code != 200:
+        raise MatrixError(f"set_writers failed: {resp.status_code}")
+
+
+def send_as(room_id: str, mxid: str, content: dict, txn_id: str) -> str:
+    """A message in a room as one of its members (AS masquerade). Returns its event id."""
+    resp = requests.put(
+        f"{app.config['MATRIX_INTERNAL_URL']}/_matrix/client/v3/rooms/{room_id}/send/m.room.message/{txn_id}?user_id={mxid}",
+        json=content, headers=_as_headers(), timeout=10,
+    )
+    if resp.status_code != 200:
+        raise MatrixError(f"send_as failed: {resp.status_code}")
+    return resp.json()["event_id"]
+
+
+def redact_as_bot(room_id: str, event_id: str, txn_id: str, reason: str = ""):
+    resp = requests.put(
+        f"{app.config['MATRIX_INTERNAL_URL']}/_matrix/client/v3/rooms/{room_id}/redact/{event_id}/{txn_id}",
+        json={"reason": reason}, headers=_as_headers(), timeout=10,
+    )
+    if resp.status_code != 200:
+        raise MatrixError(f"redact_as_bot failed: {resp.status_code}")

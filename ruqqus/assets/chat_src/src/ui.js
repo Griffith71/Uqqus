@@ -113,19 +113,41 @@ export function renderConversationList(container, conversations, activeConversat
     const row = document.createElement("a");
     row.href = "#";
     row.className = "d-flex align-items-center px-3 py-2 border-bottom text-decoration-none text-body chat-list-row";
-    if (convo.conversation_id === activeConversationId) row.classList.add("bg-light");
+    if (convo.key === activeConversationId) row.classList.add("bg-light");
 
     const unreadDot = convo.unread_count > 0
       ? '<span class="badge badge-danger rounded-circle align-top ml-1">&nbsp;</span>'
       : "";
 
-    row.innerHTML = `
-      <img src="${escapeHtml(convo.other_user.profile_url)}" class="rounded-circle mr-2" width="40" height="40">
-      <div class="flex-grow-1 overflow-hidden">
-        <div class="font-weight-bold text-truncate">@${escapeHtml(convo.other_user.username)}${unreadDot}</div>
-      </div>
-      <div class="text-muted small ml-2">${timeLabel(convo.last_activity_utc * 1000)}</div>
-    `;
+    if (convo.kind === "channel") {
+      // a broadcast channel (routes/broadcasts.py): its name and how many are in it
+      row.innerHTML = `
+        <span class="chat-group-avatar rounded-circle mr-2 flex-shrink-0" style="width:40px;height:40px" aria-hidden="true"><i class="fas fa-tower-broadcast"></i></span>
+        <div class="flex-grow-1 overflow-hidden">
+          <div class="font-weight-bold text-truncate">${escapeHtml(convo.label)}${unreadDot}</div>
+          <div class="small text-muted text-truncate">Channel · ${Number(convo.size) || 0} member${Number(convo.size) === 1 ? "" : "s"}</div>
+        </div>
+      `;
+    } else if (convo.kind === "group") {
+      // a group: its name (or the first members' names), how many people, and who invited you to it
+      const invited = convo.invited_by ? `Invited by @${escapeHtml(convo.invited_by.username)}` : `${Number(convo.size) || 0} people`;
+      row.innerHTML = `
+        ${groupAvatar(40)}
+        <div class="flex-grow-1 overflow-hidden">
+          <div class="font-weight-bold text-truncate">${escapeHtml(convo.label)}${unreadDot}</div>
+          <div class="small text-muted text-truncate">${invited}</div>
+        </div>
+        <div class="text-muted small ml-2">${timeLabel(convo.last_activity_utc * 1000)}</div>
+      `;
+    } else {
+      row.innerHTML = `
+        <img src="${escapeHtml(convo.other_user.profile_url)}" class="rounded-circle mr-2" width="40" height="40">
+        <div class="flex-grow-1 overflow-hidden">
+          <div class="font-weight-bold text-truncate">@${escapeHtml(convo.other_user.username)}${unreadDot}</div>
+        </div>
+        <div class="text-muted small ml-2">${timeLabel(convo.last_activity_utc * 1000)}</div>
+      `;
+    }
     row.addEventListener("click", (e) => {
       e.preventDefault();
       onSelect(convo);
@@ -134,16 +156,49 @@ export function renderConversationList(container, conversations, activeConversat
   }
 }
 
-// callbacks: onAccept, onDecline, onSend(text), onTyping(isTyping), onCancelContext()
-export function renderThreadShell(pane, { otherUser, isRequest, onAccept, onDecline, onSend, onTyping, onCancelContext }) {
-  pane.innerHTML = `
-    <div class="d-flex align-items-center border-bottom px-3 py-2">
+function groupAvatar(size) {
+  return `<span class="chat-group-avatar rounded-circle mr-2 flex-shrink-0" style="width:${size}px;height:${size}px" aria-hidden="true"><i class="fas fa-users"></i></span>`;
+}
+
+function peopleLabel(n) {
+  const count = Number(n) || 0;
+  return `${count} ${count === 1 ? "person" : "people"}`;
+}
+
+// callbacks: onAccept, onDecline, onSend(text), onTyping(isTyping), onCancelContext(), onInfo() (a group's sheet),
+// onCall(kind) (a voice or video call: routes/calls.py). A 1:1 chat passes otherUser; a group passes group
+// ({ label, size }) and requestText for an invitation.
+export function renderThreadShell(pane, { otherUser, group, channel, requestText, isRequest, onAccept, onDecline, onSend, onTyping, onCancelContext, onInfo, onCall, onLeave }) {
+  const callButtons = !isRequest && onCall ? `
+      <button type="button" class="btn btn-link btn-sm text-muted" data-call="audio" title="Voice call" aria-label="Voice call"><i class="fas fa-phone"></i></button>
+      <button type="button" class="btn btn-link btn-sm text-muted" data-call="video" title="Video call" aria-label="Video call"><i class="fas fa-video"></i></button>` : "";
+  const header = channel ? `
+      <span class="chat-group-avatar rounded-circle mr-2 flex-shrink-0" style="width:36px;height:36px" aria-hidden="true"><i class="fas fa-tower-broadcast"></i></span>
+      <div class="flex-grow-1 overflow-hidden">
+        <div class="font-weight-bold text-truncate" id="chat-thread-title">${escapeHtml(channel.label)}</div>
+        <div class="small text-muted">${channel.public ? "Public channel" : "Channel for circles · end-to-end encrypted"} · ${Number(channel.size) || 0} member${Number(channel.size) === 1 ? "" : "s"}</div>
+      </div>
+      ${channel.role === "owner" ? "" : `<button type="button" class="btn btn-link btn-sm text-muted" id="chat-channel-leave">Leave</button>`}` : group ? `
+      ${groupAvatar(36)}
+      <div class="flex-grow-1 overflow-hidden">
+        <div class="font-weight-bold text-truncate" id="chat-thread-title">${escapeHtml(group.label)}</div>
+        <div class="small text-muted" id="chat-thread-subtitle">${peopleLabel(group.size)}</div>
+      </div>${callButtons}
+      <button type="button" class="btn btn-link btn-sm text-muted" id="chat-group-info-btn" title="Group info" aria-label="Group info"><i class="fas fa-users"></i></button>` : `
       <img src="${escapeHtml(otherUser.profile_url)}" class="rounded-circle mr-2" width="36" height="36">
-      <div class="font-weight-bold">@${escapeHtml(otherUser.username)}</div>
+      <div class="font-weight-bold flex-grow-1">@${escapeHtml(otherUser.username)}</div>${callButtons}`;
+  const notice = requestText || "Message request. They won't know you've seen this until you accept.";
+  pane.innerHTML = `
+    <div class="d-flex align-items-center border-bottom px-3 py-2" id="chat-thread-header">${header}
+    </div>
+    <div class="chat-call-bar d-none" id="chat-call-bar" role="status">
+      <i class="fas fa-phone text-primary" aria-hidden="true"></i>
+      <span class="flex-grow-1" id="chat-call-bar-text"></span>
+      <button type="button" class="btn btn-primary btn-sm" id="chat-call-join">Join</button>
     </div>
     ${isRequest ? `
     <div class="d-flex align-items-center justify-content-between px-3 py-2 bg-light border-bottom">
-      <div class="text-muted small">Message request. They won't know you've seen this until you accept.</div>
+      <div class="text-muted small" id="chat-request-text"></div>
       <div>
         <button type="button" class="btn btn-sm btn-secondary mr-2" id="chat-decline-btn">Delete</button>
         <button type="button" class="btn btn-sm btn-primary" id="chat-accept-btn">Accept</button>
@@ -164,9 +219,17 @@ export function renderThreadShell(pane, { otherUser, isRequest, onAccept, onDecl
   `;
 
   if (isRequest) {
+    pane.querySelector("#chat-request-text").textContent = notice;
     pane.querySelector("#chat-accept-btn").addEventListener("click", onAccept);
     pane.querySelector("#chat-decline-btn").addEventListener("click", onDecline);
   }
+  if (group && onInfo) pane.querySelector("#chat-group-info-btn").addEventListener("click", onInfo);
+  const leave = pane.querySelector("#chat-channel-leave");
+  if (leave && onLeave) leave.addEventListener("click", onLeave);
+  for (const b of pane.querySelectorAll("[data-call]")) b.addEventListener("click", () => onCall(b.dataset.call));
+  const callBar = pane.querySelector("#chat-call-bar");
+  let callKind = "audio";
+  pane.querySelector("#chat-call-join").addEventListener("click", () => onCall && onCall(callKind));
 
   const form = pane.querySelector("#chat-composer");
   const input = pane.querySelector("#chat-composer-input");
@@ -194,6 +257,15 @@ export function renderThreadShell(pane, { otherUser, isRequest, onAccept, onDecl
     if (e.key === "Escape" && !contextEl.classList.contains("d-none")) onCancelContext?.();
   });
 
+  if (channel && !channel.may_write) {
+    // members read and react; only the owner and helpers write (the room's power levels say the same)
+    form.classList.replace("d-flex", "d-none");      // d-flex is !important: the hidden attribute would lose
+    const note = document.createElement("div");
+    note.className = "small text-muted text-center py-2";
+    note.textContent = "Only the channel's owner and helpers write here. You can react to their messages.";
+    form.parentElement.appendChild(note);
+  }
+
   return {
     messagesEl: pane.querySelector("#chat-messages"),
     inputEl: input,
@@ -203,14 +275,33 @@ export function renderThreadShell(pane, { otherUser, isRequest, onAccept, onDecl
       contextEl.classList.toggle("d-flex", !!label);
       contextText.textContent = label || "";
     },
-    setTyping(name) {
-      typingEl.textContent = name ? `@${name} is typing…` : "";
+    setTyping(text) {
+      typingEl.textContent = text || "";
+    },
+    // a call going on in this chat (GET /api/calls/status): "Voice call · 3 people" and Join
+    setCall(status) {
+      const show = !!(status && status.active && !status.in_call && onCall);
+      callBar.classList.toggle("d-none", !show);
+      callBar.classList.toggle("d-flex", show);
+      if (!show) return;
+      callKind = status.kind === "video" ? "video" : "audio";
+      const people = Number(status.people) || 0;
+      pane.querySelector("#chat-call-bar-text").textContent =
+        `${callKind === "video" ? "Video" : "Voice"} call going on · ${people} ${people === 1 ? "person" : "people"}`;
+    },
+    // a group's name and size after a change in its sheet
+    setGroup(next) {
+      const title = pane.querySelector("#chat-thread-title");
+      const subtitle = pane.querySelector("#chat-thread-subtitle");
+      if (title) title.textContent = next.label;
+      if (subtitle) subtitle.textContent = peopleLabel(next.size);
     },
   };
 }
 
-// items: [{ eventId, mine, body, status, edited, deleted, quote, reactions, seen, canEdit }]
-// handlers: { onQuote(item), onReact(item, key), onEdit(item), onDelete(item) }
+// items: [{ eventId, mine, body, status, edited, deleted, quote, reactions, seen, seenBy, canEdit, sender, blocked }]
+// sender: who wrote it, in a group (null for your own and in a 1:1 chat); blocked: someone you blocked wrote it
+// handlers: { onQuote(item), onReact(item, key), onEdit(item), onDelete(item), onReport(item) }
 export function renderMessages(messagesEl, items, handlers) {
   // keep the reader's place unless they were at the bottom
   const nearBottom = messagesEl.scrollHeight - messagesEl.scrollTop - messagesEl.clientHeight < 80;
@@ -240,6 +331,45 @@ function buildMessage(item, handlers) {
 
   const column = document.createElement("div");
   column.className = `d-flex flex-column chat-msg-column ${item.mine ? "align-items-end" : "align-items-start"}`;
+
+  if (item.notice) {
+    row.className = "d-flex justify-content-center mb-2 chat-msg chat-notice";
+    const note = document.createElement("div");
+    note.className = "small text-muted chat-notice-text";
+    const icon = document.createElement("i");
+    icon.className = "fas fa-phone mr-1";
+    icon.setAttribute("aria-hidden", "true");
+    note.appendChild(icon);
+    note.appendChild(document.createTextNode(item.body));
+    row.appendChild(note);
+    return row;
+  }
+
+  if (item.sender) {
+    const who = document.createElement("div");
+    who.className = "small text-muted chat-sender";
+    who.textContent = item.sender;
+    column.appendChild(who);
+  }
+
+  if (item.filtered) {
+    const hidden = document.createElement("div");
+    hidden.className = "px-3 py-2 rounded chat-bubble bg-light font-italic text-muted";
+    hidden.textContent = "Hidden by your word filter";
+    column.appendChild(hidden);
+    row.appendChild(column);
+    return row;
+  }
+
+  if (item.blocked) {
+    // the blocker's own view only: the other person is never told (helpers/chat_groups.py)
+    const hidden = document.createElement("div");
+    hidden.className = "px-3 py-2 rounded chat-bubble bg-light font-italic text-muted";
+    hidden.textContent = "A message from someone you blocked";
+    column.appendChild(hidden);
+    row.appendChild(column);
+    return row;
+  }
 
   if (item.quote) {
     const quote = document.createElement("div");
@@ -293,6 +423,9 @@ function buildMessage(item, handlers) {
     if (item.mine && item.canEdit) {
       actions.appendChild(iconButton("Edit this message", "fas fa-pen", () => handlers.onEdit(item)));
     }
+    if (item.reportable && handlers.onReport) {
+      actions.appendChild(iconButton("Report this message", "fas fa-flag", () => handlers.onReport(item)));
+    }
     if (item.mine) {
       actions.appendChild(iconButton("Delete this message", "fas fa-trash", () => handlers.onDelete(item)));
     }
@@ -327,7 +460,7 @@ function buildMessage(item, handlers) {
   if (item.seen) {
     const seen = document.createElement("div");
     seen.className = "small text-muted chat-seen";
-    seen.textContent = "Seen";
+    seen.textContent = item.seenBy ? `Seen by ${item.seenBy}` : "Seen";
     column.appendChild(seen);
   }
 

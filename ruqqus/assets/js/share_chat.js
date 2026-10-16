@@ -140,15 +140,27 @@
   function row(target) {
     var item = document.createElement('div');
     item.className = 'share-chat-row d-flex align-items-center py-2';
-    var avatar = document.createElement('img');
-    avatar.className = 'rounded-circle mr-2';
-    avatar.width = avatar.height = 36;
-    avatar.alt = '';
-    if (typeof target.profile_url === 'string' && /^(https?:\/\/|\/)/.test(target.profile_url)) avatar.src = target.profile_url;
+    var avatar;
+    if (target.kind === 'group') {
+      // a group chat you are in (routes/chat_groups.py): its name, or its first members' names
+      avatar = document.createElement('span');
+      avatar.className = 'chat-group-avatar rounded-circle mr-2 flex-shrink-0';
+      avatar.style.width = avatar.style.height = '36px';
+      avatar.setAttribute('aria-hidden', 'true');
+      var icon = document.createElement('i');
+      icon.className = 'fas fa-users';
+      avatar.appendChild(icon);
+    } else {
+      avatar = document.createElement('img');
+      avatar.className = 'rounded-circle mr-2';
+      avatar.width = avatar.height = 36;
+      avatar.alt = '';
+      if (typeof target.profile_url === 'string' && /^(https?:\/\/|\/)/.test(target.profile_url)) avatar.src = target.profile_url;
+    }
     var name = document.createElement('div');
     name.className = 'flex-grow-1 text-truncate font-weight-bold';
-    name.textContent = target.display_name ? target.display_name : '@' + target.username;
-    if (target.display_name) {
+    name.textContent = target.kind === 'group' ? target.label : (target.display_name ? target.display_name : '@' + target.username);
+    if (target.kind !== 'group' && target.display_name) {
       var handle = document.createElement('span');
       handle.className = 'text-muted font-weight-normal ml-1';
       handle.textContent = '@' + target.username;
