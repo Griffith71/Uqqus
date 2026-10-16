@@ -455,6 +455,10 @@ def get_posts(pids, sort="hot", v=None):
     from ruqqus.helpers import space_view
     space_view.attach(g.db, posts, v)
 
+    # which of them are live threads (helpers/live_view.py): one query
+    from ruqqus.helpers import live_view
+    live_view.attach(g.db, posts)
+
     # whether the viewer follows each post, or already gets its comments (helpers/post_follows.py): two queries
     from ruqqus.helpers import post_follows
     post_follows.attach(g.db, posts, v)

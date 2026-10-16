@@ -141,3 +141,19 @@ def test_compression_never_buffers_the_stream():
     # Flask-Compress only compresses the mimetypes it is given; the stream must not be one of them
     assert "event-stream" not in read("ruqqus", "__main__.py")
 
+
+def test_the_live_endpoints_are_limited_per_account_not_per_address():
+    main = read("ruqqus", "__main__.py")
+    assert "def member_limit_key():" in main and 'f"member:{user_id}"' in main
+    limit = '@limiter.limit("120/minute", key_func=member_limit_key)'
+    limited = {
+        "live_events.py": ['@app.route("/api/live/events", methods=["GET"])'],
+        "calls.py": ['@app.route("/api/calls/heartbeat", methods=["POST"])', '@app.route("/api/calls/status", methods=["GET"])'],
+        "spaces.py": ['@app.route("/api/spaces/<sid>/heartbeat", methods=["POST"])', '@app.route("/api/spaces/<sid>/state", methods=["GET"])'],
+        "live_comments.py": ['@app.route("/api/post/<pid>/live_comments", methods=["GET"])'],
+        "live_threads.py": ['@app.route("/api/post/<pid>/live_updates", methods=["GET"])'],
+    }
+    for name, routes in limited.items():
+        lines = read("ruqqus", "routes", name).splitlines()
+        for route in routes:
+            assert lines[lines.index(route) + 1] == limit, (name, route)

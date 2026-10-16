@@ -4,6 +4,7 @@
 {% from "partials/community_note.html" import community_note %}
 {% from "partials/poll.html" import poll_block %}
 {% from "partials/space_card.html" import space_block %}
+{% from "partials/live_panel.html" import live_badge, stream_block, live_panel %}
 {% from "partials/coauthors.html" import coauthor_line %}
 {% from "partials/quote_card.html" import quote_card %}
 
@@ -441,10 +442,10 @@
           </div>
 
           {% if p.url %}
-          <h1 class="card-title post-title text-left mb-md-2 pb-md-1"><a target="_blank" href="{{ p.url }}" rel="nofollow noopener">{{ p.title | safe }}</a></h1>
+          <h1 class="card-title post-title text-left mb-md-2 pb-md-1">{{ live_badge(p) }}<a target="_blank" href="{{ p.url }}" rel="nofollow noopener">{{ p.title | safe }}</a></h1>
           {{ post_options.disclosure_row(p, v) }}
           {% else %}
-          <h1 class="card-title post-title text-left mb-md-2 pb-md-1">{{ p.title | safe }}</h1>
+          <h1 class="card-title post-title text-left mb-md-2 pb-md-1">{{ live_badge(p) }}{{ p.title | safe }}</h1>
           {{ post_options.disclosure_row(p, v) }}
           {% endif %}
 
@@ -544,6 +545,8 @@
             {{ poll_block(p, v) }}
 
             {{ space_block(p, v) }}
+
+            {{ stream_block(p) }}
 
             {% if p.embed_kind and p.embed_kind != 'widget' %}
             <div class="position-relative{% if p.is_sensitive %} sensitive-content-wrap{% endif %}" id="sensitive-embed-{{ p.base36id }}">
@@ -817,6 +820,7 @@
 
 </div>
 {{ ad_slot("post") }}
+{{ live_panel(p, v) }}
 <div class="row border-md-0 comment-section pb-3">
   <div class="col border-top">
     <div class="comments-count py-3">

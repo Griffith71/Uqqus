@@ -6401,3 +6401,28 @@ CREATE TABLE public.broadcast_reports (
 );
 
 
+--
+-- Live threads (migration 2026-10-26_live_threads.sql; helpers/live_threads.py)
+--
+
+CREATE TABLE public.live_threads (
+    post_id integer PRIMARY KEY,
+    started_utc integer NOT NULL,
+    ended_utc integer DEFAULT 0 NOT NULL,
+    last_update_utc integer DEFAULT 0 NOT NULL,
+    started_by_id integer NOT NULL
+);
+
+CREATE TABLE public.live_updates (
+    id SERIAL PRIMARY KEY,
+    post_id integer NOT NULL REFERENCES public.live_threads(post_id) ON DELETE CASCADE,
+    author_id integer NOT NULL,
+    body text NOT NULL,
+    body_html text NOT NULL,
+    word_severity smallint DEFAULT 0 NOT NULL,
+    created_utc integer NOT NULL,
+    edited_utc integer DEFAULT 0 NOT NULL,
+    deleted_utc integer DEFAULT 0 NOT NULL
+);
+
+CREATE INDEX live_updates_post_idx ON public.live_updates (post_id, id);

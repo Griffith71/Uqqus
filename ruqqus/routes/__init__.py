@@ -9,6 +9,7 @@ from .calls import *
 from .live_comments import *
 from .spaces import *
 from .broadcasts import *
+from .live_threads import *
 from .comments import *
 from .curations import *
 from .discord import *

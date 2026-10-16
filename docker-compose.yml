@@ -60,6 +60,10 @@ services:
       # the call relay's own counters (scripts/turn_usage.py) and its monthly allowance (helpers/turn_usage.py)
       - TURN_METRICS_URL=${TURN_METRICS_URL:-http://coturn:9641/metrics}
       - TURN_MONTHLY_GB=${TURN_MONTHLY_GB:-50}
+      # whether a linked stream is live (ruqqus/helpers/livestream_status.py): optional, put them in .env
+      - YOUTUBE_API_KEY=${YOUTUBE_API_KEY:-}
+      - TWITCH_CLIENT_ID=${TWITCH_CLIENT_ID:-}
+      - TWITCH_CLIENT_SECRET=${TWITCH_CLIENT_SECRET:-}
     volumes:
       # the stand-in media storage, kept across rebuilds so test pictures do not vanish
       - "media-dev:/var/lib/ruqqus-media-dev"

@@ -4,6 +4,7 @@
 {% from "partials/community_note.html" import community_note %}
 {% from "partials/poll.html" import poll_block %}
 {% from "partials/space_card.html" import space_block %}
+{% from "partials/live_panel.html" import live_badge, stream_block, live_panel %}
 {% from "partials/coauthors.html" import coauthor_line %}
 {% from "partials/quote_card.html" import quote_card %}
 {% for p in listing %}
@@ -89,7 +90,7 @@
 
       </div>
 
-      <h5 class="card-title post-title text-left w-lg-75 mb-0 pb-0 pb-md-1"><a href="{{ p.permalink }}" class="stretched-link" {% if author_of(p, v).is_private %} rel="nofollow"{% endif %}>{{ p.title | safe }}</a></h5>
+      <h5 class="card-title post-title text-left w-lg-75 mb-0 pb-0 pb-md-1">{{ live_badge(p) }}<a href="{{ p.permalink }}" class="stretched-link" {% if author_of(p, v).is_private %} rel="nofollow"{% endif %}>{{ p.title | safe }}</a></h5>
       {{ post_options.disclosure_row(p, v) }}
 
 
@@ -181,6 +182,8 @@
       {{ poll_block(p, v) }}
 
       {{ space_block(p, v) }}
+
+      {{ stream_block(p) }}
 
       <div class="post-actions mt-1 d-none d-md-block">
         <ul class="list-inline text-right d-flex">

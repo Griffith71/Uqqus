@@ -730,6 +730,8 @@
 {# live updates and incoming calls: the top page only (a side-panel frame never rings twice) #}
 {% if v and not request.args.get('embed') %}<script src="{{ asset_url('js/live_events.js') }}"></script>
 <script src="{{ asset_url('js/call_ring.js') }}"></script>{% endif %}
+{# after the live client: a live thread listens on it (partials/live_panel.html) #}
+<script src="{{ asset_url('js/live_thread.js') }}"></script>
 
 <!-- ClipboardJS -->
 

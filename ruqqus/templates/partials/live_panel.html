@@ -1,0 +1,63 @@
+{#
+  A post's live thread on its page (helpers/live_threads.py, routes/live_threads.py, assets/js/live_thread.js): LIVE and
+  its updates, newest first, above the comments. live_panel(p, v): the updates the server draws first (for visitors
+  too), and for the post's author and co-authors "Go live", a box for an update and "End live". An update on an
+  anonymous post shows no name. Its stored HTML was sanitized when it was written; a rated one the reader's word
+  filter hides says so instead.
+
+  live_badge(p): the LIVE mark beside a card's title.
+  stream_block(p): a livestream on the member's own YouTube or Twitch (helpers/livestreams.py): a card that opens it
+  there, never a player frame of its own.
+#}
+{% macro live_badge(p) %}
+{% set lv = live_of(p) %}
+{% if lv and lv.live %}<span class="live-badge" title="Live updates going on"><span class="space-live-dot" aria-hidden="true"></span>LIVE</span>{% endif %}
+{% endmacro %}
+
+{% macro stream_block(p) %}
+{% set s = stream_of(p) %}
+{% if s %}
+<a class="stream-card stream-{{ s.status or 'unknown' }}" href="{{ s.url }}" target="_blank" rel="nofollow noopener">
+  <i class="fab fa-{{ s.service }}" aria-hidden="true"></i>
+  <span class="stream-card-text">{% if s.status == 'live' %}<span class="space-live-dot" aria-hidden="true"></span>{% endif %}{{ s.text }}</span>
+  <span class="stream-card-go">Watch <i class="fas fa-up-right-from-square" aria-hidden="true"></i></span>
+</a>
+{% endif %}
+{% endmacro %}
+
+{% macro live_panel(p, v) %}
+{% set lv = live_of(p) %}
+{% set may = may_run_live(p, v) %}
+{% if lv or may %}
+<section class="live-panel{% if lv and lv.live %} is-live{% endif %}" id="live-panel" data-post="{{ lv.post36 if lv else p.base36id }}" data-live="{{ 'true' if lv and lv.live else 'false' }}" aria-label="Live updates">
+  <div class="live-panel-head">
+    <span class="live-badge" id="live-panel-badge"{% if not (lv and lv.live) %} hidden{% endif %}><span class="space-live-dot" aria-hidden="true"></span>LIVE</span>
+    <span class="live-panel-title">Live updates</span>
+    {% if lv and not lv.live %}<span class="text-muted text-small" id="live-panel-ended">· ended</span>{% endif %}
+    {% if may %}
+    <button type="button" class="btn btn-sm {{ 'btn-outline-danger' if lv and lv.live else 'btn-primary' }} ml-auto" id="live-toggle" data-on="{{ '0' if lv and lv.live else '1' }}">{{ "End live" if lv and lv.live else "Go live" }}</button>
+    {% endif %}
+  </div>
+  {% if may and not lv %}
+  <p class="text-small text-muted mb-0">Going live puts timestamped updates above the comments, pushed to everyone reading. The people who follow this post are told. It ends after a day without an update, or a week at most.</p>
+  {% endif %}
+  {% if may %}
+  <form class="live-panel-form{% if not (lv and lv.live) %} d-none{% endif %}" id="live-update-form" onsubmit="return false;">
+    <label class="sr-only" for="live-update-body">Update</label>
+    <textarea class="form-control" id="live-update-body" rows="2" maxlength="2000" placeholder="Post an update"></textarea>
+    <button type="submit" class="btn btn-primary btn-sm mt-2">Post update</button>
+    <span class="text-small ml-2" id="live-update-status" role="status"></span>
+  </form>
+  {% endif %}
+  <div class="live-new-comments d-none" id="live-new-comments" role="status"><a href="#comments" onclick="window.location.reload(); return false;">New comments · Show them</a></div>
+  <div class="live-updates" id="live-updates" role="list">
+    {% for u in live_updates_of(p, v) %}
+    <div class="live-update" role="listitem" data-update="{{ u.id }}">
+      <div class="live-update-meta text-small text-muted"><time data-live-time="{{ u.created_utc }}">{{ u.created_utc | space_time }}</time>{% if u.author %} · {{ u.author }}{% endif %}</div>
+      {% if u.hidden %}<div class="live-update-body font-italic text-muted">Hidden by your word filter</div>{% else %}<div class="live-update-body">{{ u.body_html | safe }}</div>{% endif %}
+    </div>
+    {% endfor %}
+  </div>
+</section>
+{% endif %}
+{% endmacro %}
