@@ -32,7 +32,7 @@
   {% if q.inner %}{{ quote_card(q.inner, p, v, full) }}{% endif %}
   <div class="quote-card-foot">
     {% if q.quoting %}<span><i class="fas fa-quote-left" aria-hidden="true"></i> {{ q.quoting }}</span><span aria-hidden="true">&middot;</span>{% endif %}
-    {% if q.media %}<span><i class="far fa-image" aria-hidden="true"></i> {{ q.media }}</span><span aria-hidden="true">&middot;</span>{% endif %}
+    {% if q.media %}<span><i class="{{ 'fas fa-eye-slash' if q.sensitive else 'far fa-image' }}" aria-hidden="true"></i> {{ q.media }}</span><span aria-hidden="true">&middot;</span>{% endif %}
     {% if q.where %}<span>{{ q.where }}</span><span aria-hidden="true">&middot;</span>{% endif %}
     <span class="quote-card-open">View on {{ q.label }} <i class="fas fa-arrow-up-right-from-square" aria-hidden="true"></i></span>
   </div>

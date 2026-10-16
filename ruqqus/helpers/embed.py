@@ -154,7 +154,7 @@ def _tco_target(link):
 
 def _with_x_quote(snippet):
     """X's oEmbed gives a quoted post only as a t.co link at the end of the text. When that link leads to a post on X,
-    its own oEmbed snippet is saved with this one (social_embeds.x_quote_snippet), and the address of what IT quotes,
+    its own oEmbed snippet is saved with this one (social_embeds.quoted_post_snippet), and the address of what IT quotes,
     so the quote card can show the post the way X does: with the post it quotes inside, and no deeper."""
     link = social_embeds.last_tco_link(snippet)
     quoted_url = social_embeds.x_status_url(_tco_target(link)) if link else None
@@ -169,11 +169,29 @@ def _with_x_quote(snippet):
         return snippet
     next_link = social_embeds.last_tco_link(quoted)
     next_url = social_embeds.x_status_url(_tco_target(next_link)) if next_link else None
-    return social_embeds.x_quote_snippet(snippet, quoted_url, link, quoted, next_url or "", next_link if next_url else "",
+    return social_embeds.quoted_post_snippet(snippet, quoted_url, link, quoted, next_url or "", next_link if next_url else "",
                                          _x_picture(quoted_url))
 
 
+# What this site calls itself when it reads a page for a link preview: never another company's crawler's name
+_HONEST_AGENT = "Mozilla/5.0 (compatible; RuqqusBot/1.0; link previews)"
+
+
 def instagram_oembed(url):
+    """An Instagram post. Its oEmbed now answers only "View this post on Instagram" (no author, caption or picture),
+    so the post's own page is read as a link preview reads it (social_embeds.instagram_card: name, @handle, date,
+    caption, picture), never following a redirect (a login page). The oEmbed is what is left when that fails."""
+    path = urlsplit(url).path
+    try:
+        page = requests.get(f"https://www.instagram.com{path}", headers={"User-Agent": _HONEST_AGENT},
+                            allow_redirects=False, timeout=6)
+        found = social_embeds.instagram_card(page.text[:500000]) if page.status_code == 200 else None
+    except Exception:
+        found = None
+    if found:
+        snippet = social_embeds.quote_snippet("instagram-media", url, found["name"], found["handle"], found["when"],
+                                              found["text"], not found["picture"], found["video"])
+        return snippet, found["picture"] or None, (f"{found['name']} on Instagram"[:500], found["text"][:1000])
     params = {"access_token": FACEBOOK_TOKEN} if FACEBOOK_TOKEN else {}
     return _oembed("https://graph.facebook.com/v9.0/instagram_oembed", url, params,
                    {"User-Agent": "Instagram embedder for Ruqqus"})
@@ -191,6 +209,19 @@ def tiktok_card_oembed(url):
 
 
 def bluesky_oembed(url):
+    """A Bluesky post, read from Bluesky's own public API (a fixed host, no key): its text, author and date, its
+    picture, and the post it quotes (social_embeds.bsky_snippet). Bluesky's oEmbed (which says only "[contains quote
+    post or other embedded content]" for those) is what is left when the API does not answer."""
+    at_uri = social_embeds.bsky_at_uri(url)
+    try:
+        data = requests.get("https://public.api.bsky.app/xrpc/app.bsky.feed.getPostThread",
+                            params={"uri": at_uri, "depth": 0, "parentHeight": 0}, timeout=6).json() if at_uri else None
+        thread = data.get("thread") if isinstance(data, dict) else None
+        found = social_embeds.bsky_snippet(thread.get("post")) if isinstance(thread, dict) else None
+    except Exception:
+        found = None
+    if found:
+        return found["snippet"], found["picture"] or None, (found["title"], found["text"])
     return _oembed("https://embed.bsky.app/oembed", url, {"format": "json"})
 
 
@@ -213,11 +244,12 @@ def threads_embed(url):
 
 
 def mastodon_embed(url):
-    """A post on any Mastodon server, saved as a quote (social_embeds.mastodon_quote_snippet, read by
+    """A post on any Mastodon server, saved as a quote (social_embeds.mastodon_status_snippet, read by
     helpers/quote_cards.py). The server is whatever the member linked, so both of its answers are fetched through
     safe_fetch (public addresses only, small, quick): its oEmbed says it is a Mastodon post with its own embed page on the
     same server (social_embeds.mastodon_iframe_ok), and its public API (`/api/v1/statuses/<id>`) gives the text, the
-    author and the date. Nothing of either answer is drawn as HTML."""
+    author, the date, the first picture and the status it quotes. Nothing of either answer is drawn as HTML; the
+    picture is an https address on whatever server hosts it, as any link preview's."""
     from ruqqus.helpers import safe_fetch
 
     found = social_embeds.mastodon_post(url)
@@ -234,21 +266,20 @@ def mastodon_embed(url):
     if not src or not social_embeds.mastodon_iframe_ok(src, host):
         return None
     name = social_embeds._plain(data.get("author_name"), 120)
-    handle, when, text, media = "", "", "", False
     status_id = social_embeds.mastodon_status_id(url)
     try:
         status = safe_fetch.get_json(f"https://{host}/api/v1/statuses/{status_id}") if status_id else None
     except Exception:
         status = None
-    if isinstance(status, dict):
-        account = status.get("account") if isinstance(status.get("account"), dict) else {}
-        name = social_embeds._plain(account.get("display_name"), 120) or name
-        handle = social_embeds.mastodon_handle(account.get("acct"), host)
-        when = str(status.get("created_at") or "")[:40]
-        text = social_embeds.mastodon_text(status.get("content"))
-        media = bool(status.get("media_attachments"))
+    # its picture and the status it quotes (Mastodon 4.5) come with it (social_embeds.mastodon_status_snippet)
+    parts = social_embeds.mastodon_parts(status, host)
+    found = social_embeds.mastodon_status_snippet(status, host, src) if parts else None
+    if not found:
+        return social_embeds.mastodon_quote_snippet(src, name, "", "", "", False), None, (
+            f"{name} on Mastodon" if name else "Post on Mastodon", "")
+    name = parts["name"] or name
     title = f"{name} on Mastodon" if name else "Post on Mastodon"
-    return social_embeds.mastodon_quote_snippet(src, name, handle, when, text, media), None, (title, text[:1000])
+    return found[0], found[1] or None, (title, parts["text"][:1000])
 
 
 def rumble_embed(url):

@@ -1,6 +1,8 @@
 from ruqqus.__main__ import db_session
 from ruqqus.classes import *
 from ruqqus.helpers.regions import compute_region_state
+from ruqqus.helpers import picture_refresh
+from ruqqus.helpers.embed import known_provider_embed
 
 import time
 import gevent
@@ -235,6 +237,13 @@ def recompute():
             db.commit()
             last_region_recompute_utc = now
             print_(f"Updated region/suspicion state for {updated} users")
+
+        # quote card pictures whose address expires (Instagram, TikTok) are read again a day before they do
+        try:
+            print_(f"read again {picture_refresh.refresh(db, now, known_provider_embed)} expiring pictures")
+        except Exception as e:
+            db.rollback()
+            print_(f"picture refresh failed: {e}")
 
         # a cycle rescans every live post of the last 180 days: once every few minutes is plenty
         time.sleep(CYCLE_PAUSE_SECONDS)

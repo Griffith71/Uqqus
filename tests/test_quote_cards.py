@@ -202,7 +202,7 @@ def _page(card, image):
 
 
 def _saved_quote():
-    return se.x_quote_snippet(MAKES_SENSE, PALMER_URL, "https://t.co/qDpOwsUzpY", PALMER, FIRST_URL, "https://t.co/wGKTv1kaBW")
+    return se.quoted_post_snippet(MAKES_SENSE, PALMER_URL, "https://t.co/qDpOwsUzpY", PALMER, FIRST_URL, "https://t.co/wGKTv1kaBW")
 
 
 def test_the_quoted_post_on_x_is_the_t_co_link_that_ends_the_text():
@@ -242,7 +242,7 @@ def test_an_x_post_shows_the_post_it_quotes_inside_and_no_deeper():
 
 def test_a_quote_with_no_words_of_its_own_stays_without_them():
     bare = MAKES_SENSE.replace("Makes sense ", "")
-    saved = se.x_quote_snippet(bare, PALMER_URL, "https://t.co/qDpOwsUzpY", PALMER)
+    saved = se.quoted_post_snippet(bare, PALMER_URL, "https://t.co/qDpOwsUzpY", PALMER)
     card = qc.social_card(MAKES_SENSE_URL, saved, "Elon Musk on X", "https://t.co/qDpOwsUzpY")
     assert card["text"] == "" and card["inner"]["name"] == "Tyler Palmer" and card["inner"]["quoting"] == ""
 
@@ -253,10 +253,10 @@ def test_a_post_saved_before_keeps_its_link_and_nothing_inside():
 
 
 def test_what_is_saved_for_a_quoted_post_is_escaped_and_only_an_x_post_is_drawn():
-    saved = se.x_quote_snippet(MAKES_SENSE, 'https://x.com/a/status/1"><script>', "https://t.co/x", PALMER)
-    assert "<script>" not in saved.split("x-quoted")[1].split(">")[0] and "&quot;&gt;&lt;script&gt;" in saved
-    # a saved address that is not a post on X is not drawn as a quoted post
-    odd = se.x_quote_snippet(MAKES_SENSE, "https://evil.example/a/status/1", "https://t.co/qDpOwsUzpY", PALMER)
+    saved = se.quoted_post_snippet(MAKES_SENSE, 'https://x.com/a/status/1"><script>', "https://t.co/x", PALMER)
+    assert "<script>" not in saved.split("quoted-post")[1].split(">")[0] and "&quot;&gt;&lt;script&gt;" in saved
+    # a saved address that is not a post on X, Bluesky or Mastodon is not drawn as a quoted post
+    odd = se.quoted_post_snippet(MAKES_SENSE, "https://evil.example/a/status/1", "https://t.co/qDpOwsUzpY", PALMER)
     assert qc.social_card(MAKES_SENSE_URL, odd, "", "")["inner"] is None
 
 
@@ -275,10 +275,11 @@ def test_the_backfill_re_works_x_posts_saved_with_only_a_t_co_link():
     spec = importlib.util.spec_from_file_location("backfill", ROOT / "scripts" / "backfill_social_embeds.py")
     source = spec.loader.get_data(spec.origin).decode("utf-8")
     assert "def wanted(url, no_card=True, framed=False, saved=" in source
-    assert 'if "x-quoted" not in saved and social_embeds.last_tco_link(saved):' in source
+    assert 'if not quoted and social_embeds.last_tco_link(saved):' in source
+    assert 'if read_now and saved and "data-video=" not in saved:' in source          # Bluesky, Mastodon, Instagram
     # and X posts with a photo or video but no picture, or a quoted post saved before pictures were read
     assert 'if not picture and ("pic.twitter.com" in saved or "pic.x.com" in saved):' in source
-    assert 'if "x-quoted" in saved and "data-image=" not in saved:' in source
+    assert 'if quoted and "data-image=" not in saved:' in source
 
 
 def test_an_x_posts_picture_is_its_photo_or_video_still_never_a_profile_picture():
@@ -307,9 +308,9 @@ def test_a_card_shows_its_posts_picture_and_a_video_as_a_still():
 
 
 def test_the_quoted_post_on_x_carries_its_own_picture():
-    saved = se.x_quote_snippet(MAKES_SENSE, PALMER_URL, "https://t.co/qDpOwsUzpY", PALMER, image=PHOTO)
+    saved = se.quoted_post_snippet(MAKES_SENSE, PALMER_URL, "https://t.co/qDpOwsUzpY", PALMER, image=PHOTO)
     card = qc.social_card(MAKES_SENSE_URL, saved, "Elon Musk on X", "")
     assert card["image"] == "" and card["inner"]["image"] == PHOTO
-    # only X's own picture host is saved for it
-    odd = se.x_quote_snippet(MAKES_SENSE, PALMER_URL, "https://t.co/qDpOwsUzpY", PALMER, image="https://evil.example/a.jpg")
+    # only an https picture is saved for it
+    odd = se.quoted_post_snippet(MAKES_SENSE, PALMER_URL, "https://t.co/qDpOwsUzpY", PALMER, image="http://pbs.twimg.com/media/a.jpg")
     assert 'data-image=""' in odd and qc.social_card(MAKES_SENSE_URL, odd, "", "")["inner"]["image"] == ""

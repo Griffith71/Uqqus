@@ -3,7 +3,9 @@ Mastodon) what their quote card is made from now (helpers/social_embeds.py, help
 and live links their player. Posts saved before 2026-10-15 have no card (a feed showed an empty play box) or no player,
 Mastodon posts saved before quote cards hold only a frame (no text, handle or date), and X posts saved before
 2026-10-16 that quote another hold only a t.co link to it (now the quoted post is saved with them) or have a photo or
-video and no picture (now read from the post's link-preview tags). Run once:
+video and no picture (now read from the post's link-preview tags); Bluesky, Mastodon and Instagram posts saved before
+2026-10-16 have no picture and no quoted post (now read from Bluesky's and Mastodon's APIs and Instagram's
+link-preview tags). Run once:
 
     PYTHONPATH=. python scripts/backfill_social_embeds.py --once
 
@@ -25,24 +27,30 @@ _CANDIDATES = text("""
     FROM submissions s JOIN submissions_aux a ON a.id = s.id
     WHERE s.deleted_utc = 0 AND NOT s.is_banned AND a.url IS NOT NULL AND a.url != ''
       AND (COALESCE(a.meta_title, '') = '' OR COALESCE(a.embed_url, '') LIKE '<iframe%'
-           OR a.embed_url LIKE '%twitter-tweet%') ORDER BY s.id""")
+           OR a.embed_url LIKE '%twitter-tweet%' OR a.embed_url LIKE '%bluesky-embed%'
+           OR a.embed_url LIKE '%mastodon-embed%' OR a.embed_url LIKE '%instagram-media%') ORDER BY s.id""")
 
 
 def wanted(url, no_card=True, framed=False, saved="", picture=""):
     """A post this backfill is for: a Mastodon post saved as a frame; an X post whose saved text ends with the t.co
     link of a post it quotes but not that post, that has a photo or video and no picture, or whose quoted post was
-    saved before pictures were read; or one with no card on a social site, a Mastodon post, or a YouTube Short or
-    live link."""
+    saved before pictures were read; a Bluesky, Mastodon or Instagram post saved before its picture and quoted post
+    were read (what this site builds for them now always says `data-video`); or one with no card on a social site, a
+    Mastodon post, or a YouTube Short or live link."""
     saved = saved or ""
     if framed and social_embeds.mastodon_post(url):
         return True
+    quoted = "x-quoted" in saved or "quoted-post" in saved
     if social_embeds.x_status_url(url):
-        if "x-quoted" not in saved and social_embeds.last_tco_link(saved):
+        if not quoted and social_embeds.last_tco_link(saved):
             return True
         if not picture and ("pic.twitter.com" in saved or "pic.x.com" in saved):
             return True
-        if "x-quoted" in saved and "data-image=" not in saved:
+        if quoted and "data-image=" not in saved:
             return True
+    read_now = social_embeds.bsky_post_ok(url) or social_embeds.mastodon_post(url) or social_embeds.site_of(url) == "instagram.com"
+    if read_now and saved and "data-video=" not in saved:
+        return True
     if not no_card:
         return False
     if social_embeds.site_of(url) or social_embeds.mastodon_post(url):

@@ -67,14 +67,16 @@ def _soup(snippet):
 
 
 def _signed_quote(snippet, drop_link=""):
-    """{name, handle, when, text, media} from an X, Bluesky or saved Mastodon snippet: `<blockquote><p>text</p>&mdash;
-    Name (@handle) <a>date</a></blockquote>`. A photo or video in an X post is only a pic.twitter.com link in the text;
-    `drop_link` is the t.co link that pointed at the post it quotes (drawn as a card instead)."""
+    """{name, handle, when, text, media, video, sensitive, ours} from an X or Bluesky snippet, or one this site built
+    (social_embeds.quote_snippet: Bluesky, Mastodon, Instagram): `<blockquote><p>text</p>&mdash; Name (@handle)
+    <a>date</a></blockquote>`. A photo or video in an X post is only a pic.twitter.com link in the text; `drop_link` is
+    the t.co link that pointed at the post it quotes (drawn as a card instead)."""
     soup = _soup(snippet)
     quote = soup.find("blockquote") if soup else None
     if quote is None:
         return {}
-    found = {"media": "Photo or video" if quote.get("data-media") else ""}
+    found = {"media": "Photo or video" if quote.get("data-media") else "", "video": quote.get("data-video") == "1",
+             "sensitive": quote.get("data-sensitive") == "1", "ours": quote.has_attr("data-video")}
     paragraphs = quote.find_all("p", recursive=False)       # one on X and Bluesky, one per paragraph on Mastodon
     for paragraph in paragraphs:
         for link in paragraph.find_all("a"):
@@ -86,7 +88,8 @@ def _signed_quote(snippet, drop_link=""):
         for br in paragraph.find_all("br"):
             br.replace_with("\n")
     if paragraphs:
-        found["text"] = _plain("\n\n".join(paragraph.get_text() for paragraph in paragraphs))
+        text = _plain("\n\n".join(paragraph.get_text() for paragraph in paragraphs))
+        found["text"] = text.replace(_BSKY_EMBED_NOTE, "").strip()
         for paragraph in paragraphs:
             paragraph.extract()
     signature = _SIGNATURE.match(_plain(quote.get_text(" ")).replace("\n", " "))
@@ -142,16 +145,26 @@ def _mastodon_handle(url):
     return match.group(1) + (match.group(2) or "@" + (parts.hostname or ""))
 
 
-def _x_quoted(snippet):
-    """What a saved X snippet says about the post it quotes (social_embeds.x_quote_snippet), or None."""
-    soup = _soup(snippet) if "x-quoted" in str(snippet or "") else None
-    box = soup.find("div", class_="x-quoted") if soup else None
-    if box is None or not social_embeds.x_status_url(box.get("data-url")):
+# what Bluesky's oEmbed writes in place of a quote or a picture (only seen when its API did not answer)
+_BSKY_EMBED_NOTE = "[contains quote post or other embedded content]"
+
+# the sites whose saved snippet may hold the post it quotes (social_embeds.quoted_post_snippet)
+_QUOTING_SITES = ("x.com", "twitter.com", "bsky.app", "mastodon")
+
+
+def _quoted(snippet):
+    """What a saved snippet says about the post it quotes (social_embeds.quoted_post_snippet; X posts saved before
+    2026-10-16 have a `div.x-quoted`), or None."""
+    text = str(snippet or "")
+    soup = _soup(text) if ("quoted-post" in text or "x-quoted" in text) else None
+    box = soup.find("div", class_=("quoted-post", "x-quoted")) if soup else None
+    if box is None or not social_embeds.quoted_post_ok(box.get("data-url")):
         return None
     next_url = box.get("data-next-url") or ""
+    image = box.get("data-image") or ""
     return {"url": box.get("data-url"), "link": box.get("data-link") or "", "snippet": "".join(str(part) for part in box.contents),
-            "next_url": next_url if social_embeds.x_status_url(next_url) else "", "next_link": box.get("data-next-link") or "",
-            "image": box.get("data-image") if social_embeds.x_media_ok(box.get("data-image")) else ""}
+            "next_url": next_url if social_embeds.quoted_post_ok(next_url) else "", "next_link": box.get("data-next-link") or "",
+            "image": image if urlsplit(image).scheme == "https" else ""}
 
 
 @lru_cache(maxsize=4096)
@@ -160,8 +173,9 @@ def social_card(url, snippet="", meta_title="", meta_description="", image=""):
     site). Plain text only: the template escapes it and turns its addresses into links.
 
     As on X, a post that quotes another shows it inside (`inner`, a card of its own), and no deeper: what that one
-    quotes is a line (`quoting` on the inner card). Only X sends what is needed (helpers/embed.py `_with_x_quote`)."""
-    quoted = _x_quoted(snippet) if social_embeds.site_of(url) in ("x.com", "twitter.com") else None
+    quotes is a line (`quoting` on the inner card). X, Bluesky and Mastodon say what a post quotes (helpers/embed.py)."""
+    site = social_embeds.site_of(url) or ("mastodon" if social_embeds.mastodon_post(url) else None)
+    quoted = _quoted(snippet) if site in _QUOTING_SITES else None
     card = _social(url, snippet, meta_title, meta_description, image, quoted["link"] if quoted else "")
     if card is None:
         return None
@@ -202,11 +216,11 @@ def _social(url, snippet, meta_title, meta_description, image="", drop_link=""):
 
     card = {"kind": "social", "site": site, "label": label, "icon": _ICONS.get(site, ""), "letter": label[:1],
             "url": url, "name": "", "handle": "", "when": "", "text": "", "where": "", "media": ""}
-    text_known = False                                    # a quote with no words of its own stays without them
-    if site in ("x.com", "twitter.com", "bsky.app", "mastodon"):
+    text_known, signed = False, {}                        # a quote with no words of its own stays without them
+    if site in ("x.com", "twitter.com", "bsky.app", "mastodon", "instagram.com"):
         signed = _signed_quote(snippet, drop_link)
-        text_known = "text" in signed and bool(drop_link)
-        card.update({k: v for k, v in signed.items() if v})
+        text_known = "text" in signed and (bool(drop_link) or signed.get("ours"))
+        card.update({k: v for k, v in signed.items() if v and k in card})
     elif site in ("reddit.com", "redd.it"):
         card.update({k: v for k, v in _reddit_quote(snippet).items() if v})
 
@@ -225,12 +239,17 @@ def _social(url, snippet, meta_title, meta_description, image="", drop_link=""):
         card["media"] = _MEDIA_WORD.get(site, "")
         if site == "facebook.com" and social_embeds.facebook_kind(url) == "video":
             card["media"] = "Video"
-    # the post's picture: an https address only (the template escapes it); a picture shown needs no "Photo" line
+    # the post's picture: an https address only (the template escapes it); a picture shown needs no "Photo" line.
+    # Media the site itself hides behind a warning (Bluesky's labels, Mastodon's sensitive) is never shown here.
     image = str(image or "")
-    card["image"] = image if urlsplit(image).scheme == "https" else ""
-    card["video"] = bool(card["image"]) and social_embeds.x_media_is_video(card["image"])
+    card["sensitive"] = bool(signed.get("sensitive"))
+    card["image"] = image if urlsplit(image).scheme == "https" and not card["sensitive"] else ""
+    card["video"] = bool(card["image"]) and (signed.get("video") or social_embeds.x_media_is_video(card["image"])
+                                             or site == "tiktok.com")
     if card["image"]:
         card["media"] = ""
+    elif card["sensitive"]:
+        card["media"] = "Sensitive media"
     return card
 
 
