@@ -1,0 +1,16 @@
+{% extends "collab/base.html" %}
+{# Forking a collaborative post: a new shared draft from its latest published revision, with who typed what kept. #}
+{% block page %}
+<h1 class="h4"><i class="fas fa-code-fork fa-fw" aria-hidden="true"></i>Fork this post?</h1>
+<p><a href="{{ p.permalink }}">{{ p.title | safe }}</a></p>
+{% if may_fork %}
+<p class="text-small text-muted">You get a new shared draft with the post's latest published text, and you're its only author. Everyone who wrote the original stays credited for what they typed, and your fork's post will say it was forked from this one. The original isn't changed.</p>
+<form method="post" action="/collab/fork/{{ p.base36id }}">
+  <input type="hidden" name="formkey" value="{{ v.formkey }}">
+  <button type="submit" class="btn btn-primary">Fork it</button>
+  <a class="btn btn-link text-muted" href="{{ p.permalink }}">Cancel</a>
+</form>
+{% else %}
+<div class="alert alert-secondary" role="status">Only a public post can be forked.</div>
+{% endif %}
+{% endblock %}

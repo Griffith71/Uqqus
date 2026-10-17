@@ -1,0 +1,34 @@
+{% extends "collab/base.html" %}
+{#
+  A collaborative post's public revisions (one per publish), and one revision against the one before it: changed
+  lines marked with a sign as well as a colour, text escaped. Who published each is shown; who typed what is on
+  "Who wrote what".
+#}
+{% block pagetitle %}Revisions{% endblock %}
+{% block heading %}Revisions{% endblock %}
+{% block robots %}{% endblock %}
+
+{% block page %}
+<p class="mb-2"><a href="{{ p.permalink }}"><i class="fas fa-arrow-left fa-fw" aria-hidden="true"></i>Back to the post</a> · <a href="/post/{{ p.base36id }}/written_by">Who wrote what</a>{% if v %} · <a href="/collab/fork/{{ p.base36id }}"><i class="fas fa-code-fork fa-fw" aria-hidden="true"></i>Fork</a>{% endif %}</p>
+{% if rows is not none %}
+  <h1 class="h4">{{ p.title | safe }}</h1>
+  {% if fork_post %}<p class="text-small"><i class="fas fa-code-fork fa-fw" aria-hidden="true"></i>Forked from <a href="{{ fork_post.permalink }}">{{ fork_post.title | safe }}</a></p>{% endif %}
+  {% if fork_count %}<p class="text-small text-muted">Forked {{ fork_count }} time{{ 's' if fork_count != 1 else '' }}.</p>{% endif %}
+  <ol class="list-unstyled collab-revisions">
+    {% for row in rows %}
+    <li class="py-2 border-bottom">
+      <a href="/post/{{ p.base36id }}/revisions/{{ row[1] }}" class="font-weight-bold">Revision {{ row[1] }}</a>
+      <span class="text-muted text-small">· published by {{ publishers[row[4]].name if row[4] in publishers else 'Deleted account' }} · <span title="{{ row[5] | timestamp_label }}">{{ row[5] | age_label }}</span> · <a href="/post/{{ p.base36id }}/written_by?revision={{ row[1] }}">who wrote what</a></span>
+    </li>
+    {% endfor %}
+  </ol>
+{% else %}
+  <h1 class="h4">Revision {{ row[1] }}</h1>
+  <p class="text-muted text-small">Published by {{ publishers[row[6]].name if row[6] in publishers else 'Deleted account' }} on {{ row[7] | timestamp_label }}{% if before %}, compared with revision {{ before[1] }}{% else %}, the first revision{% endif %}. <a href="/post/{{ p.base36id }}/revisions">All revisions</a></p>
+  <div class="wiki-diff" role="table" aria-label="Changed lines">
+    {% for kind, line in diff %}
+    <div class="wiki-diff-line is-{{ kind }}" role="row"><span class="wiki-diff-sign" role="cell" aria-label="{{ {'added': 'Added', 'removed': 'Removed', 'same': 'Unchanged'}[kind] }}">{{ {'added': '+', 'removed': '−', 'same': ' '}[kind] }}</span><span class="wiki-diff-text" role="cell">{{ line or ' ' }}</span></div>
+    {% endfor %}
+  </div>
+{% endif %}
+{% endblock %}

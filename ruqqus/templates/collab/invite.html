@@ -1,0 +1,12 @@
+{% extends "collab/base.html" %}
+{# An invitation to write a shared draft (a passed add_author proposal waiting for the invitee's answer). #}
+{% block page %}
+<h1 class="h4">Write “{{ doc[2] or 'an untitled draft' }}” together?</h1>
+<p>The authors agreed to invite you: {% for a in authors %}{% if a.link %}<a href="{{ a.link }}">{{ a.name }}</a>{% else %}{{ a.name }}{% endif %}{% if not loop.last %}, {% endif %}{% endfor %}.</p>
+<p class="text-small text-muted">As an author you edit the draft live with them, and every character you type is credited to you. Once the post is published, anyone who can see it can see who wrote what. The authors decide together:</p>
+<ul class="text-small text-muted">{% for line in rules_lines %}<li>{{ line }}</li>{% endfor %}</ul>
+<div class="d-flex flex-wrap" style="gap: 0.5rem;">
+  <form method="post" action="/api/collab/invite/{{ proposal[0] }}/accept"><input type="hidden" name="formkey" value="{{ v.formkey }}"><button type="submit" class="btn btn-primary">Accept</button></form>
+  <form method="post" action="/api/collab/invite/{{ proposal[0] }}/decline"><input type="hidden" name="formkey" value="{{ v.formkey }}"><button type="submit" class="btn btn-secondary">Decline</button></form>
+</div>
+{% endblock %}

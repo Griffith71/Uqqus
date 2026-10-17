@@ -34,7 +34,7 @@ def post_comment_permission(pid, v):
     from the next comment (`api_comment` asks `comment_permission.restriction`). Like the audience change, it is not an
     edit: no history row and no `edited_utc`."""
     post = get_post(pid, v=v)                              # only someone who may see it gets this far
-    if post.author_id != v.id:
+    if not _runs(post, v):
         abort(403)
     if post.is_deleted or post.is_banned:
         abort(404)
@@ -57,10 +57,25 @@ def post_comment_permission(pid, v):
     return jsonify({"message": PERMISSION_CHANGED[mode]})
 
 
+def _runs(post, viewer):
+    """Who decides this post's settings: its author, and for a collaborative post every current author of its
+    open shared draft (audit C-03: the first publisher alone used to)."""
+    if viewer is None:
+        return False
+    if post.author_id == viewer.id:
+        return True
+    from ruqqus.helpers import collab_store, collab_view
+    if not collab_view.is_collab(post):
+        return False
+    doc = collab_store.open_doc_for_post(g.db, post.repost_id or post.id)
+    return doc is not None and collab_store.is_author(g.db, doc[0], viewer.id)
+
+
 def may_change_comment_permission(post, viewer):
-    """Offer "Who can comment" in a post's menu: the author, on the post of their own profile, still up."""
+    """Offer "Who can comment" in a post's menu: the author (or a collaborative post's authors), on the post of a
+    profile, still up."""
     viewer = None if isinstance(viewer, Undefined) else viewer
-    return bool(viewer and isinstance(post, Submission) and post.author_id == viewer.id
+    return bool(viewer and isinstance(post, Submission) and _runs(post, viewer)
                 and not post.is_deleted and not post.is_banned
                 and post.repost_id in (0, None) and post.is_profile_post)
 

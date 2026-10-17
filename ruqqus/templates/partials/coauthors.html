@@ -3,9 +3,10 @@
 
   coauthor_line(p, v, dot): " · with <names>" for a post whose co-authors accepted, nothing for any
   other post. Names are links; a name the viewer's word filter hides is left out. `dot` false drops the
-  leading dot, for the bar at the top of a post page.
+  leading dot, for the bar at the top of a post page. A collaborative post can have up to 50 authors: after five
+  names the line says "and N others", linking to who wrote what (routes/collab.py).
 #}
 {% macro coauthor_line(p, v, dot=true) %}
 {%- set people = coauthors_of(p, v) -%}
-{%- if people %}{{ ' · ' if dot else '' }}<span class="coauthors">with {% for u in people %}<a href="{{ u.permalink }}" class="user-name"><img src="{{ u.profile_url }}" class="profile-pic-20 mr-1" alt=""><span class="user-name-inner">{{ u.shown_name }}</span>{{ handle_tag(u) }}</a>{% if not loop.last %}, {% endif %}{% endfor %}</span>{% endif -%}
+{%- if people %}{{ ' · ' if dot else '' }}<span class="coauthors">with {% for u in people[:5] %}<a href="{{ u.permalink }}" class="user-name"><img src="{{ u.profile_url }}" class="profile-pic-20 mr-1" alt=""><span class="user-name-inner">{{ u.shown_name }}</span>{{ handle_tag(u) }}</a>{% if not loop.last %}, {% endif %}{% endfor %}{% if people | length > 5 %} and <a href="/post/{{ p.base36id }}/written_by">{{ people | length - 5 }} other{{ 's' if people | length - 5 != 1 else '' }}</a>{% endif %}</span>{% endif -%}
 {% endmacro %}

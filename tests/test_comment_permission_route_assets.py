@@ -31,7 +31,10 @@ def test_only_the_author_changes_who_can_comment_on_their_own_profile_post():
     assert '@app.route("/api/post/<pid>/comment_permission", methods=["POST"])' in head
     assert "@is_not_banned" in head and "@validate_formkey" in head
     body = func(ROUTE, "post_comment_permission")
-    assert body.index("get_post(pid, v=v)") < body.index("if post.author_id != v.id:") < body.index("cperm.parse(raw)")
+    assert body.index("get_post(pid, v=v)") < body.index("if not _runs(post, v):") < body.index("cperm.parse(raw)")
+    runs = func(ROUTE, "_runs")
+    # the author, or a current author of a collaborative post's open draft (audit C-03), nobody else
+    assert "post.author_id == viewer.id" in runs and "collab_store.is_author(g.db, doc[0], viewer.id)" in runs
     assert "abort(403)" in body and "abort(404)" in body
     assert "post.repost_id not in (0, None) or not post.is_profile_post" in body
     assert "cperm.refusal(mode, bool(post.is_anonymous))" in body

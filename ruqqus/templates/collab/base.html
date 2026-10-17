@@ -1,0 +1,29 @@
+{% extends "default.html" %}
+{#
+  The shared-draft pages (routes/collab.py): the left sidebar, a sticky title row and a page of their own (`page`).
+#}
+{% block title %}
+<title>{% block pagetitle %}Shared drafts{% endblock %} - {{ 'SITE_NAME' | app_config }}</title>
+{% block robots %}<meta name="robots" content="noindex">{% endblock %}
+{% endblock %}
+
+{% block desktopBanner %}
+<div class="row border-bottom bg-white sticky d-none d-md-block guild-border-top" style="overflow: visible;">
+  <div class="col">
+    <div class="d-flex justify-content-between align-items-center">
+      <div class="font-weight-bold py-3">{% block heading %}Shared drafts{% endblock %}</div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block leftSidebarBlock %}
+{% include "sidebar-left.html" %}
+{% endblock %}
+
+{% block content %}
+<div class="col px-3 px-md-4 py-4 collab-page">
+  {% block page %}{% endblock %}
+</div>
+<script src="{{ asset_url('js/guild_pages.js') }}"></script>
+{% endblock %}

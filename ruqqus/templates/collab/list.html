@@ -1,0 +1,33 @@
+{% extends "collab/base.html" %}
+{# "Your shared drafts" (routes/collab.py collab_list) and invitations waiting for an answer. #}
+{% block page %}
+<div class="d-flex flex-wrap align-items-center mb-3" style="gap: 0.5rem;">
+  <h1 class="h4 mb-0">Shared drafts</h1>
+  <form method="post" action="/collab/new" class="ml-auto">
+    <input type="hidden" name="formkey" value="{{ v.formkey }}">
+    <button type="submit" class="btn btn-primary"><i class="fas fa-pen-to-square fa-fw" aria-hidden="true"></i>New shared draft</button>
+  </form>
+</div>
+<p class="text-muted text-small">Write a post with other people at the same time. Everyone sees each other's changes as they type, and every character is credited to whoever typed it. Once published, anyone who can see the post can see who wrote what, and the authors keep improving it.</p>
+
+{% if invites %}
+<h2 class="h6 text-uppercase text-muted mt-4">Invitations</h2>
+<ul class="list-unstyled collab-list">
+  {% for p in invites %}{% set d = invite_docs.get(p[0]) %}{% if d %}
+  <li class="collab-list-item"><a href="/collab/invite/{{ p[0] }}" class="font-weight-bold">{{ d[2] or 'Untitled draft' }}</a> <span class="text-muted text-small">· you're invited to write it</span></li>
+  {% endif %}{% endfor %}
+</ul>
+{% endif %}
+
+<h2 class="h6 text-uppercase text-muted mt-4">Yours</h2>
+<ul class="list-unstyled collab-list">
+  {% for d in docs %}
+  <li class="collab-list-item">
+    <a href="/collab/{{ d[0] }}" class="font-weight-bold">{{ d[2] or 'Untitled draft' }}</a>
+    <span class="text-muted text-small">· {{ authors_of[d[0]] }} author{{ 's' if authors_of[d[0]] != 1 else '' }} · changed <span title="{{ d[13] | timestamp_label }}">{{ d[13] | age_label }}</span>{% if d[7] %} · published{% if d[4] != d[8] %}, with unpublished changes{% endif %}{% endif %}</span>
+  </li>
+  {% else %}
+  <li class="text-muted py-2">No shared drafts yet.</li>
+  {% endfor %}
+</ul>
+{% endblock %}

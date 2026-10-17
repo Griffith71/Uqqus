@@ -1,0 +1,131 @@
+{#
+  A shared draft's side panel (routes/collab.py _panel_context): the authors (and whether they count for decisions),
+  the proposals with their votes, the rules in plain words with the form to propose new ones, the public revisions.
+  Every button is a POST with the form key through guild_pages.js (`data-guild-post`, `data-guild-form`).
+#}
+{% set doc_id = doc[0] %}
+<section class="collab-section" aria-labelledby="collab-authors-h">
+  <h2 class="collab-section-title" id="collab-authors-h"><i class="fas fa-users fa-fw" aria-hidden="true"></i>Authors</h2>
+  <ul class="list-unstyled mb-2">
+    {% for a in authors %}
+    <li class="collab-author">
+      {% if a.link %}<a href="{{ a.link }}">{{ a.name }}</a>{% else %}{{ a.name }}{% endif %}{% if a.handle and a.handle != a.name %} <span class="text-muted text-small">@{{ a.handle }}</span>{% endif %}
+      {% if a.me %}<span class="badge badge-light">you</span>{% endif %}
+      {% if not a.counted %}<span class="text-muted text-small-extra d-block">{% if a.handle %}@{{ a.handle }}{% else %}This author{% endif %} hasn't been active for {{ inactive_label }}, so isn't counted.</span>{% endif %}
+      {% if not a.me and authors | length > 1 %}
+      <button type="button" class="btn btn-sm btn-link text-muted p-0 ml-1" data-guild-post="/api/collab/{{ doc_id }}/propose?kind=remove_author&username={{ a.handle | urlencode }}"
+        data-confirm="Propose removing @{{ a.handle }} as an author? What they wrote stays credited to them." {% if not a.handle %}hidden{% endif %}>Propose removing</button>
+      {% endif %}
+    </li>
+    {% endfor %}
+  </ul>
+  {% if shares %}
+  <div class="collab-shares text-small" aria-label="Share of the text">
+    {% for s in shares %}<span class="collab-share"><span class="collab-swatch collab-tint-{{ s.tint }}" aria-hidden="true"></span>{{ s.name }} {{ s.percent }}%{% if s.from_original %} <span class="text-muted">(from the original)</span>{% endif %}</span>{% endfor %}
+  </div>
+  {% endif %}
+  <form class="form-inline mt-2" action="/api/collab/{{ doc_id }}/propose" data-guild-form>
+    <input type="hidden" name="kind" value="add_author">
+    <label class="sr-only" for="collab-add-name">Account to add</label>
+    <input type="text" class="form-control form-control-sm mr-2 mb-1" id="collab-add-name" name="username" placeholder="@name" maxlength="26" required>
+    <button type="submit" class="btn btn-sm btn-secondary mb-1"><i class="fas fa-user-plus fa-fw" aria-hidden="true"></i>Propose adding</button>
+    <div class="text-danger small w-100" role="alert" hidden></div>
+  </form>
+  <button type="button" class="btn btn-sm btn-link text-danger px-0 mt-1" data-guild-post="/api/collab/{{ doc_id }}/leave"
+    data-confirm="Leave this draft? You stop being an author; what you wrote stays credited to you.{% if authors | length == 1 %} You're the last author, so the draft closes: its published post stays, as an ordinary post of the profile it's on.{% endif %}">Leave the draft</button>
+</section>
+
+<section class="collab-section" aria-labelledby="collab-proposals-h">
+  <h2 class="collab-section-title" id="collab-proposals-h"><i class="fas fa-scale-balanced fa-fw" aria-hidden="true"></i>Proposals</h2>
+  <ul class="list-unstyled mb-0">
+    {% for p in proposals %}
+    <li class="collab-proposal is-{{ p.outcome }}">
+      <div>
+        <strong>
+          {% if p.kind == 'add_author' %}Add {{ p.subject.name if p.subject else 'an account' }}
+          {% elif p.kind == 'remove_author' %}Remove {{ p.subject.name if p.subject else 'an author' }}
+          {% elif p.kind == 'change_rules' %}Change the rules
+          {% elif p.kind == 'delete_post' %}Delete the published post
+          {% else %}Publish the draft as it was{% endif %}
+        </strong>
+        <span class="text-muted text-small">· asked by {{ p.by.name }} · {{ p.yes }} yes · {{ p.no }} no</span>
+      </div>
+      {% if p.rules %}<ul class="text-small text-muted mb-1">{% for line in p.rules %}<li>{{ line }}</li>{% endfor %}</ul>{% endif %}
+      {% if p.outcome == 'open' %}
+      <div class="text-small-extra text-muted">Open until <span title="{{ p.closes_utc | timestamp_label }}">{{ p.closes_utc | timestamp_label }}</span>{% if p.mine is not none %} · you voted {{ 'yes' if p.mine else 'no' }}{% endif %}</div>
+      <div class="d-flex flex-wrap mt-1" style="gap: 0.25rem;">
+        {% if not (p.kind == 'remove_author' and p.subject and p.subject.handle == v.username) %}
+        <button type="button" class="btn btn-sm {{ 'btn-primary' if p.mine == true else 'btn-secondary' }}" data-guild-post="/api/collab/{{ doc_id }}/proposals/{{ p.id }}/vote?vote=yes"><i class="fas fa-check fa-fw" aria-hidden="true"></i>Yes</button>
+        <button type="button" class="btn btn-sm {{ 'btn-danger' if p.mine == false else 'btn-secondary' }}" data-guild-post="/api/collab/{{ doc_id }}/proposals/{{ p.id }}/vote?vote=no"><i class="fas fa-xmark fa-fw" aria-hidden="true"></i>No</button>
+        {% endif %}
+        {% if p.mine_to_withdraw %}<button type="button" class="btn btn-sm btn-link text-muted" data-guild-post="/api/collab/{{ doc_id }}/proposals/{{ p.id }}/withdraw">Withdraw</button>{% endif %}
+      </div>
+      {% else %}
+      <div class="text-small-extra text-muted">
+        {{ {'passed': 'Passed', 'failed': "Didn't pass", 'withdrawn': 'Withdrawn', 'expired': 'Closed undecided'}[p.outcome] }}
+        {% if p.kind == 'add_author' and p.outcome == 'passed' %} · {{ {'': 'waiting for them to accept', 'accepted': 'they accepted', 'declined': 'they declined'}[p.invitee_answer] }}{% endif %}
+      </div>
+      {% endif %}
+    </li>
+    {% else %}
+    <li class="text-muted text-small">No proposals yet.</li>
+    {% endfor %}
+  </ul>
+  {% if post %}
+  <button type="button" class="btn btn-sm btn-link text-danger px-0 mt-2" data-guild-post="/api/collab/{{ doc_id }}/propose?kind=delete_post"
+    data-confirm="Propose deleting the published post? It's deleted only if the authors agree by your rules.">Propose deleting the post</button>
+  {% endif %}
+</section>
+
+<section class="collab-section" aria-labelledby="collab-rules-h">
+  <h2 class="collab-section-title" id="collab-rules-h"><i class="fas fa-scale-balanced fa-fw" aria-hidden="true"></i>Rules</h2>
+  <ul class="text-small mb-2">{% for line in rules_lines %}<li>{{ line }}</li>{% endfor %}</ul>
+  <details class="collab-rules-form">
+    <summary class="text-small font-weight-bold">Propose new rules</summary>
+    <form class="mt-2" action="/api/collab/{{ doc_id }}/propose" data-guild-form>
+      <input type="hidden" name="kind" value="change_rules">
+      <div class="form-group mb-2">
+        <label for="collab-decision" class="text-small mb-1">How decisions are made</label>
+        <select class="custom-select custom-select-sm" id="collab-decision" name="decision">
+          {% for key, label in decision_labels.items() %}<option value="{{ key }}"{% if doc_rules.decision == key %} selected{% endif %}>{{ label }}</option>{% endfor %}
+        </select>
+      </div>
+      <div class="form-group mb-2">
+        <label for="collab-inactive" class="text-small mb-1">An author stops being counted after this long away from the site</label>
+        <select class="custom-select custom-select-sm" id="collab-inactive" name="inactive_after_days">
+          {% for days, label in inactive_labels.items() %}<option value="{{ days if days is not none else 'never' }}"{% if doc_rules.inactive_after_days == days %} selected{% endif %}>{{ label | capitalize }}</option>{% endfor %}
+        </select>
+      </div>
+      <div class="form-group mb-2">
+        <label for="collab-publish-rule" class="text-small mb-1">Publishing</label>
+        <select class="custom-select custom-select-sm" id="collab-publish-rule" name="publish">
+          {% for key, label in publish_labels.items() %}<option value="{{ key }}"{% if doc_rules.publish == key %} selected{% endif %}>{{ label }}</option>{% endfor %}
+        </select>
+      </div>
+      <div class="form-group mb-2">
+        <label for="collab-days" class="text-small mb-1">A proposal nobody decides closes after</label>
+        <select class="custom-select custom-select-sm" id="collab-days" name="proposal_days">
+          {% for d in proposal_days %}<option value="{{ d }}"{% if doc_rules.proposal_days == d %} selected{% endif %}>{{ d }} days</option>{% endfor %}
+        </select>
+      </div>
+      <p class="text-small-extra text-muted mb-2">New rules need every counted author to agree.</p>
+      <button type="submit" class="btn btn-sm btn-secondary">Propose these rules</button>
+      <div class="text-danger small mt-1" role="alert" hidden></div>
+    </form>
+  </details>
+</section>
+
+<section class="collab-section" aria-labelledby="collab-revisions-h">
+  <h2 class="collab-section-title" id="collab-revisions-h"><i class="fas fa-clock-rotate-left fa-fw" aria-hidden="true"></i>Published revisions</h2>
+  {% if fork_post %}<p class="text-small mb-1"><i class="fas fa-code-fork fa-fw" aria-hidden="true"></i>Forked from <a href="{{ fork_post.permalink }}">{{ fork_post.title | safe }}</a></p>{% endif %}
+  {% if publishes %}
+  <ul class="list-unstyled text-small mb-0">
+    {% for row in publishes[:10] %}
+    <li>Revision {{ row[1] }} · <span title="{{ row[5] | timestamp_label }}">{{ row[5] | age_label }}</span>{% if post %} · <a href="/post/{{ post.base36id }}/revisions/{{ row[1] }}">see it</a>{% endif %}</li>
+    {% endfor %}
+  </ul>
+  {% else %}
+  <p class="text-muted text-small mb-0">Not published yet. Publishing puts the draft on your profile as a post, with every author on its byline.</p>
+  {% endif %}
+  {% if unpublished and publishes %}<p class="text-small-extra text-muted mt-1 mb-0">The draft has changes the post doesn't show yet.</p>{% endif %}
+</section>

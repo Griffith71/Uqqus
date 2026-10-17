@@ -9,7 +9,7 @@ from flask import abort, g, jsonify, redirect, render_template, request
 from jinja2 import Undefined
 
 from ruqqus.classes import PostCoauthor, Submission, User
-from ruqqus.helpers import coauthors
+from ruqqus.helpers import coauthors, collab_view
 from ruqqus.helpers.get import get_post, get_user
 from ruqqus.helpers.visibility import post_hidden
 from ruqqus.helpers.wrappers import auth_required, validate_formkey
@@ -43,12 +43,23 @@ def _author_only(post, v):
         abort(403)
 
 
+COLLAB_REFUSAL = "This post's authors are decided in its shared draft."
+
+
+def _collab(post):
+    """A collaborative post: its authors come and go through its shared draft (routes/collab.py), never here."""
+    from ruqqus.helpers import collab_store
+    return collab_store.open_doc_for_post(g.db, post.id) is not None
+
+
 @app.post("/api/coauthor/<pid>/invite")
 @auth_required
 @validate_formkey
 def coauthor_invite(pid, v):
     """The author invites accounts (`usernames`, separated by commas or spaces)."""
     post = _primary(pid)
+    if _collab(post):
+        return jsonify({"error": COLLAB_REFUSAL}), 409
     _author_only(post, v)
     if post.audience:
         return jsonify({"error": "A post for a Circle can't have co-authors."}), 400
@@ -141,6 +152,8 @@ def coauthor_decline(pid, v):
 def coauthor_leave(pid, v):
     """A co-author steps off: the post stays, without their name, and leaves their profile."""
     post = _primary(pid)
+    if _collab(post):
+        return jsonify({"error": COLLAB_REFUSAL}), 409
     row = _row(post, v.id)
     if row is None or row.status != coauthors.ACCEPTED:
         abort(404)
@@ -159,6 +172,8 @@ def coauthor_leave(pid, v):
 def coauthor_remove(pid, v):
     """The author takes a co-author off, or cancels an invitation that was not answered."""
     post = _primary(pid)
+    if _collab(post):
+        return jsonify({"error": COLLAB_REFUSAL}), 409
     _author_only(post, v)
     name = (request.form.get("username") or "").strip().lstrip("@")
     user = get_user(name, graceful=True) if name else None
@@ -183,7 +198,7 @@ def _may_invite(post, v=None):
     """Offer the Co-authors menu item: the author, on a post of their own profile that is not anonymous."""
     v = None if isinstance(v, Undefined) else v
     return bool(v and isinstance(post, Submission) and post.author_id == v.id and not post.is_anonymous
-                and not post.audience and post.repost_id in (0, None))
+                and not post.audience and post.repost_id in (0, None) and not collab_view.is_collab(post))
 
 
 app.jinja_env.globals.update(coauthors_of=_coauthors_of, is_coauthor=_is_coauthor, may_invite_coauthors=_may_invite)
