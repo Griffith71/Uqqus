@@ -176,6 +176,36 @@ def _with_x_quote(snippet):
 # What this site calls itself when it reads a page for a link preview: never another company's crawler's name
 _HONEST_AGENT = "Mozilla/5.0 (compatible; RuqqusBot/1.0; link previews)"
 
+# what a handler may answer as a player of its own choosing (`_player`); the templates draw each one
+# (social_embeds.player_layout): "iframe" a video, "vertical" a 9:16 video, "audio" a music or podcast player,
+# "image" a picture or GIF from a fixed CDN
+PLAYER_KINDS = ("iframe", "vertical", "audio", "image")
+
+
+def _player(kind, src, thumbnail=None, card=None):
+    """A player whose kind the handler decides (a Facebook video is a player, a Facebook post a quote card)."""
+    return {"kind": kind, "src": src, "thumbnail": thumbnail, "card": card}
+
+
+def _redirect_target(link, domain):
+    """Where a share or short link leads: one HEAD to that site, its Location read, no redirect followed. Only an https
+    address on the same site counts (the caller then checks it names a video or a post)."""
+    try:
+        location = requests.head(link, headers={"User-Agent": _HONEST_AGENT}, allow_redirects=False,
+                                 timeout=4).headers.get("Location")
+    except Exception:
+        return None
+    return location if social_embeds.host_in(location, (domain,)) else None
+
+
+def _json(endpoint, params):
+    """A site's own answer (a fixed host), as a dict ({} when it does not answer or says something else)."""
+    try:
+        data = requests.get(endpoint, params=params, headers={"User-Agent": _HONEST_AGENT}, timeout=6).json()
+    except Exception:
+        return {}
+    return data if isinstance(data, dict) else {}
+
 
 def instagram_oembed(url):
     """An Instagram post. Its oEmbed now answers only "View this post on Instagram" (no author, caption or picture),
@@ -188,6 +218,11 @@ def instagram_oembed(url):
         found = social_embeds.instagram_card(page.text[:500000]) if page.status_code == 200 else None
     except Exception:
         found = None
+    # a reel or a video plays in Instagram's own plain player (loaded on click: social_embeds.player_layout)
+    code = social_embeds.instagram_reel_code(url)
+    if code:
+        card = (f"{found['name']} on Instagram"[:500], found["text"][:1000]) if found else social_embeds.default_card(url)
+        return _player("vertical", social_embeds.instagram_player(code), (found or {}).get("picture") or None, card)
     if found:
         snippet = social_embeds.quote_snippet("instagram-media", url, found["name"], found["handle"], found["when"],
                                               found["text"], not found["picture"], found["video"])
@@ -198,14 +233,47 @@ def instagram_oembed(url):
 
 
 def facebook_post_oembed(url):
-    # a post and a video are two different services at Facebook; both answer without a token for public posts
-    service = "oembed_video" if social_embeds.facebook_kind(url) == "video" else "oembed_post"
-    params = {"access_token": FACEBOOK_TOKEN} if FACEBOOK_TOKEN else {}
-    return _oembed(f"https://graph.facebook.com/v21.0/{service}", url, params)
+    """A Facebook post or video. Share links and fb.watch only redirect, so the address they lead to is asked first
+    (`_redirect_target`; it counts only when it names a video or a page's post). A video or reel plays in Facebook's
+    plain player (social_embeds.facebook_player, loaded on click), with its title, text, page and date from the video
+    oEmbed, which answers without a token (tested 2026-10-16). A post's oEmbed needs a token Meta gives only to reviewed
+    apps; the owner chose to have none (2026-10-16), so a post's card names the page from its link and opens it there."""
+    if social_embeds.facebook_needs_resolving(url):
+        target = _redirect_target(url, "facebook.com")
+        if target and (social_embeds.facebook_names_a_video(target) or social_embeds.facebook_page_name(target)):
+            url = target
+    url = social_embeds.facebook_canonical(url)
+    params = {"url": url, **({"access_token": FACEBOOK_TOKEN} if FACEBOOK_TOKEN else {})}
+    if social_embeds.facebook_kind(url) == "video":
+        data = _json("https://graph.facebook.com/v21.0/oembed_video", params)
+        kind = "vertical" if social_embeds.facebook_is_reel(url) else "iframe"
+        return _player(kind, social_embeds.facebook_player(url), data.get("thumbnail_url"),
+                       social_embeds.card_from_facebook(data.get("html"), url))
+    snippet = _json("https://graph.facebook.com/v21.0/oembed_post", params).get("html")
+    if snippet:
+        return snippet, None, social_embeds.card_from_facebook(snippet, url)
+    return (social_embeds.quote_snippet("fb-post", url, social_embeds.facebook_page_name(url), "", "", ""), None,
+            social_embeds.card_from_facebook("", url))
 
 
 def tiktok_card_oembed(url):
-    return _oembed("https://www.tiktok.com/oembed", url)
+    """A TikTok video plays in TikTok's plain player (/player/v1/<id>, loaded on click). A short link (vm., vt., /t/)
+    only redirects, so the video it leads to is asked first. The words come from TikTok's oEmbed, which may not answer
+    (from the local container it times out): the player does not need them. A link that names no video (a photo post,
+    a profile) keeps its quote card."""
+    if social_embeds.tiktok_needs_resolving(url):
+        target = _redirect_target(url, "tiktok.com")
+        if target and social_embeds.tiktok_video_id(target):
+            url = target
+    try:
+        answer = _oembed("https://www.tiktok.com/oembed", url)
+    except Exception:
+        answer = None
+    video_id = social_embeds.tiktok_video_id(url)
+    if not video_id:
+        return answer
+    thumbnail, card = (answer[1], answer[2]) if answer else (None, social_embeds.default_card(url))
+    return _player("vertical", social_embeds.tiktok_player(video_id), thumbnail, card)
 
 
 def bluesky_oembed(url):
@@ -378,6 +446,152 @@ def bilibili_embed(url):
     return f"https://player.bilibili.com/player.html?bvid={m.group(1)}&page=1&high_quality=1&danmaku=0&autoplay=1"
 
 
+# --- Music, more video, GIFs, Telegram, Truth Social (2026-10-16) -------------------------------------------------
+# Each asks one fixed host (the site's own oEmbed service or page) or builds the player from the link alone, and keeps
+# only a player address on that site's own player hosts (social_embeds.AUDIO_HOSTS, IMAGE_HOSTS, host_in): nothing a
+# submitted page says is drawn. What each site answered when tested is in CLAUDE.md ("Social embeds and quote cards").
+
+def _oembed_player(kind, endpoint, url, hosts, params=None, must_contain=""):
+    """A player from a site's oEmbed answer: the iframe address in its snippet, only on `hosts`."""
+    data = _json(endpoint, {"url": url, **(params or {})})
+    src = _extract_iframe_src(data.get("html") or "")
+    if not social_embeds.host_in(src, hosts) or must_contain not in src:
+        return None
+    return _player(kind, src, data.get("thumbnail_url"), _player_card(data))
+
+
+def _player_card(data):
+    """(meta_title, meta_description) for a song, a talk or a clip: its title and who made it."""
+    title = social_embeds.clean_name(data.get("title"), 200)
+    author = social_embeds.clean_name(data.get("author_name"))
+    if not title and not author:
+        return None
+    return (title or author), (author if title else "")
+
+
+def spotify_embed(url):
+    return _oembed_player("audio", "https://open.spotify.com/oembed", url, ("open.spotify.com",), must_contain="/embed/")
+
+
+def soundcloud_embed(url):
+    found = _oembed_player("audio", "https://soundcloud.com/oembed", url, ("w.soundcloud.com",), {"format": "json"},
+                           must_contain="/player/")
+    if found:
+        found["src"] = found["src"].replace("visual=true", "visual=false")      # the compact player, not the 400px one
+    return found
+
+
+def mixcloud_embed(url):
+    return _oembed_player("audio", "https://app.mixcloud.com/oembed/", url, ("www.mixcloud.com", "player-widget.mixcloud.com"),
+                          {"format": "json"}, must_contain="/widget/")
+
+
+def deezer_embed(url):
+    return _oembed_player("audio", "https://api.deezer.com/oembed", url, ("widget.deezer.com",), {"format": "json"})
+
+
+def apple_embed(url):
+    src = social_embeds.apple_player(url)
+    return _player("audio", src) if src else None
+
+
+def bandcamp_embed(url):
+    """A Bandcamp track or album: its page names the item (`bc-page-properties`), and Bandcamp's own player is built
+    from that number (the page's own og:video is no longer there). Only an artist's *.bandcamp.com page is read."""
+    if not social_embeds.host_in(url, ("bandcamp.com",)) or not re.search(r"^/(track|album)/", urlparse(url).path):
+        return None
+    try:
+        page = requests.get(url, headers={"User-Agent": _HONEST_AGENT}, allow_redirects=False, timeout=6)
+    except Exception:
+        return None
+    src = social_embeds.bandcamp_player(page.text[:500000]) if page.status_code == 200 else None
+    return _player("audio", src) if src else None
+
+
+def streamable_embed(url):
+    return _oembed_player("iframe", "https://api.streamable.com/oembed.json", url, ("streamable.com",))
+
+
+def ted_embed(url):
+    return _oembed_player("iframe", "https://www.ted.com/services/v1/oembed.json", url, ("embed.ted.com",))
+
+
+def kick_embed(url):
+    src = social_embeds.kick_player(url)
+    return _player("iframe", src) if src else None
+
+
+def loom_embed(url):
+    src = social_embeds.loom_player(url)
+    return _player("iframe", src) if src else None
+
+
+def giphy_embed(url):
+    """A GIPHY GIF, drawn as its looping mp4 (a tenth of the GIF's size) from GIPHY's own media host."""
+    data = _json("https://giphy.com/services/oembed", {"url": url})
+    gif = data.get("url") or ""
+    if not social_embeds.host_in(gif, ("giphy.com",)) or not gif.endswith("/giphy.gif"):
+        return None
+    return _player("image", gif[:-len("giphy.gif")] + "giphy.mp4", gif, _player_card(data))
+
+
+_TENOR_MEDIA = re.compile(r"^(https://media\.tenor\.com/[A-Za-z0-9_-]{6,40}?)AAAA[A-Za-z0-9]/([A-Za-z0-9._-]{1,120})\.(?:png|gif|webp|jpg)$")
+
+
+def tenor_embed(url):
+    """A Tenor GIF: Tenor's oEmbed names its still picture; the GIF is the same file in Tenor's GIF size (AAAAC)."""
+    data = _json("https://tenor.com/oembed", {"url": url})
+    match = _TENOR_MEDIA.match(data.get("thumbnail_url") or "")
+    if not match:
+        return None
+    return _player("image", f"{match.group(1)}AAAAC/{match.group(2)}.gif", data.get("thumbnail_url"), _player_card(data))
+
+
+def flickr_embed(url):
+    data = _json("https://www.flickr.com/services/oembed", {"url": url, "format": "json"})
+    photo = data.get("url") or ""
+    if data.get("type") != "photo" or not social_embeds.host_in(photo, ("live.staticflickr.com",)):
+        return None
+    return _player("image", photo, data.get("thumbnail_url"), _player_card(data))
+
+
+def telegram_embed(url):
+    """A post in a public Telegram channel, read from Telegram's own widget page for it (plain HTML, no script run):
+    the channel, the text, the date and the first picture, saved as our own escaped quote (social_embeds.quote_snippet)."""
+    found = social_embeds.telegram_post(url)
+    if not found:
+        return None
+    channel, message = found
+    try:
+        page = requests.get(f"https://t.me/{channel}/{message}", params={"embed": "1"},
+                            headers={"User-Agent": _HONEST_AGENT}, allow_redirects=False, timeout=6)
+    except Exception:
+        return None
+    card = social_embeds.telegram_card(page.text[:500000]) if page.status_code == 200 else None
+    if not card:
+        return None
+    snippet = social_embeds.quote_snippet("telegram-post", f"https://t.me/{channel}/{message}", card["name"] or channel,
+                                          "@" + channel, card["when"], card["text"], card["video"] and not card["picture"],
+                                          card["video"])
+    title = f"{card['name'] or channel} on Telegram"
+    return snippet, card["picture"] or None, (title[:500], card["text"][:1000])
+
+
+def truthsocial_embed(url):
+    """A Truth Social post: it runs Mastodon's software, so its public API answers as a Mastodon server does
+    (/api/v1/statuses/<id>, a fixed host), read by the Mastodon card (social_embeds.mastodon_status_snippet)."""
+    status_id = social_embeds.truthsocial_status_id(url)
+    if not status_id:
+        return None
+    status = _json(f"https://truthsocial.com/api/v1/statuses/{status_id}", {})
+    found = social_embeds.mastodon_status_snippet(status, "truthsocial.com", url) if status.get("id") else None
+    if not found:
+        return None
+    parts = social_embeds.mastodon_parts(status, "truthsocial.com")
+    title = f"{parts['name']} on Truth Social" if parts and parts["name"] else "Post on Truth Social"
+    return found[0], found[1] or None, (title[:500], (parts["text"] if parts else "")[:1000])
+
+
 # Built-in handlers for named platforms - checked by detect_video_embed()
 # before the generic allowlisted-discovery/og:video fallback below. Unlike
 # that generic path, these run unconditionally for their domain (no
@@ -390,6 +604,10 @@ def bilibili_embed(url):
 # embed_type "widget": a social site's post, its oEmbed snippet from a fixed,
 # hardcoded API host (not something the submitted page gets to redirect). The
 # snippet is never drawn: helpers/quote_cards.py reads it into a quote card.
+# embed_type "audio" / "image": a music or podcast player, a GIF or picture. A
+# handler may answer a player of another kind than its entry (`_player`): a
+# Facebook, Instagram or TikTok video is a player ("iframe" or "vertical",
+# loaded on click), a post on those sites stays a "widget" quote card.
 KNOWN_PROVIDER_HANDLERS = {
     "youtube.com": ("iframe", youtube_embed),
     "youtu.be": ("iframe", youtube_embed),
@@ -414,6 +632,23 @@ KNOWN_PROVIDER_HANDLERS = {
     "threads.net": ("widget", threads_embed),
     "threads.com": ("widget", threads_embed),
     "tumblr.com": ("widget", tumblr_oembed),
+    "t.me": ("widget", telegram_embed),
+    "telegram.me": ("widget", telegram_embed),
+    "truthsocial.com": ("widget", truthsocial_embed),
+    "streamable.com": ("iframe", streamable_embed),
+    "kick.com": ("iframe", kick_embed),
+    "loom.com": ("iframe", loom_embed),
+    "ted.com": ("iframe", ted_embed),
+    "open.spotify.com": ("audio", spotify_embed),
+    "soundcloud.com": ("audio", soundcloud_embed),
+    "music.apple.com": ("audio", apple_embed),
+    "podcasts.apple.com": ("audio", apple_embed),
+    "bandcamp.com": ("audio", bandcamp_embed),
+    "mixcloud.com": ("audio", mixcloud_embed),
+    "deezer.com": ("audio", deezer_embed),
+    "giphy.com": ("image", giphy_embed),
+    "tenor.com": ("image", tenor_embed),
+    "flickr.com": ("image", flickr_embed),
 }
 
 
@@ -456,9 +691,14 @@ def known_provider_embed(url):
 
 
 def _unpack(embed_type, result):
-    """A handler's answer as (embed_type, content, thumbnail, card): a plain string (the older handlers), or a
-    (content, thumbnail) or (content, thumbnail, card) tuple. Nothing usable is (None, None, None, None)."""
+    """A handler's answer as (embed_type, content, thumbnail, card): a plain string (the older handlers), a
+    (content, thumbnail) or (content, thumbnail, card) tuple, or a player (`_player`: a dict that names its own kind,
+    so one site can answer a quote card for a post and a player for a video). Nothing usable is (None, None, None, None)."""
     thumbnail_url, card = None, None
+    if isinstance(result, dict):
+        if not result.get("src") or result.get("kind") not in PLAYER_KINDS:
+            return None, None, None, None
+        return result["kind"], result["src"], result.get("thumbnail") or None, result.get("card")
     if isinstance(result, tuple):
         result, thumbnail_url, *rest = result
         card = rest[0] if rest else None
@@ -562,10 +802,12 @@ def detect_video_embed(url, response, soup):
                 data = resp.json()
             except Exception:
                 data = {}
-            if data.get("type") == "video" and data.get("html"):
+            # "rich" is how audio players answer (SoundCloud); the player's own host is checked either way
+            if data.get("type") in ("video", "rich") and data.get("html"):
                 src = _extract_iframe_src(data["html"])
                 if src and _host_allowed(urlparse(src).hostname):
-                    return "iframe", src, data.get("thumbnail_url")
+                    kind = "audio" if social_embeds.host_in(src, social_embeds.AUDIO_HOSTS) else "iframe"
+                    return kind, src, data.get("thumbnail_url")
 
     # Layer 3: og:video fallback - no third-party gate possible here, the
     # value is a meta tag on the submitter's own page. Caller must render

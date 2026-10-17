@@ -2,9 +2,12 @@
 are not one fixed host (Mastodon). Pure: no I/O; the calls to each site's own oEmbed service are in helpers/embed.py,
 and the quote card a post shows is made by helpers/quote_cards.py (tests/test_social_embeds.py).
 
-* No page loads a site's script, frame or widget: the oEmbed snippet is saved and read into a quote card in this site's
+* No page loads a site's script or widget: a post's oEmbed snippet is saved and read into a quote card in this site's
   own font. `card_from_oembed` also gives the link-preview fields (`meta_title` "Elon Musk on X", `meta_description`
   the post's own words), which the card falls back to.
+* A video on a social site (Facebook videos and reels, Instagram reels, TikTok) plays in that site's plain player
+  frame, built here from the link alone, and loaded only when the reader presses play (`player_layout`: the owner's
+  choice, 2026-10-16). Music, video and GIF sites get their players the same way ("Players" at the end).
 * Mastodon is any server, so it is never trusted like a fixed host: only a link shaped like a Mastodon post
   (`mastodon_post`), its oEmbed and its public API fetched through helpers/safe_fetch.py, only that server's own
   `/embed` page accepted as proof (`mastodon_iframe_ok`), and what is saved built and escaped by us
@@ -30,6 +33,9 @@ SITES = {
     "threads.com": "Threads",
     "pinterest.com": "Pinterest",
     "tumblr.com": "Tumblr",
+    "t.me": "Telegram",
+    "telegram.me": "Telegram",
+    "truthsocial.com": "Truth Social",
 }
 
 _SPACE = re.compile(r"\s+")
@@ -110,9 +116,18 @@ def youtube_id(url):
 def facebook_kind(url):
     """Which of Facebook's oEmbed services a link needs: "video" for videos, reels and fb.watch, else "post"."""
     host, path = _host(url), urlsplit(str(url or "")).path.lower()
-    if host == "fb.watch" or "/videos/" in path or path.startswith("/watch") or "/reel" in path:
+    if (host == "fb.watch" or "/videos/" in path or path.startswith("/watch") or "/reel" in path
+            or path.startswith(("/share/v/", "/share/r/"))):
         return "video"
     return "post"
+
+
+def facebook_names_a_video(url):
+    """A Facebook address that itself names one video or reel (not the /watch page, not a share link)."""
+    parts = urlsplit(str(url or ""))
+    path = parts.path.lower()
+    return bool(re.search(r"/videos/(?:[\w.-]+/)?\d{5,25}", path) or re.match(r"^/reel/\d{5,25}", path)
+                or (path.rstrip("/") == "/watch" and re.search(r"(?:^|&)v=\d{5,25}", parts.query or "")))
 
 
 def mastodon_post(url):
@@ -519,3 +534,288 @@ def threads_snippet(url):
 def threads_card(url):
     match = _THREADS_PATH.match(urlsplit(str(url or "")).path)
     return (f"@{match.group(1)} on Threads", "") if match else ("Post on Threads", "")
+
+
+# --- Players -----------------------------------------------------------------------------------------------------
+# A link to a video, a song or a GIF is drawn as that site's own player (helpers/embed.py asks each site's fixed
+# oEmbed host or builds the address from the link). Everything here is pure: it reads links and answers, and says
+# where a player may come from. `player_layout` is what the feed card and the post page draw from.
+
+# the hosts a player frame may come from, per kind; a player address on any other host is refused
+AUDIO_HOSTS = ("open.spotify.com", "w.soundcloud.com", "embed.music.apple.com", "embed.podcasts.apple.com",
+               "bandcamp.com", "www.mixcloud.com", "player-widget.mixcloud.com", "widget.deezer.com")
+IMAGE_HOSTS = ("giphy.com", "media.tenor.com", "live.staticflickr.com")
+# a social site's player is loaded only when the reader presses play: its frame is that site's page, with its cookies
+CLICK_HOSTS = ("facebook.com", "instagram.com", "tiktok.com", "kick.com")
+
+_FB_RESERVED = {"watch", "reel", "reels", "share", "permalink.php", "story.php", "photo", "photo.php", "groups",
+                "events", "plugins", "video.php", "people", "profile.php", "login", "marketplace", "stories"}
+_IG_REEL = re.compile(r"^/(?:[A-Za-z0-9._]{1,30}/)?(?:reel|reels|tv)/([A-Za-z0-9_-]{5,40})/?$")
+_TIKTOK_VIDEO = re.compile(r"^/(?:@[A-Za-z0-9._]{1,40}/video|embed/v2|video|player/v1)/(\d{8,25})/?$")
+_TELEGRAM_POST = re.compile(r"^/(?:s/)?([A-Za-z][A-Za-z0-9_]{3,31})/(\d{1,12})/?$")
+_TRUTH_POST = re.compile(r"^/@([A-Za-z0-9_]{1,30})/(?:posts/)?(\d{6,25})/?$")
+_KICK_PATH = re.compile(r"^/([A-Za-z0-9_-]{2,40})(?:/clips/(clip_[A-Za-z0-9]{5,40}))?/?$")
+_LOOM_PATH = re.compile(r"^/(?:share|embed)/([0-9a-f]{20,40})/?$")
+_BIDI = re.compile("[‎‏‪-‮⁦-⁩]")
+
+
+def _on(host, domain):
+    return host == domain or host.endswith("." + domain)
+
+
+def host_in(url, hosts):
+    """Is `url` an https address on one of `hosts` (or below one)?"""
+    parts = urlsplit(str(url or ""))
+    host = (parts.hostname or "").lower()
+    return parts.scheme == "https" and bool(host) and any(_on(host, h) for h in hosts)
+
+
+def clean_name(text, limit=120):
+    """A name from another site, as plain text: no bidirectional controls (Flickr sends them), spaces collapsed."""
+    return _plain(_BIDI.sub("", str(text or "")), limit)
+
+
+# Facebook ---------------------------------------------------------------------------------------------------------
+
+def facebook_needs_resolving(url):
+    """A Facebook link that only redirects to the post (share links, fb.watch): its canonical address is asked first."""
+    host, path = _host(url), urlsplit(str(url or "")).path.lower()
+    return host == "fb.watch" or (_on(host, "facebook.com") and path.startswith("/share/"))
+
+
+def facebook_canonical(url):
+    """The link on www.facebook.com (m., mbasic., web. and touch. are the same post), https, without its query unless
+    the query is what names the post (watch?v=, permalink.php, story.php, photo.php)."""
+    parts = urlsplit(str(url or ""))
+    host = (parts.hostname or "").lower()
+    if not _on(host, "facebook.com"):
+        return url
+    keep = parts.path.lower().rstrip("/") in ("/watch", "/permalink.php", "/story.php", "/photo.php", "/photo")
+    query = parts.query if keep else ""
+    return "https://www.facebook.com" + (parts.path or "/") + ("?" + query if query else "")
+
+
+def facebook_is_reel(url):
+    path = urlsplit(str(url or "")).path.lower()
+    return "/reel" in path or path.startswith("/share/r/")
+
+
+def facebook_player(url):
+    """Facebook's plain video player for a public video or reel (no script; a frame of facebook.com)."""
+    from urllib.parse import quote
+    return "https://www.facebook.com/plugins/video.php?href=" + quote(facebook_canonical(url), safe="") + "&show_text=false"
+
+
+def facebook_page_name(url):
+    """The page or profile a Facebook post link names (`/NASA/posts/...`), or "" (a number, or a link that names none)."""
+    first = (urlsplit(str(url or "")).path.strip("/").split("/") or [""])[0]
+    if not first or first.lower() in _FB_RESERVED or first.isdigit() or not re.match(r"^[A-Za-z0-9.-]{2,50}$", first):
+        return ""
+    return first
+
+
+def facebook_card(snippet):
+    """What Facebook's oEmbed snippet says about a post or video: its title (the first link), its text (the first
+    paragraph), and "Posted by <a>Name</a> on <date>". Plain text; {} when the snippet says nothing."""
+    try:
+        from bs4 import BeautifulSoup
+        quote_tag = BeautifulSoup(str(snippet or ""), "html.parser").find("blockquote")
+    except Exception:
+        return {}
+    if quote_tag is None:
+        return {}
+    links = quote_tag.find_all("a")
+    paragraph = quote_tag.find("p")
+    text = _plain(paragraph.get_text(" ")) if paragraph else ""
+    whole = _plain(quote_tag.get_text(" "), 1000)
+    match = re.search(r"Posted by (.+?) on (.+)$", whole)
+    name = clean_name(match.group(1)) if match else ""
+    when = _plain(match.group(2), 60) if match else ""
+    title = clean_name(links[0].get_text(" "), 200) if links and links[0].get_text(strip=True) != name else ""
+    if title and title == text:
+        title = ""
+    out = {"name": name, "when": when, "title": title, "text": text}
+    return out if any(out.values()) else {}
+
+
+def card_from_facebook(snippet, url):
+    """(meta_title, meta_description) for a Facebook post or video from its snippet: "<name> on Facebook" and its words."""
+    found = facebook_card(snippet)
+    name = found.get("name") or facebook_page_name(url)
+    words = " - ".join(part for part in (found.get("title"), found.get("text")) if part)
+    title = f"{name} on Facebook" if name else "Post on Facebook"
+    return title[:500], words[:1000]
+
+
+# Instagram, TikTok -------------------------------------------------------------------------------------------------
+
+def instagram_reel_code(url):
+    """The code of an Instagram reel or video (`/reel/<code>`, `/tv/<code>`, `/<user>/reel/<code>`), or None."""
+    if site_of(url) != "instagram.com":
+        return None
+    match = _IG_REEL.match(urlsplit(str(url or "")).path)
+    return match.group(1) if match else None
+
+
+def instagram_player(code):
+    return f"https://www.instagram.com/reel/{code}/embed/"
+
+
+def tiktok_needs_resolving(url):
+    """A TikTok short link (vm., vt., or tiktok.com/t/...): it only redirects to the video."""
+    host, path = _host(url), urlsplit(str(url or "")).path
+    return host in ("vm.tiktok.com", "vt.tiktok.com") or (_on(host, "tiktok.com") and path.startswith("/t/"))
+
+
+def tiktok_video_id(url):
+    if site_of(url) != "tiktok.com":
+        return None
+    match = _TIKTOK_VIDEO.match(urlsplit(str(url or "")).path)
+    return match.group(1) if match else None
+
+
+def tiktok_player(video_id):
+    return f"https://www.tiktok.com/player/v1/{video_id}?rel=0"
+
+
+# Telegram, Truth Social --------------------------------------------------------------------------------------------
+
+def telegram_post(url):
+    """(channel, message id) of a post in a public Telegram channel (t.me/<channel>/<id>), or None."""
+    if site_of(url) not in ("t.me", "telegram.me"):
+        return None
+    match = _TELEGRAM_POST.match(urlsplit(str(url or "")).path)
+    return (match.group(1), match.group(2)) if match else None
+
+
+def telegram_card(page):
+    """What a card needs from Telegram's own widget page for a post (t.me/<channel>/<id>?embed=1, plain HTML), or None:
+    the channel's name, the text, the date, the first picture."""
+    try:
+        from bs4 import BeautifulSoup
+        soup = BeautifulSoup(str(page or ""), "html.parser")
+    except Exception:
+        return None
+    text_tag = soup.select_one(".tgme_widget_message_text")
+    owner = soup.select_one(".tgme_widget_message_owner_name")
+    if text_tag is None and owner is None:
+        return None
+    for br in text_tag.find_all("br") if text_tag else []:
+        br.replace_with("\n")
+    text = (text_tag.get_text() if text_tag else "").strip()
+    stamp = soup.find("time", attrs={"datetime": True})
+    picture = ""
+    photo = soup.select_one(".tgme_widget_message_photo_wrap")
+    if photo is not None:
+        found = re.search(r"url\(['\"]?(https://[^'\")]+)", photo.get("style") or "")
+        picture = _https(found.group(1)) if found else ""
+    return {"name": clean_name(owner.get_text(" ") if owner else ""), "text": text[:2000],
+            "when": (stamp["datetime"][:10] if stamp else ""), "picture": picture,
+            "video": soup.select_one(".tgme_widget_message_video_player") is not None}
+
+
+def truthsocial_status_id(url):
+    if site_of(url) != "truthsocial.com":
+        return None
+    match = _TRUTH_POST.match(urlsplit(str(url or "")).path)
+    return match.group(2) if match else None
+
+
+# Video sites -------------------------------------------------------------------------------------------------------
+
+def kick_player(url):
+    """Kick's player for a channel (`kick.com/<channel>`) or one of its clips (`kick.com/<channel>/clips/clip_...`)."""
+    if not host_in(url, ("kick.com",)) or _host(url).startswith("player."):
+        return None
+    match = _KICK_PATH.match(urlsplit(str(url or "")).path)
+    if not match or match.group(1).lower() in ("categories", "browse", "following", "search", "dashboard"):
+        return None
+    clip = f"?clip={match.group(2)}" if match.group(2) else ""
+    return f"https://player.kick.com/{match.group(1)}{clip}"
+
+
+def loom_player(url):
+    if not host_in(url, ("loom.com",)):
+        return None
+    match = _LOOM_PATH.match(urlsplit(str(url or "")).path)
+    return f"https://www.loom.com/embed/{match.group(1)}" if match else None
+
+
+# Music -------------------------------------------------------------------------------------------------------------
+
+def apple_player(url):
+    """Apple's own player for a link to Apple Music or Apple Podcasts: the same path on its embed host."""
+    parts = urlsplit(str(url or ""))
+    host = (parts.hostname or "").lower()
+    target = {"music.apple.com": "embed.music.apple.com", "podcasts.apple.com": "embed.podcasts.apple.com"}.get(host)
+    if parts.scheme != "https" or not target or not re.match(r"^/[a-z]{2}/[A-Za-z0-9/_.%-]{3,300}$", parts.path):
+        return None
+    query = "?" + parts.query if re.match(r"^i=\d{1,20}$", parts.query or "") else ""
+    return f"https://{target}{parts.path}{query}"
+
+
+def bandcamp_player(page):
+    """Bandcamp's own player for a track or album page, from the item it names in `bc-page-properties`, or None."""
+    found = re.search(r'<meta name="bc-page-properties" content="([^"]{1,300})"', str(page or ""))
+    if not found:
+        return None
+    try:
+        import json as json_lib
+        props = json_lib.loads(html.unescape(found.group(1)))
+    except ValueError:
+        return None
+    kind = {"t": "track", "a": "album"}.get(props.get("item_type"))
+    item = props.get("item_id")
+    if not kind or not isinstance(item, int):
+        return None
+    return (f"https://bandcamp.com/EmbeddedPlayer/{kind}={item}/size=large/bgcol=ffffff/linkcol=0687f5/"
+            "tracklist=false/artwork=small/transparent=true/")
+
+
+def audio_height(src):
+    """How tall a music or podcast player is: one track or episode is short, a list is taller."""
+    host, parts = _host(src), urlsplit(str(src or ""))
+    path = parts.path.lower()
+    if host == "open.spotify.com":
+        return 152 if re.match(r"^/embed/(track|episode)/", path) else 352
+    if host == "w.soundcloud.com":
+        return 166 if "%2Fsets%2F" not in src and "/sets/" not in src else 400
+    if host in ("embed.music.apple.com", "embed.podcasts.apple.com"):
+        return 175 if parts.query.startswith("i=") or "/song/" in path else 450
+    if host in ("www.mixcloud.com", "player-widget.mixcloud.com"):
+        return 120
+    if host == "bandcamp.com":
+        return 120
+    if host == "widget.deezer.com":
+        return 152 if "/track/" in path else 300
+    return 166
+
+
+def player_layout(kind, src):
+    """How a player is drawn, from its kind and address: whether it loads when the reader presses play ("click") or
+    when it scrolls into view ("auto"), its shape ("16 / 9", "9 / 16") or its height in pixels (music), or None for
+    something that is not a player."""
+    if kind not in ("iframe", "iframe_untrusted", "video", "vertical", "audio", "image"):
+        return None
+    if kind == "image":
+        return {"load": "now", "aspect": None, "height": None}
+    if kind == "audio":
+        return {"load": "click", "aspect": None, "height": audio_height(src)}
+    load = "click" if host_in(src, CLICK_HOSTS) else "auto"
+    return {"load": load, "aspect": "9 / 16" if kind == "vertical" else "16 / 9", "height": None}
+
+
+# the sites whose links became players on 2026-10-16 (scripts/backfill_social_embeds.py re-works posts saved before)
+PLAYER_SITES = ("open.spotify.com", "soundcloud.com", "music.apple.com", "podcasts.apple.com", "bandcamp.com",
+                "mixcloud.com", "deezer.com", "streamable.com", "kick.com", "loom.com", "ted.com", "giphy.com",
+                "tenor.com", "flickr.com")
+
+
+def becomes_player(url):
+    """A link that is a player now: a Facebook video or reel, an Instagram reel, a TikTok video (or short link), or a
+    link to one of PLAYER_SITES."""
+    if site_of(url) == "facebook.com" or _host(url) == "fb.watch":
+        return facebook_kind(url) == "video"
+    if instagram_reel_code(url) or tiktok_video_id(url) or tiktok_needs_resolving(url):
+        return True
+    return host_in(url, PLAYER_SITES)

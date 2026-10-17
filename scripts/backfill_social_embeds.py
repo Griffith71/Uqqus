@@ -5,7 +5,9 @@ Mastodon posts saved before quote cards hold only a frame (no text, handle or da
 2026-10-16 that quote another hold only a t.co link to it (now the quoted post is saved with them) or have a photo or
 video and no picture (now read from the post's link-preview tags); Bluesky, Mastodon and Instagram posts saved before
 2026-10-16 have no picture and no quoted post (now read from Bluesky's and Mastodon's APIs and Instagram's
-link-preview tags). Run once:
+link-preview tags). Since 2026-10-16 a Facebook video or reel, an Instagram reel, a TikTok video and a link to a music,
+video or GIF site (social_embeds.becomes_player) is a player: posts saved before as a card or a plain link are worked
+out again too. Run once:
 
     PYTHONPATH=. python scripts/backfill_social_embeds.py --once
 
@@ -58,11 +60,20 @@ def wanted(url, no_card=True, framed=False, saved="", picture=""):
     return bool(social_embeds.youtube_id(url)) and ("/shorts/" in url or "/live/" in url)
 
 
+# live posts whose saved embed is not a player yet (social_embeds.becomes_player decides which of them can be one)
+_PLAYER_CANDIDATES = text("""
+    SELECT s.id, a.url FROM submissions s JOIN submissions_aux a ON a.id = s.id
+    WHERE s.deleted_utc = 0 AND NOT s.is_banned AND a.url IS NOT NULL AND a.url != ''
+      AND COALESCE(a.embed_type, '') NOT IN ('iframe', 'vertical', 'audio', 'image', 'video') ORDER BY s.id""")
+
+
 def run():
     db = db_session()
     try:
         ids = [pid for pid, url, no_card, framed, saved, picture in db.execute(_CANDIDATES).fetchall()
                if wanted(url, no_card, framed, saved, picture)]
+        ids = sorted(set(ids) | {pid for pid, url in db.execute(_PLAYER_CANDIDATES).fetchall()
+                                 if social_embeds.becomes_player(url)})
         if ids:
             db.execute(text("UPDATE submissions_aux SET embed_url = '', embed_type = NULL WHERE id = ANY(:ids)"), {"ids": ids})
         db.commit()

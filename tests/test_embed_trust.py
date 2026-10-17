@@ -50,11 +50,14 @@ def test_the_repair_migration_names_every_iframe_platform():
     src = (ROOT / "ruqqus" / "helpers" / "embed.py").read_text()
     table = src[src.index("KNOWN_PROVIDER_HANDLERS = {"):src.index("}", src.index("KNOWN_PROVIDER_HANDLERS = {"))]
     iframe = set(re.findall(r'"([a-z.]+)": \("iframe"', table))
-    sql = (ROOT / "scripts" / "migrations" / "2026-10-10_trusted_provider_embeds.sql").read_text()
-    named = set(re.findall(r"\('([a-z.]+)'\)", sql))
+    named = set()
+    # the first repair, and the one for the platforms added on 2026-10-16
+    for name in ("2026-10-10_trusted_provider_embeds.sql", "2026-10-27_more_trusted_embeds.sql"):
+        sql = (ROOT / "scripts" / "migrations" / name).read_text()
+        named |= set(re.findall(r"\('([a-z.]+)'\)", sql))
+        assert "WHERE a.embed_type = 'iframe_untrusted'" in sql
     # clips.twitch.tv is covered by twitch.tv
     assert iframe - {"clips.twitch.tv"} == named
-    assert "WHERE a.embed_type = 'iframe_untrusted'" in sql
 
 
 def test_between_equally_visible_videos_the_higher_one_plays():

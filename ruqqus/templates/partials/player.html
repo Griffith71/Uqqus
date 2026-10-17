@@ -1,0 +1,30 @@
+{# A post's player, drawn the same way on a feed card and on the post page (helpers/social_embeds.player_layout,
+   `player_of(p)`): a GIF or picture at once, from its site's own CDN; anything else a thumbnail that
+   assets/js/feed_video_autoplay.js turns into the player, as it scrolls into view ("auto") or only when the reader
+   presses play ("click": a social site's frame, which is that site's page with its cookies, and music, which never
+   plays by itself). Each box keeps its shape before the player loads ("Painting right the first time"). #}
+{% macro player_box(p, layout, link=None, nofollow=False) %}
+{% if p.embed_kind == 'image' %}
+<div class="embed-image mb-3">
+  {% if p.embed_url.endswith('.mp4') %}
+  <video src="{{ p.embed_url }}" autoplay loop muted playsinline{% if p.preview_image_url %} poster="{{ p.preview_image_url }}"{% endif %} aria-label="GIF from {{ p.domain }}"></video>
+  {% else %}
+  <img src="{{ p.embed_url }}" alt="Picture from {{ p.domain }}" loading="lazy" referrerpolicy="no-referrer" onerror="hideBrokenMedia(this)">
+  {% endif %}
+</div>
+{% else %}
+<div class="embed-lg mb-3" data-embed-kind="{{ p.embed_kind }}" data-embed-src="{{ p.embed_url }}" data-embed-load="{{ layout.load }}"
+     data-embed-title="{{ 'Audio' if p.embed_kind == 'audio' else 'Video' }} from {{ p.domain }}"
+     {%- if layout.aspect %} data-embed-aspect="{{ layout.aspect }}"{% endif %}
+     {%- if layout.height %} data-embed-height="{{ layout.height }}" style="height: {{ layout.height }}px"{% endif %}>
+  <div class="feed-video-thumb">
+    {% if p.preview_image_url %}<img src="{{ p.preview_image_url }}" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="hideBrokenMedia(this)">{% endif %}
+    {# a real button for keyboards and screen readers; a click anywhere on the thumbnail plays too #}
+    <button type="button" class="embed-lg-play" aria-label="Play {{ 'audio' if p.embed_kind == 'audio' else 'video' }} from {{ p.domain }}"><i class="fas fa-play-circle" aria-hidden="true"></i></button>
+    <div class="post-img-overlay">{{ p.domain }}
+      {% if link %}<a href="{{ link }}" rel="{% if nofollow %}nofollow {% endif %}noopener" class="text-white" onclick="event.stopPropagation()" aria-label="Open the post"><i class="fas fa-external-link-alt text-small ml-1"></i></a>{% endif %}
+    </div>
+  </div>
+</div>
+{% endif %}
+{% endmacro %}

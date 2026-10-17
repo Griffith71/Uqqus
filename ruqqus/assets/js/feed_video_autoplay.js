@@ -4,7 +4,9 @@
 // any domain the server's generic oEmbed/og:video detection picked up
 // (ruqqus/helpers/embed.py's detect_video_embed). Only one video is ever
 // live at a time, and nothing autoplays inside an unrevealed sensitive-
-// content wrapper.
+// content wrapper. A container with data-embed-load="click" (a social site's
+// player, music: helpers/social_embeds.player_layout) is never started by
+// scrolling: only pressing its thumbnail builds the player, and it stays.
 
 (function () {
   if (!('IntersectionObserver' in window)) return;
@@ -29,13 +31,15 @@
     return !!(wrap && !wrap.classList.contains('revealed'));
   }
 
-  function buildMedia(container) {
+  function buildMedia(container, chosen) {
     var existing = container.querySelector('.feed-video-media');
     if (existing) return existing;
 
     var kind = container.dataset.embedKind;
     var src = container.dataset.embedSrc;
     var media;
+    // pressed by the reader: it may play with sound; started by scrolling: muted
+    var startParams = chosen ? 'autoplay=1' : 'autoplay=1&mute=1';
 
     if (kind === 'video') {
       media = document.createElement('video');
@@ -53,7 +57,7 @@
       // ignored or conflict, so only add it if nothing's there yet.
       media.src = /[?&]autoplay=/i.test(src)
         ? src
-        : src + (src.indexOf('?') === -1 ? '?' : '&') + 'autoplay=1&mute=1';
+        : src + (src.indexOf('?') === -1 ? '?' : '&') + startParams;
       media.frameBorder = '0';
       // Ruqqus sends Referrer-Policy: same-origin site-wide, which starves
       // YouTube's embedded player of the cross-origin referrer it needs to
@@ -61,7 +65,8 @@
       // configuration error"). Overriding it per-iframe fixes the embed
       // without loosening the site-wide header for anything else.
       media.referrerPolicy = 'strict-origin-when-cross-origin';
-      media.allow = 'accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture';
+      media.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen';
+      media.title = container.dataset.embedTitle || 'Video';
       media.allowFullscreen = true;
       // iframe_untrusted = extracted from an arbitrary page's own
       // og:video tag, not a vetted oEmbed provider - no allow-same-origin/
@@ -78,7 +83,15 @@
     // space available to them. Setting this directly (rather than through
     // the stylesheet) makes it correct from the first frame for both kinds.
     media.style.width = '100%';
-    media.style.aspectRatio = '16 / 9';
+    if (container.dataset.embedHeight) {
+      // a music player is its provider's height (the box already has it, so nothing moves)
+      media.style.height = container.dataset.embedHeight + 'px';
+      media.style.maxHeight = 'none';
+    } else if (container.dataset.embedAspect) {
+      media.style.aspectRatio = container.dataset.embedAspect;          // 9 / 16 for a vertical video
+    } else {
+      media.style.aspectRatio = '16 / 9';
+    }
     container.appendChild(media);
 
     var thumb = container.querySelector('.feed-video-thumb');
@@ -173,8 +186,21 @@
     reconcile();
   }, { threshold: [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1] });
 
+  function playChosen(container) {
+    buildMedia(container, true);
+  }
+
   function observeAll() {
     document.querySelectorAll('[data-embed-kind]').forEach(function (container) {
+      if (container.dataset.embedLoad === 'click') {
+        var button = container.querySelector('.feed-video-thumb');
+        if (button && !button.dataset.clickBound) {
+          button.dataset.clickBound = '1';
+          // the thumbnail and its play button (a real <button>: Enter and Space click it, and the click comes here)
+          button.addEventListener('click', function () { playChosen(container); });
+        }
+        return;
+      }
       if (!ratios.has(container)) {
         ratios.set(container, 0);
         observer.observe(container);
@@ -191,12 +217,27 @@
     });
   }
 
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', observeAll);
-  } else {
+  // a looping GIF stands still for readers who asked for less motion
+  function calmGifs() {
+    if (!window.matchMedia || !window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    document.querySelectorAll('.embed-image video').forEach(function (video) {
+      video.removeAttribute('autoplay');
+      video.pause();
+      video.controls = true;
+    });
+  }
+
+  function start() {
     observeAll();
+    calmGifs();
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', start);
+  } else {
+    start();
   }
 
   // re-scan hook for any future dynamically-loaded content (pagination etc)
-  window.observeFeedVideos = observeAll;
+  window.observeFeedVideos = start;
 })();

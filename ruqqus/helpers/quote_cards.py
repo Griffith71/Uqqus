@@ -41,6 +41,9 @@ _POST_PATHS = {
     "threads.com": re.compile(r"^/@(?P<handle>[\w.]+)/post/[\w-]+"),
     "pinterest.com": re.compile(r"^/pin/\d+"),
     "tumblr.com": re.compile(r"^/(?:(?P<handle>[\w-]+)/)?(?:post/)?\d+"),
+    "t.me": re.compile(r"^/(?:s/)?(?P<handle>[A-Za-z]\w{3,31})/\d+"),
+    "telegram.me": re.compile(r"^/(?:s/)?(?P<handle>[A-Za-z]\w{3,31})/\d+"),
+    "truthsocial.com": re.compile(r"^/@(?P<handle>\w{1,30})/(?:posts/)?\d+"),
 }
 
 # what a post on these sites usually carries, when the site does not say: the card's line under the text
@@ -48,7 +51,8 @@ _MEDIA_WORD = {"tiktok.com": "Video", "instagram.com": "Photo or video", "pinter
 
 # Font Awesome 6.4 Free brand icons (tests/data/fa_free_6_4_0_names.txt); a site without one shows its first letter
 _ICONS = {"reddit.com": "reddit", "redd.it": "reddit", "tiktok.com": "tiktok", "instagram.com": "instagram",
-          "facebook.com": "facebook", "pinterest.com": "pinterest", "tumblr.com": "tumblr", "mastodon": "mastodon"}
+          "facebook.com": "facebook", "pinterest.com": "pinterest", "tumblr.com": "tumblr", "mastodon": "mastodon",
+          "t.me": "telegram", "telegram.me": "telegram"}
 
 
 def _plain(text, limit=TEXT_MAX):
@@ -217,7 +221,7 @@ def _social(url, snippet, meta_title, meta_description, image="", drop_link=""):
     card = {"kind": "social", "site": site, "label": label, "icon": _ICONS.get(site, ""), "letter": label[:1],
             "url": url, "name": "", "handle": "", "when": "", "text": "", "where": "", "media": ""}
     text_known, signed = False, {}                        # a quote with no words of its own stays without them
-    if site in ("x.com", "twitter.com", "bsky.app", "mastodon", "instagram.com"):
+    if site in ("x.com", "twitter.com", "bsky.app", "mastodon", "instagram.com", "t.me", "telegram.me", "truthsocial.com"):
         signed = _signed_quote(snippet, drop_link)
         text_known = "text" in signed and (bool(drop_link) or signed.get("ours"))
         card.update({k: v for k, v in signed.items() if v and k in card})
