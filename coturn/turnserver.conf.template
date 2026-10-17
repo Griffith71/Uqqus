@@ -8,7 +8,8 @@
 # stays refused).
 #
 # On a live site (see CLAUDE.md "Call relay"):
-# - run it with the host's network and `external-ip=<public ip>` (and `<public>/<private>` behind NAT);
+# - run it with the host's network and `external-ip=<public ip>` (and `<public>/<private>` behind NAT), and
+#   `allowed-peer-ip=<public ip>` (every other peer is refused below);
 # - a DNS-only hostname, turn.<site>: its UDP ports can't go through Cloudflare, so this reveals the server's
 #   address, and the origin's firewall must accept 80/443 from Cloudflare's addresses only;
 # - TLS for networks that only let 443 through: `tls-listening-port=5349`, `cert=` and `pkey=` for turn.<site>,
@@ -40,30 +41,13 @@ bps-capacity=12500000
 no-cli
 no-multicast-peers
 
-# never relay to this server's own network or any other private, reserved or special address (the relay must not
-# be a way into the machine or its neighbours)
-denied-peer-ip=0.0.0.0-0.255.255.255
-denied-peer-ip=10.0.0.0-10.255.255.255
-denied-peer-ip=100.64.0.0-100.127.255.255
-denied-peer-ip=127.0.0.0-127.255.255.255
-denied-peer-ip=169.254.0.0-169.254.255.255
-denied-peer-ip=172.16.0.0-172.31.255.255
-denied-peer-ip=192.0.0.0-192.0.0.255
-denied-peer-ip=192.0.2.0-192.0.2.255
-denied-peer-ip=192.88.99.0-192.88.99.255
-denied-peer-ip=192.168.0.0-192.168.255.255
-denied-peer-ip=198.18.0.0-198.19.255.255
-denied-peer-ip=198.51.100.0-198.51.100.255
-denied-peer-ip=203.0.113.0-203.0.113.255
-denied-peer-ip=240.0.0.0-255.255.255.255
-denied-peer-ip=::1
-denied-peer-ip=64:ff9b::-64:ff9b::ffff:ffff
-denied-peer-ip=::ffff:0.0.0.0-::ffff:255.255.255.255
-denied-peer-ip=100::-100::ffff:ffff:ffff:ffff
-denied-peer-ip=2001::-2001:1ff:ffff:ffff:ffff:ffff:ffff:ffff
-denied-peer-ip=2002::-2002:ffff:ffff:ffff:ffff:ffff:ffff:ffff
-denied-peer-ip=fc00::-fdff:ffff:ffff:ffff:ffff:ffff:ffff:ffff
-denied-peer-ip=fe80::-febf:ffff:ffff:ffff:ffff:ffff:ffff:ffff
+# never relay to anything but this relay itself (audit M-05). Every call and Space connection is relay-only on both
+# sides (iceTransportPolicy "relay"), so the only legitimate peer of an allocation is another allocation here: the
+# relay's own address, allowed by docker-compose.yml (--allowed-peer-ip=<container address>; on a live site also
+# `allowed-peer-ip=<external ip>`). Refusing every other address means the relay can't be used as a free proxy to the
+# rest of the internet, nor as a way into the machine or its neighbours.
+denied-peer-ip=0.0.0.0-255.255.255.255
+denied-peer-ip=::-ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff
 
 # its own counters, read by scripts/turn_usage.py (TURN_METRICS_URL); the port is never published
 prometheus

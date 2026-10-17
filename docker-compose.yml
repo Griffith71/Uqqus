@@ -32,6 +32,13 @@ services:
       - FEED_SERVERS_ENABLED=${FEED_SERVERS_ENABLED:-1}
       - FEED_SERVER_ALLOW_LOCAL=${FEED_SERVER_ALLOW_LOCAL:-1}
       - BOTS_ENABLED=${BOTS_ENABLED:-1}
+      # chat for a member whose Matrix account Synapse already holds with no record on the site (routes/chat.py,
+      # audit D-07): off, so a database restored without Synapse's never hands a new member an old account. Turn it on
+      # only when the two belong together (e.g. a dev database restored on its own, with test accounts)
+      - MATRIX_ADOPT_EXISTING=${MATRIX_ADOPT_EXISTING:-0}
+      # the client's address (ruqqus/helpers/client_address.py): proxies in front of the app, none locally
+      - TRUSTED_PROXY_HOPS=${TRUSTED_PROXY_HOPS:-0}
+      - TRUST_CF_CONNECTING_IP=${TRUST_CF_CONNECTING_IP:-0}
       # the creator fund (ruqqus/helpers/creator_fund.py): points a member needs to share a month (default 50, never under 10)
       - CREATOR_FUND_MIN_POINTS=${CREATOR_FUND_MIN_POINTS:-}
       # Google AdSense (ruqqus/helpers/ads.py): empty = no ads. Put real ids in .env
@@ -104,6 +111,7 @@ services:
     entrypoint: ["sh", "-c"]
     command:
       - >
+        test -f /etc/coturn/turnserver.conf || { echo "coturn/turnserver.conf is missing: run python scripts/gen_dev_env.py" >&2; exit 1; } &&
         exec turnserver -c /etc/coturn/turnserver.conf
         --relay-ip=$$(hostname -i) --allowed-peer-ip=$$(hostname -i)
     volumes:
