@@ -58,4 +58,6 @@ from .bot_accounts import *
 from .guild_flair import *
 from .guild_wiki import *
 from .guild_events import *
+from .guild_channels import *
+from .guild_roles import *
 from .collab import *

@@ -973,8 +973,10 @@ class User(Base, Stndrd, Age_times):
         on the navbar chat button), unlike chat_unread_count above."""
         from ruqqus.helpers import chat_group_store
         from ruqqus.helpers import broadcast_store
+        from ruqqus.helpers import guild_channel_store
+        # guild channels add a count of channels with news and of unread mentions (a muted channel has none)
         return (ChatUnread.total_for_user(g.db, self.id) + chat_group_store.unread_total(g.db, self.id)
-                + broadcast_store.unread_total(g.db, self.id))
+                + broadcast_store.unread_total(g.db, self.id) + guild_channel_store.unread_total(g.db, self.id, int(time.time())))
 
     @property
     def boards_modded(self):

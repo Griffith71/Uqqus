@@ -110,6 +110,16 @@ def heartbeat(r, room_id, user_id, device_id, now):
     return True
 
 
+def refresh(r, room_id):
+    """Keeps a room's keys alive while someone is in it (a voice channel goes on for as long as anyone is there; `join`
+    only does it when somebody comes)."""
+    info = meta(r, room_id)
+    if info is None:
+        return
+    for key in (_meta_key(room_id), _roster_key(room_id), _id_key(info["call_id"])):
+        r.expire(key, _EXPIRE)
+
+
 def leave(r, room_id, user_id, device_id):
     r.hdel(_roster_key(room_id), f"{user_id}:{device_id}")
 

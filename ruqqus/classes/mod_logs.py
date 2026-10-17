@@ -136,7 +136,7 @@ class ModAction(Base, Stndrd, Age_times):
         if self.user.is_deleted:
             return f"[deleted user] {self.actiontype['title'].format(self=self)}"
         elif 'admin action' in self.note or 'admin_action' in self.note:
-            return f"@{app.config['SITE_NAME'].lower()} {self.actiontype['title'].format(self=self)}"
+            return f"@{app.config['SITE_NAME']} {self.actiontype['title'].format(self=self)}"
         else:
             return f"@{self.user.username} {self.actiontype['title'].format(self=self)}"
     
@@ -282,6 +282,110 @@ ACTIONTYPES={
         "icon":"fa-tag",
         "color": "bg-primary",
         "title": 'changed whether forwards need a flair'
+    },
+    # guild channels (helpers/guild_channels.py); the note is the channel's name, escaped. A removed message's text is
+    # not logged: the entry names the channel and the writer
+    "channel_create":{
+        "str":'made a channel',
+        "icon":"fa-comments",
+        "color": "bg-primary",
+        "title": 'made a channel'
+    },
+    "channel_edit":{
+        "str":'changed a channel',
+        "icon":"fa-comments",
+        "color": "bg-primary",
+        "title": 'changed a channel'
+    },
+    "channel_delete":{
+        "str":'deleted a channel',
+        "icon":"fa-comments",
+        "color": "bg-danger",
+        "title": 'deleted a channel'
+    },
+    "channel_pin":{
+        "str":'pinned a message in a channel',
+        "icon":"fa-thumbtack",
+        "color": "bg-primary",
+        "title": 'pinned a message in a channel'
+    },
+    "channel_unpin":{
+        "str":'took a pin off a channel message',
+        "icon":"fa-thumbtack",
+        "color": "bg-muted",
+        "title": 'took a pin off a channel message'
+    },
+    "category_create":{
+        "str":'made a channel category',
+        "icon":"fa-comments",
+        "color": "bg-primary",
+        "title": 'made a channel category'
+    },
+    "category_edit":{
+        "str":'renamed a channel category',
+        "icon":"fa-comments",
+        "color": "bg-primary",
+        "title": 'renamed a channel category'
+    },
+    "category_delete":{
+        "str":'deleted a channel category',
+        "icon":"fa-comments",
+        "color": "bg-danger",
+        "title": 'deleted a channel category'
+    },
+    "role_create":{
+        "str":'made a role',
+        "icon":"fa-user-group",
+        "color": "bg-primary",
+        "title": 'made a role'
+    },
+    "role_edit":{
+        "str":'changed a role',
+        "icon":"fa-user-group",
+        "color": "bg-primary",
+        "title": 'changed a role'
+    },
+    "role_delete":{
+        "str":'deleted a role',
+        "icon":"fa-user-group",
+        "color": "bg-danger",
+        "title": 'deleted a role'
+    },
+    "role_assign":{
+        "str":'gave a role to {self.target_link}',
+        "icon":"fa-user-group",
+        "color": "bg-primary",
+        "title": 'gave a role to {self.target_link}'
+    },
+    "role_unassign":{
+        "str":'took a role from {self.target_link}',
+        "icon":"fa-user-group",
+        "color": "bg-muted",
+        "title": 'took a role from {self.target_link}'
+    },
+    "automod_settings":{
+        "str":'changed the auto-moderation of the channels',
+        "icon":"fa-comments",
+        "color": "bg-primary",
+        "title": 'changed the auto-moderation of the channels'
+    },
+    "channel_feed_add":{
+        "str":'added a bot feed {self.target_link} to a channel',
+        "icon":"fa-comments",
+        "color": "bg-primary",
+        "title": 'added a bot feed {self.target_link} to a channel'
+    },
+    "channel_feed_remove":{
+        "str":'took a bot feed {self.target_link} off a channel',
+        "icon":"fa-comments",
+        "color": "bg-muted",
+        "title": 'took a bot feed {self.target_link} off a channel'
+    },
+    "channel_message_remove":{
+        "str":'removed a message by {self.target_link} from a channel',
+        "icon":"fa-comment-slash",
+        "color": "bg-danger",
+        "title": 'removed a channel message'
     },
     # guild wiki and resources (helpers/guild_wiki.py); the note is the page's address, escaped when it was written
     "wiki_edit":{

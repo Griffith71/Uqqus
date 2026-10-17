@@ -1,0 +1,335 @@
+{% extends "guild/guild_settings.html" %}
+
+{# A guild's channels (routes/guild_channels.py, helpers/guild_channels.py): guildmasters with the config permission make,
+   change, order and delete them; with the content permission they work the reports and mute people in the channels.
+   Plain forms (no script), each with the form key. Everything typed is plain text. #}
+
+{% block pagetitle %}+{{ b.name }} Channels{% endblock %}
+
+{% macro level_select(name, selected, id) %}
+<select class="custom-select custom-select-sm" name="{{ name }}" id="{{ id }}">
+  {% for key, label in levels.items() %}<option value="{{ key }}"{% if key == selected %} selected{% endif %}>{{ label }}</option>{% endfor %}
+</select>
+{% endmacro %}
+
+{% macro slow_select(selected, id) %}
+<select class="custom-select custom-select-sm" name="slow_mode" id="{{ id }}">
+  {% for seconds, label in slow_choices %}<option value="{{ seconds }}"{% if seconds == selected %} selected{% endif %}>{{ label }}</option>{% endfor %}
+</select>
+{% endmacro %}
+
+{% macro category_select(selected, id) %}
+<select class="custom-select custom-select-sm" name="category" id="{{ id }}">
+  <option value="">No category</option>
+  {% for c in categories %}<option value="{{ c.id }}"{% if c.id == selected %} selected{% endif %}>{{ c.name }}</option>{% endfor %}
+</select>
+{% endmacro %}
+
+{% block content %}
+<div class="row">
+  <div class="col" id="guild-channels-settings">
+
+    <h2 class="h5">Channels</h2>
+    <p class="text-small text-muted">Channels are where +{{ b.name }}'s members talk, in the guild's Chat tab and in Chat. They are not end-to-end encrypted: messages go through the site, which applies the word filter and slow mode, and lets members report them and guildmasters remove them. Up to {{ max_channels }}.</p>
+
+    {% if error %}<div class="alert alert-danger" role="alert">{{ error }}</div>{% endif %}
+    {% if notice %}<div class="alert alert-success" role="status">{{ notice }}</div>{% endif %}
+
+    {% if can_configure %}
+    <h3 class="h6">Categories</h3>
+    <p class="text-small text-muted">Categories group channels in the list. Up to {{ max_categories }}. Deleting one keeps its channels.</p>
+    <div class="guild-channel-form">
+      <form class="form-inline mb-2" method="post" action="/+{{ b.name }}/mod/channels/categories/new">
+        <input type="hidden" name="formkey" value="{{ v.formkey }}">
+        <label class="sr-only" for="new-category-name">Category name</label>
+        <input type="text" class="form-control form-control-sm mr-2" id="new-category-name" name="name" maxlength="{{ category_max }}" placeholder="New category" required>
+        <button type="submit" class="btn btn-sm btn-primary"{% if categories | length >= max_categories %} disabled{% endif %}>Add</button>
+      </form>
+      {% for cat in categories %}
+      <div class="d-flex flex-wrap align-items-center mb-1" id="category-{{ cat.id }}">
+        <form class="form-inline mr-2" method="post" action="/+{{ b.name }}/mod/channels/categories/{{ cat.id }}/rename">
+          <input type="hidden" name="formkey" value="{{ v.formkey }}">
+          <label class="sr-only" for="category-name-{{ cat.id }}">Name</label>
+          <input type="text" class="form-control form-control-sm mr-1" id="category-name-{{ cat.id }}" name="name" value="{{ cat.name }}" maxlength="{{ category_max }}" required>
+          <button type="submit" class="btn btn-sm btn-secondary">Rename</button>
+        </form>
+        <form class="d-inline" method="post" action="/+{{ b.name }}/mod/channels/categories/order">
+          <input type="hidden" name="formkey" value="{{ v.formkey }}"><input type="hidden" name="ids" value="{{ cat_swaps[cat.id].up }}">
+          <button type="submit" class="btn btn-sm btn-link" aria-label="Move {{ cat.name }} up"{% if loop.first %} disabled{% endif %}><i class="fas fa-arrow-up" aria-hidden="true"></i></button>
+        </form>
+        <form class="d-inline" method="post" action="/+{{ b.name }}/mod/channels/categories/order">
+          <input type="hidden" name="formkey" value="{{ v.formkey }}"><input type="hidden" name="ids" value="{{ cat_swaps[cat.id].down }}">
+          <button type="submit" class="btn btn-sm btn-link" aria-label="Move {{ cat.name }} down"{% if loop.last %} disabled{% endif %}><i class="fas fa-arrow-down" aria-hidden="true"></i></button>
+        </form>
+        <form class="d-inline" method="post" action="/+{{ b.name }}/mod/channels/categories/{{ cat.id }}/delete"
+              onsubmit="return confirm('Delete this category? Its channels stay.');">
+          <input type="hidden" name="formkey" value="{{ v.formkey }}">
+          <button type="submit" class="btn btn-sm btn-link text-danger">Delete</button>
+        </form>
+      </div>
+      {% else %}
+      <p class="text-muted text-small mb-0">No categories yet.</p>
+      {% endfor %}
+    </div>
+    {% endif %}
+
+    {% if can_configure %}
+    <h3 class="h6">Auto-moderation</h3>
+    <p class="text-small text-muted">The guild's own rules for what is written in its channels, on top of the site's word filter. Guildmasters are never held to them. A message that breaks one is refused with a short reason that never says which word.</p>
+    <form class="guild-channel-form" method="post" action="/+{{ b.name }}/mod/channels/automod">
+      <input type="hidden" name="formkey" value="{{ v.formkey }}">
+      <div class="form-row">
+        <div class="form-group col-md-4">
+          <label for="automod-account">Account at least this old (days)</label>
+          <input type="number" min="0" max="365" class="form-control form-control-sm" id="automod-account" name="min_account_days" value="{{ automod.min_account_days if automod else 0 }}">
+        </div>
+        <div class="form-group col-md-4">
+          <label for="automod-member">In the guild at least (days) to write</label>
+          <input type="number" min="0" max="365" class="form-control form-control-sm" id="automod-member" name="min_member_days" value="{{ automod.min_member_days if automod else 0 }}">
+        </div>
+        <div class="form-group col-md-4">
+          <label for="automod-links">In the guild at least (days) to send links</label>
+          <input type="number" min="0" max="365" class="form-control form-control-sm" id="automod-links" name="link_member_days" value="{{ automod.link_member_days if automod else 0 }}">
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="automod-words">Words and phrases not allowed <span class="text-muted">(one a line, up to {{ max_words }})</span></label>
+        <textarea class="form-control form-control-sm" id="automod-words" name="blocked_words" rows="3">{{ automod.blocked_words if automod else "" }}</textarea>
+      </div>
+      <button type="submit" class="btn btn-sm btn-primary">Save auto-moderation</button>
+    </form>
+    {% endif %}
+
+    {% if can_configure %}
+    <h3 class="h6">Make a channel</h3>
+    <form class="guild-channel-form" method="post" action="/+{{ b.name }}/mod/channels/new">
+      <input type="hidden" name="formkey" value="{{ v.formkey }}">
+      <div class="form-row">
+        <div class="form-group col-md-6">
+          <label for="new-channel-name">Name</label>
+          <input type="text" class="form-control" id="new-channel-name" name="name" maxlength="{{ name_max }}" required>
+        </div>
+        <div class="form-group col-md-6">
+          <label for="new-channel-kind">Kind</label>
+          <select class="custom-select" name="kind" id="new-channel-kind">
+            {% for key, label in kinds.items() %}<option value="{{ key }}">{{ label }}</option>{% endfor %}
+          </select>
+          <small class="form-text text-muted">An announcement channel is written by guildmasters only; everyone else reads and reacts. A voice channel is a room to drop in and out of (up to 8 people). A stage channel shows a Space. This can't be changed later.</small>
+        </div>
+      </div>
+      {% if can_encrypt %}
+      <div class="custom-control custom-checkbox mb-3">
+        <input type="checkbox" class="custom-control-input" id="new-channel-encrypted" name="encrypted" value="1">
+        <label class="custom-control-label" for="new-channel-encrypted">End-to-end encrypted (text channels only)</label>
+        <small class="form-text text-muted">Nobody but its people can read it: not the site, not guildmasters. So it has no word filter, slow mode, pins, search, reports or mentions, holds up to 500 people, and is written and read in Chat. Everyone who reads it writes in it; a guildmaster can remove a message and mute someone. This can't be changed later.</small>
+      </div>
+      {% endif %}
+      <div class="form-group">
+        <label for="new-channel-topic">Topic</label>
+        <input type="text" class="form-control" id="new-channel-topic" name="topic" maxlength="{{ topic_max }}">
+      </div>
+      <div class="form-group">
+        <label for="new-channel-rules">Rules <span class="text-muted">(shown above the channel)</span></label>
+        <textarea class="form-control" id="new-channel-rules" name="rules" rows="3" maxlength="{{ rules_max }}"></textarea>
+      </div>
+      <div class="form-group">
+        <label for="new-channel-space">Space <span class="text-muted">(for a stage channel: the post's address or id)</span></label>
+        <input type="text" class="form-control" id="new-channel-space" name="space" maxlength="300">
+      </div>
+      <div class="form-row">
+        <div class="form-group col-md-6">
+          <label for="new-channel-category">Category</label>
+          {{ category_select(none, "new-channel-category") }}
+        </div>
+        <div class="form-group col-md-6">
+          <div class="custom-control custom-checkbox mt-4">
+            <input type="checkbox" class="custom-control-input" id="new-channel-gate" name="rules_gate" value="1">
+            <label class="custom-control-label" for="new-channel-gate">People accept the rules before they can write</label>
+          </div>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group col-md-4">
+          <label for="new-channel-read">Who can read</label>
+          {{ level_select("read_level", "members", "new-channel-read") }}
+        </div>
+        <div class="form-group col-md-4">
+          <label for="new-channel-write">Who can write or speak</label>
+          {{ level_select("write_level", "members", "new-channel-write") }}
+        </div>
+        <div class="form-group col-md-4">
+          <label for="new-channel-slow">Slow mode</label>
+          {{ slow_select(0, "new-channel-slow") }}
+        </div>
+      </div>
+      <button type="submit" class="btn btn-primary"{% if channels | length >= max_channels %} disabled{% endif %}>Make channel</button>
+    </form>
+    {% endif %}
+
+    <h3 class="h6 mt-4">Your channels</h3>
+    {% for c in channels %}
+    <div class="guild-channel-form" id="channel-{{ c.id }}">
+      <div class="d-flex align-items-center mb-2">
+        <i class="fas {{ {'announcement': 'fa-bullhorn', 'voice': 'fa-volume-high', 'stage': 'fa-podcast'}.get(c.kind, 'fa-hashtag') }} fa-fw text-muted mr-2" aria-hidden="true"></i>
+        <strong class="mr-2">{{ c.name }}</strong>
+        <span class="text-muted text-small">{{ kinds[c.kind] }}</span>{% if c.encrypted %}<span class="badge badge-secondary ml-2">Encrypted</span>{% endif %}
+        {% if can_configure %}
+        <span class="ml-auto">
+          <form class="d-inline" method="post" action="/+{{ b.name }}/mod/channels/order">
+            <input type="hidden" name="formkey" value="{{ v.formkey }}"><input type="hidden" name="ids" value="{{ swaps[c.id].up }}">
+            <button type="submit" class="btn btn-sm btn-link" aria-label="Move {{ c.name }} up"{% if loop.first %} disabled{% endif %}><i class="fas fa-arrow-up" aria-hidden="true"></i></button>
+          </form>
+          <form class="d-inline" method="post" action="/+{{ b.name }}/mod/channels/order">
+            <input type="hidden" name="formkey" value="{{ v.formkey }}"><input type="hidden" name="ids" value="{{ swaps[c.id].down }}">
+            <button type="submit" class="btn btn-sm btn-link" aria-label="Move {{ c.name }} down"{% if loop.last %} disabled{% endif %}><i class="fas fa-arrow-down" aria-hidden="true"></i></button>
+          </form>
+        </span>
+        {% endif %}
+      </div>
+      {% if can_configure %}
+      <form method="post" action="/+{{ b.name }}/mod/channels/{{ c.id }}/edit">
+        <input type="hidden" name="formkey" value="{{ v.formkey }}">
+        <div class="form-group">
+          <label for="name-{{ c.id }}">Name</label>
+          <input type="text" class="form-control form-control-sm" id="name-{{ c.id }}" name="name" value="{{ c.name }}" maxlength="{{ name_max }}" required>
+        </div>
+        <div class="form-group">
+          <label for="topic-{{ c.id }}">Topic</label>
+          <input type="text" class="form-control form-control-sm" id="topic-{{ c.id }}" name="topic" value="{{ c.topic }}" maxlength="{{ topic_max }}">
+        </div>
+        <div class="form-group">
+          <label for="rules-{{ c.id }}">Rules</label>
+          <textarea class="form-control form-control-sm" id="rules-{{ c.id }}" name="rules" rows="2" maxlength="{{ rules_max }}">{{ c.rules }}</textarea>
+        </div>
+        {% if c.kind == "stage" %}
+        <div class="form-group">
+          <label for="space-{{ c.id }}">Space (the post's address or id)</label>
+          <input type="text" class="form-control form-control-sm" id="space-{{ c.id }}" name="space" value="{{ space_refs.get(c.id, '') }}" maxlength="300">
+        </div>
+        {% endif %}
+        <div class="form-row">
+          <div class="form-group col-md-6">
+            <label for="category-{{ c.id }}">Category</label>
+            {{ category_select(c.category_id, "category-" ~ c.id) }}
+          </div>
+          <div class="form-group col-md-6">
+            <div class="custom-control custom-checkbox mt-4">
+              <input type="checkbox" class="custom-control-input" id="gate-{{ c.id }}" name="rules_gate" value="1"{% if c.rules_gate %} checked{% endif %}>
+              <label class="custom-control-label" for="gate-{{ c.id }}">People accept the rules before they can write</label>
+            </div>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group col-md-4">
+            <label for="read-{{ c.id }}">Who can read</label>
+            {{ level_select("read_level", c.read_level, "read-" ~ c.id) }}
+          </div>
+          <div class="form-group col-md-4">
+            {% if c.kind in ("announcement", "stage") %}
+            <label>Who can write</label>
+            <div class="text-small text-muted pt-1">{{ "Nobody types here" if c.kind == "stage" else "Guildmasters with the content permission" }}</div>
+            <input type="hidden" name="write_level" value="mods">
+            {% else %}
+            <label for="write-{{ c.id }}">{{ "Who can speak" if c.kind == "voice" else "Who can write" }}</label>
+            {{ level_select("write_level", c.write_level, "write-" ~ c.id) }}
+            {% endif %}
+          </div>
+          <div class="form-group col-md-4">
+            {% if c.kind in ("announcement", "voice", "stage") %}
+            <input type="hidden" name="slow_mode" value="0">
+            {% else %}
+            <label for="slow-{{ c.id }}">Slow mode</label>
+            {{ slow_select(c.slow_mode_seconds, "slow-" ~ c.id) }}
+            {% endif %}
+          </div>
+        </div>
+        {% if roles and c.kind != "stage" %}
+        <h4 class="h6 mt-2 mb-1">Roles <span class="text-muted font-weight-normal text-small">(allow beats deny; the channel's own rules apply to everyone else)</span></h4>
+        {% for role in roles %}
+        {% set ow = overwrites.get(c.id, {}).get(role.id, (0, 0)) %}
+        <div class="form-row align-items-center mb-1">
+          <div class="col-md-4"><span class="flair-chip flair-{{ role.colour }}">{{ role.name }}</span></div>
+          <div class="col-6 col-md-4">
+            <label class="sr-only" for="ow-read-{{ c.id }}-{{ role.id }}">{{ role.name }}: read</label>
+            <select class="custom-select custom-select-sm" name="ow_read_{{ role.id }}" id="ow-read-{{ c.id }}-{{ role.id }}">
+              {% for key, label in overwrite_labels.items() %}<option value="{{ key }}"{% if key == ow[0] %} selected{% endif %}>{{ "See: " ~ label if c.kind == "voice" else "Read: " ~ label }}</option>{% endfor %}
+            </select>
+          </div>
+          <div class="col-6 col-md-4">
+            <label class="sr-only" for="ow-write-{{ c.id }}-{{ role.id }}">{{ role.name }}: write</label>
+            <select class="custom-select custom-select-sm" name="ow_write_{{ role.id }}" id="ow-write-{{ c.id }}-{{ role.id }}">
+              {% for key, label in overwrite_labels.items() %}<option value="{{ key }}"{% if key == ow[1] %} selected{% endif %}>{{ "Speak: " ~ label if c.kind == "voice" else "Write: " ~ label }}</option>{% endfor %}
+            </select>
+          </div>
+        </div>
+        {% endfor %}
+        {% endif %}
+        <button type="submit" class="btn btn-sm btn-primary mt-2">Save</button>
+      </form>
+      <form class="mt-2" method="post" action="/+{{ b.name }}/mod/channels/{{ c.id }}/delete"
+            onsubmit="return confirm('Delete this channel? Its messages stop being shown.');">
+        <input type="hidden" name="formkey" value="{{ v.formkey }}">
+        <button type="submit" class="btn btn-sm btn-link text-danger px-0">Delete channel</button>
+      </form>
+      {% if c.kind == "announcement" %}
+      <h4 class="h6 mt-3 mb-1">Bots feeding this channel <span class="text-muted font-weight-normal text-small">(their new posts go in as messages; up to {{ max_feeds }})</span></h4>
+      {% for bot in feeds.get(c.id, []) %}
+      <form class="d-flex align-items-center mb-1" method="post" action="/+{{ b.name }}/mod/channels/{{ c.id }}/feeds/remove">
+        <input type="hidden" name="formkey" value="{{ v.formkey }}"><input type="hidden" name="username" value="{{ bot.username }}">
+        <span class="mr-2">@{{ bot.username }}</span><button type="submit" class="btn btn-sm btn-link">Remove</button>
+      </form>
+      {% else %}
+      <p class="text-muted text-small mb-1">No bot feeds this channel.</p>
+      {% endfor %}
+      <form class="form-inline mt-1" method="post" action="/+{{ b.name }}/mod/channels/{{ c.id }}/feeds/add">
+        <input type="hidden" name="formkey" value="{{ v.formkey }}">
+        <label class="sr-only" for="feed-{{ c.id }}">Bot username</label>
+        <input type="text" class="form-control form-control-sm mr-2" id="feed-{{ c.id }}" name="username" placeholder="@bot" required>
+        <button type="submit" class="btn btn-sm btn-secondary">Add a bot</button>
+      </form>
+      {% endif %}
+      {% else %}
+      <div class="text-small text-muted">{{ c.topic }}</div>
+      {% endif %}
+    </div>
+    {% else %}
+    <p class="text-muted text-small">No channels yet.</p>
+    {% endfor %}
+
+    {% if can_moderate %}
+    <h3 class="h6 mt-4">Reported messages</h3>
+    {% for report in reports %}
+    <div class="guild-channel-form">
+      <div class="text-small text-muted">#{{ report[1] }} · {{ report[5] }} report{{ "s" if report[5] != 1 else "" }}</div>
+      <blockquote class="mb-2" style="overflow-wrap: anywhere;">{{ report[3] or "(the text is no longer kept)" }}</blockquote>
+      {% if report[6] %}<ul class="text-small text-muted">{% for reason in report[6] %}<li>{{ reason }}</li>{% endfor %}</ul>{% endif %}
+      <form class="d-inline" method="post" action="/+{{ b.name }}/mod/channels/reports/{{ report[2] }}/remove">
+        <input type="hidden" name="formkey" value="{{ v.formkey }}"><button type="submit" class="btn btn-sm btn-danger">Remove the message</button>
+      </form>
+      <form class="d-inline" method="post" action="/+{{ b.name }}/mod/channels/reports/{{ report[2] }}/dismiss">
+        <input type="hidden" name="formkey" value="{{ v.formkey }}"><button type="submit" class="btn btn-sm btn-secondary">Dismiss</button>
+      </form>
+    </div>
+    {% else %}
+    <p class="text-muted text-small">Nothing reported.</p>
+    {% endfor %}
+
+    <h3 class="h6 mt-4">Muted in the channels</h3>
+    <p class="text-small text-muted">A muted person can still read, but can't write in any of +{{ b.name }}'s channels. They are told when they try.</p>
+    <form class="form-inline mb-2" method="post" action="/+{{ b.name }}/mod/channels/mute">
+      <input type="hidden" name="formkey" value="{{ v.formkey }}">
+      <label class="sr-only" for="mute-name">Username</label>
+      <input type="text" class="form-control form-control-sm mr-2" id="mute-name" name="username" placeholder="@username" required>
+      <button type="submit" class="btn btn-sm btn-secondary">Mute</button>
+    </form>
+    {% for u in muted %}
+    <form class="d-flex align-items-center mb-1" method="post" action="/+{{ b.name }}/mod/channels/unmute">
+      <input type="hidden" name="formkey" value="{{ v.formkey }}"><input type="hidden" name="username" value="{{ u.username }}">
+      <span class="mr-2">@{{ u.username }}</span><button type="submit" class="btn btn-sm btn-link">Unmute</button>
+    </form>
+    {% endfor %}
+    {% endif %}
+
+  </div>
+</div>
+{% endblock %}

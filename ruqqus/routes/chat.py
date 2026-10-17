@@ -11,12 +11,13 @@ from ruqqus.helpers.wrappers import *
 from ruqqus.helpers.get import *
 from ruqqus.helpers.chat_permissions import can_message_directly, is_blocked
 from ruqqus.helpers.chat_events import is_new_message
-from ruqqus.helpers import broadcast_store, chat_group_store
+from ruqqus.helpers import broadcast_store, chat_group_store, guild_channel_store
+from ruqqus.helpers import guild_channels as guild_channel_rules
 from ruqqus.helpers.visibility import filter_users, post_hidden, user_hidden
 from ruqqus.helpers.secret_box import encrypt_secret, decrypt_secret
 from ruqqus.classes import *
 import ruqqus.helpers.matrix_client as matrix
-from ruqqus.__main__ import app, limiter
+from ruqqus.__main__ import app, limiter, r
 
 
 def _ensure_provisioned(v):
@@ -222,6 +223,11 @@ def chat_start(v):
 def chat_conversations(v):
     status = request.args.get("status", "inbox")
     before = request.args.get("before", type=int)
+
+    # guild channels (routes/guild_channels.py) are their own tab
+    if status == "guild":
+        from ruqqus.routes.guild_channels import conversations_for
+        return jsonify({"conversations": conversations_for(v)})
 
     q = g.db.query(ChatConversation).filter(
         or_(ChatConversation.user_a_id == v.id, ChatConversation.user_b_id == v.id)
@@ -447,6 +453,10 @@ def _guard_room_event(event):
                     target not in (matrix.mxid_for(pair.user_a_id), matrix.mxid_for(pair.user_b_id)):
                 matrix.kick_as_bot(room_id, target, "Not part of this chat")
             return
+        guild_channel = guild_channel_store.by_room(g.db, room_id)
+        if guild_channel is not None:
+            _guard_guild_channel(guild_channel, event)
+            return
         if kind not in ("m.room.message", "m.reaction"):
             return
         channel = broadcast_store.by_room(g.db, room_id)
@@ -459,6 +469,68 @@ def _guard_room_event(event):
             matrix.redact_as_bot(room_id, event.get("event_id"), secrets.token_hex(12), "Reactions are emoji")
     except Exception as e:
         app.logger.warning(f"appservice guard: {e}")
+
+
+def _guard_encrypted_guild_channel(channel, event, now, remove):
+    """An end-to-end encrypted guild channel (private and Circle guilds): its people write from their own browsers, and
+    the site can't read what they wrote, so it can only keep the room to what a client sends: encrypted messages, emoji
+    reactions and taking back one's own. Nothing is signed or rated, and nothing is kept. What it can do is count: more
+    encrypted events from one person than the guild's own limit allows a minute (on top of Synapse's per-session limit)
+    are removed."""
+    kind, sender, content = event.get("type"), event.get("sender") or "", event.get("content") or {}
+    if kind == "m.room.redaction":
+        return
+    if kind == "m.reaction":
+        if not guild_channel_rules.reaction_ok((content.get("m.relates_to") or {}).get("key")):
+            remove("Reactions are emoji")
+        return
+    if kind != "m.room.encrypted":
+        remove("Not allowed in an encrypted channel")
+        return
+    user_id = _user_id_for_mxid(sender)
+    if user_id is None or guild_channel_store.burst_count(r, channel.id, user_id, now) > guild_channel_rules.PER_MINUTE:
+        remove("Too many messages in a minute")
+        return
+    guild_channel_store.touch(g.db, channel.matrix_room_id, now, user_id)
+
+
+def _guard_guild_channel(channel, event):
+    """A guild channel's room (helpers/guild_channels.py): everything in it comes through the site. A message needs the
+    site's signature for this sender, rating and text, and a nonce nobody has used; a reaction must be an emoji; a
+    sticker, a poll, an edit or anything else a member's own client could send is removed. A member taking back their
+    own message is recorded. A valid message is what moves the channel's last activity (so a stream of removed ones
+    can't light up everyone's unread dot)."""
+    room_id, kind, sender = event.get("room_id"), event.get("type"), event.get("sender") or ""
+    content = event.get("content") or {}
+    event_id = event.get("event_id")
+    now = int(time.time())
+
+    def remove(reason):
+        matrix.redact_as_bot(room_id, event_id, secrets.token_hex(12), reason)
+
+    if event.get("state_key") is not None:
+        return                                                # state events: only the bot can send them
+    if channel.encrypted:
+        _guard_encrypted_guild_channel(channel, event, now, remove)
+        return
+    if kind == "m.room.redaction":
+        target = event.get("redacts") or content.get("redacts")
+        if target:
+            guild_channel_store.remove_post(g.db, channel.id, target, now)
+        return
+    if kind == "m.reaction":
+        if not guild_channel_rules.reaction_ok((content.get("m.relates_to") or {}).get("key")):
+            remove("Reactions are emoji")
+        return
+    if kind != "m.room.message":
+        remove("Not allowed in a channel")
+        return
+    nonce = content.get(guild_channel_rules.NONCE_KEY)
+    if not guild_channel_rules.mark_ok(app.config["SECRET_KEY"], room_id, sender, content) or \
+            not guild_channel_store.claim_nonce(r, nonce, event_id):
+        remove("Written around the channel's rules")
+        return
+    guild_channel_store.touch(g.db, room_id, now, _user_id_for_mxid(sender))
 
 
 @app.route("/matrix/appservice/_matrix/app/v1/transactions/<txn_id>", methods=["PUT"])

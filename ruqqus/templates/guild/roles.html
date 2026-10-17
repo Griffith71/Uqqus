@@ -1,0 +1,112 @@
+{% extends "guild/guild_settings.html" %}
+
+{# A guild's roles (routes/guild_roles.py, helpers/guild_roles.py): named, coloured groups guildmasters give to members.
+   A role carries a few permissions; what it allows or denies in a channel is set on the channel (Channels). Colours are
+   the flair palette's names; names are plain text. Plain forms with the form key, no script. #}
+
+{% block pagetitle %}+{{ b.name }} Roles{% endblock %}
+
+{% block content %}
+<div class="row">
+  <div class="col" id="guild-roles-settings">
+
+    <h2 class="h5">Roles</h2>
+    <p class="text-small text-muted">A role is a coloured name beside someone's messages in +{{ b.name }}'s channels. It can let its people skip slow mode, remove or pin messages, and on each channel (under <a href="/+{{ b.name }}/mod/channels">Channels</a>) allow or deny reading and writing over the channel's own rules. Where one role allows and another denies, allowing wins. A role never lets someone into a channel of a guild they can't see, and never changes what a guildmaster can do. Up to {{ max_roles }}.</p>
+
+    {% if error %}<div class="alert alert-danger" role="alert">{{ error }}</div>{% endif %}
+    {% if notice %}<div class="alert alert-success" role="status">{{ notice }}</div>{% endif %}
+
+    <h3 class="h6">Make a role</h3>
+    <form class="guild-channel-form" method="post" action="/+{{ b.name }}/mod/roles/new">
+      <input type="hidden" name="formkey" value="{{ v.formkey }}">
+      <div class="form-row">
+        <div class="form-group col-md-6">
+          <label for="new-role-name">Name</label>
+          <input type="text" class="form-control" id="new-role-name" name="name" maxlength="{{ name_max }}" required>
+        </div>
+        <div class="form-group col-md-6">
+          <label for="new-role-colour">Colour</label>
+          <select class="custom-select" name="colour" id="new-role-colour">
+            {% for c in colours %}<option value="{{ c }}">{{ c | capitalize }}</option>{% endfor %}
+          </select>
+        </div>
+      </div>
+      {% for perm in perms %}
+      <div class="custom-control custom-checkbox">
+        <input type="checkbox" class="custom-control-input" id="new-role-{{ perm }}" name="perm_{{ perm }}" value="1">
+        <label class="custom-control-label" for="new-role-{{ perm }}">{{ perm_labels[perm] }}</label>
+      </div>
+      {% endfor %}
+      <button type="submit" class="btn btn-primary mt-3"{% if roles | length >= max_roles %} disabled{% endif %}>Make role</button>
+    </form>
+
+    <h3 class="h6 mt-4">Your roles</h3>
+    {% for role in roles %}
+    <div class="guild-channel-form" id="role-{{ role.id }}">
+      <div class="d-flex align-items-center mb-2">
+        <span class="flair-chip flair-{{ role.colour }}">{{ role.name }}</span>
+        <span class="text-muted text-small">{{ people[role.id].count }} {{ "person" if people[role.id].count == 1 else "people" }}</span>
+        <span class="ml-auto">
+          <form class="d-inline" method="post" action="/+{{ b.name }}/mod/roles/order">
+            <input type="hidden" name="formkey" value="{{ v.formkey }}"><input type="hidden" name="ids" value="{{ swaps[role.id].up }}">
+            <button type="submit" class="btn btn-sm btn-link" aria-label="Move {{ role.name }} up"{% if loop.first %} disabled{% endif %}><i class="fas fa-arrow-up" aria-hidden="true"></i></button>
+          </form>
+          <form class="d-inline" method="post" action="/+{{ b.name }}/mod/roles/order">
+            <input type="hidden" name="formkey" value="{{ v.formkey }}"><input type="hidden" name="ids" value="{{ swaps[role.id].down }}">
+            <button type="submit" class="btn btn-sm btn-link" aria-label="Move {{ role.name }} down"{% if loop.last %} disabled{% endif %}><i class="fas fa-arrow-down" aria-hidden="true"></i></button>
+          </form>
+        </span>
+      </div>
+      <form method="post" action="/+{{ b.name }}/mod/roles/{{ role.id }}/edit">
+        <input type="hidden" name="formkey" value="{{ v.formkey }}">
+        <div class="form-row">
+          <div class="form-group col-md-6">
+            <label for="role-name-{{ role.id }}">Name</label>
+            <input type="text" class="form-control form-control-sm" id="role-name-{{ role.id }}" name="name" value="{{ role.name }}" maxlength="{{ name_max }}" required>
+          </div>
+          <div class="form-group col-md-6">
+            <label for="role-colour-{{ role.id }}">Colour</label>
+            <select class="custom-select custom-select-sm" name="colour" id="role-colour-{{ role.id }}">
+              {% for c in colours %}<option value="{{ c }}"{% if c == role.colour %} selected{% endif %}>{{ c | capitalize }}</option>{% endfor %}
+            </select>
+          </div>
+        </div>
+        {% for perm in perms %}
+        <div class="custom-control custom-checkbox">
+          <input type="checkbox" class="custom-control-input" id="role-{{ role.id }}-{{ perm }}" name="perm_{{ perm }}" value="1"{% if role["perm_" ~ perm] %} checked{% endif %}>
+          <label class="custom-control-label" for="role-{{ role.id }}-{{ perm }}">{{ perm_labels[perm] }}</label>
+        </div>
+        {% endfor %}
+        <button type="submit" class="btn btn-sm btn-primary mt-2">Save</button>
+      </form>
+
+      <h4 class="h6 mt-3 mb-1">People</h4>
+      {% for u in people[role.id].users %}
+      <form class="d-flex align-items-center mb-1" method="post" action="/+{{ b.name }}/mod/roles/{{ role.id }}/remove">
+        <input type="hidden" name="formkey" value="{{ v.formkey }}"><input type="hidden" name="username" value="{{ u.username }}">
+        <span class="mr-2">@{{ u.username }}</span><button type="submit" class="btn btn-sm btn-link" aria-label="Take {{ role.name }} from @{{ u.username }}">Remove</button>
+      </form>
+      {% else %}
+      <p class="text-muted text-small mb-1">Nobody has this role yet.</p>
+      {% endfor %}
+      {% if people[role.id].count > shown %}<p class="text-muted text-small">Showing the first {{ shown }}.</p>{% endif %}
+      <form class="form-inline mt-2" method="post" action="/+{{ b.name }}/mod/roles/{{ role.id }}/add">
+        <input type="hidden" name="formkey" value="{{ v.formkey }}">
+        <label class="sr-only" for="role-add-{{ role.id }}">Username</label>
+        <input type="text" class="form-control form-control-sm mr-2" id="role-add-{{ role.id }}" name="username" placeholder="@username" required>
+        <button type="submit" class="btn btn-sm btn-secondary">Give this role</button>
+      </form>
+
+      <form class="mt-2" method="post" action="/+{{ b.name }}/mod/roles/{{ role.id }}/delete"
+            onsubmit="return confirm('Delete this role? Everyone loses it, and the channels forget what it allowed or denied.');">
+        <input type="hidden" name="formkey" value="{{ v.formkey }}">
+        <button type="submit" class="btn btn-sm btn-link text-danger px-0">Delete role</button>
+      </form>
+    </div>
+    {% else %}
+    <p class="text-muted text-small">No roles yet.</p>
+    {% endfor %}
+
+  </div>
+</div>
+{% endblock %}

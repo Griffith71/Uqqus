@@ -104,3 +104,42 @@ export const leaveChannel = (formkey, channelId) => postJSON(`/api/broadcasts/${
 export const markChannelRead = (formkey, channelId) => postJSON(`/api/broadcasts/${channelId}/mark_read`, formkey);
 export const reportChannelMessage = (formkey, channelId, eventId, reason) =>
   postJSON(`/api/broadcasts/${channelId}/report`, formkey, { event_id: eventId, reason });
+
+// --- guild channels (routes/guild_channels.py) -------------------------------------------------------------------------
+export const joinGuildChannel = (formkey, channelId) => postJSON(`/api/guilds/channels/${channelId}/join`, formkey);
+export const postToGuildChannel = (formkey, channelId, body, quote, thread) => {
+  const extra = { body };
+  if (quote) extra.quote = quote;
+  if (thread) extra.thread = thread;
+  return postJSON(`/api/guilds/channels/${channelId}/messages`, formkey, extra);
+};
+export const markGuildChannelRead = (formkey, channelId) => postJSON(`/api/guilds/channels/${channelId}/mark_read`, formkey);
+export const reportGuildChannelMessage = (formkey, channelId, eventId, reason) =>
+  postJSON(`/api/guilds/channels/${channelId}/report`, formkey, { event_id: eventId, reason });
+export const removeGuildChannelMessage = (formkey, channelId, eventId) =>
+  postJSON(`/api/guilds/channels/${channelId}/remove`, formkey, { event_id: eventId });
+
+// names for the people who wrote in a channel: only people who did are ever answered
+export async function guildChannelSenders(channelId, userIds) {
+  const resp = await fetch(`/api/guilds/channels/${channelId}/senders?ids=${userIds.join(",")}`, { credentials: "same-origin" });
+  if (!resp.ok) throw new Error("Could not load names");
+  return (await resp.json()).senders || {};
+}
+export const pinGuildChannelMessage = (formkey, channelId, eventId, on) =>
+  postJSON(`/api/guilds/channels/${channelId}/pin`, formkey, { event_id: eventId, on: on ? "1" : "0" });
+export const muteGuildChannel = (formkey, channelId, hours) =>
+  postJSON(`/api/guilds/channels/${channelId}/mute`, formkey, { hours: String(hours) });
+export const acceptGuildChannelRules = (formkey, channelId) => postJSON(`/api/guilds/channels/${channelId}/accept_rules`, formkey);
+
+export async function guildChannelPins(channelId) {
+  const resp = await fetch(`/api/guilds/channels/${channelId}/pins`, { credentials: "same-origin" });
+  if (!resp.ok) throw new Error("Could not load the pinned messages");
+  return (await resp.json()).pins || [];
+}
+
+export async function searchGuildChannel(channelId, query) {
+  const resp = await fetch(`/api/guilds/channels/${channelId}/search?q=${encodeURIComponent(query)}`, { credentials: "same-origin" });
+  if (resp.status === 429) throw new Error("Searching too fast. Wait a moment.");
+  if (!resp.ok) throw new Error("Could not search");
+  return resp.json();
+}

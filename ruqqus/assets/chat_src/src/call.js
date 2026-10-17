@@ -135,6 +135,8 @@ function applyRoster(peers) {
   for (const p of state.roster) tile(`${p.mxid}|${p.device_id}`, p, false);
   state.mesh.setRoster(state.roster);
   if (!state.roster.length && !boot.isGroup && state.connected.size === 0) setStatus(boot.answer ? "Connecting…" : "Ringing…");
+  // a voice channel is there whether or not anyone else is
+  else if (boot.isVoice && !state.roster.length && state.connected.size === 0) setStatus("You're the only one here.");
 }
 
 async function beat() {

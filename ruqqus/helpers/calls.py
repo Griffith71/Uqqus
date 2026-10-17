@@ -33,6 +33,7 @@ SIGNAL_TYPE = "org.uqqus.call.signal"       # the to-device event the browsers e
 NOT_ALLOWED = "You can't call in this chat."
 REQUEST_FIRST = "You can call once they've accepted your message request."
 FULL = f"This call is full ({AUDIO_MAX} people)."
+VOICE_FULL = f"This voice channel is full ({AUDIO_MAX} people)."
 TOO_MANY_STARTS = "You've started a lot of calls in the last hour. Try again later."
 
 

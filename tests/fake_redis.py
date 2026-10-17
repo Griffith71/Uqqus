@@ -28,6 +28,9 @@ class FakeRedis:
     def expire(self, key, seconds):
         return key in self.data
 
+    def ttl(self, key):
+        return 30 if key in self.data else -2
+
     # hashes
     def _hash(self, key):
         value = self.data.setdefault(key, {})

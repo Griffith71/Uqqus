@@ -259,6 +259,41 @@ def recompute():
         except Exception as e:
             print_(f"guild event reminders failed: {e}")
 
+        # guild channel rooms: out of them everyone who should not be there, announcement writers, old message text
+        try:
+            from ruqqus.helpers import guild_channel_sync, call_store
+            from ruqqus.__main__ import r as redis_client
+            import ruqqus.helpers.matrix_client as matrix
+            roster_of = (lambda room: {e["user_id"] for e in call_store.roster(redis_client, room, now)}) if redis_client is not None else None
+            print_(f"guild channels: {guild_channel_sync.run(db, now, matrix.kick_as_bot, matrix.set_writers, matrix.mxid_for, print_, roster_of)} taken out of rooms")
+            db.commit()
+        except Exception as e:
+            db.rollback()
+            print_(f"guild channels sync failed: {e}")
+
+        # bot accounts' new posts into the announcement channels they feed (helpers/guild_channel_feeds.py)
+        try:
+            from ruqqus.helpers import guild_channel_feeds
+            from ruqqus.helpers.word_filter_store import get_filter
+            from ruqqus.__main__ import app as flask_app, r as feed_redis
+            import ruqqus.helpers.matrix_client as feed_matrix
+            import secrets as feed_secrets
+            if feed_redis is not None:
+                feed_sent = guild_channel_feeds.run(
+                    db, feed_redis, now,
+                    provision=lambda bot_id: guild_channel_feeds.provision_bot(db, bot_id, now, feed_matrix.provision_user),
+                    put_in_room=feed_matrix.put_in_room, set_writers=feed_matrix.set_writers,
+                    send=lambda room, mxid, content: feed_matrix.send_as(room, mxid, content, feed_secrets.token_hex(12)),
+                    mxid_for=feed_matrix.mxid_for, secret=flask_app.config["SECRET_KEY"],
+                    rate=lambda text_: get_filter(db).severity(text_),
+                    link_of=lambda post_id, url: guild_channel_feeds.post_link(
+                        flask_app.config["SERVER_NAME"], flask_app.config.get("FORCE_HTTPS"), post_id, url), log=print_)
+                db.commit()
+                print_(f"guild channel feeds: {feed_sent} items sent")
+        except Exception as e:
+            db.rollback()
+            print_(f"guild channel feeds failed: {e}")
+
         # shared-draft edits, deleted live updates and old view counts are not kept forever (helpers/retention.py)
         try:
             from ruqqus.helpers import retention

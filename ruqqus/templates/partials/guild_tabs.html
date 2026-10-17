@@ -1,8 +1,9 @@
 {#
   What a guild draws above its posts (board.html's `feedtop`) and on its Wiki and Events pages (guild/guild_tab_page.html).
 
-  guild_tabs(b, v, active): Posts · Wiki · Events. Wiki shows while the wiki is on (or to the guildmasters who can
-  switch it on); Events while the guild has an event coming (or to the guildmasters who make them).
+  guild_tabs(b, v, active): Posts · Chat · Wiki · Events. Chat shows to a signed-in reader while the guild has channels
+  (routes/guild_channels.py); Wiki while the wiki is on (or to the guildmasters who can switch it on); Events while the
+  guild has an event coming (or to the guildmasters who make them).
   guild_resources(b, v): the guild's pinned resources (helpers/guild_wiki.py), as this reader may follow them
   (`guild_resources_for`: a post they can't open is left out). Links leave the site with nofollow.
   pinned_row(posts): the guild's pinned posts as one row above the feed instead of mixed into its first page.
@@ -13,9 +14,13 @@
 {% set gm = b.has_mod(v, "content") %}
 {% set show_wiki = b.wiki_enabled or gm %}
 {% set show_events = gm or guild_has_events(b, v) %}
-{% if show_wiki or show_events %}
+{% set show_chat = guild_has_chat(b, v) %}
+{% if show_wiki or show_events or show_chat %}
 <nav class="guild-tabs" aria-label="+{{ b.name }}">
   <a class="guild-tab{% if active == 'posts' %} is-on{% endif %}" href="{{ b.permalink }}"{% if active == 'posts' %} aria-current="page"{% endif %}><i class="fas fa-newspaper fa-fw" aria-hidden="true"></i>Posts</a>
+  {% if show_chat %}
+  <a class="guild-tab{% if active == 'chat' %} is-on{% endif %}" href="{{ b.permalink }}/chat"{% if active == 'chat' %} aria-current="page"{% endif %}><i class="fas fa-comments fa-fw" aria-hidden="true"></i>Chat</a>
+  {% endif %}
   {% if show_wiki %}
   <a class="guild-tab{% if active == 'wiki' %} is-on{% endif %}" href="{{ b.permalink }}/wiki"{% if active == 'wiki' %} aria-current="page"{% endif %}><i class="fas fa-book fa-fw" aria-hidden="true"></i>Wiki{% if not b.wiki_enabled %} <span class="text-muted text-small-extra">(off)</span>{% endif %}</a>
   {% endif %}

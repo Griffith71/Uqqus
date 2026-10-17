@@ -107,6 +107,8 @@
       {% if mod.perm_appearance %}<li class="mb-2"><a class="text-muted" href="/+{{ b.name }}/mod/appearance"><i class="fas fa-palette fa-fw text-center mr-2"></i>Appearance</a></li>{% endif %}
       {% if mod.perm_config %}<li class="mb-2"><a class="text-muted" href="/+{{ b.name }}/mod/flair"><i class="fas fa-tag fa-fw text-center mr-2"></i>Flair</a></li>{% endif %}
       {% if mod.perm_config %}<li class="mb-2"><a class="text-muted" href="/+{{ b.name }}/mod/resources"><i class="fas fa-thumbtack fa-fw text-center mr-2"></i>Resources</a></li>{% endif %}
+      {% if mod.perm_config %}<li class="mb-2"><a class="text-muted" href="/+{{ b.name }}/mod/roles"><i class="fas fa-user-group fa-fw text-center mr-2"></i>Roles</a></li>{% endif %}
+      {% if mod.perm_content or mod.perm_config %}<li class="mb-2"><a class="text-muted" href="/+{{ b.name }}/mod/channels"><i class="fas fa-comments fa-fw text-center mr-2"></i>Channels</a></li>{% endif %}
       {% if mod.perm_content or mod.perm_config %}<li class="mb-2"><a class="text-muted" href="/+{{ b.name }}/wiki"><i class="fas fa-book fa-fw text-center mr-2"></i>Wiki</a></li>{% endif %}
       {% if mod.perm_content %}<li class="mb-2"><a class="text-muted" href="/+{{ b.name }}/events"><i class="fas fa-calendar-days fa-fw text-center mr-2"></i>Events</a></li>{% endif %}
       <li class="mb-2"><a class="text-muted" href="/+{{ b.name }}/mod/mods"><i class="fas fa-crown fa-fw text-center mr-2"></i>Guildmasters</a></li>

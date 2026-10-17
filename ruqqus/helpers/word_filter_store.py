@@ -148,5 +148,13 @@ def rescan(db, batch=500, log=None):
             if log:
                 log(f"{model.__name__}: {len(rows)} checked")
 
+    # guild channels' names, topics and rules (helpers/guild_channels.py)
+    from ruqqus.helpers import guild_channel_store
+    guild_channel_store.rescan_severities(db, f.severity)
+    guild_channel_store.rescan_category_severities(db, f.severity)
+    from ruqqus.helpers import guild_role_store
+    guild_role_store.rescan_severities(db, f.severity)
+    db.commit()
+
     return changed
 

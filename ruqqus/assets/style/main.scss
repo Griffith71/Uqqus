@@ -144,6 +144,12 @@ $yiq-contrasted-threshold:  160 !default;
     }
   }
 
+// The page's three columns, one block centred on the page (Reddit's 272 / 740 / 316, two pixels off the feed so the block
+// stays the navbar's 1326px). The notifications / chat panel takes the right sidebar's width, so opening it moves nothing.
+$layout-left: 272px;
+$layout-feed: 738px;
+$layout-right: 316px;
+
 // Links: the brand colour is too light for text on white (#148fd5 is 3.6:1); a darker shade of it passes AA.
 // Buttons and fills keep the brand colour itself.
 $link-color: darken($primary, 20%);
@@ -1827,8 +1833,8 @@ body.embedded .share-chat-item {
     #main-content-row.panel-open > #side-panel {
         display: flex;
         flex-direction: column;
-        flex: 0 0 380px;
-        max-width: 380px;
+        flex: 0 0 $layout-right;
+        max-width: $layout-right;
         position: sticky;
         top: var(--navbar-height, 55px);
         height: calc(100vh - var(--navbar-height, 55px));
@@ -1886,18 +1892,6 @@ body.embedded #chat-app {
     height: 100vh !important;
 }
 
-#composer .inline-composer .form-control.ic-title {
-    background: transparent !important;
-    border-color: transparent !important;
-    box-shadow: none !important;
-    resize: none;
-    overflow: hidden;
-    min-height: 2.5rem;
-    padding-left: 0;
-    padding-right: 0;
-    font-size: 1.1rem;
-}
-
 // The conversation list (wider on a big screen: see "Chat has no sidebars")
 #chat-list-pane {
     width: 250px;
@@ -1941,6 +1935,63 @@ body.embedded #chat-app {
     #chat #chat-app.chat-has-room #chat-mobile-bar {
         display: block;
     }
+}
+
+// A guild's Chat tab frames this page for one channel: no conversation list, the thread takes the whole frame
+#chat #chat-app.chat-single #chat-list-pane,
+#chat #chat-app.chat-single #chat-mobile-bar {
+    display: none !important;
+}
+
+// the guild page above the frame already names the channel: the header keeps only its buttons (search, pins, notifications)
+#chat #chat-app.chat-single #chat-thread-header {
+    justify-content: flex-end;
+}
+
+#chat #chat-app.chat-single #chat-thread-header .chat-gc-id {
+    display: none !important;
+}
+
+#chat #chat-app.chat-single #chat-thread-pane {
+    display: flex !important;
+    flex: 1 1 0;
+    min-height: 0;
+    height: auto !important;
+}
+
+// A guild channel's panel over the messages: a thread, the pinned messages, search, notifications (ui.js)
+#chat-thread-pane {
+    position: relative;
+}
+
+.chat-panel {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 5;
+    flex-direction: column;
+    background-color: $white;
+}
+
+.chat-panel-row {
+    overflow-wrap: anywhere;
+}
+
+.chat-mention {
+    border-left: 3px solid $primary;
+}
+
+.chat-thread-link {
+    font-size: 0.8rem;
+}
+
+.chat-rules-text {
+    white-space: pre-line;
+    overflow-wrap: anywhere;
+    max-height: 8rem;
+    overflow-y: auto;
 }
 
 // Chat messages: actions on hover, quotes, reactions (assets/chat_src/src/ui.js)
@@ -2355,8 +2406,8 @@ body.embedded #chat-app {
 
 // The navbar lines up with the page's columns (assets/js/nav_align.js): the logo
 // with the left sidebar's content, the account section with the right sidebar's,
-// and the search box with the feed. The page is a block of sidebar + feed (726px)
-// + sidebar, 1326px, centered; each side adds the 15px column gutter. These are the
+// and the search box with the feed. The page is a block of sidebar (272px) + feed (738px)
+// + sidebar (316px), 1326px, centered; each side adds the 15px column gutter. These are the
 // values for that default block; the script replaces them with the real column edges
 // when the left sidebar is collapsed or a side panel is open.
 @media (min-width: 992px) {
@@ -2371,10 +2422,10 @@ body.embedded #chat-app {
     }
 
     // left sidebar folded to its 65px rail (the sidebar_pref cookie, html.sidebar-folded): a block of
-    // 65 + 726 + 300 = 1091px, centered, so the first paint is already right
+    // 65 + 738 + 316 = 1119px, centered, so the first paint is already right
     html.sidebar-folded #navbar > .container-fluid {
-        padding-left: var(--nav-inset-left, #{"max(15px, calc((100% - 1091px) / 2 + 15px))"});
-        padding-right: var(--nav-inset-right, #{"max(15px, calc((100% - 1091px) / 2 + 15px))"});
+        padding-left: var(--nav-inset-left, #{"max(15px, calc((100% - 1119px) / 2 + 15px))"});
+        padding-right: var(--nav-inset-right, #{"max(15px, calc((100% - 1119px) / 2 + 15px))"});
     }
 
     // the search box is centered over the feed by the script (it depends on the logo's width): it is hidden
@@ -3154,8 +3205,8 @@ html.feed-live {
 // Sidebar content
 
 .sidebar {
-    -ms-flex: 0 0 300px;
-    flex: 0 0 300px;
+    -ms-flex: 0 0 $layout-right;
+    flex: 0 0 $layout-right;
 }
 
 .sidebar h1, .sidebar h2, .sidebar h3, .sidebar h4, .sidebar h5, .sidebar h6 {
@@ -3296,8 +3347,8 @@ html.feed-live {
 
 @media (min-width: 1199.98px) {
     .sidebar.sidebar-left {
-        -ms-flex: 0 0 300px;
-        flex: 0 0 300px;
+        -ms-flex: 0 0 $layout-left;
+        flex: 0 0 $layout-left;
     }
 }
 
@@ -5869,9 +5920,9 @@ textarea, input[type=text] {
 
 }
 
-// Reddit-style proportions: the feed/post column is capped at 726px (696px
-// of card, 640px of media) and the left sidebar (300px), main column and
-// right sidebar (300px) form ONE block centered on the page, so the
+// Reddit-style proportions: the feed/post column is capped at 738px (the card fills it,
+// 640px of media) and the left sidebar (272px), main column and
+// right sidebar (316px) form ONE block centered on the page, so the
 // sidebars sit right next to the content instead of at the screen edges.
 // justify-content needs !important to beat the markup's
 // .justify-content-around. Below the sidebar breakpoint (lg / 992px,
@@ -5885,10 +5936,28 @@ textarea, input[type=text] {
     }
 
     #frontpage #main-content-col, #userpage #main-content-col, #search #main-content-col, #guild #main-content-col, #settings-guild #main-content-col, #thread #main-content-col, #notifications #main-content-col, #curations #main-content-col, #content_history #main-content-col {
-        max-width: 726px;
+        max-width: $layout-feed;
         min-width: 0;
         margin-left: 0;
         margin-right: 0;
+        float: none;
+    }
+}
+
+// Regions (templates/regions.html): a map page with no sidebars, as wide as the navbar's content (the block's 1326px
+// less the 15px gutter each side), so its edges are the logo's and the account area's. Chat and Settings do the same.
+@media (min-width: 992px) {
+    #regions #main-content-row {
+        justify-content: center !important;
+    }
+
+    #regions #main-content-col {
+        max-width: 1296px;
+        min-width: 0;
+        padding-left: 0;
+        padding-right: 0;
+        margin-left: 15px;
+        margin-right: 15px;
         float: none;
     }
 }
@@ -5955,11 +6024,11 @@ textarea, input[type=text] {
     max-width: 572px;
 }
 
-// Create a post / create a guild: a 726px form column and a 300px rules
-// column, centered (the same widths as the feed and its right sidebar).
+// Create a post / create a guild: a form column and a rules column, centered
+// (the same widths as the feed and its right sidebar).
 @media (min-width: 992px) {
     #submit .container {
-        max-width: 1026px;
+        max-width: $layout-feed + $layout-right;
     }
 
     // let the form column shrink instead of pushing the rules below it
@@ -5968,15 +6037,15 @@ textarea, input[type=text] {
     }
 
     #submit .submit-main-col {
-        -ms-flex: 0 1 726px;
-        flex: 0 1 726px;
-        max-width: 726px;
+        -ms-flex: 0 1 $layout-feed;
+        flex: 0 1 $layout-feed;
+        max-width: $layout-feed;
     }
 
     #submit .submit-side-col {
-        -ms-flex: 0 0 300px;
-        flex: 0 0 300px;
-        max-width: 300px;
+        -ms-flex: 0 0 $layout-right;
+        flex: 0 0 $layout-right;
+        max-width: $layout-right;
     }
 }
 
@@ -6992,13 +7061,13 @@ html {
         content: "";
         order: 1;
         flex: 1 1 0;
-        max-width: 726px;
+        max-width: $layout-feed;
     }
 
     #main-content-row.expects-right-sidebar:not(:has(> .sidebar:not(#sidebar-left)))::after {
         content: "";
         order: 2;
-        flex: 0 0 300px;
+        flex: 0 0 $layout-right;
     }
 }
 
@@ -7421,6 +7490,157 @@ $audience-hover: $gray-200;
     font-size: 0.75rem;
     line-height: 1.4;
     color: $muted;
+}
+
+// The cards layout of the same field (layout="cards": the Create a post page). The real radios and ticks stay in the
+// markup, visually hidden; their labels are the cards and chips.
+.audience-cards {
+    margin-bottom: 0.75rem;
+    padding-top: 0;
+}
+
+// Create a post: the picture preview has nothing to show until a picture is chosen
+#submit #image-preview:not([src]) {
+    display: none !important;
+}
+
+.audience-choices {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem;
+}
+
+.audience-radio,
+.audience-chip-input {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: 0;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.audience-choice {
+    display: flex;
+    align-items: flex-start;
+    font-size: 0.9375rem;
+    font-weight: 400;
+    letter-spacing: normal;
+    text-transform: none;
+    gap: 0.65rem;
+    margin: 0;
+    padding: 0.7rem 0.85rem;
+    cursor: pointer;
+    border: 1px solid $audience-border;
+    border-radius: 12px;
+    transition: border-color 150ms ease, background-color 150ms ease;
+}
+
+.audience-choice > i {
+    margin-top: 0.2rem;
+    color: $muted;
+}
+
+.audience-choice-text {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.25;
+}
+
+.audience-choice-text small {
+    font-size: 0.75rem;
+    letter-spacing: normal;
+    text-transform: none;
+    color: $muted;
+}
+
+.audience-radio:checked + .audience-choice {
+    border-color: $primary;
+    box-shadow: inset 0 0 0 1px $primary;
+}
+
+.audience-radio:checked + .audience-choice > i {
+    color: $primary;
+}
+
+.audience-radio:focus-visible + .audience-choice,
+.audience-chip-input:focus-visible + .audience-chip {
+    outline: 2px solid $primary;
+    outline-offset: 2px;
+}
+
+.audience-cards .audience-circles {
+    margin: 0.6rem 0 0;
+    padding: 0.75rem 0.85rem;
+    border: 1px dashed $audience-border;
+    border-radius: 12px;
+}
+
+.audience-cards[data-mode="0"] .audience-circles {
+    display: none;
+}
+
+.audience-subtitle {
+    display: block;
+    margin-bottom: 0.45rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: $muted;
+}
+
+.audience-chip-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+}
+
+.audience-chip {
+    margin: 0;
+    letter-spacing: normal;
+    text-transform: none;
+    padding: 0.3rem 0.8rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    cursor: pointer;
+    border: 1px solid $audience-border;
+    border-radius: 999px;
+    transition: background-color 150ms ease, color 150ms ease;
+}
+
+.audience-chip small {
+    margin-left: 0.35rem;
+    font-size: 0.75rem;
+    font-weight: 400;
+    color: $muted;
+}
+
+.audience-chip-input:checked + .audience-chip {
+    color: #fff;
+    background: $primary;
+    border-color: $primary;
+}
+
+.audience-chip-input:checked + .audience-chip small {
+    color: rgba(255, 255, 255, 0.85);
+}
+
+.audience-empty {
+    margin: 0.6rem 0 0;
+    font-size: 0.8125rem;
+    color: $muted;
+}
+
+@media (max-width: 399.98px) {
+    .audience-choices {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .audience-choice,
+    .audience-chip {
+        transition: none;
+    }
 }
 
 // Settings > Circles (settings_circle.html, settings_circle_one.html)
@@ -7929,6 +8149,160 @@ $gp-removed-fg: #a4161a;
     min-height: 50vh;
 }
 
+// Guild channels (templates/guild/chat.html, routes/guild_channels.py): the channel list beside the chat page in a frame
+.guild-chat {
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
+}
+
+.guild-chat-list {
+    flex: 0 0 13rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.guild-chat-group {
+    color: $gp-muted;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    margin: 0.75rem 0 0.375rem;
+}
+
+.guild-chat-channel {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.375rem 0.625rem;
+    border-radius: 0.375rem;
+    color: $gp-muted !important;
+    font-weight: 600;
+    text-decoration: none !important;
+    overflow-wrap: anywhere;
+}
+
+.guild-chat-channel:hover, .guild-chat-channel:focus-visible {
+    color: $gp-text !important;
+    background: rgba(128, 128, 128, 0.12);
+}
+
+.guild-chat-channel.is-on {
+    color: $gp-text !important;
+    background: rgba(128, 128, 128, 0.2);
+}
+
+.guild-chat-channel.is-unread {
+    color: $gp-text !important;
+}
+
+.guild-chat-dot {
+    width: 0.5rem;
+    height: 0.5rem;
+    margin-left: auto;
+    flex: none;
+    border-radius: 50%;
+    background: $primary;
+}
+
+.guild-chat-badge {
+    margin-left: auto;
+    flex: none;
+    min-width: 1.25rem;
+    padding: 0 0.375rem;
+    border-radius: 0.625rem;
+    background: $danger;
+    color: $white;
+    font-size: 0.75rem;
+    line-height: 1.25rem;
+    text-align: center;
+}
+
+.guild-chat-count {
+    margin-left: auto;
+    flex: none;
+    padding: 0 0.375rem;
+    border-radius: 0.625rem;
+    background: rgba(128, 128, 128, 0.25);
+    font-size: 0.75rem;
+    line-height: 1.25rem;
+}
+
+.guild-chat-channel.is-muted {
+    opacity: 0.6;
+}
+
+.guild-chat-main {
+    flex: 1 1 0;
+    min-width: 0;
+    border: 1px solid $gp-border;
+    border-radius: 0.5rem;
+    overflow: hidden;
+}
+
+.guild-chat-head {
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid $gp-border;
+}
+
+.guild-chat-topic {
+    color: $gp-muted;
+    font-size: 0.875rem;
+    overflow-wrap: anywhere;
+}
+
+.guild-chat-rules {
+    margin-top: 0.5rem;
+    font-size: 0.875rem;
+}
+
+.guild-chat-rules-text {
+    white-space: pre-line;
+    overflow-wrap: anywhere;
+    margin: 0.375rem 0 0;
+}
+
+.guild-chat-frame {
+    display: block;
+    width: 100%;
+    height: 70vh;
+    min-height: 24rem;
+    border: 0;
+}
+
+.guild-channel-form {
+    border: 1px solid $gp-border;
+    border-radius: 0.5rem;
+    padding: 0.75rem 1rem;
+    margin-bottom: 0.75rem;
+}
+
+@media (max-width: 767.98px) {
+    .guild-chat {
+        flex-direction: column;
+    }
+
+    .guild-chat-list {
+        flex: none;
+        display: flex;
+        gap: 0.25rem;
+        width: 100%;
+        overflow-x: auto;
+    }
+
+    .guild-chat-group {
+        display: none;
+    }
+
+    // stacked, the chat panel takes its own height (a zero flex basis would collapse it)
+    .guild-chat-main {
+        flex: none;
+        width: 100%;
+    }
+}
+
 .wiki-layout {
     gap: 1.5rem;
 }
@@ -8351,6 +8725,311 @@ $gp-removed-fg: #a4161a;
     text-decoration: underline;
 }
 
+$ex-surface: $white;
+$ex-field: $gray-100;
+$ex-border: $gray-300;
+$ex-hover: $gray-100;
+$ex-text: $black;
+$ex-muted: $muted;
+
+// Explore (and the circles pages, which are laid out the same way) (templates/boards.html = Discover guilds, templates/curations/browse.html = Discover curations, both through
+// templates/partials/explore.html). Reddit's Explore: a heading with tabs, a row of chips, a grid of cards. The
+// feed column takes the right sidebar's room (feed + right sidebar), so the left sidebar stays exactly where the home feed has it.
+#explore #main-content-row,
+#circles #main-content-row {
+    flex-wrap: nowrap;
+}
+
+@media (min-width: 992px) {
+    #explore #main-content-row,
+    #circles #main-content-row {
+        justify-content: center !important;
+    }
+
+    #explore #main-content-col,
+    #circles #main-content-col {
+        max-width: $layout-feed + $layout-right;
+        min-width: 0;
+        margin-left: 0;
+        margin-right: 0;
+        float: none;
+    }
+}
+
+.explore {
+    padding: 1.5rem 0 3rem;
+}
+
+.explore-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 0.5rem 1rem;
+    margin-bottom: 0.75rem;
+}
+
+.explore-title {
+    margin: 0;
+    font-size: 1.75rem;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+}
+
+.explore-lead {
+    margin: 0.25rem 0 0;
+    font-size: 0.9375rem;
+    color: $ex-muted;
+}
+
+.explore-tabs {
+    display: flex;
+    gap: 0.25rem;
+    margin-bottom: 1rem;
+    border-bottom: 1px solid $ex-border;
+}
+
+.explore-tab {
+    margin-bottom: -1px;
+    padding: 0.6rem 1rem;
+    font-weight: 600;
+    color: $ex-muted;
+    border-bottom: 2px solid transparent;
+}
+
+.explore-tab:hover {
+    color: $ex-text;
+    text-decoration: none;
+}
+
+.explore-tab.active {
+    color: $ex-text;
+    border-bottom-color: $primary;
+}
+
+.explore-chips {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+    padding-bottom: 0.25rem;
+    overflow-x: auto;
+    scrollbar-width: none;
+}
+
+.explore-chips::-webkit-scrollbar {
+    display: none;
+}
+
+.explore-chip {
+    display: inline-flex;
+    flex: 0 0 auto;
+    align-items: center;
+    gap: 0.4rem;
+    min-height: 36px;
+    padding: 0 0.9rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: $ex-text;
+    white-space: nowrap;
+    background: $ex-field;
+    border: 1px solid transparent;
+    border-radius: 999px;
+    transition: background-color 150ms ease, color 150ms ease;
+}
+
+.explore-chip:hover {
+    color: $ex-text;
+    text-decoration: none;
+}
+
+.explore-chip.active,
+.explore-chip.active:hover {
+    color: #fff;
+    background: $primary;
+}
+
+.explore-chip:focus-visible,
+.explore-tab:focus-visible,
+.explore-name:focus-visible {
+    outline: 2px solid $primary;
+    outline-offset: 2px;
+}
+
+.explore-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 16px;
+    margin: 1rem 0 0;
+    padding: 0;
+    list-style: none;
+}
+
+.explore-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 0.65rem;
+    min-width: 0;
+    padding: 1rem;
+    background: $ex-surface;
+    border: 1px solid $ex-border;
+    border-radius: 16px;
+    transition: background-color 150ms ease;
+}
+
+@media (hover: hover) and (pointer: fine) {
+    .explore-card:hover {
+        background: $ex-hover;
+    }
+}
+
+.explore-card-top {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.explore-avatar {
+    flex: 0 0 auto;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.explore-avatar-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    color: #fff;
+    background: $primary;
+}
+
+.explore-who {
+    flex: 1 1 auto;
+    min-width: 0;
+    line-height: 1.3;
+}
+
+// the whole card opens the guild or curation; Join / Follow sits above the stretched link
+.explore-name {
+    display: block;
+    overflow: hidden;
+    font-weight: 700;
+    color: $ex-text;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.explore-name:hover {
+    color: $ex-text;
+    text-decoration: none;
+}
+
+.explore-name::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    border-radius: 16px;
+}
+
+.explore-meta {
+    overflow: hidden;
+    font-size: 0.8125rem;
+    color: $ex-muted;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.explore-join {
+    position: relative;
+    z-index: 2;
+    flex: 0 0 auto;
+}
+
+.explore-join .btn {
+    min-width: 4.5rem;
+    font-weight: 600;
+    border-radius: 999px;
+}
+
+.explore-desc {
+    display: -webkit-box;
+    margin: 0;
+    overflow: hidden;
+    font-size: 0.875rem;
+    color: $ex-muted;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+}
+
+.explore-section-title {
+    margin: 2rem 0 0;
+    font-size: 1.125rem;
+    font-weight: 700;
+}
+
+.explore-empty {
+    grid-column: 1 / -1;
+    font-size: 0.9375rem;
+    color: $ex-muted;
+}
+
+@media (max-width: 575.98px) {
+    .explore {
+        padding-top: 1rem;
+    }
+
+    .explore-title {
+        font-size: 1.5rem;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .explore-card,
+    .explore-chip {
+        transition: none;
+    }
+}
+
+// The two ways to make a post (templates/partials/composer_modes.html): Post | Write with others
+.composer-modes {
+    display: flex;
+    gap: 0.25rem;
+    margin-bottom: 1rem;
+    border-bottom: 1px solid $ex-border;
+}
+
+.composer-mode {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    margin-bottom: -1px;
+    padding: 0.55rem 0.9rem;
+    font-weight: 600;
+    color: $ex-muted;
+    border-bottom: 2px solid transparent;
+}
+
+.composer-mode:hover {
+    color: $ex-text;
+    text-decoration: none;
+}
+
+.composer-mode.active {
+    color: $ex-text;
+    border-bottom-color: $primary;
+}
+
+.composer-mode:focus-visible {
+    outline: 2px solid $primary;
+    outline-offset: 2px;
+}
+
 // Create post card (templates/submit.html, assets/js/composer_card.js). The look of a social composer
 // (x.com's header and attach row, reddit's large borderless title), on this site's own tokens.
 // One radius scale: 16px card, 12px fields, full pills for controls. Motion is feedback only: transform and
@@ -8757,7 +9436,7 @@ $cc-muted: $muted;
     text-overflow: ellipsis;
 }
 
-// the feed composer and the Create post panel share the card's controls: a pill Post button, round tools
+// the feed composer shares the card's controls: a pill Post button, round tools
 .inline-composer #ic-post {
     min-height: 36px;
     padding-left: 1rem;
@@ -8772,8 +9451,8 @@ $cc-muted: $muted;
     }
 }
 
-// The feed composer and the Create post panel carry the full editor's controls (inline_composer.html):
-// the audience pill, the tool row, the toolbar and "More options", compact enough for the 380px panel.
+// The feed composer carries the full editor's controls (inline_composer.html):
+// the audience pill, the tool row, the toolbar and "More options", compact enough for the feed's column.
 .inline-composer .ic-head {
     margin-bottom: 0.25rem;
 }

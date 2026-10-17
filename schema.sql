@@ -6567,7 +6567,8 @@ CREATE TABLE public.collab_docs (
     forked_at_publish_id integer,
     created_utc integer DEFAULT 0 NOT NULL,
     updated_utc integer DEFAULT 0 NOT NULL,
-    deleted_utc integer DEFAULT 0 NOT NULL
+    deleted_utc integer DEFAULT 0 NOT NULL,
+    options text DEFAULT '{}' NOT NULL
 );
 
 CREATE UNIQUE INDEX collab_docs_post_key ON public.collab_docs (post_id) WHERE post_id IS NOT NULL;
@@ -6640,6 +6641,195 @@ CREATE TABLE public.collab_votes (
     PRIMARY KEY (proposal_id, user_id)
 );
 
+-- Guild channels (migration 2026-11-04_guild_channels.sql; helpers/guild_channels.py)
+
+CREATE TABLE public.guild_channels (
+    id SERIAL PRIMARY KEY,
+    board_id integer NOT NULL REFERENCES public.boards(id) ON DELETE CASCADE,
+    name character varying(40) NOT NULL,
+    topic character varying(200) DEFAULT '' NOT NULL,
+    rules character varying(1000) DEFAULT '' NOT NULL,
+    word_severity smallint DEFAULT 0 NOT NULL,
+    kind character varying(12) DEFAULT 'text' NOT NULL,
+    read_level character varying(10) DEFAULT 'members' NOT NULL,
+    write_level character varying(10) DEFAULT 'members' NOT NULL,
+    slow_mode_seconds integer DEFAULT 0 NOT NULL,
+    position integer DEFAULT 0 NOT NULL,
+    matrix_room_id character varying(255) NOT NULL,
+    last_activity_utc integer DEFAULT 0 NOT NULL,
+    created_utc integer DEFAULT 0 NOT NULL,
+    deleted_utc integer DEFAULT 0 NOT NULL,
+    CONSTRAINT guild_channels_room_key UNIQUE (matrix_room_id),
+    CONSTRAINT guild_channels_kind_check CHECK (kind IN ('text', 'announcement', 'voice')),
+    CONSTRAINT guild_channels_read_check CHECK (read_level IN ('members', 'approved', 'mods')),
+    CONSTRAINT guild_channels_write_check CHECK (write_level IN ('members', 'approved', 'mods')),
+    CONSTRAINT guild_channels_slow_check CHECK (slow_mode_seconds >= 0 AND slow_mode_seconds <= 21600)
+);
+
+CREATE INDEX guild_channels_board_idx ON public.guild_channels (board_id, position, id) WHERE deleted_utc = 0;
+
+CREATE TABLE public.guild_channel_reads (
+    channel_id integer NOT NULL REFERENCES public.guild_channels(id) ON DELETE CASCADE,
+    user_id integer NOT NULL,
+    joined_utc integer DEFAULT 0 NOT NULL,
+    last_read_utc integer DEFAULT 0 NOT NULL,
+    PRIMARY KEY (channel_id, user_id)
+);
+
+CREATE INDEX guild_channel_reads_user_idx ON public.guild_channel_reads (user_id);
+
+CREATE TABLE public.guild_channel_posts (
+    id SERIAL PRIMARY KEY,
+    channel_id integer NOT NULL REFERENCES public.guild_channels(id) ON DELETE CASCADE,
+    author_id integer NOT NULL,
+    event_id character varying(255) NOT NULL,
+    body text DEFAULT '' NOT NULL,
+    word_severity smallint DEFAULT 0 NOT NULL,
+    created_utc integer DEFAULT 0 NOT NULL,
+    removed_utc integer DEFAULT 0 NOT NULL,
+    CONSTRAINT guild_channel_posts_event_key UNIQUE (channel_id, event_id)
+);
+
+CREATE INDEX guild_channel_posts_author_idx ON public.guild_channel_posts (channel_id, author_id, created_utc);
+
+CREATE TABLE public.guild_channel_reports (
+    id SERIAL PRIMARY KEY,
+    channel_id integer NOT NULL REFERENCES public.guild_channels(id) ON DELETE CASCADE,
+    post_id integer NOT NULL REFERENCES public.guild_channel_posts(id) ON DELETE CASCADE,
+    reporter_id integer NOT NULL,
+    reason character varying(200) DEFAULT '' NOT NULL,
+    created_utc integer DEFAULT 0 NOT NULL,
+    resolved_utc integer DEFAULT 0 NOT NULL,
+    CONSTRAINT guild_channel_reports_once UNIQUE (post_id, reporter_id)
+);
+
+CREATE INDEX guild_channel_reports_open_idx ON public.guild_channel_reports (channel_id) WHERE resolved_utc = 0;
+
+-- Guild channels, part 2 (migration 2026-11-05_guild_channels_polish.sql; helpers/guild_channels.py)
+
+ALTER TABLE public.guild_channel_posts ADD COLUMN thread_event_id character varying(255) DEFAULT '' NOT NULL;
+
+CREATE INDEX guild_channel_posts_thread_idx ON public.guild_channel_posts (channel_id, thread_event_id) WHERE thread_event_id <> '';
+CREATE INDEX guild_channel_posts_time_idx ON public.guild_channel_posts (channel_id, created_utc);
+
+CREATE TABLE public.guild_channel_categories (
+    id SERIAL PRIMARY KEY,
+    board_id integer NOT NULL REFERENCES public.boards(id) ON DELETE CASCADE,
+    name character varying(40) NOT NULL,
+    word_severity smallint DEFAULT 0 NOT NULL,
+    position integer DEFAULT 0 NOT NULL
+);
+
+CREATE INDEX guild_channel_categories_board_idx ON public.guild_channel_categories (board_id, position, id);
+
+ALTER TABLE public.guild_channels ADD COLUMN category_id integer REFERENCES public.guild_channel_categories(id) ON DELETE SET NULL;
+ALTER TABLE public.guild_channels ADD COLUMN rules_gate boolean DEFAULT false NOT NULL;
+
+CREATE TABLE public.guild_channel_pins (
+    channel_id integer NOT NULL REFERENCES public.guild_channels(id) ON DELETE CASCADE,
+    post_id integer NOT NULL REFERENCES public.guild_channel_posts(id) ON DELETE CASCADE,
+    pinned_by integer NOT NULL,
+    created_utc integer DEFAULT 0 NOT NULL,
+    PRIMARY KEY (channel_id, post_id)
+);
+
+CREATE TABLE public.guild_channel_prefs (
+    channel_id integer NOT NULL REFERENCES public.guild_channels(id) ON DELETE CASCADE,
+    user_id integer NOT NULL,
+    muted_until integer DEFAULT 0 NOT NULL,
+    PRIMARY KEY (channel_id, user_id)
+);
+
+CREATE TABLE public.guild_channel_rules_ack (
+    channel_id integer NOT NULL REFERENCES public.guild_channels(id) ON DELETE CASCADE,
+    user_id integer NOT NULL,
+    rules_key character varying(32) NOT NULL,
+    created_utc integer DEFAULT 0 NOT NULL,
+    PRIMARY KEY (channel_id, user_id)
+);
+
+CREATE TABLE public.guild_channel_mentions (
+    id SERIAL PRIMARY KEY,
+    channel_id integer NOT NULL REFERENCES public.guild_channels(id) ON DELETE CASCADE,
+    post_id integer NOT NULL REFERENCES public.guild_channel_posts(id) ON DELETE CASCADE,
+    user_id integer NOT NULL,
+    created_utc integer DEFAULT 0 NOT NULL,
+    read_utc integer DEFAULT 0 NOT NULL
+);
+
+CREATE INDEX guild_channel_mentions_user_idx ON public.guild_channel_mentions (user_id, channel_id) WHERE read_utc = 0;
+
+-- Guild channels: unread by a counter (migration 2026-11-06_guild_channels_unread.sql; helpers/guild_channel_store.py)
+
+ALTER TABLE public.guild_channels ADD COLUMN activity_seq bigint DEFAULT 0 NOT NULL;
+ALTER TABLE public.guild_channel_reads ADD COLUMN last_read_seq bigint DEFAULT 0 NOT NULL;
+
+-- Guild channels, part 3: voice and stage channels (migration 2026-11-07_guild_voice.sql; helpers/guild_channels.py)
+
+ALTER TABLE public.guild_channels DROP CONSTRAINT guild_channels_kind_check;
+ALTER TABLE public.guild_channels ADD CONSTRAINT guild_channels_kind_check CHECK (kind IN ('text', 'announcement', 'voice', 'stage'));
+ALTER TABLE public.guild_channels ADD COLUMN space_post_id integer;
+
+-- Guild roles (migration 2026-11-08_guild_roles.sql; helpers/guild_roles.py)
+
+CREATE TABLE public.guild_roles (
+    id SERIAL PRIMARY KEY,
+    board_id integer NOT NULL REFERENCES public.boards(id) ON DELETE CASCADE,
+    name character varying(30) NOT NULL,
+    word_severity smallint DEFAULT 0 NOT NULL,
+    colour character varying(12) DEFAULT 'gray' NOT NULL,
+    position integer DEFAULT 0 NOT NULL,
+    perm_slow_exempt boolean DEFAULT false NOT NULL,
+    perm_remove_messages boolean DEFAULT false NOT NULL,
+    perm_pin boolean DEFAULT false NOT NULL
+);
+
+CREATE INDEX guild_roles_board_idx ON public.guild_roles (board_id, position, id);
+
+CREATE TABLE public.guild_role_members (
+    role_id integer NOT NULL REFERENCES public.guild_roles(id) ON DELETE CASCADE,
+    user_id integer NOT NULL,
+    assigned_by integer NOT NULL,
+    created_utc integer DEFAULT 0 NOT NULL,
+    PRIMARY KEY (role_id, user_id)
+);
+
+CREATE INDEX guild_role_members_user_idx ON public.guild_role_members (user_id);
+
+CREATE TABLE public.guild_channel_overwrites (
+    channel_id integer NOT NULL REFERENCES public.guild_channels(id) ON DELETE CASCADE,
+    role_id integer NOT NULL REFERENCES public.guild_roles(id) ON DELETE CASCADE,
+    read_ow smallint DEFAULT 0 NOT NULL,
+    write_ow smallint DEFAULT 0 NOT NULL,
+    PRIMARY KEY (channel_id, role_id),
+    CONSTRAINT guild_channel_overwrites_check CHECK (read_ow IN (0, 1, 2) AND write_ow IN (0, 1, 2))
+);
+
+CREATE INDEX guild_channel_overwrites_role_idx ON public.guild_channel_overwrites (role_id);
+
+-- Guild channels, part 5: auto-moderation, bot feeds, encrypted channels (migration 2026-11-09_guild_channels_extras.sql)
+
+CREATE TABLE public.guild_chat_settings (
+    board_id integer PRIMARY KEY REFERENCES public.boards(id) ON DELETE CASCADE,
+    min_account_days integer DEFAULT 0 NOT NULL,
+    min_member_days integer DEFAULT 0 NOT NULL,
+    link_member_days integer DEFAULT 0 NOT NULL,
+    blocked_words text DEFAULT '' NOT NULL,
+    CONSTRAINT guild_chat_settings_days CHECK (min_account_days BETWEEN 0 AND 365 AND min_member_days BETWEEN 0 AND 365
+                                                AND link_member_days BETWEEN 0 AND 365)
+);
+
+CREATE TABLE public.guild_channel_feeds (
+    channel_id integer NOT NULL REFERENCES public.guild_channels(id) ON DELETE CASCADE,
+    bot_user_id integer NOT NULL,
+    added_by integer NOT NULL,
+    created_utc integer DEFAULT 0 NOT NULL,
+    last_post_id integer DEFAULT 0 NOT NULL,
+    PRIMARY KEY (channel_id, bot_user_id)
+);
+
+ALTER TABLE public.guild_channels ADD COLUMN encrypted boolean DEFAULT false NOT NULL;
+
 -- Which migrations this schema already includes (scripts/migrate.py, audit D-02). A database made from this file
 -- starts with every one recorded; add a line here with each new migration.
 
@@ -6698,4 +6888,11 @@ INSERT INTO public.schema_migrations (name) VALUES
     ('2026-10-30_guild_wiki.sql'),
     ('2026-10-31_guild_events.sql'),
     ('2026-11-01_collab_posts.sql'),
-    ('2026-11-02_audit_fixes.sql');
+    ('2026-11-02_audit_fixes.sql'),
+    ('2026-11-03_collab_options.sql'),
+    ('2026-11-04_guild_channels.sql'),
+    ('2026-11-05_guild_channels_polish.sql'),
+    ('2026-11-06_guild_channels_unread.sql'),
+    ('2026-11-07_guild_voice.sql'),
+    ('2026-11-08_guild_roles.sql'),
+    ('2026-11-09_guild_channels_extras.sql');

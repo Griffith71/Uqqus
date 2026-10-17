@@ -27,6 +27,7 @@ from ruqqus.helpers.muting import hide_muted
 from ruqqus.helpers.blocks import hide_blocked
 from ruqqus.helpers import guild_limits
 from ruqqus.helpers import circle_store
+from ruqqus.helpers import guild_channel_access
 from ruqqus.helpers import deletion_log as log_rules
 from ruqqus.helpers import guild_flair, guild_flair_store
 
@@ -789,6 +790,9 @@ Optional form data:
 
     g.db.commit()
 
+    # out of the guild's channel rooms at once (helpers/guild_channels.py)
+    guild_channel_access.remove_from_rooms(g.db, board.id, user.id, drop_roles=True)
+    g.db.commit()
 
     if request.args.get("toast"):
         return jsonify({"message": f"@{user.username} was exiled from +{board.name}"})
@@ -1699,6 +1703,9 @@ URL path parameters:
     board.stored_subscriber_count = board.subscriber_count
     g.db.add(board)
 
+    # out of the guild's channel rooms too (helpers/guild_channels.py)
+    guild_channel_access.remove_from_rooms(g.db, board.id, v.id, drop_roles=True)
+
     return jsonify({"message": f"Left +{board.name}"}), 200
 
 
@@ -2075,6 +2082,8 @@ Required form data:
         target_user_id=user.id
         )
     g.db.add(ma)
+    # a channel for approved members only is closed to them now (helpers/guild_channels.py); the rest is the sync step's
+    guild_channel_access.remove_from_rooms(g.db, board.id, user.id)
     return "", 204
 
 

@@ -1,0 +1,80 @@
+{% extends "guild/guild_tab_page.html" %}
+{#
+  A guild's Chat tab (routes/guild_channels.py, helpers/guild_channels.py): the channels this reader may read, and the
+  chat page for the chosen one in a frame of the site itself (/chat?embed=1&single=1&room=...), so the thread is the same
+  client as everywhere else (messages go through the site: word filter, slow mode, reports). Names, topics and rules are
+  drawn escaped; the page says nothing about channels the reader may not read.
+#}
+
+{% block pagetitle %}Chat{% endblock %}
+
+{% block guildbody %}
+{% if state == "signin" %}
+<p class="text-muted">Sign in to chat in +{{ b.name }}'s channels.</p>
+<a class="btn btn-primary" href="/login?redirect={{ b.permalink }}/chat">Sign in</a>
+{% elif state == "join" %}
+<p class="text-muted">Join +{{ b.name }} to read and write in its channels.</p>
+<a class="btn btn-primary" href="{{ b.permalink }}">Go to +{{ b.name }}</a>
+{% elif state == "none" %}
+<p class="text-muted">+{{ b.name }} has no channels you can read yet.</p>
+{% if gm %}<a class="btn btn-primary" href="{{ b.permalink }}/mod/channels">Make a channel</a>{% endif %}
+{% else %}
+<div class="guild-chat">
+  <nav aria-label="Channels">
+    <ul class="guild-chat-list">
+      {% for section in sections %}
+      {% if section.name %}<li class="guild-chat-group" role="presentation">{{ section.name }}</li>{% endif %}
+      {% for c in section.channels %}
+      <li>
+        <a class="guild-chat-channel{% if c.channel_id == selected.channel_id %} is-on{% endif %}{% if c.unread_count and c.channel_id != selected.channel_id %} is-unread{% endif %}{% if c.muted %} is-muted{% endif %}"
+           href="{{ b.permalink }}/chat?c={{ c.channel_id }}"{% if c.channel_id == selected.channel_id %} aria-current="page"{% endif %}>
+          <i class="fas {{ {'announcement': 'fa-bullhorn', 'voice': 'fa-volume-high', 'stage': 'fa-podcast'}.get(c.channel_kind, 'fa-hashtag') }} fa-fw" aria-hidden="true"></i>
+          <span>{{ c.label }}</span>
+          {% if c.voice_people %}<span class="guild-chat-count" role="img" aria-label="{{ c.voice_people }} in the call">{{ c.voice_people }}</span>{% endif %}
+          {% if c.mentions %}<span class="guild-chat-badge" role="img" aria-label="{{ c.mentions }} unread mention{{ 's' if c.mentions != 1 else '' }}">{{ c.mentions }}</span>
+          {% elif c.unread_count and c.channel_id != selected.channel_id %}<span class="guild-chat-dot" role="img" aria-label="Unread messages"></span>{% endif %}
+        </a>
+      </li>
+      {% endfor %}
+      {% endfor %}
+    </ul>
+  </nav>
+  <section class="guild-chat-main" aria-label="{{ selected.label }}">
+    <div class="guild-chat-head">
+      <div class="font-weight-bold">
+        <i class="fas {{ {'announcement': 'fa-bullhorn', 'voice': 'fa-volume-high', 'stage': 'fa-podcast'}.get(selected.channel_kind, 'fa-hashtag') }} fa-fw text-muted" aria-hidden="true"></i>{{ selected.label }}
+        {% if selected.channel_kind == "announcement" %}<span class="text-muted text-small font-weight-normal">· only guildmasters write here</span>{% endif %}
+        {% if selected.channel_kind == "voice" %}<span class="text-muted text-small font-weight-normal">· voice, up to 8 people</span>{% endif %}
+        {% if selected.slow_mode_seconds %}<span class="text-muted text-small font-weight-normal">· slow mode, {{ selected.slow_mode_seconds }}s</span>{% endif %}
+      </div>
+      {% if selected.topic %}<div class="guild-chat-topic">{{ selected.topic }}</div>{% endif %}
+      {% if selected.rules %}
+      <details class="guild-chat-rules">
+        <summary>Channel rules</summary>
+        <p class="guild-chat-rules-text">{{ selected.rules }}</p>
+      </details>
+      {% endif %}
+    </div>
+    {% if selected.encrypted %}
+    <div class="p-4">
+      <p class="mb-2"><i class="fas fa-lock fa-fw text-muted" aria-hidden="true"></i>This channel is end-to-end encrypted: it is read and written in Chat, where your messages are unlocked.</p>
+      <a class="btn btn-primary" href="/chat?room={{ selected.room_id | urlencode }}">Open in Chat</a>
+    </div>
+    {% elif selected.channel_kind == "stage" %}
+    <div class="p-4 guild-stage">
+      {% if selected.space and selected.space.status in ("live", "scheduled", "ended") %}
+      <div class="font-weight-bold">{{ selected.space.title or "A Space" }}</div>
+      <div class="text-muted mb-3">{{ {"live": "Live now", "scheduled": "Coming up", "ended": "Ended"}[selected.space.status] }}</div>
+      {% if selected.space.status != "ended" %}<a class="btn btn-primary" href="{{ selected.space.url }}">{{ "Listen" if selected.space.status == "live" else "Open the Space" }}</a>{% endif %}
+      {% else %}
+      <p class="text-muted mb-0">No Space is shown on this stage right now.</p>
+      {% endif %}
+    </div>
+    {% else %}
+    <iframe class="guild-chat-frame" title="{{ selected.label }}" loading="lazy"
+            src="/chat?embed=1&amp;single=1&amp;room={{ selected.room_id | urlencode }}"></iframe>
+    {% endif %}
+  </section>
+</div>
+{% endif %}
+{% endblock %}

@@ -323,6 +323,43 @@ def set_writers(room_id: str, writer_mxids):
         raise MatrixError(f"set_writers failed: {resp.status_code}")
 
 
+def guild_channel_power_levels(announcement: bool, writer_mxids=()) -> dict:
+    """A guild channel's room (helpers/guild_channels.py). Members send messages, react and take back their own; in an
+    announcement channel only the people listed (50) send. What Matrix's levels can't say (who may write, slow mode, the
+    word filter) is the site's: every message must carry the site's signature or the appservice webhook removes it
+    (routes/chat.py `_guard_room_event`). Stickers and polls are kept to the bot, since nothing rates them."""
+    levels = group_power_levels()
+    if announcement:
+        levels["events_default"] = 50
+        levels["users"] = {mxid: 50 for mxid in writer_mxids}
+    levels["events"] = {**levels["events"], "m.reaction": 0, "m.room.redaction": 0,
+                        "m.sticker": 100, "m.poll.start": 100, "org.matrix.msc3381.poll.start": 100}
+    return levels
+
+
+def create_guild_channel_room(announcement: bool, writer_mxids=(), encrypted: bool = False) -> str:
+    """A guild channel's room: made by the bot, NOT encrypted (the site rates, counts and removes its messages) unless the
+    channel is an encrypted one of a private or Circle guild, invite-only (the bot invites whoever the site lets in), and a
+    member reads what was written before they came (an encrypted room's earlier messages can't be read by someone new:
+    their device never had its keys)."""
+    state = [
+        {"type": "m.room.history_visibility", "content": {"history_visibility": "shared"}},
+        {"type": "m.room.guest_access", "content": {"guest_access": "forbidden"}},
+    ]
+    if encrypted:
+        state.insert(0, {"type": "m.room.encryption", "content": {"algorithm": "m.megolm.v1.aes-sha2"}})
+    resp = requests.post(
+        f"{app.config['MATRIX_INTERNAL_URL']}/_matrix/client/v3/createRoom",
+        json={"preset": "private_chat", "visibility": "private", "is_direct": False,
+              "power_level_content_override": guild_channel_power_levels(announcement, writer_mxids),
+              "initial_state": state},
+        headers=_as_headers(), timeout=10,
+    )
+    if resp.status_code != 200:
+        raise MatrixError(f"create_guild_channel_room failed: {resp.status_code}")
+    return resp.json()["room_id"]
+
+
 def send_as(room_id: str, mxid: str, content: dict, txn_id: str) -> str:
     """A message in a room as one of its members (AS masquerade). Returns its event id."""
     resp = requests.put(
@@ -341,3 +378,15 @@ def redact_as_bot(room_id: str, event_id: str, txn_id: str, reason: str = ""):
     )
     if resp.status_code != 200:
         raise MatrixError(f"redact_as_bot failed: {resp.status_code}")
+
+
+def event_sender(room_id: str, event_id: str):
+    """Who sent an event in a room, as the bot sees it (None when there is no such event): an encrypted channel keeps
+    no copy of its messages on the site, so a removal asks Matrix whose it was."""
+    resp = requests.get(f"{app.config['MATRIX_INTERNAL_URL']}/_matrix/client/v3/rooms/{room_id}/event/{event_id}",
+                        headers=_as_headers(), timeout=10)
+    if resp.status_code == 404:
+        return None
+    if resp.status_code != 200:
+        raise MatrixError(f"event_sender failed: {resp.status_code}")
+    return resp.json().get("sender")

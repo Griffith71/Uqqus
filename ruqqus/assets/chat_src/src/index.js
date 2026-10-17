@@ -1,5 +1,5 @@
 import * as sdk from "matrix-js-sdk";
-import { ClientEvent, EventType, RoomEvent, RoomMemberEvent, MatrixEventEvent, ReceiptType } from "matrix-js-sdk";
+import { ClientEvent, Direction, EventType, RoomEvent, RoomMemberEvent, MatrixEventEvent, ReceiptType } from "matrix-js-sdk";
 import { initAsync as initCryptoWasm } from "@matrix-org/matrix-sdk-crypto-wasm";
 
 import { cryptoCallbacks, ensureEncryptionReady, signOwnDevices } from "./crypto.js";
@@ -10,17 +10,22 @@ import {
   listConversations, acceptConversation, declineConversation, markRead,
   groupInfo, acceptGroup, declineGroup, markGroupRead,
   postToChannel, leaveChannel, markChannelRead, reportChannelMessage,
+  joinGuildChannel, postToGuildChannel, markGuildChannelRead, reportGuildChannelMessage, removeGuildChannelMessage,
+  pinGuildChannelMessage, muteGuildChannel, acceptGuildChannelRules, guildChannelPins, searchGuildChannel,
 } from "./api.js";
 import { renderConversationList, renderThreadShell, renderMessages, setTabBadge } from "./ui.js";
 import { initGroups } from "./groups.js";
+import {
+  createSenders, mentionPattern, renderMute, renderPins, renderResults, renderSearch, renderStageCard, renderVoiceCard, stopCards,
+} from "./guild_channels.js";
 
 const boot = window.RUQQUS_CHAT_BOOT;
 
 const state = {
   client: null,
   tab: "inbox",
-  conversations: { inbox: [], request: [], channel: [] },
-  active: null, // { conversation, room, isRequest, group } - group: a group's members, for its threads
+  conversations: { inbox: [], request: [], channel: [], guild: [] },
+  active: null, // { conversation, room, isRequest, group, channel, gchannel } - group: a group's members, for its threads; gchannel: a guild channel, with the names of its writers
   thread: null, // { messagesEl, inputEl, setContext, setTyping }
   context: null, // { type: "quote" | "edit", event } - what the box is answering or replacing
   typingSent: 0, // when we last told the room we are typing (0: not typing)
@@ -151,11 +156,22 @@ function filteredOut(event) {
   return severity > 0 && severity >= 3 - Math.min(level, 2);
 }
 
+// Matrix's threads: a message with a relation of type m.thread belongs to the thread of the event it points at
+function isThreadMessage(event) {
+  return event.getOriginalContent()["m.relates_to"]?.rel_type === "m.thread";
+}
+
+function threadRootOf(event) {
+  return event.getOriginalContent()["m.relates_to"]?.event_id;
+}
+
 function renderActiveThread() {
-  const { room, conversation, isRequest, group, channel } = state.active;
+  const { room, conversation, isRequest, group, channel, gchannel } = state.active;
   const myMxid = state.client.getUserId();
   const memberOf = (event) => (group ? group.byMxid.get(event.getSender()) : null);
   const writerOf = (event) => (channel ? channel.writers.get(event.getSender()) : null);
+  // a guild channel: who wrote it, once the site has said (null until then); whom the viewer muted is left out
+  const infoOf = (event) => (gchannel && event.getSender() !== myMxid ? gchannel.senders.get(event.getSender()) : null);
 
   // Pending (locally-echoed, not-yet-sent) events are already included
   // here: the client is created without an explicit pendingEventOrdering
@@ -168,6 +184,22 @@ function renderActiveThread() {
     .getEvents()
     .filter(isShownMessage);
   const byId = new Map(events.map((event) => [event.getId(), event]));
+  // in a guild channel a message that was taken out (by its writer, a guildmaster, or the site removing one that
+  // went around its rules) is simply gone, whom the viewer muted is left out, and a message in a thread is shown in
+  // its thread, not among the rest
+  const shown = gchannel
+    ? events.filter((event) => !event.isRedacted() && !isThreadMessage(event) && !(infoOf(event) && infoOf(event).muted))
+    : events;
+  const threadsLive = new Map();
+  if (gchannel) {
+    for (const event of events) {
+      if (isThreadMessage(event) && !event.isRedacted()) {
+        const root = threadRootOf(event);
+        threadsLive.set(root, (threadsLive.get(root) || 0) + 1);
+      }
+    }
+  }
+  const mine_ = gchannel ? mentionPattern(boot.username) : null;
 
   // the last message of mine, and whether the other person (in a group: how many of the others) has read it
   const lastMine = [...events].reverse().find((e) => e.getSender() === myMxid && !e.isRedacted() && !e.status);
@@ -176,16 +208,19 @@ function renderActiveThread() {
   if (lastMine && group) {
     seenBy = group.info.members.filter((m) => m.joined && m.mxid !== myMxid && room.hasUserReadEvent(m.mxid, lastMine.getId())).length;
     if (seenBy) seenId = lastMine.getId();
-  } else if (lastMine && !channel && room.hasUserReadEvent(otherMxidOf(conversation), lastMine.getId())) {
+  } else if (lastMine && !channel && !gchannel && room.hasUserReadEvent(otherMxidOf(conversation), lastMine.getId())) {
     seenId = lastMine.getId();
   }
 
-  const items = events.map((event) => {
+  const itemOf = (event) => {
     const deleted = event.isRedacted();
-    const quoted = byId.get(event.getOriginalContent()["m.relates_to"]?.["m.in_reply_to"]?.event_id);
+    const relation = event.getOriginalContent()["m.relates_to"];
+    // a message in a thread quotes its root only as a fallback: that is not shown as a quote
+    const quoted = relation?.rel_type === "m.thread" && relation.is_falling_back ? null : byId.get(relation?.["m.in_reply_to"]?.event_id);
     const mine = event.getSender() === myMxid;
     const author = !mine ? memberOf(event) : null;
-    const quotedBlocked = quoted && memberOf(quoted)?.blocked;
+    const info = infoOf(event);
+    const quotedBlocked = quoted && (memberOf(quoted)?.blocked || (gchannel && infoOf(quoted)?.blocked));
     return {
       eventId: event.getId(),
       mine,
@@ -197,20 +232,35 @@ function renderActiveThread() {
       reactions: deleted ? [] : reactionsOf(room, event, myMxid),
       seen: event.getId() === seenId,
       seenBy: group ? seenBy : 0,
-      canEdit: mine && !deleted && event.getContent().msgtype === "m.text",
+      canEdit: mine && !deleted && (!gchannel || gchannel.encrypted) && event.getContent().msgtype === "m.text",
       // a line the call window writes when a call ends ("Voice call · 12 min"): drawn as a note, not a bubble
       notice: !deleted && event.getContent().msgtype === "m.notice",
       // in a group, who wrote it (someone who has left has no row any more); in a channel, which writer
       sender: group && !mine ? (author ? author.shown_name : "Someone who left")
-        : channel && !mine ? (writerOf(event) ? writerOf(event).shown_name : "A former helper") : null,
-      blocked: !!(author && author.blocked),
-      filtered: !!(channel && channel.public && !mine && !deleted && filteredOut(event)),
-      reportable: !!(channel && channel.public && !mine && !deleted),
+        : channel && !mine ? (writerOf(event) ? writerOf(event).shown_name : "A former helper")
+        : gchannel && !mine ? (info ? info.shown_name : "…") : null,
+      blocked: !!(author && author.blocked) || !!(info && info.blocked),
+      filtered: !!(channel && channel.public && !mine && !deleted && filteredOut(event)) || !!(gchannel && !mine && !deleted && filteredOut(event)),
+      reportable: !!(channel && channel.public && !mine && !deleted) || !!(gchannel && !gchannel.encrypted && !mine && !deleted),
+      removable: !!(gchannel && gchannel.can_remove && !mine && !deleted),
+      senderRole: gchannel && !mine && info ? info.role || null : null,
+      // a guild channel: threads under a message, pins, and mentions of the viewer
+      threadable: !!(gchannel && !gchannel.encrypted && !deleted && !event.status && !isThreadMessage(event)),
+      threadCount: gchannel && !isThreadMessage(event)
+        ? Math.max(threadsLive.get(event.getId()) || 0, event.getServerAggregatedRelation("m.thread")?.count || 0) : 0,
+      pinnable: !!(gchannel && !gchannel.encrypted && gchannel.can_pin && !deleted && !event.status),
+      pinned: !!(gchannel && state.active.pinned && state.active.pinned.has(event.getId())),
+      mentionsMe: !!(mine_ && !mine && !deleted && mine_.test(event.getContent().body || "")),
     };
-  });
+  };
+  const items = shown.map(itemOf);
+  state.active.itemOf = itemOf;
 
-  renderMessages(state.thread.messagesEl, items, messageHandlers);
+  // a guild channel is long: Synapse sends the newest events, and older ones are asked for
+  const more = gchannel && room.getLiveTimeline().getPaginationToken(Direction.Backward) ? { onLoad: loadEarlier } : null;
+  renderMessages(state.thread.messagesEl, items, messageHandlers, more);
   updateTyping();
+  if (state.active.threadPanel) renderThreadPanel();
 
   // Tell the server and the other person once per newest message, not once per draw:
   // our own receipt comes back as a Receipt event that redraws the thread, which
@@ -218,13 +268,200 @@ function renderActiveThread() {
   const last = events[events.length - 1];
   if (!isRequest && last && !last.status && state.active.readUpTo !== last.getId()) {
     state.active.readUpTo = last.getId();
-    state.client.sendReadReceipt(last, ReceiptType.Read).catch(() => {});
-    const marked = channel ? markChannelRead(boot.formkey, conversation.channel_id)
+    if (!gchannel) state.client.sendReadReceipt(last, ReceiptType.Read).catch(() => {});   // not to a whole guild's channel
+    const marked = gchannel ? markGuildChannelRead(boot.formkey, conversation.channel_id)
+      : channel ? markChannelRead(boot.formkey, conversation.channel_id)
       : group ? markGroupRead(boot.formkey, conversation.group_id) : markRead(boot.formkey, conversation.conversation_id);
     marked
       .then(() => window.refreshChatBadge?.()) // navbar chat badge (assets/js/chat_badge.js)
       .catch(() => {});
   }
+}
+
+// Older messages of a guild channel, keeping the reader where they were
+async function loadEarlier() {
+  const active = state.active;
+  if (!active || !active.gchannel || !state.thread) return;
+  const box = state.thread.messagesEl;
+  const height = box.scrollHeight;
+  const top = box.scrollTop;
+  try {
+    await state.client.scrollback(active.room, 50);
+  } catch (e) {
+    window.alert("Couldn't load earlier messages. Try again in a moment.");
+  }
+  if (state.active !== active) return;
+  renderActiveThread();
+  box.scrollTop = top + (box.scrollHeight - height);
+}
+
+// --- a guild channel's panels: a thread, the pinned messages, search, notifications --------------------------------------------
+function closePanels() {
+  if (state.active) state.active.threadPanel = null;
+}
+
+async function openThread(rootId) {
+  const active = state.active;
+  if (!active || !active.gchannel || !state.thread) return;
+  let older = [];
+  try {
+    // the thread's messages the live timeline doesn't hold (the server keeps them under their root)
+    older = (await state.client.relations(active.room.roomId, rootId, "m.thread", "m.room.message", { limit: 50 })).events || [];
+  } catch (e) {
+    older = [];
+  }
+  if (state.active !== active) return;
+  const panel = state.thread.openPanel("Thread", () => { active.threadPanel = null; });
+  const form = document.createElement("form");
+  form.className = "d-flex";
+  const input = document.createElement("textarea");
+  input.className = "form-control mr-2 chat-composer-input";
+  input.rows = 1;
+  input.placeholder = "Add to the thread...";
+  input.setAttribute("aria-label", "Add to the thread");
+  const send = document.createElement("button");
+  send.type = "submit";
+  send.className = "btn btn-primary align-self-end";
+  send.textContent = "Send";
+  form.append(input, send);
+  if (active.gchannel.may_write) {
+    panel.foot.appendChild(form);
+    panel.showFoot();
+  }
+  const submit = () => {
+    const text = input.value.trim();
+    if (!text) return;
+    input.value = "";
+    postToGuildChannel(boot.formkey, active.conversation.channel_id, text, null, rootId).catch((e) => {
+      window.alert(e.message);
+      if (!input.value) input.value = text;
+    });
+  };
+  form.addEventListener("submit", (e) => { e.preventDefault(); submit(); });
+  input.addEventListener("keydown", (e) => {
+    if (e.key === "Enter" && !e.shiftKey && !e.isComposing) { e.preventDefault(); submit(); }
+  });
+  active.threadPanel = { rootId, older, panel };
+  renderThreadPanel();
+  input.focus();
+}
+
+const threadHandlers = {
+  onReact: (item, key) => messageHandlers.onReact(item, key),
+  onReport: (item) => messageHandlers.onReport(item),
+  onRemove: (item) => messageHandlers.onRemove(item),
+  onDelete: (item) => messageHandlers.onDelete(item),
+};
+
+function renderThreadPanel() {
+  const active = state.active;
+  const tp = active && active.threadPanel;
+  if (!tp || !active.itemOf) return;
+  const root = active.room.findEventById(tp.rootId);
+  const live = active.room.getLiveTimeline().getEvents().filter((e) => isThreadMessage(e) && threadRootOf(e) === tp.rootId);
+  const seen = new Set();
+  const events = [];
+  for (const event of [...tp.older, ...live]) {
+    if (seen.has(event.getId())) continue;
+    seen.add(event.getId());
+    events.push(event);
+  }
+  events.sort((a, b) => a.getTs() - b.getTs());
+  const visible = events.filter((event) => !event.isRedacted() && !(active.gchannel.senders.get(event.getSender())?.muted));
+  const items = [];
+  if (root && !root.isRedacted()) items.push(active.itemOf(root));
+  for (const event of visible) items.push(active.itemOf(event));
+  // each is a message among the rest here: no thread of a thread, and no button to start one
+  renderMessages(tp.panel.body, items.map((item) => ({ ...item, threadable: false, threadCount: 0, pinnable: false })), threadHandlers);
+}
+
+async function loadPins() {
+  const active = state.active;
+  if (!active || !active.gchannel) return;
+  try {
+    const pins = await guildChannelPins(active.conversation.channel_id);
+    if (state.active === active) {
+      active.pinned = new Set(pins.map((p) => p.event_id));
+      scheduleRender();
+    }
+  } catch (e) {
+    /* the pins are for the panel to show */
+  }
+}
+
+async function openPins() {
+  const active = state.active;
+  if (!active || !active.gchannel || !state.thread) return;
+  const panel = state.thread.openPanel("Pinned messages");
+  try {
+    const pins = await guildChannelPins(active.conversation.channel_id);
+    active.pinned = new Set(pins.map((p) => p.event_id));
+    const draw = (list) => renderPins(panel.body, list, active.gchannel.can_pin, async (pin) => {
+      try {
+        await pinGuildChannelMessage(boot.formkey, active.conversation.channel_id, pin.event_id, false);
+        active.pinned.delete(pin.event_id);
+        draw(list.filter((p) => p.event_id !== pin.event_id));
+        scheduleRender();
+      } catch (e) {
+        window.alert(e.message);
+      }
+    });
+    draw(pins);
+  } catch (e) {
+    panel.body.textContent = e.message;
+  }
+}
+
+function openSearch() {
+  const active = state.active;
+  if (!active || !active.gchannel || !state.thread) return;
+  const panel = state.thread.openPanel("Search");
+  panel.showFoot();
+  renderSearch(panel.body, panel.foot, async (query) => {
+    try {
+      renderResults(panel.body, await searchGuildChannel(active.conversation.channel_id, query));
+    } catch (e) {
+      panel.body.textContent = e.message;
+    }
+  });
+}
+
+function openMute() {
+  const active = state.active;
+  if (!active || !active.gchannel || !state.thread) return;
+  const panel = state.thread.openPanel("Notifications");
+  const draw = () => renderMute(panel.body, !!active.gchannel.muted, async (hours) => {
+    try {
+      const answer = await muteGuildChannel(boot.formkey, active.conversation.channel_id, hours);
+      active.gchannel.muted = answer.muted;
+      active.conversation.muted = answer.muted;
+      const icon = document.querySelector("#chat-gc-mute i");
+      if (icon) icon.className = `fas ${answer.muted ? "fa-bell-slash" : "fa-bell"}`;
+      guildListAt = 0;
+      queueRefresh();
+      window.refreshChatBadge?.();
+      draw();
+    } catch (e) {
+      window.alert(e.message);
+    }
+  });
+  draw();
+}
+
+async function onAcceptRules() {
+  const active = state.active;
+  if (!active || !active.gchannel) return;
+  try {
+    await acceptGuildChannelRules(boot.formkey, active.conversation.channel_id);
+  } catch (e) {
+    window.alert(e.message);
+    return;
+  }
+  // the channel again, now with its box
+  guildListAt = 0;
+  await refreshLists();
+  const fresh = state.conversations.guild.find((c) => c.key === active.conversation.key);
+  if (fresh) openConversation(fresh);
 }
 
 // Several events usually land together (a message, its reaction, a receipt): draw once.
@@ -239,8 +476,8 @@ function scheduleRender() {
 
 function updateTyping() {
   if (!state.active || !state.thread) return;
-  const { room, conversation, group, channel } = state.active;
-  if (channel) return;
+  const { room, conversation, group, channel, gchannel } = state.active;
+  if (channel || gchannel) return;
   if (!group) {
     const other = room.getMember(otherMxidOf(conversation));
     state.thread.setTyping(other && other.typing ? `@${conversation.other_user.username} is typing…` : null);
@@ -267,7 +504,7 @@ function stopTyping() {
 }
 
 function onTyping(isTyping) {
-  if (!state.active || state.active.isRequest) return;
+  if (!state.active || state.active.isRequest || state.active.gchannel) return;      // not told to a whole channel
   if (!isTyping) {
     stopTyping();
     return;
@@ -319,12 +556,42 @@ const messageHandlers = {
     }
   },
   async onReport(item) {
-    const { conversation } = state.active;
+    const { conversation, gchannel } = state.active;
     const reason = window.prompt("What's wrong with this message? (optional)");
     if (reason === null) return;
     try {
-      await reportChannelMessage(boot.formkey, conversation.channel_id, item.eventId, reason);
-      window.alert("Thanks: the site's admins will take a look.");
+      if (gchannel) {
+        await reportGuildChannelMessage(boot.formkey, conversation.channel_id, item.eventId, reason);
+        window.alert("Thanks: the guild's guildmasters will take a look.");
+      } else {
+        await reportChannelMessage(boot.formkey, conversation.channel_id, item.eventId, reason);
+        window.alert("Thanks: the site's admins will take a look.");
+      }
+    } catch (e) {
+      window.alert(e.message);
+    }
+  },
+  onThread(item) {
+    openThread(item.eventId);
+  },
+  async onPin(item) {
+    const { conversation, gchannel } = state.active;
+    if (!gchannel) return;
+    try {
+      const answer = await pinGuildChannelMessage(boot.formkey, conversation.channel_id, item.eventId, !item.pinned);
+      state.active.pinned = state.active.pinned || new Set();
+      if (answer.pinned) state.active.pinned.add(item.eventId);
+      else state.active.pinned.delete(item.eventId);
+      scheduleRender();
+    } catch (e) {
+      window.alert(e.message);
+    }
+  },
+  async onRemove(item) {
+    const { conversation } = state.active;
+    if (!window.confirm("Remove this message for everyone? The guild's log will say you did.")) return;
+    try {
+      await removeGuildChannelMessage(boot.formkey, conversation.channel_id, item.eventId);
     } catch (e) {
       window.alert(e.message);
     }
@@ -335,15 +602,44 @@ const messageHandlers = {
   },
 };
 
+// a voice or stage channel has no thread of messages: a card in its place
+function openGuildCard(conversation) {
+  stopTyping();
+  closePanels();
+  state.context = null;
+  state.active = null;
+  state.thread = null;
+  const pane = document.getElementById("chat-thread-pane");
+  if (conversation.channel_kind === "voice") renderVoiceCard(pane, conversation, () => startCall(conversation.room_id, "audio"));
+  else renderStageCard(pane, conversation);
+  document.getElementById("chat-app")?.classList.add("chat-has-room");
+}
+
 async function openConversation(conversation) {
+  stopCards();
+  if (conversation.kind === "guild_channel" && !["text", "announcement"].includes(conversation.channel_kind)) {
+    return openGuildCard(conversation);
+  }
   const isRequest = state.tab === "request";
   const isGroup = conversation.kind === "group";
   const isChannel = conversation.kind === "channel";
-  const room = isGroup || isChannel ? await waitForRoom(conversation.room_id, 8000) : state.client.getRoom(conversation.room_id);
+  const isGuildChannel = conversation.kind === "guild_channel";
+  if (isGuildChannel && !conversation.in_room) {
+    // a guild's channel is joined by opening it: the site checks the person may read it, then puts them in its room
+    try {
+      await joinGuildChannel(boot.formkey, conversation.channel_id);
+      conversation.in_room = true;
+    } catch (e) {
+      window.alert(e.message);
+      return;
+    }
+  }
+  const room = isGroup || isChannel || isGuildChannel ? await waitForRoom(conversation.room_id, 8000) : state.client.getRoom(conversation.room_id);
   if (!room) return;
   const channel = isChannel
     ? { ...conversation, writers: new Map((conversation.writers || []).map((w) => [w.mxid, w])) }
     : null;
+  const gchannel = isGuildChannel ? { ...conversation, senders: createSenders(conversation.channel_id, scheduleRender) } : null;
 
   let group = null;
   if (isGroup) {
@@ -355,9 +651,10 @@ async function openConversation(conversation) {
   }
 
   stopTyping();
+  closePanels();
   state.context = null;
-  state.active = { conversation, room, isRequest, group, channel };
-  queueMicrotask(() => showThreadNotice(isGroup || isChannel ? "" : waitingNotice(conversation)));
+  state.active = { conversation, room, isRequest, group, channel, gchannel };
+  queueMicrotask(() => showThreadNotice(isGroup || isChannel || isGuildChannel ? "" : waitingNotice(conversation)));
 
   const pane = document.getElementById("chat-thread-pane");
   const inviter = isGroup && conversation.invited_by ? `@${conversation.invited_by.username}` : "Someone";
@@ -366,8 +663,13 @@ async function openConversation(conversation) {
     group: group ? { label: group.info.label, size: group.info.size } : null,
     requestText: isGroup ? `${inviter} added you to this group. Accept to read it and write in it.` : null,
     onInfo: group ? () => groupSheets.openInfo(state.active.group.info) : null,
-    onCall: isChannel ? null : (kind) => startCall(conversation.room_id, kind),
+    onCall: isChannel || isGuildChannel ? null : (kind) => startCall(conversation.room_id, kind),
     channel,
+    guildChannel: gchannel,
+    onSearch: gchannel ? openSearch : null,
+    onPins: gchannel ? openPins : null,
+    onMute: gchannel ? openMute : null,
+    onAcceptRules: gchannel ? onAcceptRules : null,
     onLeave: isChannel ? () => onLeaveChannel(conversation) : null,
     isRequest,
     onAccept: () => onAccept(conversation, room),
@@ -380,7 +682,7 @@ async function openConversation(conversation) {
     },
   });
 
-  if (isRequest) {
+  if (isRequest || isGuildChannel) {
     try {
       await state.client.scrollback(room, 30);
     } catch (e) {
@@ -391,6 +693,7 @@ async function openConversation(conversation) {
 
   renderActiveThread();
   watchCall();
+  if (gchannel) loadPins();
 }
 
 async function onLeaveChannel(conversation) {
@@ -406,6 +709,21 @@ async function onLeaveChannel(conversation) {
 }
 
 function onSend(room, text) {
+  if (state.active && state.active.gchannel && !state.active.gchannel.encrypted) {
+    // a guild channel is written through the site (who may write, slow mode, the word filter), which signs and sends
+    // it as you; it is not encrypted, so it needs no unlocking. An encrypted one is written like a group, from here
+    const { gchannel } = state.active;
+    const quote = state.context && state.context.type === "quote" ? state.context.event.getId() : null;
+    setContext(null);
+    postToGuildChannel(boot.formkey, gchannel.channel_id, text, quote).catch((e) => {
+      window.alert(e.message);
+      if (state.thread && !state.thread.inputEl.value) {     // slow mode and the like: what you wrote is not lost
+        state.thread.inputEl.value = text;
+        state.thread.fit?.();
+      }
+    });
+    return;
+  }
   if (state.locked) {
     window.alert("Unlock your messages first: reload the page to enter your password.");
     return;
@@ -466,6 +784,7 @@ async function onAccept(conversation, room) {
 
 function closeThread() {
   stopTyping();
+  stopCards();
   state.active = null;
   state.thread = null;
   document.getElementById("chat-thread-pane").innerHTML =
@@ -495,7 +814,7 @@ let callTimer = null;
 function watchCall() {
   clearTimeout(callTimer);
   const active = state.active;
-  if (!active || active.isRequest) return;
+  if (!active || active.isRequest || active.gchannel) return;
   fetch(`/api/calls/status?room=${encodeURIComponent(active.room.roomId)}`, { credentials: "same-origin" })
     .then((r) => (r.ok ? r.json() : null))
     .then((status) => {
@@ -558,16 +877,26 @@ function setTab(tab) {
   );
 }
 
+// The guild channels list is the dearest to work out (every channel of every guild you are in), so a message arriving
+// in some room does not ask for it again within this long
+let guildListAt = 0;
+const GUILD_LIST_MS = 15000;
+
 async function refreshLists() {
-  const [inbox, request, channel] = await Promise.all([
+  const wantGuilds = !guildListAt || Date.now() - guildListAt > GUILD_LIST_MS;
+  const [inbox, request, channel, guild] = await Promise.all([
     listConversations("inbox"),
     listConversations("request"),
     listConversations("channel"),
+    wantGuilds ? listConversations("guild").catch(() => state.conversations.guild) : state.conversations.guild,
   ]);
+  if (wantGuilds) guildListAt = Date.now();
   state.conversations.inbox = inbox;
   state.conversations.request = request;
   state.conversations.channel = channel;
+  state.conversations.guild = guild;
   setTabBadge(document.getElementById("chat-channels-badge"), channel.filter((c) => c.unread_count > 0).length);
+  setTabBadge(document.getElementById("chat-guilds-badge"), guild.filter((c) => c.unread_count > 0).length);
 
   setTabBadge(document.getElementById("chat-inbox-badge"), inbox.filter((c) => c.unread_count > 0).length);
   setTabBadge(document.getElementById("chat-requests-badge"), request.length);
@@ -624,7 +953,7 @@ function wireGlobalEvents(client) {
 
   client.on(RoomEvent.MyMembership, (room, membership) => {
     // removed from the group that is open (or it was closed): leave the thread
-    if (inActiveRoom(room) && state.active.group && (membership === "leave" || membership === "ban")) closeThread();
+    if (inActiveRoom(room) && (state.active.group || state.active.gchannel) && (membership === "leave" || membership === "ban")) closeThread();
     queueRefresh();
   });
   client.on(ClientEvent.Room, queueRefresh);
@@ -783,6 +1112,10 @@ async function main() {
     link.addEventListener("click", (e) => {
       e.preventDefault();
       setTab(link.dataset.chatTab);
+      if (link.dataset.chatTab === "guild") {
+        guildListAt = 0;                                  // opening the tab shows what is new
+        refreshLists().catch(() => {});
+      }
     });
   }
 
@@ -794,12 +1127,18 @@ async function main() {
   if (boot.initialRoom) {
     const match = state.conversations.inbox.find((c) => c.room_id === boot.initialRoom)
       || state.conversations.request.find((c) => c.room_id === boot.initialRoom)
-      || state.conversations.channel.find((c) => c.room_id === boot.initialRoom);
+      || state.conversations.channel.find((c) => c.room_id === boot.initialRoom)
+      || state.conversations.guild.find((c) => c.room_id === boot.initialRoom);
     if (match) {
-      setTab(state.conversations.inbox.includes(match) ? "inbox" : state.conversations.channel.includes(match) ? "channel" : "request");
+      setTab(state.conversations.inbox.includes(match) ? "inbox" : state.conversations.channel.includes(match) ? "channel"
+        : state.conversations.guild.includes(match) ? "guild" : "request");
       openConversation(match);
     }
   }
+
+  // A guild's Chat tab frames this page for one unencrypted channel (single): it has no keys to unlock, and the unlock
+  // box (which takes the focus, and so scrolls the page around the frame) is for the chat page itself
+  if (boot.single) return;
 
   // Non-blocking: the lists show at once; sending waits until this device has unlocked (crypto.js)
   const newCode = new URLSearchParams(window.location.search).get("recovery") === "new";

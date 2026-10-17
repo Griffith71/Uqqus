@@ -5,6 +5,8 @@
 //
 // Message text only ever goes in through textContent, never innerHTML.
 
+import { composerNote } from "./guild_channels.js";
+
 function escapeHtml(s) {
   const div = document.createElement("div");
   div.textContent = s == null ? "" : String(s);
@@ -119,7 +121,20 @@ export function renderConversationList(container, conversations, activeConversat
       ? '<span class="badge badge-danger rounded-circle align-top ml-1">&nbsp;</span>'
       : "";
 
-    if (convo.kind === "channel") {
+    if (convo.kind === "guild_channel") {
+      // a guild's channel (routes/guild_channels.py): its name, and the guild it is in
+      const icon = { announcement: "fa-bullhorn", voice: "fa-volume-high", stage: "fa-podcast" }[convo.channel_kind] || "fa-hashtag";
+      row.innerHTML = `
+        <span class="chat-group-avatar rounded-circle mr-2 flex-shrink-0" style="width:40px;height:40px" aria-hidden="true"><i class="fas ${icon}"></i></span>
+        <div class="flex-grow-1 overflow-hidden">
+          <div class="font-weight-bold text-truncate">${escapeHtml(convo.label)}${unreadDot}</div>
+          <div class="small text-muted text-truncate">${convo.encrypted ? '<i class="fas fa-lock" aria-hidden="true"></i> ' : ""}+${escapeHtml(convo.guild)}${convo.category ? " · " + escapeHtml(convo.category) : ""}${convo.channel_kind === "announcement" ? " · Announcements" : ""}</div>
+        </div>
+        ${convo.voice_people ? `<span class="badge badge-secondary badge-pill ml-1" aria-label="${Number(convo.voice_people)} in the call">${Number(convo.voice_people)}</span>` : ""}
+        ${convo.mentions ? `<span class="badge badge-danger badge-pill ml-1" aria-label="${Number(convo.mentions)} unread mentions">${Number(convo.mentions)}</span>` : ""}
+        ${convo.muted ? '<i class="fas fa-bell-slash text-muted ml-1" title="Muted" aria-hidden="true"></i>' : ""}
+      `;
+    } else if (convo.kind === "channel") {
       // a broadcast channel (routes/broadcasts.py): its name and how many are in it
       row.innerHTML = `
         <span class="chat-group-avatar rounded-circle mr-2 flex-shrink-0" style="width:40px;height:40px" aria-hidden="true"><i class="fas fa-tower-broadcast"></i></span>
@@ -168,11 +183,19 @@ function peopleLabel(n) {
 // callbacks: onAccept, onDecline, onSend(text), onTyping(isTyping), onCancelContext(), onInfo() (a group's sheet),
 // onCall(kind) (a voice or video call: routes/calls.py). A 1:1 chat passes otherUser; a group passes group
 // ({ label, size }) and requestText for an invitation.
-export function renderThreadShell(pane, { otherUser, group, channel, requestText, isRequest, onAccept, onDecline, onSend, onTyping, onCancelContext, onInfo, onCall, onLeave }) {
+export function renderThreadShell(pane, { otherUser, group, channel, guildChannel, onSearch, onPins, onMute, onAcceptRules, requestText, isRequest, onAccept, onDecline, onSend, onTyping, onCancelContext, onInfo, onCall, onLeave }) {
   const callButtons = !isRequest && onCall ? `
       <button type="button" class="btn btn-link btn-sm text-muted" data-call="audio" title="Voice call" aria-label="Voice call"><i class="fas fa-phone"></i></button>
       <button type="button" class="btn btn-link btn-sm text-muted" data-call="video" title="Video call" aria-label="Video call"><i class="fas fa-video"></i></button>` : "";
-  const header = channel ? `
+  const header = guildChannel ? `
+      <span class="chat-gc-id chat-group-avatar rounded-circle mr-2 flex-shrink-0" style="width:36px;height:36px" aria-hidden="true"><i class="fas ${guildChannel.channel_kind === "announcement" ? "fa-bullhorn" : "fa-hashtag"}"></i></span>
+      <div class="chat-gc-id flex-grow-1 overflow-hidden">
+        <div class="font-weight-bold text-truncate" id="chat-thread-title">${escapeHtml(guildChannel.label)}</div>
+        <div class="small text-muted text-truncate">+${escapeHtml(guildChannel.guild)}${guildChannel.topic ? " · " + escapeHtml(guildChannel.topic) : ""}</div>
+      </div>
+      ${guildChannel.encrypted ? '<span class="text-muted px-1" title="End-to-end encrypted" aria-label="End-to-end encrypted"><i class="fas fa-lock" aria-hidden="true"></i></span>' : `<button type="button" class="btn btn-link btn-sm text-muted" id="chat-gc-search" title="Search this channel" aria-label="Search this channel"><i class="fas fa-magnifying-glass" aria-hidden="true"></i></button>
+      <button type="button" class="btn btn-link btn-sm text-muted" id="chat-gc-pins" title="Pinned messages" aria-label="Pinned messages"><i class="fas fa-thumbtack" aria-hidden="true"></i></button>`}
+      <button type="button" class="btn btn-link btn-sm text-muted" id="chat-gc-mute" title="Notifications" aria-label="Notifications"><i class="fas ${guildChannel.muted ? "fa-bell-slash" : "fa-bell"}" aria-hidden="true"></i></button>` : channel ? `
       <span class="chat-group-avatar rounded-circle mr-2 flex-shrink-0" style="width:36px;height:36px" aria-hidden="true"><i class="fas fa-tower-broadcast"></i></span>
       <div class="flex-grow-1 overflow-hidden">
         <div class="font-weight-bold text-truncate" id="chat-thread-title">${escapeHtml(channel.label)}</div>
@@ -205,6 +228,14 @@ export function renderThreadShell(pane, { otherUser, group, channel, requestText
       </div>
     </div>` : ""}
     <div class="flex-grow-1 overflow-auto px-3 py-2" id="chat-messages"></div>
+    <div class="chat-panel d-none" id="chat-panel" role="dialog" aria-modal="false">
+      <div class="d-flex align-items-center border-bottom px-3 py-2">
+        <div class="font-weight-bold flex-grow-1 text-truncate" id="chat-panel-title"></div>
+        <button type="button" class="btn btn-link btn-sm text-muted" id="chat-panel-close" aria-label="Close">&times;</button>
+      </div>
+      <div class="flex-grow-1 overflow-auto px-3 py-2" id="chat-panel-body"></div>
+      <div class="border-top p-2 d-none" id="chat-panel-foot"></div>
+    </div>
     <div id="chat-typing" class="px-3 small text-muted chat-typing" aria-live="polite"></div>
     <div id="chat-context" class="d-none align-items-center border-top px-3 py-1 small bg-light">
       <div class="flex-grow-1 text-truncate" id="chat-context-text"></div>
@@ -275,6 +306,42 @@ export function renderThreadShell(pane, { otherUser, group, channel, requestText
     if (e.key === "Escape" && !contextEl.classList.contains("d-none")) onCancelContext?.();
   });
 
+  if (guildChannel) {
+    for (const [id, handler] of [["chat-gc-search", onSearch], ["chat-gc-pins", onPins], ["chat-gc-mute", onMute]]) {
+      const button = pane.querySelector("#" + id);
+      if (button && handler) button.addEventListener("click", handler);
+    }
+    // a channel that asks its rules to be accepted: the rules, and one button, in place of the box
+    if (guildChannel.needs_rules) {
+      form.classList.replace("d-flex", "d-none");
+      const box = document.createElement("div");
+      box.className = "px-2 py-2";
+      const title = document.createElement("div");
+      title.className = "font-weight-bold small mb-1";
+      title.textContent = "Rules of this channel";
+      const text = document.createElement("div");
+      text.className = "small chat-rules-text mb-2";
+      text.textContent = guildChannel.rules;
+      const agree = document.createElement("button");
+      agree.type = "button";
+      agree.className = "btn btn-primary btn-sm";
+      agree.id = "chat-accept-rules";
+      agree.textContent = "I agree to the rules";
+      agree.addEventListener("click", () => onAcceptRules && onAcceptRules());
+      box.append(title, text, agree);
+      form.parentElement.appendChild(box);
+    }
+    // who may write, and slow mode, are the site's rules (helpers/guild_channels.py): this line only says them
+    const note = guildChannel.needs_rules ? "" : composerNote(guildChannel);
+    if (!guildChannel.may_write && !guildChannel.needs_rules) form.classList.replace("d-flex", "d-none");      // d-flex is !important: hidden would lose
+    if (note) {
+      const line = document.createElement("div");
+      line.className = "small text-muted text-center py-1";
+      line.id = "chat-channel-note";
+      line.textContent = note;
+      form.parentElement.appendChild(line);
+    }
+  }
   if (channel && !channel.may_write) {
     // members read and react; only the owner and helpers write (the room's power levels say the same)
     form.classList.replace("d-flex", "d-none");      // d-flex is !important: the hidden attribute would lose
@@ -308,6 +375,25 @@ export function renderThreadShell(pane, { otherUser, group, channel, requestText
       pane.querySelector("#chat-call-bar-text").textContent =
         `${callKind === "video" ? "Video" : "Voice"} call going on · ${people} ${people === 1 ? "person" : "people"}`;
     },
+    // a panel over the messages (a thread, the pinned messages, search, notifications): { body, foot, close }
+    openPanel(title, onClose) {
+      const panel = pane.querySelector("#chat-panel");
+      const body = pane.querySelector("#chat-panel-body");
+      const foot = pane.querySelector("#chat-panel-foot");
+      pane.querySelector("#chat-panel-title").textContent = title;
+      body.textContent = "";
+      foot.textContent = "";
+      foot.classList.add("d-none");
+      panel.classList.remove("d-none");
+      panel.classList.add("d-flex");
+      const close = () => {
+        panel.classList.add("d-none");
+        panel.classList.remove("d-flex");
+        if (onClose) onClose();
+      };
+      pane.querySelector("#chat-panel-close").onclick = close;
+      return { body, foot, close, showFoot() { foot.classList.remove("d-none"); } };
+    },
     // a group's name and size after a change in its sheet
     setGroup(next) {
       const title = pane.querySelector("#chat-thread-title");
@@ -320,12 +406,26 @@ export function renderThreadShell(pane, { otherUser, group, channel, requestText
 
 // items: [{ eventId, mine, body, status, edited, deleted, quote, reactions, seen, seenBy, canEdit, sender, blocked }]
 // sender: who wrote it, in a group (null for your own and in a 1:1 chat); blocked: someone you blocked wrote it
-// handlers: { onQuote(item), onReact(item, key), onEdit(item), onDelete(item), onReport(item) }
-export function renderMessages(messagesEl, items, handlers) {
+// handlers: { onQuote(item), onReact(item, key), onEdit(item), onDelete(item), onReport(item), onRemove(item) }
+// removable: a guildmaster may remove this message from a guild channel
+export function renderMessages(messagesEl, items, handlers, more) {
   // keep the reader's place unless they were at the bottom
   const nearBottom = messagesEl.scrollHeight - messagesEl.scrollTop - messagesEl.clientHeight < 80;
   const before = messagesEl.scrollTop;
   messagesEl.innerHTML = "";
+  if (more && more.onLoad) {
+    // older messages exist (a guild channel): one button at the top
+    const older = document.createElement("div");
+    older.className = "text-center mb-2";
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "btn btn-sm btn-link";
+    button.id = "chat-load-earlier";
+    button.textContent = "Load earlier messages";
+    button.addEventListener("click", () => more.onLoad());
+    older.appendChild(button);
+    messagesEl.appendChild(older);
+  }
   for (const item of items) {
     messagesEl.appendChild(buildMessage(item, handlers));
   }
@@ -368,6 +468,13 @@ function buildMessage(item, handlers) {
     const who = document.createElement("div");
     who.className = "small text-muted chat-sender";
     who.textContent = item.sender;
+    // a guild role, as a chip in the flair palette (the server only sends a palette colour; the pattern is a second lock)
+    if (item.senderRole && /^[a-z]{1,12}$/.test(item.senderRole.colour || "")) {
+      const chip = document.createElement("span");
+      chip.className = `flair-chip flair-${item.senderRole.colour} ml-1`;
+      chip.textContent = item.senderRole.name;
+      who.appendChild(chip);
+    }
     column.appendChild(who);
   }
 
@@ -401,7 +508,7 @@ function buildMessage(item, handlers) {
   line.className = "d-flex align-items-center";
 
   const bubble = document.createElement("div");
-  bubble.className = `px-3 py-2 rounded chat-bubble ${item.mine ? "bg-primary text-white" : "bg-light"}`;
+  bubble.className = `px-3 py-2 rounded chat-bubble ${item.mine ? "bg-primary text-white" : "bg-light"}${item.mentionsMe ? " chat-mention" : ""}`;
   if (item.status) bubble.style.opacity = "0.6";
   const shared = !item.deleted && item.body ? POST_LINK.exec(item.body) : null;
   if (item.deleted) {
@@ -423,7 +530,8 @@ function buildMessage(item, handlers) {
   } else {
     const actions = document.createElement("div");
     actions.className = "chat-actions d-flex align-items-center";
-    actions.appendChild(iconButton("Quote this message", "fas fa-quote-left", () => handlers.onQuote(item)));
+    if (handlers.onQuote) actions.appendChild(iconButton("Quote this message", "fas fa-quote-left", () => handlers.onQuote(item)));
+    if (item.threadable && handlers.onThread) actions.appendChild(iconButton("Start or open a thread", "far fa-comments", () => handlers.onThread(item)));
 
     const picker = document.createElement("div");
     picker.className = "chat-picker d-none";
@@ -445,6 +553,12 @@ function buildMessage(item, handlers) {
     if (item.reportable && handlers.onReport) {
       actions.appendChild(iconButton("Report this message", "fas fa-flag", () => handlers.onReport(item)));
     }
+    if (item.pinnable && handlers.onPin) {
+      actions.appendChild(iconButton(item.pinned ? "Unpin this message" : "Pin this message", "fas fa-thumbtack", () => handlers.onPin(item)));
+    }
+    if (item.removable && handlers.onRemove) {
+      actions.appendChild(iconButton("Remove this message (guildmaster)", "fas fa-comment-slash", () => handlers.onRemove(item)));
+    }
     if (item.mine) {
       actions.appendChild(iconButton("Delete this message", "fas fa-trash", () => handlers.onDelete(item)));
     }
@@ -460,6 +574,15 @@ function buildMessage(item, handlers) {
   column.appendChild(line);
 
   if (shared) column.appendChild(postCard(shared[1]));
+
+  if (item.threadCount && handlers.onThread) {
+    const link = document.createElement("button");
+    link.type = "button";
+    link.className = "btn btn-link btn-sm px-0 chat-thread-link";
+    link.textContent = `${item.threadCount} message${item.threadCount === 1 ? "" : "s"} in thread`;
+    link.addEventListener("click", () => handlers.onThread(item));
+    column.appendChild(link);
+  }
 
   if (item.reactions && item.reactions.length) {
     const chips = document.createElement("div");
