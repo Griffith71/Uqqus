@@ -88,6 +88,8 @@ CREATE TABLE public.boards (
     color_nonce integer,
     is_nsfl boolean,
     sensitive_forced boolean DEFAULT false NOT NULL,
+    require_flair boolean DEFAULT false NOT NULL,
+    wiki_enabled boolean DEFAULT false NOT NULL,
     rank_trending double precision,
     stored_subscriber_count integer,
     avg_score double precision,
@@ -226,6 +228,7 @@ CREATE TABLE public.submissions (
     made_with_ai boolean DEFAULT false NOT NULL,
     is_anonymous boolean DEFAULT false NOT NULL,
     audience smallint DEFAULT 0 NOT NULL,
+    guild_flair_id integer,
     tip_coins integer DEFAULT 0 NOT NULL,
     tip_boost double precision DEFAULT 0 NOT NULL
 );
@@ -323,6 +326,8 @@ CREATE TABLE public.users (
     bio_severity smallint DEFAULT 0 NOT NULL,
     for_you_reset_utc integer DEFAULT 0 NOT NULL,
     creator_fund_opt_in_utc integer DEFAULT 0 NOT NULL,
+    last_active_utc integer DEFAULT 0 NOT NULL,
+    premium_auto_renew boolean DEFAULT false NOT NULL,
     score_display smallint DEFAULT 0 NOT NULL,
     profile_job character varying(60) DEFAULT '' NOT NULL,
     profile_location character varying(60) DEFAULT '' NOT NULL,
@@ -5057,7 +5062,7 @@ ALTER TABLE ONLY public.badges
 --
 
 ALTER TABLE ONLY public.bans
-    ADD CONSTRAINT bans_board_id_fkey FOREIGN KEY (board_id);
+    ADD CONSTRAINT bans_board_id_fkey FOREIGN KEY (board_id) REFERENCES public.boards(id);
 
 
 --
@@ -5065,7 +5070,7 @@ ALTER TABLE ONLY public.bans
 --
 
 ALTER TABLE ONLY public.contributors
-    ADD CONSTRAINT board_id_fkey FOREIGN KEY (board_id);
+    ADD CONSTRAINT board_id_fkey FOREIGN KEY (board_id) REFERENCES public.boards(id);
 
 
 --
@@ -5089,7 +5094,7 @@ ALTER TABLE ONLY public.flags
 --
 
 ALTER TABLE ONLY public.mods
-    ADD CONSTRAINT mods_board_id_fkey FOREIGN KEY (board_id);
+    ADD CONSTRAINT mods_board_id_fkey FOREIGN KEY (board_id) REFERENCES public.boards(id);
 
 
 --
@@ -5105,7 +5110,7 @@ ALTER TABLE ONLY public.notifications
 --
 
 ALTER TABLE ONLY public.postrels
-    ADD CONSTRAINT postrels_board_id_fkey FOREIGN KEY (board_id);
+    ADD CONSTRAINT postrels_board_id_fkey FOREIGN KEY (board_id) REFERENCES public.boards(id);
 
 
 --
@@ -5121,7 +5126,7 @@ ALTER TABLE ONLY public.postrels
 --
 
 ALTER TABLE ONLY public.forwardrels
-    ADD CONSTRAINT forwardrels_board_id_fkey FOREIGN KEY (board_id);
+    ADD CONSTRAINT forwardrels_board_id_fkey FOREIGN KEY (board_id) REFERENCES public.boards(id);
 
 
 --
@@ -5153,7 +5158,7 @@ ALTER TABLE ONLY public.comment_forwardrels
 --
 
 ALTER TABLE ONLY public.comment_forwardrels
-    ADD CONSTRAINT comment_forwardrels_board_id_fkey FOREIGN KEY (board_id);
+    ADD CONSTRAINT comment_forwardrels_board_id_fkey FOREIGN KEY (board_id) REFERENCES public.boards(id);
 
 
 --
@@ -5211,7 +5216,7 @@ ALTER TABLE ONLY public.subcategories
 --
 
 ALTER TABLE ONLY public.submissions
-    ADD CONSTRAINT submissions_board_id_fkey FOREIGN KEY (board_id);
+    ADD CONSTRAINT submissions_board_id_fkey FOREIGN KEY (board_id) REFERENCES public.boards(id);
 
 
 --
@@ -5219,7 +5224,7 @@ ALTER TABLE ONLY public.submissions
 --
 
 ALTER TABLE ONLY public.submissions
-    ADD CONSTRAINT submissions_original_board_id_fkey FOREIGN KEY (original_board_id);
+    ADD CONSTRAINT submissions_original_board_id_fkey FOREIGN KEY (original_board_id) REFERENCES public.boards(id);
 
 
 --
@@ -5227,7 +5232,7 @@ ALTER TABLE ONLY public.submissions
 --
 
 ALTER TABLE ONLY public.subscriptions
-    ADD CONSTRAINT subscriptions_board_id_fkey FOREIGN KEY (board_id);
+    ADD CONSTRAINT subscriptions_board_id_fkey FOREIGN KEY (board_id) REFERENCES public.boards(id);
 
 
 --
@@ -5457,7 +5462,7 @@ ALTER TABLE ONLY public.curation_guilds
     ADD CONSTRAINT curation_guilds_curation_id_fkey FOREIGN KEY (curation_id) REFERENCES public.curations(id);
 
 ALTER TABLE ONLY public.curation_guilds
-    ADD CONSTRAINT curation_guilds_board_id_fkey FOREIGN KEY (board_id);
+    ADD CONSTRAINT curation_guilds_board_id_fkey FOREIGN KEY (board_id) REFERENCES public.boards(id);
 
 CREATE INDEX curation_guilds_curation_id_idx ON public.curation_guilds USING btree (curation_id);
 
@@ -5621,7 +5626,11 @@ CREATE TABLE public.chat_identities (
     user_id integer NOT NULL,
     matrix_user_id character varying(255) NOT NULL,
     provisioned_utc integer DEFAULT 0,
-    recovery_key_encrypted text
+    recovery_key_encrypted text,
+    key_salt character varying(64),
+    key_blob_password text,
+    key_blob_recovery text,
+    ready_utc integer DEFAULT 0 NOT NULL
 );
 
 ALTER TABLE ONLY public.chat_identities
@@ -6228,6 +6237,16 @@ CREATE TABLE public.chat_groups (
     CONSTRAINT chat_groups_room_key UNIQUE (matrix_room_id)
 );
 
+-- Every add to a group, kept so the daily cap can't be reset by removing and adding again (audit M-08).
+CREATE TABLE public.chat_group_adds (
+    id SERIAL PRIMARY KEY,
+    adder_id integer NOT NULL,
+    group_id integer NOT NULL,
+    user_id integer NOT NULL,
+    created_utc integer DEFAULT 0 NOT NULL
+);
+CREATE INDEX chat_group_adds_adder_idx ON public.chat_group_adds (adder_id, created_utc);
+
 CREATE TABLE public.chat_group_members (
     group_id integer NOT NULL REFERENCES public.chat_groups(id) ON DELETE CASCADE,
     user_id integer NOT NULL,
@@ -6402,7 +6421,7 @@ CREATE TABLE public.broadcast_reports (
 
 
 --
--- Live threads (migration 2026-10-26_live_threads.sql; helpers/live_threads.py)
+-- Live threads (migrations 2026-10-26_live_threads.sql, 2026-10-28_live_threads_reddit.sql; helpers/live_threads.py)
 --
 
 CREATE TABLE public.live_threads (
@@ -6410,7 +6429,12 @@ CREATE TABLE public.live_threads (
     started_utc integer NOT NULL,
     ended_utc integer DEFAULT 0 NOT NULL,
     last_update_utc integer DEFAULT 0 NOT NULL,
-    started_by_id integer NOT NULL
+    started_by_id integer NOT NULL,
+    ends_utc integer DEFAULT 0 NOT NULL,
+    summary text DEFAULT '' NOT NULL,
+    summary_html text DEFAULT '' NOT NULL,
+    summary_severity smallint DEFAULT 0 NOT NULL,
+    summary_edited_utc integer DEFAULT 0 NOT NULL
 );
 
 CREATE TABLE public.live_updates (
@@ -6422,7 +6446,256 @@ CREATE TABLE public.live_updates (
     word_severity smallint DEFAULT 0 NOT NULL,
     created_utc integer NOT NULL,
     edited_utc integer DEFAULT 0 NOT NULL,
-    deleted_utc integer DEFAULT 0 NOT NULL
+    deleted_utc integer DEFAULT 0 NOT NULL,
+    struck_utc integer DEFAULT 0 NOT NULL
 );
 
 CREATE INDEX live_updates_post_idx ON public.live_updates (post_id, id);
+
+--
+-- Guild flair (migration 2026-10-29_guild_flair.sql; helpers/guild_flair.py)
+--
+
+CREATE TABLE public.guild_flairs (
+    id SERIAL PRIMARY KEY,
+    board_id integer NOT NULL REFERENCES public.boards(id) ON DELETE CASCADE,
+    name character varying(24) NOT NULL,
+    colour character varying(12) DEFAULT 'gray' NOT NULL,
+    position integer DEFAULT 0 NOT NULL,
+    name_severity smallint DEFAULT 0 NOT NULL,
+    created_utc integer DEFAULT 0 NOT NULL
+);
+
+CREATE UNIQUE INDEX guild_flairs_name_key ON public.guild_flairs (board_id, lower(name));
+CREATE INDEX guild_flairs_board_idx ON public.guild_flairs (board_id, position);
+CREATE INDEX submissions_guild_flair_idx ON public.submissions (board_id, guild_flair_id) WHERE guild_flair_id IS NOT NULL;
+
+--
+-- Guild wikis and pinned resources (migration 2026-10-30_guild_wiki.sql; helpers/guild_wiki.py)
+--
+CREATE TABLE public.guild_wiki_pages (
+    id SERIAL PRIMARY KEY,
+    board_id integer NOT NULL REFERENCES public.boards(id) ON DELETE CASCADE,
+    slug character varying(40) NOT NULL,
+    title character varying(80) NOT NULL,
+    edit_level character varying(12) DEFAULT 'mods' NOT NULL,
+    current_revision_id integer DEFAULT 0 NOT NULL,
+    created_utc integer DEFAULT 0 NOT NULL,
+    locked boolean DEFAULT false NOT NULL,
+    title_severity smallint DEFAULT 0 NOT NULL,
+    CONSTRAINT guild_wiki_pages_level CHECK (edit_level IN ('mods', 'approved', 'members'))
+);
+
+CREATE UNIQUE INDEX guild_wiki_pages_slug_key ON public.guild_wiki_pages (board_id, slug);
+
+CREATE TABLE public.guild_wiki_revisions (
+    id SERIAL PRIMARY KEY,
+    page_id integer NOT NULL REFERENCES public.guild_wiki_pages(id) ON DELETE CASCADE,
+    editor_id integer NOT NULL,
+    body text DEFAULT '' NOT NULL,
+    body_html text DEFAULT '' NOT NULL,
+    word_severity smallint DEFAULT 0 NOT NULL,
+    reason character varying(140) DEFAULT '' NOT NULL,
+    created_utc integer DEFAULT 0 NOT NULL,
+    removed_utc integer DEFAULT 0 NOT NULL
+);
+
+CREATE INDEX guild_wiki_revisions_page_idx ON public.guild_wiki_revisions (page_id, id);
+CREATE INDEX guild_wiki_revisions_editor_idx ON public.guild_wiki_revisions (editor_id, created_utc);
+
+CREATE TABLE public.guild_resources (
+    id SERIAL PRIMARY KEY,
+    board_id integer NOT NULL REFERENCES public.boards(id) ON DELETE CASCADE,
+    label character varying(40) NOT NULL,
+    kind character varying(8) NOT NULL,
+    target character varying(300) NOT NULL,
+    position integer DEFAULT 0 NOT NULL,
+    label_severity smallint DEFAULT 0 NOT NULL,
+    CONSTRAINT guild_resources_kind CHECK (kind IN ('link', 'wiki', 'post'))
+);
+
+CREATE INDEX guild_resources_board_idx ON public.guild_resources (board_id, position);
+
+-- Guild events and their calendar (migration 2026-10-31_guild_events.sql; helpers/guild_events.py)
+
+CREATE TABLE public.guild_events (
+    id SERIAL PRIMARY KEY,
+    board_id integer NOT NULL REFERENCES public.boards(id) ON DELETE CASCADE,
+    creator_id integer NOT NULL,
+    title character varying(120) NOT NULL,
+    details text DEFAULT '' NOT NULL,
+    details_html text DEFAULT '' NOT NULL,
+    word_severity smallint DEFAULT 0 NOT NULL,
+    starts_utc integer NOT NULL,
+    ends_utc integer NOT NULL,
+    location_url character varying(300) DEFAULT '' NOT NULL,
+    location_text character varying(120) DEFAULT '' NOT NULL,
+    space_post_id integer,
+    cancelled_utc integer DEFAULT 0 NOT NULL,
+    created_utc integer DEFAULT 0 NOT NULL,
+    reminded_utc integer DEFAULT 0 NOT NULL,
+    CONSTRAINT guild_events_times CHECK (ends_utc > starts_utc)
+);
+
+CREATE INDEX guild_events_board_idx ON public.guild_events (board_id, starts_utc);
+CREATE INDEX guild_events_due_idx ON public.guild_events (starts_utc) WHERE reminded_utc = 0 AND cancelled_utc = 0;
+
+CREATE TABLE public.guild_event_rsvps (
+    event_id integer NOT NULL REFERENCES public.guild_events(id) ON DELETE CASCADE,
+    user_id integer NOT NULL,
+    status character varying(12) NOT NULL,
+    created_utc integer DEFAULT 0 NOT NULL,
+    PRIMARY KEY (event_id, user_id),
+    CONSTRAINT guild_event_rsvps_status CHECK (status IN ('going', 'interested'))
+);
+
+-- Shared drafts and collaborative posts (migration 2026-11-01_collab_posts.sql; helpers/collab_rules.py)
+
+--   psql "$DATABASE_URL" -f scripts/migrations/2026-11-01_collab_posts.sql
+CREATE TABLE public.collab_docs (
+    id SERIAL PRIMARY KEY,
+    creator_id integer NOT NULL,
+    title text DEFAULT '' NOT NULL,
+    body text DEFAULT '' NOT NULL,
+    revision integer DEFAULT 0 NOT NULL,
+    authorship text DEFAULT '{}' NOT NULL,
+    rules text DEFAULT '{}' NOT NULL,
+    post_id integer,
+    published_revision integer DEFAULT 0 NOT NULL,
+    forked_from_doc_id integer,
+    forked_from_post_id integer,
+    forked_at_publish_id integer,
+    created_utc integer DEFAULT 0 NOT NULL,
+    updated_utc integer DEFAULT 0 NOT NULL,
+    deleted_utc integer DEFAULT 0 NOT NULL
+);
+
+CREATE UNIQUE INDEX collab_docs_post_key ON public.collab_docs (post_id) WHERE post_id IS NOT NULL;
+CREATE INDEX collab_docs_forked_idx ON public.collab_docs (forked_from_post_id) WHERE forked_from_post_id IS NOT NULL;
+CREATE INDEX collab_docs_creator_idx ON public.collab_docs (creator_id, created_utc);
+
+CREATE TABLE public.collab_authors (
+    doc_id integer NOT NULL REFERENCES public.collab_docs(id) ON DELETE CASCADE,
+    user_id integer NOT NULL,
+    joined_utc integer DEFAULT 0 NOT NULL,
+    left_utc integer DEFAULT 0 NOT NULL,
+    added_by_proposal_id integer,
+    PRIMARY KEY (doc_id, user_id)
+);
+
+CREATE INDEX collab_authors_user_idx ON public.collab_authors (user_id, left_utc);
+
+CREATE TABLE public.collab_ops (
+    doc_id integer NOT NULL REFERENCES public.collab_docs(id) ON DELETE CASCADE,
+    revision integer NOT NULL,
+    user_id integer NOT NULL,
+    field character varying(5) NOT NULL,
+    op text NOT NULL,
+    client_key character varying(32) DEFAULT '' NOT NULL,
+    created_utc integer DEFAULT 0 NOT NULL,
+    PRIMARY KEY (doc_id, revision),
+    CONSTRAINT collab_ops_field CHECK (field IN ('title', 'body'))
+);
+
+CREATE INDEX collab_ops_user_idx ON public.collab_ops (user_id, created_utc);
+CREATE UNIQUE INDEX collab_ops_client_key ON public.collab_ops (doc_id, user_id, client_key) WHERE client_key <> '';
+
+CREATE TABLE public.collab_publishes (
+    id SERIAL PRIMARY KEY,
+    doc_id integer NOT NULL REFERENCES public.collab_docs(id) ON DELETE CASCADE,
+    number integer NOT NULL,
+    revision integer NOT NULL,
+    title text NOT NULL,
+    body text NOT NULL,
+    authorship text NOT NULL,
+    published_by integer NOT NULL,
+    published_utc integer DEFAULT 0 NOT NULL,
+    CONSTRAINT collab_publishes_number_key UNIQUE (doc_id, number)
+);
+
+CREATE TABLE public.collab_proposals (
+    id SERIAL PRIMARY KEY,
+    doc_id integer NOT NULL REFERENCES public.collab_docs(id) ON DELETE CASCADE,
+    kind character varying(16) NOT NULL,
+    subject_user_id integer,
+    payload text DEFAULT '{}' NOT NULL,
+    proposed_by integer NOT NULL,
+    created_utc integer DEFAULT 0 NOT NULL,
+    closes_utc integer DEFAULT 0 NOT NULL,
+    decided_utc integer DEFAULT 0 NOT NULL,
+    outcome character varying(10) DEFAULT 'open' NOT NULL,
+    invitee_answer character varying(10) DEFAULT '' NOT NULL,
+    CONSTRAINT collab_proposals_kind CHECK (kind IN ('add_author', 'remove_author', 'change_rules', 'delete_post', 'publish')),
+    CONSTRAINT collab_proposals_outcome CHECK (outcome IN ('open', 'passed', 'failed', 'withdrawn', 'expired'))
+);
+
+CREATE INDEX collab_proposals_doc_idx ON public.collab_proposals (doc_id, outcome);
+CREATE INDEX collab_proposals_subject_idx ON public.collab_proposals (subject_user_id, outcome) WHERE subject_user_id IS NOT NULL;
+
+CREATE TABLE public.collab_votes (
+    proposal_id integer NOT NULL REFERENCES public.collab_proposals(id) ON DELETE CASCADE,
+    user_id integer NOT NULL,
+    vote boolean NOT NULL,
+    created_utc integer DEFAULT 0 NOT NULL,
+    PRIMARY KEY (proposal_id, user_id)
+);
+
+-- Which migrations this schema already includes (scripts/migrate.py, audit D-02). A database made from this file
+-- starts with every one recorded; add a line here with each new migration.
+
+CREATE TABLE public.schema_migrations (
+    name character varying(255) PRIMARY KEY,
+    applied_utc integer DEFAULT 0 NOT NULL
+);
+
+INSERT INTO public.schema_migrations (name) VALUES
+    ('2026-10-05_word_filter.sql'),
+    ('2026-10-06_anonymous.sql'),
+    ('2026-10-06_comment_permission.sql'),
+    ('2026-10-06_content_disclosure.sql'),
+    ('2026-10-06_post_drafts.sql'),
+    ('2026-10-06_post_templates.sql'),
+    ('2026-10-06_regions_reshuffle.sql'),
+    ('2026-10-07_curation_algorithm.sql'),
+    ('2026-10-07_media.sql'),
+    ('2026-10-07_trending.sql'),
+    ('2026-10-08_coauthors.sql'),
+    ('2026-10-08_community_notes.sql'),
+    ('2026-10-08_languages.sql'),
+    ('2026-10-08_muting.sql'),
+    ('2026-10-09_bookmark_folders.sql'),
+    ('2026-10-09_polls.sql'),
+    ('2026-10-09_post_insights.sql'),
+    ('2026-10-10_circle_guilds.sql'),
+    ('2026-10-10_circle_posts.sql'),
+    ('2026-10-10_circles.sql'),
+    ('2026-10-10_deletion_log.sql'),
+    ('2026-10-10_for_you_reset.sql'),
+    ('2026-10-10_post_follows_and_feedback.sql'),
+    ('2026-10-10_rules_and_login_ip.sql'),
+    ('2026-10-10_stories.sql'),
+    ('2026-10-10_trusted_provider_embeds.sql'),
+    ('2026-10-11_search_body_index.sql'),
+    ('2026-10-12_creator_fund.sql'),
+    ('2026-10-13_tips.sql'),
+    ('2026-10-14_profile_details.sql'),
+    ('2026-10-14_score_display.sql'),
+    ('2026-10-15_bots.sql'),
+    ('2026-10-16_site_bots.sql'),
+    ('2026-10-17_display_name.sql'),
+    ('2026-10-18_sensitive_accounts.sql'),
+    ('2026-10-19_feed_intervals.sql'),
+    ('2026-10-20_many_circles.sql'),
+    ('2026-10-21_turn_usage.sql'),
+    ('2026-10-22_chat_groups.sql'),
+    ('2026-10-23_chat_calls.sql'),
+    ('2026-10-24_spaces.sql'),
+    ('2026-10-25_broadcasts.sql'),
+    ('2026-10-26_live_threads.sql'),
+    ('2026-10-27_more_trusted_embeds.sql'),
+    ('2026-10-28_live_threads_reddit.sql'),
+    ('2026-10-29_guild_flair.sql'),
+    ('2026-10-30_guild_wiki.sql'),
+    ('2026-10-31_guild_events.sql'),
+    ('2026-11-01_collab_posts.sql'),
+    ('2026-11-02_audit_fixes.sql');
