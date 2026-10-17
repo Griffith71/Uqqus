@@ -21,6 +21,7 @@ MACRO_FIELDS = {
     "coauthors_field": {"coauthors"},
     "poll_field": {"poll_option", "poll_hours"},
     "space_field": {"space", "space_start", "space_record"},
+    "live_field": {"live", "live_hours"},
 }
 
 
@@ -34,7 +35,7 @@ def names(page):
 
 # what only one of them has, on purpose (none today: write the reason here when there is one)
 ONLY_FULL = set()
-ONLY_INLINE = set()
+ONLY_INLINE = {"guild_flair"}      # a Circle guild's own composer: its posts are made straight in the guild
 
 
 def test_every_option_of_the_full_editor_is_in_the_feed_composer():

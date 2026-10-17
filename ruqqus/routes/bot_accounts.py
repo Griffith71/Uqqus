@@ -129,6 +129,8 @@ def _display_name(raw, account_id):
         return "", str(refused)
     if name and display_name_store.takes_a_handle(g.db, account_id, name):
         return "", "That is another account's username, so it can't be a display name."
+    if name and display_names.reserved_refusal(name, (app.config["SITE_NAME"], "ruqqus", "uqqus")):
+        return "", display_names.RESERVED
     return name, None
 
 

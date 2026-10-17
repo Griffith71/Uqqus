@@ -84,7 +84,7 @@ def _error_text(response):
     data = response.get_json(silent=True)
     if isinstance(data, dict) and data.get("error"):
         return str(data["error"])[:500]
-    return f"The server answered {response.status_code}."
+    return pd.status_reason(response.status_code)
 
 
 def _fail(draft_id, user, now, reason):

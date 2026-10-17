@@ -1,3 +1,4 @@
+from flask import g
 from sqlalchemy import *
 from sqlalchemy.orm import relationship, lazyload
 

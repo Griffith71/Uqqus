@@ -64,8 +64,7 @@ def user_agent():
 
 
 def _not_this_site(host):
-    site = bots.own_host()
-    if site and (host == site or host.endswith("." + site)):
+    if bots.is_own_host(host):
         raise FetchError("A bot can't read this site itself.")
 
 
@@ -74,6 +73,7 @@ def _once(url, etag, last_modified, allow_local, deadline, max_bytes):
     scheme, host, port, path = safe_fetch.check_url(url, allow_local)
     _not_this_site(host)
     address = safe_fetch.vetted_address(host, port, allow_local)
+    _not_this_site(address)                                           # a name that leads to the origin itself
 
     slow = FetchError("The feed did not answer in time.")
     context = ssl.create_default_context() if scheme == "https" else None

@@ -175,7 +175,8 @@ def get_post(pid, v=None, graceful=False, nSession=None, no_text=False, **kwargs
             Load(UserBlock).lazyload('*'),
             joinedload(Submission.awards),
             joinedload(Submission.domain_obj),
-            joinedload(Submission.reposts).lazyload('*'),
+            # a copy draws its original's embed (Submission.embed_url): load the original's text with it (P-06)
+            joinedload(Submission.reposts).options(lazyload('*'), joinedload(Submission.submission_aux)),
             Load(AwardRelationship).lazyload('*')
         )
 
@@ -260,7 +261,8 @@ def get_post(pid, v=None, graceful=False, nSession=None, no_text=False, **kwargs
             Load(UserBlock).lazyload('*'),
             joinedload(Submission.awards),
             joinedload(Submission.domain_obj),
-            joinedload(Submission.reposts).lazyload('*'),
+            # a copy draws its original's embed (Submission.embed_url): load the original's text with it (P-06)
+            joinedload(Submission.reposts).options(lazyload('*'), joinedload(Submission.submission_aux)),
             Load(AwardRelationship).lazyload('*')
         # ).join(
         #     exile,
@@ -353,7 +355,8 @@ def get_posts(pids, sort="hot", v=None):
             Load(UserBlock).lazyload('*'),
             joinedload(Submission.awards),
             joinedload(Submission.domain_obj),
-            joinedload(Submission.reposts).lazyload('*'),
+            # a copy draws its original's embed (Submission.embed_url): load the original's text with it (P-06)
+            joinedload(Submission.reposts).options(lazyload('*'), joinedload(Submission.submission_aux)),
             Load(AwardRelationship).lazyload('*')
         ).filter(
             Submission.id.in_(pids)
@@ -425,7 +428,8 @@ def get_posts(pids, sort="hot", v=None):
             Load(UserBlock).lazyload('*'),
             joinedload(Submission.awards),
             joinedload(Submission.domain_obj),
-            joinedload(Submission.reposts).lazyload('*'),
+            # a copy draws its original's embed (Submission.embed_url): load the original's text with it (P-06)
+            joinedload(Submission.reposts).options(lazyload('*'), joinedload(Submission.submission_aux)),
             Load(AwardRelationship).lazyload('*')
         ).filter(Submission.id.in_(pids)
         # ).join(
@@ -458,6 +462,14 @@ def get_posts(pids, sort="hot", v=None):
     # which of them are live threads (helpers/live_view.py): one query
     from ruqqus.helpers import live_view
     live_view.attach(g.db, posts)
+
+    # the flair on each guild copy (helpers/guild_flair_store.py): one query
+    from ruqqus.helpers import guild_flair_store
+    guild_flair_store.attach(g.db, posts)
+
+    # who forwarded each copy, for the bylines, the menus and the flair rule (helpers/forward_view.py): three queries
+    from ruqqus.helpers import forward_view
+    forward_view.attach(g.db, posts)
 
     # whether the viewer follows each post, or already gets its comments (helpers/post_follows.py): two queries
     from ruqqus.helpers import post_follows
@@ -780,8 +792,11 @@ def get_comment(cid, nSession=None, v=None, graceful=False, no_text=False, **kwa
         abort(404)
 
     # a comment whose post is no longer in the database (an orphan) has no page to be shown on: every route that
-    # reads comment.post or comment.permalink would crash. A system notification has no post at all and is kept.
-    if x is not None and x.parent_submission and x.post is None:
+    # reads comment.post or comment.permalink would crash. A system notification has no post at all: it is read
+    # only through the notification lists, never by id (audit CR-01: its id crashed /post/<p>/<c>, the v2 comment
+    # API and the vue comment route), unless a caller asks for one with `system_ok`.
+    if x is not None and ((x.parent_submission and x.post is None)
+                          or (not x.parent_submission and not kwargs.get("system_ok"))):
         if graceful:
             return None
         abort(404)

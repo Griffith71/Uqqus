@@ -2,8 +2,9 @@
 
 Rep is the upvotes (helpers/vote_colour.py colours it by the share of upvotes). Only live items count (not removed,
 not deleted); forward copies of a post count, as they always did; the account's own votes never count (so the
-automatic upvote on one's own post adds nothing). Anonymous items count for their author like any other: only a total
-is ever shown, never which items made it. Plain SQL (`sqlalchemy.text`), so the same statements run on SQLite in the
+automatic upvote on one's own post adds nothing). Anonymous items never count: the profile's tooltip shows the exact
+up and down counts, so upvoting an anonymous post and watching whose number moved would name its author (audit,
+carried from BACKEND_AUDIT_FINDINGS). Plain SQL (`sqlalchemy.text`), so the same statements run on SQLite in the
 tests."""
 from sqlalchemy import text
 
@@ -15,10 +16,12 @@ _COUNTS = text("""
       SELECT v.vote_type FROM votes v JOIN submissions s ON s.id = v.submission_id
       WHERE s.author_id = :u AND v.user_id <> :u
         AND COALESCE(s.is_banned, :no) = :no AND COALESCE(s.deleted_utc, 0) = 0
+        AND COALESCE(s.is_anonymous, :no) = :no
       UNION ALL
       SELECT cv.vote_type FROM commentvotes cv JOIN comments c ON c.id = cv.comment_id
       WHERE c.author_id = :u AND cv.user_id <> :u
         AND COALESCE(c.is_banned, :no) = :no AND COALESCE(c.deleted_utc, 0) = 0
+        AND COALESCE(c.is_anonymous, :no) = :no
     ) t
 """)
 

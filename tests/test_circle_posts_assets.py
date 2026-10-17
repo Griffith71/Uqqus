@@ -100,6 +100,10 @@ def test_lists_that_ask_for_public_posts_are_the_ones_known_and_each_decision_is
     # helpers/post_counts.py 1 (2026-10-13): a post's share count leaves out forward copies that are not public, so the
     # number never hints at a private guild the post went to.
     # helpers/similar_store.py 1 (2026-10-14): Similar accounts ties accounts to guilds through public posts only.
+    # classes/boards.py 4 -> 0 (2026-11, audit A-01, the owner's choice): a private guild's page and comment list show a
+    # non-member only their own posts, not the ones forwarded while it was public.
+    # routes/chat.py 1 -> 0 (2026-11, audit M-12): the chat post preview asks `in_private_guild_for`, the post page's
+    # own rule, instead of its own `post_public` / `can_view` test.
     counts = {}
     for path in (ROOT / "ruqqus").rglob("*"):
         if path.suffix in (".py", ".html") and "__pycache__" not in path.parts:
@@ -107,9 +111,9 @@ def test_lists_that_ask_for_public_posts_are_the_ones_known_and_each_decision_is
             if n:
                 counts[str(path.relative_to(ROOT)).replace("\\", "/")] = n
     assert counts == {
-        "ruqqus/classes/boards.py": 4, "ruqqus/classes/submission.py": 3, "ruqqus/classes/user.py": 15,
+        "ruqqus/classes/submission.py": 3, "ruqqus/classes/user.py": 15,
         "ruqqus/helpers/ads.py": 1, "ruqqus/helpers/post_counts.py": 1, "ruqqus/helpers/similar_store.py": 1, "ruqqus/helpers/circle_clause.py": 2, "ruqqus/helpers/creator_fund_store.py": 3, "ruqqus/helpers/circle_guard.py": 1, "ruqqus/helpers/trending_store.py": 2,
-        "ruqqus/routes/chat.py": 1, "ruqqus/routes/circles.py": 1, "ruqqus/routes/curations.py": 2,
+        "ruqqus/routes/circles.py": 1, "ruqqus/routes/curations.py": 2,
         "ruqqus/routes/deletion_log.py": 2, "ruqqus/routes/front.py": 6, "ruqqus/routes/legal.py": 1,
         "ruqqus/routes/posts.py": 2, "ruqqus/routes/search.py": 2, "ruqqus/templates/comments.html": 1,
     }, counts
@@ -135,7 +139,7 @@ def test_the_circle_condition_is_only_for_posts_made_for_circles():
 
 def test_the_rss_feed_carries_nothing_made_for_a_circle():
     feeds = read("ruqqus", "routes", "feeds.py")
-    assert "posts = [p for p in get_posts(ids, sort=sort, v=user) if not p.audience and not p.hidden_by_guild]" in feeds
+    assert "if not p.audience and not p.hidden_by_guild and not p.in_private_guild_for(None)]" in feeds   # B-01 too
     # and a text post (no link, no picture) no longer breaks the whole feed
     assert feeds.index('if post.url:') < feeds.index('doc.stag("link", href=post.url)')
     assert feeds.index('if image_url:') < feeds.index('doc.stag("media:thumbnail", url=image_url)')

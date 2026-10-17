@@ -245,6 +245,28 @@ def recompute():
             db.rollback()
             print_(f"picture refresh failed: {e}")
 
+        # shared drafts: open proposals counted again (authors go inactive, proposals reach their end)
+        try:
+            from ruqqus.routes.collab import settle_open_proposals
+            print_(f"decided {settle_open_proposals(db_session)} shared-draft proposals")
+        except Exception as e:
+            print_(f"shared-draft proposals failed: {e}")
+
+        # guild events starting within the hour: everyone who answered Going or Interested is told, once
+        try:
+            from ruqqus.routes.guild_events import send_due_reminders
+            print_(f"sent {send_due_reminders(db_session)} guild event reminders")
+        except Exception as e:
+            print_(f"guild event reminders failed: {e}")
+
+        # shared-draft edits, deleted live updates and old view counts are not kept forever (helpers/retention.py)
+        try:
+            from ruqqus.helpers import retention
+            print_(f"retention: {retention.prune(db, now)}")
+        except Exception as e:
+            db.rollback()
+            print_(f"retention failed: {e}")
+
         # a cycle rescans every live post of the last 180 days: once every few minutes is plenty
         time.sleep(CYCLE_PAUSE_SECONDS)
 

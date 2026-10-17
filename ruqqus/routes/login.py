@@ -9,6 +9,7 @@ from urllib.parse import urlencode
 
 from ruqqus.helpers.word_filter_store import apply_user_severity
 from ruqqus.classes import *
+from sqlalchemy import func
 from ruqqus.helpers.wrappers import *
 from ruqqus.helpers.base36 import *
 from ruqqus.helpers.security import *
@@ -24,7 +25,9 @@ from ruqqus.__main__ import app, limiter
 
 valid_username_regex = re.compile(r"^[a-zA-Z0-9_]{3,25}$")
 valid_password_regex = re.compile(r"^.{8,100}$")
-# valid_email_regex=re.compile(r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)")
+# an email address is optional; when given it needs a name, one @ and a domain with a dot (audit I-03: no check ran,
+# and every failure of the sign-up said the email was wrong)
+valid_email_regex = re.compile(r"^[^@\s]{1,64}@[^@\s]+\.[^@\s]+$")
 
 # login form
 
@@ -80,11 +83,14 @@ def check_for_alts(current_id):
 @throttle_check_ip('login')
 def login_post():
 
-    username = request.form.get("username")
+    username = (request.form.get("username") or "").strip()
+    if not username:
+        return render_template("login.html", failed=True, i=random_image()), 400
 
     if "@" in username:
+        # an exact, case-insensitive match: never a LIKE pattern, where % and _ match anything (audit I-01)
         account = g.db.query(User).filter(
-            User.email.ilike(username),
+            func.lower(User.email) == username.lower(),
             User.is_deleted == False).first()
     else:
         account = get_user(username, graceful=True)
@@ -120,7 +126,7 @@ def login_post():
                                    i=random_image(),
                                    redirect=request.form.get("redirect", "/")
                                    )
-    elif request.form.get("2fa_token", "x"):
+    elif request.form.get("2fa_token") and request.form.get("time", "").isdigit() and request.form.get("hash"):
         now = int(time.time())
 
         if now - int(request.form.get("time")) > 600:
@@ -151,7 +157,9 @@ def login_post():
             g.db.commit()
 
     else:
-        abort(400)
+        # neither a password nor a complete 2FA answer (audit I-02: no password used to crash here)
+        time.sleep(random.uniform(0, 2))
+        return render_template("login.html", failed=True, i=random_image()), 400
 
     # set session and user id
     flask_session["user_id"] = account.id
@@ -306,9 +314,9 @@ def sign_up_post(v):
     def new_signup(error):
 
         args = {"error": error}
-        if request.form.get("referred_by"):
-            user = g.db.query(User).filter_by(
-                id=request.form.get("referred_by")).first()
+        ref = request.form.get("referred_by", "")
+        if ref.isascii() and ref.isdigit():
+            user = g.db.query(User).filter_by(id=int(ref)).first()
             if user:
                 args["ref"] = user.username
 
@@ -339,14 +347,12 @@ def sign_up_post(v):
         #print(f"signup fail - {username } - invalid password")
         return new_signup("Password must be between 8 and 100 characters.")
 
-    # if not re.match(valid_email_regex, request.form.get("email")):
-    #    return new_signup("That's not a valid email.")
-
     # Check for existing acocunts
-    email = request.form.get("email")
-    email = email.lstrip().rstrip()
+    email = (request.form.get("email") or "").strip()
     if not email:
         email = None
+    elif len(email) > 255 or not valid_email_regex.match(email):
+        return new_signup("That email address doesn't look right. You can also leave it empty.")
 
     #counteract gmail username+2 and extra period tricks - convert submitted email to actual inbox
     if email and email.endswith("@gmail.com"):
@@ -361,7 +367,7 @@ def sign_up_post(v):
         return redirect(existing_account.permalink)
 
     if existing_account or (email and g.db.query(
-            User).filter(User.email.ilike(email)).first()):
+            User).filter(func.lower(User.email) == email.lower()).first()):
         # #print(f"signup fail - {username } - email already exists")
         return new_signup(
             "An account with that username or email already exists.")
@@ -396,7 +402,8 @@ def sign_up_post(v):
     flask_session.pop("signup_token")
 
     # get referral
-    ref_id = int(request.form.get("referred_by", 0))
+    ref = request.form.get("referred_by", "")
+    ref_id = int(ref) if ref.isascii() and ref.isdigit() else 0
 
     # upgrade user badge
     if ref_id:
@@ -434,8 +441,8 @@ def sign_up_post(v):
         apply_user_severity(new_user)
 
     except Exception as e:
-        #print(e)
-        return new_signup("Please enter a valid email")
+        print(f"sign-up failed: {type(e).__name__}: {e}", flush=True)
+        return new_signup("Your account couldn't be created. Please try again.")
 
     g.db.add(new_user)
     g.db.commit()
@@ -458,16 +465,15 @@ def sign_up_post(v):
         send_verification_email(new_user)
 
     # send welcome message
-    text = f"""![](https://media.giphy.com/media/ehmupaq36wyALTJce6/200w.gif)
-\n\nWelcome to Ruqqus, {new_user.username}. We're glad to have you here.
-\n\nWhile you get settled in, here are a couple of things we recommend for newcomers:
-- View the [quickstart guide](https://ruqqus.com/post/86i)
-- Personalize your front page by [joining some guilds](/browse)
-\n\nYou're welcome to say almost anything protected by the First Amendment here - even if you don't live in the United States.
-And since we're committed to [open-source](https://github.com/ruqqus/ruqqus) transparency, your front page (and your posted content) won't be artificially manipulated.
-\n\nReally, it's what social media should have been doing all along.
-\n\nNow, go enjoy your digital freedom.
-\n\n-The Ruqqus Team"""
+    # the welcome message (audit U-02: it named another site, linked to ruqqus.com and promised a front page that is
+    # never ranked, which For You and the ads made untrue)
+    site = app.config["SITE_NAME"]
+    text = f"""Welcome to {site}, {new_user.username}. We're glad to have you here.
+\n\nA few things to start with:
+- Follow people and [join some guilds](/browse) so your Following feed has something in it
+- Read the [rules](/help/rules) and the [help pages](/help)
+- Choose how much you see in [Settings > Content](/settings/content)
+\n\n-The {site} team"""
     send_notification(new_user, text)
 
     session["user_id"] = new_user.id
@@ -492,14 +498,13 @@ def get_forgot():
 @throttle_check_ip('password_reset')
 def post_forgot():
 
-    username = request.form.get("username").lstrip('@')
-    email = request.form.get("email",'').lstrip().rstrip()
+    username = (request.form.get("username") or "").lstrip('@')
+    email = (request.form.get("email") or '').strip()
 
-    email=email.replace("_", r"\_")
-
+    # exact, case-insensitive matches: never LIKE patterns (audit I-01)
     user = g.db.query(User).filter(
-        User.username.ilike(username),
-        User.email.ilike(email),
+        func.lower(User.username) == username.lower(),
+        func.lower(User.email) == email.lower(),
         User.is_deleted == False).first()
 
     if user:
@@ -509,7 +514,7 @@ def post_forgot():
         url = f"https://{app.config['SERVER_NAME']}/reset?id={user.id}&time={now}&token={token}"
 
         send_mail(to_address=user.email,
-                  subject="Ruqqus - Password Reset Request",
+                  subject=f"{app.config['SITE_NAME']} - Password Reset Request",
                   html=render_template("email/password_reset.html",
                                        action_url=url,
                                        v=user)

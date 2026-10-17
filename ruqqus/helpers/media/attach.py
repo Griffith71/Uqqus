@@ -21,7 +21,9 @@ def _models():
 def claimed_assets(db, author_id, texts):
     """The author's own ready assets mentioned in `texts`. A mention only counts when the
     id, the secret token and the extension all match, so an address cannot be guessed and
-    someone else's file cannot be claimed."""
+    someone else's file cannot be claimed. `author_id` may be a list: a collaborative post's
+    authors (routes/collab.py), each claiming only their own files."""
+    owners = set(author_id) if isinstance(author_id, (list, tuple, set, frozenset)) else {author_id}
     MediaAsset, _, _ = _models()
     refs = rules.find_refs(*texts)
     if not refs:
@@ -30,7 +32,7 @@ def claimed_assets(db, author_id, texts):
     out = []
     for asset_id, token, ext in refs:
         asset = rows.get(asset_id)
-        if (asset is not None and asset.user_id == author_id and asset.ext == ext
+        if (asset is not None and asset.user_id in owners and asset.ext == ext
                 and asset.status == rules.READY and hmac.compare_digest(asset.token, token)):
             out.append(asset)
     return out
@@ -176,7 +178,8 @@ def audience_of(db, asset):
 def sync(db, author_id, texts, submission_id=None, comment_id=None):
     """Make the assets attached to this post (or comment) match what its link and text
     mention now: attach the newly mentioned ones, let go of the ones no longer there.
-    Returns the attached assets. The caller commits, then calls safety.scan_later on them."""
+    Returns the attached assets. The caller commits, then calls safety.scan_later on them.
+    `author_id` may be a list of owners (a collaborative post's authors)."""
     MediaAsset, _, _ = _models()
     if not (submission_id or comment_id):
         return []

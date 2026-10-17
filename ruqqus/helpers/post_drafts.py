@@ -13,6 +13,7 @@ import re
 from . import coauthors
 from . import comment_permission as cperm
 from . import circles
+from . import live_threads as live_rules
 from . import polls as poll_rules
 from .post_fields import BODY_MAX, TITLE_MAX, URL_MAX, PostFieldError, check_body, flag
 
@@ -78,6 +79,13 @@ def clean_fields(form):
     except poll_rules.PollError as error:
         raise PostFieldError(error.message)
 
+    # "Make this a live thread" (helpers/live_threads.py): it goes live when the draft is published
+    live = flag(form, "live")
+    try:
+        live_hours = live_rules.clean_hours(form.get("live_hours")) if live else live_rules.DEFAULT_HOURS
+    except live_rules.Refused as error:
+        raise PostFieldError(str(error))
+
     return {
         "title": title,
         "url": url,
@@ -94,6 +102,8 @@ def clean_fields(form):
             "made_with_ai": flag(form, "made_with_ai"),
             "anonymous": flag(form, "anonymous"),
             "sensitive": flag(form, "sensitive"),
+            "live": live,
+            "live_hours": live_hours,
         },
     }
 
@@ -152,6 +162,10 @@ def publish_form(fields, formkey):
         # the length counts from the moment of publishing
         data["poll_option"] = list(options["poll_options"])
         data["poll_hours"] = str(options.get("poll_hours") or poll_rules.DEFAULT_HOURS)
+    if options.get("live"):
+        # the thread's length also counts from the moment of publishing
+        data["live"] = "true"
+        data["live_hours"] = str(options.get("live_hours") or live_rules.DEFAULT_HOURS)
     return data
 
 
@@ -174,6 +188,27 @@ def retry_at(now, message, attempts):
     return now + max(60, wait + 5)
 
 
+STATUS_REASONS = {
+    400: "something in it isn't accepted any more (a link, a guild or an option). Open it and press Post to see what.",
+    401: "you were signed out.",
+    403: "your account couldn't post it at that moment (a suspension, or the rules of a guild it was forwarded to). "
+         "Open it and press Post to see what.",
+    404: "a guild or post it named no longer exists.",
+    409: "it clashed with something already posted.",
+    413: "it is too large.",
+    429: "you were posting too fast, and it couldn't wait any longer.",
+}
+
+
+def status_reason(status):
+    """What a refusal with no message of its own means, in words (audit P-02: members were told "403 Forbidden")."""
+    if status in STATUS_REASONS:
+        return STATUS_REASONS[status]
+    if status >= 500:
+        return "the site had a problem. Try posting it yourself or scheduling it again."
+    return "it was refused."
+
+
 def failure_notice(title, reason):
     """The notification text for a scheduled post that could not be published."""
     shown = title if title else "Untitled"
@@ -184,6 +219,6 @@ def failure_notice(title, reason):
 __all__ = [
     "DRAFT_LIMIT", "MIN_LEAD_SECONDS", "MAX_LEAD_SECONDS", "MAX_ATTEMPTS", "KEEP_PUBLISHED_SECONDS",
     "STALE_PUBLISHING_SECONDS", "STATUSES", "EDITABLE", "BODY_MAX",
-    "clean_fields", "is_empty", "schedule_time", "require_title", "publish_form",
+    "STATUS_REASONS", "status_reason", "clean_fields", "is_empty", "schedule_time", "require_title", "publish_form",
     "cooldown_seconds", "retry_at", "failure_notice", "PostFieldError",
 ]

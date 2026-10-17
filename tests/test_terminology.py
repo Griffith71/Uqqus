@@ -45,7 +45,7 @@ def _files():
         for p in ROOT.glob(pattern):
             rel = p.relative_to(ROOT).as_posix()
             # the built chat bundle and vendored libraries are not ours to word
-            if rel.startswith(SKIP_DIRS) or rel in SKIP_FILES or rel.endswith((".min.js", "chat_bundle.js", "js/bootstrap.js")):
+            if rel.startswith(SKIP_DIRS) or rel in SKIP_FILES or rel.endswith((".min.js", "chat_bundle.js", "call_bundle.js", "space_bundle.js", "js/bootstrap.js")):
                 continue
             yield p, rel
 

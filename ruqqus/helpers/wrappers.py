@@ -73,8 +73,22 @@ def get_logged_in_user(db=None):
 
     if x[0]:
         x[0].client = x[1]
+        _note_active(x[0])
 
     return x
+
+
+ACTIVE_STAMP_SECONDS = 86400
+
+
+def _note_active(user):
+    """When the account was last on the site, to the day (shared drafts leave authors gone longer than their rules
+    say uncounted: helpers/collab_rules.py). One write a day at most; the live stream never writes."""
+    if request.path.startswith(("/api/live/events", "/assets/")):
+        return
+    now = int(time.time())
+    if now - (getattr(user, "last_active_utc", 0) or 0) >= ACTIVE_STAMP_SECONDS:
+        user.last_active_utc = now
 
 def check_ban_evade(v):
 
@@ -83,14 +97,14 @@ def check_ban_evade(v):
     
     if random.randint(0,30) < v.ban_evade and not v.is_suspended:
         v.ban(reason="Evading a site-wide ban")
-        send_notification(v, "Your Ruqqus account has been permanently suspended for the following reason:\n\n> ban evasion")
+        send_notification(v, f"Your {app.config['SITE_NAME']} account has been permanently suspended for the following reason:\n\n> ban evasion")
 
         for post in g.db.query(Submission).filter_by(author_id=v.id).all():
             if post.is_banned:
                 continue
 
             post.is_banned=True
-            post.ban_reason="Ban evasion. This submission's owner was banned from Ruqqus on another account."
+            post.ban_reason="Ban evasion. This submission's owner was banned on another account."
             g.db.add(post)
 
             ma=ModAction(
@@ -109,7 +123,7 @@ def check_ban_evade(v):
                 continue
 
             comment.is_banned=True
-            comment.ban_reason="Ban evasion. This comment's owner was banned from Ruqqus on another account."
+            comment.ban_reason="Ban evasion. This comment's owner was banned on another account."
             g.db.add(comment)
 
             ma=ModAction(

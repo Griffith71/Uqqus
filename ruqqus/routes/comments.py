@@ -419,7 +419,7 @@ Optional file data:
             threshold *= 2
 
         if len(similar_comments) > threshold:
-            text = "Your Ruqqus account has been suspended for 1 day for the following reason:\n\n> Too much spam!"
+            text = f"Your {app.config['SITE_NAME']} account has been suspended for 1 day for the following reason:\n\n> Too much spam!"
             send_notification(v, text)
 
             v.ban(reason="Spamming.",
@@ -726,7 +726,7 @@ Optional form data (left out: unchanged):
         threshold *= 2
 
     if len(similar_comments) > threshold:
-        text = "Your Ruqqus account has been suspended for 1 day for the following reason:\n\n> Too much spam!"
+        text = f"Your {app.config['SITE_NAME']} account has been suspended for 1 day for the following reason:\n\n> Too much spam!"
         send_notification(v, text)
 
         v.ban(reason="Spamming.",
@@ -1072,7 +1072,20 @@ def forward_comment(cid, v):
     if already:
         return {"error": f"Already forwarded to +{target.name}."}, 409
 
+    # the guild's required flair applies to a forwarded comment as to a forwarded post (audit G-01)
+    from ruqqus.helpers import guild_flair as flair_rules, guild_flair_store as flair_store
+    raw_flair = request.form.get("flair", "")
+    flair_id = flair_rules.parse_id(raw_flair) if raw_flair else None
+    if raw_flair and flair_id is None:
+        return {"error": "That isn't a flair."}, 400
+    flair_refusal = flair_rules.forward_refusal(target.require_flair, flair_id, flair_store.ids_of(g.db, target.id),
+                                                target.name)
+    if flair_refusal:
+        return {"error": flair_refusal}, 409
+
     new_post = create_forward_post_from_comment(comment, target, v)
+    if flair_id:
+        flair_store.set_post_flair(g.db, new_post.id, flair_id)
     g.db.commit()
 
     cache.delete_memoized(frontlist)
@@ -1099,7 +1112,7 @@ def embed_comment_cid(cid, pid=None):
     if comment.is_banned or comment.deleted_utc > 0:
         if request.path.startswith("/api/"):
             return jsonify({'error': f'Comment {cid} has been removed'}), 410
-        return render_template("embeds/comment_removed.html", c=comment), 410
+        return render_template("embeds/comment_removed.html", c=comment, v=None), 410
 
     if comment.board.is_banned:
         abort(410)
@@ -1107,7 +1120,7 @@ def embed_comment_cid(cid, pid=None):
     if post_hidden(comment.post, None) or comment_thread_hidden(comment, None):
         abort(403)
 
-    return render_template("embeds/comment.html", c=comment)
+    return render_template("embeds/comment.html", c=comment, v=None)
 
 @app.route("/mod/comment_pin/<guildname>/<cid>", methods=["POST"])
 @app.route("/api/v1/comment_pin/<guildname>/<cid>", methods=["POST"])

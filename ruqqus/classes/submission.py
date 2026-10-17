@@ -133,6 +133,7 @@ class Submission(Base, Stndrd, Age_times, Scores, Fuzzing):
     # in rank_hot / rank_best only, never to its score or the Top sort)
     tip_coins = Column(Integer, default=0)
     tip_boost = Column(Float, default=0)
+    guild_flair_id = Column(Integer, default=None)       # the flair on a guild's copy (helpers/guild_flair.py)
     reports = relationship("Report", backref="submission")
     is_bot = Column(Boolean, default=False)
 
@@ -437,6 +438,7 @@ class Submission(Base, Stndrd, Age_times, Scores, Fuzzing):
         if self.mod_approved:
             return 0
         else:
+            from .flags import Report
             return self.reports.filter(
                 Report.created_utc > self.accepted_utc).count()
 
@@ -530,6 +532,11 @@ class Submission(Base, Stndrd, Age_times, Scores, Fuzzing):
         if self.board_id != self.original_board_id and self.original_board:
             data['original_guild_name'] = self.original_board.name
             data['original_guild_id'] = base36encode(self.original_board_id)
+
+        # a guild copy's flair (helpers/guild_flair.py), as the reader's word filter lets it show
+        from ruqqus.routes.guild_flair import flair_of
+        flair = flair_of(self) if self.guild_flair_id else None
+        data['flair'] = {"name": flair["name"], "colour": flair["colour"]} if flair else None
         return data
 
     @property

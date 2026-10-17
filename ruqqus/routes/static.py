@@ -23,6 +23,23 @@ from ruqqus.__main__ import app, limiter, db_session
 _compiled_css = {}
 
 
+# the web app manifest (audit U-02: a static file that named another site, started at ruqqus.com and had no icons, so
+# the site could not be installed)
+@app.route("/manifest.json", methods=["GET"])
+@limiter.exempt
+def web_manifest():
+	name = app.config["SITE_NAME"]
+	icon = "/assets/images/favicons/android-chrome-{0}x{0}.png"
+	resp = jsonify({
+		"name": name, "short_name": name, "start_url": "/", "scope": "/", "display": "standalone",
+		"background_color": "#ffffff", "theme_color": "#ffffff",
+		"icons": [{"src": icon.format(n), "sizes": f"{n}x{n}", "type": "image/png"} for n in (192, 384)],
+	})
+	resp.headers["Content-Type"] = "application/manifest+json"
+	resp.headers["Cache-Control"] = "public, max-age=3600"
+	return resp
+
+
 # the site's own stylesheets are never rate limited: a page that loses one renders unstyled
 @app.route("/assets/style/<file>.css", methods=["GET"])
 @limiter.exempt

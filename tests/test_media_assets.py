@@ -88,7 +88,7 @@ def test_a_public_file_is_cached_for_good_and_a_private_one_never():
     # refusals are never cached either, so a 404 cannot stick after the post goes up
     assert 'response.headers["Cache-Control"] = NO_STORE' in ROUTES[ROUTES.index("def _refuse("):ROUTES.index("def media_file(")]
     # and the app's blanket header leaves these answers alone
-    assert 'if not request.path.startswith("/media/"):' in MAIN
+    assert 'if "Cache-Control" not in response.headers:' in MAIN       # a route's own header is kept (audit X-02)
 
 
 def test_a_public_file_never_reads_the_session():

@@ -269,6 +269,7 @@ def build_legacy(monkeypatch):
     app = Flask("legacy-test")
     app.config["SERVER_NAME"] = "localhost"
     app.config["FORCE_HTTPS"] = 0
+    app.config["SITE_NAME"] = "Uqqus"
     app.secret_key = "test-secret"
     db = FakeDB()
 
@@ -328,7 +329,9 @@ def build_legacy(monkeypatch):
     stubs = {
         "gevent": _module("gevent", sleep=lambda s: None),
         "ruqqus.__main__": _module(
-            "ruqqus.__main__", Base=object, app=app, db_session=lambda: db),
+            "ruqqus.__main__", Base=object, app=app, db_session=lambda: db,
+            limiter=types.SimpleNamespace(limit=lambda *a, **k: (lambda f: f)), r=None,
+            member_limit_key=lambda: "test"),
         "ruqqus.classes": classes,
         "ruqqus.helpers.get": _module(
             "ruqqus.helpers.get", get_post=get_post, get_comment=get_comment,

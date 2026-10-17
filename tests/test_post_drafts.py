@@ -22,7 +22,7 @@ def test_a_draft_saves_the_composers_fields():
     assert f["title"] == "A titlewith breaks"          # one line, like the real title
     assert f["url"] == "https://example.com/x" and f["body"] == "some **text**"
     assert f["forward_guilds"] == ["general", "Test"]  # leading + dropped, case-insensitive duplicates dropped
-    assert f["options"] == {"coauthors": "", "poll_options": [], "poll_hours": 24, "comment_permission": 2, "audience": 0, "circles": [], "paid_partnership": True, "made_with_ai": False, "anonymous": False, "sensitive": True}
+    assert f["options"] == {"coauthors": "", "poll_options": [], "poll_hours": 24, "comment_permission": 2, "audience": 0, "circles": [], "paid_partnership": True, "made_with_ai": False, "anonymous": False, "sensitive": True, "live": False, "live_hours": 24}
 
 
 def test_an_empty_draft_is_valid_but_flagged_empty():
@@ -137,3 +137,21 @@ def test_a_draft_for_circles_without_a_circle_is_refused_never_made_public():
 def test_a_draft_for_an_audience_that_is_not_a_choice_is_refused(raw):
     with pytest.raises(pd.PostFieldError, match="Choose who can see this"):
         pd.clean_fields(form(("title", "t"), ("audience", raw)))
+
+
+def test_a_draft_keeps_its_live_thread_and_publishing_starts_it():
+    # "Make this a live thread" (helpers/live_threads.py): kept, and sent back so submit_post starts it when published
+    f = pd.clean_fields(MultiDict([("title", "Election night"), ("live", "true"), ("live_hours", "72")]))
+    assert f["options"]["live"] is True and f["options"]["live_hours"] == 72
+    data = pd.publish_form(f, "key")
+    assert data["live"] == "true" and data["live_hours"] == "72"
+    quiet = pd.clean_fields(MultiDict([("title", "x"), ("live_hours", "nonsense")]))   # the length is read only when ticked
+    assert quiet["options"]["live"] is False and "live" not in pd.publish_form(quiet, "key")
+    with pytest.raises(PostFieldError):
+        pd.clean_fields(MultiDict([("title", "x"), ("live", "true"), ("live_hours", "5")]))
+
+
+def test_a_refusal_without_a_message_is_put_in_words():
+    assert "Forbidden" not in pd.status_reason(403) and "Post" in pd.status_reason(403)
+    assert "problem" in pd.status_reason(502)
+    assert pd.status_reason(418) == "it was refused."

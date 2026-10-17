@@ -60,9 +60,11 @@ def feeds_user(sort=None, username=None, key=None):
     t = request.args.get('t')
 
     ids = user.idlist(sort=sort, page=page, t=t)
-    # a feed address is a secret that is handed to other programs: it carries nothing made for a Circle (helpers/circles.py)
-    # nor a copy a guild's moderators hid (the page shows "Removed by guildmasters" for it)
-    posts = [p for p in get_posts(ids, sort=sort, v=user) if not p.audience and not p.hidden_by_guild]
+    # a feed address is a secret that is handed to other programs: it carries nothing made for a Circle (helpers/circles.py),
+    # nothing in a private guild (audit B-01: only what a visitor could open), nor a copy a guild's moderators hid (the
+    # page shows "Removed by guildmasters" for it)
+    posts = [p for p in get_posts(ids, sort=sort, v=user)
+             if not p.audience and not p.hidden_by_guild and not p.in_private_guild_for(None)]
 
     domain = environ.get(
     "domain", environ.get(

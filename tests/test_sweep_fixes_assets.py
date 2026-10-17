@@ -18,7 +18,9 @@ def func(source, name):
 def test_a_comment_whose_post_is_gone_is_a_404_not_a_crash():
     # /comment/<cid> and /post_short/<pid>/<cid> read comment.permalink, which reads comment.post
     body = func(read("helpers", "get.py"), "get_comment")
-    check = "if x is not None and x.parent_submission and x.post is None:"
+    check = "if x is not None and ((x.parent_submission and x.post is None)"
+    # and a system notification (no post at all) is not read by id either (audit CR-01)
+    assert 'or (not x.parent_submission and not kwargs.get("system_ok"))):' in body
     assert check in body
     after = body.split(check)[1][:200]
     assert "return None" in after and "abort(404)" in after

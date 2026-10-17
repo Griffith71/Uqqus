@@ -260,3 +260,15 @@ def test_the_bot_page_says_how_a_feed_is_read():
     assert bots.cadence_label(5, 0) == "Read every 5 minutes"
     assert bots.cadence_label(27, 0) == "Read every 27 minutes (quiet lately)"
     assert bots.cadence_label(5, 0, bots.PENDING) == ""
+
+
+def test_every_name_and_address_of_this_site_is_refused(monkeypatch):
+    # audit B-01: the short domain, the onion name and the origin's addresses too, not only the main name
+    monkeypatch.setenv("SERVER_NAME", "laba.example")
+    monkeypatch.setenv("SHORT_DOMAIN", "lb.ex")
+    monkeypatch.setenv("ONION_NAME", "abc.onion")
+    monkeypatch.setenv("ORIGIN_IPS", "203.0.113.7, 2001:db8::1")
+    for host in ("laba.example", "www.laba.example", "lb.ex", "abc.onion", "203.0.113.7", "2001:db8::1"):
+        assert bots.is_own_host(host), host
+    assert not bots.is_own_host("bbc.co.uk")
+    assert bots.parse_feed_url("https://lb.ex/feed")[1] == "A bot can't read this site itself."

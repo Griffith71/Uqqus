@@ -676,9 +676,9 @@ def info_packet(username, method="html"):
 
         send_mail(
             user.email,
-            "Your Ruqqus Data",
-            "Your Ruqqus data is attached.",
-            "Your Ruqqus data is attached.",
+            f"Your {app.config['SITE_NAME']} data",
+            f"Your {app.config['SITE_NAME']} data is attached.",
+            f"Your {app.config['SITE_NAME']} data is attached.",
             files={f"{user.username}_{entry}.{method}": io.StringIO(convert_file(str(packet[entry][method]()))) for entry in packet}
         )
 

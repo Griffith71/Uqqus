@@ -105,3 +105,21 @@ def test_your_own_handle_is_fine_as_your_own_display_name():
     assert not store.takes_a_handle(db, 2, "big admin")
     assert store.takes_a_handle(db, 1, "big admin")
     assert store.takes_a_handle(db, None, "ada")              # an account that does not exist yet has no handle of its own
+
+
+def test_look_alike_letters_cannot_imitate_a_handle():
+    """Audit I-04: a Cyrillic letter, an accent, a combining mark, full-width letters or 0/o, 1/l all used to pass."""
+    from ruqqus.helpers import display_name_store as store
+
+    db = _users()
+    for name in ("аda", "áda", "a̶da", "ａｄａ", "Adа", "BIG ADM1N", "big_admіn"):
+        assert store.takes_a_handle(db, 2 if "da" in name.lower() or "а" in name else 1, name) or \
+            store.takes_a_handle(db, 3, name), repr(name)
+    assert dn.skeleton("аudit_fríend") == dn.skeleton("audit_friend")
+
+
+def test_staff_like_names_are_kept_for_staff():
+    for name in ("Admin", "ＡＤＭＩＮ", "Uqqus Moderators", "The Mod Team", "official"):
+        assert dn.reserved_refusal(name, ("Uqqus",)) == dn.RESERVED, name
+    for name in ("Badminton fan", "Ecosystem lover", "Grace Hopper", "Moderately online"):
+        assert dn.reserved_refusal(name, ("Uqqus",)) is None, name

@@ -24,13 +24,13 @@ print()
 displayed_post_owners = select(Submission.author_id).filter_by(
         is_deleted=False,
         is_banned=False
-    ).distinct().subquery()
+    ).distinct().scalar_subquery()
 displayed_comment_owners = select(Comment.author_id).filter_by(
     is_deleted=False,
     is_banned=False
-).distinct().subquery()
+).distinct().scalar_subquery()
 
-modaction_owners = select(ModAction.user_id).distinct().subquery()
+modaction_owners = select(ModAction.user_id).distinct().scalar_subquery()
 
 banned_accounts = db.query(User).filter(
         User.is_banned > 0,

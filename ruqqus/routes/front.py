@@ -8,6 +8,7 @@ from ruqqus.helpers.wrappers import *
 from ruqqus.helpers.visibility import filter_posts, filter_comments, filter_boards, filter_users, viewer_level
 from ruqqus.helpers.sensitive import hide_sensitive
 from ruqqus.helpers.muting import hide_muted
+from ruqqus.helpers.feed_family import one_per_family
 from ruqqus.helpers.post_feedback import hide_fewer
 from ruqqus.helpers.blocks import hide_blocked
 from ruqqus.helpers.get import *
@@ -157,6 +158,8 @@ def frontlist(v=None, sort=None, page=1,
     posts = hide_fewer(posts, v, Submission)
     # All is everything except sensitive content, unless the viewer chose to see it (helpers/sensitive.py)
     posts = hide_sensitive(posts, v, Submission)
+    # one card per post: a guild copy leaves when its original is in All too (helpers/feed_family.py, audit F-01)
+    posts = one_per_family(posts, Submission)
     
     if v and v.hide_bot:
         posts = posts.filter(Submission.is_bot==False)
@@ -164,16 +167,16 @@ def frontlist(v=None, sort=None, page=1,
     if v and v.admin_level >= 4:
         board_blocks = select(BoardBlock.board_id).filter_by(
             user_id=v.id
-        ).subquery()
+        ).scalar_subquery()
 
         posts = posts.filter(Submission.board_id.notin_(board_blocks))
     elif v:
         m = select(ModRelationship.board_id).filter_by(
             user_id=v.id, invite_rescinded=False
-        ).subquery()
+        ).scalar_subquery()
         c = select(ContributorRelationship.board_id).filter_by(
             user_id=v.id
-        ).subquery()
+        ).scalar_subquery()
 
         posts = posts.filter(
             or_(
@@ -189,7 +192,7 @@ def frontlist(v=None, sort=None, page=1,
 
         board_blocks = select(BoardBlock.board_id).filter_by(
             user_id=v.id
-        ).subquery()
+        ).scalar_subquery()
 
         posts = posts.filter(Submission.board_id.notin_(board_blocks))
     else:
@@ -204,15 +207,20 @@ def frontlist(v=None, sort=None, page=1,
                     select(Subscription.board_id).filter_by(
                         user_id=v.id,
                         is_active=True
-                    ).subquery()
+                    ).scalar_subquery()
                 )
             )
         )
+        if v.admin_level < 4:
+            # a copy in a guild that has since turned private stays out of All for everyone but its members and the
+            # author (audit F-02: a post's public stamp is made when it is posted, for the sharing rule, and kept)
+            posts = posts.filter(or_(Board.is_private == False, Submission.author_id == v.id,
+                                     Submission.board_id.in_(m), Submission.board_id.in_(c)))
     else:
 
         posts = posts.join(
             Submission.board).filter_by(
-            all_opt_out=False)
+            all_opt_out=False, is_private=False)
 
     # a banned guild's posts leave every feed (search, trending and Following already do this)
     posts = posts.filter(Board.is_banned == False)
@@ -1081,9 +1089,9 @@ Optional query parameters:
 
     b = g.db.query(Board)
 
-    contribs = select(ContributorRelationship.board_id).filter_by(user_id=v.id, is_active=True).subquery()
-    m = select(ModRelationship.board_id).filter_by(user_id=v.id, accepted=True).subquery()
-    s = select(Subscription.board_id).filter_by(user_id=v.id, is_active=True).subquery()
+    contribs = select(ContributorRelationship.board_id).filter_by(user_id=v.id, is_active=True).scalar_subquery()
+    m = select(ModRelationship.board_id).filter_by(user_id=v.id, accepted=True).scalar_subquery()
+    s = select(Subscription.board_id).filter_by(user_id=v.id, is_active=True).scalar_subquery()
 
     content = b.filter(
         or_(
@@ -1176,7 +1184,7 @@ def random_post(v):
     if v:
         bans = g.db.query(
             BanRelationship.board_id).filter_by(
-            user_id=v.id).subquery()
+            user_id=v.id).scalar_subquery()
         x = x.filter(Submission.board_id.notin_(bans))
 
     # only what anyone may open: no Circle or private-guild posts (the redirect itself names them)
@@ -1283,10 +1291,10 @@ def comment_idlist(page=1, v=None, **kwargs):
         pass
     elif v:
         m = g.db.query(ModRelationship.board_id).filter_by(
-            user_id=v.id, invite_rescinded=False).subquery()
+            user_id=v.id, invite_rescinded=False).scalar_subquery()
         c = g.db.query(
             ContributorRelationship.board_id).filter_by(
-            user_id=v.id).subquery()
+            user_id=v.id).scalar_subquery()
 
         posts = posts.filter(
             or_(
@@ -1315,10 +1323,10 @@ def comment_idlist(page=1, v=None, **kwargs):
         # blocks
         blocking = g.db.query(
             UserBlock.target_id).filter_by(
-            user_id=v.id).subquery()
+            user_id=v.id).scalar_subquery()
         blocked = g.db.query(
             UserBlock.user_id).filter_by(
-            target_id=v.id).subquery()
+            target_id=v.id).scalar_subquery()
 
         comments = comments.filter(
             or_(Comment.author_id.notin_(blocking), Comment.is_anonymous == True),

@@ -39,16 +39,16 @@ def ban_user(user_id, v):
 
     if days > 0:
         if message:
-            text = f"Your Ruqqus account has been suspended for {days} days for the following reason:\n\n> {message}"
+            text = f"Your {app.config['SITE_NAME']} account has been suspended for {days} days for the following reason:\n\n> {message}"
         else:
-            text = f"Your Ruqqus account has been suspended for {days} days due to a Terms of Service violation."
+            text = f"Your {app.config['SITE_NAME']} account has been suspended for {days} days due to a Terms of Service violation."
         user.ban(admin=v, reason=reason, days=days)
 
     else:
         if message:
-            text = f"Your Ruqqus account has been permanently suspended for the following reason:\n\n> {message}"
+            text = f"Your {app.config['SITE_NAME']} account has been permanently suspended for the following reason:\n\n> {message}"
         else:
-            text = "Your Ruqqus account has been permanently suspended due to a Terms of Service violation."
+            text = f"Your {app.config['SITE_NAME']} account has been permanently suspended due to a Terms of Service violation."
 
         user.ban(admin=v, reason=reason)
 
@@ -78,7 +78,7 @@ def unban_user(user_id, v):
     user.unban()
 
     send_notification(user,
-                      "Your Ruqqus account has been reinstated. Please carefully review and abide by the [terms of service](/help/terms) and [content policy](/help/rules) to ensure that you don't get suspended again.")
+                      f"Your {app.config['SITE_NAME']} account has been reinstated. Please carefully review and abide by the [terms of service](/help/terms) and [content policy](/help/rules) to ensure that you don't get suspended again.")
 
 
     return (redirect(user.url), user)
@@ -987,9 +987,11 @@ def admin_sig_generate(v):
 @auth_desired
 def sig_validate(v):
 
-    file=request.files["file"]
+    file=request.files.get("file")
 
-    sig=request.form.get("sig").lstrip().rstrip()
+    sig=(request.form.get("sig") or "").strip()
+    if not file or not sig:
+        return render_template("help/signature.html", v=v, error=True)
 
     valid=validate_hash(str(file.read()), sig)
 

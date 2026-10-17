@@ -6,8 +6,8 @@ from sqlalchemy.orm import Session
 from ruqqus.helpers import rep_store
 
 TABLES = """
-CREATE TABLE submissions (id INTEGER PRIMARY KEY, author_id INTEGER, is_banned BOOLEAN DEFAULT 0, deleted_utc INTEGER DEFAULT 0);
-CREATE TABLE comments (id INTEGER PRIMARY KEY, author_id INTEGER, is_banned BOOLEAN DEFAULT 0, deleted_utc INTEGER DEFAULT 0);
+CREATE TABLE submissions (id INTEGER PRIMARY KEY, author_id INTEGER, is_banned BOOLEAN DEFAULT 0, deleted_utc INTEGER DEFAULT 0, is_anonymous BOOLEAN DEFAULT 0);
+CREATE TABLE comments (id INTEGER PRIMARY KEY, author_id INTEGER, is_banned BOOLEAN DEFAULT 0, deleted_utc INTEGER DEFAULT 0, is_anonymous BOOLEAN DEFAULT 0);
 CREATE TABLE votes (id INTEGER PRIMARY KEY, user_id INTEGER, submission_id INTEGER, vote_type INTEGER);
 CREATE TABLE commentvotes (id INTEGER PRIMARY KEY, user_id INTEGER, comment_id INTEGER, vote_type INTEGER);
 """
@@ -38,6 +38,11 @@ def make():
         "INSERT INTO commentvotes (user_id, comment_id, vote_type) VALUES (2, 20, 1)",
         "INSERT INTO commentvotes (user_id, comment_id, vote_type) VALUES (3, 20, -1)",
         "INSERT INTO commentvotes (user_id, comment_id, vote_type) VALUES (1, 20, 1)",
+        # anonymous items never count: Rep's exact counts would name their author
+        "INSERT INTO submissions (id, author_id, is_anonymous) VALUES (15, 1, 1)",
+        "INSERT INTO comments (id, author_id, is_anonymous) VALUES (21, 1, 1)",
+        "INSERT INTO votes (user_id, submission_id, vote_type) VALUES (2, 15, 1)",
+        "INSERT INTO commentvotes (user_id, comment_id, vote_type) VALUES (3, 21, 1)",
     ]
     for row in rows:
         db.execute(text(row))

@@ -5,6 +5,7 @@ import gevent
 import mistletoe
 import re
 from ruqqus.helpers.word_filter_store import apply_user_severity
+from ruqqus.helpers import coins as coins_store
 from ruqqus.classes import *
 from ruqqus.helpers.wrappers import *
 from ruqqus.helpers.security import *
@@ -20,8 +21,9 @@ from ruqqus.helpers import muting as muting_rules
 from ruqqus.helpers import sensitive as sensitive_rules
 from ruqqus.mail import *
 from .front import frontlist
-from ruqqus.__main__ import app, cache
+from ruqqus.__main__ import app, cache, limiter
 from flask import session as flask_session
+from markupsafe import escape        # flask.escape went with Flask 3: every message of the security form crashed
 
 
 valid_username_regex = re.compile(r"^[a-zA-Z0-9_]{3,25}$")
@@ -87,6 +89,11 @@ def settings_profile_post(v):
                 message = "That is another account's username, so it can't be your display name."
                 return {"html": lambda: render_template("settings_profile.html", v=v, error=message),
                         "api": lambda: (jsonify({"error": message}), 400)}
+            reserved = None if v.admin_level >= 3 else display_names.reserved_refusal(
+                new_name, (app.config["SITE_NAME"], "ruqqus", "uqqus"))
+            if reserved:
+                return {"html": lambda: render_template("settings_profile.html", v=v, error=reserved),
+                        "api": lambda: (jsonify({"error": reserved}), 400)}
 
         if new_name == (v.display_name or ""):
             return {"html": lambda: render_template("settings_profile.html", v=v, error="You didn't change anything"),
@@ -143,7 +150,9 @@ def settings_profile_post(v):
 
         with CustomRenderer() as renderer:
             bio_html = renderer.render(mistletoe.Document(bio))
-        bio_html = sanitize(bio_html, linkgen=True)
+        # the bio's own narrow list of tags (links and text styles, no headings, tables or pictures): it was written
+        # for bios and never used (carried from BACKEND_AUDIT_FINDINGS); an older bio keeps its HTML until it is edited
+        bio_html = sanitize(bio_html, bio=True, linkgen=True)
 
         # Run safety filter
         bans = filter_comment_html(bio_html)
@@ -259,6 +268,16 @@ def settings_security_post(v):
 
         g.db.add(v)
 
+        # the chat key, locked again by the browser with the new password (assets/js/chat_key.js); without it the
+        # old copy stays and chat asks for the recovery code or the old password on the next new device (M-03)
+        blob = request.form.get("chat_key_blob", "")
+        if blob and re.fullmatch(r"[A-Za-z0-9_\-]{40,4096}", blob):
+            identity = g.db.query(ChatIdentity).filter_by(user_id=v.id).first()
+            if identity is not None:
+                identity.key_blob_password = blob
+                identity.recovery_key_encrypted = None
+                g.db.add(identity)
+
         return redirect("/settings/security?msg=" +
                         escape("Your password has been changed."))
 
@@ -311,7 +330,9 @@ def settings_security_post(v):
             return redirect("/settings/security?error=" +
                             escape("Invalid password or token."))
 
-        secret = request.form.get("2fa_secret")
+        secret = request.form.get("2fa_secret") or ""
+        if not re.fullmatch(r"[A-Z2-7]{16,64}", secret):
+            return redirect("/settings/security?error=" + escape("Invalid password or token."))
         x = pyotp.TOTP(secret)
         if not x.verify(request.form.get("2fa_token"), valid_window=1):
             return redirect("/settings/security?error=" +
@@ -340,6 +361,9 @@ def settings_security_post(v):
 
         return redirect("/settings/security?msg=" +
                         escape("Two-factor authentication disabled."))
+
+    # a form with none of the fields above (audit CR-04: it fell through and answered 500)
+    return redirect("/settings/security?error=" + escape("Nothing to change."))
 
 
 @app.route("/settings/dark_mode/<x>", methods=["POST"])
@@ -395,13 +419,16 @@ def settings_log_out_others(v):
 @validate_formkey
 def settings_images_profile(v):
     if v.can_upload_avatar:
-        v.set_profile(request.files["profile"])
+        upload = request.files.get("profile")
+        if not upload or not upload.filename:                          # audit CR-04: no file answered 500
+            return render_template("settings_profile.html", v=v, error="Choose a picture first.")
+        v.set_profile(upload)
 
-        # anti csam
+        # anti csam (it removed `board`'s picture, a name that doesn't exist here, so a match failed to remove it)
         new_thread = gevent.spawn(check_csam_url,
                                       v.profile_url,
                                             v,
-                                            lambda: board.del_profile()
+                                            lambda: v.del_profile()
                                             )
         new_thread.start()
 
@@ -417,13 +444,16 @@ def settings_images_profile(v):
 @validate_formkey
 def settings_images_banner(v):
     if v.can_upload_banner:
-        v.set_banner(request.files["banner"])
+        upload = request.files.get("banner")
+        if not upload or not upload.filename:                          # audit CR-04: no file answered 500
+            return render_template("settings_profile.html", v=v, error="Choose a picture first.")
+        v.set_banner(upload)
 
-        # anti csam
+        # anti csam (it removed `board`'s picture, a name that doesn't exist here, so a match failed to remove it)
         new_thread = gevent.spawn(check_csam_url,
                                       v.banner_url,
                                             v,
-                                            lambda: board.del_banner()
+                                            lambda: v.del_banner()
                                             )
         new_thread.start()
 
@@ -479,6 +509,26 @@ def update_announcement(v):
     return "", 204
 
 
+def _leave_chat_groups(v):
+    """Out of every chat group, handing a group they own to its next admin or member (routes/chat_groups._leave,
+    which also takes them out of the Matrix room). Best effort: chat being down never stops a deletion."""
+    try:
+        from ruqqus.helpers import chat_group_store
+        from ruqqus.routes.chat_groups import _leave
+        now = int(time.time())
+        for status in ("joined", "invited"):
+            for row in chat_group_store.groups_for(g.db, v.id, status, limit=200):
+                group = chat_group_store.group(g.db, row[0])
+                if group is None:
+                    continue
+                try:
+                    _leave(group, v, now)
+                except Exception as e:          # one group's Matrix trouble never keeps them in the others
+                    app.logger.warning(f"delete_account: group {row[0]} not left for {v.id}: {e}")
+    except Exception as e:
+        app.logger.warning(f"delete_account: chat groups not left for {v.id}: {e}")
+
+
 @app.route("/settings/delete_account", methods=["POST"])
 @is_not_banned
 @no_negative_balance("html")
@@ -516,9 +566,14 @@ def delete_account(v):
     for contrib in contribs:
         g.db.delete(contrib)
 
-    blocks = g.db.query(UserBlock).filter_by(target_id=v.id).all()
-    for block in blocks:
-        g.db.delete(block)
+    # other people's blocks of this account stay: they are theirs (and matter if an admin restores the account)
+
+    # everything else the account had running or kept (helpers/account_cleanup.py, audit I-05): circles,
+    # co-authorships, stories, channels, shared drafts, answers, bookmarks, drafts, linked storage, the chat key,
+    # sign-in addresses, profile details
+    from ruqqus.helpers import account_cleanup
+    account_cleanup.close_account(g.db, v.id, int(time.time()))
+    _leave_chat_groups(v)
 
     for b in v.boards_modded:
         if b.mods_count == 0 and not b.is_circle:
@@ -664,7 +719,8 @@ def settings_unblock_user(v):
 @validate_formkey
 def settings_block_guild(v):
 
-    board = get_guild(request.values.get("board"), graceful=True)
+    name = request.values.get("board") or ""                            # audit CR-04: no name answered 500
+    board = get_guild(name, graceful=True) if name else None
 
     if not board:
         return jsonify({"error": "That guild doesn't exist."}), 404
@@ -693,7 +749,8 @@ def settings_block_guild(v):
 @validate_formkey
 def settings_unblock_guild(v):
 
-    board = get_guild(request.values.get("board"), graceful=True)
+    name = request.values.get("board") or ""
+    board = get_guild(name, graceful=True) if name else None
 
     x = v.has_blocked_guild(board) if board else None
     if not x:
@@ -790,7 +847,7 @@ def settings_name_change(v):
                            error="Admins can't change their name.")
 
 
-    new_name=request.form.get("name").lstrip().rstrip()
+    new_name = (request.form.get("name") or "").strip()                   # audit CR-04: no name answered 500
 
     #make sure name is different
     if new_name==v.username:
@@ -857,11 +914,16 @@ def settings_name_change(v):
 
     #do name change and deduct coins
 
-    v=g.db.query(User).with_for_update().options(lazyload('*')).filter_by(id=v.id).first()
+    # the 20 coins go in one conditional statement (helpers/coins.py): two requests can't spend them twice
+    g.db.flush()
+    if not coins_store.spend(g.db, v.id, 20):
+        g.db.rollback()
+        return render_template("settings_profile.html", v=v,
+                               error="Username changes cost 20 Coins, and you don't have enough.")
+    g.db.refresh(v)
 
     v.username=new_name
     apply_user_severity(v)
-    v.coin_balance-=20
     v.name_changed_utc=int(time.time())
 
     set_nick(v, new_name)
@@ -989,3 +1051,21 @@ def settings_badge_recheck(v):
     v.refresh_selfset_badges()
 
     return jsonify({"message":"Badges Refreshed"})
+
+
+@app.route("/settings/export", methods=["POST"])
+@limiter.limit("3/hour")
+@auth_required
+@validate_formkey
+def settings_export(v):
+    """Download your data: one JSON file of what the site keeps about this account (helpers/data_export.py, audit
+    I-06). The password is asked again: the file holds your sign-in addresses and private lists."""
+    if not v.verifyPass(request.form.get("password", "")):
+        return render_template("settings_security.html", v=v, error="Incorrect password"), 401
+    from ruqqus.helpers import data_export
+    body = data_export.as_json(data_export.build(g.db, v.id))
+    resp = make_response(body)
+    resp.headers["Content-Type"] = "application/json; charset=utf-8"
+    resp.headers["Content-Disposition"] = f'attachment; filename="{v.username}-data.json"'
+    resp.headers["Cache-Control"] = "no-store"
+    return resp

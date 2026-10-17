@@ -12,7 +12,10 @@ from ruqqus.helpers.base36 import *
 from ruqqus.helpers.sanitize import *
 from ruqqus.helpers.get import *
 from ruqqus.classes import *
+import re
 import time
+import imagehash
+from jinja2 import TemplateNotFound
 from sqlalchemy import or_
 from ruqqus.helpers.wordfilter import WordFilter
 from ruqqus.helpers import wordfilter_seed
@@ -491,7 +494,14 @@ def admin_link_accounts(v):
 @app.route("/admin/<pagename>", methods=["GET"])
 @admin_level_required(3)
 def admin_tools(v, pagename):
-    return render_template(f"admin/{pagename}.html", v=v)
+    # only a page that exists, by a plain name (audit CR-02: an unknown name raised TemplateNotFound mid-response and
+    # the connection dropped with no answer)
+    if not re.fullmatch(r"[a-z0-9_]{1,40}", pagename):
+        abort(404)
+    try:
+        return render_template(f"admin/{pagename}.html", v=v)
+    except TemplateNotFound:
+        abort(404)
 
 
 @app.route("/admin/removed", methods=["GET"])
@@ -776,6 +786,7 @@ def admin_account_data_get(username, v):
 
 @app.route("/admin/image_purge", methods=["POST"])
 @admin_level_required(5)
+@validate_formkey
 def admin_image_purge(v):
     
     url=request.form.get("url")
@@ -1360,7 +1371,7 @@ def user_by_email(email, v):
 
     email=email.replace('_', r'\_')
 
-    user=g.db.query(User).filter(User.email.ilike(email)).first()
+    user=g.db.query(User).filter(func.lower(User.email) == (email or '').lower()).first()
 
     if not user:
         abort(404)

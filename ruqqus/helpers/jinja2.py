@@ -34,6 +34,15 @@ def ratio_class_global(ups, downs):
     return ratio_class(ups, downs)
 
 
+@app.template_global("player_of")
+def player_of(p):
+    """How a post's player is drawn (helpers/social_embeds.player_layout): {"load": "auto"|"click"|"now", "aspect",
+    "height"}, or None when the post has no player."""
+    from ruqqus.helpers import social_embeds
+
+    return social_embeds.player_layout(getattr(p, "embed_kind", None), getattr(p, "embed_url", "") or "")
+
+
 @app.template_global("quote_of")
 def quote_of(p, v):
     """What a post quotes, for its quote card (helpers/quote_cards.py, partials/quote_card.html): a social site's post
@@ -54,6 +63,9 @@ def _quote_for(p, v, depth):
     quoted = quote_cards.quoted_post_id(url, app.config["SERVER_NAME"], app.config.get("SHORT_DOMAIN"))
     if quoted:
         return None if quoted == p.base36id else _post_quote(quoted, v, depth)
+    # a video, song or GIF from a social site plays in its own player instead (social_embeds.player_layout)
+    if getattr(p, "embed_kind", None) in ("iframe", "vertical", "audio", "image", "video"):
+        return None
     card = quote_cards.social_card(url, p.embed_url or "", p.meta_title or "", p.meta_description or "", p.preview_image_url or "")
     return quote_cards.inside(card) if depth else card
 

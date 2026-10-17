@@ -12,6 +12,7 @@ from ruqqus.helpers.base36 import *
 from ruqqus.helpers import anonymity, circle_clause, circles, guild_limits, post_follows
 from .coauthors import PostCoauthor
 from ruqqus.helpers.muting import hide_muted, hide_muted_guilds
+from ruqqus.helpers.feed_family import one_per_family
 from ruqqus.helpers import post_feedback
 from ruqqus.helpers.blocks import hide_blocked
 from ruqqus.helpers.security import *
@@ -117,6 +118,8 @@ class User(Base, Stndrd, Age_times):
     # when the member last pressed "Reset For You" in settings (0: never); the feed does not read it yet
     for_you_reset_utc = Column(Integer, default=0)
     creator_fund_opt_in_utc = Column(Integer, default=0)     # the creator fund (helpers/creator_fund.py); 0 = not taking part
+    premium_auto_renew = Column(Boolean, default=False)       # spend a coin on the next week when one runs out (helpers/premium.py)
+    last_active_utc = Column(Integer, default=0)             # stamped at most daily (wrappers._note_active); shared drafts don't count authors gone longer than their rules say
     score_display = Column(SmallInteger, default=0)   # how scores read: 0 upvotes, coloured (default); 1 upvotes minus downvotes
     # the profile header (partials/profile_header.html): what the member writes about themselves (helpers/profile_details.py)
     profile_job = Column(String(60), default="")
@@ -320,6 +323,10 @@ class User(Base, Stndrd, Age_times):
                 and_(or_(Submission.author_id.in_(user_ids), Submission.id.in_(coauthored)), not_(Submission.is_anonymous))
             )
         )
+        # one card per post: a guild copy leaves when its original is in Following too (an author you follow), never
+        # when the guild is your only way to it (helpers/feed_family.py, audit F-01)
+        posts = one_per_family(posts, Submission, lambda original: and_(
+            or_(original.author_id.in_(user_ids), original.id.in_(coauthored)), not_(original.is_anonymous)))
 
         if self.admin_level < 4:
             # admins can see everything
@@ -507,6 +514,7 @@ class User(Base, Stndrd, Age_times):
         posts = hide_muted(posts, self, Submission)
         posts = post_feedback.hide_fewer(posts, self, Submission)
         posts = hide_sensitive(posts, self, Submission)       # as All (helpers/sensitive.py)
+        posts = one_per_family(posts, Submission)              # one card per post (audit F-01)
 
         if self.hide_bot:
             posts = posts.filter(Submission.is_bot == False)
@@ -514,15 +522,15 @@ class User(Base, Stndrd, Age_times):
         if self.admin_level >= 4:
             board_blocks = select(BoardBlock.board_id).filter_by(
                 user_id=self.id
-            ).subquery()
+            ).scalar_subquery()
             posts = posts.filter(Submission.board_id.notin_(board_blocks))
         else:
             m = select(ModRelationship.board_id).filter_by(
                 user_id=self.id, invite_rescinded=False
-            ).subquery()
+            ).scalar_subquery()
             c = select(ContributorRelationship.board_id).filter_by(
                 user_id=self.id
-            ).subquery()
+            ).scalar_subquery()
 
             posts = posts.filter(
                 or_(
@@ -537,7 +545,7 @@ class User(Base, Stndrd, Age_times):
 
             board_blocks = select(BoardBlock.board_id).filter_by(
                 user_id=self.id
-            ).subquery()
+            ).scalar_subquery()
             posts = posts.filter(Submission.board_id.notin_(board_blocks))
 
         posts = posts.join(Submission.board).filter(
@@ -547,7 +555,7 @@ class User(Base, Stndrd, Age_times):
                     select(Subscription.board_id).filter_by(
                         user_id=self.id,
                         is_active=True
-                    ).subquery()
+                    ).scalar_subquery()
                 )
             )
         )
@@ -672,10 +680,10 @@ class User(Base, Stndrd, Age_times):
             m = g.db.query(
                 ModRelationship.board_id).filter_by(
                 user_id=v.id,
-                invite_rescinded=False).subquery()
+                invite_rescinded=False).scalar_subquery()
             c = g.db.query(
                 ContributorRelationship.board_id).filter_by(
-                user_id=v.id).subquery()
+                user_id=v.id).scalar_subquery()
 
         def apply_common_filters(q):
             q = filter_posts(q, v)
@@ -685,7 +693,7 @@ class User(Base, Stndrd, Age_times):
                 q = q.filter(Submission.deleted_utc == 0)
             return q.filter(Submission.created_utc >= cutoff)
 
-        forward_copies = g.db.query(ForwardRelationship.forward_submission_id).subquery()
+        forward_copies = g.db.query(ForwardRelationship.forward_submission_id).scalar_subquery()
 
         authored_sort_expr = sort_col if sort_col is not None else Submission.created_utc
         reposted_sort_expr = sort_col if sort_col is not None else RepostRelationship.created_utc
@@ -1041,7 +1049,7 @@ class User(Base, Stndrd, Age_times):
                 ModRelationship.perm_full == True,
                 ModRelationship.perm_content == True
             )
-        ).subquery()
+        ).scalar_subquery()
         
         posts=g.db.query(Submission).options(lazyload('*')).filter(
             Submission.board_id.in_(
@@ -1134,7 +1142,7 @@ class User(Base, Stndrd, Age_times):
         notifications = hide_blocked(hide_muted(notifications, self, Comment), self, Comment)
 
         if comments_only:
-            cs = g.db.query(Comment.id).filter(Comment.author_id == self.id).subquery()
+            cs = g.db.query(Comment.id).filter(Comment.author_id == self.id).scalar_subquery()
             ps = post_follows.owned_post_ids(self.id)
             notifications = notifications.filter(
                 or_(
@@ -1146,7 +1154,7 @@ class User(Base, Stndrd, Age_times):
                 )
             )
         elif mentions_only:
-            cs = g.db.query(Comment.id).filter(Comment.author_id == self.id).subquery()
+            cs = g.db.query(Comment.id).filter(Comment.author_id == self.id).scalar_subquery()
             ps = post_follows.owned_post_ids(self.id)
             notifications = notifications.filter(
                 and_(
@@ -1207,7 +1215,7 @@ class User(Base, Stndrd, Age_times):
     @property
     @lazy
     def mentions_count(self):
-        cs=g.db.query(Comment.id).filter(Comment.author_id==self.id).subquery()
+        cs=g.db.query(Comment.id).filter(Comment.author_id==self.id).scalar_subquery()
         ps = post_follows.owned_post_ids(self.id)
         return hide_blocked(filter_comments(hide_muted(self.notifications.options(
             lazyload('*')
@@ -1231,7 +1239,7 @@ class User(Base, Stndrd, Age_times):
     @property
     @lazy
     def comment_notifications_count(self):
-        cs=g.db.query(Comment.id).filter(Comment.author_id==self.id).subquery()
+        cs=g.db.query(Comment.id).filter(Comment.author_id==self.id).scalar_subquery()
         ps = post_follows.owned_post_ids(self.id)
         q = self.notifications.options(
             lazyload('*')
@@ -1368,12 +1376,12 @@ class User(Base, Stndrd, Age_times):
                 User.id.in_(
                     g.db.query(Alt.user1).filter(
                         Alt.user2==self.id
-                    ).subquery()
+                    ).scalar_subquery()
                 ),
                 User.id.in_(
                     g.db.query(Alt.user2).filter(
                         Alt.user1==self.id
-                    ).subquery()
+                    ).scalar_subquery()
                 ).subquery()
             )
         ).subquery()
@@ -1823,10 +1831,10 @@ class User(Base, Stndrd, Age_times):
             m = g.db.query(
                 ModRelationship.board_id).filter_by(
                 user_id=self.id,
-                invite_rescinded=False).subquery()
+                invite_rescinded=False).scalar_subquery()
             c = g.db.query(
                 ContributorRelationship.board_id).filter_by(
-                user_id=self.id).subquery()
+                user_id=self.id).scalar_subquery()
             posts = posts.filter(
                 or_(
                     Submission.author_id == self.id,
@@ -1839,10 +1847,10 @@ class User(Base, Stndrd, Age_times):
 
             blocking = g.db.query(
                 UserBlock.target_id).filter_by(
-                user_id=self.id).subquery()
+                user_id=self.id).scalar_subquery()
             blocked = g.db.query(
                 UserBlock.user_id).filter_by(
-                target_id=self.id).subquery()
+                target_id=self.id).scalar_subquery()
 
             posts = posts.filter(
                 or_(Submission.author_id.notin_(blocking), Submission.is_anonymous == True),
@@ -1876,10 +1884,10 @@ class User(Base, Stndrd, Age_times):
             m = g.db.query(
                 ModRelationship.board_id).filter_by(
                 user_id=self.id,
-                invite_rescinded=False).subquery()
+                invite_rescinded=False).scalar_subquery()
             c = g.db.query(
                 ContributorRelationship.board_id).filter_by(
-                user_id=self.id).subquery()
+                user_id=self.id).scalar_subquery()
             comments = comments.filter(
                 or_(
                     Comment.author_id == self.id,
@@ -1891,10 +1899,10 @@ class User(Base, Stndrd, Age_times):
 
             blocking = g.db.query(
                 UserBlock.target_id).filter_by(
-                user_id=self.id).subquery()
+                user_id=self.id).scalar_subquery()
             blocked = g.db.query(
                 UserBlock.user_id).filter_by(
-                target_id=self.id).subquery()
+                target_id=self.id).scalar_subquery()
 
             comments = comments.filter(
                 or_(Comment.author_id.notin_(blocking), Comment.is_anonymous == True),
@@ -1942,10 +1950,10 @@ class User(Base, Stndrd, Age_times):
             m = g.db.query(
                 ModRelationship.board_id).filter_by(
                 user_id=v.id,
-                invite_rescinded=False).subquery()
+                invite_rescinded=False).scalar_subquery()
             c = g.db.query(
                 ContributorRelationship.board_id).filter_by(
-                user_id=v.id).subquery()
+                user_id=v.id).scalar_subquery()
             posts = posts.filter(
                 or_(
                     Submission.author_id == v.id,
@@ -1977,10 +1985,10 @@ class User(Base, Stndrd, Age_times):
             m = g.db.query(
                 ModRelationship.board_id).filter_by(
                 user_id=self.id,
-                invite_rescinded=False).subquery()
+                invite_rescinded=False).scalar_subquery()
             c = g.db.query(
                 ContributorRelationship.board_id).filter_by(
-                user_id=self.id).subquery()
+                user_id=self.id).scalar_subquery()
             posts = posts.filter(
                 or_(
                     Submission.author_id == self.id,
@@ -1993,10 +2001,10 @@ class User(Base, Stndrd, Age_times):
 
             blocking = g.db.query(
                 UserBlock.target_id).filter_by(
-                user_id=self.id).subquery()
+                user_id=self.id).scalar_subquery()
             blocked = g.db.query(
                 UserBlock.user_id).filter_by(
-                target_id=self.id).subquery()
+                target_id=self.id).scalar_subquery()
 
             posts = posts.filter(
                 or_(Submission.author_id.notin_(blocking), Submission.is_anonymous == True),
@@ -2026,10 +2034,10 @@ class User(Base, Stndrd, Age_times):
             m = g.db.query(
                 ModRelationship.board_id).filter_by(
                 user_id=self.id,
-                invite_rescinded=False).subquery()
+                invite_rescinded=False).scalar_subquery()
             c = g.db.query(
                 ContributorRelationship.board_id).filter_by(
-                user_id=self.id).subquery()
+                user_id=self.id).scalar_subquery()
             posts = posts.filter(
                 or_(
                     Submission.author_id == self.id,
@@ -2042,10 +2050,10 @@ class User(Base, Stndrd, Age_times):
 
             blocking = g.db.query(
                 UserBlock.target_id).filter_by(
-                user_id=self.id).subquery()
+                user_id=self.id).scalar_subquery()
             blocked = g.db.query(
                 UserBlock.user_id).filter_by(
-                target_id=self.id).subquery()
+                target_id=self.id).scalar_subquery()
 
             posts = posts.filter(
                 or_(Submission.author_id.notin_(blocking), Submission.is_anonymous == True),
@@ -2075,10 +2083,10 @@ class User(Base, Stndrd, Age_times):
             pass
         else:
             m = g.db.query(ModRelationship.board_id).filter_by(
-                user_id=self.id, invite_rescinded=False).subquery()
+                user_id=self.id, invite_rescinded=False).scalar_subquery()
             c = g.db.query(
                 ContributorRelationship.board_id).filter_by(
-                user_id=self.id).subquery()
+                user_id=self.id).scalar_subquery()
 
             posts = posts.filter(
                 or_(
@@ -2109,10 +2117,10 @@ class User(Base, Stndrd, Age_times):
         if self.admin_level <= 3:
             blocking = g.db.query(
                 UserBlock.target_id).filter_by(
-                user_id=self.id).subquery()
+                user_id=self.id).scalar_subquery()
             blocked = g.db.query(
                 UserBlock.user_id).filter_by(
-                target_id=self.id).subquery()
+                target_id=self.id).scalar_subquery()
 
             comments = comments.filter(
                 or_(Comment.author_id.notin_(blocking), Comment.is_anonymous == True),
@@ -2171,52 +2179,24 @@ class User(Base, Stndrd, Age_times):
 
     @property
     def has_premium(self):
-        
-        now=int(time.time())
-
+        """A week of Premium that is paid for and running. Reading it never spends a coin (helpers/premium.py:
+        coins buy time only through the Redeem button or the auto-renewal the member switched on)."""
+        now = int(time.time())
         if self.negative_balance_cents:
             return False
-
-        elif self.premium_expires_utc > now:
+        if (self.premium_expires_utc or 0) > now:
             return True
-
-        elif self.coin_balance >=1:
-            self.coin_balance -=1
-            self.premium_expires_utc = now + 60*60*24*7
-
-            if not self.premium_first_purchased_utc:
-                self.premium_first_purchased_utc = now
-
-            add_role(self, "premium")
-
+        if self.premium_expires_utc:
+            delete_role(self, "premium")
+            self.premium_expires_utc = 0
             g.db.add(self)
-
-            return True
-
-        else:
-
-            if self.premium_expires_utc:
-                delete_role(self, "premium")
-                self.premium_expires_utc=0
-                g.db.add(self)
-
-            return False
+        return False
 
     @property
     def has_premium_no_renew(self):
-        
-        now=int(time.time())
+        """The same test without the tidy-up write: Premium only when a week is running, never because of a coin."""
+        return not self.negative_balance_cents and (self.premium_expires_utc or 0) > int(time.time())
 
-        if self.negative_balance_cents:
-            return False
-        elif self.premium_expires_utc > now:
-            return True
-        elif self.coin_balance>=1:
-            return True
-        else:
-            return False
-    
-    
     @property
     def renew_premium_time(self):
         return time.strftime("%d %b %Y at %H:%M:%S",
@@ -2274,7 +2254,9 @@ class User(Base, Stndrd, Age_times):
     @cache.memoize(60*60*24)
     def badges(self):
         self.refresh_selfset_badges()
-        g.db.commit()
+        # flushed, not committed: the request commits at its end, and a commit here expired every post already
+        # loaded for the page, so each card read its row again (audit P-06: 15 extra queries on a profile)
+        g.db.flush()
         return self._badges.all()
 
     @property

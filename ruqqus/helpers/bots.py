@@ -190,6 +190,22 @@ def own_host():
     return (os.environ.get("SERVER_NAME") or os.environ.get("domain") or "").strip().lower().split(":")[0]
 
 
+def own_hosts():
+    """Every name and address this site answers on (audit B-01: only the main name was refused): the main name, the
+    short domain, the onion name and the origin's own addresses (`ORIGIN_IPS`, comma-separated)."""
+    names = [own_host(), os.environ.get("SHORT_DOMAIN", ""), os.environ.get("ONION_NAME", "")]
+    names += os.environ.get("ORIGIN_IPS", "").split(",")
+    out = set()
+    for name in (n.strip().lower().rstrip(".") for n in names if n and n.strip()):
+        out.add(name.split(":")[0] if name.count(":") == 1 else name)       # a port goes; an IPv6 address stays
+    return out
+
+
+def is_own_host(host, sites=None):
+    host = (host or "").lower().rstrip(".")
+    return any(host == site or host.endswith("." + site) for site in (own_hosts() if sites is None else sites))
+
+
 def parse_feed_url(raw, allow_local=False, site_host=None):
     """(address, error) for a feed address a member typed. https, a host name, no user name or password, not this
     site. Where the name leads is judged when it is fetched (helpers/feed_fetch.py, through helpers/safe_fetch.py)."""
@@ -210,8 +226,7 @@ def parse_feed_url(raw, allow_local=False, site_host=None):
     host = (parts.hostname or "").lower().rstrip(".")
     if not host:
         return None, "That address has no server name."
-    site = (own_host() if site_host is None else site_host).lower()
-    if site and (host == site or host.endswith("." + site)):
+    if is_own_host(host, None if site_host is None else {site_host.lower()} - {""}):
         return None, "A bot can't read this site itself."
     return url, None
 

@@ -17,7 +17,6 @@ from flask_caching import Cache
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 from flask_compress import Compress
-from flask_socketio import SocketIO
 from time import sleep
 from collections import deque
 import psycopg2
@@ -36,7 +35,6 @@ import traceback
 import time
 
 from redis import BlockingConnectionPool, ConnectionPool
-from werkzeug.middleware.proxy_fix import ProxyFix
 
 
 _version = "2.38.0"
@@ -82,10 +80,14 @@ app = Flask(__name__,
             template_folder='./templates',
             static_folder='./static'
             )
-app.wsgi_app = ProxyFix(app.wsgi_app, x_for=3)
+# the client's real address, by the deployment's own proxies only (helpers/client_address.py: audit X-01)
+from ruqqus.helpers.client_address import ClientAddress
+app.wsgi_app = ClientAddress(app.wsgi_app)
 app.url_map.strict_slashes = False
 
-app.config["SITE_NAME"]=environ.get("SITE_NAME", "Ruqqus").lstrip().rstrip()
+app.config["SITE_NAME"]=environ.get("SITE_NAME", "laba").lstrip().rstrip()
+# the legal entity named in the terms, the legal pages and the footer; the site's own name until it is set
+app.config["COMPANY_NAME"]=(environ.get("COMPANY_NAME") or "").strip() or app.config["SITE_NAME"]
 
 app.config["SITE_COLOR"]=environ.get("SITE_COLOR", "148fd5").lstrip().rstrip()
 
@@ -130,6 +132,7 @@ app.config["MATRIX_PUBLIC_URL"] = environ.get("MATRIX_PUBLIC_URL", "http://local
 app.config["MATRIX_SERVER_NAME"] = environ.get("MATRIX_SERVER_NAME", "chat.localhost")
 app.config["MATRIX_AS_TOKEN"] = environ.get("MATRIX_AS_TOKEN")
 app.config["MATRIX_HS_TOKEN"] = environ.get("MATRIX_HS_TOKEN")
+app.config["MATRIX_BOT_LOCALPART"] = environ.get("MATRIX_BOT_LOCALPART", "ruqqus_bot")   # sender_localpart in synapse/ruqqus-appservice.yaml
 app.config["MATRIX_USER_PREFIX"] = environ.get("MATRIX_USER_PREFIX", "ruqqus_")
 
 #environ.get(
@@ -223,27 +226,6 @@ app.jinja_env.filters['markdown'] = markdown_filter
 
 cache = Cache(app)
 Compress(app)
-
-class CorsMatch(str):
-
-    def __eq__(self, other):
-        if isinstance(other, str):
-            if other in ['https://ruqqus.com', f'https://{app.config["SERVER_NAME"]}']:
-                return True
-
-            elif other.endswith(".ruqqus.com"):
-                return True
-
-        elif isinstance(other, list):
-            if f'https://{app.config["SERVER_NAME"]}' in other:
-                return True
-            elif any([x.endswith(".ruqqus.com") for x in other]):
-                return True
-
-        return False
-
-
-
 
 # app.config["CACHE_REDIS_URL"]
 app.config["RATELIMIT_STORAGE_URL"] = environ.get("REDIS_URL", "redis://redis").lstrip().rstrip()
@@ -340,6 +322,26 @@ class RetryingQuery(_Query):
 #db_session = scoped_session(sessionmaker(class_=RoutingSession))#, query_cls=RetryingQuery))
 db_session=scoped_session(sessionmaker(bind=_engine, query_cls=RetryingQuery))
 
+
+def _warn_pending_migrations():
+    """Says at start-up which migrations this database lacks (scripts/migrate.py, audit D-02). Never stops the app."""
+    from pathlib import Path
+    folder = Path(__file__).resolve().parent.parent / "scripts" / "migrations"
+    try:
+        with _engine.connect() as conn:
+            done = {row[0] for row in conn.exec_driver_sql("SELECT name FROM schema_migrations")}
+    except Exception as e:
+        print(f"migrations could not be checked ({type(e).__name__}: {str(e).splitlines()[0][:200]}): "
+              "run PYTHONPATH=. python scripts/migrate.py --status", flush=True)
+        return
+    missing = sorted(p.name for p in folder.glob("*.sql") if p.name not in done)
+    if missing:
+        print(f"{len(missing)} migrations not applied (scripts/migrate.py --apply): {', '.join(missing)}", flush=True)
+
+
+if environ.get("CHECK_MIGRATIONS", "1") != "0":
+    _warn_pending_migrations()
+
 Base = declarative_base()
 
 
@@ -354,16 +356,6 @@ r=redis.Redis(
 
 
 #import and bind chat function
-#the if statement is needed because chat includes its own db session
-#and if it's not used then every worker connection will spawn a new db session
-#from ruqqus.chat.chat_routes import *
-#if "load_chat" in sys.argv:
-#    socketio=SocketIO(
-#        app,
-#        cors_allowed_origins=CorsMatch()
-#        #message_queue=app.config["CACHE_REDIS_URL"]
-#        )
-#    from ruqqus.chat.chat import *
 
 local_ban_cache={}
 
@@ -523,11 +515,15 @@ def after_request(response):
     response.headers.add('Access-Control-Allow-Headers',
                          "Origin, X-Requested-With, Content-Type, Accept, x-auth"
                          )
-    # /media/... sets its own: a file that is part of a post is kept by the CDN for good,
-    # one that is not is never stored (routes/media.py)
-    if not request.path.startswith("/media/"):
-        response.headers.add("Cache-Control",
-                             "maxage=600")
+    # caching (audit X-02: every answer said "maxage=600", not a directive at all, on personalised pages too). A route
+    # that set its own keeps it (/media/..., the .ics feeds, anything no-store); assets that aren't versioned are
+    # kept ten minutes; every page is personal (the viewer, their filter, their form key), so it is private and
+    # asked for again each time.
+    if "Cache-Control" not in response.headers:
+        if request.path.startswith("/assets/"):
+            response.headers["Cache-Control"] = "public, max-age=600"
+        else:
+            response.headers["Cache-Control"] = "private, no-cache"
     # a versioned asset (helpers/page_assets.asset_url, ?v= is a hash of its content) never changes at that
     # address: kept for a year, never asked for again
     if request.path.startswith("/assets/") and request.args.get("v") and response.status_code == 200:
@@ -537,20 +533,28 @@ def after_request(response):
     # answer/14660912): the browsers' default policy only while ads are on (helpers/ads.py), otherwise none at all
     from ruqqus.helpers import ads
     response.headers.add("Referrer-Policy", "strict-origin-when-cross-origin" if ads.config() else "same-origin")
-    # response.headers.add("X-Content-Type-Options","nosniff")
+    # a file is what its Content-Type says, never what the browser guesses from its bytes (audit X-02)
+    response.headers["X-Content-Type-Options"] = "nosniff"
     # microphone and camera only on the pages that hold a call or a Space (helpers/device_access.py)
     from ruqqus.helpers import device_access
-    response.headers.add("Feature-Policy", device_access.feature_policy(request.path))
     response.headers.add("Permissions-Policy", device_access.permissions_policy(request.path))
     if request.path.startswith("/embed/"):
-        pass
+        ancestors = "*"
     elif request.args.get("embed") and request.path.startswith(("/notifications", "/chat", "/composer")):
         # the side panels (assets/js/side_panels.js) show these pages in a frame of the
         # site itself; no other site may frame them
         response.headers.add("X-Frame-Options", "sameorigin")
+        ancestors = "'self'"
     else:
         response.headers.add("X-Frame-Options",
                              "deny")
+        ancestors = "'none'"
+    # a Content-Security-Policy that hardens without breaking the inline handlers the pages still use (audit X-02):
+    # no plugins, no <base> that would send relative links elsewhere, forms only to this site, framing as above. A
+    # route that set its own (served media: helpers/media) keeps it.
+    if "Content-Security-Policy" not in response.headers:
+        response.headers["Content-Security-Policy"] = (f"object-src 'none'; base-uri 'self'; form-action 'self'; "
+                                                       f"frame-ancestors {ancestors}")
 
     # signups - hit discord webhook
     # if request.method == "POST" and response.status_code in [

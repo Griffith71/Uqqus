@@ -229,7 +229,7 @@ def test_a_mix_is_described_with_its_numbers():
 
 def test_an_outside_server_is_named_and_said_to_be_unseen():
     lines = fa.describe(spec(mode="server", server="https://feeds.example.org/top?x=1"))
-    assert lines[0] == "Ranked by an outside server (feeds.example.org). Ruqqus cannot see how it picks posts."
+    assert lines[0] == "Ranked by an outside server (feeds.example.org). This site cannot see how it picks posts."
     assert "only orders posts you are allowed to see" in lines[1]
 
 

@@ -354,7 +354,7 @@ def left_out_line(spec):
 def describe(spec):
     """What the algorithm does, as sentences anyone can read."""
     if is_server(spec):
-        lines = [f"Ranked by an outside server ({server_host(spec['server'])}). Ruqqus cannot see how it picks posts.",
+        lines = [f"Ranked by an outside server ({server_host(spec['server'])}). This site cannot see how it picks posts.",
                  "It only orders posts you are allowed to see."]
         if left_out_line(spec):
             lines.append(left_out_line(spec))

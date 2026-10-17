@@ -49,6 +49,53 @@ def key(name):
     return _SEPARATORS.sub("", unicodedata.normalize("NFKC", str(name or "")).casefold())
 
 
+# Letters from other scripts that look like ASCII ones (Unicode TR39 "confusables", the ones that matter for
+# handles, which are ASCII letters, digits and underscores). After NFKC (full-width forms), case folding and removing
+# accents and combining marks, these are swapped for the letter they imitate.
+_CONFUSABLES = str.maketrans({
+    # Cyrillic
+    "а": "a", "в": "b", "е": "e", "ё": "e", "һ": "h", "і": "i", "ї": "i", "ј": "j", "к": "k", "м": "m", "н": "h",
+    "о": "o", "р": "p", "с": "c", "т": "t", "у": "y", "х": "x", "ѕ": "s", "ԁ": "d", "ԛ": "q", "ԝ": "w", "ӏ": "l",
+    "ɡ": "g", "ь": "b", "ү": "y", "ѵ": "v", "ʏ": "y",
+    # Greek
+    "α": "a", "β": "b", "ε": "e", "η": "n", "ι": "i", "κ": "k", "ν": "v", "ο": "o", "ρ": "p", "τ": "t", "υ": "u",
+    "χ": "x", "γ": "y", "ϲ": "c", "ϳ": "j", "ω": "w", "μ": "u",
+    # Latin look-alikes that keep no accent to strip
+    "ı": "i", "ł": "l", "ø": "o", "đ": "d", "ħ": "h", "ŀ": "l", "ƚ": "l", "ɩ": "i", "ʟ": "l", "ꞁ": "l", "ß": "ss",
+    "æ": "ae", "œ": "oe", "þ": "p",
+})
+# what an ASCII handle itself can be mistaken for: 0/o, 1/l/i/I, rn/m, vv/w (applied to both sides)
+_ASCII_LOOKALIKES = (("rn", "m"), ("vv", "w"), ("0", "o"), ("1", "l"), ("i", "l"), ("|", "l"))
+
+RESERVED_WORDS = ("admin", "administrator", "moderator", "moderators", "mod team", "staff", "official", "support team",
+                  "trust and safety", "system")
+RESERVED = "That name is kept for the site's staff."
+
+
+def skeleton(name):
+    """What a name looks like, for telling whether it imitates a handle (audit I-04): full-width and styled letters
+    folded (NFKC), case folded, accents and combining marks removed, other scripts' look-alike letters swapped for the
+    ASCII they imitate, then the handle look-alikes (0/o, 1/l/i, rn/m, vv/w), keeping only letters and digits."""
+    text = unicodedata.normalize("NFKC", str(name or "")).casefold()
+    text = "".join(c for c in unicodedata.normalize("NFKD", text) if unicodedata.category(c) not in ("Mn", "Me", "Cf"))
+    text = text.translate(_CONFUSABLES)
+    for a, b in _ASCII_LOOKALIKES:
+        text = text.replace(a, b)
+    return "".join(c for c in text if c.isascii() and c.isalnum())
+
+
+def reserved_refusal(name, site_names=()):
+    """A display name that reads as the site's staff or the site itself ("Admin", "Uqqus Moderators"), refused for
+    everyone but the site's admins. Whole words only, so "Badminton fan" is fine. None when it's fine."""
+    words = [w for w in (skeleton(part) for part in re.split(r"[^\w]+|_", unicodedata.normalize("NFKC", str(name or "")))) if w]
+    runs = {"".join(words[i:j]) for i in range(len(words)) for j in range(i + 1, min(len(words), i + 4) + 1)}
+    for word in RESERVED_WORDS + tuple(site_names):
+        mark = skeleton(word)
+        if mark and mark in runs:
+            return RESERVED
+    return None
+
+
 def shown(display_name, username):
     """The name to draw: the display name when there is one, else the handle."""
     return display_name or username

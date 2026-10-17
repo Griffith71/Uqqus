@@ -32,6 +32,9 @@ from ruqqus.classes import *
 from ruqqus.helpers import coauthors       # after the star-import: ruqqus.classes has a module of this name too
 from ruqqus.helpers import polls as poll_rules, poll_store
 from ruqqus.helpers import spaces as space_rules, space_store
+from ruqqus.helpers import live_threads as live_rules
+from ruqqus.helpers import guild_flair as flair_rules, guild_flair_store as flair_store
+from ruqqus.helpers import collab_store
 from ruqqus.helpers import circles as circle_rules, circle_guard, circle_store
 from ruqqus.helpers import insights_store
 from ruqqus.helpers import bots as bot_rules, bot_store
@@ -300,7 +303,27 @@ Optional file data:
     if primary.author_id != v.id or primary.is_banned:
         abort(403)
 
-    form = request.form
+    # a collaborative post changes only when its authors publish its shared draft (routes/collab.py)
+    if collab_store.open_doc_for_post(g.db, primary.id) is not None:
+        return _edit_error(COLLAB_EDIT_REFUSAL, 403)
+
+    return apply_post_edit(p, primary, v, request.form, request.files.get("file"))
+
+
+COLLAB_EDIT_REFUSAL = "Edit this post in its shared draft, then publish the changes."
+
+
+# the older picture upload stores files in the site's public bucket, where anyone with the address can open them, so a
+# post that isn't public (for circles, or in a Circle guild) never uses it; linked-media pictures follow the post's
+# audience (helpers/media/attach.py). Audit, carried from BACKEND_AUDIT_FINDINGS ("body_image to the public bucket").
+PUBLIC_UPLOAD_REFUSAL = ("A post that isn't public can't use this picture upload: its files can be opened by anyone "
+                         "with the address. Add the picture from your linked storage instead (Settings > Media).")
+
+
+def apply_post_edit(p, primary, v, form, upload, media_owner_ids=None):
+    """The edit itself, for `edit_post` and for publishing a collaborative post's shared draft (routes/collab.py):
+    `v` is whoever acts (the history row, bans, spam checks), `form` the fields as edit_post reads them, `upload` an
+    image file or None, `media_owner_ids` whose linked files the text may show (the author alone by default)."""
     old_url = primary.url or ""
     old_body = primary.body or ""
 
@@ -327,7 +350,6 @@ Optional file data:
 
     # image: replace it with an upload, or remove it
     old_image_key = _own_image_key(primary)
-    upload = request.files.get("file")
     if not (upload and upload.filename):
         upload = None
 
@@ -409,7 +431,7 @@ Optional file data:
                 BadLink.link)).first()
         if badlink:
             if badlink.autoban:
-                text = "Your Ruqqus account has been suspended for 1 day for the following reason:\n\n> Too much spam!"
+                text = f"Your {app.config['SITE_NAME']} account has been suspended for 1 day for the following reason:\n\n> Too much spam!"
                 send_notification(v, text)
                 v.ban(days=1, reason="spam")
 
@@ -429,6 +451,8 @@ Optional file data:
 
     if not unchanged:
 
+        if upload and primary.audience:
+            return _edit_error(PUBLIC_UPLOAD_REFUSAL, 400)
         if upload:
             image_name = f'post/{primary.base36id}/{secrets.token_urlsafe(8)}'
             upload_file(image_name, upload)
@@ -496,7 +520,7 @@ Optional file data:
 
         # files from the author's linked storage: attach the ones the post shows now,
         # let go of the ones it no longer does (helpers/media)
-        attached_media = media_attach.sync(g.db, v.id, (url, body), submission_id=primary.id)
+        attached_media = media_attach.sync(g.db, media_owner_ids or v.id, (url, body), submission_id=primary.id)
 
         # the image scan and the thumbnail/embed worker read from their own
         # sessions, so the edit has to be committed before they start
@@ -1094,6 +1118,17 @@ Optional file data:
         if target.disallowbots and (request.headers.get("X-User-Type", "").lower() == "bot" or v.is_bot):
             return {"api": lambda: ({"error": f"403 Not Authorized - +{target.name} disallows bots from forwarding!"}, 403)}
 
+        # a guild that requires a flair is forwarded to from the post's own Forward dialog, where one is picked
+        # (helpers/guild_flair.py): "Forward to guilds" names several guilds and can't pick one for each
+        if target.require_flair and flair_store.ids_of(g.db, target.id):
+            flair_error = flair_rules.COMPOSER_REQUIRED.format(guild=target.name)
+            return {"html": lambda fe=flair_error: (render_template("submit.html", v=v, error=fe, title=title, url=url,
+                                                                   body=body, text=text_for_redisplay, b=None,
+                                                                   forward_guild_names=forward_guild_names), 403),
+                    # 403 naming the guild, like every other guild refusal: a bot then posts again without forwarding
+                    # (helpers/bot_runner.classify); 409 read as "already posted", so the item was dropped (audit G-02)
+                    "api": lambda fe=flair_error: ({"error": fe}, 403)}
+
         forward_boards.append(target)
 
     # similarity check
@@ -1105,7 +1140,7 @@ Optional file data:
     # authored content, so they shouldn't multiply against this user's
     # spam-similarity count (which would otherwise make heavy Forward use
     # look identical to actual repeated spam-posting).
-    forward_copies = g.db.query(ForwardRelationship.forward_submission_id).subquery()
+    forward_copies = g.db.query(ForwardRelationship.forward_submission_id).scalar_subquery()
 
     similar_posts = g.db.query(Submission).options(
         lazyload('*')
@@ -1156,7 +1191,7 @@ Optional file data:
 
     if max(len(similar_urls), len(similar_posts)) >= threshold:
 
-        text = "Your Ruqqus account has been suspended for 1 day for the following reason:\n\n> Too much spam!"
+        text = f"Your {app.config['SITE_NAME']} account has been suspended for 1 day for the following reason:\n\n> Too much spam!"
         send_notification(v, text)
 
         v.ban(reason="Spamming.",
@@ -1266,7 +1301,7 @@ Optional file data:
                 BadLink.link)).first()
         if badlink:
             if badlink.autoban:
-                text = "Your Ruqqus account has been suspended for 1 day for the following reason:\n\n> Too much spam!"
+                text = f"Your {app.config['SITE_NAME']} account has been suspended for 1 day for the following reason:\n\n> Too much spam!"
                 send_notification(v, text)
                 v.ban(days=1, reason="spam")
 
@@ -1366,6 +1401,38 @@ Optional file data:
                 "api": lambda: ({"error": space_error}, 400)
                 }
 
+    # "Make this a live thread" (helpers/live_threads.py): `live` and its length `live_hours`, checked before anything
+    # is made; the thread starts right after the post (routes/live_threads.start_thread). Bots never run one.
+    live_hours, live_error = None, None
+    if flag(request.form, "live"):
+        if v.is_bot or request.headers.get("X-User-Type", "").lower() == "bot":
+            live_error = "Bots can't run live threads."
+        else:
+            try:
+                live_hours = live_rules.clean_hours(request.form.get("live_hours"))
+            except live_rules.Refused as error:
+                live_error = str(error)
+    if live_error:
+        return {"html": lambda: (render_template("submit.html", v=v, error=live_error,
+                                                 title=title, url=url, body=body, text=text_for_redisplay,
+                                                 b=None, forward_guild_names=forward_guild_names), 400),
+                "api": lambda: ({"error": live_error}, 400)
+                }
+
+    # a Circle guild's post is made straight in the guild: its author picks the flair (helpers/guild_flair.py)
+    circle_flair_id = None
+    if circle_board is not None:
+        raw_flair = request.form.get("guild_flair", "")
+        circle_flair_id = flair_rules.parse_id(raw_flair) if raw_flair else None
+        circle_flair_error = "That isn't a flair." if raw_flair and circle_flair_id is None else flair_rules.forward_refusal(
+            circle_board.require_flair, circle_flair_id, flair_store.ids_of(g.db, circle_board.id), circle_board.name)
+        if circle_flair_error:
+            return {"html": lambda: (render_template("submit.html", v=v, error=circle_flair_error,
+                                                     title=title, url=url, body=body, text=text_for_redisplay,
+                                                     b=None, forward_guild_names=forward_guild_names), 409),
+                    "api": lambda: ({"error": circle_flair_error}, 409)
+                    }
+
     # who can see it (helpers/circles.py): Public unless the author chose some of their circles (only their own:
     # circle_store.resolve). A post for circles stays between the author and the people in them, so what would take it
     # elsewhere (anonymity, co-authors, forwards, an own video) stops it here
@@ -1381,6 +1448,8 @@ Optional file data:
             audience, anonymous=flag(request.form, "anonymous"), coauthors=bool(coauthor_names),
             forwards=bool(forward_guild_names),
             own_video=bool(url and media_attach.own_video(g.db, v.id, url)))
+    if audience_error is None and audience and (request.files.get("file") or request.files.get("body_image")):
+        audience_error = PUBLIC_UPLOAD_REFUSAL
     if audience_error:
         return {"html": lambda: (render_template("submit.html", v=v, error=audience_error,
                                                  title=title, url=url, body=body, text=text_for_redisplay,
@@ -1435,6 +1504,13 @@ Optional file data:
 
     if space_start is not None:
         space_store.create(g.db, new_post.id, v.id, space_start, space_record, int(time.time()))
+
+    if live_hours:
+        from ruqqus.routes.live_threads import start_thread
+        start_thread(new_post, v, int(time.time()), live_hours)
+
+    if circle_flair_id:
+        flair_store.set_post_flair(g.db, new_post.id, circle_flair_id)
 
     g.db.refresh(new_post)
 
@@ -1603,14 +1679,14 @@ Optional file data:
         Subscription.user_id != v.id,
         # a member who muted the guild is not rung for it (helpers/muting.py)
         Subscription.user_id.notin_(
-            g.db.query(BoardBlock.user_id).filter_by(board_id=new_post.board_id).subquery()
+            g.db.query(BoardBlock.user_id).filter_by(board_id=new_post.board_id).scalar_subquery()
             ),
         # blocked either way, as for followers below
         Subscription.user_id.notin_(
-            g.db.query(UserBlock.user_id).filter_by(target_id=v.id).subquery()
+            g.db.query(UserBlock.user_id).filter_by(target_id=v.id).scalar_subquery()
             ),
         Subscription.user_id.notin_(
-            g.db.query(UserBlock.target_id).filter_by(user_id=v.id).subquery()
+            g.db.query(UserBlock.target_id).filter_by(user_id=v.id).scalar_subquery()
             )
         )
 
@@ -1621,10 +1697,10 @@ Optional file data:
         Follow.get_notifs==True,
         Follow.user_id!=v.id,
         Follow.user_id.notin_(
-            g.db.query(UserBlock.user_id).filter_by(target_id=v.id).subquery()
+            g.db.query(UserBlock.user_id).filter_by(target_id=v.id).scalar_subquery()
             ),
         Follow.user_id.notin_(
-            g.db.query(UserBlock.target_id).filter_by(user_id=v.id).subquery()
+            g.db.query(UserBlock.target_id).filter_by(user_id=v.id).scalar_subquery()
             )
         ).join(Follow.target).filter(
         User.is_private==False,
@@ -1804,7 +1880,19 @@ Required form data:
     if already:
         return {"error": f"Already forwarded to +{target.name}."}, 409
 
+    # the flair the forwarder picked for the guild's copy (helpers/guild_flair.py): one of the guild's, or required
+    raw_flair = request.form.get("flair", "")
+    flair_id = flair_rules.parse_id(raw_flair) if raw_flair else None
+    if raw_flair and flair_id is None:
+        return {"error": "That isn't a flair."}, 400
+    flair_refusal = flair_rules.forward_refusal(target.require_flair, flair_id, flair_store.ids_of(g.db, target.id),
+                                                target.name)
+    if flair_refusal:
+        return {"error": flair_refusal}, 409
+
     new_forward = create_forward_post(primary, target, v)
+    if flair_id:
+        flair_store.set_post_flair(g.db, new_forward.id, flair_id)
     g.db.commit()
 
     cache.delete_memoized(frontlist)
@@ -1834,6 +1922,19 @@ URL path parameters:
     if post.is_deleted:
         abort(404)
 
+    # a collaborative post is deleted only when its authors agree (a proposal in its shared draft, routes/collab.py)
+    if collab_store.open_doc_for_post(g.db, post.repost_id or post.id) is not None and not post.is_repost:
+        return jsonify({"error": COLLAB_DELETE_REFUSAL}), 403
+
+    return delete_post_as(post, v)
+
+
+COLLAB_DELETE_REFUSAL = "Deleting a collaborative post needs its authors' agreement: propose it in its shared draft."
+
+
+def delete_post_as(post, v):
+    """Deletes `post` (and, for a primary post, its forwarded copies) with `v` as the one who deleted it: for
+    delete_post_pid, and for a collaborative post whose authors agreed to delete it (routes/collab.py)."""
     now = int(time.time())
 
     post.deleted_utc = now
@@ -1854,7 +1955,7 @@ URL path parameters:
     ))
 
     # clear cache
-    cache.delete_memoized(User.userpagelisting, v, sort="new")
+    cache.delete_memoized(User.userpagelisting, post.author, sort="new")
     cache.delete_memoized(Board.idlist, post.board)
 
     if post.age >= 3600 * 6:
@@ -1907,7 +2008,8 @@ def embed_post_pid(pid):
     if post_hidden(post, None):
         abort(403)
 
-    return render_template("embeds/submission.html", p=post)
+    # an embed is drawn as a visitor sees it: `v` is None, never undefined (audit E-01: score_mode(v) crashed)
+    return render_template("embeds/submission.html", p=post, v=None)
 
 
 @app.route("/api/toggle_post_sensitive/<pid>", methods=["POST"])
