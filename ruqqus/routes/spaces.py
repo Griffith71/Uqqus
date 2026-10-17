@@ -136,7 +136,16 @@ def state_json(space, v):
     now = int(time.time())
     stage, listeners, peers, me, _ = _people(space, v, now)
     may_run = me["may_run"]
+    inside = may_run or any(p["id"] == v.id for p in stage + listeners)
+    if not inside:
+        # someone who hasn't joined learns how many are in it, never who (audit L-01: the roster, with Matrix and
+        # device ids, went to anyone who could open the post, a blocked account included)
+        return {"id": space.id, "status": space.status, "record": bool(space.record), "room_id": None,
+                "stage": [], "listeners": [], "peers": [], "me": me, "inside": False,
+                "stage_count": len(stage), "listener_count": len(listeners), "hands": [],
+                "max_stage": space_rules.MAX_STAGE, "max_listeners": space_rules.MAX_LISTENERS}
     return {
+        "inside": True, "stage_count": len(stage),
         "id": space.id, "status": space.status, "record": bool(space.record), "room_id": space.matrix_room_id,
         "stage": stage, "listeners": listeners, "peers": peers, "me": me,
         "listener_count": len(listeners),
@@ -436,6 +445,7 @@ def space_remove(sid, v):
         call_store.leave_user(r, space.room, user.id)
     _out_of_room(space, user.id)
     live_bus.publish_to_user(r, user.id, "space.removed", {"space_id": space.id})
+    live_bus.revoke(r, user.id, f"space:{space.id}")                     # their open pages stop hearing it (C-07)
     _tell(space)
     return jsonify(state_json(space, v))
 
@@ -500,9 +510,19 @@ def space_replay(sid, v):
     body = ((post.body or "").rstrip() + f"\n\n[audio]({asset.path})").strip()
     with CustomRenderer() as renderer:
         body_md = renderer.render(mistletoe.Document(body))
-    post.submission_aux.body = body
-    post.submission_aux.body_html = sanitize(body_md, linkgen=True)
-    g.db.add(post.submission_aux)
+    body_html = sanitize(body_md, linkgen=True)
+    # the post and its live guild copies get the sound, each rated again by the word filter as any edit is (audit
+    # L-03: only the original changed, unrated)
+    from ruqqus.helpers import poll_store
+    from ruqqus.helpers.word_filter_store import apply_post_severity
+    options = poll_store.option_text(g.db, post.id)
+    copies = g.db.query(Submission).filter(Submission.repost_id == post.id, Submission.deleted_utc == 0).all()
+    for target in [post] + copies:
+        target.submission_aux.body = body
+        target.submission_aux.body_html = body_html
+        apply_post_severity(target, target.title, body_html, extra=options)
+        g.db.add(target.submission_aux)
+        g.db.add(target)
     space_store.set_replay(g.db, space.id, asset.id)
     attached = media_attach.sync(g.db, v.id, (body, post.url or ""), submission_id=post.id)
     g.db.commit()

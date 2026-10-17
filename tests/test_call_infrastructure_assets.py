@@ -20,31 +20,35 @@ def read(*parts):
 def test_only_call_and_space_pages_may_use_the_microphone_and_camera():
     for path in ("/call/!abc:ruqqus.local", "/space/12"):
         assert device_access.is_call_page(path)
-        assert "microphone 'self';" in device_access.feature_policy(path)
-        assert "camera 'self';" in device_access.feature_policy(path)
         assert "microphone=(self)" in device_access.permissions_policy(path)
         assert "camera=(self)" in device_access.permissions_policy(path)
     # the chat page and its side panel never hold a call: it runs in a window of its own
     for path in ("/", "/chat", "/api/chat/token", "/call/", "/space/", "/calls/x", "/settings/media", "", None):
         assert not device_access.is_call_page(path)
-        assert "microphone 'none';" in device_access.feature_policy(path)
-        assert "camera 'none';" in device_access.feature_policy(path)
         assert "microphone=()" in device_access.permissions_policy(path)
         assert "camera=()" in device_access.permissions_policy(path)
 
 
 def test_every_other_feature_stays_off_on_every_page():
     for path in ("/", "/call/x"):
-        policy = device_access.feature_policy(path)
-        for name in ("geolocation", "payment", "fullscreen", "sync-xhr", "push", "notifications"):
-            assert f"{name} 'none';" in policy
-        assert "geolocation=()" in device_access.permissions_policy(path)
-        assert "payment=()" in device_access.permissions_policy(path)
+        policy = device_access.permissions_policy(path)
+        for name in ("geolocation", "payment", "sync-xhr", "midi", "magnetometer", "gyroscope"):
+            assert f"{name}=()" in policy
 
 
-def test_every_response_gets_both_headers_from_the_one_rule():
+def test_videos_may_go_full_screen_on_every_page():
+    # it was off everywhere, so no embedded player could go full screen (audit 2026-10-16, X-03); each player's frame
+    # still asks for it with allow="fullscreen" (templates/submission.html, assets/js/feed_video_autoplay.js)
+    for path in ("/", "/post/abc", "/call/x"):
+        assert "fullscreen=*" in device_access.permissions_policy(path)
+        assert "fullscreen=()" not in device_access.permissions_policy(path)
+
+
+def test_every_response_gets_the_header_from_the_one_rule():
     main = read("ruqqus", "__main__.py")
-    assert 'device_access.feature_policy(request.path)' in main
+    # Permissions-Policy only (audit U-03: the older Feature-Policy listed features browsers don't know and logged
+    # console warnings on every page; every browser that applies these features reads Permissions-Policy)
+    assert "Feature-Policy" not in main and "feature_policy" not in read("ruqqus", "helpers", "device_access.py")
     assert 'device_access.permissions_policy(request.path)' in main
     assert "microphone 'none'; camera 'none'" not in main      # the old fixed string is gone
 
@@ -72,15 +76,13 @@ def test_images_are_pinned_and_only_the_relays_client_port_is_published():
     assert "TURN_MONTHLY_GB=${TURN_MONTHLY_GB:-" in compose and "TURN_METRICS_URL=" in compose
 
 
-def test_the_relay_never_reaches_a_private_address():
+def test_the_relay_never_reaches_any_address_but_itself():
+    """Every peer is refused (audit M-05: it used to accept every public address, a free proxy for any member);
+    docker-compose.yml allows only the relay's own address, where two members' allocations meet."""
     conf = read("coturn", "turnserver.conf.template")
     denied = set(re.findall(r"^denied-peer-ip=(\S+)$", conf, re.M))
-    for block in ("10.0.0.0-10.255.255.255", "172.16.0.0-172.31.255.255", "192.168.0.0-192.168.255.255",
-                  "127.0.0.0-127.255.255.255", "169.254.0.0-169.254.255.255", "100.64.0.0-100.127.255.255",
-                  "0.0.0.0-0.255.255.255", "::1", "fc00::-fdff:ffff:ffff:ffff:ffff:ffff:ffff:ffff",
-                  "fe80::-febf:ffff:ffff:ffff:ffff:ffff:ffff:ffff", "::ffff:0.0.0.0-::ffff:255.255.255.255"):
-        assert block in denied, block
-    assert "allowed-peer-ip" not in conf.split("# On a live site", 1)[1].split("listening-port", 1)[1]
+    assert denied == {"0.0.0.0-255.255.255.255", "::-ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff"}
+    assert not re.search(r"^allowed-peer-ip", conf, re.M)           # only compose allows, and only the relay itself
     for line in ("no-multicast-peers", "no-cli", "no-tcp-relay", "use-auth-secret", "fingerprint", "prometheus"):
         assert re.search(rf"^{line}$", conf, re.M), line
     assert re.search(r"^user-quota=\d+$", conf, re.M) and re.search(r"^max-bps=\d+$", conf, re.M)

@@ -100,7 +100,7 @@ function render() {
   const listeners = byId("space-listeners");
   stage.replaceChildren(...data.stage.map((p) => personTile(p, true)));
   listeners.replaceChildren(...data.listeners.map((p) => personTile(p, false)));
-  byId("space-count").textContent = `${data.stage.length + data.listener_count} in the Space`;
+  byId("space-count").textContent = `${(data.stage_count ?? data.stage.length) + data.listener_count} in the Space`;
   byId("space-listener-heading").textContent = `Listeners (${data.listener_count})`;
 
   const me = data.me;

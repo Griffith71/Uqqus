@@ -105,6 +105,31 @@ def test_the_hub_hands_each_message_to_the_streams_that_hear_its_channel():
     assert mine.queue.empty()
 
 
+def test_a_revoke_takes_a_topic_from_the_members_open_streams():
+    class Redis:
+        def __init__(self):
+            self.sent = []
+
+        def publish(self, channel, data):
+            self.sent.append((channel, data))
+
+    redis = Redis()
+    assert live_bus.revoke(redis, 1, "collab:4")
+    assert not live_bus.revoke(redis, 1, "not a topic")
+    (channel, payload), = redis.sent
+    hub = _hub()
+    mine = hub.subscribe(1, ["live:u:1", "live:t:collab:4", "live:t:post:2"])
+    other = hub.subscribe(2, ["live:u:2", "live:t:collab:4"])
+    hub.dispatch(channel, payload)
+    assert mine.queue.empty()                                           # applied, never passed on to the page
+    hub.dispatch("live:t:collab:4", "x")
+    hub.dispatch("live:t:post:2", "y")
+    assert mine.queue.get_nowait() == "y" and mine.queue.empty()
+    assert other.queue.get_nowait() == "x"                              # someone else keeps hearing it
+    hub.dispatch("live:t:collab:4", payload)                            # a revoke on a topic channel is just a message
+    assert other.queue.get_nowait() == payload
+
+
 def test_a_slow_tab_loses_its_oldest_events():
     hub = _hub()
     sub = hub.subscribe(1, ["live:u:1"])
@@ -115,15 +140,22 @@ def test_a_slow_tab_loses_its_oldest_events():
     assert sub.dropped == 5
 
 
-def test_streams_per_member_are_capped_and_freed():
+def test_streams_per_member_are_capped_by_ending_the_oldest():
+    """Audit L-05: at the cap the member's oldest stream ends (a page already left) and the new one opens; refusing
+    the new one left the page being looked at with no live updates at all."""
     hub = _hub()
     subs = [hub.subscribe(1, ["live:u:1"]) for _ in range(live_bus.MAX_STREAMS_PER_MEMBER)]
     assert all(subs)
-    assert hub.subscribe(1, ["live:u:1"]) is None
-    assert hub.subscribe(2, ["live:u:2"]) is not None          # another member is not affected
-    hub.unsubscribe(subs[0])
-    hub.unsubscribe(subs[0])                                    # twice is harmless
-    assert hub.subscribe(1, ["live:u:1"]) is not None
+    newest = hub.subscribe(1, ["live:u:1"])
+    assert newest is not None
+    assert subs[0].queue.get_nowait() is live_bus.CLOSE           # the oldest is told to end
+    hub.dispatch("live:u:1", "x")
+    assert subs[0].queue.empty() and newest.queue.get_nowait() == "x"
+    assert hub.subscribe(2, ["live:u:2"]) is not None              # another member is not affected
+    hub.unsubscribe(subs[1])
+    hub.unsubscribe(subs[1])                                       # twice is harmless
+    frames = list(live_bus.stream(subs[0], lambda t: live_bus.CLOSE))
+    assert len(frames) == 2                                        # retry + open, then it ends
 
 
 def test_the_listener_starts_once():

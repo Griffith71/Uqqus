@@ -47,7 +47,8 @@ def topic_channel(topic):
 
 
 def register_topic(prefix, guard):
-    """guard(v, key) -> bool: may this member hear `<prefix>:<key>`? Asked once, when a stream opens."""
+    """guard(v, key) -> bool: may this member hear `<prefix>:<key>`? Asked once, when a stream opens; `revoke` takes
+    a topic back from open streams when access ends."""
     _guards[prefix] = guard
 
 
@@ -96,6 +97,34 @@ def publish_to_user(redis, user_id, kind, data=None):
     return publish(redis, user_channel(user_id), kind, data)
 
 
+REVOKE = "live.revoke"
+
+
+def revoke(redis, user_id, topic):
+    """Takes `topic` away from the member's open streams at once (audit C-07): a guard is asked only when a stream
+    opens, so someone removed from a draft, a Space or a call kept hearing its topic until the stream ended (10
+    minutes). Call it wherever access to a topic ends. The hub applies it and never passes it on to the page."""
+    try:
+        channel = topic_channel(topic)
+    except ValueError:
+        return False
+    return publish(redis, user_channel(user_id), REVOKE, {"channel": channel})
+
+
+def _revoked_channel(payload):
+    """The topic channel a revoke message names, or None for any other message."""
+    if not isinstance(payload, str) or REVOKE not in payload:
+        return None
+    try:
+        message = json.loads(payload)
+    except ValueError:
+        return None
+    if message.get("kind") != REVOKE:
+        return None
+    channel = (message.get("data") or {}).get("channel")
+    return channel if isinstance(channel, str) else None
+
+
 def sse_event(payload):
     """One message as an SSE frame. The payload is our own JSON (no newlines), sent as one `data:` line."""
     try:
@@ -122,6 +151,8 @@ class Subscription:
         self.channels = frozenset(channels)
         self.queue = queue
         self.dropped = 0
+        self.opened = 0.0
+        self.member_id = None
 
     def offer(self, payload):
         try:
@@ -145,15 +176,25 @@ class Hub:
         self._spawn = spawn
         self._subs = set()
         self._per_member = {}
+        self._seq = 0
         self._started = False
 
     def subscribe(self, member_id, channels):
-        """None when the member already has MAX_STREAMS_PER_MEMBER streams open on this worker."""
-        if self._per_member.get(member_id, 0) >= MAX_STREAMS_PER_MEMBER:
-            return None
+        """A new stream for the member. At MAX_STREAMS_PER_MEMBER on this worker, the member's OLDEST stream is told
+        to end instead of the new one being refused (audit L-05): the site reloads on every page, so the oldest is
+        almost always a page already left whose connection hasn't been noticed closed yet, while the new one is the
+        page being looked at (a refused EventSource never retries, so that page used to get no live updates at all,
+        call rings included)."""
         self._ensure_started()
+        mine = sorted((s for s in self._subs if s.member_id == member_id), key=lambda s: s.opened)
+        while len(mine) >= MAX_STREAMS_PER_MEMBER:
+            oldest = mine.pop(0)
+            self.unsubscribe(oldest)
+            oldest.offer(CLOSE)
         sub = Subscription(channels, self._make_queue(QUEUE_SIZE))
         sub.member_id = member_id
+        self._seq += 1
+        sub.opened = self._seq                  # the order streams opened in (oldest first)
         self._subs.add(sub)
         self._per_member[member_id] = self._per_member.get(member_id, 0) + 1
         return sub
@@ -168,9 +209,13 @@ class Hub:
                 self._per_member.pop(sub.member_id, None)
 
     def dispatch(self, channel, payload):
+        revoked = _revoked_channel(payload) if channel.startswith(f"{PREFIX}u:") else None
         for sub in list(self._subs):
             if channel in sub.channels:
-                sub.offer(payload)
+                if revoked is not None:
+                    sub.channels = sub.channels - {revoked}
+                else:
+                    sub.offer(payload)
 
     def _ensure_started(self):
         if not self._started:
@@ -190,6 +235,9 @@ class Hub:
                 time.sleep(2)
 
 
+CLOSE = object()                 # put in a stream's queue to end it (a newer stream of the member took its place)
+
+
 def stream(sub, get, now=time.time, max_seconds=MAX_STREAM_SECONDS):
     """The frames of one stream. `get(timeout)` returns the next payload or None after `timeout` seconds."""
     started = now()
@@ -197,6 +245,8 @@ def stream(sub, get, now=time.time, max_seconds=MAX_STREAM_SECONDS):
     yield sse_comment("open")
     while now() - started < max_seconds:
         payload = get(KEEPALIVE_SECONDS)
+        if payload is CLOSE:
+            return
         if payload is None:
             yield sse_comment()
             continue

@@ -34,12 +34,34 @@
     });
   }
 
+  var failures = 0;
+  var retryTimer = null;
+
   function open() {
     if (source) source.close();
+    clearTimeout(retryTimer);
     bound = {};
     source = new EventSource(url());
+    source.addEventListener('open', function () { failures = 0; });
+    // the browser reconnects by itself after a dropped connection, but gives up for good on an error answer
+    // (a 429 or a 503, audit L-05): then this page reopens it, waiting a little longer each time
+    source.addEventListener('error', function () {
+      if (!source || source.readyState !== EventSource.CLOSED) return;
+      failures += 1;
+      clearTimeout(retryTimer);
+      retryTimer = setTimeout(function () {
+        if (!document.hidden && Object.keys(handlers).length) open();
+      }, Math.min(60000, 1000 * Math.pow(2, failures)));
+    });
     Object.keys(handlers).forEach(bind);
   }
+
+  // leaving the page closes its stream at once, so the next page's stream never waits behind it
+  window.addEventListener('pagehide', function () {
+    clearTimeout(retryTimer);
+    if (source) source.close();
+    source = null;
+  });
 
   function close() {
     if (source) source.close();
