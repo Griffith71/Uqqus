@@ -43,6 +43,10 @@ def tick(now=None):
     for event, *_ in events:
         counts[event] = counts.get(event, 0) + 1
 
+    renewed = renew_premium(now)
+    if renewed:
+        counts["premium_renewed"] = renewed
+
     lapsed = [(payer, owner, coins, board, name) for event, payer, owner, coins, board, name in events if event == "lapsed"]
     if lapsed:
         with app.test_request_context():
@@ -67,6 +71,32 @@ def tick(now=None):
             finally:
                 db_session.remove()
     return counts
+
+
+def renew_premium(now=None):
+    """Premium weeks for the members who switched auto-renewal on (helpers/premium.py): one coin each, one
+    statement each, committed one member at a time. Returns how many renewed."""
+    from ruqqus.helpers import premium
+    from ruqqus.helpers.discord import add_role
+    now = int(now or time.time())
+    renewed = 0
+    with app.test_request_context():
+        g.db = db_session()
+        try:
+            for user_id in premium.due_ids(g.db, now):
+                user = g.db.query(User).filter_by(id=user_id).first()
+                if user is not None and premium.redeem_week(g.db, user, now):
+                    g.db.commit()
+                    renewed += 1
+                    try:
+                        add_role(user, "premium")
+                    except Exception:
+                        traceback.print_exc()
+                else:
+                    g.db.rollback()
+        finally:
+            db_session.remove()
+    return renewed
 
 
 def main():

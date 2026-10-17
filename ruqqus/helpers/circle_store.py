@@ -372,10 +372,19 @@ def _pay(db, payer_id, owner_id, circle_id, coins, kind, now):
     return True
 
 
+def _serialise(db, a, b):
+    """One subscription decision at a time per (circle or guild, payer): a double-click or a retried request waits
+    for the first and then sees its membership, so it is never charged twice (audit $-02). Postgres only; released
+    when the caller commits."""
+    if db.bind.dialect.name == "postgresql":
+        db.execute(text("SELECT pg_advisory_xact_lock(:a, :b)"), {"a": int(a) % 2147483647, "b": int(b) % 2147483647})
+
+
 def subscribe(db, circle_id, payer_id, now=None):
     """Subscribe `payer_id` to a paid circle. Returns (outcome, text): outcome is "subscribed", "resumed" (a cancelled
     subscriber who still had access: nothing is charged) or "refused" with the reason."""
     now = _now(now)
+    _serialise(db, circle_id, payer_id)
     circle = get(db, circle_id)
     if circle is None or circle.kind != circles.PAID:
         return "refused", "That circle isn't taking subscribers."
@@ -445,6 +454,9 @@ def renew_due(db, now=None, limit=500):
         account = _account(db, row.user_id)
         balance = account.coin_balance if account else 0
         decision = circles.renewal(now, row.renews_utc, row.cancelled, balance, row.price_coins)
+        # a deleted or permanently banned owner or payer ends it: nobody pays an account that is gone (audit $-03)
+        if decision == circles.RENEW and (_gone(account) or _gone(_account(db, row.owner_id))):
+            decision = circles.END
         if decision == circles.RENEW and (blocked_between(db, row.owner_id, row.user_id)
                                           or (row.board_id and exiled_from(db, row.board_id, row.user_id))):
             decision = circles.END
@@ -525,6 +537,7 @@ def subscribe_guild(db, board_id, payer_id, now=None):
     """Join a Circle guild for its price: the coins go to the guild's founder and the payer becomes an approved
     contributor. Returns (outcome, text): "subscribed", "resumed" or "refused" with the reason."""
     now = _now(now)
+    _serialise(db, -int(board_id), payer_id)
     guild = guild_row(db, board_id)
     circle = circle_of_board(db, board_id)
     price = circle.price_coins if circle else 0

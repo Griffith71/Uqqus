@@ -473,6 +473,21 @@ def test_a_block_ends_a_renewal_instead_of_charging(db):
     assert coins(db, FAN) == 90
 
 
+def test_a_deleted_or_banned_owner_or_payer_ends_a_renewal_instead_of_charging(db):
+    """Audit $-03: a deleted owner's circle kept charging its subscribers."""
+    from sqlalchemy import text as sql
+    for who, column in ((OWNER, "is_deleted"), (FAN, "is_deleted"), (OWNER, "is_banned")):
+        fans = paid(db, 10, name=f"Circle {who} {column}")
+        store.subscribe(db, fans, FAN, NOW)
+        db.execute(sql(f"UPDATE users SET {column} = 1 WHERE id = :u"), {"u": who})
+        before = coins(db, FAN)
+        events = store.renew_due(db, NOW + c.PERIOD)
+        assert events and all(e[0] == "ended" for e in events), (who, column, events)
+        assert coins(db, FAN) == before
+        db.execute(sql(f"UPDATE users SET {column} = 0 WHERE id = :u"), {"u": who})
+        db.execute(sql("DELETE FROM circle_members"))
+
+
 def test_a_late_renewal_runs_from_now(db):
     fans = paid(db)
     store.subscribe(db, fans, FAN, NOW)

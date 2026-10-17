@@ -16,6 +16,8 @@ from ruqqus.helpers.base36 import *
 from ruqqus.helpers.get import *
 from ruqqus.__main__ import app
 from ruqqus.helpers import tips, tips_store
+from ruqqus.helpers import coins as coins_store, premium
+from ruqqus.helpers.discord import add_role
 
 CLIENT=PayPalClient()
 
@@ -154,7 +156,12 @@ def shop_buy_coins_completed(v):
     #successful payment - award coins
 
     if txn.coin_count:
-        v.coin_balance += txn.coin_count
+        g.db.flush()
+        coins_store.give(g.db, v.id, txn.coin_count)
+        g.db.refresh(v)
+        # buying coins without a running week starts one, as the purchase form says (helpers/premium.py)
+        if not v.has_premium_no_renew and premium.redeem_week(g.db, v, int(time.time())):
+            add_role(v, "premium")
     else:
         v.negative_balance_cents -= txn.usd_cents
 
@@ -229,10 +236,9 @@ def paypal_webhook_handler():
 def _tip_notification(kind, permalink, coins, recipient):
     """What the author is told of a tip. Tips are anonymous: never who sent it."""
     text = f"Someone liked [your {kind}]({permalink}) and has tipped you {coins} coin{'s' if coins != 1 else ''}!\n\n"
-    if (recipient.premium_expires_utc or 0) < int(time.time()):
-        text += "Your coins are used for [Ruqqus Premium](/settings/premium) automatically, a week per coin."
-    else:
-        text += "Since you already have Ruqqus Premium, the coins have been added to your balance. You can keep them, or give them to someone else."
+    # coins buy Premium only when the member asks, or with auto-renew switched on (helpers/premium.py, audit $-04)
+    text += (f"The coins are in your balance: keep them, tip someone, or redeem a week of "
+             f"[{app.config['SITE_NAME']} Premium](/settings/premium) per coin.")
     return text
 
 
@@ -283,22 +289,13 @@ def gift_post_pid(pid, v):
     if coins is None:
         return jsonify({"error": f"A tip is a whole number of coins, from 1 to {tips.MAX_TIP}."}), 400
 
-    v=g.db.query(User).with_for_update().options(lazyload('*')).filter_by(id=v.id).first()
-    u=g.db.query(User).with_for_update().options(lazyload('*')).filter_by(id=u.id).first()
-
-    if not v.coin_balance>=coins:
-        return jsonify({"error":"You don't have that many coins to give!"}), 403
-
-
-    v.coin_balance -= coins
-    u.coin_balance += coins
-
-    g.db.add(v)
-    g.db.add(u)
+    # one conditional statement checks and moves the coins (helpers/coins.py): parallel tips can't create coins
     g.db.flush()
-    if v.coin_balance<0:
+    if not coins_store.move(g.db, v.id, u.id, coins):
         g.db.rollback()
         return jsonify({"error":"You don't have that many coins to give!"}), 403
+    g.db.refresh(v)
+    g.db.refresh(u)
 
     # the tip, the post's totals and its place in the ranked sorts move with the coins, in one transaction
     # (helpers/tips.py: the boost counts in rank_hot / rank_best, never in the score or the Top sort)
@@ -362,20 +359,13 @@ def gift_comment_pid(cid, v):
     if coins is None:
         return jsonify({"error": f"A tip is a whole number of coins, from 1 to {tips.MAX_TIP}."}), 400
 
-    v=g.db.query(User).with_for_update().options(lazyload('*')).filter_by(id=v.id).first()
-    u=g.db.query(User).with_for_update().options(lazyload('*')).filter_by(id=u.id).first()
-
-    if not v.coin_balance>=coins:
-        return jsonify({"error":"You don't have that many coins to give!"}), 403
-        
-    v.coin_balance -= coins
-    u.coin_balance += coins
-    g.db.add(v)
-    g.db.add(u)
+    # one conditional statement checks and moves the coins (helpers/coins.py): parallel tips can't create coins
     g.db.flush()
-    if v.coin_balance<0:
+    if not coins_store.move(g.db, v.id, u.id, coins):
         g.db.rollback()
         return jsonify({"error":"You don't have that many coins to give!"}), 403
+    g.db.refresh(v)
+    g.db.refresh(u)
 
     tips_store.record(g.db, v.id, coins, comment_id=comment.id)
     g.db.commit()
@@ -401,3 +391,29 @@ def paypaltxn_txid(txid, v):
         v=v, 
         txns=[txn]
         )
+
+
+@app.route("/settings/premium/redeem", methods=["POST"])
+@is_not_banned
+@validate_formkey
+def premium_redeem(v):
+    """Spend one coin on a week of Premium, added after any time left (helpers/premium.py). Only when asked."""
+    if v.negative_balance_cents:
+        return jsonify({"error": "Settle your balance first."}), 402
+    if not premium.redeem_week(g.db, v, int(time.time())):
+        g.db.rollback()
+        return jsonify({"error": "You don't have a coin to redeem."}), 403
+    add_role(v, "premium")
+    g.db.commit()
+    return jsonify({"message": f"Premium until {v.renew_premium_time} UTC."})
+
+
+@app.route("/settings/premium/auto_renew", methods=["POST"])
+@auth_required
+@validate_formkey
+def premium_auto_renew(v):
+    """Whether a coin is spent on the next week when one runs out (`setting=true|false`)."""
+    v.premium_auto_renew = request.values.get("setting") == "true"
+    g.db.add(v)
+    g.db.commit()
+    return jsonify({"premium_auto_renew": v.premium_auto_renew})

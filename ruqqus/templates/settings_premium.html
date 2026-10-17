@@ -48,19 +48,22 @@
                 <label for="buypremium">Coins</label>
               </div>
               <div class="body w-lg-100">
-                  <p>Coins are auto-redeemed for one week of premium account time.</p>
-                  {% if v.has_premium and v.coin_balance >=1 %}
+                  <p>One coin buys one week of Premium. Coins are only spent on Premium when you redeem one or switch on renewal below.</p>
                   <p class="text-muted">Current balance: <span class="text-black font-weight-bold">{{ v.coin_balance }} Coin{{ '' if v.coin_balance==1 else 's' }}</span></p>
-                  <p class="text-muted">Next renewal after: <span class="text-black font-weight-bold">{{ v.renew_premium_time }} UTC</span></p>
-
-                  {% elif v.has_premium %}
-                  <p class="text-muted">Current balance: <span class="text-black font-weight-bold">0 Coins</span></p>
-                  <p class="text-muted">Premium expires: <span class="text-black font-weight-bold">{{ v.renew_premium_time }} UTC</span>. Buy some Coins to continue with Premium.</p>
-
+                  {% if v.has_premium %}
+                  <p class="text-muted">Premium until: <span class="text-black font-weight-bold">{{ v.renew_premium_time }} UTC</span></p>
                   {% else %}
-                  <p class="text-muted">Current balance: <span class="text-black font-weight-bold">0 Coins</span></p>
-                  <p class="text-muted">Buy some Coins to enjoy Ruqqus Premium.</p>
+                  <p class="text-muted">You don't have Premium right now.</p>
                   {% endif %}
+                  <div class="d-flex flex-wrap align-items-center mb-3" style="gap: 0.75rem;">
+                    <button type="button" class="btn btn-secondary" {% if v.coin_balance < 1 %}disabled{% endif %}
+                      onclick="post_toast('/settings/premium/redeem', callback=function(){window.location.reload()})">Redeem 1 coin for a week</button>
+                    <div class="custom-control custom-switch">
+                      <input type="checkbox" class="custom-control-input" id="premium-auto-renew"{% if v.premium_auto_renew %} checked{% endif %}
+                        onchange="post_toast('/settings/premium/auto_renew?setting=' + this.checked)">
+                      <label class="custom-control-label" for="premium-auto-renew">Renew automatically from my coins when a week runs out</label>
+                    </div>
+                  </div>
                   <div class="d-none d-md-block"><div class="text-muted">Perks:</div>
                     <ul class="mb-0 pl-0 no-bullets font-weight-bold">
                       <li class="py-1"><span class="fa-stack fa-1x mr-2">
@@ -116,12 +119,12 @@
                     <label for="promo-code">Promo Code</label>
                     <input id="promo-code" class="form-control" type="text" placeholder="Optional" name="promo" oninput="coin_quote()">
                     {% if not v.has_premium %}
-                      <p class="text-small-extra text-muted">Note that the first coin of your purchase will be automatically redeemed.</p>
+                      <p class="text-small-extra text-muted">Buying coins without Premium running redeems the first one for a week.</p>
                     {% endif %}
                     <p id="promo-text" class="text-small text-danger"></p>
                     <input id="buy-coin-btn" type="submit" class="btn btn-primary mt-2" value="Buy Coins">
                   </form>
-                <p class="text-small-extra text-muted">Coins have no cash value and cannot be redeemed for anything other than Premium membership time and username changes.</p>
+                <p class="text-small-extra text-muted">Coins have no cash value. They buy Premium time and username changes, and you can give them to other members as tips or for paid circles. The creator fund pays members in coins.</p>
 
                 <p class="text-small-extra text-muted"><a href="/settings/purchase_history" target="_blank">Purchase history</a></p>
 
