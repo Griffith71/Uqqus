@@ -20,7 +20,7 @@ from sqlalchemy import and_, column, exists, func, not_, or_, select, table
 
 from ruqqus.helpers import anonymity
 from ruqqus.helpers import search_query as sq
-from ruqqus.helpers.curation_feed import _comment_count, kind_conditions
+from ruqqus.helpers.curation_feed import _comment_count, kind_conditions, member_condition
 from ruqqus.helpers.feed_algorithm import like_pattern
 from ruqqus.helpers.visibility import board_hidden, user_hidden
 
@@ -63,6 +63,26 @@ def find_guild(name, v):
     return board
 
 
+def find_topic(name):
+    """The topic an `in:#name` names (helpers/topics.py), or None."""
+    from ruqqus.helpers import topics
+    return topics.find(name)
+
+
+def find_curation(slug, v):
+    """The public curation an `in:&slug` names, or None. A private one (its owner's included), or one whose owner is
+    gone or banned, reads as one that does not exist."""
+    from ruqqus.helpers.get import get_curation
+
+    curation = get_curation(slug, graceful=True)
+    if curation is None or curation.is_private:
+        return None
+    owner = curation.owner
+    if owner is None or owner.is_deleted or owner.is_banned:
+        return None
+    return curation
+
+
 def resolve(query, v, b=None):
     """(the query with account and guild ids filled in, notes). Names nobody may see become
     problems on the query; `in:` inside one guild's search is dropped with a note."""
@@ -78,11 +98,24 @@ def resolve(query, v, b=None):
             if b is not None:
                 notes.append(sq.IN_INSIDE_GUILD)
                 continue
-            board = find_guild(part.value, v)
-            if board is None:
-                problems.append(sq.NO_GUILD.format(part.value))
+            if part.value[:1] == "#":
+                topic = find_topic(part.value[1:])
+                if topic is None:
+                    problems.append(sq.NO_TOPIC.format(part.value[1:]))
+                else:
+                    part = replace(part, value="#" + topic.slug, refs=tuple(topic.subcat_ids))
+            elif part.value[:1] == "&":
+                curation = find_curation(part.value[1:], v)
+                if curation is None:
+                    problems.append(sq.NO_CURATION.format(part.value[1:]))
+                else:
+                    part = replace(part, value="&" + curation.slug, ref=curation.id)
             else:
-                part = replace(part, value=board.name, ref=board.id)
+                board = find_guild(part.value, v)
+                if board is None:
+                    problems.append(sq.NO_GUILD.format(part.value))
+                else:
+                    part = replace(part, value=board.name, ref=board.id)
         parts.append(part)
     query = replace(query, parts=tuple(parts), problems=tuple(dict.fromkeys(problems)))
     return query, list(dict.fromkeys(notes))
@@ -129,6 +162,15 @@ def _condition(part, v):
             return not_(and_(Submission.author_id == part.ref, not_(Submission.is_anonymous)))
         return and_(Submission.author_id == part.ref, anonymity.hide_anonymous(Submission, v))
     if k == "in":
+        if value[:1] == "#":
+            # a topic: any guild in one of its subcategories (an empty list matches nothing)
+            from ruqqus.classes import Board
+            in_topic = Submission.board_id.in_(select(Board.id).where(Board.subcat_id.in_(part.refs or (-1,))))
+            return not_(in_topic) if negated else in_topic
+        if value[:1] == "&":
+            # a public curation: its guilds, and its accounts' posts that are not anonymous (the feed's own rule)
+            in_curation = member_condition(part.ref)
+            return not_(in_curation) if negated else in_curation
         return Submission.board_id != part.ref if negated else Submission.board_id == part.ref
     if k == "lang":
         if negated:

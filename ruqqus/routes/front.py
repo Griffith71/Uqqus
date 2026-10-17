@@ -18,6 +18,7 @@ from ruqqus.__main__ import app, cache
 from ruqqus.classes.submission import Submission
 from ruqqus.classes.categories import CATEGORIES
 from ruqqus.classes.votes import Vote
+from ruqqus.helpers import topics as topic_rules
 from ruqqus.helpers.languages import LANGUAGE_NAMES, known_codes
 from ruqqus.helpers.regions import REGION_CENTROIDS
 
@@ -639,16 +640,6 @@ def default_cat_cookie():
     output += [0]
     return output
 
-@app.route("/categories", methods=["GET"])
-@auth_desired
-def categories_select(v):
-    return render_template(
-        "categorylisting.html",
-        v=v,
-        categories=CATEGORIES
-        )
-
-
 @app.route("/all", methods=["GET"])
 @app.route("/api/v1/all/listing", methods=["GET"])
 @app.route("/inpage/all")
@@ -745,9 +736,9 @@ def categorical(v):
     """
 Set the viewer's Categorical filter (session key "catids") - Categorical is
 no longer its own destination, it's an ambient modifier shared by All/For
-You/Following (see _resolve_active_filters()). Once resolved, redirects back
-to whichever of those three the viewer was last using. Same first-time
-picker-page gating as before when nothing has ever been chosen.
+You/Following (see _resolve_active_filters()). The sidebar's Categorical
+panel is the only place to choose; this saves the choice and redirects back
+to whichever of those three the viewer was last using.
 
 /inpage/categorical keeps rendering a partial directly (no redirect) for any
 future AJAX-refresh use.
@@ -775,17 +766,7 @@ Optional query parameters:
 
     cats_param_present = 'cats' in request.args
     new_cats=request.args.get('cats','')
-    ever_chosen = 'catids' in flask_session
     cats = flask_session.get('catids', [])
-
-    if not ever_chosen and not cats_param_present and not request.path.startswith('/api/'):
-        return make_response(
-            render_template(
-                "categorylisting.html",
-                v=v,
-                categories=CATEGORIES
-                )
-            )
 
     if cats_param_present:
         cats = [int(x) for x in new_cats.split(',') if x] if new_cats else []
@@ -870,24 +851,15 @@ Optional query parameters:
     return redirect({'all': '/all', 'for_you': '/for_you', 'following': '/following'}.get(base_feed, '/for_you'))
 
 
-@app.route("/language/<code>", methods=["GET"])
-def language_feed_legacy_redirect(code):
-    """Old path-style language URL (/language/en,fr) - kept as a thin
-    redirect to the current query-param form so any existing links/bookmarks
-    from before this route shape changed still work."""
-    return redirect(f"/language?codes={code}")
-
-
 @app.route("/language", methods=["GET"])
 @auth_desired
 def language_feed(v):
     """
 Set the viewer's Language filter (session key "langcodes") - Language is no
 longer its own destination, it's an ambient modifier shared by All/For You/
-Following (see _resolve_active_filters()). Same first-time picker-page
-gating as before when nothing has ever been chosen; once resolved,
-redirects back to whichever of the three base feeds the viewer was last
-using.
+Following (see _resolve_active_filters()). The sidebar's Language panel is
+the only place to choose; this just saves the choice and redirects back to
+whichever of the three base feeds the viewer was last using.
 
 Optional query parameters:
 * `codes` - Comma-separated language code(s) to select/remember. An explicit
@@ -897,10 +869,6 @@ Optional query parameters:
 
     codes_param_present = 'codes' in request.args
     new_codes = request.args.get('codes', '')
-    ever_chosen = 'langcodes' in flask_session
-
-    if not ever_chosen and not codes_param_present:
-        return render_template("language_picker.html", v=v, languages=LANGUAGE_NAMES)
 
     if codes_param_present:
         codes = [x for x in new_codes.split(',') if x]
@@ -995,13 +963,13 @@ def guild_ids(sort="subs", page=1, cats=[], filter_level=1):
 
     # a Circle guild is found by invitation, never by browsing (its existence names its members' circle)
     guilds = g.db.query(Board).filter_by(is_banned=False, is_circle=False).filter(
-        Board.subcat_id != 108,
+        Board.subcat_id != topic_rules.UNLISTED_SUBCAT,
         func.lower(Board.name) != PROFILE_BOARD_NAME
     )
     guilds = filter_boards(guilds, None, level=filter_level)
 
     if cats:
-        guilds=guilds.filter(Board.subcat.in_(tuple(cats)))
+        guilds=guilds.filter(Board.subcat_id.in_(tuple(cats)))
 
     if sort == "subs":
         guilds = guilds.order_by(Board.stored_subscriber_count.desc())
@@ -1040,12 +1008,28 @@ Optional query parameters:
 
     sort_method = request.args.get("sort", "trending")
 
+    # the chips are the categories as topics (helpers/topics.py); `topic` can also name a subcategory topic, reached from
+    # a `#name` link or /topic/<name>. `cat` (a category id) and `cats` (subcategory ids) are the older ways in.
+    chips = []
+    for category in CATEGORIES:
+        chip = None if category.is_nsfw or not category.visible else topic_rules.find(category.name)
+        if chip and chip not in chips:
+            chips.append(chip)
+    topic = topic_rules.find(request.args.get("topic", ""))
+    if topic is None and request.args.get("cat", type=int):
+        category = next((c for c in CATEGORIES if c.id == request.args.get("cat", type=int)), None)
+        topic = topic_rules.find(category.name) if category else None
+    if topic:
+        cats = list(topic.subcat_ids)
+    else:
+        cats = [int(x) for x in request.args.get("cats", "").split(",") if x.strip().isdigit()]
+
     # get list of ids
     ids = guild_ids(
         sort=sort_method,
         page=page,
         filter_level=viewer_level(v),
-        cats=request.args.get("cats").split(',') if request.args.get("cats") else None
+        cats=cats or None
         )
 
     # check existence of next page
@@ -1064,10 +1048,21 @@ Optional query parameters:
                                             boards=boards,
                                             page=page,
                                             next_exists=next_exists,
-                                            sort_method=sort_method
+                                            sort_method=sort_method,
+                                            topics=chips,
+                                            topic=topic
                                             ),
             "api": lambda: jsonify({"data": [board.json for board in boards]})
             }
+
+
+@app.route("/topic/<name>", methods=["GET"])
+def topic_page(name):
+    """What `#name` links to: the guilds of that topic (a category or subcategory, helpers/topics.py), on Explore."""
+    topic = topic_rules.find(name)
+    if topic is None:
+        abort(404)
+    return redirect(f"/browse?topic={topic.slug}")
 
 
 @app.route('/mine/guilds', methods=["GET"])

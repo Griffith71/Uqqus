@@ -9,8 +9,8 @@
  *   - the audience pill shows what is chosen ("Public", "Friends", "Friends +1", "3 circles") and closes after Public,
  *     on Escape and on a click elsewhere (ticking circles keeps it open);
  *   - the poll button in the attach row opens "More options" and starts the poll panel
- *     (assets/js/poll_composer.js owns the panel and its fields). The feed composer and the
- *     Create post panel (partials/inline_composer.html) use the same ids.
+ *     (assets/js/poll_composer.js owns the panel and its fields). The feed composer
+ *     (partials/inline_composer.html) uses the same ids.
  */
 (function () {
   'use strict';
@@ -103,7 +103,7 @@
     pollButton.addEventListener('click', function () {
       var more = document.querySelector('.composer-more');
       if (more) more.open = true;
-      // the feed composer and the Create post panel fold their options behind a button instead
+      // the feed composer folds its options behind a button instead
       var folded = document.getElementById('ic-options');
       var foldedToggle = document.getElementById('ic-options-toggle');
       if (folded && folded.hidden && foldedToggle) foldedToggle.click();

@@ -15,7 +15,7 @@ STYLES = [(ROOT / "assets" / "style" / name).read_text(encoding="utf-8") for nam
 def test_each_panel_has_a_navbar_icon_and_a_page_to_show():
     triggers = set(re.findall(r'data-side-panel="(\w+)"', DEFAULT))
     configured = set(re.findall(r"^\s{4}(\w+): \{ title:", PANELS_JS, re.M))
-    assert triggers == configured == {"notifications", "chat", "post"}
+    assert triggers == configured == {"notifications", "chat"}
     # the bell exists in two forms (unread / all read): both open the panel
     assert DEFAULT.count('data-side-panel="notifications"') == 2
 
@@ -23,7 +23,8 @@ def test_each_panel_has_a_navbar_icon_and_a_page_to_show():
 def test_the_panel_pages_are_the_real_pages_in_embed_mode():
     for src in re.findall(r"src: '([^']+)'", PANELS_JS):
         assert src.endswith("?embed=1"), src
-    assert "/composer?embed=1" in PANELS_JS and "/chat?embed=1" in PANELS_JS and "/notifications?embed=1" in PANELS_JS
+    assert "/chat?embed=1" in PANELS_JS and "/notifications?embed=1" in PANELS_JS
+    assert "/composer" not in PANELS_JS and "post:" not in PANELS_JS         # Create post is the feed's own composer
 
 
 def test_every_element_the_script_uses_is_in_the_page_shell():
@@ -32,11 +33,10 @@ def test_every_element_the_script_uses_is_in_the_page_shell():
         assert f'id="{element_id}"' in shell, element_id
 
 
-def test_the_left_sidebar_is_folded_without_touching_the_saved_preference():
-    # toggle_sidebar_collapse() also POSTs /settings/toggle_collapse, which FLIPS the stored flag
+def test_opening_a_panel_leaves_the_left_sidebar_as_it_is():
+    # the panel replaces the right sidebar only; folding the left one (or flipping the saved preference) is the member's choice
     assert "toggle_sidebar_collapse" not in PANELS_JS and "toggle_collapse" not in PANELS_JS
-    assert "classList.add('sidebar-collapsed')" in PANELS_JS
-    assert "if (left && !leftWasCollapsed) left.classList.remove('sidebar-collapsed')" in PANELS_JS
+    assert "sidebar-collapsed" not in PANELS_JS and "sidebar-left" not in PANELS_JS
 
 
 def test_it_is_desktop_only_and_never_hijacks_a_modified_click():
@@ -58,7 +58,7 @@ def test_embedded_pages_have_no_chrome_and_open_links_in_the_full_window():
 
 
 def test_only_the_site_itself_may_frame_the_panel_pages():
-    assert re.search(r'request\.args\.get\("embed"\) and request\.path\.startswith\(\("/notifications", "/chat", "/composer"\)\)', MAIN)
+    assert re.search(r'request\.args\.get\("embed"\) and request\.path\.startswith\(\("/notifications", "/chat"\)\)', MAIN)
     assert '"sameorigin"' in MAIN and '"deny"' in MAIN
     # the page that frames a panel is never itself embedded
     assert "not request.args.get('embed')" in DEFAULT

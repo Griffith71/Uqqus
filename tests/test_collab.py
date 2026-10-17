@@ -126,12 +126,13 @@ def test_who_can_be_added_never_names_a_block():
 # --- the SQL ---------------------------------------------------------------------------------------------------------
 
 def _tables():
-    sql = read("scripts", "migrations", "2026-11-01_collab_posts.sql")
-    sql = "\n".join(line for line in sql.splitlines() if not line.strip().startswith("--"))
-    for s in (s.strip() for s in sql.split(";")):
-        if s.startswith("CREATE"):
-            yield (s.replace("public.", "").replace("IF NOT EXISTS ", "")
-                   .replace("SERIAL PRIMARY KEY", "INTEGER PRIMARY KEY AUTOINCREMENT"))
+    for name in ("2026-11-01_collab_posts.sql", "2026-11-03_collab_options.sql"):
+        sql = read("scripts", "migrations", name)
+        sql = "\n".join(line for line in sql.splitlines() if not line.strip().startswith("--"))
+        for s in (s.strip() for s in sql.split(";")):
+            if s.startswith(("CREATE", "ALTER TABLE public.collab_docs")):
+                yield (s.replace("public.", "").replace("IF NOT EXISTS ", "")
+                       .replace("SERIAL PRIMARY KEY", "INTEGER PRIMARY KEY AUTOINCREMENT"))
 
 
 @pytest.fixture
@@ -238,3 +239,42 @@ def test_the_schema_mirrors_the_migration():
         assert f"CREATE TABLE IF NOT EXISTS public.{table}" in migration and f"CREATE TABLE public.{table} (" in schema
     assert "    last_active_utc integer DEFAULT 0 NOT NULL," in schema
     assert "ADD COLUMN IF NOT EXISTS last_active_utc" in migration
+
+
+# --- the post options a draft keeps ----------------------------------------------------------------------------------
+
+def test_options_keep_only_known_values_in_their_own_types():
+    assert rules.clean_options(None) == {"comment_permission": 0, "paid_partnership": False, "made_with_ai": False,
+                                         "sensitive": False, "forward_guilds": []}
+    got = rules.clean_options({"url": "https://example.com/a", "comment_permission": "2", "paid_partnership": "true",
+                               "sensitive": True, "forward_guilds": ["+Cats", "cats", "bad name", "dogs"], "evil": "<script>"})
+    assert got == {"url": "https://example.com/a", "comment_permission": 2, "paid_partnership": True, "made_with_ai": False,
+                   "sensitive": True, "forward_guilds": ["Cats", "dogs"]}
+    assert "url" not in rules.clean_options({"url": "javascript:alert(1)"})
+    assert rules.clean_options({"comment_permission": 9})["comment_permission"] == 0
+
+
+def test_what_a_member_types_is_refused_not_dropped():
+    with pytest.raises(rules.Refused):
+        rules.check_options({"url": "ftp://example.com"})
+    with pytest.raises(rules.Refused):
+        rules.check_options({"forward_guilds": ["ok", "not ok"]})
+    with pytest.raises(rules.Refused):
+        rules.check_options({"forward_guilds": [f"g{i}" for i in range(rules.FORWARD_MAX + 1)]})
+
+
+def test_options_become_the_form_the_post_routes_read():
+    fields = rules.post_fields({"url": "https://example.com", "comment_permission": 3, "made_with_ai": True,
+                                "sensitive": True, "forward_guilds": ["cats"]})
+    assert fields == {"comment_permission": "3", "url": "https://example.com", "paid_partnership": "", "made_with_ai": "true",
+                      "sensitive": "on", "forward_guilds": ["cats"]}
+    assert rules.post_fields(None) == {"comment_permission": "0", "paid_partnership": "", "made_with_ai": ""}
+
+
+def test_options_are_kept_with_the_draft_and_never_with_another(db):
+    a, b = store.create(db, 1, NOW), store.create(db, 2, NOW)
+    assert store.options_of(store.doc(db, a)) == rules.clean_options({})
+    store.set_options(db, a, {"url": "https://example.com", "comment_permission": 1, "forward_guilds": ["cats"]}, NOW)
+    assert store.options_of(store.doc(db, a))["forward_guilds"] == ["cats"]
+    assert store.options_of(store.doc(db, a))["comment_permission"] == 1
+    assert store.options_of(store.doc(db, b)) == rules.clean_options({})

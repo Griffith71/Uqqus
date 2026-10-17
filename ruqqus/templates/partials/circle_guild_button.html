@@ -11,7 +11,7 @@
   onclick="if (confirm('Join this Circle guild for {{ st.price }} coin{{ '' if st.price == 1 else 's' }} every 30 days? It renews from your coins until you cancel.')) { post_toast('/api/circle/guild/{{ b.name }}/subscribe', function () { window.location.reload(); }); }">
   {% if st.paid %}Resume membership{% else %}Join Circle &middot; {{ st.price }} coin{{ '' if st.price == 1 else 's' }}/month{% endif %}</button>
 {% elif st.paid %}
-<a href="/settings/circles" class="badge badge-secondary circle-guild-badge{{ ' ml-2' if not block else '' }}">Circle member</a>
+<a href="/circles/in" class="badge badge-secondary circle-guild-badge{{ ' ml-2' if not block else '' }}">Circle member</a>
 {% endif %}
 {% endif %}
 {% endmacro %}

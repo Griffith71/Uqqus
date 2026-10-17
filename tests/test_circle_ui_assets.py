@@ -52,7 +52,7 @@ def test_the_sheets_draw_the_same_field_with_the_members_own_circles():
     assert '{{ audience_field(0, "story-audience", (), circle_choices(v)) }}' in stories
     options = read("ruqqus", "templates", "partials", "post_options.html")
     field = options.split("{% macro audience_field(")[1].split("{% endmacro %}")[0]
-    assert 'data-circle-name="{{ c.name }}"' in field and "| safe" not in field and 'href="/settings/circle"' in field
+    assert 'data-circle-name="{{ c.name }}"' in field and "| safe" not in field and 'href="/circles"' in field
 
 
 def test_the_add_to_circles_sheet_sits_above_its_backdrop_and_writes_no_html():

@@ -254,10 +254,12 @@ def curations_browse(v):
 
     owned = []
     followed = []
+    followed_ids = set()
     if v:
         owned = g.db.query(Curation).filter_by(owner_id=v.id).order_by(Curation.created_utc.desc()).all()
         followed_ids = select(CurationFollow.curation_id).filter_by(user_id=v.id)
         followed = g.db.query(Curation).filter(Curation.id.in_(followed_ids)).all()
+        followed_ids = {c.id for c in followed}
 
     return render_template(
         "curations/browse.html",
@@ -265,6 +267,7 @@ def curations_browse(v):
         public_curations=public_curations,
         owned=owned,
         followed=followed,
+        followed_ids=followed_ids,
     )
 
 
@@ -894,6 +897,22 @@ def curation_follow_inline(slug, v):
         g.db.commit()
 
     return jsonify({"following": True})
+
+
+@app.route("/api/unfollow_curation/<slug>", methods=["POST"])
+@auth_required
+@validate_formkey
+def curation_unfollow_inline(slug, v):
+    """The same unfollow as /&<slug>/unfollow for buttons that stay on the page (Explore)."""
+
+    curation = get_curation(slug, graceful=True)
+    if not curation:
+        abort(404)
+
+    g.db.query(CurationFollow).filter_by(curation_id=curation.id, user_id=v.id).delete()
+    g.db.commit()
+
+    return jsonify({"following": False})
 
 
 @app.route("/&<slug>/unfollow", methods=["POST"])

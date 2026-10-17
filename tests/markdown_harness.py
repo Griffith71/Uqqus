@@ -3,7 +3,7 @@ without the app or a database.
 
 ruqqus/helpers/get.py imports every model and needs a database session, but
 markdown.py and sanitize.py only use a handful of its names (user / guild /
-curation lookups for @mentions, +guilds and &curations, and get_domain for
+curation / topic lookups for @mentions, +guilds, &curations and #topics, and get_domain for
 image hosts). Those are stubbed here: no user, guild or curation exists, so
 mentions render as plain text, and only the hosts passed in count as image
 hosts we embed.
@@ -14,12 +14,13 @@ import types
 from types import SimpleNamespace as NS
 
 
-def load(monkeypatch, image_hosts=("i.imgur.com",)):
+def load(monkeypatch, image_hosts=("i.imgur.com",), topics=None):
     stub = types.ModuleType("ruqqus.helpers.get")
     stub.get_domain = lambda netloc: NS(show_thumbnail=True) if netloc in image_hosts else None
     stub.get_user = lambda *a, **k: None
     stub.get_guild = lambda *a, **k: None
     stub.get_curation = lambda *a, **k: None
+    stub.get_topic = lambda name, *a, **k: (topics or {}).get(str(name).lower())
     stub.app = NS(config={"RUQQUSPATH": "."})
     monkeypatch.setitem(sys.modules, "ruqqus.helpers.get", stub)
     for name in ("ruqqus.helpers.markdown", "ruqqus.helpers.sanitize"):

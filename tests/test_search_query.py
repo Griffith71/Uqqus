@@ -34,6 +34,20 @@ def test_names_lose_their_at_and_plus():
         ("from", "alice", False), ("from", "bob", False), ("in", "pets", False), ("in", "news", False)]
 
 
+def test_in_takes_a_guild_a_topic_or_a_public_curation():
+    assert kinds("in:+pets in:#gaming in:&news -in:#pc -in:&mine") == [
+        ("in", "pets", False), ("in", "#gaming", False), ("in", "&news", False), ("in", "#pc", True), ("in", "&mine", True)]
+    assert kinds("guild:#arts") == [("in", "#arts", False)]
+
+
+def test_a_topic_or_curation_that_cannot_exist_reads_as_one_that_does_not():
+    assert sq.parse("in:#a.b").problems == (sq.NO_TOPIC.format("a.b"),)
+    assert sq.parse("in:&a b").problems == ()        # "b" is a word; the operator ends at the space
+    assert sq.parse("in:&a%b").problems == (sq.NO_CURATION.format("a%b"),)
+    assert sq.parse("in:#").problems == ("in: needs something after it, such as in:+pets.",)
+    assert sq.parse("in:&").problems == ("in: needs something after it, such as in:+pets.",)
+
+
 def test_an_unknown_key_stays_free_text():
     assert kinds("https://example.com note:this") == [("word", "https://example.com", False), ("word", "note:this", False)]
 
@@ -140,6 +154,7 @@ def test_labels():
     assert labels("from:@a -in:+b since:2026-01-05 -has:image lang:fr -is:forward min_votes:3") == [
         "From @a", "Not in +b", "Since 5 Jan 2026", "Without a picture", "In French", "No forwarded copies",
         "At least 3 votes"]
+    assert labels("in:#gaming -in:&news") == ["In #gaming", "Not in &news"]
 
 
 def test_the_advanced_form_round_trip_loses_nothing():
@@ -152,6 +167,14 @@ def test_the_advanced_form_round_trip_loses_nothing():
     again = sq.compose(words=fields["words"], author=fields["from"], guild=fields["in"], since=fields["since"],
                        until=fields["until"], has=fields["has"], lang=fields["lang"], no_forwards=fields["no_forwards"])
     assert sorted(kinds(again)) == sorted(kinds(text))
+
+
+def test_the_advanced_forms_in_field_keeps_a_topic_or_curation():
+    for text in ("in:#gaming", "in:&news"):
+        field = sq.form_fields(sq.parse(text))["in"]
+        assert field == text[3:]
+        assert sq.compose(guild=field) == text
+    assert sq.compose(guild="#ga<ming") == "in:#gaming" and sq.compose(guild="&") == "" and sq.compose(guild="#") == ""
 
 
 def test_compose_strips_what_a_field_cannot_hold():

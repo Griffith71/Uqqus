@@ -59,6 +59,26 @@ class MediaAsset(Base):
     status = Column(String)
 
 
+class Board(Base):
+    __tablename__ = "boards"
+    id = Column(Integer, primary_key=True)
+    subcat_id = Column(Integer)
+
+
+class CurationGuild(Base):
+    __tablename__ = "curation_guilds"
+    id = Column(Integer, primary_key=True)
+    curation_id = Column(Integer)
+    board_id = Column(Integer)
+
+
+class CurationUser(Base):
+    __tablename__ = "curation_users"
+    id = Column(Integer, primary_key=True)
+    curation_id = Column(Integer)
+    target_user_id = Column(Integer)
+
+
 class Comment(Base):
     __tablename__ = "comments"
     id = Column(Integer, primary_key=True)
@@ -86,7 +106,7 @@ POSTS = {
 @pytest.fixture
 def db(monkeypatch):
     classes = types.ModuleType("ruqqus.classes")
-    for model in (Submission, SubmissionAux, Poll, MediaAsset, Comment):
+    for model in (Submission, SubmissionAux, Poll, MediaAsset, Comment, Board, CurationGuild, CurationUser):
         setattr(classes, model.__name__, model)
     monkeypatch.setitem(sys.modules, "ruqqus.classes", classes)
 
@@ -98,6 +118,10 @@ def db(monkeypatch):
                                created_utc=JAN_1 + pid * DAY, **extra))
         session.add(SubmissionAux(id=pid, title=title, body=body, url=url))
     session.add(Poll(id=1, post_id=5))
+    session.add_all([Board(id=PETS, subcat_id=5), Board(id=NEWS, subcat_id=6)])
+    # curation 1 holds the guild +news and the account b; curation 2 holds only the account a
+    session.add_all([CurationGuild(curation_id=1, board_id=NEWS), CurationUser(curation_id=1, target_user_id=B),
+                     CurationUser(curation_id=2, target_user_id=A)])
     session.add_all([Comment(id=i, parent_submission=5) for i in range(1, 4)])
     session.commit()
     yield session
@@ -108,8 +132,16 @@ def found(db, text, viewer=None):
     query = sq.parse(text)
     assert not query.problems, query.problems
     ids = {"a": A, "b": B, "pets": PETS, "news": NEWS}
-    query = replace(query, parts=tuple(replace(p, ref=ids[p.value]) if p.kind in ("from", "in") else p
-                                       for p in query.parts))
+    topics = {"#animals": (5,), "#headlines": (6,), "#nothing": ()}        # subcategory ids, as search_filters.resolve sets them
+    curations = {"&mix": 1, "&justa": 2}
+
+    def resolved(p):
+        if p.kind == "in" and p.value in topics:
+            return replace(p, refs=topics[p.value])
+        if p.kind == "in" and p.value in curations:
+            return replace(p, ref=curations[p.value])
+        return replace(p, ref=ids[p.value]) if p.kind in ("from", "in") else p
+    query = replace(query, parts=tuple(resolved(p) for p in query.parts))
     posts = db.query(Submission.id).join(SubmissionAux, SubmissionAux.id == Submission.id)
     return sorted(x[0] for x in search_filters.apply(posts, query, viewer).all())
 
@@ -151,6 +183,23 @@ def test_a_minus_word_keeps_posts_with_no_text(db):
 def test_guilds(db):
     assert found(db, "in:+pets") == [1, 2, 5, 7]
     assert found(db, "-in:+pets") == [3, 4, 6]
+
+
+def test_topics_are_the_guilds_of_their_subcategories(db):
+    assert found(db, "in:#animals") == [1, 2, 5, 7]
+    assert found(db, "-in:#animals") == [3, 4, 6]
+    assert found(db, "in:#headlines cat") == [3]
+    assert found(db, "in:#nothing") == []              # a topic with no subcategory matches nothing, never everything
+    assert found(db, "-in:#nothing") == [1, 2, 3, 4, 5, 6, 7]
+
+
+def test_a_curation_is_its_guilds_and_the_non_anonymous_posts_of_its_accounts(db):
+    assert found(db, "in:&mix") == [3, 4, 5, 6, 7]     # +news (3, 4, 6) and b's posts (3, 4, 5, 7)
+    assert found(db, "-in:&mix") == [1, 2]
+    # a's anonymous post (2) never matches through the account, so a curation can't say which posts a wrote
+    assert found(db, "in:&justa") == [1, 6]
+    assert 2 not in found(db, "in:&justa", ADMIN)
+    assert 2 in found(db, "-in:&justa", STRANGER)
 
 
 def test_has(db):

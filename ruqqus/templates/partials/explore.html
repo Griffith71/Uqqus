@@ -1,0 +1,61 @@
+{#
+  The Explore pages (Discover guilds at /browse, Discover curations at /curations), laid out like Reddit's Explore:
+  a heading with its tabs, a row of chips, and a grid of cards. The pages have the left sidebar where the home feed
+  has it and no right sidebar (the feed column widens to take its room: #explore in main.scss).
+  `active` is "guilds" or "curations".
+#}
+{% macro explore_head(active, lead) %}
+<div class="explore-head">
+  <div>
+    <h1 class="explore-title">Explore</h1>
+    {% if lead %}<p class="explore-lead">{{ lead }}</p>{% endif %}
+  </div>
+  {% if active == 'curations' and v %}<a href="/curations/create" class="btn btn-primary btn-sm rounded-pill px-3">Create a curation</a>{% endif %}
+</div>
+<nav class="explore-tabs" aria-label="Explore">
+  <a href="/browse" class="explore-tab{% if active == 'guilds' %} active{% endif %}"{% if active == 'guilds' %} aria-current="page"{% endif %}>Guilds</a>
+  <a href="/curations" class="explore-tab{% if active == 'curations' %} active{% endif %}"{% if active == 'curations' %} aria-current="page"{% endif %}>Curations</a>
+</nav>
+{% endmacro %}
+
+{% macro guild_card(b, v) %}
+<li class="explore-card" id="board-{{ b.base36id }}">
+  <div class="explore-card-top">
+    <img alt="" src="{{ b.profile_url }}" class="explore-avatar" width="48" height="48" loading="lazy">
+    <div class="explore-who">
+      <a class="explore-name" href="{{ b.permalink }}">+{{ b.name }}</a>
+      <div class="explore-meta">{{ [b.stored_subscriber_count, 0] | max }} member{{ 's' if b.stored_subscriber_count != 1 else '' }}{% if b.is_sensitive %} &middot; <span class="text-warning">Sensitive</span>{% endif %}</div>
+    </div>
+    <div class="explore-join">
+      {% if v %}
+      <div id="button-sub-{{ b.base36id }}" class="{% if b.has_subscriber(v) %}d-none{% endif %}"><button type="button" class="btn btn-primary btn-sm" onclick="post_toast('/api/subscribe/{{ b.name }}', callback=function(){document.getElementById('button-unsub-{{ b.base36id }}').classList.toggle('d-none');document.getElementById('button-sub-{{ b.base36id }}').classList.toggle('d-none');})">Join</button></div>
+      <div id="button-unsub-{{ b.base36id }}" class="{% if not b.has_subscriber(v) %}d-none{% endif %}"><button type="button" class="btn btn-secondary btn-sm" onclick="post_toast('/api/unsubscribe/{{ b.name }}', callback=function(){document.getElementById('button-unsub-{{ b.base36id }}').classList.toggle('d-none');document.getElementById('button-sub-{{ b.base36id }}').classList.toggle('d-none');})">Leave</button></div>
+      {% else %}
+      <a class="btn btn-primary btn-sm" href="/signup">Join</a>
+      {% endif %}
+    </div>
+  </div>
+  <p class="explore-desc">{{ b.description_for(v) | truncate(160, True) }}</p>
+</li>
+{% endmacro %}
+
+{% macro curation_card(c, v, following) %}
+<li class="explore-card" id="curation-{{ c.slug }}">
+  <div class="explore-card-top">
+    <span class="explore-avatar explore-avatar-icon" aria-hidden="true"><i class="fas fa-stream"></i></span>
+    <div class="explore-who">
+      <a class="explore-name" href="{{ c.permalink }}">{{ c.name }}</a>
+      <div class="explore-meta">by @{{ c.owner.username }}{% if c.is_private %} &middot; Private{% endif %}{% if c.uses_feed_server %} &middot; outside server{% elif c.has_own_algorithm %} &middot; own algorithm{% endif %}</div>
+    </div>
+    {% if v and v.id != c.owner_id and not c.is_private %}
+    <div class="explore-join">
+      <div id="button-follow-{{ c.slug }}" class="{% if following %}d-none{% endif %}"><button type="button" class="btn btn-primary btn-sm" onclick="post_toast('/api/follow_curation/{{ c.slug }}', function(){document.getElementById('button-unfollow-{{ c.slug }}').classList.remove('d-none');document.getElementById('button-follow-{{ c.slug }}').classList.add('d-none');})">Follow</button></div>
+      <div id="button-unfollow-{{ c.slug }}" class="{% if not following %}d-none{% endif %}"><button type="button" class="btn btn-secondary btn-sm" onclick="post_toast('/api/unfollow_curation/{{ c.slug }}', function(){document.getElementById('button-follow-{{ c.slug }}').classList.remove('d-none');document.getElementById('button-unfollow-{{ c.slug }}').classList.add('d-none');})">Unfollow</button></div>
+    </div>
+    {% elif not v and not c.is_private %}
+    <div class="explore-join"><a class="btn btn-primary btn-sm" href="/signup">Follow</a></div>
+    {% endif %}
+  </div>
+  {% if c.description %}<p class="explore-desc">{{ c.description | truncate(160, True) }}</p>{% endif %}
+</li>
+{% endmacro %}

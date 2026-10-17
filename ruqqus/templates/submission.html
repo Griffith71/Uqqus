@@ -144,7 +144,7 @@
 <meta property="og:site_name" content="{{ p.board.permalink | full_link }}" />
 
 <meta name="twitter:card" content="summary_large_image"/>
-<meta name="twitter:site" content="@{{ 'SITE_NAME' | app_config }} | lower">
+<meta name="twitter:site" content="@{{ 'SITE_NAME' | app_config }}">
 <meta name="twitter:title" content="{{ p.title }} - {{ 'SITE_NAME' | app_config }}" />
 <meta name="twitter:creator" content="{{ '@'+author_of(p, v).username if not author_of(p, v).is_deleted and not anon_hidden(p, v) else ('Anonymous' if anon_hidden(p, v) else '[deleted account]')}}">
 <meta name="twitter:description" content="{{ p.body }}" />

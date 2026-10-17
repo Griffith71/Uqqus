@@ -156,7 +156,7 @@ def test_an_outside_server_is_said_plainly_and_an_admin_can_take_it_off():
     assert "{% if v and v.admin_level >= 4 %}" in note and "/remove_feed_server" in note
     remove = route("curation_remove_feed_server")
     assert "@admin_level_required(4)" in remove and "@validate_formkey" in remove and 'methods=["POST"]' in remove
-    assert "outside server" in read("ruqqus", "templates", "curations", "browse.html")
+    assert "outside server" in read("ruqqus", "templates", "partials", "explore.html")
     assert "{{ feed_notice }}" in PAGE
     for sheet in ("main.scss", "main_dark.scss"):
         assert ".curation-server-note" in read("ruqqus", "assets", "style", sheet), sheet
@@ -274,7 +274,7 @@ def test_everyone_who_can_see_a_curation_can_read_its_rules():
     assert "How this curation picks posts" in PAGE and "curation.algorithm_summary" in PAGE
     summary = PAGE[PAGE.index("How this curation picks posts") - 200:PAGE.index("How this curation picks posts")]
     assert "is_owner" not in summary
-    assert "has_own_algorithm" in read("ruqqus", "templates", "curations", "browse.html")
+    assert "has_own_algorithm" in read("ruqqus", "templates", "partials", "explore.html")
 
 
 def test_the_curation_page_can_be_scrolled_like_any_feed():

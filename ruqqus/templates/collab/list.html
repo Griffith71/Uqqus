@@ -1,33 +1,70 @@
-{% extends "collab/base.html" %}
-{# "Your shared drafts" (routes/collab.py collab_list) and invitations waiting for an answer. #}
-{% block page %}
-<div class="d-flex flex-wrap align-items-center mb-3" style="gap: 0.5rem;">
-  <h1 class="h4 mb-0">Shared drafts</h1>
-  <form method="post" action="/collab/new" class="ml-auto">
-    <input type="hidden" name="formkey" value="{{ v.formkey }}">
-    <button type="submit" class="btn btn-primary"><i class="fas fa-pen-to-square fa-fw" aria-hidden="true"></i>New shared draft</button>
-  </form>
+{% extends "submit.html" %}
+{#
+  "Write with others" (routes/collab.py collab_list): the second way to make a post, beside Create a post, laid out
+  the same way. Your shared drafts, the invitations waiting for an answer, and the button that starts a new one.
+#}
+{% block title %}
+<title>Write with others - {{ 'SITE_NAME' | app_config }}</title>
+<meta name="robots" content="noindex">
+{% endblock %}
+
+{% block form %}
+{% import "partials/posting_rules.html" as rules %}
+{% from "partials/composer_modes.html" import composer_modes %}
+
+<div class="container">
+  <div class="row justify-content-center mb-4 pb-7">
+
+    <div class="col col-md-6 p-3 py-md-0 submit-main-col">
+
+      <h1 class="d-none d-md-block composer-heading">Write with others</h1>
+      {{ composer_modes("together") }}
+      <h2 class="h3 d-md-none composer-heading">Write with others</h2>
+
+      <div class="body composer-card">
+        <div class="composer-head">
+          <img src="{{ v.profile_url }}" class="composer-avatar" alt="">
+          <div class="composer-who">
+            <span class="composer-name">Start a shared draft</span>
+            <span class="composer-where">Write one post together, at the same time</span>
+          </div>
+        </div>
+        <p class="text-muted text-small mb-3">Everyone sees each other's changes as they type, and every character is credited to whoever typed it. You choose who joins. Once it is published, anyone who can see the post can see who wrote what, and the authors keep improving it.</p>
+        <form method="post" action="/collab/new">
+          <input type="hidden" name="formkey" value="{{ v.formkey }}">
+          <button type="submit" class="btn btn-purple"><i class="fas fa-user-group fa-fw mr-1" aria-hidden="true"></i>New shared draft</button>
+        </form>
+      </div>
+
+      {% if invites %}
+      <h2 class="h6 text-uppercase text-muted mt-4">Invitations</h2>
+      <ul class="list-unstyled collab-list">
+        {% for p in invites %}{% set d = invite_docs.get(p[0]) %}{% if d %}
+        <li class="collab-list-item"><a href="/collab/invite/{{ p[0] }}" class="font-weight-bold">{{ d[2] or 'Untitled draft' }}</a> <span class="text-muted text-small">· you're invited to write it</span></li>
+        {% endif %}{% endfor %}
+      </ul>
+      {% endif %}
+
+      <h2 class="h6 text-uppercase text-muted mt-4">Your shared drafts</h2>
+      <ul class="list-unstyled collab-list">
+        {% for d in docs %}
+        <li class="collab-list-item">
+          <a href="/collab/{{ d[0] }}" class="font-weight-bold">{{ d[2] or 'Untitled draft' }}</a>
+          <span class="text-muted text-small">· {{ authors_of[d[0]] }} author{{ 's' if authors_of[d[0]] != 1 else '' }} · changed <span title="{{ d[13] | timestamp_label }}">{{ d[13] | age_label }}</span>{% if d[7] %} · published{% if d[4] != d[8] %}, with unpublished changes{% endif %}{% endif %}</span>
+        </li>
+        {% else %}
+        <li class="text-muted py-2">No shared drafts yet.</li>
+        {% endfor %}
+      </ul>
+
+      {{ rules.rules_panel('m') }}
+
+    </div>
+
+    <div class="col sidebar text-left d-none d-lg-block pt-3 submit-side-col">
+      {{ rules.rules_card('d') }}
+    </div>
+
+  </div>
 </div>
-<p class="text-muted text-small">Write a post with other people at the same time. Everyone sees each other's changes as they type, and every character is credited to whoever typed it. Once published, anyone who can see the post can see who wrote what, and the authors keep improving it.</p>
-
-{% if invites %}
-<h2 class="h6 text-uppercase text-muted mt-4">Invitations</h2>
-<ul class="list-unstyled collab-list">
-  {% for p in invites %}{% set d = invite_docs.get(p[0]) %}{% if d %}
-  <li class="collab-list-item"><a href="/collab/invite/{{ p[0] }}" class="font-weight-bold">{{ d[2] or 'Untitled draft' }}</a> <span class="text-muted text-small">· you're invited to write it</span></li>
-  {% endif %}{% endfor %}
-</ul>
-{% endif %}
-
-<h2 class="h6 text-uppercase text-muted mt-4">Yours</h2>
-<ul class="list-unstyled collab-list">
-  {% for d in docs %}
-  <li class="collab-list-item">
-    <a href="/collab/{{ d[0] }}" class="font-weight-bold">{{ d[2] or 'Untitled draft' }}</a>
-    <span class="text-muted text-small">· {{ authors_of[d[0]] }} author{{ 's' if authors_of[d[0]] != 1 else '' }} · changed <span title="{{ d[13] | timestamp_label }}">{{ d[13] | age_label }}</span>{% if d[7] %} · published{% if d[4] != d[8] %}, with unpublished changes{% endif %}{% endif %}</span>
-  </li>
-  {% else %}
-  <li class="text-muted py-2">No shared drafts yet.</li>
-  {% endfor %}
-</ul>
 {% endblock %}

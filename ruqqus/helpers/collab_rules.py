@@ -181,3 +181,68 @@ def check_title(value):
     if len(title) > TITLE_MAX:
         raise Refused(f"A title can be at most {TITLE_MAX} characters.")
     return title
+
+
+# --- the post options a draft keeps ------------------------------------------------------------------------------
+# What a regular post has beside its title and text and that a collaborative post can have too: a link, who can
+# comment, content disclosure, sensitive, and guilds to forward to. Not here, on purpose: an audience of circles,
+# anonymous, co-authors (the authors ARE the co-authors), a poll, a Space or a live thread (see the module notes).
+
+URL_MAX = 2048
+FORWARD_MAX = 10
+COMMENT_CHOICES = (0, 1, 2, 3)           # everyone, accounts the author follows, Premium, no one (helpers/comment_permission.py)
+FLAG_OPTIONS = ("paid_partnership", "made_with_ai", "sensitive")
+_GUILD_NAME = re.compile(r"[A-Za-z0-9_]{1,40}")
+
+
+def clean_options(raw):
+    """Only known options, in their own types; anything else is dropped. Used on what is stored and on what arrives."""
+    raw = raw if isinstance(raw, dict) else {}
+    out = {}
+    url = str(raw.get("url") or "").strip()
+    if url and len(url) <= URL_MAX and re.match(r"https?://\S+$", url, re.I):
+        out["url"] = url
+    try:
+        permission = int(raw.get("comment_permission", 0))
+    except (TypeError, ValueError):
+        permission = 0
+    out["comment_permission"] = permission if permission in COMMENT_CHOICES else 0
+    for name in FLAG_OPTIONS:
+        out[name] = raw.get(name) in (True, "true", "True", "1", 1, "on")
+    guilds, seen = [], set()
+    for name in raw.get("forward_guilds") or []:
+        name = str(name).strip().lstrip("+")
+        if _GUILD_NAME.fullmatch(name) and name.lower() not in seen and len(guilds) < FORWARD_MAX:
+            seen.add(name.lower())
+            guilds.append(name)
+    out["forward_guilds"] = guilds
+    return out
+
+
+def check_options(raw):
+    """`clean_options` for what a member typed: a link that isn't one or too many guilds is refused, not dropped."""
+    raw = raw if isinstance(raw, dict) else {}
+    url = str(raw.get("url") or "").strip()
+    if url and not (len(url) <= URL_MAX and re.match(r"https?://\S+$", url, re.I)):
+        raise Refused("A link starts with http:// or https://.")
+    if len(raw.get("forward_guilds") or []) > FORWARD_MAX:
+        raise Refused(f"You can forward to at most {FORWARD_MAX} guilds.")
+    for name in raw.get("forward_guilds") or []:
+        if not _GUILD_NAME.fullmatch(str(name).strip().lstrip("+")):
+            raise Refused(f"“{str(name)[:40]}” isn't a guild name.")
+    return clean_options(raw)
+
+
+def post_fields(options):
+    """The options as the form fields POST /api/vue/submit and the edit read."""
+    options = clean_options(options)
+    fields = {"comment_permission": str(options["comment_permission"])}
+    if options.get("url"):
+        fields["url"] = options["url"]
+    for name in ("paid_partnership", "made_with_ai"):
+        fields[name] = "true" if options[name] else ""
+    if options["sensitive"]:
+        fields["sensitive"] = "on"
+    if options["forward_guilds"]:
+        fields["forward_guilds"] = list(options["forward_guilds"])
+    return fields

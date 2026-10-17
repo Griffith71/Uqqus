@@ -182,9 +182,18 @@ def test_the_job_runs_as_its_own_supervisord_program():
 
 # --- the pages ----------------------------------------------------------------------------------------
 
-def test_the_settings_tab_is_in_both_navs_and_the_pages_draw_nothing_as_html():
-    nav = read("ruqqus", "templates", "settings.html")
-    assert nav.count('href="/settings/circle"') == 2 and nav.count("request.path.startswith('/settings/circle')") == 2
+def test_circles_are_in_the_account_menu_and_not_a_settings_tab():
+    settings = read("ruqqus", "templates", "settings.html")
+    assert "/circles" not in settings and "/settings/circle" not in settings
+    for shell in ("default.html", "header.html"):
+        page = read("ruqqus", "templates", shell)
+        # the account dropdown and the phone menu
+        assert page.count('href="/circles"') == 2, shell
+    routes = read("ruqqus", "routes", "circles.py")
+    for old in ('"/settings/circle"', '"/settings/circle/<int:cid>"', '"/settings/circles"'):
+        assert f"@app.route({old}" in routes and "redirect(" in routes      # old links still arrive
+    for name in ("settings_circle.html", "settings_circle_one.html", "settings_circles.html"):
+        assert '{% extends "circles_base.html" %}' in read("ruqqus", "templates", name), name
     for name in ("settings_circle.html", "settings_circle_one.html", "settings_circles.html"):
         html = read("ruqqus", "templates", name)
         assert "| safe" not in html, name

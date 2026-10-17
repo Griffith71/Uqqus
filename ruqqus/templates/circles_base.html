@@ -1,0 +1,19 @@
+{% extends "default.html" %}
+{#
+  The circles pages (routes/circles.py): your circles, one circle, the paid circles you are in. Opened from the account
+  menu, so they are a page of the site (the left sidebar, no settings tabs). The pages put their own markup in `content`.
+#}
+{% block title %}
+<title>{% block pagetitle %}Your circles - {{ 'SITE_NAME' | app_config }}{% endblock %}</title>
+<meta name="robots" content="noindex">
+{% endblock %}
+
+{% block pagetype %}circles{% endblock %}
+
+{% block customPadding %}px-3 px-md-4 py-4{% endblock %}
+
+{% block leftSidebarBlock %}
+{% include "sidebar-left.html" %}
+{% endblock %}
+
+{% block sidebar %}{% endblock %}

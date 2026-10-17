@@ -21,6 +21,7 @@ import secrets
 import time
 
 from flask import *
+from werkzeug.datastructures import MultiDict
 
 from ruqqus.helpers.wrappers import *
 from ruqqus.helpers.get import *
@@ -172,7 +173,35 @@ def _panel_context(doc, v):
 def collab_editor(doc_id, v):
     doc = _doc_or_404(doc_id, v)
     ctx = _panel_context(doc, v)
-    return render_template("collab/editor.html", v=v, title_max=rules.TITLE_MAX, body_max=rules.BODY_MAX, **ctx)
+    options = store.options_of(doc)
+    return render_template("collab/editor.html", v=v, title_max=rules.TITLE_MAX, body_max=rules.BODY_MAX,
+                           options=options, forward_guild_names=options["forward_guilds"], **ctx)
+
+
+@app.route("/api/collab/<int:doc_id>/options", methods=["POST"])
+@is_not_banned
+@validate_formkey
+def collab_options(doc_id, v):
+    """The post options kept with the draft (link, who can comment, disclosure, sensitive, guilds to forward to).
+    Any author may change them, the last save wins, and they are used the next time the draft is published."""
+    _doc_or_404(doc_id, v)
+    if not _may_write(v):
+        abort(403)
+    form = request.form
+    try:
+        options = rules.check_options({
+            "url": form.get("url", ""),
+            "comment_permission": form.get("comment_permission", 0),
+            "paid_partnership": any(x.strip().lower() == "true" for x in form.getlist("paid_partnership")),
+            "made_with_ai": any(x.strip().lower() == "true" for x in form.getlist("made_with_ai")),
+            "sensitive": bool(form.get("sensitive")),
+            "forward_guilds": [x for x in form.getlist("forward_guilds") if x.strip()],
+        })
+    except rules.Refused as e:
+        return _error(str(e))
+    store.set_options(g.db, doc_id, options, _now())
+    g.db.commit()
+    return jsonify({"ok": True, "options": options})
 
 
 @app.route("/collab/<int:doc_id>/panel", methods=["GET"])
@@ -566,7 +595,8 @@ def _sync_coauthors(doc):
 
 
 def _snapshot(doc):
-    return {"title": doc[2], "body": doc[3], "runs": store.runs_of(doc), "revision": doc[4]}
+    return {"title": doc[2], "body": doc[3], "runs": store.runs_of(doc), "revision": doc[4],
+            "options": store.options_of(doc)}
 
 
 def _publish(doc, publisher, snap, now):
@@ -582,7 +612,8 @@ def _publish(doc, publisher, snap, now):
     if post is not None and post.is_banned:
         return "This post was removed, so it can't be changed."
     if post is None or post.deleted_utc:
-        status, data = _post_as(publisher, "/api/vue/submit", {"title": title, "body": body})
+        status, data = _post_as(publisher, "/api/vue/submit",
+                                dict({"title": title, "body": body}, **rules.post_fields(snap.get("options"))))
         if status != 200 or not data.get("id"):
             return str(data.get("error") or f"The server answered {status}.")[:300]
         post_id = base36decode(data["id"])
@@ -592,7 +623,13 @@ def _publish(doc, publisher, snap, now):
         post = g.db.query(Submission).filter_by(id=post_id).first()
     else:
         from ruqqus.routes.posts import apply_post_edit
-        answer = apply_post_edit(post, post, publisher, {"title": title, "body": body}, None,
+        # the link, who can comment and the disclosure and sensitive marks follow the draft's options (guilds are
+        # forwarded to once, when the post is made)
+        fields = rules.post_fields(snap.get("options"))
+        fields.pop("forward_guilds", None)
+        fields.setdefault("url", "")
+        fields.setdefault("sensitive", "")
+        answer = apply_post_edit(post, post, publisher, MultiDict(dict({"title": title, "body": body}, **fields)), None,
                                  media_owner_ids=store.everyone(g.db, doc[0]))
         if isinstance(answer, tuple) and answer[1] >= 400:
             g.db.rollback()

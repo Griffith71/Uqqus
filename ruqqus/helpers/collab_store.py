@@ -16,7 +16,7 @@ from ruqqus.helpers import collab_ot as ot
 from ruqqus.helpers import collab_rules as rules
 
 _DOC = ("id, creator_id, title, body, revision, authorship, rules, post_id, published_revision, forked_from_doc_id, "
-        "forked_from_post_id, forked_at_publish_id, created_utc, updated_utc, deleted_utc")
+        "forked_from_post_id, forked_at_publish_id, created_utc, updated_utc, deleted_utc, options")
 _PROPOSAL = ("id, doc_id, kind, subject_user_id, payload, proposed_by, created_utc, closes_utc, decided_utc, outcome, "
              "invitee_answer")
 FIELDS = ("title", "body")
@@ -47,6 +47,11 @@ def runs_of(doc):
 
 def rules_of(doc):
     return rules.clean_rules(_loads(doc[6], {}))
+
+
+def options_of(doc):
+    """The post options kept with the draft (a link, who can comment, disclosure, sensitive, guilds to forward to)."""
+    return rules.clean_options(_loads(doc[15], {}))
 
 
 # --- drafts -------------------------------------------------------------------------------------------------------
@@ -116,6 +121,11 @@ def fork_count(db, post_id):
 def set_published(db, doc_id, post_id, revision):
     db.execute(text("UPDATE collab_docs SET post_id = :p, published_revision = :r WHERE id = :d"),
                {"p": post_id, "r": revision, "d": doc_id})
+
+
+def set_options(db, doc_id, options, now):
+    db.execute(text("UPDATE collab_docs SET options = :o, updated_utc = :now WHERE id = :d"),
+               {"o": _dumps(rules.clean_options(options)), "now": now, "d": doc_id})
 
 
 def set_rules(db, doc_id, new_rules, now):

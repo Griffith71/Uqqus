@@ -75,7 +75,7 @@ def test_comments_votes_tips_and_chat_refuse_a_bot_account_whatever_it_sends():
 # --- posting -------------------------------------------------------------------------------------------------
 
 def test_every_bot_post_asks_the_bot_rules_and_is_marked_as_a_bot_post():
-    submit = POSTS.split("def submit_post(")[1].split("\n@app.get(\"/composer\")")[0]
+    submit = POSTS.split("def submit_post(")[1].split("\n@app.get(\"/inpage/post_card/<pid>\")")[0]
     assert submit.index("if v.is_bot:") < submit.index("new_post = Submission(")
     assert "bot_error, bot_wait = _bot_refusal(v)" in submit and '"bot_refusal": "wait" if bot_wait else "stop"' in submit
     assert "bot_rules.option_refusal(" in submit

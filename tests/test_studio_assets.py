@@ -51,7 +51,7 @@ def test_the_tabs_put_insights_in_the_studio_and_keep_its_old_address():
     assert 'studio_tab="insights"' in insights
     assert '{% include "partials/studio_nav.html" %}' in read("ruqqus", "templates", "insights_overview.html")
     assert '{% include "partials/studio_nav.html" %}' in PAGE
-    for href in ('href="/studio"', 'href="/studio/insights"', 'href="/settings/circle#circle-paid"', 'href="/settings/creator_fund"'):
+    for href in ('href="/studio"', 'href="/studio/insights"', 'href="/circles#circle-paid"', 'href="/settings/creator_fund"'):
         assert href in NAV, href
     assert 'aria-current="page"' in NAV
 

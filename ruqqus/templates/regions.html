@@ -34,8 +34,11 @@
 </style>
 {% endblock %}
 
+{# a map page: no right sidebar #}
+{% block sidebar %}{% endblock %}
+
 {% block content %}
-<div class="col px-md-4 py-4">
+<div class="col px-0 py-4">
 
   <h1 class="h3">Regions</h1>
   <p class="text-muted">

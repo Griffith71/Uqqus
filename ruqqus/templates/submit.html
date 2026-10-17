@@ -64,6 +64,7 @@
     {% block form %}
     {% import "partials/posting_rules.html" as rules %}
     {% import "partials/post_options.html" as post_options %}
+    {% from "partials/composer_modes.html" import composer_modes %}
 
     <!-- Page Content -->
 
@@ -78,7 +79,7 @@
                     <h1 class="d-none d-md-block composer-heading">Create a post</h1>
 
                     {# a post written with other people starts as a shared draft (routes/collab.py) #}
-                    <a href="/collab" class="d-inline-block text-small mb-3"><i class="fas fa-pen-to-square fa-fw" aria-hidden="true"></i>Write with others instead (a shared draft)</a>
+                    {{ composer_modes("post") }}
 
                     <h2 class="h3 d-md-none composer-heading">Create a post</h2>
 
@@ -107,16 +108,11 @@
                                 <span class="composer-name">{{ v.username }}</span>
                                 <span class="composer-where">Posting to your profile</span>
                             </div>
-                            <details class="composer-pill" id="composer-audience">
-                                <summary aria-label="Who can see this post">
-                                    <i class="fas {{ 'fa-user-friends' if audience_now == 4 else 'fa-globe-americas' }}" id="composer-audience-icon" aria-hidden="true"></i>
-                                    <span id="composer-audience-label">{{ "Circles" if audience_now == 4 else "Public" }}</span>
-                                    <i class="fas fa-chevron-down composer-pill-caret"></i>
-                                </summary>
-                                <div class="composer-pill-menu">
-                                    {{ post_options.audience_field(audience_now, "post-audience", circles_now, circle_choices(v)) }}
-                                </div>
-                            </details>
+                        </div>
+
+                        {# Public or the circles you pick, in plain view (partials/post_options.html, layout "cards"); composer_card.js keeps the radios and ticks in step #}
+                        <div class="composer-audience">
+                            {{ post_options.audience_field(audience_now, "post-audience", circles_now, circle_choices(v), "cards") }}
                         </div>
 
                         <label for="post-title" class="sr-only">Title</label>

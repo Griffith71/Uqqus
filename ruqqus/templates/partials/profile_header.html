@@ -31,7 +31,7 @@
           {% if own %}
           <a class="dropdown-item" href="/settings/profile"><i class="fas fa-pen fa-fw"></i>Edit profile</a>
           <a class="dropdown-item" href="/settings/profile#lists"><i class="fas fa-user-lock fa-fw"></i>Who can see your lists</a>
-          <a class="dropdown-item" href="/settings/circle"><i class="fas fa-circle-notch fa-fw"></i>Your circles</a>
+          <a class="dropdown-item" href="/circles"><i class="fas fa-circle-notch fa-fw"></i>Your circles</a>
           <a class="dropdown-item" href="/@{{ u.username }}/channels"><i class="fas fa-tower-broadcast fa-fw"></i>Your channels</a>
           {% elif v %}
           <a class="dropdown-item" href="#" data-curation-user="{{ u.username }}"><i class="fas fa-layer-group fa-fw"></i>Add to curation</a>
@@ -80,7 +80,7 @@
           </div>
         </div>
         {% elif st.subscribed %}
-        <a href="/settings/circles" class="btn profile-x-outline profile-x-pill circle-badge">Subscribed</a>
+        <a href="/circles/in" class="btn profile-x-outline profile-x-pill circle-badge">Subscribed</a>
         {% endif %}
       {% endif %}
       {% if can_follow %}

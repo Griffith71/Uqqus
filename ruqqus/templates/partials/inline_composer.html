@@ -2,9 +2,8 @@
   The composer at the top of a feed (assets/js/inline_composer.js), desktop only:
   post straight from the feed instead of opening "Create a post".
 
-  inline_composer(v, board, panel): `board` is the guild whose page this is, or none.
-  With `panel` it is the Create post side panel (composer_panel.html): always shown and
-  open, and there is no feed to add the new card to, so it links to the post instead.
+  inline_composer(v, board): `board` is the guild whose page this is, or none. The navbar's Create post
+  button (`data-compose`, assets/js/inline_composer.js) scrolls to this box and opens it.
 
   A post is always made on your own profile first. "Forward to guilds" in Options works
   like the one on Create a post: the script writes one hidden `forward_guilds` field per
@@ -23,20 +22,20 @@
 #}
 {% from "partials/post_options.html" import audience_field, comment_permission_field, disclosure_field, anonymous_field, coauthors_field, poll_field, space_field, live_field %}
 
-{% macro inline_composer(v, board=none, panel=false) %}
+{% macro inline_composer(v, board=none) %}
 {% set circle_guild = board and board.is_circle %}
-<div class="row no-gutters {% if panel %}d-flex{% else %}d-none d-lg-flex mt-3{% endif %}{% if not v %} mb-3{% endif %}">
+<div class="row no-gutters d-none d-lg-flex mt-3{% if not v %} mb-3{% endif %}">
   <div class="col">
     <div class="card pseudo-submit-form inline-composer-card">
       {% if v %}
-      <form id="inline-composer" class="inline-composer card-body" autocomplete="off" novalidate{% if panel %} data-open="true"{% endif %}{% if circle_guild %} data-circle-guild="{{ board.name }}"{% endif %}{% if board %} data-guild="{{ board.name }}"{% endif %}>
+      <form id="inline-composer" class="inline-composer card-body" autocomplete="off" novalidate{% if circle_guild %} data-circle-guild="{{ board.name }}"{% endif %}{% if board %} data-guild="{{ board.name }}"{% endif %}>
         <input type="hidden" name="formkey" value="{{ v.formkey }}">
         {% if not circle_guild %}<input type="hidden" name="draft_id" id="draft-id" value="">{% endif %}
         <div id="ic-forward-inputs"></div>
         <div class="d-flex">
           <img src="{{ v.profile_url }}" class="profile-pic-35 mr-3 align-self-start" alt="">
           <div class="flex-grow-1 ic-main">
-            <div id="ic-head" class="ic-head d-flex align-items-center justify-content-between"{% if not panel %} hidden{% endif %}>
+            <div id="ic-head" class="ic-head d-flex align-items-center justify-content-between" hidden>
               <span class="composer-where">Posting to {% if circle_guild %}+{{ board.name }}{% else %}your profile{% endif %}</span>
               {% if not circle_guild %}
               <details class="composer-pill" id="composer-audience">
@@ -51,7 +50,7 @@
             </div>
             <textarea id="ic-title" name="title" rows="1" maxlength="280" class="form-control ic-title" placeholder="Share something with the {{ 'SITE_NAME' | app_config }} community..." aria-label="Post title"></textarea>
 
-            <div id="ic-more" class="ic-more"{% if not panel %} hidden{% endif %}>
+            <div id="ic-more" class="ic-more" hidden>
               <div class="comment-write post-editor mt-2">
                 <div class="post-toolbar" data-target="ic-body"></div>
                 <div class="input-group">
@@ -125,14 +124,13 @@
               </div>
             </div>
 
-            <div id="ic-bar" class="ic-bar d-flex align-items-center mt-2"{% if not panel %} hidden{% endif %}>
+            <div id="ic-bar" class="ic-bar d-flex align-items-center mt-2" hidden>
               <button type="button" id="ic-options-toggle" class="btn btn-link btn-sm text-muted px-1" aria-expanded="false" aria-controls="ic-options">More options<i class="fas fa-chevron-down composer-pill-caret ml-1"></i></button>
               <a href="/submit{% if board %}?guild={{ board.name | urlencode }}{% endif %}" class="btn btn-link btn-sm text-muted px-1">Full editor</a>
               <span id="ic-count" class="ml-auto mr-3 text-small text-muted" aria-live="polite"></span>
               <button type="submit" id="ic-post" class="btn btn-primary btn-sm" disabled>Post</button>
             </div>
             <div id="ic-error" class="text-danger text-small mt-2" role="alert" hidden></div>
-            <div id="ic-posted" class="text-small mt-2" role="status" hidden>Posted. <a id="ic-posted-link" href="#" target="_top">View your post</a></div>
           </div>
         </div>
       </form>

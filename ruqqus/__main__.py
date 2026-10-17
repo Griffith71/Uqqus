@@ -85,7 +85,7 @@ from ruqqus.helpers.client_address import ClientAddress
 app.wsgi_app = ClientAddress(app.wsgi_app)
 app.url_map.strict_slashes = False
 
-app.config["SITE_NAME"]=environ.get("SITE_NAME", "laba").lstrip().rstrip()
+app.config["SITE_NAME"]=environ.get("SITE_NAME", "Laba").lstrip().rstrip()
 # the legal entity named in the terms, the legal pages and the footer; the site's own name until it is set
 app.config["COMPANY_NAME"]=(environ.get("COMPANY_NAME") or "").strip() or app.config["SITE_NAME"]
 
@@ -540,7 +540,7 @@ def after_request(response):
     response.headers.add("Permissions-Policy", device_access.permissions_policy(request.path))
     if request.path.startswith("/embed/"):
         ancestors = "*"
-    elif request.args.get("embed") and request.path.startswith(("/notifications", "/chat", "/composer")):
+    elif request.args.get("embed") and request.path.startswith(("/notifications", "/chat")):
         # the side panels (assets/js/side_panels.js) show these pages in a frame of the
         # site itself; no other site may frame them
         response.headers.add("X-Frame-Options", "sameorigin")

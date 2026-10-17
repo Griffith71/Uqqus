@@ -12,8 +12,12 @@ from flask import *
 from ruqqus.classes.domains import reasons as REASONS
 from ruqqus.__main__ import app, cache
 from ruqqus.helpers import search_filters, search_query
+from ruqqus.helpers import topics as topic_rules
 from ruqqus.helpers.curation_feed import FeedTooSlow, limited
 from ruqqus.helpers.languages import LANGUAGE_NAMES
+from ruqqus.helpers.profile_about import shown_curations
+from ruqqus.helpers.word_filter_store import name_severity
+from ruqqus.helpers.wordfilter import is_hidden
 
 
 
@@ -21,6 +25,25 @@ from ruqqus.helpers.languages import LANGUAGE_NAMES
 # their conditions helpers/search_filters.py; this module keeps who may see what
 SORTS = ("hot", "top", "new", "old", "disputed", "activity")
 TIME_LIMIT_MS = 5000
+
+
+def listable_boards(boards, v):
+    """A query over Board, narrowed to the guilds this viewer may be shown in a list: not word-filtered, banned only for
+    admins, and a Circle guild only for its members (contributors and guildmasters), as everywhere else."""
+    boards = filter_boards(boards, v)
+
+    if not (v and v.admin_level >= 3):
+        boards = boards.filter_by(is_banned=False)
+
+    if not (v and v.admin_level >= 4):
+        member_of = select(ContributorRelationship.board_id).where(
+            ContributorRelationship.user_id == (v.id if v else 0), ContributorRelationship.is_active == True
+        ).union(select(ModRelationship.board_id).where(
+            ModRelationship.user_id == (v.id if v else 0), ModRelationship.accepted == True,
+            ModRelationship.invite_rescinded == False))
+        boards = boards.filter(or_(Board.is_circle == False, Board.id.in_(member_of)))
+
+    return boards
 
 
 def sort_of(raw, default):
@@ -191,19 +214,7 @@ def search(v, search_type="posts"):
         boards = g.db.query(Board).filter(
             Board.name.ilike(f'%{term}%'),
             func.lower(Board.name) != PROFILE_BOARD_NAME)
-        boards = filter_boards(boards, v)
-
-        if not (v and v.admin_level >= 3):
-            boards = boards.filter_by(is_banned=False)
-
-        # a Circle guild only for its members (contributors and guildmasters), as everywhere else
-        if not (v and v.admin_level >= 4):
-            member_of = select(ContributorRelationship.board_id).where(
-                ContributorRelationship.user_id == (v.id if v else 0), ContributorRelationship.is_active == True
-            ).union(select(ModRelationship.board_id).where(
-                ModRelationship.user_id == (v.id if v else 0), ModRelationship.accepted == True,
-                ModRelationship.invite_rescinded == False))
-            boards = boards.filter(or_(Board.is_circle == False, Board.id.in_(member_of)))
+        boards = listable_boards(boards, v)
 
         if v:
             joined = select(Subscription).filter_by(user_id=v.id, is_active=True).subquery()
@@ -245,6 +256,80 @@ def search(v, search_type="posts"):
                                next_exists=next_exists
                                ),
                 "api":lambda:jsonify({"data":[x.json for x in boards]})
+                }
+
+    elif query.startswith("#"):
+
+        # topic search: `#gam` is the topics whose name holds "gam" (a category or a subcategory, helpers/topics.py), and
+        # the results are the guilds in them
+        found = topic_rules.matching(query)
+        subcat_ids = sorted({i for t in found for i in t.subcat_ids})
+
+        boards = g.db.query(Board).filter(
+            Board.subcat_id.in_(subcat_ids) if subcat_ids else false(),
+            func.lower(Board.name) != PROFILE_BOARD_NAME)
+        boards = listable_boards(boards, v).order_by(Board.stored_subscriber_count.desc(), Board.name.asc())
+
+        total = boards.count()
+
+        boards = [x for x in boards.offset(25 * (page - 1)).limit(26)]
+        next_exists = (len(boards) == 26)
+        boards = boards[0:25]
+
+        return {"html":lambda:render_template("search_boards.html",
+                               v=v,
+                               query=query,
+                               total=total,
+                               page=page,
+                               boards=boards,
+                               topics_found=found,
+                               sort_method=request.args.get("sort", "subs").lower(),
+                               next_exists=next_exists
+                               ),
+                "api":lambda:jsonify({"topics": [{"name": t.label, "slug": t.slug, "permalink": t.url} for t in found],
+                                      "data":[x.json for x in boards]})
+                }
+
+    elif query.startswith("&"):
+
+        # curation search: public curations whose name or slug holds the text. A private curation is never found,
+        # its owner included (they have their own list); a name the viewer's word filter hides is left out as it is drawn
+        term = query.lstrip('&')
+        term = term.replace('\\', '')
+        term = term.replace('_', r'\_')
+
+        found = g.db.query(Curation).join(User, User.id == Curation.owner_id).filter(
+            Curation.is_private == False,
+            User.is_deleted == False,
+            User.is_banned == 0,
+            or_(Curation.name.ilike(f'%{term}%'), Curation.slug.ilike(f'%{term}%')))
+        found = found.order_by(Curation.slug.ilike(term).desc(), Curation.created_utc.desc())
+
+        total = found.count()
+
+        rows = [x for x in found.offset(25 * (page - 1)).limit(26)]
+        next_exists = (len(rows) == 26)
+        level = viewer_level(v)
+        curations, _ = shown_curations(rows[0:25], lambda name: is_hidden(level, name_severity(name or "", g.db)), limit=25)
+
+        followed_ids = set()
+        if v and curations:
+            followed_ids = {r[0] for r in g.db.query(CurationFollow.curation_id).filter(
+                CurationFollow.user_id == v.id, CurationFollow.curation_id.in_([c.id for c in curations])).all()}
+
+        return {"html":lambda:render_template("search_curations.html",
+                               v=v,
+                               query=query,
+                               total=total,
+                               page=page,
+                               curations=curations,
+                               followed_ids=followed_ids,
+                               sort_method="new",
+                               next_exists=next_exists
+                               ),
+                "api":lambda:jsonify({"data":[{"name": c.name, "slug": c.slug, "description": c.description,
+                                               "owner": c.owner.username, "permalink": c.permalink}
+                                              for c in curations]})
                 }
 
     elif query.startswith("@"):

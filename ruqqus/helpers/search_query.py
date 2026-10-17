@@ -28,6 +28,8 @@ DAY = 86400
 # a search must never confirm that a private guild, or a deleted or blocked account, exists.
 NO_ACCOUNT = "No account called @{}."
 NO_GUILD = "No guild called +{}."
+NO_TOPIC = "No topic called #{}."
+NO_CURATION = "No public curation called &{}."
 IN_INSIDE_GUILD = "in: is not used when searching one guild."
 NO_DAYS = "Those dates leave no days to search."
 TOO_LONG = f"A search can be at most {MAX_CHARS} characters."
@@ -57,7 +59,9 @@ class Operator:
 OPERATORS = (
     Operator("from", "user", "from:@alice", "Posts by an account. Their anonymous posts are never found this way.",
              aliases=("author",)),
-    Operator("in", "guild", "in:+pets", "Posts in a guild.", aliases=("guild",)),
+    Operator("in", "guild", "in:+pets",
+             "Posts in a guild. in:#gaming is the guilds of a topic and in:&news is a public curation's guilds and accounts.",
+             aliases=("guild",)),
     Operator("since", "date", "since:2026-01-01", "Posted on that day or later.", negatable=False),
     Operator("until", "date", "until:2026-01-31", "Posted on that day or earlier.", negatable=False),
     Operator("after", "date", "after:2026-01-01", "Posted after that day (the day itself is left out).", negatable=False),
@@ -106,12 +110,14 @@ LANGUAGE_BY_NAME = {_squash(name): code for code, name in LANGUAGE_NAMES.items()
 class Part:
     """A word, a "phrase" or an operator. `value` is cleaned (a name without its @ or +, a day as
     YYYY-MM-DD, a language code, a whole number); `text` is the part as it was typed, so it can be
-    taken back out of the query; `ref` is the account or guild id search_filters found."""
+    taken back out of the query; `ref` is the account or guild id search_filters found. An `in:` that names a
+    topic (`#gaming`) or a public curation (`&news`) keeps its # or & in `value`; `refs` are the topic's subcategory ids."""
     kind: str
     value: str
     negated: bool = False
     text: str = ""
     ref: int = 0
+    refs: tuple = ()
 
 
 @dataclass(frozen=True)
@@ -161,6 +167,12 @@ def _clean(op, value):
         name = value.lstrip("@")
         return (name, None) if USERNAME.fullmatch(name) else (None, NO_ACCOUNT.format(name))
     if op.kind == "guild":
+        if value[:1] in ("#", "&"):
+            # a topic (#gaming) or a public curation (&news): the prefix says which
+            prefix, name = value[0], value[1:]
+            if GUILDNAME.fullmatch(name):
+                return prefix + name, None
+            return None, (NO_TOPIC if prefix == "#" else NO_CURATION).format(name)
         name = value.lstrip("+")
         return (name, None) if GUILDNAME.fullmatch(name) else (None, NO_GUILD.format(name))
     if op.kind == "date":
@@ -227,7 +239,7 @@ def parse(text):
             continue
 
         spec, value = BY_KEY[key], op.group(2).strip('"')
-        if not value.strip("@+"):
+        if not value.strip("@+#&"):
             problems.append(f"{key}: needs something after it, such as {spec.example.lstrip('-')}.")
             continue
         if negated and not spec.negatable:
@@ -264,7 +276,8 @@ def label(part):
     if k == "from":
         return f"Not from @{v}" if no else f"From @{v}"
     if k == "in":
-        return f"Not in +{v}" if no else f"In +{v}"
+        shown = v if v[:1] in ("#", "&") else f"+{v}"
+        return f"Not in {shown}" if no else f"In {shown}"
     if k in DATE_KEYS:
         return {"since": "Since", "until": "Until", "after": "After", "before": "Before", "on": "On"}[k] + " " + _day_label(v)
     if k == "has":
@@ -314,11 +327,14 @@ def compose(words="", author="", guild="", since="", until="", has=(), lang="", 
     """The search text the advanced form stands for (parse checks it like anything typed)."""
     out = [" ".join((words or "").split())]
     author = re.sub(r"[^A-Za-z0-9_\-]", "", (author or "").strip().lstrip("@"))
-    guild = re.sub(r"[^A-Za-z0-9_]", "", (guild or "").strip().lstrip("+"))
+    guild = (guild or "").strip()
+    prefix = guild[:1] if guild[:1] in ("#", "&") else ""
+    guild = prefix + re.sub(r"[^A-Za-z0-9_]", "", guild.lstrip("+#&"))
+    guild = guild if guild.lstrip("#&") else ""
     if author:
         out.append(f"from:@{author}")
     if guild:
-        out.append(f"in:+{guild}")
+        out.append(f"in:{guild}" if guild[:1] in ("#", "&") else f"in:+{guild}")
     for key, day in (("since", since), ("until", until)):
         day = re.sub(r"[^0-9-]", "", day or "")
         if day:

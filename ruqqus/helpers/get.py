@@ -1063,6 +1063,16 @@ def get_curation(slug, v=None, graceful=False):
     return curation
 
 
+def get_topic(name, graceful=True):
+    """The topic `#name` writes (helpers/topics.py), or None (404 when not graceful)."""
+    from ruqqus.helpers import topics
+
+    topic = topics.find(name)
+    if topic is None and not graceful:
+        abort(404)
+    return topic
+
+
 def get_boards(bids, v=None, graceful=False):
         
     if v:

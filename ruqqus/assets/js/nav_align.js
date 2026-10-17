@@ -20,7 +20,7 @@
 
   var root = document.documentElement;
   var wide = window.matchMedia('(min-width: 992px)');
-  var BLOCK = 1326;       // sidebar 300 + feed 726 + sidebar 300
+  var BLOCK = 1326;       // sidebar 272 + feed 738 + sidebar 316 (main.scss $layout-*)
   var GUTTER = 15;        // the padding of a column: where its content starts
   var SEARCH_MAX = 500;
   var SEARCH_GAP = 16;    // kept clear between the search box and the icons

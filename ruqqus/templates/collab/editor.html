@@ -1,47 +1,140 @@
-{% extends "collab/base.html" %}
+{% extends "submit.html" %}
 {#
-  A shared draft's editor (routes/collab.py collab_editor). The title and the text are plain fields the authors edit
-  together; assets/js/collab_editor.js sends each change as an op and brings in everyone else's (helpers/collab_ot.py).
-  The text is markdown with the post editor's toolbar and Write / Preview (post_editor.js, loaded by default.html).
-  The side panel (collab/panel.html) is redrawn when the draft's live topic says something changed.
+  A shared draft's editor (routes/collab.py collab_editor), laid out as Create a post is: the same page, the same
+  writing card (avatar, large title, the post toolbar, the attach row, forwarding, "More options") and the same bar
+  along the bottom. The title and the text are plain fields the authors edit together; assets/js/collab_editor.js sends
+  each change as an op and brings in everyone else's (helpers/collab_ot.py). The options (link, who can comment,
+  disclosure, sensitive, guilds to forward to) are saved with the draft by assets/js/collab_options.js and used when it
+  is published. The panel below the card (collab/panel.html) is redrawn when the draft's live topic says something
+  changed. Not here, on purpose: circles, anonymous, co-authors (the authors are the co-authors), polls.
 #}
-{% block pagetitle %}{{ doc[2] or 'Untitled draft' }}{% endblock %}
-{% block heading %}Shared draft{% endblock %}
+{% block title %}
+<title>{{ doc[2] or 'Untitled draft' }} - Shared draft - {{ 'SITE_NAME' | app_config }}</title>
+<meta name="robots" content="noindex">
+{% endblock %}
 
-{% block page %}
-<div id="collab-editor" data-doc="{{ doc[0] }}" data-revision="{{ doc[4] }}" data-me="{{ v.id }}">
-  <div class="d-flex flex-wrap align-items-center mb-2" style="gap: 0.5rem;">
-    <a href="/collab" class="text-small"><i class="fas fa-arrow-left fa-fw" aria-hidden="true"></i>Shared drafts</a>
-    <span class="collab-status text-muted text-small ml-auto" role="status" aria-live="polite" id="collab-status">Saved</span>
+{% block form %}
+{% import "partials/posting_rules.html" as rules %}
+{% import "partials/post_options.html" as post_options %}
+{% from "partials/composer_modes.html" import composer_modes %}
+
+<div class="container">
+  <div class="row justify-content-center mb-4 pb-7">
+
+    <div class="col col-md-6 p-3 py-md-0 submit-main-col">
+
+      <h1 class="d-none d-md-block composer-heading">Write with others</h1>
+      {{ composer_modes("together") }}
+      <h2 class="h3 d-md-none composer-heading">Write with others</h2>
+
+      <div class="body composer-card" id="collab-editor" data-doc="{{ doc[0] }}" data-revision="{{ doc[4] }}" data-me="{{ v.id }}">
+
+        <div class="composer-head">
+          <img src="{{ v.profile_url }}" class="composer-avatar" alt="">
+          <div class="composer-who">
+            <span class="composer-name">Shared draft</span>
+            <span class="composer-where">{{ authors | length }} author{{ 's' if authors | length != 1 else '' }} · everything you type is credited to you</span>
+          </div>
+          <span class="collab-status text-muted text-small" role="status" aria-live="polite" id="collab-status">Saved</span>
+        </div>
+
+        <label for="collab-title" class="sr-only">Title</label>
+        <div class="composer-title-wrap">
+          <input type="text" id="collab-title" class="form-control rounded composer-title-input collab-title" maxlength="{{ title_max }}" placeholder="Title" aria-label="Post title" value="{{ doc[2] }}" autocomplete="off" data-field="title">
+        </div>
+
+        <div class="comment-write post-editor collab-body-wrap mt-2">
+          <label for="collab-body" class="sr-only">Text</label>
+          <div class="post-toolbar" data-target="collab-body"></div>
+          <div class="input-group">
+            <textarea id="collab-body" class="comment-box form-control rounded collab-body" rows="14" maxlength="{{ body_max }}" aria-label="Post text" placeholder="Write together…" data-field="body">{{ doc[3] }}</textarea>
+          </div>
+          <div class="post-preview d-none"></div>
+        </div>
+
+        <div class="form-text text-small"><a href="/help/formatting" target="_blank">Formatting help</a></div>
+
+        <div class="collab-here text-muted text-small mt-2" id="collab-here" aria-live="polite"></div>
+        <div class="alert alert-warning text-small mt-2" id="collab-notice" role="alert" hidden></div>
+
+        <div class="composer-tools" role="toolbar" aria-label="Add to your post">
+          <button type="button" id="collab-link-btn" class="composer-tool" title="Add a link" aria-label="Add a link" aria-controls="collab-link-row" aria-expanded="{{ 'true' if options.url else 'false' }}"><i class="fas fa-link"></i></button>
+          <button type="button" class="composer-tool composer-tool-text" id="gif-title-btn" onclick="getGif();commentForm('collab-body')" data-toggle="modal" data-target="#gifModal" title="Add a GIF" aria-label="Add a GIF">GIF</button>
+          <button type="button" class="composer-tool" id="emoji-title-btn" onclick="commentForm('collab-body');loadEmojis()" data-toggle="modal" data-target="#emojiModal" title="Add an emoji" aria-label="Add an emoji"><i class="fas fa-smile-beam"></i></button>
+        </div>
+
+        <div id="collab-options" data-url="/api/collab/{{ doc[0] }}/options">
+
+          <div id="collab-link-row" class="mt-2"{% if not options.url %} hidden{% endif %}>
+            <label for="collab-url" class="mt-2">Link (optional)</label>
+            <input type="url" id="collab-url" name="url" class="form-control" maxlength="2048" placeholder="https://" value="{{ options.url or '' }}" autocomplete="off">
+          </div>
+
+          <div class="composer-forward">
+            <label for="forward_guild_input" class="mt-3">Forward to guilds (optional)<i class="fas fa-info-circle text-gray-400 ml-1" data-toggle="tooltip" data-placement="top" title="The post appears on the profile of whoever publishes it first. Optionally forward it into guilds for community discussion: each guild gets its own independent copy with its own votes and comments. Guilds are forwarded to when the draft is first published."></i></label>
+            <div id="forward-guild-chips" class="mb-2"></div>
+            <div id="forward_guild_inputs"></div>
+            <div class="input-group">
+              <input class="form-control" id="forward_guild_input" type="text" placeholder="Type a guild name and press Enter" onkeydown="if(event.key==='Enter'){event.preventDefault();addForwardGuild();}">
+              <div class="input-group-append">
+                <button class="btn btn-secondary" type="button" onclick="addForwardGuild()"{% if doc[7] %} disabled title="Already published: forward it from the post's menu"{% endif %}>Add</button>
+              </div>
+            </div>
+            {% if doc[7] %}<small class="form-text text-muted">Already published. Forward the post to more guilds from its menu.</small>{% endif %}
+          </div>
+
+          <details class="composer-more">
+            <summary><span>More options</span><i class="fas fa-chevron-down composer-pill-caret"></i></summary>
+            <div class="composer-more-body">
+              {{ post_options.comment_permission_field(options.comment_permission, "collab-cp") }}
+              {{ post_options.disclosure_field(options.paid_partnership, options.made_with_ai, "collab-disc") }}
+
+              <label for="collab-sensitive" class="text-warning mt-3">Sensitive Content?<i class="fas fa-info-circle text-gray-400 ml-1" data-toggle="tooltip" data-placement="top" title="Not a rule violation - just something that could be upsetting. Shown blurred with a click-to-reveal instead of being blocked."></i></label>
+              <div class="custom-control custom-checkbox">
+                <input type="checkbox" class="custom-control-input" id="collab-sensitive" name="sensitive"{% if options.sensitive %} checked{% endif %}>
+                <label class="custom-control-label" for="collab-sensitive">Blur this post until viewers click to reveal it.</label>
+              </div>
+              <p class="text-muted text-small mt-3 mb-0">A post written together is public and can't be anonymous, shared with circles, or have a poll. Its authors are its co-authors. These options are shared by every author and used each time you publish.</p>
+            </div>
+          </details>
+          <div class="text-small text-muted mt-2" id="collab-options-status" role="status" aria-live="polite"></div>
+        </div>
+
+      </div>
+
+      <div id="collab-panel" data-url="/collab/{{ doc[0] }}/panel" class="mt-4">
+        {% include "collab/panel.html" %}
+      </div>
+
+      {{ rules.rules_panel('m') }}
+
+    </div>
+
+    <div class="col sidebar text-left d-none d-lg-block pt-3 submit-side-col">
+      {{ rules.rules_card('d') }}
+    </div>
+
   </div>
-
-  <label for="collab-title" class="sr-only">Title</label>
-  <input type="text" id="collab-title" class="form-control collab-title" maxlength="{{ title_max }}" placeholder="Title" value="{{ doc[2] }}" autocomplete="off" data-field="title">
-
-  <div class="comment-write post-editor collab-body-wrap mt-2">
-    <label for="collab-body" class="sr-only">Text</label>
-    <div class="post-toolbar" data-target="collab-body"></div>
-    <textarea id="collab-body" class="comment-box form-control rounded collab-body" rows="18" maxlength="{{ body_max }}" placeholder="Write together…" data-field="body">{{ doc[3] }}</textarea>
-    <div class="post-preview d-none"></div>
-  </div>
-
-  <div class="collab-here text-muted text-small mt-2" id="collab-here" aria-live="polite"></div>
-  <div class="alert alert-warning text-small mt-2" id="collab-notice" role="alert" hidden></div>
-
-  <div class="d-flex flex-wrap align-items-center mt-3" style="gap: 0.5rem;">
-    <button type="button" class="btn btn-primary" id="collab-publish" data-url="/api/collab/{{ doc[0] }}/publish">
-      {% if doc[7] %}Publish changes{% else %}Publish{% endif %}
-    </button>
-    <a class="btn btn-link text-muted" href="/collab/{{ doc[0] }}/written_by"><i class="fas fa-palette fa-fw" aria-hidden="true"></i>Who wrote what</a>
-    {% if post %}<a class="btn btn-link text-muted" href="{{ post.permalink }}">See the post</a>{% endif %}
-  </div>
-  <div class="text-danger small mt-2" id="collab-publish-error" role="alert" hidden></div>
 </div>
 
-<div id="collab-panel" data-url="/collab/{{ doc[0] }}/panel" class="mt-4">
-  {% include "collab/panel.html" %}
+<div class="container">
+  <div class="row fixed-bottom composer-bar p-3" style="z-index: 100; bottom: 0px;">
+    <div class="col">
+      <a href="/collab" class="btn btn-link text-muted px-2">Back</a>
+    </div>
+    <div class="col text-right">
+      <span class="text-danger small mr-2" id="collab-publish-error" role="alert" hidden></span>
+      <a class="btn btn-link text-muted px-2" href="/collab/{{ doc[0] }}/written_by"><i class="fas fa-palette fa-fw" aria-hidden="true"></i><span class="d-none d-md-inline ml-1">Who wrote what</span></a>
+      {% if post %}<a class="btn btn-link text-muted px-2" href="{{ post.permalink }}">See the post</a>{% endif %}
+      <button type="button" class="btn btn-purple" id="collab-publish" data-url="/api/collab/{{ doc[0] }}/publish">
+        {% if doc[7] %}Publish changes{% else %}Publish{% endif %}
+      </button>
+    </div>
+  </div>
 </div>
 
 <script src="{{ asset_url('js/collab_ot.js') }}"></script>
 <script src="{{ asset_url('js/collab_editor.js') }}"></script>
+<script src="{{ asset_url('js/guild_pages.js') }}"></script>
+<script defer src="{{ asset_url('js/collab_options.js') }}"></script>
 {% endblock %}

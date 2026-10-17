@@ -1,6 +1,6 @@
 /*
- * Save draft, Schedule and the Drafts list on Create a post, and in the feed composer and the
- * Create post panel (`#inline-composer`, templates/partials/inline_composer.html).
+ * Save draft, Schedule and the Drafts list on Create a post and in the feed composer
+ * (`#inline-composer`, templates/partials/inline_composer.html).
  *
  * A draft is the composer's title, link, text, guilds and options, saved on the
  * server (POST /api/drafts). Scheduling saves it with a publish time; the

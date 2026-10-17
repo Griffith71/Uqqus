@@ -1,50 +1,41 @@
-{% extends "home.html" %}
+{% extends "default.html" %}
+{% from "partials/explore.html" import explore_head, curation_card with context %}
 
-{% block pagetype %}curations{% endblock %}
+{# Discover curations: Explore's layout (partials/explore.html). The left sidebar stays where the home feed has it; there is no right sidebar. #}
+
+{% block pagetype %}explore{% endblock %}
 
 {% block title %}
-<title>Curations - {{ 'SITE_NAME' | app_config }}</title>
+<title>Explore curations - {{ 'SITE_NAME' | app_config }}</title>
 {% endblock %}
 
-{% macro curation_card(c) %}
-<div class="col-md-4 mb-3">
-  <div class="card h-100">
-    <div class="card-body">
-      <h6 class="mb-1"><a href="{{ c.permalink }}">{{ c.name }}</a></h6>
-      <div class="text-muted text-small mb-2">by @{{ c.owner.username }}{% if c.uses_feed_server %} &middot; <span class="curation-own-algorithm">outside server</span>{% elif c.has_own_algorithm %} &middot; <span class="curation-own-algorithm">own algorithm</span>{% endif %}</div>
-      {% if c.description %}<p class="text-small">{{ c.description }}</p>{% endif %}
-    </div>
-  </div>
-</div>
-{% endmacro %}
+{% block leftSidebarBlock %}
+{% include "sidebar-left.html" %}
+{% endblock %}
+
+{% block sidebar %}{% endblock %}
 
 {% block content %}
-<div class="col px-md-4 py-4">
+<div class="explore">
 
-  <div class="d-flex align-items-center justify-content-between mb-3">
-    <h1 class="h3 mb-0">Curations</h1>
-    {% if v %}<a href="/curations/create" class="btn btn-primary btn-sm">Create a Curation</a>{% endif %}
-  </div>
-  <p class="text-muted">
-    Curations are custom feeds - named collections of guilds and accounts, made by users like you.
-  </p>
+  {{ explore_head('curations', 'Curations are custom feeds: named collections of guilds and accounts, made by people like you.') }}
 
   {% if v %}
-  <h2 class="h5 mt-4">Your Curations</h2>
-  <div class="row">
-    {% for c in owned %}{{ curation_card(c) }}{% else %}<div class="col-12 text-muted text-small">You haven't created any curations yet.</div>{% endfor %}
-  </div>
+  <h2 class="explore-section-title">Your curations</h2>
+  <ul class="explore-grid">
+    {% for c in owned %}{{ curation_card(c, v, false) }}{% else %}<li class="explore-empty">You haven't created any curations yet.</li>{% endfor %}
+  </ul>
 
-  <h2 class="h5 mt-4">Following</h2>
-  <div class="row">
-    {% for c in followed %}{{ curation_card(c) }}{% else %}<div class="col-12 text-muted text-small">You're not following any curations yet.</div>{% endfor %}
-  </div>
+  <h2 class="explore-section-title">Following</h2>
+  <ul class="explore-grid">
+    {% for c in followed %}{{ curation_card(c, v, true) }}{% else %}<li class="explore-empty">You're not following any curations yet.</li>{% endfor %}
+  </ul>
   {% endif %}
 
-  <h2 class="h5 mt-4">Public Curations</h2>
-  <div class="row">
-    {% for c in public_curations %}{{ curation_card(c) }}{% else %}<div class="col-12 text-muted text-small">No public curations yet - be the first!</div>{% endfor %}
-  </div>
+  <h2 class="explore-section-title">Public curations</h2>
+  <ul class="explore-grid">
+    {% for c in public_curations %}{{ curation_card(c, v, c.id in followed_ids) }}{% else %}<li class="explore-empty">No public curations yet. Be the first!</li>{% endfor %}
+  </ul>
 
 </div>
 {% endblock %}

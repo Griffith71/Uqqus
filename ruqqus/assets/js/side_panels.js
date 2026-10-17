@@ -1,8 +1,9 @@
 /*
- * Side panels (desktop only, >= 992px): the navbar's Notifications, Chat and
- * Create post icons open their page in a panel that replaces the right sidebar
- * and folds the left sidebar into its rail, so you can use them while the feed
- * stays where it is and keeps scrolling.
+ * Side panels (desktop only, >= 992px): the navbar's Notifications and Chat icons
+ * open their page in a panel that replaces the right sidebar (and is as wide as it),
+ * so you can use them while the feed stays where it is and keeps scrolling. The
+ * left sidebar is left exactly as it is (open or folded). The Create post icon is
+ * not a panel: it opens the composer already on the feed (assets/js/inline_composer.js).
  *
  * Each panel shows the real page in a frame with ?embed=1 (templates/default.html:
  * no navbar or sidebars). Frames are made when first opened and then only hidden,
@@ -18,8 +19,7 @@
 
   var PANELS = {
     notifications: { title: 'Notifications', src: '/notifications?embed=1', page: '/notifications', fresh: true },
-    chat: { title: 'Chat', src: '/chat?embed=1', page: '/chat' },
-    post: { title: 'Create post', src: '/composer?embed=1', page: '/submit' }
+    chat: { title: 'Chat', src: '/chat?embed=1', page: '/chat' }
   };
 
   var wide = window.matchMedia('(min-width: 992px)');
@@ -29,9 +29,6 @@
   var triggers = Array.prototype.slice.call(document.querySelectorAll('[data-side-panel]'));
   var frames = {};
   var current = null;
-  var leftWasCollapsed = false;
-
-  function leftSidebar() { return document.getElementById('sidebar-left'); }
 
   function frameFor(name) {
     if (!frames[name]) {
@@ -53,13 +50,7 @@
 
   function open(name) {
     if (current === null) {
-      // the panel takes the right sidebar's place; the left one folds into its rail (without
-      // touching the saved preference, so closing restores what you had)
-      var left = leftSidebar();
-      if (left) {
-        leftWasCollapsed = left.classList.contains('sidebar-collapsed');
-        left.classList.add('sidebar-collapsed');
-      }
+      // the panel takes the right sidebar's place; the left sidebar stays as it is
       row.classList.add('panel-open');
       panel.hidden = false;
     }
@@ -73,8 +64,6 @@
 
   function close() {
     if (current === null) return;
-    var left = leftSidebar();
-    if (left && !leftWasCollapsed) left.classList.remove('sidebar-collapsed');
     row.classList.remove('panel-open');
     panel.hidden = true;
     current = null;

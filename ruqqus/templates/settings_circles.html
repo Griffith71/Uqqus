@@ -1,4 +1,4 @@
-{% extends "settings.html" %}
+{% extends "circles_base.html" %}
 
 {% block pagetitle %}Paid circles you are in - {{ 'SITE_NAME' | app_config }}{% endblock %}
 
@@ -14,7 +14,7 @@
       <h2 class="h5">Paid circles you are in</h2>
       <p class="text-small text-muted">
         Subscriptions renew every 30 days from your coins. Cancel and you keep access until the day you paid to.
-        <a href="/settings/circle">Your own circles</a>
+        <a href="/circles">Your own circles</a>
       </p>
       <div id="circle-status" class="text-small" role="status"></div>
 

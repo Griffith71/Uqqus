@@ -222,24 +222,10 @@ def sign_up_get(v):
     if not agent:
         abort(403)
 
-    # check for referral in link
-    ref_id = None
-    ref = request.args.get("ref", None)
-    if ref:
-        ref_user = g.db.query(User).filter(User.username.ilike(ref)).first()
-
-    else:
-        ref_user = None
-
-    if ref_user and (ref_user.id in flask_session.get("history", [])):
-        return render_template("sign_up_failed_ref.html",
-                               i=random_image())
-
     # check tor
     # if request.headers.get("CF-IPCountry")=="T1":
     #    return render_template("sign_up_tor.html",
-    #        i=random_image(),
-    #        ref_user=ref_user)
+    #        i=random_image())
 
     # Make a unique form key valid for one account creation
     now = int(time.time())
@@ -264,7 +250,6 @@ def sign_up_get(v):
                            now=now,
                            i=random_image(),
                            redirect=redir,
-                           ref_user=ref_user,
                            error=error,
                            hcaptcha=app.config["HCAPTCHA_SITEKEY"]
                            )
@@ -313,14 +298,7 @@ def sign_up_post(v):
     # form
     def new_signup(error):
 
-        args = {"error": error}
-        ref = request.form.get("referred_by", "")
-        if ref.isascii() and ref.isdigit():
-            user = g.db.query(User).filter_by(id=int(ref)).first()
-            if user:
-                args["ref"] = user.username
-
-        return redirect(f"/signup?{urlencode(args)}")
+        return redirect(f"/signup?{urlencode({'error': error})}")
 
     if app.config["DISABLE_SIGNUPS"]:
         return new_signup("New account registration is currently closed. Please come back later.")
@@ -401,18 +379,6 @@ def sign_up_post(v):
     # kill tokens
     flask_session.pop("signup_token")
 
-    # get referral
-    ref = request.form.get("referred_by", "")
-    ref_id = int(ref) if ref.isascii() and ref.isdigit() else 0
-
-    # upgrade user badge
-    if ref_id:
-        ref_user = g.db.query(User).options(
-            lazyload('*')).filter_by(id=ref_id).first()
-        if ref_user:
-            ref_user.refresh_selfset_badges()
-            g.db.add(ref_user)
-
     # make new user
     signup_utc = int(time.time())
     cf_country = request.headers.get("cf-ipcountry")
@@ -426,7 +392,6 @@ def sign_up_post(v):
             email=email,
             created_utc=signup_utc,
             creation_ip=request.remote_addr,
-            referred_by=ref_id or None,
             tos_agreed_utc=signup_utc,
             creation_region=cf_country,
             display_region=signup_region,

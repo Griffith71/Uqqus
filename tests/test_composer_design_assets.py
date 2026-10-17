@@ -48,11 +48,14 @@ def test_the_draft_scripts_still_find_the_one_body_block_and_the_form():
     assert '<form id="submitform"' in SUBMIT
 
 
-def test_the_audience_pill_wraps_the_real_radios_and_works_without_script():
-    pill = FORM.split('<details class="composer-pill" id="composer-audience">')[1].split("</details>")[0]
-    assert "post_options.audience_field(" in pill                   # name="audience" radios, as before
-    assert "<summary" in pill and 'id="composer-audience-label"' in pill
-    # the label is drawn by the server from the saved value, so the pill is right before any script
+def test_the_audience_is_in_plain_view_as_cards_over_the_real_radios():
+    # no menu to find: Public and Circles are both drawn, and the circles are chips under Circles (the other composers keep the pill)
+    assert 'id="composer-audience"' not in FORM
+    assert 'post_options.audience_field(audience_now, "post-audience", circles_now, circle_choices(v), "cards")' in FORM
+    options = read("templates", "partials", "post_options.html")
+    cards = options.split('{% if layout == "cards" %}')[1].split("{% else %}")[0]
+    assert 'name="audience" value="0"' in cards and 'name="audience" value="4"' in cards and 'name="circles"' in cards
+    assert 'data-circle-name="{{ c.name }}"' in cards and 'href="/circles"' in cards and "| safe" not in cards
     assert 'audience_now = ((draft.option("audience", 0) if draft else request.form.get("audience", 0)) | int)' in FORM
 
 

@@ -1,6 +1,6 @@
 /*
  * The "Add a poll" panel of the composers (templates/partials/post_options.html poll_field, used by
- * Create a post, the feed composer and the Create post panel).
+ * Create a post and the feed composer).
  *
  * The panel starts closed with all its fields disabled, so a closed panel sends nothing. "Add a poll"
  * opens it with two options (up to four), "+ Add option" shows the next row, the x on a row clears and

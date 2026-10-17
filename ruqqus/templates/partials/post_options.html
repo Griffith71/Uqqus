@@ -34,8 +34,34 @@
   it is anonymous.
 #}
 
-{% macro audience_field(selected, prefix, chosen=(), choices=()) %}
+{% macro audience_field(selected, prefix, chosen=(), choices=(), layout="menu") %}
 {% set for_circles = selected == 4 %}
+{% if layout == "cards" %}
+{# the Create a post page: both choices in plain view (no menu to find), the circles as chips under Circles #}
+<div class="audience audience-cards" data-audience-field data-mode="{{ 4 if for_circles else 0 }}">
+  <span class="audience-title">Who can see this post?</span>
+  <div class="audience-choices" role="radiogroup" aria-label="Who can see this post">
+    <input type="radio" class="audience-radio" id="{{ prefix }}-0" name="audience" value="0"{% if not for_circles %} checked{% endif %}>
+    <label class="audience-choice" for="{{ prefix }}-0"><i class="fas fa-globe-americas" aria-hidden="true"></i><span class="audience-choice-text"><strong>Public</strong><small>Anyone can see it</small></span></label>
+    <input type="radio" class="audience-radio" id="{{ prefix }}-4" name="audience" value="4"{% if for_circles %} checked{% endif %}>
+    <label class="audience-choice" for="{{ prefix }}-4"><i class="fas fa-user-friends" aria-hidden="true"></i><span class="audience-choice-text"><strong>Circles</strong><small>Only the circles you pick</small></span></label>
+  </div>
+  <div class="audience-circles" role="group" aria-label="Circles">
+    <span class="audience-subtitle">Pick who it is for</span>
+    <div class="audience-chip-list">
+      {% for c in choices %}
+      <input type="checkbox" class="audience-chip-input" id="{{ prefix }}-c-{{ c.token }}" name="circles" value="{{ c.token }}" data-circle-name="{{ c.name }}"{% if c.token in chosen %} checked{% endif %}>
+      <label class="audience-chip" for="{{ prefix }}-c-{{ c.token }}"{% if c.hint %} title="{{ c.hint }}"{% endif %}>{{ c.name }}{% if c.hint and c.kind != "friends" %}<small>{{ c.hint }}</small>{% endif %}</label>
+      {% endfor %}
+    </div>
+    {% if choices | length <= 1 %}
+    <p class="audience-empty">Friends is everyone you follow who follows you back. To share with family, a team or anyone else, make a circle first, then pick it here.</p>
+    {% endif %}
+    <a href="/circles" class="audience-manage">Make or change your circles</a>
+  </div>
+  <p class="audience-note">Only the people in them see it, and nobody is told which of your circles they are in. It can't be anonymous, forwarded, reposted or co-authored, and it stays off All, search and trending.</p>
+</div>
+{% else %}
 <div class="audience" data-audience-field data-mode="{{ 4 if for_circles else 0 }}">
   <span class="audience-title">Who can see this?</span>
   <div class="custom-control custom-radio">
@@ -53,10 +79,11 @@
       <label class="custom-control-label" for="{{ prefix }}-c-{{ c.token }}">{{ c.name }}{% if c.hint %} <span class="audience-hint">{{ c.hint }}</span>{% endif %}</label>
     </div>
     {% endfor %}
-    <a href="/settings/circle" class="audience-manage">Make or change your circles</a>
+    <a href="/circles" class="audience-manage">Make or change your circles</a>
   </div>
   <p class="audience-note">Only the people in them see it, and nobody is told which of your circles they are in. It can't be anonymous, forwarded, reposted or co-authored, and it stays off All, search and trending.</p>
 </div>
+{% endif %}
 {% endmacro %}
 
 {% macro comment_permission_field(selected, prefix) %}

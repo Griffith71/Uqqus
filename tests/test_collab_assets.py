@@ -48,7 +48,7 @@ def test_ops_are_the_callers_and_the_live_event_is_a_number():
 
 def test_publishing_reuses_the_site_and_collaborative_posts_refuse_direct_changes():
     publish = ROUTES.split("def _publish(", 1)[1].split("\n@app", 1)[0]
-    assert '_post_as(publisher, "/api/vue/submit", {"title": title, "body": body})' in publish
+    assert '_post_as(publisher, "/api/vue/submit",' in publish and "rules.post_fields(snap.get(\"options\"))" in publish
     assert "apply_post_edit(post, post, publisher" in publish and "media_owner_ids=store.everyone(g.db, doc[0])" in publish
     assert "store.add_publish(" in publish and "_sync_coauthors(" in publish
     posts = read("ruqqus", "routes", "posts.py")
@@ -94,9 +94,15 @@ def test_templates_draw_text_escaped_and_scripts_never_write_html():
 
 
 def test_entry_points_and_docs():
-    assert 'href="/collab"' in read("ruqqus", "templates", "submit.html")
+    # the way in is the post area (the tabs above the Create a post card), not the account menu
+    assert 'composer_modes("post")' in read("ruqqus", "templates", "submit.html")
+    modes = read("ruqqus", "templates", "partials", "composer_modes.html")
+    assert 'href="/submit"' in modes and 'href="/collab"' in modes
     for name in ("default.html", "header.html"):
-        assert 'href="/collab"><i class="fas fa-pen-to-square' in read("ruqqus", "templates", name)
+        assert "/collab" not in read("ruqqus", "templates", name)
+    for name in ("editor.html", "list.html"):
+        page = read("ruqqus", "templates", "collab", name)
+        assert '{% extends "submit.html" %}' in page and 'composer_modes("together")' in page, name
     assert "from .collab import *" in read("ruqqus", "routes", "__init__.py")
     docs = read("CLAUDE.md")
     assert "## Shared drafts and collaborative posts (legacy app)" in docs and "2026-11-01_collab_posts.sql" in docs

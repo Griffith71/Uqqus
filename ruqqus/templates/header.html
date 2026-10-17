@@ -26,10 +26,10 @@
 
 <nav class="navbar navbar-expand-md navbar-light shadow shadow-md fixed-top" id="navbar">
   <div class="container-fluid">
-    <div class="flex-grow-1"><a href="/" class="navbar-brand text-purple logo-gradient"><span class="brand-main">ɸlaba</span><span class="text-small-extra text-uppercase text-gray-400"> Beta</span></a></div>
+    <div class="flex-grow-1"><a href="/" class="navbar-brand text-purple logo-gradient"><span class="brand-main">ɸLaba</span><span class="text-small-extra text-uppercase text-gray-400"> Beta</span></a></div>
     <div class="flex-grow-1 d-fl d-none d-md-block">
       <form id="searchform" class="form-inline search flex-nowrap mx-0 mx-lg-auto" action="{% if b %}/+{{ b.name }}{% endif %}/search" method="get">
-        <input class="form-control w-100" type="search" placeholder="Search posts{% if b %} in +{{ b.name }}{% else %}, +guilds, and @users{% endif %}" aria-label="Search posts{% if b %} in +{{ b.name }}{% else %}, +guilds, and @users{% endif %}" name="q" value="{{ request.args.get('q', '') }}">
+        <input class="form-control w-100" type="search" placeholder="Search posts{% if b %} in +{{ b.name }}{% else %}, +guilds, @users, #topics, &curations{% endif %}" aria-label="Search posts{% if b %} in +{{ b.name }}{% else %}, +guilds, @users, #topics, &curations{% endif %}" name="q" value="{{ request.args.get('q', '') }}">
         <span class="input-group-append">
           <span class="input-group-text border-0 bg-transparent" style="margin-left: -2.5rem;" onclick="document.getElementById('searchform').submit()">
             <i class="fa fa-search" aria-hidden="true"></i>
@@ -142,6 +142,7 @@
         <div class="px-2">
           <a class="dropdown-item" href="{{ v.permalink }}"><i class="fas fa-user-circle fa-fw text-left mr-3"></i>My
           profile</a>
+          <a class="dropdown-item" href="/submit"><i class="fas fa-feather-alt fa-fw text-left mr-3"></i>Create post</a>
           <a class="dropdown-item" href="/history"><i class="fas fa-history fa-fw text-left mr-3"></i>History</a>
           {% if v.notifications_count %}
           <a class="dropdown-item" href="/notifications"><i class="fas fa-inbox fa-fw text-left mr-3"></i>Inbox<span
@@ -157,23 +158,16 @@
               <a class="dropdown-item" href="/chat"><i class="fas fa-comment-dots fa-fw text-left mr-3"></i>Chat</a>
               {% endif %}
             <a class="dropdown-item" href="/studio"><i class="fas fa-chart-pie fa-fw text-left mr-3"></i>Creator Studio</a>
-            <a class="dropdown-item" href="/collab"><i class="fas fa-pen-to-square fa-fw text-left mr-3"></i>Shared drafts</a>
+            <a class="dropdown-item" href="/circles"><i class="fas fa-circle-notch fa-fw text-left mr-3"></i>Circles</a>
             <a class="dropdown-item" href="/settings"><i class="fas fa-cog fa-fw text-left mr-3"></i>Settings</a>
-            <a class="dropdown-item d-lg-none" href="/categories"><i class="fas fa-shapes fa-fw text-left mr-3"></i>Categories</a>
 
             {% block darkswitch %}
             {% if v and v.can_use_darkmode and theme_choice() == "dark" %}
             <a class="dropdown-item" href="javascript:void(0)" onclick="switch_css()"><i class="fas fa-toggle-on fa-fw text-left mr-3" id="dark-switch"></i>Dark mode</a>
             {% elif v and v.can_use_darkmode %}
             <a class="dropdown-item" href="javascript:void(0)" onclick="switch_css()"><i class="fas fa-toggle-off fa-fw text-left mr-3" id="dark-switch"></i>Dark mode</a>
-            {% else %}
-            <a class="dropdown-item" href="/settings/profile#referral"><i class="fas fa-toggle-off fa-fw text-left mr-3"></i>Dark mode</a>
             {% endif %}
             {% endblock %}
-          </div>
-          <hr class="my-2">
-          <div class="px-2">
-            <button class="dropdown-item copy-link" data-clipboard-text="{{ ('/signup?ref='+v.username) | full_link }}"><i class="fas fa-user-friends fa-fw text-left mr-3"></i>Invite friends</button>
           </div>
           <hr class="my-2">
           <div class="px-2">
@@ -199,7 +193,7 @@
  <ul class="navbar-nav ml-auto d-flex d-md-none mt-3">
    <li class="nav-item pb-3">
     <form class="form-inline search flex-nowrap mx-0 mx-lg-auto" action="{% if b %}/+{{ b.name }}{% endif %}/search" method="get">
-      <input class="form-control form-control-sm w-100" type="search" placeholder="Search posts{% if b %} in +{{ b.name }}{% else %}, +guilds, and @users{% endif %}" aria-label="Search posts{% if b %} in +{{ b.name }}{% else %}, +guilds, and @users{% endif %}" name="q" value="{{ request.args.get('q', '') }}">
+      <input class="form-control form-control-sm w-100" type="search" placeholder="Search posts{% if b %} in +{{ b.name }}{% else %}, +guilds, @users, #topics, &curations{% endif %}" aria-label="Search posts{% if b %} in +{{ b.name }}{% else %}, +guilds, @users, #topics, &curations{% endif %}" name="q" value="{{ request.args.get('q', '') }}">
       <span class="input-group-append">
         <span class="input-group-text border-0 bg-transparent" style="margin-left: -2.5rem;">
           <i class="fa fa-search" aria-hidden="true"></i>
@@ -231,6 +225,12 @@
     </a>
   </li>
   <li class="nav-item">
+    <a class="nav-link" href="/submit"><i class="fas fa-feather-alt fa-fw mr-3"></i>Create post</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="/circles"><i class="fas fa-circle-notch fa-fw mr-3"></i>Circles</a>
+  </li>
+  <li class="nav-item">
     <a class="nav-link" href="/settings"><i class="fas fa-cog fa-fw mr-3"></i>My account</a>
   </li>
   {% if v.can_make_guild %}
@@ -239,9 +239,6 @@
   </li>
   {% endif %}
   {% endif %}
-  <li class="nav-item">
-    <a class="nav-link" href="/categories"><i class="fas fa-shapes fa-fw mr-3"></i>Categories</a>
-  </li>
   {% if v %}
   {% block darkswitchMobile %}
   {% if theme_choice() == "dark" %}

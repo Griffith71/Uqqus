@@ -1,4 +1,4 @@
-"""The full editor (templates/submit.html) and the feed composer / Create post panel
+"""The full editor (templates/submit.html) and the feed composer
 (templates/partials/inline_composer.html) are two forms for the same route. They drifted once (the panel had no
 toolbar, GIF, emoji, drafts or picture-in-text); this keeps the field names in step, with the differences written
 down."""

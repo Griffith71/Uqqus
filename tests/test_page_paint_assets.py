@@ -71,7 +71,7 @@ def test_the_folded_sidebar_is_drawn_by_the_server():
 def test_the_navbar_defaults_fit_the_folded_sidebar_and_the_search_box_fades_in():
     for name, css in STYLES.items():
         assert "html.sidebar-folded #navbar > .container-fluid" in css, name
-        assert 'calc((100% - 1091px) / 2 + 15px)' in css, name   # 65 + 726 + 300
+        assert 'calc((100% - 1119px) / 2 + 15px)' in css, name   # 65 + 738 + 316
         assert "html.nav-align:not(.nav-aligned) #navbar #searchform" in css, name
         assert "nav-search-fallback" in css, name                # never left hidden without the script
     assert "root.classList.add('nav-aligned')" in read("assets", "js", "nav_align.js")

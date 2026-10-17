@@ -2,7 +2,7 @@
  * "Host a Space" in the composers (partials/post_options.html space_field, helpers/spaces.py): ticking it shows the
  * start time and replay options; the time the member picks is in their own time zone, so it is sent as a Unix time
  * (`space_start`), which the server checks. Empty starts the Space when the host opens it. Works for every composer
- * on the page, the feed composer and the Create post panel included.
+ * on the page, the feed composer included.
  */
 (function () {
   function sync(box) {

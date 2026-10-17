@@ -68,9 +68,13 @@ def test_the_script_sends_one_forward_guilds_field_per_guild_with_the_editors_li
     assert re.search(r"event\.key !== 'Enter'\) return;\s*event\.preventDefault\(\);", SCRIPT)
 
 
-def test_the_side_panel_composer_gets_it_through_the_same_macro():
-    panel = (TEMPLATES / "composer_panel.html").read_text(encoding="utf-8")
-    assert "inline_composer(v, none, true)" in panel
+def test_the_navbar_create_post_button_opens_this_composer_and_there_is_no_panel_for_it():
+    default = (TEMPLATES / "default.html").read_text(encoding="utf-8")
+    assert 'href="/submit" data-compose' in default and 'data-side-panel="post"' not in default
+    assert "[data-compose]" in SCRIPT and "title.focus({ preventScroll: true });" in SCRIPT
+    assert "(min-width: 992px)" in SCRIPT                       # narrow screens and modifier clicks follow the link
+    assert not (TEMPLATES / "composer_panel.html").exists()
+    assert "panel" not in PARTIAL.split("{% macro inline_composer(")[1].split("%}")[0]
 
 
 def test_it_is_desktop_only_and_loaded_for_members():
@@ -116,6 +120,5 @@ def test_the_page_flag_brings_the_drafts_panel_and_the_scripts_to_every_composer
     assert '{% if v and composer_drafts %}{% include "partials/drafts_ui.html" %}{% endif %}' in default
     for script in ("post_editor.js", "post_drafts.js", "composer_card.js"):
         assert f"asset_url('js/{script}')" in default, script
-    for page in ("home.html", "composer_panel.html"):
-        assert "{% set composer_drafts = true %}" in (TEMPLATES / page).read_text(encoding="utf-8"), page
+    assert "{% set composer_drafts = true %}" in (TEMPLATES / "home.html").read_text(encoding="utf-8")
     assert BOARD.startswith('{% extends "home.html" %}')     # a guild page gets the flag through home.html

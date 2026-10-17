@@ -27,7 +27,7 @@ OPTIONS = read("ruqqus", "templates", "partials", "post_options.html")
 
 
 def submit_source():
-    return POSTS.split("def submit_post(v):")[1].split("def composer_panel(")[0]
+    return POSTS.split("def submit_post(v):")[1].split("def post_card_fragment(")[0]
 
 
 # --- storage ------------------------------------------------------------------------------------------

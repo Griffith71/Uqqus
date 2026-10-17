@@ -43,7 +43,6 @@
   var file = el('ic-file');
   var bodyImage = el('ic-body-image');
   var linkButton = el('ic-link-btn');
-  var posted = el('ic-posted');
   var busy = false;
 
   function autosize() {
@@ -75,6 +74,20 @@
     errorBox.textContent = message;
     errorBox.hidden = false;
   }
+
+  // The navbar's Create post button (templates/default.html, `data-compose`): on a wide screen it brings this box into
+  // view and opens it (focusing the title does that); with a modifier key held or on a narrow screen it is the plain
+  // link to the full Create a post page. A page with no composer never loads this far (see the early return above).
+  var wide = window.matchMedia('(min-width: 992px)');
+  Array.prototype.forEach.call(document.querySelectorAll('[data-compose]'), function (link) {
+    link.addEventListener('click', function (event) {
+      if (!wide.matches || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+      event.preventDefault();
+      var card = form.closest('.card') || form;
+      card.scrollIntoView({ block: 'center', behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
+      title.focus({ preventScroll: true });
+    });
+  });
 
   title.addEventListener('focus', open);
   title.addEventListener('input', function () { autosize(); update(); });
@@ -176,7 +189,6 @@
 
   function reset() {
     form.reset();
-    var keepOpen = form.getAttribute('data-open') === 'true';
     forwards = presetGuild ? [presetGuild] : [];
     renderForwards();
     el('ic-file-name').textContent = '';
@@ -200,12 +212,10 @@
     // back to Write if the text was being previewed
     var write = form.querySelector('.post-toolbar .post-tb-tab');
     if (write && !write.classList.contains('active')) write.click();
-    if (!keepOpen) {
-      form.classList.remove('is-open');
-      head.hidden = true;
-      more.hidden = true;
-      bar.hidden = true;
-    }
+    form.classList.remove('is-open');
+    head.hidden = true;
+    more.hidden = true;
+    bar.hidden = true;
     autosize();
     update();
   }
@@ -214,7 +224,7 @@
   // copy forwarded to that guild, which is what the guild's feed lists (unless
   // the guild was taken off the list, then it is the post on your profile).
   function addCard(id) {
-    if (!document.querySelector('.posts')) return Promise.resolve();   // no feed here (the side panel)
+    if (!document.querySelector('.posts')) return Promise.resolve();   // no feed on this page
     var url = '/inpage/post_card/' + encodeURIComponent(id);
     if (presetGuild && hasGuild(presetGuild)) url += '?guild=' + encodeURIComponent(presetGuild);
     return fetch(url, { credentials: 'same-origin' })
@@ -240,7 +250,6 @@
     if (busy || post.disabled) return;
     busy = true;
     errorBox.hidden = true;
-    posted.hidden = true;
     post.textContent = 'Posting…';
     update();
 
@@ -265,11 +274,6 @@
       }
       return addCard(result.body.id).then(function () {
         reset();
-        // no feed on this page (the side panel): point at the new post instead
-        if (!document.querySelector('.posts')) {
-          el('ic-posted-link').href = result.body.permalink;
-          posted.hidden = false;
-        }
       }, function () {
         // posted, but the card could not be fetched: the feed just needs a reload to show it
         reset();
@@ -284,7 +288,6 @@
     });
   }
 
-  if (form.getAttribute('data-open') === 'true') open();
   renderForwards();
   autosize();
   update();

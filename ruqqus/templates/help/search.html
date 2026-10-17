@@ -15,7 +15,18 @@
 
 <pre class="search-help-example"><code>cats "black cat" -dogs from:@alice in:+pets since:2026-01-01 has:image lang:en</code></pre>
 
-<p>Start a search with <code>+</code> to find guilds (<code>+pets</code>) or with <code>@</code> to find accounts (<code>@alice</code>).</p>
+<h2>Start with a symbol</h2>
+
+<p>The same four symbols work in the search box, in posts and comments, and in <code>in:</code> and <code>from:</code>:</p>
+
+<ul>
+  <li><code>+pets</code>: a guild. Search <code>+pets</code> to find guilds with that in their name.</li>
+  <li><code>@alice</code>: an account. Search <code>@alice</code> to find accounts.</li>
+  <li><code>#gaming</code>: a topic, one of the site's categories or subcategories (Arts, Gaming, News, Film &amp; TV: letters and numbers only, so <code>#filmtv</code>). Search <code>#gam</code> to find the guilds in the topics with that in their name; <code>in:#gaming</code> narrows a post search to them.</li>
+  <li><code>&amp;news</code>: a public curation, by its name or the short name under it. Search <code>&amp;news</code> to find them; <code>in:&amp;news</code> narrows a post search to that curation's guilds and accounts. Private curations are never found.</li>
+</ul>
+
+<p>To search for the words themselves, put them in quotes: <code>"#gaming"</code>.</p>
 
 <h2>Words</h2>
 
@@ -53,7 +64,7 @@
   <li>Days are in UTC. <code>before:</code> and <code>after:</code> leave the day itself out; <code>since:</code> and <code>until:</code> include it.</li>
   <li><code>from:</code> never finds an account's anonymous posts, and <code>-from:</code> never hides them. Nobody can find out who wrote an anonymous post by searching.</li>
   <li>A search only finds what you could see anyway: your word filter, blocks, mutes and private guilds all still apply. A search for one account (<code>from:</code>) shows their posts even if you muted them.</li>
-  <li>An account or guild you can't see reads as one that does not exist.</li>
+  <li>An account, guild, topic or curation you can't see reads as one that does not exist.</li>
   <li>A search can hold up to {{ search.MAX_PARTS }} words and operators, and up to {{ search.MAX_CHARS }} characters.</li>
   <li>The search page has an <b>Advanced search</b> form that writes the operators for you.</li>
 </ul>
@@ -63,6 +74,7 @@
 <ul>
   <li><code>from:@alice has:poll</code>: Alice's polls.</li>
   <li><code>in:+news domain:example.com since:2026-01-01</code>: links to example.com in +news this year.</li>
+  <li><code>in:#gaming has:video</code>: videos in any guild about gaming.</li>
   <li><code>recipe lang:es -is:forward</code>: recipes in Spanish, each post once.</li>
   <li><code>"open source" min_votes:50 min_comments:10</code>: well-discussed posts about open source.</li>
 </ul>

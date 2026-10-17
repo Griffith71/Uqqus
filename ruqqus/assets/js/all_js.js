@@ -1743,6 +1743,23 @@ function toggle_sidebar_expand() {
   document.getElementById('sidebar-left').classList.remove('sidebar-collapsed');
 }
 
+// The folded sidebar's Regional / Language / Categorical icons do what the same rows do in the open sidebar: the
+// sidebar opens and the filter's panel with it. Below 1200px the sidebar is only ever its rail (main.scss), so the
+// sheet the phone's feed tabs open is used instead.
+function openSidebarFilter(name) {
+  var sheets = { regional: '#regionalFilterModal', language: '#languageFilterModal', categorical: '#categoricalFilterModal' };
+  if (!sheets[name]) return;
+  if (window.matchMedia('(max-width: 1199.98px)').matches) {
+    $(sheets[name]).modal('show');
+    return;
+  }
+  toggle_sidebar_expand();
+  var panel = $('#sidebar-filter-' + name);
+  panel.collapse('show');
+  var node = panel.get(0);
+  if (node && node.scrollIntoView) setTimeout(function () { node.scrollIntoView({ block: 'nearest' }); }, 350);
+}
+
 // Voting
 
 // The arrows and the score change at once, before the server has answered. This remembers how they were
@@ -3058,71 +3075,6 @@ var tipModal2 = function(id, content, link, recipient, recipientPFP) {
   console.log(recipientPFP, id, content, link, recipient)
 }
 
-var togglecat = function(sort, reload=false, delay=1000, page="/all", inpage="/inpage/all") {
-  var cbs = document.getElementsByClassName('cat-check');
-  var l = []
-  for (var i=0; i< cbs.length; i++) {
-    l.push(cbs[i].checked)
-  }
-  setTimeout(function(){triggercat(sort, l, reload, page, inpage)}, delay)
-  return l;
-}
-
-var triggercat=function(sort, cats, reload, page, inpage="/inpage/all") {
-
-  var cbs = document.getElementsByClassName('cat-check');
-  var l = []
-  for (var i=0; i< cbs.length; i++) {
-    l.push(cbs[i].checked)
-  }
-
-
-
-  for (var i=0; i<l.length; i++){
-    if (cats[i] != l[i]){
-      console.log("triggerfail");
-      return false;
-    }
-  }
-
-  console.log("triggercat")
-
-  var catlist=[]
-  for (var i=0; i< cbs.length; i++) {
-    if(cbs[i].checked){
-      catlist.push(cbs[i].dataset.cat);
-    }
-  }
-
-  var groups = document.getElementsByClassName('cat-group');
-  var grouplist=[];
-  for (i=0; i<groups.length; i++){
-    if(groups[i].checked){
-      grouplist.push(groups[i].dataset.group);
-    }
-  }
-
-  var url=inpage+'?sort='+ sort +'&cats=' + catlist.join(',') + '&groups=' + grouplist.join(',');
-  
-
-  xhr = new XMLHttpRequest();
-  xhr.open('get', url);
-  xhr.withCredentials=true;
-
-  xhr.onload=function(){
-    if (reload){
-      document.location.href=page
-    }
-    else {
-      var l = document.getElementById('posts');
-      l.innerHTML=xhr.response;
-      register_votes();
-    }
-  }
-  xhr.send()
-}
-
-
 var permsEdit = function(username, permstring) {
 
   document.getElementById('permedit-user').innerText = username
@@ -3161,48 +3113,20 @@ var permother=function() {
   }
 }
 
-var cattoggle=function(id){
-
-  var check = document.getElementById('group-'+id);
-
-  check.click()
-
-  var x=document.getElementsByClassName('group-'+id);
-  for (i=0;i<x.length;i++) {
-    x[i].checked=check.checked
-  }
-
-  card=document.getElementById('cat-card-'+id)
-  card.classList.toggle('selected');
-}
-
-var all_cats=function(page, inpage="/inpage/all") {
-  // "Show all" means "no category filter" (matches the empty-selection = no
-  // filter semantics every other sidebar filter uses) - so this unchecks
-  // everything and submits an explicit empty cats= list, rather than
-  // checking every box and submitting all of them.
-  var x=document.getElementsByClassName('cat-check');
-  for(i=0;i<x.length;i++){
-    x[i].checked=false;
-  };
-
-  var y=document.getElementsByClassName('cat-group');
-  for(i=0;i<y.length;i++){
-    y[i].checked=false;
-  };
-
-  togglecat('hot', reload=true, delay=0, page=page, inpage=inpage)
-}
-
 var filterSidebarList = function(input, listId) {
   var query = input.value.trim().toLowerCase();
   var list = document.getElementById(listId);
   if (!list) return;
+  // the category lists are the site's topics: #gaming (or #filmtv for "Film & TV") finds them as it does in the search box
+  var topics = /categor/i.test(listId);
+  var squash = function (text) { return text.replace(/[^a-z0-9]/g, ''); };
+  if (topics) query = squash(query.replace(/^#/, ''));
   var rows = list.querySelectorAll('[data-filter-row]');
   var anyVisible = false;
   for (var i = 0; i < rows.length; i++) {
     var row = rows[i];
     var text = (row.getAttribute('data-filter-text') || row.textContent || '').toLowerCase();
+    if (topics) text = squash(text);
     var match = (query === '' || text.indexOf(query) !== -1);
     row.classList.toggle('d-none', !match);
     if (match) anyVisible = true;

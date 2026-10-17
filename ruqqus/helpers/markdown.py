@@ -7,6 +7,7 @@ from mistletoe.html_renderer import HTMLRenderer
 from .post_formatting import TEXT_COLORS, HIGHLIGHT_COLORS, ALIGNMENTS, BUTTON_CLASS
 import os.path
 import re
+from html import escape as _html_escape
 
 from flask import g
 
@@ -51,9 +52,10 @@ class CurationMention(SpanToken):
         self.target = (match_obj.group(1), match_obj.group(2))
 
 
-class ChatMention(SpanToken):
+class TopicMention(SpanToken):
+    """#topic: one of the site's categories or subcategories (helpers/topics.py). Two characters are enough (#pc, #qa)."""
 
-    pattern = re.compile(r"(^|\s|\n)#(\w{3,25})")
+    pattern = re.compile(r"(^|\s|\n)#(\w{2,25})")
     parse_inner = False
 
     def __init__(self, match_obj):
@@ -174,7 +176,7 @@ class CustomRenderer(HTMLRenderer):
         super().__init__(UserMention,
                          BoardMention,
                          CurationMention,
-                         #ChatMention,
+                         TopicMention,
                          Emoji,
                          Spoiler,
                          TextColor,
@@ -234,16 +236,16 @@ class CustomRenderer(HTMLRenderer):
 
         return f'{space}<a href="{curation.permalink}" class="d-inline-block">&{curation.slug}</a>'
 
-    def render_chat_mention(self, token):
+    def render_topic_mention(self, token):
         space = token.target[0]
         target = token.target[1]
 
-        board = get_guild(target, graceful=True)
+        topic = get_topic(target)
 
-        if not board or board.is_banned:
+        # only a topic the site has is a link: any other #word stays as it was typed
+        if topic is None:
             return f"{space}#{target}"
-        else:
-            return f'{space}<a href="{board.permalink}/chat" class="d-inline-block"><img src="/+{board.name}/pic/profile" class="profile-pic-20 mr-1">#{board.name}</a>'
+        return f'{space}<a href="{topic.url}" class="d-inline-block" title="{_html_escape(topic.label)}">#{target}</a>'
 
     def render_emoji(self, token):
         

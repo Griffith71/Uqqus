@@ -293,7 +293,7 @@ class _TextExtractor(HTMLParser):
     """Visible text of stored post/comment HTML.
 
     Inline tags are transparent, so a word split by formatting is rejoined.
-    Skipped: @user / +guild / &curation mention links and links whose text is
+    Skipped: @user / +guild / &curation / #topic mention links and links whose text is
     just their own address (names and URLs are not prose)."""
 
     def __init__(self):
@@ -313,7 +313,7 @@ class _TextExtractor(HTMLParser):
         if tag == "a":
             attrs = dict(attrs)
             href = attrs.get("href") or ""
-            if "data-original-name" in attrs or href.startswith(("/@", "/+", "/&")):
+            if "data-original-name" in attrs or href.startswith(("/@", "/+", "/&", "/topic/")):
                 self._skip_depth = 1
             else:
                 self._link_href = href

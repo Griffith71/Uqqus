@@ -1,4 +1,4 @@
-"""Circles (helpers/circles.py rules, helpers/circle_store.py database side): the settings pages and the actions.
+"""Circles (helpers/circles.py rules, helpers/circle_store.py database side): the pages and the actions.
 
 Everything that moves coins or changes who is in a circle needs a login and the form key. The owner only ever
 changes their own circles (`v.id` is the owner everywhere, and circle_store checks each circle is theirs); a member
@@ -6,7 +6,7 @@ only ever changes their own subscription. Nobody is told they were put in a cust
 the custom circles they are in."""
 import time
 
-from flask import abort, g, jsonify, render_template, request
+from flask import abort, g, jsonify, redirect, render_template, request
 
 from ruqqus.classes import Board, ForwardRelationship, RepostRelationship, Submission, User
 from ruqqus.helpers import circle_guard, circle_store, circles, coauthors, sharing
@@ -44,9 +44,25 @@ def _mine(v, cid, kinds=(circles.CUSTOM, circles.PAID)):
     return row
 
 
-# --- the settings pages ------------------------------------------------------------------------------------
+# --- the circles pages (opened from the account menu) -----------------------------------------------------------
 
+# they used to be tabs of Settings: the old addresses still arrive (links, bookmarks, the studio) and go to the new ones
 @app.route("/settings/circle", methods=["GET"])
+def old_circles_page():
+    return redirect("/circles", 301)
+
+
+@app.route("/settings/circle/<int:cid>", methods=["GET"])
+def old_circle_page(cid):
+    return redirect(f"/circles/{cid}", 301)
+
+
+@app.route("/settings/circles", methods=["GET"])
+def old_circles_in_page():
+    return redirect("/circles/in", 301)
+
+
+@app.route("/circles", methods=["GET"])
 @auth_required
 def settings_circle(v):
     now = int(time.time())
@@ -71,7 +87,7 @@ def settings_circle(v):
     )
 
 
-@app.route("/settings/circle/<int:cid>", methods=["GET"])
+@app.route("/circles/<int:cid>", methods=["GET"])
 @auth_required
 def settings_circle_one(cid, v):
     now = int(time.time())
@@ -95,7 +111,7 @@ def settings_circle_one(cid, v):
     )
 
 
-@app.route("/settings/circles", methods=["GET"])
+@app.route("/circles/in", methods=["GET"])
 @auth_required
 def settings_circles(v):
     """The paid circles and Circle guilds this account pays to be in. Never the custom circles someone put it in."""
@@ -130,7 +146,7 @@ def circle_create(v):
     if error:
         return _fail(error, 409)
     g.db.commit()
-    return jsonify({"id": new_id, "go": f"/settings/circle/{new_id}", "message": f"{name} is ready."})
+    return jsonify({"id": new_id, "go": f"/circles/{new_id}", "message": f"{name} is ready."})
 
 
 @app.route("/api/circles/<int:cid>/rename", methods=["POST"])
@@ -157,7 +173,7 @@ def circle_delete(cid, v):
     if error:
         return _fail(error, 409)
     g.db.commit()
-    return jsonify({"go": "/settings/circle", "message": f"{row.name} is deleted. Posts that were for it are still for your other circles they were shared with."})
+    return jsonify({"go": "/circles", "message": f"{row.name} is deleted. Posts that were for it are still for your other circles they were shared with."})
 
 
 @app.route("/api/circles/<int:cid>/price", methods=["POST"])
@@ -211,7 +227,7 @@ def circle_choices_for(username, v):
         return _fail("You can always see your own posts.")
     inside = circle_store.custom_circles_with(g.db, v.id, target.id)
     rows = circle_store.circles_of(g.db, v.id, kinds=(circles.CUSTOM,))
-    response = jsonify({"username": target.username, "manage": "/settings/circle",
+    response = jsonify({"username": target.username, "manage": "/circles",
                         "circles": [{"id": r.id, "name": r.name, "in": r.id in inside} for r in rows]})
     response.headers["Cache-Control"] = "private, no-store"
     return response

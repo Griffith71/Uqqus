@@ -1,0 +1,10 @@
+{#
+  The two ways to make a post, side by side above the writing card: write it yourself (Create a post) or write it with
+  other people at the same time (a shared draft, routes/collab.py). `active` is "post" or "together".
+#}
+{% macro composer_modes(active) %}
+<nav class="composer-modes" aria-label="How to write this post">
+  <a href="/submit" class="composer-mode{% if active == 'post' %} active{% endif %}"{% if active == 'post' %} aria-current="page"{% endif %}><i class="fas fa-feather-alt" aria-hidden="true"></i>Post</a>
+  <a href="/collab" class="composer-mode{% if active == 'together' %} active{% endif %}"{% if active == 'together' %} aria-current="page"{% endif %}><i class="fas fa-user-group" aria-hidden="true"></i>Write with others</a>
+</nav>
+{% endmacro %}

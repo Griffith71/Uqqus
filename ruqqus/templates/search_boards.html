@@ -1,6 +1,13 @@
 {% extends "search.html" %}
 
 {% block listing_template %}
+{# `#text` in the search box: the topics it names, then the guilds in them (routes/search.py) #}
+{% if topics_found is defined %}
+<div class="explore-chips mt-3 mx-md-3" role="group" aria-label="Topics">
+  {% for t in topics_found %}<a class="explore-chip" href="{{ t.url }}">#{{ t.label }}</a>{% else %}<span class="text-muted text-small">No topic called {{ query }}.</span>{% endfor %}
+</div>
+{% if topics_found and not boards %}<p class="text-muted text-small mt-3 mx-md-3">No guilds are in {{ 'this topic' if topics_found | length == 1 else 'these topics' }} yet.</p>{% endif %}
+{% endif %}
 <div class="row row-cols-1 row-cols-md-3 mt-3 mx-0">
 {% include "board_listing.html" %}
 </div>

@@ -117,7 +117,7 @@ Or, indent the lines with four spaces.
 
 ## Custom Formatting
 
-We also have some custom hooks for mentioning users and guilds. Note that these only work if the mentioned user or guild actually exists.
+We also have some custom hooks for mentioning accounts, guilds, topics and curations. Note that these only work if what you mention actually exists: a `#word` that is not one of the site's topics, or an `&name` that is not a public curation, stays as plain text.
 
 {% endfilter %}
 
@@ -138,6 +138,16 @@ We also have some custom hooks for mentioning users and guilds. Note that these 
     <td>Guild Mention</td>
     <td>+general</td>
     <td><a class="d-inline-block" href="/+general"><img alt="" src="/+general/pic/profile" class="profile-pic-20 align-middle mr-1">+general</a></td>
+  </tr>
+  <tr>
+    <td>Topic Mention<br><span class="text-small text-muted">a category or subcategory: gaming, arts, filmtv, pc... (letters and numbers only)</span></td>
+    <td>#gaming</td>
+    <td><a class="d-inline-block" href="/topic/gaming">#gaming</a></td>
+  </tr>
+  <tr>
+    <td>Curation Mention<br><span class="text-small text-muted">the short name under a curation's title; public curations only</span></td>
+    <td>&amp;mycuration</td>
+    <td><a class="d-inline-block" href="/curations">&amp;mycuration</a></td>
   </tr>
 </table></div>
 
