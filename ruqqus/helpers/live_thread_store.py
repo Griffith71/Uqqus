@@ -5,23 +5,43 @@ Nothing here commits.
 
 from sqlalchemy import bindparam, text
 
-_UPDATE = "id, post_id, author_id, body, body_html, word_severity, created_utc, edited_utc, deleted_utc"
+_UPDATE = "id, post_id, author_id, body, body_html, word_severity, created_utc, edited_utc, deleted_utc, struck_utc"
+_THREAD = ("started_utc, ended_utc, last_update_utc, started_by_id, ends_utc, summary, summary_html, summary_severity, "
+           "summary_edited_utc")
 
 
 def thread(db, post_id):
-    """(started_utc, ended_utc, last_update_utc, started_by_id) or None."""
-    return db.execute(text("SELECT started_utc, ended_utc, last_update_utc, started_by_id FROM live_threads WHERE post_id = :p"),
-                      {"p": post_id}).fetchone()
+    """(started_utc, ended_utc, last_update_utc, started_by_id, ends_utc, summary, summary_html, summary_severity,
+    summary_edited_utc) or None."""
+    return db.execute(text(f"SELECT {_THREAD} FROM live_threads WHERE post_id = :p"), {"p": post_id}).fetchone()
 
 
-def start(db, post_id, user_id, now):
-    """Live from now (again, if it had ended)."""
+def start(db, post_id, user_id, now, ends_utc=0):
+    """Live from now until `ends_utc` (again, if it had ended: its updates and summary stay)."""
     if thread(db, post_id) is None:
-        db.execute(text("""INSERT INTO live_threads (post_id, started_utc, ended_utc, last_update_utc, started_by_id)
-                           VALUES (:p, :now, 0, :now, :u)"""), {"p": post_id, "now": now, "u": user_id})
+        db.execute(text("""INSERT INTO live_threads (post_id, started_utc, ended_utc, last_update_utc, started_by_id, ends_utc)
+                           VALUES (:p, :now, 0, :now, :u, :ends)"""), {"p": post_id, "now": now, "u": user_id, "ends": ends_utc})
     else:
-        db.execute(text("""UPDATE live_threads SET started_utc = :now, ended_utc = 0, last_update_utc = :now, started_by_id = :u
-                           WHERE post_id = :p"""), {"p": post_id, "now": now, "u": user_id})
+        db.execute(text("""UPDATE live_threads SET started_utc = :now, ended_utc = 0, last_update_utc = :now, started_by_id = :u,
+                           ends_utc = :ends WHERE post_id = :p"""), {"p": post_id, "now": now, "u": user_id, "ends": ends_utc})
+
+
+def extend(db, post_id, ends_utc):
+    """A running thread's new end."""
+    db.execute(text("UPDATE live_threads SET ends_utc = :ends WHERE post_id = :p AND ended_utc = 0"),
+               {"p": post_id, "ends": ends_utc})
+
+
+def set_summary(db, post_id, body, body_html, severity, now):
+    db.execute(text("""UPDATE live_threads SET summary = :body, summary_html = :html, summary_severity = :sev,
+                       summary_edited_utc = :now WHERE post_id = :p"""),
+               {"p": post_id, "body": body, "html": body_html, "sev": severity, "now": now})
+
+
+def strike(db, update_id, on, now):
+    """Cross an update out ("Corrected"), or undo it."""
+    db.execute(text("UPDATE live_updates SET struck_utc = :at WHERE id = :u AND deleted_utc = 0"),
+               {"u": update_id, "at": now if on else 0})
 
 
 def end(db, post_id, now):
@@ -29,10 +49,10 @@ def end(db, post_id, now):
 
 
 def threads_for(db, post_ids):
-    """{post id: (started_utc, ended_utc, last_update_utc)} for a page of (primary) posts."""
+    """{post id: (started_utc, ended_utc, last_update_utc, ends_utc)} for a page of (primary) posts."""
     if not post_ids:
         return {}
-    query = text("SELECT post_id, started_utc, ended_utc, last_update_utc FROM live_threads WHERE post_id IN :ids").bindparams(
+    query = text("SELECT post_id, started_utc, ended_utc, last_update_utc, ends_utc FROM live_threads WHERE post_id IN :ids").bindparams(
         bindparam("ids", expanding=True))
     return {row[0]: tuple(row[1:]) for row in db.execute(query, {"ids": list(post_ids)})}
 

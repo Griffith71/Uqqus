@@ -16,9 +16,11 @@ def attach(db, posts):
     now = int(time.time())
     for p in posts:
         row = rows.get(primary[p.id])
+        live = row is not None and rules.is_live(row[0], row[1], row[2], now, row[3])
         p.live_data = None if row is None else {
-            "live": rules.is_live(row[0], row[1], row[2], now), "started_utc": row[0], "ended_utc": row[1],
+            "live": live, "started_utc": row[0], "ended_utc": row[1],
             "last_update_utc": row[2], "post_id": primary[p.id], "post36": base36encode(primary[p.id]),
+            "ends_utc": rules.ends_at(row[0], row[2], row[3]) if live else None,
         }
 
 

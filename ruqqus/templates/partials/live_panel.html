@@ -1,9 +1,11 @@
 {#
   A post's live thread on its page (helpers/live_threads.py, routes/live_threads.py, assets/js/live_thread.js): LIVE and
-  its updates, newest first, above the comments. live_panel(p, v): the updates the server draws first (for visitors
-  too), and for the post's author and co-authors "Go live", a box for an update and "End live". An update on an
-  anonymous post shows no name. Its stored HTML was sanitized when it was written; a rated one the reader's word
-  filter hides says so instead.
+  its updates, newest first, above the comments, as Reddit's live threads read. live_panel(p, v): "LIVE · ends <time>
+  · N watching" or "This live thread has ended", who writes the updates, the pinned summary, and the updates (crossed
+  out ones say "Corrected"), drawn first by the server (for visitors too); for the post's author and co-authors: Go
+  live for a chosen length, Extend, End now, Edit summary, a box for an update, and Cross out / Delete on updates
+  (assets/js/live_thread.js). An update on an anonymous post shows no name. Stored HTML (updates, the summary) was
+  sanitized when it was written; a rated one the reader's word filter hides says so instead.
 
   live_badge(p): the LIVE mark beside a card's title.
   stream_block(p): a livestream on the member's own YouTube or Twitch (helpers/livestreams.py): a card that opens it
@@ -11,7 +13,7 @@
 #}
 {% macro live_badge(p) %}
 {% set lv = live_of(p) %}
-{% if lv and lv.live %}<span class="live-badge" title="Live updates going on"><span class="space-live-dot" aria-hidden="true"></span>LIVE</span>{% endif %}
+{% if lv and lv.live %}<span class="live-badge" title="Live thread{% if lv.ends_utc %}: ends {{ lv.ends_utc | space_time }}{% endif %}"><span class="space-live-dot" aria-hidden="true"></span>LIVE</span>{% endif %}
 {% endmacro %}
 
 {% macro stream_block(p) %}
@@ -29,31 +31,76 @@
 {% set lv = live_of(p) %}
 {% set may = may_run_live(p, v) %}
 {% if lv or may %}
-<section class="live-panel{% if lv and lv.live %} is-live{% endif %}" id="live-panel" data-post="{{ lv.post36 if lv else p.base36id }}" data-live="{{ 'true' if lv and lv.live else 'false' }}" aria-label="Live updates">
+{% set t = live_thread_of(p, v) %}
+<section class="live-panel{% if t.live %} is-live{% endif %}" id="live-panel" data-post="{{ lv.post36 if lv else p.base36id }}" data-live="{{ 'true' if t.live else 'false' }}" data-may="{{ 'true' if may else 'false' }}" aria-label="Live thread">
   <div class="live-panel-head">
-    <span class="live-badge" id="live-panel-badge"{% if not (lv and lv.live) %} hidden{% endif %}><span class="space-live-dot" aria-hidden="true"></span>LIVE</span>
-    <span class="live-panel-title">Live updates</span>
-    {% if lv and not lv.live %}<span class="text-muted text-small" id="live-panel-ended">· ended</span>{% endif %}
+    <div class="live-status">
+      <span class="live-badge" id="live-panel-badge"{% if not t.live %} hidden{% endif %}><span class="space-live-dot" aria-hidden="true"></span>LIVE</span>
+      {% if t.live %}
+      <span class="live-status-text">ends <time id="live-ends" data-live-until="{{ t.ends_utc }}">{{ t.ends_utc | space_time }}</time></span>
+      <span class="live-status-text" id="live-watching" hidden>· <span id="live-watching-count">0</span> watching</span>
+      {% elif t.exists %}
+      <span class="live-ended" id="live-panel-ended">This live thread has ended</span>
+      <time class="live-status-text" data-live-time="{{ t.ended_utc }}">{{ t.ended_utc | space_time }}</time>
+      {% else %}
+      <span class="live-panel-title">Live thread</span>
+      {% endif %}
+    </div>
+    <div class="live-runners text-small text-muted">{{ t.runners }}</div>
+  </div>
+
+  {% if may %}
+  <div class="live-controls" id="live-controls">
+    {% if t.live %}
+    <label class="sr-only" for="live-extend-hours">Extend for</label>
+    <select class="custom-select custom-select-sm w-auto" id="live-extend-hours">
+      {% for h, label in live_durations %}<option value="{{ h }}"{% if h == live_default_hours %} selected{% endif %}>{{ label }} from now</option>{% endfor %}
+    </select>
+    <button type="button" class="btn btn-sm btn-secondary" id="live-extend">Extend</button>
+    <button type="button" class="btn btn-sm btn-outline-danger ml-auto" id="live-end">End now</button>
+    {% else %}
+    <p class="text-small text-muted mb-2 w-100" id="live-start-help">{% if t.exists %}Go live again{% else %}Going live puts timestamped updates above the comments, pushed to everyone reading, like a Reddit live thread. The people who follow this post are told.{% endif %}</p>
+    <label class="sr-only" for="live-start-hours">How long it runs</label>
+    <select class="custom-select custom-select-sm w-auto" id="live-start-hours">
+      {% for h, label in live_durations %}<option value="{{ h }}"{% if h == live_default_hours %} selected{% endif %}>for {{ label }}</option>{% endfor %}
+    </select>
+    <button type="button" class="btn btn-sm btn-primary" id="live-start">Go live</button>
+    {% endif %}
+    <span class="text-small w-100" id="live-control-status" role="status"></span>
+  </div>
+  {% endif %}
+
+  {% if t.summary_html or t.summary_hidden or (may and t.exists) %}
+  <div class="live-summary" id="live-summary">
+    <div class="live-summary-head"><span class="live-summary-title">Summary</span>{% if may %}<button type="button" class="btn btn-link btn-sm p-0 ml-auto" id="live-summary-edit">Edit summary</button>{% endif %}</div>
+    <div class="live-summary-body" id="live-summary-body">
+      {%- if t.summary_html %}{{ t.summary_html | safe }}{% elif t.summary_hidden %}<p class="font-italic text-muted mb-0">Hidden by your word filter</p>{% else %}<p class="text-muted mb-0">Key facts and links people should see first.</p>{% endif -%}
+    </div>
     {% if may %}
-    <button type="button" class="btn btn-sm {{ 'btn-outline-danger' if lv and lv.live else 'btn-primary' }} ml-auto" id="live-toggle" data-on="{{ '0' if lv and lv.live else '1' }}">{{ "End live" if lv and lv.live else "Go live" }}</button>
+    <form class="live-summary-form" id="live-summary-form" hidden onsubmit="return false;">
+      <label class="sr-only" for="live-summary-text">Summary</label>
+      <textarea class="form-control" id="live-summary-text" rows="3" maxlength="1000">{{ t.summary or '' }}</textarea>
+      <button type="submit" class="btn btn-primary btn-sm mt-2">Save summary</button>
+      <button type="button" class="btn btn-link btn-sm mt-2" id="live-summary-cancel">Cancel</button>
+    </form>
     {% endif %}
   </div>
-  {% if may and not lv %}
-  <p class="text-small text-muted mb-0">Going live puts timestamped updates above the comments, pushed to everyone reading. The people who follow this post are told. It ends after a day without an update, or a week at most.</p>
   {% endif %}
+
   {% if may %}
-  <form class="live-panel-form{% if not (lv and lv.live) %} d-none{% endif %}" id="live-update-form" onsubmit="return false;">
+  <form class="live-panel-form{% if not t.live %} d-none{% endif %}" id="live-update-form" onsubmit="return false;">
     <label class="sr-only" for="live-update-body">Update</label>
     <textarea class="form-control" id="live-update-body" rows="2" maxlength="2000" placeholder="Post an update"></textarea>
     <button type="submit" class="btn btn-primary btn-sm mt-2">Post update</button>
     <span class="text-small ml-2" id="live-update-status" role="status"></span>
   </form>
   {% endif %}
+  <button type="button" class="live-new-pill" id="live-new-updates" hidden></button>
   <div class="live-new-comments d-none" id="live-new-comments" role="status"><a href="#comments" onclick="window.location.reload(); return false;">New comments · Show them</a></div>
-  <div class="live-updates" id="live-updates" role="list">
+  <div class="live-updates" id="live-updates" role="list" aria-live="polite">
     {% for u in live_updates_of(p, v) %}
-    <div class="live-update" role="listitem" data-update="{{ u.id }}">
-      <div class="live-update-meta text-small text-muted"><time data-live-time="{{ u.created_utc }}">{{ u.created_utc | space_time }}</time>{% if u.author %} · {{ u.author }}{% endif %}</div>
+    <div class="live-update{% if u.struck %} is-struck{% endif %}" role="listitem" data-update="{{ u.id }}"{% if u.may_change %} data-may-change="true"{% endif %}>
+      <div class="live-update-meta text-small text-muted"><time data-live-time="{{ u.created_utc }}">{{ u.created_utc | space_time }}</time>{% if u.author %} · {{ u.author }}{% endif %}{% if u.struck %} · <span class="live-corrected">Corrected</span>{% endif %}</div>
       {% if u.hidden %}<div class="live-update-body font-italic text-muted">Hidden by your word filter</div>{% else %}<div class="live-update-body">{{ u.body_html | safe }}</div>{% endif %}
     </div>
     {% endfor %}
