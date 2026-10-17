@@ -15,6 +15,11 @@
             <small class="form-text text-muted">This creates a new, independent post in that guild with its own votes and comments. The title is generated from the comment's text. A link back to the original comment will be shown on the new post.</small>
             <input type="hidden" name="formkey" value="{{ v.formkey }}">
             <input class="form-control mt-3" id="forward-comment-guild-name" type="text" placeholder="Guild name (without +)" onkeydown="if(event.key==='Enter'){event.preventDefault();document.getElementById('forwardCommentButton').click();}">
+            {# the guild's flairs (helpers/guild_flair.py), as in the post Forward dialog (assets/js/guild_flair.js) #}
+            <div class="mt-3" id="forward-comment-flair-field" hidden>
+              <label class="text-small font-weight-bold mb-1" for="forward-comment-flair">Flair <span class="text-muted font-weight-normal" id="forward-comment-flair-required" hidden>(required in this guild)</span></label>
+              <select class="custom-select" id="forward-comment-flair"></select>
+            </div>
           </div>
           <div id="forwardCommentError" class="text-danger px-3 pb-2 d-none small"></div>
           <div class="modal-footer">

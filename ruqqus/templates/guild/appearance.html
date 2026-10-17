@@ -1,6 +1,6 @@
 {% extends "guild/guild_settings.html" %}
 
-{% block pagetitle %}Edit +{{ b.name }} Appearance - Ruqqus Guildmaster Tools{% endblock %}
+{% block pagetitle %}Edit +{{ b.name }} Appearance - {{ 'SITE_NAME' | app_config }} Guildmaster Tools{% endblock %}
 
 
 {% block content %}
@@ -151,7 +151,7 @@
         <div class="d-lg-flex">
 
           <div class="title w-lg-25 text-md-center">
-            <img src="{{ b.profile_url }}" class="profile-pic-75">
+            <img alt="" src="{{ b.profile_url }}" class="profile-pic-75">
           </div>
 
           <div class="body w-lg-100 my-auto">
@@ -195,7 +195,7 @@
       <div class="d-lg-flex">
 
         <div class="title w-lg-75 text-md-center">
-          <img src="{{ b.banner_url }}" class="banner-pic-135">
+          <img alt="Banner" src="{{ b.banner_url }}" class="banner-pic-135">
         </div>
 
         <div class="body w-lg-100 my-auto">

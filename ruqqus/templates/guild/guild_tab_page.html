@@ -1,0 +1,25 @@
+{% extends "board.html" %}
+{#
+  A guild's Wiki and Events pages: the guild's banner, sidebar and tabs (partials/guild_tabs.html) around a page of
+  their own (`guildbody`) instead of its posts. The sort and time filters and the feed composer belong to the posts.
+#}
+{% from "partials/guild_tabs.html" import guild_tabs %}
+
+{% block title %}
+<title>{% block pagetitle %}{% endblock %} · +{{ b.name }} - {{ 'SITE_NAME' | app_config }}</title>
+{% if b.is_private or b.is_circle %}<meta name="robots" content="noindex">{% endif %}
+{% endblock %}
+
+{% block viewfilters %}{% endblock %}
+{% block PseudoSubmitForm %}{% endblock %}
+{% block mobileFeedTabs %}{% endblock %}
+
+{% block content %}
+{{ guild_tabs(b, v, tab) }}
+<div class="guild-page py-3">
+  {% block guildbody %}{% endblock %}
+</div>
+<script src="{{ asset_url('js/guild_pages.js') }}"></script>
+{% endblock %}
+
+{% block pagenav %}{% endblock %}

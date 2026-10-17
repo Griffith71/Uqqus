@@ -14,7 +14,13 @@
             <div class="h6">Forward to a guild for community discussion</div>
             <small class="form-text text-muted">This creates an independent copy of the post with its own votes and comments in that guild. You can forward to any guild that accepts forwards from you.</small>
             <input type="hidden" name="formkey" value="{{ v.formkey }}">
-            <input class="form-control mt-3" id="forward-guild-name" type="text" placeholder="Guild name (without +)" onkeydown="if(event.key==='Enter'){event.preventDefault();document.getElementById('forwardPostButton').click();}">
+            <label class="sr-only" for="forward-guild-name">Guild name</label>
+            <input class="form-control mt-3" id="forward-guild-name" type="text" placeholder="Guild name (without +)" autocomplete="off" onkeydown="if(event.key==='Enter'){event.preventDefault();document.getElementById('forwardPostButton').click();}">
+            {# the guild's flairs (helpers/guild_flair.py), loaded once a guild is named (assets/js/guild_flair.js) #}
+            <div class="mt-3" id="forward-flair-field" hidden>
+              <label class="text-small font-weight-bold mb-1" for="forward-flair">Flair <span class="text-muted font-weight-normal" id="forward-flair-required" hidden>(required in this guild)</span></label>
+              <select class="custom-select" id="forward-flair"></select>
+            </div>
           </div>
           <div id="forwardPostError" class="text-danger px-3 pb-2 d-none small"></div>
           <div class="modal-footer">

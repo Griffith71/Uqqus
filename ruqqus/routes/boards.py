@@ -6,7 +6,7 @@ import cssutils
 import sass
 
 from ruqqus.helpers.wrappers import *
-from ruqqus.helpers.visibility import filter_posts, filter_boards, viewer_level, board_hidden, hidden_notice
+from ruqqus.helpers.visibility import filter_posts, filter_boards, viewer_level, board_hidden, hidden_notice, text_hidden
 from ruqqus.helpers.base36 import *
 from ruqqus.helpers.sanitize import *
 from ruqqus.helpers.markdown import *
@@ -28,6 +28,7 @@ from ruqqus.helpers.blocks import hide_blocked
 from ruqqus.helpers import guild_limits
 from ruqqus.helpers import circle_store
 from ruqqus.helpers import deletion_log as log_rules
+from ruqqus.helpers import guild_flair, guild_flair_store
 
 # the templates quote the per-person cap (home sidebar, siege help) from the one place that sets it
 app.jinja_env.globals.update(GUILD_LIMIT_PER_PERSON=guild_limits.PER_PERSON,
@@ -365,10 +366,17 @@ Optional query parameters:
     page = page_number()
     ignore_pinned = bool(request.args.get("ignore_pinned", False))
 
+    # the guild's flairs, and the ones this reader filters by (helpers/guild_flair.py)
+    flair_rows = guild_flair_store.flairs_of(g.db, board.id)
+    chosen_flairs = guild_flair.parse_filter(request.args.getlist("flair"), [f[0] for f in flair_rows])
+    if chosen_flairs:
+        ignore_pinned = True             # a pinned post may not have the flair asked for
+
     ids = board.idlist(sort=sort,
                        t=t,
                        page=page,
                        v=v,
+                       flairs=chosen_flairs,
                        filter_level=viewer_level(v),
                        gt=int(request.args.get("utc_greater_than", 0)),
                        lt=int(request.args.get("utc_less_than", 0))
@@ -387,16 +395,25 @@ Optional query parameters:
         stickies = stickies.order_by(Submission.id.asc()).limit(4)
         stickies = [x[0] for x in stickies]
         ids = stickies + ids
+    else:
+        stickies = []
 
     posts = get_posts(ids,
                       sort=sort,
                       v=v)
+    # the page draws the pinned posts as their own row above the feed; the API keeps them first in `data`
+    pinned_set = set(stickies)
+    pinned_posts = [p for p in posts if p.id in pinned_set]
+    feed_posts = [p for p in posts if p.id not in pinned_set]
 
     return {'html': lambda: render_template("board.html",
                                             b=board,
                                             v=v,
                                             time_filter=t,
-                                            listing=posts,
+                                            guild_flairs=[f for f in flair_rows if not text_hidden(f[5], v)],
+                                            chosen_flairs=chosen_flairs,
+                                            listing=feed_posts,
+                                            pinned_posts=pinned_posts,
                                             next_exists=next_exists,
                                             sort_method=sort,
                                             page=page#,
@@ -1739,7 +1756,7 @@ def all_mod_queue(v):
         ModRelationship.user_id==v.id, 
         ModRelationship.accepted==True, 
         or_(ModRelationship.perm_content==True, ModRelationship.perm_full==True)
-    ).subquery()
+    ).scalar_subquery()
 
     ids = g.db.query(Submission.id).options(lazyload('*')).filter(Submission.board_id.in_(board_ids),
                                                                   Submission.mod_approved==None,
@@ -1774,7 +1791,7 @@ def all_mod_queue(v):
 def mod_board_images_profile(bid, board, v):
 
     if request.headers.get("cf-ipcountry")=="T1" and not v.is_activated:
-        return jsonfiy({"error":"You must have a verified email address to upload images via Tor."}), 401
+        return jsonify({"error":"You must have a verified email address to upload images via Tor."}), 401
 
     board.set_profile(request.files["profile"])
 
@@ -1947,7 +1964,6 @@ def mod_board_color(bid, board, v):
 
     try:
         cache.delete_memoized(board_css, board.name)
-        cache.delete_memoized(board_dark_css, board.name)
     except BaseException:
         pass
 

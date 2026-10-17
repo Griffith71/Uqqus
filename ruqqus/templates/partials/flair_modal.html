@@ -1,0 +1,21 @@
+{# "Set flair" on a guild's copy of a post (routes/guild_flair.py post_flair_set; assets/js/guild_flair.js): whoever
+   forwarded it, or a guildmaster with content permission. The guild's flairs are read when it opens. #}
+<div class="modal fade" id="setFlairModal" tabindex="-1" role="dialog" aria-labelledby="setFlairModalTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="setFlairModalTitle">Set flair</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true"><i class="fas fa-times"></i></span></button>
+      </div>
+      <div class="modal-body">
+        <label class="text-small font-weight-bold mb-1" for="set-flair-select">Flair in <span id="set-flair-guild"></span></label>
+        <select class="custom-select" id="set-flair-select"></select>
+        <div class="text-danger small mt-2" id="set-flair-error" role="alert" hidden></div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-link text-muted" data-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-primary" id="set-flair-save">Save</button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,72 @@
+{% extends "guild/guild_settings.html" %}
+
+{# A guild's pinned resources (routes/guild_wiki.py, helpers/guild_wiki.py): up to `max_resources` buttons under the
+   guild's header, each a link, a wiki page or a post. Labels are plain text; links are checked like a profile's
+   website and the banned-domain list. #}
+
+{% block pagetitle %}+{{ b.name }} Resources{% endblock %}
+
+{% block content %}
+<div class="row">
+  <div class="col" id="guild-resources-settings" data-base="/mod/{{ b.base36id }}/resources">
+
+    <h2 class="h5">Resources</h2>
+    <p class="text-small text-muted">Buttons under +{{ b.name }}'s header: a guide, a wiki page, a post everyone should read. Up to {{ max_resources }}. A post a reader can't open is left out for them.</p>
+
+    <div class="settings-section rounded mb-4">
+      <div class="d-lg-flex">
+        <div class="title w-lg-25"><label for="wiki-enabled">Wiki</label></div>
+        <div class="body w-lg-100">
+          <div class="custom-control custom-switch">
+            <input type="checkbox" class="custom-control-input" id="wiki-enabled"{% if b.wiki_enabled %} checked{% endif %}
+              data-guild-toggle="/mod/{{ b.base36id }}/wiki/enable">
+            <label class="custom-control-label" for="wiki-enabled">+{{ b.name }} has a wiki</label>
+          </div>
+          <span class="d-block mt-1 text-small-extra text-muted">Its pages are at <a class="guild-inline-link" href="{{ b.permalink }}/wiki">{{ b.permalink }}/wiki</a>. Each page says who may edit it.</span>
+        </div>
+      </div>
+    </div>
+
+    <h3 class="h6">Add a resource</h3>
+    <form class="d-flex flex-wrap align-items-end mb-4" action="/mod/{{ b.base36id }}/resources/add" data-guild-form style="gap: 0.5rem;">
+      <div>
+        <label class="text-small mb-1" for="resource-label">Label</label>
+        <input type="text" class="form-control" id="resource-label" name="label" maxlength="{{ label_max }}" required>
+      </div>
+      <div>
+        <label class="text-small mb-1" for="resource-kind">Kind</label>
+        <select class="custom-select" id="resource-kind" name="kind">
+          <option value="link">Link</option>
+          <option value="wiki">Wiki page</option>
+          <option value="post">Post</option>
+        </select>
+      </div>
+      <div class="flex-grow-1">
+        <label class="text-small mb-1" for="resource-target">Address, page or post</label>
+        <input type="text" class="form-control" id="resource-target" name="target" list="resource-pages" placeholder="https://… · page-address · post link" required>
+        <datalist id="resource-pages">{% for pg in pages %}<option value="{{ pg[2] }}">{{ pg[3] }}</option>{% endfor %}</datalist>
+      </div>
+      <button type="submit" class="btn btn-primary"{% if resources | length >= max_resources %} disabled{% endif %}>Add</button>
+      <div class="text-danger small w-100" role="alert" hidden></div>
+    </form>
+
+    <div class="settings-section rounded">
+      {% for r in resources %}
+      <div class="d-flex flex-wrap align-items-center px-3 py-2{% if not loop.first %} border-top{% endif %}" style="gap: 0.5rem;">
+        <i class="fas fa-fw {{ 'fa-link' if r[3] == 'link' else ('fa-book' if r[3] == 'wiki' else 'fa-thumbtack') }} text-muted" aria-hidden="true"></i>
+        <strong>{{ r[2] }}</strong>
+        <span class="text-muted text-small text-break">{{ r[4] }}</span>
+        <button type="button" class="btn btn-sm btn-link ml-auto" data-guild-post="/mod/{{ b.base36id }}/resources/{{ r[0] }}/move?step=up" aria-label="Move {{ r[2] }} up"{% if loop.first %} disabled{% endif %}><i class="fas fa-arrow-up" aria-hidden="true"></i></button>
+        <button type="button" class="btn btn-sm btn-link" data-guild-post="/mod/{{ b.base36id }}/resources/{{ r[0] }}/move?step=down" aria-label="Move {{ r[2] }} down"{% if loop.last %} disabled{% endif %}><i class="fas fa-arrow-down" aria-hidden="true"></i></button>
+        <button type="button" class="btn btn-sm btn-link text-danger" data-guild-post="/mod/{{ b.base36id }}/resources/{{ r[0] }}/delete" data-confirm="Remove {{ r[2] }}?">Remove</button>
+      </div>
+      {% else %}
+      <div class="px-3 py-3 text-muted text-small">No resources yet.</div>
+      {% endfor %}
+    </div>
+
+  </div>
+</div>
+
+<script src="{{ asset_url('js/guild_pages.js') }}"></script>
+{% endblock %}

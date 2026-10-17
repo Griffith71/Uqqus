@@ -1,0 +1,37 @@
+{% extends "guild/guild_tab_page.html" %}
+{#
+  Editing a wiki page (routes/guild_wiki.py `guild_wiki_save`): the post editor's toolbar and Write / Preview
+  (assets/js/post_editor.js, loaded by default.html; previews through /api/preview, the renderer a saved page uses),
+  a title, the text and an optional reason that the history shows. Saving makes a new revision.
+#}
+{% set tab = "wiki" %}
+
+{% block pagetitle %}Edit {{ page[3] if page else slug }}{% endblock %}
+
+{% block guildbody %}
+<div class="wiki-main">
+  <h1 class="h4">{% if page %}Edit {{ page[3] }}{% else %}New page: /wiki/{{ slug }}{% endif %}</h1>
+  <form action="{{ b.permalink }}/wiki/{{ slug }}/edit" data-guild-form class="wiki-editor">
+    <div class="form-group">
+      <label for="wiki-title" class="text-small font-weight-bold">Title</label>
+      <input type="text" class="form-control" id="wiki-title" name="title" maxlength="{{ title_max }}" value="{{ page[3] if page else '' }}">
+      {# the revision this edit starts from: a save made on an older one is refused as an edit conflict #}
+      <input type="hidden" name="base_revision" value="{{ page[5] if page else 0 }}">
+    </div>
+    <div class="form-group comment-write post-editor">
+      <label for="wiki-body" class="text-small font-weight-bold">Text</label>
+      <div class="post-toolbar" data-target="wiki-body"></div>
+      <textarea id="wiki-body" name="body" class="comment-box form-control rounded" rows="18" maxlength="{{ wiki_max }}">{{ rev[3] if rev else '' }}</textarea>
+      <div class="post-preview d-none"></div>
+      <small class="form-text text-muted">Markdown, up to {{ "{:,}".format(wiki_max) }} characters. Every saved version stays in the page's public history.</small>
+    </div>
+    <div class="form-group">
+      <label for="wiki-reason" class="text-small font-weight-bold">What changed <span class="text-muted font-weight-normal">(optional)</span></label>
+      <input type="text" class="form-control" id="wiki-reason" name="reason" maxlength="{{ reason_max }}">
+    </div>
+    <button type="submit" class="btn btn-primary">Save</button>
+    <a class="btn btn-link text-muted" href="{{ b.permalink }}/wiki{% if page %}/{{ slug }}{% endif %}">Cancel</a>
+    <div class="text-danger small mt-2" role="alert" hidden></div>
+  </form>
+</div>
+{% endblock %}

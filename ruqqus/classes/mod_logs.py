@@ -258,6 +258,93 @@ ACTIONTYPES={
         "color": "bg-muted",
         "title": 'un-pinned a comment'
     },
+    # guild flair (helpers/guild_flair.py); the note is the flair's name, escaped when it was written
+    "flair_create":{
+        "str":'added a flair',
+        "icon":"fa-tag",
+        "color": "bg-primary",
+        "title": 'added a flair'
+    },
+    "flair_edit":{
+        "str":'changed a flair',
+        "icon":"fa-tag",
+        "color": "bg-primary",
+        "title": 'changed a flair'
+    },
+    "flair_delete":{
+        "str":'deleted a flair',
+        "icon":"fa-tag",
+        "color": "bg-danger",
+        "title": 'deleted a flair'
+    },
+    "flair_settings":{
+        "str":'changed whether forwards need a flair',
+        "icon":"fa-tag",
+        "color": "bg-primary",
+        "title": 'changed whether forwards need a flair'
+    },
+    # guild wiki and resources (helpers/guild_wiki.py); the note is the page's address, escaped when it was written
+    "wiki_edit":{
+        "str":'edited a wiki page',
+        "icon":"fa-book",
+        "color": "bg-primary",
+        "title": 'edited a wiki page'
+    },
+    "wiki_restore":{
+        "str":'restored a wiki page revision',
+        "icon":"fa-book",
+        "color": "bg-primary",
+        "title": 'restored a wiki page revision'
+    },
+    "wiki_settings":{
+        "str":'changed who may edit a wiki page',
+        "icon":"fa-book",
+        "color": "bg-primary",
+        "title": 'changed who may edit a wiki page'
+    },
+    "wiki_delete":{
+        "str":'deleted a wiki page',
+        "icon":"fa-book",
+        "color": "bg-danger",
+        "title": 'deleted a wiki page'
+    },
+    "wiki_toggle":{
+        "str":'switched the wiki',
+        "icon":"fa-book",
+        "color": "bg-primary",
+        "title": 'switched the wiki'
+    },
+    "resources_edit":{
+        "str":'changed the pinned resources',
+        "icon":"fa-thumbtack",
+        "color": "bg-primary",
+        "title": 'changed the pinned resources'
+    },
+    # guild events (helpers/guild_events.py); the note is the event's title, escaped when it was written
+    "event_create":{
+        "str":'created an event',
+        "icon":"fa-calendar-days",
+        "color": "bg-primary",
+        "title": 'created an event'
+    },
+    "event_edit":{
+        "str":'edited an event',
+        "icon":"fa-calendar-days",
+        "color": "bg-primary",
+        "title": 'edited an event'
+    },
+    "event_cancel":{
+        "str":'cancelled an event',
+        "icon":"fa-calendar-xmark",
+        "color": "bg-danger",
+        "title": 'cancelled an event'
+    },
+    "set_post_flair":{
+        "str":'set the flair of post {self.target_link}',
+        "icon":"fa-tag",
+        "color": "bg-primary",
+        "title": 'set the flair of post {self.target_post.title}'
+    },
     "pin_post":{
         "str":'pinned post {self.target_link}',
         "icon":"fa-thumbtack fa-rotate--45",

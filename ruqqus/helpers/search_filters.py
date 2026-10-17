@@ -16,7 +16,7 @@ Anonymity: `from:@x` leaves out x's anonymous posts (unless the viewer is x or a
 import re
 from dataclasses import replace
 
-from sqlalchemy import and_, exists, func, not_, or_, select
+from sqlalchemy import and_, column, exists, func, not_, or_, select, table
 
 from ruqqus.helpers import anonymity
 from ruqqus.helpers import search_query as sq
@@ -143,6 +143,13 @@ def _condition(part, v):
         if negated:
             return not_(func.coalesce(SubmissionAux.url, "").ilike(pattern, escape="\\"))
         return SubmissionAux.url.ilike(pattern, escape="\\")
+    if k == "flair":
+        # a guild's copy carries the flair (helpers/guild_flair.py): its flair is one with this name, ignoring case
+        flairs = table("guild_flairs", column("id"), column("name"))
+        named = select(flairs.c.id).where(func.lower(flairs.c.name) == value.lower())
+        if negated:
+            return or_(Submission.guild_flair_id.is_(None), not_(Submission.guild_flair_id.in_(named)))
+        return Submission.guild_flair_id.in_(named)
     if k == "min_votes":
         return func.coalesce(Submission.upvotes, 0) - func.coalesce(Submission.downvotes, 0) >= int(value)
     if k == "min_comments":

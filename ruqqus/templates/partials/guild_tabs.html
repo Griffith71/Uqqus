@@ -1,0 +1,57 @@
+{#
+  What a guild draws above its posts (board.html's `feedtop`) and on its Wiki and Events pages (guild/guild_tab_page.html).
+
+  guild_tabs(b, v, active): Posts · Wiki · Events. Wiki shows while the wiki is on (or to the guildmasters who can
+  switch it on); Events while the guild has an event coming (or to the guildmasters who make them).
+  guild_resources(b, v): the guild's pinned resources (helpers/guild_wiki.py), as this reader may follow them
+  (`guild_resources_for`: a post they can't open is left out). Links leave the site with nofollow.
+  pinned_row(posts): the guild's pinned posts as one row above the feed instead of mixed into its first page.
+#}
+{% from "partials/guild_flair.html" import flair_chip %}
+
+{% macro guild_tabs(b, v, active) %}
+{% set gm = b.has_mod(v, "content") %}
+{% set show_wiki = b.wiki_enabled or gm %}
+{% set show_events = gm or guild_has_events(b, v) %}
+{% if show_wiki or show_events %}
+<nav class="guild-tabs" aria-label="+{{ b.name }}">
+  <a class="guild-tab{% if active == 'posts' %} is-on{% endif %}" href="{{ b.permalink }}"{% if active == 'posts' %} aria-current="page"{% endif %}><i class="fas fa-newspaper fa-fw" aria-hidden="true"></i>Posts</a>
+  {% if show_wiki %}
+  <a class="guild-tab{% if active == 'wiki' %} is-on{% endif %}" href="{{ b.permalink }}/wiki"{% if active == 'wiki' %} aria-current="page"{% endif %}><i class="fas fa-book fa-fw" aria-hidden="true"></i>Wiki{% if not b.wiki_enabled %} <span class="text-muted text-small-extra">(off)</span>{% endif %}</a>
+  {% endif %}
+  {% if show_events %}
+  <a class="guild-tab{% if active == 'events' %} is-on{% endif %}" href="{{ b.permalink }}/events"{% if active == 'events' %} aria-current="page"{% endif %}><i class="fas fa-calendar-days fa-fw" aria-hidden="true"></i>Events</a>
+  {% endif %}
+</nav>
+{% endif %}
+{% endmacro %}
+
+{% macro guild_resources(b, v) %}
+{% set items = guild_resources_for(b, v) %}
+{% if items %}
+<nav class="guild-resources" aria-label="Resources">
+  {% for r in items %}
+  <a class="guild-resource" href="{{ r.href }}"{% if r.external %} rel="nofollow ugc noopener noreferrer" target="_blank"{% endif %}>
+    <i class="fas fa-fw {{ 'fa-link' if r.kind == 'link' else ('fa-book' if r.kind == 'wiki' else 'fa-thumbtack') }}" aria-hidden="true"></i>{{ r.label }}
+  </a>
+  {% endfor %}
+</nav>
+{% endif %}
+{% endmacro %}
+
+{% macro pinned_row(posts) %}
+{% if posts %}
+<section class="guild-pinned" aria-label="Pinned posts">
+  <div class="guild-pinned-title"><i class="fas fa-thumbtack fa-fw" aria-hidden="true"></i>Pinned</div>
+  <ul class="guild-pinned-list">
+    {% for p in posts %}
+    <li class="guild-pinned-item" id="pinned-{{ p.base36id }}">
+      <a href="{{ p.permalink }}">{{ flair_chip(flair_of(p)) }}{{ p.title | safe }}</a>
+      <span class="text-muted text-small-extra">{{ p.comment_count }} comment{{ 's' if p.comment_count != 1 else '' }}</span>
+    </li>
+    {% endfor %}
+  </ul>
+</section>
+{% endif %}
+{% endmacro %}
+

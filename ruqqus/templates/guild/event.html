@@ -1,0 +1,67 @@
+{% extends "guild/guild_tab_page.html" %}
+{#
+  One guild event (routes/guild_events.py). Its details are their stored HTML, sanitized when written (the only
+  `| safe`); a title the reader's word filter hides shows a notice. Going / Interested shows counts and the reader's own
+  answer, never who. Add to calendar (.ics) is offered for public guilds only.
+#}
+{% block pagetitle %}{{ event.title }}{% endblock %}
+
+{% block guildbody %}
+<article class="event-page" data-event="{{ event.id }}" data-rsvp="{{ b.permalink }}/events/{{ event.id }}/rsvp">
+  <p class="mb-2"><a href="{{ b.permalink }}/events"><i class="fas fa-arrow-left fa-fw" aria-hidden="true"></i>Events</a></p>
+  {% if event.status == 'cancelled' %}<div class="alert alert-secondary" role="status"><i class="fas fa-calendar-xmark mr-2" aria-hidden="true"></i>This event was cancelled.</div>{% endif %}
+  <h1 class="h4 mb-2">{{ event.title }}</h1>
+
+  <dl class="event-facts">
+    <dt><i class="fas fa-clock fa-fw" aria-hidden="true"></i><span class="sr-only">When</span></dt>
+    <dd>
+      <time class="event-time" datetime="{{ event.starts_utc | iso_utc }}" data-utc="{{ event.starts_utc }}" data-end="{{ event.ends_utc }}" data-long>{{ event.starts_utc | timestamp_label }} to {{ event.ends_utc | timestamp_label }}</time>
+      {% if event.status == 'live' %}<span class="badge badge-danger ml-1">Happening now</span>{% elif event.status == 'over' %}<span class="badge badge-light ml-1">Over</span>{% endif %}
+    </dd>
+    {% if event.location_text or event.location_url %}
+    <dt><i class="fas fa-location-dot fa-fw" aria-hidden="true"></i><span class="sr-only">Where</span></dt>
+    <dd>
+      {% if event.location_text %}{{ event.location_text }}{% endif %}
+      {% if event.location_url %}{% if event.location_text %} · {% endif %}<a href="{{ event.location_url }}" rel="nofollow ugc noopener noreferrer" target="_blank">{{ event.location_url | link_host }}</a>{% endif %}
+    </dd>
+    {% endif %}
+  </dl>
+
+  <div class="event-rsvp" aria-live="polite">
+    <div class="event-counts"><strong data-count="going">{{ event.going }}</strong> going · <strong data-count="interested">{{ event.interested }}</strong> interested</div>
+    {% if not rsvp_refusal %}
+    <div class="event-rsvp-buttons" role="group" aria-label="Your answer">
+      <button type="button" class="btn btn-sm {{ 'btn-primary' if mine == 'going' else 'btn-secondary' }}" data-rsvp-status="going" aria-pressed="{{ 'true' if mine == 'going' else 'false' }}"><i class="fas fa-check fa-fw" aria-hidden="true"></i>Going</button>
+      <button type="button" class="btn btn-sm {{ 'btn-primary' if mine == 'interested' else 'btn-secondary' }}" data-rsvp-status="interested" aria-pressed="{{ 'true' if mine == 'interested' else 'false' }}"><i class="fas fa-star fa-fw" aria-hidden="true"></i>Interested</button>
+      <button type="button" class="btn btn-sm btn-link text-muted" data-rsvp-status="none"{% if not mine %} hidden{% endif %}>Not going</button>
+    </div>
+    <div class="text-muted text-small-extra mt-1">Only the numbers are shown: nobody sees who answered. You'll get a reminder an hour before.</div>
+    {% elif not v %}
+    <a class="btn btn-sm btn-primary" href="/login?redirect={{ request.path | urlencode }}">Sign in to answer</a>
+    {% else %}
+    <div class="text-muted text-small">{{ rsvp_refusal }}</div>
+    {% endif %}
+    <div class="text-danger small mt-1" role="alert" hidden></div>
+  </div>
+
+  {% if event.hidden %}
+  <div class="alert alert-secondary text-small mt-3" role="status">Hidden by your word filter.</div>
+  {% elif event.details_html %}
+  <div class="event-details user-text mt-3">{{ event.details_html | safe }}</div>
+  {% endif %}
+
+  {% if space_post %}
+  {% from "partials/space_card.html" import space_block %}
+  <div class="mt-3">{{ space_block(space_post, v) }}</div>
+  {% endif %}
+
+  <div class="event-actions mt-4 d-flex flex-wrap align-items-center">
+    {% if ics %}<a class="btn btn-sm btn-link px-0 mr-3" href="{{ b.permalink }}/events/{{ event.id }}.ics"><i class="fas fa-calendar-plus fa-fw" aria-hidden="true"></i>Add to calendar</a>{% endif %}
+    {% if gm and event.status != 'cancelled' %}
+    <a class="btn btn-sm btn-link px-0 mr-3" href="{{ b.permalink }}/events/{{ event.id }}/edit"><i class="fas fa-pen fa-fw" aria-hidden="true"></i>Edit</a>
+    <button type="button" class="btn btn-sm btn-link text-danger px-0" data-guild-post="{{ b.permalink }}/events/{{ event.id }}/cancel" data-confirm="Cancel this event? Its page stays, marked Cancelled.">Cancel the event</button>
+    {% endif %}
+  </div>
+</article>
+<script src="{{ asset_url('js/guild_events.js') }}"></script>
+{% endblock %}

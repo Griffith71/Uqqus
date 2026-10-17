@@ -6,7 +6,7 @@
       <div class="modal-header position-relative border-0" style="background-image: url({{ board.banner_url }}); height: 100px; overflow: hidden; object-fit: cover; background-size: cover;">
         <div class="white-overlay position-absolute w-100 h-100" style="left: 0; top: 0; background-color: rgba(255, 255, 255, 0.5); background-image: linear-gradient(180deg, #ffffff00 25%, #ffffff 100%);"></div>
         <div style="z-index: 1" class="d-flex align-items-center my-auto">
-          <img src="{{ board.profile_url }}" class="profile-pic-65 bg-white mr-3"><h5 class="modal-title h4">+{{ board.name }}
+          <img alt="" src="{{ board.profile_url }}" class="profile-pic-65 bg-white mr-3"><h5 class="modal-title h4">+{{ board.name }}
           {% if board.is_sensitive %}
           <span class="badge badge-warning text-small ml-2" data-toggle="tooltip" data-placement="bottom" title="This guild discusses sensitive topics">Sensitive Content</span>
           {% endif %}
@@ -64,7 +64,7 @@
           <li>
             <span class="text-black font-weight-bold">Do not harass other users</span>
             <p style="padding: 0 0 0 22px;">
-              Do not harass or threaten others on Ruqqus. You are not allowed to share or publish personal information, either yours or another person.
+              Do not harass or threaten others on {{ 'SITE_NAME' | app_config }}. You are not allowed to share or publish personal information, either yours or another person.
             </p>
           </li>
           <li>
@@ -76,7 +76,7 @@
           <li>
             <span class="text-black font-weight-bold">Check for duplicates</span>
             <p style="padding: 0 0 0 22px;">
-              Nobody likes reposts. Please make sure the content you're posting hasn't been posted on Ruqqus before.
+              Nobody likes reposts. Please make sure the content you're posting hasn't been posted on {{ 'SITE_NAME' | app_config }} before.
             </p>
           </li>
         </ol>

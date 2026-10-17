@@ -1,0 +1,38 @@
+{#
+  Guild flair (helpers/guild_flair.py, routes/guild_flair.py).
+
+  flair_chip(f): the coloured chip before a title (f from `flair_of(p)`: {"id", "name", "colour"}). The colour is one of
+  the fixed palette's names (`.flair-<colour>` in both stylesheets); the name is plain text, escaped.
+  flair_filter(b, flairs, chosen, sort, t): the guild's row of flairs above its posts: pressing one adds it to the
+  filter or takes it out (`?flair=3&flair=7`, the guild's own ids only), "All" clears it. Plain links: it works without
+  script, and the continuous feed follows the Next link, which keeps the filter.
+#}
+{% macro flair_chip(f) %}
+{% if f %}<span class="flair-chip flair-{{ f.colour }}">{{ f.name }}</span>{% endif %}
+{% endmacro %}
+
+{% macro flair_filter(b, flairs, chosen, sort, t) %}
+{% if flairs %}
+<nav class="flair-filter" aria-label="Filter +{{ b.name }} by flair">
+  <a class="flair-filter-all{% if not chosen %} is-on{% endif %}" href="{{ b.permalink }}?sort={{ sort }}&t={{ t }}"{% if not chosen %} aria-current="true"{% endif %}>All</a>
+  {% for f in flairs %}
+    {% set on = f[0] in chosen %}
+    {% set next = (chosen | reject("equalto", f[0]) | list) if on else ((chosen | list) + [f[0]]) %}
+    <a class="flair-chip flair-{{ f[3] }} flair-filter-chip{% if on %} is-on{% endif %}" href="{{ b.permalink }}?sort={{ sort }}&t={{ t }}{% for fid in next %}&flair={{ fid }}{% endfor %}"
+       aria-pressed="{{ 'true' if on else 'false' }}" role="button">{{ f[2] }}</a>
+  {% endfor %}
+</nav>
+{% endif %}
+{% endmacro %}
+
+{% macro flair_item(p, v) %}
+{% if may_set_flair(p, v) %}
+<a class="dropdown-item" href="javascript:void(0)" data-set-flair="{{ p.base36id }}" data-guild="{{ p.board.name }}"><i class="fas fa-tag fa-fw"></i>Set flair</a>
+{% endif %}
+{% endmacro %}
+
+{% macro flair_button(p, v) %}
+{% if may_set_flair(p, v) %}
+<button class="btn btn-link btn-block btn-lg text-left text-muted" data-dismiss="modal" data-set-flair="{{ p.base36id }}" data-guild="{{ p.board.name }}"><i class="fas fa-tag fa-fw text-center text-muted mr-3"></i>Set flair</button>
+{% endif %}
+{% endmacro %}

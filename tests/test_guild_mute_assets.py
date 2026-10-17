@@ -43,7 +43,7 @@ def test_following_and_the_for_you_weights_leave_a_muted_guild_out():
 
 
 def test_a_member_who_muted_the_guild_is_not_rung_for_its_posts():
-    assert "g.db.query(BoardBlock.user_id).filter_by(board_id=new_post.board_id).subquery()" in POSTS
+    assert "g.db.query(BoardBlock.user_id).filter_by(board_id=new_post.board_id).scalar_subquery()" in POSTS
 
 
 def test_both_mute_urls_work_and_every_cache_is_cleared():

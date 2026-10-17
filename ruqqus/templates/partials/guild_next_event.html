@@ -1,0 +1,15 @@
+{# The guild sidebar's "Next event" box (routes/guild_events.py `guild_next_event`): the soonest event not cancelled or
+   over, with its counts (never who). The time is written in the reader's zone by guild_events.js when it is loaded. #}
+{% set e = guild_next_event(b, v) %}
+{% if e %}
+<div class="sidebar-section sidebar-info guild-next-event">
+  <div class="title"><i class="fas fa-calendar-days mr-2" aria-hidden="true"></i>Next event</div>
+  <div class="body">
+    <a class="font-weight-bold d-block text-break" href="{{ b.permalink }}/events/{{ e.id }}">{{ e.title }}</a>
+    <time class="event-time text-muted text-small d-block" datetime="{{ e.starts_utc | iso_utc }}" data-utc="{{ e.starts_utc }}" data-end="{{ e.ends_utc }}">{{ e.starts_utc | timestamp_label }}</time>
+    <div class="text-muted text-small-extra">{{ e.going }} going · {{ e.interested }} interested</div>
+    <a class="text-small" href="{{ b.permalink }}/events">All events</a>
+  </div>
+</div>
+<script src="{{ asset_url('js/guild_events.js') }}" defer></script>
+{% endif %}

@@ -1,0 +1,69 @@
+{% extends "guild/guild_settings.html" %}
+
+{# A guild's flairs (routes/guild_flair.py, helpers/guild_flair.py): add, rename, recolour, reorder, delete, and whether
+   every forward needs one. Colours are the fixed palette's names; names are plain text. #}
+
+{% block pagetitle %}+{{ b.name }} Flair{% endblock %}
+
+{% block content %}
+<div class="row">
+  <div class="col" id="guild-flair" data-base="/mod/{{ b.base36id }}/flair">
+
+    <h2 class="h5">Flair</h2>
+    <p class="text-small text-muted">Flairs tag the posts forwarded to +{{ b.name }}, and readers filter the guild by them. Whoever forwards a post picks one; you can change it from the post's menu (Set flair). Up to {{ max_flairs }}.</p>
+
+    <div class="settings-section rounded mb-4">
+      <div class="d-lg-flex">
+        <div class="title w-lg-25"><label for="flair-require">Require a flair</label></div>
+        <div class="body w-lg-100">
+          <div class="custom-control custom-switch">
+            <input type="checkbox" class="custom-control-input" id="flair-require"{% if b.require_flair %} checked{% endif %}
+              onchange="post_toast('/mod/{{ b.base36id }}/flair/require?setting=' + this.checked)">
+            <label class="custom-control-label" for="flair-require">Every forward to +{{ b.name }} needs a flair</label>
+          </div>
+          <span class="d-block mt-1 text-small-extra text-muted">Forwards then come from the post's Forward dialog, where a flair is picked.</span>
+        </div>
+      </div>
+    </div>
+
+    <h3 class="h6">Add a flair</h3>
+    <form class="d-flex flex-wrap align-items-end mb-4" id="flair-add" onsubmit="return false;" style="gap: 0.5rem;">
+      <div>
+        <label class="text-small mb-1" for="flair-add-name">Name</label>
+        <input type="text" class="form-control" id="flair-add-name" maxlength="{{ name_max }}" required>
+      </div>
+      <div>
+        <label class="text-small mb-1" for="flair-add-colour">Colour</label>
+        <select class="custom-select" id="flair-add-colour">
+          {% for c in colours %}<option value="{{ c }}">{{ c | capitalize }}</option>{% endfor %}
+        </select>
+      </div>
+      <button type="submit" class="btn btn-primary" id="flair-add-button"{% if flairs | length >= max_flairs %} disabled{% endif %}>Add</button>
+    </form>
+
+    <div class="settings-section rounded" id="flair-list">
+      {% for f in flairs %}
+      <div class="d-flex flex-wrap align-items-center px-3 py-2{% if not loop.first %} border-top{% endif %}" data-flair="{{ f[0] }}" style="gap: 0.5rem;">
+        <span class="flair-chip flair-{{ f[3] }}">{{ f[2] }}</span>
+        <label class="sr-only" for="flair-name-{{ f[0] }}">Name</label>
+        <input type="text" class="form-control form-control-sm w-auto" id="flair-name-{{ f[0] }}" value="{{ f[2] }}" maxlength="{{ name_max }}">
+        <label class="sr-only" for="flair-colour-{{ f[0] }}">Colour</label>
+        <select class="custom-select custom-select-sm w-auto" id="flair-colour-{{ f[0] }}">
+          {% for c in colours %}<option value="{{ c }}"{% if c == f[3] %} selected{% endif %}>{{ c | capitalize }}</option>{% endfor %}
+        </select>
+        <button type="button" class="btn btn-sm btn-secondary" data-flair-save="{{ f[0] }}">Save</button>
+        <button type="button" class="btn btn-sm btn-link" data-flair-move="{{ f[0] }}" data-step="up" aria-label="Move {{ f[2] }} up"{% if loop.first %} disabled{% endif %}><i class="fas fa-arrow-up" aria-hidden="true"></i></button>
+        <button type="button" class="btn btn-sm btn-link" data-flair-move="{{ f[0] }}" data-step="down" aria-label="Move {{ f[2] }} down"{% if loop.last %} disabled{% endif %}><i class="fas fa-arrow-down" aria-hidden="true"></i></button>
+        <button type="button" class="btn btn-sm btn-link text-danger ml-auto" data-flair-delete="{{ f[0] }}" data-name="{{ f[2] }}">Delete</button>
+      </div>
+      {% else %}
+      <div class="px-3 py-3 text-muted text-small" id="flair-empty">No flairs yet.</div>
+      {% endfor %}
+    </div>
+    <div class="text-danger small mt-2" id="flair-error" role="alert" hidden></div>
+
+  </div>
+</div>
+
+<script src="{{ asset_url('js/guild_flair_settings.js') }}"></script>
+{% endblock %}

@@ -1,0 +1,77 @@
+{% extends "guild/guild_tab_page.html" %}
+{#
+  A guild's events (routes/guild_events.py, helpers/guild_events.py): Upcoming (a list) and Calendar (a month grid,
+  Monday first). Times are Unix times on `data-utc` that assets/js/guild_events.js writes in the reader's own time zone;
+  the server's UTC text is what shows without script. On the calendar the server puts each event on its UTC day and
+  the script moves it to the reader's own day. Counts only, never who answered.
+#}
+{% block pagetitle %}Events{% endblock %}
+
+{% macro when(e) %}<time class="event-time" datetime="{{ e.starts_utc | iso_utc }}" data-utc="{{ e.starts_utc }}" data-end="{{ e.ends_utc }}">{{ e.starts_utc | timestamp_label }}</time>{% endmacro %}
+
+{% macro event_row(e) %}
+<li class="event-row is-{{ e.status }}">
+  <div class="event-row-date" aria-hidden="true" data-utc="{{ e.starts_utc }}" data-day-badge>{{ e.starts_utc | day_badge }}</div>
+  <div class="event-row-text">
+    <a class="event-row-title" href="{{ b.permalink }}/events/{{ e.id }}">{{ e.title }}</a>
+    <div class="text-muted text-small">
+      {% if e.status == 'cancelled' %}<span class="badge badge-secondary mr-1">Cancelled</span>{% elif e.status == 'live' %}<span class="badge badge-danger mr-1">Happening now</span>{% endif %}
+      {{ when(e) }}{% if e.location_text %} · {{ e.location_text }}{% elif e.location_url %} · Online{% endif %}
+    </div>
+    <div class="text-muted text-small-extra">{{ e.going }} going · {{ e.interested }} interested</div>
+  </div>
+</li>
+{% endmacro %}
+
+{% block guildbody %}
+<div class="events-head d-flex flex-wrap align-items-center mb-3">
+  <nav class="events-views" aria-label="Events view">
+    <a class="events-view{% if view == 'list' %} is-on{% endif %}" href="{{ b.permalink }}/events"{% if view == 'list' %} aria-current="page"{% endif %}>Upcoming</a>
+    <a class="events-view{% if view == 'calendar' %} is-on{% endif %}" href="{{ b.permalink }}/events/calendar"{% if view == 'calendar' %} aria-current="page"{% endif %}>Calendar</a>
+  </nav>
+  <div class="ml-auto d-flex align-items-center">
+    {% if ics %}<a class="btn btn-sm btn-link text-muted" href="{{ b.permalink }}/events.ics" title="Subscribe in your calendar app"><i class="fas fa-calendar fa-fw" aria-hidden="true"></i>Subscribe</a>{% endif %}
+    {% if gm %}<a class="btn btn-sm btn-primary" href="{{ b.permalink }}/events/new"><i class="fas fa-plus fa-fw" aria-hidden="true"></i>New event</a>{% endif %}
+  </div>
+</div>
+
+{% if view == 'list' %}
+  <h2 class="h6 text-muted text-uppercase">Upcoming</h2>
+  <ul class="list-unstyled events-list">
+    {% for e in upcoming %}{{ event_row(e) }}{% else %}<li class="text-muted py-3">No events coming up.{% if gm %} Make one with New event.{% endif %}</li>{% endfor %}
+  </ul>
+  {% if past %}
+  <h2 class="h6 text-muted text-uppercase mt-4">Past</h2>
+  <ul class="list-unstyled events-list is-past">
+    {% for e in past %}{{ event_row(e) }}{% endfor %}
+  </ul>
+  {% endif %}
+
+{% else %}
+  <div class="d-flex align-items-center mb-2">
+    <a class="btn btn-sm btn-link" href="{{ b.permalink }}/events/calendar?month={{ prev }}" aria-label="Previous month"><i class="fas fa-chevron-left" aria-hidden="true"></i></a>
+    <h2 class="h5 mb-0 mx-2">{{ month | month_name }} {{ year }}</h2>
+    <a class="btn btn-sm btn-link" href="{{ b.permalink }}/events/calendar?month={{ next }}" aria-label="Next month"><i class="fas fa-chevron-right" aria-hidden="true"></i></a>
+  </div>
+  <div class="events-calendar" role="grid" aria-label="{{ month | month_name }} {{ year }}" data-calendar>
+    <div class="events-calendar-row is-head" role="row">
+      {% for d in ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"] %}<div class="events-calendar-head" role="columnheader">{{ d }}</div>{% endfor %}
+    </div>
+    {% for week in weeks %}
+    <div class="events-calendar-row" role="row">
+      {% for day in week %}
+      {% set key = day.isoformat() %}
+      <div class="events-calendar-day{% if day.month != month %} is-other{% endif %}{% if key == today %} is-today{% endif %}" role="gridcell" data-day="{{ key }}">
+        <span class="events-calendar-num">{{ day.day }}</span>
+        {% for e in by_day.get(key, []) %}
+        <a class="events-calendar-event is-{{ e.status }}" href="{{ b.permalink }}/events/{{ e.id }}" data-utc="{{ e.starts_utc }}" data-calendar-event>{{ e.title }}</a>
+        {% endfor %}
+      </div>
+      {% endfor %}
+    </div>
+    {% endfor %}
+  </div>
+  <p class="text-muted text-small-extra mt-2" data-zone-note>Days and times are in UTC.</p>
+{% endif %}
+<script src="{{ asset_url('js/guild_events.js') }}"></script>
+{% endblock %}

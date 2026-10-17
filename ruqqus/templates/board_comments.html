@@ -13,7 +13,7 @@
 <!-- Desktop -->
 <div class="row d-none d-md-block">
   <div class="col px-0">
-    <img src="{{ b.banner_url }}" style="width: 100%; height: 250px; object-fit: cover;">
+    <img alt="" src="{{ b.banner_url }}" style="width: 100%; height: 250px; object-fit: cover;">
   </div>
 </div>
 <div class="row border-bottom bg-white sticky d-none d-md-block guild-border-top" style="overflow: visible;">
@@ -21,7 +21,7 @@
     <div class="d-flex align-items-center">
       <div class="d-flex align-items-center border-right py-2 pr-3">
         <div>
-          <a href="{{ b.permalink }}"><img src="{{ b.profile_url }}" class="profile-pic-35 mr-2"></a>
+          <a href="{{ b.permalink }}"><img alt="{{ '+' ~ b.name }}" src="{{ b.profile_url }}" class="profile-pic-35 mr-2"></a>
         </div>
         <div>
           <a href="{{ b.permalink }}">
@@ -46,7 +46,7 @@
       </div>
       <div class="d-flex align-items-center p-3">
         <div class="dropdown dropdown-actions">
-          <a href="#" role="button" id="dropdownMoreLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="line-height: 0;
+          <a href="#" role="button" id="dropdownMoreLink" aria-label="More options" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="line-height: 0;
           ">
           <i class="fas fa-ellipsis-h text-base text-black"></i>
         </a>

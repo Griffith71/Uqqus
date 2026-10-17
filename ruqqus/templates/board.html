@@ -1,6 +1,8 @@
 {% extends "home.html" %}
 {% from "partials/theme.html" import theme_links %}
 {% from "partials/circle_guild_button.html" import circle_guild_button %}
+{% from "partials/guild_flair.html" import flair_filter %}
+{% from "partials/guild_tabs.html" import guild_tabs, guild_resources, pinned_row %}
 
 {% block stylesheets %}
 {{ theme_links(b.css_url ~ "?v=" ~ asset_version("style/main.css"), b.css_dark_url ~ "?v=" ~ asset_version("style/main_dark.css")) }}
@@ -63,7 +65,7 @@
     <div class="d-flex align-items-center">
       {% for mod in b.mods_list[0:3] %}
       <a href="{{ mod.user.permalink }}">
-        <img src="{{ mod.user.profile_url }}" class="profile-pic profile-pic-30 profile-stacked {% if not loop.first %}ml-n2{% endif %}" data-toggle="tooltip" data-placement="bottom" title="{{ '@' + mod.user.username }}">
+        <img alt="{{ mod.user.shown_name }}" src="{{ mod.user.profile_url }}" class="profile-pic profile-pic-30 profile-stacked {% if not loop.first %}ml-n2{% endif %}" data-toggle="tooltip" data-placement="bottom" title="{{ '@' + mod.user.username }}">
       </a>
       {% if loop.last %}
       {% if b.mods_count - loop.index > 0 %}
@@ -90,14 +92,8 @@
 </div>
 
 
-{% if False %}
-<div class="sidebar-section sidebar-chat">
-  <a href="{{ b.chat_url }}" target="_blank"><div class="title"><i class="fas fa-comments mr-2"></i>Guild Chat (<i class="far fa-user fa-sm mr-1"></i><span class="board-chat-count"></span>)</div></a>
-  <div class="body">
-    {% include "chat/chat_client.html" %}
-  </div>
-</div>
-{% endif %}
+
+{% include "partials/guild_next_event.html" %}
 
 {% set mod = b.has_mod(v) %}
 
@@ -109,6 +105,10 @@
 
       {% if mod.perm_config %}<li class="mb-2"><a class="text-muted" href="/+{{ b.name }}/mod/settings"><i class="fas fa-cog fa-fw text-center mr-2"></i>Settings</a></li>{% endif %}
       {% if mod.perm_appearance %}<li class="mb-2"><a class="text-muted" href="/+{{ b.name }}/mod/appearance"><i class="fas fa-palette fa-fw text-center mr-2"></i>Appearance</a></li>{% endif %}
+      {% if mod.perm_config %}<li class="mb-2"><a class="text-muted" href="/+{{ b.name }}/mod/flair"><i class="fas fa-tag fa-fw text-center mr-2"></i>Flair</a></li>{% endif %}
+      {% if mod.perm_config %}<li class="mb-2"><a class="text-muted" href="/+{{ b.name }}/mod/resources"><i class="fas fa-thumbtack fa-fw text-center mr-2"></i>Resources</a></li>{% endif %}
+      {% if mod.perm_content or mod.perm_config %}<li class="mb-2"><a class="text-muted" href="/+{{ b.name }}/wiki"><i class="fas fa-book fa-fw text-center mr-2"></i>Wiki</a></li>{% endif %}
+      {% if mod.perm_content %}<li class="mb-2"><a class="text-muted" href="/+{{ b.name }}/events"><i class="fas fa-calendar-days fa-fw text-center mr-2"></i>Events</a></li>{% endif %}
       <li class="mb-2"><a class="text-muted" href="/+{{ b.name }}/mod/mods"><i class="fas fa-crown fa-fw text-center mr-2"></i>Guildmasters</a></li>
       <li class="mb-2"><a class="text-muted" href="/+{{ b.name }}/mod/log"><i class="fas fa-scroll fa-fw text-center mr-2"></i>Mod Log</a></li>
       <li class="mb-2"><a class="text-muted" href="/+{{ b.name }}/mod/css"><i class="fas fa-pen fa-fw text-center mr-2"></i>CSS</a></li>
@@ -140,7 +140,7 @@
 <div class="row d-none d-md-block">
   <div class="col px-0">
     {% block desktopbanner %}
-    <img src="{{ b.banner_url }}" style="width: 100%; height: 250px; object-fit: cover;">
+    <img alt="" src="{{ b.banner_url }}" style="width: 100%; height: 250px; object-fit: cover;">
     {% endblock %}
   </div>
 </div>
@@ -149,7 +149,7 @@
     <div class="d-flex align-items-center">
       <div class="d-flex align-items-center border-right py-2 pr-3">
         <div>
-          <a href="{{ b.permalink }}"><img src="{{ b.profile_url }}" class="profile-pic-35 mr-2"></a>
+          <a href="{{ b.permalink }}"><img alt="{{ '+' ~ b.name }}" src="{{ b.profile_url }}" class="profile-pic-35 mr-2"></a>
         </div>
         <div>
           <a href="{{ b.permalink }}">
@@ -177,7 +177,7 @@
       </div>
       <div class="d-flex align-items-center p-3">
         <div class="dropdown dropdown-actions">
-          <a href="#" role="button" id="dropdownMoreLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="line-height: 0;
+          <a href="#" role="button" id="dropdownMoreLink" aria-label="More options" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="line-height: 0;
           ">
           <i class="fas fa-ellipsis-h text-base text-black"></i>
         </a>
@@ -270,13 +270,13 @@
 <div class="container-fluid text-center bg-white d-md-none">
   <div class="row">
     <div class="col px-0">
-      <img src="{{ b.banner_url }}" style="width: 100%; height: 65px; object-fit: cover;">
+      <img alt="" src="{{ b.banner_url }}" style="width: 100%; height: 65px; object-fit: cover;">
     </div>
   </div>
   <div class="row border-bottom">
     <div class="col">
       <div style="margin-top: -34px;">
-        <a href="{{ b.permalink }}"><img src="{{ b.profile_url }}" class="profile-pic-65 border-2 border-white mb-2"></a>
+        <a href="{{ b.permalink }}"><img alt="{{ '+' ~ b.name }}" src="{{ b.profile_url }}" class="profile-pic-65 border-2 border-white mb-2"></a>
       </div>
       <div class="mt-n3 py-3">
         <a href="{{ b.permalink }}" class="text-black">
@@ -336,6 +336,13 @@
 
 {% block leftSidebarBlock %}
 {% include "sidebar-left.html" %}
+{% endblock %}
+
+{% block feedtop %}
+{{ guild_tabs(b, v, "posts") }}
+{{ guild_resources(b, v) }}
+{{ pinned_row(pinned_posts) }}
+{{ flair_filter(b, guild_flairs or [], chosen_flairs or (), sort_method, time_filter) }}
 {% endblock %}
 
 {% block pagetype %}guild{% endblock %}

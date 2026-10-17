@@ -1,6 +1,6 @@
 {% extends "guild/guild_settings.html" %}
 
-{% block pagetitle %}+{{ b.name }} Guildmasters - Ruqqus Guildmaster Tools{% endblock %}
+{% block pagetitle %}+{{ b.name }} Guildmasters - {{ 'SITE_NAME' | app_config }} Guildmaster Tools{% endblock %}
 
 {% block scripts %}
     <script>
@@ -100,7 +100,7 @@
           <tr>
             <td>
               <a href="{{ mod.user.permalink }}">
-                <img src="{{ mod.user.profile_url }}" class="profile-pic-20 align-top mr-2">@{{ mod.user.username }}</a>
+                <img alt="" src="{{ mod.user.profile_url }}" class="profile-pic-20 align-top mr-2">@{{ mod.user.username }}</a>
               </td>
               <td>{{ mod.created_date }}</td>
               <td>{{ mod.permlist }}</td>
@@ -108,7 +108,7 @@
               <td>
                 {% if me and me.perm_full and me.id < mod.id %}
                 <div class="dropdown float-right dropdown-actions">
-                  <a href="#" role="button" id="dropdownMoreLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="line-height: 0;">
+                  <a href="#" role="button" id="dropdownMoreLink" aria-label="More options" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="line-height: 0;">
                     <i class="fas fa-ellipsis-h text-muted"></i>
                   </a>
                   <div class="dropdown-menu border-0 shadow dropdown-menu-right mt-2" aria-labelledby="dropdownMoreLink" x-placement="bottom-end" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(21px, 18px, 0px);">
@@ -151,14 +151,14 @@
             <tr>
               <td>
                 <a href="{{ m.user.permalink }}">
-                  <img src="{{ m.user.profile_url }}" class="profile-pic-20 align-top mr-2">@{{ m.user.username }}</a>
+                  <img alt="" src="{{ m.user.profile_url }}" class="profile-pic-20 align-top mr-2">@{{ m.user.username }}</a>
                 </td>
                 <td>{{ m.created_date }}</td>
                 <td>{{ m.permlist }}</td>
                 <td>
                     {% if me.perm_full %}
                   <div class="dropdown float-right dropdown-actions">
-                    <a href="#" role="button" id="dropdownMoreLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="line-height: 0;">
+                    <a href="#" role="button" id="dropdownMoreLink" aria-label="More options" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="line-height: 0;">
                       <i class="fas fa-ellipsis-h text-muted"></i>
                     </a>
                     <div class="dropdown-menu border-0 shadow dropdown-menu-right mt-2" aria-labelledby="dropdownMoreLink" x-placement="bottom-end" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(21px, 18px, 0px);">

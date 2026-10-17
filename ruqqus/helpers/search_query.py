@@ -46,7 +46,7 @@ TEXT = ("word", "phrase")
 @dataclass(frozen=True)
 class Operator:
     key: str
-    kind: str               # user, guild, date, choice, lang, domain, url, number
+    kind: str               # user, guild, date, choice, lang, domain, url, number, flair
     example: str
     help: str
     aliases: tuple = ()
@@ -72,6 +72,8 @@ OPERATORS = (
     Operator("is", "choice", "-is:forward",
              "Forwarded copies (-is:forward leaves them out, so a post is found once), posts made with AI, "
              "paid partnerships.", values=("forward", "ai", "partnership")),
+    Operator("flair", "flair", 'flair:"Question"', "Posts a guild tagged with this flair. With in:+guild, that guild's "
+             "flair.", aliases=("tag",)),
     Operator("min_votes", "number", "min_votes:10", "A score of at least this many votes.", negatable=False),
     Operator("min_comments", "number", "min_comments:5", "At least this many comments.", negatable=False),
 )
@@ -188,6 +190,9 @@ def _clean(op, value):
         return None, "domain: needs a site name, such as domain:example.com."
     if op.kind == "url":
         return (value, None) if len(value) <= 200 else (None, "url: can be at most 200 characters.")
+    if op.kind == "flair":
+        name = " ".join(value.split())
+        return (name, None) if 0 < len(name) <= 24 else (None, "flair: needs a flair's name, at most 24 characters.")
     if op.kind == "number":
         if value.isascii() and value.isdigit() and int(value) <= MAX_NUMBER:
             return str(int(value)), None
@@ -270,6 +275,8 @@ def label(part):
         return f"Not linking to {v}" if no else f"Linking to {v}"
     if k == "url":
         return f'Link without "{v}"' if no else f'Link with "{v}"'
+    if k == "flair":
+        return f'Not flaired "{v}"' if no else f'Flaired "{v}"'
     if k == "is":
         return IS_LABELS[v][1 if no else 0]
     if k == "min_votes":

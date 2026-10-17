@@ -53,6 +53,8 @@ class Board(Base, Stndrd, Age_times):
     is_sensitive=Column(Boolean, default=False)
     is_nsfl=Column(Boolean, default=False)
     sensitive_forced=Column(Boolean, default=False)   # an admin marked the guild sensitive; its guildmasters can't undo it
+    require_flair=Column(Boolean, default=False)      # every forward needs a flair (helpers/guild_flair.py)
+    wiki_enabled=Column(Boolean, default=False)       # the guild's wiki is on (helpers/guild_wiki.py)
     # word filter rating of the guild name / its description
     name_severity=Column(SmallInteger, default=0)
     description_severity=Column(SmallInteger, default=0)
@@ -162,7 +164,9 @@ class Board(Base, Stndrd, Age_times):
 
     @cache.memoize(timeout=60)
     def idlist(self, sort=None, page=1, t=None,
-               hide_offensive=True, hide_bot=False, v=None, **kwargs):
+               hide_offensive=True, hide_bot=False, v=None, flairs=(), **kwargs):
+        # `flairs`: the reader's flair filter (helpers/guild_flair.parse_filter: this guild's ids, sorted), part of the
+        # cache key because it is an argument
 
         posts = g.db.query(Submission.id).options(lazyload('*')).filter_by(is_banned=False,
                                                                            #is_pinned=False,
@@ -174,19 +178,21 @@ class Board(Base, Stndrd, Age_times):
 
         posts = filter_posts(posts, v)
 
+        if flairs:
+            posts = posts.filter(Submission.guild_flair_id.in_(list(flairs)))
+
         if v and v.hide_bot and not self.has_mod(v, "content"):
             posts = posts.filter_by(is_bot=False)
 
+        # a private guild shows a non-member only their own posts, even ones forwarded while it was public (the owner's
+        # choice, 2026-11, audit A-01): they stay on their authors' profiles, where they were public anyway
         if self.is_private:
             if v and (self.can_view(v) or v.admin_level >= 4):
                 pass
             elif v:
-                posts = posts.filter(or_(Submission.post_public == True,
-                                         Submission.author_id == v.id
-                                         )
-                                     )
+                posts = posts.filter(Submission.author_id == v.id)
             else:
-                posts = posts.filter_by(post_public=True)
+                posts = posts.filter(false())
 
         if v and not self.has_mod(v) and v.admin_level <= 3:
             # blocked either way (helpers/blocks.py)
@@ -558,6 +564,18 @@ class Board(Base, Stndrd, Age_times):
         data['subscriber_count']= self.subscriber_count
         data['disallowbots']= self.disallowbots
 
+        # guild flair, wiki and events (helpers/guild_flair.py, guild_wiki.py, guild_events.py)
+        from ruqqus.helpers import guild_flair_store
+        from ruqqus.routes.guild_events import next_event_for
+        viewer = anonymity.current_viewer()
+        data['flairs'] = [{'id': f[0], 'name': f[2], 'colour': f[3]}
+                          for f in guild_flair_store.flairs_of(g.db, self.id) if not text_hidden(f[5], viewer)]
+        data['require_flair'] = bool(self.require_flair)
+        data['wiki_enabled'] = bool(self.wiki_enabled)
+        upcoming = next_event_for(self, viewer)
+        data['next_event'] = None if upcoming is None else {
+            k: upcoming[k] for k in ('id', 'title', 'starts_utc', 'ends_utc', 'status', 'going', 'interested')}
+
         return data
     
 
@@ -571,16 +589,15 @@ class Board(Base, Stndrd, Age_times):
         posts = g.db.query(Submission).options(
             lazyload('*')).filter_by(board_id=self.id)
 
+        # a private guild shows a non-member only their own posts, even ones forwarded while it was public (the owner's
+        # choice, 2026-11, audit A-01): they stay on their authors' profiles, where they were public anyway
         if self.is_private:
             if v and (self.can_view(v) or v.admin_level >= 4):
                 pass
             elif v:
-                posts = posts.filter(or_(Submission.post_public == True,
-                                         Submission.author_id == v.id
-                                         )
-                                     )
+                posts = posts.filter(Submission.author_id == v.id)
             else:
-                posts = posts.filter_by(post_public=True)
+                posts = posts.filter(false())
 
         posts = posts.subquery()
 
@@ -595,10 +612,10 @@ class Board(Base, Stndrd, Age_times):
             # blocks
             blocking = g.db.query(
                 UserBlock.target_id).filter_by(
-                user_id=v.id).subquery()
+                user_id=v.id).scalar_subquery()
             blocked = g.db.query(
                 UserBlock.user_id).filter_by(
-                target_id=v.id).subquery()
+                target_id=v.id).scalar_subquery()
 
             comments = comments.filter(
                 or_(Comment.author_id.notin_(blocking), Comment.is_anonymous == True),

@@ -1,0 +1,70 @@
+{% extends "guild/guild_tab_page.html" %}
+{#
+  A wiki page's history (every revision, newest first, public to whoever sees the guild) and the diff between two
+  revisions (`diff`: (kind, text) lines from guild_wiki.diff, escaped here; each changed line is marked with a sign
+  as well as a colour). Guildmasters restore an old revision: a new revision with its text.
+#}
+{% set tab = "wiki" %}
+
+{% block pagetitle %}History of {{ wiki_title(page, v) }}{% endblock %}
+
+{% block guildbody %}
+<div class="wiki-main">
+  <p class="mb-1"><a href="{{ b.permalink }}/wiki/{{ page[2] }}"><i class="fas fa-arrow-left fa-fw" aria-hidden="true"></i>{{ wiki_title(page, v) }}</a></p>
+
+{% if revisions is not none %}
+  <h1 class="h4">History</h1>
+  {% if revisions | length > 1 %}
+  <form method="get" action="{{ b.permalink }}/wiki/{{ page[2] }}/diff" class="wiki-history">
+  <p class="text-muted text-small mb-1">To compare two revisions, pick the older one in the left column and the newer one in the right.</p>
+  {% endif %}
+  <ol class="list-unstyled wiki-revisions">
+    {% for r in revisions %}
+    <li class="wiki-revision d-flex flex-wrap align-items-center py-2 border-bottom">
+      {% if revisions | length > 1 %}
+      <span class="wiki-pick mr-2">
+        <label class="sr-only" for="a-{{ r[0] }}">Compare from this revision</label>
+        <input type="radio" name="a" value="{{ r[0] }}" id="a-{{ r[0] }}"{% if loop.index == 2 %} checked{% endif %}>
+        <label class="sr-only" for="b-{{ r[0] }}">Compare to this revision</label>
+        <input type="radio" name="b" value="{{ r[0] }}" id="b-{{ r[0] }}"{% if loop.first %} checked{% endif %}>
+      </span>
+      {% endif %}
+      <a href="{{ b.permalink }}/wiki/{{ page[2] }}/revision/{{ r[0] }}" title="{{ r[7] | timestamp_label }}">{{ r[7] | age_label }}</a>
+      <span class="text-muted mx-1">·</span>
+      <span>{{ editors[r[2]] }}</span>
+      {% if r[0] == page[5] %}<span class="badge badge-light ml-2">Current</span>{% endif %}
+      {% if r[8] %}<span class="badge badge-secondary ml-2">Removed by admins</span>{% endif %}
+      {% if r[6] %}<span class="text-muted text-small ml-2">“{{ r[6] }}”</span>{% endif %}
+      {% if gm and r[0] != page[5] and not r[8] %}
+      <button type="button" class="btn btn-sm btn-link ml-auto" data-guild-post="{{ b.permalink }}/wiki/{{ page[2] }}/restore/{{ r[0] }}" data-confirm="Put this revision's text back? It becomes a new revision; nothing in the history is lost.">Restore</button>
+      {% endif %}
+      {% if v and v.admin_level >= 3 and not r[8] %}
+      <button type="button" class="btn btn-sm btn-link text-danger{% if not (gm and r[0] != page[5]) %} ml-auto{% endif %}" data-guild-post="/admin/wiki/{{ page[0] }}/revision/{{ r[0] }}/remove" data-confirm="Take this revision's text down for everyone but admins?">Remove (admin)</button>
+      {% endif %}
+    </li>
+    {% else %}
+    <li class="text-muted">No revisions yet.</li>
+    {% endfor %}
+  </ol>
+  {% if revisions | length > 1 %}
+  <button type="submit" class="btn btn-sm btn-secondary mt-2">Compare the chosen revisions</button>
+  </form>
+  {% endif %}
+
+{% else %}
+  <h1 class="h4">Changes</h1>
+  <p class="text-muted text-small">From the revision of {{ older[7] | timestamp_label }} ({{ editors[older[2]] }}) to {{ newer[7] | timestamp_label }} ({{ editors[newer[2]] }}). <a href="{{ b.permalink }}/wiki/{{ page[2] }}/history">Back to the history</a></p>
+  {% if notice %}
+  <div class="alert alert-secondary text-small" role="status">{{ notice }}</div>
+  {% elif not diff %}
+  <p class="text-muted">The two revisions have the same text.</p>
+  {% else %}
+  <div class="wiki-diff" role="table" aria-label="Changed lines">
+    {% for kind, line in diff %}
+    <div class="wiki-diff-line is-{{ kind }}" role="row"><span class="wiki-diff-sign" role="cell" aria-label="{{ {'added': 'Added', 'removed': 'Removed', 'same': 'Unchanged'}[kind] }}">{{ {'added': '+', 'removed': '−', 'same': ' '}[kind] }}</span><span class="wiki-diff-text" role="cell">{{ line or ' ' }}</span></div>
+    {% endfor %}
+  </div>
+  {% endif %}
+{% endif %}
+</div>
+{% endblock %}

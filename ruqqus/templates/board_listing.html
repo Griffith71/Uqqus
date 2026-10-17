@@ -5,7 +5,7 @@
 	<div id="board-{{ b.base36id }}" class="card h-100">
 		<div class="card-body" style="word-wrap: break-word;">
 			<div class="d-flex flex-wrap align-items-center mb-2">
-				<img src="{{ b.profile_url }}" class="profile-pic-40 mr-2">
+				<img alt="" src="{{ b.profile_url }}" class="profile-pic-40 mr-2">
 
 				<a class="card-title text-break stretched-link h5 mb-0" href="{{ b.permalink }}">+{{ b.name }} {% if b.is_sensitive %}<span class="badge badge-warning">Sensitive Content</span>{% endif %}</a>
 
@@ -28,7 +28,7 @@
     <a class="card-title stretched-link mb-0" href="{{ b.permalink }}">
 
      <div class="d-flex align-items-center">
-        <img src="{{ b.profile_url }}" class="profile-pic-50 mr-2">
+        <img alt="" src="{{ b.profile_url }}" class="profile-pic-50 mr-2">
 
         <div>
          <div class="text-black" style="font-size: 16px;">+{{ b.name }} {% if b.is_sensitive %}<span class="badge badge-warning">Sensitive Content</span>{% endif %}</div>

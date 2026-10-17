@@ -65,16 +65,17 @@ def searchlisting(query, v=None, page=1, t="None", sort="top", b=None, filter_le
     elif v:
         m = select(ModRelationship.board_id).filter_by(
             user_id=v.id, invite_rescinded=False
-        ).subquery()
+        ).scalar_subquery()
         c = select(
             ContributorRelationship.board_id
         ).filter_by(
             user_id=v.id
-        ).subquery()
+        ).scalar_subquery()
         posts = posts.filter(
             or_(
                 Submission.author_id == v.id,
-                Submission.post_public == True,
+                # public when shared, and not in a guild that has since turned private (audit A-01)
+                and_(Submission.post_public == True, Board.is_private == False),
                 Submission.board_id.in_(m),
                 Submission.board_id.in_(c)
             )
@@ -87,6 +88,7 @@ def searchlisting(query, v=None, page=1, t="None", sort="top", b=None, filter_le
     else:
         posts = posts.filter(
             Submission.post_public == True,
+            Board.is_private == False,
             Board.is_banned==False,
             )
 

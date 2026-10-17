@@ -1,0 +1,112 @@
+{% extends "guild/guild_tab_page.html" %}
+{#
+  A guild's wiki (routes/guild_wiki.py, helpers/guild_wiki.py). `view`: "page" (a page's current text), "revision" (an
+  old revision), "pages" (the list), "empty" (no first page yet), "refused" (why this reader can't edit). The text is
+  the revision's stored HTML, sanitized when it was saved (the only `| safe`); a revision the admins removed or the
+  reader's word filter hides shows a notice instead.
+#}
+{% set tab = "wiki" %}
+
+{% block pagetitle %}{% if page %}{{ wiki_title(page, v) }}{% else %}Wiki{% endif %}{% endblock %}
+
+{% block guildbody %}
+{% if not b.wiki_enabled %}
+<div class="alert alert-secondary text-small" role="status">
+  <i class="fas fa-book mr-2" aria-hidden="true"></i>The wiki is off: only guildmasters see it.
+  {% if b.has_mod(v, "config") %}<button type="button" class="btn btn-sm btn-primary ml-2" data-guild-post="/mod/{{ b.base36id }}/wiki/enable?setting=true">Switch it on</button>{% endif %}
+</div>
+{% elif b.has_mod(v, "config") and view == "pages" %}
+<div class="text-right mb-2"><button type="button" class="btn btn-sm btn-link text-muted" data-guild-post="/mod/{{ b.base36id }}/wiki/enable?setting=false" data-confirm="Switch the wiki off? Its pages are kept; only guildmasters see them until it is on again.">Switch the wiki off</button></div>
+{% endif %}
+
+<div class="d-lg-flex wiki-layout">
+  <nav class="wiki-nav" aria-label="Wiki pages">
+    <div class="wiki-nav-title">Pages</div>
+    <ul class="list-unstyled mb-2">
+      {% for pg in pages %}
+      <li><a class="wiki-nav-link{% if page and pg[0] == page[0] %} is-on{% endif %}" href="{{ b.permalink }}/wiki/{{ pg[2] }}"{% if page and pg[0] == page[0] %} aria-current="page"{% endif %}>{{ wiki_title(pg, v) }}</a></li>
+      {% else %}
+      <li class="text-muted text-small">No pages yet.</li>
+      {% endfor %}
+    </ul>
+    <a class="text-small" href="{{ b.permalink }}/wiki/pages">All pages</a>
+  </nav>
+
+  <article class="wiki-main">
+  {% if view == "page" or view == "revision" %}
+    <header class="wiki-head">
+      <h1 class="h4 mb-1">{{ wiki_title(page, v) }}</h1>
+      <div class="text-muted text-small">
+        {% if view == "revision" %}
+          <strong>An old revision</strong> · {{ rev[7] | timestamp_label }} by {{ editor[rev[2]] }} · <a href="{{ b.permalink }}/wiki/{{ page[2] }}">See the current page</a>
+        {% elif rev %}
+          Last edited <span title="{{ rev[7] | timestamp_label }}">{{ rev[7] | age_label }}</span> by {{ editor[rev[2]] }}
+        {% endif %}
+        · <a href="{{ b.permalink }}/wiki/{{ page[2] }}/history"><i class="fas fa-clock-rotate-left fa-fw" aria-hidden="true"></i>History</a>
+        {% if may_edit %} · <a href="{{ b.permalink }}/wiki/{{ page[2] }}/edit"><i class="fas fa-pen fa-fw" aria-hidden="true"></i>Edit</a>{% endif %}
+      </div>
+      <div class="text-muted text-small-extra mt-1">{% if page[7] %}<i class="fas fa-lock fa-fw" aria-hidden="true"></i>Locked: guildmasters edit it.{% else %}Who can edit: {{ levels[page[4]] }}.{% endif %}</div>
+    </header>
+
+    {% if notice %}
+    <div class="alert alert-secondary text-small" role="status">{{ notice }}</div>
+    {% elif body_html %}
+    <div class="wiki-body user-text">{{ body_html | safe }}</div>
+    {% else %}
+    <p class="text-muted">This page is empty.</p>
+    {% endif %}
+
+    {% if gm and view == "page" %}
+    <details class="wiki-settings mt-4">
+      <summary class="text-small font-weight-bold">Page settings</summary>
+      <form class="mt-2" action="{{ b.permalink }}/wiki/{{ page[2] }}/settings" data-guild-form>
+        <fieldset>
+          <legend class="text-small mb-1">Who can edit this page</legend>
+          {% for key, label in levels.items() %}
+          <div class="custom-control custom-radio">
+            <input type="radio" class="custom-control-input" id="level-{{ key }}" name="edit_level" value="{{ key }}"{% if page[4] == key %} checked{% endif %}>
+            <label class="custom-control-label" for="level-{{ key }}">{{ label }}</label>
+          </div>
+          {% endfor %}
+        </fieldset>
+        <div class="custom-control custom-checkbox mt-2">
+          <input type="checkbox" class="custom-control-input" id="wiki-locked" name="locked" value="true"{% if page[7] %} checked{% endif %}>
+          <label class="custom-control-label" for="wiki-locked">Lock it (only guildmasters edit it, whatever the choice above)</label>
+        </div>
+        <button type="submit" class="btn btn-sm btn-primary mt-2">Save</button>
+        <div class="text-danger small mt-2" role="alert" hidden></div>
+      </form>
+      {% if page[2] != "index" %}
+      <button type="button" class="btn btn-sm btn-link text-danger px-0 mt-3" data-guild-post="{{ b.permalink }}/wiki/{{ page[2] }}/delete" data-confirm="Delete this page and its whole history? This can't be undone.">Delete this page</button>
+      {% endif %}
+    </details>
+    {% endif %}
+
+  {% elif view == "pages" %}
+    <h1 class="h4">Wiki pages</h1>
+    {% if may_create %}
+    <form class="form-inline mb-3" data-new-wiki-page="{{ b.permalink }}/wiki/" onsubmit="return false;">
+      <label class="sr-only" for="new-wiki-slug">New page address</label>
+      <input type="text" class="form-control form-control-sm mr-2" id="new-wiki-slug" placeholder="new-page-address" maxlength="40" pattern="[A-Za-z0-9 _-]+" required>
+      <button type="submit" class="btn btn-sm btn-primary">Make a page</button>
+    </form>
+    {% endif %}
+    <ul class="list-unstyled">
+      {% for pg in pages %}
+      <li class="py-2 border-bottom"><a href="{{ b.permalink }}/wiki/{{ pg[2] }}" class="font-weight-bold">{{ wiki_title(pg, v) }}</a> <span class="text-muted text-small">/wiki/{{ pg[2] }}{% if pg[7] %} · <i class="fas fa-lock" aria-label="Locked"></i>{% endif %}</span></li>
+      {% else %}
+      <li class="text-muted">No pages yet.</li>
+      {% endfor %}
+    </ul>
+
+  {% elif view == "empty" %}
+    <h1 class="h4">Wiki</h1>
+    <p class="text-muted">+{{ b.name }}'s guildmasters haven't written the wiki yet.</p>
+
+  {% elif view == "refused" %}
+    <h1 class="h4">Edit</h1>
+    <div class="alert alert-secondary" role="status">{{ refusal }}</div>
+  {% endif %}
+  </article>
+</div>
+{% endblock %}
