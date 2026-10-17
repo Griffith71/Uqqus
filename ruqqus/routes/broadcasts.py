@@ -217,7 +217,8 @@ def broadcast_message(bid, v):
     severity = get_filter(g.db).severity(body)
     try:
         event_id = matrix.send_as(channel[5], matrix.mxid_for(v.id),
-                                  {"msgtype": "m.text", "body": body, channel_rules.SEVERITY_KEY: severity},
+                                  {"msgtype": "m.text", "body": body, channel_rules.SEVERITY_KEY: severity,
+                                   channel_rules.SITE_KEY: channel_rules.site_mark(app.config["SECRET_KEY"], channel[5], body)},
                                   secrets.token_hex(12))
     except matrix.MatrixError:
         return _error("Chat isn't answering right now. Try again in a moment.", 502)

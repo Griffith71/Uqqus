@@ -2,9 +2,10 @@ import * as sdk from "matrix-js-sdk";
 import { ClientEvent, EventType, RoomEvent, RoomMemberEvent, MatrixEventEvent, ReceiptType } from "matrix-js-sdk";
 import { initAsync as initCryptoWasm } from "@matrix-org/matrix-sdk-crypto-wasm";
 
-import { ensureSession } from "./token.js";
-import { cryptoCallbacks, ensureEncryptionReady } from "./crypto.js";
-import { fetchStoredRecoveryKey } from "./recovery.js";
+import { cryptoCallbacks, ensureEncryptionReady, signOwnDevices } from "./crypto.js";
+import { markReady } from "./keylock.js";
+import { OnlySignedDevicesIsolationMode } from "matrix-js-sdk/lib/crypto-api/index.js";
+import { ensureSession, loadSession, CALL_STORAGE_KEY } from "./token.js";
 import {
   listConversations, acceptConversation, declineConversation, markRead,
   groupInfo, acceptGroup, declineGroup, markGroupRead,
@@ -25,7 +26,50 @@ const state = {
   typingSent: 0, // when we last told the room we are typing (0: not typing)
   typingTimer: null,
   renderQueued: false,
+  locked: true,  // until this device has unlocked its encryption (crypto.js), nothing is sent from it
 };
+
+// --- messages waiting for someone whose chat isn't set up yet (audit M-04) ---------------------------------------
+// A message encrypted to someone with no device yet could never be read by them. So it waits here, in this browser,
+// and goes as soon as they've opened chat (the conversation list says `ready`).
+const WAITING_KEY = "uqqus_chat_waiting";
+
+function loadWaiting() {
+  try { return JSON.parse(localStorage.getItem(WAITING_KEY) || "{}") || {}; } catch (e) { return {}; }
+}
+
+function saveWaiting(waiting) {
+  try { localStorage.setItem(WAITING_KEY, JSON.stringify(waiting)); } catch (e) { /* not kept: sent when possible */ }
+}
+
+function waitFor(roomId, text) {
+  const waiting = loadWaiting();
+  (waiting[roomId] = waiting[roomId] || []).push({ text, at: Date.now() });
+  saveWaiting(waiting);
+}
+
+async function sendWaiting() {
+  if (state.locked) return;
+  const waiting = loadWaiting();
+  const all = [...state.conversations.inbox, ...state.conversations.request];
+  let changed = false;
+  for (const roomId of Object.keys(waiting)) {
+    const convo = all.find((c) => c.room_id === roomId);
+    if (!convo || !convo.other_user || !convo.other_user.ready) continue;
+    for (const item of waiting[roomId]) {
+      try { await state.client.sendTextMessage(roomId, item.text); } catch (e) { break; }
+    }
+    delete waiting[roomId];
+    changed = true;
+  }
+  if (changed) saveWaiting(waiting);
+}
+
+function waitingNotice(conversation) {
+  const count = (loadWaiting()[conversation.room_id] || []).length;
+  if (!count || !conversation.other_user) return "";
+  return `@${conversation.other_user.username} hasn't opened chat yet. Your ${count === 1 ? "message" : `${count} messages`} will be sent when they do.`;
+}
 
 function isMessageLikeEvent(event) {
   return event.getType() === EventType.RoomMessage || event.getType() === EventType.RoomMessageEncrypted;
@@ -258,6 +302,7 @@ const messageHandlers = {
     if (!event) return;
     setContext({ type: "edit", event });
     state.thread.inputEl.value = event.getContent().body || "";
+    state.thread.fit?.();
     state.thread.inputEl.focus();
   },
   onReact(item, key) {
@@ -312,6 +357,7 @@ async function openConversation(conversation) {
   stopTyping();
   state.context = null;
   state.active = { conversation, room, isRequest, group, channel };
+  queueMicrotask(() => showThreadNotice(isGroup || isChannel ? "" : waitingNotice(conversation)));
 
   const pane = document.getElementById("chat-thread-pane");
   const inviter = isGroup && conversation.invited_by ? `@${conversation.invited_by.username}` : "Someone";
@@ -360,6 +406,16 @@ async function onLeaveChannel(conversation) {
 }
 
 function onSend(room, text) {
+  if (state.locked) {
+    window.alert("Unlock your messages first: reload the page to enter your password.");
+    return;
+  }
+  const pair = state.active && state.active.conversation && state.active.conversation.other_user;
+  if (pair && state.active.conversation.other_user.ready === false && !state.context) {
+    waitFor(room.roomId, text);
+    showThreadNotice(waitingNotice(state.active.conversation));
+    return;
+  }
   if (state.active && state.active.channel && state.active.channel.public) {
     // a public channel is written through the site (word filter, daily count, bans), which sends it as you
     setContext(null);
@@ -518,6 +574,21 @@ async function refreshLists() {
   window.refreshChatBadge?.();
 
   setTab(state.tab);
+  sendWaiting().catch(() => {});
+}
+
+function showThreadNotice(text) {
+  const pane = document.getElementById("chat-thread-pane");
+  if (!pane) return;
+  let note = pane.querySelector(".chat-thread-notice");
+  if (!text) { if (note) note.remove(); return; }
+  if (!note) {
+    note = document.createElement("div");
+    note.className = "chat-thread-notice alert alert-secondary text-small m-2";
+    note.setAttribute("role", "status");
+    pane.prepend(note);
+  }
+  note.textContent = text;
 }
 
 let refreshQueued = false;
@@ -600,6 +671,11 @@ async function sendShared({ room_id: roomId, text }) {
   // the inbox holds every chat you can write in, including the ones you started yourself;
   // a request waiting for you to accept it is not in it
   if (!convo) throw new Error("You can't send to that chat.");
+  if (state.locked) throw new Error("Open Chat once to unlock your messages, then try again.");
+  if (convo.other_user && convo.other_user.ready === false) {
+    waitFor(roomId, text);                // sent when they've opened chat (M-04)
+    return;
+  }
   await state.client.sendTextMessage(roomId, text);
 }
 
@@ -676,6 +752,9 @@ async function main() {
   await initCryptoWasm("/assets/js/matrix_sdk_crypto_wasm_bg.wasm");
 
   await client.initRustCrypto();
+  // message keys only for devices their owner signed: a device made without the owner's key (which the site no
+  // longer has) gets nothing, and nothing from one is trusted (crypto.js, audit M-03)
+  client.getCrypto().setDeviceIsolationMode(new OnlySignedDevicesIsolationMode());
 
   await new Promise((resolve) => {
     const onSync = (newState) => {
@@ -722,12 +801,25 @@ async function main() {
     }
   }
 
-  // Non-blocking: lets the list/thread UI render immediately rather than
-  // waiting on cross-signing/secret-storage setup.
-  fetchStoredRecoveryKey()
-    .catch(() => null)
-    .then((storedRecoveryKey) => ensureEncryptionReady(client, storedRecoveryKey, boot.formkey))
-    .catch(() => {});
+  // Non-blocking: the lists show at once; sending waits until this device has unlocked (crypto.js)
+  const newCode = new URLSearchParams(window.location.search).get("recovery") === "new";
+  ensureEncryptionReady(client, boot.formkey, { newCode })
+    .then(async (ready) => {
+      state.locked = !ready;
+      if (!ready) return;
+      await markReady(boot.formkey);
+      const callSession = loadSession(CALL_STORAGE_KEY);
+      await signOwnDevices(client, [callSession && callSession.device_id]);
+      sendWaiting().catch(() => {});
+    })
+    .catch((e) => { console.warn("Chat: encryption setup failed", e); });
+
+  // a call or Space window opened later makes a device of its own here: sign it as it appears
+  window.addEventListener("storage", (event) => {
+    if (event.key !== CALL_STORAGE_KEY || state.locked) return;
+    const callSession = loadSession(CALL_STORAGE_KEY);
+    signOwnDevices(client, [callSession && callSession.device_id]).catch(() => {});
+  });
 }
 
 main();

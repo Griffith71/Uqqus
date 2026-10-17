@@ -212,8 +212,8 @@ export function renderThreadShell(pane, { otherUser, group, channel, requestText
     </div>
     <div class="border-top p-2">
       <form id="chat-composer" class="d-flex">
-        <input type="text" class="form-control mr-2" id="chat-composer-input" placeholder="Start a message..." autocomplete="off">
-        <button type="submit" class="btn btn-primary">Send</button>
+        <textarea class="form-control mr-2 chat-composer-input" id="chat-composer-input" rows="1" placeholder="Start a message..." aria-label="Message" autocomplete="off"></textarea>
+        <button type="submit" class="btn btn-primary align-self-end">Send</button>
       </form>
     </div>
   `;
@@ -237,16 +237,34 @@ export function renderThreadShell(pane, { otherUser, group, channel, requestText
   const contextEl = pane.querySelector("#chat-context");
   const contextText = pane.querySelector("#chat-context-text");
 
+  // the box grows with its text up to a few lines (its max-height), then scrolls
+  const fit = () => {
+    input.style.height = "auto";
+    input.style.height = `${input.scrollHeight + 2}px`;
+  };
+
   form.addEventListener("submit", (e) => {
     e.preventDefault();
     const text = input.value.trim();
     if (!text) return;
     input.value = "";
+    fit();
     onSend(text);
   });
 
+  // Enter sends, Shift+Enter starts a new line (never while an input method is still composing a character)
+  input.addEventListener("keydown", (e) => {
+    if (e.key === "Enter" && !e.shiftKey && !e.isComposing) {
+      e.preventDefault();
+      form.requestSubmit();
+    }
+  });
+
   // typing: tell the other side while there is text, and stop when it is gone or sent
-  input.addEventListener("input", () => onTyping?.(input.value.length > 0));
+  input.addEventListener("input", () => {
+    fit();
+    onTyping?.(input.value.length > 0);
+  });
   input.addEventListener("blur", () => onTyping?.(false));
 
   pane.querySelector("#chat-context-cancel").addEventListener("click", () => {
@@ -269,6 +287,7 @@ export function renderThreadShell(pane, { otherUser, group, channel, requestText
   return {
     messagesEl: pane.querySelector("#chat-messages"),
     inputEl: input,
+    fit,
     // a line above the box: "Quoting ..." / "Editing message", or none
     setContext(label) {
       contextEl.classList.toggle("d-none", !label);

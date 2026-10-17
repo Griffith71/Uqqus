@@ -18,7 +18,7 @@
 
           <div class="settings-section rounded">
 
-            <form action="/settings/security" method="post">
+            <form action="/settings/security" method="post" data-chat-rekey>
 
               <div class="body">
 
@@ -225,59 +225,32 @@
 
 </div>
 
-  <h2 class="h5">Message Encryption Recovery Key</h2>
+  <h2 class="h5">Download your data</h2>
 
-  <p class="text-small text-muted">Your chat messages are end-to-end encrypted. Re-enter your password to view the recovery key for your account.</p>
+  <p class="text-small text-muted">One file with your profile, posts, comments, votes, follows, blocks, mutes, bookmarks, drafts, circles, stories, shared drafts and where you signed in from. Chats aren't in it: they're end-to-end encrypted and the site can't read them.</p>
 
   <div class="settings-section rounded">
-
-    <form action="/api/chat/recovery_key/reveal" method="post">
+    <form action="/settings/export" method="post" class="body">
       <input type="hidden" name="formkey" value="{{ v.formkey }}">
-
-      <div class="body">
-
-        <div class="d-lg-flex">
-
-         <label for="recovery-key-password" class="w-lg-25">Password</label>
-
-         <div class="w-lg-100">
-
-           <input autocomplete="new-password" type="password" class="form-control mb-2" id="recovery-key-password" name="password" autocomplete="off" required>
-
-         </div>
-
-       </div>
-
-       {% if revealed_recovery_key %}
-       <div class="d-lg-flex mt-2">
-
-         <label for="recovery-key-value" class="w-lg-25">Recovery key</label>
-
-         <div class="w-lg-100">
-
-           <input type="text" readonly onclick="this.select()" class="form-control" id="recovery-key-value" value="{{ revealed_recovery_key }}">
-
-         </div>
-
-       </div>
-       {% endif %}
-
-     </div>
-
-     <div class="footer">
-
-      <div class="d-flex">
-
-        <input class="btn btn-primary ml-auto"
-        type="submit" value="Reveal recovery key">
-
+      <div class="d-lg-flex">
+        <label for="export-password" class="w-lg-25">Password</label>
+        <div class="w-lg-100"><input type="password" class="form-control mb-2" id="export-password" name="password" autocomplete="current-password" required></div>
       </div>
+      <div class="d-flex"><button type="submit" class="btn btn-secondary ml-auto">Download my data</button></div>
+    </form>
+  </div>
 
+  <h2 class="h5">Message encryption</h2>
+
+  <p class="text-small text-muted">Your chats are end-to-end encrypted, and the site can't read them. The key that opens them is kept locked: once with your password, and once with the recovery code you saved when chat was set up. If you forget your password, that code is the only way to read your old messages after a reset.</p>
+
+  <div class="settings-section rounded">
+    <div class="body">
+      <p class="mb-2">Lost your recovery code? Make a new one: the old one stops working.</p>
+      <a class="btn btn-secondary" href="/chat?recovery=new">Make a new recovery code</a>
     </div>
+  </div>
 
-  </form>
-
-</div>
 
 <h2 class="h5 text-danger ">Danger Zone</h2>
 

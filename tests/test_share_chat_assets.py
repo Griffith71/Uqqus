@@ -117,7 +117,7 @@ def test_the_list_of_people_leaves_out_blocks_requests_and_filtered_names():
 
 def test_the_card_is_made_for_the_reader_and_never_names_an_author():
     preview = route("chat_post_preview")
-    for rule in ("post_hidden(post, v)", "post.board.can_view(v)", "post.is_banned or post.board.is_banned", "post.deleted_utc",
+    for rule in ("post_hidden(post, v)", "post.in_private_guild_for(v)", "v.any_block_exists(post.author)", "post.is_banned or post.board.is_banned", "post.deleted_utc",
                  "POST_ID.match(pid)", "post.has_thumb and not post.is_sensitive"):
         assert rule in preview, rule
     answered = re.search(r"return jsonify\(\{\s*\"ok\": True,(.*?)\}\)", preview, re.S).group(1)

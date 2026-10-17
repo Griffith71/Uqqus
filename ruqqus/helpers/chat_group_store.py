@@ -32,6 +32,10 @@ def add_member(db, gid, user_id, role, status, invited_by_id, now):
                        VALUES (:g, :u, :role, :status, :by, 0, 0, :joined, :now)"""),
                {"g": gid, "u": user_id, "role": role, "status": status, "by": invited_by_id, "now": now,
                 "joined": now if status == rules.JOINED else 0})
+    if invited_by_id and invited_by_id != user_id:
+        # every add is logged, so removing someone and adding them again still counts against the daily cap (M-08)
+        db.execute(text("INSERT INTO chat_group_adds (adder_id, group_id, user_id, created_utc) VALUES (:a, :g, :u, :now)"),
+                   {"a": invited_by_id, "g": gid, "u": user_id, "now": now})
 
 
 def group(db, gid):
@@ -91,8 +95,8 @@ def created_since(db, user_id, since):
 
 
 def added_since(db, user_id, since):
-    return db.execute(text("""SELECT COUNT(*) FROM chat_group_members
-                              WHERE invited_by_id = :u AND user_id <> :u AND invited_utc >= :since"""),
+    """People this account added to groups since `since`, from the log (a removed member still counts: M-08)."""
+    return db.execute(text("SELECT COUNT(*) FROM chat_group_adds WHERE adder_id = :u AND created_utc >= :since"),
                       {"u": user_id, "since": since}).scalar() or 0
 
 

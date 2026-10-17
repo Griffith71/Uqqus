@@ -19,7 +19,7 @@ from ruqqus.__main__ import app
 
 from ruqqus.helpers import chat_groups as group_rules
 from ruqqus.helpers import chat_group_store as group_store
-from ruqqus.helpers.chat_permissions import can_message_directly
+from ruqqus.helpers.chat_permissions import can_add_to_group_directly
 
 _DAY = 86400
 
@@ -70,9 +70,12 @@ def _usernames():
 def _out_of_call(room_id, user_id):
     """Out of the group's call too, if it has one (the others' windows drop them at their next heartbeat)."""
     from ruqqus.__main__ import r
-    from ruqqus.helpers import call_store
+    from ruqqus.helpers import call_store, live_bus
     if r is not None:
+        info = call_store.meta(r, room_id)
         call_store.leave_user(r, room_id, user_id)
+        if info:
+            live_bus.revoke(r, user_id, f"call:{info['call_id']}")      # their open pages stop hearing it (C-07)
 
 
 def _membership(gid, v, joined_only=True):
@@ -84,31 +87,56 @@ def _membership(gid, v, joined_only=True):
     return group, me
 
 
-def _add_one(group, target, v, now):
-    """Invites one person (the room first), and lets them straight in when the two follow each other."""
+def _add_one(group, target, v, now, done=None):
+    """Invites one person (the room first), and lets them straight in when the two follow each other. `done`
+    collects the Matrix ids already invited, for `_undo`."""
     room_id = group[1]
     mxid = _mxid(target.id)
     matrix.invite_as_bot(room_id, mxid)
-    direct = can_message_directly(v, target)
+    if done is not None:
+        done.append(mxid)
+    direct = can_add_to_group_directly(v, target)
     if direct:
         matrix.join_room_as(room_id, mxid)
     group_store.add_member(g.db, group[0], target.id, group_rules.MEMBER,
                            group_rules.JOINED if direct else group_rules.INVITED, v.id, now)
 
 
+def _blocked_with_any(user_ids):
+    """Everyone in a block, either way, with any of `user_ids`."""
+    ids = list(user_ids)
+    if not ids:
+        return set()
+    rows = g.db.query(UserBlock.user_id, UserBlock.target_id).filter(
+        or_(UserBlock.user_id.in_(ids), UserBlock.target_id.in_(ids))).all()
+    return {x for pair in rows for x in pair}
+
+
 def _refusals(v, role, names, existing_ids, size):
-    """Each typed name to a user, or the first refusal. Nobody is added unless every name can be."""
-    blocked = _blocked_ids(v)
+    """Each typed name to a user, or the first refusal. Nobody is added unless every name can be. Nobody is put in a
+    group with someone they're in a block with, whoever adds them (M-09); the message never says who blocked whom."""
+    blocked = _blocked_ids(v) | (_blocked_with_any(existing_ids) - set(existing_ids))
     users = []
     for name in names:
         target = get_user(name, graceful=True)
-        refusal = group_rules.add_refusal(v.id, role, target, target is not None and target.id in blocked,
+        clash = target is not None and (target.id in blocked or target.id in _blocked_with_any([u.id for u in users]))
+        refusal = group_rules.add_refusal(v.id, role, target, clash,
                                           target is not None and target.id in existing_ids,
                                           size + len(users), typed_name=name)
         if refusal:
             return None, refusal
         users.append(target)
     return users, None
+
+
+def _undo(room_id, mxids):
+    """A Matrix step failed after others went through: take back the invites and joins already done, so the room
+    and the member list never disagree (M-07). Best effort; what can't be undone is logged."""
+    for mxid in mxids:
+        try:
+            matrix.kick_as_bot(room_id, mxid)
+        except matrix.MatrixError:
+            app.logger.warning(f"chat group: could not undo {mxid} in {room_id}")
 
 
 def _daily_adds_left(v, now):
@@ -141,19 +169,22 @@ def chat_group_create(v):
     from ruqqus.routes.chat import _ensure_provisioned
     owner_mxid = _ensure_provisioned(v)
     mxids = [owner_mxid] + [_mxid(u.id) for u in users]
+    room_id = None
     try:
         room_id = matrix.create_group_room(mxids)
         matrix.join_room_as(room_id, owner_mxid)
         gid = group_store.create(g.db, room_id, name, _name_severity(name), v.id, now)
         group = group_store.group(g.db, gid)
         for target in users:
-            direct = can_message_directly(v, target)
+            direct = can_add_to_group_directly(v, target)
             if direct:
                 matrix.join_room_as(room_id, _mxid(target.id))
             group_store.add_member(g.db, gid, target.id, group_rules.MEMBER,
                                    group_rules.JOINED if direct else group_rules.INVITED, v.id, now)
     except matrix.MatrixError:
         g.db.rollback()
+        if room_id:
+            _undo(room_id, mxids)            # nobody stays in a room the database never recorded
         return _error("Chat isn't answering right now. Try again in a moment.", 502)
     g.db.commit()
     return jsonify({"group_id": group[0], "room_id": room_id})
@@ -181,11 +212,13 @@ def chat_group_add(gid, v):
     users, refusal = _refusals(v, me[1], names, existing, len(existing))
     if refusal:
         return _error(refusal, 403 if not group_rules.may_manage(me[1]) else 400)
+    done = []
     try:
         for target in users:
-            _add_one(group, target, v, now)
+            _add_one(group, target, v, now, done)
     except matrix.MatrixError:
         g.db.rollback()
+        _undo(group[1], done)
         return _error("Chat isn't answering right now. Try again in a moment.", 502)
     g.db.commit()
     return jsonify(group_json(group_store.group(g.db, gid), group_store.member(g.db, gid, v.id), v, full=True))

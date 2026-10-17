@@ -1,6 +1,9 @@
+import hmac
 import html
 import re
+import secrets
 import time
+from os import environ
 from flask import *
 from sqlalchemy import or_, func, text
 
@@ -13,14 +16,21 @@ from ruqqus.helpers.visibility import filter_users, post_hidden, user_hidden
 from ruqqus.helpers.secret_box import encrypt_secret, decrypt_secret
 from ruqqus.classes import *
 import ruqqus.helpers.matrix_client as matrix
-from ruqqus.__main__ import app
+from ruqqus.__main__ import app, limiter
 
 
 def _ensure_provisioned(v):
     identity = g.db.query(ChatIdentity).filter_by(user_id=v.id).first()
     if identity:
         return identity.matrix_user_id
-    mxid = matrix.provision_user(v.id)
+    # no record here: a Matrix account Synapse already has for this id belonged to someone else (a database restored
+    # without Synapse's, audit D-07), so it is never handed over unless an admin says the two were restored together
+    try:
+        mxid = matrix.provision_user(v.id, adopt_existing=environ.get("MATRIX_ADOPT_EXISTING") == "1")
+    except matrix.OrphanMatrixAccount as e:
+        print(f"chat refused: {e}. Restore Synapse's database with the site's (scripts/backup.sh), or set "
+              "MATRIX_ADOPT_EXISTING=1 if they belong together.", flush=True)
+        abort(503)
     g.db.add(ChatIdentity(user_id=v.id, matrix_user_id=mxid))
     g.db.commit()
     return mxid
@@ -62,55 +72,98 @@ def chat_token(v):
     })
 
 
+_BLOB = re.compile(r"^[A-Za-z0-9_\-]{40,4096}$")
+
+
+def _identity(v):
+    identity = g.db.query(ChatIdentity).filter_by(user_id=v.id).first()
+    if not identity:
+        abort(404)
+    return identity
+
+
+@app.route("/api/chat/key", methods=["GET"])
+@auth_required
+def chat_key_get(v):
+    """The account's LOCKED recovery key copies and the salt the browser derives its password key with (audit M-03).
+    Nothing here can unlock anything without the member's password or recovery code, which never reach this route.
+    `legacy` says an old server-readable copy still exists (the browser replaces it with locked copies, then it's
+    cleared)."""
+    _ensure_provisioned(v)
+    identity = _identity(v)
+    if not identity.key_salt:
+        identity.key_salt = secrets.token_urlsafe(16)
+        g.db.add(identity)
+        g.db.commit()
+    return jsonify({"salt": identity.key_salt, "password_blob": identity.key_blob_password,
+                    "recovery_blob": identity.key_blob_recovery, "legacy": bool(identity.recovery_key_encrypted),
+                    "ready": bool(identity.ready_utc)})
+
+
+@app.route("/api/chat/key", methods=["POST"])
+@auth_required
+@validate_formkey
+def chat_key_set(v):
+    """Saves the locked copies the browser made (`password_blob`, `recovery_blob`: base64url, opaque here). Saving a
+    password copy clears the old server-readable key for good."""
+    identity = _identity(v)
+    changed = False
+    for field, column in (("password_blob", "key_blob_password"), ("recovery_blob", "key_blob_recovery")):
+        value = request.values.get(field)
+        if value is None:
+            continue
+        if not _BLOB.match(value):
+            return jsonify({"error": "That key couldn't be saved."}), 400
+        setattr(identity, column, value)
+        changed = True
+    if not changed:
+        return jsonify({"error": "Nothing to save."}), 400
+    if identity.key_blob_password:
+        identity.recovery_key_encrypted = None          # the server can no longer read the key
+    g.db.add(identity)
+    g.db.commit()
+    return "", 204
+
+
 @app.route("/api/chat/recovery_key", methods=["GET"])
 @auth_required
-def chat_recovery_key_get(v):
-    """Lets the chat bundle unlock E2EE automatically on any device with
-    no user interaction - see crypto.js's ensureEncryptionReady(). A plain
-    same-origin JSON read gated only by the normal session cookie, same as
-    GET /api/chat/conversations; nothing here is a state change for CSRF
-    to target."""
+def chat_recovery_key_legacy(v):
+    """The old server-readable copy, only while it still exists: the member's own browser reads it once to lock it
+    with their password and a recovery code (POST /api/chat/key then clears it). Never anything for an account
+    set up after audit M-03."""
     identity = g.db.query(ChatIdentity).filter_by(user_id=v.id).first()
     if not identity or not identity.recovery_key_encrypted:
         return jsonify({"recovery_key": None})
     return jsonify({"recovery_key": decrypt_secret(identity.recovery_key_encrypted)})
 
 
-@app.route("/api/chat/recovery_key", methods=["POST"])
+@app.route("/api/chat/check_password", methods=["POST"])
+@limiter.limit("10/minute")
 @auth_required
 @validate_formkey
-def chat_recovery_key_set(v):
-    """Called once by the bundle right after it generates a brand-new
-    recovery key on first-ever E2EE setup for this account, so it never
-    has to be shown to or saved by the user."""
-    recovery_key = request.values.get("recovery_key", "")
-    if not recovery_key:
-        abort(400)
-    identity = g.db.query(ChatIdentity).filter_by(user_id=v.id).first()
-    if not identity:
-        abort(404)
-    identity.recovery_key_encrypted = encrypt_secret(recovery_key)
-    g.db.add(identity)
-    g.db.commit()
+def chat_check_password(v):
+    """Whether a typed password is the account's, before the browser locks the chat key with it (a typo would lock
+    it with the wrong key). The password is checked like a login and kept nowhere."""
+    return jsonify({"ok": bool(v.verifyPass(request.form.get("password", "")))})
+
+
+@app.route("/api/chat/ready", methods=["POST"])
+@auth_required
+@validate_formkey
+def chat_ready(v):
+    """This member's chat has finished setting up encryption: messages waiting for them in other people's browsers
+    can now be sent (audit M-04)."""
+    identity = _identity(v)
+    if not identity.ready_utc:
+        identity.ready_utc = int(time.time())
+        g.db.add(identity)
+        g.db.commit()
     return "", 204
 
 
-@app.route("/api/chat/recovery_key/reveal", methods=["POST"])
-@auth_required
-@validate_formkey
-def chat_recovery_key_reveal(v):
-    """Manual export path for a human who wants to see/copy their actual
-    key - gated behind re-entering the account password, same pattern as
-    settings_log_out_others in ruqqus/routes/settings.py."""
-    if not v.verifyPass(request.form.get("password", "")):
-        return render_template("settings_security.html", v=v, error="Incorrect Password"), 401
-
-    identity = g.db.query(ChatIdentity).filter_by(user_id=v.id).first()
-    if not identity or not identity.recovery_key_encrypted:
-        return render_template("settings_security.html", v=v, error="No recovery key has been generated yet."), 404
-
-    return render_template("settings_security.html", v=v,
-                           revealed_recovery_key=decrypt_secret(identity.recovery_key_encrypted))
+def _chat_ready(user_id):
+    identity = g.db.query(ChatIdentity).filter_by(user_id=user_id).first()
+    return bool(identity and identity.ready_utc)
 
 
 def _started(room_id, status):
@@ -192,6 +245,8 @@ def chat_conversations(v):
                 "id": other.id,
                 "username": other.username,
                 "profile_url": other.profile_url,
+                # messages to someone whose chat isn't set up yet wait in the sender's browser (M-04)
+                "ready": _chat_ready(other.id),
             },
             "unread_count": unread.unread_count if unread else 0,
             "last_activity_utc": c.last_activity_utc,
@@ -261,7 +316,9 @@ def chat_share_targets(v):
 
     follows = [i for i in v.following_ids if i not in seen and i not in blocked]
     if follows and len(out) < SHARE_TARGETS:
-        people = g.db.query(User).filter(User.id.in_(follows), User.is_deleted == False, User.is_banned == 0)
+        # never a bot: a chat with one is refused (audit M-13)
+        people = g.db.query(User).filter(User.id.in_(follows), User.is_deleted == False, User.is_banned == 0,
+                                         User.is_bot.isnot(True))
         if q:
             people = people.filter(User.username.ilike("%" + q.replace("\\", "").replace("%", "\\%").replace("_", "\\_") + "%"))
         people = filter_users(people, v).order_by(User.username.asc()).limit(SHARE_TARGETS - len(out)).all()
@@ -289,7 +346,11 @@ def chat_post_preview(pid, v):
         return jsonify({"ok": False, "notice": "This post was deleted."})
     if post_hidden(post, v):
         return jsonify({"ok": False, "notice": "Hidden by your word filter."})
-    if not post.post_public and not post.board.can_view(v) and post.author_id != v.id:
+    # the post page's own rule for private guilds, and a block either way hides it as a quote card does (audit
+    # M-12); an anonymous post is never hidden for whose it is
+    if post.in_private_guild_for(v):
+        return jsonify({"ok": False, "notice": "Not available to you."})
+    if not post.is_anonymous and post.author_id != v.id and post.author and v.any_block_exists(post.author):
         return jsonify({"ok": False, "notice": "Not available to you."})
 
     return jsonify({
@@ -330,9 +391,19 @@ def chat_decline(v, cid):
     c = g.db.query(ChatConversation).filter_by(id=cid).first()
     if not c or v.id not in (c.user_a_id, c.user_b_id) or c.initiator_id == v.id:
         abort(404)
+    room_id, sender_id = c.matrix_room_id, c.initiator_id
     g.db.query(ChatUnread).filter_by(conversation_id=cid).delete()
     g.db.delete(c)
     g.db.commit()
+    # the room goes with the request (audit M-10: it stayed, with the invitation in the decliner's chat client and
+    # the sender still in it). Best effort: the request is already gone, and a new message makes a new room.
+    if room_id:
+        for leave in (lambda: matrix.leave_room_as(room_id, _mxid_for_user_id(v.id)),
+                      lambda: matrix.kick_as_bot(room_id, _mxid_for_user_id(sender_id), "Message request declined")):
+            try:
+                leave()
+            except Exception:
+                pass
     return "", 204
 
 
@@ -357,14 +428,50 @@ def chat_mark_read(v, cid):
 # --- Application Service webhook (Synapse -> Ruqqus), see
 # synapse/ruqqus-appservice.yaml for the registration this answers to ---
 
+def _guard_room_event(event):
+    """What Matrix's own rules can't stop, removed as it happens (best effort, never failing the transaction):
+    - someone joining or invited to a 1:1 room who isn't one of its two people (M-02, belt and braces: the rooms only
+      let the bot invite);
+    - in a public broadcast channel, a message the site didn't send (a writer's own client, around the word filter,
+      the daily count and reports) or a reaction that is text rather than an emoji (M-06)."""
+    from ruqqus.helpers import broadcasts as channel_rules
+    try:
+        room_id, kind, sender = event.get("room_id"), event.get("type"), event.get("sender") or ""
+        bot = f"@{app.config['MATRIX_BOT_LOCALPART']}:{app.config['MATRIX_SERVER_NAME']}"
+        if not room_id or sender == bot:
+            return
+        if kind == "m.room.member" and (event.get("content") or {}).get("membership") in ("join", "invite"):
+            pair = g.db.query(ChatConversation).filter_by(matrix_room_id=room_id).first()
+            target = event.get("state_key") or ""
+            if pair is not None and target != bot and \
+                    target not in (matrix.mxid_for(pair.user_a_id), matrix.mxid_for(pair.user_b_id)):
+                matrix.kick_as_bot(room_id, target, "Not part of this chat")
+            return
+        if kind not in ("m.room.message", "m.reaction"):
+            return
+        channel = broadcast_store.by_room(g.db, room_id)
+        if channel is None or channel[4] != 0:          # only public channels: a channel for circles is encrypted
+            return
+        content = event.get("content") or {}
+        if kind == "m.room.message" and not channel_rules.mark_ok(app.config["SECRET_KEY"], room_id, content):
+            matrix.redact_as_bot(room_id, event.get("event_id"), secrets.token_hex(12), "Posted around the channel's rules")
+        elif kind == "m.reaction" and not channel_rules.reaction_ok(((content.get("m.relates_to") or {}).get("key"))):
+            matrix.redact_as_bot(room_id, event.get("event_id"), secrets.token_hex(12), "Reactions are emoji")
+    except Exception as e:
+        app.logger.warning(f"appservice guard: {e}")
+
+
 @app.route("/matrix/appservice/_matrix/app/v1/transactions/<txn_id>", methods=["PUT"])
 def matrix_appservice_transaction(txn_id):
+    token = app.config.get("MATRIX_HS_TOKEN") or ""
     auth = request.headers.get("Authorization", "")
-    if auth != f"Bearer {app.config['MATRIX_HS_TOKEN']}":
+    # an unset token never matches "Bearer None", and the compare takes the same time whatever is sent (M-11)
+    if not token or not hmac.compare_digest(auth.encode(), f"Bearer {token}".encode()):
         abort(403)
 
     body = request.get_json(silent=True, force=True) or {}
     for event in body.get("events", []):
+        _guard_room_event(event)
         if event.get("type") not in ("m.room.message", "m.room.encrypted"):
             continue
         if not is_new_message(event):     # a reaction to, or an edit of, an earlier message

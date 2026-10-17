@@ -12,14 +12,19 @@ class ChatIdentity(Base):
     access token, or device id - those live only in the browser
     (localStorage), never server-side.
 
-    recovery_key_encrypted DOES hold a secret (encrypted at rest - see
-    ruqqus.helpers.secret_box): the account's Matrix secret-storage
-    recovery key, saved automatically so E2EE unlocks on any device
-    without the user managing a key themselves. Storing this server-side
-    means the operator can decrypt a user's message history given this
-    value and MASTER_KEY - an explicit, deliberate tradeoff against pure
-    zero-knowledge E2EE, made for UX reasons. See routes/chat.py's
-    recovery_key routes for the only code paths that read/write it."""
+    **The site can't read anyone's chats** (audit M-03): the account's Matrix
+    recovery key is kept only LOCKED, in two copies the browser made:
+    `key_blob_password` (AES-GCM under a key the browser derives from the
+    member's password and `key_salt`) and `key_blob_recovery` (under a key
+    from the one-time recovery code shown once). The server never sees the
+    derived keys or the recovery key. See routes/chat.py's /api/chat/key
+    routes and assets/chat_src/src/keylock.js.
+
+    `recovery_key_encrypted` is the old, server-readable copy from before
+    that change: it is read once by the member's own browser to make the
+    locked copies, then cleared (POST /api/chat/key). `ready_utc` is when the
+    member's browser first finished setting up encryption: messages to
+    someone not ready yet wait in the sender's browser (audit M-04)."""
 
     __tablename__ = "chat_identities"
 
@@ -27,6 +32,10 @@ class ChatIdentity(Base):
     matrix_user_id = Column(String(255), nullable=False)
     provisioned_utc = Column(Integer, default=0)
     recovery_key_encrypted = Column(Text, nullable=True)
+    key_salt = Column(String(64), nullable=True)
+    key_blob_password = Column(Text, nullable=True)
+    key_blob_recovery = Column(Text, nullable=True)
+    ready_utc = Column(Integer, default=0)
 
     user = relationship("User", primaryjoin="User.id==ChatIdentity.user_id")
 

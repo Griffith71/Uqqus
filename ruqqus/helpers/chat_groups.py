@@ -12,7 +12,7 @@ through a route and these rules; members can only write, react, edit and delete 
   account, not someone in a block with the person adding them, either way, and not into a full group. A block is
   never named: every one of those says "@x can't be added to a group." (the name is the one typed).
 - **Where an invitation lands**: in Inbox when the two follow each other in either direction, as a 1:1 chat would
-  (`chat_permissions.can_message_directly`), and they are in at once; otherwise in Requests, where they can read
+  (`chat_permissions.can_add_to_group_directly`: the two follow each other), and they are in at once; otherwise in Requests, where they can read
   the group from their invitation on and accept or delete it.
 - **A block doesn't change a group both people are already in**: removing someone would tell them about the block.
   The blocker's own client hides the messages of the people they blocked ("A message from someone you blocked").

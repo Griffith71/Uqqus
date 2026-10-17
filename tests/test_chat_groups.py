@@ -102,7 +102,10 @@ def test_what_a_group_is_called():
 
 def _tables():
     from pathlib import Path
-    sql = (Path(__file__).resolve().parent.parent / "scripts" / "migrations" / "2026-10-22_chat_groups.sql").read_text(encoding="utf-8")
+    migrations = Path(__file__).resolve().parent.parent / "scripts" / "migrations"
+    sql = (migrations / "2026-10-22_chat_groups.sql").read_text(encoding="utf-8")
+    sql += ";\n" + ";\n".join(s for s in (migrations / "2026-11-02_audit_fixes.sql").read_text(encoding="utf-8").split(";")
+                                 if "chat_group_adds" in s)
     sql = "\n".join(line for line in sql.splitlines() if not line.strip().startswith("--"))
     out = []
     for s in (s.strip() for s in sql.split(";") if "CREATE" in s):
@@ -184,11 +187,15 @@ def test_roles_removal_and_renaming(db):
 
 
 def test_daily_counts_for_the_limits(db):
-    _group(db, now=100)
+    gid = _group(db, now=100)
     store.create(db, "!two:ruqqus.local", "", 0, ANN.id, 5000)
     assert store.created_since(db, ANN.id, 0) == 2 and store.created_since(db, ANN.id, 1000) == 1
     assert store.added_since(db, ANN.id, 0) == 2           # Bob and Cat; never herself
     assert store.added_since(db, BOB.id, 0) == 0
+    # removing someone and adding them again still counts against the daily cap (audit M-08)
+    store.remove_member(db, gid, BOB.id)
+    store.add_member(db, gid, BOB.id, rules.MEMBER, rules.INVITED, ANN.id, 300)
+    assert store.added_since(db, ANN.id, 0) == 3
 
 
 def test_the_database_refuses_unknown_roles_and_states(db):

@@ -7,21 +7,21 @@ import ruqqus.helpers.matrix_client as matrix_client
 
 
 def can_message_directly(sender, recipient) -> bool:
-    """True if sender's message to recipient should land straight in
-    recipient's Inbox; False if it must become a Request.
-
-    Current default (no per-user setting exists yet - see
-    User.following_ids/friend_ids in ruqqus/classes/user.py): allowed if
-    EITHER follows the other, in either direction. A future "who can
-    message me" setting should be layered in here first (e.g. check
-    recipient.chat_permission_mode), falling back to this default.
-    """
+    """True if sender's message to recipient should land straight in recipient's Inbox; False if it must become a
+    Request. **The recipient decides**: only when the recipient follows the sender (audit M-01: a stranger who
+    followed someone used to land in their Inbox, put them in groups and ring them). Calls follow the same rule, since
+    a call needs a chat both people have in their Inbox."""
     if sender.id == recipient.id:
         return False
-    return (
-        recipient.id in sender.following_ids
-        or sender.id in recipient.following_ids
-    )
+    return sender.id in recipient.following_ids
+
+
+def can_add_to_group_directly(adder, target) -> bool:
+    """A group add joins someone at once only when the two follow each other; anyone else gets an invitation in
+    their Requests ("@x added you to this group", Accept / Delete)."""
+    if adder.id == target.id:
+        return False
+    return target.id in adder.following_ids and adder.id in target.following_ids
 
 
 def is_blocked(sender, recipient) -> bool:

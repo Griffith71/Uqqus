@@ -91,7 +91,7 @@
                        <p class="text-muted mb-md-2">Usernames aplenty. No email address required :)</p>
                        {% endif %}
 
-                       <form action="/signup" method="post" class="mt-md-3" id="signup">
+                       <form action="/signup" method="post" class="mt-md-3" id="signup" data-chat-prekey>
 
                             {% if error %}<span class="text-danger">{{ error }}</span><br>{% endif %}
 
@@ -199,6 +199,7 @@
 <!-- Ruqqus JS -->
 
 <script src="{{ asset_url('js/all_js.js') }}"></script>
+<script src="{{ asset_url('js/chat_key.js') }}"></script>
 
 </body>
 

@@ -27,9 +27,16 @@ def mxid_for(user_id: int) -> str:
     return f"@{app.config['MATRIX_USER_PREFIX']}{user_id}:{app.config['MATRIX_SERVER_NAME']}"
 
 
-def provision_user(user_id: int) -> str:
-    """Idempotent: Synapse returns 400 M_USER_IN_USE if already
-    registered, which we treat as success (the user already exists)."""
+class OrphanMatrixAccount(MatrixError):
+    """Synapse already has an account for a user id the site has no chat record of (audit D-07)."""
+
+
+def provision_user(user_id: int, adopt_existing: bool = True) -> str:
+    """Makes the member's Matrix account. Synapse answers 400 M_USER_IN_USE when it already exists: with
+    `adopt_existing` that counts as success; without it, it is an OrphanMatrixAccount. Matrix ids come from user ids,
+    so after the site's database is restored without Synapse's (or the other way round) a NEW member can be given the
+    id of an old account that still sits in Synapse, with its rooms and the people who knew it. The caller passes
+    adopt_existing=False when it has no record of the account, and chat is refused rather than hand it over."""
     mxid = mxid_for(user_id)
     localpart = f"{app.config['MATRIX_USER_PREFIX']}{user_id}"
     resp = requests.post(
@@ -38,7 +45,9 @@ def provision_user(user_id: int) -> str:
         headers=_as_headers(), timeout=10,
     )
     if resp.status_code == 400 and resp.json().get("errcode") == "M_USER_IN_USE":
-        return mxid
+        if adopt_existing:
+            return mxid
+        raise OrphanMatrixAccount(f"{mxid} exists in Synapse with no chat record on the site")
     if resp.status_code != 200:
         raise MatrixError(f"provision_user failed: {resp.status_code}")
     return mxid
@@ -83,6 +92,9 @@ def create_dm_room(initiator_mxid: str, invitee_mxid: str) -> str:
             "visibility": "private",
             "is_direct": True,
             "invite": [initiator_mxid, invitee_mxid],
+            # only the bot invites, kicks or changes the room: without this either person could quietly invite
+            # a third account, which both clients would then encrypt to (audit M-02)
+            "power_level_content_override": group_power_levels(),
             "initial_state": [
                 {"type": "m.room.encryption",
                  "content": {"algorithm": "m.megolm.v1.aes-sha2"}},
@@ -234,6 +246,35 @@ def put_in_room(room_id: str, mxid: str):
     except MatrixError:
         pass
     join_room_as(room_id, mxid)
+
+
+def lock_down_room(room_id: str):
+    """Gives an existing room the group power levels (only the bot invites, kicks or changes the room), keeping the
+    writers of a channel. For 1:1 rooms made before audit M-02 (scripts/lock_dm_rooms.py)."""
+    url = f"{app.config['MATRIX_INTERNAL_URL']}/_matrix/client/v3/rooms/{room_id}/state/m.room.power_levels"
+    current = requests.get(url, headers=_as_headers(), timeout=10)
+    if current.status_code != 200:
+        raise MatrixError(f"lock_down_room read failed: {current.status_code}")
+    levels = group_power_levels()
+    # members go back to 0; only a non-member entry at 100 (the bot, listed as creator in rooms before version 12)
+    # is kept
+    bot = f"@{app.config['MATRIX_BOT_LOCALPART']}:{app.config['MATRIX_SERVER_NAME']}"
+    kept = {k: v for k, v in (current.json().get("users") or {}).items() if k == bot}
+    if kept:
+        levels["users"] = kept
+    resp = requests.put(url, json=levels, headers=_as_headers(), timeout=10)
+    if resp.status_code != 200:
+        raise MatrixError(f"lock_down_room failed: {resp.status_code}")
+
+
+def room_member_ids(room_id: str):
+    """The Matrix ids joined or invited in a room (as the bot)."""
+    resp = requests.get(f"{app.config['MATRIX_INTERNAL_URL']}/_matrix/client/v3/rooms/{room_id}/members",
+                        headers=_as_headers(), timeout=10)
+    if resp.status_code != 200:
+        raise MatrixError(f"room_member_ids failed: {resp.status_code}")
+    return [e.get("state_key") for e in resp.json().get("chunk", [])
+            if (e.get("content") or {}).get("membership") in ("join", "invite")]
 
 
 def channel_power_levels(writer_mxids) -> dict:
