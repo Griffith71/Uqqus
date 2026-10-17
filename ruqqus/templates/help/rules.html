@@ -1,7 +1,7 @@
 {% extends "docs_default.html" %}
 
 {% block title %}
-<title>Ruqqus - The independent social platform</title>
+<title>{{ 'SITE_NAME' | app_config }} - The independent social platform</title>
 <meta name="description" content="Rules.">
 {% endblock %}
 
@@ -10,11 +10,11 @@
 
 {% filter markdown %}
 
-#Ruqqus Content Policy
+#{{ 'SITE_NAME' | app_config }} Content Policy
 
-Ruqqus.com is a free speech environment. However, in order to comply with US law, and in order to ensure the safety of our users, there are a few things you are not permitted to do with the Ruqqus platform.
+{{ 'SITE_NAME' | app_config }}.com is a free speech environment. However, in order to comply with US law, and in order to ensure the safety of our users, there are a few things you are not permitted to do with the {{ 'SITE_NAME' | app_config }} platform.
 
-By using ruqqus.com, you agree to follow these rules. Violations (in Ruqqus's sole discretion) may lead to the suspension of your ruqqus.com account.
+By using ruqqus.com, you agree to follow these rules. Violations (in {{ 'SITE_NAME' | app_config }}'s sole discretion) may lead to the suspension of your ruqqus.com account.
 
 ## 1: Intellectual Property
 
@@ -32,7 +32,7 @@ You may not upload to, embed within, or link out from ruqqus.com:
     * Phishing attacks
     * XSS attacks
 2. URL shorteners
-3. Anything that breaks Ruqqus
+3. Anything that breaks {{ 'SITE_NAME' | app_config }}
     * If you find a problem, tell us about it. You'll get a nifty badge on your profile.
 
 ## 3: User Safety
@@ -40,7 +40,7 @@ You may not upload to, embed within, or link out from ruqqus.com:
 You may not use ruqqus.com to do any of the following:
 
 1. Threaten, intimidate, or harrass other users
-2. Impersonate Ruqqus staff or other individuals
+2. Impersonate {{ 'SITE_NAME' | app_config }} staff or other individuals
 3. Solicit, collect, or publish personal information, either yours or another individual's
 	* This does not include information that is already publically available, such as public figures' names, government contact info, etc.
 4. Spam
@@ -69,7 +69,7 @@ You may not use ruqqus.com to do any of the following:
 
 ## 6: Bots
 
-The following rules apply to clients interacting with Ruqqus in an automated manner ("Bots").
+The following rules apply to clients interacting with {{ 'SITE_NAME' | app_config }} in an automated manner ("Bots").
 
 1. Bots may not vote or comment. They may post, forward and help with moderation.
 2. Bots must use a unique `User-Agent` header.
@@ -109,7 +109,7 @@ Unnecessary duplicate posting is not permitted either: check that what you are p
 
 ## 11: Anonymous Posts and Comments
 
-You may post or comment anonymously. Other users will see "Anonymous" instead of your name; you and site administrators can still see it, and Ruqqus keeps the account on record for legal and abuse handling. Anonymous posts and comments follow every rule on this page. They cannot be changed to or from anonymous after posting, are not listed on your profile, and cannot receive tips.
+You may post or comment anonymously. Other users will see "Anonymous" instead of your name; you and site administrators can still see it, and {{ 'SITE_NAME' | app_config }} keeps the account on record for legal and abuse handling. Anonymous posts and comments follow every rule on this page. They cannot be changed to or from anonymous after posting, are not listed on your profile, and cannot receive tips.
 
 {% endfilter %}
 {% endblock %}

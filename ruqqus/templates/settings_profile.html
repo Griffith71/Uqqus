@@ -18,7 +18,7 @@
         <div class="d-flex">
 
           <div class="title w-lg-25 text-md-center">
-            <img src="{{ v.profile_url }}" class="profile-pic-75">
+            <img alt="" src="{{ v.profile_url }}" class="profile-pic-75">
           </div>
 
           <div class="body w-lg-100 my-auto">
@@ -73,7 +73,7 @@
         <div class="d-flex">
 
           <div class="title w-lg-75 text-md-center banner-preview">
-            <img src="{{ v.banner_url }}" class="banner-pic-135">
+            <img alt="Banner" src="{{ v.banner_url }}" class="banner-pic-135">
           </div>
 
           <div class="body w-lg-100 my-auto">
@@ -125,7 +125,7 @@
 
       <h2 class="h5" id="referral" name="referral">Referrals</h2>
 
-      <p class="text-small text-muted">Invite a friend to make a {{ 'SITE_NAME' | app_config }}.</p>
+      <p class="text-small text-muted">Invite a friend to make an account.</p>
 
       <div class="settings-section rounded">
 
@@ -148,7 +148,7 @@
 
               </div>
 
-              <div class="text-small-extra text-muted mt-3">Share this link with a friend. {% if v.referral_count==0 %} When they sign up, you'll get the bronze recruitment badge. <a href="/help/badges">Learn more.</a>{% elif v.referral_count<10 %} When you refer 10 friends, you'll receive the silver recruitment badge. <a href="/help/badges">Learn more.</a>{% elif v.referral_count<100 %} When you refer 100 friends, you'll receive the gold recruitment badge. <a href="/help/badges">Learn more</a>.{% endif %}</div>
+              <div class="text-small-extra text-muted mt-3">Share this link with a friend. {% if v.referral_count==0 %} When they sign up, you'll get the bronze recruitment badge. <a class="inline-link" href="/help/badges">Learn more.</a>{% elif v.referral_count<10 %} When you refer 10 friends, you'll receive the silver recruitment badge. <a href="/help/badges">Learn more.</a>{% elif v.referral_count<100 %} When you refer 100 friends, you'll receive the gold recruitment badge. <a href="/help/badges">Learn more</a>.{% endif %}</div>
 
               </div>
 
@@ -204,7 +204,7 @@
 
               <div class="body w-lg-100">
 
-                <input type="text" readonly="" class="form-control copy-link" id="rss_feed" value="{{ ('/feeds/@' + v.username + '/' + v.feedkey + '/hot') | full_link }}" data-clipboard-text="{{ ('/feeds/@' + v.username + '/' + v.feedkey + '/hot') | full_link }}">
+                <input type="text" readonly="" class="form-control copy-link" id="rss_feed" aria-label="Your RSS feed address" value="{{ ('/feeds/@' + v.username + '/' + v.feedkey + '/hot') | full_link }}" data-clipboard-text="{{ ('/feeds/@' + v.username + '/' + v.feedkey + '/hot') | full_link }}">
                 <form action="/settings/new_feedkey" method="post">
                   <input type="hidden" name="formkey" value="{{ v.formkey }}">
                   <input type="submit" class="btn btn-secondary text-capitalize mr-2 mb-0 mt-2" value="Generate new URL">
@@ -363,14 +363,14 @@
                 <div class="w-lg-100">
                   <p>Titles change the way your name is displayed across {{ 'SITE_NAME' | app_config }}, allowing you to show off a site achievement.</p>
                   <div class="input-group mb2">
-                    <select id='title-selector' class="form-control" form="profile-settings" name="title_id" onchange="post_toast('/settings/profile?title_id='+document.getElementById('title-selector').value)">
+                    <select id='title-selector' aria-label="Title" class="form-control" form="profile-settings" name="title_id" onchange="post_toast('/settings/profile?title_id='+document.getElementById('title-selector').value)">
                      <option value="0"{{ ' selected' if v.title_id==0 else '' }}>No title</option>
                      {% for entry in v.available_titles %}
                      <option value="{{ entry.id }}"{{ ' selected' if v.title_id==entry.id else '' }}>{{ entry.text }}</option>
                      {% endfor %}
                    </select>
                  </div>
-                 <div class="text-small-extra text-muted mt-3"><a href="/help/titles" target="_blank">Click here</a> to see all titles and the requirements to unlock them.</div>
+                 <div class="text-small-extra text-muted mt-3"><a class="inline-link" href="/help/titles" target="_blank">Click here</a> to see all titles and the requirements to unlock them.</div>
 
                </div>
 
@@ -382,7 +382,7 @@
                 <div class="w-lg-100">
                   <p>Change the default sorting for posts.</p>
                   <div class="input-group mb2">
-                    <select id='defaultsorting' class="form-control" form="profile-settings" name="defaultsorting" onchange="post_toast('/settings/profile?defaultsorting='+document.getElementById('defaultsorting').value)">
+                    <select id='defaultsorting' aria-label="Default sort" class="form-control" form="profile-settings" name="defaultsorting" onchange="post_toast('/settings/profile?defaultsorting='+document.getElementById('defaultsorting').value)">
                      {% for entry in ["hot", "new", "old", "top", "disputed", "activity"] %}
                      <option value="{{ entry }}"{{ ' selected' if v.defaultsorting==entry else '' }}>{{ entry }}</option>
                      {% endfor %}
@@ -399,7 +399,7 @@
                 <div class="w-lg-100">
                   <p>Change the default time filter for posts.</p>
                   <div class="input-group mb2">
-                    <select id='defaulttime' class="form-control" form="profile-settings" name="defaulttime" onchange="post_toast('/settings/profile?defaulttime='+document.getElementById('defaulttime').value)">
+                    <select id='defaulttime' aria-label="Default time range" class="form-control" form="profile-settings" name="defaulttime" onchange="post_toast('/settings/profile?defaulttime='+document.getElementById('defaulttime').value)">
                      {% for entry in ["day", "week", "month", "year", "all"] %}
                      <option value="{{ entry }}"{{ ' selected' if v.defaulttime==entry else '' }}>{{ entry }}</option>
                      {% endfor %}

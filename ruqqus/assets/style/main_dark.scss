@@ -1985,6 +1985,13 @@ body.embedded #chat-app {
     white-space: pre-wrap;
 }
 
+// the chat box: several lines, grown by the script up to about six (audit M-14)
+.chat-composer-input {
+    resize: none;
+    max-height: 9.5rem;
+    overflow-y: auto;
+}
+
 .chat-actions {
     visibility: hidden;
     margin: 0 0.25rem;
@@ -2238,6 +2245,103 @@ body.embedded #chat-app {
 .live-new-comments {
     margin-bottom: 0.5rem;
     font-size: 0.875rem;
+}
+
+// Read like Reddit's live threads (partials/live_panel.html): the status line ("LIVE · ends in 5 h · 12 watching" or
+// "This live thread has ended"), who writes the updates, the runners' controls, the pinned summary, crossed-out
+// updates ("Corrected"), and the "N new updates" pill that waits at the top of the thread while the reader scrolls.
+.live-panel .live-panel-head {
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.live-status {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.375rem;
+    min-height: 1.5rem;
+}
+
+.live-status-text {
+    font-size: 0.875rem;
+    opacity: 0.8;
+}
+
+.live-ended {
+    font-weight: 700;
+}
+
+.live-controls {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+}
+
+.live-summary {
+    margin-bottom: 0.75rem;
+    padding: 0.625rem 0.75rem;
+    border-radius: 0.5rem;
+    background-color: rgba(127, 127, 127, 0.08);
+}
+
+.live-summary-head {
+    display: flex;
+    align-items: center;
+    margin-bottom: 0.25rem;
+}
+
+.live-summary-title {
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    opacity: 0.75;
+}
+
+.live-summary-body p:last-child {
+    margin-bottom: 0;
+}
+
+.live-update.is-struck .live-update-body {
+    text-decoration: line-through;
+    opacity: 0.6;
+}
+
+.live-corrected {
+    font-weight: 700;
+    color: #b54708;
+}
+
+.live-update-actions {
+    margin-top: 0.25rem;
+    font-size: 0.8125rem;
+}
+
+.live-new-pill {
+    position: sticky;
+    top: 4.5rem;
+    z-index: 5;
+    display: block;
+    margin: 0 auto 0.5rem;
+    padding: 0.25rem 0.875rem;
+    border: 0;
+    border-radius: 999px;
+    background-color: #e5484d;
+    color: #fff;
+    font-size: 0.8125rem;
+    font-weight: 700;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.live-new-pill[hidden] {
+    display: none;
+}
+
+.live-badge-sm {
+    font-size: 0.625rem;
 }
 
 .stream-card {
@@ -5362,7 +5466,7 @@ pre .clo, pre .opn, pre .pun, code .clo, code .opn, code .pun {
 // Medium devices (tablets, less than 992px)
 @media (max-width: 991.98px) {
     #frontpage, #search {
-        padding-top: 55px;
+        padding-top: var(--navbar-height, 55px);
     }
 }
 
@@ -5418,8 +5522,10 @@ html {
     max-width: none;
 }
 
+// the navbar's measured height (default.html sets --navbar-height): on a phone it is two rows, about 90px, and a
+// fixed 55px put the top of the post page and the profile under it (audit U-01)
 body, #settings, #notifications, #submit {
-    padding-top: 55px;
+    padding-top: var(--navbar-height, 55px);
     background-color: $gray-600;
 }
 
@@ -7132,6 +7238,60 @@ body:not(.using-mouse) :focus-visible:not(.form-control) {
     object-fit: cover;
 }
 
+// The other players (partials/player.html, helpers/social_embeds.player_layout): a 9:16 video (TikTok, reels) keeps
+// that shape, as tall as a feed picture may be, centred; a music player is its provider's height (set on the box
+// too, so nothing moves when the frame arrives) and its cover fills the box until then; a GIF or picture keeps a
+// little room while it loads. `.embed-lg iframe` caps height at 512px: these set their own.
+.embed-lg[data-embed-kind="vertical"] .feed-video-thumb,
+.embed-lg[data-embed-kind="vertical"] .feed-video-media {
+    aspect-ratio: 9 / 16;
+    height: 512px;
+    max-height: 80vh;
+    width: auto !important;
+    max-width: 100%;
+    margin: 0 auto;
+}
+
+.embed-lg[data-embed-kind="audio"] .feed-video-thumb {
+    aspect-ratio: auto;
+    height: 100%;
+    background-color: rgba(127, 127, 127, 0.12);
+}
+
+.embed-lg[data-embed-kind="audio"] .feed-video-media {
+    max-height: none;
+    background-color: transparent;
+    border-radius: 12px;
+}
+
+// the play mark of a player loaded on click is a real button (partials/player.html): no button look of its own
+button.embed-lg-play {
+    background: none;
+    border: 0;
+    padding: 0;
+    line-height: 1;
+}
+
+button.embed-lg-play:focus-visible {
+    outline: 3px solid $white;
+    outline-offset: 4px;
+    border-radius: 50%;
+}
+
+.embed-image {
+    position: relative;
+    overflow: hidden;
+    border-radius: $border-radius;
+    min-height: 120px;
+}
+
+.embed-image img, .embed-image video {
+    display: block;
+    width: 100%;
+    max-height: 512px;
+    object-fit: contain;
+}
+
 // default.html's #navbarResponsive holds only the phone menu (d-md-none), but from 768px Bootstrap lays a
 // .navbar-collapse out as a growing flex box anyway: an empty one took 200-400px after the account area,
 // so the account area never reached its column edge and slid when nav_align.js ran. header.html's
@@ -7649,6 +7809,601 @@ $quote-hover: rgba(255, 255, 255, 0.05);
     .quote-card {
         font-size: 14px;
     }
+}
+
+// Guild flair (partials/guild_flair.html, helpers/guild_flair.py): a chip before a title, the guild's filter row above
+// its posts. Every colour of the fixed palette (`guild_flair.COLOURS`) has a rule here and in the other stylesheet
+// (tests/test_guild_flair.py checks); the pairs are chosen for 4.5:1 text contrast.
+.flair-chip {
+    display: inline-block;
+    margin-right: 0.375rem;
+    padding: 0.0625rem 0.5rem;
+    border-radius: 999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    line-height: 1.5;
+    vertical-align: middle;
+    white-space: nowrap;
+}
+
+.flair-filter {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.375rem;
+    align-items: center;
+    padding: 0.75rem 0 0.25rem;
+}
+
+.flair-filter a {
+    text-decoration: none !important;
+}
+
+.flair-filter-all {
+    padding: 0.0625rem 0.625rem;
+    border-radius: 999px;
+    border: 1px solid $border-color;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.flair-filter-chip {
+    margin-right: 0;
+    border: 1px solid transparent;
+    opacity: 0.85;
+}
+
+.flair-filter-chip:hover, .flair-filter-chip:focus-visible {
+    opacity: 1;
+}
+
+.flair-filter-chip.is-on, .flair-filter-all.is-on {
+    opacity: 1;
+    box-shadow: 0 0 0 2px currentColor;
+}
+
+@each $name, $bg, $fg in (gray #343a40 #e9ecef, red #5c1416 #ffc9c9, orange #5a2a00 #ffd8a8, yellow #4d3d00 #ffec99,
+                          green #173d22 #b2f2bb, teal #0b3b33 #96f2d7, blue #0b2e4f #a5d8ff, indigo #1f2a63 #bac8ff,
+                          purple #45144f #eebefa, pink #5c1230 #fcc2d7) {
+    .flair-#{$name} {
+        background-color: $bg;
+        color: $fg !important;
+    }
+}
+
+// Guild tabs, resources, pinned row, wiki and events (partials/guild_tabs.html, templates/guild/wiki*.html,
+// templates/guild/event*.html). Each block keeps its height from the server's markup; nothing loads late.
+$gp-surface: $gray-300;
+$gp-hover: $gray-400;
+$gp-border: $gray-400;
+$gp-text: $black;
+$gp-muted: $muted;
+$gp-added-bg: #173d22;
+$gp-added-fg: #b2f2bb;
+$gp-removed-bg: #5c1416;
+$gp-removed-fg: #ffc9c9;
+.guild-tabs {
+    display: flex;
+    gap: 0.25rem;
+    padding: 0.75rem 0 0;
+    border-bottom: 1px solid $gp-border;
+    overflow-x: auto;
+}
+
+.guild-tab {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    padding: 0.5rem 0.875rem;
+    color: $gp-muted !important;
+    font-weight: 600;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1px;
+    white-space: nowrap;
+    text-decoration: none !important;
+}
+
+.guild-tab:hover, .guild-tab:focus-visible {
+    color: $gp-text !important;
+}
+
+.guild-tab.is-on {
+    color: $gp-text !important;
+    border-bottom-color: $primary;
+}
+
+.guild-resources {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    padding: 0.75rem 0 0;
+}
+
+.guild-resource {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    padding: 0.3125rem 0.75rem;
+    border: 1px solid $gp-border;
+    border-radius: 999px;
+    background: $gp-surface;
+    color: $gp-text !important;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    text-decoration: none !important;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.guild-resource:hover, .guild-resource:focus-visible {
+    background: $gp-hover;
+}
+
+.guild-pinned {
+    margin-top: 0.75rem;
+    padding: 0.625rem 0.875rem;
+    border: 1px solid $gp-border;
+    border-radius: 12px;
+    background: $gp-surface;
+}
+
+.guild-pinned-title {
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+    color: $gp-muted;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    margin-bottom: 0.25rem;
+}
+
+.guild-pinned-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.guild-pinned-item {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.5rem;
+    padding: 0.25rem 0;
+}
+
+.guild-pinned-item a {
+    color: $gp-text !important;
+    font-weight: 600;
+    overflow-wrap: anywhere;
+}
+
+.guild-page {
+    min-height: 50vh;
+}
+
+.wiki-layout {
+    gap: 1.5rem;
+}
+
+.wiki-nav {
+    flex: 0 0 13rem;
+    margin-bottom: 1rem;
+}
+
+.wiki-nav-title {
+    color: $gp-muted;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    margin-bottom: 0.375rem;
+}
+
+.wiki-nav-link {
+    display: block;
+    padding: 0.25rem 0.5rem;
+    border-radius: 8px;
+    color: $gp-text !important;
+    overflow-wrap: anywhere;
+}
+
+.wiki-nav-link.is-on {
+    background: $gp-hover;
+    font-weight: 700;
+}
+
+.wiki-main {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+.wiki-head {
+    margin-bottom: 1rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid $gp-border;
+}
+
+.wiki-body {
+    overflow-wrap: anywhere;
+}
+
+.wiki-revisions {
+    list-style: none;
+    padding-left: 0;
+}
+
+.wiki-head .text-small a, .guild-inline-link {
+    text-decoration: underline;
+}
+
+.wiki-body img {
+    max-width: 100%;
+    height: auto;
+}
+
+.wiki-diff {
+    border: 1px solid $gp-border;
+    border-radius: 8px;
+    overflow-x: auto;
+    font-family: SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: 0.8125rem;
+}
+
+.wiki-diff-line {
+    display: flex;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+}
+
+.wiki-diff-sign {
+    flex: 0 0 1.75rem;
+    text-align: center;
+    font-weight: 700;
+    user-select: none;
+}
+
+.wiki-diff-text {
+    flex: 1 1 auto;
+    padding-right: 0.5rem;
+}
+
+.wiki-diff-line.is-added {
+    background: $gp-added-bg;
+    color: $gp-added-fg;
+}
+
+.wiki-diff-line.is-removed {
+    background: $gp-removed-bg;
+    color: $gp-removed-fg;
+}
+
+.wiki-diff-line.is-same {
+    color: $gp-muted;
+}
+
+.events-views {
+    display: inline-flex;
+    border: 1px solid $gp-border;
+    border-radius: 999px;
+    padding: 0.125rem;
+}
+
+.events-view {
+    padding: 0.25rem 0.875rem;
+    border-radius: 999px;
+    color: $gp-muted !important;
+    font-weight: 600;
+    font-size: 0.875rem;
+    text-decoration: none !important;
+}
+
+.events-view.is-on {
+    background: $gp-hover;
+    color: $gp-text !important;
+}
+
+.event-row {
+    display: flex;
+    gap: 0.875rem;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid $gp-border;
+}
+
+.event-row-date {
+    flex: 0 0 3.5rem;
+    height: 3.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    border-radius: 12px;
+    background: $gp-hover;
+    color: $gp-text;
+    font-weight: 700;
+    font-size: 0.8125rem;
+    line-height: 1.1;
+}
+
+.event-row-text {
+    min-width: 0;
+}
+
+.event-row-title {
+    color: $gp-text !important;
+    font-weight: 700;
+    overflow-wrap: anywhere;
+}
+
+.event-row.is-cancelled .event-row-title {
+    text-decoration: line-through;
+}
+
+.events-list.is-past .event-row {
+    opacity: 0.75;
+}
+
+.events-calendar {
+    border: 1px solid $gp-border;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.events-calendar-row {
+    display: grid;
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+}
+
+.events-calendar-row + .events-calendar-row {
+    border-top: 1px solid $gp-border;
+}
+
+.events-calendar-head {
+    padding: 0.375rem;
+    text-align: center;
+    color: $gp-muted;
+    font-size: 0.75rem;
+    font-weight: 700;
+}
+
+.events-calendar-day {
+    min-height: 5.5rem;
+    padding: 0.25rem;
+    border-left: 1px solid $gp-border;
+    min-width: 0;
+}
+
+.events-calendar-day:first-child {
+    border-left: 0;
+}
+
+.events-calendar-day.is-other {
+    background: $gp-surface;
+}
+
+.events-calendar-day.is-other .events-calendar-num {
+    color: $gp-muted;
+}
+
+.events-calendar-num {
+    display: inline-block;
+    min-width: 1.5rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-align: center;
+    border-radius: 999px;
+}
+
+.events-calendar-day.is-today .events-calendar-num {
+    background: $primary;
+    color: #ffffff;
+}
+
+.events-calendar-event {
+    display: block;
+    margin-top: 0.125rem;
+    padding: 0.0625rem 0.375rem;
+    border-radius: 6px;
+    background: $gp-hover;
+    color: $gp-text !important;
+    font-size: 0.75rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.events-calendar-event.is-cancelled {
+    text-decoration: line-through;
+    opacity: 0.7;
+}
+
+@media (max-width: 575.98px) {
+    .events-calendar-day {
+        min-height: 3.75rem;
+        padding: 0.125rem;
+    }
+
+    .events-calendar-event {
+        font-size: 0.625rem;
+        padding: 0 0.1875rem;
+    }
+}
+
+.event-facts {
+    display: grid;
+    grid-template-columns: 1.5rem 1fr;
+    gap: 0.375rem 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.event-facts dt {
+    color: $gp-muted;
+}
+
+.event-facts dd {
+    margin: 0;
+    overflow-wrap: anywhere;
+}
+
+.event-rsvp {
+    padding: 0.75rem 0.875rem;
+    border: 1px solid $gp-border;
+    border-radius: 12px;
+    background: $gp-surface;
+}
+
+.event-counts {
+    margin-bottom: 0.5rem;
+}
+
+.event-rsvp-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.event-details {
+    overflow-wrap: anywhere;
+}
+
+@media (max-width: 767.98px) {
+    .guild-tabs, .guild-resources, .flair-filter, .guild-page {
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+
+    .guild-pinned {
+        margin-left: 1rem;
+        margin-right: 1rem;
+    }
+}
+
+// Shared drafts and collaborative posts (templates/collab/*.html, assets/js/collab_editor.js). The author tints are a
+// fixed palette (.collab-tint-0..7), never free CSS; "who wrote what" also says who typed a stretch on hover.
+.collab-page {
+    min-height: 60vh;
+}
+
+.collab-page p a, .collab-section li a {
+    text-decoration: underline;
+}
+
+.collab-title {
+    border: 0;
+    border-bottom: 1px solid $gp-border;
+    border-radius: 0;
+    padding-left: 0;
+    font-size: 1.375rem;
+    font-weight: 700;
+    background: transparent;
+}
+
+.collab-title:focus {
+    box-shadow: none;
+    border-bottom-color: $primary;
+}
+
+.collab-body {
+    min-height: 18rem;
+    font-size: 0.9375rem;
+    line-height: 1.6;
+}
+
+.collab-here {
+    min-height: 1.25rem;
+}
+
+.collab-section {
+    padding: 0.875rem 1rem;
+    margin-bottom: 0.75rem;
+    border: 1px solid $gp-border;
+    border-radius: 12px;
+    background: $gp-surface;
+}
+
+.collab-section-title {
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+    font-size: 0.875rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+.collab-author {
+    padding: 0.1875rem 0;
+    overflow-wrap: anywhere;
+}
+
+.collab-shares, .collab-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.375rem 0.875rem;
+}
+
+.collab-legend {
+    margin-bottom: 1rem;
+}
+
+.collab-share {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+}
+
+.collab-swatch {
+    display: inline-block;
+    width: 0.75rem;
+    height: 0.75rem;
+    border-radius: 3px;
+    border: 1px solid $gp-border;
+}
+
+.collab-proposal {
+    padding: 0.5rem 0;
+    border-top: 1px solid $gp-border;
+}
+
+.collab-proposal:first-child {
+    border-top: 0;
+}
+
+.collab-proposal.is-failed, .collab-proposal.is-withdrawn, .collab-proposal.is-expired {
+    opacity: 0.7;
+}
+
+.collab-list-item {
+    padding: 0.5rem 0;
+    border-bottom: 1px solid $gp-border;
+    overflow-wrap: anywhere;
+}
+
+.collab-blame {
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    line-height: 1.7;
+}
+
+.collab-blame span {
+    border-radius: 2px;
+}
+
+@each $n, $bg in (0 #0b2e4f, 1 #5a2a00, 2 #173d22, 3 #45144f, 4 #4d3d00, 5 #0b3b33, 6 #5c1230, 7 #1f2a63) {
+    .collab-tint-#{$n} {
+        background-color: $bg;
+    }
+}
+
+// a link in a byline is told apart from the text by more than its colour (audit U-04, axe link-in-text-block)
+.inline-link {
+    text-decoration: underline;
+}
+
+// links in what members write (posts, comments, notifications) are underlined, so they don't rely on colour alone
+.comment-text a:not(.btn):not(.post-button), .post-body a:not(.btn):not(.post-button) {
+    text-decoration: underline;
 }
 
 // Create post card (templates/submit.html, assets/js/composer_card.js). The look of a social composer

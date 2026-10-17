@@ -20,7 +20,7 @@
 	<link rel="apple-touch-icon" href="/favicon.ico">
 	<meta name="apple-mobile-web-app-capable" content="yes">
 	<meta name="format-detection" content="telephone=no">
-	<meta name="apple-mobile-web-app-title" content="Ruqqus">
+	<meta name="apple-mobile-web-app-title" content="{{ 'SITE_NAME' | app_config }}">
 
 	<!-- Ruqqus CSS -->
 	
@@ -77,7 +77,7 @@
   				<i class="fas fa-fire fa-stack-1x text-danger"></i>
 			</span>
 			<h1 class="h5">503 Service Unavailable</h1>
-			<p class="text-muted">Ruqqus is unavailable.</p>
+			<p class="text-muted">{{ 'SITE_NAME' | app_config }} is unavailable.</p>
 			<p class="text-muted">The server you connected to is most likely being restarted right now. Try again in a few moments.</p>
 			<button class="btn btn-primary" onclick="window.location.reload()">
 			 	Refresh
@@ -114,7 +114,7 @@
             <li class="list-inline-item"><a href="/help/donate" target="_blank">Donate</a></li>
             <li class="list-inline-item"><a href="https://www.twitter.com/ruqqus" target="_blank">Twitter</a></li>
             <li class="list-inline-item"><a href="https://github.com/ruqqus/ruqqus" target="_blank">Github</a></li>
-            <li class="list-inline-item">&copy; 2021 Ruqqus, LLC</li>
+            <li class="list-inline-item">&copy; 2021 {{ 'COMPANY_NAME' | app_config }}</li>
           </ul>
         </div>
         </div>

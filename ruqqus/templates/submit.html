@@ -77,6 +77,9 @@
 
                     <h1 class="d-none d-md-block composer-heading">Create a post</h1>
 
+                    {# a post written with other people starts as a shared draft (routes/collab.py) #}
+                    <a href="/collab" class="d-inline-block text-small mb-3"><i class="fas fa-pen-to-square fa-fw" aria-hidden="true"></i>Write with others instead (a shared draft)</a>
+
                     <h2 class="h3 d-md-none composer-heading">Create a post</h2>
 
                     {# The card keeps every field name and id the scripts use (post_drafts.js, post_editor.js, poll_composer.js, media_upload.js,
@@ -138,7 +141,7 @@
                         <div id="image-upload-block">
                             <div><label class="mt-3">Image Upload</label></div>
 
-                            <img id="image-preview" class="w-100 d-block">
+                            <img id="image-preview" alt="The picture you chose" class="w-100 d-block">
 
                             <label class="btn btn-secondary m-0" for="file-upload">
                                 <div id="filename-show">Select Image</div>
@@ -223,6 +226,7 @@
                                 {{ post_options.poll_field(draft.option("poll_options", []) if draft else request.form.getlist("poll_option") | select | list, draft.option("poll_hours", poll_default_hours) if draft else request.form.get("poll_hours", poll_default_hours), "post-poll") }}
 
                                 {{ post_options.space_field("post-space") }}
+                                {{ post_options.live_field("post-live", (draft.option("live", False) if draft else request.form.get("live") == "true"), (draft.option("live_hours", 0) if draft else request.form.get("live_hours", 0))) }}
 
                                 <label for="sensitive" class="text-warning mt-3">Sensitive Content?<i class="fas fa-info-circle text-gray-400 ml-1" data-toggle="tooltip" data-placement="top" title="Not a rule violation - just something that could be upsetting. Shown blurred with a click-to-reveal instead of being blocked."></i></label>
 
@@ -260,7 +264,7 @@
                             <li class="list-inline-item"><a href="/discord" class="text-gray-500">Discord</a></li>
                         </ul>
 
-                        <div class="text-muted text-small-extra mt-1">v. 2.38.0, © 2021 Ruqqus, LLC</div>
+                        <div class="text-muted text-small-extra mt-1">v. 2.38.0, © 2021 {{ 'COMPANY_NAME' | app_config }}</div>
 
                     </div>
 

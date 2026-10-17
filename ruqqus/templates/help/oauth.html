@@ -1,21 +1,21 @@
 {% extends "docs_default.html" %}
 
 {% block title %}
-<title>Ruqqus - OAuth2</title>
-<meta name="description" content="Ruqqus OAuth2 Guide">
+<title>{{ 'SITE_NAME' | app_config }} - OAuth2</title>
+<meta name="description" content="{{ 'SITE_NAME' | app_config }} OAuth2 Guide">
 {% endblock %}
 
 {% block content %}
 {% filter markdown %}
 # OAuth2
 
-The OAuth2 authorization flow is used to enable users to authorize third-party applications to access their Ruqqus account without having to provide their login information to the application.
+The OAuth2 authorization flow is used to enable users to authorize third-party applications to access their {{ 'SITE_NAME' | app_config }} account without having to provide their login information to the application.
 
 This page explains how to obtain API application keys, how to prompt a user for authorization, and how to obtain and use access tokens. 
 
 ## Step 1: Create your Application
 
-In the [apps tab of Ruqqus settings](/settings/apps), fill in and submit the form to request new API keys. You will need:
+In the [apps tab of {{ 'SITE_NAME' | app_config }} settings](/settings/apps), fill in and submit the form to request new API keys. You will need:
 
 * an application name
 * a Redirect URI, or a comma-separated list of redirect URIs. May not use HTTP unless using localhost (use HTTPS instead).
@@ -37,13 +37,13 @@ Send your user to `https://ruqqus.com/oauth/authorize`, with the following URL p
 * `scope` - A comma-separated list of permission scopes that you are requesting. Valid scopes are: `identity`, `create`, `read`, `update`, `delete`, `vote`, and `guildmaster`.
 * `permanent` - optional. Set to `true` if you are requesting indefinite access. Omit if not.
 
-If done correctly, the user will see that your application wants to access their Ruqqus account, and be prompted to approve or deny the request.
+If done correctly, the user will see that your application wants to access their {{ 'SITE_NAME' | app_config }} account, and be prompted to approve or deny the request.
 
 <img src="/assets/images/illustrations/reader.png" style="border:1px solid #2ca1ea">
 
 ## Step 3: Catch the redirect
 
-The user clicks "Authorize". Ruqqus will redirect the user's browser to GET the designated redirect URI. The following URL parameters will be included, which your server should process:
+The user clicks "Authorize". {{ 'SITE_NAME' | app_config }} will redirect the user's browser to GET the designated redirect URI. The following URL parameters will be included, which your server should process:
 
 * `code` - a **single-use** authorization code.
 * `state` - The state token from earlier.
@@ -92,11 +92,11 @@ If everything is good, we will respond with the following (example) JSON body:
 	}
 </pre>
 
-Store the access and refresh tokens. You should also store expiration timestamp and the scopes list, so that you can avoid sending invalid requests to Ruqqus.
+Store the access and refresh tokens. You should also store expiration timestamp and the scopes list, so that you can avoid sending invalid requests to {{ 'SITE_NAME' | app_config }}.
 
 ## Step 5: Using the Access Token
 
-To use the access token, include the following header in subsequent API requests to Ruqqus: `Authorization: Bearer access_token_goes_here`
+To use the access token, include the following header in subsequent API requests to {{ 'SITE_NAME' | app_config }}: `Authorization: Bearer access_token_goes_here`
 
 Python example, presuming that the application has obtained a valid `read` authorization:
 

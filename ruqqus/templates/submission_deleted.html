@@ -28,7 +28,7 @@
   <div class="col">
     <div class="d-flex align-items-center py-2">
       <span class="d-flex align-items-center text-black">
-        <img src="/assets/images/profiles/default-profile-pic.png" class="profile-pic-35 mr-2">
+        <img alt="" src="/assets/images/profiles/default-profile-pic.png" class="profile-pic-35 mr-2">
         <span class="h6 mb-0">Anon</span>
       </span>
     </div>
@@ -41,7 +41,7 @@
     <div class="d-flex align-items-center">
       <div class="d-flex align-items-center border-right py-2 pr-3">
         <div>
-          <a href="{{ p.board.permalink }}"><img src="{{ p.board.profile_url }}" class="profile-pic-35 mr-2"></a>
+          <a href="{{ p.board.permalink }}"><img alt="{{ '+' ~ p.board.name }}" src="{{ p.board.profile_url }}" class="profile-pic-35 mr-2"></a>
         </div>
         <div>
           <a href="{{ p.board.permalink }}"><span class="h6 text-black mb-0">+{{ p.board.name }}</span></a>
@@ -55,7 +55,7 @@
       </div>
       <div class="d-flex align-items-center p-3">
         <div class="dropdown dropdown-actions">
-            <a href="#" role="button" id="dropdownMoreLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="line-height: 0;">
+            <a href="#" role="button" id="dropdownMoreLink" aria-label="More options" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="line-height: 0;">
             <i class="fas fa-ellipsis-h text-muted" style="font-size: 1rem"></i>
           </a>
           <div class="dropdown-menu border-0 shadow dropdown-menu-right mt-2" aria-labelledby="dropdownMoreLink" x-placement="bottom-end"
@@ -88,7 +88,7 @@
   <div class="w-100 position-absolute text-center bg-white" style="bottom: 0;">
     <div class="container">
       <div style="margin-top: -34px;">
-        <a href="{{ p.board.permalink }}"><img src="{{ p.board.profile_url }}" class="profile-pic-65 border-2 border-white mb-2"></a>
+        <a href="{{ p.board.permalink }}"><img alt="{{ '+' ~ p.board.name }}" src="{{ p.board.profile_url }}" class="profile-pic-65 border-2 border-white mb-2"></a>
       </div>
       <a href="{{ p.board.permalink }}" class="text-black">
         <h1 class="h5 d-inline-block mb-0">+{{ p.board.name }}
@@ -245,7 +245,7 @@
             {% endif %}
             <div class="post-filter ml-auto"><span>Sort By:</span>
               <span class="dropdown">
-                <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
+                <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" aria-label="Sort comments"
                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 
               </a>
@@ -264,7 +264,7 @@
         <div class="card border-0 bg-light mt-4">
           <div class="card-body">
             <h5 class="card-title">Jump in the discussion.</h5>
-            <p class="card-text">Become part of the community, no email address required. Make a Ruqqus.</p>
+            <p class="card-text">Become part of the community, no email address required. Make an account.</p>
             <div>
               <a href="/signup" class="btn btn-primary">Sign up</a>
               <a href="/login" class="btn btn-link text-muted">Sign in</a>

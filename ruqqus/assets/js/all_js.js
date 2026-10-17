@@ -1113,6 +1113,8 @@ forward_postModal = function(id) {
 
   var input = document.getElementById('forward-guild-name');
   input.value = '';
+  var flairField = document.getElementById('forward-flair-field');
+  if (flairField) flairField.hidden = true;           // assets/js/guild_flair.js fills it for the guild named
 
   var errorBox = document.getElementById('forwardPostError');
   errorBox.classList.add('d-none');
@@ -1135,6 +1137,8 @@ forward_postModal = function(id) {
     var form = new FormData();
     form.append("formkey", formkey());
     form.append("board", name);
+    var flair = document.getElementById('forward-flair');
+    if (flair && !document.getElementById('forward-flair-field').hidden && flair.value) form.append("flair", flair.value);
     xhr.withCredentials = true;
 
     var thisButton = this;
@@ -1187,6 +1191,8 @@ forward_commentModal = function(id) {
 
   var guildInput = document.getElementById('forward-comment-guild-name');
   guildInput.value = '';
+  var commentFlairField = document.getElementById('forward-comment-flair-field');
+  if (commentFlairField) commentFlairField.hidden = true;     // assets/js/guild_flair.js fills it for the guild named
 
   var errorBox = document.getElementById('forwardCommentError');
   errorBox.classList.add('d-none');
@@ -1209,6 +1215,8 @@ forward_commentModal = function(id) {
     var form = new FormData();
     form.append("formkey", formkey());
     form.append("board", name);
+    var commentFlair = document.getElementById('forward-comment-flair');
+    if (commentFlair && !document.getElementById('forward-comment-flair-field').hidden && commentFlair.value) form.append("flair", commentFlair.value);
     xhr.withCredentials = true;
 
     var thisButton = this;

@@ -21,7 +21,7 @@
   scheduled copy would be published as a public profile post.
   tests/test_composers_offer_the_same_options.py keeps this form and templates/submit.html in step.
 #}
-{% from "partials/post_options.html" import audience_field, comment_permission_field, disclosure_field, anonymous_field, coauthors_field, poll_field, space_field %}
+{% from "partials/post_options.html" import audience_field, comment_permission_field, disclosure_field, anonymous_field, coauthors_field, poll_field, space_field, live_field %}
 
 {% macro inline_composer(v, board=none, panel=false) %}
 {% set circle_guild = board and board.is_circle %}
@@ -92,6 +92,14 @@
                   </div>
                 </div>
                 </div>
+                {% if circle_guild %}{% set circle_flairs = flairs_for_guild(board, v) %}{% if circle_flairs %}
+                {# a Circle guild's post is made straight in it: its author picks the flair (helpers/guild_flair.py) #}
+                <label class="mt-3 d-block" for="ic-guild-flair">Flair{% if board.require_flair %} <span class="text-muted font-weight-normal">(required)</span>{% endif %}</label>
+                <select class="custom-select" id="ic-guild-flair" name="guild_flair">
+                  <option value="">{{ 'Pick a flair' if board.require_flair else 'No flair' }}</option>
+                  {% for f in circle_flairs %}<option value="{{ f.id }}">{{ f.name }}</option>{% endfor %}
+                </select>
+                {% endif %}{% endif %}
                 <input type="url" id="ic-url" name="url" class="form-control mt-3" placeholder="Link (optional)" aria-label="Link">
                 {{ comment_permission_field(0, "ic-permission") }}
                 {{ disclosure_field(false, false, "ic-disclosure") }}
@@ -99,6 +107,7 @@
                 <div{% if circle_guild %} hidden{% endif %}>{{ coauthors_field("", "ic-coauthors") }}</div>
                 {{ poll_field([], poll_default_hours, "ic-poll") }}
                 <div{% if circle_guild %} hidden{% endif %}>{{ space_field("ic-space") }}</div>
+                {{ live_field("ic-live") }}
                 <label class="mt-3 d-block">Sensitive content</label>
                 <div class="custom-control custom-checkbox">
                   <input type="checkbox" class="custom-control-input" id="ic-sensitive" name="sensitive"{% if board and board.is_sensitive %} checked disabled{% endif %}>

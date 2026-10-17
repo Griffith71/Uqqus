@@ -1,8 +1,8 @@
 {% extends "docs_default.html" %}
 
 {% block title %}
-<title>Ruqqus - Press</title>
-<meta name="description" content="Ruqqus Press Resources">
+<title>{{ 'SITE_NAME' | app_config }} - Press</title>
+<meta name="description" content="{{ 'SITE_NAME' | app_config }} Press Resources">
 {% endblock %}
 
 <!-- Left Sidebar -->
@@ -37,11 +37,11 @@
 
 {% filter markdown %}
 
-Welcome to the Ruqqus press portal.
+Welcome to the {{ 'SITE_NAME' | app_config }} press portal.
 
 ## Press Releases
 
-Official Ruqqus press releases are posted in [+RuqqusPress](/+RuqqusPress?sort=new).
+Official {{ 'SITE_NAME' | app_config }} press releases are posted in [+RuqqusPress](/+RuqqusPress?sort=new).
 
 ## Logo
 
@@ -58,88 +58,88 @@ Do not display logos against a textured background.
 
 ## Mascot
 
-The name of the Ruqqus mascot is "Ruqqie".
+The name of the {{ 'SITE_NAME' | app_config }} mascot is "Ruqqie".
 
-Ruqqie may be resized, but should not be redrawn, rotated, distorted, or otherwise altered. Transformative artistic works are permitted under Fair Use. However, Ruqqie and transformative artistic works based on Ruqqie may not be sold, affixed to merchandise, or otherwise monetized without explicit written permission from Ruqqus LLC.
+Ruqqie may be resized, but should not be redrawn, rotated, distorted, or otherwise altered. Transformative artistic works are permitted under Fair Use. However, Ruqqie and transformative artistic works based on Ruqqie may not be sold, affixed to merchandise, or otherwise monetized without explicit written permission from {{ 'COMPANY_NAME' | app_config }}.
 
 * [Ruqqie](/assets/images/logo/ruqqie.png)
 
 ## Terminology
 
-Ruqqus is broken into numerous smaller messaging and commenting boards focused around a variety of topics. These boards are called "Guilds". Guild names always start with a `+` symbol, and are usually (though not always) named after their topic of interest. For example, [+news](/+news) is a Guild focused on sharing and discussion of news and current events.
+{{ 'SITE_NAME' | app_config }} is broken into numerous smaller messaging and commenting boards focused around a variety of topics. These boards are called "Guilds". Guild names always start with a `+` symbol, and are usually (though not always) named after their topic of interest. For example, [+news](/+news) is a Guild focused on sharing and discussion of news and current events.
 
-The users who create and moderate Guilds are called "Guildmasters". Guildmasters are regular users, and have no affiliation with Ruqqus LLC beyond having a ruqqus.com account.
+The users who create and moderate Guilds are called "Guildmasters". Guildmasters are regular users, and have no affiliation with {{ 'COMPANY_NAME' | app_config }} beyond having a ruqqus.com account.
 
 A post always belongs to its author's profile first. Anyone can "Forward" it into other Guilds for community-scoped discussion - each Guild a post is forwarded to gets its own independent copy, with its own votes and its own comments. Users can add comments to posts or to other comments.
 
-Guildmasters cannot delete or remove content that isn't theirs. They can "Hide" a post or comment from their own Guild if it breaks that Guild's rules - this only affects how the content appears within that one Guild; it remains untouched on the author's profile and in any other Guild it's been forwarded to. Only the content's own author (or Ruqqus staff, for sitewide violations) can truly remove it everywhere.
+Guildmasters cannot delete or remove content that isn't theirs. They can "Hide" a post or comment from their own Guild if it breaks that Guild's rules - this only affects how the content appears within that one Guild; it remains untouched on the author's profile and in any other Guild it's been forwarded to. Only the content's own author (or {{ 'SITE_NAME' | app_config }} staff, for sitewide violations) can truly remove it everywhere.
 
-When referring to the Ruqqus social media platform, use "Ruqqus" or "ruqqus.com".
+When referring to the {{ 'SITE_NAME' | app_config }} social media platform, use "{{ 'SITE_NAME' | app_config }}" or "ruqqus.com".
 
-When referring to the business which owns and operates the Ruqqus platform, use "Ruqqus LLC".
+When referring to the business which owns and operates the {{ 'SITE_NAME' | app_config }} platform, use "{{ 'COMPANY_NAME' | app_config }}".
 
-When referring to the owners, staff, or other elements of Ruqqus LLC, use "Ruqqus staff", "Ruqqus owners", or similar phrasing.
+When referring to the owners, staff, or other elements of {{ 'COMPANY_NAME' | app_config }}, use "{{ 'SITE_NAME' | app_config }} staff", "{{ 'SITE_NAME' | app_config }} owners", or similar phrasing.
 
-Users of the Ruqqus platform may be informally called "Ruqqies", or formally "Ruqqus users".
+Users of the {{ 'SITE_NAME' | app_config }} platform may be informally called "Ruqqies", or formally "{{ 'SITE_NAME' | app_config }} users".
 
 ## Coloring
 
-The name of the Ruqqus purple color is "porpl". Its RGB hex code is #2ca1ea.
+The name of the {{ 'SITE_NAME' | app_config }} purple color is "porpl". Its RGB hex code is #2ca1ea.
 
 ## Licensing
 
 The assets on this page ("brand assets") may be used for the following purposes, under a limited, nonexclusive, nontransferable, royalty-free license ("the License"):
 
-* To link to Ruqqus, enable sharing to Ruqqus, or refer to your presence on Ruqqus.
-* To indicate the presence of a Ruqqus-powered embed of content from Ruqqus.
-* As specifically permitted by a separate written agreement you have with Ruqqus LLC
+* To link to {{ 'SITE_NAME' | app_config }}, enable sharing to {{ 'SITE_NAME' | app_config }}, or refer to your presence on {{ 'SITE_NAME' | app_config }}.
+* To indicate the presence of a {{ 'SITE_NAME' | app_config }}-powered embed of content from {{ 'SITE_NAME' | app_config }}.
+* As specifically permitted by a separate written agreement you have with {{ 'COMPANY_NAME' | app_config }}
 
 Use of brand assets for the following is not permitted under the License:
 
-* Placing Ruqqus name or brand assets on apparel or merchandise, without written approval from Ruqqus LLC.
-* Using the Ruqqus name or brand assets as a name, or part of a name, of a company, product, service, application, website, domain name, or social media account.
+* Placing {{ 'SITE_NAME' | app_config }} name or brand assets on apparel or merchandise, without written approval from {{ 'COMPANY_NAME' | app_config }}.
+* Using the {{ 'SITE_NAME' | app_config }} name or brand assets as a name, or part of a name, of a company, product, service, application, website, domain name, or social media account.
 
 Terms of the License. A violation of these terms shall automatically terminate your License.
 
 * Do not modify the brand assets or use modified versions found elsewhere.
-* Do not use the Ruqqus name or brand assets in a manner that implies a partnership with, or endorsement by, ruqqus.com or Ruqqus LLC.
-* Do not use the Ruqqus name or brand assets in connection with material that violates the Ruqqus [terms of service](/help/terms) or [content policy](/help/rules).
-* Do not use the brand assets in connection with content that disparages ruqqus.com, Ruqqus LLC, or Ruqqus staff.
+* Do not use the {{ 'SITE_NAME' | app_config }} name or brand assets in a manner that implies a partnership with, or endorsement by, ruqqus.com or {{ 'COMPANY_NAME' | app_config }}.
+* Do not use the {{ 'SITE_NAME' | app_config }} name or brand assets in connection with material that violates the {{ 'SITE_NAME' | app_config }} [terms of service](/help/terms) or [content policy](/help/rules).
+* Do not use the brand assets in connection with content that disparages ruqqus.com, {{ 'COMPANY_NAME' | app_config }}, or {{ 'SITE_NAME' | app_config }} staff.
 
-Ruqqus LLC may revoke your License at any time and for any reason.
+{{ 'COMPANY_NAME' | app_config }} may revoke your License at any time and for any reason.
 
-A failure by Ruqqus in one or more instances to insist upon your strict adherence to these licence terms, shall not be construed as a waiver of any continuing or subsequent violations of these license terms.
+A failure by {{ 'SITE_NAME' | app_config }} in one or more instances to insist upon your strict adherence to these licence terms, shall not be construed as a waiver of any continuing or subsequent violations of these license terms.
 
 ## Content
 
-The following requirements must be met when attributing any Ruqqus content within ediorial content:
+The following requirements must be met when attributing any {{ 'SITE_NAME' | app_config }} content within ediorial content:
 
 Do:
 
-* Explicitly state and cite Ruqqus. (Logo assets may be helpful here.)
-* Capitalize "Ruqqus", except when using it as part of "ruqqus.com" or within links
-* Capitalize "Ruqqus LLC"
-* Link to the original Ruqqus post, comment, or community if it appears online.
+* Explicitly state and cite {{ 'SITE_NAME' | app_config }}. (Logo assets may be helpful here.)
+* Capitalize "{{ 'SITE_NAME' | app_config }}", except when using it as part of "ruqqus.com" or within links
+* Capitalize "{{ 'COMPANY_NAME' | app_config }}"
+* Link to the original {{ 'SITE_NAME' | app_config }} post, comment, or community if it appears online.
 * Use the full text of the post or comment.
-* Respect the displayed capitalization of Ruqqus guild names and user names.
+* Respect the displayed capitalization of {{ 'SITE_NAME' | app_config }} guild names and user names.
 * Refer to guilds as "+guildname"
 * Refer to individual users as "@username"
 
 Do not:
 
-* Screenshot Ruqqus content to use within digital editorial content. (Embed it instead.)
-* Alter posts, comments, username identification, or any other content found on Ruqqus.
-* Quote a Ruqqus user without properly attributing the quote to them and providing a link to the comment.
+* Screenshot {{ 'SITE_NAME' | app_config }} content to use within digital editorial content. (Embed it instead.)
+* Alter posts, comments, username identification, or any other content found on {{ 'SITE_NAME' | app_config }}.
+* Quote a {{ 'SITE_NAME' | app_config }} user without properly attributing the quote to them and providing a link to the comment.
 * Omit part of a comment or post text.
 * Capitalize "ruqqus.com"
-* Leave outdated versions of content up. Changes or deletions to content should be reflected in a timely manner. (Use of Ruqqus-powered embeds is the best way to accomplish this.)
+* Leave outdated versions of content up. Changes or deletions to content should be reflected in a timely manner. (Use of {{ 'SITE_NAME' | app_config }}-powered embeds is the best way to accomplish this.)
 
 Verbal rules:
 
-* Explicitly state that content is from Ruqqus
+* Explicitly state that content is from {{ 'SITE_NAME' | app_config }}
 * Do not alter the title, text, or meaning of the content.
 * Read content in full. Do not excerpt content. Do not attempt to quote content from memory.
-* "Ruqqus" is pronounced identically to the standard English word "ruckus"
+* "{{ 'SITE_NAME' | app_config }}" is pronounced identically to the standard English word "ruckus"
 * "Ruqqie" is pronounced "RUCK-ee"
 
 
@@ -177,7 +177,7 @@ Verbal rules:
 
 {% elif v and v.is_suspended %}
 
-<p>Your Ruqqus account has been suspended. You are not permitted to submit press inquiries at this time.</p>
+<p>Your {{ 'SITE_NAME' | app_config }} account has been suspended. You are not permitted to submit press inquiries at this time.</p>
 
 
 {% elif v %}

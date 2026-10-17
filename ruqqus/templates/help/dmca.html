@@ -1,7 +1,7 @@
 {% extends "docs_default.html" %}
 
 {% block title %}
-<title>Ruqqus - DMCA Takedown Request</title>
+<title>{{ 'SITE_NAME' | app_config }} - DMCA Takedown Request</title>
 <meta name="description" content="DMCA Takedown Request">
 {% endblock %}
 
@@ -32,15 +32,15 @@
 {% filter markdown %}
 # DMCA Takedown Request
 
-Use this page to submit a DMCA takedown request to Ruqqus. 
+Use this page to submit a DMCA takedown request to {{ 'SITE_NAME' | app_config }}. 
 
-Abuse of this form is a violation of the Ruqqus [terms of service](/about/terms) and may lead to the termination of your Ruqqus account, at the discretion of Ruqqus staff.
+Abuse of this form is a violation of the {{ 'SITE_NAME' | app_config }} [terms of service](/about/terms) and may lead to the termination of your {{ 'SITE_NAME' | app_config }} account, at the discretion of {{ 'SITE_NAME' | app_config }} staff.
 
 {% endfilter %}
 
 {% if v and v.is_suspended %}
 
-<div>Your Ruqqus account has been suspended. You are not permitted to submit DMCA takedown requests at this time.</div>
+<div>Your {{ 'SITE_NAME' | app_config }} account has been suspended. You are not permitted to submit DMCA takedown requests at this time.</div>
 
 {% elif v and v.is_activated %}
 

@@ -89,6 +89,13 @@
     });
     var pollHours = form.querySelector('select[name="poll_hours"]');
     if (pollHours && !pollHours.disabled) data.append('poll_hours', pollHours.value);
+    // "Make this a live thread" (helpers/live_threads.py): it goes live when the draft is published
+    var live = form.querySelector('input[type="checkbox"][name="live"]');
+    if (live && live.checked) {
+      data.append('live', 'true');
+      var liveHours = form.querySelector('select[name="live_hours"]');
+      if (liveHours) data.append('live_hours', liveHours.value);
+    }
     var sensitive = form.querySelector('input[type="checkbox"][name="sensitive"]');
     if (sensitive && sensitive.checked) data.append('sensitive', 'true');
     if (idField.value) data.append('draft_id', idField.value);

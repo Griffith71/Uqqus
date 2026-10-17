@@ -4,7 +4,7 @@
 
 {% block title %}	
 <title>{{ 'SITE_NAME' | app_config }} - Help</title>	
-<meta name="description" content="Ruqqus Help">	
+<meta name="description" content="{{ 'SITE_NAME' | app_config }} Help">	
 {% endblock %}	
 
 {% block sidebarLeftblock %}
@@ -33,7 +33,7 @@
 * [Post Formatting](/help/formatting)
 * [Search tips](/help/search)
 * [Guild Siege](/help/siege)
-* [Contact Ruqqus](/help/contact)
+* [Contact {{ 'SITE_NAME' | app_config }}](/help/contact)
 
 ## Account Cosmetics	
 
@@ -45,7 +45,7 @@
 * [API Documentation](/help/docs)
 * [OAuth2 Guide](/help/oauth)
 
-## Ruqqus Policies	
+## {{ 'SITE_NAME' | app_config }} Policies	
 
 * [Terms of service](/help/terms)	
 * [Content Policy](/help/rules)

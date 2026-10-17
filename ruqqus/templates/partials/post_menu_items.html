@@ -4,7 +4,32 @@
   follow_item(p, v) / follow_button(p, v): "Follow post" / "Unfollow post" (helpers/post_follows.py). Offered to a
   signed-in viewer on a live post, unless they are told of its comments anyway (`p.follow_state == "own"`: the
   author, or on a forward copy the person who forwarded it). The two items toggle each other like Mute guild.
+
+  live_item(p, v) / live_button(p, v): "Go live" (or "Manage live thread" while it is live) for who may run the post's
+  live thread (its author and accepted co-authors; never on a forward copy). It opens the panel on the post page
+  (`?live=start#live-panel`), where the length is picked (helpers/live_threads.py, partials/live_panel.html).
+
+  collab_item(p, v) / collab_button(p, v): for a collaborative post (published from a shared draft, routes/collab.py):
+  "Who wrote what" and "Revisions" for anyone who can see it, "Open the shared draft" for its authors, "Fork" for
+  anyone signed in on a public post. collab_mark(p, v) is the post page's line: "Written together", who wrote what,
+  and the post it was forked from.
 #}
+
+{% macro _live_label(p) -%}
+{%- set lv = live_of(p) -%}{{ "Manage live thread" if lv and lv.live else "Go live" }}
+{%- endmacro %}
+
+{% macro live_item(p, v) %}
+{% if v and not p.is_banned and p.deleted_utc == 0 and may_run_live(p, v) %}
+<a class="dropdown-item" href="{{ p.permalink }}?live=start#live-panel"><i class="fas fa-tower-broadcast fa-fw"></i>{{ _live_label(p) }}</a>
+{% endif %}
+{% endmacro %}
+
+{% macro live_button(p, v) %}
+{% if v and not p.is_banned and p.deleted_utc == 0 and may_run_live(p, v) %}
+<a class="btn btn-link btn-block btn-lg text-left text-muted" href="{{ p.permalink }}?live=start#live-panel"><i class="fas fa-tower-broadcast fa-fw text-center text-muted mr-3"></i>{{ _live_label(p) }}</a>
+{% endif %}
+{% endmacro %}
 
 {% macro follow_item(p, v) %}
 {% if v and p.follow_state in ("can_follow", "following") and not p.is_banned and p.deleted_utc == 0 %}
@@ -58,4 +83,29 @@
 {% if _can_curate(p, v) %}
 <button class="btn btn-link btn-block btn-lg text-left text-muted" data-dismiss="modal" data-curation-post="{{ p.base36id }}"><i class="fas fa-layer-group fa-fw text-center text-muted mr-3"></i>Add to curation</button>
 {% endif %}
+{% endmacro %}
+
+{% macro collab_item(p, v) %}
+{% set c = collab_of(p, v) if is_collab_post(p) else none %}
+{% if c and not p.is_banned and p.deleted_utc == 0 %}
+<a class="dropdown-item" href="/post/{{ p.base36id }}/written_by"><i class="fas fa-palette fa-fw"></i>Who wrote what</a>
+<a class="dropdown-item" href="/post/{{ p.base36id }}/revisions"><i class="fas fa-clock-rotate-left fa-fw"></i>Revisions</a>
+{% if c.mine %}<a class="dropdown-item" href="/collab/{{ c.doc_id }}"><i class="fas fa-pen-to-square fa-fw"></i>Open the shared draft</a>{% endif %}
+{% if v and p.is_public %}<a class="dropdown-item" href="/collab/fork/{{ p.base36id }}"><i class="fas fa-code-fork fa-fw"></i>Fork</a>{% endif %}
+{% endif %}
+{% endmacro %}
+
+{% macro collab_button(p, v) %}
+{% set c = collab_of(p, v) if is_collab_post(p) else none %}
+{% if c and not p.is_banned and p.deleted_utc == 0 %}
+<a class="btn btn-link btn-block btn-lg text-left text-muted" href="/post/{{ p.base36id }}/written_by"><i class="fas fa-palette fa-fw text-center text-muted mr-3"></i>Who wrote what</a>
+<a class="btn btn-link btn-block btn-lg text-left text-muted" href="/post/{{ p.base36id }}/revisions"><i class="fas fa-clock-rotate-left fa-fw text-center text-muted mr-3"></i>Revisions</a>
+{% if c.mine %}<a class="btn btn-link btn-block btn-lg text-left text-muted" href="/collab/{{ c.doc_id }}"><i class="fas fa-pen-to-square fa-fw text-center text-muted mr-3"></i>Open the shared draft</a>{% endif %}
+{% if v and p.is_public %}<a class="btn btn-link btn-block btn-lg text-left text-muted" href="/collab/fork/{{ p.base36id }}"><i class="fas fa-code-fork fa-fw text-center text-muted mr-3"></i>Fork</a>{% endif %}
+{% endif %}
+{% endmacro %}
+
+{% macro collab_mark(p, v) %}
+{%- set c = collab_of(p, v) if is_collab_post(p) else none -%}
+{%- if c %} · <a href="/post/{{ p.base36id }}/written_by" class="collab-mark"><i class="fas fa-pen-to-square" aria-hidden="true"></i> Written together</a>{% if c.revisions > 1 %} · <a href="/post/{{ p.base36id }}/revisions">{{ c.revisions }} revisions</a>{% endif %}{% if c.fork_post %} · <i class="fas fa-code-fork" aria-hidden="true"></i> forked from <a href="{{ c.fork_post.permalink }}">{{ c.fork_post.title | striptags | truncate(60) }}</a>{% endif %}{% endif -%}
 {% endmacro %}

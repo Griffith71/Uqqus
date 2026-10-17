@@ -8,7 +8,7 @@
         <div class="sidebar-collapsed-hidden collapsed-toggle-parent">
           <div class="d-flex justify-content-between align-items-center mb-3">
             <div class="text-small font-weight-bold text-muted text-uppercase" style="letter-spacing: 0.025rem;">{{ "SITE_NAME" | app_config }} Feeds</div>
-            <button class="btn" data-toggle="tooltip" data-placement="right" title="Collapse" onclick="toggle_sidebar_collapse();"><span class="collapsed-toggle"></span></button>
+            <button class="btn" data-toggle="tooltip" data-placement="right" title="Collapse" aria-label="Fold the sidebar" onclick="toggle_sidebar_collapse();"><span class="collapsed-toggle"></span></button>
           </div>
         </div>
         <div class="sidebar-collapsed-visible collapsed-toggle-parent">
@@ -176,7 +176,7 @@
                   <a href="{{ board.permalink }}">
                     <div class="d-flex">
                       <div>
-                        <img src="{{ board.profile_url }}" class="profile-pic profile-pic-28 ml-1 mr-2">
+                        <img alt="" src="{{ board.profile_url }}" class="profile-pic profile-pic-28 ml-1 mr-2">
                       </div>
                       <div class="my-auto">
                         <div class="text-black font-weight-normal">+{{ board.name }}</div>
@@ -192,7 +192,7 @@
                 {% for board in v.boards_subscribed[0:10] %}
                 <li class="guild-recommendations-item">
                   <a href="{{ board.permalink }}">
-                    <img src="{{ board.profile_url }}" class="profile-pic profile-pic-28 transition-square">
+                    <img alt="{{ '+' ~ board.name }}" src="{{ board.profile_url }}" class="profile-pic profile-pic-28 transition-square">
                   </a>
                 </li>
                 {% endfor %}
@@ -228,7 +228,7 @@
                 <a href="{{ board.permalink }}">
                   <div class="d-flex">
                     <div>
-                      <img src="{{ board.profile_url }}" class="profile-pic profile-pic-28 mr-2">
+                      <img alt="" src="{{ board.profile_url }}" class="profile-pic profile-pic-28 mr-2">
                     </div>
                     <div class="my-auto">
                       <div class="text-black font-weight-normal">+{{ board.name }}</div>
@@ -243,7 +243,7 @@
               {% for board in v.boards_modded[0:10] %}
               <li class="guild-recommendations-item">
                 <a href="{{ board.permalink }}">
-                  <img src="{{ board.profile_url }}" class="profile-pic profile-pic-28 transition-square">
+                  <img alt="{{ '+' ~ board.name }}" src="{{ board.profile_url }}" class="profile-pic profile-pic-28 transition-square">
                 </a>
               </li>
               {% endfor %}

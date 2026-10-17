@@ -1,8 +1,8 @@
 {% extends "docs_default.html" %}
 
 {% block title %}
-<title>Ruqqus - Formatting</title>
-<meta name="description" content="Ruqqus Formatting">
+<title>{{ 'SITE_NAME' | app_config }} - Formatting</title>
+<meta name="description" content="{{ 'SITE_NAME' | app_config }} Formatting">
 {% endblock %}
 
 {% block content %}
@@ -10,7 +10,7 @@
 
 # Chat Help
 
-Ruqqus chat supports [markdown formatting](/help/formatting).
+{{ 'SITE_NAME' | app_config }} chat supports [markdown formatting](/help/formatting).
 
 The following chat commands are also supported
 
@@ -49,8 +49,8 @@ The following chat commands are also supported
   </tr>
   <tr>
     <td>Links</td>
-    <td>[Ruqqus](https://ruqqus.com)</td>
-    <td><a href="https://ruqqus.com">Ruqqus</a></td>
+    <td>[{{ 'SITE_NAME' | app_config }}](https://ruqqus.com)</td>
+    <td><a href="https://ruqqus.com">{{ 'SITE_NAME' | app_config }}</a></td>
   </tr>
   <tr>
     <td>Image embeds*</td>
@@ -125,12 +125,12 @@ We also have some custom hooks for mentioning users and guilds. Note that these 
   <tr>
     <td>Username Mention</td>
     <td>@ruqqus</td>
-    <td><a class="d-inline-block" href="/@ruqqus"><img src="/@ruqqus/pic/profile" class="profile-pic-20 mr-1">@ruqqus</a></td>
+    <td><a class="d-inline-block" href="/@ruqqus"><img alt="" src="/@ruqqus/pic/profile" class="profile-pic-20 mr-1">@ruqqus</a></td>
   </tr>
   <tr>
     <td>Guild Mention</td>
     <td>+general</td>
-    <td><a class="d-inline-block" href="/+general"><img src="/+general/pic/profile" class="profile-pic-20 align-middle mr-1">+general</a></td>
+    <td><a class="d-inline-block" href="/+general"><img alt="" src="/+general/pic/profile" class="profile-pic-20 align-middle mr-1">+general</a></td>
   </tr>
 </table>
 

@@ -16,7 +16,7 @@
 
 <div id="comment-{{ c.base36id }}" class="comment rounded">
 
-    <span class="mr-2 d-block d-md-none"><a href="{{ author_of(c, v).permalink }}"><img src="{{ author_of(c, v).profile_url }}" class="profile-pic-25"></a></span>
+    <span class="mr-2 d-block d-md-none"><a href="{{ author_of(c, v).permalink }}"><img alt="{{ author_of(c, v).shown_name }}" src="{{ author_of(c, v).profile_url }}" class="profile-pic-25"></a></span>
 
     <span class="comment-collapse d-md-block d-none" onclick="collapse_comment('{{ c.base36id }}')"></span>
 
@@ -28,7 +28,7 @@
 		{% if (c.distinguish_level and not anon_hidden(c, v)) or op_badge(c, c.post, v) %}
 		<span> </span>
 			{% if c.distinguish_level and not anon_hidden(c, v) %}
-				<i class="fas fa-shield text-admin" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Ruqqus Administrator, speaking officially"></i>
+				<i class="fas fa-shield text-admin" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="{{ 'SITE_NAME' | app_config }} Administrator, speaking officially"></i>
 			{% endif %}
 			{% if op_badge(c, c.post, v) %}
 				<i class="fas fa-microphone-lines text-info" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Submitter"></i>
@@ -73,7 +73,7 @@
                     </li>
                     <li class="list-inline-item d-none d-md-inline-block">
                         <div class="dropdown show">
-                          <a href="#" role="button" id="dropdownMoreLink" data-toggle="dropdown" aria-haspopup="true"
+                          <a href="#" role="button" id="dropdownMoreLink" aria-label="More options" data-toggle="dropdown" aria-haspopup="true"
                           aria-expanded="false">
                           <i class="fas fa-ellipsis-h"></i>
                       </a>

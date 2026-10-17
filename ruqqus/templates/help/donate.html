@@ -9,21 +9,21 @@
 	<meta name="author" content="">
 
 	{% block title %}
-	<title>Donate - Ruqqus</title>
+	<title>Donate - {{ 'SITE_NAME' | app_config }}</title>
 	<meta property="og:type" content="article" />
-	<meta property="og:title" content="Ruqqus: Awesome Online Communities, Without Censorship" />
+	<meta property="og:title" content="{{ 'SITE_NAME' | app_config }}: Awesome Online Communities, Without Censorship" />
 	<meta property="og:site_name" content="ruqqus.com" />
 	<meta property="og:image" content="{{ '/assets/images/preview-images/ruqqus_og_image.png' | full_link }}" />
 	<meta property="og:url" content="{{ request.path | full_link }}">
-	<meta property="og:description" name="description" content="Support Ruqqus via PayPal or Cryptocurrency. Ruqqus is an open-source web app that lets you enjoy online communities focused around topics you love, without censorship and moderator abuse.">
+	<meta property="og:description" name="description" content="Support {{ 'SITE_NAME' | app_config }} via PayPal or Cryptocurrency. {{ 'SITE_NAME' | app_config }} is an open-source web app that lets you enjoy online communities focused around topics you love, without censorship and moderator abuse.">
 	<meta property="og:author" name="author" content="@ruqqus" />
 	<meta property="og:site_name" content="ruqqus.com" />
 
 	<meta name="twitter:card" content="summary_large_image"/>
 	<meta name="twitter:site" content="@ruqqus">
-	<meta name="twitter:title" content="Ruqqus: Awesome Online Communities, Without Censorship" />
+	<meta name="twitter:title" content="{{ 'SITE_NAME' | app_config }}: Awesome Online Communities, Without Censorship" />
 	<meta name="twitter:creator" content="@ruqqus">
-	<meta name="twitter:description" content="Support Ruqqus via PayPal or Cryptocurrency. Ruqqus is an open-source web app that lets you enjoy online communities focused around topics you love, without censorship and moderator abuse." />
+	<meta name="twitter:description" content="Support {{ 'SITE_NAME' | app_config }} via PayPal or Cryptocurrency. {{ 'SITE_NAME' | app_config }} is an open-source web app that lets you enjoy online communities focused around topics you love, without censorship and moderator abuse." />
 	<meta name="twitter:image" content="{{ '/assets/images/preview-images/ruqqus_og_image.png' | full_link }}" />
 	<meta name="twitter:url" content="{{ request.path | full_link }}" />
 	{% endblock %}
@@ -82,11 +82,11 @@
 			<div class="col-12 col-md-5 col-lg-6">
 				<h1 class="text-capitalize">Support online freedom of speech and the future of digital discourse</h1>
 				<p class="text-gray-300 mb-6">
-					Ruqqus is an open-source web app that lets you enjoy online communities focused around topics you love, without censorship and moderator abuse.
+					{{ 'SITE_NAME' | app_config }} is an open-source web app that lets you enjoy online communities focused around topics you love, without censorship and moderator abuse.
 				</p>
 				<div class="text-center text-md-left">
-					<a href="#donate-CTA" class="btn btn-lg btn-black shadow-md"><i class="fas fa-heart text-small mr-2"></i>Donate to Ruqqus</a>
-					<p class="text-small mt-3">Just want to use Ruqqus? <a href="/login" class="text-white">Visit Ruqqus.com</a></p>
+					<a href="#donate-CTA" class="btn btn-lg btn-black shadow-md"><i class="fas fa-heart text-small mr-2"></i>Donate to {{ 'SITE_NAME' | app_config }}</a>
+					<p class="text-small mt-3">Just want to use {{ 'SITE_NAME' | app_config }}? <a href="/login" class="text-white">Visit {{ 'SITE_NAME' | app_config }}.com</a></p>
 				</div>
 			</div>
 			<div class="col-12 col-md-5 col-lg-6 text-right">
@@ -144,9 +144,9 @@
 				<div class="card h-100 border-0 text-center shadow-lg p-5">
 					<i class="fas fa-server text-primary mb-4" style="font-size: 2.5rem;"></i>
 
-					<h3 class="h5">Help Ruqqus Grow</h3>
+					<h3 class="h5">Help {{ 'SITE_NAME' | app_config }} Grow</h3>
 
-					<p class="text-muted mb-0">Your support will help the Ruqqus team upgrade server infrastructure, pay for APIs, etc.</p>
+					<p class="text-muted mb-0">Your support will help the {{ 'SITE_NAME' | app_config }} team upgrade server infrastructure, pay for APIs, etc.</p>
 
 				</div>
 			</div>
@@ -159,7 +159,7 @@
 
 					<h3 class="h5">Support Freedom of Speech</h3>
 
-					<p class="text-muted mb-0">Supporting Ruqqus means supporting free speech and digital discourse.</p>
+					<p class="text-muted mb-0">Supporting {{ 'SITE_NAME' | app_config }} means supporting free speech and digital discourse.</p>
 
 				</div>
 
@@ -187,7 +187,7 @@
 				<p class="text-muted">We like to keep things transparent. For this reason, our entire
 					codebase is open-source and
 					available on GitHub. View our
-					algorithms right from your browser. No biased trending or sorting manipulation on Ruqqus.
+					algorithms right from your browser. No biased trending or sorting manipulation on {{ 'SITE_NAME' | app_config }}.
 				</p>
 
 				<ul class="list-inline no-bullets mb-6 mb-md-5" style="opacity: .1">
@@ -472,7 +472,7 @@
 	</div>
 	<div class="row">
 		<div class="col">
-			<span class="text-white text-small-extra opacity-50">&copy; 2021 Ruqqus, LLC</span>
+			<span class="text-white text-small-extra opacity-50">&copy; 2021 {{ 'COMPANY_NAME' | app_config }}</span>
 		</div>
 	</div>
 </div>

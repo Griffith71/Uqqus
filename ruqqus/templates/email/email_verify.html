@@ -2,10 +2,10 @@
 
 {% block image %}verify.png{% endblock %}
 
-{% block title %}Welcome to Ruqqus!{% endblock %}</h1>
+{% block title %}Welcome to {{ 'SITE_NAME' | app_config }}!{% endblock %}</h1>
 
 {% block content %}
-                        <p>Thanks for joining Ruqqus. We’re happy to have you on board. To get the most out of Ruqqus, please verify your account email:</p>
+                        <p>Thanks for joining {{ 'SITE_NAME' | app_config }}. We’re happy to have you on board. To get the most out of {{ 'SITE_NAME' | app_config }}, please verify your account email:</p>
                         <!-- Action -->
                         <table class="body-action" align="center" width="100%" cellpadding="0" cellspacing="0" role="presentation">
                           <tr>
@@ -45,10 +45,10 @@
                             </td>
                           </tr>
                         </table>
-                        <p>Please note that Ruqqus will never ask you for your email, password, or two-factor token via email, text, or phone.</p>
-                        <p>If you have any questions, feel free to <a href="mailto:hello@ruqqus.com">email the Ruqqus team.</a>.</p>
+                        <p>Please note that {{ 'SITE_NAME' | app_config }} will never ask you for your email, password, or two-factor token via email, text, or phone.</p>
+                        <p>If you have any questions, feel free to <a href="mailto:hello@ruqqus.com">email the {{ 'SITE_NAME' | app_config }} team.</a>.</p>
                         <p>Thanks,
-                          <br>The Ruqqus Team</p>
+                          <br>The {{ 'SITE_NAME' | app_config }} Team</p>
                         <p><strong>P.S.</strong> Feel free to tweet at us on Twitter <a href="https://www.twitter.com/ruqqus">@ruqqus</a>.</p>
                         <!-- Sub copy -->
                         <table class="body-sub" role="presentation">

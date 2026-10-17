@@ -5,10 +5,10 @@
 
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="Sign in to Ruqqus">
+    <meta name="description" content="Sign in to {{ 'SITE_NAME' | app_config }}">
     <meta name="author" content="">
 
-    <title>2-Step Login - Ruqqus</title>
+    <title>2-Step Login - {{ 'SITE_NAME' | app_config }}</title>
 
     <!-- Bootstrap core CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
@@ -67,7 +67,7 @@
 
                         <h1 class="h2">Premium Required</h1>
 
-                        <p class="text-muted mb-md-5">Development server access is a Ruqqus Premium benefit.</p>
+                        <p class="text-muted mb-md-5">Development server access is a {{ 'SITE_NAME' | app_config }} Premium benefit.</p>
 
                         <a href="https://ruqqus.com/settings/premium" class="btn btn-primary">Get Premium</a>
 

@@ -5,16 +5,16 @@
 
 {% block title %}
 <title>Signature Verification</title>
-<meta name="description" content="Ruqqus Signature Verification">
+<meta name="description" content="{{ 'SITE_NAME' | app_config }} Signature Verification">
 {% endblock %}
 
 {% block content %}
 
-<h1>Ruqqus Signature Verification</h1>
-<p>This page may be used to authenticate any file which is purported to be from Ruqqus LLC.</p>
-<p>Any file provided by Ruqqus LLC in response to a legal process, such as a search warrant, will be accompanied by a cryptographic signature. A file may be submitted here, with its signature. If this page does not validate the signature, then the file may not be authentic, and you should suspect tampering or mishandling.</p>
+<h1>{{ 'SITE_NAME' | app_config }} Signature Verification</h1>
+<p>This page may be used to authenticate any file which is purported to be from {{ 'COMPANY_NAME' | app_config }}.</p>
+<p>Any file provided by {{ 'COMPANY_NAME' | app_config }} in response to a legal process, such as a search warrant, will be accompanied by a cryptographic signature. A file may be submitted here, with its signature. If this page does not validate the signature, then the file may not be authentic, and you should suspect tampering or mishandling.</p>
 
-As an example, you can test this page using the Ruqqus logo <a href="/assets/images/logo/ruqqus_logo.png" target="_blank">here</a>. Its signature is <code>bd50e735a575eaaa9ab8cff79e063cde</code>.
+As an example, you can test this page using the {{ 'SITE_NAME' | app_config }} logo <a href="/assets/images/logo/ruqqus_logo.png" target="_blank">here</a>. Its signature is <code>bd50e735a575eaaa9ab8cff79e063cde</code>.
 
 {% if error %}
 	<p class="text-danger">The signature is not valid. The file or signature may have been altered or mishandled, or the file is inauthentic.</p>

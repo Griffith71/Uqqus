@@ -153,6 +153,9 @@
     </div>
     {% endif %}
 
+    {# what a page puts above its posts: a guild's tabs, resources, pinned row and flair filter (board.html) #}
+    {% block feedtop %}{% endblock %}
+
     <div class="row no-gutters {% if listing %}mt-md-3{% elif not listing %}my-md-3{% endif %}">
 
       <div class="col-12">

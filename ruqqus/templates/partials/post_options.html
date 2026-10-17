@@ -172,6 +172,26 @@
 </div>
 {% endmacro %}
 
+{% macro live_field(prefix, checked=False, hours=None) %}
+{# "Make this a live thread" (helpers/live_threads.py, as Reddit's live threads): `live` and how long it runs
+   (`live_hours`, the poll lengths). Read by submit_post; kept in drafts, so a scheduled post goes live when it is
+   published. The length is only read when the box is ticked. #}
+<div class="live-composer mt-3" data-live-composer>
+  <label class="d-block">Live thread (optional)<i class="fas fa-info-circle text-gray-400 ml-1" data-toggle="tooltip" data-placement="top" title="Post timestamped updates above the comments, pushed to everyone reading, like a Reddit live thread. You can extend it or end it early from the post."></i></label>
+  <div class="d-flex align-items-center flex-wrap">
+    <div class="custom-control custom-checkbox mr-3">
+      <input type="checkbox" class="custom-control-input" id="{{ prefix }}" name="live" value="true"{% if checked %} checked{% endif %}>
+      <label class="custom-control-label" for="{{ prefix }}"><span class="live-badge live-badge-sm mr-1" aria-hidden="true">LIVE</span>Make this a live thread</label>
+    </div>
+    <label class="sr-only" for="{{ prefix }}-hours">How long it runs</label>
+    <select class="custom-select custom-select-sm w-auto" id="{{ prefix }}-hours" name="live_hours">
+      {% set chosen = (hours or live_default_hours) | int %}
+      {% for h, label in live_durations %}<option value="{{ h }}"{% if h == chosen %} selected{% endif %}>for {{ label }}</option>{% endfor %}
+    </select>
+  </div>
+</div>
+{% endmacro %}
+
 {% macro anonymous_field(checked, prefix) %}
 <label class="mt-3 d-block">Anonymity<i class="fas fa-info-circle text-gray-400 ml-1" data-toggle="tooltip" data-placement="top" title="Other users see Anonymous instead of your name. You and site admins can still see it, it follows the same rules as any post, and it cannot be undone after posting. It is not listed on your profile."></i></label>
 <div class="anonymity">

@@ -1,7 +1,7 @@
 {% extends "docs_default.html" %}
 
 {% block title %}
-<title>Ruqqus - The independent social platform</title>
+<title>{{ 'SITE_NAME' | app_config }} - The independent social platform</title>
 <meta name="description" content="Privacy Policy.">
 {% endblock %}
 
@@ -12,7 +12,7 @@
 
 ## Cookies
 
-Ruqqus uses encrypted cookies to maintain secure authenticated sessions. These cookies are randomized with each new session.
+{{ 'SITE_NAME' | app_config }} uses encrypted cookies to maintain secure authenticated sessions. These cookies are randomized with each new session.
 
 These cookies are used for authentication and abuse mitigation purposes only.
 
@@ -30,14 +30,14 @@ We use - and then promptly forget - the following information about you from thi
 * Verification from hCaptcha that you aren't a bot, during account registration
 * Verification of purchase approval from PayPal, during purchase of Coins
 
-Ruqqus will not release your information to third parties, except:
+{{ 'SITE_NAME' | app_config }} will not release your information to third parties, except:
 
 * As required by United States law
-* At our discretion, Ruqqus may share your information with United States law enforcement in the event of an emergency, if we have good cause to believe that doing so would avert or mitigate the emergency.
+* At our discretion, {{ 'SITE_NAME' | app_config }} may share your information with United States law enforcement in the event of an emergency, if we have good cause to believe that doing so would avert or mitigate the emergency.
 
 ### Anonymous posts and comments
 
-When you post or comment anonymously, other users see "Anonymous" instead of your name, and the post or comment is left out of your public profile, search by author and your followers' feeds. It is anonymous to other users, not to Ruqqus: the account that wrote it stays on record, is visible to you and to site administrators, and is subject to the exceptions above. Anonymity is not guaranteed against being recognised by what you write, when you write it, or by votes and Rep, which still count towards your account.
+When you post or comment anonymously, other users see "Anonymous" instead of your name, and the post or comment is left out of your public profile, search by author and your followers' feeds. It is anonymous to other users, not to {{ 'SITE_NAME' | app_config }}: the account that wrote it stays on record, is visible to you and to site administrators, and is subject to the exceptions above. Anonymity is not guaranteed against being recognised by what you write, when you write it, or by votes and Rep, which still count towards your account.
 
 ### Deleting and editing
 

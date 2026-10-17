@@ -1,8 +1,8 @@
 {% extends "docs_default.html" %}
 
 {% block title %}
-<title>Ruqqus - Formatting</title>
-<meta name="description" content="Ruqqus Formatting">
+<title>{{ 'SITE_NAME' | app_config }} - Formatting</title>
+<meta name="description" content="{{ 'SITE_NAME' | app_config }} Formatting">
 {% endblock %}
 
 {% block content %}
@@ -10,7 +10,7 @@
 
 # Formatting
 
-On Ruqqus, you can use Markdown formatting.
+On {{ 'SITE_NAME' | app_config }}, you can use Markdown formatting.
 
 
 ## Inline formatting
@@ -47,8 +47,8 @@ On Ruqqus, you can use Markdown formatting.
   </tr>
   <tr>
     <td>Links</td>
-    <td>[Ruqqus](https://ruqqus.com)</td>
-    <td><a href="https://ruqqus.com">Ruqqus</a></td>
+    <td>[{{ 'SITE_NAME' | app_config }}](https://ruqqus.com)</td>
+    <td><a href="https://ruqqus.com">{{ 'SITE_NAME' | app_config }}</a></td>
   </tr>
   <tr>
     <td>Image embeds*</td>
@@ -58,6 +58,15 @@ On Ruqqus, you can use Markdown formatting.
 </table></div>
 
 <p class="text-small">* We have customized image embeds to add pop-overs and operate on a whitelist system. Embeds from known safe image hosts will use a pop-up display as demonstrated here. Attempted embeds to non-whitelisted sites will be converted into a link. The whitelist may be viewed <a href="/info/image_hosts" target="_blank">here</a>.</p>
+
+<h3 id="links-to-other-sites" class="h5 mt-4">Links to other sites</h3>
+<p class="text-small">When a post links to a video, a song or a post on another site, the post shows it:</p>
+<ul class="text-small">
+  <li><strong>Videos play in the post:</strong> YouTube, Vimeo, Dailymotion, Twitch, Kick, Rumble, Odysee, BitChute, Bilibili, Streamable, Loom and TED; Facebook videos and reels, Instagram reels and TikTok videos play when you press play.</li>
+  <li><strong>Music and podcasts:</strong> Spotify, SoundCloud, Apple Music, Apple Podcasts, Bandcamp, Mixcloud and Deezer show their player; nothing plays until you press it.</li>
+  <li><strong>GIFs and photos:</strong> GIPHY, Tenor and Flickr.</li>
+  <li><strong>Posts</strong> on X, Bluesky, Mastodon, Threads, Instagram, Reddit, Tumblr, Pinterest, Telegram and Truth Social show as a card with who wrote it and what they wrote. A Facebook post shows the page it is from; its text stays on Facebook.</li>
+</ul>
 
 {% filter markdown %}
 
@@ -123,12 +132,12 @@ We also have some custom hooks for mentioning users and guilds. Note that these 
   <tr>
     <td>Username Mention</td>
     <td>@ruqqus</td>
-    <td><a class="d-inline-block" href="/@ruqqus"><img src="/@ruqqus/pic/profile" class="profile-pic-20 mr-1">@ruqqus</a></td>
+    <td><a class="d-inline-block" href="/@ruqqus"><img alt="" src="/@ruqqus/pic/profile" class="profile-pic-20 mr-1">@ruqqus</a></td>
   </tr>
   <tr>
     <td>Guild Mention</td>
     <td>+general</td>
-    <td><a class="d-inline-block" href="/+general"><img src="/+general/pic/profile" class="profile-pic-20 align-middle mr-1">+general</a></td>
+    <td><a class="d-inline-block" href="/+general"><img alt="" src="/+general/pic/profile" class="profile-pic-20 align-middle mr-1">+general</a></td>
   </tr>
 </table></div>
 
