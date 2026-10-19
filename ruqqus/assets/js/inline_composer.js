@@ -162,6 +162,18 @@
   }
 
   el('ic-forward-add').addEventListener('click', addForward);
+
+  // "Where to post" (assets/js/where_to_post.js): the line under the avatar opens the options at the guild search, and a
+  // post for Circles is only on the profile, so its guilds go
+  var whereLine = el('ic-where-line');
+  if (whereLine) whereLine.addEventListener('click', function () {
+    showOptions(true);
+    forwardInput.focus();
+  });
+  form.addEventListener('where:circles', function () {
+    forwards = [];
+    renderForwards();
+  });
   forwardInput.addEventListener('keydown', function (event) {
     if (event.key !== 'Enter') return;
     event.preventDefault();             // Enter adds the guild; it does not post
@@ -256,7 +268,7 @@
     var data = new FormData(form);
     if (circleGuild) {
       // made in the guild itself: nothing that would take it elsewhere or change who sees it travels with it
-      ['audience', 'circles', 'anonymous', 'coauthors', 'forward_guilds'].forEach(function (name) { data.delete(name); });
+      ['audience', 'circles', 'anonymous', 'forward_guilds', 'post_to_profile'].forEach(function (name) { data.delete(name); });
       data.set('circle_guild', circleGuild);
     }
     var sent = fetch('/api/vue/submit', { method: 'POST', body: data, credentials: 'same-origin' });

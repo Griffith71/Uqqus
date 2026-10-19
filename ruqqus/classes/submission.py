@@ -205,6 +205,12 @@ class Submission(Base, Stndrd, Age_times, Scores, Fuzzing):
         return bool(self.repost_id)
 
     @property
+    def space_comment_count(self):
+        """The comments the card and the page header show: its own, or for a post made for guilds only the sum over
+        its guilds (helpers/space_counts.py)."""
+        return self.__dict__.get("_space_comments", self.comment_count)
+
+    @property
     def is_profile_post(self):
         # deferred import - boards.py imports from this module, so this
         # can't be a top-level import without a circular-import error
@@ -327,6 +333,10 @@ class Submission(Base, Stndrd, Age_times, Scores, Fuzzing):
 
     def rendered_page(self, comment=None, comment_info=None, v=None):
 
+        # a Space's post that was taken down shows nothing at all, not even its title (a Space that was not recorded
+        # leaves nothing: routes/spaces.py `_take_down`)
+        if self.deleted_utc > 0 and cperm.is_space(self):
+            abort(404)
         # check for banned
         if self.purged_utc > 0 or self.deleted_utc > 0:
             template = "submission_deleted.html"
@@ -375,6 +385,8 @@ class Submission(Base, Stndrd, Age_times, Scores, Fuzzing):
                                is_allowed_to_comment=is_allowed_to_comment,
                                comment_restriction=comment_restriction,
                                comments_off=cperm.closed_notice(self) is not None,
+                               guilds_only=cperm.is_guilds_only(self),
+                               space_post=cperm.is_space(self),
                                render_child_comments=True,
                                b=None if self.is_profile_post else self.board
                                )

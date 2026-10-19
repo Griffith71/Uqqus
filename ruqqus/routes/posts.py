@@ -32,7 +32,6 @@ from ruqqus.classes import *
 from ruqqus.helpers import coauthors       # after the star-import: ruqqus.classes has a module of this name too
 from ruqqus.helpers import polls as poll_rules, poll_store
 from ruqqus.helpers import spaces as space_rules, space_store
-from ruqqus.helpers import live_threads as live_rules
 from ruqqus.helpers import guild_flair as flair_rules, guild_flair_store as flair_store
 from ruqqus.helpers import collab_store
 from ruqqus.helpers import circles as circle_rules, circle_guard, circle_store
@@ -724,6 +723,9 @@ def create_forward_post(primary, target, forwarded_by):
         language_code=primary.language_code,
         severity_extra=poll_store.option_text(g.db, primary.id)
     )
+    # a copy of a Space's post has no comments either: everyone is sent to the one Space
+    if primary.comment_permission == cperm.SPACE:
+        forward_post.comment_permission = cperm.SPACE
 
     g.db.add(ForwardRelationship(
         primary_submission_id=primary.id,
@@ -838,6 +840,10 @@ Optional form data:
 * `comment_permission` - Who can comment on the post on your profile: `0`
   everyone (default), `1` accounts you follow, `2` Premium accounts, `3` no one
   (comments off). Forwarded copies follow their guild's rules instead.
+* `post_to_profile` - Where to post: `false` to post only to the guilds in
+  `forward_guilds`. The post is still listed on your profile, but its profile
+  entry has no comments (they are in the guilds). Default `true`. A post for
+  Circles is always on your profile.
 * `content` - Legacy combined-field form, retained for API clients: the
   first 280 characters become the title, anything past that becomes the
   body. Only used when `title`/`body` are absent.
@@ -916,6 +922,19 @@ Optional file data:
                                                  b=None, forward_guild_names=forward_guild_names
                                                  ), 400),
                 "api": lambda: ({"error": permission_error}, 400)
+                }
+
+    # where to post: the profile (the default) and/or guilds. A profile entry made for guilds only is still listed on the
+    # profile, but its comments are in the guilds (helpers/comment_permission.py GUILDS). A post for Circles is always
+    # on the profile.
+    for_circles = (request.form.get("audience") or "").strip() not in ("", "0")
+    to_profile = True if for_circles else flag(request.form, "post_to_profile", True)
+    guilds_only = bool(forward_guild_names) and not to_profile
+    if not to_profile and not forward_guild_names and not request.form.get("circle_guild"):
+        return {"html": lambda: (render_template("submit.html", v=v, error="Choose where to post.", title=title, url=url,
+                                                 body=body, text=text_for_redisplay, b=None,
+                                                 forward_guild_names=forward_guild_names), 400),
+                "api": lambda: ({"error": "Choose where to post."}, 400)
                 }
 
     if not title:
@@ -1383,7 +1402,7 @@ Optional file data:
                 }
 
     # a Space this post announces (helpers/spaces.py): a live audio room. Checked here, before anything is made
-    space_start, space_record, space_error = None, False, None
+    space_start, space_record, space_video, space_error = None, False, False, None
     if flag(request.form, "space"):
         now_space = int(time.time())
         space_error = space_rules.make_refusal(
@@ -1394,29 +1413,12 @@ Optional file data:
         if space_error is None:
             space_start, space_error = space_rules.parse_start(request.form.get("space_start"), now_space)
         space_record = flag(request.form, "space_record")
+        space_video = flag(request.form, "space_video")
     if space_error:
         return {"html": lambda: (render_template("submit.html", v=v, error=space_error,
                                                  title=title, url=url, body=body, text=text_for_redisplay,
                                                  b=None, forward_guild_names=forward_guild_names), 400),
                 "api": lambda: ({"error": space_error}, 400)
-                }
-
-    # "Make this a live thread" (helpers/live_threads.py): `live` and its length `live_hours`, checked before anything
-    # is made; the thread starts right after the post (routes/live_threads.start_thread). Bots never run one.
-    live_hours, live_error = None, None
-    if flag(request.form, "live"):
-        if v.is_bot or request.headers.get("X-User-Type", "").lower() == "bot":
-            live_error = "Bots can't run live threads."
-        else:
-            try:
-                live_hours = live_rules.clean_hours(request.form.get("live_hours"))
-            except live_rules.Refused as error:
-                live_error = str(error)
-    if live_error:
-        return {"html": lambda: (render_template("submit.html", v=v, error=live_error,
-                                                 title=title, url=url, body=body, text=text_for_redisplay,
-                                                 b=None, forward_guild_names=forward_guild_names), 400),
-                "api": lambda: ({"error": live_error}, 400)
                 }
 
     # a Circle guild's post is made straight in the guild: its author picks the flair (helpers/guild_flair.py)
@@ -1463,7 +1465,8 @@ Optional file data:
         board_id=board.id,
         original_board_id=board.id,
         is_sensitive=sensitive_rules.marks_post(request.form.get("sensitive", ""), v),   # always, for a sensitive account
-        comment_permission=comment_permission,
+        # a Space's post has no comments: the Space's own board is its discussion (helpers/comment_permission.py SPACE)
+        comment_permission=cperm.SPACE if space_start is not None else (cperm.GUILDS if guilds_only else comment_permission),
         paid_partnership=flag(request.form, "paid_partnership"),
         made_with_ai=flag(request.form, "made_with_ai"),
         is_anonymous=flag(request.form, "anonymous"),
@@ -1503,11 +1506,7 @@ Optional file data:
         poll_store.create(g.db, new_post, poll_options, poll_hours)
 
     if space_start is not None:
-        space_store.create(g.db, new_post.id, v.id, space_start, space_record, int(time.time()))
-
-    if live_hours:
-        from ruqqus.routes.live_threads import start_thread
-        start_thread(new_post, v, int(time.time()), live_hours)
+        space_store.create(g.db, new_post.id, v.id, space_start, space_record, int(time.time()), video=space_video)
 
     if circle_flair_id:
         flair_store.set_post_flair(g.db, new_post.id, circle_flair_id)

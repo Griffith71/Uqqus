@@ -82,5 +82,5 @@ def test_an_uploaded_sound_is_inserted_as_that_link():
     assert "['image', 'audio'].forEach" in uploader
     for name in ("main.scss", "main_dark.scss"):
         assert ".media-audio {" in (root / "assets" / "style" / name).read_text(encoding="utf-8"), name
-    for name in ("comments.html", "submission.html"):
+    for name in ("comments.html", "partials/comment_form.html"):
         assert 'data-media-upload="audio"' in (root / "templates" / name).read_text(encoding="utf-8"), name

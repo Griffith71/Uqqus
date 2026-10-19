@@ -14,6 +14,7 @@
   var status = document.getElementById('comment-permission-status');
   var anonymousNote = document.getElementById('comment-permission-anonymous-note');
   var followed = document.getElementById('comment-permission-option-1');
+  var guildsRow = document.getElementById('comment-permission-guilds-row');
   var target = null;
 
   function say(text, isError) {
@@ -45,8 +46,11 @@
     target = {
       id: item.getAttribute('data-post-id'),
       mode: item.getAttribute('data-mode') || '0',
-      anonymous: item.getAttribute('data-anonymous') === '1'
+      anonymous: item.getAttribute('data-anonymous') === '1',
+      hasGuilds: item.getAttribute('data-has-guilds') === '1'
     };
+    // "Not on my profile" only for a post that has guilds to hold its comments (routes/post_commenting.py)
+    guildsRow.classList.toggle('d-none', !target.hasGuilds);
     var radio = document.getElementById('comment-permission-option-' + target.mode);
     if (radio) radio.checked = true;
     followed.disabled = target.anonymous;

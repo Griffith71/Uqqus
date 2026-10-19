@@ -30,7 +30,7 @@
 {% macro live_panel(p, v) %}
 {% set lv = live_of(p) %}
 {% set may = may_run_live(p, v) %}
-{% if lv or may %}
+{% if lv %}
 {% set t = live_thread_of(p, v) %}
 <section class="live-panel{% if t.live %} is-live{% endif %}" id="live-panel" data-post="{{ lv.post36 if lv else p.base36id }}" data-live="{{ 'true' if t.live else 'false' }}" data-may="{{ 'true' if may else 'false' }}" aria-label="Live thread">
   <div class="live-panel-head">

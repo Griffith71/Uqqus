@@ -1,0 +1,19 @@
+{#
+  One Space in the Spaces area (templates/spaces_home.html): its title, its host, and the Space card every post of a
+  Space carries (partials/space_card.html: Live / Scheduled / Ended, Join or Remind me). `p` is the Space's post, which
+  the area only lists when the viewer may open it (routes/spaces.py `_visible_space_posts`).
+#}
+{% from "partials/space_card.html" import space_block %}
+{% macro space_tile(row, p, v) %}
+{% set host = author_of(p, v) %}
+<li class="explore-card space-tile">
+  <div class="explore-card-top">
+    <img alt="" src="{{ host.profile_url }}" class="explore-avatar" width="48" height="48" loading="lazy">
+    <div class="explore-who">
+      <a class="explore-name" href="/space/{{ row[0] }}">{{ p.title }}</a>
+      <div class="explore-meta">{{ host.shown_name }}{{ handle_tag(host) }}{% if p.board and not p.is_profile_post %} &middot; +{{ p.board.name }}{% endif %}</div>
+    </div>
+  </div>
+  {{ space_block(p, v) }}
+</li>
+{% endmacro %}

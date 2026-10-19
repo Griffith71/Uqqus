@@ -1,0 +1,89 @@
+{% extends "default.html" %}
+{% import "partials/post_options.html" as post_options %}
+
+{#
+  Setting up a Space (routes/spaces.py `spaces_new`). A Space is still a post (votes, shares; no comments: its own
+  board is the discussion), so the form is sent to the real POST /api/vue/submit with the `space` fields
+  (assets/js/space_new.js); every posting rule, throttle and ban applies, and `space_store.create` is in submit_post.
+  The start time is worked out from the member's own clock (assets/js/space_composer.js, `data-space-composer`).
+#}
+
+{% block pagetype %}explore{% endblock %}
+
+{% block title %}
+<title>Start a Space - {{ 'SITE_NAME' | app_config }}</title>
+{% endblock %}
+
+{% block leftSidebarBlock %}
+{% include "sidebar-left.html" %}
+{% endblock %}
+
+{% block sidebar %}{% endblock %}
+
+{% block content %}
+<div class="explore space-new">
+  <div class="explore-head">
+    <div>
+      <h1 class="explore-title">Start a Space</h1>
+      <p class="explore-lead">A live room: up to {{ space_max_stage }} people on stage and {{ space_max_listeners }} listening. Everyone in it can see who is there.</p>
+    </div>
+    <a href="/spaces" class="btn btn-link text-muted btn-sm">Back to Spaces</a>
+  </div>
+
+  <form id="space-form" class="composer-card" autocomplete="off" novalidate>
+    <input type="hidden" name="formkey" value="{{ v.formkey }}">
+
+    <label for="space-title" class="font-weight-bold">What is it about?</label>
+    <input type="text" id="space-title" name="title" class="form-control" maxlength="280" placeholder="Title" required>
+
+    <label for="space-body" class="font-weight-bold mt-3">Description <span class="text-muted font-weight-normal">(optional)</span></label>
+    <textarea id="space-body" name="body" class="form-control" rows="3" maxlength="10000" placeholder="What will you talk about?"></textarea>
+
+    <div class="space-composer mt-3" data-space-composer>
+      <input type="checkbox" name="space" value="true" data-space-toggle checked hidden>
+      <div class="space-options">
+        <label class="d-block font-weight-bold" for="space-when">When</label>
+        <input type="datetime-local" class="form-control" id="space-when" data-space-when style="max-width: 18rem;">
+        <input type="hidden" name="space_start" value="">
+        <small class="form-text text-muted">Leave it empty to start as soon as you open it. Up to {{ space_schedule_days }} days ahead.</small>
+
+        <label class="d-block font-weight-bold mt-3">Recording</label>
+        <div class="custom-control custom-radio">
+          <input type="radio" class="custom-control-input" id="space-record-no" name="space_record" value="" checked>
+          <label class="custom-control-label" for="space-record-no">Not recorded <span class="text-muted text-small">everything, its post too, is gone when it ends</span></label>
+        </div>
+        <div class="custom-control custom-radio">
+          <input type="radio" class="custom-control-input" id="space-record-yes" name="space_record" value="true">
+          <label class="custom-control-label" for="space-record-yes">Recorded <span class="text-muted text-small">kept as a replay, saved to your own linked storage; everyone is told before they join</span></label>
+        </div>
+
+        <label class="d-block font-weight-bold mt-3">Video</label>
+        <div class="custom-control custom-checkbox">
+          <input type="checkbox" class="custom-control-input" id="space-video" name="space_video" value="true">
+          <label class="custom-control-label" for="space-video">Allow video <span class="text-muted text-small">up to {{ space_video_stage }} people on stage can turn their camera on while the Space has {{ space_video_people }} people or fewer; above that it is audio only. A replay keeps the sound only.</span></label>
+        </div>
+      </div>
+    </div>
+
+    <div class="mt-3">
+      {{ post_options.audience_field(0, "space-audience", (), circle_choices(v), "cards") }}
+    </div>
+
+    <label for="space-guild-input" class="font-weight-bold mt-3 mb-0">Where to post</label>
+    {{ post_options.where_profile("space-where", "space-guild-input", "space-guild-add", true) }}
+    <div id="space-guild-chips" class="mb-2"></div>
+    <div id="space-guild-inputs"></div>
+    <div class="input-group">
+      <input class="form-control" id="space-guild-input" type="text" placeholder="Search guilds to post to" autocomplete="off">
+      <div class="input-group-append"><button class="btn btn-secondary" id="space-guild-add" type="button">Add</button></div>
+    </div>
+    <small class="form-text text-muted">Its post shows wherever you post it, with votes and shares. It has no comments: the discussion is in the Space.</small>
+
+    <div class="text-danger small mt-3" id="space-error" role="alert" hidden></div>
+    <div class="d-flex justify-content-end mt-3">
+      <button type="submit" class="btn btn-primary" id="space-submit">Start the Space</button>
+    </div>
+  </form>
+</div>
+<script src="{{ asset_url('js/space_new.js') }}"></script>
+{% endblock %}

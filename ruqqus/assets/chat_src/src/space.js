@@ -1,10 +1,12 @@
 // A Space's own page (templates/space.html, routes/spaces.py, helpers/spaces.py): who is on stage and listening,
-// raised hands, the host's controls, the post's comments as its live discussion, and the replay.
+// raised hands, the host's controls, video while the Space is small, the board (its discussion: its post takes no
+// comments), the live updates the host and co-hosts write, and the replay.
 //
-// Audio goes browser to browser through the site's relay (rtc/mesh.js): the people on stage send their voice to
-// everyone in the Space, listeners only receive. A listener has no microphone until they accept an invitation to
-// speak. The server's roster says who is in the Space and in which role; nothing is played from anyone it does not
-// list on stage. Every name and comment goes in as text, except a comment's stored, sanitized HTML.
+// Sound and video go browser to browser through the site's relay (rtc/mesh.js): the people on stage send to everyone
+// in the Space, listeners only receive. A listener has no microphone until they accept an invitation to speak, and a
+// camera only once on stage, while the server says video is open. The server's roster says who is in the Space, in
+// which role and who sends video; nothing is played or shown from anyone it does not list on stage. Every name and
+// board message goes in as text; an update or the summary is its stored, sanitized HTML.
 
 import * as sdk from "matrix-js-sdk";
 import { ClientEvent } from "matrix-js-sdk";
@@ -20,9 +22,11 @@ const STAGE = new Set(["host", "cohost", "speaker"]);
 const ROLE_LABEL = { host: "Host", cohost: "Co-host", speaker: "Speaker" };
 
 const state = {
-  client: null, me: null, mesh: null, media: null, joined: false, ended: false,
+  client: null, me: null, mesh: null, media: null, joined: false, joining: false, ended: false,
   data: null, heartbeat: null, streams: new Map(), meters: new Map(), audios: new Map(),
-  lastComment: null, recorder: null, chunks: [], mix: null,
+  recorder: null, chunks: [], mix: null, videos: new Map(),
+  board: { last: 0, quote: null, settings: null },
+  updates: { last: 0, thread: null },
 };
 
 // --- the server -------------------------------------------------------------------------------------------------
@@ -109,8 +113,22 @@ function render() {
   byId("space-hand-label").textContent = me.hand ? "Lower hand" : "Raise hand";
   byId("space-invite").hidden = !me.invited || !state.joined;
   byId("space-mute").hidden = !onStage() || !state.media;
+  const video = data.video || {};
+  const camera = byId("space-camera");
+  const cameraOn = !!(state.media && state.media.videoTrack && !state.media.cameraOff);
+  camera.hidden = !onStage() || !state.media || !video.allowed;
+  camera.disabled = !cameraOn && !video.open;
+  camera.setAttribute("aria-pressed", String(cameraOn));
+  byId("space-camera-label").textContent = cameraOn ? "Camera off" : "Camera on";
+  const note = byId("space-video-note");
+  note.textContent = video.allowed && !video.open && video.note ? video.note : "";
+  note.hidden = !note.textContent;
   byId("space-step-down").hidden = !onStage() || myRole() === "host" || !state.joined;
   byId("space-end").hidden = !(boot.isHost || boot.isAdmin) || data.status !== "live";
+
+  drawVideos();
+  drawRunnerControls();
+  drawBoardControls();
 
   const hands = byId("space-hands");
   hands.replaceChildren();
@@ -201,7 +219,8 @@ function speaking() {
   for (const [key, meter] of state.meters) {
     const loud = meter() > 0.08;
     const userId = key === "me" ? boot.userId : Number((state.data?.peers.find((p) => peerKey(p) === key) || {}).id);
-    document.querySelectorAll(`.space-person[data-user="${userId}"]`).forEach((el) => el.classList.toggle("speaking", loud));
+    document.querySelectorAll(`.space-person[data-user="${userId}"], .space-video[data-user="${userId}"]`)
+      .forEach((el) => el.classList.toggle("speaking", loud));
   }
   if (!state.ended) requestAnimationFrame(speaking);
 }
@@ -223,11 +242,94 @@ async function micOn() {
 
 function micOff() {
   if (!state.media) return;
+  if (state.media.videoTrack) api("video", { on: "0" }).catch(() => {});
   state.mesh.setMedia(null);
   state.media.stop();
   state.media = null;
   state.meters.delete("me");
   applyRoster();
+  render();
+}
+
+// --- video (only people on stage, only while the server says it is open) ---------------------------------------------
+function videoTile(key, stream, name, userId, mine) {
+  let tile = state.videos.get(key);
+  if (!tile) {
+    tile = document.createElement("div");
+    tile.className = `space-video${mine ? " mine" : ""}`;
+    const video = document.createElement("video");
+    video.autoplay = true;
+    video.muted = true;                 // the sound plays from the audio element: never twice
+    video.playsInline = true;
+    const label = document.createElement("span");
+    label.className = "space-video-name";
+    tile.append(video, label);
+    state.videos.set(key, tile);
+  }
+  tile.dataset.user = String(userId);
+  tile.querySelector(".space-video-name").textContent = name;
+  const video = tile.querySelector("video");
+  if (video.srcObject !== stream) video.srcObject = stream;
+  video.play().catch(() => {});
+  return tile;
+}
+
+function liveVideo(stream) {
+  return stream && stream.getVideoTracks().some((t) => t.readyState === "live" && !t.muted);
+}
+
+function drawVideos() {
+  const box = byId("space-videos");
+  const data = state.data;
+  const wanted = [];
+  if (data && state.joined) {
+    if (state.media && state.media.videoTrack && !state.media.cameraOff && data.me.video) {
+      wanted.push(videoTile("me", state.media.stream, "You", boot.userId, true));
+    }
+    for (const p of data.peers || []) {
+      const key = peerKey(p);
+      const stream = state.streams.get(key);
+      if (p.video && STAGE.has(p.role) && liveVideo(stream)) wanted.push(videoTile(key, stream, p.shown_name, p.id, false));
+    }
+  }
+  for (const [key, tile] of state.videos) {
+    if (!wanted.includes(tile)) {
+      tile.remove();
+      state.videos.delete(key);
+    }
+  }
+  box.replaceChildren(...wanted);
+  box.hidden = !wanted.length;
+}
+
+async function cameraOn() {
+  if (!state.media) return;
+  try {
+    state.data = await api("video", { on: "1" });     // the server says first whether video is open
+  } catch (e) {
+    return say(e.message, true);
+  }
+  try {
+    await state.media.startCamera();
+  } catch (e) {
+    api("video", { on: "0" }).catch(() => {});
+    return say(e instanceof MediaRefused ? e.message : "The camera couldn't be started.", true);
+  }
+  state.mesh.syncTracks();
+  render();
+  applyRoster();
+}
+
+async function cameraOff(reason) {
+  if (!state.media || !state.media.videoTrack) return;
+  state.media.stopCamera();
+  if (state.mesh) state.mesh.syncTracks();
+  try {
+    state.data = await api("video", { on: "0" });
+  } catch (e) {
+    // the next heartbeat says what the server has
+  }
+  if (reason) say(reason);
   render();
 }
 
@@ -295,75 +397,427 @@ function offerDownload(file) {
   link.hidden = false;
 }
 
-// --- live comments (the post's own, routes/live_comments.py) --------------------------------------------------------
-function drawComments(list) {
-  const box = byId("space-comments");
-  const atBottom = box.scrollHeight - box.scrollTop - box.clientHeight < 60;
-  for (const c of list) {
-    if (document.getElementById(`space-comment-${c.id}`)) continue;
-    const row = document.createElement("div");
-    row.className = "space-comment";
-    row.id = `space-comment-${c.id}`;
-    const head = document.createElement("div");
-    head.className = "space-comment-head";
-    head.appendChild(avatar(c.avatar, 24));
-    const name = document.createElement("span");
-    name.className = "space-comment-name";
-    name.textContent = c.author;
-    head.appendChild(name);
-    const body = document.createElement("div");
-    body.className = "space-comment-body";
-    body.innerHTML = c.body_html;          // stored sanitized when it was written (helpers/sanitize.py)
-    for (const a of body.querySelectorAll("a")) {
-      a.target = "_blank";
-      a.rel = "nofollow noopener noreferrer";
-    }
-    row.append(head, body);
-    box.appendChild(row);
-    state.lastComment = c.id;
+// --- shared drawing helpers ------------------------------------------------------------------------------------------
+function clock(utc) {
+  try {
+    return new Date(utc * 1000).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+  } catch (e) {
+    return "";
   }
+}
+
+function smallButton(label, fn) {
+  const b = document.createElement("button");
+  b.type = "button";
+  b.textContent = label;
+  b.addEventListener("click", fn);
+  return b;
+}
+
+async function postForm(url, fields = {}) {
+  const resp = await fetch(url, {
+    method: "POST", credentials: "same-origin", headers: { Accept: "application/json" },
+    body: new URLSearchParams({ formkey: boot.formkey, ...fields }),
+  });
+  if (resp.status === 204) return {};
+  let data = {};
+  try {
+    data = await resp.json();
+  } catch (e) {
+    data = {};
+  }
+  if (!resp.ok) throw new Error(data.error || "That didn't work. Try again.");
+  return data;
+}
+
+async function getJson(url) {
+  const resp = await fetch(url, { credentials: "same-origin", headers: { Accept: "application/json" } });
+  if (!resp.ok) throw new Error("not available");
+  return resp.json();
+}
+
+function live() {
+  return (state.data ? state.data.status : boot.status) === "live" && !state.ended;
+}
+
+// --- the board: the Space's discussion (routes/spaces.py `space_messages`) -------------------------------------------
+const BOARD_KEEP = 400;
+const ROLE_NAME = { host: "Host", cohost: "Co-host" };
+
+function boardNote(text, bad) {
+  const el = byId("space-board-note");
+  el.textContent = text || "";
+  el.style.color = bad ? "#ff8a8a" : "";
+}
+
+function canWrite() {
+  return live() && (state.joined || (state.data && state.data.me && state.data.me.may_run));
+}
+
+function drawBoardControls() {
+  const form = byId("space-board-form");
+  form.hidden = !canWrite();
+  if (!live()) {
+    boardNote(state.ended || boot.status === "ended" ? "The board is closed: this Space has ended." : "The board opens when the Space starts.");
+  } else if (!canWrite()) {
+    boardNote("Join the Space to write on its board.");
+  } else if (byId("space-board-note").textContent.startsWith("Join the Space") || byId("space-board-note").textContent.startsWith("The board")) {
+    boardNote("");
+  }
+  const settings = state.board.settings;
+  const slow = settings ? settings.slow_seconds : 0;
+  byId("space-slow-label").textContent = slow && live() ? `Slow mode · ${settings.slow_label}` : "";
+  const may = !!(state.data && state.data.me && state.data.me.may_moderate) && live();
+  byId("space-slow-wrap").hidden = !may;
+  const select = byId("space-slow");
+  if (may && !select.options.length) {
+    for (const [seconds, label] of boot.slowChoices || []) {
+      const option = document.createElement("option");
+      option.value = String(seconds);
+      option.textContent = seconds ? `Slow · ${label}` : "Slow mode off";
+      select.appendChild(option);
+    }
+  }
+  if (may) select.value = String(slow || 0);
+  if (may) byId("space-slow-label").textContent = "";
+  for (const el of document.querySelectorAll(".board-quote-btn")) el.hidden = !canWrite();
+}
+
+function setQuote(m) {
+  state.board.quote = m ? m.id : null;
+  byId("space-quote").hidden = !m;
+  byId("space-quote-text").textContent = m ? `${m.author}: ${m.body || ""}` : "";
+  if (m) byId("space-board-input").focus();
+}
+
+function drawMessage(m) {
+  const row = document.createElement("div");
+  row.className = "board-msg";
+  row.id = `space-msg-${m.id}`;
+  const head = document.createElement("div");
+  head.className = "board-head";
+  head.appendChild(avatar(m.avatar, 24));
+  const name = document.createElement("span");
+  name.className = "board-name";
+  name.textContent = m.mine ? "You" : m.author;
+  head.appendChild(name);
+  if (ROLE_NAME[m.role]) {
+    const role = document.createElement("span");
+    role.className = "board-role";
+    role.textContent = ROLE_NAME[m.role];
+    head.appendChild(role);
+  }
+  const time = document.createElement("span");
+  time.className = "board-time";
+  time.textContent = clock(m.created_utc);
+  head.appendChild(time);
+  row.appendChild(head);
+  if (m.quote) {
+    const quote = document.createElement("div");
+    quote.className = "board-quote";
+    if (m.quote.gone) {
+      quote.classList.add("hidden-text");
+      quote.textContent = "A message that isn't there any more";
+    } else if (m.quote.hidden) {
+      quote.classList.add("hidden-text");
+      quote.textContent = `${m.quote.author}: hidden by your word filter`;
+    } else {
+      quote.textContent = `${m.quote.author}: ${m.quote.body}`;
+    }
+    row.appendChild(quote);
+  }
+  const body = document.createElement("div");
+  body.className = "board-body";
+  if (m.hidden) {
+    body.classList.add("hidden-text");
+    body.textContent = "Hidden by your word filter";
+  } else {
+    body.textContent = m.body;
+  }
+  row.appendChild(body);
+  const actions = document.createElement("div");
+  actions.className = "board-actions";
+  if (!m.hidden) {
+    const quote = smallButton("Quote", () => setQuote(m));
+    quote.className = "board-quote-btn";
+    quote.hidden = !canWrite();
+    actions.appendChild(quote);
+  }
+  if (m.mine) {
+    actions.appendChild(smallButton("Delete", async () => {
+      if (!window.confirm("Delete this message?")) return;
+      try {
+        await postForm(`/api/space_messages/${m.id}/delete`);
+        row.remove();
+      } catch (e) {
+        boardNote(e.message, true);
+      }
+    }));
+  } else {
+    actions.appendChild(smallButton("Report", async () => {
+      const reason = window.prompt("What's wrong with this message? (optional)");
+      if (reason === null) return;
+      try {
+        await postForm(`/api/space_messages/${m.id}/report`, { reason });
+        boardNote("Thanks: the site's admins will take a look.");
+      } catch (e) {
+        boardNote(e.message, true);
+      }
+    }));
+  }
+  if (m.may_remove) {
+    actions.appendChild(smallButton("Remove", async () => {
+      if (!window.confirm("Remove this message from the board for everyone?")) return;
+      try {
+        await postForm(`/api/space_messages/${m.id}/remove`);
+        row.remove();
+      } catch (e) {
+        boardNote(e.message, true);
+      }
+    }));
+  }
+  row.appendChild(actions);
+  return row;
+}
+
+function drawMessages(list) {
+  const box = byId("space-board");
+  const atBottom = box.scrollHeight - box.scrollTop - box.clientHeight < 80;
+  for (const m of list) {
+    state.board.last = Math.max(state.board.last, m.id);
+    if (document.getElementById(`space-msg-${m.id}`)) continue;
+    box.appendChild(drawMessage(m));
+  }
+  while (box.children.length > BOARD_KEEP) box.firstElementChild.remove();
+  byId("space-board-empty").hidden = box.children.length > 0;
   if (atBottom) box.scrollTop = box.scrollHeight;
 }
 
-async function loadComments() {
-  const after = state.lastComment ? `?after=${encodeURIComponent(state.lastComment)}` : "";
+async function loadBoard() {
   try {
-    const resp = await fetch(`/api/post/${boot.postId}/live_comments${after}`, { credentials: "same-origin" });
-    if (!resp.ok) return;
-    const data = await resp.json();
-    drawComments(data.comments || []);
+    const data = await getJson(`/api/spaces/${boot.spaceId}/messages${state.board.last ? `?after=${state.board.last}` : ""}`);
+    state.board.settings = data.board || state.board.settings;
+    drawMessages(data.messages || []);
+    drawBoardControls();
   } catch (e) {
     // the next event or the next poll tries again
   }
 }
 
-function wireComments() {
-  const form = byId("space-comment-form");
-  const input = byId("space-comment-input");
+function wireBoard() {
+  const form = byId("space-board-form");
+  const input = byId("space-board-input");
   form.addEventListener("submit", async (event) => {
     event.preventDefault();
     const text = input.value.trim();
     if (!text) return;
-    const body = new URLSearchParams({ formkey: boot.formkey, parent_fullname: `t2_${boot.postId}`, body: text });
     input.disabled = true;
     try {
-      const resp = await fetch("/api/comment", { method: "POST", credentials: "same-origin", body, headers: { Accept: "application/json" } });
-      if (!resp.ok) {
-        let data = {};
-        try { data = await resp.json(); } catch (e) { data = {}; }
-        throw new Error(data.error || "Your comment couldn't be posted.");
-      }
+      const fields = { body: text };
+      if (state.board.quote) fields.quote = String(state.board.quote);
+      const data = await postForm(`/api/spaces/${boot.spaceId}/messages`, fields);
       input.value = "";
-      loadComments();
+      setQuote(null);
+      boardNote("");
+      drawMessages(data.messages || []);
+      const box = byId("space-board");
+      box.scrollTop = box.scrollHeight;
     } catch (e) {
-      say(e.message, true);
+      boardNote(e.message, true);
     } finally {
       input.disabled = false;
       input.focus();
     }
   });
-  loadComments();
-  setInterval(loadComments, 30000);          // a fallback for a missed live event
+  byId("space-quote-cancel").addEventListener("click", () => setQuote(null));
+  byId("space-slow").addEventListener("change", async (event) => {
+    try {
+      const data = await postForm(`/api/spaces/${boot.spaceId}/slow`, { seconds: event.target.value });
+      state.board.settings = data.board;
+      drawBoardControls();
+    } catch (e) {
+      boardNote(e.message, true);
+    }
+  });
+  loadBoard();
+  setInterval(loadBoard, 30000);          // a fallback for a missed live event
+}
+
+// --- live updates: the host and co-hosts write them (the live-thread machinery, keyed by the post) -------------------
+function mayRun() {
+  return !!(state.data && state.data.me && state.data.me.may_run);
+}
+
+function drawRunnerControls() {
+  const runner = mayRun() && live();
+  byId("space-update-form").hidden = !runner;
+  byId("space-summary-edit").hidden = !runner || !byId("space-summary-form").hidden;
+  if (!runner) byId("space-summary-form").hidden = true;
+}
+
+function drawThread(thread) {
+  if (!thread) return;
+  state.updates.thread = thread;
+  byId("space-updates-live").hidden = !thread.live;
+  const summary = byId("space-summary");
+  if (thread.summary_hidden) {
+    summary.textContent = "The summary is hidden by your word filter.";
+    summary.hidden = false;
+  } else if (thread.summary_html) {
+    summary.innerHTML = thread.summary_html;          // stored sanitized when it was written (helpers/sanitize.py)
+    for (const a of summary.querySelectorAll("a")) {
+      a.target = "_blank";
+      a.rel = "nofollow noopener noreferrer";
+    }
+    summary.hidden = false;
+  } else {
+    summary.replaceChildren();
+    summary.hidden = true;
+  }
+}
+
+function drawUpdate(u) {
+  const row = document.createElement("article");
+  row.className = `update${u.struck ? " struck" : ""}`;
+  row.id = `space-update-${u.id}`;
+  const meta = document.createElement("div");
+  meta.className = "update-meta";
+  const time = document.createElement("span");
+  time.textContent = clock(u.created_utc);
+  meta.appendChild(time);
+  if (u.author) {
+    const by = document.createElement("span");
+    by.textContent = u.author;
+    meta.appendChild(by);
+  }
+  if (u.struck) {
+    const tag = document.createElement("span");
+    tag.textContent = "Corrected";
+    meta.appendChild(tag);
+  }
+  row.appendChild(meta);
+  const body = document.createElement("div");
+  body.className = "update-body";
+  if (u.hidden) {
+    body.textContent = "Hidden by your word filter";
+  } else {
+    body.innerHTML = u.body_html || "";          // stored sanitized when it was written (helpers/sanitize.py)
+    for (const a of body.querySelectorAll("a")) {
+      a.target = "_blank";
+      a.rel = "nofollow noopener noreferrer";
+    }
+  }
+  row.appendChild(body);
+  if (u.may_change) {
+    const actions = document.createElement("div");
+    actions.className = "board-actions";
+    actions.style.paddingLeft = "0";
+    actions.appendChild(smallButton(u.struck ? "Undo correction" : "Cross out", async () => {
+      try {
+        replaceUpdate(await postForm(`/api/live_updates/${u.id}/strike`, { on: u.struck ? "0" : "1" }));
+      } catch (e) {
+        say(e.message, true);
+      }
+    }));
+    actions.appendChild(smallButton("Delete", async () => {
+      if (!window.confirm("Delete this update?")) return;
+      try {
+        await postForm(`/api/live_updates/${u.id}/delete`);
+        replaceUpdate({ id: u.id, gone: true });
+      } catch (e) {
+        say(e.message, true);
+      }
+    }));
+    row.appendChild(actions);
+  }
+  return row;
+}
+
+function replaceUpdate(u) {
+  const old = document.getElementById(`space-update-${u.id}`);
+  if (u.gone) {
+    if (old) old.remove();
+  } else if (old) {
+    old.replaceWith(drawUpdate(u));
+  }
+  byId("space-updates-empty").hidden = byId("space-updates").children.length > 0;
+}
+
+async function loadUpdates() {
+  try {
+    const first = !state.updates.last;
+    const data = await getJson(`/api/post/${boot.postId}/live_updates${first ? "" : `?after=${state.updates.last}`}`);
+    drawThread(data.thread);
+    const box = byId("space-updates");
+    // the first page comes newest first; later ones oldest first: the newest is always on top
+    for (const u of data.updates || []) {
+      state.updates.last = Math.max(state.updates.last, u.id);
+      if (document.getElementById(`space-update-${u.id}`)) continue;
+      if (first) box.appendChild(drawUpdate(u));
+      else box.prepend(drawUpdate(u));
+    }
+    byId("space-updates-empty").hidden = box.children.length > 0;
+  } catch (e) {
+    // the next event or the next poll tries again
+  }
+}
+
+async function refreshUpdate(id) {
+  try {
+    replaceUpdate(await getJson(`/api/live_updates/${id}`));
+  } catch (e) {
+    replaceUpdate({ id, gone: true });
+  }
+}
+
+function wireUpdates() {
+  byId("space-update-form").addEventListener("submit", async (event) => {
+    event.preventDefault();
+    const input = byId("space-update-input");
+    const text = input.value.trim();
+    if (!text) return;
+    input.disabled = true;
+    try {
+      const u = await postForm(`/api/spaces/${boot.spaceId}/updates`, { body: text });
+      input.value = "";
+      state.updates.last = Math.max(state.updates.last, u.id);
+      if (!document.getElementById(`space-update-${u.id}`)) byId("space-updates").prepend(drawUpdate(u));
+      byId("space-updates-empty").hidden = true;
+    } catch (e) {
+      say(e.message, true);
+    } finally {
+      input.disabled = false;
+    }
+  });
+  byId("space-summary-edit").addEventListener("click", async () => {
+    // the words themselves, to edit, come with the thread for whoever runs it
+    try {
+      const data = await getJson(`/api/spaces/${boot.spaceId}/summary`);
+      byId("space-summary-input").value = data.summary || "";
+    } catch (e) {
+      byId("space-summary-input").value = "";
+    }
+    byId("space-summary-form").hidden = false;
+    byId("space-summary-edit").hidden = true;
+    byId("space-summary-input").focus();
+  });
+  byId("space-summary-cancel").addEventListener("click", () => {
+    byId("space-summary-form").hidden = true;
+    drawRunnerControls();
+  });
+  byId("space-summary-form").addEventListener("submit", async (event) => {
+    event.preventDefault();
+    try {
+      const data = await postForm(`/api/spaces/${boot.spaceId}/summary`, { summary: byId("space-summary-input").value });
+      drawThread(data.thread);
+      byId("space-summary-form").hidden = true;
+      drawRunnerControls();
+    } catch (e) {
+      say(e.message, true);
+    }
+  });
+  loadUpdates();
+  setInterval(loadUpdates, 60000);
 }
 
 // --- joining and leaving --------------------------------------------------------------------------------------------
@@ -400,6 +854,15 @@ function inRoom(roomId) {
 }
 
 async function join() {
+  state.joining = true;
+  try {
+    await joinSpace();
+  } finally {
+    state.joining = false;
+  }
+}
+
+async function joinSpace() {
   byId("space-join").disabled = true;
   say("Joining…");
   resumeAudio();
@@ -459,8 +922,13 @@ async function join() {
       if (audio.srcObject !== stream) audio.srcObject = stream;
       audio.play().catch(() => { byId("space-play").hidden = false; });
       if (!state.meters.has(key)) state.meters.set(key, levelMeter(stream));
+      for (const track of stream.getVideoTracks()) {
+        track.onmute = drawVideos;
+        track.onunmute = drawVideos;
+      }
       recordAdd(stream);
       applyRoster();
+      drawVideos();
     },
     onPeerGone: (key) => {
       state.streams.delete(key);
@@ -468,6 +936,7 @@ async function join() {
       const audio = state.audios.get(key);
       if (audio) audio.remove();
       state.audios.delete(key);
+      drawVideos();
     },
   });
   if (onStage()) await micOn();
@@ -492,7 +961,8 @@ function soon(fn, base) {
   };
 }
 const beatSoon = soon(() => beat(), 1000);
-const commentsSoon = soon(() => loadComments(), 600);
+const boardSoon = soon(() => loadBoard(), 400);
+const updatesSoon = soon(() => loadUpdates(), 400);
 
 async function beat() {
   if (!state.joined || state.ended) return;
@@ -503,6 +973,8 @@ async function beat() {
     state.data = data;
     if (onStage() && !wasOnStage) await micOn();
     if (!onStage() && wasOnStage) micOff();
+    // the Space grew past what video allows, or the relay's month closed it: cameras off, with the reason
+    if (state.media && state.media.videoTrack && data.video && !data.video.open) await cameraOff(data.video.note);
     render();
     applyRoster();
   } catch (e) {
@@ -526,6 +998,11 @@ async function finish(reason) {
   byId("space-live").hidden = true;
   byId("space-ended").hidden = false;
   byId("space-ended-text").textContent = reason;
+  if (state.data) state.data.status = "ended";
+  boot.status = "ended";
+  drawBoardControls();
+  drawRunnerControls();
+  drawVideos();
   await recordFinish();
 }
 
@@ -549,6 +1026,11 @@ function wire() {
     byId("space-mute").setAttribute("aria-pressed", String(state.media.muted));
     byId("space-mute-label").textContent = state.media.muted ? "Unmute" : "Mute";
   });
+  byId("space-camera").addEventListener("click", () => {
+    const on = !!(state.media && state.media.videoTrack && !state.media.cameraOff);
+    if (on) cameraOff();
+    else cameraOn();
+  });
   byId("space-end").addEventListener("click", async () => {
     if (!window.confirm("End this Space for everyone?")) return;
     try {
@@ -567,11 +1049,13 @@ function wire() {
   if (start) {
     start.addEventListener("click", async () => {
       start.disabled = true;
+      state.joining = true;              // the "started" event this sends back must not reload the page
       try {
         await api("start");
         boot.status = "live";
         await join();
       } catch (e) {
+        state.joining = false;
         start.disabled = false;
         say(e.message, true);
       }
@@ -595,16 +1079,27 @@ function wire() {
     navigator.sendBeacon(`/api/spaces/${boot.spaceId}/leave`, form);
   });
 
-  const live = window.UqqusLive;
-  live.watch(`post:${boot.postId}`);
-  live.on("comment.new", commentsSoon);
-  live.on("space.roster", beatSoon);
-  live.on("space.started", () => { if (!state.joined) window.location.reload(); });
-  live.on("space.ended", () => finish("This Space has ended."));
-  live.on("space.invited", beatSoon);
-  live.on("space.listening", () => beat().then(() => micOff()));
-  live.on("space.removed", () => finish("You were removed from this Space."));
-  live.on("space.mute", () => {
+  const bus = window.UqqusLive;
+  bus.watch(`post:${boot.postId}`);
+  bus.watch(`space:${boot.spaceId}`);              // the board and the updates live for readers who haven't joined too
+  bus.on("space.message", boardSoon);
+  bus.on("space.message_gone", (data) => {
+    const el = document.getElementById(`space-msg-${Number(data.id)}`);
+    if (el) el.remove();
+  });
+  bus.on("space.board", () => { boardSoon(); beatSoon(); });
+  bus.on("live.update", updatesSoon);
+  bus.on("live.summary", updatesSoon);
+  bus.on("live.changed", (data) => refreshUpdate(Number(data.id)));
+  bus.on("space.roster", beatSoon);
+  // a reader waiting on a scheduled Space gets the live page; never one that is joining it right now (the host who
+  // pressed Start hears this too)
+  bus.on("space.started", () => { if (!state.joined && !state.joining) window.location.reload(); });
+  bus.on("space.ended", () => finish("This Space has ended."));
+  bus.on("space.invited", beatSoon);
+  bus.on("space.listening", () => beat().then(() => micOff()));
+  bus.on("space.removed", () => finish("You were removed from this Space."));
+  bus.on("space.mute", () => {
     if (!state.media) return;
     state.media.setMuted(true);
     byId("space-mute").setAttribute("aria-pressed", "true");
@@ -613,10 +1108,24 @@ function wire() {
   });
 }
 
+async function loadState() {
+  // who this reader is in the Space (may they run the updates, moderate the board?) before they join
+  try {
+    const data = await getJson(`/api/spaces/${boot.spaceId}/state`);
+    if (!state.data) state.data = data;
+    drawRunnerControls();
+    drawBoardControls();
+  } catch (e) {
+    // the page still reads
+  }
+}
+
 function main() {
   if (!boot) return;
   wire();
-  wireComments();
+  wireBoard();
+  wireUpdates();
+  loadState();
 }
 
 main();

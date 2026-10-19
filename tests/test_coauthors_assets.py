@@ -112,17 +112,15 @@ def test_a_name_that_cannot_be_invited_stops_the_post_before_it_is_made():
     assert POSTS.index("coauthors.invite_names(g.db, v, new_post, coauthor_names)") < POSTS.index("_discard_draft(v, request.form.get(\"draft_id\"))")
 
 
-def test_the_field_is_in_both_composers_and_travels_through_a_draft():
-    macro = read("ruqqus", "templates", "partials", "post_options.html")
-    assert 'name="coauthors"' in macro and 'maxlength="200"' in macro and "{% macro coauthors_field(value, prefix) %}" in macro
-    assert 'post_options.coauthors_field(draft.option("coauthors", "")' in read("ruqqus", "templates", "submit.html")
-    inline = read("ruqqus", "templates", "partials", "inline_composer.html")
-    assert "coauthors_field" in inline.split("{% from")[1].split("\n")[0] and 'coauthors_field("", "ic-coauthors")' in inline
-    # the feed composer sends its whole form, so the field needs no script there
-    assert "new FormData(form)" in read("ruqqus", "assets", "js", "inline_composer.js")
-    drafts = read("ruqqus", "helpers", "post_drafts.py")
-    assert '"coauthors": ", ".join(names)' in drafts and 'data["coauthors"] = options["coauthors"]' in drafts
-    assert "input[name=\"coauthors\"]" in read("ruqqus", "assets", "js", "post_drafts.js")
+def test_there_is_no_co_authors_field_in_the_composers_or_drafts_any_more():
+    # writing a post with other people is a shared draft now (routes/collab.py); invitations after posting stay in the post menu
+    assert "coauthors_field" not in read("ruqqus", "templates", "partials", "post_options.html")
+    assert "coauthors" not in read("ruqqus", "templates", "submit.html").replace("coauthors.html", "")
+    assert "coauthors_field" not in read("ruqqus", "templates", "partials", "inline_composer.html")
+    assert "coauthors" not in read("ruqqus", "helpers", "post_drafts.py")
+    assert "coauthors" not in read("ruqqus", "assets", "js", "post_drafts.js")
+    # the form field the API takes, and its refusals, are still in submit_post
+    assert 'request.form.get("coauthors")' in read("ruqqus", "routes", "posts.py")
 
 
 # --- where the post is listed and named ---------------------------------------------------------------------

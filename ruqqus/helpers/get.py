@@ -288,6 +288,11 @@ def get_post(pid, v=None, graceful=False, nSession=None, no_text=False, **kwargs
         from ruqqus.helpers.media import attach as media_attach
         media_attach.attach_image_sizes(nSession, [x], current_app.config["SERVER_NAME"])
 
+    # a post made for guilds only shows its guilds' comment and vote totals (helpers/space_counts.py)
+    if x is not None:
+        from ruqqus.helpers import space_counts
+        space_counts.attach(nSession, [x])
+
     return x
 
 
@@ -478,6 +483,9 @@ def get_posts(pids, sort="hot", v=None):
     # the shares and bookmarks the action row counts (helpers/post_counts.py): three queries for the page
     from ruqqus.helpers import post_counts
     post_counts.attach(g.db, posts)
+    # a post made for guilds only counts its guilds' comments and votes on the profile (helpers/space_counts.py)
+    from ruqqus.helpers import space_counts
+    space_counts.attach(g.db, posts)
 
     # the stored size of linked-media pictures, so their room is kept before they load (one query)
     from flask import current_app

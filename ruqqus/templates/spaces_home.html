@@ -1,0 +1,43 @@
+{% extends "default.html" %}
+{% from "partials/space_tile.html" import space_tile with context %}
+
+{# The Spaces area (routes/spaces.py `spaces_home`): Spaces have their own place beside Chat, and are never made from
+   Create a post. Laid out like Explore: the left sidebar where the home feed has it, no right sidebar. #}
+
+{% block pagetype %}explore{% endblock %}
+
+{% block title %}
+<title>Spaces - {{ 'SITE_NAME' | app_config }}</title>
+{% endblock %}
+
+{% block leftSidebarBlock %}
+{% include "sidebar-left.html" %}
+{% endblock %}
+
+{% block sidebar %}{% endblock %}
+
+{% block content %}
+<div class="explore">
+  <div class="explore-head">
+    <div>
+      <h1 class="explore-title">Spaces</h1>
+      <p class="explore-lead">Live rooms to talk, listen and follow along. A Space is recorded for replay, or it is gone when it ends.</p>
+    </div>
+    {% if v %}<a href="/spaces/new" class="btn btn-primary btn-sm rounded-pill px-3"><i class="fas fa-microphone-lines mr-1" aria-hidden="true"></i>Start a Space</a>{% endif %}
+  </div>
+  <nav class="explore-tabs" aria-label="Spaces">
+    {% for key, label in tabs %}{% if key != 'mine' or v %}
+    <a href="/spaces?tab={{ key }}" class="explore-tab{% if tab == key %} active{% endif %}"{% if tab == key %} aria-current="page"{% endif %}>{{ label }}</a>
+    {% endif %}{% endfor %}
+  </nav>
+
+  <ul class="explore-grid">
+    {% for row, p in items %}{{ space_tile(row, p, v) }}{% else %}
+    <li class="explore-empty">
+      {% if tab == 'live' %}Nobody is live right now.{% elif tab == 'upcoming' %}No Spaces are scheduled.{% elif tab == 'recordings' %}No recordings yet.{% else %}You haven't hosted a Space yet.{% endif %}
+      {% if v %}<a href="/spaces/new">Start one</a>{% endif %}
+    </li>
+    {% endfor %}
+  </ul>
+</div>
+{% endblock %}

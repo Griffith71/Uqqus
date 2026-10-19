@@ -1,10 +1,11 @@
 <!DOCTYPE html>
 {#
   A Space's own page (routes/spaces.py `space_page`, assets/chat_src/src/space.js). A page of its own, opened in a new
-  tab from the post, so the audio keeps going while the rest of the site reloads page by page; it is allowed the
-  microphone (helpers/device_access.py). The post's comments are its live discussion (routes/live_comments.py).
-  Before joining, the sheet says that everyone in the Space can see who is there (the owner's choice) and, for a
-  recorded Space, that it is recorded. Names go in as text; `boot` is drawn with |tojson.
+  tab from the post, so the sound keeps going while the rest of the site reloads page by page; it is allowed the
+  microphone and the camera (helpers/device_access.py). Its post takes no comments: the discussion is the Space's own
+  **board** (beside the stage), and the host and co-hosts write **live updates** under the stage. Before joining, the
+  sheet says that everyone in the Space can see who is there (the owner's choice) and, for a recorded Space, that it
+  is recorded. Names and messages go in as text (an update is its stored, sanitized HTML); `boot` is drawn with |tojson.
 #}
 <html lang="en">
 <head>
@@ -22,10 +23,15 @@
     body { margin: 0; background: var(--bg); color: var(--text); font: 15px/1.45 system-ui, -apple-system, "Segoe UI", sans-serif;
            -webkit-font-smoothing: antialiased; }
     a { color: var(--accent); }
-    .space-wrap { max-width: 1100px; margin: 0 auto; padding: 1rem; padding-top: max(1rem, env(safe-area-inset-top));
-                  display: grid; gap: 1rem; grid-template-columns: minmax(0, 1fr) 340px; }
-    @media (max-width: 860px) { .space-wrap { grid-template-columns: minmax(0, 1fr); } }
-    header { grid-column: 1 / -1; display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap; }
+    .space-wrap { max-width: 1180px; margin: 0 auto; padding: 1rem; padding-top: max(1rem, env(safe-area-inset-top));
+                  display: grid; gap: 1rem; grid-template-columns: minmax(0, 1fr) 360px;
+                  grid-template-areas: "head head" "stage board" "updates board"; grid-template-rows: auto auto 1fr;
+                  align-items: start; }
+    @media (max-width: 860px) { .space-wrap { grid-template-columns: minmax(0, 1fr); grid-template-areas: "head" "stage" "updates" "board"; } }
+    header { grid-area: head; display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap; }
+    #space-main { grid-area: stage; }
+    #space-updates-panel { grid-area: updates; }
+    #space-board-panel { grid-area: board; }
     .space-title { font-size: 1.2rem; font-weight: 700; margin: 0; flex: 1 1 18rem; min-width: 0; overflow-wrap: anywhere; }
     .space-title a { color: inherit; text-decoration: none; }
     .space-title a:hover { text-decoration: underline; }
@@ -66,18 +72,60 @@
     #space-hands { margin-top: 1rem; }
     .space-hands-title { font-weight: 700; margin-bottom: 0.5rem; }
     .space-hand-row { display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; padding: 0.375rem 0; border-top: 1px solid var(--line); }
-    .comments { display: flex; flex-direction: column; max-height: calc(100vh - 7rem); min-height: 22rem; }
-    #space-comments { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 0.75rem; padding-right: 0.25rem; }
-    .space-comment-head { display: flex; align-items: center; gap: 0.5rem; font-size: 0.85rem; }
-    .space-comment-head img { border-radius: 50%; background: var(--line); }
-    .space-comment-name { font-weight: 700; }
-    .space-comment-body { font-size: 0.9rem; overflow-wrap: anywhere; padding-left: 2rem; }
-    .space-comment-body p { margin: 0.125rem 0; }
-    .space-comment-body img { max-width: 100%; height: auto; border-radius: 8px; }
-    #space-comment-form { display: flex; gap: 0.5rem; margin-top: 0.75rem; }
-    #space-comment-input { flex: 1; min-width: 0; border-radius: 999px; border: 1px solid var(--line); background: var(--bg); color: var(--text);
-                           padding: 0.5rem 0.875rem; font: inherit; }
-    #space-comment-input:focus-visible { outline: 2px solid var(--accent); }
+    /* video: the people on stage with their camera on, above the stage's faces */
+    .space-videos { display: grid; gap: 0.5rem; grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr)); margin-bottom: 0.75rem; }
+    .space-video { position: relative; background: #000; border-radius: 12px; overflow: hidden; aspect-ratio: 16 / 9;
+                   outline: 3px solid transparent; outline-offset: -3px; transition: outline-color 120ms ease-out; }
+    .space-video.speaking { outline-color: var(--speaking); }
+    .space-video video { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .space-video.mine video { transform: scaleX(-1); }
+    .space-video-name { position: absolute; left: 0.5rem; bottom: 0.375rem; font-size: 0.8rem; font-weight: 600;
+                        background: rgba(0, 0, 0, 0.55); padding: 0.0625rem 0.5rem; border-radius: 6px; }
+    #space-video-note { color: var(--muted); font-size: 0.8rem; margin-top: 0.5rem; }
+    /* the board and the live updates */
+    .board { display: flex; flex-direction: column; max-height: calc(100vh - 7rem); min-height: 24rem; position: sticky; top: 1rem; }
+    @media (max-width: 860px) { .board { position: static; max-height: 32rem; } }
+    .panel-head { display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; margin-bottom: 0.5rem; }
+    .panel-head .space-section-title { margin: 0; }
+    #space-board { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 0.625rem; padding-right: 0.25rem; }
+    .board-msg { position: relative; }
+    .board-head { display: flex; align-items: center; gap: 0.5rem; font-size: 0.8rem; }
+    .board-head img { border-radius: 50%; background: var(--line); }
+    .board-name { font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .board-role { font-size: 0.7rem; color: var(--accent); font-weight: 600; }
+    .board-time { color: var(--muted); font-size: 0.75rem; margin-left: auto; white-space: nowrap; }
+    .board-body { font-size: 0.9rem; overflow-wrap: anywhere; white-space: pre-wrap; padding-left: 2rem; }
+    .board-body.hidden-text, .board-quote.hidden-text { color: var(--muted); font-style: italic; }
+    .board-quote { margin: 0.125rem 0 0.25rem 2rem; border-left: 3px solid var(--line); padding: 0.125rem 0.5rem; color: var(--muted);
+                   font-size: 0.8rem; overflow-wrap: anywhere; white-space: pre-wrap; }
+    .board-actions { display: flex; gap: 0.25rem; padding-left: 2rem; margin-top: 0.125rem; }
+    .board-actions button { background: none; border: 0; color: var(--muted); font: inherit; font-size: 0.75rem; padding: 0.125rem 0.375rem;
+                            border-radius: 6px; cursor: pointer; }
+    .board-actions button:hover { color: var(--text); background: var(--line); }
+    .board-actions button:focus-visible { outline: 2px solid var(--accent); }
+    #space-quote { display: flex; align-items: center; gap: 0.5rem; font-size: 0.8rem; color: var(--muted); margin-top: 0.5rem;
+                   border-left: 3px solid var(--accent); padding-left: 0.5rem; }
+    #space-quote-text { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    #space-board-form { display: flex; gap: 0.5rem; margin-top: 0.5rem; }
+    .space-input { flex: 1; min-width: 0; border-radius: 999px; border: 1px solid var(--line); background: var(--bg); color: var(--text);
+                   padding: 0.5rem 0.875rem; font: inherit; }
+    .space-input:focus-visible { outline: 2px solid var(--accent); }
+    textarea.space-input { border-radius: 12px; resize: vertical; min-height: 4.5rem; width: 100%; }
+    #space-board-note { color: var(--muted); font-size: 0.8rem; margin-top: 0.5rem; }
+    .space-select { background: var(--bg); color: var(--text); border: 1px solid var(--line); border-radius: 8px; font: inherit;
+                    font-size: 0.8rem; padding: 0.125rem 0.375rem; }
+    #space-summary { border: 1px solid var(--line); border-radius: 12px; padding: 0.625rem 0.75rem; margin-bottom: 0.75rem; font-size: 0.9rem; overflow-wrap: anywhere; }
+    #space-summary p { margin: 0.25rem 0; }
+    #space-updates { display: flex; flex-direction: column; gap: 0.75rem; }
+    .update { border-left: 3px solid var(--live); padding-left: 0.75rem; }
+    .update-meta { color: var(--muted); font-size: 0.75rem; display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap; }
+    .update-body { font-size: 0.95rem; overflow-wrap: anywhere; }
+    .update-body p { margin: 0.25rem 0; }
+    .update-body img { max-width: 100%; height: auto; border-radius: 8px; }
+    .update.struck .update-body { text-decoration: line-through; color: var(--muted); }
+    .update-tag { color: var(--live); font-weight: 700; }
+    #space-update-form, #space-summary-form { margin-bottom: 0.75rem; }
+    #space-replay-player { width: 100%; margin: 0.5rem 0; }
     dialog { background: var(--panel); color: var(--text); border: 1px solid var(--line); border-radius: 16px; padding: 1rem; min-width: 16rem; }
     dialog::backdrop { background: rgba(0, 0, 0, 0.6); }
     #space-person-actions { display: flex; flex-direction: column; gap: 0.5rem; margin-top: 0.75rem; }
@@ -101,7 +149,7 @@
       </nav>
     </header>
 
-    <main class="panel">
+    <main class="panel" id="space-main">
       <section id="space-join-sheet">
         {% if boot.status == 'live' %}
         <p class="muted" style="margin-top:0"><i class="fas fa-podcast" aria-hidden="true"></i> This Space is live.</p>
@@ -112,7 +160,11 @@
         {% endif %}
         {% if boot.status != 'ended' %}
         <div class="space-notice"><i class="fas fa-users" aria-hidden="true"></i>Everyone in this Space can see who is here, listeners too.</div>
-        {% if boot.record %}<div class="space-notice"><i class="fas fa-circle-dot" aria-hidden="true"></i>This Space is recorded: the host keeps a replay with the post.</div>{% endif %}
+        {% if boot.record %}<div class="space-notice"><i class="fas fa-circle-dot" aria-hidden="true"></i>This Space is recorded: the host keeps a replay with the post.</div>
+        {% else %}<div class="space-notice"><i class="fas fa-eraser" aria-hidden="true"></i>This Space is not recorded: when it ends, its post, board and updates are gone.</div>{% endif %}
+        {% if boot.video %}<div class="space-notice"><i class="fas fa-video" aria-hidden="true"></i>People on stage may turn their camera on while the Space is small.</div>{% endif %}
+        {% elif boot.replay %}
+        <audio id="space-replay-player" controls preload="none" src="{{ boot.replay }}"></audio>
         {% endif %}
         <div class="space-controls">
           <button type="button" class="space-btn primary" id="space-join"{% if boot.status != 'live' %} hidden{% endif %}><i class="fas fa-headphones" aria-hidden="true"></i>Join the Space</button>
@@ -124,6 +176,7 @@
       </section>
 
       <section id="space-room" hidden>
+        <div class="space-videos" id="space-videos" hidden></div>
         <div class="space-section-title">On stage</div>
         <div class="space-grid" id="space-stage"></div>
         <div class="space-section-title" id="space-listener-heading">Listeners</div>
@@ -131,6 +184,7 @@
         <div id="space-hands"></div>
         <div class="space-controls">
           <button type="button" class="space-btn" id="space-mute" aria-pressed="false" hidden><i class="fas fa-microphone" aria-hidden="true"></i><span id="space-mute-label">Mute</span></button>
+          <button type="button" class="space-btn" id="space-camera" aria-pressed="false" hidden><i class="fas fa-video" aria-hidden="true"></i><span id="space-camera-label">Camera on</span></button>
           <button type="button" class="space-btn" id="space-hand" aria-pressed="false" hidden><i class="fas fa-hand" aria-hidden="true"></i><span id="space-hand-label">Raise hand</span></button>
           <span id="space-invite" hidden>
             <span class="muted">You're invited to speak.</span>
@@ -141,6 +195,7 @@
           <button type="button" class="space-btn danger" id="space-end" hidden>End the Space</button>
           <button type="button" class="space-btn" id="space-leave"><i class="fas fa-right-from-bracket" aria-hidden="true"></i>Leave</button>
         </div>
+        <div id="space-video-note" role="status" aria-live="polite" hidden></div>
       </section>
 
       <section id="space-ended" hidden>
@@ -156,14 +211,49 @@
       <div id="space-audio" hidden></div>
     </main>
 
-    <aside class="panel comments" aria-label="Discussion">
-      <div class="space-section-title" style="margin-top:0">Discussion</div>
-      <div id="space-comments"></div>
-      <form id="space-comment-form">
-        <label class="muted" for="space-comment-input" style="position:absolute;left:-9999px">Comment</label>
-        <input id="space-comment-input" type="text" maxlength="2000" autocomplete="off" placeholder="Add a comment">
-        <button type="submit" class="space-btn primary small">Post</button>
+    <section class="panel" id="space-updates-panel" aria-labelledby="space-updates-title">
+      <div class="panel-head">
+        <div class="space-section-title" id="space-updates-title"><span class="update-tag" id="space-updates-live" hidden>LIVE · </span>Live updates</div>
+        <button type="button" class="space-btn small" id="space-summary-edit" hidden>Edit summary</button>
+      </div>
+      <form id="space-summary-form" hidden>
+        <label class="muted" for="space-summary-input" style="position:absolute;left:-9999px">Summary</label>
+        <textarea id="space-summary-input" class="space-input" maxlength="{{ boot.summaryMax }}" placeholder="What people joining now should know (markdown)"></textarea>
+        <div class="space-controls" style="margin-top:0.5rem">
+          <button type="submit" class="space-btn primary small">Save summary</button>
+          <button type="button" class="space-btn small" id="space-summary-cancel">Cancel</button>
+        </div>
       </form>
+      <div id="space-summary" hidden></div>
+      <form id="space-update-form" hidden>
+        <label class="muted" for="space-update-input" style="position:absolute;left:-9999px">Update</label>
+        <textarea id="space-update-input" class="space-input" maxlength="{{ boot.updateMax }}" placeholder="Post an update for everyone (markdown)"></textarea>
+        <div class="space-controls" style="margin-top:0.5rem"><button type="submit" class="space-btn primary small">Post update</button></div>
+      </form>
+      <div id="space-updates" aria-live="polite"></div>
+      <p class="muted" id="space-updates-empty" style="margin:0;font-size:0.875rem">No updates yet. The host and co-hosts post them here.</p>
+    </section>
+
+    <aside class="panel board" id="space-board-panel" aria-labelledby="space-board-title">
+      <div class="panel-head">
+        <div class="space-section-title" id="space-board-title">Board</div>
+        <span class="muted" style="font-size:0.75rem" id="space-slow-label"></span>
+        <label id="space-slow-wrap" hidden><span style="position:absolute;left:-9999px">Slow mode</span>
+          <select id="space-slow" class="space-select" aria-label="Slow mode"></select>
+        </label>
+      </div>
+      <div id="space-board" aria-live="polite"></div>
+      <p class="muted" id="space-board-empty" style="font-size:0.875rem">Nothing on the board yet.</p>
+      <div id="space-quote" hidden>
+        <i class="fas fa-quote-left" aria-hidden="true"></i><span id="space-quote-text"></span>
+        <button type="button" class="space-btn small" id="space-quote-cancel" aria-label="Don't quote"><i class="fas fa-xmark" aria-hidden="true"></i></button>
+      </div>
+      <form id="space-board-form" hidden>
+        <label class="muted" for="space-board-input" style="position:absolute;left:-9999px">Message</label>
+        <input id="space-board-input" class="space-input" type="text" maxlength="{{ boot.boardMax }}" autocomplete="off" placeholder="Write on the board">
+        <button type="submit" class="space-btn primary small">Send</button>
+      </form>
+      <div id="space-board-note" role="status" aria-live="polite"></div>
     </aside>
   </div>
 

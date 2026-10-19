@@ -41,4 +41,37 @@
 <p class="text-muted" id="space-reports-empty">No Spaces are waiting for a look.</p>
 {% endfor %}
 
+<h2 class="h4 mt-4">Reported messages on Space boards</h2>
+
+<p class="text-muted">A board is public to whoever may open the Space's post. Removing a message takes it off the board for everyone; its text is kept only until its reports are closed. A message whose Space was not recorded is deleted once its reports are closed.</p>
+
+{% for m in messages %}
+<div class="card mb-3 space-message-report" data-message="{{ m.id }}">
+  <div class="card-body">
+    <div class="d-flex justify-content-between align-items-start flex-wrap">
+      <div class="mr-3">
+        {% if m.author %}<a href="{{ m.author.permalink }}" target="_blank" rel="noopener">@{{ m.author.username }}</a>{% else %}<span class="text-muted">A deleted account</span>{% endif %}
+        <a href="/space/{{ m.space_id }}" class="ml-2" target="_blank" rel="noopener">Open the Space</a>
+        {% if m.removed %}<span class="badge badge-secondary ml-2">Removed</span>{% elif m.deleted %}<span class="badge badge-secondary ml-2">Deleted by its writer</span>{% endif %}
+      </div>
+      <div class="text-muted text-small">{{ m.count }} report{{ '' if m.count == 1 else 's' }}</div>
+    </div>
+    <p class="mt-2 mb-1" style="white-space:pre-wrap">{{ m.body or "(no text kept)" }}</p>
+    {% for reason in m.reasons %}<div class="text-small text-muted mt-1">"{{ reason }}"</div>{% endfor %}
+    {% if not m.removed and not m.deleted %}
+    <form action="/admin/space_messages/{{ m.id }}/remove" method="post" class="d-inline mt-2">
+      <input type="hidden" name="formkey" value="{{ v.formkey }}">
+      <button class="btn btn-danger btn-sm">Remove the message</button>
+    </form>
+    {% endif %}
+    <form action="/admin/space_messages/{{ m.id }}/dismiss" method="post" class="d-inline">
+      <input type="hidden" name="formkey" value="{{ v.formkey }}">
+      <button class="btn btn-link btn-sm text-muted">Dismiss the reports</button>
+    </form>
+  </div>
+</div>
+{% else %}
+<p class="text-muted" id="space-message-reports-empty">No messages are waiting for a look.</p>
+{% endfor %}
+
 {% endblock %}

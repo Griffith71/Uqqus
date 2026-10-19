@@ -103,6 +103,41 @@ export class LocalMedia {
     return track;
   }
 
+  // a Space speaker turning their camera on or off after joining with the microphone alone (mesh.syncTracks then
+  // adds or takes away the video in every connection)
+  async startCamera() {
+    if (this.videoTrack) {
+      this.setCameraOff(false);
+      return this.videoTrack;
+    }
+    let fresh;
+    try {
+      fresh = await navigator.mediaDevices.getUserMedia({ audio: false, video: VIDEO_CONSTRAINTS });
+    } catch (error) {
+      const name = error && error.name;
+      if (name === "NotAllowedError" || name === "SecurityError") {
+        throw new MediaRefused("The browser didn't allow the camera. Allow it for this site in the address bar, then try again.");
+      }
+      if (name === "NotFoundError" || name === "OverconstrainedError") throw new MediaRefused("No camera was found.");
+      if (name === "NotReadableError") throw new MediaRefused("The camera is in use by another app.");
+      throw new MediaRefused("The camera couldn't be started.");
+    }
+    const track = fresh.getVideoTracks()[0];
+    this.stream.addTrack(track);
+    this.wantsVideo = true;
+    this.cameraOff = false;
+    return track;
+  }
+
+  stopCamera() {
+    const track = this.videoTrack;
+    if (!track) return;
+    this.stream.removeTrack(track);
+    track.stop();
+    this.wantsVideo = false;
+    this.cameraOff = true;
+  }
+
   stop() {
     for (const track of this.stream.getTracks()) track.stop();
   }

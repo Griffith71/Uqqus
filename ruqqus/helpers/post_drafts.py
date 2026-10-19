@@ -10,10 +10,8 @@ pressed Post.
 """
 import re
 
-from . import coauthors
 from . import comment_permission as cperm
 from . import circles
-from . import live_threads as live_rules
 from . import polls as poll_rules
 from .post_fields import BODY_MAX, TITLE_MAX, URL_MAX, PostFieldError, check_body, flag
 
@@ -67,11 +65,6 @@ def clean_fields(form):
     if audience_error:
         raise PostFieldError(audience_error)
 
-    try:
-        names = coauthors.parse_names(form.get("coauthors"))
-    except coauthors.CoauthorError as error:
-        raise PostFieldError(error.message)
-
     # a draft may hold an unfinished poll (one option); scheduling it needs a whole one (require_poll)
     try:
         poll_options = poll_rules.clean_options(form.getlist("poll_option"), complete=False)
@@ -79,31 +72,22 @@ def clean_fields(form):
     except poll_rules.PollError as error:
         raise PostFieldError(error.message)
 
-    # "Make this a live thread" (helpers/live_threads.py): it goes live when the draft is published
-    live = flag(form, "live")
-    try:
-        live_hours = live_rules.clean_hours(form.get("live_hours")) if live else live_rules.DEFAULT_HOURS
-    except live_rules.Refused as error:
-        raise PostFieldError(str(error))
-
     return {
         "title": title,
         "url": url,
         "body": body,
         "forward_guilds": guilds,
         "options": {
-            "coauthors": ", ".join(names),
             "poll_options": poll_options,
             "poll_hours": poll_hours,
             "comment_permission": permission,
+            "post_to_profile": flag(form, "post_to_profile", True),      # "where to post": the profile, as well as the guilds
             "audience": audience,
             "circles": list(circle_tokens),
             "paid_partnership": flag(form, "paid_partnership"),
             "made_with_ai": flag(form, "made_with_ai"),
             "anonymous": flag(form, "anonymous"),
             "sensitive": flag(form, "sensitive"),
-            "live": live,
-            "live_hours": live_hours,
         },
     }
 
@@ -148,6 +132,7 @@ def publish_form(fields, formkey):
         "body": fields["body"],
         "forward_guilds": list(fields["forward_guilds"]),
         "comment_permission": str(options.get("comment_permission", cperm.EVERYONE)),
+        "post_to_profile": "true" if options.get("post_to_profile", True) else "false",
         "formkey": formkey,
     }
     if options.get("audience"):
@@ -156,16 +141,10 @@ def publish_form(fields, formkey):
     for name in ("sensitive", "paid_partnership", "made_with_ai", "anonymous"):
         if options.get(name):
             data[name] = "true"
-    if options.get("coauthors"):
-        data["coauthors"] = options["coauthors"]
     if options.get("poll_options"):
         # the length counts from the moment of publishing
         data["poll_option"] = list(options["poll_options"])
         data["poll_hours"] = str(options.get("poll_hours") or poll_rules.DEFAULT_HOURS)
-    if options.get("live"):
-        # the thread's length also counts from the moment of publishing
-        data["live"] = "true"
-        data["live_hours"] = str(options.get("live_hours") or live_rules.DEFAULT_HOURS)
     return data
 
 

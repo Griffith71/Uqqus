@@ -79,7 +79,7 @@ def test_the_partial_defines_every_macro_the_menus_call():
     called = set(re.findall(r"post_menu\.(\w+)\(", LISTING + PAGE))
     defined = set(re.findall(r"{% macro (\w+)\(", MENU))
     assert called == {"follow_item", "follow_button", "fewer_item", "fewer_button", "curation_item", "curation_button",
-                      "live_item", "live_button", "collab_item", "collab_button", "collab_mark"}
+                      "collab_item", "collab_button", "collab_mark"}
     assert called <= defined
 
 

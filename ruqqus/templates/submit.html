@@ -106,13 +106,28 @@
                             <img src="{{ v.profile_url }}" class="composer-avatar" alt="">
                             <div class="composer-who">
                                 <span class="composer-name">{{ v.username }}</span>
-                                <span class="composer-where">Posting to your profile</span>
+                                <span class="composer-where" data-where-line>Posting to your profile</span>
                             </div>
                         </div>
 
                         {# Public or the circles you pick, in plain view (partials/post_options.html, layout "cards"); composer_card.js keeps the radios and ticks in step #}
                         <div class="composer-audience">
                             {{ post_options.audience_field(audience_now, "post-audience", circles_now, circle_choices(v), "cards") }}
+                        </div>
+
+                        {# Where to post: My profile and/or guilds (assets/js/where_to_post.js). The guild chips are this page's own script below. #}
+                        {% set to_profile = (draft.option("post_to_profile", true) if draft else (not request.form or "1" in request.form.getlist("post_to_profile"))) and not b %}
+                        <div class="composer-forward composer-where-block" id="where-to-post">
+                            <label for="forward_guild_input" class="mt-3 mb-0">Where to post<i class="fas fa-info-circle text-gray-400 ml-1" data-toggle="tooltip" data-placement="top" title="Your post is listed on your profile either way. Choose My profile to have its comments there too, and add guilds to post it straight into them: each guild gets its own copy with its own votes and comments."></i></label>
+                            {{ post_options.where_profile("post-where", "forward_guild_input", "forward_guild_add", to_profile) }}
+                            <div id="forward-guild-chips" class="mb-2"></div>
+                            <div id="forward_guild_inputs"></div>
+                            <div class="input-group">
+                                <input class="form-control" id="forward_guild_input" type="text" placeholder="Search guilds to post to" autocomplete="off" onkeydown="if(event.key==='Enter'){event.preventDefault();addForwardGuild();}">
+                                <div class="input-group-append">
+                                    <button class="btn btn-secondary" id="forward_guild_add" type="button" onclick="addForwardGuild()">Add</button>
+                                </div>
+                            </div>
                         </div>
 
                         <label for="post-title" class="sr-only">Title</label>
@@ -195,34 +210,19 @@
                             <button type="button" class="composer-tool" id="composer-poll-btn" title="Add a poll" aria-label="Add a poll"><i class="fas fa-chart-bar"></i></button>
                         </div>
 
-                        <div class="composer-forward">
-                            <label for="forward_guild_input" class="mt-3">Forward to guilds (optional)<i class="fas fa-info-circle text-gray-400 ml-1" data-toggle="tooltip" data-placement="top" title="Your post always appears on your profile first. Optionally forward it into other guilds for community discussion - each guild gets its own independent copy with its own votes and comments."></i></label>
-                        <div id="forward-guild-chips" class="mb-2"></div>
-                        <div id="forward_guild_inputs"></div>
-                        <div class="input-group">
-                            <input class="form-control" id="forward_guild_input" type="text" placeholder="Type a guild name and press Enter" onkeydown="if(event.key==='Enter'){event.preventDefault();addForwardGuild();}">
-                            <div class="input-group-append">
-                                <button class="btn btn-secondary" type="button" onclick="addForwardGuild()">Add</button>
-                            </div>
-                        </div>
-                        </div>
-
                         <details class="composer-more"{% if draft or request.form %} open{% endif %}>
                             <summary><span>More options</span><i class="fas fa-chevron-down composer-pill-caret"></i></summary>
                             <div class="composer-more-body">
 
-                                {{ post_options.comment_permission_field((draft.option("comment_permission", 0) if draft else request.form.get("comment_permission", 0)) | int, "post-cp") }}
+                                <div data-where-comment>{{ post_options.comment_permission_field((draft.option("comment_permission", 0) if draft else request.form.get("comment_permission", 0)) | int, "post-cp") }}</div>
 
                                 {{ post_options.disclosure_field(draft.option("paid_partnership", false) if draft else request.form.getlist("paid_partnership") | select | list | length > 0, draft.option("made_with_ai", false) if draft else request.form.getlist("made_with_ai") | select | list | length > 0, "post-disc") }}
 
                                 {{ post_options.anonymous_field(draft.option("anonymous", false) if draft else request.form.getlist("anonymous") | select | list | length > 0, "post-anon") }}
 
-                                {{ post_options.coauthors_field(draft.option("coauthors", "") if draft else request.form.get("coauthors", ""), "post-coauthors") }}
 
                                 {{ post_options.poll_field(draft.option("poll_options", []) if draft else request.form.getlist("poll_option") | select | list, draft.option("poll_hours", poll_default_hours) if draft else request.form.get("poll_hours", poll_default_hours), "post-poll") }}
 
-                                {{ post_options.space_field("post-space") }}
-                                {{ post_options.live_field("post-live", (draft.option("live", False) if draft else request.form.get("live") == "true"), (draft.option("live_hours", 0) if draft else request.form.get("live_hours", 0))) }}
 
                                 <label for="sensitive" class="text-warning mt-3">Sensitive Content?<i class="fas fa-info-circle text-gray-400 ml-1" data-toggle="tooltip" data-placement="top" title="Not a rule violation - just something that could be upsetting. Shown blurred with a click-to-reveal instead of being blocked."></i></label>
 
@@ -309,9 +309,9 @@
     <script src="{{ asset_url('js/post_editor.js') }}"></script>
     <script src="{{ asset_url('js/post_drafts.js') }}"></script>
     <script src="{{ asset_url('js/poll_composer.js') }}"></script>
-    <script src="{{ asset_url('js/space_composer.js') }}"></script>
     <script src="{{ asset_url('js/media_upload.js') }}"></script>
     <script src="{{ asset_url('js/composer_card.js') }}"></script>
+    <script src="{{ asset_url('js/where_to_post.js') }}"></script>
 
     <!-- ClipboardJS -->
 
@@ -381,6 +381,9 @@
         forwardGuilds.splice(i, 1);
         renderForwardGuildChips();
     }
+
+    // a post for Circles is only on the profile: the guilds go (assets/js/where_to_post.js tells the form)
+    document.addEventListener('where:circles', function () { forwardGuilds.length = 0; if (document.getElementById('forward-guild-chips')) renderForwardGuildChips(); });
 
     {% if forward_guild_names %}
     {% for fg in forward_guild_names %}

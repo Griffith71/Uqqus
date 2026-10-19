@@ -183,3 +183,19 @@ def test_extend_summary_and_crossing_out_in_the_database(db):
     store.end(db, 10, NOW + 9)
     store.extend(db, 10, NOW + 99 * HOUR)                                        # an ended thread is not extended
     assert store.thread(db, 10)[4] == NOW + 6 * HOUR
+
+
+def test_a_space_that_was_not_recorded_leaves_no_update_or_summary(db):
+    """A Space's live updates are a live thread keyed by its post; `erase` is what ending a not-recorded Space does."""
+    store.start(db, 10, 1, NOW, NOW + HOUR)
+    a = store.add_update(db, 10, 1, "one", "<p>one</p>", 0, NOW + 1)
+    b = store.add_update(db, 10, 2, "two", "<p>two</p>", 0, NOW + 2)
+    store.delete_update(db, b, NOW + 3)
+    store.set_summary(db, 10, "facts", "<p>facts</p>", 0, NOW + 4)
+    store.add_update(db, 11, 1, "elsewhere", "<p>elsewhere</p>", 0, NOW + 5)
+    store.erase(db, 10, NOW + 10)
+    assert store.updates(db, 10) == []
+    assert tuple(store.update(db, a))[3:5] == ("", "") and store.update(db, a)[8] == NOW + 10
+    assert store.update(db, b)[8] == NOW + 3 and store.update(db, b)[3] == ""          # its own time kept, text gone
+    assert tuple(store.thread(db, 10))[5:7] == ("", "") and store.thread(db, 10)[1] == NOW + 10
+    assert [u[3] for u in store.updates(db, 11)] == ["elsewhere"]

@@ -110,6 +110,21 @@ def heartbeat(r, room_id, user_id, device_id, now):
     return True
 
 
+def set_video(r, room_id, user_id, device_id, on):
+    """Whether this device sends video now (a Space's camera button). False when it is not in the call."""
+    field = f"{user_id}:{device_id}"
+    current = r.hget(_roster_key(room_id), field)
+    if not current:
+        return False
+    try:
+        entry = json.loads(current)
+    except (TypeError, ValueError):
+        return False
+    entry["video"] = bool(on)
+    r.hset(_roster_key(room_id), field, json.dumps(entry))
+    return True
+
+
 def refresh(r, room_id):
     """Keeps a room's keys alive while someone is in it (a voice channel goes on for as long as anyone is there; `join`
     only does it when somebody comes)."""

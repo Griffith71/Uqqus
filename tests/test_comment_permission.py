@@ -26,6 +26,8 @@ def test_parse_accepts_only_known_modes():
     assert cp.parse("3") == cp.NOBODY
     for bad in ("4", "-1", "", "abc", None, "1.5"):
         assert cp.parse(bad) is None
+    # 4 (comments in the guilds) is only taken where the caller says so: the post's own menu
+    assert cp.parse("4", allow_guilds=True) == cp.GUILDS and cp.parse("5", allow_guilds=True) is None
 
 
 def test_choices_cover_every_mode_in_order():
@@ -101,7 +103,7 @@ def test_a_forwarded_copy_ignores_the_authors_setting():
         assert cp.restriction(copy, user()) is None
 
 
-@pytest.mark.parametrize("stored", [4, -1, 99])
+@pytest.mark.parametrize("stored", [6, -1, 99])
 def test_an_unknown_stored_value_limits_nothing(stored):
     assert cp.mode_of(post(stored)) == cp.EVERYONE
 
@@ -137,3 +139,22 @@ def test_refusal_only_for_followed_on_an_anonymous_post():
         assert cp.refusal(mode, True) is None
     for mode in cp.MODES:
         assert cp.refusal(mode, False) is None
+
+
+def test_a_post_made_for_guilds_has_no_comments_on_the_profile_for_anyone():
+    p = post(cp.GUILDS)
+    assert cp.mode_of(p) == cp.GUILDS and cp.is_guilds_only(p)
+    # literal, like No one: the author and admins are refused too
+    for who in (user(), user(admin=3), None, user(id=1)):
+        assert cp.restriction(p, who) == cp.GUILDS_NOTICE
+    assert cp.closed_notice(p) == cp.GUILDS_NOTICE
+    # a copy in a guild never reads it (it follows its guild's rules)
+    assert cp.mode_of(post(cp.GUILDS, profile=False)) == cp.EVERYONE
+
+
+def test_a_space_post_takes_no_comments_on_any_copy():
+    for p in (post(cp.SPACE), post(cp.SPACE, profile=False)):
+        assert cp.mode_of(p) == cp.SPACE and cp.is_space(p)
+        for who in (user(), user(admin=3), user(id=1), None):
+            assert cp.restriction(p, who) == cp.SPACE_NOTICE
+        assert cp.closed_notice(p) == cp.SPACE_NOTICE

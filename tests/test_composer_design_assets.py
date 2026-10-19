@@ -27,7 +27,7 @@ IDS = [
 
 NAMES = ["formkey", "draft_id", "title", "body", "url", "forward_guilds", "sensitive"]
 MACRO_FIELDS = ["audience_field", "comment_permission_field", "disclosure_field", "anonymous_field",
-                "coauthors_field", "poll_field"]
+                "poll_field"]
 
 
 def test_every_id_the_scripts_use_is_still_on_the_page():
@@ -61,7 +61,7 @@ def test_the_audience_is_in_plain_view_as_cards_over_the_real_radios():
 
 def test_the_options_are_folded_in_the_page_not_removed_from_it():
     more = FORM.split('<details class="composer-more"')[1].split("</details>")[0]
-    for macro in ("comment_permission_field", "disclosure_field", "anonymous_field", "coauthors_field", "poll_field"):
+    for macro in ("comment_permission_field", "disclosure_field", "anonymous_field", "poll_field"):
         assert f"post_options.{macro}(" in more, macro
     assert 'id="sensitiveCheck"' in more and 'name="sensitive"' in more
     assert "{% if draft or request.form %} open{% endif %}" in FORM         # a draft or a re-render shows them

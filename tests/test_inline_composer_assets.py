@@ -43,15 +43,18 @@ def test_a_guild_page_starts_with_its_guild_and_the_feed_with_none():
     assert "?guild=" in SCRIPT and "hasGuild(presetGuild)" in SCRIPT
 
 
-def test_forward_to_guilds_is_in_the_options_like_on_create_a_post():
+def test_where_to_post_is_in_the_options_like_on_create_a_post():
     submit = (TEMPLATES / "submit.html").read_text(encoding="utf-8")
     options = PARTIAL[PARTIAL.index('<div id="ic-options"'):]
     # the first field of Options, with the full editor's label and tooltip
-    assert options.index("Forward to guilds (optional)") < options.index('id="ic-url"')
-    assert "Forward to guilds (optional)" in submit
-    tooltip = re.search(r'title="(Your post always appears on your profile first[^"]+)"', submit).group(1)
+    assert options.index("Where to post") < options.index('id="ic-url"')
+    assert "Where to post" in submit
+    tooltip = re.search(r'title="(Your post is listed on your profile either way[^"]+)"', submit).group(1)
     assert tooltip in PARTIAL, "the info tooltip must say the same thing as on Create a post"
-    assert "Type a guild name and press Enter" in PARTIAL
+    assert "Search guilds to post to" in PARTIAL and "Search guilds to post to" in submit
+    # My profile is one place beside the guilds; on a guild's page the guild is the place and the profile is off
+    assert 'where_profile("ic-where", "ic-forward-input", "ic-forward-add", not board)' in PARTIAL
+    assert "<div data-where-comment>" in PARTIAL and "<div data-where-comment>" in submit        # Who can comment follows My profile
     for element in ('id="ic-forward-input"', 'id="ic-forward-add"', 'id="ic-forward-chips"', 'id="ic-forward-chip-list"', 'id="ic-forward-inputs"'):
         assert element in PARTIAL, element
 

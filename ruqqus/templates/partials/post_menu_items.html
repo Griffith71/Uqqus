@@ -5,31 +5,11 @@
   signed-in viewer on a live post, unless they are told of its comments anyway (`p.follow_state == "own"`: the
   author, or on a forward copy the person who forwarded it). The two items toggle each other like Mute guild.
 
-  live_item(p, v) / live_button(p, v): "Go live" (or "Manage live thread" while it is live) for who may run the post's
-  live thread (its author and accepted co-authors; never on a forward copy). It opens the panel on the post page
-  (`?live=start#live-panel`), where the length is picked (helpers/live_threads.py, partials/live_panel.html).
-
   collab_item(p, v) / collab_button(p, v): for a collaborative post (published from a shared draft, routes/collab.py):
   "Who wrote what" and "Revisions" for anyone who can see it, "Open the shared draft" for its authors, "Fork" for
   anyone signed in on a public post. collab_mark(p, v) is the post page's line: "Written together", who wrote what,
   and the post it was forked from.
 #}
-
-{% macro _live_label(p) -%}
-{%- set lv = live_of(p) -%}{{ "Manage live thread" if lv and lv.live else "Go live" }}
-{%- endmacro %}
-
-{% macro live_item(p, v) %}
-{% if v and not p.is_banned and p.deleted_utc == 0 and may_run_live(p, v) %}
-<a class="dropdown-item" href="{{ p.permalink }}?live=start#live-panel"><i class="fas fa-tower-broadcast fa-fw"></i>{{ _live_label(p) }}</a>
-{% endif %}
-{% endmacro %}
-
-{% macro live_button(p, v) %}
-{% if v and not p.is_banned and p.deleted_utc == 0 and may_run_live(p, v) %}
-<a class="btn btn-link btn-block btn-lg text-left text-muted" href="{{ p.permalink }}?live=start#live-panel"><i class="fas fa-tower-broadcast fa-fw text-center text-muted mr-3"></i>{{ _live_label(p) }}</a>
-{% endif %}
-{% endmacro %}
 
 {% macro follow_item(p, v) %}
 {% if v and p.follow_state in ("can_follow", "following") and not p.is_banned and p.deleted_utc == 0 %}

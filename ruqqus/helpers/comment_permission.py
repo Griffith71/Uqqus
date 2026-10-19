@@ -13,6 +13,17 @@ callers pass the post and the viewer.
 
 EVERYONE, FOLLOWED, PREMIUM, NOBODY = 0, 1, 2, 3
 
+# A post made for guilds only (the owner's "where to post", routes/posts.py `post_to_profile`) still lists on its
+# author's profile, but its profile entry has no comment space: the comments are in the guilds' own spaces
+# (routes/post_spaces.py). Not a choice in "Who can comment?" (the forms offer MODES); the composer's "My profile"
+# switch and the post menu's "comments on my profile" switch set and clear it. Literal like No one: nobody comments on
+# the profile entry, the author and admins included.
+GUILDS = 4
+
+# A Space's post (routes/spaces.py): it is a post, with votes and shares, but its discussion is the Space's own board,
+# so neither the post nor any copy of it in a guild takes comments. Literal for everyone, set when the Space is made.
+SPACE = 5
+
 MODES = (EVERYONE, FOLLOWED, PREMIUM, NOBODY)
 
 # the choices in the post forms, in display order
@@ -26,16 +37,21 @@ CHOICES = (
 # shown where the comment box would be. It names nobody, so it is as safe on an
 # anonymous post as anywhere else.
 CLOSED_NOTICE = "Comments are turned off for this post."
+GUILDS_NOTICE = "This post has no comments on the profile. Its comments are in the guilds it was posted to."
+SPACE_NOTICE = "This is a Space: its discussion is in the Space."
 
 ADMIN_LEVEL = 3   # same bar as the other "admins may do this anyway" checks
 
 
-def parse(raw):
-    """A form value as a mode, or None when it is not one of ours."""
+def parse(raw, allow_guilds=False):
+    """A form value as a mode, or None when it is not one of ours. GUILDS is only taken where the caller says so (the
+    post's own menu and edit, for a post that has guilds to hold its comments)."""
     try:
         mode = int(str(raw).strip())
     except ValueError:
         return None
+    if mode == GUILDS and allow_guilds:
+        return mode
     return mode if mode in MODES else None
 
 
@@ -54,19 +70,38 @@ def refusal(mode, is_anonymous):
 
 def mode_of(post):
     """The setting that applies to a post: EVERYONE unless it is a post on its
-    author's own profile with a limit."""
+    author's own profile with a limit, or a Space's post (SPACE on every copy)."""
+    if getattr(post, "comment_permission", None) == SPACE:
+        return SPACE
     if not getattr(post, "is_profile_post", False):
         return EVERYONE
     mode = getattr(post, "comment_permission", None) or EVERYONE
+    if mode == GUILDS:
+        return GUILDS
     if mode not in MODES or refusal(mode, getattr(post, "is_anonymous", False)):
         return EVERYONE
     return mode
 
 
+def is_space(post):
+    """True for a Space's post or a guild copy of it: it takes no comments (see SPACE)."""
+    return mode_of(post) == SPACE
+
+
+def is_guilds_only(post):
+    """True for a profile entry whose comment space is the guilds' (see GUILDS)."""
+    return mode_of(post) == GUILDS
+
+
 def closed_notice(post):
     """The sentence for a post whose comments are off, or None. Safe for a visitor:
     it says nothing about who the viewer is."""
-    return CLOSED_NOTICE if mode_of(post) == NOBODY else None
+    mode = mode_of(post)
+    if mode == SPACE:
+        return SPACE_NOTICE
+    if mode == GUILDS:
+        return GUILDS_NOTICE
+    return CLOSED_NOTICE if mode == NOBODY else None
 
 
 def restriction(post, viewer):
@@ -76,6 +111,10 @@ def restriction(post, viewer):
     mode = mode_of(post)
     if mode == EVERYONE:
         return None
+    if mode == SPACE:
+        return SPACE_NOTICE
+    if mode == GUILDS:
+        return GUILDS_NOTICE
     if mode == NOBODY:
         return CLOSED_NOTICE
 

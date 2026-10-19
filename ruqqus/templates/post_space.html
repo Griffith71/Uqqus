@@ -1,0 +1,31 @@
+{#
+  One guild's comment space of a post on a profile, or all of them together, as a piece of page (routes/post_spaces.py
+  `post_space`). Not a page: assets/js/post_spaces.js puts it under the post's comment-spaces bar.
+#}
+{% if copy %}
+<div class="space-title">
+  <a href="{{ copy.permalink }}" class="font-weight-bold">+{{ copy.board.name }}</a>
+  <span class="text-muted text-small">{{ copy.comment_count }} comment{{ '' if copy.comment_count == 1 else 's' }} &middot; <a href="{{ copy.permalink }}">Open in the guild</a></span>
+</div>
+{% include "partials/comment_form.html" %}
+{% if copy.nested_comments %}
+<div class="comment-section">
+  {% with comments=copy.nested_comments %}{% include "comments.html" %}{% endwith %}
+</div>
+{% else %}
+<div class="text-muted text-center py-5">No comments in +{{ copy.board.name }} yet.</div>
+{% endif %}
+{% else %}
+<div class="space-title">
+  <span class="font-weight-bold">All guilds</span>
+  <span class="text-muted text-small">Every guild's comments in one list. Open a guild to comment in it.</span>
+</div>
+{% for c, thread in entries %}
+<div class="space-thread">
+  <a class="space-chip" href="{{ c.permalink }}">+{{ c.board.name }}</a>
+  {% with comments=[thread], p=c, is_allowed_to_comment=false, comment_restriction=none %}{% include "comments.html" %}{% endwith %}
+</div>
+{% else %}
+<div class="text-muted text-center py-5">No comments in these guilds yet.</div>
+{% endfor %}
+{% endif %}

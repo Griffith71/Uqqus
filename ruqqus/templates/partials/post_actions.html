@@ -7,7 +7,7 @@
   two rows on one page apart. The ids `bookmark-<part><id>` / `unbookmark-<part><id>` are the ones
   assets/js/bookmark_folders.js turns on when an item is filed.
 
-  - Comments: `p.comment_count`, a link to the post.
+  - Comments: `p.space_comment_count`, a link to the post.
   - Shares: `p.share_count` (reposts and live public forwards, helpers/post_counts.py), opening the share menu for
     whoever may share the post (helpers/sharing.py: anyone when it is public, only its author otherwise); for anyone
     else the count alone, with no menu.
@@ -35,8 +35,8 @@
 
 <li class="list-inline-item post-action-item">
   <a href="{{ p.permalink }}" class="post-action post-action-comments"{% if author_of(p, v).is_private %} rel="nofollow"{% endif %}
-     title="{{ p.comment_count }} comment{{ '' if p.comment_count == 1 else 's' }}" aria-label="{{ p.comment_count }} comment{{ '' if p.comment_count == 1 else 's' }}">
-    <i class="fas fa-comment-dots" aria-hidden="true"></i><span class="post-action-count">{{ _n(p.comment_count) }}</span>
+     title="{{ p.space_comment_count }} comment{{ '' if p.space_comment_count == 1 else 's' }}" aria-label="{{ p.space_comment_count }} comment{{ '' if p.space_comment_count == 1 else 's' }}">
+    <i class="fas fa-comment-dots" aria-hidden="true"></i><span class="post-action-count">{{ _n(p.space_comment_count) }}</span>
   </a>
 </li>
 

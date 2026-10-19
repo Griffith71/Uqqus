@@ -183,20 +183,23 @@ class Fuzzing:
     @property
     def upvotes_fuzzed(self):
 
-        if self.upvotes <= 10 or self.is_archived:
-            return self.upvotes
+        # a post made for guilds only adds its guilds' votes (helpers/space_counts.py); nothing else has the attribute
+        upvotes = self.upvotes + self.__dict__.get("_space_ups", 0)
+        if upvotes <= 10 or self.is_archived:
+            return upvotes
 
-        lower = int(self.upvotes * 0.99)
-        upper = int(self.upvotes * 1.01) + 1
+        lower = int(upvotes * 0.99)
+        upper = int(upvotes * 1.01) + 1
 
         return random.randint(lower, upper)
 
     @property
     def downvotes_fuzzed(self):
-        if self.downvotes <= 10 or self.is_archived:
-            return self.downvotes
+        downvotes = self.downvotes + self.__dict__.get("_space_downs", 0)
+        if downvotes <= 10 or self.is_archived:
+            return downvotes
 
-        lower = int(self.downvotes * 0.99)
-        upper = int(self.downvotes * 1.01) + 1
+        lower = int(downvotes * 0.99)
+        upper = int(downvotes * 1.01) + 1
 
         return random.randint(lower, upper)

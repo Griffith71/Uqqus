@@ -19,6 +19,7 @@ PERMISSION_CHANGED = {
     cperm.FOLLOWED: "Only accounts you follow can comment on this post now.",
     cperm.PREMIUM: "Only Premium accounts can comment on this post now.",
     cperm.NOBODY: cperm.CLOSED_NOTICE,
+    cperm.GUILDS: "This post has no comments on your profile now. Its comments are in the guilds.",
 }
 
 
@@ -42,9 +43,14 @@ def post_comment_permission(pid, v):
         return _fail("Only a post on your own profile has this setting. A copy in a guild follows that guild's rules.")
 
     raw = request.values.get("comment_permission")
-    mode = cperm.parse(raw) if raw is not None else None
+    mode = cperm.parse(raw, allow_guilds=True) if raw is not None else None
     if mode is None:
         return _fail("Choose who can comment.")
+    if mode == cperm.GUILDS:
+        # the comments move to the guilds, so there have to be some to hold them (routes/post_spaces.py)
+        from ruqqus.routes.post_spaces import spaces_of
+        if not spaces_of(post, v):
+            return _fail("This post isn't in any guild, so its comments can only be on your profile.")
     refused = cperm.refusal(mode, bool(post.is_anonymous))
     if refused:
         return _fail(refused)

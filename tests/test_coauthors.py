@@ -55,7 +55,8 @@ def test_the_limits_are_the_ones_the_form_and_the_column_have():
     from pathlib import Path
 
     root = Path(__file__).resolve().parent.parent
-    assert f'maxlength="{co.FIELD_CHARS}"' in (root / "ruqqus" / "templates" / "partials" / "post_options.html").read_text(encoding="utf-8")
+    # the field is no longer in the composers; the 200 characters it allowed are still what the column and `parse_names` take
+    assert co.FIELD_CHARS == 200
     assert co.MAX_COAUTHORS == 5
 
 

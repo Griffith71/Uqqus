@@ -6305,6 +6305,8 @@ CREATE TABLE public.spaces (
     ended_by_admin boolean DEFAULT false NOT NULL,
     created_utc integer DEFAULT 0 NOT NULL,
     matrix_room_id character varying(255),
+    video boolean DEFAULT false NOT NULL,
+    board_slow_seconds smallint DEFAULT 0 NOT NULL,
     CONSTRAINT spaces_post_key UNIQUE (post_id),
     CONSTRAINT spaces_status_check CHECK (status IN ('scheduled', 'live', 'ended'))
 );
@@ -6353,6 +6355,32 @@ CREATE TABLE public.space_reports (
     created_utc integer NOT NULL,
     resolved_utc integer DEFAULT 0 NOT NULL,
     CONSTRAINT space_reports_once UNIQUE (space_id, reporter_id)
+);
+
+CREATE TABLE public.space_messages (
+    id SERIAL PRIMARY KEY,
+    space_id integer NOT NULL REFERENCES public.spaces(id) ON DELETE CASCADE,
+    author_id integer NOT NULL,
+    body character varying(500) DEFAULT '' NOT NULL,
+    word_severity smallint DEFAULT 0 NOT NULL,
+    quote_id integer,
+    created_utc integer NOT NULL,
+    deleted_utc integer DEFAULT 0 NOT NULL,
+    removed_utc integer DEFAULT 0 NOT NULL,
+    removed_by_id integer
+);
+
+CREATE INDEX space_messages_space_idx ON public.space_messages (space_id, id);
+CREATE INDEX space_messages_author_idx ON public.space_messages (author_id, created_utc);
+
+CREATE TABLE public.space_message_reports (
+    id SERIAL PRIMARY KEY,
+    message_id integer NOT NULL REFERENCES public.space_messages(id) ON DELETE CASCADE,
+    reporter_id integer NOT NULL,
+    reason character varying(200) DEFAULT '' NOT NULL,
+    created_utc integer NOT NULL,
+    resolved_utc integer DEFAULT 0 NOT NULL,
+    CONSTRAINT space_message_reports_once UNIQUE (message_id, reporter_id)
 );
 
 
@@ -6895,4 +6923,6 @@ INSERT INTO public.schema_migrations (name) VALUES
     ('2026-11-06_guild_channels_unread.sql'),
     ('2026-11-07_guild_voice.sql'),
     ('2026-11-08_guild_roles.sql'),
-    ('2026-11-09_guild_channels_extras.sql');
+    ('2026-11-09_guild_channels_extras.sql'),
+    ('2026-11-10_space_posts.sql'),
+    ('2026-11-11_space_board.sql');

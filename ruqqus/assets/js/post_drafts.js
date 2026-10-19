@@ -70,6 +70,9 @@
     Array.prototype.forEach.call(form.querySelectorAll('input[name="forward_guilds"]'), function (i) {
       data.append('forward_guilds', i.value);
     });
+    // "Where to post": the profile's switch (the guilds are the forward_guilds above)
+    var where = form.querySelector('input[type="checkbox"][name="post_to_profile"]');
+    if (where) data.append('post_to_profile', where.checked ? 'true' : 'false');
     var permission = form.querySelector('input[name="comment_permission"]:checked');
     if (permission) data.append('comment_permission', permission.value);
     var audience = form.querySelector('input[name="audience"]:checked');
@@ -82,20 +85,11 @@
     ['paid_partnership', 'made_with_ai', 'anonymous'].forEach(function (name) {
       if (form.querySelector('input[type="checkbox"][name="' + name + '"]:checked')) data.append(name, 'true');
     });
-    var coauthors = form.querySelector('input[name="coauthors"]');
-    if (coauthors && coauthors.value.trim()) data.append('coauthors', coauthors.value.trim());
     Array.prototype.forEach.call(form.querySelectorAll('input[name="poll_option"]'), function (i) {
       if (!i.disabled && i.value.trim()) data.append('poll_option', i.value.trim());
     });
     var pollHours = form.querySelector('select[name="poll_hours"]');
     if (pollHours && !pollHours.disabled) data.append('poll_hours', pollHours.value);
-    // "Make this a live thread" (helpers/live_threads.py): it goes live when the draft is published
-    var live = form.querySelector('input[type="checkbox"][name="live"]');
-    if (live && live.checked) {
-      data.append('live', 'true');
-      var liveHours = form.querySelector('select[name="live_hours"]');
-      if (liveHours) data.append('live_hours', liveHours.value);
-    }
     var sensitive = form.querySelector('input[type="checkbox"][name="sensitive"]');
     if (sensitive && sensitive.checked) data.append('sensitive', 'true');
     if (idField.value) data.append('draft_id', idField.value);

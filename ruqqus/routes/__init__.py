@@ -46,6 +46,7 @@ from .voters import *
 from .deletion_log import *
 from .circles import *
 from .post_commenting import *
+from .post_spaces import *
 from .stories import *
 from .post_follows import *
 from .post_feedback import *

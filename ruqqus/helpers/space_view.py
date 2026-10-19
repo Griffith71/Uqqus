@@ -32,7 +32,7 @@ def attach(db, posts, v):
             people = len({e["user_id"] for e in call_store.roster(r, space_store.room(sid), now)})
         p.space_data = {
             "id": sid, "status": status, "label": rules.state_label(status, scheduled_utc, now),
-            "scheduled_utc": scheduled_utc, "record": bool(row[7]), "people": people, "peak": row[9],
+            "scheduled_utc": scheduled_utc, "record": bool(row[7]), "video": bool(row[12]), "people": people, "peak": row[9],
             "is_host": v is not None and v.id == host_id,
             "reminded": v is not None and status == rules.SCHEDULED and space_store.reminded(db, sid, v.id),
         }

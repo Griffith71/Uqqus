@@ -14,7 +14,8 @@ def read(*parts):
 ROUTE = read("ruqqus", "routes", "post_commenting.py")
 CIRCLES = read("ruqqus", "routes", "circles.py")
 SUBMISSION_PY = read("ruqqus", "classes", "submission.py")
-PAGE = read("ruqqus", "templates", "submission.html")
+# the comment box moved to a partial the post page and a guild's comment space share
+PAGE = read("ruqqus", "templates", "submission.html") + read("ruqqus", "templates", "partials", "comment_form.html")
 CARD = read("ruqqus", "templates", "submission_listing.html")
 SHELL = read("ruqqus", "templates", "default.html")
 MODAL = read("ruqqus", "templates", "partials", "comment_permission_modal.html")
@@ -31,7 +32,7 @@ def test_only_the_author_changes_who_can_comment_on_their_own_profile_post():
     assert '@app.route("/api/post/<pid>/comment_permission", methods=["POST"])' in head
     assert "@is_not_banned" in head and "@validate_formkey" in head
     body = func(ROUTE, "post_comment_permission")
-    assert body.index("get_post(pid, v=v)") < body.index("if not _runs(post, v):") < body.index("cperm.parse(raw)")
+    assert body.index("get_post(pid, v=v)") < body.index("if not _runs(post, v):") < body.index("cperm.parse(raw, allow_guilds=True)")
     runs = func(ROUTE, "_runs")
     # the author, or a current author of a collaborative post's open draft (audit C-03), nobody else
     assert "post.author_id == viewer.id" in runs and "collab_store.is_author(g.db, doc[0], viewer.id)" in runs

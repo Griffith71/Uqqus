@@ -1,0 +1,34 @@
+{#
+  The comment spaces of a post made for guilds (routes/post_spaces.py): the profile's own (unless the post was made for
+  guilds only), "All guilds", and each guild the author posted it to, ranked by the sort the page is using. Choosing one
+  opens its comments below (assets/js/post_spaces.js fetches /post/<id>/space/<guild|all>). Needs `p`, `spaces` and
+  `guilds_only` from the page.
+#}
+<div class="comment-spaces" id="comment-spaces" data-post="{{ p.base36id }}" data-sort="{{ spaces.sort }}">
+  <div class="comment-spaces-head">
+    <span class="font-weight-bold">Comment spaces</span>
+    <span class="text-muted text-small">{% if guilds_only %}This post has no comments on the profile. Choose a guild's.{% else %}Each guild has its own comments, with its own rules.{% endif %}</span>
+  </div>
+  <div class="comment-spaces-list" role="tablist" aria-label="Comment spaces">
+    {% if not guilds_only %}
+    <button type="button" class="space-tab active" role="tab" aria-selected="true" data-space="profile">On the profile <span class="space-count">{{ p.comment_count }}</span></button>
+    {% endif %}
+    <button type="button" class="space-tab" role="tab" aria-selected="false" data-space="all">All guilds <span class="space-count">{{ spaces.total_comments }}</span></button>
+    {% for c in spaces.shown %}
+    <button type="button" class="space-tab" role="tab" aria-selected="false" data-space="{{ c.board.name }}" title="+{{ c.board.name }}">+{{ c.board.name }} <span class="space-count">{{ c.comment_count }}</span></button>
+    {% endfor %}
+    {% if spaces.more %}
+    <details class="space-more">
+      <summary>{{ spaces.more | length }} more guilds</summary>
+      <input type="search" class="form-control form-control-sm space-filter" placeholder="Find a guild" aria-label="Find a guild" autocomplete="off">
+      <div class="space-more-list">
+        {% for c in spaces.more %}
+        <button type="button" class="space-tab" role="tab" aria-selected="false" data-space="{{ c.board.name }}">+{{ c.board.name }} <span class="space-count">{{ c.comment_count }}</span></button>
+        {% endfor %}
+      </div>
+    </details>
+    {% endif %}
+  </div>
+  <div class="comment-space-body" id="space-fragment" hidden aria-live="polite"></div>
+</div>
+<script defer src="{{ asset_url('js/post_spaces.js') }}"></script>

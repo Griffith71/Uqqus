@@ -216,7 +216,7 @@ def test_the_poll_panel_is_in_both_composers_and_closed_panels_send_nothing():
     assert "{% macro poll_field(options, hours, prefix) %}" in OPTIONS
     assert 'post_options.poll_field(draft.option("poll_options", [])' in read("ruqqus", "templates", "submit.html")
     inline = read("ruqqus", "templates", "partials", "inline_composer.html")
-    assert "coauthors_field, poll_field %}" in inline.split("\n")[16] or "poll_field" in inline.split("{% from")[1].split("\n")[0]
+    assert "poll_field" in inline.split("{% from")[1].split("\n")[0]
     assert 'poll_field([], poll_default_hours, "ic-poll")' in inline
     # a closed panel's fields are disabled, so they are not in the form that is posted
     macro = OPTIONS.split("{% macro poll_field(")[1].split("{% endmacro %}")[0]

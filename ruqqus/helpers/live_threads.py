@@ -14,8 +14,8 @@ partials/live_panel.html with assets/js/live_thread.js).
 - When it goes live, the people who follow the post (helpers/post_follows.py) are told, if they may still read it.
 
 Since 2026-10-16 it reads like Reddit's live threads (the owner's choice):
-- **A chosen length** (`DURATIONS`, the poll lengths): it is started from either composer or the post's "..." menu for
-  1 hour to 7 days (`ends_utc`), can be extended while live (`extend_until`, never past MAX_DAYS from its start) or
+- **A chosen length** (`DURATIONS`, the poll lengths): it ran for 1 hour to 7 days (`ends_utc`; since 2026-10-19 no post
+  starts one: a Space's live updates use this machinery, started and ended with the Space, routes/spaces.py), can be extended while live (`extend_until`, never past MAX_DAYS from its start) or
   ended early, and waits RESTART_WAIT before it can start again, so the people who follow it are not told over and
   over. A thread started before then has no `ends_utc` and keeps the old rule (`ends_at`).
 - **Corrections**: the writer of an update, or the post's author, crosses it out (shown "Corrected", undone the same

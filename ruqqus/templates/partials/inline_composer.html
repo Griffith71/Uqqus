@@ -20,7 +20,7 @@
   scheduled copy would be published as a public profile post.
   tests/test_composers_offer_the_same_options.py keeps this form and templates/submit.html in step.
 #}
-{% from "partials/post_options.html" import audience_field, comment_permission_field, disclosure_field, anonymous_field, coauthors_field, poll_field, space_field, live_field %}
+{% from "partials/post_options.html" import audience_field, comment_permission_field, disclosure_field, anonymous_field, poll_field, where_profile %}
 
 {% macro inline_composer(v, board=none) %}
 {% set circle_guild = board and board.is_circle %}
@@ -36,7 +36,7 @@
           <img src="{{ v.profile_url }}" class="profile-pic-35 mr-3 align-self-start" alt="">
           <div class="flex-grow-1 ic-main">
             <div id="ic-head" class="ic-head d-flex align-items-center justify-content-between" hidden>
-              <span class="composer-where">Posting to {% if circle_guild %}+{{ board.name }}{% else %}your profile{% endif %}</span>
+              {% if circle_guild %}<span class="composer-where">Posting to +{{ board.name }}</span>{% else %}<button type="button" id="ic-where-line" class="composer-where where-line btn btn-link p-0" data-where-line title="Where to post">Posting to {{ '+' ~ board.name if board else 'your profile' }}</button>{% endif %}
               {% if not circle_guild %}
               <details class="composer-pill" id="composer-audience">
                 <summary aria-label="Who can see this post">
@@ -83,9 +83,10 @@
 
               <div id="ic-options" class="ic-options mt-2" hidden>
                 <div{% if circle_guild %} hidden{% endif %}>
-                <label for="ic-forward-input" class="d-block">Forward to guilds (optional)<i class="fas fa-info-circle text-gray-400 ml-1" data-toggle="tooltip" data-placement="top" title="Your post always appears on your profile first. Optionally forward it into other guilds for community discussion - each guild gets its own independent copy with its own votes and comments."></i></label>
+                <label for="ic-forward-input" class="d-block mb-0">Where to post<i class="fas fa-info-circle text-gray-400 ml-1" data-toggle="tooltip" data-placement="top" title="Your post is listed on your profile either way. Choose My profile to have its comments there too, and add guilds to post it straight into them: each guild gets its own copy with its own votes and comments."></i></label>
+                {{ where_profile("ic-where", "ic-forward-input", "ic-forward-add", not board) }}
                 <div class="input-group">
-                  <input class="form-control" id="ic-forward-input" type="text" maxlength="50" placeholder="Type a guild name and press Enter" autocomplete="off">
+                  <input class="form-control" id="ic-forward-input" type="text" maxlength="50" placeholder="Search guilds to post to" autocomplete="off">
                   <div class="input-group-append">
                     <button class="btn btn-secondary" id="ic-forward-add" type="button">Add</button>
                   </div>
@@ -100,13 +101,10 @@
                 </select>
                 {% endif %}{% endif %}
                 <input type="url" id="ic-url" name="url" class="form-control mt-3" placeholder="Link (optional)" aria-label="Link">
-                {{ comment_permission_field(0, "ic-permission") }}
+                <div data-where-comment>{{ comment_permission_field(0, "ic-permission") }}</div>
                 {{ disclosure_field(false, false, "ic-disclosure") }}
                 <div{% if circle_guild %} hidden{% endif %}>{{ anonymous_field(false, "ic-anonymous") }}</div>
-                <div{% if circle_guild %} hidden{% endif %}>{{ coauthors_field("", "ic-coauthors") }}</div>
                 {{ poll_field([], poll_default_hours, "ic-poll") }}
-                <div{% if circle_guild %} hidden{% endif %}>{{ space_field("ic-space") }}</div>
-                {{ live_field("ic-live") }}
                 <label class="mt-3 d-block">Sensitive content</label>
                 <div class="custom-control custom-checkbox">
                   <input type="checkbox" class="custom-control-input" id="ic-sensitive" name="sensitive"{% if board and board.is_sensitive %} checked disabled{% endif %}>

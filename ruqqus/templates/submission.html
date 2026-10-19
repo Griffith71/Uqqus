@@ -340,7 +340,7 @@
           <button class="btn btn-link btn-block btn-lg text-left text-muted" data-dismiss="modal" onclick="togglePostEdit('{{ p.base36id }}')"><i class="far fa-edit text-center text-muted mr-3"></i>Edit</button>
           {% if may_invite_coauthors(p, v) %}<a class="btn btn-link btn-block btn-lg text-left text-muted coauthors-item" href="javascript:void(0)" data-dismiss="modal" data-post-id="{{ p.base36id }}"><i class="fas fa-user-friends fa-fw text-center text-muted mr-3"></i>Co-authors</a>{% endif %}
           {% if may_change_audience(p, v) %}<a class="btn btn-link btn-block btn-lg text-left text-muted audience-item" href="javascript:void(0)" data-dismiss="modal" data-post-id="{{ p.base36id }}" data-audience="{{ p.audience or 0 }}" data-circles="{{ p.circle_tokens() }}"><i class="fas fa-circle-notch fa-fw text-center text-muted mr-3"></i>Who can see this</a>{% endif %}
-          {% if may_change_comment_permission(p, v) %}<a class="btn btn-link btn-block btn-lg text-left text-muted comment-permission-item" href="javascript:void(0)" data-dismiss="modal" data-post-id="{{ p.base36id }}" data-mode="{{ p.comment_permission or 0 }}" data-anonymous="{{ 1 if p.is_anonymous else 0 }}"><i class="fas fa-comment-slash fa-fw text-center text-muted mr-3"></i>Who can comment</a>{% endif %}
+          {% if may_change_comment_permission(p, v) %}<a class="btn btn-link btn-block btn-lg text-left text-muted comment-permission-item" href="javascript:void(0)" data-dismiss="modal" data-post-id="{{ p.base36id }}" data-mode="{{ p.comment_permission or 0 }}" data-has-guilds="{{ 1 if comment_spaces(p, v).copies else 0 }}" data-anonymous="{{ 1 if p.is_anonymous else 0 }}"><i class="fas fa-comment-slash fa-fw text-center text-muted mr-3"></i>Who can comment</a>{% endif %}
           {% if may_see_insights(p, v) %}<a class="btn btn-link btn-block btn-lg text-left text-muted" href="/post/{{ p.base36id }}/insights"><i class="fas fa-chart-line fa-fw text-center text-muted mr-3"></i>Insights</a>{% endif %}
           <button class="btn btn-link btn-block btn-lg text-left text-muted" data-toggle="modal" data-dismiss="modal" data-target="#deletePostModal" onclick="delete_postModal('{{ p.base36id }}')"><i class="far fa-trash-alt text-center text-muted mr-3"></i>{{ "Remove from +"+p.board.name if p.is_repost else "Delete" }}</button>
           {% endif %}
@@ -378,7 +378,6 @@
           {% endif %}
 
           {{ post_menu.follow_button(p, v) }}
-          {{ post_menu.live_button(p, v) }}
           {{ flair_button(p, v) }}
           {{ post_menu.collab_button(p, v) }}
           {{ post_menu.fewer_button(p, v) }}
@@ -694,7 +693,7 @@
                         <a class="dropdown-item" href="javascript:void(0)" onclick="togglePostEdit('{{ p.base36id }}')"><i class="fas fa-edit fa-fw"></i>Edit</a>
                         {% if may_invite_coauthors(p, v) %}<a class="dropdown-item coauthors-item" href="javascript:void(0)" data-post-id="{{ p.base36id }}"><i class="fas fa-user-friends fa-fw"></i>Co-authors</a>{% endif %}
                         {% if may_change_audience(p, v) %}<a class="dropdown-item audience-item" href="javascript:void(0)" data-post-id="{{ p.base36id }}" data-audience="{{ p.audience or 0 }}" data-circles="{{ p.circle_tokens() }}"><i class="fas fa-circle-notch fa-fw"></i>Who can see this</a>{% endif %}
-                        {% if may_change_comment_permission(p, v) %}<a class="dropdown-item comment-permission-item" href="javascript:void(0)" data-post-id="{{ p.base36id }}" data-mode="{{ p.comment_permission or 0 }}" data-anonymous="{{ 1 if p.is_anonymous else 0 }}"><i class="fas fa-comment-slash fa-fw"></i>Who can comment</a>{% endif %}
+                        {% if may_change_comment_permission(p, v) %}<a class="dropdown-item comment-permission-item" href="javascript:void(0)" data-post-id="{{ p.base36id }}" data-mode="{{ p.comment_permission or 0 }}" data-has-guilds="{{ 1 if comment_spaces(p, v).copies else 0 }}" data-anonymous="{{ 1 if p.is_anonymous else 0 }}"><i class="fas fa-comment-slash fa-fw"></i>Who can comment</a>{% endif %}
                         {% if may_see_insights(p, v) %}<a class="dropdown-item" href="/post/{{ p.base36id }}/insights"><i class="fas fa-chart-line fa-fw"></i>Insights</a>{% endif %}
                         <a class="dropdown-item" href="javascript:void(0)" data-toggle="modal" data-dismiss="modal" data-target="#deletePostModal" onclick="delete_postModal('{{ p.base36id }}')"><i class="fas fa-trash-alt fa-fw"></i>{{ "Remove from +"+p.board.name if p.is_repost else "Delete" }}</a>
                         {% endif %}
@@ -732,7 +731,6 @@
                         {% endif %}
 
                         {{ post_menu.follow_item(p, v) }}
-                        {{ post_menu.live_item(p, v) }}
                         {{ flair_item(p, v) }}
                 {{ post_menu.collab_item(p, v) }}
                         {{ post_menu.fewer_item(p, v) }}
@@ -824,14 +822,15 @@
 
 </div>
 {{ ad_slot("post") }}
-{{ live_panel(p, v) }}
+{# a Space's live updates are read on the Space's own page, beside its board #}
+{% if not space_post %}{{ live_panel(p, v) }}{% endif %}
 <div class="row border-md-0 comment-section pb-3">
   <div class="col border-top">
     <div class="comments-count py-3">
-      {% if linked_comment and p.comment_count >= 2%}
+      {% if linked_comment and p.space_comment_count >= 2%}
       <div class="total"><a href="{{ p.permalink }}">View entire discussion</a></div>
       {% else %}
-      <div class="total">Comments <span class="d-none d-md-inline-block">({{ p.comment_count }})</span></div>
+      <div class="total">Comments <span class="d-none d-md-inline-block">({{ p.space_comment_count }})</span></div>
       {% endif %}
       <div class="post-filter ml-auto"><span>Sort By:</span>
         <span class="dropdown">
@@ -850,68 +849,16 @@
     </div>
   </div>
 
-  {% if not p.is_banned and is_allowed_to_comment and comment_restriction %}
-  <div class="text-muted text-small border rounded p-3 mb-3" id="comment-restriction"><i class="fas fa-lock fa-fw mr-1"></i>{{ comment_restriction }}</div>
-  {% endif %}
-
-  {% if not p.is_banned and is_allowed_to_comment and not comment_restriction and ((not p.is_blocking and not p.is_blocked) or v.admin_level>=3 or anon_hidden(p, v)) %}
-  <div id="comment-form-space-{{ p.fullname }}" class="comment-write mb-3">
-    <form id="comment-on-{{ p.fullname }}" class="input-group" action="/api/comment" method="post">
-      <input type="hidden" name="formkey" value="{{ v.formkey }}">
-      <input type="hidden" name="parent_fullname" value="t2_{{ p.base36id }}">
-      <input id="comment-form-submission-{{ p.fullname }}" type="hidden" name="submission" value="{{ p.base36id }}">
-      {% if v %}
-      <textarea maxlength="10000" id="comment-form-body-{{ p.fullname }}" class="comment-box form-control rounded" id="comment-form" onkeydown="textAreaOnKeyDown(event, (fullname = '{{ p.fullname }}') => post_comment(fullname))" name="body" form="comment-on-{{ p.fullname }}" aria-label="With textarea" placeholder="Add your comment..." rows="1"></textarea>
-      {% endif %}
-      <div class="comment-format">
-        <small class="format pl-0"><i class="fas fa-bold" onclick="makeBold('comment-form-body-{{ p.fullname }}')" data-toggle="tooltip" data-placement="bottom" data-delay='{"show":"700", "hide":"300"}' title="Bold"></i></small>
-        <small class="format"><i class="fas fa-italic" onclick="makeItalics('comment-form-body-{{ p.fullname }}')" data-toggle="tooltip" data-placement="bottom" data-delay='{"show":"700", "hide":"300"}' title="Italicize"></i></small>
-        <small class="format"><i class="fas fa-quote-right" onclick="makeQuote('comment-form-body-{{ p.fullname }}')" data-toggle="tooltip" data-placement="bottom" data-delay='{"show":"700", "hide":"300"}' title="Quote"></i></small>
-          <label class="btn btn-secondary format d-inline-block m-0" for="gif-comment-btn-{{ p.fullname }}">
-            <span id="gif-comment-btn-{{ p.fullname }}" class="font-weight-bolder text-uppercase" onclick="getGif();commentForm('comment-form-body-{{ p.fullname }}')" aria-hidden="true" data-toggle="modal" data-target="#gifModal" data-toggle="tooltip" data-placement="bottom" title="Add GIF">GIF</span>
-          </label> 
-          &nbsp;
-          <label class="btn btn-secondary format d-inline-block m-0" for="emoji-comment-btn-{{p.fullname}}">
-            <div id="emoji-comment-btn-{{p.fullname}}" onclick="commentForm('comment-form-body-{{p.fullname}}');loadEmojis()" aria-hidden="true" data-toggle="modal" data-target="#emojiModal" data-toggle="tooltip" data-placement="bottom" title="Add EMOJI"><i class="fas fa-smile-beam"></i></div>
-          </label> 
-          {% if media_offered() %}
-          <button type="button" class="format btn btn-secondary m-0 ml-1 d-inline-block" data-media-upload="image" data-target="comment-form-body-{{ p.fullname }}" data-toggle="tooltip" data-placement="bottom" title="Add an image" aria-label="Add an image"><i class="far fa-image"></i></button>
-          <button type="button" class="format btn btn-secondary m-0 ml-1 d-inline-block" data-media-upload="audio" data-target="comment-form-body-{{ p.fullname }}" data-toggle="tooltip" data-placement="bottom" title="Add audio" aria-label="Add audio"><i class="fas fa-volume-up"></i></button>
-          {% endif %}
-          <label class="format btn btn-secondary m-0 ml-1 {% if v.has_premium and not media_offered() %}d-inline-block{% else %}d-none{% endif %}" for="file-upload-comment-{{ p.fullname }}">
-                <div id="filename-show-comment-{{ p.base36id }}"><i class="far fa-image"></i></div>
-                <input id="file-upload-comment-{{ p.fullname }}" type="file" name="file" accept="image/*" onchange="document.getElementById('filename-show-comment-{{ p.base36id }}').innerHTML=document.getElementById('file-upload-comment-{{ p.fullname }}').files[0].name;" hidden>
-          </label>
-          <label id="comment-sensitive-label-{{ p.fullname }}" class="format btn btn-secondary m-0 ml-1 d-inline-block" for="comment-sensitive-{{ p.fullname }}" data-toggle="tooltip" data-placement="bottom" title="Mark as Sensitive Content (blurred until clicked)" onclick="document.getElementById('comment-sensitive-label-{{ p.fullname }}').classList.toggle('text-warning')">
-                <input id="comment-sensitive-{{ p.fullname }}" type="checkbox" hidden>
-                <i class="fas fa-eye-slash"></i>
-          </label>
-        {{ post_options.disclosure_toggles("comment-disc-" ~ p.fullname, false, false, true, p.is_anonymous and v and v.id == p.author_id) }}
-        <a id="save-comment-on-{{ p.fullname }}" href="javascript:void(0)" form="comment-on-{{ p.fullname }}" class="btn btn-primary text-whitebtn ml-auto" onclick="post_comment('{{ p.fullname }}')">Comment</a>
-      </div>
-    </form>
-  </div>
-  {% endif %}
-
-  {% if not v and not p.is_banned and comment_restriction %}
-  <div class="text-muted text-small border rounded p-3 mb-3" id="comment-restriction"><i class="fas fa-lock fa-fw mr-1"></i>{{ comment_restriction }}</div>
-  {% elif not v and not p.is_banned %}
-  <div class="comment-write mb-3">
-    <textarea maxlength="10000" class="comment-box form-control rounded" name="body" aria-label="With textarea" placeholder="Add your comment..." rows="1" onclick="location.href='/login?redirect={{ request.path | urlencode}}';"></textarea>
-  </div>
-  {% if p.comment_count >= 2 %}
-  <div class="card border-0 bg-light mt-4">
-    <div class="card-body">
-      <h5 class="card-title">Jump in the discussion.</h5>
-      <p class="card-text">Become a member of +{{ p.board.name }}, no email address required. Make an account.</p>
-      <div>
-        <a href="/signup?redirect={{ request.path | urlencode}}" class="btn btn-primary">Sign up</a>
-        <a href="/login?redirect={{ request.path | urlencode}}" class="btn btn-link text-muted">Sign in</a>
-      </div>
-    </div>
-  </div>
-  {% endif %}
-  {% endif %}
+  {% set spaces = comment_spaces(p, v) %}
+  {# a post made for guilds: its comment spaces are listed (partials/comment_spaces.html), and with no profile space the profile has no box or thread of its own #}
+  {% if spaces.copies %}{% include "partials/comment_spaces.html" %}{% endif %}
+  {% if space_post %}
+  {# a Space's post takes no comments: its discussion is the Space's own board (routes/spaces.py) #}
+  {% set sd = space_of(p, v) %}
+  <div class="space-post-note text-muted text-small border rounded p-3 mb-3"><i class="fas fa-microphone-lines fa-fw mr-1" aria-hidden="true"></i>This is a Space: its discussion is in the Space.{% if sd %} <a href="/space/{{ sd.id }}">Open the Space</a>{% endif %}</div>
+  {% elif not (spaces.copies and guilds_only) %}
+  {% if spaces.copies %}<div id="space-profile">{% endif %}
+  {% include "partials/comment_form.html" %}
 
   {% if p.nested_comments %}
   <div class="comment-section">
@@ -938,6 +885,8 @@
   {% endif %}
 </div>
 {% endif %}
+  {% if spaces.copies %}</div>{% endif %}
+  {% endif %}
 
 </div>
 

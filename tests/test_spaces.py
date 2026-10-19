@@ -3,7 +3,10 @@
 The promises: never anonymous, never by a bot, never in a Circle guild; a block with the host or a co-host, being
 removed, or not being allowed to see the post all read the same ("isn't available"); at most MAX_STAGE on stage and
 MAX_LISTENERS listening; only the host and co-hosts run it, and only the host names co-hosts; a report is once per
-person and nobody is ever told who reported; the replay is WebM or Ogg audio, recognised by its first bytes."""
+person and nobody is ever told who reported; the replay is WebM or Ogg audio, recognised by its first bytes. The board
+(Phase 2): plain text, only from people in a live Space, slowed and capped, quotes only from the same Space, reports once
+per person and never naming who; a Space that was not recorded leaves no message behind but a reported one, which goes
+once its reports are closed. Video: only while the host allowed it, the Space is small and the relay's month allows."""
 import pytest
 from sqlalchemy import create_engine, text
 from sqlalchemy.orm import Session
@@ -99,13 +102,19 @@ def test_a_replay_is_recognised_by_its_first_bytes():
 
 # --- the SQL --------------------------------------------------------------------------------------------------
 
+MIGRATIONS = ("2026-10-24_spaces.sql", "2026-11-11_space_board.sql")
+
+
 def _tables():
     from pathlib import Path
-    sql = (Path(__file__).resolve().parent.parent / "scripts" / "migrations" / "2026-10-24_spaces.sql").read_text(encoding="utf-8")
-    sql = "\n".join(line for line in sql.splitlines() if not line.strip().startswith("--"))
-    for s in (s.strip() for s in sql.split(";") if "CREATE" in s):
-        yield (s.replace("public.", "").replace("IF NOT EXISTS ", "").replace("SERIAL PRIMARY KEY", "INTEGER PRIMARY KEY AUTOINCREMENT")
-               .replace(" WHERE status = 'live'", ""))
+    for name in MIGRATIONS:
+        sql = (Path(__file__).resolve().parent.parent / "scripts" / "migrations" / name).read_text(encoding="utf-8")
+        sql = "\n".join(line for line in sql.splitlines() if not line.strip().startswith("--"))
+        for s in (s.strip() for s in sql.split(";") if "CREATE" in s or "ALTER" in s):
+            if "ADD COLUMN IF NOT EXISTS matrix_room_id" in s:
+                continue                                  # already in the CREATE above it
+            yield (s.replace("public.", "").replace("IF NOT EXISTS ", "").replace("SERIAL PRIMARY KEY", "INTEGER PRIMARY KEY AUTOINCREMENT")
+                   .replace(" WHERE status = 'live'", ""))
 
 
 @pytest.fixture
@@ -191,3 +200,124 @@ def test_the_replay_and_the_peak(db):
     store.set_replay(db, sid, 48)
     row = store.get(db, sid)
     assert row[9] == 3 and row[8] == 48 and bool(row[7])
+
+
+def test_a_space_remembers_whether_it_allows_video_and_its_slow_mode(db):
+    sid = store.create(db, 12, HOST, NOW + 60, False, NOW, video=True)
+    row = store.get(db, sid)
+    assert bool(row[12]) is True and row[13] == 0
+    store.set_slow(db, sid, 30)
+    assert store.get(db, sid)[13] == 30
+    assert bool(store.get(db, _space(db, post=13))[12]) is False          # off unless the host allowed it
+
+
+# --- video ----------------------------------------------------------------------------------------------------
+
+def test_video_only_while_allowed_small_and_the_relay_allows():
+    assert rules.video_refusal(False, 2, True) == rules.VIDEO_OFF
+    assert rules.video_refusal(True, 2, False) == rules.VIDEO_RELAY
+    assert rules.video_refusal(True, rules.VIDEO_PEOPLE_MAX, True) is None
+    assert rules.video_refusal(True, rules.VIDEO_PEOPLE_MAX + 1, True) == rules.VIDEO_TOO_BIG
+
+
+def test_a_camera_needs_the_stage_and_a_free_place():
+    assert rules.camera_refusal(True, 3, True, True, 0) is None
+    assert rules.camera_refusal(True, 3, True, False, 0).startswith("Only people on stage")
+    assert rules.camera_refusal(True, 3, True, True, rules.VIDEO_STAGE_MAX) == rules.VIDEO_FULL
+    assert rules.camera_refusal(True, 3, True, True, rules.VIDEO_STAGE_MAX - 1) is None
+    assert rules.camera_refusal(True, rules.VIDEO_PEOPLE_MAX + 1, True, True, 0) == rules.VIDEO_TOO_BIG
+    assert rules.VIDEO_STAGE_MAX <= rules.MAX_STAGE
+
+
+# --- the board ------------------------------------------------------------------------------------------------
+
+def test_a_message_is_plain_text_and_bounded():
+    assert rules.clean_message("  hello\r\n\n\n\nthere\x07  ") == "hello\n\nthere"
+    for empty in ("", "   ", None, "\x00\x01"):
+        with pytest.raises(rules.Refused):
+            rules.clean_message(empty)
+    assert len(rules.clean_message("x" * rules.BOARD_MAX)) == rules.BOARD_MAX
+    with pytest.raises(rules.Refused):
+        rules.clean_message("x" * (rules.BOARD_MAX + 1))
+
+
+def test_who_writes_on_the_board():
+    live = rules.LIVE
+    assert rules.message_refusal(live, True, False, 0, 0) is None
+    assert rules.message_refusal(rules.SCHEDULED, True, False, 0, 0) == rules.BOARD_CLOSED
+    assert rules.message_refusal(rules.ENDED, True, False, 0, 0) == rules.BOARD_CLOSED
+    assert rules.message_refusal(live, False, False, 0, 0) == rules.BOARD_JOIN
+    assert rules.message_refusal(live, True, True, 0, 0) == "Your account is suspended."
+    assert "fast" in rules.message_refusal(live, True, False, rules.BOARD_PER_MINUTE, 0)
+    assert "a day" in rules.message_refusal(live, True, False, 0, rules.BOARD_PER_DAY)
+
+
+def test_slow_mode_and_who_moderates():
+    assert rules.clean_slow("30") == 30 and rules.clean_slow("0") == 0
+    for bad in ("7", "-10", "", None, "١٠"):
+        with pytest.raises(rules.Refused):
+            rules.clean_slow(bad)
+    assert rules.slow_label(0) == "Off" and rules.slow_label(30) == "30 s" and rules.slow_label(300) == "5 min"
+    assert rules.may_moderate(rules.HOST, False) and rules.may_moderate(rules.COHOST, False)
+    assert not rules.may_moderate(rules.SPEAKER, False) and rules.may_moderate(rules.LISTENER, True)
+    assert rules.may_delete_message(BOB, BOB) and not rules.may_delete_message(CAT, BOB) and not rules.may_delete_message(None, BOB)
+
+
+def test_the_board_lists_quotes_and_counts(db):
+    sid = _space(db)
+    other = _space(db, post=11)
+    a = store.add_message(db, sid, BOB, "first", 0, None, NOW)
+    b = store.add_message(db, sid, CAT, "second", 1, a, NOW + 1)
+    store.add_message(db, other, BOB, "elsewhere", 0, None, NOW + 2)
+    assert [m[0] for m in store.messages(db, sid)] == [a, b]               # oldest first
+    assert [m[0] for m in store.messages(db, sid, after_id=a)] == [b]
+    assert store.message(db, b)[5] == a and store.message(db, b)[4] == 1
+    assert store.quotable(db, sid, a) and not store.quotable(db, other, a)      # a quote stays in its own Space
+    assert store.messages_since(db, BOB, NOW) == 2 and store.messages_since(db, BOB, NOW + 1) == 1
+    assert set(store.messages_by(db, {a, b})) == {a, b} and store.messages_by(db, set()) == {}
+
+
+def test_deleting_and_removing_take_a_message_off_the_board(db):
+    sid = _space(db)
+    a = store.add_message(db, sid, BOB, "mine", 0, None, NOW)
+    b = store.add_message(db, sid, CAT, "rude", 2, None, NOW)
+    assert store.delete_message(db, a, NOW + 5) and not store.delete_message(db, a, NOW + 6)
+    assert store.message(db, a)[3] == "" and not store.quotable(db, sid, a)    # its text goes at once
+    assert store.remove_message(db, b, HOST, NOW + 7) and not store.remove_message(db, b, HOST, NOW + 8)
+    assert store.message(db, b)[3] == "" and store.messages(db, sid) == []
+
+
+def test_a_reported_message_keeps_its_text_until_the_reports_are_closed(db):
+    sid = _space(db, record=True)
+    m = store.add_message(db, sid, CAT, "rude", 2, None, NOW)
+    assert store.report_message(db, m, BOB, "rude", NOW)
+    assert not store.report_message(db, m, BOB, "again", NOW)              # once per person
+    assert store.report_message(db, m, DAN, "", NOW + 1)
+    queue = store.open_message_reports(db)
+    assert [(row[0], n, reasons) for row, n, reasons in queue] == [(m, 2, ["rude"])]     # never who
+    store.remove_message(db, m, HOST, NOW + 2)
+    assert store.message(db, m)[3] == "rude"                                 # kept for the admins
+    store.resolve_message_reports(db, m, NOW + 3)
+    assert store.message(db, m)[3] == "" and store.open_message_reports(db) == []
+
+
+def test_a_space_that_was_not_recorded_leaves_no_message_behind(db):
+    sid = _space(db, record=False)
+    kept = store.add_message(db, sid, BOB, "reported", 0, None, NOW)
+    store.add_message(db, sid, CAT, "ordinary", 0, None, NOW)
+    store.report_message(db, kept, DAN, "", NOW)
+    store.end(db, sid, NOW + 10)
+    store.clear_board(db, sid)
+    left = db.execute(text("SELECT id FROM space_messages WHERE space_id = :s"), {"s": sid}).fetchall()
+    assert [row[0] for row in left] == [kept]                                # waits for the admins
+    store.resolve_message_reports(db, kept, NOW + 20)
+    assert store.message(db, kept) is None
+
+
+def test_a_recorded_space_keeps_its_board_after_a_report_is_closed(db):
+    sid = _space(db, record=True)
+    m = store.add_message(db, sid, BOB, "fine", 0, None, NOW)
+    store.report_message(db, m, DAN, "", NOW)
+    store.end(db, sid, NOW + 10)
+    store.resolve_message_reports(db, m, NOW + 20)
+    assert store.message(db, m)[3] == "fine"

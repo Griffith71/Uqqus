@@ -62,26 +62,21 @@ def test_who_is_watching_is_a_count_kept_in_redis_only():
     assert "tab" not in watch.split('"""', 2)[2]                                # once per address, not per tab (L-06)
 
 
-def test_a_live_thread_starts_from_both_composers_for_a_chosen_length():
-    posts = read("ruqqus", "routes", "posts.py")
-    submit = posts.split("def submit_post(", 1)[1]
-    assert 'live_rules.clean_hours(request.form.get("live_hours"))' in submit
-    assert submit.index('flag(request.form, "live")') < submit.index("new_post = Submission(")
-    assert submit.index("new_post = Submission(") < submit.index("start_thread(new_post, v, int(time.time()), live_hours)")
-    assert posts.index("from ruqqus.classes import *") < posts.index("from ruqqus.helpers import live_threads as live_rules")
-    assert 'live_field("post-live"' in read("ruqqus", "templates", "submit.html")
-    assert 'live_field("ic-live")' in read("ruqqus", "templates", "partials", "inline_composer.html")
-    drafts = read("ruqqus", "assets", "js", "post_drafts.js")
-    assert "data.append('live', 'true');" in drafts and "data.append('live_hours', liveHours.value);" in drafts
-
-
-def test_go_live_is_in_every_post_menu():
+def test_no_post_starts_a_live_thread_any_more():
+    # live updates are part of Spaces now (the owner's choice): nothing in the composers, drafts or post menus starts one
+    submit = read("ruqqus", "routes", "posts.py").split("def submit_post(", 1)[1]
+    assert 'flag(request.form, "live")' not in submit and "start_thread(" not in submit
+    assert "live_field" not in read("ruqqus", "templates", "submit.html")
+    assert "live_field" not in read("ruqqus", "templates", "partials", "inline_composer.html")
+    assert "'live'" not in read("ruqqus", "assets", "js", "post_drafts.js")
     items = read("ruqqus", "templates", "partials", "post_menu_items.html")
-    assert "{% macro live_item(p, v) %}" in items and "{% macro live_button(p, v) %}" in items
-    assert items.count("may_run_live(p, v)") == 2 and items.count('href="{{ p.permalink }}?live=start#live-panel"') == 2
-    for name in ("submission_listing.html", "submission.html"):
-        page = read("ruqqus", "templates", name)
-        assert "{{ post_menu.live_item(p, v) }}" in page and "{{ post_menu.live_button(p, v) }}" in page, name
+    assert "live_item" not in items and "live_button" not in items and "?live=start" not in items
+    # the route refuses a new start; a running thread can still be extended, ended and written in
+    toggle = ROUTES.split("def live_toggle(", 1)[1].split("\ndef start_thread(", 1)[0]
+    assert toggle.index("if not live:") < toggle.index("start_thread(primary, v, now, hours)")
+    assert "Live updates are part of Spaces now" in toggle
+    # and the panel is only drawn for a post that has a thread
+    assert "{% if lv %}" in read("ruqqus", "templates", "partials", "live_panel.html")
 
 
 def test_updates_never_name_the_author_of_an_anonymous_post():
@@ -140,21 +135,3 @@ def test_the_schema():
     reddit = read("scripts", "migrations", "2026-10-28_live_threads_reddit.sql")
     for column in ("ends_utc", "summary", "summary_html", "summary_severity", "summary_edited_utc", "struck_utc"):
         assert f"ADD COLUMN IF NOT EXISTS {column} " in reddit and f"    {column} " in schema, column
-
-
-def test_the_go_live_items_render():
-    """Rendered for real: "Go live" for who may run it, "Manage live thread" while live, nothing for anyone else."""
-    from types import SimpleNamespace as NS
-    from jinja2 import Environment, FileSystemLoader
-    env = Environment(loader=FileSystemLoader(str(ROOT / "ruqqus" / "templates")))
-    state = {"may": True, "live": None}
-    env.globals.update(may_run_live=lambda p, v: state["may"], live_of=lambda p: state["live"],
-                       author_of=lambda item, viewer: item.author)
-    module = env.get_template("partials/post_menu_items.html").make_module()
-    post = NS(base36id="7k", permalink="/post/7k/x", is_banned=False, deleted_utc=0)
-    viewer = NS(id=2)
-    assert "Go live" in str(module.live_item(post, viewer)) and "/post/7k/x?live=start#live-panel" in str(module.live_button(post, viewer))
-    state["live"] = {"live": True}
-    assert "Manage live thread" in str(module.live_item(post, viewer))
-    state["may"] = False
-    assert "live" not in str(module.live_item(post, viewer)).lower()

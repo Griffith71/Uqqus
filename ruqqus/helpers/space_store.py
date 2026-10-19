@@ -1,5 +1,5 @@
 """Spaces in the database (rules in helpers/spaces.py): `spaces`, `space_roles`, `space_hands`, `space_reminders`,
-`space_removed` and `space_reports`. Who is listening right now is kept in Redis by helpers/call_store.py under the
+`space_removed`, `space_reports`, and the board: `space_messages` and `space_message_reports`. Who is listening right now is kept in Redis by helpers/call_store.py under the
 room name `space:<id>`, like a call.
 
 Plain `text()` SQL with bound values only, tested on SQLite (`tests/test_spaces.py`). Nothing here commits.
@@ -10,7 +10,7 @@ from sqlalchemy import bindparam, text
 from ruqqus.helpers import spaces as rules
 
 _SPACE = ("id, post_id, host_id, status, scheduled_utc, started_utc, ended_utc, record, replay_asset_id, "
-          "listener_peak, ended_by_admin, matrix_room_id")
+          "listener_peak, ended_by_admin, matrix_room_id, video, board_slow_seconds")
 
 
 def room(space_id):
@@ -18,11 +18,12 @@ def room(space_id):
     return f"space:{int(space_id)}"
 
 
-def create(db, post_id, host_id, start_utc, record, now):
+def create(db, post_id, host_id, start_utc, record, now, video=False):
     db.execute(text("""INSERT INTO spaces (post_id, host_id, status, scheduled_utc, started_utc, ended_utc, record,
-                                           listener_peak, ended_by_admin, created_utc)
-                       VALUES (:post, :host, 'scheduled', :start, 0, 0, :record, 0, :no, :now)"""),
-               {"post": post_id, "host": host_id, "start": start_utc, "record": bool(record), "now": now, "no": False})
+                                           listener_peak, ended_by_admin, created_utc, video, board_slow_seconds)
+                       VALUES (:post, :host, 'scheduled', :start, 0, 0, :record, 0, :no, :now, :video, 0)"""),
+               {"post": post_id, "host": host_id, "start": start_utc, "record": bool(record), "now": now, "no": False,
+                "video": bool(video)})
     return db.execute(text("SELECT id FROM spaces WHERE post_id = :post"), {"post": post_id}).scalar()
 
 
@@ -176,3 +177,150 @@ def open_reports(db, limit=50):
 def resolve_reports(db, space_id, now):
     db.execute(text("UPDATE space_reports SET resolved_utc = :now WHERE space_id = :s AND resolved_utc = 0"),
                {"s": space_id, "now": now})
+
+
+# --- the Spaces area (routes/spaces.py `spaces_home`) --------------------------------------------------------------
+
+LIST_MAX = 60
+
+
+def listing(db, tab, viewer_id=None, limit=LIST_MAX):
+    """Space rows for a tab of the Spaces area, newest or soonest first. Who may see each one is the caller's (through
+    its post); this only picks the rows. `live`: running now; `upcoming`: scheduled; `recordings`: ended with a replay;
+    `mine`: the viewer's own, any state."""
+    if tab == "live":
+        sql = f"SELECT {_SPACE} FROM spaces WHERE status = 'live' ORDER BY started_utc DESC LIMIT :n"
+    elif tab == "upcoming":
+        sql = f"SELECT {_SPACE} FROM spaces WHERE status = 'scheduled' ORDER BY scheduled_utc ASC LIMIT :n"
+    elif tab == "recordings":
+        sql = (f"SELECT {_SPACE} FROM spaces WHERE status = 'ended' AND record = :yes AND replay_asset_id IS NOT NULL "
+               "ORDER BY ended_utc DESC LIMIT :n")
+    elif tab == "mine":
+        sql = f"SELECT {_SPACE} FROM spaces WHERE host_id = :me ORDER BY created_utc DESC LIMIT :n"
+    else:
+        return []
+    return db.execute(text(sql), {"n": int(limit), "me": viewer_id or 0, "yes": True}).fetchall()
+
+
+def live_for_host(db, host_id):
+    """The Space this account is hosting right now, or None (the live banner on its profile)."""
+    return db.execute(text(f"""SELECT {_SPACE} FROM spaces WHERE host_id = :h AND status = 'live'
+                               ORDER BY started_utc DESC LIMIT 1"""), {"h": host_id}).fetchone()
+
+
+def clear_reminders(db, space_id):
+    db.execute(text("DELETE FROM space_reminders WHERE space_id = :s"), {"s": space_id})
+
+
+# --- the board (`space_messages`, `space_message_reports`) -----------------------------------------------------------
+
+_MESSAGE = "id, space_id, author_id, body, word_severity, quote_id, created_utc, deleted_utc, removed_utc"
+BOARD_PAGE = 100
+
+
+def set_slow(db, space_id, seconds):
+    db.execute(text("UPDATE spaces SET board_slow_seconds = :n WHERE id = :s"), {"s": space_id, "n": int(seconds)})
+
+
+def add_message(db, space_id, author_id, body, severity, quote_id, now):
+    db.execute(text("""INSERT INTO space_messages (space_id, author_id, body, word_severity, quote_id, created_utc,
+                                                   deleted_utc, removed_utc)
+                       VALUES (:s, :a, :body, :sev, :q, :now, 0, 0)"""),
+               {"s": space_id, "a": author_id, "body": body, "sev": int(severity or 0), "q": quote_id, "now": now})
+    return db.execute(text("SELECT MAX(id) FROM space_messages WHERE space_id = :s AND author_id = :a"),
+                      {"s": space_id, "a": author_id}).scalar()
+
+
+def message(db, message_id):
+    return db.execute(text(f"SELECT {_MESSAGE} FROM space_messages WHERE id = :m"), {"m": message_id}).fetchone()
+
+
+def quotable(db, space_id, message_id):
+    """A message of this Space that can be quoted (not deleted or removed)."""
+    row = message(db, message_id)
+    return row is not None and row[1] == space_id and not row[7] and not row[8]
+
+
+def messages(db, space_id, after_id=0, limit=BOARD_PAGE):
+    """The board's messages: the newest page, oldest first (or, after an id, the newer ones). Never deleted or removed
+    ones."""
+    if after_id:
+        return db.execute(text(f"""SELECT {_MESSAGE} FROM space_messages WHERE space_id = :s AND id > :after
+                                   AND deleted_utc = 0 AND removed_utc = 0 ORDER BY id ASC LIMIT :n"""),
+                          {"s": space_id, "after": after_id, "n": limit}).fetchall()
+    rows = db.execute(text(f"""SELECT {_MESSAGE} FROM space_messages WHERE space_id = :s
+                               AND deleted_utc = 0 AND removed_utc = 0 ORDER BY id DESC LIMIT :n"""),
+                      {"s": space_id, "n": limit}).fetchall()
+    return list(reversed(rows))
+
+
+def messages_by(db, ids):
+    """{id: row} for the quoted messages of a page (deleted and removed ones too: the quote says so)."""
+    if not ids:
+        return {}
+    query = text(f"SELECT {_MESSAGE} FROM space_messages WHERE id IN :ids").bindparams(bindparam("ids", expanding=True))
+    return {row[0]: row for row in db.execute(query, {"ids": list(ids)}).fetchall()}
+
+
+def messages_since(db, author_id, since):
+    return db.execute(text("SELECT COUNT(*) FROM space_messages WHERE author_id = :a AND created_utc >= :since"),
+                      {"a": author_id, "since": since}).scalar() or 0
+
+
+def delete_message(db, message_id, now):
+    """Its writer takes it back: the text goes at once."""
+    done = db.execute(text("""UPDATE space_messages SET deleted_utc = :now, body = '' WHERE id = :m AND deleted_utc = 0
+                              AND removed_utc = 0"""), {"m": message_id, "now": now})
+    return done.rowcount == 1
+
+
+def remove_message(db, message_id, by_id, now):
+    """The host, a co-host or an admin takes it down. The text stays only while a report about it is open."""
+    done = db.execute(text("""UPDATE space_messages SET removed_utc = :now, removed_by_id = :by WHERE id = :m
+                              AND deleted_utc = 0 AND removed_utc = 0"""), {"m": message_id, "by": by_id, "now": now})
+    db.execute(text("""UPDATE space_messages SET body = '' WHERE id = :m AND NOT EXISTS
+                       (SELECT 1 FROM space_message_reports WHERE message_id = :m AND resolved_utc = 0)"""), {"m": message_id})
+    return done.rowcount == 1
+
+
+def report_message(db, message_id, reporter_id, reason, now):
+    """False when this person had already reported this message."""
+    exists = db.execute(text("SELECT 1 FROM space_message_reports WHERE message_id = :m AND reporter_id = :u"),
+                        {"m": message_id, "u": reporter_id}).fetchone()
+    if exists:
+        return False
+    db.execute(text("""INSERT INTO space_message_reports (message_id, reporter_id, reason, created_utc, resolved_utc)
+                       VALUES (:m, :u, :reason, :now, 0)"""), {"m": message_id, "u": reporter_id, "reason": reason, "now": now})
+    return True
+
+
+def open_message_reports(db, limit=50):
+    """(message row, how many reports, the latest reasons) for the admins' queue, the most reported first. Never who."""
+    rows = db.execute(text("""SELECT message_id, COUNT(*) AS n, MAX(created_utc) AS latest FROM space_message_reports
+                              WHERE resolved_utc = 0 GROUP BY message_id ORDER BY n DESC, latest DESC LIMIT :n"""),
+                      {"n": limit}).fetchall()
+    out = []
+    for message_id, n, _latest in rows:
+        row = message(db, message_id)
+        if row is None:
+            continue
+        reasons = [r[0] for r in db.execute(text("""SELECT reason FROM space_message_reports WHERE message_id = :m
+                                                    AND resolved_utc = 0 AND reason <> '' ORDER BY created_utc DESC LIMIT 5"""),
+                                            {"m": message_id})]
+        out.append((row, n, reasons))
+    return out
+
+
+def resolve_message_reports(db, message_id, now):
+    """Closes the reports; a removed message, or one whose Space left nothing behind, loses its text with them."""
+    db.execute(text("UPDATE space_message_reports SET resolved_utc = :now WHERE message_id = :m AND resolved_utc = 0"),
+               {"m": message_id, "now": now})
+    db.execute(text("UPDATE space_messages SET body = '' WHERE id = :m AND removed_utc > 0"), {"m": message_id})
+    db.execute(text("""DELETE FROM space_messages WHERE id = :m AND space_id IN
+                       (SELECT id FROM spaces WHERE status = 'ended' AND record = :no)"""), {"m": message_id, "no": False})
+
+
+def clear_board(db, space_id):
+    """A Space that was not recorded ended: its messages go, except a reported one, which waits for the admins."""
+    db.execute(text("""DELETE FROM space_messages WHERE space_id = :s AND id NOT IN
+                       (SELECT message_id FROM space_message_reports WHERE resolved_utc = 0)"""), {"s": space_id})

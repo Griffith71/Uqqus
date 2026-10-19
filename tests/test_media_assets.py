@@ -188,7 +188,7 @@ def test_a_form_is_not_sent_while_its_picture_is_still_uploading():
 
 
 def test_comment_forms_offer_the_picture_button_only_with_linked_storage():
-    for name in ("comments.html", "submission.html"):
+    for name in ("comments.html", "partials/comment_form.html"):
         html = read("ruqqus", "templates", name)
         assert 'data-media-upload="image" data-target="comment-form-body-' in html, name
         button = html[:html.index('data-media-upload="image"')]

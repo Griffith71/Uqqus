@@ -122,6 +122,15 @@ def thread_json(primary, v, row=None):
     }
 
 
+SPACE_REFUSAL = "This is a Space: its host and co-hosts post its updates from the Space."
+
+
+def _space_refusal(primary):
+    """A Space's live updates run with the Space (routes/spaces.py), never from here."""
+    from ruqqus.helpers import comment_permission as cperm
+    return _error(SPACE_REFUSAL, 409) if cperm.is_space(primary) else None
+
+
 def _hours():
     try:
         return live_rules.clean_hours(request.values.get("hours")), None
@@ -135,6 +144,9 @@ def _hours():
 def live_toggle(pid, v):
     """Go live for a chosen length (`hours`), extend a running thread (`extend=1&hours=`), or end it (`on=0`)."""
     post, primary = _readable(pid, v)
+    refused = _space_refusal(primary)
+    if refused:
+        return refused
     may = live_rules.may_run(v.id, primary.author_id, _runners(primary))
     now = int(time.time())
     row = live_store.thread(g.db, primary.id)
@@ -158,6 +170,10 @@ def live_toggle(pid, v):
         g.db.commit()
         live_bus.publish(r, _topic(primary), "live.status", {})
         return jsonify({"live": True, "thread": thread_json(primary, v)})
+    # live updates are part of Spaces now (routes/spaces.py): no post starts a thread any more. One that is running can
+    # still be extended, ended and written in, and every thread stays readable
+    if not live:
+        return _error("Live updates are part of Spaces now: start a Space from Spaces.", 409)
     stopped = live_rules.ended_at(row[0], row[1], row[2], row[4]) if row and not live else 0
     refusal = live_rules.start_refusal(may, bool(primary.is_banned), bool(primary.deleted_utc), live, stopped, now)
     if refusal:
@@ -212,6 +228,9 @@ def live_update_one(uid, v):
 @validate_formkey
 def live_update_add(pid, v):
     post, primary = _readable(pid, v)
+    refused = _space_refusal(primary)
+    if refused:
+        return refused
     now = int(time.time())
     row = live_store.thread(g.db, primary.id)
     live = bool(row) and live_rules.is_live(row[0], row[1], row[2], now, row[4])
@@ -269,6 +288,9 @@ def live_update_delete(uid, v):
 def live_summary(pid, v):
     """The pinned summary (Reddit's "resources"), kept up to date by who runs the thread; empty clears it."""
     post, primary = _readable(pid, v)
+    refused = _space_refusal(primary)
+    if refused:
+        return refused
     if not live_rules.may_run(v.id, primary.author_id, _runners(primary)):
         return _error("Only the post's author and co-authors can edit the summary.", 403)
     if live_store.thread(g.db, primary.id) is None:

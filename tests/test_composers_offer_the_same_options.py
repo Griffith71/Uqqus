@@ -15,10 +15,10 @@ OPTIONS = (ROOT / "partials" / "post_options.html").read_text(encoding="utf-8")
 # the macros of partials/post_options.html both pages call, and the field names each draws
 MACRO_FIELDS = {
     "audience_field": {"audience", "circles"},
+    "where_profile": {"post_to_profile"},
     "comment_permission_field": {"comment_permission"},
     "disclosure_field": {"paid_partnership", "made_with_ai"},
     "anonymous_field": {"anonymous"},
-    "coauthors_field": {"coauthors"},
     "poll_field": {"poll_option", "poll_hours"},
     "space_field": {"space", "space_start", "space_record"},
     "live_field": {"live", "live_hours"},

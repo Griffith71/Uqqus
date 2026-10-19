@@ -86,3 +86,13 @@ def delete_update(db, update_id, now):
 def updates_since(db, post_id, since):
     return db.execute(text("SELECT COUNT(*) FROM live_updates WHERE post_id = :p AND created_utc >= :since"),
                       {"p": post_id, "since": since}).scalar() or 0
+
+
+def erase(db, post_id, now):
+    """A Space that was not recorded ended: its updates and summary go, text and all."""
+    db.execute(text("""UPDATE live_updates SET body = '', body_html = '',
+                       deleted_utc = CASE WHEN deleted_utc = 0 THEN :now ELSE deleted_utc END WHERE post_id = :p"""),
+               {"p": post_id, "now": now})
+    db.execute(text("""UPDATE live_threads SET summary = '', summary_html = '',
+                       ended_utc = CASE WHEN ended_utc = 0 THEN :now ELSE ended_utc END WHERE post_id = :p"""),
+               {"p": post_id, "now": now})

@@ -46,6 +46,38 @@ def listable_boards(boards, v):
     return boards
 
 
+@app.get("/api/guild_search")
+@auth_required
+def guild_search(v):
+    """Guilds a signed-in member could post to, for the "Where to post" box in the composers: name part, up to 8,
+    exact name first, then guilds they joined, then the biggest. A Circle guild has its own composer, a guild the member
+    is exiled from or may not forward to is left out, and the visibility rules are the guild list's (`listable_boards`)."""
+    term = (request.args.get("q") or "").strip().lstrip("+")[:40]
+    term = term.replace('\\', '').replace('_', r'\_').replace('%', '')
+
+    boards = g.db.query(Board).filter(
+        Board.name.ilike(f"%{term}%"),
+        func.lower(Board.name) != PROFILE_BOARD_NAME,
+        Board.is_circle == False)
+    boards = listable_boards(boards, v)
+    joined = select(Subscription).filter_by(user_id=v.id, is_active=True).subquery()
+    boards = boards.join(joined, joined.c.board_id == Board.id, isouter=True).order_by(
+        Board.name.ilike(term).desc(), joined.c.id.is_(None).asc(), Board.stored_subscriber_count.desc())
+
+    found = []
+    for board in boards.limit(30):
+        if board.has_ban(v):
+            continue
+        if (board.restricted_forwarding or board.is_private) and not board.can_forward(v):
+            continue
+        found.append({"name": board.name, "members": max(board.stored_subscriber_count or 0, 0)})
+        if len(found) == 8:
+            break
+    response = jsonify({"guilds": found})
+    response.headers["Cache-Control"] = "private, no-store"
+    return response
+
+
 def sort_of(raw, default):
     raw = (raw or "").lower()
     return raw if raw in SORTS else default

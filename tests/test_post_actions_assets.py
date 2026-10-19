@@ -15,7 +15,7 @@ def test_the_four_counts_come_in_order():
     body = PARTIAL[PARTIAL.index("{% macro counted_actions("):]
     order = [body.index(k) for k in ("post-action-comments", "post-action-shares", "post-action-bookmark", "post-action-tip")]
     assert order == sorted(order)
-    for count in ("_n(p.comment_count)", "_n(shares)", "_n(base)", "_n(base + 1)", "_n(coins)"):
+    for count in ("_n(p.space_comment_count)", "_n(shares)", "_n(base)", "_n(base + 1)", "_n(coins)"):
         assert count in body, count
 
 

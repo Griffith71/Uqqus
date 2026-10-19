@@ -122,21 +122,41 @@ export class Mesh {
     }
   }
 
-  // add or take away this window's tracks for one peer (a Space speaker moved on or off stage)
+  // keep what this window sends to one peer in step with its tracks: all of them while it should send (a Space speaker
+  // on stage), none otherwise; a camera turned on or off later adds or takes away just that track
   updateSending(peer) {
     const should = this.media && this.sends(peer.info);
-    if (should && !peer.senders.length) {
-      for (const track of this.media.stream.getTracks()) peer.senders.push(peer.pc.addTrack(track, this.media.stream));
-    } else if (!should && peer.senders.length) {
-      for (const sender of peer.senders) {
-        try {
-          peer.pc.removeTrack(sender);
-        } catch (e) {
-          // already gone
-        }
+    const tracks = should ? this.media.stream.getTracks() : [];
+    const left = tracks.filter((track) => !peer.senders.some((sender) => sender.track === track));
+    const kept = [];
+    for (const sender of peer.senders) {
+      if (sender.track && tracks.includes(sender.track)) {
+        kept.push(sender);
+        continue;
       }
-      peer.senders = [];
+      // a new microphone or camera of the same kind (mesh.replaceTrack may not have finished): swap it in place
+      const kind = sender.track && sender.track.kind;
+      const same = kind ? left.findIndex((track) => track.kind === kind) : -1;
+      if (same >= 0) {
+        sender.replaceTrack(left[same]).catch(() => {});
+        left.splice(same, 1);
+        kept.push(sender);
+        continue;
+      }
+      try {
+        peer.pc.removeTrack(sender);
+      } catch (e) {
+        // already gone
+      }
     }
+    for (const track of left) kept.push(peer.pc.addTrack(track, this.media.stream));
+    peer.senders = kept;
+    if (left.length && peer.pc.connectionState === "connected") this.limitBitrate(peer);
+  }
+
+  // after this window's tracks changed (a camera on or off)
+  syncTracks() {
+    for (const peer of this.peers.values()) this.updateSending(peer);
   }
 
   limitBitrate(peer) {

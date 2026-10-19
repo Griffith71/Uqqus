@@ -113,7 +113,7 @@ def test_the_search_box_has_the_two_branches_and_every_search_box_says_so():
     route = read("ruqqus", "routes", "search.py")
     assert 'elif query.startswith("#"):' in route and 'elif query.startswith("&"):' in route
     # one rule for who may be shown a guild in a list, used by + and #
-    assert route.count("listable_boards(boards, v)") == 3 and "def listable_boards(boards, v):" in route   # its definition and its two uses
+    assert route.count("listable_boards(boards, v)") == 4 and "def listable_boards(boards, v):" in route   # its definition and its three uses: +, # and the composers' guild search
     # a curation: public only, owner gone or banned left out, the word filter as it is drawn
     branch = route.split('elif query.startswith("&"):')[1].split('elif query.startswith("@"):')[0]
     assert "Curation.is_private == False" in branch and "User.is_deleted == False" in branch and "User.is_banned == 0" in branch

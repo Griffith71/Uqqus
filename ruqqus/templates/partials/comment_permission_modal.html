@@ -21,6 +21,10 @@
             <label class="custom-control-label" for="comment-permission-option-{{ value }}">{{ label }}</label>
           </div>
           {% endfor %}
+          <div class="custom-control custom-radio d-none" id="comment-permission-guilds-row">
+            <input type="radio" class="custom-control-input" id="comment-permission-option-4" name="comment-permission-choice" value="4">
+            <label class="custom-control-label" for="comment-permission-option-4">Not on my profile <span class="text-muted text-small">the comments are in the guilds it was posted to</span></label>
+          </div>
         </div>
         <div id="comment-permission-anonymous-note" class="text-small text-muted mt-2 d-none">"Accounts you follow" can't be chosen for an anonymous post: it would show people whether you follow them.</div>
         <div id="comment-permission-status" class="text-small mt-2" role="status"></div>

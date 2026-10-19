@@ -9030,6 +9030,263 @@ $ex-muted: $muted;
     outline-offset: 2px;
 }
 
+// Comment spaces of a post made for guilds (templates/partials/comment_spaces.html, assets/js/post_spaces.js)
+.comment-spaces {
+    margin-bottom: 1rem;
+    padding: 0.75rem;
+    border: 1px solid $ex-border;
+    border-radius: 12px;
+}
+
+.comment-spaces-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.25rem 0.75rem;
+    margin-bottom: 0.5rem;
+}
+
+.comment-spaces-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+}
+
+.space-tab {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    min-height: 32px;
+    padding: 0 0.8rem;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: $ex-text;
+    cursor: pointer;
+    background: $ex-field;
+    border: 1px solid transparent;
+    border-radius: 999px;
+    transition: background-color 150ms ease, color 150ms ease;
+}
+
+.space-tab.active,
+.space-tab.active:hover {
+    color: #fff;
+    background: $primary;
+}
+
+.space-tab:focus-visible,
+.space-more summary:focus-visible {
+    outline: 2px solid $primary;
+    outline-offset: 2px;
+}
+
+.space-count {
+    font-weight: 400;
+    color: $ex-muted;
+}
+
+.space-tab.active .space-count {
+    color: rgba(255, 255, 255, 0.85);
+}
+
+.space-more {
+    flex-basis: 100%;
+    margin-top: 0.25rem;
+}
+
+.space-more summary {
+    font-size: 0.8125rem;
+    color: $ex-muted;
+    cursor: pointer;
+}
+
+.space-filter {
+    max-width: 16rem;
+    margin-top: 0.4rem;
+}
+
+.space-more-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    max-height: 11rem;
+    margin-top: 0.4rem;
+    overflow-y: auto;
+}
+
+.comment-space-body {
+    margin-top: 1rem;
+}
+
+.space-title {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.25rem 0.75rem;
+    margin-bottom: 0.75rem;
+}
+
+.space-thread {
+    margin-bottom: 0.5rem;
+}
+
+.space-chip {
+    display: inline-block;
+    margin: 0.25rem 0;
+    padding: 0 0.6rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    border: 1px solid $ex-border;
+    border-radius: 999px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .space-tab {
+        transition: none;
+    }
+}
+
+// "Where to post" (templates/partials/post_options.html where_profile, assets/js/where_to_post.js)
+.where-field {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.4rem 0.6rem;
+    margin: 0.75rem 0 0.4rem;
+}
+
+.where-profile-input {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.where-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    min-height: 32px;
+    margin: 0;
+    padding: 0 0.85rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    letter-spacing: normal;
+    color: $ex-muted;
+    text-transform: none;
+    cursor: pointer;
+    background: transparent;
+    border: 1px solid $ex-border;
+    border-radius: 999px;
+    transition: background-color 150ms ease, color 150ms ease;
+}
+
+.where-profile-input:checked + .where-chip {
+    color: #fff;
+    background: $primary;
+    border-color: $primary;
+}
+
+.where-profile-input:disabled + .where-chip {
+    cursor: default;
+    opacity: 0.85;
+}
+
+.where-profile-input:focus-visible + .where-chip {
+    outline: 2px solid $primary;
+    outline-offset: 2px;
+}
+
+.where-note {
+    flex-basis: 100%;
+}
+
+.where-suggest {
+    position: relative;
+    z-index: 5;
+    margin: 0.25rem 0 0;
+    padding: 0.25rem 0;
+    list-style: none;
+    background: $ex-surface;
+    border: 1px solid $ex-border;
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+}
+
+.where-suggest button {
+    display: block;
+    width: 100%;
+    padding: 0.4rem 0.9rem;
+    color: $ex-text;
+    text-align: left;
+    background: transparent;
+    border: 0;
+}
+
+.where-suggest button:hover,
+.where-suggest button:focus-visible {
+    background: $ex-hover;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .where-chip {
+        transition: none;
+    }
+}
+
+// A Space hosted now, at the top of the host's profile (partials/profile_header.html)
+.profile-live-banner {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.6rem 1rem;
+    color: $ex-text;
+    background: $ex-field;
+    border-bottom: 1px solid $ex-border;
+}
+
+.profile-live-banner:hover {
+    color: $ex-text;
+    text-decoration: none;
+}
+
+.profile-live-title {
+    flex: 1 1 auto;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.profile-live-people {
+    font-size: 0.8125rem;
+    color: $ex-muted;
+    white-space: nowrap;
+}
+
+.space-tile .space-card {
+    flex-wrap: wrap;
+    margin: 0;
+}
+
+.space-tile .space-card-text {
+    flex: 1 1 0;
+    min-width: 0;
+}
+
+.space-tile .space-card-action {
+    flex-basis: 100%;
+}
+
+.space-tile .space-card-action .btn {
+    width: 100%;
+}
+
+.space-new .composer-card {
+    max-width: 44rem;
+}
+
 // Create post card (templates/submit.html, assets/js/composer_card.js). The look of a social composer
 // (x.com's header and attach row, reddit's large borderless title), on this site's own tokens.
 // One radius scale: 16px card, 12px fields, full pills for controls. Motion is feedback only: transform and
@@ -9088,6 +9345,12 @@ $cc-muted: $muted;
 .composer-where {
     font-size: 0.8125rem;
     color: $cc-muted;
+}
+
+// the feed composer's "Posting to ..." line is a button that opens the guild search
+.composer-where.where-line {
+    font-weight: 400;
+    text-align: left;
 }
 
 // the audience pill: a <details>, so it works without script

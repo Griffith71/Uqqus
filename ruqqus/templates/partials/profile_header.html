@@ -14,6 +14,18 @@
 {% set can_follow = v and not own and not u.is_private and not u.is_nofollow %}
 <section class="profile-x" aria-labelledby="profile-x-name">
 
+  {# a Space this account is hosting now (routes/spaces.py live_space_for): at the top of its profile, as X shows it #}
+  {% set live_space = live_space_for(u, v) %}
+  {% if live_space %}
+  <a class="profile-live-banner" href="/space/{{ live_space.id }}">
+    <span class="space-live-dot" aria-hidden="true"></span>
+    <strong>Live now</strong>
+    <span class="profile-live-title">{{ live_space.title }}</span>
+    <span class="profile-live-people">{{ live_space.people }} in it</span>
+    <span class="btn btn-primary btn-sm">Join</span>
+  </a>
+  {% endif %}
+
   <div class="profile-x-banner">
     {% if u.has_banner %}<img src="{{ u.banner_url }}" alt="" class="profile-x-banner-img">{% endif %}
   </div>

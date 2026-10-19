@@ -56,7 +56,7 @@ def test_the_forms_and_the_comment_js_use_the_same_names():
     assert "'comment-disc-'+fullname+'-paid'" in js and "'comment-edit-disc-'+id+'-paid'" in js
     assert 'disclosure_toggles("comment-disc-" ~' in read("ruqqus", "templates", "comments.html")
     assert 'disclosure_toggles("comment-edit-disc-" ~' in read("ruqqus", "templates", "comments.html")
-    assert 'disclosure_toggles("comment-disc-" ~' in read("ruqqus", "templates", "submission.html")
+    assert 'disclosure_toggles("comment-disc-" ~' in read("ruqqus", "templates", "partials", "comment_form.html")
 
 
 def test_the_labels_show_wherever_a_post_or_comment_is_listed():
