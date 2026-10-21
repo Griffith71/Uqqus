@@ -1,3 +1,4 @@
+import html
 import re
 from urllib.parse import urlparse
 from sqlalchemy import func, literal
@@ -1210,12 +1211,12 @@ Required form data:
         user_id=v.id,
         board_id=board.id,
         target_comment_id=comment.id,
-        note=reason
+        note=html.escape(reason)[:256]          # the log draws notes as HTML (bug hunt C1)
     )
     g.db.add(ma)
     g.db.commit()
 
-    html=render_template(
+    rendered=render_template(
                 "comments.html",
                 v=v,
                 comments=[comment],
@@ -1223,9 +1224,9 @@ Required form data:
                 is_allowed_to_comment=True
                 )
 
-    html=str(BeautifulSoup(html, features="html.parser").find(id=f"comment-{comment.base36id}-only"))
+    rendered=str(BeautifulSoup(rendered, features="html.parser").find(id=f"comment-{comment.base36id}-only"))
 
-    return jsonify({"html":html})
+    return jsonify({"html":rendered})
 
 
 @app.route("/mod/unhide_comment/<guildname>/<cid>", methods=["POST"])

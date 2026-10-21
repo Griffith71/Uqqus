@@ -1,3 +1,4 @@
+import html
 import time
 import calendar
 from flask import *
@@ -914,7 +915,7 @@ def admin_nuke_user(v):
 
     note='admin action'
     if user.ban_reason:
-        note+=f" | {user.ban_reason}"
+        note+=f" | {html.escape(user.ban_reason)}"     # the mod log draws notes as HTML (bug hunt C1)
 
 
     for post in g.db.query(Submission).filter_by(author_id=user.id).all():

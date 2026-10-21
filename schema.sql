@@ -6976,4 +6976,5 @@ INSERT INTO public.schema_migrations (name) VALUES
     ('2026-11-17_signin_alerts.sql'),
     ('2026-11-18_user_name_search_index.sql'),
     ('2026-11-20_guild_day_stats.sql'),
-    ('2026-11-21_self_automation.sql');
+    ('2026-11-21_self_automation.sql'),
+    ('2026-11-22_escape_mod_log_notes.sql');
