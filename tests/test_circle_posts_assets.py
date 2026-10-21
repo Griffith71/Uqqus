@@ -85,7 +85,9 @@ def test_a_page_request_gets_a_gate_that_shows_nothing_of_the_post_and_an_api_re
     gate = read("ruqqus", "templates", "errors", "circle_gate.html")
     assert not re.search(r"\b(post|p)\.(title|body|board|permalink|url)\b", gate)
     assert "owner.username" in gate and "Shared with a circle" in gate and "| safe" not in gate
-    assert "/api/circles/{{ c.id }}/subscribe" in gate and "c.id in joinable" in gate
+    # Join opens the subscribe sheet on the circles this post is for that take subscribers (no browser confirm)
+    assert 'data-circle-open="{{ c.id }}"' in gate and "c.id in joinable" in gate and "confirm(" not in gate
+    assert "subscribe_sheet(owner, offered, v)" in gate and 'selectattr("joinable")' in gate
 
 
 # --- lists --------------------------------------------------------------------------------------------
@@ -108,6 +110,8 @@ def test_lists_that_ask_for_public_posts_are_the_ones_known_and_each_decision_is
     # only when public. A bot can't post for circles (bots.option_refusal), so this is a second lock, never a way to leak one.
     # routes/chat.py 1 -> 0 (2026-11, audit M-12): the chat post preview asks `in_private_guild_for`, the post page's
     # own rule, instead of its own `post_public` / `can_view` test.
+    # routes/search.py 2 -> 4 (2026-10-21): the comment search asks for public posts the same way (comment_searchlisting:
+    # a non-public post's comments are found only by its author, the guild's mods and contributors).
     counts = {}
     for path in (ROOT / "ruqqus").rglob("*"):
         if path.suffix in (".py", ".html") and "__pycache__" not in path.parts:
@@ -119,7 +123,7 @@ def test_lists_that_ask_for_public_posts_are_the_ones_known_and_each_decision_is
         "ruqqus/helpers/ads.py": 1, "ruqqus/helpers/guild_channel_store.py": 1, "ruqqus/helpers/post_counts.py": 1, "ruqqus/helpers/space_counts.py": 1, "ruqqus/helpers/similar_store.py": 1, "ruqqus/helpers/circle_clause.py": 2, "ruqqus/helpers/creator_fund_store.py": 3, "ruqqus/helpers/circle_guard.py": 1, "ruqqus/helpers/trending_store.py": 2,
         "ruqqus/routes/circles.py": 1, "ruqqus/routes/curations.py": 2,
         "ruqqus/routes/deletion_log.py": 2, "ruqqus/routes/front.py": 6, "ruqqus/routes/legal.py": 1,
-        "ruqqus/routes/posts.py": 2, "ruqqus/routes/search.py": 2, "ruqqus/templates/comments.html": 1,
+        "ruqqus/routes/posts.py": 2, "ruqqus/routes/search.py": 4, "ruqqus/templates/comments.html": 1,
     }, counts
 
 
@@ -212,9 +216,9 @@ def test_the_menu_item_the_sheet_and_the_script_agree():
 
 def test_the_composer_the_create_page_and_drafts_all_carry_the_audience():
     options = read("ruqqus", "templates", "partials", "post_options.html")
-    assert '{% macro audience_field(selected, prefix, chosen=(), choices=(), layout="menu") %}' in options
+    assert '{% macro audience_field(selected, prefix, chosen=(), choices=(), layout="menu", noun="post") %}' in options
     assert 'name="audience"' in options and 'name="circles"' in options
-    assert "post_options.audience_field(audience_now, \"post-audience\", circles_now, circle_choices(v), \"cards\")" in read("ruqqus", "templates", "submit.html")
+    assert "post_options.audience_field(audience_now, \"post-audience\", circles_now, circle_choices(v))" in read("ruqqus", "templates", "submit.html")
     assert 'audience_field(0, "ic-audience", (), circle_choices(v))' in read("ruqqus", "templates", "partials", "inline_composer.html")
     drafts = read("ruqqus", "helpers", "post_drafts.py")
     assert 'circles.parse_audience(form.get("audience"), form.getlist("circles"))' in drafts and '"circles": list(circle_tokens),' in drafts

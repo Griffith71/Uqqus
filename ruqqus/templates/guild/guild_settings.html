@@ -97,6 +97,11 @@
                     <a class="nav-link{% if request.path.endswith('/mod/resources') %} active{% endif %}" href="/+{{ b.name }}/mod/resources"><i class="fas fa-thumbtack"></i>Resources</a>
                   </li>
                   {% endif %}
+                  {% if mod and (mod.perm_full or mod.perm_config or mod.perm_content) %}
+                  <li class="nav-item">
+                    <a class="nav-link{% if request.path.endswith('/mod/insights') %} active{% endif %}" href="/+{{ b.name }}/mod/insights"><i class="fas fa-chart-simple"></i>Insights</a>
+                  </li>
+                  {% endif %}
                   {% if mod and (mod.perm_config or mod.perm_content) %}
                   <li class="nav-item">
                     <a class="nav-link{% if request.path.endswith('/mod/channels') %} active{% endif %}" href="/+{{ b.name }}/mod/channels"><i class="fas fa-comments"></i>Channels</a>
@@ -171,6 +176,11 @@
             </li>
             <li class="nav-item">
               <a class="nav-link{% if request.path.endswith('/mod/resources') %} active{% endif %}" href="/+{{ b.name }}/mod/resources" aria-label="Resources"><i class="fas fa-thumbtack text-lg mr-0"></i></a>
+            </li>
+            {% endif %}
+            {% if mod and (mod.perm_full or mod.perm_config or mod.perm_content) %}
+            <li class="nav-item">
+              <a class="nav-link{% if request.path.endswith('/mod/insights') %} active{% endif %}" href="/+{{ b.name }}/mod/insights" aria-label="Insights"><i class="fas fa-chart-simple text-lg mr-0"></i></a>
             </li>
             {% endif %}
             {% if mod and (mod.perm_config or mod.perm_content) %}

@@ -28,14 +28,19 @@ from ruqqus.helpers.blocks import hide_blocked
 from ruqqus.helpers import guild_limits
 from ruqqus.helpers import circle_store
 from ruqqus.helpers import guild_channel_access
+from ruqqus.helpers import guild_insights_store
+from ruqqus.routes import guild_insights_pages
 from ruqqus.helpers import deletion_log as log_rules
 from ruqqus.helpers import guild_flair, guild_flair_store
+from ruqqus.helpers import bell as bell_rules
 
 # the templates quote the per-person cap (home sidebar, siege help) from the one place that sets it
 app.jinja_env.globals.update(GUILD_LIMIT_PER_PERSON=guild_limits.PER_PERSON,
                               GUILD_LIMIT_PER_NETWORK=guild_limits.PER_IP)
 
 
+# the site's own boards: general (1) and systemprofile (2), where every profile post lives
+INTERNAL_BOARDS = (1, 2)
 valid_board_regex = re.compile("^[a-zA-Z0-9][a-zA-Z0-9_]{2,24}$")
 
 @app.route("/m/<name>", methods=["GET"])
@@ -242,7 +247,7 @@ Optional form data:
         Board.creator_id.in_(user_ids),
         Board.created_utc >= cutoff).all()
     if v.admin_level<3 and len([x for x in recent]) >= 2:
-        return render_template("message.html",
+        return render_template("message.html", v=v,
                                title="You need to wait a bit.",
                                message="You can only create up to 2 guilds per day. Try again later."
                                ), 429
@@ -355,6 +360,8 @@ Optional query parameters:
                                                  ), 410),
                 'api': lambda: (jsonify({'error': f'410 Gone - +{board.name} is banned.'}), 410)
                 }
+    guild_insights_pages.count_page_view(v, board)
+
     if v:
         defaultsorting = v.defaultsorting
         defaulttime = v.defaulttime
@@ -470,6 +477,11 @@ URL path parameters:
         board_id=board.id
         )
     g.db.add(ma)
+    g.db.commit()
+
+    # a guildmaster's announcement rings the guild's bell, once per post (helpers/bell.py)
+    if post.gm_distinguish:
+        bell_rules.ring_guild(board, v, bell_rules.HERALD, post.id, f"/post/{post.base36id}")
 
     return "", 204
 
@@ -1664,6 +1676,9 @@ URL path parameters:
     board.stored_subscriber_count = board.subscriber_count
     g.db.add(board)
 
+    # guild insights count the join (counts only, best effort; helpers/guild_insights_store.py)
+    guild_insights_store.bump(g.db, board.id, "joins", int(time.time()))
+
     return jsonify({"message": f"Joined +{board.name}"}), 200
 
 
@@ -1705,6 +1720,8 @@ URL path parameters:
 
     # out of the guild's channel rooms too (helpers/guild_channels.py)
     guild_channel_access.remove_from_rooms(g.db, board.id, v.id, drop_roles=True)
+
+    guild_insights_store.bump(g.db, board.id, "leaves", int(time.time()))
 
     return jsonify({"message": f"Left +{board.name}"}), 200
 
@@ -1922,7 +1939,9 @@ def board_css(board_fullname, theme, x):
 
     # This doesn't use python's string formatting because
     # of some odd behavior with css files
-    scss = raw.replace("{boardcolor}", board.color)
+    # the site's internal boards (general, systemprofile) are the site's own colour, never Ruqqus's old purple
+    colour = app.config["SITE_COLOR"] if board.id in INTERNAL_BOARDS else board.color
+    scss = raw.replace("{boardcolor}", colour)
     scss = scss.replace("{maincolor}", app.config["SITE_COLOR"])
     scss = scss.replace("{ruqquspath}", app.config["RUQQUSPATH"])
 
@@ -2139,6 +2158,11 @@ URL path parameters:
         target_submission_id=post.id
     )
     g.db.add(ma)
+    g.db.commit()
+
+    # pinning is a guildmaster's announcement: it rings the guild's bell, once per post (helpers/bell.py)
+    if post.is_pinned:
+        bell_rules.ring_guild(board, v, bell_rules.PIN, post.id, f"/post/{post.base36id}")
 
     return "", 204
 
@@ -2705,4 +2729,7 @@ URL path parameters:
     g.db.add(sub)
     g.db.commit()
 
-    return jsonify({"message":f"Notifications {'en' if sub.get_notifs else 'dis'}abled for +{guild.name}"})
+    # the guild's bell rings for its guildmasters' announcements only (helpers/bell.py)
+    if sub.get_notifs:
+        return jsonify({"message": f"You'll be told when +{guild.name}'s guildmasters make an announcement."})
+    return jsonify({"message": f"Announcements from +{guild.name} turned off."})

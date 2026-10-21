@@ -75,7 +75,7 @@ OPERATORS = (
     Operator("url", "url", "url:example.com/news", "Posts whose link contains this text."),
     Operator("is", "choice", "-is:forward",
              "Forwarded copies (-is:forward leaves them out, so a post is found once), posts made with AI, "
-             "paid partnerships.", values=("forward", "ai", "partnership")),
+             "commercial promotion (paid partnerships, sponsorships, affiliate links).", values=("forward", "ai", "partnership")),
     Operator("flair", "flair", 'flair:"Question"', "Posts a guild tagged with this flair. With in:+guild, that guild's "
              "flair.", aliases=("tag",)),
     Operator("min_votes", "number", "min_votes:10", "A score of at least this many votes.", negatable=False),
@@ -90,13 +90,14 @@ CHOICE_ALIASES = {
     "has": {"links": "link", "images": "image", "picture": "image", "pictures": "image", "photo": "image",
             "videos": "video", "sound": "audio", "sounds": "audio", "polls": "poll"},
     "is": {"forwards": "forward", "forwarded": "forward", "made_with_ai": "ai", "paid": "partnership",
-           "partner": "partnership", "partnerships": "partnership"},
+           "partner": "partnership", "partnerships": "partnership", "promotion": "partnership",
+           "commercial": "partnership", "sponsored": "partnership"},
 }
 
 HAS_LABELS = {"link": "a link", "image": "a picture", "video": "a video", "audio": "a sound", "poll": "a poll"}
 IS_LABELS = {"forward": ("Forwarded copies", "No forwarded copies"),
              "ai": ("Made with AI", "Not made with AI"),
-             "partnership": ("Paid partnerships", "No paid partnerships")}
+             "partnership": ("Commercial promotion", "No commercial promotion")}
 
 
 def _squash(name):

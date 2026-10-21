@@ -104,9 +104,13 @@ def test_nothing_is_a_topic_without_the_site(monkeypatch):
 # --- the wiring ---------------------------------------------------------------------------------------------------
 
 def test_the_word_filter_reads_a_topic_link_like_the_other_mentions():
-    assert '"/topic/"' in read("ruqqus", "helpers", "wordfilter.py")
+    assert "topic/[A-Za-z0-9_-]+" in read("ruqqus", "helpers", "wordfilter.py")
     from ruqqus.helpers.wordfilter import visible_text
     assert "fuck" not in visible_text('<p>hi <a href="/topic/fuck">#fuck</a> there</p>')
+    assert "fuck" not in visible_text('<p>hi <a href="/@fuck">@fuck</a> there</p>')
+    # a link to someone's post or comment is not a mention: its words are read
+    assert "fuck" in visible_text('<p>hi <a href="/@alice/post/abc">fuck this</a> there</p>')
+    assert "fuck" in visible_text('<p>hi <a href="/+pets/@carol/post/abc">fuck this</a> there</p>')
 
 
 def test_the_search_box_has_the_two_branches_and_every_search_box_says_so():

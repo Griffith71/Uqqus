@@ -1,0 +1,72 @@
+{% extends "guild/guild_settings.html" %}
+
+{# A guild's insights for its guildmasters (routes/guild_insights_pages.py, helpers/guild_insights.py): counts only, never
+   who. Day-by-day bars only for a guild with enough members that a day can't point at one person. #}
+
+{% block pagetitle %}+{{ b.name }} Insights{% endblock %}
+
+{% block content %}
+<div class="row">
+  <div class="col" id="guild-insights">
+
+    <div class="d-flex justify-content-between align-items-start flex-wrap">
+      <div>
+        <h2 class="h5">Insights</h2>
+        <p class="text-small text-muted mb-2">How +{{ b.name }} is doing over the last {{ data.days }} days.</p>
+      </div>
+      <nav class="btn-group btn-group-sm mb-3" aria-label="Time range">
+        {% for w in windows %}
+        <a href="?days={{ w }}" class="btn btn-sm {% if w == data.days %}btn-secondary{% else %}btn-link text-muted{% endif %}"{% if w == data.days %} aria-current="page"{% endif %}>{{ w }} days</a>
+        {% endfor %}
+      </nav>
+    </div>
+
+    <div class="insight-tiles">
+      <div class="insight-tile"><span class="insight-number">{{ data.members }}</span><span class="insight-label">Members now</span></div>
+      <div class="insight-tile"><span class="insight-number">{{ signed(data.net) }}</span><span class="insight-label">Net growth</span><span class="insight-sub">{{ data.joined }} joined &middot; {{ data.left }} left</span></div>
+      <div class="insight-tile"><span class="insight-number">{{ data.views }}</span><span class="insight-label">Page views</span></div>
+      <div class="insight-tile"><span class="insight-number">{{ data.posts }}</span><span class="insight-label">Posts</span></div>
+      <div class="insight-tile"><span class="insight-number">{{ data.comments }}</span><span class="insight-label">Comments</span></div>
+      <div class="insight-tile"><span class="insight-number">{{ data.upvotes }}</span><span class="insight-label">Upvotes</span></div>
+      <div class="insight-tile"><span class="insight-number">{{ data.reports }}</span><span class="insight-label">Reports opened</span></div>
+      <div class="insight-tile"><span class="insight-number">{{ data.exiles }}</span><span class="insight-label">Exiles</span></div>
+    </div>
+
+    <h3 class="h6 mt-4">What the guildmasters did</h3>
+    {% if data.mod_actions %}
+    <table class="table table-sm insight-table">
+      <thead><tr><th scope="col">Action</th><th scope="col" class="text-right">Times</th></tr></thead>
+      <tbody>
+        {% for kind, n in data.mod_actions.items() %}<tr><td>{{ kind | replace("_", " ") | capitalize }}</td><td class="text-right">{{ n }}</td></tr>{% endfor %}
+      </tbody>
+    </table>
+    {% else %}
+    <p class="text-muted text-small">No moderator actions in this time.</p>
+    {% endif %}
+
+    <h3 class="h6 mt-4">Day by day</h3>
+    {% if data.series %}
+    <div class="insight-days" role="table" aria-label="Day by day">
+      <div class="insight-days-row insight-days-head" role="row">
+        <span role="columnheader">Day</span><span role="columnheader">Joined</span><span role="columnheader">Left</span><span role="columnheader">Views</span><span role="columnheader">Posts</span><span role="columnheader">Comments</span>
+      </div>
+      {% for day in data.series %}
+      <div class="insight-days-row" role="row">
+        <span role="cell">{{ day.label }}</span>
+        <span role="cell">{{ day.joins }}</span>
+        <span role="cell">{{ day.leaves }}</span>
+        <span role="cell"><span class="insight-bar" style="width: {{ (day.views * 100 / peak) | round(0) | int }}%"></span> {{ day.views }}</span>
+        <span role="cell">{{ day.posts }}</span>
+        <span role="cell">{{ day.comments }}</span>
+      </div>
+      {% endfor %}
+    </div>
+    {% else %}
+    <p class="text-muted text-small">Day-by-day figures appear once +{{ b.name }} has {{ min_chart }} members, so that a small guild's numbers can't point at one person. The totals above always show.</p>
+    {% endif %}
+
+    <p class="text-small text-muted mt-4 mb-1">{{ started_note }}</p>
+    <p class="text-small text-muted">{{ privacy_note }}</p>
+  </div>
+</div>
+{% endblock %}

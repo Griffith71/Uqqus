@@ -29,7 +29,9 @@ def test_the_operators_come_first_and_every_visibility_rule_still_follows():
     at = [listing.index(x) for x in order]
     assert at == sorted(at), order
     assert "@cache.memoize(300)\ndef searchlisting(" in ROUTE
-    assert ROUTE.count("filter_level=viewer_level(v)") == 1 and "filter_level=viewer_level(v)" in body(ROUTE, "post_search")
+    # the post search and the comment search each put the viewer's filter level in their cache key
+    assert ROUTE.count("filter_level=viewer_level(v)") == 2 and "filter_level=viewer_level(v)" in body(ROUTE, "post_search")
+    assert "filter_level=viewer_level(v)" in body(ROUTE, "comment_search")
 
 
 def test_a_search_with_a_problem_does_not_run_and_a_slow_one_says_so():

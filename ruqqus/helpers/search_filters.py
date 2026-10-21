@@ -125,9 +125,10 @@ def _host_pattern(host):
     return r"^https?://([^/]*\.)?" + re.escape(host) + r"(/|:|\?|#|$)"
 
 
-def _text(part):
+def text_condition(part):
     """A word or phrase in the title or the text. The positive form leaves the columns bare so
-    the trigram indexes can answer it; the negative one needs coalesce (NOT NULL is NULL)."""
+    the trigram indexes can answer it; the negative one needs coalesce (NOT NULL is NULL).
+    The feed filters' "any of these words" uses it too (helpers/feed_filter_sql.py)."""
     from ruqqus.classes import SubmissionAux
 
     pattern = like_pattern(part.value)
@@ -156,7 +157,7 @@ def _condition(part, v):
 
     k, value, negated = part.kind, part.value, part.negated
     if k in sq.TEXT:
-        return _text(part)
+        return text_condition(part)
     if k == "from":
         if negated:
             return not_(and_(Submission.author_id == part.ref, not_(Submission.is_anonymous)))

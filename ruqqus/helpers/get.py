@@ -6,16 +6,25 @@ from sqlalchemy import *
 from sqlalchemy.orm import *
 from urllib.parse import urlparse
 from ruqqus.helpers import circle_guard
+from ruqqus.helpers import permalinks
 
 import re
 import time
 
 
+def like_literal(text):
+    """`text` as a pattern that matches only itself in LIKE / ILIKE. Use it with `escape=LIKE_ESCAPE`: the escape
+    character is named in the query, so the result doesn't depend on a database's default (Postgres's is a backslash,
+    SQLite has none)."""
+    return text.replace("\\", "\\\\").replace("%", "\\%").replace("_", "\\_")
+
+
+LIKE_ESCAPE = "\\"
+
+
 def get_user(username, v=None, nSession=None, graceful=False):
 
-    username = username.replace('\\', '')
-    username = username.replace('_', r'\_')
-    username = username.replace('%', '')
+    username = like_literal(username)
 
     if not nSession:
         nSession = g.db
@@ -37,8 +46,8 @@ def get_user(username, v=None, nSession=None, graceful=False):
             aliased(UserBlock, alias=isblocked),
             aliased(Follow, alias=follow)
             ).filter(or_(
-                User.username.ilike(username),
-                User.original_username.ilike(username)
+                User.username.ilike(username, escape=LIKE_ESCAPE),
+                User.original_username.ilike(username, escape=LIKE_ESCAPE)
             )).join(
             isblocking,
             isblocking.c.target_id==User.id,
@@ -69,8 +78,8 @@ def get_user(username, v=None, nSession=None, graceful=False):
         User
         ).filter(
         or_(
-            User.username.ilike(username),
-            User.original_username.ilike(username)
+            User.username.ilike(username, escape=LIKE_ESCAPE),
+            User.original_username.ilike(username, escape=LIKE_ESCAPE)
             )
         ).first()
 
@@ -1057,11 +1066,9 @@ def get_board(bid,v=None, graceful=False):
 def get_curation(slug, v=None, graceful=False):
 
     slug = slug.lstrip('&')
-    slug = slug.replace('\\', '')
-    slug = slug.replace('_', r'\_')
-    slug = slug.replace('%', '')
+    slug = like_literal(slug)
 
-    curation = g.db.query(Curation).filter(Curation.slug.ilike(slug)).first()
+    curation = g.db.query(Curation).filter(Curation.slug.ilike(slug, escape=LIKE_ESCAPE)).first()
 
     if not curation:
         if graceful:
@@ -1135,9 +1142,7 @@ def get_guild(name, v=None, graceful=False, db=None):
 
     name = name.lstrip('+')
 
-    name = name.replace('\\', '')
-    name = name.replace('_', r'\_')
-    name = name.replace('%', '')
+    name = like_literal(name)
 
     if v:
         sub = g.db.query(Subscription).filter_by(user_id=v.id, is_active=True).subquery()
@@ -1149,7 +1154,7 @@ def get_guild(name, v=None, graceful=False, db=None):
             joinedload(Board.moderators).joinedload(ModRelationship.user),
             joinedload(Board.subcat).joinedload(SubCategory.category)
             ).filter(
-                    Board.name.ilike(name)
+                    Board.name.ilike(name, escape=LIKE_ESCAPE)
             ).join(
             sub,
             sub.c.board_id==Board.id,
@@ -1167,7 +1172,7 @@ def get_guild(name, v=None, graceful=False, db=None):
             joinedload(Board.moderators).joinedload(ModRelationship.user),
             joinedload(Board.subcat).joinedload(SubCategory.category)
             ).filter(
-                    Board.name.ilike(name)
+                    Board.name.ilike(name, escape=LIKE_ESCAPE)
         )
         board=query.first()
     
@@ -1238,33 +1243,27 @@ def get_application(client_id, graceful=False):
 
 
 def get_from_permalink(link, v=None):
+    """The post, comment, account or guild an address on this site names (a post's or comment's address first: it
+    starts with an @name or a +guild too, helpers/permalinks.py)."""
 
-    link=urlparse(link).path
+    link = urlparse(link).path
 
-    if "@" in link:
+    found = permalinks.parse(link)
+    if found:
+        kind, b36 = found
+        if kind == "comment":
+            return get_comment(b36, v=v)
+        return get_post(b36, v=v)
 
-        name = re.search(r"/@(\w+)", link)
-        if name:
-            name=name.group(1)
-            return get_user(name, v=v)
+    name = re.fullmatch(r"/@(\w+)/?", link)
+    if name:
+        return get_user(name.group(1), v=v)
 
-    if "+" in link:
+    guild = re.fullmatch(r"/\+(\w+)/?", link)
+    if guild:
+        return get_guild(guild.group(1), v=v)
 
-        x = re.search(r"/\+(\w+)$", link)
-        if x:
-            name=x.group(1)
-            return get_guild(name, v=v)
-
-    ids = re.search(r"/\+\w+/post/(\w+)/[^/]+(/(\w+))?", link)
-
-    post_id = ids.group(1)
-    comment_id = ids.group(3)
-
-    if comment_id:
-        return get_comment(comment_id, v=v)
-
-    else:
-        return get_post(post_id, v=v)
+    abort(404)
 
 
 def get_from_fullname(fullname, v=None, graceful=False):
@@ -1312,9 +1311,8 @@ def get_txid(txid):
 
 def get_promocode(code):
 
-    code = code.replace('\\', '')
-    code = code.replace("_", r"\_")
+    code = like_literal(code)
 
-    code = g.db.query(PromoCode).filter(PromoCode.code.ilike(code)).first()
+    code = g.db.query(PromoCode).filter(PromoCode.code.ilike(code, escape=LIKE_ESCAPE)).first()
 
     return code

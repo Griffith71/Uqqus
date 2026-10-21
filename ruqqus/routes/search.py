@@ -1,6 +1,7 @@
 from ruqqus.classes import *
 from ruqqus.helpers.wrappers import *
-from ruqqus.helpers.visibility import filter_posts, filter_boards, filter_users, viewer_level
+from ruqqus.helpers.visibility import (comment_thread_hidden, filter_boards, filter_comments, filter_posts,
+                                       filter_users, post_hidden, viewer_level)
 from ruqqus.helpers.muting import hide_muted
 from ruqqus.helpers.blocks import hide_blocked
 from urllib.parse import quote
@@ -11,7 +12,8 @@ from sqlalchemy import *
 from flask import *
 from ruqqus.classes.domains import reasons as REASONS
 from ruqqus.__main__ import app, cache
-from ruqqus.helpers import search_filters, search_query
+from ruqqus.helpers import search_comments, search_filters, search_query
+from ruqqus.helpers.get import LIKE_ESCAPE, like_literal
 from ruqqus.helpers import topics as topic_rules
 from ruqqus.helpers.curation_feed import FeedTooSlow, limited
 from ruqqus.helpers.languages import LANGUAGE_NAMES
@@ -200,6 +202,129 @@ def post_search(raw, v, page, t, sort, b=None):
     return total, ids, query, notes
 
 
+COMMENT_SORTS = ("top", "new", "old")
+
+
+@cache.memoize(300)
+def comment_searchlisting(query, v=None, page=1, sort="top", b=None, filter_level=None):
+    """(total, ids) of comments matching a resolved, prepared query. Who may see what follows the site's comment list
+    (routes/front.py `comment_idlist`) and the post search above: the word filter, mutes (not for a search of one
+    author's comments), blocks either way (the comment's author and its post's), removed and deleted comments and
+    posts, banned guilds, a guild the viewer muted, private guilds and Circles (a post that is not public is only for
+    its author, the guild's mods and contributors). `filter_level` is part of the cache key."""
+    comments = g.db.query(Comment.id).join(
+        CommentAux, CommentAux.id == Comment.id
+    ).join(
+        Submission, Submission.id == Comment.parent_submission      # a system message has no post: it is never found
+    ).join(
+        Board, Board.id == Submission.board_id
+    )
+
+    comments = search_comments.apply(comments, query, v)
+
+    if b:
+        comments = comments.filter(Submission.board_id == b.id)
+
+    comments = filter_comments(comments, v)
+    if not query.for_one_author:
+        comments = hide_muted(comments, v, Comment)
+    if v and v.hide_bot:
+        comments = comments.filter(Comment.is_bot == False)
+
+    # removed and deleted items belong on the logs, not in a search, admins included
+    comments = comments.filter(Comment.is_banned == False, Comment.deleted_utc == 0,
+                               Submission.is_banned == False, Submission.deleted_utc == 0,
+                               Board.is_banned == False)
+
+    if v and v.admin_level >= 4:
+        pass
+    elif v:
+        m = select(ModRelationship.board_id).filter_by(user_id=v.id, invite_rescinded=False).scalar_subquery()
+        c = select(ContributorRelationship.board_id).filter_by(user_id=v.id).scalar_subquery()
+        comments = comments.filter(or_(
+            Submission.author_id == v.id,
+            and_(Submission.post_public == True, Board.is_private == False),
+            Submission.board_id.in_(m),
+            Submission.board_id.in_(c)))
+        comments = hide_blocked(comments, v, Comment)
+        comments = hide_blocked(comments, v, Submission)
+        if not b:
+            comments = comments.filter(Submission.board_id.notin_(select(BoardBlock.board_id).filter_by(user_id=v.id)))
+    else:
+        comments = comments.filter(Submission.post_public == True, Board.is_private == False)
+
+    if sort == "new":
+        comments = comments.order_by(Comment.created_utc.desc())
+    elif sort == "old":
+        comments = comments.order_by(Comment.created_utc.asc())
+    else:
+        comments = comments.order_by(Comment.score_top.desc())
+
+    def run():
+        return comments.count(), [x[0] for x in comments.offset(25 * (page - 1)).limit(26).all()]
+
+    return limited(g.db, run, TIME_LIMIT_MS)
+
+
+def comment_search(raw, v, page, sort, b=None):
+    """(total, ids, query, notices) for the comment search, as `post_search`: a problem with the query, or one that
+    would read every comment, is a notice and the search does not run."""
+    query, notes = search_filters.resolve(search_query.parse(raw), v, b=b)
+    if query.problems:
+        return 0, [], query, list(query.problems) + notes
+    query, dropped = search_comments.prepare(query)
+    notes = notes + dropped
+    broad = search_comments.problem(query)
+    if broad:
+        return 0, [], query, [broad] + notes
+    try:
+        total, ids = comment_searchlisting(query, v=v, page=page, sort=sort, b=b, filter_level=viewer_level(v))
+    except FeedTooSlow:
+        return 0, [], query, [search_query.TOO_SLOW] + notes
+    return total, ids, query, notes
+
+
+def comments_for(ids, v):
+    """The comments of a page of results, in the order found. One whose ancestor the viewer's filter hides (it can't be
+    checked in SQL), or whose post they may not open, is left out, so a page can come up short."""
+    found = {c.id: c for c in get_comments(ids, v=v)}
+    shown = []
+    for cid in ids:
+        comment = found.get(cid)
+        if comment is None or comment_thread_hidden(comment, v):
+            continue
+        post = comment.post
+        if post is None or post_hidden(post, v) or post.in_private_guild_for(v):
+            continue
+        shown.append(comment)
+    return shown
+
+
+def comment_search_response(query, v, page, b=None):
+    """The results page (or JSON) of a comment search, for the site's search and a guild's."""
+    sort = sort_of(request.args.get("sort"), "top")
+    sort = sort if sort in COMMENT_SORTS else "top"
+    total, ids, parsed, notices = comment_search(query, v, page, sort, b=b)
+    next_exists = len(ids) == 26
+    comments = comments_for(ids[0:25], v)
+    return {"html": lambda: render_template("search_comments.html",
+                                            v=v,
+                                            query=query,
+                                            total=total,
+                                            page=page,
+                                            listing=comments,
+                                            standalone=True,
+                                            sort_method=sort,
+                                            time_filter="all",
+                                            next_exists=next_exists,
+                                            notices=notices,
+                                            b=b,
+                                            comment_search=True,
+                                            **search_page(parsed)),
+            "api": lambda: jsonify({"data": [x.json for x in comments], "next_exists": next_exists,
+                                    "notices": notices})}
+
+
 def search_page(query):
     """What the results page shows about the query: a chip per operator with the query
     without it (its remove link), and the advanced form filled in."""
@@ -366,13 +491,14 @@ def search(v, search_type="posts"):
 
     elif query.startswith("@"):
             
-        term=query.lstrip('@')
-        term=term.replace('\\','')
-        term=term.replace('_', r'\_')
-        
+        # a handle OR a display name (helpers/display_names.py): what a person types is a name to find, so `%` and `_`
+        # in it are letters, not wildcards (the older code escaped `_` and let `%` through)
+        term = like_literal(query.lstrip('@'))
+
         now=int(time.time())
-        users=g.db.query(User).filter(
-            User.username.ilike(f'%{term}%'))
+        users=g.db.query(User).filter(or_(
+            User.username.ilike(f'%{term}%', escape=LIKE_ESCAPE),
+            User.display_name.ilike(f'%{term}%', escape=LIKE_ESCAPE)))
         users=filter_users(users, v)
         
         
@@ -389,7 +515,10 @@ def search(v, search_type="posts"):
               )
             )
         )
-        users=users.order_by(User.username.ilike(term).desc(), User.stored_subscriber_count.desc())
+        # the exact handle first, then an exact display name, then the most followed
+        users=users.order_by(User.username.ilike(term, escape=LIKE_ESCAPE).desc(),
+                             User.display_name.ilike(term, escape=LIKE_ESCAPE).desc(),
+                             User.stored_subscriber_count.desc())
         
         total=users.count()
         
@@ -411,6 +540,9 @@ def search(v, search_type="posts"):
                 }
                    
     
+
+    elif request.args.get("type") == "comments":
+        return comment_search_response(query, v, page)
 
     else:
         sort = sort_of(request.args.get("sort"), "top")
@@ -476,6 +608,9 @@ def search_guild(name, v, search_type="posts"):
         return render_template("board_banned.html", v=v, b=b)
 
     page=page_number()
+
+    if request.args.get("type") == "comments":
+        return comment_search_response(query, v, page, b=b)
 
     sort=sort_of(request.args.get("sort"), "hot")
     

@@ -81,11 +81,15 @@
           {% if b %}<div class="text-muted text-small mb-1">Showing results in +{{ b.name }}. <a href="/search?q={{ query | urlencode }}">Did you want to search all of {{ 'SITE_NAME' | app_config }} instead?</a></div>{% endif %}
 
           {% if post_search %}
+          <nav class="btn-group btn-group-sm search-types mt-2 mb-1" aria-label="What to search">
+            <a href="{% if b %}/+{{ b.name }}{% endif %}/search?q={{ query | urlencode }}" class="btn btn-sm {% if comment_search %}btn-link text-muted{% else %}btn-secondary{% endif %}"{% if not comment_search %} aria-current="page"{% endif %}><i class="fas fa-align-left mr-1" aria-hidden="true"></i>Posts</a>
+            <a href="{% if b %}/+{{ b.name }}{% endif %}/search?q={{ query | urlencode }}&type=comments" class="btn btn-sm {% if comment_search %}btn-secondary{% else %}btn-link text-muted{% endif %}"{% if comment_search %} aria-current="page"{% endif %}><i class="fas fa-comment mr-1" aria-hidden="true"></i>Comments</a>
+          </nav>
           {# the operators of this search (helpers/search_query.py), each with a link to the search without it #}
           {% if chips %}
           <div class="search-chips" role="group" aria-label="Filters in this search">
             {% for chip_label, rest in chips %}
-            <span class="search-chip">{{ chip_label }} <a href="?q={{ rest | urlencode }}&sort={{ sort_method }}&t={{ time_filter }}" aria-label="Remove the filter: {{ chip_label }}">&times;</a></span>
+            <span class="search-chip">{{ chip_label }} <a href="?q={{ rest | urlencode }}&sort={{ sort_method }}&t={{ time_filter }}{% if comment_search %}&type=comments{% endif %}" aria-label="Remove the filter: {{ chip_label }}">&times;</a></span>
             {% endfor %}
           </div>
           {% endif %}
@@ -97,7 +101,7 @@
           {% endif %}
 
           <div class="search-tools">
-            <details class="search-advanced">
+            {% if not comment_search %}<details class="search-advanced">
               <summary>Advanced search</summary>
               <form action="{% if b %}/+{{ b.name }}{% endif %}/search" method="get" class="search-advanced-form">
                 <input type="hidden" name="adv" value="1">
@@ -130,7 +134,7 @@
                   <button type="submit" class="btn btn-primary">Search</button>
                 </div>
               </form>
-            </details>
+            </details>{% endif %}
             <a class="search-tips-link" href="/help/search">Search tips</a>
           </div>
           {% endif %}

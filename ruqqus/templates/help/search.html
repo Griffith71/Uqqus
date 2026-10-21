@@ -69,6 +69,16 @@
   <li>The search page has an <b>Advanced search</b> form that writes the operators for you.</li>
 </ul>
 
+<h2>Searching comments</h2>
+
+<p>On the search page, switch from <b>Posts</b> to <b>Comments</b> to search what people wrote in comments (the same switch is on a guild's own search). Words, "phrases" and <code>-words</code> are looked for in the comment's text. These operators work on comments: <code>from:</code>, <code>in:</code> (where the comment is: its post's guild, topic or curation), <code>since:</code>, <code>until:</code>, <code>after:</code>, <code>before:</code>, <code>on:</code>, <code>min_votes:</code>, <code>is:ai</code> and <code>is:partnership</code>. The ones about a post's own content (<code>has:</code>, <code>lang:</code>, <code>domain:</code>, <code>url:</code>, <code>flair:</code>, <code>is:forward</code>, <code>min_comments:</code>) are left out with a note.</p>
+
+<ul>
+  <li>A comment search needs a word of at least 3 letters, or <code>from:</code> or <code>in:</code>.</li>
+  <li>Comments follow the same rules as everywhere else: your word filter, the accounts you blocked or muted, and private guilds and Circle posts you can't open are never shown. Comments under a post you can't open are left out, so a page can have fewer than 25 results.</li>
+  <li>Anonymous comments are never found with <code>from:</code>.</li>
+</ul>
+
 <h2>Examples</h2>
 
 <ul>
@@ -77,6 +87,7 @@
   <li><code>in:#gaming has:video</code>: videos in any guild about gaming.</li>
   <li><code>recipe lang:es -is:forward</code>: recipes in Spanish, each post once.</li>
   <li><code>"open source" min_votes:50 min_comments:10</code>: well-discussed posts about open source.</li>
+  <li>Comments: <code>from:@alice since:2026-01-01 recipe</code>, or <code>in:+pets "vet bill"</code>.</li>
 </ul>
 
 {% endblock %}
