@@ -6095,7 +6095,7 @@ CREATE TABLE public.bots (
     posts_today integer DEFAULT 0 NOT NULL,
     CONSTRAINT bots_one_per_account UNIQUE (user_id),
     CONSTRAINT bots_status CHECK (status IN ('pending', 'approved', 'rejected', 'paused')),
-    CONSTRAINT bots_kind CHECK (kind IN ('site', 'member'))
+    CONSTRAINT bots_kind CHECK (kind IN ('site', 'member', 'self'))
 );
 CREATE INDEX bots_owner_idx ON public.bots (owner_id);
 CREATE INDEX bots_proposed_idx ON public.bots (proposed_by_id);
@@ -6975,4 +6975,5 @@ INSERT INTO public.schema_migrations (name) VALUES
     ('2026-11-16_login_user_agent.sql'),
     ('2026-11-17_signin_alerts.sql'),
     ('2026-11-18_user_name_search_index.sql'),
-    ('2026-11-20_guild_day_stats.sql');
+    ('2026-11-20_guild_day_stats.sql'),
+    ('2026-11-21_self_automation.sql');

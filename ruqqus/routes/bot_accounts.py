@@ -1,11 +1,15 @@
 """Bot accounts (helpers/bots.py rules, helpers/bot_store.py SQL): Settings > Bots, where members and admins propose
 bots and manage the ones they may, and the admins' queue at /admin/bots.
 
-Two kinds (helpers/bots.py): a SITE bot runs on free feeds and, once approved, belongs to nobody (the admins run it);
-a MEMBER bot needs its member (a key, an API bill) and stays theirs. Who may change a bot is `bots.may_manage`
-(`_manageable`): an admin, any bot; a member, their own member bot, and a site bot they proposed while it still
-waits. Anything else is a 404. Every change is a POST with the form key. Whoever is responsible for a bot
+Three kinds (helpers/bots.py): a SITE bot runs on free feeds and, once approved, belongs to nobody (the admins run it);
+a MEMBER bot needs its member (a key, an API bill) and stays theirs; SELF is automated posting on the member's OWN
+account, which they keep using as themselves. Who may change a bot is `bots.may_manage` (`_manageable`): an admin,
+any bot; a member, their own member bot and their own account's automated posting, and a site bot they proposed while
+it still waits. Anything else is a 404. Every change is a POST with the form key. Whoever is responsible for a bot
 (`bots.responsible_id`) is told of every decision about it.
+
+**A SELF row's account is a person's account**: nothing here deletes, deactivates, renames or edits its profile, and
+its OAuth grants are the person's own, never a bot's keys (`_not_self`, `settings_bot_delete`).
 """
 import html
 import io
@@ -44,9 +48,16 @@ def _manageable(name, v):
     if not bots.may_manage(row, v.id, admin):
         abort(404)
     account = g.db.query(User).filter_by(id=row.user_id).first()
-    if account is None or not account.is_bot or account.is_deleted:
+    if account is None or account.is_deleted or not (account.is_bot or bots.is_self(row)):
         abort(404)
     return account, row, admin
+
+
+def _not_self(row):
+    """The routes that edit a bot ACCOUNT (its picture, banner, bio, display name, keys) are not for a person's own
+    account: they edit their profile in Settings > Profile, and their own scripts use their own apps."""
+    if bots.is_self(row):
+        abort(404)
 
 
 def _feed_title(url):
@@ -148,8 +159,65 @@ def _set_bio(account, raw):
 def settings_bots(v):
     rows = bot_store.bots_of(g.db, v.id)
     refusal = bots.owner_refusal(v, bot_store.active_count(g.db, v.id))
+    own = bot_store.own_automation(g.db, v.id)
     return render_template("settings_bots.html", v=v, bots_list=rows, refusal=refusal, rules=bots, admin=bots.is_admin(v),
+                           own=own, own_refusal=bots.self_refusal(v, own is not None and own.status != bots.REJECTED),
                            msg=request.args.get("msg"), error=request.args.get("error"))
+
+
+def _feeds(raw):
+    """(urls, titles, error) for the feeds typed one per line: each checked and read once now."""
+    lines = [line for line in (raw or "").splitlines() if line.strip()]
+    if len(lines) > bots.MAX_SOURCES:
+        return [], [], f"A bot can read at most {bots.MAX_SOURCES} feeds."
+    urls, titles = [], []
+    for line in lines:
+        url, error = bots.parse_feed_url(line, allow_local=feed_fetch.safe_fetch.local_allowed())
+        if error:
+            return [], [], error
+        title, error = _feed_title(url)
+        if error:
+            return [], [], error
+        if url not in urls:
+            urls.append(url)
+            titles.append(title)
+    return urls, titles, None
+
+
+@app.post("/settings/bots/automate")
+@is_not_banned
+@validate_formkey
+def settings_bots_automate(v):
+    """Automated posting on the member's OWN account (helpers/bots.py SELF): no new account, nothing about their
+    profile changes. Their feeds' new items are posted as them, each marked automated, once an admin approves it.
+    One per account, apart from the bots they run. A rejected one is replaced by the new proposal."""
+    now = int(time.time())
+    own = bot_store.own_automation(g.db, v.id)
+    refusal = bots.self_refusal(v, own is not None and own.status != bots.REJECTED, now)
+    if refusal:
+        return _back("/settings/bots", error=refusal)
+    purpose, error = bots.parse_purpose(request.form.get("purpose"))
+    urls, titles = [], []
+    if not error:
+        urls, titles, error = _feeds(request.form.get("sources"))
+    error = error or bots.kind_refusal(bots.SELF, len(urls))
+    guilds = []
+    if not error:
+        guilds, error = _guild_names(request.form.get("forward_guilds"), v)
+    if error:
+        return _back("/settings/bots", error=error)
+    if own is not None:                          # a rejected proposal: its row and feeds make way for this one
+        bot_store.forget_bot(g.db, v.id)
+    bot_store.add_bot(g.db, v.id, v.id, v.username, purpose, guilds, now, kind=bots.SELF, proposed_by=v.id)
+    for url, title in zip(urls, titles):
+        source_id = bot_store.add_source(g.db, v.id, url, now)
+        bot_store.record_check(g.db, source_id, 0, 0, title=title)
+    approved = bots.is_admin(v) and request.form.get("approve_now") == "1"
+    if approved:
+        bot_store.review_bot(g.db, v.id, bots.APPROVED, v.id, "", now)
+    g.db.commit()
+    return _back(f"/settings/bots/{v.username}", msg="Your account posts from these feeds from now on." if approved else
+                 "Thanks. An admin will look at it soon; you will get a notification.")
 
 
 @app.post("/settings/bots/apply")
@@ -170,20 +238,11 @@ def settings_bots_apply(v):
     error = error or purpose_error or display_error
     if not error and get_user(name, graceful=True):
         error = "That name is taken."
-    lines = [line for line in (request.form.get("sources") or "").splitlines() if line.strip()]
-    if not error and len(lines) > bots.MAX_SOURCES:
-        error = f"A bot can read at most {bots.MAX_SOURCES} feeds."
     urls, titles = [], []
-    for line in lines if not error else []:
-        url, error = bots.parse_feed_url(line, allow_local=feed_fetch.safe_fetch.local_allowed())
-        if error:
-            break
-        title, error = _feed_title(url)
-        if error:
-            break
-        if url not in urls:
-            urls.append(url)
-            titles.append(title)
+    if not error:
+        urls, titles, error = _feeds(request.form.get("sources"))
+    if not error and kind == bots.SELF:
+        error = "Automated posting on your own account is set up in its own section."
     error = error or bots.kind_refusal(kind, len(urls))
     guilds = []
     if not error:
@@ -258,6 +317,12 @@ def settings_bot(name, v):
 def settings_bot_profile(name, v):
     account, row, admin = _manageable(name, v)
     guilds, error = _guild_names(request.form.get("forward_guilds"), v)
+    if bots.is_self(row):                        # a person's own account: only where its automated posts go
+        if error:
+            return _back(_page(account), error=error)
+        bot_store.set_forward_guilds(g.db, account.id, guilds)
+        g.db.commit()
+        return _back(_page(account), msg="Saved.")
     if not error and request.form.get("display_name") is not None:
         account.display_name, error = _display_name(request.form.get("display_name"), account.id)
     if error:
@@ -278,6 +343,7 @@ def settings_bot_picture(name, which, v):
     if which not in ("picture", "banner"):
         abort(404)
     account, row, admin = _manageable(name, v)
+    _not_self(row)
     field = "profile" if which == "picture" else "banner"
     file, error = _image(request.files.get(field))
     if error or file is None:
@@ -295,6 +361,7 @@ def settings_bot_picture_remove(name, which, v):
     if which not in ("picture", "banner"):
         abort(404)
     account, row, admin = _manageable(name, v)
+    _not_self(row)
     try:
         account.del_profile() if which == "picture" else account.del_banner()
     except Exception:
@@ -369,8 +436,8 @@ def settings_bot_pause(name, v):
     if not bot_store.set_running(g.db, account.id, False, reason, by_admin=admin):
         return _back(_page(account), error="Only a running bot can be paused.")
     g.db.commit()
-    if admin and row.kind == bots.MEMBER and row.owner_id != v.id:
-        _tell(row.owner_id, f"An admin paused your bot @{row.username}: {reason}")
+    if admin and row.kind in (bots.MEMBER, bots.SELF) and row.owner_id != v.id:
+        _tell(row.owner_id, f"An admin paused {bots.subject(row, capital=False)}: {reason}")
     return _back(_page(account), msg="Paused. Nothing is posted until it is resumed.")
 
 
@@ -382,8 +449,8 @@ def settings_bot_resume(name, v):
     if not bot_store.set_running(g.db, account.id, True, by_admin=admin):
         return _back(_page(account), error="An admin paused this bot; only an admin can start it again.")
     g.db.commit()
-    if admin and row.kind == bots.MEMBER and row.owner_id != v.id:
-        _tell(row.owner_id, f"Your bot @{row.username} is running again.")
+    if admin and row.kind in (bots.MEMBER, bots.SELF) and row.owner_id != v.id:
+        _tell(row.owner_id, f"{bots.subject(row)} is running again.")
     return _back(_page(account), msg="Running again.")
 
 
@@ -392,8 +459,17 @@ def settings_bot_resume(name, v):
 @validate_formkey
 def settings_bot_delete(name, v):
     """A proposal that still waits is withdrawn: the account goes (it never posted). A bot that ran stops for good:
-    its posts stay, under a deactivated account, like any account's, and its keys stop working."""
+    its posts stay, under a deactivated account, like any account's, and its keys stop working. A person's own
+    account only stops posting automatically: the account, its posts and its own apps' grants are untouched."""
     account, row, admin = _manageable(name, v)
+    if bots.is_self(row):
+        bot_store.forget_bot(g.db, account.id)
+        g.db.commit()
+        if admin and row.owner_id != v.id:
+            _tell(row.owner_id, "An admin switched off your account's automated posting. Your account and your "
+                                "posts are as they were.")
+            return _back("/admin/bots", msg=f"@{row.username}'s automated posting is switched off.")
+        return _back("/settings/bots", msg="Your account no longer posts automatically. Its posts stay.")
     username = account.username
     for key in _keys_of(account.id):
         g.db.delete(key)
@@ -452,6 +528,7 @@ def settings_bot_create_key(name, v):
 @validate_formkey
 def settings_bot_revoke_key(name, key_id, v):
     account, row, admin = _manageable(name, v)
+    _not_self(row)
     key = g.db.query(ClientAuth).filter_by(id=key_id, user_id=account.id).first()
     if key is None:
         abort(404)
@@ -500,6 +577,10 @@ def admin_bot_approve(uid, v):
     if row.kind == bots.SITE:
         _tell(row.proposed_by_id, f"The bot you proposed, [@{row.username}](/@{row.username}), was approved. It is run by "
                                   "the site from now on and starts posting from its feeds within a few minutes. Thank you!")
+    elif bots.is_self(row):
+        _tell(row.owner_id, "Your account's automated posting was approved. Your feeds' new posts appear on your "
+                            "profile, marked as automated, within a few minutes. Manage it in "
+                            "[Settings > Bots](/settings/bots).")
     else:
         _tell(row.owner_id, f"Your bot [@{row.username}](/@{row.username}) was approved. It starts posting within a few "
                             "minutes. Manage it in [Settings > Bots](/settings/bots).")
@@ -514,13 +595,15 @@ def admin_bot_reject(uid, v):
     note = bots.plain_text(request.form.get("note"), bots.NOTE_MAX)
     if row is None or not bot_store.review_bot(g.db, uid, bots.REJECTED, v.id, note):
         abort(404)
-    # the account never posted anything: it goes, so the name is free again (the row keeps the name and the note)
-    account = g.db.query(User).filter_by(id=uid, is_bot=True).first()
-    if account is not None:
-        g.db.delete(account)
+    # a bot account never posted anything: it goes, so the name is free again (the row keeps the name and the note).
+    # A person's own account is never a bot account (is_bot), so nothing here can touch it.
+    if not bots.is_self(row):
+        account = g.db.query(User).filter_by(id=uid, is_bot=True).first()
+        if account is not None:
+            g.db.delete(account)
     g.db.commit()
-    _tell(bots.responsible_id(row), f"The bot @{row.username} you proposed was not approved."
-                                    + (f" The admins said: {note}" if note else ""))
+    what = "Automated posting for your account was" if bots.is_self(row) else f"The bot @{row.username} you proposed was"
+    _tell(bots.responsible_id(row), f"{what} not approved." + (f" The admins said: {note}" if note else ""))
     return _back("/admin/bots", msg=f"@{row.username} rejected.")
 
 
@@ -556,8 +639,8 @@ def admin_bot_kind(uid, v):
     row = bot_store.bot_of(g.db, uid)
     account = g.db.query(User).filter_by(id=uid, is_bot=True).first()
     kind = bots.parse_kind(request.form.get("kind"))
-    if row is None or account is None or row.status != bots.PENDING or kind is None:
-        abort(404)
+    if row is None or account is None or row.status != bots.PENDING or kind in (None, bots.SELF):
+        abort(404)                               # a bot account is never turned into a person's own account
     if kind == bots.SITE and not bot_store.source_count(g.db, uid):
         return _back(f"/settings/bots/{account.username}", error="A site bot reads at least one feed: add one first.")
     owner_id = row.proposed_by_id if kind == bots.MEMBER else None
@@ -580,8 +663,9 @@ def admin_bot_source(source_id, decision, v):
         abort(404)
     row = bot_store.bot_of(g.db, source.bot_id)
     g.db.commit()
-    if row is not None and row.kind == bots.MEMBER:
-        _tell(row.owner_id, f"The feed {source.url} for your bot @{row.username} was "
+    if row is not None and row.kind in (bots.MEMBER, bots.SELF):
+        whose = "your account's automated posting" if bots.is_self(row) else f"your bot @{row.username}"
+        _tell(row.owner_id, f"The feed {source.url} for {whose} was "
                             + ("approved: it is read from now on." if status == bots.APPROVED else "not approved."))
     return _admin_back(row, "Done.") if row is not None else _back("/admin/bots", msg="Done.")
 
@@ -595,8 +679,8 @@ def admin_bot_pause(uid, v):
     if row is None or not bot_store.set_running(g.db, uid, False, reason, by_admin=True):
         abort(404)
     g.db.commit()
-    if row.kind == bots.MEMBER:
-        _tell(row.owner_id, f"An admin paused your bot @{row.username}: {reason}")
+    if row.kind in (bots.MEMBER, bots.SELF):
+        _tell(row.owner_id, f"An admin paused {bots.subject(row, capital=False)}: {reason}")
     return _admin_back(row, f"@{row.username} paused.")
 
 
@@ -608,8 +692,8 @@ def admin_bot_resume(uid, v):
     if row is None or not bot_store.set_running(g.db, uid, True, by_admin=True):
         abort(404)
     g.db.commit()
-    if row.kind == bots.MEMBER:
-        _tell(row.owner_id, f"Your bot @{row.username} is running again.")
+    if row.kind in (bots.MEMBER, bots.SELF):
+        _tell(row.owner_id, f"{bots.subject(row)} is running again.")
     return _admin_back(row, f"@{row.username} is running again.")
 
 
@@ -618,4 +702,10 @@ def bots_waiting():
     return bot_store.waiting_count(g.db)
 
 
-app.jinja_env.globals.update(bots_waiting=bots_waiting, bot_rules=bots)     # bot_rules: the limits /help/bots shows
+def automates(user):
+    """Does this person's own account post from feeds by itself right now? Its profile says so."""
+    return bool(user) and bot_store.automates(g.db, user.id)
+
+
+# bot_rules: the limits /help/bots shows
+app.jinja_env.globals.update(bots_waiting=bots_waiting, bot_rules=bots, automates=automates)

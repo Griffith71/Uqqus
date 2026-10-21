@@ -776,10 +776,23 @@ def create_forward_post_from_comment(comment, target, comment_forwarded_by):
     return new_post
 
 
-def _bot_refusal(v):
-    """(why this bot account may not post now, or None; whether that passes by itself: the daily cap, bots off)."""
+def _automation(v):
+    """The bots row of an automated post's account: a bot account's own row, or the member's own account's automated
+    posting (helpers/bots.py SELF), only when the post comes with the bot header. None for any other post."""
+    says_bot = request.headers.get("X-User-Type", "").lower() == "bot"
+    if not v.is_bot and not says_bot:
+        return None
     bot = bot_store.bot_of(g.db, v.id)
-    owner = g.db.query(User).filter_by(id=v.bot_owner_id).first() if v.bot_owner_id else None
+    return bot if bot_rules.is_automated(v.is_bot, says_bot, bot) else None
+
+
+def _bot_refusal(v, bot=None):
+    """(why this automated post may not go now, or None; whether that passes by itself: the daily cap, bots off)."""
+    bot = bot if bot is not None else bot_store.bot_of(g.db, v.id)
+    if bot_rules.is_self(bot):
+        owner = v                                   # automated posting on the member's own account: they run it
+    else:
+        owner = g.db.query(User).filter_by(id=v.bot_owner_id).first() if v.bot_owner_id else None
     today = bot_store.posts_today(g.db, v.id, bot_rules.utc_day())
     message = bot_rules.post_refusal(bot, owner, today)
     return message, bool(message) and (today >= bot_rules.DAILY_CAP or not bot_rules.enabled())
@@ -867,11 +880,14 @@ Optional file data:
         if not (x.lower() in seen_names or seen_names.add(x.lower()))
     ]
 
-    # a bot account posts only while it is approved and its owner may run it, at most bot_rules.DAILY_CAP a day, and
-    # its posts are public, signed and its own (helpers/bots.py). "bot_refusal" tells scripts/run_bots.py whether to
-    # try again later ("wait") or pause the bot ("stop"); a bot key's script gets the same answer
-    if v.is_bot:
-        bot_error, bot_wait = _bot_refusal(v)
+    # an automated post (a bot account's, or one from a member's own account's automated posting: helpers/bots.py
+    # is_automated) goes only while it is approved and its owner may run it, at most bot_rules.DAILY_CAP a day, and
+    # it is public, signed and its own. "bot_refusal" tells scripts/run_bots.py whether to try again later ("wait") or
+    # pause the bot ("stop"); a bot key's script gets the same answer
+    automation = _automation(v)
+    automated = automation is not None or bool(v.is_bot)
+    if automated:
+        bot_error, bot_wait = _bot_refusal(v, automation)
         if not bot_error:
             bot_wait = False
             bot_error = bot_rules.option_refusal(flag(request.form, "anonymous"),
@@ -1146,6 +1162,18 @@ Optional file data:
     # look identical to actual repeated spam-posting).
     forward_copies = g.db.query(ForwardRelationship.forward_submission_id).scalar_subquery()
 
+    # Automated posts and a person's own posts are judged apart (helpers/bots.py is_automated): an automated post
+    # against the account's automated posts only, without the link check (one feed's links share a site, and the
+    # runner never posts an item twice), and refused rather than punished; a person whose own account also posts
+    # automatically against their own posts only, so their feeds never push them towards a ban. Every other account
+    # keeps the rule as it was (a header alone changes nothing).
+    if automated:
+        own_kind = [Submission.is_bot.is_(True)]
+    elif bot_rules.is_self(bot_store.bot_of(g.db, v.id)):
+        own_kind = [Submission.is_bot.isnot(True)]
+    else:
+        own_kind = []
+
     similar_posts = g.db.query(Submission).options(
         lazyload('*')
         ).join(
@@ -1156,7 +1184,8 @@ Optional file data:
                     Submission.author_id == v.id,
                     Submission.id.notin_(forward_copies),
                     SubmissionAux.title.op('<->')(title) < app.config["SPAM_SIMILARITY_THRESHOLD"],
-                    Submission.created_utc > cutoff
+                    Submission.created_utc > cutoff,
+                    *own_kind
             #    ),
             #    and_(
             #        SubmissionAux.title.op('<->')(title) < app.config["SPAM_SIMILARITY_THRESHOLD"]/2,
@@ -1165,7 +1194,7 @@ Optional file data:
             #)
     ).all()
 
-    if url:
+    if url and not automated:
         similar_urls = g.db.query(Submission).options(
             lazyload('*')
         ).join(
@@ -1176,7 +1205,8 @@ Optional file data:
                     Submission.author_id == v.id,
                     Submission.id.notin_(forward_copies),
                     SubmissionAux.url.op('<->')(url) < app.config["SPAM_URL_SIMILARITY_THRESHOLD"],
-                    Submission.created_utc > cutoff
+                    Submission.created_utc > cutoff,
+                    *own_kind
             #    ),
             #    and_(
             #        SubmissionAux.url.op('<->')(url) < app.config["SPAM_URL_SIMILARITY_THRESHOLD"]/2,
@@ -1192,6 +1222,15 @@ Optional file data:
         threshold *= 3
     elif v.age >= (60 * 60 * 24):
         threshold *= 2
+
+    if automated and max(len(similar_urls), len(similar_posts)) >= threshold:
+        # the feed is repeating itself: this item is not posted, and nobody is suspended for it (the runner reads a
+        # 409 as already posted: the item is marked seen and never tried again, bot_runner.classify)
+        message = "This is too much like what was posted automatically today."
+        return {"html": lambda: (render_template("submit.html", v=v, error=message, title=title, url=url, body=body,
+                                                 text=text_for_redisplay, b=None,
+                                                 forward_guild_names=forward_guild_names), 409),
+                "api": lambda: ({"error": message}, 409)}
 
     if max(len(similar_urls), len(similar_posts)) >= threshold:
 
@@ -1744,7 +1783,7 @@ Optional file data:
 
     _discard_draft(v, request.form.get("draft_id"))
 
-    if v.is_bot:
+    if automated:
         bot_store.count_post(g.db, v.id, bot_rules.utc_day())       # the daily cap counts the job and keys alike
         g.db.commit()
 

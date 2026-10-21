@@ -18,8 +18,8 @@
         feeds (RSS, Atom or JSON feeds from news sites, YouTube channels, Bluesky, Mastodon, Reddit, Substack and many
         more): anyone can propose one, and once approved it is the site's, run by the admins and linked to nobody. A
         <strong>member bot</strong> needs its member to run it, with a key for their own script (for example for X) or
-        a paid source: it stays theirs and says who runs it. Bots post and forward; they never comment, vote, chat or
-        take tips. <a href="/help/bots">How bots work</a>
+        a paid source: it stays theirs and says who runs it. Bots post and forward; they never comment, vote or chat.
+        <a href="/help/bots">How bots work</a>
       </p>
 
       {% set mine = bots_list | selectattr("kind", "equalto", "member") | list %}
@@ -61,6 +61,72 @@
       {% endif %}
 
       {% if not mine and not proposed %}<p class="text-muted" id="bot-list-empty">You don't run or propose any bots.</p>{% endif %}
+
+      {# automated posting on the member's own account (helpers/bots.py SELF): they keep using it as themselves #}
+      <h2 class="h5 mt-5" id="bot-own">Post automatically from your own account</h2>
+      <p class="text-small text-muted">
+        Your account can also post new items from feeds by itself, while you keep using it as you do now. Each of
+        those posts is marked as automated, and people who hide bot content don't see them. Your own posts, comments,
+        votes and chats are unchanged. An admin approves it first.
+        <a href="/help/bots#own-account">How it works</a>
+      </p>
+      {% if own and own.status != 'rejected' %}
+      <div class="settings-section rounded px-3 py-2 d-flex justify-content-between align-items-center flex-wrap" id="bot-own-row">
+        <div class="min-w-0">
+          <span class="font-weight-bold">@{{ v.username }}</span>
+          <span class="badge badge-pill {% if own.status == 'approved' %}badge-success{% elif own.status == 'pending' %}badge-info{% else %}badge-secondary{% endif %} ml-1 bot-status">{{ rules.STATUS_LABELS[own.status] }}</span>
+          {% if own.status == 'paused' and own.paused_reason %}<div class="text-small text-muted text-break">{{ own.paused_reason }}</div>{% endif %}
+        </div>
+        <a href="/settings/bots/{{ v.username }}" class="btn btn-link btn-sm">Manage</a>
+      </div>
+      {% else %}
+      {% if own and own.review_note %}<p class="text-small text-muted text-break" id="bot-own-rejected">It was not approved last time. The admins said: {{ own.review_note }}</p>{% endif %}
+      {% if own_refusal %}
+      <p class="text-muted" id="bot-own-refused">{{ own_refusal }}</p>
+      {% else %}
+      <form action="/settings/bots/automate" method="post" class="settings-section rounded" id="bot-own-form">
+        <input type="hidden" name="formkey" value="{{ v.formkey }}">
+        <div class="d-lg-flex">
+          <div class="title w-lg-25"><label for="bot-own-purpose">What it posts</label></div>
+          <div class="body w-lg-100">
+            <textarea class="form-control" id="bot-own-purpose" name="purpose" rows="2" maxlength="{{ rules.PURPOSE_MAX }}" required
+                      placeholder="New videos from my YouTube channel and posts from my blog."></textarea>
+            <span class="d-block mt-1 text-small-extra text-muted">For the admins who review it.</span>
+          </div>
+        </div>
+        <div class="d-lg-flex border-top">
+          <div class="title w-lg-25"><label for="bot-own-sources">Feeds</label></div>
+          <div class="body w-lg-100">
+            <textarea class="form-control" id="bot-own-sources" name="sources" rows="3" spellcheck="false" autocomplete="off" required
+                      placeholder="https://www.youtube.com/feeds/videos.xml?channel_id=..."></textarea>
+            <span class="d-block mt-1 text-small-extra text-muted">One address a line, up to {{ rules.MAX_SOURCES }}. Each is read once now to check it is a feed.</span>
+          </div>
+        </div>
+        <div class="d-lg-flex border-top">
+          <div class="title w-lg-25"><label for="bot-own-guilds">Forward to guilds</label></div>
+          <div class="body w-lg-100">
+            <input type="text" class="form-control" id="bot-own-guilds" name="forward_guilds" autocomplete="off" spellcheck="false" placeholder="+music">
+            <span class="d-block mt-1 text-small-extra text-muted">Optional, up to {{ rules.MAX_FORWARD_GUILDS }}. Some guilds take no automated forwards.</span>
+          </div>
+        </div>
+        {% if admin %}
+        <div class="d-lg-flex border-top">
+          <div class="title w-lg-25"><label for="bot-own-approve-now">Admin</label></div>
+          <div class="body w-lg-100">
+            <div class="custom-control custom-checkbox">
+              <input type="checkbox" class="custom-control-input" id="bot-own-approve-now" name="approve_now" value="1">
+              <label class="custom-control-label" for="bot-own-approve-now">Approve it now</label>
+            </div>
+          </div>
+        </div>
+        {% endif %}
+        <div class="border-top p-3">
+          <button type="submit" class="btn btn-primary">Propose</button>
+          <span class="d-block d-sm-inline text-small text-muted mt-2 mt-sm-0 ml-sm-2">At most {{ rules.DAILY_CAP }} automated posts a day. It doesn't count towards your {{ rules.MAX_BOTS }} bots.</span>
+        </div>
+      </form>
+      {% endif %}
+      {% endif %}
 
       <h2 class="h5 mt-5" id="bot-apply">Propose a bot</h2>
       {% if refusal %}

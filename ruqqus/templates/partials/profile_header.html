@@ -121,6 +121,9 @@
         <span class="profile-x-chip profile-x-bot">Automated{% if u.bot_kind == 'site' %} by {{ 'SITE_NAME' | app_config }}{% elif bot_owner and not bot_owner.is_deleted %} by <a href="{{ bot_owner.permalink }}">@{{ bot_owner.username }}</a>{% endif %}</span>
         {% if u.bot_status != "approved" and v and u.bot_row and (v.admin_level >= 3 or v.id in (u.bot_row.owner_id, u.bot_row.proposed_by_id)) %}<span class="profile-x-chip">{{ {"pending": "Waiting for approval", "paused": "Paused", "rejected": "Rejected"}.get(u.bot_status, "") }}</span>{% endif %}
         {% endif %}
+        {# a person's own account that also posts from feeds by itself (helpers/bots.py SELF): their posts from feeds
+           carry the robot mark; the account is theirs and used as always #}
+        {% if not u.is_bot and automates(u) %}<a href="/help/bots#own-account" class="profile-x-chip profile-x-bot" id="profile-automates"><i class="fas fa-robot fa-fw mr-1" aria-hidden="true"></i>Some posts are automated</a>{% endif %}
         {% if u.real_id %}<span class="badge badge-pill text-white badge-info ml-1">{{ u.real_id }}</span>{% endif %}
       </div>
     </div>

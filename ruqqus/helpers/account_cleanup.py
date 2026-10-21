@@ -48,6 +48,13 @@ STEPS = (
                             "key_blob_recovery = NULL WHERE user_id = :u"),
     # two-factor backup codes
     ("remove backup codes", "DELETE FROM mfa_backup_codes WHERE user_id = :u"),
+    # their own account's automated posting (helpers/bots.py SELF): its feeds stop, what it saw goes. A bot ACCOUNT's
+    # row is not theirs to end here (a bot is never signed in to, so never deleted this way)
+    ("forget what automated posting saw", "DELETE FROM bot_seen WHERE source_id IN (SELECT s.id FROM bot_sources s "
+                                          "JOIN bots b ON b.user_id = s.bot_id WHERE b.user_id = :u AND b.kind = 'self')"),
+    ("stop automated posting's feeds", "DELETE FROM bot_sources WHERE bot_id = :u AND EXISTS "
+                                       "(SELECT 1 FROM bots b WHERE b.user_id = :u AND b.kind = 'self')"),
+    ("stop automated posting", "DELETE FROM bots WHERE user_id = :u AND kind = 'self'"),
     # where they signed in from, and what they wrote about themselves
     ("forget sign-in addresses", "DELETE FROM login_events WHERE user_id = :u"),
     ("clear the profile", "UPDATE users SET display_name = '', bio = '', bio_html = '', profile_job = '', "

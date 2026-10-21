@@ -9,6 +9,10 @@ nobody ever logs into a bot), with the bot header and from the bot's own loopbac
 (`bots.loopback_for`). So every posting rule - the throttle, spam and link checks, guild forwarding rules, the word
 filter, bans and the bot rules in submit_post - applies exactly as for a person, and nothing here repeats submit_post.
 
+A member's own account that posts automatically (helpers/bots.py SELF) goes the same way: the session is the member's
+account, made here and never a sign-in (no sign-in history row, no new-sign-in email), and the bot header makes
+submit_post mark the post automated and hold it to the bot rules (bots.is_automated).
+
 Sources are claimed with FOR UPDATE SKIP LOCKED (bot_store.claim_due), so more than one runner is safe.
 BOTS_ENABLED=0 makes every run do nothing.
 """

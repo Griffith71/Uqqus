@@ -3,10 +3,12 @@
 {% block pagetitle %}@{{ account.username }} - Bots - {{ 'SITE_NAME' | app_config }}{% endblock %}
 
 {# One bot: what a member may change on their own member bot or on a site bot they proposed while it waits, and what
-   an admin may change on any bot (routes/bot_accounts.py, helpers/bots.py may_manage). #}
+   an admin may change on any bot (routes/bot_accounts.py, helpers/bots.py may_manage). `own`: the automated posting
+   of a person's own account, which has no picture, banner, bio, name or keys here (they are the person's profile). #}
 
 {% block content %}
 {% set site = bot.kind == 'site' %}
+{% set own = bot.kind == 'self' %}
 {% set waiting = bot.status == 'pending' %}
 <div class="row">
   <div class="col col-lg-8">
@@ -21,7 +23,10 @@
         <span class="badge badge-pill {% if bot.status == 'approved' %}badge-success{% elif waiting %}badge-info{% else %}badge-secondary{% endif %} ml-1" id="bot-status">{{ rules.STATUS_LABELS[bot.status] }}</span>
         <span class="badge badge-pill badge-light ml-1" id="bot-kind">{{ rules.KIND_LABELS[bot.kind] }}</span>
       </h2>
-      {% if waiting and site %}
+      {% if own %}
+      <p class="text-small text-muted" id="bot-own-intro">{% if waiting %}Waiting for an admin.{% elif bot.status == 'paused' %}{{ bot.paused_reason or "Paused." }}{% if bot.paused_by_admin %} Only an admin can start it again.{% endif %}{% else %}{{ posts_today }} of {{ rules.DAILY_CAP }} automated posts today.{% endif %}
+        The account is used as always: only posts from these feeds are made by themselves, each marked as automated.</p>
+      {% elif waiting and site %}
       <p class="text-small text-muted">A site bot waiting for an admin. Its proposer can change it until then; once approved it is run by the site and linked to nobody.</p>
       {% elif waiting %}
       <p class="text-small text-muted">Waiting for an admin. You will get a notification when they decide; until then the bot's profile is visible to you and the admins only.</p>
@@ -38,7 +43,7 @@
           {% else %}Run by {% if names.get(bot.owner_id) %}<a href="/@{{ names[bot.owner_id] }}">@{{ names[bot.owner_id] }}</a>{% else %}a deleted account{% endif %}.{% endif %}
         </div>
         <p class="text-small text-break mb-3"><span class="font-weight-bold">What it posts:</span> {{ bot.purpose }}</p>
-        {% if waiting %}
+        {% if waiting and not own %}
         <form action="/admin/bots/{{ bot.user_id }}/rename" method="post" class="d-flex align-items-center flex-wrap mb-2" id="bot-rename">
           <input type="hidden" name="formkey" value="{{ v.formkey }}">
           <label for="bot-new-name" class="text-small font-weight-bold mb-0 mr-2">Name</label>
@@ -55,13 +60,15 @@
           </select>
           <button class="btn btn-outline-primary btn-sm">Change</button>
         </form>
+        {% endif %}
+        {% if waiting %}
         <div class="d-flex flex-wrap align-items-center">
           <form action="/admin/bots/{{ bot.user_id }}/approve" method="post" class="d-inline mr-2 mb-1">
             <input type="hidden" name="formkey" value="{{ v.formkey }}"><input type="hidden" name="next" value="page">
             <button class="btn btn-primary btn-sm">Approve</button>
           </form>
           <form action="/admin/bots/{{ bot.user_id }}/reject" method="post" class="d-inline-flex align-items-center mb-1"
-                onsubmit="return confirm('Reject @{{ account.username }}? Its account is deleted and its name is free again.');">
+                onsubmit="return confirm('{{ ('Reject automated posting for @' ~ account.username ~ '? Their account is not touched.') if own else ('Reject @' ~ account.username ~ '? Its account is deleted and its name is free again.') }}');">
             <input type="hidden" name="formkey" value="{{ v.formkey }}">
             <label for="bot-reject-note" class="sr-only">Why not</label>
             <input type="text" class="form-control form-control-sm" id="bot-reject-note" name="note" maxlength="{{ rules.NOTE_MAX }}" placeholder="Why not (they are told)" style="min-width: 12rem;" autocomplete="off">
@@ -72,6 +79,7 @@
       </div>
       {% endif %}
 
+      {% if not own %}
       <h3 class="h6 mt-4">Picture and banner</h3>
       <div class="settings-section rounded p-3" id="bot-images">
         <div class="d-flex align-items-center flex-wrap">
@@ -103,6 +111,7 @@
         </div>
         <span class="d-block text-small-extra text-muted">PNG, JPEG, GIF or WebP, 8 MB at most.</span>
       </div>
+      {% endif %}
 
       <h3 class="h6 mt-4">Feeds</h3>
       <div class="settings-section rounded px-3 py-1 mb-2" id="bot-sources">
@@ -201,9 +210,10 @@
       {% endif %}
       {% endif %}
 
-      <h3 class="h6 mt-5">Profile and guilds</h3>
+      <h3 class="h6 mt-5">{{ 'Guilds' if own else 'Profile and guilds' }}</h3>
       <form action="/settings/bots/{{ account.username }}/profile" method="post" class="settings-section rounded" id="bot-profile">
         <input type="hidden" name="formkey" value="{{ v.formkey }}">
+        {% if not own %}
         <div class="d-lg-flex">
           <div class="title w-lg-25"><label for="bot-display-name">Display name</label></div>
           <div class="body w-lg-100">
@@ -218,11 +228,12 @@
             <span class="d-block mt-1 text-small-extra text-muted">Plain text, no links. Say where the posts come from.</span>
           </div>
         </div>
-        <div class="d-lg-flex border-top">
+        {% endif %}
+        <div class="d-lg-flex{% if not own %} border-top{% endif %}">
           <div class="title w-lg-25"><label for="bot-guilds">Forward to guilds</label></div>
           <div class="body w-lg-100">
             <input type="text" class="form-control" id="bot-guilds" name="forward_guilds" value="{% for name in guilds %}+{{ name }}{% if not loop.last %}, {% endif %}{% endfor %}" autocomplete="off" spellcheck="false" placeholder="+technology">
-            <span class="d-block mt-1 text-small-extra text-muted">Each guild's own rules apply. When one refuses, the post stays on the bot's profile and the reason shows above.</span>
+            <span class="d-block mt-1 text-small-extra text-muted">Each guild's own rules apply. When one refuses, the post stays on {{ 'your' if own else "the bot's" }} profile and the reason shows above.</span>
           </div>
         </div>
         <div class="border-top p-3"><button type="submit" class="btn btn-primary">Save</button></div>
@@ -248,12 +259,22 @@
       </div>
       {% endif %}
 
+      {% if own %}
+      <h3 class="h6 mt-5 text-danger">{{ 'Withdraw' if waiting else 'Stop posting automatically' }}</h3>
+      <form action="/settings/bots/{{ account.username }}/delete" method="post" id="bot-delete"
+            onsubmit="return confirm('Stop posting automatically? Your account and all its posts stay as they are.');">
+        <input type="hidden" name="formkey" value="{{ v.formkey }}">
+        <button class="btn btn-outline-danger">{{ 'Withdraw the proposal' if waiting else 'Stop posting automatically' }}</button>
+        <span class="d-block mt-1 text-small-extra text-muted">Only the automation and its feeds go. Your account and its posts stay.</span>
+      </form>
+      {% else %}
       <h3 class="h6 mt-5 text-danger">{{ 'Withdraw' if waiting else 'Switch off for good' }}</h3>
       <form action="/settings/bots/{{ account.username }}/delete" method="post" id="bot-delete"
             onsubmit="return confirm('{{ ('Withdraw the proposal for @' ~ account.username ~ '?') if waiting else ('Switch @' ~ account.username ~ ' off for good? Its posts stay; the bot never posts again.') }}');">
         <input type="hidden" name="formkey" value="{{ v.formkey }}">
         <button class="btn btn-outline-danger">{{ 'Withdraw the proposal' if waiting else 'Delete @' ~ account.username }}</button>
       </form>
+      {% endif %}
 
     </div>
   </div>

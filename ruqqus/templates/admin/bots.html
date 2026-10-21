@@ -104,7 +104,7 @@
       <form action="/admin/bots/{{ b.user_id }}/pause" method="post" class="d-inline-flex align-items-center">
         <input type="hidden" name="formkey" value="{{ v.formkey }}">
         <label for="pause-reason-{{ b.user_id }}" class="sr-only">Why</label>
-        <input type="text" class="form-control form-control-sm" id="pause-reason-{{ b.user_id }}" name="reason" maxlength="300" placeholder="Why{% if b.kind == 'member' %} (sent to its member){% endif %}" autocomplete="off">
+        <input type="text" class="form-control form-control-sm" id="pause-reason-{{ b.user_id }}" name="reason" maxlength="300" placeholder="Why{% if b.kind in ('member', 'self') %} (sent to its member){% endif %}" autocomplete="off">
         <button class="btn btn-outline-primary btn-sm ml-1">Pause</button>
       </form>
       {% else %}

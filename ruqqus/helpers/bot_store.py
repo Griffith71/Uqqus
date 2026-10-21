@@ -44,17 +44,33 @@ def bot_named(db, username):
 
 def bots_of(db, member_id):
     """A member's member bots and the site bots they proposed, newest first, rejected ones included (they show the
-    admin's note). An approved site bot shows as the site's: nothing about it is theirs to change any more."""
-    return db.execute(text(f"SELECT {BOT_COLUMNS} FROM bots WHERE owner_id = :m OR (kind = :site AND proposed_by_id = :m) "
-                           "ORDER BY created_utc DESC, id DESC"), {"m": member_id, "site": bots.SITE}).fetchall()
+    admin's note). An approved site bot shows as the site's: nothing about it is theirs to change any more. The
+    automated posting of their own account is not a bot of theirs (`own_automation`)."""
+    return db.execute(text(f"SELECT {BOT_COLUMNS} FROM bots WHERE (owner_id = :m AND kind != :self) "
+                           "OR (kind = :site AND proposed_by_id = :m) ORDER BY created_utc DESC, id DESC"),
+                      {"m": member_id, "site": bots.SITE, "self": bots.SELF}).fetchall()
 
 
 def active_count(db, member_id):
     """What counts towards a member's limit: their member bots that were not rejected, and the site bots they
-    proposed that still wait (an approved site bot is the site's, not theirs)."""
-    return db.execute(text("SELECT COUNT(*) FROM bots WHERE (owner_id = :m AND status != :r) "
+    proposed that still wait (an approved site bot is the site's, not theirs). The automated posting of their own
+    account is apart (one per account) and never counts."""
+    return db.execute(text("SELECT COUNT(*) FROM bots WHERE (owner_id = :m AND status != :r AND kind != :self) "
                            "OR (kind = :site AND proposed_by_id = :m AND status = :p)"),
-                      {"m": member_id, "r": bots.REJECTED, "site": bots.SITE, "p": bots.PENDING}).scalar() or 0
+                      {"m": member_id, "r": bots.REJECTED, "site": bots.SITE, "p": bots.PENDING,
+                       "self": bots.SELF}).scalar() or 0
+
+
+def own_automation(db, member_id):
+    """The automated posting of this member's own account (its `bots` row: user_id is their account), or None."""
+    return db.execute(text(f"SELECT {BOT_COLUMNS} FROM bots WHERE user_id = :m AND kind = :self"),
+                      {"m": member_id, "self": bots.SELF}).fetchone()
+
+
+def automates(db, user_id):
+    """Does this person's own account post automatically right now (approved, not paused)? The profile says so."""
+    return bool(db.execute(text("SELECT 1 FROM bots WHERE user_id = :u AND kind = :self AND status = :a"),
+                           {"u": user_id, "self": bots.SELF, "a": bots.APPROVED}).first())
 
 
 def add_bot(db, user_id, owner_id, username, purpose, guild_names, now=None, kind=bots.MEMBER, proposed_by=None):
@@ -62,7 +78,7 @@ def add_bot(db, user_id, owner_id, username, purpose, guild_names, now=None, kin
     forward (kept for the admins and to tell them of the decision, never shown)."""
     db.execute(text("INSERT INTO bots (user_id, owner_id, username, kind, proposed_by_id, status, purpose, forward_guilds, "
                     "created_utc) VALUES (:u, :o, :n, :k, :pb, :s, :p, :g, :t)"),
-               {"u": user_id, "o": owner_id if kind == bots.MEMBER else None, "n": username, "k": kind,
+               {"u": user_id, "o": owner_id if kind in (bots.MEMBER, bots.SELF) else None, "n": username, "k": kind,
                 "pb": proposed_by if proposed_by is not None else owner_id, "s": bots.PENDING, "p": purpose,
                 "g": json.dumps(list(guild_names)), "t": _now(now)})
     return bot_of(db, user_id)

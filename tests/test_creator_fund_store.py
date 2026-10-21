@@ -18,7 +18,8 @@ CREATE TABLE users (id INTEGER PRIMARY KEY, username TEXT, created_utc INTEGER, 
     unban_utc INTEGER DEFAULT 0, is_deleted BOOLEAN DEFAULT 0, creator_fund_opt_in_utc INTEGER DEFAULT 0,
     negative_balance_cents INTEGER DEFAULT 0, coin_balance INTEGER DEFAULT 0, is_bot BOOLEAN DEFAULT 0);
 CREATE TABLE submissions (id INTEGER PRIMARY KEY, author_id INTEGER, post_public BOOLEAN DEFAULT 1,
-    is_banned BOOLEAN DEFAULT 0, deleted_utc INTEGER DEFAULT 0, repost_id INTEGER DEFAULT 0, is_anonymous BOOLEAN DEFAULT 0);
+    is_banned BOOLEAN DEFAULT 0, deleted_utc INTEGER DEFAULT 0, repost_id INTEGER DEFAULT 0, is_anonymous BOOLEAN DEFAULT 0,
+    is_bot BOOLEAN DEFAULT 0);
 CREATE TABLE comments (id INTEGER PRIMARY KEY, author_id INTEGER, parent_submission INTEGER, created_utc INTEGER,
     is_banned BOOLEAN DEFAULT 0, deleted_utc INTEGER DEFAULT 0, creation_ip TEXT, app_id INTEGER);
 CREATE TABLE votes (id INTEGER PRIMARY KEY, user_id INTEGER, submission_id INTEGER, created_utc INTEGER,
@@ -144,6 +145,18 @@ def test_items_and_times_that_never_count(db):
     removed = comment(db, A, post(db, B), b=True)
     upvote_comment(db, FANS[4], removed)
     assert scores(db) == {}
+
+
+def test_an_automated_post_earns_nothing_but_the_members_own_words_under_it_do(db):
+    """A member's own account can post from feeds (helpers/bots.py SELF): what a feed posted isn't their work."""
+    automated = post(db, A)
+    db.execute(text("UPDATE submissions SET is_bot = 1 WHERE id = :p"), {"p": automated})
+    upvote(db, FANS[0], automated)                 # an upvote on it: nothing
+    comment(db, FANS[1], automated)                # a comment on it: nothing for A
+    own = comment(db, A, automated)                # A's own comment under it ...
+    upvote_comment(db, FANS[2], own)               # ... is A's work: a point
+    upvote(db, FANS[3], post(db, A))               # and A's own post earns as always
+    assert scores(db) == {A: 2}
 
 
 def test_a_forwarded_copy_earns_for_the_original_author_and_anonymous_posts_for_their_author(db):

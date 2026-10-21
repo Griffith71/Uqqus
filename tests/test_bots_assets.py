@@ -45,7 +45,10 @@ def test_the_site_bot_migration_and_the_schema_agree():
         "kind character varying(10) DEFAULT 'member' NOT NULL" in bots_table
     assert "proposed_by_id integer" in SITE_MIGRATION and "proposed_by_id integer" in bots_table
     assert "ALTER COLUMN owner_id DROP NOT NULL" in SITE_MIGRATION and "owner_id integer," in bots_table
-    assert "CHECK (kind IN ('site', 'member'))" in SITE_MIGRATION and "CHECK (kind IN ('site', 'member'))" in SCHEMA
+    assert "CHECK (kind IN ('site', 'member'))" in SITE_MIGRATION       # later widened for a person's own account:
+    own = read("scripts", "migrations", "2026-11-21_self_automation.sql")
+    assert "CHECK (kind IN ('site', 'member', 'self'))" in own and "CHECK (kind IN ('site', 'member', 'self'))" in SCHEMA
+    assert "DROP CONSTRAINT IF EXISTS bots_kind" in own and "('2026-11-21_self_automation.sql')" in SCHEMA
     assert "bots_proposed_idx" in SITE_MIGRATION and "bots_proposed_idx" in SCHEMA
     assert "UPDATE bots SET proposed_by_id = owner_id WHERE proposed_by_id IS NULL" in SITE_MIGRATION
 
@@ -83,8 +86,10 @@ def test_comments_votes_and_chat_refuse_a_bot_account_whatever_it_sends():
 
 def test_every_bot_post_asks_the_bot_rules_and_is_marked_as_a_bot_post():
     submit = POSTS.split("def submit_post(")[1].split("\n@app.get(\"/inpage/post_card/<pid>\")")[0]
-    assert submit.index("if v.is_bot:") < submit.index("new_post = Submission(")
-    assert "bot_error, bot_wait = _bot_refusal(v)" in submit and '"bot_refusal": "wait" if bot_wait else "stop"' in submit
+    # every automated post: a bot account's, or a header post from a person's own account that posts automatically
+    assert "automated = automation is not None or bool(v.is_bot)" in submit
+    assert submit.index("if automated:") < submit.index("new_post = Submission(")
+    assert "bot_error, bot_wait = _bot_refusal(v, automation)" in submit and '"bot_refusal": "wait" if bot_wait else "stop"' in submit
     assert "bot_rules.option_refusal(" in submit
     assert 'is_bot = request.headers.get("X-User-Type","").lower()=="bot" or bool(v.is_bot),' in submit
     assert "bot_store.count_post(g.db, v.id, bot_rules.utc_day())" in submit
@@ -135,7 +140,7 @@ def test_every_change_is_a_post_with_the_form_key_and_admins_decide():
             assert "@admin_level_required(3)" in decorators, name
         else:
             assert "@auth_required" in decorators or "@is_not_banned" in decorators, name
-            if name != "settings_bots_apply":
+            if name not in ("settings_bots_apply", "settings_bots_automate"):      # proposals: no bot yet
                 assert "account, row, admin = _manageable(name, v)" in func(ROUTES, name), name
     assert "@admin_level_required(3)" in head(ROUTES, "admin_bots")
     manageable = func(ROUTES, "_manageable")
@@ -166,9 +171,9 @@ def test_a_site_bot_belongs_to_nobody_and_tells_its_proposer_once():
     assert "if row.kind == bots.SITE:\n        _tell(row.proposed_by_id" in approve
     assert "_tell(bots.responsible_id(row)" in func(ROUTES, "admin_bot_reject")
     for name in ("admin_bot_source", "admin_bot_pause", "admin_bot_resume"):
-        assert "row.kind == bots.MEMBER" in func(ROUTES, name), name   # a site bot has nobody to tell
+        assert "row.kind in (bots.MEMBER, bots.SELF)" in func(ROUTES, name), name   # a site bot has nobody to tell
     runner = read("ruqqus", "helpers", "bot_runner.py")
-    assert "if bot.kind == bots.MEMBER and not owner_ok(bot.owner_id):" in runner
+    assert "if bot.kind in (bots.MEMBER, bots.SELF) and not owner_ok(bot.owner_id):" in runner
 
 
 def test_pictures_are_checked_by_opening_them_and_scanned():
@@ -284,3 +289,96 @@ def test_feeds_are_read_as_often_as_they_safely_can_be():
     assert "CHECK_MINUTES" not in read("ruqqus", "helpers", "bots.py")
     assert "bot_rules.FLOOR_MINUTES" in read("ruqqus", "templates", "help", "bots.html")
     assert "rules.cadence_label(s.check_minutes, s.asked_minutes, s.status)" in read("ruqqus", "templates", "settings_bot.html")
+
+
+# --- a member's own account that posts automatically (helpers/bots.py SELF) --------------------------------------
+
+def test_a_persons_own_account_is_never_deleted_deactivated_renamed_or_edited_as_a_bot():
+    manageable = func(ROUTES, "_manageable")
+    assert "not (account.is_bot or bots.is_self(row))" in manageable
+    # switching it off: only the automation goes, before anything that deletes keys or the account
+    delete = func(ROUTES, "settings_bot_delete")
+    own_branch = delete.index("if bots.is_self(row):")
+    assert own_branch < delete.index("_keys_of(account.id)") and own_branch < delete.index("account.is_deleted = True")
+    assert own_branch < delete.index("g.db.delete(account)")
+    branch = delete[own_branch:delete.index("username = account.username")]
+    assert "bot_store.forget_bot(g.db, account.id)" in branch and "return" in branch
+    assert "is_deleted" not in branch and "delete(account)" not in branch
+    # a rejection deletes only a bot account (is_bot), never a person's
+    reject = func(ROUTES, "admin_bot_reject")
+    assert "if not bots.is_self(row):" in reject and "filter_by(id=uid, is_bot=True)" in reject
+    # rename and kind look the account up as a bot account (a person's never matches), and no bot becomes SELF
+    for name in ("admin_bot_rename", "admin_bot_kind"):
+        assert "filter_by(id=uid, is_bot=True)" in func(ROUTES, name), name
+    assert "kind in (None, bots.SELF)" in func(ROUTES, "admin_bot_kind")
+    # pictures, banner and keys are a bot account's: not on a person's own account
+    for name in ("settings_bot_picture", "settings_bot_picture_remove", "settings_bot_revoke_key"):
+        body = func(ROUTES, name)
+        assert "account, row, admin = _manageable(name, v)\n    _not_self(row)\n" in body, name    # before anything else
+    assert "return row.kind == bots.MEMBER and row.owner_id == v.id" in func(ROUTES, "_is_owner")   # no keys made
+    profile = func(ROUTES, "settings_bot_profile")
+    start = profile.index("if bots.is_self(row):")
+    branch = profile[start:profile.index('return _back(_page(account), msg="Saved.")', start)]
+    assert "set_forward_guilds" in branch and "display_name" not in branch and "bio" not in branch
+    assert start < profile.index("_display_name(") and start < profile.index("_set_bio(account")
+
+
+def test_setting_it_up_makes_no_account():
+    automate = func(ROUTES, "settings_bots_automate")
+    assert "User(" not in automate and "is_bot=True" not in automate
+    assert "bot_store.add_bot(g.db, v.id, v.id, v.username, purpose, guilds, now, kind=bots.SELF, proposed_by=v.id)" in automate
+    assert "bots.self_refusal(v, own is not None and own.status != bots.REJECTED, now)" in automate
+    assert "bots.kind_refusal(bots.SELF, len(urls))" in automate
+    assert "Automated posting on your own account is set up in its own section." in func(ROUTES, "settings_bots_apply")
+    assert '"o": owner_id if kind in (bots.MEMBER, bots.SELF) else None' in read("ruqqus", "helpers", "bot_store.py")
+
+
+def test_automated_posts_from_a_persons_account_are_held_to_the_bot_rules():
+    automation = func(POSTS, "_automation")
+    assert "bot_rules.is_automated(v.is_bot, says_bot, bot)" in automation
+    refusal = func(POSTS, "_bot_refusal")
+    assert "if bot_rules.is_self(bot):\n        owner = v" in refusal
+    submit = POSTS.split("def submit_post(")[1]
+    assert submit.count("if automated:") == 3                     # the rules before, the spam guard, the daily count
+
+
+def test_the_spam_guard_never_suspends_anyone_for_an_automated_post():
+    submit = POSTS.split("def submit_post(")[1]
+    guard = submit[submit.index("own_kind = [Submission.is_bot.is_(True)]"):]
+    assert "elif bot_rules.is_self(bot_store.bot_of(g.db, v.id)):\n        own_kind = [Submission.is_bot.isnot(True)]" in guard
+    assert guard.count("*own_kind") == 2
+    assert "if url and not automated:" in guard                  # one feed's links share a site
+    refused = guard.index("if automated and max(len(similar_urls), len(similar_posts)) >= threshold:")
+    banned = guard.index("v.ban(reason=\"Spamming.\"")
+    assert refused < banned and "409" in guard[refused:banned] and "return" in guard[refused:banned]
+    assert "ban(" not in guard[refused:banned]
+    assert "noqa" not in POSTS
+
+
+def test_the_pages_say_what_it_is():
+    page = read("ruqqus", "templates", "settings_bot.html")
+    assert "{% set own = bot.kind == 'self' %}" in page
+    assert "{% if not own %}\n      <h3 class=\"h6 mt-4\">Picture and banner</h3>" in page
+    assert "{% if waiting and not own %}" in page                 # no rename or kind for a person's account
+    assert "Stop posting automatically" in page and "Their account is not touched." in page
+    listing = read("ruqqus", "templates", "settings_bots.html")
+    assert 'action="/settings/bots/automate"' in listing and 'id="bot-own"' in listing
+    header = read("ruqqus", "templates", "partials", "profile_header.html")
+    assert "{% if not u.is_bot and automates(u) %}" in header and "/help/bots#own-account" in header
+    assert "automates=automates" in ROUTES
+    help_page = read("ruqqus", "templates", "help", "bots.html")
+    assert 'id="own-account"' in help_page and "Your feeds can't get your account suspended." in help_page
+    assert "chat, take tips or lead" not in help_page             # a bot's post takes tips (2026-10-20)
+
+
+def test_deleting_the_account_ends_it_and_the_export_lists_it():
+    from ruqqus.helpers import account_cleanup, data_export
+    steps = dict(account_cleanup.STEPS)
+    assert steps["stop automated posting"] == "DELETE FROM bots WHERE user_id = :u AND kind = 'self'"
+    assert "kind = 'self'" in steps["stop automated posting's feeds"] and "kind = 'self'" in steps["forget what automated posting saw"]
+    assert "automated_posting" in dict(data_export.SECTIONS)
+
+
+def test_the_creator_fund_pays_nothing_for_an_automated_post():
+    fund = read("ruqqus", "helpers", "creator_fund_store.py")
+    assert fund.count("AND COALESCE(s.is_bot, :no) = :no") == 2

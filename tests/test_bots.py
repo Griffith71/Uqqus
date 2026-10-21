@@ -272,3 +272,54 @@ def test_every_name_and_address_of_this_site_is_refused(monkeypatch):
         assert bots.is_own_host(host), host
     assert not bots.is_own_host("bbc.co.uk")
     assert bots.parse_feed_url("https://lb.ex/feed")[1] == "A bot can't read this site itself."
+
+
+# --- a member's own account that posts automatically (SELF) ------------------------------------------------------
+
+def own(status=bots.APPROVED, owner=7, kind=bots.SELF):
+    return NS(kind=kind, status=status, owner_id=owner, proposed_by_id=owner, user_id=owner, username="ann")
+
+
+def test_a_members_own_account_is_a_third_kind_that_reads_feeds():
+    assert bots.parse_kind("self") == bots.SELF and bots.SELF in bots.KINDS
+    assert bots.KIND_LABELS[bots.SELF] == "Own account"
+    assert bots.kind_refusal(bots.SELF, 0) and bots.kind_refusal(bots.SELF, 1) is None
+    assert bots.is_self(own()) and not bots.is_self(own(kind=bots.MEMBER)) and not bots.is_self(None)
+
+
+def test_one_per_account_apart_from_the_bots_a_member_runs():
+    assert bots.self_refusal(member(), False, NOW) is None
+    assert "already" in bots.self_refusal(member(), True, NOW)
+    assert bots.self_refusal(member(created=NOW - 86400), False, NOW) ==         "Your account needs to be at least 30 days old to post automatically."
+    assert "suspended" in bots.self_refusal(member(is_suspended=True), False, NOW)
+    assert "Sign in" in bots.self_refusal(None, False, NOW)
+    assert "A bot can't" in bots.self_refusal(member(is_bot=True), False, NOW)
+
+
+def test_only_the_member_and_admins_manage_their_own_accounts_posting_and_the_member_is_told():
+    assert bots.may_manage(own(), 7, False) and bots.may_manage(own(), 1, True)
+    assert not bots.may_manage(own(), 8, False) and not bots.may_manage(own(), None, False)
+    assert not bots.may_manage(own(bots.REJECTED), 7, False)
+    assert bots.responsible_id(own()) == 7
+    assert bots.subject(own()) == "Your account's automated posting"
+    assert bots.subject(own(kind=bots.MEMBER)) == "Your bot @ann" and bots.subject(own(kind=bots.MEMBER), capital=False) == "your bot @ann"
+
+
+def test_the_member_must_be_in_good_standing_for_their_feeds_to_post():
+    assert bots.post_refusal(own(), member(), 0, is_on=True) is None
+    assert "owner" in bots.post_refusal(own(), member(is_suspended=True), 0, is_on=True)
+    assert "owner" in bots.post_refusal(own(), member(is_deleted=True), 0, is_on=True)
+    assert "a day" in bots.post_refusal(own(), member(), bots.DAILY_CAP, is_on=True)
+    assert bots.post_refusal(own(bots.PAUSED), member(), 0, is_on=True) == "This bot is not running."
+
+
+@pytest.mark.parametrize("account_is_bot, says_bot, row, automated", [
+    (True, False, None, True),                        # every post of a bot account
+    (True, True, own(kind=bots.MEMBER), True),
+    (False, True, own(), True),                       # a header post from an account that posts automatically
+    (False, False, own(), False),                     # the person's own posts, made by hand
+    (False, True, None, False),                       # a header alone changes nothing: only marked, as before
+    (False, True, own(kind=bots.MEMBER), False),      # (never the case: a person's account has no member-bot row)
+])
+def test_which_posts_are_automated(account_is_bot, says_bot, row, automated):
+    assert bots.is_automated(account_is_bot, says_bot, row) is automated

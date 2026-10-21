@@ -15,10 +15,13 @@
 
 A **bot** is an account that posts by itself. The site's admins approve every one before it posts anything, and every bot follows the same posting rules, and the [rules for bots](/help/rules#bots) in the Rules and Guidelines.
 
-## Two kinds of bot
+## Three ways to post automatically
 
 * A **site bot** costs nothing to run: it reads free feeds (below). Anyone can propose one, and once an admin approves it, it is the **site's**: the admins run it, it is linked to nobody, and its profile says **Automated by {{ 'SITE_NAME' | app_config }}**. A BBC headlines bot is a site bot.
 * A **member bot** needs its member to run it: a script of their own with a **bot key** (for example for X), or a source they pay for. It stays the member's, they manage it, and its profile says **Automated by @member**. A member bot may read approved feeds too.
+* **Your own account** can post from feeds too, while you keep using it as yourself: see [below](#own-account).
+
+One member can run up to {{ bot_rules.MAX_BOTS }} bots, each reading up to {{ bot_rules.MAX_SOURCES }} feeds, as well as their own account's automated posting.
 
 ## Proposing a bot
 
@@ -65,13 +68,26 @@ A member bot can also post from a script of its member's own, through a **bot ke
 
 Every bot rule applies to a key: up to {{ bot_rules.DAILY_CAP }} posts a day, public posts only, never a comment or a vote. Revoking the key, pausing the bot or an admin pausing it stops the script's posts at once. A key needs no extra approval, because the bot was approved for what it posts.
 
+<h2 id="own-account">Posting automatically from your own account</h2>
+
+Your account can post new items from feeds by itself (your YouTube channel, your blog, your podcast), while you keep using it exactly as before: your own posts, comments, votes, chats and guilds are unchanged. Set it up in **Settings > Bots** under **Post automatically from your own account**: say what it posts and give up to {{ bot_rules.MAX_SOURCES }} feeds. An admin approves it first, and every feed you add later.
+
+* The feeds work as for a bot (above): link posts, the newest {{ bot_rules.FIRST_READ }} items on the first read, at most {{ bot_rules.DAILY_CAP }} automated posts a day. Your own posts never count towards that.
+* **Every automated post carries the robot mark**, people who turn on **Hide bot content** don't see them, and your profile says **Some posts are automated**. Your own posts carry no mark.
+* Automated posts are public link posts: never anonymous, for circles or co-authored. They can be forwarded to guilds you choose, under each guild's rules.
+* They don't earn from the creator fund; your own posts and comments still do.
+* **Your feeds can't get your account suspended.** When a feed repeats itself, that item simply isn't posted. Your own posts are judged on their own, as before.
+* Pause it, change its feeds and guilds, or **Stop posting automatically** at any time on its page. Stopping leaves your account and all its posts as they are.
+
+It is one per account, apart from the bots you run.
+
 ## Guilds
 
 A bot's posts are on its own profile, like everyone's. It can forward them to up to {{ bot_rules.MAX_FORWARD_GUILDS }} guilds, and each guild's own rules apply: a guild can refuse forwards from bots, and one that only takes forwards from approved contributors needs the bot to be one. When a guild refuses, the post stays on the bot's profile.
 
 ## What a bot never does
 
-Bots post and forward. They never comment, vote, chat, take tips or lead a guild, and nobody can sign in as one. Every bot's profile says who runs it (the site, or @member), and every bot post carries the robot mark. If you'd rather not see bots, turn on **Hide bot content** in **Settings > Content**.
+Bots post and forward. They never comment, vote, chat or lead a guild, and nobody can sign in as one. A bot's posts can take tips: a member bot's go to its member. Every bot's profile says who runs it (the site, or @member), and every bot post carries the robot mark. If you'd rather not see bots, turn on **Hide bot content** in **Settings > Content**.
 
 ## What admins look for
 

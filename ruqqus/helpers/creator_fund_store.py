@@ -29,14 +29,17 @@ def _now(now):
 
 # The month's points. `events` is every (account, member, item) the month gave: an upvote on the member's post or
 # comment, or a comment on the member's post (the post is the item, so upvoting and commenting on one post is one
-# point). Only live, public items; no votes or comments made through an API app (bots). `counted` keeps the
-# established accounts that are not the member; `pairs` caps what one account gives one member.
+# point). Only live, public items; no votes or comments made through an API app (bots), and nothing for an automated
+# post (`is_bot`: a member's own account can post automatically from feeds, helpers/bots.py SELF; what a feed posted
+# isn't their work). `counted` keeps the established accounts that are not the member; `pairs` caps what one account
+# gives one member.
 _POINTS = """
 WITH events AS (
     SELECT v.user_id AS engager, s.author_id AS author, 'p' || CAST(s.id AS TEXT) AS item, v.creation_ip AS ip
     FROM votes v JOIN submissions s ON s.id = v.submission_id
     WHERE v.vote_type = 1 AND v.app_id IS NULL AND v.created_utc >= :start AND v.created_utc < :end
       AND COALESCE(s.post_public, :yes) = :yes AND COALESCE(s.is_banned, :no) = :no AND s.deleted_utc = 0
+      AND COALESCE(s.is_bot, :no) = :no
     UNION
     SELECT cv.user_id, c.author_id, 'c' || CAST(c.id AS TEXT), cv.creation_ip
     FROM commentvotes cv JOIN comments c ON c.id = cv.comment_id JOIN submissions s ON s.id = c.parent_submission
@@ -49,6 +52,7 @@ WITH events AS (
     WHERE c.app_id IS NULL AND c.created_utc >= :start AND c.created_utc < :end
       AND COALESCE(c.is_banned, :no) = :no AND c.deleted_utc = 0
       AND COALESCE(s.post_public, :yes) = :yes AND COALESCE(s.is_banned, :no) = :no AND s.deleted_utc = 0
+      AND COALESCE(s.is_bot, :no) = :no
 ),
 counted AS (
     SELECT e.engager, e.author, e.item, e.ip

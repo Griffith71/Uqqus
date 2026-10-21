@@ -40,6 +40,8 @@ SECTIONS = (
     ("two_factor", "SELECT (SELECT count(*) FROM mfa_backup_codes WHERE user_id = :u AND used_utc = 0) AS unused_backup_codes, "
                    "(mfa_secret IS NOT NULL) AS two_factor_on FROM users WHERE id = :u"),
     ("linked_storage", "SELECT provider, status, created_utc FROM media_accounts WHERE user_id = :u"),
+    ("automated_posting", "SELECT b.status, b.purpose, b.created_utc, s.url, s.status AS feed_status FROM bots b "
+                          "LEFT JOIN bot_sources s ON s.bot_id = b.user_id WHERE b.user_id = :u AND b.kind = 'self'"),
 )
 
 

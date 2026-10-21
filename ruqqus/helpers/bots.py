@@ -33,9 +33,11 @@ PENDING, APPROVED, REJECTED, PAUSED = "pending", "approved", "rejected", "paused
 STATUSES = (PENDING, APPROVED, REJECTED, PAUSED)
 STATUS_LABELS = {PENDING: "Waiting for approval", APPROVED: "Running", REJECTED: "Rejected", PAUSED: "Paused"}
 
-SITE, MEMBER = "site", "member"
-KINDS = (SITE, MEMBER)
-KIND_LABELS = {SITE: "Site bot", MEMBER: "Member bot"}
+SITE, MEMBER, SELF = "site", "member", "self"
+KINDS = (SITE, MEMBER, SELF)
+# SELF: automated posting on the member's OWN account, which they keep using as themselves (the owner, 2026-10-21).
+# Its row's user_id is the member's account; nothing that deletes, renames or edits a bot account may touch it.
+KIND_LABELS = {SITE: "Site bot", MEMBER: "Member bot", SELF: "Own account"}
 
 IMAGE_MAX_BYTES = 8 * 1024 * 1024            # a bot's picture or banner
 IMAGE_FORMATS = ("PNG", "JPEG", "GIF", "WEBP")
@@ -120,33 +122,65 @@ def parse_kind(raw):
     return raw if raw in KINDS else None
 
 
+def is_self(bot):
+    """Automated posting on the member's own account: its row names their account, which must never be deleted,
+    deactivated, renamed or have its profile edited from a bot's page."""
+    return bot is not None and getattr(bot, "kind", None) == SELF
+
+
+def self_refusal(owner, has_one, now=None):
+    """Why this member may not set up automated posting on their own account, or None. One per account, beside (not
+    counted with) the bot accounts they run; the account must be in good standing and 30 days old, as for a bot."""
+    if has_one:
+        return "Your account already posts automatically. Change its feeds on its page."
+    if owner is None or getattr(owner, "is_deleted", False):
+        return "Sign in to post automatically."
+    if getattr(owner, "is_bot", False):
+        return "A bot can't run bots."
+    if getattr(owner, "is_suspended", False):
+        return "Your account can't post automatically while it is suspended."
+    if not is_admin(owner) and _now(now) - (owner.created_utc or 0) < OWNER_MIN_AGE:
+        return "Your account needs to be at least 30 days old to post automatically."
+    return None
+
+
 def kind_refusal(kind, feed_count):
     """A site bot is the free kind: it reads feeds, so it needs at least one. A member bot may have none (it posts with
-    its member's key)."""
+    its member's key). Automated posting on one's own account is feeds only."""
     if kind not in KINDS:
         return "Choose what kind of bot it is."
     if kind == SITE and not feed_count:
         return "A site bot reads at least one feed: that is what makes it free to run."
+    if kind == SELF and not feed_count:
+        return "Add at least one feed for your account to post from."
     return None
 
 
 def may_manage(bot, viewer_id, admin):
-    """May this person change this bot? Admins: any bot. A member: their own member bot, and a site bot they
-    proposed while it is still waiting (after approval a site bot is the site's, run by the admins)."""
+    """May this person change this bot? Admins: any bot. A member: their own member bot, the automated posting of
+    their own account, and a site bot they proposed while it is still waiting (after approval a site bot is the
+    site's, run by the admins)."""
     if bot is None or bot.status == REJECTED:
         return False
     if admin:
         return True
-    if bot.kind == MEMBER:
+    if bot.kind in (MEMBER, SELF):
         return viewer_id is not None and bot.owner_id == viewer_id
     return bot.status == PENDING and viewer_id is not None and bot.proposed_by_id == viewer_id
 
 
+def subject(bot, capital=True):
+    """How a notice names it: "Your bot @x", or "Your account's automated posting" for the member's own account."""
+    words = "your account's automated posting" if is_self(bot) else f"your bot @{bot.username}"
+    return words[0].upper() + words[1:] if capital else words
+
+
 def responsible_id(bot):
-    """Who is told about a bot: its member (member bot) or whoever proposed it, for the decision on a site bot."""
+    """Who is told about a bot: its member (member bot, own account) or whoever proposed it, for the decision on a
+    site bot."""
     if bot is None:
         return None
-    return bot.owner_id if bot.kind == MEMBER else bot.proposed_by_id
+    return bot.owner_id if bot.kind in (MEMBER, SELF) else bot.proposed_by_id
 
 
 def parse_username(raw):
@@ -320,12 +354,19 @@ def post_refusal(bot, owner, posts_today, is_on=None):
         return "Bots are switched off on this site for now."
     if bot is None or bot.status != APPROVED:
         return "This bot is not running." if bot is not None and bot.status == PAUSED else "This bot has not been approved."
-    if getattr(bot, "kind", MEMBER) == MEMBER and (
+    if getattr(bot, "kind", MEMBER) in (MEMBER, SELF) and (
             owner is None or getattr(owner, "is_deleted", False) or getattr(owner, "is_suspended", False)):
         return "This bot's owner can't run it right now."
     if posts_today >= DAILY_CAP:
         return f"A bot can post at most {DAILY_CAP} times a day."
     return None
+
+
+def is_automated(account_is_bot, says_bot, bot):
+    """Is this post automated, so held to the bot rules (approval, the daily cap, the options a bot may not use, the
+    spam guard's refuse-don't-ban)? Every post of a bot account; and a post sent with the bot header from an account
+    whose automated posting is set up. A header post from any other account keeps the old rules (it is only marked)."""
+    return bool(account_is_bot) or (bool(says_bot) and is_self(bot))
 
 
 def option_refusal(anonymous, audience, coauthors):

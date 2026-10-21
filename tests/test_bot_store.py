@@ -3,6 +3,8 @@ migrations add up to) so the two can't drift apart."""
 import re
 from pathlib import Path
 
+import pytest
+
 from sqlalchemy import create_engine, text
 from sqlalchemy.orm import Session
 
@@ -209,3 +211,59 @@ def test_the_table_takes_only_the_two_kinds():
     db = make()
     with pytest.raises(IntegrityError):
         bs.add_bot(db, 10, 1, "bbc_tech", "x", [], NOW, kind="robot")
+
+
+# --- a member's own account that posts automatically (SELF) -------------------------------------------------------
+
+def own_for(db, uid=1, name="owner"):
+    bs.add_bot(db, uid, uid, name, "My channel's new videos.", [], NOW, kind=bots.SELF, proposed_by=uid)
+    return bs.add_source(db, uid, "https://www.youtube.com/feeds/videos.xml?channel_id=x", NOW)
+
+
+def test_a_members_own_posting_names_their_own_account_and_is_theirs():
+    db = make()
+    own_for(db)
+    row = bs.own_automation(db, 1)
+    assert row.kind == bots.SELF and row.user_id == row.owner_id == row.proposed_by_id == 1 and row.username == "owner"
+    assert bs.bot_of(db, 1).kind == bots.SELF and bs.bot_named(db, "owner").user_id == 1
+    assert bs.own_automation(db, 2) is None
+
+
+def test_it_never_counts_against_the_bots_they_run_nor_lists_as_one():
+    db = make()
+    app_for(db, 10, "bbc_tech", owner=1)
+    own_for(db)
+    assert bs.active_count(db, 1) == 1
+    assert [r.username for r in bs.bots_of(db, 1)] == ["bbc_tech"]
+
+
+def test_the_profile_says_so_only_while_it_runs():
+    db = make()
+    own_for(db)
+    assert not bs.automates(db, 1)                              # waiting for an admin
+    bs.review_bot(db, 1, bots.APPROVED, 99, "", NOW)
+    assert bs.automates(db, 1) and not bs.automates(db, 2)
+    bs.set_running(db, 1, False, "Paused by its owner.")
+    assert not bs.automates(db, 1)
+
+
+def test_stopping_it_leaves_the_account_alone():
+    db = make()
+    own_for(db)
+    bs.forget_bot(db, 1)
+    assert bs.own_automation(db, 1) is None and bs.sources_of(db, 1) == []
+    assert db.execute(text("SELECT username FROM users WHERE id = 1")).scalar() == "owner"
+
+
+def test_a_renamed_member_keeps_their_row():
+    db = make()
+    own_for(db)
+    bs.rename(db, 1, "owner2")
+    assert bs.bot_named(db, "owner2").user_id == 1 and bs.bot_named(db, "owner") is None
+
+
+def test_the_one_per_account_rule_is_the_tables_too():
+    db = make()
+    own_for(db)
+    with pytest.raises(Exception):
+        bs.add_bot(db, 1, 1, "owner", "again", [], NOW, kind=bots.SELF, proposed_by=1)

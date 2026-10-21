@@ -18,6 +18,7 @@ from ruqqus.helpers.chat_permissions import on_block_created
 from ruqqus.helpers import circle_store
 from ruqqus.helpers import blocklist
 from ruqqus.helpers import chat_devices
+from ruqqus.helpers import bot_store
 from ruqqus.helpers import account_sessions, mfa_backup, mfa_backup_store, sign_in_history
 from ruqqus.helpers.regions import COUNTRY_NAMES
 from ruqqus.helpers import totp as totp_rules
@@ -1003,6 +1004,7 @@ def settings_name_change(v):
     v.name_changed_utc=int(time.time())
 
     set_nick(v, new_name)
+    bot_store.rename(g.db, v.id, new_name)      # their own account's automated posting (helpers/bots.py SELF), if any
 
     g.db.add(v)
     g.db.commit()
