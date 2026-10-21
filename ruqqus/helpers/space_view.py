@@ -27,11 +27,17 @@ def attach(db, posts, v):
             p.space_data = None
             continue
         sid, _post_id, host_id, status, scheduled_utc = row[0], row[1], row[2], row[3], row[4]
+        kind, ends_utc = row[space_store.KIND], row[space_store.ENDS]
+        # a Space whose time is up reads as ended at once; the background cycle ends it for good (space_ending)
+        if rules.is_due(kind, status, row[5], ends_utc, now):
+            status = rules.ENDED
         people = 0
-        if status == rules.LIVE and r is not None:
+        if status == rules.LIVE and kind == rules.CALL and r is not None:
             people = len({e["user_id"] for e in call_store.roster(r, space_store.room(sid), now)})
         p.space_data = {
             "id": sid, "status": status, "label": rules.state_label(status, scheduled_utc, now),
+            "kind": kind, "kind_label": rules.KIND_LABELS.get(kind, "Space"), "icon": rules.KIND_ICONS.get(kind),
+            "ends_utc": ends_utc,
             "scheduled_utc": scheduled_utc, "record": bool(row[7]), "video": bool(row[12]), "people": people, "peak": row[9],
             "is_host": v is not None and v.id == host_id,
             "reminded": v is not None and status == rules.SCHEDULED and space_store.reminded(db, sid, v.id),

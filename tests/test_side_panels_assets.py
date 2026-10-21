@@ -33,10 +33,27 @@ def test_every_element_the_script_uses_is_in_the_page_shell():
         assert f'id="{element_id}"' in shell, element_id
 
 
-def test_opening_a_panel_leaves_the_left_sidebar_as_it_is():
-    # the panel replaces the right sidebar only; folding the left one (or flipping the saved preference) is the member's choice
-    assert "toggle_sidebar_collapse" not in PANELS_JS and "toggle_collapse" not in PANELS_JS
-    assert "sidebar-collapsed" not in PANELS_JS and "sidebar-left" not in PANELS_JS
+def test_the_panel_widens_into_the_folded_sidebars_room_and_folds_it_only_when_needed():
+    # the owner (2026-10-21): the panel is the right sidebar's width plus the 207px the left sidebar gives up when it
+    # folds, whenever the window holds the 1326px block with the rail; the left sidebar folds only while there is no
+    # room for it, and only while the panel is open
+    assert "var LEFT_OPEN = 272, RAIL = 65, FEED = 738, RIGHT = 316, GIVEN_UP = 207, GUTTERS = 30;" in PANELS_JS
+    assert "var WIDE_PANEL = RAIL + FEED + RIGHT + GIVEN_UP + GUTTERS;" in PANELS_JS
+    assert "var room = LEFT_OPEN + FEED + (widePanel ? RIGHT + GIVEN_UP : RIGHT) + GUTTERS;" in PANELS_JS
+    assert "if (width < room) fold(); else unfold();" in PANELS_JS
+    # never the member's own choice: the saved preference is not touched, and a sidebar they folded stays folded
+    assert "set_sidebar_pref" not in PANELS_JS and "sidebar_pref" not in PANELS_JS.split("*/", 1)[1]
+    assert "toggle_sidebar_collapse" not in PANELS_JS and "toggle_sidebar_expand" not in PANELS_JS
+    end = chr(10) + "  }"
+    fold = PANELS_JS.split("function fold() {", 1)[1].split(end, 1)[0]
+    assert "sidebar.classList.contains('sidebar-collapsed')) return;" in fold
+    close = PANELS_JS.split("function close() {", 1)[1].split(end, 1)[0]
+    assert "fit();" in close
+    fit = PANELS_JS.split("function fit() {", 1)[1].split(end, 1)[0]
+    assert "unfold();" in fit and "html.classList.remove('panel-wide');" in fit
+    for css in STYLES:
+        assert "html.panel-wide #main-content-row.panel-open > #side-panel {" in css
+        assert "flex: 0 0 calc(#{$layout-right} + 207px);" in css
 
 
 def test_it_is_desktop_only_and_never_hijacks_a_modified_click():

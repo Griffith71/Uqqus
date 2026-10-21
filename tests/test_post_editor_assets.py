@@ -58,3 +58,22 @@ def test_the_placeholder_buttons_can_be_switched_on_by_an_uploader():
 def test_the_toolbar_never_builds_html_from_user_text():
     # the only innerHTML is the server-rendered preview; names and labels go through textContent
     assert JS.count("innerHTML") == 1 and "area.innerHTML = res.data.html" in JS
+
+
+def test_undo_redo_then_what_goes_into_the_text_then_the_folded_formatting():
+    # the owner (2026-10-21): Reddit's order, the formatting folded behind "Aa" at the top of the box
+    order = [JS.index(x) for x in ("tbButton('Undo'", "tbButton('Redo'", "uploadStub('image'", "uploadStub('video'",
+                                   "uploadStub('audio'", "tbButton('GIF'", "tbButton('Emoji'", "tbButton('Link (Ctrl+K)'",
+                                   "'post-tb-toggle'", "dropdown('Text style'")]
+    assert order == sorted(order)
+    assert "extras.forEach(function (g) { g.classList.add('post-tb-extra'); });" in JS
+    assert "setFolded(!startOpen, false);" in JS and "localStorage" in JS and "try {" in JS
+    more = JS.split("dropdown('More'", 1)[1].split("})\n    ));", 1)[0]
+    assert "'Emoji'" not in more and "'GIF'" not in more          # moved to the front, not twice
+    assert "use: function (kind, textarea)" in JS and "'posteditor:register'" in JS
+
+
+def test_a_gif_from_the_blue_row_is_the_posts_link():
+    js = (ROOT / "assets" / "js" / "all_js.js").read_text(encoding="utf-8")
+    gif = js.split("function insertGIF(url,form) {", 1)[1].split("\n  }", 1)[0]
+    assert "target.hasAttribute('data-attach-link')" in gif and "target.value = url;" in gif

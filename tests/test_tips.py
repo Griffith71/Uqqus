@@ -30,3 +30,13 @@ def test_anything_else_is_refused_not_a_crash(raw):
 def test_labels_and_the_age_a_tipper_needs():
     assert tips.label(1) == "1 coin tipped" and tips.label(12) == "12 coins tipped"
     assert tips.established_before(100 * 86400) == 70 * 86400
+
+
+def test_the_coins_of_a_tip_go_to_the_author_a_bot_s_owner_or_nobody():
+    from ruqqus.helpers import tips as rules
+    assert rules.recipient_id(1) == 1
+    assert rules.recipient_id(5, is_bot=True, bot_owner_id=1) == 1      # a member bot: the member who runs it
+    assert rules.recipient_id(5, is_bot=True, bot_owner_id=None) is None  # a site bot: spent, only the lift
+    assert rules.answerable_id(5, is_bot=True, bot_owner_id=1) == 1
+    assert rules.answerable_id(5, is_bot=True, bot_owner_id=None) == 5
+    assert rules.answerable_id(1) == 1

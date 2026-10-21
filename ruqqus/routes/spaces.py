@@ -1,10 +1,11 @@
-"""Spaces: the live page, joining and leaving, the stage, video, the board, live updates, reminders, reports and the
-replay (rules in helpers/spaces.py, SQL in helpers/space_store.py, who is listening now in helpers/call_store.py under
-`space:<id>`, the page's script assets/chat_src/src/space.js).
+"""Spaces: making one, its page, joining and leaving a call, the stage, video, the board, live updates, reminders,
+reports and the replay (rules in helpers/spaces.py, SQL in helpers/space_store.py, ending in helpers/space_ending.py,
+who is in a call now in helpers/call_store.py under `space:<id>`, the page's script assets/chat_src/src/space.js).
 
-A Space is read through its post: whoever may not open the post gets a 404 here too (get_post, a Circle post,
-a private guild, the word filter), and a block with the host or a co-host either way reads as "isn't available".
-Every change is a POST with the form key; the host and co-hosts run it; admins (level 3) can end any Space.
+A Space is not a post (helpers/spaces.py), but it is read through its hidden backing row: whoever may not open that row
+gets a 404 here too (get_post, a Circle audience, a private guild, the word filter), and a block with the host or a
+co-host either way reads as "isn't available". Every change is a POST with the form key; the host and co-hosts run it;
+admins (level 3) can end any Space.
 """
 import os
 import re
@@ -24,11 +25,14 @@ import ruqqus.helpers.matrix_client as matrix
 from ruqqus.__main__ import app, limiter, member_limit_key, r
 
 from ruqqus.helpers import spaces as space_rules
-from ruqqus.helpers import space_store, space_view, call_store, live_bus, turn_usage, turn_usage_store
+from ruqqus.helpers import space_store, space_view, space_ending, call_store, live_bus, turn_usage, turn_usage_store
 from ruqqus.helpers import live_thread_store as live_store
 from ruqqus.helpers.alerts import send_notification
+from ruqqus.helpers import bell as bell_rules
 from ruqqus.helpers.media import attach as media_attach, safety as media_safety
 from ruqqus.helpers.visibility import post_hidden
+from ruqqus.helpers import sharing as sharing_rules
+from urllib.parse import quote
 
 _DEVICE = re.compile(r"^[A-Za-z0-9_.=-]{1,64}$")
 
@@ -43,7 +47,8 @@ class _Space:
     def __init__(self, row, post):
         (self.id, self.post_id, self.host_id, self.status, self.scheduled_utc, self.started_utc, self.ended_utc,
          self.record, self.replay_asset_id, self.listener_peak, self.ended_by_admin, self.matrix_room_id,
-         self.video, self.slow_seconds) = row
+         self.video, self.slow_seconds, self.kind, self.ends_utc, self.replay_link) = row
+        self.row = row
         self.post = post
 
     @property
@@ -88,41 +93,27 @@ def load_space(sid, v):
 
 
 def _maybe_end(space):
-    if space.status != space_rules.LIVE or r is None:
+    """Ends a live Space lazily: its time is up (a board's or live thread's length, a call's MAX_SECONDS), a call's host
+    has gone, or a live thread's host ended its thread from the post page."""
+    if space.status != space_rules.LIVE:
         return
     now = int(time.time())
-    host_seen = r.get(f"space:host:{space.id}")
-    too_long = now - space.started_utc > space_rules.MAX_SECONDS
-    gone = not host_seen and now - space.started_utc > space_rules.HOST_GONE_SECONDS
-    if too_long or gone:
+    due = space_rules.is_due(space.kind, space.status, space.started_utc, space.ends_utc, now)
+    if space.kind == space_rules.CALL and r is not None:
+        gone = not r.get(f"space:host:{space.id}") and now - space.started_utc > space_rules.HOST_GONE_SECONDS
+        due = due or gone
+    if space.kind == space_rules.LIVE_THREAD:
+        thread = live_store.thread(g.db, space.post_id)
+        due = due or (thread is not None and bool(thread[1]))
+    if due:
         _end(space, now)
         g.db.commit()
 
 
 def _end(space, now, by_admin=False):
-    if space_store.end(g.db, space.id, now, by_admin=by_admin):
-        call_store.end(r, space.room)
-        live_store.end(g.db, space.post_id, now)          # its live updates end with it
-        live_bus.publish(r, space.topic, "space.ended", {"by_admin": by_admin})
-        # a Space that was not recorded leaves nothing behind (the owner's choice): its post and every copy of it go
-        if not space.record:
-            _take_down(space, now)
+    """Ends it once (helpers/space_ending.py): a Space that was not recorded leaves nothing behind."""
+    space_ending.end(g.db, r, space.row, now, by_admin=by_admin)
     space.status = space_rules.ENDED
-
-
-def _take_down(space, now):
-    """Take a not-recorded Space's post and its guild copies down when it ends. It is not the author deleting it, so
-    no history row is written and nothing appears in the public Deletion log (routes/deletion_log.py reads those rows);
-    its board, its live updates and its reminders go too (a reported message waits for the admins). The caller
-    commits."""
-    posts = g.db.query(Submission).filter(or_(Submission.id == space.post_id, Submission.repost_id == space.post_id)).all()
-    for post in posts:
-        if not post.deleted_utc:
-            post.deleted_utc = now
-            g.db.add(post)
-    space_store.clear_reminders(g.db, space.id)
-    space_store.clear_board(g.db, space.id)
-    live_store.erase(g.db, space.post_id, now)
 
 
 def _relay_video_ok(now):
@@ -245,22 +236,85 @@ def _replay_path(space):
     return asset.path if asset is not None else None
 
 
+def _replay_player(space):
+    """Where a video replay plays: the host's own video channel's player frame, from its fixed host (a YouTube or
+    Dailymotion address checked when it was saved: helpers/media/rules.video_ref)."""
+    from ruqqus.helpers.media import rules as media_rules
+    found = media_rules.video_ref(space.replay_link or "")
+    if not found:
+        return None
+    provider, video_id = found
+    if provider == "youtube":
+        return f"https://www.youtube-nocookie.com/embed/{video_id}"
+    return f"https://www.dailymotion.com/embed/video/{video_id}"
+
+
+def _space_for_row(post, v):
+    """The Space whose backing row (or a guild copy of it) is `post`, when v may open it, else a 404."""
+    rows = space_store.for_posts(g.db, [post.repost_id or post.id])
+    row = rows.get(post.repost_id or post.id)
+    if row is None:
+        abort(404)
+    primary = _post_for(row, v)
+    if primary is None:
+        abort(404)
+    space = _Space(row, primary)
+    _maybe_end(space)
+    return space
+
+
+def _vote_of(post, v):
+    from ruqqus.classes.votes import Vote
+    vote = g.db.query(Vote).filter_by(user_id=v.id, submission_id=post.id).first() if v else None
+    return vote.vote_type if vote else 0
+
+
+# a Space's own address: /@host/space/<id of its backing row> (helpers/permalinks.py). A live thread is drawn as its
+# backing row's page (its live panel: updates and summary, and its comments); a board and a call by the Space page
+@app.route("/@<username>/space/<pid>", methods=["GET"])
+@auth_desired
+def space_home_page(username, pid, v):
+    post = get_post(pid, v=v)
+    space = _space_for_row(post, v)
+    from ruqqus.routes.posts import canonical_redirect, post_base36id_with_comments
+    if space.kind == space_rules.LIVE_THREAD:
+        return post_base36id_with_comments(pid=space.post.base36id)
+    if v is None:
+        return redirect(f"/login?redirect={quote(request.path)}")
+    moved = canonical_redirect(space.post)
+    if moved:
+        return moved
+    return _space_page(space, v)
+
+
 @app.route("/space/<sid>", methods=["GET"])
 @auth_required
 def space_page(sid, v):
+    """The older address of a Space, by its own number: on to its address under its host."""
     space = load_space(sid, v)
+    return redirect(space.post.permalink, code=301)
+
+
+def _space_page(space, v):
     host = g.db.query(User).filter_by(id=space.host_id).first()
+    post = space.post
     boot = {
-        "formkey": v.formkey, "userId": v.id, "spaceId": space.id, "postId": space.post.base36id,
-        "title": space.post.title, "permalink": space.post.permalink, "status": space.status,
+        "formkey": v.formkey, "userId": v.id, "spaceId": space.id, "postId": post.base36id,
+        "title": post.title, "permalink": post.permalink, "status": space.status, "kind": space.kind,
+        "kindLabel": space_rules.KIND_LABELS[space.kind],
         "isHost": v.id == space.host_id, "record": bool(space.record), "scheduledUtc": space.scheduled_utc,
+        "endsUtc": space.ends_utc,
         "host": {"shown_name": host.shown_name, "username": host.username, "profile_url": host.profile_url},
         "avatar": v.profile_url, "maxStage": space_rules.MAX_STAGE, "maxListeners": space_rules.MAX_LISTENERS,
         "isAdmin": v.admin_level >= 3, "video": bool(space.video), "boardMax": space_rules.BOARD_MAX,
         "slowChoices": [[n, space_rules.slow_label(n)] for n in space_rules.SLOW_CHOICES],
-        "updateMax": 2000, "summaryMax": 1000, "replay": _replay_path(space),
+        "updateMax": 2000, "summaryMax": 1000, "replay": _replay_path(space), "replayPlayer": _replay_player(space),
+        "videoReplay": space_rules.video_replay(space.kind, space.record, space.video, post.audience),
+        "votes": {"score": post.score_fuzzed, "mine": _vote_of(post, v),
+                  "locked": bool(post.voted_elsewhere) or bool(post.is_archived)},
+        "mayShare": sharing_rules.may_share(post, v),
     }
-    resp = make_response(render_template("space.html", v=v, boot=boot))
+    resp = make_response(render_template("space.html", v=v, boot=boot, space_kind=space.kind))
     resp.headers["Cache-Control"] = "no-store"
     return resp
 
@@ -274,37 +328,56 @@ def space_start(sid, v):
     space = load_space(sid, v)
     if v.id != space.host_id:
         return _error("Only the host can start this Space.", 403)
-    now = int(time.time())
     if space.status != space_rules.SCHEDULED:
         return _error(space_rules.OVER if space.status == space_rules.ENDED else "This Space has already started.", 409)
-    try:
-        room_id = matrix.create_space_room()
-    except matrix.MatrixError:
-        return _error("Spaces aren't answering right now. Try again in a moment.", 502)
+    refusal = _begin(space, v)
+    if refusal:
+        return refusal
+    return jsonify({"status": space_rules.LIVE})
+
+
+def _begin(space, v):
+    """Scheduled -> live, and everyone who asked is told. A call gets its silent Matrix room (browsers learn each
+    other's devices in it); a live thread starts its thread, for its length. An error response, or None."""
+    now = int(time.time())
+    room_id = None
+    if space.kind == space_rules.CALL:
+        try:
+            room_id = matrix.create_space_room()
+        except matrix.MatrixError:
+            return _error("Spaces aren't answering right now. Try again in a moment.", 502)
     if not space_store.start(g.db, space.id, now):
         g.db.rollback()
         return _error("This Space has already started.", 409)
-    space_store.set_room(g.db, space.id, room_id)
+    if room_id:
+        space_store.set_room(g.db, space.id, room_id)
     g.db.commit()
-    if r is not None:
+    if r is not None and space.kind == space_rules.CALL:
         r.set(f"space:host:{space.id}", now, ex=space_rules.HOST_GONE_SECONDS)
-    # its live updates (the live-thread machinery, keyed by its post) run while it is live, at most as long as it can
-    live_store.start(g.db, space.post_id, v.id, now, now + space_rules.MAX_SECONDS)
-    g.db.commit()
+    if space.kind == space_rules.LIVE_THREAD:
+        # its updates and summary are the live-thread machinery, keyed by its backing row, for as long as it runs
+        row = space_store.get(g.db, space.id)
+        live_store.start(g.db, space.post_id, v.id, now, row[space_store.ENDS] or now + space_rules.DEFAULT_HOURS * 3600)
+        g.db.commit()
     live_bus.publish(r, space.topic, "space.started", {})
     # the people who asked to be reminded (send_notification commits by itself); never the title or the host's name
     reminded = set(space_store.reminder_ids(g.db, space.id))
     for uid in reminded:
         user = g.db.query(User).filter_by(id=uid).first()
         if user is not None and uid != v.id:
-            send_notification(user, f"A Space you asked to be reminded of is live: [join it]({space.post.permalink})")
+            send_notification(user, f"A Space you asked to be reminded of is live: [join it](/space/{space.id})")
     # and, once, the people who follow its post (helpers/post_follows.py) and may still read it
     from ruqqus.helpers import post_follows
     from ruqqus.routes.comments import _followers_who_may_read
     ids = [uid for uid in post_follows.followers(g.db, space.post_id, v.id, anonymous=False) if uid not in reminded]
+    told = set(ids)
     for user in g.db.query(User).filter(User.id.in_(_followers_who_may_read(space.post, ids))).all() if ids else []:
-        send_notification(user, f"A Space you follow is live: [join it]({space.post.permalink})")
-    return jsonify({"status": space_rules.LIVE})
+        send_notification(user, f"A Space you follow is live: [join it](/space/{space.id})")
+    # and the people who rang the host's bell (helpers/bell.py), who may read its post and were not told above
+    bell_rules.ring_account(v, bell_rules.SPACE_LIVE, space.id, f"/space/{space.id}",
+                            only=lambda ring: [uid for uid in _followers_who_may_read(space.post, ring)
+                                               if uid not in told and uid not in reminded])
+    return None
 
 
 @app.route("/api/spaces/<sid>/join", methods=["POST"])
@@ -591,12 +664,23 @@ def space_report(sid, v):
 @is_not_banned
 @validate_formkey
 def space_replay(sid, v):
-    """The host's recording, already uploaded to their own linked storage (helpers/media), becomes the post's sound."""
+    """The host's recording, already uploaded to their own storage (helpers/media): the sound on their linked storage
+    becomes the Space's sound, or (`video`, a call that allowed cameras and is shared with everyone:
+    space_rules.video_replay) the video on their own video channel becomes its replay."""
     space = load_space(sid, v)
-    if v.id != space.host_id or not space.record:
+    if v.id != space.host_id or not space.record or space.kind != space_rules.CALL:
         abort(403)
-    if space.status != space_rules.ENDED or space.replay_asset_id:
+    if space.status != space_rules.ENDED or space.replay_asset_id or space.replay_link:
         return _error("This Space can't take a replay now.", 409)
+    if request.values.get("video"):
+        if not space_rules.video_replay(space.kind, space.record, space.video, space.post.audience):
+            return _error("This Space keeps its sound only.", 409)
+        link = _own_video_link(v, request.values.get("video"))
+        if link is None:
+            return _error("That recording can no longer be used.", 400)
+        space_store.set_replay(g.db, space.id, None, link)
+        g.db.commit()
+        return jsonify({"ok": True, "link": link})
     asset = media_attach.own_asset(g.db, v.id, request.values.get("media"), kinds=("audio",))
     if asset is None:
         return _error("That recording can no longer be used.", 400)
@@ -624,7 +708,24 @@ def space_replay(sid, v):
     return jsonify({"ok": True, "path": asset.path})
 
 
-# --- the board: the Space's own discussion (its post takes no comments) -----------------------------------------------
+def _own_video_link(v, raw_id):
+    """The address of the host's own ready video on their video channel (helpers/media: YouTube or Dailymotion), by
+    its asset id, or None. Only an address video_ref recognises is kept."""
+    from ruqqus.classes.media import MediaAsset
+    from ruqqus.helpers.media import rules as media_rules
+    try:
+        asset_id = int(str(raw_id or "").strip(), 36)
+    except ValueError:
+        return None
+    asset = g.db.query(MediaAsset).filter_by(id=asset_id, user_id=v.id).first()
+    if (asset is None or asset.status != media_rules.READY or asset.kind != media_rules.VIDEO
+            or asset.provider not in media_rules.HOSTED):
+        return None
+    link = asset.json.get("link") or ""
+    return link if media_rules.video_ref(link) else None
+
+
+# --- the board: a board's discussion, a call's live chat ----------------------------------------------------------------
 
 def _hidden_authors(v):
     """The accounts whose messages this reader never sees: blocked either way, or muted by the reader."""
@@ -710,11 +811,17 @@ def space_message_add(sid, v):
     now = int(time.time())
     roles = space_store.roles(g.db, space.id)
     role = space_rules.role_of(v.id, space.host_id, roles)
-    roster = call_store.roster(r, space.room, now) if r is not None else []
+    if space.kind == space_rules.LIVE_THREAD:
+        return _error("A live thread takes comments, not board messages.", 409)
+    roster = call_store.roster(r, space.room, now) if r is not None and space.kind == space_rules.CALL else []
     inside = space_rules.may_run(role) or any(e["user_id"] == v.id for e in roster)
+    # on a board anyone who may open it writes, unless the host removed them or a block stands between them and a host
+    kept_out = space.kind == space_rules.BOARD and (space_store.removed(g.db, space.id, v.id)
+                                                    or _blocked_with_hosts(space, v, roles))
     refusal = space_rules.message_refusal(space.status, inside, bool(v.is_suspended),
                                           space_store.messages_since(g.db, v.id, now - 60),
-                                          space_store.messages_since(g.db, v.id, now - 86400))
+                                          space_store.messages_since(g.db, v.id, now - 86400),
+                                          kind=space.kind, kept_out=kept_out)
     if refusal:
         return _error(refusal, 429 if "fast" in refusal or "a day" in refusal else 409)
     quote_id = None
@@ -898,33 +1005,67 @@ def spaces_home(v):
     tab = request.args.get("tab", "live")
     if tab not in dict(SPACE_TABS) or (tab == "mine" and not v):
         tab = "live"
-    shown = _visible_space_posts(space_store.listing(g.db, tab, v.id if v else None), v)
+    kind = space_rules.parse_kind(request.args.get("kind"))
+    shown = _visible_space_posts(space_store.listing(g.db, tab, v.id if v else None, kind=kind), v)
     if tab == "live":
-        # the busiest first: how many are in each now is the post's space card data (helpers/space_view.py)
+        # the busiest first: how many are in each now is the Space card's data (helpers/space_view.py)
         shown.sort(key=lambda pair: -((space_view.space_of(pair[1], v) or {}).get("people") or 0))
-    return render_template("spaces_home.html", v=v, tab=tab, tabs=SPACE_TABS, items=shown)
+    return render_template("spaces_home.html", v=v, tab=tab, tabs=SPACE_TABS, items=shown, kind=kind,
+                           kinds=[(k, space_rules.KIND_LABELS[k], space_rules.KIND_ICONS[k]) for k in space_rules.KINDS])
 
 
 @app.route("/spaces/new", methods=["GET"])
 @auth_required
 def spaces_new(v):
-    """Setting up a Space. The form posts to the real POST /api/vue/submit (every posting rule, throttle and ban, and
-    `space_store.create` in submit_post), so nothing about posting lives here."""
+    """Setting up a Space: its kind, title, when, length, recording, audience and where its card shows. The form is
+    sent to POST /api/spaces (`space_create`)."""
     return render_template("space_new.html", v=v, space_max_stage=space_rules.MAX_STAGE,
                            space_max_listeners=space_rules.MAX_LISTENERS, space_video_stage=space_rules.VIDEO_STAGE_MAX,
-                           space_video_people=space_rules.VIDEO_PEOPLE_MAX)
+                           space_video_people=space_rules.VIDEO_PEOPLE_MAX, space_kinds=space_rules.KINDS,
+                           kind_labels=space_rules.KIND_LABELS, kind_hints=space_rules.KIND_HINTS,
+                           kind_icons=space_rules.KIND_ICONS, space_lengths=space_rules.LENGTHS,
+                           space_default_hours=space_rules.DEFAULT_HOURS)
+
+
+# the fields of the setup form handed on to the posting route (helpers/spaces.py: its backing row is made there)
+_CREATE_FIELDS = ("title", "body", "space_kind", "space_hours", "space_start", "space_record", "space_video", "audience")
+_CREATE_LISTS = ("circles", "forward_guilds")
+
+
+@app.route("/api/spaces", methods=["POST"])
+@limiter.limit("20/hour", key_func=member_limit_key)
+@is_not_banned
+@validate_formkey
+def space_create(v):
+    """Makes a Space. Its hidden backing row is made by the real posting route in this process, as v (the scheduler's
+    way, routes/collab.py `_post_as`), so every posting rule, throttle and ban applies; the request's environ carries
+    space_rules.ENVIRON_KEY, which no browser can set, so a Space is never made anywhere else. A board or a live thread
+    asked to start now starts at once; a call waits for its host to open it."""
+    from ruqqus.routes.collab import _post_as
+    data = {name: request.form.get(name, "") for name in _CREATE_FIELDS}
+    for name in _CREATE_LISTS:
+        data[name] = request.form.getlist(name)
+    data.update(space="true", post_to_profile="1")
+    status, answer = _post_as(v, "/api/vue/submit", data, environ={space_rules.ENVIRON_KEY: True})
+    if status >= 300 or not answer.get("id"):
+        return _error(answer.get("error") or "The Space could not be made.", status if status >= 400 else 400)
+    post = get_post(answer["id"], v=v)
+    space = _space_for_row(post, v)
+    starts_now = space.scheduled_utc <= int(time.time()) + 60
+    if space.kind != space_rules.CALL and starts_now:
+        refusal = _begin(space, v)
+        if refusal:
+            return refusal
+    return jsonify({"url": post.permalink, "id": space.id})
 
 
 @app.route("/space/post/<pid>", methods=["GET"])
 @auth_required
 def space_for_post(pid, v):
-    """From a Space's post (or a guild copy of it) to the Space: where the setup page goes once it is made."""
+    """An older address: from a Space's backing row (or a guild copy of it) to the Space."""
     post = get_post(pid, v=v)
-    rows = space_store.for_posts(g.db, [post.repost_id or post.id])
-    row = rows.get(post.repost_id or post.id)
-    if row is None or _post_for(row, v) is None:
-        abort(404)
-    return redirect(f"/space/{row[0]}")
+    space = _space_for_row(post, v)
+    return redirect(space.post.permalink, code=301)
 
 
 def live_space_for(user, v):

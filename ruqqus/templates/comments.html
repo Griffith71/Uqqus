@@ -1,6 +1,7 @@
 {% macro single_comment(c, level=1) %}
 {% import "partials/post_options.html" as post_options %}
 {% from "partials/community_note.html" import community_note %}
+{% from "partials/subscriber_badge.html" import subscriber_mark %}
 <!---beginning of comment {{ c.id }}--->
 
 {% set ups=c.upvotes_fuzzed %}
@@ -159,6 +160,7 @@
         {% if op_badge(c, c.post, v) %}
         <i class="fas fa-microphone-lines text-info" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Submitter"></i>
         {% endif %}
+        {{ subscriber_mark(c) }}
         {% if c.is_bot %}
         <i class="fas fa-robot text-info" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Automaton"></i>
         {% endif %}

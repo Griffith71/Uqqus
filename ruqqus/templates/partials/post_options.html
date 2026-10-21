@@ -8,7 +8,7 @@
   `prefix` keeps the input ids unique when the field is on a page twice.
 
   disclosure_field(paid, ai, prefix): "Content disclosure" checkboxes (paid
-  partnership, made with AI) for a post. The hidden empty inputs make an
+  commercial promotion, made with AI) for a post. The hidden empty inputs make an
   unticked box arrive as "off" on edit forms (helpers/post_fields.flag).
 
   disclosure_toggles(prefix, paid, ai): the same two options as icon toggles
@@ -31,13 +31,13 @@
   it is anonymous.
 #}
 
-{% macro audience_field(selected, prefix, chosen=(), choices=(), layout="menu") %}
+{% macro audience_field(selected, prefix, chosen=(), choices=(), layout="menu", noun="post") %}
 {% set for_circles = selected == 4 %}
 {% if layout == "cards" %}
 {# the Create a post page: both choices in plain view (no menu to find), the circles as chips under Circles #}
 <div class="audience audience-cards" data-audience-field data-mode="{{ 4 if for_circles else 0 }}">
-  <span class="audience-title">Who can see this post?</span>
-  <div class="audience-choices" role="radiogroup" aria-label="Who can see this post">
+  <span class="audience-title">Who can see this {{ noun }}?</span>
+  <div class="audience-choices" role="radiogroup" aria-label="Who can see this {{ noun }}">
     <input type="radio" class="audience-radio" id="{{ prefix }}-0" name="audience" value="0"{% if not for_circles %} checked{% endif %}>
     <label class="audience-choice" for="{{ prefix }}-0"><i class="fas fa-globe-americas" aria-hidden="true"></i><span class="audience-choice-text"><strong>Public</strong><small>Anyone can see it</small></span></label>
     <input type="radio" class="audience-radio" id="{{ prefix }}-4" name="audience" value="4"{% if for_circles %} checked{% endif %}>
@@ -120,7 +120,7 @@
   <div class="custom-control custom-checkbox custom-control-inline">
     <input type="hidden" name="paid_partnership" value="">
     <input type="checkbox" class="custom-control-input" id="{{ prefix }}-paid" name="paid_partnership" value="true"{% if paid %} checked{% endif %}>
-    <label class="custom-control-label" for="{{ prefix }}-paid">Paid partnership</label>
+    <label class="custom-control-label" for="{{ prefix }}-paid" data-toggle="tooltip" data-placement="top" title="Paid partnerships, sponsorships, affiliate links, or advertising your own products or services">Commercial promotion</label>
   </div>
   <div class="custom-control custom-checkbox custom-control-inline">
     <input type="hidden" name="made_with_ai" value="">
@@ -131,7 +131,7 @@
 {% endmacro %}
 
 {% macro disclosure_toggles(prefix, paid=false, ai=false, anonymous_option=false, anonymous_locked=false) %}
-<label class="format btn btn-secondary m-0 ml-1 d-inline-block{% if paid %} text-info{% endif %}" for="{{ prefix }}-paid" data-toggle="tooltip" data-placement="bottom" title="Paid partnership">
+<label class="format btn btn-secondary m-0 ml-1 d-inline-block{% if paid %} text-info{% endif %}" for="{{ prefix }}-paid" data-toggle="tooltip" data-placement="bottom" title="Commercial promotion: paid partnerships, sponsorships, affiliate links, or advertising your own products or services">
   <input id="{{ prefix }}-paid" type="checkbox" hidden{% if paid %} checked{% endif %} onchange="this.parentNode.classList.toggle('text-info', this.checked)">
   <i class="fas fa-handshake"></i>
 </label>
@@ -148,7 +148,7 @@
 {% endmacro %}
 
 {% macro disclosure_badges(item, v=none) %}
-{%- if item.paid_partnership %}<span class="badge badge-pill bg-white border text-muted text-small-extra mr-1" data-toggle="tooltip" data-placement="bottom" title="The author says this is a paid partnership"><i class="fas fa-handshake fa-fw mr-1"></i>Paid partnership</span>{% endif -%}
+{%- if item.paid_partnership %}<span class="badge badge-pill bg-white border text-muted text-small-extra mr-1" data-toggle="tooltip" data-placement="bottom" title="The author says this is commercial promotion: a paid partnership, sponsorship, affiliate link, or advertising of their own products or services"><i class="fas fa-handshake fa-fw mr-1"></i>Commercial promotion</span>{% endif -%}
 {%- if item.made_with_ai %}<span class="badge badge-pill bg-white border text-muted text-small-extra mr-1" data-toggle="tooltip" data-placement="bottom" title="The author says this was made with AI"><i class="fas fa-robot fa-fw mr-1"></i>Made with AI</span>{% endif -%}
 {%- if item.is_anonymous and not anon_hidden(item, v) %}<span class="badge badge-pill bg-white border text-muted text-small-extra mr-1" data-toggle="tooltip" data-placement="bottom" title="Other users see this as Anonymous. Only you and site admins see your name."><i class="fas fa-user-secret fa-fw mr-1"></i>Anonymous</span>{% endif -%}
 {% endmacro %}
@@ -187,7 +187,18 @@
 </div>
 {% endmacro %}
 
-{% macro anonymous_field(checked, prefix) %}
+{% macro anonymous_field(checked, prefix, compact=false) %}
+{% if compact %}
+{# in the audience pill's menu (both composers): a switch under Public / Circles. composer_card.js turns it off while
+   Circles is chosen (a post for circles can't be anonymous) and shows it on the pill #}
+<div class="composer-anonymous">
+  <div class="custom-control custom-switch">
+    <input type="checkbox" class="custom-control-input" id="{{ prefix }}" name="anonymous" value="true"{% if checked %} checked{% endif %} aria-describedby="{{ prefix }}-hint">
+    <label class="custom-control-label" for="{{ prefix }}">Post anonymously</label>
+  </div>
+  <span class="audience-hint d-block" id="{{ prefix }}-hint">Others see Anonymous instead of your name; you and site admins still see it. It can't be changed after posting.</span>
+</div>
+{% else %}
 <label class="mt-3 d-block">Anonymity<i class="fas fa-info-circle text-gray-400 ml-1" data-toggle="tooltip" data-placement="top" title="Other users see Anonymous instead of your name. You and site admins can still see it, it follows the same rules as any post, and it cannot be undone after posting. It is not listed on your profile."></i></label>
 <div class="anonymity">
   <div class="custom-control custom-checkbox">
@@ -195,4 +206,5 @@
     <label class="custom-control-label" for="{{ prefix }}">Post anonymously</label>
   </div>
 </div>
+{% endif %}
 {% endmacro %}

@@ -1,14 +1,14 @@
 /*
- * "Host a Space" in the composers (partials/post_options.html space_field, helpers/spaces.py): ticking it shows the
- * start time and replay options; the time the member picks is in their own time zone, so it is sent as a Unix time
- * (`space_start`), which the server checks. Empty starts the Space when the host opens it. Works for every composer
- * on the page, the feed composer included.
+ * A Space's start time (templates/space_new.html, helpers/spaces.py): the time the member picks is in their own time
+ * zone, so it is sent as a Unix time (`space_start`), which the server checks. Empty starts it now (a call: when its
+ * host opens it). A box with a `[data-space-toggle]` tick box shows its options only while it is ticked.
  */
 (function () {
   function sync(box) {
-    var on = box.querySelector('[data-space-toggle]').checked;
+    var toggle = box.querySelector('[data-space-toggle]');
+    var on = !toggle || toggle.checked;
     var options = box.querySelector('.space-options');
-    if (options) options.hidden = !on;
+    if (options && toggle) options.hidden = !on;
     var when = box.querySelector('[data-space-when]');
     var start = box.querySelector('input[name="space_start"]');
     if (when && start) {

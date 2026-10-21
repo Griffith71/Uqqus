@@ -129,10 +129,13 @@
     <div class="flex-row box-shadow-bottom d-flex justify-content-center justify-content-md-between align-items-center">
       <ul class="nav settings-nav">
         <li class="nav-item">
-          <a class="nav-link active" href="/@{{ u.username}}">Posts</a>
+          <a class="nav-link{% if profile_tab != 'spaces' %} active{% endif %}" href="/@{{ u.username}}"{% if profile_tab != 'spaces' %} aria-current="page"{% endif %}>Posts</a>
         </li>
         <li class="nav-item">
           <a class="nav-link" href="/@{{ u.username}}/comments">Comments</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link{% if profile_tab == 'spaces' %} active{% endif %}" href="/@{{ u.username}}/spaces"{% if profile_tab == 'spaces' %} aria-current="page"{% endif %}>Spaces</a>
         </li>
         <li class="nav-item">
           <a class="nav-link" href="/@{{ u.username}}/forwarded">Forwarded</a>

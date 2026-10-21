@@ -245,6 +245,17 @@ def recompute():
             db.rollback()
             print_(f"picture refresh failed: {e}")
 
+        # Spaces whose time is up end even when nobody opens them (helpers/space_ending.py); one not recorded
+        # disappears with its board, updates and comments
+        try:
+            from ruqqus.helpers import space_ending
+            from ruqqus.__main__ import r as space_redis
+            print_(f"ended {space_ending.end_due(db, space_redis, now)} Spaces whose time was up")
+            db.commit()
+        except Exception as e:
+            db.rollback()
+            print_(f"ending Spaces failed: {e}")
+
         # shared drafts: open proposals counted again (authors go inactive, proposals reach their end)
         try:
             from ruqqus.routes.collab import settle_open_proposals

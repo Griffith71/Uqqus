@@ -24,6 +24,7 @@ from ruqqus.helpers import chat_groups as group_rules
 from ruqqus.helpers import chat_group_store as group_store
 from ruqqus.helpers import live_bus, turn_usage, turn_usage_store
 from ruqqus.helpers.chat_permissions import is_blocked
+from ruqqus.helpers.visibility import user_hidden
 
 _DEVICE = re.compile(r"^[A-Za-z0-9_.=-]{1,64}$")
 # a room id: "!opaque:server", or from room version 12 (Synapse 1.162's default) "!opaque" alone
@@ -328,3 +329,46 @@ def call_status(v):
         from ruqqus.routes import guild_channels as channels
         answer["who"] = channels.voice_who(room, roster, v)       # whoever may see the channel sees who is in it
     return jsonify(answer)
+
+
+# --- the Calls tab of the chat page (assets/chat_src/src/index.js) ------------------------------------------------
+
+def _short(room_id):
+    """A room id without its server part: call rows may hold either (room version 12 has no server part)."""
+    return str(room_id or "").split(":", 1)[0]
+
+
+@app.route("/api/calls/history", methods=["GET"])
+@auth_required
+def calls_history(v):
+    """The member's recent calls: only in chats they are in now (their 1:1 chats and the groups they joined), newest
+    first, with the other person or the group, voice or video, when, how long, and whether they started it. Nothing
+    says who else took part. A 1:1 chat with someone in a block either way, or whose name the viewer's filter hides,
+    is left out (a block is never named)."""
+    from sqlalchemy import or_
+    from ruqqus.routes.chat_groups import group_json
+    chats = {}
+    rows = g.db.query(ChatConversation).filter(
+        or_(ChatConversation.user_a_id == v.id, ChatConversation.user_b_id == v.id)).all()
+    for convo in rows:
+        other = convo.other_user(v.id)
+        if other is None or other.is_deleted or is_blocked(v, other) or user_hidden(other, v):
+            continue
+        chats[_short(convo.matrix_room_id)] = {
+            "kind": "pair", "key": f"c{convo.id}", "room_id": convo.matrix_room_id, "label": other.shown_name,
+            "username": other.username, "avatar": other.profile_url}
+    for row in group_store.groups_for(g.db, v.id, "joined", limit=200):
+        group = group_json(row[:8], group_store.member(g.db, row[0], v.id), v)
+        chats[_short(group["room_id"])] = {
+            "kind": "group", "key": group["key"], "room_id": group["room_id"], "label": group["label"],
+            "username": None, "avatar": None}
+    wanted = set(chats) | {chat["room_id"] for chat in chats.values()}
+    calls = []
+    for room, kind, starter, started, ended, peak in call_store.history(g.db, wanted):
+        chat = chats.get(_short(room))
+        if chat is None:
+            continue
+        calls.append({**chat, "call_kind": kind, "outgoing": starter == v.id, "started_utc": started,
+                      "seconds": max(0, ended - started) if ended else None, "peak": peak})
+    return jsonify({"calls": calls})
+

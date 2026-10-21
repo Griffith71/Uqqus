@@ -48,10 +48,16 @@ def test_the_draft_scripts_still_find_the_one_body_block_and_the_form():
     assert '<form id="submitform"' in SUBMIT
 
 
-def test_the_audience_is_in_plain_view_as_cards_over_the_real_radios():
-    # no menu to find: Public and Circles are both drawn, and the circles are chips under Circles (the other composers keep the pill)
-    assert 'id="composer-audience"' not in FORM
-    assert 'post_options.audience_field(audience_now, "post-audience", circles_now, circle_choices(v), "cards")' in FORM
+def test_the_head_holds_where_it_goes_and_who_sees_it_as_on_the_feed_composer():
+    # the owner (2026-10-21): the audience is the pill at the top right, as on the feed composer, with Post anonymously in
+    # its menu; where it goes is a dropdown at the top left with the guild search (the "cards" layout stays for Spaces)
+    head = FORM.split('<div class="composer-head">')[1].split('<label for="post-title"')[0]
+    assert '<details class="composer-pill composer-audience-pill" id="composer-audience">' in head
+    assert 'post_options.audience_field(audience_now, "post-audience", circles_now, circle_choices(v))' in head
+    assert '"post-anon", compact=true)' in head and "post_options.anonymous_field(" in head
+    assert '<details class="composer-pill composer-where-pill" id="composer-where">' in head
+    assert 'post_options.where_profile("post-where", "forward_guild_input", "forward_guild_add", to_profile)' in head
+    assert 'id="forward_guild_input"' in head and 'id="forward-guild-chips"' in head and 'id="forward_guild_inputs"' in head
     options = read("templates", "partials", "post_options.html")
     cards = options.split('{% if layout == "cards" %}')[1].split("{% else %}")[0]
     assert 'name="audience" value="0"' in cards and 'name="audience" value="4"' in cards and 'name="circles"' in cards
@@ -61,19 +67,34 @@ def test_the_audience_is_in_plain_view_as_cards_over_the_real_radios():
 
 def test_the_options_are_folded_in_the_page_not_removed_from_it():
     more = FORM.split('<details class="composer-more"')[1].split("</details>")[0]
-    for macro in ("comment_permission_field", "disclosure_field", "anonymous_field", "poll_field"):
+    for macro in ("comment_permission_field", "disclosure_field"):
         assert f"post_options.{macro}(" in more, macro
+    # the poll is under the blue row and anonymity in the audience pill, never twice (the owner, 2026-10-21)
+    for macro in ("poll_field", "anonymous_field"):
+        assert f"post_options.{macro}(" not in more, macro
+        assert FORM.count(f"post_options.{macro}(") == 1, macro
     assert 'id="sensitiveCheck"' in more and 'name="sensitive"' in more
     assert "{% if draft or request.form %} open{% endif %}" in FORM         # a draft or a re-render shows them
     # a closed <details> still submits its fields: nothing is disabled to fold them
-    assert "disabled" not in FORM.split('<details class="composer-more"')[1].split("poll_field")[0]
+    assert "disabled" not in more.split('id="sensitiveCheck"')[0]
 
 
 def test_the_attach_row_calls_the_handlers_that_already_exist():
     tools = FORM.split('<div class="composer-tools"')[1].split("</div>")[0]
-    for call in ("attachLink()", "getGif();commentForm('post-title')", "commentForm('post-title');loadEmojis()"):
+    # a GIF is the post's own media (its link, all_js.js insertGIF); the emoji goes into the title
+    for call in ("attachLink()", "getGif();commentForm('post-URL')", "commentForm('post-title');loadEmojis()"):
         assert call in tools, call
     assert 'for="file-upload"' in tools and 'id="composer-poll-btn"' in tools
+    assert 'data-post-media="video"' in tools and 'data-post-media="audio"' in tools
+    assert 'id="post-URL" name="url" class="d-none" value="{{ prefill_url }}" data-attach-link' in FORM
+
+
+def test_the_blue_row_is_right_under_the_title_and_the_body_shows_at_once():
+    title = FORM.index('id="post-title"')
+    tools = FORM.index('<div class="composer-tools"')
+    body = FORM.index('id="body-write"')
+    assert title < tools < FORM.index('class="composer-poll"') < body
+    assert '<div id="body-write" class="comment-write post-editor mt-3">' in FORM      # no d-none: Reddit's body box
 
 
 def test_the_script_only_drives_the_pill_and_the_poll_button():

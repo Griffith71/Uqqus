@@ -1,38 +1,57 @@
-"""Spaces: live audio rooms, as on X (pure rules, no I/O; the SQL is helpers/space_store.py, the routes
-routes/spaces.py, the page assets/chat_src/src/space.js).
+"""Spaces (pure rules, no I/O; the SQL is helpers/space_store.py, the routes routes/spaces.py, the page
+assets/chat_src/src/space.js).
 
-**A Space is a post**, set up in the Spaces area (`/spaces/new`, never from a composer), so it is listed, followed,
-forwarded, voted on, filtered, muted, blocked and reported like any post and has the post's audience (Public or
-circles). **Its post takes no comments** (helpers/comment_permission.py `SPACE`): its discussion is the Space's own
-**board**, and its host and co-hosts write **live updates** above it (the live-thread machinery, keyed by its post).
-The `spaces` row holds the rest: when it starts, its state, whether it is recorded and allows video, its replay.
+**A Space is not a post** (the owner, 2026-10-20): it is made only in the Spaces area (`/spaces/new`), lives at its own
+address (`/@host/space/<id>`), is listed under a profile's Spaces tab and never its Posts, and is drawn as its own card.
+It has **most of what a post has**: votes, ranking in feeds, shares, filters, mutes, blocks, reports and an audience
+(Public or circles). Those rules are spread over hundreds of places, so a Space keeps a hidden backing row in
+`submissions` (`is_space`) that takes part in all of them unchanged; that row is never shown as a post.
 
-- **People**: the host (who made it), up to MAX_COHOSTS co-hosts the host names, speakers, and listeners. Up to
-  MAX_STAGE people are on stage (host, co-hosts and speakers) and MAX_LISTENERS listen: there is no media server,
-  so each person on stage sends their voice to everyone in the Space (the owner's choice, 2026-10-16).
-- **Video**, when the host allowed it: up to VIDEO_STAGE_MAX people on stage at once, and only while the Space has
-  at most VIDEO_PEOPLE_MAX people in it and the relay's month allows video (helpers/turn_usage.py). Above that it is
-  audio only for everyone, with a notice (each person uploads one copy per other person).
-- **Everyone in a Space is shown to everyone in it**, as on X (the owner's choice): the join sheet says so first.
-- **Never anonymous** (it is a voice), never by a bot, never in a Circle guild.
-- **Joining** needs a signed-in member who may see the post, who is not in a block with the host or a co-host either
-  way and whom the host has not removed. One message for every refusal that could reveal a block.
-- **The host and co-hosts run it**: invite a listener to speak (who then accepts), move a speaker back to listening,
-  ask a speaker to mute, remove someone (they can't come back to this Space), slow the board, remove a message, end
-  it. A raised hand is seen by them. Admins (level 3) can end any Space and remove any message.
-- **The board**: plain text up to BOARD_MAX characters, public to whoever may open the post (not end-to-end
-  encrypted, so it can be moderated), written only by people in the Space while it is live, rated by the word filter,
-  slowed by slow mode (the host and co-hosts are never slowed), capped per minute and per day, and a message may quote
-  one earlier message of the same Space.
-- **A replay** is opt-in when the Space is made (`record`): everyone is told before they join and while it runs.
-  The host's browser records the Space and uploads it to the host's own linked storage when it ends (helpers/media);
-  it becomes the post's sound, and the board and the updates stay to read. **A Space that is not recorded leaves
-  nothing**: when it ends its post, its copies, its board and its updates go.
+**A Space is exactly one of three kinds** (KINDS), chosen when it is made and never changed. What takes the place of
+comments depends on the kind:
+
+- **board**: a public message board for a set time (`ends_utc`, LENGTHS). Anyone who may open it writes on it.
+- **live**: a live thread, as on Reddit: the host writes timestamped updates and a pinned summary (the live-thread
+  machinery, helpers/live_thread_store.py, keyed by its backing row) and everyone comments under them (the ordinary
+  comments of the backing row), for a set time.
+- **call**: a live audio and video stage, as X's Spaces, with a live chat beside it (the board). At most MAX_SECONDS.
+
+- **People** (a call): the host (who made it), up to MAX_COHOSTS co-hosts the host names, speakers, and listeners. Up
+  to MAX_STAGE people are on stage and MAX_LISTENERS listen: there is no media server, so each person on stage sends
+  their voice to everyone in it (the owner's choice, 2026-10-16).
+- **Video** (a call whose host allowed it): up to VIDEO_STAGE_MAX people on stage at once, only while the call has at
+  most VIDEO_PEOPLE_MAX people in it and the relay's month allows video (helpers/turn_usage.py).
+- **Everyone in a call is shown to everyone in it**, as on X (the owner's choice): the join sheet says so first.
+- **Never anonymous**, never by a bot, never in a Circle guild.
+- **Joining** a call needs a signed-in member who may see it, who is not in a block with the host or a co-host either
+  way and whom the host has not removed. One message for every refusal that could reveal a block. The same holds for
+  writing on a board.
+- **The board** (a board's main thing, a call's live chat): plain text up to BOARD_MAX characters, public to whoever
+  may open the Space (not end-to-end encrypted, so it can be moderated), rated by the word filter, slowed by slow mode
+  (the host and co-hosts are never slowed), capped per minute and per day; a message may quote one earlier message of
+  the same Space.
+- **Recorded or not**, for every kind (`record`): everyone is told before they join. **A Space that is not recorded
+  leaves nothing**: when it ends it disappears from feeds and the host's profile with its board, updates and comments.
+  A recorded board or live thread stays to read; **a recorded call keeps a replay**: the sound, or the video too when
+  cameras were allowed (`video_replay`), saved to the host's own storage, as every upload on this site is.
 """
 
 HOST, COHOST, SPEAKER, LISTENER = "host", "cohost", "speaker", "listener"
 STAGE_ROLES = (HOST, COHOST, SPEAKER)
 SCHEDULED, LIVE, ENDED = "scheduled", "live", "ended"
+
+BOARD, LIVE_THREAD, CALL = "board", "live", "call"
+KINDS = (BOARD, LIVE_THREAD, CALL)
+KIND_LABELS = {BOARD: "Message board", LIVE_THREAD: "Live thread", CALL: "Call"}
+KIND_HINTS = {
+    BOARD: "A public board for a set time: anyone who can see it writes on it.",
+    LIVE_THREAD: "You post timestamped updates as things happen; everyone comments under them.",
+    CALL: "A live audio stage (video too, if you allow it), with a live chat beside it.",
+}
+KIND_ICONS = {BOARD: "fa-comments", LIVE_THREAD: "fa-tower-broadcast", CALL: "fa-microphone-lines"}
+# how long a board or a live thread runs (the poll lengths: helpers/polls.py); a call runs at most MAX_SECONDS
+LENGTHS = ((1, "1 hour"), (6, "6 hours"), (24, "1 day"), (72, "3 days"), (168, "7 days"))
+DEFAULT_HOURS = 24
 
 MAX_STAGE = 5
 MAX_COHOSTS = 2
@@ -52,6 +71,10 @@ BOARD_PER_DAY = 300               # one person's messages in Spaces in a day
 SLOW_CHOICES = (0, 10, 30, 60, 300)
 
 UNAVAILABLE = "This Space isn't available."
+NOT_HERE = "Spaces are started in the Spaces area."
+# set on the environ of the in-process request the Spaces area sends to the posting route (routes/spaces.py
+# `space_create`); a browser can only send headers, which arrive as HTTP_* keys, so it can never set this one
+ENVIRON_KEY = "ruqqus.space_create"
 NOT_STARTED = "This Space hasn't started yet."
 OVER = "This Space has ended."
 FULL = f"This Space is full ({MAX_LISTENERS} listeners)."
@@ -61,7 +84,7 @@ VIDEO_TOO_BIG = f"Video is off: this Space has more than {VIDEO_PEOPLE_MAX} peop
 VIDEO_RELAY = "Video is off this month to keep calls free. Audio still works."
 VIDEO_FULL = f"{VIDEO_STAGE_MAX} people are already on video."
 BOARD_CLOSED = "The board is open while the Space is live."
-BOARD_JOIN = "Join the Space to write on its board."
+BOARD_JOIN = "Join the Space to write in its chat."
 
 
 class Refused(ValueError):
@@ -85,11 +108,62 @@ def parse_start(value, now):
     return max(start, now), None
 
 
-def make_refusal(anonymous, bot, circle_guild, made_today):
+def parse_kind(value):
+    """The kind a Space is made as: one of KINDS, else None."""
+    text = str(value or "").strip().lower()
+    return text if text in KINDS else None
+
+
+def parse_length(kind, value):
+    """How many hours a board or a live thread runs: one of LENGTHS (DEFAULT_HOURS when none is given). A call has
+    no chosen length: None."""
+    if kind == CALL:
+        return None
+    text = str(value or "").strip()
+    if not text:
+        return DEFAULT_HOURS
+    if text.isascii() and text.isdigit() and int(text) in dict(LENGTHS):
+        return int(text)
+    raise Refused("Pick one of the lengths.")
+
+
+def ends_at(kind, start_utc, hours):
+    """When a board or a live thread started at `start_utc` stops by itself (0 for a call: MAX_SECONDS and its host
+    being gone end it)."""
+    if kind == CALL or not hours:
+        return 0
+    return int(start_utc) + int(hours) * 3600
+
+
+def is_due(kind, status, started_utc, ends_utc, now):
+    """Whether a live Space has run its time: a board or a live thread at its end, a call after MAX_SECONDS."""
+    if status != LIVE:
+        return False
+    if kind == CALL:
+        return bool(started_utc) and now - started_utc > MAX_SECONDS
+    return bool(ends_utc) and now >= ends_utc
+
+
+def comment_mode(kind):
+    """The backing row's "Who can comment": a live thread takes comments from everyone (0); a board and a call take
+    none (helpers/comment_permission.py SPACE: their discussion is the board)."""
+    return 0 if kind == LIVE_THREAD else 5
+
+
+def video_replay(kind, record, video, audience):
+    """Whether a recorded Space keeps its cameras in the replay: a call that allowed video, shared with everyone. A
+    video replay lives on the host's own video channel, which names the channel and opens for anyone holding the link,
+    so a Space for circles keeps the sound only (as circles.post_refusal refuses a channel video on a circle post)."""
+    return kind == CALL and bool(record) and bool(video) and not audience
+
+
+def make_refusal(anonymous, bot, circle_guild, made_today, kind=CALL):
+    if kind not in KINDS:
+        return "Choose what kind of Space it is."
     if bot:
         return "Bots can't host Spaces."
     if anonymous:
-        return "A Space can't be anonymous: people hear your voice."
+        return "A Space can't be anonymous."
     if circle_guild:
         return "A Space can't be hosted in a Circle guild."
     if made_today >= SPACES_PER_DAY:
@@ -215,13 +289,17 @@ def clean_message(text):
     return body
 
 
-def message_refusal(status, inside, suspended, last_minute, today):
-    """Why this member may not write on the board now (slow mode is the caller's: it lives in Redis)."""
+def message_refusal(status, inside, suspended, last_minute, today, kind=CALL, kept_out=False):
+    """Why this member may not write on the board now (slow mode is the caller's: it lives in Redis). In a call only
+    the people in it write (`inside`); on a board anyone who may open it, unless the host removed them or they are in
+    a block with the host or a co-host (`kept_out`: one message that never says which)."""
     if status != LIVE:
         return BOARD_CLOSED
     if suspended:
         return "Your account is suspended."
-    if not inside:
+    if kept_out:
+        return UNAVAILABLE
+    if kind == CALL and not inside:
         return BOARD_JOIN
     if last_minute >= BOARD_PER_MINUTE:
         return "You're writing very fast. Wait a moment."

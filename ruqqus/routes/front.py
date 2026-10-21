@@ -19,6 +19,8 @@ from ruqqus.classes.submission import Submission
 from ruqqus.classes.categories import CATEGORIES
 from ruqqus.classes.votes import Vote
 from ruqqus.helpers import topics as topic_rules
+from ruqqus.helpers import feed_filters as feed_filter_rules
+from ruqqus.helpers import feed_filter_sql
 from ruqqus.helpers.languages import LANGUAGE_NAMES, known_codes
 from ruqqus.helpers.regions import REGION_CENTROIDS
 
@@ -120,7 +122,7 @@ def viewer_sticky(v):
 
 @cache.memoize(timeout=900)
 def frontlist(v=None, sort=None, page=1,
-              t=None, categories=[], filter_words='', region=None, language=None, **kwargs):
+              t=None, categories=[], filter_words='', region=None, language=None, feed_filter=None, **kwargs):
 
     # cutoff=int(time.time())-(60*60*24*30)
 
@@ -240,11 +242,16 @@ def frontlist(v=None, sort=None, page=1,
 
     posts=posts.options(contains_eager(Submission.board))
 
+    # SubmissionAux is joined once, for the word filter and the feed filters alike
+    if (v and filter_words) or feed_filter_sql.needs_aux(feed_filter):
+        posts = posts.join(Submission.submission_aux)
+
+    # Post type and the Advanced filter only narrow (helpers/feed_filter_sql.py)
+    posts = feed_filter_sql.apply(posts, feed_filter, v)
 
     #custom filter
     #print(filter_words)
     if v and filter_words:
-        posts=posts.join(Submission.submission_aux)
         for word in filter_words:
             #print(word)
             posts=posts.filter(not_(SubmissionAux.title.ilike(f'%{word}%')))
@@ -317,10 +324,60 @@ SUBCAT_NAME_BY_ID = {id_: name for name, id_, catname in ALL_SUBCATS}
 ALL_SUBCAT_IDS = set(SUBCAT_NAME_BY_ID.keys())
 
 
+def _session_filters():
+    """The five feed filters exactly as this session holds them (the saved default's shape)."""
+    return {"regions": list(flask_session.get('selected_regions') or []),
+            "languages": known_codes(flask_session.get('langcodes')),
+            "categories": list(flask_session.get('catids') or []),
+            "types": feed_filter_rules.parse_types(flask_session.get('feed_post_types') or []),
+            "advanced": feed_filter_rules.compact(flask_session.get('feed_filter') or {})}
+
+
+def _saved_defaults(v):
+    """A member's saved default filters, every part checked again, or None."""
+    if v is None:
+        return None
+    return feed_filter_rules.read_defaults(v.feed_defaults or "", known_regions=REGION_CENTROIDS,
+                                           known_languages=LANGUAGE_NAMES, known_categories=ALL_SUBCAT_IDS)
+
+
+def _load_into_session(saved):
+    flask_session['selected_regions'] = saved["regions"]
+    flask_session['langcodes'] = saved["languages"]
+    flask_session['catids'] = saved["categories"]
+    flask_session['feed_post_types'] = saved["types"]
+    if saved["advanced"]:
+        flask_session['feed_filter'] = saved["advanced"]
+    else:
+        flask_session.pop('feed_filter', None)
+    flask_session.modified = True
+
+
+def _apply_saved_defaults(v):
+    """Once per session and member: their saved default filters become the session's. After that the sidebar's
+    changes last for the session only, until "Reset to my default" or a new sign-in."""
+    if v is None or flask_session.get('feed_defaults_for') == v.id:
+        return
+    flask_session['feed_defaults_for'] = v.id
+    flask_session.modified = True
+    saved = _saved_defaults(v)
+    if saved is not None:
+        _load_into_session(saved)
+
+
+def _feed_defaults_state(v):
+    """For the sidebar: 'none' (nothing saved), 'same' (the session is the saved default) or 'differs'."""
+    saved = _saved_defaults(v)
+    if saved is None:
+        return "none"
+    return "same" if saved == _session_filters() else "differs"
+
+
 def _resolve_active_filters(v):
     """The combined set of active Regional/Language/Categorical selections,
     shared by all three filter routes so that landing on any one of them
     applies all three dimensions together, not just its own."""
+    _apply_saved_defaults(v)
     region_codes = flask_session.get('selected_regions') or ([v.display_region] if v and v.display_region else [])
     language_codes = known_codes(flask_session.get('langcodes'))
     subcat_ids = flask_session.get('catids') or []
@@ -340,6 +397,28 @@ def _filter_display_context(region_codes, language_codes, subcat_ids):
         "language_names_list": [LANGUAGE_NAMES.get(c) for c in language_codes],
         "current_subcats": subcat_ids,
         "subcat_names": [SUBCAT_NAME_BY_ID[i] for i in subcat_ids if i in SUBCAT_NAME_BY_ID],
+    }
+
+
+def _stored_feed_filters():
+    """(post types, Advanced filter spec) as the session holds them, cleaned again on the way out."""
+    _apply_saved_defaults(getattr(g, 'v', None))
+    types = feed_filter_rules.parse_types(flask_session.get('feed_post_types') or [])
+    spec = feed_filter_rules.clean(flask_session.get('feed_filter') or {})
+    return types, spec
+
+
+def _feed_filter_for(v):
+    """(FeedFilter or None, the notices' context) for All, For You and Following. The API's listings are never
+    narrowed by what a browser session chose (All already leaves the category filter out there)."""
+    types, spec = _stored_feed_filters()
+    if request.path.startswith("/api/"):
+        return None, {}
+    feed_filter, notices = feed_filter_sql.prepare(spec, types, v)
+    return feed_filter, {
+        "post_type_names": feed_filter_rules.type_labels(types),
+        "feed_filter_chips": feed_filter_rules.chips(feed_filter.query if feed_filter else None, spec),
+        "feed_filter_notices": notices,
     }
 
 
@@ -418,6 +497,7 @@ def inject_sidebar_filter_data():
 
     v = getattr(g, 'v', None)
     active_regions, active_languages, active_subcats = _resolve_active_filters(v)
+    active_post_types, feed_filter_spec = _stored_feed_filters()
 
     return {
         "CATEGORIES": CATEGORIES,
@@ -427,6 +507,15 @@ def inject_sidebar_filter_data():
         "active_regions": active_regions,
         "active_languages": active_languages,
         "active_subcats": active_subcats,
+        # Post type and the Advanced filter (helpers/feed_filters.py)
+        "post_type_catalog": feed_filter_rules.POST_TYPES,
+        "post_type_groups": feed_filter_rules.GROUPS,
+        "active_post_types": active_post_types,
+        "post_type_summary": feed_filter_rules.type_summary(active_post_types),
+        "feed_filter_form": feed_filter_rules.form_values(feed_filter_spec),
+        "feed_filter_count": feed_filter_rules.field_count(feed_filter_spec),
+        # "Save as my default" (members only): none / same / differs
+        "feed_defaults_state": _feed_defaults_state(v) if v else None,
     }
 
 
@@ -463,9 +552,11 @@ Optional query parameters:
     if v is None:
         # a visitor follows nothing: the page asks them to sign in (it used to show All, labelled Following)
         region_codes, language_codes, subcat_ids = [], [], []
+        feed_filter_context = {}
         posts, next_exists = [], False
     else:
         region_codes, language_codes, subcat_ids = _resolve_active_filters(v)
+        feed_filter, feed_filter_context = _feed_filter_for(v)
 
         ids=v.idlist(sort=sort,
                      page=page,
@@ -485,6 +576,7 @@ Optional query parameters:
                      region=region_codes,
                      language=language_codes,
                      categories=subcat_ids,
+                     feed_filter=feed_filter,
 
                      )
 
@@ -492,7 +584,7 @@ Optional query parameters:
         ids=ids[0:25]
 
         # If page 1, check for sticky
-        if page == 1 and not ignore_pinned and ids:
+        if page == 1 and not ignore_pinned and feed_filter is None and ids:
             sticky = viewer_sticky(v)
             if sticky:
                 ids=[sticky.id]+ids
@@ -508,7 +600,8 @@ Optional query parameters:
                                             page=page,
                                             only=only,
                                             following_feed=True,
-                                            **_filter_display_context(region_codes, language_codes, subcat_ids)
+                                            **_filter_display_context(region_codes, language_codes, subcat_ids),
+                                            **feed_filter_context
                                             ),
             'api': lambda: jsonify({"data": [x.json for x in posts],
                                     "next_exists": next_exists
@@ -553,6 +646,7 @@ Optional query parameters:
     ignore_pinned = bool(request.args.get("ignore_pinned", False))
 
     region_codes, language_codes, subcat_ids = _resolve_active_filters(v)
+    feed_filter, feed_filter_context = _feed_filter_for(v)
 
     if v and v.interest_subcats():
         ids = v.for_you_idlist(
@@ -564,6 +658,7 @@ Optional query parameters:
             region=region_codes,
             language=language_codes,
             categories=subcat_ids,
+            feed_filter=feed_filter,
         )
     else:
         # zero-signal accounts (and anonymous visitors) fall back to All
@@ -577,12 +672,13 @@ Optional query parameters:
             region=region_codes,
             language=language_codes,
             categories=subcat_ids,
+            feed_filter=feed_filter,
         )
 
     next_exists = (len(ids) == 26)
     ids = ids[0:25]
 
-    if page == 1 and not ignore_pinned:
+    if page == 1 and not ignore_pinned and feed_filter is None:
         sticky = viewer_sticky(v)
         if sticky:
             ids = [sticky.id] + ids
@@ -620,7 +716,8 @@ Optional query parameters:
                                             time_filter=t,
                                             page=page,
                                             CATEGORIES=CATEGORIES,
-                                            **_filter_display_context(region_codes, language_codes, subcat_ids)
+                                            **_filter_display_context(region_codes, language_codes, subcat_ids),
+                                            **feed_filter_context
                                             ),
             'api': lambda: jsonify({"data": [x.json for x in posts],
                                     "next_exists": next_exists
@@ -679,6 +776,7 @@ Optional query parameters:
     ignore_pinned = bool(request.args.get("ignore_pinned", False))
 
     region_codes, language_codes, subcat_ids = _resolve_active_filters(v)
+    feed_filter, feed_filter_context = _feed_filter_for(v)
 
     ids = frontlist(sort=sort,
                     page=page,
@@ -692,6 +790,7 @@ Optional query parameters:
                     categories=[] if request.path.startswith("/api/") else subcat_ids,
                     region=region_codes,
                     language=language_codes,
+                    feed_filter=feed_filter,
                     )
 
     # check existence of next page
@@ -699,7 +798,7 @@ Optional query parameters:
     ids = ids[0:25]
 
    # If page 1, check for sticky
-    if page == 1 and not ignore_pinned:
+    if page == 1 and not ignore_pinned and feed_filter is None:
         sticky = []
         sticky = viewer_sticky(v)
         if sticky:
@@ -715,7 +814,8 @@ Optional query parameters:
                                             time_filter=t,
                                             page=page,
                                             CATEGORIES=CATEGORIES,
-                                            **_filter_display_context(region_codes, language_codes, subcat_ids)
+                                            **_filter_display_context(region_codes, language_codes, subcat_ids),
+                                            **feed_filter_context
                                             ),
             'inpage': lambda: render_template("submission_listing.html",
                                               v=v,
@@ -877,6 +977,88 @@ Optional query parameters:
                 abort(404)
         flask_session['langcodes'] = codes
         flask_session.modified = True
+
+    base_feed = flask_session.get('base_feed', 'for_you')
+    return redirect({'all': '/all', 'for_you': '/for_you', 'following': '/following'}.get(base_feed, '/for_you'))
+
+
+@app.route("/post_type", methods=["GET"])
+def post_type_filter():
+    """
+Set the viewer's Post type filter (session key "feed_post_types", helpers/feed_filters.py): All, For You and
+Following then show only posts of the ticked types. Redirects back to whichever of the three the viewer was last
+using.
+
+Optional query parameters:
+* `types` - Comma-separated post types (`POST_TYPES`). An explicit empty value (`?types=`) clears the filter;
+  unknown types are left out.
+"""
+
+    if "types" in request.args:
+        flask_session['feed_post_types'] = feed_filter_rules.parse_types(request.args.get("types", ""))
+        flask_session.modified = True
+
+    base_feed = flask_session.get('base_feed', 'for_you')
+    return redirect({'all': '/all', 'for_you': '/for_you', 'following': '/following'}.get(base_feed, '/for_you'))
+
+
+@app.post("/settings/feed_defaults")
+@auth_required
+@validate_formkey
+def feed_defaults(v):
+    """
+The member's default feed filters (users.feed_defaults). `action`:
+* `save` - the five filters this session has now become the default, loaded into every new session.
+* `reset` - the saved default becomes this session's filters again.
+* `clear` - nothing is saved any more (this session keeps its filters).
+Redirects back to whichever of All, For You and Following the member was last using.
+"""
+    action = request.form.get("action", "")
+    if action == "save":
+        now = _session_filters()
+        v.feed_defaults = feed_filter_rules.defaults_payload(now["regions"], now["languages"], now["categories"],
+                                                             now["types"], now["advanced"])
+        g.db.add(v)
+        g.db.commit()
+    elif action == "reset":
+        saved = _saved_defaults(v)
+        if saved is not None:
+            _load_into_session(saved)
+    elif action == "clear":
+        v.feed_defaults = ""
+        g.db.add(v)
+        g.db.commit()
+    else:
+        abort(400)
+
+    base_feed = flask_session.get('base_feed', 'for_you')
+    return redirect({'all': '/all', 'for_you': '/for_you', 'following': '/following'}.get(base_feed, '/for_you'))
+
+
+@app.route("/feed_filter", methods=["GET"])
+def advanced_feed_filter():
+    """
+Set the viewer's Advanced filter (session key "feed_filter", helpers/feed_filters.py): X's Advanced search for All,
+For You and Following. The popup's form sends its fields here; whatever a field doesn't accept is left out. Redirects
+back to whichever of the three the viewer was last using.
+
+Optional query parameters:
+* `clear` - Any value clears the filter.
+* the popup's fields: `all_words`, `phrase`, `any_words`, `none_words`, `topics`, `from`, `not_from`, `mentioning`,
+  `in_guilds`, `not_in_guilds`, `domain`, `ai`, `partnership`, `forwards`, `min_votes`, `min_comments`, `since`,
+  `until`.
+"""
+
+    if request.args.get("clear"):
+        flask_session.pop('feed_filter', None)
+    else:
+        # only the fields that are set: the session is a cookie that also holds the sign-in (helpers/feed_filters.py)
+        spec = feed_filter_rules.compact(request.args)
+        if spec:
+            flask_session['feed_filter'] = spec
+        else:
+            flask_session.pop('feed_filter', None)
+    flask_session.modified = True
 
     base_feed = flask_session.get('base_feed', 'for_you')
     return redirect({'all': '/all', 'for_you': '/for_you', 'following': '/following'}.get(base_feed, '/for_you'))
@@ -1156,6 +1338,25 @@ Optional query parameters:
                            page=page,
                            kind="users"),
             "api": lambda: jsonify({"data": [x.json for x in content]})}
+
+
+@app.route("/random", methods=["GET"])
+@auth_desired
+def random_anything(v):
+    """
+The navbar's Random button: a random guild, post or comment, a third of the time each. The three kinds are tried in a
+shuffled order and the first that has anything wins, so an empty kind (no public comments yet) never ends in a 404
+while the others have something. What each may land on is decided by its own route below, unchanged.
+"""
+    from werkzeug.exceptions import NotFound
+
+    pick = {"guild": random_guild, "post": random_post, "comment": random_comment}
+    for kind in random.sample(list(pick), 3):
+        try:
+            return pick[kind]()
+        except NotFound:
+            continue
+    abort(404)
 
 
 @app.route("/random/post", methods=["GET"])

@@ -153,3 +153,14 @@ def test_starts_are_counted_for_the_hourly_limit(db):
         store.record_start(db, ROOM, f"c{n}", "audio", 1, NOW + n)
     store.record_start(db, ROOM, "other", "audio", 2, NOW)
     assert store.starts_since(db, 1, NOW) == 3 and store.starts_since(db, 1, NOW + 2) == 1
+
+
+def test_the_calls_tab_reads_only_the_rooms_it_is_given_newest_first(db):
+    """The route names only rooms of chats the member is in now (routes/calls.py `calls_history`)."""
+    store.record_start(db, ROOM, "c1", "audio", 1, NOW)
+    store.record_end(db, "c1", NOW + 90)
+    store.record_start(db, "!other:server", "c2", "video", 2, NOW + 10)
+    store.record_start(db, "!secret", "c3", "audio", 3, NOW + 20)           # a chat this member is not in
+    rows = store.history(db, [ROOM, "!other:server"])
+    assert [tuple(r) for r in rows] == [("!other:server", "video", 2, NOW + 10, 0, 1), (ROOM, "audio", 1, NOW, NOW + 90, 1)]
+    assert store.history(db, []) == []

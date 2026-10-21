@@ -14,6 +14,11 @@ Whose tips count for the boost (the coins move either way): not the author's own
 ACCOUNT_AGE_DAYS old that are not banned or deleted, and never an account sharing an address with the author
 (helpers/guild_limits.addresses_of), because a tip from one's own second account would cost nothing: the coins come
 straight back.
+
+**Bots take tips** (the owner, 2026-10-20), so coins can lift a bot's post. Whoever the coins go to is
+`recipient_id`: a member bot's coins go to the member who runs it, and a site bot's to nobody (they are spent and only
+lift the post). For a member bot the owner stands in for the author in the boost rules (`answerable_id`): the owner's
+own tips and their second accounts' would cost them nothing, since the coins come back.
 """
 import math
 
@@ -49,6 +54,20 @@ def post_boost(coins_by_tipper):
 def established_before(now):
     """A tipper counts if their account was made before this moment."""
     return int(now) - ACCOUNT_AGE_DAYS * DAY
+
+
+def recipient_id(author_id, is_bot=False, bot_owner_id=None):
+    """Who gets a post's tip coins: its author; for a member bot, the member who runs it; for a site bot (no owner),
+    nobody: None, the coins are spent and only lift the post."""
+    if not is_bot:
+        return author_id
+    return bot_owner_id or None
+
+
+def answerable_id(author_id, is_bot=False, bot_owner_id=None):
+    """Whose own tips (and whose second accounts' tips) never count for a post's boost: whoever the coins come back
+    to. Nobody gets a site bot's coins back, so that is only the bot itself (which can't tip)."""
+    return recipient_id(author_id, is_bot, bot_owner_id) or author_id
 
 
 def label(coins):

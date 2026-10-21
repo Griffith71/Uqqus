@@ -18,7 +18,7 @@ The functions take the Redis client and the database session, so they are tested
 import json
 import secrets
 
-from sqlalchemy import text
+from sqlalchemy import bindparam, text
 
 from ruqqus.helpers import calls
 
@@ -184,6 +184,21 @@ def record_start(db, room_id, call_id, kind, started_by, now):
 
 def record_peak(db, call_id, size):
     db.execute(text("UPDATE chat_calls SET peak = :n WHERE call_id = :call AND peak < :n"), {"call": call_id, "n": size})
+
+
+HISTORY_MAX = 50
+
+
+def history(db, room_ids, limit=HISTORY_MAX):
+    """The calls held in these rooms, newest first: (room_id, kind, started_by_id, started_utc, ended_utc, peak). The
+    caller names only rooms of chats the member is in now (routes/calls.py `calls_history`); never who took part."""
+    rooms = sorted({str(room) for room in room_ids if room})
+    if not rooms:
+        return []
+    query = text("""SELECT room_id, kind, started_by_id, started_utc, ended_utc, peak FROM chat_calls
+                    WHERE room_id IN :rooms ORDER BY started_utc DESC LIMIT :n""").bindparams(
+        bindparam("rooms", expanding=True))
+    return db.execute(query, {"rooms": rooms, "n": int(limit)}).fetchall()
 
 
 def record_end(db, call_id, now):

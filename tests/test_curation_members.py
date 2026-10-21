@@ -48,18 +48,6 @@ def test_a_public_guild_goes_anywhere():
     assert cm.guild_refusal(False, guild(), False) is None and cm.guild_refusal(False, guild(), True) is None
 
 
-def test_what_the_sheet_offers():
-    profile_post = NS(is_anonymous=False, is_profile_post=True)
-    guild_post = NS(is_anonymous=False, is_profile_post=False)
-    anonymous_guild_post = NS(is_anonymous=True, is_profile_post=False)
-    anonymous_profile_post = NS(is_anonymous=True, is_profile_post=True)
-    assert cm.offered(profile_post, guild(), account()) == {"author": True, "guild": False}
-    assert cm.offered(guild_post, guild(), account()) == {"author": True, "guild": True}
-    assert cm.offered(anonymous_guild_post, guild(), account()) == {"author": False, "guild": True}
-    assert cm.offered(anonymous_profile_post, guild(), account()) == {"author": False, "guild": False}
-    assert cm.offered(guild_post, guild(is_banned=True), account(is_deleted=True)) == {"author": False, "guild": False}
-
-
 @pytest.fixture
 def db():
     engine = create_engine("sqlite://")

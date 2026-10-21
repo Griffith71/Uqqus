@@ -13,10 +13,12 @@
 
   The other options are the shared ones in partials/post_options.html.
 
-  It offers what the full editor does, in a compact form: the audience pill (composer_card.js), the
-  formatting toolbar and Write / Preview (post_editor.js), a tool row (image, link, GIF, emoji, poll,
-  a picture in the text), and Save draft / Schedule / Drafts (post_drafts.js, which reads this form by
-  field name). A Circle guild composer has NO drafts controls: a draft keeps no `circle_guild`, so a
+  It offers what the full editor does, laid out as Reddit's: the head holds where it goes (a dropdown with a guild
+  search) and who sees it (the audience pill, with Post anonymously in its menu; composer_card.js); the blue row
+  right under the title attaches the post's own picture, video, sound, link, GIF (as the post's link) and poll; the
+  body has the formatting toolbar and Write / Preview at its top, folded behind "Aa" (post_editor.js); More options
+  holds who can comment, disclosure, sensitive and Save draft / Schedule / Drafts (post_drafts.js, which reads this
+  form by field name). A Circle guild composer has NO drafts controls: a draft keeps no `circle_guild`, so a
   scheduled copy would be published as a public profile post.
   tests/test_composers_offer_the_same_options.py keeps this form and templates/submit.html in step.
 #}
@@ -35,8 +37,27 @@
         <div class="d-flex">
           <img src="{{ v.profile_url }}" class="profile-pic-35 mr-3 align-self-start" alt="">
           <div class="flex-grow-1 ic-main">
-            <div id="ic-head" class="ic-head d-flex align-items-center justify-content-between" hidden>
-              {% if circle_guild %}<span class="composer-where">Posting to +{{ board.name }}</span>{% else %}<button type="button" id="ic-where-line" class="composer-where where-line btn btn-link p-0" data-where-line title="Where to post">Posting to {{ '+' ~ board.name if board else 'your profile' }}</button>{% endif %}
+            {# the head: where it goes (left) and who sees it (right), both usable before anything is typed #}
+            <div id="ic-head" class="ic-head d-flex align-items-center justify-content-between">
+              {% if circle_guild %}<span class="composer-where">Posting to +{{ board.name }}</span>{% else %}
+              {# Where to post (assets/js/where_to_post.js): My profile and guilds, with a guild search, in one dropdown #}
+              <details class="composer-pill composer-where-pill" id="composer-where">
+                <summary aria-label="Where to post"><i class="fas fa-location-arrow" aria-hidden="true"></i><span id="ic-where-line" class="composer-where-text" data-where-line>Posting to {{ '+' ~ board.name if board else 'your profile' }}</span><i class="fas fa-chevron-down composer-pill-caret"></i></summary>
+                <div class="composer-pill-menu composer-where-menu">
+                  <label for="ic-forward-input" class="audience-title d-block">Where to post<i class="fas fa-info-circle text-gray-400 ml-1" data-toggle="tooltip" data-placement="top" title="Your post is listed on your profile either way. Choose My profile to have its comments there too, and add guilds to post it straight into them: each guild gets its own copy with its own votes and comments."></i></label>
+                  {{ where_profile("ic-where", "ic-forward-input", "ic-forward-add", not board) }}
+                  <div id="ic-forward-chips" class="ic-forward-chips mt-2" hidden>
+                    <span class="text-small text-muted mr-1">Forwarding to</span><span id="ic-forward-chip-list"></span>
+                  </div>
+                  <div class="input-group mt-2">
+                    <input class="form-control" id="ic-forward-input" type="text" maxlength="50" placeholder="Search guilds to post to" autocomplete="off">
+                    <div class="input-group-append">
+                      <button class="btn btn-secondary" id="ic-forward-add" type="button">Add</button>
+                    </div>
+                  </div>
+                </div>
+              </details>
+              {% endif %}
               {% if not circle_guild %}
               <details class="composer-pill" id="composer-audience">
                 <summary aria-label="Who can see this post">
@@ -44,54 +65,49 @@
                   <span id="composer-audience-label">Public</span>
                   <i class="fas fa-chevron-down composer-pill-caret"></i>
                 </summary>
-                <div class="composer-pill-menu">{{ audience_field(0, "ic-audience", (), circle_choices(v)) }}</div>
+                <div class="composer-pill-menu">{{ audience_field(0, "ic-audience", (), circle_choices(v)) }}{{ anonymous_field(false, "ic-anonymous", compact=true) }}</div>
               </details>
               {% endif %}
             </div>
             <textarea id="ic-title" name="title" rows="1" maxlength="280" class="form-control ic-title" placeholder="Share something with the {{ 'SITE_NAME' | app_config }} community..." aria-label="Post title"></textarea>
 
             <div id="ic-more" class="ic-more" hidden>
+              {# the blue row, right under the title: what is attached here is the post's own (shown on its card in feeds) #}
+              <div class="composer-tools ic-tools" role="toolbar" aria-label="Add to your post">
+                {# with linked storage (helpers/media) the picture goes to the member's own account and the form carries its id #}
+                {% if v.can_submit_image or media_offered() %}
+                <label class="composer-tool" for="ic-file" title="Add a picture"><i class="fas fa-image"></i><span class="sr-only">Add a picture</span></label>
+                <input type="file" id="ic-file" name="file" accept="image/*" hidden{% if media_offered() %} data-media-main="ic-media"{% endif %}>
+                {% if media_offered() %}<input type="hidden" name="media" id="ic-media" value="">{% endif %}
+                {% endif %}
+                {# a video (to the member's own channel, the post links to it) or a sound: shown once the uploader is there #}
+                <button type="button" class="composer-tool" data-post-media="video" data-target="ic-body" title="Add a video" aria-label="Add a video" hidden><i class="fas fa-video"></i></button>
+                <button type="button" class="composer-tool" data-post-media="audio" data-target="ic-body" title="Add a sound" aria-label="Add a sound" hidden><i class="fas fa-volume-up"></i></button>
+                <button type="button" class="composer-tool" id="ic-link-btn" title="Add a link" aria-label="Add a link"><i class="fas fa-link"></i></button>
+                <button type="button" class="composer-tool composer-tool-text" id="ic-gif-btn" onclick="commentForm('ic-url');getGif()" data-toggle="modal" data-target="#gifModal" title="Add a GIF" aria-label="Add a GIF">GIF</button>
+                <button type="button" class="composer-tool" id="ic-emoji-btn" onclick="commentForm('ic-title');loadEmojis()" data-toggle="modal" data-target="#emojiModal" title="Add an emoji" aria-label="Add an emoji"><i class="fas fa-smile-beam"></i></button>
+                <button type="button" class="composer-tool" id="composer-poll-btn" title="Add a poll" aria-label="Add a poll"><i class="fas fa-chart-bar"></i></button>
+                <span id="ic-file-name" class="text-small text-muted text-truncate ic-file-name"></span>
+              </div>
+              <div id="ic-link-row" class="composer-attach-link" hidden>
+                <input type="url" id="ic-url" name="url" class="form-control" placeholder="Link" aria-label="Link" data-attach-link>
+              </div>
+              <div class="composer-poll">{{ poll_field([], poll_default_hours, "ic-poll") }}</div>
+
               <div class="comment-write post-editor mt-2">
                 <div class="post-toolbar" data-target="ic-body"></div>
                 <div class="input-group">
                   <textarea id="ic-body" name="body" rows="3" class="form-control" placeholder="Add more (optional, markdown works)" aria-label="Post text"></textarea>
                 </div>
                 <div class="post-preview d-none"></div>
-              </div>
-              <div class="form-text text-small"><a href="/help/formatting" target="_blank" rel="noopener">Formatting help</a></div>
-              <div id="ic-forward-chips" class="ic-forward-chips mt-2" hidden>
-                <span class="text-small text-muted mr-1">Forwarding to</span><span id="ic-forward-chip-list"></span>
-              </div>
-
-              <div class="composer-tools ic-tools" role="toolbar" aria-label="Add to your post">
-                {# with linked storage (helpers/media) the picture goes to the member's own account and the form carries its id #}
-                {% if v.can_submit_image or media_offered() %}
-                <label class="composer-tool" for="ic-file" title="Add an image"><i class="fas fa-image"></i><span class="sr-only">Add an image</span></label>
-                <input type="file" id="ic-file" name="file" accept="image/*" hidden{% if media_offered() %} data-media-main="ic-media"{% endif %}>
-                {% if media_offered() %}<input type="hidden" name="media" id="ic-media" value="">{% endif %}
-                {% endif %}
-                <button type="button" class="composer-tool" id="ic-link-btn" title="Add a link" aria-label="Add a link"><i class="fas fa-link"></i></button>
-                <button type="button" class="composer-tool composer-tool-text" id="ic-gif-btn" onclick="commentForm('ic-body');getGif()" data-toggle="modal" data-target="#gifModal" title="Add a GIF" aria-label="Add a GIF">GIF</button>
-                <button type="button" class="composer-tool" id="ic-emoji-btn" onclick="commentForm('ic-body');loadEmojis()" data-toggle="modal" data-target="#emojiModal" title="Add an emoji" aria-label="Add an emoji"><i class="fas fa-smile-beam"></i></button>
-                <button type="button" class="composer-tool" id="composer-poll-btn" title="Add a poll" aria-label="Add a poll"><i class="fas fa-chart-bar"></i></button>
+                {# a picture in the text without linked storage: the body toolbar's Image opens this (composer_card.js) #}
                 {% if v.can_upload_comment_image and not circle_guild %}
-                <label class="composer-tool" for="ic-body-image" title="Add a picture to the text"><i class="fas fa-images"></i><span class="sr-only">Add a picture to the text</span></label>
                 <input type="file" id="ic-body-image" name="body_image" accept="image/*" hidden>
                 {% endif %}
-                <span id="ic-file-name" class="text-small text-muted text-truncate ic-file-name"></span>
               </div>
+              <div class="form-text text-small"><a href="/help/formatting" target="_blank" rel="noopener">Formatting help</a></div>
 
               <div id="ic-options" class="ic-options mt-2" hidden>
-                <div{% if circle_guild %} hidden{% endif %}>
-                <label for="ic-forward-input" class="d-block mb-0">Where to post<i class="fas fa-info-circle text-gray-400 ml-1" data-toggle="tooltip" data-placement="top" title="Your post is listed on your profile either way. Choose My profile to have its comments there too, and add guilds to post it straight into them: each guild gets its own copy with its own votes and comments."></i></label>
-                {{ where_profile("ic-where", "ic-forward-input", "ic-forward-add", not board) }}
-                <div class="input-group">
-                  <input class="form-control" id="ic-forward-input" type="text" maxlength="50" placeholder="Search guilds to post to" autocomplete="off">
-                  <div class="input-group-append">
-                    <button class="btn btn-secondary" id="ic-forward-add" type="button">Add</button>
-                  </div>
-                </div>
-                </div>
                 {% if circle_guild %}{% set circle_flairs = flairs_for_guild(board, v) %}{% if circle_flairs %}
                 {# a Circle guild's post is made straight in it: its author picks the flair (helpers/guild_flair.py) #}
                 <label class="mt-3 d-block" for="ic-guild-flair">Flair{% if board.require_flair %} <span class="text-muted font-weight-normal">(required)</span>{% endif %}</label>
@@ -100,11 +116,8 @@
                   {% for f in circle_flairs %}<option value="{{ f.id }}">{{ f.name }}</option>{% endfor %}
                 </select>
                 {% endif %}{% endif %}
-                <input type="url" id="ic-url" name="url" class="form-control mt-3" placeholder="Link (optional)" aria-label="Link">
                 <div data-where-comment>{{ comment_permission_field(0, "ic-permission") }}</div>
                 {{ disclosure_field(false, false, "ic-disclosure") }}
-                <div{% if circle_guild %} hidden{% endif %}>{{ anonymous_field(false, "ic-anonymous") }}</div>
-                {{ poll_field([], poll_default_hours, "ic-poll") }}
                 <label class="mt-3 d-block">Sensitive content</label>
                 <div class="custom-control custom-checkbox">
                   <input type="checkbox" class="custom-control-input" id="ic-sensitive" name="sensitive"{% if board and board.is_sensitive %} checked disabled{% endif %}>
@@ -122,7 +135,7 @@
               </div>
             </div>
 
-            <div id="ic-bar" class="ic-bar d-flex align-items-center mt-2" hidden>
+            <div id="ic-bar" class="ic-bar d-flex align-items-center mt-2">
               <button type="button" id="ic-options-toggle" class="btn btn-link btn-sm text-muted px-1" aria-expanded="false" aria-controls="ic-options">More options<i class="fas fa-chevron-down composer-pill-caret ml-1"></i></button>
               <a href="/submit{% if board %}?guild={{ board.name | urlencode }}{% endif %}" class="btn btn-link btn-sm text-muted px-1">Full editor</a>
               <span id="ic-count" class="ml-auto mr-3 text-small text-muted" aria-live="polite"></span>

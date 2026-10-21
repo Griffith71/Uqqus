@@ -213,7 +213,7 @@ def test_every_part_is_said():
     text = " ".join(fa.describe(s))
     for part in ("whole site, no older than a week", '"etna" or "vesuvius"', 'all of "italy"', 'Never posts that mention "spoilers"',
                  "Only pictures and video", "Only links to example.org", "Never links to spam.example",
-                 "At least 1 vote and 3 comments", "Leaves out bots, posts made with AI, paid partnerships and forwarded copies",
+                 "At least 1 vote and 3 comments", "Leaves out bots, posts made with AI, commercial promotion and forwarded copies",
                  "Newest first"):
         assert part in text, part
 

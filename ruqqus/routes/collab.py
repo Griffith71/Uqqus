@@ -541,11 +541,13 @@ def collab_leave(doc_id, v):
 
 # --- publishing ---------------------------------------------------------------------------------------------------
 
-def _post_as(user, path, data):
+def _post_as(user, path, data, environ=None):
     """POST to one of the site's own routes in this process, as `user` (a one-off session), from the address and
     country of the request that asked: the draft scheduler's way (scripts/publish_scheduled.py), so every posting rule
     applies as if they had pressed Post themselves. It runs in a greenlet of its own: database sessions are kept per
-    greenlet and so is Flask's context, so the inner request can't close or replace this request's session or `g`."""
+    greenlet and so is Flask's context, so the inner request can't close or replace this request's session or `g`.
+    `environ` adds keys to the inner request's environ, which a browser can never set (the Spaces area marks its
+    requests so: helpers/spaces.py ENVIRON_KEY)."""
     import gevent
 
     user_id, nonce = user.id, user.login_nonce
@@ -562,7 +564,7 @@ def _post_as(user, path, data):
             session["login_nonce"] = nonce
             session["session_id"] = session_id
         form = dict(data, formkey=generate_hash(f"{session_id}+{user_id}+{nonce}"))
-        response = client.post(path, data=form, headers=headers, environ_base={"REMOTE_ADDR": address})
+        response = client.post(path, data=form, headers=headers, environ_base={"REMOTE_ADDR": address, **(environ or {})})
         return response.status_code, response.get_json(silent=True) or {}
 
     return gevent.spawn(run).get(timeout=60)

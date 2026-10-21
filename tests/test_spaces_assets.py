@@ -30,6 +30,12 @@ def test_a_space_is_checked_before_the_post_and_made_after_it():
     create = submit.index("space_store.create(g.db, new_post.id")
     assert check < made < create
     assert 'flag(request.form, "space")' in submit and 'space_rules.parse_start(request.form.get("space_start")' in submit
+    # only the Spaces area makes one, in-process, with a mark on the environ no browser can set (routes/spaces.py)
+    assert "if space_wanted and not request.environ.get(space_rules.ENVIRON_KEY):\n        space_error = space_rules.NOT_HERE" in submit
+    create = ROUTES.split("def space_create(", 1)[1].split("\n@app.route", 1)[0]
+    assert '_post_as(v, "/api/vue/submit", data, environ={space_rules.ENVIRON_KEY: True})' in create
+    assert 'ENVIRON_KEY = "ruqqus.space_create"' in read("ruqqus", "helpers", "spaces.py")
+    assert "environ_base={\"REMOTE_ADDR\": address, **(environ or {})}" in read("ruqqus", "routes", "collab.py")
     assert 'anonymous=flag(request.form, "anonymous")' in submit and "circle_guild=circle_board is not None" in submit
     assert "from ruqqus.helpers import spaces as space_rules, space_store" in POSTS
 
@@ -38,19 +44,26 @@ def test_every_route_reads_the_space_through_its_post():
     routes = re.findall(r'@app\.route\("([^"]+)", methods=\["(\w+)"\]\)\n((?:@[^\n]+\n)+)def (\w+)', ROUTES)
     assert len(routes) >= 18
     for path, method, decorators, name in routes:
-        if name == "spaces_home":                     # the Spaces area lists what a visitor may see too
+        if name in ("spaces_home", "space_home_page"):   # the area and a live thread read like posts, visitors too
             assert "@auth_desired" in decorators
             continue
         assert "@auth_required" in decorators or "@is_not_banned" in decorators or "@admin_level_required(3)" in decorators, name
         if method == "POST":
             assert "@validate_formkey" in decorators, name
-        if path.startswith("/space/post/"):            # from a Space's post to the Space: the post route's checks
+        if path.startswith("/space/post/"):            # from a Space's backing row to the Space: its checks
             body = ROUTES.split(f"def {name}(", 1)[1].split("\n@app.route", 1)[0]
-            assert "get_post(pid, v=v)" in body and "_post_for(row, v) is None" in body, name
+            assert "get_post(pid, v=v)" in body and "_space_for_row(post, v)" in body, name
             continue
         if path.startswith(("/space/", "/api/spaces/")):
             body = ROUTES.split(f"def {name}(", 1)[1].split("\n@app.route", 1)[0]
             assert "load_space(sid, v)" in body, name
+    # a Space's own address: its backing row's checks, then the redirect to the canonical address (which names the
+    # host) only after them; a visitor gets a live thread only, a board or a call asks them to sign in
+    home = ROUTES.split("def space_home_page(", 1)[1].split("\n@app.route", 1)[0]
+    assert home.index("get_post(pid, v=v)") < home.index("_space_for_row(post, v)") < home.index("canonical_redirect(space.post)")
+    assert home.index("if v is None:") < home.index("_space_page(space, v)")
+    for_row = ROUTES.split("def _space_for_row(", 1)[1].split("\ndef ", 1)[0]
+    assert "_post_for(row, v)" in for_row and "abort(404)" in for_row
     post_for = ROUTES.split("def _post_for(", 1)[1].split("\ndef ", 1)[0]
     for check in ("get_post(", "graceful=True", "post.in_private_guild_for(v)", "post_hidden(post, v)", "post.deleted_utc", "post.is_banned"):
         assert check in post_for, check
@@ -70,18 +83,31 @@ def test_the_host_and_co_hosts_run_it_and_admins_can_end_it():
         assert f"space_rules.{rule}(" in body, name
     start = ROUTES.split("def space_start(", 1)[1].split("\n@app.route", 1)[0]
     assert "v.id != space.host_id" in start and "matrix.create_space_room()" in start
+    assert "if space.kind == space_rules.CALL:" in start            # only a call has a Matrix room
     # the reminder notice names neither the Space nor its host
-    assert 'send_notification(user, f"A Space you asked to be reminded of is live: [join it]({space.post.permalink})")' in start
+    # the Space's own page, never its post's address (which names the host: helpers/permalinks.py)
+    assert 'send_notification(user, f"A Space you asked to be reminded of is live: [join it](/space/{space.id})")' in start
+    assert "permalink" not in start.split("reminded = set(")[1]
 
 
 def test_the_page_and_its_script():
     assert PAGE.startswith("<!DOCTYPE html>") and "window.UQQUS_SPACE_BOOT = {{ boot | tojson }};" in PAGE
     assert "Everyone in this Space can see who is here, listeners too." in PAGE
+    # a Space is not a post: the page never sends anyone to "the post"; it votes and copies its own address
+    assert "Open the post" not in PAGE and "Back to the post" not in PAGE
+    assert 'id="space-upvote"' in PAGE and "`/api/vote/post/${boot.postId}/${next}`" in SPACE_JS
     assert "This Space is recorded" in PAGE and "[hidden] { display: none !important; }" in PAGE
     for script in ("js/live_events.js", "js/media_upload.js", "js/space_bundle.js"):
         assert f"asset_url('{script}')" in PAGE, script
+    # every element the script asks for is on the page, but the updates panel: only a Space made before live threads
+    # were their own kind has updates, and the script asks for them only when the panel is there (UPDATES)
+    updates = ("space-updates", "space-update", "space-summary")
     for element_id in re.findall(r'byId\("([\w-]+)"\)', SPACE_JS):
+        if element_id.startswith(updates) or element_id == "space-end-board":
+            continue
         assert f'id="{element_id}"' in PAGE, element_id
+    assert 'const UPDATES = !!byId("space-updates-panel");' in SPACE_JS
+    assert 'id="space-end-board"' in PAGE
     from ruqqus.helpers import device_access
     assert device_access.is_call_page("/space/12")
     # a listener has no microphone; nothing is played from anyone off stage
@@ -98,9 +124,16 @@ def test_the_page_and_its_script():
 
 
 def test_the_replay_goes_to_the_hosts_own_storage():
-    assert 'window.MediaUpload.upload(file, "audio"' in SPACE_JS and 'await api("replay", { media: String(asset.id) });' in SPACE_JS
+    # the sound to their linked storage, or (a public call that allowed cameras) the video to their own channel
+    assert 'window.MediaUpload.upload(file, video ? "video" : "audio"' in SPACE_JS
+    assert 'await api("replay", video ? { video: String(asset.id) } : { media: String(asset.id) });' in SPACE_JS
+    assert "canvas.captureStream(15)" in SPACE_JS and "boot.videoReplay" in SPACE_JS
     replay = ROUTES.split("def space_replay(", 1)[1].split("\n@app.route", 1)[0]
-    assert "v.id != space.host_id or not space.record" in replay
+    assert "v.id != space.host_id or not space.record or space.kind != space_rules.CALL" in replay
+    assert "space_rules.video_replay(space.kind, space.record, space.video, space.post.audience)" in replay
+    own = ROUTES.split("def _own_video_link(", 1)[1].split("\ndef ", 1)[0]
+    for check in ("user_id=v.id", "media_rules.VIDEO", "media_rules.HOSTED", "media_rules.video_ref(link)"):
+        assert check in own, check
     assert 'media_attach.own_asset(g.db, v.id, request.values.get("media"), kinds=("audio",))' in replay
     assert "media_attach.sync(" in replay and "media_safety.scan_later(attached)" in replay
     assert '"webm": (AUDIO, "audio/webm"),' in read("ruqqus", "helpers", "media", "rules.py")
@@ -126,26 +159,39 @@ def test_a_space_is_set_up_in_the_spaces_area_not_in_the_composers():
     assert "space_field" not in read("ruqqus", "templates", "submit.html")
     assert "space_field" not in read("ruqqus", "templates", "partials", "inline_composer.html")
     page = read("ruqqus", "templates", "space_new.html")
-    for name in ('name="space"', 'name="space_start"', 'name="space_record"', "data-space-when", "data-space-composer"):
+    for name in ('name="space_kind"', 'name="space_hours"', 'name="space_start"', 'name="space_record"', "data-space-when",
+                 "data-space-composer", 'data-space-for="board live"', 'data-space-for="call"'):
         assert name in page, name
+    assert 'name="space"' not in page                     # the route adds it; the browser can't make a Space elsewhere
     assert "where_profile(" in page and "audience_field(" in page
     script = read("ruqqus", "assets", "js", "space_new.js")
-    assert "fetch('/api/vue/submit'" in script and "'/space/post/'" in script and "innerHTML" not in script
+    assert "fetch('/api/spaces'" in script and "/api/vue/submit" not in script and "innerHTML" not in script
     assert "asset_url('js/space_composer.js')" in read("ruqqus", "templates", "default.html")
+    # not a navbar button (the owner, 2026-10-21): the account menu and the phone menu in each shell, and the left
+    # sidebar's own Spaces section under My Curations (open and folded)
     for shell in ("default.html", "header.html"):
-        assert read("ruqqus", "templates", shell).count('href="/spaces"') == 3, shell     # navbar, account menu, phone menu
-    assert 'href="/spaces"' in read("ruqqus", "templates", "sidebar-left.html")
+        page = read("ruqqus", "templates", shell)
+        assert page.count('href="/spaces"') == 2, shell
+        assert 'href="/spaces" aria-label="Spaces"' not in page, shell
+    sidebar = read("ruqqus", "templates", "sidebar-left.html")
+    assert sidebar.count('href="/spaces"') == 2 and 'href="/spaces/new"' in sidebar
+    assert sidebar.index("My Curations") < sidebar.index('class="mb-4 mt-4 sidebar-spaces"')
 
 
 def test_a_space_post_takes_no_comments_and_a_not_recorded_space_leaves_nothing():
     posts = read("ruqqus", "routes", "posts.py")
-    assert "comment_permission=cperm.SPACE if space_start is not None else" in posts
-    assert "if primary.comment_permission == cperm.SPACE:" in posts                      # its guild copies too
-    end = ROUTES.split("def _end(", 1)[1].split("\ndef _people(", 1)[0]
-    assert "if not space.record:" in end and "_take_down(space, now)" in end
-    take_down = ROUTES.split("def _take_down(", 1)[1].split("\ndef ", 1)[0]
-    assert "Submission.repost_id == space.post_id" in take_down and "post.deleted_utc = now" in take_down
-    assert "ContentEditHistory" not in take_down                                          # never in the Deletion log
+    # a live thread takes comments, a board and a call none (helpers/spaces.py comment_mode); copies only show the card
+    assert "comment_permission=(space_rules.comment_mode(space_kind) if space_start is not None" in posts
+    assert "is_space=space_start is not None," in posts
+    assert "if primary.is_space or primary.comment_permission == cperm.SPACE:" in posts
+    assert "space_ending.end(g.db, r, space.row, now, by_admin=by_admin)" in ROUTES
+    ending = read("ruqqus", "helpers", "space_ending.py")
+    assert "if not record:\n        take_down(db, space_id, post_id, now)" in ending
+    take_down = ending.split("def take_down(", 1)[1].split("\ndef ", 1)[0]
+    assert "WHERE (id = :p OR repost_id = :p) AND deleted_utc = 0" in take_down
+    assert "UPDATE comments SET deleted_utc = :now" in take_down
+    assert "content_edit_history" not in take_down                                        # never in the Deletion log
+    assert "space_ending.end_due(db, space_redis, now)" in read("scripts", "recomputes.py")
     assert "live_space_for(u, v)" in read("ruqqus", "templates", "partials", "profile_header.html")
     migration = read("scripts", "migrations", "2026-11-10_space_posts.sql")
     assert "SET comment_permission = 5" in migration and "2026-11-10_space_posts.sql" in read("schema.sql")
@@ -201,16 +247,20 @@ def test_the_board_is_drawn_for_each_reader_and_pushed_by_id_only():
         assert event in _route("space_message_delete") and event in _route("space_message_remove")
 
 
-def test_the_live_updates_are_run_from_the_space():
+def test_a_live_thread_space_is_its_backing_row_s_live_thread():
     add = _route("space_update_add")
     assert "_runs_updates(space, v)" in add and "space.status != space_rules.LIVE" in add
     assert '"live.update", {"id": uid})' in add and "live_routes._render(body, space.post)" in add
     assert "_runs_updates(space, v)" in _route("space_summary") and "_runs_updates(space, v)" in _route("space_summary_text")
     start = _route("space_start")
-    assert "live_store.start(g.db, space.post_id, v.id, now, now + space_rules.MAX_SECONDS)" in start
+    # a live thread's thread starts with it, for its own length; a live thread is drawn by its backing row's page
+    assert "live_store.start(g.db, space.post_id, v.id, now, row[space_store.ENDS]" in start
     assert "_followers_who_may_read(space.post, ids)" in start              # its followers are told once
-    assert "live_store.end(g.db, space.post_id, now)" in ROUTES.split("def _end(", 1)[1].split("\ndef ", 1)[0]
+    assert "live_store.end(db, post_id, now)" in read("ruqqus", "helpers", "space_ending.py")
+    assert "return post_base36id_with_comments(pid=space.post.base36id)" in ROUTES
     threads = read("ruqqus", "routes", "live_threads.py")
+    toggle = threads.split("def live_toggle(", 1)[1].split("\n@app.route", 1)[0]
+    assert "space_ending.end(g.db, r, row, now)" in toggle and "space_store.set_ends(g.db, primary.id" in toggle
     for name in ("live_toggle", "live_update_add", "live_summary"):
         body = threads.split(f"def {name}(", 1)[1].split("\n@app.route", 1)[0]
         assert "_space_refusal(primary)" in body, name
@@ -231,14 +281,16 @@ def test_video_only_on_stage_and_only_while_open():
     mesh = read("ruqqus", "assets", "chat_src", "src", "rtc", "mesh.js")
     assert "syncTracks() {" in mesh and 'iceTransportPolicy: "relay"' in mesh
     assert 'name="space_video"' in read("ruqqus", "templates", "space_new.html")
-    assert 'space_video = flag(request.form, "space_video")' in POSTS and "video=space_video)" in POSTS
+    assert 'space_video = flag(request.form, "space_video") and space_kind == space_rules.CALL' in POSTS
+    assert "video=space_video," in POSTS
 
 
 def test_a_not_recorded_space_takes_its_board_and_updates_with_it():
-    take_down = ROUTES.split("def _take_down(", 1)[1].split("\ndef ", 1)[0]
-    assert "space_store.clear_board(g.db, space.id)" in take_down and "live_store.erase(g.db, space.post_id, now)" in take_down
+    take_down = read("ruqqus", "helpers", "space_ending.py").split("def take_down(", 1)[1].split("\ndef ", 1)[0]
+    assert "space_store.clear_board(db, space_id)" in take_down and "live_store.erase(db, post_id, now)" in take_down
     page = read("ruqqus", "classes", "submission.py").split("def rendered_page(", 1)[1]
-    assert page.index("if self.deleted_utc > 0 and cperm.is_space(self):\n            abort(404)") < page.index('template = "submission_deleted.html"')
+    # every taken-down Space shows nothing, a live thread (which takes comments) included
+    assert page.index("if self.deleted_utc > 0 and (self.is_space or cperm.is_space(self)):\n            abort(404)") < page.index('template = "submission_deleted.html"')
     migration = read("scripts", "migrations", "2026-11-11_space_board.sql")
     for table in ("space_messages", "space_message_reports"):
         assert f"CREATE TABLE IF NOT EXISTS public.{table} (" in migration and f"CREATE TABLE public.{table} (" in read("schema.sql")

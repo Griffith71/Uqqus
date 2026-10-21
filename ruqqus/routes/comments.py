@@ -27,8 +27,10 @@ from ruqqus.helpers import anonymity
 from ruqqus.classes import *
 from flask import *
 from ruqqus.helpers import sharing
+from ruqqus.helpers import bell as bell_rules
 from ruqqus.__main__ import app, limiter, db_session
 from .front import frontlist
+from .posts import canonical_redirect
 
 
 BUCKET=app.config["S3_BUCKET"]
@@ -51,21 +53,12 @@ def _followers_who_may_read(post, ids):
     return ids
 
 
+# a comment's page under every address it has had: /@author/comment/<id>, the anonymous /comment/<id>, the older
+# /post/<pid>/<slug>/<cid> forms and the short links; anything but its own address is redirected to it after the checks
+@app.route("/@<username>/comment/<cid>", methods=["GET"])
 @app.route("/comment/<cid>", methods=["GET"])
 @app.route("/post_short/<pid>/<cid>", methods=["GET"])
 @app.route("/post_short/<pid>/<cid>/", methods=["GET"])
-def comment_cid(cid, pid=None):
-
-    try:
-        x=base36decode(cid)
-    except:
-        abort(400)
-        
-    comment = get_comment(cid)
-    if not comment.parent_submission:
-        abort(403)
-    return redirect(comment.permalink)
-
 @app.route("/api/v1/comment/<cid>", methods=["GET"])
 @app.route("/+<guildname>/post/<pid>/<anything>/<cid>", methods=["GET"])
 @app.route("/post/<pid>/<anything>/<cid>", methods=["GET"])
@@ -74,7 +67,7 @@ def comment_cid(cid, pid=None):
 @app.get("/api/v2/comments/<cid>")
 @auth_desired
 @api("read")
-def post_pid_comment_cid(cid, pid=None, guildname=None, anything=None, v=None):
+def post_pid_comment_cid(cid, pid=None, guildname=None, anything=None, username=None, v=None):
     """
 Fetch a single comment and up to 5 total layers above and below.
 
@@ -87,16 +80,8 @@ Optional query parameters:
 
     comment = get_comment(cid, v=v)
 
-    # every check below runs on the comment's own post, never on the `pid`
-    # in the URL (a /api/ request with another post's id isn't redirected)
-    if not pid:
-        pid = base36encode(comment.parent_submission)
-    if base36decode(pid) != comment.parent_submission:
-        post = get_post(base36encode(comment.parent_submission), v=v)
-        mismatch = True
-    else:
-        post = get_post(pid, v=v)
-        mismatch = False
+    # every check below runs on the comment's own post, never on the `pid` in the URL
+    post = get_post(base36encode(comment.parent_submission), v=v)
     board = post.board
 
     if post.in_private_guild_for(v):
@@ -104,20 +89,6 @@ Optional query parameters:
 
     if post_hidden(post, v) or comment_thread_hidden(comment, v):
         return hidden_notice(v)
-
-    guildname_provided = guildname is not None
-    if not guildname:
-        guildname = board.name
-
-    # fix incorrect guildname/pid; profile-only posts have no guild segment
-    # in their canonical URL, so a guild-less request for one is already
-    # canonical and must not be redirected (that redirect would just
-    # recompute the same guild-less URL forever)
-    wrong_guild = guildname_provided and board.name != guildname
-    missing_guild = not guildname_provided and not post.is_profile_post
-
-    if (mismatch or wrong_guild or missing_guild) and not request.path.startswith("/api/"):
-        return redirect(comment.permalink)
 
     if board.is_banned and not (v and v.admin_level > 3):
         return {'html': lambda: render_template("board_banned.html",
@@ -127,6 +98,10 @@ Optional query parameters:
                 'api': lambda: {'error': f'+{board.name} is banned.'}
 
                 }
+
+    moved = canonical_redirect(comment)
+    if moved:
+        return moved
 
     post._preloaded_comments = [comment]
 
@@ -547,7 +522,7 @@ Optional file data:
 
     # queue up notifications for username mentions
     soup = BeautifulSoup(body_html, features="html.parser")
-    mentions = soup.find_all("a", href=re.compile(r"^/@(\w+)") , limit=3)
+    mentions = soup.find_all("a", href=re.compile(r"^/@(\w+)/?$") , limit=3)
     # only people who may see the post are told (as submit_post does with circle_guard.eligible_ids):
     # otherwise the comment is dropped from their inbox and leaves an unread count behind
     eligible = circle_guard.eligible_ids(g.db, parent_post.author_id, parent_post.audience, board_id=parent_post.board_id,
@@ -992,6 +967,10 @@ def repost_comment(cid, v):
 
     cache.delete_memoized(User.commentlisting, v)
 
+    # the reposter's bell (helpers/bell.py): a comment anyone may open (not under a post only a private guild may read)
+    if not (comment.post and comment.post.in_private_guild_for(None)):
+        bell_rules.ring_account(v, bell_rules.COMMENT_REPOST, comment.id, f"/comment/{comment.base36id}")
+
     return jsonify({"message": "Reposted to your profile."})
 
 
@@ -1090,6 +1069,10 @@ def forward_comment(cid, v):
 
     cache.delete_memoized(frontlist)
     cache.delete_memoized(Board.idlist, target, sort="new")
+
+    # the forwarder's bell (helpers/bell.py): only into an open guild, and never for their own anonymous comment
+    if not (target.is_private or target.is_circle) and not (comment.is_anonymous and comment.author_id == v.id):
+        bell_rules.ring_account(v, bell_rules.COMMENT_FORWARD, new_post.id, f"/post/{new_post.base36id}", guild_name=target.name)
 
     return jsonify(new_post.json)
 

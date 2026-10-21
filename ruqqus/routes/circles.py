@@ -9,7 +9,9 @@ import time
 from flask import abort, g, jsonify, redirect, render_template, request
 
 from ruqqus.classes import Board, ForwardRelationship, RepostRelationship, Submission, User
-from ruqqus.helpers import circle_guard, circle_store, circles, coauthors, sharing
+from ruqqus.helpers import circle_guard, circle_store, circles, coauthors, sharing, subscriber_badges
+from ruqqus.helpers.visibility import text_hidden
+from ruqqus.helpers.word_filter_store import get_filter
 from ruqqus.helpers.alerts import send_notification
 from ruqqus.helpers.get import get_guild, get_post, get_user
 from ruqqus.helpers.media import attach as media_attach, cdn as media_cdn
@@ -108,6 +110,8 @@ def settings_circle_one(cid, v):
         name_max=circles.NAME_MAX,
         price_max=circles.PRICE_MAX,
         describe_price=circles.describe_price,
+        description=circle_store.description_of(g.db, row.id)[0] if row.kind == circles.PAID else "",
+        description_max=circles.DESCRIPTION_MAX,
     )
 
 
@@ -189,6 +193,20 @@ def circle_price(cid, v):
     if price == 0:
         return jsonify({"message": "Nobody new can subscribe. Current subscribers keep what they paid for."})
     return jsonify({"message": f"New subscribers pay {price} coins every 30 days. Current subscribers keep their price."})
+
+
+@app.route("/api/circles/<int:cid>/description", methods=["POST"])
+@is_not_banned
+@validate_formkey
+def circle_description(cid, v):
+    """What a paid circle's owner says subscribers get (the subscribe sheet). Plain text, rated by the word filter."""
+    _mine(v, cid, kinds=(circles.PAID,))
+    description, error = circles.parse_description(request.values.get("description"))
+    if error:
+        return _fail(error)
+    circle_store.set_description(g.db, v.id, cid, description, get_filter(g.db).severity(description))
+    g.db.commit()
+    return jsonify({"message": "Saved. People see it before they subscribe." if description else "Description removed."})
 
 
 @app.route("/api/circles/<int:cid>/add", methods=["POST"])
@@ -289,8 +307,15 @@ def circle_status(owner, viewer):
         subscribed = tier == circles.SUBSCRIBER
         cancelled = bool(subscribed and sub.cancelled)
         if row.price_coins > 0 or subscribed:
+            # what the subscribe sheet says (partials/circle_subscribe_modal.html): the owner's description, as the
+            # viewer's word filter allows, and what the circle holds as counts only, never which posts
+            description, severity = circle_store.description_of(g.db, row.id)
             paid.append({"id": row.id, "name": row.name, "price": row.price_coins, "subscribed": subscribed,
-                         "cancelled": cancelled, "joinable": row.price_coins > 0 and (not subscribed or cancelled)})
+                         "cancelled": cancelled, "joinable": row.price_coins > 0 and (not subscribed or cancelled),
+                         "renews_utc": sub.renews_utc if subscribed else 0,
+                         "description": "" if text_hidden(severity, viewer, owner.id) else description,
+                         "posts": circle_store.shared_post_count(g.db, row.id),
+                         "channels": circle_store.channel_count(g.db, row.id)})
     joinable = [p for p in paid if p["joinable"]]
     return {"paid": paid, "joinable": joinable, "subscribed": any(p["subscribed"] and not p["cancelled"] for p in paid)}
 
@@ -312,7 +337,8 @@ def circle_choices(viewer):
     return found
 
 
-app.jinja_env.globals.update(circle_status=circle_status, circle_choices=circle_choices)
+app.jinja_env.globals.update(circle_status=circle_status, circle_choices=circle_choices,
+                             subscriber_badge=subscriber_badges.badge_of)
 
 
 # --- who can see a post that already exists ------------------------------------------------------------

@@ -1,20 +1,22 @@
-"""Add to curation, in the source: the routes' guards, the owner-only rule, the anonymity promise, the menus."""
+"""Add to curation, in the source. A curation is a feed built from accounts, guilds and topics, never from a post (the
+owner, 2026-10-20): nothing on a post or comment adds to one. The sheet opens from a profile's menu (an account) and a
+guild page's menu (a guild); the routes' guards, the owner-only rule and the guild's own visibility."""
 import re
 from pathlib import Path
-from types import SimpleNamespace as NS
 
 ROOT = Path(__file__).resolve().parent.parent
 RUQQUS = ROOT / "ruqqus"
 
 
 def read(*parts):
-    return RUQQUS.joinpath(*parts).read_text()
+    return RUQQUS.joinpath(*parts).read_text(encoding="utf-8")
 
 
 CURATIONS = read("routes", "curations.py")
 MENU = read("templates", "partials", "post_menu_items.html")
 LISTING = read("templates", "submission_listing.html")
 PAGE = read("templates", "submission.html")
+COMMENTS = read("templates", "comments.html")
 DEFAULT = read("templates", "default.html")
 JS = read("assets", "js", "curation_picker.js")
 MODAL = read("templates", "partials", "curation_picker_modal.html")
@@ -26,7 +28,15 @@ def func(name):
     return CURATIONS[start:start + 10 + nxt.start()]
 
 
-def test_the_form_routes_and_the_menu_share_one_set_of_rules_and_inserts():
+def test_nothing_on_a_post_or_comment_adds_to_a_curation():
+    for src in (MENU, LISTING, PAGE, COMMENTS):
+        assert "curation_item" not in src and "curation_button" not in src and "data-curation-post" not in src
+    assert "/api/post/<pid>/add_to_curation" not in CURATIONS and "def post_add_to_curation(" not in CURATIONS
+    assert "post=" not in JS and "/api/post/" not in JS
+    assert "def offered(" not in read("helpers", "curation_members.py")
+
+
+def test_the_form_routes_and_the_menus_share_one_set_of_rules_and_inserts():
     assert "from ruqqus.helpers import curation_members" in CURATIONS
     assert "curation_members.add_user(g.db, curation.id, target.id)" in func("curation_add_user")
     assert "curation_members.add_guild(g.db, curation.id, board.id)" in func("curation_add_guild")
@@ -34,58 +44,42 @@ def test_the_form_routes_and_the_menu_share_one_set_of_rules_and_inserts():
     assert "curation_members.guild_refusal(False, board, curation.is_private)" in func("curation_add_guild")
 
 
-def test_the_add_route_is_owner_only_form_keyed_and_loads_the_post_like_every_route():
-    head = CURATIONS.split("def post_add_to_curation(")[0].rsplit("\n\n\n", 1)[1]
-    assert "/api/post/<pid>/add_to_curation" in head and "@auth_required" in head and "@validate_formkey" in head
-    body = func("post_add_to_curation")
-    assert "_post_for_curation(pid, v)" in body
-    assert "_owned_curation_or_404(request.form.get(\"curation\"" in body
-    assert 'if what not in curation_members.WHAT' in body
+def test_the_sheet_lists_only_for_an_account_or_a_guild():
+    mine = func("curations_mine")
+    assert '_curations_mine_for_account(request.args.get("user", ""), v)' in mine
+    assert '_curations_mine_for_guild(request.args.get("guild", ""), v)' in mine
+    assert mine.rstrip().endswith("abort(400)")
+
+
+def test_a_guild_is_added_only_by_a_member_who_may_see_it_and_only_to_their_own_curation():
+    head = CURATIONS.split("def guild_add_to_curation(")[0].rsplit("\n\n\n", 1)[1]
+    assert "/api/guild/<name>/add_to_curation" in head and "@auth_required" in head and "@validate_formkey" in head
+    body = func("guild_add_to_curation")
+    assert "_guild_for_curation(name, v)" in body
+    assert '_owned_curation_or_404(request.form.get("curation", "").strip(), v)' in body
+    assert "curation_members.guild_refusal(False, board, curation.is_private)" in body
     assert "_invalidate_curation_feed(curation.id)" in body
-    loader = func("_post_for_curation")
-    assert "from ruqqus.routes.post_follows import _post_or_404" in loader
+    # the guild page's own visibility: a private or Circle guild is a 404 to anyone it is hidden from
+    loader = func("_guild_for_curation")
+    for check in ("board.is_banned", "not board.can_view(v)", "board_hidden(board, v)", "abort(404)"):
+        assert check in loader, check
+    assert "_guild_for_curation(name, v)" in func("_curations_mine_for_guild")
 
 
-def test_an_anonymous_posts_author_is_never_added_or_named():
-    body = func("post_add_to_curation")
-    assert "author_refusal(bool(post.is_anonymous), post.author)" in body
-    listing = func("curations_mine")
-    assert "account = None if post.is_anonymous else post.author" in listing
-    assert '"author": {"username": account.username} if can["author"] else None' in listing
+def test_an_account_is_added_from_its_profile_menu_as_before():
+    assert "_account_for_curation(username, v)" in func("user_add_to_curation")
+    loader = func("_account_for_curation")
+    assert "user_hidden(target, v) or target.is_blocking or target.is_blocked" in loader
 
 
-def test_the_sheet_is_offered_to_members_outside_the_frames_and_draws_text_only():
+def test_the_guild_menus_offer_it_and_the_sheet_draws_text_only():
+    for name in ("board.html", "board_comments.html"):
+        assert 'data-curation-guild="{{ b.name }}"' in read("templates", name), name
+    assert read("templates", "board.html").count('data-curation-guild="{{ b.name }}"') == 2       # desktop, phone
     assert '{% if v and not request.args.get(\'embed\') %}{% include "partials/curation_picker_modal.html" %}{% endif %}' in DEFAULT
     assert "asset_url('js/curation_picker.js')" in DEFAULT
     assert "innerHTML" not in JS
-    assert "/^[0-9a-z]{1,10}$/.test(id)" in JS and "closest('[data-curation-post], [data-curation-user]')" in JS
-    assert "/^[A-Za-z0-9_]{3,25}$/.test(name)" in JS          # an account from a profile's menu: a username only
-    assert 'id="curationPickerModal"' in MODAL
-
-
-def test_every_post_menu_offers_it():
-    for src in (LISTING, PAGE):
-        assert src.count("post_menu.curation_item(p, v)") == 1 and src.count("post_menu.curation_button(p, v)") == 1
-
-
-def test_the_menu_item_renders_only_where_something_can_be_added():
-    from jinja2 import Environment, FileSystemLoader
-    env = Environment(loader=FileSystemLoader(str(RUQQUS / "templates")))
-    env.globals["author_of"] = lambda item, viewer: item.author       # the site's Jinja global (helpers/anonymity.py)
-    module = env.get_template("partials/post_menu_items.html").make_module()
-    viewer = NS(id=2)
-
-    def post(**kw):
-        base = dict(base36id="7k", is_banned=False, deleted_utc=0, is_anonymous=False, is_profile_post=False,
-                    author=NS(is_deleted=False))
-        base.update(kw)
-        return NS(**base)
-
-    assert "Add to curation" in str(module.curation_item(post(), viewer))
-    assert "Add to curation" in str(module.curation_button(post(), viewer))
-    assert "Add to curation" in str(module.curation_item(post(is_profile_post=True), viewer))          # the author
-    assert "Add to curation" in str(module.curation_item(post(is_anonymous=True), viewer))            # the guild
-    assert str(module.curation_item(post(is_anonymous=True, is_profile_post=True), viewer)).strip() == ""
-    assert str(module.curation_item(post(is_profile_post=True, author=NS(is_deleted=True)), viewer)).strip() == ""
-    assert str(module.curation_item(post(deleted_utc=5), viewer)).strip() == ""
-    assert str(module.curation_item(post(), None)).strip() == ""
+    assert "closest('[data-curation-user], [data-curation-guild]')" in JS
+    assert "/^[A-Za-z0-9_]{3,25}$/.test(name)" in JS                         # an account: a username only
+    assert "/^[A-Za-z0-9][A-Za-z0-9_]{2,24}$/.test(guild)" in JS             # a guild: the guild name rule
+    assert 'id="curationPickerModal"' in MODAL and "never from a" in MODAL

@@ -23,7 +23,7 @@ HOST, BOB, CAT, DAN = 1, 2, 3, 4
 
 def test_who_can_host_a_space():
     assert rules.make_refusal(False, False, False, 0) is None
-    assert rules.make_refusal(True, False, False, 0) == "A Space can't be anonymous: people hear your voice."
+    assert rules.make_refusal(True, False, False, 0) == "A Space can't be anonymous."
     assert rules.make_refusal(False, True, False, 0) == "Bots can't host Spaces."
     assert rules.make_refusal(False, False, True, 0) == "A Space can't be hosted in a Circle guild."
     assert "at most" in rules.make_refusal(False, False, False, rules.SPACES_PER_DAY)
@@ -115,6 +115,12 @@ def _tables():
                 continue                                  # already in the CREATE above it
             yield (s.replace("public.", "").replace("IF NOT EXISTS ", "").replace("SERIAL PRIMARY KEY", "INTEGER PRIMARY KEY AUTOINCREMENT")
                    .replace(" WHERE status = 'live'", ""))
+    # the kinds (2026-11-13): the new columns only (its CHECK is added in a DO block SQLite has no word for)
+    sql = (Path(__file__).resolve().parent.parent / "scripts" / "migrations" / "2026-11-13_space_kinds.sql").read_text(encoding="utf-8")
+    sql = "\n".join(line for line in sql.splitlines() if not line.strip().startswith("--"))
+    for s in (s.strip() for s in sql.split(";")):
+        if s.startswith("ALTER TABLE public.spaces ADD COLUMN"):
+            yield s.replace("public.", "").replace("IF NOT EXISTS ", "")
 
 
 @pytest.fixture
@@ -321,3 +327,111 @@ def test_a_recorded_space_keeps_its_board_after_a_report_is_closed(db):
     store.end(db, sid, NOW + 10)
     store.resolve_message_reports(db, m, NOW + 20)
     assert store.message(db, m)[3] == "fine"
+
+
+# --- kinds (the owner, 2026-10-20: a Space is a board, a live thread or a call, and not a post) -------------------
+
+def test_a_space_is_exactly_one_kind():
+    assert rules.parse_kind("Board") == rules.BOARD and rules.parse_kind("live") == rules.LIVE_THREAD
+    assert rules.parse_kind("call") == rules.CALL and rules.parse_kind("stream") is None and rules.parse_kind("") is None
+    assert rules.make_refusal(False, False, False, 0, kind=None) == "Choose what kind of Space it is."
+    assert set(rules.KIND_LABELS) == set(rules.KINDS) == set(rules.KIND_HINTS) == set(rules.KIND_ICONS)
+
+
+def test_a_board_and_a_live_thread_run_for_a_chosen_length_a_call_for_at_most_four_hours():
+    assert rules.parse_length(rules.CALL, "24") is None
+    assert rules.parse_length(rules.BOARD, "") == rules.DEFAULT_HOURS
+    assert rules.parse_length(rules.LIVE_THREAD, "168") == 168
+    for bad in ("5", "abc", "-1", "١"):
+        with pytest.raises(rules.Refused):
+            rules.parse_length(rules.BOARD, bad)
+    assert rules.ends_at(rules.BOARD, NOW, 6) == NOW + 6 * 3600 and rules.ends_at(rules.CALL, NOW, 6) == 0
+    assert rules.is_due(rules.BOARD, rules.LIVE, NOW, NOW + 10, NOW + 10)
+    assert not rules.is_due(rules.BOARD, rules.LIVE, NOW, NOW + 10, NOW + 9)
+    assert rules.is_due(rules.CALL, rules.LIVE, NOW, 0, NOW + rules.MAX_SECONDS + 1)
+    assert not rules.is_due(rules.BOARD, rules.ENDED, NOW, NOW + 10, NOW + 99)
+
+
+def test_what_takes_the_place_of_comments_depends_on_the_kind():
+    assert rules.comment_mode(rules.LIVE_THREAD) == 0              # everyone comments under the updates
+    assert rules.comment_mode(rules.BOARD) == rules.comment_mode(rules.CALL) == 5   # the board is the discussion
+
+
+def test_a_board_is_written_on_by_anyone_who_may_open_it_a_call_s_chat_by_the_people_in_it():
+    live = rules.LIVE
+    assert rules.message_refusal(live, False, False, 0, 0, kind=rules.BOARD) is None
+    assert rules.message_refusal(live, False, False, 0, 0, kind=rules.CALL) == rules.BOARD_JOIN
+    # removed, or a block with a host: one message that never says which
+    assert rules.message_refusal(live, True, False, 0, 0, kind=rules.BOARD, kept_out=True) == rules.UNAVAILABLE
+
+
+def test_only_a_public_call_that_allowed_cameras_keeps_a_video_replay():
+    assert rules.video_replay(rules.CALL, True, True, 0)
+    assert not rules.video_replay(rules.CALL, True, True, 4)       # for circles: the channel would name the host
+    assert not rules.video_replay(rules.CALL, True, False, 0)
+    assert not rules.video_replay(rules.CALL, False, True, 0)
+    assert not rules.video_replay(rules.BOARD, True, True, 0)
+
+
+def test_a_late_start_keeps_the_length_and_a_call_has_none(db):
+    sid = store.create(db, 30, HOST, NOW + 600, False, NOW, kind=rules.BOARD, ends_utc=NOW + 600 + 3600)
+    assert store.start(db, sid, NOW + 900)                         # opened five minutes late
+    row = store.get(db, sid)
+    assert row[store.KIND] == rules.BOARD and row[store.ENDS] == NOW + 900 + 3600
+    call = store.create(db, 31, HOST, NOW, False, NOW, video=True)
+    store.start(db, call, NOW)
+    assert store.get(db, call)[store.ENDS] == 0 and store.get(db, call)[12]           # video kept for a call
+    board = store.create(db, 32, HOST, NOW, False, NOW, video=True, kind=rules.BOARD, ends_utc=NOW + 60)
+    assert not store.get(db, board)[12]                                               # never on a board
+
+
+def test_what_has_run_its_time(db):
+    board = store.create(db, 40, HOST, NOW, False, NOW, kind=rules.BOARD, ends_utc=NOW + 60)
+    store.start(db, board, NOW)
+    call = store.create(db, 41, HOST, NOW, False, NOW)
+    store.start(db, call, NOW)
+    fresh = store.create(db, 42, HOST, NOW, False, NOW, kind=rules.LIVE_THREAD, ends_utc=NOW + 86400)
+    store.start(db, fresh, NOW)
+    assert [row[0] for row in store.due(db, NOW + 61)] == [board]
+    assert [row[0] for row in store.due(db, NOW + rules.MAX_SECONDS + 1)] == [board, call]
+
+
+def test_the_spaces_area_lists_one_kind_and_a_recorded_board_is_a_recording(db):
+    board = store.create(db, 50, HOST, NOW, True, NOW, kind=rules.BOARD, ends_utc=NOW + 60)
+    call = store.create(db, 51, HOST, NOW, True, NOW)
+    for sid in (board, call):
+        store.start(db, sid, NOW)
+        store.end(db, sid, NOW + 100)
+    assert [row[0] for row in store.listing(db, "recordings")] == [board]           # the call has no replay yet
+    store.set_replay(db, call, None, "https://www.youtube.com/watch?v=abcdefghijk")
+    assert {row[0] for row in store.listing(db, "recordings")} == {board, call}
+    assert [row[0] for row in store.listing(db, "recordings", kind=rules.CALL)] == [call]
+    assert [row[0] for row in store.host_listing(db, HOST)][:2] == [call, board]
+
+
+def test_a_space_that_ends_in_the_background_leaves_nothing_when_it_was_not_recorded(db):
+    from ruqqus.helpers import space_ending
+    db.execute(text("CREATE TABLE submissions (id INTEGER PRIMARY KEY, repost_id INTEGER, deleted_utc INTEGER DEFAULT 0)"))
+    db.execute(text("CREATE TABLE live_threads (post_id INTEGER PRIMARY KEY, ended_utc INTEGER DEFAULT 0, "
+                    "summary TEXT DEFAULT '', summary_html TEXT DEFAULT '')"))
+    db.execute(text("CREATE TABLE live_updates (id INTEGER PRIMARY KEY, post_id INTEGER, body TEXT, body_html TEXT, "
+                    "deleted_utc INTEGER DEFAULT 0)"))
+    db.execute(text("CREATE TABLE comments (id INTEGER PRIMARY KEY, parent_submission INTEGER, deleted_utc INTEGER DEFAULT 0)"))
+    db.execute(text("INSERT INTO submissions (id, repost_id) VALUES (60, NULL), (61, 60), (70, NULL)"))
+    db.execute(text("INSERT INTO comments (id, parent_submission) VALUES (1, 60), (2, 70)"))
+    gone = store.create(db, 60, HOST, NOW, False, NOW, kind=rules.LIVE_THREAD, ends_utc=NOW + 60)
+    kept = store.create(db, 70, HOST, NOW, True, NOW, kind=rules.BOARD, ends_utc=NOW + 60)
+    db.execute(text("INSERT INTO live_threads (post_id, summary) VALUES (60, 'what to know')"))
+    db.execute(text("INSERT INTO live_updates (post_id, body, body_html) VALUES (60, 'it began', '<p>it began</p>')"))
+    for sid in (gone, kept):
+        store.start(db, sid, NOW)
+    store.add_message(db, kept, BOB, "still here", 0, None, NOW)
+    assert space_ending.end_due(db, None, NOW + 61) == 2
+    assert space_ending.end_due(db, None, NOW + 62) == 0                               # once
+    deleted = dict(db.execute(text("SELECT id, deleted_utc FROM submissions")).fetchall())
+    assert deleted[60] == deleted[61] == NOW + 61 and deleted[70] == 0                 # the row and its copy go
+    comments = dict(db.execute(text("SELECT id, deleted_utc FROM comments")).fetchall())
+    assert comments == {1: NOW + 61, 2: 0}                                              # its comments go with it
+    assert db.execute(text("SELECT body FROM live_updates")).scalar() == ""
+    assert db.execute(text("SELECT summary FROM live_threads")).scalar() == ""
+    assert store.messages(db, kept)[0][3] == "still here"                               # a recorded board stays

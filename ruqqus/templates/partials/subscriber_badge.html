@@ -1,0 +1,6 @@
+{#
+  The Subscriber badge beside a name (helpers/subscriber_badges.py): the person pays for one of the profile's or the
+  post author's paid circles, and both of them let this viewer see it. Set per page by subscriber_badges.attach; never
+  on an anonymous item. Plain text only.
+#}
+{% macro subscriber_mark(item) %}{% set b = subscriber_badge(item) %}{% if b %} <span class="subscriber-badge" data-toggle="tooltip" data-placement="bottom" title="Subscribes to {{ b.circle }} by @{{ b.owner }}"><i class="fas fa-user-check" aria-hidden="true"></i>Subscriber</span>{% endif %}{% endmacro %}

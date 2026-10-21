@@ -17,7 +17,7 @@ from ruqqus.helpers.visibility import filter_users, post_hidden, user_hidden
 from ruqqus.helpers.secret_box import encrypt_secret, decrypt_secret
 from ruqqus.classes import *
 import ruqqus.helpers.matrix_client as matrix
-from ruqqus.__main__ import app, limiter, r
+from ruqqus.__main__ import app, limiter, member_limit_key, r
 
 
 def _ensure_provisioned(v):
@@ -268,9 +268,13 @@ def chat_conversations(v):
         return jsonify({"conversations": [{**channel_json(row[:8], (row[8], row[9], 0), v),
                                            "last_activity_utc": row[10] or row[6]} for row in rows]})
 
-    # groups: joined ones in Inbox, invitations in Requests (routes/chat_groups.py), merged by last activity
+    # groups (routes/chat_groups.py): joined ones are their own tab, Groups (the Inbox is 1:1 chats only, the owner
+    # 2026-10-20), and invitations wait in Requests beside the 1:1 requests, merged by last activity
     from ruqqus.routes.chat_groups import group_json
-    for row in chat_group_store.groups_for(g.db, v.id, "joined" if status == "inbox" else "invited", limit=25):
+    if status == "group":
+        out = []
+    group_tab = {"group": "joined", "request": "invited"}.get(status)
+    for row in chat_group_store.groups_for(g.db, v.id, group_tab, limit=25) if group_tab else []:
         if before and row[6] >= before:
             continue
         group = row[:8]
@@ -595,3 +599,83 @@ def matrix_appservice_query_user(matrix_user_id):
 def matrix_appservice_query_room(room_alias):
     # We never use room aliases.
     abort(404)
+
+
+# --- search (the chat page's search box: assets/chat_src/src/chat_extras.js) ------------------------------------------
+SEARCH_EACH = 20
+
+
+@app.route("/api/chat/search", methods=["GET"])
+@limiter.limit("30/minute", key_func=member_limit_key)
+@auth_required
+def chat_search(v):
+    """Find chats (the owner, 2026-10-21): your own 1:1 chats, groups and channels; public broadcast channels you are
+    not in; the channels of your guilds you may read; and guilds with chat that you may see. Groups are private and
+    invite-only, so only your own are found. Never a chat request, never anyone in a block with you either way, never a
+    name your word filter hides; each list is worked out by the rules its own tab and page use."""
+    from ruqqus.routes.chat_groups import group_json
+    from ruqqus.routes.broadcasts import channel_json, _blocked
+    from ruqqus.routes.guild_channels import conversations_for
+    from ruqqus.routes.search import listable_boards
+    from ruqqus.helpers.visibility import text_hidden
+    q = (request.args.get("q") or "").strip().lstrip("@+")[:40]
+    found = {"chats": [], "channels": [], "guild_chats": [], "guilds": []}
+    if len(q) < 2:
+        return jsonify(found)
+    needle = q.lower()
+
+    def holds(*texts):
+        return any(needle in str(t or "").lower() for t in texts)
+
+    # your 1:1 chats (never a request), your groups, the channels you are in
+    rows = g.db.query(ChatConversation).filter(
+        or_(ChatConversation.user_a_id == v.id, ChatConversation.user_b_id == v.id)
+    ).order_by(ChatConversation.last_activity_utc.desc()).limit(300).all()
+    for convo in rows:
+        if convo.tab_for(v.id) != "inbox":
+            continue
+        other = convo.other_user(v.id)
+        if other is None or other.is_deleted or is_blocked(v, other) or user_hidden(other, v):
+            continue
+        if holds(other.username, other.shown_name):
+            found["chats"].append({"kind": "pair", "key": f"c{convo.id}", "room_id": convo.matrix_room_id,
+                                   "label": other.shown_name, "sub": f"@{other.username}", "avatar": other.profile_url})
+    for row in chat_group_store.groups_for(g.db, v.id, "joined", limit=200):
+        group = group_json(row[:8], chat_group_store.member(g.db, row[0], v.id), v)
+        if holds(group["label"]):
+            found["chats"].append({"kind": "group", "key": group["key"], "room_id": group["room_id"],
+                                   "label": group["label"], "sub": f"Group · {group['size']} people", "avatar": None})
+    for row in broadcast_store.joined_by(g.db, v.id, limit=100):
+        channel = channel_json(row[:8], (row[8], row[9], 0), v)
+        if holds(channel["label"]):
+            found["chats"].append({"kind": "channel", "key": channel["key"], "room_id": channel["room_id"],
+                                   "label": channel["label"], "sub": "Channel", "avatar": None})
+    found["chats"] = found["chats"][:SEARCH_EACH]
+
+    # public channels you are not in (routes/broadcasts.py: never an owner in a block either way, a name your filter
+    # hides is never matched)
+    for row in broadcast_store.search_public(g.db, q, v.id, limit=SEARCH_EACH * 2):
+        if text_hidden(row[3], v) or _blocked(row, v):
+            continue
+        found["channels"].append(channel_json(row, None, v))
+        if len(found["channels"]) >= SEARCH_EACH:
+            break
+
+    # the channels of your guilds you may read (the Guilds tab's own list and rules)
+    mine = conversations_for(v)
+    found["guild_chats"] = [c for c in mine if holds(c["label"], c["guild"])][:SEARCH_EACH]
+
+    # guilds with chat you may see and are not in yet: their Chat tab keeps its own rules
+    in_guilds = {c["guild"].lower() for c in mine}
+    boards = listable_boards(g.db.query(Board).filter(Board.name.ilike(broadcast_store.like_pattern(q), escape=chr(92))), v)
+    for board in boards.order_by(Board.stored_subscriber_count.desc()).limit(SEARCH_EACH * 2).all():
+        if board.name.lower() in in_guilds or not board.can_view(v) or board.is_banned:
+            continue
+        channels = guild_channel_store.count(g.db, board.id)
+        if not channels:
+            continue
+        found["guilds"].append({"name": board.name, "url": f"/+{board.name}/chat", "channels": channels,
+                                "avatar": board.profile_url})
+        if len(found["guilds"]) >= SEARCH_EACH:
+            break
+    return jsonify(found)

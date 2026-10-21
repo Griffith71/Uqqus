@@ -1,7 +1,8 @@
 /*
- * Setting up a Space (templates/space_new.html). The guild chips write one hidden `forward_guilds` field per guild
- * (assets/js/where_to_post.js searches guilds and presses Add); the form goes to the real POST /api/vue/submit, as the
- * feed composer's does, and then to the Space itself (/space/post/<post id>). Text only: no HTML is written.
+ * Starting a Space (templates/space_new.html). The kind (board, live thread, call) shows the fields that fit it
+ * (`data-space-for`); the guild chips write one hidden `forward_guilds` field per guild (assets/js/where_to_post.js
+ * searches guilds and presses Add); the form goes to POST /api/spaces (routes/spaces.py `space_create`), then to the
+ * Space's own address it answers with. Text only: no HTML is written.
  */
 (function () {
   'use strict';
@@ -59,6 +60,25 @@
   // a Space for circles is only on the profile (where_to_post.js says so on the form)
   form.addEventListener('where:circles', function () { guilds = []; render(); });
 
+  function kind() {
+    var picked = form.querySelector('input[name="space_kind"]:checked');
+    return picked ? picked.value : 'board';
+  }
+
+  // the fields that fit the chosen kind: a length for a board or a live thread, video for a call
+  function showKind() {
+    var k = kind();
+    Array.prototype.forEach.call(form.querySelectorAll('[data-space-for]'), function (node) {
+      var fits = node.getAttribute('data-space-for').split(' ').indexOf(k) !== -1;
+      node.hidden = !fits;
+      Array.prototype.forEach.call(node.querySelectorAll('input, select'), function (field) { field.disabled = !fits; });
+    });
+  }
+  Array.prototype.forEach.call(form.querySelectorAll('input[name="space_kind"]'), function (radio) {
+    radio.addEventListener('change', showKind);
+  });
+  showKind();
+
   function label() {
     submit.textContent = when && when.value ? 'Schedule the Space' : 'Start the Space';
   }
@@ -75,15 +95,16 @@
     if (!form.querySelector('#space-title').value.trim()) { fail('Give the Space a title.'); return; }
     errorBox.hidden = true;
     submit.disabled = true;
-    fetch('/api/vue/submit', { method: 'POST', body: new FormData(form), credentials: 'same-origin' })
+    fetch('/api/spaces', { method: 'POST', body: new FormData(form), credentials: 'same-origin', headers: { Accept: 'application/json' } })
       .then(function (response) {
         if (response.redirected) { window.location.href = response.url; return null; }
         return response.json().then(function (body) { return { ok: response.ok, body: body }; });
       })
       .then(function (result) {
         if (!result) return;
-        if (!result.ok || !result.body || !result.body.id) { fail((result.body && result.body.error) || 'The Space could not be made.'); return; }
-        window.location.href = '/space/post/' + encodeURIComponent(result.body.id);
+        var url = result.body && result.body.url;
+        if (!result.ok || typeof url !== 'string' || url.charAt(0) !== '/') { fail((result.body && result.body.error) || 'The Space could not be made.'); return; }
+        window.location.href = url;
       })
       .catch(function () { fail('The Space could not be made. Check your connection.'); });
   });

@@ -8,9 +8,14 @@
  * working. The colour, highlight and alignment names below must match
  * ruqqus/helpers/post_formatting.py (tests/test_post_editor_assets.py checks).
  *
+ * The order is Reddit's: Undo, Redo, then what goes into the text (image, video,
+ * sound, GIF, emoji, link), then "Aa", which folds the rest of the formatting away
+ * (folded by default; the viewer's choice is kept in localStorage).
+ *
  * Image, audio and video buttons are placeholders until an uploader exists:
  * PostEditor.register('image', function (ctx) { ... ctx.insert('![](url)') })
- * switches the button on.
+ * switches the button on. PostEditor.use(kind, textarea) runs one for another
+ * button (the composers' video and sound for the post itself).
  */
 (function () {
   'use strict';
@@ -28,6 +33,7 @@
     { name: 'Divider', body: '---' }
   ];
 
+  var FOLD_KEY = 'post_toolbar_open';   // '1' while the viewer keeps the formatting open
   var uploaders = {};       // kind -> handler registered through PostEditor.register
   var stubButtons = [];     // [{kind, button}]
   var openMenus = [];
@@ -465,11 +471,27 @@
       };
     }
 
+    // Undo and redo first, then what goes into the text (pictures, video, sound, GIF, emoji, a link), as Reddit's editor
+    // has them; the rest of the formatting folds behind "Aa" (the owner's choice: collapsed, at the top of the box)
     group(
       tbButton('Undo', 'fas fa-undo', exec('undo')),
       tbButton('Redo', 'fas fa-redo', exec('redo'))
     );
-    group(dropdown('Text style', 'fas fa-heading', function (menu) {
+    group(
+      uploadStub('image', 'Image', 'far fa-image'),
+      uploadStub('video', 'Video', 'fas fa-video'),
+      uploadStub('audio', 'Sound', 'fas fa-volume-up'),
+      tbButton('GIF', 'fas fa-film', function () { getGif(); commentForm(id); $('#gifModal').modal('show'); }),
+      tbButton('Emoji', 'far fa-smile-beam', function () { commentForm(id); loadEmojis(); $('#emojiModal').modal('show'); }),
+      tbButton('Link (Ctrl+K)', 'fas fa-link', linkDialog)
+    );
+    var toggle = tbButton('Formatting', null, null, 'post-tb-toggle');
+    toggle.appendChild(make('span', 'post-tb-toggle-text', 'Aa'));
+    toggle.setAttribute('aria-expanded', 'false');
+    group(toggle);
+
+    var extras = [];
+    extras.push(group(dropdown('Text style', 'fas fa-heading', function (menu) {
       var el = ta();
       menu.appendChild(menuItem('Paragraph', function () { setHeading(el, 0); }, 'fas fa-paragraph'));
       [1, 2, 3, 4].forEach(function (n) {
@@ -477,8 +499,8 @@
       });
       menu.appendChild(menuItem('Quote', function () { makeQuote(id); }, 'fas fa-quote-right'));
       menu.appendChild(menuItem('Code block', function () { blockCode(el); }, 'fas fa-code'));
-    }));
-    group(
+    })));
+    extras.push(group(
       tbButton('Bold (Ctrl+B)', 'fas fa-bold', function () { makeBold(id); }),
       tbButton('Italic (Ctrl+I)', 'fas fa-italic', function () { makeItalics(id); }),
       tbButton('Strikethrough', 'fas fa-strikethrough', function () { makeStrikethrough(id); }),
@@ -517,15 +539,9 @@
       }),
       tbButton('Superscript', 'fas fa-superscript', function () { editorToggleWrap(id, '<sup>', '</sup>'); }),
       tbButton('Subscript', 'fas fa-subscript', function () { editorToggleWrap(id, '<sub>', '</sub>'); })
-    );
-    group(
-      tbButton('Link (Ctrl+K)', 'fas fa-link', linkDialog),
-      uploadStub('image', 'Image', 'far fa-image'),
-      uploadStub('audio', 'Audio', 'fas fa-volume-up'),
-      uploadStub('video', 'Video', 'fas fa-video'),
-      tbButton('Quote', 'fas fa-quote-right', function () { makeQuote(id); })
-    );
-    group(
+    ));
+    extras.push(group(
+      tbButton('Quote', 'fas fa-quote-right', function () { makeQuote(id); }),
       tbButton('Bulleted list', 'fas fa-list-ul', function () { makeBulletList(id); }),
       tbButton('Numbered list', 'fas fa-list-ol', function () { makeNumberedList(id); }),
       dropdown('Alignment', 'fas fa-align-left', function (menu) {
@@ -535,8 +551,8 @@
         });
         menu.appendChild(menuItem('Remove alignment', function () { applyAlign(el, null); }, 'fas fa-eraser'));
       })
-    );
-    group(
+    ));
+    extras.push(group(
       tbButton('Button', 'fas fa-hand-pointer', buttonDialog),
       dropdown('Template', 'far fa-file-alt', fillTemplates),
       dropdown('More', 'fas fa-ellipsis-h', function (menu) {
@@ -546,14 +562,24 @@
         menu.appendChild(menuItem('Table', function () {
           insertBlock(el, '| Column | Column |\n| --- | --- |\n| Cell | Cell |');
         }, 'fas fa-table'));
-        menu.appendChild(menuItem('Emoji', function () {
-          commentForm(id); loadEmojis(); $('#emojiModal').modal('show');
-        }, 'far fa-smile-beam'));
-        menu.appendChild(menuItem('GIF', function () {
-          getGif(); commentForm(id); $('#gifModal').modal('show');
-        }, 'fas fa-film'));
       })
-    );
+    ));
+    extras.forEach(function (g) { g.classList.add('post-tb-extra'); });
+
+    // folded or not is the viewer's own choice, kept in this browser (it may be unavailable: then it starts folded)
+    function setFolded(folded, remember) {
+      bar.classList.toggle('post-tb-collapsed', folded);
+      toggle.setAttribute('aria-expanded', String(!folded));
+      toggle.title = folded ? 'Show formatting' : 'Hide formatting';
+      toggle.setAttribute('aria-label', toggle.title);
+      if (remember) {
+        try { localStorage.setItem(FOLD_KEY, folded ? '0' : '1'); } catch (err) { /* storage unavailable */ }
+      }
+    }
+    var startOpen = false;
+    try { startOpen = localStorage.getItem(FOLD_KEY) === '1'; } catch (err) { startOpen = false; }
+    setFolded(!startOpen, false);
+    toggle.addEventListener('click', function () { closeMenus(); setFolded(!bar.classList.contains('post-tb-collapsed'), true); });
 
     var statusNode = make('span', 'post-tb-status text-muted text-small');
     statusNode.setAttribute('role', 'status');
@@ -613,6 +639,20 @@
     register: function (kind, handler) {
       uploaders[kind] = handler;
       stubButtons.forEach(function (entry) { if (entry.kind === kind) enableStub(entry); });
+      // the composers' own buttons (a video or a sound for the post itself) wait for this
+      document.dispatchEvent(new CustomEvent('posteditor:register', { detail: { kind: kind } }));
+    },
+    // whether an uploader exists for a kind, and running it for a given text box (the composers' post-level buttons)
+    has: function (kind) { return !!uploaders[kind]; },
+    use: function (kind, textarea) {
+      var handler = uploaders[kind];
+      if (!handler || !textarea) return false;
+      handler({
+        textarea: textarea,
+        kind: kind,
+        insert: function (text) { editorReplace(textarea, textarea.selectionStart, textarea.selectionEnd, text); }
+      });
+      return true;
     },
     version: 1
   };

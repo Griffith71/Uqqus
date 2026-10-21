@@ -24,7 +24,8 @@ LIVE = read("ruqqus", "assets", "js", "live_events.js")
 
 def test_routes_need_an_account_and_the_form_key():
     routes = re.findall(r'@app\.route\("([^"]+)", methods=\["(\w+)"\]\)\n((?:@[^\n]+\n)+)def (\w+)', ROUTES)
-    assert {name for *_, name in routes} == {"call_window", "call_join", "call_heartbeat", "call_leave", "call_decline", "call_status"}
+    assert {name for *_, name in routes} == {"call_window", "call_join", "call_heartbeat", "call_leave", "call_decline", "call_status",
+                                                   "calls_history"}           # the chat page's Calls tab
     for path, method, decorators, name in routes:
         assert "@auth_required" in decorators, name
         if method == "POST":

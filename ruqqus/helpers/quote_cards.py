@@ -18,7 +18,7 @@ from datetime import datetime
 from functools import lru_cache
 from urllib.parse import urlsplit
 
-from ruqqus.helpers import social_embeds
+from ruqqus.helpers import permalinks, social_embeds
 
 TEXT_MAX = 2000
 _SPACES = re.compile(r"[ \t\f\v]+")
@@ -258,18 +258,17 @@ def _social(url, snippet, meta_title, meta_description, image="", drop_link=""):
 
 
 def quoted_post_id(url, server_name, short_domain=""):
-    """The base 36 id of the post on this site a link points at, or None: `/+guild/post/<id>/<slug>`, a profile post's
-    `/post/<id>/<slug>`, the shortlink `/post/<id>` and `/<id>` on the short domain. A comment link (one more id after
-    the slug) is not a post."""
+    """The base 36 id of the post on this site a link points at, or None: any address the site gives a post, old or new
+    (`/@alice/post/<id>`, `/+guild/@carol/post/<id>`, `/post/<id>`, the older forms with a title slug:
+    helpers/permalinks.py), and `/<id>` on the short domain. A comment link is not a post."""
     parts = urlsplit(str(url or ""))
     host = (parts.hostname or "").lower()
     if parts.scheme not in ("http", "https") or not host:
         return None
     if host == str(server_name or "").split(":")[0].lower():
-        for rule in (rf"^/\+\w+/post/{_B36}(?:/[\w-]*)?/?$", rf"^/post/{_B36}(?:/[\w-]*)?/?$"):
-            match = re.match(rule, parts.path, re.I)
-            if match:
-                return match.group(1).lower()
+        found = permalinks.parse(parts.path)
+        if found and found[0] == "post":
+            return found[1]
     if short_domain and host == str(short_domain).split(":")[0].lower():
         match = re.match(rf"^/{_B36}/?$", parts.path, re.I)
         if match:

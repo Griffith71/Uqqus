@@ -43,12 +43,14 @@ def test_a_guild_page_starts_with_its_guild_and_the_feed_with_none():
     assert "?guild=" in SCRIPT and "hasGuild(presetGuild)" in SCRIPT
 
 
-def test_where_to_post_is_in_the_options_like_on_create_a_post():
+def test_where_to_post_is_the_dropdown_in_the_head_like_on_create_a_post():
     submit = (TEMPLATES / "submit.html").read_text(encoding="utf-8")
-    options = PARTIAL[PARTIAL.index('<div id="ic-options"'):]
-    # the first field of Options, with the full editor's label and tooltip
-    assert options.index("Where to post") < options.index('id="ic-url"')
-    assert "Where to post" in submit
+    head = PARTIAL[PARTIAL.index('<div id="ic-head"'):PARTIAL.index('<textarea id="ic-title"')]
+    # the owner (2026-10-21): a dropdown at the top left with the guild search, usable before anything is typed
+    assert '<details class="composer-pill composer-where-pill" id="composer-where">' in head
+    assert "Where to post" in head and "Where to post" in submit
+    assert '<div id="ic-head" class="ic-head d-flex align-items-center justify-content-between">' in PARTIAL   # no hidden
+    assert '<div id="ic-bar" class="ic-bar d-flex align-items-center mt-2">' in PARTIAL
     tooltip = re.search(r'title="(Your post is listed on your profile either way[^"]+)"', submit).group(1)
     assert tooltip in PARTIAL, "the info tooltip must say the same thing as on Create a post"
     assert "Search guilds to post to" in PARTIAL and "Search guilds to post to" in submit
@@ -96,8 +98,13 @@ def test_the_composer_has_what_the_full_editor_has():
     # toolbar and preview (post_editor.js builds the toolbar for this textarea)
     assert 'class="post-toolbar" data-target="ic-body"' in PARTIAL
     assert 'class="post-preview d-none"' in PARTIAL
-    # GIF and emoji write into the body
-    assert "commentForm('ic-body');getGif()" in PARTIAL and "commentForm('ic-body');loadEmojis()" in PARTIAL
+    # from the blue row a GIF is the post's link and the emoji goes into the title; the body toolbar has its own
+    assert "commentForm('ic-url');getGif()" in PARTIAL and "commentForm('ic-title');loadEmojis()" in PARTIAL
+    assert 'id="ic-url" name="url" class="form-control" placeholder="Link" aria-label="Link" data-attach-link' in PARTIAL
+    # the poll is under the blue row, and anonymity in the audience pill: never under More options
+    options = PARTIAL[PARTIAL.index('<div id="ic-options"'):]
+    assert "poll_field(" not in options and "anonymous_field(" not in options
+    assert '{{ anonymous_field(false, "ic-anonymous", compact=true) }}' in PARTIAL
     # the audience pill and the poll button are composer_card.js's
     assert 'id="composer-audience"' in PARTIAL and 'id="composer-poll-btn"' in PARTIAL
     # a picture for the text is the field the post route reads, offered only to who may upload one
@@ -125,3 +132,12 @@ def test_the_page_flag_brings_the_drafts_panel_and_the_scripts_to_every_composer
         assert f"asset_url('js/{script}')" in default, script
     assert "{% set composer_drafts = true %}" in (TEMPLATES / "home.html").read_text(encoding="utf-8")
     assert BOARD.startswith('{% extends "home.html" %}')     # a guild page gets the flag through home.html
+
+
+def test_more_options_and_the_pills_work_before_anything_is_typed():
+    # More options used to show nothing until the title had been focused (#ic-options sits inside #ic-more, which only
+    # open() reveals): every control opens the composer first now
+    show = SCRIPT.split("function showOptions(show) {", 1)[1].split("\n  }", 1)[0]
+    assert "if (show) open();" in show
+    assert "wherePill.addEventListener('toggle'" in SCRIPT and "audiencePill.addEventListener('toggle'" in SCRIPT
+    assert "head.hidden" not in SCRIPT and "bar.hidden" not in SCRIPT

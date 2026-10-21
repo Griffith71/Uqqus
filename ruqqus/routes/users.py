@@ -9,6 +9,7 @@ import gevent
 
 from ruqqus.helpers.wrappers import *
 from ruqqus.helpers.visibility import viewer_level, user_hidden, hidden_notice
+from ruqqus.helpers import subscriber_badges
 from ruqqus.helpers.base36 import *
 from ruqqus.helpers.sanitize import *
 from ruqqus.helpers.filters import *
@@ -21,7 +22,7 @@ from flask import *
 from ruqqus.__main__ import app, cache, limiter, db_session
 
 BAN_REASONS = ['',
-               "URL shorteners are not permitted."
+               "Deceptive URL shorteners are not permitted."
                ]
 
 
@@ -84,11 +85,12 @@ def redditor_moment_redirect(username):
 
 
 @app.route("/@<username>", methods=["GET"])
+@app.route("/@<username>/spaces", methods=["GET"], defaults={"tab": "spaces"})
 @app.route("/api/v1/user/<username>/listing", methods=["GET"])
 @app.get("/api/v2/users/<username>/submissions")
 @auth_desired
 @api("read")
-def u_username(username, v=None):
+def u_username(username, v=None, tab=None):
     """
 Get posts created by another user.
 
@@ -167,13 +169,16 @@ Optional query parameters:
     page = page_number()
     page = max(page, 1)
 
-    ids = u.userpagelisting(v=v, page=page, sort=sort, t=t, filter_level=viewer_level(v))
+    # the Spaces tab lists the account's Spaces, never under Posts (helpers/spaces.py: a Space is not a post)
+    spaces_tab = tab == "spaces"
+    ids = u.userpagelisting(v=v, page=page, sort=sort, t=t, spaces=spaces_tab, filter_level=viewer_level(v))
 
     # we got 26 items just to see if a next page exists
     next_exists = (len(ids) == 26)
     ids = ids[0:25]
 
     listing = get_posts(ids, v=v)
+    subscriber_badges.attach(u, listing, v)       # helpers/subscriber_badges.py
 
     reposted_ids = {r.submission_id for r in g.db.query(RepostRelationship).filter(
         RepostRelationship.user_id == u.id,
@@ -187,7 +192,8 @@ Optional query parameters:
                                             page=page,
                                             next_exists=next_exists,
                                             is_following=(v and u.has_follower(v)),
-                                            reposted_ids=reposted_ids),
+                                            reposted_ids=reposted_ids,
+                                            profile_tab="spaces" if spaces_tab else "posts"),
             'api': lambda: jsonify({"data": [x.json for x in listing]})
             }
 
@@ -284,6 +290,7 @@ Optional query parameters:
     ids = ids[0:25]
 
     listing = get_comments(ids, v=v)
+    subscriber_badges.attach(user, listing, v)       # helpers/subscriber_badges.py
 
     is_following = (v and user.has_follower(v))
 
@@ -383,6 +390,7 @@ Optional query parameters:
     ids = ids[0:25]
 
     listing = get_posts(ids, v=v)
+    subscriber_badges.attach(user, listing, v)       # helpers/subscriber_badges.py
 
     is_following = (v and user.has_follower(v))
 
@@ -555,7 +563,10 @@ URL path parameters:
     g.db.add(follow)
     g.db.commit()
 
-    return jsonify({"message":f"Notifications {'en' if follow.get_notifs else 'dis'}abled for @{user.username}"})
+    # posts, forwards, reposts, Spaces going live and stories (helpers/bell.py)
+    if follow.get_notifs:
+        return jsonify({"message": f"You'll be told about everything @{user.username} does."})
+    return jsonify({"message": f"Notifications for @{user.username} turned off."})
 
 
 def convert_file(html):

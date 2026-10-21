@@ -23,15 +23,30 @@
 
     <div class="d-flex align-items-center px-3 pt-3 pb-2">
       <div class="font-weight-bold h5 mb-0 flex-grow-1">Chat</div>
+      <button type="button" id="chat-new-chat" class="btn btn-link btn-sm px-1" title="New chat" aria-label="New chat">
+        <i class="fas fa-pen-to-square" aria-hidden="true"></i>
+      </button>
       <button type="button" id="chat-new-group" class="btn btn-link btn-sm px-1" title="New group" aria-label="New group">
         <i class="fas fa-user-group" aria-hidden="true"></i>
       </button>
+    </div>
+
+    {# find chats: your own, public channels, your guilds' chats, guilds with chat (assets/chat_src/src/chat_extras.js) #}
+    <div class="px-3 pb-2" role="search">
+      <label class="sr-only" for="chat-search">Search chats and channels</label>
+      <input type="search" id="chat-search" class="form-control form-control-sm" maxlength="40" autocomplete="off"
+             placeholder="Search chats, channels and guilds" aria-label="Search chats and channels">
     </div>
 
     <ul class="nav px-2" id="chat-tabs">
       <li class="nav-item">
         <a href="#" class="nav-link py-2 px-3 active" data-chat-tab="inbox">
           Inbox<span id="chat-inbox-badge" class="badge badge-danger rounded-circle align-top ml-1 d-none"></span>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a href="#" class="nav-link py-2 px-3" data-chat-tab="group">
+          Groups<span id="chat-groups-badge" class="badge badge-danger rounded-circle align-top ml-1 d-none"></span>
         </a>
       </li>
       <li class="nav-item">
@@ -48,6 +63,9 @@
         <a href="#" class="nav-link py-2 px-3" data-chat-tab="guild">
           Guilds<span id="chat-guilds-badge" class="badge badge-danger rounded-circle align-top ml-1 d-none"></span>
         </a>
+      </li>
+      <li class="nav-item">
+        <a href="#" class="nav-link py-2 px-3" data-chat-tab="calls">Calls</a>
       </li>
     </ul>
 

@@ -24,6 +24,9 @@ class Circle(Base, Age_times):
     created_utc = Column(Integer, nullable=False, default=0)
     name = Column(String(40), nullable=False, default="")
     kind = Column(String(12), nullable=False)
+    # what a paid circle's owner says subscribers get (the subscribe sheet), rated by the word filter
+    description = Column(String(300), nullable=False, default="")
+    description_severity = Column(SmallInteger, nullable=False, default=0)
 
     def __repr__(self):
         return f"<Circle(id={self.id}, kind={self.kind}, user_id={self.user_id}, board_id={self.board_id})>"

@@ -1,8 +1,10 @@
 {#
-  "Add to curation": the sheet a signed-in member opens from a post's menu (assets/js/curation_picker.js).
-  It lists their own curations (GET /api/curations/mine?post=<id>) and, for each, adds the post's author or its
-  guild (POST /api/post/<id>/add_to_curation). The author is offered only when the post is not anonymous.
-  Every name goes in as text. Included once per page, for members, outside the side-panel frames.
+  "Add to curation": the sheet a signed-in member opens from a profile's "⋯" menu (an account) or a guild page's
+  menu (a guild) (assets/js/curation_picker.js). A curation is built from accounts, guilds and topics, never from a
+  post (the owner, 2026-10-20): nothing on a post or comment opens it. It lists their own curations
+  (GET /api/curations/mine?user= | ?guild=) and adds on a tap (POST /api/user/<name>/add_to_curation,
+  /api/guild/<name>/add_to_curation). Every name goes in as text. Included once per page, for members, outside the
+  side-panel frames.
 #}
 <div class="modal fade" id="curationPickerModal" tabindex="-1" role="dialog" aria-labelledby="curationPickerTitle" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered" role="document">

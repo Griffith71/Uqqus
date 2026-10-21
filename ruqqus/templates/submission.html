@@ -22,8 +22,13 @@
 {% set can_pin = v and p.is_guildmaster('content') %}
 
 {% block stylesheets %}
+{# a post on a profile is the site's own colour; a guild's copy is its guild's (the internal boards keep no colour) #}
+{% if p.is_profile_post %}
+{{ theme_links(asset_url("style/main.css"), asset_url("style/main_dark.css")) }}
+{% else %}
 {{ theme_links(p.board.css_url ~ "?v=" ~ asset_version("style/main.css"), p.board.css_dark_url ~ "?v=" ~ asset_version("style/main_dark.css")) }}
 <link id="board-css" rel="stylesheet" href="{{ p.board.custom_css_url }}">
+{% endif %}
 {% endblock %}
 
 
@@ -381,7 +386,6 @@
           {{ flair_button(p, v) }}
           {{ post_menu.collab_button(p, v) }}
           {{ post_menu.fewer_button(p, v) }}
-          {{ post_menu.curation_button(p, v) }}
 
           {% if v.id != p.author_id and p.deleted_utc == 0 and not author_of(p, v).is_deleted and not anon_hidden(p, v) %}
           <button id="mute-user-button-{{ p.base36id }}" class="btn btn-link btn-block btn-lg text-left text-muted{% if is_muted(p, v) %} d-none{% endif %}" data-dismiss="modal" onclick="post_toast('/settings/mute?username={{ author_of(p, v).username }}', callback=function(){document.getElementById('mute-user-button-{{ p.base36id }}').classList.toggle('d-none');document.getElementById('unmute-user-button-{{ p.base36id }}').classList.toggle('d-none');})"
@@ -734,7 +738,6 @@
                         {{ flair_item(p, v) }}
                 {{ post_menu.collab_item(p, v) }}
                         {{ post_menu.fewer_item(p, v) }}
-                        {{ post_menu.curation_item(p, v) }}
 
                         {% if v.id != p.author_id and not author_of(p, v).is_deleted and not anon_hidden(p, v) %}
                         <div class="dropdown-divider"></div>
@@ -851,11 +854,11 @@
 
   {% set spaces = comment_spaces(p, v) %}
   {# a post made for guilds: its comment spaces are listed (partials/comment_spaces.html), and with no profile space the profile has no box or thread of its own #}
-  {% if spaces.copies %}{% include "partials/comment_spaces.html" %}{% endif %}
+  {# a live-thread Space has one discussion, here: its guild copies only show its card (helpers/spaces.py) #}
+  {% if spaces.copies and not p.is_space %}{% include "partials/comment_spaces.html" %}{% endif %}
   {% if space_post %}
-  {# a Space's post takes no comments: its discussion is the Space's own board (routes/spaces.py) #}
-  {% set sd = space_of(p, v) %}
-  <div class="space-post-note text-muted text-small border rounded p-3 mb-3"><i class="fas fa-microphone-lines fa-fw mr-1" aria-hidden="true"></i>This is a Space: its discussion is in the Space.{% if sd %} <a href="/space/{{ sd.id }}">Open the Space</a>{% endif %}</div>
+  {# a board's or a call's backing row takes no comments: its discussion is the Space's own board (routes/spaces.py) #}
+  <div class="space-post-note text-muted text-small border rounded p-3 mb-3"><i class="fas fa-microphone-lines fa-fw mr-1" aria-hidden="true"></i>This is a Space: its discussion is in the Space. <a href="{{ p.permalink }}">Open the Space</a></div>
   {% elif not (spaces.copies and guilds_only) %}
   {% if spaces.copies %}<div id="space-profile">{% endif %}
   {% include "partials/comment_form.html" %}

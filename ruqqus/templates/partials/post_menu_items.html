@@ -43,28 +43,6 @@
 {% endif %}
 {% endmacro %}
 
-{#
-  curation_item(p, v) / curation_button(p, v): "Add to curation" (helpers/curation_members.py), for a signed-in
-  viewer on a live post. Offered when the post's author can be added (the post is not anonymous) or its guild can
-  (the post is in a guild, not on a profile). assets/js/curation_picker.js opens the sheet.
-#}
-
-{% macro _can_curate(p, v) -%}
-{{- "1" if v and not p.is_banned and p.deleted_utc == 0 and ((not p.is_anonymous and not author_of(p, v).is_deleted) or not p.is_profile_post) else "" -}}
-{%- endmacro %}
-
-{% macro curation_item(p, v) %}
-{% if _can_curate(p, v) %}
-<a class="dropdown-item" href="javascript:void(0)" data-curation-post="{{ p.base36id }}"><i class="fas fa-layer-group fa-fw"></i>Add to curation</a>
-{% endif %}
-{% endmacro %}
-
-{% macro curation_button(p, v) %}
-{% if _can_curate(p, v) %}
-<button class="btn btn-link btn-block btn-lg text-left text-muted" data-dismiss="modal" data-curation-post="{{ p.base36id }}"><i class="fas fa-layer-group fa-fw text-center text-muted mr-3"></i>Add to curation</button>
-{% endif %}
-{% endmacro %}
-
 {% macro collab_item(p, v) %}
 {% set c = collab_of(p, v) if is_collab_post(p) else none %}
 {% if c and not p.is_banned and p.deleted_utc == 0 %}

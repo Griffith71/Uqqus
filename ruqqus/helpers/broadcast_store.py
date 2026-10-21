@@ -41,6 +41,34 @@ def of_owner(db, owner_id):
                       {"o": owner_id}).fetchall()
 
 
+def public_of_owners(db, owner_ids, viewer_id, limit=30):
+    """Public channels of these accounts the viewer is not in yet, newest first (the Channels tab's "From people you
+    follow"). The caller leaves out anyone in a block with the viewer."""
+    ids = sorted({int(i) for i in owner_ids})
+    if not ids:
+        return []
+    query = text(f"""SELECT {_CHANNEL} FROM broadcasts WHERE owner_id IN :ids AND audience = 0 AND deleted_utc = 0
+                     AND id NOT IN (SELECT broadcast_id FROM broadcast_members WHERE user_id = :me)
+                     ORDER BY created_utc DESC LIMIT :n""").bindparams(bindparam("ids", expanding=True))
+    return db.execute(query, {"ids": ids, "me": viewer_id, "n": int(limit)}).fetchall()
+
+
+def like_pattern(q):
+    """`q` as a LIKE pattern (on LOWER of both sides) that matches it anywhere, its own wildcards taken literally."""
+    escaped = str(q or "").replace("\\", "\\\\").replace("%", "\\%").replace("_", "\\_")
+    return f"%{escaped}%"
+
+
+def search_public(db, q, viewer_id, limit=40):
+    """Public channels whose name holds `q`, that the viewer is not in, newest first (the chat page's search). The
+    caller leaves out an owner in a block with the viewer and a name their filter hides."""
+    return db.execute(text(f"""SELECT {_CHANNEL} FROM broadcasts WHERE audience = 0 AND deleted_utc = 0
+                               AND LOWER(name) LIKE LOWER(:q) ESCAPE '\\'
+                               AND id NOT IN (SELECT broadcast_id FROM broadcast_members WHERE user_id = :me)
+                               ORDER BY created_utc DESC LIMIT :n"""),
+                      {"q": like_pattern(q), "me": viewer_id, "n": int(limit)}).fetchall()
+
+
 def circle_ids(db, bid):
     return tuple(row[0] for row in db.execute(text("SELECT circle_id FROM broadcast_circles WHERE broadcast_id = :b"), {"b": bid}))
 

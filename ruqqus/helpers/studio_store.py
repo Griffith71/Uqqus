@@ -4,12 +4,15 @@ import time
 
 from sqlalchemy import text
 
-# a tip on a forward copy goes to the original author, and a copy keeps the original's author_id, so it counts here
+# a tip on a forward copy goes to the original author, and a copy keeps the original's author_id, so it counts here;
+# a tip on a post of the member's own bot came to them too (helpers/tips.py recipient_id), but never their own tip
 _TIPS = text("""
     SELECT COALESCE(SUM(a.coins), 0) FROM award_relationships a
     LEFT JOIN submissions s ON s.id = a.submission_id
     LEFT JOIN comments c ON c.id = a.comment_id
-    WHERE (s.author_id = :u OR c.author_id = :u) AND COALESCE(a.user_id, 0) <> :u AND a.created_utc >= :since""")
+    WHERE (s.author_id = :u OR c.author_id = :u
+           OR s.author_id IN (SELECT b.id FROM users b WHERE b.is_bot = :yes AND b.bot_owner_id = :u))
+      AND COALESCE(a.user_id, 0) <> :u AND a.created_utc >= :since""")
 _CIRCLES = text("SELECT COALESCE(SUM(coins), 0) FROM circle_payments WHERE owner_id = :u AND created_utc >= :since")
 _FUND = text("SELECT COALESCE(SUM(coins), 0) FROM creator_fund_payouts WHERE user_id = :u AND status = 'paid' AND paid_utc >= :since")
 _SUBSCRIBERS = text("""
@@ -21,7 +24,7 @@ def earnings(db, user_id, since=0):
     """{source: coins} a member received since a date (helpers/studio.py SOURCES). A held creator fund payout is not
     counted until it is paid."""
     params = {"u": user_id, "since": int(since)}
-    return {"tips": int(db.execute(_TIPS, params).scalar() or 0),
+    return {"tips": int(db.execute(_TIPS, dict(params, yes=True)).scalar() or 0),
             "circles": int(db.execute(_CIRCLES, params).scalar() or 0),
             "fund": int(db.execute(_FUND, params).scalar() or 0)}
 

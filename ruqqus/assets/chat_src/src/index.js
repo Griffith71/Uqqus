@@ -15,6 +15,7 @@ import {
 } from "./api.js";
 import { renderConversationList, renderThreadShell, renderMessages, setTabBadge } from "./ui.js";
 import { initGroups } from "./groups.js";
+import { initExtras } from "./chat_extras.js";
 import {
   createSenders, mentionPattern, renderMute, renderPins, renderResults, renderSearch, renderStageCard, renderVoiceCard, stopCards,
 } from "./guild_channels.js";
@@ -24,7 +25,7 @@ const boot = window.RUQQUS_CHAT_BOOT;
 const state = {
   client: null,
   tab: "inbox",
-  conversations: { inbox: [], request: [], channel: [], guild: [] },
+  conversations: { inbox: [], group: [], request: [], channel: [], guild: [] },
   active: null, // { conversation, room, isRequest, group, channel, gchannel } - group: a group's members, for its threads; gchannel: a guild channel, with the names of its writers
   thread: null, // { messagesEl, inputEl, setContext, setTyping }
   context: null, // { type: "quote" | "edit", event } - what the box is answering or replacing
@@ -777,9 +778,11 @@ async function onAccept(conversation, room) {
     await acceptConversation(boot.formkey, conversation.conversation_id);
   }
   await refreshLists();
-  setTab("inbox");
-  const refreshed = state.conversations.inbox.find((c) => c.key === conversation.key);
-  if (refreshed) openConversation(refreshed);
+  const refreshed = [...state.conversations.inbox, ...state.conversations.group].find((c) => c.key === conversation.key);
+  if (refreshed) {
+    setTab(refreshed.kind === "group" ? "group" : "inbox");
+    openConversation(refreshed);
+  }
 }
 
 function closeThread() {
@@ -828,12 +831,15 @@ function watchCall() {
 
 // --- groups: the sheets (groups.js) and keeping an open group's members current --------------------
 let groupSheets = null;
+let extras = null;                                   // New chat, the Calls tab, the Channels tab's extras
 
 async function openByKey(key, roomId) {
   await refreshLists();
-  const found = state.conversations.inbox.find((c) => c.key === key || c.room_id === roomId);
-  if (!found) return;
-  setTab("inbox");
+  const tabs = ["inbox", "group", "request", "channel", "guild"];
+  const tab = tabs.find((t) => state.conversations[t].some((c) => (key && c.key === key) || c.room_id === roomId));
+  if (!tab) return;
+  const found = state.conversations[tab].find((c) => (key && c.key === key) || c.room_id === roomId);
+  setTab(tab);
   document.getElementById("chat-app")?.classList.add("chat-has-room");
   openConversation(found);
 }
@@ -868,13 +874,27 @@ function setTab(tab) {
   state.tab = tab;
   for (const link of document.querySelectorAll("[data-chat-tab]")) {
     link.classList.toggle("active", link.dataset.chatTab === tab);
+    if (link.dataset.chatTab === tab) link.setAttribute("aria-current", "page");
+    else link.removeAttribute("aria-current");
+  }
+  const list = document.getElementById("chat-conversation-list");
+  if (tab === "calls") {
+    extras?.renderCalls(list);                     // not conversations: recent calls (chat_extras.js)
+    return;
   }
   renderConversationList(
-    document.getElementById("chat-conversation-list"),
+    list,
     state.conversations[tab],
     state.active ? state.active.conversation.key : null,
     (convo) => openConversation(convo),
   );
+  if (tab === "channel") extras?.decorateChannels(list);
+}
+
+// The Calls tab draws itself when it is opened, and search results stay until the search is cleared: a list refresh
+// (a message arriving) redraws neither
+function redrawTab() {
+  if (state.tab !== "calls" && !extras?.searching()) setTab(state.tab);
 }
 
 // The guild channels list is the dearest to work out (every channel of every guild you are in), so a message arriving
@@ -884,14 +904,16 @@ const GUILD_LIST_MS = 15000;
 
 async function refreshLists() {
   const wantGuilds = !guildListAt || Date.now() - guildListAt > GUILD_LIST_MS;
-  const [inbox, request, channel, guild] = await Promise.all([
+  const [inbox, group, request, channel, guild] = await Promise.all([
     listConversations("inbox"),
+    listConversations("group"),
     listConversations("request"),
     listConversations("channel"),
     wantGuilds ? listConversations("guild").catch(() => state.conversations.guild) : state.conversations.guild,
   ]);
   if (wantGuilds) guildListAt = Date.now();
   state.conversations.inbox = inbox;
+  state.conversations.group = group;
   state.conversations.request = request;
   state.conversations.channel = channel;
   state.conversations.guild = guild;
@@ -899,10 +921,11 @@ async function refreshLists() {
   setTabBadge(document.getElementById("chat-guilds-badge"), guild.filter((c) => c.unread_count > 0).length);
 
   setTabBadge(document.getElementById("chat-inbox-badge"), inbox.filter((c) => c.unread_count > 0).length);
+  setTabBadge(document.getElementById("chat-groups-badge"), group.filter((c) => c.unread_count > 0).length);
   setTabBadge(document.getElementById("chat-requests-badge"), request.length);
   window.refreshChatBadge?.();
 
-  setTab(state.tab);
+  redrawTab();
   sendWaiting().catch(() => {});
 }
 
@@ -991,7 +1014,7 @@ async function sendShared({ room_id: roomId, text }) {
   if (typeof roomId !== "string" || typeof text !== "string" || !text.trim() || text.length > 2000) {
     throw new Error("That message can't be sent.");
   }
-  const find = () => state.conversations.inbox.find((c) => c.room_id === roomId);
+  const find = () => [...state.conversations.inbox, ...state.conversations.group].find((c) => c.room_id === roomId);
   let convo = find();
   if (!convo) {
     await refreshLists();          // a chat that was just started from the share sheet
@@ -1098,6 +1121,15 @@ async function main() {
 
   wireGlobalEvents(client);
 
+  extras = initExtras({
+    boot,
+    openRoom: (roomId) => openByKey(null, roomId),
+    openKey: (key, roomId) => openByKey(key, roomId),
+    startCall,
+    refreshLists,
+    showTab: () => setTab(state.tab),
+  });
+
   groupSheets = initGroups({
     boot,
     onCreated: (made) => openByKey(`g${made.group_id}`, made.room_id),
@@ -1126,11 +1158,13 @@ async function main() {
 
   if (boot.initialRoom) {
     const match = state.conversations.inbox.find((c) => c.room_id === boot.initialRoom)
+      || state.conversations.group.find((c) => c.room_id === boot.initialRoom)
       || state.conversations.request.find((c) => c.room_id === boot.initialRoom)
       || state.conversations.channel.find((c) => c.room_id === boot.initialRoom)
       || state.conversations.guild.find((c) => c.room_id === boot.initialRoom);
     if (match) {
-      setTab(state.conversations.inbox.includes(match) ? "inbox" : state.conversations.channel.includes(match) ? "channel"
+      setTab(state.conversations.inbox.includes(match) ? "inbox" : state.conversations.group.includes(match) ? "group"
+        : state.conversations.channel.includes(match) ? "channel"
         : state.conversations.guild.includes(match) ? "guild" : "request");
       openConversation(match);
     }

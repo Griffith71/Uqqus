@@ -1,0 +1,17 @@
+{% import "_sidebar_filter_macros.html" as filters %}
+<!-- Post type filter - mobile equivalent of the desktop sidebar's Post type panel -->
+<div class="modal fade modal-sm-bottom" id="postTypeFilterModal" tabindex="-1" role="dialog" aria-labelledby="postTypeFilterModalTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="postTypeFilterModalTitle">Post type</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true"><i class="fas fa-times"></i></span>
+        </button>
+      </div>
+      <div class="modal-body" style="overflow-y: scroll;">
+        {{ filters.post_type_body('mobile-post_type-options', post_type_catalog, post_type_groups, active_post_types) }}
+      </div>
+    </div>
+  </div>
+</div>

@@ -230,7 +230,8 @@ CREATE TABLE public.submissions (
     audience smallint DEFAULT 0 NOT NULL,
     guild_flair_id integer,
     tip_coins integer DEFAULT 0 NOT NULL,
-    tip_boost double precision DEFAULT 0 NOT NULL
+    tip_boost double precision DEFAULT 0 NOT NULL,
+    is_space boolean DEFAULT false NOT NULL
 );
 
 
@@ -328,6 +329,7 @@ CREATE TABLE public.users (
     creator_fund_opt_in_utc integer DEFAULT 0 NOT NULL,
     last_active_utc integer DEFAULT 0 NOT NULL,
     premium_auto_renew boolean DEFAULT false NOT NULL,
+    signin_alerts boolean DEFAULT true NOT NULL,
     score_display smallint DEFAULT 0 NOT NULL,
     profile_job character varying(60) DEFAULT '' NOT NULL,
     profile_location character varying(60) DEFAULT '' NOT NULL,
@@ -341,7 +343,8 @@ CREATE TABLE public.users (
     subscribers_visibility smallint DEFAULT 2 NOT NULL,
     subscriptions_visibility smallint DEFAULT 2 NOT NULL,
     is_bot boolean DEFAULT false NOT NULL,
-    bot_owner_id integer
+    bot_owner_id integer,
+    feed_defaults text DEFAULT '' NOT NULL
 );
 
 
@@ -5257,7 +5260,8 @@ CREATE TABLE public.login_events (
     created_utc integer DEFAULT 0,
     ip character varying(255),
     cf_country character(2),
-    region_code character varying(32)
+    region_code character varying(32),
+    user_agent character varying(200)
 );
 
 CREATE SEQUENCE public.login_events_id_seq
@@ -5939,6 +5943,8 @@ CREATE TABLE public.circles (
     created_utc integer DEFAULT 0 NOT NULL,
     name character varying(40) DEFAULT '' NOT NULL,
     kind character varying(12) NOT NULL,
+    description character varying(300) DEFAULT '' NOT NULL,
+    description_severity smallint DEFAULT 0 NOT NULL,
     CONSTRAINT circles_one_owner CHECK ((user_id IS NOT NULL) <> (board_id IS NOT NULL)),
     CONSTRAINT circles_price_range CHECK (price_coins >= 0 AND price_coins <= 100),
     CONSTRAINT circles_kind CHECK (kind IN ('friends', 'custom', 'paid', 'guild')),
@@ -6307,12 +6313,17 @@ CREATE TABLE public.spaces (
     matrix_room_id character varying(255),
     video boolean DEFAULT false NOT NULL,
     board_slow_seconds smallint DEFAULT 0 NOT NULL,
+    kind character varying(5) DEFAULT 'call' NOT NULL,
+    ends_utc integer DEFAULT 0 NOT NULL,
+    replay_link character varying(255),
     CONSTRAINT spaces_post_key UNIQUE (post_id),
-    CONSTRAINT spaces_status_check CHECK (status IN ('scheduled', 'live', 'ended'))
+    CONSTRAINT spaces_status_check CHECK (status IN ('scheduled', 'live', 'ended')),
+    CONSTRAINT spaces_kind_check CHECK (kind IN ('board', 'live', 'call'))
 );
 
 CREATE INDEX spaces_host_idx ON public.spaces (host_id, created_utc);
 CREATE INDEX spaces_live_idx ON public.spaces (status) WHERE status = 'live';
+CREATE INDEX spaces_due_idx ON public.spaces (ends_utc) WHERE status = 'live' AND ends_utc > 0;
 
 CREATE TABLE public.space_roles (
     space_id integer NOT NULL REFERENCES public.spaces(id) ON DELETE CASCADE,
@@ -6858,8 +6869,39 @@ CREATE TABLE public.guild_channel_feeds (
 
 ALTER TABLE public.guild_channels ADD COLUMN encrypted boolean DEFAULT false NOT NULL;
 
+CREATE TABLE public.mfa_backup_codes (
+    user_id integer NOT NULL,
+    code_hash character(64) NOT NULL,
+    salt character varying(32) NOT NULL,
+    created_utc integer DEFAULT 0 NOT NULL,
+    used_utc integer DEFAULT 0 NOT NULL,
+    PRIMARY KEY (user_id, code_hash)
+);
+
+CREATE INDEX users_display_name_trgm_idx ON public.users USING gin (display_name public.gin_trgm_ops);
+
+CREATE TABLE public.guild_day_stats (
+    board_id integer NOT NULL,
+    day integer NOT NULL,
+    joins integer DEFAULT 0 NOT NULL,
+    leaves integer DEFAULT 0 NOT NULL,
+    page_views integer DEFAULT 0 NOT NULL,
+    PRIMARY KEY (board_id, day)
+);
+
 -- Which migrations this schema already includes (scripts/migrate.py, audit D-02). A database made from this file
 -- starts with every one recorded; add a line here with each new migration.
+
+CREATE TABLE public.bell_rings (
+    id SERIAL PRIMARY KEY,
+    actor_id integer NOT NULL,
+    kind character varying(16) NOT NULL,
+    target_id integer NOT NULL,
+    created_utc integer NOT NULL,
+    CONSTRAINT bell_rings_once UNIQUE (actor_id, kind, target_id)
+);
+
+CREATE INDEX bell_rings_created_idx ON public.bell_rings (created_utc);
 
 CREATE TABLE public.schema_migrations (
     name character varying(255) PRIMARY KEY,
@@ -6925,4 +6967,12 @@ INSERT INTO public.schema_migrations (name) VALUES
     ('2026-11-08_guild_roles.sql'),
     ('2026-11-09_guild_channels_extras.sql'),
     ('2026-11-10_space_posts.sql'),
-    ('2026-11-11_space_board.sql');
+    ('2026-11-11_space_board.sql'),
+    ('2026-11-12_defaults_descriptions_bells.sql'),
+    ('2026-11-13_space_kinds.sql'),
+    ('2026-11-14_site_board_colour.sql'),
+    ('2026-11-15_mfa_backup_codes.sql'),
+    ('2026-11-16_login_user_agent.sql'),
+    ('2026-11-17_signin_alerts.sql'),
+    ('2026-11-18_user_name_search_index.sql'),
+    ('2026-11-20_guild_day_stats.sql');

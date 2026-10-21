@@ -1,9 +1,16 @@
 /*
  * Side panels (desktop only, >= 992px): the navbar's Notifications and Chat icons
- * open their page in a panel that replaces the right sidebar (and is as wide as it),
- * so you can use them while the feed stays where it is and keeps scrolling. The
- * left sidebar is left exactly as it is (open or folded). The Create post icon is
+ * open their page in a panel that replaces the right sidebar, so you can use them
+ * while the feed stays where it is and keeps scrolling. The Create post icon is
  * not a panel: it opens the composer already on the feed (assets/js/inline_composer.js).
+ *
+ * Its width (the owner, 2026-10-21): the right sidebar's plus the 207px the left sidebar
+ * gives up when it folds to its rail (316 + 207 = 523px), whenever the window holds the
+ * normal 1326px block with the rail (WIDE_PANEL); on a narrower one it is the right
+ * sidebar's width. The left sidebar folds to its rail only when it, the feed and the
+ * panel don't fit, and only while the panel is open, so the feed keeps its width: the
+ * member's own choice (the sidebar_pref cookie) is never changed, and a sidebar they
+ * folded stays so.
  *
  * Each panel shows the real page in a frame with ?embed=1 (templates/default.html:
  * no navbar or sidebars). Frames are made when first opened and then only hidden,
@@ -29,6 +36,41 @@
   var triggers = Array.prototype.slice.call(document.querySelectorAll('[data-side-panel]'));
   var frames = {};
   var current = null;
+  var html = document.documentElement;
+  var sidebar = document.getElementById('sidebar-left');
+  // the columns ($layout-* in the stylesheets), the 207px the folded sidebar gives up, the 15px gutter each side
+  var LEFT_OPEN = 272, RAIL = 65, FEED = 738, RIGHT = 316, GIVEN_UP = 207, GUTTERS = 30;
+  var WIDE_PANEL = RAIL + FEED + RIGHT + GIVEN_UP + GUTTERS;      // 1356: the 1326px block with the rail
+  var foldedByPanel = false;
+
+  function fold() {
+    if (foldedByPanel || !sidebar || sidebar.classList.contains('sidebar-collapsed')) return;
+    foldedByPanel = true;
+    sidebar.classList.add('sidebar-collapsed');
+    html.classList.add('panel-folds-left');
+  }
+
+  function unfold() {
+    if (!foldedByPanel) return;
+    foldedByPanel = false;
+    if (sidebar) sidebar.classList.remove('sidebar-collapsed');
+    html.classList.remove('panel-folds-left');
+  }
+
+  // the panel's width and the left sidebar, for this window (nav_align.js follows the columns' class changes)
+  function fit() {
+    if (current === null) {
+      html.classList.remove('panel-wide');
+      unfold();
+      return;
+    }
+    var width = window.innerWidth;
+    var widePanel = width >= WIDE_PANEL;
+    html.classList.toggle('panel-wide', widePanel);
+    // the open left sidebar stays while it, the feed and the panel fit; otherwise it folds to its rail
+    var room = LEFT_OPEN + FEED + (widePanel ? RIGHT + GIVEN_UP : RIGHT) + GUTTERS;
+    if (width < room) fold(); else unfold();
+  }
 
   function frameFor(name) {
     if (!frames[name]) {
@@ -60,6 +102,7 @@
     titleNode.textContent = PANELS[name].title;
     fullLink.href = PANELS[name].page;
     markActive(name);
+    fit();
   }
 
   function close() {
@@ -68,6 +111,7 @@
     panel.hidden = true;
     current = null;
     markActive(null);
+    fit();
   }
 
   // the share sheet (share_chat.js) sends through this same chat frame, so there is only ever one chat
@@ -85,6 +129,7 @@
   });
 
   document.getElementById('side-panel-close').addEventListener('click', close);
+  window.addEventListener('resize', function () { if (current !== null) fit(); });
   document.addEventListener('keydown', function (event) { if (event.key === 'Escape') close(); });
   (wide.addEventListener ? wide.addEventListener.bind(wide, 'change') : wide.addListener.bind(wide))(function () {
     if (!wide.matches) close();

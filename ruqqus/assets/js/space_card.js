@@ -1,6 +1,6 @@
 /*
  * The Space card under a post (templates/partials/space_card.html): a scheduled start shown in the reader's own time
- * zone, and "Remind me", which asks POST /api/spaces/<id>/remind (routes/spaces.py). Clicks are taken on the
+ * zone, "Remind me", which asks POST /api/spaces/<id>/remind (routes/spaces.py), and a live thread's "Start now". Clicks are taken on the
  * document, so cards the continuous feed adds work too; their times are formatted by bindPostCards (all_js.js).
  */
 (function () {
@@ -18,6 +18,23 @@
   }
   window.formatSpaceTimes = formatSpaceTimes;
   formatSpaceTimes(document);
+
+  // a scheduled live thread's host starts it from its own page (that page is its backing row's: no Space page)
+  document.addEventListener('click', function (event) {
+    var start = event.target.closest && event.target.closest('[data-space-start]');
+    if (!start) return;
+    event.preventDefault();
+    event.stopPropagation();
+    var body = new URLSearchParams();
+    body.set('formkey', typeof formkey === 'function' ? formkey() : '');
+    start.disabled = true;
+    fetch('/api/spaces/' + encodeURIComponent(start.getAttribute('data-space-start')) + '/start', {
+      method: 'POST', credentials: 'same-origin', body: body, headers: { Accept: 'application/json' }
+    }).then(function (r) {
+      if (r.ok) { window.location.reload(); return; }
+      start.disabled = false;
+    }).catch(function () { start.disabled = false; });
+  });
 
   document.addEventListener('click', function (event) {
     var button = event.target.closest && event.target.closest('[data-space-remind]');

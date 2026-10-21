@@ -56,7 +56,7 @@ def test_discover_guilds_filters_by_topic_and_never_reads_a_detached_property():
 
 def test_the_rail_icons_open_the_filter_in_the_sidebar_instead_of_going_to_a_page():
     rail = read("templates", "sidebar-left.html")
-    for name in ("regional", "language", "categorical"):
+    for name in ("regional", "language", "categorical", "post_type", "advanced"):
         assert f"onclick=\"openSidebarFilter('{name}')\"" in rail, name
     for old in ('href="/regional"', 'href="/language"', 'href="/categorical"'):
         assert old not in rail, old
@@ -68,7 +68,7 @@ def test_the_rail_icons_open_the_filter_in_the_sidebar_instead_of_going_to_a_pag
 
 def test_the_filter_notices_open_the_same_panels():
     home = read("templates", "home.html")
-    for name in ("regional", "language", "categorical"):
+    for name in ("regional", "language", "categorical", "post_type", "advanced"):
         assert f"openSidebarFilter('{name}')" in home, name
     assert 'href="/regional"' not in home and 'href="/language"' not in home and 'href="/categorical"' not in home
 

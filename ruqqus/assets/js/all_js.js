@@ -475,9 +475,21 @@ $('#new_email').on('input', function () {
 
   function insertGIF(url,form) {
 
+    var target = document.getElementById(form);
+
+    // a GIF from a composer's blue row is the post's own media: it becomes the post's link (the link field carries
+    // data-attach-link), which a GIPHY or Tenor address draws as the post's picture on its card
+    if (target && target.hasAttribute('data-attach-link')) {
+      target.value = url;
+      target.dispatchEvent(new Event('input', { bubbles: true }));
+      if (target.id === 'post-URL' && typeof showAttachedLinkChip === 'function') showAttachedLinkChip(url);
+      if (typeof checkForRequired === 'function' && document.getElementById('create_button')) checkForRequired();
+      return;
+    }
+
     var gif = "![](" + url +")";
 
-    insertAtCaret(document.getElementById(form), gif);
+    insertAtCaret(target, gif);
 
   }
 
@@ -822,8 +834,9 @@ document.addEventListener('input', function (event) {
   if (event.target.tagName.toLowerCase() !== 'textarea') return;
   // The post composer's title (fixed single-line, horizontal-scroll) and
   // body (fixed initial size, its own scrollbar) are deliberately NOT
-  // auto-growing - only comment/edit boxes use this behavior.
-  if (event.target.id === 'post-title' || event.target.id === 'post-body') return;
+  // auto-growing - only comment/edit boxes use this behavior. The feed composer's title sizes itself to one line at a
+  // time (inline_composer.js autosize); this one's extra 32px left a gap under it.
+  if (event.target.id === 'post-title' || event.target.id === 'post-body' || event.target.id === 'ic-title') return;
   autoExpand(event.target);
 }, false);
 
@@ -1743,11 +1756,16 @@ function toggle_sidebar_expand() {
   document.getElementById('sidebar-left').classList.remove('sidebar-collapsed');
 }
 
-// The folded sidebar's Regional / Language / Categorical icons do what the same rows do in the open sidebar: the
-// sidebar opens and the filter's panel with it. Below 1200px the sidebar is only ever its rail (main.scss), so the
-// sheet the phone's feed tabs open is used instead.
+// The folded sidebar's Regional / Language / Categorical / Post type icons do what the same rows do in the open
+// sidebar: the sidebar opens and the filter's panel with it. Below 1200px the sidebar is only ever its rail
+// (main.scss), so the sheet the phone's feed tabs open is used instead. The Advanced filter is a popup at every width.
 function openSidebarFilter(name) {
-  var sheets = { regional: '#regionalFilterModal', language: '#languageFilterModal', categorical: '#categoricalFilterModal' };
+  var sheets = { regional: '#regionalFilterModal', language: '#languageFilterModal', categorical: '#categoricalFilterModal',
+                 post_type: '#postTypeFilterModal' };
+  if (name === 'advanced') {
+    $('#advancedFilterModal').modal('show');
+    return;
+  }
   if (!sheets[name]) return;
   if (window.matchMedia('(max-width: 1199.98px)').matches) {
     $(sheets[name]).modal('show');
@@ -3137,7 +3155,8 @@ var filterSidebarList = function(input, listId) {
 
 var resortSidebarFilterList = function(listId) {
   var list = document.getElementById(listId);
-  if (!list) return;
+  // a grouped list (Post type) keeps its own order: its rows sit in one list per group
+  if (!list || list.hasAttribute('data-keep-order')) return;
   var rows = Array.prototype.slice.call(list.querySelectorAll('[data-filter-row]'));
   rows.sort(function(a, b) {
     var aSel = a.classList.contains('is-selected');
@@ -3166,6 +3185,7 @@ var toggleSidebarFilterOption = function(li, listId) {
   if (link) link.classList.toggle('text-purple', selected);
   if (link) link.classList.toggle('font-weight-bold', selected);
   if (link) link.classList.toggle('text-black', !selected);
+  if (link && link.hasAttribute('aria-checked')) link.setAttribute('aria-checked', selected ? 'true' : 'false');
   if (icon) icon.classList.toggle('invisible', !selected);
   resortSidebarFilterList(listId);
   updateSidebarFilterCount(listId);
@@ -3181,6 +3201,7 @@ var deselectAllSidebarFilter = function(listId) {
     var link = li.querySelector('a');
     var icon = li.querySelector('i');
     if (link) { link.classList.remove('text-purple', 'font-weight-bold'); link.classList.add('text-black'); }
+    if (link && link.hasAttribute('aria-checked')) link.setAttribute('aria-checked', 'false');
     if (icon) icon.classList.add('invisible');
   }
   resortSidebarFilterList(listId);

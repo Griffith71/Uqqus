@@ -44,12 +44,6 @@ def guild_refusal(is_profile_post, board, curation_is_private):
     return None
 
 
-def offered(post, board, account):
-    """What the sheet may offer for a post: {"author": bool, "guild": bool}."""
-    return {"author": author_refusal(bool(post.is_anonymous), account) is None,
-            "guild": not post.is_profile_post and not board.is_banned}
-
-
 # --- the database ----------------------------------------------------------------------------------------
 
 _HAS_USER = text("SELECT 1 FROM curation_users WHERE curation_id = :c AND target_user_id = :t")

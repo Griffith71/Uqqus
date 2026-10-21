@@ -46,6 +46,17 @@
             <div data-circle-status class="text-small mt-2" role="status"></div>
           </div>
         </form>
+        <form class="d-lg-flex border-top" data-circle-form action="/api/circles/{{ circle.id }}/description">
+          <div class="title w-lg-25"><label for="circle-description">What subscribers get</label></div>
+          <div class="body w-lg-100">
+            <textarea class="form-control" id="circle-description" name="description" rows="4" maxlength="{{ description_max }}" aria-describedby="circle-description-help">{{ description }}</textarea>
+            <button type="submit" class="btn btn-primary mt-2">Save description</button>
+            <span class="d-block mt-2 text-small-extra text-muted" id="circle-description-help">
+              Shown on the subscribe sheet before anyone pays, under the price. Plain text, up to {{ description_max }} characters. Leave it empty to show only what the circle holds.
+            </span>
+            <div data-circle-status class="text-small mt-2" role="status"></div>
+          </div>
+        </form>
         <div class="d-lg-flex border-top">
           <div class="title w-lg-25"><span class="font-weight-bold">Coins received</span></div>
           <div class="body w-lg-100">

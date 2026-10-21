@@ -144,7 +144,7 @@ def test_a_guild_post_is_made_by_where_to_post():
     assert "(cperm.GUILDS if guilds_only else comment_permission)" in posts
     assert "Choose where to post." in posts
     # a post for Circles is always on the profile
-    assert "True if for_circles else flag(request.form" in posts
+    assert "True if for_circles or space_wanted else flag(request.form" in posts     # a Space too (helpers/spaces.py)
     menu = read("ruqqus", "routes", "post_commenting.py")
     assert "spaces_of(post, v)" in menu and "cperm.parse(raw, allow_guilds=True)" in menu
 

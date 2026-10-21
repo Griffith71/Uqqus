@@ -1,6 +1,8 @@
-// A Space's own page (templates/space.html, routes/spaces.py, helpers/spaces.py): who is on stage and listening,
-// raised hands, the host's controls, video while the Space is small, the board (its discussion: its post takes no
-// comments), the live updates the host and co-hosts write, and the replay.
+// A Space's own page for a message board or a call (templates/space.html, routes/spaces.py, helpers/spaces.py; a live
+// thread is drawn by its backing row's page). A board: the board, which anyone who may open it writes on while it is
+// live. A call: who is on stage and listening, raised hands, the host's controls, video while the call is small, its
+// live chat (the board, written by the people in it) and the replay: the sound, or the cameras too
+// (`boot.videoReplay`), saved to the host's own storage. Votes and the link are in the header.
 //
 // Sound and video go browser to browser through the site's relay (rtc/mesh.js): the people on stage send to everyone
 // in the Space, listeners only receive. A listener has no microphone until they accept an invitation to speak, and a
@@ -18,6 +20,9 @@ import { Mesh } from "./rtc/mesh.js";
 
 const boot = window.UQQUS_SPACE_BOOT;
 const byId = (id) => document.getElementById(id);
+const IS_CALL = !boot || boot.kind === "call";
+// the updates panel is only drawn for a Space made before live threads were their own kind
+const UPDATES = !!byId("space-updates-panel");
 const STAGE = new Set(["host", "cohost", "speaker"]);
 const ROLE_LABEL = { host: "Host", cohost: "Co-host", speaker: "Speaker" };
 
@@ -334,14 +339,60 @@ async function cameraOff(reason) {
 }
 
 // --- the replay (host only, when the Space is recorded) -------------------------------------------------------------
+// A video replay is a 1280x720 canvas the host's browser draws the on-stage cameras into, as a grid, 15 times a
+// second (a timer, not animation frames, so it keeps drawing in a background tab), recorded with the mixed sound.
+const FRAME_MS = 1000 / 15;
+
+function drawFrame(ctx, canvas) {
+  ctx.fillStyle = "#0f1114";
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  const videos = Array.from(document.querySelectorAll("#space-videos video")).filter((v) => v.readyState >= 2);
+  if (!videos.length) {
+    ctx.fillStyle = "#e8eaed";
+    ctx.font = "600 40px system-ui, sans-serif";
+    ctx.textAlign = "center";
+    ctx.fillText(boot.title.slice(0, 60), canvas.width / 2, canvas.height / 2 - 10);
+    ctx.fillStyle = "#9aa3ad";
+    ctx.font = "28px system-ui, sans-serif";
+    ctx.fillText(`Hosted by ${boot.host.shown_name}`, canvas.width / 2, canvas.height / 2 + 40);
+    return;
+  }
+  const cols = Math.ceil(Math.sqrt(videos.length));
+  const rows = Math.ceil(videos.length / cols);
+  const w = canvas.width / cols;
+  const h = canvas.height / rows;
+  videos.forEach((video, i) => {
+    const x = (i % cols) * w;
+    const y = Math.floor(i / cols) * h;
+    const scale = Math.min(w / (video.videoWidth || 16), h / (video.videoHeight || 9));
+    const dw = (video.videoWidth || 16) * scale;
+    const dh = (video.videoHeight || 9) * scale;
+    ctx.drawImage(video, x + (w - dw) / 2, y + (h - dh) / 2, dw, dh);
+  });
+}
+
 function recordStart() {
   if (!boot.isHost || !boot.record || state.recorder || !window.MediaRecorder) return;
   try {
     const context = new AudioContext();
     const destination = context.createMediaStreamDestination();
     state.mix = { context, destination, added: new Set() };
-    const type = ["audio/webm;codecs=opus", "audio/ogg;codecs=opus", "audio/webm"].find((t) => MediaRecorder.isTypeSupported(t));
-    state.recorder = new MediaRecorder(destination.stream, type ? { mimeType: type, audioBitsPerSecond: 48000 } : undefined);
+    let stream = destination.stream;
+    let types = ["audio/webm;codecs=opus", "audio/ogg;codecs=opus", "audio/webm"];
+    let options = { audioBitsPerSecond: 48000 };
+    const canvas = document.createElement("canvas");
+    if (boot.videoReplay && canvas.captureStream) {
+      canvas.width = 1280;
+      canvas.height = 720;
+      const ctx = canvas.getContext("2d");
+      state.mix.frames = setInterval(() => drawFrame(ctx, canvas), FRAME_MS);
+      stream = new MediaStream([...canvas.captureStream(15).getVideoTracks(), ...destination.stream.getAudioTracks()]);
+      types = ["video/webm;codecs=vp8,opus", "video/webm;codecs=vp9,opus", "video/webm"];
+      options = { audioBitsPerSecond: 48000, videoBitsPerSecond: 1000000 };
+      state.mix.video = true;
+    }
+    const type = types.find((t) => MediaRecorder.isTypeSupported(t));
+    state.recorder = new MediaRecorder(stream, type ? { mimeType: type, ...options } : undefined);
     state.recorder.ondataavailable = (e) => { if (e.data && e.data.size) state.chunks.push(e.data); };
     state.recorder.start(10000);
     if (state.media) recordAdd(state.media.stream);
@@ -366,7 +417,9 @@ async function recordFinish() {
     recorder.onstop = resolve;
     recorder.stop();
   });
-  const type = recorder.mimeType || "audio/webm";
+  const video = !!(state.mix && state.mix.video);
+  if (state.mix && state.mix.frames) clearInterval(state.mix.frames);
+  const type = recorder.mimeType || (video ? "video/webm" : "audio/webm");
   const ext = type.includes("ogg") ? "ogg" : "webm";
   const file = new File(state.chunks, `space-${boot.spaceId}.${ext}`, { type: type.split(";")[0] });
   state.chunks = [];
@@ -377,13 +430,15 @@ async function recordFinish() {
     note.textContent = "The replay couldn't be saved here.";
     return offerDownload(file);
   }
-  note.textContent = "Saving the replay to your linked storage…";
+  // a long video is large: the upload runs from this tab, so it has to stay open until it is done
+  note.textContent = video ? "Saving the replay to your own video channel… keep this tab open." : "Saving the replay to your linked storage…";
   try {
-    const asset = await window.MediaUpload.upload(file, "audio", {
+    const asset = await window.MediaUpload.upload(file, video ? "video" : "audio", {
+      fields: video ? { title: boot.title.slice(0, 100), visibility: "unlisted" } : undefined,
       onProgress: (n) => { note.textContent = `Saving the replay… ${Math.round((n || 0) * 100)}%`; },
     });
-    await api("replay", { media: String(asset.id) });
-    note.textContent = "The replay is saved with the post.";
+    await api("replay", video ? { video: String(asset.id) } : { media: String(asset.id) });
+    note.textContent = video ? "The replay is saved: it plays here once your video service has it ready." : "The replay is saved.";
   } catch (e) {
     note.textContent = `The replay wasn't saved: ${e.message || "the upload failed"}. You can download it instead.`;
     offerDownload(file);
@@ -451,6 +506,9 @@ function boardNote(text, bad) {
 }
 
 function canWrite() {
+  // on a board anyone who may open it writes (the server still refuses a removed or blocked member); in a call, the
+  // people in it and its host and co-hosts
+  if (!IS_CALL) return live();
   return live() && (state.joined || (state.data && state.data.me && state.data.me.may_run));
 }
 
@@ -458,10 +516,10 @@ function drawBoardControls() {
   const form = byId("space-board-form");
   form.hidden = !canWrite();
   if (!live()) {
-    boardNote(state.ended || boot.status === "ended" ? "The board is closed: this Space has ended." : "The board opens when the Space starts.");
+    boardNote(state.ended || boot.status === "ended" ? `The ${IS_CALL ? "chat" : "board"} is closed: this Space has ended.` : `The ${IS_CALL ? "chat" : "board"} opens when the Space starts.`);
   } else if (!canWrite()) {
-    boardNote("Join the Space to write on its board.");
-  } else if (byId("space-board-note").textContent.startsWith("Join the Space") || byId("space-board-note").textContent.startsWith("The board")) {
+    boardNote("Join the Space to write in its chat.");
+  } else if (/^(Join the Space|The board|The chat)/.test(byId("space-board-note").textContent)) {
     boardNote("");
   }
   const settings = state.board.settings;
@@ -649,6 +707,7 @@ function mayRun() {
 }
 
 function drawRunnerControls() {
+  if (!UPDATES) return;
   const runner = mayRun() && live();
   byId("space-update-form").hidden = !runner;
   byId("space-summary-edit").hidden = !runner || !byId("space-summary-form").hidden;
@@ -744,6 +803,7 @@ function replaceUpdate(u) {
 }
 
 async function loadUpdates() {
+  if (!UPDATES) return;
   try {
     const first = !state.updates.last;
     const data = await getJson(`/api/post/${boot.postId}/live_updates${first ? "" : `?after=${state.updates.last}`}`);
@@ -763,6 +823,7 @@ async function loadUpdates() {
 }
 
 async function refreshUpdate(id) {
+  if (!UPDATES) return;
   try {
     replaceUpdate(await getJson(`/api/live_updates/${id}`));
   } catch (e) {
@@ -771,6 +832,7 @@ async function refreshUpdate(id) {
 }
 
 function wireUpdates() {
+  if (!UPDATES) return;
   byId("space-update-form").addEventListener("submit", async (event) => {
     event.preventDefault();
     const input = byId("space-update-input");
@@ -1040,6 +1102,19 @@ function wire() {
       say(e.message, true);
     }
   });
+  const endBoard = byId("space-end-board");
+  if (endBoard) {
+    endBoard.addEventListener("click", async () => {
+      if (!window.confirm("End this Space for everyone?")) return;
+      try {
+        await api("end");
+        endBoard.hidden = true;
+        finish("You ended the Space.");
+      } catch (e) {
+        say(e.message, true);
+      }
+    });
+  }
   byId("space-play").addEventListener("click", () => {
     resumeAudio();
     for (const audio of state.audios.values()) audio.play().catch(() => {});
@@ -1053,6 +1128,10 @@ function wire() {
       try {
         await api("start");
         boot.status = "live";
+        if (!IS_CALL) {
+          window.location.reload();         // a board has nothing to join: it is open to write on
+          return;
+        }
         await join();
       } catch (e) {
         state.joining = false;
@@ -1108,6 +1187,51 @@ function wire() {
   });
 }
 
+// Votes on the Space (its backing row's votes: routes/votes.py, with its rules, the one-vote-per-family rule too).
+function drawVotes() {
+  const v = boot.votes || {};
+  byId("space-score").textContent = String(v.score || 0);
+  byId("space-upvote").setAttribute("aria-pressed", String(v.mine === 1));
+  byId("space-downvote").setAttribute("aria-pressed", String(v.mine === -1));
+}
+
+function wireVotes() {
+  const up = byId("space-upvote");
+  if (!up) return;
+  const vote = async (dir) => {
+    const v = boot.votes;
+    if (v.locked) return say("Your vote is on another copy of this Space, or it can't change any more.", true);
+    const next = v.mine === dir ? 0 : dir;
+    try {
+      const resp = await fetch(`/api/vote/post/${boot.postId}/${next}`, {
+        method: "POST", credentials: "same-origin", headers: { Accept: "application/json" },
+        body: new URLSearchParams({ formkey: boot.formkey }),
+      });
+      const data = await resp.json().catch(() => ({}));
+      if (!resp.ok) throw new Error(data.error || "The vote didn't go through.");
+      v.score += next - v.mine;
+      v.mine = next;
+      drawVotes();
+    } catch (e) {
+      say(e.message, true);
+    }
+  };
+  up.addEventListener("click", () => vote(1));
+  byId("space-downvote").addEventListener("click", () => vote(-1));
+  const copy = byId("space-copy-link");
+  if (copy) {
+    copy.addEventListener("click", async () => {
+      try {
+        await navigator.clipboard.writeText(window.location.origin + boot.permalink);
+        say("Link copied.");
+      } catch (e) {
+        say("The link couldn't be copied.", true);
+      }
+    });
+  }
+  drawVotes();
+}
+
 async function loadState() {
   // who this reader is in the Space (may they run the updates, moderate the board?) before they join
   try {
@@ -1125,6 +1249,7 @@ function main() {
   wire();
   wireBoard();
   wireUpdates();
+  wireVotes();
   loadState();
 }
 

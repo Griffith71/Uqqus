@@ -338,6 +338,54 @@ def subscribers(db, circle_id, now=None):
         ORDER BY m.renews_utc, m.id"""), {"c": circle_id, "now": _now(now)}).fetchall()
 
 
+_SUBSCRIBED_AUTHORS = text("""
+    SELECT m.user_id, c.name FROM circle_members m JOIN circles c ON c.id = m.circle_id
+    WHERE c.user_id = :o AND c.kind = 'paid' AND m.user_id IN :ids AND m.tier = 'subscriber' AND m.status = 'active'
+      AND m.renews_utc > :now
+    ORDER BY c.name, c.id""").bindparams(bindparam("ids", expanding=True))
+
+
+def subscribed_authors(db, owner_id, author_ids, now=None):
+    """{author id: the name of one of the owner's PAID circles they have access to now} for these authors: the
+    subscriber badge (helpers/subscriber_badges.py). Paid circles only: a custom circle is never revealed."""
+    ids = [i for i in _ids(author_ids) if i != owner_id]
+    if not ids or not owner_id:
+        return {}
+    found = {}
+    for user_id, name in db.execute(_SUBSCRIBED_AUTHORS, {"o": owner_id, "ids": ids, "now": _now(now)}).fetchall():
+        found.setdefault(user_id, name)
+    return found
+
+
+def description_of(db, circle_id):
+    """(description, its word-filter rating) of a circle, ("", 0) when it has none."""
+    row = db.execute(text("SELECT description, description_severity FROM circles WHERE id = :i"), {"i": circle_id}).fetchone()
+    return (row[0] or "", int(row[1] or 0)) if row else ("", 0)
+
+
+def set_description(db, owner_id, circle_id, description, severity):
+    """The owner's paid circle's description (the subscribe sheet). Only the owner's own paid circle; True if set."""
+    if owned(db, owner_id, circle_id, kinds=(circles.PAID,)) is None:
+        return False
+    db.execute(text("UPDATE circles SET description = :d, description_severity = :s WHERE id = :i"),
+               {"d": description, "s": int(severity), "i": circle_id})
+    return True
+
+
+def shared_post_count(db, circle_id):
+    """How many live posts are shared with this circle (the subscribe sheet says so; never which)."""
+    return int(db.execute(text("""
+        SELECT COUNT(*) FROM post_circles pc JOIN submissions s ON s.id = pc.post_id
+        WHERE pc.circle_id = :c AND s.deleted_utc = 0 AND s.is_banned = false"""), {"c": circle_id}).scalar() or 0)
+
+
+def channel_count(db, circle_id):
+    """How many open broadcast channels are for this circle (helpers/broadcast_store.py)."""
+    return int(db.execute(text("""
+        SELECT COUNT(*) FROM broadcast_circles bc JOIN broadcasts b ON b.id = bc.broadcast_id
+        WHERE bc.circle_id = :c AND b.deleted_utc = 0"""), {"c": circle_id}).scalar() or 0)
+
+
 def memberships(db, user_id, now=None):
     """The paid circles this account is in, with access now:
     [(circle_id, owner_id, owner_username, name, renews_utc, cancelled, price_coins)]. Custom circles are never listed:

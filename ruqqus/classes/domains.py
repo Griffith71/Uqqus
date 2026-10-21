@@ -2,7 +2,7 @@ from sqlalchemy import *
 from ruqqus.__main__ import Base, cache
 
 reasons = {
-    1: "URL shorteners are not allowed.",
+    1: "Deceptive URL shorteners are not allowed.",
     3: "Piracy is not allowed.",
     4: "Sites hosting digitally malicious content are not allowed.",
     5: "Spam",

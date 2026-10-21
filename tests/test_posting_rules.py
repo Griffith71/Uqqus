@@ -7,19 +7,36 @@ TEMPLATES = Path(__file__).resolve().parent.parent / "ruqqus" / "templates"
 PARTIAL = TEMPLATES / "partials" / "posting_rules.html"
 POLICY = TEMPLATES / "help" / "rules.html"
 
-# The owner's rules, as phrases that must appear in both places.
+# The owner's rules (2026-10-20), as phrases that must appear in both places.
 CORE = (
+    "good-faith",
     "bad-faith",
-    "undisclosed, harmful motives",
+    "documented evidence",
     "gambling schemes",
-    "misinformation",
-    "unsafe or unregulated products or services",
-    "purely erotic",
-    "purely violent",
-    "purely grotesque",
-    "duplicate posting",
-    "anonymous posts and comments follow",
+    "intellectual property",
+    "deceptive impersonation",
+    "erotic",
+    "violent",
+    "grotesque",
+    "a broader work",
+    "pirated copies",
+    "consisting entirely of any one of",
+    "personal information",
+    "impersonation",
+    "paid partnerships",
+    "unsolicited commercial promotion",
+    "commercial promotion",
+    "created using ai",
+    "identify themselves as bots",
+    "not from",                  # anonymity hides the author from users, not from the site
+    "ban",
+    "hacking",
+    "votes",
 )
+# rules the owner's text removed: they must not come back through one copy that was forgotten
+REMOVED = ("duplicate posting", "misinformation", "anti-degen", "revenge pornography", "shortener", "unregulated",
+           "sex scene", "complicit", "facilitate illegal", "entertainment", "purely to display")
+BOTS = TEMPLATES / "help" / "bots.html"
 
 
 def _text(path):
@@ -53,3 +70,40 @@ def test_pages_use_the_shared_partial_not_their_own_copy():
 def test_rules_are_reachable_on_small_screens():
     # the desktop card sits in a d-none d-lg-block sidebar; small screens get the panel
     assert "d-lg-none" in PARTIAL.read_text(encoding="utf-8")
+
+
+def test_the_policy_and_the_card_both_have_six_sections():
+    policy = POLICY.read_text(encoding="utf-8")
+    assert re.findall(r"^## (\d+)\. ", policy, re.M) == ["1", "2", "3", "4", "5"]
+    assert '<h2 id="bots">6. Bots</h2>' in policy
+    card = PARTIAL.read_text(encoding="utf-8")
+    assert len(re.findall(r"\{% call rule\(prefix, \d+,", card)) == 5   # the bot rules are on the full page only, not beside Create a post
+
+
+def test_removed_rules_are_gone_from_both():
+    card, policy = _text(PARTIAL), _text(POLICY)
+    for phrase in REMOVED:
+        assert phrase not in card and phrase not in policy, phrase
+
+
+def test_the_site_is_named_from_settings_never_written_out():
+    for path in (PARTIAL, POLICY):
+        html = path.read_text(encoding="utf-8")
+        assert "ruqqus.com" not in html.lower() and "laba" not in html.lower().replace("{{ 'site_name' | app_config }}", ""), path.name
+
+
+def test_the_bot_pages_and_the_rules_point_at_each_other():
+    assert "/help/rules#bots" in BOTS.read_text(encoding="utf-8")
+    assert "/help/bots" in POLICY.read_text(encoding="utf-8")
+    assert 'rule(prefix, 7, "Bots")' not in PARTIAL.read_text(encoding="utf-8")      # not on the post/guild card
+    assert "x-user-type" not in _text(PARTIAL)
+    assert "x-user-type" in _text(POLICY)
+    assert "Settings > Bots" in POLICY.read_text(encoding="utf-8")
+
+
+def test_the_pages_that_name_the_policy_call_it_the_rules_and_guidelines():
+    for name in ("help.html", "docs_default.html"):
+        assert "[Rules and Guidelines](/help/rules)" in (TEMPLATES / name).read_text(encoding="utf-8"), name
+        assert "[Content Policy]" not in (TEMPLATES / name).read_text(encoding="utf-8"), name
+    # the Terms still define "Content Policy": it is the same page
+    assert 'Rules and Guidelines [here](/help/rules) (the "Content Policy")' in (TEMPLATES / "help" / "terms.html").read_text(encoding="utf-8")

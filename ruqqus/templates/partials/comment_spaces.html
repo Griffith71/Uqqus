@@ -6,10 +6,10 @@
 #}
 <div class="comment-spaces" id="comment-spaces" data-post="{{ p.base36id }}" data-sort="{{ spaces.sort }}">
   <div class="comment-spaces-head">
-    <span class="font-weight-bold">Comment spaces</span>
+    <span class="font-weight-bold">Discussions</span>
     <span class="text-muted text-small">{% if guilds_only %}This post has no comments on the profile. Choose a guild's.{% else %}Each guild has its own comments, with its own rules.{% endif %}</span>
   </div>
-  <div class="comment-spaces-list" role="tablist" aria-label="Comment spaces">
+  <div class="comment-spaces-list" role="tablist" aria-label="Discussions">
     {% if not guilds_only %}
     <button type="button" class="space-tab active" role="tab" aria-selected="true" data-space="profile">On the profile <span class="space-count">{{ p.comment_count }}</span></button>
     {% endif %}

@@ -78,7 +78,7 @@ def unban_user(user_id, v):
     user.unban()
 
     send_notification(user,
-                      f"Your {app.config['SITE_NAME']} account has been reinstated. Please carefully review and abide by the [terms of service](/help/terms) and [content policy](/help/rules) to ensure that you don't get suspended again.")
+                      f"Your {app.config['SITE_NAME']} account has been reinstated. Please carefully review and abide by the [terms of service](/help/terms) and [rules and guidelines](/help/rules) to ensure that you don't get suspended again.")
 
 
     return (redirect(user.url), user)

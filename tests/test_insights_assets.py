@@ -67,8 +67,9 @@ def test_counting_can_never_spoil_the_page():
     assert "ON CONFLICT (post_id, day) DO UPDATE SET views = post_view_days.views + 1" in STORE
 
 
-def test_both_post_pages_count_after_recording_the_view_and_for_visitors_too():
-    assert POSTS.count("insights_store.count_view(v, post)") == 2
+def test_the_post_page_counts_after_recording_the_view_and_for_visitors_too():
+    # one page answers every address a post has had (helpers/permalinks.py), so one place counts
+    assert POSTS.count("insights_store.count_view(v, post)") == 1
     for chunk in POSTS.split("record_view(v, post)")[1:]:
         assert chunk.lstrip().startswith("insights_store.count_view(v, post)")
     # not under `if v:` (a visitor's open counts), and the import comes after the classes star-import

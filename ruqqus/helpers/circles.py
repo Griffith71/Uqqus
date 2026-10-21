@@ -93,6 +93,25 @@ def parse_name(raw):
     return text, None
 
 
+DESCRIPTION_MAX = 300
+_BLANK_LINES = re.compile(r"\n{3,}")
+
+
+def parse_description(raw):
+    """(description, None) or (None, message) for what a paid circle's owner says subscribers get. Plain text: line
+    breaks kept (at most one blank line), no control or invisible characters, DESCRIPTION_MAX characters. Empty clears
+    it."""
+    lines = str(raw or "").replace("\r\n", "\n").replace("\r", "\n").split("\n")
+    clean = []
+    for line in lines:
+        line = "".join(ch for ch in line if ch == _JOINER or unicodedata.category(ch)[0] != "C")
+        clean.append(_SPACES.sub(" ", line).strip())
+    text = _BLANK_LINES.sub("\n\n", "\n".join(clean)).strip()
+    if len(text) > DESCRIPTION_MAX:
+        return None, f"A description can be {DESCRIPTION_MAX} characters at most."
+    return text, None
+
+
 def parse_audience(raw_audience, raw_circles=()):
     """(audience, tokens, None) or (None, (), message) from a form: `audience` is 0 (Public) or 4 (circles), and
     `circles` the chosen circles, each FRIENDS_TOKEN or a circle id. Whose circles they are is the store's to check

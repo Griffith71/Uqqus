@@ -5,13 +5,15 @@ from sqlalchemy import text
 
 TABLES = (
     "CREATE TABLE users (id integer PRIMARY KEY, username text, coin_balance integer DEFAULT 0, "
-    "is_deleted boolean DEFAULT 0, is_banned integer DEFAULT 0, unban_utc integer DEFAULT 0)",
+    "is_deleted boolean DEFAULT 0, is_banned integer DEFAULT 0, unban_utc integer DEFAULT 0, "
+    "is_bot boolean DEFAULT 0, bot_owner_id integer)",
     "CREATE TABLE userblocks (id integer PRIMARY KEY AUTOINCREMENT, user_id integer, target_id integer)",
     "CREATE TABLE follows (id integer PRIMARY KEY AUTOINCREMENT, user_id integer, target_id integer)",
     "CREATE TABLE boards (id integer PRIMARY KEY, name text, creator_id integer, is_circle boolean DEFAULT 0, is_banned boolean DEFAULT 0)",
     "CREATE TABLE circles (id integer PRIMARY KEY AUTOINCREMENT, user_id integer, board_id integer, "
     "price_coins integer NOT NULL DEFAULT 0, created_utc integer NOT NULL DEFAULT 0, name text NOT NULL DEFAULT '', "
-    "kind text NOT NULL, CHECK (kind IN ('friends', 'custom', 'paid', 'guild')))",
+    "kind text NOT NULL, description text NOT NULL DEFAULT '', description_severity integer NOT NULL DEFAULT 0, "
+    "CHECK (kind IN ('friends', 'custom', 'paid', 'guild')))",
     "CREATE UNIQUE INDEX circles_friends_key ON circles (user_id) WHERE kind = 'friends'",
     "CREATE UNIQUE INDEX circles_board_key ON circles (board_id) WHERE board_id IS NOT NULL",
     "CREATE TABLE circle_members (id integer PRIMARY KEY AUTOINCREMENT, circle_id integer NOT NULL, "

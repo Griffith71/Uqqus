@@ -90,3 +90,17 @@ def test_coins_are_written_as_the_site_writes_numbers():
 def test_no_source_is_ad_money():
     assert {key for key, _, _ in rules.SOURCES} == {"tips", "circles", "fund"}
     assert not any("ad" in label.lower().split() for _, label, _ in rules.SOURCES)
+
+
+def test_tips_on_my_own_bot_s_posts_came_to_me(db):
+    """A member bot's coins go to the member who runs it (helpers/tips.py recipient_id); a site bot's to nobody."""
+    MY_BOT, SITE_BOT = 50, 51
+    db.execute(text("INSERT INTO users (id, username, is_bot, bot_owner_id) VALUES (:b, 'mybot', 1, :me), (:s, 'sitebot', 1, NULL)"),
+               {"b": MY_BOT, "s": SITE_BOT, "me": ME})
+    db.execute(text("INSERT INTO submissions (id, author_id) VALUES (60, :b), (61, :s)"), {"b": MY_BOT, "s": SITE_BOT})
+    for post in (60, 61):
+        db.execute(text("INSERT INTO award_relationships (user_id, submission_id, coins, created_utc) VALUES (:f, :p, 6, :t)"),
+                   {"f": FAN, "p": post, "t": NOW - DAY})
+    assert store.earnings(db, ME)["tips"] == 5 + 3 + 2 + 1 + 6
+    assert store.earnings(db, OTHER)["tips"] == 7 + 9 + 4
+

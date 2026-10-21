@@ -21,14 +21,21 @@
   <div class="explore-head">
     <div>
       <h1 class="explore-title">Spaces</h1>
-      <p class="explore-lead">Live rooms to talk, listen and follow along. A Space is recorded for replay, or it is gone when it ends.</p>
+      <p class="explore-lead">Message boards, live threads and calls, for a while. A Space is kept to read or replay, or it is gone when it ends.</p>
     </div>
     {% if v %}<a href="/spaces/new" class="btn btn-primary btn-sm rounded-pill px-3"><i class="fas fa-microphone-lines mr-1" aria-hidden="true"></i>Start a Space</a>{% endif %}
   </div>
   <nav class="explore-tabs" aria-label="Spaces">
     {% for key, label in tabs %}{% if key != 'mine' or v %}
-    <a href="/spaces?tab={{ key }}" class="explore-tab{% if tab == key %} active{% endif %}"{% if tab == key %} aria-current="page"{% endif %}>{{ label }}</a>
+    <a href="/spaces?tab={{ key }}{% if kind %}&kind={{ kind }}{% endif %}" class="explore-tab{% if tab == key %} active{% endif %}"{% if tab == key %} aria-current="page"{% endif %}>{{ label }}</a>
     {% endif %}{% endfor %}
+  </nav>
+  {# one kind of Space at a time, or all of them #}
+  <nav class="explore-chips" aria-label="Kinds of Space">
+    <a href="/spaces?tab={{ tab }}" class="explore-chip{% if not kind %} active{% endif %}"{% if not kind %} aria-current="true"{% endif %}>All</a>
+    {% for key, label, icon in kinds %}
+    <a href="/spaces?tab={{ tab }}&kind={{ key }}" class="explore-chip{% if kind == key %} active{% endif %}"{% if kind == key %} aria-current="true"{% endif %}><i class="fas {{ icon }} mr-1" aria-hidden="true"></i>{{ label }}</a>
+    {% endfor %}
   </nav>
 
   <ul class="explore-grid">

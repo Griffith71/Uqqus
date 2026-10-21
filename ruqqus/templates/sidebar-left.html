@@ -43,17 +43,6 @@
               </a>
             </li>
             <li class="guild-recommendations-item">
-              <a href="/spaces">
-                <div class="d-flex">
-                  <span class="fa-stack">
-                    <i class="fa-2x fas fa-circle text-purple fa-stack-2x" style=""></i>
-                    <i class="fa-stack-1x fas fa-microphone-lines fa-inverse d-inline-block text-white"></i>
-                  </span>
-                  <span class="my-auto ml-2 text-black font-weight-normal">Spaces</span>
-                </div>
-              </a>
-            </li>
-            <li class="guild-recommendations-item">
               <a href="/following">
                 <div class="d-flex">
                   <span class="fa-stack">
@@ -81,14 +70,6 @@
                       <i class="fa-2x fas fa-circle text-purple fa-stack-2x" style=""></i>
                       <i class="fa-stack-1x fas fa-star fa-inverse d-inline-block text-white"></i>
                   </span>
-                  </a>
-                </li>
-                <li class="guild-recommendations-item">
-                  <a href="/spaces" aria-label="Spaces" title="Spaces">
-                    <span class="fa-stack">
-                      <i class="fa-2x fas fa-circle text-purple fa-stack-2x" style=""></i>
-                      <i class="fa-stack-1x fas fa-microphone-lines fa-inverse d-inline-block text-white"></i>
-                    </span>
                   </a>
                 </li>
                 <li class="guild-recommendations-item">
@@ -123,10 +104,26 @@
                     </span>
                   </a>
                 </li>
+                <li class="guild-recommendations-item">
+                  <a href="javascript:void(0)" onclick="openSidebarFilter('post_type')" role="button" aria-label="Post type" title="Post type">
+                    <span class="fa-stack">
+                      <i class="fa-2x fas fa-circle text-purple fa-stack-2x" style=""></i>
+                      <i class="fa-stack-1x fas fa-shapes fa-inverse d-inline-block text-white"></i>
+                    </span>
+                  </a>
+                </li>
+                <li class="guild-recommendations-item">
+                  <a href="javascript:void(0)" onclick="openSidebarFilter('advanced')" role="button" aria-label="Advanced filter" title="Advanced filter">
+                    <span class="fa-stack">
+                      <i class="fa-2x fas fa-circle text-purple fa-stack-2x" style=""></i>
+                      <i class="fa-stack-1x fas fa-sliders fa-inverse d-inline-block text-white"></i>
+                    </span>
+                  </a>
+                </li>
               </ul>
 
               <hr class="my-3 sidebar-collapsed-hidden">
-              <div class="d-flex justify-content-between align-items-center mb-2 sidebar-collapsed-hidden">
+              <div class="mb-2 sidebar-collapsed-hidden">
                 <div class="text-small font-weight-bold text-muted text-uppercase" style="letter-spacing: 0.025rem;">Filters</div>
               </div>
 
@@ -173,6 +170,60 @@
                     {{ filters.filter_panel_body('sidebar-categorical-options', categorical_catalog, active_subcats, 'Search categories…', '/categorical', 'cats') }}
                   </div>
                 </li>
+                <li class="guild-recommendations-item">
+                  <a href="javascript:void(0)" data-toggle="collapse" data-target="#sidebar-filter-post_type" role="button" aria-expanded="false" aria-controls="sidebar-filter-post_type">
+                    <div class="d-flex">
+                      <span class="fa-stack">
+                        <i class="fa-2x fas fa-circle text-purple fa-stack-2x" style=""></i>
+                        <i class="fa-stack-1x fas fa-shapes fa-inverse d-inline-block text-white"></i>
+                      </span>
+                      <span class="my-auto ml-2 text-black font-weight-normal">Post type</span>
+                      <span class="my-auto ml-auto post-type-choice{% if active_post_types %} is-set{% endif %}">{{ post_type_summary }}<i class="fas fa-caret-down ml-1" aria-hidden="true"></i></span>
+                    </div>
+                  </a>
+                  <div class="collapse mt-2 ml-2 mr-2" id="sidebar-filter-post_type">
+                    {{ filters.post_type_body('sidebar-post_type-options', post_type_catalog, post_type_groups, active_post_types) }}
+                  </div>
+                </li>
+                <li class="guild-recommendations-item">
+                  <a href="javascript:void(0)" data-toggle="modal" data-target="#advancedFilterModal" role="button">
+                    <div class="d-flex">
+                      <span class="fa-stack">
+                        <i class="fa-2x fas fa-circle text-purple fa-stack-2x" style=""></i>
+                        <i class="fa-stack-1x fas fa-sliders fa-inverse d-inline-block text-white"></i>
+                      </span>
+                      <span class="my-auto ml-2 text-black font-weight-normal">Advanced filter</span>
+                      {% if feed_filter_count %}<span class="my-auto ml-auto badge badge-pill badge-purple" title="{{ feed_filter_count }} set">{{ feed_filter_count }}</span>{% endif %}
+                    </div>
+                  </a>
+                </li>
+                {% if v %}{# the member's default filters, loaded into every new session (routes/front.py feed_defaults) #}
+                <li class="guild-recommendations-item feed-defaults">
+                  <form method="post" action="/settings/feed_defaults" class="m-0">
+                    <input type="hidden" name="formkey" value="{{ v.formkey }}">
+                    <button type="submit" name="action" value="save" class="btn btn-link p-0 text-left w-100 text-decoration-none"{% if feed_defaults_state == 'same' %} disabled aria-disabled="true"{% endif %}>
+                      <div class="d-flex">
+                        <span class="fa-stack">
+                          <i class="fa-2x fas fa-circle text-purple fa-stack-2x" style=""></i>
+                          <i class="fa-stack-1x fas fa-floppy-disk fa-inverse d-inline-block text-white"></i>
+                        </span>
+                        <span class="my-auto ml-2 text-black font-weight-normal">{% if feed_defaults_state == 'same' %}These are your default{% else %}Save as my default{% endif %}</span>
+                      </div>
+                    </button>
+                    {% if feed_defaults_state == 'differs' %}
+                    <div class="feed-defaults-actions">
+                      <button type="submit" name="action" value="reset" class="btn btn-link p-0">Reset to my default</button>
+                      <span aria-hidden="true">·</span>
+                      <button type="submit" name="action" value="clear" class="btn btn-link p-0">Forget my default</button>
+                    </div>
+                    {% elif feed_defaults_state == 'same' %}
+                    <div class="feed-defaults-actions">
+                      <button type="submit" name="action" value="clear" class="btn btn-link p-0">Forget my default</button>
+                    </div>
+                    {% endif %}
+                  </form>
+                </li>
+                {% endif %}
               </ul>
             </div>
 
@@ -354,6 +405,49 @@
               <a href="/curations" class="btn btn-outline-gray-300 text-muted btn-block btn-sm text-small sidebar-collapsed-hidden">Discover Curations</a>
             </div>
             {% endif %}
+
+            {# Spaces, under My Curations (the owner, 2026-10-21: not a navbar button): live boards, live threads and calls #}
+            <div class="mb-4 mt-4 sidebar-spaces">
+              <div class="sidebar-collapsed-hidden">
+                <div class="text-small font-weight-bold text-muted text-uppercase mb-2" style="letter-spacing: 0.025rem;">Spaces</div>
+                <ul class="no-bullets guild-recommendations-list pl-0">
+                  <li class="guild-recommendations-item">
+                    <a href="/spaces">
+                      <div class="d-flex">
+                        <span class="fa-stack">
+                          <i class="fa-2x fas fa-circle text-purple fa-stack-2x"></i>
+                          <i class="fa-stack-1x fas fa-microphone-lines fa-inverse d-inline-block text-white"></i>
+                        </span>
+                        <div class="my-auto ml-2 text-black font-weight-normal">Live and upcoming</div>
+                      </div>
+                    </a>
+                  </li>
+                  {% if v %}
+                  <li class="guild-recommendations-item">
+                    <a href="/spaces/new">
+                      <div class="d-flex">
+                        <span class="fa-stack">
+                          <i class="fa-2x fas fa-circle text-gray-400 fa-stack-2x"></i>
+                          <i class="fa-stack-1x fas fa-plus fa-inverse d-inline-block text-white"></i>
+                        </span>
+                        <div class="my-auto ml-2 text-black font-weight-normal">Start a Space</div>
+                      </div>
+                    </a>
+                  </li>
+                  {% endif %}
+                </ul>
+              </div>
+              <ul class="no-bullets guild-recommendations-list pl-0 sidebar-collapsed-visible">
+                <li class="guild-recommendations-item">
+                  <a href="/spaces" data-toggle="tooltip" data-placement="right" title="Spaces" aria-label="Spaces">
+                    <span class="fa-stack">
+                      <i class="fa-2x fas fa-circle text-purple fa-stack-2x"></i>
+                      <i class="fa-stack-1x fas fa-microphone-lines fa-inverse d-inline-block text-white"></i>
+                    </span>
+                  </a>
+                </li>
+              </ul>
+            </div>
           </div>
         </div>
 

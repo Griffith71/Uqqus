@@ -36,16 +36,18 @@ from ruqqus.helpers import guild_flair as flair_rules, guild_flair_store as flai
 from ruqqus.helpers import collab_store
 from ruqqus.helpers import circles as circle_rules, circle_guard, circle_store
 from ruqqus.helpers import insights_store
+from ruqqus.helpers import permalinks
 from ruqqus.helpers import bots as bot_rules, bot_store
 from ruqqus.helpers import sensitive as sensitive_rules
 from ruqqus.helpers import sharing
+from ruqqus.helpers import bell as bell_rules
 from .front import frontlist
 from ruqqus.__main__ import app, limiter, cache, db_session
 from flask import session as flask_session
 
 
 BAN_REASONS = ['',  #placeholder
-               "URL shorteners are not permitted.",
+               "Deceptive URL shorteners are not permitted.",
                "",  # placeholder, formerly "no porn"
                "Copyright infringement is not permitted.",
                "Digitally malicious content is not permitted.",
@@ -59,28 +61,21 @@ BAN_REASONS = ['',  #placeholder
 BUCKET = app.config.get("S3_BUCKET", "i.ruqqus.com")
 
 
+def canonical_redirect(item):
+    """A 301 to `item`'s own address when the page was asked for by another one (an old slug form, another name, no
+    name), keeping the query (?sort=, ?context=). Asked only after the page's own checks passed, so a redirect never
+    names the author of something the reader may not open (helpers/permalinks.py). None on the API and when the
+    address is already the item's own."""
+    if request.path.startswith("/api/") or permalinks.same_path(request.path, item.permalink):
+        return None
+    query = request.query_string.decode("utf-8", "replace")
+    return redirect(item.permalink + (f"?{query}" if query else ""), code=301)
+
+
 @app.route("/post_short/", methods=["GET"])
-@app.route("/post_short/<base36id>", methods=["GET"])
-@app.route("/post_short/<base36id>/", methods=["GET"])
-def incoming_post_shortlink(base36id=None):
+def incoming_post_shortlink_home():
+    return redirect('/')
 
-    if not base36id:
-        return redirect('/')
-
-    if base36id == "robots.txt":
-        return redirect('/robots.txt')
-
-    try:
-        x=base36decode(base36id)
-    except:
-        abort(400)
-
-    post = get_post(base36id)
-    return redirect(post.permalink)
-
-@app.get("/+<boardname>/post/<pid>")
-def post_redirect(boardname, pid):
-    return redirect(get_post(pid).permalink)
 
 @app.get("/api/v2/submissions/<pid>")
 @auth_desired
@@ -115,13 +110,24 @@ URL path parameters:
         }
 
 
+# a post's page under every address it has had: /@author/post/<id>, /+guild/@forwarder/post/<id>, the anonymous
+# /post/<id> and /+guild/post/<id>, the older forms with a title slug and the short links. The checks run first and
+# then any address but the post's own is redirected to it (helpers/permalinks.py).
+@app.route("/@<username>/post/<pid>", methods=["GET"])
+@app.route("/+<boardname>/@<username>/post/<pid>", methods=["GET"])
+@app.route("/+<boardname>/post/<pid>", methods=["GET"])
 @app.route("/+<boardname>/post/<pid>/", methods=["GET"])
 @app.route("/+<boardname>/post/<pid>/<anything>", methods=["GET"])
+@app.route("/post/<pid>", methods=["GET"])
+@app.route("/post/<pid>/", methods=["GET"])
+@app.route("/post/<pid>/<anything>", methods=["GET"])
+@app.route("/post_short/<pid>", methods=["GET"])
+@app.route("/post_short/<pid>/", methods=["GET"])
 @app.route("/api/v1/post/<pid>", methods=["GET"])
 @app.get("/api/v2/submissions/<pid>/comments")
 @auth_desired
 @api("read")
-def post_base36id_with_comments(pid, boardname=None, anything=None, v=None):
+def post_base36id_with_comments(pid, boardname=None, username=None, anything=None, v=None):
     """
 Get the comment tree for a submission.
 
@@ -131,7 +137,10 @@ URL path parameters:
 Optional query parameters:
 * `sort` - Comment sort order. One of `hot`, `new`, `top`, `disputed`, `old`. Default `hot`.
 """
-    
+
+    if pid == "robots.txt":
+        return redirect('/robots.txt')
+
     post = get_post_with_comments(
         pid, v=v, sort_type=request.args.get(
             "sort", "top"))
@@ -143,44 +152,16 @@ Optional query parameters:
         return hidden_notice(v)
 
     board = post.board
-    #if the guild name is incorrect, fix the link and redirect
 
-    if boardname and not boardname == board.name:
-        return redirect(post.permalink)
-
-    if board.is_banned and not (v and v.admin_level > 3):
+    if board.is_banned and not post.is_profile_post and not (v and v.admin_level > 3):
         return render_template("board_banned.html",
                                v=v,
                                b=board,
                                p=True)
 
-    post.tree_comments(v=v)
-
-    if v:
-        record_view(v, post)
-    insights_store.count_view(v, post)
-
-    return {
-        "html":lambda:post.rendered_page(v=v),
-        "api":lambda:jsonify({"data":[x.json for x in post.nested_comments]})
-        }
-
-#profile-primary posts render here directly (no guild in the URL to redirect
-#into); anything else redirects to add the guild name into the url
-@app.route("/post/<base36id>", methods=["GET"])
-@app.route("/post/<base36id>/", methods=["GET"])
-@app.route("/post/<base36id>/<anything>", methods=["GET"])
-@auth_desired
-@api("read")
-def post_base36id_noboard(base36id, anything=None, v=None):
-
-    post=get_post_with_comments(base36id, v=v, sort_type=request.args.get("sort","top"))
-
-    if not post.is_profile_post:
-        return redirect(post.permalink)
-
-    if post_hidden(post, v):
-        return hidden_notice(v)
+    moved = canonical_redirect(post)
+    if moved:
+        return moved
 
     post.tree_comments(v=v)
 
@@ -724,8 +705,10 @@ def create_forward_post(primary, target, forwarded_by):
         severity_extra=poll_store.option_text(g.db, primary.id)
     )
     # a copy of a Space's post has no comments either: everyone is sent to the one Space
-    if primary.comment_permission == cperm.SPACE:
+    # a Space's guild copy only shows its card: the Space has one discussion, on the Space (helpers/spaces.py)
+    if primary.is_space or primary.comment_permission == cperm.SPACE:
         forward_post.comment_permission = cperm.SPACE
+        forward_post.is_space = True
 
     g.db.add(ForwardRelationship(
         primary_submission_id=primary.id,
@@ -928,7 +911,9 @@ Optional file data:
     # profile, but its comments are in the guilds (helpers/comment_permission.py GUILDS). A post for Circles is always
     # on the profile.
     for_circles = (request.form.get("audience") or "").strip() not in ("", "0")
-    to_profile = True if for_circles else flag(request.form, "post_to_profile", True)
+    # a Space lives on its host's profile, its own address (helpers/spaces.py): its guilds only show its card
+    space_wanted = flag(request.form, "space")
+    to_profile = True if for_circles or space_wanted else flag(request.form, "post_to_profile", True)
     guilds_only = bool(forward_guild_names) and not to_profile
     if not to_profile and not forward_guild_names and not request.form.get("circle_guild"):
         return {"html": lambda: (render_template("submit.html", v=v, error="Choose where to post.", title=title, url=url,
@@ -1401,19 +1386,31 @@ Optional file data:
                 "api": lambda: ({"error": poll_error}, 400)
                 }
 
-    # a Space this post announces (helpers/spaces.py): a live audio room. Checked here, before anything is made
+    # a Space's hidden backing row (helpers/spaces.py: a Space is not a post). Only the Spaces area makes one, through
+    # this route in-process (routes/spaces.py `space_create`, which marks the request's environ: no browser can), so
+    # every posting rule, throttle and ban applies to it. Checked here, before anything is made
     space_start, space_record, space_video, space_error = None, False, False, None
-    if flag(request.form, "space"):
+    space_kind, space_hours = None, None
+    if space_wanted and not request.environ.get(space_rules.ENVIRON_KEY):
+        space_error = space_rules.NOT_HERE
+    elif space_wanted:
         now_space = int(time.time())
+        space_kind = space_rules.parse_kind(request.form.get("space_kind"))
         space_error = space_rules.make_refusal(
             anonymous=flag(request.form, "anonymous"),
             bot=bool(v.is_bot) or request.headers.get("X-User-Type", "").lower() == "bot",
             circle_guild=circle_board is not None,
-            made_today=space_store.made_since(g.db, v.id, now_space - 86400))
+            made_today=space_store.made_since(g.db, v.id, now_space - 86400),
+            kind=space_kind)
         if space_error is None:
             space_start, space_error = space_rules.parse_start(request.form.get("space_start"), now_space)
+        if space_error is None:
+            try:
+                space_hours = space_rules.parse_length(space_kind, request.form.get("space_hours"))
+            except space_rules.Refused as refused:
+                space_start, space_error = None, str(refused)
         space_record = flag(request.form, "space_record")
-        space_video = flag(request.form, "space_video")
+        space_video = flag(request.form, "space_video") and space_kind == space_rules.CALL
     if space_error:
         return {"html": lambda: (render_template("submit.html", v=v, error=space_error,
                                                  title=title, url=url, body=body, text=text_for_redisplay,
@@ -1465,8 +1462,10 @@ Optional file data:
         board_id=board.id,
         original_board_id=board.id,
         is_sensitive=sensitive_rules.marks_post(request.form.get("sensitive", ""), v),   # always, for a sensitive account
-        # a Space's post has no comments: the Space's own board is its discussion (helpers/comment_permission.py SPACE)
-        comment_permission=cperm.SPACE if space_start is not None else (cperm.GUILDS if guilds_only else comment_permission),
+        # a Space's discussion depends on its kind: a live thread takes comments, a board and a call none (their board)
+        comment_permission=(space_rules.comment_mode(space_kind) if space_start is not None
+                            else (cperm.GUILDS if guilds_only else comment_permission)),
+        is_space=space_start is not None,
         paid_partnership=flag(request.form, "paid_partnership"),
         made_with_ai=flag(request.form, "made_with_ai"),
         is_anonymous=flag(request.form, "anonymous"),
@@ -1506,7 +1505,8 @@ Optional file data:
         poll_store.create(g.db, new_post, poll_options, poll_hours)
 
     if space_start is not None:
-        space_store.create(g.db, new_post.id, v.id, space_start, space_record, int(time.time()), video=space_video)
+        space_store.create(g.db, new_post.id, v.id, space_start, space_record, int(time.time()), video=space_video,
+                           kind=space_kind, ends_utc=space_rules.ends_at(space_kind, space_start, space_hours))
 
     if circle_flair_id:
         flair_store.set_post_flair(g.db, new_post.id, circle_flair_id)
@@ -1657,7 +1657,7 @@ Optional file data:
     notify_users = set()
 	
     soup = BeautifulSoup(body_html, features="html.parser")
-    for mention in soup.find_all("a", href=re.compile(r"^/@(\w+)") , limit=3):
+    for mention in soup.find_all("a", href=re.compile(r"^/@(\w+)/?$") , limit=3):
         username = mention["href"].split("@")[1]
         user = g.db.query(User).filter_by(username=username).first()
         if user and not v.any_block_exists(user) and user.id != v.id: 
@@ -1666,28 +1666,8 @@ Optional file data:
     # print(f"Content Event: @{new_post.author.username} post
     # {new_post.base36id}")
 
-    #Bell notifs
-
-
-    board_uids = g.db.query(
-        Subscription.user_id
-        ).options(lazyload('*')).filter(
-        Subscription.board_id==new_post.board_id, 
-        Subscription.is_active==True,
-        Subscription.get_notifs==True,
-        Subscription.user_id != v.id,
-        # a member who muted the guild is not rung for it (helpers/muting.py)
-        Subscription.user_id.notin_(
-            g.db.query(BoardBlock.user_id).filter_by(board_id=new_post.board_id).scalar_subquery()
-            ),
-        # blocked either way, as for followers below
-        Subscription.user_id.notin_(
-            g.db.query(UserBlock.user_id).filter_by(target_id=v.id).scalar_subquery()
-            ),
-        Subscription.user_id.notin_(
-            g.db.query(UserBlock.target_id).filter_by(user_id=v.id).scalar_subquery()
-            )
-        )
+    #Bell notifs: the author's followers who rang their bell. A guild's bell no longer rings for every post in it, only
+    # for its guildmasters' announcements (helpers/bell.py: a heralded or pinned post, a new event)
 
     follow_uids=g.db.query(
         Follow.user_id
@@ -1711,21 +1691,6 @@ Optional file data:
         contribs=g.db.query(ContributorRelationship).filter_by(board_id=new_post.board_id, is_active=True).subquery()
         mods=g.db.query(ModRelationship).filter_by(board_id=new_post.board_id, accepted=True).subquery()
 
-        board_uids=board_uids.join(
-            contribs,
-            contribs.c.user_id==Subscription.user_id,
-            isouter=True
-            ).join(
-            mods,
-            mods.c.user_id==Subscription.user_id,
-            isouter=True
-            ).filter(
-                or_(
-                    mods.c.id != None,
-                    contribs.c.id !=None
-                )
-            )
-
         follow_uids=follow_uids.join(
             contribs,
             contribs.c.user_id==Follow.user_id,
@@ -1742,10 +1707,10 @@ Optional file data:
             )
 
     # an anonymous post does not notify the author's followers: only they would get it
-    follower_ids = [] if new_post.is_anonymous else [x[0] for x in follow_uids.all()]
+    follower_ids = [] if new_post.is_anonymous else [x[0] for x in follow_uids.order_by(Follow.id).limit(bell_rules.MAX_RINGS).all()]
     if new_post.audience == circle_rules.GUILD:
-        follower_ids = []            # made inside a Circle guild: the guild's members are told (below), the author's followers are not
-    uids=list(set([x[0] for x in board_uids.all()] + follower_ids).union(notify_users))
+        follower_ids = []            # made inside a Circle guild: for its members only, so the author's followers are not told
+    uids=list(set(follower_ids).union(notify_users))
     if not new_post.is_anonymous:
         muters = {x[0] for x in g.db.query(UserMute.user_id).filter_by(target_id=v.id).all()}
         uids = [uid for uid in uids if uid not in muters]
@@ -1889,6 +1854,10 @@ Required form data:
 
     cache.delete_memoized(frontlist)
     cache.delete_memoized(Board.idlist, target, sort="new")
+
+    # the forwarder's bell (helpers/bell.py): only into an open guild, and never for the author's own anonymous post
+    if not (target.is_private or target.is_circle) and not (primary.is_anonymous and primary.author_id == v.id):
+        bell_rules.ring_account(v, bell_rules.FORWARD, new_forward.id, f"/post/{new_forward.base36id}", guild_name=target.name)
 
     return jsonify(new_forward.json)
 
@@ -2141,6 +2110,10 @@ def repost_post(base36id, v):
     g.db.commit()
 
     cache.delete_memoized(User.userpagelisting, v)
+
+    # the reposter's bell (helpers/bell.py): a post anyone may open (not one only a private guild's members may read)
+    if not primary.in_private_guild_for(None):
+        bell_rules.ring_account(v, bell_rules.REPOST, primary.id, f"/post/{primary.base36id}")
 
     return jsonify({"message": "Reposted to your profile."})
 

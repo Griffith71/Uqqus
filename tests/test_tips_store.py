@@ -12,7 +12,7 @@ NEW = NOW - 5 * 86400
 
 TABLES = """
 CREATE TABLE users (id INTEGER PRIMARY KEY, created_utc INTEGER, is_banned INTEGER DEFAULT 0, unban_utc INTEGER DEFAULT 0,
-    is_deleted BOOLEAN DEFAULT 0, creation_ip TEXT);
+    is_deleted BOOLEAN DEFAULT 0, creation_ip TEXT, is_bot BOOLEAN DEFAULT 0, bot_owner_id INTEGER);
 CREATE TABLE login_events (id INTEGER PRIMARY KEY, user_id INTEGER, ip TEXT, created_utc INTEGER);
 CREATE TABLE award_relationships (id INTEGER PRIMARY KEY, user_id INTEGER, submission_id INTEGER, comment_id INTEGER,
     coins INTEGER DEFAULT 1 NOT NULL, created_utc INTEGER DEFAULT 0 NOT NULL);
@@ -83,3 +83,33 @@ def test_tips_on_comments_are_kept_but_never_counted_for_a_post(db):
     tips_store.record(db, FAN, 5, comment_id=55, now=NOW)
     assert tips_store.recompute_post(db, POST, AUTHOR, now=NOW) == (0, 0.0)
     assert db.execute(text("SELECT coins, created_utc FROM award_relationships WHERE comment_id = 55")).fetchone() == (5, NOW)
+
+
+# --- bots (the owner, 2026-10-20: coins can lift a bot's post) ---------------------------------------------------
+
+BOT, SITE_BOT = 20, 21
+
+
+def bot_post(db, post_id, bot_id, owner_id):
+    db.execute(text("INSERT INTO users (id, created_utc, is_bot, bot_owner_id) VALUES (:i, :c, 1, :o)"),
+               {"i": bot_id, "c": OLD, "o": owner_id})
+    db.execute(text("INSERT INTO submissions (id, author_id) VALUES (:p, :a)"), {"p": post_id, "a": bot_id})
+
+
+def tip_bot(db, post_id, bot_id, who, coins):
+    tips_store.record(db, who, coins, post_id=post_id, now=NOW)
+    return tips_store.recompute_post(db, post_id, bot_id, now=NOW)
+
+
+def test_a_member_bot_s_owner_stands_for_its_author(db):
+    bot_post(db, 200, BOT, AUTHOR)
+    # the owner's own tips and their second accounts' come back to them: shown, never a lift
+    for who in (AUTHOR, ALT, HOUSEMATE):
+        tip_bot(db, 200, BOT, who, 2)
+    assert tip_bot(db, 200, BOT, FAN, 1) == (7, 10.0)
+
+
+def test_a_site_bot_s_tips_lift_its_post_from_anyone_in_good_standing(db):
+    bot_post(db, 201, SITE_BOT, None)
+    assert tip_bot(db, 201, SITE_BOT, AUTHOR, 1) == (1, 10.0)       # nobody gets these coins back
+    assert tip_bot(db, 201, SITE_BOT, NEWBIE, 1) == (2, 10.0)       # the age rule still holds

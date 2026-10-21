@@ -29,3 +29,27 @@
 <button type="button" class="btn btn-purple btn-sm btn-block mt-2" onclick="applySidebarFilter('{{ list_id }}', '{{ apply_url }}', '{{ apply_param }}')">Apply</button>
 {% endif %}
 {% endmacro %}
+
+{# Post type (helpers/feed_filters.py POST_TYPES): the same rows and scripts as the lists above, in groups and in their
+   own order (data-keep-order: ticking one doesn't move it to the top). Nothing ticked is every type. #}
+{% macro post_type_body(list_id, catalog, groups, active_set) %}
+<div class="d-flex justify-content-between align-items-center mb-1">
+  <span id="{{ list_id }}-count" class="text-small text-muted{% if not active_set %} d-none{% endif %}">{{ active_set|length }} selected</span>
+  <a href="javascript:void(0)" class="text-small text-muted" onclick="deselectAllSidebarFilter('{{ list_id }}')">Deselect all</a>
+</div>
+<div id="{{ list_id }}" class="post-type-list" data-keep-order>
+  {% for group in groups %}
+  <div class="post-type-group" id="{{ list_id }}-{{ loop.index }}">{{ group }}</div>
+  <ul class="no-bullets pl-0 mb-1" aria-labelledby="{{ list_id }}-{{ loop.index }}">
+    {% for key, label, in_group in catalog if in_group == group %}
+    {% set on = key in active_set %}
+    <li data-filter-row data-value="{{ key }}" class="py-1{% if on %} is-selected{% endif %}" onclick="toggleSidebarFilterOption(this, '{{ list_id }}')">
+      <a href="javascript:void(0)" role="checkbox" aria-checked="{{ 'true' if on else 'false' }}" class="text-decoration-none d-flex align-items-center {% if on %}text-purple font-weight-bold{% else %}text-black{% endif %}"><i class="fas fa-check mr-1{% if not on %} invisible{% endif %}" aria-hidden="true"></i><span>{{ label }}</span></a>
+    </li>
+    {% endfor %}
+  </ul>
+  {% endfor %}
+</div>
+<p class="text-small-extra text-muted mb-0">Shows posts of any type you tick.</p>
+<button type="button" class="btn btn-purple btn-sm btn-block mt-2" onclick="applySidebarFilter('{{ list_id }}', '/post_type', 'types')">Apply</button>
+{% endmacro %}

@@ -83,7 +83,8 @@ def test_the_chat_page_only_answers_its_own_parent_and_only_into_a_chat_the_memb
     assert "window.parent === window || event.origin !== window.location.origin || event.source !== window.parent" in handler
     assert '"*"' not in INDEX
     send = INDEX.split("async function sendShared(")[1].split("window.addEventListener")[0]
-    assert "state.conversations.inbox.find(" in send and "state.conversations.request" not in send
+    # a chat you can write in: a 1:1 chat or a group you joined, never one still waiting as a request
+    assert "[...state.conversations.inbox, ...state.conversations.group].find(" in send and "state.conversations.request" not in send
     assert "text.length > 2000" in send and "!isReady" in send
     assert "state.client.sendTextMessage(roomId, text)" in send
     assert "isReady = true;\n  tellParent({ type: \"ruqqus-chat-ready\" });" in INDEX
@@ -128,7 +129,9 @@ def test_the_card_is_made_for_the_reader_and_never_names_an_author():
 # --- the card -------------------------------------------------------------------------------
 
 def test_the_thread_draws_a_card_only_for_this_sites_own_post_links_and_only_as_text():
-    assert '"https?://" + window.location.host.replace(' in UI and "(?:/\\\\+\\\\w+)?/post/([0-9a-z]{1,10})" in UI
+    # a post's address under its author or forwarder (helpers/permalinks.py), and the older forms
+    assert '"https?://" + window.location.host.replace(' in UI
+    assert '"(?:/\\\\+\\\\w+)?(?:/@\\\\w+)?/post/([0-9a-z]{1,10})(?![0-9a-z])' in UI
     card = UI.split("function fillPostCard(")[1].split("function postCard(")[0]
     assert "innerHTML" not in card and card.count("textContent") >= 4
     assert 'data.url.startsWith("/")' in card and 'data.thumb.startsWith("https://")' in card

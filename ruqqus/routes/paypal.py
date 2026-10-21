@@ -260,10 +260,6 @@ def gift_post_pid(pid, v):
     if post.is_anonymous:
         return jsonify({"error":"You can't give awards to anonymous posts."}), 403
 
-    # nobody spends a bot's coins (helpers/bots.py)
-    if post.author.is_bot:
-        return jsonify({"error":"Bots don't take tips."}), 403
-
     if post.deleted_utc > 0:
         return jsonify({"error":"You can't give awards to deleted posts"}), 403
 
@@ -284,6 +280,19 @@ def gift_post_pid(pid, v):
     if u.is_blocked:
         return jsonify({"error":"You can't give awards to someone that's blocking you."}), 403
 
+    # a bot's post takes tips too (the owner, 2026-10-20): a member bot's coins go to the member who runs it, a site
+    # bot's to nobody, spent only to lift the post (helpers/tips.py recipient_id)
+    receiver = u
+    if u.is_bot:
+        owner_id = tips.recipient_id(u.id, True, u.bot_owner_id)
+        receiver = g.db.query(User).filter_by(id=owner_id).first() if owner_id else None
+        if owner_id and receiver is None:
+            return jsonify({"error":"This bot can't take tips right now."}), 403
+        if receiver is not None:
+            if receiver.id == v.id:
+                return jsonify({"error":"You can't tip your own bot: the coins would come back to you."}), 403
+            if receiver.is_deleted or (receiver.is_banned and not receiver.unban_utc) or v.any_block_exists(receiver):
+                return jsonify({"error":"This bot can't take tips right now."}), 403
 
     coins = tips.parse_coins(request.args.get("coins"))
     if coins is None:
@@ -291,11 +300,14 @@ def gift_post_pid(pid, v):
 
     # one conditional statement checks and moves the coins (helpers/coins.py): parallel tips can't create coins
     g.db.flush()
-    if not coins_store.move(g.db, v.id, u.id, coins):
+    moved = (coins_store.move(g.db, v.id, receiver.id, coins) if receiver is not None
+             else coins_store.spend(g.db, v.id, coins))
+    if not moved:
         g.db.rollback()
         return jsonify({"error":"You don't have that many coins to give!"}), 403
     g.db.refresh(v)
-    g.db.refresh(u)
+    if receiver is not None:
+        g.db.refresh(receiver)
 
     # the tip, the post's totals and its place in the ranked sorts move with the coins, in one transaction
     # (helpers/tips.py: the boost counts in rank_hot / rank_best, never in the score or the Top sort)
@@ -308,9 +320,11 @@ def gift_post_pid(pid, v):
     g.db.add(post)
     g.db.commit()
 
-    # send_notification commits on its own (helpers/alerts.py): only once the tip is safe
-    send_notification(u, _tip_notification("post", post.permalink, coins, u))
-    g.db.commit()
+    # send_notification commits on its own (helpers/alerts.py): only once the tip is safe; a site bot's tip tells nobody
+    if receiver is not None:
+        kind = "bot's post" if u.is_bot else "post"
+        send_notification(receiver, _tip_notification(kind, post.permalink, coins, receiver))
+        g.db.commit()
 
     return jsonify({"message":"Tip Successful!"})
 

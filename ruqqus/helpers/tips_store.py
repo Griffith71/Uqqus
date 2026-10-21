@@ -30,6 +30,8 @@ _COUNTING = text("""
 
 _TOTALS = text("UPDATE submissions SET tip_coins = :coins, tip_boost = :boost WHERE id = :p")
 
+_AUTHOR = text("SELECT is_bot, bot_owner_id FROM users WHERE id = :a")
+
 
 def _now(now):
     return int(now if now is not None else time.time())
@@ -53,10 +55,17 @@ def counting_tippers(db, tipper_ids, author_id, now=None):
     return {t for t in ids if not author_addresses & set(guild_limits.addresses_of(db, t, now))}
 
 
+def answerable_for(db, author_id):
+    """Who stands for the author in the boost rules: the author, or the member who runs a member bot
+    (helpers/tips.py `answerable_id`)."""
+    row = db.execute(_AUTHOR, {"a": author_id}).fetchone()
+    return rules.answerable_id(author_id, bool(row and row[0]), row[1] if row else None)
+
+
 def recompute_post(db, post_id, author_id, now=None):
     """Work out a post's tip totals again from its tips and store them: (tip_coins, tip_boost)."""
     by_tipper = {int(u): int(c) for u, c in db.execute(_BY_TIPPER, {"p": post_id}).fetchall() if u is not None}
-    counting = counting_tippers(db, set(by_tipper), author_id, now)
+    counting = counting_tippers(db, set(by_tipper), answerable_for(db, author_id), now)
     coins = sum(by_tipper.values())
     boost = rules.post_boost({t: c for t, c in by_tipper.items() if t in counting})
     db.execute(_TOTALS, {"coins": coins, "boost": boost, "p": post_id})

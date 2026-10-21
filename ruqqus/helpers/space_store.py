@@ -9,8 +9,10 @@ from sqlalchemy import bindparam, text
 
 from ruqqus.helpers import spaces as rules
 
+# the columns of a Space row, in this order (routes/spaces.py `_Space` reads them by position)
 _SPACE = ("id, post_id, host_id, status, scheduled_utc, started_utc, ended_utc, record, replay_asset_id, "
-          "listener_peak, ended_by_admin, matrix_room_id, video, board_slow_seconds")
+          "listener_peak, ended_by_admin, matrix_room_id, video, board_slow_seconds, kind, ends_utc, replay_link")
+KIND, ENDS, REPLAY_LINK = 14, 15, 16
 
 
 def room(space_id):
@@ -18,12 +20,15 @@ def room(space_id):
     return f"space:{int(space_id)}"
 
 
-def create(db, post_id, host_id, start_utc, record, now, video=False):
+def create(db, post_id, host_id, start_utc, record, now, video=False, kind=rules.CALL, ends_utc=0):
+    """A new Space, waiting to start. `ends_utc` is a board's or a live thread's planned end, counted from its planned
+    start (`start` moves it when it opens late)."""
     db.execute(text("""INSERT INTO spaces (post_id, host_id, status, scheduled_utc, started_utc, ended_utc, record,
-                                           listener_peak, ended_by_admin, created_utc, video, board_slow_seconds)
-                       VALUES (:post, :host, 'scheduled', :start, 0, 0, :record, 0, :no, :now, :video, 0)"""),
+                                           listener_peak, ended_by_admin, created_utc, video, board_slow_seconds,
+                                           kind, ends_utc)
+                       VALUES (:post, :host, 'scheduled', :start, 0, 0, :record, 0, :no, :now, :video, 0, :kind, :ends)"""),
                {"post": post_id, "host": host_id, "start": start_utc, "record": bool(record), "now": now, "no": False,
-                "video": bool(video)})
+                "video": bool(video) and kind == rules.CALL, "kind": kind, "ends": int(ends_utc or 0)})
     return db.execute(text("SELECT id FROM spaces WHERE post_id = :post"), {"post": post_id}).scalar()
 
 
@@ -45,10 +50,23 @@ def made_since(db, host_id, since):
 
 
 def start(db, space_id, now):
-    """Scheduled -> live, once. False when it was not waiting to start."""
-    done = db.execute(text("UPDATE spaces SET status = 'live', started_utc = :now WHERE id = :s AND status = 'scheduled'"),
+    """Scheduled -> live, once. A board or a live thread keeps the length it was given, from now. False when it was not
+    waiting to start."""
+    done = db.execute(text("""UPDATE spaces SET status = 'live', started_utc = :now,
+                                  ends_utc = CASE WHEN ends_utc > 0 THEN :now + (ends_utc - scheduled_utc) ELSE 0 END
+                              WHERE id = :s AND status = 'scheduled'"""),
                       {"s": space_id, "now": now})
     return done.rowcount == 1
+
+
+def due(db, now, limit=100):
+    """Live Spaces that have run their time (helpers/spaces.py `is_due`): a board or a live thread past its end, a call
+    past MAX_SECONDS. For the background cycle (helpers/space_ending.py)."""
+    return db.execute(text(f"""SELECT {_SPACE} FROM spaces WHERE status = 'live'
+                               AND ((ends_utc > 0 AND ends_utc <= :now)
+                                    OR (kind = 'call' AND started_utc > 0 AND started_utc < :oldest))
+                               ORDER BY id LIMIT :n"""),
+                      {"now": now, "oldest": now - rules.MAX_SECONDS, "n": int(limit)}).fetchall()
 
 
 def end(db, space_id, now, by_admin=False):
@@ -59,6 +77,17 @@ def end(db, space_id, now, by_admin=False):
     return done.rowcount == 1
 
 
+def set_ends(db, post_id, ends_utc):
+    """A live-thread Space's new end, when its host extends the thread from its page (routes/live_threads.py)."""
+    db.execute(text("UPDATE spaces SET ends_utc = :ends WHERE post_id = :p AND status = 'live' AND ends_utc > 0"),
+               {"p": post_id, "ends": int(ends_utc)})
+
+
+def for_post(db, post_id):
+    """The Space row whose backing row is this post id, or None."""
+    return db.execute(text(f"SELECT {_SPACE} FROM spaces WHERE post_id = :p"), {"p": post_id}).fetchone()
+
+
 def set_room(db, space_id, room_id):
     db.execute(text("UPDATE spaces SET matrix_room_id = :room WHERE id = :s"), {"s": space_id, "room": room_id})
 
@@ -67,8 +96,11 @@ def note_listeners(db, space_id, count):
     db.execute(text("UPDATE spaces SET listener_peak = :n WHERE id = :s AND listener_peak < :n"), {"s": space_id, "n": count})
 
 
-def set_replay(db, space_id, asset_id):
-    db.execute(text("UPDATE spaces SET replay_asset_id = :a WHERE id = :s"), {"s": space_id, "a": asset_id})
+def set_replay(db, space_id, asset_id, link=None):
+    """The replay: an asset on the host's linked storage (the sound, served at /media/...) and, for a video replay, its
+    address on the host's own video channel."""
+    db.execute(text("UPDATE spaces SET replay_asset_id = :a, replay_link = :link WHERE id = :s"),
+               {"s": space_id, "a": asset_id, "link": link})
 
 
 # --- roles ------------------------------------------------------------------------------------------------------
@@ -184,22 +216,33 @@ def resolve_reports(db, space_id, now):
 LIST_MAX = 60
 
 
-def listing(db, tab, viewer_id=None, limit=LIST_MAX):
+# what counts as a recording: a call with its replay saved; a recorded board or live thread is its own record
+RECORDING = "(kind <> 'call' OR replay_asset_id IS NOT NULL OR replay_link IS NOT NULL)"
+
+
+def listing(db, tab, viewer_id=None, limit=LIST_MAX, kind=None):
     """Space rows for a tab of the Spaces area, newest or soonest first. Who may see each one is the caller's (through
     its post); this only picks the rows. `live`: running now; `upcoming`: scheduled; `recordings`: ended with a replay;
-    `mine`: the viewer's own, any state."""
+    `mine`: the viewer's own, any state. `kind` narrows it to one kind of Space."""
+    where = " AND kind = :kind" if kind in rules.KINDS else ""
     if tab == "live":
-        sql = f"SELECT {_SPACE} FROM spaces WHERE status = 'live' ORDER BY started_utc DESC LIMIT :n"
+        sql = f"SELECT {_SPACE} FROM spaces WHERE status = 'live'{where} ORDER BY started_utc DESC LIMIT :n"
     elif tab == "upcoming":
-        sql = f"SELECT {_SPACE} FROM spaces WHERE status = 'scheduled' ORDER BY scheduled_utc ASC LIMIT :n"
+        sql = f"SELECT {_SPACE} FROM spaces WHERE status = 'scheduled'{where} ORDER BY scheduled_utc ASC LIMIT :n"
     elif tab == "recordings":
-        sql = (f"SELECT {_SPACE} FROM spaces WHERE status = 'ended' AND record = :yes AND replay_asset_id IS NOT NULL "
+        sql = (f"SELECT {_SPACE} FROM spaces WHERE status = 'ended' AND record = :yes AND {RECORDING}{where} "
                "ORDER BY ended_utc DESC LIMIT :n")
     elif tab == "mine":
-        sql = f"SELECT {_SPACE} FROM spaces WHERE host_id = :me ORDER BY created_utc DESC LIMIT :n"
+        sql = f"SELECT {_SPACE} FROM spaces WHERE host_id = :me{where} ORDER BY created_utc DESC LIMIT :n"
     else:
         return []
-    return db.execute(text(sql), {"n": int(limit), "me": viewer_id or 0, "yes": True}).fetchall()
+    return db.execute(text(sql), {"n": int(limit), "me": viewer_id or 0, "yes": True, "kind": kind}).fetchall()
+
+
+def host_listing(db, host_id, limit=LIST_MAX):
+    """A profile's Spaces tab: the host's Spaces, newest first (the caller asks who may see each, through its row)."""
+    return db.execute(text(f"SELECT {_SPACE} FROM spaces WHERE host_id = :h ORDER BY created_utc DESC LIMIT :n"),
+                      {"h": host_id, "n": int(limit)}).fetchall()
 
 
 def live_for_host(db, host_id):

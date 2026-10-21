@@ -321,7 +321,7 @@ def spread(rows, limit, page=PAGE):
 
 _AGE_WORDS = {"day": "a day", "week": "a week", "month": "a month", "year": "a year"}
 _KIND_WORDS = {"text": "text posts", "link": "links", "image": "pictures", "video": "video", "audio": "sound"}
-_HIDE_WORDS = {"bots": "bots", "ai": "posts made with AI", "paid": "paid partnerships", "forwards": "forwarded copies"}
+_HIDE_WORDS = {"bots": "bots", "ai": "posts made with AI", "paid": "commercial promotion", "forwards": "forwarded copies"}
 _RANK_WORDS = {"hot": "Ordered by Hot, the site's usual order.", "new": "Newest first.", "top": "Most votes first.",
                "activity": "Most discussed first."}
 _FADE_WORDS = {6: "6 hours", 12: "12 hours", 24: "a day", 72: "3 days", 168: "a week"}

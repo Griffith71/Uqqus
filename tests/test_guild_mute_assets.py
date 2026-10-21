@@ -42,8 +42,11 @@ def test_following_and_the_for_you_weights_leave_a_muted_guild_out():
     assert func(USER, "for_you_idlist", "\n    def ").count("BoardBlock.board_id") == 2
 
 
-def test_a_member_who_muted_the_guild_is_not_rung_for_its_posts():
-    assert "g.db.query(BoardBlock.user_id).filter_by(board_id=new_post.board_id).scalar_subquery()" in POSTS
+def test_a_member_who_muted_the_guild_is_not_rung_for_its_announcements():
+    # the guild's bell rings for its guildmasters' announcements only (helpers/bell.py), never for a member who muted it
+    bell = read("ruqqus", "helpers", "bell.py")
+    assert "NOT EXISTS (SELECT 1 FROM boardblocks bb WHERE bb.user_id = r.id AND bb.board_id = :board)" in bell
+    assert "Subscription.get_notifs" not in POSTS
 
 
 def test_both_mute_urls_work_and_every_cache_is_cleared():

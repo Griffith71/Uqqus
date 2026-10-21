@@ -18,6 +18,7 @@ from ruqqus.__main__ import app
 
 from ruqqus.helpers import guild_events as event_rules
 from ruqqus.helpers import guild_event_store as event_store
+from ruqqus.helpers import bell as bell_rules
 from ruqqus.helpers.visibility import text_hidden
 from ruqqus.routes.guild_wiki import visible_guild, _render, _severity, _content_gm, _log
 
@@ -239,6 +240,8 @@ def guild_event_create(guildname, v):
     eid = event_store.create(g.db, board.id, v.id, fields, now)
     _log(board, v, "event_create", fields["title"])
     g.db.commit()
+    # a new event is a guildmaster's announcement: it rings the guild's bell (helpers/bell.py)
+    bell_rules.ring_guild(board, v, bell_rules.EVENT, eid, f"/+{board.name}/events/{eid}")
     return jsonify({"ok": True, "url": f"/+{board.name}/events/{eid}"})
 
 

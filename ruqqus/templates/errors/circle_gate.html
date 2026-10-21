@@ -28,8 +28,9 @@
       <a href="/login?redirect={{ request.path | urlencode }}" class="btn btn-primary">Sign in</a>
       {% else %}
       {% for c in paid if c.id in joinable %}
-      <button type="button" class="btn btn-primary circle-join d-block mx-auto mb-2" data-name="{{ c.name }}" data-price="{{ c.price_coins }}"
-        onclick="if (confirm('Subscribe to ' + this.dataset.name + ' for ' + this.dataset.price + ' coins every 30 days? It renews from your coins until you cancel.')) { post_toast('/api/circles/{{ c.id }}/subscribe', function () { window.location.reload(); }); }">
+      {# opens the subscribe sheet on this circle (partials/circle_subscribe_modal.html: the price, what subscribers
+         get, the terms) #}
+      <button type="button" class="btn btn-primary circle-join d-block mx-auto mb-2" data-circle-open="{{ c.id }}" aria-haspopup="dialog">
         Join {{ c.name }} &middot; {{ c.price_coins }} coin{{ '' if c.price_coins == 1 else 's' }}/month</button>
       {% else %}
       <a href="{{ owner.permalink }}" class="btn btn-secondary">Go to their profile</a>
@@ -38,4 +39,11 @@
     </div>
   </div>
 </div>
+{% if v and joinable %}
+{# only the paid circles this post is for, that take subscribers #}
+{% set offered = st.paid | selectattr("id", "in", paid | map(attribute="id") | list) | selectattr("joinable") | list %}
+{% from "partials/circle_subscribe_modal.html" import subscribe_sheet %}
+{{ subscribe_sheet(owner, offered, v) }}
+<script src="{{ asset_url('js/circle_subscribe.js') }}"></script>
+{% endif %}
 {% endblock %}

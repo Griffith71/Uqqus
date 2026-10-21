@@ -27,6 +27,7 @@ images, other languages. The word list needs human upkeep.
 Pure standard library and no Flask/database imports, so it is unit-testable.
 """
 import hashlib
+import re
 import unicodedata
 from html.parser import HTMLParser
 
@@ -289,6 +290,11 @@ class WordFilter:
         return self.severity(visible_text(html))
 
 
+# a mention link (/@user, /+guild, /&curation, /topic/<slug>) and nothing longer: a link to a post or comment
+# (/@user/post/<id>, /+guild/@user/post/<id>) has words of its own, which are read
+_NAME_LINK = re.compile(r"^/(?:[@+&][A-Za-z0-9_]+|topic/[A-Za-z0-9_-]+)/?$")
+
+
 class _TextExtractor(HTMLParser):
     """Visible text of stored post/comment HTML.
 
@@ -313,7 +319,7 @@ class _TextExtractor(HTMLParser):
         if tag == "a":
             attrs = dict(attrs)
             href = attrs.get("href") or ""
-            if "data-original-name" in attrs or href.startswith(("/@", "/+", "/&", "/topic/")):
+            if "data-original-name" in attrs or _NAME_LINK.match(href):
                 self._skip_depth = 1
             else:
                 self._link_href = href

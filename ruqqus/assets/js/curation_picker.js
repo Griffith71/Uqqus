@@ -1,13 +1,10 @@
 /*
- * "Add to curation" (routes/curations.py `curations_mine`, `post_add_to_curation`; helpers/curation_members.py).
- *
- * One delegated click handler for every `[data-curation-post]` menu item. It opens the sheet
- * (partials/curation_picker_modal.html), asks which of the member's curations already hold the post's author
- * and guild, and adds on a tap. The author is offered only when the server names one (never for an anonymous
- * post). Every name is drawn with textContent.
- *
- * A profile's "⋯" menu has `[data-curation-user]` (an account): the same sheet, with the account as the only
- * choice (`?user=<name>`, POST /api/user/<name>/add_to_curation).
+ * "Add to curation" (routes/curations.py `curations_mine`, `user_add_to_curation`, `guild_add_to_curation`;
+ * helpers/curation_members.py). A curation is built from accounts, guilds and topics, never from a post (the owner,
+ * 2026-10-20), so the sheet opens from a profile's "⋯" menu (`[data-curation-user]`, an account) or a guild page's
+ * menu (`[data-curation-guild]`, a guild), never from a post or a comment. One delegated click handler: it opens the
+ * sheet (partials/curation_picker_modal.html), asks which of the member's curations already hold it, and adds on a
+ * tap. Every name is drawn with textContent.
  */
 (function () {
   'use strict';
@@ -24,8 +21,8 @@
   var guildInput = document.getElementById('curation-picker-guild');
   var authorLabel = document.getElementById('curation-picker-author-label');
   var guildLabel = document.getElementById('curation-picker-guild-label');
-  var postId = null;
-  var userName = null;                 // set instead of postId when adding an account from its profile
+  var userName = null;                 // an account, from its profile's menu
+  var guildName = null;                // or a guild, from its page's menu
   var info = null;
   var token = 0;                       // a late answer for a sheet that was closed and reopened is ignored
 
@@ -74,7 +71,7 @@
     body.set('curation', curation.slug);
     body.set('what', kind);
     var url = userName ? '/api/user/' + encodeURIComponent(userName) + '/add_to_curation'
-                       : '/api/post/' + encodeURIComponent(postId) + '/add_to_curation';
+                       : '/api/guild/' + encodeURIComponent(guildName) + '/add_to_curation';
     fetch(url, {
       method: 'POST',
       credentials: 'same-origin',
@@ -91,8 +88,8 @@
   }
 
   function open(id, user) {
-    postId = user ? null : id;
     userName = user ? id : null;
+    guildName = user ? null : id;
     info = null;
     var mine = ++token;
     list.textContent = '';
@@ -101,7 +98,7 @@
     guildRow.classList.add('d-none');
     createLink.classList.add('d-none');
     $(modal).modal('show');
-    fetch('/api/curations/mine?' + (user ? 'user=' : 'post=') + encodeURIComponent(id), { credentials: 'same-origin' })
+    fetch('/api/curations/mine?' + (user ? 'user=' : 'guild=') + encodeURIComponent(id), { credentials: 'same-origin' })
       .then(function (r) { return r.json().then(function (data) { return { ok: r.ok, data: data }; }); })
       .then(function (res) {
         if (mine !== token) return;
@@ -109,7 +106,7 @@
         info = res.data;
         if (info.author) {
           authorRow.classList.remove('d-none');
-          authorLabel.textContent = (user ? 'The account, @' : 'The author, @') + info.author.username;
+          authorLabel.textContent = 'The account, @' + info.author.username;
         }
         if (info.guild) {
           guildRow.classList.remove('d-none');
@@ -131,7 +128,7 @@
   $(modal).on('hidden.bs.modal', function () { token++; });
 
   document.addEventListener('click', function (event) {
-    var item = event.target.closest ? event.target.closest('[data-curation-post], [data-curation-user]') : null;
+    var item = event.target.closest ? event.target.closest('[data-curation-user], [data-curation-guild]') : null;
     if (!item) return;
     event.preventDefault();
     var name = item.getAttribute('data-curation-user');
@@ -139,7 +136,7 @@
       if (/^[A-Za-z0-9_]{3,25}$/.test(name)) open(name, true);
       return;
     }
-    var id = item.getAttribute('data-curation-post');
-    if (/^[0-9a-z]{1,10}$/.test(id)) open(id, false);
+    var guild = item.getAttribute('data-curation-guild');
+    if (/^[A-Za-z0-9][A-Za-z0-9_]{2,24}$/.test(guild)) open(guild, false);      // the guild name rule
   });
 })();

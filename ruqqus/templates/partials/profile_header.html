@@ -74,25 +74,15 @@
         <button type="submit" class="btn profile-x-icon" aria-label="Message @{{ u.username }}" title="Message"><i class="far fa-envelope"></i></button>
       </form>
       {% endif %}
-      {% if st %}{# paid circles only: what a custom circle holds is never shown to the people in it #}
-        {% if st.joinable | length == 1 %}
+      {% if st and st.paid %}{# paid circles only: what a custom circle holds is never shown to the people in it. The
+         button opens the subscribe sheet (partials/circle_subscribe_modal.html), which has the price, what the owner
+         says subscribers get, the terms and Subscribe / Cancel #}
+        {% if st.joinable %}
         {% set c = st.joinable[0] %}
-        <button type="button" class="btn btn-outline-primary profile-x-pill circle-join" data-name="{{ c.name }}" data-price="{{ c.price }}"
-          onclick="if (confirm('Subscribe to ' + this.dataset.name + ' by @{{ u.username }} for ' + this.dataset.price + ' coins every 30 days? It renews from your coins until you cancel.')) { post_toast('/api/circles/{{ c.id }}/subscribe', function () { window.location.reload(); }); }">
-          {% if c.cancelled %}Resume{% else %}Subscribe{% endif %}<span class="profile-x-price"> · {{ c.price }} coin{{ '' if c.price == 1 else 's' }}/mo</span></button>
-        {% elif st.joinable %}
-        <div class="dropdown d-inline-block">
-          <button type="button" class="btn btn-outline-primary profile-x-pill circle-join" id="profile-x-subscribe" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Subscribe <i class="fas fa-chevron-down ml-1" aria-hidden="true"></i></button>
-          <div class="dropdown-menu dropdown-menu-right border-0 shadow profile-x-menu" aria-labelledby="profile-x-subscribe">
-            {% for c in st.joinable %}
-            <button type="button" class="dropdown-item circle-join-choice" data-name="{{ c.name }}" data-price="{{ c.price }}"
-              onclick="if (confirm('Subscribe to ' + this.dataset.name + ' by @{{ u.username }} for ' + this.dataset.price + ' coins every 30 days? It renews from your coins until you cancel.')) { post_toast('/api/circles/{{ c.id }}/subscribe', function () { window.location.reload(); }); }">
-              <span class="font-weight-bold">{{ c.name }}</span> <span class="text-muted">&middot; {% if c.cancelled %}resume, {% endif %}{{ c.price }} coin{{ '' if c.price == 1 else 's' }}/mo</span></button>
-            {% endfor %}
-          </div>
-        </div>
+        <button type="button" class="btn btn-outline-primary profile-x-pill circle-join" data-circle-open="{{ c.id }}" aria-haspopup="dialog">
+          {% if st.joinable | length == 1 %}{% if c.cancelled %}Resume{% else %}Subscribe{% endif %}<span class="profile-x-price">&nbsp;· {{ c.price }} coin{{ '' if c.price == 1 else 's' }}/mo</span>{% else %}Subscribe{% endif %}</button>
         {% elif st.subscribed %}
-        <a href="/circles/in" class="btn profile-x-outline profile-x-pill circle-badge">Subscribed</a>
+        <button type="button" class="btn profile-x-outline profile-x-pill circle-badge" data-circle-open="{{ st.paid[0].id }}" aria-haspopup="dialog">Subscribed</button>
         {% endif %}
       {% endif %}
       {% if can_follow %}
@@ -100,7 +90,7 @@
         <button type="button" class="btn btn-primary profile-x-pill" onclick="post('/api/follow/{{ u.username }}', callback=toggleSub)">Follow</button>
       </div>
       <div id="button-unsub" class="profile-x-follow{% if not is_following %} d-none{% endif %}">
-        <button type="button" class="btn profile-x-icon bell-button" data-toggle="tooltip" data-placement="bottom" title="Be told when @{{ u.username }} posts" data-url="/@{{ u.username }}/toggle_bell" aria-label="Post notifications">
+        <button type="button" class="btn profile-x-icon bell-button" data-toggle="tooltip" data-placement="bottom" title="Notify me about everything @{{ u.username }} does: posts, forwards, reposts, Spaces and stories" data-url="/@{{ u.username }}/toggle_bell" aria-label="Notify me about everything @{{ u.username }} does">
           <i class="fas fa-fw bell-icon {% if u.is_following and u.is_following.get_notifs %}fa-bell text-purple{% else %}fa-bell-slash{% endif %}"></i>
         </button>
         <button type="button" class="btn profile-x-outline profile-x-pill profile-x-following" onclick="post('/api/unfollow/{{ u.username }}', callback=toggleSub)">
@@ -172,3 +162,8 @@
 
 </section>
 {% if st and not request.args.get('embed') %}{% include "partials/circle_member_modal.html" %}{% endif %}
+{% if st and st.paid and not request.args.get('embed') %}
+{% from "partials/circle_subscribe_modal.html" import subscribe_sheet %}
+{{ subscribe_sheet(u, st.paid, v) }}
+<script src="{{ asset_url('js/circle_subscribe.js') }}"></script>
+{% endif %}

@@ -76,9 +76,12 @@ def test_premium_is_bought_only_when_asked(engine):
 
 def test_the_routes_use_the_one_statement_and_reading_premium_spends_nothing():
     paypal = read("ruqqus", "routes", "paypal.py")
-    for name in ("gift_post_pid", "gift_comment_pid"):
+    # a post's tip goes to its author, a member bot's owner, or (a site bot's) to nobody: helpers/tips.py recipient_id
+    for name, moves in (("gift_post_pid", ("coins_store.move(g.db, v.id, receiver.id, coins)",
+                                           "coins_store.spend(g.db, v.id, coins)")),
+                        ("gift_comment_pid", ("coins_store.move(g.db, v.id, u.id, coins)",))):
         body = paypal.split(f"def {name}(", 1)[1].split("\n@app", 1)[0]
-        assert "coins_store.move(g.db, v.id, u.id, coins)" in body and "coin_balance -=" not in body, name
+        assert all(m in body for m in moves) and "coin_balance -=" not in body, name
     settings = read("ruqqus", "routes", "settings.py")
     assert "coins_store.spend(g.db, v.id, 20)" in settings and "coin_balance-=20" not in settings
     user = read("ruqqus", "classes", "user.py")

@@ -141,3 +141,28 @@ def test_the_database_refuses_an_unknown_audience_or_role(db):
     bid = _channel(db)
     with pytest.raises(Exception):
         store.add_member(db, bid, DAN, "king", NOW)
+
+
+def test_channels_from_people_you_follow_are_public_ones_you_are_not_in(db):
+    public = _channel(db, room="!pub")
+    joined = _channel(db, room="!joined")
+    store.add_member(db, joined, BOB, "member", NOW)
+    _channel(db, rules.CIRCLES, (7,), room="!circle")                       # never: it is for circles
+    closed = _channel(db, room="!closed")
+    store.close(db, closed, NOW + 1)
+    found = [row[0] for row in store.public_of_owners(db, [OWNER], BOB)]
+    assert found == [public]
+    assert store.public_of_owners(db, [], BOB) == [] and store.public_of_owners(db, [CAT], BOB) == []
+
+
+def test_the_chat_search_finds_public_channels_you_are_not_in_by_name(db):
+    news = _channel(db, room="!news1")                              # "News"
+    joined = _channel(db, room="!news2")
+    store.add_member(db, joined, BOB, "member", NOW)
+    _channel(db, rules.CIRCLES, (7,), room="!news3")                 # for circles: never in a search
+    db.execute(text("UPDATE broadcasts SET name = '100% real' WHERE matrix_room_id = '!news1'"))
+    assert [r[0] for r in store.search_public(db, "real", BOB)] == [news]
+    assert [r[0] for r in store.search_public(db, "100%", BOB)] == [news]
+    assert store.search_public(db, "_", BOB) == []                   # a wildcard is only itself: no name holds "_"
+    assert store.search_public(db, "NEWS", BOB) == []                 # the one left is joined or for circles
+    assert store.like_pattern("a_b%") == "%a\_b\%%"

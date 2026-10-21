@@ -13,6 +13,7 @@ from ruqqus.helpers.base36 import *
 from ruqqus.helpers.lazy import lazy
 from ruqqus.helpers import comment_permission as cperm
 from ruqqus.helpers import anonymity
+from ruqqus.helpers import permalinks
 from ruqqus.helpers import community_notes
 import ruqqus.helpers.aws as aws
 from ruqqus.__main__ import Base, cache, app
@@ -136,6 +137,8 @@ class Submission(Base, Stndrd, Age_times, Scores, Fuzzing):
     guild_flair_id = Column(Integer, default=None)       # the flair on a guild's copy (helpers/guild_flair.py)
     reports = relationship("Report", backref="submission")
     is_bot = Column(Boolean, default=False)
+    # the hidden backing row of a Space, or a guild copy of one (helpers/spaces.py): never shown as a post
+    is_space = Column(Boolean, default=False)
 
     upvotes = Column(Integer, default=1)
     downvotes = Column(Integer, default=0)
@@ -297,22 +300,20 @@ class Submission(Base, Stndrd, Age_times, Scores, Fuzzing):
     @property
     @lazy
     def permalink(self):
-
-        output = self.title.lower()
-
-        output = re.sub(r'&\w{2,3};', '', output)
-        output = [re.sub(r'\W', '', word) for word in output.split()]
-        output = [x for x in output if x][0:6]
-
-        output = '-'.join(output)
-
-        if not output:
-            output = '-'
-
+        """The post's address, an extension of whoever owns it (helpers/permalinks.py): /@author/post/<id> on a profile,
+        /+guild/@forwarder/post/<id> for a guild copy, never a name on an anonymous post. A Space's backing row, and
+        every guild copy of it, is the Space's own address (helpers/spaces.py: a Space is not a post)."""
+        if self.is_space:
+            return permalinks.space_path(base36encode(self.repost_id or self.id), self.author.username)
+        anonymous = bool(self.is_anonymous)
         if self.is_profile_post:
-            return f"/post/{self.base36id}/{output}"
-
-        return f"/+{self.board.name}/post/{self.base36id}/{output}"
+            return permalinks.post_path(self.base36id, name=None if anonymous else self.author.username,
+                                        anonymous=anonymous)
+        name = None
+        if not anonymous:
+            forwarder = self.comment_forwarded_by or self.forwarded_by or self.author
+            name = forwarder.username
+        return permalinks.post_path(self.base36id, name=name, guild=self.board.name, anonymous=anonymous)
 
     @property
     def is_archived(self):
@@ -335,7 +336,7 @@ class Submission(Base, Stndrd, Age_times, Scores, Fuzzing):
 
         # a Space's post that was taken down shows nothing at all, not even its title (a Space that was not recorded
         # leaves nothing: routes/spaces.py `_take_down`)
-        if self.deleted_utc > 0 and cperm.is_space(self):
+        if self.deleted_utc > 0 and (self.is_space or cperm.is_space(self)):
             abort(404)
         # check for banned
         if self.purged_utc > 0 or self.deleted_utc > 0:
@@ -416,6 +417,11 @@ class Submission(Base, Stndrd, Age_times, Scores, Fuzzing):
         viewer = v if v is not None else getattr(g, 'v', None)
         comments = [c for c in comments if not comment_hidden(c, viewer)]
 
+        # the Subscriber badge on commenters who pay for the post's author's circles; never under an anonymous post,
+        # where it would name the author (helpers/subscriber_badges.py)
+        from ruqqus.helpers import subscriber_badges
+        subscriber_badges.attach(None if self.is_anonymous else self.author, comments, viewer)
+
         pinned_comment=[]
 
         index = {}
@@ -490,7 +496,8 @@ class Submission(Base, Stndrd, Age_times, Scores, Fuzzing):
     @property
     @lazy
     def links_to_post(self):
-        return bool((self.domain==app.config["SERVER_NAME"]) and re.match(r"^https?://[a-zA-Z0-9_.-]+/\+\w+/post/(\w+)(/[a-zA-Z0-9_-]+/?)?$", self.url))
+        return bool(self.domain == app.config["SERVER_NAME"] and permalinks.parse(self.url)
+                    and permalinks.parse(self.url)[0] == "post")
     
 
     @property

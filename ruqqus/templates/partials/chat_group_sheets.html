@@ -1,8 +1,65 @@
 {#
-  The chat page's two group sheets, driven by the chat bundle (assets/chat_src/src/groups.js): "New group" (a name
-  and the people to add) and a group's own sheet (its people, adding and removing them, admins, the name, Leave).
-  Every name the script puts in goes in as text. The rules are routes/chat_groups.py's; these only offer them.
+  The chat page's sheets, driven by the chat bundle: "New group" (a name and the people to add) and a group's own sheet
+  (its people, adding and removing them, admins, the name, Leave) (assets/chat_src/src/groups.js), "New chat" and
+  "New channel" (assets/chat_src/src/chat_extras.js). Every name the scripts put in goes in as text. The rules are the
+  routes' (routes/chat_groups.py, routes/chat.py, routes/broadcasts.py); these only offer them.
 #}
+<div class="modal fade" id="chatNew" tabindex="-1" role="dialog" aria-labelledby="chatNewTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="chatNewTitle">New chat</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true"><i class="fas fa-times"></i></span>
+        </button>
+      </div>
+      <div class="modal-body p-0">
+        <div class="px-3 pt-3 pb-2">
+          <label class="sr-only" for="chat-new-search">Search people</label>
+          <input type="search" id="chat-new-search" class="form-control" maxlength="40" autocomplete="off" placeholder="Search people, or type an @handle">
+          <p class="text-small text-muted mt-2 mb-0">Someone who follows you gets your message in their Inbox; anyone else gets it as a request. Chats are end-to-end encrypted.</p>
+          <div id="chat-new-status" class="text-small mt-1" role="status"></div>
+        </div>
+        <div id="chat-new-results" class="border-top"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="chatChannelNew" tabindex="-1" role="dialog" aria-labelledby="chatChannelNewTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="chatChannelNewTitle">New channel</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true"><i class="fas fa-times"></i></span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <label class="text-small font-weight-bold mb-1" for="chat-channel-name">Name</label>
+        <input type="text" id="chat-channel-name" class="form-control mb-3" maxlength="50" autocomplete="off" placeholder="Behind the scenes">
+        <fieldset>
+          <legend class="text-small font-weight-bold mb-1">Who can join</legend>
+          <div class="custom-control custom-radio">
+            <input type="radio" class="custom-control-input" id="chat-channel-public" name="chat-channel-audience" value="0" checked>
+            <label class="custom-control-label" for="chat-channel-public">Anyone <span class="text-muted text-small">public, moderated, not end-to-end encrypted</span></label>
+          </div>
+          <div class="custom-control custom-radio">
+            <input type="radio" class="custom-control-input" id="chat-channel-friends" name="chat-channel-audience" value="friends">
+            <label class="custom-control-label" for="chat-channel-friends">My Friends <span class="text-muted text-small">people you follow who follow you back; end-to-end encrypted</span></label>
+          </div>
+        </fieldset>
+        <p class="text-small text-muted mt-2 mb-0">You and up to 3 helpers write; members read and react. For other circles, make it on <a href="/@{{ v.username }}/channels">your channels page</a>. You can have up to 3 channels.</p>
+        <div id="chat-channel-status" class="text-small mt-2" role="status"></div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+        <button type="button" id="chat-channel-create" class="btn btn-primary">Make the channel</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div class="modal fade" id="chatGroupNew" tabindex="-1" role="dialog" aria-labelledby="chatGroupNewTitle" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content">

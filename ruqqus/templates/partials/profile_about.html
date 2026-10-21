@@ -46,6 +46,22 @@
     </ul>
     {% endif %}
 
+    {# the chats the account made that this viewer may see: its channels (routes/broadcasts.py channels_for; groups
+       are private and never listed) #}
+    {% set about_chats = channels_for(u, v) %}
+    {% if about_chats %}
+    <div class="profile-about-heading">Chats</div>
+    <ul class="profile-about-list">
+      {% for c in about_chats %}
+      <li class="profile-about-item">
+        <i class="fas fa-tower-broadcast fa-fw text-muted mr-2" aria-hidden="true"></i>
+        <a href="/@{{ u.username }}/channels" class="text-truncate">{{ c.name }}</a>
+        <span class="profile-about-role ml-auto">{% if c.member %}Joined{% elif c.public %}Channel{% else %}For a circle{% endif %}</span>
+      </li>
+      {% endfor %}
+    </ul>
+    {% endif %}
+
     {% if about_guilds %}
     <div class="profile-about-heading">Guilds</div>
     <ul class="profile-about-list">

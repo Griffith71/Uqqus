@@ -8,7 +8,7 @@ import time
 from flask import abort, g, jsonify, redirect, render_template, request
 
 from ruqqus.classes import MediaAsset
-from ruqqus.helpers import circle_guard, circle_store, circles, stories as rules, story_store
+from ruqqus.helpers import bell as bell_rules, circle_guard, circle_store, circles, stories as rules, story_store
 from ruqqus.helpers.get import get_user
 from ruqqus.helpers.media import attach as media_attach, safety as media_safety
 from ruqqus.helpers.visibility import text_hidden, user_hidden
@@ -169,6 +169,9 @@ def story_create(v):
     g.db.commit()
     if picture is not None:
         media_safety.scan_later([g.db.query(MediaAsset).filter_by(id=picture.id).first()])
+    # the author's bell (helpers/bell.py): a story for circles reaches only the people in them
+    bell_rules.ring_account(v, bell_rules.STORY, story_id, v.permalink,
+                            only=circle_store.eligible_ids(g.db, v.id, circle_ids) if audience == circles.CIRCLES else None)
     return _private({"id": story_id, "message": "Your story is up for 24 hours."})
 
 

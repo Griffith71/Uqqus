@@ -31,7 +31,7 @@ def test_the_room_lets_only_writers_write():
 
 def test_routes_need_an_account_and_the_form_key():
     routes = re.findall(r'@app\.route\("([^"]+)", methods=\["(\w+)"\]\)\n((?:@[^\n]+\n)+)def (\w+)', ROUTES)
-    assert len(routes) == 12
+    assert len(routes) == 13                          # with /api/broadcasts/following (the Channels tab)
     for path, method, decorators, name in routes:
         assert "@auth_required" in decorators or "@is_not_banned" in decorators or "@admin_level_required(3)" in decorators, name
         if method == "POST":

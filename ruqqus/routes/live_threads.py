@@ -155,6 +155,12 @@ def live_toggle(pid, v):
         if not may:
             return _error("Only the post's author and co-authors can end its live updates.", 403)
         live_store.end(g.db, primary.id, now)
+        # a live-thread Space ends with its thread (helpers/space_ending.py: not recorded, it leaves nothing)
+        if primary.is_space:
+            from ruqqus.helpers import space_ending, space_store
+            row = space_store.for_post(g.db, primary.id)
+            if row is not None:
+                space_ending.end(g.db, r, row, now)
         g.db.commit()
         live_bus.publish(r, _topic(primary), "live.ended", {})
         return jsonify({"live": False, "thread": thread_json(primary, v)})
@@ -167,6 +173,9 @@ def live_toggle(pid, v):
         if not live:
             return _error("This post isn't live.", 409)
         live_store.extend(g.db, primary.id, live_rules.extend_until(row[0], now, hours))
+        if primary.is_space:
+            from ruqqus.helpers import space_store
+            space_store.set_ends(g.db, primary.id, live_rules.extend_until(row[0], now, hours))
         g.db.commit()
         live_bus.publish(r, _topic(primary), "live.status", {})
         return jsonify({"live": True, "thread": thread_json(primary, v)})

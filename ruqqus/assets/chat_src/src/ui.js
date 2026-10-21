@@ -26,9 +26,11 @@ function timeLabel(ms) {
 // A message that holds a link to one of this site's posts gets a small card under it (made for the
 // reader by /api/chat/post_preview: their own visibility rules, and never the author). The links are
 // recognised by the page's own host name (a copied link always says https), so a link to another site is
-// just text.
+// just text. A post's address is /@author/post/<id> (a guild copy /+guild/@forwarder/post/<id>, an anonymous post
+// has no name); older links with a title after the id still count.
 const POST_LINK = new RegExp(
-  "https?://" + window.location.host.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + "(?:/\\+\\w+)?/post/([0-9a-z]{1,10})(?:/[^\\s]*)?"
+  "https?://" + window.location.host.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") +
+    "(?:/\\+\\w+)?(?:/@\\w+)?/post/([0-9a-z]{1,10})(?![0-9a-z])(?:/[^\\s]*)?"
 );
 const previews = new Map();      // post id -> what the server said about it
 const asking = new Set();        // post ids being asked about

@@ -1,0 +1,73 @@
+{#
+  Subscribing to someone's paid circle, laid out like X's subscribe sheet: who, the price, what the owner says
+  subscribers get, what the circle holds (counts only, never which posts), the terms, your coins, then Subscribe.
+  Opened by any [data-circle-open="<id>"] (the profile header's Subscribe / Subscribed, the gate page's Join);
+  assets/js/circle_subscribe.js shows that circle's panel and posts to the existing routes
+  (/api/circles/<id>/subscribe and /cancel). `paid` is circle_status(owner, v).paid: paid circles only, never a
+  custom circle. Everything is drawn as text.
+#}
+{% macro subscribe_sheet(owner, paid, v) %}
+{% if v and paid %}
+<div class="modal fade modal-sm-bottom circle-subscribe-modal" id="circleSubscribeModal" tabindex="-1" role="dialog" aria-labelledby="circleSubscribeTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header align-items-center">
+        <h5 class="modal-title" id="circleSubscribeTitle">Subscribe to @{{ owner.username }}</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true"><i class="fas fa-times"></i></span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="circle-sub-owner">
+          <img src="{{ owner.profile_url }}" alt="" class="circle-sub-avatar">
+          <div>
+            <div class="circle-sub-owner-name">{{ owner.shown_name }}</div>
+            <div class="text-muted text-small">@{{ owner.username }}</div>
+          </div>
+        </div>
+
+        {% if paid | length > 1 %}
+        <div class="circle-sub-choices" role="tablist" aria-label="Circles">
+          {% for c in paid %}
+          <button type="button" role="tab" class="circle-sub-choice" data-circle-choice="{{ c.id }}" aria-selected="{{ 'true' if loop.first else 'false' }}">
+            <span class="circle-sub-choice-name">{{ c.name }}</span>
+            <span class="circle-sub-choice-price">{{ c.price }} coin{{ '' if c.price == 1 else 's' }}/mo{% if c.subscribed and not c.cancelled %} · subscribed{% endif %}</span>
+          </button>
+          {% endfor %}
+        </div>
+        {% endif %}
+
+        {% for c in paid %}
+        {% set active = c.subscribed and not c.cancelled %}
+        {% set short = (v.coin_balance or 0) < c.price %}
+        <section class="circle-sub-panel" data-circle-panel="{{ c.id }}" aria-labelledby="circle-sub-name-{{ c.id }}"{% if not loop.first %} hidden{% endif %}>
+          <h6 class="circle-sub-name" id="circle-sub-name-{{ c.id }}">{{ c.name }}</h6>
+          <p class="circle-sub-price"><strong>{{ c.price }} coin{{ '' if c.price == 1 else 's' }}</strong> / month</p>
+          {% if c.description %}<p class="circle-sub-description">{{ c.description }}</p>{% endif %}
+
+          <div class="circle-sub-perks-title">What you get</div>
+          <ul class="circle-sub-perks">
+            <li><i class="fas fa-lock fa-fw" aria-hidden="true"></i><span>Posts and stories @{{ owner.username }} shares with {{ c.name }}{% if c.posts %} <span class="text-muted">· {{ c.posts }} post{{ '' if c.posts == 1 else 's' }} so far</span>{% endif %}</span></li>
+            {% if c.channels %}<li><i class="fas fa-tower-broadcast fa-fw" aria-hidden="true"></i><span>{{ c.channels }} broadcast channel{{ '' if c.channels == 1 else 's' }} for subscribers</span></li>{% endif %}
+            <li><i class="fas fa-user-check fa-fw" aria-hidden="true"></i><span>A Subscriber badge next to your name on @{{ owner.username }}'s profile and posts, shown to whoever your <a href="/settings/profile#lists">"Circles you subscribe to"</a> setting allows</span></li>
+          </ul>
+
+          <p class="circle-sub-terms">Renews every 30 days from your coins at this price until you cancel. Cancelling keeps your access until the day you paid to. No refunds.</p>
+
+          {% if active %}
+          <div class="circle-sub-status"><i class="fas fa-circle-check text-success" aria-hidden="true"></i> Subscribed{% if c.renews_utc %} · renews <time datetime="{{ c.renews_utc | iso_utc }}">{{ c.renews_utc | timestamp_label }}</time>{% endif %}</div>
+          <button type="button" class="btn btn-outline-danger btn-block circle-sub-action" data-circle-cancel="{{ c.id }}">Cancel subscription</button>
+          {% else %}
+          <p class="circle-sub-balance">You have {{ v.coin_balance or 0 }} coin{{ '' if (v.coin_balance or 0) == 1 else 's' }}.{% if short %} <a href="/settings/premium">Get coins</a>{% endif %}</p>
+          <button type="button" class="btn btn-primary btn-block circle-sub-action" data-circle-subscribe="{{ c.id }}"{% if short %} disabled aria-disabled="true"{% endif %}>
+            {% if c.cancelled %}Resume subscription{% else %}Subscribe · {{ c.price }} coin{{ '' if c.price == 1 else 's' }}/mo{% endif %}</button>
+          {% endif %}
+          <div class="circle-sub-message text-small mt-2" role="status" aria-live="polite"></div>
+        </section>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endif %}
+{% endmacro %}

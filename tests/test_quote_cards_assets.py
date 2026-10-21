@@ -119,7 +119,7 @@ def test_the_title_is_the_members_own_words_when_a_link_is_a_quote():
     # a link pasted into the title is attached instead, in both composers
     assert "function pastedLink(event)" in js and "event.target !== title || urlField.value) return;" in js
     inline = (ROOT / "ruqqus" / "assets" / "js" / "inline_composer.js").read_text(encoding="utf-8")
-    assert "title.addEventListener('paste'" in inline and "el('ic-url').value = link;" in inline
+    assert "title.addEventListener('paste'" in inline and "url.value = link;" in inline
 
 
 def test_both_stylesheets_draw_a_video_still_with_a_play_mark():

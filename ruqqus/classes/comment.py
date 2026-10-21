@@ -8,6 +8,7 @@ import math
 from .mix_ins import *
 from ruqqus.helpers.base36 import *
 from ruqqus.helpers import anonymity
+from ruqqus.helpers import permalinks
 from ruqqus.helpers import community_notes
 from ruqqus.helpers.lazy import lazy
 from ruqqus.__main__ import Base, cache
@@ -212,8 +213,11 @@ class Comment(Base, Age_times, Scores, Stndrd, Fuzzing):
     @property
     @lazy
     def permalink(self):
-
-        return f"{self.post.permalink}/{self.base36id}"
+        """The comment's address, under its own author (helpers/permalinks.py): /@bob/comment/<id>, or /comment/<id>
+        when it is anonymous. The page shows it in its post's thread."""
+        anonymous = bool(self.is_anonymous)
+        return permalinks.comment_path(self.base36id, name=None if anonymous else self.author.username,
+                                       anonymous=anonymous)
 
     @property
     def forwarded_posts(self):

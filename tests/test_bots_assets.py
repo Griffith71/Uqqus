@@ -50,7 +50,7 @@ def test_the_site_bot_migration_and_the_schema_agree():
     assert "UPDATE bots SET proposed_by_id = owner_id WHERE proposed_by_id IS NULL" in SITE_MIGRATION
 
 
-# --- nobody logs into a bot, and a bot never comments, votes, chats, takes tips or leads a guild ---------------
+# --- nobody logs into a bot, and a bot never comments, votes, chats or leads a guild ---------------------------
 
 def test_login_refuses_a_bot_before_any_password_is_checked():
     login = func(read("ruqqus", "routes", "login.py"), "login_post", "\n# ")
@@ -59,13 +59,20 @@ def test_login_refuses_a_bot_before_any_password_is_checked():
     assert "passhash=bots.UNUSABLE_PASSWORD" in func(ROUTES, "settings_bots_apply")
 
 
-def test_comments_votes_tips_and_chat_refuse_a_bot_account_whatever_it_sends():
+def test_comments_votes_and_chat_refuse_a_bot_account_whatever_it_sends():
     assert 'request.headers.get("X-User-Type", "").lower() == "bot" or v.is_bot:' in read("ruqqus", "routes", "comments.py")
     assert read("ruqqus", "routes", "votes.py").count('=="bot" or v.is_bot:') == 2
     paypal = read("ruqqus", "routes", "paypal.py")
-    assert "if post.author.is_bot:" in func(paypal, "gift_post_pid", "\n@app.route")
+    # a bot's POST takes tips (the owner, 2026-10-20): a member bot's coins go to its owner, a site bot's to nobody,
+    # and nobody is told of a site bot's; bots don't comment, so a bot's comment never takes one
+    gift = func(paypal, "gift_post_pid", "\n@app.route")
+    assert "if post.author.is_bot:" not in gift
+    assert "tips.recipient_id(u.id, True, u.bot_owner_id)" in gift
+    assert "coins_store.spend(g.db, v.id, coins)" in gift and "coins_store.move(g.db, v.id, receiver.id, coins)" in gift
+    assert "if receiver is not None:\n        kind = " in gift
     assert "if comment.author.is_bot:" in func(paypal, "gift_comment_pid", "\n@app.route")
-    assert read("ruqqus", "templates", "partials", "post_actions.html").count("not author_of(p, v).is_bot") == 2
+    actions = read("ruqqus", "templates", "partials", "post_actions.html")
+    assert "author_of(p, v).is_bot" not in actions and actions.count("v.id != author_of(p, v).bot_owner_id") == 2
     assert "if target.is_bot or v.is_bot:" in func(read("ruqqus", "routes", "chat.py"), "chat_start")
     assert "COALESCE(a.is_bot, :no) = :no" in read("ruqqus", "helpers", "creator_fund_store.py")
     assert "if self.is_bot:\n            return False" in func(USER, "can_join_gms", "\n    def ")

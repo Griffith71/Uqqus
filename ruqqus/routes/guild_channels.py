@@ -1098,3 +1098,23 @@ def guild_feed_remove(guildname, cid, board, v):
     _log(board, v, "channel_feed_remove", f"#{row.name}", target_user_id=bot.id)
     g.db.commit()
     return _manage_page(board, v, notice=f"@{bot.username} no longer feeds #{row.name}.")[0]
+
+
+def guild_channels_for(board, v):
+    """Jinja global: a guild's channels this viewer may read, for its About box (the Chat tab's own rule: a visitor
+    sees none). Name, kind and the link into the Chat tab."""
+    from jinja2 import Undefined
+    v = None if isinstance(v, Undefined) else v
+    if not has_chat(board, v):
+        return []
+    out = []
+    for row in store.of_board_for(g.db, board.id, v.id):
+        if _read_refusal(row, v, _hidden(board, v, row)):
+            continue
+        item = channel_json(row, v)
+        out.append({"id": row.id, "label": item["label"], "kind": row.kind,
+                    "url": f"/+{board.name}/chat?c={row.id}"})
+    return out
+
+
+app.jinja_env.globals.update(guild_channels_for=guild_channels_for)

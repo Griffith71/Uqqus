@@ -257,9 +257,13 @@ def test_part_two_schema_and_migration_agree():
         create = re.search(rf"CREATE TABLE (?:IF NOT EXISTS )?public\.{table} \((.*?)\n\);", migration, re.S).group(1)
         mirrored = re.search(rf"CREATE TABLE public\.{table} \((.*?)\n\);", block, re.S).group(1)
         assert create.strip() == mirrored.strip(), table
-    for column in ("thread_event_id character varying(255) DEFAULT '' NOT NULL", "category_id integer REFERENCES public.guild_channel_categories(id) ON DELETE SET NULL",
-                   "rules_gate boolean DEFAULT false NOT NULL"):
+    for column in ("thread_event_id character varying(255) DEFAULT '' NOT NULL", "rules_gate boolean DEFAULT false NOT NULL"):
         assert column in migration and column in block, column
+    # the migration adds the category column and its foreign key in two statements (a column added with REFERENCES
+    # gets the constraint again every time the file runs; tests/pg checks the file can run twice)
+    assert "category_id integer REFERENCES public.guild_channel_categories(id) ON DELETE SET NULL" in block
+    assert "ADD COLUMN IF NOT EXISTS category_id integer;" in migration
+    assert "REFERENCES public.guild_channel_categories(id) ON DELETE SET NULL" in migration
     docs = read("CLAUDE.md")
     for needle in ("2026-11-05_guild_channels_polish.sql", "2026-11-06_guild_channels_unread.sql", "Threads", "Pinned messages", "accept the rules"):
         assert needle in docs, needle

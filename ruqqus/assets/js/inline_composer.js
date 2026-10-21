@@ -25,8 +25,6 @@
   var el = function (id) { return document.getElementById(id); };
   var title = el('ic-title');
   var more = el('ic-more');
-  var head = el('ic-head');
-  var bar = el('ic-bar');
   var options = el('ic-options');
   var optionsToggle = el('ic-options-toggle');
   var count = el('ic-count');
@@ -43,6 +41,8 @@
   var file = el('ic-file');
   var bodyImage = el('ic-body-image');
   var linkButton = el('ic-link-btn');
+  var linkRow = el('ic-link-row');
+  var url = el('ic-url');
   var busy = false;
 
   function autosize() {
@@ -50,16 +50,25 @@
     title.style.height = title.scrollHeight + 'px';
   }
 
+  // the head (where it goes, who sees it) and the bar (More options, Full editor, Post) show from the start; the rest
+  // opens with the first thing the member does, whichever control that is (it used to wait for the title's focus, so
+  // More options did nothing before typing)
   function open() {
     form.classList.add('is-open');
-    head.hidden = false;
     more.hidden = false;
-    bar.hidden = false;
   }
 
   function showOptions(show) {
+    if (show) open();
     options.hidden = !show;
     optionsToggle.setAttribute('aria-expanded', String(show));
+  }
+
+  // the post's link sits right under the blue row, shown once it is asked for or filled (a GIF, a pasted link)
+  function showLink(focus) {
+    open();
+    linkRow.hidden = false;
+    if (focus) url.focus();
   }
 
   function update() {
@@ -102,20 +111,19 @@
     showOptions(options.hidden);
   });
 
-  // the link tool: the Link field lives in More options
-  linkButton.addEventListener('click', function () {
-    showOptions(true);
-    el('ic-url').focus();
-  });
+  // the link tool: the post's link, right under the blue row
+  linkButton.addEventListener('click', function () { showLink(true); });
+  // a GIF chosen from the blue row is the post's link (all_js.js insertGIF fills this field and says so)
+  url.addEventListener('input', function () { if (url.value) showLink(false); });
 
   // a link pasted into the title on its own goes in the Link field instead (as on X, where a pasted post link becomes
   // the quoted post), so the title keeps only the member's own words; pastedLink is in all_js.js
   title.addEventListener('paste', function (event) {
     var link = typeof window.pastedLink === 'function' ? window.pastedLink(event) : null;
-    if (!link || el('ic-url').value) return;
+    if (!link || url.value) return;
     event.preventDefault();
-    el('ic-url').value = link;
-    showOptions(true);
+    url.value = link;
+    showLink(false);
   });
 
   // --- Forward to guilds: the same chips and fields as on Create a post --------------
@@ -163,13 +171,16 @@
 
   el('ic-forward-add').addEventListener('click', addForward);
 
-  // "Where to post" (assets/js/where_to_post.js): the line under the avatar opens the options at the guild search, and a
-  // post for Circles is only on the profile, so its guilds go
-  var whereLine = el('ic-where-line');
-  if (whereLine) whereLine.addEventListener('click', function () {
-    showOptions(true);
-    forwardInput.focus();
+  // "Where to post" (assets/js/where_to_post.js) is the dropdown at the top left: opening it opens the composer and puts
+  // the cursor in its guild search. A post for Circles is only on the profile, so its guilds go
+  var wherePill = el('composer-where');
+  if (wherePill) wherePill.addEventListener('toggle', function () {
+    if (!wherePill.open) return;
+    open();
+    if (!forwardInput.disabled) forwardInput.focus();
   });
+  var audiencePill = el('composer-audience');
+  if (audiencePill) audiencePill.addEventListener('toggle', function () { if (audiencePill.open) open(); });
   form.addEventListener('where:circles', function () {
     forwards = [];
     renderForwards();
@@ -225,9 +236,8 @@
     var write = form.querySelector('.post-toolbar .post-tb-tab');
     if (write && !write.classList.contains('active')) write.click();
     form.classList.remove('is-open');
-    head.hidden = true;
     more.hidden = true;
-    bar.hidden = true;
+    linkRow.hidden = true;
     autosize();
     update();
   }

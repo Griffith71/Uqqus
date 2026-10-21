@@ -62,9 +62,10 @@ def test_the_post_shows_coins_never_who_tipped():
     comments = read("ruqqus/templates/comments.html")
     assert 'class="tip-badge"' in comments and "ruqqus-coin.png\" style" not in comments
     # Tip is in the row (no longer in the "..." menu or the phone sheet), and never on one's own, an anonymous, a
-    # removed or a deleted post, or one whose author's account is deleted or is a bot (helpers/bots.py)
+    # removed or a deleted post, or one whose author's account is deleted; a bot's post takes tips, but never from the
+    # member who runs it (the coins would come back: helpers/tips.py)
     assert actions.count("tipModal2(") == 1
-    gate = "{% if v and v.id != p.author_id and not p.is_anonymous and not author_of(p, v).is_deleted and not author_of(p, v).is_bot and not anon_hidden(p, v) and p.deleted_utc == 0 and not p.is_banned %}"
+    gate = "{% if v and v.id != p.author_id and not p.is_anonymous and not author_of(p, v).is_deleted and v.id != author_of(p, v).bot_owner_id and not anon_hidden(p, v) and p.deleted_utc == 0 and not p.is_banned %}"
     assert actions.count(gate) == 2
     for page in ("submission_listing.html", "submission.html"):
         assert "tipModal2(" not in read(f"ruqqus/templates/{page}"), page
@@ -81,7 +82,7 @@ def test_schema_and_migration_agree():
     assert "ADD COLUMN IF NOT EXISTS coins integer NOT NULL DEFAULT 1;" in migration
     assert "    coins integer DEFAULT 1 NOT NULL,\n    created_utc integer DEFAULT 0 NOT NULL\n);" in schema
     assert "ADD COLUMN IF NOT EXISTS tip_boost double precision NOT NULL DEFAULT 0;" in migration
-    assert "    tip_coins integer DEFAULT 0 NOT NULL,\n    tip_boost double precision DEFAULT 0 NOT NULL\n);" in schema
+    assert "    tip_coins integer DEFAULT 0 NOT NULL,\n    tip_boost double precision DEFAULT 0 NOT NULL," in schema
     assert "tip_coins = Column(Integer, default=0)" in read("ruqqus/classes/submission.py")
     assert "coins=Column(Integer, default=1)" in read("ruqqus/classes/paypal.py")
     assert "scripts/recompute_tip_boost.py --once" in migration

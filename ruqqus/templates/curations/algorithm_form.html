@@ -130,7 +130,7 @@
 
     <div class="form-group mb-0">
       <div class="mb-1">Leave out</div>
-      {% for value, label in [("bots", "Bots"), ("ai", "Made with AI"), ("paid", "Paid partnerships"), ("forwards", "Forwarded copies")] %}
+      {% for value, label in [("bots", "Bots"), ("ai", "Made with AI"), ("paid", "Commercial promotion"), ("forwards", "Forwarded copies")] %}
       <div class="form-check form-check-inline">
         <input class="form-check-input" type="checkbox" name="hide" id="alg-hide-{{ value }}" value="{{ value }}"{% if value in spec.hide %} checked{% endif %}>
         <label class="form-check-label" for="alg-hide-{{ value }}">{{ label }}</label>

@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 {#
-  A Space's own page (routes/spaces.py `space_page`, assets/chat_src/src/space.js). A page of its own, opened in a new
-  tab from the post, so the sound keeps going while the rest of the site reloads page by page; it is allowed the
-  microphone and the camera (helpers/device_access.py). Its post takes no comments: the discussion is the Space's own
-  **board** (beside the stage), and the host and co-hosts write **live updates** under the stage. Before joining, the
-  sheet says that everyone in the Space can see who is there (the owner's choice) and, for a recorded Space, that it
-  is recorded. Names and messages go in as text (an update is its stored, sanitized HTML); `boot` is drawn with |tojson.
+  A Space's own page for a message board or a call (routes/spaces.py `space_home_page`, assets/chat_src/src/space.js;
+  a live thread is drawn by its backing row's page). A page of its own, opened in a new tab, so a call's sound keeps
+  going while the rest of the site reloads page by page; it is allowed the microphone and the camera
+  (helpers/device_access.py). A board's page is the board; a call's is the stage with its live chat beside it. Before
+  joining a call, the sheet says that everyone in it can see who is there (the owner's choice) and, for a recorded
+  Space, that it is recorded. Names and messages go in as text; `boot` is drawn with |tojson.
 #}
 <html lang="en">
 <head>
@@ -28,6 +28,21 @@
                   grid-template-areas: "head head" "stage board" "updates board"; grid-template-rows: auto auto 1fr;
                   align-items: start; }
     @media (max-width: 860px) { .space-wrap { grid-template-columns: minmax(0, 1fr); grid-template-areas: "head" "stage" "updates" "board"; } }
+    /* a board: the board is the page, under a short panel with its state */
+    .space-wrap.kind-board { max-width: 760px; grid-template-columns: minmax(0, 1fr); grid-template-areas: "head" "stage" "board"; }
+    .kind-board .board { position: static; max-height: none; min-height: 28rem; }
+    .kind-board #space-board { max-height: 60vh; }
+    .space-kind { display: inline-flex; align-items: center; gap: 0.375rem; border: 1px solid var(--line); border-radius: 6px;
+                  padding: 0.0625rem 0.5rem; font-size: 0.75rem; font-weight: 600; }
+    .space-votes { display: inline-flex; align-items: center; gap: 0.25rem; background: var(--line); border-radius: 999px; padding: 0.125rem; }
+    .space-vote { background: none; border: 0; color: var(--muted); border-radius: 50%; width: 2rem; height: 2rem; cursor: pointer;
+                  touch-action: manipulation; font: inherit; }
+    .space-vote:hover { color: var(--text); background: #3a4049; }
+    .space-vote:focus-visible { outline: 2px solid var(--accent); }
+    #space-upvote[aria-pressed="true"] { color: var(--accent); }
+    #space-downvote[aria-pressed="true"] { color: #e8452c; }
+    #space-score { min-width: 1.5rem; text-align: center; font-weight: 700; font-variant-numeric: tabular-nums; }
+    .space-replay-frame { width: 100%; aspect-ratio: 16 / 9; border: 0; border-radius: 12px; background: #000; margin: 0.5rem 0; }
     header { grid-area: head; display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap; }
     #space-main { grid-area: stage; }
     #space-updates-panel { grid-area: updates; }
@@ -135,41 +150,54 @@
   </style>
 </head>
 <body>
-  <div class="space-wrap">
+  <div class="space-wrap kind-{{ space_kind }}">
     <header>
-      <h1 class="space-title"><a href="{{ boot.permalink }}" target="_blank" rel="noopener" id="space-post-link"></a></h1>
+      <h1 class="space-title" id="space-title"></h1>
       <div class="space-meta">
+        <span class="space-kind"><i class="fas {{ 'fa-comments' if space_kind == 'board' else 'fa-microphone-lines' }}" aria-hidden="true"></i>{{ boot.kindLabel }}</span>
         <span class="space-live" id="space-live"{% if boot.status != 'live' %} hidden{% endif %}><i class="fas fa-circle-dot" aria-hidden="true"></i>LIVE</span>
         <span id="space-host"></span>
         <span id="space-count" aria-live="polite"></span>
       </div>
-      <nav class="space-controls" style="margin-top:0" aria-label="Leave this window">
-        <a class="space-btn small" href="{{ boot.permalink }}" target="_blank" rel="noopener"><i class="fas fa-arrow-up-right-from-square" aria-hidden="true"></i>Open the post</a>
-        <a class="space-btn small" href="/" target="_blank" rel="noopener"><i class="fas fa-house" aria-hidden="true"></i>Home</a>
+      <nav class="space-controls" style="margin-top:0" aria-label="This Space">
+        <span class="space-votes">
+          <button type="button" class="space-vote" id="space-upvote" aria-label="Upvote" aria-pressed="false"><i class="fas fa-arrow-up" aria-hidden="true"></i></button>
+          <span id="space-score" aria-live="polite"></span>
+          <button type="button" class="space-vote" id="space-downvote" aria-label="Downvote" aria-pressed="false"><i class="fas fa-arrow-down" aria-hidden="true"></i></button>
+        </span>
+        {% if boot.mayShare %}<button type="button" class="space-btn small" id="space-copy-link"><i class="fas fa-link" aria-hidden="true"></i>Copy link</button>{% endif %}
+        <a class="space-btn small" href="/@{{ boot.host.username }}/spaces" target="_blank" rel="noopener"><i class="fas fa-user" aria-hidden="true"></i>{{ boot.host.shown_name }}'s Spaces</a>
+        <a class="space-btn small" href="/spaces" target="_blank" rel="noopener"><i class="fas fa-podcast" aria-hidden="true"></i>Spaces</a>
       </nav>
     </header>
 
     <main class="panel" id="space-main">
       <section id="space-join-sheet">
         {% if boot.status == 'live' %}
-        <p class="muted" style="margin-top:0"><i class="fas fa-podcast" aria-hidden="true"></i> This Space is live.</p>
+        <p class="muted" style="margin-top:0"><i class="fas fa-podcast" aria-hidden="true"></i> This Space is live{% if boot.endsUtc %} until <time data-space-time="{{ boot.endsUtc }}">{{ boot.endsUtc | space_time }}</time>{% endif %}.</p>
         {% elif boot.status == 'scheduled' %}
         <p class="muted" style="margin-top:0"><i class="fas fa-podcast" aria-hidden="true"></i> This Space hasn't started yet.</p>
         {% else %}
-        <p class="muted" style="margin-top:0"><i class="fas fa-podcast" aria-hidden="true"></i> This Space has ended. Its discussion is still here.</p>
+        <p class="muted" style="margin-top:0"><i class="fas fa-podcast" aria-hidden="true"></i> This Space has ended. {{ 'Its board' if space_kind == 'board' else 'Its chat' }} is still here to read.</p>
         {% endif %}
         {% if boot.status != 'ended' %}
-        <div class="space-notice"><i class="fas fa-users" aria-hidden="true"></i>Everyone in this Space can see who is here, listeners too.</div>
-        {% if boot.record %}<div class="space-notice"><i class="fas fa-circle-dot" aria-hidden="true"></i>This Space is recorded: the host keeps a replay with the post.</div>
-        {% else %}<div class="space-notice"><i class="fas fa-eraser" aria-hidden="true"></i>This Space is not recorded: when it ends, its post, board and updates are gone.</div>{% endif %}
+        {% if space_kind == 'call' %}<div class="space-notice"><i class="fas fa-users" aria-hidden="true"></i>Everyone in this Space can see who is here, listeners too.</div>{% endif %}
+        {% if boot.record and space_kind == 'call' %}<div class="space-notice"><i class="fas fa-circle-dot" aria-hidden="true"></i>This Space is recorded: the host keeps a replay{% if boot.videoReplay %} with the video{% endif %}.</div>
+        {% elif boot.record %}<div class="space-notice"><i class="fas fa-circle-dot" aria-hidden="true"></i>This Space is recorded: its board stays to read when it ends.</div>
+        {% else %}<div class="space-notice"><i class="fas fa-eraser" aria-hidden="true"></i>This Space is not recorded: when it ends, it is gone, with everything in it.</div>{% endif %}
         {% if boot.video %}<div class="space-notice"><i class="fas fa-video" aria-hidden="true"></i>People on stage may turn their camera on while the Space is small.</div>{% endif %}
+        {% elif boot.replayPlayer %}
+        <iframe class="space-replay-frame" src="{{ boot.replayPlayer }}" title="Replay of this Space" loading="lazy" allow="fullscreen; picture-in-picture" referrerpolicy="strict-origin-when-cross-origin"></iframe>
         {% elif boot.replay %}
         <audio id="space-replay-player" controls preload="none" src="{{ boot.replay }}"></audio>
         {% endif %}
         <div class="space-controls">
-          <button type="button" class="space-btn primary" id="space-join"{% if boot.status != 'live' %} hidden{% endif %}><i class="fas fa-headphones" aria-hidden="true"></i>Join the Space</button>
+          <button type="button" class="space-btn primary" id="space-join"{% if boot.status != 'live' or space_kind != 'call' %} hidden{% endif %}><i class="fas fa-headphones" aria-hidden="true"></i>Join the Space</button>
           {% if boot.status == 'scheduled' and boot.isHost %}
           <button type="button" class="space-btn primary" id="space-start"><i class="fas fa-podcast" aria-hidden="true"></i>Start the Space</button>
+          {% endif %}
+          {% if space_kind != 'call' and boot.status == 'live' and (boot.isHost or boot.isAdmin) %}
+          <button type="button" class="space-btn danger small" id="space-end-board">End the Space</button>
           {% endif %}
           <button type="button" class="space-btn small" id="space-report"><i class="fas fa-flag" aria-hidden="true"></i>Report</button>
         </div>
@@ -200,7 +228,6 @@
 
       <section id="space-ended" hidden>
         <p id="space-ended-text"></p>
-        <p><a href="{{ boot.permalink }}">Back to the post</a></p>
         <div id="space-replay" hidden>
           <p id="space-replay-text" class="muted" role="status"></p>
           <a id="space-replay-download" class="space-btn small" hidden><i class="fas fa-headphones" aria-hidden="true"></i>Download the recording</a>
@@ -211,46 +238,23 @@
       <div id="space-audio" hidden></div>
     </main>
 
-    <section class="panel" id="space-updates-panel" aria-labelledby="space-updates-title">
-      <div class="panel-head">
-        <div class="space-section-title" id="space-updates-title"><span class="update-tag" id="space-updates-live" hidden>LIVE · </span>Live updates</div>
-        <button type="button" class="space-btn small" id="space-summary-edit" hidden>Edit summary</button>
-      </div>
-      <form id="space-summary-form" hidden>
-        <label class="muted" for="space-summary-input" style="position:absolute;left:-9999px">Summary</label>
-        <textarea id="space-summary-input" class="space-input" maxlength="{{ boot.summaryMax }}" placeholder="What people joining now should know (markdown)"></textarea>
-        <div class="space-controls" style="margin-top:0.5rem">
-          <button type="submit" class="space-btn primary small">Save summary</button>
-          <button type="button" class="space-btn small" id="space-summary-cancel">Cancel</button>
-        </div>
-      </form>
-      <div id="space-summary" hidden></div>
-      <form id="space-update-form" hidden>
-        <label class="muted" for="space-update-input" style="position:absolute;left:-9999px">Update</label>
-        <textarea id="space-update-input" class="space-input" maxlength="{{ boot.updateMax }}" placeholder="Post an update for everyone (markdown)"></textarea>
-        <div class="space-controls" style="margin-top:0.5rem"><button type="submit" class="space-btn primary small">Post update</button></div>
-      </form>
-      <div id="space-updates" aria-live="polite"></div>
-      <p class="muted" id="space-updates-empty" style="margin:0;font-size:0.875rem">No updates yet. The host and co-hosts post them here.</p>
-    </section>
-
     <aside class="panel board" id="space-board-panel" aria-labelledby="space-board-title">
       <div class="panel-head">
-        <div class="space-section-title" id="space-board-title">Board</div>
+        <div class="space-section-title" id="space-board-title">{{ 'Board' if space_kind == 'board' else 'Live chat' }}</div>
         <span class="muted" style="font-size:0.75rem" id="space-slow-label"></span>
         <label id="space-slow-wrap" hidden><span style="position:absolute;left:-9999px">Slow mode</span>
           <select id="space-slow" class="space-select" aria-label="Slow mode"></select>
         </label>
       </div>
       <div id="space-board" aria-live="polite"></div>
-      <p class="muted" id="space-board-empty" style="font-size:0.875rem">Nothing on the board yet.</p>
+      <p class="muted" id="space-board-empty" style="font-size:0.875rem">{{ 'Nothing on the board yet.' if space_kind == 'board' else 'Nothing in the chat yet.' }}</p>
       <div id="space-quote" hidden>
         <i class="fas fa-quote-left" aria-hidden="true"></i><span id="space-quote-text"></span>
         <button type="button" class="space-btn small" id="space-quote-cancel" aria-label="Don't quote"><i class="fas fa-xmark" aria-hidden="true"></i></button>
       </div>
       <form id="space-board-form" hidden>
         <label class="muted" for="space-board-input" style="position:absolute;left:-9999px">Message</label>
-        <input id="space-board-input" class="space-input" type="text" maxlength="{{ boot.boardMax }}" autocomplete="off" placeholder="Write on the board">
+        <input id="space-board-input" class="space-input" type="text" maxlength="{{ boot.boardMax }}" autocomplete="off" placeholder="{{ 'Write on the board' if space_kind == 'board' else 'Write in the chat' }}">
         <button type="submit" class="space-btn primary small">Send</button>
       </form>
       <div id="space-board-note" role="status" aria-live="polite"></div>
@@ -270,7 +274,7 @@
   <script>
     window.UQQUS_SPACE_BOOT = {{ boot | tojson }};
     window.formkey = function () { return window.UQQUS_SPACE_BOOT.formkey; };
-    document.getElementById("space-post-link").textContent = window.UQQUS_SPACE_BOOT.title;
+    document.getElementById("space-title").textContent = window.UQQUS_SPACE_BOOT.title;
     document.getElementById("space-host").textContent = "Hosted by " + window.UQQUS_SPACE_BOOT.host.shown_name;
   </script>
   <script src="{{ asset_url('js/live_events.js') }}"></script>

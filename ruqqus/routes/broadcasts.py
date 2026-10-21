@@ -122,6 +122,18 @@ def broadcast_create(v):
     return jsonify(channel_json(channel_store.get(g.db, bid), channel_store.member(g.db, bid, v.id), v))
 
 
+@app.route("/api/broadcasts/following", methods=["GET"])
+@auth_required
+def broadcasts_following(v):
+    """The Channels tab's "From people you follow": public channels of accounts v follows that v is not in, never an
+    account in a block with v either way, a deleted one, or one whose name v's filter hides. Not a directory."""
+    followed = [row[0] for row in g.db.query(Follow.target_id).filter(Follow.user_id == v.id).all()]
+    owners = {u.id: u for u in g.db.query(User).filter(User.id.in_(followed)).all()} if followed else {}
+    keep = [uid for uid, u in owners.items()
+            if not u.is_deleted and not user_hidden(u, v) and not v.any_block_exists(u)]
+    return jsonify({"channels": [channel_json(row, None, v) for row in channel_store.public_of_owners(g.db, keep, v.id)]})
+
+
 @app.route("/api/broadcasts/<int:bid>", methods=["GET"])
 @auth_required
 def broadcast_info(bid, v):
@@ -314,3 +326,24 @@ def admin_broadcast_report_act(pid, action, v):
     channel_store.resolve_reports(g.db, pid, now)
     g.db.commit()
     return redirect("/admin/broadcast_reports")
+
+
+def channels_for(owner, v):
+    """Jinja global: an account's channels this viewer may see, for its profile's About box: public ones and those for
+    circles they are in, never across a block either way (the channels page's own rules). Groups are never listed."""
+    from jinja2 import Undefined
+    v = None if isinstance(v, Undefined) else v
+    if v is None or owner is None or owner.is_deleted or (owner.id != v.id and v.any_block_exists(owner)):
+        return []
+    shown = []
+    for row in channel_store.of_owner(g.db, owner.id):
+        me = channel_store.member(g.db, row[0], v.id)
+        if me is None and not _may_see(row, v):
+            continue
+        if text_hidden(row[3], v):
+            continue
+        shown.append({"name": row[2], "public": row[4] == channel_rules.PUBLIC, "member": me is not None})
+    return shown
+
+
+app.jinja_env.globals.update(channels_for=channels_for)
