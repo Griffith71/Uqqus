@@ -41,3 +41,30 @@ def test_c1_a_comment_hide_reason_with_markup_is_shown_as_text(guildmaster_with_
     assert post(client, f"/mod/hide_comment/general/{base36encode(cid)}", {"reason": XSS, "formkey": mod.formkey(client)}).status_code == 200
     log = author.browser().get("/+general/mod/log", base_url=BASE).get_data(as_text=True)
     assert XSS not in log and "&lt;img src=x" in log
+
+
+# ---------------------------------------------------------------- H5: signing in can send people to another site
+
+OFF_SITE = ["https://evil.example/x", "//evil.example/x", "/\evil.example/x", "\\evil.example", "https:evil.example",
+            "javascript:alert(1)", " https://evil.example", "/\tx//evil.example"]
+
+
+def test_h5_signing_in_never_sends_the_browser_off_site(make_member, real_app):
+    from urllib.parse import urlsplit
+    app, _ = real_app
+    member = make_member()
+    for target in OFF_SITE:
+        answer = post(app.test_client(), "/login", {"username": member.username, "password": member.password, "redirect": target})
+        assert answer.status_code == 302, target
+        where = urlsplit(answer.headers["Location"])
+        assert where.netloc in ("", "localhost") and not where.path.startswith("//"), (target, answer.headers["Location"])
+
+
+def test_h5_a_signed_in_member_opening_the_login_page_stays_on_the_site(make_member):
+    from urllib.parse import quote, urlsplit
+    member = make_member()
+    for target in OFF_SITE:
+        answer = member.browser().get("/login?redirect=" + quote(target, safe=""), base_url=BASE)
+        assert answer.status_code == 302, target
+        where = urlsplit(answer.headers["Location"])
+        assert where.netloc in ("", "localhost") and not where.path.startswith("//"), (target, answer.headers["Location"])

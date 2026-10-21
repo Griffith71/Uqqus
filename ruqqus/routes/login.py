@@ -17,6 +17,7 @@ from ruqqus.helpers.security import *
 from ruqqus.helpers.alerts import *
 from ruqqus.helpers.get import *
 from ruqqus.helpers.regions import resolve_region
+from ruqqus.helpers.redirects import same_site
 from ruqqus.helpers import account_sessions, chat_devices, mfa_backup, mfa_backup_store, signin_alerts, user_agents
 from ruqqus.helpers.regions import COUNTRY_NAMES
 from ruqqus.mail import send_verification_email
@@ -40,7 +41,8 @@ valid_email_regex = re.compile(r"^[^@\s]{1,64}@[^@\s]+\.[^@\s]+$")
 @auth_desired
 def login_get(v):
 
-    redir = request.args.get("redirect", "/")
+    # only a path on this site: a redirect value is whatever a link said (bug hunt H5)
+    redir = same_site(request.args.get("redirect", "/"))
     if v:
         return redirect(redir)
 
@@ -212,7 +214,7 @@ def login_post():
 
     # check for previous page
 
-    redir = request.form.get("redirect", "/")
+    redir = same_site(request.form.get("redirect", "/"))       # only a path on this site (bug hunt H5)
     if redir:
         return redirect(redir)
     else:
