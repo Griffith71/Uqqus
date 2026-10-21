@@ -39,6 +39,16 @@ from redis import BlockingConnectionPool, ConnectionPool
 
 _version = "2.38.0"
 
+# Logging: standard `logging` to stdout (docker logs), one format, the level from LOG_LEVEL (default INFO). Only if
+# nothing configured the root logger already (gunicorn's own loggers keep theirs).
+import logging
+logging.basicConfig(level=getattr(logging, environ.get("LOG_LEVEL", "INFO").upper(), logging.INFO), stream=sys.stdout,
+                    format="%(asctime)s %(levelname)s %(name)s: %(message)s")
+
+# Error tracking (helpers/error_tracking.py): off unless SENTRY_DSN is set; starts before the Flask app is made
+from ruqqus.helpers import error_tracking
+ERROR_TRACKING_ON = error_tracking.init(environ, _version)
+
 # def time_limit(s):
 #     def wrapper_maker(f):
 #         def wrapper(*args, **kwargs):
@@ -90,6 +100,7 @@ app.config["SITE_NAME"]=environ.get("SITE_NAME", "Laba").lstrip().rstrip()
 app.config["COMPANY_NAME"]=(environ.get("COMPANY_NAME") or "").strip() or app.config["SITE_NAME"]
 
 app.config["SITE_COLOR"]=environ.get("SITE_COLOR", "148fd5").lstrip().rstrip()
+app.config["ERROR_TRACKING_ON"] = ERROR_TRACKING_ON      # the privacy page names the service only while it runs
 
 app.config["RUQQUSPATH"]=environ.get("RUQQUSPATH", os.path.dirname(os.path.realpath(__file__)))
 
@@ -399,9 +410,18 @@ def drop_connection():
     gevent.getcurrent().kill()
 
 
+# the health checks (routes/health.py) are answered before anything else runs: no database lookup for the ban lists, no
+# redirect to https, no session cookie, so a monitor sees the process itself and nothing a visitor's state could change
+HEALTH_PATHS = ("/healthz", "/readyz")
+
+
 # enforce https
 @app.before_request
 def before_request():
+
+    if request.path in HEALTH_PATHS:
+        g.skip_session_cookie = True
+        return None
 
     if request.method.lower() != "get" and app.config["READ_ONLY"]:
         return jsonify({"error":f"{app.config['SITE_NAME']} is currently in read-only mode."}), 500

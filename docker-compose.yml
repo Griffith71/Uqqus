@@ -84,6 +84,14 @@ services:
       - redis
       - postgres
       - synapse
+    restart: unless-stopped
+    # readiness, unlike the image's own liveness check: the database and Redis must answer (routes/health.py)
+    healthcheck:
+      test: ["CMD", "/opt/ruqqus/service/venv/bin/python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1/readyz', timeout=4)"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 60s
 
   synapse:
     image: matrixdotorg/synapse:v1.162.0
@@ -102,6 +110,13 @@ services:
       - "8008:8008"
     depends_on:
       - postgres_synapse
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://127.0.0.1:8008/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 60s
 
   # the relay calls and Spaces send their media through (coturn/turnserver.conf.template, rendered by
   # scripts/gen_dev_env.py). Only the client port is published: two members' relayed connections meet inside this
@@ -119,6 +134,7 @@ services:
     ports:
       - "3478:3478/udp"
       - "3478:3478/tcp"
+    restart: unless-stopped
 
   postgres_synapse:
     image: postgres:15
@@ -133,6 +149,12 @@ services:
       - POSTGRES_INITDB_ARGS=--locale=C --encoding=UTF8
     volumes:
       - "postgres-synapse-data:/var/lib/postgresql/data"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U synapse -d synapse"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
 
   redis:
     image: redis
@@ -140,6 +162,34 @@ services:
       - ./redis.conf:/ruqqus/redis.conf
     ports:
       - "6379:6379"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+
+  # A daily dump of the site's database and Synapse's, as a pair, into the `backups` volume (scripts/backup_loop.sh).
+  # The postgres:15 client reads both servers. Restore: scripts/restore.sh; the restore drill: scripts/verify_backup.sh;
+  # what it does NOT cover (a copy off this machine, the media volumes): RESTORE.md.
+  backup:
+    image: postgres:15
+    entrypoint: ["bash", "/backup_loop.sh"]
+    volumes:
+      - "./scripts/backup_loop.sh:/backup_loop.sh:ro"
+      - "backups:/backups"
+    depends_on:
+      - postgres
+      - postgres_synapse
+    restart: unless-stopped
+    healthcheck:
+      # healthy while a backup succeeded within the last 26 hours (the interval plus two of slack) and the latest
+      # try did not fail (last_failure is removed by the next success)
+      test: ["CMD-SHELL", "test -n \"$$(find /backups/last_success -mmin -1560 2>/dev/null)\" && ! test -e /backups/last_failure"]
+      interval: 30m
+      timeout: 10s
+      retries: 1
+      start_period: 15m
 
   postgres:
     image: postgres:12.3
@@ -150,8 +200,15 @@ services:
       - POSTGRES_HOST_AUTH_METHOD=trust
     ports:
       - "5432:5432"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
 
 volumes:
+  backups:
   media-dev:
   synapse-media:
   synapse-signing-key:

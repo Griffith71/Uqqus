@@ -1,0 +1,7 @@
+#!/usr/bin/env sh
+# Keep the graphify knowledge graph current after each commit (AST-only, no cost).
+# Background and best effort: never slows or fails a commit.
+if command -v graphify >/dev/null 2>&1 && [ -f graphify-out/graph.json ]; then
+  (graphify update . >/dev/null 2>&1 &)
+fi
+exit 0

@@ -11,66 +11,9 @@ concurrency:
   group: ci-${{ github.ref }}
   cancel-in-progress: true
 
-env:
-  HUSKY: "0" # skip git-hook install inside CI
+# web/ (a parked Next.js scaffold) is deliberately not built or tested here: see CLAUDE.md.
 
 jobs:
-  web:
-    name: web (typecheck, lint, test, build)
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: web
-    env:
-      # Placeholders so `next build` / prisma generate don't need real services.
-      DATABASE_URL: postgresql://user:password@localhost:5432/ci
-      DIRECT_URL: postgresql://user:password@localhost:5432/ci
-      AUTH_SECRET: ci-placeholder-secret
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version-file: .nvmrc
-          cache: npm
-          cache-dependency-path: web/package-lock.json
-      - run: npm ci
-      - run: npm run typecheck
-      - run: npm run lint
-      - run: npm run format:check
-      - run: npm test
-      - run: npm run build
-      # Blocking at high/critical for production deps. Dev-toolchain advisories
-      # (shadcn, eslint-config-next) are tracked separately and not gated here.
-      - name: npm audit (production deps)
-        run: npm audit --omit=dev --audit-level=high
-
-  e2e:
-    name: web (playwright smoke)
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: web
-    env:
-      DATABASE_URL: postgresql://user:password@localhost:5432/ci
-      DIRECT_URL: postgresql://user:password@localhost:5432/ci
-      AUTH_SECRET: ci-placeholder-secret
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version-file: .nvmrc
-          cache: npm
-          cache-dependency-path: web/package-lock.json
-      - run: npm ci
-      - run: npx playwright install --with-deps chromium
-      - run: npm run test:e2e
-      - uses: actions/upload-artifact@v4
-        if: failure()
-        with:
-          name: playwright-report
-          path: web/playwright-report
-          retention-days: 7
-
   python:
     name: legacy app (ruff, pytest, pip-audit)
     runs-on: ubuntu-latest
@@ -84,11 +27,56 @@ jobs:
       - run: pip install -r requirements-dev.txt
       - run: ruff check .
       - run: pytest -q
-      # TODO: many pinned dependencies have known advisories (aiohttp, pillow,
-      # urllib3, cryptography, ...); make this blocking once they are upgraded.
+      # Blocking: a pinned runtime dependency with a published advisory fails the build (2026-10-21: clean after
+      # Pillow 13 and certifi). Bump the pin, test, and keep this green.
       - name: pip-audit (pinned runtime deps)
         run: pip-audit -r requirements.txt --disable-pip --no-deps
-        continue-on-error: true
+
+  postgres:
+    name: real Postgres (schema, every migration twice, app smoke)
+    runs-on: ubuntu-latest
+    # The same Postgres major as the dev stack (docker-compose.yml). The other job runs on SQLite with the app stubbed;
+    # this one loads schema.sql and seed-db.sql, replays every migration file, and opens pages of the real app.
+    services:
+      postgres:
+        image: postgres:12
+        env:
+          POSTGRES_HOST_AUTH_METHOD: trust
+          POSTGRES_DB: ci_site
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+      redis:
+        image: redis:7
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      PG_TEST_DATABASE_URL: postgresql://postgres@localhost:5432/ci_site
+      REDIS_URL: redis://localhost
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+          cache-dependency-path: requirements.txt
+      - run: pip install -r requirements.txt pytest
+      - name: load schema.sql and seed-db.sql
+        run: |
+          psql "$PG_TEST_DATABASE_URL" -v ON_ERROR_STOP=1 -q -f schema.sql
+          psql "$PG_TEST_DATABASE_URL" -v ON_ERROR_STOP=1 -q -f seed-db.sql
+      # In a process of its own: the app monkey-patches the standard library when it is imported.
+      - run: pytest -q tests/pg
+    # (the app needs no Matrix server or object store to be read; MASTER_KEY and domain get CI values in tests/pg)
 
   secrets:
     name: secret scan (gitleaks)

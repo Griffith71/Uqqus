@@ -41,6 +41,12 @@ RUN mkdir -p assets && \
         cp -r docs/assets/fontawesome assets/; \
     fi
 
+# the job programs' output reaches `docker logs` as it happens, not in blocks (supervisord.conf sends it to stdout)
+ENV PYTHONUNBUFFERED=1
+
 EXPOSE 80/tcp
+
+# liveness only (routes/health.py `/healthz`: no database or Redis call); `/readyz` is the readiness check
+HEALTHCHECK --interval=30s --timeout=5s --start-period=60s --retries=3     CMD ["/opt/ruqqus/service/venv/bin/python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1/healthz', timeout=4)"]
 
 CMD [ "/usr/bin/supervisord", "-c", "/etc/supervisord.conf" ]

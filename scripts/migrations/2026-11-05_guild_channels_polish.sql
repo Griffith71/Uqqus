@@ -16,7 +16,17 @@ CREATE TABLE IF NOT EXISTS public.guild_channel_categories (
 
 CREATE INDEX IF NOT EXISTS guild_channel_categories_board_idx ON public.guild_channel_categories (board_id, position, id);
 
-ALTER TABLE public.guild_channels ADD COLUMN IF NOT EXISTS category_id integer REFERENCES public.guild_channel_categories(id) ON DELETE SET NULL;
+-- The column and its foreign key are separate statements: "ADD COLUMN IF NOT EXISTS ... REFERENCES" adds the
+-- constraint again on every run (a second, identical foreign key named ..._fkey1).
+ALTER TABLE public.guild_channels ADD COLUMN IF NOT EXISTS category_id integer;
+DO $$
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conrelid = 'public.guild_channels'::regclass AND contype = 'f'
+                   AND confrelid = 'public.guild_channel_categories'::regclass) THEN
+        ALTER TABLE public.guild_channels ADD FOREIGN KEY (category_id)
+            REFERENCES public.guild_channel_categories(id) ON DELETE SET NULL;
+    END IF;
+END $$;
 ALTER TABLE public.guild_channels ADD COLUMN IF NOT EXISTS rules_gate boolean DEFAULT false NOT NULL;
 
 CREATE TABLE IF NOT EXISTS public.guild_channel_pins (

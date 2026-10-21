@@ -41,6 +41,28 @@ def pending(conn):
     return [name for name in files() if name not in done]
 
 
+def run_file(conn, name):
+    """Runs one migration file as `psql -f` would. Through the DBAPI cursor, not `exec_driver_sql`: with no parameters
+    SQLAlchemy 2 hands psycopg2 an immutable dict, which it refuses ("not a sequence"), so `--apply` never worked."""
+    sql = (MIGRATIONS / name).read_text(encoding="utf-8")
+    cursor = conn.connection.cursor()
+    try:
+        for statement in statements(sql):
+            cursor.execute(statement)
+    finally:
+        cursor.close()
+
+
+def statements(sql):
+    """The file as one string, or, when it builds an index CONCURRENTLY, as separate statements: Postgres refuses that
+    command inside a multi-statement string (psql -f sends them one at a time). Only such files are split, and they
+    are plain: comment lines and one statement after another."""
+    if "CONCURRENTLY" not in sql.upper():
+        return [sql]
+    body = "\n".join(line for line in sql.splitlines() if not line.strip().startswith("--"))
+    return [part.strip() + ";" for part in body.split(";") if part.strip()]
+
+
 def record(conn, name):
     conn.execute(text("INSERT INTO schema_migrations (name, applied_utc) VALUES (:n, :t) ON CONFLICT (name) DO NOTHING"),
                  {"n": name, "t": int(time.time())})
@@ -62,7 +84,7 @@ def main(argv):
         if "--apply" in argv:
             for name in todo:
                 print(f"applying {name}")
-                conn.exec_driver_sql((MIGRATIONS / name).read_text(encoding="utf-8"))
+                run_file(conn, name)
                 record(conn, name)
             print("up to date" if not todo else f"applied {len(todo)}")
             return 0
