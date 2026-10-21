@@ -5,7 +5,9 @@ import { initAsync as initCryptoWasm } from "@matrix-org/matrix-sdk-crypto-wasm"
 import { cryptoCallbacks, ensureEncryptionReady, signOwnDevices } from "./crypto.js";
 import { markReady } from "./keylock.js";
 import { OnlySignedDevicesIsolationMode } from "matrix-js-sdk/lib/crypto-api/index.js";
-import { ensureSession, loadSession, CALL_STORAGE_KEY } from "./token.js";
+import { ensureSession, loadSession, CALL_STORAGE_KEY, STORAGE_KEY } from "./token.js";
+import { startAgainWhenSignedOut } from "./signed_out.js";
+import { answerOwnVerifications } from "./verification.js";
 import {
   listConversations, acceptConversation, declineConversation, markRead,
   groupInfo, acceptGroup, declineGroup, markGroupRead,
@@ -1092,8 +1094,11 @@ async function main() {
     userId: session.user_id,
     deviceId: session.device_id,
     cryptoCallbacks,
+    // emoji only: a new app is verified by comparing them on this page (verification.js); this page can't scan a code
+    verificationMethods: ["m.sas.v1"],
   });
   state.client = client;
+  startAgainWhenSignedOut(client, STORAGE_KEY);
 
   // matrix-js-sdk's rust crypto backend loads this WASM binary via a
   // runtime fetch() relative to its own module URL, which doesn't survive
@@ -1120,6 +1125,7 @@ async function main() {
   });
 
   wireGlobalEvents(client);
+  answerOwnVerifications(client);
 
   extras = initExtras({
     boot,

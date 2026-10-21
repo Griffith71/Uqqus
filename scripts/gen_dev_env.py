@@ -1,17 +1,20 @@
 #!/usr/bin/env python3
 """Generate local-dev secrets without committing them.
 
-Writes MASTER_KEY, MATRIX_AS_TOKEN, MATRIX_HS_TOKEN and TURN_SHARED_SECRET to
-the untracked .env (docker compose reads it automatically) and renders, all
-untracked: the Synapse appservice registration, the call relay's config
-(coturn/turnserver.conf) and the relay secret Synapse reads
-(synapse/turn_shared_secret). Existing .env values are never overwritten.
+Writes MASTER_KEY, MATRIX_AS_TOKEN, MATRIX_HS_TOKEN, TURN_SHARED_SECRET,
+OIDC_CLIENT_SECRET and OIDC_PRIVATE_KEY to the untracked .env (docker compose
+reads it automatically) and renders, all untracked: the Synapse appservice
+registration, the call relay's config (coturn/turnserver.conf), the relay
+secret Synapse reads (synapse/turn_shared_secret) and the client secret
+Synapse signs in to the site with (synapse/oidc_client_secret). Existing .env
+values are never overwritten.
 
 Usage: python scripts/gen_dev_env.py
 Production: set these from your secret store; never reuse the dev values.
 """
 import base64
 import secrets
+import subprocess
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -21,13 +24,36 @@ RENDERED = ROOT / "synapse" / "ruqqus-appservice.yaml"
 TURN_TEMPLATE = ROOT / "coturn" / "turnserver.conf.template"
 TURN_RENDERED = ROOT / "coturn" / "turnserver.conf"
 TURN_SECRET_FILE = ROOT / "synapse" / "turn_shared_secret"
+OIDC_SECRET_FILE = ROOT / "synapse" / "oidc_client_secret"
 
 GENERATORS = {
     "MASTER_KEY": lambda: base64.b64encode(secrets.token_bytes(32)).decode(),
     "MATRIX_AS_TOKEN": lambda: secrets.token_hex(32),
     "MATRIX_HS_TOKEN": lambda: secrets.token_hex(32),
     "TURN_SHARED_SECRET": lambda: secrets.token_hex(32),
+    "OIDC_CLIENT_SECRET": lambda: secrets.token_hex(32),
+    "OIDC_PRIVATE_KEY": lambda: oidc_private_key(),
 }
+
+
+def oidc_private_key():
+    """The key the site signs its OIDC id_tokens with: an RSA key's PEM, base64-encoded so it fits on one .env line."""
+    try:
+        from cryptography.hazmat.primitives import serialization
+        from cryptography.hazmat.primitives.asymmetric import rsa
+    except ImportError:
+        # no `cryptography` here (it is in the app's image, not always beside this script): OpenSSL makes the same key
+        try:
+            pem = subprocess.run(["openssl", "genpkey", "-algorithm", "RSA", "-pkeyopt", "rsa_keygen_bits:2048"],
+                                 check=True, capture_output=True).stdout
+        except (OSError, subprocess.CalledProcessError):
+            print("No cryptography package or openssl: OIDC_PRIVATE_KEY left empty, so chat apps stay off")
+            return ""
+    else:
+        key = rsa.generate_private_key(public_exponent=65537, key_size=2048)
+        pem = key.private_bytes(serialization.Encoding.PEM, serialization.PrivateFormat.PKCS8,
+                                serialization.NoEncryption())
+    return base64.b64encode(pem).decode()
 
 
 def write(path, content):
@@ -72,6 +98,9 @@ def main():
     write(TURN_RENDERED, turn)
     write(TURN_SECRET_FILE, values["TURN_SHARED_SECRET"])       # Synapse strips the file's content
     print(f"Rendered {TURN_RENDERED.relative_to(ROOT)} and {TURN_SECRET_FILE.relative_to(ROOT)} (untracked)")
+
+    write(OIDC_SECRET_FILE, values["OIDC_CLIENT_SECRET"])      # Synapse reads its client secret from this file
+    print(f"Wrote {OIDC_SECRET_FILE.relative_to(ROOT)} (untracked)")
 
 
 if __name__ == "__main__":

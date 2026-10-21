@@ -17,6 +17,7 @@ from ruqqus.helpers.aws import *
 from ruqqus.helpers.chat_permissions import on_block_created
 from ruqqus.helpers import circle_store
 from ruqqus.helpers import blocklist
+from ruqqus.helpers import chat_devices
 from ruqqus.helpers import account_sessions, mfa_backup, mfa_backup_store, sign_in_history
 from ruqqus.helpers.regions import COUNTRY_NAMES
 from ruqqus.helpers import totp as totp_rules
@@ -280,6 +281,7 @@ def settings_security_post(v):
 
         v.passhash = v.hash_password(request.form.get("new_password"))
         account_sessions.end_other_sessions(v, flask_session)       # whoever held the old password is signed out
+        chat_devices.sign_out(g.db, v.id, app.config["SITE_NAME"])  # and so is any chat app signed in with it
 
         g.db.add(v)
 
@@ -458,6 +460,7 @@ def settings_log_out_others(v):
                                v=v, error="Incorrect Password"), 401
 
     account_sessions.end_other_sessions(v, flask_session)
+    chat_devices.sign_out(g.db, v.id, app.config["SITE_NAME"])     # chat apps signed in with the account too
 
     g.db.add(v)
 
@@ -626,6 +629,9 @@ def delete_account(v):
     from ruqqus.helpers import account_cleanup
     account_cleanup.close_account(g.db, v.id, int(time.time()))
     _leave_chat_groups(v)
+    # every chat device signs out, outside apps and the site's own browsers, and the chat name says it is gone
+    chat_devices.sign_out(g.db, v.id, app.config["SITE_NAME"], apps_only=False)
+    chat_devices.sync_name(g.db, v)
 
     for b in v.boards_modded:
         if b.mods_count == 0 and not b.is_circle:
@@ -1000,6 +1006,7 @@ def settings_name_change(v):
 
     g.db.add(v)
     g.db.commit()
+    chat_devices.sync_name(g.db, v)             # outside chat apps show the new @handle
 
     return render_template("settings_profile.html",
                        v=v,

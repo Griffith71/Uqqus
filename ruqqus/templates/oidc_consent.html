@@ -1,0 +1,52 @@
+{% extends "login.html" %}
+
+{# "Sign in with <site>" in an outside Matrix app (routes/oidc_pages.py, helpers/oidc_provider.py): the member confirms
+   with their password. Nothing here names the app: the chat server is the only client, whichever app asked it. #}
+
+{% block title %}
+<title>Sign in to a chat app - {{ 'SITE_NAME' | app_config }}</title>
+{% endblock %}
+
+{% block content %}
+<div id="auth-form">
+
+  {% if broken %}
+  <h1 class="h3">This sign-in can't go on</h1>
+  <p class="text-muted">{{ error }}</p>
+  <a href="/" class="btn btn-secondary">Back to {{ 'SITE_NAME' | app_config }}</a>
+
+  {% elif refusal %}
+  <h1 class="h3">Sign in to a chat app</h1>
+  <p class="text-muted">{{ refusal }}</p>
+  {% if refusal != "This account can't use chat apps." %}<a href="/chat" class="btn btn-primary mr-2">Open Chat</a>{% endif %}
+  <form action="/oidc/authorize" method="post" class="d-inline">
+    <input type="hidden" name="formkey" value="{{ v.formkey }}">
+    {% for name, value in args.items() %}<input type="hidden" name="{{ name }}" value="{{ value }}">{% endfor %}
+    <button type="submit" name="decision" value="deny" class="btn btn-secondary">Cancel</button>
+  </form>
+
+  {% else %}
+  <h1 class="h3">Sign in to a chat app</h1>
+  <p class="mb-2">A chat app wants to sign in to your chats as <strong>@{{ v.username }}</strong>.</p>
+  <ul class="text-small mb-3 pl-3">
+    <li>It will see your chats, groups and channels and can send messages as you.</li>
+    <li>To read messages sent before, it will ask for your <strong>security key</strong>, which you can see in
+      <a href="/settings/chat_apps">Settings &gt; Chat apps</a>.</li>
+    <li>It can't see your password, your posts or your settings, and you can sign it out at any time from the same page.</li>
+  </ul>
+  <p class="text-small text-muted">Only continue if you started signing in to a chat app just now.</p>
+
+  {% if error %}<div class="alert alert-danger text-small" role="alert">{{ error }}</div>{% endif %}
+
+  <form action="/oidc/authorize" method="post" id="login">
+    <input type="hidden" name="formkey" value="{{ v.formkey }}">
+    {% for name, value in args.items() %}<input type="hidden" name="{{ name }}" value="{{ value }}">{% endfor %}
+    <label for="oidc-password">Your {{ 'SITE_NAME' | app_config }} password</label>
+    <input class="form-control mb-3" id="oidc-password" type="password" name="password" autocomplete="current-password" required autofocus>
+    <button type="submit" name="decision" value="allow" class="btn btn-primary" id="oidc-allow">Continue</button>
+    <button type="submit" name="decision" value="deny" class="btn btn-secondary" formnovalidate>Cancel</button>
+  </form>
+  {% endif %}
+
+</div>
+{% endblock %}

@@ -63,6 +63,9 @@ services:
       - MATRIX_SERVER_NAME=${MATRIX_SERVER_NAME:-ruqqus.local}
       - MATRIX_AS_TOKEN=${MATRIX_AS_TOKEN:?run python scripts/gen_dev_env.py}
       - MATRIX_HS_TOKEN=${MATRIX_HS_TOKEN:?run python scripts/gen_dev_env.py}
+      # Sign in with the site in outside Matrix apps (routes/oidc_pages.py); empty switches it off
+      - OIDC_CLIENT_SECRET=${OIDC_CLIENT_SECRET:-}
+      - OIDC_PRIVATE_KEY=${OIDC_PRIVATE_KEY:-}
       - MATRIX_USER_PREFIX=${MATRIX_USER_PREFIX:-ruqqus_}
       # the call relay's own counters (scripts/turn_usage.py) and its monthly allowance (helpers/turn_usage.py)
       - TURN_METRICS_URL=${TURN_METRICS_URL:-http://coturn:9641/metrics}
@@ -95,6 +98,8 @@ services:
 
   synapse:
     image: matrixdotorg/synapse:v1.162.0
+    environment:
+      - PYTHONPATH=/modules
     entrypoint: ["sh", "-c"]
     command:
       - >
@@ -104,6 +109,10 @@ services:
       - "./synapse/homeserver.yaml:/data/homeserver.yaml"
       - "./synapse/ruqqus-appservice.yaml:/data/ruqqus-appservice.yaml"
       - "./synapse/turn_shared_secret:/data/turn_shared_secret:ro"
+      # the site's rules, held by the homeserver (synapse/modules/uqqus_rules.py, homeserver.yaml `modules:`)
+      - "./synapse/modules:/modules:ro"
+      # the secret Synapse signs in to the site with (homeserver.yaml oidc_providers), written by scripts/gen_dev_env.py
+      - "./synapse/oidc_client_secret:/data/oidc_client_secret:ro"
       - "synapse-signing-key:/data/keys"
       - "synapse-media:/data/media_store"
     ports:

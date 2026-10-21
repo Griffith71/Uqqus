@@ -4,7 +4,7 @@
 // device_id across calls keeps this browser as a single stable Olm/Megolm
 // device instead of minting a new one every page load.
 
-const STORAGE_KEY = "ruqqus_chat_session";
+export const STORAGE_KEY = "ruqqus_chat_session";
 // The call window (call.js) is a second device of the same account, with its own crypto store, so a call never
 // fights the chat page over one device's keys.
 export const CALL_STORAGE_KEY = "ruqqus_call_session";

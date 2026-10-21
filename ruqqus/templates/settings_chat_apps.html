@@ -1,0 +1,102 @@
+{% extends "settings.html" %}
+
+{% block pagetitle %}Chat apps - {{ 'SITE_NAME' | app_config }}{% endblock %}
+
+{# Using your chats in an outside Matrix app (routes/chat_apps.py, routes/oidc_pages.py). The security key is unlocked
+   in this browser with the member's password (assets/chat_src/src/chat_apps.js): the site never sees it. #}
+
+{% block content %}
+<div class="row">
+  <div class="col col-lg-8">
+    <div class="settings" id="chat-apps" data-formkey="{{ v.formkey }}" data-site="{{ 'SITE_NAME' | app_config }}">
+
+      <h2 class="h5">Chat apps</h2>
+      <p class="text-small text-muted">
+        Your chats run on Matrix, an open standard, on {{ 'SITE_NAME' | app_config }}'s own chat server. Besides Chat
+        on this site, you can use them in a Matrix app such as Element (web, desktop and the classic phone apps),
+        FluffyChat or Cinny. They stay end-to-end encrypted there too.
+      </p>
+
+      <div class="settings-section rounded">
+        <div class="d-lg-flex">
+          <div class="title w-lg-25"><label>Sign in to an app</label></div>
+          <div class="body w-lg-100">
+            {% if not sso_on %}
+            <p class="mb-0">Chat apps aren't switched on for this site yet.</p>
+            {% elif refusal %}
+            <p class="mb-2">{{ refusal }}</p>
+            {% if refusal != "This account can't use chat apps." %}<a href="/chat" class="btn btn-primary btn-sm">Open Chat</a>{% endif %}
+            {% else %}
+            <ol class="pl-3 mb-2">
+              <li>In the app, choose to sign in to another server and type <code id="chat-apps-server">{{ site_address }}</code>.
+                If it asks for the server's full address, it is <code>{{ homeserver }}</code>.</li>
+              <li>Choose <strong>Sign in with {{ 'SITE_NAME' | app_config }}</strong>, then confirm on this site with your password.</li>
+              <li>When the app asks to verify itself, enter your <strong>security key</strong> (below). Until it is
+                verified it can't read your messages, and nobody's messages are sent to it.</li>
+            </ol>
+            <p class="text-small text-muted mb-0">Element X, Element's newest phone app, doesn't work with this
+              server's sign-in yet. Use Element's classic app, FluffyChat or Cinny.</p>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+
+      <div class="settings-section rounded">
+        <div class="d-lg-flex">
+          <div class="title w-lg-25"><label>What works in apps</label></div>
+          <div class="body w-lg-100 text-small">
+            <p class="mb-1"><strong>Read and write:</strong> your chats, groups, channels for circles and encrypted guild channels.</p>
+            <p class="mb-1"><strong>Read only:</strong> public channels and other guild channels. Their messages go
+              through the site's word filter and rules, so a message written there from an app is removed: write
+              those on this site.</p>
+            <p class="mb-1"><strong>On this site only:</strong> starting a chat, accepting a message request,
+              making a group or adding people, calls and Spaces. An app can't find people, make rooms or start a
+              call on this server: the site keeps who can reach you as it does here.</p>
+            <p class="mb-0"><strong>Not yet:</strong> pictures and files. The chat server keeps no files, so an app
+              can't send one.</p>
+          </div>
+        </div>
+      </div>
+
+      {% if chat_ready %}
+      <div class="settings-section rounded">
+        <div class="d-lg-flex">
+          <div class="title w-lg-25"><label for="chat-key-password">Security key</label></div>
+          <div class="body w-lg-100">
+            <p class="text-small">The key that opens your messages in a new app. It is locked with your password and
+              opened here, in this browser: {{ 'SITE_NAME' | app_config }} never sees it. Anyone with it and your
+              account can read your chats, so never share it.</p>
+            <form id="chat-key-form" class="form-inline mb-2" autocomplete="off">
+              <input type="password" class="form-control form-control-sm mr-2 mb-2" id="chat-key-password"
+                     placeholder="Your password" autocomplete="current-password" required>
+              <button type="submit" class="btn btn-secondary btn-sm mb-2" id="chat-key-show">Show my security key</button>
+            </form>
+            <p class="text-danger small mb-1" id="chat-key-error" role="alert" hidden></p>
+            <div id="chat-key-out" hidden>
+              <input type="text" readonly class="form-control chat-key-code mb-2" id="chat-key-value" aria-label="Your security key">
+              <button type="button" class="btn btn-secondary btn-sm mr-2" id="chat-key-copy">Copy</button>
+              <button type="button" class="btn btn-link btn-sm" id="chat-key-hide">Hide</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endif %}
+
+      <div class="settings-section rounded">
+        <div class="d-lg-flex">
+          <div class="title w-lg-25"><label>Your chat devices</label></div>
+          <div class="body w-lg-100">
+            <p class="text-small text-muted">Every browser and app signed in to your chats. Sign out any you don't
+              recognise or no longer use; a browser you sign out asks for your password the next time it opens Chat.</p>
+            <ul class="list-unstyled mb-0" id="chat-devices" aria-live="polite">
+              <li class="text-muted text-small">Loading…</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+<script type="module" src="{{ asset_url('js/chat_apps_bundle.js') }}"></script>
+{% endblock %}

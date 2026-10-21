@@ -11,6 +11,8 @@ browser is the sole owner/persistence point for its own token+device_id
 (localStorage) - see ruqqus/templates/chat.html's bundle boot.
 """
 
+from urllib.parse import quote
+
 import requests
 from ruqqus.__main__ import app
 
@@ -41,7 +43,7 @@ def provision_user(user_id: int, adopt_existing: bool = True) -> str:
     localpart = f"{app.config['MATRIX_USER_PREFIX']}{user_id}"
     resp = requests.post(
         f"{app.config['MATRIX_INTERNAL_URL']}/_matrix/client/v3/register",
-        json={"type": "m.login.application_service", "username": localpart},
+        json={"type": "m.login.application_service", "username": localpart, "inhibit_login": True},
         headers=_as_headers(), timeout=10,
     )
     if resp.status_code == 400 and resp.json().get("errcode") == "M_USER_IN_USE":
@@ -62,6 +64,8 @@ def login_as(mxid: str, device_id: str = None) -> dict:
     body = {
         "type": "m.login.application_service",
         "identifier": {"type": "m.id.user", "user": mxid},
+        # the member's device list (Settings > Chat apps) tells the site's own browsers from outside apps by this name
+        "initial_device_display_name": site_device_name(),
     }
     if device_id:
         body["device_id"] = device_id
@@ -72,6 +76,37 @@ def login_as(mxid: str, device_id: str = None) -> dict:
     if resp.status_code != 200:
         raise MatrixError(f"login_as failed: {resp.status_code}")
     return resp.json()
+
+
+def site_device_name() -> str:
+    return f"{app.config['SITE_NAME']} chat"
+
+
+def set_display_name(mxid: str, name: str):
+    """The account's chat name, as outside apps show it. Members can't set it; only the bot can, through the
+    homeserver module's own address (synapse/modules/uqqus_rules.py)."""
+    resp = requests.post(f"{app.config['MATRIX_INTERNAL_URL']}/_synapse/client/uqqus/display_name",
+                         json={"user_id": mxid, "display_name": name}, headers=_as_headers(), timeout=10)
+    if resp.status_code != 200:
+        raise MatrixError(f"set_display_name failed: {resp.status_code}")
+
+
+def list_devices(mxid: str):
+    """The member's Matrix devices (the site's own browsers and any outside app), as the bot: id, name, last seen."""
+    resp = requests.get(f"{app.config['MATRIX_INTERNAL_URL']}/_matrix/client/v3/devices",
+                        params={"user_id": mxid}, headers=_as_headers(), timeout=10)
+    if resp.status_code != 200:
+        raise MatrixError(f"list_devices failed: {resp.status_code}")
+    return [{"device_id": d.get("device_id"), "name": d.get("display_name") or "", "last_seen": d.get("last_seen_ts")}
+            for d in resp.json().get("devices", [])]
+
+
+def delete_device(mxid: str, device_id: str):
+    """Signs one of the member's devices out: its access token stops working and its keys are dropped."""
+    resp = requests.delete(f"{app.config['MATRIX_INTERNAL_URL']}/_matrix/client/v3/devices/{quote(device_id, safe='')}",
+                           params={"user_id": mxid}, json={}, headers=_as_headers(), timeout=10)
+    if resp.status_code not in (200, 404):
+        raise MatrixError(f"delete_device failed: {resp.status_code}")
 
 
 def create_dm_room(initiator_mxid: str, invitee_mxid: str) -> str:

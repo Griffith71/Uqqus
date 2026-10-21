@@ -6,6 +6,8 @@ from .boards import *
 from .chat import *
 from .live_events import *
 from .chat_groups import *
+from .chat_apps import *
+from .oidc_pages import *
 from .calls import *
 from .live_comments import *
 from .spaces import *

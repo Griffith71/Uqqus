@@ -11,7 +11,7 @@ from ruqqus.helpers.wrappers import *
 from ruqqus.helpers.get import *
 from ruqqus.helpers.chat_permissions import can_message_directly, is_blocked
 from ruqqus.helpers.chat_events import is_new_message
-from ruqqus.helpers import broadcast_store, chat_group_store, guild_channel_store
+from ruqqus.helpers import broadcast_store, chat_group_store, chat_devices, guild_channel_store
 from ruqqus.helpers import guild_channels as guild_channel_rules
 from ruqqus.helpers.visibility import filter_users, post_hidden, user_hidden
 from ruqqus.helpers.secret_box import encrypt_secret, decrypt_secret
@@ -34,6 +34,7 @@ def _ensure_provisioned(v):
         abort(503)
     g.db.add(ChatIdentity(user_id=v.id, matrix_user_id=mxid))
     g.db.commit()
+    chat_devices.sync_name(g.db, v, mxid)       # outside apps show the @handle (helpers/chat_devices.py)
     return mxid
 
 

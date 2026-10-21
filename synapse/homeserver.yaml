@@ -46,6 +46,60 @@ registration_requires_token: false
 app_service_config_files:
   - /data/ruqqus-appservice.yaml
 
+# The site's rules, held by the homeserver (synapse/modules/uqqus_rules.py, mounted at /modules): only the site's bot
+# makes rooms, invites, makes room addresses and sends room state; nobody publishes a room or uploads to the media
+# store; a member joins only a room they were invited to. An outside Matrix app talks to this server directly, so the
+# rules the site's routes apply must hold here too.
+modules:
+  - module: uqqus_rules.UqqusRules
+    config:
+      bot_localpart: ruqqus_bot
+      user_prefix: ruqqus_
+
+# Nobody can look people up here: the site's own people search (with its block and word-filter rules) is the only way
+# to find someone, and a profile is only readable by people who share a room with it.
+user_directory:
+  enabled: false
+require_auth_for_profile_requests: true
+limit_profile_requests_to_users_who_share_rooms: true
+
+# Names and pictures are the site's: an outside app can't change a member's chat name (it could pass for someone else).
+enable_set_displayname: false
+enable_set_avatar_url: false
+enable_3pid_changes: false
+
+# "Sign in with <site>" in outside Matrix apps (Element Web and Desktop, FluffyChat, Cinny...): the site is the only
+# way in (ruqqus/routes/oidc_pages.py, helpers/oidc_provider.py). Synapse makes nobody new here (`enable_registration`):
+# a sign-in lands on the Matrix account the site already made for that member (`allow_existing_users`, the id from the
+# site's account number), and only once the member has opened Chat on the site, so their keys exist. Password sign-in is
+# off (nobody has a Matrix password); the site's own chat page signs in through the appservice, which this leaves alone.
+# Endpoints the browser opens use the site's public address; those Synapse calls itself use the compose network.
+# On a live site: issuer and authorization_endpoint are https://<site>, the rest stay internal, and skip_verification
+# is removed (it only allows the http issuer of local development).
+password_config:
+  enabled: false
+oidc_providers:
+  - idp_id: site
+    idp_name: "Laba"
+    discover: false
+    issuer: "http://localhost"
+    client_id: synapse
+    client_secret_path: /data/oidc_client_secret
+    client_auth_method: client_secret_post
+    pkce_method: always
+    scopes: ["openid"]
+    authorization_endpoint: "http://localhost/oidc/authorize"
+    token_endpoint: "http://ruqqus/oidc/token"
+    userinfo_endpoint: "http://ruqqus/oidc/userinfo"
+    jwks_uri: "http://ruqqus/oidc/jwks"
+    skip_verification: true
+    allow_existing_users: true
+    enable_registration: false
+    user_mapping_provider:
+      config:
+        subject_claim: sub
+        localpart_template: "ruqqus_{{ user.sub }}"
+
 signing_key_path: /data/keys/homeserver.signing.key
 
 trusted_key_servers: []

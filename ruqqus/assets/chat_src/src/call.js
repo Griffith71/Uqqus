@@ -10,6 +10,7 @@ import { ClientEvent } from "matrix-js-sdk";
 import { initAsync as initCryptoWasm } from "@matrix-org/matrix-sdk-crypto-wasm";
 
 import { ensureSession, CALL_STORAGE_KEY } from "./token.js";
+import { startAgainWhenSignedOut } from "./signed_out.js";
 import { LocalMedia, MediaRefused, levelMeter, resumeAudio } from "./rtc/media.js";
 import { Mesh } from "./rtc/mesh.js";
 
@@ -258,6 +259,7 @@ async function startMatrix() {
   const client = sdk.createClient({
     baseUrl: session.homeserver_url, accessToken: session.access_token, userId: session.user_id, deviceId: session.device_id,
   });
+  startAgainWhenSignedOut(client, CALL_STORAGE_KEY, "uqqus-call");
   await initCryptoWasm("/assets/js/matrix_sdk_crypto_wasm_bg.wasm");
   await client.initRustCrypto({ cryptoDatabasePrefix: "uqqus-call" });
   await new Promise((resolve) => {

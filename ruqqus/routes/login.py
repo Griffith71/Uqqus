@@ -17,7 +17,7 @@ from ruqqus.helpers.security import *
 from ruqqus.helpers.alerts import *
 from ruqqus.helpers.get import *
 from ruqqus.helpers.regions import resolve_region
-from ruqqus.helpers import account_sessions, mfa_backup, mfa_backup_store, signin_alerts, user_agents
+from ruqqus.helpers import account_sessions, chat_devices, mfa_backup, mfa_backup_store, signin_alerts, user_agents
 from ruqqus.helpers.regions import COUNTRY_NAMES
 from ruqqus.mail import send_verification_email
 from secrets import token_hex
@@ -588,8 +588,10 @@ def post_reset(v):
                                error="Passwords didn't match.")
 
     user.passhash = hash_password(password)
-    # every sign-in of the account ends, and this reset link stops working (its token holds the nonce)
+    # every sign-in of the account ends, and this reset link stops working (its token holds the nonce); so does
+    # every chat app signed in with it (helpers/chat_devices.py)
     account_sessions.end_other_sessions(user)
+    chat_devices.sign_out(g.db, user.id, app.config["SITE_NAME"])
     g.db.add(user)
 
     return render_template("message_success.html", v=None,
