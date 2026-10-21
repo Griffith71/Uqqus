@@ -1,6 +1,9 @@
 """One reproducing test (or a few) per bug fixed in the bug hunt of 2026-10, on the real app and a real Postgres. Each
 section names the finding (C1, H1, ... in the plan); each test failed on the code before its fix."""
 import secrets
+import sys
+
+from sqlalchemy import text
 
 from .test_characterization import BASE, fresh, guildmaster_with_post, post
 
@@ -68,3 +71,26 @@ def test_h5_a_signed_in_member_opening_the_login_page_stays_on_the_site(make_mem
         assert answer.status_code == 302, target
         where = urlsplit(answer.headers["Location"])
         assert where.netloc in ("", "localhost") and not where.path.startswith("//"), (target, answer.headers["Location"])
+
+
+# ---------------------------------------------------------------- the site-bots migration re-run refuses own-account rows
+
+def test_running_the_site_bots_migration_again_keeps_own_account_rows(pg_engine):
+    """2026-10-16_site_bots.sql re-added a two-kind CHECK on every run, so once a member's own account posted
+    automatically (kind 'self', 2026-11-21) running the file again failed: migrations must be safe to run twice."""
+    from pathlib import Path
+    sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "scripts"))
+    import migrate
+    uid = 900_000_000 + secrets.randbelow(90_000_000)
+    with pg_engine.connect() as conn:
+        conn.execute(text("INSERT INTO bots (user_id, owner_id, username, kind, proposed_by_id, status) "
+                          "VALUES (:u, :u, :n, 'self', :u, 'pending')"), {"u": uid, "n": f"own_{uid}"})
+        conn.commit()
+        try:
+            migrate.run_file(conn, "2026-10-16_site_bots.sql")
+            kinds = conn.execute(text("SELECT pg_get_constraintdef(oid) FROM pg_constraint WHERE conname = 'bots_kind'")).scalar()
+            assert "'self'" in kinds, "the newer, wider rule stays"
+        finally:
+            conn.rollback()
+            conn.execute(text("DELETE FROM bots WHERE user_id = :u"), {"u": uid})
+            conn.commit()

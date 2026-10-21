@@ -7,6 +7,12 @@ ALTER TABLE bots ADD COLUMN IF NOT EXISTS kind character varying(10) DEFAULT 'me
 ALTER TABLE bots ADD COLUMN IF NOT EXISTS proposed_by_id integer;
 ALTER TABLE bots ALTER COLUMN owner_id DROP NOT NULL;
 UPDATE bots SET proposed_by_id = owner_id WHERE proposed_by_id IS NULL;
-ALTER TABLE bots DROP CONSTRAINT IF EXISTS bots_kind;
-ALTER TABLE bots ADD CONSTRAINT bots_kind CHECK (kind IN ('site', 'member'));
+-- Only when the table has no rule yet: a later migration widens it (2026-11-21_self_automation.sql adds 'self'), and
+-- running this file again must never narrow it back (a database with an own-account row would refuse it).
+DO $$
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'bots_kind' AND conrelid = 'public.bots'::regclass) THEN
+        ALTER TABLE bots ADD CONSTRAINT bots_kind CHECK (kind IN ('site', 'member'));
+    END IF;
+END $$;
 CREATE INDEX IF NOT EXISTS bots_proposed_idx ON bots (proposed_by_id);
