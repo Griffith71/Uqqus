@@ -118,6 +118,7 @@ class User(Base, Stndrd, Age_times):
     # when the member last pressed "Reset For You" in settings (0: never); the feed does not read it yet
     for_you_reset_utc = Column(Integer, default=0)
     creator_fund_opt_in_utc = Column(Integer, default=0)     # the creator fund (helpers/creator_fund.py); 0 = not taking part
+    signin_alerts = Column(Boolean, default=True)             # email a verified address about a sign-in from somewhere new (helpers/signin_alerts.py)
     premium_auto_renew = Column(Boolean, default=False)       # spend a coin on the next week when one runs out (helpers/premium.py)
     last_active_utc = Column(Integer, default=0)             # stamped at most daily (wrappers._note_active); shared drafts don't count authors gone longer than their rules say
     score_display = Column(SmallInteger, default=0)   # how scores read: 0 upvotes, coloured (default); 1 upvotes minus downvotes
@@ -139,6 +140,8 @@ class User(Base, Stndrd, Age_times):
     # a bot account (helpers/bots.py): nobody logs into it; bot_owner_id is the member who runs it
     is_bot = Column(Boolean, default=False)
     bot_owner_id = Column(Integer, default=None)
+    # the member's saved feed filters, JSON (helpers/feed_filters.py read_defaults), loaded into a new session once
+    feed_defaults = Column(String, default="")
     hide_bot = Column(Boolean, default=False)
     show_nsfl = Column(Boolean, default=False)
     is_private = Column(Boolean, default=False)
@@ -260,6 +263,14 @@ class User(Base, Stndrd, Age_times):
         x = pyotp.TOTP(self.mfa_secret)
         return x.verify(token, valid_window=1)
 
+    def accept_2fa(self, token):
+        """`validate_2fa`, and a code is accepted once (helpers/totp.py): used by the sign-in, turning two-factor off,
+        making backup codes and deleting the account, so a code seen once cannot be replayed within its window."""
+        from ruqqus.__main__ import r
+        from ruqqus.helpers import totp
+        step = totp.matched_step(self.mfa_secret, token)
+        return step is not None and totp.claim(r, self.id, step)
+
     @property
     def mfa_removal_code(self):
 
@@ -367,8 +378,14 @@ class User(Base, Stndrd, Age_times):
             language_list = language if isinstance(language, (list, tuple)) else [language]
             posts = posts.filter(Submission.language_code.in_(language_list))
 
+        # Post type and the Advanced filter only narrow; SubmissionAux is joined once for them and the word filter
+        from ruqqus.helpers import feed_filter_sql
+        feed_filter = kwargs.get("feed_filter")
+        if filter_words or feed_filter_sql.needs_aux(feed_filter):
+            posts = posts.join(Submission.submission_aux)
+        posts = feed_filter_sql.apply(posts, feed_filter, self)
+
         if filter_words:
-            posts=posts.join(Submission.submission_aux)
             for word in filter_words:
                 #print(word)
                 posts=posts.filter(not_(SubmissionAux.title.ilike(f'%{word}%')))
@@ -596,8 +613,14 @@ class User(Base, Stndrd, Age_times):
 
         posts = posts.options(contains_eager(Submission.board))
 
-        if filter_words:
+        # Post type and the Advanced filter only narrow; SubmissionAux is joined once for them and the word filter
+        from ruqqus.helpers import feed_filter_sql
+        feed_filter = kwargs.get("feed_filter")
+        if filter_words or feed_filter_sql.needs_aux(feed_filter):
             posts = posts.join(Submission.submission_aux)
+        posts = feed_filter_sql.apply(posts, feed_filter, self)
+
+        if filter_words:
             for word in filter_words:
                 posts = posts.filter(not_(SubmissionAux.title.ilike(f'%{word}%')))
 
@@ -649,7 +672,9 @@ class User(Base, Stndrd, Age_times):
         return [x.id for x in posts.offset(25 * (page - 1)).limit(26).all()]
 
     @cache.memoize(300)
-    def userpagelisting(self, v=None, page=1, sort="new", t="all", **kwargs):
+    def userpagelisting(self, v=None, page=1, sort="new", t="all", spaces=False, **kwargs):
+        """The ids of a profile's Posts tab (its posts, the posts it co-authors and its reposts) or, with `spaces`,
+        its Spaces tab: a Space is never listed under Posts (helpers/spaces.py: a Space is not a post)."""
 
         now = int(time.time())
         if t == 'day':
@@ -710,6 +735,7 @@ class User(Base, Stndrd, Age_times):
             Submission.id.notin_(forward_copies)
         )
         authored = apply_common_filters(authored)
+        authored = authored.filter(Submission.is_space == bool(spaces))
         # a profile does not list the user's anonymous posts (to anyone but them and admins)
         authored = authored.filter(anonymity.hide_anonymous(Submission, v))
         # what someone writes inside a Circle guild stays in the guild: it is not on their profile, for anyone
@@ -745,6 +771,8 @@ class User(Base, Stndrd, Age_times):
             RepostRelationship, RepostRelationship.submission_id == Submission.id
         ).filter(RepostRelationship.user_id == self.id)
         reposted = apply_common_filters(reposted)
+        # reposts are posts: the Spaces tab holds the account's own Spaces only
+        reposted = reposted.filter(Submission.is_space == False, false() if spaces else true())
 
         if not (v and v.admin_level >= 3):
             reposted = reposted.filter(Submission.is_banned == False).join(

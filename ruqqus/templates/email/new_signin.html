@@ -1,0 +1,55 @@
+{% extends "email/default.html" %}
+
+{% block image %}reset.png{% endblock %}
+
+{% block title %}New sign-in to your {{ 'SITE_NAME' | app_config }} account{% endblock %}</h1>
+
+{% block content %}
+                        <p>Hi {{ v.username }}, we noticed a sign-in to your {{ 'SITE_NAME' | app_config }} account from {% if "country" in why and "browser" in why %}a place and browser{% elif "country" in why %}a place{% else %}a browser{% endif %} we haven't seen on it recently.</p>
+                        <table class="attributes" width="100%" cellpadding="0" cellspacing="0" role="presentation">
+                          <tr>
+                            <td class="attributes_content">
+                              <table width="100%" cellpadding="0" cellspacing="0" role="presentation">
+                                <tr>
+                                  <td class="attributes_item"><span class="f-fallback"><strong>Browser:</strong> {{ browser }}</span></td>
+                                </tr>
+                                <tr>
+                                  <td class="attributes_item"><span class="f-fallback"><strong>Place:</strong> {{ place }} (the country only, from the connection)</span></td>
+                                </tr>
+                                <tr>
+                                  <td class="attributes_item"><span class="f-fallback"><strong>Time:</strong> {{ when }}</span></td>
+                                </tr>
+                              </table>
+                            </td>
+                          </tr>
+                        </table>
+                        <p>If this was you, there is nothing to do.</p>
+                        <p><strong>If it wasn't you,</strong> change your password now. Changing it also signs out every other device.</p>
+                        <!-- Action -->
+                        <table class="body-action" align="center" width="100%" cellpadding="0" cellspacing="0" role="presentation">
+                          <tr>
+                            <td align="center">
+                              <table width="100%" border="0" cellspacing="0" cellpadding="0" role="presentation">
+                                <tr>
+                                  <td align="center">
+                                    <a href="{{ action_url }}" class="f-fallback button" target="_blank">Change your password</a>
+                                  </td>
+                                </tr>
+                              </table>
+                            </td>
+                          </tr>
+                        </table>
+                        <p>Please note that {{ 'SITE_NAME' | app_config }} will never ask you for your email, password, or two-factor token via email, text, or phone.</p>
+                        <p>You can turn these emails off in your <a href="{{ settings_url }}">Security settings</a>.</p>
+                        <p>Thanks,
+                          <br>The {{ 'SITE_NAME' | app_config }} Team</p>
+                        <!-- Sub copy -->
+                        <table class="body-sub" role="presentation">
+                          <tr>
+                            <td>
+                              <p class="f-fallback sub">If you're having trouble with the button above, copy and paste the URL below into your web browser.</p>
+                              <p class="f-fallback sub">{{ action_url }}</p>
+                            </td>
+                          </tr>
+                        </table>
+{% endblock %}

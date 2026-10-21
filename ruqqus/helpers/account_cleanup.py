@@ -46,6 +46,8 @@ STEPS = (
     # chat: no copy of the key, locked or not, stays
     ("forget the chat key", "UPDATE chat_identities SET recovery_key_encrypted = NULL, key_blob_password = NULL, "
                             "key_blob_recovery = NULL WHERE user_id = :u"),
+    # two-factor backup codes
+    ("remove backup codes", "DELETE FROM mfa_backup_codes WHERE user_id = :u"),
     # where they signed in from, and what they wrote about themselves
     ("forget sign-in addresses", "DELETE FROM login_events WHERE user_id = :u"),
     ("clear the profile", "UPDATE users SET display_name = '', bio = '', bio_html = '', profile_job = '', "

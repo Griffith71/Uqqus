@@ -22,6 +22,7 @@ We collect basic information in order to operate the platform, and to mitigate a
 
 * Your email address, if you choose to provide it.
 * The IP address from which content is submitted.
+* Where and with what you signed in: the country, a short description of the browser ("Chrome on Windows") and the address. Your Security settings list your last ten sign-ins so you can spot one that isn't you, and if your email address is verified we email you when you sign in from a country or browser you haven't used in 90 days (you can turn that off). The address and the browser text are erased after 90 days; the country is kept for about 14 months, to tell whether you have moved.
 * Whether or not you have indicated that you are 18 years of age.
 * Other saved personal preferances.
 
@@ -43,6 +44,12 @@ When you post or comment anonymously, other users see "Anonymous" instead of you
 
 Deleting a post or comment takes it off your profile, feeds and guilds, but not out of public view: its text, as it was when you deleted it, stays readable in the public [Deletion log](/log/deleted), and the history of a post or comment keeps the versions you edited away. A post or comment that a guild's moderators hide from their guild stays on your profile and is recorded in that guild's public moderation log. Content removed by the site's administrators is not shown to other users.
 {% endfilter %}
+
+{% if 'ERROR_TRACKING_ON' | app_config %}
+<h2 id="errors">Error reports</h2>
+
+<p>When something on {{ 'SITE_NAME' | app_config }} breaks, the error is reported to an error-tracking service so it can be fixed. A report holds the error, the part of the code that failed and which page type it was. Before it leaves our server we remove the rest: what you typed, your cookies, the address you were on beyond its path, your account, your IP address and the values in a database error. It is used to fix errors and for nothing else.</p>
+{% endif %}
 
 {% if ads_configured() %}
 <h2 id="ads">Ads</h2>

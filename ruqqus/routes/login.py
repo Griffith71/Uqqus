@@ -2,6 +2,7 @@ from flask import *
 from flask import session as flask_session
 import time
 import hmac
+import gevent
 from os import environ
 import re
 import random
@@ -16,12 +17,14 @@ from ruqqus.helpers.security import *
 from ruqqus.helpers.alerts import *
 from ruqqus.helpers.get import *
 from ruqqus.helpers.regions import resolve_region
+from ruqqus.helpers import account_sessions, mfa_backup, mfa_backup_store, signin_alerts, user_agents
+from ruqqus.helpers.regions import COUNTRY_NAMES
 from ruqqus.mail import send_verification_email
 from secrets import token_hex
 
 
 from ruqqus.mail import *
-from ruqqus.__main__ import app, limiter
+from ruqqus.__main__ import app, limiter, r
 
 valid_username_regex = re.compile(r"^[a-zA-Z0-9_]{3,25}$")
 valid_password_regex = re.compile(r"^.{8,100}$")
@@ -138,10 +141,17 @@ def login_post():
                              ):
             return redirect("/login")
         
-        is_2fa=account.validate_2fa(request.form.get("2fa_token", "").strip())
-        is_recovery=safe_compare(request.form.get("2fa_token","").lower().replace(' ',''), account.mfa_removal_code)
-        
-        if not is_2fa and not is_recovery:
+        answer = request.form.get("2fa_token", "").strip()
+        # a six-digit code from the authenticator (accepted once), or one of the account's backup codes (spent, and
+        # two-factor stays on), or the older recovery code, which turns two-factor off and works only for an account
+        # that has made no backup codes (helpers/mfa_backup.py)
+        is_2fa = account.accept_2fa(answer)
+        is_backup = not is_2fa and mfa_backup_store.spend(g.db, account.id, answer, now)
+        is_recovery = (not is_2fa and not is_backup
+                       and mfa_backup.legacy_code_allowed(mfa_backup_store.has_codes(g.db, account.id))
+                       and safe_compare(answer.lower().replace(' ', ''), account.mfa_removal_code))
+
+        if not is_2fa and not is_backup and not is_recovery:
             
             hash = generate_hash(f"{account.id}+{now}+2fachallenge")
             return render_template("login_2fa.html",
@@ -155,6 +165,8 @@ def login_post():
             account.mfa_secret=None
             g.db.add(account)
             g.db.commit()
+        elif is_backup:
+            g.db.commit()              # the code is spent
 
     else:
         # neither a password nor a complete 2FA answer (audit I-02: no password used to crash here)
@@ -168,14 +180,31 @@ def login_post():
     flask_session.permanent = True
 
     cf_country = request.headers.get("cf-ipcountry")
+    agent = user_agents.stored(request.headers.get("User-Agent"))
+    signed_in_utc = int(time.time())
+    # a sign-in from somewhere new is emailed to a verified address (helpers/signin_alerts.py). Worked out BEFORE this
+    # sign-in is recorded, or it would be compared with itself; sent after, and nothing here can stop the sign-in
+    try:
+        alert = signin_alerts.check(g.db, account, cf_country, agent, signed_in_utc, r, COUNTRY_NAMES)
+    except Exception as e:
+        print(f"sign-in alert not checked: {type(e).__name__}", flush=True)
+        alert = None
     g.db.add(LoginEvent(
         user_id=account.id,
-        created_utc=int(time.time()),
+        created_utc=signed_in_utc,
         ip=request.remote_addr,
         cf_country=cf_country,
         region_code=resolve_region(cf_country),
+        user_agent=agent,
     ))
     g.db.commit()
+    if alert:
+        try:
+            html = render_template("email/new_signin.html", v=account, action_url=f"https://{app.config['SERVER_NAME']}/settings/security",
+                                   settings_url=f"https://{app.config['SERVER_NAME']}/settings/security#sign-ins", **alert)
+            gevent.spawn(send_mail_quietly, account.email, signin_alerts.subject(app.config["SITE_NAME"]), html)
+        except Exception as e:
+            print(f"sign-in alert not sent: {type(e).__name__}", flush=True)
 
     check_for_alts(account.id)
 
@@ -418,6 +447,7 @@ def sign_up_post(v):
         ip=request.remote_addr,
         cf_country=cf_country,
         region_code=signup_region,
+        user_agent=user_agents.stored(request.headers.get("User-Agent")),
     ))
     g.db.commit()
 
@@ -454,7 +484,7 @@ def sign_up_post(v):
 @app.route("/forgot", methods=["GET"])
 def get_forgot():
 
-    return render_template("forgot_password.html",
+    return render_template("forgot_password.html", v=None,
                            i=random_image()
                            )
 
@@ -485,7 +515,7 @@ def post_forgot():
                                        v=user)
                   )
 
-    return render_template("forgot_password.html",
+    return render_template("forgot_password.html", v=None,
                            msg="If the username and email matches an account, you will be sent a password reset email. You have ten minutes to complete the password reset process.",
                            i=random_image())
 
@@ -500,7 +530,7 @@ def get_reset():
     now = int(time.time())
 
     if now - timestamp > 600:
-        return render_template("message.html", 
+        return render_template("message.html", v=None,
             title="Password reset link expired",
             error="That password reset link has expired.")
 
@@ -538,7 +568,7 @@ def post_reset(v):
     now = int(time.time())
 
     if now - timestamp > 600:
-        return render_template("message.html",
+        return render_template("message.html", v=None,
                                title="Password reset expired",
                                error="That password reset form has expired.")
 
@@ -558,8 +588,10 @@ def post_reset(v):
                                error="Passwords didn't match.")
 
     user.passhash = hash_password(password)
+    # every sign-in of the account ends, and this reset link stops working (its token holds the nonce)
+    account_sessions.end_other_sessions(user)
     g.db.add(user)
 
-    return render_template("message_success.html",
+    return render_template("message_success.html", v=None,
                            title="Password reset successful!",
                            message="Login normally to access your account.")

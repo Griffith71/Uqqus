@@ -183,6 +183,84 @@
 
     </div>
 
+  {% if new_backup_codes %}
+  <div class="settings-section rounded backup-codes-new" id="backup-codes-new" role="alert">
+    <div class="body">
+      <h3 class="h6">Your backup codes</h3>
+      <p class="text-small">Save these now. They are shown <strong>once</strong>: the site keeps no copy it can show you again. Each one works a single time, in place of the 6-digit code, and signing in with one leaves two-step login on.</p>
+      <ul class="backup-codes-list list-unstyled" id="backup-codes-list">{% for code in new_backup_codes %}<li>{{ code }}</li>{% endfor %}</ul>
+      <div class="d-flex flex-wrap align-items-center">
+        <button type="button" class="btn btn-secondary btn-sm mr-2" data-backup-copy>Copy</button>
+        <button type="button" class="btn btn-secondary btn-sm mr-2" data-backup-download>Download</button>
+        <button type="button" class="btn btn-secondary btn-sm mr-2" data-backup-print>Print</button>
+        <span class="text-small text-muted" data-backup-said role="status"></span>
+      </div>
+    </div>
+  </div>
+  {% endif %}
+
+  {% if v.mfa_secret %}
+  <h2 class="h5" id="backup-codes">Backup codes</h2>
+
+  <p class="text-small text-muted">One-time codes for the day you lose your authenticator. Making a new set replaces every earlier code, used or not.</p>
+
+  <div class="settings-section rounded">
+    <form action="/settings/security" method="post">
+      <input type="hidden" name="formkey" value="{{ v.formkey }}">
+      <div class="body">
+        <p class="mb-3{% if backup_low %} text-danger{% endif %}">{{ backup_line }}</p>
+        <div class="d-lg-flex">
+          <label for="backup-password" class="w-lg-25">Password</label>
+          <div class="w-lg-100"><input type="password" class="form-control mb-2" id="backup-password" name="password" autocomplete="current-password" required></div>
+        </div>
+        <div class="d-lg-flex">
+          <label for="backup-token" class="w-lg-25">6-digit code</label>
+          <div class="w-lg-100"><input type="text" class="form-control mb-2" id="backup-token" name="new_backup_codes" inputmode="numeric" autocomplete="one-time-code" placeholder="# # # # # #" required></div>
+        </div>
+      </div>
+      <div class="footer">
+        <div class="d-flex"><button type="submit" class="btn btn-secondary ml-auto">Make new backup codes</button></div>
+      </div>
+    </form>
+  </div>
+  {% endif %}
+
+  <h2 class="h5" id="sign-ins">Recent sign-ins</h2>
+
+  <p class="text-small text-muted">Your last {{ sign_ins | length }} sign-ins. The place is only the country, worked out from the connection. Don't recognise one? Change your password: that signs out every other device.</p>
+
+  <div class="settings-section rounded">
+    <div class="body">
+      {% if sign_ins %}
+      <ul class="list-unstyled mb-0 sign-in-list">
+        {% for s in sign_ins %}
+        <li class="sign-in-row"><span class="sign-in-browser">{{ s.browser }}</span> <span class="text-muted">&middot; {{ s.place }} &middot; <time datetime="{{ s.iso }}">{{ s.when }}</time></span></li>
+        {% endfor %}
+      </ul>
+      {% else %}
+      <p class="mb-0 text-muted">No sign-ins recorded yet.</p>
+      {% endif %}
+    </div>
+    <form action="/settings/security" method="post" id="signin-alerts">
+      <input type="hidden" name="formkey" value="{{ v.formkey }}">
+      <input type="hidden" name="signin_alerts_form" value="1">
+      <div class="body border-top">
+        <div class="custom-control custom-switch mb-2">
+          <input type="checkbox" class="custom-control-input" id="signin_alerts" name="signin_alerts" value="1" {% if v.signin_alerts %}checked{% endif %}>
+          <label class="custom-control-label" for="signin_alerts">Email me about new sign-ins</label>
+        </div>
+        <p class="text-small text-muted mb-2">We email you when your account is signed in from a country or browser it hasn't used in the last 90 days, at most once a day.{% if not (v.is_activated and v.email) %} <strong>This needs a verified email address.</strong>{% endif %}</p>
+        <div class="d-lg-flex">
+          <label for="signin-alerts-password" class="w-lg-25">Password</label>
+          <div class="w-lg-100"><input type="password" class="form-control mb-2" id="signin-alerts-password" name="password" autocomplete="current-password" required></div>
+        </div>
+      </div>
+      <div class="footer">
+        <div class="d-flex"><button type="submit" class="btn btn-secondary ml-auto">Save</button></div>
+      </div>
+    </form>
+  </div>
+
   <h2 class="h5">Log Out Everywhere</h2>
 
   <p class="text-small text-muted">Log all other devices out of your {{ 'SITE_NAME' | app_config }} account.</p>

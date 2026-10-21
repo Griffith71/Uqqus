@@ -18,6 +18,7 @@ MODEL = read("ruqqus", "classes", "circle.py")
 SCHEMA = read("schema.sql")
 FIRST = read("scripts", "migrations", "2026-10-10_circles.sql")
 MANY = read("scripts", "migrations", "2026-10-20_many_circles.sql")
+DESCRIPTIONS = read("scripts", "migrations", "2026-11-12_defaults_descriptions_bells.sql")
 TABLES = {"Circle": "circles", "CircleMember": "circle_members", "CirclePayment": "circle_payments"}
 
 
@@ -47,6 +48,7 @@ def test_the_model_the_schema_and_the_migrations_have_the_same_columns():
     for cls, table in TABLES.items():
         assert table_columns(SCHEMA, "CREATE TABLE public.", table) == model_columns(cls), table
     added = set(re.findall(r"ALTER TABLE circles ADD COLUMN IF NOT EXISTS (\w+) ", MANY))
+    added |= set(re.findall(r"ALTER TABLE public.circles ADD COLUMN IF NOT EXISTS (\w+) ", DESCRIPTIONS))
     assert table_columns(FIRST, "CREATE TABLE IF NOT EXISTS ", "circles") | added == model_columns("Circle")
     for table in ("post_circles", "story_circles"):
         assert table_columns(SCHEMA, "CREATE TABLE public.", table) == table_columns(MANY, "CREATE TABLE IF NOT EXISTS ", table)
@@ -143,11 +145,16 @@ def test_an_unknown_or_deleted_account_or_circle_is_a_404():
 
 
 def test_a_block_ends_both_ways():
-    block = read("ruqqus", "routes", "settings.py").split("def settings_block_user(")[1].split("\n@app.route")[0]
-    assert "circle_store.end_between(g.db, v.id, user.id)" in block
-    assert block.index("on_block_created(v, user)") < block.index("circle_store.end_between(")
+    # the Block button and the block-list import both go through helpers/blocklist.py `block_account`
+    route = read("ruqqus", "routes", "settings.py").split("def settings_block_user(")[1].split("\n@app.route")[0]
+    assert "blocklist.block_account(g.db, v, user)" in route
+    block = read("ruqqus", "helpers", "blocklist.py").split("def block_account(")[1].split("\ndef ")[0]
+    assert "circle_store.end_between(db, blocker.id, target.id)" in block
+    assert block.index("on_block_created(blocker, target)") < block.index("circle_store.end_between(")
     # the only place a UserBlock is made
-    assert sum(path.read_text(encoding="utf-8").count("UserBlock(") for path in (ROOT / "ruqqus" / "routes").glob("*.py")) == 1
+    made = sum(path.read_text(encoding="utf-8").count("UserBlock(")
+               for folder in ("routes", "helpers") for path in (ROOT / "ruqqus" / folder).glob("*.py"))
+    assert made == 1
 
 
 # --- the coins ----------------------------------------------------------------------------------------
@@ -207,8 +214,14 @@ def test_the_profile_offers_paid_circles_and_add_to_circles_and_never_says_you_w
     header = read("ruqqus", "templates", "partials", "profile_header.html")
     assert '{% include "partials/profile_header.html" %}' in read("ruqqus", "templates", "userpage.html")
     assert "{% set st = circle_status(u, v) %}" in header
-    assert "app.jinja_env.globals.update(circle_status=circle_status, circle_choices=circle_choices)" in ROUTES
-    assert "circle-join" in header and "/api/circles/{{ c.id }}/subscribe" in header
+    assert "app.jinja_env.globals.update(circle_status=circle_status, circle_choices=circle_choices," in ROUTES
+    # Subscribe opens the subscribe sheet (no browser confirm), which posts to the existing routes
+    assert "circle-join" in header and 'data-circle-open="{{ c.id }}"' in header and "confirm(" not in header
+    assert "subscribe_sheet(u, st.paid, v)" in header and "js/circle_subscribe.js" in header
+    sheet_html = read("ruqqus", "templates", "partials", "circle_subscribe_modal.html")
+    sheet_js = read("ruqqus", "assets", "js", "circle_subscribe.js")
+    assert "| safe" not in sheet_html and 'data-circle-subscribe="{{ c.id }}"' in sheet_html
+    assert "'/subscribe'" in sheet_js and "'/cancel'" in sheet_js and "innerHTML" not in sheet_js
     assert 'data-circle-member="{{ u.username }}"' in header and '{% include "partials/circle_member_modal.html" %}' in header
     for gone in ("In their Circle", "circle-friend-add", "you_added", "Close Friends"):
         assert gone not in header, gone

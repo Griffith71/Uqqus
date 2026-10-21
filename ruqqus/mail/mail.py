@@ -12,24 +12,44 @@ from ruqqus.classes import *
 from ruqqus.__main__ import app
 
 
-def send_mail(to_address, subject, html, plaintext=None, files={},
-              from_address="Ruqqus <noreply@mail.ruqqus.com>"):
+def mail_settings():
+    """(Mailgun key, sending domain, From line) from the environment: `MAILGUN_KEY`, `MAILGUN_DOMAIN` (default
+    `mail.<the site's name>`) and `MAIL_FROM` (default "<SITE_NAME> <noreply@domain>"). The key may be empty."""
+    key = (environ.get("MAILGUN_KEY") or "").strip()
+    domain = (environ.get("MAILGUN_DOMAIN") or "").strip() or f"mail.{app.config['SERVER_NAME']}"
+    sender = (environ.get("MAIL_FROM") or "").strip() or f"{app.config['SITE_NAME']} <noreply@{domain}>"
+    return key, domain, sender
 
-    url = "https://api.mailgun.net/v3/mail.ruqqus.com/messages"
 
-    data = {"from": from_address,
+def send_mail(to_address, subject, html, plaintext=None, files={}, from_address=None):
+    """Sends one email through Mailgun; None when no key is set (nothing is sent, and nothing crashes)."""
+    key, domain, sender = mail_settings()
+    if not key:
+        print("mail not sent: MAILGUN_KEY is not set", flush=True)
+        return None
+
+    data = {"from": from_address or sender,
             "to": [to_address],
             "subject": subject,
             "text": plaintext,
             "html": html,
             }
 
-    return requests.post(url,
-                         auth=(
-                             "api", environ.get("MAILGUN_KEY").lstrip().rstrip()),
+    return requests.post(f"https://api.mailgun.net/v3/{domain}/messages",
+                         auth=("api", key),
                          data=data,
-                         files=[("attachment", (k, files[k])) for k in files]
+                         files=[("attachment", (k, files[k])) for k in files],
+                         timeout=15
                          )
+
+
+def send_mail_quietly(to_address, subject, html):
+    """`send_mail` for the emails nobody waits for (a sign-in alert): never raises, so a mail outage can't touch the
+    request or the greenlet that sent it."""
+    try:
+        send_mail(to_address, subject, html)
+    except Exception as e:
+        print(f"mail not sent: {type(e).__name__}", flush=True)
 
 
 def send_verification_email(user, email=None):
@@ -49,12 +69,13 @@ def send_verification_email(user, email=None):
               html=render_template("email/email_verify.html",
                                    action_url=link,
                                    v=user),
-              subject="Validate your Ruqqus account email."
+              subject=f"Validate your {app.config['SITE_NAME']} account email."
               )
 
 
 @app.route("/api/verify_email", methods=["POST"])
 @is_not_banned
+@validate_formkey
 def api_verify_email(v):
 
     send_verification_email(v)

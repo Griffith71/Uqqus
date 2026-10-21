@@ -15,6 +15,8 @@ from ruqqus.helpers.markdown import *
 import ruqqus.classes
 from ruqqus.classes import *
 from ruqqus.mail import *
+from ruqqus.helpers import mfa_backup_store, sign_in_history
+from ruqqus.helpers.regions import COUNTRY_NAMES
 from ruqqus.__main__ import app, limiter, db_session
 
 # take care of misc pages that never really change (much)
@@ -199,20 +201,12 @@ def help_admins(v):
 @auth_required
 def settings_security(v):
     mfa_secret=pyotp.random_base32() if not v.mfa_secret else None
-    if mfa_secret:
-        recovery=f"{mfa_secret}+{v.id}+{v.original_username}"
-        recovery=generate_hash(recovery)
-        recovery=base36encode(int(recovery,16))
-        while len(recovery)<25:
-            recovery="0"+recovery
-        recovery=" ".join([recovery[i:i+5] for i in range(0,len(recovery),5)])
-    else:
-        recovery=None
     return render_template(
             "settings_security.html",
             v=v,
             mfa_secret=mfa_secret,
-            recovery=recovery,
+            **mfa_backup_store.page_context(g.db, v),
+            **sign_in_history.page_context(g.db, v, COUNTRY_NAMES),
             error=request.args.get("error") or None,
             msg=request.args.get("msg") or None
         )

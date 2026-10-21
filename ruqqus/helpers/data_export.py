@@ -11,7 +11,7 @@ from sqlalchemy import text
 
 SECTIONS = (
     ("account", "SELECT id, username, display_name, email, bio, profile_job, profile_location, profile_website, "
-                "created_utc, coin_balance, premium_expires_utc, filter_level FROM users WHERE id = :u"),
+                "created_utc, coin_balance, premium_expires_utc, filter_level, signin_alerts FROM users WHERE id = :u"),
     ("posts", "SELECT s.id, s.created_utc, s.edited_utc, s.deleted_utc, a.title, a.url, a.body, s.board_id, "
               "s.is_anonymous FROM submissions s JOIN submissions_aux a ON a.id = s.id "
               "WHERE s.author_id = :u ORDER BY s.id"),
@@ -35,7 +35,10 @@ SECTIONS = (
                       "JOIN collab_authors a ON a.doc_id = d.id WHERE a.user_id = :u"),
     ("event_answers", "SELECT event_id, status, created_utc FROM guild_event_rsvps WHERE user_id = :u"),
     ("tips_given", "SELECT submission_id, comment_id, coins, created_utc FROM award_relationships WHERE user_id = :u"),
-    ("sign_ins", "SELECT created_utc, ip, cf_country FROM login_events WHERE user_id = :u ORDER BY created_utc DESC"),
+    ("sign_ins", "SELECT created_utc, ip, cf_country, user_agent FROM login_events WHERE user_id = :u ORDER BY created_utc DESC"),
+    # the codes themselves are never exported (the site keeps only a hash); this is how many are left
+    ("two_factor", "SELECT (SELECT count(*) FROM mfa_backup_codes WHERE user_id = :u AND used_utc = 0) AS unused_backup_codes, "
+                   "(mfa_secret IS NOT NULL) AS two_factor_on FROM users WHERE id = :u"),
     ("linked_storage", "SELECT provider, status, created_utc FROM media_accounts WHERE user_id = :u"),
 )
 

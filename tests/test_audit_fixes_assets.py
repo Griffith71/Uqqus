@@ -173,6 +173,18 @@ def test_random_lands_only_on_what_anyone_may_open():
     assert "is_deleted=False" in user and "filter_users(x, v)" in user and "abort(404)" in user
 
 
+def test_the_random_button_is_one_click_a_third_each():
+    # no dropdown: /random picks a guild, a post or a comment through their own routes and their own rules
+    src = read("routes", "front.py")
+    anything = func(src, "random_anything")
+    assert '{"guild": random_guild, "post": random_post, "comment": random_comment}' in anything
+    assert "random.sample(list(pick), 3)" in anything and "except NotFound:" in anything and "abort(404)" in anything
+    for shell in ("default.html", "header.html"):
+        html = read("templates", shell)
+        assert html.count('href="/random"') == 2, shell              # signed in, and a visitor
+        assert "View random" not in html and 'href="/random/post"' not in html, shell
+
+
 def test_a_block_never_drops_an_anonymous_item_from_a_list():
     # dropping it would tell the viewer which anonymous items the blocked account wrote
     pat = re.compile(r"(?<!or_\()\b(Submission|Comment)\.author_id\.notin_\((blocking|blocked)\)")
@@ -397,7 +409,9 @@ def test_follow_respects_blocks_and_account_state_and_a_block_ends_follows():
     assert "You can't follow this account." in follow
     assert "@validate_formkey\ndef follow_user(" in users and "@validate_formkey\ndef unfollow_user(" in users
     block = func(read("routes", "settings.py"), "settings_block_user")
-    assert "g.db.query(Follow).filter(or_(" in block and 'f"You can\'t block @{user.username}."' in block
+    assert "blocklist.block_account(g.db, v, user)" in block         # the Block button and the import share one routine
+    shared = read("helpers", "blocklist.py")
+    assert "db.query(Follow).filter(or_(" in shared and "You can't block @{name}." in shared
     page = read("templates", "userpage.html")
     assert page.count("not u.is_private and not u.is_nofollow") >= 2   # desktop and phone
 
@@ -719,3 +733,42 @@ def test_every_template_compiles():
         except jinja2.TemplateSyntaxError as e:
             broken.append(f"{name}:{e.lineno}: {e.message}")
     assert not broken, "\n".join(broken)
+
+
+def test_verify_email_needs_the_form_key_and_v1_is_token_only():
+    """`/api/verify_email` sends mail, so another site must not be able to trigger it (2026-10-21). The `/api/v1` paths
+    skip the form key in `validate_formkey` because they accept an OAuth bearer token only: a session cookie does not
+    authenticate them (`get_logged_in_user`; `tests/test_votes.py::test_v1_post_ignores_session_cookie`)."""
+    mail = (ROOT / "ruqqus" / "mail" / "mail.py").read_text(encoding="utf-8")
+    route = mail.split('@app.route("/api/verify_email", methods=["POST"])', 1)[1].split("def api_verify_email", 1)[0]
+    assert "@validate_formkey" in route and "@is_not_banned" in route
+    wrappers = (ROOT / "ruqqus" / "helpers" / "wrappers.py").read_text(encoding="utf-8")
+    auth = wrappers.split("def get_logged_in_user", 1)[1].split("elif 'user_id' in flask_session", 1)[0]
+    assert 'request.path.startswith("/api/v1")' in auth and "Authorization" in auth
+
+
+def test_every_page_is_drawn_with_a_viewer():
+    """A page that extends the site layout reads `v` (the navbar, the sidebar's `v.has_premium`), and Jinja raises on
+    an attribute of an undefined name but not of None. So a route that draws a page for a visitor passes `v=None`
+    (2026-10-21: the password reset's "Password reset successful" page crashed after the password was changed).
+    Email templates are drawn for the recipient and are exempt."""
+    import ast
+    bad = []
+    for path in sorted((ROOT / "ruqqus").rglob("*.py")):
+        try:
+            tree = ast.parse(path.read_text(encoding="utf-8"))
+        except SyntaxError:
+            continue
+        for node in ast.walk(tree):
+            if not (isinstance(node, ast.Call) and getattr(node.func, "id", getattr(node.func, "attr", "")) == "render_template"):
+                continue
+            if not node.args or not isinstance(node.args[0], ast.Constant) or not isinstance(node.args[0].value, str):
+                continue
+            keywords = {k.arg for k in node.keywords}
+            name = node.args[0].value
+            if None in keywords or "v" in keywords or name.startswith("email/"):
+                continue                                           # **context, or the viewer is given, or an email
+            template = ROOT / "ruqqus" / "templates" / name
+            if template.exists() and "{% extends" in template.read_text(encoding="utf-8"):
+                bad.append(f"{path.relative_to(ROOT).as_posix()}:{node.lineno} {name}")
+    assert not bad, "pages drawn without v:\n" + "\n".join(bad)

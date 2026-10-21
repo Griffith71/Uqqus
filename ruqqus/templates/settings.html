@@ -297,6 +297,7 @@
 
 <script src="{{ asset_url('js/all_js.js') }}"></script>
 <script src="{{ asset_url('js/chat_key.js') }}"></script>
+{% if new_backup_codes %}<script src="{{ asset_url('js/backup_codes.js') }}"></script>{% endif %}
 
 {% block onload %}{% endblock %}
 

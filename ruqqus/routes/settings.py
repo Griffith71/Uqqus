@@ -16,12 +16,16 @@ from ruqqus.helpers.discord import remove_user, set_nick
 from ruqqus.helpers.aws import *
 from ruqqus.helpers.chat_permissions import on_block_created
 from ruqqus.helpers import circle_store
+from ruqqus.helpers import blocklist
+from ruqqus.helpers import account_sessions, mfa_backup, mfa_backup_store, sign_in_history
+from ruqqus.helpers.regions import COUNTRY_NAMES
+from ruqqus.helpers import totp as totp_rules
 from ruqqus.helpers import post_feedback as post_feedback_rules
 from ruqqus.helpers import muting as muting_rules
 from ruqqus.helpers import sensitive as sensitive_rules
 from ruqqus.mail import *
 from .front import frontlist
-from ruqqus.__main__ import app, cache, limiter
+from ruqqus.__main__ import app, cache, limiter, r
 from flask import session as flask_session
 from markupsafe import escape        # flask.escape went with Flask 3: every message of the security form crashed
 
@@ -244,6 +248,16 @@ def settings_profile_post(v):
         return jsonify({"error": "You didn't change anything."}), 400
 
 
+def _backup_codes_page(v, codes, msg):
+    """The Security page with a set of backup codes in it, this once: not cached, never in an address."""
+    page = make_response(render_template(
+        "settings_security.html", v=v, mfa_secret=None, error=None, msg=msg,
+        new_backup_codes=[mfa_backup.display(c) for c in codes], **mfa_backup_store.page_context(g.db, v),
+        **sign_in_history.page_context(g.db, v, COUNTRY_NAMES)))
+    page.headers["Cache-Control"] = "no-store"
+    return page
+
+
 @app.route("/settings/security", methods=["POST"])
 @auth_required
 @validate_formkey
@@ -265,6 +279,7 @@ def settings_security_post(v):
                 "settings_security.html", v=v, error="Incorrect password")
 
         v.passhash = v.hash_password(request.form.get("new_password"))
+        account_sessions.end_other_sessions(v, flask_session)       # whoever held the old password is signed out
 
         g.db.add(v)
 
@@ -279,7 +294,7 @@ def settings_security_post(v):
                 g.db.add(identity)
 
         return redirect("/settings/security?msg=" +
-                        escape("Your password has been changed."))
+                        escape("Your password has been changed. " + account_sessions.OTHERS_SIGNED_OUT))
 
     if request.form.get("new_email"):
 
@@ -330,19 +345,40 @@ def settings_security_post(v):
             return redirect("/settings/security?error=" +
                             escape("Invalid password or token."))
 
+        # already on: the secret is not replaced by whoever has the password and a session (that would swap the
+        # account's authenticator for theirs without ever needing the old one); turn it off first, with a code
+        if v.mfa_secret:
+            return redirect("/settings/security?error=" +
+                            escape("Two-factor authentication is already on. Turn it off first to set up a new device."))
+
         secret = request.form.get("2fa_secret") or ""
         if not re.fullmatch(r"[A-Z2-7]{16,64}", secret):
             return redirect("/settings/security?error=" + escape("Invalid password or token."))
-        x = pyotp.TOTP(secret)
-        if not x.verify(request.form.get("2fa_token"), valid_window=1):
+        step = totp_rules.matched_step(secret, request.form.get("2fa_token"))
+        if step is None:
             return redirect("/settings/security?error=" +
                             escape("Invalid password or token."))
+        totp_rules.claim(r, v.id, step)               # that code is spent: it can't switch two-factor off a moment later
 
         v.mfa_secret = secret
+        account_sessions.end_other_sessions(v, flask_session)
         g.db.add(v)
 
-        return redirect("/settings/security?msg=" +
-                        escape("Two-factor authentication enabled."))
+        # the account's first backup codes, shown once, here
+        codes = mfa_backup.generate()
+        mfa_backup_store.replace(g.db, v.id, codes, int(time.time()))
+        return _backup_codes_page(v, codes, "Two-factor authentication is on. " + account_sessions.OTHERS_SIGNED_OUT)
+
+    if request.form.get("new_backup_codes", ""):
+
+        if not v.mfa_secret:
+            return redirect("/settings/security?error=" + escape("Turn on two-factor authentication first."))
+        if not v.verifyPass(request.form.get("password")) or not v.accept_2fa(request.form.get("new_backup_codes")):
+            return redirect("/settings/security?error=" + escape("Invalid password or code."))
+
+        codes = mfa_backup.generate()                 # every earlier code, used or not, stops working
+        mfa_backup_store.replace(g.db, v.id, codes, int(time.time()))
+        return _backup_codes_page(v, codes, "Your new backup codes are below. The old ones no longer work.")
 
     if request.form.get("2fa_remove", ""):
 
@@ -350,17 +386,36 @@ def settings_security_post(v):
             return redirect("/settings/security?error=" +
                             escape("Invalid password or token."))
 
-        token = request.form.get("2fa_remove")
+        token = request.form.get("2fa_remove") or ""
 
-        if not v.validate_2fa(token) and not safe_compare(v.mfa_removal_code, token.lower().replace(' ','')):
+        # an authenticator code (accepted once), a backup code (spent), or the older recovery code, which only an
+        # account with no backup codes still has (helpers/mfa_backup.py)
+        if not (v.accept_2fa(token)
+                or mfa_backup_store.spend(g.db, v.id, token, int(time.time()))
+                or (mfa_backup.legacy_code_allowed(mfa_backup_store.has_codes(g.db, v.id))
+                    and safe_compare(v.mfa_removal_code, token.lower().replace(' ', '')))):
             return redirect("/settings/security?error=" +
                             escape("Invalid password or token."))
 
         v.mfa_secret = None
+        mfa_backup_store.delete_all(g.db, v.id)       # no second factor, no codes
+        account_sessions.end_other_sessions(v, flask_session)
         g.db.add(v)
 
         return redirect("/settings/security?msg=" +
-                        escape("Two-factor authentication disabled."))
+                        escape("Two-factor authentication disabled. " + account_sessions.OTHERS_SIGNED_OUT))
+
+    if request.form.get("signin_alerts_form", ""):
+
+        # switching a security notice off is a security change, so it asks for the password like the others
+        if not v.verifyPass(request.form.get("password")):
+            return redirect("/settings/security?error=" + escape("Invalid password."))
+
+        v.signin_alerts = bool(request.form.get("signin_alerts"))
+        g.db.add(v)
+
+        return redirect("/settings/security?msg=" + escape(
+            "We'll email you about sign-ins from somewhere new." if v.signin_alerts else "Sign-in emails are off."))
 
     # a form with none of the fields above (audit CR-04: it fell through and answered 500)
     return redirect("/settings/security?error=" + escape("Nothing to change."))
@@ -402,11 +457,7 @@ def settings_log_out_others(v):
         return render_template("settings_security.html",
                                v=v, error="Incorrect Password"), 401
 
-    # increment account's nonce
-    v.login_nonce += 1
-
-    # update cookie accordingly
-    flask_session["login_nonce"] = v.login_nonce
+    account_sessions.end_other_sessions(v, flask_session)
 
     g.db.add(v)
 
@@ -536,7 +587,8 @@ def _leave_chat_groups(v):
 def delete_account(v):
 
     if not v.verifyPass(request.form.get("password", "")) or (
-            v.mfa_secret and not v.validate_2fa(request.form.get("twofactor", ""))):
+            v.mfa_secret and not (v.accept_2fa(request.form.get("twofactor", ""))
+                                  or mfa_backup_store.spend(g.db, v.id, request.form.get("twofactor", ""), int(time.time())))):
         return render_template("settings_security.html", v=v,
                                error="Invalid password or token" if v.mfa_secret else "Invalid password")
 
@@ -628,10 +680,14 @@ def settings_blockedpage(v):
 
     show = "guilds" if request.args.get("show") == "guilds" else "accounts"
 
+    counts = blocklist.counts_from_query(request.args.get("done"))
     return render_template("settings_blocks.html",
                            v=v,
                            show=show,
-                           muted=muted_accounts(v) if show == "accounts" else [])
+                           muted=muted_accounts(v) if show == "accounts" else [],
+                           msg=blocklist.summary(counts) if counts else None,
+                           error=blocklist.PROBLEMS.get(request.args.get("problem")),
+                           max_import=blocklist.MAX_NAMES)
 
 
 @app.route("/settings/filters", methods=["GET"])
@@ -648,47 +704,61 @@ def settings_block_user(v):
 
     user = get_user(request.values.get("username"), graceful=True)
 
-    if not user:
-        return jsonify({"error": "That user doesn't exist."}), 404
+    done = blocklist.block_account(g.db, v, user)
+    if done != "blocked":
+        message, status = blocklist.REFUSALS[done]
+        return jsonify({"error": message.format(name=user.username if user else "")}), status
 
-    if user.id == v.id:
-        return jsonify({"error": "You can't block yourself."}), 409
+    _forget_block_caches(v)
 
-    if v.has_block(user):
-        return jsonify({"error": f"You have already blocked @{user.username}."}), 409
+    return jsonify({"message": f"@{user.username} blocked."})
 
-    if user.id == 1:
-        return jsonify({"error": f"You can't block @{user.username}."}), 409
 
-    if user.is_deleted:
-        return jsonify({"error": "That account has been deactivated"}), 410
-    
-    new_block = UserBlock(user_id=v.id,
-                          target_id=user.id,
-                          created_utc=int(time.time())
-                          )
-    g.db.add(new_block)
-    g.db.commit()
-
-    on_block_created(v, user)
-
-    # a block takes each of you out of the other's Circle (friends go, subscriptions end; no refund)
-    circle_store.end_between(g.db, v.id, user.id)
-
-    # and ends the follows both ways (a blocked account could not follow you again either, routes/users.py)
-    g.db.query(Follow).filter(or_(and_(Follow.user_id == v.id, Follow.target_id == user.id),
-                                  and_(Follow.user_id == user.id, Follow.target_id == v.id))).delete(synchronize_session=False)
-    g.db.flush()
-    for account in (v, user):
-        account.stored_subscriber_count = account.follower_count
-        g.db.add(account)
-    g.db.commit()
-
+def _forget_block_caches(v):
     cache.delete_memoized(v.idlist)
     #cache.delete_memoized(Board.idlist, v=v)
     cache.delete_memoized(frontlist, v=v)
 
-    return jsonify({"message": f"@{user.username} blocked."})
+
+@app.route("/settings/blocks/export", methods=["GET"])
+@limiter.limit("5/day")
+@auth_required
+def settings_blocks_export(v):
+    """Your blocked and muted accounts as a CSV (`kind,username`), to keep or to import somewhere else."""
+    from sqlalchemy import select as sa_select
+    blocked = [r[0] for r in g.db.execute(sa_select(User.username).join(UserBlock, UserBlock.target_id == User.id).where(
+        UserBlock.user_id == v.id, User.is_deleted == False))]
+    muted = [r[0] for r in g.db.execute(sa_select(User.username).join(UserMute, UserMute.target_id == User.id).where(
+        UserMute.user_id == v.id, User.is_deleted == False))]
+    resp = make_response(blocklist.render(blocked, muted))
+    resp.headers["Content-Type"] = "text/csv; charset=utf-8"
+    resp.headers["Content-Disposition"] = f'attachment; filename="{v.username}-blocklist.csv"'
+    resp.headers["Cache-Control"] = "no-store"
+    return resp
+
+
+@app.route("/settings/blocks/import", methods=["POST"])
+@limiter.limit("5/day")
+@auth_required
+@validate_formkey
+def settings_blocks_import(v):
+    """Blocks and mutes the accounts in an uploaded file or a pasted list (at most 200). Every account goes through
+    the same routine as the Block button; the answer is counts only (helpers/blocklist.py)."""
+    upload = request.files.get("file")
+    raw = request.form.get("names", "")
+    if upload and upload.filename:
+        raw = upload.read(blocklist.MAX_CHARS + 1).decode("utf-8", errors="replace")
+    rows, problem = blocklist.parse(raw)
+    if problem:
+        return redirect("/settings/blocks?show=accounts&problem=" + problem)
+
+    counts, muted_any = blocklist.run_import(g.db, v, rows, lambda name: get_user(name, graceful=True))
+    _forget_block_caches(v)
+    if muted_any:
+        from ruqqus.helpers import muting
+        muting.forget(v)
+        muting.clear_cached_feeds(v)
+    return redirect("/settings/blocks?show=accounts&done=" + blocklist.counts_to_query(counts))
 
 
 @app.route("/settings/unblock", methods=["POST"])

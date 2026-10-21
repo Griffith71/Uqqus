@@ -24,6 +24,18 @@
     </div>
     {% endif %}
 
+    {% if msg %}
+    <div class="alert alert-success alert-dismissible fade show my-3" role="status">
+      <i class="fas fa-check-circle my-auto" aria-hidden="true"></i>
+      <span>
+        {{ msg }}
+      </span>
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true"><i class="fas fa-times"></i></span>
+      </button>
+    </div>
+    {% endif %}
+
   </div>
 
 </div>
@@ -90,6 +102,12 @@
       <div class="mt-3 mt-md-auto">
         <button type="button" class="btn btn-primary text-nowrap" data-toggle="modal" data-target="#guildmasterExileModal">Block account</button>
       </div>
+    </div>
+
+    <div class="d-flex flex-wrap align-items-center mb-3" id="blocklist-file">
+      <a class="btn btn-secondary btn-sm mr-2" href="/settings/blocks/export"><i class="fas fa-download mr-1" aria-hidden="true"></i>Export list</a>
+      <button type="button" class="btn btn-secondary btn-sm mr-2" data-toggle="modal" data-target="#importBlocklistModal"><i class="fas fa-upload mr-1" aria-hidden="true"></i>Import list</button>
+      <span class="text-small text-muted">Your blocked and muted accounts as a file you can keep or bring to another account.</span>
     </div>
 
     {% set blocks = v.blocking | rejectattr('target.is_deleted') | rejectattr('target.is_suspended') | list %}
@@ -214,6 +232,34 @@
         <div class="modal-footer">
           <button type="button" class="btn btn-link text-muted" data-dismiss="modal">Cancel</button>
           <button type="button" class="btn btn-primary" id="exileUserButton" onclick="block_user()">Block account</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Import list dialog -->
+<div class="modal fade" id="importBlocklistModal" tabindex="-1" role="dialog" aria-labelledby="importBlocklistModalTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <form action="/settings/blocks/import" method="post" enctype="multipart/form-data">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="importBlocklistModalTitle">Import a list</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true"><i class="fas fa-times"></i></span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <p class="text-small">Choose a file exported from here (<code>kind,username</code>), or paste usernames, one per line (those are blocked). Up to {{ max_import }} names. Every account is blocked the same way the Block button does it, and you are told only how many were done.</p>
+          <input type="hidden" name="formkey" value="{{ v.formkey }}">
+          <label for="blocklist-file-input">File</label>
+          <input type="file" name="file" id="blocklist-file-input" class="form-control-file mb-3" accept=".csv,.txt,text/csv,text/plain">
+          <label for="blocklist-names">Or paste usernames</label>
+          <textarea name="names" id="blocklist-names" class="form-control" rows="5" spellcheck="false" autocomplete="off" placeholder="alice&#10;bob"></textarea>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-link text-muted" data-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn btn-primary">Import</button>
         </div>
       </div>
     </form>
