@@ -1,0 +1,4 @@
+{# page-view statistics from the owner's own Plausible server (helpers/analytics.py): nothing unless PLAUSIBLE_SRC is set #}
+{% if 'ANALYTICS_SRC' | app_config %}
+<script defer data-domain="{{ 'ANALYTICS_DOMAIN' | app_config }}" src="{{ 'ANALYTICS_SRC' | app_config }}"></script>
+{% endif %}

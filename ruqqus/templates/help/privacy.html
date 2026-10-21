@@ -51,6 +51,12 @@ Deleting a post or comment takes it off your profile, feeds and guilds, but not 
 <p>When something on {{ 'SITE_NAME' | app_config }} breaks, the error is reported to an error-tracking service so it can be fixed. A report holds the error, the part of the code that failed and which page type it was. Before it leaves our server we remove the rest: what you typed, your cookies, the address you were on beyond its path, your account, your IP address and the values in a database error. It is used to fix errors and for nothing else.</p>
 {% endif %}
 
+{% if 'ANALYTICS_SRC' | app_config %}
+<h2 id="analytics">Page-view statistics</h2>
+
+<p>{{ 'SITE_NAME' | app_config }} counts page views with Plausible Analytics, run on a server of our own at {{ 'ANALYTICS_HOST' | app_config }}. It sets no cookies and keeps no IP address: it records the page, the site you came from, your browser, system and country, counted together with everyone else's. We use it to see which pages are used and for nothing else.</p>
+{% endif %}
+
 {% if ads_configured() %}
 <h2 id="ads">Ads</h2>
 

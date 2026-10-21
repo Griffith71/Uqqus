@@ -94,3 +94,22 @@ def test_running_the_site_bots_migration_again_keeps_own_account_rows(pg_engine)
             conn.rollback()
             conn.execute(text("DELETE FROM bots WHERE user_id = :u"), {"u": uid})
             conn.commit()
+
+
+# ---------------------------------------------------------------- H7: analytics only from the owner's own host
+
+def test_h7_the_analytics_script_is_drawn_only_while_set_and_the_privacy_page_names_it(real_app, monkeypatch):
+    app, _ = real_app
+    off = app.test_client().get("/help/privacy", base_url=BASE).get_data(as_text=True)
+    assert "ruqqus.com/js" not in off and 'id="analytics"' not in off and "stats.example.org" not in off
+    monkeypatch.setitem(app.config, "ANALYTICS_SRC", "https://stats.example.org/js/script.js")
+    monkeypatch.setitem(app.config, "ANALYTICS_DOMAIN", "laba.example")
+    monkeypatch.setitem(app.config, "ANALYTICS_HOST", "stats.example.org")
+    # Jinja folds `'NAME' | app_config` into the compiled template, and the app keeps compiled templates for good
+    # (config doesn't change while a site runs): draw these pages from a fresh cache, put back after the test
+    monkeypatch.setattr(app.jinja_env, "cache", {})
+    page = app.test_client().get("/help/privacy", base_url=BASE).get_data(as_text=True)
+    assert '<script defer data-domain="laba.example" src="https://stats.example.org/js/script.js"></script>' in page
+    assert 'id="analytics"' in page and "at stats.example.org." in page
+    home = app.test_client().get("/", base_url=BASE, follow_redirects=True).get_data(as_text=True)
+    assert home.count('src="https://stats.example.org/js/script.js"') == 1, "and on the site's own layout"

@@ -132,6 +132,12 @@ class DomainMatcher(str):
 
 app.config["SERVER_NAME"] = SERVER_NAME #DomainMatcher(SERVER_NAME, ONION_NAME)
 
+# page-view analytics from a host the owner runs (helpers/analytics.py): off unless PLAUSIBLE_SRC is set; the
+# privacy page names it only while it is on
+from ruqqus.helpers import analytics
+app.config["ANALYTICS_SRC"], app.config["ANALYTICS_DOMAIN"] = analytics.settings(environ, SERVER_NAME)
+app.config["ANALYTICS_HOST"] = analytics.host_of(app.config["ANALYTICS_SRC"])
+
 # Matrix-backed chat - the homeserver is a separate, internal-only
 # service (see docker-compose.yml's `synapse` service); the app talks to
 # it server-side via an Application Service token (never exposed to the

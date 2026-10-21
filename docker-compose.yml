@@ -47,6 +47,9 @@ services:
       - ADSENSE_SLOT_POST=${ADSENSE_SLOT_POST:-}
       - ADSENSE_SLOT_SIDEBAR=${ADSENSE_SLOT_SIDEBAR:-}
       - ADSENSE_FEED_LAYOUT_KEY=${ADSENSE_FEED_LAYOUT_KEY:-}
+      # page-view statistics from your own Plausible server (ruqqus/helpers/analytics.py): empty = off
+      - PLAUSIBLE_SRC=${PLAUSIBLE_SRC:-}
+      - PLAUSIBLE_DOMAIN=${PLAUSIBLE_DOMAIN:-}
 
       - HCAPTCHA_SECRET=5436ertfgcvbnfgcy
       - CLOUDFLARE_KEY=5436ertfgcvbnfgcy

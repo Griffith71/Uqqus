@@ -52,8 +52,8 @@ On {{ 'SITE_NAME' | app_config }}, you can use Markdown formatting.
   </tr>
   <tr>
     <td>Image embeds*</td>
-    <td>![](https://i.ruqqus.com/post/67x/EaNkUiAv7UQ)</td>
-    <td><a data-target="#expandImageModal" data-toggle="modal" href="https://i.ruqqus.com/post/67x/EaNkUiAv7UQ" onclick="expandDesktopImage('https://i.ruqqus.com/post/67x/EaNkUiAv7UQ');" rel="nofollow" target="_blank"><img class="in-comment-image rounded-sm my-2" rel="nofollow" src="https://i.ruqqus.com/post/67x/EaNkUiAv7UQ" style="max-height: 100px; max-width: 100%;"></a></td>
+    <td>![]({{ request.url_root }}assets/images/illustrations/reader.png)</td>
+    <td><a data-target="#expandImageModal" data-toggle="modal" href="{{ request.url_root }}assets/images/illustrations/reader.png" onclick="expandDesktopImage('{{ request.url_root }}assets/images/illustrations/reader.png');" rel="nofollow" target="_blank"><img class="in-comment-image rounded-sm my-2" rel="nofollow" src="{{ request.url_root }}assets/images/illustrations/reader.png" style="max-height: 100px; max-width: 100%;"></a></td>
   </tr>
 </table></div>
 
