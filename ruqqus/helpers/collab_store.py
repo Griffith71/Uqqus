@@ -60,13 +60,13 @@ def create(db, creator_id, now, *, title="", body="", runs=None, forked_from=Non
     """A new draft with its creator as the one author. `runs` keeps who typed a fork's text."""
     runs = runs or {"title": authorship.for_text(title, creator_id), "body": authorship.for_text(body, creator_id)}
     fork = forked_from or {}
-    db.execute(text(f"""INSERT INTO collab_docs (creator_id, title, body, revision, authorship, rules, post_id,
+    # RETURNING, not MAX(id) afterwards: two drafts made at once by one member could take each other's id (bug hunt)
+    doc_id = db.execute(text(f"""INSERT INTO collab_docs (creator_id, title, body, revision, authorship, rules, post_id,
                           published_revision, forked_from_doc_id, forked_from_post_id, forked_at_publish_id, created_utc,
                           updated_utc, deleted_utc)
-                        VALUES (:c, :t, :b, 0, :a, :r, NULL, 0, :fd, :fp, :fx, :now, :now, 0)"""),
+                        VALUES (:c, :t, :b, 0, :a, :r, NULL, 0, :fd, :fp, :fx, :now, :now, 0) RETURNING id"""),
                {"c": creator_id, "t": title, "b": body, "a": _dumps(runs), "r": _dumps(rules.DEFAULT_RULES),
-                "fd": fork.get("doc_id"), "fp": fork.get("post_id"), "fx": fork.get("publish_id"), "now": now})
-    doc_id = db.execute(text("SELECT MAX(id) FROM collab_docs WHERE creator_id = :c"), {"c": creator_id}).scalar()
+                "fd": fork.get("doc_id"), "fp": fork.get("post_id"), "fx": fork.get("publish_id"), "now": now}).scalar()
     db.execute(text("INSERT INTO collab_authors (doc_id, user_id, joined_utc, left_utc) VALUES (:d, :u, :now, 0)"),
                {"d": doc_id, "u": creator_id, "now": now})
     return doc_id
@@ -279,13 +279,11 @@ def publish_by_id(db, publish_id):
 # --- proposals and votes -----------------------------------------------------------------------------------------
 
 def propose(db, doc_id, kind, proposed_by, now, closes_utc, *, subject=None, payload=None):
-    db.execute(text("""INSERT INTO collab_proposals (doc_id, kind, subject_user_id, payload, proposed_by, created_utc,
+    return db.execute(text("""INSERT INTO collab_proposals (doc_id, kind, subject_user_id, payload, proposed_by, created_utc,
                          closes_utc, decided_utc, outcome, invitee_answer)
-                       VALUES (:d, :k, :s, :p, :by, :now, :closes, 0, 'open', '')"""),
+                       VALUES (:d, :k, :s, :p, :by, :now, :closes, 0, 'open', '') RETURNING id"""),
                {"d": doc_id, "k": kind, "s": subject, "p": _dumps(payload or {}), "by": proposed_by, "now": now,
-                "closes": closes_utc})
-    return db.execute(text("SELECT MAX(id) FROM collab_proposals WHERE doc_id = :d AND proposed_by = :by"),
-                      {"d": doc_id, "by": proposed_by}).scalar()
+                "closes": closes_utc}).scalar()
 
 
 def proposal(db, doc_id, proposal_id):
