@@ -918,10 +918,10 @@ def mod_invite_username(bid, board, v):
         perm_config=True
         )
 
+    g.db.add(x)               # before the notice, which commits: the replaced row and the new one go together
+
     text = f"You have been invited to join +{board.name} as a guildmaster. You can [click here]({board.permalink}/mod/mods) and accept this invitation. Or, if you weren't expecting this, you can ignore it."
     send_notification(user, text)
-
-    g.db.add(x)
 
     ma=ModAction(
         kind="invite_mod",
