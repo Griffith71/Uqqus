@@ -164,7 +164,10 @@ def post_flair_set(pid, v):
         return _error("Only a guild's copy of a post has a flair.", 409)
     mod = board.has_mod(v)
     is_content_gm = bool(mod) and (mod.perm_content or mod.perm_full) and not v.is_suspended
-    if not flair_rules.may_set(v.id, _forwarder_id(post), is_content_gm):
+    # the forwarder only while they still take part (bug hunt: an exiled or suspended forwarder, and a Circle guild's
+    # author who had left it, could still label the copy in a guild that no longer has them)
+    takes_part = not (v.is_suspended or board.is_banned or board.has_ban(v) or not board.can_view(v))
+    if not flair_rules.may_set(v.id, _forwarder_id(post), is_content_gm) or not (is_content_gm or takes_part):
         return _error("Only whoever forwarded this post and the guild's guildmasters can change its flair.", 403)
     raw = request.values.get("flair", "")
     flair_id = flair_rules.parse_id(raw) if raw else None

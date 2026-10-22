@@ -1885,3 +1885,24 @@ def test_no_poll_vote_across_a_block_with_its_author(make_member):
     answer = post(them, f"/api/poll/{pid}/vote", {"option": str(option), "formkey": voter.formkey(them)})
     assert answer.status_code == 403 and "block" not in answer.get_data(as_text=True).lower()
     assert fresh(author).execute(text("SELECT count(*) FROM poll_votes WHERE user_id = :u"), {"u": voter.id}).scalar() == 0
+
+
+def test_an_exiled_forwarder_no_longer_sets_the_flair_on_their_copy(guildmaster_with_post):
+    """The forwarder of a guild's copy changes its flair; an exiled one still could."""
+    from ruqqus.classes import BanRelationship
+    from ruqqus.helpers.base36 import base36encode
+    mod, author, copy_id = guildmaster_with_post
+    db = fresh(mod)
+    fid = db.execute(text("INSERT INTO guild_flairs (board_id, name) VALUES (1, :n) RETURNING id"),
+                     {"n": f"f{secrets.token_hex(3)}"}).scalar()
+    db.commit()
+    here = author.browser()
+    assert post(here, f"/api/post/{base36encode(copy_id)}/flair", {"flair": str(fid),
+                                                                     "formkey": author.formkey(here)}).status_code == 200
+    db = fresh(mod)
+    db.add(BanRelationship(user_id=author.id, board_id=1, banning_mod_id=mod.id, is_active=True,
+                           created_utc=int(time.time())))
+    db.commit()
+    here = author.browser()
+    assert post(here, f"/api/post/{base36encode(copy_id)}/flair", {"flair": "",
+                                                                     "formkey": author.formkey(here)}).status_code == 403
