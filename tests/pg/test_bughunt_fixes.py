@@ -284,7 +284,10 @@ def test_m2_the_ban_needs_the_form_key_and_covers_the_accounts_comments(make_mem
         assert _banned(fresh(admin), signed_up, commented) == 2, "the comment's address too"
     finally:
         db = fresh(admin)
-        db.execute(text("DELETE FROM ips WHERE addr IN (:a, :b)"), {"a": signed_up, "b": commented})
+        # every ban this admin made: the target's alts are banned too, and in these tests every member is an alt of
+        # the others (they all sign in from the test client's address), which would leave that address banned
+        db.execute(text("DELETE FROM ips WHERE addr IN (:a, :b) OR banned_by = :v"),
+                   {"a": signed_up, "b": commented, "v": admin.id})
         db.commit()
 
 
@@ -1571,5 +1574,8 @@ def test_the_ip_ban_by_username_covers_comments_and_spares_higher_admins(make_me
         assert _banned(fresh(admin), signed_up, commented) == 2
     finally:
         db = fresh(admin)
-        db.execute(text("DELETE FROM ips WHERE addr IN (:a, :b)"), {"a": signed_up, "b": commented})
+        # every ban this admin made: the target's alts are banned too, and in these tests every member is an alt of
+        # the others (they all sign in from the test client's address), which would leave that address banned
+        db.execute(text("DELETE FROM ips WHERE addr IN (:a, :b) OR banned_by = :v"),
+                   {"a": signed_up, "b": commented, "v": admin.id})
         db.commit()
