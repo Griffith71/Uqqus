@@ -7,6 +7,8 @@ import time
 import pprint
 
 from flask import request, jsonify, redirect, render_template, abort
+from sqlalchemy import text
+import logging as _logging       # a later star import rebinds `logging` to flask.logging
 
 from ruqqus.classes import *
 from ruqqus.helpers.wrappers import *
@@ -17,10 +19,11 @@ from ruqqus.helpers.get import *
 from ruqqus.__main__ import app
 from ruqqus.helpers import tips, tips_store
 from ruqqus.helpers import coins as coins_store, premium
-from ruqqus.helpers import coin_shop
+from ruqqus.helpers import coin_shop, paypal_events
 from ruqqus.helpers.discord import add_role
 
 CLIENT=PayPalClient()
+log = _logging.getLogger(__name__)
 
 def coins_to_price_cents(n, code=None):
 
@@ -191,7 +194,13 @@ def shop_buy_coins_completed(v):
 
 @app.route("/shop/paypal_webhook", methods=["POST"])
 def paypal_webhook_handler():
-    
+    """PayPal's word that money went back (a refund or a chargeback): what the account owes grows by it. Each event
+    is handled once, and an order never counts for more than it cost (helpers/paypal_events.py, bug hunt H3)."""
+
+    event=request.get_json(silent=True)
+    if not isinstance(event, dict):
+        abort(400)
+
     #Verify paypal signature
     data={
         "auth_algo":request.headers.get("PAYPAL-AUTH-ALGO"),
@@ -200,7 +209,7 @@ def paypal_webhook_handler():
         "transmission_sig":request.headers.get("PAYPAL-TRANSMISSION-SIG"),
         "transmission_time":request.headers.get("PAYPAL-TRANSMISSION-TIME"),
         "webhook_id":CLIENT.webhook_id,
-        "webhook_event":request.json
+        "webhook_event":event
         }
 
 
@@ -208,43 +217,54 @@ def paypal_webhook_handler():
 
     if x.json().get("verification_status") != "SUCCESS":
         abort(403)
-    
-    data=request.json
 
-    #Reversals
-    if data["event_type"] in ["PAYMENT.SALE.REVERSED", "PAYMENT.SALE.REFUNDED"]:
+    if not event.get("id") or not event.get("event_type"):
+        abort(400)
 
-        txn=get_txn(data["resource"]["id"])
-
-        amount_cents=int(float(data["resource"]["amount"]["total"])*100)
-
-    elif data["event_type"] in ["PAYMENT.CAPTURE.REVERSED", "PAYMENT.CAPTURE.REFUNDED"]:
-
-        txn=get_txn(data["resource"]["id"])
-
-        amount_cents=int(float(data["resource"]["amount"]["value"])*100)
-
-    else:
+    if not paypal_events.is_reversal(event):
         return "", 204
 
+    event_id=str(event["id"])[:64]
+    # once per event: PayPal sends one again when it isn't sure it arrived
+    first=g.db.execute(text("INSERT INTO paypal_events (event_id, event_type, created_utc) VALUES (:e, :t, :now) "
+                            "ON CONFLICT (event_id) DO NOTHING RETURNING event_id"),
+                       {"e": event_id, "t": str(event["event_type"])[:64], "now": int(time.time())}).first()
+    if not first:
+        g.db.rollback()
+        return "", 204
 
-    #increase to cover extra round of paypal fees
-    amount_cents += 30
-    amount_cents /= (1-0.029)
-    amount_cents = int(amount_cents)
+    txn=_reversed_txn(event)
+    if not txn:
+        # not one of this site's orders (or one it can't name): kept as handled, so PayPal stops sending it
+        log.warning("PayPal %s %s names no order of this site", event["event_type"], event_id)
+        g.db.commit()
+        return "", 204
 
-    txn.user.negative_balance_cents+=amount_cents
-
+    refund=paypal_events.amount_cents(event)
+    counts=paypal_events.chargeable_cents(refund, txn.refunded_cents, txn.usd_cents)
+    g.db.execute(text("UPDATE paypal_events SET txn_id = :t WHERE event_id = :e"), {"t": txn.id, "e": event_id})
+    if counts:
+        txn.refunded_cents=(txn.refunded_cents or 0) + counts
+        txn.user.negative_balance_cents=(txn.user.negative_balance_cents or 0) + paypal_events.owed_for(counts)
+        g.db.add(txn.user)
     txn.status=-2
 
     g.db.add(txn)
-    g.db.add(txn.user)
-
-    g.db.flush()
-
-
+    g.db.commit()
 
     return "", 204
+
+
+def _reversed_txn(event):
+    """The coin order a reversal is about, locked for this transaction, or None."""
+    order, capture, legacy = paypal_events.keys(event)
+    query=g.db.query(PayPalTxn).with_for_update(of=PayPalTxn)      # the order row only, not its eager joins
+    for column, value in ((PayPalTxn.paypal_id, order), (PayPalTxn.paypal_capture_id, capture), (PayPalTxn.paypal_id, legacy)):
+        if value:
+            txn=query.filter(column == str(value)[:64]).first()
+            if txn:
+                return txn
+    return None
 
 
 def _tip_notification(kind, permalink, coins, recipient):

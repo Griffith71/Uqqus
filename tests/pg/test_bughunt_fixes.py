@@ -468,3 +468,75 @@ def test_c1_an_admin_nukes_typed_reason_is_shown_as_text_on_the_removed_post(mak
     reader = make_member()                  # an admin is shown the post itself; a member gets the removed page with its reason
     page = reader.browser().get(f"/post/{base36encode(copy_id)}", base_url=BASE, follow_redirects=True).get_data(as_text=True)
     assert XSS not in page and "&lt;img src=x" in page
+
+
+# ---------------------------------------------------------------- H3: a refund or chargeback reaches the account, once
+
+def _paid_order(member, cents=499):
+    order, capture = "ORDER-" + secrets.token_hex(5).upper(), "CAPTURE-" + secrets.token_hex(5).upper()
+    db = fresh(member)
+    txn = db.execute(text("INSERT INTO paypal_txns (user_id, created_utc, coin_count, usd_cents, status, paypal_id, "
+                          "paypal_capture_id) VALUES (:u, 0, 5, :c, 3, :o, :k) RETURNING id"),
+                     {"u": member.id, "c": cents, "o": order, "k": capture}).scalar()
+    db.commit()
+    return txn, order, capture
+
+
+def _event(kind, resource):
+    return {"id": "WH-" + secrets.token_hex(6).upper(), "event_type": kind, "resource": resource}
+
+
+def _refund(capture, value="4.99"):
+    return _event("PAYMENT.CAPTURE.REFUNDED", {
+        "id": "REFUND-" + secrets.token_hex(4), "amount": {"currency_code": "USD", "value": value},
+        "links": [{"href": f"https://api.paypal.com/v2/payments/captures/{capture}", "rel": "up"}]})
+
+
+def _hook(app, event):
+    return app.test_client().post("/shop/paypal_webhook", base_url=BASE, json=event)
+
+
+def test_h3_a_refund_reaches_the_account_and_is_counted_once(make_member, real_app, fake_paypal):
+    from ruqqus.helpers import paypal_events
+    app, _ = real_app
+    member = make_member()
+    txn, _, capture = _paid_order(member)
+    event = _refund(capture)
+    assert _hook(app, event).status_code == 204
+    assert _owed(member) == paypal_events.owed_for(499)
+    assert _hook(app, event).status_code == 204, "PayPal sends an event again"
+    assert _owed(member) == paypal_events.owed_for(499), "counted once"
+    row = fresh(member).execute(text("SELECT status, refunded_cents FROM paypal_txns WHERE id = :t"), {"t": txn}).first()
+    assert tuple(row) == (-2, 499)
+
+
+def test_h3_a_chargeback_and_a_refund_of_the_same_money_count_once(make_member, real_app, fake_paypal):
+    from ruqqus.helpers import paypal_events
+    app, _ = real_app
+    member = make_member()
+    _, order, capture = _paid_order(member)
+    chargeback = _event("PAYMENT.CAPTURE.REVERSED", {"id": capture, "amount": {"currency_code": "USD", "value": "4.99"},
+                                                      "supplementary_data": {"related_ids": {"order_id": order}}})
+    assert _hook(app, chargeback).status_code == 204
+    assert _hook(app, _refund(capture)).status_code == 204
+    assert _owed(member) == paypal_events.owed_for(499)
+
+
+def test_h3_an_event_for_no_order_of_the_site_or_a_body_that_isnt_json_is_answered_without_error(real_app, fake_paypal):
+    app, _ = real_app
+    assert _hook(app, _refund("CAPTURE-NOT-OURS")).status_code == 204, "kept as handled, so PayPal stops sending it"
+    bad = app.test_client().post("/shop/paypal_webhook", base_url=BASE, data="not json", content_type="application/json")
+    assert bad.status_code == 400
+    assert app.test_client().post("/shop/paypal_webhook", base_url=BASE, json=["a list"]).status_code == 400
+
+
+def test_h3_paying_an_order_keeps_the_capture_refunds_will_name(make_member, real_app, monkeypatch):
+    from types import SimpleNamespace
+    paypal = sys.modules["ruqqus.routes.paypal"]
+    member = make_member()
+    order = {"id": "ORDER-X", "status": "COMPLETED", "payer": {"address": {"country_code": "GB"}},
+             "purchase_units": [{"payments": {"captures": [{"id": "CAPTURE-KEPT", "status": "COMPLETED"}]}}]}
+    monkeypatch.setattr(paypal.CLIENT, "_post", lambda url, data=None: SimpleNamespace(json=lambda: order))
+    txn = paypal.PayPalTxn(user_id=member.id, paypal_id="ORDER-X", usd_cents=499, coin_count=5, status=1)
+    assert paypal.CLIENT.capture(txn) is True
+    assert txn.status == 3 and txn.paypal_capture_id == "CAPTURE-KEPT" and txn.payer_country == "GB"

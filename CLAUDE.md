@@ -849,6 +849,8 @@ A coin buys a week of Premium **only when the member asks** (Settings > Premium:
 
 ## Coins and money (legacy app)
 
+**Buying coins** (`routes/paypal.py`, a PayPal v2 Checkout order per purchase: `paypal_txns.paypal_id` is the ORDER id, `paypal_capture_id` the capture made when it is paid): 1 to 10,000 coins (`helpers/coin_shop.py`). `users.negative_balance_cents` is what an account owes after a refund or chargeback and is never below 0 (a CHECK; every check reads "not 0" as "owes"). **The webhook** (`/shop/paypal_webhook`) checks PayPal's signature, handles each event id once (`paypal_events`), finds the order by the refund's capture or the order id (`helpers/paypal_events.py`; never by `resource.id`, which is the refund's), and counts at most what the order cost in all (`refunded_cents`). Its event shapes are PayPal's published v2 schema, not yet checked against real payloads.
+
 Every coin moves through `helpers/coins.py` (`spend`, `give`, `move`): one conditional `UPDATE ... WHERE coin_balance >= :c` per side, so parallel requests can't spend a coin twice or make one. Callers `flush()` pending ORM changes before and `refresh()` the users after. Tips, the name change, Premium and circles use it; circle subscriptions also take an advisory lock per (member, circle), and renewals end a subscription whose payer or owner is gone. `tests/test_coins.py`, `tests/live/test_live_posts.py` (parallel tips on a running site).
 
 ## The internal boards' colour (legacy app)

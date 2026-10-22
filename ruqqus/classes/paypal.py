@@ -143,10 +143,19 @@ class PayPalClient():
 			if status=="COMPLETED":
 				txn.status=3
 				txn.payer_country=x.get("payer", {}).get("address", {}).get("country_code")
+				txn.paypal_capture_id=_capture_id(x)
 		except KeyError:
 			abort(403)
 			
 		return status=="COMPLETED"
+
+
+def _capture_id(order):
+	"""The capture a paid order made (purchase_units[0].payments.captures[0].id), which refunds and chargebacks name."""
+	try:
+		return str(order["purchase_units"][0]["payments"]["captures"][0]["id"])[:64] or None
+	except (KeyError, IndexError, TypeError):
+		return None
 
 
 class PayPalTxn(Base, Stndrd, Age_times):
@@ -161,6 +170,9 @@ class PayPalTxn(Base, Stndrd, Age_times):
 	coin_count=Column(Integer)
 	promo_id=Column(Integer, ForeignKey("promocodes.id"))
 	payer_country=Column(String(2), default=None)
+	# the capture made when the order was paid, which refunds name; what has gone back so far (bug hunt H3)
+	paypal_capture_id=Column(String(64), default=None)
+	refunded_cents=Column(Integer, default=0, nullable=False)
 
 	status=Column(Integer, default=0) #0=initialized 1=created, 2=authorized, 3=captured, -1=failed, -2=reversed 
 

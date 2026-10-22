@@ -2336,7 +2336,9 @@ CREATE TABLE public.paypal_txns (
     status integer DEFAULT 0,
     coin_count integer DEFAULT 1 NOT NULL,
     promo_id integer,
-    payer_country character(2)
+    payer_country character(2),
+    paypal_capture_id character varying(64),
+    refunded_cents integer DEFAULT 0 NOT NULL
 );
 
 
@@ -6903,6 +6905,16 @@ CREATE TABLE public.bell_rings (
 
 CREATE INDEX bell_rings_created_idx ON public.bell_rings (created_utc);
 
+-- a refund or chargeback reaches the account once (bug hunt 2026-10, H3; 2026-11-24_paypal_reversals.sql)
+CREATE INDEX paypal_txns_capture_idx ON public.paypal_txns (paypal_capture_id);
+
+CREATE TABLE public.paypal_events (
+    event_id character varying(64) PRIMARY KEY,
+    event_type character varying(64) NOT NULL,
+    txn_id integer,
+    created_utc integer NOT NULL
+);
+
 -- what an account owes is never below 0 (bug hunt 2026-10, H4; 2026-11-23_owed_never_below_zero.sql)
 ALTER TABLE public.users ADD CONSTRAINT users_owed_never_below_zero CHECK (negative_balance_cents >= 0);
 
@@ -6981,4 +6993,5 @@ INSERT INTO public.schema_migrations (name) VALUES
     ('2026-11-20_guild_day_stats.sql'),
     ('2026-11-21_self_automation.sql'),
     ('2026-11-22_escape_mod_log_notes.sql'),
-    ('2026-11-23_owed_never_below_zero.sql');
+    ('2026-11-23_owed_never_below_zero.sql'),
+    ('2026-11-24_paypal_reversals.sql');
