@@ -208,7 +208,12 @@ def guild_wiki_edit(guildname, slug, v):
         return render_template("guild/wiki.html", v=v, b=board, view="refused", refusal=refusal,
                                pages=wiki_store.pages_of(g.db, board.id), may_create=False, gm=False), 403
     rev = wiki_store.revision(g.db, page[0], page[5]) if page else None
-    return render_template("guild/wiki_edit.html", v=v, b=board, slug=slug, page=page, rev=rev,
+    # the text to start from only when this editor may read it (bug hunt: a revision the admins removed, or one their
+    # word filter hides, was put in the form, and saving it published it again)
+    start_notice = _shown(rev, v)[1]
+    if start_notice:
+        rev = None
+    return render_template("guild/wiki_edit.html", v=v, b=board, slug=slug, page=page, rev=rev, start_notice=start_notice,
                            wiki_max=wiki_rules.WIKI_MAX, title_max=wiki_rules.TITLE_MAX, reason_max=wiki_rules.REASON_MAX)
 
 

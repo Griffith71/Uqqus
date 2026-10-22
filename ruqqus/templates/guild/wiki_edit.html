@@ -20,6 +20,7 @@
     </div>
     <div class="form-group comment-write post-editor">
       <label for="wiki-body" class="text-small font-weight-bold">Text</label>
+      {% if start_notice %}<p class="text-small text-muted mb-2">{{ start_notice }} The page's current text isn't shown here; what you save replaces it.</p>{% endif %}
       <div class="post-toolbar" data-target="wiki-body"></div>
       <textarea id="wiki-body" name="body" class="comment-box form-control rounded" rows="18" maxlength="{{ wiki_max }}">{{ rev[3] if rev else '' }}</textarea>
       <div class="post-preview d-none"></div>

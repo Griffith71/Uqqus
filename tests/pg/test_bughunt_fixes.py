@@ -1596,3 +1596,27 @@ def test_admins_read_a_calls_chat_they_moderate(make_member, real_app):
     assert seen.get_json()["messages"][0]["may_remove"] is True
     outsider = other.browser().get(f"/api/spaces/{sid}/messages", base_url=BASE)
     assert outsider.status_code == 200 and outsider.get_json()["messages"] == []
+
+
+def test_the_wiki_editor_never_starts_from_a_revision_the_admins_removed(guildmaster_with_post):
+    """The edit form put the current revision's text in the box even when the admins had removed it, and saving it
+    published it again."""
+    mod, _, _ = guildmaster_with_post
+    slug, secret = f"p{secrets.token_hex(4)}", f"home address {secrets.token_hex(4)}"
+    db = fresh(mod)
+    db.execute(text("UPDATE boards SET wiki_enabled = true WHERE id = 1"))
+    pid = db.execute(text("INSERT INTO guild_wiki_pages (board_id, slug, title) VALUES (1, :s, 'Page') RETURNING id"),
+                     {"s": slug}).scalar()
+    rid = db.execute(text("INSERT INTO guild_wiki_revisions (page_id, editor_id, body, body_html, word_severity, reason, "
+                          "created_utc, removed_utc) VALUES (:p, :u, :b, :b, 0, '', :n, :n) RETURNING id"),
+                     {"p": pid, "u": mod.id, "b": secret, "n": int(time.time())}).scalar()
+    db.execute(text("UPDATE guild_wiki_pages SET current_revision_id = :r WHERE id = :p"), {"r": rid, "p": pid})
+    db.commit()
+    try:
+        page = mod.browser().get(f"/+general/wiki/{slug}/edit", base_url=BASE)
+        assert page.status_code == 200
+        assert secret not in page.get_data(as_text=True)
+    finally:
+        db = fresh(mod)
+        db.execute(text("UPDATE boards SET wiki_enabled = false WHERE id = 1"))
+        db.commit()
