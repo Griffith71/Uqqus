@@ -63,15 +63,32 @@ STEPS = (
 )
 
 
+# Postgres's codes for a table or a column that doesn't exist (a database a migration hasn't reached yet)
+_MISSING = ("42P01", "42703")
+
+
+def _missing_table(error):
+    """Is this the database saying a table or column doesn't exist? Anything else is a real failure."""
+    original = getattr(error, "orig", None)
+    if getattr(original, "pgcode", None) in _MISSING:
+        return True
+    message = str(original or error).lower()          # SQLite, which the unit tests use
+    return "no such table" in message or "no such column" in message
+
+
 def close_account(db, user_id, now):
-    """Runs every step for `user_id`; returns the names of the steps that couldn't run (a missing table)."""
+    """Runs every step for `user_id`; returns the names of the steps that couldn't run (a missing table). Any other
+    error is raised, so the deletion fails as a whole (bug hunt M7: a lock timeout was skipped like a missing table,
+    and a deleted account kept its subscriptions renewing)."""
     skipped = []
     for name, sql in STEPS:
         savepoint = db.begin_nested()
         try:
             db.execute(text(sql), {"u": user_id, "now": now, "yes": True, "no": False})
             savepoint.commit()
-        except Exception:
+        except Exception as error:
             savepoint.rollback()
+            if not _missing_table(error):
+                raise
             skipped.append(name)
     return skipped

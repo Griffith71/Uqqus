@@ -79,3 +79,27 @@ def test_the_data_export_reads_every_section_from_the_schema():
         data = data_export.build(db, 5)
     assert set(data) == {"note"} | {name for name, _ in data_export.SECTIONS}       # no section failed
     assert data["account"][0]["email"] == "a@b.c" and [r["ip"] for r in data["sign_ins"]] == ["1.2.3.4"]
+
+
+def test_any_other_error_stops_the_deletion_instead_of_being_skipped():
+    """Bug hunt M7: every error was skipped like a missing table, so a lock timeout on one step left a deleted account
+    with its circle subscriptions still renewing."""
+    import pytest
+    from sqlalchemy.exc import OperationalError
+
+    class Savepoint:
+        def commit(self):
+            pass
+
+        def rollback(self):
+            pass
+
+    class LockedDB:
+        def begin_nested(self):
+            return Savepoint()
+
+        def execute(self, *args, **kwargs):
+            raise OperationalError("UPDATE circle_members ...", {}, Exception("canceling statement due to lock timeout"))
+
+    with pytest.raises(OperationalError):
+        account_cleanup.close_account(LockedDB(), 5, 1000)
