@@ -42,7 +42,7 @@ STEPS = (
     ("remove templates", "DELETE FROM post_templates WHERE user_id = :u"),
     ("remove mutes", "DELETE FROM usermutes WHERE user_id = :u"),
     # linked storage: the site lets go of their accounts (the files stay in the member's own storage)
-    ("unlink storage", "UPDATE media_accounts SET status = 'removed', refresh_token_encrypted = NULL WHERE user_id = :u"),
+    ("unlink storage", "UPDATE media_accounts SET status = 'removed', refresh_token_encrypted = '' WHERE user_id = :u"),
     # chat: no copy of the key, locked or not, stays
     ("forget the chat key", "UPDATE chat_identities SET recovery_key_encrypted = NULL, key_blob_password = NULL, "
                             "key_blob_recovery = NULL WHERE user_id = :u"),
