@@ -34,20 +34,18 @@ Project rules are in `CLAUDE.md`; read its **Rules** section first.
 | M8 | Login CSRF (another site could sign a visitor in) |
 | L1-L4, L6, L7 | Dead decorator, comment edit answers, 500s on bad query values, form key edge case, feed dates, CDN libraries pinned with SRI |
 
-Also: `docs/` (the old Ruqqus site) and four unused files were removed.
+| L5 | Pictures in a private guild follow the post page's own rule (`circles.PRIVATE_GUILD`), and the CDN forgets them when the guild turns private or a post there is unpinned |
+| More | A new comment with a banned link is 400/403, not 401; banners, thumbnails and admin image tools use the site's bucket, never `i.ruqqus.com` (the bucket has no default now); links need a host (`example.org` without https:// works); sign-up's odd fields; the 503 page's Rocket Loader; old X / Instagram templates loaded their scripts; `recomputes.py` steps roll back; invisible characters in code are escapes |
+
+Also removed (dead code): `docs/`, four unused assets, five unused scripts, eight unused templates, the old data export, commented-out feed routes, `python-daemon`, duplicate imports. Guards added: no raw invisible characters in app code, no redirect straight to a request value, no `i.ruqqus.com` address, no CDN script without a pinned version.
 
 ## Still open (start here)
 
-1. **L5, reverted**: pictures in comments in a private guild are served publicly to anyone holding the link. The fix
-   must use the post page's own rule (`Submission.in_private_guild_for`), not the Circle-guild one.
-2. **L10**: logged-out pages send `Cache-Control: public`; five tests in `tests/test_wrappers.py` pin it, so ask the
+1. **L10**: logged-out pages send `Cache-Control: public`; five tests in `tests/test_wrappers.py` pin it, so ask the
    owner before changing them.
-3. A non-ASCII form key is a 500 (`hmac.compare_digest`); `tests/test_votes.py::test_post_non_ascii_formkey_is_500`
+2. A non-ASCII form key is a 500 (`hmac.compare_digest`); `tests/test_votes.py::test_post_non_ascii_formkey_is_500`
    pins it (owner's OK needed).
-4. Creating a comment answers a banned link with 401 instead of 400 (`api_comment`).
-5. M9: the query retry wrapper in `__main__.py` silently drops pending changes; left on purpose (no failing flow found).
-6. Small: `S3_BUCKET_NAME` defaults to `i.ruqqus.com`; a leftover Rocket Loader script on `errors/503.html`;
-   `site_embeds/twitter.html` loads X's widget; `recomputes.py` steps that don't roll back on error.
-7. PayPal payload shapes follow PayPal's published v2 schema and have **not** been checked against real payloads.
-8. Planned, not started: the rest of the dead-code list, the reorganisation into packages (start with `tests/paths.py`),
-   CI guards (semgrep rules, a coverage floor), and a final review of the whole branch.
+3. M9: the query retry wrapper in `__main__.py` silently drops pending changes; left on purpose (no failing flow found).
+4. PayPal payload shapes follow PayPal's published v2 schema and have **not** been checked against real payloads.
+5. The Terms page still names ruqqus.com (the owner's text).
+6. Not done, on the owner's choice: the reorganisation into packages (it would conflict with parallel work).
