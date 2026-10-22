@@ -577,3 +577,35 @@ def test_m6_written_off_counts_permanent_bans_only_and_a_refund_lowers_revenue_o
         db.execute(text("UPDATE users SET negative_balance_cents = 0 WHERE id IN (:a, :b)"), {"a": temporary.id, "b": permanent.id})
         db.execute(text("DELETE FROM paypal_txns WHERE user_id = :u"), {"u": buyer.id})
         db.commit()
+
+
+# ---------------------------------------------------------------- H6: a password reset keeps the password rules
+
+def _reset_form(member):
+    from ruqqus.helpers.security import generate_hash
+    user = member.user()
+    uid, nonce, now = user.id, user.login_nonce, int(time.time())
+    return {"user_id": uid, "time": now, "token": generate_hash(f"{uid}+{now}+reset+{nonce}")}
+
+
+def test_h6_a_reset_refuses_a_password_signing_up_would_refuse(make_member, real_app):
+    app, _ = real_app
+    member = make_member()
+    form = _reset_form(member)
+    for weak in ("", "a", "short12"):
+        answer = post(app.test_client(), "/reset", {**form, "password": weak, "confirm_password": weak})
+        assert answer.status_code == 200 and "between 8 and 100" in answer.get_data(as_text=True), repr(weak)
+    signed = post(app.test_client(), "/login", {"username": member.username, "password": member.password, "redirect": "/"})
+    assert signed.status_code == 302, "the old password still works: nothing was saved"
+
+
+def test_h6_a_reset_form_or_link_cut_short_is_a_400_not_an_error(make_member, real_app):
+    app, _ = real_app
+    member = make_member()
+    form = _reset_form(member)
+    for broken in ({**form, "time": "soon"}, {k: v for k, v in form.items() if k != "time"},
+                   {k: v for k, v in form.items() if k != "token"}, {**form, "user_id": "x"}):
+        answer = post(app.test_client(), "/reset", {**broken, "password": "Long-enough-1", "confirm_password": "Long-enough-1"})
+        assert answer.status_code == 400, broken
+    for query in ("?id=1&time=soon&token=x", "?id=1&token=x", "?id=x&time=1&token=x", "?id=1&time=1"):
+        assert app.test_client().get("/reset" + query, base_url=BASE).status_code == 400, query

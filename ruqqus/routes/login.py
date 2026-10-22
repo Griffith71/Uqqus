@@ -531,9 +531,12 @@ def post_forgot():
 @app.route("/reset", methods=["GET"])
 def get_reset():
 
-    user_id = request.args.get("id")
-    timestamp = int(request.args.get("time",0))
-    token = request.args.get("token")
+    user_id = request.args.get("id") or ""
+    timestamp = request.args.get("time") or ""
+    token = request.args.get("token") or ""
+    if not (user_id.isascii() and user_id.isdigit() and timestamp.isascii() and timestamp.isdigit() and token):
+        abort(400)                                   # a link cut short or altered (bug hunt H6: it was a 500)
+    timestamp = int(timestamp)
 
     now = int(time.time())
 
@@ -542,9 +545,9 @@ def get_reset():
             title="Password reset link expired",
             error="That password reset link has expired.")
 
-    user = g.db.query(User).filter_by(id=user_id).first()
+    user = g.db.query(User).filter_by(id=int(user_id)).first()
 
-    if not user:
+    if not user or user.is_deleted:
         abort(404)
 
     if not validate_hash(f"{user_id}+{timestamp}+forgot+{user.login_nonce}", token):
@@ -566,12 +569,16 @@ def post_reset(v):
     if v:
         return redirect('/')
 
-    user_id = request.form.get("user_id")
-    timestamp = int(request.form.get("time"))
-    token = request.form.get("token")
+    # a form missing a field, or with one that isn't a number, is a 400 (bug hunt H6: it was a 500)
+    user_id = request.form.get("user_id") or ""
+    timestamp = request.form.get("time") or ""
+    token = request.form.get("token") or ""
+    if not (user_id.isascii() and user_id.isdigit() and timestamp.isascii() and timestamp.isdigit() and token):
+        abort(400)
+    timestamp = int(timestamp)
 
-    password = request.form.get("password")
-    confirm_password = request.form.get("confirm_password")
+    password = request.form.get("password") or ""
+    confirm_password = request.form.get("confirm_password") or ""
 
     now = int(time.time())
 
@@ -580,9 +587,9 @@ def post_reset(v):
                                title="Password reset expired",
                                error="That password reset form has expired.")
 
-    user = g.db.query(User).filter_by(id=user_id).first()
+    user = g.db.query(User).filter_by(id=int(user_id)).first()
 
-    if not user:
+    if not user or user.is_deleted:
         abort(404)
     if not validate_hash(f"{user_id}+{timestamp}+reset+{user.login_nonce}", token):
         abort(400)
@@ -594,6 +601,15 @@ def post_reset(v):
                                time=timestamp,
                                i=random_image(),
                                error="Passwords didn't match.")
+
+    # the same rule as signing up (bug hunt H6: a reset saved any password, an empty one included)
+    if not re.fullmatch(valid_password_regex, password):
+        return render_template("reset_password.html",
+                               v=user,
+                               token=token,
+                               time=timestamp,
+                               i=random_image(),
+                               error="Password must be between 8 and 100 characters.")
 
     user.passhash = hash_password(password)
     # every sign-in of the account ends, and this reset link stops working (its token holds the nonce); so does
