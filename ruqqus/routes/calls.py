@@ -236,6 +236,8 @@ def call_heartbeat(v):
         if r is not None and room_id:
             call_store.leave_user(r, room_id, v.id)
         return jsonify({"in_call": False, "reason": "You can't be in this call any more."})
+    if r is None:
+        return jsonify({"in_call": False})          # no Redis: no call (join answers the same; it was a 500 here)
     info = call_store.meta(r, room_id)
     if info is None or not call_store.heartbeat(r, room_id, v.id, device_id, now):
         return jsonify({"in_call": False})
