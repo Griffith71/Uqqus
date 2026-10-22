@@ -1779,3 +1779,24 @@ def test_reporting_and_bookmarking_a_post_in_a_private_guild_need_its_membership
         db.execute(text("UPDATE boards SET is_private = false WHERE id = 1"))
         db.execute(text("UPDATE submissions SET post_public = true WHERE id = :s"), {"s": copy_id})
         db.commit()
+
+
+def test_a_rename_spends_no_coins_while_the_account_owes_or_is_suspended(make_member):
+    """The name change spends 20 coins with no check of what the account owes after a chargeback, and a suspended
+    account could rename itself."""
+    owes, suspended = make_member(), make_member()
+    db = fresh(owes)
+    db.execute(text("UPDATE users SET coin_balance = 50 WHERE id IN (:a, :b)"), {"a": owes.id, "b": suspended.id})
+    db.execute(text("UPDATE users SET negative_balance_cents = 300 WHERE id = :a"), {"a": owes.id})
+    db.commit()
+    here = owes.browser()
+    answer = post(here, "/settings/name_change", {"name": f"n{secrets.token_hex(5)}", "formkey": owes.formkey(here)})
+    assert answer.status_code == 402
+    them = suspended.browser()
+    db = fresh(owes)
+    db.execute(text("UPDATE users SET is_banned = 1, unban_utc = 0 WHERE id = :b"), {"b": suspended.id})
+    db.commit()
+    post(them, "/settings/name_change", {"name": f"n{secrets.token_hex(5)}", "formkey": suspended.formkey(them)})
+    rows = dict(fresh(owes).execute(text("SELECT id, coin_balance FROM users WHERE id IN (:a, :b)"),
+                                    {"a": owes.id, "b": suspended.id}).fetchall())
+    assert rows == {owes.id: 50, suspended.id: 50}

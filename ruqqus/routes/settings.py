@@ -918,7 +918,8 @@ def settings_purchase_history(v):
     return render_template("settings_txnlist.html", v=v)
 
 @app.route("/settings/name_change", methods=["POST"])
-@auth_required
+@is_not_banned                   # a suspended account doesn't rename itself (bug hunt)
+@no_negative_balance("html")     # and no coins are spent while the account owes after a chargeback, as elsewhere
 @validate_formkey
 def settings_name_change(v):
 
