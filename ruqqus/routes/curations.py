@@ -433,7 +433,9 @@ def curation_edit_post(slug, v):
         # form made it public with them, the rule curation_members.guild_refusal keeps on every add)
         boards = g.db.query(Board).filter(Board.id.in_(
             select(CurationGuild.board_id).where(CurationGuild.curation_id == curation.id))).all()
-        if any(curation_members.guild_refusal(False, b, False) for b in boards):
+        # private and Circle guilds only: a banned guild is in no list and no feed, so it neither leaks a name nor
+        # should keep the owner from publishing with a message about private guilds
+        if any(b.is_private or getattr(b, "is_circle", False) for b in boards):
             return jsonify({"error": "A private guild can only go in a private curation. Take it out first."}), 409
 
     curation.name = name

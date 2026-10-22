@@ -2057,3 +2057,20 @@ def test_a_forwarder_can_be_exiled_with_the_copy_they_forwarded(make_member, gui
     wrong = post(here, "/mod/exile/general", {"username": author.username, "thing": f"t2_{base36encode(copy_id)}",
                                               "formkey": mod.formkey(here)})
     assert wrong.status_code == 400
+
+
+def test_a_banned_guild_never_keeps_a_curation_from_going_public(make_member):
+    """Publishing asked guild_refusal, which also refuses a banned guild, and answered about private guilds."""
+    owner = make_member()
+    _, slug = _curation(owner, private=True)
+    db = fresh(owner)
+    db.execute(text("UPDATE boards SET is_banned = true WHERE id = 1"))
+    db.commit()
+    try:
+        here = owner.browser()
+        answer = post(here, f"/&{slug}/edit", {"name": "Public now", "is_private": "false", "formkey": owner.formkey(here)})
+        assert answer.status_code in (200, 302), answer.get_data(as_text=True)[:200]
+    finally:
+        db = fresh(owner)
+        db.execute(text("UPDATE boards SET is_banned = false WHERE id = 1"))
+        db.commit()
