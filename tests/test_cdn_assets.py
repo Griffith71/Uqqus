@@ -1,6 +1,9 @@
-"""Scripts from a CDN are pinned to an exact version and hash-checked, and none is a version with a known hole (bug hunt
-2026-10, L7: jQuery 3.1.1 / 3.2.1, Bootstrap 4.0.0's JavaScript, and `clipboard@2` / `code-prettify@master`, which
-load whatever their authors publish next)."""
+"""Scripts from a CDN are pinned to an exact version and hash-checked, and none is older than the fix of the holes the
+bug hunt found (2026-10, L7: jQuery 3.1.1 / 3.2.1, Bootstrap 4.0.0's JavaScript, and `clipboard@2` /
+`code-prettify@master`, which load whatever their authors publish next).
+
+Not clean, and known: Bootstrap 4.3.1's JavaScript still has CVE-2024-6531 (the carousel's `data-slide` attribute), which
+no 4.x release fixes. No page has a carousel and member HTML is sanitized; moving to Bootstrap 5 is its own job."""
 import re
 from pathlib import Path
 
