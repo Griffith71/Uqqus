@@ -39,3 +39,11 @@ def test_the_shared_libraries_are_hash_checked():
     for name, src, tag in _cdn_scripts():
         if re.search(r"jquery-|popper|bootstrap|clipboard|prettify", src):
             assert 'integrity="sha' in tag and 'crossorigin="anonymous"' in tag, (name, src)
+
+
+def test_no_template_loads_a_social_sites_script():
+    """The owner's rule (CLAUDE.md, Social embeds): no page loads a social site's script or widget. The old per-domain
+    templates for X and Instagram did, and drew the site's oEmbed HTML raw."""
+    loads = re.compile(r"platform\.twitter\.com|platform\.instagram\.com|connect\.facebook\.net|tiktok\.com/embed\.js", re.I)
+    found = [p.relative_to(TEMPLATES).as_posix() for p in TEMPLATES.rglob("*.html") if loads.search(p.read_text(encoding="utf-8"))]
+    assert found == []

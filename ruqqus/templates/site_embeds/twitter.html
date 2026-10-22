@@ -1,6 +1,2 @@
-{{ p.embed_url | safe }}
-<script async src="https://platform.twitter.com/widgets.js" charset="utf-8">
-</script>
-<script>
-	document.getElementById('twitter-widget-0').setAttribute('sandbox','')
-</script>
+{# no page loads a social site's script or draws its HTML (CLAUDE.md, Social embeds); a plain link instead #}
+<p class="my-2"><a href="{{ p.url }}" rel="nofollow noopener noreferrer ugc" target="_blank">View the post on X</a></p>
