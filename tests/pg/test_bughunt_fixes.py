@@ -1849,3 +1849,18 @@ def test_pinning_a_deleted_post_rings_nobody(guildmaster_with_post):
     answer = post(here, f"/mod/post_pin/general/{base36encode(copy_id)}/1", {"formkey": mod.formkey(here)})
     assert answer.status_code < 500
     assert fresh(mod).execute(text("SELECT count(*) FROM bell_rings WHERE target_id = :s"), {"s": copy_id}).scalar() == 0
+
+
+def test_making_a_guild_private_clears_the_cached_lists_and_still_answers(guildmaster_with_post):
+    """Turning a guild private cleared no cached list, so non-members kept seeing it until they ran out (caching is off
+    in these tests: this checks the clearing runs and the setting is saved)."""
+    mod, _, _ = guildmaster_with_post
+    here = mod.browser()
+    try:
+        answer = post(here, "/mod/1/settings/private", {"guildprivacy": "true", "formkey": mod.formkey(here)})
+        assert answer.status_code == 204, answer.get_data(as_text=True)[:300]
+        assert fresh(mod).execute(text("SELECT is_private FROM boards WHERE id = 1")).scalar() is True
+    finally:
+        db = fresh(mod)
+        db.execute(text("UPDATE boards SET is_private = false WHERE id = 1"))
+        db.commit()

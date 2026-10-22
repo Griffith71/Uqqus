@@ -1235,6 +1235,12 @@ def mod_bid_settings_private(bid, board, v):
         # serves them per reader from now on)
         from ruqqus.helpers.media import attach as media_attach, cdn as media_cdn
         media_cdn.purge(media_attach.board_paths(g.db, board.id))
+        # and what the lists had cached for everyone (the guild page 60 s, its comments 10 minutes, All and search
+        # 5 to 15): non-members kept seeing its posts until they ran out (bug hunt). A rare change, so all of them go.
+        from ruqqus.routes.front import comment_idlist as _comment_idlist, frontlist as _frontlist
+        from ruqqus.routes.search import searchlisting as _searchlisting
+        for cached in (Board.idlist, _comment_idlist, _frontlist, _searchlisting):
+            cache.delete_memoized(cached)
 
     ma=ModAction(
         user_id=v.id,
