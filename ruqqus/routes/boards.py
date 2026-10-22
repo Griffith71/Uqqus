@@ -490,7 +490,8 @@ URL path parameters:
     g.db.commit()
 
     # a guildmaster's announcement rings the guild's bell, once per post (helpers/bell.py)
-    if post.gm_distinguish:
+    # never for a post that is gone: the notice would lead to a 404 (bug hunt)
+    if post.gm_distinguish and not (post.deleted_utc or post.is_banned):
         bell_rules.ring_guild(board, v, bell_rules.HERALD, post.id, f"/post/{post.base36id}")
 
     return "", 204
@@ -2207,7 +2208,7 @@ URL path parameters:
     g.db.commit()
 
     # pinning is a guildmaster's announcement: it rings the guild's bell, once per post (helpers/bell.py)
-    if post.is_pinned:
+    if post.is_pinned and not (post.deleted_utc or post.is_banned):     # never for a post that is gone
         bell_rules.ring_guild(board, v, bell_rules.PIN, post.id, f"/post/{post.base36id}")
 
     return "", 204

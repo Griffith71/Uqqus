@@ -1836,3 +1836,16 @@ def test_a_refused_tip_never_says_who_blocked_whom(make_member, guildmaster_with
     answer = post(them, f"/gift_post/{base36encode(copy_id)}", {"coins": "1", "formkey": tipper.formkey(them)})
     assert answer.status_code == 403
     assert "block" not in answer.get_data(as_text=True).lower()
+
+
+def test_pinning_a_deleted_post_rings_nobody(guildmaster_with_post):
+    """Pinning or heralding rang the guild's bell for a post that was deleted or removed: a notice leading to a 404."""
+    from ruqqus.helpers.base36 import base36encode
+    mod, _, copy_id = guildmaster_with_post
+    db = fresh(mod)
+    db.execute(text("UPDATE submissions SET deleted_utc = :n WHERE id = :s"), {"n": int(time.time()), "s": copy_id})
+    db.commit()
+    here = mod.browser()
+    answer = post(here, f"/mod/post_pin/general/{base36encode(copy_id)}/1", {"formkey": mod.formkey(here)})
+    assert answer.status_code < 500
+    assert fresh(mod).execute(text("SELECT count(*) FROM bell_rings WHERE target_id = :s"), {"s": copy_id}).scalar() == 0
