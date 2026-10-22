@@ -547,7 +547,9 @@ def get_reset():
 
     user = g.db.query(User).filter_by(id=int(user_id)).first()
 
-    if not user or user.is_deleted:
+    if not user:
+        abort(404)
+    if user.is_deleted:
         abort(404)
 
     if not validate_hash(f"{user_id}+{timestamp}+forgot+{user.login_nonce}", token):
@@ -589,7 +591,9 @@ def post_reset(v):
 
     user = g.db.query(User).filter_by(id=int(user_id)).first()
 
-    if not user or user.is_deleted:
+    if not user:
+        abort(404)
+    if user.is_deleted:
         abort(404)
     if not validate_hash(f"{user_id}+{timestamp}+reset+{user.login_nonce}", token):
         abort(400)
