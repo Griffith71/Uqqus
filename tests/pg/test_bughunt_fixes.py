@@ -830,3 +830,30 @@ def test_m5_premium_renewals_run_even_when_the_circles_fail(real_app, monkeypatc
     with pytest.raises(RuntimeError):
         job.tick(1_900_000_000)
     assert renewed == [1_900_000_000]
+
+
+# ---------------------------------------------------------------- L2: editing a comment to a banned link says no
+
+def test_l2_editing_a_comment_to_a_banned_link_is_refused_not_saved(make_member, guildmaster_with_post):
+    from ruqqus.helpers.base36 import base36encode
+    _, author, copy_id = guildmaster_with_post
+    cid = _comment_on(author, copy_id)
+    malicious, banned = f"bad-{secrets.token_hex(3)}.example", f"spam-{secrets.token_hex(3)}.example"
+    db = fresh(author)
+    for domain, reason in ((malicious, 4), (banned, 1)):
+        db.execute(text("INSERT INTO domains (domain, can_submit, can_comment, reason, show_thumbnail) "
+                        "VALUES (:d, false, false, :r, false)"), {"d": domain, "r": reason})
+    db.commit()
+    try:
+        client = author.browser()
+        refused = post(client, f"/edit_comment/{base36encode(cid)}", {"body": f"see [this](https://{banned}/x)", "formkey": author.formkey(client)})
+        assert refused.status_code == 400 and banned in refused.get_json()["error"]
+        client = author.browser()
+        bad = post(client, f"/edit_comment/{base36encode(cid)}", {"body": f"see [this](https://{malicious}/x)", "formkey": author.formkey(client)})
+        assert bad.status_code == 403, "the page took a 200 for a saved edit"
+        body = fresh(author).execute(text("SELECT body FROM comments_aux WHERE id = :c"), {"c": cid}).scalar()
+        assert malicious not in body and banned not in body
+    finally:
+        db = fresh(author)
+        db.execute(text("DELETE FROM domains WHERE domain IN (:a, :b)"), {"a": malicious, "b": banned})
+        db.commit()

@@ -636,24 +636,15 @@ Optional form data (left out: unchanged):
         reason = f"Remove the {ban.domain} link from your comment and try again."
 
         #auto ban for digitally malicious content
+        # (bug hunt L2: this answered 200, which the page took for a saved edit: the comment read "undefined")
         if any([x.reason==4 for x in bans]):
             v.ban(days=30, reason="Digitally malicious content is not allowed.")
-            return jsonify({"error":"Digitally malicious content is not allowed."})
+            return jsonify({"error":"Digitally malicious content is not allowed."}), 403
         
         if ban.reason:
             reason += f" {ban.reason_text}"    
           
-        return jsonify({"error": reason}), 401
-    
-        return {'html': lambda: render_template("comment_failed.html",
-                                                action=f"/edit_comment/{c.base36id}",
-                                                badlinks=[
-                                                    x.domain for x in bans],
-                                                body=body,
-                                                v=v
-                                                ),
-                'api': lambda: ({'error': f'A blacklisted domain was used.'}, 400)
-                }
+        return jsonify({"error": reason}), 400
 
     apply_comment_severity(c, body_html)
 
