@@ -29,7 +29,7 @@ from ruqqus.helpers.get import get_user
 from ruqqus.helpers.safe_fetch import FetchError
 from ruqqus.helpers.word_filter_store import apply_user_severity
 from ruqqus.helpers.wrappers import admin_level_required, auth_required, is_not_banned, validate_formkey
-from ruqqus.__main__ import app
+from ruqqus.__main__ import app, limiter, member_limit_key
 
 
 def _back(path, msg=None, error=None):
@@ -185,6 +185,7 @@ def _feeds(raw):
 
 
 @app.post("/settings/bots/automate")
+@limiter.limit("10/hour", key_func=member_limit_key)    # each reads outside feeds now (bug hunt)
 @is_not_banned
 @validate_formkey
 def settings_bots_automate(v):
@@ -221,6 +222,7 @@ def settings_bots_automate(v):
 
 
 @app.post("/settings/bots/apply")
+@limiter.limit("10/hour", key_func=member_limit_key)    # each reads outside feeds now (bug hunt)
 @is_not_banned
 @validate_formkey
 def settings_bots_apply(v):
@@ -378,6 +380,7 @@ def settings_bot_picture_remove(name, which, v):
 # --- feeds -----------------------------------------------------------------------------------------------------
 
 @app.post("/settings/bots/<name>/sources/add")
+@limiter.limit("30/hour", key_func=member_limit_key)    # each reads outside feeds now (bug hunt)
 @is_not_banned
 @validate_formkey
 def settings_bot_add_source(name, v):

@@ -1906,3 +1906,13 @@ def test_an_exiled_forwarder_no_longer_sets_the_flair_on_their_copy(guildmaster_
     here = author.browser()
     assert post(here, f"/api/post/{base36encode(copy_id)}/flair", {"flair": "",
                                                                      "formkey": author.formkey(here)}).status_code == 403
+
+
+def test_adding_bot_feeds_is_rate_limited(make_member):
+    """Each add reads the typed feed at once, and nothing limited how often: a member could have the site fetch
+    addresses of their choice in a loop."""
+    member = make_member()
+    here = member.browser()
+    statuses = [post(here, f"/settings/bots/nobot{secrets.token_hex(3)}/sources/add",
+                     {"url": "not a feed", "formkey": member.formkey(here)}).status_code for _ in range(31)]
+    assert 429 not in statuses[:30] and statuses[30] == 429, statuses
