@@ -111,6 +111,12 @@ def activate(v):
         return render_template("message_success.html", v=v,
                                title="Email already verified.", message="Email already verified."), 404
 
+    # still free: the check when the change was asked for is up to an hour old (bug hunt: another account could take
+    # the address meanwhile, and two accounts then shared it: sign-in by email and resets pick one)
+    if g.db.query(User).filter(User.id != user.id, func.lower(User.email) == email.lower()).first():
+        return render_template("message.html", v=v, title="That email address is already in use.",
+                               message="Another account uses that address now. Visit your settings to use another."), 409
+
     user.email = email
     user.is_activated = True
 

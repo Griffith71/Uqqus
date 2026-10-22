@@ -1916,3 +1916,21 @@ def test_adding_bot_feeds_is_rate_limited(make_member):
     statuses = [post(here, f"/settings/bots/nobot{secrets.token_hex(3)}/sources/add",
                      {"url": "not a feed", "formkey": member.formkey(here)}).status_code for _ in range(31)]
     assert 429 not in statuses[:30] and statuses[30] == 429, statuses
+
+
+def test_an_email_link_never_gives_an_account_an_address_another_took_meanwhile(make_member, real_app):
+    """The address was checked when the change was asked for; the link works for an hour after."""
+    from ruqqus.helpers.security import generate_hash
+    app, _ = real_app
+    asker, taker = make_member(), make_member()
+    address = f"shared_{secrets.token_hex(4)}@example.org"
+    db = fresh(asker)
+    db.execute(text("UPDATE users SET email = :e WHERE id = :u"), {"e": address.upper(), "u": taker.id})
+    db.commit()
+    now = int(time.time())
+    with app.test_request_context():
+        token = generate_hash(f"{address}+{asker.id}+{now}")
+    answer = asker.browser().get("/activate", base_url=BASE,
+                                 query_string={"email": address, "id": str(asker.id), "time": str(now), "token": token})
+    assert answer.status_code == 409
+    assert fresh(asker).execute(text("SELECT email FROM users WHERE id = :u"), {"u": asker.id}).scalar() != address
