@@ -159,7 +159,16 @@ def guild_wiki_history(guildname, slug, v):
         abort(404)
     rows = wiki_store.revisions(g.db, page[0])
     return render_template("guild/wiki_history.html", v=v, b=board, page=page, revisions=rows, editors=_editor_names(rows),
-                           gm=_content_gm(board, v))
+                           gm=_content_gm(board, v), reasons={r[0]: _reason_shown(r, v) for r in rows})
+
+
+def _reason_shown(rev, v):
+    """A revision's "what changed" as this reader may see it: never once the admins removed the revision, and never
+    when their word filter hides it (bug hunt: the reason was drawn whatever was done to the revision, and unrated)."""
+    reason = rev[6] or ""
+    if not reason or (rev[8] and not (v and v.admin_level >= 3)):
+        return ""
+    return "" if text_hidden(_severity(reason), v, owner_id=rev[2]) else reason
 
 
 @app.route("/+<guildname>/wiki/<slug>/revision/<int:rid>", methods=["GET"])

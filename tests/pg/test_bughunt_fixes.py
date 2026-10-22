@@ -1953,3 +1953,26 @@ def test_a_reinvited_guildmaster_comes_after_those_appointed_meanwhile(make_memb
     rows = dict(fresh(mod).execute(text("SELECT user_id, id FROM mods WHERE board_id = 1 AND user_id IN (:b, :c) "
                                         "AND invite_rescinded = false"), {"b": bob.id, "c": carol.id}).fetchall())
     assert rows[bob.id] > rows[carol.id]
+
+
+def test_a_removed_wiki_revisions_reason_leaves_the_public_history(make_member, guildmaster_with_post):
+    """History drew each edit's reason whatever the admins had done to the revision."""
+    mod, _, _ = guildmaster_with_post
+    reader = make_member()
+    slug, reason = f"p{secrets.token_hex(4)}", f"reason {secrets.token_hex(4)}"
+    db = fresh(mod)
+    db.execute(text("UPDATE boards SET wiki_enabled = true WHERE id = 1"))
+    pid = db.execute(text("INSERT INTO guild_wiki_pages (board_id, slug, title) VALUES (1, :s, 'Page') RETURNING id"),
+                     {"s": slug}).scalar()
+    rid = db.execute(text("INSERT INTO guild_wiki_revisions (page_id, editor_id, body, body_html, word_severity, reason, "
+                          "created_utc, removed_utc) VALUES (:p, :u, 'x', 'x', 0, :r, :n, :n) RETURNING id"),
+                     {"p": pid, "u": mod.id, "r": reason, "n": int(time.time())}).scalar()
+    db.execute(text("UPDATE guild_wiki_pages SET current_revision_id = :r WHERE id = :p"), {"r": rid, "p": pid})
+    db.commit()
+    try:
+        page = reader.browser().get(f"/+general/wiki/{slug}/history", base_url=BASE)
+        assert page.status_code == 200 and reason not in page.get_data(as_text=True)
+    finally:
+        db = fresh(mod)
+        db.execute(text("UPDATE boards SET wiki_enabled = false WHERE id = 1"))
+        db.commit()

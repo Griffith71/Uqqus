@@ -34,7 +34,7 @@
       <span>{{ editors[r[2]] }}</span>
       {% if r[0] == page[5] %}<span class="badge badge-light ml-2">Current</span>{% endif %}
       {% if r[8] %}<span class="badge badge-secondary ml-2">Removed by admins</span>{% endif %}
-      {% if r[6] %}<span class="text-muted text-small ml-2">“{{ r[6] }}”</span>{% endif %}
+      {% if reasons[r[0]] %}<span class="text-muted text-small ml-2">“{{ reasons[r[0]] }}”</span>{% endif %}
       {% if gm and r[0] != page[5] and not r[8] %}
       <button type="button" class="btn btn-sm btn-link ml-auto" data-guild-post="{{ b.permalink }}/wiki/{{ page[2] }}/restore/{{ r[0] }}" data-confirm="Put this revision's text back? It becomes a new revision; nothing in the history is lost.">Restore</button>
       {% endif %}
