@@ -199,9 +199,26 @@ def collab_options(doc_id, v):
         })
     except rules.Refused as e:
         return _error(str(e))
+    if _listed_link(options.get("url")):
+        # never kept: whoever publishes would be held to it (an autoban link suspended the publisher, chosen by
+        # another author; bug hunt). Refused here, never a ban: posting is where links are judged against accounts
+        return _error("That link can't be posted here.")
     store.set_options(g.db, doc_id, options, _now())
     g.db.commit()
+    _changed(doc_id)                     # the other open editors redraw their options (the last save wins)
     return jsonify({"ok": True, "options": options})
+
+
+def _listed_link(url):
+    """The banned-link entry a link matches, the way posting checks one (routes/posts.py), or None."""
+    if not url:
+        return None
+    from urllib.parse import urlparse, urlunparse, ParseResult
+    from sqlalchemy import literal
+    parsed = urlparse(url)
+    check = urlunparse(ParseResult(scheme="https", netloc=parsed.netloc, path=parsed.path, params=parsed.params,
+                                   query=parsed.query, fragment=""))
+    return g.db.query(BadLink).filter(literal(check).contains(BadLink.link)).first()
 
 
 @app.route("/collab/<int:doc_id>/panel", methods=["GET"])
@@ -610,6 +627,12 @@ def _publish(doc, publisher, snap, now):
     except rules.Refused as e:
         return str(e)
     body = snap.get("body") or ""
+    # asked before anything changes (bug hunt: a suspended proposer's passed proposal edited the live post, and the
+    # check came after the edit was committed, so the revision was never recorded)
+    if publisher is None or publisher.is_suspended or publisher.is_deleted:
+        return "Your account can't publish right now."
+    if _listed_link((snap.get("options") or {}).get("url")):
+        return "That link can't be posted here."
     post = g.db.query(Submission).filter_by(id=doc[7]).first() if doc[7] else None
     if post is not None and post.is_banned:
         return "This post was removed, so it can't be changed."

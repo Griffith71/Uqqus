@@ -1216,3 +1216,57 @@ def test_an_admin_siege_on_a_guild_with_a_guildmaster_answers_without_an_error(m
     here = admin.browser()
     answer = post(here, "/admin/siege_guild", {"guild": "general", "username": target.username, "formkey": admin.formkey(here)})
     assert answer.status_code < 500, answer.status_code
+
+
+# ---------------------------------------------------------------- review of media, collab, channels, stories
+
+def _draft(member):
+    here = member.browser()
+    made = post(here, "/collab/new", {"formkey": member.formkey(here)})
+    assert made.status_code == 302, made.status_code
+    return int(made.headers["Location"].rstrip("/").rsplit("/", 1)[-1])
+
+
+def test_a_shared_draft_never_keeps_a_banned_link(make_member):
+    """Any author may save the draft's link; an autoban link then suspended whoever published, chosen by someone else."""
+    member = make_member()
+    doc = _draft(member)
+    banned = f"spam-{secrets.token_hex(3)}.example"
+    db = fresh(member)
+    db.execute(text("INSERT INTO badlinks (reason, link, autoban) VALUES (1, :l, true)"), {"l": banned})
+    db.commit()
+    try:
+        here = member.browser()
+        answer = post(here, f"/api/collab/{doc}/options", {"url": f"https://{banned}/x", "formkey": member.formkey(here)})
+        assert answer.status_code == 400
+        assert banned not in (fresh(member).execute(text("SELECT options FROM collab_docs WHERE id = :d"), {"d": doc}).scalar() or "")
+        assert not fresh(member).execute(text("SELECT is_banned FROM users WHERE id = :u"), {"u": member.id}).scalar()
+    finally:
+        db = fresh(member)
+        db.execute(text("DELETE FROM badlinks WHERE link = :l"), {"l": banned})
+        db.commit()
+
+
+def test_a_suspended_account_publishes_nothing_from_a_shared_draft(make_member, real_app):
+    """A suspended proposer's passed publish still edited the post; the check came after the edit was committed."""
+    from flask import g
+    from ruqqus.helpers import collab_store
+    app, db_session = real_app
+    member = make_member()
+    doc_id = _draft(member)
+    db = fresh(member)
+    db.execute(text("UPDATE users SET is_banned = 1, unban_utc = :t WHERE id = :u"), {"t": int(time.time()) + 86400, "u": member.id})
+    db.commit()
+    try:
+        with app.test_request_context():
+            g.db = db_session()
+            user = g.db.query(sys.modules["ruqqus.classes"].User).get(member.id)
+            snap = {"title": f"Draft {secrets.token_hex(3)}", "body": "text", "revision": 1, "options": {}}
+            answer = sys.modules["ruqqus.routes.collab"]._publish(collab_store.doc(g.db, doc_id), user, snap, int(time.time()))
+            assert answer == "Your account can't publish right now."
+        made = fresh(member).execute(text("SELECT count(*) FROM submissions WHERE author_id = :u"), {"u": member.id}).scalar()
+        assert made == 0
+    finally:
+        db = fresh(member)
+        db.execute(text("UPDATE users SET is_banned = 0, unban_utc = 0 WHERE id = :u"), {"u": member.id})
+        db.commit()
