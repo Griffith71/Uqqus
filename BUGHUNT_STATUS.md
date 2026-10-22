@@ -11,7 +11,7 @@ Project rules are in `CLAUDE.md`; read its **Rules** section first.
 - Real Postgres: `tests/pg` (see **Operations** in `CLAUDE.md`). Most of this hunt's tests are in
   `tests/pg/test_bughunt_fixes.py`, and the flows it pinned first are in `tests/pg/test_characterization.py`.
 - New migrations (apply to a database that has the older ones): `2026-11-22_escape_mod_log_notes.sql` (run it
-  **before** starting the new code), `2026-11-23_owed_never_below_zero.sql`, `2026-11-24_paypal_reversals.sql`.
+  **before** starting the new code), `2026-11-23_owed_never_below_zero.sql`, `2026-11-24_paypal_reversals.sql`, `2026-11-25_deleted_accounts_app_grants.sql`.
 
 ## Fixed
 
@@ -35,6 +35,7 @@ Project rules are in `CLAUDE.md`; read its **Rules** section first.
 | L1-L4, L6, L7 | Dead decorator, comment edit answers, 500s on bad query values, form key edge case, feed dates, CDN libraries pinned with SRI |
 
 | L5 | Pictures in a private guild follow the post page's own rule (`circles.PRIVATE_GUILD`), and the CDN forgets them when the guild turns private or a post there is unpinned |
+| Round 2 | From the reviews (commits `77bcbf21c..`): account deletion ends app grants (migration `2026-11-25_deleted_accounts_app_grants.sql`); admins act only on accounts below their level, and the siege checks the account it installs; API follow / join need the `update` scope; Spaces: someone removed or blocked stays out, and only a call has a stage, roster and co-hosts; shared drafts keep no banned link and a suspended account publishes nothing; encrypted guild channel removals never redact state; unblocking puts a 1:1 chat back; public channels keep only signed messages and emoji reactions; a call heartbeat without Redis isn't a 500; a group invitation can't be accepted across a block with a member; a Highlight's older stories can be viewed and reported, and a closed profile's stories (and pictures) aren't served; collab drafts and proposals take their ids with RETURNING; admin email lookup with `_`, badge grant redirects; OAuth codes expire after 10 minutes, the redirect is encoded, the localhost check compares the host, and odd input / non-ASCII OIDC credentials are refusals, not 500s |
 | More | A new comment with a banned link is 400/403, not 401; banners, thumbnails and admin image tools use the site's bucket, never `i.ruqqus.com` (the bucket has no default now); links need a host (`example.org` without https:// works); sign-up's odd fields; the 503 page's Rocket Loader; old X / Instagram templates loaded their scripts; `recomputes.py` steps roll back; invisible characters in code are escapes |
 
 Also removed (dead code): `docs/`, four unused assets, five unused scripts, eight unused templates, the old data export, commented-out feed routes, `python-daemon`, duplicate imports. Guards added: no raw invisible characters in app code, no redirect straight to a request value, no `i.ruqqus.com` address, no CDN script without a pinned version.
