@@ -746,8 +746,13 @@ Optional form data:
             # the public mod log would pair the user with the anonymous item: exile without it, whoever wrote it
             # (a different answer for "not theirs" would itself tell who did)
             item = None
-        elif item.author_id != user.id:
-            return jsonify({"error": f"That isn't @{user.username}'s."}), 400
+        else:
+            # a guild's copy belongs to whoever forwarded it here (it keeps the original author's id): that is who an
+            # exile with it is about, as has_participant counts them (bug hunt: a forwarder couldn't be exiled with it)
+            from ruqqus.helpers import post_follows as _post_follows
+            owner_id = _post_follows.responsible_id(g.db, item) if isinstance(item, Submission) else item.author_id
+            if owner_id != user.id:
+                return jsonify({"error": f"That isn't @{user.username}'s."}), 400
 
     if user.id == v.id:
         return jsonify({"error": "You can't exile yourself."}), 409

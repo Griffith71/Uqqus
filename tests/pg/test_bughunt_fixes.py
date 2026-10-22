@@ -2038,3 +2038,22 @@ def test_following_leaves_out_a_guilds_old_public_posts_once_it_is_private(make_
         db = fresh(mod)
         db.execute(text("UPDATE boards SET is_private = false WHERE id = 1"))
         db.commit()
+
+
+def test_a_forwarder_can_be_exiled_with_the_copy_they_forwarded(make_member, guildmaster_with_post):
+    """The exile's `thing` had to be the user's by author_id, but a copy keeps the original author's: its forwarder
+    could never be exiled with it."""
+    from ruqqus.helpers.base36 import base36encode
+    mod, author, copy_id = guildmaster_with_post
+    forwarder = make_member()
+    db = fresh(mod)
+    assert db.execute(text("UPDATE forwardrels SET forwarded_by_id = :f WHERE forward_submission_id = :s"),
+                      {"f": forwarder.id, "s": copy_id}).rowcount == 1
+    db.commit()
+    here = mod.browser()
+    answer = post(here, "/mod/exile/general", {"username": forwarder.username, "thing": f"t2_{base36encode(copy_id)}",
+                                               "formkey": mod.formkey(here)})
+    assert answer.status_code < 400, answer.get_data(as_text=True)[:300]
+    wrong = post(here, "/mod/exile/general", {"username": author.username, "thing": f"t2_{base36encode(copy_id)}",
+                                              "formkey": mod.formkey(here)})
+    assert wrong.status_code == 400
