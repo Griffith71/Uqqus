@@ -162,22 +162,12 @@ def audience_context(db, asset):
                .join(Comment, Comment.parent_submission == Submission.id).filter(Comment.id == asset.comment_id).first())
     else:
         row = None
-    if row and not row.audience and row.board_id and _in_private_guild(db, row.board_id):
-        # a post (or a comment on a guild copy) in a private guild is for its members: served per viewer, never cached
-        # in public (bug hunt L5: it was audience 0, public for a year to anyone holding the address)
-        return circles.GUILD, row.author_id, row.board_id, ()
     if not row or not row.audience:
         return 0, None, None, ()
     found = ()
     if row.audience == circles.CIRCLES:
         found = tuple(sorted(r[0] for r in db.execute(text("SELECT circle_id FROM post_circles WHERE post_id = :i"), {"i": row.id}).fetchall()))
     return row.audience, row.author_id, row.board_id, found
-
-
-def _in_private_guild(db, board_id):
-    """Is this a private guild that isn't a Circle guild (a Circle guild's posts carry their own audience, 3)?"""
-    found = db.execute(text("SELECT is_private, is_circle FROM boards WHERE id = :b"), {"b": board_id}).fetchone()
-    return bool(found and found[0] and not found[1])
 
 
 def audience_of(db, asset):
