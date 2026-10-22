@@ -1005,6 +1005,11 @@ def settings_name_change(v):
         return render_template("settings_profile.html", v=v,
                                error="Username changes cost 20 Coins, and you don't have enough.")
     g.db.refresh(v)
+    # the 7-day wait again, now that this request holds the row (the spend above locks it until the commit): two
+    # requests at once both passed the first check and both paid (bug hunt)
+    if v.name_changed_utc > int(time.time()) - 60*60*24*7:
+        g.db.rollback()
+        return render_template("settings_profile.html", v=v, error="You need to wait 7 days between name changes.")
 
     v.username=new_name
     apply_user_severity(v)

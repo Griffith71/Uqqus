@@ -1976,3 +1976,25 @@ def test_a_removed_wiki_revisions_reason_leaves_the_public_history(make_member, 
         db = fresh(mod)
         db.execute(text("UPDATE boards SET wiki_enabled = false WHERE id = 1"))
         db.commit()
+
+
+def test_two_renames_at_once_charge_once(make_member, monkeypatch):
+    """The 7-day wait was read before the coins moved: a second request in flight passed it and paid again. Here the
+    other request's rename is committed just before this one's charge, as the row lock would order them."""
+    member = make_member()
+    db = fresh(member)
+    db.execute(text("UPDATE users SET coin_balance = 50, name_changed_utc = 0 WHERE id = :u"), {"u": member.id})
+    db.commit()
+    settings = sys.modules["ruqqus.routes.settings"]
+    real_spend = settings.coins_store.spend
+
+    def spend_after_the_other_rename(session, user_id, amount):
+        other = fresh(member)
+        other.execute(text("UPDATE users SET name_changed_utc = :n, coin_balance = coin_balance - 20 WHERE id = :u"),
+                      {"n": int(time.time()), "u": user_id})
+        other.commit()
+        return real_spend(session, user_id, amount)
+    monkeypatch.setattr(settings.coins_store, "spend", spend_after_the_other_rename)
+    here = member.browser()
+    post(here, "/settings/name_change", {"name": f"n{secrets.token_hex(5)}", "formkey": member.formkey(here)})
+    assert fresh(member).execute(text("SELECT coin_balance FROM users WHERE id = :u"), {"u": member.id}).scalar() == 30
