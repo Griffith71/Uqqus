@@ -1579,3 +1579,20 @@ def test_the_ip_ban_by_username_covers_comments_and_spares_higher_admins(make_me
         db.execute(text("DELETE FROM ips WHERE addr IN (:a, :b) OR banned_by = :v"),
                    {"a": signed_up, "b": commented, "v": admin.id})
         db.commit()
+
+
+def test_admins_read_a_calls_chat_they_moderate(make_member, real_app):
+    """A call's chat is read only by the people in the call or running it; admins remove its messages, so they read
+    it too (the review of that fix)."""
+    host, admin, other = make_member(), _admin(make_member, 3), make_member()
+    sid = _board_space(host)
+    db = fresh(host)
+    db.execute(text("UPDATE spaces SET kind = 'call' WHERE id = :s"), {"s": sid})
+    db.execute(text("INSERT INTO space_messages (space_id, author_id, body, created_utc) VALUES (:s, :a, 'hello', :n)"),
+               {"s": sid, "a": host.id, "n": int(time.time())})
+    db.commit()
+    seen = admin.browser().get(f"/api/spaces/{sid}/messages", base_url=BASE)
+    assert seen.status_code == 200 and len(seen.get_json()["messages"]) == 1
+    assert seen.get_json()["messages"][0]["may_remove"] is True
+    outsider = other.browser().get(f"/api/spaces/{sid}/messages", base_url=BASE)
+    assert outsider.status_code == 200 and outsider.get_json()["messages"] == []
