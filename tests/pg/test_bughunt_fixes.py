@@ -970,3 +970,20 @@ def test_a_banner_and_a_thumbnail_are_drawn_from_the_sites_own_bucket(make_membe
     user.has_banner, user.banner_set_utc, user.banner_nonce = True, 1_700_000_000, 1
     assert user.banner_url.startswith(f"https://{app.config['S3_BUCKET']}/uid/")
     member.db_session().rollback()
+
+
+def test_a_sign_up_form_with_a_missing_or_odd_field_is_refused_not_a_500(real_app):
+    import hmac as _hmac
+    import os
+    app, _ = real_app
+    client = app.test_client()
+    client.get("/signup", base_url=BASE)                         # gives the session its sign-up token
+    with client.session_transaction() as s:
+        token = s.get("signup_token", "")
+    assert token
+    assert post(client, "/signup", {"now": "abc", "formkey": "x"}).status_code in (302, 400)
+    then = str(int(time.time()) - 60)
+    key = _hmac.new(key=bytes(os.environ["MASTER_KEY"], "utf-16"), msg=bytes(then + token + "ci", "utf-16"),
+                    digestmod="md5").hexdigest()
+    answer = post(client, "/signup", {"now": then, "formkey": key})          # no username, no password
+    assert answer.status_code == 302 and "/signup" in answer.headers["Location"]

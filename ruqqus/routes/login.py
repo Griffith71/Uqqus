@@ -330,7 +330,7 @@ def sign_up_post(v):
 
     now = int(time.time())
 
-    username = request.form.get("username")
+    username = request.form.get("username") or ""          # a missing field is a refusal, never a TypeError (bug hunt)
 
     # define function that takes an error message and generates a new signup
     # form
@@ -341,7 +341,7 @@ def sign_up_post(v):
     if app.config["DISABLE_SIGNUPS"]:
         return new_signup("New account registration is currently closed. Please come back later.")
 
-    if now - int(form_timestamp) < 5:
+    if not (form_timestamp.isascii() and form_timestamp.isdigit()) or now - int(form_timestamp) < 5:
         #print(f"signup fail - {username } - too fast")
         return new_signup("There was a problem. Please try again.")
 
@@ -359,7 +359,7 @@ def sign_up_post(v):
         #print(f"signup fail - {username } - mismatched passwords")
         return new_signup("Invalid username")
 
-    if not re.fullmatch(valid_password_regex, request.form.get("password")):
+    if not re.fullmatch(valid_password_regex, request.form.get("password") or ""):
         #print(f"signup fail - {username } - invalid password")
         return new_signup("Password must be between 8 and 100 characters.")
 
