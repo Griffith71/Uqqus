@@ -154,20 +154,32 @@ def audience_context(db, asset):
             found = db.execute(text("SELECT circle_id FROM story_circles WHERE story_id = :i"), {"i": story.id}).fetchall()
             return circles.CIRCLES, story.user_id, None, tuple(sorted(r[0] for r in found))
         return (story.audience or circles.STORY_OPEN), story.user_id, None, ()
+    columns = (Submission.id, Submission.audience, Submission.author_id, Submission.board_id, Submission.post_public,
+               Submission.is_pinned)
     if asset.submission_id:
-        row = db.query(Submission.id, Submission.audience, Submission.author_id, Submission.board_id).filter(
-            Submission.id == asset.submission_id).first()
+        row = db.query(*columns).filter(Submission.id == asset.submission_id).first()
     elif asset.comment_id:
-        row = (db.query(Submission.id, Submission.audience, Submission.author_id, Submission.board_id)
+        row = (db.query(*columns)
                .join(Comment, Comment.parent_submission == Submission.id).filter(Comment.id == asset.comment_id).first())
     else:
         row = None
+    if (row and not row.audience and not row.post_public and not row.is_pinned and row.board_id
+            and _in_private_guild(db, row.board_id)):
+        # bug hunt L5: these were public, cached for a year for anyone holding the address. A copy that was public
+        # there, or a pinned one, stays readable by anyone (as the post page says) and so does its picture
+        return circles.PRIVATE_GUILD, row.author_id, row.board_id, ()
     if not row or not row.audience:
         return 0, None, None, ()
     found = ()
     if row.audience == circles.CIRCLES:
         found = tuple(sorted(r[0] for r in db.execute(text("SELECT circle_id FROM post_circles WHERE post_id = :i"), {"i": row.id}).fetchall()))
     return row.audience, row.author_id, row.board_id, found
+
+
+def _in_private_guild(db, board_id):
+    """Is this a private guild that isn't a Circle guild (a Circle guild's posts carry their own audience, 3)?"""
+    found = db.execute(text("SELECT is_private, is_circle FROM boards WHERE id = :b"), {"b": board_id}).fetchone()
+    return bool(found and found[0] and not found[1])
 
 
 def audience_of(db, asset):

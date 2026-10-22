@@ -900,6 +900,41 @@ def test_l4_a_signed_in_session_that_never_drew_a_form_key_is_refused(make_membe
     assert answer.status_code == 401 or (answer.status_code == 302 and "/login" in answer.headers["Location"]), answer.status_code
 
 
+# ---------------------------------------------------------------- L5: a picture follows the post page's own rule
+
+def test_l5_a_comment_picture_in_a_private_guild_follows_the_post_pages_rule(make_member, guildmaster_with_post):
+    """Pictures on a post in a private guild were public and cached for a year. The first fix used the Circle-guild
+    rule and hid pictures on pages their readers may open (reverted); the post page's own rule is used now."""
+    from ruqqus.helpers import circles
+    from ruqqus.helpers.media import attach
+    _, author, copy_id = guildmaster_with_post
+    cid = _comment_on(author, copy_id)
+    db = fresh(author)
+    asset_id = db.execute(text("INSERT INTO media_assets (user_id, account_id, provider, kind, token, status, comment_id) "
+                               "VALUES (:u, 0, 'dev', 'image', :t, 'ready', :c) RETURNING id"),
+                          {"u": author.id, "t": secrets.token_hex(8), "c": cid}).scalar()
+    db.commit()
+    MediaAsset = attach._models()[0]
+
+    def audience(post_public, pinned):
+        d = fresh(author)
+        d.execute(text("UPDATE submissions SET post_public = :p, is_pinned = :n WHERE id = :s"),
+                  {"p": post_public, "n": pinned, "s": copy_id})
+        d.commit()
+        return attach.audience_context(d, d.query(MediaAsset).filter_by(id=asset_id).first())[0]
+    try:
+        db.execute(text("UPDATE boards SET is_private = true WHERE id = 1"))
+        db.commit()
+        assert audience(False, False) == circles.PRIVATE_GUILD, "never public there: the guild's readers only"
+        assert audience(True, False) == 0, "forwarded while public: anyone may read the page, and see the picture"
+        assert audience(False, True) == 0, "pinned: the page is readable by anyone"
+    finally:
+        db = fresh(author)
+        db.execute(text("UPDATE boards SET is_private = false WHERE id = 1"))
+        db.execute(text("UPDATE submissions SET post_public = true, is_pinned = false WHERE id = :s"), {"s": copy_id})
+        db.execute(text("DELETE FROM media_assets WHERE id = :a"), {"a": asset_id})
+        db.commit()
+
 # ---------------------------------------------------------------- L6: feed dates carry their time zone
 
 def test_l6_feed_dates_say_they_are_utc(real_app):

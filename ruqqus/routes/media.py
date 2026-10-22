@@ -14,8 +14,8 @@ from urllib.parse import urlencode
 from flask import Response, g, jsonify, redirect, render_template, request, session
 
 from ruqqus.__main__ import app, limiter
-from ruqqus.classes import MediaAccount, MediaAsset
-from ruqqus.helpers import circle_guard
+from ruqqus.classes import Board, MediaAccount, MediaAsset
+from ruqqus.helpers import circle_guard, circles
 from ruqqus.helpers.media import attach, cdn, dev, google_oauth, oauth, registry, rules, safety
 from ruqqus.helpers.media.base import AccountLost, MediaGone, ProviderDown
 from ruqqus.helpers.secret_box import encrypt_secret
@@ -676,7 +676,12 @@ never cached. Anything else is refused, so this is not a file host for other sit
         # only now does it matter who is asking; a public file never looks at the session
         v, _ = get_logged_in_user()
         is_owner = bool(v) and v.id == asset.user_id
-        allowed = bool(audience) and circle_guard.may_see(g.db, audience, circle_owner, v, board_id=board_id, circle_ids=circle_ids)
+        if audience == circles.PRIVATE_GUILD:
+            # the post page's own rule (Submission.in_private_guild_for): its author, or whoever may view the guild
+            board = g.db.query(Board).filter_by(id=board_id).first()
+            allowed = bool(v) and (v.id == circle_owner or bool(board and board.can_view(v)))
+        else:
+            allowed = bool(audience) and circle_guard.may_see(g.db, audience, circle_owner, v, board_id=board_id, circle_ids=circle_ids)
     mode = rules.access(asset.status, live, is_owner, audience, allowed)
     if mode is None:
         return _refuse(404)

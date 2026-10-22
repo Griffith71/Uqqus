@@ -30,6 +30,9 @@ CIRCLES = 4
 # not a choice, never stored on a post or a story: what a PUBLIC story's picture is treated as when it is served (it must
 # not be cached by a CDN past the story's 24 hours, so it is shown only to a signed-in viewer who is not blocked)
 STORY_OPEN = 8
+# not stored either: a post in a private guild that was never public there (or a comment on one), whose pictures follow
+# the post page's own rule (Submission.in_private_guild_for: its author, or whoever may view the guild); never cached
+PRIVATE_GUILD = 9
 
 NAMES = {PUBLIC: "Public", CIRCLES: "Circles", GUILD: "Circle guild members"}
 
