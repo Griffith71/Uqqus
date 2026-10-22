@@ -1425,3 +1425,27 @@ def test_a_suspended_accounts_story_is_neither_viewed_nor_its_picture_served(mak
     assert here.get(path, base_url=BASE).status_code == 404
     assert post(here, f"/api/stories/{sid}/view", {"formkey": viewer.formkey(here)}).status_code == 404
     assert post(here, f"/api/stories/{sid}/report", {"reason": "x", "formkey": viewer.formkey(here)}).status_code == 404
+
+
+def test_an_admin_finds_an_account_by_an_address_with_an_underscore(make_member, real_app):
+    """The lookup compares exactly, but escaped `_` as for a LIKE: every address with one was never found."""
+    admin, member = _admin(make_member), make_member()
+    address = f"first_last_{secrets.token_hex(3)}@example.org"
+    db = fresh(member)
+    db.execute(text("UPDATE users SET email = :e WHERE id = :u"), {"e": address, "u": member.id})
+    db.commit()
+    answer = admin.browser().get(f"/admin/email/{address}", base_url=BASE)
+    assert answer.status_code == 302 and member.username in answer.headers["Location"]
+
+
+def test_granting_a_badge_goes_back_to_the_form_and_a_bad_badge_is_not_a_500(make_member, real_app):
+    """Errors redirected to /badge_grant, which has no page; a missing or unknown badge id was a 500."""
+    admin = _admin(make_member)
+    here = admin.browser()
+    nobody = post(here, "/badge_grant", {"username": f"nobody{secrets.token_hex(4)}", "badge_id": "1",
+                                         "formkey": admin.formkey(here)})
+    assert nobody.status_code == 302 and nobody.headers["Location"].endswith("/admin/badge_grant?error=no_user")
+    member = make_member()
+    for bad in ("", "x", "999999"):
+        answer = post(here, "/badge_grant", {"username": member.username, "badge_id": bad, "formkey": admin.formkey(here)})
+        assert answer.status_code in (400, 403), (bad, answer.status_code)

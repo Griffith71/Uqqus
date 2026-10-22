@@ -154,15 +154,18 @@ def badge_grant_post(v):
 
     user = get_user(request.form.get("username"), graceful=True)
     if not user:
-        return redirect("/badge_grant?error=no_user")
+        return redirect("/admin/badge_grant?error=no_user")      # the form's own page (bug hunt: /badge_grant has no GET)
 
-    badge_id = int(request.form.get("badge_id"))
+    raw_badge = request.form.get("badge_id", "") or ""
+    if not (raw_badge.isascii() and raw_badge.isdigit() and len(raw_badge) <= 9):
+        abort(400)
+    badge_id = int(raw_badge)
 
     if user.has_badge(badge_id):
-        return redirect("/badge_grant?error=already_owned")
+        return redirect("/admin/badge_grant?error=already_owned")
 
     badge = g.db.query(BadgeDef).filter_by(id=badge_id).first()
-    if badge.kind != 3:
+    if badge is None or badge.kind != 3:
         abort(403)
 
     new_badge = Badge(badge_id=badge_id,
@@ -1386,8 +1389,7 @@ def admin_siege_guild(v):
 @admin_level_required(4)
 def user_by_email(email, v):
 
-    email=email.replace('_', r'\_')
-
+    # an exact comparison, not a LIKE: escaping `_` made every address with one unfindable (bug hunt)
     user=g.db.query(User).filter(func.lower(User.email) == (email or '').lower()).first()
 
     if not user:
