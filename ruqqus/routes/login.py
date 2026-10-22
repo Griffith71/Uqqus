@@ -172,6 +172,9 @@ def login_post():
                                    )
         elif is_recovery:
             account.mfa_secret=None
+            # switching two-factor off ends the account's other sign-ins, as it does from Settings (bug hunt: a
+            # stolen session outlived the owner signing in with the recovery code); this one takes the new nonce below
+            account_sessions.end_other_sessions(account)
             g.db.add(account)
             g.db.commit()
         elif is_backup:

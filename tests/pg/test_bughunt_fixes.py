@@ -1693,3 +1693,20 @@ def test_removing_a_contributor_through_the_v2_api_works_and_an_odd_thing_is_not
     odd = post(here, "/mod/exile/general", {"username": member.username, "thing": f"t1_{base36encode(member.id)}",
                                             "formkey": mod.formkey(here)})
     assert odd.status_code == 400
+
+
+def test_switching_two_factor_off_with_the_recovery_code_signs_out_the_other_browsers(make_member):
+    """From Settings, turning two-factor off ends every other sign-in; the recovery code at sign-in didn't."""
+    import pyotp
+    from .test_account_security import sign_in, signed_in
+    member = make_member()
+    elsewhere = member.browser()                # signed in before two-factor (a stolen session, say)
+    assert signed_in(elsewhere)
+    db = member.db_session()
+    user = member.user()
+    user.mfa_secret = pyotp.random_base32()
+    db.add(user)
+    db.commit()
+    assert sign_in(member, member.user().mfa_removal_code.lower().replace(" ", "")).status_code == 302
+    assert member.user().mfa_secret is None
+    assert not signed_in(elsewhere)
