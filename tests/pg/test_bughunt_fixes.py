@@ -1664,3 +1664,32 @@ def test_exiling_never_tells_a_guildmaster_who_wrote_an_anonymous_item(make_memb
     assert refused.status_code == 403 and "participated" in refused.get_json()["error"]
     done = post(here, "/mod/exile/general", {"username": named.username, "formkey": mod.formkey(here)})
     assert done.status_code < 400, done.get_data(as_text=True)[:300]
+
+
+def test_removing_a_contributor_through_the_v2_api_works_and_an_odd_thing_is_not_a_500(make_member, guildmaster_with_post,
+                                                                                         real_app):
+    """DELETE /api/v2/guilds/<guildname>/contributors called the view with `guildname` where it wanted `bid` (a
+    TypeError on every call); an exile naming a user or a guild as its `thing` was a 500."""
+    from ruqqus.classes import ContributorRelationship
+    from ruqqus.helpers.base36 import base36encode
+    app, _ = real_app
+    mod, _, _ = guildmaster_with_post
+    member = make_member()
+    db = member.db_session()
+    db.add(ContributorRelationship(user_id=member.id, board_id=1, is_active=True, created_utc=int(time.time())))
+    db.commit()
+    db = fresh(mod)
+    db.execute(text("UPDATE client_auths SET scope_guildmaster = true WHERE access_token = :t"),
+               {"t": (token := _app_token(mod))})
+    db.commit()
+    answer = app.test_client().delete("/api/v2/guilds/general/contributors", base_url=BASE,
+                                      data={"username": member.username},
+                                      headers={"Authorization": f"Bearer {token}", "User-Agent": "ci"},
+                                      environ_base={"REMOTE_ADDR": addr()})
+    assert answer.status_code < 400, answer.get_data(as_text=True)[:300]
+    assert fresh(mod).execute(text("SELECT is_active FROM contributors WHERE user_id = :u AND board_id = 1"),
+                              {"u": member.id}).scalar() is False
+    here = mod.browser()
+    odd = post(here, "/mod/exile/general", {"username": member.username, "thing": f"t1_{base36encode(member.id)}",
+                                            "formkey": mod.formkey(here)})
+    assert odd.status_code == 400

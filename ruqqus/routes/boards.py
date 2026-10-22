@@ -723,6 +723,8 @@ Optional form data:
     item = request.values.get("thing")
     if item:
         item=get_from_fullname(item)
+        if not isinstance(item, (Submission, Comment)):
+            return jsonify({"error": "That isn't a post or comment."}), 400   # a user, a guild or nothing (bug hunt: a 500)
 
         if item.original_board_id != board.id:
             return jsonify({"error":f"That was originally created in +{item.original_board.name}, not +{board.name}"}), 400
@@ -2092,7 +2094,9 @@ Required form data:
 @is_guildmaster("access")
 @api("guildmaster")
 @validate_formkey
-def mod_unapprove_bid_user(bid, board, v):
+def mod_unapprove_bid_user(board, v, bid=None, guildname=None):
+    # either address names the guild (`is_guildmaster` found it): the v2 one passes `guildname`, never `bid` (bug hunt:
+    # every DELETE /api/v2/guilds/<guildname>/contributors was a TypeError)
     """
 Un-approve a user as a Contributor in a Guild
 
