@@ -1647,3 +1647,20 @@ def test_a_removed_member_of_a_private_guild_no_longer_finds_its_posts(make_memb
         db.execute(text("UPDATE boards SET is_private = false WHERE id = 1"))
         db.execute(text("UPDATE submissions SET post_public = true WHERE id = :s"), {"s": copy_id})
         db.commit()
+
+
+def test_exiling_never_tells_a_guildmaster_who_wrote_an_anonymous_item(make_member, guildmaster_with_post):
+    """"Hasn't participated" counted anonymous comments, so an exile by name answered whether that account wrote an
+    anonymous item in the guild. Its named comments still count."""
+    mod, _, copy_id = guildmaster_with_post
+    hidden, named = make_member(), make_member()
+    cid = _comment_on(hidden, copy_id)
+    _comment_on(named, copy_id)
+    db = fresh(mod)
+    db.execute(text("UPDATE comments SET is_anonymous = true WHERE id = :c"), {"c": cid})
+    db.commit()
+    here = mod.browser()
+    refused = post(here, "/mod/exile/general", {"username": hidden.username, "formkey": mod.formkey(here)})
+    assert refused.status_code == 403 and "participated" in refused.get_json()["error"]
+    done = post(here, "/mod/exile/general", {"username": named.username, "formkey": mod.formkey(here)})
+    assert done.status_code < 400, done.get_data(as_text=True)[:300]

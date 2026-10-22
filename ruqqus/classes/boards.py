@@ -498,9 +498,27 @@ class Board(Base, Stndrd, Age_times):
         return f"/assets/{self.fullname}/dark/{self.color_nonce}.css"
 
     def has_participant(self, user):
-        return (g.db.query(Submission).filter_by(original_board_id=self.id, author_id=user.id).first() or
-                g.db.query(Comment).filter_by(
-            author_id=user.id, original_board_id=self.id).first()
+        """Whether `user` took part here, as the exile check asks it. What they did in their own name only: a forward
+        they made (a copy keeps the ORIGINAL author's id, so the author of someone else's forward isn't a participant
+        and the forwarder is), a post made straight in the guild, or a comment. Never anything anonymous: a yes or no
+        would tell a guildmaster who wrote an anonymous item here (bug hunt)."""
+        named_copy = select(Submission.id).where(Submission.is_anonymous == False)
+        return bool(
+            g.db.query(ForwardRelationship.id).filter(
+                ForwardRelationship.board_id == self.id, ForwardRelationship.forwarded_by_id == user.id,
+                ForwardRelationship.forward_submission_id.in_(named_copy)).first()
+            or g.db.query(CommentForwardRelationship.id).filter(
+                CommentForwardRelationship.board_id == self.id, CommentForwardRelationship.forwarded_by_id == user.id,
+                CommentForwardRelationship.forwarded_submission_id.in_(named_copy)).first()
+            or g.db.query(Submission.id).filter(
+                Submission.original_board_id == self.id, Submission.author_id == user.id,
+                Submission.is_anonymous == False, or_(Submission.repost_id == None, Submission.repost_id == 0),
+                # a forwarded comment's post keeps the comment's author too: its forwarder is counted above
+                ~Submission.id.in_(select(CommentForwardRelationship.forwarded_submission_id).where(
+                    CommentForwardRelationship.forwarded_submission_id != None))).first()
+            or g.db.query(Comment.id).filter(
+                Comment.original_board_id == self.id, Comment.author_id == user.id,
+                Comment.is_anonymous == False).first()
         )
 
     @property
