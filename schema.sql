@@ -6903,6 +6903,9 @@ CREATE TABLE public.bell_rings (
 
 CREATE INDEX bell_rings_created_idx ON public.bell_rings (created_utc);
 
+-- what an account owes is never below 0 (bug hunt 2026-10, H4; 2026-11-23_owed_never_below_zero.sql)
+ALTER TABLE public.users ADD CONSTRAINT users_owed_never_below_zero CHECK (negative_balance_cents >= 0);
+
 CREATE TABLE public.schema_migrations (
     name character varying(255) PRIMARY KEY,
     applied_utc integer DEFAULT 0 NOT NULL
@@ -6977,4 +6980,5 @@ INSERT INTO public.schema_migrations (name) VALUES
     ('2026-11-18_user_name_search_index.sql'),
     ('2026-11-20_guild_day_stats.sql'),
     ('2026-11-21_self_automation.sql'),
-    ('2026-11-22_escape_mod_log_notes.sql');
+    ('2026-11-22_escape_mod_log_notes.sql'),
+    ('2026-11-23_owed_never_below_zero.sql');

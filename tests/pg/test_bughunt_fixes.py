@@ -3,12 +3,14 @@ section names the finding (C1, H1, ... in the plan); each test failed on the cod
 import secrets
 import sys
 
+import pytest
+
 from sqlalchemy import text
 
-from .test_characterization import BASE, addr, fresh, guildmaster_with_post, post
+from .test_characterization import BASE, addr, fake_paypal, fresh, guildmaster_with_post, post
 
-# guildmaster_with_post is a fixture: importing it here makes it available to this file's tests
-assert guildmaster_with_post
+# guildmaster_with_post and fake_paypal are fixtures: importing them here makes them available to this file's tests
+assert guildmaster_with_post and fake_paypal
 
 XSS = '<img src=x onerror="alert(1)">'
 
@@ -356,3 +358,68 @@ def test_m1_a_stylesheet_saved_through_the_old_gap_is_not_served(guildmaster_wit
     db = fresh(mod)
     db.execute(text("UPDATE boards SET css = '' WHERE id = 1"))
     db.commit()
+
+
+# ---------------------------------------------------------------- H4: what an account owes never goes below 0
+
+def _owed(member):
+    return fresh(member).execute(text("SELECT negative_balance_cents FROM users WHERE id = :u"), {"u": member.id}).scalar()
+
+
+def _txns(member):
+    return fresh(member).execute(text("SELECT count(*) FROM paypal_txns WHERE user_id = :u"), {"u": member.id}).scalar()
+
+
+def test_h4_a_purchase_of_no_coins_or_an_unreadable_count_is_refused_and_locks_nothing(make_member, fake_paypal):
+    member = make_member()
+    client = member.browser()
+    for count in ("0", "-5", "abc", "1.5", "99999"):
+        answer = post(client, "/shop/buy_coins", {"coin_count": count, "formkey": member.formkey(client)})
+        assert answer.status_code == 400, (count, answer.status_code)
+    assert fake_paypal.created == [] and _txns(member) == 0
+    assert _owed(member) == 0
+
+
+def test_h4_paying_off_a_debt_never_leaves_it_below_zero(make_member, fake_paypal):
+    from ruqqus.helpers.base36 import base36encode
+    member = make_member()
+    client = member.browser()
+    assert post(client, "/shop/negative_balance", {"formkey": member.formkey(client)}).status_code == 400, "nothing owed"
+    db = fresh(member)
+    db.execute(text("UPDATE users SET negative_balance_cents = 100 WHERE id = :u"), {"u": member.id})
+    # a debt-payment order larger than what is owed now (the debt was lowered by hand after the order was opened)
+    txn = db.execute(text("INSERT INTO paypal_txns (user_id, created_utc, coin_count, usd_cents, status, paypal_id) "
+                          "VALUES (:u, 0, 0, 300, 1, 'ORDER-TEST') RETURNING id"), {"u": member.id}).scalar()
+    db.commit()
+    done = client.get(f"/shop/buy_coins_completed?txid={base36encode(txn)}", base_url=BASE)
+    assert done.status_code == 200
+    assert _owed(member) == 0
+
+
+def test_h4_the_migration_sets_values_below_zero_back_once_and_keeps_them_from_coming_back(pg_engine, make_member):
+    from pathlib import Path
+    sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "scripts"))
+    import migrate
+    name = "2026-11-23_owed_never_below_zero.sql"
+    member = make_member()
+    member.db_session().rollback()        # the app's session would hold its read lock on users, and ALTER TABLE wait on it
+    with pg_engine.connect() as conn:
+        conn.execute(text("SET lock_timeout = '10s'"))
+        conn.execute(text("ALTER TABLE users DROP CONSTRAINT IF EXISTS users_owed_never_below_zero"))
+        conn.execute(text("DELETE FROM schema_migrations WHERE name = :n"), {"n": name})
+        conn.execute(text("UPDATE users SET negative_balance_cents = -49 WHERE id = :u"), {"u": member.id})
+        conn.commit()
+        try:
+            migrate.run_file(conn, name)
+            conn.commit()
+            assert conn.execute(text("SELECT negative_balance_cents FROM users WHERE id = :u"), {"u": member.id}).scalar() == 0
+            migrate.run_file(conn, name)
+            conn.commit()
+            with pytest.raises(Exception) as refused:
+                conn.execute(text("UPDATE users SET negative_balance_cents = -1 WHERE id = :u"), {"u": member.id})
+            conn.rollback()
+            assert "users_owed_never_below_zero" in str(refused.value)
+        finally:
+            conn.rollback()
+            conn.execute(text("UPDATE users SET negative_balance_cents = 0 WHERE id = :u"), {"u": member.id})
+            conn.commit()

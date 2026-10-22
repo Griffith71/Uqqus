@@ -113,7 +113,7 @@ class PayPalClient():
 
 		x=r.json()
 
-		if x["status"]=="CREATED":
+		if x.get("status")=="CREATED":
 			txn.paypal_id=x["id"]
 			txn.status=1
 

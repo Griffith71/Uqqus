@@ -17,6 +17,7 @@ from ruqqus.helpers.get import *
 from ruqqus.__main__ import app
 from ruqqus.helpers import tips, tips_store
 from ruqqus.helpers import coins as coins_store, premium
+from ruqqus.helpers import coin_shop
 from ruqqus.helpers.discord import add_role
 
 CLIENT=PayPalClient()
@@ -77,23 +78,40 @@ def shop_coin_balance(v):
 @validate_formkey
 def shop_buy_coins(v):
 
-    coin_count=int(request.form.get("coin_count",1))
+    # 1 to 10,000 coins, digits only (bug hunt H4: 0 was priced at 49 cents and then "paid off" a debt that wasn't
+    # there, which locked the account; a negative or unreadable count was a 500)
+    coin_count=coin_shop.parse_coin_count(request.form.get("coin_count", "1"))
+    if coin_count is None:
+        return jsonify({"error": coin_shop.BAD_COUNT}), 400
 
     code=request.form.get("promo","")
     promo=get_promocode(code)
+
+    price=coins_to_price_cents(coin_count, code=promo)
+    if price <= 0:
+        return jsonify({"error": coin_shop.FREE}), 400
 
     new_txn=PayPalTxn(
         user_id=v.id,
         created_utc=int(time.time()),
         coin_count=coin_count,
-        usd_cents=coins_to_price_cents(coin_count, code=promo),
+        usd_cents=price,
         promo_id= promo.id if promo else None
         )
 
+    return _start_order(new_txn)
+
+
+def _start_order(new_txn):
+    """Open the PayPal order for `new_txn` and send the browser to approve it; nothing is kept when PayPal refuses."""
     g.db.add(new_txn)
     g.db.flush()
 
     CLIENT.create(new_txn)
+
+    if not new_txn.paypal_id:
+        g.db.rollback()
+        return jsonify({"error": "PayPal couldn't start this order. Please try again later."}), 502
 
     g.db.add(new_txn)
     g.db.commit()
@@ -107,6 +125,9 @@ def shop_buy_coins(v):
 @validate_formkey
 def shop_negative_balance(v):
 
+    if (v.negative_balance_cents or 0) <= 0:
+        return jsonify({"error": coin_shop.NOTHING_OWED}), 400
+
     new_txn=PayPalTxn(
         user_id=v.id,
         created_utc=int(time.time()),
@@ -114,15 +135,7 @@ def shop_negative_balance(v):
         usd_cents=v.negative_balance_cents
         )
 
-    g.db.add(new_txn)
-    g.db.flush()
-
-    CLIENT.create(new_txn)
-
-    g.db.add(new_txn)
-    g.db.commit()
-
-    return redirect(new_txn.approve_url)
+    return _start_order(new_txn)
 
 @app.route("/shop/buy_coins_completed", methods=["GET"])
 @no_sanctions
@@ -163,7 +176,8 @@ def shop_buy_coins_completed(v):
         if not v.has_premium_no_renew and premium.redeem_week(g.db, v, int(time.time())):
             add_role(v, "premium")
     else:
-        v.negative_balance_cents -= txn.usd_cents
+        # paying off what the account owes: never below 0 (helpers/coin_shop.py)
+        v.negative_balance_cents = coin_shop.owed_after_payment(v.negative_balance_cents, txn.usd_cents)
 
     g.db.add(v)
     g.db.commit()
