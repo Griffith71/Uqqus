@@ -354,11 +354,9 @@ def gift_post_pid(pid, v):
 
     u=get_user(post.author.username, v=v)
 
-    if u.is_blocking:
-        return jsonify({"error":"You can't give awards to someone you're blocking."}), 403
-
-    if u.is_blocked:
-        return jsonify({"error":"You can't give awards to someone that's blocking you."}), 403
+    if u.is_blocking or u.is_blocked:
+        # one message either way: it never says who blocked whom (bug hunt: the second told a tipper they were blocked)
+        return jsonify({"error": "You can't tip this account."}), 403
 
     # a bot's post takes tips too (the owner, 2026-10-20): a member bot's coins go to the member who runs it, a site
     # bot's to nobody, spent only to lift the post (helpers/tips.py recipient_id)
@@ -443,11 +441,9 @@ def gift_comment_pid(cid, v):
 
     u=get_user(comment.author.username, v=v)
 
-    if u.is_blocking:
-        return jsonify({"error":"You can't give awards to someone you're blocking."}), 403
-
-    if u.is_blocked:
-        return jsonify({"error":"You can't give awards to someone that's blocking you."}), 403
+    if u.is_blocking or u.is_blocked:
+        # one message either way: it never says who blocked whom (bug hunt: the second told a tipper they were blocked)
+        return jsonify({"error": "You can't tip this account."}), 403
 
     coins = tips.parse_coins(request.args.get("coins"))
     if coins is None:

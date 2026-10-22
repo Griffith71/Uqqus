@@ -1820,3 +1820,19 @@ def test_odd_input_is_refused_or_ignored_never_a_500(make_member, guildmaster_wi
     assert them.get("/circles/99999999999", base_url=BASE).status_code == 404
     assert them.get(f"/@{member.username}/followers?page=99999999999999999999", base_url=BASE).status_code < 500
     assert post(them, "/settings/profile", {"title_id": "abc", "formkey": member.formkey(them)}).status_code == 400
+
+
+def test_a_refused_tip_never_says_who_blocked_whom(make_member, guildmaster_with_post):
+    """A tip to someone who blocked you said "someone that's blocking you"."""
+    from ruqqus.helpers.base36 import base36encode
+    _, author, copy_id = guildmaster_with_post
+    tipper = make_member()
+    here = author.browser()
+    assert post(here, "/settings/block", {"username": tipper.username, "formkey": author.formkey(here)}).status_code < 400
+    db = fresh(author)
+    db.execute(text("UPDATE users SET coin_balance = 10 WHERE id = :u"), {"u": tipper.id})
+    db.commit()
+    them = tipper.browser()
+    answer = post(them, f"/gift_post/{base36encode(copy_id)}", {"coins": "1", "formkey": tipper.formkey(them)})
+    assert answer.status_code == 403
+    assert "block" not in answer.get_data(as_text=True).lower()
