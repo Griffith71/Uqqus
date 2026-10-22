@@ -68,6 +68,11 @@ def poll_vote(pid, v):
 
     primary = post if primary_id == post.id else g.db.query(Submission).filter_by(id=primary_id).first()
     gone = primary is None or bool(primary.is_banned or primary.deleted_utc)
+    # no vote across a block with the post's author, as a vote on the post itself (routes/votes.py); never asked of
+    # an anonymous post, whose author a refusal would name. One message, never who blocked whom (bug hunt)
+    if primary is not None and not primary.is_anonymous and primary.author_id != v.id \
+            and v.any_block_exists(primary.author):
+        return jsonify({"error": "You can't vote in this poll."}), 403
 
     raw = (request.values.get("option") or "").strip()
     option = None

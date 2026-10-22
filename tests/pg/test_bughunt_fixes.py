@@ -1864,3 +1864,24 @@ def test_making_a_guild_private_clears_the_cached_lists_and_still_answers(guildm
         db = fresh(mod)
         db.execute(text("UPDATE boards SET is_private = false WHERE id = 1"))
         db.commit()
+
+
+def test_no_poll_vote_across_a_block_with_its_author(make_member):
+    """A vote on a post is refused across a block; a vote in its poll wasn't."""
+    from werkzeug.datastructures import MultiDict
+    author, voter = make_member(), make_member()
+    here = author.browser()
+    made = here.post("/api/vue/submit", base_url=BASE, environ_base={"REMOTE_ADDR": addr()},
+                     data=MultiDict([("title", f"Poll {secrets.token_hex(4)}"), ("body", "which?"),
+                                     ("post_to_profile", "1"), ("poll_option", "Yes"), ("poll_option", "No"),
+                                     ("poll_hours", "24"), ("formkey", author.formkey(here))]))
+    assert made.status_code == 200, made.get_data(as_text=True)[:300]
+    pid = made.get_json()["id"]
+    option = fresh(author).execute(text("SELECT o.id FROM poll_options o JOIN polls p ON p.id = o.poll_id "
+                                        "WHERE p.post_id = :p ORDER BY o.id LIMIT 1"),
+                                   {"p": int(pid, 36)}).scalar()
+    assert post(here, "/settings/block", {"username": voter.username, "formkey": author.formkey(here)}).status_code < 400
+    them = voter.browser()
+    answer = post(them, f"/api/poll/{pid}/vote", {"option": str(option), "formkey": voter.formkey(them)})
+    assert answer.status_code == 403 and "block" not in answer.get_data(as_text=True).lower()
+    assert fresh(author).execute(text("SELECT count(*) FROM poll_votes WHERE user_id = :u"), {"u": voter.id}).scalar() == 0
