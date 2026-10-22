@@ -1449,3 +1449,62 @@ def test_granting_a_badge_goes_back_to_the_form_and_a_bad_badge_is_not_a_500(mak
     for bad in ("", "x", "999999"):
         answer = post(here, "/badge_grant", {"username": member.username, "badge_id": bad, "formkey": admin.formkey(here)})
         assert answer.status_code in (400, 403), (bad, answer.status_code)
+
+
+def _oauth_app(member, *uris):
+    db = fresh(member)
+    client_id, secret = secrets.token_hex(16), secrets.token_hex(32)
+    app_id = db.execute(text("INSERT INTO oauth_apps (client_id, client_secret, app_name, redirect_uri, author_id, is_banned) "
+                             "VALUES (:c, :s, 'ci app', :r, :u, false) RETURNING id"),
+                        {"c": client_id, "s": secret, "r": ",".join(uris), "u": member.id}).scalar()
+    db.commit()
+    return app_id, client_id, secret
+
+
+def test_oauth_redirects_are_encoded_codes_expire_and_odd_input_is_not_a_500(make_member, real_app):
+    """A code never expired; the state went into the redirect unencoded after a second `?`; `localhost.<anything>`
+    passed the http check on the prompt while `localhost:8080` failed it on the answer; `permanent=abc`, missing
+    scopes and a missing description were 500s; rerolling or rescinding something missing was a 500."""
+    from urllib.parse import parse_qs, urlparse
+    member = make_member()
+    _, client_id, secret = _oauth_app(member, "https://example.org/cb?x=1", "http://localhost.evil.example/cb",
+                                      "http://localhost:8080/cb")
+    here = member.browser()
+    prompt = here.get("/oauth/authorize", base_url=BASE, query_string={
+        "client_id": client_id, "scope": "identity", "redirect_uri": "http://localhost.evil.example/cb", "state": "s"})
+    assert prompt.status_code == 400
+
+    def authorize(**over):
+        form = {"client_id": client_id, "scopes": "identity", "state": "a&code=forged", "permanent": "0",
+                "redirect_uri": "https://example.org/cb?x=1", "formkey": member.formkey(here)}
+        form.update(over)
+        return post(here, "/oauth/authorize", {k: v for k, v in form.items() if v is not None})
+
+    local = authorize(redirect_uri="http://localhost:8080/cb")
+    assert local.status_code == 302, local.get_data(as_text=True)[:200]
+    answer = authorize()
+    assert answer.status_code == 302
+    where = urlparse(answer.headers["Location"])
+    query = parse_qs(where.query)
+    assert where.path == "/cb" and query["x"] == ["1"] and query["state"] == ["a&code=forged"] and len(query["code"]) == 1
+    assert authorize(permanent="abc").status_code < 500
+    assert authorize(scopes=None).status_code == 400
+
+    db = fresh(member)
+    db.execute(text("UPDATE client_auths SET access_token_expire_utc = :t WHERE oauth_code = :c"),
+               {"t": int(time.time()) - 1, "c": query["code"][0]})
+    db.commit()
+    grant = real_app[0].test_client().post("/oauth/grant", base_url=BASE, data={
+        "client_id": client_id, "client_secret": secret, "grant_type": "code", "code": query["code"][0]})
+    assert grant.status_code == 401
+
+    fresh_code = parse_qs(urlparse(authorize().headers["Location"]).query)["code"][0]
+    good = real_app[0].test_client().post("/oauth/grant", base_url=BASE, data={
+        "client_id": client_id, "client_secret": secret, "grant_type": "code", "code": fresh_code})
+    assert good.status_code == 200 and good.get_json()["expires_at"] > time.time() + 3000
+
+    assert post(here, "/oauth/reroll/zzzzzz", {"formkey": member.formkey(here)}).status_code == 404
+    assert post(here, "/oauth/rescind/zzzzzz", {"formkey": member.formkey(here)}).status_code == 404
+    made = post(here, "/help/api_keys", {"name": "x", "redirect_uri": "https://example.org/cb", "formkey": member.formkey(here)})
+    assert made.status_code < 500
+    assert post(here, "/edit_app/abc", {"formkey": member.formkey(here)}).status_code == 404

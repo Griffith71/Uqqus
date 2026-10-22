@@ -1,4 +1,4 @@
-from urllib.parse import urlparse
+from urllib.parse import urlencode, urlparse
 from time import time
 import secrets
 import re
@@ -20,6 +20,28 @@ SCOPES = {
     'vote': 'Cast votes as you',
     'guildmaster': 'Perform Guildmaster actions'
 }
+
+CODE_SECONDS = 600      # an authorization code is swapped for a token within ten minutes, or not at all
+
+
+def _http_allowed(uri):
+    """https, or http to this machine only (a developer's own app). The host is compared as a whole: the GET once took
+    `localhost.example.com`, and the POST refused `localhost:8080` (bug hunt)."""
+    parsed = urlparse(uri or "")
+    if parsed.scheme != "http":
+        return True
+    return (parsed.hostname or "") in ("localhost", "127.0.0.1")
+
+
+def _with_query(uri, **values):
+    """`uri` with these values added to its query, encoded (the state and scopes went in raw, and a second `?` was
+    added to an address that already had one)."""
+    return uri + ("&" if "?" in uri else "?") + urlencode(values)
+
+
+def _whole(raw):
+    raw = (raw or "").strip()
+    return int(raw) if raw.isascii() and raw.isdigit() and len(raw) <= 9 else None
 
 
 @app.route("/oauth/authorize", methods=["GET"])
@@ -65,8 +87,7 @@ def oauth_authorize_prompt(v):
     if not redirect_uri:
         return jsonify({"oauth_error": f"`redirect_uri` must be provided."}), 400
 
-    if redirect_uri.startswith(
-            'http://') and not urlparse(redirect_uri).netloc.startswith("localhost"):
+    if not _http_allowed(redirect_uri):
         return jsonify(
             {"oauth_error": "redirect_uri must not use http (use https instead)"}), 400
 
@@ -101,7 +122,7 @@ def oauth_authorize_prompt(v):
 def oauth_authorize_post(v):
 
     client_id = request.form.get("client_id")
-    scopes_txt = request.form.get("scopes")
+    scopes_txt = request.form.get("scopes") or ""
     state = request.form.get("state")
     redirect_uri = request.form.get("redirect_uri")
 
@@ -116,8 +137,7 @@ def oauth_authorize_post(v):
     if redirect_uri not in valid_redirect_uris:
         return jsonify({"oauth_error": "Invalid redirect_uri"}), 400
 
-    if redirect_uri.startswith(
-            'http://') and not urlparse(redirect_uri).netloc == "localhost":
+    if not _http_allowed(redirect_uri):
         return jsonify(
             {"oauth_error": "redirect_uri must not use http (use https instead)"}), 400
 
@@ -137,7 +157,7 @@ def oauth_authorize_post(v):
     if not state:
         return jsonify({'oauth_error': 'state argument required'}), 400
 
-    permanent = bool(int(request.values.get("permanent", 0)))
+    permanent = bool(_whole(request.values.get("permanent", "0")))
 
     new_auth = ClientAuth(
         oauth_client=application.id,
@@ -151,12 +171,13 @@ def oauth_authorize_post(v):
         scope_vote="vote" in scopes,
         scope_guildmaster="guildmaster" in scopes,
         refresh_token=secrets.token_urlsafe(128)[0:128] if permanent else None,
-        access_token_expire_utc=int(time.time())+3600
+        # until it is swapped, this is when the code stops working (bug hunt: a code never expired)
+        access_token_expire_utc=int(time.time()) + CODE_SECONDS
     )
 
     g.db.add(new_auth)
 
-    return redirect(f"{redirect_uri}?code={new_auth.oauth_code}&scopes={scopes_txt}&state={state}")
+    return redirect(_with_query(redirect_uri, code=new_auth.oauth_code, scopes=scopes_txt, state=state))
 
 
 @app.route("/oauth/grant", methods=["POST"])
@@ -190,6 +211,10 @@ def oauth_grant():
         ).first()
 
         if not auth:
+            return jsonify({"oauth_error": "Invalid code"}), 401
+        if (auth.access_token_expire_utc or 0) < int(time.time()):
+            g.db.delete(auth)               # an expired code is gone for good
+            g.db.commit()
             return jsonify({"oauth_error": "Invalid code"}), 401
 
         auth.oauth_code = None
@@ -253,7 +278,7 @@ def request_api_keys(v):
         app_name=request.form.get('name'),
         redirect_uri=request.form.get('redirect_uri'),
         author_id=v.id,
-        description=request.form.get("description")[0:256],
+        description=(request.form.get("description") or "")[0:256],
         client_id=secrets.token_urlsafe(32)[0:32],
         client_secret=secrets.token_urlsafe(64)[0:64]
     )
@@ -293,8 +318,8 @@ def delete_oauth_app(v, aid):
 @validate_formkey
 def edit_oauth_app(v, aid):
 
-    aid = int(aid)
-    app = g.db.query(OauthApp).filter_by(id=aid).first()
+    aid = _whole(aid)
+    app = g.db.query(OauthApp).filter_by(id=aid).first() if aid is not None else None
 
     # only the app's own author edits it
     if not app:
@@ -304,7 +329,7 @@ def edit_oauth_app(v, aid):
 
     app.redirect_uri = request.form.get('redirect_uri')
     app.app_name = request.form.get('name')
-    app.description = request.form.get("description")[0:256]
+    app.description = (request.form.get("description") or "")[0:256]
 
     g.db.add(app)
 
@@ -441,6 +466,8 @@ def reroll_oauth_tokens(aid, v):
 
     a = g.db.query(OauthApp).filter_by(id=aid).first()
 
+    if a is None:
+        abort(404)
     if a.author_id != v.id:
         abort(403)
 
@@ -463,6 +490,8 @@ def oauth_rescind_app(aid, v):
     aid = base36decode(aid)
     auth = g.db.query(ClientAuth).filter_by(id=aid).first()
 
+    if auth is None:
+        abort(404)
     if auth.user_id != v.id:
         abort(403)
 

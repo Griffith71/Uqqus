@@ -87,13 +87,15 @@ def account_refusal(user, chat_ready):
 def pkce_ok(verifier, challenge):
     if not verifier or not _VERIFIER.match(verifier) or not challenge:
         return False
-    return hmac.compare_digest(b64url(hashlib.sha256(verifier.encode("ascii")).digest()), challenge)
+    # bytes: compare_digest refuses a str with a letter outside ASCII (a 500, bug hunt)
+    return hmac.compare_digest(b64url(hashlib.sha256(verifier.encode("ascii")).digest()).encode(), str(challenge).encode())
 
 
 def client_ok(given_id, given_secret, client_id, client_secret):
     if not given_id or not given_secret:
         return False
-    return hmac.compare_digest(given_id, client_id) and hmac.compare_digest(given_secret, client_secret)
+    # bytes, as in pkce_ok
+    return hmac.compare_digest(str(given_id).encode(), str(client_id).encode()) and hmac.compare_digest(str(given_secret).encode(), str(client_secret).encode())
 
 
 def basic_auth(header):
