@@ -1218,6 +1218,12 @@ def mod_bid_settings_private(bid, board, v):
     g.db.add(board)
     g.db.commit()
 
+    if board.is_private:
+        # its pictures were public files a CDN keeps for a year: it must forget them (media.attach.audience_context
+        # serves them per reader from now on)
+        from ruqqus.helpers.media import attach as media_attach, cdn as media_cdn
+        media_cdn.purge(media_attach.board_paths(g.db, board.id))
+
     ma=ModAction(
         user_id=v.id,
         board_id=board.id,

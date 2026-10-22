@@ -27,8 +27,16 @@ def _purge(urls):
         logging.warning("media: could not purge %d address(es) from the CDN: %s", len(urls), e)
 
 
+# Cloudflare takes at most 30 addresses in one purge call
+BATCH = 30
+
+
+def batches(urls, size=BATCH):
+    return [urls[i:i + size] for i in range(0, len(urls), size)]
+
+
 def purge(paths):
     """Ask the CDN to drop these media paths. Runs in the background and never raises."""
     urls = [absolute(p) for p in paths if p]
-    if urls:
-        gevent.spawn(_purge, urls)
+    for batch in batches(urls):
+        gevent.spawn(_purge, batch)

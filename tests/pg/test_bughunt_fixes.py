@@ -987,3 +987,35 @@ def test_a_sign_up_form_with_a_missing_or_odd_field_is_refused_not_a_500(real_ap
                     digestmod="md5").hexdigest()
     answer = post(client, "/signup", {"now": then, "formkey": key})          # no username, no password
     assert answer.status_code == 302 and "/signup" in answer.headers["Location"]
+
+
+def test_turning_a_guild_private_makes_the_cdn_forget_its_pictures(guildmaster_with_post, monkeypatch):
+    from ruqqus.helpers.media import attach, cdn
+    mod, author, copy_id = guildmaster_with_post
+    cid = _comment_on(author, copy_id)
+    db = fresh(author)
+    asset_id = db.execute(text("INSERT INTO media_assets (user_id, account_id, provider, kind, token, ext, status, comment_id) "
+                               "VALUES (:u, 0, 'gdrive', 'image', :t, 'png', 'ready', :c) RETURNING id"),
+                          {"u": author.id, "t": secrets.token_hex(8), "c": cid}).scalar()
+    db.commit()
+    asked = []
+    monkeypatch.setattr(cdn, "purge", lambda paths: asked.extend(paths))
+    try:
+        client = mod.browser()
+        answer = post(client, "/mod/1/settings/private", {"guildprivacy": "true", "formkey": mod.formkey(client)})
+        assert answer.status_code == 204
+        path = fresh(author).query(attach._models()[0]).filter_by(id=asset_id).first().path
+        assert path in asked
+    finally:
+        db = fresh(author)
+        db.execute(text("UPDATE boards SET is_private = false WHERE id = 1"))
+        db.execute(text("DELETE FROM media_assets WHERE id = :a"), {"a": asset_id})
+        db.commit()
+
+
+def test_cdn_purges_go_in_batches_of_thirty(real_app):
+    """Cloudflare purges at most 30 addresses a call; a guild's pictures can be many more."""
+    from ruqqus.helpers.media import cdn
+    urls = [f"https://x/{i}" for i in range(65)]
+    assert [len(b) for b in cdn.batches(urls)] == [30, 30, 5] and sum(cdn.batches(urls), []) == urls
+    assert cdn.batches([]) == []

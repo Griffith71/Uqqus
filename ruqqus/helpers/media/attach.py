@@ -121,6 +121,16 @@ def attached_paths(db, submission_id=None, comment_id=None):
     return [a.path for a in rows if a.provider in rules.SERVED and a.ext]
 
 
+def board_paths(db, board_id):
+    """The addresses of every file shown on a guild's posts or their comments: what a CDN must forget when the guild
+    turns private (it kept them as public files)."""
+    MediaAsset, Submission, Comment = _models()
+    posts = db.query(Submission.id).filter(Submission.board_id == board_id)
+    comments = db.query(Comment.id).filter(Comment.parent_submission.in_(posts))
+    rows = db.query(MediaAsset).filter((MediaAsset.submission_id.in_(posts)) | (MediaAsset.comment_id.in_(comments))).all()
+    return [a.path for a in rows if a.provider in rules.SERVED and a.ext]
+
+
 def is_live(db, asset):
     """Is the asset part of a post or comment that is still up, or of a story that is up or kept in a Highlight?"""
     _, Submission, Comment = _models()
