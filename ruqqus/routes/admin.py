@@ -1120,14 +1120,14 @@ def admin_siege_guild(v):
     user=get_user(request.form.get("username"))
     guild = get_guild(guild)
 
-    if now-v.created_utc < 60*60*24*30:
+    if now-user.created_utc < 60*60*24*30:          # the account installed, not the admin (bug hunt)
         return render_template("message.html",
                                v=v,
                                title=f"Siege on +{guild.name} Failed",
                                error=f"@{user.username}'s account is too new."
                                ), 403
 
-    if v.is_suspended or v.is_deleted:
+    if user.is_suspended or user.is_deleted:
         return render_template("message.html",
                                v=v,
                                title=f"Siege on +{guild.name} Failed",
@@ -1189,9 +1189,9 @@ def admin_siege_guild(v):
     # update siege date
     user.last_siege_utc = now
     g.db.add(user)
-    for alt in v.alts:
+    for alt in user.alts:
         alt.last_siege_utc = now
-        g.db.add(user)
+        g.db.add(alt)
 
 
     # check user activity
@@ -1249,7 +1249,7 @@ def admin_siege_guild(v):
                     )
                 ),
                 ModAction.created_utc > cutoff
-            ).options(contains_eager(ModAction.User)
+            ).options(contains_eager(ModAction.user)      # .User was an AttributeError: every siege past this point was a 500
             ).first()
         if ma:
             return render_template("message.html",

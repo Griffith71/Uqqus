@@ -1187,3 +1187,32 @@ def test_following_through_the_api_needs_the_update_scope(make_member, real_app)
     assert follow(strong).status_code < 300
     assert fresh(member).execute(text("SELECT count(*) FROM follows WHERE user_id = :u AND target_id = :t"),
                                  {"u": member.id, "t": target.id}).scalar() == 1
+
+
+def test_an_admin_siege_never_installs_a_suspended_account(make_member):
+    """The siege route checked the admin's own age and standing, though its messages named the account installed."""
+    admin, target = _admin(make_member, 3), make_member()
+    db = fresh(admin)
+    db.execute(text("UPDATE users SET is_banned = 1, unban_utc = 0, created_utc = created_utc - 9000000 WHERE id = :u"),
+               {"u": target.id})
+    db.execute(text("UPDATE users SET created_utc = created_utc - 9000000 WHERE id = :u"), {"u": admin.id})
+    db.commit()
+    here = admin.browser()
+    post(here, "/admin/siege_guild", {"guild": "general", "username": target.username, "formkey": admin.formkey(here)})
+    mods = fresh(admin).execute(text("SELECT count(*) FROM mods WHERE user_id = :u AND board_id = 1"), {"u": target.id}).scalar()
+    assert mods == 0
+    db = fresh(admin)
+    db.execute(text("UPDATE users SET is_banned = 0 WHERE id = :u"), {"u": target.id})
+    db.commit()
+
+
+def test_an_admin_siege_on_a_guild_with_a_guildmaster_answers_without_an_error(make_member, guildmaster_with_post):
+    """The check of the guildmasters' recent activity named ModAction.User (an AttributeError): every admin siege that
+    reached it was a 500."""
+    admin, target = _admin(make_member, 3), make_member()
+    db = fresh(admin)
+    db.execute(text("UPDATE users SET created_utc = created_utc - 9000000 WHERE id IN (:a, :t)"), {"a": admin.id, "t": target.id})
+    db.commit()
+    here = admin.browser()
+    answer = post(here, "/admin/siege_guild", {"guild": "general", "username": target.username, "formkey": admin.formkey(here)})
+    assert answer.status_code < 500, answer.status_code
