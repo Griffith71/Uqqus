@@ -1000,6 +1000,9 @@ def test_turning_a_guild_private_makes_the_cdn_forget_its_pictures(guildmaster_w
                                "VALUES (:u, 0, 'gdrive', 'image', :t, 'png', 'ready', :c) RETURNING id"),
                           {"u": author.id, "t": secrets.token_hex(8), "c": cid}).scalar()
     db.commit()
+    # a copy never public there (one that was public stays public, and is not purged: audience_context)
+    db.execute(text("UPDATE submissions SET post_public = false WHERE id = :s"), {"s": copy_id})
+    db.commit()
     asked = []
     monkeypatch.setattr(cdn, "purge", lambda paths: asked.extend(paths))
     try:
@@ -1011,6 +1014,7 @@ def test_turning_a_guild_private_makes_the_cdn_forget_its_pictures(guildmaster_w
     finally:
         db = fresh(author)
         db.execute(text("UPDATE boards SET is_private = false WHERE id = 1"))
+        db.execute(text("UPDATE submissions SET post_public = true WHERE id = :s"), {"s": copy_id})
         db.execute(text("DELETE FROM media_assets WHERE id = :a"), {"a": asset_id})
         db.commit()
 
@@ -1021,3 +1025,66 @@ def test_cdn_purges_go_in_batches_of_thirty(real_app):
     urls = [f"https://x/{i}" for i in range(65)]
     assert [len(b) for b in cdn.batches(urls)] == [30, 30, 5] and sum(cdn.batches(urls), []) == urls
     assert cdn.batches([]) == []
+
+
+
+# ---------------------------------------------------------------- batch D review
+
+def test_a_link_typed_without_https_works_and_one_without_a_host_is_refused(make_member):
+    member = make_member()
+    here = member.browser()
+    made = post(here, "/api/vue/submit", {"title": f"Link {secrets.token_hex(4)}", "url": f"example.org/{secrets.token_hex(3)}",
+                                          "formkey": member.formkey(here), "post_to_profile": "1"})
+    assert made.status_code == 200, made.get_data(as_text=True)[:300]
+    from ruqqus.helpers.base36 import base36decode
+    url = fresh(member).execute(text("SELECT url FROM submissions_aux WHERE id = :p"),
+                                {"p": base36decode(made.get_json()["id"])}).scalar()
+    assert url.startswith("https://example.org/"), url
+    refused = post(here, "/api/vue/submit", {"title": f"Link {secrets.token_hex(4)}", "url": "foo",
+                                             "formkey": member.formkey(here), "post_to_profile": "1"})
+    assert refused.status_code == 400
+
+
+def test_with_no_bucket_a_post_with_an_empty_host_deletes_normally(make_member, real_app, monkeypatch):
+    from ruqqus.helpers.base36 import base36encode
+    app, _ = real_app
+    monkeypatch.setitem(app.config, "S3_BUCKET", "")
+    member = make_member()
+    pid = _link_post(member, "https:///foo")                     # stored before links were checked
+    here = member.browser()
+    answer = post(here, f"/delete_post/{base36encode(pid)}", {"formkey": member.formkey(here)})
+    assert answer.status_code < 500, answer.status_code
+
+
+def test_unpinning_a_post_in_a_private_guild_purges_its_pictures(guildmaster_with_post, monkeypatch):
+    from ruqqus.helpers.base36 import base36encode
+    from ruqqus.helpers.media import attach, cdn
+    mod, author, copy_id = guildmaster_with_post
+    db = fresh(author)
+    db.execute(text("UPDATE submissions SET post_public = false, is_pinned = true WHERE id = :s"), {"s": copy_id})
+    db.execute(text("UPDATE boards SET is_private = true WHERE id = 1"))
+    asset_id = db.execute(text("INSERT INTO media_assets (user_id, account_id, provider, kind, token, ext, status, submission_id) "
+                               "VALUES (:u, 0, 'gdrive', 'image', :t, 'png', 'ready', :s) RETURNING id"),
+                          {"u": author.id, "t": secrets.token_hex(8), "s": copy_id}).scalar()
+    db.commit()
+    asked = []
+    monkeypatch.setattr(cdn, "purge", lambda paths: asked.extend(paths))
+    try:
+        client = mod.browser()
+        answer = post(client, f"/mod/post_pin/general/{base36encode(copy_id)}/0", {"formkey": mod.formkey(client)})
+        assert answer.status_code in (200, 204), answer.get_data(as_text=True)[:200]
+        path = fresh(author).query(attach._models()[0]).filter_by(id=asset_id).first().path
+        assert path in asked
+    finally:
+        db = fresh(author)
+        db.execute(text("UPDATE boards SET is_private = false WHERE id = 1"))
+        db.execute(text("UPDATE submissions SET post_public = true, is_pinned = false WHERE id = :s"), {"s": copy_id})
+        db.execute(text("DELETE FROM media_assets WHERE id = :a"), {"a": asset_id})
+        db.commit()
+
+
+def test_an_overlong_sign_up_time_is_refused_not_a_500(real_app):
+    app, _ = real_app
+    client = app.test_client()
+    client.get("/signup", base_url=BASE)
+    assert post(client, "/signup", {"now": "9" * 5000, "formkey": "x"}).status_code in (302, 400)

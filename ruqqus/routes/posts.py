@@ -981,16 +981,18 @@ Optional file data:
 
     # Force https for submitted urls
 
-    if request.form.get("url"):
-        new_url = ParseResult(scheme="https",
-                              netloc=parsed_url.netloc,
-                              path=parsed_url.path,
-                              params=parsed_url.params,
-                              query=parsed_url.query,
-                              fragment=parsed_url.fragment)
-        url = urlunparse(new_url)
-    else:
-        url = ""
+    # the rule edit_post uses (post_fields.normalize_url): a link needs a host. "example.com" typed without https://
+    # was saved as https:///example.com, and "foo" as a link with no host at all (bug hunt)
+    try:
+        url = normalize_url(request.form.get("url", ""))
+    except PostFieldError as e:
+        link_error = str(e)
+        return {"html": lambda: (render_template("submit.html", v=v, error=link_error, title=title, url=url,
+                                                 body=body, text=text_for_redisplay, b=None,
+                                                 forward_guild_names=forward_guild_names), 400),
+                "api": lambda: ({"error": link_error}, 400)
+                }
+    parsed_url = urlparse(url)
 
     # check for duplicate (exact resubmission of the same primary post)
     dup = g.db.query(Submission).join(Submission.submission_aux).filter(
@@ -1962,7 +1964,7 @@ def delete_post_as(post, v):
         cache.delete_memoized(frontlist, sort="new")
 
     # delete an image hosted in the site's bucket - only the primary's copy, forwards share the same url
-    if post.domain == app.config["S3_BUCKET"]:
+    if app.config["S3_BUCKET"] and post.domain == app.config["S3_BUCKET"]:
 
         segments = post.url.split("/")
         pid = segments[4]

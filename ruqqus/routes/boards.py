@@ -1201,6 +1201,7 @@ def mod_bid_settings_restricted(bid, board, v):
 
 
 @app.route("/mod/<bid>/settings/private", methods=["POST"])
+@limiter.limit("10/hour")              # turning private purges the CDN's copies of the guild's pictures
 @auth_required
 @is_guildmaster("config")
 @validate_formkey
@@ -2169,6 +2170,12 @@ URL path parameters:
     post.is_pinned = x
 
     cache.delete_memoized(Board.idlist, post.board)
+
+    if not x and board.is_private and not board.is_circle:
+        # a pinned post's pictures were public files a CDN keeps; unpinned in a private guild they are not any more
+        from ruqqus.helpers.media import attach as media_attach, cdn as media_cdn
+        g.db.flush()
+        media_cdn.purge(media_attach.board_paths(g.db, board.id, post_id=post.id))
 
     g.db.add(post)
 

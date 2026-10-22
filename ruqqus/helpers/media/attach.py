@@ -121,11 +121,15 @@ def attached_paths(db, submission_id=None, comment_id=None):
     return [a.path for a in rows if a.provider in rules.SERVED and a.ext]
 
 
-def board_paths(db, board_id):
-    """The addresses of every file shown on a guild's posts or their comments: what a CDN must forget when the guild
-    turns private (it kept them as public files)."""
+def board_paths(db, board_id, post_id=None):
+    """The addresses of the files on a guild's posts and their comments that become private with the guild (never
+    public there, not pinned; audience_context): what a CDN must forget when the guild turns private, since it kept
+    them as public files. `post_id` limits it to one post (one unpinned in a private guild)."""
     MediaAsset, Submission, Comment = _models()
-    posts = db.query(Submission.id).filter(Submission.board_id == board_id)
+    posts = db.query(Submission.id).filter(Submission.board_id == board_id, Submission.post_public == False,
+                                           Submission.is_pinned == False)
+    if post_id is not None:
+        posts = posts.filter(Submission.id == post_id)
     comments = db.query(Comment.id).filter(Comment.parent_submission.in_(posts))
     rows = db.query(MediaAsset).filter((MediaAsset.submission_id.in_(posts)) | (MediaAsset.comment_id.in_(comments))).all()
     return [a.path for a in rows if a.provider in rules.SERVED and a.ext]

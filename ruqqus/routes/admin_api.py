@@ -410,7 +410,7 @@ Required form data:
 
     # blank live content + clean up hosted media, for every target post
     for t in targets:
-        if t.domain == app.config["S3_BUCKET"] and t.url:
+        if app.config["S3_BUCKET"] and t.domain == app.config["S3_BUCKET"] and t.url:
             segments = t.url.split("/")
             if len(segments) > 5:
                 tpid, rand = segments[4], segments[5]
@@ -850,7 +850,7 @@ def admin_csam_nuke(pid, v):
         alt.is_banned = v.id
         g.db.add(alt)
 
-    if post.domain == app.config["S3_BUCKET"]:
+    if app.config["S3_BUCKET"] and post.domain == app.config["S3_BUCKET"]:
 
         # TODO: take a phash of the image and store it before deleting
         name = urlparse(post.url).path.lstrip('/')

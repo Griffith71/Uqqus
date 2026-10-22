@@ -341,7 +341,7 @@ def sign_up_post(v):
     if app.config["DISABLE_SIGNUPS"]:
         return new_signup("New account registration is currently closed. Please come back later.")
 
-    if not (form_timestamp.isascii() and form_timestamp.isdigit()) or now - int(form_timestamp) < 5:
+    if not (form_timestamp.isascii() and form_timestamp.isdigit() and len(form_timestamp) <= 12) or now - int(form_timestamp) < 5:
         #print(f"signup fail - {username } - too fast")
         return new_signup("There was a problem. Please try again.")
 

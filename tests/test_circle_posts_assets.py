@@ -100,6 +100,7 @@ def test_lists_that_ask_for_public_posts_are_the_ones_known_and_each_decision_is
     # helpers/ads.py 1 (2026-10-12): no ad beside a post that is not public (a Circle or private-guild post).
     # helpers/media/attach.py 2 (2026-10-22, bug hunt L5): a picture on a post in a private guild that was never public
     # there is served by the post page's own rule (circles.PRIVATE_GUILD); one that was public there stays public.
+    # -> 3: board_paths purges the CDN's copies of exactly those posts' pictures when the guild turns private.
     # helpers/creator_fund_store.py 3 (2026-10-12): the creator fund counts only votes and comments on public posts.
     # helpers/space_counts.py 1: a post made for guilds only counts its guilds' public copies, never one in a private guild
     # (the same rule as post_counts: the number never hints at a guild the reader can't open).
@@ -122,7 +123,7 @@ def test_lists_that_ask_for_public_posts_are_the_ones_known_and_each_decision_is
                 counts[str(path.relative_to(ROOT)).replace("\\", "/")] = n
     assert counts == {
         "ruqqus/classes/submission.py": 3, "ruqqus/classes/user.py": 15,
-        "ruqqus/helpers/ads.py": 1, "ruqqus/helpers/media/attach.py": 2, "ruqqus/helpers/guild_channel_store.py": 1, "ruqqus/helpers/post_counts.py": 1, "ruqqus/helpers/space_counts.py": 1, "ruqqus/helpers/similar_store.py": 1, "ruqqus/helpers/circle_clause.py": 2, "ruqqus/helpers/creator_fund_store.py": 3, "ruqqus/helpers/circle_guard.py": 1, "ruqqus/helpers/trending_store.py": 2,
+        "ruqqus/helpers/ads.py": 1, "ruqqus/helpers/media/attach.py": 3, "ruqqus/helpers/guild_channel_store.py": 1, "ruqqus/helpers/post_counts.py": 1, "ruqqus/helpers/space_counts.py": 1, "ruqqus/helpers/similar_store.py": 1, "ruqqus/helpers/circle_clause.py": 2, "ruqqus/helpers/creator_fund_store.py": 3, "ruqqus/helpers/circle_guard.py": 1, "ruqqus/helpers/trending_store.py": 2,
         "ruqqus/routes/circles.py": 1, "ruqqus/routes/curations.py": 2,
         "ruqqus/routes/deletion_log.py": 2, "ruqqus/routes/front.py": 6, "ruqqus/routes/legal.py": 1,
         "ruqqus/routes/posts.py": 2, "ruqqus/routes/search.py": 4, "ruqqus/templates/comments.html": 1,

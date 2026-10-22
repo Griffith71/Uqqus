@@ -35,8 +35,13 @@ def batches(urls, size=BATCH):
     return [urls[i:i + size] for i in range(0, len(urls), size)]
 
 
+def _purge_all(groups):
+    for batch in groups:                # one after another: a big guild must not use up the zone's API limit at once
+        _purge(batch)
+
+
 def purge(paths):
-    """Ask the CDN to drop these media paths. Runs in the background and never raises."""
+    """Ask the CDN to drop these media paths. Runs in the background, one batch after another, and never raises."""
     urls = [absolute(p) for p in paths if p]
-    for batch in batches(urls):
-        gevent.spawn(_purge, batch)
+    if urls:
+        gevent.spawn(_purge_all, batches(urls))
