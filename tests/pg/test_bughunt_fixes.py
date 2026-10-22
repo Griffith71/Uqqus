@@ -1123,3 +1123,37 @@ def test_an_admin_acts_only_on_accounts_below_their_own_level(make_member):
     db = fresh(junior)
     db.execute(text("UPDATE users SET is_banned = 0, unban_utc = 0 WHERE id = :u"), {"u": junior.id})
     db.commit()
+
+
+# ---------------------------------------------------------------- review of chat, calls and Spaces
+
+def _board_space(host):
+    here = host.browser()
+    made = post(here, "/api/spaces", {"title": f"Board {secrets.token_hex(3)}", "space_kind": "board", "space_hours": "1",
+                                      "formkey": host.formkey(here)})
+    assert made.status_code == 200, made.get_data(as_text=True)[:300]
+    data = made.get_json()
+    sid = data.get("space_id") or data.get("id")
+    if isinstance(sid, str) and not sid.isdigit():
+        sid = fresh(host).execute(text("SELECT id FROM spaces WHERE host_id = :h ORDER BY id DESC"), {"h": host.id}).scalar()
+    return int(sid)
+
+
+def test_someone_removed_from_a_space_can_neither_listen_nor_read_it_again(make_member, real_app):
+    """The live-events topic guard only asked whether the post was visible: a reload let a removed person back in."""
+    from flask import g
+    from ruqqus.helpers import space_store
+    app, db_session = real_app
+    host, removed, other = make_member(), make_member(), make_member()
+    sid = _board_space(host)
+    db = fresh(host)
+    space_store.remove(db, sid, removed.id, host.id, int(time.time()))
+    db.commit()
+    assert removed.browser().get(f"/api/spaces/{sid}/messages", base_url=BASE).status_code == 404
+    assert other.browser().get(f"/api/spaces/{sid}/messages", base_url=BASE).status_code == 200
+    spaces = sys.modules["ruqqus.routes.spaces"]
+    with app.test_request_context():
+        g.db = db_session()
+        users = sys.modules["ruqqus.classes"].User
+        assert spaces._guard_space_topic(g.db.query(users).get(removed.id), str(sid)) is False
+        assert spaces._guard_space_topic(g.db.query(users).get(other.id), str(sid)) is True

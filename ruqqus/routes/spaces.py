@@ -202,11 +202,17 @@ def _tell(space):
 
 
 def _guard_space_topic(v, sid):
+    """Who may listen to a Space's live events: whoever may see its post, but never someone its host removed or
+    anyone in a block with a host (bug hunt: a reload let them back in after space_remove revoked the topic)."""
     try:
         row = space_store.get(g.db, int(sid))
     except (TypeError, ValueError):
         return False
-    return row is not None and _post_for(row, v) is not None
+    if row is None or _post_for(row, v) is None:
+        return False
+    if space_store.removed(g.db, row.id, v.id):
+        return False
+    return not _blocked_with_hosts(row, v, space_store.roles(g.db, row.id))
 
 
 live_bus.register_topic("space", _guard_space_topic)
@@ -788,6 +794,16 @@ def _board_json(space):
 @auth_required
 def space_messages(sid, v):
     space = load_space(sid, v)
+    # bug hunt: read by anyone who may open the Space. Never someone the host removed or in a block with a host; and a
+    # call's chat only by people in the call (or running it): its writers' names say who is in it, which an outsider
+    # is never told (state_json gives them counts only)
+    roles = space_store.roles(g.db, space.id)
+    if space_store.removed(g.db, space.id, v.id) or _blocked_with_hosts(space, v, roles):
+        abort(404)
+    if space.kind == space_rules.CALL and not space_rules.may_run(space_rules.role_of(v.id, space.host_id, roles)):
+        roster = call_store.roster(r, space.room, int(time.time())) if r is not None else []
+        if not any(e["user_id"] == v.id for e in roster):
+            return jsonify({"messages": [], "board": _board_json(space)})
     try:
         after = int(request.args.get("after", "0") or 0)
     except ValueError:
