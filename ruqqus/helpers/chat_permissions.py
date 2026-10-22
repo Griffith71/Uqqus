@@ -58,6 +58,29 @@ def on_block_created(blocker, blocked):
     end_call_in(convo.matrix_room_id)
 
 
+def on_block_removed(a, b):
+    """The other half of on_block_created: once no block stands between the two either way, the bot lifts the ban
+    and puts both back in their 1:1 room (bug hunt: nothing ever unbanned, so after an unblock the chat stayed broken
+    for good: chat_start handed back a room one of them couldn't enter). Best effort, as the ban is."""
+    from ruqqus.classes import ChatConversation, ChatIdentity
+
+    if a.any_block_exists(b):
+        return
+    a_id, b_id = min(a.id, b.id), max(a.id, b.id)
+    convo = g.db.query(ChatConversation).filter_by(user_a_id=a_id, user_b_id=b_id).first()
+    if not convo:
+        return
+    for identity in g.db.query(ChatIdentity).filter(ChatIdentity.user_id.in_([a_id, b_id])).all():
+        try:
+            matrix_client.unban_user_as_bot(convo.matrix_room_id, identity.matrix_user_id)
+        except matrix_client.MatrixError:
+            pass                        # not banned (only the blocked one was)
+        try:
+            matrix_client.put_in_room(convo.matrix_room_id, identity.matrix_user_id)
+        except matrix_client.MatrixError:
+            pass
+
+
 def end_call_in(room_id):
     """A call in this 1:1 chat ends at once (a block): both windows are told (helpers/call_store.py). Best effort,
     like the ban above: the block itself never fails because of it."""

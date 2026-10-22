@@ -222,6 +222,16 @@ def create_group_room(invitee_mxids) -> str:
     return resp.json()["room_id"]
 
 
+def unban_user_as_bot(room_id: str, target_mxid: str):
+    """Lifts a ban the bot set (see ban_user_as_bot): the other half of unblocking (chat_permissions.on_block_removed)."""
+    resp = requests.post(
+        f"{app.config['MATRIX_INTERNAL_URL']}/_matrix/client/v3/rooms/{room_id}/unban",
+        json={"user_id": target_mxid}, headers=_as_headers(), timeout=10,
+    )
+    if resp.status_code != 200:
+        raise MatrixError(f"unban_user_as_bot failed: {resp.status_code}")
+
+
 def invite_as_bot(room_id: str, target_mxid: str):
     resp = requests.post(
         f"{app.config['MATRIX_INTERNAL_URL']}/_matrix/client/v3/rooms/{room_id}/invite",

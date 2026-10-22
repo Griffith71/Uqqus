@@ -1292,3 +1292,28 @@ def test_an_encrypted_channels_removal_never_redacts_the_rooms_state(real_app, m
         assert channels._remove_encrypted_message(row, None, None, "$stateEventAAAAAAAA") is False
         assert channels._remove_encrypted_message(row, None, None, "$messageEventAAAAAA") is True
     assert redacted == ["$messageEventAAAAAA"]
+
+
+def test_unblocking_puts_both_back_in_their_chat(make_member, monkeypatch):
+    """A block bans the blocked person from the pair's room; nothing ever lifted it, so the chat stayed broken."""
+    from ruqqus.helpers import matrix_client
+    a, b = make_member(), make_member()
+    room = f"!room{secrets.token_hex(4)}:chat.localhost"
+    db = fresh(a)
+    low, high = min(a.id, b.id), max(a.id, b.id)
+    db.execute(text("INSERT INTO chat_conversations (user_a_id, user_b_id, initiator_id, matrix_room_id, status) "
+                    "VALUES (:l, :h, :l, :r, 'inbox')"), {"l": low, "h": high, "r": room})
+    for member in (a, b):
+        db.execute(text("INSERT INTO chat_identities (user_id, matrix_user_id) VALUES (:u, :m) ON CONFLICT DO NOTHING"),
+                   {"u": member.id, "m": f"@ci_{member.id}:chat.localhost"})
+    db.commit()
+    calls = []
+    monkeypatch.setattr(matrix_client, "ban_user_as_bot", lambda r, m: calls.append(("ban", m)))
+    monkeypatch.setattr(matrix_client, "unban_user_as_bot", lambda r, m: calls.append(("unban", m)))
+    monkeypatch.setattr(matrix_client, "put_in_room", lambda r, m: calls.append(("in", m)))
+    here = a.browser()
+    assert post(here, "/settings/block", {"username": b.username, "formkey": a.formkey(here)}).status_code < 400
+    assert ("ban", f"@ci_{b.id}:chat.localhost") in calls
+    here = a.browser()
+    assert post(here, "/settings/unblock", {"username": b.username, "formkey": a.formkey(here)}).status_code < 400
+    assert ("unban", f"@ci_{b.id}:chat.localhost") in calls and ("in", f"@ci_{b.id}:chat.localhost") in calls

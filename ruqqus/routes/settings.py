@@ -780,6 +780,10 @@ def settings_unblock_user(v):
         abort(409)
 
     g.db.delete(x)
+    g.db.flush()
+    # their 1:1 chat works again once no block stands either way (helpers/chat_permissions.py)
+    from ruqqus.helpers import chat_permissions
+    chat_permissions.on_block_removed(v, user)
 
     cache.delete_memoized(v.idlist)
     #cache.delete_memoized(Board.idlist, v=v)
