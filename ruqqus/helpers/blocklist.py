@@ -123,7 +123,7 @@ def parse(raw):
         return [], "size"
     rows, seen = [], set()
     for line in raw.replace("\r", "\n").split("\n"):
-        line = line.strip().lstrip("﻿")
+        line = line.strip().lstrip("\ufeff")
         if not line or line.startswith("#"):
             continue
         tokens = [t.strip() for t in re.split(r"[,\s]+", line) if t.strip()]
