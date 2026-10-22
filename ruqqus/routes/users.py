@@ -448,6 +448,7 @@ def profile_json_refusal(u, v):
 @app.route("/api/follow/<username>", methods=["POST"])
 @app.post("/api/v2/users/<username>/follow")
 @auth_required
+@api("update")        # an app's token needs the update scope (bug hunt: no scope was checked)
 @validate_formkey
 def follow_user(username, v):
     """
@@ -488,6 +489,7 @@ URL path parameters:
 @app.route("/api/unfollow/<username>", methods=["POST"])
 @app.delete("/api/v2/users/<username>/follow")
 @auth_required
+@api("update")        # an app's token needs the update scope (bug hunt: no scope was checked)
 @validate_formkey
 def unfollow_user(username, v):
     """

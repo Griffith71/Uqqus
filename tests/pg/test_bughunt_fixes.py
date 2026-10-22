@@ -1157,3 +1157,33 @@ def test_someone_removed_from_a_space_can_neither_listen_nor_read_it_again(make_
         users = sys.modules["ruqqus.classes"].User
         assert spaces._guard_space_topic(g.db.query(users).get(removed.id), str(sid)) is False
         assert spaces._guard_space_topic(g.db.query(users).get(other.id), str(sid)) is True
+
+
+def _app_token(member, **scopes):
+    db = fresh(member)
+    app_id = db.execute(text("INSERT INTO oauth_apps (client_id, client_secret, app_name, redirect_uri, author_id, is_banned) "
+                             "VALUES (:c, :s, 'ci app', 'https://example.org/cb', :u, false) RETURNING id"),
+                        {"c": secrets.token_hex(16), "s": secrets.token_hex(32), "u": member.id}).scalar()
+    token = secrets.token_hex(32)
+    db.execute(text("INSERT INTO client_auths (user_id, oauth_client, access_token, access_token_expire_utc, scope_identity, "
+                    "scope_update) VALUES (:u, :a, :t, :e, true, :up)"),
+               {"u": member.id, "a": app_id, "t": token, "e": int(time.time()) + 3600, "up": bool(scopes.get("update"))})
+    db.commit()
+    return token
+
+
+def test_following_through_the_api_needs_the_update_scope(make_member, real_app):
+    """POST /api/v2/users/<name>/follow (and three like it) had no api() decorator: a token crashed them (an unexpected
+    `c` argument) and no scope was checked."""
+    app, _ = real_app
+    member, target = make_member(), make_member()
+    weak, strong = _app_token(member), _app_token(member, update=True)
+
+    def follow(token):
+        return app.test_client().post(f"/api/v2/users/{target.username}/follow", base_url=BASE,
+                                      headers={"Authorization": f"Bearer {token}", "User-Agent": "ci"},
+                                      environ_base={"REMOTE_ADDR": addr()})
+    assert follow(weak).status_code == 403
+    assert follow(strong).status_code < 300
+    assert fresh(member).execute(text("SELECT count(*) FROM follows WHERE user_id = :u AND target_id = :t"),
+                                 {"u": member.id, "t": target.id}).scalar() == 1

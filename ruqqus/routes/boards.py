@@ -1656,6 +1656,7 @@ Optional query parameters
 @app.route("/api/subscribe/<guildname>", methods=["POST"])
 @app.post("/api/v2/me/subscriptions/<guildname>")
 @auth_required
+@api("update")        # an app's token needs the update scope (bug hunt: no scope was checked)
 @validate_formkey
 def subscribe_board(guildname, v):
     """
@@ -1707,6 +1708,7 @@ URL path parameters:
 @app.route("/api/unsubscribe/<guildname>", methods=["POST"])
 @app.delete("/api/v2/me/subscriptions/<guildname>")
 @auth_required
+@api("update")        # an app's token needs the update scope (bug hunt: no scope was checked)
 @validate_formkey
 def unsubscribe_board(guildname, v):
     """
