@@ -1998,3 +1998,12 @@ def test_two_renames_at_once_charge_once(make_member, monkeypatch):
     here = member.browser()
     post(here, "/settings/name_change", {"name": f"n{secrets.token_hex(5)}", "formkey": member.formkey(here)})
     assert fresh(member).execute(text("SELECT coin_balance FROM users WHERE id = :u"), {"u": member.id}).scalar() == 30
+
+
+def test_a_page_number_is_clamped_only_when_it_is_a_number(real_app):
+    """The clamp for a page past bigint ran before the digit check, so a long word became page 100000, not page 1."""
+    from ruqqus.helpers.wrappers import page_number
+    app, _ = real_app
+    for raw, page in (("abcdefghij", 1), ("99999999999999999999", 100000), ("3", 3), ("", 1)):
+        with app.test_request_context(f"/?page={raw}"):
+            assert page_number() == page, raw

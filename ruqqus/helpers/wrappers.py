@@ -19,7 +19,7 @@ def page_number():
     """The request's ?page=: a whole number from 1. Anything else (0, -1, "abc") is page 1, so a list never asks the
     database for a negative OFFSET."""
     raw = request.args.get("page", "1") or "1"
-    if len(raw) > 6:
+    if len(raw) > 6 and raw.isascii() and raw.isdigit():
         raw = "100000"                # far past any list's end, and never an OFFSET past bigint (bug hunt: a 500)
     return max(int(raw), 1) if raw.isascii() and raw.isdigit() else 1
 
