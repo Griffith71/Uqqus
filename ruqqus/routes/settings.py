@@ -211,6 +211,8 @@ def settings_profile_post(v):
 
     x = request.values.get("title_id", None)
     if x:
+        if not (x.isascii() and x.isdigit() and len(x) <= 9):
+            abort(400)                # not a title's id (bug hunt: "abc" was a 500)
         x = int(x)
         if x == 0:
             v.title_id = None

@@ -1800,3 +1800,23 @@ def test_a_rename_spends_no_coins_while_the_account_owes_or_is_suspended(make_me
     rows = dict(fresh(owes).execute(text("SELECT id, coin_balance FROM users WHERE id IN (:a, :b)"),
                                     {"a": owes.id, "b": suspended.id}).fetchall())
     assert rows == {owes.id: 50, suspended.id: 50}
+
+
+def test_odd_input_is_refused_or_ignored_never_a_500(make_member, guildmaster_with_post, real_app):
+    """A guild name ending in a newline passed the name check; an over-long guild description, a non-ASCII digit as
+    a draft id, a circle id past a database integer, a page number past bigint and a non-numeric title id were 500s."""
+    mod, _, _ = guildmaster_with_post
+    boards = sys.modules["ruqqus.routes.boards"]
+    assert boards.re.match(boards.valid_board_regex, "kittens\n") is None
+    assert boards.re.match(boards.valid_board_regex, "kittens")
+    here = mod.browser()
+    long = post(here, "/mod/1/settings/description", {"description": "x" * 1600, "formkey": mod.formkey(here)})
+    assert long.status_code == 400
+    member = make_member()
+    them = member.browser()
+    draft = post(them, "/api/drafts", {"title": "A draft", "body": "text", "draft_id": "\u00b2",
+                                       "formkey": member.formkey(them)})
+    assert draft.status_code < 500, draft.get_data(as_text=True)[:200]
+    assert them.get("/circles/99999999999", base_url=BASE).status_code == 404
+    assert them.get(f"/@{member.username}/followers?page=99999999999999999999", base_url=BASE).status_code < 500
+    assert post(them, "/settings/profile", {"title_id": "abc", "formkey": member.formkey(them)}).status_code == 400

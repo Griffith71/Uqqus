@@ -43,7 +43,10 @@ app.jinja_env.globals.update(GUILD_LIMIT_PER_PERSON=guild_limits.PER_PERSON,
 
 # the site's own boards: general (1) and systemprofile (2), where every profile post lives
 INTERNAL_BOARDS = (1, 2)
-valid_board_regex = re.compile("^[a-zA-Z0-9][a-zA-Z0-9_]{2,24}$")
+# \Z, not $: `$` also matches before a final newline, so "kittens\n" passed and made a second "+kittens" (bug hunt)
+valid_board_regex = re.compile(r"^[a-zA-Z0-9][a-zA-Z0-9_]{2,24}\Z")
+DESCRIPTION_MAX = 1500           # boards.description; its HTML has 5000 (a longer one was a 500)
+DESCRIPTION_HTML_MAX = 5000
 
 @app.route("/m/<name>", methods=["GET"])
 @app.route("/api/v1/multi/<name>/listing", methods=["GET"])
@@ -215,9 +218,11 @@ Optional form data:
                                error=guild_limits.say(refused)
                                )
 
-    board_name = request.form.get("name")
-    board_name = board_name.lstrip("+")
-    description = request.form.get("description")
+    board_name = (request.form.get("name") or "").lstrip("+")
+    description = request.form.get("description") or ""          # optional (bug hunt: missing was a 500)
+    if len(description) > DESCRIPTION_MAX:
+        return render_template("make_board.html", v=v, error=f"A description is at most {DESCRIPTION_MAX} characters.",
+                               description=description[:DESCRIPTION_MAX])
 
     if not re.match(valid_board_regex, board_name):
         return render_template("make_board.html",
@@ -269,6 +274,9 @@ Optional form data:
     with CustomRenderer() as renderer:
         description_md = renderer.render(mistletoe.Document(description))
     description_html = sanitize(description_md, linkgen=True)
+    if len(description_html) > DESCRIPTION_HTML_MAX:
+        return render_template("make_board.html", v=v, error="That description is too long once formatted.",
+                               description=description), 400
 
     # make the board
 
@@ -1270,10 +1278,14 @@ def mod_bid_settings_name(bid, board, v):
 @validate_formkey
 def mod_bid_settings_description(bid, board, v):
     # board description
-    description = request.form.get("description")
+    description = request.form.get("description") or ""
+    if len(description) > DESCRIPTION_MAX:
+        return jsonify({"error": f"A description is at most {DESCRIPTION_MAX} characters."}), 400
     with CustomRenderer() as renderer:
         description_md = renderer.render(mistletoe.Document(description))
     description_html = sanitize(description_md, linkgen=True)
+    if len(description_html) > DESCRIPTION_HTML_MAX:
+        return jsonify({"error": "That description is too long once formatted."}), 400
 
     board.description = description
     board.description_html = description_html

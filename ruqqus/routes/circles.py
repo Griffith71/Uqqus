@@ -40,6 +40,8 @@ def _link(user):
 
 def _mine(v, cid, kinds=(circles.CUSTOM, circles.PAID)):
     """One of the member's own circles of these kinds, or a 404 (someone else's circle looks like no circle)."""
+    if not 0 < cid < 2 ** 31:
+        abort(404)                    # past a database integer (bug hunt: /circles/99999999999 was a 500)
     row = circle_store.owned(g.db, v.id, cid, kinds=kinds)
     if row is None:
         abort(404)
@@ -255,6 +257,8 @@ def circle_choices_for(username, v):
 
 def _paid_circle(cid):
     """A paid circle of a live account, by the id in the address (its owner comes from the circle); else a 404."""
+    if not 0 < cid < 2 ** 31:
+        abort(404)
     row = circle_store.get(g.db, cid)
     if row is None or row.kind != circles.PAID:
         abort(404)

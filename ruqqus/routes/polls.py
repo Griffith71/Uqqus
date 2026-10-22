@@ -71,7 +71,7 @@ def poll_vote(pid, v):
 
     raw = (request.values.get("option") or "").strip()
     option = None
-    if raw.isascii() and raw.isdigit():
+    if raw.isascii() and raw.isdigit() and len(raw) <= 9:       # past an integer is no option (bug hunt: a 500)
         option = g.db.query(PollOption).filter_by(id=int(raw), poll_id=poll.id).first()
 
     now = int(time.time())

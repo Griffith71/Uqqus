@@ -64,7 +64,7 @@ LAPSE = "lapse"
 END = "end"
 
 _DIGITS = re.compile(r"[0-9]{1,3}")
-_ID = re.compile(r"[0-9]{1,10}")
+_ID = re.compile(r"[0-9]{1,9}")      # inside a database integer (ten digits could pass 2**31: a 500, bug hunt)
 _SPACES = re.compile(r"\s+")
 _JOINER = chr(0x200D)
 _MARKDOWN = re.compile(r"[\[\]()*_`~<>#|!\\]")

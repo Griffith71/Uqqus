@@ -59,7 +59,9 @@ Form data: the composer's own fields (`title`, `url`, `body`, `forward_guilds`,
     draft = None
     raw_id = (request.form.get("draft_id") or "").strip()
     if raw_id:
-        draft = _mine(v, int(raw_id)) if raw_id.isdigit() else None
+        # ASCII digits inside an integer (bug hunt: "\u00b2" passes str.isdigit() and int() refuses it; a long number
+        # overflowed the column): anything else is no draft, and the save makes a new one
+        draft = _mine(v, int(raw_id)) if raw_id.isascii() and raw_id.isdigit() and len(raw_id) <= 9 else None
         if draft is None or draft.status == "published":
             draft = None   # gone or already published: this save becomes a new draft
         elif draft.status == "publishing":
