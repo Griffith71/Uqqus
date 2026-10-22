@@ -3,7 +3,7 @@ from ruqqus.helpers.wrappers import page_number
 import hmac
 import html
 from .front import frontlist
-from datetime import datetime
+from datetime import datetime, timezone
 from ruqqus.classes import *
 from ruqqus.helpers.security import *
 from ruqqus.helpers.jinja2 import full_link
@@ -44,6 +44,12 @@ from ruqqus.__main__ import app, limiter
 #                  )
 
 #     return feed.get_response()
+
+
+def atom_time(utc):
+    """A date as Atom requires it (RFC 3339, with its offset): "2026-10-22T10:00:00+00:00". It was written without one,
+    which readers may take as their own local time (bug hunt L6), with the deprecated utcfromtimestamp."""
+    return datetime.fromtimestamp(utc, timezone.utc).isoformat()
 
 
 @app.route('/feeds/@<username>/<key>/<sort>', methods=["GET"])
@@ -91,10 +97,10 @@ def feeds_user(sort=None, username=None, key=None):
 
                 if (post.edited_utc > 0):
                     with tag("updated"):
-                        text(datetime.utcfromtimestamp(post.edited_utc).isoformat())
+                        text(atom_time(post.edited_utc))
 
                 with tag("published"):
-                    text(datetime.utcfromtimestamp(post.created_utc).isoformat())
+                    text(atom_time(post.created_utc))
                 
                 if post.url:
                     doc.stag("link", href=post.url)

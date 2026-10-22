@@ -926,3 +926,11 @@ def test_l5_a_comment_picture_in_a_private_guild_is_served_per_member(make_membe
         db.execute(text("UPDATE boards SET is_private = false WHERE id = 1"))
         db.execute(text("DELETE FROM media_assets WHERE id = :a"), {"a": asset_id})
         db.commit()
+
+
+# ---------------------------------------------------------------- L6: feed dates carry their time zone
+
+def test_l6_feed_dates_say_they_are_utc(real_app):
+    feeds = sys.modules["ruqqus.routes.feeds"]
+    assert feeds.atom_time(0) == "1970-01-01T00:00:00+00:00"
+    assert feeds.atom_time(1_792_000_000).endswith("+00:00")
