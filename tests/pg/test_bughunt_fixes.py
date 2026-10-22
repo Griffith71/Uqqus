@@ -1914,7 +1914,7 @@ def test_adding_bot_feeds_is_rate_limited(make_member):
     from ruqqus.__main__ import r
     member = make_member()
     # ids start over on a new test database while Redis keeps the limiter's counts: start this member's from nothing
-    for key in r.scan_iter(f"flask_limiting_*member:{member.id}*"):
+    for key in r.scan_iter(f"*flask_limiting_/member:{member.id}/*"):
         r.delete(key)
     here = member.browser()
     statuses = [post(here, f"/settings/bots/nobot{secrets.token_hex(3)}/sources/add",
