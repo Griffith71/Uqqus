@@ -8,7 +8,7 @@ It is deliberately not a blacklist of exact strings. Every token is reduced to
 a "skeleton" of plain a-z letters before it is compared with the word list, so
 the usual ways of dodging a filter are folded away first:
 
-    case, accents, zero-width characters      FuCk, fúck, f​uck
+    case, accents, zero-width characters      FuCk, fúck, f\u200buck
     look-alike letters from other alphabets   fuсk (Cyrillic с), fullwidth, maths fonts
     digits and symbols standing in for letters   sh1t, a55, @ss, f*ck
     punctuation inside a word                  f.u.c.k, f-u-c-k

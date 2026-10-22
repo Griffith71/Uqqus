@@ -19,7 +19,7 @@ MAX_CHARS = 600
 TTL = 30                        # seconds a worker keeps the list of annotated items
 DAILY_REQUESTS = 20             # requests one member may make in a day
 
-_CONTROL = re.compile(r"[\x00-\x09\x0b-\x1f\x7f​-‍  ﻿]")
+_CONTROL = re.compile(r"[\x00-\x09\x0b-\x1f\x7f\u200b-\u200d  \ufeff]")
 _cache = {"at": 0.0, "posts": frozenset(), "comments": frozenset()}
 
 

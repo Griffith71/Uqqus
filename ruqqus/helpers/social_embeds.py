@@ -556,7 +556,7 @@ _TELEGRAM_POST = re.compile(r"^/(?:s/)?([A-Za-z][A-Za-z0-9_]{3,31})/(\d{1,12})/?
 _TRUTH_POST = re.compile(r"^/@([A-Za-z0-9_]{1,30})/(?:posts/)?(\d{6,25})/?$")
 _KICK_PATH = re.compile(r"^/([A-Za-z0-9_-]{2,40})(?:/clips/(clip_[A-Za-z0-9]{5,40}))?/?$")
 _LOOM_PATH = re.compile(r"^/(?:share|embed)/([0-9a-f]{20,40})/?$")
-_BIDI = re.compile("[‎‏‪-‮⁦-⁩]")
+_BIDI = re.compile("[\u200e\u200f\u202a-\u202e\u2066-\u2069]")
 
 
 def _on(host, domain):
