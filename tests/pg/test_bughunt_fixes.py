@@ -1159,6 +1159,23 @@ def test_someone_removed_from_a_space_can_neither_listen_nor_read_it_again(make_
         assert spaces._guard_space_topic(g.db.query(users).get(other.id), str(sid)) is True
 
 
+def test_a_board_has_no_stage_roster_or_cohosts(make_member, real_app):
+    """join, invite, accept and cohost took any kind of Space: a board's host could name co-hosts and anyone who opened
+    a board could join its call roster."""
+    host, other = make_member(), make_member()
+    sid = _board_space(host)
+    here = host.browser()
+    invited = post(here, f"/api/spaces/{sid}/invite", {"username": other.username, "formkey": host.formkey(here)})
+    assert invited.status_code == 409, invited.get_data(as_text=True)[:300]
+    them = other.browser()
+    joined = post(them, f"/api/spaces/{sid}/join", {"device_id": "ABCDEFGHIJ", "formkey": other.formkey(them)})
+    assert joined.status_code == 409, joined.get_data(as_text=True)[:300]
+    assert post(them, f"/api/spaces/{sid}/accept", {"formkey": other.formkey(them)}).status_code == 409
+    named = post(here, f"/api/spaces/{sid}/cohost", {"username": other.username, "formkey": host.formkey(here)})
+    assert named.status_code == 409
+    assert fresh(host).execute(text("SELECT count(*) FROM space_roles WHERE space_id = :s"), {"s": sid}).scalar() == 0
+
+
 def _app_token(member, **scopes):
     db = fresh(member)
     app_id = db.execute(text("INSERT INTO oauth_apps (client_id, client_secret, app_name, redirect_uri, author_id, is_banned) "

@@ -386,11 +386,19 @@ def _begin(space, v):
     return None
 
 
+def _call_only(space):
+    """A stage, co-hosts and a roster are a call's (CLAUDE.md, Spaces): a board or a live thread is refused (bug hunt:
+    anyone who opened a board could join its roster and read the others' devices, and its host could name co-hosts)."""
+    if space.kind != space_rules.CALL:
+        abort(make_response(jsonify({"error": "Only a call has a stage."}), 409))
+
+
 @app.route("/api/spaces/<sid>/join", methods=["POST"])
 @auth_required
 @validate_formkey
 def space_join(sid, v):
     space = load_space(sid, v)
+    _call_only(space)
     device_id = request.values.get("device_id", "")
     if not _DEVICE.match(device_id) or r is None:
         abort(400)
@@ -435,7 +443,7 @@ def space_heartbeat(sid, v):
     space = load_space(sid, v)
     device_id = request.values.get("device_id", "")
     now = int(time.time())
-    if space.status != space_rules.LIVE or r is None:
+    if space.status != space_rules.LIVE or r is None or space.kind != space_rules.CALL:
         return jsonify({"in_space": False, "status": space.status})
     if space_store.removed(g.db, space.id, v.id) or _blocked_with_hosts(space, v, space_store.roles(g.db, space.id)):
         call_store.leave_user(r, space.room, v.id)
@@ -490,7 +498,11 @@ def space_hand(sid, v):
 @validate_formkey
 def space_invite(sid, v):
     space = load_space(sid, v)
+    _call_only(space)
     user, role, roles = _target(space)
+    # only someone in the call (bug hunt: any account could be sent "invited to speak", across a block or a Circle)
+    if r is None or not any(e["user_id"] == user.id for e in call_store.roster(r, space.room, int(time.time()))):
+        return _error("Only someone in the call can be invited to speak.", 409)
     stage = 1 + sum(1 for (rl, st) in roles.values() if st == "accepted")
     refusal = space_rules.invite_refusal(_my_role(space, v), role, stage, roles.get(user.id, (None, None))[1] == "invited")
     if refusal:
@@ -508,6 +520,7 @@ def space_invite(sid, v):
 @validate_formkey
 def space_accept(sid, v):
     space = load_space(sid, v)
+    _call_only(space)
     roles = space_store.roles(g.db, space.id)
     stage = 1 + sum(1 for (rl, st) in roles.values() if st == "accepted")
     if stage >= space_rules.MAX_STAGE:
@@ -547,6 +560,7 @@ def space_listen(sid, v):
 @validate_formkey
 def space_cohost(sid, v):
     space = load_space(sid, v)
+    _call_only(space)
     user, role, roles = _target(space)
     cohosts = sum(1 for (rl, st) in roles.values() if rl == space_rules.COHOST)
     refusal = space_rules.cohost_refusal(_my_role(space, v), role, cohosts)
