@@ -27,6 +27,16 @@ def expand_url(post_url, fragment_url):
         return f"{post_url}{'/' if not post_url.endswith('/') else ''}{fragment_url}"
 
 def thumbnail_thread(pid, debug=False):
+    """A link post's preview, in its own greenlet with its own session, which is closed whatever happens (bug hunt:
+    an error left it open, and enough of them use up the database pool)."""
+    db = db_session()
+    try:
+        return _thumbnail(pid, db, debug)
+    finally:
+        db.close()
+
+
+def _thumbnail(pid, db, debug=False):
 
     #define debug print functionf
     def print_(x):
@@ -35,8 +45,6 @@ def thumbnail_thread(pid, debug=False):
                 print(x)
             except:
                 pass
-
-    db = db_session()
 
     post = get_post(pid, graceful=True, session=db)
     if not post:

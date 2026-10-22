@@ -19,7 +19,7 @@ Nothing about any member is sent: no cookies, no referrer.
 import http.client
 import ssl
 import time
-from urllib.parse import urljoin, urlsplit, urlunsplit
+from urllib.parse import quote, urljoin, urlsplit, urlunsplit
 
 from ruqqus.helpers import safe_fetch
 from ruqqus.helpers.safe_fetch import FetchError
@@ -65,9 +65,29 @@ def as_https(url):
     return url
 
 
+def _wire(host, path):
+    """The host and path as they go on the wire: a name in another script as IDNA, a path's other characters
+    percent-encoded (requests did both; http.client sends ASCII only). FetchError when it can't be written."""
+    try:
+        wire_host = host.encode("idna").decode("ascii") if not host.isascii() else host
+    except UnicodeError:
+        raise FetchError("That is not a usable address.")
+    return wire_host, quote(path, safe="/%:@!$&'()*+,;=?~-._")
+
+
+def _location(response):
+    """Where a redirect points. Headers arrive as latin-1; a server that wrote UTF-8 there is read as UTF-8."""
+    value = response.getheader("Location", "") or ""
+    try:
+        return value.encode("latin-1").decode("utf-8")
+    except UnicodeError:
+        return value
+
+
 def _once(url, read, user_agent, allow_local, deadline, max_bytes):
     """One request. ("redirect", location) or ("answer", Page)."""
     scheme, host, port, path = safe_fetch.check_url(url, allow_local, MAX_URL)
+    host, path = _wire(host, path)
     address = safe_fetch.vetted_address(host, port, allow_local)
     context = ssl.create_default_context() if scheme == "https" else None
     connection = safe_fetch._Pinned(host, port, address, max(0.5, deadline - time.monotonic()), context)
@@ -76,7 +96,7 @@ def _once(url, read, user_agent, allow_local, deadline, max_bytes):
         connection.request("GET", path, headers={"User-Agent": user_agent, "Accept": "*/*", "Connection": "close"})
         response = connection.getresponse()
         if response.status in REDIRECTS:
-            return "redirect", response.getheader("Location", "") or ""
+            return "redirect", _location(response)
         content_type = (response.getheader("Content-Type", "") or "")[:200]
         body, complete = b"", True
         if response.status == 200 and any(content_type.lower().startswith(kind) for kind in read):
@@ -98,6 +118,9 @@ def _once(url, read, user_agent, allow_local, deadline, max_bytes):
         raise FetchError("The page's certificate could not be checked.")
     except (OSError, http.client.HTTPException):
         raise slow
+    except (UnicodeError, ValueError):
+        # a header or address http.client can't write or read: no answer, never a crash of the caller
+        raise FetchError("That is not a usable address.")
     finally:
         connection.close()
 

@@ -88,3 +88,18 @@ def test_a_long_article_address_is_fine_while_a_feed_servers_limit_stays():
     assert sf.check_url(long_url, False, pf.MAX_URL)[1] == "example.org"
     with pytest.raises(sf.FetchError):
         sf.check_url(long_url, False)
+
+
+def test_an_address_with_other_scripts_is_sent_as_the_browser_would():
+    assert pf._wire("bücher.example", "/wiki/Café?q=ü") == ("xn--bcher-kva.example", "/wiki/Caf%C3%A9?q=%C3%BC")
+    assert pf._wire("example.org", "/a%20b/c?d=1&e=2") == ("example.org", "/a%20b/c?d=1&e=2"), "escapes kept as they are"
+    base, seen = serve((200, [("Content-Type", "text/html")], PAGE))
+    page = pf.get(base + "/wiki/Café", allow_local=True)
+    assert page.status == 200 and seen[0].startswith("GET /wiki/Caf%C3%A9 HTTP/1.1")
+
+
+def test_a_redirect_written_in_utf_8_is_followed():
+    # the stand-in server writes its headers as UTF-8 bytes; http.client reads them back as latin-1
+    base, seen = serve((302, [("Location", "/wiki/Café")], b""), (200, [("Content-Type", "text/html")], PAGE))
+    page = pf.get(base + "/a", allow_local=True)
+    assert page.status == 200 and seen[1].startswith("GET /wiki/Caf%C3%A9 HTTP/1.1")

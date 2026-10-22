@@ -423,3 +423,33 @@ def test_h4_the_migration_sets_values_below_zero_back_once_and_keeps_them_from_c
             conn.rollback()
             conn.execute(text("UPDATE users SET negative_balance_cents = 0 WHERE id = :u"), {"u": member.id})
             conn.commit()
+
+
+def test_h1_a_link_with_other_scripts_in_it_still_gets_a_title(make_member, monkeypatch):
+    """The first page_fetch let http.client's UnicodeEncodeError through: a 500 for /wiki/Café (found in review)."""
+    monkeypatch.setenv("FEED_SERVER_ALLOW_LOCAL", "1")
+    member = make_member()
+    base, seen = _serve((200, "text/html", PAGE))
+    answer = member.browser().get("/submit/title?url=" + base + "/wiki/Café", base_url=BASE, environ_base={"REMOTE_ADDR": addr()})
+    assert answer.status_code == 200 and answer.get_json()["title"] == "Inside"
+    assert seen[0].startswith("GET /wiki/Caf%C3%A9 ")
+
+
+def test_h2_an_oembed_address_named_by_the_members_page_is_read_through_the_guard(real_app, monkeypatch):
+    """embed.detect_video_embed fetched the page's own <link type=application/json+oembed> with plain requests,
+    redirects followed (found in review): it now goes through page_fetch, whose every hop is judged."""
+    from bs4 import BeautifulSoup
+    embed = sys.modules["ruqqus.helpers.embed"]
+    page_fetch = sys.modules["ruqqus.helpers.page_fetch"]
+    endpoint = "https://www.youtube.com/oembed?url=https%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv%3Dabcdefghijk"
+    asked = []
+    answer = b'{"type": "video", "html": "<iframe src=\\"https://www.youtube.com/embed/abcdefghijk\\"></iframe>"}'
+    monkeypatch.setattr(page_fetch, "get", lambda url, **kw: asked.append(url) or page_fetch.Page(200, "application/json", answer, url, True))
+
+    def plain(*a, **k):
+        raise AssertionError("plain requests was used")
+    monkeypatch.setattr(embed.requests, "get", plain)
+    soup = BeautifulSoup(f'<html><head><link type="application/json+oembed" href="{endpoint}"></head></html>', "html.parser")
+    found = embed.detect_video_embed("https://blog.example.org/a-video", page_fetch.Page(200, "text/html", b"", "", True), soup)
+    assert asked == [endpoint]
+    assert found[0] in ("iframe", "audio") and found[1] == "https://www.youtube.com/embed/abcdefghijk"

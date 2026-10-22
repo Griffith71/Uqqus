@@ -8,6 +8,7 @@ from ruqqus.__main__ import app
 from .get import *
 from .embed_trust import same_provider_player
 from . import social_embeds
+from . import page_fetch
 
 youtube_regex = re.compile(r"^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*")
 ruqqus_regex = re.compile(r"^https?://.*ruqqus\.com/\+\w+/post/(\w+)(/[a-zA-Z0-9_-]+/(\w+))?")
@@ -352,13 +353,10 @@ def mastodon_embed(url):
 
 def rumble_embed(url):
 
-    #print(url)
-    headers={
-        "User-Agent":"Rumble embedder for Ruqqus"
-    }
-    r=requests.get(url, headers=headers)
+    # through safe_fetch's guard (helpers/page_fetch.py): a redirect on rumble.com can't lead to this site's network
+    r=page_fetch.get(url, user_agent="Rumble embedder for Ruqqus")
 
-    soup=BeautifulSoup(r.content, features="html.parser")
+    soup=BeautifulSoup(r.body, features="html.parser")
 
     script=soup.find("script", attrs={"type":"application/ld+json"})
 
@@ -797,10 +795,13 @@ def detect_video_embed(url, response, soup):
     if oembed_link:
         endpoint = oembed_link["href"]
         if _host_allowed(urlparse(endpoint).hostname):
+            # the address comes from the member's page: through safe_fetch's guard (helpers/page_fetch.py), so a
+            # redirect on an allowed host can't lead to this site's own network
             try:
-                resp = requests.get(endpoint, timeout=6)
-                data = resp.json()
-            except Exception:
+                answer = page_fetch.get(endpoint, read=("application/json", "text/"), max_bytes=256 * 1024, timeout=6)
+                data = json.loads(answer.body) if answer.status == 200 else {}
+                data = data if isinstance(data, dict) else {}
+            except (page_fetch.FetchError, ValueError):
                 data = {}
             # "rich" is how audio players answer (SoundCloud); the player's own host is checked either way
             if data.get("type") in ("video", "rich") and data.get("html"):
