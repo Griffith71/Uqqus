@@ -941,3 +941,23 @@ def test_l6_feed_dates_say_they_are_utc(real_app):
     feeds = sys.modules["ruqqus.routes.feeds"]
     assert feeds.atom_time(0) == "1970-01-01T00:00:00+00:00"
     assert feeds.atom_time(1_792_000_000).endswith("+00:00")
+
+
+def test_a_new_comment_with_a_banned_link_is_a_400_not_a_401(make_member, guildmaster_with_post):
+    """A 401 means "not signed in": an API client would drop its token over a link."""
+    from ruqqus.helpers.base36 import base36encode
+    _, author, copy_id = guildmaster_with_post
+    banned = f"spam-{secrets.token_hex(3)}.example"
+    db = fresh(author)
+    db.execute(text("INSERT INTO domains (domain, can_submit, can_comment, reason, show_thumbnail) VALUES (:d, false, false, 1, false)"),
+               {"d": banned})
+    db.commit()
+    try:
+        here = author.browser()
+        answer = post(here, "/api/comment", {"parent_fullname": f"t2_{base36encode(copy_id)}",
+                                             "body": f"see [this](https://{banned}/x)", "formkey": author.formkey(here)})
+        assert answer.status_code == 400 and banned in answer.get_json()["error"]
+    finally:
+        db = fresh(author)
+        db.execute(text("DELETE FROM domains WHERE domain = :d"), {"d": banned})
+        db.commit()

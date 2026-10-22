@@ -324,14 +324,19 @@ Optional file data:
             reason += f" {ban.reason_text}"
             
         #auto ban for digitally malicious content
+        banned = True
         if any([x.reason==7 for x in bans]):
             v.ban(reason="Sexualizing minors")
         elif any([x.reason==4 for x in bans]):
             v.ban(days=30, reason="Digitally malicious content")
         elif any([x.reason==9 for x in bans]):
             v.ban(days=7, reason="Engaging in illegal activity")
-        
-        return jsonify({"error": reason}), 401
+        else:
+            banned = False
+
+        # a 401 told an API client its sign-in was bad (bug hunt): 403 when the link bans the account, else 400, as
+        # editing a comment answers
+        return jsonify({"error": reason}), 403 if banned else 400
 
     # check existing
     existing = g.db.query(Comment).join(CommentAux).filter(Comment.author_id == v.id,
