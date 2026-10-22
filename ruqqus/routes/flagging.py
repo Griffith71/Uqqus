@@ -15,7 +15,11 @@ from ruqqus.__main__ import app
 @validate_formkey
 def api_flag_post(pid, v):
 
-    post = get_post(pid)
+    # read as the reporter, as the post page reads it (bug hunt: without `v` the Circle guard read as a visitor, so a
+    # Circle's members could never report its posts; and a post in a private guild answered for anyone)
+    post = get_post(pid, v=v)
+    if post.in_private_guild_for(v):
+        abort(404)
 
     kind = request.form.get("report_type")
 
@@ -84,7 +88,9 @@ def _note_refusal(v, author_id, post_id=None, comment_id=None):
 @validate_formkey
 def api_flag_comment(cid, v):
 
-    comment = get_comment(cid)
+    comment = get_comment(cid, v=v)        # as the reporter, like the post above
+    if comment.post is None or comment.post.in_private_guild_for(v):
+        abort(404)
     kind = request.form.get("report_type", "admin")
 
     if kind == "note":

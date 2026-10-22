@@ -1752,3 +1752,30 @@ def test_a_private_guild_never_leaves_a_curation_through_publishing_forking_or_i
         db = fresh(mod)
         db.execute(text("UPDATE boards SET is_private = false WHERE id = 1"))
         db.commit()
+
+
+def test_reporting_and_bookmarking_a_post_in_a_private_guild_need_its_membership(make_member, guildmaster_with_post):
+    """The flag and bookmark routes answered for any post id, so an outsider could confirm and act on a post in a
+    private guild (and the flag routes read a Circle post as a visitor, so its own members couldn't report it)."""
+    from ruqqus.helpers.base36 import base36encode
+    mod, _, copy_id = guildmaster_with_post
+    outsider = make_member()
+    db = fresh(mod)
+    db.execute(text("UPDATE submissions SET post_public = false, is_pinned = false WHERE id = :s"), {"s": copy_id})
+    db.execute(text("UPDATE boards SET is_private = true WHERE id = 1"))
+    db.commit()
+    try:
+        here = outsider.browser()
+        pid = base36encode(copy_id)
+        assert post(here, f"/api/flag/post/{pid}", {"report_type": "admin", "formkey": outsider.formkey(here)}).status_code == 404
+        assert post(here, "/bookmarks/move", {"kind": "post", "id": pid, "folder_id": "none",
+                                              "formkey": outsider.formkey(here)}).status_code == 404
+        assert fresh(mod).execute(text("SELECT count(*) FROM save_relationship WHERE user_id = :u"),
+                                  {"u": outsider.id}).scalar() == 0
+        inside = mod.browser()
+        assert post(inside, f"/api/flag/post/{pid}", {"report_type": "admin", "formkey": mod.formkey(inside)}).status_code == 204
+    finally:
+        db = fresh(mod)
+        db.execute(text("UPDATE boards SET is_private = false WHERE id = 1"))
+        db.execute(text("UPDATE submissions SET post_public = true WHERE id = :s"), {"s": copy_id})
+        db.commit()

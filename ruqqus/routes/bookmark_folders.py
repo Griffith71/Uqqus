@@ -37,11 +37,12 @@ def _target(v, kind, ident):
         abort(404)
     if kind == "post":
         item = get_post(ident, v=v, graceful=True)
-        if not item or post_hidden(item, v):
+        # and a post in a guild they can't see, as every route that reads a post by id asks (bug hunt)
+        if not item or post_hidden(item, v) or item.in_private_guild_for(v):
             abort(404)
     else:
         item = get_comment(ident, v=v, graceful=True)
-        if not item or comment_hidden(item, v):
+        if not item or comment_hidden(item, v) or item.post is None or item.post.in_private_guild_for(v):
             abort(404)
     return item
 
