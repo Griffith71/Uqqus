@@ -18,6 +18,7 @@ from ruqqus.helpers.alerts import *
 from ruqqus.helpers.get import *
 from ruqqus.helpers.regions import resolve_region
 from ruqqus.helpers.redirects import same_site
+from ruqqus.helpers import same_origin
 from ruqqus.helpers import account_sessions, chat_devices, mfa_backup, mfa_backup_store, signin_alerts, user_agents
 from ruqqus.helpers.regions import COUNTRY_NAMES
 from ruqqus.mail import send_verification_email
@@ -87,6 +88,10 @@ def check_for_alts(current_id):
 @limiter.limit("6/minute")
 @throttle_check_ip('login')
 def login_post():
+
+    # a sign-in another site's page sent (login CSRF, bug hunt M8: it would sign the visitor into someone else's account)
+    if same_origin.from_another_site(request.headers.get("Origin"), request.headers.get("Sec-Fetch-Site"), request.host):
+        abort(403)
 
     username = (request.form.get("username") or "").strip()
     if not username:

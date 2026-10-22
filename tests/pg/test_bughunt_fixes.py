@@ -283,3 +283,30 @@ def test_m2_the_ban_needs_the_form_key_and_covers_the_accounts_comments(make_mem
         db = fresh(admin)
         db.execute(text("DELETE FROM ips WHERE addr IN (:a, :b)"), {"a": signed_up, "b": commented})
         db.commit()
+
+
+# ---------------------------------------------------------------- M8: another site can't sign a visitor in
+
+def _sign_in(app, member, **headers):
+    client = app.test_client()
+    answer = client.post("/login", base_url=BASE, environ_base={"REMOTE_ADDR": addr()},
+                         headers={"User-Agent": "ci", **headers},
+                         data={"username": member.username, "password": member.password, "redirect": "/"})
+    signed_in = client.get("/settings/profile", base_url=BASE).status_code == 200
+    return answer.status_code, signed_in
+
+
+def test_m8_a_sign_in_sent_from_another_sites_page_is_refused(make_member, real_app):
+    app, _ = real_app
+    member = make_member()
+    for headers in ({"Origin": "https://evil.example"}, {"Origin": "null"}, {"Sec-Fetch-Site": "cross-site"},
+                    {"Origin": "https://localhost.evil.example"}):
+        status, signed_in = _sign_in(app, member, **headers)
+        assert status == 403 and not signed_in, headers
+
+
+def test_m8_a_sign_in_from_the_sites_own_page_still_works(make_member, real_app):
+    app, _ = real_app
+    member = make_member()
+    assert _sign_in(app, member, Origin="http://localhost", **{"Sec-Fetch-Site": "same-origin"}) == (302, True)
+    assert _sign_in(app, member) == (302, True), "an app or a script sends neither header"
