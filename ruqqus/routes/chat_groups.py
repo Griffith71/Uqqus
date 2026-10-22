@@ -283,6 +283,11 @@ def chat_group_accept(gid, v):
     group, me = _membership(gid, v, joined_only=False)
     if me[2] != group_rules.INVITED:
         abort(404)
+    # the add rule asked again (bug hunt: a block made after the invitation, with anyone who has joined since or
+    # was already in, put the two together); the message never says who blocked whom
+    joined = [row[0] for row in group_store.members(g.db, gid) if row[2] == group_rules.JOINED and row[0] != v.id]
+    if _blocked_ids(v) & set(joined):
+        return _error("You can't join this group.", 403)
     try:
         matrix.join_room_as(group[1], _mxid(v.id))
     except matrix.MatrixError:

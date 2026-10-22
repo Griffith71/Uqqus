@@ -1354,3 +1354,29 @@ def test_a_public_channel_keeps_nothing_but_signed_messages_and_emoji_reactions(
         assert chat._guard_room_event(sticker) is True
         assert not chat._guard_room_event(emoji)
     assert redacted == ["$s"]
+
+
+def test_accepting_a_group_invitation_is_refused_across_a_block_with_someone_in_it(make_member, real_app, monkeypatch):
+    """Adding someone checks blocks with everyone in the group, but a block made after the invitation went unasked
+    when it was accepted, and put the two in one group."""
+    from ruqqus.helpers import matrix_client
+    joined = []
+    monkeypatch.setattr(matrix_client, "join_room_as", lambda room, mxid: joined.append(mxid))
+    owner, member, invitee = make_member(), make_member(), make_member()
+    db = fresh(owner)
+    now = int(time.time())
+    gid = db.execute(text("INSERT INTO chat_groups (matrix_room_id, created_by_id, created_utc) VALUES (:r, :o, :n) "
+                          "RETURNING id"), {"r": f"!g{secrets.token_hex(6)}:chat.localhost", "o": owner.id, "n": now}).scalar()
+    for uid, role, status in ((owner.id, "owner", "joined"), (member.id, "member", "joined"), (invitee.id, "member", "invited")):
+        db.execute(text("INSERT INTO chat_group_members (group_id, user_id, role, status, invited_by_id, invited_utc) "
+                        "VALUES (:g, :u, :r, :s, :o, :n)"), {"g": gid, "u": uid, "r": role, "s": status, "o": owner.id, "n": now})
+    db.commit()
+    here = member.browser()
+    assert post(here, "/settings/block", {"username": invitee.username, "formkey": member.formkey(here)}).status_code < 400
+    them = invitee.browser()
+    answer = post(them, f"/api/chat/groups/{gid}/accept", {"formkey": invitee.formkey(them)})
+    assert answer.status_code == 403
+    assert "block" not in answer.get_data(as_text=True).lower()
+    assert joined == []
+    assert fresh(owner).execute(text("SELECT status FROM chat_group_members WHERE group_id = :g AND user_id = :u"),
+                                {"g": gid, "u": invitee.id}).scalar() == "invited"
