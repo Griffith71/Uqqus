@@ -261,6 +261,7 @@ def recompute():
             from ruqqus.routes.collab import settle_open_proposals
             print_(f"decided {settle_open_proposals(db_session)} shared-draft proposals")
         except Exception as e:
+            db.rollback()                 # the next step starts on a clean session (bug hunt)
             print_(f"shared-draft proposals failed: {e}")
 
         # guild events starting within the hour: everyone who answered Going or Interested is told, once
@@ -268,6 +269,7 @@ def recompute():
             from ruqqus.routes.guild_events import send_due_reminders
             print_(f"sent {send_due_reminders(db_session)} guild event reminders")
         except Exception as e:
+            db.rollback()                 # the next step starts on a clean session (bug hunt)
             print_(f"guild event reminders failed: {e}")
 
         # guild channel rooms: out of them everyone who should not be there, announcement writers, old message text
