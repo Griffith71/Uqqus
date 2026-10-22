@@ -71,7 +71,7 @@ def _viewable(posts, v):
         posts = posts.filter(
             or_(
                 Submission.author_id == v.id,
-                Submission.post_public == True,
+                and_(Submission.post_public == True, _guild_still_public()),
                 Submission.board_id.in_(m),
                 Submission.board_id.in_(c)
             )
@@ -80,9 +80,15 @@ def _viewable(posts, v):
         board_blocks = select(BoardBlock.board_id).filter_by(user_id=v.id)
         posts = posts.filter(Submission.board_id.notin_(board_blocks))
     else:
-        posts = posts.filter(Submission.post_public == True)
+        posts = posts.filter(Submission.post_public == True, _guild_still_public())
 
     return posts
+
+
+def _guild_still_public():
+    """A post made public in a guild that has since turned private is out, as All and search leave it out (the owner's
+    rule, 2026-11: a guild that turns private hides its old posts from non-members; bug hunt)."""
+    return Submission.board_id.notin_(select(Board.id).where(Board.is_private == True))
 
 
 def _own_filters(posts, curation):
@@ -422,6 +428,14 @@ def curation_edit_post(slug, v):
     if not name or len(name) > 100:
         abort(400)
 
+    if not is_private and curation.is_private:
+        # a public curation lists its guilds: one with a private or Circle guild in it stays private (bug hunt: this
+        # form made it public with them, the rule curation_members.guild_refusal keeps on every add)
+        boards = g.db.query(Board).filter(Board.id.in_(
+            select(CurationGuild.board_id).where(CurationGuild.curation_id == curation.id))).all()
+        if any(curation_members.guild_refusal(False, b, False) for b in boards):
+            return jsonify({"error": "A private guild can only go in a private curation. Take it out first."}), 409
+
     curation.name = name
     curation.description = description[:500]
     curation.is_private = is_private
@@ -458,10 +472,8 @@ def curation_delete(slug, v):
 def curation_add_guild(slug, v):
 
     curation = _owned_curation_or_404(slug, v)
-    guildname = request.form.get("guildname", "").strip()
-    board = get_guild(guildname, graceful=True)
-    if not board:
-        abort(404)
+    # the guild page's own visibility, as the menu's sheet asks it (bug hunt: this form took any guild by name)
+    board = _guild_for_curation(request.form.get("guildname", "").strip(), v)
 
     refusal = curation_members.guild_refusal(False, board, curation.is_private)
     if refusal:
@@ -937,7 +949,13 @@ def curation_fork(slug, v):
     g.db.add(fork)
     g.db.flush()
 
+    from ruqqus.helpers.visibility import board_hidden
     for cg in g.db.query(CurationGuild).filter_by(curation_id=original.id).all():
+        # only guilds the forker may see: the fork's edit page names them (bug hunt: a guild that turned private, in a
+        # public curation, was copied and named to anyone who forked it)
+        board = g.db.query(Board).filter_by(id=cg.board_id).first()
+        if board is None or board.is_banned or not board.can_view(v) or board_hidden(board, v):
+            continue
         g.db.add(CurationGuild(curation_id=fork.id, board_id=cg.board_id, created_utc=int(time.time())))
     for cu in g.db.query(CurationUser).filter_by(curation_id=original.id).all():
         g.db.add(CurationUser(curation_id=fork.id, target_user_id=cu.target_user_id, created_utc=int(time.time())))

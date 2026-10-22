@@ -1710,3 +1710,45 @@ def test_switching_two_factor_off_with_the_recovery_code_signs_out_the_other_bro
     assert sign_in(member, member.user().mfa_removal_code.lower().replace(" ", "")).status_code == 302
     assert member.user().mfa_secret is None
     assert not signed_in(elsewhere)
+
+
+def _curation(member, *, private, board_id=1):
+    db = fresh(member)
+    slug = f"c{secrets.token_hex(5)}"
+    cid = db.execute(text("INSERT INTO curations (owner_id, name, slug, is_private, created_utc) VALUES (:o, :n, :s, :p, :t) "
+                          "RETURNING id"), {"o": member.id, "n": f"Cur {slug}", "s": slug, "p": private, "t": int(time.time())}).scalar()
+    db.execute(text("INSERT INTO curation_guilds (curation_id, board_id, created_utc) VALUES (:c, :b, 0)"),
+               {"c": cid, "b": board_id})
+    db.commit()
+    return cid, slug
+
+
+def test_a_private_guild_never_leaves_a_curation_through_publishing_forking_or_its_feed(make_member, guildmaster_with_post):
+    """A curation with a private guild could be made public; forking a public one copied (and named, on the fork's
+    edit page) a guild that had turned private; and its feed still showed that guild's earlier public posts."""
+    mod, _, copy_id = guildmaster_with_post
+    owner, forker = make_member(), make_member()
+    word = f"zc{secrets.token_hex(5)}"
+    db = fresh(mod)
+    db.execute(text("UPDATE submissions_aux SET title = :t WHERE id = :s"), {"t": f"Curated {word}", "s": copy_id})
+    db.commit()
+    cid, slug = _curation(owner, private=False)
+    try:
+        assert f"Curated {word}" in forker.browser().get(f"/&{slug}?sort=new", base_url=BASE).get_data(as_text=True)
+        db = fresh(mod)
+        db.execute(text("UPDATE boards SET is_private = true WHERE id = 1"))
+        db.commit()
+        assert f"Curated {word}" not in forker.browser().get(f"/&{slug}?sort=new", base_url=BASE).get_data(as_text=True)
+        here = forker.browser()
+        assert post(here, f"/&{slug}/fork", {"formkey": forker.formkey(here)}).status_code in (200, 302)
+        assert fresh(mod).execute(text("SELECT count(*) FROM curation_guilds cg JOIN curations c ON c.id = cg.curation_id "
+                                       "WHERE c.owner_id = :f"), {"f": forker.id}).scalar() == 0
+        _, private_slug = _curation(owner, private=True)
+        here = owner.browser()
+        made_public = post(here, f"/&{private_slug}/edit", {"name": "Now public", "is_private": "false",
+                                                            "formkey": owner.formkey(here)})
+        assert made_public.status_code == 409
+    finally:
+        db = fresh(mod)
+        db.execute(text("UPDATE boards SET is_private = false WHERE id = 1"))
+        db.commit()
