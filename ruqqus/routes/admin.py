@@ -1008,36 +1008,14 @@ def admin_ipban(v):
 @validate_formkey
 def admin_user_ipban(v):
 
-    #bans all non-Tor IPs associated with a given account
-    #only use for obvious proxys
+    """Bans every non-Tor address of an account and its alts (only for obvious proxies): the same as /admin/ipnuke by
+    username (bug hunt: this copy crashed on any account with a comment, `ips.add()` had no argument, banned alts of
+    any level and answered nothing)."""
 
-    target_user=get_user(request.values.get("username"))
-
-    targets=[target_user]+[alt for alt in target_user.alts]
-
-    ips=set()
-    for user in targets:
-        if user.creation_region != "T1":
-            ips.add(user.creation_ip)
-
-        for post in g.db.query(Submission).options(lazyload('*')).filter_by(author_id=user.id).all():
-            if post.creation_region != "T1":
-                ips.add(post.creation_ip)
-
-        for comment in g.db.query(Comment).options(lazyload('*')).filter_by(author_id=user.id).all():
-            if comment.creation_region != "T1":
-                ips.add()
-
-    
-    for ip in ips:
-
-        new_ipban=IP(
-            banned_by=v.id,
-            addr=ip
-            )
-        g.db.add(new_ipban)
-
-    g.db.commit()
+    target_user=get_user(request.values.get("username", ""), graceful=True)
+    if target_user is None:
+        abort(404)
+    return _ban_addresses(v, target_user)
 
 @app.route("/admin/get_ip", methods=["GET"])
 @admin_level_required(4)
@@ -1068,7 +1046,11 @@ def admin_ipnuke(v):
     if not isinstance(thing, User):
         abort(400)
 
-    target_user=thing
+    return _ban_addresses(v, thing)
+
+
+def _ban_addresses(v, target_user):
+    """The addresses of an account and of its alts below the admin's level, banned (both IP-ban routes)."""
     if (v.admin_level or 0) <= (target_user.admin_level or 0):
         abort(403)                  # only below the admin's own level (bug hunt)
     targets=[target_user]+[alt for alt in target_user.alts if (alt.admin_level or 0) < (v.admin_level or 0)]

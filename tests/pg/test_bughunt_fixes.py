@@ -1547,3 +1547,29 @@ def test_unblocking_never_joins_a_requests_recipient_and_survives_an_unreachable
     assert post(here, "/settings/unblock", {"username": b.username, "formkey": a.formkey(here)}).status_code < 400
     assert fresh(a).execute(text("SELECT count(*) FROM userblocks WHERE user_id = :a AND target_id = :b"),
                             {"a": a.id, "b": b.id}).scalar() == 0
+
+
+def test_the_ip_ban_by_username_covers_comments_and_spares_higher_admins(make_member, guildmaster_with_post):
+    """/admin/user_ipban was a copy of the ipnuke without its fixes: any comment outside Tor was a 500, and an
+    admin's own level never mattered."""
+    _, author, copy_id = guildmaster_with_post
+    admin = _admin(make_member, 7)
+    cid = _comment_on(author, copy_id)
+    signed_up, commented = _doc_ip(), _doc_ip()
+    db = fresh(admin)
+    db.execute(text("UPDATE users SET creation_ip = :i, creation_region = 'GB' WHERE id = :u"), {"i": signed_up, "u": author.id})
+    db.execute(text("UPDATE comments SET creation_ip = :i, creation_region = 'GB' WHERE id = :c"), {"i": commented, "c": cid})
+    db.commit()
+    try:
+        client = admin.browser()
+        senior = _admin(make_member, 9)
+        assert post(client, "/admin/user_ipban", {"username": senior.username, "formkey": admin.formkey(client)}).status_code == 403
+        assert post(client, "/admin/user_ipban", {"username": "nobody" + secrets.token_hex(4),
+                                                  "formkey": admin.formkey(client)}).status_code == 404
+        done = post(client, "/admin/user_ipban", {"username": author.username, "formkey": admin.formkey(client)})
+        assert done.status_code == 200, done.get_data(as_text=True)[:300]
+        assert _banned(fresh(admin), signed_up, commented) == 2
+    finally:
+        db = fresh(admin)
+        db.execute(text("DELETE FROM ips WHERE addr IN (:a, :b)"), {"a": signed_up, "b": commented})
+        db.commit()
