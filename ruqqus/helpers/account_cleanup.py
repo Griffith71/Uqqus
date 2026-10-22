@@ -46,6 +46,8 @@ STEPS = (
     # chat: no copy of the key, locked or not, stays
     ("forget the chat key", "UPDATE chat_identities SET recovery_key_encrypted = NULL, key_blob_password = NULL, "
                             "key_blob_recovery = NULL WHERE user_id = :u"),
+    # apps the member let act for them: their tokens and refresh tokens stop working (bug hunt)
+    ("revoke app grants", "DELETE FROM client_auths WHERE user_id = :u"),
     # two-factor backup codes
     ("remove backup codes", "DELETE FROM mfa_backup_codes WHERE user_id = :u"),
     # their own account's automated posting (helpers/bots.py SELF): its feeds stop, what it saw goes. A bot ACCOUNT's

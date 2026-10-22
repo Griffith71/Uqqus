@@ -6994,4 +6994,5 @@ INSERT INTO public.schema_migrations (name) VALUES
     ('2026-11-21_self_automation.sql'),
     ('2026-11-22_escape_mod_log_notes.sql'),
     ('2026-11-23_owed_never_below_zero.sql'),
-    ('2026-11-24_paypal_reversals.sql');
+    ('2026-11-24_paypal_reversals.sql'),
+    ('2026-11-25_deleted_accounts_app_grants.sql');

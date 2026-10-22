@@ -135,6 +135,9 @@ def upload_from_file(name, filename, resize=None):
 
 def delete_file(name):
 
+    if not BUCKET:
+        return              # no bucket configured: nothing was stored there (bug hunt; boto3 refuses an empty name)
+
     S3.delete_object(Bucket=BUCKET,
                      Key=name)
 
@@ -172,7 +175,7 @@ def check_csam(post):
 
     parsed_url = urlparse(post.url)
 
-    if parsed_url.netloc != BUCKET:
+    if not BUCKET or parsed_url.netloc != BUCKET:
         return
 
     headers = {"User-Agent": "Ruqqus webserver"}
@@ -254,7 +257,7 @@ def check_csam_url(url, v, delete_content_function):
 
     parsed_url = urlparse(url)
 
-    if parsed_url.netloc != BUCKET:
+    if not BUCKET or parsed_url.netloc != BUCKET:
         return
 
     headers = {"User-Agent": "Ruqqus webserver"}

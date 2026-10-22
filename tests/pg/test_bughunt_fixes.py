@@ -1088,3 +1088,20 @@ def test_an_overlong_sign_up_time_is_refused_not_a_500(real_app):
     client = app.test_client()
     client.get("/signup", base_url=BASE)
     assert post(client, "/signup", {"now": "9" * 5000, "formkey": "x"}).status_code in (302, 400)
+
+
+# ---------------------------------------------------------------- review of the OAuth API and admin tools
+
+def test_deleting_an_account_ends_the_grants_it_gave_apps(make_member):
+    """An app's token signed it in as a deleted account: it kept posting, voting and refreshing its token."""
+    member = make_member()
+    db = fresh(member)
+    token = secrets.token_hex(32)
+    db.execute(text("INSERT INTO client_auths (user_id, access_token, refresh_token, access_token_expire_utc, scope_identity) "
+                    "VALUES (:u, :t, :r, :e, true)"), {"u": member.id, "t": token, "r": secrets.token_hex(32), "e": int(time.time()) + 3600})
+    db.commit()
+    client = member.browser()
+    done = post(client, "/settings/delete_account", {"password": member.password, "formkey": member.formkey(client)})
+    assert done.status_code in (200, 302), done.status_code
+    left = fresh(member).execute(text("SELECT count(*) FROM client_auths WHERE user_id = :u"), {"u": member.id}).scalar()
+    assert left == 0
