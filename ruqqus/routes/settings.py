@@ -976,13 +976,13 @@ def settings_name_change(v):
     #all reqs passed
 
     #check user avatar/banner for rename if needed
-    if v.has_profile and v.profile_url.startswith("https://i.ruqqus.com/users/"):
+    if v.has_profile and v.profile_url.startswith(f"https://{app.config['S3_BUCKET']}/users/"):
         upload_from_url(f"uid/{v.base36id}/profile-{v.profile_nonce}.png", f"{v.profile_url}")
         v.profile_set_utc=int(time.time())
         g.db.add(v)
         g.db.commit()
 
-    if v.has_banner and v.banner_url.startswith("https://i.ruqqus.com/users/"):
+    if v.has_banner and v.banner_url.startswith(f"https://{app.config['S3_BUCKET']}/users/"):
         upload_from_url(f"uid/{v.base36id}/banner-{v.banner_nonce}.png", f"{v.banner_url}")
         v.banner_set_utc=int(time.time())
         g.db.add(v)

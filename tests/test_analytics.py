@@ -46,3 +46,17 @@ def test_no_page_loads_anything_from_the_old_ruqqus_domain():
     loads = re.compile(r"""<(?:script|link|img|iframe)\b[^>]*(?:src|href)\s*=\s*["']?(?:https?:)?//[^"'>\s]*ruqqus\.com""", re.I)
     found = [str(p.relative_to(ROOT)) for p in TEMPLATES.rglob("*.html") if loads.search(p.read_text(encoding="utf-8"))]
     assert found == []
+
+
+def test_no_code_builds_an_address_on_the_old_ruqqus_bucket():
+    """Banners and thumbnails were drawn from https://i.ruqqus.com/... (another site's host) though they were uploaded
+    to this site's own bucket, S3_BUCKET; the bucket name had i.ruqqus.com as its default too."""
+    import re as _re
+    found = []
+    for path in (ROOT / "ruqqus").rglob("*.py"):
+        text = path.read_text(encoding="utf-8")
+        for number, line in enumerate(text.splitlines(), 1):
+            code = line.split("#", 1)[0]
+            if _re.search(r"i\.ruqqus\.com", code):
+                found.append(f"{path.relative_to(ROOT).as_posix()}:{number}")
+    assert found == []

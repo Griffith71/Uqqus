@@ -961,3 +961,12 @@ def test_a_new_comment_with_a_banned_link_is_a_400_not_a_401(make_member, guildm
         db = fresh(author)
         db.execute(text("DELETE FROM domains WHERE domain = :d"), {"d": banned})
         db.commit()
+
+
+def test_a_banner_and_a_thumbnail_are_drawn_from_the_sites_own_bucket(make_member, real_app):
+    app, _ = real_app
+    member = make_member()
+    user = member.user()
+    user.has_banner, user.banner_set_utc, user.banner_nonce = True, 1_700_000_000, 1
+    assert user.banner_url.startswith(f"https://{app.config['S3_BUCKET']}/uid/")
+    member.db_session().rollback()

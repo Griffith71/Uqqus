@@ -410,7 +410,7 @@ Required form data:
 
     # blank live content + clean up hosted media, for every target post
     for t in targets:
-        if t.domain == "i.ruqqus.com" and t.url:
+        if t.domain == app.config["S3_BUCKET"] and t.url:
             segments = t.url.split("/")
             if len(segments) > 5:
                 tpid, rand = segments[4], segments[5]
@@ -701,8 +701,8 @@ def user_stat_data(v):
              "guild_data": guild_stats,
              "comment_data": comment_stats,
              "vote_data": vote_stats,
-             "single_plot": f"https://i.ruqqus.com/{x[0]}",
-             "multi_plot": f"https://i.ruqqus.com/{x[1]}"
+             "single_plot": f"https://{app.config['S3_BUCKET']}/{x[0]}",
+             "multi_plot": f"https://{app.config['S3_BUCKET']}/{x[1]}"
              }
 
     return jsonify(final)
@@ -850,7 +850,7 @@ def admin_csam_nuke(pid, v):
         alt.is_banned = v.id
         g.db.add(alt)
 
-    if post.domain == "i.ruqqus.com":
+    if post.domain == app.config["S3_BUCKET"]:
 
         # TODO: take a phash of the image and store it before deleting
         name = urlparse(post.url).path.lstrip('/')

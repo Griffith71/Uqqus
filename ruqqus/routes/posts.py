@@ -58,7 +58,7 @@ BAN_REASONS = ['',  #placeholder
                "Engaging in or planning unlawful activity"
                ]
 
-BUCKET = app.config.get("S3_BUCKET", "i.ruqqus.com")
+BUCKET = app.config.get("S3_BUCKET", "")
 
 
 def canonical_redirect(item):
@@ -1961,8 +1961,8 @@ def delete_post_as(post, v):
         cache.delete_memoized(Board.idlist, post.board, sort="new")
         cache.delete_memoized(frontlist, sort="new")
 
-    # delete i.ruqqus.com - only the primary's copy, forwards share the same url
-    if post.domain == "i.ruqqus.com":
+    # delete an image hosted in the site's bucket - only the primary's copy, forwards share the same url
+    if post.domain == app.config["S3_BUCKET"]:
 
         segments = post.url.split("/")
         pid = segments[4]

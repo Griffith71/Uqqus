@@ -924,7 +924,7 @@ def admin_purge_guild_images(boardname, v):
         if post.has_thumb:
             aws.delete_file(urlparse(post.thumb_url).path.lstrip('/'))
 
-        if post.url and post.domain=="i.ruqqus.com":
+        if post.url and post.domain==app.config["S3_BUCKET"]:
             aws.delete_file(urlparse(post.url).path.lstrip('/'))
 
     i=0

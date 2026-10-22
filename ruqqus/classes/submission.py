@@ -465,7 +465,7 @@ class Submission(Base, Stndrd, Age_times, Scores, Fuzzing):
     def thumb_url(self):
 
         if self.has_thumb:
-            return f"https://i.ruqqus.com/posts/{self.base36id}/thumb.png"
+            return f"https://{app.config['S3_BUCKET']}/posts/{self.base36id}/thumb.png"
         elif self.is_image:
             return self.url
         elif self.is_repost and self.reposts:
@@ -915,7 +915,7 @@ class Submission(Base, Stndrd, Age_times, Scores, Fuzzing):
     def has_uploaded_image(self):
         """True when the post's link is an image uploaded to our own bucket
         (it can be replaced or removed), not a link to somewhere else."""
-        bucket = app.config.get("S3_BUCKET", "i.ruqqus.com")
+        bucket = app.config.get("S3_BUCKET", "")
         if not self.url:
             return False
         if self.url.startswith(f"https://{bucket}/post/"):

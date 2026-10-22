@@ -14,7 +14,7 @@ from ruqqus.__main__ import db_session
 from .base36 import hex2bin
 import gevent
 
-BUCKET = environ.get("S3_BUCKET_NAME",'i.ruqqus.com').lstrip().rstrip()
+BUCKET = environ.get("S3_BUCKET_NAME", "").strip()      # no default: never another site's bucket
 CF_KEY = environ.get("CLOUDFLARE_KEY").lstrip().rstrip()
 CF_ZONE = environ.get("CLOUDFLARE_ZONE").lstrip().rstrip()
 

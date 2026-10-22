@@ -1515,9 +1515,9 @@ class User(Base, Stndrd, Age_times):
 
         if self.has_banner:
             if self.banner_set_utc>1616443200:
-                return f"https://i.ruqqus.com/uid/{self.base36id}/banner-{self.banner_nonce}.png"
+                return f"https://{app.config['S3_BUCKET']}/uid/{self.base36id}/banner-{self.banner_nonce}.png"
             else:
-                return f"https://i.ruqqus.com/users/{self.username}/banner-{self.banner_nonce}.png"
+                return f"https://{app.config['S3_BUCKET']}/users/{self.username}/banner-{self.banner_nonce}.png"
         else:
             return "/assets/images/profiles/default_bg.png"
 
