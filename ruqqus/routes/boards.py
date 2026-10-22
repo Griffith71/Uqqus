@@ -896,26 +896,27 @@ def mod_invite_username(bid, board, v):
         return jsonify({"error": f"@{user.username} has already been invited."}), 409
 
     if x:
+        # a withdrawn invitation's row goes, and the new one is made after everyone appointed meanwhile: seniority is
+        # the row's id (who may remove whom), and reviving the old row put a re-invited guildmaster ahead of them
+        # (bug hunt). It is also told of the invitation, as anyone invited is.
+        g.db.delete(x)
+        g.db.flush()
 
-        x.invite_rescinded = False
-        g.db.add(x)
+    x = ModRelationship(
+        user_id=user.id,
+        board_id=board.id,
+        accepted=False,
+        perm_full=True,
+        perm_content=True,
+        perm_appearance=True,
+        perm_access=True,
+        perm_config=True
+        )
 
-    else:
-        x = ModRelationship(
-            user_id=user.id,
-            board_id=board.id,
-            accepted=False,
-            perm_full=True,
-            perm_content=True,
-            perm_appearance=True,
-            perm_access=True,
-            perm_config=True
-            )
+    text = f"You have been invited to join +{board.name} as a guildmaster. You can [click here]({board.permalink}/mod/mods) and accept this invitation. Or, if you weren't expecting this, you can ignore it."
+    send_notification(user, text)
 
-        text = f"You have been invited to join +{board.name} as a guildmaster. You can [click here]({board.permalink}/mod/mods) and accept this invitation. Or, if you weren't expecting this, you can ignore it."
-        send_notification(user, text)
-
-        g.db.add(x)
+    g.db.add(x)
 
     ma=ModAction(
         kind="invite_mod",

@@ -1934,3 +1934,22 @@ def test_an_email_link_never_gives_an_account_an_address_another_took_meanwhile(
                                  query_string={"email": address, "id": str(asker.id), "time": str(now), "token": token})
     assert answer.status_code == 409
     assert fresh(asker).execute(text("SELECT email FROM users WHERE id = :u"), {"u": asker.id}).scalar() != address
+
+
+def test_a_reinvited_guildmaster_comes_after_those_appointed_meanwhile(make_member, guildmaster_with_post):
+    """Who may remove whom is the mods row's id; re-inviting revived the withdrawn row, so its holder outranked
+    everyone invited in between."""
+    mod, _, _ = guildmaster_with_post
+    bob, carol = make_member(), make_member()
+    here = mod.browser()
+
+    def invite(member):
+        answer = post(here, "/mod/invite_mod/1", {"username": member.username, "formkey": mod.formkey(here)})
+        assert answer.status_code < 400, answer.get_data(as_text=True)[:200]
+    invite(bob)
+    assert post(here, f"/mod/1/rescind/{bob.username}", {"formkey": mod.formkey(here)}).status_code < 400
+    invite(carol)
+    invite(bob)
+    rows = dict(fresh(mod).execute(text("SELECT user_id, id FROM mods WHERE board_id = 1 AND user_id IN (:b, :c) "
+                                        "AND invite_rescinded = false"), {"b": bob.id, "c": carol.id}).fetchall())
+    assert rows[bob.id] > rows[carol.id]
