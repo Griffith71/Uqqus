@@ -1136,6 +1136,9 @@ class User(Base, Stndrd, Age_times):
 
     def validate_formkey(self, formkey):
 
+        # a session that never drew a form key has none to match: refused (401), never a KeyError (bug hunt L4)
+        if "session_id" not in session:
+            return False
         return validate_hash(f"{session['session_id']}+{self.id}+{self.login_nonce}", formkey)
 
     @property

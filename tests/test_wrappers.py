@@ -558,11 +558,12 @@ def test_formkey_skipped_entirely_on_api_v1_paths(fk):
     assert (r.status_code, r.get_data(as_text=True)) == (200, "ok-api")
 
 
-def test_formkey_without_session_id_is_500(fk):
-    """CURRENT BEHAVIOUR (suspected bug): KeyError -> 500, not 401."""
+def test_formkey_without_session_id_is_401(fk):
+    """A session that never drew a form key is refused (401). It was a KeyError and a 500 (the suspected bug this
+    test recorded; fixed in the bug hunt, L4, with the owner's OK to update it)."""
     with fk.client.session_transaction() as s:
         del s["session_id"]
-    assert fk.client.post("/fk", data={"formkey": "x"}).status_code == 500
+    assert fk.client.post("/fk", data={"formkey": "x"}).status_code == 401
 
 
 def test_formkey_validate_wrapper_requires_v_keyword(app_):
@@ -627,5 +628,6 @@ def test_fake_user_formkey_code_matches_real_user_class():
     assert "msg = f\"{session['session_id']}+{self.id}+{self.login_nonce}\"" in src
     assert ("return validate_hash(f\"{session['session_id']}+{self.id}+"
             "{self.login_nonce}\", formkey)") in src
+    assert 'if "session_id" not in session:\n            return False' in src
     assert "session[\"session_id\"] = token_hex(16)" in src
     assert "self.unban_utc ==\n                                    0 or" in src

@@ -883,3 +883,18 @@ def test_l3_a_yes_or_no_query_value_reads_false_as_no_and_a_number_reads_only_di
     for value, expected in (("1700000000", 1700000000), ("abc", 0), ("-5", 0), ("1.5", 0), ("", 0), ("9" * 40, 0)):
         with app.test_request_context(f"/?utc_greater_than={value}"):
             assert whole_arg("utc_greater_than") == expected, value
+
+
+# ---------------------------------------------------------------- L4: a session with no form key yet is refused, not a 500
+
+def test_l4_a_signed_in_session_that_never_drew_a_form_key_is_refused(make_member, guildmaster_with_post):
+    """A guard, not a reproduction: the real app gives every request a session_id in before_request, so it never hit
+    the KeyError the harness tests recorded (tests/test_votes.py, tests/test_wrappers.py)."""
+    from ruqqus.helpers.base36 import base36encode
+    _, _, copy_id = guildmaster_with_post
+    member = make_member()
+    client = member.browser()
+    with client.session_transaction() as s:
+        s.pop("session_id", None)
+    answer = post(client, f"/api/vote/post/{base36encode(copy_id)}/1", {"formkey": "anything"})
+    assert answer.status_code == 401 or (answer.status_code == 302 and "/login" in answer.headers["Location"]), answer.status_code

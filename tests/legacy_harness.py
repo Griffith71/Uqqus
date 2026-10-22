@@ -162,6 +162,8 @@ class FakeUser(Row):
     def validate_formkey(self, formkey):  # ruqqus/classes/user.py
         from ruqqus.helpers.security import validate_hash
         s = flask.session
+        if "session_id" not in s:
+            return False
         return validate_hash(
             f"{s['session_id']}+{self.id}+{self.login_nonce}", formkey)
 

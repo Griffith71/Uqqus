@@ -218,13 +218,14 @@ def test_post_formkey_accepted_from_query_string(env):
     assert r.status_code == 204
 
 
-def test_post_session_without_session_id_is_500(env):
-    """CURRENT BEHAVIOUR (suspected bug): a logged-in session that has no
-    session_id (never rendered a formkey) makes validate_formkey raise
-    KeyError -> 500 instead of 401."""
+def test_post_session_without_session_id_is_401(env):
+    """A logged-in session that has no session_id (never rendered a formkey)
+    is refused with 401. It made validate_formkey raise KeyError -> 500 (the
+    suspected bug this test recorded; fixed in the bug hunt, L4, with the
+    owner's OK to update it)."""
     with env.client.session_transaction() as s:
         del s["session_id"]
-    assert vote(env, "post", 1, formkey="anything").status_code == 500
+    assert vote(env, "post", 1, formkey="anything").status_code == 401
 
 
 def test_post_non_ascii_formkey_is_500(env):
