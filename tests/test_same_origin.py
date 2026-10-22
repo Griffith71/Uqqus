@@ -33,3 +33,13 @@ def test_the_sites_own_pages_and_non_browsers_may_send_it(origin, fetch_site, ho
 ])
 def test_another_site_is_refused(origin, fetch_site, host):
     assert from_another_site(origin, fetch_site, host)
+
+
+def test_a_proxy_that_passes_on_the_name_only_or_the_sites_own_names_still_sign_in():
+    # served on :8443 behind nginx's `$host` (the port dropped): SERVER_NAME names it
+    assert not from_another_site("https://laba.example:8443", None, "laba.example", ("laba.example:8443",))
+    assert not from_another_site("https://laba.example:8443", None, "127.0.0.1:5000", ("laba.example:8443",))
+    assert not from_another_site("http://abc.onion", None, "127.0.0.1:5000", ("laba.example", "abc.onion"))
+    assert from_another_site("https://evil.example:8443", None, "laba.example")
+    assert from_another_site("https://laba.example:8443", None, "laba.example:443"), "a Host with a port is exact"
+    assert from_another_site("https://evil.example", None, "127.0.0.1:5000", ("laba.example", ""))

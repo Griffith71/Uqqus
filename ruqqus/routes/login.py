@@ -90,7 +90,8 @@ def check_for_alts(current_id):
 def login_post():
 
     # a sign-in another site's page sent (login CSRF, bug hunt M8: it would sign the visitor into someone else's account)
-    if same_origin.from_another_site(request.headers.get("Origin"), request.headers.get("Sec-Fetch-Site"), request.host):
+    if same_origin.from_another_site(request.headers.get("Origin"), request.headers.get("Sec-Fetch-Site"), request.host,
+                                     (app.config.get("SERVER_NAME") or "", environ.get("ONION_NAME", ""))):
         abort(403)
 
     username = (request.form.get("username") or "").strip()

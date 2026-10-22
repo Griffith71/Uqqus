@@ -9,9 +9,11 @@ browser on another site (an app, a script, a test), so it is not this attack and
 from urllib.parse import urlsplit
 
 
-def from_another_site(origin, fetch_site, host):
-    """True when the browser says the request comes from somewhere other than `host` (the Host it was sent to, with
-    its port). The scheme is not compared: behind a TLS proxy the site itself may be reached over http."""
+def from_another_site(origin, fetch_site, host, site_names=()):
+    """True when the browser says the request comes from somewhere other than this site: `host` (the Host it was sent
+    to) or one of `site_names` (the names it is configured with, SERVER_NAME and the onion name: a proxy that passes on
+    the name only, as nginx's `$host` does, drops a port the browser's Origin keeps). The scheme is not compared:
+    behind a TLS proxy the site itself may be reached over http."""
     if (fetch_site or "").strip().lower() == "cross-site":
         return True
     origin = (origin or "").strip()
@@ -26,4 +28,5 @@ def from_another_site(origin, fetch_site, host):
         return True
     if parts.scheme not in ("http", "https") or not netloc:
         return True
-    return netloc != (host or "").strip().lower()
+    ours = {n.strip().lower() for n in (host, *site_names) if n and n.strip()}
+    return netloc not in ours
