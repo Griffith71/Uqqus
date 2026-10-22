@@ -34,14 +34,6 @@ COPY --from=chat-bundle /opt/build/ruqqus/assets/js/space_bundle.js ./ruqqus/ass
 COPY --from=chat-bundle /opt/build/ruqqus/assets/js/chat_apps_bundle.js ./ruqqus/assets/js/chat_apps_bundle.js
 COPY --from=chat-bundle /opt/build/ruqqus/assets/js/matrix_sdk_crypto_wasm_bg.wasm ./ruqqus/assets/js/matrix_sdk_crypto_wasm_bg.wasm
 
-# Ensure FontAwesome and other docs assets are available under ./assets at runtime
-# so Flask's send_from_directory('./assets', path) can find them. Copy docs/assets
-# into the application assets directory at build time.
-RUN mkdir -p assets && \
-    if [ -d docs/assets/fontawesome ]; then \
-        cp -r docs/assets/fontawesome assets/; \
-    fi
-
 # the job programs' output reaches `docker logs` as it happens, not in blocks (supervisord.conf sends it to stdout)
 ENV PYTHONUNBUFFERED=1
 
