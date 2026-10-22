@@ -6,7 +6,6 @@ from ruqqus.helpers.embed import known_provider_embed
 
 import time
 import gevent
-import daemon
 
 db = db_session()
 
@@ -320,8 +319,6 @@ def recompute():
 
 
 
-#with daemon.DaemonContext():
-#    recompute()
 
 #gevent.spawn()
 
