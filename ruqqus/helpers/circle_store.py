@@ -154,7 +154,8 @@ def blocked_between(db, a_id, b_id):
 def _account(db, user_id):
     return db.execute(text(
         "SELECT id, username, coin_balance, COALESCE(is_deleted, :no) AS is_deleted, COALESCE(is_banned, 0) AS is_banned, "
-        "COALESCE(unban_utc, 0) AS unban_utc FROM users WHERE id = :u"), {"u": user_id, "no": NO}).fetchone()
+        "COALESCE(unban_utc, 0) AS unban_utc, COALESCE(negative_balance_cents, 0) AS owes FROM users WHERE id = :u"),
+        {"u": user_id, "no": NO}).fetchone()
 
 
 def _gone(account):
@@ -505,6 +506,10 @@ def renew_due(db, now=None, limit=500):
         # a deleted or permanently banned owner or payer ends it: nobody pays an account that is gone (audit $-03)
         if decision == circles.RENEW and (_gone(account) or _gone(_account(db, row.owner_id))):
             decision = circles.END
+        if decision == circles.RENEW and account.owes:
+            # an account that owes after a chargeback pays nothing on until it is settled, as Premium's renewals
+            # (premium.due_ids) and subscribing refuse it (bug hunt: its coins kept going to circle owners)
+            decision = circles.LAPSE
         if decision == circles.RENEW and (blocked_between(db, row.owner_id, row.user_id)
                                           or (row.board_id and exiled_from(db, row.board_id, row.user_id))):
             decision = circles.END

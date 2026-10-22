@@ -6,7 +6,7 @@ from sqlalchemy import text
 TABLES = (
     "CREATE TABLE users (id integer PRIMARY KEY, username text, coin_balance integer DEFAULT 0, "
     "is_deleted boolean DEFAULT 0, is_banned integer DEFAULT 0, unban_utc integer DEFAULT 0, "
-    "is_bot boolean DEFAULT 0, bot_owner_id integer)",
+    "is_bot boolean DEFAULT 0, bot_owner_id integer, negative_balance_cents integer DEFAULT 0)",
     "CREATE TABLE userblocks (id integer PRIMARY KEY AUTOINCREMENT, user_id integer, target_id integer)",
     "CREATE TABLE follows (id integer PRIMARY KEY AUTOINCREMENT, user_id integer, target_id integer)",
     "CREATE TABLE boards (id integer PRIMARY KEY, name text, creator_id integer, is_circle boolean DEFAULT 0, is_banned boolean DEFAULT 0)",
