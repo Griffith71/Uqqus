@@ -1380,3 +1380,48 @@ def test_accepting_a_group_invitation_is_refused_across_a_block_with_someone_in_
     assert joined == []
     assert fresh(owner).execute(text("SELECT status FROM chat_group_members WHERE group_id = :g AND user_id = :u"),
                                 {"g": gid, "u": invitee.id}).scalar() == "invited"
+
+
+def _story(db, owner_id, age=0):
+    now = int(time.time()) - age
+    return db.execute(text("INSERT INTO stories (user_id, kind, body, background, created_utc, expires_utc) "
+                           "VALUES (:u, 'text', 'hello there', 'blue', :c, :e) RETURNING id"),
+                      {"u": owner_id, "c": now, "e": now + 86400}).scalar()
+
+
+def test_a_highlight_story_past_its_day_can_still_be_viewed_and_reported(make_member, real_app):
+    """story_view and story_report only knew live stories: a Highlight's older stories answered 404."""
+    owner, viewer = make_member(), make_member()
+    db = fresh(owner)
+    sid = _story(db, owner.id, age=3 * 86400)
+    hid = db.execute(text("INSERT INTO highlights (user_id, title) VALUES (:u, 'Trips') RETURNING id"), {"u": owner.id}).scalar()
+    db.execute(text("INSERT INTO highlight_stories (highlight_id, story_id) VALUES (:h, :s)"), {"h": hid, "s": sid})
+    loose = _story(db, owner.id, age=3 * 86400)                   # past its day and in no Highlight
+    db.commit()
+    here = viewer.browser()
+    assert here.get(f"/api/highlights/{hid}", base_url=BASE).status_code == 200
+    assert post(here, f"/api/stories/{sid}/view", {"formkey": viewer.formkey(here)}).status_code == 200
+    reported = post(here, f"/api/stories/{sid}/report", {"reason": "spam", "formkey": viewer.formkey(here)})
+    assert reported.status_code == 200, reported.get_data(as_text=True)[:200]
+    assert post(here, f"/api/stories/{loose}/view", {"formkey": viewer.formkey(here)}).status_code == 404
+
+
+def test_a_suspended_accounts_story_is_neither_viewed_nor_its_picture_served(make_member, real_app):
+    """The story lists and Highlights ask the profile's gates; viewing, reporting and the picture didn't."""
+    owner, viewer = make_member(), make_member()
+    db = fresh(owner)
+    sid = _story(db, owner.id)
+    asset_id = db.execute(text("INSERT INTO media_assets (user_id, account_id, provider, kind, token, ext, status, story_id) "
+                               "VALUES (:u, 0, 'gdrive', 'image', :t, 'png', 'ready', :s) RETURNING id"),
+                          {"u": owner.id, "t": secrets.token_hex(8), "s": sid}).scalar()
+    db.commit()
+    from ruqqus.helpers.media import attach
+    path = fresh(owner).query(attach._models()[0]).filter_by(id=asset_id).first().path
+    here = viewer.browser()
+    assert here.get(path, base_url=BASE).status_code == 410             # allowed: refused only for the missing account
+    db = fresh(owner)
+    db.execute(text("UPDATE users SET is_banned = 1, unban_utc = 0 WHERE id = :u"), {"u": owner.id})
+    db.commit()
+    assert here.get(path, base_url=BASE).status_code == 404
+    assert post(here, f"/api/stories/{sid}/view", {"formkey": viewer.formkey(here)}).status_code == 404
+    assert post(here, f"/api/stories/{sid}/report", {"reason": "x", "formkey": viewer.formkey(here)}).status_code == 404

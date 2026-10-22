@@ -14,7 +14,7 @@ from urllib.parse import urlencode
 from flask import Response, g, jsonify, redirect, render_template, request, session
 
 from ruqqus.__main__ import app, limiter
-from ruqqus.classes import Board, MediaAccount, MediaAsset
+from ruqqus.classes import Board, MediaAccount, MediaAsset, User
 from ruqqus.helpers import circle_guard, circles
 from ruqqus.helpers.media import attach, cdn, dev, google_oauth, oauth, registry, rules, safety
 from ruqqus.helpers.media.base import AccountLost, MediaGone, ProviderDown
@@ -682,6 +682,12 @@ never cached. Anything else is refused, so this is not a file host for other sit
             allowed = bool(v) and (v.id == circle_owner or bool(board and board.can_view(v)))
         else:
             allowed = bool(audience) and circle_guard.may_see(g.db, audience, circle_owner, v, board_id=board_id, circle_ids=circle_ids)
+        if allowed and asset.story_id and not is_owner:
+            # the profile's own gates, as the story routes ask them (bug hunt: a suspended, private or deleted
+            # account's story pictures were still served to whoever held the address)
+            from ruqqus.routes.stories import _profile_closed as story_profile_closed
+            owner = g.db.query(User).filter_by(id=circle_owner).first()
+            allowed = owner is not None and not story_profile_closed(owner, v)
     mode = rules.access(asset.status, live, is_owner, audience, allowed)
     if mode is None:
         return _refuse(404)

@@ -102,6 +102,16 @@ def watchable(db, owner_id, viewer, now=None):
     return _visible(db, rows, viewer, now)
 
 
+def kept_in_highlight(db, row, viewer, now=None):
+    """A story past its 24 hours that a Highlight keeps, and this viewer may see (a Highlight is watched story by
+    story, so viewing and reporting one must work after the day is over: bug hunt)."""
+    if row is None or row.deleted_utc:
+        return False
+    if not db.execute(text("SELECT 1 FROM highlight_stories WHERE story_id = :s LIMIT 1"), {"s": row.id}).first():
+        return False
+    return bool(_visible(db, [row], viewer, _now(now)))
+
+
 _LIVE_BY_OWNERS = text(f"SELECT {_COLUMNS} FROM stories WHERE user_id IN :owners AND deleted_utc = 0 AND expires_utc > :n ORDER BY created_utc, id"
                        ).bindparams(bindparam("owners", expanding=True))
 _SEEN = text("SELECT story_id FROM story_views WHERE viewer_id = :v AND story_id IN :ids").bindparams(bindparam("ids", expanding=True))

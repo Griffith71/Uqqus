@@ -104,7 +104,9 @@ def story_view(sid, v):
         abort(404)
     if row.user_id == v.id:
         return _private({"ok": True})
-    if not any(r.id == sid for r in story_store.watchable(g.db, row.user_id, v)):
+    _owner_by_id(row.user_id, v)          # the profile's own gates, as the lists and Highlights ask (bug hunt)
+    if not (any(r.id == sid for r in story_store.watchable(g.db, row.user_id, v))
+            or story_store.kept_in_highlight(g.db, row, v)):
         abort(404)
     story_store.mark_seen(g.db, sid, v.id)
     g.db.commit()
@@ -194,7 +196,9 @@ def story_report(sid, v):
         abort(404)
     if row.user_id == v.id:
         return _fail("That's your own story.")
-    if not any(r.id == sid for r in story_store.watchable(g.db, row.user_id, v)):
+    _owner_by_id(row.user_id, v)          # the profile's own gates, as the lists and Highlights ask (bug hunt)
+    if not (any(r.id == sid for r in story_store.watchable(g.db, row.user_id, v))
+            or story_store.kept_in_highlight(g.db, row, v)):
         abort(404)
     if not story_store.report(g.db, sid, v.id, rules.parse_reason(request.form.get("reason"))):
         return _fail("You already reported this story.", 409)
