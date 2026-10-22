@@ -1508,3 +1508,42 @@ def test_oauth_redirects_are_encoded_codes_expire_and_odd_input_is_not_a_500(mak
     made = post(here, "/help/api_keys", {"name": "x", "redirect_uri": "https://example.org/cb", "formkey": member.formkey(here)})
     assert made.status_code < 500
     assert post(here, "/edit_app/abc", {"formkey": member.formkey(here)}).status_code == 404
+
+
+def test_unblocking_never_joins_a_requests_recipient_and_survives_an_unreachable_chat_server(make_member, monkeypatch):
+    """After an unblock both people were joined to the room, also the recipient of a request they never accepted; and
+    a connection error from the chat server was a 500 that rolled the unblock back."""
+    import requests
+    from ruqqus.helpers import matrix_client
+    a, b = make_member(), make_member()
+    room = f"!room{secrets.token_hex(4)}:chat.localhost"
+    db = fresh(a)
+    low, high = min(a.id, b.id), max(a.id, b.id)
+    db.execute(text("INSERT INTO chat_conversations (user_a_id, user_b_id, initiator_id, matrix_room_id, status) "
+                    "VALUES (:l, :h, :i, :r, 'request')"), {"l": low, "h": high, "i": a.id, "r": room})
+    for member in (a, b):
+        db.execute(text("INSERT INTO chat_identities (user_id, matrix_user_id) VALUES (:u, :m) ON CONFLICT DO NOTHING"),
+                   {"u": member.id, "m": f"@ci_{member.id}:chat.localhost"})
+    db.commit()
+    calls = []
+    monkeypatch.setattr(matrix_client, "ban_user_as_bot", lambda r, m: calls.append(("ban", m)))
+    monkeypatch.setattr(matrix_client, "unban_user_as_bot", lambda r, m: calls.append(("unban", m)))
+    monkeypatch.setattr(matrix_client, "invite_as_bot", lambda r, m: calls.append(("invite", m)))
+    monkeypatch.setattr(matrix_client, "put_in_room", lambda r, m: calls.append(("in", m)))
+    here = a.browser()
+    assert post(here, "/settings/block", {"username": b.username, "formkey": a.formkey(here)}).status_code < 400
+    here = a.browser()
+    assert post(here, "/settings/unblock", {"username": b.username, "formkey": a.formkey(here)}).status_code < 400
+    recipient = f"@ci_{b.id}:chat.localhost"
+    assert ("invite", recipient) in calls and ("in", recipient) not in calls
+
+    def down(*args):
+        raise requests.ConnectionError("chat server down")
+    monkeypatch.setattr(matrix_client, "unban_user_as_bot", down)
+    monkeypatch.setattr(matrix_client, "ban_user_as_bot", down)
+    here = a.browser()
+    assert post(here, "/settings/block", {"username": b.username, "formkey": a.formkey(here)}).status_code < 400
+    here = a.browser()
+    assert post(here, "/settings/unblock", {"username": b.username, "formkey": a.formkey(here)}).status_code < 400
+    assert fresh(a).execute(text("SELECT count(*) FROM userblocks WHERE user_id = :a AND target_id = :b"),
+                            {"a": a.id, "b": b.id}).scalar() == 0

@@ -3,7 +3,12 @@ future per-user "who can message me" setting has exactly one place to
 extend rather than scattered checks."""
 
 from flask import g
+import requests
 import ruqqus.helpers.matrix_client as matrix_client
+
+# what a call to the chat server raises when it refuses or can't be reached: never allowed to fail a block or an
+# unblock (bug hunt: a connection error was a 500 and the unblock was rolled back)
+_UNREACHABLE = (matrix_client.MatrixError, requests.RequestException)
 
 
 def can_message_directly(sender, recipient) -> bool:
@@ -53,7 +58,7 @@ def on_block_created(blocker, blocked):
 
     try:
         matrix_client.ban_user_as_bot(convo.matrix_room_id, identity.matrix_user_id)
-    except matrix_client.MatrixError:
+    except _UNREACHABLE:
         pass
     end_call_in(convo.matrix_room_id)
 
@@ -70,14 +75,21 @@ def on_block_removed(a, b):
     convo = g.db.query(ChatConversation).filter_by(user_a_id=a_id, user_b_id=b_id).first()
     if not convo:
         return
+    people = {a.id: a, b.id: b}
     for identity in g.db.query(ChatIdentity).filter(ChatIdentity.user_id.in_([a_id, b_id])).all():
+        if people[identity.user_id].is_deleted:
+            continue                    # a deleted account is never brought back into a room
         try:
             matrix_client.unban_user_as_bot(convo.matrix_room_id, identity.matrix_user_id)
-        except matrix_client.MatrixError:
+        except _UNREACHABLE:
             pass                        # not banned (only the blocked one was)
         try:
-            matrix_client.put_in_room(convo.matrix_room_id, identity.matrix_user_id)
-        except matrix_client.MatrixError:
+            if convo.status == "request" and identity.user_id != convo.initiator_id:
+                # a request's recipient only ever held an invitation until they accept it: never join them
+                matrix_client.invite_as_bot(convo.matrix_room_id, identity.matrix_user_id)
+            else:
+                matrix_client.put_in_room(convo.matrix_room_id, identity.matrix_user_id)
+        except _UNREACHABLE:
             pass
 
 
