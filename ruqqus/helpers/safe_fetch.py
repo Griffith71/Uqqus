@@ -67,11 +67,12 @@ def is_public(address):
     return bool(ip.is_global) and not ip.is_multicast
 
 
-def check_url(url, allow_local=None):
+def check_url(url, allow_local=None, max_len=MAX_URL):
     """(scheme, host, port, path with query) of an address that may be fetched, or FetchError.
-    Only the address itself is judged here; `vetted_address` judges where it leads."""
+    Only the address itself is judged here; `vetted_address` judges where it leads. `max_len` is longer for a page a
+    member linked (helpers/page_fetch.py) than for a server they name."""
     allow_local = local_allowed() if allow_local is None else allow_local
-    if not isinstance(url, str) or not url.strip() or len(url) > MAX_URL or any(c.isspace() or ord(c) < 32 for c in url.strip()):
+    if not isinstance(url, str) or not url.strip() or len(url) > max_len or any(c.isspace() or ord(c) < 32 for c in url.strip()):
         raise FetchError("That is not a usable address.")
     try:
         parts = urlsplit(url.strip())

@@ -606,20 +606,19 @@ def get_post_title(v):
             quote_cards.quoted_post_id(url, app.config["SERVER_NAME"], app.config.get("SHORT_DOMAIN"))):
         return jsonify({"url": url, "title": "", "quote": True})
 
-    #mimic chrome browser agent
-    headers = {"User-Agent": f"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.72 Safari/537.36"}
+    # through safe_fetch's guard (helpers/page_fetch.py): never this site's own network, at any redirect
+    from ruqqus.helpers import page_fetch
     try:
-        x = requests.get(url, headers=headers)
-    except BaseException:
+        x = page_fetch.get(url, user_agent=page_fetch.BROWSER_AGENT)
+    except page_fetch.FetchError:
         return jsonify({"error": "Could not reach page"}), 400
 
-
-    if not x.status_code == 200:
-        return jsonify({"error": f"Page returned {x.status_code}"}), x.status_code
+    if not x.status == 200:
+        return jsonify({"error": f"Page returned {x.status}"}), x.status
 
 
     try:
-        soup = BeautifulSoup(x.content, 'html.parser')
+        soup = BeautifulSoup(x.body, 'html.parser')
 
         data = {"url": url,
                 "title": soup.find('title').string

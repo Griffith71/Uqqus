@@ -5,7 +5,7 @@ import sys
 
 from sqlalchemy import text
 
-from .test_characterization import BASE, fresh, guildmaster_with_post, post
+from .test_characterization import BASE, addr, fresh, guildmaster_with_post, post
 
 # guildmaster_with_post is a fixture: importing it here makes it available to this file's tests
 assert guildmaster_with_post
@@ -113,3 +113,113 @@ def test_h7_the_analytics_script_is_drawn_only_while_set_and_the_privacy_page_na
     assert 'id="analytics"' in page and "at stats.example.org." in page
     home = app.test_client().get("/", base_url=BASE, follow_redirects=True).get_data(as_text=True)
     assert home.count('src="https://stats.example.org/js/script.js"') == 1, "and on the site's own layout"
+
+
+# ---------------------------------------------------------------- H1, H2: a member's link can't make the site read its own network
+
+def _serve(*answers):
+    """A server on this machine that answers one request per entry: (status, content type, body). Returns its address
+    and the requests it got (none, if the site never called it)."""
+    import socket
+    import threading
+    listener = socket.socket()
+    listener.bind(("127.0.0.1", 0))
+    listener.listen(len(answers))
+    listener.settimeout(20)
+    seen = []
+
+    def run():
+        try:
+            for status, kind, body in answers:
+                conn, _ = listener.accept()
+                seen.append(conn.recv(65536).decode("latin-1"))
+                conn.sendall(f"HTTP/1.1 {status} X\r\nContent-Type: {kind}\r\nContent-Length: {len(body)}\r\n\r\n".encode() + body)
+                conn.close()
+        except OSError:
+            pass
+        finally:
+            listener.close()
+
+    threading.Thread(target=run, daemon=True).start()
+    return f"http://127.0.0.1:{listener.getsockname()[1]}", seen
+
+
+PAGE = b'<html><head><title>Inside</title><meta property="og:image" content="/pic.png"></head></html>'
+
+
+def _png():
+    from io import BytesIO
+    from PIL import Image
+    out = BytesIO()
+    Image.new("RGB", (40, 40), (20, 140, 210)).save(out, "PNG")
+    return out.getvalue()
+
+
+def test_h1_the_title_suggestion_never_reads_an_address_off_the_public_internet(make_member, monkeypatch):
+    monkeypatch.delenv("FEED_SERVER_ALLOW_LOCAL", raising=False)         # the dev container sets it for its test servers
+    member = make_member()
+    base, seen = _serve((200, "text/html", PAGE))
+    answer = member.browser().get("/submit/title?url=" + base + "/", base_url=BASE, environ_base={"REMOTE_ADDR": addr()})
+    assert answer.status_code == 400 and "Inside" not in answer.get_data(as_text=True)
+    assert seen == [], "the site never called it"
+    for inside in ("http://169.254.169.254/latest/meta-data/", "http://postgres:5432/", "http://redis:6379/"):
+        assert member.browser().get("/submit/title?url=" + inside, base_url=BASE, environ_base={"REMOTE_ADDR": addr()}).status_code == 400, inside
+
+
+def test_h1_the_title_suggestion_still_reads_a_page(make_member, monkeypatch):
+    monkeypatch.setenv("FEED_SERVER_ALLOW_LOCAL", "1")                  # the only way to stand in for a public page here
+    member = make_member()
+    base, seen = _serve((302, "text/html", b""), (200, "text/html", PAGE))
+    answer = member.browser().get("/submit/title?url=" + base + "/", base_url=BASE, environ_base={"REMOTE_ADDR": addr()})
+    assert answer.status_code == 400 and seen, "a redirect with no Location goes nowhere"
+    base, seen = _serve((200, "text/html", PAGE))
+    answer = member.browser().get("/submit/title?url=" + base + "/a", base_url=BASE, environ_base={"REMOTE_ADDR": addr()})
+    assert answer.status_code == 200 and answer.get_json()["title"] == "Inside" and len(seen) == 1
+
+
+def _link_post(member, url):
+    """A text post of `member` whose link is then set to `url` (so no preview runs while it is made)."""
+    from ruqqus.helpers.base36 import base36decode
+    here = member.browser()
+    answer = post(here, "/api/vue/submit", {"title": f"Link {secrets.token_hex(4)}", "body": "text",
+                                            "formkey": member.formkey(here), "post_to_profile": "1"})
+    assert answer.status_code == 200, answer.get_data(as_text=True)[:300]
+    pid = base36decode(answer.get_json()["id"])
+    db = fresh(member)
+    db.execute(text("UPDATE submissions_aux SET url = :u, embed_url = '' WHERE id = :p"), {"u": url, "p": pid})
+    db.commit()
+    return pid
+
+
+def _preview(pid):
+    from ruqqus.helpers.base36 import base36encode
+    from ruqqus.helpers.thumbs import thumbnail_thread
+    return thumbnail_thread(base36encode(pid))
+
+
+def test_h2_a_link_preview_never_reads_an_address_off_the_public_internet(make_member, real_app, monkeypatch):
+    monkeypatch.delenv("FEED_SERVER_ALLOW_LOCAL", raising=False)
+    member = make_member()
+    base, seen = _serve((200, "text/html", PAGE), (200, "image/png", _png()))
+    pid = _link_post(member, base + "/page")
+    app, _ = real_app
+    with app.app_context():
+        done, why = _preview(pid)
+    assert not done and why == "Unable to connect to source"
+    assert seen == []
+
+
+def test_h2_a_link_preview_still_reads_the_title_and_picture(make_member, real_app, monkeypatch):
+    monkeypatch.setenv("FEED_SERVER_ALLOW_LOCAL", "1")
+    # thumbs.expand_url makes every picture address https (as it always has); the stand-in server here speaks http
+    thumbs = sys.modules["ruqqus.helpers.thumbs"]
+    monkeypatch.setattr(thumbs, "expand_url", lambda page, found: page.rsplit("/", 1)[0] + found)
+    member = make_member()
+    base, seen = _serve((200, "text/html", PAGE), (200, "image/png", _png()))
+    pid = _link_post(member, base + "/page")
+    app, _ = real_app
+    with app.app_context():
+        done, why = _preview(pid)
+    assert done, why
+    row = fresh(member).execute(text("SELECT meta_title, preview_image_url FROM submissions_aux WHERE id = :p"), {"p": pid}).first()
+    assert row[0] == "Inside" and row[1].endswith("/pic.png") and len(seen) == 2

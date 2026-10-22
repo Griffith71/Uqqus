@@ -111,7 +111,7 @@ def test_the_title_is_the_members_own_words_when_a_link_is_a_quote():
     posts = (ROOT / "ruqqus" / "routes" / "posts.py").read_text(encoding="utf-8")
     route = posts[posts.index("def get_post_title("):posts.index("def _build_standalone_submission(")]
     quote = route.index('return jsonify({"url": url, "title": "", "quote": True})')
-    assert quote < route.index("requests.get(url")                   # a quoted post's page is not fetched for a title
+    assert quote < route.index("page_fetch.get(url")                 # a quoted post's page is not fetched for a title
     js = (ROOT / "ruqqus" / "assets" / "js" / "all_js.js").read_text(encoding="utf-8")
     suggest = js[js.index("function autoSuggestTitle()"):js.index("// Exile Member")]
     # nothing for a quote, and never over what the member typed while the answer was on its way

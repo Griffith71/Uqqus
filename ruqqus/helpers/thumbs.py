@@ -1,4 +1,3 @@
-import requests
 from urllib.parse import urlparse
 from bs4 import BeautifulSoup
 from PIL import Image as PILimage
@@ -9,6 +8,7 @@ import gevent
 
 from .get import *
 from .embed import detect_video_embed, known_provider_embed
+from . import page_fetch
 from ruqqus.__main__ import app, db_session
 
 def expand_url(post_url, fragment_url):
@@ -49,9 +49,6 @@ def thumbnail_thread(pid, debug=False):
 
     #get the content
 
-    #mimic chrome browser agent
-    headers={"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.72 Safari/537.36"}
-
     # Named-platform embeds (YouTube, Vimeo, TikTok, etc - see
     # KNOWN_PROVIDER_HANDLERS in embed.py) are checked before fetching
     # fetch_url at all, not just before parsing it. These call their own
@@ -83,17 +80,19 @@ def thumbnail_thread(pid, debug=False):
             db.close()
             return True, "Success"
 
+    # every fetch goes through safe_fetch's guard (helpers/page_fetch.py): a public address at every redirect, a
+    # size limit, one time limit; a member's link can't make the site read its own network
     try:
         print_(f"loading {fetch_url}")
-        x=requests.get(fetch_url, headers=headers, timeout=10)
-    except:
+        x=page_fetch.get(fetch_url, user_agent=page_fetch.BROWSER_AGENT)
+    except page_fetch.FetchError:
         print_(f"unable to connect to {fetch_url}")
         db.close()
         return False, "Unable to connect to source"
 
-    if x.status_code != 200:
+    if x.status != 200:
         db.close()
-        return False, f"Source returned status {x.status_code}."
+        return False, f"Source returned status {x.status}."
 
     #detect if there was a redirect
     # requested_domain = post.domain
@@ -113,7 +112,7 @@ def thumbnail_thread(pid, debug=False):
 
     if content_type.startswith("text/html"):
         #parse html, find image, load image
-        soup=BeautifulSoup(x.content, 'html.parser')
+        soup=BeautifulSoup(x.body, 'html.parser')
         #parse html
 
         # Generic video detection (oEmbed/og:video/direct-file fallback for
@@ -195,24 +194,33 @@ def thumbnail_thread(pid, debug=False):
             print_(f"Trying url {url}")
 
             try:
-                image_req=requests.get(url, headers=headers, timeout=10)
-            except:
+                image_req=page_fetch.get(url, read=("image/",), max_bytes=page_fetch.IMAGE_BYTES,
+                                         user_agent=page_fetch.BROWSER_AGENT)
+            except page_fetch.FetchError:
                 print_(f"Unable to connect to candidate url {url}")
                 continue
 
-            if image_req.status_code >= 400:
-                print_(f"status code {x.status_code}")
+            if image_req.status != 200:
+                print_(f"status code {image_req.status}")
                 continue
 
-            if not image_req.headers.get("Content-Type","").startswith("image/"):
-                print_(f'bad type {image_req.headers.get("Content-Type","")}, try next')
+            if not image_req.content_type.startswith("image/"):
+                print_(f'bad type {image_req.content_type}, try next')
                 continue
 
-            if image_req.headers.get("Content-Type","").startswith("image/svg"):
+            if image_req.content_type.startswith("image/svg"):
                 print_("svg, try next")
                 continue
 
-            image = PILimage.open(BytesIO(image_req.content))
+            if not image_req.complete:
+                print_("image too large, next")
+                continue
+
+            try:
+                image = PILimage.open(BytesIO(image_req.body))
+            except (OSError, ValueError, PILimage.DecompressionBombError):
+                print_("not a picture PIL can read, next")
+                continue
             if image.width < 30 or image.height < 30:
                 print_("image too small, next")
                 continue
