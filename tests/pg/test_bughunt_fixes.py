@@ -336,8 +336,10 @@ def test_m1_a_guild_stylesheet_that_loads_an_outside_address_is_refused(guildmas
         assert "evil.example" not in _stylesheet(mod), css
 
 
-def test_m1_the_sites_own_pictures_and_animations_still_save(guildmaster_with_post, real_app):
+def test_m1_the_sites_own_pictures_and_animations_still_save(guildmaster_with_post, real_app, monkeypatch):
     app, _ = real_app
+    # the bucket has no default since the hunt's bucket fix (an unset one allows no pictures); name one for this test
+    monkeypatch.setitem(app.config, "S3_BUCKET", "i.laba.example")
     mod, _, _ = guildmaster_with_post
     client = mod.browser()
     bucket = app.config["S3_BUCKET"]
