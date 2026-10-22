@@ -362,7 +362,7 @@ def test_post_flush_failure_is_422_without_commit_or_rollback(env):
     env.db.fail_flush = True
     r = vote(env, "post", 1)
     assert (r.status_code, r.get_json()) == (422, {"error": "Vote already exists."})
-    assert env.db.commits == 0 and env.db.rollbacks == 0
+    assert env.db.commits == 0 and env.db.rollbacks == 1
 
 
 # ------------------------------------------------------------- post: OAuth
@@ -560,7 +560,7 @@ def test_comment_flush_failure_is_422(env):
     env.db.fail_flush = True
     r = vote(env, "comment", 1)
     assert (r.status_code, r.get_json()) == (422, {"error": "Vote already exists."})
-    assert env.db.commits == 0 and env.db.rollbacks == 0
+    assert env.db.commits == 0 and env.db.rollbacks == 1
 
 
 def test_v1_comment_token_vote_records_app_id(env):

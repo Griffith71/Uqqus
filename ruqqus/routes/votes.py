@@ -96,6 +96,7 @@ URL path parameters:
     try:
         g.db.flush()
     except:
+        g.db.rollback()          # else after_request commits the failed transaction and answers 500 (bug hunt M3)
         return jsonify({"error":"Vote already exists."}), 422
         
     post.upvotes = post.ups
@@ -182,6 +183,7 @@ URL path parameters:
     try:
         g.db.flush()
     except:
+        g.db.rollback()          # else after_request commits the failed transaction and answers 500 (bug hunt M3)
         return jsonify({"error":"Vote already exists."}), 422
 
     comment.upvotes = comment.ups

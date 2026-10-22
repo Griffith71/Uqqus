@@ -737,3 +737,44 @@ def test_b_an_event_that_fails_half_way_is_not_kept_and_works_when_sent_again(ma
     monkeypatch.setattr(paypal_events, "owed_for", real)
     assert _hook(app, event).status_code == 204, "PayPal's retry is handled, not dropped as already seen"
     assert _owed(member) == paypal_events.owed_for(499)
+
+
+# ---------------------------------------------------------------- M3: a double click is a 422, never a 500
+
+def _race(pg_engine, member, path, insert, params):
+    """Send `path` while another connection holds the same row uncommitted: the request's check can't see it, its
+    insert waits on the unique index, and fails when the other commits (what a double click does)."""
+    import threading
+    client = member.browser()
+    key = member.formkey(client)
+    answer = {}
+    # pg_engine's connections commit every statement (AUTOCOMMIT): this one holds a real transaction
+    with pg_engine.connect().execution_options(isolation_level="READ COMMITTED") as other:
+        held = other.begin()
+        other.execute(text(insert), params)                    # not committed yet
+        worker = threading.Thread(target=lambda: answer.setdefault("status", post(client, path, {"formkey": key}).status_code))
+        worker.start()
+        time.sleep(1.5)                                        # the request is now waiting on the unique index
+        held.commit()
+    worker.join(20)
+    return answer.get("status")
+
+
+def test_m3_a_bookmark_or_vote_sent_twice_at_once_is_a_422(make_member, guildmaster_with_post, pg_engine):
+    """The vote route answered its 422 with the failed transaction still open, which after_request then committed: a
+    500. The bookmarks abort(422), and every error page rolls back first (routes/errors.py), so they were fine; they
+    are here so they stay so."""
+    from ruqqus.helpers.base36 import base36encode
+    _, author, copy_id = guildmaster_with_post
+    member = make_member()
+    cid = _comment_on(author, copy_id)
+    now = int(time.time())
+    assert _race(pg_engine, member, f"/save_post/{base36encode(copy_id)}",
+                 "INSERT INTO save_relationship (user_id, submission_id, created_utc) VALUES (:u, :p, :t)",
+                 {"u": member.id, "p": copy_id, "t": now}) == 422
+    assert _race(pg_engine, member, f"/save_comment/{base36encode(cid)}",
+                 "INSERT INTO comment_save_relationship (user_id, comment_id, created_utc) VALUES (:u, :c, :t)",
+                 {"u": member.id, "c": cid, "t": now}) == 422
+    assert _race(pg_engine, member, f"/api/vote/post/{base36encode(copy_id)}/1",
+                 "INSERT INTO votes (user_id, submission_id, created_utc, vote_type) VALUES (:u, :p, :t, 1)",
+                 {"u": member.id, "p": copy_id, "t": now}) == 422
