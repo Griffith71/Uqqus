@@ -365,8 +365,10 @@ def post_refusal(bot, owner, posts_today, is_on=None):
 def is_automated(account_is_bot, says_bot, bot):
     """Is this post automated, so held to the bot rules (approval, the daily cap, the options a bot may not use, the
     spam guard's refuse-don't-ban)? Every post of a bot account; and a post sent with the bot header from an account
-    whose automated posting is set up. A header post from any other account keeps the old rules (it is only marked)."""
-    return bool(account_is_bot) or (bool(says_bot) and is_self(bot))
+    whose automated posting is set up: approved (running or paused). A header post from any other account, or from one
+    whose automated posting is still waiting or was rejected, keeps the old rules: it is only marked (bug hunt: a
+    rejected row, which is kept, refused every one of the member's own scripted posts as "not approved")."""
+    return bool(account_is_bot) or (bool(says_bot) and is_self(bot) and getattr(bot, "status", None) in (APPROVED, PAUSED))
 
 
 def option_refusal(anonymous, audience, coauthors):
