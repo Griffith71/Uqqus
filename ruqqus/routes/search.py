@@ -126,7 +126,7 @@ def searchlisting(query, v=None, page=1, t="None", sort="top", b=None, filter_le
         c = select(
             ContributorRelationship.board_id
         ).filter_by(
-            user_id=v.id
+            user_id=v.id, is_active=True
         ).scalar_subquery()
         posts = posts.filter(
             or_(
@@ -240,7 +240,7 @@ def comment_searchlisting(query, v=None, page=1, sort="top", b=None, filter_leve
         pass
     elif v:
         m = select(ModRelationship.board_id).filter_by(user_id=v.id, invite_rescinded=False).scalar_subquery()
-        c = select(ContributorRelationship.board_id).filter_by(user_id=v.id).scalar_subquery()
+        c = select(ContributorRelationship.board_id).filter_by(user_id=v.id, is_active=True).scalar_subquery()
         comments = comments.filter(or_(
             Submission.author_id == v.id,
             and_(Submission.post_public == True, Board.is_private == False),

@@ -1620,3 +1620,30 @@ def test_the_wiki_editor_never_starts_from_a_revision_the_admins_removed(guildma
         db = fresh(mod)
         db.execute(text("UPDATE boards SET wiki_enabled = false WHERE id = 1"))
         db.commit()
+
+
+def test_a_removed_member_of_a_private_guild_no_longer_finds_its_posts(make_member, guildmaster_with_post):
+    """Feeds and search counted a guild as yours for any contributor row, but removing a member only marks the row
+    inactive: a removed member still found the private guild's posts."""
+    from ruqqus.classes import ContributorRelationship
+    mod, author, copy_id = guildmaster_with_post
+    db = fresh(mod)
+    word = f"zq{secrets.token_hex(5)}"
+    db.execute(text("UPDATE submissions_aux SET title = :t WHERE id = :s"), {"t": f"Private {word}", "s": copy_id})
+    db.execute(text("UPDATE submissions SET post_public = false WHERE id = :s"), {"s": copy_id})
+    db.execute(text("UPDATE boards SET is_private = true WHERE id = 1"))
+    db.commit()
+    try:
+        removed = make_member()
+        db = removed.db_session()
+        db.add(ContributorRelationship(user_id=removed.id, board_id=1, is_active=False, created_utc=int(time.time())))
+        db.commit()
+        seen = mod.browser().get("/search", base_url=BASE, query_string={"q": word})
+        assert f"Private {word}" in seen.get_data(as_text=True), "a guildmaster finds it"
+        found = removed.browser().get("/search", base_url=BASE, query_string={"q": word})
+        assert found.status_code == 200 and f"Private {word}" not in found.get_data(as_text=True)
+    finally:
+        db = fresh(mod)
+        db.execute(text("UPDATE boards SET is_private = false WHERE id = 1"))
+        db.execute(text("UPDATE submissions SET post_public = true WHERE id = :s"), {"s": copy_id})
+        db.commit()

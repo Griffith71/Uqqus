@@ -347,7 +347,7 @@ class User(Base, Stndrd, Age_times):
                 invite_rescinded=False
             )
             c = select(ContributorRelationship.board_id).filter_by(
-                user_id=self.id
+                user_id=self.id, is_active=True
             )
             posts = posts.filter(
                 or_(
@@ -546,7 +546,7 @@ class User(Base, Stndrd, Age_times):
                 user_id=self.id, invite_rescinded=False
             ).scalar_subquery()
             c = select(ContributorRelationship.board_id).filter_by(
-                user_id=self.id
+                user_id=self.id, is_active=True
             ).scalar_subquery()
 
             posts = posts.filter(
@@ -708,7 +708,7 @@ class User(Base, Stndrd, Age_times):
                 invite_rescinded=False).scalar_subquery()
             c = g.db.query(
                 ContributorRelationship.board_id).filter_by(
-                user_id=v.id).scalar_subquery()
+                user_id=v.id, is_active=True).scalar_subquery()
 
         def apply_common_filters(q):
             q = filter_posts(q, v)
@@ -1867,7 +1867,7 @@ class User(Base, Stndrd, Age_times):
                 invite_rescinded=False).scalar_subquery()
             c = g.db.query(
                 ContributorRelationship.board_id).filter_by(
-                user_id=self.id).scalar_subquery()
+                user_id=self.id, is_active=True).scalar_subquery()
             posts = posts.filter(
                 or_(
                     Submission.author_id == self.id,
@@ -1920,7 +1920,7 @@ class User(Base, Stndrd, Age_times):
                 invite_rescinded=False).scalar_subquery()
             c = g.db.query(
                 ContributorRelationship.board_id).filter_by(
-                user_id=self.id).scalar_subquery()
+                user_id=self.id, is_active=True).scalar_subquery()
             comments = comments.filter(
                 or_(
                     Comment.author_id == self.id,
@@ -1986,7 +1986,7 @@ class User(Base, Stndrd, Age_times):
                 invite_rescinded=False).scalar_subquery()
             c = g.db.query(
                 ContributorRelationship.board_id).filter_by(
-                user_id=v.id).scalar_subquery()
+                user_id=v.id, is_active=True).scalar_subquery()
             posts = posts.filter(
                 or_(
                     Submission.author_id == v.id,
@@ -2021,7 +2021,7 @@ class User(Base, Stndrd, Age_times):
                 invite_rescinded=False).scalar_subquery()
             c = g.db.query(
                 ContributorRelationship.board_id).filter_by(
-                user_id=self.id).scalar_subquery()
+                user_id=self.id, is_active=True).scalar_subquery()
             posts = posts.filter(
                 or_(
                     Submission.author_id == self.id,
@@ -2070,7 +2070,7 @@ class User(Base, Stndrd, Age_times):
                 invite_rescinded=False).scalar_subquery()
             c = g.db.query(
                 ContributorRelationship.board_id).filter_by(
-                user_id=self.id).scalar_subquery()
+                user_id=self.id, is_active=True).scalar_subquery()
             posts = posts.filter(
                 or_(
                     Submission.author_id == self.id,
@@ -2119,7 +2119,7 @@ class User(Base, Stndrd, Age_times):
                 user_id=self.id, invite_rescinded=False).scalar_subquery()
             c = g.db.query(
                 ContributorRelationship.board_id).filter_by(
-                user_id=self.id).scalar_subquery()
+                user_id=self.id, is_active=True).scalar_subquery()
 
             posts = posts.filter(
                 or_(

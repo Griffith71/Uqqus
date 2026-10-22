@@ -178,7 +178,7 @@ def frontlist(v=None, sort=None, page=1,
             user_id=v.id, invite_rescinded=False
         ).scalar_subquery()
         c = select(ContributorRelationship.board_id).filter_by(
-            user_id=v.id
+            user_id=v.id, is_active=True
         ).scalar_subquery()
 
         posts = posts.filter(
@@ -1490,7 +1490,7 @@ def comment_idlist(page=1, v=None, **kwargs):
             user_id=v.id, invite_rescinded=False).scalar_subquery()
         c = g.db.query(
             ContributorRelationship.board_id).filter_by(
-            user_id=v.id).scalar_subquery()
+            user_id=v.id, is_active=True).scalar_subquery()
 
         posts = posts.filter(
             or_(

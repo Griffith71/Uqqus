@@ -67,7 +67,7 @@ def _viewable(posts, v):
         posts = posts.filter(Submission.board_id.notin_(board_blocks))
     elif v:
         m = select(ModRelationship.board_id).filter_by(user_id=v.id, invite_rescinded=False)
-        c = select(ContributorRelationship.board_id).filter_by(user_id=v.id)
+        c = select(ContributorRelationship.board_id).filter_by(user_id=v.id, is_active=True)
         posts = posts.filter(
             or_(
                 Submission.author_id == v.id,
