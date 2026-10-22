@@ -491,6 +491,12 @@ def _remove_encrypted_message(row, board, v, event_id):
     if rules.quoted_event_id(event_id) is None:
         return False
     try:
+        found = matrix.event(row.matrix_room_id, event_id)
+        # a person's message only: never the room's state (its encryption, power levels, creation) or anything else
+        # (bug hunt: any event id was redacted, m.room.encryption included)
+        if (found is None or "state_key" in found
+                or found.get("type") not in ("m.room.encrypted", "m.room.message", "m.reaction")):
+            return False
         sender = matrix.event_sender(row.matrix_room_id, event_id)
         if sender is None:
             return False

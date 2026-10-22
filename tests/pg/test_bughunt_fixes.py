@@ -1270,3 +1270,25 @@ def test_a_suspended_account_publishes_nothing_from_a_shared_draft(make_member, 
         db = fresh(member)
         db.execute(text("UPDATE users SET is_banned = 0, unban_utc = 0 WHERE id = :u"), {"u": member.id})
         db.commit()
+
+
+def test_an_encrypted_channels_removal_never_redacts_the_rooms_state(real_app, monkeypatch, guildmaster_with_post):
+    """Any event id was redacted by the bot, m.room.encryption and the power levels included."""
+    from types import SimpleNamespace
+    from flask import g
+    app, db_session = real_app
+    channels = sys.modules["ruqqus.routes.guild_channels"]
+    matrix = channels.matrix
+    redacted = []
+    monkeypatch.setattr(matrix, "redact_as_bot", lambda room, event_id, txn, reason: redacted.append(event_id))
+    monkeypatch.setattr(matrix, "event_sender", lambda room, event_id: "@ruqqus_5:chat.localhost")
+    monkeypatch.setattr(channels, "_log", lambda *a, **k: None)
+    events = {"$stateEventAAAAAAAA": {"type": "m.room.encryption", "state_key": "", "sender": "@bot:chat.localhost"},
+              "$messageEventAAAAAA": {"type": "m.room.encrypted", "sender": "@ruqqus_5:chat.localhost"}}
+    monkeypatch.setattr(matrix, "event", lambda room, event_id: events.get(event_id))
+    row = SimpleNamespace(matrix_room_id="!room:chat.localhost", name="general")
+    with app.test_request_context():
+        g.db = db_session()
+        assert channels._remove_encrypted_message(row, None, None, "$stateEventAAAAAAAA") is False
+        assert channels._remove_encrypted_message(row, None, None, "$messageEventAAAAAA") is True
+    assert redacted == ["$messageEventAAAAAA"]

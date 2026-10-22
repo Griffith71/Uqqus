@@ -415,13 +415,20 @@ def redact_as_bot(room_id: str, event_id: str, txn_id: str, reason: str = ""):
         raise MatrixError(f"redact_as_bot failed: {resp.status_code}")
 
 
-def event_sender(room_id: str, event_id: str):
-    """Who sent an event in a room, as the bot sees it (None when there is no such event): an encrypted channel keeps
-    no copy of its messages on the site, so a removal asks Matrix whose it was."""
+def event(room_id: str, event_id: str):
+    """An event in a room as the bot sees it (a dict), or None when there is no such event."""
     resp = requests.get(f"{app.config['MATRIX_INTERNAL_URL']}/_matrix/client/v3/rooms/{room_id}/event/{event_id}",
                         headers=_as_headers(), timeout=10)
     if resp.status_code == 404:
         return None
     if resp.status_code != 200:
-        raise MatrixError(f"event_sender failed: {resp.status_code}")
-    return resp.json().get("sender")
+        raise MatrixError(f"event failed: {resp.status_code}")
+    found = resp.json()
+    return found if isinstance(found, dict) else None
+
+
+def event_sender(room_id: str, event_id: str):
+    """Who sent an event in a room, as the bot sees it (None when there is no such event): an encrypted channel keeps
+    no copy of its messages on the site, so a removal asks Matrix whose it was."""
+    found = event(room_id, event_id)
+    return found.get("sender") if found else None
