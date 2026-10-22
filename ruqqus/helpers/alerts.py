@@ -29,12 +29,13 @@ def send_notification(user, text):
                          body_html=text_html
                          )
     g.db.add(new_aux)
-    g.db.commit()
-    # g.db.begin()
 
+    # in the same commit as the message (bug hunt M4: it was added after the commit, so a job that didn't commit
+    # again lost it, e.g. the last "your membership lapsed" notice of each run of renew_circles.py)
     notif = Notification(comment_id=new_comment.id,
                          user_id=user.id)
     g.db.add(notif)
+    g.db.commit()
 
 
 def send_to_many(user_ids, text):

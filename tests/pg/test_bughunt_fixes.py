@@ -778,3 +778,20 @@ def test_m3_a_bookmark_or_vote_sent_twice_at_once_is_a_422(make_member, guildmas
     assert _race(pg_engine, member, f"/api/vote/post/{base36encode(copy_id)}/1",
                  "INSERT INTO votes (user_id, submission_id, created_utc, vote_type) VALUES (:u, :p, :t, 1)",
                  {"u": member.id, "p": copy_id, "t": now}) == 422
+
+
+# ---------------------------------------------------------------- M4: a notification is kept with its message
+
+def test_m4_a_notification_sent_from_a_job_is_kept_without_a_second_commit(make_member, real_app):
+    from flask import g
+    from ruqqus.helpers.alerts import send_notification
+    app, db_session = real_app
+    member = make_member()
+    with app.test_request_context():                    # as scripts/renew_circles.py runs it
+        g.db = db_session()
+        user = g.db.query(sys.modules["ruqqus.classes"].User).filter_by(id=member.id).first()
+        send_notification(user, "Your membership lapsed " + secrets.token_hex(3))
+        g.db.rollback()                                 # a job that ends without committing again
+        g.db.close()
+    kept = fresh(member).execute(text("SELECT count(*) FROM notifications WHERE user_id = :u"), {"u": member.id}).scalar()
+    assert kept == 1
