@@ -1317,3 +1317,23 @@ def test_unblocking_puts_both_back_in_their_chat(make_member, monkeypatch):
     here = a.browser()
     assert post(here, "/settings/unblock", {"username": b.username, "formkey": a.formkey(here)}).status_code < 400
     assert ("unban", f"@ci_{b.id}:chat.localhost") in calls and ("in", f"@ci_{b.id}:chat.localhost") in calls
+
+
+def test_a_public_channel_keeps_nothing_but_signed_messages_and_emoji_reactions(real_app, monkeypatch):
+    """A writer's own Matrix app could send stickers, polls or encrypted events into a public channel, around the word
+    filter, the daily count and reports; and a removed message still raised every member's unread count."""
+    from flask import g
+    app, db_session = real_app
+    chat = sys.modules["ruqqus.routes.chat"]
+    redacted = []
+    monkeypatch.setattr(chat.matrix, "redact_as_bot", lambda room, event_id, txn, reason="": redacted.append(event_id))
+    monkeypatch.setattr(chat.broadcast_store, "by_room", lambda db, room: (7, 1, "x", "y", 0))
+    with app.test_request_context():
+        g.db = db_session()
+        sticker = {"room_id": "!c:chat.localhost", "type": "m.sticker", "sender": "@w:chat.localhost", "event_id": "$s",
+                   "content": {"body": "hi"}}
+        emoji = {"room_id": "!c:chat.localhost", "type": "m.reaction", "sender": "@w:chat.localhost", "event_id": "$r",
+                 "content": {"m.relates_to": {"key": "\U0001F44D"}}}
+        assert chat._guard_room_event(sticker) is True
+        assert not chat._guard_room_event(emoji)
+    assert redacted == ["$s"]

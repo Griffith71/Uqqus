@@ -462,16 +462,26 @@ def _guard_room_event(event):
         if guild_channel is not None:
             _guard_guild_channel(guild_channel, event)
             return
-        if kind not in ("m.room.message", "m.reaction"):
-            return
+        if event.get("state_key") is not None or kind == "m.room.redaction":
+            return                      # state is the bot's alone; taking back one's own message is allowed
         channel = broadcast_store.by_room(g.db, room_id)
         if channel is None or channel[4] != 0:          # only public channels: a channel for circles is encrypted
             return
         content = event.get("content") or {}
-        if kind == "m.room.message" and not channel_rules.mark_ok(app.config["SECRET_KEY"], room_id, content):
-            matrix.redact_as_bot(room_id, event.get("event_id"), secrets.token_hex(12), "Posted around the channel's rules")
-        elif kind == "m.reaction" and not channel_rules.reaction_ok(((content.get("m.relates_to") or {}).get("key"))):
-            matrix.redact_as_bot(room_id, event.get("event_id"), secrets.token_hex(12), "Reactions are emoji")
+        # everything else a writer's own Matrix app could send (stickers, polls, encrypted events...) went around the
+        # word filter, the daily count and reports (bug hunt): only a signed message or an emoji reaction stays
+        reason = None
+        if kind == "m.room.message":
+            if not channel_rules.mark_ok(app.config["SECRET_KEY"], room_id, content):
+                reason = "Posted around the channel's rules"
+        elif kind == "m.reaction":
+            if not channel_rules.reaction_ok(((content.get("m.relates_to") or {}).get("key"))):
+                reason = "Reactions are emoji"
+        else:
+            reason = "Not allowed in a channel"
+        if reason:
+            matrix.redact_as_bot(room_id, event.get("event_id"), secrets.token_hex(12), reason)
+            return True                 # removed: never counted as an unread message
     except Exception as e:
         app.logger.warning(f"appservice guard: {e}")
 
@@ -548,7 +558,8 @@ def matrix_appservice_transaction(txn_id):
 
     body = request.get_json(silent=True, force=True) or {}
     for event in body.get("events", []):
-        _guard_room_event(event)
+        if _guard_room_event(event):
+            continue                    # removed as it arrived (bug hunt: it still raised every member's unread count)
         if event.get("type") not in ("m.room.message", "m.room.encrypted"):
             continue
         if not is_new_message(event):     # a reaction to, or an edit of, an earlier message
