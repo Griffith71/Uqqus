@@ -223,3 +223,63 @@ def test_h2_a_link_preview_still_reads_the_title_and_picture(make_member, real_a
     assert done, why
     row = fresh(member).execute(text("SELECT meta_title, preview_image_url FROM submissions_aux WHERE id = :p"), {"p": pid}).first()
     assert row[0] == "Inside" and row[1].endswith("/pic.png") and len(seen) == 2
+
+
+# ---------------------------------------------------------------- M2: an IP ban is a POST with the form key
+
+def _doc_ip():
+    return f"203.0.113.{secrets.randbelow(250) + 1}"           # a documentation range: never a real member's
+
+
+def _admin(make_member, level=4):
+    admin = make_member()
+    db = admin.db_session()
+    db.execute(text("UPDATE users SET admin_level = :l WHERE id = :u"), {"l": level, "u": admin.id})
+    db.commit()
+    return admin
+
+
+def _banned(db, *ips):
+    return db.execute(text("SELECT count(*) FROM ips WHERE addr = ANY(:a)"), {"a": list(ips)}).scalar()
+
+
+def test_m2_opening_a_link_never_bans_anyone(make_member):
+    admin, target = _admin(make_member), make_member()
+    ip = _doc_ip()
+    db = fresh(admin)
+    db.execute(text("UPDATE users SET creation_ip = :i, creation_region = 'GB' WHERE id = :u"), {"i": ip, "u": target.id})
+    db.commit()
+    try:
+        admin.browser().get(f"/admin/get_ip?link=/@{target.username}&ipnuke=1", base_url=BASE)
+        assert _banned(fresh(admin), ip) == 0, "a GET a crafted link can make an admin's browser send"
+    finally:
+        db = fresh(admin)
+        db.execute(text("DELETE FROM ips WHERE addr = :i"), {"i": ip})
+        db.commit()
+
+
+def test_m2_the_ban_needs_the_form_key_and_covers_the_accounts_comments(make_member, guildmaster_with_post):
+    _, author, copy_id = guildmaster_with_post
+    admin = _admin(make_member)
+    cid = _comment_on(author, copy_id)
+    signed_up, commented = _doc_ip(), _doc_ip()
+    db = fresh(admin)
+    db.execute(text("UPDATE users SET creation_ip = :i, creation_region = 'GB' WHERE id = :u"), {"i": signed_up, "u": author.id})
+    db.execute(text("UPDATE comments SET creation_ip = :i, creation_region = 'GB' WHERE id = :c"), {"i": commented, "c": cid})
+    db.commit()
+    try:
+        client = admin.browser()
+        refused = post(client, "/admin/ipnuke", {"link": f"/@{author.username}"})
+        # a 401 to a page request is drawn as a redirect to signing in (routes/errors.py)
+        assert refused.status_code == 401 or (refused.status_code == 302 and "/login" in refused.headers["Location"])
+        assert _banned(fresh(admin), signed_up, commented) == 0
+        level3 = _admin(make_member, 3)
+        here = level3.browser()
+        assert post(here, "/admin/ipnuke", {"link": f"/@{author.username}", "formkey": level3.formkey(here)}).status_code in (403, 404)
+        done = post(client, "/admin/ipnuke", {"link": f"/@{author.username}", "formkey": admin.formkey(client)})
+        assert done.status_code == 200, done.get_data(as_text=True)[:300]
+        assert _banned(fresh(admin), signed_up, commented) == 2, "the comment's address too"
+    finally:
+        db = fresh(admin)
+        db.execute(text("DELETE FROM ips WHERE addr IN (:a, :b)"), {"a": signed_up, "b": commented})
+        db.commit()

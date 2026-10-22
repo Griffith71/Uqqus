@@ -1047,43 +1047,55 @@ def admin_get_ip_info(v):
 
     thing=get_from_permalink(link)
 
-    if isinstance(thing, User):
-        if request.values.get("ipnuke"):
-
-            target_user=thing
-            targets=[target_user]+[alt for alt in target_user.alts]
-
-            ips=set()
-            for user in targets:
-                if user.creation_region != "T1":
-                    ips.add(user.creation_ip)
-
-                for post in g.db.query(Submission).options(lazyload('*')).filter_by(author_id=user.id).all():
-                    if post.creation_region != "T1":
-                        ips.add(post.creation_ip)
-
-                for comment in g.db.query(Comment).options(lazyload('*')).filter_by(author_id=user.id).all():
-                    if comment.creation_region != "T1":
-                        ips.add()
-
-            
-            for ip in ips:
-
-                if g.db.query(IP).filter_by(addr=ip).first():
-                    continue
-
-                new_ipban=IP(
-                    banned_by=v.id,
-                    addr=ip
-                    )
-                g.db.add(new_ipban)
-
-
-            g.db.commit()
-
-            return f"{len(ips)} ips banned"
-
     return redirect(f"/admin/ip/{thing.creation_ip}")
+
+
+@app.route("/admin/ipnuke", methods=["POST"])
+@admin_level_required(4)
+@validate_formkey
+def admin_ipnuke(v):
+    """Ban every address an account and its alts signed up, posted or commented from (outside Tor). A POST with the
+    form key (bug hunt 2026-10, M2: it was `?ipnuke=1` on the GET above, so a crafted link opened by an admin banned
+    an account and its alts; and a comment's address was never added, the call had no argument)."""
+
+    thing=get_from_permalink(request.form.get("link", ""))
+    if not isinstance(thing, User):
+        abort(400)
+
+    target_user=thing
+    targets=[target_user]+[alt for alt in target_user.alts]
+
+    ips=set()
+    for user in targets:
+        if user.creation_region != "T1":
+            ips.add(user.creation_ip)
+
+        for post in g.db.query(Submission).options(lazyload('*')).filter_by(author_id=user.id).all():
+            if post.creation_region != "T1":
+                ips.add(post.creation_ip)
+
+        for comment in g.db.query(Comment).options(lazyload('*')).filter_by(author_id=user.id).all():
+            if comment.creation_region != "T1":
+                ips.add(comment.creation_ip)
+
+    ips.discard(None)
+    ips.discard("")
+
+    for ip in ips:
+
+        if g.db.query(IP).filter_by(addr=ip).first():
+            continue
+
+        new_ipban=IP(
+            banned_by=v.id,
+            addr=ip
+            )
+        g.db.add(new_ipban)
+
+
+    g.db.commit()
+
+    return f"{len(ips)} ips banned"
 
 
 def print_(*x):

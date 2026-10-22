@@ -17,5 +17,14 @@
 	<input type="submit" value="Submit" class="btn btn-primary">
 </form>
 
+<h2 class="h5 mt-5">Ban an account's addresses</h2>
+<p>Bans every address the account and its alts signed up, posted or commented from (Tor exits left out).</p>
+<form action="/admin/ipnuke" method="post" onsubmit="return confirm('Ban every address of this account and its alts?');">
+	<input type="hidden" name="formkey" value="{{ v.formkey }}">
+	<label for="nuke-link-input">Account address (/@name)</label>
+	<input id="nuke-link-input" type="text" class="form-control mb-2" name="link" required>
+	<input type="submit" value="Ban addresses" class="btn btn-danger">
+</form>
+
 
 {% endblock %}
