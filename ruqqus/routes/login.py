@@ -83,7 +83,8 @@ def check_for_alts(current_id):
 # login post procedure
 
 
-@no_cors
+# (an @no_cors above @app.route here never applied: Flask registers the function below it. Removed in the bug hunt,
+# L1; a sign-in from another site's page is refused by same_origin at the top instead, onion address included)
 @app.route("/login", methods=["POST"])
 @limiter.limit("6/minute")
 @throttle_check_ip('login')
