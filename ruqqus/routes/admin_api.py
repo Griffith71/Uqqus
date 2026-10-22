@@ -923,7 +923,8 @@ def admin_nuke_user(v):
             continue
             
         post.is_banned=True
-        post.ban_reason=user.ban_reason
+        # the removed post's page draws its reason as HTML (submission_banned.html): this one is typed text
+        post.ban_reason=html.escape(user.ban_reason) if user.ban_reason else user.ban_reason
         g.db.add(post)
 
         ma=ModAction(

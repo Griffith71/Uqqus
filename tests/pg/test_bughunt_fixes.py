@@ -453,3 +453,18 @@ def test_h2_an_oembed_address_named_by_the_members_page_is_read_through_the_guar
     found = embed.detect_video_embed("https://blog.example.org/a-video", page_fetch.Page(200, "text/html", b"", "", True), soup)
     assert asked == [endpoint]
     assert found[0] in ("iframe", "audio") and found[1] == "https://www.youtube.com/embed/abcdefghijk"
+
+
+def test_c1_an_admin_nukes_typed_reason_is_shown_as_text_on_the_removed_post(make_member, guildmaster_with_post):
+    """admin_nuke_user copied the account's typed ban reason onto each post, drawn with `| safe` (found in review)."""
+    from ruqqus.helpers.base36 import base36encode
+    _, author, copy_id = guildmaster_with_post
+    admin = _admin(make_member)
+    db = fresh(admin)
+    db.execute(text("UPDATE users SET ban_reason = :r WHERE id = :u"), {"r": XSS, "u": author.id})
+    db.commit()
+    client = admin.browser()
+    assert post(client, "/admin/nuke_user", {"user": author.username, "formkey": admin.formkey(client)}).status_code in (200, 302)
+    reader = make_member()                  # an admin is shown the post itself; a member gets the removed page with its reason
+    page = reader.browser().get(f"/post/{base36encode(copy_id)}", base_url=BASE, follow_redirects=True).get_data(as_text=True)
+    assert XSS not in page and "&lt;img src=x" in page

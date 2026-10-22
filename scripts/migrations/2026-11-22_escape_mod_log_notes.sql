@@ -2,6 +2,8 @@
 -- reason) was stored as typed, so markup in it ran for every reader of the log. New notes are escaped when written;
 -- this escapes the ones already stored, once (it runs only while this file isn't recorded, so running it again
 -- never escapes twice). Safe to run twice.
+-- Run it BEFORE starting the code that escapes new notes: a note written by the new code before this ran would be
+-- escaped twice (it would read &amp;lt; ...). On a database baselined with `migrate.py --baseline`, run it by hand.
 --   psql "$DATABASE_URL" -f scripts/migrations/2026-11-22_escape_mod_log_notes.sql
 
 CREATE TABLE IF NOT EXISTS public.schema_migrations (
