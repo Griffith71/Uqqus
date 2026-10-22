@@ -13,6 +13,9 @@ NO_OUTSIDE = "No external links allowed."
 
 _LOADERS = re.compile(r"(?<![a-z0-9_-])(?:-webkit-|-moz-)?(?:image-set|image|cross-fade|element|paint|src)\s*\(")
 _URL = re.compile(r"url\(\s*(?:\"([^\"]*)\"|'([^']*)'|([^\s'\")]*))\s*\)")
+# loads nothing from anywhere: a reference into the page itself (an SVG filter) and a raster picture written inline
+_IN_PAGE = re.compile(r"#[a-z][a-z0-9_-]*")
+_INLINE_PICTURE = re.compile(r"data:image/(?:png|gif|jpeg|webp)(?:;base64)?,[a-z0-9+/=%]*")
 
 
 def refusal(css, allowed_host):
@@ -28,6 +31,8 @@ def refusal(css, allowed_host):
     allowed = (allowed_host or "").lower()
     for match in found:
         address = next(group for group in match.groups() if group is not None).strip()
+        if _IN_PAGE.fullmatch(address) or _INLINE_PICTURE.fullmatch(address):
+            continue
         try:
             parts = urlsplit(address)
             host = parts.hostname

@@ -17,6 +17,9 @@ BUCKET = "i.laba.example"
     "@keyframes spin { from { transform: rotate(0deg) } to { transform: rotate(360deg) } }",
     ".x::after { content: \"hello\" }",
     ".a[title^=x] { color: red }",
+    ".x { filter: url(#blur) }",
+    ".x { background: url(data:image/png;base64,iVBORw0KGgo=) }",
+    ".x { background: url('data:image/gif;base64,R0lGODlhAQABAAAAACw=') }",
 ])
 def test_plain_rules_and_the_sites_own_pictures_are_fine(css):
     assert refusal(css, BUCKET) is None
@@ -35,7 +38,9 @@ def test_plain_rules_and_the_sites_own_pictures_are_fine(css):
     "@import 'https://evil.example/x.css';",
     "@namespace svg 'https://evil.example/';",
     "body { background: url(/assets/a.png) }",
-    "body { background: url(data:image/png;base64,AAAA) }",
+    "body { background: url(data:image/svg+xml;base64,AAAA) }",
+    "body { background: url(data:text/html,<script>x</script>) }",
+    "body { filter: url(#blur https://evil.example) }",
     "body { background: url(https://user:pw@i.laba.example/a.png) }",
     "body { background: url(https://i.laba.example.evil.example/a.png) }",
     "body { background: URL(https://evil.example/a.png) }",
