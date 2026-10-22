@@ -240,7 +240,7 @@ def error_all_preview(eid, v):
 @error_wrapper
 @auth_desired
 @api(error_handler=True)
-def error_402(e, v):
+def error_database_overload(e, v):
     return{"html": lambda: (render_template('errors/overload.html', v=v), 500),
            "api": lambda: (jsonify({"error": "500 Internal Server Error (database overload)"}), 500)
            }

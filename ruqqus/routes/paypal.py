@@ -4,7 +4,6 @@ import urllib
 import hmac
 import pprint
 import time
-import pprint
 
 from flask import request, jsonify, redirect, render_template, abort
 from sqlalchemy import text
