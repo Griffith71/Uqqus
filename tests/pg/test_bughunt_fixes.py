@@ -1911,7 +1911,11 @@ def test_an_exiled_forwarder_no_longer_sets_the_flair_on_their_copy(guildmaster_
 def test_adding_bot_feeds_is_rate_limited(make_member):
     """Each add reads the typed feed at once, and nothing limited how often: a member could have the site fetch
     addresses of their choice in a loop."""
+    from ruqqus.__main__ import r
     member = make_member()
+    # ids start over on a new test database while Redis keeps the limiter's counts: start this member's from nothing
+    for key in r.scan_iter(f"flask_limiting_*member:{member.id}*"):
+        r.delete(key)
     here = member.browser()
     statuses = [post(here, f"/settings/bots/nobot{secrets.token_hex(3)}/sources/add",
                      {"url": "not a feed", "formkey": member.formkey(here)}).status_code for _ in range(31)]
