@@ -2007,3 +2007,34 @@ def test_a_page_number_is_clamped_only_when_it_is_a_number(real_app):
     for raw, page in (("abcdefghij", 1), ("99999999999999999999", 100000), ("3", 3), ("", 1)):
         with app.test_request_context(f"/?page={raw}"):
             assert page_number() == page, raw
+
+
+def test_following_leaves_out_a_guilds_old_public_posts_once_it_is_private(make_member, guildmaster_with_post, real_app):
+    """Following passed any public post of a subscribed guild, so a member removed from a guild that turned private
+    (still subscribed) kept seeing what was forwarded while it was public."""
+    from flask import g
+    from ruqqus.classes import Subscription, User
+    app, db_session = real_app
+    mod, _, copy_id = guildmaster_with_post
+    member = make_member()
+    db = member.db_session()
+    db.add(Subscription(user_id=member.id, board_id=1, is_active=True, created_utc=int(time.time())))
+    db.commit()
+    db = fresh(mod)
+    db.execute(text("UPDATE submissions SET created_utc = :n WHERE id = :s"), {"n": int(time.time()), "s": copy_id})
+    db.commit()
+
+    def following():
+        with app.test_request_context():
+            g.db = db_session()
+            return User.idlist(g.db.query(User).get(member.id), sort="new", page=1)
+    assert copy_id in following()
+    try:
+        db = fresh(mod)
+        db.execute(text("UPDATE boards SET is_private = true WHERE id = 1"))
+        db.commit()
+        assert copy_id not in following()
+    finally:
+        db = fresh(mod)
+        db.execute(text("UPDATE boards SET is_private = false WHERE id = 1"))
+        db.commit()

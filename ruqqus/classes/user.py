@@ -349,10 +349,14 @@ class User(Base, Stndrd, Age_times):
             c = select(ContributorRelationship.board_id).filter_by(
                 user_id=self.id, is_active=True
             )
+            # a post made public in a guild that is private now is its members' alone, as in All and search (the
+            # owner's rule: a guild that turns private hides its old posts; bug hunt: a removed member who stayed
+            # subscribed kept seeing them here)
+            still_public = Submission.board_id.notin_(select(Board.id).where(Board.is_private == True))
             posts = posts.filter(
                 or_(
                     Submission.author_id == self.id,
-                    Submission.post_public == True,
+                    and_(Submission.post_public == True, still_public),
                     Submission.board_id.in_(m),
                     Submission.board_id.in_(c),
                     circle_clause.for_viewer(self)
@@ -552,7 +556,8 @@ class User(Base, Stndrd, Age_times):
             posts = posts.filter(
                 or_(
                     Submission.author_id == self.id,
-                    Submission.post_public == True,
+                    and_(Submission.post_public == True,       # and not in a guild that is private now (as above)
+                         Submission.board_id.notin_(select(Board.id).where(Board.is_private == True))),
                     Submission.board_id.in_(m),
                     Submission.board_id.in_(c)
                 )
