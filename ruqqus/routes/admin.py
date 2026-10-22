@@ -12,6 +12,7 @@ from ruqqus.helpers.base36 import *
 from ruqqus.helpers.sanitize import *
 from ruqqus.helpers.get import *
 from ruqqus.classes import *
+from ruqqus.helpers import money_stats as money_rules      # the view below is called money_stats
 import re
 import time
 import imagehash
@@ -293,9 +294,10 @@ def money_stats(v):
     midnight_year_start = calendar.timegm(midnight_year_start)
 
     now=int(time.time())
-    intake=sum([int(x[0] - (x[0] * 0.029) - 30 )  for x in g.db.query(PayPalTxn.usd_cents).filter(PayPalTxn.status==3, PayPalTxn.created_utc>midnight_year_start).all()])
-    loss=sum([x[0] for x in g.db.query(PayPalTxn.usd_cents).filter(PayPalTxn.status<0, PayPalTxn.created_utc>midnight_year_start).all()])
-    revenue=str(intake-loss)
+    # a reversed order arrived and went back: counted once in each (helpers/money_stats.py, bug hunt M6)
+    paid=[x[0] for x in g.db.query(PayPalTxn.usd_cents).filter(PayPalTxn.status.in_(money_rules.PAID), PayPalTxn.created_utc>midnight_year_start).all()]
+    refunds=[x[0] for x in g.db.query(func.coalesce(func.nullif(PayPalTxn.refunded_cents, 0), PayPalTxn.usd_cents)).filter(PayPalTxn.status==-2, PayPalTxn.created_utc>midnight_year_start).all()]
+    revenue=money_rules.revenue_cents(paid, refunds)
 
     data={
         "cents_received_last_24h":g.db.query(func.sum(PayPalTxn.usd_cents)).filter(PayPalTxn.status==3, PayPalTxn.created_utc>now-60*60*24).scalar(),
@@ -303,14 +305,15 @@ def money_stats(v):
         "sales_count_last_24h":g.db.query(PayPalTxn).filter(PayPalTxn.status==3, PayPalTxn.created_utc>now-60*60*24).count(),
         "sales_count_last_week":g.db.query(PayPalTxn).filter(PayPalTxn.status==3, PayPalTxn.created_utc>now-60*60*24*7).count(),
         "receivables_outstanding_cents": g.db.query(func.sum(User.negative_balance_cents)).filter(User.is_deleted==False, or_(User.is_banned == 0, and_(User.is_banned > 0, User.unban_utc > 0))).scalar(),
-        "cents_written_off":g.db.query(func.sum(User.negative_balance_cents)).filter(or_(User.is_deleted==True, User.unban_utc > 0)).scalar(),
+        # owed by accounts that are gone for good: deleted, or banned with no end (a temporary ban still owes it)
+        "cents_written_off":g.db.query(func.sum(User.negative_balance_cents)).filter(or_(User.is_deleted==True, and_(User.is_banned>0, User.unban_utc==0))).scalar(),
         "coins_redeemed_last_24_hrs": g.db.query(User).filter(User.premium_expires_utc>now+60*60*24*6, User.premium_expires_utc < now+60*60*24*7).count(),
         "coins_redeemed_last_week": g.db.query(User).filter(User.premium_expires_utc>now, User.premium_expires_utc < now+60*60*24*7).count(),
         "coins_in_circulation": g.db.query(func.sum(User.coin_balance)).filter(User.is_deleted==False, or_(User.is_banned==0, and_(User.is_banned>0, User.unban_utc>0))).scalar(),
         "coins_vanished": g.db.query(func.sum(User.coin_balance)).filter(or_(User.is_deleted==True, and_(User.is_banned>0, User.unban_utc==0))).scalar(),
         "receivables_outstanding_cents": g.db.query(func.sum(User.negative_balance_cents)).filter(User.is_deleted==False, or_(User.is_banned == 0, and_(User.is_banned > 0, User.unban_utc > 0))).scalar(),
         "coins_sold_ytd":g.db.query(func.sum(PayPalTxn.coin_count)).filter(PayPalTxn.status==3, PayPalTxn.created_utc>midnight_year_start).scalar(),
-        "revenue_usd_ytd":f"{revenue[0:-2]}.{revenue[-2:]}"
+        "revenue_usd_ytd":money_rules.dollars(revenue)
     }
     return render_template("admin/content_stats.html", v=v, title="Financial Statistics", data=data)
 

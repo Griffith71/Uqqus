@@ -2,6 +2,7 @@
 section names the finding (C1, H1, ... in the plan); each test failed on the code before its fix."""
 import secrets
 import sys
+import time
 
 import pytest
 
@@ -540,3 +541,39 @@ def test_h3_paying_an_order_keeps_the_capture_refunds_will_name(make_member, rea
     txn = paypal.PayPalTxn(user_id=member.id, paypal_id="ORDER-X", usd_cents=499, coin_count=5, status=1)
     assert paypal.CLIENT.capture(txn) is True
     assert txn.status == 3 and txn.paypal_capture_id == "CAPTURE-KEPT" and txn.payer_country == "GB"
+
+
+# ---------------------------------------------------------------- M6: the admins' money page
+
+def _money(admin):
+    import re
+    page = admin.browser().get("/admin/money", base_url=BASE).get_data(as_text=True)
+    rows = dict(re.findall(r"<td>(\w+)</td>\s*<td>([^<]*)</td>", page))
+    written_off = rows.get("cents_written_off")
+    return (int(written_off) if written_off not in (None, "None", "") else 0), round(float(rows["revenue_usd_ytd"]) * 100)
+
+
+def test_m6_written_off_counts_permanent_bans_only_and_a_refund_lowers_revenue_once(make_member):
+    from ruqqus.helpers import money_stats
+    admin = _admin(make_member, 2)
+    temporary, permanent, buyer = make_member(), make_member(), make_member()
+    written_off, revenue = _money(admin)
+    db = fresh(admin)
+    db.execute(text("UPDATE users SET negative_balance_cents = 1000, is_banned = 1, unban_utc = :t WHERE id = :u"),
+               {"t": int(time.time()) + 86400, "u": temporary.id})
+    db.execute(text("UPDATE users SET negative_balance_cents = 700, is_banned = 1, unban_utc = 0 WHERE id = :u"), {"u": permanent.id})
+    now = int(time.time())
+    for status, refunded in ((3, 0), (-2, 499)):
+        db.execute(text("INSERT INTO paypal_txns (user_id, created_utc, coin_count, usd_cents, status, paypal_id, refunded_cents) "
+                        "VALUES (:u, :t, 5, 499, :s, :o, :r)"),
+                   {"u": buyer.id, "t": now, "s": status, "o": "ORDER-" + secrets.token_hex(5), "r": refunded})
+    db.commit()
+    try:
+        after_off, after_revenue = _money(admin)
+        assert after_off - written_off == 700, "the temporary ban still owes it"
+        assert after_revenue - revenue == 2 * money_stats.net_of_fees(499) - 499
+    finally:
+        db = fresh(admin)
+        db.execute(text("UPDATE users SET negative_balance_cents = 0 WHERE id IN (:a, :b)"), {"a": temporary.id, "b": permanent.id})
+        db.execute(text("DELETE FROM paypal_txns WHERE user_id = :u"), {"u": buyer.id})
+        db.commit()
