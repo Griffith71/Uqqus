@@ -390,7 +390,7 @@ def test_h4_paying_off_a_debt_never_leaves_it_below_zero(make_member, fake_paypa
     db.execute(text("UPDATE users SET negative_balance_cents = 100 WHERE id = :u"), {"u": member.id})
     # a debt-payment order larger than what is owed now (the debt was lowered by hand after the order was opened)
     txn = db.execute(text("INSERT INTO paypal_txns (user_id, created_utc, coin_count, usd_cents, status, paypal_id) "
-                          "VALUES (:u, 0, 0, 300, 1, 'ORDER-TEST') RETURNING id"), {"u": member.id}).scalar()
+                          "VALUES (:u, 0, 0, 300, 1, :o) RETURNING id"), {"u": member.id, "o": "ORDER-" + secrets.token_hex(5)}).scalar()
     db.commit()
     done = client.get(f"/shop/buy_coins_completed?txid={base36encode(txn)}", base_url=BASE)
     assert done.status_code == 200
@@ -609,3 +609,131 @@ def test_h6_a_reset_form_or_link_cut_short_is_a_400_not_an_error(make_member, re
         assert answer.status_code == 400, broken
     for query in ("?id=1&time=soon&token=x", "?id=1&token=x", "?id=x&time=1&token=x", "?id=1&time=1"):
         assert app.test_client().get("/reset" + query, base_url=BASE).status_code == 400, query
+
+
+# ---------------------------------------------------------------- batch B review: races, old orders, pending captures
+
+def test_b_a_refund_during_a_debt_payment_is_not_lost(make_member, real_app, fake_paypal, monkeypatch):
+    """The completion route wrote max(0, owed_when_it_started - paid): a refund landing meanwhile was overwritten."""
+    import threading
+    from ruqqus.helpers import paypal_events
+    from ruqqus.helpers.base36 import base36encode
+    app, _ = real_app
+    paypal = sys.modules["ruqqus.routes.paypal"]
+    member = make_member()
+    client = member.browser()
+    _, _, capture = _paid_order(member)                       # an earlier order, refunded while the debt is paid
+    db = fresh(member)
+    db.execute(text("UPDATE users SET negative_balance_cents = 1000 WHERE id = :u"), {"u": member.id})
+    debt = db.execute(text("INSERT INTO paypal_txns (user_id, created_utc, coin_count, usd_cents, status, paypal_id) "
+                           "VALUES (:u, 0, 0, 1000, 1, :o) RETURNING id"), {"u": member.id, "o": "ORDER-" + secrets.token_hex(5)}).scalar()
+    db.commit()
+    started = threading.Event()
+
+    def slow_capture(txn):
+        started.set()
+        time.sleep(1.5)                                        # PayPal takes its time; the refund arrives now
+        txn.status = 3
+        return True
+    monkeypatch.setattr(paypal.CLIENT, "capture", slow_capture)
+    done = {}
+    paying = threading.Thread(target=lambda: done.setdefault("pay", client.get(
+        f"/shop/buy_coins_completed?txid={base36encode(debt)}", base_url=BASE).status_code))
+    paying.start()
+    assert started.wait(10)
+    assert _hook(app, _refund(capture)).status_code == 204
+    paying.join(20)
+    assert done.get("pay") == 200
+    assert _owed(member) == paypal_events.owed_for(499), "the refund's debt stays; the 1000 paid is gone"
+
+
+def test_b_a_refund_of_an_order_paid_before_capture_ids_were_kept_is_found_through_paypal(make_member, real_app, fake_paypal, monkeypatch):
+    from types import SimpleNamespace
+    from ruqqus.helpers import paypal_events
+    app, _ = real_app
+    paypal = sys.modules["ruqqus.routes.paypal"]
+    member = make_member()
+    txn, order, _ = _paid_order(member)
+    db = fresh(member)
+    db.execute(text("UPDATE paypal_txns SET paypal_capture_id = NULL WHERE id = :t"), {"t": txn})
+    db.commit()
+    asked = []
+    old_capture = "CAPTURE-OLD-" + secrets.token_hex(4)          # never kept on any order: found only through PayPal
+    record = {"id": old_capture, "supplementary_data": {"related_ids": {"order_id": order}}}
+    monkeypatch.setattr(paypal.CLIENT, "_get", lambda url: asked.append(url) or SimpleNamespace(json=lambda: record))
+    assert _hook(app, _refund(old_capture)).status_code == 204
+    assert asked == [f"/v2/payments/captures/{old_capture}"]
+    assert _owed(member) == paypal_events.owed_for(499)
+    kept = fresh(member).execute(text("SELECT paypal_capture_id FROM paypal_txns WHERE id = :t"), {"t": txn}).scalar()
+    assert kept == old_capture
+
+
+def test_b_a_capture_paypal_is_still_checking_gives_nothing_until_it_clears(make_member, real_app, fake_paypal, monkeypatch):
+    from ruqqus.helpers.base36 import base36encode
+    app, _ = real_app
+    paypal = sys.modules["ruqqus.routes.paypal"]
+    member = make_member()
+    client = member.browser()
+    before = member.user().coin_balance or 0
+    order, capture = "ORDER-" + secrets.token_hex(5), "CAPTURE-" + secrets.token_hex(5)
+    db = fresh(member)
+    txn = db.execute(text("INSERT INTO paypal_txns (user_id, created_utc, coin_count, usd_cents, status, paypal_id) "
+                          "VALUES (:u, 0, 5, 499, 1, :o) RETURNING id"), {"u": member.id, "o": order}).scalar()
+    db.commit()
+
+    def pending(t):
+        t.status, t.paypal_capture_id = 4, capture
+        return "PENDING"
+    monkeypatch.setattr(paypal.CLIENT, "capture", pending)
+    assert client.get(f"/shop/buy_coins_completed?txid={base36encode(txn)}", base_url=BASE).status_code == 200
+    assert (fresh(member).execute(text("SELECT coin_balance FROM users WHERE id = :u"), {"u": member.id}).scalar() or 0) == before
+
+    cleared = _event("PAYMENT.CAPTURE.COMPLETED", {"id": capture, "status": "COMPLETED",
+                                                    "supplementary_data": {"related_ids": {"order_id": order}}})
+    assert _hook(app, cleared).status_code == 204
+    assert _hook(app, {**cleared, "id": "WH-" + secrets.token_hex(6)}).status_code == 204, "a second copy gives nothing more"
+    coins = fresh(member).execute(text("SELECT coin_balance FROM users WHERE id = :u"), {"u": member.id}).scalar() or 0
+    assert coins in (before + 5, before + 4)                    # buying starts a week of Premium, which spends one
+    assert fresh(member).execute(text("SELECT status FROM paypal_txns WHERE id = :t"), {"t": txn}).scalar() == 3
+
+
+def test_b_a_denied_capture_gives_nothing(make_member, real_app, fake_paypal):
+    app, _ = real_app
+    member = make_member()
+    order, capture = "ORDER-" + secrets.token_hex(5), "CAPTURE-" + secrets.token_hex(5)
+    db = fresh(member)
+    txn = db.execute(text("INSERT INTO paypal_txns (user_id, created_utc, coin_count, usd_cents, status, paypal_id, paypal_capture_id) "
+                          "VALUES (:u, 0, 5, 499, 4, :o, :c) RETURNING id"), {"u": member.id, "o": order, "c": capture}).scalar()
+    db.commit()
+    before = member.user().coin_balance or 0
+    assert _hook(app, _event("PAYMENT.CAPTURE.DENIED", {"id": capture, "status": "DECLINED"})).status_code == 204
+    assert fresh(member).execute(text("SELECT status FROM paypal_txns WHERE id = :t"), {"t": txn}).scalar() == -1
+    assert (fresh(member).execute(text("SELECT coin_balance FROM users WHERE id = :u"), {"u": member.id}).scalar() or 0) == before
+
+
+def test_b_an_order_paid_but_still_pending_at_paypal_reads_as_pending(make_member, real_app, monkeypatch):
+    from types import SimpleNamespace
+    paypal = sys.modules["ruqqus.routes.paypal"]
+    order = {"id": "ORDER-P", "status": "COMPLETED",
+             "purchase_units": [{"payments": {"captures": [{"id": "CAPTURE-P", "status": "PENDING"}]}}]}
+    monkeypatch.setattr(paypal.CLIENT, "_post", lambda url, data=None: SimpleNamespace(json=lambda: order))
+    txn = paypal.PayPalTxn(paypal_id="ORDER-P", usd_cents=499, coin_count=5, status=1)
+    assert paypal.CLIENT.capture(txn) == "PENDING" and txn.status == 4 and txn.paypal_capture_id == "CAPTURE-P"
+
+
+def test_b_an_event_that_fails_half_way_is_not_kept_and_works_when_sent_again(make_member, real_app, fake_paypal, monkeypatch):
+    from ruqqus.helpers import paypal_events
+    app, _ = real_app
+    member = make_member()
+    _, _, capture = _paid_order(member)
+    event = _refund(capture)
+    real = paypal_events.owed_for
+
+    def broken(cents):
+        raise RuntimeError("half way")
+    monkeypatch.setattr(paypal_events, "owed_for", broken)
+    assert _hook(app, event).status_code == 503
+    assert _owed(member) == 0
+    monkeypatch.setattr(paypal_events, "owed_for", real)
+    assert _hook(app, event).status_code == 204, "PayPal's retry is handled, not dropped as already seen"
+    assert _owed(member) == paypal_events.owed_for(499)

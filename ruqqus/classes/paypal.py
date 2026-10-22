@@ -15,9 +15,12 @@ PAYPAL_WEBHOOK_ID=environ.get("PAYPAL_WEBHOOK_ID", "").rstrip()
 PAYPAL_URL="https://api.paypal.com"
 
 STATUSES={
+	0:"STARTED",
 	1:"CREATED",
 	2:"AUTHORIZED",
 	3:"CAPTURED",
+	4:"PENDING",
+	-1:"FAILED",
 	-2:"REVERSED"
 }
 
@@ -132,22 +135,38 @@ class PayPalClient():
 
 
 	def capture(self, txn):
+		"""Capture a paid order: True once the money is the site's (status 3), "PENDING" while PayPal still
+		checks it (status 4: the coins wait for PAYMENT.CAPTURE.COMPLETED; bug hunt, review of batch B), else None.
+		An order can be COMPLETED while its capture is still PENDING (a payment under review, an eCheck)."""
 
 		url=f"{txn.paypal_url}/capture"
 
 		x=self._post(url)
 		x=x.json()
-		
-		try:
-			status=x["status"]
-			if status=="COMPLETED":
-				txn.status=3
-				txn.payer_country=x.get("payer", {}).get("address", {}).get("country_code")
-				txn.paypal_capture_id=_capture_id(x)
-		except KeyError:
+
+		if not isinstance(x, dict) or "status" not in x:
 			abort(403)
-			
-		return status=="COMPLETED"
+		if x["status"]!="COMPLETED":
+			return None
+
+		txn.payer_country=(x.get("payer") or {}).get("address", {}).get("country_code")
+		txn.paypal_capture_id=_capture_id(x)
+		captured=_capture_status(x)
+		if captured=="PENDING":
+			txn.status=4
+			return "PENDING"
+		if captured not in (None, "COMPLETED"):
+			return None                       # DECLINED, FAILED: no money
+		txn.status=3
+		return True
+
+
+def _capture_status(order):
+	"""The status of the capture a paid order made, or None when the answer has none."""
+	try:
+		return str(order["purchase_units"][0]["payments"]["captures"][0]["status"])
+	except (KeyError, IndexError, TypeError):
+		return None
 
 
 def _capture_id(order):

@@ -68,3 +68,22 @@ def test_an_order_never_counts_for_more_than_it_cost():
 def test_what_is_owed_adds_paypals_fee_as_before():
     assert pe.owed_for(499) == int((499 + 30) / (1 - 0.029))
     assert pe.owed_for(0) == 0
+
+
+def test_a_settlement_names_its_capture_and_order():
+    cleared = {"id": "WH-4", "event_type": "PAYMENT.CAPTURE.COMPLETED",
+               "resource": {"id": "CAPTURE-5", "status": "COMPLETED", "supplementary_data": {"related_ids": {"order_id": "ORDER-8"}}}}
+    assert pe.is_settlement(cleared) and not pe.is_reversal(cleared)
+    assert pe.keys(cleared) == ("ORDER-8", "CAPTURE-5", None)
+    assert pe.keys({**cleared, "event_type": "PAYMENT.CAPTURE.DENIED"}) == ("ORDER-8", "CAPTURE-5", None)
+
+
+def test_paypals_record_of_a_capture_names_its_order():
+    assert pe.order_of_capture({"supplementary_data": {"related_ids": {"order_id": "ORDER-1"}}}) == "ORDER-1"
+    for record in ({}, None, {"supplementary_data": []}, {"supplementary_data": {"related_ids": "x"}}):
+        assert pe.order_of_capture(record) is None
+
+
+def test_odd_shapes_in_a_signed_event_name_nothing_rather_than_fail():
+    for resource in ({"supplementary_data": ["x"]}, {"links": "x"}, {"links": [1, None]}, {"supplementary_data": {"related_ids": []}}):
+        assert pe.keys({"event_type": "PAYMENT.CAPTURE.REFUNDED", "resource": resource}) == (None, None, None)

@@ -10,6 +10,10 @@ before."""
 
 REVERSALS_V2 = ("PAYMENT.CAPTURE.REFUNDED", "PAYMENT.CAPTURE.REVERSED")
 REVERSALS_V1 = ("PAYMENT.SALE.REFUNDED", "PAYMENT.SALE.REVERSED")
+# a capture PayPal was still checking (PENDING when the order was paid): its coins wait for one of these
+SETTLEMENTS = ("PAYMENT.CAPTURE.COMPLETED", "PAYMENT.CAPTURE.DENIED")
+# events whose resource is the capture itself
+_CAPTURE_RESOURCE = ("PAYMENT.CAPTURE.REVERSED",) + SETTLEMENTS
 
 # what a reversal costs the site on top of the money itself: PayPal's fee for the order, added to what the account owes
 FEE_FIXED_CENTS = 30
@@ -20,9 +24,14 @@ def is_reversal(event):
     return isinstance(event, dict) and event.get("event_type") in REVERSALS_V2 + REVERSALS_V1
 
 
+def is_settlement(event):
+    return isinstance(event, dict) and event.get("event_type") in SETTLEMENTS
+
+
 def _capture_from_links(resource):
     """A refund's links name the capture it refunds (`rel: up`, .../v2/payments/captures/<id>)."""
-    for link in resource.get("links") or []:
+    links = resource.get("links")
+    for link in links if isinstance(links, list) else []:
         if not isinstance(link, dict):
             continue
         href = str(link.get("href") or "")
@@ -38,12 +47,24 @@ def keys(event):
         return None, None, None
     if event.get("event_type") in REVERSALS_V1:
         return None, None, resource.get("id") or resource.get("parent_payment")
-    related = ((resource.get("supplementary_data") or {}).get("related_ids") or {})
+    supplementary = resource.get("supplementary_data")
+    related = supplementary.get("related_ids") if isinstance(supplementary, dict) else None
+    related = related if isinstance(related, dict) else {}
+    order = related.get("order_id")
+    capture = _capture_from_links(resource) or related.get("capture_id")
+    if event.get("event_type") in _CAPTURE_RESOURCE and not capture:
+        capture = resource.get("id")                  # these events' resource is the capture itself
+    return (str(order) if order else None), (str(capture) if capture else None), None
+
+
+def order_of_capture(capture):
+    """The order id PayPal's own record of a capture names (GET /v2/payments/captures/<id>), or None."""
+    if not isinstance(capture, dict):
+        return None
+    supplementary = capture.get("supplementary_data")
+    related = supplementary.get("related_ids") if isinstance(supplementary, dict) else None
     order = related.get("order_id") if isinstance(related, dict) else None
-    capture = _capture_from_links(resource) or (related.get("capture_id") if isinstance(related, dict) else None)
-    if event.get("event_type") == "PAYMENT.CAPTURE.REVERSED" and not capture:
-        capture = resource.get("id")                  # the resource of a reversal can be the capture itself
-    return order or None, capture or None, None
+    return str(order) if order else None
 
 
 def amount_cents(event):

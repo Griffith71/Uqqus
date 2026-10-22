@@ -102,6 +102,8 @@ def fake_paypal(real_app, monkeypatch):
     monkeypatch.setattr(paypal_routes.CLIENT, "create", create)
     monkeypatch.setattr(paypal_routes.CLIENT, "capture", capture)
     monkeypatch.setattr(paypal_routes.CLIENT, "_post", _post)
+    # PayPal's own record of a capture (asked for a refund of an older order): none here, and never the network
+    monkeypatch.setattr(paypal_routes.CLIENT, "_get", lambda url: SimpleNamespace(json=lambda: {}))
     return calls
 
 

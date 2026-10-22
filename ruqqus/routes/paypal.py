@@ -8,6 +8,7 @@ import pprint
 
 from flask import request, jsonify, redirect, render_template, abort
 from sqlalchemy import text
+from urllib.parse import quote
 import logging as _logging       # a later star import rebinds `logging` to flask.logging
 
 from ruqqus.classes import *
@@ -150,10 +151,8 @@ def shop_buy_coins_completed(v):
     if not id:
         abort(400)
     id=base36decode(id)
-    txn=g.db.query(PayPalTxn
-        #).with_for_update(
-        ).filter_by(user_id=v.id, id=id, status=1).first()
-    #v=g.db.query(User).with_for_update().options(lazyload('*')).filter_by(id=v.id).first()
+    # locked until this answer is committed: a second tab with the same order waits, then finds it already captured
+    txn=g.db.query(PayPalTxn).with_for_update(of=PayPalTxn).filter_by(user_id=v.id, id=id, status=1).first()
 
     if not txn:
         abort(400)
@@ -161,7 +160,8 @@ def shop_buy_coins_completed(v):
     if txn.promo and not txn.promo.promo_is_active:
         return jsonify({"error":f"The promo code `{txn.promo.code}` is not currently valid. Please begin a new transaction."}), 422
 
-    if not CLIENT.capture(txn):
+    outcome=CLIENT.capture(txn)
+    if not outcome:
         abort(402)
 
     txn.created_utc=int(time.time())
@@ -169,33 +169,51 @@ def shop_buy_coins_completed(v):
     g.db.add(txn)
     g.db.flush()
 
-    #successful payment - award coins
+    if outcome == "PENDING":
+        # PayPal is still checking the payment: nothing is given until PAYMENT.CAPTURE.COMPLETED says it cleared
+        g.db.commit()
+        return render_template("single_txn.html", v=v, txns=[txn],
+                               msg="PayPal is still checking this payment. Your coins arrive as soon as it clears.")
 
-    if txn.coin_count:
-        g.db.flush()
-        coins_store.give(g.db, v.id, txn.coin_count)
-        g.db.refresh(v)
-        # buying coins without a running week starts one, as the purchase form says (helpers/premium.py)
-        if not v.has_premium_no_renew and premium.redeem_week(g.db, v, int(time.time())):
-            add_role(v, "premium")
-    else:
-        # paying off what the account owes: never below 0 (helpers/coin_shop.py)
-        v.negative_balance_cents = coin_shop.owed_after_payment(v.negative_balance_cents, txn.usd_cents)
-
-    g.db.add(v)
+    _credit(txn, v)
     g.db.commit()
 
     return render_template(
-        "single_txn.html", 
-        v=v, 
+        "single_txn.html",
+        v=v,
         txns=[txn],
         msg="The Royal Bank has minted your Coins. Here is a copy of your order."
         )
 
+
+def _credit(txn, user):
+    """What a paid order bought: its coins, or the debt it pays off. The caller holds the order's row lock and has
+    just moved it to captured, so this runs once per order."""
+    if txn.coin_count:
+        g.db.flush()
+        coins_store.give(g.db, user.id, txn.coin_count)
+        g.db.refresh(user)
+        # buying coins without a running week starts one, as the purchase form says (helpers/premium.py)
+        if not user.has_premium_no_renew and premium.redeem_week(g.db, user, int(time.time())):
+            add_role(user, "premium")
+    else:
+        # paying off what the account owes: never below 0 (helpers/coin_shop.py)
+        _change_owed(user.id, lambda owed: coin_shop.owed_after_payment(owed, txn.usd_cents))
+        g.db.refresh(user)
+
+
+def _change_owed(user_id, change):
+    """Set what an account owes from what it owes NOW, under the row's lock: two refunds, or a refund and a debt
+    payment, at the same moment can't write over each other (review of batch B)."""
+    owed = g.db.execute(text("SELECT negative_balance_cents FROM users WHERE id = :u FOR UPDATE"), {"u": user_id}).scalar()
+    g.db.execute(text("UPDATE users SET negative_balance_cents = :o WHERE id = :u"), {"o": change(owed or 0), "u": user_id})
+
+
 @app.route("/shop/paypal_webhook", methods=["POST"])
 def paypal_webhook_handler():
-    """PayPal's word that money went back (a refund or a chargeback): what the account owes grows by it. Each event
-    is handled once, and an order never counts for more than it cost (helpers/paypal_events.py, bug hunt H3)."""
+    """PayPal's word about a coin order: money went back (a refund or a chargeback: what the account owes grows by
+    it), or a capture it was still checking cleared or was denied. Each event is handled once and all of it or none:
+    if anything fails PayPal is told so and sends it again (helpers/paypal_events.py, bug hunt H3)."""
 
     event=request.get_json(silent=True)
     if not isinstance(event, dict):
@@ -221,49 +239,78 @@ def paypal_webhook_handler():
     if not event.get("id") or not event.get("event_type"):
         abort(400)
 
-    if not paypal_events.is_reversal(event):
+    if not (paypal_events.is_reversal(event) or paypal_events.is_settlement(event)):
         return "", 204
 
     event_id=str(event["id"])[:64]
-    # once per event: PayPal sends one again when it isn't sure it arrived
-    first=g.db.execute(text("INSERT INTO paypal_events (event_id, event_type, created_utc) VALUES (:e, :t, :now) "
-                            "ON CONFLICT (event_id) DO NOTHING RETURNING event_id"),
-                       {"e": event_id, "t": str(event["event_type"])[:64], "now": int(time.time())}).first()
-    if not first:
-        g.db.rollback()
-        return "", 204
-
-    txn=_reversed_txn(event)
-    if not txn:
-        # not one of this site's orders (or one it can't name): kept as handled, so PayPal stops sending it
-        log.warning("PayPal %s %s names no order of this site", event["event_type"], event_id)
+    try:
+        # once per event: PayPal sends one again when it isn't sure it arrived
+        first=g.db.execute(text("INSERT INTO paypal_events (event_id, event_type, created_utc) VALUES (:e, :t, :now) "
+                                "ON CONFLICT (event_id) DO NOTHING RETURNING event_id"),
+                           {"e": event_id, "t": str(event["event_type"])[:64], "now": int(time.time())}).first()
+        if first:
+            _handle_event(event, event_id)
         g.db.commit()
-        return "", 204
-
-    refund=paypal_events.amount_cents(event)
-    counts=paypal_events.chargeable_cents(refund, txn.refunded_cents, txn.usd_cents)
-    g.db.execute(text("UPDATE paypal_events SET txn_id = :t WHERE event_id = :e"), {"t": txn.id, "e": event_id})
-    if counts:
-        txn.refunded_cents=(txn.refunded_cents or 0) + counts
-        txn.user.negative_balance_cents=(txn.user.negative_balance_cents or 0) + paypal_events.owed_for(counts)
-        g.db.add(txn.user)
-    txn.status=-2
-
-    g.db.add(txn)
-    g.db.commit()
+    except Exception:
+        # nothing of it is kept (after_request would otherwise commit the event's row and drop PayPal's retry)
+        g.db.rollback()
+        log.exception("PayPal %s %s could not be handled; PayPal will send it again", event.get("event_type"), event_id)
+        return "", 503
 
     return "", 204
 
 
-def _reversed_txn(event):
-    """The coin order a reversal is about, locked for this transaction, or None."""
+def _handle_event(event, event_id):
+    txn=_event_txn(event)
+    if not txn:
+        # not one of this site's orders: kept as handled (paypal_events.txn_id NULL), so PayPal stops sending it
+        log.warning("PayPal %s %s names no order of this site", event["event_type"], event_id)
+        return
+    g.db.execute(text("UPDATE paypal_events SET txn_id = :t WHERE event_id = :e"), {"t": txn.id, "e": event_id})
+
+    if paypal_events.is_settlement(event):
+        if txn.status != 4:
+            return                          # captured at once (or already settled): nothing waits on this
+        if event["event_type"] == "PAYMENT.CAPTURE.COMPLETED":
+            txn.status=3
+            g.db.add(txn)
+            g.db.flush()
+            _credit(txn, g.db.query(User).filter_by(id=txn.user_id).first())
+        else:
+            txn.status=-1                   # denied: no money, so nothing was or is given
+            g.db.add(txn)
+        return
+
+    credited = txn.status in (3, -2)        # a pending capture's coins were never given: nothing is owed back
+    refund=paypal_events.amount_cents(event)
+    counts=paypal_events.chargeable_cents(refund, txn.refunded_cents, txn.usd_cents)
+    if counts:
+        txn.refunded_cents=(txn.refunded_cents or 0) + counts
+        if credited:
+            owed=paypal_events.owed_for(counts)
+            _change_owed(txn.user_id, lambda before: before + owed)
+    txn.status=-2 if credited else -1
+    g.db.add(txn)
+
+
+def _event_txn(event):
+    """The coin order an event is about, locked for this transaction, or None. An order paid before the capture's id
+    was kept (2026-11-24) is found through PayPal's record of the capture, which names its order."""
     order, capture, legacy = paypal_events.keys(event)
     query=g.db.query(PayPalTxn).with_for_update(of=PayPalTxn)      # the order row only, not its eager joins
     for column, value in ((PayPalTxn.paypal_id, order), (PayPalTxn.paypal_capture_id, capture), (PayPalTxn.paypal_id, legacy)):
         if value:
-            txn=query.filter(column == str(value)[:64]).first()
+            txn=query.filter(column == value[:64]).first()
             if txn:
                 return txn
+    if capture:
+        # a network failure here raises: the event is not kept and PayPal sends it again
+        record=CLIENT._get("/v2/payments/captures/" + quote(capture, safe="")).json()
+        order=paypal_events.order_of_capture(record)
+        txn=query.filter(PayPalTxn.paypal_id == order[:64]).first() if order else None
+        if txn and not txn.paypal_capture_id:
+            txn.paypal_capture_id=capture[:64]
+        return txn
     return None
 
 
