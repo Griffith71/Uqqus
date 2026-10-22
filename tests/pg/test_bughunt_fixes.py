@@ -857,3 +857,29 @@ def test_l2_editing_a_comment_to_a_banned_link_is_refused_not_saved(make_member,
         db = fresh(author)
         db.execute(text("DELETE FROM domains WHERE domain IN (:a, :b)"), {"a": malicious, "b": banned})
         db.commit()
+
+
+# ---------------------------------------------------------------- L3: a bad query value is never a 500
+
+def test_l3_bad_query_values_are_never_a_500(make_member, real_app):
+    app, _ = real_app
+    member = make_member()
+    for client in (app.test_client(), member.browser()):
+        for path in ("/?utc_greater_than=abc", "/all?utc_less_than=x", "/+general?utc_greater_than=1.5",
+                     "/all?utc_greater_than=-5", "/post/1?context=abc", "/activate?time=soon&id=1&token=x&email=a"):
+            answer = client.get(path, base_url=BASE)
+            assert answer.status_code < 500, (path, answer.status_code)
+
+
+def test_l3_a_yes_or_no_query_value_reads_false_as_no_and_a_number_reads_only_digits(real_app):
+    """`bool(request.args.get("ignore_pinned", False))` was True for "false" (and "0", "no"): the feeds hid their
+    pinned posts. The feeds read it through flag_arg now, and their time limits through whole_arg."""
+    from ruqqus.helpers.wrappers import flag_arg, whole_arg
+    app, _ = real_app
+    for value, expected in (("false", False), ("0", False), ("no", False), ("", False), ("true", True), ("1", True),
+                            ("Yes", True), ("on", True)):
+        with app.test_request_context(f"/?ignore_pinned={value}"):
+            assert flag_arg("ignore_pinned") is expected, value
+    for value, expected in (("1700000000", 1700000000), ("abc", 0), ("-5", 0), ("1.5", 0), ("", 0), ("9" * 40, 0)):
+        with app.test_request_context(f"/?utc_greater_than={value}"):
+            assert whole_arg("utc_greater_than") == expected, value

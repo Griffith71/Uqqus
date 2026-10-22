@@ -547,7 +547,7 @@ Optional query parameters:
     sort = request.args.get("sort", v.defaultsorting if v else "hot")
     t = request.args.get('t', v.defaulttime if v else "all")
     page = max(page_number(), 0)
-    ignore_pinned = bool(request.args.get("ignore_pinned", False))
+    ignore_pinned = flag_arg("ignore_pinned")
 
     if v is None:
         # a visitor follows nothing: the page asks them to sign in (it used to show All, labelled Following)
@@ -570,8 +570,8 @@ Optional query parameters:
                      hide_bot=v.hide_bot,
 
                      #greater/less than
-                     gt=int(request.args.get("utc_greater_than",0)),
-                     lt=int(request.args.get("utc_less_than",0)),
+                     gt=whole_arg("utc_greater_than"),
+                     lt=whole_arg("utc_less_than"),
 
                      region=region_codes,
                      language=language_codes,
@@ -643,7 +643,7 @@ Optional query parameters:
     sort = request.args.get("sort", defaultsorting)
     t = request.args.get('t', defaulttime)
     page = max(page_number(), 1)
-    ignore_pinned = bool(request.args.get("ignore_pinned", False))
+    ignore_pinned = flag_arg("ignore_pinned")
 
     region_codes, language_codes, subcat_ids = _resolve_active_filters(v)
     feed_filter, feed_filter_context = _feed_filter_for(v)
@@ -653,8 +653,8 @@ Optional query parameters:
             sort=sort, page=page, t=t,
             filter_level=viewer_level(v),
             filter_words=v.filter_words,
-            gt=int(request.args.get("utc_greater_than", 0)),
-            lt=int(request.args.get("utc_less_than", 0)),
+            gt=whole_arg("utc_greater_than"),
+            lt=whole_arg("utc_less_than"),
             region=region_codes,
             language=language_codes,
             categories=subcat_ids,
@@ -667,8 +667,8 @@ Optional query parameters:
             filter_level=viewer_level(v),
             hide_bot=(v and v.hide_bot),
             filter_words=v.filter_words if v else [],
-            gt=int(request.args.get("utc_greater_than", 0)),
-            lt=int(request.args.get("utc_less_than", 0)),
+            gt=whole_arg("utc_greater_than"),
+            lt=whole_arg("utc_less_than"),
             region=region_codes,
             language=language_codes,
             categories=subcat_ids,
@@ -773,7 +773,7 @@ Optional query parameters:
 
     sort=request.args.get("sort",defaultsorting)
     t=request.args.get('t', defaulttime)
-    ignore_pinned = bool(request.args.get("ignore_pinned", False))
+    ignore_pinned = flag_arg("ignore_pinned")
 
     region_codes, language_codes, subcat_ids = _resolve_active_filters(v)
     feed_filter, feed_filter_context = _feed_filter_for(v)
@@ -784,8 +784,8 @@ Optional query parameters:
                     v=v,
                     filter_level=viewer_level(v),
                     hide_bot=(v and v.hide_bot),
-                    gt=int(request.args.get("utc_greater_than", 0)),
-                    lt=int(request.args.get("utc_less_than", 0)),
+                    gt=whole_arg("utc_greater_than"),
+                    lt=whole_arg("utc_less_than"),
                     filter_words=v.filter_words if v else [],
                     categories=[] if request.path.startswith("/api/") else subcat_ids,
                     region=region_codes,
@@ -862,7 +862,7 @@ Optional query parameters:
 
     sort=request.args.get("sort",defaultsorting)
     t=request.args.get('t', defaulttime)
-    ignore_pinned = bool(request.args.get("ignore_pinned", False))
+    ignore_pinned = flag_arg("ignore_pinned")
 
     cats_param_present = 'cats' in request.args
     new_cats=request.args.get('cats','')
@@ -891,8 +891,8 @@ Optional query parameters:
                     v=v,
                     filter_level=viewer_level(v),
                     hide_bot=(v and v.hide_bot),
-                    gt=int(request.args.get("utc_greater_than", 0)),
-                    lt=int(request.args.get("utc_less_than", 0)),
+                    gt=whole_arg("utc_greater_than"),
+                    lt=whole_arg("utc_less_than"),
                     filter_words=v.filter_words if v else [],
                     categories=cats_for_filter,
                     region=region_codes,
@@ -1097,8 +1097,8 @@ def subcat(name, v):
                             v=v,
                             filter_level=viewer_level(v),
                             hide_bot=(v and v.hide_bot),
-                            gt=int(request.args.get("utc_greater_than", 0)),
-                            lt=int(request.args.get("utc_less_than", 0)),
+                            gt=whole_arg("utc_greater_than"),
+                            lt=whole_arg("utc_less_than"),
                             filter_words=v.filter_words if v else [],
                             categories=[name]
                             )
@@ -1109,8 +1109,8 @@ def subcat(name, v):
                         v=v,
                         filter_level=viewer_level(v),
                         hide_bot=(v and v.hide_bot),
-                        gt=int(request.args.get("utc_greater_than", 0)),
-                        lt=int(request.args.get("utc_less_than", 0)),
+                        gt=whole_arg("utc_greater_than"),
+                        lt=whole_arg("utc_less_than"),
                         filter_words=v.filter_words if v else [],
                         categories=[name]
                         )

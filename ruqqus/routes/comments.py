@@ -107,7 +107,7 @@ Optional query parameters:
     post._preloaded_comments = [comment]
 
     # context improver
-    context = min(int(request.args.get("context", 0)), 4)
+    context = min(whole_arg("context"), 4)
     comment_info = comment
     c = comment
     while context > 0 and not c.is_top_level:

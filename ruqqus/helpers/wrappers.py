@@ -22,6 +22,19 @@ def page_number():
     return max(int(raw), 1) if raw.isascii() and raw.isdigit() else 1
 
 
+def whole_arg(name, default=0):
+    """A query value that is a whole number (`?utc_greater_than=`, `?context=`), else `default`: never a 500 for
+    "abc" (bug hunt L3: every feed answered ?utc_greater_than=abc with a 500)."""
+    raw = request.args.get(name, "") or ""
+    return int(raw) if raw.isascii() and raw.isdigit() and len(raw) <= 12 else default
+
+
+def flag_arg(name):
+    """A yes/no query value: only 1, true, yes or on mean yes (bug hunt L3: `bool("false")` is True, so
+    ?ignore_pinned=false hid the pinned posts)."""
+    return (request.args.get(name, "") or "").strip().lower() in ("1", "true", "yes", "on")
+
+
 def get_logged_in_user(db=None):
 
     if not db:

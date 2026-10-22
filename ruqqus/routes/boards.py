@@ -374,7 +374,7 @@ Optional query parameters:
     sort = request.args.get("sort", defaultsorting)
     t = request.args.get("t", defaulttime)
     page = page_number()
-    ignore_pinned = bool(request.args.get("ignore_pinned", False))
+    ignore_pinned = flag_arg("ignore_pinned")
 
     # the guild's flairs, and the ones this reader filters by (helpers/guild_flair.py)
     flair_rows = guild_flair_store.flairs_of(g.db, board.id)
@@ -388,8 +388,8 @@ Optional query parameters:
                        v=v,
                        flairs=chosen_flairs,
                        filter_level=viewer_level(v),
-                       gt=int(request.args.get("utc_greater_than", 0)),
-                       lt=int(request.args.get("utc_less_than", 0))
+                       gt=whole_arg("utc_greater_than"),
+                       lt=whole_arg("utc_less_than")
                        )
 
     next_exists = (len(ids) == 26)

@@ -89,7 +89,11 @@ def activate(v):
 
     email = request.args.get("email", "")
     id = request.args.get("id", "")
-    timestamp = int(request.args.get("time", "0"))
+    timestamp = request.args.get("time", "") or ""
+    # a link cut short or altered is a 400 (bug hunt L3: it was a 500)
+    if not (timestamp.isascii() and timestamp.isdigit()):
+        abort(400)
+    timestamp = int(timestamp)
     token = request.args.get("token", "")
 
     if int(time.time()) - timestamp > 3600:
