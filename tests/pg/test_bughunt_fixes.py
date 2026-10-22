@@ -1105,3 +1105,21 @@ def test_deleting_an_account_ends_the_grants_it_gave_apps(make_member):
     assert done.status_code in (200, 302), done.status_code
     left = fresh(member).execute(text("SELECT count(*) FROM client_auths WHERE user_id = :u"), {"u": member.id}).scalar()
     assert left == 0
+
+
+def test_an_admin_acts_only_on_accounts_below_their_own_level(make_member):
+    """A level-3 admin could ban (and nuke, demod, IP-ban) an admin of any level, the site's owner included."""
+    junior, senior, peer = _admin(make_member, 3), _admin(make_member, 4), _admin(make_member, 4)
+
+    def banned(member):
+        return fresh(member).execute(text("SELECT is_banned FROM users WHERE id = :u"), {"u": member.id}).scalar()
+    here = junior.browser()
+    assert post(here, f"/api/ban_user/{senior.id}", {"reason": "x", "formkey": junior.formkey(here)}).status_code == 403
+    assert not banned(senior)
+    here = senior.browser()
+    assert post(here, "/admin/nuke_user", {"user": peer.username, "formkey": senior.formkey(here)}).status_code == 403
+    assert post(here, f"/api/ban_user/{junior.id}", {"reason": "x", "days": "1", "formkey": senior.formkey(here)}).status_code in (200, 302)
+    assert banned(junior), "a senior admin still bans below their level"
+    db = fresh(junior)
+    db.execute(text("UPDATE users SET is_banned = 0, unban_utc = 0 WHERE id = :u"), {"u": junior.id})
+    db.commit()

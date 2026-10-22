@@ -23,6 +23,12 @@ import matplotlib.pyplot as plt
 from ruqqus.__main__ import app, cache
 
 
+def _outranks(admin, target):
+    """An admin acts on an account only below their own level (bug hunt: a level-3 admin could ban, nuke or demod an
+    admin of any level, the site's owner included). The bar the display-name and sensitive routes already use."""
+    return (admin.admin_level or 0) > (target.admin_level or 0)
+
+
 @app.route("/api/ban_user/<user_id>", methods=["POST"])
 @admin_level_required(3)
 @validate_formkey
@@ -37,6 +43,8 @@ def ban_user(user_id, v):
 
     if not user:
         abort(400)
+    if not _outranks(v, user):
+        abort(403)
 
     if days > 0:
         if message:
@@ -55,7 +63,7 @@ def ban_user(user_id, v):
 
 
     for x in user.alts:
-        if not x.is_deleted:
+        if not x.is_deleted and _outranks(v, x):
             x.ban(admin=v, reason=reason)
 
 
@@ -75,6 +83,8 @@ def unban_user(user_id, v):
 
     if not user:
         abort(400)
+    if not _outranks(v, user):
+        abort(403)
 
     user.unban()
 
@@ -912,6 +922,8 @@ def admin_ban_domain(v):
 def admin_nuke_user(v):
 
     user=get_user(request.form.get("user"))
+    if not _outranks(v, user):
+        abort(403)
 
     note='admin action'
     if user.ban_reason:
@@ -960,6 +972,8 @@ def admin_nuke_user(v):
 def admin_demod_user(v):
 
     user=get_user(request.form.get("user"))
+    if not _outranks(v, user):
+        abort(403)
 
     for mod in g.db.query(ModRelationship).filter_by(user_id=user.id, accepted=True):
 

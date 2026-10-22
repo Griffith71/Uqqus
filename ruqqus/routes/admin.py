@@ -1066,7 +1066,9 @@ def admin_ipnuke(v):
         abort(400)
 
     target_user=thing
-    targets=[target_user]+[alt for alt in target_user.alts]
+    if (v.admin_level or 0) <= (target_user.admin_level or 0):
+        abort(403)                  # only below the admin's own level (bug hunt)
+    targets=[target_user]+[alt for alt in target_user.alts if (alt.admin_level or 0) < (v.admin_level or 0)]
 
     ips=set()
     for user in targets:
