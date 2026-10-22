@@ -111,6 +111,20 @@ def tick(now=None):
     return results
 
 
+def tick_safely():
+    """One tick of the forever loop. After an error the scoped session is thrown away: left in its failed
+    transaction, every later tick would fail too until the job was restarted (bug hunt M5)."""
+    try:
+        return tick()
+    except Exception:
+        traceback.print_exc()
+        try:
+            db_session.remove()
+        except Exception:
+            traceback.print_exc()
+        return None
+
+
 def main():
     if "--once" in sys.argv:
         print(tick())
@@ -120,10 +134,7 @@ def main():
         return
     log(f"started, checking every {POLL_SECONDS}s")
     while True:
-        try:
-            tick()
-        except Exception:
-            traceback.print_exc()
+        tick_safely()
         time.sleep(POLL_SECONDS)
 
 

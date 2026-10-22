@@ -795,3 +795,38 @@ def test_m4_a_notification_sent_from_a_job_is_kept_without_a_second_commit(make_
         g.db.close()
     kept = fresh(member).execute(text("SELECT count(*) FROM notifications WHERE user_id = :u"), {"u": member.id}).scalar()
     assert kept == 1
+
+
+# ---------------------------------------------------------------- M5: a job keeps working after a database error
+
+def _job(name):
+    from pathlib import Path
+    folder = str(Path(__file__).resolve().parents[2] / "scripts")
+    if folder not in sys.path:
+        sys.path.insert(0, folder)
+    return __import__(name)
+
+
+def test_m5_the_scheduler_works_again_on_the_tick_after_a_database_error(real_app):
+    _, db_session = real_app
+    scheduler = _job("publish_scheduled")
+    broken = db_session()
+    with pytest.raises(Exception):
+        broken.execute(text("SELECT 1 / 0"))                  # the scoped session is now in a failed transaction
+    with pytest.raises(Exception):
+        scheduler.tick()                                        # what the loop used to do every tick from then on
+    assert scheduler.tick_safely() is None, "this tick fails, and the session is thrown away"
+    assert scheduler.tick() == {}, "the next one works"
+
+
+def test_m5_premium_renewals_run_even_when_the_circles_fail(real_app, monkeypatch):
+    job = _job("renew_circles")
+    renewed = []
+
+    def circles_fail(db, now=None):
+        raise RuntimeError("circles down")
+    monkeypatch.setattr(job.circle_store, "renew_due", circles_fail)
+    monkeypatch.setattr(job, "renew_premium", lambda now=None: renewed.append(now) or 0)
+    with pytest.raises(RuntimeError):
+        job.tick(1_900_000_000)
+    assert renewed == [1_900_000_000]

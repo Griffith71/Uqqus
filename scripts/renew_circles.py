@@ -31,11 +31,14 @@ def log(message):
 def tick(now=None):
     """One pass. Returns {event: count} for renewed, lapsed and ended subscriptions."""
     db = db_session()
+    circles_failed = None
     try:
         events = circle_store.renew_due(db, now)
-    except Exception:
+    except Exception as failure:
+        # the Premium renewals below don't depend on the circles: they still run, then the error is raised (bug hunt
+        # M5: an error here skipped every auto-renewal that hour, and every hour it kept failing)
         db.rollback()
-        raise
+        circles_failed, events = failure, []
     finally:
         db_session.remove()
 
@@ -70,6 +73,8 @@ def tick(now=None):
                         f"you didn't have the {coins} coins it renews for. You can subscribe again from their profile.")
             finally:
                 db_session.remove()
+    if circles_failed is not None:
+        raise circles_failed
     return counts
 
 
