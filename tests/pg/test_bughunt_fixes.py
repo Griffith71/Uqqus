@@ -2141,3 +2141,21 @@ def test_someone_elses_private_curation_reads_as_missing(make_member):
     assert post(here, f"/&{private_slug}/edit", {"name": "x", "formkey": other.formkey(here)}).status_code == 404
     assert post(here, f"/&{public_slug}/edit", {"name": "x", "formkey": other.formkey(here)}).status_code == 403
     assert owner.browser().get(f"/&{private_slug}", base_url=BASE).status_code == 200
+
+
+def test_a_recorded_calls_chat_stays_readable_once_it_has_ended(make_member, real_app):
+    """While a call runs its chat is for the people in it; once a recorded call has ended the chat is part of the
+    record, for whoever may open the Space (the owner, 2026-10-23)."""
+    host, listener = make_member(), make_member()
+    sid = _board_space(host)
+    db = fresh(host)
+    db.execute(text("UPDATE spaces SET kind = 'call', record = true WHERE id = :s"), {"s": sid})
+    db.execute(text("INSERT INTO space_messages (space_id, author_id, body, created_utc) VALUES (:s, :a, 'hello', :n)"),
+               {"s": sid, "a": host.id, "n": int(time.time())})
+    db.commit()
+    assert listener.browser().get(f"/api/spaces/{sid}/messages", base_url=BASE).get_json()["messages"] == []
+    db = fresh(host)
+    db.execute(text("UPDATE spaces SET status = 'ended', ended_utc = :n WHERE id = :s"), {"n": int(time.time()), "s": sid})
+    db.commit()
+    later = listener.browser().get(f"/api/spaces/{sid}/messages", base_url=BASE)
+    assert later.status_code == 200 and len(later.get_json()["messages"]) == 1

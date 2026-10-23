@@ -814,7 +814,11 @@ def space_messages(sid, v):
     roles = space_store.roles(g.db, space.id)
     if space_store.removed(g.db, space.id, v.id) or _blocked_with_hosts(space, v, roles):
         abort(404)
-    if space.kind == space_rules.CALL and not space_rules.may_run(space_rules.role_of(v.id, space.host_id, roles)) \
+    # once a recorded call has ended its chat is part of the record, for whoever may open the Space (the owner,
+    # 2026-10-23); while it runs, only the people in it
+    kept = space.status == space_rules.ENDED and bool(space.record)
+    if space.kind == space_rules.CALL and not kept \
+            and not space_rules.may_run(space_rules.role_of(v.id, space.host_id, roles)) \
             and (v.admin_level or 0) < 3:      # admins remove messages (CLAUDE.md, Spaces), so they read them
         roster = call_store.roster(r, space.room, int(time.time())) if r is not None else []
         if not any(e["user_id"] == v.id for e in roster):
