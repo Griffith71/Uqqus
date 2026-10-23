@@ -7,6 +7,7 @@ from sqlalchemy.orm import *
 from urllib.parse import urlparse
 from ruqqus.helpers import circle_guard
 from ruqqus.helpers import permalinks
+from ruqqus.helpers import blocks
 
 import re
 import time
@@ -247,6 +248,12 @@ def get_post(pid, v=None, graceful=False, nSession=None, no_text=False, **kwargs
         x._saved = items[7] or 0
         x._reposted = items[8] or 0
         # x._is_exiled_for=items[5] or 0
+
+        # the author blocked this viewer: nothing of theirs opens for them (helpers/blocks.py shut_out)
+        if blocks.shut_out(x, v):
+            if graceful:
+                return None
+            abort(404)
 
         # where the viewer's vote on this post's other copies is, so the arrows can be locked (helpers/vote_copies.py)
         from ruqqus.helpers import vote_copies
@@ -780,6 +787,11 @@ def get_comment(cid, nSession=None, v=None, graceful=False, no_text=False, **kwa
 
         x._is_blocking = block and block.user_id == v.id
         x._is_blocked = block and block.target_id == v.id
+
+        if blocks.shut_out(x, v):          # as for a post above
+            if graceful:
+                return None
+            abort(404)
 
     else:
         q = nSession.query(

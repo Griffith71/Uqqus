@@ -32,3 +32,13 @@ def coauthored_with(model, user_ids):
     primary = func.coalesce(func.nullif(model.repost_id, 0), model.id)
     return exists().where(and_(PostCoauthor.post_id == primary, PostCoauthor.status == "accepted",
                                PostCoauthor.user_id.in_(user_ids)))
+
+
+def shut_out(item, v):
+    """Whether `v` may not open `item` (a post or comment read with `v`, so `is_blocked` is set) because its author
+    blocked them: someone blocked sees nothing of the account that blocked them, not its posts and not its comments
+    (the owner, 2026-10-23); a direct link is a plain 404. Never for an anonymous item (refusing only those would say
+    who wrote them), and never for the site's admins (level 3) or the guild's guildmasters, who moderate it."""
+    if v is None or not getattr(item, "_is_blocked", False) or item.is_anonymous:
+        return False
+    return (v.admin_level or 0) < 3 and not getattr(item, "_is_guildmaster", False)

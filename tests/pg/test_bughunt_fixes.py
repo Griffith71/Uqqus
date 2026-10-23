@@ -1834,8 +1834,7 @@ def test_a_refused_tip_never_says_who_blocked_whom(make_member, guildmaster_with
     db.commit()
     them = tipper.browser()
     answer = post(them, f"/gift_post/{base36encode(copy_id)}", {"coins": "1", "formkey": tipper.formkey(them)})
-    assert answer.status_code == 403
-    assert "block" not in answer.get_data(as_text=True).lower()
+    assert answer.status_code == 404        # the owner's rule (2026-10-23): someone blocked can't open the post at all
 
 
 def test_pinning_a_deleted_post_rings_nobody(guildmaster_with_post):
@@ -1883,7 +1882,8 @@ def test_no_poll_vote_across_a_block_with_its_author(make_member):
     assert post(here, "/settings/block", {"username": voter.username, "formkey": author.formkey(here)}).status_code < 400
     them = voter.browser()
     answer = post(them, f"/api/poll/{pid}/vote", {"option": str(option), "formkey": voter.formkey(them)})
-    assert answer.status_code == 403 and "block" not in answer.get_data(as_text=True).lower()
+    # someone blocked can't open the post at all now (the owner, 2026-10-23): a plain 404
+    assert answer.status_code == 404
     assert fresh(author).execute(text("SELECT count(*) FROM poll_votes WHERE user_id = :u"), {"u": voter.id}).scalar() == 0
 
 
@@ -2078,3 +2078,54 @@ def test_a_banned_guild_never_keeps_a_curation_from_going_public(make_member):
         db = fresh(owner)
         db.execute(text("UPDATE boards SET is_banned = false WHERE id = 1"))
         db.commit()
+
+
+def test_someone_blocked_sees_nothing_of_the_account_that_blocked_them(make_member, guildmaster_with_post):
+    """The owner's rule (2026-10-23): a blocked person can't open the blocker's posts or comments, nor read the
+    blocker's comments in a thread. An anonymous post stays open (refusing it would name its author)."""
+    from ruqqus.helpers.base36 import base36encode
+    _, author, copy_id = guildmaster_with_post
+    blocker, blocked = author, make_member()
+    other_post = copy_id
+    secret = f"words {secrets.token_hex(4)}"
+    cid = _comment_on(blocker, other_post)
+    db = fresh(blocker)
+    db.execute(text("UPDATE comments_aux SET body = :b, body_html = :b WHERE id = :c"), {"b": secret, "c": cid})
+    original = db.execute(text("SELECT repost_id FROM submissions WHERE id = :s"), {"s": copy_id}).scalar()
+    db.commit()
+    here = blocker.browser()
+    assert post(here, "/settings/block", {"username": blocked.username, "formkey": blocker.formkey(here)}).status_code < 400
+    them = blocked.browser()
+    assert them.get(f"/post/{base36encode(original)}", base_url=BASE, follow_redirects=True).status_code == 404
+    assert them.get(f"/comment/{base36encode(cid)}", base_url=BASE, follow_redirects=True).status_code == 404
+    assert post(them, f"/api/vote/post/{base36encode(original)}/1", {"formkey": blocked.formkey(them)}).status_code == 404
+    db = fresh(blocker)
+    db.execute(text("UPDATE submissions SET is_anonymous = true WHERE id = :s"), {"s": original})
+    db.commit()
+    try:
+        page = them.get(f"/post/{base36encode(original)}", base_url=BASE, follow_redirects=True)
+        assert page.status_code == 200, "an anonymous post never refuses for whose it is"
+    finally:
+        db = fresh(blocker)
+        db.execute(text("UPDATE submissions SET is_anonymous = false WHERE id = :s"), {"s": original})
+        db.commit()
+
+
+def test_a_blockers_comment_in_someone_elses_thread_is_closed_to_the_person_they_blocked(make_member):
+    from ruqqus.helpers.base36 import base36decode
+    owner, blocker, blocked = make_member(), make_member(), make_member()
+    here = owner.browser()
+    made = post(here, "/api/vue/submit", {"title": f"Thread {secrets.token_hex(4)}", "body": "text",
+                                          "post_to_profile": "1", "formkey": owner.formkey(here)})
+    assert made.status_code == 200, made.get_data(as_text=True)[:200]
+    pid = made.get_json()["id"]
+    secret = f"words{secrets.token_hex(4)}"
+    cid = _comment_on(blocker, base36decode(pid))
+    db = fresh(owner)
+    db.execute(text("UPDATE comments_aux SET body = :b, body_html = :b WHERE id = :c"), {"b": secret, "c": cid})
+    db.commit()
+    assert secret in blocked.browser().get(f"/post/{pid}", base_url=BASE, follow_redirects=True).get_data(as_text=True)
+    mine = blocker.browser()
+    assert post(mine, "/settings/block", {"username": blocked.username, "formkey": blocker.formkey(mine)}).status_code < 400
+    page = blocked.browser().get(f"/post/{pid}", base_url=BASE, follow_redirects=True)
+    assert page.status_code == 200 and secret not in page.get_data(as_text=True)
