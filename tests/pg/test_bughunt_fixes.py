@@ -2159,3 +2159,24 @@ def test_a_recorded_calls_chat_stays_readable_once_it_has_ended(make_member, rea
     db.commit()
     later = listener.browser().get(f"/api/spaces/{sid}/messages", base_url=BASE)
     assert later.status_code == 200 and len(later.get_json()["messages"]) == 1
+
+
+def test_another_site_cannot_change_a_visitors_feed_filters(make_member):
+    """The filter links change the session with a GET: a link, a picture or a frame on another site set a visitor's
+    filters. A request the browser marks cross-site changes nothing; the site's own still does."""
+    front = sys.modules["ruqqus.routes.front"]
+    code = sorted(front.REGION_CENTROIDS)[0]
+    member = make_member()
+    here = member.browser()
+
+    def regions():
+        with here.session_transaction() as session:
+            return session.get("selected_regions")
+    here.get(f"/regional?region={code}", base_url=BASE, headers={"Sec-Fetch-Site": "cross-site"})
+    assert regions() in (None, [])
+    here.get("/post_type?types=poll", base_url=BASE, headers={"Sec-Fetch-Site": "cross-site"})
+    with here.session_transaction() as session:
+        assert not session.get("feed_post_types")
+    here.get(f"/regional?region={code}", base_url=BASE, headers={"Sec-Fetch-Site": "same-origin"})
+    assert regions() == [code]
+    assert here.get("/categorical?cats=abc", base_url=BASE).status_code < 500

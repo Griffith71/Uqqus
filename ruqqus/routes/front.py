@@ -828,6 +828,28 @@ Optional query parameters:
             }
 
 
+def _filter_change_from_another_site():
+    """The feed-filter links (/regional, /language, /categorical, /post_type, /feed_filter) change the session with a
+    plain GET, since the sidebar's Apply buttons are links: one another site sends (a link, a picture, a frame) changes
+    nothing (bug hunt: another site could set a visitor's feed filters). A browser marks those requests
+    `Sec-Fetch-Site: cross-site`; one with no such header is not this attack (helpers/same_origin.py)."""
+    from os import environ as _environ
+    from ruqqus.helpers import same_origin as _same_origin
+    return _same_origin.from_another_site(request.headers.get("Origin"), request.headers.get("Sec-Fetch-Site"),
+                                          request.host, (app.config.get("SERVER_NAME") or "", _environ.get("ONION_NAME", "")))
+
+
+def _id_text(x):
+    """A category or group id as text: ASCII digits inside an integer (bug hunt: anything else was a 500)."""
+    return x.isascii() and x.isdigit() and len(x) <= 9
+
+
+def _feed_home():
+    """Where a filter change goes back to: the feed the viewer was last on."""
+    base_feed = flask_session.get('base_feed', 'for_you')
+    return redirect({'all': '/all', 'for_you': '/for_you', 'following': '/following'}.get(base_feed, '/for_you'))
+
+
 @app.route("/categorical", methods=["GET"])
 @app.route("/inpage/categorical")
 @auth_desired
@@ -850,6 +872,9 @@ Optional query parameters:
 * `page` - Page of results to return. Default `1`.
 """
 
+    if _filter_change_from_another_site():
+        return _feed_home()
+
     page = page_number()
     page = max(page, 1)
 
@@ -869,13 +894,13 @@ Optional query parameters:
     cats = flask_session.get('catids', [])
 
     if cats_param_present:
-        cats = [int(x) for x in new_cats.split(',') if x] if new_cats else []
+        cats = [int(x) for x in new_cats.split(',') if _id_text(x)] if new_cats else []   # "abc" was a 500
         flask_session['catids']=cats
         flask_session.modified=True
 
     groups = request.args.get("groups")
     if groups:
-        flask_session['groupids']=[int(x) for x in groups.split(',')]
+        flask_session['groupids']=[int(x) for x in groups.split(',') if _id_text(x)]
         flask_session.modified=True
 
     if request.path == "/categorical":
@@ -936,6 +961,9 @@ Optional query parameters:
   code is unrecognized.
 """
 
+    if _filter_change_from_another_site():
+        return _feed_home()
+
     if "region" in request.args:
         # checked for presence, not truthiness - an explicit ?region= (empty)
         # means "clear my region selection", not "leave it as-is"
@@ -967,6 +995,9 @@ Optional query parameters:
   code is unrecognized.
 """
 
+    if _filter_change_from_another_site():
+        return _feed_home()
+
     codes_param_present = 'codes' in request.args
     new_codes = request.args.get('codes', '')
 
@@ -993,6 +1024,9 @@ Optional query parameters:
 * `types` - Comma-separated post types (`POST_TYPES`). An explicit empty value (`?types=`) clears the filter;
   unknown types are left out.
 """
+
+    if _filter_change_from_another_site():
+        return _feed_home()
 
     if "types" in request.args:
         flask_session['feed_post_types'] = feed_filter_rules.parse_types(request.args.get("types", ""))
@@ -1048,6 +1082,9 @@ Optional query parameters:
   `in_guilds`, `not_in_guilds`, `domain`, `ai`, `partnership`, `forwards`, `min_votes`, `min_comments`, `since`,
   `until`.
 """
+
+    if _filter_change_from_another_site():
+        return _feed_home()
 
     if request.args.get("clear"):
         flask_session.pop('feed_filter', None)
