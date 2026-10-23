@@ -60,7 +60,8 @@ def test_only_the_owner_reaches_anything_that_edits_a_curation():
         assert "@auth_required" in body, name
         assert "curation = _owned_curation_or_404(slug, v)" in body, name
     owned = ROUTES.split("def _owned_curation_or_404(")[1].split("\n\n\n")[0]
-    assert "if curation.owner_id != v.id:\n        abort(403)" in owned
+    # someone else's private curation reads as missing (the owner, 2026-10-23); a public one is refused
+    assert "if curation.owner_id != v.id:" in owned and "abort(404 if curation.is_private else 403)" in owned
 
 
 def test_every_change_needs_the_form_key():
@@ -73,7 +74,7 @@ def test_every_change_needs_the_form_key():
 
 def test_a_private_curation_is_closed_to_everyone_but_its_owner():
     page = route("curation_detail")
-    assert "if curation.is_private and not is_owner:\n        abort(403)" in page
+    assert "if curation.is_private and not is_owner:\n        abort(404)" in page   # not found (the owner, 2026-10-23)
     for name in ("curation_follow", "curation_fork"):
         assert "if not original or original.is_private:" in route(name) or "if not curation or curation.is_private:" in route(name), name
 

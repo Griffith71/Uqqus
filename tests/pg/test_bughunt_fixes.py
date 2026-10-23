@@ -2129,3 +2129,15 @@ def test_a_blockers_comment_in_someone_elses_thread_is_closed_to_the_person_they
     assert post(mine, "/settings/block", {"username": blocked.username, "formkey": blocker.formkey(mine)}).status_code < 400
     page = blocked.browser().get(f"/post/{pid}", base_url=BASE, follow_redirects=True)
     assert page.status_code == 200 and secret not in page.get_data(as_text=True)
+
+
+def test_someone_elses_private_curation_reads_as_missing(make_member):
+    """It answered 403 where a missing one answers 404, so slugs could be probed (the owner, 2026-10-23: not found)."""
+    owner, other = make_member(), make_member()
+    _, private_slug = _curation(owner, private=True)
+    _, public_slug = _curation(owner, private=False)
+    here = other.browser()
+    assert here.get(f"/&{private_slug}", base_url=BASE).status_code == 404
+    assert post(here, f"/&{private_slug}/edit", {"name": "x", "formkey": other.formkey(here)}).status_code == 404
+    assert post(here, f"/&{public_slug}/edit", {"name": "x", "formkey": other.formkey(here)}).status_code == 403
+    assert owner.browser().get(f"/&{private_slug}", base_url=BASE).status_code == 200

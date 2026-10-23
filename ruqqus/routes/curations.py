@@ -248,7 +248,9 @@ def _owned_curation_or_404(slug, v):
     if not curation:
         abort(404)
     if curation.owner_id != v.id:
-        abort(403)
+        # someone else's private curation is "not found", as a missing one is: nothing says it exists (the owner,
+        # 2026-10-23); a public one may be seen, so it is only refused
+        abort(404 if curation.is_private else 403)
     return curation
 
 
@@ -337,7 +339,7 @@ def curation_detail(slug, v):
 
     is_owner = bool(v and v.id == curation.owner_id)
     if curation.is_private and not is_owner:
-        abort(403)
+        abort(404)          # not found, as a missing one (the owner, 2026-10-23)
 
     sort = request.args.get("sort")
     t = request.args.get("t")
