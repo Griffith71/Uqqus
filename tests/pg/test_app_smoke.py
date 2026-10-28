@@ -110,6 +110,41 @@ def test_the_happening_box_is_private_and_answers_204_when_nothing_changed(site)
         assert get(client, f"/inpage/happening?rev={rev}").status_code == 204
 
 
+def test_similar_guilds_suggest_the_same_topic_and_leave_out_what_must_not_be_suggested(site):
+    """/inpage/similar_guilds/<name> on Postgres: two public guilds in one category suggest each other, to a visitor (with a sign-in
+    link) and to a member (a Join button); a private or Circle guild, the site's own boards and a guild that does not exist
+    draw nothing; and a guild's page carries the placeholder for its box above the ad (not board 1, which the route refuses)."""
+    from ruqqus.classes import Board
+    db = site.db_session()
+    now = int(time.time())
+    # fixed names: a database used twice keeps its guilds, and a fresh pair each run would crowd the box's three rows
+    names = {"public": "ci_sim_public", "twin": "ci_sim_twin", "private": "ci_sim_private", "circle": "ci_sim_circle"}
+    for key, name in names.items():
+        if not db.query(Board).filter_by(name=name).first():
+            board = Board(name=name, description="a guild made by the smoke test", description_html="<p>a guild made by the smoke test</p>",
+                          creator_id=1, subcat_id=0, cat_id=18, is_private=key in ("private", "circle"), is_circle=key == "circle")
+            db.add(board)
+    db.commit()
+
+    visitor = get(site.visitor(), f"/inpage/similar_guilds/{names['public']}")
+    assert visitor.status_code == 200
+    page = visitor.get_data(as_text=True)
+    assert f"+{names['twin']}" in page and "Similar guilds" in page and "/login?redirect=" in page
+    assert names["private"] not in page and names["circle"] not in page
+    member = get(site.as_member(), f"/inpage/similar_guilds/{names['public']}")
+    assert member.status_code == 200 and f'data-url="/api/subscribe/{names["twin"]}"' in member.get_data(as_text=True)
+    for name in (names["private"], names["circle"], "general", "systemprofile", "nosuchguild"):
+        for client in (site.visitor(), site.as_member()):
+            answer = get(client, f"/inpage/similar_guilds/{name}")
+            assert answer.status_code == 200 and not answer.get_data(as_text=True).strip(), name
+
+    shell = get(site.visitor(), f"/+{names['public']}")
+    assert shell.status_code == 200
+    html = shell.get_data(as_text=True)
+    assert f'data-src="/inpage/similar_guilds/{names["public"]}"' in html
+    assert get(site.visitor(), "/+general").get_data(as_text=True).count('id="similar-guilds"') == 0
+
+
 def test_a_post_and_its_embeds_render(site):
     for client in (site.visitor(), site.as_member()):
         for path in (f"/post/{site.post_id}", f"/embed/post/{site.post_id}"):

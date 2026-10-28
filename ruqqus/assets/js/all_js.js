@@ -582,6 +582,15 @@ function collapse_comment(comment_id) {
 
   document.getElementById(comment).classList.toggle("collapsed");
 
+// Post Info's "Discussed in" (submission.html): three places, then the rest of the list opened and closed in place
+function togglePostPlaces(button) {
+  var list = document.getElementById(button.getAttribute("aria-controls"));
+  if (!list) return;
+  var open = list.classList.toggle("is-collapsed") === false;
+  button.setAttribute("aria-expanded", open ? "true" : "false");
+  button.textContent = open ? button.getAttribute("data-less") : button.getAttribute("data-more");
+};
+
 };
 
 // Toggle a long comment's collapsed overflow text

@@ -132,7 +132,7 @@ def test_the_pages_and_the_tab():
     tabs = read("ruqqus", "templates", "partials", "guild_tabs.html")
     assert "guild_has_chat(b, v)" in tabs and 'href="{{ b.permalink }}/chat"' in tabs
     assert "app.jinja_env.globals.update(guild_has_chat=has_chat)" in ROUTES
-    assert 'href="/+{{ b.name }}/mod/channels"' in read("ruqqus", "templates", "board.html")
+    assert 'href="/+{{ b.name }}/mod/channels"' in read("ruqqus", "templates", "partials", "guild_sidebar.html")
     settings = read("ruqqus", "templates", "guild", "guild_settings.html")
     assert settings.count('href="/+{{ b.name }}/mod/channels"') == 2                 # desktop and phone
     page = read("ruqqus", "templates", "guild", "chat.html")
@@ -372,7 +372,7 @@ def test_part_four_roles():
     # the pages and the client
     page = read("ruqqus", "templates", "guild", "roles.html")
     assert "| safe" not in page and page.count('name="formkey" value="{{ v.formkey }}"') >= 6 and "flair-{{ role.colour }}" in page
-    assert 'href="/+{{ b.name }}/mod/roles"' in read("ruqqus", "templates", "board.html")
+    assert 'href="/+{{ b.name }}/mod/roles"' in read("ruqqus", "templates", "partials", "guild_sidebar.html")
     assert read("ruqqus", "templates", "guild", "guild_settings.html").count('href="/+{{ b.name }}/mod/roles"') == 2
     manage = read("ruqqus", "templates", "guild", "channels.html")
     assert 'name="ow_read_{{ role.id }}"' in manage and 'name="ow_write_{{ role.id }}"' in manage

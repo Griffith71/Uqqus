@@ -49,6 +49,13 @@ def language_name(code):
     return i18n.language_name(code, current_locale()) or ""
 
 
+@app.template_global("reading_minutes")
+def reading_minutes(p):
+    """About how long a post's text takes to read, in whole minutes (230 words a minute, rounded up)."""
+    words = len((getattr(p, "body", "") or "").split())
+    return -(-words // 230) if words else 0
+
+
 @app.template_global("guild_topic")
 def guild_topic(b):
     """The topic a guild is in (helpers/topics.py: /topic/<slug>), or None: an Uncategorized, hidden or NSFW one has
@@ -65,6 +72,37 @@ def guild_topic(b):
         return None
     found = topics.find(sub.name)
     return found if found is not None and b.subcat_id in found.subcat_ids else None
+
+
+@app.template_global("post_places")
+def post_places(p, v):
+    """The other places a post is discussed, most traction first (helpers/post_places.py)."""
+    from ruqqus.helpers.post_places import places_for
+    return places_for(p, v)
+
+
+@cache.memoize(timeout=60)
+def _standing_counts(sql_name, board, start, end, score):
+    from flask import g
+    from ruqqus.helpers import post_standing
+    return post_standing.counts(g.db, getattr(post_standing, sql_name), board, start, end, score)
+
+
+@app.template_global("post_standing")
+def post_standing_for(p):
+    """Where a post stands among the posts made around it (helpers/post_standing.py), the counts cached a minute."""
+    from flask import g
+    from ruqqus.helpers import post_standing
+    names = {post_standing.GUILD_SQL: "GUILD_SQL", post_standing.SITE_SQL: "SITE_SQL"}
+    return post_standing.standing_for(g.db, p, app_config("SITE_NAME"),
+                                      counted=lambda db, sql, *args: _standing_counts(names[sql], *args))
+
+
+@app.template_global("upvote_share")
+def upvote_share(ups, downs):
+    """The share of the votes that are upvotes, a whole percent, or None with no votes (Post Info's "N% upvoted")."""
+    total = (ups or 0) + (downs or 0)
+    return round(100 * (ups or 0) / total) if total > 0 else None
 
 
 @app.template_global("score_mode")
@@ -167,6 +205,18 @@ def handle_tag(u):
 def profile_guilds(u, v):
     from ruqqus.helpers.profile_about import guilds_for
     return guilds_for(u, v)
+
+
+@app.template_global("post_author_box")
+def post_author_box(p, v):
+    """The author whose About box a profile post's page shows in its sidebar, or None (helpers/profile_about.py
+    author_box_shown: never for an anonymous post)."""
+    if p is None or getattr(p, "is_anonymous", False):
+        return None
+    from ruqqus.helpers.anonymity import author_of
+    from ruqqus.helpers.profile_about import author_box_shown
+    author = author_of(p, v)
+    return author if author_box_shown(p, author, v) else None
 
 
 @app.template_global("profile_curations")

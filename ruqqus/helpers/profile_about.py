@@ -24,6 +24,23 @@ def shown_curations(curations, hidden, limit=CURATIONS_SHOWN):
     return visible[:limit], max(0, len(visible) - limit)
 
 
+def author_box_shown(post, author, v):
+    """May a post page show its author's About box (the sidebar of a post that lives only on a profile)?
+
+    Never for an anonymous post (it would name the author, to the author too, so the page reads the same to
+    everyone), nor for an account whose profile this viewer couldn't open: deleted, suspended or in private mode
+    (unless it's their own, or they're an admin, as on the profile page), or a bot that isn't approved yet. A word-
+    filtered name never gets here: its post is hidden (helpers/visibility.post_hidden)."""
+    if post is None or author is None or getattr(post, "is_anonymous", False):
+        return False
+    if getattr(author, "is_deleted", False):
+        return False
+    own_or_admin = bool(v and (v.id == author.id or (getattr(v, "admin_level", 0) or 0) >= 3))
+    if (getattr(author, "is_suspended", False) or getattr(author, "is_private", False)) and not own_or_admin:
+        return False
+    return bool(author.bot_shown_to(v))
+
+
 # --- what a page reads ---------------------------------------------------------
 
 def guilds_for(owner, v):

@@ -1,10 +1,10 @@
 from flask import render_template, request
 
 from ruqqus.helpers.wrappers import auth_required, auth_desired
-from ruqqus.helpers.get import get_user
-from ruqqus.helpers.visibility import user_hidden
+from ruqqus.helpers.get import get_guild, get_user
+from ruqqus.helpers.visibility import board_hidden, user_hidden
 from ruqqus.helpers import suggestions
-from ruqqus.__main__ import app
+from ruqqus.__main__ import app, limiter, member_limit_key
 
 KINDS = ("users", "guilds", "curations")
 
@@ -42,3 +42,17 @@ def similar_accounts_box(username, v):
     if not u or u.is_deleted or u.is_banned or u.is_private or u.is_nofollow or user_hidden(u, v):
         return ""
     return render_template("partials/similar_accounts_box.html", v=v, u=u, picks=suggestions.similar_for(u, v))
+
+
+@app.get("/inpage/similar_guilds/<name>")
+@limiter.limit("120/minute", key_func=member_limit_key)
+@auth_desired
+def similar_guilds_box(name, v):
+    """A guild's "Similar guilds" box (helpers/similar_guilds_store.py), loaded after the page like Similar accounts.
+    Visitors get it too. Nothing is drawn for a guild that is gone, banned, private, a Circle guild, one of the site's
+    own boards (1 and 2) or hidden from the viewer: no suggestions are made from it, and a mod gets no exception, since
+    the box is a list for everyone."""
+    b = get_guild(name, v=v, graceful=True)
+    if not b or b.is_banned or b.is_private or b.is_circle or b.id in (1, 2) or board_hidden(b, v):
+        return ""
+    return render_template("partials/similar_guilds_box.html", v=v, b=b, picks=suggestions.similar_guilds_for(b, v))

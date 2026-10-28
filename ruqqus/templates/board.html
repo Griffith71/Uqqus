@@ -54,89 +54,7 @@
 {% endblock %}
 
 {% block sidebarblock %}
-<div class="sidebar-section sidebar-guildmake">
-  <div class="title"><i class="fas fa-info-circle mr-2"></i>About Guild</div>
-  <div class="body">
-    {{ b.description_html_for(v) | safe }}
-
-    <div class="text-small font-weight-bold text-muted text-uppercase mb-1" style="letter-spacing: 0.025rem;">Founded</div>
-    <p>{{ b.created_date }}</p>
-    <div class="text-small font-weight-bold text-muted text-uppercase mb-2" style="letter-spacing: 0.025rem;">Guildmasters</div>
-    <div class="d-flex align-items-center">
-      {% for mod in b.mods_list[0:3] %}
-      <a href="{{ mod.user.permalink }}">
-        <img alt="{{ mod.user.shown_name }}" src="{{ mod.user.profile_url }}" class="profile-pic profile-pic-30 profile-stacked {% if not loop.first %}ml-n2{% endif %}" data-toggle="tooltip" data-placement="bottom" title="{{ '@' + mod.user.username }}">
-      </a>
-      {% if loop.last %}
-      {% if b.mods_count - loop.index > 0 %}
-      <div class="text-small text-primary ml-2">
-        <a href="{{ b.permalink+'/mod/mods' }}">+{{ b.mods_count - loop.index }} more guildmaster{% if b.mods_count - loop.index > 1 %}s{% endif %}</a>
-      </div>
-      {% endif %}
-      {% endif %}
-      {% else %}
-      <small class="text-muted">No guildmasters</small>
-      {% endfor %}
-    </div>
-
-    <div class="text-small font-weight-bold text-muted text-uppercase mb-2 mt-3" style="letter-spacing: 0.025rem;">Settings</div>
-    <div class="text-primary">
-      <i class="fas fa-filter"data-toggle="tooltip" data-placement="bottom" title="Category: {% if b.subcat %}{{ b.subcat.category.name }} / {{ b.subcat.name }}{% else %}Uncategorized{% endif %}"></i>
-      {% if b.is_private %}<i class="fas fa-eye-slash"data-toggle="tooltip" data-placement="bottom" title="Private mode."></i>{% endif %}
-      {% if b.restricted_forwarding %}<i class="fas fa-user-lock"data-toggle="tooltip" data-placement="bottom" title="Restricted forwarding mode."></i>{% endif %}
-      {% if b.is_sensitive %}<i class="fas fa-eye-slash" data-toggle="tooltip" data-placement="bottom" title="Sensitive Content"></i>{% endif %}
-      {% if b.all_opt_out %}<i class="fas fa-list" data-toggle="tooltip" data-placement="bottom" title="Opted out of All"></i>{% endif %}
-    </div>
-
-    {# its chats this viewer may read (routes/guild_channels.py guild_channels_for: the Chat tab's own rule) #}
-    {% set about_channels = guild_channels_for(b, v) %}
-    {% if about_channels %}
-    <div class="text-small font-weight-bold text-muted text-uppercase mb-2 mt-3" style="letter-spacing: 0.025rem;">Chat</div>
-    <ul class="list-unstyled mb-0 guild-about-chats">
-      {% for c in about_channels[0:8] %}
-      <li class="text-truncate mb-1">
-        <i class="fas {{ 'fa-volume-high' if c.kind == 'voice' else ('fa-tower-broadcast' if c.kind in ('announcement', 'stage') else 'fa-hashtag') }} fa-fw text-muted mr-1" aria-hidden="true"></i>
-        <a href="{{ c.url }}">{{ c.label }}</a>
-      </li>
-      {% endfor %}
-    </ul>
-    {% if about_channels | length > 8 %}<a class="text-small" href="{{ b.permalink }}/chat">All {{ about_channels | length }} channels</a>{% endif %}
-    {% endif %}
-
-  </div>
-</div>
-
-
-
-{% include "partials/guild_next_event.html" %}
-
-{% set mod = b.has_mod(v) %}
-
-{% if mod %}
-<div class="sidebar-section sidebar-info">
-  <div class="title"><i class="fas fa-crown mr-2"></i>Guildmaster Tools</div>
-  <div class="body">
-    <ul class="list-unstyled mb-0">
-
-      {% if mod.perm_config %}<li class="mb-2"><a class="text-muted" href="/+{{ b.name }}/mod/settings"><i class="fas fa-cog fa-fw text-center mr-2"></i>Settings</a></li>{% endif %}
-      {% if mod.perm_appearance %}<li class="mb-2"><a class="text-muted" href="/+{{ b.name }}/mod/appearance"><i class="fas fa-palette fa-fw text-center mr-2"></i>Appearance</a></li>{% endif %}
-      {% if mod.perm_config %}<li class="mb-2"><a class="text-muted" href="/+{{ b.name }}/mod/flair"><i class="fas fa-tag fa-fw text-center mr-2"></i>Flair</a></li>{% endif %}
-      {% if mod.perm_config %}<li class="mb-2"><a class="text-muted" href="/+{{ b.name }}/mod/resources"><i class="fas fa-thumbtack fa-fw text-center mr-2"></i>Resources</a></li>{% endif %}
-      {% if mod.perm_config %}<li class="mb-2"><a class="text-muted" href="/+{{ b.name }}/mod/roles"><i class="fas fa-user-group fa-fw text-center mr-2"></i>Roles</a></li>{% endif %}
-      {% if mod.perm_content or mod.perm_config %}<li class="mb-2"><a class="text-muted" href="/+{{ b.name }}/mod/channels"><i class="fas fa-comments fa-fw text-center mr-2"></i>Channels</a></li>{% endif %}
-      {% if mod.perm_content or mod.perm_config %}<li class="mb-2"><a class="text-muted" href="/+{{ b.name }}/wiki"><i class="fas fa-book fa-fw text-center mr-2"></i>Wiki</a></li>{% endif %}
-      {% if mod.perm_content %}<li class="mb-2"><a class="text-muted" href="/+{{ b.name }}/events"><i class="fas fa-calendar-days fa-fw text-center mr-2"></i>Events</a></li>{% endif %}
-      <li class="mb-2"><a class="text-muted" href="/+{{ b.name }}/mod/mods"><i class="fas fa-crown fa-fw text-center mr-2"></i>Guildmasters</a></li>
-      <li class="mb-2"><a class="text-muted" href="/+{{ b.name }}/mod/log"><i class="fas fa-scroll fa-fw text-center mr-2"></i>Mod Log</a></li>
-      <li class="mb-2"><a class="text-muted" href="/+{{ b.name }}/mod/css"><i class="fas fa-pen fa-fw text-center mr-2"></i>CSS</a></li>
-      {% if mod.perm_access %}<li class="mb-2"><a class="text-muted" href="/+{{ b.name }}/mod/exiled"><i class="fas fa-user-slash fa-fw text-center mr-2"></i>Exiles</a></li>{% endif %}
-      {% if mod.perm_content %}<li class="mb-2"><a class="text-muted" href="/+{{ b.name }}/mod/queue"><i class="fas fa-flag fa-fw text-center mr-2"></i>Reports</a></li>{% endif %}
-      {% if mod.perm_access and (b.restricted_forwarding or b.is_private) %}<li class="mb-2"><a class="text-muted" href="/+{{ b.name }}/mod/contributors"><i class="fas fa-user-check fa-fw text-center mr-2"></i>Approved users</a></li>{% endif %}
-    </ul>
-  </div>
-</div>
-{% endif %}
-{% include "partials/sidebar_common.html" %}
+{% include "partials/guild_sidebar.html" %}
 {% endblock %}
 
 
@@ -172,14 +90,14 @@
           <a href="{{ b.permalink }}">
             <div class="h6 text-black mb-0 d-inline-block">{{ b.name }}
               {% if v and v.has_blocked_guild(b) %}
-              <i class="fas fa-eye-slash text-danger align-middle ml-2" data-toggle="tooltip" data-placement="bottom" data-html="true" title="You have muted this guild. Its posts stay out of All, For You and Following. Visit your settings or click the <i class='fas fa-ellipsis-h text-small'></i> icon to unmute it."></i>
+              <i class="fas fa-eye-slash text-danger align-middle ml-2" data-toggle="tooltip" data-placement="bottom" data-html="true" title="{{ _("You have muted this guild. Its posts stay out of All, For You and Following. Visit your settings or click the <i class='fas fa-ellipsis-h text-small'></i> icon to unmute it.") }}"></i>
               {% endif %}
             </div>
             {% if b.is_sensitive %}
-            <span class="badge badge-warning text-small ml-2" data-toggle="tooltip" data-placement="bottom" title="This guild discusses sensitive topics">Sensitive Content</span>
+            <span class="badge badge-warning text-small ml-2" data-toggle="tooltip" data-placement="bottom" title="{{ _('This guild discusses sensitive topics') }}">{{ _("Sensitive Content") }}</span>
             {% endif %}
             {% if b.is_private %}
-            <span class="badge badge-warning text-small ml-2" data-toggle="tooltip" data-placement="bottom" title="This guild is private. Content posted prior to the guild being set to private is visible to everyone.">private</span>{% endif %}
+            <span class="badge badge-warning text-small ml-2" data-toggle="tooltip" data-placement="bottom" title="{{ _('This guild is private. Content posted prior to the guild being set to private is visible to everyone.') }}">{{ pgettext("guild badge", "private") }}</span>{% endif %}
             <div class="text-muted text-small">+{{ b.name }}</div>
           </a>
         </div>
@@ -187,30 +105,30 @@
 
       {% block infobar %}
       <div class="border-right py-3 px-3">
-        <a href="{{ b.permalink+'/mod/mods' }}" class="text-black" style="text-decoration: none;">Guildmasters<span class="text-primary"> {{ b.mods_count }}</span></a>
+        <a href="{{ b.permalink+'/mod/mods' }}" class="text-black" style="text-decoration: none;">{{ ngettext('Guildmasters<span class="text-primary"> %(num)s</span>', 'Guildmasters<span class="text-primary"> %(num)s</span>', b.mods_count) }}</a>
       </div>
       <div class="border-right p-3">
-        Member{{ 's' if b.stored_subscriber_count != 1 else '' }}<span class="text-primary"> {{ [b.stored_subscriber_count, 0] | max }}</span>
+        {{ ngettext('Member<span class="text-primary"> %(count)s</span>', 'Members<span class="text-primary"> %(count)s</span>', b.stored_subscriber_count, count=[b.stored_subscriber_count, 0] | max) }}
       </div>
       <div class="d-flex align-items-center p-3">
         <div class="dropdown dropdown-actions">
-          <a href="#" role="button" id="dropdownMoreLink" aria-label="More options" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="line-height: 0;
+          <a href="#" role="button" id="dropdownMoreLink" aria-label="{{ _('More options') }}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="line-height: 0;
           ">
           <i class="fas fa-ellipsis-h text-base text-black"></i>
         </a>
         <div class="dropdown-menu border-0 shadow dropdown-menu-right mt-2" aria-labelledby="dropdownMoreLink" x-placement="bottom-end"
         style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(21px, 18px, 0px);">
-        <button class="dropdown-item" data-toggle="modal" data-target="#guildDetailsModal"><i class="fas fa-info-circle"></i>Guild details</button>
-        <a class="dropdown-item" href="{{ b.permalink }}/mod/log"><i class="fas fa-scroll"></i>Moderation log</a>
+        <button class="dropdown-item" data-toggle="modal" data-target="#guildDetailsModal"><i class="fas fa-info-circle"></i>{{ _("Guild details") }}</button>
+        <a class="dropdown-item" href="{{ b.permalink }}/mod/log"><i class="fas fa-scroll"></i>{{ _("Moderation log") }}</a>
         {% if b.has_mod(v, "config") %}{# the settings page needs the config permission #}
-        <a class="dropdown-item" href="{{ b.permalink }}/mod/settings"><i class="fas fa-cog"></i>Guild settings</a>
+        <a class="dropdown-item" href="{{ b.permalink }}/mod/settings"><i class="fas fa-cog"></i>{{ _("Guild settings") }}</a>
         {% endif %}
         {% if v and not v.has_blocked_guild(b) %}
         {# a curation is built from accounts, guilds and topics, never from a post (routes/curations.py) #}
-        {% if v and not b.is_banned %}<a class="dropdown-item" href="javascript:void(0)" data-curation-guild="{{ b.name }}"><i class="fas fa-layer-group"></i>Add to curation</a>{% endif %}
-        <a class="dropdown-item text-danger" href="javascript:void(0)" onclick="post_toast('/settings/mute_guild?board={{ b.name }}')"><i class="fas fa-eye-slash text-danger"></i>Mute guild</a>
+        {% if v and not b.is_banned %}<a class="dropdown-item" href="javascript:void(0)" data-curation-guild="{{ b.name }}"><i class="fas fa-layer-group"></i>{{ _("Add to curation") }}</a>{% endif %}
+        <a class="dropdown-item text-danger" href="javascript:void(0)" onclick="post_toast('/settings/mute_guild?board={{ b.name }}')"><i class="fas fa-eye-slash text-danger"></i>{{ _("Mute guild") }}</a>
         {% elif v %}
-        <a class="dropdown-item" href="javascript:void(0)" onclick="post_toast('/settings/unmute_guild?board={{ b.name }}')"><i class="fas fa-eye"></i>Unmute guild</a>
+        <a class="dropdown-item" href="javascript:void(0)" onclick="post_toast('/settings/unmute_guild?board={{ b.name }}')"><i class="fas fa-eye"></i>{{ _("Unmute guild") }}</a>
         {% endif %}
       </div>
     </div>
@@ -221,7 +139,8 @@
     <div class="d-flex align-items-center">
 
       {% block viewfilters %}
-      <div class="text-small font-weight-bold mr-2">Filter by</div>
+      {% set time_labels = {"day": pgettext("time range", "Day"), "week": pgettext("time range", "Week"), "month": pgettext("time range", "Month"), "year": pgettext("time range", "Year"), "all": pgettext("time range", "All")} %}
+      <div class="sr-only">{{ _("Filter by") }}</div>{# read out, not drawn: the guild bar has no room (_screens.scss) #}
       <div class="dropdown dropdown-actions">
         <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           {% if time_filter=="day" %}<i class="fas fa-calendar-day mr-1"></i>{% endif %}
@@ -229,17 +148,17 @@
           {% if time_filter=="month" %}<i class="fas fa-calendar-alt mr-1"></i>{% endif %}
           {% if time_filter=="year" %}<i class="fas fa-calendar mr-1"></i>{% endif %}
           {% if time_filter=="all" %}<i class="fas fa-infinity mr-1"></i>{% endif %}
-          {{ time_filter | capitalize }}
+          {{ time_labels.get(time_filter, time_filter | capitalize) }}
         </button>
         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 31px, 0px);">
-          {% if not time_filter=="day" %}<a class="dropdown-item" href="?sort={{ sort_method }}&t=day"><i class="fas fa-calendar-day mr-2"></i>Day</a>{% endif %}
-          {% if not time_filter=="week" %}<a class="dropdown-item" href="?sort={{ sort_method }}&t=week"><i class="fas fa-calendar-week mr-2"></i>Week</a>{% endif %}
-          {% if not time_filter=="month" %}<a class="dropdown-item" href="?sort={{ sort_method }}&t=month"><i class="fas fa-calendar-alt mr-2"></i>Month</a>{% endif %}
-          {% if not time_filter=="year" %}<a class="dropdown-item" href="?sort={{ sort_method }}&t=year"><i class="fas fa-calendar mr-2"></i>Year</a>{% endif %}
-          {% if not time_filter=="all" %}<a class="dropdown-item" href="?sort={{ sort_method }}&t=all"><i class="fas fa-infinity mr-2"></i>All</a>{% endif %}
+          {% if not time_filter=="day" %}<a class="dropdown-item" href="?sort={{ sort_method }}&t=day"><i class="fas fa-calendar-day mr-2"></i>{{ pgettext("time range", "Day") }}</a>{% endif %}
+          {% if not time_filter=="week" %}<a class="dropdown-item" href="?sort={{ sort_method }}&t=week"><i class="fas fa-calendar-week mr-2"></i>{{ pgettext("time range", "Week") }}</a>{% endif %}
+          {% if not time_filter=="month" %}<a class="dropdown-item" href="?sort={{ sort_method }}&t=month"><i class="fas fa-calendar-alt mr-2"></i>{{ pgettext("time range", "Month") }}</a>{% endif %}
+          {% if not time_filter=="year" %}<a class="dropdown-item" href="?sort={{ sort_method }}&t=year"><i class="fas fa-calendar mr-2"></i>{{ pgettext("time range", "Year") }}</a>{% endif %}
+          {% if not time_filter=="all" %}<a class="dropdown-item" href="?sort={{ sort_method }}&t=all"><i class="fas fa-infinity mr-2"></i>{{ pgettext("time range", "All") }}</a>{% endif %}
         </div>
       </div>
-      <div class="text-small font-weight-bold ml-3 mr-2">Sort by</div>
+      <div class="sr-only">{{ _("Sort by") }}</div>
       <div class="dropdown dropdown-actions">
         <button class="btn btn-secondary dropdown-toggle mr-2" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           {% if sort_method=="hot" %}<i class="fas fa-fire mr-1"></i>{% endif %}
@@ -248,15 +167,16 @@
           {% if sort_method=="old" %}<i class="fas fa-book mr-1"></i>{% endif %}
           {% if sort_method=="disputed" %}<i class="fas fa-bullhorn mr-1"></i>{% endif %}
           {% if sort_method=="activity" %}<i class="fas fa-comments mr-1"></i>{% endif %}
-          {{ sort_method }}
+          {# Translators: the guild page's current sort order, written in lowercase on its bar #}
+          {{ {"hot": pgettext("sort, lowercase", "hot"), "top": pgettext("sort, lowercase", "top"), "new": pgettext("sort, lowercase", "new"), "old": pgettext("sort, lowercase", "old"), "disputed": pgettext("sort, lowercase", "disputed"), "activity": pgettext("sort, lowercase", "activity")}.get(sort_method, sort_method) }}
         </button>
         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 31px, 0px);">
-          {% if not sort_method=="hot" %}<a class="dropdown-item" href="?sort=hot&t={{time_filter}}"><i class="fas fa-fire mr-2"></i>Hot</a>{% endif %}
-          {% if not sort_method=="top" %}<a class="dropdown-item" href="?sort=top&t={{time_filter}}"><i class="fas fa-arrow-alt-circle-up mr-2"></i>Top</a>{% endif %}
-          {% if not sort_method=="new" %}<a class="dropdown-item" href="?sort=new&t={{time_filter}}"><i class="fas fa-star mr-2"></i>New</a>{% endif %}
-          {% if not sort_method=="old" %}<a class="dropdown-item" href="?sort=old&t={{time_filter}}"><i class="fas fa-book mr-2"></i>Old</a>{% endif %}
-          {% if not sort_method=="disputed" %}<a class="dropdown-item" href="?sort=disputed&t={{time_filter}}"><i class="fas fa-bullhorn mr-2"></i>Disputed</a>{% endif %}
-          {% if not sort_method=="activity" %}<a class="dropdown-item" href="?sort=activity&t={{time_filter}}"><i class="fas fa-comments mr-2"></i>Activity</a>{% endif %}
+          {% if not sort_method=="hot" %}<a class="dropdown-item" href="?sort=hot&t={{time_filter}}"><i class="fas fa-fire mr-2"></i>{{ pgettext("sort", "Hot") }}</a>{% endif %}
+          {% if not sort_method=="top" %}<a class="dropdown-item" href="?sort=top&t={{time_filter}}"><i class="fas fa-arrow-alt-circle-up mr-2"></i>{{ pgettext("sort", "Top") }}</a>{% endif %}
+          {% if not sort_method=="new" %}<a class="dropdown-item" href="?sort=new&t={{time_filter}}"><i class="fas fa-star mr-2"></i>{{ pgettext("sort", "New") }}</a>{% endif %}
+          {% if not sort_method=="old" %}<a class="dropdown-item" href="?sort=old&t={{time_filter}}"><i class="fas fa-book mr-2"></i>{{ pgettext("sort", "Old") }}</a>{% endif %}
+          {% if not sort_method=="disputed" %}<a class="dropdown-item" href="?sort=disputed&t={{time_filter}}"><i class="fas fa-bullhorn mr-2"></i>{{ pgettext("sort", "Disputed") }}</a>{% endif %}
+          {% if not sort_method=="activity" %}<a class="dropdown-item" href="?sort=activity&t={{time_filter}}"><i class="fas fa-comments mr-2"></i>{{ pgettext("sort", "Activity") }}</a>{% endif %}
         </div>
       </div>
       {% endblock %}
@@ -264,17 +184,17 @@
       {% if v %}
       <div id="button-sub" {% if b.is_subscribed %}class="d-none"{% endif %}>
         <button class="btn btn-primary" onclick="post_toast('/api/subscribe/{{ b.name }}', callback=toggleSub)">
-          Join guild
+          {{ _("Join guild") }}
         </button>
       </div>
-      <div id="button-unsub" class="{% if not b.is_subscribed %}d-none{% endif %}" role="group" aria-label="Leave guild desktop">
-        <button class="btn btn-secondary" onclick="post_toast('/api/unsubscribe/{{ b.name }}', callback=toggleSub)">Leave</button>
-        <button class="btn btn-transparent bell-button" data-toggle="tooltip" data-placement="bottom" title="Be told when the guildmasters make an announcement: a heralded or pinned post, or a new event." data-url="/+{{ b.name }}/toggle_bell" aria-label="Announcements from +{{ b.name }}">
+      <div id="button-unsub" class="{% if not b.is_subscribed %}d-none{% endif %}" role="group" aria-label="{{ _('Leave guild desktop') }}">
+        <button class="btn btn-secondary" onclick="post_toast('/api/unsubscribe/{{ b.name }}', callback=toggleSub)">{{ pgettext("button: leave the guild", "Leave") }}</button>
+        <button class="btn btn-transparent bell-button" data-toggle="tooltip" data-placement="bottom" title="{{ _('Be told when the guildmasters make an announcement: a heralded or pinned post, or a new event.') }}" data-url="/+{{ b.name }}/toggle_bell" aria-label="{{ _('Announcements from +%(guild)s', guild=b.name) }}">
           <i class="fas fa-fw bell-icon {% if b.is_subscribed and b.is_subscribed.get_notifs %}fa-bell text-primary{% else %}fa-bell-slash{% endif %}"></i>
         </button>
       </div>
       {% elif not v %}
-      <a class="btn btn-primary" href="/signup">Join guild</a>
+      <a class="btn btn-primary" href="/signup">{{ _("Join guild") }}</a>
       {% endif %}
       {{ circle_guild_button(b, v) }}
     </div>
@@ -301,10 +221,10 @@
         <a href="{{ b.permalink }}" class="text-black">
           <h1 class="h5 d-inline-block mb-0">{{ b.name }}
             {% if b.is_sensitive %}
-            <span class="badge badge-warning text-small align-top">Sensitive Content</span>
+            <span class="badge badge-warning text-small align-top">{{ _("Sensitive Content") }}</span>
             {% endif %}
             {% if b.is_private %}
-            <span class="badge badge-warning text-small align-top" data-toggle="tooltip" data-placement="bottom" title="This guild is private. Content posted prior to the guild being set to private is visible to everyone.">private</span>
+            <span class="badge badge-warning text-small align-top" data-toggle="tooltip" data-placement="bottom" title="{{ _('This guild is private. Content posted prior to the guild being set to private is visible to everyone.') }}">{{ pgettext("guild badge", "private") }}</span>
             {% endif %}
           </h1>
           <div class="text-muted text-small">+{{ b.name }}</div>
@@ -313,37 +233,37 @@
         {% block mobile_description %}
         <div class="text-muted text-break">{{ b.description_html_for(v) | safe }}</div>
         {% endblock %}
-        <p class="font-weight-bold">{{ [b.stored_subscriber_count, 0] | max }} member{{ 's' if b.stored_subscriber_count != 1 else '' }}
+        <p class="font-weight-bold">{{ ngettext("%(count)s member", "%(count)s members", b.stored_subscriber_count, count=[b.stored_subscriber_count, 0] | max) }}
         </p>
         {% if b.has_mod(v, "config") %}
-        <a class="btn btn-outline-secondary btn-block text-muted mb-2" href="{{ b.permalink }}/mod/settings">Guild settings</a>
+        <a class="btn btn-outline-secondary btn-block text-muted mb-2" href="{{ b.permalink }}/mod/settings">{{ _("Guild settings") }}</a>
         {% endif %}
 
         {% if False and b.can_chat(v) %}
-        <a class="btn btn-primary btn-block text-white mb-2" href="{{ b.chat_url }}">Chat</a>
+        <a class="btn btn-primary btn-block text-white mb-2" href="{{ b.chat_url }}">{{ _("Chat") }}</a>
         {% endif %}
 
       {% if v %}
         <div id="button-sub-mobile" {% if b.is_subscribed %}class="d-none"{% endif %}>
           <button class="btn btn-primary btn-block" onclick="post_toast('/api/subscribe/{{ b.name }}', callback=toggleSub)">
-            Join guild
+            {{ _("Join guild") }}
           </button>
         </div>
         <div id="button-unsub-mobile" {% if not b.is_subscribed %}class="d-none"{% endif %}>
           <button class="btn btn-secondary btn-block" onclick="post_toast('/api/unsubscribe/{{ b.name }}', callback=toggleSub)">
-            Leave
+            {{ pgettext("button: leave the guild", "Leave") }}
           </button>
-          <button class="btn btn-transparent bell-button" data-url="/+{{ b.name }}/toggle_bell" aria-label="Announcements from +{{ b.name }}">
+          <button class="btn btn-transparent bell-button" data-url="/+{{ b.name }}/toggle_bell" aria-label="{{ _('Announcements from +%(guild)s', guild=b.name) }}">
             <i class="fas bell-icon fa-fw {% if b.is_subscribed and b.is_subscribed.get_notifs %}fa-bell text-primary{% else %}fa-bell-slash{% endif %}"></i>
           </button>
         </div>
         {% elif not v %}
-        <a class="btn btn-primary btn-block" href="/signup">Join guild</a>
+        <a class="btn btn-primary btn-block" href="/signup">{{ _("Join guild") }}</a>
         {% endif %}
         {% if v %}
         {# phones have no "..." menu on the guild banner: the mute sits here #}
-        <button class="btn btn-link btn-sm text-muted mt-1" onclick="post_toast('/settings/{{ 'unmute_guild' if v.has_blocked_guild(b) else 'mute_guild' }}?board={{ b.name }}', callback=function(){window.location.reload()})"><i class="fas fa-eye-slash fa-fw mr-1"></i>{{ 'Unmute guild' if v.has_blocked_guild(b) else 'Mute guild' }}</button>
-        {% if not b.is_banned %}<button type="button" class="btn btn-link btn-sm text-muted mt-1" data-curation-guild="{{ b.name }}"><i class="fas fa-layer-group fa-fw mr-1"></i>Add to curation</button>{% endif %}
+        <button class="btn btn-link btn-sm text-muted mt-1" onclick="post_toast('/settings/{{ 'unmute_guild' if v.has_blocked_guild(b) else 'mute_guild' }}?board={{ b.name }}', callback=function(){window.location.reload()})"><i class="fas fa-eye-slash fa-fw mr-1"></i>{{ _('Unmute guild') if v.has_blocked_guild(b) else _('Mute guild') }}</button>
+        {% if not b.is_banned %}<button type="button" class="btn btn-link btn-sm text-muted mt-1" data-curation-guild="{{ b.name }}"><i class="fas fa-layer-group fa-fw mr-1"></i>{{ _("Add to curation") }}</button>{% endif %}
         {% endif %}
         {{ circle_guild_button(b, v, true) }}
       </div>

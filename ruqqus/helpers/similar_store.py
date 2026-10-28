@@ -12,7 +12,7 @@ the viewer's word filter) are applied when the list is read, in helpers/suggesti
 """
 from sqlalchemy import text
 
-from ruqqus.helpers.suggestions import Scores, plural
+from ruqqus.helpers.suggestions import ALSO_ACTIVE_IN, SHARED_FOLLOWERS, Scores
 
 MIN_SHARED_FOLLOWERS = 3
 RECENT_SECONDS = 90 * 86400
@@ -53,9 +53,10 @@ def candidates(db, owner_id, owner_name, now):
     """[(account id, score, reason)], best first, unfiltered (see the module's note on what is applied later)."""
     s = Scores()
     for uid, n in db.execute(_CO_FOLLOWED, {"owner": owner_id, "least": MIN_SHARED_FOLLOWERS}).fetchall():
-        s.add(uid, 3 * n, f"Followed by {plural(n, 'person', 'people')} who follow @{owner_name}")
+        # kept as data, drawn in each reader's language by suggestions.reason_text (the ranking is shared and cached)
+        s.add(uid, 3 * n, (SHARED_FOLLOWERS, n, owner_name))
     for uid, guild, n in db.execute(_SAME_GUILDS, {
             "owner": owner_id, "no": False, "yes": True, "since": int(now) - RECENT_SECONDS,
             "profile_board": PROFILE_BOARD}).fetchall():
-        s.add(uid, min(n, 5) * 0.8, f"Also active in +{guild}")
+        s.add(uid, min(n, 5) * 0.8, (ALSO_ACTIVE_IN, guild))
     return [row for row in s.rows() if row[0] != owner_id][:300]

@@ -13,7 +13,9 @@ def test_the_guild_page_draws_tabs_resources_pinned_and_next_event():
     feedtop = board.split("{% block feedtop %}", 1)[1].split("{% endblock %}", 1)[0]
     assert feedtop.index("guild_tabs(b, v, \"posts\")") < feedtop.index("guild_resources(b, v)") < \
         feedtop.index("pinned_row(pinned_posts)") < feedtop.index("flair_filter(")
-    assert '{% include "partials/guild_next_event.html" %}' in board
+    sidebar = read("ruqqus", "templates", "partials", "guild_sidebar.html")       # the guild's own sidebar
+    assert '{% include "partials/guild_sidebar.html" %}' in board
+    assert '{% include "partials/guild_next_event.html" %}' in sidebar
     for path in ("/mod/resources", "/wiki", "/events"):
         assert f'href="/+{{{{ b.name }}}}{path}"' in board
     route = read("ruqqus", "routes", "boards.py")

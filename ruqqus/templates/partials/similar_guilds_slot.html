@@ -1,0 +1,24 @@
+{#
+  The guild sidebar's "Similar guilds" box: an empty placeholder that assets/js/similar_guilds.js fills after the page
+  loads from /inpage/similar_guilds/<name> (routes/suggestions.py), so no guild or post page waits for its queries and
+  a guild page that visitors get from a cache stays the same for everyone. Drawn by partials/guild_sidebar.html, above the
+  sidebar ad, for the guilds the route makes suggestions from (not a private, Circle or banned guild, nor the site's own
+  boards). Reads `b`.
+
+  Like the other boxes that arrive late, it keeps the height it had last time (fill_late_box in all_js.js stores it
+  under this box's id) and takes it before the first paint, so the ad below it does not jump. The script is its own
+  because who_to_follow.js is not loaded for a visitor on a guild page.
+#}
+{% if not (b.is_banned or b.is_private or b.is_circle or b.id in (1, 2)) %}
+<div id="similar-guilds" class="late-box" data-src="/inpage/similar_guilds/{{ b.name }}"></div>
+<script>
+  (function () {
+    try {
+      var box = document.getElementById("similar-guilds");
+      var h = box ? parseInt(localStorage.getItem("late_box_h:similar-guilds"), 10) : 0;
+      if (h > 0) box.style.minHeight = h + "px";
+    } catch (e) {}
+  })();
+</script>
+<script src="{{ asset_url('js/similar_guilds.js') }}" defer></script>
+{% endif %}

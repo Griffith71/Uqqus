@@ -1,0 +1,17 @@
+{#
+  "Similar guilds" in a guild's right sidebar, above the sidebar ad: guilds like this one (helpers/similar_guilds_store.py,
+  routes/suggestions.py /inpage/similar_guilds/<name>, loaded after the page by assets/js/similar_guilds.js). The rows
+  and the Join buttons are Who to follow's (partials/suggestion_row.html, assets/js/who_to_follow.js). Nothing is drawn
+  when there is nobody to suggest.
+#}
+{% from "partials/suggestion_row.html" import suggestion_row with context %}
+{% if picks %}
+<div class="sidebar-section who-to-follow similar-guilds">
+  <div class="title"><i class="fas fa-chess-rook mr-2"></i>{{ _("Similar guilds") }}</div>
+  <div class="body">
+    {% for item, reason in picks %}
+    {{ suggestion_row("guilds", item, reason, login_to=(none if v else b.permalink)) }}
+    {% endfor %}
+  </div>
+</div>
+{% endif %}

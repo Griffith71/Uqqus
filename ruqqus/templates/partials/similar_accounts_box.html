@@ -6,7 +6,7 @@
 {% from "partials/suggestion_row.html" import suggestion_row with context %}
 {% if picks %}
 <div class="sidebar-section who-to-follow similar-accounts">
-  <div class="title"><i class="fas fa-user-friends mr-2"></i>Similar accounts</div>
+  <div class="title"><i class="fas fa-user-friends mr-2"></i>{{ _("Similar accounts") }}</div>
   <div class="body">
     {% for item, reason in picks %}
     {{ suggestion_row("users", item, reason, login_to=(none if v else u.permalink)) }}

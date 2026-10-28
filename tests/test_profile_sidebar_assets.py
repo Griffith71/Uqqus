@@ -48,12 +48,24 @@ def test_similar_accounts_replace_who_to_follow_on_a_profile_only():
                      r'data-src="/inpage/similar_accounts/\{\{ profile_user.username \}\}"></div>\n'
                      r'\{% elif v %\}<div id="who-to-follow"', late)
     shared = (TEMPLATES / "partials" / "sidebar_common.html").read_text(encoding="utf-8")
-    support = shared.index('fa-heart mr-2"></i>Support')
+    support = shared.index('fa-heart mr-2"></i>{{ _("Support %(site)s") }}')
     assert shared.rindex("{% if not profile_user %}", 0, support) > shared.rindex("{% endif %}", 0, support)
     js = read("ruqqus", "assets", "js", "who_to_follow.js")
     assert "['who-to-follow', 'similar-accounts'].forEach" in js
     assert "{% if v or u is defined %}<script src=\"{{ asset_url('js/who_to_follow.js') }}\"></script>{% endif %}" \
         in read("ruqqus", "templates", "default.html")
+
+
+def test_the_pages_about_one_account_read_as_its_profile_in_the_sidebar():
+    # the follow lists and the channels page are the account's too (the owner, 2026-10-26): Similar accounts, its curations
+    # and no Support, not Who to follow. No About box: that stays on the profile. Account search has no one account.
+    for name, owner in (("follow_list.html", "u"), ("channels.html", "owner")):
+        src = (TEMPLATES / name).read_text(encoding="utf-8")
+        block = src[src.index("{% block sidebarblock %}"):]
+        block = block[:block.index("{% endblock %}")]
+        assert f"{{% set profile_user = {owner} %}}" in block, name
+        assert '{% include "partials/sidebar_common.html" %}' in block and "profile_about" not in block, name
+    assert "profile_user" not in (TEMPLATES / "search_users.html").read_text(encoding="utf-8")
 
 
 def test_the_similar_accounts_route_refuses_what_must_not_be_suggested_from():

@@ -49,7 +49,7 @@ def test_the_about_boxes_use_the_channels_page_and_the_chat_tab_rules():
     assert "{% set about_chats = channels_for(u, v) %}" in read("ruqqus", "templates", "partials", "profile_about.html")
     guild = func(read("ruqqus", "routes", "guild_channels.py"), "guild_channels_for")
     assert "has_chat(board, v)" in guild and "_read_refusal(row, v, _hidden(board, v, row))" in guild
-    assert "{% set about_channels = guild_channels_for(b, v) %}" in read("ruqqus", "templates", "board.html")
+    assert "{% set about_channels = guild_channels_for(b, v) %}" in read("ruqqus", "templates", "partials", "guild_sidebar.html")
 
 
 def test_the_search_box_draws_text_only():

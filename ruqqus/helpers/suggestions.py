@@ -22,9 +22,14 @@ Rules this module keeps (CLAUDE.md):
 import math
 import time
 
+from ruqqus.helpers import category_filter
+from ruqqus.helpers.i18n_runtime import N_, msg, tr, trn
+
 SIDEBAR_COUNT = 3        # one of each kind in the sidebar box
 PAGE_COUNT = 50          # the full page
 CACHE_SECONDS = 300
+GUILD_CACHE_SECONDS = 1800        # Similar guilds' ranking: its members-in-common query is the costly one
+SIMILAR_GUILDS_MS = 2500          # and it gives up (leaving the same-topic guilds) after this long
 RECENT_SECONDS = 30 * 86400
 SPECIAL_SUBCATS = (108,)          # never suggested (as /browse)
 CHILD_HIDDEN_SUBCATS = (44,)      # and these when the word filter is on
@@ -70,6 +75,49 @@ def plural(n, one, many):
     return f"{n} {one if n == 1 else many}"
 
 
+# A reason is kept in the cached ranking as data, never as text in one reader's language (the ranking is cached, and
+# similar accounts' is shared by every viewer): an English label marked with N_, or (kind, count) for one that counts.
+FOLLOWED_BY, MEMBERS_YOU_FOLLOW, FOLLOWERS = "followed_by", "members_you_follow", "followers"
+# Similar accounts (helpers/similar_store.py): (SHARED_FOLLOWERS, count, the profile's username) and
+# (ALSO_ACTIVE_IN, guild name)
+SHARED_FOLLOWERS, ALSO_ACTIVE_IN = "shared_followers", "also_active_in"
+# Similar guilds (helpers/similar_guilds_store.py): (SHARES_MEMBERS, the guild the box is on) and (SAME_TOPIC, the topic's
+# English name). Neither carries a count: how many members two guilds share is not shown.
+SHARES_MEMBERS, SAME_TOPIC = "shares_members", "same_topic"
+
+
+def _similar_reason(reason):
+    """A Similar accounts or Similar guilds reason (helpers/similar_store.py, similar_guilds_store.py), which names the
+    profile or guild it is drawn on, or None."""
+    if isinstance(reason, (tuple, list)) and len(reason) == 3 and reason[0] == SHARED_FOLLOWERS:
+        _kind, n, name = reason
+        return trn("Followed by %(num)s person who follows @%(name)s", "Followed by %(num)s people who follow @%(name)s",
+                   n, name=name)
+    if isinstance(reason, (tuple, list)) and len(reason) == 2 and reason[0] == ALSO_ACTIVE_IN:
+        return tr("Also active in +%(guild)s", guild=reason[1])
+    if isinstance(reason, (tuple, list)) and len(reason) == 2 and reason[0] == SHARES_MEMBERS:
+        return tr("Shares members with +%(guild)s", guild=reason[1])
+    if isinstance(reason, (tuple, list)) and len(reason) == 2 and reason[0] == SAME_TOPIC:
+        return tr("Also about %(topic)s", topic=msg(reason[1]))
+    return None
+
+
+def reason_text(reason):
+    """A reason as the reader reads it."""
+    similar = _similar_reason(reason)
+    if similar is not None:
+        return similar
+    if isinstance(reason, (tuple, list)) and len(reason) == 2:
+        kind, n = reason
+        if kind == FOLLOWED_BY:
+            return trn("Followed by %(num)s person you follow", "Followed by %(num)s people you follow", n)
+        if kind == MEMBERS_YOU_FOLLOW:
+            return trn("%(num)s person you follow is a member", "%(num)s people you follow are members", n)
+        if kind == FOLLOWERS:
+            return trn("%(num)s follower", "%(num)s followers", n)
+    return msg(reason)
+
+
 # --- eligibility (pure) --------------------------------------------------------
 
 def user_eligible(u, viewer_id, following, blocked_ids):
@@ -88,6 +136,17 @@ def guild_eligible(b, joined, blocked_board_ids, filter_on):
     return b.subcat_id not in hidden
 
 
+def similar_guild_eligible(b, joined, blocked_board_ids, exiled_board_ids, filter_on, sensitive_ok):
+    """May this guild be suggested on another guild's page? Everything `guild_eligible` asks, and not a Circle guild, an
+    NSFL one, one the viewer is exiled from, nor a sensitive one unless the guild the box is on is itself sensitive or the
+    viewer chose to see sensitive content (`sensitive_ok`)."""
+    if not guild_eligible(b, joined, blocked_board_ids, filter_on):
+        return False
+    if b.id in exiled_board_ids or b.is_circle or b.is_nsfl:
+        return False
+    return bool(sensitive_ok) or not b.is_sensitive
+
+
 def curation_eligible(c, viewer_id, followed, blocked_ids, owner_ok):
     """`owner_ok`: the owner exists, is not banned or deleted and passes the word filter."""
     if c is None or c.is_private or c.owner_id == viewer_id or c.id in followed:
@@ -102,13 +161,16 @@ def _cache():
     return cache
 
 
-def _memo(fn):
-    """memoize lazily: the cache object only exists once the app has started."""
+def _memo(fn=None, *, seconds=None):
+    """memoize lazily: the cache object only exists once the app has started. `@_memo` keeps CACHE_SECONDS;
+    `@_memo(seconds=...)` another time."""
+    if fn is None:
+        return lambda inner: _memo(inner, seconds=seconds)
     holder = {}
 
     def wrapper(*args, **kwargs):
         if "f" not in holder:
-            holder["f"] = _cache().memoize(CACHE_SECONDS)(fn)
+            holder["f"] = _cache().memoize(seconds or CACHE_SECONDS)(fn)
         return holder["f"](*args, **kwargs)
     wrapper.__name__ = fn.__name__
     wrapper.uncached = fn
@@ -129,11 +191,11 @@ def user_candidates(viewer_id):
         f2, f2.c.user_id == f1.c.target_id
     ).filter(f1.c.user_id == viewer_id).group_by(f2.c.target_id).order_by(func.count().desc()).limit(200).all()
     for uid, n in rows:
-        s.add(uid, 3 * n, f"Followed by {plural(n, 'person', 'people')} you follow")
+        s.add(uid, 3 * n, (FOLLOWED_BY, n))
 
     # accounts that follow you
     for (uid,) in g.db.query(Follow.user_id).filter(Follow.target_id == viewer_id).limit(200).all():
-        s.add(uid, 2, "Follows you")
+        s.add(uid, 2, N_("Follows you"))
 
     # taste: who posts in the guilds you joined (anonymous posts are left out)
     since = int(time.time()) - RECENT_SECONDS
@@ -146,19 +208,19 @@ def user_candidates(viewer_id):
         Board.name != PROFILE_BOARD,
     ).group_by(Submission.author_id).order_by(func.count().desc()).limit(200).all()
     for uid, n in rows:
-        s.add(uid, min(n, 5) * 0.8, "Active in guilds you joined")
+        s.add(uid, min(n, 5) * 0.8, N_("Active in guilds you joined"))
 
     # popularity, for a member with little signal
     for uid, n in g.db.query(Follow.target_id, func.count()).group_by(Follow.target_id).order_by(
             func.count().desc()).limit(50).all():
-        s.add(uid, popularity(n), "Popular on the site")
+        s.add(uid, popularity(n), N_("Popular on the site"))
 
     # and a small site with few follows: who has been posting lately (never anonymous posts)
     for uid, n in g.db.query(Submission.author_id, func.count()).filter(
             Submission.created_utc > since, Submission.is_banned == False,
             Submission.deleted_utc == 0, Submission.is_anonymous == False,
     ).group_by(Submission.author_id).order_by(func.count().desc()).limit(50).all():
-        s.add(uid, min(n, 5) * 0.2, "Active recently")
+        s.add(uid, min(n, 5) * 0.2, N_("Active recently"))
 
     return s.rows()[:300]
 
@@ -176,23 +238,24 @@ def guild_candidates(viewer_id):
     for bid, n in g.db.query(Subscription.board_id, func.count()).filter(
             Subscription.user_id.in_(followed), Subscription.is_active == True
     ).group_by(Subscription.board_id).order_by(func.count().desc()).limit(200).all():
-        s.add(bid, 3 * n, f"{plural(n, 'person', 'people')} you follow {'is a member' if n == 1 else 'are members'}")
+        s.add(bid, 3 * n, (MEMBERS_YOU_FOLLOW, n))
 
-    # guilds in the categories your joins and votes point at
+    # guilds in the categories your joins and votes point at (-N: guilds filed under a category alone)
     viewer = g.db.query(User).filter(User.id == viewer_id).first()
     subcats = viewer.interest_subcats() if viewer else []
     for rank, subcat in enumerate(subcats):
         weight = 2.5 - 0.15 * rank
         for bid, in g.db.query(Board.id).filter(
-                Board.subcat_id == subcat, Board.is_banned == False, Board.is_private == False
+                category_filter.board_clause([subcat], Board.subcat_id, Board.cat_id),
+                Board.is_banned == False, Board.is_private == False
         ).order_by(Board.stored_subscriber_count.desc()).limit(25).all():
-            s.add(bid, weight, "Matches your interests")
+            s.add(bid, weight, N_("Matches your interests"))
 
     # popularity
     for bid, n in g.db.query(Board.id, Board.stored_subscriber_count).filter(
             Board.is_banned == False, Board.is_private == False, Board.all_opt_out == False
     ).order_by(Board.stored_subscriber_count.desc()).limit(50).all():
-        s.add(bid, popularity(n or 0), "Popular guild")
+        s.add(bid, popularity(n or 0), N_("Popular guild"))
 
     return s.rows()[:300]
 
@@ -222,17 +285,17 @@ def curation_candidates(viewer_id):
         CurationFollow.curation_id.in_(mine)).group_by(CurationFollow.curation_id).all())
 
     viewer = g.db.query(User).filter(User.id == viewer_id).first()
-    subcats = set(str(x) for x in (viewer.interest_subcats() if viewer else []))
+    interests = set(viewer.interest_subcats() if viewer else [])
 
     for c in g.db.query(Curation).filter(Curation.id.in_(mine)).all():
         if guild_overlap.get(c.id):
-            s.add(c.id, 3 * guild_overlap[c.id], "Covers guilds you joined")
+            s.add(c.id, 3 * guild_overlap[c.id], N_("Covers guilds you joined"))
         if user_overlap.get(c.id):
-            s.add(c.id, 3 * user_overlap[c.id], "Includes accounts you follow")
-        if subcats and subcats.intersection(str(x) for x in c.category_filter_list):
-            s.add(c.id, 2, "Matches your interests")
+            s.add(c.id, 3 * user_overlap[c.id], N_("Includes accounts you follow"))
+        if interests and interests & set(c.category_filter_list):
+            s.add(c.id, 2, N_("Matches your interests"))
         n = followers.get(c.id, 0)
-        s.add(c.id, popularity(n), plural(n, "follower", "followers") if n else "New curation")
+        s.add(c.id, popularity(n), (FOLLOWERS, n) if n else N_("New curation"))
 
     return s.rows()[:300]
 
@@ -260,7 +323,7 @@ def users_for(v, limit=PAGE_COUNT):
     ids = [r[0] for r in rows]
     users = {u.id: u for u in filter_users(g.db.query(User).filter(User.id.in_(ids)), v).all()}
     picked = top(rows, lambda i: user_eligible(users.get(i), v.id, following, blocked), limit)
-    return [(users[i], reason) for i, _, reason in picked]
+    return [(users[i], reason_text(reason)) for i, _, reason in picked]
 
 
 def guilds_for(v, limit=PAGE_COUNT):
@@ -277,7 +340,7 @@ def guilds_for(v, limit=PAGE_COUNT):
     blocked = {x for x, in g.db.query(BoardBlock.board_id).filter(BoardBlock.user_id == v.id).all()}
     filter_on = viewer_level(v) > 0
     picked = top(rows, lambda i: guild_eligible(boards.get(i), joined, blocked, filter_on), limit)
-    return [(boards[i], reason) for i, _, reason in picked]
+    return [(boards[i], reason_text(reason)) for i, _, reason in picked]
 
 
 def curations_for(v, limit=PAGE_COUNT):
@@ -301,7 +364,7 @@ def curations_for(v, limit=PAGE_COUNT):
         return curation_eligible(c, v.id, followed, blocked, owner_ok)
 
     picked = top(rows, ok, limit)
-    return [(curations[i], reason) for i, _, reason in picked]
+    return [(curations[i], reason_text(reason)) for i, _, reason in picked]
 
 
 # --- Similar accounts (a profile's sidebar; the SQL and its rules are in helpers/similar_store.py) ---------------
@@ -334,7 +397,70 @@ def similar_for(owner, v, limit=SIMILAR_COUNT):
     ids = [r[0] for r in rows]
     users = {u.id: u for u in filter_users(g.db.query(User).filter(User.id.in_(ids)), v).all()} if ids else {}
     picked = top(rows, lambda i: user_eligible(users.get(i), viewer_id, following, blocked), limit)
-    return [(users[i], reason) for i, _, reason in picked]
+    return [(users[i], reason_text(reason)) for i, _, reason in picked]
+
+
+# --- Similar guilds (a guild's sidebar; the SQL and its rules are in helpers/similar_guilds_store.py) ----------------
+
+def _topic_of(anchor):
+    """What the guild is filed under (similar_guilds_store.Topic), or None for an Uncategorized or unlisted one."""
+    from ruqqus.helpers import similar_guilds_store as store
+
+    if anchor.subcat_id in SPECIAL_SUBCATS:
+        return None
+    category = anchor.category
+    if category is None:
+        return None
+    subcat = None if anchor.cat_id else anchor.subcat
+    return store.Topic(subcat.id if subcat else None, subcat.name if subcat else None, category.id, category.name,
+                       tuple(sub.id for sub in category.subcats))
+
+
+@_memo(seconds=GUILD_CACHE_SECONDS)
+def similar_guild_candidates(board_id):
+    """The ranking for one guild, the same for every viewer (it reads nothing about the viewer). The members-in-common
+    query runs under a time limit; past it only the same-topic guilds are ranked."""
+    from flask import g
+    from ruqqus.classes import Board
+    from ruqqus.helpers import curation_feed, similar_guilds_store as store
+
+    anchor = g.db.query(Board).filter(Board.id == board_id).first()
+    if anchor is None:
+        return []
+    try:
+        members = curation_feed.limited(g.db, lambda: store.co_members(g.db, board_id), ms=SIMILAR_GUILDS_MS)
+    except curation_feed.FeedTooSlow:
+        members = []
+    return store.candidates(g.db, board_id, anchor.name, _topic_of(anchor), members=members)
+
+
+def similar_guilds_for(anchor, v, limit=SIMILAR_COUNT):
+    """[(guild, reason)] like `anchor` that the viewer (or a visitor, v None) may be shown: never the guild itself, one
+    the viewer joined or muted or is exiled from, a private, Circle, banned, NSFL, opted-out or word-filtered guild, and
+    a sensitive one only when `anchor` is sensitive or the viewer chose to see sensitive content."""
+    from flask import g
+    from ruqqus.classes import Board, Subscription
+    from ruqqus.classes.board_relationships import BanRelationship, BoardBlock
+    from ruqqus.helpers.sensitive import shows_sensitive
+    from ruqqus.helpers.visibility import filter_boards, viewer_level
+
+    rows = [r for r in similar_guild_candidates(anchor.id) if r[0] != anchor.id]
+    ids = [r[0] for r in rows]
+    if not ids:
+        return []
+    boards = {b.id: b for b in filter_boards(g.db.query(Board).filter(Board.id.in_(ids)), v).all()}
+    joined, blocked, exiled = set(), set(), set()
+    if v:
+        joined = {x for x, in g.db.query(Subscription.board_id).filter(
+            Subscription.user_id == v.id, Subscription.is_active == True).all()}
+        blocked = {x for x, in g.db.query(BoardBlock.board_id).filter(BoardBlock.user_id == v.id).all()}
+        exiled = {x for x, in g.db.query(BanRelationship.board_id).filter(
+            BanRelationship.user_id == v.id, BanRelationship.is_active == True, BanRelationship.board_id.in_(ids)).all()}
+    filter_on = viewer_level(v) > 0
+    sensitive_ok = bool(anchor.is_sensitive) or shows_sensitive(v)
+    picked = top(rows, lambda i: similar_guild_eligible(boards.get(i), joined, blocked, exiled, filter_on, sensitive_ok),
+                 limit)
+    return [(boards[i], reason_text(reason)) for i, _, reason in picked]
 
 
 def sidebar_suggestions(v):

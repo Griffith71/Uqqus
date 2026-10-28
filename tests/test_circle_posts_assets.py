@@ -126,6 +126,8 @@ def test_lists_that_ask_for_public_posts_are_the_ones_known_and_each_decision_is
     assert counts == {
         "ruqqus/classes/submission.py": 3, "ruqqus/classes/user.py": 15,
         "ruqqus/helpers/ads.py": 1, "ruqqus/helpers/media/attach.py": 3, "ruqqus/helpers/guild_channel_store.py": 1, "ruqqus/helpers/post_counts.py": 1, "ruqqus/helpers/space_counts.py": 1, "ruqqus/helpers/similar_store.py": 1, "ruqqus/helpers/circle_clause.py": 2, "ruqqus/helpers/creator_fund_store.py": 3, "ruqqus/helpers/circle_guard.py": 1, "ruqqus/helpers/trending_store.py": 2,
+        # Post Info's site-wide standing compares a profile post with public ones only: counts, a Circle post isn't one
+        "ruqqus/helpers/post_standing.py": 1,
         "ruqqus/routes/circles.py": 1, "ruqqus/routes/curations.py": 2,
         "ruqqus/routes/deletion_log.py": 2, "ruqqus/routes/front.py": 6, "ruqqus/routes/happening_pages.py": 2, "ruqqus/routes/legal.py": 1,
         "ruqqus/routes/posts.py": 2, "ruqqus/routes/search.py": 4, "ruqqus/templates/comments.html": 1,

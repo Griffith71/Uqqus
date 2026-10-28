@@ -9,38 +9,49 @@
 {% set about_guilds = profile_guilds(u, v) %}
 {% set about_badges = u.badges %}
 <div class="sidebar-section profile-about">
-  <div class="title"><i class="fas fa-id-card mr-2"></i>About @{{ u.username }}</div>
+  <div class="title"><i class="fas fa-id-card mr-2"></i>{{ _("About @%(name)s", name=u.username) }}</div>
   <div class="body">
+    {# on a post page (submission.html, `about_identity`) the box says whose account it is first: the profile page has
+       the header for that #}
+    {% if about_identity %}
+    <a class="profile-about-identity" href="{{ u.permalink }}">
+      <img src="{{ u.profile_url }}" alt="" width="40" height="40" class="profile-pic-40">
+      <span class="min-w-0">
+        <span class="d-block font-weight-bold text-truncate">{{ u.shown_name }}</span>
+        <span class="d-block text-muted text-small text-truncate">@{{ u.username }}</span>
+      </span>
+    </a>
+    {% endif %}
     <dl class="profile-about-facts mb-0">
       <div class="profile-about-fact profile-about-region">
-        <dt>Region</dt>
+        <dt>{{ _("Region") }}</dt>
         <dd>
           {% if u.display_region %}
-          <span>{{ u.display_region_name }}</span>
-          {% if u.region_suspicion_flag %}<i class="fas fa-exclamation-triangle text-warning ml-1" data-toggle="tooltip" data-placement="bottom" title="We can't confirm this account's region with confidence - it may use a VPN or travel often." aria-label="We can't confirm this account's region"></i>{% endif %}
+          <span>{{ msg_text(u.display_region_name) }}</span>
+          {% if u.region_suspicion_flag %}<i class="fas fa-exclamation-triangle text-warning ml-1" data-toggle="tooltip" data-placement="bottom" title="{{ _("We can't confirm this account's region with confidence - it may use a VPN or travel often.") }}" aria-label="{{ _("We can't confirm this account's region") }}"></i>{% endif %}
           {% set territories = u.display_region | region_country_list %}
-          <button type="button" class="profile-about-more d-block text-small" data-toggle="modal" data-target="#aboutAccountModal">{% if territories %}{{ territories | length }} possible territories{% else %}About this account{% endif %}</button>
+          <button type="button" class="profile-about-more d-block text-small" data-toggle="modal" data-target="#aboutAccountModal">{% if territories %}{# Translators: how many countries the region may be; English uses the same words for one and many #}{{ ngettext("%(num)s possible territories", "%(num)s possible territories", territories | length) }}{% else %}{{ _("About this account") }}{% endif %}</button>
           {% else %}
-          <span class="text-muted">Not known yet</span>
-          <span class="d-block text-muted text-small">Set from where the account uses {{ 'SITE_NAME' | app_config }}.</span>
+          <span class="text-muted">{{ _("Not known yet") }}</span>
+          <span class="d-block text-muted text-small">{{ _("Set from where the account uses %(site)s.") }}</span>
           {% endif %}
         </dd>
       </div>
       <div class="profile-about-fact">
-        <dt>Rep</dt>
+        <dt>{{ _("Rep") }}</dt>
         <dd><span class="rep-count {{ u.rep_class }}" title="{{ u.rep_label }}">{{ u.true_score }}</span>
           <span class="d-block text-muted text-small">{{ u.rep_label }}</span></dd>
       </div>
     </dl>
 
     {% if about_badges %}
-    <div class="profile-about-heading">Achievements</div>
+    <div class="profile-about-heading">{{ _("Achievements") }}</div>
     <ul class="profile-about-list">
       {% for b in about_badges %}
       <li class="profile-about-item">
         <img src="{{ b.path }}" alt="" width="24" height="24" class="mr-2">
-        <span>{% if b.url %}<a href="{{ b.url }}">{{ b.name }}</a>{% else %}{{ b.name }}{% endif %}
-          {% if b.text %}<span class="d-block text-muted text-small">{{ b.text }}</span>{% endif %}</span>
+        <span>{% if b.url %}<a href="{{ b.url }}">{{ msg_text(b.name) }}</a>{% else %}{{ msg_text(b.name) }}{% endif %}
+          {% if b.text %}<span class="d-block text-muted text-small">{{ msg_text(b.text) }}</span>{% endif %}</span>
       </li>
       {% endfor %}
     </ul>
@@ -50,26 +61,26 @@
        are private and never listed) #}
     {% set about_chats = channels_for(u, v) %}
     {% if about_chats %}
-    <div class="profile-about-heading">Chats</div>
+    <div class="profile-about-heading">{{ _("Chats") }}</div>
     <ul class="profile-about-list">
       {% for c in about_chats %}
       <li class="profile-about-item">
         <i class="fas fa-tower-broadcast fa-fw text-muted mr-2" aria-hidden="true"></i>
         <a href="/@{{ u.username }}/channels" class="text-truncate">{{ c.name }}</a>
-        <span class="profile-about-role ml-auto">{% if c.member %}Joined{% elif c.public %}Channel{% else %}For a circle{% endif %}</span>
+        <span class="profile-about-role ml-auto">{% if c.member %}{{ pgettext("status", "Joined") }}{% elif c.public %}{{ pgettext("noun", "Channel") }}{% else %}{{ _("For a circle") }}{% endif %}</span>
       </li>
       {% endfor %}
     </ul>
     {% endif %}
 
     {% if about_guilds %}
-    <div class="profile-about-heading">Guilds</div>
+    <div class="profile-about-heading">{{ _("Guilds") }}</div>
     <ul class="profile-about-list">
       {% for board, role in about_guilds %}
       <li class="profile-about-item">
         <img src="{{ board.profile_url }}" alt="" width="24" height="24" class="profile-pic-25 mr-2">
         <a href="{{ board.permalink }}" class="text-truncate">+{{ board.name }}</a>
-        <span class="profile-about-role ml-auto">{{ role }}</span>
+        <span class="profile-about-role ml-auto">{{ {"Founder": pgettext("guild role", "Founder"), "Guildmaster": pgettext("guild role", "Guildmaster")}.get(role, role) }}</span>
       </li>
       {% endfor %}
     </ul>

@@ -18,7 +18,7 @@ def user(id, **kw):
 
 
 def guild(id, **kw):
-    base = dict(id=id, name=f"g{id}", is_banned=False, is_private=False, all_opt_out=False, subcat_id=5)
+    base = dict(id=id, name=f"g{id}", is_banned=False, is_private=False, all_opt_out=False, subcat_id=5, cat_id=None)
     base.update(kw)
     return NS(**base)
 
@@ -95,12 +95,145 @@ def test_banned_private_opted_out_and_profile_guilds_are_never_suggested():
     assert not sg.guild_eligible(guild(1, name=sg.PROFILE_BOARD), set(), set(), False)
 
 
+def similar(id, **kw):
+    base = dict(is_circle=False, is_nsfl=False, is_sensitive=False)
+    base.update(kw)
+    return guild(id, **base)
+
+
+def test_similar_guilds_add_to_the_guild_rules():
+    # what guild_eligible refuses stays refused, and Similar guilds also refuses a Circle guild, an NSFL guild, one the viewer
+    # is exiled from, and a sensitive one unless the guild the box is on is sensitive or the viewer chose to see them
+    assert sg.similar_guild_eligible(similar(1), set(), set(), set(), False, False)
+    assert not sg.similar_guild_eligible(similar(1), {1}, set(), set(), False, False)       # joined
+    assert not sg.similar_guild_eligible(similar(1), set(), {1}, set(), False, False)       # muted
+    assert not sg.similar_guild_eligible(similar(1), set(), set(), {1}, False, False)       # exiled
+    assert not sg.similar_guild_eligible(similar(1, is_circle=True), set(), set(), set(), False, False)
+    assert not sg.similar_guild_eligible(similar(1, is_nsfl=True), set(), set(), set(), False, False)
+    assert not sg.similar_guild_eligible(similar(1, is_private=True), set(), set(), set(), False, False)
+    assert not sg.similar_guild_eligible(similar(1, is_sensitive=True), set(), set(), set(), False, False)
+    assert sg.similar_guild_eligible(similar(1, is_sensitive=True), set(), set(), set(), False, True)
+
+
+def test_similar_guilds_reasons_name_no_person_and_no_count():
+    here = sg.reason_text((sg.SHARES_MEMBERS, "cats"))
+    assert here == "Shares members with +cats" and not any(ch.isdigit() for ch in here)
+    assert sg.reason_text((sg.SAME_TOPIC, "Food")) == "Also about Food"
+
+
 def test_hidden_categories_follow_the_word_filter():
     for subcat in sg.SPECIAL_SUBCATS:
         assert not sg.guild_eligible(guild(1, subcat_id=subcat), set(), set(), False)
     for subcat in sg.CHILD_HIDDEN_SUBCATS:
         assert sg.guild_eligible(guild(1, subcat_id=subcat), set(), set(), False)
         assert not sg.guild_eligible(guild(1, subcat_id=subcat), set(), set(), True)
+
+
+def test_a_guild_filed_under_a_category_alone_is_not_one_of_the_hidden_subcategories():
+    alone = guild(1, subcat_id=0, cat_id=7)
+    assert sg.guild_eligible(alone, set(), set(), False) and sg.guild_eligible(alone, set(), set(), True)
+
+
+def test_the_interest_ids_may_be_a_category_alone_in_both_candidate_queries():
+    guilds = inspect.getsource(sg.guild_candidates.uncached)
+    assert "category_filter.board_clause([subcat], Board.subcat_id, Board.cat_id)" in guilds
+    assert "Board.subcat_id == subcat" not in guilds
+    curations = inspect.getsource(sg.curation_candidates.uncached)
+    assert "interests = set(viewer.interest_subcats() if viewer else [])" in curations
+    assert "interests & set(c.category_filter_list)" in curations
+    assert "expand" not in curations
+
+
+def test_a_curation_matches_an_interest_only_through_an_id_both_name(monkeypatch):
+    # curation_candidates run for real on SQLite: -N is the guilds filed under category N alone, so it is no stand-in for
+    # N's subcategories (nor they for it); a token equal on both sides overlaps
+    import sys
+    import types
+
+    import flask
+    from sqlalchemy import Boolean, Column, Integer, String, create_engine
+    from sqlalchemy.orm import Session, declarative_base
+
+    Base = declarative_base()
+    interests = []
+
+    class Follow(Base):
+        __tablename__ = "follows"
+        id = Column(Integer, primary_key=True)
+        user_id = Column(Integer)
+        target_id = Column(Integer)
+
+    class Subscription(Base):
+        __tablename__ = "subscriptions"
+        id = Column(Integer, primary_key=True)
+        user_id = Column(Integer)
+        board_id = Column(Integer)
+        is_active = Column(Boolean)
+
+    class User(Base):
+        __tablename__ = "users"
+        id = Column(Integer, primary_key=True)
+
+        def interest_subcats(self):
+            return interests
+
+    class Curation(Base):
+        __tablename__ = "curations"
+        id = Column(Integer, primary_key=True)
+        is_private = Column(Boolean, default=False)
+        category_filter = Column(String)
+
+        @property
+        def category_filter_list(self):
+            return [int(x) for x in self.category_filter.split(",") if x] if self.category_filter else []
+
+    class CurationGuild(Base):
+        __tablename__ = "curation_guilds"
+        id = Column(Integer, primary_key=True)
+        curation_id = Column(Integer)
+        board_id = Column(Integer)
+
+    class CurationUser(Base):
+        __tablename__ = "curation_users"
+        id = Column(Integer, primary_key=True)
+        curation_id = Column(Integer)
+        target_user_id = Column(Integer)
+
+    class CurationFollow(Base):
+        __tablename__ = "curation_follows"
+        id = Column(Integer, primary_key=True)
+        curation_id = Column(Integer)
+
+    classes = types.ModuleType("ruqqus.classes")
+    classes.Follow, classes.Subscription, classes.User = Follow, Subscription, User
+    curations = types.ModuleType("ruqqus.classes.curations")
+    curations.Curation, curations.CurationGuild = Curation, CurationGuild
+    curations.CurationUser, curations.CurationFollow = CurationUser, CurationFollow
+    monkeypatch.setitem(sys.modules, "ruqqus.classes", classes)
+    monkeypatch.setitem(sys.modules, "ruqqus.classes.curations", curations)
+
+    engine = create_engine("sqlite://")
+    Base.metadata.create_all(engine)
+    db = Session(engine)
+    db.add(User(id=5))
+    # 1: the subcategories of Arts; 2: Arts alone; 3: both; 4: another category's rows
+    db.add_all([Curation(id=1, category_filter="7,8"), Curation(id=2, category_filter="-1"),
+                Curation(id=3, category_filter="-1,7,8"), Curation(id=4, category_filter="9"), Curation(id=5)])
+    db.commit()
+
+    def matching(own_interests):
+        interests[:] = own_interests
+        with flask.Flask("test").app_context():
+            flask.g.db = db
+            rows = sg.curation_candidates.uncached(5)
+        return sorted(row[0] for row in rows if row[2] == "Matches your interests")
+
+    assert matching([7]) == [1, 3]                  # a subcategory is not the category alone
+    assert matching([-1]) == [2, 3]                 # the category alone is not its subcategories
+    assert matching([-1, 7]) == [1, 2, 3]
+    assert matching([9]) == [4]
+    assert matching([-2]) == [] and matching([]) == []
+    db.close()
 
 
 def test_curations_must_be_public_someone_elses_and_not_followed():
@@ -125,7 +258,8 @@ def test_the_posting_signal_leaves_anonymous_posts_out():
 
 def test_reasons_name_no_individual():
     source = inspect.getsource(sg)
-    reasons = re.findall(r'(?:s\.add\([^\n]*?,\s*)(f?"[^"\n]+")', source)
+    reasons = re.findall(r'(?:s\.add\([^\n]*?,\s*)(?:N_\()?(f?"[^"\n]+")', source)
+    reasons += re.findall(r'trn\(("[^"\n]+")', inspect.getsource(sg.reason_text))      # the reasons that count
     assert reasons
     for text in reasons:
         assert "@" not in text and "author" not in text.lower(), text

@@ -5,6 +5,7 @@ from sqlalchemy import create_engine, text
 from sqlalchemy.orm import Session
 
 from ruqqus.helpers import similar_store
+from ruqqus.helpers.suggestions import reason_text
 
 NOW = 1_800_000_000
 OWNER = 1
@@ -43,7 +44,7 @@ def test_co_followed_needs_three_of_the_owners_followers():
     follows = [(f, OWNER) for f in (10, 11, 12)] + [(10, 50), (11, 50), (12, 50), (10, 60), (11, 60), (10, 70)]
     rows = similar_store.candidates(make(follows=follows), OWNER, "owner", NOW)
     assert ids(rows) == [50]
-    assert rows[0][2] == "Followed by 3 people who follow @owner"
+    assert reason_text(rows[0][2]) == "Followed by 3 people who follow @owner"
 
 
 def test_the_owner_is_never_suggested():
@@ -62,7 +63,7 @@ def test_same_guilds_counts_public_named_posts_only():
         (26, 1, {"t": NOW - 200 * 86400}),  # nor an old one
     ]
     rows = similar_store.candidates(make(boards=boards, posts=posts), OWNER, "owner", NOW)
-    assert ids(rows) == [20] and rows[0][2] == "Also active in +cats"
+    assert ids(rows) == [20] and reason_text(rows[0][2]) == "Also active in +cats"
 
 
 def test_the_owners_anonymous_posts_never_point_at_a_guild():

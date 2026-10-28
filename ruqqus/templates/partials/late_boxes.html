@@ -1,13 +1,18 @@
 {#
   The right sidebar's boxes that are filled after the page loads, so no page waits for their queries:
-  Trending (assets/js/trending.js) and Who to follow (assets/js/who_to_follow.js). On a profile (the page sets
+  What's happening (assets/js/happening.js: Trending, Live and Today in one box; with HAPPENING_ENABLED=0 the Trending box
+  alone, assets/js/trending.js) and Who to follow (assets/js/who_to_follow.js). On a profile (the page sets
   `profile_user`) Who to follow is Similar accounts instead, for visitors too (the same script fills it).
 
   So that their arrival never pushes the boxes below them, each placeholder keeps the height it had the last
   time (fill_late_box in all_js.js stores it per box) and the script below gives it that height before the
   first paint; the content then fades in. A box that was empty last time takes no room.
 #}
+{% if happening_enabled() %}
+<div id="happening-box" class="late-box" data-src="/inpage/happening"></div>
+{% else %}
 <div id="trending-box" class="late-box" data-src="/inpage/trending"></div>
+{% endif %}
 {{ ad_slot("sidebar") }}
 {% if profile_user %}<div id="similar-accounts" class="late-box" data-src="/inpage/similar_accounts/{{ profile_user.username }}"></div>
 {% elif v %}<div id="who-to-follow" class="late-box" data-src="/inpage/who_to_follow"></div>{% endif %}
@@ -17,6 +22,7 @@
       document.querySelectorAll(".late-box").forEach(function (box) {
         var h = parseInt(localStorage.getItem("late_box_h:" + box.id), 10);
         if (h > 0) box.style.minHeight = h + "px";
+        else if (box.id === "happening-box") box.style.minHeight = "29.8rem";    // the first visit: Trending and one more section (417px at the 14px root, measured); Live and Today are not drawn while empty
       });
     } catch (e) {}
   })();

@@ -16,7 +16,10 @@ def test_only_the_opt_in_pages_draw_an_ad():
     for path in TEMPLATES.rglob("*.html"):
         for page in re.findall(r'ad_slot\("(\w+)"\)', path.read_text(encoding="utf-8")):
             calls.setdefault(str(path.relative_to(TEMPLATES)), []).append(page)
-    assert calls == {"home.html": ["feed"], "submission.html": ["post"], "partials/late_boxes.html": ["sidebar"]}
+    # the sidebar slot: the site-wide boxes (late_boxes.html) and, at the foot of a guild's own sidebar, the guild page's
+    # and a guild post's (partials/guild_sidebar.html; the owner kept one there, 2026-10-23)
+    assert calls == {"home.html": ["feed"], "submission.html": ["post"], "partials/late_boxes.html": ["sidebar"],
+                     "partials/guild_sidebar.html": ["sidebar"]}
 
 
 def test_a_page_that_shows_no_posts_never_gets_an_ad():
