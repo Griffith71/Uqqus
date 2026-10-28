@@ -372,8 +372,9 @@ def test_mutes_also_hide_posts_coauthored_with_a_muted_account():
 
 def test_notifications_leave_out_blocked_accounts_and_counts_agree():
     user = read("classes", "user.py")
-    listing = user.split("def notification_commentlisting(")[1].split("\n    def ")[0]
+    listing = user.split("def _notification_comment_query(")[1].split("\n    def ")[0]        # the list's filters, shared with the page
     assert "hide_blocked(hide_muted(notifications, self, Comment), self, Comment)" in listing
+    assert "self._notification_comment_query(tab)" in user.split("def notification_commentlisting(")[1].split("\n    def ")[0]
     count = user.split("def mentions_count(")[1].split("\n    @property")[0]
     assert "hide_blocked(filter_comments(hide_muted(" in count
     assert "c._is_blocked = False" not in func(read("routes", "front.py"), "notifications")

@@ -133,6 +133,12 @@ def ring_guild(board, actor, kind, target_id, link):
 
 
 # --- what a notice says: who did it, and a link; never a title or text --------------------------------------------
+# the stored messages (`notice_msgid`) of each sort, so the notifications page can tell a bell notice from any other
+# notice and bundle the ones from one account or one guild (helpers/notification_groups.py)
+ACCOUNT_NOTICE_IDS = frozenset(_ACCOUNT_NOTICES.values())
+GUILD_NOTICE_IDS = frozenset(_GUILD_NOTICES.values())
+
+
 
 def account_notice(username, kind, link, guild_name=None):
     who = f"@{username}"

@@ -1,0 +1,109 @@
+{#
+  One row of the notifications page (notifications.html): a bundle of notifications from one place, drawn as x.com draws them: a
+  type icon, a stack of avatars, one sentence naming who, an excerpt, a short time, and a "..." menu of what you can switch off.
+  The rules (what a row is, what bundles, the menu's items) are helpers/notification_groups.py; the data, helpers/notification_feed.py.
+  The whole row opens the thing through the overlay link; names and the menu sit above it (_notifications.scss). The menu's items
+  are flipped in place by assets/js/notification_actions.js, which reads the data-* attributes written here.
+  Sentences are written out per shape (one person, two, three or more) so each language can order them its own way.
+#}
+{% macro who(a) %}{% if a.anonymous %}<strong class="notif-name">{{ _("Anonymous") }}</strong>{% else %}<a class="notif-name" href="{{ a.link }}">{{ a.name }}</a>{% endif %}{% endmacro %}
+
+{% macro post_title(post) %}<a class="notif-title" href="{{ post.permalink }}">{{ post.title | safe }}</a>{% endmacro %}
+
+{% macro action_label(c, on) -%}
+  {%- if c.action == "post-follow" -%}{% if on %}{{ _("Unfollow this post") }}{% else %}{{ _("Follow this post") }}{% endif %}
+  {%- elif c.action == "user-bell" -%}{% if on %}{{ _("Turn off notifications from @%(name)s", name=c.target) }}{% else %}{{ _("Turn on notifications from @%(name)s", name=c.target) }}{% endif %}
+  {%- elif c.action == "user-follow" -%}{% if on %}{{ _("Unfollow @%(name)s", name=c.target) }}{% else %}{{ _("Follow @%(name)s", name=c.target) }}{% endif %}
+  {%- elif c.action == "user-mute" -%}{% if on %}{{ _("Unmute @%(name)s", name=c.target) }}{% else %}{{ _("Mute @%(name)s", name=c.target) }}{% endif %}
+  {%- elif c.action == "guild-bell" -%}{% if on %}{{ _("Turn off notifications from +%(guild)s", guild=c.target) }}{% else %}{{ _("Turn on notifications from +%(guild)s", guild=c.target) }}{% endif %}
+  {%- elif c.action == "guild-member" -%}{% if on %}{{ _("Leave +%(guild)s", guild=c.target) }}{% else %}{{ _("Join +%(guild)s", guild=c.target) }}{% endif %}
+  {%- elif c.action == "guild-mute" -%}{% if on %}{{ _("Unmute +%(guild)s", guild=c.target) }}{% else %}{{ _("Mute +%(guild)s", guild=c.target) }}{% endif %}
+  {%- endif -%}
+{%- endmacro %}
+
+{# one icon per action whatever its state: the label says what the next tap does #}
+{% set ACTION_ICONS = {"post-follow": "fa-bell", "user-bell": "fa-bell", "user-follow": "fa-user-group", "user-mute": "fa-volume-xmark",
+                       "guild-bell": "fa-bell", "guild-member": "fa-door-open", "guild-mute": "fa-volume-xmark"} %}
+{% set KIND_ICONS = {"comment_on_post": "fa-comment", "comment_on_comment": "fa-comment", "mention": "fa-at", "post": "fa-feather-alt",
+                     "bell_account": "fa-bell", "bell_guild": "fa-chess-rook", "system": "fa-circle-info"} %}
+
+{% macro row(grp, v) %}
+{% set first = grp.newest %}
+{% set n = grp.actors | length %}
+{% set href = (first.bundle_link if grp.count > 1 else first.link) or first.link or first.bundle_link %}
+{% set a = grp.names[0] if grp.names else none %}
+{% set b = grp.names[1] if grp.names | length > 1 else none %}
+<article class="notif notif-kind-{{ grp.kind | replace('_', '-') }}{% if grp.unread %} is-new{% endif %}" id="notification-{{ first.id }}" data-notification="{{ first.id }}">
+  <div class="notif-icon" aria-hidden="true"><i class="fas {{ KIND_ICONS[grp.kind] }} fa-fw"></i></div>
+
+  <div class="notif-main">
+    {% if grp.shown %}
+    <div class="notif-avatars{% if grp.shown | length > 1 %} is-stack{% endif %}" aria-hidden="true">
+      {% for actor in grp.shown %}<img src="{{ actor.avatar }}" alt="" class="notif-avatar" loading="lazy">{% endfor %}
+    </div>
+    {% endif %}
+
+    <div class="notif-text">
+      {%- if grp.kind == "comment_on_post" -%}
+        {% set post = first.ref.post %}
+        {% set title %}{{ post_title(post) }}{% endset %}
+        {% if first.post_state == "own" %}
+          {% if n == 1 %}{{ _("%(a)s commented on your post %(post)s", a=who(a), post=title) }}
+          {% elif n == 2 %}{{ _("%(a)s and %(b)s commented on your post %(post)s", a=who(a), b=who(b), post=title) }}
+          {% else %}{{ ngettext("%(a)s, %(b)s and %(num)s other commented on your post %(post)s", "%(a)s, %(b)s and %(num)s others commented on your post %(post)s", grp.rest, a=who(a), b=who(b), post=title) }}{% endif %}
+        {% elif first.post_state == "following" %}
+          {% if n == 1 %}{{ _("%(a)s commented on a post you follow: %(post)s", a=who(a), post=title) }}
+          {% elif n == 2 %}{{ _("%(a)s and %(b)s commented on a post you follow: %(post)s", a=who(a), b=who(b), post=title) }}
+          {% else %}{{ ngettext("%(a)s, %(b)s and %(num)s other commented on a post you follow: %(post)s", "%(a)s, %(b)s and %(num)s others commented on a post you follow: %(post)s", grp.rest, a=who(a), b=who(b), post=title) }}{% endif %}
+        {% else %}
+          {# a post you no longer follow: the notifications stay, worded without "you follow" #}
+          {% if n == 1 %}{{ _("%(a)s commented on %(post)s", a=who(a), post=title) }}
+          {% elif n == 2 %}{{ _("%(a)s and %(b)s commented on %(post)s", a=who(a), b=who(b), post=title) }}
+          {% else %}{{ ngettext("%(a)s, %(b)s and %(num)s other commented on %(post)s", "%(a)s, %(b)s and %(num)s others commented on %(post)s", grp.rest, a=who(a), b=who(b), post=title) }}{% endif %}
+        {% endif %}
+      {%- elif grp.kind == "comment_on_comment" -%}
+        {% if n == 1 %}{{ _("%(a)s commented on your comment", a=who(a)) }}
+        {% elif n == 2 %}{{ _("%(a)s and %(b)s commented on your comment", a=who(a), b=who(b)) }}
+        {% else %}{{ ngettext("%(a)s, %(b)s and %(num)s other commented on your comment", "%(a)s, %(b)s and %(num)s others commented on your comment", grp.rest, a=who(a), b=who(b)) }}{% endif %}
+      {%- elif grp.kind == "mention" -%}
+        {% set title %}{{ post_title(first.ref.post) }}{% endset %}
+        {{ _("%(a)s mentioned you in a comment on %(post)s", a=who(a), post=title) }}
+      {%- elif grp.kind == "post" -%}
+        {% if grp.count == 1 %}{% set title %}{{ post_title(first.ref) }}{% endset %}{{ _("%(a)s posted %(post)s", a=who(a), post=title) }}
+        {% else %}{{ ngettext("%(a)s posted %(num)s new post", "%(a)s posted %(num)s new posts", grp.count, a=who(a)) }}{% endif %}
+      {%- elif grp.kind in ("bell_account", "bell_guild", "system") -%}
+        {% if grp.count == 1 or grp.kind == "system" %}
+          <span class="notif-notice">{{ notice_html(first.ref) | safe }}</span>
+        {% elif grp.kind == "bell_account" %}
+          {{ ngettext("%(a)s has %(num)s new update", "%(a)s has %(num)s new updates", grp.count, a=who(a) if a else first.account) }}
+        {% else %}
+          {% set guild_link %}<a class="notif-name" href="/+{{ first.guild }}">+{{ first.guild }}</a>{% endset %}
+          {{ ngettext("%(guild)s has %(num)s new update", "%(guild)s has %(num)s new updates", grp.count, guild=guild_link) }}
+        {% endif %}
+      {%- endif -%}
+    </div>
+
+    {% if first.excerpt and grp.kind != "system" %}<div class="notif-excerpt">{{ first.excerpt }}</div>{% endif %}
+  </div>
+
+  <div class="notif-side">
+    <time class="notif-time" datetime="{{ first.created_utc }}" title="{{ datetime_text(first.created_utc, '%d %B %Y at %H:%M') }}">{{ compact_age(first.created_utc) }}</time>
+    {% if grp.menu %}
+    <div class="dropdown notif-menu">
+      <button type="button" class="btn notif-menu-button" data-toggle="dropdown" data-boundary="viewport" aria-haspopup="true" aria-expanded="false" aria-label="{{ _('More options for this notification') }}"><i class="fas fa-ellipsis" aria-hidden="true"></i></button>
+      <div class="dropdown-menu dropdown-menu-right notif-menu-list">
+        {% for c in grp.menu %}
+        <a href="javascript:void(0)" role="button" class="dropdown-item" data-notif-action="{{ c.action }}" data-target="{{ c.target }}" data-on="{{ 1 if c.on else 0 }}"
+           data-url-on="{{ c.url_on }}" data-url-off="{{ c.url_off }}"{% if c.field %} data-field="{{ c.field }}"{% endif %}
+           data-label-on="{{ action_label(c, true) | trim }}" data-label-off="{{ action_label(c, false) | trim }}"><i class="fas {{ ACTION_ICONS[c.action] }} fa-fw mr-3" aria-hidden="true"></i><span class="notif-action-label">{{ action_label(c, c.on) | trim }}</span></a>
+        {% endfor %}
+      </div>
+    </div>
+    {% else %}
+    <span class="notif-menu-spacer" aria-hidden="true"></span>{# the times stay in one column whether or not a row has a menu #}
+    {% endif %}
+  </div>
+
+  {% if href %}<a class="notif-open" href="{{ href }}"><span class="sr-only">{{ _("Open this notification") }}</span></a>{% endif %}
+</article>
+{% endmacro %}

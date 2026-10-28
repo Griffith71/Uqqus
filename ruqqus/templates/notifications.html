@@ -1,107 +1,96 @@
 {% extends "home.html" %}
+{% from "partials/notification_row.html" import row %}
 
 {% block fixedMobileBarJS %}{% endblock %}
 
 {% block pagetype %}notifications{% endblock %}
 
+{% block sidebar %}{% endblock %}
+{# no right sidebar; a list, so its content is centred at the feed's width (default.html main_row_class, _screens.scss) #}
+{% block main_row_class %} wide-main is-focused{% endblock %}
+
 {% block PseudoSubmitForm %}{% endblock %}
 
 {% block navbar %}
-<div class="font-weight-bold py-3">Inbox</div>
+<div class="font-weight-bold py-3">{{ _('Inbox') }}</div>
 {% endblock %}
 
 
 {% block content %}
 
-<div class="row mx-0 border-bottom bg-white sticky d-block x-scroll-parent" style="overflow: visible;">
+{# the tabs: an underline bar like x.com's; `settings-nav` stays so the side panel (assets/js/embedded.js) keeps these links inside its frame #}
+<div class="row mx-0 border-bottom bg-white sticky d-block x-scroll-parent notif-tabs" style="overflow: visible;">
   <div class="col w-100">
-    <ul class="nav settings-nav px-0 x-scroll">
+    <ul class="nav settings-nav px-0 x-scroll" aria-label="{{ _('Notification types') }}">
       <li class="nav-item">
-        <a class="nav-link py-3{% if request.path=='/notifications/all' %} active{% endif %}" href="/notifications/all">
-          All
-        </a>
+        <a class="nav-link py-3{% if tab == 'all' %} active{% endif %}"{% if tab == 'all' %} aria-current="page"{% endif %} href="/notifications/all">{{ pgettext("filter", "All") }}</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link py-3{% if request.path=='/notifications' %} active{% endif %}" href="/notifications">
-          Unread
-        </a>
+        <a class="nav-link py-3{% if tab == 'unread' %} active{% endif %}"{% if tab == 'unread' %} aria-current="page"{% endif %} href="/notifications">{{ _('Unread') }}{% if v.notifications_count %} <span class="notif-count">{{ v.notifications_count }}</span>{% endif %}</a>
       </li>
       <li class="nav-item">
-
-        <a class="nav-link py-3{% if request.path=='/notifications/posts' %} active{% endif %}" href="/notifications/posts{% if not v.post_notifications_count %}?all=true{% endif %}">
-          Posts{% if v.post_notifications_count %} <span class="text-purple font-weight-bold">({{ v.post_notifications_count }})</span>{% endif %}
-
-        </a>
+        <a class="nav-link py-3{% if tab == 'posts' %} active{% endif %}"{% if tab == 'posts' %} aria-current="page"{% endif %} href="/notifications/posts">{{ pgettext("noun", "Posts") }}{% if v.post_notifications_count %} <span class="notif-count">{{ v.post_notifications_count }}</span>{% endif %}</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link py-3{% if request.path=='/notifications/replies' %} active{% endif %}" href="/notifications/replies">
-          Comments{% if v.comment_notifications_count %} <span class="text-purple font-weight-bold">{{ v.comment_notifications_count }}</span>{% endif %}
-        </a>
+        <a class="nav-link py-3{% if tab == 'comments' %} active{% endif %}"{% if tab == 'comments' %} aria-current="page"{% endif %} href="/notifications/replies">{{ pgettext("noun", "Comments") }}{% if v.comment_notifications_count %} <span class="notif-count">{{ v.comment_notifications_count }}</span>{% endif %}</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link py-3{% if request.path=='/notifications/mentions' %} active{% endif %}" href="/notifications/mentions">
-          Mentions{% if v.mentions_count %} <span class="text-purple font-weight-bold">{{ v.mentions_count }}</span>{% endif %}
-        </a>
+        <a class="nav-link py-3{% if tab == 'mentions' %} active{% endif %}"{% if tab == 'mentions' %} aria-current="page"{% endif %} href="/notifications/mentions">{{ _('Mentions') }}{% if v.mentions_count %} <span class="notif-count">{{ v.mentions_count }}</span>{% endif %}</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link py-3 {% if request.path=='/notifications/system' %} active{% endif %}" href="/notifications/system">
-          System{% if v.system_notif_count %} <span class="text-purple font-weight-bold">{{ v.system_notif_count }}</span>{% endif %}
-        </a>
+        {# Translators: the tab of notices from the site itself #}
+        <a class="nav-link py-3{% if tab == 'system' %} active{% endif %}"{% if tab == 'system' %} aria-current="page"{% endif %} href="/notifications/system">{{ pgettext("notifications", "System") }}{% if v.system_notif_count %} <span class="notif-count">{{ v.system_notif_count }}</span>{% endif %}</a>
       </li>
     </ul>
   </div>
 </div>
 
-<div class="p-3 p-md-0">
+<div class="notif-list">
 
-  <h1 class="h3 d-md-none embedded-hidden">Inbox</h1>
+  <h1 class="h3 d-md-none embedded-hidden px-3 pt-3">{{ _('Inbox') }}</h1>
 
-  {% block notif_content %}
-    {% with comments=notifications %}
-      {% include "comments.html" %}
-    {% endwith %}
-  {% endblock %}
+  {% for grp in groups %}{{ row(grp, v) }}{% endfor %}
 
-  {% if not notifications %}
-  <div class="text-center py-7 py-md-8">
-
-    <span class="fa-stack fa-2x text-muted mb-4">
-      <i class="fas fa-square text-gray-400 fa-stack-2x"></i>
-      <i class="fas text-gray-600 fa-envelope fa-stack-1x text-lg"></i>
-    </span>
-
-    <div class="h5">No unread messages</div>
-    <div class="text-small text-muted mb-3">When you receive new posts, comments, or mentions, they will show up here.</div>
-    <a href="/notifications/all" class="btn btn-outline-primary">View all</a>
+  {% if not groups %}
+  <div class="notif-empty text-center">
+    <span class="notif-empty-icon" aria-hidden="true"><i class="fas {{ 'fa-check-double' if tab == 'unread' else 'fa-envelope-open' }}"></i></span>
+    {% if tab == 'unread' %}
+    <div class="h5">{{ _("You're all caught up") }}</div>
+    <div class="text-small text-muted mb-3">{{ _('New posts, comments and mentions will show up here.') }}</div>
+    <a href="/notifications/all" class="btn btn-outline-primary">{{ _('View all') }}</a>
+    {% else %}
+    <div class="h5">{{ _('Nothing here yet') }}</div>
+    <div class="text-small text-muted mb-3">{{ _('When you receive new posts, comments, or mentions, they will show up here.') }}</div>
+    {% endif %}
   </div>
-
   {% endif %}
 
 </div>
 
+<script src="{{ asset_url('js/notification_actions.js') }}"></script>
+
 {% endblock %}
 
 {% block pagenav %}
-{% if notifications %}
-<nav aria-label="Page navigation">
+{% if groups and (page > 1 or next_exists) %}
+{% set keep = 'all=true&' if request.args.get('all') else '' %}
+<nav aria-label="{{ _('Page navigation') }}">
   <ul class="pagination pagination-sm mb-0">
     {% if page>1 %}
     <li class="page-item">
-      <small><a class="page-link" href="?all={{ request.args.get('all', '') }}&page={{ page-1 }}" tabindex="-1">Prev</a></small>
+      <small><a class="page-link" href="?{{ keep }}page={{ page-1 }}" tabindex="-1">{{ pgettext("previous page", "Prev") }}</a></small>
     </li>
     {% else %}
-    <li class="page-item disabled"><span class="page-link">Prev</span></li>
+    <li class="page-item disabled"><span class="page-link">{{ pgettext("previous page", "Prev") }}</span></li>
     {% endif %}
     {% if next_exists %}
     <li class="page-item">
-      <small><a class="page-link" href="?all={{ request.args.get('all', '') }}&page={{ page+1 }}">Next</a></small>
+      <small><a class="page-link" href="?{{ keep }}page={{ page+1 }}" rel="next">{{ pgettext("next page", "Next") }}</a></small>
     </li>
     {% else %}
-    <li class="page-item disabled"><span class="page-link">Next</span></li>
+    <li class="page-item disabled"><span class="page-link">{{ pgettext("next page", "Next") }}</span></li>
     {% endif %}
   </ul>
 </nav>
 {% endif %}
 {% endblock %}
-
-{# the GIF, emoji, delete, tip and forward sheets come once per page from default.html (for a signed-in viewer) #}

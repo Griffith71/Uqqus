@@ -48,9 +48,12 @@ def test_every_feed_that_leaves_out_blocked_authors_leaves_out_muted_ones_too():
 
 
 def test_notifications_and_their_counts_leave_muted_accounts_out():
-    for name in ("notification_commentlisting", "notification_postlisting", "comment_notifications_count",
+    # the lists' filtering is in two builders that the lists and the notifications page (helpers/notification_feed.py) share
+    for name in ("_notification_comment_query", "_notification_post_query", "comment_notifications_count",
                  "post_notifications_count", "notifications_count", "mentions_count"):
         assert "hide_muted(" in body(USER, name, "\n    @property\n" if name.endswith("count") or name == "mentions_count" else "\n    def "), name
+    assert "self._notification_comment_query(tab)" in body(USER, "notification_commentlisting", "\n    def ")
+    assert "self._notification_post_query(all_)" in body(USER, "notification_postlisting", "\n    def ")
 
 
 def test_a_search_for_one_author_is_not_filtered_that_is_going_to_them_on_purpose():

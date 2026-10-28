@@ -8,6 +8,7 @@ import re
 from urllib.parse import quote_plus
 
 from ruqqus.classes.user import User
+from ruqqus.helpers import compact_age as compact_age_rules
 from .get import *
 from .regions import REGION_COUNTRIES, COUNTRY_NAMES
 import requests
@@ -21,6 +22,21 @@ post_regex = re.compile(r"^https?://[a-zA-Z0-9_.-]+/\+\w+/post/(\w+)(/[a-zA-Z0-9
 # How a viewer reads scores (users.score_display): 0, the default and what visitors get, is upvotes coloured by their
 # share of the votes (helpers/vote_colour.py); 1 is upvotes minus downvotes. Only those two values are ever drawn.
 SCORE_UPVOTES, SCORE_NET = 0, 1
+
+
+@app.template_global("compact_age")
+def compact_age(timestamp, now=None):
+    """A short age for a row of the notifications page: "now", "5m", "2h", "3d", then a short date ("Oct 25")."""
+    from ruqqus.helpers.i18n_runtime import date_text, tr
+    seconds = max(0, int((time.time() if now is None else now) - int(timestamp or 0)))
+    parts = compact_age_rules.parts(seconds)
+    if parts is None:
+        return date_text(timestamp, "%b %d", "MMM d")
+    unit, number = parts
+    if unit == "now":
+        return tr("now")
+    return {"m": lambda: tr("%(num)sm", num=number), "h": lambda: tr("%(num)sh", num=number),
+            "d": lambda: tr("%(num)sd", num=number)}[unit]()
 
 
 @app.template_global("language_name")

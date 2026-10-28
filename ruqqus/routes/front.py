@@ -76,12 +76,20 @@ def notifications(v):
                 parent.nested_comments = [c]
                 listing.append(parent)
 
-        elif c.level == 1 and c.post.author_id == v.id:
-            c._is_comment_on_post = True
-            listing.append(c)
-        else:
-            c._is_username_mention = True
-            listing.append(c)
+    return {'html': lambda: notifications_page(v, notification_feed.tab_of(request.path, request.args.get("all")), page),
+            'api': lambda: jsonify({"data": [x.json for x in api_listing()]})}
+
+
+def notifications_page(v, tab, number):
+    """The page of bundled rows (helpers/notification_feed.py): marks what it shows as read, after noting what was new."""
+    shown = notification_feed.page(g.db, v, tab, number)
+    return render_template("notifications.html",
+                           v=v,
+                           groups=shown.groups,
+                           next_exists=shown.next_exists,
+                           tab=tab,
+                           page=number,
+                           is_notification_page=True)
 
     return {'html': lambda: render_template("notifications.html",
                             v=v,
@@ -110,13 +118,8 @@ def notifications_posts(v):
 
     posts=get_posts(pids, v=v, sort="new")
 
-    return {'html': lambda: render_template("notifications_posts.html",
-                            v=v,
-                            notifications=posts,
-                            next_exists=next_exists,
-                            page=page,
-                            is_notification_page=True),
-            'api': lambda: jsonify({"data": [x.json for x in posts]})
+    return {'html': lambda: notifications_page(v, "posts", page),
+            'api': api_json
             }
 
 def viewer_sticky(v):

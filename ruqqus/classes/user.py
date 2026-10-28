@@ -1171,7 +1171,11 @@ class User(Base, Stndrd, Age_times):
     def __repr__(self):
         return f"<User(username={self.username})>"
 
-    def notification_commentlisting(self, page=1, all_=False, comments_only=False, mentions_only=False, system_only=False):
+    def _notification_comment_query(self, tab):
+        """The viewer's notifications that point at a comment, filtered the way every list of them is (removed and deleted
+        comments, the word filter, mutes, blocks), for one tab: "unread", "all", "comments" (a comment under theirs, or on
+        a post that is theirs or that they follow), "mentions" (the rest) or "system" (notices from the site). Shared by
+        the lists below and by the notifications page (helpers/notification_feed.py). Not ordered, not marked read."""
 
         notifications = self.notifications.options(
             joinedload(Notification.comment).joinedload(Comment.comment_aux)
@@ -1212,6 +1216,32 @@ class User(Base, Stndrd, Age_times):
             notifications = notifications.filter(Comment.author_id == 1)
         elif not all_:
             notifications = notifications.filter(Notification.read == False)
+        return notifications
+
+    def _notification_post_query(self, all_=True):
+        """The same for the notifications that point at a post (a post from an account whose bell is on, a mention in a
+        post). Not ordered, not marked read."""
+
+        notifications = self.notifications.join(
+            Notification.post
+        ).filter(
+            Submission.is_banned == False,
+            Submission.deleted_utc == 0
+        )
+        notifications = filter_posts(notifications, self)
+        notifications = hide_blocked(hide_muted(notifications, self, Submission), self, Submission)
+
+        if not all_:
+            notifications = notifications.filter(Notification.read == False)
+        return notifications
+
+    def notification_commentlisting(self, page=1, all_=False, comments_only=False, mentions_only=False, system_only=False):
+
+        tab = ("comments" if comments_only else "mentions" if mentions_only else "system" if system_only
+               else "all" if all_ else "unread")
+        notifications = self._notification_comment_query(tab).options(
+            joinedload(Notification.comment).joinedload(Comment.comment_aux)
+        )
 
         notifications = notifications.order_by(
             Notification.id.desc()
@@ -1228,23 +1258,11 @@ class User(Base, Stndrd, Age_times):
 
     def notification_postlisting(self, all_=False, page=1):
 
-        notifications=self.notifications.join(
-            Notification.post
-            ).filter(
-            Submission.is_banned==False, 
-            Submission.deleted_utc==0
-            )
-        notifications=filter_posts(notifications, self)
-        notifications=hide_blocked(hide_muted(notifications, self, Submission), self, Submission)
-
-        if not all_:
-            notifications=notifications.filter(Notification.read==False)
-
-        notifications=notifications.options(
-                contains_eager(Notification.post)
-            ).order_by(
-                Notification.id.desc()
-            ).offset(25*(page-1)).limit(26)
+        notifications = self._notification_post_query(all_).options(
+            contains_eager(Notification.post)
+        ).order_by(
+            Notification.id.desc()
+        ).offset(25*(page-1)).limit(26)
 
         output=[]
         for x in notifications[0:25]:
@@ -1269,12 +1287,11 @@ class User(Base, Stndrd, Age_times):
             Comment.is_banned == False,
             Comment.deleted_utc == 0
             ).filter(
-                and_(
-                    Comment.parent_comment_id.notin_(cs),
-                    or_(
-                        Comment.level>1,
-                        Comment.parent_submission.notin_(ps)
-                    )
+                Comment.author_id != 1,
+                or_(Comment.parent_comment_id.is_(None), Comment.parent_comment_id.notin_(cs)),    # as _notification_comment_query("mentions")
+                or_(
+                    Comment.level>1,
+                    Comment.parent_submission.notin_(ps)
                 )
             ), self, Comment), self), self, Comment).count()
 
