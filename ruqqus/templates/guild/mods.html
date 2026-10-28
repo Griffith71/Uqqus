@@ -1,13 +1,13 @@
 {% extends "guild/guild_settings.html" %}
 
-{% block pagetitle %}+{{ b.name }} Guildmasters - {{ 'SITE_NAME' | app_config }} Guildmaster Tools{% endblock %}
+{% block pagetitle %}{{ _("+%(guild)s Guildmasters - %(site)s Guildmaster Tools", guild=b.name) }}{% endblock %}
 
 {% block scripts %}
     <script>
       // Guildmaster Step Down Function
       step_downModal = function(mod) {
         document.getElementById("stepDownButton").onclick = function() {
-          this.innerHTML='<span class="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true"></span>Stepping down';
+          this.innerHTML='<span class="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true"></span>' + {{ _("Stepping down") | tojson }};
           this.disabled = true;
           post('/mod/{{ b.base36id }}/remove/' + mod,
             callback = function() {
@@ -31,7 +31,7 @@
 
    <!-- tabs container -->
 
-   {% block content %}
+   {% block content %}{% macro perms_shown(m) %}{% set names = {"full": pgettext("guildmaster permission", "full"), "access": pgettext("guildmaster permission", "access"), "appearance": pgettext("guildmaster permission", "appearance"), "config": pgettext("guildmaster permission", "config"), "content": pgettext("guildmaster permission", "content"), "none": pgettext("guildmaster permission", "none")} %}{% for p in m.permlist.split(", ") %}{{ names.get(p, p) }}{% if not loop.last %}, {% endif %}{% endfor %}{% endmacro %}{% macro permedit_user() %}<span id="permedit-user"></span>{% endmacro %}
    
    <div class="row justify-content-around">
 
@@ -43,19 +43,19 @@
         <span>
           {{ error if error else request.args.get('error') }}
         </span>
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <button type="button" class="close" data-dismiss="alert" aria-label="{{ _('Close') }}">
           <span aria-hidden="true"><i class="fas fa-times"></i></span>
         </button>
       </div>
       {% endif %}
 
-      {% if request.args.get('msg') or msg %}
+      {% if request.args.get('msg') or (msg is string and msg) %}
       <div class="alert alert-success alert-dismissible fade show my-3" role="alert">
         <i class="fas fa-check-circle my-auto" aria-hidden="true"></i>
         <span>
-          {{ msg if msg else request.args.get('msg') }}
+          {{ msg if (msg is string and msg) else msg_text(request.args.get('msg')) }}
         </span>
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <button type="button" class="close" data-dismiss="alert" aria-label="{{ _('Close') }}">
           <span aria-hidden="true"><i class="fas fa-times"></i></span>
         </button>
       </div>
@@ -70,15 +70,15 @@
            <div class="d-md-flex justify-content-between mb-3">
 
         <div>
-         <h2 class="h5" name="guild_name">Guildmasters of +{{ b.name }}</h2>
+         <h2 class="h5" name="guild_name">{{ _("Guildmasters of +%(guild)s", guild=b.name) }}</h2>
        </div>
 
        <div class="mt-auto">
         {% if me %}
-        <a href="javascript:void(0)" class="btn btn-outline-primary mr-2" data-toggle="modal" data-target="#stepDownModal" onclick="step_downModal('{{ v.username }}')">Resign</a>
+        <a href="javascript:void(0)" class="btn btn-outline-primary mr-2" data-toggle="modal" data-target="#stepDownModal" onclick="step_downModal('{{ v.username }}')">{{ _("Resign") }}</a>
         {% endif %}
         {% if me and me.perm_full %}
-        <a href="javascript:void(0)" class="btn btn-primary" data-toggle="modal" data-target="#guildmasterInviteModal"><i class="fas fa-plus mr-2"></i>Add guildmaster</a>
+        <a href="javascript:void(0)" class="btn btn-primary" data-toggle="modal" data-target="#guildmasterInviteModal"><i class="fas fa-plus mr-2"></i>{{ _("Add guildmaster") }}</a>
         {% endif %}
       </div>
 
@@ -88,9 +88,9 @@
       <table class="table table-hover rounded mb-0">
         <thead class="thead-dark">
           <tr>
-            <th scope="col">User</th>
-            <th scope="col">Guildmaster Since</th>
-            <th scope="col">Permissions</th>
+            <th scope="col">{{ _("User") }}</th>
+            <th scope="col">{{ _("Guildmaster Since") }}</th>
+            <th scope="col">{{ _("Permissions") }}</th>
             <th scope="col"></th>
           </tr>
         </thead>
@@ -102,18 +102,18 @@
               <a href="{{ mod.user.permalink }}">
                 <img alt="" src="{{ mod.user.profile_url }}" class="profile-pic-20 align-top mr-2">@{{ mod.user.username }}</a>
               </td>
-              <td>{{ mod.created_date }}</td>
-              <td>{{ mod.permlist }}</td>
+              <td>{{ date_text(mod.created_utc, "%d %B %Y") }}</td>
+              <td>{{ perms_shown(mod) }}</td>
 
               <td>
                 {% if me and me.perm_full and me.id < mod.id %}
                 <div class="dropdown float-right dropdown-actions">
-                  <a href="#" role="button" id="dropdownMoreLink" aria-label="More options" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="line-height: 0;">
+                  <a href="#" role="button" id="dropdownMoreLink" aria-label="{{ _('More options') }}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="line-height: 0;">
                     <i class="fas fa-ellipsis-h text-muted"></i>
                   </a>
                   <div class="dropdown-menu border-0 shadow dropdown-menu-right mt-2" aria-labelledby="dropdownMoreLink" x-placement="bottom-end" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(21px, 18px, 0px);">
-                    <a class="dropdown-item" href="javascript:void(0)" data-toggle="modal" data-target="#editPermsModal" onclick="permsEdit('{{ mod.user.username }}','{{ mod.permlist }}')"><i class="fas fa-user-cog fa-fw"></i>Edit permissions</a>
-                    <a class="dropdown-item" href="javascript:void(0)" onclick="post('/mod/{{ b.base36id }}/remove/{{ mod.user.username }}', callback=function(){window.location.reload(true)})"><i class="fas fa-trash-alt"></i>Remove guildmaster</a>
+                    <a class="dropdown-item" href="javascript:void(0)" data-toggle="modal" data-target="#editPermsModal" onclick="permsEdit('{{ mod.user.username }}','{{ mod.permlist }}')"><i class="fas fa-user-cog fa-fw"></i>{{ _("Edit permissions") }}</a>
+                    <a class="dropdown-item" href="javascript:void(0)" onclick="post('/mod/{{ b.base36id }}/remove/{{ mod.user.username }}', callback=function(){window.location.reload(true)})"><i class="fas fa-trash-alt"></i>{{ _("Remove guildmaster") }}</a>
                   </div>
                 </div>
                 {% endif %}
@@ -122,7 +122,7 @@
               </td>
             </tr>
             {% else %}
-            <td>There are no guildmasters.{% if b.is_siegable and b.id>1%} You may be able to <a href="/help/siege">siege</a> this community and become guildmaster.{% endif %}</td>
+            <td>{{ _("There are no guildmasters.") }}{% if b.is_siegable and b.id>1%} {{ _('You may be able to <a href="%(url)s">siege</a> this community and become guildmaster.', url="/help/siege") }}{% endif %}</td>
             {% endfor %}
 
           </tbody>
@@ -131,17 +131,17 @@
 
 
 
-      <h2 class="h5" name="guild_name">Pending guildmasters</h2>
+      <h2 class="h5" name="guild_name">{{ _("Pending guildmasters") }}</h2>
 
-      <p class="text-small text-muted">These users have been invited to moderate +{{ b.name }}.</p>
+      <p class="text-small text-muted">{{ _("These users have been invited to moderate +%(guild)s.", guild=b.name) }}</p>
 
       <div class="card mb-5">
         <table class="table table-hover rounded mb-0">
           <thead class="thead-dark">
             <tr>
-              <th scope="col">User</th>
-              <th scope="col">Invited On</th>
-              <th scope="col">Permissions</th>
+              <th scope="col">{{ _("User") }}</th>
+              <th scope="col">{{ _("Invited On") }}</th>
+              <th scope="col">{{ _("Permissions") }}</th>
               <th scope="col"></th>
             </tr>
           </thead>
@@ -153,24 +153,24 @@
                 <a href="{{ m.user.permalink }}">
                   <img alt="" src="{{ m.user.profile_url }}" class="profile-pic-20 align-top mr-2">@{{ m.user.username }}</a>
                 </td>
-                <td>{{ m.created_date }}</td>
-                <td>{{ m.permlist }}</td>
+                <td>{{ date_text(m.created_utc, "%d %B %Y") }}</td>
+                <td>{{ perms_shown(m) }}</td>
                 <td>
                     {% if me.perm_full %}
                   <div class="dropdown float-right dropdown-actions">
-                    <a href="#" role="button" id="dropdownMoreLink" aria-label="More options" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="line-height: 0;">
+                    <a href="#" role="button" id="dropdownMoreLink" aria-label="{{ _('More options') }}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="line-height: 0;">
                       <i class="fas fa-ellipsis-h text-muted"></i>
                     </a>
                     <div class="dropdown-menu border-0 shadow dropdown-menu-right mt-2" aria-labelledby="dropdownMoreLink" x-placement="bottom-end" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(21px, 18px, 0px);">
-                      <a class="dropdown-item" href="javascript:void(0)" data-toggle="modal" data-target="#editPermsModal" onclick="permsEdit('{{ m.user.username }}','{{ m.permlist }}')"><i class="fas fa-user-cog fa-fw"></i>Edit permissions</a>
-                      <a class="dropdown-item text-danger" href="javascript:void(0)" onclick="post('/mod/{{ b.base36id }}/rescind/{{ m.user.username }}', callback=function(){window.location.reload(true)})"><i class="fas fa-times text-danger fa-fw"></i>Cancel invite</a>
+                      <a class="dropdown-item" href="javascript:void(0)" data-toggle="modal" data-target="#editPermsModal" onclick="permsEdit('{{ m.user.username }}','{{ m.permlist }}')"><i class="fas fa-user-cog fa-fw"></i>{{ _("Edit permissions") }}</a>
+                      <a class="dropdown-item text-danger" href="javascript:void(0)" onclick="post('/mod/{{ b.base36id }}/rescind/{{ m.user.username }}', callback=function(){window.location.reload(true)})"><i class="fas fa-times text-danger fa-fw"></i>{{ _("Cancel invite") }}</a>
                     </div>
                   </div>
                     {% endif %}
                 </td>
               </tr>
               {% else %}
-                <td>There are no guildmaster invitations.</td>
+                <td>{{ _("There are no guildmaster invitations.") }}</td>
               {% endfor %}
 
             </tbody>
@@ -202,19 +202,19 @@
 		<form action="/mod/invite_mod/{{ b.base36id }}" id="invite-form" method="post" onsubmit="return false;">
 			<div class="modal-content">
 				<div class="modal-header">
-					<h5 class="modal-title">Invite user to be guildmaster</h5>
-					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<h5 class="modal-title">{{ _("Invite user to be guildmaster") }}</h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="{{ _('Close') }}">
 						<span aria-hidden="true"><i class="fas fa-times"></i></span>
 					</button>
 				</div>
 				<div class="modal-body">
-					<p>Users invited to moderate a guild will need to accept their invite. They will receive a notification shortly after you invite them.</p>
+					<p>{{ _("Users invited to moderate a guild will need to accept their invite. They will receive a notification shortly after you invite them.") }}</p>
 					<input type="hidden" name="formkey" value="{{ v.formkey }}">
-					<input type="text" name="username" placeholder="enter username" id="invite-username" class="form-control" maxlength=25 required>
+					<input type="text" name="username" placeholder="{{ _('enter username') }}" id="invite-username" class="form-control" maxlength=25 required>
 				</div>
 				<div class="modal-footer">
-					<button type="button" class="btn btn-link text-muted" data-dismiss="modal">Cancel</button>
-					<button type="button" class="btn btn-primary" id="inviteUserButton" onclick="invite_mod_to_guild('{{ b.base36id }}')">Invite user</button>
+					<button type="button" class="btn btn-link text-muted" data-dismiss="modal">{{ _("Cancel") }}</button>
+					<button type="button" class="btn btn-primary" id="inviteUserButton" onclick="invite_mod_to_guild('{{ b.base36id }}')">{{ _("Invite user") }}</button>
 				</div>
 			</div>
 		</form>
@@ -226,17 +226,17 @@
   <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">Step down as guildmaster</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <h5 class="modal-title">{{ _("Step down as guildmaster") }}</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="{{ _('Close') }}">
           <span aria-hidden="true"><i class="fas fa-times"></i></span>
         </button>
       </div>
       <div class="modal-body">
-        <p>If you step down as guildmaster, you will lose full permissions to moderate this guild. This action cannot be undone.</p>
+        <p>{{ _("If you step down as guildmaster, you will lose full permissions to moderate this guild. This action cannot be undone.") }}</p>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-link text-muted" data-dismiss="modal">Cancel</button>
-        <button class="btn btn-danger" onclick="post('/mod/{{ b.base36id }}/step_down', callback=function(){window.location.reload(true)})">Step down</button>
+        <button type="button" class="btn btn-link text-muted" data-dismiss="modal">{{ _("Cancel") }}</button>
+        <button class="btn btn-danger" onclick="post('/mod/{{ b.base36id }}/step_down', callback=function(){window.location.reload(true)})">{{ _("Step down") }}</button>
       </div>
 
     </div>
@@ -249,8 +249,8 @@
     <div class="modal-content">
       <form action="/+{{ b.name }}/mod/edit_perms" method="post">
       <div class="modal-header">
-        <h5 class="modal-title">Edit guildmaster permissions on @<span id="permedit-user"></span></h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <h5 class="modal-title">{{ _("Edit guildmaster permissions on @%(name)s", name=permedit_user()) }}</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="{{ _('Close') }}">
           <span aria-hidden="true"><i class="fas fa-times"></i></span>
         </button>
       </div>
@@ -261,37 +261,37 @@
         <div class="form-group">
           <label class="custom-control custom-checkbox" for="check-perm-full">
             <input type="checkbox" id="check-perm-full" class="custom-control-input perm-box" onchange="permfull()" data-perm="full" name="perm_full" value="full">
-            <span class="custom-control-label">full</span>
+            <span class="custom-control-label">{{ pgettext("guildmaster permission", "full") }}</span>
           </label>
         </div>
         <div class="form-group">
           <label class="custom-control custom-checkbox" for="check-perm-access">
             <input type="checkbox" id="check-perm-access" class="custom-control-input perm-box" onchange="permother()" data-perm="access" name="perm_access" value="access">
-            <span class="custom-control-label">access</span>
+            <span class="custom-control-label">{{ pgettext("guildmaster permission", "access") }}</span>
           </label>
         </div>
         <div class="form-group">
           <label class="custom-control custom-checkbox" for="check-perm-appearance">
             <input type="checkbox" id="check-perm-appearance" class="custom-control-input perm-box" onchange="permother()" data-perm="appearance" name="perm_appearance" value="appearance">
-            <span class="custom-control-label">appearance</span>
+            <span class="custom-control-label">{{ pgettext("guildmaster permission", "appearance") }}</span>
           </label>
         </div>
         <div class="form-group">
           <label class="custom-control custom-checkbox" for="check-perm-config">
             <input type="checkbox" id="check-perm-config" class="custom-control-input perm-box" onchange="permother()" data-perm="config" name="perm_config" value="config">
-            <span class="custom-control-label">config</span>
+            <span class="custom-control-label">{{ pgettext("guildmaster permission", "config") }}</span>
           </label>
         </div>
         <div class="form-group">
           <label class="custom-control custom-checkbox" for="check-perm-content">
             <input type="checkbox" id="check-perm-content" class="custom-control-input perm-box" onchange="permother()" data-perm="content" name="perm_content" value="content">
-            <span class="custom-control-label">content</span>
+            <span class="custom-control-label">{{ pgettext("guildmaster permission", "content") }}</span>
           </label>
         </div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-link text-muted" data-dismiss="modal">Cancel</button>
-        <input type="submit" class="btn btn-danger" value="Save Changes">
+        <button type="button" class="btn btn-link text-muted" data-dismiss="modal">{{ _("Cancel") }}</button>
+        <input type="submit" class="btn btn-danger" value="{{ _('Save Changes') }}">
       </div>
       </form>
     </div>
@@ -304,7 +304,7 @@
 
 <div class="toast error" id="toast-invite-error" role="alert" aria-live="assertive" aria-atomic="true" data-animation="true" data-autohide="true" data-delay="5000">
 	<div class="toast-body text-center">
-		<i class="fas fa-exclamation-circle text-danger mr-2"></i><span id="toast-error-message">Error. Please try again.</span>
+		<i class="fas fa-exclamation-circle text-danger mr-2"></i><span id="toast-error-message">{{ _("Error. Please try again.") }}</span>
 	</div>
 </div>
 

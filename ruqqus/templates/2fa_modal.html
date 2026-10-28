@@ -4,8 +4,8 @@
   <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">{% if mfa_secret %}Setup two-step login{% elif mfa_secret and not v.email %}Email required for two-step login{% else %}Disable two-step login{% endif %}</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <h5 class="modal-title">{% if mfa_secret %}{{ _("Setup two-step login") }}{% elif mfa_secret and not v.email %}{{ _("Email required for two-step login") }}{% else %}{{ _("Disable two-step login") }}{% endif %}</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="{{ _('Close') }}">
           <span aria-hidden="true"><i class="fas fa-times"></i></span>
         </button>
       </div>
@@ -16,26 +16,26 @@
           <input type="hidden" name="2fa_secret" value="{{ mfa_secret }}">
           <div class="modal-body">
             <p>
-              <span class="font-weight-bold">Step 1:</span> Scan this barcode (or enter the code) using a two-factor authentication app such as Google Authenticator or Authy.
+              <span class="font-weight-bold">{{ _("Step 1:") }}</span> {{ _("Scan this barcode (or enter the code) using a two-factor authentication app such as Google Authenticator or Authy.") }}
             </p>
             <div class="text-center mb-3">
               <img class="img-fluid" style="width: 175px;" src="/2faqr/{{ mfa_secret }}">
-              <div class="text-small text-muted">Or enter this code: {{ mfa_secret }}</div>
+              <div class="text-small text-muted">{{ _("Or enter this code: %(code)s", code=mfa_secret) }}</div>
             </div>
             <p>
-              <span class="font-weight-bold">Step 2:</span> Enter the six-digit code generated in the authenticator app and your {{ 'SITE_NAME' | app_config }} account password.
+              <span class="font-weight-bold">{{ _("Step 2:") }}</span> {{ _("Enter the six-digit code generated in the authenticator app and your %(site)s account password.") }}
             </p>
-            <p class="text-small text-muted">Next you'll get ten one-time backup codes. <span class="font-weight-bold">If you lose your two-factor device, you will not be able to get back into your account without one of them</span>, so save them somewhere safe: they are shown once.</p>
+            <p class="text-small text-muted">{% trans %}Next you'll get ten one-time backup codes. <span class="font-weight-bold">If you lose your two-factor device, you will not be able to get back into your account without one of them</span>, so save them somewhere safe: they are shown once.{% endtrans %}</p>
             <p>
-            <label for="2fa_input">6-digit code</label>
+            <label for="2fa_input">{{ _("6-digit code") }}</label>
             <input type="text" class="form-control mb-2" id="2fa_input" name="2fa_token" placeholder="# # # # # #" required>
 
-            <label for="2fa_input_password">Password</label>
+            <label for="2fa_input_password">{{ _("Password") }}</label>
             <input type="password" autocomplete="new-password" class="form-control mb-2" id="2fa_input_password" name="password" oninput="document.getElementById('enable2faButton').disabled=false" autocomplete="off" required>
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-link text-muted" data-dismiss="modal">Cancel</button>
-            <input id="enable2faButton" class="btn btn-primary" type="submit" value="Enable 2-step login" disabled>
+            <button type="button" class="btn btn-link text-muted" data-dismiss="modal">{{ _("Cancel") }}</button>
+            <input id="enable2faButton" class="btn btn-primary" type="submit" value="{{ _('Enable 2-step login') }}" disabled>
           </div>
         </form>
       </div>
@@ -48,18 +48,18 @@
 
             <div class="alert alert-warning" role="alert">
               <i class="fas fa-info-circle"></i>
-              To disable two-step login, please enter your {{ 'SITE_NAME' | app_config }} account password and the 6-digit code generated in your authentication app. If you no longer have your two-step device, enter one of your backup codes instead.
+              {{ _("To disable two-step login, please enter your %(site)s account password and the 6-digit code generated in your authentication app. If you no longer have your two-step device, enter one of your backup codes instead.") }}
             </div>
 
-            <label for="2fa_input_password">Password</label>
+            <label for="2fa_input_password">{{ _("Password") }}</label>
             <input type="password" autocomplete="new-password" class="form-control mb-2" id="2fa_input_password" name="password" autocomplete="off" required>
 
-            <label for="2fa_input">6-digit code</label>
+            <label for="2fa_input">{{ _("6-digit code") }}</label>
             <input type="text" class="form-control mb-2" id="2fa_input" name="2fa_remove" placeholder="# # # # # #" oninput="document.getElementById('disable2faButton').disabled=false" required>
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-link text-muted" data-dismiss="modal">Cancel</button>
-            <input id="disable2faButton" class="btn btn-primary" type="submit" value="Disable 2-step login" disabled>
+            <button type="button" class="btn btn-link text-muted" data-dismiss="modal">{{ _("Cancel") }}</button>
+            <input id="disable2faButton" class="btn btn-primary" type="submit" value="{{ _('Disable 2-step login') }}" disabled>
           </div>
         </form>
       </div>

@@ -18,12 +18,15 @@ DAY = 86400
 
 UNANIMOUS, TWO_THIRDS, MAJORITY = "unanimous", "two_thirds", "majority"
 DECISIONS = (UNANIMOUS, TWO_THIRDS, MAJORITY)
-DECISION_LABELS = {UNANIMOUS: "Every author agrees", TWO_THIRDS: "Two thirds of the authors agree",
-                   MAJORITY: "More than half of the authors agree"}
+# the labels are compared and handed to templates as they are (marked with N_, drawn with msg())
+DECISION_LABELS = {UNANIMOUS: N_("Every author agrees"), TWO_THIRDS: N_("Two thirds of the authors agree"),
+                   MAJORITY: N_("More than half of the authors agree")}
 INACTIVE_CHOICES = (7, 30, 90, 180, 365, None)
-INACTIVE_LABELS = {7: "a week", 30: "a month", 90: "3 months", 180: "6 months", 365: "12 months", None: "never"}
+# Translators: how long an author may be away from the site, as in "hasn't been active for 3 months"
+INACTIVE_LABELS = {7: N_("a week"), 30: N_("a month"), 90: N_("3 months"), 180: N_("6 months"), 365: N_("12 months"),
+                   None: N_("never")}
 ANY_AUTHOR, VOTE = "any_author", "vote"
-PUBLISH_LABELS = {ANY_AUTHOR: "Any author can publish", VOTE: "Publishing is put to a vote"}
+PUBLISH_LABELS = {ANY_AUTHOR: N_("Any author can publish"), VOTE: N_("Publishing is put to a vote")}
 PROPOSAL_DAY_CHOICES = (7, 14, 30)
 
 DEFAULT_RULES = {"decision": UNANIMOUS, "inactive_after_days": 180, "publish": ANY_AUTHOR, "proposal_days": 30}
@@ -43,8 +46,8 @@ RESYNC_AFTER = 500               # a browser more revisions behind than this rel
 TITLE_MAX = 280
 BODY_MAX = 25_000
 
-CANT_ADD = "@{name} can't be added."
-NOT_ACTIVE = "@{name} hasn't been active for {window}, so isn't counted."
+CANT_ADD = N_("@%(name)s can't be added.")
+NOT_ACTIVE = N_("@%(name)s hasn't been active for %(time)s, so isn't counted.")
 
 _NAME = re.compile(r"^@?([A-Za-z0-9_]{1,25})$")
 
@@ -77,15 +80,15 @@ def rules_from_form(form):
     raw_inactive = (form.get("inactive_after_days") or "").strip()
     raw_days = (form.get("proposal_days") or "").strip()
     if decision not in DECISIONS or publish not in (ANY_AUTHOR, VOTE):
-        raise Refused("Choose how decisions are made and who can publish.")
+        raise Refused(tr("Choose how decisions are made and who can publish."))
     if raw_inactive == "never":
         inactive = None
     elif raw_inactive.isascii() and raw_inactive.isdigit() and int(raw_inactive) in INACTIVE_CHOICES:
         inactive = int(raw_inactive)
     else:
-        raise Refused("Choose when an author stops being counted.")
+        raise Refused(tr("Choose when an author stops being counted."))
     if not (raw_days.isascii() and raw_days.isdigit() and int(raw_days) in PROPOSAL_DAY_CHOICES):
-        raise Refused("Choose how long a proposal stays open.")
+        raise Refused(tr("Choose how long a proposal stays open."))
     return {"decision": decision, "inactive_after_days": inactive, "publish": publish, "proposal_days": int(raw_days)}
 
 
@@ -93,19 +96,24 @@ def describe(rules):
     """The rules in plain words, for the draft page and a rules proposal."""
     rules = clean_rules(rules)
     window = rules["inactive_after_days"]
-    lines = [DECISION_LABELS[rules["decision"]] + " to add or remove an author or delete the post.",
-             "Changing these rules always needs every counted author.",
-             PUBLISH_LABELS[rules["publish"]] + "."]
-    lines.append("Every author counts, however long they've been away." if window is None else
-                 f"An author who hasn't been active on the site for {INACTIVE_LABELS[window]} isn't counted.")
-    lines.append(f"A proposal nobody decides closes after {rules['proposal_days']} days.")
+    decision = {UNANIMOUS: tr("Every author agrees to add or remove an author or delete the post."),
+                TWO_THIRDS: tr("Two thirds of the authors agree to add or remove an author or delete the post."),
+                MAJORITY: tr("More than half of the authors agree to add or remove an author or delete the post.")}
+    lines = [decision[rules["decision"]],
+             tr("Changing these rules always needs every counted author."),
+             tr("Any author can publish.") if rules["publish"] == ANY_AUTHOR else tr("Publishing is put to a vote.")]
+    lines.append(tr("Every author counts, however long they've been away.") if window is None else
+                 tr("An author who hasn't been active on the site for %(time)s isn't counted.",
+                    time=msg(INACTIVE_LABELS[window])))
+    lines.append(trn("A proposal nobody decides closes after %(num)s day.",
+                     "A proposal nobody decides closes after %(num)s days.", rules["proposal_days"]))
     return lines
 
 
 def parse_name(value):
     found = _NAME.match(str(value or "").strip())
     if not found:
-        raise Refused("Type the account's @name.")
+        raise Refused(tr("Type the account's @name."))
     return found.group(1)
 
 
@@ -151,21 +159,22 @@ def tally(kind, rules, voter_ids, votes):
 def add_refusal(*, name, candidate, authors_now, already, blocked_with_any):
     """Why an account can't be proposed as an author (one message for every reason a block could explain)."""
     if candidate is None or candidate.is_deleted or getattr(candidate, "is_bot", False) or candidate.is_suspended:
-        return CANT_ADD.format(name=name)
+        return tr("@%(name)s can't be added.", name=name)
     if already:
-        return f"@{candidate.username} is already an author."
+        return tr("@%(name)s is already an author.", name=candidate.username)
     if blocked_with_any:
-        return CANT_ADD.format(name=candidate.username)
+        return tr("@%(name)s can't be added.", name=candidate.username)
     if authors_now >= MAX_AUTHORS:
-        return f"A shared draft can have at most {MAX_AUTHORS} authors."
+        return trn("A shared draft can have at most %(num)s author.", "A shared draft can have at most %(num)s authors.",
+                   MAX_AUTHORS)
     return None
 
 
 def remove_refusal(*, subject_is_author, subject_is_me):
     if subject_is_me:
-        return "To stop being an author, leave the draft."
+        return tr("To stop being an author, leave the draft.")
     if not subject_is_author:
-        return "That account isn't an author."
+        return tr("That account isn't an author.")
     return None
 
 
@@ -227,12 +236,13 @@ def check_options(raw):
     raw = raw if isinstance(raw, dict) else {}
     url = str(raw.get("url") or "").strip()
     if url and not (len(url) <= URL_MAX and re.match(r"https?://\S+$", url, re.I)):
-        raise Refused("A link starts with http:// or https://.")
+        raise Refused(tr("A link starts with http:// or https://."))
     if len(raw.get("forward_guilds") or []) > FORWARD_MAX:
-        raise Refused(f"You can forward to at most {FORWARD_MAX} guilds.")
+        raise Refused(trn("You can forward to at most %(num)s guild.", "You can forward to at most %(num)s guilds.",
+                           FORWARD_MAX))
     for name in raw.get("forward_guilds") or []:
         if not _GUILD_NAME.fullmatch(str(name).strip().lstrip("+")):
-            raise Refused(f"“{str(name)[:40]}” isn't a guild name.")
+            raise Refused(tr("“%(name)s” isn't a guild name.", name=str(name)[:40]))
     return clean_options(raw)
 
 

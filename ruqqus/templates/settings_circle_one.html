@@ -12,101 +12,109 @@
   <div class="col col-lg-8">
     <div class="settings" id="circle-one" data-circle-id="{{ circle.id }}">
 
-      <a href="/circles" class="text-small"><i class="fas fa-chevron-left mr-1" aria-hidden="true"></i>Your circles</a>
+      <a href="/circles" class="text-small"><i class="fas fa-chevron-left mr-1" aria-hidden="true"></i>{{ _("Your circles") }}</a>
       <h2 class="h5 mt-2 mb-1 text-break">{{ circle.name }}</h2>
       <p class="text-small text-muted">
-        {% if paid %}A paid circle: people pay {{ describe_price(circle.price_coins) | lower }} to be in it. They see its name.
-        {% else %}A circle of your own. The people in it are not told, and nothing they see names it: your posts for it show as "Shared with a circle".{% endif %}
+        {# Translators: %(price)s is a price such as "5 coins every 30 days" #}
+        {% if paid %}{{ _("A paid circle: people pay %(price)s to be in it. They see its name.", price=describe_price(circle.price_coins) if circle.price_coins > 0 else describe_price(circle.price_coins) | lower) }}
+        {# Translators: %(label)s is the label people see on such a post, "Shared with a circle" #}
+        {% else %}{{ _('A circle of your own. The people in it are not told, and nothing they see names it: your posts for it show as "%(label)s".', label=_("Shared with a circle")) }}{% endif %}
       </p>
       <div id="circle-status" class="text-small" role="status"></div>
 
       <div class="settings-section rounded">
         <form class="d-lg-flex" data-circle-form action="/api/circles/{{ circle.id }}/rename">
-          <div class="title w-lg-25"><label for="circle-name">Name</label></div>
+          <div class="title w-lg-25"><label for="circle-name">{{ _("Name") }}</label></div>
           <div class="body w-lg-100">
             <div class="input-group" style="max-width: 24rem;">
               <input type="text" class="form-control" id="circle-name" name="name" maxlength="{{ name_max }}" value="{{ circle.name }}" autocomplete="off" required>
-              <div class="input-group-append"><button type="submit" class="btn btn-secondary">Rename</button></div>
+              <div class="input-group-append"><button type="submit" class="btn btn-secondary">{{ pgettext("button", "Rename") }}</button></div>
             </div>
             <div data-circle-status class="text-small mt-2" role="status"></div>
           </div>
         </form>
         {% if paid %}
         <form class="d-lg-flex border-top" data-circle-form action="/api/circles/{{ circle.id }}/price">
-          <div class="title w-lg-25"><label for="circle-price">Price</label></div>
+          <div class="title w-lg-25"><label for="circle-price">{{ _("Price") }}</label></div>
           <div class="body w-lg-100">
             <div class="input-group" style="max-width: 18rem;">
               <input type="number" class="form-control" id="circle-price" name="price" autocomplete="off" min="0" max="{{ price_max }}" step="1" value="{{ circle.price_coins }}" aria-describedby="circle-price-help" required>
-              <div class="input-group-append"><span class="input-group-text">coins</span></div>
+              {# Translators: the unit after the price field #}
+              <div class="input-group-append"><span class="input-group-text">{{ pgettext("unit", "coins") }}</span></div>
             </div>
-            <button type="submit" class="btn btn-primary mt-2">Save price</button>
+            <button type="submit" class="btn btn-primary mt-2">{{ _("Save price") }}</button>
             <span class="d-block mt-2 text-small-extra text-muted" id="circle-price-help">
-              Every 30 days, from 1 to {{ price_max }} coins; 0 takes nobody new. Someone who already subscribed keeps the price they signed up at.
+              {{ _("Every 30 days, from 1 to %(max)s coins; 0 takes nobody new. Someone who already subscribed keeps the price they signed up at.", max=price_max) }}
             </span>
             <div data-circle-status class="text-small mt-2" role="status"></div>
           </div>
         </form>
         <form class="d-lg-flex border-top" data-circle-form action="/api/circles/{{ circle.id }}/description">
-          <div class="title w-lg-25"><label for="circle-description">What subscribers get</label></div>
+          <div class="title w-lg-25"><label for="circle-description">{{ _("What subscribers get") }}</label></div>
           <div class="body w-lg-100">
             <textarea class="form-control" id="circle-description" name="description" rows="4" maxlength="{{ description_max }}" aria-describedby="circle-description-help">{{ description }}</textarea>
-            <button type="submit" class="btn btn-primary mt-2">Save description</button>
+            <button type="submit" class="btn btn-primary mt-2">{{ _("Save description") }}</button>
             <span class="d-block mt-2 text-small-extra text-muted" id="circle-description-help">
-              Shown on the subscribe sheet before anyone pays, under the price. Plain text, up to {{ description_max }} characters. Leave it empty to show only what the circle holds.
+              {{ _("Shown on the subscribe sheet before anyone pays, under the price. Plain text, up to %(max)s characters. Leave it empty to show only what the circle holds.", max=description_max) }}
             </span>
             <div data-circle-status class="text-small mt-2" role="status"></div>
           </div>
         </form>
         <div class="d-lg-flex border-top">
-          <div class="title w-lg-25"><span class="font-weight-bold">Coins received</span></div>
+          <div class="title w-lg-25"><span class="font-weight-bold">{{ _("Coins received") }}</span></div>
           <div class="body w-lg-100">
-            <span id="circle-earned">{{ earned_30 }} in the last 30 days &middot; {{ earned_all }} in all.</span>
-            <span class="d-block text-small-extra text-muted">They go straight to your coin balance.</span>
+            {# Translators: coins received: in the last 30 days, and in all #}
+            <span id="circle-earned">{{ _("%(recent)s in the last 30 days &middot; %(total)s in all.", recent=earned_30, total=earned_all) }}</span>
+            <span class="d-block text-small-extra text-muted">{{ _("They go straight to your coin balance.") }}</span>
           </div>
         </div>
         {% endif %}
       </div>
 
       {% if paid %}
-      <h2 class="h6 mt-5 mb-2" id="circle-subscribers">Subscribers <span class="text-muted text-small font-weight-normal">{{ subscribers | length }}</span></h2>
+      <h2 class="h6 mt-5 mb-2" id="circle-subscribers">{{ _("Subscribers") }} <span class="text-muted text-small font-weight-normal">{{ subscribers | length }}</span></h2>
       <div class="settings-section rounded">
         {% for s in subscribers %}
         <div class="d-flex align-items-center justify-content-between px-3 py-2 circle-person{% if not loop.first %} border-top{% endif %}">
           <span class="min-w-0 text-truncate"><a href="/@{{ s.username }}">@{{ s.username }}</a>
-            <span class="text-muted text-small">&middot; {{ s.price }} coin{{ '' if s.price == 1 else 's' }} every 30 days</span></span>
-          <span class="text-muted text-small text-nowrap ml-2">{% if s.cancelled %}ends {{ s.until }}{% else %}renews {{ s.until }}{% endif %}</span>
+            <span class="text-muted text-small">&middot; {{ ngettext("%(num)s coin every 30 days", "%(num)s coins every 30 days", s.price) }}</span></span>
+          {# Translators: when a subscription ends (cancelled) or renews; %(date)s is a date #}
+          <span class="text-muted text-small text-nowrap ml-2">{% if s.cancelled %}{{ _("ends %(date)s", date=s.until) }}{% else %}{{ _("renews %(date)s", date=s.until) }}{% endif %}</span>
         </div>
         {% else %}
-        <div class="px-3 py-3 text-muted text-small" id="circle-subscribers-empty">{% if circle.price_coins %}No subscribers yet. People subscribe from your profile.{% else %}Set a price to let people subscribe.{% endif %}</div>
+        <div class="px-3 py-3 text-muted text-small" id="circle-subscribers-empty">{% if circle.price_coins %}{{ _("No subscribers yet. People subscribe from your profile.") }}{% else %}{{ _("Set a price to let people subscribe.") }}{% endif %}</div>
         {% endfor %}
       </div>
       {% else %}
-      <h2 class="h6 mt-5 mb-2" id="circle-people">People <span class="text-muted text-small font-weight-normal">{{ people | length }} of {{ member_limit }}</span></h2>
+      <h2 class="h6 mt-5 mb-2" id="circle-people">{{ _("People") }} <span class="text-muted text-small font-weight-normal">
+        {#- Translators: "%(count)s of %(limit)s": how many people are in the circle, out of the most it may hold -#}
+        {{- _("%(count)s of %(limit)s", count=people | length, limit=member_limit) }}</span></h2>
       <div class="settings-section rounded">
         <form class="px-3 py-3" data-circle-form action="/api/circles/{{ circle.id }}/add" id="circle-add">
-          <label for="circle-add-name" class="font-weight-bold text-small mb-1">Add someone</label>
+          <label for="circle-add-name" class="font-weight-bold text-small mb-1">{{ _("Add someone") }}</label>
           <div class="input-group" style="max-width: 24rem;">
             <div class="input-group-prepend"><span class="input-group-text">@</span></div>
-            <input type="text" class="form-control" id="circle-add-name" name="username" maxlength="25" autocomplete="off" spellcheck="false" placeholder="username" required>
-            <div class="input-group-append"><button type="submit" class="btn btn-primary">Add</button></div>
+            <input type="text" class="form-control" id="circle-add-name" name="username" maxlength="25" autocomplete="off" spellcheck="false" placeholder="{{ _('username') }}" required>
+            <div class="input-group-append"><button type="submit" class="btn btn-primary">{{ pgettext("button", "Add") }}</button></div>
           </div>
-          <span class="d-block mt-2 text-small-extra text-muted">They are not told. Anyone you block leaves your circles.</span>
+          <span class="d-block mt-2 text-small-extra text-muted">{{ _("They are not told. Anyone you block leaves your circles.") }}</span>
           <div data-circle-status class="text-small mt-2" role="status"></div>
         </form>
         {% for p in people %}
         <div class="d-flex align-items-center justify-content-between border-top px-3 py-2 circle-person" data-username="{{ p.username }}">
-          <span class="min-w-0 text-truncate"><a href="/@{{ p.username }}">@{{ p.username }}</a> <span class="text-muted text-small">&middot; since {{ p.since }}</span></span>
-          <button type="button" class="btn btn-link btn-sm text-danger" data-circle-post="/api/circles/{{ circle.id }}/remove" data-field-username="{{ p.username }}" aria-label="Remove @{{ p.username }}">Remove</button>
+          {# Translators: the date someone was added to the circle #}
+          <span class="min-w-0 text-truncate"><a href="/@{{ p.username }}">@{{ p.username }}</a> <span class="text-muted text-small">&middot; {{ _("since %(date)s", date=p.since) }}</span></span>
+          <button type="button" class="btn btn-link btn-sm text-danger" data-circle-post="/api/circles/{{ circle.id }}/remove" data-field-username="{{ p.username }}" aria-label="{{ _('Remove @%(name)s', name=p.username) }}">{{ pgettext("button", "Remove") }}</button>
         </div>
         {% else %}
-        <div class="border-top px-3 py-3 text-muted text-small" id="circle-people-empty">Nobody yet.</div>
+        <div class="border-top px-3 py-3 text-muted text-small" id="circle-people-empty">{{ _("Nobody yet.") }}</div>
         {% endfor %}
       </div>
       {% endif %}
 
       <div class="mt-5">
         <button type="button" class="btn btn-outline-danger btn-sm" data-circle-post="/api/circles/{{ circle.id }}/delete"
-          data-confirm="Delete {{ circle.name }}? Posts and stories that were only for it will be for you alone.">Delete this circle</button>
+          data-confirm="{{ _('Delete %(name)s? Posts and stories that were only for it will be for you alone.', name=circle.name) }}">{{ _("Delete this circle") }}</button>
       </div>
 
     </div>

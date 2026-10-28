@@ -1,8 +1,8 @@
 {% extends "docs_default.html" %}
 
 {% block title %}
-<title>{{ 'SITE_NAME' | app_config }} - Press</title>
-<meta name="description" content="{{ 'SITE_NAME' | app_config }} Press Resources">
+{# Translators: "Press" here means news reporters and the media. #}<title>{{ _("%(site)s - Press") }}</title>
+<meta name="description" content="{{ _('%(site)s Press Resources') }}">
 {% endblock %}
 
 <!-- Left Sidebar -->
@@ -16,7 +16,7 @@
       <span>
         {{ error if error else request.args.get('error') }}
       </span>
-      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+      <button type="button" class="close" data-dismiss="alert" aria-label="{{ _('Close') }}">
         <span aria-hidden="true"><i class="fas fa-times"></i></span>
       </button>
     </div>
@@ -27,166 +27,166 @@
       <span>
         {{ msg if msg else request.args.get('msg') }}
       </span>
-      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+      <button type="button" class="close" data-dismiss="alert" aria-label="{{ _('Close') }}">
         <span aria-hidden="true"><i class="fas fa-times"></i></span>
       </button>
     </div>
     {% endif %}
 
-<h1 class="article-title">Press</h1>
+<h1 class="article-title">{{ pgettext("news media", "Press") }}</h1>
 
 {% filter markdown %}
 
-Welcome to the {{ 'SITE_NAME' | app_config }} press portal.
+{% trans site='SITE_NAME' | app_config %}Welcome to the {{ site }} press portal.{% endtrans %}
 
-## Press Releases
+## {% trans %}Press Releases{% endtrans %}
 
-Official {{ 'SITE_NAME' | app_config }} press releases are posted in [+RuqqusPress](/+RuqqusPress?sort=new).
+{% trans site='SITE_NAME' | app_config %}Official {{ site }} press releases are posted in [+RuqqusPress](/+RuqqusPress?sort=new).{% endtrans %}
 
-## Logo
+## {% trans %}Logo{% endtrans %}
 
-Use primary logos on light backgrounds, and alternate logos with dark backgrounds. Logos may be uniformly resized but may not be redrawn, rotated, recolored, distorted, or otherwise altered.
+{% trans %}Use primary logos on light backgrounds, and alternate logos with dark backgrounds. Logos may be uniformly resized but may not be redrawn, rotated, recolored, distorted, or otherwise altered.{% endtrans %}
 
-The tilted "r" in alternate logos is deliberately transparent so that it can match the background color. Do not fill in the "r" with a different color.
+{% trans %}The tilted "r" in alternate logos is deliberately transparent so that it can match the background color. Do not fill in the "r" with a different color.{% endtrans %}
 
-Do not display logos against a textured background.
+{% trans %}Do not display logos against a textured background.{% endtrans %}
 
-* [Primary logo](/assets/images/logo/ruqqus_logo_square_white_fill.png)
-* [Alternate logo](/assets/images/logo/ruqqus_logo_white.png)
-* [Primary logo with wordmark](/assets/images/logo/ruqqus_text_logo.png)
-* [Alternate logo with wordmark](/assets/images/logo/ruqqus_text_logo_white.png)
+* {% trans %}[Primary logo](/assets/images/logo/ruqqus_logo_square_white_fill.png){% endtrans %}
+* {% trans %}[Alternate logo](/assets/images/logo/ruqqus_logo_white.png){% endtrans %}
+* {% trans %}[Primary logo with wordmark](/assets/images/logo/ruqqus_text_logo.png){% endtrans %}
+* {% trans %}[Alternate logo with wordmark](/assets/images/logo/ruqqus_text_logo_white.png){% endtrans %}
 
-## Mascot
+## {% trans %}Mascot{% endtrans %}
 
-The name of the {{ 'SITE_NAME' | app_config }} mascot is "Ruqqie".
+{% trans site='SITE_NAME' | app_config %}The name of the {{ site }} mascot is "Ruqqie".{% endtrans %}
 
-Ruqqie may be resized, but should not be redrawn, rotated, distorted, or otherwise altered. Transformative artistic works are permitted under Fair Use. However, Ruqqie and transformative artistic works based on Ruqqie may not be sold, affixed to merchandise, or otherwise monetized without explicit written permission from {{ 'COMPANY_NAME' | app_config }}.
+{% trans company='COMPANY_NAME' | app_config %}Ruqqie may be resized, but should not be redrawn, rotated, distorted, or otherwise altered. Transformative artistic works are permitted under Fair Use. However, Ruqqie and transformative artistic works based on Ruqqie may not be sold, affixed to merchandise, or otherwise monetized without explicit written permission from {{ company }}.{% endtrans %}
 
-* [Ruqqie](/assets/images/logo/ruqqie.png)
+* {% trans %}[Ruqqie](/assets/images/logo/ruqqie.png){% endtrans %}
 
-## Terminology
+## {% trans %}Terminology{% endtrans %}
 
-{{ 'SITE_NAME' | app_config }} is broken into numerous smaller messaging and commenting boards focused around a variety of topics. These boards are called "Guilds". Guild names always start with a `+` symbol, and are usually (though not always) named after their topic of interest. For example, [+news](/+news) is a Guild focused on sharing and discussion of news and current events.
+{% trans site='SITE_NAME' | app_config %}{{ site }} is broken into numerous smaller messaging and commenting boards focused around a variety of topics. These boards are called "Guilds". Guild names always start with a `+` symbol, and are usually (though not always) named after their topic of interest. For example, [+news](/+news) is a Guild focused on sharing and discussion of news and current events.{% endtrans %}
 
-The users who create and moderate Guilds are called "Guildmasters". Guildmasters are regular users, and have no affiliation with {{ 'COMPANY_NAME' | app_config }} beyond having a ruqqus.com account.
+{% trans company='COMPANY_NAME' | app_config %}The users who create and moderate Guilds are called "Guildmasters". Guildmasters are regular users, and have no affiliation with {{ company }} beyond having a ruqqus.com account.{% endtrans %}
 
-A post always belongs to its author's profile first. Anyone can "Forward" it into other Guilds for community-scoped discussion - each Guild a post is forwarded to gets its own independent copy, with its own votes and its own comments. Users can add comments to posts or to other comments.
+{% trans %}A post always belongs to its author's profile first. Anyone can "Forward" it into other Guilds for community-scoped discussion - each Guild a post is forwarded to gets its own independent copy, with its own votes and its own comments. Users can add comments to posts or to other comments.{% endtrans %}
 
-Guildmasters cannot delete or remove content that isn't theirs. They can "Hide" a post or comment from their own Guild if it breaks that Guild's rules - this only affects how the content appears within that one Guild; it remains untouched on the author's profile and in any other Guild it's been forwarded to. Only the content's own author (or {{ 'SITE_NAME' | app_config }} staff, for sitewide violations) can truly remove it everywhere.
+{% trans site='SITE_NAME' | app_config %}Guildmasters cannot delete or remove content that isn't theirs. They can "Hide" a post or comment from their own Guild if it breaks that Guild's rules - this only affects how the content appears within that one Guild; it remains untouched on the author's profile and in any other Guild it's been forwarded to. Only the content's own author (or {{ site }} staff, for sitewide violations) can truly remove it everywhere.{% endtrans %}
 
-When referring to the {{ 'SITE_NAME' | app_config }} social media platform, use "{{ 'SITE_NAME' | app_config }}" or "ruqqus.com".
+{% trans site='SITE_NAME' | app_config %}When referring to the {{ site }} social media platform, use "{{ site }}" or "ruqqus.com".{% endtrans %}
 
-When referring to the business which owns and operates the {{ 'SITE_NAME' | app_config }} platform, use "{{ 'COMPANY_NAME' | app_config }}".
+{% trans site='SITE_NAME' | app_config, company='COMPANY_NAME' | app_config %}When referring to the business which owns and operates the {{ site }} platform, use "{{ company }}".{% endtrans %}
 
-When referring to the owners, staff, or other elements of {{ 'COMPANY_NAME' | app_config }}, use "{{ 'SITE_NAME' | app_config }} staff", "{{ 'SITE_NAME' | app_config }} owners", or similar phrasing.
+{% trans site='SITE_NAME' | app_config, company='COMPANY_NAME' | app_config %}When referring to the owners, staff, or other elements of {{ company }}, use "{{ site }} staff", "{{ site }} owners", or similar phrasing.{% endtrans %}
 
-Users of the {{ 'SITE_NAME' | app_config }} platform may be informally called "Ruqqies", or formally "{{ 'SITE_NAME' | app_config }} users".
+{% trans site='SITE_NAME' | app_config %}Users of the {{ site }} platform may be informally called "Ruqqies", or formally "{{ site }} users".{% endtrans %}
 
-## Coloring
+## {% trans %}Coloring{% endtrans %}
 
-The name of the {{ 'SITE_NAME' | app_config }} purple color is "porpl". Its RGB hex code is #2ca1ea.
+{% trans site='SITE_NAME' | app_config %}The name of the {{ site }} purple color is "porpl". Its RGB hex code is #2ca1ea.{% endtrans %}
 
-## Licensing
+## {% trans %}Licensing{% endtrans %}
 
-The assets on this page ("brand assets") may be used for the following purposes, under a limited, nonexclusive, nontransferable, royalty-free license ("the License"):
+{% trans %}The assets on this page ("brand assets") may be used for the following purposes, under a limited, nonexclusive, nontransferable, royalty-free license ("the License"):{% endtrans %}
 
-* To link to {{ 'SITE_NAME' | app_config }}, enable sharing to {{ 'SITE_NAME' | app_config }}, or refer to your presence on {{ 'SITE_NAME' | app_config }}.
-* To indicate the presence of a {{ 'SITE_NAME' | app_config }}-powered embed of content from {{ 'SITE_NAME' | app_config }}.
-* As specifically permitted by a separate written agreement you have with {{ 'COMPANY_NAME' | app_config }}
+* {% trans site='SITE_NAME' | app_config %}To link to {{ site }}, enable sharing to {{ site }}, or refer to your presence on {{ site }}.{% endtrans %}
+* {% trans site='SITE_NAME' | app_config %}To indicate the presence of a {{ site }}-powered embed of content from {{ site }}.{% endtrans %}
+* {% trans company='COMPANY_NAME' | app_config %}As specifically permitted by a separate written agreement you have with {{ company }}{% endtrans %}
 
-Use of brand assets for the following is not permitted under the License:
+{% trans %}Use of brand assets for the following is not permitted under the License:{% endtrans %}
 
-* Placing {{ 'SITE_NAME' | app_config }} name or brand assets on apparel or merchandise, without written approval from {{ 'COMPANY_NAME' | app_config }}.
-* Using the {{ 'SITE_NAME' | app_config }} name or brand assets as a name, or part of a name, of a company, product, service, application, website, domain name, or social media account.
+* {% trans site='SITE_NAME' | app_config, company='COMPANY_NAME' | app_config %}Placing {{ site }} name or brand assets on apparel or merchandise, without written approval from {{ company }}.{% endtrans %}
+* {% trans site='SITE_NAME' | app_config %}Using the {{ site }} name or brand assets as a name, or part of a name, of a company, product, service, application, website, domain name, or social media account.{% endtrans %}
 
-Terms of the License. A violation of these terms shall automatically terminate your License.
+{% trans %}Terms of the License. A violation of these terms shall automatically terminate your License.{% endtrans %}
 
-* Do not modify the brand assets or use modified versions found elsewhere.
-* Do not use the {{ 'SITE_NAME' | app_config }} name or brand assets in a manner that implies a partnership with, or endorsement by, ruqqus.com or {{ 'COMPANY_NAME' | app_config }}.
-* Do not use the {{ 'SITE_NAME' | app_config }} name or brand assets in connection with material that violates the {{ 'SITE_NAME' | app_config }} [terms of service](/help/terms) or [rules and guidelines](/help/rules).
-* Do not use the brand assets in connection with content that disparages ruqqus.com, {{ 'COMPANY_NAME' | app_config }}, or {{ 'SITE_NAME' | app_config }} staff.
+* {% trans %}Do not modify the brand assets or use modified versions found elsewhere.{% endtrans %}
+* {% trans site='SITE_NAME' | app_config, company='COMPANY_NAME' | app_config %}Do not use the {{ site }} name or brand assets in a manner that implies a partnership with, or endorsement by, ruqqus.com or {{ company }}.{% endtrans %}
+* {% trans site='SITE_NAME' | app_config %}Do not use the {{ site }} name or brand assets in connection with material that violates the {{ site }} [terms of service](/help/terms) or [rules and guidelines](/help/rules).{% endtrans %}
+* {% trans site='SITE_NAME' | app_config, company='COMPANY_NAME' | app_config %}Do not use the brand assets in connection with content that disparages ruqqus.com, {{ company }}, or {{ site }} staff.{% endtrans %}
 
-{{ 'COMPANY_NAME' | app_config }} may revoke your License at any time and for any reason.
+{% trans company='COMPANY_NAME' | app_config %}{{ company }} may revoke your License at any time and for any reason.{% endtrans %}
 
-A failure by {{ 'SITE_NAME' | app_config }} in one or more instances to insist upon your strict adherence to these licence terms, shall not be construed as a waiver of any continuing or subsequent violations of these license terms.
+{% trans site='SITE_NAME' | app_config %}A failure by {{ site }} in one or more instances to insist upon your strict adherence to these licence terms, shall not be construed as a waiver of any continuing or subsequent violations of these license terms.{% endtrans %}
 
-## Content
+## {{ pgettext("noun: what people post on the site", "Content") }}
 
-The following requirements must be met when attributing any {{ 'SITE_NAME' | app_config }} content within ediorial content:
+{% trans site='SITE_NAME' | app_config %}The following requirements must be met when attributing any {{ site }} content within ediorial content:{% endtrans %}
 
-Do:
+{% trans %}Do:{% endtrans %}
 
-* Explicitly state and cite {{ 'SITE_NAME' | app_config }}. (Logo assets may be helpful here.)
-* Capitalize "{{ 'SITE_NAME' | app_config }}", except when using it as part of "ruqqus.com" or within links
-* Capitalize "{{ 'COMPANY_NAME' | app_config }}"
-* Link to the original {{ 'SITE_NAME' | app_config }} post, comment, or community if it appears online.
-* Use the full text of the post or comment.
-* Respect the displayed capitalization of {{ 'SITE_NAME' | app_config }} guild names and user names.
-* Refer to guilds as "+guildname"
-* Refer to individual users as "@username"
+* {% trans site='SITE_NAME' | app_config %}Explicitly state and cite {{ site }}. (Logo assets may be helpful here.){% endtrans %}
+* {% trans site='SITE_NAME' | app_config %}Capitalize "{{ site }}", except when using it as part of "ruqqus.com" or within links{% endtrans %}
+* {% trans company='COMPANY_NAME' | app_config %}Capitalize "{{ company }}"{% endtrans %}
+* {% trans site='SITE_NAME' | app_config %}Link to the original {{ site }} post, comment, or community if it appears online.{% endtrans %}
+* {% trans %}Use the full text of the post or comment.{% endtrans %}
+* {% trans site='SITE_NAME' | app_config %}Respect the displayed capitalization of {{ site }} guild names and user names.{% endtrans %}
+* {% trans %}Refer to guilds as "+guildname"{% endtrans %}
+* {% trans %}Refer to individual users as "@username"{% endtrans %}
 
-Do not:
+{% trans %}Do not:{% endtrans %}
 
-* Screenshot {{ 'SITE_NAME' | app_config }} content to use within digital editorial content. (Embed it instead.)
-* Alter posts, comments, username identification, or any other content found on {{ 'SITE_NAME' | app_config }}.
-* Quote a {{ 'SITE_NAME' | app_config }} user without properly attributing the quote to them and providing a link to the comment.
-* Omit part of a comment or post text.
-* Capitalize "ruqqus.com"
-* Leave outdated versions of content up. Changes or deletions to content should be reflected in a timely manner. (Use of {{ 'SITE_NAME' | app_config }}-powered embeds is the best way to accomplish this.)
+* {% trans site='SITE_NAME' | app_config %}Screenshot {{ site }} content to use within digital editorial content. (Embed it instead.){% endtrans %}
+* {% trans site='SITE_NAME' | app_config %}Alter posts, comments, username identification, or any other content found on {{ site }}.{% endtrans %}
+* {% trans site='SITE_NAME' | app_config %}Quote a {{ site }} user without properly attributing the quote to them and providing a link to the comment.{% endtrans %}
+* {% trans %}Omit part of a comment or post text.{% endtrans %}
+* {% trans %}Capitalize "ruqqus.com"{% endtrans %}
+* {% trans site='SITE_NAME' | app_config %}Leave outdated versions of content up. Changes or deletions to content should be reflected in a timely manner. (Use of {{ site }}-powered embeds is the best way to accomplish this.){% endtrans %}
 
-Verbal rules:
+{% trans %}Verbal rules:{% endtrans %}
 
-* Explicitly state that content is from {{ 'SITE_NAME' | app_config }}
-* Do not alter the title, text, or meaning of the content.
-* Read content in full. Do not excerpt content. Do not attempt to quote content from memory.
-* "{{ 'SITE_NAME' | app_config }}" is pronounced identically to the standard English word "ruckus"
-* "Ruqqie" is pronounced "RUCK-ee"
+* {% trans site='SITE_NAME' | app_config %}Explicitly state that content is from {{ site }}{% endtrans %}
+* {% trans %}Do not alter the title, text, or meaning of the content.{% endtrans %}
+* {% trans %}Read content in full. Do not excerpt content. Do not attempt to quote content from memory.{% endtrans %}
+* {% trans site='SITE_NAME' | app_config %}"{{ site }}" is pronounced identically to the standard English word "ruckus"{% endtrans %}
+* {% trans %}"Ruqqie" is pronounced "RUCK-ee"{% endtrans %}
 
 
 
-## Inquiry Contact
+## {% trans %}Inquiry Contact{% endtrans %}
 
 {% endfilter %}
 
 {% if v and v.is_activated and not v.is_suspended %}
 
-<p>Use this form to submit a press inquiry. You must have a press email address set on your account. If you have a generic, non-press email address, please <a target="_blank" href="/settings/security">update it</a> before submitting this form.</p>
+<p>{{ _('Use this form to submit a press inquiry. You must have a press email address set on your account. If you have a generic, non-press email address, please <a target="_blank" href="%(url)s">update it</a> before submitting this form.', url="/settings/security") }}</p>
 
-<label class="mt-3">Your Email</label>
+<label class="mt-3">{{ _("Your Email") }}</label>
 <input class="form-control" value="{{ v.email }}" readonly="readonly" disabled>
 
 <form id="pressform" action="/help/submit_contact" method="post">
 <input type="hidden" name="formkey" value="{{ v.formkey }}">
 <input type="hidden" name="press" value="true">
 
-<label for="input-name" class="mt-3">Your name</label>
+<label for="input-name" class="mt-3">{{ _("Your name") }}</label>
 <input type="text" id="input-name" class="form-control" name="name" required>
 
-<label for="input-org" class="mt-3">Your organization</label>
+<label for="input-org" class="mt-3">{{ _("Your organization") }}</label>
 <input type="text" id="input-org" class="form-control" name="organization" required>
 
-<label for="input-title" class="mt-3">Your title</label>
+{# Translators: the job title of the person writing (editor, reporter...). #}<label for="input-title" class="mt-3">{{ _("Your title") }}</label>
 <input type="text" id="input-title" class="form-control" name="title" required>
 
-<label for="input-inquiry" class="mt-3">Your inquiry</label>
+<label for="input-inquiry" class="mt-3">{{ _("Your inquiry") }}</label>
 <textarea id="input-inquiry" for="pressform" name="inquiry" class="form-control" required></textarea>
 
-<input type="submit" value="Submit Inquiry" class="btn btn-primary mt-3">
+<input type="submit" value="{{ _('Submit Inquiry') }}" class="btn btn-primary mt-3">
 
 </form>
 
 {% elif v and v.is_suspended %}
 
-<p>Your {{ 'SITE_NAME' | app_config }} account has been suspended. You are not permitted to submit press inquiries at this time.</p>
+<p>{{ _("Your %(site)s account has been suspended. You are not permitted to submit press inquiries at this time.") }}</p>
 
 
 {% elif v %}
 
-<p>Please <a target="_blank" href="/settings/security">verify your press email address</a> in order to ensure we can respond to your inquiry. Then, refresh this page.</p>
+<p>{{ _('Please <a target="_blank" href="%(url)s">verify your press email address</a> in order to ensure we can respond to your inquiry. Then, refresh this page.', url="/settings/security") }}</p>
 
 {% else %}
 
-<p>In order to ensure that we can respond to your inquiry, please first <a href="/signup" target="_blank">sign up</a> or <a href="/login" target="_blank">log in</a> and make sure you have <a target="_blank" href="/settings/security">verified your press email address</a>. Then, refresh this page.</p>
+<p>{{ _('In order to ensure that we can respond to your inquiry, please first <a href="%(signup)s" target="_blank">sign up</a> or <a href="%(login)s" target="_blank">log in</a> and make sure you have <a target="_blank" href="%(security)s">verified your press email address</a>. Then, refresh this page.', signup="/signup", login="/login", security="/settings/security") }}</p>
 
 {% endif %}
 

@@ -24,33 +24,33 @@ if (keyForm) {
     const button = byId("chat-key-show");
     button.disabled = true;
     try {
-      if (!(await passwordIsRight(formkey, password.value))) { say("That password isn't right."); return; }
+      if (!(await passwordIsRight(formkey, password.value))) { say(window.tr("That password isn't right.")); return; }
       const info = await fetchKeyInfo();
-      if (!info.password_blob) { say("Open Chat once on this site first, so your key is set up."); return; }
+      if (!info.password_blob) { say(window.tr("Open Chat once on this site first, so your key is set up.")); return; }
       let key;
       try {
         key = await unlock(await passwordKey(await prekeyFromPassword(password.value), info.salt), info.password_blob);
       } catch (err) {
-        say("Your key was locked with an older password. Open Chat on this site and enter your recovery code once; then it opens here.");
+        say(window.tr("Your key was locked with an older password. Open Chat on this site and enter your recovery code once; then it opens here."));
         return;
       }
       password.value = "";
       value.value = key;
       out.hidden = false;
     } catch (err) {
-      say(err.message || "Your key can't be shown right now.");
+      say(err.message || window.tr("Your key can't be shown right now."));
     } finally {
       button.disabled = false;
     }
   });
   byId("chat-key-copy").addEventListener("click", async () => {
-    try { await navigator.clipboard.writeText(value.value); byId("chat-key-copy").textContent = "Copied"; }
+    try { await navigator.clipboard.writeText(value.value); byId("chat-key-copy").textContent = window.tr("Copied"); }
     catch (err) { value.select(); }
   });
   byId("chat-key-hide").addEventListener("click", () => {
     value.value = "";
     out.hidden = true;
-    byId("chat-key-copy").textContent = "Copy";
+    byId("chat-key-copy").textContent = window.tr("Copy");
   });
 }
 
@@ -60,8 +60,9 @@ const list = byId("chat-devices");
 const here = (loadSession() || {}).device_id;
 
 function when(ts) {
-  if (!ts) return "Not used yet";
-  return "Last used " + new Date(ts).toLocaleDateString(undefined, { day: "numeric", month: "short", year: "numeric" });
+  if (!ts) return window.tr("Not used yet");
+  const date = new Date(ts).toLocaleDateString(window.I18N.intl, { day: "numeric", month: "short", year: "numeric" });
+  return window.tr("Last used %(date)s", { date });
 }
 
 function line(text, cls) {
@@ -72,7 +73,7 @@ function line(text, cls) {
 }
 
 async function signOut(device, button) {
-  if (!window.confirm(`Sign out ${device.name}? It will need to sign in again to read your chats.`)) return;
+  if (!window.confirm(window.tr("Sign out %(device)s? It will need to sign in again to read your chats.", { device: device.name }))) return;
   button.disabled = true;
   const body = new URLSearchParams({ formkey, device_id: device.device_id });
   const resp = await fetch("/api/chat/devices/sign_out", { method: "POST", credentials: "same-origin", body });
@@ -80,7 +81,7 @@ async function signOut(device, button) {
     await load();
   } else {
     button.disabled = false;
-    window.alert("That device couldn't be signed out right now.");
+    window.alert(window.tr("That device couldn't be signed out right now."));
   }
 }
 
@@ -91,11 +92,11 @@ async function load() {
     data = await resp.json();
     if (!resp.ok) throw new Error(data.error);
   } catch (err) {
-    list.replaceChildren(line((err && err.message) || "Your chat devices can't be listed right now."));
+    list.replaceChildren(line((err && err.message) || window.tr("Your chat devices can't be listed right now.")));
     return;
   }
   if (!data.devices.length) {
-    list.replaceChildren(line("No devices yet. Open Chat to start."));
+    list.replaceChildren(line(window.tr("No devices yet. Open Chat to start.")));
     return;
   }
   list.replaceChildren(...data.devices.map((device) => {
@@ -107,16 +108,17 @@ async function load() {
     name.textContent = device.name;
     const sub = document.createElement("div");
     sub.className = "text-small text-muted";
-    const kind = device.site ? "A browser on this site" : "An app";
-    sub.textContent = `${device.device_id === here ? "This browser" : kind} · ${when(device.last_seen)}`;
+    const kind = device.device_id === here ? window.tr("This browser") : device.site ? window.tr("A browser on this site") : window.tr("An app");
+    // Translators: a chat device's line, e.g. "An app · Last used 3 Oct 2026"
+    sub.textContent = window.tr("%(kind)s · %(used)s", { kind, used: when(device.last_seen) });
     text.append(name, sub);
     li.append(text);
     if (device.device_id !== here) {
       const button = document.createElement("button");
       button.type = "button";
       button.className = "btn btn-secondary btn-sm";
-      button.textContent = "Sign out";
-      button.setAttribute("aria-label", `Sign out ${device.name}`);
+      button.textContent = window.tr("Sign out");
+      button.setAttribute("aria-label", window.tr("Sign out %(device)s", { device: device.name }));
       button.addEventListener("click", () => signOut(device, button));
       li.append(button);
     }

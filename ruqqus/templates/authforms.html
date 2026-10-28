@@ -3,21 +3,19 @@
 <html{{ html_attrs() }}>
 
 <head>
+{% from "partials/i18n_boot.html" import i18n_boot %}{{ i18n_boot() }}
 
     <meta charset="utf-8">
 {{ font_faces() }}
 {{ theme_color() }}
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="{% block pagedesc %}{{ 'SITE_NAME' | app_config }} - the free speech social platform{% endblock %}">
+    <meta name="description" content="{% block pagedesc %}{{ _('%(site)s - the free speech social platform') }}{% endblock %}">
     <meta name="author" content="">
 
-    <title>{% block pagetitle %}{{ 'SITE_NAME' | app_config }} - the open, free-speech social platform{% endblock %}</title>
+    <title>{% block pagetitle %}{{ _('%(site)s - the open, free-speech social platform') }}{% endblock %}</title>
 
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,600&display=swap" rel="stylesheet">
 
-    <!-- Bootstrap core CSS -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
-        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"> <!-- the icons, as default.html loads them -->
@@ -34,19 +32,19 @@
     <nav class="navbar navbar-expand-lg navbar-dark bg-transparent fixed-top border-0">
         <div class="container-fluid">
             <button class="navbar-toggler d-none" type="button" data-toggle="collapse" data-target="#navbarResponsive"
-                aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+                aria-controls="navbarResponsive" aria-expanded="false" aria-label="{{ _('Toggle navigation') }}">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarResponsive">
                 <ul class="navbar-nav ml-auto">
                     <li class="nav-item">
-                        <a class="nav-link" href="/help/about">About</a>
+                        <a class="nav-link" href="/help/about">{{ _('About') }}</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/help/terms">Terms</a>
+                        <a class="nav-link" href="/help/terms">{{ _('Terms') }}</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="mailto:info@ruqqus.com">Contact</a>
+                        <a class="nav-link" href="mailto:info@ruqqus.com">{{ _('Contact') }}</a>
                     </li>
                 </ul>
             </div>
@@ -78,7 +76,7 @@
                           <span>
                           {{ error }}
                           </span>
-                          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                          <button type="button" class="close" data-dismiss="alert" aria-label="{{ _('Close') }}">
                             <span aria-hidden="true"><i class="fas fa-times"></i></span>
                         </button>
                 </div>
@@ -89,7 +87,7 @@
                           <span>
                           {{ msg }}
                           </span>
-                          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                          <button type="button" class="close" data-dismiss="alert" aria-label="{{ _('Close') }}">
                             <span aria-hidden="true"><i class="fas fa-times"></i></span>
                         </button>
                 </div>
@@ -114,7 +112,7 @@
                         {{ i.text }}
                     </h6>
 
-                    <img class="splash-img" src="{{ i.path }}"></img>
+                    <img class="splash-img" src="{{ i.path }}" alt="">
                 </div>
 
             </div>

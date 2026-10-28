@@ -12,7 +12,8 @@ from ruqqus.classes import Board, ForwardRelationship, RepostRelationship, Submi
 from ruqqus.helpers import circle_guard, circle_store, circles, coauthors, sharing, subscriber_badges
 from ruqqus.helpers.visibility import text_hidden
 from ruqqus.helpers.word_filter_store import get_filter
-from ruqqus.helpers.alerts import send_notification
+from ruqqus.helpers.alerts import notify
+from ruqqus.helpers.i18n_runtime import N_, tr, trn
 from ruqqus.helpers.get import get_guild, get_post, get_user
 from ruqqus.helpers.media import attach as media_attach, cdn as media_cdn
 from ruqqus.helpers.wrappers import auth_required, is_guildmaster, is_not_banned, no_negative_balance, validate_formkey
@@ -20,6 +21,10 @@ from ruqqus.__main__ import app, cache
 from ruqqus.routes.front import frontlist
 
 DAY = 24 * 60 * 60
+
+# notices, stored in English and drawn in each reader's language (helpers/alerts.py notify)
+SUBSCRIBED = N_("[@%(name)s](/@%(name)s) subscribed to your paid circle %(circle)s.")
+JOINED_GUILD = N_("[@%(name)s](/@%(name)s) joined [+%(guild)s](/+%(guild)s).")
 
 
 def _target(name, v):
@@ -32,10 +37,6 @@ def _target(name, v):
 
 def _fail(message, status=400):
     return jsonify({"error": message}), status
-
-
-def _link(user):
-    return f"[@{user.username}](/@{user.username})"
 
 
 def _mine(v, cid, kinds=(circles.CUSTOM, circles.PAID)):
@@ -152,7 +153,7 @@ def circle_create(v):
     if error:
         return _fail(error, 409)
     g.db.commit()
-    return jsonify({"id": new_id, "go": f"/circles/{new_id}", "message": f"{name} is ready."})
+    return jsonify({"id": new_id, "go": f"/circles/{new_id}", "message": tr("%(name)s is ready.", name=name)})
 
 
 @app.route("/api/circles/<int:cid>/rename", methods=["POST"])
@@ -167,7 +168,7 @@ def circle_rename(cid, v):
     if error:
         return _fail(error, 409)
     g.db.commit()
-    return jsonify({"message": f"It's called {name} now."})
+    return jsonify({"message": tr("It's called %(name)s now.", name=name)})
 
 
 @app.route("/api/circles/<int:cid>/delete", methods=["POST"])
@@ -179,7 +180,7 @@ def circle_delete(cid, v):
     if error:
         return _fail(error, 409)
     g.db.commit()
-    return jsonify({"go": "/circles", "message": f"{row.name} is deleted. Posts that were for it are still for your other circles they were shared with."})
+    return jsonify({"go": "/circles", "message": tr("%(name)s is deleted. Posts that were for it are still for your other circles they were shared with.", name=row.name)})
 
 
 @app.route("/api/circles/<int:cid>/price", methods=["POST"])
@@ -193,8 +194,10 @@ def circle_price(cid, v):
     circle_store.set_price(g.db, v.id, cid, price)
     g.db.commit()
     if price == 0:
-        return jsonify({"message": "Nobody new can subscribe. Current subscribers keep what they paid for."})
-    return jsonify({"message": f"New subscribers pay {price} coins every 30 days. Current subscribers keep their price."})
+        return jsonify({"message": tr("Nobody new can subscribe. Current subscribers keep what they paid for.")})
+    return jsonify({"message": trn("New subscribers pay %(num)s coin every 30 days. Current subscribers keep their price.",
+                                "New subscribers pay %(num)s coins every 30 days. Current subscribers keep their price.",
+                                price)})
 
 
 @app.route("/api/circles/<int:cid>/description", methods=["POST"])
@@ -208,7 +211,7 @@ def circle_description(cid, v):
         return _fail(error)
     circle_store.set_description(g.db, v.id, cid, description, get_filter(g.db).severity(description))
     g.db.commit()
-    return jsonify({"message": "Saved. People see it before they subscribe." if description else "Description removed."})
+    return jsonify({"message": tr("Saved. People see it before they subscribe.") if description else tr("Description removed.")})
 
 
 @app.route("/api/circles/<int:cid>/add", methods=["POST"])
@@ -222,7 +225,7 @@ def circle_add(cid, v):
     if refusal:
         return _fail(refusal)
     g.db.commit()
-    return jsonify({"message": f"@{target.username} is in {row.name}. They are not told."})
+    return jsonify({"message": tr("@%(name)s is in %(circle)s. They are not told.", name=target.username, circle=row.name)})
 
 
 @app.route("/api/circles/<int:cid>/remove", methods=["POST"])
@@ -232,9 +235,9 @@ def circle_remove(cid, v):
     row = _mine(v, cid, kinds=(circles.CUSTOM,))
     target = _target(request.values.get("username"), v)
     if not circle_store.remove_member(g.db, v.id, row.id, target.id):
-        return _fail(f"They aren't in {row.name}.", 404)
+        return _fail(tr("They aren't in %(circle)s.", circle=row.name), 404)
     g.db.commit()
-    return jsonify({"message": f"@{target.username} is no longer in {row.name}."})
+    return jsonify({"message": tr("@%(name)s is no longer in %(circle)s.", name=target.username, circle=row.name)})
 
 
 @app.route("/api/circles/for/<username>", methods=["GET"])
@@ -244,7 +247,7 @@ def circle_choices_for(username, v):
     Only ever the asker's own circles: nothing here says whose circles the account is in."""
     target = _target(username, v)
     if target.id == v.id:
-        return _fail("You can always see your own posts.")
+        return _fail(tr("You can always see your own posts."))
     inside = circle_store.custom_circles_with(g.db, v.id, target.id)
     rows = circle_store.circles_of(g.db, v.id, kinds=(circles.CUSTOM,))
     response = jsonify({"username": target.username, "manage": "/circles",
@@ -283,7 +286,7 @@ def circle_subscribe(cid, v):
     g.db.commit()
     g.db.refresh(v)
     if outcome == "subscribed":
-        send_notification(owner, f"{_link(v)} subscribed to your paid circle {circles.plain_name(row.name)}.")
+        notify(owner, SUBSCRIBED, name=v.username, circle=circles.plain_name(row.name))
     return jsonify({"message": message})
 
 
@@ -293,9 +296,9 @@ def circle_subscribe(cid, v):
 def circle_cancel(cid, v):
     row, _ = _paid_circle(cid)
     if not circle_store.cancel(g.db, row.id, v.id):
-        return _fail("You aren't subscribed to that circle.", 404)
+        return _fail(tr("You aren't subscribed to that circle."), 404)
     g.db.commit()
-    return jsonify({"message": "Your subscription won't renew. You keep access until the day you paid to."})
+    return jsonify({"message": tr("Your subscription won't renew. You keep access until the day you paid to.")})
 
 
 def circle_status(owner, viewer):
@@ -333,10 +336,10 @@ def circle_choices(viewer):
     found = g.__dict__.get("_circle_choices")
     if found is None:
         found = [{"token": circles.FRIENDS_TOKEN, "name": circles.FRIENDS_NAME, "kind": circles.FRIENDS,
-                  "hint": "People you follow who follow you back"}]
+                  "hint": tr("People you follow who follow you back")}]
         for row in circle_store.circles_of(g.db, viewer.id, kinds=(circles.CUSTOM, circles.PAID)):
             found.append({"token": str(row.id), "name": row.name, "kind": row.kind,
-                          "hint": "Paid circle" if row.kind == circles.PAID else ""})
+                          "hint": tr("Paid circle") if row.kind == circles.PAID else ""})
         g._circle_choices = found
     return found
 
@@ -390,12 +393,12 @@ def circle_post_audience(pid, v):
     if post.is_deleted or post.is_banned:
         abort(404)
     if post.repost_id not in (0, None):
-        return _fail("Only a post on your own profile has an audience.")
+        return _fail(tr("Only a post on your own profile has an audience."))
     if (post.audience or 0) == circles.GUILD:
-        return _fail("A post in a Circle guild keeps that guild's audience.")
+        return _fail(tr("A post in a Circle guild keeps that guild's audience."))
     raw, chosen = request.values.get("audience"), request.values.getlist("circles")
     if (raw is None or not raw.strip()) and not chosen:
-        return _fail("Choose who can see this.")
+        return _fail(tr("Choose who can see this."))
     audience, tokens, error = circles.parse_audience(raw, chosen)
     if error:
         return _fail(error)
@@ -407,7 +410,7 @@ def circle_post_audience(pid, v):
     before = post.audience or 0
     before_ids = sorted(circle_guard.post_circles(g.db, [post.id]).get(post.id, ())) if before == circles.CIRCLES else []
     if audience == before and circle_ids == before_ids:
-        return jsonify({"message": "Nothing changed."})
+        return jsonify({"message": tr("Nothing changed.")})
 
     own = []
     if audience != circles.PUBLIC:
@@ -418,7 +421,7 @@ def circle_post_audience(pid, v):
             return _fail(refusal)
         notes = []
         if circle_store.reaches_nobody(g.db, v.id, circle_ids):
-            notes.append("Nobody is in those circles yet, so only you would see this post.")
+            notes.append(tr("Nobody is in those circles yet, so only you would see this post."))
         if before == circles.PUBLIC:
             own, others, reposted = _shared_copies(post, v.id)
             notes.append(sharing.narrowing_note([c.board.name for c in own], others, reposted))
@@ -427,7 +430,7 @@ def circle_post_audience(pid, v):
         if notes and request.values.get("confirm") != "1":
             return jsonify({"error": " ".join(notes), "confirm": True}), 409
     elif request.values.get("confirm") != "1":
-        return jsonify({"error": "This post will be visible to everyone. Confirm to make it public.", "confirm": True}), 409
+        return jsonify({"error": tr("This post will be visible to everyone. Confirm to make it public."), "confirm": True}), 409
 
     post.audience = audience
     post.post_public = not audience and not post.board.is_private
@@ -443,9 +446,9 @@ def circle_post_audience(pid, v):
     cache.delete_memoized(frontlist, sort="new")
     cache.delete_memoized(frontlist)
     if audience == circles.PUBLIC:
-        return jsonify({"message": "This post is public now."})
+        return jsonify({"message": tr("This post is public now.")})
     named = [name for _, _, name in circle_store.names_of(g.db, circle_ids)]
-    return jsonify({"message": f"Shared with {circles.shared_label(named)} now."})
+    return jsonify({"message": tr("Shared with %(circles)s now.", circles=circles.shared_label(named))})
 
 
 def may_change_audience(post, viewer):
@@ -494,15 +497,17 @@ def board_circle_price(guildname, board, v):
     if not board.is_circle:
         abort(404)
     if board.creator_id != v.id:
-        return _fail("Only the guild's founder can set the price.", 403)
+        return _fail(tr("Only the guild's founder can set the price."), 403)
     price, error = circles.parse_price(request.values.get("price"))
     if error:
         return _fail(error)
     circle_store.set_board_price(g.db, board.id, price)
     g.db.commit()
     if price == 0:
-        return jsonify({"message": "Nobody can pay to join now: the guild is by invitation only. Current members keep what they paid for."})
-    return jsonify({"message": f"New members pay {price} coins every 30 days. Current members keep their price."})
+        return jsonify({"message": tr("Nobody can pay to join now: the guild is by invitation only. Current members keep what they paid for.")})
+    return jsonify({"message": trn("New members pay %(num)s coin every 30 days. Current members keep their price.",
+                                "New members pay %(num)s coins every 30 days. Current members keep their price.",
+                                price)})
 
 
 @app.route("/api/circle/guild/<guildname>/subscribe", methods=["POST"])
@@ -521,7 +526,7 @@ def circle_guild_subscribe(guildname, v):
     if outcome == "subscribed":
         founder = g.db.query(User).filter_by(id=board.creator_id).first()
         if founder is not None and founder.id != v.id:
-            send_notification(founder, f"{_link(v)} joined [+{board.name}](/+{board.name}).")
+            notify(founder, JOINED_GUILD, name=v.username, guild=board.name)
     return jsonify({"message": message})
 
 
@@ -531,9 +536,9 @@ def circle_guild_subscribe(guildname, v):
 def circle_guild_cancel(guildname, v):
     board = _circle_guild(guildname)
     if not circle_store.cancel_guild(g.db, board.id, v.id):
-        return _fail("You aren't a paying member of that guild.", 404)
+        return _fail(tr("You aren't a paying member of that guild."), 404)
     g.db.commit()
-    return jsonify({"message": "Your membership won't renew. You keep access until the day you paid to."})
+    return jsonify({"message": tr("Your membership won't renew. You keep access until the day you paid to.")})
 
 
 def circle_guild_status(board, viewer):

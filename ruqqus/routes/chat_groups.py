@@ -15,6 +15,7 @@ from ruqqus.helpers.get import *
 from ruqqus.helpers.visibility import filter_users, text_hidden, user_hidden
 from ruqqus.classes import *
 import ruqqus.helpers.matrix_client as matrix
+from ruqqus.helpers.i18n_runtime import tr, trn
 from ruqqus.__main__ import app
 
 from ruqqus.helpers import chat_groups as group_rules
@@ -157,11 +158,12 @@ def chat_group_create(v):
         return _error(str(e))
     names = _usernames()
     if not names:
-        return _error("Add at least one person.")
+        return _error(tr("Add at least one person."))
     if group_store.created_since(g.db, v.id, now - _DAY) >= group_rules.GROUPS_PER_DAY:
-        return _error(f"You can start at most {group_rules.GROUPS_PER_DAY} groups a day.", 429)
+        return _error(trn("You can start at most %(num)s group a day.", "You can start at most %(num)s groups a day.",
+                           group_rules.GROUPS_PER_DAY), 429)
     if _daily_adds_left(v, now) < len(names):
-        return _error("You've added a lot of people to groups today. Try again tomorrow.", 429)
+        return _error(tr("You've added a lot of people to groups today. Try again tomorrow."), 429)
 
     users, refusal = _refusals(v, group_rules.OWNER, names, set(), 1)
     if refusal:
@@ -186,7 +188,7 @@ def chat_group_create(v):
         g.db.rollback()
         if room_id:
             _undo(room_id, mxids)            # nobody stays in a room the database never recorded
-        return _error("Chat isn't answering right now. Try again in a moment.", 502)
+        return _error(tr("Chat isn't answering right now. Try again in a moment."), 502)
     g.db.commit()
     return jsonify({"group_id": group[0], "room_id": room_id})
 
@@ -206,9 +208,9 @@ def chat_group_add(gid, v):
     now = _now()
     names = _usernames()
     if not names:
-        return _error("Type who to add.")
+        return _error(tr("Type who to add."))
     if _daily_adds_left(v, now) < len(names):
-        return _error("You've added a lot of people to groups today. Try again tomorrow.", 429)
+        return _error(tr("You've added a lot of people to groups today. Try again tomorrow."), 429)
     existing = {m[0] for m in group_store.members(g.db, gid)}
     users, refusal = _refusals(v, me[1], names, existing, len(existing))
     if refusal:
@@ -220,7 +222,7 @@ def chat_group_add(gid, v):
     except matrix.MatrixError:
         g.db.rollback()
         _undo(group[1], done)
-        return _error("Chat isn't answering right now. Try again in a moment.", 502)
+        return _error(tr("Chat isn't answering right now. Try again in a moment."), 502)
     g.db.commit()
     return jsonify(group_json(group_store.group(g.db, gid), group_store.member(g.db, gid, v.id), v, full=True))
 
@@ -238,7 +240,7 @@ def chat_group_remove(gid, v):
     try:
         matrix.kick_as_bot(group[1], _mxid(target.id))
     except matrix.MatrixError:
-        return _error("Chat isn't answering right now. Try again in a moment.", 502)
+        return _error(tr("Chat isn't answering right now. Try again in a moment."), 502)
     _out_of_call(group[1], target.id)
     group_store.remove_member(g.db, gid, target.id)
     g.db.commit()
@@ -272,7 +274,7 @@ def chat_group_leave(gid, v):
         _leave(group, v, _now())
     except matrix.MatrixError:
         g.db.rollback()
-        return _error("Chat isn't answering right now. Try again in a moment.", 502)
+        return _error(tr("Chat isn't answering right now. Try again in a moment."), 502)
     g.db.commit()
     return "", 204
 
@@ -288,11 +290,11 @@ def chat_group_accept(gid, v):
     # was already in, put the two together); the message never says who blocked whom
     joined = [row[0] for row in group_store.members(g.db, gid) if row[2] == group_rules.JOINED and row[0] != v.id]
     if _blocked_ids(v) & set(joined):
-        return _error("You can't join this group.", 403)
+        return _error(tr("You can't join this group."), 403)
     try:
         matrix.join_room_as(group[1], _mxid(v.id))
     except matrix.MatrixError:
-        return _error("Chat isn't answering right now. Try again in a moment.", 502)
+        return _error(tr("Chat isn't answering right now. Try again in a moment."), 502)
     group_store.accept(g.db, gid, v.id, _now())
     g.db.commit()
     return "", 204
@@ -309,7 +311,7 @@ def chat_group_decline(gid, v):
         _leave(group, v, _now())
     except matrix.MatrixError:
         g.db.rollback()
-        return _error("Chat isn't answering right now. Try again in a moment.", 502)
+        return _error(tr("Chat isn't answering right now. Try again in a moment."), 502)
     g.db.commit()
     return "", 204
 
@@ -320,7 +322,7 @@ def chat_group_decline(gid, v):
 def chat_group_rename(gid, v):
     group, me = _membership(gid, v)
     if not group_rules.may_manage(me[1]):
-        return _error("Only the group's owner and admins can rename it.", 403)
+        return _error(tr("Only the group's owner and admins can rename it."), 403)
     try:
         name = group_rules.clean_name(request.values.get("name", ""))
     except group_rules.Refused as e:
@@ -402,7 +404,7 @@ def group_json(group, me, v, full=False):
             "mxid": matrix.mxid_for(u.id),
             "username": "" if deleted else u.username,
             "display_name": "" if deleted or user_hidden(u, v) else (u.display_name or ""),
-            "shown_name": "Deleted account" if deleted else (u.username if user_hidden(u, v) else u.shown_name),
+            "shown_name": tr("Deleted account") if deleted else (u.username if user_hidden(u, v) else u.shown_name),
             "profile_url": "" if deleted else u.profile_url,
             "role": m[1],
             "joined": m[2] == group_rules.JOINED,

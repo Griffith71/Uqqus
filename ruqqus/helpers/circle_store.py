@@ -20,6 +20,7 @@ import time
 from sqlalchemy import bindparam, text
 
 from ruqqus.helpers import circles
+from ruqqus.helpers.i18n_runtime import tr, trn
 
 YES, NO = True, False
 
@@ -84,9 +85,9 @@ def _name_taken(db, owner_id, name, except_id=None):
 def create(db, owner_id, kind, name, price=0, now=None):
     """(circle id, None) or (None, message). The kind's limits and Premium are the caller's (circles.refusal_to_make)."""
     if kind not in (circles.CUSTOM, circles.PAID):
-        return None, "That kind of circle can't be made."
+        return None, tr("That kind of circle can't be made.")
     if _name_taken(db, owner_id, name):
-        return None, "You already have a circle with that name."
+        return None, tr("You already have a circle with that name.")
     new_id = db.execute(text("INSERT INTO circles (user_id, price_coins, created_utc, name, kind) VALUES (:o, :p, :t, :n, :k) RETURNING id"),
                         {"o": owner_id, "p": price if kind == circles.PAID else 0, "t": _now(now), "n": name, "k": kind}).scalar()
     return new_id, None
@@ -95,9 +96,9 @@ def create(db, owner_id, kind, name, price=0, now=None):
 def rename(db, owner_id, circle_id, name):
     """None, or the message why not. Friends keeps its own name."""
     if not owned(db, owner_id, circle_id, kinds=(circles.CUSTOM, circles.PAID)):
-        return "That circle isn't yours."
+        return tr("That circle isn't yours.")
     if _name_taken(db, owner_id, name, except_id=circle_id):
-        return "You already have a circle with that name."
+        return tr("You already have a circle with that name.")
     db.execute(text("UPDATE circles SET name = :n WHERE id = :i"), {"n": name, "i": circle_id})
     return None
 
@@ -108,10 +109,10 @@ def delete(db, owner_id, circle_id, now=None):
     record of what came in stays. Friends can't be deleted."""
     row = owned(db, owner_id, circle_id, kinds=(circles.CUSTOM, circles.PAID))
     if row is None:
-        return "That circle isn't yours."
+        return tr("That circle isn't yours.")
     if row.kind == circles.PAID and subscribers(db, circle_id, now):
-        return ("People have paid for this circle and still have days left. Set its price to 0 so nobody new joins, "
-                "and delete it when their paid days are over.")
+        return tr("People have paid for this circle and still have days left. Set its price to 0 so nobody new joins, "
+                  "and delete it when their paid days are over.")
     db.execute(text("DELETE FROM post_circles WHERE circle_id = :i"), {"i": circle_id})
     db.execute(text("DELETE FROM story_circles WHERE circle_id = :i"), {"i": circle_id})
     db.execute(text("DELETE FROM circle_members WHERE circle_id = :i"), {"i": circle_id})
@@ -123,7 +124,7 @@ def delete(db, owner_id, circle_id, now=None):
 def set_price(db, owner_id, circle_id, price):
     """None, or the message why not. Existing subscribers keep the price they signed up at."""
     if not owned(db, owner_id, circle_id, kinds=(circles.PAID,)):
-        return "That circle isn't yours."
+        return tr("That circle isn't yours.")
     db.execute(text("UPDATE circles SET price_coins = :p WHERE id = :i"), {"p": price, "i": circle_id})
     return None
 
@@ -138,7 +139,7 @@ def resolve(db, owner_id, tokens, now=None):
             continue
         row = owned(db, owner_id, int(token))
         if row is None:
-            return None, "One of those circles isn't yours any more. Choose again."
+            return None, tr("One of those circles isn't yours any more. Choose again.")
         found.append(row.id)
     return sorted(set(found)), None
 
@@ -219,7 +220,7 @@ def member_counts(db, circle_ids, now=None):
 def add_member(db, owner_id, circle_id, target_id, now=None):
     """Put someone in one of the owner's custom circles. None, or the message why not. They are not told."""
     if not owned(db, owner_id, circle_id, kinds=(circles.CUSTOM,)):
-        return "That circle isn't yours."
+        return tr("That circle isn't yours.")
     already = bool(db.execute(text("SELECT 1 FROM circle_members WHERE circle_id = :c AND user_id = :u AND tier = 'member' AND status = 'active'"),
                               {"c": circle_id, "u": target_id}).fetchone())
     refusal = circles.refusal_to_add_member(
@@ -436,7 +437,7 @@ def subscribe(db, circle_id, payer_id, now=None):
     _serialise(db, circle_id, payer_id)
     circle = get(db, circle_id)
     if circle is None or circle.kind != circles.PAID:
-        return "refused", "That circle isn't taking subscribers."
+        return "refused", tr("That circle isn't taking subscribers.")
     row = subscriber_row(db, circle.id, payer_id)
     tier = circles.tier_of(row.tier, row.status, row.renews_utc, now) if row else None
     cancelled = bool(row and row.cancelled)
@@ -447,17 +448,19 @@ def subscribe(db, circle_id, payer_id, now=None):
         return "refused", refusal
     if tier == circles.SUBSCRIBER and cancelled:
         db.execute(text("UPDATE circle_members SET cancelled = :no WHERE id = :i"), {"no": NO, "i": row.id})
-        return "resumed", "Your subscription will renew again."
+        return "resumed", tr("Your subscription will renew again.")
     price = circle.price_coins
     if not _pay(db, payer_id, circle.user_id, circle.id, price, "subscribe", now):
-        return "refused", f"You need {price} coins to subscribe and you don't have enough."
+        return "refused", trn("You need %(num)s coins to subscribe and you don't have enough.",
+                              "You need %(num)s coins to subscribe and you don't have enough.", price)
     db.execute(text("""
         INSERT INTO circle_members (circle_id, user_id, tier, status, started_utc, renews_utc, cancelled, price_coins, created_utc)
         VALUES (:c, :u, 'subscriber', 'active', :t, :r, :no, :p, :t)
         ON CONFLICT (circle_id, user_id) DO UPDATE SET tier = 'subscriber', status = 'active', started_utc = :t,
             renews_utc = :r, cancelled = :no, price_coins = :p"""),
         {"c": circle.id, "u": payer_id, "t": now, "r": circles.next_renewal(now, 0), "no": NO, "p": price})
-    return "subscribed", f"You're subscribed. It renews in 30 days for {price} coins unless you cancel."
+    return "subscribed", trn("You're subscribed. It renews in 30 days for %(num)s coins unless you cancel.",
+                             "You're subscribed. It renews in 30 days for %(num)s coins unless you cancel.", price)
 
 
 def cancel(db, circle_id, payer_id):
@@ -595,7 +598,7 @@ def subscribe_guild(db, board_id, payer_id, now=None):
     circle = circle_of_board(db, board_id)
     price = circle.price_coins if circle else 0
     if guild is None or not guild.is_circle or guild.is_banned:
-        return "refused", "That guild isn't a Circle guild."
+        return "refused", tr("That guild isn't a Circle guild.")
     founder = guild.creator_id
     row = db.execute(text("SELECT m.id, m.tier, m.status, m.renews_utc, m.cancelled FROM circle_members m JOIN circles c ON c.id = m.circle_id "
                           "WHERE c.board_id = :b AND m.user_id = :u"), {"b": board_id, "u": payer_id}).fetchone()
@@ -603,17 +606,18 @@ def subscribe_guild(db, board_id, payer_id, now=None):
     cancelled = bool(row and row.cancelled)
     if tier == circles.SUBSCRIBER and cancelled:
         db.execute(text("UPDATE circle_members SET cancelled = :no WHERE id = :i"), {"no": NO, "i": row.id})
-        return "resumed", "Your membership will renew again."
+        return "resumed", tr("Your membership will renew again.")
     if tier == circles.SUBSCRIBER:
-        return "refused", "You are already a member."
+        return "refused", tr("You are already a member.")
     if is_guild_member(db, board_id, payer_id):
-        return "refused", "You are already a member of this guild."
+        return "refused", tr("You are already a member of this guild.")
     if exiled_from(db, board_id, payer_id) or _gone(_account(db, founder)) or blocked_between(db, founder, payer_id):
-        return "refused", "You can't join this Circle guild."
+        return "refused", tr("You can't join this Circle guild.")
     if price <= 0:
-        return "refused", "This Circle guild is by invitation only."
+        return "refused", tr("This Circle guild is by invitation only.")
     if not _pay(db, payer_id, founder, circle.id, price, "subscribe", now):
-        return "refused", f"You need {price} coins to join and you don't have enough."
+        return "refused", trn("You need %(num)s coins to join and you don't have enough.",
+                              "You need %(num)s coins to join and you don't have enough.", price)
     db.execute(text("""
         INSERT INTO circle_members (circle_id, user_id, tier, status, started_utc, renews_utc, cancelled, price_coins, created_utc)
         VALUES (:c, :u, 'subscriber', 'active', :t, :r, :no, :p, :t)
@@ -621,7 +625,8 @@ def subscribe_guild(db, board_id, payer_id, now=None):
             renews_utc = :r, cancelled = :no, price_coins = :p"""),
         {"c": circle.id, "u": payer_id, "t": now, "r": circles.next_renewal(now, 0), "no": NO, "p": price})
     join_guild(db, board_id, payer_id, founder, now)
-    return "subscribed", f"You're in. It renews in 30 days for {price} coins unless you cancel."
+    return "subscribed", trn("You're in. It renews in 30 days for %(num)s coins unless you cancel.",
+                             "You're in. It renews in 30 days for %(num)s coins unless you cancel.", price)
 
 
 def cancel_guild(db, board_id, payer_id):

@@ -44,7 +44,7 @@
     list.textContent = '';
     if (!info) return;
     if (!info.curations.length) {
-      list.appendChild(make('p', 'text-muted mb-0', 'You have no curations yet.'));
+      list.appendChild(make('p', 'text-muted mb-0', tr('You have no curations yet.')));
       return;
     }
     var kind = what();
@@ -56,7 +56,8 @@
       row.disabled = has || blocked;
       row.appendChild(make('span', 'font-weight-bold', c.name));
       row.appendChild(make('span', 'text-small ml-2 ' + (has ? 'text-success' : 'text-muted'),
-        has ? 'Added' : (blocked ? 'Private guilds need a private curation' : (c.private ? 'Private' : 'Public'))));
+        // Translators: beside a curation's name: already holds it / can't take a private guild / the curation is private or public
+        has ? tr('Added') : (blocked ? tr('Private guilds need a private curation') : (c.private ? tr('Private') : tr('Public')))));
       row.addEventListener('click', function () { add(c, row); });
       list.appendChild(row);
     });
@@ -65,7 +66,7 @@
   function add(curation, row) {
     var kind = what();
     row.disabled = true;
-    say('Adding...');
+    say(tr('Adding...'));
     var body = new URLSearchParams();
     body.set('formkey', formkey());
     body.set('curation', curation.slug);
@@ -79,12 +80,12 @@
       body: body
     }).then(function (r) { return r.json().then(function (data) { return { ok: r.ok, data: data }; }); })
       .then(function (res) {
-        if (!res.ok) { row.disabled = false; say(res.data.error || 'Could not add it.', true); return; }
+        if (!res.ok) { row.disabled = false; say(res.data.error || tr('Could not add it.'), true); return; }
         if (kind === 'author') curation.has_author = true; else curation.has_guild = true;
-        say(res.data.message || 'Added.');
+        say(res.data.message || tr('Added.'));
         draw();
       })
-      .catch(function () { row.disabled = false; say('Could not add it. Try again.', true); });
+      .catch(function () { row.disabled = false; say(tr('Could not add it. Try again.'), true); });
   }
 
   function open(id, user) {
@@ -93,7 +94,7 @@
     info = null;
     var mine = ++token;
     list.textContent = '';
-    say('Loading...');
+    say(tr('Loading...'));
     authorRow.classList.add('d-none');
     guildRow.classList.add('d-none');
     createLink.classList.add('d-none');
@@ -102,15 +103,15 @@
       .then(function (r) { return r.json().then(function (data) { return { ok: r.ok, data: data }; }); })
       .then(function (res) {
         if (mine !== token) return;
-        if (!res.ok) { say(res.data.error || 'Could not load your curations.', true); return; }
+        if (!res.ok) { say(res.data.error || tr('Could not load your curations.'), true); return; }
         info = res.data;
         if (info.author) {
           authorRow.classList.remove('d-none');
-          authorLabel.textContent = 'The account, @' + info.author.username;
+          authorLabel.textContent = tr('The account, @%(name)s', {name: info.author.username});
         }
         if (info.guild) {
           guildRow.classList.remove('d-none');
-          guildLabel.textContent = 'The guild, +' + info.guild.name;
+          guildLabel.textContent = tr('The guild, +%(name)s', {name: info.guild.name});
         }
         if (info.author) authorInput.checked = true; else guildInput.checked = true;
         if (typeof info.create_url === 'string' && info.create_url.charAt(0) === '/') {
@@ -120,7 +121,7 @@
         say('');
         draw();
       })
-      .catch(function () { if (mine === token) say('Could not load your curations. Try again.', true); });
+      .catch(function () { if (mine === token) say(tr('Could not load your curations. Try again.'), true); });
   }
 
   authorInput.addEventListener('change', draw);

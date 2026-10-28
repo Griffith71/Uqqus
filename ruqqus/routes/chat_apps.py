@@ -10,6 +10,7 @@ from flask import *
 from ruqqus.helpers.wrappers import *
 from ruqqus.helpers import oidc_provider as oidc
 from ruqqus.helpers.chat_devices import is_site_device
+from ruqqus.helpers.i18n_runtime import tr
 from ruqqus.classes import *
 import ruqqus.helpers.matrix_client as matrix
 from ruqqus.__main__ import app, limiter
@@ -50,7 +51,7 @@ def chat_devices(v):
     try:
         devices = matrix.list_devices(identity.matrix_user_id)
     except matrix.MatrixError:
-        return jsonify({"error": "Your chat devices can't be listed right now."}), 503
+        return jsonify({"error": tr("Your chat devices can't be listed right now.")}), 503
     resp = jsonify({"devices": device_rows(devices, app.config["SITE_NAME"])})
     resp.headers["Cache-Control"] = "no-store"
     return resp
@@ -70,5 +71,5 @@ def chat_device_sign_out(v):
             abort(404)
         matrix.delete_device(identity.matrix_user_id, device_id)
     except matrix.MatrixError:
-        return jsonify({"error": "That device couldn't be signed out right now."}), 503
+        return jsonify({"error": tr("That device couldn't be signed out right now.")}), 503
     return "", 204

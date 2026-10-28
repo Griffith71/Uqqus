@@ -16,13 +16,14 @@ from ruqqus.helpers.filters import *
 from ruqqus.helpers.embed import *
 from ruqqus.helpers.markdown import *
 from ruqqus.helpers.get import *
+from ruqqus.helpers.i18n_runtime import N_, tr
 from ruqqus.classes import *
 from ruqqus.mail import *
 from flask import *
 from ruqqus.__main__ import app, cache, limiter, db_session
 
 BAN_REASONS = ['',
-               "Deceptive URL shorteners are not permitted."
+               N_("Deceptive URL shorteners are not permitted.")
                ]
 
 
@@ -126,42 +127,42 @@ Optional query parameters:
         return {'html': lambda: render_template("userpage_reserved.html",
                                                 u=u,
                                                 v=v),
-                'api': lambda: {"error": f"That username is reserved for: {u.reserved}"}
+                'api': lambda: {"error": tr("That username is reserved for: %(reason)s", reason=u.reserved)}
                 }
 
     if u.is_suspended and not (v and (v.admin_level >=3 or v.id==u.id)):
         return {'html': lambda: render_template("userpage_banned.html",
                                                 u=u,
                                                 v=v),
-                'api': lambda: {"error": "That user is banned"}
+                'api': lambda: {"error": tr("That user is banned")}
                 }
 
     if u.is_deleted and not (v and v.admin_level >= 3):
         return {'html': lambda: render_template("userpage_deleted.html",
                                                 u=u,
                                                 v=v),
-                'api': lambda: {"error": "That user deactivated their account."}
+                'api': lambda: {"error": tr("That user deactivated their account.")}
                 }
 
     if u.is_private and not (v and (v.admin_level >=3 or v.id==u.id)):
         return {'html': lambda: render_template("userpage_private.html",
                                                 u=u,
                                                 v=v),
-                'api': lambda: {"error": "That userpage is private"}
+                'api': lambda: {"error": tr("That userpage is private")}
                 }
 
     if u.is_blocking and not (v and v.admin_level >= 3):
         return {'html': lambda: render_template("userpage_blocking.html",
                                                 u=u,
                                                 v=v),
-                'api': lambda: {"error": f"You are blocking @{u.username}."}
+                'api': lambda: {"error": tr("You are blocking @%(name)s.", name=u.username)}
                 }
 
     if u.is_blocked and not (v and v.admin_level >= 3):
         return {'html': lambda: render_template("userpage_blocked.html",
                                                 u=u,
                                                 v=v),
-                'api': lambda: {"error": "This person is blocking you."}
+                'api': lambda: {"error": tr("This person is blocking you.")}
                 }
 
     sort = request.args.get("sort", "new")
@@ -237,42 +238,42 @@ Optional query parameters:
         return {'html': lambda: render_template("userpage_reserved.html",
                                                 u=u,
                                                 v=v),
-                'api': lambda: {"error": f"That username is reserved for: {u.reserved}"}
+                'api': lambda: {"error": tr("That username is reserved for: %(reason)s", reason=u.reserved)}
                 }
 
     if u.is_suspended and not (v and (v.admin_level >=3 or v.id==u.id)):
         return {'html': lambda: render_template("userpage_banned.html",
                                                 u=u,
                                                 v=v),
-                'api': lambda: {"error": "That user is banned"}
+                'api': lambda: {"error": tr("That user is banned")}
                 }
 
     if u.is_deleted and not (v and v.admin_level >= 3):
         return {'html': lambda: render_template("userpage_deleted.html",
                                                 u=u,
                                                 v=v),
-                'api': lambda: {"error": "That user deactivated their account."}
+                'api': lambda: {"error": tr("That user deactivated their account.")}
                 }
 
     if u.is_private and not (v and (v.admin_level >=3 or v.id==u.id)):
         return {'html': lambda: render_template("userpage_private.html",
                                                 u=u,
                                                 v=v),
-                'api': lambda: {"error": "That userpage is private"}
+                'api': lambda: {"error": tr("That userpage is private")}
                 }
 
     if u.is_blocking and not (v and v.admin_level >= 3):
         return {'html': lambda: render_template("userpage_blocking.html",
                                                 u=u,
                                                 v=v),
-                'api': lambda: {"error": f"You are blocking @{u.username}."}
+                'api': lambda: {"error": tr("You are blocking @%(name)s.", name=u.username)}
                 }
 
     if u.is_blocked and not (v and v.admin_level >= 3):
         return {'html': lambda: render_template("userpage_blocked.html",
                                                 u=u,
                                                 v=v),
-                'api': lambda: {"error": "This person is blocking you."}
+                'api': lambda: {"error": tr("This person is blocking you.")}
                 }
 
     page = page_number()
@@ -344,42 +345,42 @@ Optional query parameters:
         return {'html': lambda: render_template("userpage_reserved.html",
                                                 u=u,
                                                 v=v),
-                'api': lambda: {"error": f"That username is reserved for: {u.reserved}"}
+                'api': lambda: {"error": tr("That username is reserved for: %(reason)s", reason=u.reserved)}
                 }
 
     if u.is_suspended and not (v and (v.admin_level >=3 or v.id==u.id)):
         return {'html': lambda: render_template("userpage_banned.html",
                                                 u=u,
                                                 v=v),
-                'api': lambda: {"error": "That user is banned"}
+                'api': lambda: {"error": tr("That user is banned")}
                 }
 
     if u.is_deleted and not (v and v.admin_level >= 3):
         return {'html': lambda: render_template("userpage_deleted.html",
                                                 u=u,
                                                 v=v),
-                'api': lambda: {"error": "That user deactivated their account."}
+                'api': lambda: {"error": tr("That user deactivated their account.")}
                 }
 
     if u.is_private and not (v and (v.admin_level >=3 or v.id==u.id)):
         return {'html': lambda: render_template("userpage_private.html",
                                                 u=u,
                                                 v=v),
-                'api': lambda: {"error": "That userpage is private"}
+                'api': lambda: {"error": tr("That userpage is private")}
                 }
 
     if u.is_blocking and not (v and v.admin_level >= 3):
         return {'html': lambda: render_template("userpage_blocking.html",
                                                 u=u,
                                                 v=v),
-                'api': lambda: {"error": f"You are blocking @{u.username}."}
+                'api': lambda: {"error": tr("You are blocking @%(name)s.", name=u.username)}
                 }
 
     if u.is_blocked and not (v and v.admin_level >= 3):
         return {'html': lambda: render_template("userpage_blocked.html",
                                                 u=u,
                                                 v=v),
-                'api': lambda: {"error": "This person is blocking you."}
+                'api': lambda: {"error": tr("This person is blocking you.")}
                 }
 
     page = page_number()
@@ -435,13 +436,13 @@ def profile_json_refusal(u, v):
     if v and (v.id == u.id or v.admin_level >= 3):
         return None
     if u.reserved:
-        return f"That username is reserved for: {u.reserved}"
+        return tr("That username is reserved for: %(reason)s", reason=u.reserved)
     if u.is_private:
-        return "That userpage is private"
+        return tr("That userpage is private")
     if u.is_blocking:
-        return f"You are blocking @{u.username}."
+        return tr("You are blocking @%(name)s.", name=u.username)
     if u.is_blocked:
-        return "This person is blocking you."
+        return tr("This person is blocking you.")
     return None
 
 
@@ -462,12 +463,12 @@ URL path parameters:
     target = get_user(username)
 
     if target.id==v.id:
-        return jsonify({"error": "You can't follow yourself!"}), 400
+        return jsonify({"error": tr("You can't follow yourself!")}), 400
 
     # the profile's own gates (userpage); the message never says which, so it cannot reveal a block
     if (target.is_deleted or target.is_suspended or target.is_nofollow or target.is_private
             or v.any_block_exists(target)):
-        return jsonify({"error": "You can't follow this account."}), 403
+        return jsonify({"error": tr("You can't follow this account.")}), 403
 
     # check for existing follow
     if g.db.query(Follow).filter_by(user_id=v.id, target_id=target.id).first():
@@ -556,11 +557,11 @@ URL path parameters:
 
     user=get_user(username, v=v, graceful=True)
     if not user:
-        return jsonify({"error": f"User '@{username}' not found."}), 404
+        return jsonify({"error": tr("User '@%(name)s' not found.", name=username)}), 404
 
     follow=g.db.query(Follow).filter_by(user_id=v.id, target_id=user.id).first()
     if not follow:
-        return jsonify({"error": f"You aren't following @{user.username}"}), 404
+        return jsonify({"error": tr("You aren't following @%(name)s", name=user.username)}), 404
 
     follow.get_notifs = not follow.get_notifs
     g.db.add(follow)
@@ -568,8 +569,8 @@ URL path parameters:
 
     # posts, forwards, reposts, Spaces going live and stories (helpers/bell.py)
     if follow.get_notifs:
-        return jsonify({"message": f"You'll be told about everything @{user.username} does."})
-    return jsonify({"message": f"Notifications for @{user.username} turned off."})
+        return jsonify({"message": tr("You'll be told about everything @%(name)s does.", name=user.username)})
+    return jsonify({"message": tr("Notifications for @%(name)s turned off.", name=user.username)})
 
 
 

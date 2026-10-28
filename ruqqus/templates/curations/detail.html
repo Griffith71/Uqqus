@@ -13,41 +13,42 @@
     <div>
       <h1 class="h3 mb-0">
         {{ curation.name }}
-        {% if curation.is_private %}<span class="badge badge-secondary">Private</span>{% else %}<span class="badge badge-info">Public</span>{% endif %}
+        {% if curation.is_private %}<span class="badge badge-secondary">{{ pgettext("curation", "Private") }}</span>{% else %}<span class="badge badge-info">{{ pgettext("curation", "Public") }}</span>{% endif %}
       </h1>
       <div class="text-muted text-small">&{{ curation.slug }}</div>
-      <div class="text-muted text-small">by <a href="{{ curation.owner.permalink }}">@{{ curation.owner.username }}</a></div>
+      {% set owner_link %}<a href="{{ curation.owner.permalink }}">@{{ curation.owner.username }}</a>{% endset %}
+      <div class="text-muted text-small">{# Translators: who made the curation, a link to their @handle #}{{ _("by %(owner)s", owner=owner_link) }}</div>
       {% if curation.description %}<p class="mt-2">{{ curation.description }}</p>{% endif %}
     </div>
 
     <div class="mt-2">
       {% if is_owner %}
-      <a href="{{ curation.permalink }}/edit" class="btn btn-secondary btn-sm">Edit</a>
+      <a href="{{ curation.permalink }}/edit" class="btn btn-secondary btn-sm">{{ pgettext("verb", "Edit") }}</a>
       {% elif v and not curation.is_private %}
         {% if is_following %}
         <form method="post" action="{{ curation.permalink }}/unfollow" class="d-inline">
           <input type="hidden" name="formkey" value="{{ v.formkey }}">
-          <button type="submit" class="btn btn-secondary btn-sm">Unfollow</button>
+          <button type="submit" class="btn btn-secondary btn-sm">{{ pgettext("button", "Unfollow") }}</button>
         </form>
         {% else %}
         <form method="post" action="{{ curation.permalink }}/follow" class="d-inline">
           <input type="hidden" name="formkey" value="{{ v.formkey }}">
-          <button type="submit" class="btn btn-primary btn-sm">Follow</button>
+          <button type="submit" class="btn btn-primary btn-sm">{{ pgettext("button", "Follow") }}</button>
         </form>
         {% endif %}
         <form method="post" action="{{ curation.permalink }}/fork" class="d-inline">
           <input type="hidden" name="formkey" value="{{ v.formkey }}">
-          <button type="submit" class="btn btn-outline-secondary btn-sm">Fork</button>
+          <button type="submit" class="btn btn-outline-secondary btn-sm">{{ pgettext("verb", "Fork") }}</button>
         </form>
       {% endif %}
     </div>
   </div>
 
   <div class="text-small text-muted mb-3">
-    {{ guilds | length }} guild{{ 's' if guilds | length != 1 else '' }}
+    {{ ngettext("%(num)s guild", "%(num)s guilds", guilds | length) }}
     &middot;
-    {{ accounts | length }} account{{ 's' if accounts | length != 1 else '' }}
-    {% if curation.forked_from_id %}&middot; forked from another curation{% endif %}
+    {{ ngettext("%(num)s account", "%(num)s accounts", accounts | length) }}
+    {% if curation.forked_from_id %}&middot; {{ _("forked from another curation") }}{% endif %}
   </div>
 
   {% if curation.uses_feed_server %}
@@ -55,16 +56,16 @@
   <div class="curation-server-note text-small mb-3" role="note">
     <i class="fas fa-server mr-1" aria-hidden="true"></i>{{ curation.algorithm_summary | join(" ") }}
     {% if v and v.admin_level >= 4 %}
-    <form method="post" action="{{ curation.permalink }}/remove_feed_server" class="d-inline ml-2" onsubmit="return confirm('Take this curation off its outside server?');">
+    <form method="post" action="{{ curation.permalink }}/remove_feed_server" class="d-inline ml-2" onsubmit="return confirm({{ _('Take this curation off its outside server?') | tojson | forceescape }});">
       <input type="hidden" name="formkey" value="{{ v.formkey }}">
-      <button type="submit" class="btn btn-sm btn-outline-danger">Remove the server</button>
+      <button type="submit" class="btn btn-sm btn-outline-danger">{{ _("Remove the server") }}</button>
     </form>
     {% endif %}
   </div>
   {% else %}
   {# what this feed shows and how it is ordered, for everyone who can see it #}
   <details class="curation-how text-small mb-3">
-    <summary>How this curation picks posts</summary>
+    <summary>{{ _("How this curation picks posts") }}</summary>
     <ul class="mb-0 mt-1 pl-3">
       {% for line in curation.algorithm_summary %}<li>{{ line }}</li>{% endfor %}
     </ul>
@@ -78,24 +79,24 @@
   </div>
 
   {% if not listing and not feed_notice %}
-  <p class="text-muted">{% if curation.uses_feed_server %}Its feed server has not named any posts you can see.{% elif curation.has_own_algorithm %}No posts match this curation's rules right now.{% else %}No posts yet from this curation's guilds or accounts.{% endif %}</p>
+  <p class="text-muted">{% if curation.uses_feed_server %}{{ _("Its feed server has not named any posts you can see.") }}{% elif curation.has_own_algorithm %}{{ _("No posts match this curation's rules right now.") }}{% else %}{{ _("No posts yet from this curation's guilds or accounts.") }}{% endif %}</p>
   {% endif %}
 
 </div>
 {% endblock %}
 
 {% block pagenav %}
-<nav aria-label="Page navigation">
+<nav aria-label="{{ _('Page navigation') }}">
   <ul class="pagination pagination-sm mb-0">
     {% if page>1 %}
-    <li class="page-item"><small><a class="page-link" href="?page={{ page-1 }}{% if sort_method %}&sort={{ sort_method }}{% endif %}">Prev</a></small></li>
+    <li class="page-item"><small><a class="page-link" href="?page={{ page-1 }}{% if sort_method %}&sort={{ sort_method }}{% endif %}">{{ pgettext("previous page", "Prev") }}</a></small></li>
     {% else %}
-    <li class="page-item disabled"><span class="page-link">Prev</span></li>
+    <li class="page-item disabled"><span class="page-link">{{ pgettext("previous page", "Prev") }}</span></li>
     {% endif %}
     {% if next_exists %}
-    <li class="page-item"><small><a class="page-link" href="?page={{ page+1 }}{% if sort_method %}&sort={{ sort_method }}{% endif %}">Next</a></small></li>
+    <li class="page-item"><small><a class="page-link" href="?page={{ page+1 }}{% if sort_method %}&sort={{ sort_method }}{% endif %}" rel="next">{{ pgettext("next page", "Next") }}</a></small></li>
     {% else %}
-    <li class="page-item disabled"><span class="page-link">Next</span></li>
+    <li class="page-item disabled"><span class="page-link">{{ pgettext("next page", "Next") }}</span></li>
     {% endif %}
   </ul>
 </nav>

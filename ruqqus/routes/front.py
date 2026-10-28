@@ -28,6 +28,8 @@ from ruqqus.helpers import notification_feed
 from ruqqus.helpers.languages import LANGUAGE_NAMES, known_codes, choosable, language_condition
 from ruqqus.helpers.languages import catalogue as language_catalogue, label as language_label, UNKNOWN as LANGUAGE_UNKNOWN
 from ruqqus.helpers.regions import REGION_CENTROIDS
+from ruqqus.helpers import i18n
+from ruqqus.helpers.i18n_runtime import current_locale, msg, tr, tr_lazy, translations
 
 
 @app.route("/post/", methods=["GET"])
@@ -46,35 +48,43 @@ def slash_post():
 def notifications(v):
 
     page = page_number()
-    all_ = request.args.get('all', False)
 
-    cids = v.notification_commentlisting(page=page,
-                                         all_=request.path=="/notifications/all",
-                                         mentions_only=request.path=="/notifications/mentions",
-                                         comments_only=request.path=="/notifications/replies",
-                                         system_only=request.path=="/notifications/system"
-                                         )
-    next_exists = (len(cids) == 26)
-    cids = cids[0:25]
+    def api_listing():
+        # the API's list is what it always was: comments only, a comment on your comment under its parent
+        cids = v.notification_commentlisting(page=page,
+                                             all_=request.path=="/notifications/all",
+                                             mentions_only=request.path=="/notifications/mentions",
+                                             comments_only=request.path=="/notifications/replies",
+                                             system_only=request.path=="/notifications/system"
+                                             )
+        cids = cids[0:25]
 
-    comments = get_comments(cids, v=v, sort_type="new", load_parent=True)
+        comments = get_comments(cids, v=v, sort_type="new", load_parent=True)
 
-    listing = []
-    for c in comments:
-        # comments by accounts blocked either way are left out of the list (User.notification_commentlisting)
-        c.nested_comments = []
-        if c.author_id == 1:
-            c._is_system = True
-            listing.append(c)
-        elif c.level > 1 and c.parent_comment and c.parent_comment.author_id == v.id:
-            c._is_comment_on_comment = True
-            parent = c.parent_comment
+        listing = []
+        for c in comments:
+            # comments by accounts blocked either way are left out of the list (User.notification_commentlisting)
+            c.nested_comments = []
+            if c.author_id == 1:
+                c._is_system = True
+                listing.append(c)
+            elif c.level > 1 and c.parent_comment and c.parent_comment.author_id == v.id:
+                c._is_comment_on_comment = True
+                parent = c.parent_comment
 
-            if parent in listing:
-                parent.nested_comments = parent.nested_comments + [c]
+                if parent in listing:
+                    parent.nested_comments = parent.nested_comments + [c]
+                else:
+                    parent.nested_comments = [c]
+                    listing.append(parent)
+
+            elif c.level == 1 and c.post.author_id == v.id:
+                c._is_comment_on_post = True
+                listing.append(c)
             else:
-                parent.nested_comments = [c]
-                listing.append(parent)
+                c._is_username_mention = True
+                listing.append(c)
+        return listing
 
     return {'html': lambda: notifications_page(v, notification_feed.tab_of(request.path, request.args.get("all")), page),
             'api': lambda: jsonify({"data": [x.json for x in api_listing()]})}
@@ -91,15 +101,6 @@ def notifications_page(v, tab, number):
                            page=number,
                            is_notification_page=True)
 
-    return {'html': lambda: render_template("notifications.html",
-                            v=v,
-                            notifications=listing,
-                            next_exists=next_exists,
-                            page=page,
-                            standalone=True,
-                            render_child_comments=True,
-                            is_notification_page=True),
-            'api': lambda: jsonify({"data": [x.json for x in listing]})}
 
 @app.get("/notifications/posts")
 @auth_required
@@ -108,15 +109,17 @@ def notifications_posts(v):
 
     page=page_number()
 
-    pids=v.notification_postlisting(
-        page=page,
-        all_=request.args.get("all")
-        )
+    def api_listing():
+        pids=v.notification_postlisting(
+            page=page,
+            all_=request.args.get("all")
+            )
+        pids=pids[0:25]
+        return get_posts(pids, v=v, sort="new")
 
-    next_exists=(len(pids)==26)
-    pids=pids[0:25]
-
-    posts=get_posts(pids, v=v, sort="new")
+    def api_json():
+        posts = api_listing()
+        return jsonify({"data": [x.json for x in posts]})
 
     return {'html': lambda: notifications_page(v, "posts", page),
             'api': api_json
@@ -325,7 +328,8 @@ def sidebar_regions():
 # resolving ids back to display names for the "Showing posts in X" notice.
 ALL_SUBCATS = sorted(
     [(subcat.name, subcat.id, cat.name) for cat in CATEGORIES for subcat in cat.subcats]
-    + [("Uncategorized", 0, "")],
+    # Translators: the category of guilds that have none
+    + [(tr_lazy("Uncategorized"), 0, "")],
     key=lambda x: x[0]
 )
 SUBCAT_NAME_BY_ID = {id_: name for name, id_, catname in ALL_SUBCATS}
@@ -481,19 +485,15 @@ def region_filter_condition(region_list):
     to the caller's query, so it composes safely regardless of what's
     already been joined."""
 
-    # an anonymous post does not match through its author, or the filter would tell where they live
-    author_match = and_(
-        Submission.author_id.in_(select(User.id).where(User.display_region.in_(region_list))),
-        not_(Submission.is_anonymous)
-    )
+    # an anonymous post matches through its author too (the owner, 2026-10-27: anonymous posts show in All under a region
+    # filter, and so tell readers which region they come from; the composer's anonymous switch says so). It never names them.
+    author_match = Submission.author_id.in_(select(User.id).where(User.display_region.in_(region_list)))
     forwarder_match = exists(
         select(ForwardRelationship.id)
         .join(User, User.id == ForwardRelationship.forwarded_by_id)
         .where(
             ForwardRelationship.forward_submission_id == Submission.id,
             User.display_region.in_(region_list),
-            # an author who forwarded their own anonymous post is not a region match either
-            or_(not_(Submission.is_anonymous), ForwardRelationship.forwarded_by_id != Submission.author_id)
         )
     )
     reposter_match = exists(
@@ -519,7 +519,7 @@ def inject_sidebar_filter_data():
     of the same name still take precedence over these defaults."""
 
     stored_catids = flask_session.get('catids')
-    if stored_catids and set(stored_catids) == ALL_SUBCAT_IDS:
+    if stored_catids and set(stored_catids) in (ALL_SUBCAT_IDS, ALL_CATEGORY_CHOICES):
         flask_session['catids'] = []
         flask_session.modified = True
 
@@ -531,15 +531,11 @@ def inject_sidebar_filter_data():
     # an error page can render before before_request opened g.db (the rate
     # limiter answers first); it gets an empty region list instead of a 500
     regions_catalog = [
-        {"value": r.code, "label": r.current_name, "search": r.current_name}
+        {"value": r.code, "label": msg(r.current_name), "search": f"{msg(r.current_name)} {r.current_name}"}
         for r in sidebar_regions()
     ] if getattr(g, 'db', None) is not None else []
 
-    sorted_languages = sorted(LANGUAGE_NAMES.items(), key=lambda x: x[1])
-    languages_catalog = [
-        {"value": code, "label": name, "search": name}
-        for code, name in sorted_languages
-    ]
+    languages_catalog = _languages_catalog()        # the languages, then "Other or unknown"
 
     v = getattr(g, 'v', None)
     active_regions, active_languages, active_subcats = _resolve_active_filters(v)
@@ -886,7 +882,7 @@ def _filter_change_from_another_site():
 
 
 def _id_text(x):
-    """A category or group id as text: ASCII digits inside an integer (bug hunt: anything else was a 500)."""
+    """A group id as text: ASCII digits inside an integer (bug hunt: anything else was a 500)."""
     return x.isascii() and x.isdigit() and len(x) <= 9
 
 
@@ -919,7 +915,8 @@ to whichever of those three the viewer was last using.
 future AJAX-refresh use.
 
 Optional query parameters:
-* `cats` - Comma-separated subcategory ids to select/remember.
+* `cats` - Comma-separated subcategory ids to select/remember. `-<id>` is the guilds filed under a
+  category alone (`-1` is Arts alone); send the category's subcategory ids too for everything in it.
 * `sort` - One of `hot`, `new`, `top`, `disputed`, `activity`. Default `hot`.
 * `t` - One of `day`, `week`, `month`, `year`, `all`. Default `all`.
 * `page` - Page of results to return. Default `1`.
@@ -947,7 +944,7 @@ Optional query parameters:
     cats = flask_session.get('catids', [])
 
     if cats_param_present:
-        cats = [int(x) for x in new_cats.split(',') if _id_text(x)] if new_cats else []   # "abc" was a 500
+        cats = _category_choices(new_cats)
         flask_session['catids']=cats
         flask_session.modified=True
 
@@ -1057,7 +1054,7 @@ Optional query parameters:
     if codes_param_present:
         codes = [x for x in new_codes.split(',') if x]
         for c in codes:
-            if c not in LANGUAGE_NAMES:
+            if not choosable(c):
                 abort(404)
         flask_session['langcodes'] = known_codes(codes)          # row keys: "mk" is the Bulgarian row
         flask_session.modified = True
@@ -1293,9 +1290,9 @@ Optional query parameters:
         category = next((c for c in CATEGORIES if c.id == request.args.get("cat", type=int)), None)
         topic = topic_rules.find(category.name) if category else None
     if topic:
-        cats = list(topic.subcat_ids)
+        cats = list(topic.ids)
     else:
-        cats = [int(x) for x in request.args.get("cats", "").split(",") if x.strip().isdigit()]
+        cats = _category_choices(request.args.get("cats", ""))
 
     # get list of ids
     ids = guild_ids(
@@ -1670,6 +1667,14 @@ Optional query parameters:
 @auth_desired
 @api()
 def categories(v):
+    """
+Get the categories and their subcategories
+
+Anywhere a category id is taken (a guild's `category`, the `cats` of a filter), `-<id>`
+with the id of a category is that category alone: for a guild, filed under the category
+with no subcategory; in a filter, only the guilds filed that way (add the category's
+subcategory ids for every guild in it).
+"""
 
     return make_response(
         jsonify(

@@ -55,7 +55,7 @@ def test_the_feed_ad_sits_outside_the_post_list_and_the_continuous_feed_gets_ads
 def test_the_slot_draws_only_checked_values():
     slot = read("ruqqus", "templates", "partials", "ad_slot.html")
     assert "| safe" not in slot and "{{ cfg.client }}" in slot and "{{ cfg.slots[page] }}" in slot
-    assert 'aria-label="Advertisement"' in slot and ">Advertisement<" in slot
+    assert 'aria-label="{{ _(\'Advertisement\') }}"' in slot and '>{{ _("Advertisement") }}<' in slot
 
 
 def test_ads_txt_consent_link_and_referrer_policy():
@@ -74,7 +74,7 @@ def test_ads_txt_consent_link_and_referrer_policy():
 
 def test_premium_lists_no_ads_as_a_perk():
     page = read("ruqqus", "templates", "settings_premium.html")
-    assert "{% if ads_configured() %}" in page and "</span>No ads" in page
+    assert "{% if ads_configured() %}" in page and '</span>{{ _("No ads") }}' in page
 
 
 def test_both_stylesheets_keep_the_boxes_room():

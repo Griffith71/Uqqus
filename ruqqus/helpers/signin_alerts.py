@@ -14,6 +14,7 @@ sign-in after this shipped).
 from sqlalchemy import text
 
 from ruqqus.helpers import sign_in_history, user_agents
+from ruqqus.helpers.i18n_runtime import tr
 
 WINDOW = 90 * 86400
 ONE_A_DAY = 86400

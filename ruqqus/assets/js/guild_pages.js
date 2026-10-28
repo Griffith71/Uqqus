@@ -18,7 +18,7 @@
       .then(function (r) {
         if (r.status === 204) return {};
         return r.json().catch(function () { return {}; }).then(function (d) {
-          if (!r.ok) throw new Error(d.error || 'That didn’t work. Try again.');
+          if (!r.ok) throw new Error(d.error || tr('That didn’t work. Try again.'));
           return d;
         });
       });

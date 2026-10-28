@@ -47,13 +47,13 @@ def test_the_card_is_on_the_content_settings_page_and_is_honest_about_the_effect
     assert "post_toast('/settings/for_you/reset'" in CARD and "confirm(" in CARD
     assert "Everything you asked for with" in CARD and "Show fewer posts like this" in CARD
     assert "but For You does not use it for your upvotes and guilds yet." in CARD
-    assert "{{ v.for_you_reset_date }}" in CARD and "| safe" not in CARD.split('id="for-you"')[1]
+    assert "date=v.for_you_reset_date)" in CARD and "| safe" not in CARD.split('id="for-you"')[1]
 
 
 def test_the_date_is_shown_in_the_site_format_and_never_for_a_member_who_did_not_reset():
     body = USER.split("def for_you_reset_date(self):")[1].split("@property")[0]
     assert "if not self.for_you_reset_utc:" in body and "return None" in body
-    assert 'time.strftime("%d %B %Y", time.gmtime(self.for_you_reset_utc))' in body
+    assert 'date_text(self.for_you_reset_utc, "%d %B %Y")' in body      # English exactly as strftime wrote it
 
 
 def test_the_claude_md_records_where_the_feed_will_read_it():

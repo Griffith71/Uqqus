@@ -13,6 +13,7 @@ from sqlalchemy.exc import IntegrityError
 from ruqqus.classes import BookmarkFolder, CommentSaveRelationship, SaveRelationship
 from ruqqus.helpers import bookmark_folders as rules
 from ruqqus.helpers.get import get_comment, get_post
+from ruqqus.helpers.i18n_runtime import tr
 from ruqqus.helpers.visibility import comment_hidden, post_hidden
 from ruqqus.helpers.wrappers import auth_required, validate_formkey
 from ruqqus.__main__ import app
@@ -96,9 +97,9 @@ def bookmark_folders_create(v):
         g.db.flush()
     except IntegrityError:
         g.db.rollback()
-        return jsonify({"error": f"You already have a folder called {name}."}), 409
+        return jsonify({"error": tr("You already have a folder called %(name)s.", name=name)}), 409
 
-    return jsonify({"id": folder.id, "name": folder.name, "message": f"Folder {folder.name} made."})
+    return jsonify({"id": folder.id, "name": folder.name, "message": tr("Folder %(name)s made.", name=folder.name)})
 
 
 @app.route("/bookmarks/folders/<int:folder_id>/rename", methods=["POST"])
@@ -120,9 +121,9 @@ def bookmark_folders_rename(folder_id, v):
         g.db.flush()
     except IntegrityError:
         g.db.rollback()
-        return jsonify({"error": f"You already have a folder called {name}."}), 409
+        return jsonify({"error": tr("You already have a folder called %(name)s.", name=name)}), 409
 
-    return jsonify({"id": folder.id, "name": folder.name, "message": "Folder renamed."})
+    return jsonify({"id": folder.id, "name": folder.name, "message": tr("Folder renamed.")})
 
 
 @app.route("/bookmarks/folders/<int:folder_id>/delete", methods=["POST"])
@@ -137,7 +138,7 @@ def bookmark_folders_delete(folder_id, v):
             {"folder_id": None}, synchronize_session=False)
     g.db.delete(folder)
 
-    return jsonify({"message": "Folder deleted. Its bookmarks are unsorted now."})
+    return jsonify({"message": tr("Folder deleted. Its bookmarks are unsorted now.")})
 
 
 @app.route("/bookmarks/move", methods=["POST"])
@@ -175,6 +176,6 @@ def bookmark_move(v):
         g.db.rollback()
         abort(422)
 
-    where = f"Moved to {folder.name}." if folder else "Moved to unsorted."
+    where = tr("Moved to %(folder)s.", folder=folder.name) if folder else tr("Moved to unsorted.")
     return jsonify({"message": where, "saved": True, "kind": kind, "id": request.values.get("id"),
                     "folder": {"id": folder.id, "name": folder.name} if folder else None})

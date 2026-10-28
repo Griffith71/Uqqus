@@ -12,6 +12,7 @@ from collections import namedtuple
 from datetime import datetime
 
 from ruqqus.helpers import bots
+from ruqqus.helpers.i18n_runtime import tr, tr_lazy
 
 MAX_ITEMS = 100
 
@@ -28,7 +29,7 @@ class FeedError(ValueError):
         self.message = message
 
 
-NOT_A_FEED = "That address does not answer with an RSS, Atom or JSON feed."
+NOT_A_FEED = tr_lazy("That address does not answer with an RSS, Atom or JSON feed.")
 
 
 def _local(tag):
@@ -134,15 +135,15 @@ def _parse_xml(data):
     try:
         root = ElementTree.fromstring(data)
     except DefusedXmlException:
-        raise FeedError("That feed declares entities, which are not read here.")
+        raise FeedError(tr("That feed declares entities, which are not read here."))
     except ElementTree.ParseError:
-        raise FeedError(NOT_A_FEED)
+        raise FeedError(str(NOT_A_FEED))
 
     kind = _local(root.tag)
     if kind == "rss":
         channel = _child(root, "channel")
         if channel is None:
-            raise FeedError(NOT_A_FEED)
+            raise FeedError(str(NOT_A_FEED))
         return Feed(bots.plain_text(_text(channel, "title"), 200), _rss_items(channel), _asks(channel))
     if kind == "RDF":
         channel = _child(root, "channel")
@@ -150,16 +151,16 @@ def _parse_xml(data):
         return Feed(bots.plain_text(title, 200), _rss_items(root), _asks(channel) if channel is not None else 0)
     if kind == "feed":
         return Feed(bots.plain_text(_text(root, "title"), 200), _atom_items(root), _asks(root))
-    raise FeedError(NOT_A_FEED)
+    raise FeedError(str(NOT_A_FEED))
 
 
 def _parse_json(data):
     try:
         doc = json.loads(data.decode("utf-8-sig"))
     except (ValueError, UnicodeDecodeError):
-        raise FeedError(NOT_A_FEED)
+        raise FeedError(str(NOT_A_FEED))
     if not isinstance(doc, dict) or not str(doc.get("version", "")).startswith("https://jsonfeed.org/version/"):
-        raise FeedError(NOT_A_FEED)
+        raise FeedError(str(NOT_A_FEED))
     out = []
     for entry in doc.get("items") or []:
         if not isinstance(entry, dict):
@@ -177,7 +178,7 @@ def parse(data, content_type=""):
     """The feed's title and up to MAX_ITEMS items, in the feed's own order (newest first, by convention).
     FeedError when it is not a feed."""
     if not data:
-        raise FeedError(NOT_A_FEED)
+        raise FeedError(str(NOT_A_FEED))
     head = data.lstrip()[:1]
     if "json" in (content_type or "").lower() or head in (b"{", b"["):
         feed = _parse_json(data)

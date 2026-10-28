@@ -3,7 +3,7 @@
 {% from "partials/theme.html" import theme_links %}
 
 {% block title %}
-<title>Create a Guild - {{ 'SITE_NAME' | app_config }}</title>
+<title>{{ _("Create a Guild - %(site)s") }}</title>
 {% endblock %}
 
 {% block sidebar %}{% endblock %}
@@ -24,30 +24,30 @@
 
             <div class="col col-md-6 p-3 py-md-0 submit-main-col">
 
-                <h1 class="d-none d-md-block">Create a guild</h1>
+                <h1 class="d-none d-md-block">{{ _("Create a guild") }}</h1>
 
-                <h2 class="h3 d-md-none">Create a guild</h2>
+                <h2 class="h3 d-md-none">{{ _("Create a guild") }}</h2>
 
                 <div class="body">
 
                     <input type="hidden" name="formkey" value="{{ v.formkey }}">
 
-                    <label for="title">Guild Name</label>
+                    <label for="title">{{ _("Guild Name") }}</label>
 
                     <input class="form-control" id="title-register"
                     aria-describedby="titleHelpRegister" type="text" name="name" required>
-                    <small class="form-text text-muted">Names must be 3-25 characters</small>
+                    <small class="form-text text-muted">{{ _("Names must be 3-25 characters") }}</small>
 
                     <div class="custom-control custom-checkbox mt-3">
                         <input type="checkbox" class="custom-control-input" id="circle-guild" name="circle" value="true">
-                        <label class="custom-control-label" for="circle-guild">Make this a Circle guild</label>
+                        <label class="custom-control-label" for="circle-guild">{{ _("Make this a Circle guild") }}</label>
                     </div>
-                    <small class="form-text text-muted">A Circle guild is private for good: only its members see it, and they post straight into it, so what they write does not appear on their own profiles. You invite members free, or set a price in coins to join, and the coins go to you. This can't be changed later.</small>
+                    <small class="form-text text-muted">{{ _("A Circle guild is private for good: only its members see it, and they post straight into it, so what they write does not appear on their own profiles. You invite members free, or set a price in coins to join, and the coins go to you. This can't be changed later.") }}</small>
 
-                    <label for="description" class="mt-3">Guild Description</label>
+                    <label for="description" class="mt-3">{{ _("Guild Description") }}</label>
 
                     <div class="input-group">
-                        <textarea form="submitform" class="form-control rounded" aria-label="With textarea" placeholder="Briefly describe what the guild is about..." rows="4" name="description">{{ description }}</textarea>
+                        <textarea form="submitform" class="form-control rounded" aria-label="{{ _('With textarea') }}" placeholder="{{ _('Briefly describe what the guild is about...') }}" rows="4" name="description">{{ description }}</textarea>
                         <div class="bg-light text-format d-none">
                             <small class="format"><i class="fas fa-bold"></i></small>
                             <small class="format"><i class="fas fa-italic"></i></small>
@@ -56,24 +56,29 @@
                         </div>
                     </div>
 
-                    <label for="select-category">Select Category</label>
+                    <label for="select-category">{{ _("Select Category") }}</label>
                     <div class="input-group">
                       <select id="category-selector" name="category" class="form-control" required>
-                        <option value="" selected disabled>Select a Category</option>
-                        {% for category in categories %}
-                            <option disabled>{{ category.name }}</option>
+                        <option value="" selected disabled>{{ _("Select a Category") }}</option>
+                        {# an error re-render passes no categories: the context processor's CATEGORIES (routes/front.py) fills the list #}
+                        {% for category in (categories or CATEGORIES) %}
+                            {% if category.subcats %}
+                            <option value="-{{ category.id }}">{{ _("%(category)s (whole category)", category=msg_text(category.name)) }}</option>
+                            {% else %}
+                            <option disabled>{{ msg_text(category.name) }}</option>
+                            {% endif %}
 
                             {% for subcat in category.subcats %}
-                              <option value="{{ subcat.id }}"> - {{ subcat.name }}</option>
+                              <option value="{{ subcat.id }}"> - {{ msg_text(subcat.name) }}</option>
                             {% endfor %}
                         {% endfor %}
                       </select>
                     </div>
 
-                    <label for="sensitive" class="text-warning mt-3">Sensitive Content?</label>
+                    <label for="sensitive" class="text-warning mt-3">{{ _("Sensitive Content?") }}</label>
                     <div class="custom-control custom-checkbox">
                         <input type="checkbox" class="custom-control-input" id="sensitiveCheck" name="sensitive" value="true">
-                        <label class="custom-control-label" for="sensitiveCheck">This guild discusses sensitive topics (every post here will be blurred by default).</label>
+                        <label class="custom-control-label" for="sensitiveCheck">{{ _("This guild discusses sensitive topics (every post here will be blurred by default).") }}</label>
                     </div>
 
                 </div>
@@ -90,7 +95,7 @@
                         </p>
                         {% endif %}
 
-                        <button class="btn btn-primary ml-auto" id="create_button">Create Guild</button>
+                        <button class="btn btn-primary ml-auto" id="create_button">{{ _("Create Guild") }}</button>
 
                     </div>
 
@@ -106,13 +111,13 @@
 
                 <div class="d-none d-md-block">
                     <ul class="list-inline text-small mb-0">
-                        <li class="list-inline-item"><a href="/help/about" class="text-gray-500">About</a></li>
-                        <li class="list-inline-item d-none"><a href="/help/contact" class="text-gray-500">Contact</a></li>
-                        <li class="list-inline-item"><a href="/help/terms" class="text-gray-500">Terms</a></li>
-                        <li class="list-inline-item"><a href="/help/privacy" class="text-gray-500">Privacy Policy</a></li>
-                        <li class="list-inline-item"><a href="/help/donate" class="text-gray-500">Donate</a></li>
-                        <li class="list-inline-item"><a href="/help/press" class="text-gray-500">Press</a></li>
-                        <li class="list-inline-item"><a href="/help" class="text-gray-500">Help</a></li>
+                        <li class="list-inline-item"><a href="/help/about" class="text-gray-500">{{ pgettext("footer link", "About") }}</a></li>
+                        <li class="list-inline-item d-none"><a href="/help/contact" class="text-gray-500">{{ pgettext("footer link", "Contact") }}</a></li>
+                        <li class="list-inline-item"><a href="/help/terms" class="text-gray-500">{{ pgettext("footer link", "Terms") }}</a></li>
+                        <li class="list-inline-item"><a href="/help/privacy" class="text-gray-500">{{ _("Privacy Policy") }}</a></li>
+                        <li class="list-inline-item"><a href="/help/donate" class="text-gray-500">{{ pgettext("footer link", "Donate") }}</a></li>
+                        <li class="list-inline-item"><a href="/help/press" class="text-gray-500">{{ pgettext("footer link", "Press") }}</a></li>
+                        <li class="list-inline-item"><a href="/help" class="text-gray-500">{{ pgettext("footer link", "Help") }}</a></li>
                         <li class="list-inline-item"><a href="https://www.twitter.com/ruqqus" class="text-gray-500">Twitter</a></li>
                         <li class="list-inline-item"><a href="https://github.com/ruqqus/ruqqus" class="text-gray-500">Github</a></li>
                         <li class="list-inline-item"><a href="/discord" class="text-gray-500">Discord</a></li>

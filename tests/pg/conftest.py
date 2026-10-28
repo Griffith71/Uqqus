@@ -69,7 +69,7 @@ signup guard's counts (`su:*`, `signup:*`) too: a site-wide count left by earlie
 surge."""
     if r is None:
         return
-    for pattern in ("throttle:*", "signin_alert:*", "totp:*"):
+    for pattern in ("throttle:*", "signin_alert:*", "totp:*", "su:*", "signup:*"):
         for key in r.scan_iter(pattern):
             r.delete(key)
 

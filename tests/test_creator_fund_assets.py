@@ -43,7 +43,7 @@ def test_only_level_four_admins_pay_and_every_change_needs_the_form_key():
 
 def test_payment_commits_before_the_notifications():
     pay = read("ruqqus/routes/creator_fund.py").split("def admin_creator_fund_pay(")[1].split("\n@app.")[0]
-    assert pay.index("g.db.flush()") < pay.index("store.pay(") < pay.index("g.db.commit()") < pay.index("send_notification(")
+    assert pay.index("g.db.flush()") < pay.index("store.pay(") < pay.index("g.db.commit()") < pay.index("notify(")
     assert "except store.AlreadyPaid:" in pay
 
 

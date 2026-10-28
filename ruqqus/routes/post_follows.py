@@ -4,6 +4,7 @@ from flask import abort, g, jsonify
 
 from ruqqus.helpers import post_follows as rules
 from ruqqus.helpers.get import get_post
+from ruqqus.helpers.i18n_runtime import msg, tr
 from ruqqus.helpers.visibility import post_hidden
 from ruqqus.helpers.wrappers import is_not_banned, validate_formkey
 from ruqqus.__main__ import app
@@ -32,9 +33,9 @@ def follow_post(pid, v):
     try:
         rules.follow(g.db, v.id, post)
     except rules.FollowError as error:
-        return jsonify({"error": error.message}), error.status
+        return jsonify({"error": msg(error.message)}), error.status
     g.db.commit()
-    return jsonify({"message": "You'll be notified of comments on this post."})
+    return jsonify({"message": tr("You'll be notified of comments on this post.")})
 
 
 @app.route("/api/post/<pid>/unfollow", methods=["POST"])
@@ -45,6 +46,6 @@ def unfollow_post(pid, v):
     try:
         rules.unfollow(g.db, v.id, post)
     except rules.FollowError as error:
-        return jsonify({"error": error.message}), error.status
+        return jsonify({"error": msg(error.message)}), error.status
     g.db.commit()
-    return jsonify({"message": "You won't be notified of comments on this post."})
+    return jsonify({"message": tr("You won't be notified of comments on this post.")})

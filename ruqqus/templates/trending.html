@@ -4,7 +4,7 @@
 {% block pagetype %}curations{% endblock %}
 
 {% block title %}
-<title>{{ heading }} - {{ 'SITE_NAME' | app_config }}</title>
+<title>{{ _("%(topic)s - %(site)s", topic=heading) }}</title>
 {% endblock %}
 
 {% block desktopBanner %}{% endblock %}
@@ -16,9 +16,9 @@
 
   <h1 class="h3 mb-1">{{ heading }}</h1>
   <p class="text-muted">
-    What an unusual number of different people have posted about in the last day, compared with the week before.
-    Every account counts once, so one account cannot make a topic.
-    {% if place %}<a href="/trending?scope=all">See the whole site's list</a>{% endif %}
+    {% trans %}What an unusual number of different people have posted about in the last day, compared with the week before.
+    Every account counts once, so one account cannot make a topic.{% endtrans %}
+    {% if place %}<a href="/trending?scope=all">{{ _("See the whole site's list") }}</a>{% endif %}
   </p>
 
   {% if topics %}
@@ -30,8 +30,7 @@
         <span class="trend-main">
           <span class="trend-label d-block font-weight-bold">{{ t.label }}</span>
           <span class="trend-count d-block text-small text-muted">
-            {% if t.kind == "link" %}Shared link &middot; {% endif %}{{ t.post_count }} post{{ '' if t.post_count == 1 else 's' }}
-            by {{ t.author_count }} {{ 'person' if t.author_count == 1 else 'people' }}
+            {% if t.kind == "link" %}{{ _("Shared link") }} &middot; {% endif %}{# Translators: for example "12 posts by 5 people" about a trending topic #}{{ _("%(posts)s by %(people)s", posts=ngettext("%(num)s post", "%(num)s posts", t.post_count), people=ngettext("%(num)s person", "%(num)s people", t.author_count)) }}
           </span>
         </span>
       </a>
@@ -39,7 +38,7 @@
     {% endfor %}
   </ol>
   {% else %}
-  <p class="text-muted">Nothing is trending right now. Topics appear here when several people post about the same thing.</p>
+  <p class="text-muted">{{ _("Nothing is trending right now. Topics appear here when several people post about the same thing.") }}</p>
   {% endif %}
 
 </div>

@@ -3,6 +3,7 @@
 <html{{ html_attrs() }}>
 
 <head>
+{% from "partials/i18n_boot.html" import i18n_boot %}{{ i18n_boot() }}
   <meta charset="utf-8">
 {{ font_faces() }}
 {{ theme_color() }}
@@ -12,28 +13,25 @@
 
   <link rel="icon" type="image/png" href="/assets/images/logo/favicon.png">
 
-  <title>{% block pagetitle %}Settings - {{ 'SITE_NAME' | app_config  }}{% endblock %}</title>
+  <title>{% block pagetitle %}{{ _("Settings - %(site)s") }}{% endblock %}</title>
     <meta property="og:type" content="article" />
-    <meta property="og:title" content="{{ 'SITE_NAME' | app_config  }}: Awesome Online Communities, Without Censorship" />
+    <meta property="og:title" content="{{ _('%(site)s: Awesome Online Communities, Without Censorship') }}" />
     <meta property="og:site_name" content="{{ 'SERVER_NAME' | app_config  }}" />
     <meta property="og:image" content="{{ '/assets/images/preview-images/ruqqus_og_image.png' | full_link }}" />
     <meta property="og:url" content="{{ '/' | full_link }}">
-    <meta property="og:description" name="description" content="{{ 'SITE_NAME' | app_config  }} is an open-source platform for online communities, free of censorship and moderator abuse by design.">
+    <meta property="og:description" name="description" content="{{ _('%(site)s is an open-source platform for online communities, free of censorship and moderator abuse by design.') }}">
     <meta property="og:author" name="author" content="@{{ 'SITE_NAME' | app_config }}" />
     <meta property="og:site_name" content="{{ 'SERVER_NAME' | app_config  }}" />
 
     <meta name="twitter:card" content="summary_large_image"/>
     <meta name="twitter:site" content="@{{ 'SITE_NAME' | app_config }}">
-    <meta name="twitter:title" content="{{ 'SITE_NAME' | app_config  }}: Awesome Online Communities, Without Censorship" />
+    <meta name="twitter:title" content="{{ _('%(site)s: Awesome Online Communities, Without Censorship') }}" />
     <meta name="twitter:creator" content="@{{ 'SITE_NAME' | app_config }}">
-    <meta name="twitter:description" content="{{ 'SITE_NAME' | app_config  }} is an open-source platform for online communities, free of censorship and moderator abuse by design." />
+    <meta name="twitter:description" content="{{ _('%(site)s is an open-source platform for online communities, free of censorship and moderator abuse by design.') }}" />
     <meta name="twitter:image" content="{{ '/assets/images/preview-images/ruqqus_og_image.png' | full_link }}" />
     <meta name="twitter:url" content="{{ '/' | full_link }}" />
   <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,600&display=swap" rel="stylesheet">
 
-  <!-- Bootstrap core CSS -->
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
-  integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 
   <!-- Ruqqus CSS -->
   {{ theme_links(asset_url("style/main.css"), asset_url("style/main_dark.css")) }}
@@ -82,7 +80,7 @@
       <span>
         {{ error }}
       </span>
-      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+      <button type="button" class="close" data-dismiss="alert" aria-label="{{ _('Close') }}">
         <span aria-hidden="true"><i class="fas fa-times"></i></span>
       </button>
     </div>
@@ -93,7 +91,7 @@
       <span>
         {{ msg }}
       </span>
-      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+      <button type="button" class="close" data-dismiss="alert" aria-label="{{ _('Close') }}">
         <span aria-hidden="true"><i class="fas fa-times"></i></span>
       </button>
     </div>
@@ -101,9 +99,9 @@
 
     <div class="mt-3">
 
-      <h1 class="d-none d-md-block">Settings</h1>
+      <h1 class="d-none d-md-block">{{ _("Settings") }}</h1>
 
-      <h2 class="h3 d-md-none">Settings</h2>
+      <h2 class="h3 d-md-none">{{ _("Settings") }}</h2>
 
     </div>
 
@@ -115,34 +113,34 @@
 
       <ul class="nav settings-nav">
         <li class="nav-item">
-          <a class="nav-link{% if request.path=='/settings/profile' %} active{% endif %}" href="/settings/profile">Profile</a>
+          <a class="nav-link{% if request.path=='/settings/profile' %} active{% endif %}" href="/settings/profile">{{ _("Profile") }}</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link{% if request.path=='/settings/content' %} active{% endif %}" href="/settings/content">Content</a>
+          <a class="nav-link{% if request.path=='/settings/content' %} active{% endif %}" href="/settings/content">{{ _("Content") }}</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link{% if request.path=='/settings/security' %} active{% endif %}" href="/settings/security">Security</a>
+          <a class="nav-link{% if request.path=='/settings/security' %} active{% endif %}" href="/settings/security">{{ _("Security") }}</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link{% if request.path=='/settings/premium' %} active{% endif %}" href="/settings/premium">Premium</a>
+          <a class="nav-link{% if request.path=='/settings/premium' %} active{% endif %}" href="/settings/premium">{{ _("Premium") }}</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link{% if request.path=='/settings/blocks' %} active{% endif %}" href="/settings/blocks">Block &amp; Mute</a>
+          <a class="nav-link{% if request.path=='/settings/blocks' %} active{% endif %}" href="/settings/blocks">{{ _("Block &amp; Mute") }}</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link{% if request.path=='/settings/apps' %} active{% endif %}" href="/settings/apps">Apps</a>
+          <a class="nav-link{% if request.path=='/settings/apps' %} active{% endif %}" href="/settings/apps">{{ _("Apps") }}</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link{% if request.path=='/settings/chat_apps' %} active{% endif %}" href="/settings/chat_apps">Chat apps</a>
+          <a class="nav-link{% if request.path=='/settings/chat_apps' %} active{% endif %}" href="/settings/chat_apps">{{ _("Chat apps") }}</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link{% if request.path=='/settings/media' %} active{% endif %}" href="/settings/media">Media</a>
+          <a class="nav-link{% if request.path=='/settings/media' %} active{% endif %}" href="/settings/media">{{ _("Media") }}</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link{% if request.path=='/settings/creator_fund' %} active{% endif %}" href="/settings/creator_fund">Creator fund</a>
+          <a class="nav-link{% if request.path=='/settings/creator_fund' %} active{% endif %}" href="/settings/creator_fund">{{ _("Creator fund") }}</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link{% if request.path.startswith('/settings/bots') %} active{% endif %}" href="/settings/bots">Bots</a>
+          <a class="nav-link{% if request.path.startswith('/settings/bots') %} active{% endif %}" href="/settings/bots">{{ _("Bots") }}</a>
         </li>
       </ul>
 
@@ -154,34 +152,34 @@
 
       <ul class="nav settings-nav">
         <li class="nav-item">
-          <a class="nav-link{% if request.path=='/settings/profile' %} active{% endif %}" href="/settings/profile" title="Profile" aria-label="Profile"><i class="fas fa-cog text-lg mr-0" aria-hidden="true"></i></a>
+          <a class="nav-link{% if request.path=='/settings/profile' %} active{% endif %}" href="/settings/profile" title="{{ _('Profile') }}" aria-label="{{ _('Profile') }}"><i class="fas fa-cog text-lg mr-0" aria-hidden="true"></i></a>
         </li>
         <li class="nav-item">
-          <a class="nav-link{% if request.path=='/settings/content' %} active{% endif %}" href="/settings/content" title="Content" aria-label="Content"><i class="fas fa-filter text-lg mr-0" aria-hidden="true"></i></a>
+          <a class="nav-link{% if request.path=='/settings/content' %} active{% endif %}" href="/settings/content" title="{{ _('Content') }}" aria-label="{{ _('Content') }}"><i class="fas fa-filter text-lg mr-0" aria-hidden="true"></i></a>
         </li>
         <li class="nav-item">
-          <a class="nav-link{% if request.path=='/settings/security' %} active{% endif %}" href="/settings/security" title="Security" aria-label="Security"><i class="fas fa-lock text-lg mr-0" aria-hidden="true"></i></a>
+          <a class="nav-link{% if request.path=='/settings/security' %} active{% endif %}" href="/settings/security" title="{{ _('Security') }}" aria-label="{{ _('Security') }}"><i class="fas fa-lock text-lg mr-0" aria-hidden="true"></i></a>
         </li>
         <li class="nav-item">
-          <a class="nav-link{% if request.path=='/settings/premium' %} active{% endif %}" href="/settings/premium" title="Premium" aria-label="Premium"><i class="fas fa-star text-lg mr-0" aria-hidden="true"></i></a>
+          <a class="nav-link{% if request.path=='/settings/premium' %} active{% endif %}" href="/settings/premium" title="{{ _('Premium') }}" aria-label="{{ _('Premium') }}"><i class="fas fa-star text-lg mr-0" aria-hidden="true"></i></a>
         </li>
         <li class="nav-item">
-          <a class="nav-link{% if request.path=='/settings/blocks' %} active{% endif %}" href="/settings/blocks" title="Block and mute" aria-label="Block and mute"><i class="fas fa-user-minus text-lg mr-0" aria-hidden="true"></i></a>
+          <a class="nav-link{% if request.path=='/settings/blocks' %} active{% endif %}" href="/settings/blocks" title="{{ _('Block and mute') }}" aria-label="{{ _('Block and mute') }}"><i class="fas fa-user-minus text-lg mr-0" aria-hidden="true"></i></a>
         </li>
         <li class="nav-item">
-          <a class="nav-link{% if request.path=='/settings/apps' %} active{% endif %}" href="/settings/apps" title="Apps" aria-label="Apps"><i class="fas fa-code text-lg mr-0" aria-hidden="true"></i></a>
+          <a class="nav-link{% if request.path=='/settings/apps' %} active{% endif %}" href="/settings/apps" title="{{ _('Apps') }}" aria-label="{{ _('Apps') }}"><i class="fas fa-code text-lg mr-0" aria-hidden="true"></i></a>
         </li>
         <li class="nav-item">
-          <a class="nav-link{% if request.path=='/settings/chat_apps' %} active{% endif %}" href="/settings/chat_apps" title="Chat apps" aria-label="Chat apps"><i class="fas fa-comments text-lg mr-0" aria-hidden="true"></i></a>
+          <a class="nav-link{% if request.path=='/settings/chat_apps' %} active{% endif %}" href="/settings/chat_apps" title="{{ _('Chat apps') }}" aria-label="{{ _('Chat apps') }}"><i class="fas fa-comments text-lg mr-0" aria-hidden="true"></i></a>
         </li>
         <li class="nav-item">
-          <a class="nav-link{% if request.path=='/settings/media' %} active{% endif %}" href="/settings/media" aria-label="Media storage"><i class="fas fa-photo-video text-lg mr-0"></i></a>
+          <a class="nav-link{% if request.path=='/settings/media' %} active{% endif %}" href="/settings/media" aria-label="{{ _('Media storage') }}"><i class="fas fa-photo-video text-lg mr-0"></i></a>
         </li>
         <li class="nav-item">
-          <a class="nav-link{% if request.path=='/settings/creator_fund' %} active{% endif %}" href="/settings/creator_fund" aria-label="Creator fund"><i class="fas fa-hand-holding-heart text-lg mr-0"></i></a>
+          <a class="nav-link{% if request.path=='/settings/creator_fund' %} active{% endif %}" href="/settings/creator_fund" aria-label="{{ _('Creator fund') }}"><i class="fas fa-hand-holding-heart text-lg mr-0"></i></a>
         </li>
         <li class="nav-item">
-          <a class="nav-link{% if request.path.startswith('/settings/bots') %} active{% endif %}" href="/settings/bots" aria-label="Bots"><i class="fas fa-robot text-lg mr-0"></i></a>
+          <a class="nav-link{% if request.path.startswith('/settings/bots') %} active{% endif %}" href="/settings/bots" aria-label="{{ _('Bots') }}"><i class="fas fa-robot text-lg mr-0"></i></a>
         </li>
       </ul>
 
@@ -198,7 +196,7 @@
       <span>
         {{ error if error else request.args.get('error') }}
       </span>
-      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+      <button type="button" class="close" data-dismiss="alert" aria-label="{{ _('Close') }}">
         <span aria-hidden="true"><i class="fas fa-times"></i></span>
       </button>
     </div>
@@ -209,7 +207,7 @@
       <span>
         {{ msg if msg else request.args.get('msg') }}
       </span>
-      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+      <button type="button" class="close" data-dismiss="alert" aria-label="{{ _('Close') }}">
         <span aria-hidden="true"><i class="fas fa-times"></i></span>
       </button>
     </div>
@@ -225,9 +223,9 @@
 
         <div id="name">
 
-          <h2 class="h5" name="guild_name">Guild Name</h2>
+          <h2 class="h5" name="guild_name">{{ _("Guild Name") }}</h2>
 
-          <p class="text-small text-muted">Change the capitilization of your guild's name.</p>
+          <p class="text-small text-muted">{{ _("Change the capitilization of your guild's name.") }}</p>
 
         </div>
         <!-- ...existing code... -->
@@ -253,13 +251,13 @@
 {% block clipboard %}
 <div class="toast clipboard" id="toast-success" role="alert" aria-live="assertive" aria-atomic="true" data-animation="true" data-autohide="true" data-delay="5000">
   <div class="toast-body text-center">
-    <i class="fas fa-check-circle text-success mr-2"></i>Link copied to clipboard
+    <i class="fas fa-check-circle text-success mr-2"></i>{{ _("Link copied to clipboard") }}
   </div>
 </div>
 
 <div class="toast clipboard" id="toast-error" role="alert" aria-live="assertive" aria-atomic="true" data-animation="true" data-autohide="true" data-delay="5000">
   <div class="toast-body text-center">
-    <i class="fas fa-exclamation-circle text-danger mr-2"></i>Unable to copy link
+    <i class="fas fa-exclamation-circle text-danger mr-2"></i>{{ _("Unable to copy link") }}
   </div>
 </div>
 {% endblock %}

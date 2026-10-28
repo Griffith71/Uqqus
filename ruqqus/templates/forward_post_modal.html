@@ -3,36 +3,36 @@
   <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">Forward this post</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <h5 class="modal-title">{{ _("Forward this post") }}</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="{{ _('Close') }}">
           <span aria-hidden="true"><i class="fas fa-times"></i></span>
         </button>
       </div>
       <div id="forwardPostFormBefore">
         <form id="forward-post-form" method="post">
           <div class="modal-body">
-            <div class="h6">Forward to a guild for community discussion</div>
-            <small class="form-text text-muted">This creates an independent copy of the post with its own votes and comments in that guild. You can forward to any guild that accepts forwards from you.</small>
+            <div class="h6">{{ _("Forward to a guild for community discussion") }}</div>
+            <small class="form-text text-muted">{{ _("This creates an independent copy of the post with its own votes and comments in that guild. You can forward to any guild that accepts forwards from you.") }}</small>
             <input type="hidden" name="formkey" value="{{ v.formkey }}">
-            <label class="sr-only" for="forward-guild-name">Guild name</label>
-            <input class="form-control mt-3" id="forward-guild-name" type="text" placeholder="Guild name (without +)" autocomplete="off" onkeydown="if(event.key==='Enter'){event.preventDefault();document.getElementById('forwardPostButton').click();}">
+            <label class="sr-only" for="forward-guild-name">{{ _("Guild name") }}</label>
+            <input class="form-control mt-3" id="forward-guild-name" type="text" placeholder="{{ _('Guild name (without +)') }}" autocomplete="off" onkeydown="if(event.key==='Enter'){event.preventDefault();document.getElementById('forwardPostButton').click();}">
             {# the guild's flairs (helpers/guild_flair.py), loaded once a guild is named (assets/js/guild_flair.js) #}
             <div class="mt-3" id="forward-flair-field" hidden>
-              <label class="text-small font-weight-bold mb-1" for="forward-flair">Flair <span class="text-muted font-weight-normal" id="forward-flair-required" hidden>(required in this guild)</span></label>
+              <label class="text-small font-weight-bold mb-1" for="forward-flair">{{ _("Flair") }} <span class="text-muted font-weight-normal" id="forward-flair-required" hidden>{{ _("(required in this guild)") }}</span></label>
               <select class="custom-select" id="forward-flair"></select>
             </div>
           </div>
           <div id="forwardPostError" class="text-danger px-3 pb-2 d-none small"></div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-link text-muted" data-dismiss="modal">Cancel</button>
-            <button type="button" id="forwardPostButton" class="btn btn-primary">Forward</button>
+            <button type="button" class="btn btn-link text-muted" data-dismiss="modal">{{ _("Cancel") }}</button>
+            <button type="button" id="forwardPostButton" class="btn btn-primary">{{ pgettext("verb", "Forward") }}</button>
           </div>
         </form>
       </div>
       <div class="d-none" id="forwardPostFormAfter">
         <div class="modal-body">
-          <div class="h6">Forwarded!</div>
-          <small class="form-text text-muted">Reloading...</small>
+          <div class="h6">{{ _("Forwarded!") }}</div>
+          <small class="form-text text-muted">{{ _("Reloading...") }}</small>
         </div>
       </div>
     </div>

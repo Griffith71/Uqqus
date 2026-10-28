@@ -1,6 +1,6 @@
 {% extends "guild/guild_settings.html" %}
 
-{% block pagetitle %}+{{ b.name }} Settings - {{ 'SITE_NAME' | app_config }} Guildmaster Tools{% endblock %}
+{% block pagetitle %}{{ _("+%(guild)s Settings - %(site)s Guildmaster Tools", guild=b.name) }}{% endblock %}
 
 
 {% block content %}
@@ -14,7 +14,7 @@
       <span>
         {{ error if error else request.args.get('error') }}
       </span>
-      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+      <button type="button" class="close" data-dismiss="alert" aria-label="{{ _('Close') }}">
         <span aria-hidden="true"><i class="fas fa-times"></i></span>
       </button>
     </div>
@@ -25,7 +25,7 @@
       <span>
         {{ msg if msg else request.args.get('msg') }}
       </span>
-      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+      <button type="button" class="close" data-dismiss="alert" aria-label="{{ _('Close') }}">
         <span aria-hidden="true"><i class="fas fa-times"></i></span>
       </button>
     </div>
@@ -41,23 +41,23 @@
 
         <div id="name">
 
-          <h2 class="h5" name="guild_name">Guild Name</h2>
+          <h2 class="h5" name="guild_name">{{ _("Guild Name") }}</h2>
 
-          <p class="text-small text-muted">Change the capitilization of your guild's name.</p>
+          <p class="text-small text-muted">{{ _("Change the capitilization of your guild's name.") }}</p>
 
           <div class="settings-section rounded">
 
             <div class="d-lg-flex">
 
               <div class="title w-lg-25">
-                <label for="guild_name">Name</label>
+                <label for="guild_name">{{ _("Name") }}</label>
               </div>
 
               <div class="body w-lg-100">
 
                 <input type="text" class="form-control copy-link" id="guild_name" name="guild_name" value="{{ b.name }}">
 
-                <div class="text-small-extra text-muted mt-3">Only the guild name capitalization can be changed.</div>
+                <div class="text-small-extra text-muted mt-3">{{ _("Only the guild name capitalization can be changed.") }}</div>
 
               </div>
 
@@ -72,7 +72,7 @@
                   <span class="text-danger text-small" style="vertical-align: sub;">{{ error }}</span>
                 </p>
                 {% endif %}
-                <button class="btn btn-primary ml-auto" id="save-guild-name" onclick="mod_post('/mod/{{ b.base36id }}/settings/name', 'guild_name', 'save-guild-name');">Save</button>
+                <button class="btn btn-primary ml-auto" id="save-guild-name" onclick="mod_post('/mod/{{ b.base36id }}/settings/name', 'guild_name', 'save-guild-name');">{{ pgettext("button", "Save") }}</button>
 
               </div>
 
@@ -83,22 +83,22 @@
 
         <div id="description">
 
-          <h2 class="h5" id="guild_description" name="guild_description">Guild Description</h2>
+          <h2 class="h5" id="guild_description" name="guild_description">{{ _("Guild Description") }}</h2>
 
-          <p class="text-small text-muted">Edit the guild's public description. All visitors to the guild will see this.</p>
+          <p class="text-small text-muted">{{ _("Edit the guild's public description. All visitors to the guild will see this.") }}</p>
 
           <div class="settings-section rounded">
 
             <div class="body d-lg-flex">
 
-              <label for="bio" class="text-black w-lg-25">Description</label>
+              <label for="bio" class="text-black w-lg-25">{{ _("Description") }}</label>
 
               <div class="w-lg-100">
                 <div class="input-group mb-2">
-                  <textarea class="form-control rounded" id="bio" aria-label="With textarea" placeholder="What's this guild all about?" rows="3" name="description" form="profile-settings" maxlength="1000">{{ b.description }}</textarea>
+                  <textarea class="form-control rounded" id="bio" aria-label="{{ _('With textarea') }}" placeholder="{{ _("What's this guild all about?") }}" rows="3" name="description" form="profile-settings" maxlength="1000">{{ b.description }}</textarea>
                 </div>
 
-                <small>Limit of 1000 characters</small>
+                <small>{{ _("Limit of 1000 characters") }}</small>
 
               </div>
 
@@ -114,7 +114,7 @@
                 </p>
                 {% endif %}
 
-                <button class="btn btn-primary ml-auto" id="save-bio" onclick="mod_post('/mod/{{ b.base36id }}/settings/description', 'bio', 'save-bio');">Save</button>
+                <button class="btn btn-primary ml-auto" id="save-bio" onclick="mod_post('/mod/{{ b.base36id }}/settings/description', 'bio', 'save-bio');">{{ pgettext("button", "Save") }}</button>
 
               </div>
 
@@ -124,21 +124,21 @@
         </div>
 
         <div id="category">
-          <h2 class="h5" id="guild_category">Guild Category</h2>
+          <h2 class="h5" id="guild_category">{{ _("Guild Category") }}</h2>
 
-          <p class="text-small text-muted">Select the category of content this guild is for. Selecting the correct category will improve visibility for people who might be interested in joining.</p>
+          <p class="text-small text-muted">{{ _("Select the category of content this guild is for. Selecting the correct category will improve visibility for people who might be interested in joining.") }}</p>
 
           <div class="settings-section rounded">
             <div class="body d-lg-flex">
 
-              <label for="category-select" class="text-black w-lg-25">Category</label>
+              <label for="category-select" class="text-black w-lg-25">{{ _("Category") }}</label>
 
 
               <div class="w-lg-100">
                 <div class="input-group mb-2">
                   <select id="category-selector" name="category" class="form-control" onchange="post_toast('/mod/{{ b.base36id }}/category/'+document.getElementById('category-selector').selectedOptions[0].value)" {% if b.is_locked_category %}disabled{% endif %}>
-                    {% if not b.subcat %}
-                      <option value="0" selected disabled>Select a Category</option>
+                    {% if not b.category %}
+                      <option value="0" selected disabled>{{ _("Select a Category") }}</option>
                     {% endif %}
                     {% for category in categories %}
                         {% if category.subcats %}
@@ -148,7 +148,7 @@
                         {% endif %}
 
                         {% for subcat in category.subcats %}
-                          <option value="{{ subcat.id }}"{% if subcat.id==b.subcat_id %} selected{% endif %}> - {{ subcat.name }}</option>
+                          <option value="{{ subcat.id }}"{% if subcat.id==b.subcat_id %} selected{% endif %}> - {{ msg_text(subcat.name) }}</option>
                         {% endfor %}
                     {% endfor %}
                   </select>
@@ -161,16 +161,16 @@
 
         <div id="sensitive-content-settings">
 
-          <h2 class="h5">Sensitive Content</h2>
+          <h2 class="h5">{{ _("Sensitive Content") }}</h2>
 
-          <p class="text-small text-muted">Designate whether your guild discusses sensitive topics.</p>
+          <p class="text-small text-muted">{{ _("Designate whether your guild discusses sensitive topics.") }}</p>
 
           <div class="settings-section rounded">
 
             <div class="d-lg-flex">
 
               <div class="title w-lg-25">
-                <label for="sensitiveGuild">Sensitive Content</label>
+                <label for="sensitiveGuild">{{ _("Sensitive Content") }}</label>
               </div>
 
               <div class="body w-lg-100">
@@ -180,7 +180,7 @@
                   <label class="custom-control-label" for="sensitiveGuild"></label>
                 </div>
 
-                <span class="text-small-extra text-muted">{% if b.sensitive_forced %}The site's admins marked this guild sensitive, so only an admin can change this. {% endif %}A sensitive guild's posts are left out of All and For You for anyone who hasn't chosen to see sensitive content. Enable if your guild discusses topics that could be upsetting (e.g. addiction recovery, grief support) - not a rule violation, just a heads-up. Every post in this guild will be blurred by default.</span>
+                <span class="text-small-extra text-muted">{% if b.sensitive_forced %}{{ _("The site's admins marked this guild sensitive, so only an admin can change this.") }} {% endif %}{{ _("A sensitive guild's posts are left out of All and For You for anyone who hasn't chosen to see sensitive content. Enable if your guild discusses topics that could be upsetting (e.g. addiction recovery, grief support) - not a rule violation, just a heads-up. Every post in this guild will be blurred by default.") }}</span>
 
               </div>
 
@@ -192,16 +192,16 @@
 
         <div id="restricted">
 
-          <h2 class="h5">Restricted Forwarding</h2>
+          <h2 class="h5">{{ _("Restricted Forwarding") }}</h2>
 
-          <p class="text-small text-muted">Only approved contributors can forward posts and comments to +{{ b.name }}.</p>
+          <p class="text-small text-muted">{{ _("Only approved contributors can forward posts and comments to +%(guild)s.", guild=b.name) }}</p>
 
           <div class="settings-section rounded">
 
             <div class="d-lg-flex">
 
               <div class="title w-lg-25">
-                <label for="restrictswitch">Restrict Forwarding</label>
+                <label for="restrictswitch">{{ _("Restrict Forwarding") }}</label>
               </div>
 
               <div class="body w-lg-100">
@@ -211,7 +211,7 @@
                   <label class="custom-control-label" for="restrictswitch"></label>
                 </div>
 
-                <span class="text-small-extra text-muted">Restrict forwarding to +{{ b.name }} to approved users only. (Anyone will still be able to comment).</span>
+                <span class="text-small-extra text-muted">{{ _("Restrict forwarding to +%(guild)s to approved users only. (Anyone will still be able to comment).", guild=b.name) }}</span>
 
               </div>
 
@@ -223,16 +223,16 @@
 
         <div id="privacy">
 
-          <h2 class="h5">Guild Privacy</h2>
+          <h2 class="h5">{{ _("Guild Privacy") }}</h2>
 
-          <p class="text-small text-muted">Make +{{ b.name }} private. Forwarded posts will only be visible to approved Guild Members.</p>
+          <p class="text-small text-muted">{{ _("Make +%(guild)s private. Forwarded posts will only be visible to approved Guild Members.", guild=b.name) }}</p>
 
           <div class="settings-section rounded">
 
             <div class="d-lg-flex">
 
               <div class="title w-lg-25">
-                <label for="guildprivacy">Toggle Privacy</label>
+                <label for="guildprivacy">{{ _("Toggle Privacy") }}</label>
               </div>
 
               <div class="body w-lg-100">
@@ -242,7 +242,7 @@
                   <label class="custom-control-label" for="guildprivacy"></label>
                 </div>
 
-                <span class="text-small-extra text-muted">Restrict viewing, forwarding, and commenting in +{{ b.name }} to approved members only.</span>
+                <span class="text-small-extra text-muted">{{ _("Restrict viewing, forwarding, and commenting in +%(guild)s to approved members only.", guild=b.name) }}</span>
 
               </div>
 
@@ -254,16 +254,16 @@
 
         <div id="optout">
 
-          <h2 class="h5">Opt Out of All/Trending</h2>
+          <h2 class="h5">{{ _("Opt Out of All/Trending") }}</h2>
 
-          <p class="text-small text-muted">Don't show +{{ b.name }} content in All or Trending for users that aren't members of the guild.</p>
+          <p class="text-small text-muted">{{ _("Don't show +%(guild)s content in All or Trending for users that aren't members of the guild.", guild=b.name) }}</p>
 
           <div class="settings-section rounded">
 
             <div class="d-lg-flex">
 
               <div class="title w-lg-25">
-                <label for="guildoptout">Toggle Opt-Out</label>
+                <label for="guildoptout">{{ _("Toggle Opt-Out") }}</label>
               </div>
 
               <div class="body w-lg-100">
@@ -273,7 +273,7 @@
                   <label class="custom-control-label" for="guildoptout"></label>
                 </div>
 
-                <span class="text-small-extra text-muted">Don't show +{{ b.name }} content in All or Trending for users that aren't members of the guild.</span>
+                <span class="text-small-extra text-muted">{{ _("Don't show +%(guild)s content in All or Trending for users that aren't members of the guild.", guild=b.name) }}</span>
 
               </div>
 
@@ -285,16 +285,16 @@
 
         <div id="disallow_bots">
 
-          <h2 class="h5">Disallow Bots</h2>
+          <h2 class="h5">{{ _("Disallow Bots") }}</h2>
 
-          <p class="text-small text-muted">Disallow bots from forwarding to +{{ b.name }}. Bots can't comment anywhere on the site.</p>
+          <p class="text-small text-muted">{{ _("Disallow bots from forwarding to +%(guild)s. Bots can't comment anywhere on the site.", guild=b.name) }}</p>
 
           <div class="settings-section rounded">
 
             <div class="d-lg-flex">
 
               <div class="title w-lg-25">
-                <label for="disallowbots">Disallow Bots</label>
+                <label for="disallowbots">{{ _("Disallow Bots") }}</label>
               </div>
 
               <div class="body w-lg-100">
@@ -304,7 +304,7 @@
                   <label class="custom-control-label" for="disallowbots"></label>
                 </div>
 
-                <span class="text-small-extra text-muted">Disallow bots from forwarding to +{{ b.name }}. Bots can't comment anywhere on the site.</span>
+                <span class="text-small-extra text-muted">{{ _("Disallow bots from forwarding to +%(guild)s. Bots can't comment anywhere on the site.", guild=b.name) }}</span>
 
               </div>
 

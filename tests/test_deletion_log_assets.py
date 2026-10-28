@@ -83,7 +83,8 @@ def test_the_log_is_a_paged_list_not_a_feed():
     # infinite_scroll.js engages on #posts / .posts and would hide Prev/Next and lift "post cards" that are not there
     classes = [c for value in re.findall(r'class="([^"]*)"', PAGE) for c in value.split()]
     assert 'id="posts"' not in PAGE and "posts" not in classes
-    assert ">Prev</a>" in PAGE and ">Next</a>" in PAGE and 'ul class="pagination' in PAGE
+    assert '>{{ pgettext("previous page", "Prev") }}</a>' in PAGE and '>{{ pgettext("next page", "Next") }}</a>' in PAGE
+    assert 'ul class="pagination' in PAGE
 
 
 def test_it_is_linked_from_the_footer_the_account_menu_and_the_guild_mod_log():

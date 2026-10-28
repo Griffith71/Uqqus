@@ -73,15 +73,15 @@ def test_nothing_says_hide_from_all_any_more_and_every_caller_uses_the_new_urls(
         assert "Hide from /all" not in source and "Show in /all" not in source and "Hide guild" not in source, name
         assert "/settings/block_guild" not in source and "/settings/unblock_guild" not in source, name
     assert 'xhr.open("post", "/settings/mute_guild");' in JS
-    assert "Block &amp; Mute</a>" in SETTINGS_NAV and "Hide Guilds" not in SETTINGS_NAV
+    assert 'Block &amp; Mute") }}</a>' in SETTINGS_NAV and "Hide Guilds" not in SETTINGS_NAV
     assert "Guilds you have muted" in FILTERS and "15 minutes" not in FILTERS
 
 
 def test_the_card_offers_mute_guild_on_every_feed_not_only_all():
     assert 'request.path=="/all"' not in CARD.split("hide-guild-")[0].rsplit("{% if", 1)[1]
     assert CARD.count('{% if v and not p.is_profile_post and not request.path.startswith("/+") %}') == 2     # dropdown + phone sheet
-    assert "Mute guild</a>" in CARD and "Unmute guild</a>" in CARD
-    assert "Mute guild</button>" in CARD and "Unmute guild</button>" in CARD
+    assert '{{ _("Mute guild") }}</a>' in CARD and '{{ _("Unmute guild") }}</a>' in CARD
+    assert '{{ _("Mute guild") }}</button>' in CARD and '{{ _("Unmute guild") }}</button>' in CARD
 
 
 def test_a_phone_can_mute_from_the_guild_banner():

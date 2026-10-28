@@ -1,6 +1,6 @@
 {% extends "settings.html" %}
 
-{% block pagetitle %}Premium Settings - {{ 'SITE_NAME' | app_config }}{% endblock %}
+{% block pagetitle %}{{ _("Premium Settings - %(site)s") }}{% endblock %}
 
 {% block content %}
 
@@ -11,7 +11,7 @@
 
     <div class="settings">
 
-          <h2 id="ruqqus-premium" class="h5">Purchase History</h2>
+          <h2 id="ruqqus-premium" class="h5">{{ _("Purchase History") }}</h2>
 
           {% with txns = v.txn_history %}
           {% include "txn_listing.html" %}

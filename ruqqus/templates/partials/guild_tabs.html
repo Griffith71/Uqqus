@@ -17,15 +17,15 @@
 {% set show_chat = guild_has_chat(b, v) %}
 {% if show_wiki or show_events or show_chat %}
 <nav class="guild-tabs" aria-label="+{{ b.name }}">
-  <a class="guild-tab{% if active == 'posts' %} is-on{% endif %}" href="{{ b.permalink }}"{% if active == 'posts' %} aria-current="page"{% endif %}><i class="fas fa-newspaper fa-fw" aria-hidden="true"></i>Posts</a>
+  <a class="guild-tab{% if active == 'posts' %} is-on{% endif %}" href="{{ b.permalink }}"{% if active == 'posts' %} aria-current="page"{% endif %}><i class="fas fa-newspaper fa-fw" aria-hidden="true"></i>{{ _("Posts") }}</a>
   {% if show_chat %}
-  <a class="guild-tab{% if active == 'chat' %} is-on{% endif %}" href="{{ b.permalink }}/chat"{% if active == 'chat' %} aria-current="page"{% endif %}><i class="fas fa-comments fa-fw" aria-hidden="true"></i>Chat</a>
+  <a class="guild-tab{% if active == 'chat' %} is-on{% endif %}" href="{{ b.permalink }}/chat"{% if active == 'chat' %} aria-current="page"{% endif %}><i class="fas fa-comments fa-fw" aria-hidden="true"></i>{{ _("Chat") }}</a>
   {% endif %}
   {% if show_wiki %}
-  <a class="guild-tab{% if active == 'wiki' %} is-on{% endif %}" href="{{ b.permalink }}/wiki"{% if active == 'wiki' %} aria-current="page"{% endif %}><i class="fas fa-book fa-fw" aria-hidden="true"></i>Wiki{% if not b.wiki_enabled %} <span class="text-muted text-small-extra">(off)</span>{% endif %}</a>
+  <a class="guild-tab{% if active == 'wiki' %} is-on{% endif %}" href="{{ b.permalink }}/wiki"{% if active == 'wiki' %} aria-current="page"{% endif %}><i class="fas fa-book fa-fw" aria-hidden="true"></i>{{ _("Wiki") }}{% if not b.wiki_enabled %} <span class="text-muted text-small-extra">{# Translators: the guild's wiki is switched off #}{{ _("(off)") }}</span>{% endif %}</a>
   {% endif %}
   {% if show_events %}
-  <a class="guild-tab{% if active == 'events' %} is-on{% endif %}" href="{{ b.permalink }}/events"{% if active == 'events' %} aria-current="page"{% endif %}><i class="fas fa-calendar-days fa-fw" aria-hidden="true"></i>Events</a>
+  <a class="guild-tab{% if active == 'events' %} is-on{% endif %}" href="{{ b.permalink }}/events"{% if active == 'events' %} aria-current="page"{% endif %}><i class="fas fa-calendar-days fa-fw" aria-hidden="true"></i>{{ _("Events") }}</a>
   {% endif %}
 </nav>
 {% endif %}
@@ -34,7 +34,7 @@
 {% macro guild_resources(b, v) %}
 {% set items = guild_resources_for(b, v) %}
 {% if items %}
-<nav class="guild-resources" aria-label="Resources">
+<nav class="guild-resources" aria-label="{{ _('Resources') }}">
   {% for r in items %}
   <a class="guild-resource" href="{{ r.href }}"{% if r.external %} rel="nofollow ugc noopener noreferrer" target="_blank"{% endif %}>
     <i class="fas fa-fw {{ 'fa-link' if r.kind == 'link' else ('fa-book' if r.kind == 'wiki' else 'fa-thumbtack') }}" aria-hidden="true"></i>{{ r.label }}
@@ -46,13 +46,13 @@
 
 {% macro pinned_row(posts) %}
 {% if posts %}
-<section class="guild-pinned" aria-label="Pinned posts">
-  <div class="guild-pinned-title"><i class="fas fa-thumbtack fa-fw" aria-hidden="true"></i>Pinned</div>
+<section class="guild-pinned" aria-label="{{ _('Pinned posts') }}">
+  <div class="guild-pinned-title"><i class="fas fa-thumbtack fa-fw" aria-hidden="true"></i>{{ pgettext("heading of pinned posts", "Pinned") }}</div>
   <ul class="guild-pinned-list">
     {% for p in posts %}
     <li class="guild-pinned-item" id="pinned-{{ p.base36id }}">
       <a href="{{ p.permalink }}">{{ flair_chip(flair_of(p)) }}{{ p.title | safe }}</a>
-      <span class="text-muted text-small-extra">{{ p.comment_count }} comment{{ 's' if p.comment_count != 1 else '' }}</span>
+      <span class="text-muted text-small-extra">{{ ngettext("%(num)s comment", "%(num)s comments", p.comment_count) }}</span>
     </li>
     {% endfor %}
   </ul>

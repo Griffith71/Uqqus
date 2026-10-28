@@ -24,7 +24,7 @@
     panel = make('div');
     panel.id = 'voters-panel';
     panel.setAttribute('role', 'dialog');
-    panel.setAttribute('aria-label', 'Who upvoted');
+    panel.setAttribute('aria-label', tr('Who upvoted'));
     panel.hidden = true;
     document.body.appendChild(panel);
   }
@@ -32,7 +32,10 @@
   function place() {
     var rect = anchor.getBoundingClientRect();
     var top = rect.top + window.pageYOffset - 8;
-    var left = rect.right + window.pageXOffset + 10;
+    // beside the score, on its end side (the left in a right-to-left page)
+    var left = document.documentElement.dir === 'rtl'
+      ? rect.left + window.pageXOffset - panel.offsetWidth - 10
+      : rect.right + window.pageXOffset + 10;
     var room = window.pageXOffset + window.innerWidth - panel.offsetWidth - 8;
     panel.style.top = top + 'px';
     panel.style.left = Math.max(window.pageXOffset + 8, Math.min(left, room)) + 'px';
@@ -40,7 +43,7 @@
 
   function show(children) {
     panel.textContent = '';
-    panel.appendChild(make('div', 'voters-title', 'Upvoted by'));
+    panel.appendChild(make('div', 'voters-title', tr('Upvoted by')));
     children.forEach(function (child) { panel.appendChild(child); });
     place();
   }
@@ -61,7 +64,7 @@
   function draw(data) {
     var children = [];
     if (!data.people.length) {
-      children.push(make('p', 'voters-empty', 'None of the people you follow back have upvoted this yet.'));
+      children.push(make('p', 'voters-empty', tr('None of the people you follow back have upvoted this yet.')));
     } else {
       var list = make('div', 'voters-list');
       data.people.forEach(function (person) { list.appendChild(row(person)); });
@@ -72,7 +75,7 @@
   }
 
   function failed(message) {
-    var retry = make('button', 'btn btn-link btn-sm p-0 align-baseline', 'Try again');
+    var retry = make('button', 'btn btn-link btn-sm p-0 align-baseline', tr('Try again'));
     retry.type = 'button';
     retry.addEventListener('click', load);
     var line = make('p', 'voters-empty', message + ' ');
@@ -82,17 +85,17 @@
 
   function load() {
     var mine = ++token;
-    show([make('p', 'voters-empty', 'Loading\u2026')]);
+    show([make('p', 'voters-empty', tr('Loading\u2026'))]);
     fetch(anchor.getAttribute('data-voters-url'), { credentials: 'same-origin', headers: { 'Accept': 'application/json' } })
       .then(function (response) {
-        if (response.status === 403) throw new Error('only the author');
+        if (response.status === 403) throw new Error('not-author');               // a code, never shown
         if (!response.ok) throw new Error(String(response.status));
         return response.json();
       })
       .then(function (data) { if (mine === token) draw(data); })
       .catch(function (error) {
         if (mine !== token) return;
-        failed(error.message === 'only the author' ? 'Only the author can see this.' : 'Could not load the list.');
+        failed(error.message === 'not-author' ? tr('Only the author can see this.') : tr('Could not load the list.'));
       });
   }
 

@@ -4,6 +4,7 @@ from flask import abort, g, jsonify, redirect, render_template, request
 
 from ruqqus.helpers import user_reports
 from ruqqus.helpers.get import get_user
+from ruqqus.helpers.i18n_runtime import msg, tr
 from ruqqus.helpers.visibility import user_hidden
 from ruqqus.helpers.wrappers import admin_level_required, auth_required, not_quarantined, validate_formkey
 from ruqqus.__main__ import app
@@ -19,16 +20,16 @@ def report_account(username, v):
         abort(404)
     refused = user_reports.refusal(v.id, target.id, target.is_deleted)
     if refused:
-        return jsonify({"error": refused[0]}), refused[1]
+        return jsonify({"error": msg(refused[0])}), refused[1]
     reason, error = user_reports.parse_reason(request.form.get("reason"))
     if error:
-        return jsonify({"error": error}), 400
+        return jsonify({"error": msg(error)}), 400
     if user_reports.filed_today(g.db, v.id) >= user_reports.DAILY_LIMIT:
-        return jsonify({"error": "You've sent a lot of reports today. Try again tomorrow."}), 429
+        return jsonify({"error": tr("You've sent a lot of reports today. Try again tomorrow.")}), 429
     if not user_reports.report(g.db, target.id, v.id, reason):
-        return jsonify({"error": "You already reported this account."}), 409
+        return jsonify({"error": tr("You already reported this account.")}), 409
     g.db.commit()
-    return jsonify({"message": "Thanks. An admin will look at it."})
+    return jsonify({"message": tr("Thanks. An admin will look at it.")})
 
 
 @app.get("/admin/user_reports")

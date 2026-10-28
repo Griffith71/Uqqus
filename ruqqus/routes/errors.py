@@ -6,6 +6,7 @@ from ruqqus.helpers.wrappers import *
 from ruqqus.helpers.session_helpers import *
 from ruqqus.classes.custom_errors import *
 from ruqqus.helpers import circle_guard, circle_store, circles
+from ruqqus.helpers.i18n_runtime import tr
 from urllib.parse import quote, urlencode
 import time
 import jinja2
@@ -57,7 +58,7 @@ def error_401(e):
     output = f"/login?redirect={argval}"
 
     if request.path.startswith(("/api/v1/", "/api/v2/")):
-        return jsonify({"error": "401 Not Authorized"}), 401
+        return jsonify({"error": tr("401 Not Authorized")}), 401
     else:
         return redirect(output)
 
@@ -66,7 +67,7 @@ def error_401(e):
 @api(error_handler=True)
 def error_402(e):
     return {"html": lambda: (render_template('errors/402.html', v=_viewer()), 402),
-            "api": lambda: (jsonify({"error": "402 Payment Required"}), 402)
+            "api": lambda: (jsonify({"error": tr("402 Payment Required")}), 402)
             }
 
 @app.errorhandler(CircleOnly)
@@ -90,7 +91,7 @@ def error_circle_only(e):
         return response
 
     return {"html": gate,
-            "api": lambda: (jsonify({"error": "404 Not Found"}), 404)
+            "api": lambda: (jsonify({"error": tr("404 Not Found")}), 404)
             }
 
 
@@ -99,7 +100,7 @@ def error_circle_only(e):
 @api(error_handler=True)
 def error_403(e):
     return {"html": lambda: (render_template('errors/403.html', v=_viewer()), 403),
-            "api": lambda: (jsonify({"error": "403 Forbidden"}), 403)
+            "api": lambda: (jsonify({"error": tr("403 Forbidden")}), 403)
             }
 
 
@@ -108,7 +109,7 @@ def error_403(e):
 @api(error_handler=True)
 def error_404(e):
     return {"html": lambda: (render_template('errors/404.html', v=_viewer()), 404),
-            "api": lambda: (jsonify({"error": "404 Not Found"}), 404)
+            "api": lambda: (jsonify({"error": tr("404 Not Found")}), 404)
             }
 
 
@@ -117,7 +118,7 @@ def error_404(e):
 @api(error_handler=True)
 def error_405(e):
     return {"html": lambda: (render_template('errors/405.html', v=_viewer()), 405),
-            "api": lambda: (jsonify({"error": "405 Method Not Allowed"}), 405)
+            "api": lambda: (jsonify({"error": tr("405 Method Not Allowed")}), 405)
             }
 
 
@@ -126,7 +127,7 @@ def error_405(e):
 @api(error_handler=True)
 def error_409(e):
     return {"html": lambda: (render_template('errors/409.html', v=_viewer()), 409),
-            "api": lambda: (jsonify({"error": "409 Conflict"}), 409)
+            "api": lambda: (jsonify({"error": tr("409 Conflict")}), 409)
             }
 
 
@@ -135,7 +136,7 @@ def error_409(e):
 @api(error_handler=True)
 def error_413(e):
     return {"html": lambda: (render_template('errors/413.html', v=_viewer()), 413),
-            "api": lambda: (jsonify({"error": "413 Request Payload Too Large"}), 413)
+            "api": lambda: (jsonify({"error": tr("413 Request Payload Too Large")}), 413)
             }
 
 
@@ -144,7 +145,7 @@ def error_413(e):
 @api(error_handler=True)
 def error_422(e):
     return {"html": lambda: (render_template('errors/422.html', v=_viewer()), 422),
-            "api": lambda: (jsonify({"error": "422 Unprocessable Entity"}), 422)
+            "api": lambda: (jsonify({"error": tr("422 Unprocessable Entity")}), 422)
             }
 
 
@@ -182,7 +183,7 @@ def error_429(e):
 
 
     return {"html": lambda: (render_template('errors/429.html', v=_viewer()), 429),
-        "api": lambda: (jsonify({"error": "429 Too Many Requests"}), 429)
+        "api": lambda: (jsonify({"error": tr("429 Too Many Requests")}), 429)
         }
 
 
@@ -191,7 +192,7 @@ def error_429(e):
 @api(error_handler=True)
 def error_451(e):
     return {"html": lambda: (render_template('errors/451.html', v=_viewer()), 451),
-            "api": lambda: (jsonify({"error": "451 Unavailable For Legal Reasons"}), 451)
+            "api": lambda: (jsonify({"error": tr("451 Unavailable For Legal Reasons")}), 451)
             }
 
 
@@ -206,7 +207,7 @@ def error_500(e):
         pass
 
     return {"html": lambda: (render_template('errors/500.html', v=None), 500),
-            "api": lambda: (jsonify({"error": "500 Internal Server Error"}), 500)
+            "api": lambda: (jsonify({"error": tr("500 Internal Server Error")}), 500)
             }
 
 @app.errorhandler(503)
@@ -220,7 +221,7 @@ def error_503(e):
         pass
 
     return {"html": lambda: (render_template('errors/503.html'), 503),
-            "api": lambda: (jsonify({"error": "503 Service Unavailable"}), 503)
+            "api": lambda: (jsonify({"error": tr("503 Service Unavailable")}), 503)
             }
 
 @app.route("/error/<eid>", methods=["GET"])
@@ -242,5 +243,5 @@ def error_all_preview(eid, v):
 @api(error_handler=True)
 def error_database_overload(e, v):
     return{"html": lambda: (render_template('errors/overload.html', v=v), 500),
-           "api": lambda: (jsonify({"error": "500 Internal Server Error (database overload)"}), 500)
+           "api": lambda: (jsonify({"error": tr("500 Internal Server Error (database overload)")}), 500)
            }

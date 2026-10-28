@@ -10,15 +10,17 @@ from ruqqus.helpers.get import *
 from ruqqus.classes import *
 from flask import *
 from ruqqus.__main__ import app
+from ruqqus.helpers.i18n_runtime import tr, tr_lazy
 
+# what the consent page (oauth.html) says each scope lets an app do; the keys are the scope names apps send
 SCOPES = {
-    'identity': 'See your username',
-    'create': 'Save posts and comments as you',
-    'read': f'View {app.config["SITE_NAME"]} as you, including private or restricted content',
-    'update': 'Edit your posts and comments',
-    'delete': 'Delete your posts and comments',
-    'vote': 'Cast votes as you',
-    'guildmaster': 'Perform Guildmaster actions'
+    'identity': tr_lazy('See your username'),
+    'create': tr_lazy('Save posts and comments as you'),
+    'read': tr_lazy('View %(site)s as you, including private or restricted content'),
+    'update': tr_lazy('Edit your posts and comments'),
+    'delete': tr_lazy('Delete your posts and comments'),
+    'vote': tr_lazy('Cast votes as you'),
+    'guildmaster': tr_lazy('Perform Guildmaster actions')
 }
 
 CODE_SECONDS = 600      # an authorization code is swapped for a token within ten minutes, or not at all
@@ -475,7 +477,7 @@ def reroll_oauth_tokens(aid, v):
 
     g.db.add(a)
 
-    return jsonify({"message": "Secret Rerolled",
+    return jsonify({"message": tr("Secret Rerolled"),
                     "id": a.client_id,
                     "secret": a.client_secret
                     }
@@ -497,7 +499,7 @@ def oauth_rescind_app(aid, v):
 
     g.db.delete(auth)
 
-    return jsonify({"message": f"{auth.application.app_name} Revoked"})
+    return jsonify({"message": tr("%(app)s Revoked", app=auth.application.app_name)})
 
 @app.route("/api/v1/release", methods=["POST"])
 @app.patch("/api/v2/auth")
@@ -518,7 +520,7 @@ def oauth_release_auth(v):
     auth.access_token_expire_utc=0
     g.db.add(auth)
 
-    return jsonify({"message":"Authorization released"})
+    return jsonify({"message": tr("Authorization released")})
 
 @app.route("/api/v1/kill", methods=["POST"])
 @app.delete("/api/v2/auth")
@@ -535,4 +537,4 @@ def oauth_kill_auth(v):
 
     g.db.delete(auth)
 
-    return jsonify({"message":"Authorization revoked"})
+    return jsonify({"message": tr("Authorization revoked")})

@@ -21,11 +21,14 @@ from ruqqus.helpers import broadcasts as channel_rules
 from ruqqus.helpers import broadcast_store as channel_store
 from ruqqus.helpers import circle_guard, circle_store
 from ruqqus.helpers.visibility import text_hidden, user_hidden
+from ruqqus.helpers.i18n_runtime import msg, tr
 
 _DAY = 86400
 
 
 def _error(message, status=400):
+    """An error answer. `message` is shown as it is: translated already (tr), or a helper's English drawn with msg at the
+    call (its refusals stay English: this module compares them)."""
     return jsonify({"error": message}), status
 
 
@@ -81,7 +84,7 @@ def channel_json(channel, me, v):
         "key": f"b{channel[0]}",
         "channel_id": channel[0],
         "room_id": channel[5],
-        "label": "A channel" if hidden else channel[2],
+        "label": tr("A channel") if hidden else channel[2],
         "public": channel[4] == channel_rules.PUBLIC,
         "owner": {"id": owner.id, "username": owner.username, "shown_name": owner.shown_name,
                   "profile_url": owner.profile_url, "mxid": matrix.mxid_for(owner.id)} if owner else None,
@@ -102,21 +105,23 @@ def broadcast_create(v):
     try:
         name = channel_rules.clean_name(request.values.get("name"))
     except channel_rules.Refused as e:
-        return _error(str(e))
+        return _error(msg(str(e)))
     audience = channel_rules.CIRCLES if request.values.get("audience") == "4" else channel_rules.PUBLIC
     circle_ids = []
     if audience == channel_rules.CIRCLES:
         circle_ids, error = circle_store.resolve(g.db, v.id, request.values.getlist("circles"))
         if error:
-            return _error(error)
-    refusal = channel_rules.make_refusal(bool(v.is_bot), channel_store.owned_count(g.db, v.id), audience, circle_ids)
+            return _error(msg(error))
+    owned = channel_store.owned_count(g.db, v.id)
+    refusal = channel_rules.make_refusal(bool(v.is_bot), owned, audience, circle_ids)
     if refusal:
-        return _error(refusal, 409 if "at most" in refusal else 400)
+        # the status comes from the refusal's condition, never its text (translated)
+        return _error(refusal, 409 if not v.is_bot and owned >= channel_rules.MAX_PER_OWNER else 400)
     from ruqqus.helpers.word_filter_store import get_filter
     try:
         room_id = matrix.create_channel_room(_mxid(v), encrypted=audience == channel_rules.CIRCLES)
     except matrix.MatrixError:
-        return _error("Chat isn't answering right now. Try again in a moment.", 502)
+        return _error(tr("Chat isn't answering right now. Try again in a moment."), 502)
     bid = channel_store.create(g.db, v.id, name, get_filter(g.db).severity(name), audience, room_id, circle_ids, _now())
     g.db.commit()
     return jsonify(channel_json(channel_store.get(g.db, bid), channel_store.member(g.db, bid, v.id), v))
@@ -156,7 +161,7 @@ def broadcast_join(bid, v):
     try:
         matrix.put_in_room(channel[5], _mxid(v))
     except matrix.MatrixError:
-        return _error("Chat isn't answering right now. Try again in a moment.", 502)
+        return _error(tr("Chat isn't answering right now. Try again in a moment."), 502)
     channel_store.add_member(g.db, bid, v.id, channel_rules.MEMBER, _now())
     g.db.commit()
     return jsonify(channel_json(channel, channel_store.member(g.db, bid, v.id), v))
@@ -168,11 +173,11 @@ def broadcast_join(bid, v):
 def broadcast_leave(bid, v):
     channel, me = _channel(bid, v)
     if me[0] == channel_rules.OWNER:
-        return _error("The owner deletes a channel instead of leaving it.", 409)
+        return _error(tr("The owner deletes a channel instead of leaving it."), 409)
     try:
         matrix.leave_room_as(channel[5], matrix.mxid_for(v.id))
     except matrix.MatrixError:
-        return _error("Chat isn't answering right now. Try again in a moment.", 502)
+        return _error(tr("Chat isn't answering right now. Try again in a moment."), 502)
     was_helper = me[0] == channel_rules.HELPER
     channel_store.remove_member(g.db, bid, v.id)
     if was_helper:
@@ -197,13 +202,14 @@ def broadcast_helpers(bid, v):
     refusal = channel_rules.helper_refusal(me[0], target_row[0] if target_row else None,
                                            len(channel_store.helpers(g.db, bid)), adding)
     if refusal:
-        return _error(refusal, 403 if refusal.startswith("Only") else 409)
+        # the status comes from the refusal's condition, never its text (translated): only the owner chooses
+        return _error(refusal, 403 if me[0] != channel_rules.OWNER else 409)
     channel_store.set_role(g.db, bid, target.id, channel_rules.HELPER if adding else channel_rules.MEMBER)
     try:
         _sync_writers(channel)
     except matrix.MatrixError:
         g.db.rollback()
-        return _error("Chat isn't answering right now. Try again in a moment.", 502)
+        return _error(tr("Chat isn't answering right now. Try again in a moment."), 502)
     g.db.commit()
     return jsonify(channel_json(channel, channel_store.member(g.db, bid, v.id), v))
 
@@ -216,15 +222,16 @@ def broadcast_message(bid, v):
     by its writers' own browsers (end-to-end encrypted), never here."""
     channel, me = _channel(bid, v)
     if channel[4] != channel_rules.PUBLIC:
-        return _error("This channel is written from the chat itself.", 409)
+        return _error(tr("This channel is written from the chat itself."), 409)
     try:
         body = channel_rules.clean_message(request.values.get("body"))
     except channel_rules.Refused as e:
-        return _error(str(e))
+        return _error(msg(str(e)))
     now = _now()
     refusal = channel_rules.post_refusal(me[0], bool(v.is_suspended), channel_store.posts_since(g.db, bid, now - _DAY))
     if refusal:
-        return _error(refusal, 403 if refusal.startswith(("Only", "Your")) else 429)
+        # the status comes from the refusal's condition, never its text (translated): not a writer, or suspended
+        return _error(refusal, 403 if not channel_rules.may_write(me[0]) or v.is_suspended else 429)
     from ruqqus.helpers.word_filter_store import get_filter
     severity = get_filter(g.db).severity(body)
     try:
@@ -233,7 +240,7 @@ def broadcast_message(bid, v):
                                    channel_rules.SITE_KEY: channel_rules.site_mark(app.config["SECRET_KEY"], channel[5], body)},
                                   secrets.token_hex(12))
     except matrix.MatrixError:
-        return _error("Chat isn't answering right now. Try again in a moment.", 502)
+        return _error(tr("Chat isn't answering right now. Try again in a moment."), 502)
     channel_store.record_post(g.db, bid, v.id, event_id, body, severity, now)
     g.db.commit()
     return jsonify({"event_id": event_id})
@@ -258,10 +265,10 @@ def broadcast_report(bid, v):
     if post is None or post[3]:
         abort(404)
     if post[1] == v.id:
-        return _error("You can't report your own message.", 409)
+        return _error(tr("You can't report your own message."), 409)
     reason = " ".join(str(request.values.get("reason") or "").split())[:channel_rules.REPORT_MAX]
     if not channel_store.report(g.db, bid, post[0], v.id, reason, _now()):
-        return _error("You've already reported this message.", 409)
+        return _error(tr("You've already reported this message."), 409)
     g.db.commit()
     return jsonify({"ok": True})
 
@@ -321,7 +328,7 @@ def admin_broadcast_report_act(pid, action, v):
             try:
                 matrix.redact_as_bot(channel[5], row[1], secrets.token_hex(12), "Removed by the site's admins")
             except matrix.MatrixError:
-                return _error("Chat isn't answering right now. Try again in a moment.", 502)
+                return _error("Chat isn't answering right now. Try again in a moment.", 502)     # an admin page: English
         channel_store.remove_post(g.db, pid, now)
     channel_store.resolve_reports(g.db, pid, now)
     g.db.commit()

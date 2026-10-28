@@ -19,9 +19,13 @@ class PostFieldError(ValueError):
     """A rejected field value; str(error) is the message shown to the user."""
 
 
+TITLE_COLUMN = 500        # submissions_aux.title: the escaped title has to fit too
+
+
 def clean_title(raw):
     title = (raw or "").strip()
     title = title.replace("\n", "").replace("\r", "").replace("\t", "")
+    typed = title
     title = bleach.clean(title)
 
     if not title:
@@ -45,13 +49,13 @@ def normalize_url(raw):
     if not url:
         return ""
     if len(url) > URL_MAX:
-        raise PostFieldError(f"{URL_MAX} character limit for URLs.")
+        raise PostFieldError(trn("%(num)s character limit for URLs.", "%(num)s character limit for URLs.", URL_MAX))
 
     if "://" not in url:
         url = "https://" + url
     parsed = urlparse(url)
     if parsed.scheme not in ("http", "https") or not parsed.netloc or "." not in parsed.netloc:
-        raise PostFieldError("That doesn't look like a valid link.")
+        raise PostFieldError(tr("That doesn't look like a valid link."))
 
     return urlunparse(ParseResult(scheme="https",
                                   netloc=parsed.netloc,
@@ -86,9 +90,10 @@ def clean_template_name(raw):
     """One line, single spaces, 1-60 characters."""
     name = " ".join((raw or "").split())
     if not name:
-        raise PostFieldError("Give the template a name.")
+        raise PostFieldError(tr("Give the template a name."))
     if len(name) > TEMPLATE_NAME_MAX:
-        raise PostFieldError(f"{TEMPLATE_NAME_MAX} character limit for template names.")
+        raise PostFieldError(trn("%(num)s character limit for template names.", "%(num)s character limit for template names.",
+                                 TEMPLATE_NAME_MAX))
     return name
 
 
@@ -96,5 +101,5 @@ def check_template_body(raw):
     """The template text as written (inner formatting kept), within the post body limit."""
     body = (raw or "").strip("\r\n")
     if not body.strip():
-        raise PostFieldError("A template needs some text.")
+        raise PostFieldError(tr("A template needs some text."))
     return check_body(body)

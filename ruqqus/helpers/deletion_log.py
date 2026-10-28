@@ -13,6 +13,11 @@ A guild's mod log (`/+guild/mod/log`) already records what its moderators hid, r
 """
 import re
 
+from babel.support import LazyProxy
+from markupsafe import escape
+
+from ruqqus.helpers.i18n_runtime import N_, tr, trn, trp
+
 PER_PAGE = 25
 MAX_PAGE = 1000
 
@@ -31,11 +36,13 @@ SHOW = {
                  "purge_comment", "obliterate_comment"),
     "exiles": ("exile_user", "unexile_user", "chatban_user", "unchatban_user"),
 }
+# marked with N_ and drawn with msg_text() (guild/modlog.html); "All" alone is ambiguous, so it is a lazy string with
+# its context (the filter's), which msg_text() draws as it is
 SHOW_LABELS = {
-    "all": "All",
-    "posts": "Posts hidden or removed",
-    "comments": "Comments hidden or removed",
-    "exiles": "Exiles and chat bans",
+    "all": LazyProxy(lambda: trp("filter", "All"), enable_cache=False),
+    "posts": N_("Posts hidden or removed"),
+    "comments": N_("Comments hidden or removed"),
+    "exiles": N_("Exiles and chat bans"),
 }
 
 _DIGITS = re.compile(r"[0-9]{1,4}")
@@ -65,20 +72,16 @@ def kinds_for(show):
     return SHOW[parse_show(show)]
 
 
-def _count(n, unit):
-    return f"{n} {unit}{'' if n == 1 else 's'}"
-
-
 def lived(seconds):
     """How long something was up before it was deleted, in words."""
     seconds = max(0, int(seconds or 0))
     if seconds < 60:
-        return "less than a minute"
+        return tr("less than a minute")
     if seconds < 3600:
-        return _count(seconds // 60, "minute")
+        return trn("%(num)s minute", "%(num)s minutes", seconds // 60)
     if seconds < 86400:
-        return _count(seconds // 3600, "hour")
-    return _count(seconds // 86400, "day")
+        return trn("%(num)s hour", "%(num)s hours", seconds // 3600)
+    return trn("%(num)s day", "%(num)s days", seconds // 86400)
 
 
 def without_media(html):
@@ -86,8 +89,12 @@ def without_media(html):
     uploads are detached when it is deleted, so the addresses in its text no longer serve anything: a broken
     picture in a public log helps nobody. Only tags are removed and a fixed marker put in, so what comes out
     is as safe as what went in."""
-    html = _SOUND.sub('<span class="text-muted">[sound]</span>', html or "")
-    return _PICTURE.sub('<span class="text-muted">[picture]</span>', html)
+    # Translators: stands in a deleted post's text where a sound was
+    sound = f'<span class="text-muted">{escape(tr("[sound]"))}</span>'
+    # Translators: stands in a deleted post's text where a picture was
+    picture = f'<span class="text-muted">{escape(tr("[picture]"))}</span>'
+    html = _SOUND.sub(lambda _m: sound, html or "")
+    return _PICTURE.sub(lambda _m: picture, html)
 
 
 def has_text(title, body, body_html):

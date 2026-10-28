@@ -79,9 +79,11 @@ def test_a_note_never_names_the_admin_or_the_requesters():
     for name in ("partials/community_note.html",):
         page = read("ruqqus", "templates", *name.split("/"))
         assert ".admin_id" not in page and "author" not in page and "user_id" not in page
-        assert "Added by {{ 'SITE_NAME' | app_config }} moderators" in page
-    sent = next(line for line in ADMIN.splitlines() if "send_notification(user," in line)
+        assert '{{ _("Added by %(site)s moderators after members asked for context") }}' in page
+    sent = next(line for line in ADMIN.splitlines() if "notify(user," in line)
     assert "item.permalink" in sent and "author" not in sent.lower() and "admin" not in sent.lower()
+    told = ADMIN.split("NOTE_ADDED = {", 1)[1].split("}", 1)[0]                # the words the notice is made of
+    assert "%(link)s" in told and "author" not in told.lower() and "admin" not in told.lower()
     admin_page = read("ruqqus", "templates", "admin", "note_requests.html")
     assert "user_id" not in admin_page and ".author" not in admin_page
 
@@ -90,7 +92,7 @@ def test_writing_a_note_keeps_the_old_one_and_closes_the_requests():
     write = ADMIN.split("def admin_note_write(")[1].split("@app.post")[0]
     assert '.update({"removed_utc": now})' in write                     # the old note is kept as removed
     assert "g.db.query(NoteRequest).filter(where(NoteRequest)).delete(" in write
-    assert write.index("g.db.commit()") < write.index("community_notes.forget()") < write.index("send_notification(")
+    assert write.index("g.db.commit()") < write.index("community_notes.forget()") < write.index("notify(")
     assert "clean_body(request.form.get" in write
 
 

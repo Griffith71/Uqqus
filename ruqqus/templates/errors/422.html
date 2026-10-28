@@ -1,7 +1,7 @@
 {% extends "errors/default.html" %}
 
 {% block title %}
-<title>422 Unprocessable Entity</title>
+<title>{{ _("422 Unprocessable Entity") }}</title>
 {% endblock %}
 
 {% block pagetype %}error-422{% endblock %}
@@ -11,9 +11,9 @@
 	<div class="col-10 col-md-5">
 	<div class="text-center px-3 my-8">
 			<i class="fas fa-laptop-code text-muted mb-5" style="font-size: 5rem;"></i>
-			<h1 class="h5">422 Unprocessable Entity</h1>
-			<p class="text-muted mb-5">The server thinks you're asking something silly. It might take you more seriously if you take off the jester outfit.</p>
-			<div><a href="/" class="btn btn-primary">Go to frontpage</a></div>
+			<h1 class="h5">{{ _("422 Unprocessable Entity") }}</h1>
+			<p class="text-muted mb-5">{{ _("The server thinks you're asking something silly. It might take you more seriously if you take off the jester outfit.") }}</p>
+			<div><a href="/" class="btn btn-primary">{{ _("Go to frontpage") }}</a></div>
 		</div>
 	</div>
 </div>

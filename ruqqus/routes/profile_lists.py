@@ -7,6 +7,7 @@ from flask import abort, g, jsonify, redirect, render_template, request
 
 from ruqqus.helpers import follow_lists
 from ruqqus.helpers.get import get_user
+from ruqqus.helpers.i18n_runtime import tr
 from ruqqus.helpers.visibility import _cut, user_hidden, viewer_level
 from ruqqus.helpers.wrappers import auth_desired, auth_required, page_number, validate_formkey
 from ruqqus.__main__ import app
@@ -105,13 +106,13 @@ def settings_list_visibility(v):
             continue
         choice = follow_lists.parse_choice(raw)
         if choice is None:
-            return jsonify({"error": "Choose Everyone, Followers or Only me."}), 400
+            return jsonify({"error": tr("Choose Everyone, Followers or Only me.")}), 400
         setattr(v, follow_lists.SETTING[name], choice)
         changed = True
     if not changed:
-        return jsonify({"error": "Nothing to change."}), 400
+        return jsonify({"error": tr("Nothing to change.")}), 400
     g.db.add(v)
     g.db.commit()
     if request.values.get("back"):
         return redirect("/settings/profile#lists")
-    return jsonify({"message": "Saved. Your lists are shown as you chose."})
+    return jsonify({"message": tr("Saved. Your lists are shown as you chose.")})

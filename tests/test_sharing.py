@@ -75,30 +75,30 @@ def test_the_post_share_menu_is_drawn_only_for_whoever_may_share():
     actions = read("ruqqus", "templates", "partials", "post_actions.html")
     shares = actions.split('<li class="list-inline-item post-action-item">')[2].split("</li>")[0]
     menu, rest = shares.split("{% if may_share(p, v) %}")[1].split("{% else %}")
-    for item in ("Copy link</a>", "share-chat-item", "Forward</a>", "/repost'"):
+    for item in ('"Copy link") }}</a>', "share-chat-item", '"Forward") }}</a>', "/repost'"):
         assert item in menu and item not in rest, item
-    assert '<span class="post-action post-action-shares" title="Only the author can share this post"' in rest
+    assert '<span class="post-action post-action-shares" title="{{ _(\'Only the author can share this post\') }}"' in rest
     assert "_n(shares)" in rest                                                  # the count still shows: counts only
     # a post made for a Circle is still never forwarded or reposted, even by its author
-    assert menu.index("Forward</a>") > menu.index("{% if v and not p.audience %}") > menu.index("share-chat-item")
+    assert menu.index('"Forward") }}</a>') > menu.index("{% if v and not p.audience %}") > menu.index("share-chat-item")
 
 
-def test_the_shortlink_box_follows_the_rule_and_an_empty_box_is_not_drawn():
+def test_the_post_sidebar_has_no_shortlink_and_the_share_menu_keeps_the_rule():
+    # the owner (2026-10-23): no Shortlink box. Sharing is the share menu's, drawn only for whoever may share
     page = read("ruqqus", "templates", "submission.html").split("{% block sidebarblock %}")[1].split("{% endblock %}")[0]
-    assert "{% set shortlink_shown = may_share(p, v) %}" in page
-    assert "{% if shortlink_shown or p.board_id != p.original_board_id %}" in page
-    assert page.index("{% if shortlink_shown %}") < page.index("Shortlink:")
+    assert "Shortlink" not in page and "shortlink" not in page
+    assert "may_share(p, v)" in read("ruqqus", "templates", "partials", "post_actions.html")
 
 
 def test_every_comment_share_item_follows_the_rule():
     comments = read("ruqqus", "templates", "comments.html")
     assert "{% set can_share = may_share_comment(c, v) %}" in comments
     assert "{% set can_forward = v and can_share and not (c.post and c.post.audience) %}" in comments
-    for marker in ('id="shareDropdownLink-{{ c.base36id }}"', "<span>Copy Link</span>"):
+    for marker in ('id="shareDropdownLink-{{ c.base36id }}"', '<span>{{ _("Copy Link") }}</span>'):
         before = comments.split(marker)[0]
         assert before.rsplit("{% if ", 1)[1].startswith("can_share %}"), marker
-    for marker in ('<a id="repost-{{ c.base36id }}"', '<a id="repost-modal-{{ c.base36id }}"', "<span>Forward</span>",
-                   "Forward</a>"):
+    for marker in ('<a id="repost-{{ c.base36id }}"', '<a id="repost-modal-{{ c.base36id }}"',
+                   '<span>{{ pgettext("verb", "Forward") }}</span>', '"Forward") }}</a>'):
         before = comments.split(marker)[0]
         assert before.rsplit("{% if ", 1)[1].startswith("can_forward %}"), marker
     # Move to folder is in the "..." menu, so a comment that can't be shared can still be filed

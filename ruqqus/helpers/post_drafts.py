@@ -13,6 +13,7 @@ import re
 from . import comment_permission as cperm
 from . import circles
 from . import polls as poll_rules
+from .i18n_runtime import N_, tr, trn
 from .post_fields import BODY_MAX, TITLE_MAX, URL_MAX, PostFieldError, check_body, flag
 
 DRAFT_LIMIT = 50                       # per user, published ones do not count
@@ -35,11 +36,12 @@ def clean_fields(form):
     can be a few words), a title is only required to schedule."""
     title = (form.get("title") or "").replace("\r", "").replace("\n", "").replace("\t", "").strip()
     if len(title) > TITLE_MAX:
-        raise PostFieldError(f"{TITLE_MAX} character limit for titles.")
+        raise PostFieldError(trn("%(num)s character limit for titles.", "%(num)s character limit for titles.",
+                                 TITLE_MAX))
 
     url = (form.get("url") or "").strip()
     if len(url) > URL_MAX:
-        raise PostFieldError(f"{URL_MAX} character limit for URLs.")
+        raise PostFieldError(trn("%(num)s character limit for URLs.", "%(num)s character limit for URLs.", URL_MAX))
 
     body = check_body(form.get("body"))
 
@@ -49,16 +51,17 @@ def clean_fields(form):
         if not name or name.lower() in seen:
             continue
         if len(name) > GUILD_NAME_MAX:
-            raise PostFieldError("That guild name is too long.")
+            raise PostFieldError(tr("That guild name is too long."))
         seen.add(name.lower())
         guilds.append(name)
     if len(guilds) > FORWARD_GUILDS_MAX:
-        raise PostFieldError(f"Forward to at most {FORWARD_GUILDS_MAX} guilds.")
+        raise PostFieldError(trn("Forward to at most %(num)s guild.", "Forward to at most %(num)s guilds.",
+                                 FORWARD_GUILDS_MAX))
 
     raw_permission = form.get("comment_permission", "")
     permission = cperm.EVERYONE if str(raw_permission).strip() == "" else cperm.parse(raw_permission)
     if permission is None:
-        raise PostFieldError("Choose who can comment.")
+        raise PostFieldError(tr("Choose who can comment."))
 
     # which circles are the author's own is decided when the post is made (circle_store.resolve in submit_post)
     audience, circle_tokens, audience_error = circles.parse_audience(form.get("audience"), form.getlist("circles"))
@@ -101,17 +104,17 @@ def schedule_time(raw, now):
     try:
         when = int(str(raw).strip())
     except ValueError:
-        raise PostFieldError("Pick a date and time.")
+        raise PostFieldError(tr("Pick a date and time."))
     if when < now + MIN_LEAD_SECONDS:
-        raise PostFieldError("Pick a time at least 5 minutes from now.")
+        raise PostFieldError(tr("Pick a time at least 5 minutes from now."))
     if when > now + MAX_LEAD_SECONDS:
-        raise PostFieldError("You can schedule a post up to a year ahead.")
+        raise PostFieldError(tr("You can schedule a post up to a year ahead."))
     return when
 
 
 def require_title(fields):
     if not fields["title"]:
-        raise PostFieldError("A scheduled post needs a title.")
+        raise PostFieldError(tr("A scheduled post needs a title."))
 
 
 def require_poll(fields):
@@ -167,16 +170,23 @@ def retry_at(now, message, attempts):
     return now + max(60, wait + 5)
 
 
+# Stored in English as the draft's error (drawn with msg) and put in the author's notice after "could not be
+# published:" (failure_message).
+# Translators: why a scheduled post could not be published. Each completes the sentence "Your scheduled post could
+# not be published: ...". "Post" is the name of the button.
 STATUS_REASONS = {
-    400: "something in it isn't accepted any more (a link, a guild or an option). Open it and press Post to see what.",
-    401: "you were signed out.",
-    403: "your account couldn't post it at that moment (a suspension, or the rules of a guild it was forwarded to). "
-         "Open it and press Post to see what.",
-    404: "a guild or post it named no longer exists.",
-    409: "it clashed with something already posted.",
-    413: "it is too large.",
-    429: "you were posting too fast, and it couldn't wait any longer.",
+    400: N_("something in it isn't accepted any more (a link, a guild or an option). Open it and press Post to see "
+            "what."),
+    401: N_("you were signed out."),
+    403: N_("your account couldn't post it at that moment (a suspension, or the rules of a guild it was forwarded to). "
+            "Open it and press Post to see what."),
+    404: N_("a guild or post it named no longer exists."),
+    409: N_("it clashed with something already posted."),
+    413: N_("it is too large."),
+    429: N_("you were posting too fast, and it couldn't wait any longer."),
 }
+SERVER_PROBLEM = N_("the site had a problem. Try posting it yourself or scheduling it again.")
+REFUSED = N_("it was refused.")
 
 
 def status_reason(status):
@@ -184,20 +194,35 @@ def status_reason(status):
     if status in STATUS_REASONS:
         return STATUS_REASONS[status]
     if status >= 500:
-        return "the site had a problem. Try posting it yourself or scheduling it again."
-    return "it was refused."
+        return SERVER_PROBLEM
+    return REFUSED
+
+
+# Translators: a notification. %(title)s is the post's title; %(reason)s says why, as a sentence starting in lowercase.
+_FAILED = N_("Your scheduled post \"%(title)s\" could not be published: %(reason)s\n\n"
+             "It is saved in your drafts, so you can fix it and post it or schedule it again.")
+# Translators: a notification about a post with no title. %(reason)s says why, as a sentence starting in lowercase.
+_FAILED_UNTITLED = N_("Your scheduled post \"Untitled\" could not be published: %(reason)s\n\n"
+                      "It is saved in your drafts, so you can fix it and post it or schedule it again.")
+
+
+def failure_message(title, reason):
+    """(message, values) of the notification for a scheduled post that could not be published, for alerts.notify:
+    stored in English with its values, read in the author's own language."""
+    if title:
+        return _FAILED, {"title": title, "reason": reason}
+    return _FAILED_UNTITLED, {"reason": reason}
 
 
 def failure_notice(title, reason):
-    """The notification text for a scheduled post that could not be published."""
-    shown = title if title else "Untitled"
-    return (f"Your scheduled post \"{shown}\" could not be published: {reason}\n\n"
-            "It is saved in your drafts, so you can fix it and post it or schedule it again.")
+    """The notification text for a scheduled post that could not be published, as it is stored (English)."""
+    message, values = failure_message(title, reason)
+    return message % values
 
 
 __all__ = [
     "DRAFT_LIMIT", "MIN_LEAD_SECONDS", "MAX_LEAD_SECONDS", "MAX_ATTEMPTS", "KEEP_PUBLISHED_SECONDS",
     "STALE_PUBLISHING_SECONDS", "STATUSES", "EDITABLE", "BODY_MAX",
     "STATUS_REASONS", "status_reason", "clean_fields", "is_empty", "schedule_time", "require_title", "publish_form",
-    "cooldown_seconds", "retry_at", "failure_notice", "PostFieldError",
+    "cooldown_seconds", "retry_at", "failure_message", "failure_notice", "PostFieldError",
 ]

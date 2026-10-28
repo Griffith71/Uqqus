@@ -8,11 +8,16 @@ from flask import g, redirect, render_template, request
 
 from ruqqus.helpers import creator_fund as rules
 from ruqqus.helpers import creator_fund_store as store
-from ruqqus.helpers.alerts import send_notification
+from ruqqus.helpers.alerts import notify
+from ruqqus.helpers.i18n_runtime import N_, tr
 from ruqqus.helpers.wrappers import admin_level_required, auth_required, is_not_banned, validate_formkey
 from ruqqus.__main__ import app, cache
 
 ADMIN_LEVEL = 4             # coins are money: as /admin/money's most powerful tools
+
+# stored in English and drawn in each reader's language (helpers/alerts.py notify)
+EARNED = N_("You earned %(coins)s coins from the creator fund for %(month)s. "
+            "They are in your coin balance. [Creator fund](/settings/creator_fund)")
 
 
 @cache.memoize(600)
@@ -31,9 +36,9 @@ def settings_creator_fund(v):
     return render_template(
         "settings_creator_fund.html", v=v,
         taking_part=bool(v.creator_fund_opt_in_utc),
-        month_name=rules.month_name(month),
+        month_name=rules.month_text(month),
         points=points, accounts=accounts, min_points=rules.min_points(),
-        payouts=[(rules.month_name(m), p, c, s) for m, p, c, s in store.payouts_of_member(g.db, v.id)],
+        payouts=[(rules.month_text(m), p, c, s) for m, p, c, s in store.payouts_of_member(g.db, v.id)],
         rules=rules,
         msg=request.args.get("msg"), error=request.args.get("error"),
     )
@@ -46,12 +51,12 @@ def settings_creator_fund_save(v):
     if request.form.get("action") == "leave":
         store.set_opt_in(g.db, v.id, False)
         g.db.commit()
-        return redirect("/settings/creator_fund?msg=" + quote("You have left the creator fund."))
+        return redirect("/settings/creator_fund?msg=" + quote(tr("You have left the creator fund.")))
     if request.form.get("agree") != "1":
-        return redirect("/settings/creator_fund?error=" + quote("Tick the box to agree to the rules first."))
+        return redirect("/settings/creator_fund?error=" + quote(tr("Tick the box to agree to the rules first.")))
     store.set_opt_in(g.db, v.id, True)
     g.db.commit()
-    return redirect("/settings/creator_fund?msg=" + quote("You are taking part in the creator fund."))
+    return redirect("/settings/creator_fund?msg=" + quote(tr("You are taking part in the creator fund.")))
 
 
 # --- admin ---------------------------------------------------------------------------------
@@ -108,9 +113,7 @@ def admin_creator_fund_pay(v):
     # each notification commits on its own (helpers/alerts.py), so they go out after the payment is safe
     for user_id, coins, status in result:
         if status == "paid":
-            send_notification(SimpleNamespace(id=user_id),
-                              f"You earned {coins} coins from the creator fund for {rules.month_name(month)}. "
-                              f"They are in your coin balance. [Creator fund](/settings/creator_fund)")
+            notify(SimpleNamespace(id=user_id), EARNED, coins=coins, month=rules.month_name(month))
     g.db.commit()
     paid = sum(c for _, c, s in result if s == "paid")
     return _admin_redirect(month, msg=f"Paid {paid} coins to {sum(1 for r in result if r[2] == 'paid')} members"
@@ -131,8 +134,6 @@ def admin_creator_fund_release(payout_id, v):
     user_id, coins, month = done
     g.db.commit()
     g.db.expire_all()
-    send_notification(SimpleNamespace(id=user_id),
-                      f"You earned {coins} coins from the creator fund for {rules.month_name(month)}. "
-                      f"They are in your coin balance. [Creator fund](/settings/creator_fund)")
+    notify(SimpleNamespace(id=user_id), EARNED, coins=coins, month=rules.month_name(month))
     g.db.commit()
     return _admin_redirect(month, msg=f"Paid {coins} coins.")

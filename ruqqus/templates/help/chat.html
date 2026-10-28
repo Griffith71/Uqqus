@@ -1,134 +1,134 @@
 {% extends "docs_default.html" %}
 
 {% block title %}
-<title>{{ 'SITE_NAME' | app_config }} - Formatting</title>
-<meta name="description" content="{{ 'SITE_NAME' | app_config }} Formatting">
+<title>{{ _("%(site)s - Formatting") }}</title>
+<meta name="description" content="{{ _("%(site)s Formatting") }}">
 {% endblock %}
 
-{% block content %}
+{% block content %}{% set site = 'SITE_NAME' | app_config %}{# Translators: the sample word in the formatting examples (*text* shows as italics) #}{% set sample = pgettext("formatting example", "text") %}
 {% filter markdown %}
 
-# Chat Help
+# {% trans %}Chat Help{% endtrans %}
 
-{{ 'SITE_NAME' | app_config }} chat supports [markdown formatting](/help/formatting).
+{% trans %}{{ site }} chat supports [markdown formatting](/help/formatting).{% endtrans %}
 
-The following chat commands are also supported
+{% trans %}The following chat commands are also supported{% endtrans %}
 
 
-## Universal commands
+## {% trans %}Universal commands{% endtrans %}
 
 {% endfilter %}
 
 <table class="table table-striped mb-5">
   <thead class="bg-primary text-white">
     <tr>
-      <th>Name</th>
-      <th>Type</th>
-      <th>Displays as</th>
+      <th>{{ pgettext("formatting table column", "Name") }}</th>
+      {# Translators: a column of the formatting table: what you type to get the format #}<th>{{ pgettext("formatting table column", "Type") }}</th>
+      <th>{{ _("Displays as") }}</th>
     </tr>
   </thead>
   <tr>
-    <td>Italics</td>
-    <td>*text*</td>
-    <td><i>text</i></td>
+    <td>{{ pgettext("formatting", "Italics") }}</td>
+    <td>*{{ sample }}*</td>
+    <td><i>{{ sample }}</i></td>
   </tr>
   <tr>
-    <td>Bold</td>
-    <td>**text**</td>
-    <td><b>text</b></td>
+    <td>{{ pgettext("formatting", "Bold") }}</td>
+    <td>**{{ sample }}**</td>
+    <td><b>{{ sample }}</b></td>
   </tr>
   <tr>
-    <td>Code</td>
-    <td>`text`</td>
-    <td><code>text</code></td>
+    <td>{{ pgettext("formatting", "Code") }}</td>
+    <td>`{{ sample }}`</td>
+    <td><code>{{ sample }}</code></td>
   </tr>
   <tr>
-    <td>Strikethrough</td>
-    <td>~~text~~</td>
-    <td><del>text</del></td>
+    <td>{{ _("Strikethrough") }}</td>
+    <td>~~{{ sample }}~~</td>
+    <td><del>{{ sample }}</del></td>
   </tr>
   <tr>
-    <td>Links</td>
+    <td>{{ pgettext("formatting", "Links") }}</td>
     <td>[{{ 'SITE_NAME' | app_config }}](https://ruqqus.com)</td>
     <td><a href="https://ruqqus.com">{{ 'SITE_NAME' | app_config }}</a></td>
   </tr>
   <tr>
-    <td>Image embeds*</td>
+    <td>{{ _("Image embeds") }}*</td>
     <td>![]({{ request.url_root }}assets/images/illustrations/reader.png)</td>
     <td><a data-target="#expandImageModal" data-toggle="modal" href="{{ request.url_root }}assets/images/illustrations/reader.png" onclick="expandDesktopImage('{{ request.url_root }}assets/images/illustrations/reader.png');" rel="nofollow" target="_blank"><img class="in-comment-image rounded-sm my-2" rel="nofollow" src="{{ request.url_root }}assets/images/illustrations/reader.png" style="max-height: 100px; max-width: 100%;"></a></td>
   </tr>
 </table>
 
-<p class="text-small">* We have customized image embeds to add pop-overs and operate on a whitelist system. Embeds from known safe image hosts will use a pop-up display as demonstrated here. Attempted embeds to non-whitelisted sites will be converted into a link. The whitelist may be viewed <a href="/info/image_hosts" target="_blank">here</a>.</p>
+<p class="text-small">* {{ _('We have customized image embeds to add pop-overs and operate on a whitelist system. Embeds from known safe image hosts will use a pop-up display as demonstrated here. Attempted embeds to non-whitelisted sites will be converted into a link. The whitelist may be viewed <a href="%(url)s" target="_blank">here</a>.', url="/info/image_hosts") }}</p>
 
 {% filter markdown %}
 
-## Block formatting
+## {% trans %}Block formatting{% endtrans %}
 
-These Markdown tags format an entire paragraph of text at a time.
+{% trans %}These Markdown tags format an entire paragraph of text at a time.{% endtrans %}
 
 <table class="table table-striped mb-5">
   <thead class="bg-primary text-white">
     <tr>
-      <th>Name</th>
-      <th>Type</th>
-      <th>Displays as</th>
+      <th>{{ pgettext("formatting table column", "Name") }}</th>
+      <th>{{ pgettext("formatting table column", "Type") }}</th>
+      <th>{{ _("Displays as") }}</th>
     </tr>
   </thead>
   <tr>
-    <td>Blockquote</td>
-    <td>&gt; text</td>
-    <td><blockquote>text</blockquote></td>
+    <td>{{ _("Blockquote") }}</td>
+    <td>&gt; {{ sample }}</td>
+    <td><blockquote>{{ sample }}</blockquote></td>
   </tr>
   <tr>
-    <td>Headers 1-6</td>
-    <td># Header 1<br>## Header 2<br>### Header 3<br>#### Header 4<br>##### Header 5<br>###### Header 6</td>
-    <td><h1>Header 1</h1><h2>Header 2</h2><h3>Header 3</h3><h4>Header 4</h4><h5>Header 5</h5><h6>Header 6</h6></td>
+    <td>{{ _("Headers 1-6") }}</td>
+    <td># {{ _("Header %(level)s", level=1) }}<br>## {{ _("Header %(level)s", level=2) }}<br>### {{ _("Header %(level)s", level=3) }}<br>#### {{ _("Header %(level)s", level=4) }}<br>##### {{ _("Header %(level)s", level=5) }}<br>###### {{ _("Header %(level)s", level=6) }}</td>
+    <td><h1>{{ _("Header %(level)s", level=1) }}</h1><h2>{{ _("Header %(level)s", level=2) }}</h2><h3>{{ _("Header %(level)s", level=3) }}</h3><h4>{{ _("Header %(level)s", level=4) }}</h4><h5>{{ _("Header %(level)s", level=5) }}</h5><h6>{{ _("Header %(level)s", level=6) }}</h6></td>
   </tr>
   <tr>
-    <td>Ordered list</td>
-    <td>1. First thing<br>2. Second thing</td>
-    <td><ol><li>First thing</li><li>Second thing</li></ol></td>
+    <td>{{ _("Ordered list") }}</td>
+    <td>1. {{ _("First thing") }}<br>2. {{ _("Second thing") }}</td>
+    <td><ol><li>{{ _("First thing") }}</li><li>{{ _("Second thing") }}</li></ol></td>
   </tr>
   <tr>
-    <td>Unordered list</td>
-    <td>* First thing<br>* Second thing</td>
-    <td><ul><li>First thing</li><li>Second thing</li></ul></td>
+    <td>{{ _("Unordered list") }}</td>
+    <td>* {{ _("First thing") }}<br>* {{ _("Second thing") }}</td>
+    <td><ul><li>{{ _("First thing") }}</li><li>{{ _("Second thing") }}</li></ul></td>
   </tr>
   <tr>
-    <td>Code Block</td>
-    <td>```<br>Use three backticks above and below.<br>Or, indent the lines with four spaces.<br>```</td>
+    <td>{{ _("Code Block") }}</td>
+    <td>```<br>{{ _("Use three backticks above and below.") }}<br>{{ _("Or, indent the lines with four spaces.") }}<br>```</td>
     <td>
 <pre>
-Use three backticks above and below.
-Or, indent the lines with four spaces.
+{{ _("Use three backticks above and below.") }}
+{{ _("Or, indent the lines with four spaces.") }}
 </pre>
     </td>
   </tr>
 </table>
 
 
-## Custom Formatting
+## {% trans %}Custom Formatting{% endtrans %}
 
-We also have some custom hooks for mentioning users and guilds. Note that these only work if the mentioned user or guild actually exists.
+{% trans %}We also have some custom hooks for mentioning users and guilds. Note that these only work if the mentioned user or guild actually exists.{% endtrans %}
 
 {% endfilter %}
 
 <table class="table table-striped mb-5">
   <thead class="bg-primary text-white">
     <tr>
-      <th>Name</th>
-      <th>Type</th>
-      <th>Displays as</th>
+      <th>{{ pgettext("formatting table column", "Name") }}</th>
+      <th>{{ pgettext("formatting table column", "Type") }}</th>
+      <th>{{ _("Displays as") }}</th>
     </tr>
   </thead>
   <tr>
-    <td>Username Mention</td>
+    <td>{{ _("Username Mention") }}</td>
     <td>@ruqqus</td>
     <td><a class="d-inline-block" href="/@ruqqus"><img alt="" src="/@ruqqus/pic/profile" class="profile-pic-20 mr-1">@ruqqus</a></td>
   </tr>
   <tr>
-    <td>Guild Mention</td>
+    <td>{{ _("Guild Mention") }}</td>
     <td>+general</td>
     <td><a class="d-inline-block" href="/+general"><img alt="" src="/+general/pic/profile" class="profile-pic-20 align-middle mr-1">+general</a></td>
   </tr>

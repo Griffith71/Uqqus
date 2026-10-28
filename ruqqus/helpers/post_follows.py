@@ -21,6 +21,8 @@ import time
 
 from sqlalchemy import bindparam, text
 
+from ruqqus.helpers.i18n_runtime import tr, trn
+
 MAX_FOLLOWED = 500        # posts one account may follow
 MAX_NOTIFIED = 1000       # followers told of one comment
 
@@ -120,18 +122,19 @@ def follow(db, user_id, post, now=None):
     """Start following `post`. FollowError when the person already gets its notifications, already follows
     it, or follows too many. Does not commit."""
     if responsible_id(db, post) == user_id:
-        raise FollowError("You already get notifications for this post.")
+        raise FollowError(tr("You already get notifications for this post."))
     if is_following(db, user_id, post.id):
-        raise FollowError("You already follow this post.")
+        raise FollowError(tr("You already follow this post."))
     if db.execute(_COUNT, {"u": user_id}).scalar() >= MAX_FOLLOWED:
-        raise FollowError(f"You can follow {MAX_FOLLOWED} posts at most. Unfollow one first.")
+        raise FollowError(trn("You can follow %(num)s post at most. Unfollow one first.",
+                              "You can follow %(num)s posts at most. Unfollow one first.", MAX_FOLLOWED))
     db.execute(_INSERT, {"u": user_id, "p": post.id, "t": int(now if now is not None else time.time())})
 
 
 def unfollow(db, user_id, post):
     """Stop following. FollowError when they were not. Does not commit."""
     if not is_following(db, user_id, post.id):
-        raise FollowError("You don't follow this post.")
+        raise FollowError(tr("You don't follow this post."))
     db.execute(_DELETE, {"u": user_id, "p": post.id})
 
 

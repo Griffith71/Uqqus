@@ -3,37 +3,35 @@
 <html{{ html_attrs() }}>
 
 <head>
+{% from "partials/i18n_boot.html" import i18n_boot %}{{ i18n_boot() }}
 
     <meta charset="utf-8">
 {{ font_faces() }}
 {{ theme_color() }}
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="Sign up in under 27 seconds.">
+    <meta name="description" content="{{ _('Sign up in under 27 seconds.') }}">
     <meta name="author" content="">
     <meta property="og:type" content="article" />
-    <meta property="og:title" content="{{ 'SITE_NAME' | app_config }}: The Open-Source Platform for Independent Internet Communities" />
+    <meta property="og:title" content="{{ _('%(site)s: The Open-Source Platform for Independent Internet Communities') }}" />
     <meta property="og:site_name" content="{{ 'SERVER_NAME' | app_config }}" />
     <meta property="og:image" content="{{ '/assets/images/preview-images/ruqqus_og_image.png' | full_link }}" />
     <meta property="og:url" content="https://{{ 'SERVER_NAME' | app_config }}">
-    <meta property="og:description" name="description" content="Sign up now! {{ 'SITE_NAME' | app_config }} is an open-source platform for online communities, free of censorship and moderator abuse by design.">
+    <meta property="og:description" name="description" content="{{ _('Sign up now! %(site)s is an open-source platform for online communities, free of censorship and moderator abuse by design.') }}">
     <meta property="og:author" name="author" content="@{{ 'SITE_NAME' | app_config }}" />
     <meta property="og:site_name" content="{{ 'SERVER_NAME' | app_config }}" />
 
     <meta name="twitter:card" content="summary_large_image"/>
     <meta name="twitter:site" content="@{{ 'SITE_NAME' | app_config }}">
-    <meta name="twitter:title" content="{{ 'SITE_NAME' | app_config }}: The Open-Source Platform for Independent Internet Communities" />
+    <meta name="twitter:title" content="{{ _('%(site)s: The Open-Source Platform for Independent Internet Communities') }}" />
     <meta name="twitter:creator" content="@{{ 'SITE_NAME' | app_config }}">
-    <meta name="twitter:description" content="Sign up now! {{ 'SITE_NAME' | app_config }} is an open-source platform for online communities, free of censorship and moderator abuse by design." />
+    <meta name="twitter:description" content="{{ _('Sign up now! %(site)s is an open-source platform for online communities, free of censorship and moderator abuse by design.') }}" />
     <meta name="twitter:image" content="{{ '/assets/images/preview-images/ruqqus_og_image.png' | full_link }}" />
     <meta name="twitter:url" content="https://{{ 'SERVER_NAME' | app_config }}" />
 
-    <title>Sign up - {{ 'SITE_NAME' | app_config }}</title>
+    <title>{{ _("Sign up - %(site)s") }}</title>
 
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,600&display=swap" rel="stylesheet">
 
-    <!-- Bootstrap core CSS -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
-    integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"> <!-- the icons, as default.html loads them -->
@@ -50,19 +48,19 @@
     <nav class="navbar navbar-expand-lg navbar-dark bg-transparent fixed-top border-0">
         <div class="container-fluid">
             <button class="navbar-toggler d-none" type="button" data-toggle="collapse" data-target="#navbarResponsive"
-            aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+            aria-controls="navbarResponsive" aria-expanded="false" aria-label="{{ _('Toggle navigation') }}">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarResponsive">
             <ul class="navbar-nav ml-auto">
                 <li class="nav-item">
-                    <a class="nav-link" href="/help/about">About</a>
+                    <a class="nav-link" href="/help/about">{{ _('About') }}</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/help/terms">Terms</a>
+                    <a class="nav-link" href="/help/terms">{{ _('Terms') }}</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/help/contact">Contact</a>
+                    <a class="nav-link" href="/help/contact">{{ _('Contact') }}</a>
                 </li>
             </ul>
         </div>
@@ -86,8 +84,8 @@
 
                     <div id="register-form" class="">
 
-                       <h1 class="h2">Create your account.</h1>
-                       <p class="text-muted mb-md-2">Usernames aplenty. No email address required :)</p>
+                       <h1 class="h2">{{ _('Create your account.') }}</h1>
+                       <p class="text-muted mb-md-2">{{ _('Usernames aplenty. No email address required :)') }}</p>
 
                        <form action="/signup" method="post" class="mt-md-3" id="signup" data-chat-prekey>
 
@@ -98,30 +96,28 @@
 
                             {% if redirect %}<input type="hidden" name="redirect" value="{{ redirect }}">{% endif %}
 
-                            <label for="username-register" class="mt-3">Username</label>
+                            <label for="username-register" class="mt-3">{{ _('Username') }}</label>
 
                             <input class="form-control" id="username-register"
                             aria-describedby="usernameHelpRegister" type="text" name="username" pattern="[a-zA-Z0-9_]{3,25}" required="">
                             <small id="usernameHelpRegister"></small>
 
-                            <label for="email-register" class="mt-3">Email Address</label>
+                            <label for="email-register" class="mt-3">{{ _('Email Address') }}</label>
 
-                            <small class="d-inline-block text-muted ml-1">(optional)</small>
+                            <small class="d-inline-block text-muted ml-1">{{ _('(optional)') }}</small>
 
                             <input class="form-control" id="email-register"
                             aria-describedby="emailHelpRegister" type="text" name="email">
 
-                            <label for="password-register" class="mt-3">Password</label>
+                            <label for="password-register" class="mt-3">{{ _('Password') }}</label>
 
                             <input class="form-control" id="password-register"
                             aria-describedby="passwordHelpReigster" type="password" name="password" required="">
-                            <small id="passwordHelpRegister" class="form-text font-weight-bold text-muted d-none mt-1">Minimum of 8
-                                characters
-                            required.</small>
-                            <small id="passwordHelpSuccess" class="form-text font-weight-bold text-success d-none mt-1">Your password meets the requirements.
+                            <small id="passwordHelpRegister" class="form-text font-weight-bold text-muted d-none mt-1">{{ _('Minimum of 8 characters required.') }}</small>
+                            <small id="passwordHelpSuccess" class="form-text font-weight-bold text-success d-none mt-1">{{ _('Your password meets the requirements.') }}
                             </small>
 
-                            <label for="password_confirm" class="mt-3">Confirm Password</label>
+                            <label for="password_confirm" class="mt-3">{{ _('Confirm Password') }}</label>
 
                             <input class="form-control" id="password_confirm"
                             aria-describedby="passwordConfirmHelp" type="password" name="password_confirm"
@@ -129,26 +125,25 @@
 
                             {# how scores read (users.score_display, helpers/jinja2.py score_mode); changeable in Settings > Content #}
                             <fieldset class="mt-4 score-display-choice">
-                                <legend class="score-display-legend">How should scores read?</legend>
+                                <legend class="score-display-legend">{{ _('How should scores read?') }}</legend>
                                 <div class="custom-control custom-radio">
                                     <input type="radio" class="custom-control-input" id="score-display-0" name="score_display" value="0" checked>
-                                    <label class="custom-control-label score-display-option" for="score-display-0">Upvotes, coloured by how many were up
-                                        <span class="d-block text-muted text-small">e.g. <span class="font-weight-bold vote-ratio-9">128</span>: blue when most votes are up, red when most are down</span></label>
+                                    <label class="custom-control-label score-display-option" for="score-display-0">{{ _('Upvotes, coloured by how many were up') }}
+                                        <span class="d-block text-muted text-small">{{ _('e.g. <span class="font-weight-bold vote-ratio-9">%(score)s</span>: blue when most votes are up, red when most are down', score=128) }}</span></label>
                                 </div>
                                 <div class="custom-control custom-radio mt-2">
                                     <input type="radio" class="custom-control-input" id="score-display-1" name="score_display" value="1">
-                                    <label class="custom-control-label score-display-option" for="score-display-1">Upvotes minus downvotes
-                                        <span class="d-block text-muted text-small">e.g. <span class="font-weight-bold">120</span> for 128 up and 8 down</span></label>
+                                    <label class="custom-control-label score-display-option" for="score-display-1">{{ _('Upvotes minus downvotes') }}
+                                        <span class="d-block text-muted text-small">{{ _('e.g. <span class="font-weight-bold">%(score)s</span> for %(up)s up and %(down)s down', score=120, up=128, down=8) }}</span></label>
                                 </div>
-                                <small class="form-text text-muted">You can change this any time in Settings.</small>
+                                <small class="form-text text-muted">{{ _('You can change this any time in Settings.') }}</small>
                             </fieldset>
 
-                            <p class="text-small text-muted mt-3 mb-0 signup-lists-note">Anyone can see who you follow, who follows you and your Circle's subscribers. You can change who sees each list in Settings.</p>
+                            <p class="text-small text-muted mt-3 mb-0 signup-lists-note">{{ _("Anyone can see who you follow, who follows you and your Circle's subscribers. You can change who sees each list in Settings.") }}</p>
 
                             <div class="custom-control custom-checkbox mt-4">
                                 <input type="checkbox" class="custom-control-input" id="termsCheck" required>
-                                <label class="custom-control-label terms" for="termsCheck">I accept the <a
-                                    href="/about/terms" target="_blank">terms and conditions</a></label>
+                                <label class="custom-control-label terms" for="termsCheck">{{ _('I accept the <a href="%(url)s" target="_blank">terms and conditions</a>', url="/about/terms") }}</label>
                             </div>
 
                             {# the signup guard (helpers/captcha.py): hCaptcha or Turnstile, whichever CAPTCHA_PROVIDER names #}
@@ -166,7 +161,7 @@
                             <button class="btn btn-primary login w-100 mt-3" id="register_button">{{ pgettext("button", "Register") }}</button>
 
                             <div class="text-center text-muted text-small mt-2 mb-0">
-                                    Already have an account? <a href="/login{{ '?redirect='+redirect if redirect else '' }}" class="font-weight-bold toggle-login">Log in</a>
+                                    {{ _('Already have an account? <a href="%(url)s" class="font-weight-bold toggle-login">Log in</a>', url="/login" ~ ('?redirect='+redirect if redirect else '')) }}
                             </div>
 
                         </form>
@@ -189,7 +184,7 @@
                     {{ i.text }}
                 </h6>
 
-                <img class="splash-img" src="{{ i.path }}"></img>
+                <img class="splash-img" src="{{ i.path }}" alt="">
             </div>
 
         </div>

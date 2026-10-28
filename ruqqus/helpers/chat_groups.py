@@ -21,6 +21,7 @@ through a route and these rules; members can only write, react, edit and delete 
 """
 
 from ruqqus.helpers import display_names
+from ruqqus.helpers.i18n_runtime import tr, trn
 
 MAX_MEMBERS = 32
 MAX_NAME_LEN = 50
@@ -32,8 +33,6 @@ ROLES = (OWNER, ADMIN, MEMBER)
 INVITED, JOINED = "invited", "joined"
 INBOX, REQUEST = "inbox", "request"
 
-CANT_ADD = "@{name} can't be added to a group."
-
 
 class Refused(ValueError):
     """Shown to the member as it is."""
@@ -42,11 +41,12 @@ class Refused(ValueError):
 def clean_name(value):
     """The name to store ("" for none)."""
     try:
-        name = display_names.clean(value)
+        name = display_names.clean(value, display_names.GROUP)
     except display_names.Refused as e:
-        raise Refused(str(e).replace("A display name", "A group name"))
+        raise Refused(str(e))
     if len(name) > MAX_NAME_LEN:
-        raise Refused(f"A group name can be at most {MAX_NAME_LEN} characters.")
+        raise Refused(trn("A group name can be at most %(num)s character.", "A group name can be at most %(num)s characters.",
+                          MAX_NAME_LEN))
     return name
 
 
@@ -58,44 +58,46 @@ def add_refusal(adder_id, adder_role, target, blocked_either_way, already_in, si
     """None when `target` may be added, otherwise the message. `size` counts invited and joined members."""
     name = typed_name or (target.username if target is not None else "")
     if not may_manage(adder_role):
-        return "Only the group's owner and admins can add people."
+        return tr("Only the group's owner and admins can add people.")
     if target is None:
-        return f"No account called @{name}."
+        return tr("No account called @%(name)s.", name=name)
     if target.id == adder_id:
-        return "You're already in this group."
+        return tr("You're already in this group.")
     if already_in:
-        return f"@{target.username} is already in this group."
+        return tr("@%(name)s is already in this group.", name=target.username)
     if size >= MAX_MEMBERS:
-        return f"A group can have at most {MAX_MEMBERS} people."
+        return trn("A group can have at most %(num)s person.", "A group can have at most %(num)s people.", MAX_MEMBERS)
     if getattr(target, "is_bot", False) or getattr(target, "is_deleted", False) \
             or getattr(target, "is_suspended", False) or blocked_either_way:
-        return CANT_ADD.format(name=target.username)
+        # one message for every reason, so a block is never named
+        return tr("@%(name)s can't be added to a group.", name=target.username)
     return None
 
 
 def remove_refusal(actor_id, actor_role, target_id, target_role):
     if target_id == actor_id:
-        return "Use Leave to leave the group."
+        # Translators: "Leave" is the name of the group's button.
+        return tr("Use Leave to leave the group.")
     if target_role is None:
-        return "They aren't in this group."
+        return tr("They aren't in this group.")
     if actor_role == OWNER:
         return None
     if actor_role == ADMIN and target_role == MEMBER:
         return None
     if actor_role == ADMIN:
-        return "Only the owner can remove an admin."
-    return "Only the group's owner and admins can remove people."
+        return tr("Only the owner can remove an admin.")
+    return tr("Only the group's owner and admins can remove people.")
 
 
 def role_refusal(actor_role, target_id, target_role, new_role, actor_id):
     if actor_role != OWNER:
-        return "Only the owner can choose the admins."
+        return tr("Only the owner can choose the admins.")
     if target_id == actor_id or target_role == OWNER:
-        return "The owner's role can't be changed."
+        return tr("The owner's role can't be changed.")
     if target_role is None:
-        return "They aren't in this group."
+        return tr("They aren't in this group.")
     if new_role not in (ADMIN, MEMBER):
-        return "That isn't a role."
+        return tr("That isn't a role.")
     return None
 
 
@@ -120,9 +122,10 @@ def label(name, name_hidden, member_names, total):
         return name
     names = [n for n in member_names if n][:3]
     if not names:
-        return "Group chat"
+        return tr("Group chat")
     others = total - len(names)
     text = ", ".join(names)
     if others > 0:
-        text += f" and {others} other{'s' if others != 1 else ''}"
+        # Translators: a group chat with no name, called by its first members: "Ann, Bob, Cat and 2 others".
+        return trn("%(names)s and %(num)s other", "%(names)s and %(num)s others", others, names=text)
     return text

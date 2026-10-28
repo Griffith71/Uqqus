@@ -1,3 +1,4 @@
+{% from "partials/language_switcher.html" import language_switcher %}
 	<div class="sticky-63 d-none d-md-block">
         <ul class="list-inline text-small mb-0">
           <li class="list-inline-item"><a href="/help/about" class="text-gray-500">{{ _("About") }}</a></li>
@@ -17,6 +18,7 @@
         </ul>
 
 
-        <div class="text-muted text-small-extra mt-1">v. 2.38.0, © 2021 {{ 'COMPANY_NAME' | app_config }}</div>
+        {{ language_switcher() }}
+        <div class="text-muted text-small-extra mt-1">{# Translators: "v." is short for version; the name is the company that runs the site #}{{ _("v. %(version)s, © 2021 %(company)s", version="2.38.0", company='COMPANY_NAME' | app_config) }}</div>
 
       </div>

@@ -2,31 +2,33 @@
   <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title h4" id="aboutAccountModalLabel">About @{{ u.username }}</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <h5 class="modal-title h4" id="aboutAccountModalLabel">{{ _("About @%(name)s", name=u.username) }}</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="{{ _('Close') }}">
           <span aria-hidden="true"><i class="fas fa-times"></i></span>
         </button>
       </div>
       <div class="modal-body">
 
         <div class="mb-3">
-          <div class="font-weight-bold text-small text-uppercase text-muted mb-1" style="letter-spacing: 0.025rem;">Date Joined</div>
-          <div data-toggle="tooltip" data-placement="bottom" title="{{ u.created_datetime }}">{{ u.created_date }}</div>
+          <div class="font-weight-bold text-small text-uppercase text-muted mb-1" style="letter-spacing: 0.025rem;">{{ _("Date Joined") }}</div>
+          <div data-toggle="tooltip" data-placement="bottom" title="{{ datetime_text(u.created_utc, '%d %B %Y at %H:%M:%S') }}">{{ date_text(u.created_utc, '%d %B %Y') }}</div>
         </div>
 
         <div class="mb-3">
-          <div class="font-weight-bold text-small text-uppercase text-muted mb-1" style="letter-spacing: 0.025rem;">Account Based In</div>
+          <div class="font-weight-bold text-small text-uppercase text-muted mb-1" style="letter-spacing: 0.025rem;">{{ _("Account Based In") }}</div>
           <div>
-            {{ u.display_region_name }}
+            {# the region's own name, or the site's "Unknown" (User.display_region_name) #}
+            {{ msg_text(u.display_region_name) }}
             {% if u.region_suspicion_flag %}
             <i class="fas fa-exclamation-triangle text-warning ml-1" data-toggle="tooltip" data-placement="bottom"
-               title="We can't confirm this account's region with confidence - it may use a VPN or travel frequently."></i>
+               title="{{ _("We can't confirm this account's region with confidence - it may use a VPN or travel frequently.") }}"></i>
             {% endif %}
           </div>
           {% set region_countries = u.display_region | region_country_list %}
           {% if region_countries %}
           <a class="text-muted text-small d-inline-block mt-1" data-toggle="collapse" href="#aboutAccountCountries" role="button" aria-expanded="false" aria-controls="aboutAccountCountries">
-            {{ region_countries | length }} possible territories <i class="fas fa-caret-down"></i>
+            {# Translators: a link opening the list of countries an account's region may be; the English says "territories" for any number #}
+            {{ ngettext("%(num)s possible territories", "%(num)s possible territories", region_countries | length) }} <i class="fas fa-caret-down"></i>
           </a>
           <div class="collapse" id="aboutAccountCountries">
             <ul class="list-unstyled text-small text-muted mb-0 mt-1">
@@ -40,8 +42,8 @@
 
         {% if u.premium_first_purchased_utc %}
         <div class="mb-3">
-          <div class="font-weight-bold text-small text-uppercase text-muted mb-1" style="letter-spacing: 0.025rem;">Date Got Premium</div>
-          <div>{{ u.premium_first_purchased_date }}</div>
+          <div class="font-weight-bold text-small text-uppercase text-muted mb-1" style="letter-spacing: 0.025rem;">{{ _("Date Got Premium") }}</div>
+          <div>{{ date_text(u.premium_first_purchased_utc, '%d %B %Y') }}</div>
         </div>
         {% endif %}
 

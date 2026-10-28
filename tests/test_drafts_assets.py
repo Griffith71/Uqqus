@@ -44,7 +44,7 @@ def test_the_scheduler_submits_through_the_real_route():
     src = read("scripts", "publish_scheduled.py")
     assert '"/api/vue/submit"' in src           # session auth, JSON answers, same rules as the Post button
     assert "FOR UPDATE SKIP LOCKED" in src      # more than one scheduler is safe
-    assert "retry_at" in src and "failure_notice" in src
+    assert "retry_at" in src and "pd.failure_message(draft.title, reason)" in src
 
 
 def test_every_element_the_script_uses_exists_in_the_composer():

@@ -3,101 +3,101 @@
 
 
 {% block content %}
-<h1 class="article-title">User titles</h1>
+<h1 class="article-title">{{ _("User titles") }}</h1>
 
-<p>{{ 'SITE_NAME' | app_config }} titles are text-based, cosmetic achievements that can be displayed next to your username across the {{ 'SITE_NAME' | app_config }} platform. Titles may be earned through various activities on {{ 'SITE_NAME' | app_config }}: earning rep, inviting friends, helping staff, and more.</p>
+<p>{{ _("%(site)s titles are text-based, cosmetic achievements that can be displayed next to your username across the %(site)s platform. Titles may be earned through various activities on %(site)s: earning rep, inviting friends, helping staff, and more.") }}</p>
 
 <div class="mb-5">
 
-	<h3 class="h5">Article guide:</h3>
+	<h3 class="h5">{{ _("Article guide:") }}</h3>
 
 	<ul>
-		<li><a href="#UnlockableTitles">Unlockable titles</a></li>
-		<li><a href="#SupporterTitles">Supporter titles</a></li>
-		<li><a href="#GrantedTitles">Granted titles</a></li>
-		<li><a href="#PoliticalCompass">Political Compass titles</a></li>
-		<li><a href="#UnobtainableTitles">Unobtainable titles</a></li>
+		<li><a href="#UnlockableTitles">{{ _("Unlockable titles") }}</a></li>
+		<li><a href="#SupporterTitles">{{ _("Supporter titles") }}</a></li>
+		<li><a href="#GrantedTitles">{{ _("Granted titles") }}</a></li>
+		<li><a href="#PoliticalCompass">{{ _("Political Compass titles") }}</a></li>
+		<li><a href="#UnobtainableTitles">{{ _("Unobtainable titles") }}</a></li>
 	</ul>
 
 </div>
 
-<h2 class="h3" id="UnlockableTitles">Unlockable titles</h2>
+<h2 class="h3" id="UnlockableTitles">{{ _("Unlockable titles") }}</h2>
 
-<p>These titles automatically unlock through different kinds of activity on {{ 'SITE_NAME' | app_config }}.</p>
+<p>{{ _("These titles automatically unlock through different kinds of activity on %(site)s.") }}</p>
 
 <table class="table table-striped mb-5">
 	<thead class="bg-primary text-white">
 		<tr>
-			<th scope="col">Title</th>
-			<th scope="col">Description</th>
+			<th scope="col">{{ pgettext("table column", "Title") }}</th>
+			<th scope="col">{{ pgettext("table column", "Description") }}</th>
 		</tr>
 	</thead>
 	<tbody>
 		{% for t in titles if t.kind==1 %}
 		<tr>
-			<td>{% if v %}<a href="{{ v.permalink }}" class="user-name">{{ v.username }}</a>{% else %}[name]{% endif %}{{ t.rendered | safe }}</td>
+			<td>{% if v %}<a href="{{ v.permalink }}" class="user-name">{{ v.username }}</a>{% else %}{# Translators: stands for the reader's username in front of each title when they are not signed in #}{{ _("[name]") }}{% endif %}{{ t.rendered | safe }}</td>
 			<td>{{ t.requirement_string }}</td>
 		</tr>
 		{% endfor %}
 	</tbody>
 </table>
 
-<h2 class="h3" id="SupporterTitles">Supporter titles</h2>
+<h2 class="h3" id="SupporterTitles">{{ _("Supporter titles") }}</h2>
 
-<p>These titles can be obtained by financially supporting {{ 'SITE_NAME' | app_config }}.</p>
+<p>{{ _("These titles can be obtained by financially supporting %(site)s.") }}</p>
 
 <table class="table table-striped mb-5">
 	<thead class="bg-primary text-white">
 		<tr>
-			<th scope="col">Title</th>
-			<th scope="col">Description</th>
+			<th scope="col">{{ pgettext("table column", "Title") }}</th>
+			<th scope="col">{{ pgettext("table column", "Description") }}</th>
 		</tr>
 	</thead>
 	<tbody>
 		{% for t in titles if t.kind==2 %}
 		<tr>
-			<td>{% if v %}<a href="{{ v.permalink }}" class="user-name">{{ v.username }}</a>{% else %}[name]{% endif %}{{ t.rendered | safe }}</td>
+			<td>{% if v %}<a href="{{ v.permalink }}" class="user-name">{{ v.username }}</a>{% else %}{# Translators: stands for the reader's username in front of each title when they are not signed in #}{{ _("[name]") }}{% endif %}{{ t.rendered | safe }}</td>
 			<td>{{ t.requirement_string }}</td>
 		</tr>
 		{% endfor %}
 	</tbody>
 </table>
-<h2 class="h3" id="GrantedTitles">Granted titles</h2>
+<h2 class="h3" id="GrantedTitles">{{ _("Granted titles") }}</h2>
 
-<p>These titles can be granted by {{ 'SITE_NAME' | app_config }} staff.</p>
+<p>{{ _("These titles can be granted by %(site)s staff.") }}</p>
 
 <table class="table table-striped mb-5">
 	<thead class="bg-primary text-white">
 		<tr>
-			<th scope="col">Title</th>
-			<th scope="col">Description</th>
+			<th scope="col">{{ pgettext("table column", "Title") }}</th>
+			<th scope="col">{{ pgettext("table column", "Description") }}</th>
 		</tr>
 	</thead>
 	<tbody>
 		{% for t in titles if t.kind==3 %}
 		<tr>
-			<td>{% if v %}<a href="{{ v.permalink }}" class="user-name">{{ v.username }}</a>{% else %}[name]{% endif %}{{ t.rendered | safe }}</td>
+			<td>{% if v %}<a href="{{ v.permalink }}" class="user-name">{{ v.username }}</a>{% else %}{# Translators: stands for the reader's username in front of each title when they are not signed in #}{{ _("[name]") }}{% endif %}{{ t.rendered | safe }}</td>
 			<td>{{ t.requirement_string }}</td>
 		</tr>
 		{% endfor %}
 	</tbody>
 </table>
 
-<h2 class="h3" id="PoliticalCompass">Political Compass Titles</h2>
+<h2 class="h3" id="PoliticalCompass">{{ _("Political Compass Titles") }}</h2>
 
-<p>These titles are available for those who wish to indicate their political leanings. There are no requirements to use any of these titles.</p>
+<p>{{ _("These titles are available for those who wish to indicate their political leanings. There are no requirements to use any of these titles.") }}</p>
 
 <table class="table table-striped mb-5">
 	<thead class="bg-primary text-white">
 		<tr>
-			<th scope="col">Title</th>
-			<th scope="col">Description</th>
+			<th scope="col">{{ pgettext("table column", "Title") }}</th>
+			<th scope="col">{{ pgettext("table column", "Description") }}</th>
 		</tr>
 	</thead>
 	<tbody>
 		{% for t in titles if t.kind==5 %}
 		<tr>
-			<td>{% if v %}<a href="{{ v.permalink }}" class="user-name">{{ v.username }}</a>{% else %}[name]{% endif %}{{ t.rendered | safe }}</td>
+			<td>{% if v %}<a href="{{ v.permalink }}" class="user-name">{{ v.username }}</a>{% else %}{# Translators: stands for the reader's username in front of each title when they are not signed in #}{{ _("[name]") }}{% endif %}{{ t.rendered | safe }}</td>
 			<td>{{ t.requirement_string }}</td>
 		</tr>
 		{% endfor %}
@@ -105,21 +105,21 @@
 </table>
 
 
-<h2 class="h3" id="UnobtainableTitles">Unobtainable titles</h2>
+<h2 class="h3" id="UnobtainableTitles">{{ _("Unobtainable titles") }}</h2>
 
-<p>There is no way to acquire these titles if you don't already have them.</p>
+<p>{{ _("There is no way to acquire these titles if you don't already have them.") }}</p>
 
 <table class="table table-striped mb-5">
 	<thead class="bg-primary text-white">
 		<tr>
-			<th scope="col">Title</th>
-			<th scope="col">Description</th>
+			<th scope="col">{{ pgettext("table column", "Title") }}</th>
+			<th scope="col">{{ pgettext("table column", "Description") }}</th>
 		</tr>
 	</thead>
 	<tbody>
 		{% for t in titles if t.kind==4 %}
 		<tr>
-			<td>{% if v %}<a href="{{ v.permalink }}" class="user-name">{{ v.username }}</a>{% else %}[name]{% endif %}{{ t.rendered | safe }}</td>
+			<td>{% if v %}<a href="{{ v.permalink }}" class="user-name">{{ v.username }}</a>{% else %}{# Translators: stands for the reader's username in front of each title when they are not signed in #}{{ _("[name]") }}{% endif %}{{ t.rendered | safe }}</td>
 			<td>{{ t.requirement_string }}</td>
 		</tr>
 		{% endfor %}

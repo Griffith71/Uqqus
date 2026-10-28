@@ -1,6 +1,6 @@
 {% extends "guild/guild_settings.html" %}
 
-{% block pagetitle %}+{{ b.name }} Approved Contributors{% endblock %}
+{% block pagetitle %}{{ _("+%(guild)s Approved Contributors", guild=b.name) }}{% endblock %}
 
 {% block content %}
 
@@ -14,7 +14,7 @@
 			<span>
 				{{ error }}
 			</span>
-			<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+			<button type="button" class="close" data-dismiss="alert" aria-label="{{ _('Close') }}">
 				<span aria-hidden="true"><i class="fas fa-times"></i></span>
 			</button>
 		</div>
@@ -32,11 +32,11 @@
 		<div class="d-md-flex justify-content-between mb-3">
 
 			<div>
-				<h2 class="h5" name="guild_name">Approved contributors for +{{ b.name }}</h2>
-				<p class="text-small text-muted mb-md-0">The following users are approved to forward to +{{ b.name }}.</p>
+				<h2 class="h5" name="guild_name">{{ _("Approved contributors for +%(guild)s", guild=b.name) }}</h2>
+				<p class="text-small text-muted mb-md-0">{{ _("The following users are approved to forward to +%(guild)s.", guild=b.name) }}</p>
 			</div>
 			<div class="mt-auto">
-				<button class="btn btn-primary" data-toggle="modal" data-target="#guildmasterApproveModal"><i class="fas fa-plus mr-2"></i>Add user</button>
+				<button class="btn btn-primary" data-toggle="modal" data-target="#guildmasterApproveModal"><i class="fas fa-plus mr-2"></i>{{ _("Add user") }}</button>
 			</div>
 		</div>
 
@@ -52,9 +52,9 @@
 		<table class="table table-hover rounded mb-0">
 			<thead class="thead-dark">
 				<tr>
-					<th scope="col">User</th>
-					<th scope="col">Approved by</th>
-					<th scope="col">Approved since</th>
+					<th scope="col">{{ _("User") }}</th>
+					<th scope="col">{{ _("Approved by") }}</th>
+					<th scope="col">{{ _("Approved since") }}</th>
 					<th scope="col"></th>
 				</tr>
 			</thead>
@@ -69,47 +69,47 @@
 							<a href="{{ contrib.approving_mod.permalink }}">
 								<img alt="" src="{{ contrib.approving_mod.profile_url }}" class="profile-pic-20 align-top mr-2">@{{ contrib.approving_mod.username }}</a>
 						</td>
-						<td>{{ contrib.created_date }}</td>
+						<td>{{ date_text(contrib.created_utc, "%d %B %Y") }}</td>
 
 						<td>
 							<div class="dropdown float-right dropdown-actions">
-								<a href="#" role="button" id="dropdownMoreLink" aria-label="More options" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="line-height: 0;">
+								<a href="#" role="button" id="dropdownMoreLink" aria-label="{{ _('More options') }}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="line-height: 0;">
 									<i class="fas fa-ellipsis-h text-muted"></i>
 								</a>
 								<div class="dropdown-menu border-0 shadow dropdown-menu-right mt-2" aria-labelledby="dropdownMoreLink" x-placement="bottom-end" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(21px, 18px, 0px);">
-									<a class="dropdown-item" href="javascript:void(0)" onclick="post('/mod/unapprove/{{ b.base36id }}?username={{ contrib.user.username }}&formkey={{ v.formkey }}', callback=function(){window.location.reload(true)})"><i class="fas fa-check"></i>Unapprove</a>
+									<a class="dropdown-item" href="javascript:void(0)" onclick="post('/mod/unapprove/{{ b.base36id }}?username={{ contrib.user.username }}&formkey={{ v.formkey }}', callback=function(){window.location.reload(true)})"><i class="fas fa-check"></i>{{ _("Unapprove") }}</a>
 								</div>
 							</div>
 						</td>
 					</tr>
 					{% else %}
-					<td>There are no approved users</td>
+					<td>{{ _("There are no approved users") }}</td>
 					{% endfor %}
 				</tbody>
 			</table>
 		</div>
-		<nav aria-label="Page navigation" class="mb-5">
+		<nav aria-label="{{ _('Page navigation') }}" class="mb-5">
 		  <ul class="pagination pagination-sm mb-0">
 		    {% if page>1 %}
 		    <li class="page-item">
-		      <small><a class="page-link" href="?page={{ page-1 }}" tabindex="-1">Prev</a></small>
+		      <small><a class="page-link" href="?page={{ page-1 }}" tabindex="-1">{{ _("Prev") }}</a></small>
 		    </li>
 		    {% else %}
-		    <li class="page-item disabled"><span class="page-link">Prev</span></li>
+		    <li class="page-item disabled"><span class="page-link">{{ _("Prev") }}</span></li>
 		    {% endif %}
 		    {% if next_exists %}
 		    <li class="page-item">
-		      <small><a class="page-link" href="?page={{ page+1 }}">Next</a></small>
+		      <small><a class="page-link" href="?page={{ page+1 }}" rel="next">{{ _("Next") }}</a></small>
 		    </li>
 		    {% else %}
-		    <li class="page-item disabled"><span class="page-link">Next</span></li>
+		    <li class="page-item disabled"><span class="page-link">{{ _("Next") }}</span></li>
 		    {% endif %}
 		  </ul>
 		</nav>
 		{% else %}
 		<div class="text-center border-md rounded py-7">
 			<i class="fas fa-ghost text-gray-500 mb-3" style="font-size: 3.5rem;"></i>
-			<p class="font-weight-bold text-gray-500 mb-0">No users approved to forward to +{{ b.name }}</p>
+			<p class="font-weight-bold text-gray-500 mb-0">{{ _("No users approved to forward to +%(guild)s", guild=b.name) }}</p>
 		</div>
 		{% endif %}
 
@@ -126,19 +126,19 @@
 		<form action="/mod/approve/{{ b.name }}" id="approve-form" method="post" onsubmit="return false;">
 			<div class="modal-content">
 				<div class="modal-header">
-					<h5 class="modal-title">Approve user for +{{ b.name }}</h5>
-					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<h5 class="modal-title">{{ _("Approve user for +%(guild)s", guild=b.name) }}</h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="{{ _('Close') }}">
 						<span aria-hidden="true"><i class="fas fa-times"></i></span>
 					</button>
 				</div>
 				<div class="modal-body">
-					<p>Users approved from a guild will receive a notification shortly after you approve them.</p>
+					<p>{{ _("Users approved from a guild will receive a notification shortly after you approve them.") }}</p>
 					<input type="hidden" name="formkey" value="{{ v.formkey }}">
-					<input type="text" name="username" placeholder="enter username" id="approve-username" class="form-control" maxlength=25 required>
+					<input type="text" name="username" placeholder="{{ _('enter username') }}" id="approve-username" class="form-control" maxlength=25 required>
 				</div>
 				<div class="modal-footer">
-					<button type="button" class="btn btn-link text-muted" data-dismiss="modal">Cancel</button>
-					<button type="button" class="btn btn-primary" id="approveUserButton" onclick="approve_from_guild('{{ b.name }}')">Approve user</button>
+					<button type="button" class="btn btn-link text-muted" data-dismiss="modal">{{ _("Cancel") }}</button>
+					<button type="button" class="btn btn-primary" id="approveUserButton" onclick="approve_from_guild('{{ b.name }}')">{{ _("Approve user") }}</button>
 				</div>
 			</div>
 		</form>
@@ -150,7 +150,7 @@
 
 <div class="toast error" id="toast-approve-error" role="alert" aria-live="assertive" aria-atomic="true" data-animation="true" data-autohide="true" data-delay="5000">
 	<div class="toast-body text-center">
-		<i class="fas fa-exclamation-circle text-danger mr-2"></i><span id="toast-error-message">Error. Please try again.</span>
+		<i class="fas fa-exclamation-circle text-danger mr-2"></i><span id="toast-error-message">{{ _("Error. Please try again.") }}</span>
 	</div>
 </div>
 

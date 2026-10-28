@@ -14,6 +14,7 @@ from ruqqus.routes.front import _resolve_active_filters
 from ruqqus.__main__ import app
 
 SORTS = ("new", "top")
+YOUR_FILTERS = "your filters"          # a marker for _title, never shown as it is
 
 
 def _viewer_filters(v):
@@ -29,7 +30,7 @@ def _place(scopes):
     if scopes == [trending_store.SITE]:
         return None
     if len(scopes) > 1:
-        return "your filters"
+        return YOUR_FILTERS
     kind, _, code = scopes[0].partition(":")
     if kind == "lang":
         return language_name(code, current_locale()) or language_label(code) or code
@@ -39,8 +40,11 @@ def _place(scopes):
 
 def _title(place):
     if place is None:
-        return "Trending"
-    return f"Trending for {place}" if place == "your filters" else f"Trending in {place}"
+        return tr("Trending")
+    if place == YOUR_FILTERS:
+        return tr("Trending for your filters")
+    # Translators: %(place)s is a region or a language, as in "Trending in Spanish"
+    return tr("Trending in %(place)s", place=place)
 
 
 def _current(v):

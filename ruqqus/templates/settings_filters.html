@@ -1,6 +1,6 @@
 {% extends "settings.html" %}
 
-{% block pagetitle %}Profile Settings - {{ 'SITE_NAME' | app_config }}{% endblock %}
+{% block pagetitle %}{{ _("Profile Settings - %(site)s") }}{% endblock %}
 
 {% block content %}
 
@@ -11,32 +11,32 @@
 
     <div class="settings">
 
-          <h2 class="h5">Content Filters</h2>
+          <h2 class="h5">{{ _("Content Filters") }}</h2>
 
             <div class="settings-section rounded">
 
               <div class="d-lg-flex border-bottom">
 
                 <div class="title w-lg-25">
-                  <label for="filterlevel">Word filter</label>
+                  <label for="filterlevel">{{ _("Word filter") }}</label>
                 </div>
 
                 <div class="body w-lg-100">
 
                   {% set level = 1 if v.filter_level is none else v.filter_level %}
                   <select class="form-control" id="filterlevel" data-current="{{ level }}" onchange="filter_level_changed()">
-                    <option value="0"{% if level == 0 %} selected{% endif %}>Off - show everything</option>
-                    <option value="1"{% if level == 1 %} selected{% endif %}>Standard - hide extremely offensive language</option>
-                    <option value="2"{% if level == 2 %} selected{% endif %}>Child - also hide profanity and sensitive content</option>
+                    <option value="0"{% if level == 0 %} selected{% endif %}>{{ _("Off - show everything") }}</option>
+                    <option value="1"{% if level == 1 %} selected{% endif %}>{{ _("Standard - hide extremely offensive language") }}</option>
+                    <option value="2"{% if level == 2 %} selected{% endif %}>{{ _("Child - also hide profanity and sensitive content") }}</option>
                   </select>
 
                   <div id="filterlevel-password-row" class="mt-2 d-none">
-                    <input type="password" class="form-control" id="filterlevel-password" autocomplete="current-password" placeholder="Account password (needed to turn the Child filter down)">
+                    <input type="password" class="form-control" id="filterlevel-password" autocomplete="current-password" placeholder="{{ _('Account password (needed to turn the Child filter down)') }}">
                   </div>
 
-                  <button type="button" class="btn btn-primary mt-2 d-none" id="filterlevel-save" onclick="save_filter_level()">Save word filter</button>
+                  <button type="button" class="btn btn-primary mt-2 d-none" id="filterlevel-save" onclick="save_filter_level()">{{ _("Save word filter") }}</button>
 
-                  <span class="d-block mt-2 text-small-extra text-muted">Posts and comments that contain filtered words are hidden from you entirely - they are not removed for anyone else. Content from a user or guild whose name contains a filtered word is hidden too. Your own posts and comments are always shown to you. Turning the Child filter down again needs your account password.</span>
+                  <span class="d-block mt-2 text-small-extra text-muted">{{ _("Posts and comments that contain filtered words are hidden from you entirely - they are not removed for anyone else. Content from a user or guild whose name contains a filtered word is hidden too. Your own posts and comments are always shown to you. Turning the Child filter down again needs your account password.") }}</span>
 
                 </div>
 
@@ -45,7 +45,7 @@
               <div class="d-lg-flex border-bottom">
 
                 <div class="title w-lg-25">
-                  <label for="hidebot">Hide bot content</label>
+                  <label for="hidebot">{{ _("Hide bot content") }}</label>
                 </div>
 
                 <div class="body w-lg-100">
@@ -55,7 +55,7 @@
                     <label class="custom-control-label" for="hidebot"></label>
                   </div>
 
-                  <span class="text-small-extra text-muted">Hide posts or collapse comments that are made by bots.</span>
+                  <span class="text-small-extra text-muted">{{ _("Hide posts or collapse comments that are made by bots.") }}</span>
 
                 </div>
 
@@ -64,21 +64,21 @@
               <div class="d-lg-flex">
 
                 <div class="title w-lg-25">
-                  <label for="filters-text">Custom Filters</label>
+                  <label for="filters-text">{{ _("Custom Filters") }}</label>
                 </div>
 
                 <div class="body w-lg-100">
                   <form id="custom-filter" action="/settings/profile" method="post">
                     <input type="hidden" name="formkey" value="{{ v.formkey }}">
-                      <small>Hides matching content from your feeds, and collapses matching comments.</small>
+                      <small>{{ _("Hides matching content from your feeds, and collapses matching comments.") }}</small>
                     <div class="input-group mb-2">
-                      <textarea class="form-control rounded" id="filters-text" aria-label="With textarea"
-                      placeholder="Add your own custom content filters."
+                      <textarea class="form-control rounded" id="filters-text" aria-label="{{ _('With textarea') }}"
+                      placeholder="{{ _('Add your own custom content filters.') }}"
                       rows="3" name="filters" form="custom-filter" maxlength="1000">{{ v.custom_filter_list }}</textarea>
                     </div>
                     <div class="d-flex">
-                      <small>Use a new line for each filter entry. Limit of 1000 characters.</small>
-                      <input class="btn btn-primary ml-auto" id="bioSave" type="submit" value="Save Changes">
+                      <small>{{ _("Use a new line for each filter entry. Limit of 1000 characters.") }}</small>
+                      <input class="btn btn-primary ml-auto" id="bioSave" type="submit" value="{{ _('Save Changes') }}">
                     </div>
                   </form>
 
@@ -90,7 +90,7 @@
 
             </div>
 
-          <h2 class="h5 mt-5" id="sensitive">Sensitive content</h2>
+          <h2 class="h5 mt-5" id="sensitive">{{ _("Sensitive content") }}</h2>
 
             {# helpers/sensitive.py: All and For You leave sensitive content out unless you choose to see it #}
             <div class="settings-section rounded">
@@ -98,7 +98,7 @@
               <div class="d-lg-flex border-bottom">
 
                 <div class="title w-lg-25">
-                  <label for="all-shows-sensitive">Show it in All and For You</label>
+                  <label for="all-shows-sensitive">{{ _("Show it in All and For You") }}</label>
                 </div>
 
                 <div class="body w-lg-100">
@@ -109,7 +109,7 @@
                     <label class="custom-control-label" for="all-shows-sensitive"></label>
                   </div>
 
-                  <span class="text-small-extra text-muted">Sensitive posts, guilds and accounts deal with upsetting topics, such as grief or addiction recovery. They are not against the rules, but All and For You leave them out unless you turn this on. You can always open a sensitive guild or profile, search for it or follow it.{% if child %} The Child word filter hides sensitive content everywhere, so this is off.{% endif %}</span>
+                  <span class="text-small-extra text-muted">{{ _("Sensitive posts, guilds and accounts deal with upsetting topics, such as grief or addiction recovery. They are not against the rules, but All and For You leave them out unless you turn this on. You can always open a sensitive guild or profile, search for it or follow it.") }}{% if child %} {{ _("The Child word filter hides sensitive content everywhere, so this is off.") }}{% endif %}</span>
 
                 </div>
 
@@ -118,7 +118,7 @@
               <div class="d-lg-flex">
 
                 <div class="title w-lg-25">
-                  <label for="sensitive-account">My account is sensitive</label>
+                  <label for="sensitive-account">{{ _("My account is sensitive") }}</label>
                 </div>
 
                 <div class="body w-lg-100">
@@ -128,7 +128,7 @@
                     <label class="custom-control-label" for="sensitive-account"></label>
                   </div>
 
-                  <span class="text-small-extra text-muted">{% if v.sensitive_forced %}An admin marked your account sensitive, so only an admin can change this. {% endif %}Turn on if what you post is often upsetting. Your profile shows a Sensitive content badge, your new posts are blurred, and your posts are left out of All and For You for anyone who hasn't chosen to see sensitive content.</span>
+                  <span class="text-small-extra text-muted">{% if v.sensitive_forced %}{{ _("An admin marked your account sensitive, so only an admin can change this.") }} {% endif %}{{ _("Turn on if what you post is often upsetting. Your profile shows a Sensitive content badge, your new posts are blurred, and your posts are left out of All and For You for anyone who hasn't chosen to see sensitive content.") }}</span>
 
                 </div>
 
@@ -136,7 +136,7 @@
 
             </div>
 
-          <h2 class="h5 mt-5" id="scores">Scores</h2>
+          <h2 class="h5 mt-5" id="all-feed">{{ pgettext("feed", "All") }}</h2>
 
             <div class="settings-section rounded">
 
@@ -257,11 +257,11 @@
 
                   {# users.score_display (helpers/jinja2.py score_mode): the same two choices as when signing up #}
                   <select class="form-control" id="score-display" onchange="post_toast('/settings/score_display?score_display=' + this.value, function () { window.location.reload(); })">
-                    <option value="0"{% if score_mode(v) == 0 %} selected{% endif %}>Upvotes, coloured by how many were up</option>
-                    <option value="1"{% if score_mode(v) == 1 %} selected{% endif %}>Upvotes minus downvotes</option>
+                    <option value="0"{% if score_mode(v) == 0 %} selected{% endif %}>{{ _("Upvotes, coloured by how many were up") }}</option>
+                    <option value="1"{% if score_mode(v) == 1 %} selected{% endif %}>{{ _("Upvotes minus downvotes") }}</option>
                   </select>
 
-                  <span class="d-block mt-2 text-small-extra text-muted">Coloured: a post with mostly upvotes shows its upvotes in <span class="font-weight-bold vote-ratio-10">blue</span>, one with mostly downvotes in <span class="font-weight-bold vote-ratio-0">red</span>, and anything between in a shade between. Hover a score to see both counts.</span>
+                  <span class="d-block mt-2 text-small-extra text-muted">{{ _('Coloured: a post with mostly upvotes shows its upvotes in <span class="font-weight-bold vote-ratio-10">blue</span>, one with mostly downvotes in <span class="font-weight-bold vote-ratio-0">red</span>, and anything between in a shade between. Hover a score to see both counts.') }}</span>
 
                 </div>
 
@@ -269,23 +269,23 @@
 
             </div>
 
-          <h2 class="h5 mt-5" id="for-you">For You</h2>
+          <h2 class="h5 mt-5" id="for-you">{{ _("For You") }}</h2>
 
             <div class="settings-section rounded">
 
               <div class="d-lg-flex">
 
                 <div class="title w-lg-25">
-                  <label for="for-you-reset">Reset For You</label>
+                  <label for="for-you-reset">{{ _("Reset For You") }}</label>
                 </div>
 
                 <div class="body w-lg-100">
 
-                  <button type="button" class="btn btn-primary" id="for-you-reset" onclick="if (confirm('Reset your For You feed?')) { post_toast('/settings/for_you/reset', function () { window.location.reload(); }); }">Reset For You</button>
+                  <button type="button" class="btn btn-primary" id="for-you-reset" onclick="if (confirm({{ _('Reset your For You feed?') | tojson | forceescape }})) { post_toast('/settings/for_you/reset', function () { window.location.reload(); }); }">{{ _("Reset For You") }}</button>
 
-                  <span class="d-block mt-2 text-small-extra text-muted">Start your For You feed over. Everything you asked for with "Show fewer posts like this" is forgotten, so those posts and their guilds and categories come back. Your reset date is saved on your account, but For You does not use it for your upvotes and guilds yet.</span>
+                  <span class="d-block mt-2 text-small-extra text-muted">{{ _('Start your For You feed over. Everything you asked for with "Show fewer posts like this" is forgotten, so those posts and their guilds and categories come back. Your reset date is saved on your account, but For You does not use it for your upvotes and guilds yet.') }}</span>
 
-                  <span class="d-block mt-1 text-small-extra text-muted" id="for-you-reset-date">{% if v.for_you_reset_date %}Last reset: {{ v.for_you_reset_date }}.{% else %}You have not reset it.{% endif %}</span>
+                  <span class="d-block mt-1 text-small-extra text-muted" id="for-you-reset-date">{% if v.for_you_reset_date %}{{ _("Last reset: %(date)s.", date=v.for_you_reset_date) }}{% else %}{{ _("You have not reset it.") }}{% endif %}</span>
 
                 </div>
 

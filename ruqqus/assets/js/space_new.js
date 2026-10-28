@@ -29,7 +29,7 @@
       var remove = document.createElement('button');
       remove.type = 'button';
       remove.className = 'ic-chip-remove';
-      remove.setAttribute('aria-label', 'Do not post to +' + name);
+      remove.setAttribute('aria-label', tr('Do not post to +%(guild)s', {guild: name}));
       remove.textContent = '×';
       remove.addEventListener('click', function () { guilds.splice(i, 1); render(); });
       chip.appendChild(remove);
@@ -80,7 +80,7 @@
   showKind();
 
   function label() {
-    submit.textContent = when && when.value ? 'Schedule the Space' : 'Start the Space';
+    submit.textContent = when && when.value ? tr('Schedule the Space') : tr('Start the Space');
   }
   if (when) { when.addEventListener('input', label); when.addEventListener('change', label); }
 
@@ -92,7 +92,7 @@
 
   form.addEventListener('submit', function (event) {
     event.preventDefault();
-    if (!form.querySelector('#space-title').value.trim()) { fail('Give the Space a title.'); return; }
+    if (!form.querySelector('#space-title').value.trim()) { fail(tr('Give the Space a title.')); return; }
     errorBox.hidden = true;
     submit.disabled = true;
     fetch('/api/spaces', { method: 'POST', body: new FormData(form), credentials: 'same-origin', headers: { Accept: 'application/json' } })
@@ -103,9 +103,9 @@
       .then(function (result) {
         if (!result) return;
         var url = result.body && result.body.url;
-        if (!result.ok || typeof url !== 'string' || url.charAt(0) !== '/') { fail((result.body && result.body.error) || 'The Space could not be made.'); return; }
+        if (!result.ok || typeof url !== 'string' || url.charAt(0) !== '/') { fail((result.body && result.body.error) || tr('The Space could not be made.')); return; }
         window.location.href = url;
       })
-      .catch(function () { fail('The Space could not be made. Check your connection.'); });
+      .catch(function () { fail(tr('The Space could not be made. Check your connection.')); });
   });
 })();

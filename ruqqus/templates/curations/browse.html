@@ -6,7 +6,7 @@
 {% block pagetype %}explore{% endblock %}
 
 {% block title %}
-<title>Explore curations - {{ 'SITE_NAME' | app_config }}</title>
+<title>{{ _("Explore curations - %(site)s") }}</title>
 {% endblock %}
 
 {% block leftSidebarBlock %}
@@ -18,23 +18,23 @@
 {% block content %}
 <div class="explore">
 
-  {{ explore_head('curations', 'Curations are custom feeds: named collections of guilds and accounts, made by people like you.') }}
+  {{ explore_head('curations', _('Curations are custom feeds: named collections of guilds and accounts, made by people like you.')) }}
 
   {% if v %}
-  <h2 class="explore-section-title">Your curations</h2>
+  <h2 class="explore-section-title">{{ _("Your curations") }}</h2>
   <ul class="explore-grid">
-    {% for c in owned %}{{ curation_card(c, v, false) }}{% else %}<li class="explore-empty">You haven't created any curations yet.</li>{% endfor %}
+    {% for c in owned %}{{ curation_card(c, v, false) }}{% else %}<li class="explore-empty">{{ _("You haven't created any curations yet.") }}</li>{% endfor %}
   </ul>
 
-  <h2 class="explore-section-title">Following</h2>
+  <h2 class="explore-section-title">{{ pgettext("heading: curations you follow", "Following") }}</h2>
   <ul class="explore-grid">
-    {% for c in followed %}{{ curation_card(c, v, true) }}{% else %}<li class="explore-empty">You're not following any curations yet.</li>{% endfor %}
+    {% for c in followed %}{{ curation_card(c, v, true) }}{% else %}<li class="explore-empty">{{ _("You're not following any curations yet.") }}</li>{% endfor %}
   </ul>
   {% endif %}
 
-  <h2 class="explore-section-title">Public curations</h2>
+  <h2 class="explore-section-title">{{ _("Public curations") }}</h2>
   <ul class="explore-grid">
-    {% for c in public_curations %}{{ curation_card(c, v, c.id in followed_ids) }}{% else %}<li class="explore-empty">No public curations yet. Be the first!</li>{% endfor %}
+    {% for c in public_curations %}{{ curation_card(c, v, c.id in followed_ids) }}{% else %}<li class="explore-empty">{{ _("No public curations yet. Be the first!") }}</li>{% endfor %}
   </ul>
 
 </div>

@@ -71,7 +71,14 @@ function button(label, className, onClick) {
   return b;
 }
 
-const ROLE_NOTES = { owner: "Owner", admin: "Admin" };
+// a person's role in a group, beside their name (translated when drawn, in the page's language)
+function roleNote(role) {
+  // Translators: a person's role in a group chat, shown beside their name
+  if (role === "owner") return window.tr("Owner");
+  // Translators: a person's role in a group chat, shown beside their name
+  if (role === "admin") return window.tr("Admin");
+  return "";
+}
 
 export function initGroups({ boot, onCreated, onChanged, onLeft }) {
   const max = Number(boot.maxGroupMembers) || 32;
@@ -92,7 +99,7 @@ export function initGroups({ boot, onCreated, onChanged, onLeft }) {
       const chip = document.createElement("button");
       chip.type = "button";
       chip.className = "btn btn-sm btn-outline-secondary chat-chip mr-1 mb-1";
-      chip.setAttribute("aria-label", `Remove ${person.username}`);
+      chip.setAttribute("aria-label", window.tr("Remove %(name)s", { name: person.username }));
       chip.textContent = `@${person.username} `;
       const x = document.createElement("i");
       x.className = "fas fa-xmark";
@@ -113,17 +120,18 @@ export function initGroups({ boot, onCreated, onChanged, onLeft }) {
     if (!people.length) {
       const empty = document.createElement("p");
       empty.className = "text-small text-muted mb-0";
-      empty.textContent = searchInput.value.trim() ? "Nobody matches." : "Follow someone to add them to a group.";
+      empty.textContent = searchInput.value.trim() ? window.tr("Nobody matches.") : window.tr("Follow someone to add them to a group.");
       results.appendChild(empty);
       return;
     }
     for (const person of people) {
       const picked = chosen.has(person.username);
-      const toggle = button(picked ? "Added" : "Add", picked ? "btn-secondary" : "btn-primary", () => {
+      // Translators: a button that adds a person to a new group chat, and the same button once pressed
+      const toggle = button(picked ? window.tr("Added") : window.tr("Add"), picked ? "btn-secondary" : "btn-primary", () => {
         if (chosen.has(person.username)) {
           chosen.delete(person.username);
         } else if (chosen.size + 1 >= max) {
-          say(newStatus, `A group can have at most ${max} people.`, true);
+          say(newStatus, window.trn("A group can have at most %(num)s person.", "A group can have at most %(num)s people.", max), true);
           return;
         } else {
           chosen.set(person.username, person);
@@ -141,7 +149,7 @@ export function initGroups({ boot, onCreated, onChanged, onLeft }) {
     const mine = ++token;
     searchPeople(q.trim())
       .then((people) => { if (mine === token) drawResults(people); })
-      .catch(() => { if (mine === token) say(newStatus, "Could not search. Try again.", true); });
+      .catch(() => { if (mine === token) say(newStatus, window.tr("Could not search. Try again."), true); });
   }
 
   searchInput.addEventListener("input", debounce(() => load(searchInput.value), 250));
@@ -158,7 +166,7 @@ export function initGroups({ boot, onCreated, onChanged, onLeft }) {
 
   createButton.addEventListener("click", async () => {
     createButton.disabled = true;
-    say(newStatus, "Creating…");
+    say(newStatus, window.tr("Creating…"));
     try {
       const made = await createGroup(boot.formkey, nameInput.value.trim(), [...chosen.keys()]);
       sheet("chatGroupNew", "hide");
@@ -204,7 +212,7 @@ export function initGroups({ boot, onCreated, onChanged, onLeft }) {
     const me = group.members.find((m) => m.id === boot.userId);
     const myRole = me ? me.role : null;
     infoTitle.textContent = group.label;
-    count.textContent = `${group.size} ${group.size === 1 ? "person" : "people"}`;
+    count.textContent = window.trn("%(num)s person", "%(num)s people", group.size);
     renameForm.classList.toggle("d-none", !group.can_manage);
     if (document.activeElement !== renameInput) renameInput.value = group.name || "";
     addBox.classList.toggle("d-none", !group.can_manage || group.size >= max);
@@ -213,20 +221,23 @@ export function initGroups({ boot, onCreated, onChanged, onLeft }) {
     for (const person of group.members) {
       const isMe = person.id === boot.userId;
       const notes = [];
-      if (ROLE_NOTES[person.role]) notes.push(ROLE_NOTES[person.role]);
-      if (!person.joined) notes.push("Invited");
-      if (isMe) notes.push("You");
+      if (roleNote(person.role)) notes.push(roleNote(person.role));
+      // Translators: beside someone invited to a group chat who hasn't joined yet
+      if (!person.joined) notes.push(window.tr("Invited"));
+      // Translators: beside your own name in a group chat's list of people
+      if (isMe) notes.push(window.tr("You"));
       const buttons = [];
       if (!isMe && person.username) {
         // what the server would allow (helpers/chat_groups.py); it checks again
         if (myRole === "owner" && person.role !== "owner" && person.joined) {
           const admin = person.role === "admin";
-          buttons.push(button(admin ? "Remove admin" : "Make admin", "btn-outline-primary", () =>
+          buttons.push(button(admin ? window.tr("Remove admin") : window.tr("Make admin"), "btn-outline-primary", () =>
             act(setGroupRole(boot.formkey, group.group_id, person.username, admin ? "member" : "admin"))));
         }
         if (myRole === "owner" ? person.role !== "owner" : myRole === "admin" && person.role === "member") {
-          buttons.push(button("Remove", "btn-outline-danger", () => {
-            if (!window.confirm(`Remove @${person.username} from the group?`)) return;
+          // Translators: a button that removes a person from a group chat
+          buttons.push(button(window.tr("Remove"), "btn-outline-danger", () => {
+            if (!window.confirm(window.tr("Remove @%(name)s from the group?", { name: person.username }))) return;
             act(removeFromGroup(boot.formkey, group.group_id, person.username));
           }));
         }
@@ -242,13 +253,14 @@ export function initGroups({ boot, onCreated, onChanged, onLeft }) {
     if (!shown.length) {
       const empty = document.createElement("p");
       empty.className = "text-small text-muted mb-0";
-      empty.textContent = addSearch.value.trim() ? "Nobody else matches." : "Search for someone to add.";
+      empty.textContent = addSearch.value.trim() ? window.tr("Nobody else matches.") : window.tr("Search for someone to add.");
       addResults.appendChild(empty);
       return;
     }
     for (const person of shown) {
       addResults.appendChild(personRow(person, {
-        buttons: [button("Add", "btn-primary", () =>
+        // Translators: a button that adds a person to a group chat
+        buttons: [button(window.tr("Add"), "btn-primary", () =>
           act(addToGroup(boot.formkey, current.group_id, [person.username]), () => {
             addSearch.value = "";
             addResults.textContent = "";
@@ -273,8 +285,8 @@ export function initGroups({ boot, onCreated, onChanged, onLeft }) {
     const group = current;
     const owner = group.my_role === "owner";
     const message = owner
-      ? "Leave this group? Someone else in it becomes its owner."
-      : "Leave this group? You won't see new messages unless someone adds you again.";
+      ? window.tr("Leave this group? Someone else in it becomes its owner.")
+      : window.tr("Leave this group? You won't see new messages unless someone adds you again.");
     if (!window.confirm(message)) return;
     try {
       await leaveGroup(boot.formkey, group.group_id);

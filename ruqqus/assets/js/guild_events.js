@@ -13,7 +13,7 @@
 
   var zone = '';
   try { zone = Intl.DateTimeFormat().resolvedOptions().timeZone || ''; } catch (e) { zone = ''; }
-  var lang = document.documentElement.lang || undefined;
+  var lang = I18N.intl;
 
   function fmt(utc, options) {
     try { return new Date(utc * 1000).toLocaleString(lang, options); } catch (e) { return ''; }
@@ -63,7 +63,8 @@
       }
     });
     var note = document.querySelector('[data-zone-note]');
-    if (note && zone) note.textContent = 'Days and times are in your time zone (' + zone + ').';
+    // Translators: %(zone)s is a time zone name such as Europe/London
+    if (note && zone) note.textContent = tr('Days and times are in your time zone (%(zone)s).', {zone: zone});
   }
 
   function rsvp() {
@@ -76,7 +77,7 @@
       var body = new URLSearchParams({ status: button.getAttribute('data-rsvp-status'), formkey: typeof formkey === 'function' ? formkey() : '' });
       page.querySelectorAll('[data-rsvp-status]').forEach(function (b) { b.disabled = true; });
       fetch(page.getAttribute('data-rsvp'), { method: 'POST', credentials: 'same-origin', body: body, headers: { Accept: 'application/json' } })
-        .then(function (r) { return r.json().catch(function () { return {}; }).then(function (d) { if (!r.ok) throw new Error(d.error || 'That didn’t work.'); return d; }); })
+        .then(function (r) { return r.json().catch(function () { return {}; }).then(function (d) { if (!r.ok) throw new Error(d.error || tr('That didn’t work.')); return d; }); })
         .then(function (d) {
           if (box) box.hidden = true;
           page.querySelector('[data-count="going"]').textContent = d.going;
@@ -123,7 +124,13 @@
     // runs before guild_pages.js reads the form (capture phase)
     form.addEventListener('submit', sync, true);
     var note = form.querySelector('[data-zone-note]');
-    if (note && zone) note.textContent = 'Times are in your time zone (' + zone + '). ' + note.textContent.replace(/^Times are in your time zone\. /, '');
+    if (note && zone) {
+      // the server's note starts with "Times are in your time zone." (in the page's language): drop it for the named zone
+      var plain = tr('Times are in your time zone.') + ' ';
+      var rest = note.textContent.indexOf(plain) === 0 ? note.textContent.slice(plain.length) : note.textContent;
+      // Translators: %(zone)s is a time zone name such as Europe/London
+      note.textContent = tr('Times are in your time zone (%(zone)s).', {zone: zone}) + ' ' + rest;
+    }
   }
 
   function run() {

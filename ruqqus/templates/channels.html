@@ -6,13 +6,19 @@
 #}
 
 {% block title %}
-<title>{{ owner.shown_name }}'s channels - {{ "SITE_NAME" | app_config }}</title>
+<title>{{ _("%(name)s's channels - %(site)s", name=owner.shown_name) }}</title>
+{% endblock %}
+
+{% block sidebarblock %}
+{# one of this account's pages: Similar accounts in place of Who to follow (partials/sidebar_common.html reads profile_user) #}
+{% set profile_user = owner %}
+{% include "partials/sidebar_common.html" %}
 {% endblock %}
 
 {% block content %}
 <div class="channels-page py-3">
-  <h1 class="h4 mb-1">{{ "Your channels" if owner.id == v.id else owner.shown_name ~ "'s channels" }}</h1>
-  <p class="text-muted text-small">A channel is one-to-many: its owner and helpers write, members read and react. A public channel is open to everyone and can be moderated; a channel for circles is end-to-end encrypted and only for the people in them.</p>
+  <h1 class="h4 mb-1">{{ _("Your channels") if owner.id == v.id else _("%(name)s's channels", name=owner.shown_name) }}</h1>
+  <p class="text-muted text-small">{{ _("A channel is one-to-many: its owner and helpers write, members read and react. A public channel is open to everyone and can be moderated; a channel for circles is end-to-end encrypted and only for the people in them.") }}</p>
 
   {% for c in channels %}
   <div class="card mb-2 channel-row" data-channel="{{ c.channel_id }}">
@@ -20,34 +26,34 @@
       <span class="chat-group-avatar rounded-circle mr-3 flex-shrink-0" style="width:40px;height:40px" aria-hidden="true"><i class="fas fa-tower-broadcast"></i></span>
       <div class="flex-grow-1 overflow-hidden">
         <div class="font-weight-bold text-truncate">{{ c.label }}</div>
-        <div class="text-small text-muted">{{ "Public" if c.public else "For circles · end-to-end encrypted" }} · {{ c.size }} member{{ '' if c.size == 1 else 's' }}</div>
+        <div class="text-small text-muted">{% if c.public %}{{ ngettext("Public · %(num)s member", "Public · %(num)s members", c.size) }}{% else %}{{ ngettext("For circles · end-to-end encrypted · %(num)s member", "For circles · end-to-end encrypted · %(num)s members", c.size) }}{% endif %}</div>
       </div>
       {% if c.status == 'joined' %}
-      <a class="btn btn-secondary btn-sm" href="/chat?room={{ c.room_id | urlencode }}">Open</a>
+      <a class="btn btn-secondary btn-sm" href="/chat?room={{ c.room_id | urlencode }}">{{ pgettext("button", "Open") }}</a>
       {% else %}
-      <button type="button" class="btn btn-primary btn-sm" data-channel-join="{{ c.channel_id }}">Join</button>
+      <button type="button" class="btn btn-primary btn-sm" data-channel-join="{{ c.channel_id }}">{{ pgettext("button", "Join") }}</button>
       {% endif %}
     </div>
   </div>
   {% else %}
-  <p class="text-muted" id="channels-empty">{{ "You have no channels yet." if owner.id == v.id else "No channels to show." }}</p>
+  <p class="text-muted" id="channels-empty">{{ _("You have no channels yet.") if owner.id == v.id else _("No channels to show.") }}</p>
   {% endfor %}
 
   {% if owner.id == v.id and channels | length < max_channels and not v.is_bot %}
   <form id="channel-new" class="card mt-4" onsubmit="return false;">
     <div class="card-body">
-      <h2 class="h6">New channel</h2>
-      <label class="text-small font-weight-bold mb-1" for="channel-name">Name</label>
+      <h2 class="h6">{{ _("New channel") }}</h2>
+      <label class="text-small font-weight-bold mb-1" for="channel-name">{{ _("Name") }}</label>
       <input type="text" class="form-control mb-3" id="channel-name" name="name" maxlength="50" required autocomplete="off">
       <fieldset>
-        <legend class="text-small font-weight-bold mb-1">Who can join</legend>
+        <legend class="text-small font-weight-bold mb-1">{{ _("Who can join") }}</legend>
         <div class="custom-control custom-radio">
           <input type="radio" class="custom-control-input" id="channel-public" name="audience" value="0" checked>
-          <label class="custom-control-label" for="channel-public">Everyone (public, not encrypted)</label>
+          <label class="custom-control-label" for="channel-public">{{ _("Everyone (public, not encrypted)") }}</label>
         </div>
         <div class="custom-control custom-radio">
           <input type="radio" class="custom-control-input" id="channel-circles" name="audience" value="4">
-          <label class="custom-control-label" for="channel-circles">Some of my circles (end-to-end encrypted)</label>
+          <label class="custom-control-label" for="channel-circles">{{ _("Some of my circles (end-to-end encrypted)") }}</label>
         </div>
         <div class="pl-4 mt-1" id="channel-circle-list">
           {% for choice in circle_choices(v) %}
@@ -58,7 +64,7 @@
           {% endfor %}
         </div>
       </fieldset>
-      <button type="submit" class="btn btn-primary btn-sm mt-3">Create channel</button>
+      <button type="submit" class="btn btn-primary btn-sm mt-3">{{ _("Create channel") }}</button>
       <div id="channel-status" class="text-small mt-2" role="status"></div>
     </div>
   </form>
@@ -76,7 +82,7 @@
   function send(url, body) {
     body.set('formkey', formkey());
     return fetch(url, { method: 'POST', credentials: 'same-origin', body: body, headers: { Accept: 'application/json' } })
-      .then(function (r) { return r.json().catch(function () { return {}; }).then(function (d) { if (!r.ok) throw new Error(d.error || 'That didn’t work.'); return d; }); });
+      .then(function (r) { return r.json().catch(function () { return {}; }).then(function (d) { if (!r.ok) throw new Error(d.error || {{ _('That didn’t work.') | tojson }}); return d; }); });
   }
   document.querySelectorAll('[data-channel-join]').forEach(function (button) {
     button.addEventListener('click', function () {

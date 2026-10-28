@@ -9,57 +9,70 @@
   The card's cover link opens what it quotes; the links in its text sit above the cover.
 
   As on X, what the quoted post quotes in turn is drawn inside it (`q.inner`, this macro again), and no deeper: a card
-  inside a card has no `inner`, only the one line `q.quoting` ("Quoting @x on X").
+  inside a card has no `inner`, only the one line `q.quoting` ("Quoting @x on X"), drawn whole in the reader's language
+  from its parts (quote_cards.QuotingLine: `who`, `service`) by quoting_text.
 #}
+{% macro quoting_text(line) -%}
+{%- if line.service and line.who -%}
+{#- Translators: on a card quoting a post, what that post quotes in turn: who is a handle such as @name, service another site such as X or Bluesky -#}
+{{ _("Quoting %(who)s on %(service)s", who=line.who, service=line.service) }}
+{%- elif line.service -%}
+{#- Translators: on a card quoting a post, what that post quotes in turn when the other site names nobody: service is a site such as Reddit -#}
+{{ _("Quoting a post on %(service)s", service=line.service) }}
+{%- elif line -%}
+{#- Translators: on a card quoting a post, the line saying that post quotes another post -#}
+{{ _("Quoting a post") }}
+{%- endif -%}
+{%- endmacro %}
 {% macro quote_card(q, p, v, full=False) %}
 {% if q.kind == 'social' %}
 <div class="quote-card{% if full %} quote-card-full{% endif %}" data-quote="{{ q.site }}">
-  <a class="quote-card-cover" href="{{ q.url }}" target="_blank" rel="nofollow noopener noreferrer" aria-label="Open this post on {{ q.label }}"></a>
+  <a class="quote-card-cover" href="{{ q.url }}" target="_blank" rel="nofollow noopener noreferrer" aria-label="{{ _('Open this post on %(service)s', service=q.label) }}"></a>
   <div class="quote-card-head">
     <span class="quote-card-mark" aria-hidden="true">{% if q.icon %}<i class="fab fa-{{ q.icon }}"></i>{% else %}{{ q.letter }}{% endif %}</span>
     {% if q.name %}<span class="quote-card-name">{{ q.name }}</span>{% endif %}
     {% if q.handle %}<span class="quote-card-handle">{{ q.handle }}</span>{% endif %}
-    {% if not q.name and not q.handle %}<span class="quote-card-name">Post on {{ q.label }}</span>{% endif %}
-    {% if q.when %}<span class="quote-card-dot" aria-hidden="true">&middot;</span><span class="quote-card-when">{{ q.when }}</span>{% endif %}
+    {# Translators: a card quoting a post from another site that names no author: service is the site, such as Instagram #}{% if not q.name and not q.handle %}<span class="quote-card-name">{{ _("Post on %(service)s", service=q.label) }}</span>{% endif %}
+    {% if q.when %}<span class="quote-card-dot" aria-hidden="true">&middot;</span><span class="quote-card-when">{{ date_text(q.when_utc, "%-d %B %Y") if q.when_utc else q.when }}</span>{% endif %}
   </div>
   {% if q.text %}<div class="quote-card-text">{{ q.text | urlize(48, true, target="_blank") }}</div>{% endif %}
   {% if q.image %}
   <div class="quote-card-pic">
     <img class="quote-card-media" src="{{ q.image }}" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="hideBrokenMedia(this)">
-    {% if q.video %}<span class="quote-card-play" aria-hidden="true"><i class="fas fa-play"></i></span><span class="sr-only">Video, plays on {{ q.label }}</span>{% endif %}
+    {% if q.video %}<span class="quote-card-play" aria-hidden="true"><i class="fas fa-play"></i></span><span class="sr-only">{{ _("Video, plays on %(service)s", service=q.label) }}</span>{% endif %}
   </div>
   {% endif %}
   {% if q.inner %}{{ quote_card(q.inner, p, v, full) }}{% endif %}
   <div class="quote-card-foot">
-    {% if q.quoting %}<span><i class="fas fa-quote-left" aria-hidden="true"></i> {{ q.quoting }}</span><span aria-hidden="true">&middot;</span>{% endif %}
-    {% if q.media %}<span><i class="{{ 'fas fa-eye-slash' if q.sensitive else 'far fa-image' }}" aria-hidden="true"></i> {{ q.media }}</span><span aria-hidden="true">&middot;</span>{% endif %}
+    {% if q.quoting %}<span><i class="fas fa-quote-left" aria-hidden="true"></i> {{ quoting_text(q.quoting) }}</span><span aria-hidden="true">&middot;</span>{% endif %}
+    {% if q.media %}<span><i class="{{ 'fas fa-eye-slash' if q.sensitive else 'far fa-image' }}" aria-hidden="true"></i> {{ msg_text(q.media) }}</span><span aria-hidden="true">&middot;</span>{% endif %}
     {% if q.where %}<span>{{ q.where }}</span><span aria-hidden="true">&middot;</span>{% endif %}
-    <span class="quote-card-open">View on {{ q.label }} <i class="fas fa-arrow-up-right-from-square" aria-hidden="true"></i></span>
+    <span class="quote-card-open">{{ _("View on %(service)s", service=q.label) }} <i class="fas fa-arrow-up-right-from-square" aria-hidden="true"></i></span>
   </div>
 </div>
 {% elif q.kind == 'post' and q.notice %}
-<div class="quote-card quote-card-notice" role="note">{{ q.notice }}</div>
+<div class="quote-card quote-card-notice" role="note">{{ msg_text(q.notice) }}</div>
 {% elif q.kind == 'post' %}
 {% set quoted = q.post %}
 {% set who = author_of(quoted, v) %}
 <div class="quote-card{% if full %} quote-card-full{% endif %}" data-quote="post">
-  <a class="quote-card-cover" href="{{ quoted.permalink }}" aria-label="Open the quoted post"></a>
+  <a class="quote-card-cover" href="{{ quoted.permalink }}" aria-label="{{ _('Open the quoted post') }}"></a>
   <div class="quote-card-head">
     <img src="{{ who.profile_url }}" class="quote-card-avatar" width="20" height="20" alt="">
     <span class="quote-card-name">{{ who.shown_name }}</span>{{ handle_tag(who) }}
-    <span class="quote-card-dot" aria-hidden="true">&middot;</span><span class="quote-card-when" title="{{ quoted.created_datetime }}">{{ quoted.age_string }}</span>
+    <span class="quote-card-dot" aria-hidden="true">&middot;</span><span class="quote-card-when" title="{{ datetime_text(quoted.created_utc, '%d %B %Y at %H:%M:%S') }}">{{ quoted.age_string }}</span>
     {% if not quoted.is_profile_post %}<span class="quote-card-dot" aria-hidden="true">&middot;</span><span class="quote-card-where">+{{ quoted.board.name }}</span>{% endif %}
   </div>
   <div class="quote-card-text"><span class="quote-card-title">{{ quoted.title | safe }}</span>{% if quoted.body_html %}
     <span class="quote-card-body">{{ quoted.body_html | striptags | truncate(2000 if full else 400, False, "…", 0) }}</span>{% endif %}</div>
   {% if quoted.is_sensitive %}
-  <div class="quote-card-foot"><span><i class="fas fa-eye-slash" aria-hidden="true"></i> Sensitive content</span></div>
+  <div class="quote-card-foot"><span><i class="fas fa-eye-slash" aria-hidden="true"></i> {{ _("Sensitive content") }}</span></div>
   {# a link post's preview picture is the picture of what it links to: not drawn when that is a card inside or a line #}
   {% elif quoted.is_image or (quoted.preview_image_url and not q.inner and not q.quoting) %}
   <img class="quote-card-media" src="{{ quoted.url if quoted.is_image else quoted.preview_image_url }}" alt="" loading="lazy" onerror="hideBrokenMedia(this)">
   {% endif %}
   {% if q.inner %}{{ quote_card(q.inner, p, v, full) }}
-  {% elif q.quoting %}<div class="quote-card-foot"><span><i class="fas fa-quote-left" aria-hidden="true"></i> {{ q.quoting }}</span></div>{% endif %}
+  {% elif q.quoting %}<div class="quote-card-foot"><span><i class="fas fa-quote-left" aria-hidden="true"></i> {{ quoting_text(q.quoting) }}</span></div>{% endif %}
 </div>
 {% endif %}
 {% endmacro %}

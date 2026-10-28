@@ -13,11 +13,12 @@
 
 {% block title %}
 {% if comment_info and not comment_info.is_banned and linked_comment.deleted_utc == 0 %}
-<title>@{{ author_of(comment_info, v).username }} comments {% if not p.is_profile_post %}in +{{ p.board.name }} {% endif %}on "{{ p.title }}"</title>
+<title>{% if not p.is_profile_post %}{{ _('@%(name)s comments in +%(guild)s on "%(title)s"', name=author_of(comment_info, v).username, guild=p.board.name, title=p.title) }}{% else %}{{ _('@%(name)s comments on "%(title)s"', name=author_of(comment_info, v).username, title=p.title) }}{% endif %}</title>
 <meta name="description" content="{{ comment_info.body }}">
 {% else %}
 <title>{{ p.title | safe}}</title>
-<meta name="description" content="posted {{ p.age_string }} by {% if p.purged_utc %}[removed by admin]{% else %}Anon{% endif %}{% if not p.is_profile_post %} in +{{ p.board.name }}{% endif %}">
+{% set deleted_by = _("[removed by admin]") if p.purged_utc else _("Anon") %}
+<meta name="description" content="{% if not p.is_profile_post %}{{ _('posted %(age)s by %(who)s in +%(guild)s', age=p.age_string, who=deleted_by, guild=p.board.name) }}{% else %}{{ _('posted %(age)s by %(who)s', age=p.age_string, who=deleted_by) }}{% endif %}">
 {% endif %}
 {% endblock %}
 
@@ -29,7 +30,8 @@
     <div class="d-flex align-items-center py-2">
       <span class="d-flex align-items-center text-black">
         <img alt="" src="/assets/images/profiles/default-profile-pic.png" class="profile-pic-35 mr-2">
-        <span class="h6 mb-0">Anon</span>
+        {# Translators: short for Anonymous: who wrote a deleted post #}
+        <span class="h6 mb-0">{{ _("Anon") }}</span>
       </span>
     </div>
   </div>
@@ -48,31 +50,31 @@
         </div>
       </div>
       <div class="border-right py-3 px-3">
-        Guildmasters<span class="text-primary"> {{ p.board.mods_count }}</span>
+        {{ _("Guildmasters") }}<span class="text-primary"> {{ p.board.mods_count }}</span>
       </div>
       <div class="border-right p-3">
-        Member{{ 's' if p.board.subscriber_count != 1 else '' }}<span class="text-primary"> {{ p.board.subscriber_count }}</span>
+        {{ ngettext('Member<span class="text-primary"> %(num)s</span>', 'Members<span class="text-primary"> %(num)s</span>', p.board.subscriber_count) }}
       </div>
       <div class="d-flex align-items-center p-3">
         <div class="dropdown dropdown-actions">
-            <a href="#" role="button" id="dropdownMoreLink" aria-label="More options" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="line-height: 0;">
+            <a href="#" role="button" id="dropdownMoreLink" aria-label="{{ _('More options') }}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="line-height: 0;">
             <i class="fas fa-ellipsis-h text-muted" style="font-size: 1rem"></i>
           </a>
           <div class="dropdown-menu border-0 shadow dropdown-menu-right mt-2" aria-labelledby="dropdownMoreLink" x-placement="bottom-end"
           style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(21px, 18px, 0px);">
-          <button class="dropdown-item" data-toggle="modal" data-target="#guildDetailsModal"><i class="fas fa-info-circle"></i>Guild details</button>
+          <button class="dropdown-item" data-toggle="modal" data-target="#guildDetailsModal"><i class="fas fa-info-circle"></i>{{ _("Guild details") }}</button>
           {% if p.board.has_mod(v) %}
-          <a class="dropdown-item" href="{{ p.board.permalink }}/mod/settings"><i class="fas fa-cog"></i>Guild settings</a>
+          <a class="dropdown-item" href="{{ p.board.permalink }}/mod/settings"><i class="fas fa-cog"></i>{{ _("Guild settings") }}</a>
           {% endif %}
         </div>
       </div>
     </div>
     <div class="ml-auto">
       {% if v %}
-      <div id="button-sub" {% if p.board.has_subscriber(v) %}class="d-none"{% endif %}><a class="btn btn-primary" href="javascript:void(0)" onclick="post('/api/subscribe/{{ p.board.name }}', callback=toggleSub)">Join guild</a></div>
-      <div id="button-unsub" {% if not p.board.has_subscriber(v) %}class="d-none"{% endif %}><a class="btn btn-secondary" href="javascript:void(0)" onclick="post('/api/unsubscribe/{{ p.board.name }}', callback=toggleSub)">Leave</a></div>
+      <div id="button-sub" {% if p.board.has_subscriber(v) %}class="d-none"{% endif %}><a class="btn btn-primary" href="javascript:void(0)" onclick="post('/api/subscribe/{{ p.board.name }}', callback=toggleSub)">{{ _("Join guild") }}</a></div>
+      <div id="button-unsub" {% if not p.board.has_subscriber(v) %}class="d-none"{% endif %}><a class="btn btn-secondary" href="javascript:void(0)" onclick="post('/api/unsubscribe/{{ p.board.name }}', callback=toggleSub)">{{ pgettext("button", "Leave") }}</a></div>
       {% elif not v %}
-      <a class="btn btn-primary" href="/signup">Join guild</a>
+      <a class="btn btn-primary" href="/signup">{{ _("Join guild") }}</a>
       {% endif %}
     </div>
   </div>
@@ -93,7 +95,7 @@
       <a href="{{ p.board.permalink }}" class="text-black">
         <h1 class="h5 d-inline-block mb-0">+{{ p.board.name }}
           {% if p.board.is_sensitive %}
-          <span class="badge badge-warning text-small align-top">Sensitive Content</span>
+          <span class="badge badge-warning text-small align-top">{{ _("Sensitive Content") }}</span>
           {% endif %}
         </h1>
       </a>
@@ -129,12 +131,16 @@
 
         <div class="card-block w-100 my-md-auto">
 
-          <div class="post-meta text-left d-none d-md-block mb-md-2"><span data-toggle="tooltip" data-placement="bottom" data-delay='{"show":"700", "hide":"300"}' title="{{ p.created_datetime }}">{{ p.age_string }}</span> by {% if p.purged_utc %}[removed by admin]{% else %}Anon{% endif %}{% if not p.purged_utc %} · ({{ p.domain }}){% endif %}{% if not p.is_public %} · <i class="fas fa-eye-slash text-warning" data-toggle="tooltip" data-placement="bottom" title="Private post, visible because {{ p.visibility_reason(v) }}"></i>{% endif %}{% if p.edited_utc %} · Edited <span data-toggle="tooltip" data-placement="bottom" data-delay='{"show":"700", "hide":"300"}' title="{{ edited_datetime }}">{{ p.edited_string }}</span>{% endif %}{% if p.is_sensitive %} · <span class="badge badge-warning text-small-extra">sensitive content</span>{% endif %}</div>
+          {% set deleted_by = _("[removed by admin]") if p.purged_utc else _("Anon") %}
+          {% set posted_age %}<span data-toggle="tooltip" data-placement="bottom" data-delay='{"show":"700", "hide":"300"}' title="{{ datetime_text(p.created_utc, '%d %B %Y at %H:%M:%S') }}">{{ p.age_string }}</span>{% endset %}
+          {% set edited_age %}<span data-toggle="tooltip" data-placement="bottom" data-delay='{"show":"700", "hide":"300"}' title="{{ edited_datetime }}">{{ p.edited_string }}</span>{% endset %}
+          {# Translators: a deleted post's line: age is how long ago it was posted ("5 hours ago"), who is "Anon" or "[removed by admin]" #}
+          <div class="post-meta text-left d-none d-md-block mb-md-2">{{ _("%(age)s by %(who)s", age=posted_age, who=deleted_by) }}{% if not p.purged_utc %} · ({{ p.domain }}){% endif %}{% if not p.is_public %} · <i class="fas fa-eye-slash text-warning" data-toggle="tooltip" data-placement="bottom" title="{{ p.private_note(v) }}"></i>{% endif %}{% if p.edited_utc %} · {{ _("Edited %(when)s", when=edited_age) }}{% endif %}{% if p.is_sensitive %} · <span class="badge badge-warning text-small-extra">{{ _("sensitive content") }}</span>{% endif %}</div>
 
           {% if p.purged_utc %}
-          <h1 class="card-title post-title text-left mb-md-3 text-muted">[removed by admin]</h1>
+          <h1 class="card-title post-title text-left mb-md-3 text-muted">{{ _("[removed by admin]") }}</h1>
           {% else %}
-          <h1 class="card-title post-title text-left mb-md-3">{{ p.title | safe }}</h1>
+          <h1 dir="auto" class="card-title post-title text-start mb-md-3">{{ p.title | safe }}</h1>
 
           {% if p.url %}
           <div class="row post-img-lg mb-3">
@@ -147,7 +153,7 @@
           {% endif %}
           {% endif %}
 
-          <div class="post-meta text-left d-block d-md-none mb-3">{% if p.is_sensitive %}<span class="text-warning"><i class="fas fa-exclamation-triangle text-small mr-1"></i>sensitive content</span> · {% endif %}<span data-toggle="tooltip" data-placement="bottom" data-delay='{"show":"700", "hide":"300"}' title="{{ p.created_datetime }}">{{ p.age_string }}</span> by {% if p.purged_utc %}[removed by admin]{% else %}Anon{% endif %}{% if p.edited_utc %} · Edited <span data-toggle="tooltip" data-placement="bottom" data-delay='{"show":"700", "hide":"300"}' title="{{ edited_datetime }}">{{ p.edited_string }}</span>{% endif %}</div>
+          <div class="post-meta text-left d-block d-md-none mb-3">{% if p.is_sensitive %}<span class="text-warning"><i class="fas fa-exclamation-triangle text-small mr-1"></i>{{ _("sensitive content") }}</span> · {% endif %}{{ _("%(age)s by %(who)s", age=posted_age, who=deleted_by) }}{% if p.edited_utc %} · {{ _("Edited %(when)s", when=edited_age) }}{% endif %}</div>
 
 
               <div class="d-none d-md-flex justify-content-between align-items-center mt-2">
@@ -156,7 +162,7 @@
 
                     <li class="list-inline-item"><a href="{{ p.permalink }}"><i class="fas fa-comment-dots"></i>{{ p.comment_count }}</a></li>
 
-                    <li class="list-inline-item"><a href="javascript:void(0);" role="button" class="copy-link" data-clipboard-text="{{ p.permalink | full_link }}"><i class="fas fa-link"></i>Copy link</a></li>
+                    <li class="list-inline-item"><a href="javascript:void(0);" role="button" class="copy-link" data-clipboard-text="{{ p.permalink | full_link }}"><i class="fas fa-link"></i>{{ _("Copy link") }}</a></li>
 
                   </ul>
                 </div>
@@ -203,7 +209,7 @@
 
               <li class="list-inline-item mr-auto"><a href="{{ p.permalink }}"><i class="fas fa-comment-dots"></i>{{ p.comment_count }}</a></li>
 
-              <li class="list-inline-item"><a href="javascript:void(0);" role="button" class="copy-link" data-clipboard-text="{{ p.permalink | full_link }}"><i class="fas fa-link"></i>Share</a></li>
+              <li class="list-inline-item"><a href="javascript:void(0);" role="button" class="copy-link" data-clipboard-text="{{ p.permalink | full_link }}"><i class="fas fa-link"></i>{{ pgettext("button", "Share") }}</a></li>
               {% if v %}
               <li class="list-inline-item">
                 <a href="#" data-toggle="modal" data-target="#actionsModal">
@@ -239,22 +245,22 @@
         <div class="col border-top">
           <div class="comments-count py-3">
             {% if linked_comment and p.comment_count >= 2%}
-            <div class="total"><a href="{{ p.permalink }}">View entire discussion</a></div>
+            <div class="total"><a href="{{ p.permalink }}">{{ _("View entire discussion") }}</a></div>
             {% else %}
-            <div class="total">Comments <span class="d-none d-md-inline-block">({{ p.comment_count }})</span></div>
+            <div class="total">{{ _("Comments") }} <span class="d-none d-md-inline-block">({{ p.comment_count }})</span></div>
             {% endif %}
-            <div class="post-filter ml-auto"><span>Sort By:</span>
+            <div class="post-filter ml-auto"><span>{{ _("Sort By:") }}</span>
               <span class="dropdown">
-                <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" aria-label="Sort comments"
+                <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" aria-label="{{ _('Sort comments') }}"
                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 
               </a>
               <span class="dropdown-menu border-0 shadow dropdown-menu-right mt-2" aria-labelledby="dropdownMenuLink">
-                <a class="dropdown-item" href="?sort=new">New</a>
-                <a class="dropdown-item" href="?sort=old">Old</a>
-                <a class="dropdown-item" href="?sort=top">Top</a>
-                <a class="dropdown-item" href="?sort=disputed">Disputed</a>
-                <a class="dropdown-item d-none" href="#">Based</a>
+                <a class="dropdown-item" href="?sort=new">{{ pgettext("sort", "New") }}</a>
+                <a class="dropdown-item" href="?sort=old">{{ pgettext("sort", "Old") }}</a>
+                <a class="dropdown-item" href="?sort=top">{{ pgettext("sort", "Top") }}</a>
+                <a class="dropdown-item" href="?sort=disputed">{{ pgettext("sort", "Disputed") }}</a>
+                <a class="dropdown-item d-none" href="#">{{ pgettext("sort", "Based") }}</a>
               </span>
             </span>
           </div>
@@ -263,11 +269,11 @@
         {% if not v and p.comment_count >= 2 %}
         <div class="card border-0 bg-light mt-4">
           <div class="card-body">
-            <h5 class="card-title">Jump in the discussion.</h5>
-            <p class="card-text">Become part of the community, no email address required. Make an account.</p>
+            <h5 class="card-title">{{ _("Jump in the discussion.") }}</h5>
+            <p class="card-text">{{ _("Become part of the community, no email address required. Make an account.") }}</p>
             <div>
-              <a href="/signup" class="btn btn-primary">Sign up</a>
-              <a href="/login" class="btn btn-link text-muted">Sign in</a>
+              <a href="/signup" class="btn btn-primary">{{ _("Sign up") }}</a>
+              <a href="/login" class="btn btn-link text-muted">{{ _("Sign in") }}</a>
             </div>
           </div>
         </div>
@@ -284,9 +290,9 @@
         <i class="fas fa-ghost text-gray-500 mb-4" style="
         font-size: 3.5rem;"></i>
         {% if v %}
-        <div class="h6 text-gray-500">This comment section is a ghost town. Be the first to comment!</div>
+        <div class="h6 text-gray-500">{{ _("This comment section is a ghost town. Be the first to comment!") }}</div>
         {% else %}
-        <div class="h6 text-gray-500">This comment section is a ghost town. <a href="/login">Sign in</a> to comment!</div>
+        <div class="h6 text-gray-500">{{ _('This comment section is a ghost town. <a href="%(url)s">Sign in</a> to comment!', url="/login") }}</div>
         {% endif %}
       </div>
       {% endif %}

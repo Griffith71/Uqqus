@@ -1,7 +1,7 @@
 {% extends "errors/default.html" %}
 
 {% block title %}
-<title>409 Conflict</title>
+<title>{{ _("409 Conflict") }}</title>
 {% endblock %}
 
 {% block pagetype %}error-409{% endblock %}
@@ -11,9 +11,9 @@
 	<div class="col-10 col-md-5">
 	<div class="text-center px-3 my-8">
 			<i class="fas fa-khanda text-muted mb-5" style="font-size: 5rem;"></i>
-			<h1 class="h5">409 Conflict</h1>
-			<p class="text-muted mb-5">There were no survivors.</p>
-			<div><a href="/" class="btn btn-primary">Go to frontpage</a></div>
+			<h1 class="h5">{{ _("409 Conflict") }}</h1>
+			<p class="text-muted mb-5">{{ _("There were no survivors.") }}</p>
+			<div><a href="/" class="btn btn-primary">{{ _("Go to frontpage") }}</a></div>
 		</div>
 	</div>
 </div>

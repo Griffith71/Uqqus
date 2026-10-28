@@ -9,6 +9,7 @@ from flask import *
 
 from ruqqus.helpers.wrappers import *
 from ruqqus.helpers import live_bus
+from ruqqus.helpers.i18n_runtime import tr
 from ruqqus.__main__ import app, limiter, member_limit_key, r
 
 _hub = None
@@ -51,7 +52,7 @@ def live_events(v):
     h = live_hub()
     sub = h.subscribe(v.id, channels)
     if sub is None:
-        return jsonify({"error": "Too many live streams are open. Close a tab and try again."}), 429
+        return jsonify({"error": tr("Too many live streams are open. Close a tab and try again.")}), 429
 
     def get(timeout):
         try:

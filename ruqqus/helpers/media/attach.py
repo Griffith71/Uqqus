@@ -10,6 +10,7 @@ from urllib.parse import urlparse
 from sqlalchemy import text
 
 from ruqqus.helpers import circles
+from ruqqus.helpers.i18n_runtime import tr_lazy
 from . import rules
 
 
@@ -93,8 +94,9 @@ def own_video(db, author_id, url):
     return db.query(MediaAsset).filter_by(user_id=author_id, provider=provider, provider_ref=video_id).first()
 
 
-ANONYMOUS_VIDEO = ("A video uploaded to your YouTube or Dailymotion channel shows your channel's name, "
-                   "so it cannot be added to an anonymous post.")
+# shown only (a refusal when posting or editing): translated each time it is used
+ANONYMOUS_VIDEO = tr_lazy("A video uploaded to your YouTube or Dailymotion channel shows your channel's name, "
+                          "so it cannot be added to an anonymous post.")
 
 
 def link_refusal(db, author_id, hides_author, url):

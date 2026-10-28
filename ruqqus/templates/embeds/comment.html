@@ -4,7 +4,8 @@
 {% import "partials/post_options.html" as post_options %}
 
 {% block title %}
-<title>@{{ author_of(c, v).username }} comments in +{{ c.board.name }} on "{{ c.post.title }}"</title>
+{# Translators: a comment's page title: who commented, in which guild, on which post #}
+<title>{{ _('@%(name)s comments in +%(guild)s on "%(title)s"', name=author_of(c, v).username, guild=c.board.name, title=c.post.title) }}</title>
 <meta name="description" content="{{ c.body }}">
 {% endblock %}
 
@@ -24,20 +25,20 @@
 
         <div id="comment-{{ c.base36id }}-only">
 
-            <div class="user-info">{% if c.is_sensitive %}<span class="badge badge-warning">sensitive content</span> {% endif %}{{ post_options.disclosure_badges(c, v) }}{% if author_of(c, v).title and author_of(c, v).title.is_before %}<span style="color:#{{ author_of(c, v).title.color }}">{{ author_of(c, v).title.text }}</span> {% endif %}<a href="{{ author_of(c, v).permalink }}" class="user-name {% if op_badge(c, c.post, v) %}text-info{% endif %}">{{ author_of(c, v).username }}</a>{% if author_of(c, v).title and not author_of(c, v).title.is_before %}<span style="color:#{{ author_of(c, v).title.color }}">{{ author_of(c, v).title.text }}</span>{% endif %}
+            <div class="user-info">{% if c.is_sensitive %}<span class="badge badge-warning">{{ _("sensitive content") }}</span> {% endif %}{{ post_options.disclosure_badges(c, v) }}{% if author_of(c, v).title and author_of(c, v).title.is_before %}<span style="color:#{{ author_of(c, v).title.color }}">{{ author_of(c, v).title.text }}</span> {% endif %}<a href="{{ author_of(c, v).permalink }}" class="user-name {% if op_badge(c, c.post, v) %}text-info{% endif %}">{{ author_of(c, v).username }}</a>{% if author_of(c, v).title and not author_of(c, v).title.is_before %}<span style="color:#{{ author_of(c, v).title.color }}">{{ author_of(c, v).title.text }}</span>{% endif %}
 		{% if (c.distinguish_level and not anon_hidden(c, v)) or op_badge(c, c.post, v) %}
 		<span> </span>
 			{% if c.distinguish_level and not anon_hidden(c, v) %}
-				<i class="fas fa-shield text-admin" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="{{ 'SITE_NAME' | app_config }} Administrator, speaking officially"></i>
+				<i class="fas fa-shield text-admin" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="{{ _('%(site)s Administrator, speaking officially') }}"></i>
 			{% endif %}
 			{% if op_badge(c, c.post, v) %}
-				<i class="fas fa-microphone-lines text-info" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Submitter"></i>
+				<i class="fas fa-microphone-lines text-info" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="{{ _('Submitter') }}"></i>
 			{% endif %}
 			<span> </span>
 		{% endif %}
                 <span class="time-stamp" data-toggle="tooltip" data-placement="bottom" data-delay='{"show":"700", "hide":"300"}' title="{{ c.created_datetime }}"><span>&#183;</span> {{ c.age_string }}</span>
 		{% if c.edited_utc %}
-		<span class="time-edited" data-toggle="tooltip" data-placement="bottom" data-delay='{"show":"700", "hide":"300"}' title="{{ c.edited_datetime }}"><span>&#183;</span> <span class="font-italic">Edited {{ c.edited_string }}</span></span>
+		<span class="time-edited" data-toggle="tooltip" data-placement="bottom" data-delay='{"show":"700", "hide":"300"}' title="{{ c.edited_datetime }}"><span>&#183;</span> <span class="font-italic">{{ _("Edited %(when)s", when=c.edited_string) }}</span></span>
 		{% endif %}
 
         <span class="comment-collapse d-md-none" onclick="collapse_comment('{{ c.base36id }}')"></span>
@@ -69,18 +70,18 @@
                     </li>
 
 {% endif %}
-                    <li class="list-inline-item text-muted d-none d-md-inline-block"><a href="javascript:void(0);" role="button" class="copy-link" data-clipboard-text="{{ c.permalink | full_link}}"><i class="fas fa-link"></i><span>Copy link</span></a>
+                    <li class="list-inline-item text-muted d-none d-md-inline-block"><a href="javascript:void(0);" role="button" class="copy-link" data-clipboard-text="{{ c.permalink | full_link}}"><i class="fas fa-link"></i><span>{{ _("Copy link") }}</span></a>
                     </li>
                     <li class="list-inline-item d-none d-md-inline-block">
                         <div class="dropdown show">
-                          <a href="#" role="button" id="dropdownMoreLink" aria-label="More options" data-toggle="dropdown" aria-haspopup="true"
+                          <a href="#" role="button" id="dropdownMoreLink" aria-label="{{ _('More options') }}" data-toggle="dropdown" aria-haspopup="true"
                           aria-expanded="false">
                           <i class="fas fa-ellipsis-h"></i>
                       </a>
 
                       <div class="dropdown-menu border-0 shadow" aria-labelledby="dropdownMoreLink">
-                        <a class="dropdown-item" href="{{ c.parent.permalink }}"><i class="fas fa-dna"></i>Parent</a>
-                        <a class="dropdown-item d-none" href="#"><i class="fas fa-save"></i>Save</a>
+                        <a class="dropdown-item" href="{{ c.parent.permalink }}"><i class="fas fa-dna"></i>{{ pgettext("link to the comment this one answers", "Parent") }}</a>
+                        <a class="dropdown-item d-none" href="#"><i class="fas fa-save"></i>{{ pgettext("button", "Save") }}</a>
 
 
                     </div>
@@ -109,16 +110,16 @@
   <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content">
         <div class="modal-header">
-            <h5 class="modal-title h6">More options</h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <h5 class="modal-title h6">{{ _("More options") }}</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="{{ _('Close') }}">
               <span aria-hidden="true"><i class="fas fa-times"></i></span>
           </button>
       </div>
       <div class="modal-body">
           <ul class="list-group comment-actions">
-            <li class="list-group-item"><a href="javascript:void(0);" role="button" class="d-block copy-link" data-dismiss="modal" data-clipboard-text="{{ c.permalink | full_link}}"><i class="fas fa-link"></i><span>Share</span></a>
-                <li class="list-group-item"><a class="d-block" href="{{ c.parent.permalink }}"><i class="fas fa-dna"></i>Parent</a></li>
-                <li class="list-group-item d-none"><a href="#" class="d-block"><i class="fas fa-save"></i>Save</a></li>
+            <li class="list-group-item"><a href="javascript:void(0);" role="button" class="d-block copy-link" data-dismiss="modal" data-clipboard-text="{{ c.permalink | full_link}}"><i class="fas fa-link"></i><span>{{ pgettext("verb", "Share") }}</span></a>
+                <li class="list-group-item"><a class="d-block" href="{{ c.parent.permalink }}"><i class="fas fa-dna"></i>{{ pgettext("link to the comment this one answers", "Parent") }}</a></li>
+                <li class="list-group-item d-none"><a href="#" class="d-block"><i class="fas fa-save"></i>{{ pgettext("button", "Save") }}</a></li>
 
              
             </ul>

@@ -24,7 +24,8 @@ from ruqqus.__main__ import app, limiter, member_limit_key, r
 from ruqqus.helpers import live_threads as live_rules
 from ruqqus.helpers import live_thread_store as live_store
 from ruqqus.helpers import live_view, livestream_status, live_bus, anonymity
-from ruqqus.helpers.alerts import send_notification
+from ruqqus.helpers.alerts import notify
+from ruqqus.helpers.i18n_runtime import N_, tr, tr_lazy
 from ruqqus.helpers.visibility import text_hidden
 
 _DAY = 86400
@@ -122,7 +123,7 @@ def thread_json(primary, v, row=None):
     }
 
 
-SPACE_REFUSAL = "This is a Space: its host and co-hosts post its updates from the Space."
+SPACE_REFUSAL = tr_lazy("This is a Space: its host and co-hosts post its updates from the Space.")
 
 
 def _space_refusal(primary):
@@ -153,7 +154,7 @@ def live_toggle(pid, v):
     live = bool(row) and live_rules.is_live(row[0], row[1], row[2], now, row[4])
     if request.values.get("on") == "0":
         if not may:
-            return _error("Only the post's author and co-authors can end its live updates.", 403)
+            return _error(tr("Only the post's author and co-authors can end its live updates."), 403)
         live_store.end(g.db, primary.id, now)
         # a live-thread Space ends with its thread (helpers/space_ending.py: not recorded, it leaves nothing)
         if primary.is_space:
@@ -169,9 +170,9 @@ def live_toggle(pid, v):
         return error
     if request.values.get("extend") == "1":
         if not may:
-            return _error("Only the post's author and co-authors can extend its live updates.", 403)
+            return _error(tr("Only the post's author and co-authors can extend its live updates."), 403)
         if not live:
-            return _error("This post isn't live.", 409)
+            return _error(tr("This post isn't live."), 409)
         live_store.extend(g.db, primary.id, live_rules.extend_until(row[0], now, hours))
         if primary.is_space:
             from ruqqus.helpers import space_store
@@ -182,11 +183,12 @@ def live_toggle(pid, v):
     # live updates are part of Spaces now (routes/spaces.py): no post starts a thread any more. One that is running can
     # still be extended, ended and written in, and every thread stays readable
     if not live:
-        return _error("Live updates are part of Spaces now: start a Space from Spaces.", 409)
+        return _error(tr("Live updates are part of Spaces now: start a Space from Spaces."), 409)
     stopped = live_rules.ended_at(row[0], row[1], row[2], row[4]) if row and not live else 0
     refusal = live_rules.start_refusal(may, bool(primary.is_banned), bool(primary.deleted_utc), live, stopped, now)
     if refusal:
-        return _error(refusal, 403 if refusal.startswith("Only") else 409)
+        # the refusal is in the reader's language: who may run it decides the status, never its words
+        return _error(refusal, 403 if not may else 409)
     start_thread(primary, v, now, hours)
     g.db.commit()
     # the people who follow the post (helpers/post_follows.py) and may still read it
@@ -194,7 +196,7 @@ def live_toggle(pid, v):
     from ruqqus.routes.comments import _followers_who_may_read
     ids = post_follows.followers(g.db, primary.id, v.id, anonymous=bool(primary.is_anonymous))
     for user in g.db.query(User).filter(User.id.in_(_followers_who_may_read(primary, ids))).all() if ids else []:
-        send_notification(user, f"A post you follow is live: [see the updates]({primary.permalink})")
+        notify(user, N_("A post you follow is live: [see the updates](%(link)s)"), link=primary.permalink)
     live_bus.publish(r, _topic(primary), "live.status", {})
     return jsonify({"live": True, "thread": thread_json(primary, v)})
 
@@ -250,7 +252,9 @@ def live_update_add(pid, v):
     refusal = live_rules.update_refusal(live_rules.may_run(v.id, primary.author_id, _runners(primary)), live,
                                         live_store.updates_since(g.db, primary.id, now - _DAY))
     if refusal:
-        return _error(refusal, 403 if refusal.startswith("Only") else 409)
+        # the refusal is in the reader's language: who may run it decides the status, never its words
+        may = live_rules.may_run(v.id, primary.author_id, _runners(primary))
+        return _error(refusal, 403 if not may else 409)
     uid = live_store.add_update(g.db, primary.id, v.id, body, _render(body, primary), _severity(body), now)
     g.db.commit()
     live_bus.publish(r, _topic(primary), "live.update", {"id": uid})
@@ -301,9 +305,9 @@ def live_summary(pid, v):
     if refused:
         return refused
     if not live_rules.may_run(v.id, primary.author_id, _runners(primary)):
-        return _error("Only the post's author and co-authors can edit the summary.", 403)
+        return _error(tr("Only the post's author and co-authors can edit the summary."), 403)
     if live_store.thread(g.db, primary.id) is None:
-        return _error("This post has no live thread.", 409)
+        return _error(tr("This post has no live thread."), 409)
     try:
         body = live_rules.clean_summary(request.values.get("summary"))
     except live_rules.Refused as e:

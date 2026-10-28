@@ -15,7 +15,12 @@ call is small: each person uploads one stream per other person.
   is not in the call can't listen in, and neither the relay nor the server can stand in the middle.
 - **Who is in a call** is known to the server (heartbeats every HEARTBEAT_SECONDS, gone after HEARTBEAT_TTL), never
   what is said. A call lasts at most MAX_CALL_SECONDS; a 1:1 call rings for RING_SECONDS.
+
+The refusals stay English (they are compared): `shown` gives one in the reader's language. The summary line stays
+English too (it is written into the chat's room, which everyone in it reads); `summary_data` goes with it so each
+reader's chat draws it in their own language (ui.js).
 """
+from ruqqus.helpers.i18n_runtime import N_, msg, trn
 
 AUDIO, VIDEO = "audio", "video"
 KINDS = (AUDIO, VIDEO)
@@ -30,11 +35,21 @@ STARTS_PER_HOUR = 20
 
 SIGNAL_TYPE = "org.uqqus.call.signal"       # the to-device event the browsers exchange
 
-NOT_ALLOWED = "You can't call in this chat."
-REQUEST_FIRST = "You can call once they've accepted your message request."
-FULL = f"This call is full ({AUDIO_MAX} people)."
+NOT_ALLOWED = N_("You can't call in this chat.")
+REQUEST_FIRST = N_("You can call once they've accepted your message request.")
+FULL = f"This call is full ({AUDIO_MAX} people)."                         # shown with `shown`
 VOICE_FULL = f"This voice channel is full ({AUDIO_MAX} people)."
-TOO_MANY_STARTS = "You've started a lot of calls in the last hour. Try again later."
+TOO_MANY_STARTS = N_("You've started a lot of calls in the last hour. Try again later.")
+
+
+def shown(refusal):
+    """A refusal (one of the constants above, or another English message) in the reader's language."""
+    if refusal == FULL:
+        return trn("This call is full (%(num)s person).", "This call is full (%(num)s people).", AUDIO_MAX)
+    if refusal == VOICE_FULL:
+        return trn("This voice channel is full (%(num)s person).", "This voice channel is full (%(num)s people).",
+                   AUDIO_MAX)
+    return msg(refusal)
 
 
 def parse_kind(value):
@@ -78,5 +93,11 @@ def duration_label(seconds):
 
 
 def summary(kind, seconds):
-    """The line the last person to leave writes into the chat (call.js), e.g. "Video call · 12 min"."""
+    """The line the last person to leave writes into the chat (call.js), e.g. "Video call · 12 min". English on
+    purpose: the room's members read one event; they draw `summary_data` in their own language."""
     return f"{'Video call' if kind == VIDEO else 'Voice call'} · {duration_label(seconds)}"
+
+
+def summary_data(kind, seconds):
+    """What the summary says, as data (call.js puts it in the event as `org.uqqus.call_summary`)."""
+    return {"kind": VIDEO if kind == VIDEO else AUDIO, "seconds": max(0, int(seconds))}

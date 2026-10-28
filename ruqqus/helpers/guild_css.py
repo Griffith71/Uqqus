@@ -9,7 +9,9 @@ all (`@import`, `@namespace`, `image-set()` and the other functions that take a 
 import re
 from urllib.parse import urlsplit
 
-NO_OUTSIDE = "No external links allowed."
+from ruqqus.helpers.i18n_runtime import tr_lazy
+
+NO_OUTSIDE = tr_lazy("No external links allowed.")
 
 _LOADERS = re.compile(r"(?<![a-z0-9_-])(?:-webkit-|-moz-)?(?:image-set|image|cross-fade|element|paint|src)\s*\(")
 _URL = re.compile(r"url\(\s*(?:\"([^\"]*)\"|'([^']*)'|([^\s'\")]*))\s*\)")

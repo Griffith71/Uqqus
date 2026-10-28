@@ -3,7 +3,7 @@
 {% block pagetype %}regions{% endblock %}
 
 {% block title %}
-<title>Regions - {{ 'SITE_NAME' | app_config }}</title>
+<title>{{ _("Regions - %(site)s") }}</title>
 {% endblock %}
 
 {% block stylesheets %}
@@ -40,14 +40,14 @@
 {% block content %}
 <div class="col px-0 py-4">
 
-  <h1 class="h3">Regions</h1>
+  <h1 class="h3">{{ _("Regions") }}</h1>
   <p class="text-muted">
-    Every account's "Account Based In" field shows one of these broad regions instead of an exact country, so nobody's
-    real location is exposed. If you're a member of a region, you can propose and vote on a better name for it below.
+    {% trans %}Every account's "Account Based In" field shows one of these broad regions instead of an exact country, so nobody's
+    real location is exposed. If you're a member of a region, you can propose and vote on a better name for it below.{% endtrans %}
   </p>
 
   <div class="d-flex justify-content-end mb-2">
-    <a href="javascript:void(0)" id="reset-map-view" class="text-small text-muted"><i class="fas fa-expand"></i> Reset view</a>
+    <a href="javascript:void(0)" id="reset-map-view" class="text-small text-muted"><i class="fas fa-expand"></i> {{ _("Reset view") }}</a>
   </div>
   <div id="world-map" class="mb-4 border rounded"></div>
 
@@ -58,10 +58,11 @@
         <div class="card-body">
           <div class="d-flex align-items-center mb-2">
             <span class="rounded-circle d-inline-block mr-2" style="width: 14px; height: 14px; background-color: {{ region.color }}; flex-shrink: 0;"></span>
-            <h6 class="mb-0">{{ region.current_name }}</h6>
+            <h6 class="mb-0">{{ msg_text(region.current_name) }}</h6>
           </div>
           <a class="text-muted text-small d-inline-block mb-2" data-toggle="collapse" href="#countries-{{ region.code }}" role="button" aria-expanded="false" aria-controls="countries-{{ region.code }}">
-            {{ region_countries.get(region.code, []) | length }} territories <i class="fas fa-caret-down"></i>
+            {# Translators: how many countries and territories a region is made of #}
+            {{ ngettext("%(num)s territories", "%(num)s territories", region_countries.get(region.code, []) | length) }} <i class="fas fa-caret-down"></i>
           </a>
           <div class="collapse" id="countries-{{ region.code }}">
             <ul class="list-unstyled text-small text-muted mb-2 mt-1">
@@ -73,7 +74,7 @@
 
           {% if v and v.display_region == region.code %}
           <hr>
-          <div class="font-weight-bold text-small text-uppercase text-muted mb-2">Vote on this region's name</div>
+          <div class="font-weight-bold text-small text-uppercase text-muted mb-2">{{ _("Vote on this region's name") }}</div>
 
           {% set proposals = proposals_by_region.get(region.id, []) %}
           {% if proposals %}
@@ -85,15 +86,15 @@
             </form>
             {% endfor %}
           {% else %}
-          <div class="text-muted text-small mb-2">No name proposals yet - be the first!</div>
+          <div class="text-muted text-small mb-2">{{ _("No name proposals yet - be the first!") }}</div>
           {% endif %}
 
           <form method="post" action="/regions/{{ region.code }}/propose" class="mt-2">
             <input type="hidden" name="formkey" value="{{ v.formkey }}">
             <div class="input-group input-group-sm">
-              <input type="text" name="proposed_name" maxlength="64" class="form-control" placeholder="Propose a name" required>
+              <input type="text" name="proposed_name" maxlength="64" class="form-control" placeholder="{{ _('Propose a name') }}" required>
               <div class="input-group-append">
-                <button type="submit" class="btn btn-outline-primary">Propose</button>
+                <button type="submit" class="btn btn-outline-primary">{{ pgettext("button", "Propose") }}</button>
               </div>
             </div>
           </form>

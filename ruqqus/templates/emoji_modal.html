@@ -5,10 +5,10 @@
 			<div class="modal-header border-bottom-0">
 				<div>
 					<h5 class="modal-title">
-						Select an emoji
+						{{ _("Select an emoji") }}
 					</h5>
 				</div>
-				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+				<button type="button" class="close" data-dismiss="modal" aria-label="{{ _('Close') }}">
 					<i class="fas fa-times text-muted"></i>
 				</button>
 			</div>
@@ -17,10 +17,10 @@
 					<a class="nav-link text-small active" data-toggle="tab" href="#emoji-tab-ruqqus">{{ 'SITE_NAME' | app_config }}</a>
 				</li>
 				<li class="nav-item flex-fill text-center">
-					<a class="nav-link text-small" data-toggle="tab" href="#emoji-tab-animated">Animated</a>
+					<a class="nav-link text-small" data-toggle="tab" href="#emoji-tab-animated">{{ pgettext("emoji tab", "Animated") }}</a>
 				</li>
 				<li class="nav-item flex-fill text-center">
-					<a class="nav-link text-small" data-toggle="tab" href="#emoji-tab-reaction">Reaction</a>
+					<a class="nav-link text-small" data-toggle="tab" href="#emoji-tab-reaction">{{ pgettext("emoji tab", "Reaction") }}</a>
 				</li>
 			</ul>
 			<div style="overflow-y: scroll;">
@@ -35,14 +35,14 @@
 							<div class="position-absolute w-full h-100 d-flex align-items-center justify-content-center" style="left: 0; right: 0;z-index: 1">
 								<div class="text-center">
 									<div class="h6">
-										Unlock animated emojis with {{ 'SITE_NAME' | app_config }} Premium.
+										{{ _("Unlock animated emojis with %(site)s Premium.") }}
 									</div>
 									<div class="text-small-extra text-muted mb-3">
-										Support {{ 'SITE_NAME' | app_config }} today :)
+										{{ _("Support %(site)s today :)") }}
 									</div>
 									<a href="/settings/premium" class="btn btn-warning btn-lg shadow-sm">
 										<img src="/assets/images/icons/ruqqus-coin.png" class="mr-2 mt-n1" style="width: 15px;"/>
-										Get coins
+										{{ _("Get coins") }}
 									</a>
 								</div>
 							</div>

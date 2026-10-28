@@ -4,17 +4,17 @@
   <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="setFlairModalTitle">Set flair</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true"><i class="fas fa-times"></i></span></button>
+        <h5 class="modal-title" id="setFlairModalTitle">{{ _("Set flair") }}</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="{{ _('Close') }}"><span aria-hidden="true"><i class="fas fa-times"></i></span></button>
       </div>
       <div class="modal-body">
-        <label class="text-small font-weight-bold mb-1" for="set-flair-select">Flair in <span id="set-flair-guild"></span></label>
+        <label class="text-small font-weight-bold mb-1" for="set-flair-select">{# Translators: the guild's name, filled in by the page #}{{ _("Flair in %(guild)s", guild='<span id="set-flair-guild"></span>'|safe) }}</label>
         <select class="custom-select" id="set-flair-select"></select>
         <div class="text-danger small mt-2" id="set-flair-error" role="alert" hidden></div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-link text-muted" data-dismiss="modal">Cancel</button>
-        <button type="button" class="btn btn-primary" id="set-flair-save">Save</button>
+        <button type="button" class="btn btn-link text-muted" data-dismiss="modal">{{ _("Cancel") }}</button>
+        <button type="button" class="btn btn-primary" id="set-flair-save">{{ pgettext("button", "Save") }}</button>
       </div>
     </div>
   </div>

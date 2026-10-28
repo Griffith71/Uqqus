@@ -24,6 +24,7 @@ from urllib.parse import urlparse
 
 from . import dailymotion_oauth, oauth, rules
 from .base import Provider, ProviderDown
+from ..i18n_runtime import tr
 
 API = dailymotion_oauth.API
 CHANNEL = "people"                     # Dailymotion's category for a member's own videos
@@ -71,7 +72,8 @@ class DailymotionProvider(Provider):
         address = _json(r).get("upload_url")
         if r.status_code != 200 or not address:
             if _limit_reached(r):
-                raise rules.MediaError("Dailymotion is not taking more uploads from your account today. Try again tomorrow.", 429)
+                raise rules.MediaError(tr("Dailymotion is not taking more uploads from your account today. Try again tomorrow."),
+                                      429)
             raise ProviderDown(f"Dailymotion did not start the upload ({r.status_code})")
         wanted = rules.video_visibility(details.get("visibility") or account.setting("video_visibility"))
         oauth.remember(_session_key(asset), json.dumps({
@@ -84,9 +86,9 @@ class DailymotionProvider(Provider):
     def finish_upload(self, account, asset, answer=None):
         raw = oauth.recall(_session_key(asset))
         if not raw:
-            raise rules.MediaError("That upload expired. Add the video again.")
+            raise rules.MediaError(tr("That upload expired. Add the video again."))
         if not upload_address_ok(answer):
-            raise rules.MediaError("The video did not finish uploading to Dailymotion. Add it again.")
+            raise rules.MediaError(tr("The video did not finish uploading to Dailymotion. Add it again."))
         session = json.loads(raw)
         unlisted = session.get("wanted") != "public"
         r = self._api(account, "POST", f"{API}/me/videos", params={"fields": "id,private_id,private,status"}, data={
@@ -101,10 +103,11 @@ class DailymotionProvider(Provider):
         video = _json(r)
         if r.status_code not in (200, 201) or not video.get("id"):
             if _limit_reached(r):
-                raise rules.MediaError("Dailymotion is not taking more uploads from your account today. Try again tomorrow.", 429)
+                raise rules.MediaError(tr("Dailymotion is not taking more uploads from your account today. Try again tomorrow."),
+                                      429)
             raise ProviderDown(f"Dailymotion answered {r.status_code}")
         if video.get("status") in ("rejected", "deleted"):
-            raise rules.MediaError("Dailymotion did not accept that video.")
+            raise rules.MediaError(tr("Dailymotion did not accept that video."))
         oauth.forget_key(_session_key(asset))
         # an unlisted video plays only through its private id; that id is what the post links to
         ref = video.get("private_id") if unlisted and video.get("private_id") else video["id"]

@@ -11,8 +11,11 @@
       var when = new Date(ts * 1000);
       var today = new Date();
       var sameDay = when.toDateString() === today.toDateString();
-      el.textContent = (sameDay ? 'Today, ' : when.toLocaleDateString([], { weekday: 'short', day: 'numeric', month: 'short' }) + ', ')
-        + when.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
+      var time = when.toLocaleTimeString(I18N.intl, { hour: 'numeric', minute: '2-digit' });
+      // Translators: when a scheduled Space starts; %(time)s is a time of day
+      if (sameDay) el.textContent = tr('Today, %(time)s', {time: time});
+      // Translators: when a scheduled Space starts; %(date)s is a short date ("Fri, 24 Oct"), %(time)s a time of day
+      else el.textContent = tr('%(date)s, %(time)s', {date: when.toLocaleDateString(I18N.intl, { weekday: 'short', day: 'numeric', month: 'short' }), time: time});
       el.dataset.formatted = '1';
     });
   }
@@ -51,7 +54,7 @@
     }).then(function (r) { return r.ok ? r.json() : null; }).then(function (data) {
       if (!data) return;
       button.setAttribute('aria-pressed', data.reminded ? 'true' : 'false');
-      button.textContent = data.reminded ? 'Reminder set' : 'Remind me';
+      button.textContent = data.reminded ? tr('Reminder set') : tr('Remind me');
       button.classList.toggle('btn-secondary', !!data.reminded);
       button.classList.toggle('btn-outline-primary', !data.reminded);
     }).catch(function () {}).then(function () { button.disabled = false; });

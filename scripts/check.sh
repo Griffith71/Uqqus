@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
-# Run every local quality check: legacy Python (ruff + pytest). web/ is parked and not checked.
+# Run every local quality check: legacy Python (ruff + pytest) and the interface languages (no unmarked text, every
+# catalogue safe to draw: docs/i18n.md). web/ is parked and not checked.
 # Usage: bash scripts/check.sh   (needs .venv from requirements-dev.txt)
 set -euo pipefail
 cd "$(dirname "$0")/.."

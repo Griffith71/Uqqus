@@ -10,6 +10,7 @@ authentication switched on or off, a reset by email (which also makes that reset
 nonce), and "log out all other devices". The browser that made the change keeps its own sign-in by taking the new
 number into its cookie.
 """
+from ruqqus.helpers.i18n_runtime import tr_lazy
 
 
 def end_other_sessions(user, session=None):
@@ -21,4 +22,4 @@ def end_other_sessions(user, session=None):
     return user.login_nonce
 
 
-OTHERS_SIGNED_OUT = "Your other devices have been signed out."
+OTHERS_SIGNED_OUT = tr_lazy("Your other devices have been signed out.")

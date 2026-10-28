@@ -20,7 +20,14 @@ from ruqqus.helpers import guild_events as event_rules
 from ruqqus.helpers import guild_event_store as event_store
 from ruqqus.helpers import bell as bell_rules
 from ruqqus.helpers.visibility import text_hidden
+from ruqqus.helpers import i18n
+from ruqqus.helpers.i18n_runtime import N_, babel_locale, current_locale, date_text, tr
 from ruqqus.routes.guild_wiki import visible_guild, _render, _severity, _content_gm, _log
+
+
+# the reminder an hour before an event (stored in English, drawn in each reader's language: helpers/alerts.py notify)
+REMINDER = N_("**%(title)s** in +%(guild)s starts within the hour: [see the event](/+%(guild)s/events/%(event)s)")
+REMINDER_HIDDEN = N_("An event in +%(guild)s starts within the hour: [see the event](/+%(guild)s/events/%(event)s)")
 
 
 def _error(message, status=400):
@@ -42,7 +49,7 @@ def _view(row, v, counts, now):
     """What a page draws of one event, as this reader may see it."""
     hidden = text_hidden(row[6], v)
     return {
-        "id": row[0], "title": "Event hidden by your word filter" if hidden else row[3], "hidden": hidden,
+        "id": row[0], "title": tr("Event hidden by your word filter") if hidden else row[3], "hidden": hidden,
         "details_html": "" if hidden else row[5], "starts_utc": row[7], "ends_utc": row[8],
         "location_url": row[9], "location_text": row[10], "space_post_id": row[11],
         "status": event_rules.status_of((row[7], row[8], row[12]), now),
@@ -64,11 +71,11 @@ def _space_post_id(value):
     try:
         _, b36 = wiki_rules.clean_resource_target(wiki_rules.POST, value)
     except wiki_rules.Refused:
-        raise event_rules.Refused("Give the Space's post link.")
+        raise event_rules.Refused(tr("Give the Space's post link."))
     from ruqqus.helpers import space_store
     pid = base36decode(b36)
     if not space_store.for_posts(g.db, [pid]):
-        raise event_rules.Refused("That post isn't a Space.")
+        raise event_rules.Refused(tr("That post isn't a Space."))
     return pid
 
 
@@ -197,7 +204,7 @@ def guild_events_ics(guildname):
     _public_or_404(board)
     now = _now()
     rows = list(event_store.past(g.db, board.id, now, limit=20)) + list(event_store.upcoming(g.db, board.id, now, limit=200))
-    body = event_rules.ics(_ics_events(board, rows), host=app.config["SERVER_NAME"], name=f"+{board.name} events", now=now)
+    body = event_rules.ics(_ics_events(board, rows), host=app.config["SERVER_NAME"], name=tr("+%(guild)s events", guild=board.name), now=now)
     return _ics_response(body, f"{board.name}-events.ics")
 
 
@@ -206,7 +213,7 @@ def guild_event_ics(guildname, eid):
     board = visible_guild(guildname, None, need_wiki=False)
     _public_or_404(board)
     row = _event_or_404(board, eid)
-    body = event_rules.ics(_ics_events(board, [row]), host=app.config["SERVER_NAME"], name=f"+{board.name} events",
+    body = event_rules.ics(_ics_events(board, [row]), host=app.config["SERVER_NAME"], name=tr("+%(guild)s events", guild=board.name),
                            now=_now())
     return _ics_response(body, f"{board.name}-event-{eid}.ics")
 
@@ -265,7 +272,7 @@ def guild_event_save(guildname, eid, v):
         abort(403)
     row = _event_or_404(board, eid)
     if row[12]:
-        return _error("A cancelled event can't be changed.", 409)
+        return _error(tr("A cancelled event can't be changed."), 409)
     try:
         fields = _fields(_now(), keep_start=row[7])
     except event_rules.Refused as e:
@@ -319,7 +326,7 @@ def guild_event_rsvp(guildname, eid, v):
 def send_due_reminders(db_session, now=None):
     """Tells everyone who answered an event starting within the hour, once (`claim_reminder`), if they can still see
     the guild. The notice names the event unless the person's word filter hides its title. Returns how many told."""
-    from ruqqus.helpers.alerts import send_notification
+    from ruqqus.helpers.alerts import notify
     now = now or _now()
     told = 0
     with app.test_request_context():
@@ -336,9 +343,10 @@ def send_due_reminders(db_session, now=None):
                     user = g.db.query(User).filter_by(id=uid).first()
                     if user is None or user.is_deleted or user.is_suspended or not board.can_view(user) or board.has_ban(user):
                         continue
-                    name = "An event" if text_hidden(row[6], user) else f"**{_md_plain(row[3])}**"
-                    send_notification(user, f"{name} in +{board.name} starts within the hour: "
-                                            f"[see the event](/+{board.name}/events/{row[0]})")
+                    if text_hidden(row[6], user):
+                        notify(user, REMINDER_HIDDEN, guild=board.name, event=row[0])
+                    else:
+                        notify(user, REMINDER, title=_md_plain(row[3]), guild=board.name, event=row[0])
                     told += 1
         finally:
             g.db.close()
@@ -358,6 +366,8 @@ def iso_utc(utc):
 @app.template_filter("day_badge")
 def day_badge(utc):
     """"16 Oct" (UTC; the script writes the reader's own day)."""
+    if current_locale() != i18n.ENGLISH:
+        return date_text(int(utc or 0), "%d %b", "d MMM")
     t = time.gmtime(int(utc or 0))
     return f"{t.tm_mday} {time.strftime('%b', t)}"
 
@@ -365,7 +375,22 @@ def day_badge(utc):
 @app.template_filter("month_name")
 def month_name(month):
     import calendar
-    return calendar.month_name[int(month)]
+    if current_locale() == i18n.ENGLISH:
+        return calendar.month_name[int(month)]
+    from babel.dates import get_month_names
+    return get_month_names("wide", context="stand-alone", locale=babel_locale())[int(month)]
+
+
+@app.template_global("month_year")
+def month_year(month, year):
+    """"October 2026", the calendar's heading: one date in the reader's language (CLDR "LLLL y"), never a month name
+    and a year put side by side (English exactly as month_name and the year wrote it)."""
+    import calendar
+    if current_locale() == i18n.ENGLISH:
+        return f"{calendar.month_name[int(month)]} {year}"
+    from datetime import date
+    from babel.dates import format_date
+    return format_date(date(int(year), int(month), 1), format="LLLL y", locale=babel_locale())
 
 
 @app.template_filter("link_host")

@@ -9,6 +9,8 @@ voted for what."""
 import math
 import re
 
+from babel.support import LazyProxy
+
 from ruqqus.helpers import text_length
 from ruqqus.helpers.i18n_runtime import tr, trn
 
@@ -16,8 +18,17 @@ MIN_OPTIONS = 2
 MAX_OPTIONS = 4
 OPTION_CHARS = 40
 
-# the lengths on offer: never a free number
-DURATIONS = ((1, "1 hour"), (6, "6 hours"), (24, "1 day"), (72, "3 days"), (168, "7 days"))
+
+
+def _length_label(hours):
+    """A length on offer as the reader reads it: "6 hours", "3 days"."""
+    if hours < 24:
+        return trn("%(num)s hour", "%(num)s hours", hours)
+    return trn("%(num)s day", "%(num)s days", hours // 24)
+
+
+# the lengths on offer: never a free number (the labels are worked out in each reader's language when shown)
+DURATIONS = tuple((hours, LazyProxy(_length_label, hours, enable_cache=False)) for hours in (1, 6, 24, 72, 168))
 HOURS = tuple(hours for hours, _ in DURATIONS)
 DEFAULT_HOURS = 24
 
@@ -47,14 +58,14 @@ def clean_options(raw, complete=True):
                                 "count as 2).", OPTION_CHARS))
         key = text.casefold()
         if key in seen:
-            raise PollError(f"“{text}” is in the poll twice.")
+            raise PollError(tr("“%(option)s” is in the poll twice.", option=text))
         seen.add(key)
         options.append(text)
 
     if len(options) > MAX_OPTIONS:
-        raise PollError(f"A poll can have {MAX_OPTIONS} options at most.")
+        raise PollError(trn("A poll can have %(num)s option at most.", "A poll can have %(num)s options at most.", MAX_OPTIONS))
     if complete and options and len(options) < MIN_OPTIONS:
-        raise PollError(f"A poll needs at least {MIN_OPTIONS} options.")
+        raise PollError(trn("A poll needs at least %(num)s option.", "A poll needs at least %(num)s options.", MIN_OPTIONS))
     return options
 
 
@@ -65,7 +76,7 @@ def clean_hours(raw):
         return DEFAULT_HOURS
     if re.fullmatch(r"[0-9]{1,4}", value) and int(value) in HOURS:
         return int(value)
-    raise PollError("Pick how long the poll runs.")
+    raise PollError(tr("Pick how long the poll runs."))
 
 
 def option_text(options):
@@ -105,24 +116,22 @@ def time_left(closes_utc, now):
     """"Final results", or how long is left, in the biggest whole unit ("3 hours left")."""
     seconds = int(closes_utc) - int(now)
     if seconds <= 0:
-        return "Final results"
+        return tr("Final results")
     if seconds < 3600:
-        count, unit = max(1, math.ceil(seconds / 60)), "minute"
-    elif seconds < 48 * 3600:
-        count, unit = math.ceil(seconds / 3600), "hour"
-    else:
-        count, unit = math.ceil(seconds / 86400), "day"
-    return f"{count} {unit}{'' if count == 1 else 's'} left"
+        return trn("%(num)s minute left", "%(num)s minutes left", max(1, math.ceil(seconds / 60)))
+    if seconds < 48 * 3600:
+        return trn("%(num)s hour left", "%(num)s hours left", math.ceil(seconds / 3600))
+    return trn("%(num)s day left", "%(num)s days left", math.ceil(seconds / 86400))
 
 
 def vote_refusal(gone, closed, voted, option_known):
     """Why a vote can't be counted, or None."""
     if gone:
-        return "This poll is no longer available."
+        return tr("This poll is no longer available.")
     if closed:
-        return "This poll has ended."
+        return tr("This poll has ended.")
     if voted:
-        return "You already voted in this poll."
+        return tr("You already voted in this poll.")
     if not option_known:
-        return "Pick one of the options."
+        return tr("Pick one of the options.")
     return None

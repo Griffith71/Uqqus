@@ -24,6 +24,7 @@ Since 2026-10-16 it reads like Reddit's live threads (the owner's choice):
 - **Who is watching** is a count only, never who: a page counts while it has asked in the last WATCH_SECONDS.
 """
 
+from ruqqus.helpers.i18n_runtime import number_text, tr, trn
 from ruqqus.helpers.polls import DURATIONS
 
 MAX_DAYS = 7
@@ -67,7 +68,7 @@ def clean_hours(raw):
         return DEFAULT_HOURS
     if value.isascii() and value.isdigit() and int(value) in HOURS:
         return int(value)
-    raise Refused("Pick how long the live thread runs.")
+    raise Refused(tr("Pick how long the live thread runs."))
 
 
 def extend_until(started_utc, now, hours):
@@ -82,14 +83,15 @@ def may_run(viewer_id, author_id, coauthor_ids):
 def start_refusal(may, removed, deleted, already_live, stopped_utc=0, now=0):
     """Why the thread can't start (or start again) now. `stopped_utc`: when it last stopped, if it ran before."""
     if not may:
-        return "Only the post's author and co-authors can run its live updates."
+        return tr("Only the post's author and co-authors can run its live updates.")
     if removed or deleted:
-        return "This post can't go live."
+        return tr("This post can't go live.")
     if already_live:
-        return "This post is live already."
+        return tr("This post is live already.")
     if stopped_utc and now - stopped_utc < RESTART_WAIT:
         minutes = max(1, (RESTART_WAIT - (now - stopped_utc) + 59) // 60)
-        return f"This live thread ended a moment ago. It can go live again in {minutes} min."
+        return trn("This live thread ended a moment ago. It can go live again in %(num)s min.",
+                   "This live thread ended a moment ago. It can go live again in %(num)s min.", minutes)
     return None
 
 
@@ -102,34 +104,38 @@ def clean_summary(text):
     """The pinned summary as written (empty clears it)."""
     body = (text or "").strip()
     if len(body) > SUMMARY_MAX:
-        raise Refused(f"The summary can be at most {SUMMARY_MAX:,} characters.")
+        raise Refused(trn("The summary can be at most %(num)s character.", "The summary can be at most %(num)s characters.",
+                           SUMMARY_MAX, num=number_text(SUMMARY_MAX)))
     return body
 
 
 def runners_line(names, anonymous):
     """Who writes the updates, for the header: "Updates by @a and @b" (an anonymous post: the author, unnamed)."""
     if anonymous or not names:
-        return "Updates by the author"
+        return tr("Updates by the author")
     names = [f"@{n}" for n in names]
     if len(names) == 1:
-        return f"Updates by {names[0]}"
-    return f"Updates by {', '.join(names[:-1])} and {names[-1]}"
+        return tr("Updates by %(name)s", name=names[0])
+    # Translators: names is a list of @handles separated by commas, last is the final @handle
+    return tr("Updates by %(names)s and %(last)s", names=", ".join(names[:-1]), last=names[-1])
 
 
 def clean_update(text):
     body = (text or "").strip()
     if not body:
-        raise Refused("Write the update first.")
+        raise Refused(tr("Write the update first."))
     if len(body) > UPDATE_MAX:
-        raise Refused(f"An update can be at most {UPDATE_MAX:,} characters.")
+        raise Refused(trn("An update can be at most %(num)s character.", "An update can be at most %(num)s characters.",
+                           UPDATE_MAX, num=number_text(UPDATE_MAX)))
     return body
 
 
 def update_refusal(may, live, today):
     if not may:
-        return "Only the post's author and co-authors can post updates."
+        return tr("Only the post's author and co-authors can post updates.")
     if not live:
-        return "This post isn't live."
+        return tr("This post isn't live.")
     if today >= UPDATES_PER_DAY:
-        return f"A post can have at most {UPDATES_PER_DAY} updates a day."
+        return trn("A post can have at most %(num)s update a day.", "A post can have at most %(num)s updates a day.",
+                   UPDATES_PER_DAY)
     return None

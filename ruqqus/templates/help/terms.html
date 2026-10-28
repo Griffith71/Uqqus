@@ -9,6 +9,8 @@
 
 
 {% block content %}
+{% if ui_locale() != "en" %}<p class="legal-english-note text-muted text-small">{{ _("This page is in English: the English text is the binding version.") }}</p>{% endif %}
+<div lang="en" dir="ltr">
 <h1 class="article-title">Terms of Service</h1>
 {% filter markdown %}
 
@@ -166,5 +168,6 @@ Whenever {{ 'SITE_NAME' | app_config }} updates these terms of service or the Co
 <a id="agreebox" href="javascript:void(0)" class="btn btn-primary" onclick="post('/api/agree_tos', callback=function(){window.history.back()})">I agree.</a>
 
 {% endif %}
+</div>
 {% endblock %}
 

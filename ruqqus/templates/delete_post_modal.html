@@ -3,8 +3,8 @@
   <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content">
       <div class="modal-header d-none d-md-flex">
-        <h5 class="modal-title">Delete post?</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <h5 class="modal-title">{{ _("Delete post?") }}</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="{{ _('Close') }}">
           <span aria-hidden="true"><i class="fas fa-times"></i></span>
         </button>
       </div>
@@ -20,25 +20,25 @@
           </span>
         </div>
 
-        <div class="h4 d-md-none">Delete post?</div>
+        <div class="h4 d-md-none">{{ _("Delete post?") }}</div>
 
-        <p class="d-none d-md-block">Your post will be taken off your profile, feeds and guilds. Its text stays readable in the public <a href="/log/deleted">Deletion log</a>. This can't be undone.</p>
+        <p class="d-none d-md-block">{{ _('Your post will be taken off your profile, feeds and guilds. Its text stays readable in the public <a href="%(url)s">Deletion log</a>. This can\'t be undone.', url="/log/deleted") }}</p>
 
-        <p class="text-muted d-md-none">Your post will be taken off your profile, feeds and guilds. Its text stays readable in the public <a href="/log/deleted">Deletion log</a>. This can't be undone.</p>
+        <p class="text-muted d-md-none">{{ _('Your post will be taken off your profile, feeds and guilds. Its text stays readable in the public <a href="%(url)s">Deletion log</a>. This can\'t be undone.', url="/log/deleted") }}</p>
 
         <div class="d-md-none">
 
-          <button type="button" id="deletePostButton-mobile" class="btn btn-danger btn-block btn-lg">Delete post</button>
+          <button type="button" id="deletePostButton-mobile" class="btn btn-danger btn-block btn-lg">{{ _("Delete post") }}</button>
 
-          <button type="button" class="btn btn-secondary btn-block btn-lg" data-dismiss="modal">Cancel</button>
+          <button type="button" class="btn btn-secondary btn-block btn-lg" data-dismiss="modal">{{ _("Cancel") }}</button>
 
         </div>
 
       </div>
       
       <div class="modal-footer d-none d-md-flex">
-        <button type="button" class="btn btn-link text-muted" data-dismiss="modal">Cancel</button>
-        <button type="button" id="deletePostButton" class="btn btn-danger">Delete post</button>
+        <button type="button" class="btn btn-link text-muted" data-dismiss="modal">{{ _("Cancel") }}</button>
+        <button type="button" id="deletePostButton" class="btn btn-danger">{{ _("Delete post") }}</button>
       </div>
       
     </div>

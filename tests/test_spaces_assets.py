@@ -33,9 +33,9 @@ def test_a_space_is_checked_before_the_post_and_made_after_it():
     # only the Spaces area makes one, in-process, with a mark on the environ no browser can set (routes/spaces.py)
     assert "if space_wanted and not request.environ.get(space_rules.ENVIRON_KEY):\n        space_error = space_rules.NOT_HERE" in submit
     create = ROUTES.split("def space_create(", 1)[1].split("\n@app.route", 1)[0]
-    assert '_post_as(v, "/api/vue/submit", data, environ={space_rules.ENVIRON_KEY: True})' in create
+    assert '_post_as(v, "/api/vue/submit", data,\n                              environ={space_rules.ENVIRON_KEY: True, UI_LOCALE_KEY: current_locale()})' in create
     assert 'ENVIRON_KEY = "ruqqus.space_create"' in read("ruqqus", "helpers", "spaces.py")
-    assert "environ_base={\"REMOTE_ADDR\": address, **(environ or {})}" in read("ruqqus", "routes", "collab.py")
+    assert "environ_base={\"REMOTE_ADDR\": address, UI_LOCALE_KEY: \"en\", **(environ or {})}" in read("ruqqus", "routes", "collab.py")
     assert 'anonymous=flag(request.form, "anonymous")' in submit and "circle_guild=circle_board is not None" in submit
     assert "from ruqqus.helpers import spaces as space_rules, space_store" in POSTS
 
@@ -86,7 +86,8 @@ def test_the_host_and_co_hosts_run_it_and_admins_can_end_it():
     assert "if space.kind == space_rules.CALL:" in start            # only a call has a Matrix room
     # the reminder notice names neither the Space nor its host
     # the Space's own page, never its post's address (which names the host: helpers/permalinks.py)
-    assert 'send_notification(user, f"A Space you asked to be reminded of is live: [join it](/space/{space.id})")' in start
+    assert 'REMINDED_LIVE = N_("A Space you asked to be reminded of is live: [join it](/space/%(space)s)")' in ROUTES
+    assert "notify(user, REMINDED_LIVE, space=space.id)" in start
     assert "permalink" not in start.split("reminded = set(")[1]
 
 

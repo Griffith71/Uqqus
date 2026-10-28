@@ -6,7 +6,7 @@
 {% block pagetype %}explore{% endblock %}
 
 {% block title %}
-<title>Explore guilds - {{ 'SITE_NAME' | app_config }}</title>
+<title>{{ _("Explore guilds - %(site)s") }}</title>
 {% endblock %}
 
 {% block leftSidebarBlock %}
@@ -21,48 +21,48 @@
   {% if request.args.get('onboarding') %}
   <div class="alert alert-success alert-dismissible fade show mb-3" role="alert">
     <i class="fas fa-check-circle my-auto" aria-hidden="true"></i>
-    <span>Welcome to {{ 'SITE_NAME' | app_config }}! These communities are currently Trending. Join some to start customizing your <a href="/">home page</a>.</span>
-    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true"><i class="fas fa-times"></i></span></button>
+    <span>{{ _('Welcome to %(site)s! These communities are currently Trending. Join some to start customizing your <a href="/">home page</a>.') }}</span>
+    <button type="button" class="close" data-dismiss="alert" aria-label="{{ _('Close') }}"><span aria-hidden="true"><i class="fas fa-times"></i></span></button>
   </div>
   {% endif %}
 
-  {{ explore_head('guilds', 'Find communities to join. Guilds you join show up in your sidebar and your Following feed.') }}
+  {{ explore_head('guilds', _('Find communities to join. Guilds you join show up in your sidebar and your Following feed.')) }}
 
-  <div class="explore-chips" role="group" aria-label="Sort guilds">
-    <a class="explore-chip{% if sort_method == 'trending' %} active{% endif %}" href="?sort=trending{% if topic %}&topic={{ topic.slug }}{% endif %}"><i class="fas fa-fire" aria-hidden="true"></i>Trending</a>
-    <a class="explore-chip{% if sort_method == 'new' %} active{% endif %}" href="?sort=new{% if topic %}&topic={{ topic.slug }}{% endif %}"><i class="fas fa-star" aria-hidden="true"></i>New</a>
-    <a class="explore-chip{% if sort_method == 'subs' %} active{% endif %}" href="?sort=subs{% if topic %}&topic={{ topic.slug }}{% endif %}"><i class="fas fa-users" aria-hidden="true"></i>Members</a>
+  <div class="explore-chips" role="group" aria-label="{{ _('Sort guilds') }}">
+    <a class="explore-chip{% if sort_method == 'trending' %} active{% endif %}" href="?sort=trending{% if topic %}&topic={{ topic.slug }}{% endif %}"><i class="fas fa-fire" aria-hidden="true"></i>{{ pgettext("sort", "Trending") }}</a>
+    <a class="explore-chip{% if sort_method == 'new' %} active{% endif %}" href="?sort=new{% if topic %}&topic={{ topic.slug }}{% endif %}"><i class="fas fa-star" aria-hidden="true"></i>{{ pgettext("sort", "New") }}</a>
+    <a class="explore-chip{% if sort_method == 'subs' %} active{% endif %}" href="?sort=subs{% if topic %}&topic={{ topic.slug }}{% endif %}"><i class="fas fa-users" aria-hidden="true"></i>{{ _("Members") }}</a>
   </div>
 
   {% if topics %}
-  <div class="explore-chips explore-topics" role="group" aria-label="Topics">
+  <div class="explore-chips explore-topics" role="group" aria-label="{{ _('Topics') }}">
     {% if topic and topic not in topics %}
-    <a class="explore-chip explore-chip-topic active" href="?sort={{ sort_method }}" title="Show every topic">#{{ topic.label }}<i class="fas fa-times ml-1" aria-hidden="true"></i><span class="sr-only">Remove this topic</span></a>
+    <a class="explore-chip explore-chip-topic active" href="?sort={{ sort_method }}" title="{{ _('Show every topic') }}">#{{ msg_text(topic.label) }}<i class="fas fa-times ml-1" aria-hidden="true"></i><span class="sr-only">{{ _("Remove this topic") }}</span></a>
     {% endif %}
-    <a class="explore-chip explore-chip-topic{% if not topic %} active{% endif %}" href="?sort={{ sort_method }}">All topics</a>
+    <a class="explore-chip explore-chip-topic{% if not topic %} active{% endif %}" href="?sort={{ sort_method }}">{{ _("All topics") }}</a>
     {% for t in topics %}
-    <a class="explore-chip explore-chip-topic{% if topic and topic.slug == t.slug %} active{% endif %}" href="?sort={{ sort_method }}&topic={{ t.slug }}">{{ t.label }}</a>
+    <a class="explore-chip explore-chip-topic{% if topic and topic.slug == t.slug %} active{% endif %}" href="?sort={{ sort_method }}&topic={{ t.slug }}">{{ msg_text(t.label) }}</a>
     {% endfor %}
   </div>
   {% endif %}
 
   <ul class="explore-grid">
     {% for b in boards %}{{ guild_card(b, v) }}{% else %}
-    <li class="explore-empty">No guilds here yet.</li>
+    <li class="explore-empty">{{ _("No guilds here yet.") }}</li>
     {% endfor %}
   </ul>
 
-  <nav aria-label="Page navigation" class="mt-4">
+  <nav aria-label="{{ _('Page navigation') }}" class="mt-4">
     <ul class="pagination pagination-sm mb-0">
       {% if page > 1 %}
-      <li class="page-item"><a class="page-link" href="?sort={{ sort_method }}{% if topic %}&topic={{ topic.slug }}{% endif %}&page={{ page - 1 }}" tabindex="-1">Prev</a></li>
+      <li class="page-item"><a class="page-link" href="?sort={{ sort_method }}{% if topic %}&topic={{ topic.slug }}{% endif %}&page={{ page - 1 }}" tabindex="-1">{{ pgettext("previous page", "Prev") }}</a></li>
       {% else %}
-      <li class="page-item disabled"><span class="page-link">Prev</span></li>
+      <li class="page-item disabled"><span class="page-link">{{ pgettext("previous page", "Prev") }}</span></li>
       {% endif %}
       {% if next_exists %}
-      <li class="page-item"><a class="page-link" href="?sort={{ sort_method }}{% if topic %}&topic={{ topic.slug }}{% endif %}&page={{ page + 1 }}">Next</a></li>
+      <li class="page-item"><a class="page-link" href="?sort={{ sort_method }}{% if topic %}&topic={{ topic.slug }}{% endif %}&page={{ page + 1 }}" rel="next">{{ pgettext("next page", "Next") }}</a></li>
       {% else %}
-      <li class="page-item disabled"><span class="page-link">Next</span></li>
+      <li class="page-item disabled"><span class="page-link">{{ pgettext("next page", "Next") }}</span></li>
       {% endif %}
     </ul>
   </nav>

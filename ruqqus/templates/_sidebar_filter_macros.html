@@ -18,28 +18,56 @@
 <input type="hidden" name="{{ apply_param }}" id="{{ list_id }}-hidden-value" value="">
 {% endif %}
 <div class="d-flex justify-content-between align-items-center mb-1">
-  <span id="{{ list_id }}-count" class="text-small text-muted{% if not active_set %} d-none{% endif %}">{{ active_set|length }} selected</span>
-  <a href="javascript:void(0)" class="text-small text-muted" onclick="deselectAllSidebarFilter('{{ list_id }}')">Deselect all</a>
+  {# Translators: how many options are ticked in a filter list #}
+  <span id="{{ list_id }}-count" class="text-small text-muted{% if not active_set %} d-none{% endif %}">{{ ngettext("%(num)s selected", "%(num)s selected", active_set|length) }}</span>
+  <a href="javascript:void(0)" class="text-small text-muted" onclick="deselectAllSidebarFilter('{{ list_id }}')">{{ _("Deselect all") }}</a>
 </div>
 <input type="text" class="form-control form-control-sm mb-2" placeholder="{{ search_placeholder }}" oninput="filterSidebarList(this, '{{ list_id }}')">
+{% if groups -%}
+{# Translators: a hint under the search box of the Categorical list, about the tick box of each category #}
+<p class="text-muted text-small mb-1">{{ _("Tick a category to tick all its subcategories. Untick them to keep only guilds filed under the category itself.") }}</p>
+{# Translators: said beside a ticked category in the Categorical list when it and all its subcategories are ticked #}
+{% set state_all = _("everything in it") %}
+{# Translators: said beside a ticked category in the Categorical list when none of its subcategories is ticked: only the guilds filed under the category itself #}
+{% set state_alone = _("category only") %}
+{# Translators: said beside a ticked category in the Categorical list when some of its subcategories are ticked #}
+{% set state_some = _("category and some subcategories") %}
+<div id="{{ list_id }}" data-keep-order style="max-height: 320px; overflow-y: auto;">
+  {% for group in groups %}
+  <div data-filter-group>
+    <ul class="no-bullets pl-0 mb-1"{% if group.heading %} aria-labelledby="{{ list_id }}-{{ loop.index }}"{% endif %}>
+      {% if group.heading %}
+      {% set heading_on = group.heading.value in active_set %}
+      {% set rows_on = group.options | selectattr('value', 'in', active_set) | list | length %}
+      {% if not heading_on %}{% set state = '' %}{% elif rows_on == group.options | length %}{% set state = state_all %}{% elif rows_on == 0 %}{% set state = state_alone %}{% else %}{% set state = state_some %}{% endif %}
+      {# Translators: the tooltip of a category's tick box in the Categorical list #}
+      <li data-filter-row data-filter-heading data-value="{{ group.heading.value }}" data-state-all="{{ state_all }}" data-state-alone="{{ state_alone }}" data-state-some="{{ state_some }}" class="filter-group-heading{% if heading_on %} is-selected{% endif %}" onclick="toggleSidebarFilterOption(this, '{{ list_id }}')">
+        <a href="javascript:void(0)" role="checkbox" aria-checked="{{ 'true' if heading_on else 'false' }}" aria-labelledby="{{ list_id }}-{{ loop.index }}" aria-describedby="{{ list_id }}-{{ loop.index }}-state" title="{{ _('Ticks all its subcategories. Untick them to keep only the guilds filed under the category itself.') }}" class="text-decoration-none d-flex align-items-center"><i class="fas fa-check mr-1{% if not heading_on %} invisible{% endif %}" aria-hidden="true"></i><span id="{{ list_id }}-{{ loop.index }}">{{ group.heading.label }}</span><span id="{{ list_id }}-{{ loop.index }}-state" data-filter-state class="filter-group-state{% if not state %} d-none{% endif %}">{{ state }}</span></a>
+      </li>
+      {% endif %}
+      {% for opt in group.options %}
+      {{ filter_row(opt, list_id, opt.value in active_set) }}
+      {% endfor %}
+    </ul>
+  </div>
+  {% endfor %}
+</div>
+{%- else -%}
 <ul class="no-bullets pl-0 mb-1" id="{{ list_id }}" style="max-height: 220px; overflow-y: auto;">
   {% for opt in options if opt.value in active_set %}
-  <li data-filter-row data-filter-text="{{ opt.search }}" data-value="{{ opt.value }}" class="py-1 is-selected" onclick="toggleSidebarFilterOption(this, '{{ list_id }}')">
-    <a href="javascript:void(0)" class="text-decoration-none text-purple font-weight-bold d-flex align-items-center"><i class="fas fa-check mr-1"></i><span class="sidebar-filter-text" onmouseenter="startSidebarFilterMarquee(this)" onmouseleave="stopSidebarFilterMarquee(this)">{{ opt.label }}</span></a>
-  </li>
+  {{ filter_row(opt, list_id, true) }}
   {% endfor %}
   {% for opt in options if opt.value not in active_set %}
-  <li data-filter-row data-filter-text="{{ opt.search }}" data-value="{{ opt.value }}" class="py-1" onclick="toggleSidebarFilterOption(this, '{{ list_id }}')">
-    <a href="javascript:void(0)" class="text-decoration-none text-black d-flex align-items-center"><i class="fas fa-check mr-1 invisible"></i><span class="sidebar-filter-text" onmouseenter="startSidebarFilterMarquee(this)" onmouseleave="stopSidebarFilterMarquee(this)">{{ opt.label }}</span></a>
-  </li>
+  {{ filter_row(opt, list_id, false) }}
   {% endfor %}
 </ul>
-<div id="{{ list_id }}-empty" class="text-muted text-small d-none">No matches.</div>
+{%- endif %}
+<div id="{{ list_id }}-empty" class="text-muted text-small d-none">{{ _("No matches.") }}</div>
 {% if apply_mode == 'form' %}
-<button type="button" class="btn btn-purple btn-sm btn-block mt-2" onclick="applyCurationFilter('{{ list_id }}', '{{ list_id }}-hidden-value', '{{ list_id }}-form')">Apply</button>
+<button type="button" class="btn btn-purple btn-sm btn-block mt-2" onclick="applyCurationFilter('{{ list_id }}', '{{ list_id }}-hidden-value', '{{ list_id }}-form')">{{ pgettext("button", "Apply") }}</button>
 </form>
 {% else %}
-<button type="button" class="btn btn-purple btn-sm btn-block mt-2" onclick="applySidebarFilter('{{ list_id }}', '{{ apply_url }}', '{{ apply_param }}')">Apply</button>
+<button type="button" class="btn btn-purple btn-sm btn-block mt-2" onclick="applySidebarFilter('{{ list_id }}', '{{ apply_url }}', '{{ apply_param }}')">{{ pgettext("button", "Apply") }}</button>
 {% endif %}
 {% endmacro %}
 
@@ -47,22 +75,23 @@
    own order (data-keep-order: ticking one doesn't move it to the top). Nothing ticked is every type. #}
 {% macro post_type_body(list_id, catalog, groups, active_set) %}
 <div class="d-flex justify-content-between align-items-center mb-1">
-  <span id="{{ list_id }}-count" class="text-small text-muted{% if not active_set %} d-none{% endif %}">{{ active_set|length }} selected</span>
-  <a href="javascript:void(0)" class="text-small text-muted" onclick="deselectAllSidebarFilter('{{ list_id }}')">Deselect all</a>
+  {# Translators: how many options are ticked in a filter list #}
+  <span id="{{ list_id }}-count" class="text-small text-muted{% if not active_set %} d-none{% endif %}">{{ ngettext("%(num)s selected", "%(num)s selected", active_set|length) }}</span>
+  <a href="javascript:void(0)" class="text-small text-muted" onclick="deselectAllSidebarFilter('{{ list_id }}')">{{ _("Deselect all") }}</a>
 </div>
 <div id="{{ list_id }}" class="post-type-list" data-keep-order>
   {% for group in groups %}
-  <div class="post-type-group" id="{{ list_id }}-{{ loop.index }}">{{ group }}</div>
+  <div class="post-type-group" id="{{ list_id }}-{{ loop.index }}">{{ msg_text(group) }}</div>
   <ul class="no-bullets pl-0 mb-1" aria-labelledby="{{ list_id }}-{{ loop.index }}">
     {% for key, label, in_group in catalog if in_group == group %}
     {% set on = key in active_set %}
     <li data-filter-row data-value="{{ key }}" class="py-1{% if on %} is-selected{% endif %}" onclick="toggleSidebarFilterOption(this, '{{ list_id }}')">
-      <a href="javascript:void(0)" role="checkbox" aria-checked="{{ 'true' if on else 'false' }}" class="text-decoration-none d-flex align-items-center {% if on %}text-purple font-weight-bold{% else %}text-black{% endif %}"><i class="fas fa-check mr-1{% if not on %} invisible{% endif %}" aria-hidden="true"></i><span>{{ label }}</span></a>
+      <a href="javascript:void(0)" role="checkbox" aria-checked="{{ 'true' if on else 'false' }}" class="text-decoration-none d-flex align-items-center {% if on %}text-purple font-weight-bold{% else %}text-black{% endif %}"><i class="fas fa-check mr-1{% if not on %} invisible{% endif %}" aria-hidden="true"></i><span>{{ msg_text(label) }}</span></a>
     </li>
     {% endfor %}
   </ul>
   {% endfor %}
 </div>
-<p class="text-small-extra text-muted mb-0">Shows posts of any type you tick.</p>
-<button type="button" class="btn btn-purple btn-sm btn-block mt-2" onclick="applySidebarFilter('{{ list_id }}', '/post_type', 'types')">Apply</button>
+<p class="text-small-extra text-muted mb-0">{{ _("Shows posts of any type you tick.") }}</p>
+<button type="button" class="btn btn-purple btn-sm btn-block mt-2" onclick="applySidebarFilter('{{ list_id }}', '/post_type', 'types')">{{ pgettext("button", "Apply") }}</button>
 {% endmacro %}

@@ -18,6 +18,8 @@ from types import SimpleNamespace
 
 from sqlalchemy import Integer, and_, case, func, or_, text
 
+from ruqqus.helpers.i18n_runtime import tr
+
 MAX_ROWS = 1000                       # per member: the oldest are dropped
 WINDOW_SECONDS = 60 * 24 * 3600       # how long a click lowers a category, guild and author
 SUBCAT_PENALTY = 2                    # a subscribed guild adds 3 to its category, so one click does not erase it
@@ -98,7 +100,7 @@ def add(db, user_id, post, now=None):
     """Record "fewer like this" for `post`. Asking twice is not an error (the answer is the same). A member's
     own post is refused. Does not commit."""
     if post.author_id == user_id:
-        raise FeedbackError("That's your own post.")
+        raise FeedbackError(tr("That's your own post."))
     pid = primary_post_id(post)
     if db.execute(_EXISTS, {"u": user_id, "p": pid}).first() is not None:
         return

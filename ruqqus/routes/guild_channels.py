@@ -29,11 +29,12 @@ from ruqqus.helpers import guild_automod as automod
 from ruqqus.helpers import guild_roles as role_rules
 from ruqqus.helpers import guild_role_store as role_store
 from ruqqus.helpers.base36 import base36encode
-from ruqqus.helpers.alerts import send_notification
+from ruqqus.helpers.alerts import notify
+from ruqqus.helpers.i18n_runtime import tr, tr_lazy, trn
 from ruqqus.helpers.visibility import board_hidden, text_hidden, user_hidden
 
 _DAY = 86400
-_BUSY = "Chat isn't answering right now. Try again in a moment."
+_BUSY = tr_lazy("Chat isn't answering right now. Try again in a moment.")
 
 
 def _error(message, status=400):
@@ -99,7 +100,7 @@ def _slow_exempt(row):
 def _messages_only(row):
     """A response when this channel holds no messages (voice, stage), else None."""
     if row.kind not in rules.MESSAGE_KINDS:
-        return _error("This channel has no messages.", 409)
+        return _error(tr("This channel has no messages."), 409)
     return None
 
 
@@ -167,13 +168,13 @@ def channel_json(row, v):
         "channel_id": row.id,
         "room_id": None if row.kind in rules.ROOMLESS else row.matrix_room_id,
         "guild": row.board_name,
-        "label": "A channel" if name_hidden else row.name,
+        "label": tr("A channel") if name_hidden else row.name,
         "topic": "" if name_hidden else row.topic,
         "rules": "" if name_hidden else row.rules,
         "channel_kind": row.kind,
         "may_write": _write_refusal(row, v, None) is None,
         "needs_rules": bool(rules.rules_pending(row.rules_gate, row.rules, row.acked_key)) and not row.mod and not name_hidden,
-        "category": None if not row.category_name else ("A category" if category_hidden else row.category_name),
+        "category": None if not row.category_name else (tr("A category") if category_hidden else row.category_name),
         "category_id": row.category_id,
         "slow_mode_seconds": 0 if _slow_exempt(row) else row.slow_mode_seconds,
         "can_moderate": _can_remove(row),
@@ -312,7 +313,7 @@ def _mentioned(row, board, v, post_id, body, now):
             continue
         recorded.append(target.id)
         if store.notice_due(r, row.id, v.id, target.id):
-            told.append((target, rules.mention_text(v.username, row.name, board.name, f"{board.permalink}/chat?c={row.id}")))
+            told.append((target, rules.mention_notice(v.username, row.name, board.name, f"{board.permalink}/chat?c={row.id}")))
     store.record_mentions(g.db, row.id, post_id, recorded, now)
     return told
 
@@ -345,7 +346,7 @@ def guild_channel_message(cid, v):
     if request.values.get("thread"):
         thread = rules.quoted_event_id(request.values.get("thread"))
         if not thread:
-            return _error("That message can't have a thread.")
+            return _error(tr("That message can't have a thread."))
         refusal = rules.thread_refusal(store.post_by_event(g.db, cid, thread))
         if refusal:
             return _error(refusal, 409)
@@ -391,8 +392,8 @@ def guild_channel_message(cid, v):
     store.mark_read(g.db, cid, v.id, now)
     told = _mentioned(row, board, v, post_id, body, now)
     g.db.commit()
-    for target, text_ in told:                        # send_notification commits on its own
-        send_notification(target, text_)
+    for target, (message, values) in told:           # notify commits on its own
+        notify(target, message, **values)
     return jsonify({"event_id": event_id})
 
 
@@ -420,7 +421,7 @@ def _sender_map(user_ids, v, board_id=None):
         gone = u.is_deleted or u.is_banned
         out[u.id] = {
             "id": u.id,
-            "shown_name": "Deleted account" if u.is_deleted else ("A member" if user_hidden(u, v) else u.shown_name),
+            "shown_name": tr("Deleted account") if u.is_deleted else (tr("A member") if user_hidden(u, v) else u.shown_name),
             "username": None if (gone or user_hidden(u, v)) else u.username,
             "blocked": u.id in blocked,
             "muted": u.id in muted,
@@ -458,10 +459,10 @@ def guild_channel_report(cid, v):
     if post is None or post[3]:
         abort(404)
     if post[1] == v.id:
-        return _error("You can't report your own message.", 409)
+        return _error(tr("You can't report your own message."), 409)
     reason = " ".join(str(request.values.get("reason") or "").split())[:rules.REPORT_MAX]
     if not store.report(g.db, cid, post[0], v.id, reason, _now()):
-        return _error("You've already reported this message.", 409)
+        return _error(tr("You've already reported this message."), 409)
     g.db.commit()
     return jsonify({"ok": True})
 
@@ -549,7 +550,8 @@ def guild_channel_pin(cid, v):
             _log(board, v, "channel_unpin", f"#{row.name}", target_user_id=post[1])
     elif not store.is_pinned(g.db, cid, post[0]):
         if store.pin_count(g.db, cid) >= rules.MAX_PINS:
-            return _error(f"A channel can have at most {rules.MAX_PINS} pinned messages.", 409)
+            return _error(trn("A channel can have at most %(num)s pinned message.",
+                               "A channel can have at most %(num)s pinned messages.", rules.MAX_PINS), 409)
         store.pin(g.db, cid, post[0], v.id, _now())
         _log(board, v, "channel_pin", f"#{row.name}", target_user_id=post[1])
     g.db.commit()
@@ -565,7 +567,7 @@ def guild_channel_pins(cid, v):
     names = _sender_map({p[1] for p in pins}, v)
     out = []
     for event_id, author_id, body, severity, written, pinned in pins:
-        who = names.get(author_id) or {"id": author_id, "shown_name": "Someone who left", "username": None, "blocked": False, "muted": False}
+        who = names.get(author_id) or {"id": author_id, "shown_name": tr("Someone who left"), "username": None, "blocked": False, "muted": False}
         if who["muted"]:
             continue
         shown, hidden = _visible_text(body, severity, v)
@@ -597,7 +599,7 @@ def guild_channel_accept_rules(cid, v):
     """Accept the channel's rules as they are now (a channel that asks for it): change them and everyone is asked again."""
     row, board = _load(cid, v)
     if not (row.rules_gate and row.rules):
-        return _error("This channel doesn't ask for its rules to be accepted.", 409)
+        return _error(tr("This channel doesn't ask for its rules to be accepted."), 409)
     store.accept_rules(g.db, cid, v.id, rules.rules_key(row.rules), _now())
     g.db.commit()
     return "", 204
@@ -727,7 +729,7 @@ def guild_channel_create(guildname, board, v):
                  read_level, write_level, slow, room_id, _now(), category_id, gate, space_post_id, encrypted)
     _log(board, v, "channel_create", f"#{name}")
     g.db.commit()
-    return _manage_page(board, v, notice=f"#{name} was made.")[0]
+    return _manage_page(board, v, notice=tr("#%(channel)s was made.", channel=name))[0]
 
 
 def _new_room(kind, v, encrypted=False):
@@ -751,7 +753,7 @@ def _space_post(value, v):
         return None, str(e)
     post = get_post(ref, v=v, graceful=True)
     if post is None or not space_store.for_posts(g.db, [post.id]):
-        return None, "That post isn't a Space you can open."
+        return None, tr("That post isn't a Space you can open.")
     return post.id, None
 
 
@@ -772,7 +774,7 @@ def _category_and_gate(board, channel_rules):
     asks its rules to be accepted (it needs rules to be accepted)."""
     category_id = request.values.get("category", type=int)
     if category_id and store.category(g.db, board.id, category_id) is None:
-        return None, False, "That category isn't in this guild."
+        return None, False, tr("That category isn't in this guild.")
     gate = request.values.get("rules_gate") in ("1", "on", "true")
     return (category_id or None), gate, rules.gate_refusal(gate, channel_rules)
 
@@ -827,7 +829,7 @@ def guild_channel_edit(guildname, cid, board, v):
     g.db.commit()
     if row.kind == rules.ANNOUNCEMENT:
         _sync_writers(row)                                  # a role that may now write in it, in its room
-    return _manage_page(board, v, notice=f"#{name} was saved.")[0]
+    return _manage_page(board, v, notice=tr("#%(channel)s was saved.", channel=name))[0]
 
 
 @app.route("/+<guildname>/mod/channels/<int:cid>/delete", methods=["POST"])
@@ -839,7 +841,7 @@ def guild_channel_delete(guildname, cid, board, v):
     store.close(g.db, board.id, cid, _now())
     _log(board, v, "channel_delete", f"#{row.name}")
     g.db.commit()
-    return _manage_page(board, v, notice=f"#{row.name} was deleted.")[0]
+    return _manage_page(board, v, notice=tr("#%(channel)s was deleted.", channel=row.name))[0]
 
 
 @app.route("/+<guildname>/mod/channels/order", methods=["POST"])
@@ -865,11 +867,11 @@ def guild_channel_mute(guildname, board, v):
     """Muted in the guild's channels: they can read, not write. Not a guildmaster, not yourself."""
     target = get_user((request.values.get("username") or "").lstrip("@"), graceful=True)
     if target is None or target.is_deleted:
-        return _manage_page(board, v, error="There's no account with that name.", status=404)
+        return _manage_page(board, v, error=tr("There's no account with that name."), status=404)
     if target.id == v.id or board.has_mod(target):
-        return _manage_page(board, v, error="You can't mute a guildmaster, or yourself.", status=409)
+        return _manage_page(board, v, error=tr("You can't mute a guildmaster, or yourself."), status=409)
     if not store.mute(g.db, board.id, target.id, v.id, _now()):
-        return _manage_page(board, v, error=f"@{target.username} is already muted here.", status=409)
+        return _manage_page(board, v, error=tr("@%(name)s is already muted here.", name=target.username), status=409)
     _log(board, v, "chatban_user", "", target_user_id=target.id)
     for cid, room in store.encrypted_rooms_of(g.db, board.id, target.id):      # the site can't stop them writing there
         try:
@@ -878,7 +880,8 @@ def guild_channel_mute(guildname, board, v):
         except matrix.MatrixError:
             pass                                                                # the sync step does it within minutes
     g.db.commit()
-    return _manage_page(board, v, notice=f"@{target.username} was muted in +{board.name}'s channels.")[0]
+    return _manage_page(board, v, notice=tr("@%(name)s was muted in +%(guild)s's channels.", name=target.username,
+                                                guild=board.name))[0]
 
 
 @app.route("/+<guildname>/mod/channels/unmute", methods=["POST"])
@@ -888,10 +891,10 @@ def guild_channel_mute(guildname, board, v):
 def guild_channel_unmute(guildname, board, v):
     target = get_user((request.values.get("username") or "").lstrip("@"), graceful=True)
     if target is None or not store.unmute(g.db, board.id, target.id):
-        return _manage_page(board, v, error="They aren't muted here.", status=404)
+        return _manage_page(board, v, error=tr("They aren't muted here."), status=404)
     _log(board, v, "unchatban_user", "", target_user_id=target.id)
     g.db.commit()
-    return _manage_page(board, v, notice=f"@{target.username} can write in the channels again.")[0]
+    return _manage_page(board, v, notice=tr("@%(name)s can write in the channels again.", name=target.username))[0]
 
 
 @app.route("/+<guildname>/mod/channels/reports/<int:pid>/<action>", methods=["POST"])
@@ -928,7 +931,7 @@ def guild_category_create(guildname, board, v):
     store.make_category(g.db, board.id, name, _severity(name))
     _log(board, v, "category_create", name)
     g.db.commit()
-    return _manage_page(board, v, notice=f"The category {name} was made.")[0]
+    return _manage_page(board, v, notice=tr("The category %(category)s was made.", category=name))[0]
 
 
 @app.route("/+<guildname>/mod/channels/categories/<int:category_id>/rename", methods=["POST"])
@@ -943,11 +946,11 @@ def guild_category_rename(guildname, category_id, board, v):
     except rules.Refused as e:
         return _manage_page(board, v, error=str(e), status=400)
     if store.category_taken(g.db, board.id, name, except_id=category_id):
-        return _manage_page(board, v, error="The guild already has a category with that name.", status=409)
+        return _manage_page(board, v, error=tr("The guild already has a category with that name."), status=409)
     store.rename_category(g.db, board.id, category_id, name, _severity(name))
     _log(board, v, "category_edit", name)
     g.db.commit()
-    return _manage_page(board, v, notice=f"The category was renamed {name}.")[0]
+    return _manage_page(board, v, notice=tr("The category was renamed %(category)s.", category=name))[0]
 
 
 @app.route("/+<guildname>/mod/channels/categories/<int:category_id>/delete", methods=["POST"])
@@ -961,7 +964,8 @@ def guild_category_delete(guildname, category_id, board, v):
     store.delete_category(g.db, board.id, category_id)
     _log(board, v, "category_delete", found[2])
     g.db.commit()
-    return _manage_page(board, v, notice=f"The category {found[2]} was deleted; its channels stay.")[0]
+    return _manage_page(board, v, notice=tr("The category %(category)s was deleted; its channels stay.",
+                                                category=found[2]))[0]
 
 
 @app.route("/+<guildname>/mod/channels/categories/order", methods=["POST"])
@@ -1065,7 +1069,7 @@ def guild_automod_save(guildname, board, v):
     store.save_automod(g.db, board.id, account_days, member_days, link_days, words)
     _log(board, v, "automod_settings", "")
     g.db.commit()
-    return _manage_page(board, v, notice="The auto-moderation was saved.")[0]
+    return _manage_page(board, v, notice=tr("The auto-moderation was saved."))[0]
 
 
 @app.route("/+<guildname>/mod/channels/<int:cid>/feeds/add", methods=["POST"])
@@ -1076,19 +1080,22 @@ def guild_feed_add(guildname, cid, board, v):
     """An approved bot account whose new posts go into this announcement channel (helpers/guild_channel_feeds.py)."""
     row = _own_channel(board, cid)
     if row.kind != rules.ANNOUNCEMENT:
-        return _manage_page(board, v, error="Only an announcement channel takes a bot's posts.", status=409)
+        return _manage_page(board, v, error=tr("Only an announcement channel takes a bot's posts."), status=409)
     name = (request.values.get("username") or "").strip().lstrip("@")
     bot = get_user(name, graceful=True) if name else None
     approved = bool(bot) and g.db.execute(text("SELECT 1 FROM bots WHERE user_id = :u AND status = 'approved'"), {"u": bot.id}).fetchone()
     if bot is None or not bot.is_bot or bot.is_deleted or bot.is_banned or not approved:
-        return _manage_page(board, v, error="That isn't a bot account that is running.", status=404)
+        return _manage_page(board, v, error=tr("That isn't a bot account that is running."), status=404)
     if len(store.feeds_of(g.db, cid)) >= rules.MAX_FEEDS:
-        return _manage_page(board, v, error=f"A channel can have at most {rules.MAX_FEEDS} bots feeding it.", status=409)
+        full = trn("A channel can have at most %(num)s bot feeding it.",
+                   "A channel can have at most %(num)s bots feeding it.", rules.MAX_FEEDS)
+        return _manage_page(board, v, error=full, status=409)
     if not store.add_feed(g.db, cid, bot.id, v.id, _now(), store.latest_bot_post(g.db, bot.id)):
-        return _manage_page(board, v, error="That bot already feeds this channel.", status=409)
+        return _manage_page(board, v, error=tr("That bot already feeds this channel."), status=409)
     _log(board, v, "channel_feed_add", f"#{row.name}", target_user_id=bot.id)
     g.db.commit()
-    return _manage_page(board, v, notice=f"@{bot.username}'s new posts will go into #{row.name}.")[0]
+    return _manage_page(board, v, notice=tr("@%(name)s's new posts will go into #%(channel)s.", name=bot.username,
+                                                channel=row.name))[0]
 
 
 @app.route("/+<guildname>/mod/channels/<int:cid>/feeds/remove", methods=["POST"])
@@ -1100,10 +1107,10 @@ def guild_feed_remove(guildname, cid, board, v):
     name = (request.values.get("username") or "").strip().lstrip("@")
     bot = get_user(name, graceful=True) if name else None
     if bot is None or not store.remove_feed(g.db, cid, bot.id):
-        return _manage_page(board, v, error="That bot doesn't feed this channel.", status=404)
+        return _manage_page(board, v, error=tr("That bot doesn't feed this channel."), status=404)
     _log(board, v, "channel_feed_remove", f"#{row.name}", target_user_id=bot.id)
     g.db.commit()
-    return _manage_page(board, v, notice=f"@{bot.username} no longer feeds #{row.name}.")[0]
+    return _manage_page(board, v, notice=tr("@%(name)s no longer feeds #%(channel)s.", name=bot.username, channel=row.name))[0]
 
 
 def guild_channels_for(board, v):

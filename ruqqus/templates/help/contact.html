@@ -1,8 +1,8 @@
 {% extends "docs_default.html" %}
 
 {% block title %}
-<title>{{ 'SITE_NAME' | app_config }} - Contact</title>
-<meta name="description" content="Contact {{ 'COMPANY_NAME' | app_config }}">
+<title>{{ _("%(site)s - Contact") }}</title>
+<meta name="description" content="{{ _("Contact %(company)s", company='COMPANY_NAME' | app_config) }}">
 {% endblock %}
 
 <!-- Left Sidebar -->
@@ -16,7 +16,7 @@
       <span>
         {{ error if error else request.args.get('error') }}
       </span>
-      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+      <button type="button" class="close" data-dismiss="alert" aria-label="{{ _('Close') }}">
         <span aria-hidden="true"><i class="fas fa-times"></i></span>
       </button>
     </div>
@@ -27,48 +27,48 @@
       <span>
         {{ msg if msg else request.args.get('msg') }}
       </span>
-      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+      <button type="button" class="close" data-dismiss="alert" aria-label="{{ _('Close') }}">
         <span aria-hidden="true"><i class="fas fa-times"></i></span>
       </button>
     </div>
     {% endif %}
 
-<h1 class="article-title">Contact {{ 'SITE_NAME' | app_config }}</h1>
+<h1 class="article-title">{{ _("Contact %(site)s") }}</h1>
 {% if v and v.is_activated and not v.is_suspended %}
 
-<p>Use this form to contact {{ 'COMPANY_NAME' | app_config }}.</p>
+<p>{{ _("Use this form to contact %(company)s.", company='COMPANY_NAME' | app_config) }}</p>
 
-<label class="mt-3">Your Email</label>
+<label class="mt-3">{{ _("Your Email") }}</label>
 <input class="form-control" value="{{ v.email }}" readonly="readonly" disabled>
 
 <form id="contactform" action="/help/submit_contact" method="post">
 <input type="hidden" name="formkey" value="{{ v.formkey }}">
 
-<label for="input-name" class="mt-3">Your name</label>
+<label for="input-name" class="mt-3">{{ _("Your name") }}</label>
 <input type="text" id="input-name" class="form-control" name="name">
 
-<label for="input-title" class="mt-3">Subject</label>
+<label for="input-title" class="mt-3">{{ pgettext("contact form field", "Subject") }}</label>
 <input type="text" id="input-title" class="form-control" name="subject" required>
 
-<label for="input-inquiry" class="mt-3">Your inquiry</label>
+<label for="input-inquiry" class="mt-3">{{ _("Your inquiry") }}</label>
 <textarea id="input-inquiry" form="contactform" name="inquiry" class="form-control" required></textarea>
 
-<input type="submit" value="Submit" class="btn btn-primary mt-3">
+<input type="submit" value="{{ pgettext('button', 'Submit') }}" class="btn btn-primary mt-3">
 
 </form>
 
 {% elif v and v.is_suspended %}
 
-<p>Your {{ 'SITE_NAME' | app_config }} account has been suspended. You are not permitted to use this form.</p>
+<p>{{ _("Your %(site)s account has been suspended. You are not permitted to use this form.") }}</p>
 
 
 {% elif v %}
 
-<p>Please <a target="_blank" href="/settings/security">verify your email address</a> in order to ensure we can respond to your inquiry if needed. Then, refresh this page.</p>
+<p>{{ _('Please <a target="_blank" href="%(url)s">verify your email address</a> in order to ensure we can respond to your inquiry if needed. Then, refresh this page.', url="/settings/security") }}</p>
 
 {% else %}
 
-<p>In order to ensure that we can respond to your inquiry, please first <a href="/signup" target="_blank">sign up</a> or <a href="/login" target="_blank">log in</a> and make sure you have <a target="_blank" href="/settings/security">verified your email address</a>. Then, refresh this page.</p>
+<p>{{ _('In order to ensure that we can respond to your inquiry, please first <a href="%(signup)s" target="_blank">sign up</a> or <a href="%(login)s" target="_blank">log in</a> and make sure you have <a target="_blank" href="%(url)s">verified your email address</a>. Then, refresh this page.', signup="/signup", login="/login", url="/settings/security") }}</p>
 
 {% endif %}
 

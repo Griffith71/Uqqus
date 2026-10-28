@@ -52,20 +52,22 @@
     if (person.status !== 'accepted') {
       var waiting = document.createElement('span');
       waiting.className = 'text-muted text-small ml-2';
-      waiting.textContent = 'invited';
+      // Translators: next to a name in the co-authors list: invited, has not answered yet
+      waiting.textContent = tr('invited');
       name.appendChild(waiting);
     }
     var remove = document.createElement('button');
     remove.type = 'button';
     remove.className = 'btn btn-sm btn-outline-secondary ml-2';
-    remove.textContent = person.status === 'accepted' ? 'Remove' : 'Cancel';
+    // Translators: buttons beside a co-author: remove an accepted co-author, or cancel an invitation not answered yet
+    remove.textContent = person.status === 'accepted' ? tr('Remove') : tr('Cancel');
     remove.addEventListener('click', function () {
       remove.disabled = true;
       post('/api/coauthor/' + postId + '/remove', { username: person.username }).then(function (res) {
-        if (!res.ok) { remove.disabled = false; say(res.data.error || 'Could not do that.', true); return; }
+        if (!res.ok) { remove.disabled = false; say(res.data.error || tr('Could not do that.'), true); return; }
         say('');
         load();
-      }).catch(function () { remove.disabled = false; say('Could not do that. Try again.', true); });
+      }).catch(function () { remove.disabled = false; say(tr('Could not do that. Try again.'), true); });
     });
     item.appendChild(avatar);
     item.appendChild(name);
@@ -78,19 +80,19 @@
     if (!data.coauthors.length) {
       var none = document.createElement('p');
       none.className = 'text-muted text-small mb-0';
-      none.textContent = 'No co-authors yet.';
+      none.textContent = tr('No co-authors yet.');
       list.appendChild(none);
     }
     data.coauthors.forEach(function (person) { list.appendChild(row(person)); });
     form.hidden = !data.can_invite;
-    if (!data.can_invite && data.coauthors.length >= data.limit) say('A post can have ' + data.limit + ' co-authors at most.');
+    if (!data.can_invite && data.coauthors.length >= data.limit) say(trn('A post can have %(num)s co-author at most.', 'A post can have %(num)s co-authors at most.', data.limit));
   }
 
   function load() {
     fetch('/api/coauthor/' + postId + '/list', { credentials: 'same-origin' })
       .then(function (r) { if (!r.ok) throw new Error('failed'); return r.json(); })
       .then(draw)
-      .catch(function () { list.textContent = ''; say('Could not load the co-authors. Try again.', true); });
+      .catch(function () { list.textContent = ''; say(tr('Could not load the co-authors. Try again.'), true); });
   }
 
   form.addEventListener('submit', function () {
@@ -105,12 +107,15 @@
       var problems = (data.errors || []).join(' ');
       if (data.invited && data.invited.length) {
         input.value = '';
-        say('Invited ' + data.invited.map(function (n) { return '@' + n; }).join(', ') + '.' + (problems ? ' ' + problems : ''), !!problems);
+        var invited = data.invited.map(function (n) { return '@' + n; }).join(', ');
+        // Translators: %(names)s is a list of usernames; %(problems)s is the server's sentences about the names that could not be invited
+        if (problems) say(tr('Invited %(names)s. %(problems)s', {names: invited, problems: problems}), true);
+        else say(tr('Invited %(names)s.', {names: invited}), false);
       } else {
-        say(problems || 'Nobody was invited.', true);
+        say(problems || tr('Nobody was invited.'), true);
       }
       load();
-    }).catch(function () { button.disabled = false; say('Could not invite. Try again.', true); });
+    }).catch(function () { button.disabled = false; say(tr('Could not invite. Try again.'), true); });
   });
 
   document.addEventListener('click', function (event) {

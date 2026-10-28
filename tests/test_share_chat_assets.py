@@ -30,13 +30,13 @@ def test_every_share_menu_of_a_post_offers_send_in_chat_for_a_member():
     # the whole menu is drawn only for whoever may share the post (helpers/sharing.py): anyone when it is public, its
     # author otherwise, so the author of a Circle post may send it to a chat (its card is drawn for each reader)
     item = ('{% if v %}<a class="dropdown-item share-chat-item" href="javascript:void(0);" role="button" '
-            'data-share-url="{{ p.permalink | full_link }}"><i class="fas fa-paper-plane fa-fw"></i>Send in chat</a>{% endif %}')
+            'data-share-url="{{ p.permalink | full_link }}"><i class="fas fa-paper-plane fa-fw"></i>{{ _("Send in chat") }}</a>{% endif %}')
     # the share menu of a post is drawn by one partial (partials/post_actions.html), used by the card and the post
     # page, on desktop and on the phone
     partial = read("ruqqus", "templates", "partials", "post_actions.html")
-    assert partial.count(item) == 1 == partial.count("Copy link</a>")
+    assert partial.count(item) == 1 == partial.count('{{ _("Copy link") }}</a>')
     # always right after Copy link, in the same menu
-    assert len(re.findall(r"Copy link</a>\n\s*" + re.escape(item), partial)) == 1
+    assert len(re.findall(r'\{\{ _\("Copy link"\) \}\}</a>\n\s*' + re.escape(item), partial)) == 1
     for name in ("submission_listing.html", "submission.html"):
         html = read("ruqqus", "templates", name)
         assert html.count("post_actions.counted_actions(p, v, saved, ") == 2 and "Copy link</a>" not in html, name
@@ -136,7 +136,7 @@ def test_the_thread_draws_a_card_only_for_this_sites_own_post_links_and_only_as_
     assert "innerHTML" not in card and card.count("textContent") >= 4
     assert 'data.url.startsWith("/")' in card and 'data.thumb.startsWith("https://")' in card
     assert "if (shared) column.appendChild(postCard(shared[1]));" in UI
-    assert "shared ? item.body.replace(shared[0], \"\").trim() || \"Shared a post\" : item.body" in UI
+    assert "shared ? item.body.replace(shared[0], \"\").trim() || window.tr(\"Shared a post\") : item.body" in UI
 
 
 def test_both_stylesheets_style_the_sheet_and_the_card():

@@ -27,10 +27,24 @@
   var HIGHLIGHTS = ['yellow', 'green', 'blue', 'pink'];
   var ALIGNMENTS = ['left', 'center', 'right'];
 
+  // the colour names the swatches are titled with (the names above stay the codes the server reads)
+  function colourName(name) {
+    // Translators: a colour, in "Text colour %(colour)s" and "Highlight %(colour)s"
+    return { red: tr('red'), orange: tr('orange'), green: tr('green'), blue: tr('blue'), purple: tr('purple'),
+             pink: tr('pink'), gray: tr('gray'), yellow: tr('yellow') }[name] || name;
+  }
+
   var BUILT_IN_TEMPLATES = [
-    { name: 'Call to action', body: '::: center\n\n**Your headline**\n\n[Button label](https://){.button}\n\n:::' },
-    { name: 'Pull quote', body: '> “A line worth quoting”\n>\n> — Who said it' },
-    { name: 'Divider', body: '---' }
+    // Translators: the name of a ready-made block for a post: a centred headline and a button
+    { name: tr('Call to action'),
+      // Translators: placeholder text a member replaces: the headline of a "Call to action" block, and its button's label
+      body: '::: center\n\n**' + tr('Your headline') + '**\n\n[' + tr('Button label') + '](https://){.button}\n\n:::' },
+    // Translators: the name of a ready-made block for a post: a quotation set apart
+    { name: tr('Pull quote'),
+      // Translators: placeholder text a member replaces: the quotation of a "Pull quote" block, and who said it
+      body: '> “' + tr('A line worth quoting') + '”\n>\n> — ' + tr('Who said it') },
+    // Translators: the name of a ready-made block for a post: a horizontal line
+    { name: tr('Divider'), body: '---' }
   ];
 
   var FOLD_KEY = 'post_toolbar_open';   // '1' while the viewer keeps the formatting open
@@ -284,9 +298,10 @@
         fields[f.name] = input;
         form.appendChild(input);
       });
-      var go = make('button', 'btn btn-sm btn-primary', spec.submit || 'Insert');
+      // Translators: a button (a verb): put the link or button into the post
+      var go = make('button', 'btn btn-sm btn-primary', spec.submit || tr('Insert'));
       go.type = 'submit';
-      var cancel = make('button', 'btn btn-sm btn-link text-muted', 'Cancel');
+      var cancel = make('button', 'btn btn-sm btn-link text-muted', tr('Cancel'));
       cancel.type = 'button';
       var error = make('span', 'post-tb-dialog-error text-danger text-small');
       error.setAttribute('role', 'alert');
@@ -322,11 +337,11 @@
       var el = ta();
       var selected = el.value.substring(el.selectionStart, el.selectionEnd);
       openDialog({
-        title: 'Insert link',
-        fields: [{ name: 'label', label: 'Link text', value: selected }, { name: 'url', label: 'https://...' }],
+        title: tr('Insert link'),
+        fields: [{ name: 'label', label: tr('Link text'), value: selected }, { name: 'url', label: 'https://...' }],
         onSubmit: function (v, range) {
           var url = cleanUrl(v.url);
-          if (!url) return 'Enter a web address, like https://example.com';
+          if (!url) return tr('Enter a web address, like https://example.com');
           var label = v.label.trim() || url;
           editorReplace(el, range.s, range.e, '[' + escapeLabel(label) + '](' + url + ')');
         }
@@ -337,13 +352,13 @@
       var el = ta();
       var selected = el.value.substring(el.selectionStart, el.selectionEnd).trim();
       openDialog({
-        title: 'Insert button',
-        fields: [{ name: 'label', label: 'Button text', value: selected.indexOf('\n') === -1 ? selected : '' }, { name: 'url', label: 'https://...' }],
+        title: tr('Insert button'),
+        fields: [{ name: 'label', label: tr('Button text'), value: selected.indexOf('\n') === -1 ? selected : '' }, { name: 'url', label: 'https://...' }],
         onSubmit: function (v, range) {
           var url = cleanUrl(v.url);
           var label = v.label.trim();
-          if (!label) return 'Give the button some text.';
-          if (!url) return 'Enter a web address, like https://example.com';
+          if (!label) return tr('Give the button some text.');
+          if (!url) return tr('Enter a web address, like https://example.com');
           el.setSelectionRange(range.s, range.e);
           insertBlock(el, '[' + escapeLabel(label) + '](' + url + '){.button}');
         }
@@ -353,21 +368,22 @@
     function saveTemplateDialog() {
       var el = ta();
       var text = el.value.substring(el.selectionStart, el.selectionEnd) || el.value;
-      if (!text.trim()) { status('Write something first.'); return; }
+      if (!text.trim()) { status(tr('Write something first.')); return; }
       openDialog({
-        title: 'Save as template',
-        submit: 'Save',
-        fields: [{ name: 'name', label: 'Template name', max: 60 }],
+        title: tr('Save as template'),
+        // Translators: a button that saves a template
+        submit: tr('Save'),
+        fields: [{ name: 'name', label: tr('Template name'), max: 60 }],
         onSubmit: function (v) {
-          if (!v.name.trim()) return 'Give the template a name.';
+          if (!v.name.trim()) return tr('Give the template a name.');
           var form = new FormData();
           form.append('formkey', formkey());
           form.append('name', v.name);
           form.append('body', text);
           fetch('/api/post_templates', { method: 'POST', body: form, credentials: 'same-origin' })
             .then(function (r) { return r.json().then(function (data) { return { ok: r.ok, data: data }; }); })
-            .then(function (res) { status(res.ok ? 'Template saved.' : (res.data.error || 'Could not save the template.')); })
-            .catch(function () { status('Could not save the template.'); });
+            .then(function (res) { status(res.ok ? tr('Template saved.') : (res.data.error || tr('Could not save the template.'))); })
+            .catch(function () { status(tr('Could not save the template.')); });
         }
       });
     }
@@ -378,25 +394,25 @@
         menu.appendChild(menuItem(t.name, function () { insertBlock(el, t.body); }, 'far fa-file'));
       });
       var saved = make('div', 'post-tb-saved');
-      var loading = make('div', 'post-tb-note text-muted text-small', 'Loading your templates...');
+      var loading = make('div', 'post-tb-note text-muted text-small', tr('Loading your templates...'));
       saved.appendChild(loading);
       menu.appendChild(make('div', 'post-tb-rule'));
       menu.appendChild(saved);
       menu.appendChild(make('div', 'post-tb-rule'));
-      menu.appendChild(menuItem('Save as template...', saveTemplateDialog, 'fas fa-plus'));
+      menu.appendChild(menuItem(tr('Save as template...'), saveTemplateDialog, 'fas fa-plus'));
 
       fetch('/api/post_templates', { credentials: 'same-origin' })
         .then(function (r) { return r.json(); })
         .then(function (data) {
           saved.removeChild(loading);
           if (!data.templates || !data.templates.length) {
-            saved.appendChild(make('div', 'post-tb-note text-muted text-small', 'Your saved templates show up here.'));
+            saved.appendChild(make('div', 'post-tb-note text-muted text-small', tr('Your saved templates show up here.')));
             return;
           }
           data.templates.forEach(function (t) {
             var row = make('div', 'post-tb-saved-row');
             var use = menuItem(t.name, function () { insertBlock(el, t.body); }, 'far fa-bookmark');
-            var del = tbButton('Delete "' + t.name + '"', 'fas fa-times', function (event) {
+            var del = tbButton(tr('Delete "%(name)s"', {name: t.name}), 'fas fa-times', function (event) {
               event.stopPropagation();
               var form = new FormData();
               form.append('formkey', formkey());
@@ -409,7 +425,7 @@
           });
         })
         .catch(function () {
-          if (loading.parentNode) loading.textContent = 'Could not load your templates.';
+          if (loading.parentNode) loading.textContent = tr('Could not load your templates.');
         });
     }
 
@@ -436,7 +452,7 @@
       }
       holder.classList.add('d-none');
       area.classList.remove('d-none');
-      area.textContent = 'Loading preview...';
+      area.textContent = tr('Loading preview...');
       var form = new FormData();
       form.append('formkey', formkey());
       form.append('body', el.value);
@@ -444,17 +460,17 @@
         .then(function (r) { return r.json().then(function (data) { return { ok: r.ok, data: data }; }); })
         .then(function (res) {
           if (!previewing) return;
-          if (!res.ok) { area.textContent = res.data.error || 'Could not load the preview.'; return; }
+          if (!res.ok) { area.textContent = res.data.error || tr('Could not load the preview.'); return; }
           // server output: rendered and sanitized by the same pipeline as a posted body
           area.innerHTML = res.data.html || '';
-          if (!area.textContent.trim() && !area.querySelector('img')) area.textContent = 'Nothing to preview yet.';
+          if (!area.textContent.trim() && !area.querySelector('img')) area.textContent = tr('Nothing to preview yet.');
         })
-        .catch(function () { if (previewing) area.textContent = 'Could not load the preview.'; });
+        .catch(function () { if (previewing) area.textContent = tr('Could not load the preview.'); });
     }
 
     // --- build the buttons
     bar.setAttribute('role', 'toolbar');
-    bar.setAttribute('aria-label', 'Text formatting');
+    bar.setAttribute('aria-label', tr('Text formatting'));
 
     function group() {
       var g = make('span', 'post-tb-group');
@@ -474,93 +490,104 @@
     // Undo and redo first, then what goes into the text (pictures, video, sound, GIF, emoji, a link), as Reddit's editor
     // has them; the rest of the formatting folds behind "Aa" (the owner's choice: collapsed, at the top of the box)
     group(
-      tbButton('Undo', 'fas fa-undo', exec('undo')),
-      tbButton('Redo', 'fas fa-redo', exec('redo'))
+      tbButton(tr('Undo'), 'fas fa-undo', exec('undo')),
+      tbButton(tr('Redo'), 'fas fa-redo', exec('redo'))
     );
     group(
-      uploadStub('image', 'Image', 'far fa-image'),
-      uploadStub('video', 'Video', 'fas fa-video'),
-      uploadStub('audio', 'Sound', 'fas fa-volume-up'),
-      tbButton('GIF', 'fas fa-film', function () { getGif(); commentForm(id); $('#gifModal').modal('show'); }),
-      tbButton('Emoji', 'far fa-smile-beam', function () { commentForm(id); loadEmojis(); $('#emojiModal').modal('show'); }),
-      tbButton('Link (Ctrl+K)', 'fas fa-link', linkDialog)
+      uploadStub('image', tr('Image (coming soon)'), tr('Add image'), 'far fa-image'),
+      uploadStub('video', tr('Video (coming soon)'), tr('Add video'), 'fas fa-video'),
+      uploadStub('audio', tr('Sound (coming soon)'), tr('Add sound'), 'fas fa-volume-up'),
+      tbButton(tr('GIF'), 'fas fa-film', function () { getGif(); commentForm(id); $('#gifModal').modal('show'); }),
+      tbButton(tr('Emoji'), 'far fa-smile-beam', function () { commentForm(id); loadEmojis(); $('#emojiModal').modal('show'); }),
+      tbButton(tr('Link (Ctrl+K)'), 'fas fa-link', linkDialog)
     );
-    var toggle = tbButton('Formatting', null, null, 'post-tb-toggle');
+    var toggle = tbButton(tr('Formatting'), null, null, 'post-tb-toggle');
     toggle.appendChild(make('span', 'post-tb-toggle-text', 'Aa'));
     toggle.setAttribute('aria-expanded', 'false');
     group(toggle);
 
     var extras = [];
-    extras.push(group(dropdown('Text style', 'fas fa-heading', function (menu) {
+    extras.push(group(dropdown(tr('Text style'), 'fas fa-heading', function (menu) {
       var el = ta();
-      menu.appendChild(menuItem('Paragraph', function () { setHeading(el, 0); }, 'fas fa-paragraph'));
+      menu.appendChild(menuItem(tr('Paragraph'), function () { setHeading(el, 0); }, 'fas fa-paragraph'));
       [1, 2, 3, 4].forEach(function (n) {
-        menu.appendChild(menuItem('Heading ' + n, function () { setHeading(el, n); }, 'fas fa-heading'));
+        menu.appendChild(menuItem(tr('Heading %(level)s', {level: n}), function () { setHeading(el, n); }, 'fas fa-heading'));
       });
-      menu.appendChild(menuItem('Quote', function () { makeQuote(id); }, 'fas fa-quote-right'));
-      menu.appendChild(menuItem('Code block', function () { blockCode(el); }, 'fas fa-code'));
+      // Translators: a text style in the editor: make the lines a quotation
+      menu.appendChild(menuItem(tr('Quote'), function () { makeQuote(id); }, 'fas fa-quote-right'));
+      menu.appendChild(menuItem(tr('Code block'), function () { blockCode(el); }, 'fas fa-code'));
     })));
     extras.push(group(
-      tbButton('Bold (Ctrl+B)', 'fas fa-bold', function () { makeBold(id); }),
-      tbButton('Italic (Ctrl+I)', 'fas fa-italic', function () { makeItalics(id); }),
-      tbButton('Strikethrough', 'fas fa-strikethrough', function () { makeStrikethrough(id); }),
-      tbButton('Code', 'fas fa-code', function () { makeCode(id); }),
-      dropdown('Text colour', 'fas fa-font', function (menu) {
+      tbButton(tr('Bold (Ctrl+B)'), 'fas fa-bold', function () { makeBold(id); }),
+      tbButton(tr('Italic (Ctrl+I)'), 'fas fa-italic', function () { makeItalics(id); }),
+      tbButton(tr('Strikethrough'), 'fas fa-strikethrough', function () { makeStrikethrough(id); }),
+      // Translators: a toolbar button: format the selected words as computer code
+      tbButton(tr('Code'), 'fas fa-code', function () { makeCode(id); }),
+      dropdown(tr('Text colour'), 'fas fa-font', function (menu) {
         var el = ta();
         var grid = make('div', 'post-tb-swatches');
         TEXT_COLORS.forEach(function (name) {
           var sw = make('button', 'post-tb-swatch');
           sw.type = 'button';
-          sw.title = name;
-          sw.setAttribute('aria-label', 'Text colour ' + name);
+          sw.title = colourName(name);
+          sw.setAttribute('aria-label', tr('Text colour %(colour)s', {colour: colourName(name)}));
           sw.appendChild(make('span', 'tc-' + name, 'A'));
           keepSelection(sw);
           sw.addEventListener('click', function () { closeMenus(); applyTag(el, 'c', name); });
           grid.appendChild(sw);
         });
         menu.appendChild(grid);
-        menu.appendChild(menuItem('Remove colour', function () { applyTag(el, 'c', null); }, 'fas fa-eraser'));
+        menu.appendChild(menuItem(tr('Remove colour'), function () { applyTag(el, 'c', null); }, 'fas fa-eraser'));
       }),
-      dropdown('Highlight', 'fas fa-highlighter', function (menu) {
+      // Translators: a toolbar menu: colour the background of the selected words, as a highlighter pen does
+      dropdown(tr('Highlight'), 'fas fa-highlighter', function (menu) {
         var el = ta();
         var grid = make('div', 'post-tb-swatches');
         HIGHLIGHTS.forEach(function (name) {
           var sw = make('button', 'post-tb-swatch');
           sw.type = 'button';
-          sw.title = name;
-          sw.setAttribute('aria-label', 'Highlight ' + name);
+          sw.title = colourName(name);
+          sw.setAttribute('aria-label', tr('Highlight %(colour)s', {colour: colourName(name)}));
           sw.appendChild(make('span', 'hl-' + name, 'A'));
           keepSelection(sw);
           sw.addEventListener('click', function () { closeMenus(); applyTag(el, 'h', name); });
           grid.appendChild(sw);
         });
         menu.appendChild(grid);
-        menu.appendChild(menuItem('Remove highlight', function () { applyTag(el, 'h', null); }, 'fas fa-eraser'));
+        menu.appendChild(menuItem(tr('Remove highlight'), function () { applyTag(el, 'h', null); }, 'fas fa-eraser'));
       }),
-      tbButton('Superscript', 'fas fa-superscript', function () { editorToggleWrap(id, '<sup>', '</sup>'); }),
-      tbButton('Subscript', 'fas fa-subscript', function () { editorToggleWrap(id, '<sub>', '</sub>'); })
+      tbButton(tr('Superscript'), 'fas fa-superscript', function () { editorToggleWrap(id, '<sup>', '</sup>'); }),
+      tbButton(tr('Subscript'), 'fas fa-subscript', function () { editorToggleWrap(id, '<sub>', '</sub>'); })
     ));
     extras.push(group(
-      tbButton('Quote', 'fas fa-quote-right', function () { makeQuote(id); }),
-      tbButton('Bulleted list', 'fas fa-list-ul', function () { makeBulletList(id); }),
-      tbButton('Numbered list', 'fas fa-list-ol', function () { makeNumberedList(id); }),
-      dropdown('Alignment', 'fas fa-align-left', function (menu) {
+      tbButton(tr('Quote'), 'fas fa-quote-right', function () { makeQuote(id); }),
+      tbButton(tr('Bulleted list'), 'fas fa-list-ul', function () { makeBulletList(id); }),
+      tbButton(tr('Numbered list'), 'fas fa-list-ol', function () { makeNumberedList(id); }),
+      dropdown(tr('Alignment'), 'fas fa-align-left', function (menu) {
         var el = ta();
+        var labels = { left: tr('Align left'), center: tr('Align center'), right: tr('Align right') };
         ALIGNMENTS.forEach(function (name) {
-          menu.appendChild(menuItem('Align ' + name, function () { applyAlign(el, name); }, 'fas fa-align-' + name));
+          menu.appendChild(menuItem(labels[name], function () { applyAlign(el, name); }, 'fas fa-align-' + name));
         });
-        menu.appendChild(menuItem('Remove alignment', function () { applyAlign(el, null); }, 'fas fa-eraser'));
+        menu.appendChild(menuItem(tr('Remove alignment'), function () { applyAlign(el, null); }, 'fas fa-eraser'));
       })
     ));
     extras.push(group(
-      tbButton('Button', 'fas fa-hand-pointer', buttonDialog),
-      dropdown('Template', 'far fa-file-alt', fillTemplates),
-      dropdown('More', 'fas fa-ellipsis-h', function (menu) {
+      // Translators: a toolbar button that inserts a button (a link drawn as a button) into the post
+      tbButton(tr('Button'), 'fas fa-hand-pointer', buttonDialog),
+      // Translators: a toolbar menu of ready-made blocks to insert into the post
+      dropdown(tr('Template'), 'far fa-file-alt', fillTemplates),
+      // Translators: a toolbar menu with more formatting
+      dropdown(tr('More'), 'fas fa-ellipsis-h', function (menu) {
         var el = ta();
-        menu.appendChild(menuItem('Horizontal rule', function () { insertBlock(el, '---'); }, 'fas fa-minus'));
-        menu.appendChild(menuItem('Spoiler', function () { makeSpoiler(id); }, 'fas fa-eye-slash'));
-        menu.appendChild(menuItem('Table', function () {
-          insertBlock(el, '| Column | Column |\n| --- | --- |\n| Cell | Cell |');
+        menu.appendChild(menuItem(tr('Horizontal rule'), function () { insertBlock(el, '---'); }, 'fas fa-minus'));
+        // Translators: a menu item: hide the selected words until a reader taps them
+        menu.appendChild(menuItem(tr('Spoiler'), function () { makeSpoiler(id); }, 'fas fa-eye-slash'));
+        // Translators: a menu item: insert a table into the post
+        menu.appendChild(menuItem(tr('Table'), function () {
+          // Translators: placeholder text a member replaces: a table's column heading and one of its cells
+          var column = tr('Column'), cell = tr('Cell');
+          insertBlock(el, '| ' + column + ' | ' + column + ' |\n| --- | --- |\n| ' + cell + ' | ' + cell + ' |');
         }, 'fas fa-table'));
       })
     ));
@@ -570,7 +597,7 @@
     function setFolded(folded, remember) {
       bar.classList.toggle('post-tb-collapsed', folded);
       toggle.setAttribute('aria-expanded', String(!folded));
-      toggle.title = folded ? 'Show formatting' : 'Hide formatting';
+      toggle.title = folded ? tr('Show formatting') : tr('Hide formatting');
       toggle.setAttribute('aria-label', toggle.title);
       if (remember) {
         try { localStorage.setItem(FOLD_KEY, folded ? '0' : '1'); } catch (err) { /* storage unavailable */ }
@@ -585,18 +612,21 @@
     statusNode.setAttribute('role', 'status');
     var spacer = make('span', 'post-tb-spacer');
     var tabGroup = make('span', 'post-tb-group post-tb-tabs');
-    tabs.write = tbButton('Write', null, function () { if (previewing) setPreview(false); }, 'post-tb-tab active');
-    tabs.write.textContent = 'Write';
-    tabs.preview = tbButton('Preview', null, function () { if (!previewing) setPreview(true); }, 'post-tb-tab');
-    tabs.preview.textContent = 'Preview';
+    // Translators: a tab: write the post's text (beside Preview)
+    tabs.write = tbButton(tr('Write'), null, function () { if (previewing) setPreview(false); }, 'post-tb-tab active');
+    tabs.write.textContent = tr('Write');
+    // Translators: a tab: see the post's text as it will look (beside Write)
+    tabs.preview = tbButton(tr('Preview'), null, function () { if (!previewing) setPreview(true); }, 'post-tb-tab');
+    tabs.preview.textContent = tr('Preview');
     tabGroup.appendChild(tabs.write);
     tabGroup.appendChild(tabs.preview);
     bar.appendChild(spacer);
     bar.appendChild(tabGroup);
     bar.appendChild(statusNode);   // wraps to its own row, so it never pushes the tabs down
 
-    function uploadStub(kind, label, iconClass) {
-      var b = tbButton(label + ' (coming soon)', iconClass, function () {
+    // `waiting`: the button's name before an uploader exists; `ready`: once one does
+    function uploadStub(kind, waiting, ready, iconClass) {
+      var b = tbButton(waiting, iconClass, function () {
         var handler = uploaders[kind];
         if (!handler) return;
         var el = ta();
@@ -609,7 +639,7 @@
       b.disabled = true;
       b.setAttribute('data-stub', '1');
       b.setAttribute('data-kind', kind);
-      stubButtons.push({ kind: kind, button: b, label: label });
+      stubButtons.push({ kind: kind, button: b, ready: ready });
       if (uploaders[kind]) enableStub(stubButtons[stubButtons.length - 1]);
       return b;
     }
@@ -629,7 +659,7 @@
   function enableStub(entry) {
     entry.button.disabled = false;
     entry.button.setAttribute('data-stub', '0');
-    entry.button.title = 'Add ' + entry.label.toLowerCase();
+    entry.button.title = entry.ready;
     entry.button.setAttribute('aria-label', entry.button.title);
   }
 

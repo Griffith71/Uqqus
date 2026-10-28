@@ -4,7 +4,25 @@ from sqlalchemy import *
 from sqlalchemy.orm import relationship
 from ruqqus.__main__ import Base, cache, app
 from .mix_ins import *
+from babel.support import LazyProxy
+from ruqqus.helpers.i18n_runtime import N_, msg, tr, trp
+import re
 import time
+
+
+_VALUE = re.compile(r"%\((\w+)\)s")
+
+
+def _filled(template, values):
+    """An entry's English template (marked with N_ in ACTIONTYPES) in the reader's language, filled with its values;
+    the English when the translation doesn't name the same values."""
+    translated = msg(template)
+    if sorted(_VALUE.findall(translated)) != sorted(_VALUE.findall(template)):
+        translated = template
+    try:
+        return translated % values
+    except (KeyError, ValueError, TypeError):
+        return template % values
 
 
 class ModAction(Base, Stndrd, Age_times):
@@ -53,12 +71,14 @@ class ModAction(Base, Stndrd, Age_times):
 
         if self.kind=="exile_user":
             if self.target_post:
-                return f'for <a href="{self.target_post.permalink}">post</a>'
+                # Translators: why someone was exiled, in a guild's moderation log: for a post of theirs
+                return tr('for <a href="%(link)s">post</a>', link=self.target_post.permalink)
             elif self.target_comment:
-                return f'for <a href="{self.target_comment.permalink}">comment</a>'
+                # Translators: why someone was exiled, in a guild's moderation log: for a comment of theirs
+                return tr('for <a href="%(link)s">comment</a>', link=self.target_comment.permalink)
             return self._note or ""
         elif self.kind=="chatban_user":
-            return f'Reason: {self._note}' if self._note else ''
+            return tr('Reason: %(reason)s', reason=self._note) if self._note else ''
         else:
             return self._note or ""
 
@@ -69,7 +89,7 @@ class ModAction(Base, Stndrd, Age_times):
     @property
     def string(self):
 
-        output =  self.actiontype["str"].format(self=self)
+        output = self._text("str")
 
         if self.note:
             output += f" <i>({self.note})</i>"
@@ -80,13 +100,14 @@ class ModAction(Base, Stndrd, Age_times):
     def target_link(self):
         if self.target_user:
             if self.target_user.is_deleted:
-                return "[deleted user]"
+                return tr("[deleted user]")
             else:
                 return f'<a href="{self.target_user.permalink}">{self.target_user.username}</a>'
         elif self.target_post:
             return f'<a href="{self.target_post.permalink}">{self.target_post.title}</a>'
         elif self.target_comment:
-            return f'<a href="{self.target_comment.permalink}">comment</a>'
+            # Translators: a link to a comment in a guild's moderation log ("hid a comment from this guild")
+            return tr('<a href="%(link)s">comment</a>', link=self.target_comment.permalink)
 
         else:
             return ''
@@ -131,490 +152,664 @@ class ModAction(Base, Stndrd, Age_times):
     def permalink(self):
         return f"{self.board.permalink}/mod/log/{self.base36id}"
 
+    def _text(self, key):
+        """The entry's "str" or "title" in the reader's language, with the values its English names."""
+        template = self.actiontype[key]
+        values = {"target": lambda: self.target_link, "title": lambda: self.target_post.title,
+                  "name": lambda: self.target_user.username, "guild": lambda: self.board.name,
+                  "who": self._who}
+        return _filled(template, {name: values[name]() for name in _VALUE.findall(template)})
+
+    def _who(self):
+        if self.user.is_deleted:
+            return tr("[deleted user]")
+        elif 'admin action' in self.note or 'admin_action' in self.note:
+            return f"@{app.config['SITE_NAME']}"
+        else:
+            return f"@{self.user.username}"
+
     @property
     def title_text(self):
-        if self.user.is_deleted:
-            return f"[deleted user] {self.actiontype['title'].format(self=self)}"
-        elif 'admin action' in self.note or 'admin_action' in self.note:
-            return f"@{app.config['SITE_NAME']} {self.actiontype['title'].format(self=self)}"
-        else:
-            return f"@{self.user.username} {self.actiontype['title'].format(self=self)}"
+        return self._text("title")
     
     
 
 
 ACTIONTYPES={
     "kick_post":{
-        "str":'kicked post {self.target_link}',
+        # Translators: follows the moderator's name in a guild's moderation log; %(target)s is a link
+        "str": N_('kicked post %(target)s'),
         "icon":"fa-sign-out fa-flip-horizontal",
         "color": "bg-danger",
-        "title": 'kicked post {self.target_post.title}'
+        "title": N_('%(who)s kicked post %(title)s')
     },
     "hide_post_from_guild":{
-        "str":'hid post {self.target_link} from this guild',
+        # Translators: follows the moderator's name in a guild's moderation log; %(target)s is a link
+        "str": N_('hid post %(target)s from this guild'),
         "icon":"fa-eye-slash",
         "color": "bg-danger",
-        "title": 'hid post {self.target_post.title} from this guild'
+        "title": N_('%(who)s hid post %(title)s from this guild')
     },
     "unhide_post_from_guild":{
-        "str":'unhid post {self.target_link} in this guild',
+        # Translators: follows the moderator's name in a guild's moderation log; %(target)s is a link
+        "str": N_('unhid post %(target)s in this guild'),
         "icon":"fa-eye",
         "color": "bg-muted",
-        "title": 'unhid post {self.target_post.title} in this guild'
+        "title": N_('%(who)s unhid post %(title)s in this guild')
     },
     "hide_comment_from_guild":{
-        "str":'hid a {self.target_link} from this guild',
+        # Translators: follows the moderator's name in a guild's moderation log; %(target)s is a link
+        "str": N_('hid a %(target)s from this guild'),
         "icon":"fa-eye-slash",
         "color": "bg-danger",
-        "title": 'hid a comment from this guild'
+        "title": N_('%(who)s hid a comment from this guild')
     },
     "unhide_comment_from_guild":{
-        "str":'unhid a {self.target_link} in this guild',
+        # Translators: follows the moderator's name in a guild's moderation log; %(target)s is a link
+        "str": N_('unhid a %(target)s in this guild'),
         "icon":"fa-eye",
         "color": "bg-muted",
-        "title": 'unhid a comment in this guild'
+        "title": N_('%(who)s unhid a comment in this guild')
     },
     "approve_post":{
-        "str":'approved post {self.target_link}',
+        # Translators: follows the moderator's name in a guild's moderation log; %(target)s is a link
+        "str": N_('approved post %(target)s'),
         "icon":"fa-check",
         "color": "bg-success",
-        "title": 'approved post {self.target_post.title}'
+        "title": N_('%(who)s approved post %(title)s')
     },    
     "yank_post":{
-        "str":'yanked post {self.target_link}',
+        # Translators: follows the moderator's name in a guild's moderation log; %(target)s is a link
+        "str": N_('yanked post %(target)s'),
         "icon":"fa-hand-lizard",
         "color": "bg-muted",
-        "title": 'yanked post {self.target_post.title}'
+        "title": N_('%(who)s yanked post %(title)s')
     },
     "exile_user":{
-        "str":'exiled user {self.target_link}',
+        # Translators: follows the moderator's name in a guild's moderation log; %(target)s is a link
+        "str": N_('exiled user %(target)s'),
         "icon":"fa-user-slash",
         "color": "bg-danger",
-        "title": 'exiled user {self.target_user.username}'
+        "title": N_('%(who)s exiled user %(name)s')
     },
     "unexile_user":{
-        "str":'un-exiled user {self.target_link}',
+        # Translators: follows the moderator's name in a guild's moderation log; %(target)s is a link
+        "str": N_('un-exiled user %(target)s'),
         "icon": "fa-user-slash",
         "color": "bg-muted",
-        "title": 'un-exiled user {self.target_user.username}'
+        "title": N_('%(who)s un-exiled user %(name)s')
     },
     "chatban_user":{
-        "str":'chatbanned user {self.target_link}',
+        # Translators: follows the moderator's name in a guild's moderation log; %(target)s is a link
+        "str": N_('chatbanned user %(target)s'),
         "icon":"fa-comments-alt",
         "color": "bg-danger",
-        "title": 'chatbanned user {self.target_user.username}'
+        "title": N_('%(who)s chatbanned user %(name)s')
     },
     "unchatban_user":{
-        "str":'un-chatbanned user {self.target_link}',
+        # Translators: follows the moderator's name in a guild's moderation log; %(target)s is a link
+        "str": N_('un-chatbanned user %(target)s'),
         "icon": "fa-comments-alt",
         "color": "bg-muted",
-        "title": 'un-chatbanned user {self.target_user.username}'
+        "title": N_('%(who)s un-chatbanned user %(name)s')
     },
     "contrib_user":{
-        "str":'added contributor {self.target_link}',
+        # Translators: follows the moderator's name in a guild's moderation log; %(target)s is a link
+        "str": N_('added contributor %(target)s'),
         "icon": "fa-user-check",
         "color": "bg-info",
-        "title": 'added contributor {self.target_user.username}'
+        "title": N_('%(who)s added contributor %(name)s')
     },
     "uncontrib_user":{
-        "str":'removed contributor {self.target_link}',
+        # Translators: follows the moderator's name in a guild's moderation log; %(target)s is a link
+        "str": N_('removed contributor %(target)s'),
         "icon": "fa-user-check",
         "color": "bg-muted",
-        "title": 'removed user {self.target_user.username}'
+        "title": N_('%(who)s removed user %(name)s')
     },
     "herald_comment":{
-        "str":'heralded their {self.target_link}',
+        # Translators: follows the moderator's name in a guild's moderation log; %(target)s is a link
+        "str": N_('heralded their %(target)s'),
         "icon": "fa-crown",
         "color": "bg-warning",
-        "title": 'heralded their comment'
+        "title": N_('%(who)s heralded their comment')
     },
     "herald_post":{
-        "str":'heralded their post {self.target_link}',
+        # Translators: follows the moderator's name in a guild's moderation log; %(target)s is a link
+        "str": N_('heralded their post %(target)s'),
         "icon": "fa-crown",
         "color": "bg-warning",
-        "title": 'heralded their post {self.target_post.title}'
+        "title": N_('%(who)s heralded their post %(title)s')
     },
     "unherald_comment":{
-        "str":'un-heralded their {self.target_link}',
+        # Translators: follows the moderator's name in a guild's moderation log; %(target)s is a link
+        "str": N_('un-heralded their %(target)s'),
         "icon": "fa-crown",
         "color": "bg-muted",
-        "title": 'un-heralded their comment'
+        "title": N_('%(who)s un-heralded their comment')
         },
     "unherald_post":{
-        "str":'un-heralded their post {self.target_link}',
+        # Translators: follows the moderator's name in a guild's moderation log; %(target)s is a link
+        "str": N_('un-heralded their post %(target)s'),
         "icon": "fa-crown",
         "color": "bg-muted",
-        "title": 'un-heralded their post {self.target_post.title}'
+        "title": N_('%(who)s un-heralded their post %(title)s')
     },
     "pin_comment":{
-        "str":'pinned a {self.target_link}',
+        # Translators: follows the moderator's name in a guild's moderation log; %(target)s is a link
+        "str": N_('pinned a %(target)s'),
         "icon":"fa-thumbtack fa-rotate--45",
         "color": "bg-info",
-        "title": 'pinned a comment'
+        "title": N_('%(who)s pinned a comment')
     },
     "unpin_comment":{
-        "str":'un-pinned a {self.target_link}',
+        # Translators: follows the moderator's name in a guild's moderation log; %(target)s is a link
+        "str": N_('un-pinned a %(target)s'),
         "icon":"fa-thumbtack fa-rotate--45",
         "color": "bg-muted",
-        "title": 'un-pinned a comment'
+        "title": N_('%(who)s un-pinned a comment')
     },
     # guild flair (helpers/guild_flair.py); the note is the flair's name, escaped when it was written
     "flair_create":{
-        "str":'added a flair',
+        # Translators: after the moderator's name in a guild's moderation log
+        "str": N_('added a flair'),
         "icon":"fa-tag",
         "color": "bg-primary",
-        "title": 'added a flair'
+        "title": N_('%(who)s added a flair')
     },
     "flair_edit":{
-        "str":'changed a flair',
+        # Translators: after the moderator's name in a guild's moderation log
+        "str": N_('changed a flair'),
         "icon":"fa-tag",
         "color": "bg-primary",
-        "title": 'changed a flair'
+        "title": N_('%(who)s changed a flair')
     },
     "flair_delete":{
-        "str":'deleted a flair',
+        # Translators: after the moderator's name in a guild's moderation log
+        "str": N_('deleted a flair'),
         "icon":"fa-tag",
         "color": "bg-danger",
-        "title": 'deleted a flair'
+        "title": N_('%(who)s deleted a flair')
     },
     "flair_settings":{
-        "str":'changed whether forwards need a flair',
+        # Translators: after the moderator's name in a guild's moderation log
+        "str": N_('changed whether forwards need a flair'),
         "icon":"fa-tag",
         "color": "bg-primary",
-        "title": 'changed whether forwards need a flair'
+        "title": N_('%(who)s changed whether forwards need a flair')
     },
     # guild channels (helpers/guild_channels.py); the note is the channel's name, escaped. A removed message's text is
     # not logged: the entry names the channel and the writer
     "channel_create":{
-        "str":'made a channel',
+        # Translators: after the moderator's name in a guild's moderation log
+        "str": N_('made a channel'),
         "icon":"fa-comments",
         "color": "bg-primary",
-        "title": 'made a channel'
+        "title": N_('%(who)s made a channel')
     },
     "channel_edit":{
-        "str":'changed a channel',
+        # Translators: after the moderator's name in a guild's moderation log
+        "str": N_('changed a channel'),
         "icon":"fa-comments",
         "color": "bg-primary",
-        "title": 'changed a channel'
+        "title": N_('%(who)s changed a channel')
     },
     "channel_delete":{
-        "str":'deleted a channel',
+        # Translators: after the moderator's name in a guild's moderation log
+        "str": N_('deleted a channel'),
         "icon":"fa-comments",
         "color": "bg-danger",
-        "title": 'deleted a channel'
+        "title": N_('%(who)s deleted a channel')
     },
     "channel_pin":{
-        "str":'pinned a message in a channel',
+        # Translators: after the moderator's name in a guild's moderation log
+        "str": N_('pinned a message in a channel'),
         "icon":"fa-thumbtack",
         "color": "bg-primary",
-        "title": 'pinned a message in a channel'
+        "title": N_('%(who)s pinned a message in a channel')
     },
     "channel_unpin":{
-        "str":'took a pin off a channel message',
+        # Translators: after the moderator's name in a guild's moderation log
+        "str": N_('took a pin off a channel message'),
         "icon":"fa-thumbtack",
         "color": "bg-muted",
-        "title": 'took a pin off a channel message'
+        "title": N_('%(who)s took a pin off a channel message')
     },
     "category_create":{
-        "str":'made a channel category',
+        # Translators: after the moderator's name in a guild's moderation log
+        "str": N_('made a channel category'),
         "icon":"fa-comments",
         "color": "bg-primary",
-        "title": 'made a channel category'
+        "title": N_('%(who)s made a channel category')
     },
     "category_edit":{
-        "str":'renamed a channel category',
+        # Translators: after the moderator's name in a guild's moderation log
+        "str": N_('renamed a channel category'),
         "icon":"fa-comments",
         "color": "bg-primary",
-        "title": 'renamed a channel category'
+        "title": N_('%(who)s renamed a channel category')
     },
     "category_delete":{
-        "str":'deleted a channel category',
+        # Translators: after the moderator's name in a guild's moderation log
+        "str": N_('deleted a channel category'),
         "icon":"fa-comments",
         "color": "bg-danger",
-        "title": 'deleted a channel category'
+        "title": N_('%(who)s deleted a channel category')
     },
     "role_create":{
-        "str":'made a role',
+        # Translators: after the moderator's name in a guild's moderation log
+        "str": N_('made a role'),
         "icon":"fa-user-group",
         "color": "bg-primary",
-        "title": 'made a role'
+        "title": N_('%(who)s made a role')
     },
     "role_edit":{
-        "str":'changed a role',
+        # Translators: after the moderator's name in a guild's moderation log
+        "str": N_('changed a role'),
         "icon":"fa-user-group",
         "color": "bg-primary",
-        "title": 'changed a role'
+        "title": N_('%(who)s changed a role')
     },
     "role_delete":{
-        "str":'deleted a role',
+        # Translators: after the moderator's name in a guild's moderation log
+        "str": N_('deleted a role'),
         "icon":"fa-user-group",
         "color": "bg-danger",
-        "title": 'deleted a role'
+        "title": N_('%(who)s deleted a role')
     },
     "role_assign":{
-        "str":'gave a role to {self.target_link}',
+        # Translators: follows the moderator's name in a guild's moderation log; %(target)s is a link
+        "str": N_('gave a role to %(target)s'),
         "icon":"fa-user-group",
         "color": "bg-primary",
-        "title": 'gave a role to {self.target_link}'
+        "title": N_('%(who)s gave a role to %(target)s')
     },
     "role_unassign":{
-        "str":'took a role from {self.target_link}',
+        # Translators: follows the moderator's name in a guild's moderation log; %(target)s is a link
+        "str": N_('took a role from %(target)s'),
         "icon":"fa-user-group",
         "color": "bg-muted",
-        "title": 'took a role from {self.target_link}'
+        "title": N_('%(who)s took a role from %(target)s')
     },
     "automod_settings":{
-        "str":'changed the auto-moderation of the channels',
+        # Translators: after the moderator's name in a guild's moderation log
+        "str": N_('changed the auto-moderation of the channels'),
         "icon":"fa-comments",
         "color": "bg-primary",
-        "title": 'changed the auto-moderation of the channels'
+        "title": N_('%(who)s changed the auto-moderation of the channels')
     },
     "channel_feed_add":{
-        "str":'added a bot feed {self.target_link} to a channel',
+        # Translators: follows the moderator's name in a guild's moderation log; %(target)s is a link
+        "str": N_('added a bot feed %(target)s to a channel'),
         "icon":"fa-comments",
         "color": "bg-primary",
-        "title": 'added a bot feed {self.target_link} to a channel'
+        "title": N_('%(who)s added a bot feed %(target)s to a channel')
     },
     "channel_feed_remove":{
-        "str":'took a bot feed {self.target_link} off a channel',
+        # Translators: follows the moderator's name in a guild's moderation log; %(target)s is a link
+        "str": N_('took a bot feed %(target)s off a channel'),
         "icon":"fa-comments",
         "color": "bg-muted",
-        "title": 'took a bot feed {self.target_link} off a channel'
+        "title": N_('%(who)s took a bot feed %(target)s off a channel')
     },
     "channel_message_remove":{
-        "str":'removed a message by {self.target_link} from a channel',
+        # Translators: follows the moderator's name in a guild's moderation log; %(target)s is a link
+        "str": N_('removed a message by %(target)s from a channel'),
         "icon":"fa-comment-slash",
         "color": "bg-danger",
-        "title": 'removed a channel message'
+        "title": N_('%(who)s removed a channel message')
     },
     # guild wiki and resources (helpers/guild_wiki.py); the note is the page's address, escaped when it was written
     "wiki_edit":{
-        "str":'edited a wiki page',
+        # Translators: after the moderator's name in a guild's moderation log
+        "str": N_('edited a wiki page'),
         "icon":"fa-book",
         "color": "bg-primary",
-        "title": 'edited a wiki page'
+        "title": N_('%(who)s edited a wiki page')
     },
     "wiki_restore":{
-        "str":'restored a wiki page revision',
+        # Translators: after the moderator's name in a guild's moderation log
+        "str": N_('restored a wiki page revision'),
         "icon":"fa-book",
         "color": "bg-primary",
-        "title": 'restored a wiki page revision'
+        "title": N_('%(who)s restored a wiki page revision')
     },
     "wiki_settings":{
-        "str":'changed who may edit a wiki page',
+        # Translators: after the moderator's name in a guild's moderation log
+        "str": N_('changed who may edit a wiki page'),
         "icon":"fa-book",
         "color": "bg-primary",
-        "title": 'changed who may edit a wiki page'
+        "title": N_('%(who)s changed who may edit a wiki page')
     },
     "wiki_delete":{
-        "str":'deleted a wiki page',
+        # Translators: after the moderator's name in a guild's moderation log
+        "str": N_('deleted a wiki page'),
         "icon":"fa-book",
         "color": "bg-danger",
-        "title": 'deleted a wiki page'
+        "title": N_('%(who)s deleted a wiki page')
     },
     "wiki_toggle":{
-        "str":'switched the wiki',
+        # Translators: after the moderator's name in a guild's moderation log
+        "str": N_('switched the wiki'),
         "icon":"fa-book",
         "color": "bg-primary",
-        "title": 'switched the wiki'
+        "title": N_('%(who)s switched the wiki')
     },
     "resources_edit":{
-        "str":'changed the pinned resources',
+        # Translators: after the moderator's name in a guild's moderation log
+        "str": N_('changed the pinned resources'),
         "icon":"fa-thumbtack",
         "color": "bg-primary",
-        "title": 'changed the pinned resources'
+        "title": N_('%(who)s changed the pinned resources')
     },
     # guild events (helpers/guild_events.py); the note is the event's title, escaped when it was written
     "event_create":{
-        "str":'created an event',
+        # Translators: after the moderator's name in a guild's moderation log
+        "str": N_('created an event'),
         "icon":"fa-calendar-days",
         "color": "bg-primary",
-        "title": 'created an event'
+        "title": N_('%(who)s created an event')
     },
     "event_edit":{
-        "str":'edited an event',
+        # Translators: after the moderator's name in a guild's moderation log
+        "str": N_('edited an event'),
         "icon":"fa-calendar-days",
         "color": "bg-primary",
-        "title": 'edited an event'
+        "title": N_('%(who)s edited an event')
     },
     "event_cancel":{
-        "str":'cancelled an event',
+        # Translators: after the moderator's name in a guild's moderation log
+        "str": N_('cancelled an event'),
         "icon":"fa-calendar-xmark",
         "color": "bg-danger",
-        "title": 'cancelled an event'
+        "title": N_('%(who)s cancelled an event')
     },
     "set_post_flair":{
-        "str":'set the flair of post {self.target_link}',
+        # Translators: follows the moderator's name in a guild's moderation log; %(target)s is a link
+        "str": N_('set the flair of post %(target)s'),
         "icon":"fa-tag",
         "color": "bg-primary",
-        "title": 'set the flair of post {self.target_post.title}'
+        "title": N_('%(who)s set the flair of post %(title)s')
     },
     "pin_post":{
-        "str":'pinned post {self.target_link}',
+        # Translators: follows the moderator's name in a guild's moderation log; %(target)s is a link
+        "str": N_('pinned post %(target)s'),
         "icon":"fa-thumbtack fa-rotate--45",
         "color": "bg-success",
-        "title": 'pinned post {self.target_post.title}'
+        "title": N_('%(who)s pinned post %(title)s')
     },
     "unpin_post":{
-        "str":'un-pinned post {self.target_link}',
+        # Translators: follows the moderator's name in a guild's moderation log; %(target)s is a link
+        "str": N_('un-pinned post %(target)s'),
         "icon":"fa-thumbtack fa-rotate--45",
         "color": "bg-muted",
-        "title": 'un-pinned post {self.target_post.title}'
+        "title": N_('%(who)s un-pinned post %(title)s')
     },
     "invite_mod":{
-        "str":'invited guildmaster {self.target_link}',
+        # Translators: follows the moderator's name in a guild's moderation log; %(target)s is a link
+        "str": N_('invited guildmaster %(target)s'),
         "icon":"fa-user-crown",
         "color": "bg-info",
-        "title": 'invited guildmaster @{self.target_user.username}'
+        "title": N_('%(who)s invited guildmaster @%(name)s')
     },
     "uninvite_mod":{
-        "str":'rescinded guildmaster invitation to {self.target_link}',
+        # Translators: follows the moderator's name in a guild's moderation log; %(target)s is a link
+        "str": N_('rescinded guildmaster invitation to %(target)s'),
         "icon":"fa-user-crown",
         "color": "bg-muted",
-        "title": 'rescinded guildmaster invitation to @{self.target_user.username}'
+        "title": N_('%(who)s rescinded guildmaster invitation to @%(name)s')
     },
     "accept_mod_invite":{
-        "str":'accepted guildmaster invitation',
+        # Translators: after the moderator's name in a guild's moderation log
+        "str": N_('accepted guildmaster invitation'),
         "icon":"fa-user-crown",
         "color": "bg-warning",
-        "title": 'accepted guildmaster invitation'
+        "title": N_('%(who)s accepted guildmaster invitation')
     },
     "remove_mod":{
-        "str":'removed guildmaster {self.target_link}',
+        # Translators: follows the moderator's name in a guild's moderation log; %(target)s is a link
+        "str": N_('removed guildmaster %(target)s'),
         "icon":"fa-user-crown",
         "color": "bg-danger",
-        "title": 'removed guildmaster @{self.target_user.username}'
+        "title": N_('%(who)s removed guildmaster @%(name)s')
     },
     "dethrone_self":{
-        "str":'stepped down as guildmaster',
+        # Translators: after the moderator's name in a guild's moderation log
+        "str": N_('stepped down as guildmaster'),
         "icon":"fa-user-crown",
         "color": "bg-danger",
-        "title": 'stepped down as guildmaster'
+        "title": N_('%(who)s stepped down as guildmaster')
     },
     "add_mod":{
-        "str":'added guildmaster {self.target_link}',
+        # Translators: follows the moderator's name in a guild's moderation log; %(target)s is a link
+        "str": N_('added guildmaster %(target)s'),
         "icon":"fa-user-crown",
         "color": "bg-success",
-        "title": 'added guildmaster @{self.target_user.username}'
+        "title": N_('%(who)s added guildmaster @%(name)s')
     },
     "update_settings":{
-        "str":'updated setting',
+        # Translators: after the moderator's name in a guild's moderation log
+        "str": N_('updated setting'),
         "icon":"fa-cog",
         "color": "bg-info",
-        "title": 'updated settings'
+        "title": N_('%(who)s updated settings')
     },
     "update_appearance":{
-        "str":'updated appearance',
+        # Translators: after the moderator's name in a guild's moderation log
+        "str": N_('updated appearance'),
         "icon":"fa-palette",
         "color": "bg-info",
-        "title": 'updated appearance'
+        "title": N_('%(who)s updated appearance')
     },
     "set_nsfw":{
-        "str":'set nsfw on post {self.target_link}',
+        # Translators: follows the moderator's name in a guild's moderation log; %(target)s is a link
+        "str": N_('set nsfw on post %(target)s'),
         "icon":"fa-eye-evil",
         "color": "bg-danger",
-        "title": 'set nsfw on post {self.target_post.title}'
+        "title": N_('%(who)s set nsfw on post %(title)s')
     },
     "unset_nsfw":{
-        "str":'un-set nsfw on post {self.target_link}',
+        # Translators: follows the moderator's name in a guild's moderation log; %(target)s is a link
+        "str": N_('un-set nsfw on post %(target)s'),
         "icon":"fa-eye-evil",
         "color": "bg-muted",
-        "title": 'un-set nsfw on post {self.target_post.title}'
+        "title": N_('%(who)s un-set nsfw on post %(title)s')
     },
     "set_sensitive":{
-        "str":'marked post {self.target_link} as sensitive content',
+        # Translators: follows the moderator's name in a guild's moderation log; %(target)s is a link
+        "str": N_('marked post %(target)s as sensitive content'),
         "icon":"fa-eye-slash",
         "color": "bg-warning",
-        "title": 'marked post {self.target_post.title} as sensitive content'
+        "title": N_('%(who)s marked post %(title)s as sensitive content')
     },
     "unset_sensitive":{
-        "str":'un-marked post {self.target_link} as sensitive content',
+        # Translators: follows the moderator's name in a guild's moderation log; %(target)s is a link
+        "str": N_('un-marked post %(target)s as sensitive content'),
         "icon":"fa-eye-slash",
         "color": "bg-muted",
-        "title": 'un-marked post {self.target_post.title} as sensitive content'
+        "title": N_('%(who)s un-marked post %(title)s as sensitive content')
     },
     "set_sensitive_comment":{
-        "str":'marked comment {self.target_link} as sensitive content',
+        # Translators: follows the moderator's name in a guild's moderation log; %(target)s is a link
+        "str": N_('marked comment %(target)s as sensitive content'),
         "icon":"fa-eye-slash",
         "color": "bg-warning",
-        "title": 'marked a comment as sensitive content'
+        "title": N_('%(who)s marked a comment as sensitive content')
     },
     "unset_sensitive_comment":{
-        "str":'un-marked comment {self.target_link} as sensitive content',
+        # Translators: follows the moderator's name in a guild's moderation log; %(target)s is a link
+        "str": N_('un-marked comment %(target)s as sensitive content'),
         "icon":"fa-eye-slash",
         "color": "bg-muted",
-        "title": 'un-marked a comment as sensitive content'
+        "title": N_('%(who)s un-marked a comment as sensitive content')
     },
     "ban_post":{
-        "str": 'removed post {self.target_link}',
+        # Translators: follows the moderator's name in a guild's moderation log; %(target)s is a link
+        "str": N_('removed post %(target)s'),
         "icon":"fa-feather-alt",
         "color": "bg-danger",
-        "title": "removed post {self.target_post.title}"
+        "title": N_("%(who)s removed post %(title)s")
     },
     "unban_post":{
-        "str": 'reinstated post {self.target_link}',
+        # Translators: follows the moderator's name in a guild's moderation log; %(target)s is a link
+        "str": N_('reinstated post %(target)s'),
         "icon":"fa-feather-alt",
         "color": "bg-muted",
-        "title": "reinstated post {self.target_post.title}"
+        "title": N_("%(who)s reinstated post %(title)s")
     },
     "ban_comment":{
-        "str": 'removed {self.target_link}',
+        # Translators: follows the moderator's name in a guild's moderation log; %(target)s is a link
+        "str": N_('removed %(target)s'),
         "icon":"fa-comment",
         "color": "bg-danger",
-        "title": "removed comment"
+        "title": N_("%(who)s removed comment")
     },
     "unban_comment":{
-        "str": 'reinstated {self.target_link}',
+        # Translators: follows the moderator's name in a guild's moderation log; %(target)s is a link
+        "str": N_('reinstated %(target)s'),
         "icon":"fa-comment",
         "color": "bg-muted",
-        "title": "reinstated comment"
+        "title": N_("%(who)s reinstated comment")
     },
     "purge_post":{
-        "str": 'permanently purged post {self.target_link}',
+        # Translators: follows the moderator's name in a guild's moderation log; %(target)s is a link
+        "str": N_('permanently purged post %(target)s'),
         "icon":"fa-fire",
         "color": "bg-danger",
-        "title": "permanently purged a post"
+        "title": N_("%(who)s permanently purged a post")
     },
     "purge_comment":{
-        "str": 'permanently purged {self.target_link}',
+        # Translators: follows the moderator's name in a guild's moderation log; %(target)s is a link
+        "str": N_('permanently purged %(target)s'),
         "icon":"fa-fire",
         "color": "bg-danger",
-        "title": "permanently purged a comment"
+        "title": N_("%(who)s permanently purged a comment")
     },
     "obliterate_post":{
-        "str": 'permanently obliterated post {self.target_link}',
+        # Translators: follows the moderator's name in a guild's moderation log; %(target)s is a link
+        "str": N_('permanently obliterated post %(target)s'),
         "icon":"fa-radiation",
         "color": "bg-danger",
-        "title": "permanently obliterated a post"
+        "title": N_("%(who)s permanently obliterated a post")
     },
     "obliterate_comment":{
-        "str": 'permanently obliterated {self.target_link}',
+        # Translators: follows the moderator's name in a guild's moderation log; %(target)s is a link
+        "str": N_('permanently obliterated %(target)s'),
         "icon":"fa-radiation",
         "color": "bg-danger",
-        "title": "permanently obliterated a comment"
+        "title": N_("%(who)s permanently obliterated a comment")
     },
     "change_perms":{
-        "str": 'changed permissions on guildmaster {self.target_link}',
+        # Translators: follows the moderator's name in a guild's moderation log; %(target)s is a link
+        "str": N_('changed permissions on guildmaster %(target)s'),
         "icon":"fa-user-cog",
         "color": "bg-info",
-        "title": "changed permissions on {self.target_user.username}"
+        "title": N_("%(who)s changed permissions on %(name)s")
     },
     "change_invite":{
-        "str": 'changed  permissions on guildmaster invitation to {self.target_link}',
+        # Translators: follows the moderator's name in a guild's moderation log; %(target)s is a link
+        "str": N_('changed  permissions on guildmaster invitation to %(target)s'),
         "icon":"fa-user-cog",
         "color": "bg-muted",
-        "title": "changed permissions on invitation to {self.target_user.username}"
+        "title": N_("%(who)s changed permissions on invitation to %(name)s")
     },
     "create_guild":{
-        "str": 'created +{self.board.name}',
+        # Translators: after the moderator's name in a guild's moderation log
+        "str": N_('created +%(guild)s'),
         "icon": "fa-chess-rook",
         "color": "bg-primary",
-        "title": "created +{self.board.name}"
+        "title": N_("%(who)s created +%(guild)s")
     },
     "update_stylesheet":{
-        "str": 'updated the stylesheet',
+        # Translators: after the moderator's name in a guild's moderation log
+        "str": N_('updated the stylesheet'),
         "icon": "fa-pen",
         "color": "bg-info",
-        "title": 'updated the stylesheet'
+        "title": N_('%(who)s updated the stylesheet')
     }
+}
+
+
+# the name of each kind as a guild's insights count them (helpers/guild_insights.py: "What the guildmasters did"):
+# in English exactly the kind with spaces, capitalised, as the page always wrote it
+MOD_ACTION_LABELS = {
+    # Translators: the kinds of action a guild's guildmasters take, as a guild's insights count them
+    "kick_post": LazyProxy(lambda: trp("guildmaster action", "Kick post"), enable_cache=False),
+    "hide_post_from_guild": LazyProxy(lambda: trp("guildmaster action", "Hide post from guild"), enable_cache=False),
+    "unhide_post_from_guild": LazyProxy(lambda: trp("guildmaster action", "Unhide post from guild"), enable_cache=False),
+    "hide_comment_from_guild": LazyProxy(lambda: trp("guildmaster action", "Hide comment from guild"), enable_cache=False),
+    "unhide_comment_from_guild": LazyProxy(lambda: trp("guildmaster action", "Unhide comment from guild"), enable_cache=False),
+    "approve_post": LazyProxy(lambda: trp("guildmaster action", "Approve post"), enable_cache=False),
+    "yank_post": LazyProxy(lambda: trp("guildmaster action", "Yank post"), enable_cache=False),
+    "exile_user": LazyProxy(lambda: trp("guildmaster action", "Exile user"), enable_cache=False),
+    "unexile_user": LazyProxy(lambda: trp("guildmaster action", "Unexile user"), enable_cache=False),
+    "chatban_user": LazyProxy(lambda: trp("guildmaster action", "Chatban user"), enable_cache=False),
+    "unchatban_user": LazyProxy(lambda: trp("guildmaster action", "Unchatban user"), enable_cache=False),
+    "contrib_user": LazyProxy(lambda: trp("guildmaster action", "Contrib user"), enable_cache=False),
+    "uncontrib_user": LazyProxy(lambda: trp("guildmaster action", "Uncontrib user"), enable_cache=False),
+    "herald_comment": LazyProxy(lambda: trp("guildmaster action", "Herald comment"), enable_cache=False),
+    "herald_post": LazyProxy(lambda: trp("guildmaster action", "Herald post"), enable_cache=False),
+    "unherald_comment": LazyProxy(lambda: trp("guildmaster action", "Unherald comment"), enable_cache=False),
+    "unherald_post": LazyProxy(lambda: trp("guildmaster action", "Unherald post"), enable_cache=False),
+    "pin_comment": LazyProxy(lambda: trp("guildmaster action", "Pin comment"), enable_cache=False),
+    "unpin_comment": LazyProxy(lambda: trp("guildmaster action", "Unpin comment"), enable_cache=False),
+    "flair_create": LazyProxy(lambda: trp("guildmaster action", "Flair create"), enable_cache=False),
+    "flair_edit": LazyProxy(lambda: trp("guildmaster action", "Flair edit"), enable_cache=False),
+    "flair_delete": LazyProxy(lambda: trp("guildmaster action", "Flair delete"), enable_cache=False),
+    "flair_settings": LazyProxy(lambda: trp("guildmaster action", "Flair settings"), enable_cache=False),
+    "channel_create": LazyProxy(lambda: trp("guildmaster action", "Channel create"), enable_cache=False),
+    "channel_edit": LazyProxy(lambda: trp("guildmaster action", "Channel edit"), enable_cache=False),
+    "channel_delete": LazyProxy(lambda: trp("guildmaster action", "Channel delete"), enable_cache=False),
+    "channel_pin": LazyProxy(lambda: trp("guildmaster action", "Channel pin"), enable_cache=False),
+    "channel_unpin": LazyProxy(lambda: trp("guildmaster action", "Channel unpin"), enable_cache=False),
+    "category_create": LazyProxy(lambda: trp("guildmaster action", "Category create"), enable_cache=False),
+    "category_edit": LazyProxy(lambda: trp("guildmaster action", "Category edit"), enable_cache=False),
+    "category_delete": LazyProxy(lambda: trp("guildmaster action", "Category delete"), enable_cache=False),
+    "role_create": LazyProxy(lambda: trp("guildmaster action", "Role create"), enable_cache=False),
+    "role_edit": LazyProxy(lambda: trp("guildmaster action", "Role edit"), enable_cache=False),
+    "role_delete": LazyProxy(lambda: trp("guildmaster action", "Role delete"), enable_cache=False),
+    "role_assign": LazyProxy(lambda: trp("guildmaster action", "Role assign"), enable_cache=False),
+    "role_unassign": LazyProxy(lambda: trp("guildmaster action", "Role unassign"), enable_cache=False),
+    "automod_settings": LazyProxy(lambda: trp("guildmaster action", "Automod settings"), enable_cache=False),
+    "channel_feed_add": LazyProxy(lambda: trp("guildmaster action", "Channel feed add"), enable_cache=False),
+    "channel_feed_remove": LazyProxy(lambda: trp("guildmaster action", "Channel feed remove"), enable_cache=False),
+    "channel_message_remove": LazyProxy(lambda: trp("guildmaster action", "Channel message remove"), enable_cache=False),
+    "wiki_edit": LazyProxy(lambda: trp("guildmaster action", "Wiki edit"), enable_cache=False),
+    "wiki_restore": LazyProxy(lambda: trp("guildmaster action", "Wiki restore"), enable_cache=False),
+    "wiki_settings": LazyProxy(lambda: trp("guildmaster action", "Wiki settings"), enable_cache=False),
+    "wiki_delete": LazyProxy(lambda: trp("guildmaster action", "Wiki delete"), enable_cache=False),
+    "wiki_toggle": LazyProxy(lambda: trp("guildmaster action", "Wiki toggle"), enable_cache=False),
+    "resources_edit": LazyProxy(lambda: trp("guildmaster action", "Resources edit"), enable_cache=False),
+    "event_create": LazyProxy(lambda: trp("guildmaster action", "Event create"), enable_cache=False),
+    "event_edit": LazyProxy(lambda: trp("guildmaster action", "Event edit"), enable_cache=False),
+    "event_cancel": LazyProxy(lambda: trp("guildmaster action", "Event cancel"), enable_cache=False),
+    "set_post_flair": LazyProxy(lambda: trp("guildmaster action", "Set post flair"), enable_cache=False),
+    "pin_post": LazyProxy(lambda: trp("guildmaster action", "Pin post"), enable_cache=False),
+    "unpin_post": LazyProxy(lambda: trp("guildmaster action", "Unpin post"), enable_cache=False),
+    "invite_mod": LazyProxy(lambda: trp("guildmaster action", "Invite mod"), enable_cache=False),
+    "uninvite_mod": LazyProxy(lambda: trp("guildmaster action", "Uninvite mod"), enable_cache=False),
+    "accept_mod_invite": LazyProxy(lambda: trp("guildmaster action", "Accept mod invite"), enable_cache=False),
+    "remove_mod": LazyProxy(lambda: trp("guildmaster action", "Remove mod"), enable_cache=False),
+    "dethrone_self": LazyProxy(lambda: trp("guildmaster action", "Dethrone self"), enable_cache=False),
+    "add_mod": LazyProxy(lambda: trp("guildmaster action", "Add mod"), enable_cache=False),
+    "update_settings": LazyProxy(lambda: trp("guildmaster action", "Update settings"), enable_cache=False),
+    "update_appearance": LazyProxy(lambda: trp("guildmaster action", "Update appearance"), enable_cache=False),
+    "set_nsfw": LazyProxy(lambda: trp("guildmaster action", "Set nsfw"), enable_cache=False),
+    "unset_nsfw": LazyProxy(lambda: trp("guildmaster action", "Unset nsfw"), enable_cache=False),
+    "set_sensitive": LazyProxy(lambda: trp("guildmaster action", "Set sensitive"), enable_cache=False),
+    "unset_sensitive": LazyProxy(lambda: trp("guildmaster action", "Unset sensitive"), enable_cache=False),
+    "set_sensitive_comment": LazyProxy(lambda: trp("guildmaster action", "Set sensitive comment"), enable_cache=False),
+    "unset_sensitive_comment": LazyProxy(lambda: trp("guildmaster action", "Unset sensitive comment"), enable_cache=False),
+    "ban_post": LazyProxy(lambda: trp("guildmaster action", "Ban post"), enable_cache=False),
+    "unban_post": LazyProxy(lambda: trp("guildmaster action", "Unban post"), enable_cache=False),
+    "ban_comment": LazyProxy(lambda: trp("guildmaster action", "Ban comment"), enable_cache=False),
+    "unban_comment": LazyProxy(lambda: trp("guildmaster action", "Unban comment"), enable_cache=False),
+    "purge_post": LazyProxy(lambda: trp("guildmaster action", "Purge post"), enable_cache=False),
+    "purge_comment": LazyProxy(lambda: trp("guildmaster action", "Purge comment"), enable_cache=False),
+    "obliterate_post": LazyProxy(lambda: trp("guildmaster action", "Obliterate post"), enable_cache=False),
+    "obliterate_comment": LazyProxy(lambda: trp("guildmaster action", "Obliterate comment"), enable_cache=False),
+    "change_perms": LazyProxy(lambda: trp("guildmaster action", "Change perms"), enable_cache=False),
+    "change_invite": LazyProxy(lambda: trp("guildmaster action", "Change invite"), enable_cache=False),
+    "create_guild": LazyProxy(lambda: trp("guildmaster action", "Create guild"), enable_cache=False),
+    "update_stylesheet": LazyProxy(lambda: trp("guildmaster action", "Update stylesheet"), enable_cache=False),
 }

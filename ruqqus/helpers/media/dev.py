@@ -9,6 +9,8 @@ import hashlib
 import os
 import tempfile
 
+from ruqqus.helpers.i18n_runtime import tr, tr_lazy
+
 from . import rules
 from .base import MediaGone, Provider, Stream
 
@@ -33,7 +35,7 @@ def file_path(asset):
 
 class DevProvider(Provider):
     name = "dev"
-    label = "test storage"
+    label = tr_lazy("test storage")
     served = True
 
     def begin_upload(self, account, asset, origin, details=None):
@@ -43,7 +45,7 @@ class DevProvider(Provider):
     def finish_upload(self, account, asset):
         path = file_path(asset)
         if not os.path.isfile(path):
-            raise rules.MediaError("The upload did not arrive. Try again.")
+            raise rules.MediaError(tr("The upload did not arrive. Try again."))
         return {"ref": asset.provider_ref, "size": os.path.getsize(path), "checksum": self.checksum(account, asset)}
 
     def checksum(self, account, asset):

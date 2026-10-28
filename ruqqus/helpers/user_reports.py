@@ -12,6 +12,8 @@ import time
 
 from sqlalchemy import text
 
+from ruqqus.helpers.i18n_runtime import tr
+
 REASON_MAX = 200
 DAILY_LIMIT = 20
 _CONTROL = re.compile(r"[\x00-\x08\x0b-\x1f\x7f]")
@@ -21,16 +23,16 @@ def parse_reason(raw):
     """(reason, error): plain text, control characters dropped, spaces collapsed."""
     reason = re.sub(r"\s+", " ", _CONTROL.sub("", str(raw or ""))).strip()
     if not reason:
-        return "", "Say what is wrong with this account."
+        return "", tr("Say what is wrong with this account.")
     return reason[:REASON_MAX], None
 
 
 def refusal(reporter_id, target_id, target_deleted):
     """(message, status) when a report can't be filed, else None."""
     if target_deleted:
-        return "That account has been deactivated.", 410
+        return tr("That account has been deactivated."), 410
     if reporter_id == target_id:
-        return "You can't report your own account.", 409
+        return tr("You can't report your own account."), 409
     return None
 
 

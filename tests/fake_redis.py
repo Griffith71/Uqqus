@@ -62,6 +62,11 @@ class FakeRedis:
         value = self.data.get(key)
         return dict(value) if isinstance(value, dict) else {}
 
+    def hincrby(self, key, field, amount=1):
+        h = self._hash(key)
+        h[field] = str(int(h.get(field, 0)) + amount)
+        return int(h[field])
+
     def hdel(self, key, *fields):
         h = self.data.get(key)
         if not isinstance(h, dict):

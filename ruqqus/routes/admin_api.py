@@ -48,18 +48,23 @@ def ban_user(user_id, v):
     if not _outranks(v, user):
         abort(403)
 
+    # the notices go to the member, so they are in the member's language (the admin's own words stay as written)
     if days > 0:
         if message:
-            text = f"Your {app.config['SITE_NAME']} account has been suspended for {days} days for the following reason:\n\n> {message}"
+            notice = (N_("Your %(site)s account has been suspended for %(days)s days for the following reason:\n\n> "
+                         "%(message)s"), {"days": days, "message": message})
         else:
-            text = f"Your {app.config['SITE_NAME']} account has been suspended for {days} days due to a Terms of Service violation."
+            notice = (N_("Your %(site)s account has been suspended for %(days)s days due to a Terms of Service "
+                         "violation."), {"days": days})
         user.ban(admin=v, reason=reason, days=days)
 
     else:
         if message:
-            text = f"Your {app.config['SITE_NAME']} account has been permanently suspended for the following reason:\n\n> {message}"
+            notice = (N_("Your %(site)s account has been permanently suspended for the following reason:\n\n> "
+                         "%(message)s"), {"message": message})
         else:
-            text = f"Your {app.config['SITE_NAME']} account has been permanently suspended due to a Terms of Service violation."
+            notice = (N_("Your %(site)s account has been permanently suspended due to a Terms of Service violation."),
+                      {})
 
         user.ban(admin=v, reason=reason)
 
@@ -71,7 +76,7 @@ def ban_user(user_id, v):
 
 
 
-    send_notification(user, text)
+    notify(user, notice[0], **notice[1])
 
     return (redirect(user.url), user)
 
@@ -90,8 +95,9 @@ def unban_user(user_id, v):
 
     user.unban()
 
-    send_notification(user,
-                      f"Your {app.config['SITE_NAME']} account has been reinstated. Please carefully review and abide by the [terms of service](/help/terms) and [rules and guidelines](/help/rules) to ensure that you don't get suspended again.")
+    notify(user, N_("Your %(site)s account has been reinstated. Please carefully review and abide by the [terms of "
+                    "service](/help/terms) and [rules and guidelines](/help/rules) to ensure that you don't get "
+                    "suspended again."))
 
 
     return (redirect(user.url), user)

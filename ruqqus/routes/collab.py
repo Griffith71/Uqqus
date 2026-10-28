@@ -36,6 +36,7 @@ from ruqqus.helpers import collab_rules as rules
 from ruqqus.helpers import collab_store as store
 from ruqqus.helpers import collab_view, coauthors, live_bus
 from ruqqus.helpers.visibility import user_hidden
+from ruqqus.helpers.i18n_runtime import ENVIRON_KEY as UI_LOCALE_KEY, N_, msg, tr, trn, trp
 
 DAY = 86400
 PRESENCE_SECONDS = 45
@@ -47,6 +48,8 @@ def _now():
 
 
 def _error(message, status=400, **extra):
+    """An error answer. `message` is shown as it is: translated already (tr), or English (a helper's, or one `_publish`
+    returns: it is also written into a notification) drawn with msg at the call."""
     return jsonify(dict({"error": message}, **extra)), status
 
 
@@ -69,9 +72,9 @@ def _users(ids):
 
 def _name_of(user, v):
     if user is None or user.is_deleted:
-        return {"name": "Deleted account", "handle": "", "link": None}
+        return {"name": tr("Deleted account"), "handle": "", "link": None}
     if user_hidden(user, v):
-        return {"name": "Hidden name", "handle": "", "link": None}
+        return {"name": tr("Hidden name"), "handle": "", "link": None}
     return {"name": user.shown_name, "handle": user.username, "link": user.permalink}
 
 
@@ -80,14 +83,15 @@ def _changed(doc_id):
     live_bus.publish(r, live_bus.topic_channel(f"collab:{doc_id}"), "collab.changed", {})
 
 
-def _tell(user_ids, message):
-    """Notifications, best effort: a failure to tell never undoes a decision (send_notification commits)."""
-    from ruqqus.helpers.alerts import send_notification
+def _tell(user_ids, message, **values):
+    """Notifications, best effort: a failure to tell never undoes a decision (send_notification commits). `message` is
+    English marked with N_, `values` its named values: stored in English, read in each reader's language."""
+    from ruqqus.helpers.alerts import notify
     for user in _users(user_ids).values():
         if user.is_deleted:
             continue
         try:
-            send_notification(user, message)
+            notify(user, message, **values)
         except Exception:
             g.db.rollback()
 
@@ -121,7 +125,8 @@ def collab_new(v):
         abort(403)
     now = _now()
     if store.made_since(g.db, v.id, now - DAY) >= rules.DOCS_PER_DAY:
-        return _error(f"You can start {rules.DOCS_PER_DAY} shared drafts a day.", 429)
+        return _error(trn("You can start %(num)s shared draft a day.", "You can start %(num)s shared drafts a day.",
+                          rules.DOCS_PER_DAY), 429)
     doc_id = store.create(g.db, v.id, now)
     g.db.commit()
     if request.headers.get("Accept", "").startswith("application/json"):
@@ -198,11 +203,11 @@ def collab_options(doc_id, v):
             "forward_guilds": [x for x in form.getlist("forward_guilds") if x.strip()],
         })
     except rules.Refused as e:
-        return _error(str(e))
+        return _error(msg(str(e)))
     if _listed_link(options.get("url")):
         # never kept: whoever publishes would be held to it (an autoban link suspended the publisher, chosen by
         # another author; bug hunt). Refused here, never a ban: posting is where links are judged against accounts
-        return _error("That link can't be posted here.")
+        return _error(tr("That link can't be posted here."))
     store.set_options(g.db, doc_id, options, _now())
     g.db.commit()
     _changed(doc_id)                     # the other open editors redraw their options (the last save wins)
@@ -249,7 +254,7 @@ def collab_ops_after(doc_id, v):
     doc = _doc_or_404(doc_id, v)
     after = request.args.get("after", type=int)
     if after is None or after < 0 or after > doc[4] or doc[4] - after > rules.RESYNC_AFTER:
-        return _error("Reload the draft.", 409, resync=True)
+        return _error(tr("Reload the draft."), 409, resync=True)
     return jsonify({"revision": doc[4], "ops": _ops_json(store.ops_after(g.db, doc_id, after, rules.RESYNC_AFTER))})
 
 
@@ -269,21 +274,21 @@ def collab_send_op(doc_id, v):
     try:
         op = json.loads(request.form.get("op") or "")
     except ValueError:
-        return _error("That edit couldn't be read.", 400, resync=True)
+        return _error(tr("That edit couldn't be read."), 400, resync=True)
     if base is None:
-        return _error("That edit couldn't be read.", 400, resync=True)
+        return _error(tr("That edit couldn't be read."), 400, resync=True)
     now = _now()
     try:
         own = store.commit_op(g.db, doc_id, v.id, field, base, op, now, client_key=client_key)
     except store.Resync:
         g.db.rollback()
-        return _error("Reload the draft.", 409, resync=True)
+        return _error(tr("Reload the draft."), 409, resync=True)
     except ot.OpError:
         g.db.rollback()
-        return _error("That edit didn't fit the draft.", 400, resync=True)
+        return _error(tr("That edit didn't fit the draft."), 400, resync=True)
     except rules.Refused as e:
         g.db.rollback()
-        return _error(str(e), 400, resync=True)
+        return _error(msg(str(e)), 400, resync=True)
     g.db.commit()
     revision = store.doc(g.db, doc_id)[4]
     if own is not None:
@@ -339,13 +344,15 @@ def _settle(doc, proposal, actor, now):
         payload = store.payload_of(proposal)
         if kind == rules.ADD:
             g.db.commit()
-            _tell([proposal[3]], f"You're invited to write a shared draft with others. [See the invitation](/collab/invite/{proposal[0]})")
+            _tell([proposal[3]], N_("You're invited to write a shared draft with others. [See the invitation](%(link)s)"),
+                  link=f"/collab/invite/{proposal[0]}")
         elif kind == rules.REMOVE:
             store.remove_author(g.db, doc_id, proposal[3], now)
             live_bus.revoke(r, proposal[3], f"collab:{doc_id}")       # their open pages stop hearing it (C-07)
             _sync_coauthors(store.doc(g.db, doc_id))
             g.db.commit()
-            _tell([proposal[3]], "The other authors of a shared draft removed you as an author. What you wrote stays credited to you.")
+            _tell([proposal[3]], N_("The other authors of a shared draft removed you as an author. What you wrote stays "
+                                    "credited to you."))
         elif kind == rules.RULES:
             store.set_rules(g.db, doc_id, payload.get("rules"), now)
         elif kind == rules.DELETE:
@@ -361,18 +368,46 @@ def _settle(doc, proposal, actor, now):
                 g.db.commit()
                 error = _publish(store.doc(g.db, doc_id), proposer, payload, now)
                 if error:
-                    _tell([proposal[5]], f"Your shared draft couldn't be published: {error} [Open the draft](/collab/{doc_id})")
+                    _tell([proposal[5]], N_("Your shared draft couldn't be published: %(error)s [Open the draft](%(link)s)"),
+                          error=error, link=f"/collab/{doc_id}")
     g.db.commit()
-    names = {rules.ADD: "add an author", rules.REMOVE: "remove an author", rules.RULES: "change the rules",
-             rules.DELETE: "delete the post", rules.PUBLISH: "publish"}
-    verdict = {rules.PASSED: "passed", rules.FAILED: "didn't pass", rules.EXPIRED: "closed undecided"}[outcome]
+    notice = _OUTCOME_NOTICES[kind][outcome]
     # the outcome is told to whoever made or voted on the proposal (audit C-06: it went to every author); the panel
     # shows it to the rest
     took_part = set(store.votes(g.db, proposal[0])) | {proposal[5]}
-    _tell([u for u in authors_now if u != actor.id and u in took_part],
-          f"A proposal to {names[kind]} in a shared draft {verdict}. [Open the draft](/collab/{doc_id})")
+    _tell([u for u in authors_now if u != actor.id and u in took_part], notice, link=f"/collab/{doc_id}")
     _changed(doc_id)
     return outcome
+
+
+# what each kind of proposal's outcome tells its voters: one whole sentence each
+_OUTCOME_NOTICES = {
+    rules.ADD: {
+        rules.PASSED: N_("A proposal to add an author in a shared draft passed. [Open the draft](%(link)s)"),
+        rules.FAILED: N_("A proposal to add an author in a shared draft didn't pass. [Open the draft](%(link)s)"),
+        rules.EXPIRED: N_("A proposal to add an author in a shared draft closed undecided. [Open the draft](%(link)s)"),
+    },
+    rules.REMOVE: {
+        rules.PASSED: N_("A proposal to remove an author in a shared draft passed. [Open the draft](%(link)s)"),
+        rules.FAILED: N_("A proposal to remove an author in a shared draft didn't pass. [Open the draft](%(link)s)"),
+        rules.EXPIRED: N_("A proposal to remove an author in a shared draft closed undecided. [Open the draft](%(link)s)"),
+    },
+    rules.RULES: {
+        rules.PASSED: N_("A proposal to change the rules in a shared draft passed. [Open the draft](%(link)s)"),
+        rules.FAILED: N_("A proposal to change the rules in a shared draft didn't pass. [Open the draft](%(link)s)"),
+        rules.EXPIRED: N_("A proposal to change the rules in a shared draft closed undecided. [Open the draft](%(link)s)"),
+    },
+    rules.DELETE: {
+        rules.PASSED: N_("A proposal to delete the post in a shared draft passed. [Open the draft](%(link)s)"),
+        rules.FAILED: N_("A proposal to delete the post in a shared draft didn't pass. [Open the draft](%(link)s)"),
+        rules.EXPIRED: N_("A proposal to delete the post in a shared draft closed undecided. [Open the draft](%(link)s)"),
+    },
+    rules.PUBLISH: {
+        rules.PASSED: N_("A proposal to publish in a shared draft passed. [Open the draft](%(link)s)"),
+        rules.FAILED: N_("A proposal to publish in a shared draft didn't pass. [Open the draft](%(link)s)"),
+        rules.EXPIRED: N_("A proposal to publish in a shared draft closed undecided. [Open the draft](%(link)s)"),
+    },
+}
 
 
 def _settle_all(doc, actor, now):
@@ -390,9 +425,11 @@ def collab_propose(doc_id, v):
         abort(403)
     now = _now()
     if store.proposals_since(g.db, v.id, now - DAY) >= rules.PROPOSALS_PER_DAY:
-        return _error(f"You can make {rules.PROPOSALS_PER_DAY} proposals a day.", 429)
+        return _error(trn("You can make %(num)s proposal a day.", "You can make %(num)s proposals a day.",
+                          rules.PROPOSALS_PER_DAY), 429)
     if store.open_by(g.db, doc_id, v.id) >= rules.OPEN_PER_AUTHOR:
-        return _error(f"You can have {rules.OPEN_PER_AUTHOR} open proposals in a draft at a time.", 429)
+        return _error(trn("You can have %(num)s open proposal in a draft at a time.",
+                          "You can have %(num)s open proposals in a draft at a time.", rules.OPEN_PER_AUTHOR), 429)
     kind = request.values.get("kind", "")
     doc_rules = store.rules_of(doc)
     subject, payload = None, {}
@@ -406,7 +443,7 @@ def collab_propose(doc_id, v):
                 name=name, candidate=candidate, authors_now=len(current), already=bool(candidate and candidate.id in current),
                 blocked_with_any=bool(candidate and any(u.any_block_exists(candidate) for u in people.values())))
             if refusal:
-                return _error(refusal)
+                return _error(msg(refusal))
             subject = candidate.id
         elif kind == rules.REMOVE:
             name = rules.parse_name(request.values.get("username"))
@@ -414,22 +451,22 @@ def collab_propose(doc_id, v):
             refusal = rules.remove_refusal(subject_is_author=bool(candidate and store.is_author(g.db, doc_id, candidate.id)),
                                            subject_is_me=bool(candidate and candidate.id == v.id))
             if refusal:
-                return _error(refusal)
+                return _error(msg(refusal))
             subject = candidate.id
         elif kind == rules.RULES:
             new_rules = rules.rules_from_form(request.values)
             if new_rules == doc_rules:
-                return _error("Those are already the rules.")
+                return _error(tr("Those are already the rules."))
             payload = {"rules": new_rules}
         elif kind == rules.DELETE:
             if not doc[7]:
-                return _error("This draft hasn't been published.")
+                return _error(tr("This draft hasn't been published."))
         else:
-            return _error("Choose what to propose.")
+            return _error(tr("Choose what to propose."))
     except rules.Refused as e:
-        return _error(str(e))
+        return _error(msg(str(e)))
     if store.open_like(g.db, doc_id, kind, subject):
-        return _error("There's already an open proposal like this one.", 409)
+        return _error(tr("There's already an open proposal like this one."), 409)
     pid = store.propose(g.db, doc_id, kind, v.id, now, rules.closes_at(doc_rules, now), subject=subject, payload=payload)
     store.vote(g.db, pid, v.id, True, now)
     g.db.commit()
@@ -438,7 +475,8 @@ def collab_propose(doc_id, v):
         counted = rules.counted(store.voters(g.db, doc_id), doc_rules, now,
                                 exclude=subject if kind == rules.REMOVE else None)
         _tell([u for u in counted if u != v.id],                     # only the authors whose vote counts (C-06)
-              f"@{v.username} made a proposal in a shared draft you write: your vote counts. [Open the draft](/collab/{doc_id})")
+              N_("@%(name)s made a proposal in a shared draft you write: your vote counts. [Open the draft](%(link)s)"),
+              name=v.username, link=f"/collab/{doc_id}")
         _changed(doc_id)
     return jsonify({"ok": True, "outcome": outcome})
 
@@ -452,12 +490,12 @@ def collab_vote(doc_id, pid, v):
     if proposal is None:
         abort(404)
     if proposal[9] != rules.OPEN:
-        return _error("This proposal is closed.", 409)
+        return _error(tr("This proposal is closed."), 409)
     if proposal[2] == rules.REMOVE and proposal[3] == v.id:
-        return _error("You don't vote on your own removal.", 403)
+        return _error(tr("You don't vote on your own removal."), 403)
     choice = request.values.get("vote")
     if choice not in ("yes", "no"):
-        return _error("Vote yes or no.")
+        return _error(tr("Vote yes or no."))
     now = _now()
     store.vote(g.db, pid, v.id, choice == "yes", now)
     g.db.commit()
@@ -475,7 +513,7 @@ def collab_withdraw(doc_id, pid, v):
     if proposal is None or proposal[5] != v.id:
         abort(404)
     if not store.decide(g.db, pid, rules.WITHDRAWN, _now()):
-        return _error("This proposal is closed.", 409)
+        return _error(tr("This proposal is closed."), 409)
     g.db.commit()
     _changed(doc_id)
     return jsonify({"ok": True})
@@ -517,9 +555,9 @@ def collab_invite_answer(pid, answer, v):
         refusal = rules.add_refusal(name=v.username, candidate=v, authors_now=len(current), already=v.id in current,
                                     blocked_with_any=any(u.any_block_exists(v) for u in people.values()))
         if refusal:
-            return _error("You can't join this draft now.", 409)
+            return _error(tr("You can't join this draft now."), 409)
     if not store.answer_invite(g.db, pid, "accepted" if answer == "accept" else "declined"):
-        return _error("This invitation was already answered.", 409)
+        return _error(tr("This invitation was already answered."), 409)
     if answer == "accept":
         store.add_author(g.db, doc[0], v.id, now, proposal_id=pid)
         _sync_coauthors(store.doc(g.db, doc[0]))
@@ -564,7 +602,8 @@ def _post_as(user, path, data, environ=None):
     applies as if they had pressed Post themselves. It runs in a greenlet of its own: database sessions are kept per
     greenlet and so is Flask's context, so the inner request can't close or replace this request's session or `g`.
     `environ` adds keys to the inner request's environ, which a browser can never set (the Spaces area marks its
-    requests so: helpers/spaces.py ENVIRON_KEY)."""
+    requests so: helpers/spaces.py ENVIRON_KEY). The inner request answers in English unless `environ` names a language
+    (i18n_runtime.ENVIRON_KEY): a shared draft's publish error is stored in a notice and drawn with msg()."""
     import gevent
 
     user_id, nonce = user.id, user.login_nonce
@@ -581,7 +620,8 @@ def _post_as(user, path, data, environ=None):
             session["login_nonce"] = nonce
             session["session_id"] = session_id
         form = dict(data, formkey=generate_hash(f"{session_id}+{user_id}+{nonce}"))
-        response = client.post(path, data=form, headers=headers, environ_base={"REMOTE_ADDR": address, **(environ or {})})
+        response = client.post(path, data=form, headers=headers,
+                               environ_base={"REMOTE_ADDR": address, UI_LOCALE_KEY: "en", **(environ or {})})
         return response.status_code, response.get_json(silent=True) or {}
 
     return gevent.spawn(run).get(timeout=60)
@@ -619,8 +659,9 @@ def _snapshot(doc):
 
 
 def _publish(doc, publisher, snap, now):
-    """Puts a snapshot of the draft on the post (making the post the first time). Returns an error message or None.
-    The caller has committed: the first publish runs a whole request of its own."""
+    """Puts a snapshot of the draft on the post (making the post the first time). Returns an error message or None:
+    English marked with N_ (it is also written into a notification) or what a refusal said, drawn with msg. The caller
+    has committed: the first publish runs a whole request of its own."""
     title = (snap.get("title") or "").strip()
     try:
         rules.check_title(title)
@@ -630,17 +671,18 @@ def _publish(doc, publisher, snap, now):
     # asked before anything changes (bug hunt: a suspended proposer's passed proposal edited the live post, and the
     # check came after the edit was committed, so the revision was never recorded)
     if publisher is None or publisher.is_suspended or publisher.is_deleted:
-        return "Your account can't publish right now."
+        return N_("Your account can't publish right now.")
     if _listed_link((snap.get("options") or {}).get("url")):
-        return "That link can't be posted here."
+        return N_("That link can't be posted here.")
     post = g.db.query(Submission).filter_by(id=doc[7]).first() if doc[7] else None
     if post is not None and post.is_banned:
-        return "This post was removed, so it can't be changed."
+        return N_("This post was removed, so it can't be changed.")
     if post is None or post.deleted_utc:
         status, data = _post_as(publisher, "/api/vue/submit",
                                 dict({"title": title, "body": body}, **rules.post_fields(snap.get("options"))))
         if status != 200 or not data.get("id"):
-            return str(data.get("error") or f"The server answered {status}.")[:300]
+            # Translators: %(status)s is an HTTP status code
+            return str(data.get("error") or N_("The server answered %(status)s.") % {"status": status})[:300]
         post_id = base36decode(data["id"])
         store.set_published(g.db, doc[0], post_id, snap["revision"])
         g.db.commit()
@@ -659,9 +701,9 @@ def _publish(doc, publisher, snap, now):
         if isinstance(answer, tuple) and answer[1] >= 400:
             g.db.rollback()
             data = answer[0].get_json(silent=True) or {}
-            return str(data.get("error") or "The post refused the change.")[:300]
+            return str(data.get("error") or N_("The post refused the change."))[:300]
         if publisher.is_suspended:
-            return "Your account can't publish right now."
+            return N_("Your account can't publish right now.")
         g.db.expire_all()
         post = g.db.query(Submission).filter_by(id=doc[7]).first()
         store.set_published(g.db, doc[0], post.id, snap["revision"])
@@ -691,26 +733,27 @@ def collab_publish(doc_id, v):
     if doc[7] and doc[4] == doc[8]:
         post = g.db.query(Submission).filter_by(id=doc[7]).first()
         if post is not None and not post.deleted_utc:
-            return _error("Nothing has changed since the last publish.", 409)
+            return _error(tr("Nothing has changed since the last publish."), 409)
     snap = _snapshot(doc)
     if store.rules_of(doc)["publish"] == rules.VOTE:
         if store.open_like(g.db, doc_id, rules.PUBLISH):
-            return _error("A proposal to publish is already open.", 409)
+            return _error(tr("A proposal to publish is already open."), 409)
         try:
             rules.check_title(snap["title"])
         except rules.Refused as e:
-            return _error(str(e))
+            return _error(msg(str(e)))
         pid = store.propose(g.db, doc_id, rules.PUBLISH, v.id, now, rules.closes_at(store.rules_of(doc), now), payload=snap)
         store.vote(g.db, pid, v.id, True, now)
         g.db.commit()
         outcome = _settle(store.doc(g.db, doc_id), store.proposal(g.db, doc_id, pid), v, now)
         if outcome == rules.OPEN:
             _tell([u for u in store.author_ids(g.db, doc_id) if u != v.id],
-                  f"@{v.username} asked to publish a shared draft you write: your vote counts. [Open the draft](/collab/{doc_id})")
+                  N_("@%(name)s asked to publish a shared draft you write: your vote counts. [Open the draft](%(link)s)"),
+                  name=v.username, link=f"/collab/{doc_id}")
         return jsonify({"ok": True, "proposal": True, "outcome": outcome})
     error = _publish(doc, v, snap, now)
     if error:
-        return _error(error)
+        return _error(msg(error))
     doc = store.doc(g.db, doc_id)
     return jsonify({"ok": True, "url": f"/post/{base36encode(doc[7])}"})
 
@@ -749,10 +792,10 @@ def collab_fork(pid, v):
     if not _may_write(v):
         abort(403)
     if not post.is_public:
-        return _error("Only a public post can be forked.", 403)
+        return _error(tr("Only a public post can be forked."), 403)
     now = _now()
     if store.forks_since(g.db, v.id, now - DAY) >= rules.FORKS_PER_DAY:
-        return _error(f"You can fork {rules.FORKS_PER_DAY} posts a day.", 429)
+        return _error(trn("You can fork %(num)s post a day.", "You can fork %(num)s posts a day.", rules.FORKS_PER_DAY), 429)
     latest = store.latest_publish(g.db, doc[0])
     if latest is None:
         abort(404)
@@ -778,7 +821,9 @@ def _shares(runs, v, doc_id):
 
 def _tinted(text_, runs, legend):
     tint = {p["id"]: p for p in legend}
-    return [(tint.get(uid, {"tint": None, "name": "Unknown", "handle": ""}), piece) for uid, piece in authorship.pieces(text_, runs)]
+    # Translators: who typed a piece of a shared draft, when the site doesn't know
+    unknown = {"tint": None, "name": trp("person", "Unknown"), "handle": ""}
+    return [(tint.get(uid, unknown), piece) for uid, piece in authorship.pieces(text_, runs)]
 
 
 @app.route("/post/<pid>/written_by", methods=["GET"])

@@ -14,13 +14,13 @@
           <span class="trend-rank text-muted">{{ loop.index }}</span>
           <span class="trend-main">
             <span class="trend-label d-block font-weight-bold text-truncate">{{ t.label }}</span>
-            <span class="trend-count d-block text-small text-muted">{{ t.post_count }} post{{ '' if t.post_count == 1 else 's' }}</span>
+            <span class="trend-count d-block text-small text-muted">{{ ngettext("%(num)s post", "%(num)s posts", t.post_count) }}</span>
           </span>
         </a>
       </li>
       {% endfor %}
     </ol>
-    <a href="/trending" class="d-block mt-2 text-small">How this list is made</a>
+    <a href="/trending" class="d-block mt-2 text-small">{{ _("How this list is made") }}</a>
   </div>
 </div>
 {% endif %}

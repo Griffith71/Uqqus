@@ -1,6 +1,6 @@
 {% extends "guild/guild_settings.html" %}
 
-{% block pagetitle %}Edit +{{ b.name }} Appearance - {{ 'SITE_NAME' | app_config }} Guildmaster Tools{% endblock %}
+{% block pagetitle %}{{ _("Edit +%(guild)s Appearance - %(site)s Guildmaster Tools", guild=b.name) }}{% endblock %}
 
 
 {% block content %}
@@ -14,18 +14,18 @@
       <span>
         {{ error if error else request.args.get('error') }}
       </span>
-      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+      <button type="button" class="close" data-dismiss="alert" aria-label="{{ _('Close') }}">
         <span aria-hidden="true"><i class="fas fa-times"></i></span>
       </button>
     </div>
     {% endif %}
-    {% if request.args.get('msg') or msg %}
+    {% if request.args.get('msg') or (msg is string and msg) %}
     <div class="alert alert-success alert-dismissible fade show my-3" role="alert">
       <i class="fas fa-check-circle my-auto" aria-hidden="true"></i>
       <span>
-        {{ msg if msg else request.args.get('msg') }}
+        {{ msg if (msg is string and msg) else msg_text(request.args.get('msg')) }}
       </span>
-      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+      <button type="button" class="close" data-dismiss="alert" aria-label="{{ _('Close') }}">
         <span aria-hidden="true"><i class="fas fa-times"></i></span>
       </button>
     </div>
@@ -54,17 +54,17 @@
       xhr.onprogress=function(){
         button.classList.add("btn-primary");
         button.disabled = true;
-        button.innerHTML = `<span class="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true"></span>Saving`;
+        button.innerHTML = '<span class="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true"></span>' + {{ _("Saving") | tojson }};
       }
       xhr.onload=function(){
         button.classList.remove("btn-danger");
         button.classList.add("btn-success");
-        button.innerHTML = `<i class="fas fa-check mr-2"></i>Saved`;
+        button.innerHTML = '<i class="fas fa-check mr-2"></i>' + {{ _("Saved") | tojson }};
       }
       xhr.onerror=function(){
         button.disabled = false;
         button.classList.add("btn-danger");
-        button.innerHTML = `<i class="fas fa-times mr-2"></i>Setting not saved. Try again.`;
+        button.innerHTML = '<i class="fas fa-times mr-2"></i>' + {{ _("Setting not saved. Try again.") | tojson }};
       }
       xhr.send(form);
     }
@@ -93,7 +93,7 @@
 
       <div class="settings">
 
-        <h2 id="color" class="h5" name="referral">Guild Color</h2>
+        <h2 id="color" class="h5" name="referral">{{ _("Guild Color") }}</h2>
 
         <div class="settings-section rounded">
 
@@ -101,7 +101,7 @@
 
             <div class="body w-lg-100 my-auto">
 
-              <p class="text-small mb-2">Pick an accent color to represent your guild. Affects buttons, links, etc.</p>
+              <p class="text-small mb-2">{{ _("Pick an accent color to represent your guild. Affects buttons, links, etc.") }}</p>
 
               <div class="d-flex">
 
@@ -125,7 +125,7 @@
 
               </div>
               
-              <p class="text-small mb-2">Or type a color code:</p>
+              <p class="text-small mb-2">{{ _("Or type a color code:") }}</p>
               
               <div class="d-flex">
               
@@ -133,7 +133,7 @@
                    <input type="hidden" name="formkey" value="{{ v.formkey }}">
 
                    <input class="form-control" type="text" name="color" id="color-code" value="{{ b.color }}">
-                   <label class="btn btn-secondary text-capitalize mr-2 mt-2 mb-0">Update<input type="text" for="color-code" onclick="form.submit()" hidden=""></label>
+                   <label class="btn btn-secondary text-capitalize mr-2 mt-2 mb-0">{{ pgettext("button", "Update") }}<input type="text" for="color-code" onclick="form.submit()" hidden=""></label>
                 </form>
                 
               </div>
@@ -144,7 +144,7 @@
 
         </div>
 
-      <h2 class="h5" id="images" name="referral">Guild Icon</h2>
+      <h2 class="h5" id="images" name="referral">{{ _("Guild Icon") }}</h2>
 
       <div class="settings-section rounded">
 
@@ -163,7 +163,7 @@
                <form action="/mod/{{ b.base36id }}/images/profile" method="post" enctype="multipart/form-data">
                 <input type="hidden" name="formkey" value="{{ v.formkey }}">
                 <label class="btn btn-secondary text-capitalize mr-2 mb-0">
-                  Update<input type="file" hidden name="profile" onchange="form.submit()">
+                  {{ pgettext("button", "Update") }}<input type="file" hidden name="profile" onchange="form.submit()">
                 </label>
               </form>
 
@@ -173,14 +173,14 @@
             <div>
               <form action="/mod/{{ b.base36id }}/delete/profile" method="post">
                 <input type="hidden" name="formkey" value="{{ v.formkey }}">
-                <button type="submit" value="Delete" class="btn btn-link fa-lg"><i class="far fa-trash-alt text-danger"></i></button>
+                <button type="submit" value="{{ pgettext('button', 'Delete') }}" class="btn btn-link fa-lg"><i class="far fa-trash-alt text-danger"></i></button>
               </form>
             </div>
             {% endif %}
 
           </div>
 
-          <div class="text-small-extra text-muted mt-3">JPG, PNG, GIF files supported. Max file size 16MB.</div>
+          <div class="text-small-extra text-muted mt-3">{{ _("JPG, PNG, GIF files supported. Max file size 16MB.") }}</div>
 
         </div>
 
@@ -188,14 +188,14 @@
 
     </div>
 
-    <h2 class="h5" name="referral">Guild Banner</h2>
+    <h2 class="h5" name="referral">{{ _("Guild Banner") }}</h2>
 
     <div class="settings-section rounded">
 
       <div class="d-lg-flex">
 
         <div class="title w-lg-75 text-md-center">
-          <img alt="Banner" src="{{ b.banner_url }}" class="banner-pic-135">
+          <img alt="{{ _('Banner') }}" src="{{ b.banner_url }}" class="banner-pic-135">
         </div>
 
         <div class="body w-lg-100 my-auto">
@@ -207,7 +207,7 @@
              <form action="/mod/{{ b.base36id }}/images/banner" method="post" enctype="multipart/form-data">
               <input type="hidden" name="formkey" value="{{ v.formkey }}">
               <label class="btn btn-secondary text-capitalize mr-2 mb-0">
-                Update<input type="file" hidden name="banner" onchange="form.submit()">
+                {{ pgettext("button", "Update") }}<input type="file" hidden name="banner" onchange="form.submit()">
               </label>
             </form>
 
@@ -217,14 +217,14 @@
           <div>
             <form action="/mod/{{ b.base36id }}/delete/banner" method="post">
               <input type="hidden" name="formkey" value="{{ v.formkey }}">
-              <button type="submit" value="Delete" class="btn btn-link fa-lg"><i class="far fa-trash-alt text-danger"></i></button>
+              <button type="submit" value="{{ pgettext('button', 'Delete') }}" class="btn btn-link fa-lg"><i class="far fa-trash-alt text-danger"></i></button>
             </form>
           </div>
           {% endif %}
 
         </div>
 
-        <div class="text-small-extra text-muted mt-3">JPG, PNG, GIF files supported. Max file size 16MB. (Recommend ratio of 106:25)</div>
+        <div class="text-small-extra text-muted mt-3">{{ _("JPG, PNG, GIF files supported. Max file size 16MB. (Recommend ratio of 106:25)") }}</div>
 
       </div>
 

@@ -9,19 +9,19 @@
   <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="audienceTitle">Who can see this</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <h5 class="modal-title" id="audienceTitle">{{ _("Who can see this") }}</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="{{ _('Close') }}">
           <span aria-hidden="true"><i class="fas fa-times"></i></span>
         </button>
       </div>
       <div class="modal-body">
         <div id="audience-options">{{ audience_field(0, "audience-option", (), circle_choices(v)) }}</div>
-        <p class="text-small text-muted mt-2 mb-0">A post with co-authors can't be moved to circles. Moving a public post to circles takes down the copies you forwarded; copies other people forwarded stay in their guilds.</p>
+        <p class="text-small text-muted mt-2 mb-0">{{ _("A post with co-authors can't be moved to circles. Moving a public post to circles takes down the copies you forwarded; copies other people forwarded stay in their guilds.") }}</p>
         <div id="audience-status" class="text-small mt-2" role="status"></div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-link text-muted" data-dismiss="modal">Cancel</button>
-        <button type="button" class="btn btn-primary" id="audience-save">Save</button>
+        <button type="button" class="btn btn-link text-muted" data-dismiss="modal">{{ pgettext("button", "Cancel") }}</button>
+        <button type="button" class="btn btn-primary" id="audience-save">{{ pgettext("button", "Save") }}</button>
       </div>
     </div>
   </div>

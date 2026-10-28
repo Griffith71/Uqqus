@@ -4,51 +4,51 @@
   own time zone (datetime-local) and assets/js/guild_events.js sends them as Unix times (`starts_utc`, `ends_utc`), as a
   Space's start is sent.
 #}
-{% block pagetitle %}{{ 'Edit event' if event else 'New event' }}{% endblock %}
+{% block pagetitle %}{{ _("Edit event") if event else _("New event") }}{% endblock %}
 
 {% block guildbody %}
 <div class="event-page">
-  <h1 class="h4">{{ 'Edit event' if event else 'New event' }}</h1>
+  <h1 class="h4">{{ _("Edit event") if event else _("New event") }}</h1>
   <form action="{{ b.permalink }}/events/{{ (event[0] ~ '/edit') if event else 'new' }}" data-guild-form data-event-form class="event-editor">
     <div class="form-group">
-      <label for="event-title" class="text-small font-weight-bold">Title</label>
+      <label for="event-title" class="text-small font-weight-bold">{{ _("Title") }}</label>
       <input type="text" class="form-control" id="event-title" name="title" maxlength="{{ limits.TITLE_MAX }}" value="{{ event[3] if event else '' }}" required>
     </div>
     <div class="form-row">
       <div class="form-group col-sm-6">
-        <label for="event-start" class="text-small font-weight-bold">Starts</label>
+        <label for="event-start" class="text-small font-weight-bold">{{ pgettext("event", "Starts") }}</label>
         <input type="datetime-local" class="form-control" id="event-start" data-utc="{{ event[7] if event else '' }}" required>
       </div>
       <div class="form-group col-sm-6">
-        <label for="event-end" class="text-small font-weight-bold">Ends <span class="text-muted font-weight-normal">(optional)</span></label>
+        <label for="event-end" class="text-small font-weight-bold">{{ pgettext("event", 'Ends <span class="text-muted font-weight-normal">(optional)</span>') }}</label>
         <input type="datetime-local" class="form-control" id="event-end" data-utc="{{ event[8] if event else '' }}">
       </div>
     </div>
     <input type="hidden" name="starts_utc" value="{{ event[7] if event else '' }}">
     <input type="hidden" name="ends_utc" value="{{ event[8] if event else '' }}">
-    <small class="form-text text-muted mt-n2 mb-3" data-zone-note>Times are in your time zone. At most {{ limits.MAX_DAYS }} days long.</small>
+    <small class="form-text text-muted mt-n2 mb-3" data-zone-note>{{ _("Times are in your time zone.") }} {{ ngettext("At most %(num)s day long.", "At most %(num)s days long.", limits.MAX_DAYS) }}</small>
     <div class="form-row">
       <div class="form-group col-sm-6">
-        <label for="event-place" class="text-small font-weight-bold">Place <span class="text-muted font-weight-normal">(optional)</span></label>
+        <label for="event-place" class="text-small font-weight-bold">{{ pgettext("event", 'Place <span class="text-muted font-weight-normal">(optional)</span>') }}</label>
         <input type="text" class="form-control" id="event-place" name="location_text" maxlength="{{ limits.PLACE_MAX }}" value="{{ event[10] if event else '' }}">
       </div>
       <div class="form-group col-sm-6">
-        <label for="event-link" class="text-small font-weight-bold">Online link <span class="text-muted font-weight-normal">(optional)</span></label>
+        <label for="event-link" class="text-small font-weight-bold">{{ _('Online link <span class="text-muted font-weight-normal">(optional)</span>') }}</label>
         <input type="url" class="form-control" id="event-link" name="location_url" maxlength="300" value="{{ event[9] if event else '' }}" placeholder="https://">
       </div>
     </div>
     <div class="form-group comment-write post-editor">
-      <label for="event-details" class="text-small font-weight-bold">Details <span class="text-muted font-weight-normal">(optional)</span></label>
+      <label for="event-details" class="text-small font-weight-bold">{{ _('Details <span class="text-muted font-weight-normal">(optional)</span>') }}</label>
       <div class="post-toolbar" data-target="event-details"></div>
       <textarea id="event-details" name="details" class="comment-box form-control rounded" rows="8" maxlength="{{ limits.DETAILS_MAX }}">{{ event[4] if event else '' }}</textarea>
       <div class="post-preview d-none"></div>
     </div>
     <div class="form-group">
-      <label for="event-space" class="text-small font-weight-bold">A Space for it <span class="text-muted font-weight-normal">(optional: the Space's post link)</span></label>
+      <label for="event-space" class="text-small font-weight-bold">{% trans %}A Space for it <span class="text-muted font-weight-normal">(optional: the Space's post link)</span>{% endtrans %}</label>
       <input type="text" class="form-control" id="event-space" name="space" value="{{ space or '' }}">
     </div>
-    <button type="submit" class="btn btn-primary">{{ 'Save' if event else 'Create the event' }}</button>
-    <a class="btn btn-link text-muted" href="{{ b.permalink }}/events{% if event %}/{{ event[0] }}{% endif %}">Cancel</a>
+    <button type="submit" class="btn btn-primary">{{ pgettext("button", "Save") if event else _("Create the event") }}</button>
+    <a class="btn btn-link text-muted" href="{{ b.permalink }}/events{% if event %}/{{ event[0] }}{% endif %}">{{ _("Cancel") }}</a>
     <div class="text-danger small mt-2" role="alert" hidden></div>
   </form>
 </div>

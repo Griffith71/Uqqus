@@ -33,7 +33,7 @@ function sheet() {
       if (emoji) {
         const list = document.createElement("ol");
         list.className = "chat-sas list-unstyled";
-        list.setAttribute("aria-label", "The emoji to compare");
+        list.setAttribute("aria-label", window.tr("The emoji to compare"));
         for (const [symbol, name] of emoji) {
           const item = document.createElement("li");
           const glyph = document.createElement("span");
@@ -80,14 +80,14 @@ function follow(request) {
 
   function onChange() {
     if (request.phase === VerificationPhase.Cancelled) {
-      view.show("Verification stopped", ["The app wasn't verified. You can start again from the app, or use your security key instead."],
-                [{ label: "Close", primary: true, run: close }]);
+      view.show(window.tr("Verification stopped"), [window.tr("The app wasn't verified. You can start again from the app, or use your security key instead.")],
+                [{ label: window.tr("Close"), primary: true, run: close }]);
       finish();
       return;
     }
     if (request.phase === VerificationPhase.Done) {
-      view.show("Your app is verified", ["It can now read your messages. You can sign it out in Settings > Chat apps."],
-                [{ label: "Done", primary: true, run: close }]);
+      view.show(window.tr("Your app is verified"), [window.tr("It can now read your messages. You can sign it out in Settings > Chat apps.")],
+                [{ label: window.tr("Done"), primary: true, run: close }]);
       finish();
       return;
     }
@@ -96,9 +96,9 @@ function follow(request) {
       wired = true;
       verifier.on(VerifierEvent.ShowSas, (sas) => {
         if (!sas.sas.emoji) { sas.cancel(); return; }
-        view.show("Do these emoji match?", ["Compare them with the ones your app shows, in the same order."],
-                  [{ label: "They match", primary: true, run: () => { sas.confirm().catch(() => {}); view.show("Waiting for the app", ["Confirm in the app as well."], [{ label: "Cancel", run: stop }]); } },
-                   { label: "They don't match", run: () => { sas.mismatch(); close(); } }],
+        view.show(window.tr("Do these emoji match?"), [window.tr("Compare them with the ones your app shows, in the same order.")],
+                  [{ label: window.tr("They match"), primary: true, run: () => { sas.confirm().catch(() => {}); view.show(window.tr("Waiting for the app"), [window.tr("Confirm in the app as well.")], [{ label: window.tr("Cancel"), run: stop }]); } },
+                   { label: window.tr("They don't match"), run: () => { sas.mismatch(); close(); } }],
                   sas.sas.emoji);
       });
       verifier.verify().catch(() => {});
@@ -106,16 +106,18 @@ function follow(request) {
   }
   request.on(VerificationRequestEvent.Change, onChange);
 
-  const device = request.otherDeviceId ? ` (${request.otherDeviceId})` : "";
-  view.show("Verify your new chat app?", [
-    `A chat app signed in to your account${device} asks to be verified from this browser.`,
-    "Only go on if you are signing in to an app right now. If not, choose Not now and sign it out in Settings > Chat apps.",
+  const device = request.otherDeviceId;
+  view.show(window.tr("Verify your new chat app?"), [
+    device
+      ? window.tr("A chat app signed in to your account (%(device)s) asks to be verified from this browser.", { device })
+      : window.tr("A chat app signed in to your account asks to be verified from this browser."),
+    window.tr("Only go on if you are signing in to an app right now. If not, choose Not now and sign it out in Settings > Chat apps."),
   ], [
-    { label: "Verify", primary: true, run: () => {
+    { label: window.tr("Verify"), primary: true, run: () => {
       request.accept().catch(() => {});
-      view.show("Waiting for the app", ["In the app, choose to compare emoji."], [{ label: "Cancel", run: stop }]);
+      view.show(window.tr("Waiting for the app"), [window.tr("In the app, choose to compare emoji.")], [{ label: window.tr("Cancel"), run: stop }]);
     } },
-    { label: "Not now", run: stop },
+    { label: window.tr("Not now"), run: stop },
   ]);
 }
 

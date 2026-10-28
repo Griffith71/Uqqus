@@ -8,11 +8,11 @@
         <div style="z-index: 1" class="d-flex align-items-center my-auto">
           <img alt="" src="{{ board.profile_url }}" class="profile-pic-65 bg-white mr-3"><h5 class="modal-title h4">+{{ board.name }}
           {% if board.is_sensitive %}
-          <span class="badge badge-warning text-small ml-2" data-toggle="tooltip" data-placement="bottom" title="This guild discusses sensitive topics">Sensitive Content</span>
+          <span class="badge badge-warning text-small ml-2" data-toggle="tooltip" data-placement="bottom" title="{{ _('This guild discusses sensitive topics') }}">{{ _("Sensitive Content") }}</span>
           {% endif %}
         </h5>
       </div>
-      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+      <button type="button" class="close" data-dismiss="modal" aria-label="{{ _('Close') }}">
         <span aria-hidden="true"><i class="fas fa-times"></i></span>
       </button>
     </div>      
@@ -20,31 +20,31 @@
       <div class="d-flex justify-content-between align-items-center border-bottom p-3">
 
         <div class="">
-          <div class="font-weight-bold text-small text-uppercase text-muted mb-1" style="letter-spacing: 0.025rem;">Founded</div>
+          <div class="font-weight-bold text-small text-uppercase text-muted mb-1" style="letter-spacing: 0.025rem;">{{ _("Founded") }}</div>
           <div data-toggle="tooltip" data-placement="bottom" title="{{ board.created_date }}">{{ board.age_string }}</div>
         </div>
 
         <div class="">
-          <div class="font-weight-bold text-small text-uppercase text-muted mb-1" style="letter-spacing: 0.025rem;">Guildmasters</div>
+          <div class="font-weight-bold text-small text-uppercase text-muted mb-1" style="letter-spacing: 0.025rem;">{{ _("Guildmasters") }}</div>
           <div>{{ board.mods_count }}</div>
         </div>
 
         <div class="">
-          <div class="font-weight-bold text-small text-uppercase text-muted mb-1" style="letter-spacing: 0.025rem;">Members</div>
+          <div class="font-weight-bold text-small text-uppercase text-muted mb-1" style="letter-spacing: 0.025rem;">{{ _("Members") }}</div>
           <div>{{ board.stored_subscriber_count }}</div>
         </div>
 
       {% if v %}
-      <div id="button-sub-modal" {% if board.has_subscriber(v) %}class="d-none"{% endif %}><a class="btn btn-primary" href="javascript:void(0)" onclick="post('/api/subscribe/{{ board.name }}', callback=toggleSub)">Join guild</a></div>
-      <div id="button-unsub-modal" {% if not board.has_subscriber(v) %}class="d-none"{% endif %}><a class="btn btn-secondary" href="javascript:void(0)" onclick="post('/api/unsubscribe/{{ board.name }}', callback=toggleSub)">Leave</a></div>
+      <div id="button-sub-modal" {% if board.has_subscriber(v) %}class="d-none"{% endif %}><a class="btn btn-primary" href="javascript:void(0)" onclick="post('/api/subscribe/{{ board.name }}', callback=toggleSub)">{{ _("Join guild") }}</a></div>
+      <div id="button-unsub-modal" {% if not board.has_subscriber(v) %}class="d-none"{% endif %}><a class="btn btn-secondary" href="javascript:void(0)" onclick="post('/api/unsubscribe/{{ board.name }}', callback=toggleSub)">{{ pgettext("button: leave the guild", "Leave") }}</a></div>
       {% elif not v %}
-      <a class="btn btn-primary" href="/signup">Join guild</a>
+      <a class="btn btn-primary" href="/signup">{{ _("Join guild") }}</a>
       {% endif %}
 
       </div>
       <div class="p-3">
 
-        <div class="h6">About</div>
+        <div class="h6">{{ pgettext("heading: about the guild", "About") }}</div>
 
         {{ board.description_html_for(v) | safe }}
 

@@ -1,6 +1,6 @@
 {% extends "guild/guild_settings.html" %}
 
-{% block pagetitle %}{{ '+'+b.name+' ' if b else '' }}Reported Posts - {{ 'SITE_NAME' | app_config }}{% endblock %}
+{% block pagetitle %}{% if b %}{{ _("+%(guild)s Reported Posts - %(site)s", guild=b.name) }}{% else %}{{ _("Reported Posts - %(site)s") }}{% endif %}{% endblock %}
 
 {% block postNav %}{% endblock %}
 
@@ -17,7 +17,7 @@
     <div class="profile-details">
       <div class="media">
       <div class="media-body">
-        <h1 class="h6 d-inline-block">Flagged Posts</h1>
+        <h1 class="h6 d-inline-block">{{ _("Flagged Posts") }}</h1>
 
       </div>
 
@@ -40,21 +40,21 @@
 </div>
 
 {# Prev/Next live inside content: guild/guild_settings.html declares no pagenav block #}
-<nav aria-label="Page navigation">
+<nav aria-label="{{ _('Page navigation') }}">
   <ul class="pagination pagination-sm py-3 pl-3 mb-0">
     {% if page>1 %}
     <li class="page-item">
-      <small><a class="page-link" href="?page={{ page-1 }}" tabindex="-1">Prev</a></small>
+      <small><a class="page-link" href="?page={{ page-1 }}" tabindex="-1">{{ _("Prev") }}</a></small>
     </li>
     {% else %}
-    <li class="page-item disabled"><span class="page-link">Prev</span></li>
+    <li class="page-item disabled"><span class="page-link">{{ _("Prev") }}</span></li>
     {% endif %}
     {% if next_exists %}
     <li class="page-item">
-      <small><a class="page-link" href="?page={{ page+1 }}">Next</a></small>
+      <small><a class="page-link" href="?page={{ page+1 }}" rel="next">{{ _("Next") }}</a></small>
     </li>
     {% else %}
-    <li class="page-item disabled"><span class="page-link">Next</span></li>
+    <li class="page-item disabled"><span class="page-link">{{ _("Next") }}</span></li>
     {% endif %}
   </ul>
 </nav>

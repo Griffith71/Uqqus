@@ -44,7 +44,7 @@ def test_a_circle_guild_is_made_private_and_a_circle_at_creation_only():
 
 
 def test_nothing_can_make_a_circle_guild_public():
-    assert "if board.is_circle:\n        return jsonify({\"error\": \"A Circle guild is always private.\"}), 409" in func(BOARDS, "mod_bid_settings_private", "\n@app.route")
+    assert "if board.is_circle:\n        return jsonify({\"error\": tr(\"A Circle guild is always private.\")}), 409" in func(BOARDS, "mod_bid_settings_private", "\n@app.route")
     # the three places that open a guild up when its last guildmaster goes: a Circle guild stays private
     assert "if board.mods_count == 0 and not board.is_circle:" in BOARDS
     assert "if b.mods_count == 0 and not b.is_circle:" in USER
@@ -103,7 +103,7 @@ def test_the_composer_on_a_circle_guild_posts_straight_in_and_hides_what_would_t
     assert "{% set circle_guild = board and board.is_circle %}" in COMPOSER
     assert '{% if circle_guild %} data-circle-guild="{{ board.name }}"{% endif %}{% if board %} data-guild="{{ board.name }}"{% endif %}>' in COMPOSER
     # where it goes and who sees it (with anonymity) are never drawn in a Circle guild: the post is made in it
-    assert "{% if circle_guild %}<span class=\"composer-where\">Posting to +{{ board.name }}</span>{% else %}" in COMPOSER
+    assert "{% if circle_guild %}<span class=\"composer-where\">{{ _(\"Posting to +%(guild)s\", guild=board.name) }}</span>{% else %}" in COMPOSER
     assert re.search(r"\{% if not circle_guild %\}\s*<details class=\"composer-pill\" id=\"composer-audience\">", COMPOSER)
     assert COMPOSER.index('id="composer-audience"') < COMPOSER.index('anonymous_field(false, "ic-anonymous", compact=true)') < COMPOSER.index('<textarea id="ic-title"')
     assert "var presetGuild = circleGuild ? null : form.getAttribute('data-guild');" in COMPOSER_JS
@@ -125,7 +125,7 @@ def test_only_the_founder_sets_the_price_and_anyone_but_a_guildmaster_is_turned_
     head = lambda name: CIRCLES.split(f"def {name}(")[0].rsplit("\n\n\n", 1)[1]
     assert "@is_guildmaster(\"full\")" in head("board_circle_settings") and "@auth_required" in head("board_circle_settings")
     assert "@is_guildmaster(\"full\")" in head("board_circle_price") and "@validate_formkey" in head("board_circle_price")
-    assert "if board.creator_id != v.id:\n        return _fail(\"Only the guild's founder can set the price.\", 403)" in func(CIRCLES, "board_circle_price", "\n\n\n")
+    assert "if board.creator_id != v.id:\n        return _fail(tr(\"Only the guild's founder can set the price.\"), 403)" in func(CIRCLES, "board_circle_price", "\n\n\n")
     assert "circle_store.set_board_price(g.db, board.id, price)" in func(CIRCLES, "board_circle_price", "\n\n\n")
 
 
@@ -155,7 +155,7 @@ def test_a_guilds_coins_go_to_its_founder_and_a_lost_membership_takes_the_access
 def test_the_job_tells_a_member_whose_guild_membership_lapsed_and_names_the_guild():
     job = read("scripts", "renew_circles.py")
     assert "for event, payer, owner, coins, board, name in events if event == \"lapsed\"" in job
-    assert "Your membership of [+{board.name}](/+{board.name}) ended" in job
+    assert "Your membership of [+%(guild)s](/+%(guild)s) ended" in job and "guild=board.name" in job
 
 
 def test_the_settings_page_lists_the_guilds_a_member_pays_to_be_in():

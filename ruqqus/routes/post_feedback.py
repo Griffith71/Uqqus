@@ -2,6 +2,7 @@
 from flask import g, jsonify, request
 
 from ruqqus.helpers import post_feedback as rules
+from ruqqus.helpers.i18n_runtime import tr
 from ruqqus.helpers.wrappers import is_not_banned, validate_formkey
 from ruqqus.routes.post_follows import _post_or_404
 from ruqqus.__main__ import app
@@ -24,4 +25,4 @@ def post_fewer_like_this(pid, v):
     g.db.commit()
     rules.clear_cached_feeds(v)
 
-    return jsonify({"message": "Back to normal." if undo else "We'll show fewer posts like this."})
+    return jsonify({"message": tr("Back to normal.") if undo else tr("We'll show fewer posts like this.")})

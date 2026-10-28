@@ -27,8 +27,9 @@ from flask import g
 from ruqqus.__main__ import app, db_session
 from ruqqus.classes import User
 from ruqqus.helpers import bot_runner, bot_store, bots, feed_fetch
-from ruqqus.helpers.alerts import send_notification
+from ruqqus.helpers import alerts
 from ruqqus.helpers.base36 import base36decode
+from ruqqus.helpers.i18n_runtime import ENVIRON_KEY, N_
 from ruqqus.helpers.security import generate_hash
 
 POLL_SECONDS = 60
@@ -45,8 +46,9 @@ def owner_ok(owner_id):
     return bool(owner and not owner.is_deleted and not owner.is_suspended)
 
 
-def notify(user_id, text):
-    """Best effort: telling the owner must never stop the run."""
+def notify(user_id, message, **values):
+    """Best effort: telling the owner must never stop the run. `message` is English marked with N_ and `values` its
+    values (alerts.notify), so the owner reads it in their own language."""
     try:
         user = db_session().query(User).filter_by(id=user_id).first()
         if user is None:
@@ -54,7 +56,7 @@ def notify(user_id, text):
         with app.test_request_context("/", environ_base={"REMOTE_ADDR": "127.0.0.1"}):
             g.db = db_session()
             g.v = user
-            send_notification(user, text)
+            alerts.notify(user, message, **values)
             g.db.commit()
     except Exception:
         traceback.print_exc()
@@ -66,7 +68,7 @@ def submit(bot, item, guilds):
     db.commit()                                   # the route commits this same session
     user = db.query(User).filter_by(id=bot.user_id, is_deleted=False).first()
     if user is None:
-        return bot_runner.outcome("stop", "The bot's account no longer exists.")
+        return bot_runner.outcome("stop", N_("The bot's account no longer exists."))
     user_id, nonce = user.id, user.login_nonce
 
     client = app.test_client()
@@ -82,7 +84,8 @@ def submit(bot, item, guilds):
 
     response = client.post("/api/vue/submit", data=form,
                            headers={"User-Agent": USER_AGENT, "X-User-Type": "Bot"},
-                           environ_base={"REMOTE_ADDR": bots.loopback_for(user_id)})
+                           # answered in English: a refusal is stored as the source's last error (drawn with msg)
+                           environ_base={"REMOTE_ADDR": bots.loopback_for(user_id), ENVIRON_KEY: "en"})
     data = response.get_json(silent=True) or {}
     post_id = base36decode(data["id"]) if response.status_code == 200 and data.get("id") else None
     return bot_runner.classify(response.status_code, response.headers.get("Location", ""), data, bool(guilds), post_id)

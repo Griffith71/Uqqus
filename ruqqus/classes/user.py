@@ -450,7 +450,8 @@ class User(Base, Stndrd, Age_times):
         subscriptions, followed accounts' subscriptions, and recent upvotes.
         Returns up to the top 10 subcat ids with positive affinity, ranked
         descending - or [] for a zero-signal account (for_you_idlist() then
-        falls back to plain frontlist() at the route level).
+        falls back to plain frontlist() at the route level). An id may be -N:
+        guilds filed under category N alone.
         """
 
         scores = {}
@@ -1179,9 +1180,7 @@ class User(Base, Stndrd, Age_times):
         a post that is theirs or that they follow), "mentions" (the rest) or "system" (notices from the site). Shared by
         the lists below and by the notifications page (helpers/notification_feed.py). Not ordered, not marked read."""
 
-        notifications = self.notifications.options(
-            joinedload(Notification.comment).joinedload(Comment.comment_aux)
-        ).join(
+        notifications = self.notifications.join(
             Notification.comment
         ).filter(
             Comment.is_banned == False,
@@ -1190,7 +1189,7 @@ class User(Base, Stndrd, Age_times):
         notifications = filter_comments(notifications, self)
         notifications = hide_blocked(hide_muted(notifications, self, Comment), self, Comment)
 
-        if comments_only:
+        if tab == "comments":
             cs = g.db.query(Comment.id).filter(Comment.author_id == self.id).scalar_subquery()
             ps = post_follows.owned_post_ids(self.id)
             notifications = notifications.filter(
@@ -1202,21 +1201,23 @@ class User(Base, Stndrd, Age_times):
                     )
                 )
             )
-        elif mentions_only:
+        elif tab == "mentions":
             cs = g.db.query(Comment.id).filter(Comment.author_id == self.id).scalar_subquery()
             ps = post_follows.owned_post_ids(self.id)
+            # a top-level comment has no parent comment, and `NULL NOT IN (...)` is never true: without the explicit
+            # `is_(None)` no top-level mention ever matched (the tab and its count were empty for them). The site's own
+            # notices are the System tab's.
             notifications = notifications.filter(
-                and_(
-                    Comment.parent_comment_id.notin_(cs),
-                    or_(
-                        Comment.level > 1,
-                        Comment.parent_submission.notin_(ps)
-                    )
+                Comment.author_id != 1,
+                or_(Comment.parent_comment_id.is_(None), Comment.parent_comment_id.notin_(cs)),
+                or_(
+                    Comment.level > 1,
+                    Comment.parent_submission.notin_(ps)
                 )
             )
-        elif system_only:
+        elif tab == "system":
             notifications = notifications.filter(Comment.author_id == 1)
-        elif not all_:
+        elif tab == "unread":
             notifications = notifications.filter(Notification.read == False)
         return notifications
 
@@ -1577,7 +1578,7 @@ class User(Base, Stndrd, Age_times):
 
     @property
     def can_make_guild(self):
-        return (self.has_premium or self.admin_level>=3 or self.true_score >= 250 or (self.created_utc <= 1592974538 and self.true_score >= 50)) and self.can_join_gms
+        return (self.has_premium or self.admin_level>=3 or self.true_score >= 0) and self.can_join_gms
 
     @property
     def can_join_gms(self):
@@ -1707,7 +1708,7 @@ class User(Base, Stndrd, Age_times):
     @property
     def joined_month(self):
         """"October 2026", for the profile header's "Joined" line."""
-        return time.strftime("%B %Y", time.gmtime(self.created_utc))
+        return date_text(self.created_utc, "%B %Y", "LLLL y")
 
     @property
     def json_core(self):
@@ -1759,7 +1760,7 @@ class User(Base, Stndrd, Age_times):
         """The day the member last pressed Reset For You, or None if they never did."""
         if not self.for_you_reset_utc:
             return None
-        return time.strftime("%d %B %Y", time.gmtime(self.for_you_reset_utc))
+        return date_text(self.for_you_reset_utc, "%d %B %Y")
 
     @property
     def can_use_darkmode(self):
@@ -2289,21 +2290,21 @@ class User(Base, Stndrd, Age_times):
 
     @property
     def renew_premium_time(self):
-        return time.strftime("%d %b %Y at %H:%M:%S",
-                             time.gmtime(self.premium_expires_utc))
+        return datetime_text(self.premium_expires_utc, "%d %b %Y at %H:%M:%S")
 
     @property
     def premium_first_purchased_date(self):
         if not self.premium_first_purchased_utc:
             return None
-        return time.strftime("%d %B %Y", time.gmtime(self.premium_first_purchased_utc))
+        return date_text(self.premium_first_purchased_utc, "%d %B %Y")
 
     @property
     def display_region_name(self):
         if not self.display_region:
-            return "Unknown"
+            # Translators: a member's region, when the site doesn't know it
+            return tr("Unknown")
         region = g.db.query(Region).filter_by(code=self.display_region).first()
-        return region.current_name if region else "Unknown"
+        return region.current_name if region else tr("Unknown")
 
     @property
     def filter_words(self):

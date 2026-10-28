@@ -3,7 +3,7 @@
 {# A guild's insights for its guildmasters (routes/guild_insights_pages.py, helpers/guild_insights.py): counts only, never
    who. Day-by-day bars only for a guild with enough members that a day can't point at one person. #}
 
-{% block pagetitle %}+{{ b.name }} Insights{% endblock %}
+{% block pagetitle %}{{ _("+%(guild)s Insights", guild=b.name) }}{% endblock %}
 
 {% block content %}
 <div class="row">
@@ -11,48 +11,49 @@
 
     <div class="d-flex justify-content-between align-items-start flex-wrap">
       <div>
-        <h2 class="h5">Insights</h2>
-        <p class="text-small text-muted mb-2">How +{{ b.name }} is doing over the last {{ data.days }} days.</p>
+        <h2 class="h5">{{ _("Insights") }}</h2>
+        <p class="text-small text-muted mb-2">{{ ngettext("How +%(guild)s is doing over the last %(num)s day.", "How +%(guild)s is doing over the last %(num)s days.", data.days, guild=b.name) }}</p>
       </div>
-      <nav class="btn-group btn-group-sm mb-3" aria-label="Time range">
+      <nav class="btn-group btn-group-sm mb-3" aria-label="{{ _('Time range') }}">
         {% for w in windows %}
-        <a href="?days={{ w }}" class="btn btn-sm {% if w == data.days %}btn-secondary{% else %}btn-link text-muted{% endif %}"{% if w == data.days %} aria-current="page"{% endif %}>{{ w }} days</a>
+        <a href="?days={{ w }}" class="btn btn-sm {% if w == data.days %}btn-secondary{% else %}btn-link text-muted{% endif %}"{% if w == data.days %} aria-current="page"{% endif %}>{{ ngettext("%(num)s day", "%(num)s days", w) }}</a>
         {% endfor %}
       </nav>
     </div>
 
     <div class="insight-tiles">
-      <div class="insight-tile"><span class="insight-number">{{ data.members }}</span><span class="insight-label">Members now</span></div>
-      <div class="insight-tile"><span class="insight-number">{{ signed(data.net) }}</span><span class="insight-label">Net growth</span><span class="insight-sub">{{ data.joined }} joined &middot; {{ data.left }} left</span></div>
-      <div class="insight-tile"><span class="insight-number">{{ data.views }}</span><span class="insight-label">Page views</span></div>
-      <div class="insight-tile"><span class="insight-number">{{ data.posts }}</span><span class="insight-label">Posts</span></div>
-      <div class="insight-tile"><span class="insight-number">{{ data.comments }}</span><span class="insight-label">Comments</span></div>
-      <div class="insight-tile"><span class="insight-number">{{ data.upvotes }}</span><span class="insight-label">Upvotes</span></div>
-      <div class="insight-tile"><span class="insight-number">{{ data.reports }}</span><span class="insight-label">Reports opened</span></div>
-      <div class="insight-tile"><span class="insight-number">{{ data.exiles }}</span><span class="insight-label">Exiles</span></div>
+      <div class="insight-tile"><span class="insight-number">{{ data.members }}</span><span class="insight-label">{{ _("Members now") }}</span></div>
+      <div class="insight-tile"><span class="insight-number">{{ signed(data.net) }}</span><span class="insight-label">{{ _("Net growth") }}</span>
+        {#- Translators: how many people joined and left the guild in the chosen time -#}<span class="insight-sub">{{ ngettext("%(num)s joined", "%(num)s joined", data.joined) }} &middot; {{ npgettext("people who left the guild", "%(num)s left", "%(num)s left", data.left) }}</span></div>
+      <div class="insight-tile"><span class="insight-number">{{ data.views }}</span><span class="insight-label">{{ _("Page views") }}</span></div>
+      <div class="insight-tile"><span class="insight-number">{{ data.posts }}</span><span class="insight-label">{{ pgettext("noun", "Posts") }}</span></div>
+      <div class="insight-tile"><span class="insight-number">{{ data.comments }}</span><span class="insight-label">{{ pgettext("noun", "Comments") }}</span></div>
+      <div class="insight-tile"><span class="insight-number">{{ data.upvotes }}</span><span class="insight-label">{{ pgettext("noun", "Upvotes") }}</span></div>
+      <div class="insight-tile"><span class="insight-number">{{ data.reports }}</span><span class="insight-label">{{ _("Reports opened") }}</span></div>
+      <div class="insight-tile"><span class="insight-number">{{ data.exiles }}</span><span class="insight-label">{{ pgettext("noun", "Exiles") }}</span></div>
     </div>
 
-    <h3 class="h6 mt-4">What the guildmasters did</h3>
+    <h3 class="h6 mt-4">{{ _("What the guildmasters did") }}</h3>
     {% if data.mod_actions %}
     <table class="table table-sm insight-table">
-      <thead><tr><th scope="col">Action</th><th scope="col" class="text-right">Times</th></tr></thead>
+      <thead><tr><th scope="col">{{ pgettext("a guildmaster's action, table heading", "Action") }}</th><th scope="col" class="text-right">{{ pgettext("how many times, table heading", "Times") }}</th></tr></thead>
       <tbody>
-        {% for kind, n in data.mod_actions.items() %}<tr><td>{{ kind | replace("_", " ") | capitalize }}</td><td class="text-right">{{ n }}</td></tr>{% endfor %}
+        {% for kind, n in data.mod_actions.items() %}<tr><td>{{ msg_text((action_labels or {}).get(kind)) or kind | replace("_", " ") | capitalize }}</td><td class="text-right">{{ n }}</td></tr>{% endfor %}
       </tbody>
     </table>
     {% else %}
-    <p class="text-muted text-small">No moderator actions in this time.</p>
+    <p class="text-muted text-small">{{ _("No moderator actions in this time.") }}</p>
     {% endif %}
 
-    <h3 class="h6 mt-4">Day by day</h3>
+    <h3 class="h6 mt-4">{{ _("Day by day") }}</h3>
     {% if data.series %}
-    <div class="insight-days" role="table" aria-label="Day by day">
+    <div class="insight-days" role="table" aria-label="{{ _('Day by day') }}">
       <div class="insight-days-row insight-days-head" role="row">
-        <span role="columnheader">Day</span><span role="columnheader">Joined</span><span role="columnheader">Left</span><span role="columnheader">Views</span><span role="columnheader">Posts</span><span role="columnheader">Comments</span>
+        <span role="columnheader">{{ pgettext("table heading", "Day") }}</span><span role="columnheader">{{ pgettext("people who joined the guild, table heading", "Joined") }}</span><span role="columnheader">{{ pgettext("people who left the guild, table heading", "Left") }}</span><span role="columnheader">{{ pgettext("noun", "Views") }}</span><span role="columnheader">{{ pgettext("noun", "Posts") }}</span><span role="columnheader">{{ pgettext("noun", "Comments") }}</span>
       </div>
       {% for day in data.series %}
       <div class="insight-days-row" role="row">
-        <span role="cell">{{ day.label }}</span>
+        <span role="cell">{{ date_text(day.day * 86400, "%d %b", "d MMM").lstrip("0") }}</span>
         <span role="cell">{{ day.joins }}</span>
         <span role="cell">{{ day.leaves }}</span>
         <span role="cell"><span class="insight-bar" style="width: {{ (day.views * 100 / peak) | round(0) | int }}%"></span> {{ day.views }}</span>
@@ -62,11 +63,11 @@
       {% endfor %}
     </div>
     {% else %}
-    <p class="text-muted text-small">Day-by-day figures appear once +{{ b.name }} has {{ min_chart }} members, so that a small guild's numbers can't point at one person. The totals above always show.</p>
+    <p class="text-muted text-small">{{ ngettext("Day-by-day figures appear once +%(guild)s has %(num)s member, so that a small guild's numbers can't point at one person. The totals above always show.", "Day-by-day figures appear once +%(guild)s has %(num)s members, so that a small guild's numbers can't point at one person. The totals above always show.", min_chart, guild=b.name) }}</p>
     {% endif %}
 
-    <p class="text-small text-muted mt-4 mb-1">{{ started_note }}</p>
-    <p class="text-small text-muted">{{ privacy_note }}</p>
+    <p class="text-small text-muted mt-4 mb-1">{{ msg_text(started_note) }}</p>
+    <p class="text-small text-muted">{{ msg_text(privacy_note) }}</p>
   </div>
 </div>
 {% endblock %}

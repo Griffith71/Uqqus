@@ -13,6 +13,8 @@ session's address (it can do nothing but receive this one file), so no Google cr
 ever reaches a browser. The file's id is chosen before the upload, so finishing does not
 depend on the browser being allowed to read Google's answer.
 """
+from ruqqus.helpers.i18n_runtime import tr
+
 from . import google_oauth, rules
 from .base import MediaGone, Provider, ProviderDown, Stream
 
@@ -91,7 +93,7 @@ class DriveProvider(Provider):
         location = session.headers.get("Location") if session is not None else None
         if session is None or session.status_code != 200 or not location:
             if session is not None and session.status_code == 403 and "storageQuota" in session.text:
-                raise rules.MediaError("Your Google Drive is full. Free some space and try again.", 507)
+                raise rules.MediaError(tr("Your Google Drive is full. Free some space and try again."), 507)
             raise ProviderDown(f"Drive did not start the upload ({getattr(session, 'status_code', '?')})")
 
         asset.provider_ref = file_id
@@ -110,7 +112,7 @@ class DriveProvider(Provider):
         meta = self._meta(account, asset) if asset.provider_ref else None
         checksum = (meta or {}).get("sha256Checksum") or (meta or {}).get("md5Checksum")
         if not meta or not checksum or "size" not in meta:
-            raise rules.MediaError("The upload did not arrive in your Google Drive. Try again.")
+            raise rules.MediaError(tr("The upload did not arrive in your Google Drive. Try again."))
         return {"ref": meta["id"], "size": int(meta["size"]), "checksum": checksum}
 
     # --- showing ---------------------------------------------------------------------

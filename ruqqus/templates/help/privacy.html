@@ -7,6 +7,8 @@
 
 
 {% block content %}
+{% if ui_locale() != "en" %}<p class="legal-english-note text-muted text-small">{{ _("This page is in English: the English text is the binding version.") }}</p>{% endif %}
+<div lang="en" dir="ltr">
 {% filter markdown %}
 # Privacy
 
@@ -24,6 +26,7 @@ We collect basic information in order to operate the platform, and to mitigate a
 * The IP address from which content is submitted.
 * Where and with what you signed in: the country, a short description of the browser ("Chrome on Windows") and the address. Your Security settings list your last ten sign-ins so you can spot one that isn't you, and if your email address is verified we email you when you sign in from a country or browser you haven't used in 90 days (you can turn that off). The address and the browser text are erased after 90 days; the country is kept for about 14 months, to tell whether you have moved.
 * Whether or not you have indicated that you are 18 years of age.
+* Feedback you choose to send from "Send feedback" in the account menu: your message, the address of the page you were on, whether it was light or dark, your window size, your language and your browser, and a screenshot if you attach one. Only the site's admins can read it. A screenshot is deleted a month after the admins close your feedback, and all of it is deleted with your account.
 * Other saved personal preferances.
 
 We use - and then promptly forget - the following information about you from third parties:
@@ -57,6 +60,9 @@ Deleting a post or comment takes it off your profile, feeds and guilds, but not 
 <p>{{ 'SITE_NAME' | app_config }} counts page views with Plausible Analytics, run on a server of our own at {{ 'ANALYTICS_HOST' | app_config }}. It sets no cookies and keeps no IP address: it records the page, the site you came from, your browser, system and country, counted together with everyone else's. We use it to see which pages are used and for nothing else.</p>
 {% endif %}
 
+{% if translation_services().libre %}
+<h2 id="translation">Translation</h2>
+
 <p>When you press Translate under a post or comment, its text is translated for you and kept, so the next person who asks for the same language gets the same translation. Nothing is translated unless someone presses the button. Translation is done by LibreTranslate, open-source software running on our own server: the text doesn't leave {{ 'SITE_NAME' | app_config }}. A kept translation is deleted after 90 days.</p>
 {% endif %}
 
@@ -77,5 +83,6 @@ Deleting a post or comment takes it off your profile, feeds and guilds, but not 
 {{ ads_script(consent=True) }}
 
 <p><sup>The history of this page may be viewed <a href="https://github.com/ruqqus/ruqqus" target="_blank">on GitHub.</a></sup></p>
+</div>
 
 {% endblock %}

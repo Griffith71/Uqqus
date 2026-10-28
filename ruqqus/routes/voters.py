@@ -6,6 +6,7 @@ from flask import abort, g, jsonify
 
 from ruqqus.helpers import voters as voter_rules
 from ruqqus.helpers.get import get_comment, get_post
+from ruqqus.helpers.i18n_runtime import msg, tr
 from ruqqus.helpers.wrappers import auth_required
 from ruqqus.__main__ import app
 
@@ -19,13 +20,13 @@ def _answer(kind, item, v):
     if item is None or item.is_banned or item.deleted_utc:
         abort(404)
     if item.author_id != v.id:
-        return jsonify({"error": "Only the author can see who upvoted."}), 403
+        return jsonify({"error": tr("Only the author can see who upvoted.")}), 403
 
     people = voter_rules.friends_who_upvoted(g.db, kind, item.id, item.author_id, v)
     response = jsonify({
         "people": [{"username": u.username, "display_name": u.display_name or "", "permalink": u.permalink, "avatar": u.profile_url} for u in people],
         "limit": voter_rules.LIMIT,
-        "note": voter_rules.NOTE,
+        "note": msg(voter_rules.NOTE),
     })
     response.headers["Cache-Control"] = "private, no-store"
     return response

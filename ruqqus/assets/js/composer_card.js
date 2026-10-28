@@ -34,13 +34,16 @@
 
   function label(field) {
     var chosen = read(field);
-    if (chosen.audience !== '4') return 'Public';
-    if (!chosen.circles.length) return 'Circles';
+    // Translators: who can see a post, shown on the composer's audience button
+    if (chosen.audience !== '4') return tr('Public');
+    if (!chosen.circles.length) return tr('Circles');
     var first = field.querySelector('input[name="circles"][value="' + chosen.circles[0] + '"]');
-    var name = first ? first.getAttribute('data-circle-name') : 'Circles';
+    // the automatic Friends circle is named in the page's language; a circle of the member's own keeps its name
+    var name = !first ? tr('Circles') : (first.value === 'friends' ? tr('Friends') : first.getAttribute('data-circle-name'));
     if (chosen.circles.length === 1) return name;
-    if (chosen.circles.length === 2) return name + ' +1';
-    return chosen.circles.length + ' circles';
+    // Translators: a circle's name and one more circle, on the composer's audience button
+    if (chosen.circles.length === 2) return tr('%(name)s +1', {name: name});
+    return trn('%(num)s circle', '%(num)s circles', chosen.circles.length);
   }
 
   function sync(field) {
@@ -87,7 +90,7 @@
       anonymous.disabled = forCircles;
     }
     var hidden = !!(anonymous && anonymous.checked);
-    labelText.textContent = hidden ? 'Anonymous' : label(field);
+    labelText.textContent = hidden ? tr('Anonymous') : label(field);
     if (icon) icon.className = 'fas ' + (hidden ? 'fa-user-secret' : (forCircles ? 'fa-user-friends' : 'fa-globe-americas'));
   }
 

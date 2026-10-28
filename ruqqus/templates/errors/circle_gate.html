@@ -5,7 +5,7 @@
    for are offered to join (`paid`): anyone may subscribe to those from the owner's profile anyway. #}
 
 {% block title %}
-<title>Shared with a circle - {{ 'SITE_NAME' | app_config }}</title>
+<title>{{ _("Shared with a circle - %(site)s") }}</title>
 {% endblock %}
 
 {% block pagetype %}error-circle{% endblock %}
@@ -18,22 +18,24 @@
     <div class="text-center px-3 my-8" id="circle-gate">
       <a href="{{ owner.permalink }}"><img src="{{ owner.profile_url }}" class="profile-pic profile-pic-65 mb-3" width="65" height="65" alt=""></a>
       {% if audience == 3 %}
-      <h1 class="h5">Circle guild members only</h1>
-      <p class="text-muted mb-4">This is for the members of a Circle guild.</p>
+      <h1 class="h5">{{ _("Circle guild members only") }}</h1>
+      <p class="text-muted mb-4">{{ _("This is for the members of a Circle guild.") }}</p>
       {% else %}
-      <h1 class="h5">Shared with a circle</h1>
-      <p class="text-muted mb-4">This is for the people in one of <a href="{{ owner.permalink }}">@{{ owner.username }}</a>'s circles.</p>
+      <h1 class="h5">{{ _("Shared with a circle") }}</h1>
+      {# Translators: %(name)s is the username of the person who made the post #}
+      <p class="text-muted mb-4">{{ _('This is for the people in one of <a href="%(url)s">@%(name)s</a>\'s circles.', url=owner.permalink, name=owner.username) }}</p>
       {% endif %}
       {% if not v %}
-      <a href="/login?redirect={{ request.path | urlencode }}" class="btn btn-primary">Sign in</a>
+      <a href="/login?redirect={{ request.path | urlencode }}" class="btn btn-primary">{{ _("Sign in") }}</a>
       {% else %}
       {% for c in paid if c.id in joinable %}
       {# opens the subscribe sheet on this circle (partials/circle_subscribe_modal.html: the price, what subscribers
          get, the terms) #}
+      {# Translators: %(circle)s is the name of a paid circle; the price is in the site's coins, per month #}
       <button type="button" class="btn btn-primary circle-join d-block mx-auto mb-2" data-circle-open="{{ c.id }}" aria-haspopup="dialog">
-        Join {{ c.name }} &middot; {{ c.price_coins }} coin{{ '' if c.price_coins == 1 else 's' }}/month</button>
+        {{ ngettext("Join %(circle)s &middot; %(num)s coin/month", "Join %(circle)s &middot; %(num)s coins/month", c.price_coins, circle=c.name) }}</button>
       {% else %}
-      <a href="{{ owner.permalink }}" class="btn btn-secondary">Go to their profile</a>
+      <a href="{{ owner.permalink }}" class="btn btn-secondary">{{ _("Go to their profile") }}</a>
       {% endfor %}
       {% endif %}
     </div>

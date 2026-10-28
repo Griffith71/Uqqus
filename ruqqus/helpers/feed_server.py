@@ -28,6 +28,7 @@ import re
 import time
 
 from ruqqus.helpers import safe_fetch
+from ruqqus.helpers.i18n_runtime import tr, tr_lazy, trn
 
 LIMIT = 100                  # posts asked for per request
 MAX_IDS = 500                # posts kept per curation
@@ -39,10 +40,11 @@ PAUSE_SECONDS = 600
 HOST_BUDGET = 30             # requests a minute to one host
 CURSOR_CHARS = 200
 
-OFF = "Outside feed servers are switched off on this site."
-PAUSED = "This curation's feed server has not been answering. Showing its last answer."
-PAUSED_EMPTY = "This curation's feed server has not been answering."
-BUSY = "This curation's feed server has been asked too often. Try again in a minute."
+# notices for the curation's page (shown only: translated each time they are used)
+OFF = tr_lazy("Outside feed servers are switched off on this site.")
+PAUSED = tr_lazy("This curation's feed server has not been answering. Showing its last answer.")
+PAUSED_EMPTY = tr_lazy("This curation's feed server has not been answering.")
+BUSY = tr_lazy("This curation's feed server has been asked too often. Try again in a minute.")
 
 _POST_ID = re.compile(r"^[0-9a-z]{1,10}$")
 _ALPHABET = "0123456789abcdefghijklmnopqrstuvwxyz"
@@ -70,19 +72,20 @@ def parse_answer(data):
     """(post ids as numbers in the server's order, the cursor for more or None)."""
     posts = data.get("posts") if isinstance(data, dict) else None
     if not isinstance(posts, list):
-        raise BadAnswer("The feed server's answer has no list of posts.")
+        raise BadAnswer(tr("The feed server's answer has no list of posts."))
     if len(posts) > LIMIT:
-        raise BadAnswer(f"The feed server answered with more than {LIMIT} posts at once.")
+        raise BadAnswer(trn("The feed server answered with more than %(num)s post at once.",
+                            "The feed server answered with more than %(num)s posts at once.", LIMIT))
     ids = []
     for item in posts:
         if not isinstance(item, str) or not _POST_ID.match(item):
-            raise BadAnswer("The feed server's answer holds something that is not a post id.")
+            raise BadAnswer(tr("The feed server's answer holds something that is not a post id."))
         number = int(item, 36)
         if number not in ids:
             ids.append(number)
     cursor = data.get("cursor")
     if cursor is not None and (not isinstance(cursor, str) or len(cursor) > CURSOR_CHARS or not cursor.isprintable()):
-        raise BadAnswer("The feed server's cursor is not usable.")
+        raise BadAnswer(tr("The feed server's cursor is not usable."))
     return ids, (cursor or None)
 
 
@@ -234,7 +237,8 @@ def ids_for(curation_id, url, need, store=None, fetch=None, now=None):
     except safe_fetch.FetchError as error:
         store.add(fails_key, PAUSE_SECONDS)
         if state["ids"]:
-            return state["ids"], f"{error.message} Showing its last answer."
+            # Translators: %(problem)s is a sentence saying what went wrong with a curation's feed server.
+            return state["ids"], tr("%(problem)s Showing its last answer.", problem=error.message)
         return [], error.message
     finally:
         store.delete(lock_key)

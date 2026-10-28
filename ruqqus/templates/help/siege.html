@@ -1,12 +1,12 @@
 {% extends "docs_default.html" %}
 
 {% block title %}
-<title>{{ 'SITE_NAME' | app_config }} - Siege Guild</title>
-<meta name="description" content="Lay siege to a {{ 'SITE_NAME' | app_config }} guild">
+<title>{{ _("%(site)s - Siege Guild") }}</title>
+<meta name="description" content="{{ _("Lay siege to a %(site)s guild") }}">
 {% endblock %}
 
 	
-{% block content %}
+{% block content %}{% set site = 'SITE_NAME' | app_config %}
 
     {% if request.args.get('error') or error %}
     <div class="alert alert-danger alert-dismissible fade show my-3" role="alert">
@@ -14,7 +14,7 @@
       <span>
         {{ error if error else request.args.get('error') }}
       </span>
-      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+      <button type="button" class="close" data-dismiss="alert" aria-label="{{ _('Close') }}">
         <span aria-hidden="true"><i class="fas fa-times"></i></span>
       </button>
     </div>
@@ -25,7 +25,7 @@
       <span>
         {{ msg if msg else request.args.get('msg') }}
       </span>
-      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+      <button type="button" class="close" data-dismiss="alert" aria-label="{{ _('Close') }}">
         <span aria-hidden="true"><i class="fas fa-times"></i></span>
       </button>
     </div>
@@ -33,33 +33,34 @@
 
 {% filter markdown %}
 
-# Guild Siege
+# {% trans %}Guild Siege{% endtrans %}
 
-In order to ensure that {{ 'SITE_NAME' | app_config }} Guilds can be curated and managed, users may use this page to try to "lay siege" to, and take over, a guild with inactive Guildmasters.
+{% trans %}In order to ensure that {{ site }} Guilds can be curated and managed, users may use this page to try to "lay siege" to, and take over, a guild with inactive Guildmasters.{% endtrans %}
 
-You may attempt to siege a guild once every 7 days. Any siege attempt - whether successful or not - will trigger this cool-down period.
+{% trans %}You may attempt to siege a guild once every 7 days. Any siege attempt - whether successful or not - will trigger this cool-down period.{% endtrans %}
 
-## Requirements
+## {% trans %}Requirements{% endtrans %}
 
-In order to successfully siege a guild you must meet the following requirements:
+{% trans %}In order to successfully siege a guild you must meet the following requirements:{% endtrans %}
 
-* Have an account at least 7 days old and wait 7 days since your last siege attempt, and
-* Not be exiled from the guild you are attempting to siege, and
-* Have Rep in the guild you are attempting to siege (exact requirement depends on guild size and age)
+* {% trans %}Have an account at least 7 days old and wait 7 days since your last siege attempt, and{% endtrans %}
+* {% trans %}Not be exiled from the guild you are attempting to siege, and{% endtrans %}
+* {% trans %}Have Rep in the guild you are attempting to siege (exact requirement depends on guild size and age){% endtrans %}
 
-Additionally, no current Guildmaster (or no Guildmaster above you, if you are a Guildmaster already) may have done any of the following in the past 60 days:
+{% trans %}Additionally, no current Guildmaster (or no Guildmaster above you, if you are a Guildmaster already) may have done any of the following in the past 60 days:{% endtrans %}
 
-* Have a post forwarded to the guild being sieged
-* Create a comment in the guild being sieged
-* Perform a mod action in the guild being sieged
+* {% trans %}Have a post forwarded to the guild being sieged{% endtrans %}
+* {% trans %}Create a comment in the guild being sieged{% endtrans %}
+* {% trans %}Perform a mod action in the guild being sieged{% endtrans %}
 
-Guildmasters who are permanently banned, or who have deactivated their {{ 'SITE_NAME' | app_config }} account, will always count as inactive, regardless of actual activity.
+{% trans %}Guildmasters who are permanently banned, or who have deactivated their {{ site }} account, will always count as inactive, regardless of actual activity.{% endtrans %}
 
-Sieges against [+general](/+general), or admin-controlled Guilds such as [+{{ 'SITE_NAME' | app_config }}](/+{{ 'SITE_NAME' | app_config }}), [+RuqqusPress](/+RuqqusPress) or [+GuildSiege](/+GuildSiege) will always fail.
+{# Translators: general, site_guild, press and siege are links to guilds (their names stay as they are) #}
+{% trans general="[+general](/+general)", site_guild="[+" ~ site ~ "](/+" ~ site ~ ")", press="[+RuqqusPress](/+RuqqusPress)", siege="[+GuildSiege](/+GuildSiege)" %}Sieges against {{ general }}, or admin-controlled Guilds such as {{ site_guild }}, {{ press }} or {{ siege }} will always fail.{% endtrans %}
 
-Finally, you may not Siege a guild with the intention of vandalizing it or subverting its purpose. Such sieges will be reverted by {{ 'SITE_NAME' | app_config }} admins.
+{% trans %}Finally, you may not Siege a guild with the intention of vandalizing it or subverting its purpose. Such sieges will be reverted by {{ site }} admins.{% endtrans %}
 
-## Siege a Guild
+## {% trans %}Siege a Guild{% endtrans %}
 
 {% endfilter %}
 
@@ -69,33 +70,33 @@ Finally, you may not Siege a guild with the intention of vandalizing it or subve
 
   {% if not v.can_join_gms %}
 
-    <p>You already lead the maximum number of guilds. You cannot siege a new guild unless you lead {{ GUILD_LIMIT_PER_PERSON - 1 }} or fewer guilds, but you can try to overthrow a top guildmaster in a guild you already lead.</p>
+    <p>{{ ngettext("You already lead the maximum number of guilds. You cannot siege a new guild unless you lead %(num)s or fewer guilds, but you can try to overthrow a top guildmaster in a guild you already lead.", "You already lead the maximum number of guilds. You cannot siege a new guild unless you lead %(num)s or fewer guilds, but you can try to overthrow a top guildmaster in a guild you already lead.", GUILD_LIMIT_PER_PERSON - 1) }}</p>
   {% endif %}
   {% if v.can_siege %}
 
-    <p>If automated siege does not work, you can forward a post to +SiegeGuild to request manual intervention.</p>
+    <p>{{ _("If automated siege does not work, you can forward a post to %(guild)s to request manual intervention.", guild="+SiegeGuild") }}</p>
 
-    <label>Your name:</label>
+    <label>{{ _("Your name:") }}</label>
     <input class="form-control" type="text" name="username" value="{{ v.username }}" readonly="readonly">
 
     <form action="/siege_guild" method="post">
       <input type="hidden" name="formkey" value="{{ v.formkey }}">
 
-      <label for="text-guild">Guild to siege:</label>
+      <label for="text-guild">{{ _("Guild to siege:") }}</label>
       <input class="form-control" id="text-guild" type="text" name="guild">
 
-      <input class="btn btn-primary" type="submit" value="Siege Guild">
+      <input class="btn btn-primary" type="submit" value="{{ pgettext('button', 'Siege Guild') }}">
     </form>
 
   {% elif v.is_suspended %}
 
-    <p>You are currently suspended from {{ 'SITE_NAME' | app_config }}. You cannot siege any guilds at this time.</p>
+    <p>{{ _("You are currently suspended from %(site)s. You cannot siege any guilds at this time.") }}</p>
 
   {% else %}
 
-    <p>You cannot siege any Guilds right now. You can only make one siege attempt every 7 days, and your account must be at least 7 days old.</p>
+    <p>{{ _("You cannot siege any Guilds right now. You can only make one siege attempt every 7 days, and your account must be at least 7 days old.") }}</p>
   {% endif %}
 {% else %}
-  <p>You need to be logged in to siege a Guild.</p>
+  <p>{{ _("You need to be logged in to siege a Guild.") }}</p>
 {% endif %}
 {% endblock %}

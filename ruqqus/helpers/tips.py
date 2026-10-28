@@ -22,6 +22,8 @@ own tips and their second accounts' would cost them nothing, since the coins com
 """
 import math
 
+from ruqqus.helpers.i18n_runtime import trn
+
 PER_TIPPER = 10
 PER_DOUBLING = 2
 PER_TIPPER_MAX = 20
@@ -71,4 +73,4 @@ def answerable_id(author_id, is_bot=False, bot_owner_id=None):
 
 
 def label(coins):
-    return f"{coins} coin{'s' if coins != 1 else ''} tipped"
+    return trn("%(num)s coin tipped", "%(num)s coins tipped", coins)

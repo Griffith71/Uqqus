@@ -1,6 +1,6 @@
 {% extends "circles_base.html" %}
 
-{% block pagetitle %}Paid circles you are in - {{ 'SITE_NAME' | app_config }}{% endblock %}
+{% block pagetitle %}{{ _("Paid circles you are in - %(site)s") }}{% endblock %}
 
 {# The paid circles and Circle guilds this account pays to be in, and cancelling (routes/circles.py). Never the custom
    circles someone put it in: nobody is told about those. #}
@@ -11,10 +11,10 @@
   <div class="col col-lg-8">
     <div class="settings" id="circles-in">
 
-      <h2 class="h5">Paid circles you are in</h2>
+      <h2 class="h5">{{ _("Paid circles you are in") }}</h2>
       <p class="text-small text-muted">
-        Subscriptions renew every 30 days from your coins. Cancel and you keep access until the day you paid to.
-        <a href="/circles">Your own circles</a>
+        {{ _("Subscriptions renew every 30 days from your coins. Cancel and you keep access until the day you paid to.") }}
+        <a href="/circles">{{ _("Your own circles") }}</a>
       </p>
       <div id="circle-status" class="text-small" role="status"></div>
 
@@ -22,37 +22,38 @@
         {% for m in memberships %}
         <div class="d-flex align-items-center justify-content-between px-3 py-3 circle-membership{% if not loop.first %} border-top{% endif %}" data-username="{{ m.username }}">
           <div class="min-w-0">
-            <div class="text-truncate"><span class="font-weight-bold">{{ m.name }}</span> <span class="text-muted">by <a href="/@{{ m.username }}">@{{ m.username }}</a></span></div>
+            {# Translators: after a paid circle's name: the account that owns it, as a link to its profile #}
+            <div class="text-truncate"><span class="font-weight-bold">{{ m.name }}</span> <span class="text-muted">{{ _('by <a href="/@%(name)s">@%(name)s</a>', name=m.username) }}</span></div>
             <div class="text-muted text-small">
-              {% if m.cancelled %}Won't renew, access ends {{ m.until }}
-              {% else %}{{ m.price }} coin{{ '' if m.price == 1 else 's' }} every 30 days, renews {{ m.until }}{% endif %}
+              {% if m.cancelled %}{{ _("Won't renew, access ends %(date)s", date=m.until) }}
+              {% else %}{{ ngettext("%(num)s coin every 30 days, renews %(date)s", "%(num)s coins every 30 days, renews %(date)s", m.price, date=m.until) }}{% endif %}
             </div>
           </div>
           {% if not m.cancelled %}
           <button type="button" class="btn btn-secondary btn-sm ml-2" data-circle-post="/api/circles/{{ m.circle }}/cancel"
-            data-confirm="Cancel your subscription? You keep access until the day you paid to.">Cancel</button>
+            data-confirm="{{ _('Cancel your subscription? You keep access until the day you paid to.') }}">{{ pgettext("button", "Cancel") }}</button>
           {% endif %}
         </div>
         {% else %}
-        {% if not guilds %}<div class="px-3 py-3 text-muted text-small" id="circles-in-empty">You don't pay for anyone's circle. A paid circle you can join has a Subscribe button on its owner's profile.</div>{% endif %}
+        {% if not guilds %}<div class="px-3 py-3 text-muted text-small" id="circles-in-empty">{{ _("You don't pay for anyone's circle. A paid circle you can join has a Subscribe button on its owner's profile.") }}</div>{% endif %}
         {% endfor %}
       </div>
 
       {% if guilds %}
-      <h2 class="h5 mt-5">Circle guilds you pay to be in</h2>
+      <h2 class="h5 mt-5">{{ _("Circle guilds you pay to be in") }}</h2>
       <div class="settings-section rounded" id="circle-guilds-in">
         {% for m in guilds %}
         <div class="d-flex align-items-center justify-content-between px-3 py-3 circle-guild-membership{% if not loop.first %} border-top{% endif %}" data-name="{{ m.name }}">
           <div>
             <a href="/+{{ m.name }}" class="font-weight-bold">+{{ m.name }}</a>
             <div class="text-muted text-small">
-              {% if m.cancelled %}Won't renew, access ends {{ m.until }}
-              {% else %}{{ m.price }} coin{{ '' if m.price == 1 else 's' }} every 30 days, renews {{ m.until }}{% endif %}
+              {% if m.cancelled %}{{ _("Won't renew, access ends %(date)s", date=m.until) }}
+              {% else %}{{ ngettext("%(num)s coin every 30 days, renews %(date)s", "%(num)s coins every 30 days, renews %(date)s", m.price, date=m.until) }}{% endif %}
             </div>
           </div>
           {% if not m.cancelled %}
           <button type="button" class="btn btn-secondary btn-sm" data-name="{{ m.name }}"
-            onclick="if (confirm('Cancel your membership? You keep access until the day you paid to.')) { post_toast('/api/circle/guild/' + encodeURIComponent(this.dataset.name) + '/cancel', function () { window.location.reload(); }); }">Cancel</button>
+            onclick="if (confirm({{ _('Cancel your membership? You keep access until the day you paid to.') | tojson | forceescape }})) { post_toast('/api/circle/guild/' + encodeURIComponent(this.dataset.name) + '/cancel', function () { window.location.reload(); }); }">{{ pgettext("button", "Cancel") }}</button>
           {% endif %}
         </div>
         {% endfor %}

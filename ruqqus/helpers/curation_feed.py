@@ -14,10 +14,11 @@ from sqlalchemy import and_, case, exists, func, not_, or_, select, text
 from sqlalchemy.exc import DBAPIError
 
 from ruqqus.helpers import feed_algorithm as fa
+from ruqqus.helpers.i18n_runtime import tr_lazy
 
 PROFILE_BOARD = "systemprofile"
 TIME_LIMIT_MS = 3000
-TOO_SLOW = "This curation's rules took too long to run. Its owner can make them narrower."
+TOO_SLOW = tr_lazy("This curation's rules took too long to run. Its owner can make them narrower.")
 
 
 class FeedTooSlow(Exception):

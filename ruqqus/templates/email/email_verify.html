@@ -2,10 +2,10 @@
 
 {% block image %}verify.png{% endblock %}
 
-{% block title %}Welcome to {{ 'SITE_NAME' | app_config }}!{% endblock %}</h1>
+{% block title %}{{ _("Welcome to %(site)s!") }}{% endblock %}</h1>
 
 {% block content %}
-                        <p>Thanks for joining {{ 'SITE_NAME' | app_config }}. We’re happy to have you on board. To get the most out of {{ 'SITE_NAME' | app_config }}, please verify your account email:</p>
+                        <p>{{ _("Thanks for joining %(site)s. We’re happy to have you on board. To get the most out of %(site)s, please verify your account email:") }}</p>
                         <!-- Action -->
                         <table class="body-action" align="center" width="100%" cellpadding="0" cellspacing="0" role="presentation">
                           <tr>
@@ -15,14 +15,14 @@
                               <table width="100%" border="0" cellspacing="0" cellpadding="0" role="presentation">
                                 <tr>
                                   <td align="center">
-                                    <a href="{{action_url}}" class="f-fallback button" target="_blank">Verify email</a>
+                                    <a href="{{action_url}}" class="f-fallback button" target="_blank">{{ _("Verify email") }}</a>
                                   </td>
                                 </tr>
                               </table>
                             </td>
                           </tr>
                         </table>
-                        <p>For reference, here's your username.</p>
+                        <p>{{ _("For reference, here's your username.") }}</p>
                         <table class="attributes" width="100%" cellpadding="0" cellspacing="0" role="presentation">
                           <tr>
                             <td class="attributes_content">
@@ -30,14 +30,14 @@
                                 <tr>
                                   <td class="attributes_item">
                                     <span class="f-fallback">
-              <strong>Email:</strong> {{ v.email }}
+              {{ _("<strong>Email:</strong> %(email)s", email=v.email) }}
             </span>
                                   </td>
                                 </tr>
                                 <tr>
                                   <td class="attributes_item">
                                     <span class="f-fallback">
-              <strong>Username:</strong> {{ v.username }}
+              {{ _("<strong>Username:</strong> %(name)s", name=v.username) }}
             </span>
                                   </td>
                                 </tr>
@@ -45,16 +45,16 @@
                             </td>
                           </tr>
                         </table>
-                        <p>Please note that {{ 'SITE_NAME' | app_config }} will never ask you for your email, password, or two-factor token via email, text, or phone.</p>
-                        <p>If you have any questions, feel free to <a href="mailto:hello@ruqqus.com">email the {{ 'SITE_NAME' | app_config }} team.</a>.</p>
-                        <p>Thanks,
-                          <br>The {{ 'SITE_NAME' | app_config }} Team</p>
-                        <p><strong>P.S.</strong> Feel free to tweet at us on Twitter <a href="https://www.twitter.com/ruqqus">@ruqqus</a>.</p>
+                        <p>{{ _("Please note that %(site)s will never ask you for your email, password, or two-factor token via email, text, or phone.") }}</p>
+                        <p>{{ _('If you have any questions, feel free to <a href="%(mail)s">email the %(site)s team.</a>.', mail="mailto:hello@ruqqus.com") }}</p>
+                        <p>{# Translators: the closing of an email, signed by the next line #}{{ _("Thanks,") }}
+                          <br>{{ _("The %(site)s Team") }}</p>
+                        <p>{{ _('<strong>P.S.</strong> Feel free to tweet at us on Twitter <a href="%(url)s">%(handle)s</a>.', url="https://www.twitter.com/ruqqus", handle="@ruqqus") }}</p>
                         <!-- Sub copy -->
                         <table class="body-sub" role="presentation">
                           <tr>
                             <td>
-                              <p class="f-fallback sub">If you’re having trouble with the button above, copy and paste the URL below into your web browser.</p>
+                              <p class="f-fallback sub">{{ _("If you’re having trouble with the button above, copy and paste the URL below into your web browser.") }}</p>
                               <p class="f-fallback sub">{{action_url}}</p>
                             </td>
                           </tr>

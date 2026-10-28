@@ -8,6 +8,7 @@ import os
 import tempfile
 
 from . import rules
+from ..i18n_runtime import N_, tr
 
 
 def fetch_to_temp(provider, account, asset, limit):
@@ -20,7 +21,8 @@ def fetch_to_temp(provider, account, asset, limit):
             for block in provider.open(account, asset).chunks:
                 written += len(block)
                 if written > limit:
-                    raise rules.MediaError(f"That file is too big. The limit is {limit // rules.MIB} MB.", 413)
+                    raise rules.MediaError(tr("That file is too big. The limit is %(size)s MB.", size=limit // rules.MIB),
+                                           413)
                 out.write(block)
     except BaseException:
         discard(path)
@@ -48,9 +50,9 @@ def image_size(path):
     except rules.MediaError:
         raise
     except Exception:
-        raise rules.MediaError("That image could not be read. It may be damaged.")
+        raise rules.MediaError(tr("That image could not be read. It may be damaged."))
     if width <= 0 or height <= 0 or width * height > rules.IMAGE_PIXELS_MAX:
-        raise rules.MediaError("That image is too large in pixels.")
+        raise rules.MediaError(tr("That image is too large in pixels."))
     return width, height
 
 
@@ -105,7 +107,7 @@ def _scan_public(url, asset_id):
             return
         user = db.get(User, asset.user_id)
         if user is not None:
-            ban_uploader(db, user, "Sexualizing Minors")
+            ban_uploader(db, user, N_("Sexualizing Minors"))       # a ban reason: stored in English, drawn with msg
         asset.status = rules.REMOVED
         asset.updated_utc = int(time.time())
         db.add(asset)

@@ -20,6 +20,8 @@ import calendar
 import datetime
 import re
 
+from ruqqus.helpers.i18n_runtime import date_text, tr, tr_lazy
+
 OPEN = "open"
 AUDIO_ONLY = "audio_only"
 PAUSED = "paused"
@@ -33,7 +35,7 @@ SENT_METRICS = ("turn_total_traffic_sentb", "turn_total_traffic_peer_sentb")
 
 _SAMPLE = re.compile(r"^([A-Za-z_:][A-Za-z0-9_:]*)(?:\{[^}]*\})?\s+([0-9.eE+-]+)(?:\s+-?\d+)?\s*$")
 
-UNAVAILABLE = "Calls are unavailable right now. Try again later."
+UNAVAILABLE = tr_lazy("Calls are unavailable right now. Try again later.")
 
 
 def sent_bytes(metrics_text):
@@ -101,8 +103,9 @@ def state(used, allowance, last_reading_utc, now):
 
 
 def paused_message(now):
-    day = datetime.datetime.fromtimestamp(next_month_start(now), datetime.timezone.utc)
-    return f"Calls are paused until 1 {day.strftime('%B')}. Messages still work."
+    # Translators: %(date)s is the first day of next month ("1 November").
+    return tr("Calls are paused until %(date)s. Messages still work.",
+              date=date_text(next_month_start(now), "1 %B", "d MMMM"))
 
 
 def refusal(current_state, used, allowance, now):

@@ -21,6 +21,8 @@ import os
 import re
 from datetime import datetime, timezone
 
+from ruqqus.helpers.i18n_runtime import date_text
+
 ACCOUNT_AGE_DAYS = 30
 POINTS_PER_ACCOUNT = 20
 MAX_SHARE = 0.25
@@ -68,6 +70,7 @@ def is_over(month, now):
 
 
 def month_name(month):
+    """The month in English ("October 2026"): for what is stored (a notice's values) and the admins' page."""
     start, _ = month_bounds(month)
     return datetime.fromtimestamp(start, tz=timezone.utc).strftime("%B %Y")
 

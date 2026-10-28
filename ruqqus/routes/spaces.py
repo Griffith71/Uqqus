@@ -27,7 +27,8 @@ from ruqqus.__main__ import app, limiter, member_limit_key, r
 from ruqqus.helpers import spaces as space_rules
 from ruqqus.helpers import space_store, space_view, space_ending, call_store, live_bus, turn_usage, turn_usage_store
 from ruqqus.helpers import live_thread_store as live_store
-from ruqqus.helpers.alerts import send_notification
+from ruqqus.helpers.alerts import notify
+from ruqqus.helpers.i18n_runtime import ENVIRON_KEY as UI_LOCALE_KEY, N_, current_locale, datetime_text, tr, trn
 from ruqqus.helpers import bell as bell_rules
 from ruqqus.helpers.media import attach as media_attach, safety as media_safety
 from ruqqus.helpers.visibility import post_hidden
@@ -35,6 +36,11 @@ from ruqqus.helpers import sharing as sharing_rules
 from urllib.parse import quote
 
 _DEVICE = re.compile(r"^[A-Za-z0-9_.=-]{1,64}$")
+
+# notices when a Space starts (stored in English, drawn in each reader's language: helpers/alerts.py notify); they never
+# name the Space or its host
+REMINDED_LIVE = N_("A Space you asked to be reminded of is live: [join it](/space/%(space)s)")
+FOLLOWED_LIVE = N_("A Space you follow is live: [join it](/space/%(space)s)")
 
 
 def _error(message, status=400):
@@ -333,9 +339,9 @@ def _space_page(space, v):
 def space_start(sid, v):
     space = load_space(sid, v)
     if v.id != space.host_id:
-        return _error("Only the host can start this Space.", 403)
+        return _error(tr("Only the host can start this Space."), 403)
     if space.status != space_rules.SCHEDULED:
-        return _error(space_rules.OVER if space.status == space_rules.ENDED else "This Space has already started.", 409)
+        return _error(space_rules.OVER if space.status == space_rules.ENDED else tr("This Space has already started."), 409)
     refusal = _begin(space, v)
     if refusal:
         return refusal
@@ -351,10 +357,10 @@ def _begin(space, v):
         try:
             room_id = matrix.create_space_room()
         except matrix.MatrixError:
-            return _error("Spaces aren't answering right now. Try again in a moment.", 502)
+            return _error(tr("Spaces aren't answering right now. Try again in a moment."), 502)
     if not space_store.start(g.db, space.id, now):
         g.db.rollback()
-        return _error("This Space has already started.", 409)
+        return _error(tr("This Space has already started."), 409)
     if room_id:
         space_store.set_room(g.db, space.id, room_id)
     g.db.commit()
@@ -366,19 +372,19 @@ def _begin(space, v):
         live_store.start(g.db, space.post_id, v.id, now, row[space_store.ENDS] or now + space_rules.DEFAULT_HOURS * 3600)
         g.db.commit()
     live_bus.publish(r, space.topic, "space.started", {})
-    # the people who asked to be reminded (send_notification commits by itself); never the title or the host's name
+    # the people who asked to be reminded (notify commits by itself); never the title or the host's name
     reminded = set(space_store.reminder_ids(g.db, space.id))
     for uid in reminded:
         user = g.db.query(User).filter_by(id=uid).first()
         if user is not None and uid != v.id:
-            send_notification(user, f"A Space you asked to be reminded of is live: [join it](/space/{space.id})")
+            notify(user, REMINDED_LIVE, space=space.id)
     # and, once, the people who follow its post (helpers/post_follows.py) and may still read it
     from ruqqus.helpers import post_follows
     from ruqqus.routes.comments import _followers_who_may_read
     ids = [uid for uid in post_follows.followers(g.db, space.post_id, v.id, anonymous=False) if uid not in reminded]
     told = set(ids)
     for user in g.db.query(User).filter(User.id.in_(_followers_who_may_read(space.post, ids))).all() if ids else []:
-        send_notification(user, f"A Space you follow is live: [join it](/space/{space.id})")
+        notify(user, FOLLOWED_LIVE, space=space.id)
     # and the people who rang the host's bell (helpers/bell.py), who may read its post and were not told above
     bell_rules.ring_account(v, bell_rules.SPACE_LIVE, space.id, f"/space/{space.id}",
                             only=lambda ring: [uid for uid in _followers_who_may_read(space.post, ring)
@@ -390,7 +396,7 @@ def _call_only(space):
     """A stage, co-hosts and a roster are a call's (CLAUDE.md, Spaces): a board or a live thread is refused (bug hunt:
     anyone who opened a board could join its roster and read the others' devices, and its host could name co-hosts)."""
     if space.kind != space_rules.CALL:
-        abort(make_response(jsonify({"error": "Only a call has a stage."}), 409))
+        abort(make_response(jsonify({"error": tr("Only a call has a stage.")}), 409))
 
 
 @app.route("/api/spaces/<sid>/join", methods=["POST"])
@@ -412,7 +418,7 @@ def space_join(sid, v):
     role = space_rules.role_of(v.id, space.host_id, roles)
     roster = call_store.roster(r, space.room, now)
     if any(e["user_id"] == v.id and e["device_id"] != device_id for e in roster):
-        return _error("You're already in this Space in another window.", 409)
+        return _error(tr("You're already in this Space in another window."), 409)
     listeners = {e["user_id"] for e in roster
                  if not space_rules.on_stage(space_rules.role_of(e["user_id"], space.host_id, roles)) and e["user_id"] != v.id}
     refusal = space_rules.join_refusal(space.status, True, _blocked_with_hosts(space, v, roles),
@@ -425,7 +431,7 @@ def space_join(sid, v):
             from ruqqus.routes.chat import _ensure_provisioned
             matrix.put_in_room(space.matrix_room_id, _ensure_provisioned(v))
         except matrix.MatrixError:
-            return _error("Spaces aren't answering right now. Try again in a moment.", 502)
+            return _error(tr("Spaces aren't answering right now. Try again in a moment."), 502)
     call_store.join(r, space.room, v.id, device_id, "audio", False, now)
     if v.id == space.host_id:
         r.set(f"space:host:{space.id}", now, ex=space_rules.HOST_GONE_SECONDS)
@@ -502,11 +508,13 @@ def space_invite(sid, v):
     user, role, roles = _target(space)
     # only someone in the call (bug hunt: any account could be sent "invited to speak", across a block or a Circle)
     if r is None or not any(e["user_id"] == user.id for e in call_store.roster(r, space.room, int(time.time()))):
-        return _error("Only someone in the call can be invited to speak.", 409)
+        return _error(tr("Only someone in the call can be invited to speak."), 409)
     stage = 1 + sum(1 for (rl, st) in roles.values() if st == "accepted")
-    refusal = space_rules.invite_refusal(_my_role(space, v), role, stage, roles.get(user.id, (None, None))[1] == "invited")
+    mine = _my_role(space, v)
+    refusal = space_rules.invite_refusal(mine, role, stage, roles.get(user.id, (None, None))[1] == "invited")
     if refusal:
-        return _error(refusal, 403 if "Only" in refusal else 409)
+        # 403 when the asker may not invite at all (decided by the role, not by the words: they are in the reader's language)
+        return _error(refusal, 403 if not space_rules.may_run(mine) else 409)
     space_store.invite_speaker(g.db, space.id, user.id, int(time.time()))
     space_store.lower_hand(g.db, space.id, user.id)
     g.db.commit()
@@ -526,7 +534,7 @@ def space_accept(sid, v):
     if stage >= space_rules.MAX_STAGE:
         return _error(space_rules.STAGE_FULL, 409)
     if not space_store.accept_speaker(g.db, space.id, v.id, int(time.time())):
-        return _error("There's no invitation to speak.", 409)
+        return _error(tr("There's no invitation to speak."), 409)
     g.db.commit()
     _tell(space)
     return jsonify(state_json(space, v))
@@ -543,11 +551,11 @@ def space_listen(sid, v):
         if user.id != v.id:
             mine = _my_role(space, v)
             if not space_rules.may_run(mine) or role == space_rules.HOST or (role == space_rules.COHOST and mine != space_rules.HOST):
-                return _error("Only the host and co-hosts can move people off the stage.", 403)
+                return _error(tr("Only the host and co-hosts can move people off the stage."), 403)
     else:
         user = v
     if user.id == space.host_id:
-        return _error("The host stays on stage.", 409)
+        return _error(tr("The host stays on stage."), 409)
     space_store.drop_role(g.db, space.id, user.id)
     g.db.commit()
     live_bus.publish_to_user(r, user.id, "space.listening", {"space_id": space.id})
@@ -581,7 +589,7 @@ def space_mute(sid, v):
     space = load_space(sid, v)
     user, role, _ = _target(space)
     if not space_rules.may_run(_my_role(space, v)) and v.admin_level < 3:
-        return _error("Only the host and co-hosts can mute speakers.", 403)
+        return _error(tr("Only the host and co-hosts can mute speakers."), 403)
     live_bus.publish_to_user(r, user.id, "space.mute", {"space_id": space.id})
     return jsonify({"ok": True})
 
@@ -611,7 +619,7 @@ def space_video(sid, v):
         if refusal:
             return _error(refusal, 409)
     if not call_store.set_video(r, space.room, v.id, device_id, on):
-        return _error("You're not in this Space.", 409)
+        return _error(tr("You're not in this Space."), 409)
     _tell(space)
     return jsonify(state_json(space, v))
 
@@ -644,7 +652,7 @@ def space_end(sid, v):
     space = load_space(sid, v)
     admin = v.admin_level >= 3
     if v.id != space.host_id and not admin:
-        return _error("Only the host can end this Space.", 403)
+        return _error(tr("Only the host can end this Space."), 403)
     _end(space, int(time.time()), by_admin=admin and v.id != space.host_id)
     if admin and v.id != space.host_id:
         space_store.resolve_reports(g.db, space.id, int(time.time()))
@@ -658,7 +666,7 @@ def space_end(sid, v):
 def space_remind(sid, v):
     space = load_space(sid, v)
     if space.status != space_rules.SCHEDULED:
-        return _error("This Space isn't waiting to start.", 409)
+        return _error(tr("This Space isn't waiting to start."), 409)
     if request.values.get("on") == "0":
         space_store.forget_reminder(g.db, space.id, v.id)
     else:
@@ -673,9 +681,9 @@ def space_remind(sid, v):
 def space_report(sid, v):
     space = load_space(sid, v)
     if v.id == space.host_id:
-        return _error("You can't report your own Space.", 409)
+        return _error(tr("You can't report your own Space."), 409)
     if not space_store.report(g.db, space.id, v.id, space_rules.clean_reason(request.values.get("reason")), int(time.time())):
-        return _error("You've already reported this Space.", 409)
+        return _error(tr("You've already reported this Space."), 409)
     g.db.commit()
     return jsonify({"ok": True})
 
@@ -691,19 +699,19 @@ def space_replay(sid, v):
     if v.id != space.host_id or not space.record or space.kind != space_rules.CALL:
         abort(403)
     if space.status != space_rules.ENDED or space.replay_asset_id or space.replay_link:
-        return _error("This Space can't take a replay now.", 409)
+        return _error(tr("This Space can't take a replay now."), 409)
     if request.values.get("video"):
         if not space_rules.video_replay(space.kind, space.record, space.video, space.post.audience):
-            return _error("This Space keeps its sound only.", 409)
+            return _error(tr("This Space keeps its sound only."), 409)
         link = _own_video_link(v, request.values.get("video"))
         if link is None:
-            return _error("That recording can no longer be used.", 400)
+            return _error(tr("That recording can no longer be used."), 400)
         space_store.set_replay(g.db, space.id, None, link)
         g.db.commit()
         return jsonify({"ok": True, "link": link})
     asset = media_attach.own_asset(g.db, v.id, request.values.get("media"), kinds=("audio",))
     if asset is None:
-        return _error("That recording can no longer be used.", 400)
+        return _error(tr("That recording can no longer be used."), 400)
     post = space.post
     body = ((post.body or "").rstrip() + f"\n\n[audio]({asset.path})").strip()
     with CustomRenderer() as renderer:
@@ -771,7 +779,7 @@ def _messages_json(space, v, rows):
 
     def name(uid):
         u = users.get(uid)
-        return "Deleted account" if u is None or u.is_deleted else u.shown_name
+        return tr("Deleted account") if u is None or u.is_deleted else u.shown_name
 
     out = []
     for row in rows:
@@ -847,30 +855,35 @@ def space_message_add(sid, v):
     roles = space_store.roles(g.db, space.id)
     role = space_rules.role_of(v.id, space.host_id, roles)
     if space.kind == space_rules.LIVE_THREAD:
-        return _error("A live thread takes comments, not board messages.", 409)
+        return _error(tr("A live thread takes comments, not board messages."), 409)
     roster = call_store.roster(r, space.room, now) if r is not None and space.kind == space_rules.CALL else []
     inside = space_rules.may_run(role) or any(e["user_id"] == v.id for e in roster)
     # on a board anyone who may open it writes, unless the host removed them or a block stands between them and a host
     kept_out = space.kind == space_rules.BOARD and (space_store.removed(g.db, space.id, v.id)
                                                     or _blocked_with_hosts(space, v, roles))
-    refusal = space_rules.message_refusal(space.status, inside, bool(v.is_suspended),
-                                          space_store.messages_since(g.db, v.id, now - 60),
-                                          space_store.messages_since(g.db, v.id, now - 86400),
+    last_minute = space_store.messages_since(g.db, v.id, now - 60)
+    today = space_store.messages_since(g.db, v.id, now - 86400)
+    refusal = space_rules.message_refusal(space.status, inside, bool(v.is_suspended), last_minute, today,
                                           kind=space.kind, kept_out=kept_out)
     if refusal:
-        return _error(refusal, 429 if "fast" in refusal or "a day" in refusal else 409)
+        # too many messages is a 429: told apart by asking the rule with only the counts, not by the words (they are
+        # in the reader's language)
+        too_many = refusal == space_rules.message_refusal(space_rules.LIVE, True, False, last_minute, today)
+        return _error(refusal, 429 if too_many else 409)
     quote_id = None
     raw_quote = str(request.values.get("quote", "") or "").strip()
     if raw_quote:
         if not (raw_quote.isascii() and raw_quote.isdigit() and space_store.quotable(g.db, space.id, int(raw_quote))):
-            return _error("That message can't be quoted.", 409)
+            return _error(tr("That message can't be quoted."), 409)
         quote_id = int(raw_quote)
     slow = int(space.slow_seconds or 0)
     if slow and r is not None and not space_rules.may_moderate(role, v.admin_level >= 3):
         key = f"space:slow:{space.id}:{v.id}"
         if not r.set(key, 1, nx=True, ex=slow):
             wait = max(1, int(r.ttl(key) or slow))
-            return _error(f"Slow mode is on: you can write again in {wait} s.", 429)
+            # Translators: "s" is seconds
+            return _error(trn("Slow mode is on: you can write again in %(num)s s.",
+                              "Slow mode is on: you can write again in %(num)s s.", wait), 429)
     from ruqqus.helpers.word_filter_store import get_filter
     mid = space_store.add_message(g.db, space.id, v.id, body, get_filter(g.db).severity(body), quote_id, now)
     g.db.commit()
@@ -905,7 +918,7 @@ def space_message_remove(mid, v):
     """The host, a co-host or a site admin takes a message down."""
     row, space = _message_or_404(mid, v)
     if not space_rules.may_moderate(_my_role(space, v), v.admin_level >= 3):
-        return _error("Only the host and co-hosts can remove messages.", 403)
+        return _error(tr("Only the host and co-hosts can remove messages."), 403)
     space_store.remove_message(g.db, mid, v.id, int(time.time()))
     g.db.commit()
     live_bus.publish(r, space.topic, "space.message_gone", {"id": mid})
@@ -918,9 +931,9 @@ def space_message_remove(mid, v):
 def space_message_report(mid, v):
     row, space = _message_or_404(mid, v)
     if row[2] == v.id:
-        return _error("You can't report your own message.", 409)
+        return _error(tr("You can't report your own message."), 409)
     if not space_store.report_message(g.db, mid, v.id, space_rules.clean_reason(request.values.get("reason")), int(time.time())):
-        return _error("You've already reported this message.", 409)
+        return _error(tr("You've already reported this message."), 409)
     g.db.commit()
     return jsonify({"ok": True})
 
@@ -931,7 +944,7 @@ def space_message_report(mid, v):
 def space_slow(sid, v):
     space = load_space(sid, v)
     if not space_rules.may_moderate(_my_role(space, v), v.admin_level >= 3):
-        return _error("Only the host and co-hosts can set slow mode.", 403)
+        return _error(tr("Only the host and co-hosts can set slow mode."), 403)
     try:
         seconds = space_rules.clean_slow(request.values.get("seconds"))
     except space_rules.Refused as e:
@@ -959,16 +972,17 @@ def space_update_add(sid, v):
     from ruqqus.routes import live_threads as live_routes
     space = load_space(sid, v)
     if not _runs_updates(space, v):
-        return _error("Only the host and co-hosts can post updates.", 403)
+        return _error(tr("Only the host and co-hosts can post updates."), 403)
     if space.status != space_rules.LIVE:
-        return _error("Updates can be posted while the Space is live.", 409)
+        return _error(tr("Updates can be posted while the Space is live."), 409)
     try:
         body = live_rules.clean_update(request.values.get("body"))
     except live_rules.Refused as e:
         return _error(str(e))
     now = int(time.time())
     if live_store.updates_since(g.db, space.post_id, now - 86400) >= live_rules.UPDATES_PER_DAY:
-        return _error(f"A Space can have at most {live_rules.UPDATES_PER_DAY} updates a day.", 429)
+        return _error(trn("A Space can have at most %(num)s update a day.", "A Space can have at most %(num)s updates a day.",
+                          live_rules.UPDATES_PER_DAY), 429)
     if live_store.thread(g.db, space.post_id) is None:
         live_store.start(g.db, space.post_id, space.host_id, space.started_utc or now,
                          (space.started_utc or now) + space_rules.MAX_SECONDS)
@@ -999,9 +1013,9 @@ def space_summary(sid, v):
     from ruqqus.routes import live_threads as live_routes
     space = load_space(sid, v)
     if not _runs_updates(space, v):
-        return _error("Only the host and co-hosts can edit the summary.", 403)
+        return _error(tr("Only the host and co-hosts can edit the summary."), 403)
     if space.status != space_rules.LIVE:
-        return _error("The summary can be changed while the Space is live.", 409)
+        return _error(tr("The summary can be changed while the Space is live."), 409)
     try:
         body = live_rules.clean_summary(request.values.get("summary"))
     except live_rules.Refused as e:
@@ -1019,7 +1033,10 @@ def space_summary(sid, v):
 
 # --- the Spaces area: its own place, beside Chat (the owner's choice: a Space is not made from Create a post) --------
 
-SPACE_TABS = (("live", "Live now"), ("upcoming", "Upcoming"), ("recordings", "Recordings"), ("mine", "Mine"))
+# the labels are drawn with msg() (spaces_home.html)
+SPACE_TABS = (("live", N_("Live now")), ("upcoming", N_("Upcoming")), ("recordings", N_("Recordings")),
+              # Translators: a tab of the Spaces area listing the Spaces the reader hosts ("mine" as in "belonging to me")
+              ("mine", N_("Mine")))
 
 
 def _visible_space_posts(rows, v):
@@ -1081,9 +1098,11 @@ def space_create(v):
     for name in _CREATE_LISTS:
         data[name] = request.form.getlist(name)
     data.update(space="true", post_to_profile="1")
-    status, answer = _post_as(v, "/api/vue/submit", data, environ={space_rules.ENVIRON_KEY: True})
+    # answered in this reader's language: its error is shown to them as it is
+    status, answer = _post_as(v, "/api/vue/submit", data,
+                              environ={space_rules.ENVIRON_KEY: True, UI_LOCALE_KEY: current_locale()})
     if status >= 300 or not answer.get("id"):
-        return _error(answer.get("error") or "The Space could not be made.", status if status >= 400 else 400)
+        return _error(answer.get("error") or tr("The Space could not be made."), status if status >= 400 else 400)
     post = get_post(answer["id"], v=v)
     space = _space_for_row(post, v)
     starts_now = space.scheduled_utc <= int(time.time()) + 60
@@ -1131,8 +1150,8 @@ app.jinja_env.globals.update(space_of=space_view.space_of, space_schedule_days=s
 @app.template_filter("space_time")
 def space_time(ts):
     """A scheduled start for readers without script ("Sat 18 Oct, 18:30 UTC"); space_card.js shows local time."""
-    import datetime
-    return datetime.datetime.fromtimestamp(int(ts or 0), datetime.timezone.utc).strftime("%a %d %b, %H:%M UTC")
+    # Translators: a date and time in UTC, such as "Sat 18 Oct, 18:30 UTC"
+    return tr("%(when)s UTC", when=datetime_text(int(ts or 0), "%a %d %b, %H:%M", "EEE d MMM, HH:mm"))
 
 
 @app.template_filter("space_iso")

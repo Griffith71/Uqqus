@@ -34,7 +34,7 @@ def test_the_segments_are_links_so_they_work_without_script():
     for segment in ("accounts", "guilds"):
         assert f'href="/settings/blocks?show={segment}"' in PAGE
         assert f"{{% if show == '{segment}' %}} aria-current=\"page\"{{% endif %}}" in PAGE
-    assert '<nav class="btn-group btn-group-sm block-mute-segments mb-4" aria-label="Block and mute">' in PAGE
+    assert '<nav class="btn-group btn-group-sm block-mute-segments mb-4" aria-label="{{ _(\'Block and mute\') }}">' in PAGE
 
 
 def test_accounts_has_blocked_and_muted_and_guilds_has_muted():
@@ -65,8 +65,8 @@ def test_the_form_key_is_never_put_in_an_address():
 def test_the_nav_has_one_entry_for_block_and_mute_and_no_muted_guilds():
     assert "Muted Guilds" not in NAV and "/settings/filters" not in NAV
     assert NAV.count('href="/settings/blocks"') == 2                                     # desktop and phone
-    assert ">Block &amp; Mute</a>" in NAV
-    assert 'href="/settings/blocks" title="Block and mute" aria-label="Block and mute"' in NAV
+    assert '>{{ _("Block &amp; Mute") }}</a>' in NAV
+    assert 'href="/settings/blocks" title="{{ _(\'Block and mute\') }}" aria-label="{{ _(\'Block and mute\') }}"' in NAV
 
 
 def test_every_phone_settings_icon_has_a_name():

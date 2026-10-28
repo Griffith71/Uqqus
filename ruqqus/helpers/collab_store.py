@@ -14,6 +14,7 @@ from sqlalchemy import text
 from ruqqus.helpers import collab_authorship as authorship
 from ruqqus.helpers import collab_ot as ot
 from ruqqus.helpers import collab_rules as rules
+from ruqqus.helpers.i18n_runtime import number_text, trn
 
 _DOC = ("id, creator_id, title, body, revision, authorship, rules, post_id, published_revision, forked_from_doc_id, "
         "forked_from_post_id, forked_at_publish_id, created_utc, updated_utc, deleted_utc, options")
@@ -227,7 +228,12 @@ def commit_op(db, doc_id, user_id, field, base, op, now, client_key=""):
     if ot.is_noop(op):
         return None
     if ot.units(new_text) > LIMITS[field]:
-        raise rules.Refused(f"The {field} can be at most {LIMITS[field]:,} characters.")
+        limit = LIMITS[field]
+        if field == "title":
+            raise rules.Refused(trn("The title can be at most %(num)s character.", "The title can be at most %(num)s characters.",
+                                    limit, num=number_text(limit)))
+        raise rules.Refused(trn("The body can be at most %(num)s character.", "The body can be at most %(num)s characters.",
+                                limit, num=number_text(limit)))
     runs = runs_of(row)
     runs[field] = authorship.apply(runs[field], op, user_id)
     revision += 1

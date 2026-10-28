@@ -5,6 +5,7 @@ from sqlalchemy import *
 from sqlalchemy.orm import relationship, deferred
 from flask import abort
 from .mix_ins import *
+from ruqqus.helpers.i18n_runtime import tr
 
 from ruqqus.__main__ import Base, app
 
@@ -294,25 +295,29 @@ class PromoCode(Base):
 		now=int(time.time())
 
 		if self.promo_start_utc and now < self.promo_start_utc:
-			return f"This promotion hasn't started yet. Try again later."
+			return tr("This promotion hasn't started yet. Try again later.")
 
 		elif self.promo_end_utc and now > self.promo_end_utc:
-			return f"This promotion has already ended. Sorry about that."
+			return tr("This promotion has already ended. Sorry about that.")
 
 		elif self.percent_off:
-			text= f"Save {self.percent_off}% on all purchases with code {self.code}."
+			text= tr("Save %(percent)s%% on all purchases with code %(code)s.", percent=self.percent_off, code=self.code)
 
 		elif self.flat_cents_off and self.flat_cents_min:
-			text= f"Save {self.display_flat_off} on any purchase over {self.display_flat_min} with code {self.code}."
+			# Translators: %(amount)s and %(minimum)s are prices in dollars ("$5.00")
+			text= tr("Save %(amount)s on any purchase over %(minimum)s with code %(code)s.",
+					 amount=self.display_flat_off, minimum=self.display_flat_min, code=self.code)
 
 		elif self.flat_cents_off:
-			text= f"Save {self.display_flat_off} on any purchase with code {self.code}."
+			# Translators: %(amount)s is a price in dollars ("$5.00")
+			text= tr("Save %(amount)s on any purchase with code %(code)s.", amount=self.display_flat_off, code=self.code)
 
 		else:
-			text= f"Code {self.code} is valid."
+			text= tr("Code %(code)s is valid.", code=self.code)
 
 		if self.promo_info:
-			text += f" Your purchase will also support {self.promo_info}."
+			# Translators: %(offer)s is the sentence about the promotion code; %(cause)s is who the purchase supports
+			text = tr("%(offer)s Your purchase will also support %(cause)s.", offer=text, cause=self.promo_info)
 
 		return text
 	

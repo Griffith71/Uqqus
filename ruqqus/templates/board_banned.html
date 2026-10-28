@@ -9,7 +9,7 @@
 
 {% block title %}
 <title>+{{ b.name }} - {{ 'SITE_NAME' | app_config }}</title>
-<meta name="description" content="This guild is banned.">
+<meta name="description" content="{{ _('This guild is banned.') }}">
 {% endblock %}
 
 
@@ -22,9 +22,9 @@
     <i class="far text-danger fa-ban fa-stack-2x"></i>
 </span>
 
-			<h1 class="h5">+{{ b.name }} is banned.</h1>
-			{% if b.ban_reason %}<p class="text-muted mb-5">Reason: {{ b.ban_reason }}</p>{% endif %}
-			<div><a href="/" class="btn btn-primary">Go to frontpage</a></div>
+			<h1 class="h5">{{ _("+%(guild)s is banned.", guild=b.name) }}</h1>
+			{% if b.ban_reason %}<p class="text-muted mb-5">{{ _("Reason: %(reason)s", reason=msg_text(b.ban_reason)) }}</p>{% endif %}
+			<div><a href="/" class="btn btn-primary">{{ _("Go to frontpage") }}</a></div>
 		</div>
 	</div>
 </div>

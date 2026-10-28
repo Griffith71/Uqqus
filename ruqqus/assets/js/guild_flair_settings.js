@@ -13,7 +13,7 @@
     return fetch(url, { method: 'POST', credentials: 'same-origin', body: body, headers: { Accept: 'application/json' } })
       .then(function (r) {
         if (r.status === 204) return {};
-        return r.json().catch(function () { return {}; }).then(function (d) { if (!r.ok) throw new Error(d.error || 'That didn’t work.'); return d; });
+        return r.json().catch(function () { return {}; }).then(function (d) { if (!r.ok) throw new Error(d.error || tr('That didn’t work.')); return d; });
       });
   }
   function fail(e) { errorBox.textContent = e.message; errorBox.hidden = false; }
@@ -30,7 +30,7 @@
     } else if (b.dataset.flairMove) {
       send(base + '/' + b.dataset.flairMove + '/move', { step: b.dataset.step }).then(reload).catch(fail);
     } else if (b.dataset.flairDelete) {
-      if (!window.confirm('Delete the flair ' + b.dataset.name + '? Posts that have it lose it; no post is deleted.')) return;
+      if (!window.confirm(tr('Delete the flair %(name)s? Posts that have it lose it; no post is deleted.', {name: b.dataset.name}))) return;
       send(base + '/' + b.dataset.flairDelete + '/delete').then(reload).catch(fail);
     }
   });

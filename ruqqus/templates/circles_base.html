@@ -4,7 +4,7 @@
   menu, so they are a page of the site (the left sidebar, no settings tabs). The pages put their own markup in `content`.
 #}
 {% block title %}
-<title>{% block pagetitle %}Your circles - {{ 'SITE_NAME' | app_config }}{% endblock %}</title>
+<title>{% block pagetitle %}{{ _("Your circles - %(site)s") }}{% endblock %}</title>
 <meta name="robots" content="noindex">
 {% endblock %}
 
@@ -17,3 +17,6 @@
 {% endblock %}
 
 {% block sidebar %}{% endblock %}
+{# wide (#circles in both sheets); a page that is a list or a form is centred at the feed's width, the index
+   overrides circles_focus to lay its sections out as a grid (_screens.scss) #}
+{% block main_row_class %} wide-main{% block circles_focus %} is-focused{% endblock %}{% endblock %}

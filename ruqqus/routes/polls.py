@@ -13,6 +13,7 @@ from ruqqus.helpers import poll_store
 from ruqqus.helpers import polls as rules
 from ruqqus.helpers.coauthors import primary_post_id
 from ruqqus.helpers.get import get_post
+from ruqqus.helpers.i18n_runtime import tr
 from ruqqus.helpers.visibility import post_hidden
 from ruqqus.helpers.wrappers import is_not_banned, not_quarantined, validate_formkey
 from ruqqus.__main__ import app
@@ -73,7 +74,7 @@ def poll_vote(pid, v):
     # an anonymous post, whose author a refusal would name. One message, never who blocked whom (bug hunt)
     if primary is not None and not primary.is_anonymous and primary.author_id != v.id \
             and v.any_block_exists(primary.author):
-        return jsonify({"error": "You can't vote in this poll."}), 403
+        return jsonify({"error": tr("You can't vote in this poll.")}), 403
 
     raw = (request.values.get("option") or "").strip()
     option = None
@@ -83,6 +84,8 @@ def poll_vote(pid, v):
     now = int(time.time())
     voted = g.db.query(PollVote).filter_by(poll_id=poll.id, user_id=v.id).first() is not None
     refusal = rules.vote_refusal(gone, rules.is_closed(poll.closes_utc, now), voted, option is not None)
+    # "Pick one of the options." is a 400: told by what was refused, never by the message's text (it is translated)
+    no_option = refusal is not None and option is None and not (gone or voted or rules.is_closed(poll.closes_utc, now))
 
     if not refusal:
         g.db.add(PollVote(poll_id=poll.id, option_id=option.id, user_id=v.id, created_utc=now))
@@ -90,13 +93,13 @@ def poll_vote(pid, v):
             g.db.flush()
         except IntegrityError:
             g.db.rollback()
-            refusal = "You already voted in this poll."
+            refusal = tr("You already voted in this poll.")
 
     if request.values.get("back"):
         return _back(post)
     if refusal:
-        return jsonify({"error": refusal}), 410 if gone else 409 if refusal != "Pick one of the options." else 400
+        return jsonify({"error": refusal}), 410 if gone else 400 if no_option else 409
 
     post.poll_data = poll_store.load_one(g.db, post, v)
-    return jsonify({"message": "Vote counted.",
+    return jsonify({"message": tr("Vote counted."),
                     "html": render_template("partials/poll_fragment.html", p=post, v=v)})

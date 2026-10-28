@@ -2,6 +2,7 @@ import json
 
 from sqlalchemy import *
 
+from ruqqus.helpers.i18n_runtime import msg
 from ruqqus.__main__ import Base
 
 
@@ -80,5 +81,5 @@ class PostDraft(Base):
             "status": self.status,
             "publish_utc": self.publish_utc,
             "updated_utc": self.updated_utc,
-            "error": self.error,
+            "error": msg(self.error),           # stored in English (N_), shown in the reader's language
         }

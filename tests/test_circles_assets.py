@@ -124,7 +124,7 @@ def test_a_payment_flushes_first_refreshes_after_and_only_notifies_on_a_new_subs
     body = route("circle_subscribe")
     assert body.index("g.db.flush()") < body.index("circle_store.subscribe(")
     assert body.index("g.db.commit()") < body.index("g.db.refresh(v)")
-    assert 'if outcome == "subscribed":' in body and body.count("send_notification(") == 1
+    assert 'if outcome == "subscribed":' in body and body.count("notify(") == 1
     assert "g.db.rollback()" in body.split('if outcome == "refused":')[1].split("g.db.commit()")[0]
     assert "circles.plain_name(row.name)" in body                           # a member-written name in markdown
 

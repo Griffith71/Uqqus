@@ -2,6 +2,7 @@
 a member. It catches a crash in a template or a query that only Postgres rejects, on pages the SQLite tests never draw.
 Nothing is stubbed: the app, the models, the templates, Redis and the database are the real ones; only Matrix and the
 object store are never called by a page that is merely read."""
+import re
 import secrets
 import time
 
@@ -63,6 +64,7 @@ def site(real_app):
         pass
     s = Site()
     s.app, s.post_id, s.comment_id, s.removed_id, s.as_member = app, post_id, comment_id, removed_id, as_member
+    s.db_session = db_session
     s.visitor = app.test_client
     return s
 
@@ -94,7 +96,7 @@ def test_a_visitor_can_open(site, path):
 
 @pytest.mark.parametrize("path", PUBLIC_PAGES + ["/settings/profile", "/settings/security", "/settings/content",
                                                   "/settings/blocks", "/circles", "/studio", "/submit",
-                                                  "/notifications", "/history"])
+                                                  "/notifications", "/history", "/@ci_member/channels"])
 def test_a_member_can_open(site, path):
     response = get(site.as_member(), path)
     assert response.status_code < 500, (path, response.status_code)

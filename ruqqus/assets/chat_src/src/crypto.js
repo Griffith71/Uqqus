@@ -48,19 +48,19 @@ async function authUploadDeviceSigningKeys(makeRequest) {
 
 class StartOver extends Error {}
 
-const START_OVER = "I don't have it: start over";
+const START_OVER = window.tr("I don't have it: start over");
 
 async function askPassword(formkey, info) {
   // answers {recoveryKey, prekey}; throws StartOver; null when the password doesn't open the copy (changed since)
   let found = null;
   const answer = await dialog({
-    title: "Unlock your messages",
-    text: ["Enter your password to read your messages on this device. It stays in this browser: the site can't read your chats."],
-    field: "password", fieldLabel: "Password", confirm: "Unlock",
-    secondary: info.recovery_blob ? "Use my recovery code instead" : START_OVER,
+    title: window.tr("Unlock your messages"),
+    text: [window.tr("Enter your password to read your messages on this device. It stays in this browser: the site can't read your chats.")],
+    field: "password", fieldLabel: window.tr("Password"), confirm: window.tr("Unlock"),
+    secondary: info.recovery_blob ? window.tr("Use my recovery code instead") : START_OVER,
     check: async (password) => {
-      if (!password) return "Enter your password.";
-      if (!(await passwordIsRight(formkey, password))) return "That isn't your password.";
+      if (!password) return window.tr("Enter your password.");
+      if (!(await passwordIsRight(formkey, password))) return window.tr("That isn't your password.");
       const prekey = await prekeyFromPassword(password);
       try {
         found = { recoveryKey: await unlock(await passwordKey(prekey, info.salt), info.password_blob), prekey };
@@ -80,15 +80,15 @@ async function askPassword(formkey, info) {
 async function askCode(info) {
   let recoveryKey = null;
   const answer = await dialog({
-    title: "Enter your recovery code",
-    text: ["Your password changed since this chat key was locked with it. The recovery code you saved when chat was set up opens it."],
-    field: "text", fieldLabel: "Recovery code", confirm: "Unlock", secondary: START_OVER,
+    title: window.tr("Enter your recovery code"),
+    text: [window.tr("Your password changed since this chat key was locked with it. The recovery code you saved when chat was set up opens it.")],
+    field: "text", fieldLabel: window.tr("Recovery code"), confirm: window.tr("Unlock"), secondary: START_OVER,
     check: async (code) => {
       try {
         recoveryKey = await unlock(await codeKey(code, info.salt), info.recovery_blob);
         return null;
       } catch (e) {
-        return "That code doesn't open it. Check for typos.";
+        return window.tr("That code doesn't open it. Check for typos.");
       }
     },
   });
@@ -103,12 +103,12 @@ async function getPrekey(formkey, known) {
   if (stored) return stored;
   let prekey = null;
   await dialog({
-    title: "Protect your messages",
-    text: ["Enter your password once. It locks the key to your messages in this browser, so the site can never read them."],
-    field: "password", fieldLabel: "Password", confirm: "Continue",
+    title: window.tr("Protect your messages"),
+    text: [window.tr("Enter your password once. It locks the key to your messages in this browser, so the site can never read them.")],
+    field: "password", fieldLabel: window.tr("Password"), confirm: window.tr("Continue"),
     check: async (password) => {
-      if (!password) return "Enter your password.";
-      if (!(await passwordIsRight(formkey, password))) return "That isn't your password.";
+      if (!password) return window.tr("Enter your password.");
+      if (!(await passwordIsRight(formkey, password))) return window.tr("That isn't your password.");
       prekey = await prekeyFromPassword(password);
       return null;
     },
@@ -120,10 +120,10 @@ async function showNewCode(formkey, info, recoveryKey) {
   const code = newRecoveryCode();
   await saveBlobs(formkey, { recovery_blob: await lock(await codeKey(code, info.salt), recoveryKey) });
   await dialog({
-    title: "Save your recovery code",
-    text: ["If you ever forget your password, this code is the only way to read your old messages. Keep it somewhere safe, like a password manager.",
-           "It won't be shown again."],
-    code, confirm: "I've saved it",
+    title: window.tr("Save your recovery code"),
+    text: [window.tr("If you ever forget your password, this code is the only way to read your old messages. Keep it somewhere safe, like a password manager."),
+           window.tr("It won't be shown again.")],
+    code, confirm: window.tr("I've saved it"),
   });
 }
 
@@ -160,9 +160,9 @@ async function freshKeys(client) {
 async function startOver(client) {
   const crypto = client.getCrypto();
   const ok = await dialog({
-    title: "Start over?",
-    text: ["Your chats will work again on this device, but messages from before can't be read here (or anywhere without your old key)."],
-    confirm: "Start over", secondary: "Cancel",
+    title: window.tr("Start over?"),
+    text: [window.tr("Your chats will work again on this device, but messages from before can't be read here (or anywhere without your old key).")],
+    confirm: window.tr("Start over"), secondary: window.tr("Cancel"),
   });
   if (ok.secondary) return null;
   await crypto.resetEncryption(authUploadDeviceSigningKeys);

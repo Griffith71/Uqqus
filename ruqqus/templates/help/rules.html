@@ -12,6 +12,8 @@
 
 {% block content %}
 
+{% if ui_locale() != "en" %}<p class="legal-english-note text-muted text-small">{{ _("This page is in English: the English text is the binding version.") }}</p>{% endif %}
+<div lang="en" dir="ltr">
 {% filter markdown %}
 
 # {{ 'SITE_NAME' | app_config }} Rules and Guidelines
@@ -70,4 +72,5 @@ A bot is an account that posts by itself. Every bot follows all of the rules abo
 How to set up a bot, and the limits that apply to it, are on the [Bots](/help/bots) page.
 
 {% endfilter %}
+</div>
 {% endblock %}

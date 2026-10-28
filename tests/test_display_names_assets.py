@@ -61,14 +61,20 @@ def test_the_word_filter_rates_it_with_the_username():
 
 def test_an_anonymous_byline_never_has_one():
     stand_in = read("ruqqus", "helpers", "anonymity.py").split("class AnonymousAuthor:")[1].split("ANONYMOUS = ")[0]
-    assert 'display_name = ""' in stand_in and "shown_name = LABEL" in stand_in
+    # the name drawn is "Anonymous" in the reader's language (a lazy string), never a display name
+    assert 'display_name = ""' in stand_in and "shown_name = LazyProxy(shown, enable_cache=False)" in stand_in
+    from ruqqus.helpers import anonymity
+    assert anonymity.ANONYMOUS.display_name == "" and str(anonymity.ANONYMOUS.shown_name) == "Anonymous"
 
 
 def test_every_byline_draws_the_display_name_then_the_handle():
     pattern = re.compile(r'<span class="user-name-inner">\{\{ (?P<who>[^}]*?)\.shown_name \}\}</span>\{\{ handle_tag\((?P=who)\) \}\}')
     counts = {name: len(pattern.findall((TEMPLATES / name).read_text(encoding="utf-8")))
               for name in ("submission_listing.html", "submission.html", "comments.html", "partials/coauthors.html")}
-    assert counts == {"submission_listing.html": 6, "submission.html": 6, "comments.html": 1, "partials/coauthors.html": 1}
+    # the card's six bylines (forwarder, forwarded author, author; phone and desktop) are drawn by its two name macros,
+    # forwarder_link and post_byline, so whole sentences can be translated (docs/i18n.md)
+    assert counts == {"submission_listing.html": 2, "submission.html": 6, "comments.html": 1, "partials/coauthors.html": 1}
+    assert (TEMPLATES / "submission_listing.html").read_text(encoding="utf-8").count("{{ post_byline(p, v, ") == 2
     for path in TEMPLATES.rglob("*.html"):
         for line in path.read_text(encoding="utf-8").splitlines():
             assert not re.search(r'user-name-inner">\{\{ [^}]*\.username \}\}', line), (path.name, line[:120])
@@ -106,7 +112,7 @@ def test_bots_have_one_on_the_proposal_form_and_on_their_page():
 def test_an_admin_can_clear_one_and_the_account_is_told():
     route = func(SETTINGS, "admin_clear_display_name")
     assert "v.admin_level <= (target.admin_level or 0)" in route                   # the same bar as banning
-    assert 'target.display_name = ""' in route and "apply_user_severity(target)" in route and "send_notification(target" in route
+    assert 'target.display_name = ""' in route and "apply_user_severity(target)" in route and "notify(target" in route
     head = SETTINGS.split("def admin_clear_display_name(")[0].rsplit("\n\n\n", 1)[1]
     assert "@admin_level_required(3)" in head and "@validate_formkey" in head
     page = read("ruqqus", "templates", "userpage.html")

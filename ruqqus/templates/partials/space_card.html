@@ -13,35 +13,38 @@
   <div class="space-card-icon" aria-hidden="true"><i class="fas {{ s.icon or 'fa-podcast' }}"></i></div>
   <div class="space-card-text">
     <div class="space-card-state">
-      {% if s.status == 'live' %}<span class="space-live-dot" aria-hidden="true"></span>Live · {{ s.kind_label }}
+      {# Translators: a Space's card: kind is what kind of Space it is (Message board, Live thread, Call) #}
+      {% if s.status == 'live' %}<span class="space-live-dot" aria-hidden="true"></span>{{ _("Live · %(kind)s", kind=s.kind_label) }}
       {% elif s.status == 'scheduled' %}{{ s.kind_label }} · {{ s.label }}
-      {% else %}{{ s.kind_label }} · Ended{% endif %}
-      {% if s.record %}<span class="space-card-rec" title="This Space is recorded">· Recorded</span>{% endif %}
+      {# Translators: a Space's card: kind is what kind of Space it is (Message board, Live thread, Call) #}
+      {% else %}{{ _("%(kind)s · Ended", kind=s.kind_label) }}{% endif %}
+      {% if s.record %}<span class="space-card-rec" title="{{ _('This Space is recorded') }}">· {{ pgettext("space", "Recorded") }}</span>{% endif %}
     </div>
     <div class="space-card-meta">
-      {% if s.status == 'live' and s.kind == 'call' %}{{ s.people }} {{ 'person' if s.people == 1 else 'people' }} in it now
-      {% elif s.status == 'live' and s.ends_utc %}Open until <time datetime="{{ s.ends_utc | space_iso }}" data-space-time="{{ s.ends_utc }}">{{ s.ends_utc | space_time }}</time>
+      {% if s.status == 'live' and s.kind == 'call' %}{{ ngettext("%(num)s person in it now", "%(num)s people in it now", s.people) }}
+      {% elif s.status == 'live' and s.ends_utc %}{% set until %}<time datetime="{{ s.ends_utc | space_iso }}" data-space-time="{{ s.ends_utc }}">{{ s.ends_utc | space_time }}</time>{% endset %}{{ _("Open until %(time)s", time=until) }}
       {% elif s.status == 'scheduled' %}<time datetime="{{ s.scheduled_utc | space_iso }}" data-space-time="{{ s.scheduled_utc }}">{{ s.scheduled_utc | space_time }}</time>
-      {% elif s.kind == 'call' and s.peak %}{{ s.peak }} listened at most
-      {% elif s.kind == 'call' %}Nobody listened live
-      {% else %}Still here to read{% endif %}
+      {# Translators: an ended call Space: num is the most people who were listening at once #}
+      {% elif s.kind == 'call' and s.peak %}{{ ngettext("%(num)s listened at most", "%(num)s listened at most", s.peak) }}
+      {% elif s.kind == 'call' %}{{ _("Nobody listened live") }}
+      {% else %}{{ _("Still here to read") }}{% endif %}
     </div>
   </div>
   <div class="space-card-action">
     {% if not v and s.kind != 'live' %}
-    <a class="btn btn-outline-primary btn-sm" href="/login?redirect={{ p.permalink | urlencode }}">Sign in to {{ 'listen' if s.kind == 'call' else 'read' }}</a>
+    <a class="btn btn-outline-primary btn-sm" href="/login?redirect={{ p.permalink | urlencode }}">{{ _("Sign in to listen") if s.kind == 'call' else _("Sign in to read") }}</a>
     {% elif s.status == 'live' and s.kind == 'call' %}
-    <a class="btn btn-primary btn-sm" href="{{ p.permalink }}" target="_blank" rel="noopener"><i class="fas fa-headphones mr-1" aria-hidden="true"></i>Join</a>
+    <a class="btn btn-primary btn-sm" href="{{ p.permalink }}" target="_blank" rel="noopener"><i class="fas fa-headphones mr-1" aria-hidden="true"></i>{{ pgettext("button", "Join") }}</a>
     {% elif s.status == 'live' and request.path != p.permalink %}
-    <a class="btn btn-primary btn-sm" href="{{ p.permalink }}">Open</a>
+    <a class="btn btn-primary btn-sm" href="{{ p.permalink }}">{{ pgettext("button", "Open") }}</a>
     {% elif s.status == 'scheduled' and s.is_host and s.kind == 'live' and request.path == p.permalink %}
-    <button type="button" class="btn btn-primary btn-sm" data-space-start="{{ s.id }}">Start now</button>
+    <button type="button" class="btn btn-primary btn-sm" data-space-start="{{ s.id }}">{{ _("Start now") }}</button>
     {% elif s.status == 'scheduled' and s.is_host %}
-    <a class="btn btn-primary btn-sm" href="{{ p.permalink }}"{% if s.kind == 'call' %} target="_blank" rel="noopener"{% endif %}>Open to start</a>
+    <a class="btn btn-primary btn-sm" href="{{ p.permalink }}"{% if s.kind == 'call' %} target="_blank" rel="noopener"{% endif %}>{{ _("Open to start") }}</a>
     {% elif s.status == 'scheduled' %}
-    <button type="button" class="btn btn-sm {{ 'btn-secondary' if s.reminded else 'btn-outline-primary' }}" data-space-remind="{{ s.id }}" aria-pressed="{{ 'true' if s.reminded else 'false' }}">{{ 'Reminder set' if s.reminded else 'Remind me' }}</button>
+    <button type="button" class="btn btn-sm {{ 'btn-secondary' if s.reminded else 'btn-outline-primary' }}" data-space-remind="{{ s.id }}" aria-pressed="{{ 'true' if s.reminded else 'false' }}">{{ _("Reminder set") if s.reminded else _("Remind me") }}</button>
     {% elif s.record and request.path != p.permalink %}
-    <a class="btn btn-outline-primary btn-sm" href="{{ p.permalink }}">{{ 'Play' if s.kind == 'call' else 'Read' }}</a>
+    <a class="btn btn-outline-primary btn-sm" href="{{ p.permalink }}">{{ pgettext("button", "Play") if s.kind == 'call' else pgettext("button", "Read") }}</a>
     {% endif %}
   </div>
 </div>

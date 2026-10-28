@@ -35,6 +35,9 @@ comments depends on the kind:
   A recorded board or live thread stays to read; **a recorded call keeps a replay**: the sound, or the video too when
   cameras were allowed (`video_replay`), saved to the host's own storage, as every upload on this site is.
 """
+from babel.support import LazyProxy
+
+from ruqqus.helpers.i18n_runtime import N_, tr, tr_lazy, trn, trp
 
 HOST, COHOST, SPEAKER, LISTENER = "host", "cohost", "speaker", "listener"
 STAGE_ROLES = (HOST, COHOST, SPEAKER)
@@ -42,15 +45,19 @@ SCHEDULED, LIVE, ENDED = "scheduled", "live", "ended"
 
 BOARD, LIVE_THREAD, CALL = "board", "live", "call"
 KINDS = (BOARD, LIVE_THREAD, CALL)
-KIND_LABELS = {BOARD: "Message board", LIVE_THREAD: "Live thread", CALL: "Call"}
+# marked with N_ and drawn with msg() / msg_text() (space_new.html, space_view.py); "Call" alone is ambiguous (a noun
+# here, never the verb), so it is a lazy string with its context, which msg() and msg_text() draw as it is
+KIND_LABELS = {BOARD: N_("Message board"), LIVE_THREAD: N_("Live thread"),
+               CALL: LazyProxy(lambda: trp("Space kind", "Call"), enable_cache=False)}
 KIND_HINTS = {
-    BOARD: "A public board for a set time: anyone who can see it writes on it.",
-    LIVE_THREAD: "You post timestamped updates as things happen; everyone comments under them.",
-    CALL: "A live audio stage (video too, if you allow it), with a live chat beside it.",
+    BOARD: N_("A public board for a set time: anyone who can see it writes on it."),
+    LIVE_THREAD: N_("You post timestamped updates as things happen; everyone comments under them."),
+    CALL: N_("A live audio stage (video too, if you allow it), with a live chat beside it."),
 }
 KIND_ICONS = {BOARD: "fa-comments", LIVE_THREAD: "fa-tower-broadcast", CALL: "fa-microphone-lines"}
 # how long a board or a live thread runs (the poll lengths: helpers/polls.py); a call runs at most MAX_SECONDS
-LENGTHS = ((1, "1 hour"), (6, "6 hours"), (24, "1 day"), (72, "3 days"), (168, "7 days"))
+# (labels marked with N_, drawn with msg_text() in space_new.html)
+LENGTHS = ((1, N_("1 hour")), (6, N_("6 hours")), (24, N_("1 day")), (72, N_("3 days")), (168, N_("7 days")))
 DEFAULT_HOURS = 24
 
 MAX_STAGE = 5
@@ -70,21 +77,27 @@ BOARD_PER_MINUTE = 6              # one person's burst limit
 BOARD_PER_DAY = 300               # one person's messages in Spaces in a day
 SLOW_CHOICES = (0, 10, 30, 60, 300)
 
-UNAVAILABLE = "This Space isn't available."
-NOT_HERE = "Spaces are started in the Spaces area."
+# shown only (translated each time they are used); compared only with each other in one request
+UNAVAILABLE = tr_lazy("This Space isn't available.")
+NOT_HERE = tr_lazy("Spaces are started in the Spaces area.")
 # set on the environ of the in-process request the Spaces area sends to the posting route (routes/spaces.py
 # `space_create`); a browser can only send headers, which arrive as HTTP_* keys, so it can never set this one
 ENVIRON_KEY = "ruqqus.space_create"
-NOT_STARTED = "This Space hasn't started yet."
-OVER = "This Space has ended."
-FULL = f"This Space is full ({MAX_LISTENERS} listeners)."
-STAGE_FULL = f"The stage is full ({MAX_STAGE} people)."
-VIDEO_OFF = "Video is off in this Space."
-VIDEO_TOO_BIG = f"Video is off: this Space has more than {VIDEO_PEOPLE_MAX} people in it now."
-VIDEO_RELAY = "Video is off this month to keep calls free. Audio still works."
-VIDEO_FULL = f"{VIDEO_STAGE_MAX} people are already on video."
-BOARD_CLOSED = "The board is open while the Space is live."
-BOARD_JOIN = "Join the Space to write in its chat."
+NOT_STARTED = tr_lazy("This Space hasn't started yet.")
+OVER = tr_lazy("This Space has ended.")
+FULL = LazyProxy(lambda: trn("This Space is full (%(num)s listener).", "This Space is full (%(num)s listeners).",
+                             MAX_LISTENERS), enable_cache=False)
+STAGE_FULL = LazyProxy(lambda: trn("The stage is full (%(num)s person).", "The stage is full (%(num)s people).",
+                                   MAX_STAGE), enable_cache=False)
+VIDEO_OFF = tr_lazy("Video is off in this Space.")
+VIDEO_TOO_BIG = LazyProxy(lambda: trn("Video is off: this Space has more than %(num)s person in it now.",
+                                      "Video is off: this Space has more than %(num)s people in it now.",
+                                      VIDEO_PEOPLE_MAX), enable_cache=False)
+VIDEO_RELAY = tr_lazy("Video is off this month to keep calls free. Audio still works.")
+VIDEO_FULL = LazyProxy(lambda: trn("%(num)s person is already on video.", "%(num)s people are already on video.",
+                                   VIDEO_STAGE_MAX), enable_cache=False)
+BOARD_CLOSED = tr_lazy("The board is open while the Space is live.")
+BOARD_JOIN = tr_lazy("Join the Space to write in its chat.")
 
 
 class Refused(ValueError):
@@ -100,11 +113,12 @@ def parse_start(value, now):
     try:
         start = int(float(text))
     except ValueError:
-        return None, "That start time isn't a time."
+        return None, tr("That start time isn't a time.")
     if start < now - 300:
-        return None, "A Space can't start in the past."
+        return None, tr("A Space can't start in the past.")
     if start > now + SCHEDULE_DAYS * 86400:
-        return None, f"A Space can be scheduled at most {SCHEDULE_DAYS} days ahead."
+        return None, trn("A Space can be scheduled at most %(num)s day ahead.",
+                         "A Space can be scheduled at most %(num)s days ahead.", SCHEDULE_DAYS)
     return max(start, now), None
 
 
@@ -124,7 +138,7 @@ def parse_length(kind, value):
         return DEFAULT_HOURS
     if text.isascii() and text.isdigit() and int(text) in dict(LENGTHS):
         return int(text)
-    raise Refused("Pick one of the lengths.")
+    raise Refused(tr("Pick one of the lengths."))
 
 
 def ends_at(kind, start_utc, hours):
@@ -159,15 +173,16 @@ def video_replay(kind, record, video, audience):
 
 def make_refusal(anonymous, bot, circle_guild, made_today, kind=CALL):
     if kind not in KINDS:
-        return "Choose what kind of Space it is."
+        return tr("Choose what kind of Space it is.")
     if bot:
-        return "Bots can't host Spaces."
+        return tr("Bots can't host Spaces.")
     if anonymous:
-        return "A Space can't be anonymous."
+        return tr("A Space can't be anonymous.")
     if circle_guild:
-        return "A Space can't be hosted in a Circle guild."
+        return tr("A Space can't be hosted in a Circle guild.")
     if made_today >= SPACES_PER_DAY:
-        return f"You can host at most {SPACES_PER_DAY} Spaces a day."
+        return trn("You can host at most %(num)s Space a day.", "You can host at most %(num)s Spaces a day.",
+                   SPACES_PER_DAY)
     return None
 
 
@@ -203,11 +218,11 @@ def role_of(user_id, host_id, roles):
 
 def invite_refusal(actor_role, target_role, stage_count, already_invited):
     if not may_run(actor_role):
-        return "Only the host and co-hosts can invite people to speak."
+        return tr("Only the host and co-hosts can invite people to speak.")
     if on_stage(target_role):
-        return "They're already on stage."
+        return tr("They're already on stage.")
     if already_invited:
-        return "They've already been invited to speak."
+        return tr("They've already been invited to speak.")
     if stage_count >= MAX_STAGE:
         return STAGE_FULL
     return None
@@ -215,25 +230,26 @@ def invite_refusal(actor_role, target_role, stage_count, already_invited):
 
 def cohost_refusal(actor_role, target_role, cohosts):
     if actor_role != HOST:
-        return "Only the host can choose co-hosts."
+        return tr("Only the host can choose co-hosts.")
     if target_role == HOST:
-        return "That's the host."
+        return tr("That's the host.")
     if target_role == COHOST:
         return None                         # taking it back
     if target_role != SPEAKER:
-        return "Invite them to speak first."
+        return tr("Invite them to speak first.")
     if cohosts >= MAX_COHOSTS:
-        return f"A Space can have at most {MAX_COHOSTS} co-hosts."
+        return trn("A Space can have at most %(num)s co-host.", "A Space can have at most %(num)s co-hosts.",
+                   MAX_COHOSTS)
     return None
 
 
 def remove_refusal(actor_role, target_role, actor_id, target_id):
     if target_id == actor_id:
-        return "Use Leave to leave the Space."
+        return tr("Use Leave to leave the Space.")
     if not may_run(actor_role):
-        return "Only the host and co-hosts can remove people."
+        return tr("Only the host and co-hosts can remove people.")
     if target_role == HOST or (target_role == COHOST and actor_role != HOST):
-        return "Only the host can remove a co-host."
+        return tr("Only the host can remove a co-host.")
     return None
 
 
@@ -243,10 +259,10 @@ def clean_reason(text):
 
 def state_label(status, start_utc, now):
     if status == LIVE:
-        return "Live"
+        return trp("Space state", "Live")
     if status == ENDED:
-        return "Ended"
-    return "Starting soon" if start_utc <= now else "Scheduled"
+        return trp("Space state", "Ended")
+    return tr("Starting soon") if start_utc <= now else trp("Space state", "Scheduled")
 
 
 # --- video --------------------------------------------------------------------------------------------------------
@@ -268,7 +284,7 @@ def camera_refusal(space_video, people, relay_ok, on_stage_now, on_video_now):
     if general:
         return general
     if not on_stage_now:
-        return "Only people on stage can turn their camera on."
+        return tr("Only people on stage can turn their camera on.")
     if on_video_now >= VIDEO_STAGE_MAX:
         return VIDEO_FULL
     return None
@@ -283,9 +299,10 @@ def clean_message(text):
     while "\n\n\n" in body:
         body = body.replace("\n\n\n", "\n\n")
     if not body:
-        raise Refused("Write something first.")
+        raise Refused(tr("Write something first."))
     if len(body) > BOARD_MAX:
-        raise Refused(f"A message can be at most {BOARD_MAX} characters.")
+        raise Refused(trn("A message can be at most %(num)s character.", "A message can be at most %(num)s characters.",
+                          BOARD_MAX))
     return body
 
 
@@ -296,15 +313,16 @@ def message_refusal(status, inside, suspended, last_minute, today, kind=CALL, ke
     if status != LIVE:
         return BOARD_CLOSED
     if suspended:
-        return "Your account is suspended."
+        return tr("Your account is suspended.")
     if kept_out:
         return UNAVAILABLE
     if kind == CALL and not inside:
         return BOARD_JOIN
     if last_minute >= BOARD_PER_MINUTE:
-        return "You're writing very fast. Wait a moment."
+        return tr("You're writing very fast. Wait a moment.")
     if today >= BOARD_PER_DAY:
-        return f"You can write at most {BOARD_PER_DAY} messages in Spaces a day."
+        return trn("You can write at most %(num)s message in Spaces a day.",
+                   "You can write at most %(num)s messages in Spaces a day.", BOARD_PER_DAY)
     return None
 
 
@@ -313,13 +331,17 @@ def clean_slow(raw):
     value = str(raw if raw is not None else "").strip()
     if value.isascii() and value.isdigit() and int(value) in SLOW_CHOICES:
         return int(value)
-    raise Refused("Pick one of the slow mode lengths.")
+    raise Refused(tr("Pick one of the slow mode lengths."))
 
 
 def slow_label(seconds):
     if not seconds:
-        return "Off"
-    return f"{seconds} s" if seconds < 60 else f"{seconds // 60} min"
+        return trp("slow mode", "Off")
+    if seconds < 60:
+        # Translators: slow mode's wait in seconds, shortened ("10 s")
+        return trn("%(num)s s", "%(num)s s", seconds)
+    # Translators: slow mode's wait in minutes, shortened ("5 min")
+    return trn("%(num)s min", "%(num)s min", seconds // 60)
 
 
 def may_moderate(role, admin):

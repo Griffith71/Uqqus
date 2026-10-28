@@ -29,6 +29,8 @@
       </button>
     </div>
     {% endif %}
+{% if ui_locale() != "en" %}<p class="legal-english-note text-muted text-small">{{ _("This page is in English: the English text is the binding version.") }}</p>{% endif %}
+<div lang="en" dir="ltr">
 {% filter markdown %}
 # DMCA Takedown Request
 
@@ -94,5 +96,6 @@ Abuse of this form is a violation of the {{ 'SITE_NAME' | app_config }} [terms o
 <p>In order to ensure that we can respond to your request if needed, please first <a href="/signup" target="_blank">sign up</a> or <a href="/login" target="_blank">log in</a> and make sure you have <a target="_blank" href="/settings/security">verified your email address</a>. Then, refresh this page.</p>
 {% endfilter %}
 {% endif %}
+</div>
 
 {% endblock %}

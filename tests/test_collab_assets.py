@@ -79,7 +79,7 @@ def test_decisions_follow_the_rules_module():
 def test_templates_draw_text_escaped_and_scripts_never_write_html():
     blame = read("ruqqus", "templates", "collab", "written_by.html")
     assert "{{ piece }}" in blame and "piece | safe" not in blame
-    assert 'class="collab-tint-' in blame and 'title="Typed by {{ who.name }}"' in blame
+    assert 'class="collab-tint-' in blame and "title=\"{{ _('Typed by %(name)s', name=who.name) }}\"" in blame
     editor = read("ruqqus", "templates", "collab", "editor.html")
     assert '<div class="post-toolbar" data-target="collab-body"></div>' in editor
     assert "asset_url('js/collab_ot.js')" in editor and "asset_url('js/collab_editor.js')" in editor

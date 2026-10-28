@@ -1,6 +1,6 @@
 {% extends "guild/guild_settings.html" %}
 
-{% block pagetitle %}{% if action %}(+{{ b.name }}) {{ action.title_text }}{% else %}+{{ b.name }} Moderation Log{% endif %}{% endblock %}
+{% block pagetitle %}{% if action %}(+{{ b.name }}) {{ action.title_text }}{% else %}{{ _("+%(guild)s Moderation Log", guild=b.name) }}{% endif %}{% endblock %}
 
 
 {% block content %}
@@ -11,18 +11,19 @@
     <div class="d-md-flex justify-content-between mb-3">
 
       <div>
-        <h2 class="h5" name="guild_name">+{{ b.name }} Moderation Log</h2>
-        <p class="text-small text-muted mb-md-0">This is a log of moderator actions performed in +{{ b.name }}. What members deleted themselves is in the site-wide <a href="/log/deleted?guild={{ b.name | urlencode }}">deletion log</a>.</p>
+        <h2 class="h5" name="guild_name">{{ _("+%(guild)s Moderation Log", guild=b.name) }}</h2>
+        {% set deletion_log_url %}/log/deleted?guild={{ b.name | urlencode }}{% endset -%}
+        <p class="text-small text-muted mb-md-0">{{ _('This is a log of moderator actions performed in +%(guild)s. What members deleted themselves is in the site-wide <a href="%(url)s">deletion log</a>.', guild=b.name, url=deletion_log_url) }}</p>
       </div>
 
     </div>
 
     {% if show_labels %}
     <div class="d-flex flex-wrap align-items-center mb-3" id="modlog-show">
-      <span class="text-small text-muted mr-2">Show:</span>
+      <span class="text-small text-muted mr-2">{{ pgettext("filter", "Show:") }}</span>
       <div class="btn-group btn-group-sm flex-wrap" role="group">
         {% for key, label in show_labels.items() %}
-        <a href="?show={{ key }}" class="btn btn-sm {% if show == key %}btn-secondary{% else %}btn-link text-muted{% endif %}">{{ label }}</a>
+        <a href="?show={{ key }}" class="btn btn-sm {% if show == key %}btn-secondary{% else %}btn-link text-muted{% endif %}">{{ msg_text(label) }}</a>
         {% endfor %}
       </div>
     </div>
@@ -42,7 +43,7 @@
 
 
             <span class="rounded">
-             <img src="{{ ma.user.profile_url if not hide else '/uid/1/pic/profile' }}" alt="avatar" style="width: 42px;height: 42px;" class="rounded-circle">
+             <img src="{{ ma.user.profile_url if not hide else '/uid/1/pic/profile' }}" alt="{{ _('avatar') }}" style="width: 42px;height: 42px;" class="rounded-circle">
            </span>
              <div class="text-muted pl-3">
               <div>
@@ -54,7 +55,7 @@
                   <a href="{{ ma.user.permalink }}" class="font-weight-bold text-black">@{{ ma.user.username }}</a>
                   {% endif %}
                 {% else %}
-                  [deleted user]
+                  {{ _("[deleted user]") }}
                 {% endif %}
 
                <span>{{ ma.string | safe }}</span>
@@ -69,26 +70,26 @@
 
 
       {% else %}
-      <div>There's nothing here right now.</div>
+      <div>{{ _("There's nothing here right now.") }}</div>
       {% endfor %}
     </div>
 
 
-    <nav aria-label="Page navigation" class="mb-5">
+    <nav aria-label="{{ _('Page navigation') }}" class="mb-5">
       <ul class="pagination pagination-sm mb-0">
         {% if page>1 %}
         <li class="page-item">
-          <small><a class="page-link" href="?page={{ page-1 }}{% if show and show != 'all' %}&show={{ show }}{% endif %}" tabindex="-1">Prev</a></small>
+          <small><a class="page-link" href="?page={{ page-1 }}{% if show and show != 'all' %}&show={{ show }}{% endif %}" tabindex="-1">{{ _("Prev") }}</a></small>
         </li>
         {% else %}
-        <li class="page-item disabled"><span class="page-link">Prev</span></li>
+        <li class="page-item disabled"><span class="page-link">{{ _("Prev") }}</span></li>
         {% endif %}
         {% if next_exists %}
         <li class="page-item">
-          <small><a class="page-link" href="?page={{ page+1 }}{% if show and show != 'all' %}&show={{ show }}{% endif %}">Next</a></small>
+          <small><a class="page-link" href="?page={{ page+1 }}{% if show and show != 'all' %}&show={{ show }}{% endif %}" rel="next">{{ _("Next") }}</a></small>
         </li>
         {% else %}
-        <li class="page-item disabled"><span class="page-link">Next</span></li>
+        <li class="page-item disabled"><span class="page-link">{{ _("Next") }}</span></li>
         {% endif %}
       </ul>
     </nav>

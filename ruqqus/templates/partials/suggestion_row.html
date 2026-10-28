@@ -25,20 +25,20 @@
     {% else %}
     <a href="{{ item.permalink }}" class="wtf-name d-block text-truncate font-weight-bold">{{ item.name }}</a>
     {% endif %}
-    <div class="wtf-reason text-small text-muted text-truncate">{{ reason }}</div>
+    <div class="wtf-reason text-small text-muted text-truncate" title="{{ reason }}">{{ reason }}</div>
     {% if full %}
       {% if kind == "guilds" and item.description %}<div class="text-small">{{ item.description_for(v) | truncate(120, True) }}</div>{% endif %}
       {% if kind == "curations" and item.description %}<div class="text-small">{{ item.description | truncate(120, True) }}</div>{% endif %}
     {% endif %}
   </div>
   {% if login_to %}
-  <a href="/login?redirect={{ login_to | urlencode }}" class="btn btn-primary btn-sm ml-2">Follow</a>
+  <a href="/login?redirect={{ login_to | urlencode }}" class="btn btn-primary btn-sm ml-2">{% if kind == "guilds" %}{{ pgettext("button", "Join") }}{% else %}{{ pgettext("button", "Follow") }}{% endif %}</a>
   {% elif kind == "users" %}
-  <button type="button" class="btn btn-primary btn-sm wtf-action ml-2" data-url="/api/follow/{{ item.username }}" data-done="Following">Follow</button>
+  <button type="button" class="btn btn-primary btn-sm wtf-action ml-2" data-url="/api/follow/{{ item.username }}" data-done="{{ pgettext('status', 'Following') }}">{{ pgettext("button", "Follow") }}</button>
   {% elif kind == "guilds" %}
-  <button type="button" class="btn btn-primary btn-sm wtf-action ml-2" data-url="/api/subscribe/{{ item.name }}" data-done="Joined">Join</button>
+  <button type="button" class="btn btn-primary btn-sm wtf-action ml-2" data-url="/api/subscribe/{{ item.name }}" data-done="{{ pgettext('status', 'Joined') }}">{{ pgettext("button", "Join") }}</button>
   {% else %}
-  <button type="button" class="btn btn-primary btn-sm wtf-action ml-2" data-url="/api/follow_curation/{{ item.slug }}" data-done="Following">Follow</button>
+  <button type="button" class="btn btn-primary btn-sm wtf-action ml-2" data-url="/api/follow_curation/{{ item.slug }}" data-done="{{ pgettext('status', 'Following') }}">{{ pgettext("button", "Follow") }}</button>
   {% endif %}
 </div>
 {% endmacro %}

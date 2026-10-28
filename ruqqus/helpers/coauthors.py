@@ -19,6 +19,8 @@ The pure rules (`parse_names`, `refusal`) are tested without a database; the res
 import re
 import time
 
+from ruqqus.helpers.i18n_runtime import N_, tr, trn
+
 MAX_COAUTHORS = 5              # pending and accepted together
 MAX_NAMES = 20                 # names read from one field before it is refused
 FIELD_CHARS = 200
@@ -49,39 +51,43 @@ def parse_names(text):
     something that is not a username, too many, or a field that is too long."""
     text = text or ""
     if len(text) > FIELD_CHARS:
-        raise CoauthorError("That list of co-authors is too long.")
+        raise CoauthorError(tr("That list of co-authors is too long."))
     names, seen = [], set()
     for token in re.split(r"[\s,;]+", text.strip()):
         name = token.lstrip("@")
         if not name:
             continue
         if not _NAME.match(name):
-            raise CoauthorError(f"\"{name[:30]}\" is not a username.")
+            raise CoauthorError(tr("\"%(name)s\" is not a username.", name=name[:30]))
         if name.lower() not in seen:
             seen.add(name.lower())
             names.append(name)
     if len(names) > MAX_NAMES or len(names) > MAX_COAUTHORS:
-        raise CoauthorError(f"A post can have {MAX_COAUTHORS} co-authors at most.")
+        raise CoauthorError(_too_many())
     return names
+
+
+def _too_many():
+    return trn("A post can have %(num)s co-author at most.", "A post can have %(num)s co-authors at most.", MAX_COAUTHORS)
 
 
 def refusal(name, *, anonymous, primary, author_id, candidate, count, blocked, already):
     """Why this account cannot be invited, or None. `count` is how many are invited already
     (pending or accepted), `blocked` whether a block exists either way."""
     if anonymous:
-        return "A co-authored post can't be anonymous."
+        return tr("A co-authored post can't be anonymous.")
     if not primary:
-        return "Only a post on your profile can have co-authors."
+        return tr("Only a post on your profile can have co-authors.")
     if candidate is None:
-        return f"There is no account named @{name}."
+        return tr("There is no account named @%(name)s.", name=name)
     if candidate.id == author_id:
-        return "You are already the author."
+        return tr("You are already the author.")
     if candidate.is_deleted or candidate.is_banned or blocked:
-        return f"@{candidate.username} can't be invited."
+        return tr("@%(name)s can't be invited.", name=candidate.username)
     if already:
-        return f"@{candidate.username} was already invited."
+        return tr("@%(name)s was already invited.", name=candidate.username)
     if count >= MAX_COAUTHORS:
-        return f"A post can have {MAX_COAUTHORS} co-authors at most."
+        return _too_many()
     return None
 
 
@@ -130,7 +136,8 @@ def invite(db, author, post, candidate_name):
     row = PostCoauthor(post_id=primary_id, user_id=candidate.id, invited_by_id=author.id, status=PENDING, created_utc=int(time.time()))
     db.add(row)
     db.flush()
-    _tell(candidate, f"@{author.username} invited you to co-author a post. [See the invitation](/coauthor/{post.base36id})")
+    _notify(candidate, N_("@%(name)s invited you to co-author a post. [See the invitation](%(link)s)"),
+            name=author.username, link=f"/coauthor/{post.base36id}")
     return row, None
 
 
@@ -151,6 +158,17 @@ def _tell(user, text):
 
     try:
         send_notification(user, text)
+    except Exception:
+        g.db.rollback()
+
+
+def _notify(user, message, **values):
+    """A notification marked for translation (helpers/alerts.notify), best effort like _tell."""
+    from flask import g
+    from ruqqus.helpers.alerts import notify
+
+    try:
+        notify(user, message, **values)
     except Exception:
         g.db.rollback()
 

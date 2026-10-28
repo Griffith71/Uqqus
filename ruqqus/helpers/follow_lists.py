@@ -16,11 +16,17 @@ which is private membership, never). Plain text() SQL, tested on SQLite (tests/t
 """
 from sqlalchemy import text
 
+from ruqqus.helpers.i18n_runtime import tr_lazy
+
 EVERYONE, FOLLOWERS, ONLY_ME = 0, 1, 2
-CHOICES = {EVERYONE: "Everyone", FOLLOWERS: "Followers", ONLY_ME: "Only me"}
+# Translators: who may open one of a profile's lists (Following, Followers...).
+CHOICES = {EVERYONE: tr_lazy("Everyone"), FOLLOWERS: tr_lazy("Followers"), ONLY_ME: tr_lazy("Only me")}
 
 LISTS = ("following", "followers", "subscribers", "subscriptions")
-TITLES = {"following": "Following", "followers": "Followers", "subscribers": "Subscribers", "subscriptions": "Subscriptions"}
+# Translators: the names of a profile's lists: the accounts it follows, its followers, who pays for its paid circles,
+# and the paid circles it pays for.
+TITLES = {"following": tr_lazy("Following"), "followers": tr_lazy("Followers"), "subscribers": tr_lazy("Subscribers"),
+          "subscriptions": tr_lazy("Subscriptions")}
 SETTING = {name: f"{name}_visibility" for name in LISTS}
 # the other account's setting that covers the same fact
 OTHER_SIDE = {"following": "followers_visibility", "followers": "following_visibility",

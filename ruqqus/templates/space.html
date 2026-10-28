@@ -10,12 +10,13 @@
 {% from "partials/theme.html" import html_attrs, font_faces, theme_color %}
 <html{{ html_attrs() }}>
 <head>
+{% from "partials/i18n_boot.html" import i18n_boot %}{{ i18n_boot() }}
   <meta charset="utf-8">
 {{ font_faces() }}
 {{ theme_color() }}
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="robots" content="noindex">
-  <title>Space - {{ 'SITE_NAME' | app_config }}</title>
+  <title>{{ pgettext('noun', 'Space') }} - {{ 'SITE_NAME' | app_config }}</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
     :root { color-scheme: dark; --bg: #0f1114; --panel: #1b1e23; --line: #2c3138; --text: #e8eaed; --muted: #9aa3ad;
@@ -157,74 +158,75 @@
     <header>
       <h1 class="space-title" id="space-title"></h1>
       <div class="space-meta">
-        <span class="space-kind"><i class="fas {{ 'fa-comments' if space_kind == 'board' else 'fa-microphone-lines' }}" aria-hidden="true"></i>{{ boot.kindLabel }}</span>
-        <span class="space-live" id="space-live"{% if boot.status != 'live' %} hidden{% endif %}><i class="fas fa-circle-dot" aria-hidden="true"></i>LIVE</span>
+        <span class="space-kind"><i class="fas {{ 'fa-comments' if space_kind == 'board' else 'fa-microphone-lines' }}" aria-hidden="true"></i>{{ msg_text(boot.kindLabel) }}</span>
+        <span class="space-live" id="space-live"{% if boot.status != 'live' %} hidden{% endif %}><i class="fas fa-circle-dot" aria-hidden="true"></i>{{ pgettext("badge", "LIVE") }}</span>
         <span id="space-host"></span>
         <span id="space-count" aria-live="polite"></span>
       </div>
-      <nav class="space-controls" style="margin-top:0" aria-label="This Space">
+      <nav class="space-controls" style="margin-top:0" aria-label="{{ _('This Space') }}">
         <span class="space-votes">
-          <button type="button" class="space-vote" id="space-upvote" aria-label="Upvote" aria-pressed="false"><i class="fas fa-arrow-up" aria-hidden="true"></i></button>
+          <button type="button" class="space-vote" id="space-upvote" aria-label="{{ pgettext('verb', 'Upvote') }}" aria-pressed="false"><i class="fas fa-arrow-up" aria-hidden="true"></i></button>
           <span id="space-score" aria-live="polite"></span>
-          <button type="button" class="space-vote" id="space-downvote" aria-label="Downvote" aria-pressed="false"><i class="fas fa-arrow-down" aria-hidden="true"></i></button>
+          <button type="button" class="space-vote" id="space-downvote" aria-label="{{ pgettext('verb', 'Downvote') }}" aria-pressed="false"><i class="fas fa-arrow-down" aria-hidden="true"></i></button>
         </span>
-        {% if boot.mayShare %}<button type="button" class="space-btn small" id="space-copy-link"><i class="fas fa-link" aria-hidden="true"></i>Copy link</button>{% endif %}
-        <a class="space-btn small" href="/@{{ boot.host.username }}/spaces" target="_blank" rel="noopener"><i class="fas fa-user" aria-hidden="true"></i>{{ boot.host.shown_name }}'s Spaces</a>
-        <a class="space-btn small" href="/spaces" target="_blank" rel="noopener"><i class="fas fa-podcast" aria-hidden="true"></i>Spaces</a>
+        {% if boot.mayShare %}<button type="button" class="space-btn small" id="space-copy-link"><i class="fas fa-link" aria-hidden="true"></i>{{ _("Copy link") }}</button>{% endif %}
+        <a class="space-btn small" href="/@{{ boot.host.username }}/spaces" target="_blank" rel="noopener"><i class="fas fa-user" aria-hidden="true"></i>{{ _("%(name)s's Spaces", name=boot.host.shown_name) }}</a>
+        <a class="space-btn small" href="/spaces" target="_blank" rel="noopener"><i class="fas fa-podcast" aria-hidden="true"></i>{{ _("Spaces") }}</a>
       </nav>
     </header>
 
     <main class="panel" id="space-main">
       <section id="space-join-sheet">
         {% if boot.status == 'live' %}
-        <p class="muted" style="margin-top:0"><i class="fas fa-podcast" aria-hidden="true"></i> This Space is live{% if boot.endsUtc %} until <time data-space-time="{{ boot.endsUtc }}">{{ boot.endsUtc | space_time }}</time>{% endif %}.</p>
+        {% if boot.endsUtc %}{% set ends_at %}<time data-space-time="{{ boot.endsUtc }}">{{ boot.endsUtc | space_time }}</time>{% endset %}{% endif %}
+        <p class="muted" style="margin-top:0"><i class="fas fa-podcast" aria-hidden="true"></i> {% if boot.endsUtc %}{{ _("This Space is live until %(time)s.", time=ends_at) }}{% else %}{{ _("This Space is live.") }}{% endif %}</p>
         {% elif boot.status == 'scheduled' %}
-        <p class="muted" style="margin-top:0"><i class="fas fa-podcast" aria-hidden="true"></i> This Space hasn't started yet.</p>
+        <p class="muted" style="margin-top:0"><i class="fas fa-podcast" aria-hidden="true"></i> {{ _("This Space hasn't started yet.") }}</p>
         {% else %}
-        <p class="muted" style="margin-top:0"><i class="fas fa-podcast" aria-hidden="true"></i> This Space has ended. {{ 'Its board' if space_kind == 'board' else 'Its chat' }} is still here to read.</p>
+        <p class="muted" style="margin-top:0"><i class="fas fa-podcast" aria-hidden="true"></i> {% if space_kind == 'board' %}{{ _("This Space has ended. Its board is still here to read.") }}{% else %}{{ _("This Space has ended. Its chat is still here to read.") }}{% endif %}</p>
         {% endif %}
         {% if boot.status != 'ended' %}
-        {% if space_kind == 'call' %}<div class="space-notice"><i class="fas fa-users" aria-hidden="true"></i>Everyone in this Space can see who is here, listeners too.</div>{% endif %}
-        {% if boot.record and space_kind == 'call' %}<div class="space-notice"><i class="fas fa-circle-dot" aria-hidden="true"></i>This Space is recorded: the host keeps a replay{% if boot.videoReplay %} with the video{% endif %}.</div>
-        {% elif boot.record %}<div class="space-notice"><i class="fas fa-circle-dot" aria-hidden="true"></i>This Space is recorded: its board stays to read when it ends.</div>
-        {% else %}<div class="space-notice"><i class="fas fa-eraser" aria-hidden="true"></i>This Space is not recorded: when it ends, it is gone, with everything in it.</div>{% endif %}
-        {% if boot.video %}<div class="space-notice"><i class="fas fa-video" aria-hidden="true"></i>People on stage may turn their camera on while the Space is small.</div>{% endif %}
+        {% if space_kind == 'call' %}<div class="space-notice"><i class="fas fa-users" aria-hidden="true"></i>{{ _("Everyone in this Space can see who is here, listeners too.") }}</div>{% endif %}
+        {% if boot.record and space_kind == 'call' %}<div class="space-notice"><i class="fas fa-circle-dot" aria-hidden="true"></i>{% if boot.videoReplay %}{{ _("This Space is recorded: the host keeps a replay with the video.") }}{% else %}{{ _("This Space is recorded: the host keeps a replay.") }}{% endif %}</div>
+        {% elif boot.record %}<div class="space-notice"><i class="fas fa-circle-dot" aria-hidden="true"></i>{{ _("This Space is recorded: its board stays to read when it ends.") }}</div>
+        {% else %}<div class="space-notice"><i class="fas fa-eraser" aria-hidden="true"></i>{{ _("This Space is not recorded: when it ends, it is gone, with everything in it.") }}</div>{% endif %}
+        {% if boot.video %}<div class="space-notice"><i class="fas fa-video" aria-hidden="true"></i>{{ _("People on stage may turn their camera on while the Space is small.") }}</div>{% endif %}
         {% elif boot.replayPlayer %}
-        <iframe class="space-replay-frame" src="{{ boot.replayPlayer }}" title="Replay of this Space" loading="lazy" allow="fullscreen; picture-in-picture" referrerpolicy="strict-origin-when-cross-origin"></iframe>
+        <iframe class="space-replay-frame" src="{{ boot.replayPlayer }}" title="{{ _('Replay of this Space') }}" loading="lazy" allow="fullscreen; picture-in-picture" referrerpolicy="strict-origin-when-cross-origin"></iframe>
         {% elif boot.replay %}
         <audio id="space-replay-player" controls preload="none" src="{{ boot.replay }}"></audio>
         {% endif %}
         <div class="space-controls">
-          <button type="button" class="space-btn primary" id="space-join"{% if boot.status != 'live' or space_kind != 'call' %} hidden{% endif %}><i class="fas fa-headphones" aria-hidden="true"></i>Join the Space</button>
+          <button type="button" class="space-btn primary" id="space-join"{% if boot.status != 'live' or space_kind != 'call' %} hidden{% endif %}><i class="fas fa-headphones" aria-hidden="true"></i>{{ _("Join the Space") }}</button>
           {% if boot.status == 'scheduled' and boot.isHost %}
-          <button type="button" class="space-btn primary" id="space-start"><i class="fas fa-podcast" aria-hidden="true"></i>Start the Space</button>
+          <button type="button" class="space-btn primary" id="space-start"><i class="fas fa-podcast" aria-hidden="true"></i>{{ _("Start the Space") }}</button>
           {% endif %}
           {% if space_kind != 'call' and boot.status == 'live' and (boot.isHost or boot.isAdmin) %}
-          <button type="button" class="space-btn danger small" id="space-end-board">End the Space</button>
+          <button type="button" class="space-btn danger small" id="space-end-board">{{ _("End the Space") }}</button>
           {% endif %}
-          <button type="button" class="space-btn small" id="space-report"><i class="fas fa-flag" aria-hidden="true"></i>Report</button>
+          <button type="button" class="space-btn small" id="space-report"><i class="fas fa-flag" aria-hidden="true"></i>{{ pgettext("button", "Report") }}</button>
         </div>
       </section>
 
       <section id="space-room" hidden>
         <div class="space-videos" id="space-videos" hidden></div>
-        <div class="space-section-title">On stage</div>
+        <div class="space-section-title">{{ _("On stage") }}</div>
         <div class="space-grid" id="space-stage"></div>
-        <div class="space-section-title" id="space-listener-heading">Listeners</div>
+        <div class="space-section-title" id="space-listener-heading">{{ _("Listeners") }}</div>
         <div class="space-grid small" id="space-listeners"></div>
         <div id="space-hands"></div>
         <div class="space-controls">
-          <button type="button" class="space-btn" id="space-mute" aria-pressed="false" hidden><i class="fas fa-microphone" aria-hidden="true"></i><span id="space-mute-label">Mute</span></button>
-          <button type="button" class="space-btn" id="space-camera" aria-pressed="false" hidden><i class="fas fa-video" aria-hidden="true"></i><span id="space-camera-label">Camera on</span></button>
-          <button type="button" class="space-btn" id="space-hand" aria-pressed="false" hidden><i class="fas fa-hand" aria-hidden="true"></i><span id="space-hand-label">Raise hand</span></button>
+          <button type="button" class="space-btn" id="space-mute" aria-pressed="false" hidden><i class="fas fa-microphone" aria-hidden="true"></i><span id="space-mute-label">{{ pgettext("microphone", "Mute") }}</span></button>
+          <button type="button" class="space-btn" id="space-camera" aria-pressed="false" hidden><i class="fas fa-video" aria-hidden="true"></i><span id="space-camera-label">{{ _("Camera on") }}</span></button>
+          <button type="button" class="space-btn" id="space-hand" aria-pressed="false" hidden><i class="fas fa-hand" aria-hidden="true"></i><span id="space-hand-label">{{ _("Raise hand") }}</span></button>
           <span id="space-invite" hidden>
-            <span class="muted">You're invited to speak.</span>
-            <button type="button" class="space-btn primary small" id="space-accept-speak">Speak</button>
-            <button type="button" class="space-btn small" id="space-decline-speak">Not now</button>
+            <span class="muted">{{ _("You're invited to speak.") }}</span>
+            <button type="button" class="space-btn primary small" id="space-accept-speak">{{ pgettext("button", "Speak") }}</button>
+            <button type="button" class="space-btn small" id="space-decline-speak">{{ _("Not now") }}</button>
           </span>
-          <button type="button" class="space-btn" id="space-step-down" hidden>Move to listeners</button>
-          <button type="button" class="space-btn danger" id="space-end" hidden>End the Space</button>
-          <button type="button" class="space-btn" id="space-leave"><i class="fas fa-right-from-bracket" aria-hidden="true"></i>Leave</button>
+          <button type="button" class="space-btn" id="space-step-down" hidden>{{ _("Move to listeners") }}</button>
+          <button type="button" class="space-btn danger" id="space-end" hidden>{{ _("End the Space") }}</button>
+          <button type="button" class="space-btn" id="space-leave"><i class="fas fa-right-from-bracket" aria-hidden="true"></i>{{ pgettext("button", "Leave") }}</button>
         </div>
         <div id="space-video-note" role="status" aria-live="polite" hidden></div>
       </section>
@@ -233,7 +235,7 @@
         <p id="space-ended-text"></p>
         <div id="space-replay" hidden>
           <p id="space-replay-text" class="muted" role="status"></p>
-          <a id="space-replay-download" class="space-btn small" hidden><i class="fas fa-headphones" aria-hidden="true"></i>Download the recording</a>
+          <a id="space-replay-download" class="space-btn small" hidden><i class="fas fa-headphones" aria-hidden="true"></i>{{ _("Download the recording") }}</a>
         </div>
       </section>
 
@@ -243,22 +245,22 @@
 
     <aside class="panel board" id="space-board-panel" aria-labelledby="space-board-title">
       <div class="panel-head">
-        <div class="space-section-title" id="space-board-title">{{ 'Board' if space_kind == 'board' else 'Live chat' }}</div>
+        <div class="space-section-title" id="space-board-title">{{ pgettext('Space', 'Board') if space_kind == 'board' else _('Live chat') }}</div>
         <span class="muted" style="font-size:0.75rem" id="space-slow-label"></span>
-        <label id="space-slow-wrap" hidden><span style="position:absolute;left:-9999px">Slow mode</span>
-          <select id="space-slow" class="space-select" aria-label="Slow mode"></select>
+        <label id="space-slow-wrap" hidden><span style="position:absolute;left:-9999px">{{ _("Slow mode") }}</span>
+          <select id="space-slow" class="space-select" aria-label="{{ _('Slow mode') }}"></select>
         </label>
       </div>
       <div id="space-board" aria-live="polite"></div>
-      <p class="muted" id="space-board-empty" style="font-size:0.875rem">{{ 'Nothing on the board yet.' if space_kind == 'board' else 'Nothing in the chat yet.' }}</p>
+      <p class="muted" id="space-board-empty" style="font-size:0.875rem">{{ _('Nothing on the board yet.') if space_kind == 'board' else _('Nothing in the chat yet.') }}</p>
       <div id="space-quote" hidden>
         <i class="fas fa-quote-left" aria-hidden="true"></i><span id="space-quote-text"></span>
-        <button type="button" class="space-btn small" id="space-quote-cancel" aria-label="Don't quote"><i class="fas fa-xmark" aria-hidden="true"></i></button>
+        <button type="button" class="space-btn small" id="space-quote-cancel" aria-label="{{ _("Don't quote") }}"><i class="fas fa-xmark" aria-hidden="true"></i></button>
       </div>
       <form id="space-board-form" hidden>
-        <label class="muted" for="space-board-input" style="position:absolute;left:-9999px">Message</label>
-        <input id="space-board-input" class="space-input" type="text" maxlength="{{ boot.boardMax }}" autocomplete="off" placeholder="{{ 'Write on the board' if space_kind == 'board' else 'Write in the chat' }}">
-        <button type="submit" class="space-btn primary small">Send</button>
+        <label class="muted" for="space-board-input" style="position:absolute;left:-9999px">{{ pgettext("noun", "Message") }}</label>
+        <input id="space-board-input" class="space-input" type="text" maxlength="{{ boot.boardMax }}" autocomplete="off" placeholder="{{ _('Write on the board') if space_kind == 'board' else _('Write in the chat') }}">
+        <button type="submit" class="space-btn primary small">{{ pgettext("button", "Send") }}</button>
       </form>
       <div id="space-board-note" role="status" aria-live="polite"></div>
     </aside>
@@ -267,18 +269,18 @@
   <dialog id="space-person-sheet">
     <form method="dialog" style="display:flex;justify-content:space-between;align-items:center;gap:1rem">
       <strong id="space-person-name"></strong>
-      <button class="space-btn small" aria-label="Close"><i class="fas fa-xmark" aria-hidden="true"></i></button>
+      <button class="space-btn small" aria-label="{{ _('Close') }}"><i class="fas fa-xmark" aria-hidden="true"></i></button>
     </form>
     <div id="space-person-actions"></div>
   </dialog>
 
-  <button type="button" class="space-btn primary" id="space-play" hidden><i class="fas fa-headphones" aria-hidden="true"></i>Play sound</button>
+  <button type="button" class="space-btn primary" id="space-play" hidden><i class="fas fa-headphones" aria-hidden="true"></i>{{ _("Play sound") }}</button>
 
   <script>
     window.UQQUS_SPACE_BOOT = {{ boot | tojson }};
     window.formkey = function () { return window.UQQUS_SPACE_BOOT.formkey; };
     document.getElementById("space-title").textContent = window.UQQUS_SPACE_BOOT.title;
-    document.getElementById("space-host").textContent = "Hosted by " + window.UQQUS_SPACE_BOOT.host.shown_name;
+    document.getElementById("space-host").textContent = {{ _("Hosted by %(name)s", name="%(name)s") | tojson }}.replace("%(name)s", function () { return window.UQQUS_SPACE_BOOT.host.shown_name; });
   </script>
   <script src="{{ asset_url('js/live_events.js') }}"></script>
   <script src="{{ asset_url('js/media_upload.js') }}"></script>

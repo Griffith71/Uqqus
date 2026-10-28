@@ -91,7 +91,7 @@ def test_admins_force_and_unlock_and_the_owners_are_told():
     for name in ("admin_sensitive_user", "admin_sensitive_guild"):
         assert "@admin_level_required(3)" in head(SETTINGS, name) and "@validate_formkey" in head(SETTINGS, name)
         body = func(SETTINGS, name)
-        assert "send_notification(" in body and "if force:" in body, name
+        assert "notify(" in body and "if force:" in body, name
     assert "v.admin_level <= (target.admin_level or 0)" in func(SETTINGS, "admin_sensitive_user")
     guild = func(SETTINGS, "admin_sensitive_guild")
     assert "g.db.add(ModAction(" in guild and "for guildmaster in board.mods:" in guild

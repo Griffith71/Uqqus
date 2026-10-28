@@ -10,7 +10,9 @@ from jinja2 import Undefined
 
 from ruqqus.classes import PostCoauthor, Submission, User
 from ruqqus.helpers import coauthors, collab_view
+from ruqqus.helpers.alerts import notify
 from ruqqus.helpers.get import get_post, get_user
+from ruqqus.helpers.i18n_runtime import N_, msg, tr
 from ruqqus.helpers.visibility import post_hidden
 from ruqqus.helpers.wrappers import auth_required, validate_formkey
 from ruqqus.__main__ import app, cache
@@ -43,7 +45,16 @@ def _author_only(post, v):
         abort(403)
 
 
-COLLAB_REFUSAL = "This post's authors are decided in its shared draft."
+COLLAB_REFUSAL = N_("This post's authors are decided in its shared draft.")
+
+
+def _tell(user, message, **values):
+    """A notification marked for translation (helpers/alerts.py notify), best effort as coauthors.tell: a failure to
+    tell never undoes the answer."""
+    try:
+        notify(user, message, **values)
+    except Exception:
+        g.db.rollback()
 
 
 def _collab(post):
@@ -59,19 +70,19 @@ def coauthor_invite(pid, v):
     """The author invites accounts (`usernames`, separated by commas or spaces)."""
     post = _primary(pid)
     if _collab(post):
-        return jsonify({"error": COLLAB_REFUSAL}), 409
+        return jsonify({"error": msg(COLLAB_REFUSAL)}), 409
     _author_only(post, v)
     if post.audience:
-        return jsonify({"error": "A post for a Circle can't have co-authors."}), 400
+        return jsonify({"error": tr("A post for a Circle can't have co-authors.")}), 400
     try:
         names = coauthors.parse_names(request.form.get("usernames"))
     except coauthors.CoauthorError as error:
-        return jsonify({"error": error.message}), 400
+        return jsonify({"error": msg(error.message)}), 400
     if not names:
-        return jsonify({"error": "Write a username."}), 400
+        return jsonify({"error": tr("Write a username.")}), 400
 
     invited, errors = coauthors.invite_names(g.db, v, post, names)
-    return jsonify({"invited": invited, "errors": errors}), (200 if invited or not errors else 400)
+    return jsonify({"invited": invited, "errors": [msg(e) for e in errors]}), (200 if invited or not errors else 400)
 
 
 @app.get("/api/coauthor/<pid>/list")
@@ -129,7 +140,8 @@ def coauthor_accept(pid, v):
     g.db.commit()
     _changed()
     if author:
-        coauthors.tell(author, f"@{v.username} accepted your invitation to co-author [your post]({post.permalink}).")
+        _tell(author, N_("@%(name)s accepted your invitation to co-author [your post](%(link)s)."),
+              name=v.username, link=post.permalink)
     return redirect(post.permalink)
 
 
@@ -153,7 +165,7 @@ def coauthor_leave(pid, v):
     """A co-author steps off: the post stays, without their name, and leaves their profile."""
     post = _primary(pid)
     if _collab(post):
-        return jsonify({"error": COLLAB_REFUSAL}), 409
+        return jsonify({"error": msg(COLLAB_REFUSAL)}), 409
     row = _row(post, v.id)
     if row is None or row.status != coauthors.ACCEPTED:
         abort(404)
@@ -162,7 +174,7 @@ def coauthor_leave(pid, v):
     _changed()
     author = g.db.query(User).filter_by(id=post.author_id).first()
     if author:
-        coauthors.tell(author, f"@{v.username} stepped off as co-author of [your post]({post.permalink}).")
+        _tell(author, N_("@%(name)s stepped off as co-author of [your post](%(link)s)."), name=v.username, link=post.permalink)
     return redirect(post.permalink)
 
 
@@ -173,17 +185,17 @@ def coauthor_remove(pid, v):
     """The author takes a co-author off, or cancels an invitation that was not answered."""
     post = _primary(pid)
     if _collab(post):
-        return jsonify({"error": COLLAB_REFUSAL}), 409
+        return jsonify({"error": msg(COLLAB_REFUSAL)}), 409
     _author_only(post, v)
     name = (request.form.get("username") or "").strip().lstrip("@")
     user = get_user(name, graceful=True) if name else None
     row = _row(post, user.id) if user else None
     if row is None:
-        return jsonify({"error": "That account is not invited."}), 404
+        return jsonify({"error": tr("That account is not invited.")}), 404
     g.db.delete(row)
     g.db.commit()
     _changed()
-    return jsonify({"message": f"@{user.username} removed."})
+    return jsonify({"message": tr("@%(name)s removed.", name=user.username)})
 
 
 def _coauthors_of(post, v=None):

@@ -34,7 +34,7 @@ def test_title_is_required(bad):
 
 def test_title_length_limit():
     assert clean_title("x" * 280) == "x" * 280
-    with pytest.raises(PostFieldError, match="280 character limit"):
+    with pytest.raises(PostFieldError, match="280 characters"):
         clean_title("x" * 281)
     # weighted (helpers/text_length.py): 140 CJK characters fill a title
     assert clean_title("字" * 140) == "字" * 140
@@ -50,7 +50,7 @@ def test_title_length_limit():
 def test_body_length_limit():
     assert check_body(None) == ""
     assert check_body("y" * 25000) == "y" * 25000
-    with pytest.raises(PostFieldError, match="25000 character limit"):
+    with pytest.raises(PostFieldError, match="25,000 characters"):
         check_body("y" * 25001)
 
 

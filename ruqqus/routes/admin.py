@@ -8,6 +8,7 @@ from PIL import Image as IMAGE
 
 from ruqqus.helpers.wrappers import *
 from ruqqus.helpers.alerts import *
+from ruqqus.helpers.i18n_runtime import N_
 from ruqqus.helpers.base36 import *
 from ruqqus.helpers.sanitize import *
 from ruqqus.helpers.get import *
@@ -186,13 +187,9 @@ def badge_grant_post(v):
 
     g.db.commit()
 
-    text = f"""
-@{v.username} has given you the following profile badge:
-\n\n![]({new_badge.path})
-\n\n{new_badge.name}
-"""
-
-    send_notification(user, text)
+    # to the member, in their language (the badge's name is as stored)
+    notify(user, N_("\n@%(admin)s has given you the following profile badge:\n\n\n![](%(path)s)\n\n\n%(badge)s\n"),
+           admin=v.username, path=new_badge.path, badge=new_badge.name)
 
     return redirect(user.permalink)
 
@@ -728,13 +725,7 @@ def admin_category_lock(v):
             )
         g.db.add(ma1)
 
-    ma1=ModAction(
-        board_id=board.id,
-        user_id=v.id,
-        kind="update_settings",
-        note=f"category={sc.category.name} / {sc.name} | admin action"
-        )
-    g.db.add(ma1)
+    g.db.add(board)
 
     if lock != board.is_locked_category:
         board.is_locked_category = lock
@@ -1310,8 +1301,7 @@ def admin_siege_guild(v):
             continue
 
         if x.accepted:
-            send_notification(x.user,
-                              f"You have been overthrown from +{guild.name}.")
+            notify(x.user, N_("You have been overthrown from +%(guild)s."), guild=guild.name)
 
 
             ma=ModAction(
@@ -1357,7 +1347,7 @@ def admin_siege_guild(v):
         )
         g.db.add(ma)
 
-        send_notification(user, f"You have been added as a Guildmaster to +{guild.name}")
+        notify(user, N_("You have been added as a Guildmaster to +%(guild)s"), guild=guild.name)
 
     elif not m.perm_full:
         m.perm_full=True

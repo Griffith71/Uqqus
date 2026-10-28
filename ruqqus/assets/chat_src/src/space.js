@@ -25,7 +25,16 @@ const IS_CALL = !boot || boot.kind === "call";
 // the updates panel is only drawn for a Space made before live threads were their own kind
 const UPDATES = !!byId("space-updates-panel");
 const STAGE = new Set(["host", "cohost", "speaker"]);
-const ROLE_LABEL = { host: "Host", cohost: "Co-host", speaker: "Speaker" };
+// a person's role in a call, under their name (in the page's language when drawn)
+function roleLabel(role) {
+  // Translators: a person's role in a Space's call, shown under their name
+  if (role === "host") return window.tr("Host");
+  // Translators: a person's role in a Space's call, shown under their name
+  if (role === "cohost") return window.tr("Co-host");
+  // Translators: a person's role in a Space's call, shown under their name
+  if (role === "speaker") return window.tr("Speaker");
+  return "";
+}
 
 const state = {
   client: null, me: null, mesh: null, media: null, joined: false, joining: false, ended: false,
@@ -47,7 +56,7 @@ async function api(action, fields = {}) {
   } catch (e) {
     data = {};
   }
-  if (!resp.ok) throw new Error(data.error || "That didn't work. Try again.");
+  if (!resp.ok) throw new Error(data.error || window.tr("That didn't work. Try again."));
   return data;
 }
 
@@ -86,17 +95,18 @@ function personTile(p, big) {
   if (p.hand) {
     const hand = document.createElement("i");
     hand.className = "fas fa-hand space-hand-mark";
-    hand.setAttribute("aria-label", "Hand raised");
+    hand.setAttribute("aria-label", window.tr("Hand raised"));
     face.appendChild(hand);
   }
   const name = document.createElement("span");
   name.className = "space-person-name";
-  name.textContent = p.id === boot.userId ? "You" : p.shown_name;
+  // Translators: in place of your own name among the people in a Space
+  name.textContent = p.id === boot.userId ? window.tr("You") : p.shown_name;
   el.append(face, name);
-  if (ROLE_LABEL[p.role]) {
+  if (roleLabel(p.role)) {
     const role = document.createElement("span");
     role.className = "space-role";
-    role.textContent = ROLE_LABEL[p.role];
+    role.textContent = roleLabel(p.role);
     el.appendChild(role);
   }
   el.addEventListener("click", () => openPerson(p));
@@ -110,13 +120,16 @@ function render() {
   const listeners = byId("space-listeners");
   stage.replaceChildren(...data.stage.map((p) => personTile(p, true)));
   listeners.replaceChildren(...data.listeners.map((p) => personTile(p, false)));
-  byId("space-count").textContent = `${(data.stage_count ?? data.stage.length) + data.listener_count} in the Space`;
-  byId("space-listener-heading").textContent = `Listeners (${data.listener_count})`;
+  const inSpace = (data.stage_count ?? data.stage.length) + data.listener_count;
+  // Translators: how many people are in a Space's call
+  byId("space-count").textContent = window.trn("%(num)s in the Space", "%(num)s in the Space", inSpace);
+  // Translators: the heading over the listeners of a Space's call, with how many there are ("Listeners (12)")
+  byId("space-listener-heading").textContent = window.trn("Listeners (%(num)s)", "Listeners (%(num)s)", data.listener_count);
 
   const me = data.me;
   byId("space-hand").hidden = onStage() || me.invited || !state.joined;
   byId("space-hand").setAttribute("aria-pressed", String(!!me.hand));
-  byId("space-hand-label").textContent = me.hand ? "Lower hand" : "Raise hand";
+  byId("space-hand-label").textContent = me.hand ? window.tr("Lower hand") : window.tr("Raise hand");
   byId("space-invite").hidden = !me.invited || !state.joined;
   byId("space-mute").hidden = !onStage() || !state.media;
   const video = data.video || {};
@@ -125,7 +138,8 @@ function render() {
   camera.hidden = !onStage() || !state.media || !video.allowed;
   camera.disabled = !cameraOn && !video.open;
   camera.setAttribute("aria-pressed", String(cameraOn));
-  byId("space-camera-label").textContent = cameraOn ? "Camera off" : "Camera on";
+  // Translators: the camera button in a Space's call: what pressing it does
+  byId("space-camera-label").textContent = cameraOn ? window.tr("Camera off") : window.tr("Camera on");
   const note = byId("space-video-note");
   note.textContent = video.allowed && !video.open && video.note ? video.note : "";
   note.hidden = !note.textContent;
@@ -141,7 +155,7 @@ function render() {
   if (me.may_run && data.hands.length) {
     const title = document.createElement("div");
     title.className = "space-hands-title";
-    title.textContent = "Raised hands";
+    title.textContent = window.tr("Raised hands");
     hands.appendChild(title);
     for (const id of data.hands) {
       const p = data.listeners.find((x) => x.id === id);
@@ -153,7 +167,7 @@ function render() {
       const invite = document.createElement("button");
       invite.type = "button";
       invite.className = "space-btn small";
-      invite.textContent = "Invite to speak";
+      invite.textContent = window.tr("Invite to speak");
       invite.addEventListener("click", () => act("invite", { username: p.username }));
       row.append(name, invite);
       hands.appendChild(row);
@@ -180,15 +194,15 @@ function openPerson(p) {
     });
     actions.appendChild(b);
   };
-  if (p.role === "listener" && !p.invited) add("Invite to speak", "invite", { username: p.username });
+  if (p.role === "listener" && !p.invited) add(window.tr("Invite to speak"), "invite", { username: p.username });
   if (STAGE.has(p.role) && p.role !== "host") {
-    add("Ask to mute", "mute", { username: p.username });
-    add("Move to listeners", "listen", { username: p.username });
+    add(window.tr("Ask to mute"), "mute", { username: p.username });
+    add(window.tr("Move to listeners"), "listen", { username: p.username });
   }
   if (myRole() === "host" && (p.role === "speaker" || p.role === "cohost")) {
-    add(p.role === "cohost" ? "Remove as co-host" : "Make co-host", "cohost", { username: p.username });
+    add(p.role === "cohost" ? window.tr("Remove as co-host") : window.tr("Make co-host"), "cohost", { username: p.username });
   }
-  if (p.role !== "host") add("Remove from the Space", "remove", { username: p.username }, true);
+  if (p.role !== "host") add(window.tr("Remove from the Space"), "remove", { username: p.username }, true);
   sheet.showModal();
 }
 
@@ -236,7 +250,7 @@ async function micOn() {
   try {
     state.media = await LocalMedia.open(false);
   } catch (e) {
-    say(e instanceof MediaRefused ? e.message : "The microphone couldn't be started.", true);
+    say(e instanceof MediaRefused ? e.message : window.tr("The microphone couldn't be started."), true);
     return;
   }
   state.meters.set("me", levelMeter(state.media.stream));
@@ -290,7 +304,8 @@ function drawVideos() {
   const wanted = [];
   if (data && state.joined) {
     if (state.media && state.media.videoTrack && !state.media.cameraOff && data.me.video) {
-      wanted.push(videoTile("me", state.media.stream, "You", boot.userId, true));
+      // Translators: the label on your own camera's picture in a Space's call
+      wanted.push(videoTile("me", state.media.stream, window.tr("You"), boot.userId, true));
     }
     for (const p of data.peers || []) {
       const key = peerKey(p);
@@ -319,7 +334,7 @@ async function cameraOn() {
     await state.media.startCamera();
   } catch (e) {
     api("video", { on: "0" }).catch(() => {});
-    return say(e instanceof MediaRefused ? e.message : "The camera couldn't be started.", true);
+    return say(e instanceof MediaRefused ? e.message : window.tr("The camera couldn't be started."), true);
   }
   state.mesh.syncTracks();
   render();
@@ -355,7 +370,8 @@ function drawFrame(ctx, canvas) {
     ctx.fillText(boot.title.slice(0, 60), canvas.width / 2, canvas.height / 2 - 10);
     ctx.fillStyle = "#9aa3ad";
     ctx.font = "28px system-ui, sans-serif";
-    ctx.fillText(`Hosted by ${boot.host.shown_name}`, canvas.width / 2, canvas.height / 2 + 40);
+    // Translators: drawn into a Space's video replay, under its title, while no camera is on (in the host's language)
+    ctx.fillText(window.tr("Hosted by %(name)s", { name: boot.host.shown_name }), canvas.width / 2, canvas.height / 2 + 40);
     return;
   }
   const cols = Math.ceil(Math.sqrt(videos.length));
@@ -400,7 +416,7 @@ function recordStart() {
     for (const stream of state.streams.values()) recordAdd(stream);
   } catch (e) {
     state.recorder = null;
-    say("This browser can't record the Space.", true);
+    say(window.tr("This browser can't record the Space."), true);
   }
 }
 
@@ -428,20 +444,24 @@ async function recordFinish() {
   box.hidden = false;
   const note = byId("space-replay-text");
   if (!window.MediaUpload) {
-    note.textContent = "The replay couldn't be saved here.";
+    note.textContent = window.tr("The replay couldn't be saved here.");
     return offerDownload(file);
   }
   // a long video is large: the upload runs from this tab, so it has to stay open until it is done
-  note.textContent = video ? "Saving the replay to your own video channel… keep this tab open." : "Saving the replay to your linked storage…";
+  note.textContent = video ? window.tr("Saving the replay to your own video channel… keep this tab open.") : window.tr("Saving the replay to your linked storage…");
   try {
     const asset = await window.MediaUpload.upload(file, video ? "video" : "audio", {
       fields: video ? { title: boot.title.slice(0, 100), visibility: "unlisted" } : undefined,
-      onProgress: (n) => { note.textContent = `Saving the replay… ${Math.round((n || 0) * 100)}%`; },
+      // Translators: while a Space's replay uploads, how much of it has gone ("Saving the replay… 40%")
+      onProgress: (n) => { note.textContent = window.tr("Saving the replay… %(percent)s%%", { percent: Math.round((n || 0) * 100) }); },
     });
     await api("replay", video ? { video: String(asset.id) } : { media: String(asset.id) });
-    note.textContent = video ? "The replay is saved: it plays here once your video service has it ready." : "The replay is saved.";
+    note.textContent = video ? window.tr("The replay is saved: it plays here once your video service has it ready.") : window.tr("The replay is saved.");
   } catch (e) {
-    note.textContent = `The replay wasn't saved: ${e.message || "the upload failed"}. You can download it instead.`;
+    note.textContent = e.message
+      // Translators: a Space's replay could not be uploaded; the reason follows the colon
+      ? window.tr("The replay wasn't saved: %(reason)s. You can download it instead.", { reason: e.message })
+      : window.tr("The replay wasn't saved: the upload failed. You can download it instead.");
     offerDownload(file);
   }
 }
@@ -456,7 +476,7 @@ function offerDownload(file) {
 // --- shared drawing helpers ------------------------------------------------------------------------------------------
 function clock(utc) {
   try {
-    return new Date(utc * 1000).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+    return new Date(utc * 1000).toLocaleTimeString(window.I18N.intl, { hour: "2-digit", minute: "2-digit" });
   } catch (e) {
     return "";
   }
@@ -482,7 +502,7 @@ async function postForm(url, fields = {}) {
   } catch (e) {
     data = {};
   }
-  if (!resp.ok) throw new Error(data.error || "That didn't work. Try again.");
+  if (!resp.ok) throw new Error(data.error || window.tr("That didn't work. Try again."));
   return data;
 }
 
@@ -498,12 +518,18 @@ function live() {
 
 // --- the board: the Space's discussion (routes/spaces.py `space_messages`) -------------------------------------------
 const BOARD_KEEP = 400;
-const ROLE_NAME = { host: "Host", cohost: "Co-host" };
+// a role beside a name on the board: the host and co-hosts only (in the page's language when drawn)
+function boardRole(role) {
+  return role === "host" || role === "cohost" ? roleLabel(role) : "";
+}
 
-function boardNote(text, bad) {
+// the line under the board; `standing` marks one of the lines that only say whether the board can be written on
+// (closed, not open yet, join first), which the next draw takes away once it can be
+function boardNote(text, bad, standing) {
   const el = byId("space-board-note");
   el.textContent = text || "";
   el.style.color = bad ? "#ff8a8a" : "";
+  state.board.standing = !!standing;
 }
 
 function canWrite() {
@@ -517,15 +543,19 @@ function drawBoardControls() {
   const form = byId("space-board-form");
   form.hidden = !canWrite();
   if (!live()) {
-    boardNote(state.ended || boot.status === "ended" ? `The ${IS_CALL ? "chat" : "board"} is closed: this Space has ended.` : `The ${IS_CALL ? "chat" : "board"} opens when the Space starts.`);
+    const over = state.ended || boot.status === "ended";
+    boardNote(over
+      ? (IS_CALL ? window.tr("The chat is closed: this Space has ended.") : window.tr("The board is closed: this Space has ended."))
+      : (IS_CALL ? window.tr("The chat opens when the Space starts.") : window.tr("The board opens when the Space starts.")), false, true);
   } else if (!canWrite()) {
-    boardNote("Join the Space to write in its chat.");
-  } else if (/^(Join the Space|The board|The chat)/.test(byId("space-board-note").textContent)) {
+    boardNote(window.tr("Join the Space to write in its chat."), false, true);
+  } else if (state.board.standing) {
     boardNote("");
   }
   const settings = state.board.settings;
   const slow = settings ? settings.slow_seconds : 0;
-  byId("space-slow-label").textContent = slow && live() ? `Slow mode · ${settings.slow_label}` : "";
+  // Translators: above a Space's board while slow mode is on, with how long between messages ("Slow mode · 30 seconds")
+  byId("space-slow-label").textContent = slow && live() ? window.tr("Slow mode · %(length)s", { length: settings.slow_label }) : "";
   const may = !!(state.data && state.data.me && state.data.me.may_moderate) && live();
   byId("space-slow-wrap").hidden = !may;
   const select = byId("space-slow");
@@ -533,7 +563,8 @@ function drawBoardControls() {
     for (const [seconds, label] of boot.slowChoices || []) {
       const option = document.createElement("option");
       option.value = String(seconds);
-      option.textContent = seconds ? `Slow · ${label}` : "Slow mode off";
+      // Translators: a choice of slow mode for a Space's board, with how long between messages ("Slow · 30 seconds")
+      option.textContent = seconds ? window.tr("Slow · %(length)s", { length: label }) : window.tr("Slow mode off");
       select.appendChild(option);
     }
   }
@@ -545,7 +576,8 @@ function drawBoardControls() {
 function setQuote(m) {
   state.board.quote = m ? m.id : null;
   byId("space-quote").hidden = !m;
-  byId("space-quote-text").textContent = m ? `${m.author}: ${m.body || ""}` : "";
+  // Translators: a quoted board message: who wrote it and its words ("Ann: see you there")
+  byId("space-quote-text").textContent = m ? window.tr("%(name)s: %(text)s", { name: m.author, text: m.body || "" }) : "";
   if (m) byId("space-board-input").focus();
 }
 
@@ -558,12 +590,13 @@ function drawMessage(m) {
   head.appendChild(avatar(m.avatar, 24));
   const name = document.createElement("span");
   name.className = "board-name";
-  name.textContent = m.mine ? "You" : m.author;
+  // Translators: in place of your own name over your messages on a Space's board
+  name.textContent = m.mine ? window.tr("You") : m.author;
   head.appendChild(name);
-  if (ROLE_NAME[m.role]) {
+  if (boardRole(m.role)) {
     const role = document.createElement("span");
     role.className = "board-role";
-    role.textContent = ROLE_NAME[m.role];
+    role.textContent = boardRole(m.role);
     head.appendChild(role);
   }
   const time = document.createElement("span");
@@ -576,12 +609,13 @@ function drawMessage(m) {
     quote.className = "board-quote";
     if (m.quote.gone) {
       quote.classList.add("hidden-text");
-      quote.textContent = "A message that isn't there any more";
+      quote.textContent = window.tr("A message that isn't there any more");
     } else if (m.quote.hidden) {
       quote.classList.add("hidden-text");
-      quote.textContent = `${m.quote.author}: hidden by your word filter`;
+      // Translators: a quoted board message the reader's word filter hides: who wrote it
+      quote.textContent = window.tr("%(name)s: hidden by your word filter", { name: m.quote.author });
     } else {
-      quote.textContent = `${m.quote.author}: ${m.quote.body}`;
+      quote.textContent = window.tr("%(name)s: %(text)s", { name: m.quote.author, text: m.quote.body });
     }
     row.appendChild(quote);
   }
@@ -589,7 +623,7 @@ function drawMessage(m) {
   body.className = "board-body";
   if (m.hidden) {
     body.classList.add("hidden-text");
-    body.textContent = "Hidden by your word filter";
+    body.textContent = window.tr("Hidden by your word filter");
   } else {
     body.textContent = m.body;
   }
@@ -597,14 +631,15 @@ function drawMessage(m) {
   const actions = document.createElement("div");
   actions.className = "board-actions";
   if (!m.hidden) {
-    const quote = smallButton("Quote", () => setQuote(m));
+    // Translators: a button that quotes a message on a Space's board
+    const quote = smallButton(window.tr("Quote"), () => setQuote(m));
     quote.className = "board-quote-btn";
     quote.hidden = !canWrite();
     actions.appendChild(quote);
   }
   if (m.mine) {
-    actions.appendChild(smallButton("Delete", async () => {
-      if (!window.confirm("Delete this message?")) return;
+    actions.appendChild(smallButton(window.tr("Delete"), async () => {
+      if (!window.confirm(window.tr("Delete this message?"))) return;
       try {
         await postForm(`/api/space_messages/${m.id}/delete`);
         row.remove();
@@ -613,20 +648,22 @@ function drawMessage(m) {
       }
     }));
   } else {
-    actions.appendChild(smallButton("Report", async () => {
-      const reason = window.prompt("What's wrong with this message? (optional)");
+    // Translators: a button that reports a message on a Space's board
+    actions.appendChild(smallButton(window.tr("Report"), async () => {
+      const reason = window.prompt(window.tr("What's wrong with this message? (optional)"));
       if (reason === null) return;
       try {
         await postForm(`/api/space_messages/${m.id}/report`, { reason });
-        boardNote("Thanks: the site's admins will take a look.");
+        boardNote(window.tr("Thanks: the site's admins will take a look."));
       } catch (e) {
         boardNote(e.message, true);
       }
     }));
   }
   if (m.may_remove) {
-    actions.appendChild(smallButton("Remove", async () => {
-      if (!window.confirm("Remove this message from the board for everyone?")) return;
+    // Translators: a button that removes a message from a Space's board for everyone
+    actions.appendChild(smallButton(window.tr("Remove"), async () => {
+      if (!window.confirm(window.tr("Remove this message from the board for everyone?"))) return;
       try {
         await postForm(`/api/space_messages/${m.id}/remove`);
         row.remove();
@@ -682,7 +719,11 @@ function wireBoard() {
       const box = byId("space-board");
       box.scrollTop = box.scrollHeight;
     } catch (e) {
-      boardNote(e.message, true);
+      // the server's "not open" and "join first" refusals (helpers/spaces.py) only say the board can't be written on
+      // yet: like the board's own lines, the next draw takes them away once it can be
+      const standing = e.message === window.tr("The board is open while the Space is live.")
+        || e.message === window.tr("Join the Space to write in its chat.");
+      boardNote(e.message, true, standing);
     } finally {
       input.disabled = false;
       input.focus();
@@ -721,7 +762,7 @@ function drawThread(thread) {
   byId("space-updates-live").hidden = !thread.live;
   const summary = byId("space-summary");
   if (thread.summary_hidden) {
-    summary.textContent = "The summary is hidden by your word filter.";
+    summary.textContent = window.tr("The summary is hidden by your word filter.");
     summary.hidden = false;
   } else if (thread.summary_html) {
     summary.innerHTML = thread.summary_html;          // stored sanitized when it was written (helpers/sanitize.py)
@@ -752,14 +793,15 @@ function drawUpdate(u) {
   }
   if (u.struck) {
     const tag = document.createElement("span");
-    tag.textContent = "Corrected";
+    // Translators: beside a live update its writer crossed out
+    tag.textContent = window.tr("Corrected");
     meta.appendChild(tag);
   }
   row.appendChild(meta);
   const body = document.createElement("div");
   body.className = "update-body";
   if (u.hidden) {
-    body.textContent = "Hidden by your word filter";
+    body.textContent = window.tr("Hidden by your word filter");
   } else {
     body.innerHTML = u.body_html || "";          // stored sanitized when it was written (helpers/sanitize.py)
     for (const a of body.querySelectorAll("a")) {
@@ -772,15 +814,15 @@ function drawUpdate(u) {
     const actions = document.createElement("div");
     actions.className = "board-actions";
     actions.style.paddingLeft = "0";
-    actions.appendChild(smallButton(u.struck ? "Undo correction" : "Cross out", async () => {
+    actions.appendChild(smallButton(u.struck ? window.tr("Undo correction") : window.tr("Cross out"), async () => {
       try {
         replaceUpdate(await postForm(`/api/live_updates/${u.id}/strike`, { on: u.struck ? "0" : "1" }));
       } catch (e) {
         say(e.message, true);
       }
     }));
-    actions.appendChild(smallButton("Delete", async () => {
-      if (!window.confirm("Delete this update?")) return;
+    actions.appendChild(smallButton(window.tr("Delete"), async () => {
+      if (!window.confirm(window.tr("Delete this update?"))) return;
       try {
         await postForm(`/api/live_updates/${u.id}/delete`);
         replaceUpdate({ id: u.id, gone: true });
@@ -928,7 +970,7 @@ async function join() {
 
 async function joinSpace() {
   byId("space-join").disabled = true;
-  say("Joining…");
+  say(window.tr("Joining…"));
   resumeAudio();
   if (navigator.locks) {
     const got = await new Promise((resolve) => {
@@ -939,7 +981,7 @@ async function joinSpace() {
     });
     if (!got) {
       byId("space-join").disabled = false;
-      return say("A call or a Space is already open in another window.", true);
+      return say(window.tr("A call or a Space is already open in another window."), true);
     }
   }
   try {
@@ -958,7 +1000,7 @@ async function joinSpace() {
   }
   if (!turn || !turn.uris || !turn.uris.length) {
     await api("leave").catch(() => {});
-    return say("Spaces are unavailable right now. Try again later.", true);
+    return say(window.tr("Spaces are unavailable right now. Try again later."), true);
   }
   // in the Space's room before anyone connects: that is how this browser learns the others' devices
   if (state.data.room_id) await inRoom(state.data.room_id);
@@ -1032,7 +1074,7 @@ async function beat() {
   if (!state.joined || state.ended) return;
   try {
     const data = await api("heartbeat");
-    if (!data.in_space) return finish(data.reason || (data.status === "ended" ? "This Space has ended." : "You're no longer in this Space."));
+    if (!data.in_space) return finish(data.reason || (data.status === "ended" ? window.tr("This Space has ended.") : window.tr("You're no longer in this Space.")));
     const wasOnStage = onStage();
     state.data = data;
     if (onStage() && !wasOnStage) await micOn();
@@ -1048,7 +1090,7 @@ async function beat() {
 
 async function leave(reason) {
   if (state.joined && !state.ended) await api("leave").catch(() => {});
-  finish(reason || "You left the Space.");
+  finish(reason || window.tr("You left the Space."));
 }
 
 async function finish(reason) {
@@ -1088,7 +1130,8 @@ function wire() {
     if (!state.media) return;
     state.media.setMuted(!state.media.muted);
     byId("space-mute").setAttribute("aria-pressed", String(state.media.muted));
-    byId("space-mute-label").textContent = state.media.muted ? "Unmute" : "Mute";
+    // Translators: the microphone button in a Space's call: what pressing it does
+    byId("space-mute-label").textContent = state.media.muted ? window.tr("Unmute") : window.tr("Mute");
   });
   byId("space-camera").addEventListener("click", () => {
     const on = !!(state.media && state.media.videoTrack && !state.media.cameraOff);
@@ -1096,10 +1139,10 @@ function wire() {
     else cameraOn();
   });
   byId("space-end").addEventListener("click", async () => {
-    if (!window.confirm("End this Space for everyone?")) return;
+    if (!window.confirm(window.tr("End this Space for everyone?"))) return;
     try {
       await api("end");
-      finish("You ended the Space.");
+      finish(window.tr("You ended the Space."));
     } catch (e) {
       say(e.message, true);
     }
@@ -1107,11 +1150,11 @@ function wire() {
   const endBoard = byId("space-end-board");
   if (endBoard) {
     endBoard.addEventListener("click", async () => {
-      if (!window.confirm("End this Space for everyone?")) return;
+      if (!window.confirm(window.tr("End this Space for everyone?"))) return;
       try {
         await api("end");
         endBoard.hidden = true;
-        finish("You ended the Space.");
+        finish(window.tr("You ended the Space."));
       } catch (e) {
         say(e.message, true);
       }
@@ -1143,11 +1186,11 @@ function wire() {
     });
   }
   byId("space-report").addEventListener("click", async () => {
-    const reason = window.prompt("What's wrong with this Space? (optional)") ;
+    const reason = window.prompt(window.tr("What's wrong with this Space? (optional)")) ;
     if (reason === null) return;
     try {
       await api("report", { reason });
-      say("Thanks: the site's admins will take a look.");
+      say(window.tr("Thanks: the site's admins will take a look."));
     } catch (e) {
       say(e.message, true);
     }
@@ -1176,16 +1219,16 @@ function wire() {
   // a reader waiting on a scheduled Space gets the live page; never one that is joining it right now (the host who
   // pressed Start hears this too)
   bus.on("space.started", () => { if (!state.joined && !state.joining) window.location.reload(); });
-  bus.on("space.ended", () => finish("This Space has ended."));
+  bus.on("space.ended", () => finish(window.tr("This Space has ended.")));
   bus.on("space.invited", beatSoon);
   bus.on("space.listening", () => beat().then(() => micOff()));
-  bus.on("space.removed", () => finish("You were removed from this Space."));
+  bus.on("space.removed", () => finish(window.tr("You were removed from this Space.")));
   bus.on("space.mute", () => {
     if (!state.media) return;
     state.media.setMuted(true);
     byId("space-mute").setAttribute("aria-pressed", "true");
-    byId("space-mute-label").textContent = "Unmute";
-    say("The host asked you to mute.");
+    byId("space-mute-label").textContent = window.tr("Unmute");
+    say(window.tr("The host asked you to mute."));
   });
 }
 
@@ -1202,7 +1245,7 @@ function wireVotes() {
   if (!up) return;
   const vote = async (dir) => {
     const v = boot.votes;
-    if (v.locked) return say("Your vote is on another copy of this Space, or it can't change any more.", true);
+    if (v.locked) return say(window.tr("Your vote is on another copy of this Space, or it can't change any more."), true);
     const next = v.mine === dir ? 0 : dir;
     try {
       const resp = await fetch(`/api/vote/post/${boot.postId}/${next}`, {
@@ -1210,7 +1253,7 @@ function wireVotes() {
         body: new URLSearchParams({ formkey: boot.formkey }),
       });
       const data = await resp.json().catch(() => ({}));
-      if (!resp.ok) throw new Error(data.error || "The vote didn't go through.");
+      if (!resp.ok) throw new Error(data.error || window.tr("The vote didn't go through."));
       v.score += next - v.mine;
       v.mine = next;
       drawVotes();
@@ -1225,9 +1268,9 @@ function wireVotes() {
     copy.addEventListener("click", async () => {
       try {
         await navigator.clipboard.writeText(window.location.origin + boot.permalink);
-        say("Link copied.");
+        say(window.tr("Link copied."));
       } catch (e) {
-        say("The link couldn't be copied.", true);
+        say(window.tr("The link couldn't be copied."), true);
       }
     });
   }

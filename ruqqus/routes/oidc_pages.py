@@ -14,7 +14,8 @@ from flask import *
 
 from ruqqus.helpers.wrappers import *
 from ruqqus.helpers import oidc_provider as oidc
-from ruqqus.helpers.alerts import send_notification
+from ruqqus.helpers.alerts import notify
+from ruqqus.helpers.i18n_runtime import N_, tr, tr_lazy
 from ruqqus.classes import *
 from ruqqus.__main__ import app, limiter, r
 
@@ -59,8 +60,8 @@ def _chat_ready(user_id):
 
 
 ERRORS = {
-    "unknown_client": "This sign-in request didn't come from a chat app this site knows.",
-    "bad_redirect": "This sign-in request didn't come from a chat app this site knows.",
+    "unknown_client": tr_lazy("This sign-in request didn't come from a chat app this site knows."),
+    "bad_redirect": tr_lazy("This sign-in request didn't come from a chat app this site knows."),
 }
 
 
@@ -124,7 +125,7 @@ def oidc_authorize_post(v):
     if oidc.account_refusal(v, _chat_ready(v.id)):
         return _consent(v, args, status=403)
     if not v.verifyPass(request.form.get("password", "")):
-        return _consent(v, args, error="That password isn't right.", status=401)
+        return _consent(v, args, error=tr("That password isn't right."), status=401)
     now = int(time.time())
     code = secrets.token_urlsafe(32)
     r.setex("oidc:code:" + oidc.digest(code), oidc.CODE_SECONDS,
@@ -173,9 +174,8 @@ def oidc_token():
     r.setex("oidc:token:" + oidc.digest(access), oidc.TOKEN_SECONDS, str(user.id))
     id_token = oidc.sign(oidc.id_claims(_issuer(), CLIENT_ID, user.id, record.get("nonce"), record["auth_time"], now), _key())
     try:
-        send_notification(user, f"A chat app was signed in to your {app.config['SITE_NAME']} account. If that "
-                                "wasn't you, sign it out in [Settings > Chat apps](/settings/chat_apps) and change "
-                                "your password.")
+        notify(user, N_("A chat app was signed in to your %(site)s account. If that wasn't you, sign it out in "
+                        "[Settings > Chat apps](/settings/chat_apps) and change your password."))
     except Exception as e:  # the sign-in stands; the notice is best effort
         print(f"chat app sign-in notice not sent: {type(e).__name__}", flush=True)
     return _no_store(jsonify({"access_token": access, "token_type": "Bearer", "expires_in": oidc.TOKEN_SECONDS,

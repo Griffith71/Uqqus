@@ -9,7 +9,7 @@
   changed. Not here, on purpose: circles, anonymous, co-authors (the authors are the co-authors), polls.
 #}
 {% block title %}
-<title>{{ doc[2] or 'Untitled draft' }} - Shared draft - {{ 'SITE_NAME' | app_config }}</title>
+<title>{{ doc[2] or _('Untitled draft') }} - {{ _('Shared draft') }} - {{ 'SITE_NAME' | app_config }}</title>
 <meta name="robots" content="noindex">
 {% endblock %}
 
@@ -23,78 +23,78 @@
 
     <div class="col col-md-6 p-3 py-md-0 submit-main-col">
 
-      <h1 class="d-none d-md-block composer-heading">Write with others</h1>
+      <h1 class="d-none d-md-block composer-heading">{{ _("Write with others") }}</h1>
       {{ composer_modes("together") }}
-      <h2 class="h3 d-md-none composer-heading">Write with others</h2>
+      <h2 class="h3 d-md-none composer-heading">{{ _("Write with others") }}</h2>
 
       <div class="body composer-card" id="collab-editor" data-doc="{{ doc[0] }}" data-revision="{{ doc[4] }}" data-me="{{ v.id }}">
 
         <div class="composer-head">
           <img src="{{ v.profile_url }}" class="composer-avatar" alt="">
           <div class="composer-who">
-            <span class="composer-name">Shared draft</span>
-            <span class="composer-where">{{ authors | length }} author{{ 's' if authors | length != 1 else '' }} · everything you type is credited to you</span>
+            <span class="composer-name">{{ _("Shared draft") }}</span>
+            <span class="composer-where">{{ ngettext("%(num)s author", "%(num)s authors", authors | length) }} · {{ _("everything you type is credited to you") }}</span>
           </div>
-          <span class="collab-status text-muted text-small" role="status" aria-live="polite" id="collab-status">Saved</span>
+          <span class="collab-status text-muted text-small" role="status" aria-live="polite" id="collab-status">{{ _("Saved") }}</span>
         </div>
 
-        <label for="collab-title" class="sr-only">Title</label>
+        <label for="collab-title" class="sr-only">{{ _("Title") }}</label>
         <div class="composer-title-wrap">
-          <input type="text" id="collab-title" class="form-control rounded composer-title-input collab-title" maxlength="{{ title_max }}" placeholder="Title" aria-label="Post title" value="{{ doc[2] }}" autocomplete="off" data-field="title">
+          <input type="text" id="collab-title" class="form-control rounded composer-title-input collab-title" maxlength="{{ title_max }}" placeholder="{{ _('Title') }}" aria-label="{{ _('Post title') }}" value="{{ doc[2] }}" autocomplete="off" data-field="title">
         </div>
 
         <div class="comment-write post-editor collab-body-wrap mt-2">
-          <label for="collab-body" class="sr-only">Text</label>
+          <label for="collab-body" class="sr-only">{{ pgettext("post body", "Text") }}</label>
           <div class="post-toolbar" data-target="collab-body"></div>
           <div class="input-group">
-            <textarea id="collab-body" class="comment-box form-control rounded collab-body" rows="14" maxlength="{{ body_max }}" aria-label="Post text" placeholder="Write together…" data-field="body">{{ doc[3] }}</textarea>
+            <textarea id="collab-body" class="comment-box form-control rounded collab-body" rows="14" maxlength="{{ body_max }}" aria-label="{{ _('Post text') }}" placeholder="{{ _('Write together…') }}" data-field="body">{{ doc[3] }}</textarea>
           </div>
           <div class="post-preview d-none"></div>
         </div>
 
-        <div class="form-text text-small"><a href="/help/formatting" target="_blank">Formatting help</a></div>
+        <div class="form-text text-small"><a href="/help/formatting" target="_blank">{{ _("Formatting help") }}</a></div>
 
         <div class="collab-here text-muted text-small mt-2" id="collab-here" aria-live="polite"></div>
         <div class="alert alert-warning text-small mt-2" id="collab-notice" role="alert" hidden></div>
 
-        <div class="composer-tools" role="toolbar" aria-label="Add to your post">
-          <button type="button" id="collab-link-btn" class="composer-tool" title="Add a link" aria-label="Add a link" aria-controls="collab-link-row" aria-expanded="{{ 'true' if options.url else 'false' }}"><i class="fas fa-link"></i></button>
-          <button type="button" class="composer-tool composer-tool-text" id="gif-title-btn" onclick="getGif();commentForm('collab-body')" data-toggle="modal" data-target="#gifModal" title="Add a GIF" aria-label="Add a GIF">GIF</button>
-          <button type="button" class="composer-tool" id="emoji-title-btn" onclick="commentForm('collab-body');loadEmojis()" data-toggle="modal" data-target="#emojiModal" title="Add an emoji" aria-label="Add an emoji"><i class="fas fa-smile-beam"></i></button>
+        <div class="composer-tools" role="toolbar" aria-label="{{ _('Add to your post') }}">
+          <button type="button" id="collab-link-btn" class="composer-tool" title="{{ _('Add a link') }}" aria-label="{{ _('Add a link') }}" aria-controls="collab-link-row" aria-expanded="{{ 'true' if options.url else 'false' }}"><i class="fas fa-link"></i></button>
+          <button type="button" class="composer-tool composer-tool-text" id="gif-title-btn" onclick="getGif();commentForm('collab-body')" data-toggle="modal" data-target="#gifModal" title="{{ _('Add a GIF') }}" aria-label="{{ _('Add a GIF') }}">GIF</button>
+          <button type="button" class="composer-tool" id="emoji-title-btn" onclick="commentForm('collab-body');loadEmojis()" data-toggle="modal" data-target="#emojiModal" title="{{ _('Add an emoji') }}" aria-label="{{ _('Add an emoji') }}"><i class="fas fa-smile-beam"></i></button>
         </div>
 
         <div id="collab-options" data-url="/api/collab/{{ doc[0] }}/options">
 
           <div id="collab-link-row" class="mt-2"{% if not options.url %} hidden{% endif %}>
-            <label for="collab-url" class="mt-2">Link (optional)</label>
+            <label for="collab-url" class="mt-2">{{ _("Link (optional)") }}</label>
             <input type="url" id="collab-url" name="url" class="form-control" maxlength="2048" placeholder="https://" value="{{ options.url or '' }}" autocomplete="off">
           </div>
 
           <div class="composer-forward">
-            <label for="forward_guild_input" class="mt-3">Forward to guilds (optional)<i class="fas fa-info-circle text-gray-400 ml-1" data-toggle="tooltip" data-placement="top" title="The post appears on the profile of whoever publishes it first. Optionally forward it into guilds for community discussion: each guild gets its own independent copy with its own votes and comments. Guilds are forwarded to when the draft is first published."></i></label>
+            <label for="forward_guild_input" class="mt-3">{{ _("Forward to guilds (optional)") }}<i class="fas fa-info-circle text-gray-400 ml-1" data-toggle="tooltip" data-placement="top" title="{{ _('The post appears on the profile of whoever publishes it first. Optionally forward it into guilds for community discussion: each guild gets its own independent copy with its own votes and comments. Guilds are forwarded to when the draft is first published.') }}"></i></label>
             <div id="forward-guild-chips" class="mb-2"></div>
             <div id="forward_guild_inputs"></div>
             <div class="input-group">
-              <input class="form-control" id="forward_guild_input" type="text" placeholder="Type a guild name and press Enter" onkeydown="if(event.key==='Enter'){event.preventDefault();addForwardGuild();}">
+              <input class="form-control" id="forward_guild_input" type="text" placeholder="{{ _('Type a guild name and press Enter') }}" onkeydown="if(event.key==='Enter'){event.preventDefault();addForwardGuild();}">
               <div class="input-group-append">
-                <button class="btn btn-secondary" type="button" onclick="addForwardGuild()"{% if doc[7] %} disabled title="Already published: forward it from the post's menu"{% endif %}>Add</button>
+                <button class="btn btn-secondary" type="button" onclick="addForwardGuild()"{% if doc[7] %} disabled title="{{ _("Already published: forward it from the post's menu") }}"{% endif %}>{{ pgettext("button", "Add") }}</button>
               </div>
             </div>
-            {% if doc[7] %}<small class="form-text text-muted">Already published. Forward the post to more guilds from its menu.</small>{% endif %}
+            {% if doc[7] %}<small class="form-text text-muted">{{ _("Already published. Forward the post to more guilds from its menu.") }}</small>{% endif %}
           </div>
 
           <details class="composer-more">
-            <summary><span>More options</span><i class="fas fa-chevron-down composer-pill-caret"></i></summary>
+            <summary><span>{{ _("More options") }}</span><i class="fas fa-chevron-down composer-pill-caret"></i></summary>
             <div class="composer-more-body">
               {{ post_options.comment_permission_field(options.comment_permission, "collab-cp") }}
               {{ post_options.disclosure_field(options.paid_partnership, options.made_with_ai, "collab-disc") }}
 
-              <label for="collab-sensitive" class="text-warning mt-3">Sensitive Content?<i class="fas fa-info-circle text-gray-400 ml-1" data-toggle="tooltip" data-placement="top" title="Not a rule violation - just something that could be upsetting. Shown blurred with a click-to-reveal instead of being blocked."></i></label>
+              <label for="collab-sensitive" class="text-warning mt-3">{{ _("Sensitive Content?") }}<i class="fas fa-info-circle text-gray-400 ml-1" data-toggle="tooltip" data-placement="top" title="{{ _('Not a rule violation - just something that could be upsetting. Shown blurred with a click-to-reveal instead of being blocked.') }}"></i></label>
               <div class="custom-control custom-checkbox">
                 <input type="checkbox" class="custom-control-input" id="collab-sensitive" name="sensitive"{% if options.sensitive %} checked{% endif %}>
-                <label class="custom-control-label" for="collab-sensitive">Blur this post until viewers click to reveal it.</label>
+                <label class="custom-control-label" for="collab-sensitive">{{ _("Blur this post until viewers click to reveal it.") }}</label>
               </div>
-              <p class="text-muted text-small mt-3 mb-0">A post written together is public and can't be anonymous, shared with circles, or have a poll. Its authors are its co-authors. These options are shared by every author and used each time you publish.</p>
+              <p class="text-muted text-small mt-3 mb-0">{{ _("A post written together is public and can't be anonymous, shared with circles, or have a poll. Its authors are its co-authors. These options are shared by every author and used each time you publish.") }}</p>
             </div>
           </details>
           <div class="text-small text-muted mt-2" id="collab-options-status" role="status" aria-live="polite"></div>
@@ -120,14 +120,14 @@
 <div class="container">
   <div class="row fixed-bottom composer-bar p-3" style="z-index: 100; bottom: 0px;">
     <div class="col">
-      <a href="/collab" class="btn btn-link text-muted px-2">Back</a>
+      <a href="/collab" class="btn btn-link text-muted px-2">{{ pgettext("button", "Back") }}</a>
     </div>
     <div class="col text-right">
       <span class="text-danger small mr-2" id="collab-publish-error" role="alert" hidden></span>
-      <a class="btn btn-link text-muted px-2" href="/collab/{{ doc[0] }}/written_by"><i class="fas fa-palette fa-fw" aria-hidden="true"></i><span class="d-none d-md-inline ml-1">Who wrote what</span></a>
-      {% if post %}<a class="btn btn-link text-muted px-2" href="{{ post.permalink }}">See the post</a>{% endif %}
+      <a class="btn btn-link text-muted px-2" href="/collab/{{ doc[0] }}/written_by"><i class="fas fa-palette fa-fw" aria-hidden="true"></i><span class="d-none d-md-inline ml-1">{{ _("Who wrote what") }}</span></a>
+      {% if post %}<a class="btn btn-link text-muted px-2" href="{{ post.permalink }}">{{ _("See the post") }}</a>{% endif %}
       <button type="button" class="btn btn-purple" id="collab-publish" data-url="/api/collab/{{ doc[0] }}/publish">
-        {% if doc[7] %}Publish changes{% else %}Publish{% endif %}
+        {% if doc[7] %}{{ _("Publish changes") }}{% else %}{{ pgettext("button", "Publish") }}{% endif %}
       </button>
     </div>
   </div>

@@ -1,7 +1,7 @@
 {% extends "errors/default.html" %}
 
 {% block title %}
-<title>429 Too Many Requests</title>
+<title>{{ _("429 Too Many Requests") }}</title>
 {% endblock %}
 
 {% block pagetype %}error-429{% endblock %}
@@ -11,8 +11,8 @@
 	<div class="col-10 col-md-5">
 	<div class="text-center px-3 my-8">
 			<i class="fas fa-tornado text-muted mb-5" style="font-size: 5rem;"></i>
-			<h1 class="h5">429 Too Many Requests</h1>
-			<p class="text-muted mb-5">Slow down there, friend! The royal guard doesn't like it when you go that fast!</p>
+			<h1 class="h5">{{ _("429 Too Many Requests") }}</h1>
+			<p class="text-muted mb-5">{{ _("Slow down there, friend! The royal guard doesn't like it when you go that fast!") }}</p>
 		</div>
 	</div>
 </div>

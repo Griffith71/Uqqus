@@ -93,7 +93,7 @@ def test_premium_is_checked_without_the_renewing_property():
     assert "has_premium_no_renew" in ROUTES
     assert not re.search(r"\.has_premium\b(?!_)", ROUTES)               # the has_premium property renews as a side effect
     assert ROUTES.count("if not v.has_premium_no_renew:") == 3
-    assert 'return jsonify({"error": "Post insights are for Premium accounts."}), 403' in ROUTES
+    assert 'return jsonify({"error": tr("Post insights are for Premium accounts.")}), 403' in ROUTES
     assert 'render_template("insights_locked.html", v=v, post=primary)' in ROUTES
     assert 'href="/settings/premium"' in LOCKED
 
@@ -122,7 +122,7 @@ def test_the_pages_draw_no_names_and_escape_everything_but_the_title():
 
 
 def test_the_charts_have_a_table_for_anyone_who_cannot_see_the_bars():
-    assert 'role="img" aria-label="{{ name }} per day' in PAGE and "<summary>Show as a table</summary>" in PAGE
+    assert 'role="img" aria-label="{{ ngettext(\'%(name)s per day' in PAGE and '<summary>{{ _("Show as a table") }}</summary>' in PAGE
     assert "{{ chart(data.views_chart," in PAGE and "{{ chart(data.engagement_chart," in PAGE
 
 

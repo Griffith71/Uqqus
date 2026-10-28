@@ -10,6 +10,7 @@ from flask import abort, g, jsonify, redirect, render_template, request
 from ruqqus.classes import MediaAsset
 from ruqqus.helpers import bell as bell_rules, circle_guard, circle_store, circles, stories as rules, story_store
 from ruqqus.helpers.get import get_user
+from ruqqus.helpers.i18n_runtime import msg, tr, trn
 from ruqqus.helpers.media import attach as media_attach, safety as media_safety
 from ruqqus.helpers.visibility import text_hidden, user_hidden
 from ruqqus.helpers.word_filter_store import get_filter
@@ -18,6 +19,8 @@ from ruqqus.__main__ import app
 
 
 def _fail(message, status=400):
+    """An error answer. `message` is shown as it is: translated already (tr), or English marked in a helper drawn with
+    msg at the call."""
     return jsonify({"error": message}), status
 
 
@@ -144,23 +147,24 @@ def _owner_by_id(user_id, v):
 def story_create(v):
     kind, error = rules.parse_kind(request.form.get("kind"))
     if error:
-        return _fail(error)
+        return _fail(msg(error))
     audience, tokens, error = circles.parse_audience(request.form.get("audience"), request.form.getlist("circles"))
     if error:
-        return _fail(error)
+        return _fail(msg(error))
     circle_ids, error = circle_store.resolve(g.db, v.id, tokens) if audience == circles.CIRCLES else ([], None)
     if error:
-        return _fail(error)
+        return _fail(msg(error))
     body, error = rules.clean_text(request.form.get("text"))
     if error:
-        return _fail(error)
+        return _fail(msg(error))
     video_ref = rules.parse_video(request.form.get("video")) if kind == rules.VIDEO else ""
     picture = media_attach.own_asset(g.db, v.id, request.form.get("media"), kinds=("image",)) if kind == rules.IMAGE else None
     refusal = rules.refusal(kind, audience, body, picture is not None, video_ref)
     if refusal:
-        return _fail(refusal)
+        return _fail(msg(refusal))
     if story_store.count_today(g.db, v.id) >= rules.DAILY_MAX:
-        return _fail(f"You can share {rules.DAILY_MAX} stories in a day. Try again later.", 429)
+        return _fail(trn("You can share %(num)s story in a day. Try again later.",
+                          "You can share %(num)s stories in a day. Try again later.", rules.DAILY_MAX), 429)
 
     severity = get_filter(g.db).severity(body) if body else 0           # the words go through the word filter like any text
     story_id = story_store.create(g.db, v.id, kind, body, rules.parse_background(request.form.get("background")), video_ref, audience, severity)
@@ -168,14 +172,14 @@ def story_create(v):
         circle_store.set_story_circles(g.db, story_id, circle_ids)
     if picture is not None and not story_store.attach_picture(g.db, story_id, picture.id, v.id):
         g.db.rollback()
-        return _fail("That picture is already used somewhere else. Upload it again.")
+        return _fail(tr("That picture is already used somewhere else. Upload it again."))
     g.db.commit()
     if picture is not None:
         media_safety.scan_later([g.db.query(MediaAsset).filter_by(id=picture.id).first()])
     # the author's bell (helpers/bell.py): a story for circles reaches only the people in them
     bell_rules.ring_account(v, bell_rules.STORY, story_id, v.permalink,
                             only=circle_store.eligible_ids(g.db, v.id, circle_ids) if audience == circles.CIRCLES else None)
-    return _private({"id": story_id, "message": "Your story is up for 24 hours."})
+    return _private({"id": story_id, "message": tr("Your story is up for 24 hours.")})
 
 
 @app.route("/api/stories/<int:sid>/delete", methods=["POST"])
@@ -185,7 +189,7 @@ def story_delete(sid, v):
     if not story_store.delete(g.db, sid, v.id):
         abort(404)
     g.db.commit()
-    return _private({"message": "Story deleted."})
+    return _private({"message": tr("Story deleted.")})
 
 
 @app.route("/api/stories/<int:sid>/report", methods=["POST"])
@@ -196,15 +200,15 @@ def story_report(sid, v):
     if row is None:
         abort(404)
     if row.user_id == v.id:
-        return _fail("That's your own story.")
+        return _fail(tr("That's your own story."))
     _owner_by_id(row.user_id, v)          # the profile's own gates, as the lists and Highlights ask (bug hunt)
     if not (any(r.id == sid for r in story_store.watchable(g.db, row.user_id, v))
             or story_store.kept_in_highlight(g.db, row, v)):
         abort(404)
     if not story_store.report(g.db, sid, v.id, rules.parse_reason(request.form.get("reason"))):
-        return _fail("You already reported this story.", 409)
+        return _fail(tr("You already reported this story."), 409)
     g.db.commit()
-    return _private({"message": "Thanks. A moderator will look at it."})
+    return _private({"message": tr("Thanks. A moderator will look at it.")})
 
 
 @app.route("/api/stories/archive", methods=["GET"])
@@ -222,13 +226,13 @@ def story_archive(v):
 def highlight_create(v):
     title, error = rules.parse_title(request.form.get("title"))
     if error:
-        return _fail(error)
+        return _fail(msg(error))
     hid, error = story_store.create_highlight(g.db, v.id, title, request.form.getlist("story"))
     if error:
         g.db.rollback()
-        return _fail(error)
+        return _fail(msg(error))
     g.db.commit()
-    return _private({"id": hid, "message": "Highlight saved."})
+    return _private({"id": hid, "message": tr("Highlight saved.")})
 
 
 @app.route("/api/highlights/<int:hid>/rename", methods=["POST"])
@@ -237,11 +241,11 @@ def highlight_create(v):
 def highlight_rename(hid, v):
     title, error = rules.parse_title(request.form.get("title"))
     if error:
-        return _fail(error)
+        return _fail(msg(error))
     if not story_store.rename_highlight(g.db, v.id, hid, title):
         abort(404)
     g.db.commit()
-    return _private({"message": "Renamed."})
+    return _private({"message": tr("Renamed.")})
 
 
 @app.route("/api/highlights/<int:hid>/delete", methods=["POST"])
@@ -251,7 +255,7 @@ def highlight_delete(hid, v):
     if not story_store.delete_highlight(g.db, v.id, hid):
         abort(404)
     g.db.commit()
-    return _private({"message": "Highlight deleted. Its stories are still in your archive."})
+    return _private({"message": tr("Highlight deleted. Its stories are still in your archive.")})
 
 
 # ------------------------------------------------------------------ what a profile draws

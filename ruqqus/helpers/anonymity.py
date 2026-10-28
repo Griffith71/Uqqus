@@ -14,11 +14,18 @@ by author. Never read `.author` / `.author_id` for display directly.
 Kept free of Flask and the database so the rule can be tested; the Jinja
 globals that expose it to templates are registered in routes/anonymity.py.
 """
+from babel.support import LazyProxy
 from sqlalchemy import and_, not_, or_, true
 
 ADMIN_LEVEL = 3          # the same bar as the other "admins may see this" checks
-LABEL = "Anonymous"
+LABEL = "Anonymous"      # the stand-in's handle: English, as a handle is (what a reader reads is `shown`)
 DEFAULT_AVATAR = "/assets/images/profiles/default-profile-pic.png"
+
+
+def shown():
+    """The stand-in's name as the reader reads it (Flask is imported only when a name is drawn)."""
+    from ruqqus.helpers.i18n_runtime import tr
+    return tr("Anonymous")
 
 
 class AnonymousAuthor:
@@ -30,7 +37,7 @@ class AnonymousAuthor:
     username = LABEL
     original_username = LABEL
     display_name = ""
-    shown_name = LABEL
+    shown_name = LazyProxy(shown, enable_cache=False)
     fullname = LABEL
     permalink = "javascript:void(0)"
     permalink_full = "javascript:void(0)"
@@ -49,7 +56,7 @@ class AnonymousAuthor:
         return True
 
     def __str__(self):
-        return LABEL
+        return shown()
 
 
 ANONYMOUS = AnonymousAuthor()
@@ -80,7 +87,7 @@ def author_of(item, viewer):
 
 def label_of(item, viewer):
     """The author's name as text ("Anonymous" when hidden)."""
-    return LABEL if identity_hidden(item, viewer) else item.author.username
+    return shown() if identity_hidden(item, viewer) else item.author.username
 
 
 def op_badge(comment, post, viewer):

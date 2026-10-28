@@ -68,7 +68,7 @@ def test_four_menu_entries_the_sheet_and_the_script_agree():
 
 
 def test_the_sheet_offers_the_same_four_choices_as_the_composers():
-    choices = re.findall(r'\((\d), "([^"]+)"\)', MODAL)
+    choices = re.findall(r'\((\d), _\("([^"]+)"\)\)', MODAL)
     assert choices == [("0", "Everyone"), ("1", "Accounts you follow"), ("2", "Premium accounts"), ("3", "No one")]
     # an anonymous post can't use "Accounts you follow": the sheet greys it out, the server refuses it as well
     assert "data-anonymous" in CARD and "followed.disabled = target.anonymous;" in SCRIPT
@@ -103,6 +103,6 @@ def test_narrowing_to_an_empty_circle_asks_first_and_a_circle_guild_post_is_left
 
 def test_the_help_text_and_claude_md_say_comments_can_be_turned_off():
     options = read("ruqqus", "templates", "partials", "post_options.html")
-    assert '(3, "No one")' in options and "unless you choose No one" in options
+    assert '(3, _("No one"))' in options and "unless you choose No one" in options
     claude = read("CLAUDE.md")
     assert "Who can comment?" in claude and "No one" in claude and "post_commenting.py" in claude

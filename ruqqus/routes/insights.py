@@ -14,6 +14,7 @@ from ruqqus.helpers import insights as rules
 from ruqqus.helpers import insights_store
 from ruqqus.helpers.coauthors import primary_post_id
 from ruqqus.helpers.get import get_post
+from ruqqus.helpers.i18n_runtime import tr
 from ruqqus.helpers.wrappers import auth_required
 from ruqqus.__main__ import app
 
@@ -58,7 +59,7 @@ def post_insights(pid, v):
 def post_insights_json(pid, v):
     primary = _mine(pid, v)
     if not v.has_premium_no_renew:
-        return jsonify({"error": "Post insights are for Premium accounts."}), 403
+        return jsonify({"error": tr("Post insights are for Premium accounts.")}), 403
 
     days = rules.parse_days(request.args.get("days"))
     data = insights_store.report(g.db, primary, v, days, time.time())

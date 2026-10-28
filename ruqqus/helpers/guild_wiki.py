@@ -20,6 +20,10 @@ Pinned resources (Reddit's community bookmarks): up to MAX_RESOURCES buttons und
 import difflib
 import re
 
+from babel.support import LazyProxy
+
+from ruqqus.helpers.i18n_runtime import number_text, tr, tr_lazy, trn
+
 WIKI_MAX = 40_000
 TITLE_MAX = 80
 REASON_MAX = 140
@@ -32,13 +36,14 @@ LABEL_MAX = 40
 
 MODS, APPROVED, MEMBERS = "mods", "approved", "members"
 LEVELS = (MODS, APPROVED, MEMBERS)
-LEVEL_LABELS = {MODS: "Guildmasters", APPROVED: "Guildmasters and approved members",
-                MEMBERS: f"Any member who joined {MEMBER_DAYS}+ days ago"}
+LEVEL_LABELS = {MODS: tr_lazy("Guildmasters"), APPROVED: tr_lazy("Guildmasters and approved members"),
+                MEMBERS: LazyProxy(lambda: trn("Any member who joined %(num)s+ day ago", "Any member who joined %(num)s+ days ago",
+                                               MEMBER_DAYS), enable_cache=False)}
 
 LINK, WIKI, POST = "link", "wiki", "post"
 RESOURCE_KINDS = (LINK, WIKI, POST)
 
-CANT_EDIT = "You can't edit this page."
+CANT_EDIT = tr_lazy("You can't edit this page.")
 INDEX = "index"
 
 _SLUG = re.compile(r"^[a-z0-9](?:[a-z0-9-]{0,38}[a-z0-9])?$")
@@ -54,7 +59,8 @@ def clean_slug(value):
     slug = re.sub(r"[\s_]+", "-", str(value or "").strip().lower())
     slug = re.sub(r"-{2,}", "-", slug).strip("-")
     if not _SLUG.match(slug):
-        raise Refused(f"A page's address is 1 to {SLUG_MAX} letters, digits or dashes.")
+        raise Refused(trn("A page's address is 1 to %(num)s letter, digit or dash.",
+                           "A page's address is 1 to %(num)s letters, digits or dashes.", SLUG_MAX))
     return slug
 
 
@@ -63,16 +69,17 @@ def clean_title(value, slug):
     if not title:
         title = slug.replace("-", " ").capitalize()
     if len(title) > TITLE_MAX:
-        raise Refused(f"A title can be at most {TITLE_MAX} characters.")
+        raise Refused(trn("A title can be at most %(num)s character.", "A title can be at most %(num)s characters.", TITLE_MAX))
     if any(c in title for c in "<>") or any(ord(c) < 32 for c in title):
-        raise Refused("A title is plain text.")
+        raise Refused(tr("A title is plain text."))
     return title
 
 
 def clean_body(value):
     body = str(value or "").replace("\r\n", "\n").strip()
     if len(body) > WIKI_MAX:
-        raise Refused(f"A page can be at most {WIKI_MAX:,} characters.")
+        raise Refused(trn("A page can be at most %(num)s character.", "A page can be at most %(num)s characters.", WIKI_MAX,
+                           num=number_text(WIKI_MAX)))
     return body
 
 
@@ -83,7 +90,7 @@ def clean_reason(value):
 def clean_level(value):
     level = str(value or "").strip()
     if level not in LEVELS:
-        raise Refused("Choose who may edit the page.")
+        raise Refused(tr("Choose who may edit the page."))
     return level
 
 
@@ -95,18 +102,22 @@ def edit_refusal(*, level, locked, is_content_gm, is_contributor, member_days, e
     if is_content_gm:
         return None
     if locked or level == MODS:
-        return "Only the guild's guildmasters can edit this page."
+        return tr("Only the guild's guildmasters can edit this page.")
     if level == APPROVED and not is_contributor:
-        return "Only the guild's guildmasters and approved members can edit this page."
+        return tr("Only the guild's guildmasters and approved members can edit this page.")
     if level == MEMBERS and not is_contributor and (member_days is None or member_days < MEMBER_DAYS):
-        return f"Members can edit this page {MEMBER_DAYS} days after joining the guild."
+        return trn("Members can edit this page %(num)s day after joining the guild.",
+                   "Members can edit this page %(num)s days after joining the guild.", MEMBER_DAYS)
     if edits_today >= EDITS_PER_DAY:
-        return f"You can make {EDITS_PER_DAY} wiki edits a day in a guild. Try again tomorrow."
+        return trn("You can make %(num)s wiki edit a day in a guild. Try again tomorrow.",
+                   "You can make %(num)s wiki edits a day in a guild. Try again tomorrow.", EDITS_PER_DAY)
     return None
 
 
 def page_refusal(pages_now):
-    return f"A guild can have at most {MAX_PAGES} wiki pages." if pages_now >= MAX_PAGES else None
+    if pages_now < MAX_PAGES:
+        return None
+    return trn("A guild can have at most %(num)s wiki page.", "A guild can have at most %(num)s wiki pages.", MAX_PAGES)
 
 
 def diff(old, new):
@@ -129,36 +140,38 @@ def diff(old, new):
 def clean_label(value):
     label = _SPACE.sub(" ", str(value or "")).strip()
     if not label:
-        raise Refused("Give the resource a label.")
+        raise Refused(tr("Give the resource a label."))
     if len(label) > LABEL_MAX:
-        raise Refused(f"A label can be at most {LABEL_MAX} characters.")
+        raise Refused(trn("A label can be at most %(num)s character.", "A label can be at most %(num)s characters.", LABEL_MAX))
     if any(c in label for c in "<>") or any(ord(c) < 32 for c in label):
-        raise Refused("A label is plain text.")
+        raise Refused(tr("A label is plain text."))
     return label
 
 
 def clean_resource_target(kind, value):
     """(kind, target): a link (checked like a profile's website), a wiki page's slug, or a post's base 36 id."""
     if kind not in RESOURCE_KINDS:
-        raise Refused("Choose a link, a wiki page or a post.")
+        raise Refused(tr("Choose a link, a wiki page or a post."))
     value = str(value or "").strip()
     if kind == LINK:
         from ruqqus.helpers import profile_details
         try:
-            url = profile_details.clean_website(value)
+            url = profile_details.clean_website(value, link=True)
         except profile_details.Refused as e:
-            raise Refused(str(e).replace("The website", "The link").replace("website", "link"))
+            raise Refused(str(e))
         if not url:
-            raise Refused("Give the link's address.")
+            raise Refused(tr("Give the link's address."))
         return kind, url
     if kind == WIKI:
         return kind, clean_slug(value)
     value = value.lower()
     found = re.search(r"/post/([0-9a-z]{1,10})(?:[/?#]|$)", value) or re.fullmatch(r"([0-9a-z]{1,10})", value)
     if not found:
-        raise Refused("Give the post's address or id.")
+        raise Refused(tr("Give the post's address or id."))
     return kind, found.group(1)
 
 
 def resources_refusal(count):
-    return f"A guild can have at most {MAX_RESOURCES} resources." if count >= MAX_RESOURCES else None
+    if count < MAX_RESOURCES:
+        return None
+    return trn("A guild can have at most %(num)s resource.", "A guild can have at most %(num)s resources.", MAX_RESOURCES)

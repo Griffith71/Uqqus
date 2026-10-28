@@ -454,7 +454,7 @@ $('#new_email').on('input', function () {
 			container.innerHTML = '';
 
 			if (searchTerm == undefined) {
-				container.innerHTML = '<div class="card" onclick="getGif(\'agree\');" style="overflow: hidden;"> <div class="gif-cat-overlay"> <div style="position: relative;top: 50%;transform: translateY(-50%);color: #ffffff;font-weight: bold;">Agree</div> </div> <img class="img-fluid" src="https://media.giphy.com/media/wGhYz3FHaRJgk/200w_d.gif"> </div> <div class="card" onclick="getGif(\'laugh\');" style="overflow: hidden;"> <div class="gif-cat-overlay"> <div style="position: relative;top: 50%;transform: translateY(-50%);color: #ffffff;font-weight: bold;">Laugh</div> </div> <img class="img-fluid" src="https://media.giphy.com/media/O5NyCibf93upy/200w_d.gif"> </div> <div class="card" onclick="getGif(\'confused\');" style="overflow: hidden;"> <div class="gif-cat-overlay"> <div style="position: relative;top: 50%;transform: translateY(-50%);color: #ffffff;font-weight: bold;">Confused</div> </div> <img class="img-fluid" src="https://media.giphy.com/media/3o7btPCcdNniyf0ArS/200w_d.gif"> </div> <div class="card" onclick="getGif(\'sad\');" style="overflow: hidden;"> <div class="gif-cat-overlay"> <div style="position: relative;top: 50%;transform: translateY(-50%);color: #ffffff;font-weight: bold;">Sad</div> </div> <img class="img-fluid" src="https://media.giphy.com/media/ISOckXUybVfQ4/200w_d.gif"> </div> <div class="card" onclick="getGif(\'happy\');" style="overflow: hidden;"> <div class="gif-cat-overlay"> <div style="position: relative;top: 50%;transform: translateY(-50%);color: #ffffff;font-weight: bold;">Happy</div> </div> <img class="img-fluid" src="https://media.giphy.com/media/XR9Dp54ZC4dji/200w_d.gif"> </div> <div class="card" onclick="getGif(\'awesome\');" style="overflow: hidden;"> <div class="gif-cat-overlay"> <div style="position: relative;top: 50%;transform: translateY(-50%);color: #ffffff;font-weight: bold;">Awesome</div> </div> <img class="img-fluid" src="https://media.giphy.com/media/3ohzdIuqJoo8QdKlnW/200w_d.gif"> </div> <div class="card" onclick="getGif(\'yes\');" style="overflow: hidden;"> <div class="gif-cat-overlay"> <div style="position: relative;top: 50%;transform: translateY(-50%);color: #ffffff;font-weight: bold;">Yes</div> </div> <img class="img-fluid" src="https://media.giphy.com/media/J336VCs1JC42zGRhjH/200w_d.gif"> </div> <div class="card" onclick="getGif(\'no\');" style="overflow: hidden;"> <div class="gif-cat-overlay"> <div style="position: relative;top: 50%;transform: translateY(-50%);color: #ffffff;font-weight: bold;">No</div> </div> <img class="img-fluid" src="https://media.giphy.com/media/1zSz5MVw4zKg0/200w_d.gif"> </div> <div class="card" onclick="getGif(\'love\');" style="overflow: hidden;"> <div class="gif-cat-overlay"> <div style="position: relative;top: 50%;transform: translateY(-50%);color: #ffffff;font-weight: bold;">Love</div> </div> <img class="img-fluid" src="https://media.giphy.com/media/4N1wOi78ZGzSB6H7vK/200w_d.gif"> </div> <div class="card" onclick="getGif(\'please\');" style="overflow: hidden;"> <div class="gif-cat-overlay"> <div style="position: relative;top: 50%;transform: translateY(-50%);color: #ffffff;font-weight: bold;">Please</div> </div> <img class="img-fluid" src="https://media.giphy.com/media/qUIm5wu6LAAog/200w_d.gif"> </div> <div class="card" onclick="getGif(\'scared\');" style="overflow: hidden;"> <div class="gif-cat-overlay"> <div style="position: relative;top: 50%;transform: translateY(-50%);color: #ffffff;font-weight: bold;">Scared</div> </div> <img class="img-fluid" src="https://media.giphy.com/media/bEVKYB487Lqxy/200w_d.gif"> </div> <div class="card" onclick="getGif(\'angry\');" style="overflow: hidden;"> <div class="gif-cat-overlay"> <div style="position: relative;top: 50%;transform: translateY(-50%);color: #ffffff;font-weight: bold;">Angry</div> </div> <img class="img-fluid" src="https://media.giphy.com/media/12Pb87uq0Vwq2c/200w_d.gif"> </div> <div class="card" onclick="getGif(\'awkward\');" style="overflow: hidden;"> <div class="gif-cat-overlay"> <div style="position: relative;top: 50%;transform: translateY(-50%);color: #ffffff;font-weight: bold;">Awkward</div> </div> <img class="img-fluid" src="https://media.giphy.com/media/unFLKoAV3TkXe/200w_d.gif"> </div> <div class="card" onclick="getGif(\'cringe\');" style="overflow: hidden;"> <div class="gif-cat-overlay"> <div style="position: relative;top: 50%;transform: translateY(-50%);color: #ffffff;font-weight: bold;">Cringe</div> </div> <img class="img-fluid" src="https://media.giphy.com/media/1jDvQyhGd3L2g/200w_d.gif"> </div> <div class="card" onclick="getGif(\'omg\');" style="overflow: hidden;"> <div class="gif-cat-overlay"> <div style="position: relative;top: 50%;transform: translateY(-50%);color: #ffffff;font-weight: bold;">OMG</div> </div> <img class="img-fluid" src="https://media.giphy.com/media/3o72F8t9TDi2xVnxOE/200w_d.gif"> </div> <div class="card" onclick="getGif(\'why\');" style="overflow: hidden;"> <div class="gif-cat-overlay"> <div style="position: relative;top: 50%;transform: translateY(-50%);color: #ffffff;font-weight: bold;">Why</div> </div> <img class="img-fluid" src="https://media.giphy.com/media/1M9fmo1WAFVK0/200w_d.gif"> </div> <div class="card" onclick="getGif(\'gross\');" style="overflow: hidden;"> <div class="gif-cat-overlay"> <div style="position: relative;top: 50%;transform: translateY(-50%);color: #ffffff;font-weight: bold;">Gross</div> </div> <img class="img-fluid" src="https://media.giphy.com/media/pVAMI8QYM42n6/200w_d.gif"> </div> <div class="card" onclick="getGif(\'meh\');" style="overflow: hidden;"> <div class="gif-cat-overlay"> <div style="position: relative;top: 50%;transform: translateY(-50%);color: #ffffff;font-weight: bold;">Meh</div> </div> <img class="img-fluid" src="https://media.giphy.com/media/xT77XTpyEzJ4OJO06c/200w_d.gif"> </div>'
+				container.innerHTML = gifCategoryCards();
 				backBtn.innerHTML = null;
 				cancelBtn.innerHTML = null;
 				noGIFs.innerHTML = null;
@@ -488,18 +488,18 @@ $('#new_email').on('input', function () {
 					// loop for fetching mutliple GIFs and creating the card divs
 					if (gifs.length) {
 						for (var i = 0; i < gifs.length; i++) {
-							container.innerHTML += ('<div class="card bg-white" style="overflow: hidden" data-dismiss="modal" aria-label="Close" onclick="insertGIF(\'' + gifs[i].url + '\',\'' + commentFormID + '\')"><div class="gif-cat-overlay"></div><img class="img-fluid" src="' + gifs[i].preview + '"></div>');
+							container.innerHTML += ('<div class="card bg-white" style="overflow: hidden" data-dismiss="modal" aria-label="' + escapeHtmlText(tr('Close')) + '" onclick="insertGIF(\'' + gifs[i].url + '\',\'' + commentFormID + '\')"><div class="gif-cat-overlay"></div><img class="img-fluid" src="' + gifs[i].preview + '"></div>');
 							noGIFs.innerHTML = null;
-							loadGIFs.innerHTML = '<div class="text-center py-3"><div class="mb-3"><i class="far fa-grin-beam-sweat text-gray-500" style="font-size: 3.5rem;"></i></div><p class="font-weight-bold text-gray-500 mb-0">Thou&#39;ve reached the end of the list!</p></div>';
+							loadGIFs.innerHTML = '<div class="text-center py-3"><div class="mb-3"><i class="far fa-grin-beam-sweat text-gray-500" style="font-size: 3.5rem;"></i></div><p class="font-weight-bold text-gray-500 mb-0">' + escapeHtmlText(tr("Thou've reached the end of the list!")) + '</p></div>';
 						}
 					} else {
-						noGIFs.innerHTML = '<div class="text-center py-3 mt-3"><div class="mb-3"><i class="far fa-frown text-gray-500" style="font-size: 3.5rem;"></i></div><p class="font-weight-bold text-gray-500 mb-0">Aw shucks. No GIFs found...</p></div>';
+						noGIFs.innerHTML = '<div class="text-center py-3 mt-3"><div class="mb-3"><i class="far fa-frown text-gray-500" style="font-size: 3.5rem;"></i></div><p class="font-weight-bold text-gray-500 mb-0">' + escapeHtmlText(tr('Aw shucks. No GIFs found...')) + '</p></div>';
 						container.innerHTML = null;
 						loadGIFs.innerHTML = null;
 					}
 				})
 				.catch(err => {
-					noGIFs.innerHTML = '<div class="text-center py-3 mt-3"><div class="mb-3"><i class="far fa-frown text-gray-500" style="font-size: 3.5rem;"></i></div><p class="font-weight-bold text-gray-500 mb-0">Aw shucks. No GIFs found...</p></div>';
+					noGIFs.innerHTML = '<div class="text-center py-3 mt-3"><div class="mb-3"><i class="far fa-frown text-gray-500" style="font-size: 3.5rem;"></i></div><p class="font-weight-bold text-gray-500 mb-0">' + escapeHtmlText(tr('Aw shucks. No GIFs found...')) + '</p></div>';
 					container.innerHTML = null;
 					loadGIFs.innerHTML = null;
 				});
@@ -554,7 +554,7 @@ $('#new_email').on('input', function () {
 
     // Remove inner HTML from container var
 
-    container.innerHTML = '<div class="card" onclick="getGif(\'agree\');" style="overflow: hidden;"> <div class="gif-cat-overlay"> <div style="position: relative;top: 50%;transform: translateY(-50%);color: #ffffff;font-weight: bold;">Agree</div> </div> <img class="img-fluid" src="https://media.giphy.com/media/wGhYz3FHaRJgk/200w_d.gif"> </div> <div class="card" onclick="getGif(\'laugh\');" style="overflow: hidden;"> <div class="gif-cat-overlay"> <div style="position: relative;top: 50%;transform: translateY(-50%);color: #ffffff;font-weight: bold;">Laugh</div> </div> <img class="img-fluid" src="https://media.giphy.com/media/O5NyCibf93upy/200w_d.gif"> </div> <div class="card" onclick="getGif(\'confused\');" style="overflow: hidden;"> <div class="gif-cat-overlay"> <div style="position: relative;top: 50%;transform: translateY(-50%);color: #ffffff;font-weight: bold;">Confused</div> </div> <img class="img-fluid" src="https://media.giphy.com/media/3o7btPCcdNniyf0ArS/200w_d.gif"> </div> <div class="card" onclick="getGif(\'sad\');" style="overflow: hidden;"> <div class="gif-cat-overlay"> <div style="position: relative;top: 50%;transform: translateY(-50%);color: #ffffff;font-weight: bold;">Sad</div> </div> <img class="img-fluid" src="https://media.giphy.com/media/ISOckXUybVfQ4/200w_d.gif"> </div> <div class="card" onclick="getGif(\'happy\');" style="overflow: hidden;"> <div class="gif-cat-overlay"> <div style="position: relative;top: 50%;transform: translateY(-50%);color: #ffffff;font-weight: bold;">Happy</div> </div> <img class="img-fluid" src="https://media.giphy.com/media/XR9Dp54ZC4dji/200w_d.gif"> </div> <div class="card" onclick="getGif(\'awesome\');" style="overflow: hidden;"> <div class="gif-cat-overlay"> <div style="position: relative;top: 50%;transform: translateY(-50%);color: #ffffff;font-weight: bold;">Awesome</div> </div> <img class="img-fluid" src="https://media.giphy.com/media/3ohzdIuqJoo8QdKlnW/200w_d.gif"> </div> <div class="card" onclick="getGif(\'yes\');" style="overflow: hidden;"> <div class="gif-cat-overlay"> <div style="position: relative;top: 50%;transform: translateY(-50%);color: #ffffff;font-weight: bold;">Yes</div> </div> <img class="img-fluid" src="https://media.giphy.com/media/J336VCs1JC42zGRhjH/200w_d.gif"> </div> <div class="card" onclick="getGif(\'no\');" style="overflow: hidden;"> <div class="gif-cat-overlay"> <div style="position: relative;top: 50%;transform: translateY(-50%);color: #ffffff;font-weight: bold;">No</div> </div> <img class="img-fluid" src="https://media.giphy.com/media/1zSz5MVw4zKg0/200w_d.gif"> </div> <div class="card" onclick="getGif(\'love\');" style="overflow: hidden;"> <div class="gif-cat-overlay"> <div style="position: relative;top: 50%;transform: translateY(-50%);color: #ffffff;font-weight: bold;">Love</div> </div> <img class="img-fluid" src="https://media.giphy.com/media/4N1wOi78ZGzSB6H7vK/200w_d.gif"> </div> <div class="card" onclick="getGif(\'please\');" style="overflow: hidden;"> <div class="gif-cat-overlay"> <div style="position: relative;top: 50%;transform: translateY(-50%);color: #ffffff;font-weight: bold;">Please</div> </div> <img class="img-fluid" src="https://media.giphy.com/media/qUIm5wu6LAAog/200w_d.gif"> </div> <div class="card" onclick="getGif(\'scared\');" style="overflow: hidden;"> <div class="gif-cat-overlay"> <div style="position: relative;top: 50%;transform: translateY(-50%);color: #ffffff;font-weight: bold;">Scared</div> </div> <img class="img-fluid" src="https://media.giphy.com/media/bEVKYB487Lqxy/200w_d.gif"> </div> <div class="card" onclick="getGif(\'angry\');" style="overflow: hidden;"> <div class="gif-cat-overlay"> <div style="position: relative;top: 50%;transform: translateY(-50%);color: #ffffff;font-weight: bold;">Angry</div> </div> <img class="img-fluid" src="https://media.giphy.com/media/12Pb87uq0Vwq2c/200w_d.gif"> </div> <div class="card" onclick="getGif(\'awkward\');" style="overflow: hidden;"> <div class="gif-cat-overlay"> <div style="position: relative;top: 50%;transform: translateY(-50%);color: #ffffff;font-weight: bold;">Awkward</div> </div> <img class="img-fluid" src="https://media.giphy.com/media/unFLKoAV3TkXe/200w_d.gif"> </div> <div class="card" onclick="getGif(\'cringe\');" style="overflow: hidden;"> <div class="gif-cat-overlay"> <div style="position: relative;top: 50%;transform: translateY(-50%);color: #ffffff;font-weight: bold;">Cringe</div> </div> <img class="img-fluid" src="https://media.giphy.com/media/1jDvQyhGd3L2g/200w_d.gif"> </div> <div class="card" onclick="getGif(\'omg\');" style="overflow: hidden;"> <div class="gif-cat-overlay"> <div style="position: relative;top: 50%;transform: translateY(-50%);color: #ffffff;font-weight: bold;">OMG</div> </div> <img class="img-fluid" src="https://media.giphy.com/media/3o72F8t9TDi2xVnxOE/200w_d.gif"> </div> <div class="card" onclick="getGif(\'why\');" style="overflow: hidden;"> <div class="gif-cat-overlay"> <div style="position: relative;top: 50%;transform: translateY(-50%);color: #ffffff;font-weight: bold;">Why</div> </div> <img class="img-fluid" src="https://media.giphy.com/media/1M9fmo1WAFVK0/200w_d.gif"> </div> <div class="card" onclick="getGif(\'gross\');" style="overflow: hidden;"> <div class="gif-cat-overlay"> <div style="position: relative;top: 50%;transform: translateY(-50%);color: #ffffff;font-weight: bold;">Gross</div> </div> <img class="img-fluid" src="https://media.giphy.com/media/pVAMI8QYM42n6/200w_d.gif"> </div> <div class="card" onclick="getGif(\'meh\');" style="overflow: hidden;"> <div class="gif-cat-overlay"> <div style="position: relative;top: 50%;transform: translateY(-50%);color: #ffffff;font-weight: bold;">Meh</div> </div> <img class="img-fluid" src="https://media.giphy.com/media/xT77XTpyEzJ4OJO06c/200w_d.gif"> </div>'
+    container.innerHTML = gifCategoryCards();
 
     // Hide UI buttons
 
@@ -634,8 +634,7 @@ function toggleCommentOverflow(comment_id, button) {
   button.textContent = opening ? tr("Show less") : tr("Show more");
   if (!opening) bringBackIntoView(document.getElementById("comment-" + comment_id));
 
-  var overflow = document.getElementById("comment-overflow-" + comment_id);
-  var expanded = !overflow.classList.contains("d-none");
+};
 
 // After closing something long, scroll its start back on screen if it is now above the top (under the navbar).
 function bringBackIntoView(el) {
@@ -815,10 +814,10 @@ post_edit=function(id){
       window.location.reload();
     }
     else {
-      showError(data.error || "Your edit couldn't be saved. Please try again.");
+      showError(data.error || tr("Your edit couldn't be saved. Please try again."));
     }
   };
-  xhr.onerror=function(){ showError("Your edit couldn't be saved. Please check your connection and try again."); };
+  xhr.onerror=function(){ showError(tr("Your edit couldn't be saved. Please check your connection and try again.")); };
   xhr.send(new FormData(formEl));
 };
 
@@ -842,12 +841,12 @@ function showCommentModeration(cid, removed) {
 
 function removeComment(cid) {
   post("/api/ban_comment/" + cid, function() { showCommentModeration(cid, true); },
-    "Unable to remove the comment at this time. Please try again later.");
+    tr("Unable to remove the comment at this time. Please try again later."));
 }
 
 function approveComment(cid) {
   post("/api/unban_comment/" + cid, function() { showCommentModeration(cid, false); },
-    "Unable to approve the comment at this time. Please try again later.");
+    tr("Unable to approve the comment at this time. Please try again later."));
 }
 
 admin_comment=function(cid){
@@ -975,7 +974,7 @@ function show_theme_toggles(theme) {
   document.querySelectorAll('[onclick*="switch_css"]').forEach(function(a){
     var icon = a.querySelector('i');
     if (!icon) return;
-    a.innerHTML = icon.outerHTML + (theme == "dark" ? 'Light mode' : 'Dark mode');
+    a.innerHTML = icon.outerHTML + escapeHtmlText(theme == "dark" ? tr('Light mode') : tr('Dark mode'));
   });
 }
 
@@ -1052,7 +1051,7 @@ function delete_postModal(id) {
 
   function delete_post(){
 
-    this.innerHTML='<span class="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true"></span>Deleting post';  
+    this.innerHTML='<span class="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true"></span>' + escapeHtmlText(tr('Deleting post'));  
     this.disabled = true; 
     post('/delete_post/' + id,
       callback = function() {
@@ -1072,7 +1071,7 @@ function delete_commentModal(id) {
 
   document.getElementById("deleteCommentButton").onclick = function() {  
 
-    this.innerHTML='<span class="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true"></span>Deleting comment';  
+    this.innerHTML='<span class="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true"></span>' + escapeHtmlText(tr('Deleting comment'));  
     this.disabled = true; 
     post('/delete/comment/' + id,
       callback = function() {
@@ -1088,7 +1087,7 @@ function delete_commentModal(id) {
 
 function emailVerifyText() {
 
-  document.getElementById("email-verify-text").innerHTML = "Verification email sent! Please check your inbox.";
+  document.getElementById("email-verify-text").innerHTML = escapeHtmlText(tr("Verification email sent! Please check your inbox."));
 
 }
 
@@ -1101,22 +1100,27 @@ flagAnswer = function(prefix, kind, status, noun, xhr) {
   var title = document.getElementById(prefix + "AfterTitle");
   var text = document.getElementById(prefix + "AfterText");
 
+  // noun is "post" or "comment": each sentence is written whole for both
+  var isPost = noun == "post";
+
   if (status == 409 || status == 429) {
-    title.textContent = status == 409 ? "You already did that" : "Too many requests today";
-    text.textContent = status == 429 ? "Try again tomorrow." : (kind == "note" ? "You can ask for a community note once for each " + noun + ", and not on your own " + noun + "." : "You already reported this " + noun + ".");
+    title.textContent = status == 409 ? tr("You already did that") : tr("Too many requests today");
+    if (status == 429) text.textContent = tr("Try again tomorrow.");
+    else if (kind == "note") text.textContent = isPost ? tr("You can ask for a community note once for each post, and not on your own post.") : tr("You can ask for a community note once for each comment, and not on your own comment.");
+    else text.textContent = isPost ? tr("You already reported this post.") : tr("You already reported this comment.");
   }
   else if (xhr && !xhrOk(xhr)) {
     // anything else that isn't a success: never say thank you for a report that didn't go through
-    title.textContent = "That didn't go through";
+    title.textContent = tr("That didn't go through");
     text.textContent = xhrError(xhr, xhrData(xhr));
   }
   else if (kind == "note") {
-    title.textContent = "Thank you for asking";
-    text.textContent = "The moderators will consider adding a community note. If they do, you will be told.";
+    title.textContent = tr("Thank you for asking");
+    text.textContent = tr("The moderators will consider adding a community note. If they do, you will be told.");
   }
   else {
-    title.textContent = "Thank you for reporting this " + noun + "!";
-    text.textContent = "We'll take it from here.";
+    title.textContent = isPost ? tr("Thank you for reporting this post!") : tr("Thank you for reporting this comment!");
+    text.textContent = tr("We'll take it from here.");
   }
 };
 
@@ -1132,7 +1136,7 @@ report_commentModal = function(id, author) {
 
   button.onclick = function() {
 
-    this.innerHTML='<span class="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true"></span>Reporting comment';
+    this.innerHTML='<span class="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true"></span>' + escapeHtmlText(tr('Reporting comment'));
     this.disabled = true;
 
     var kind = select.options[select.selectedIndex].value;
@@ -1161,7 +1165,7 @@ $('#reportCommentModal').on('hidden.bs.modal', function () {
   var beforeModal = document.getElementById("reportCommentFormBefore");
   var afterModal = document.getElementById("reportCommentFormAfter");
 
-  button.innerHTML='Report comment';
+  button.innerHTML=escapeHtmlText(tr('Report comment'));
   button.disabled= true;
   afterModal.classList.add('d-none');
 
@@ -1179,7 +1183,8 @@ report_postModal = function(id, author, board) {
   document.getElementById("post-author").textContent = author;
 
   offtopic=document.getElementById('report-post-to-guild-dropdown-option');
-  offtopic.innerHTML= 'This post is off-topic for +' + board;
+  // Translators: a reason in the report form; %(guild)s is the guild's name, after its + sign
+  offtopic.innerHTML= escapeHtmlText(tr('This post is off-topic for +%(guild)s', {guild: board}));
 
   if (board=='general') {
     offtopic.disabled=true;
@@ -1196,7 +1201,7 @@ report_postModal = function(id, author, board) {
 
   submitbutton.onclick = function() {
 
-    this.innerHTML='<span class="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true"></span>Reporting post';
+    this.innerHTML='<span class="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true"></span>' + escapeHtmlText(tr('Reporting post'));
     this.disabled = true;
 
     var xhr = new XMLHttpRequest();
@@ -1228,7 +1233,7 @@ $('#reportPostModal').on('hidden.bs.modal', function () {
   var beforeModal = document.getElementById("reportPostFormBefore");
   var afterModal = document.getElementById("reportPostFormAfter");
 
-  button.innerHTML='Report post';
+  button.innerHTML=escapeHtmlText(tr('Report post'));
   button.disabled= false;
 
   afterModal.classList.add('d-none');
@@ -1254,14 +1259,15 @@ forward_postModal = function(id) {
 
   var submitbutton = document.getElementById("forwardPostButton");
   submitbutton.disabled = false;
-  submitbutton.innerHTML = 'Forward';
+  // Translators: a button: forward (share) the post or comment with a guild
+  submitbutton.innerHTML = escapeHtmlText(tr('Forward'));
 
   submitbutton.onclick = function() {
 
     var name = input.value.trim().replace(/^\+/, '');
     if (!name) { return; }
 
-    this.innerHTML='<span class="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true"></span>Forwarding';
+    this.innerHTML='<span class="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true"></span>' + escapeHtmlText(tr('Forwarding'));
     this.disabled = true;
 
     var xhr = new XMLHttpRequest();
@@ -1283,17 +1289,17 @@ forward_postModal = function(id) {
       } else {
         var data;
         try { data = JSON.parse(xhr.response); } catch(e) { data = {}; }
-        errorBox.textContent = data.error || 'Unable to forward this post.';
+        errorBox.textContent = data.error || tr('Unable to forward this post.');
         errorBox.classList.remove('d-none');
         thisButton.disabled = false;
-        thisButton.innerHTML = 'Forward';
+        thisButton.innerHTML = escapeHtmlText(tr('Forward'));
       }
     };
     xhr.onerror = function() {
-      errorBox.textContent = 'Unable to forward this post.';
+      errorBox.textContent = tr('Unable to forward this post.');
       errorBox.classList.remove('d-none');
       thisButton.disabled = false;
-      thisButton.innerHTML = 'Forward';
+      thisButton.innerHTML = escapeHtmlText(tr('Forward'));
     };
     xhr.send(form);
   };
@@ -1306,7 +1312,7 @@ $('#forwardPostModal').on('hidden.bs.modal', function () {
   var beforeModal = document.getElementById("forwardPostFormBefore");
   var afterModal = document.getElementById("forwardPostFormAfter");
 
-  button.innerHTML='Forward';
+  button.innerHTML=escapeHtmlText(tr('Forward'));
   button.disabled= false;
 
   afterModal.classList.add('d-none');
@@ -1332,14 +1338,14 @@ forward_commentModal = function(id) {
 
   var submitbutton = document.getElementById("forwardCommentButton");
   submitbutton.disabled = false;
-  submitbutton.innerHTML = 'Forward';
+  submitbutton.innerHTML = escapeHtmlText(tr('Forward'));
 
   submitbutton.onclick = function() {
 
     var name = guildInput.value.trim().replace(/^\+/, '');
     if (!name) { return; }
 
-    this.innerHTML='<span class="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true"></span>Forwarding';
+    this.innerHTML='<span class="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true"></span>' + escapeHtmlText(tr('Forwarding'));
     this.disabled = true;
 
     var xhr = new XMLHttpRequest();
@@ -1361,17 +1367,17 @@ forward_commentModal = function(id) {
       } else {
         var data;
         try { data = JSON.parse(xhr.response); } catch(e) { data = {}; }
-        errorBox.textContent = data.error || 'Unable to forward this comment.';
+        errorBox.textContent = data.error || tr('Unable to forward this comment.');
         errorBox.classList.remove('d-none');
         thisButton.disabled = false;
-        thisButton.innerHTML = 'Forward';
+        thisButton.innerHTML = escapeHtmlText(tr('Forward'));
       }
     };
     xhr.onerror = function() {
-      errorBox.textContent = 'Unable to forward this comment.';
+      errorBox.textContent = tr('Unable to forward this comment.');
       errorBox.classList.remove('d-none');
       thisButton.disabled = false;
-      thisButton.innerHTML = 'Forward';
+      thisButton.innerHTML = escapeHtmlText(tr('Forward'));
     };
     xhr.send(form);
   };
@@ -1384,7 +1390,7 @@ $('#forwardCommentModal').on('hidden.bs.modal', function () {
   var beforeModal = document.getElementById("forwardCommentFormBefore");
   var afterModal = document.getElementById("forwardCommentFormAfter");
 
-  button.innerHTML='Forward';
+  button.innerHTML=escapeHtmlText(tr('Forward'));
   button.disabled = false;
 
   afterModal.classList.add('d-none');
@@ -1492,11 +1498,11 @@ function xhrLoggedOut(xhr) {
 
 function xhrError(xhr, data) {
   if (data && data.error) return data.error;
-  if (xhrLoggedOut(xhr)) return "Please log in again.";
-  if (xhr.status == 403) return "You can't do that.";
-  if (xhr.status == 404) return "That isn't there any more.";
-  if (xhr.status == 429) return "You're doing that too much. Try again later.";
-  return "Something went wrong. Please try again.";
+  if (xhrLoggedOut(xhr)) return tr("Please log in again.");
+  if (xhr.status == 403) return tr("You can't do that.");
+  if (xhr.status == 404) return tr("That isn't there any more.");
+  if (xhr.status == 429) return tr("You're doing that too much. Try again later.");
+  return tr("Something went wrong. Please try again.");
 }
 
 function xhrOk(xhr) {
@@ -1521,7 +1527,7 @@ function post(url, callback, errortext) {
 };
 
 function post_with_reason(url, callback, errortext) {
-  var reason = window.prompt("Why does this break your guild's rules? This will be shown to anyone who looks up this post/comment's history.");
+  var reason = window.prompt(tr("Why does this break your guild's rules? This will be shown to anyone who looks up this post/comment's history."));
   if (reason == null || reason.trim() == "") {
     return;
   }
@@ -1571,7 +1577,7 @@ function toggleSub(){
 }
 
 function post_toast_with_reason(url, callback) {
-  var reason = window.prompt("Why does this break your guild's rules? This will be shown to anyone who looks up this comment's history.");
+  var reason = window.prompt(tr("Why does this break your guild's rules? This will be shown to anyone who looks up this comment's history."));
   if (reason == null || reason.trim() == "") {
     return;
   }
@@ -1637,11 +1643,11 @@ function save_filter_level() {
       filter_level_changed();
       $('#toast-post-success').toast('dispose');
       $('#toast-post-success').toast('show');
-      document.getElementById('toast-post-success-text').innerText = data.message || 'Your settings have been updated.';
+      document.getElementById('toast-post-success-text').innerText = data.message || tr('Your settings have been updated.');
     } else {
       $('#toast-post-error').toast('dispose');
       $('#toast-post-error').toast('show');
-      document.getElementById('toast-post-error-text').innerText = data.error || "That couldn't be saved.";
+      document.getElementById('toast-post-error-text').innerText = data.error || tr("That couldn't be saved.");
     }
   };
   xhr.send(form);
@@ -1723,12 +1729,12 @@ function showModeration(post_id, removed) {
 
 function removePost(post_id) {
   post("/api/ban_post/" + post_id, function() { showModeration(post_id, true); },
-    "Unable to remove post at this time. Please try again later.");
+    tr("Unable to remove post at this time. Please try again later."));
 }
 
 function approvePost(post_id) {
   post("/api/unban_post/" + post_id, function() { showModeration(post_id, false); },
-    "Unable to approve post at this time. Please try again later.");
+    tr("Unable to approve post at this time. Please try again later."));
 }
 
 //Element deleter
@@ -1775,7 +1781,7 @@ $('#username-register').on('input', function () {
     $.getJSON(ruqqusAPI, function(result) {
       $.each(result, function(i, field) {
         if (field == false) {
-          id.innerHTML = '<span class="form-text font-weight-bold text-danger mt-1">Username already taken :(';
+          id.innerHTML = '<span class="form-text font-weight-bold text-danger mt-1">' + escapeHtmlText(tr('Username already taken :('));
         }
       });
     });
@@ -1784,17 +1790,17 @@ $('#username-register').on('input', function () {
 
   if (!/[^a-zA-Z0-9_$]/.test(charCount)) {
     // Change alert text
-    id.innerHTML = '<span class="form-text font-weight-bold text-success mt-1">Username is a-okay!';
+    id.innerHTML = '<span class="form-text font-weight-bold text-success mt-1">' + escapeHtmlText(tr('Username is a-okay!'));
 
     if (charCount.length < 3) {
-      id.innerHTML = '<span class="form-text font-weight-bold text-muted mt-1">Username must be at least 3 characters long.';
+      id.innerHTML = '<span class="form-text font-weight-bold text-muted mt-1">' + escapeHtmlText(tr('Username must be at least 3 characters long.'));
     }
     else if (charCount.length > 25) {
-      id.innerHTML = '<span class="form-text font-weight-bold text-danger mt-1">Username must be 25 characters or less.';
+      id.innerHTML = '<span class="form-text font-weight-bold text-danger mt-1">' + escapeHtmlText(tr('Username must be 25 characters or less.'));
     }
   }
   else {
-    id.innerHTML = '<span class="form-text font-weight-bold text-danger mt-1">No special characters or spaces allowed.</span>';
+    id.innerHTML = '<span class="form-text font-weight-bold text-danger mt-1">' + escapeHtmlText(tr('No special characters or spaces allowed.')) + '</span>';
   };
 
 });
@@ -1819,7 +1825,7 @@ $(document).ready(function() {
       // disable button
       $("#login_button").prop("disabled", true);
       // add spinner to button
-      $("#login_button").html('<span class="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true"></span>Signing in');
+      $("#login_button").html('<span class="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true"></span>' + escapeHtmlText(tr('Signing in')));
     });
 });
 
@@ -1828,7 +1834,7 @@ $(document).ready(function() {
       // disable button
       $("#register_button").prop("disabled", true);
       // add spinner to button
-      $("#register_button").html('<span class="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true"></span>Registering');
+      $("#register_button").html('<span class="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true"></span>' + escapeHtmlText(tr('Registering')));
     });
 });
 
@@ -1837,7 +1843,7 @@ $(document).ready(function() {
       // disable button
       $("#create_button").prop("disabled", true);
       // add spinner to button
-      $("#create_button").html('<span class="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true"></span>Creating post');
+      $("#create_button").html('<span class="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true"></span>' + escapeHtmlText(tr('Creating post')));
     });
 });
 
@@ -1924,6 +1930,8 @@ function snapshotVote(type, id) {
     saved.forEach(function (s) {
       s.up.classList.toggle('active', s.upActive);
       s.down.classList.toggle('active', s.downActive);
+      s.up.setAttribute('aria-pressed', s.upActive ? 'true' : 'false');
+      s.down.setAttribute('aria-pressed', s.downActive ? 'true' : 'false');
       s.score.textContent = s.text;
       s.score.className = s.cls;
       if (s.ups !== undefined) { s.score.dataset.ups = s.ups; s.score.dataset.downs = s.downs; }
@@ -1970,7 +1978,7 @@ function popVote(el) {
 // An arrow that is locked because the viewer's vote on this post is on another copy of it
 // (templates: .vote-locked, helpers/vote_copies.py): say so.
 function voteLocked(el) {
-  var message = el.getAttribute('data-locked-message') || 'You already voted on this post.';
+  var message = el.getAttribute('data-locked-message') || tr('You already voted on this post.');
   $('#toast-post-error').toast('dispose');
   $('#toast-post-error').toast('show');
   document.getElementById('toast-post-error-text').innerText = message;
@@ -2023,6 +2031,8 @@ var upvote = function(event) {
       thisScoreText.classList.remove('score-up')
       thisScoreText.classList.remove('score-down')
     }
+    thisUpvoteButton.setAttribute('aria-pressed', thisUpvoteButton.classList.contains('active') ? 'true' : 'false')
+    thisDownvoteButton.setAttribute('aria-pressed', thisDownvoteButton.classList.contains('active') ? 'true' : 'false')
   }
 
   post_toast("/api/vote/" + type + "/" + id + "/" + voteDirection, undefined, restore);
@@ -2076,6 +2086,8 @@ var downvote = function(event) {
       thisScoreText.classList.remove('score-up')
       thisScoreText.classList.remove('score-down')
     }
+    thisUpvoteButton.setAttribute('aria-pressed', thisUpvoteButton.classList.contains('active') ? 'true' : 'false')
+    thisDownvoteButton.setAttribute('aria-pressed', thisDownvoteButton.classList.contains('active') ? 'true' : 'false')
   }
 
   post_toast("/api/vote/" + type + "/" + id + "/" + voteDirection, undefined, restore);
@@ -2095,7 +2107,8 @@ var register_votes = function(root) {
   for (var i = 0; i < upvoteButtons.length; i++) {
     upvoteButtons[i].addEventListener('click', upvote, false);
     upvoteButtons[i].addEventListener('keydown', function(event) {
-      if (event.keyCode === 13) {
+      if (event.keyCode === 13 || event.keyCode === 32) {
+        event.preventDefault()
         upvote(event)
       }
     }, false)
@@ -2104,7 +2117,8 @@ var register_votes = function(root) {
   for (var i = 0; i < downvoteButtons.length; i++) {
     downvoteButtons[i].addEventListener('click', downvote, false);
     downvoteButtons[i].addEventListener('keydown', function(event) {
-      if (event.keyCode === 13) {
+      if (event.keyCode === 13 || event.keyCode === 32) {
+        event.preventDefault()
         downvote(event)
       }
     }, false)
@@ -2250,7 +2264,7 @@ function vote_comment(comment_id, direction) {
     }
   }
 
-  post(url, callback, "Unable to vote at this time. Please try again later.");
+  post(url, callback, tr("Unable to vote at this time. Please try again later."));
 }
 
 //yt embed
@@ -2294,10 +2308,10 @@ linkText.href = image;
 imgLink.href = image;
 
 if (image.includes("i.ruqqus.com")) {
-  linkText.textContent = 'Go to website';
+  linkText.textContent = tr('Go to website');
 }
 else {
-  linkText.textContent = 'View original';
+  linkText.textContent = tr('View original');
 }
 
 };
@@ -2517,7 +2531,7 @@ makeLink = function (form) {
   var s = el.selectionStart, e = el.selectionEnd;
   var selectedText = el.value.substring(s, e);
 
-  var url = window.prompt("Enter a URL", "https://");
+  var url = window.prompt(tr("Enter a URL"), "https://");
   if (url === null) return;
   url = url.trim();
   if (!url) return;
@@ -2675,7 +2689,7 @@ function syncTitleOverflow() {
 // button and the chip, never both.
 function attachLink() {
   var current = document.getElementById("post-URL").value;
-  var input = window.prompt("Attach a link to this post", current || "https://");
+  var input = window.prompt(tr("Attach a link to this post"), current || "https://");
   if (input === null) return;
   input = input.trim();
   if (!input) return;
@@ -2683,11 +2697,11 @@ function attachLink() {
   try {
     parsed = new URL(input);
   } catch (e) {
-    alert("Please enter a valid URL (including http:// or https://).");
+    alert(tr("Please enter a valid URL (including http:// or https://)."));
     return;
   }
   if (parsed.protocol !== "http:" && parsed.protocol !== "https:") {
-    alert("Links must start with http:// or https://.");
+    alert(tr("Links must start with http:// or https://."));
     return;
   }
   document.getElementById("post-URL").value = parsed.href;
@@ -2754,19 +2768,12 @@ window.onload = function () {
 
     var navbar = document.getElementById("navbar");
 
+    // the phone's bottom bar slides away while scrolling down and back when scrolling up or near the top
+    // (a transform, _nav.scss .is-hidden: it hides whole however tall the home indicator makes it)
     if (bottomBar != null) {
-      if (prevScrollpos > currentScrollPos && (window.innerHeight + currentScrollPos) < (document.body.offsetHeight - 65)) {
-        bottomBar.style.bottom = "0px";
-      } 
-      else if (currentScrollPos <= 125 && (window.innerHeight + currentScrollPos) < (document.body.offsetHeight - 65)) {
-        bottomBar.style.bottom = "0px";
-      }
-      else if (prevScrollpos > currentScrollPos && (window.innerHeight + currentScrollPos) >= (document.body.offsetHeight - 65)) {
-        bottomBar.style.bottom = "-50px";
-      }
-      else {
-        bottomBar.style.bottom = "-50px";
-      }
+      var awayFromEnd = (window.innerHeight + currentScrollPos) < (document.body.offsetHeight - 65);
+      var show = awayFromEnd && (prevScrollpos > currentScrollPos || currentScrollPos <= 125);
+      bottomBar.classList.toggle("is-hidden", !show);
     }
 
   // Execute if bottomBar exists
@@ -3050,14 +3057,43 @@ post_comment=function(fullname){
   xhr.withCredentials=true;
   xhr.onload=function(){
     if (xhr.status==200) {
-      var formSpace=document.getElementById('comment-form-space-'+fullname);
-      formSpace.innerHTML=JSON.parse(xhr.response)["html"];
+      var html=JSON.parse(xhr.response)["html"];
+      var parentId=fullname.split('_')[1];
+      // a comment on a comment: the container its parent's comments are drawn in (the gutter beside the line), where a
+      // refreshed page puts it. Not on a comment on the post, nor where the page has no such container (the inbox, a
+      // comment too deep to show its comments): those keep the new comment where the form was.
+      var children=fullname.indexOf('t3_')===0 ? document.getElementById('comments-of-'+parentId) : null;
+      if (children) {
+        var fragment=document.createElement('template');
+        fragment.innerHTML=html;
+        // the answer repeats the page's toasts: a second copy would give the page two of each id
+        ['toast-comment-success', 'toast-comment-error'].forEach(function(id){
+          var toast=fragment.content.getElementById(id);
+          if (toast) toast.remove();
+        });
+        // first, just under the fold bar: the newest comment on top, as the member's own comments stay on a refresh
+        var bar=children.querySelector(':scope > .comment-collapse');
+        children.insertBefore(fragment.content, bar ? bar.nextSibling : children.firstChild);
+        // the form stays, empty and closed, for the next comment (the Comment button was disabled while it was sent)
+        var box=document.getElementById('comment-form-body-'+fullname);
+        box.value='';
+        box.dispatchEvent(new Event('input', {bubbles: true}));
+        var upload=document.getElementById('file-upload-comment-'+fullname);
+        if (upload) upload.value='';
+        var shown=document.getElementById('filename-show-comment-'+parentId);
+        if (shown) shown.innerHTML='<i class="far fa-image"></i>';
+        document.getElementById('save-comment-on-'+fullname).classList.remove('disabled');
+        document.getElementById('comment-on-'+parentId).classList.add('d-none');
+      } else {
+        var formSpace=document.getElementById('comment-form-space-'+fullname);
+        formSpace.innerHTML=html;
+      }
       $('#toast-comment-success').toast('dispose');
       $('#toast-comment-error').toast('dispose');
       $('#toast-comment-success').toast('show');
     }
     else {
-      var message = 'Your comment could not be posted. Try again.';
+      var message = tr('Your comment could not be posted. Try again.');
       try { message = JSON.parse(xhr.response)["error"] || message; } catch (e) { /* not JSON */ }
       // the error toast is drawn with the comment list, which a post with no comments does not have
       var commentError = document.getElementById("comment-error-text");
@@ -3174,6 +3210,7 @@ comment_edit=function(id){
   xhr.withCredentials=true;
   xhr.onload=function(){
     if (xhr.status==200) {
+      var answer = JSON.parse(xhr.response);
       var commentText=document.getElementById('comment-text-'+id);
       // the new text goes into the comment's own text part (its clamp, or its wrapper), so the clamp's toggle and a
       // sensitive comment's blur stay; a translation on show is put back first and forgotten (assets/js/translate.js),
@@ -3256,11 +3293,9 @@ coin_quote = function() {
   xhr.open('get', '/shop/get_price?coins='+coin_count+'&promo='+promo.value)
 
   xhr.onload=function(){
-    var s = 'Buy '+ coin_count + ' Coin';
-
-    if (coin_count > 1){s = s+'s'};
-
-    s=s+': $'+JSON.parse(xhr.response)["price"];
+    var price = JSON.parse(xhr.response)["price"];
+    // Translators: a button; %(num)s is the number of coins, %(price)s the price in US dollars
+    var s = trn('Buy %(num)s Coin: $%(price)s', 'Buy %(num)s Coins: $%(price)s', Number(coin_count), {num: coin_count, price: price});
 
     btn.value=s;
 
@@ -3275,7 +3310,8 @@ var tipModal2 = function(id, content, link, recipient, recipientPFP) {
 
   document.getElementById('tip-recipient-pfp').src = recipientPFP;
 
-  document.getElementById("tip-content-type").innerText = content
+  // Translators: a noun, what is being tipped (a post or a comment)
+  document.getElementById("tip-content-type").innerText = content == 'comment' ? tr('comment') : (content == 'post' ? tr('post') : content)
   document.getElementById("tip-recipient-username").innerText = recipient
 
   document.getElementById("sendTipButton").onclick = function() {
@@ -3333,17 +3369,29 @@ var filterSidebarList = function(input, listId) {
   if (!list) return;
   // the category lists are the site's topics: #gaming (or #filmtv for "Film & TV") finds them as it does in the search box
   var topics = /categor/i.test(listId);
-  var squash = function (text) { return text.replace(/[^a-z0-9]/g, ''); };
+  var squash = function (text) { return text.replace(/[^\p{L}\p{N}]/gu, ''); };
   if (topics) query = squash(query.replace(/^#/, ''));
   var rows = list.querySelectorAll('[data-filter-row]');
   var anyVisible = false;
   for (var i = 0; i < rows.length; i++) {
     var row = rows[i];
+    // a category's heading is not searched: it stays while its group does
+    if (row.hasAttribute('data-filter-heading')) continue;
     var text = (row.getAttribute('data-filter-text') || row.textContent || '').toLowerCase();
     if (topics) text = squash(text);
     var match = (query === '' || text.indexOf(query) !== -1);
     row.classList.toggle('d-none', !match);
     if (match) anyVisible = true;
+  }
+  // a group (the Categorical list's category) with no row left shows no heading either
+  var groups = list.querySelectorAll('[data-filter-group]');
+  for (var j = 0; j < groups.length; j++) {
+    var members = groups[j].querySelectorAll('[data-filter-row]');
+    var shown = false;
+    for (var k = 0; k < members.length; k++) {
+      if (!members[k].hasAttribute('data-filter-heading') && !members[k].classList.contains('d-none')) shown = true;
+    }
+    groups[j].classList.toggle('d-none', !shown);
   }
   var emptyEl = document.getElementById(listId + '-empty');
   if (emptyEl) emptyEl.classList.toggle('d-none', anyVisible);
@@ -3351,7 +3399,7 @@ var filterSidebarList = function(input, listId) {
 
 var resortSidebarFilterList = function(listId) {
   var list = document.getElementById(listId);
-  // a grouped list (Post type) keeps its own order: its rows sit in one list per group
+  // a grouped list (Post type, Categorical) keeps its own order: its rows sit in one list per group
   if (!list || list.hasAttribute('data-keep-order')) return;
   var rows = Array.prototype.slice.call(list.querySelectorAll('[data-filter-row]'));
   rows.sort(function(a, b) {
@@ -3370,19 +3418,70 @@ var updateSidebarFilterCount = function(listId) {
   var countEl = document.getElementById(listId + '-count');
   if (!list || !countEl) return;
   var n = list.querySelectorAll('[data-filter-row].is-selected').length;
-  countEl.textContent = n + ' selected';
+  // Translators: how many options of a sidebar filter are ticked
+  countEl.textContent = trn('%(num)s selected', '%(num)s selected', n);
   countEl.classList.toggle('d-none', n === 0);
 };
 
-var toggleSidebarFilterOption = function(li, listId) {
-  var selected = li.classList.toggle('is-selected');
+// the look of one row, ticked or not: shared by a click on the row and Deselect all
+var setSidebarFilterRow = function(li, selected) {
+  li.classList.toggle('is-selected', selected);
   var link = li.querySelector('a');
   var icon = li.querySelector('i');
-  if (link) link.classList.toggle('text-purple', selected);
-  if (link) link.classList.toggle('font-weight-bold', selected);
-  if (link) link.classList.toggle('text-black', !selected);
-  if (link && link.hasAttribute('aria-checked')) link.setAttribute('aria-checked', selected ? 'true' : 'false');
+  if (link) {
+    // a category's heading is coloured by .is-selected in the stylesheets; a row by these classes
+    if (!li.hasAttribute('data-filter-heading')) {
+      link.classList.toggle('text-purple', selected);
+      link.classList.toggle('font-weight-bold', selected);
+      link.classList.toggle('text-black', !selected);
+    }
+    if (link.hasAttribute('aria-checked')) link.setAttribute('aria-checked', selected ? 'true' : 'false');
+  }
   if (icon) icon.classList.toggle('invisible', !selected);
+};
+
+// the rows of a heading's group, all of them (a search only hides some)
+var sidebarFilterGroupRows = function(heading) {
+  var group = heading.closest('[data-filter-group]');
+  var found = group ? group.querySelectorAll('[data-filter-row]') : [];
+  var rows = [];
+  for (var i = 0; i < found.length; i++) {
+    if (!found[i].hasAttribute('data-filter-heading')) rows.push(found[i]);
+  }
+  return rows;
+};
+
+// The small label on a ticked heading: everything in the category, the category alone, or the category and some of its
+// rows. The texts are the macro's (data-state-*), so this only picks one.
+var updateSidebarFilterHeading = function(heading) {
+  var label = heading.querySelector('[data-filter-state]');
+  if (!label) return;
+  var rows = sidebarFilterGroupRows(heading);
+  var ticked = 0;
+  for (var i = 0; i < rows.length; i++) {
+    if (rows[i].classList.contains('is-selected')) ticked++;
+  }
+  var text = '';
+  if (heading.classList.contains('is-selected')) {
+    text = heading.getAttribute(ticked === rows.length ? 'data-state-all' : (ticked === 0 ? 'data-state-alone' : 'data-state-some')) || '';
+  }
+  label.textContent = text;
+  label.classList.toggle('d-none', text === '');
+};
+
+// a heading ticks or unticks every row of its group; a row never changes its heading, only the label on it
+var toggleSidebarFilterOption = function(li, listId) {
+  var selected = !li.classList.contains('is-selected');
+  setSidebarFilterRow(li, selected);
+  if (li.hasAttribute('data-filter-heading')) {
+    var rows = sidebarFilterGroupRows(li);
+    for (var i = 0; i < rows.length; i++) setSidebarFilterRow(rows[i], selected);
+    updateSidebarFilterHeading(li);
+  } else {
+    var group = li.closest('[data-filter-group]');
+    var heading = group ? group.querySelector('[data-filter-heading]') : null;
+    if (heading) updateSidebarFilterHeading(heading);
+  }
   resortSidebarFilterList(listId);
   updateSidebarFilterCount(listId);
 };
@@ -3391,15 +3490,9 @@ var deselectAllSidebarFilter = function(listId) {
   var list = document.getElementById(listId);
   if (!list) return;
   var rows = list.querySelectorAll('[data-filter-row].is-selected');
-  for (var i = 0; i < rows.length; i++) {
-    var li = rows[i];
-    li.classList.remove('is-selected');
-    var link = li.querySelector('a');
-    var icon = li.querySelector('i');
-    if (link) { link.classList.remove('text-purple', 'font-weight-bold'); link.classList.add('text-black'); }
-    if (link && link.hasAttribute('aria-checked')) link.setAttribute('aria-checked', 'false');
-    if (icon) icon.classList.add('invisible');
-  }
+  for (var i = 0; i < rows.length; i++) setSidebarFilterRow(rows[i], false);
+  var headings = list.querySelectorAll('[data-filter-heading]');
+  for (var j = 0; j < headings.length; j++) updateSidebarFilterHeading(headings[j]);
   resortSidebarFilterList(listId);
   updateSidebarFilterCount(listId);
 };
@@ -3437,7 +3530,8 @@ var startSidebarFilterMarquee = function(el) {
   if (overflow > 2) {
     el.style.textOverflow = 'clip';
     el.style.transitionDuration = Math.max(1.2, overflow / 40) + 's';
-    el.style.transform = 'translateX(-' + overflow + 'px)';
+    // the hidden end is on the left in a right-to-left page: the text slides the other way
+    el.style.transform = 'translateX(' + (document.documentElement.dir === 'rtl' ? '' : '-') + overflow + 'px)';
   }
 };
 
@@ -3501,7 +3595,7 @@ function onExpandableImageClick(event) {
 }
 
 function onTextExpandClick(event){
-  if (event.which != 1) {
+  if (event.which > 1) {           // a middle or right click; a keyboard's Enter or Space arrives as 0 or 1
     return
   };
   id=$(this).data('id');
@@ -3528,6 +3622,7 @@ $('.text-expand').click(onTextExpandClick)
 // and the delegated ClipboardJS handler already work on added markup.
 function bindPostCards(root) {
   register_votes(root)
+  $(root).children('.card').addClass('is-arriving').one('animationend', function () { $(this).removeClass('is-arriving') })
   $(root).find('.hide-button-listing').click(onHideButtonListingClick)
   $(root).find('.expandable-image').click(onExpandableImageClick)
   $(root).find('.text-expand').click(onTextExpandClick)
@@ -3565,7 +3660,7 @@ function mod_post(url, type, id) {
           if (!button) return;
           button.classList.add("btn-primary");
           button.disabled = true;
-          button.innerHTML = '<span class="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true"></span>Saving';
+          button.innerHTML = '<span class="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true"></span>' + escapeHtmlText(tr('Saving'));
         }
         xhr.onload=function(){
           if (xhr.status >= 400)
@@ -3573,13 +3668,14 @@ function mod_post(url, type, id) {
             if (button) {
               button.classList.add("btn-primary");
               button.disabled=false;
-              button.innerHTML="Save"
+              // Translators: a button that saves a guild setting
+              button.innerHTML=escapeHtmlText(tr("Save"))
             }
             // a refused switch goes back to what is saved
             if (item.type=="checkbox") {
               item.checked = !item.checked;
             }
-            var message = "Something went wrong. Please try again.";
+            var message = tr("Something went wrong. Please try again.");
             try { message = JSON.parse(xhr.response)["error"] || message; } catch(e) {}
             $('#toast-post-error').toast('dispose');
             $('#toast-post-error').toast('show');
@@ -3589,7 +3685,7 @@ function mod_post(url, type, id) {
           if (!button) return;
           button.classList.remove("btn-danger");
           button.classList.add("btn-success");
-          button.innerHTML = `<i class="fas fa-check mr-2"></i>Saved`;
+          button.innerHTML = '<i class="fas fa-check mr-2"></i>' + escapeHtmlText(tr('Saved'));
         }
       xhr.send(form);
     }

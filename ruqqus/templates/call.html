@@ -8,12 +8,13 @@
 {% from "partials/theme.html" import html_attrs, font_faces, theme_color %}
 <html{{ html_attrs() }}>
 <head>
+{% from "partials/i18n_boot.html" import i18n_boot %}{{ i18n_boot() }}
   <meta charset="utf-8">
 {{ font_faces() }}
 {{ theme_color() }}
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="robots" content="noindex">
-  <title>{{ "Video call" if kind == "video" else "Voice call" }} - {{ 'SITE_NAME' | app_config }}</title>
+  <title>{{ _("Video call - %(site)s") if kind == "video" else _("Voice call - %(site)s") }}</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
     :root { color-scheme: dark; --bg: #0f1114; --panel: #1b1e23; --line: #2c3138; --text: #e8eaed; --muted: #9aa3ad;
@@ -50,7 +51,7 @@
     .call-name { position: absolute; left: 0.625rem; bottom: 0.5rem; padding: 0.125rem 0.5rem; border-radius: 6px;
                  background: rgba(0, 0, 0, 0.55); font-size: 0.85rem; max-width: calc(100% - 1.25rem); overflow: hidden;
                  text-overflow: ellipsis; white-space: nowrap; }
-    .call-tile.muted .call-name::after { content: " · muted"; color: var(--muted); }
+    .call-tile.muted .call-name::after { content: " · " var(--call-muted-label, "muted"); color: var(--muted); }
     .call-flag:empty { display: none; }
     .call-flag { position: absolute; right: 0.625rem; top: 0.5rem; padding: 0.125rem 0.5rem; border-radius: 6px;
                  background: rgba(0, 0, 0, 0.55); color: var(--muted); font-size: 0.8rem; }
@@ -76,29 +77,30 @@
     @media (prefers-reduced-motion: reduce) { .call-tile, .call-btn { transition: none; } }
   </style>
 </head>
-<body>
+{# Translators: shown after a person's name in a call when their microphone is off #}
+<body style="--call-muted-label: {{ '"' ~ (_('muted') | string | replace('\\', '\\\\') | replace('"', '\\"')) ~ '"' }}">
   <header>
     <div id="call-title"></div>
     <div id="call-status" role="status" aria-live="polite"></div>
   </header>
 
   <main id="call-stage">
-    <div id="call-tiles" data-count="0" aria-label="People in the call"></div>
+    <div id="call-tiles" data-count="0" aria-label="{{ _('People in the call') }}"></div>
   </main>
 
   <div id="call-fatal" hidden>
     <p id="call-fatal-text"></p>
-    <button type="button" class="call-btn" id="call-fatal-close"><i class="fas fa-xmark" aria-hidden="true"></i><span class="call-label">Close</span></button>
+    <button type="button" class="call-btn" id="call-fatal-close"><i class="fas fa-xmark" aria-hidden="true"></i><span class="call-label">{{ _("Close") }}</span></button>
   </div>
 
-  <button type="button" class="call-btn" id="call-unmute-audio" hidden><i class="fas fa-headphones" aria-hidden="true"></i><span class="call-label">Play sound</span></button>
+  <button type="button" class="call-btn" id="call-unmute-audio" hidden><i class="fas fa-headphones" aria-hidden="true"></i><span class="call-label">{{ _("Play sound") }}</span></button>
 
-  <nav id="call-controls" aria-label="Call controls">
-    <button type="button" class="call-btn" id="call-mute" aria-pressed="false"><i class="fas fa-microphone" aria-hidden="true"></i><span class="call-label">Mute</span></button>
-    <button type="button" class="call-btn" id="call-camera" aria-pressed="false"><i class="fas fa-video" aria-hidden="true"></i><span class="call-label">Camera off</span></button>
-    <label class="sr-only" for="call-devices">Microphone and camera</label>
+  <nav id="call-controls" aria-label="{{ _('Call controls') }}">
+    <button type="button" class="call-btn" id="call-mute" aria-pressed="false"><i class="fas fa-microphone" aria-hidden="true"></i><span class="call-label">{{ pgettext("microphone", "Mute") }}</span></button>
+    <button type="button" class="call-btn" id="call-camera" aria-pressed="false"><i class="fas fa-video" aria-hidden="true"></i><span class="call-label">{{ _("Camera off") }}</span></button>
+    <label class="sr-only" for="call-devices">{{ _("Microphone and camera") }}</label>
     <select id="call-devices"></select>
-    <button type="button" class="call-btn" id="call-leave"><i class="fas fa-phone-slash" aria-hidden="true"></i><span class="call-label">Leave</span></button>
+    <button type="button" class="call-btn" id="call-leave"><i class="fas fa-phone-slash" aria-hidden="true"></i><span class="call-label">{{ pgettext("button", "Leave") }}</span></button>
   </nav>
 
   <script>window.UQQUS_CALL_BOOT = {{ boot | tojson }};</script>

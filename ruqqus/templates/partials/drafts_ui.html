@@ -4,15 +4,15 @@
   (`composer_drafts` is set by home.html, which board.html extends). One composer per document:
   the ids are the same in both.
 #}
-<div id="schedule-panel" class="schedule-panel card d-none" role="dialog" aria-label="Schedule this post">
+<div id="schedule-panel" class="schedule-panel card d-none" role="dialog" aria-label="{{ _('Schedule this post') }}">
     <div class="card-body">
-        <label for="schedule-at" class="font-weight-bold mb-1">Publish on</label>
+        <label for="schedule-at" class="font-weight-bold mb-1">{{ _("Publish on") }}</label>
         <input type="datetime-local" id="schedule-at" class="form-control">
         <small class="text-muted d-block mt-1" id="schedule-hint"></small>
         <div id="schedule-error" class="text-danger text-small mt-1" role="alert"></div>
         <div class="d-flex justify-content-end mt-2">
-            <button type="button" class="btn btn-link text-muted" id="schedule-cancel">Cancel</button>
-            <button type="button" class="btn btn-primary ml-2" id="schedule-confirm">Schedule post</button>
+            <button type="button" class="btn btn-link text-muted" id="schedule-cancel">{{ pgettext("button", "Cancel") }}</button>
+            <button type="button" class="btn btn-primary ml-2" id="schedule-confirm">{{ _("Schedule post") }}</button>
         </div>
     </div>
 </div>
@@ -21,10 +21,10 @@
     <div class="modal-dialog modal-dialog-scrollable" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="draftsModalTitle">Drafts and scheduled posts</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h5 class="modal-title" id="draftsModalTitle">{{ _("Drafts and scheduled posts") }}</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="{{ _('Close') }}"><span aria-hidden="true">&times;</span></button>
             </div>
-            <div class="modal-body" id="drafts-list"><p class="text-muted mb-0">Loading...</p></div>
+            <div class="modal-body" id="drafts-list"><p class="text-muted mb-0">{{ _("Loading...") }}</p></div>
         </div>
     </div>
 </div>

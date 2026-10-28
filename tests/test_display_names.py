@@ -30,7 +30,7 @@ def test_spaces_are_tidied_and_empty_clears_it():
 
 def test_the_length_limit_counts_characters():
     assert dn.clean("x" * dn.MAX_LEN) == "x" * dn.MAX_LEN
-    with pytest.raises(dn.Refused, match="at most 50"):
+    with pytest.raises(dn.Refused, match="can be 50 characters"):
         dn.clean("x" * (dn.MAX_LEN + 1))
     assert dn.clean("é" * dn.MAX_LEN) == "é" * dn.MAX_LEN                  # characters, not bytes
     # weighted (helpers/text_length.py): a CJK character counts 2

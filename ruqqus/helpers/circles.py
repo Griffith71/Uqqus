@@ -21,8 +21,12 @@ renewal job is late. A subscriber who cancelled keeps access until that date and
 renews at the price they signed up for, so the owner raising the price never charges them more.
 """
 import re
-import time
 import unicodedata
+
+from babel.support import LazyProxy
+
+from ruqqus.helpers.i18n_runtime import N_, msg, tr, tr_lazy, trn, trp
+from ruqqus.helpers.i18n_runtime import date_text as _date_text
 
 PUBLIC = 0
 GUILD = 3
@@ -34,7 +38,9 @@ STORY_OPEN = 8
 # the post page's own rule (Submission.in_private_guild_for: its author, or whoever may view the guild); never cached
 PRIVATE_GUILD = 9
 
-NAMES = {PUBLIC: "Public", CIRCLES: "Circles", GUILD: "Circle guild members"}
+# who a post is for, shown only ("Public" alone is ambiguous: it is the audience, with its context)
+NAMES = {PUBLIC: LazyProxy(lambda: trp("audience", "Public"), enable_cache=False), CIRCLES: tr_lazy("Circles"),
+         GUILD: tr_lazy("Circle guild members")}
 
 # kinds of circle
 FRIENDS = "friends"
@@ -43,7 +49,7 @@ PAID = "paid"
 GUILD_KIND = "guild"
 # what a post form names the Friends circle by (its row is made the first time it is chosen)
 FRIENDS_TOKEN = "friends"
-FRIENDS_NAME = "Friends"
+FRIENDS_NAME = N_("Friends")          # compared as it is (a circle of your own can't take it); shown with msg()
 
 # a member row's tier: added by the owner (custom circles) or paying (paid circles, Circle guilds)
 MEMBER = "member"
@@ -74,10 +80,11 @@ def parse_price(raw):
     """(coins, None) or (None, message). 0 is allowed: the paid circle takes no new subscribers."""
     text = "" if raw is None else str(raw).strip()
     if not _DIGITS.fullmatch(text):
-        return None, f"Enter a whole number of coins from 0 to {PRICE_MAX}."
+        return None, tr("Enter a whole number of coins from 0 to %(max)s.", max=PRICE_MAX)
     value = int(text)
     if value > PRICE_MAX:
-        return None, f"The most a circle can ask is {PRICE_MAX} coins every 30 days."
+        return None, trn("The most a circle can ask is %(num)s coin every 30 days.",
+                         "The most a circle can ask is %(num)s coins every 30 days.", PRICE_MAX)
     return value, None
 
 
@@ -88,11 +95,12 @@ def parse_name(raw):
     # no control or invisible characters (right-to-left overrides, zero-width spaces), but the joiner emoji are made of
     text = "".join(ch for ch in text if ch == _JOINER or unicodedata.category(ch)[0] != "C").strip()
     if not text:
-        return None, "Give the circle a name."
+        return None, tr("Give the circle a name.")
     if len(text) > NAME_MAX:
-        return None, f"A circle's name can be {NAME_MAX} characters at most."
+        return None, trn("A circle's name can be %(num)s character at most.",
+                         "A circle's name can be %(num)s characters at most.", NAME_MAX)
     if text.casefold() == FRIENDS_NAME.casefold():
-        return None, "Friends is your automatic circle of mutual follows. Choose another name."
+        return None, tr("Friends is your automatic circle of mutual follows. Choose another name.")
     return text, None
 
 
@@ -111,7 +119,8 @@ def parse_description(raw):
         clean.append(_SPACES.sub(" ", line).strip())
     text = _BLANK_LINES.sub("\n\n", "\n".join(clean)).strip()
     if len(text) > DESCRIPTION_MAX:
-        return None, f"A description can be {DESCRIPTION_MAX} characters at most."
+        return None, trn("A description can be %(num)s character at most.",
+                         "A description can be %(num)s characters at most.", DESCRIPTION_MAX)
     return text, None
 
 
@@ -127,7 +136,7 @@ def parse_audience(raw_audience, raw_circles=()):
         if not token:
             continue
         if token != FRIENDS_TOKEN and not _ID.fullmatch(token):
-            return None, (), "Choose who can see this from your circles."
+            return None, (), tr("Choose who can see this from your circles.")
         if token not in tokens:
             tokens.append(token)
     if text == "":
@@ -136,9 +145,9 @@ def parse_audience(raw_audience, raw_circles=()):
         return PUBLIC, (), None
     if text == str(CIRCLES):
         if not tokens:
-            return None, (), "Choose at least one circle, or make it public."
+            return None, (), tr("Choose at least one circle, or make it public.")
         return CIRCLES, tuple(tokens), None
-    return None, (), "Choose who can see this: Public or some of your circles."
+    return None, (), tr("Choose who can see this: Public or some of your circles.")
 
 
 def tier_of(member_tier, status, renews_utc, now):
@@ -183,40 +192,45 @@ def post_refusal(audience, *, anonymous=False, coauthors=False, forwards=False, 
     if audience == PUBLIC:
         return None
     if anonymous:
-        return "A post for your circles can't be anonymous: the people in them already know who you are."
+        return tr("A post for your circles can't be anonymous: the people in them already know who you are.")
     if coauthors:
-        return "A post for your circles can't have co-authors."
+        return tr("A post for your circles can't have co-authors.")
     if forwards:
-        return "A post for your circles can't be forwarded to a guild."
+        return tr("A post for your circles can't be forwarded to a guild.")
     if own_video:
-        return ("A video uploaded to your YouTube or Dailymotion channel can't be kept to your circles: "
-                "anyone with its link can watch it. Share it publicly, or use a picture.")
+        return tr("A video uploaded to your YouTube or Dailymotion channel can't be kept to your circles: "
+                  "anyone with its link can watch it. Share it publicly, or use a picture.")
     return None
 
 
 def refusal_to_make(kind, *, count, has_premium):
     """Why the owner cannot make another circle of this kind, or None. `count`: how many of that kind they have."""
     if kind == CUSTOM:
-        return f"You can have {CUSTOM_LIMIT} circles of your own at most." if count >= CUSTOM_LIMIT else None
+        if count < CUSTOM_LIMIT:
+            return None
+        return trn("You can have %(num)s circle of your own at most.", "You can have %(num)s circles of your own at most.",
+                   CUSTOM_LIMIT)
     if kind == PAID:
         if not has_premium:
-            return "Paid circles are part of Premium."
-        return f"You can have {PAID_LIMIT} paid circles at most." if count >= PAID_LIMIT else None
-    return "That kind of circle can't be made."
+            return tr("Paid circles are part of Premium.")
+        if count < PAID_LIMIT:
+            return None
+        return trn("You can have %(num)s paid circle at most.", "You can have %(num)s paid circles at most.", PAID_LIMIT)
+    return tr("That kind of circle can't be made.")
 
 
 def refusal_to_add_member(*, owner_id, target_id, blocked, target_gone, members, already):
     """Why the owner cannot add this account to a custom circle, or None. Never says who blocked whom."""
     if target_id == owner_id:
-        return "You can always see your own posts."
+        return tr("You can always see your own posts.")
     if target_gone:
-        return "That account isn't available."
+        return tr("That account isn't available.")
     if blocked:
-        return "You can't add that account."
+        return tr("You can't add that account.")
     if already:
-        return "They are already in this circle."
+        return tr("They are already in this circle.")
     if members >= MEMBER_LIMIT:
-        return f"A circle can have {MEMBER_LIMIT} people at most."
+        return trn("A circle can have %(num)s person at most.", "A circle can have %(num)s people at most.", MEMBER_LIMIT)
     return None
 
 
@@ -225,15 +239,15 @@ def refusal_to_subscribe(*, owner_id, viewer_id, price, blocked, owner_gone, tie
     `tier_of`. A cancelled subscriber who still has access is not refused: subscribing again just resumes it (the caller
     checks `cancelled` and does not charge)."""
     if viewer_id == owner_id:
-        return "That's your own circle."
+        return tr("That's your own circle.")
     if owner_gone:
-        return "That account isn't available."
+        return tr("That account isn't available.")
     if blocked:
-        return "You can't subscribe to this circle."
+        return tr("You can't subscribe to this circle.")
     if tier == SUBSCRIBER and not cancelled:
-        return "You are already subscribed."
+        return tr("You are already subscribed.")
     if price <= 0:
-        return "This circle isn't taking subscribers."
+        return tr("This circle isn't taking subscribers.")
     return None
 
 
@@ -255,12 +269,14 @@ def next_renewal(now, renews_utc):
 
 
 def date_text(timestamp):
-    """A day as the site writes it ("08 October 2026"), in UTC."""
-    return time.strftime("%d %B %Y", time.gmtime(int(timestamp or 0)))
+    """A day as the site writes it ("08 October 2026"), in UTC; in the reader's language (helpers/i18n_runtime.py)."""
+    return _date_text(int(timestamp or 0), "%d %B %Y")
 
 
 def describe_price(price):
-    return "Not taking subscribers" if price <= 0 else f"{price} coin{'s' if price != 1 else ''} every 30 days"
+    if price <= 0:
+        return tr("Not taking subscribers")
+    return trn("%(num)s coin every 30 days", "%(num)s coins every 30 days", price)
 
 
 def plain_name(name):
@@ -270,21 +286,21 @@ def plain_name(name):
 
 def shared_label(names):
     """What the author is told a post or story is for: "Friends", "Friends and Family", "Friends, Family and 2 more"."""
-    names = [n for n in names if n]
+    from ruqqus.helpers.text import word_list
+    names = [msg(n) if n == FRIENDS_NAME else n for n in names if n]
     if not names:
-        return "Only you"
-    if len(names) == 1:
-        return names[0]
-    if len(names) == 2:
-        return f"{names[0]} and {names[1]}"
-    if len(names) == 3:
-        return f"{names[0]}, {names[1]} and {names[2]}"
-    return f"{names[0]}, {names[1]} and {len(names) - 2} more"
+        return tr("Only you")
+    if len(names) <= 3:
+        return word_list(names)
+    # Translators: who a post is shared with, such as "Friends, Family and 2 more" (two circles' names, then a count)
+    return trn("%(first)s, %(second)s and %(num)s more", "%(first)s, %(second)s and %(num)s more", len(names) - 2,
+               first=names[0], second=names[1])
 
 
 def viewer_label(paid_names):
     """What someone else is told a post is for. A custom circle's name is never shown to the people in it; a paid
     circle's is, to its subscribers (they chose it)."""
     if paid_names:
-        return f"For subscribers of {shared_label(paid_names)}"
-    return "Shared with a circle"
+        # Translators: who can see a post, such as "For subscribers of Supporters" (the names of paid circles)
+        return tr("For subscribers of %(circles)s", circles=shared_label(paid_names))
+    return tr("Shared with a circle")

@@ -10,6 +10,7 @@ author's choice.
 Kept free of routes, templates and the database so the rule has one home;
 callers pass the post and the viewer.
 """
+from ruqqus.helpers.i18n_runtime import N_, tr, tr_lazy
 
 EVERYONE, FOLLOWED, PREMIUM, NOBODY = 0, 1, 2, 3
 
@@ -26,19 +27,19 @@ SPACE = 5
 
 MODES = (EVERYONE, FOLLOWED, PREMIUM, NOBODY)
 
-# the choices in the post forms, in display order
+# the choices in the post forms, in display order (partials/post_options.html marks the same labels itself)
 CHOICES = (
-    (EVERYONE, "Everyone"),
-    (FOLLOWED, "Accounts you follow"),
-    (PREMIUM, "Premium accounts"),
-    (NOBODY, "No one"),
+    (EVERYONE, N_("Everyone")),
+    (FOLLOWED, N_("Accounts you follow")),
+    (PREMIUM, N_("Premium accounts")),
+    (NOBODY, N_("No one")),
 )
 
 # shown where the comment box would be. It names nobody, so it is as safe on an
 # anonymous post as anywhere else.
-CLOSED_NOTICE = "Comments are turned off for this post."
-GUILDS_NOTICE = "This post has no comments on the profile. Its comments are in the guilds it was posted to."
-SPACE_NOTICE = "This is a Space: its discussion is in the Space."
+CLOSED_NOTICE = tr_lazy("Comments are turned off for this post.")
+GUILDS_NOTICE = tr_lazy("This post has no comments on the profile. Its comments are in the guilds it was posted to.")
+SPACE_NOTICE = tr_lazy("This is a Space: its discussion is in the Space.")
 
 ADMIN_LEVEL = 3   # same bar as the other "admins may do this anyway" checks
 
@@ -57,8 +58,8 @@ def parse(raw, allow_guilds=False):
 
 # "Accounts you follow" on an anonymous post would tell each reader whether
 # the author follows them, so it is refused there and never applied
-ANONYMOUS_REFUSAL = ("Accounts you follow can't be chosen for an anonymous post: "
-                     "it would show people whether you follow them.")
+ANONYMOUS_REFUSAL = tr_lazy("Accounts you follow can't be chosen for an anonymous post: "
+                            "it would show people whether you follow them.")
 
 
 def refusal(mode, is_anonymous):
@@ -127,5 +128,5 @@ def restriction(post, viewer):
             return None
 
     if mode == FOLLOWED:
-        return f"Only accounts @{post.author.username} follows can comment on this post."
-    return "Only Premium accounts can comment on this post."
+        return tr("Only accounts @%(name)s follows can comment on this post.", name=post.author.username)
+    return tr("Only Premium accounts can comment on this post.")

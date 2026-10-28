@@ -4,11 +4,13 @@
 check reads it as "owes something" when it is not 0, so a value below 0 locked the account for good. That is what a
 purchase of 0 coins did: it was priced at 49 cents and then paid off 49 cents of a debt that wasn't there."""
 
+from ruqqus.helpers.i18n_runtime import tr_lazy
+
 MIN_COINS = 1
 MAX_COINS = 10_000
-BAD_COUNT = "Choose how many coins to buy."
-FREE = "That promo code makes this order free, which can't be paid for. Choose another package."
-NOTHING_OWED = "Your account doesn't owe anything."
+BAD_COUNT = tr_lazy("Choose how many coins to buy.")
+FREE = tr_lazy("That promo code makes this order free, which can't be paid for. Choose another package.")
+NOTHING_OWED = tr_lazy("Your account doesn't owe anything.")
 
 
 def parse_coin_count(value):

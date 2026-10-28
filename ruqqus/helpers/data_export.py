@@ -9,6 +9,8 @@ import json
 
 from sqlalchemy import text
 
+from ruqqus.helpers.i18n_runtime import tr
+
 SECTIONS = (
     ("account", "SELECT id, username, display_name, email, bio, profile_job, profile_location, profile_website, "
                 "created_utc, coin_balance, premium_expires_utc, filter_level, signin_alerts, languages, feed_defaults, "
@@ -52,7 +54,7 @@ SECTIONS = (
 
 def build(db, user_id):
     """{section: [row dicts]} for one account; sections whose table is missing are left out."""
-    out = {"note": "Chats are end-to-end encrypted and not included: the site can't read them."}
+    out = {"note": tr("Chats are end-to-end encrypted and not included: the site can't read them.")}
     for name, sql in SECTIONS:
         savepoint = db.begin_nested()
         try:

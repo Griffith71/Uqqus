@@ -45,7 +45,7 @@
     }).then(function (res) {
       if (!res.ok) {
         Array.prototype.forEach.call(buttons, function (b) { b.disabled = false; });
-        toast(true, res.data.error || 'Could not count your vote.');
+        toast(true, res.data.error || tr('Could not count your vote.'));
         return;
       }
       // the server's own markup (templates/partials/poll.html, labels escaped there); parsed, never run
@@ -53,7 +53,7 @@
       if (fresh && poll.parentNode) poll.parentNode.replaceChild(document.importNode(fresh, true), poll);
     }).catch(function () {
       Array.prototype.forEach.call(buttons, function (b) { b.disabled = false; });
-      toast(true, 'Could not count your vote. Try again.');
+      toast(true, tr('Could not count your vote. Try again.'));
     });
   });
 })();

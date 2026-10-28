@@ -44,15 +44,15 @@
   function save() {
     if (saving) { again = true; return; }
     saving = true;
-    say('Saving options…');
+    say(tr('Saving options…'));
     fetch(box.getAttribute('data-url'), { method: 'POST', credentials: 'same-origin', body: fields(), headers: { Accept: 'application/json' } })
       .then(function (r) { return r.json().catch(function () { return {}; }).then(function (d) { return { ok: r.ok, data: d }; }); })
       .then(function (res) {
         saving = false;
-        if (res.ok) say('Options saved.'); else say(res.data.error || 'The options couldn’t be saved.', true);
+        if (res.ok) say(tr('Options saved.')); else say(res.data.error || tr('The options couldn’t be saved.'), true);
         if (again) { again = false; save(); }
       })
-      .catch(function () { saving = false; say('The options couldn’t be saved. Check your connection.', true); });
+      .catch(function () { saving = false; say(tr('The options couldn’t be saved. Check your connection.'), true); });
   }
 
   function later() {

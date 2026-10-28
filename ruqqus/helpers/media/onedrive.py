@@ -14,6 +14,8 @@ by path and does not depend on the browser being allowed to read Microsoft's ans
 """
 from urllib.parse import quote
 
+from ruqqus.helpers.i18n_runtime import tr
+
 from . import microsoft_oauth, rules
 from .base import MediaGone, Provider, ProviderDown, Stream
 
@@ -66,7 +68,7 @@ class OneDriveProvider(Provider):
                       json={"name": SUBFOLDERS[kind], "folder": {}, "@microsoft.graph.conflictBehavior": "fail"})
         if r.status_code not in (200, 201, 409):
             if r.status_code == 507:
-                raise rules.MediaError("Your OneDrive is full. Free some space and try again.", 507)
+                raise rules.MediaError(tr("Your OneDrive is full. Free some space and try again."), 507)
             raise ProviderDown(f"could not create a OneDrive folder ({r.status_code})")
         made[kind] = True
         account.set_setting("folders", made)
@@ -89,7 +91,7 @@ class OneDriveProvider(Provider):
         url = _json(r).get("uploadUrl")
         if r.status_code != 200 or not url:
             if r.status_code == 507 or "quotaLimitReached" in getattr(r, "text", ""):
-                raise rules.MediaError("Your OneDrive is full. Free some space and try again.", 507)
+                raise rules.MediaError(tr("Your OneDrive is full. Free some space and try again."), 507)
             raise ProviderDown(f"OneDrive did not start the upload ({r.status_code})")
         asset.provider_ref = PATH_PREFIX + path
         return {"url": url, "method": "PUT", "headers": {}, "chunk": CHUNK}
@@ -117,7 +119,7 @@ class OneDriveProvider(Provider):
         meta = self._meta_by_path(account, ref[len(PATH_PREFIX):]) if ref.startswith(PATH_PREFIX) else None
         checksum = _checksum(meta or {})
         if not meta or not meta.get("id") or "size" not in meta or not checksum:
-            raise rules.MediaError("The upload did not arrive in your OneDrive. Try again.")
+            raise rules.MediaError(tr("The upload did not arrive in your OneDrive. Try again."))
         return {"ref": meta["id"], "size": int(meta["size"]), "checksum": checksum}
 
     # --- showing ---------------------------------------------------------------------

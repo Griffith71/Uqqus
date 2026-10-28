@@ -21,6 +21,8 @@ from urllib.parse import urlencode
 
 import requests
 
+from ruqqus.helpers.i18n_runtime import tr
+
 from .base import AccountLost, ProviderDown
 
 STATE_SECONDS = 600
@@ -178,13 +180,14 @@ class Service:
                                                 "redirect_uri": redirect_uri, "grant_type": "authorization_code"})
         data = _json(r)
         if r.status_code != 200 or not data.get("access_token"):
-            raise ValueError(f"{self.label} did not accept the connection. Try again.")
+            # Translators: service is the name of a storage or video site, such as OneDrive or Dailymotion
+            raise ValueError(tr("%(service)s did not accept the connection. Try again.", service=self.label))
         if not data.get("refresh_token"):
-            raise ValueError(f"{self.label} did not give lasting access. Remove this site from your "
-                             f"{self.label} account's connected apps, then connect again.")
+            raise ValueError(tr("%(service)s did not give lasting access. Remove this site from your %(service)s account's "
+                                "connected apps, then connect again.", service=self.label))
         sub = self.identity(data)
         if not sub:
-            raise ValueError(f"{self.label} did not say which account this is. Try again.")
+            raise ValueError(tr("%(service)s did not say which account this is. Try again.", service=self.label))
         scopes = (data.get("scope") or (" ".join(self.wants[want]) if want in self.wants else "")).split()
         return {"refresh_token": data["refresh_token"], "scopes": sorted(scopes), "sub": sub,
                 "access_token": data["access_token"], "expires_in": data.get("expires_in")}

@@ -18,7 +18,9 @@ Rules here are pure; the two subqueries are functions so tests can stand in for 
 """
 from sqlalchemy import and_, or_, select
 
-FORCED = "An admin marked this sensitive, so it can't be switched off here."
+from ruqqus.helpers.i18n_runtime import tr_lazy
+
+FORCED = tr_lazy("An admin marked this sensitive, so it can't be switched off here.")
 
 
 def shows_sensitive(v):

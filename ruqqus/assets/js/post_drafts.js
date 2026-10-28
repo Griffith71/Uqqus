@@ -35,7 +35,7 @@
   // ------------------------------------------------------------------ helpers
 
   function formatTime(epoch) {
-    return new Date(epoch * 1000).toLocaleString([], { dateStyle: 'medium', timeStyle: 'short' });
+    return new Date(epoch * 1000).toLocaleString(I18N.intl, { dateStyle: 'medium', timeStyle: 'short' });
   }
 
   function say(message, isError) {
@@ -101,7 +101,7 @@
 
   function save(publishUtc) {
     return request('/api/drafts', collect(publishUtc)).then(function (res) {
-      if (!res.ok) { say(res.data.error || 'Could not save the draft.', true); return null; }
+      if (!res.ok) { say(res.data.error || tr('Could not save the draft.'), true); return null; }
       idField.value = res.data.id;
       // a reload (or the back button) reopens this draft (the feed composer has no page to reopen it on)
       if (!inline) {
@@ -109,7 +109,7 @@
       }
       refreshCount();
       return res.data;
-    }).catch(function () { say('Could not save the draft. Check your connection.', true); return null; });
+    }).catch(function () { say(tr('Could not save the draft. Check your connection.'), true); return null; });
   }
 
   function setBanner(kind, text) {
@@ -130,8 +130,8 @@
     var hasFile = (file && file.files && file.files.length) || (media && media.value);
     save(null).then(function (data) {
       if (!data) return;
-      say(hasFile ? 'Draft saved. Images are not kept in drafts, so add it again later.' : 'Draft saved.');
-      setBanner('draft', 'Editing a draft. Post it now, or schedule it.');
+      say(hasFile ? tr('Draft saved. Images are not kept in drafts, so add it again later.') : tr('Draft saved.'));
+      setBanner('draft', tr('Editing a draft. Post it now, or schedule it.'));
     });
   });
 
@@ -157,7 +157,8 @@
     }
     var zone = '';
     try { zone = Intl.DateTimeFormat().resolvedOptions().timeZone; } catch (err) { /* older browsers */ }
-    el('schedule-hint').textContent = zone ? 'Your time zone: ' + zone : 'In your local time.';
+    // Translators: %(zone)s is a time zone name such as Europe/London
+    el('schedule-hint').textContent = zone ? tr('Your time zone: %(zone)s', {zone: zone}) : tr('In your local time.');
     scheduleError.textContent = '';
     panel.classList.remove('d-none');
     el('schedule-open').setAttribute('aria-expanded', 'true');
@@ -169,9 +170,9 @@
 
   el('schedule-confirm').addEventListener('click', function () {
     var when = new Date(scheduleInput.value);
-    if (!scheduleInput.value || isNaN(when.getTime())) { scheduleError.textContent = 'Pick a date and time.'; return; }
+    if (!scheduleInput.value || isNaN(when.getTime())) { scheduleError.textContent = tr('Pick a date and time.'); return; }
     var epoch = Math.floor(when.getTime() / 1000);
-    if (!named('title').value.trim()) { scheduleError.textContent = 'A scheduled post needs a title.'; return; }
+    if (!named('title').value.trim()) { scheduleError.textContent = tr('A scheduled post needs a title.'); return; }
     scheduleError.textContent = '';
     save(epoch).then(function (data) {
       if (!data) {
@@ -179,9 +180,10 @@
         return;
       }
       closePanel();
-      var label = 'Scheduled for ' + formatTime(data.publish_utc) + '.';
+      // Translators: %(time)s is a date and time, such as 24 Oct 2026, 15:00
+      var label = tr('Scheduled for %(time)s.', {time: formatTime(data.publish_utc)});
       say(label);
-      setBanner('scheduled', label + ' Saving a draft unschedules it; Schedule changes the time.');
+      setBanner('scheduled', label + ' ' + tr('Saving a draft unschedules it; Schedule changes the time.'));
     });
   });
 
@@ -208,16 +210,18 @@
     main.className = 'draft-main';
     var title = document.createElement('div');
     title.className = 'draft-title';
-    title.textContent = draft.title || 'Untitled';
+    title.textContent = draft.title || tr('Untitled');
     var meta = document.createElement('div');
     meta.className = 'draft-meta text-small text-muted';
     if (draft.status === 'scheduled' || draft.status === 'publishing') {
-      meta.textContent = (draft.status === 'publishing' ? 'Publishing now' : 'Scheduled for ' + formatTime(draft.publish_utc));
+      meta.textContent = (draft.status === 'publishing' ? tr('Publishing now') : tr('Scheduled for %(time)s', {time: formatTime(draft.publish_utc)}));
     } else if (draft.status === 'failed') {
-      meta.textContent = 'Could not be published: ' + (draft.error || 'unknown reason');
+      // Translators: %(reason)s is why a scheduled post could not be published
+      meta.textContent = tr('Could not be published: %(reason)s', {reason: draft.error || tr('unknown reason')});
       meta.classList.replace('text-muted', 'text-danger');
     } else {
-      meta.textContent = 'Draft, saved ' + formatTime(draft.updated_utc);
+      // Translators: %(time)s is when the draft was last saved, such as 24 Oct 2026, 15:00
+      meta.textContent = tr('Draft, saved %(time)s', {time: formatTime(draft.updated_utc)});
     }
     main.appendChild(title);
     main.appendChild(meta);
@@ -229,13 +233,14 @@
       var open = document.createElement('a');
       open.className = 'btn btn-sm btn-secondary';
       open.href = '/submit?draft=' + draft.id;
-      open.textContent = 'Open';
+      // Translators: a button that opens a draft in the editor
+      open.textContent = tr('Open');
       actions.appendChild(open);
       if (draft.status === 'scheduled') {
         var un = document.createElement('button');
         un.type = 'button';
         un.className = 'btn btn-sm btn-link text-muted';
-        un.textContent = 'Unschedule';
+        un.textContent = tr('Unschedule');
         un.addEventListener('click', function () {
           var data = new FormData(); data.append('formkey', formkey());
           request('/api/drafts/' + draft.id + '/unschedule', data).then(function () { load(list); refreshCount(); });
@@ -245,7 +250,8 @@
       var del = document.createElement('button');
       del.type = 'button';
       del.className = 'btn btn-sm btn-link text-danger';
-      del.textContent = 'Delete';
+      // Translators: a button that deletes a draft
+      del.textContent = tr('Delete');
       del.addEventListener('click', function () {
         var data = new FormData(); data.append('formkey', formkey());
         request('/api/drafts/' + draft.id + '/delete', data).then(function (res) {
@@ -276,13 +282,13 @@
         if (!data.drafts.length) {
           var none = document.createElement('p');
           none.className = 'text-muted mb-0';
-          none.textContent = 'Nothing saved yet. Save draft keeps what you have written here, and Schedule posts it later.';
+          none.textContent = tr('Nothing saved yet. Save draft keeps what you have written here, and Schedule posts it later.');
           list.appendChild(none);
           return;
         }
         data.drafts.forEach(function (d) { list.appendChild(row(d, list)); });
       })
-      .catch(function () { list.textContent = 'Could not load your drafts.'; });
+      .catch(function () { list.textContent = tr('Could not load your drafts.'); });
   }
 
   $('#draftsModal').on('show.bs.modal', function () { load(el('drafts-list')); });

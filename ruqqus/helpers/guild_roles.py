@@ -18,6 +18,7 @@ three permissions and, per channel, may allow or deny reading and writing over t
   hides it.
 """
 from ruqqus.helpers import display_names, guild_flair
+from ruqqus.helpers.i18n_runtime import N_, tr, trn
 
 MAX_ROLES = 20
 NAME_MAX = 30
@@ -27,10 +28,12 @@ COLOURS = guild_flair.COLOURS
 DEFAULT_COLOUR = guild_flair.DEFAULT_COLOUR
 
 PERMS = ("slow_exempt", "remove_messages", "pin")
-PERM_LABELS = {"slow_exempt": "Not slowed by slow mode", "remove_messages": "Remove messages", "pin": "Pin messages"}
+# marked with N_ and drawn with msg_text() (guild/roles.html, guild/channels.html)
+PERM_LABELS = {"slow_exempt": N_("Not slowed by slow mode"), "remove_messages": N_("Remove messages"),
+               "pin": N_("Pin messages")}
 
 INHERIT, ALLOW, DENY = 0, 1, 2
-OVERWRITE_LABELS = {INHERIT: "Channel's own rules", ALLOW: "Allow", DENY: "Deny"}
+OVERWRITE_LABELS = {INHERIT: N_("Channel's own rules"), ALLOW: N_("Allow"), DENY: N_("Deny")}
 
 
 class Refused(ValueError):
@@ -39,13 +42,14 @@ class Refused(ValueError):
 
 def clean_name(value):
     try:
-        name = display_names.clean(str(value or "").strip())
+        name = display_names.clean(str(value or "").strip(), kind=display_names.ROLE)
     except display_names.Refused as e:
-        raise Refused(str(e).replace("A display name", "A role name"))
+        raise Refused(str(e))
     if not name:
-        raise Refused("Give the role a name.")
+        raise Refused(tr("Give the role a name."))
     if len(name) > NAME_MAX:
-        raise Refused(f"A role name can be at most {NAME_MAX} characters.")
+        raise Refused(trn("A role name can be at most %(num)s character.", "A role name can be at most %(num)s characters.",
+                          NAME_MAX))
     return name
 
 
@@ -53,7 +57,7 @@ def clean_colour(value):
     try:
         return guild_flair.clean_colour(value or DEFAULT_COLOUR)
     except guild_flair.Refused:
-        raise Refused("Choose one of the colours.")
+        raise Refused(tr("Choose one of the colours."))
 
 
 def clean_perms(form_has):
@@ -63,14 +67,14 @@ def clean_perms(form_has):
 
 def make_refusal(count, name_taken):
     if count >= MAX_ROLES:
-        return f"A guild can have at most {MAX_ROLES} roles."
+        return trn("A guild can have at most %(num)s role.", "A guild can have at most %(num)s roles.", MAX_ROLES)
     if name_taken:
-        return "The guild already has a role with that name."
+        return tr("The guild already has a role with that name.")
     return None
 
 
 def rename_refusal(name_taken):
-    return "The guild already has a role with that name." if name_taken else None
+    return tr("The guild already has a role with that name.") if name_taken else None
 
 
 def parse_overwrite(value):
@@ -78,9 +82,9 @@ def parse_overwrite(value):
     try:
         number = int(value or 0)
     except (TypeError, ValueError):
-        raise Refused("Choose allow, deny or the channel's own rules.")
+        raise Refused(tr("Choose allow, deny or the channel's own rules."))
     if number not in (INHERIT, ALLOW, DENY):
-        raise Refused("Choose allow, deny or the channel's own rules.")
+        raise Refused(tr("Choose allow, deny or the channel's own rules."))
     return number
 
 
@@ -96,13 +100,13 @@ def resolve(allow, deny):
 def member_refusal(*, in_guild, exiled, bot, gone, count, already):
     """Why this person can't be given the role (None: they can)."""
     if gone:
-        return "That account isn't available."
+        return tr("That account isn't available.")
     if bot:
-        return "Bots can't have roles."
+        return tr("Bots can't have roles.")
     if exiled or not in_guild:
-        return "They need to be in the guild, and not exiled from it."
+        return tr("They need to be in the guild, and not exiled from it.")
     if already:
-        return "They already have this role."
+        return tr("They already have this role.")
     if count >= MAX_MEMBERS:
-        return f"A role can have at most {MAX_MEMBERS} people."
+        return trn("A role can have at most %(num)s person.", "A role can have at most %(num)s people.", MAX_MEMBERS)
     return None

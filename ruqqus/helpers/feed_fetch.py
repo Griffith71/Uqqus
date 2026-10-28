@@ -19,7 +19,11 @@ from collections import namedtuple
 from urllib.parse import urljoin
 
 from ruqqus.helpers import bots, safe_fetch
+from ruqqus.helpers.i18n_runtime import N_
 from ruqqus.helpers.safe_fetch import FetchError
+
+# what a FetchError says is kept as the source's last error (bot_runner) and shown to the bot's owner: English, marked
+# with N_, drawn with msg()
 
 try:
     import gevent
@@ -65,7 +69,7 @@ def user_agent():
 
 def _not_this_site(host):
     if bots.is_own_host(host):
-        raise FetchError("A bot can't read this site itself.")
+        raise FetchError(N_("A bot can't read this site itself."))
 
 
 def _once(url, etag, last_modified, allow_local, deadline, max_bytes):
@@ -75,7 +79,7 @@ def _once(url, etag, last_modified, allow_local, deadline, max_bytes):
     address = safe_fetch.vetted_address(host, port, allow_local)
     _not_this_site(address)                                           # a name that leads to the origin itself
 
-    slow = FetchError("The feed did not answer in time.")
+    slow = FetchError(N_("The feed did not answer in time."))
     context = ssl.create_default_context() if scheme == "https" else None
     connection = safe_fetch._Pinned(host, port, address, max(0.5, deadline - time.monotonic()), context)
     headers = {"Accept": ACCEPT, "User-Agent": user_agent(), "Connection": "close"}
@@ -94,11 +98,12 @@ def _once(url, etag, last_modified, allow_local, deadline, max_bytes):
             return "answer", Answer(False, b"", "", new_etag or etag, new_modified or last_modified, url, _max_age(response))
         if response.status in (429, 503):
             # told to slow down: the runner waits as long as the server asks (bots.retry_wait)
-            busy = FetchError("The feed asked us to slow down." if response.status == 429 else "The feed is unavailable for now.")
+            busy = FetchError(N_("The feed asked us to slow down.") if response.status == 429
+                              else N_("The feed is unavailable for now."))
             busy.retry_after = response.getheader("Retry-After", "") or ""
             raise busy
         if response.status != 200:
-            raise FetchError(f"The feed answered with an error ({response.status}).")
+            raise FetchError(N_("The feed answered with an error (%(status)s).") % {"status": response.status})
         body = b""
         while len(body) <= max_bytes:
             if time.monotonic() > deadline:
@@ -108,13 +113,13 @@ def _once(url, etag, last_modified, allow_local, deadline, max_bytes):
                 break
             body += chunk
         if len(body) > max_bytes:
-            raise FetchError("The feed's answer is too large.")
+            raise FetchError(N_("The feed's answer is too large."))
         content_type = (response.getheader("Content-Type", "") or "")[:200]
         return "answer", Answer(True, body, content_type, new_etag, new_modified, url, _max_age(response))
     except FetchError:
         raise
     except ssl.SSLError:
-        raise FetchError("The feed's certificate could not be checked.")
+        raise FetchError(N_("The feed's certificate could not be checked."))
     except (OSError, http.client.HTTPException):
         raise slow
     finally:
@@ -126,7 +131,7 @@ def fetch(url, etag="", last_modified="", allow_local=None, timeout=TIMEOUT, max
     answer in time, an error page, or too much data."""
     allow_local = safe_fetch.local_allowed() if allow_local is None else allow_local
     deadline = time.monotonic() + timeout
-    guard = gevent.Timeout(timeout, FetchError("The feed did not answer in time.")) if gevent is not None else None
+    guard = gevent.Timeout(timeout, FetchError(N_("The feed did not answer in time."))) if gevent is not None else None
     if guard is not None:
         guard.start()
     try:
@@ -135,10 +140,10 @@ def fetch(url, etag="", last_modified="", allow_local=None, timeout=TIMEOUT, max
             if kind == "answer":
                 return value
             if hop == MAX_HOPS or not value:
-                raise FetchError("The feed's address sends it somewhere else too many times.")
+                raise FetchError(N_("The feed's address sends it somewhere else too many times."))
             url = urljoin(url, value.strip())
             etag = last_modified = ""                 # the conditional headers belong to the first address
-        raise FetchError("The feed's address sends it somewhere else too many times.")
+        raise FetchError(N_("The feed's address sends it somewhere else too many times."))
     finally:
         if guard is not None:
             guard.close()

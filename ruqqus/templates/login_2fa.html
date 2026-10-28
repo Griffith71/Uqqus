@@ -3,19 +3,17 @@
 <html{{ html_attrs() }}>
 
 <head>
+{% from "partials/i18n_boot.html" import i18n_boot %}{{ i18n_boot() }}
 
     <meta charset="utf-8">
 {{ font_faces() }}
 {{ theme_color() }}
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="Sign in to {{ 'SITE_NAME' | app_config }}">
+    <meta name="description" content="{{ _('Sign in to %(site)s') }}">
     <meta name="author" content="">
 
-    <title>2-Step Login - {{ 'SITE_NAME' | app_config }}</title>
+    <title>{{ _("2-Step Login - %(site)s") }}</title>
 
-    <!-- Bootstrap core CSS -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
-    integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"> <!-- the icons, as default.html loads them -->
@@ -33,19 +31,19 @@
     <nav class="navbar navbar-expand-lg navbar-dark bg-transparent fixed-top border-0">
         <div class="container-fluid">
             <button class="navbar-toggler d-none" type="button" data-toggle="collapse" data-target="#navbarResponsive"
-            aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+            aria-controls="navbarResponsive" aria-expanded="false" aria-label="{{ _('Toggle navigation') }}">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarResponsive">
             <ul class="navbar-nav ml-auto">
                 <li class="nav-item">
-                    <a class="nav-link" href="/help/about">About</a>
+                    <a class="nav-link" href="/help/about">{{ _('About') }}</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/help/terms">Terms</a>
+                    <a class="nav-link" href="/help/terms">{{ _('Terms') }}</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/help/contact">Contact</a>
+                    <a class="nav-link" href="/help/contact">{{ _('Contact') }}</a>
                 </li>
             </ul>
         </div>
@@ -69,17 +67,17 @@
 
                     <div id="login-form" class="">
 
-                        <h1 class="h2">Two-step login</h1>
+                        <h1 class="h2">{{ _('Two-step login') }}</h1>
 
-                        <p class="text-muted mb-md-5">To login, please enter the 6-digit verification code generated in your authenticator app.</p>
+                        <p class="text-muted mb-md-5">{{ _('To login, please enter the 6-digit verification code generated in your authenticator app.') }}</p>
 
                         {% if failed %}
                         <div class="alert alert-danger alert-dismissible fade show d-flex my-3" role="alert">
                           <i class="fas fa-exclamation-circle my-auto"></i>
                           <div>
-                              Invalid verification code. Please try again.
+                              {{ _('Invalid verification code. Please try again.') }}
                           </div>
-                          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                          <button type="button" class="close" data-dismiss="alert" aria-label="{{ _('Close') }}">
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
@@ -93,13 +91,13 @@
                         <input type="hidden" name="time" value="{{ time }}">
                         <input type="hidden" name="hash" value="{{ hash }}">
 
-                        <label for="2fa_token" class="mt-3">Your verification code</label>
+                        <label for="2fa_token" class="mt-3">{{ _('Your verification code') }}</label>
 
-                        <input class="form-control" id="2fa_token" name="2fa_token" type="text" placeholder="6-digit code or backup code" autocomplete="one-time-code">
+                        <input class="form-control" id="2fa_token" name="2fa_token" type="text" placeholder="{{ _('6-digit code or backup code') }}" autocomplete="one-time-code">
                         
-                        <small>If you don't have your 2FA device, enter one of your backup codes instead. Each backup code works once. An account that never made backup codes can enter its Recovery Code, which also turns 2FA off.</small>
+                        <small>{{ _("If you don't have your 2FA device, enter one of your backup codes instead. Each backup code works once. An account that never made backup codes can enter its Recovery Code, which also turns 2FA off.") }}</small>
 
-                        <button class="btn btn-primary login w-100 mt-3" id="login_button">Sign in</button>
+                        <button class="btn btn-primary login w-100 mt-3" id="login_button">{{ _("Sign in") }}</button>
 
                     </form>
 
@@ -122,7 +120,7 @@
                 {{ i.text }}
             </h6>
 
-            <img class="splash-img" src="{{ i.path }}"></img>
+            <img class="splash-img" src="{{ i.path }}" alt="">
         </div>
 
     </div>

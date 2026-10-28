@@ -23,7 +23,7 @@
   }
 
   function done(res, box) {
-    if (!res.ok) { say(box, res.data.error || 'Could not do that. Try again.'); return; }
+    if (!res.ok) { say(box, res.data.error || tr('Could not do that. Try again.')); return; }
     if (res.data.go) window.location.href = res.data.go;
     else window.location.reload();
   }
@@ -39,7 +39,7 @@
     send(form.getAttribute('action'), new FormData(form)).then(function (res) {
       if (button) button.disabled = false;
       done(res, box);
-    }).catch(function () { if (button) button.disabled = false; say(box, 'Could not do that. Try again.'); });
+    }).catch(function () { if (button) button.disabled = false; say(box, tr('Could not do that. Try again.')); });
   });
 
   document.addEventListener('click', function (event) {
@@ -58,6 +58,6 @@
     send(button.getAttribute('data-circle-post'), body).then(function (res) {
       button.disabled = false;
       done(res, box);
-    }).catch(function () { button.disabled = false; say(box, 'Could not do that. Try again.'); });
+    }).catch(function () { button.disabled = false; say(box, tr('Could not do that. Try again.')); });
   });
 })();

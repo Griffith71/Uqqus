@@ -36,49 +36,49 @@
 {% if layout == "cards" %}
 {# the Create a post page: both choices in plain view (no menu to find), the circles as chips under Circles #}
 <div class="audience audience-cards" data-audience-field data-mode="{{ 4 if for_circles else 0 }}">
-  <span class="audience-title">Who can see this {{ noun }}?</span>
-  <div class="audience-choices" role="radiogroup" aria-label="Who can see this {{ noun }}">
+  <span class="audience-title">{{ _("Who can see this Space?") if noun == "Space" else _("Who can see this post?") }}</span>
+  <div class="audience-choices" role="radiogroup" aria-label="{{ _('Who can see this Space') if noun == 'Space' else _('Who can see this post') }}">
     <input type="radio" class="audience-radio" id="{{ prefix }}-0" name="audience" value="0"{% if not for_circles %} checked{% endif %}>
-    <label class="audience-choice" for="{{ prefix }}-0"><i class="fas fa-globe-americas" aria-hidden="true"></i><span class="audience-choice-text"><strong>Public</strong><small>Anyone can see it</small></span></label>
+    <label class="audience-choice" for="{{ prefix }}-0"><i class="fas fa-globe-americas" aria-hidden="true"></i><span class="audience-choice-text"><strong>{{ pgettext("audience", "Public") }}</strong><small>{{ _("Anyone can see it") }}</small></span></label>
     <input type="radio" class="audience-radio" id="{{ prefix }}-4" name="audience" value="4"{% if for_circles %} checked{% endif %}>
-    <label class="audience-choice" for="{{ prefix }}-4"><i class="fas fa-user-friends" aria-hidden="true"></i><span class="audience-choice-text"><strong>Circles</strong><small>Only the circles you pick</small></span></label>
+    <label class="audience-choice" for="{{ prefix }}-4"><i class="fas fa-user-friends" aria-hidden="true"></i><span class="audience-choice-text"><strong>{{ pgettext("audience", "Circles") }}</strong><small>{{ _("Only the circles you pick") }}</small></span></label>
   </div>
-  <div class="audience-circles" role="group" aria-label="Circles">
-    <span class="audience-subtitle">Pick who it is for</span>
+  <div class="audience-circles" role="group" aria-label="{{ pgettext('audience', 'Circles') }}">
+    <span class="audience-subtitle">{{ _("Pick who it is for") }}</span>
     <div class="audience-chip-list">
       {% for c in choices %}
       <input type="checkbox" class="audience-chip-input" id="{{ prefix }}-c-{{ c.token }}" name="circles" value="{{ c.token }}" data-circle-name="{{ c.name }}"{% if c.token in chosen %} checked{% endif %}>
-      <label class="audience-chip" for="{{ prefix }}-c-{{ c.token }}"{% if c.hint %} title="{{ c.hint }}"{% endif %}>{{ c.name }}{% if c.hint and c.kind != "friends" %}<small>{{ c.hint }}</small>{% endif %}</label>
+      <label class="audience-chip" for="{{ prefix }}-c-{{ c.token }}"{% if c.hint %} title="{{ msg_text(c.hint) }}"{% endif %}>{{ msg_text(c.name) if c.kind == "friends" else c.name }}{% if c.hint and c.kind != "friends" %}<small>{{ msg_text(c.hint) }}</small>{% endif %}</label>
       {% endfor %}
     </div>
     {% if choices | length <= 1 %}
-    <p class="audience-empty">Friends is everyone you follow who follows you back. To share with family, a team or anyone else, make a circle first, then pick it here.</p>
+    <p class="audience-empty">{{ _("Friends is everyone you follow who follows you back. To share with family, a team or anyone else, make a circle first, then pick it here.") }}</p>
     {% endif %}
-    <a href="/circles" class="audience-manage">Make or change your circles</a>
+    <a href="/circles" class="audience-manage">{{ _("Make or change your circles") }}</a>
   </div>
-  <p class="audience-note">Only the people in them see it, and nobody is told which of your circles they are in. It can't be anonymous, forwarded, reposted or co-authored, and it stays off All, search and trending.</p>
+  <p class="audience-note">{{ _("Only the people in them see it, and nobody is told which of your circles they are in. It can't be anonymous, forwarded, reposted or co-authored, and it stays off All, search and trending.") }}</p>
 </div>
 {% else %}
 <div class="audience" data-audience-field data-mode="{{ 4 if for_circles else 0 }}">
-  <span class="audience-title">Who can see this?</span>
+  <span class="audience-title">{{ _("Who can see this?") }}</span>
   <div class="custom-control custom-radio">
     <input type="radio" class="custom-control-input" id="{{ prefix }}-0" name="audience" value="0"{% if not for_circles %} checked{% endif %}>
-    <label class="custom-control-label" for="{{ prefix }}-0">Public <span class="audience-hint">Anyone</span></label>
+    <label class="custom-control-label" for="{{ prefix }}-0">{{ pgettext("audience", "Public") }} <span class="audience-hint">{{ pgettext("audience", "Anyone") }}</span></label>
   </div>
   <div class="custom-control custom-radio">
     <input type="radio" class="custom-control-input" id="{{ prefix }}-4" name="audience" value="4"{% if for_circles %} checked{% endif %}>
-    <label class="custom-control-label" for="{{ prefix }}-4">Circles <span class="audience-hint">Only the circles you pick</span></label>
+    <label class="custom-control-label" for="{{ prefix }}-4">{{ pgettext("audience", "Circles") }} <span class="audience-hint">{{ _("Only the circles you pick") }}</span></label>
   </div>
-  <div class="audience-circles" role="group" aria-label="Circles">
+  <div class="audience-circles" role="group" aria-label="{{ pgettext('audience', 'Circles') }}">
     {% for c in choices %}
     <div class="custom-control custom-checkbox">
       <input type="checkbox" class="custom-control-input" id="{{ prefix }}-c-{{ c.token }}" name="circles" value="{{ c.token }}" data-circle-name="{{ c.name }}"{% if c.token in chosen %} checked{% endif %}>
-      <label class="custom-control-label" for="{{ prefix }}-c-{{ c.token }}">{{ c.name }}{% if c.hint %} <span class="audience-hint">{{ c.hint }}</span>{% endif %}</label>
+      <label class="custom-control-label" for="{{ prefix }}-c-{{ c.token }}">{{ msg_text(c.name) if c.kind == "friends" else c.name }}{% if c.hint %} <span class="audience-hint">{{ msg_text(c.hint) }}</span>{% endif %}</label>
     </div>
     {% endfor %}
-    <a href="/circles" class="audience-manage">Make or change your circles</a>
+    <a href="/circles" class="audience-manage">{{ _("Make or change your circles") }}</a>
   </div>
-  <p class="audience-note">Only the people in them see it, and nobody is told which of your circles they are in. It can't be anonymous, forwarded, reposted or co-authored, and it stays off All, search and trending.</p>
+  <p class="audience-note">{{ _("Only the people in them see it, and nobody is told which of your circles they are in. It can't be anonymous, forwarded, reposted or co-authored, and it stays off All, search and trending.") }}</p>
 </div>
 {% endif %}
 {% endmacro %}
@@ -96,16 +96,16 @@
 <div class="where-field" data-where data-input="{{ input }}" data-add="{{ add }}">
   <input type="hidden" name="post_to_profile" value="0">
   <input type="checkbox" class="where-profile-input" id="{{ prefix }}-profile" name="post_to_profile" value="1"{% if checked %} checked{% endif %}>
-  <label class="where-chip" for="{{ prefix }}-profile"><i class="fas fa-user-circle" aria-hidden="true"></i>My profile</label>
+  <label class="where-chip" for="{{ prefix }}-profile"><i class="fas fa-user-circle" aria-hidden="true"></i>{{ _("My profile") }}</label>
   <span class="where-summary text-muted text-small" data-where-summary></span>
   <p class="where-note text-small text-muted mb-0" role="status" hidden></p>
 </div>
 {% endmacro %}
 
 {% macro comment_permission_field(selected, prefix) %}
-<label class="mt-3 d-block">Who can comment?<i class="fas fa-info-circle text-gray-400 ml-1" data-toggle="tooltip" data-placement="top" title="Applies to this post on your profile. A copy forwarded to a guild follows that guild's rules instead. You and site admins can always comment, unless you choose No one. You can change this later from the post's menu."></i></label>
+<label class="mt-3 d-block">{{ _("Who can comment?") }}<i class="fas fa-info-circle text-gray-400 ml-1" data-toggle="tooltip" data-placement="top" title="{{ _("Applies to this post on your profile. A copy forwarded to a guild follows that guild's rules instead. You and site admins can always comment, unless you choose No one. You can change this later from the post's menu.") }}"></i></label>
 <div class="comment-permission">
-  {% for value, label in [(0, "Everyone"), (1, "Accounts you follow"), (2, "Premium accounts"), (3, "No one")] %}
+  {% for value, label in [(0, _("Everyone")), (1, _("Accounts you follow")), (2, _("Premium accounts")), (3, _("No one"))] %}
   <div class="custom-control custom-radio custom-control-inline">
     <input type="radio" class="custom-control-input" id="{{ prefix }}-{{ value }}" name="comment_permission" value="{{ value }}"{% if selected == value %} checked{% endif %}>
     <label class="custom-control-label" for="{{ prefix }}-{{ value }}">{{ label }}</label>
@@ -115,32 +115,32 @@
 {% endmacro %}
 
 {% macro disclosure_field(paid, ai, prefix) %}
-<label class="mt-3 d-block">Content disclosure<i class="fas fa-info-circle text-gray-400 ml-1" data-toggle="tooltip" data-placement="top" title="Be upfront with readers. The labels show next to the title."></i></label>
+<label class="mt-3 d-block">{{ _("Content disclosure") }}<i class="fas fa-info-circle text-gray-400 ml-1" data-toggle="tooltip" data-placement="top" title="{{ _('Be upfront with readers. The labels show next to the title.') }}"></i></label>
 <div class="content-disclosure">
   <div class="custom-control custom-checkbox custom-control-inline">
     <input type="hidden" name="paid_partnership" value="">
     <input type="checkbox" class="custom-control-input" id="{{ prefix }}-paid" name="paid_partnership" value="true"{% if paid %} checked{% endif %}>
-    <label class="custom-control-label" for="{{ prefix }}-paid" data-toggle="tooltip" data-placement="top" title="Paid partnerships, sponsorships, affiliate links, or advertising your own products or services">Commercial promotion</label>
+    <label class="custom-control-label" for="{{ prefix }}-paid" data-toggle="tooltip" data-placement="top" title="{{ _('Paid partnerships, sponsorships, affiliate links, or advertising your own products or services') }}">{{ _("Commercial promotion") }}</label>
   </div>
   <div class="custom-control custom-checkbox custom-control-inline">
     <input type="hidden" name="made_with_ai" value="">
     <input type="checkbox" class="custom-control-input" id="{{ prefix }}-ai" name="made_with_ai" value="true"{% if ai %} checked{% endif %}>
-    <label class="custom-control-label" for="{{ prefix }}-ai">Made with AI</label>
+    <label class="custom-control-label" for="{{ prefix }}-ai">{{ _("Made with AI") }}</label>
   </div>
 </div>
 {% endmacro %}
 
 {% macro disclosure_toggles(prefix, paid=false, ai=false, anonymous_option=false, anonymous_locked=false) %}
-<label class="format btn btn-secondary m-0 ml-1 d-inline-block{% if paid %} text-info{% endif %}" for="{{ prefix }}-paid" data-toggle="tooltip" data-placement="bottom" title="Commercial promotion: paid partnerships, sponsorships, affiliate links, or advertising your own products or services">
+<label class="format btn btn-secondary m-0 ml-1 d-inline-block{% if paid %} text-info{% endif %}" for="{{ prefix }}-paid" data-toggle="tooltip" data-placement="bottom" title="{{ _('Commercial promotion: paid partnerships, sponsorships, affiliate links, or advertising your own products or services') }}">
   <input id="{{ prefix }}-paid" type="checkbox" hidden{% if paid %} checked{% endif %} onchange="this.parentNode.classList.toggle('text-info', this.checked)">
   <i class="fas fa-handshake"></i>
 </label>
-<label class="format btn btn-secondary m-0 ml-1 d-inline-block{% if ai %} text-info{% endif %}" for="{{ prefix }}-ai" data-toggle="tooltip" data-placement="bottom" title="Made with AI">
+<label class="format btn btn-secondary m-0 ml-1 d-inline-block{% if ai %} text-info{% endif %}" for="{{ prefix }}-ai" data-toggle="tooltip" data-placement="bottom" title="{{ _('Made with AI') }}">
   <input id="{{ prefix }}-ai" type="checkbox" hidden{% if ai %} checked{% endif %} onchange="this.parentNode.classList.toggle('text-info', this.checked)">
   <i class="fas fa-robot"></i>
 </label>
 {% if anonymous_option %}
-<label class="format btn btn-secondary m-0 ml-1 d-inline-block{% if anonymous_locked %} text-info{% endif %}" for="{{ prefix }}-anon" data-toggle="tooltip" data-placement="bottom" title="{{ 'Comments on your anonymous post are anonymous' if anonymous_locked else 'Comment anonymously: other users will not see your name' }}">
+<label class="format btn btn-secondary m-0 ml-1 d-inline-block{% if anonymous_locked %} text-info{% endif %}" for="{{ prefix }}-anon" data-toggle="tooltip" data-placement="bottom" title="{{ _('Comments on your anonymous post are anonymous') if anonymous_locked else _('Comment anonymously: other users will not see your name') }}">
   <input id="{{ prefix }}-anon" type="checkbox" hidden{% if anonymous_locked %} checked disabled{% endif %} onchange="this.parentNode.classList.toggle('text-info', this.checked)">
   <i class="fas fa-user-secret"></i>
 </label>
@@ -148,9 +148,9 @@
 {% endmacro %}
 
 {% macro disclosure_badges(item, v=none) %}
-{%- if item.paid_partnership %}<span class="badge badge-pill bg-white border text-muted text-small-extra mr-1" data-toggle="tooltip" data-placement="bottom" title="The author says this is commercial promotion: a paid partnership, sponsorship, affiliate link, or advertising of their own products or services"><i class="fas fa-handshake fa-fw mr-1"></i>Commercial promotion</span>{% endif -%}
-{%- if item.made_with_ai %}<span class="badge badge-pill bg-white border text-muted text-small-extra mr-1" data-toggle="tooltip" data-placement="bottom" title="The author says this was made with AI"><i class="fas fa-robot fa-fw mr-1"></i>Made with AI</span>{% endif -%}
-{%- if item.is_anonymous and not anon_hidden(item, v) %}<span class="badge badge-pill bg-white border text-muted text-small-extra mr-1" data-toggle="tooltip" data-placement="bottom" title="Other users see this as Anonymous. Only you and site admins see your name."><i class="fas fa-user-secret fa-fw mr-1"></i>Anonymous</span>{% endif -%}
+{%- if item.paid_partnership %}<span class="badge badge-pill bg-white border text-muted text-small-extra mr-1" data-toggle="tooltip" data-placement="bottom" title="{{ _('The author says this is commercial promotion: a paid partnership, sponsorship, affiliate link, or advertising of their own products or services') }}"><i class="fas fa-handshake fa-fw mr-1"></i>{{ _("Commercial promotion") }}</span>{% endif -%}
+{%- if item.made_with_ai %}<span class="badge badge-pill bg-white border text-muted text-small-extra mr-1" data-toggle="tooltip" data-placement="bottom" title="{{ _('The author says this was made with AI') }}"><i class="fas fa-robot fa-fw mr-1"></i>{{ _("Made with AI") }}</span>{% endif -%}
+{%- if item.is_anonymous and not anon_hidden(item, v) %}<span class="badge badge-pill bg-white border text-muted text-small-extra mr-1" data-toggle="tooltip" data-placement="bottom" title="{{ _('Other users see this as Anonymous. Only you and site admins see your name.') }}"><i class="fas fa-user-secret fa-fw mr-1"></i>{{ pgettext("label", "Anonymous") }}</span>{% endif -%}
 {% endmacro %}
 
 {% macro disclosure_row(item, v=none) %}
@@ -161,28 +161,28 @@
 {# the options are `poll_option` (up to poll_max_options of them), the length `poll_hours` (helpers/polls.py);
    assets/js/poll_composer.js opens and closes the panel, and keeps its fields disabled while it is closed #}
 <div class="poll-composer mt-3" data-poll-composer>
-  <label class="d-block">Poll (optional)<i class="fas fa-info-circle text-gray-400 ml-1" data-toggle="tooltip" data-placement="top" title="Your title is the question. {{ poll_min_options }} to {{ poll_max_options }} options, one vote each. The poll can be voted from every forward and repost of this post."></i></label>
-  <button type="button" class="btn btn-secondary btn-sm poll-open"{% if options %} hidden{% endif %}><i class="far fa-chart-bar mr-1"></i>Add a poll</button>
+  <label class="d-block">{{ _("Poll (optional)") }}<i class="fas fa-info-circle text-gray-400 ml-1" data-toggle="tooltip" data-placement="top" title="{{ _('Your title is the question. %(min)s to %(max)s options, one vote each. The poll can be voted from every forward and repost of this post.', min=poll_min_options, max=poll_max_options) }}"></i></label>
+  <button type="button" class="btn btn-secondary btn-sm poll-open"{% if options %} hidden{% endif %}><i class="far fa-chart-bar mr-1"></i>{{ _("Add a poll") }}</button>
   <div class="poll-panel"{% if not options %} hidden{% endif %}>
-    <p class="text-small text-muted mb-2">Your title is the question. Give {{ poll_min_options }} to {{ poll_max_options }} options. People can vote from every forward and repost of this post, once each.</p>
+    <p class="text-small text-muted mb-2">{{ _("Your title is the question. Give %(min)s to %(max)s options. People can vote from every forward and repost of this post, once each.", min=poll_min_options, max=poll_max_options) }}</p>
     <div class="poll-rows">
       {% for i in range(poll_max_options) %}
       <div class="poll-row input-group mb-2"{% if i >= poll_min_options and i >= options | length %} hidden{% endif %}>
         <input type="text" class="form-control" name="poll_option" data-weighted-max="{{ poll_option_chars }}" placeholder="{{ _('Option %(number)s', number=i + 1) }}" aria-label="{{ _('Poll option %(number)s', number=i + 1) }}" value="{{ options[i] if i < options | length else '' }}" autocomplete="off"{% if not options %} disabled{% endif %}>
         {% if i >= poll_min_options %}
-        <div class="input-group-append"><button type="button" class="btn btn-outline-secondary poll-row-remove" aria-label="Remove option {{ i + 1 }}">&times;</button></div>
+        <div class="input-group-append"><button type="button" class="btn btn-outline-secondary poll-row-remove" aria-label="{{ _('Remove option %(number)s', number=i + 1) }}">&times;</button></div>
         {% endif %}
       </div>
       {% endfor %}
     </div>
-    <button type="button" class="btn btn-link btn-sm px-0 poll-more">+ Add option</button>
-    <label class="d-block mt-2" for="{{ prefix }}-hours">Poll length</label>
+    <button type="button" class="btn btn-link btn-sm px-0 poll-more">{{ _("+ Add option") }}</button>
+    <label class="d-block mt-2" for="{{ prefix }}-hours">{{ _("Poll length") }}</label>
     <select class="custom-select" id="{{ prefix }}-hours" name="poll_hours"{% if not options %} disabled{% endif %}>
       {% for h, label in poll_durations %}
-      <option value="{{ h }}"{% if (hours | int) == h %} selected{% endif %}>{{ label }}</option>
+      <option value="{{ h }}"{% if (hours | int) == h %} selected{% endif %}>{{ msg_text(label) }}</option>
       {% endfor %}
     </select>
-    <button type="button" class="btn btn-link btn-sm text-danger px-0 mt-2 poll-remove">Remove poll</button>
+    <button type="button" class="btn btn-link btn-sm text-danger px-0 mt-2 poll-remove">{{ _("Remove poll") }}</button>
   </div>
 </div>
 {% endmacro %}
@@ -194,16 +194,16 @@
 <div class="composer-anonymous">
   <div class="custom-control custom-switch">
     <input type="checkbox" class="custom-control-input" id="{{ prefix }}" name="anonymous" value="true"{% if checked %} checked{% endif %} aria-describedby="{{ prefix }}-hint">
-    <label class="custom-control-label" for="{{ prefix }}">Post anonymously</label>
+    <label class="custom-control-label" for="{{ prefix }}">{{ _("Post anonymously") }}</label>
   </div>
-  <span class="audience-hint d-block" id="{{ prefix }}-hint">Others see Anonymous instead of your name; you and site admins still see it. It can't be changed after posting.</span>
+  <span class="audience-hint d-block" id="{{ prefix }}-hint">{{ _("Others see Anonymous instead of your name; you and site admins still see it. A region filter still shows which region it comes from. It can't be changed after posting.") }}</span>
 </div>
 {% else %}
-<label class="mt-3 d-block">Anonymity<i class="fas fa-info-circle text-gray-400 ml-1" data-toggle="tooltip" data-placement="top" title="Other users see Anonymous instead of your name. You and site admins can still see it, it follows the same rules as any post, and it cannot be undone after posting. It is not listed on your profile."></i></label>
+<label class="mt-3 d-block">{{ _("Anonymity") }}<i class="fas fa-info-circle text-gray-400 ml-1" data-toggle="tooltip" data-placement="top" title="{{ _('Other users see Anonymous instead of your name. You and site admins can still see it, it follows the same rules as any post, and it cannot be undone after posting. A region filter still shows which region it comes from. It is not listed on your profile: you find it in History, under Anonymous.') }}"></i></label>
 <div class="anonymity">
   <div class="custom-control custom-checkbox">
     <input type="checkbox" class="custom-control-input" id="{{ prefix }}" name="anonymous" value="true"{% if checked %} checked{% endif %}>
-    <label class="custom-control-label" for="{{ prefix }}">Post anonymously</label>
+    <label class="custom-control-label" for="{{ prefix }}">{{ _("Post anonymously") }}</label>
   </div>
 </div>
 {% endif %}

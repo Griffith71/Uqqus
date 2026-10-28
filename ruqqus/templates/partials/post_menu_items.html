@@ -13,15 +13,15 @@
 
 {% macro follow_item(p, v) %}
 {% if v and p.follow_state in ("can_follow", "following") and not p.is_banned and p.deleted_utc == 0 %}
-<a id="follow-post-{{ p.base36id }}" class="dropdown-item{% if p.follow_state == 'following' %} d-none{% endif %}" href="javascript:void(0)" onclick="post_toast('/api/post/{{ p.base36id }}/follow', callback=function(){document.getElementById('follow-post-{{ p.base36id }}').classList.toggle('d-none');document.getElementById('unfollow-post-{{ p.base36id }}').classList.toggle('d-none');})"><i class="fas fa-bell fa-fw"></i>Follow post</a>
-<a id="unfollow-post-{{ p.base36id }}" class="dropdown-item{% if p.follow_state != 'following' %} d-none{% endif %}" href="javascript:void(0)" onclick="post_toast('/api/post/{{ p.base36id }}/unfollow', callback=function(){document.getElementById('follow-post-{{ p.base36id }}').classList.toggle('d-none');document.getElementById('unfollow-post-{{ p.base36id }}').classList.toggle('d-none');})"><i class="fas fa-bell-slash fa-fw"></i>Unfollow post</a>
+<a id="follow-post-{{ p.base36id }}" class="dropdown-item{% if p.follow_state == 'following' %} d-none{% endif %}" href="javascript:void(0)" onclick="post_toast('/api/post/{{ p.base36id }}/follow', callback=function(){document.getElementById('follow-post-{{ p.base36id }}').classList.toggle('d-none');document.getElementById('unfollow-post-{{ p.base36id }}').classList.toggle('d-none');})"><i class="fas fa-bell fa-fw"></i>{{ _("Follow post") }}</a>
+<a id="unfollow-post-{{ p.base36id }}" class="dropdown-item{% if p.follow_state != 'following' %} d-none{% endif %}" href="javascript:void(0)" onclick="post_toast('/api/post/{{ p.base36id }}/unfollow', callback=function(){document.getElementById('follow-post-{{ p.base36id }}').classList.toggle('d-none');document.getElementById('unfollow-post-{{ p.base36id }}').classList.toggle('d-none');})"><i class="fas fa-bell-slash fa-fw"></i>{{ _("Unfollow post") }}</a>
 {% endif %}
 {% endmacro %}
 
 {% macro follow_button(p, v) %}
 {% if v and p.follow_state in ("can_follow", "following") and not p.is_banned and p.deleted_utc == 0 %}
-<button id="follow-post-button-{{ p.base36id }}" class="btn btn-link btn-block btn-lg text-left text-muted{% if p.follow_state == 'following' %} d-none{% endif %}" data-dismiss="modal" onclick="post_toast('/api/post/{{ p.base36id }}/follow', callback=function(){document.getElementById('follow-post-button-{{ p.base36id }}').classList.toggle('d-none');document.getElementById('unfollow-post-button-{{ p.base36id }}').classList.toggle('d-none');})"><i class="fas fa-bell fa-fw text-center text-muted mr-3"></i>Follow post</button>
-<button id="unfollow-post-button-{{ p.base36id }}" class="btn btn-link btn-block btn-lg text-left text-muted{% if p.follow_state != 'following' %} d-none{% endif %}" data-dismiss="modal" onclick="post_toast('/api/post/{{ p.base36id }}/unfollow', callback=function(){document.getElementById('follow-post-button-{{ p.base36id }}').classList.toggle('d-none');document.getElementById('unfollow-post-button-{{ p.base36id }}').classList.toggle('d-none');})"><i class="fas fa-bell-slash fa-fw text-center text-muted mr-3"></i>Unfollow post</button>
+<button id="follow-post-button-{{ p.base36id }}" class="btn btn-link btn-block btn-lg text-left text-muted{% if p.follow_state == 'following' %} d-none{% endif %}" data-dismiss="modal" onclick="post_toast('/api/post/{{ p.base36id }}/follow', callback=function(){document.getElementById('follow-post-button-{{ p.base36id }}').classList.toggle('d-none');document.getElementById('unfollow-post-button-{{ p.base36id }}').classList.toggle('d-none');})"><i class="fas fa-bell fa-fw text-center text-muted mr-3"></i>{{ _("Follow post") }}</button>
+<button id="unfollow-post-button-{{ p.base36id }}" class="btn btn-link btn-block btn-lg text-left text-muted{% if p.follow_state != 'following' %} d-none{% endif %}" data-dismiss="modal" onclick="post_toast('/api/post/{{ p.base36id }}/unfollow', callback=function(){document.getElementById('follow-post-button-{{ p.base36id }}').classList.toggle('d-none');document.getElementById('unfollow-post-button-{{ p.base36id }}').classList.toggle('d-none');})"><i class="fas fa-bell-slash fa-fw text-center text-muted mr-3"></i>{{ _("Unfollow post") }}</button>
 {% endif %}
 {% endmacro %}
 
@@ -33,37 +33,39 @@
 
 {% macro fewer_item(p, v) %}
 {% if v and p.author_id != v.id and not p.is_banned and p.deleted_utc == 0 %}
-<a class="dropdown-item" href="javascript:void(0)" data-fewer-post="{{ p.base36id }}"><i class="fas fa-minus-circle fa-fw"></i>Show fewer posts like this</a>
+<a class="dropdown-item" href="javascript:void(0)" data-fewer-post="{{ p.base36id }}"><i class="fas fa-minus-circle fa-fw"></i>{{ _("Show fewer posts like this") }}</a>
 {% endif %}
 {% endmacro %}
 
 {% macro fewer_button(p, v) %}
 {% if v and p.author_id != v.id and not p.is_banned and p.deleted_utc == 0 %}
-<button class="btn btn-link btn-block btn-lg text-left text-muted" data-dismiss="modal" data-fewer-post="{{ p.base36id }}"><i class="fas fa-minus-circle fa-fw text-center text-muted mr-3"></i>Show fewer posts like this</button>
+<button class="btn btn-link btn-block btn-lg text-left text-muted" data-dismiss="modal" data-fewer-post="{{ p.base36id }}"><i class="fas fa-minus-circle fa-fw text-center text-muted mr-3"></i>{{ _("Show fewer posts like this") }}</button>
 {% endif %}
 {% endmacro %}
 
 {% macro collab_item(p, v) %}
 {% set c = collab_of(p, v) if is_collab_post(p) else none %}
 {% if c and not p.is_banned and p.deleted_utc == 0 %}
-<a class="dropdown-item" href="/post/{{ p.base36id }}/written_by"><i class="fas fa-palette fa-fw"></i>Who wrote what</a>
-<a class="dropdown-item" href="/post/{{ p.base36id }}/revisions"><i class="fas fa-clock-rotate-left fa-fw"></i>Revisions</a>
-{% if c.mine %}<a class="dropdown-item" href="/collab/{{ c.doc_id }}"><i class="fas fa-pen-to-square fa-fw"></i>Open the shared draft</a>{% endif %}
-{% if v and p.is_public %}<a class="dropdown-item" href="/collab/fork/{{ p.base36id }}"><i class="fas fa-code-fork fa-fw"></i>Fork</a>{% endif %}
+<a class="dropdown-item" href="/post/{{ p.base36id }}/written_by"><i class="fas fa-palette fa-fw"></i>{{ _("Who wrote what") }}</a>
+<a class="dropdown-item" href="/post/{{ p.base36id }}/revisions"><i class="fas fa-clock-rotate-left fa-fw"></i>{{ _("Revisions") }}</a>
+{% if c.mine %}<a class="dropdown-item" href="/collab/{{ c.doc_id }}"><i class="fas fa-pen-to-square fa-fw"></i>{{ _("Open the shared draft") }}</a>{% endif %}
+{% if v and p.is_public %}<a class="dropdown-item" href="/collab/fork/{{ p.base36id }}"><i class="fas fa-code-fork fa-fw"></i>{{ pgettext("verb", "Fork") }}</a>{% endif %}
 {% endif %}
 {% endmacro %}
 
 {% macro collab_button(p, v) %}
 {% set c = collab_of(p, v) if is_collab_post(p) else none %}
 {% if c and not p.is_banned and p.deleted_utc == 0 %}
-<a class="btn btn-link btn-block btn-lg text-left text-muted" href="/post/{{ p.base36id }}/written_by"><i class="fas fa-palette fa-fw text-center text-muted mr-3"></i>Who wrote what</a>
-<a class="btn btn-link btn-block btn-lg text-left text-muted" href="/post/{{ p.base36id }}/revisions"><i class="fas fa-clock-rotate-left fa-fw text-center text-muted mr-3"></i>Revisions</a>
-{% if c.mine %}<a class="btn btn-link btn-block btn-lg text-left text-muted" href="/collab/{{ c.doc_id }}"><i class="fas fa-pen-to-square fa-fw text-center text-muted mr-3"></i>Open the shared draft</a>{% endif %}
-{% if v and p.is_public %}<a class="btn btn-link btn-block btn-lg text-left text-muted" href="/collab/fork/{{ p.base36id }}"><i class="fas fa-code-fork fa-fw text-center text-muted mr-3"></i>Fork</a>{% endif %}
+<a class="btn btn-link btn-block btn-lg text-left text-muted" href="/post/{{ p.base36id }}/written_by"><i class="fas fa-palette fa-fw text-center text-muted mr-3"></i>{{ _("Who wrote what") }}</a>
+<a class="btn btn-link btn-block btn-lg text-left text-muted" href="/post/{{ p.base36id }}/revisions"><i class="fas fa-clock-rotate-left fa-fw text-center text-muted mr-3"></i>{{ _("Revisions") }}</a>
+{% if c.mine %}<a class="btn btn-link btn-block btn-lg text-left text-muted" href="/collab/{{ c.doc_id }}"><i class="fas fa-pen-to-square fa-fw text-center text-muted mr-3"></i>{{ _("Open the shared draft") }}</a>{% endif %}
+{% if v and p.is_public %}<a class="btn btn-link btn-block btn-lg text-left text-muted" href="/collab/fork/{{ p.base36id }}"><i class="fas fa-code-fork fa-fw text-center text-muted mr-3"></i>{{ pgettext("verb", "Fork") }}</a>{% endif %}
 {% endif %}
 {% endmacro %}
 
 {% macro collab_mark(p, v) %}
 {%- set c = collab_of(p, v) if is_collab_post(p) else none -%}
-{%- if c %} · <a href="/post/{{ p.base36id }}/written_by" class="collab-mark"><i class="fas fa-pen-to-square" aria-hidden="true"></i> Written together</a>{% if c.revisions > 1 %} · <a href="/post/{{ p.base36id }}/revisions">{{ c.revisions }} revisions</a>{% endif %}{% if c.fork_post %} · <i class="fas fa-code-fork" aria-hidden="true"></i> forked from <a href="{{ c.fork_post.permalink }}">{{ c.fork_post.title | striptags | truncate(60) }}</a>{% endif %}{% endif -%}
+{%- if c %} · <a href="/post/{{ p.base36id }}/written_by" class="collab-mark"><i class="fas fa-pen-to-square" aria-hidden="true"></i> {{ _("Written together") }}</a>{% if c.revisions > 1 %} · <a href="/post/{{ p.base36id }}/revisions">{{ ngettext("%(num)s revision", "%(num)s revisions", c.revisions) }}</a>{% endif %}
+{#- Translators: the title of the post it was forked from, a link #}
+{%- if c.fork_post %}{% set fork_link %}<a href="{{ c.fork_post.permalink }}">{{ c.fork_post.title | striptags | truncate(60) }}</a>{% endset %} · <i class="fas fa-code-fork" aria-hidden="true"></i> {{ _("forked from %(post)s", post=fork_link) }}{% endif %}{% endif -%}
 {% endmacro %}

@@ -12,6 +12,7 @@ what it said, so whose words are whose is clear. The rules, with no I/O (tests/t
   `quote_of`) with the rules of opening the post (`post_notice`): a reader who may not see it is told it isn't
   available, and an anonymous author stays anonymous.
 """
+import calendar
 import html as html_lib
 import re
 from datetime import datetime
@@ -19,6 +20,7 @@ from functools import lru_cache
 from urllib.parse import urlsplit
 
 from ruqqus.helpers import permalinks, social_embeds
+from ruqqus.helpers.i18n_runtime import N_
 
 TEXT_MAX = 2000
 _SPACES = re.compile(r"[ \t\f\v]+")
@@ -46,8 +48,19 @@ _POST_PATHS = {
     "truthsocial.com": re.compile(r"^/@(?P<handle>\w{1,30})/(?:posts/)?\d+"),
 }
 
+# the card's line under the text (`media`): kept in English here (the cards are cached for every reader) and drawn
+# with msg() in partials/quote_card.html
+# Translators: on a card quoting a post from another site, the line saying the post has pictures or a video
+PHOTO_OR_VIDEO = N_("Photo or video")
+# Translators: on a card quoting a post from another site, the line saying the post is a video
+VIDEO = N_("Video")
+# Translators: on a card quoting a post from another site, the line saying the post is a picture
+PHOTO = N_("Photo")
+# Translators: on a card quoting a post from another site, said instead of a picture the site hides behind a warning
+SENSITIVE_MEDIA = N_("Sensitive media")
+
 # what a post on these sites usually carries, when the site does not say: the card's line under the text
-_MEDIA_WORD = {"tiktok.com": "Video", "instagram.com": "Photo or video", "pinterest.com": "Photo"}
+_MEDIA_WORD = {"tiktok.com": VIDEO, "instagram.com": PHOTO_OR_VIDEO, "pinterest.com": PHOTO}
 
 # Font Awesome 6.4 Free brand icons (tests/data/fa_free_6_4_0_names.txt); a site without one shows its first letter
 _ICONS = {"reddit.com": "reddit", "redd.it": "reddit", "tiktok.com": "tiktok", "instagram.com": "instagram",
@@ -79,7 +92,7 @@ def _signed_quote(snippet, drop_link=""):
     quote = soup.find("blockquote") if soup else None
     if quote is None:
         return {}
-    found = {"media": "Photo or video" if quote.get("data-media") else "", "video": quote.get("data-video") == "1",
+    found = {"media": PHOTO_OR_VIDEO if quote.get("data-media") else "", "video": quote.get("data-video") == "1",
              "sensitive": quote.get("data-sensitive") == "1", "ours": quote.has_attr("data-video")}
     paragraphs = quote.find_all("p", recursive=False)       # one on X and Bluesky, one per paragraph on Mastodon
     for paragraph in paragraphs:
@@ -87,7 +100,7 @@ def _signed_quote(snippet, drop_link=""):
             if drop_link and link.get("href") == drop_link:
                 link.decompose()
             elif _MEDIA_LINK.match(link.get_text().strip()):
-                found["media"] = "Photo or video"
+                found["media"] = PHOTO_OR_VIDEO
                 link.decompose()
         for br in paragraph.find_all("br"):
             br.replace_with("\n")
@@ -99,21 +112,35 @@ def _signed_quote(snippet, drop_link=""):
     signature = _SIGNATURE.match(_plain(quote.get_text(" ")).replace("\n", " "))
     if signature:
         found.update(name=signature.group("name").strip(), handle=signature.group("handle"),
-                     when=_when(signature.group("when")))
+                     when=_when(signature.group("when")), when_utc=_when_utc(signature.group("when")))
     return found
+
+
+def _day(text):
+    """The day a quote's date names (X sends "October 26, 2022", Bluesky and Mastodon a timestamp), or None."""
+    text = str(text or "").strip()
+    for parse in (lambda t: datetime.fromisoformat(t.replace("Z", "+00:00")), lambda t: datetime.strptime(t, "%B %d, %Y")):
+        try:
+            return parse(text)
+        except ValueError:
+            continue
+    return None
 
 
 def _when(text):
     """The date a quote was written, as the site writes dates ("26 October 2022"): X sends "October 26, 2022",
     Bluesky and Mastodon a timestamp. Anything else is kept as it came, short."""
-    text = str(text or "").strip()
-    for parse in (lambda t: datetime.fromisoformat(t.replace("Z", "+00:00")), lambda t: datetime.strptime(t, "%B %d, %Y")):
-        try:
-            day = parse(text)
-        except ValueError:
-            continue
-        return f"{day.day} {day.strftime('%B %Y')}"
-    return text[:40]
+    day = _day(text)
+    if day is None:
+        return str(text or "").strip()[:40]
+    return f"{day.day} {day.strftime('%B %Y')}"
+
+
+def _when_utc(text):
+    """The same day as a timestamp (midnight UTC, so it reads as the same day), for the template's date_text in the
+    reader's language; 0 when the date could not be read (the template then shows `when` as it came)."""
+    day = _day(text)
+    return calendar.timegm((day.year, day.month, day.day, 0, 0, 0)) if day is not None else 0
 
 
 def _reddit_quote(snippet):
@@ -193,13 +220,29 @@ def social_card(url, snippet="", meta_title="", meta_description="", image=""):
     return card
 
 
+class QuotingLine(str):
+    """The one line a card inside a card says about what it quotes ("Quoting @x on X"): the English as it always was
+    (it compares and reads as a str), with its parts, so partials/quote_card.html (`quoting_text`) translates the
+    sentence whole: `who`, the handle ("" when the site named nobody: "Quoting a post on Reddit"), and `service`, the
+    other site's name ("" for a post on this site: "Quoting a post")."""
+
+    def __new__(cls, who="", service=""):
+        line = super().__new__(cls, f"Quoting {who or 'a post'} on {service}" if service else "Quoting a post")
+        line.who, line.service = (who or "") if service else "", service or ""
+        return line
+
+    def __getnewargs__(self):
+        # copy and pickle make the line again from its parts (str's own would pass the English as `who`)
+        return self.who, self.service
+
+
 def inside(card):
     """A card drawn inside another card: what it quotes in turn is only its one line, as on X ("Quoting @x on X")."""
     if not card:
         return card
     inner, line = card.get("inner"), card.get("quoting") or ""
     if inner:
-        line = f"Quoting {inner['handle'] or 'a post'} on {inner['label']}" if inner.get("kind") == "social" else "Quoting a post"
+        line = QuotingLine(inner["handle"], inner["label"]) if inner.get("kind") == "social" else QuotingLine()
     return dict(card, inner=None, quoting=line)
 
 
@@ -219,7 +262,7 @@ def _social(url, snippet, meta_title, meta_description, image="", drop_link=""):
         return None
 
     card = {"kind": "social", "site": site, "label": label, "icon": _ICONS.get(site, ""), "letter": label[:1],
-            "url": url, "name": "", "handle": "", "when": "", "text": "", "where": "", "media": ""}
+            "url": url, "name": "", "handle": "", "when": "", "when_utc": 0, "text": "", "where": "", "media": ""}
     text_known, signed = False, {}                        # a quote with no words of its own stays without them
     if site in ("x.com", "twitter.com", "bsky.app", "mastodon", "instagram.com", "t.me", "telegram.me", "truthsocial.com"):
         signed = _signed_quote(snippet, drop_link)
@@ -242,7 +285,7 @@ def _social(url, snippet, meta_title, meta_description, image="", drop_link=""):
     if not card["media"]:
         card["media"] = _MEDIA_WORD.get(site, "")
         if site == "facebook.com" and social_embeds.facebook_kind(url) == "video":
-            card["media"] = "Video"
+            card["media"] = VIDEO
     # the post's picture: an https address only (the template escapes it); a picture shown needs no "Photo" line.
     # Media the site itself hides behind a warning (Bluesky's labels, Mastodon's sensitive) is never shown here.
     image = str(image or "")
@@ -253,7 +296,7 @@ def _social(url, snippet, meta_title, meta_description, image="", drop_link=""):
     if card["image"]:
         card["media"] = ""
     elif card["sensitive"]:
-        card["media"] = "Sensitive media"
+        card["media"] = SENSITIVE_MEDIA
     return card
 
 
@@ -276,11 +319,13 @@ def quoted_post_id(url, server_name, short_domain=""):
     return None
 
 
-UNAVAILABLE = "This post isn't available."
-DELETED = "This post was deleted."
-REMOVED = "This post was removed."
-FILTERED = "Hidden by your word filter."
-MUTED = "This post is from an account you muted."
+# what a reader is told instead of a quoted post of this site: kept in English (compared in tests and cached per
+# request), drawn with msg() in partials/quote_card.html
+UNAVAILABLE = N_("This post isn't available.")
+DELETED = N_("This post was deleted.")
+REMOVED = N_("This post was removed.")
+FILTERED = N_("Hidden by your word filter.")
+MUTED = N_("This post is from an account you muted.")
 
 
 def post_notice(*, missing, deleted, removed, filtered, blocked, muted, anonymous):
@@ -305,8 +350,8 @@ def post_notice(*, missing, deleted, removed, filtered, blocked, muted, anonymou
 def quoting_line(url, server_name, short_domain=""):
     """A quoted post that quotes something itself says so in one line, so the chain is clear without drawing it all."""
     if quoted_post_id(url, server_name, short_domain):
-        return "Quoting a post"
+        return QuotingLine()
     card = social_card(url) if url else None
     if card:
-        return f"Quoting {card['handle'] or 'a post'} on {card['label']}"
+        return QuotingLine(card["handle"], card["label"])
     return ""

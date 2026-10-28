@@ -11,11 +11,15 @@ from sqlalchemy import func
 from ruqqus.classes.images import BadPic
 from ruqqus.__main__ import db_session
 from .base36 import hex2bin
+from .i18n_runtime import N_
 import gevent
 
 BUCKET = environ.get("S3_BUCKET_NAME", "").strip()      # no default: never another site's bucket
 CF_KEY = environ.get("CLOUDFLARE_KEY").lstrip().rstrip()
 CF_ZONE = environ.get("CLOUDFLARE_ZONE").lstrip().rstrip()
+
+# the ban reason a CSAM match writes: stored English, drawn with msg() in each reader's language
+SEXUALIZING_MINORS = N_("Sexualizing Minors")
 
 # setup AWS connection
 S3 = boto3.client("s3",
@@ -194,11 +198,11 @@ def check_csam(post):
         post, author = _load_post_and_author(db, post)
 
         # ban user and alts
-        author.ban_reason="Sexualizing Minors"
+        author.ban_reason=SEXUALIZING_MINORS
         author.is_banned=1
         db.add(author)
         for alt in author.alts_threaded(db):
-            alt.ban_reason="Sexualizing Minors"
+            alt.ban_reason=SEXUALIZING_MINORS
             alt.is_banned=1
             db.add(alt)
 
@@ -272,11 +276,11 @@ def check_csam_url(url, v, delete_content_function):
     db=db_session()
 
     if x.status_code == 451:
-        v.ban_reason="Sexualizing Minors"
+        v.ban_reason=SEXUALIZING_MINORS
         v.is_banned=1
         db.add(v)
         for alt in v.alts_threaded(db):
-            alt.ban_reason="Sexualizing Minors"
+            alt.ban_reason=SEXUALIZING_MINORS
             alt.is_banned=1
             db.add(alt)
 

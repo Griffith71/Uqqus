@@ -26,7 +26,7 @@ def test_post_types_are_known_keys_once_in_their_own_order():
     assert ff.parse_types("") == [] and ff.parse_types(None) == []
     assert ff.parse_types(["guilds", "text"]) == ["text", "guilds"]
     assert len(ff.TYPE_KEYS) == len(set(ff.TYPE_KEYS))
-    assert set(ff.GROUPS) == {"Content", "Where", "Who wrote it", "Spaces"}
+    assert {str(group) for group in ff.GROUPS} == {"Content", "Where", "Who wrote it", "Spaces"}
 
 
 def test_the_post_type_row_says_what_it_shows():
@@ -387,15 +387,15 @@ def test_nothing_set_is_no_filter(names):
 def test_a_name_nobody_may_see_is_left_out_with_the_notice_of_one_that_does_not_exist(names):
     feed_filter, notices = sql.prepare({"from": "@alice @ghost", "in_guilds": "+pets +secret"}, ["poll"], None)
     assert [(p.kind, p.value, p.ref) for p in feed_filter.query.parts] == [("from", "alice", A), ("in", "pets", PETS)]
-    assert notices == [sq.NO_ACCOUNT.format("ghost") + " It is left out of the filter.",
-                       sq.NO_GUILD.format("secret") + " It is left out of the filter."]
+    assert notices == [sq.NO_ACCOUNT % {"name": "ghost"} + " It is left out of the filter.",
+                       sq.NO_GUILD % {"name": "secret"} + " It is left out of the filter."]
     assert feed_filter.types == ("poll",)
 
 
 def test_dates_that_leave_no_days_are_left_out(names):
     feed_filter, notices = sql.prepare({"since": "2026-02-01", "until": "2026-01-01", "min_votes": "3"}, [], None)
     assert [p.kind for p in feed_filter.query.parts] == ["min_votes"]
-    assert notices == [sql.LEFT_OUT.format(sql.DATES_CLASH)]
+    assert notices == [sql.left_out(sql.DATES_CLASH)] == ["The dates leave no days. It is left out of the filter."]
 
 
 def test_a_prepared_filter_is_a_stable_cache_key(names):
@@ -441,3 +441,13 @@ def test_a_saved_default_is_checked_again_when_read():
 def test_an_empty_default_is_still_a_default():
     assert ff.read_defaults(ff.defaults_payload([], [], [], [], {}), **KNOWN) == {
         "regions": [], "languages": [], "categories": [], "types": [], "advanced": {}}
+
+
+def test_the_advanced_filter_shows_only_or_leaves_out_bot_posts():
+    # the owner, 2026-10-27: "filter for bot posts", for visitors too (the session), beside Made with AI
+    assert ff.LABEL_CHOICES["bots"] == (ff.SHOW, ff.ONLY, ff.HIDE)
+    assert ff.clean({"bots": "only"})["bots"] == ff.ONLY and ff.clean({"bots": "nonsense"})["bots"] == ff.SHOW
+    assert "is:bot" in ff.query_text(ff.clean({"bots": "only"})).split()
+    assert "-is:bot" in ff.query_text(ff.clean({"bots": "hide"})).split()
+    assert "is:bot" not in ff.query_text(ff.clean({}))
+    assert "bot" in sq.BY_KEY["is"].values

@@ -8,6 +8,8 @@
 
 {% block content %}
 
+{% if ui_locale() != "en" %}<p class="legal-english-note text-muted text-small">{{ _("This page is in English: the English text is the binding version.") }}</p>{% endif %}
+<div lang="en" dir="ltr">
 {% filter markdown %}
 
 # Warrant Canaries
@@ -71,6 +73,7 @@ This page was last updated on 09 October 2020.
 		<td>Final version. No change from previous.</td>
 	</tr>
 </table>
+</div>
 
 
 {% endblock %}

@@ -19,9 +19,9 @@
   var copy = document.querySelector("[data-backup-copy]");
   if (copy) copy.addEventListener("click", function () {
     if (navigator.clipboard && navigator.clipboard.writeText) {
-      navigator.clipboard.writeText(text()).then(function () { said("Copied."); }, function () { said("Couldn't copy: select the codes and copy them."); });
+      navigator.clipboard.writeText(text()).then(function () { said(tr("Copied.")); }, function () { said(tr("Couldn't copy: select the codes and copy them.")); });
     } else {
-      said("Couldn't copy: select the codes and copy them.");
+      said(tr("Couldn't copy: select the codes and copy them."));
     }
   });
 
@@ -34,7 +34,7 @@
     link.click();
     document.body.removeChild(link);
     setTimeout(function () { URL.revokeObjectURL(link.href); }, 1000);
-    said("Downloaded.");
+    said(tr("Downloaded."));
   });
 
   var print = document.querySelector("[data-backup-print]");

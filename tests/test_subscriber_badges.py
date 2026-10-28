@@ -131,7 +131,9 @@ def test_the_badge_sits_after_the_name_link_and_is_text():
     mark = _read("templates", "partials", "subscriber_badge.html")
     assert "| safe" not in mark and "subscriber_badge(item)" in mark
     listing = _read("templates", "submission_listing.html")
-    assert listing.count("{{ subscriber_mark(p) }}{% if p.gm_distinguish %}") == 2
+    # one byline macro (post_byline) draws the author on the phone and on desktop
+    assert listing.count("{{ subscriber_mark(p) }}{% if p.gm_distinguish %}") == 1
+    assert listing.count("{{ post_byline(p, v, ") == 2
     assert "{{ subscriber_mark(c) }}" in _read("templates", "comments.html")
     for name in ("main.scss", "main_dark.scss"):
         assert ".subscriber-badge {" in _read("assets", "style", name), name

@@ -1,9 +1,13 @@
 {% extends "home.html" %}
 
+{% block sidebar %}{% endblock %}
+{# no right sidebar: the main column takes its room (default.html main_row_class, _screens.scss) #}
+{% block main_row_class %} wide-main{% endblock %}
+
 {% block pagetype %}curations{% endblock %}
 
 {% block title %}
-<title>Post insights · Creator Studio - {{ 'SITE_NAME' | app_config }}</title>
+<title>{{ _("Post insights · Creator Studio - %(site)s") }}</title>
 {% endblock %}
 
 {% block desktopBanner %}{% endblock %}
@@ -15,18 +19,18 @@
 
   {% include "partials/studio_nav.html" %}
 
-  <h2 class="h5 mb-1">Post insights</h2>
-  <p class="text-muted text-small mb-3">Your posts from the last 28 days, with what each got (a post and its guild forwards added up). Only you can see this; these are counts, never names.</p>
+  <h2 class="h5 mb-1">{{ _("Post insights") }}</h2>
+  <p class="text-muted text-small mb-3">{{ _("Your posts from the last 28 days, with what each got (a post and its guild forwards added up). Only you can see this; these are counts, never names.") }}</p>
 
   {% if rows %}
   <div class="table-responsive">
     <table class="table table-sm">
       <thead>
         <tr>
-          <th scope="col">Post</th>
-          <th scope="col" class="text-right">Views</th>
-          <th scope="col" class="text-right">Net votes</th>
-          <th scope="col" class="text-right">Comments</th>
+          <th scope="col">{{ pgettext("noun", "Post") }}</th>
+          <th scope="col" class="text-right">{{ _("Views") }}</th>
+          <th scope="col" class="text-right">{{ _("Net votes") }}</th>
+          <th scope="col" class="text-right">{{ _("Comments") }}</th>
         </tr>
       </thead>
       <tbody>
@@ -36,16 +40,16 @@
             <a href="/post/{{ row.post.base36id }}/insights">{{ row.post.title | safe }}</a>
             <div class="text-muted text-small">{{ row.post.age_string }}</div>
           </td>
-          <td class="text-right">{{ "{:,}".format(row.views) }}</td>
-          <td class="text-right">{{ "{:,}".format(row.net) }}</td>
-          <td class="text-right">{{ "{:,}".format(row.comments) }}</td>
+          <td class="text-right">{{ number_text(row.views) }}</td>
+          <td class="text-right">{{ number_text(row.net) }}</td>
+          <td class="text-right">{{ number_text(row.comments) }}</td>
         </tr>
         {% endfor %}
       </tbody>
     </table>
   </div>
   {% else %}
-  <p class="text-muted">You haven't posted anything in the last 28 days.</p>
+  <p class="text-muted">{{ _("You haven't posted anything in the last 28 days.") }}</p>
   {% endif %}
 
 </div>

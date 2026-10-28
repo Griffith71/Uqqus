@@ -3,17 +3,17 @@
 {% block sidebarblock %}{% endblock %}
 
 {% block title %}	
-<title>{{ 'SITE_NAME' | app_config }} - Help</title>	
-<meta name="description" content="{{ 'SITE_NAME' | app_config }} Help">	
+<title>{{ _('%(site)s - Help') }}</title>	
+<meta name="description" content="{{ _('%(site)s Help') }}">	
 {% endblock %}	
 
 {% block sidebarLeftblock %}
 <div class="col sidebar d-none d-lg-block p-3">
 
 	<div class="sidebar-section">
-			<div class="title">Help</div>
+			<div class="title">{{ _('Help') }}</div>
       <div class="body">
-	<a href="/">Back to {{ 'SITE_NAME' | app_config }}</a>
+	<a href="/">{{ _('Back to %(site)s') }}</a>
       </div>
 	</div>
 
@@ -23,45 +23,45 @@
 
 {% block content %}	
 {% filter markdown %}	
-# Help	
+# {% trans %}Help{% endtrans %}	
 
-## General Information	
+## {% trans %}General Information{% endtrans %}	
 
-* [About](/help/about)	
-* [FAQ](/help/faq)
-* [Meet the admins](/help/admins)
-* [Post Formatting](/help/formatting)
-* [Search tips](/help/search)
-* [Guild Siege](/help/siege)
-* [Contact {{ 'SITE_NAME' | app_config }}](/help/contact)
+* {% trans %}[About](/help/about){% endtrans %}	
+* {% trans %}[FAQ](/help/faq){% endtrans %}
+* {% trans %}[Meet the admins](/help/admins){% endtrans %}
+* {% trans %}[Post Formatting](/help/formatting){% endtrans %}
+* {% trans %}[Search tips](/help/search){% endtrans %}
+* {% trans %}[Guild Siege](/help/siege){% endtrans %}
+* {% trans site='SITE_NAME' | app_config %}[Contact {{ site }}](/help/contact){% endtrans %}
 
-## Account Cosmetics	
+## {% trans %}Account Cosmetics{% endtrans %}	
 
-* [Badges](/help/badges)	
-* [Titles](/help/titles)
+* {% trans %}[Badges](/help/badges){% endtrans %}	
+* {% trans %}[Titles](/help/titles){% endtrans %}
 
-## Developer Resources
+## {% trans %}Developer Resources{% endtrans %}
 
-* [API Documentation](/help/docs)
-* [OAuth2 Guide](/help/oauth)
+* {% trans %}[API Documentation](/help/docs){% endtrans %}
+* {% trans %}[OAuth2 Guide](/help/oauth){% endtrans %}
 
-## {{ 'SITE_NAME' | app_config }} Policies	
+## {% trans site='SITE_NAME' | app_config %}{{ site }} Policies{% endtrans %}	
 
-* [Terms of service](/help/terms)	
-* [Rules and Guidelines](/help/rules)
-* [CSAM](/help/csam)
-* [Privacy Policy](/help/privacy)	
-* [Legal Policies](/help/legal)	
+* {% trans %}[Terms of service](/help/terms){% endtrans %}	
+* {% trans %}[Rules and Guidelines](/help/rules){% endtrans %}
+* {% trans %}[CSAM](/help/csam){% endtrans %}
+* {% trans %}[Privacy Policy](/help/privacy){% endtrans %}	
+* {% trans %}[Legal Policies](/help/legal){% endtrans %}	
 
-## Legal Requests	
+## {% trans %}Legal Requests{% endtrans %}	
 
-* [Submit a Legal Request](/legal)	
-* [Submit a DMCA takedown request](/help/dmca)	
-* [Submit a DMCA counter-request](/help/counter_dmca)	
+* {% trans %}[Submit a Legal Request](/legal){% endtrans %}	
+* {% trans %}[Submit a DMCA takedown request](/help/dmca){% endtrans %}	
+* {% trans %}[Submit a DMCA counter-request](/help/counter_dmca){% endtrans %}	
 
-## Press	
+## {% trans %}Press{% endtrans %}	
 
-* [Press Resources](/help/press)
+* {% trans %}[Press Resources](/help/press){% endtrans %}
 
 {% endfilter %}	
 {% endblock %}	

@@ -3,62 +3,64 @@
 {# How bot accounts work (helpers/bots.py holds the limits shown here, as the Jinja global bot_rules). #}
 
 {% block title %}
-<title>Bots - {{ 'SITE_NAME' | app_config }}</title>
-<meta name="description" content="Accounts that post by themselves, approved by the site's admins.">
+<title>{{ _("Bots - %(site)s") }}</title>
+<meta name="description" content="{{ _("Accounts that post by themselves, approved by the site's admins.") }}">
 {% endblock %}
 
-{% block content %}
+{% block content %}{% set site = 'SITE_NAME' | app_config %}
 
 {% filter markdown %}
 
-# Bots
+# {% trans %}Bots{% endtrans %}
 
-A **bot** is an account that posts by itself. The site's admins approve every one before it posts anything, and every bot follows the same posting rules, and the [rules for bots](/help/rules#bots) in the Rules and Guidelines.
+{% trans %}A **bot** is an account that posts by itself. The site's admins approve every one before it posts anything, and every bot follows the same posting rules, and the [rules for bots](/help/rules#bots) in the Rules and Guidelines.{% endtrans %}
 
-## Three ways to post automatically
+## {% trans %}Three ways to post automatically{% endtrans %}
 
-* A **site bot** costs nothing to run: it reads free feeds (below). Anyone can propose one, and once an admin approves it, it is the **site's**: the admins run it, it is linked to nobody, and its profile says **Automated by {{ 'SITE_NAME' | app_config }}**. A BBC headlines bot is a site bot.
-* A **member bot** needs its member to run it: a script of their own with a **bot key** (for example for X), or a source they pay for. It stays the member's, they manage it, and its profile says **Automated by @member**. A member bot may read approved feeds too.
-* **Your own account** can post from feeds too, while you keep using it as yourself: see [below](#own-account).
+* {% trans %}A **site bot** costs nothing to run: it reads free feeds (below). Anyone can propose one, and once an admin approves it, it is the **site's**: the admins run it, it is linked to nobody, and its profile says **Automated by {{ site }}**. A BBC headlines bot is a site bot.{% endtrans %}
+* {% trans %}A **member bot** needs its member to run it: a script of their own with a **bot key** (for example for X), or a source they pay for. It stays the member's, they manage it, and its profile says **Automated by @member**. A member bot may read approved feeds too.{% endtrans %}
+* {% trans %}**Your own account** can post from feeds too, while you keep using it as yourself: see [below](#own-account).{% endtrans %}
 
-One member can run up to {{ bot_rules.MAX_BOTS }} bots, each reading up to {{ bot_rules.MAX_SOURCES }} feeds, as well as their own account's automated posting.
+{# Translators: bots is the most bots one member may run, feeds the most feeds each bot reads #}
+{% trans bots=bot_rules.MAX_BOTS, feeds=bot_rules.MAX_SOURCES %}One member can run up to {{ bots }} bots, each reading up to {{ feeds }} feeds, as well as their own account's automated posting.{% endtrans %}
 
-## Proposing a bot
+## {% trans %}Proposing a bot{% endtrans %}
 
-In **Settings > Bots**, any member whose account is at least 30 days old can propose up to {{ bot_rules.MAX_BOTS }} at a time (a site bot counts only while it waits). Give it:
+{% trans num=bot_rules.MAX_BOTS %}In **Settings > Bots**, any member whose account is at least 30 days old can propose up to {{ num }} at a time (a site bot counts only while it waits). Give it:{% pluralize %}In **Settings > Bots**, any member whose account is at least 30 days old can propose up to {{ num }} at a time (a site bot counts only while it waits). Give it:{% endtrans %}
 
-* a name (3 to 25 letters, numbers or underscores), a profile picture, a banner and a bio, which say where its posts come from;
-* what it posts, for the admins who review it;
-* its feeds (a site bot needs at least one), and the guilds to forward to.
+* {% trans %}a name (3 to 25 letters, numbers or underscores), a profile picture, a banner and a bio, which say where its posts come from;{% endtrans %}
+* {% trans %}what it posts, for the admins who review it;{% endtrans %}
+* {% trans %}its feeds (a site bot needs at least one), and the guilds to forward to.{% endtrans %}
 
-Until an admin decides, the bot is visible to you and the admins only, and you can still change it. The admins can change its name, picture, banner, bio, feeds, guilds and kind before approving it. You get a notification either way. Once a site bot is approved you no longer manage it: ask the admins for changes.
+{% trans %}Until an admin decides, the bot is visible to you and the admins only, and you can still change it. The admins can change its name, picture, banner, bio, feeds, guilds and kind before approving it. You get a notification either way. Once a site bot is approved you no longer manage it: ask the admins for changes.{% endtrans %}
 
-## Where its posts come from
+## {% trans %}Where its posts come from{% endtrans %}
 
-From **feeds**: RSS, Atom or JSON feeds. Most news sites publish them, and so do YouTube channels, Bluesky and Mastodon accounts, subreddits, Substack newsletters and many blogs. A bot reads up to {{ bot_rules.MAX_SOURCES }} feeds.
+{% trans num=bot_rules.MAX_SOURCES %}From **feeds**: RSS, Atom or JSON feeds. Most news sites publish them, and so do YouTube channels, Bluesky and Mastodon accounts, subreddits, Substack newsletters and many blogs. A bot reads up to {{ num }} feeds.{% pluralize %}From **feeds**: RSS, Atom or JSON feeds. Most news sites publish them, and so do YouTube channels, Bluesky and Mastodon accounts, subreddits, Substack newsletters and many blogs. A bot reads up to {{ num }} feeds.{% endtrans %}
 
-Each new item of a feed becomes a **link post**: the item's title and its link, nothing copied from the page. The site's usual link preview shows the rest (a YouTube video plays in place). When an item has no title, as on Bluesky and Mastodon, the start of its text is the title.
+{% trans %}Each new item of a feed becomes a **link post**: the item's title and its link, nothing copied from the page. The site's usual link preview shows the rest (a YouTube video plays in place). When an item has no title, as on Bluesky and Mastodon, the start of its text is the title.{% endtrans %}
 
-* A feed is read as often as it safely can be: every {{ bot_rules.FLOOR_MINUTES }} minutes at most, or less often if the feed asks to be (most news feeds say 15 minutes), and less often again while it has nothing new (up to every {{ bot_rules.QUIET_MAX_MINUTES }} minutes). A feed that asks us to slow down is left alone for as long as it says. New items are posted oldest first, at most {{ bot_rules.PER_RUN }} from one feed at a time and {{ bot_rules.DAILY_CAP }} a day for the whole bot.
-* The first time a feed is read, only its newest {{ bot_rules.FIRST_READ }} items are posted: a bot never floods the site with a feed's backlog.
-* Links are posted without tracking tags. An item already more than 2 days old when the bot first sees it is skipped, so the promos some feeds keep (and old stories put back) are never posted.
-* A feed a member adds to a running bot waits for an admin. Removing one takes effect at once.
-* A feed that keeps failing ({{ bot_rules.FAILS_BEFORE_PAUSE }} times in a row) stops and the member running it is told; start it again from Settings > Bots once it works.
+{# Translators: floor and quiet are minutes (the shortest and the longest wait between two reads of a feed), per_run is a number of items, daily a number of posts #}
+* {% trans floor=bot_rules.FLOOR_MINUTES, quiet=bot_rules.QUIET_MAX_MINUTES, per_run=bot_rules.PER_RUN, daily=bot_rules.DAILY_CAP %}A feed is read as often as it safely can be: every {{ floor }} minutes at most, or less often if the feed asks to be (most news feeds say 15 minutes), and less often again while it has nothing new (up to every {{ quiet }} minutes). A feed that asks us to slow down is left alone for as long as it says. New items are posted oldest first, at most {{ per_run }} from one feed at a time and {{ daily }} a day for the whole bot.{% endtrans %}
+* {% trans num=bot_rules.FIRST_READ %}The first time a feed is read, only its newest {{ num }} items are posted: a bot never floods the site with a feed's backlog.{% pluralize %}The first time a feed is read, only its newest {{ num }} items are posted: a bot never floods the site with a feed's backlog.{% endtrans %}
+* {% trans %}Links are posted without tracking tags. An item already more than 2 days old when the bot first sees it is skipped, so the promos some feeds keep (and old stories put back) are never posted.{% endtrans %}
+* {% trans %}A feed a member adds to a running bot waits for an admin. Removing one takes effect at once.{% endtrans %}
+* {% trans num=bot_rules.FAILS_BEFORE_PAUSE %}A feed that keeps failing ({{ num }} times in a row) stops and the member running it is told; start it again from Settings > Bots once it works.{% pluralize %}A feed that keeps failing ({{ num }} times in a row) stops and the member running it is told; start it again from Settings > Bots once it works.{% endtrans %}
 
-<h2 id="keys">Posting from your own script: bot keys</h2>
+<h2 id="keys">{% trans %}Posting from your own script: bot keys{% endtrans %}</h2>
 
-A member bot can also post from a script of its member's own, through a **bot key**. This is how to run a bot for **X**: X has no feeds, and its terms don't allow other sites to scrape it, so use your own X access in your own script and post each tweet's link. The site shows a link to a tweet as X's own embed, so no tweet text is copied. Site bots have no keys.
+{% trans %}A member bot can also post from a script of its member's own, through a **bot key**. This is how to run a bot for **X**: X has no feeds, and its terms don't allow other sites to scrape it, so use your own X access in your own script and post each tweet's link. The site shows a link to a tweet as X's own embed, so no tweet text is copied. Site bots have no keys.{% endtrans %}
 
-1. Make an app in **Settings > Apps**.
-2. On the bot's page in **Settings > Bots**, create a key through that app (a bot has at most {{ bot_rules.MAX_KEYS }}). Copy it: it is shown once.
-3. Trade the key for an access token, which lasts an hour:
+1. {% trans %}Make an app in **Settings > Apps**.{% endtrans %}
+2. {% trans num=bot_rules.MAX_KEYS %}On the bot's page in **Settings > Bots**, create a key through that app (a bot has at most {{ num }}). Copy it: it is shown once.{% pluralize %}On the bot's page in **Settings > Bots**, create a key through that app (a bot has at most {{ num }}). Copy it: it is shown once.{% endtrans %}
+3. {% trans %}Trade the key for an access token, which lasts an hour:{% endtrans %}
 
    ```
    POST /oauth/grant
    client_id=<your app's client id>&client_secret=<your app's secret>&grant_type=refresh&refresh_token=<the key>
    ```
 
-4. Post with it, a title and a link:
+4. {% trans %}Post with it, a title and a link:{% endtrans %}
 
    ```
    POST /api/v1/submit
@@ -66,37 +68,38 @@ A member bot can also post from a script of its member's own, through a **bot ke
    title=<the post's title>&url=<the link>
    ```
 
-Every bot rule applies to a key: up to {{ bot_rules.DAILY_CAP }} posts a day, public posts only, never a comment or a vote. Revoking the key, pausing the bot or an admin pausing it stops the script's posts at once. A key needs no extra approval, because the bot was approved for what it posts.
+{% trans num=bot_rules.DAILY_CAP %}Every bot rule applies to a key: up to {{ num }} posts a day, public posts only, never a comment or a vote. Revoking the key, pausing the bot or an admin pausing it stops the script's posts at once. A key needs no extra approval, because the bot was approved for what it posts.{% pluralize %}Every bot rule applies to a key: up to {{ num }} posts a day, public posts only, never a comment or a vote. Revoking the key, pausing the bot or an admin pausing it stops the script's posts at once. A key needs no extra approval, because the bot was approved for what it posts.{% endtrans %}
 
-<h2 id="own-account">Posting automatically from your own account</h2>
+<h2 id="own-account">{% trans %}Posting automatically from your own account{% endtrans %}</h2>
 
-Your account can post new items from feeds by itself (your YouTube channel, your blog, your podcast), while you keep using it exactly as before: your own posts, comments, votes, chats and guilds are unchanged. Set it up in **Settings > Bots** under **Post automatically from your own account**: say what it posts and give up to {{ bot_rules.MAX_SOURCES }} feeds. An admin approves it first, and every feed you add later.
+{% trans num=bot_rules.MAX_SOURCES %}Your account can post new items from feeds by itself (your YouTube channel, your blog, your podcast), while you keep using it exactly as before: your own posts, comments, votes, chats and guilds are unchanged. Set it up in **Settings > Bots** under **Post automatically from your own account**: say what it posts and give up to {{ num }} feeds. An admin approves it first, and every feed you add later.{% pluralize %}Your account can post new items from feeds by itself (your YouTube channel, your blog, your podcast), while you keep using it exactly as before: your own posts, comments, votes, chats and guilds are unchanged. Set it up in **Settings > Bots** under **Post automatically from your own account**: say what it posts and give up to {{ num }} feeds. An admin approves it first, and every feed you add later.{% endtrans %}
 
-* The feeds work as for a bot (above): link posts, the newest {{ bot_rules.FIRST_READ }} items on the first read, at most {{ bot_rules.DAILY_CAP }} automated posts a day. Your own posts never count towards that.
-* **Every automated post carries the robot mark**, people who turn on **Hide bot content** don't see them, and your profile says **Some posts are automated**. Your own posts carry no mark.
-* Automated posts are public link posts: never anonymous, for circles or co-authored. They can be forwarded to guilds you choose, under each guild's rules.
-* They don't earn from the creator fund; your own posts and comments still do.
-* **Your feeds can't get your account suspended.** When a feed repeats itself, that item simply isn't posted. Your own posts are judged on their own, as before.
-* Pause it, change its feeds and guilds, or **Stop posting automatically** at any time on its page. Stopping leaves your account and all its posts as they are.
+{# Translators: first_read is a number of feed items, daily a number of posts #}
+* {% trans first_read=bot_rules.FIRST_READ, daily=bot_rules.DAILY_CAP %}The feeds work as for a bot (above): link posts, the newest {{ first_read }} items on the first read, at most {{ daily }} automated posts a day. Your own posts never count towards that.{% endtrans %}
+* {% trans %}**Every automated post carries the robot mark**, people who turn on **Hide bot content** don't see them, and your profile says **Some posts are automated**. Your own posts carry no mark.{% endtrans %}
+* {% trans %}Automated posts are public link posts: never anonymous, for circles or co-authored. They can be forwarded to guilds you choose, under each guild's rules.{% endtrans %}
+* {% trans %}They don't earn from the creator fund; your own posts and comments still do.{% endtrans %}
+* {% trans %}**Your feeds can't get your account suspended.** When a feed repeats itself, that item simply isn't posted. Your own posts are judged on their own, as before.{% endtrans %}
+* {% trans %}Pause it, change its feeds and guilds, or **Stop posting automatically** at any time on its page. Stopping leaves your account and all its posts as they are.{% endtrans %}
 
-It is one per account, apart from the bots you run.
+{% trans %}It is one per account, apart from the bots you run.{% endtrans %}
 
-## Guilds
+## {% trans %}Guilds{% endtrans %}
 
-A bot's posts are on its own profile, like everyone's. It can forward them to up to {{ bot_rules.MAX_FORWARD_GUILDS }} guilds, and each guild's own rules apply: a guild can refuse forwards from bots, and one that only takes forwards from approved contributors needs the bot to be one. When a guild refuses, the post stays on the bot's profile.
+{% trans num=bot_rules.MAX_FORWARD_GUILDS %}A bot's posts are on its own profile, like everyone's. It can forward them to up to {{ num }} guilds, and each guild's own rules apply: a guild can refuse forwards from bots, and one that only takes forwards from approved contributors needs the bot to be one. When a guild refuses, the post stays on the bot's profile.{% pluralize %}A bot's posts are on its own profile, like everyone's. It can forward them to up to {{ num }} guilds, and each guild's own rules apply: a guild can refuse forwards from bots, and one that only takes forwards from approved contributors needs the bot to be one. When a guild refuses, the post stays on the bot's profile.{% endtrans %}
 
-## What a bot never does
+## {% trans %}What a bot never does{% endtrans %}
 
-Bots post and forward. They never comment, vote, chat or lead a guild, and nobody can sign in as one. A bot's posts can take tips: a member bot's go to its member. Every bot's profile says who runs it (the site, or @member), and every bot post carries the robot mark. If you'd rather not see bots, turn on **Hide bot content** in **Settings > Content**.
+{% trans %}Bots post and forward. They never comment, vote, chat or lead a guild, and nobody can sign in as one. A bot's posts can take tips: a member bot's go to its member. Every bot's profile says who runs it (the site, or @member), and every bot post carries the robot mark. If you'd rather not see bots, turn on **Hide bot content** in **Settings > Content**.{% endtrans %}
 
-## What admins look for
+## {% trans %}What admins look for{% endtrans %}
 
-* The feeds are what the proposal says they are.
-* The source lets others share its headlines and links. Many do, on conditions: the BBC, for example, asks for attribution and no BBC logos, so the bio says where the posts come from and the picture is not the source's logo.
-* The bot's name and bio don't pretend to be the source itself: "BBC Tech headlines", not "the BBC".
-* A bot that needs a key or a paid source is a member bot; one that only reads free feeds can be a site bot.
+* {% trans %}The feeds are what the proposal says they are.{% endtrans %}
+* {% trans %}The source lets others share its headlines and links. Many do, on conditions: the BBC, for example, asks for attribution and no BBC logos, so the bio says where the posts come from and the picture is not the source's logo.{% endtrans %}
+* {% trans %}The bot's name and bio don't pretend to be the source itself: "BBC Tech headlines", not "the BBC".{% endtrans %}
+* {% trans %}A bot that needs a key or a paid source is a member bot; one that only reads free feeds can be a site bot.{% endtrans %}
 
-A bot that breaks the site's rules is paused or banned like any account, and so is the member running it when the bot was the point.
+{% trans %}A bot that breaks the site's rules is paused or banned like any account, and so is the member running it when the bot was the point.{% endtrans %}
 
 {% endfilter %}
 

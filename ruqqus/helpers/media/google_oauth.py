@@ -21,6 +21,8 @@ from urllib.parse import urlencode
 
 import requests
 
+from ruqqus.helpers.i18n_runtime import tr
+
 from .base import AccountLost, ProviderDown
 
 AUTH_URL = "https://accounts.google.com/o/oauth2/v2/auth"
@@ -110,13 +112,13 @@ def exchange(code, redirect_uri):
                                        "redirect_uri": redirect_uri, "grant_type": "authorization_code"})
     data = _json(r)
     if r.status_code != 200 or not data.get("access_token"):
-        raise ValueError("Google did not accept the connection. Try again.")
+        raise ValueError(tr("Google did not accept the connection. Try again."))
     if not data.get("refresh_token"):
-        raise ValueError("Google did not give lasting access. Remove this site under your Google "
-                         "account's third-party access, then connect again.")
+        raise ValueError(tr("Google did not give lasting access. Remove this site under your Google "
+                            "account's third-party access, then connect again."))
     sub = subject(data.get("id_token", ""))
     if not sub:
-        raise ValueError("Google did not say which account this is. Try again.")
+        raise ValueError(tr("Google did not say which account this is. Try again."))
     return {"refresh_token": data["refresh_token"], "scopes": sorted((data.get("scope") or "").split()), "sub": sub}
 
 

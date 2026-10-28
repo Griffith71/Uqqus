@@ -240,6 +240,9 @@ def test_the_sheets_hold_nothing_a_member_wrote():
     expressions = set(re.findall(r"\{\{\s*([^}]*?)\s*\}\}", SHEETS))
     # the audience field draws the viewer's OWN circle names, escaped (partials/post_options.html)
     expressions.discard('audience_field(0, "story-audience", (), circle_choices(v))')
+    # the interface's own words, marked for translation: a gettext call on literal text only
+    literal = r"""(?:'[^']*'|"[^"]*")"""
+    expressions = {e for e in expressions if not re.fullmatch(rf"(?:_|pgettext)\({literal}(?:, {literal})?\)", e)}
     assert expressions <= {"name", "value", "label", "loop.first"} or all(e in ("name", "value", "label") for e in expressions - {"loop.first"}), expressions
     for source in (SHEETS, BITS, QUEUE):
         assert "|safe" not in source and "| safe" not in source

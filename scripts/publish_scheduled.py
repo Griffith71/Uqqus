@@ -27,9 +27,15 @@ from sqlalchemy import text
 from ruqqus.__main__ import app, db_session
 from ruqqus.classes import PostDraft, User
 from ruqqus.helpers import post_drafts as pd
-from ruqqus.helpers.alerts import send_notification
+from ruqqus.helpers.alerts import notify
+from ruqqus.helpers.i18n_runtime import ENVIRON_KEY, N_
 from ruqqus.helpers.base36 import base36decode
 from ruqqus.helpers.security import generate_hash
+
+# a draft's error is stored in English and drawn in the reader's language (msg_text, PostDraft.json)
+INTERRUPTED = N_("Publishing was interrupted. Check your profile before posting this again.")
+ACCOUNT_GONE = N_("The account no longer exists.")
+WENT_WRONG = N_("Something went wrong while publishing. Please try again.")
 
 POLL_SECONDS = 30
 BATCH = 10
@@ -44,10 +50,9 @@ def housekeeping(now):
     """Give up on interrupted publishes, and drop old published rows."""
     db = db_session()
     db.execute(text(
-        "UPDATE post_drafts SET status = 'failed', "
-        "error = 'Publishing was interrupted. Check your profile before posting this again.' "
+        "UPDATE post_drafts SET status = 'failed', error = :error "
         "WHERE status = 'publishing' AND claimed_utc < :cutoff"),
-        {"cutoff": now - pd.STALE_PUBLISHING_SECONDS})
+        {"cutoff": now - pd.STALE_PUBLISHING_SECONDS, "error": INTERRUPTED})
     db.execute(text("DELETE FROM post_drafts WHERE status = 'published' AND updated_utc < :cutoff"),
                {"cutoff": now - pd.KEEP_PUBLISHED_SECONDS})
     db.commit()
@@ -97,7 +102,9 @@ def _fail(draft_id, user, now, reason):
         with app.test_request_context("/", environ_base={"REMOTE_ADDR": "127.0.0.1"}):
             g.db = db_session()
             g.v = user   # the markdown renderer reads the viewer (emoji)
-            send_notification(user, pd.failure_notice(draft.title, reason))
+            # in English with its values, read in the author's own language (post_drafts.failure_message)
+            message, values = pd.failure_message(draft.title, reason)
+            notify(user, message, **values)
             g.db.commit()   # send_notification leaves the last commit to the request teardown
     except Exception:
         traceback.print_exc()
@@ -112,7 +119,7 @@ def publish(draft_id, now):
 
     user = db.query(User).filter_by(id=draft.user_id, is_deleted=False).first()
     if not user:
-        _fail(draft_id, None, now, "The account no longer exists.")
+        _fail(draft_id, None, now, ACCOUNT_GONE)
         return "failed"
 
     fields, attempts = draft.fields, draft.attempts
@@ -131,8 +138,9 @@ def publish(draft_id, now):
     if region:
         headers["cf-ipcountry"] = region
 
+    # answered in English: the error is stored on the draft (drawn with msg) and the cooldown is read back from it
     response = client.post("/api/vue/submit", data=pd.publish_form(fields, formkey),
-                           headers=headers, environ_base={"REMOTE_ADDR": ip})
+                           headers=headers, environ_base={"REMOTE_ADDR": ip, ENVIRON_KEY: "en"})
 
     if response.status_code == 200:
         data = response.get_json(silent=True) or {}
@@ -165,7 +173,7 @@ def tick(now=None):
         except Exception:
             traceback.print_exc()
             try:
-                _fail(draft_id, None, now, "Something went wrong while publishing. Please try again.")
+                _fail(draft_id, None, now, WENT_WRONG)
             except Exception:
                 traceback.print_exc()
             results[draft_id] = "failed"

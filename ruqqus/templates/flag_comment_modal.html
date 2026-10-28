@@ -3,8 +3,8 @@
   <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">Report <span id="comment-author"></span>'s comment</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <h5 class="modal-title">{# Translators: the name is the author's, filled in by the page #}{{ _("Report %(name)s's comment", name='<span id="comment-author"></span>'|safe) }}</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="{{ _('Close') }}">
           <span aria-hidden="true"><i class="fas fa-times"></i></span>
         </button>
       </div>
@@ -12,35 +12,35 @@
       <div class="" id="reportCommentFormBefore">
         <form onsubmit="return false;">
           <div class="modal-body">
-            <div class="h6">We're sorry something here is wrong.</div>
-            <small class="form-text text-muted">Please select a reason for flagging below.</small>
+            <div class="h6">{{ _("We're sorry something here is wrong.") }}</div>
+            <small class="form-text text-muted">{{ _("Please select a reason for flagging below.") }}</small>
             <input type="hidden" name="formkey" value="{{ v.formkey }}">
               <select id="report-comment-type-dropdown" name="report_type" class="custom-select mt-3" onchange="document.getElementById('reportCommentButton').disabled=false;">
                 <option disabled selected value="reason_not_selected">
-                  Reason for flagging?
+                  {{ _("Reason for flagging?") }}
                 </option>
                 <option value="admin">
-                  This comment breaks {{ 'SITE_NAME' | app_config }} policy
+                  {{ _("This comment breaks %(site)s policy") }}
                 </option>
                 <option value="note">
-                  This may be misleading or needs context (request a community note)
+                  {{ _("This may be misleading or needs context (request a community note)") }}
                 </option>
               </select>
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-link text-muted" data-dismiss="modal">Cancel</button>
-            <button type="button" id="reportCommentButton" class="btn btn-danger" disabled>Report comment</button>
+            <button type="button" class="btn btn-link text-muted" data-dismiss="modal">{{ _("Cancel") }}</button>
+            <button type="button" id="reportCommentButton" class="btn btn-danger" disabled>{{ _("Report comment") }}</button>
           </div>
         </form>
       </div>
       <!-- After report is made, show this -->
       <div class="d-none" id="reportCommentFormAfter">
         <div class="modal-body">
-          <div class="h6" id="reportCommentAfterTitle">Thank you for reporting this comment!</div>
-          <small class="form-text text-muted" id="reportCommentAfterText">We'll take it from here.</small>
+          <div class="h6" id="reportCommentAfterTitle">{{ _("Thank you for reporting this comment!") }}</div>
+          <small class="form-text text-muted" id="reportCommentAfterText">{{ _("We'll take it from here.") }}</small>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-link text-secondary" data-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-link text-secondary" data-dismiss="modal">{{ _("Close") }}</button>
         </div>
       </div>
     </div>

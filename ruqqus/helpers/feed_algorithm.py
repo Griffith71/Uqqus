@@ -1,6 +1,7 @@
 """A curation's own algorithm: which posts it shows and in what order.
 
-Pure rules, stdlib only (helpers/curation_feed.py turns a spec into the query).
+Pure rules, stdlib only but for the interface's languages (helpers/i18n_runtime.py: `describe` and the messages are
+in the reader's language); helpers/curation_feed.py turns a spec into the query.
 
 A member builds an algorithm from fixed parts in the curation form. They never write
 code, patterns or SQL: every value is one of the names below, a bounded number, or a
@@ -27,6 +28,8 @@ can see the curation, so a public feed's rules can be checked and forked.
 import json
 import math
 import re
+
+from ruqqus.helpers.i18n_runtime import current_locale, tr, tr_lazy, trn
 
 RULES, SERVER = "rules", "server"
 MODES = (RULES, SERVER)
@@ -67,16 +70,47 @@ DEFAULT = {
 
 # name: (label, what it is for, the parts that differ from DEFAULT)
 PRESETS = {
-    "latest": ("Latest", "Everything from your guilds and accounts, newest first.", {"rank": "new"}),
-    "popular": ("Popular this week", "The most voted posts of the last seven days.", {"rank": "top", "age": "week"}),
-    "discussed": ("Most discussed", "Posts with the busiest comment sections this week.", {"rank": "activity", "age": "week"}),
-    "media": ("Media only", "Pictures, video and sound, nothing else.", {"kinds": ["image", "video", "audio"]}),
-    "rising": ("Fresh and rising", "New posts that are getting attention, with no account filling the page.",
+    # Translators: ready-made starting points for a curation's algorithm: a short name, then what it is for.
+    "latest": (tr_lazy("Latest"), tr_lazy("Everything from your guilds and accounts, newest first."), {"rank": "new"}),
+    "popular": (tr_lazy("Popular this week"), tr_lazy("The most voted posts of the last seven days."),
+                {"rank": "top", "age": "week"}),
+    "discussed": (tr_lazy("Most discussed"), tr_lazy("Posts with the busiest comment sections this week."),
+                  {"rank": "activity", "age": "week"}),
+    "media": (tr_lazy("Media only"), tr_lazy("Pictures, video and sound, nothing else."),
+              {"kinds": ["image", "video", "audio"]}),
+    "rising": (tr_lazy("Fresh and rising"), tr_lazy("New posts that are getting attention, with no account filling the page."),
                {"rank": MIX_RANK, "age": "week", "mix": {"votes": 6, "comments": 8, "fade": 12, "variety": 2}}),
 }
 
 _SITE = re.compile(r"^[a-z0-9-]+(?:\.[a-z0-9-]+)+$")
 _SPLIT = re.compile(r"[,\n\r]+")
+
+
+def _too_many(field):
+    """A list that holds too much, by the field of the form it came from (each its own whole sentence)."""
+    if field == "any":
+        return trn("Mentions any of: %(num)s word or phrase at most.", "Mentions any of: %(num)s words or phrases at most.",
+                   MAX_WORDS)
+    if field == "all":
+        return trn("Mentions all of: %(num)s word or phrase at most.", "Mentions all of: %(num)s words or phrases at most.",
+                   MAX_WORDS)
+    if field == "none":
+        return trn("Never mentions: %(num)s word or phrase at most.", "Never mentions: %(num)s words or phrases at most.",
+                   MAX_WORDS)
+    if field == "only_sites":
+        return trn("Only links to: %(num)s site at most.", "Only links to: %(num)s sites at most.", MAX_SITES)
+    if field == "never_sites":
+        return trn("Never links to: %(num)s site at most.", "Never links to: %(num)s sites at most.", MAX_SITES)
+    if field == "exclude_users":
+        return trn("Leave out these accounts: %(num)s at most.", "Leave out these accounts: %(num)s at most.",
+                   MAX_EXCLUDED)
+    return trn("Leave out these guilds: %(num)s at most.", "Leave out these guilds: %(num)s at most.", MAX_EXCLUDED)
+
+
+def _not_a_site(field, item):
+    if field == "only_sites":
+        return tr("Only links to: \"%(address)s\" is not a site name. Write it like example.org", address=item)
+    return tr("Never links to: \"%(address)s\" is not a site name. Write it like example.org", address=item)
 
 
 class AlgorithmError(ValueError):
@@ -97,18 +131,20 @@ def _items(value):
     return []
 
 
-def _words(value, label):
+def _words(value, field):
     out = []
     for item in _items(value):
         word = " ".join(item.split())
         if not word:
             continue
         if len(word) > WORD_CHARS:
-            raise AlgorithmError(f"A word or phrase can be {WORD_CHARS} characters at most: \"{word[:20]}...\"")
+            raise AlgorithmError(trn("A word or phrase can be %(num)s character at most: \"%(word)s...\"",
+                                     "A word or phrase can be %(num)s characters at most: \"%(word)s...\"",
+                                     WORD_CHARS, word=word[:20]))
         if word.casefold() not in (w.casefold() for w in out):
             out.append(word)
     if len(out) > MAX_WORDS:
-        raise AlgorithmError(f"{label}: {MAX_WORDS} words or phrases at most.")
+        raise AlgorithmError(_too_many(field))
     return out
 
 
@@ -121,22 +157,22 @@ def site_name(text):
     return host if _SITE.match(host) and len(host) <= 100 else None
 
 
-def _sites(value, label):
+def _sites(value, field):
     out = []
     for item in _items(value):
         if not item.strip():
             continue
         host = site_name(item)
         if host is None:
-            raise AlgorithmError(f"{label}: \"{item.strip()[:40]}\" is not a site name. Write it like example.org")
+            raise AlgorithmError(_not_a_site(field, item.strip()[:40]))
         if host not in out:
             out.append(host)
     if len(out) > MAX_SITES:
-        raise AlgorithmError(f"{label}: {MAX_SITES} sites at most.")
+        raise AlgorithmError(_too_many(field))
     return out
 
 
-def _ids(value, label):
+def _ids(value, field):
     """Whole positive numbers, no repeats, in the order given. Anything else in the list is
     dropped (the stored spec was made by this function, so it never holds anything else)."""
     out = []
@@ -150,7 +186,7 @@ def _ids(value, label):
         if number > 0 and number not in out:
             out.append(number)
     if len(out) > MAX_EXCLUDED:
-        raise AlgorithmError(f"{label}: {MAX_EXCLUDED} at most.")
+        raise AlgorithmError(_too_many(field))
     return out
 
 
@@ -179,18 +215,18 @@ def clean(raw):
     spec = {
         "mode": _one_of(raw.get("mode"), MODES, RULES),
         "source": _one_of(raw.get("source"), SOURCES, MEMBERS),
-        "any": _words(raw.get("any"), "Mentions any of"),
-        "all": _words(raw.get("all"), "Mentions all of"),
-        "none": _words(raw.get("none"), "Never mentions"),
+        "any": _words(raw.get("any"), "any"),
+        "all": _words(raw.get("all"), "all"),
+        "none": _words(raw.get("none"), "none"),
         "kinds": _choices(raw.get("kinds"), KINDS),
-        "only_sites": _sites(raw.get("only_sites"), "Only links to"),
-        "never_sites": _sites(raw.get("never_sites"), "Never links to"),
+        "only_sites": _sites(raw.get("only_sites"), "only_sites"),
+        "never_sites": _sites(raw.get("never_sites"), "never_sites"),
         "min_votes": _number(raw.get("min_votes"), 0, MAX_COUNT, 0),
         "min_comments": _number(raw.get("min_comments"), 0, MAX_COUNT, 0),
         "age": _one_of(raw.get("age"), tuple(AGES), ""),
         "hide": _choices(raw.get("hide"), HIDE),
-        "exclude_users": _ids(raw.get("exclude_users"), "Leave out these accounts"),
-        "exclude_guilds": _ids(raw.get("exclude_guilds"), "Leave out these guilds"),
+        "exclude_users": _ids(raw.get("exclude_users"), "exclude_users"),
+        "exclude_guilds": _ids(raw.get("exclude_guilds"), "exclude_guilds"),
         "rank": _one_of(raw.get("rank"), RANKS, "hot"),
         "mix": {name: _number(mix.get(name), low, high, default) for name, (low, high, default) in MIX.items()},
         "server": "",
@@ -202,12 +238,12 @@ def clean(raw):
     if spec["mode"] == SERVER:
         server = raw.get("server").strip() if isinstance(raw.get("server"), str) else ""
         if not server:
-            raise AlgorithmError("Enter the address of the feed server.")
+            raise AlgorithmError(tr("Enter the address of the feed server."))
         if len(server) > SERVER_CHARS or any(c.isspace() for c in server):
-            raise AlgorithmError("That feed server address is too long or has spaces in it.")
+            raise AlgorithmError(tr("That feed server address is too long or has spaces in it."))
         spec["server"] = server
     elif spec["source"] == SITE and spec["age"] not in SITE_AGES:
-        raise AlgorithmError("A curation of the whole site needs an age limit of a month or less.")
+        raise AlgorithmError(tr("A curation of the whole site needs an age limit of a month or less."))
     return spec
 
 
@@ -318,13 +354,31 @@ def spread(rows, limit, page=PAGE):
 
 
 # --- saying it in plain language ---------------------------------------------------------
+# Every line is a whole sentence in the reader's language; the moving parts are named values.
 
-_AGE_WORDS = {"day": "a day", "week": "a week", "month": "a month", "year": "a year"}
-_KIND_WORDS = {"text": "text posts", "link": "links", "image": "pictures", "video": "video", "audio": "sound"}
-_HIDE_WORDS = {"bots": "bots", "ai": "posts made with AI", "paid": "commercial promotion", "forwards": "forwarded copies"}
-_RANK_WORDS = {"hot": "Ordered by Hot, the site's usual order.", "new": "Newest first.", "top": "Most votes first.",
-               "activity": "Most discussed first."}
-_FADE_WORDS = {6: "6 hours", 12: "12 hours", 24: "a day", 72: "3 days", 168: "a week"}
+# Translators: what a curation shows, said on its page ("Only pictures and video.").
+_KIND_WORDS = {"text": tr_lazy("text posts"), "link": tr_lazy("links"), "image": tr_lazy("pictures"),
+               "video": tr_lazy("video"), "audio": tr_lazy("sound")}
+# Translators: what a curation leaves out, said on its page ("Leaves out bots and forwarded copies.").
+_HIDE_WORDS = {"bots": tr_lazy("bots"), "ai": tr_lazy("posts made with AI"), "paid": tr_lazy("commercial promotion"),
+               "forwards": tr_lazy("forwarded copies")}
+_RANK_WORDS = {"hot": tr_lazy("Ordered by Hot, the site's usual order."), "new": tr_lazy("Newest first."),
+               "top": tr_lazy("Most votes first."), "activity": tr_lazy("Most discussed first.")}
+# Translators: how long a post takes to fade in a curation's own mix ("fading over a day").
+_FADE_WORDS = {6: tr_lazy("6 hours"), 12: tr_lazy("12 hours"), 24: tr_lazy("a day"), 72: tr_lazy("3 days"),
+               168: tr_lazy("a week")}
+_SOURCE_LINES = {
+    (SITE, ""): tr_lazy("Posts from the whole site."),
+    (SITE, "day"): tr_lazy("Posts from the whole site, no older than a day."),
+    (SITE, "week"): tr_lazy("Posts from the whole site, no older than a week."),
+    (SITE, "month"): tr_lazy("Posts from the whole site, no older than a month."),
+    (SITE, "year"): tr_lazy("Posts from the whole site, no older than a year."),
+    (MEMBERS, ""): tr_lazy("Posts from this curation's guilds and accounts."),
+    (MEMBERS, "day"): tr_lazy("Posts from this curation's guilds and accounts, no older than a day."),
+    (MEMBERS, "week"): tr_lazy("Posts from this curation's guilds and accounts, no older than a week."),
+    (MEMBERS, "month"): tr_lazy("Posts from this curation's guilds and accounts, no older than a month."),
+    (MEMBERS, "year"): tr_lazy("Posts from this curation's guilds and accounts, no older than a year."),
+}
 
 
 def _listed(items, last="and"):
@@ -333,11 +387,18 @@ def _listed(items, last="and"):
     items = [str(item) for item in items]
     if len(items) <= 1:
         return "".join(items)
+    if current_locale() != "en":
+        try:
+            from babel.lists import format_list
+            from ruqqus.helpers.i18n_runtime import babel_locale
+            return format_list(items, style="standard" if last == "and" else "or", locale=babel_locale())
+        except (ImportError, ValueError, LookupError):
+            pass
     return ", ".join(items[:-1]) + f" {last} " + items[-1]
 
 
 def server_host(address):
-    return site_name(address) or "an unknown address"
+    return site_name(address) or tr("an unknown address")
 
 
 def left_out_line(spec):
@@ -345,65 +406,94 @@ def left_out_line(spec):
     curation's rules are read by everyone who can see it, and a name could be a private or
     Circle guild, something a viewer's word filter hides, or a statement about a person."""
     accounts, guilds = len(spec["exclude_users"]), len(spec["exclude_guilds"])
-    parts = []
+    if accounts and guilds:
+        # Translators: %(accounts)s is "2 accounts", %(guilds)s is "1 guild".
+        return tr("Leaves out posts from %(accounts)s and %(guilds)s.",
+                  accounts=trn("%(num)s account", "%(num)s accounts", accounts),
+                  guilds=trn("%(num)s guild", "%(num)s guilds", guilds))
     if accounts:
-        parts.append(f"{accounts} account{'' if accounts == 1 else 's'}")
+        return trn("Leaves out posts from %(num)s account.", "Leaves out posts from %(num)s accounts.", accounts)
     if guilds:
-        parts.append(f"{guilds} guild{'' if guilds == 1 else 's'}")
-    return "Leaves out posts from " + _listed(parts) + "." if parts else None
+        return trn("Leaves out posts from %(num)s guild.", "Leaves out posts from %(num)s guilds.", guilds)
+    return None
+
+
+def _quoted(words, last):
+    return _listed((f"\"{w}\"" for w in words), last)
+
+
+def _at_least(votes, comments):
+    if votes and comments:
+        # Translators: %(votes)s is "3 votes", %(comments)s is "2 comments".
+        return tr("At least %(votes)s and %(comments)s.", votes=trn("%(num)s vote", "%(num)s votes", votes),
+                  comments=trn("%(num)s comment", "%(num)s comments", comments))
+    if votes:
+        return trn("At least %(num)s vote.", "At least %(num)s votes.", votes)
+    return trn("At least %(num)s comment.", "At least %(num)s comments.", comments)
+
+
+def _mix_line(mix, members_boost):
+    values = {"votes": mix["votes"], "comments": mix["comments"], "fade": _FADE_WORDS[mix["fade"]],
+              "members": mix["members"], "media": mix["media"]}
+    # "votes" in a mix are upvotes less downvotes plus the post's tip boost (helpers/tips.py)
+    # Translators: a curation's own mix of weights; %(votes)s, %(comments)s and the boosts are numbers from 0 to 10,
+    # %(fade)s is how long a post takes to fade ("a day").
+    if members_boost and mix["media"]:
+        line = tr("Ordered by its own mix: votes and tips %(votes)s, comments %(comments)s, fading over %(fade)s, a boost "
+                  "of %(members)s for this curation's guilds and accounts, a boost of %(media)s for posts with media.",
+                  **values)
+    elif members_boost:
+        line = tr("Ordered by its own mix: votes and tips %(votes)s, comments %(comments)s, fading over %(fade)s, a boost "
+                  "of %(members)s for this curation's guilds and accounts.", **values)
+    elif mix["media"]:
+        line = tr("Ordered by its own mix: votes and tips %(votes)s, comments %(comments)s, fading over %(fade)s, a boost "
+                  "of %(media)s for posts with media.", **values)
+    else:
+        line = tr("Ordered by its own mix: votes and tips %(votes)s, comments %(comments)s, fading over %(fade)s.",
+                  **values)
+    if mix["variety"]:
+        line += " " + trn("At most %(num)s post per author or guild on a page.",
+                          "At most %(num)s posts per author or guild on a page.", mix["variety"])
+    return line
 
 
 def describe(spec):
     """What the algorithm does, as sentences anyone can read."""
     if is_server(spec):
-        lines = [f"Ranked by an outside server ({server_host(spec['server'])}). This site cannot see how it picks posts.",
-                 "It only orders posts you are allowed to see."]
+        host = site_name(spec["server"])
+        if host:
+            first = tr("Ranked by an outside server (%(host)s). This site cannot see how it picks posts.", host=host)
+        else:
+            first = tr("Ranked by an outside server (an unknown address). This site cannot see how it picks posts.")
+        lines = [first, tr("It only orders posts you are allowed to see.")]
         if left_out_line(spec):
             lines.append(left_out_line(spec))
         return lines
 
-    lines = []
-    age = f", no older than {_AGE_WORDS[spec['age']]}" if spec["age"] else ""
-    if spec["source"] == SITE:
-        lines.append(f"Posts from the whole site{age}.")
-    else:
-        lines.append(f"Posts from this curation's guilds and accounts{age}.")
+    lines = [str(_SOURCE_LINES[(SITE if spec["source"] == SITE else MEMBERS, spec["age"])])]
     if spec["any"]:
-        lines.append("Only posts that mention " + _listed((f"\"{w}\"" for w in spec["any"]), "or") + ".")
+        lines.append(tr("Only posts that mention %(words)s.", words=_quoted(spec["any"], "or")))
     if spec["all"]:
-        lines.append("Only posts that mention all of " + _listed(f"\"{w}\"" for w in spec["all"]) + ".")
+        lines.append(tr("Only posts that mention all of %(words)s.", words=_quoted(spec["all"], "and")))
     if spec["none"]:
-        lines.append("Never posts that mention " + _listed((f"\"{w}\"" for w in spec["none"]), "or") + ".")
+        lines.append(tr("Never posts that mention %(words)s.", words=_quoted(spec["none"], "or")))
     if spec["kinds"]:
-        lines.append("Only " + _listed(_KIND_WORDS[k] for k in spec["kinds"]) + ".")
+        # Translators: %(kinds)s is a list of kinds of post ("pictures, video and sound").
+        lines.append(tr("Only %(kinds)s.", kinds=_listed(_KIND_WORDS[k] for k in spec["kinds"])))
     if spec["only_sites"]:
-        lines.append("Only links to " + _listed(spec["only_sites"], "or") + ".")
+        lines.append(tr("Only links to %(sites)s.", sites=_listed(spec["only_sites"], "or")))
     if spec["never_sites"]:
-        lines.append("Never links to " + _listed(spec["never_sites"], "or") + ".")
-    least = []
-    if spec["min_votes"]:
-        least.append(f"{spec['min_votes']} vote{'' if spec['min_votes'] == 1 else 's'}")
-    if spec["min_comments"]:
-        least.append(f"{spec['min_comments']} comment{'' if spec['min_comments'] == 1 else 's'}")
-    if least:
-        lines.append("At least " + _listed(least) + ".")
+        lines.append(tr("Never links to %(sites)s.", sites=_listed(spec["never_sites"], "or")))
+    if spec["min_votes"] or spec["min_comments"]:
+        lines.append(_at_least(spec["min_votes"], spec["min_comments"]))
     if spec["hide"]:
-        lines.append("Leaves out " + _listed(_HIDE_WORDS[h] for h in spec["hide"]) + ".")
+        # Translators: %(things)s is a list ("bots and forwarded copies").
+        lines.append(tr("Leaves out %(things)s.", things=_listed(_HIDE_WORDS[h] for h in spec["hide"])))
     if left_out_line(spec):
         lines.append(left_out_line(spec))
 
     if spec["rank"] != MIX_RANK:
-        lines.append(_RANK_WORDS[spec["rank"]])
+        lines.append(str(_RANK_WORDS[spec["rank"]]))
     else:
-        mix = spec["mix"]
-        # "votes" in a mix are upvotes less downvotes plus the post's tip boost (helpers/tips.py)
-        parts = [f"votes and tips {mix['votes']}", f"comments {mix['comments']}", f"fading over {_FADE_WORDS[mix['fade']]}"]
-        if mix["members"] and spec["source"] == SITE:
-            parts.append(f"a boost of {mix['members']} for this curation's guilds and accounts")
-        if mix["media"]:
-            parts.append(f"a boost of {mix['media']} for posts with media")
-        line = "Ordered by its own mix: " + ", ".join(parts) + "."
-        if mix["variety"]:
-            line += f" At most {mix['variety']} post{'' if mix['variety'] == 1 else 's'} per author or guild on a page."
-        lines.append(line)
+        lines.append(_mix_line(spec["mix"], bool(spec["mix"]["members"] and spec["source"] == SITE)))
     return lines

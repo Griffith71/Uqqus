@@ -41,7 +41,7 @@ def test_a_draft_can_turn_comments_off():
 @pytest.mark.parametrize("pairs, message", [
     ([("title", "x" * 281)], "280 character limit"),
     ([("url", "https://e.com/" + "x" * 2048)], "2048 character limit"),
-    ([("body", "x" * (BODY_MAX + 1))], "25000 character limit"),
+    ([("body", "x" * (BODY_MAX + 1))], "25,000 characters"),
     ([("comment_permission", "9")], "who can comment"),
     ([("forward_guilds", "g" * 51)], "too long"),
     ([("forward_guilds", f"g{i}") for i in range(pd.FORWARD_GUILDS_MAX + 1)], "at most"),

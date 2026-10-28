@@ -7,11 +7,15 @@ rule, the throttle and bans apply as for a person; nothing here repeats submit_p
 * The first read of a source marks its whole backlog seen and posts only its newest FIRST_READ items.
 * After that, new items are posted oldest first, at most PER_RUN a run, within the bot's daily cap.
 * A source that fails FAILS_BEFORE_PAUSE times in a row is paused and its owner told; failures back off.
+* What happened is stored in English (a source's last error, a bot's pause reason: drawn with msg()), and the owner
+  is told with `notify(user_id, message, **values)`: an English message marked with N_ and its values
+  (alerts.notify), so they read it in their own language.
 * An answer that means the bot itself can't post (suspended, not approved any more) pauses the bot and tells the owner.
 """
 from collections import namedtuple
 
 from ruqqus.helpers import bot_store, bots, feed_items
+from ruqqus.helpers.i18n_runtime import N_
 from ruqqus.helpers.safe_fetch import FetchError
 
 # kind: posted, duplicate, wait (try again next run), guild (a guild refused the forward: post again without it),
@@ -33,20 +37,22 @@ def classify(status, location, data, forwarded, post_id=None):
         return outcome("duplicate", error)
     if status in (301, 302, 303, 307, 308):
         if "/notifications" in location:
-            return outcome("stop", "The bot was suspended for posting too much similar content.")
+            return outcome("stop", N_("The bot was suspended for posting too much similar content."))
         if "/help/terms" in location or "/login" in location:
-            return outcome("stop", "The site refused the bot's session.")
-        return outcome("duplicate", "Already posted.")
+            return outcome("stop", N_("The site refused the bot's session."))
+        return outcome("duplicate", N_("Already posted."))
     if status == 403 and data.get("bot_refusal") == "wait":
         return outcome("wait", error)
     if status == 403 and data.get("bot_refusal") == "stop":
         return outcome("stop", error)
-    if status in (403, 404) and forwarded and "+" in error:
+    # a guild refused the forward (the submit route marks it, rather than this reading its words, which are in the
+    # reader's language): posted again without forwarding
+    if status in (403, 404) and forwarded and data.get("refusal") == "guild":
         return outcome("guild", error)
     if status in (429, 503) or status >= 500:
         return outcome("wait", error or f"The site answered {status}; trying again later.")
     if status == 401:
-        return outcome("stop", "The site refused the bot's session.")
+        return outcome("stop", N_("The site refused the bot's session."))
     return outcome("refused", error or f"The site answered {status}.")
 
 
@@ -62,7 +68,7 @@ def run_source(db, source_id, now, fetch, submit, notify, owner_ok):
     # a site bot belongs to nobody (the site runs it); a member bot stops while its member can't run it
     if bot.kind in (bots.MEMBER, bots.SELF) and not owner_ok(bot.owner_id):
         bot_store.record_check(db, src.id, now, now + 3600, fail_count=src.fail_count,
-                               error="The bot's owner can't run it right now.")
+                               error=N_("The bot's owner can't run it right now."))
         db.commit()
         return "owner"
 
@@ -121,7 +127,8 @@ def run_source(db, source_id, now, fetch, submit, notify, owner_ok):
             bot_store.set_running(db, bot.user_id, False, answer_of.message)
             db.commit()
             if bot.owner_id:                           # a site bot's state is on the admins' page
-                notify(bot.owner_id, f"{bots.subject(bot)} has been paused: {answer_of.message}")
+                message, values = bots.notice(bot, "paused", reason=answer_of.message)
+                notify(bot.owner_id, message, **values)
             note, result = answer_of.message, "stopped"
             break
         db.commit()
@@ -143,8 +150,8 @@ def _failed(db, src, bot, now, message, notify, retry_after=None):
         bot_store.set_source_paused(db, src.id, True, message)
         db.commit()
         if bot.owner_id:
-            notify(bot.owner_id, f"{bots.subject(bot)} stopped reading {src.url} after {fails} failed tries: "
-                                 f"{message} Start it again from Settings > Bots once it works.")
+            notice, values = bots.notice(bot, "stopped_reading", url=src.url, fails=fails, reason=message)
+            notify(bot.owner_id, notice, **values)
         return "paused"
     db.commit()
     return "failed"

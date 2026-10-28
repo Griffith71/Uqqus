@@ -40,7 +40,8 @@ def test_the_routes_record_the_tip_and_commit_before_the_notification():
         body = func(src, name)
         assert 'tips.parse_coins(request.args.get("coins"))' in body and "int(request.args" not in body, name
         assert "in_private_guild_for(" in body and "is_anonymous" in body, name
-        assert body.index(record) < body.index("g.db.commit()") < body.index("send_notification("), name
+        # the notice is alerts.notify (marked for translation), which commits through send_notification
+        assert body.index(record) < body.index("g.db.commit()") < body.index("notify("), name
         assert "AwardRelationship(" not in body, name
     post = func(src, "gift_post_pid")
     assert post.index("tips_store.recompute_post(") < post.index("post.score_hot = post.rank_hot") < post.index("g.db.commit()")

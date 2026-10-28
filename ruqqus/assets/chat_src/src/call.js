@@ -33,7 +33,7 @@ async function api(action, fields = {}) {
   } catch (e) {
     data = {};
   }
-  if (!resp.ok) throw new Error(data.error || "The call couldn't continue.");
+  if (!resp.ok) throw new Error(data.error || window.tr("The call couldn't continue."));
   return data;
 }
 
@@ -69,7 +69,8 @@ function tile(key, info, mine) {
   face.appendChild(img);
   const name = document.createElement("div");
   name.className = "call-name";
-  name.textContent = mine ? "You" : info.shown_name || "Someone";
+  // Translators: the name under your own picture in a call; "Someone" stands for a person whose name is unknown
+  name.textContent = mine ? window.tr("You") : info.shown_name || window.tr("Someone");
   const flag = document.createElement("div");
   flag.className = "call-flag";
   el.append(video, audio, face, name, flag);
@@ -135,16 +136,16 @@ function applyRoster(peers) {
   for (const key of [...state.tiles.keys()]) if (key !== "me" && !keys.has(key)) dropTile(key);
   for (const p of state.roster) tile(`${p.mxid}|${p.device_id}`, p, false);
   state.mesh.setRoster(state.roster);
-  if (!state.roster.length && !boot.isGroup && state.connected.size === 0) setStatus(boot.answer ? "Connecting…" : "Ringing…");
+  if (!state.roster.length && !boot.isGroup && state.connected.size === 0) setStatus(boot.answer ? window.tr("Connecting…") : window.tr("Ringing…"));
   // a voice channel is there whether or not anyone else is
-  else if (boot.isVoice && !state.roster.length && state.connected.size === 0) setStatus("You're the only one here.");
+  else if (boot.isVoice && !state.roster.length && state.connected.size === 0) setStatus(window.tr("You're the only one here."));
 }
 
 async function beat() {
   if (state.ended) return;
   try {
     const data = await api("heartbeat");
-    if (!data.in_call) return end(data.reason || "The call ended.");
+    if (!data.in_call) return end(data.reason || window.tr("The call ended."));
     applyRoster(data.peers);
   } catch (e) {
     // a missed beat is fine: the server allows three
@@ -162,23 +163,31 @@ async function end(reason, { leave = true } = {}) {
   if (state.mesh) state.mesh.close();
   if (state.media) state.media.stop();
   let summary = null;
+  let summaryData = null;
   if (leave && state.callId) {
     try {
       const data = await api("leave");
       summary = data.summary || null;
+      summaryData = data.summary_data || null;
     } catch (e) {
       summary = null;
     }
   }
-  // the last one out writes the call into the chat ("Voice call · 12 min"), encrypted like any message
+  // the last one out writes the call into the chat ("Voice call · 12 min"), encrypted like any message. The body stays
+  // English (everyone in the room reads the same event); the kind and length go with it so each reader's chat draws
+  // the line in their own language (ui.js)
   if (summary && state.client) {
+    const content = { msgtype: "m.notice", body: summary };
+    if (summaryData && (summaryData.kind === "audio" || summaryData.kind === "video") && Number.isFinite(summaryData.seconds)) {
+      content["org.uqqus.call_summary"] = { kind: summaryData.kind, seconds: Math.max(0, Math.floor(summaryData.seconds)) };
+    }
     try {
-      await state.client.sendMessage(boot.roomId, { msgtype: "m.notice", body: summary });
+      await state.client.sendMessage(boot.roomId, content);
     } catch (e) {
       // the chat simply has no line for it
     }
   }
-  fatal(reason || "Call ended.");
+  fatal(reason || window.tr("Call ended."));
   byId("call-fatal-close").focus();
   setTimeout(() => window.close(), 2500);
 }
@@ -191,7 +200,8 @@ function wireControls() {
     state.media.setMuted(!state.media.muted);
     mute.setAttribute("aria-pressed", String(state.media.muted));
     mute.querySelector("i").className = `fas ${state.media.muted ? "fa-microphone-slash" : "fa-microphone"}`;
-    mute.querySelector(".call-label").textContent = state.media.muted ? "Unmute" : "Mute";
+    // Translators: the label of the microphone button in a call
+    mute.querySelector(".call-label").textContent = state.media.muted ? window.tr("Unmute") : window.tr("Mute");
     state.tiles.get("me")?.classList.toggle("muted", state.media.muted);
   });
   if (!state.media.videoTrack) {
@@ -201,11 +211,12 @@ function wireControls() {
       state.media.setCameraOff(!state.media.cameraOff);
       camera.setAttribute("aria-pressed", String(state.media.cameraOff));
       camera.querySelector("i").className = `fas ${state.media.cameraOff ? "fa-video-slash" : "fa-video"}`;
-      camera.querySelector(".call-label").textContent = state.media.cameraOff ? "Camera on" : "Camera off";
+      // Translators: the label of the camera button in a call (what pressing it does)
+      camera.querySelector(".call-label").textContent = state.media.cameraOff ? window.tr("Camera on") : window.tr("Camera off");
       showStream("me", state.media.stream, true);
     });
   }
-  byId("call-leave").addEventListener("click", () => end("You left the call."));
+  byId("call-leave").addEventListener("click", () => end(window.tr("You left the call.")));
   byId("call-fatal-close").addEventListener("click", () => window.close());
   byId("call-unmute-audio").addEventListener("click", () => {
     resumeAudio();
@@ -217,20 +228,21 @@ function wireControls() {
   const fill = async () => {
     const { audio, video } = await state.media.devices();
     picker.textContent = "";
-    const group = (label, list, kind) => {
+    const group = (label, list, kind, unnamed) => {
       if (!list.length) return;
       const og = document.createElement("optgroup");
       og.label = label;
       list.forEach((d, i) => {
         const o = document.createElement("option");
         o.value = `${kind}:${d.deviceId}`;
-        o.textContent = d.label || `${label} ${i + 1}`;
+        o.textContent = d.label || unnamed(i + 1);
         og.appendChild(o);
       });
       picker.appendChild(og);
     };
-    group("Microphone", audio, "audio");
-    if (state.media.videoTrack) group("Camera", video, "video");
+    // Translators: a device with no name of its own in the call's device list, e.g. "Microphone 2"
+    group(window.tr("Microphone"), audio, "audio", (n) => window.tr("Microphone %(number)s", { number: n }));
+    if (state.media.videoTrack) group(window.tr("Camera"), video, "video", (n) => window.tr("Camera %(number)s", { number: n }));
     const current = state.media.audioTrack && state.media.audioTrack.getSettings().deviceId;
     if (current) picker.value = `audio:${current}`;
   };
@@ -238,7 +250,7 @@ function wireControls() {
   picker.addEventListener("change", () => {
     const [kind, ...rest] = picker.value.split(":");
     state.media.useDevice(kind, rest.join(":")).then(() => showStream("me", state.media.stream, true)).catch(() => {
-      setStatus("That device couldn't be used.");
+      setStatus(window.tr("That device couldn't be used."));
     });
   });
   fill().catch(() => {});
@@ -276,7 +288,7 @@ async function startMatrix() {
 }
 
 async function run() {
-  setStatus("Starting…");
+  setStatus(window.tr("Starting…"));
   byId("call-title").textContent = boot.label;
   state.client = await startMatrix();
   state.me = { userId: state.client.getUserId(), deviceId: state.client.getDeviceId() };
@@ -293,10 +305,10 @@ async function run() {
     state.media = await LocalMedia.open(!!joined.video);
   } catch (e) {
     await api("leave").catch(() => {});
-    return fatal(e instanceof MediaRefused ? e.message : "The microphone couldn't be started.");
+    return fatal(e instanceof MediaRefused ? e.message : window.tr("The microphone couldn't be started."));
   }
-  if (boot.kind === "video" && !joined.video) setStatus("Video is off in this call: you're on audio.");
-  else if (state.media.cameraProblem) setStatus("The camera couldn't be started: you're on audio.");
+  if (boot.kind === "video" && !joined.video) setStatus(window.tr("Video is off in this call: you're on audio."));
+  else if (state.media.cameraProblem) setStatus(window.tr("The camera couldn't be started: you're on audio."));
 
   let turn;
   try {
@@ -307,10 +319,10 @@ async function run() {
   if (!turn || !turn.uris || !turn.uris.length) {
     await api("leave").catch(() => {});
     state.media.stop();
-    return fatal("Calls are unavailable right now. Try again later.");
+    return fatal(window.tr("Calls are unavailable right now. Try again later."));
   }
 
-  const mine = tile("me", { shown_name: "You", profile_url: boot.avatar }, true);
+  const mine = tile("me", { shown_name: window.tr("You"), profile_url: boot.avatar }, true);
   showStream("me", state.media.stream, true);
   mine.classList.add("me");
 
@@ -324,7 +336,7 @@ async function run() {
     onStream: (key, stream) => showStream(key, stream, false),
     onPeerState: (key, s) => {
       const el = state.tiles.get(key);
-      if (el) el.querySelector(".call-flag").textContent = s === "connected" ? "" : s === "failed" ? "Couldn't connect" : "Connecting…";
+      if (el) el.querySelector(".call-flag").textContent = s === "connected" ? "" : s === "failed" ? window.tr("Couldn't connect") : window.tr("Connecting…");
       if (s === "connected") {
         state.connected.add(key);
         if (!state.joinedAt) state.joinedAt = Date.now();
@@ -350,10 +362,10 @@ async function run() {
     }, 500 + Math.random() * 500);
   });
   state.events.addEventListener("call.ended", (e) => {
-    let reason = "The call ended.";
+    let reason = window.tr("The call ended.");
     try {
       const data = JSON.parse(e.data).data || {};
-      if (data.reason === "declined") reason = "They declined the call.";
+      if (data.reason === "declined") reason = window.tr("They declined the call.");
     } catch (err) {
       // the default reason
     }
@@ -366,7 +378,7 @@ async function run() {
   // a 1:1 call nobody answers ends by itself
   if (!boot.isGroup && !joined.peers.length) {
     state.ringTimer = setTimeout(() => {
-      if (!state.connected.size) end("No answer.");
+      if (!state.connected.size) end(window.tr("No answer."));
     }, (joined.ring_seconds || 45) * 1000);
   }
 }
@@ -381,12 +393,12 @@ async function main() {
         return lock ? new Promise(() => {}) : null;      // held for as long as this window lives
       });
     });
-    if (!got) return fatal("A call is already open in another window.");
+    if (!got) return fatal(window.tr("A call is already open in another window."));
   }
   try {
     await run();
   } catch (e) {
-    fatal("The call couldn't start. Close this window and try again.");
+    fatal(window.tr("The call couldn't start. Close this window and try again."));
     if (state.callId) api("leave").catch(() => {});
   }
 }

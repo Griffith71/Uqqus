@@ -8,6 +8,7 @@ from ruqqus.classes import *
 from ruqqus.helpers.wrappers import *
 from ruqqus.helpers.security import *
 from ruqqus.helpers.discord import add_role, delete_role
+from ruqqus.helpers.i18n_runtime import tr
 from ruqqus.__main__ import app
 
 SERVER_ID = environ.get("DISCORD_SERVER_ID",'').rstrip()
@@ -111,7 +112,8 @@ def discord_redirect(v):
         requests.delete(url, headers=headers)
 
     if g.db.query(User).filter(User.id!=v.id, User.discord_id==x["id"]).first():
-        return render_template("message.html", title="Discord account already linked.", error="That Discord account is already in use by another user.", v=v)
+        return render_template("message.html", title=tr("Discord account already linked."),
+                               error=tr("That Discord account is already in use by another user."), v=v)
 
     v.discord_id=x["id"]
     g.db.add(v)

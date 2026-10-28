@@ -18,7 +18,7 @@
     select.textContent = '';
     var none = document.createElement('option');
     none.value = '';
-    none.textContent = data.require_flair ? 'Pick a flair' : 'No flair';
+    none.textContent = data.require_flair ? tr('Pick a flair') : tr('No flair');
     select.appendChild(none);
     data.flairs.forEach(function (f) {
       var option = document.createElement('option');
@@ -76,9 +76,9 @@
     errorBox.hidden = true;
     setSelect.textContent = '';
     flairsOf(guild).then(function (data) {
-      if (!data) { errorBox.textContent = 'Could not load the flairs.'; errorBox.hidden = false; return; }
+      if (!data) { errorBox.textContent = tr('Could not load the flairs.'); errorBox.hidden = false; return; }
       fill(setSelect, data);
-      if (!data.flairs.length) { errorBox.textContent = '+' + guild + ' has no flairs yet.'; errorBox.hidden = false; }
+      if (!data.flairs.length) { errorBox.textContent = tr('+%(guild)s has no flairs yet.', {guild: guild}); errorBox.hidden = false; }
     });
     $('#setFlairModal').modal('show');
   });
@@ -91,9 +91,9 @@
       .then(function (r) { return r.json().catch(function () { return {}; }).then(function (data) { return { ok: r.ok, data: data }; }); })
       .then(function (res) {
         saveButton.disabled = false;
-        if (!res.ok) { errorBox.textContent = res.data.error || 'That didn’t work.'; errorBox.hidden = false; return; }
+        if (!res.ok) { errorBox.textContent = res.data.error || tr('That didn’t work.'); errorBox.hidden = false; return; }
         window.location.reload();
       })
-      .catch(function () { saveButton.disabled = false; errorBox.textContent = 'That didn’t work.'; errorBox.hidden = false; });
+      .catch(function () { saveButton.disabled = false; errorBox.textContent = tr('That didn’t work.'); errorBox.hidden = false; });
   });
 })();

@@ -2,6 +2,7 @@
 {% from "partials/theme.html" import html_attrs, font_faces, theme_color %}
 <html{{ html_attrs() }}>
 <head>
+{% from "partials/i18n_boot.html" import i18n_boot %}{{ i18n_boot() }}
 
 	<meta charset="utf-8">
 {{ font_faces() }}
@@ -11,13 +12,10 @@
 	<meta name="author" content="">
 
 	{% block title %}
-	<title>{{ 'SITE_NAME' | app_config }}: The Open-Source Platform for Independent Internet Communities</title>
-	<meta name="description" content="The independent social platform">
+	<title>{{ _("%(site)s: The Open-Source Platform for Independent Internet Communities") }}</title>
+	<meta name="description" content="{{ _('The independent social platform') }}">
 	{% endblock %}
 
-	<!-- Bootstrap core CSS -->
-	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
-	integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 
 
 	<!-- Ruqqus CSS -->
@@ -53,13 +51,13 @@
 
 <div class="toast clipboard" id="toast-success" role="alert" aria-live="assertive" aria-atomic="true" data-animation="true" data-autohide="true" data-delay="5000">
 	<div class="toast-body text-center">
-		<i class="fas fa-check-circle text-success mr-2"></i>Link copied to clipboard
+		<i class="fas fa-check-circle text-success mr-2"></i>{{ _("Link copied to clipboard") }}
 	</div>
 </div>
 
 <div class="toast clipboard" id="toast-error" role="alert" aria-live="assertive" aria-atomic="true" data-animation="true" data-autohide="true" data-delay="5000">
 	<div class="toast-body text-center">
-		<i class="fas fa-exclamation-circle text-danger mr-2"></i>Unable to copy link
+		<i class="fas fa-exclamation-circle text-danger mr-2"></i>{{ _("Unable to copy link") }}
 	</div>
 </div>
 

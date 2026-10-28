@@ -11,6 +11,7 @@ import requests
 from .mix_ins import *
 from ruqqus.helpers.base36 import *
 from ruqqus.helpers.lazy import lazy
+from ruqqus.helpers.i18n_runtime import tr, trp
 from ruqqus.helpers import comment_permission as cperm
 from ruqqus.helpers import anonymity
 from ruqqus.helpers import permalinks
@@ -475,23 +476,64 @@ class Submission(Base, Stndrd, Age_times, Scores, Fuzzing):
         else:
             return None
 
-    def visibility_reason(self, v):
-
-
+    def _visible_why(self, v):
+        """Why this viewer may see a post that isn't public: a key of the sentences in private_label (None: no reason
+        found, drawn as the site always drew it)."""
         if not v or self.author_id == v.id:
-            return "this is your content."
+            return "own"
         elif self.audience == 3 and v.admin_level < 4:
-            return "you are a member of this Circle guild."
+            return "circle_guild"
         elif self.audience and v.admin_level < 4:
-            return "it was shared with you."
+            return "shared"
         elif self.is_pinned:
-            return "a guildmaster has pinned it."
+            return "pinned"
         elif self.board.has_mod(v):
-            return f"you are a guildmaster of +{self.board.name}."
+            return "guildmaster"
         elif self.board.has_contributor(v):
-            return f"you are an approved contributor in +{self.board.name}."
+            return "contributor"
         elif v.admin_level >= 4:
-            return "you are a Ruqqus admin."
+            return "admin"
+        return None
+
+    def _visible_to_you(self, why):
+        """"Visible to you because ...": one whole sentence per reason."""
+        guild = self.board.name if why in ("guildmaster", "contributor") else None
+        if why == "own":
+            return tr("Visible to you because this is your content.")
+        if why == "circle_guild":
+            return tr("Visible to you because you are a member of this Circle guild.")
+        if why == "shared":
+            return tr("Visible to you because it was shared with you.")
+        if why == "pinned":
+            return tr("Visible to you because a guildmaster has pinned it.")
+        if why == "guildmaster":
+            return tr("Visible to you because you are a guildmaster of +%(guild)s.", guild=guild)
+        if why == "contributor":
+            return tr("Visible to you because you are an approved contributor in +%(guild)s.", guild=guild)
+        if why == "admin":
+            return tr("Visible to you because you are a Ruqqus admin.")
+        return "Visible to you because None"
+
+    def private_note(self, v):
+        """The eye's tooltip on a deleted post that isn't public: "Private post, visible because ...", one whole
+        sentence per reason."""
+        why = self._visible_why(v)
+        guild = self.board.name if why in ("guildmaster", "contributor") else None
+        if why == "own":
+            return tr("Private post, visible because this is your content.")
+        if why == "circle_guild":
+            return tr("Private post, visible because you are a member of this Circle guild.")
+        if why == "shared":
+            return tr("Private post, visible because it was shared with you.")
+        if why == "pinned":
+            return tr("Private post, visible because a guildmaster has pinned it.")
+        if why == "guildmaster":
+            return tr("Private post, visible because you are a guildmaster of +%(guild)s.", guild=guild)
+        if why == "contributor":
+            return tr("Private post, visible because you are an approved contributor in +%(guild)s.", guild=guild)
+        if why == "admin":
+            return tr("Private post, visible because you are a Ruqqus admin.")
+        return "Private post, visible because None"
 
     @property
     @lazy
@@ -800,13 +842,34 @@ class Submission(Base, Stndrd, Age_times, Scores, Fuzzing):
         return ",".join(circles.FRIENDS_TOKEN if kind == circles.FRIENDS else str(cid) for cid, kind, _ in circle_store.names_of(g.db, ids))
 
     def private_label(self, v):
-        """The tooltip of the "private post" eye: who can see it, and why this viewer can."""
+        """The tooltip of the "private post" eye: who can see it, and why this viewer can (whole sentences)."""
         from ruqqus.helpers import circles
+        why = self._visible_why(v)
         if self.audience == circles.CIRCLES:
-            return f"{self.circle_label(v)}. Visible to you because {self.visibility_reason(v)}"
+            # Translators: %(circles)s says who a post is for ("Shared with a circle", "Friends and Family"); %(why)s is
+            # a sentence such as "Visible to you because it was shared with you."
+            return tr("%(circles)s. %(why)s", circles=self.circle_label(v), why=self._visible_to_you(why))
         if self.audience:
-            return f"{circles.NAMES.get(self.audience, 'Private')} only. Visible to you because {self.visibility_reason(v)}"
-        return f"Private post, visible to you because {self.visibility_reason(v)}"
+            # Translators: %(audience)s is who a post is for ("Circle guild members"); %(why)s is a sentence such as
+            # "Visible to you because you are a member of this Circle guild."
+            return tr("%(audience)s only. %(why)s", audience=circles.NAMES.get(self.audience, trp("audience", "Private")),
+                      why=self._visible_to_you(why))
+        guild = self.board.name if why in ("guildmaster", "contributor") else None
+        if why == "own":
+            return tr("Private post, visible to you because this is your content.")
+        if why == "circle_guild":
+            return tr("Private post, visible to you because you are a member of this Circle guild.")
+        if why == "shared":
+            return tr("Private post, visible to you because it was shared with you.")
+        if why == "pinned":
+            return tr("Private post, visible to you because a guildmaster has pinned it.")
+        if why == "guildmaster":
+            return tr("Private post, visible to you because you are a guildmaster of +%(guild)s.", guild=guild)
+        if why == "contributor":
+            return tr("Private post, visible to you because you are an approved contributor in +%(guild)s.", guild=guild)
+        if why == "admin":
+            return tr("Private post, visible to you because you are a Ruqqus admin.")
+        return "Private post, visible to you because None"
 
     @property
     def flag_count(self):

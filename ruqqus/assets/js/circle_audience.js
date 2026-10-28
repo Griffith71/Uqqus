@@ -60,22 +60,23 @@
       save.disabled = false;
       // the server asks first (an empty circle, copies taken down): the answer carries the sentence
       if (res.status === 409 && res.data.confirm && !fields.confirm) {
-        if (window.confirm(res.data.error + ' Save anyway?')) { fields.confirm = '1'; send(fields); }
+        // Translators: %(problem)s is the server's sentence saying what saving would do
+        if (window.confirm(tr('%(problem)s Save anyway?', {problem: res.data.error}))) { fields.confirm = '1'; send(fields); }
         return;
       }
-      if (!res.ok) { say(res.data.error || 'Could not change that.', true); return; }
+      if (!res.ok) { say(res.data.error || tr('Could not change that.'), true); return; }
       window.location.reload();
-    }).catch(function () { save.disabled = false; say('Could not change that. Try again.', true); });
+    }).catch(function () { save.disabled = false; say(tr('Could not change that. Try again.'), true); });
   }
 
   save.addEventListener('click', function () {
-    if (!target || !field) { say('Choose who can see this.', true); return; }
+    if (!target || !field) { say(tr('Choose who can see this.'), true); return; }
     var chosen = window.AudienceField.read(field);
-    if (chosen.audience === '4' && !chosen.circles.length) { say('Choose at least one circle, or make it public.', true); return; }
+    if (chosen.audience === '4' && !chosen.circles.length) { say(tr('Choose at least one circle, or make it public.'), true); return; }
     if (same(chosen, target)) { $('#audienceModal').modal('hide'); return; }
     var fields = { audience: chosen.audience, circles: chosen.circles };
     if (chosen.audience === '0' && target.audience !== '0') {
-      if (!window.confirm('Make this post public? Everyone will be able to see it.')) return;
+      if (!window.confirm(tr('Make this post public? Everyone will be able to see it.'))) return;
       fields.confirm = '1';
     }
     send(fields);

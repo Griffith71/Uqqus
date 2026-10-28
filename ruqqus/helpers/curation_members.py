@@ -14,6 +14,8 @@ import time
 
 from sqlalchemy import text
 
+from ruqqus.helpers.i18n_runtime import tr
+
 WHAT = ("author", "guild")
 
 
@@ -27,20 +29,20 @@ class MemberError(Exception):
 def author_refusal(post_is_anonymous, account):
     """Why the post's author can't be added, or None. `account` is the author's User."""
     if post_is_anonymous:
-        return "The author of an anonymous post can't be added."
+        return tr("The author of an anonymous post can't be added.")
     if account is None or account.is_deleted or account.is_suspended:
-        return "That account can't be added."
+        return tr("That account can't be added.")
     return None
 
 
 def guild_refusal(is_profile_post, board, curation_is_private):
     """Why the post's guild can't be added, or None."""
     if is_profile_post:
-        return "That post is on a profile, not in a guild."
+        return tr("That post is on a profile, not in a guild.")
     if board.is_banned:
-        return "That guild can't be added."
+        return tr("That guild can't be added.")
     if (board.is_private or getattr(board, "is_circle", False)) and not curation_is_private:
-        return "A private guild can only go in a private curation."
+        return tr("A private guild can only go in a private curation.")
     return None
 
 

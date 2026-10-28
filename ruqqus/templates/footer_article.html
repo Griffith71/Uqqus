@@ -1,3 +1,4 @@
+{% from "partials/language_switcher.html" import language_switcher %}
 <footer class="footer bg-primary py-5">
     <div class="container">
         <div class="row mb-5">
@@ -14,20 +15,20 @@
             c1.9-9.5,8.9-17.2,20.1-22.5l9.1,19.6c-1.8,0.7-3.2,1.2-4.9,1.9c-11.7,5.5-16.5,15.5-9.9,29.5l16.1,34.5L95.9,147L61.8,73.8
             L82.1,64.4z"/>
         </svg>
-        <p class="text-white">The open-source platform for independent internet communities</p>
+        <p class="text-white">{{ _("The open-source platform for independent internet communities") }}</p>
     </div>
     <div class="col-12 col-md-9">
       <div class="row d-inline-block d-md-flex">
           <div class="col">
-              <h6 class="text-white">The Platform</h6>
+              <h6 class="text-white">{{ _("The Platform") }}</h6>
               <ul class="no-bullets text-small pl-0">
-                <li><a href="/help/about">About</a></li>
-                <li><a href="mailto:info@ruqqus.com">Contact</a></li>
-                <li><a href="/help/press">Press</a></li>
+                <li><a href="/help/about">{{ _("About") }}</a></li>
+                <li><a href="mailto:info@ruqqus.com">{{ _("Contact") }}</a></li>
+                <li><a href="/help/press">{{ pgettext("link to the page for journalists", "Press") }}</a></li>
             </ul>
         </div>
         <div class="col">
-            <h6 class="text-white">Connect</h6>
+            <h6 class="text-white">{{ _("Connect") }}</h6>
             <ul class="no-bullets text-small pl-0">
                 <li><a href="https://www.twitter.com/ruqqus">Twitter</a></li>
                 <li><a href="https://github.com/ruqqus/ruqqus">GitHub</a></li>
@@ -35,17 +36,17 @@
             </ul>
         </div>
         <div class="col">
-            <h6 class="text-white">Get involved</h6>
+            <h6 class="text-white">{{ _("Get involved") }}</h6>
             <ul class="no-bullets text-small pl-0">
-                <li><a href="/help/donate">Donate</a></li>
-                <li><a href="https://github.com/ruqqus/ruqqus">Contribute</a></li>
+                <li><a href="/help/donate">{{ _("Donate") }}</a></li>
+                <li><a href="https://github.com/ruqqus/ruqqus">{{ _("Contribute") }}</a></li>
             </ul>
         </div>
         <div class="col">
-            <h6 class="text-white">Legal</h6>
+            <h6 class="text-white">{{ _("Legal") }}</h6>
             <ul class="no-bullets text-small pl-0">
-                <li><a href="/help/terms">Terms</a></li>
-                <li><a href="/help/privacy">Privacy Policy</a></li>
+                <li><a href="/help/terms">{{ _("Terms") }}</a></li>
+                <li><a href="/help/privacy">{{ _("Privacy Policy") }}</a></li>
             </ul>
         </div>
     </div>
@@ -53,7 +54,8 @@
 </div>
 <div class="row">
     <div class="col">
-        <span class="text-white text-small-extra opacity-50">&copy; 2021 {{ 'COMPANY_NAME' | app_config }}</span>
+        <span class="text-white text-small-extra opacity-50">{{ _("&copy; 2021 %(company)s", company='COMPANY_NAME' | app_config) }}</span>
+        <div class="language-switcher-on-dark mt-2">{{ language_switcher() }}</div>
     </div>
 </div>
 </div>

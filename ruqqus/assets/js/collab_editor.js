@@ -67,7 +67,7 @@
     var op = OT.diff(field.text, value, field.el.selectionEnd);
     field.text = value;
     buffer[f] = buffer[f] ? OT.compose(buffer[f], op) : op;
-    setStatus('Saving…');
+    setStatus(tr('Saving…'));
     typing();
     clearTimeout(sendTimer);
     sendTimer = setTimeout(pump, SEND_DELAY);
@@ -87,7 +87,7 @@
     if (wantFetch) { fetchOps(); return; }
     if (outstanding) return;                       // waiting for our op to come back in the list
     var f = buffer.title ? 'title' : (buffer.body ? 'body' : null);
-    if (!f) { setStatus(failures ? 'Offline' : 'Saved'); return; }
+    if (!f) { setStatus(failures ? tr('Offline') : tr('Saved')); return; }
     outstanding = { field: f, op: buffer[f], key: newKey() };
     buffer[f] = null;
     send();
@@ -113,12 +113,12 @@
           wantFetch = true;
           pump();
         } else if (res.data && res.data.resync) {
-          resync('The draft changed under your last edit, so it was reloaded. Check your last few words.');
+          resync(tr('The draft changed under your last edit, so it was reloaded. Check your last few words.'));
         } else if (res.status === 429) {
           retryLater();
         } else {
-          setStatus('Not saved');
-          notice(res.data.error || 'That edit couldn’t be saved.');
+          setStatus(tr('Not saved'));
+          notice(res.data.error || tr('That edit couldn’t be saved.'));
           resync();
         }
       })
@@ -128,7 +128,7 @@
   function retryLater() {
     // the same op is sent again with the same key: the server applies it once whatever happened before
     failures += 1;
-    setStatus('Offline · retrying');
+    setStatus(tr('Offline · retrying'));
     setTimeout(function () { if (!busy && outstanding && ackOwn === null && !ackEmpty) send(); },
                Math.min(30000, 1000 * Math.pow(2, failures)));
   }
@@ -203,11 +203,11 @@
         fields.title.text = fields.title.el.value = d.title;
         fields.body.text = fields.body.el.value = d.body;
         if (message) notice(message);
-        setStatus('Saved');
+        setStatus(tr('Saved'));
       })
       .catch(function () {
         busy = false;
-        notice('You can’t edit this draft any more (you may have left it or been removed).');
+        notice(tr('You can’t edit this draft any more (you may have left it or been removed).'));
         Object.keys(fields).forEach(function (f) { fields[f].el.readOnly = true; });
       });
   }
@@ -236,8 +236,15 @@
         if (!d || !hereEl) return;
         var names = d.here.map(function (p) { return p.name; });
         var typers = d.here.filter(function (p) { return p.typing; }).map(function (p) { return p.name; });
-        var text = names.length ? 'Also here: ' + names.join(', ') : '';
-        if (typers.length) text += ' · ' + typers.join(' and ') + (typers.length === 1 ? ' is' : ' are') + ' typing…';
+        // Translators: %(names)s is a list of the other authors who have this draft open
+        var text = names.length ? tr('Also here: %(names)s', {names: names.join(', ')}) : '';
+        if (typers.length) {
+          var who = typers.reduce(function (list, name) {
+            // Translators: joins names in "who is typing" ("Ann and Bob", then "Ann and Bob and Cy")
+            return tr('%(first)s and %(second)s', {first: list, second: name});
+          });
+          text += ' · ' + trn('%(names)s is typing…', '%(names)s are typing…', typers.length, {names: who});
+        }
         hereEl.textContent = text;
       })
       .catch(function () {});
@@ -274,7 +281,7 @@
   if (publish) {
     publish.addEventListener('click', function () {
       if (pending()) {
-        publishError.textContent = 'Wait a moment: your last changes are still being saved.';
+        publishError.textContent = tr('Wait a moment: your last changes are still being saved.');
         publishError.hidden = false;
         pump();
         return;
@@ -286,11 +293,11 @@
         .then(function (r) { return r.json().catch(function () { return {}; }).then(function (d) { return { ok: r.ok, data: d }; }); })
         .then(function (res) {
           publish.disabled = false;
-          if (!res.ok) { publishError.textContent = res.data.error || 'It couldn’t be published.'; publishError.hidden = false; return; }
-          if (res.data.proposal) { notice(res.data.outcome === 'passed' ? 'Published.' : 'Publishing is put to a vote: the other authors have been asked.'); refreshPanel(); return; }
+          if (!res.ok) { publishError.textContent = res.data.error || tr('It couldn’t be published.'); publishError.hidden = false; return; }
+          if (res.data.proposal) { notice(res.data.outcome === 'passed' ? tr('Published.') : tr('Publishing is put to a vote: the other authors have been asked.')); refreshPanel(); return; }
           if (res.data.url) window.location.href = res.data.url;
         })
-        .catch(function () { publish.disabled = false; publishError.textContent = 'It couldn’t be published. Try again.'; publishError.hidden = false; });
+        .catch(function () { publish.disabled = false; publishError.textContent = tr('It couldn’t be published. Try again.'); publishError.hidden = false; });
     });
   }
 

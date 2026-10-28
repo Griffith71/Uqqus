@@ -110,7 +110,7 @@ def test_the_runner_posts_through_the_real_route_as_the_bot_from_its_own_address
     runner = read("scripts", "run_bots.py")
     body = func(runner, "submit")
     assert 'client.post("/api/vue/submit"' in body and '"X-User-Type": "Bot"' in body
-    assert 'environ_base={"REMOTE_ADDR": bots.loopback_for(user_id)}' in body and '"no_repost": "1"' in body
+    assert 'environ_base={"REMOTE_ADDR": bots.loopback_for(user_id), ENVIRON_KEY: "en"}' in body and '"no_repost": "1"' in body
     assert "submit_post" not in runner.split('"""', 2)[2]     # it never repeats the route's logic
     assert "if not bots.enabled():" in func(runner, "tick")
     conf = read("supervisord.conf")
@@ -198,8 +198,8 @@ def test_a_member_can_not_resume_what_an_admin_paused():
 
 def test_a_bot_profile_says_who_runs_it_and_is_hidden_until_approved():
     header = read("ruqqus", "templates", "partials", "profile_header.html")
-    assert "Automated{% if u.bot_kind == 'site' %} by {{ 'SITE_NAME' | app_config }}" in header
-    assert "{% elif bot_owner and not bot_owner.is_deleted %} by" in header
+    assert "{% if u.bot_kind == 'site' %}{{ _(\"Automated by %(site)s\") }}" in header
+    assert "{% elif bot_owner and not bot_owner.is_deleted %}" in header and '_("Automated by %(owner)s", owner=bot_owner_link)' in header
     assert "{% if not u.is_bot %}" in header.split('action="/api/chat/start"')[0].rsplit("{% elif v %}", 1)[1]
     assert "if not u.bot_shown_to(v):\n        abort(404)" in func(read("ruqqus", "routes", "users.py"), "u_username")
     shown = func(USER, "bot_shown_to", "\n    def ")
@@ -318,7 +318,7 @@ def test_a_persons_own_account_is_never_deleted_deactivated_renamed_or_edited_as
     assert "return row.kind == bots.MEMBER and row.owner_id == v.id" in func(ROUTES, "_is_owner")   # no keys made
     profile = func(ROUTES, "settings_bot_profile")
     start = profile.index("if bots.is_self(row):")
-    branch = profile[start:profile.index('return _back(_page(account), msg="Saved.")', start)]
+    branch = profile[start:profile.index('return _back(_page(account), msg=tr("Saved."))', start)]
     assert "set_forward_guilds" in branch and "display_name" not in branch and "bio" not in branch
     assert start < profile.index("_display_name(") and start < profile.index("_set_bio(account")
 
@@ -349,7 +349,7 @@ def test_the_spam_guard_never_suspends_anyone_for_an_automated_post():
     assert guard.count("*own_kind") == 2
     assert "if url and not automated:" in guard                  # one feed's links share a site
     refused = guard.index("if automated and max(len(similar_urls), len(similar_posts)) >= threshold:")
-    banned = guard.index("v.ban(reason=\"Spamming.\"")
+    banned = guard.index("v.ban(reason=N_(\"Spamming.\")")
     assert refused < banned and "409" in guard[refused:banned] and "return" in guard[refused:banned]
     assert "ban(" not in guard[refused:banned]
     assert "noqa" not in POSTS
@@ -358,7 +358,7 @@ def test_the_spam_guard_never_suspends_anyone_for_an_automated_post():
 def test_the_pages_say_what_it_is():
     page = read("ruqqus", "templates", "settings_bot.html")
     assert "{% set own = bot.kind == 'self' %}" in page
-    assert "{% if not own %}\n      <h3 class=\"h6 mt-4\">Picture and banner</h3>" in page
+    assert "{% if not own %}\n      <h3 class=\"h6 mt-4\">{{ _(\"Picture and banner\") }}</h3>" in page
     assert "{% if waiting and not own %}" in page                 # no rename or kind for a person's account
     assert "Stop posting automatically" in page and "Their account is not touched." in page
     listing = read("ruqqus", "templates", "settings_bots.html")

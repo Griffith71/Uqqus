@@ -58,7 +58,7 @@ def settings_profile_post(v):
         if new_level != current_level:
             # the Child filter is a lock: lowering it takes the account password
             if current_level >= 2 and new_level < 2 and not v.verifyPass(request.values.get("password", "")):
-                return jsonify({"error": "Enter your account password to turn the Child filter down."}), 403
+                return jsonify({"error": tr("Enter your account password to turn the Child filter down.")}), 403
             v.filter_level = new_level
             v.hide_offensive = new_level > 0   # legacy column, no longer read
             updated = True
@@ -95,7 +95,7 @@ def settings_profile_post(v):
         if new_name:
             # nobody can wear another account's @handle as a name (ignoring case, spaces, dots, dashes, underscores)
             if display_name_store.takes_a_handle(g.db, v.id, new_name):
-                message = "That is another account's username, so it can't be your display name."
+                message = tr("That is another account's username, so it can't be your display name.")
                 return {"html": lambda: render_template("settings_profile.html", v=v, error=message),
                         "api": lambda: (jsonify({"error": message}), 400)}
             reserved = None if v.admin_level >= 3 else display_names.reserved_refusal(
@@ -105,13 +105,13 @@ def settings_profile_post(v):
                         "api": lambda: (jsonify({"error": reserved}), 400)}
 
         if new_name == (v.display_name or ""):
-            return {"html": lambda: render_template("settings_profile.html", v=v, error="You didn't change anything"),
-                    "api": lambda: (jsonify({"error": "You didn't change anything"}), 400)}
+            return {"html": lambda: render_template("settings_profile.html", v=v, error=tr("You didn't change anything")),
+                    "api": lambda: (jsonify({"error": tr("You didn't change anything")}), 400)}
 
         v.display_name = new_name
         apply_user_severity(v)
         g.db.add(v)
-        done = "Your display name has been updated." if new_name else "Your display name has been removed."
+        done = tr("Your display name has been updated.") if new_name else tr("Your display name has been removed.")
         return {"html": lambda: render_template("settings_profile.html", v=v, msg=done),
                 "api": lambda: jsonify({"message": done})}
 
@@ -132,17 +132,19 @@ def settings_profile_post(v):
             # the banned-domain list, as for a link in a bio
             bans = filter_comment_html(f'<a href="{escape(website)}">x</a>')
             if bans:
-                reason = f"{bans[0].domain} can't be linked from a profile."
                 if bans[0].reason:
-                    reason += f" {bans[0].reason_text}"
+                    reason = tr("%(domain)s can't be linked from a profile. %(reason)s", domain=bans[0].domain,
+                                reason=msg(bans[0].reason_text))
+                else:
+                    reason = tr("%(domain)s can't be linked from a profile.", domain=bans[0].domain)
                 return {"html": lambda: render_template("settings_profile.html", v=v, error=reason),
                         "api": lambda: (jsonify({"error": reason}), 400)}
 
         v.profile_job, v.profile_location, v.profile_website = job, location, website
         apply_user_severity(v)
         g.db.add(v)
-        return {"html": lambda: render_template("settings_profile.html", v=v, msg="Your profile details have been updated."),
-                "api": lambda: jsonify({"message": "Your profile details have been updated."})}
+        return {"html": lambda: render_template("settings_profile.html", v=v, msg=tr("Your profile details have been updated.")),
+                "api": lambda: jsonify({"message": tr("Your profile details have been updated.")})}
 
     if request.values.get("bio") is not None:
         bio = request.values.get("bio")
@@ -157,8 +159,8 @@ def settings_profile_post(v):
         if bio == v.bio:
             return {"html":lambda:render_template("settings_profile.html",
                                    v=v,
-                                   error="You didn't change anything"),
-		    "api":lambda:jsonify({"error":"You didn't change anything"})
+                                   error=tr("You didn't change anything")),
+		    "api":lambda:jsonify({"error":tr("You didn't change anything")})
 		   }
 
 
@@ -173,13 +175,15 @@ def settings_profile_post(v):
 
         if bans:
             ban = bans[0]
-            reason = f"Remove the {ban.domain} link from your bio and try again."
             if ban.reason:
-                reason += f" {ban.reason_text}"
+                reason = tr("Remove the %(domain)s link from your bio and try again. %(reason)s", domain=ban.domain,
+                            reason=msg(ban.reason_text))
+            else:
+                reason = tr("Remove the %(domain)s link from your bio and try again.", domain=ban.domain)
                 
             #auto ban for digitally malicious content
             if any([x.reason==4 for x in bans]):
-                v.ban(days=30, reason="Digitally malicious content is not allowed.")
+                v.ban(days=30, reason=N_("Digitally malicious content is not allowed."))
             return jsonify({"error": reason}), 401
 
         v.bio = bio
@@ -194,8 +198,8 @@ def settings_profile_post(v):
         
         return {"html":lambda:render_template("settings_profile.html",
                                v=v,
-                               msg="Your bio has been updated."),
-		"api":lambda:jsonify({"message":"Your bio has been updated."})}
+                               msg=tr("Your bio has been updated.")),
+		"api":lambda:jsonify({"message":tr("Your bio has been updated.")})}
 
     if request.values.get("filters") is not None:
 
@@ -204,16 +208,16 @@ def settings_profile_post(v):
         if filters==v.custom_filter_list:
             return {"html":lambda:render_template("settings_profile.html",
                                    v=v,
-                                   error="You didn't change anything"),
-		    "api":lambda:jsonify({"error":"You didn't change anything"})
+                                   error=tr("You didn't change anything")),
+		    "api":lambda:jsonify({"error":tr("You didn't change anything")})
 		   }
 
         v.custom_filter_list=filters
         g.db.add(v)
         return {"html":lambda:render_template("settings_profile.html",
                                v=v,
-                               msg="Your custom filters have been updated."),
-		"api":lambda:jsonify({"message":"Your custom filters have been updated"})}
+                               msg=tr("Your custom filters have been updated.")),
+		"api":lambda:jsonify({"message":tr("Your custom filters have been updated")})}
 
 
 
@@ -231,7 +235,7 @@ def settings_profile_post(v):
                 v.title_id = title.id
                 updated = True
             else:
-                return jsonify({"error": f"You don't meet the requirements for title `{title.text}`."}), 403
+                return jsonify({"error": tr("You don't meet the requirements for title `%(title)s`.", title=title.text)}), 403
         else:
             abort(400)
 
@@ -254,10 +258,10 @@ def settings_profile_post(v):
     if updated:
         g.db.add(v)
 
-        return jsonify({"message": "Your settings have been updated."})
+        return jsonify({"message": tr("Your settings have been updated.")})
 
     else:
-        return jsonify({"error": "You didn't change anything."}), 400
+        return jsonify({"error": tr("You didn't change anything.")}), 400
 
 
 def _backup_codes_page(v, codes, msg):
@@ -279,16 +283,16 @@ def settings_security_post(v):
         if request.form.get(
                 "new_password") != request.form.get("cnf_password"):
             return redirect("/settings/security?error=" +
-                            escape("Passwords do not match."))
+                            quote(tr("Passwords do not match.")))
 
         if not re.match(valid_password_regex, request.form.get("new_password")):
             #print(f"signup fail - {username } - invalid password")
             return redirect("/settings/security?error=" + 
-                            escape("Password must be between 8 and 100 characters."))
+                            quote(tr("Password must be between 8 and 100 characters.")))
 
         if not v.verifyPass(request.form.get("old_password")):
             return render_template(
-                "settings_security.html", v=v, error="Incorrect password")
+                "settings_security.html", v=v, error=tr("Incorrect password"))
 
         v.passhash = v.hash_password(request.form.get("new_password"))
         account_sessions.end_other_sessions(v, flask_session)       # whoever held the old password is signed out
@@ -307,13 +311,13 @@ def settings_security_post(v):
                 g.db.add(identity)
 
         return redirect("/settings/security?msg=" +
-                        escape("Your password has been changed. " + account_sessions.OTHERS_SIGNED_OUT))
+                        quote(tr("Your password has been changed. Your other devices have been signed out.")))
 
     if request.form.get("new_email"):
 
         if not v.verifyPass(request.form.get('password')):
             return redirect("/settings/security?error=" +
-                            escape("Invalid password."))
+                            quote(tr("Invalid password.")))
 
         new_email = request.form.get("new_email","").lstrip().rstrip()
         #counteract gmail username+2 and extra period tricks - convert submitted email to actual inbox
@@ -324,14 +328,14 @@ def settings_security_post(v):
             new_email=f"{gmail_username}@gmail.com"
         if new_email == v.email:
             return redirect("/settings/security?error=" +
-                            escape("That email is already yours!"))
+                            quote(tr("That email is already yours!")))
 
         # check to see if email is in use
         existing = g.db.query(User).filter(User.id != v.id,
                                            func.lower(User.email) == new_email.lower()).first()
         if existing:
             return redirect("/settings/security?error=" +
-                            escape("That email address is already in use."))
+                            quote(tr("That email address is already in use.")))
 
         url = f"https://{app.config['SERVER_NAME']}/activate"
 
@@ -351,28 +355,28 @@ def settings_security_post(v):
                                            v=v)
                       )
 
-        return redirect("/settings/security?msg=" + escape(
-            "Check your email and click the verification link to complete the email change."))
+        return redirect("/settings/security?msg=" + quote(
+            tr("Check your email and click the verification link to complete the email change.")))
 
     if request.form.get("2fa_token", ""):
 
         if not v.verifyPass(request.form.get('password')):
             return redirect("/settings/security?error=" +
-                            escape("Invalid password or token."))
+                            quote(tr("Invalid password or token.")))
 
         # already on: the secret is not replaced by whoever has the password and a session (that would swap the
         # account's authenticator for theirs without ever needing the old one); turn it off first, with a code
         if v.mfa_secret:
             return redirect("/settings/security?error=" +
-                            escape("Two-factor authentication is already on. Turn it off first to set up a new device."))
+                            quote(tr("Two-factor authentication is already on. Turn it off first to set up a new device.")))
 
         secret = request.form.get("2fa_secret") or ""
         if not re.fullmatch(r"[A-Z2-7]{16,64}", secret):
-            return redirect("/settings/security?error=" + escape("Invalid password or token."))
+            return redirect("/settings/security?error=" + quote(tr("Invalid password or token.")))
         step = totp_rules.matched_step(secret, request.form.get("2fa_token"))
         if step is None:
             return redirect("/settings/security?error=" +
-                            escape("Invalid password or token."))
+                            quote(tr("Invalid password or token.")))
         totp_rules.claim(r, v.id, step)               # that code is spent: it can't switch two-factor off a moment later
 
         v.mfa_secret = secret
@@ -382,24 +386,24 @@ def settings_security_post(v):
         # the account's first backup codes, shown once, here
         codes = mfa_backup.generate()
         mfa_backup_store.replace(g.db, v.id, codes, int(time.time()))
-        return _backup_codes_page(v, codes, "Two-factor authentication is on. " + account_sessions.OTHERS_SIGNED_OUT)
+        return _backup_codes_page(v, codes, tr("Two-factor authentication is on. Your other devices have been signed out."))
 
     if request.form.get("new_backup_codes", ""):
 
         if not v.mfa_secret:
-            return redirect("/settings/security?error=" + escape("Turn on two-factor authentication first."))
+            return redirect("/settings/security?error=" + quote(tr("Turn on two-factor authentication first.")))
         if not v.verifyPass(request.form.get("password")) or not v.accept_2fa(request.form.get("new_backup_codes")):
-            return redirect("/settings/security?error=" + escape("Invalid password or code."))
+            return redirect("/settings/security?error=" + quote(tr("Invalid password or code.")))
 
         codes = mfa_backup.generate()                 # every earlier code, used or not, stops working
         mfa_backup_store.replace(g.db, v.id, codes, int(time.time()))
-        return _backup_codes_page(v, codes, "Your new backup codes are below. The old ones no longer work.")
+        return _backup_codes_page(v, codes, tr("Your new backup codes are below. The old ones no longer work."))
 
     if request.form.get("2fa_remove", ""):
 
         if not v.verifyPass(request.form.get('password')):
             return redirect("/settings/security?error=" +
-                            escape("Invalid password or token."))
+                            quote(tr("Invalid password or token.")))
 
         token = request.form.get("2fa_remove") or ""
 
@@ -410,7 +414,7 @@ def settings_security_post(v):
                 or (mfa_backup.legacy_code_allowed(mfa_backup_store.has_codes(g.db, v.id))
                     and safe_compare(v.mfa_removal_code, token.lower().replace(' ', '')))):
             return redirect("/settings/security?error=" +
-                            escape("Invalid password or token."))
+                            quote(tr("Invalid password or token.")))
 
         v.mfa_secret = None
         mfa_backup_store.delete_all(g.db, v.id)       # no second factor, no codes
@@ -418,22 +422,22 @@ def settings_security_post(v):
         g.db.add(v)
 
         return redirect("/settings/security?msg=" +
-                        escape("Two-factor authentication disabled. " + account_sessions.OTHERS_SIGNED_OUT))
+                        quote(tr("Two-factor authentication disabled. Your other devices have been signed out.")))
 
     if request.form.get("signin_alerts_form", ""):
 
         # switching a security notice off is a security change, so it asks for the password like the others
         if not v.verifyPass(request.form.get("password")):
-            return redirect("/settings/security?error=" + escape("Invalid password."))
+            return redirect("/settings/security?error=" + quote(tr("Invalid password.")))
 
         v.signin_alerts = bool(request.form.get("signin_alerts"))
         g.db.add(v)
 
-        return redirect("/settings/security?msg=" + escape(
-            "We'll email you about sign-ins from somewhere new." if v.signin_alerts else "Sign-in emails are off."))
+        return redirect("/settings/security?msg=" + quote(
+            tr("We'll email you about sign-ins from somewhere new.") if v.signin_alerts else tr("Sign-in emails are off.")))
 
     # a form with none of the fields above (audit CR-04: it fell through and answered 500)
-    return redirect("/settings/security?error=" + escape("Nothing to change."))
+    return redirect("/settings/security?error=" + quote(tr("Nothing to change.")))
 
 
 @app.route("/settings/dark_mode/<x>", methods=["POST"])
@@ -470,7 +474,7 @@ def settings_log_out_others(v):
 
     if not v.verifyPass(submitted_password):
         return render_template("settings_security.html",
-                               v=v, error="Incorrect Password"), 401
+                               v=v, error=tr("Incorrect Password")), 401
 
     account_sessions.end_other_sessions(v, flask_session)
     chat_devices.sign_out(g.db, v.id, app.config["SITE_NAME"])     # chat apps signed in with the account too
@@ -478,7 +482,7 @@ def settings_log_out_others(v):
     g.db.add(v)
 
     return render_template("settings_security.html", v=v,
-                           msg="All other devices have been logged out")
+                           msg=tr("All other devices have been logged out"))
 
 
 @app.route("/settings/images/profile", methods=["POST"])
@@ -488,7 +492,7 @@ def settings_images_profile(v):
     if v.can_upload_avatar:
         upload = request.files.get("profile")
         if not upload or not upload.filename:                          # audit CR-04: no file answered 500
-            return render_template("settings_profile.html", v=v, error="Choose a picture first.")
+            return render_template("settings_profile.html", v=v, error=tr("Choose a picture first."))
         v.set_profile(upload)
 
         # anti csam (it removed `board`'s picture, a name that doesn't exist here, so a match failed to remove it)
@@ -500,10 +504,10 @@ def settings_images_profile(v):
         new_thread.start()
 
         return render_template("settings_profile.html",
-                               v=v, msg="Profile picture successfully updated.")
+                               v=v, msg=tr("Profile picture successfully updated."))
 
     return render_template("settings_profile.html", v=v,
-                           msg="Avatars require 300 reputation.")
+                           msg=tr("Avatars require 300 reputation."))
 
 
 @app.route("/settings/images/banner", methods=["POST"])
@@ -513,7 +517,7 @@ def settings_images_banner(v):
     if v.can_upload_banner:
         upload = request.files.get("banner")
         if not upload or not upload.filename:                          # audit CR-04: no file answered 500
-            return render_template("settings_profile.html", v=v, error="Choose a picture first.")
+            return render_template("settings_profile.html", v=v, error=tr("Choose a picture first."))
         v.set_banner(upload)
 
         # anti csam (it removed `board`'s picture, a name that doesn't exist here, so a match failed to remove it)
@@ -525,10 +529,10 @@ def settings_images_banner(v):
         new_thread.start()
 
         return render_template("settings_profile.html",
-                               v=v, msg="Banner successfully updated.")
+                               v=v, msg=tr("Banner successfully updated."))
 
     return render_template("settings_profile.html", v=v,
-                           msg="Banners require 500 reputation.")
+                           msg=tr("Banners require 500 reputation."))
 
 
 @app.route("/settings/delete/profile", methods=["POST"])
@@ -539,7 +543,7 @@ def settings_delete_profile(v):
     v.del_profile()
 
     return render_template("settings_profile.html", v=v,
-                           msg="Profile picture successfully removed.")
+                           msg=tr("Profile picture successfully removed."))
 
 
 @app.route("/settings/new_feedkey", methods=["POST"])
@@ -551,7 +555,7 @@ def settings_new_feedkey(v):
     g.db.add(v)
 
     return render_template("settings_profile.html", v=v,
-                           msg="Your new custom RSS Feed Token has been generated.")
+                           msg=tr("Your new custom RSS Feed Token has been generated."))
 
 
 @app.route("/settings/delete/banner", methods=["POST"])
@@ -562,7 +566,7 @@ def settings_delete_banner(v):
     v.del_banner()
 
     return render_template("settings_profile.html", v=v,
-                           msg="Banner successfully removed.")
+                           msg=tr("Banner successfully removed."))
 
 
 @app.route("/settings/read_announcement", methods=["POST"])
@@ -606,7 +610,7 @@ def delete_account(v):
             v.mfa_secret and not (v.accept_2fa(request.form.get("twofactor", ""))
                                   or mfa_backup_store.spend(g.db, v.id, request.form.get("twofactor", ""), int(time.time())))):
         return render_template("settings_security.html", v=v,
-                               error="Invalid password or token" if v.mfa_secret else "Invalid password")
+                               error=tr("Invalid password or token") if v.mfa_secret else tr("Invalid password"))
 
 
     remove_user(v)
@@ -730,7 +734,7 @@ def settings_block_user(v):
 
     _forget_block_caches(v)
 
-    return jsonify({"message": f"@{user.username} blocked."})
+    return jsonify({"message": tr("@%(name)s blocked.", name=user.username)})
 
 
 def _forget_block_caches(v):
@@ -801,7 +805,7 @@ def settings_unblock_user(v):
     #cache.delete_memoized(Board.idlist, v=v)
     cache.delete_memoized(frontlist, v=v)
 
-    return jsonify({"message": f"@{user.username} unblocked."})
+    return jsonify({"message": tr("@%(name)s unblocked.", name=user.username)})
 
 
 # Muting a guild (helpers/muting.py): a `boardblocks` row. The old /settings/block_guild and /settings/unblock_guild
@@ -816,10 +820,10 @@ def settings_block_guild(v):
     board = get_guild(name, graceful=True) if name else None
 
     if not board:
-        return jsonify({"error": "That guild doesn't exist."}), 404
+        return jsonify({"error": tr("That guild doesn't exist.")}), 404
 
     if v.has_blocked_guild(board):
-        return jsonify({"error": f"You have already muted +{board.name}."}), 409
+        return jsonify({"error": tr("You have already muted +%(guild)s.", guild=board.name)}), 409
 
     new_block = BoardBlock(user_id=v.id,
                            board_id=board.id,
@@ -832,8 +836,8 @@ def settings_block_guild(v):
 
     joined = g.db.query(Subscription.id).filter_by(user_id=v.id, board_id=board.id, is_active=True).first()
     if joined:
-        return jsonify({"message": f"+{board.name} muted. You are still a member, but its posts stay out of All, For You and Following until you unmute it."})
-    return jsonify({"message": f"+{board.name} muted. Its posts stay out of All, For You and Following."})
+        return jsonify({"message": tr("+%(guild)s muted. You are still a member, but its posts stay out of All, For You and Following until you unmute it.", guild=board.name)})
+    return jsonify({"message": tr("+%(guild)s muted. Its posts stay out of All, For You and Following.", guild=board.name)})
 
 
 @app.route("/settings/unmute_guild", methods=["POST"])
@@ -854,7 +858,7 @@ def settings_unblock_guild(v):
 
     muting_rules.clear_guild_mute_caches(v)
 
-    return jsonify({"message": f"+{board.name} unmuted."})
+    return jsonify({"message": tr("+%(guild)s unmuted.", guild=board.name)})
 
 
 @app.route("/settings/apps", methods=["GET"])
@@ -870,7 +874,7 @@ def settings_apps(v):
 def settings_remove_discord(v):
 
     if v.admin_level>1:
-        return render_template("settings_filters.html", v=v, error="Admins can't disconnect Discord.")
+        return render_template("settings_filters.html", v=v, error=tr("Admins can't disconnect Discord."))
 
     remove_user(v)
 
@@ -894,11 +898,11 @@ def settings_score_display(v):
     1 upvotes minus downvotes. Anything else is refused."""
     choice = request.values.get("score_display")
     if choice not in ("0", "1"):
-        return jsonify({"error": "Choose how scores read."}), 400
+        return jsonify({"error": tr("Choose how scores read.")}), 400
     v.score_display = int(choice)
     g.db.add(v)
     g.db.commit()
-    return jsonify({"message": "Saved."})
+    return jsonify({"message": tr("Saved.")})
 
 
 @app.route("/settings/for_you/reset", methods=["POST"])
@@ -920,7 +924,7 @@ def settings_for_you_reset(v):
     cache.delete_memoized(v.for_you_idlist)
     cache.delete_memoized(frontlist, v=v)
 
-    return jsonify({"message": "Your For You feed has been reset."})
+    return jsonify({"message": tr("Your For You feed has been reset.")})
 
 
 @app.route("/settings/purchase_history", methods=["GET"])
@@ -938,7 +942,7 @@ def settings_name_change(v):
     if v.admin_level:
         return render_template("settings_profile.html",
                            v=v,
-                           error="Admins can't change their name.")
+                           error=tr("Admins can't change their name."))
 
 
     new_name = (request.form.get("name") or "").strip()                   # audit CR-04: no name answered 500
@@ -947,31 +951,35 @@ def settings_name_change(v):
     if new_name==v.username:
         return render_template("settings_profile.html",
                            v=v,
-                           error="You didn't change anything")
+                           error=tr("You didn't change anything"))
 
     #can't change name on verified ID accounts
     if v.real_id:
         return render_template("settings_profile.html",
                            v=v,
-                           error="Your ID is verified so you can't change your username.")
+                           error=tr("Your ID is verified so you can't change your username."))
 
     #7 day cooldown
     if v.name_changed_utc > int(time.time()) - 60*60*24*7:
         return render_template("settings_profile.html",
                            v=v,
-                           error=f"You changed your name {(int(time.time()) - v.name_changed_utc)//(60*60*24)} days ago. You need to wait 7 days between name changes.")
+                           error=trn("You changed your name %(num)s day ago. You need to wait 7 days between name changes.",
+                                     "You changed your name %(num)s days ago. You need to wait 7 days between name changes.",
+                                     (int(time.time()) - v.name_changed_utc)//(60*60*24)))
 
     #costs 3 coins
     if v.coin_balance < 20:
         return render_template("settings_profile.html",
                            v=v,
-                           error=f"Username changes cost 20 Coins. You only have a balance of {v.coin_balance} Coins")
+                           error=trn("Username changes cost 20 Coins. You only have a balance of %(num)s Coin",
+                                     "Username changes cost 20 Coins. You only have a balance of %(num)s Coins",
+                                     v.coin_balance))
 
     #verify acceptability
     if not re.match(valid_username_regex, new_name):
         return render_template("settings_profile.html",
                            v=v,
-                           error=f"That isn't a valid username.")
+                           error=tr("That isn't a valid username."))
 
     #verify availability
     name=new_name.replace('_',r'\_')
@@ -988,7 +996,7 @@ def settings_name_change(v):
     if x and x.id != v.id:
         return render_template("settings_profile.html",
                            v=v,
-                           error=f"Username `{new_name}` is already in use.")
+                           error=tr("Username `%(name)s` is already in use.", name=new_name))
 
     #all reqs passed
 
@@ -1013,13 +1021,13 @@ def settings_name_change(v):
     if not coins_store.spend(g.db, v.id, 20):
         g.db.rollback()
         return render_template("settings_profile.html", v=v,
-                               error="Username changes cost 20 Coins, and you don't have enough.")
+                               error=tr("Username changes cost 20 Coins, and you don't have enough."))
     g.db.refresh(v)
     # the 7-day wait again, now that this request holds the row (the spend above locks it until the commit): two
     # requests at once both passed the first check and both paid (bug hunt)
     if v.name_changed_utc > int(time.time()) - 60*60*24*7:
         g.db.rollback()
-        return render_template("settings_profile.html", v=v, error="You need to wait 7 days between name changes.")
+        return render_template("settings_profile.html", v=v, error=tr("You need to wait 7 days between name changes."))
 
     v.username=new_name
     apply_user_severity(v)
@@ -1034,7 +1042,7 @@ def settings_name_change(v):
 
     return render_template("settings_profile.html",
                        v=v,
-                       msg=f"Username changed successfully. 20 Coins have been deducted from your balance.")
+                       msg=tr("Username changed successfully. 20 Coins have been deducted from your balance."))
 
 
 
@@ -1044,7 +1052,7 @@ def settings_name_change(v):
 def admin_clear_display_name(v):
     """Take an abusive or impersonating display name off an account (its @handle shows again). Only an account
     with a lower admin level than the admin's own: the same bar as banning (helpers/display_names.py)."""
-    from ruqqus.helpers.alerts import send_notification
+    from ruqqus.helpers.alerts import notify
 
     target = get_user(request.form.get("username", ""), graceful=True)
     if target is None or target.is_deleted or v.admin_level <= (target.admin_level or 0):
@@ -1054,8 +1062,8 @@ def admin_clear_display_name(v):
         apply_user_severity(target)
         g.db.add(target)
         g.db.commit()
-        send_notification(target, "An admin removed your display name because it broke the site's rules. "
-                                  "You can set a new one in Settings > Profile.")
+        notify(target, N_("An admin removed your display name because it broke the site's rules. "
+                          "You can set a new one in Settings > Profile."))
     return redirect(target.permalink)
 
 
@@ -1099,7 +1107,7 @@ def settings_sensitive_account(v):
     g.db.add(v)
     g.db.commit()
     muting_rules.clear_cached_feeds(v)
-    return jsonify({"message": "Your account is marked sensitive." if wanted else "Your account is no longer marked sensitive."})
+    return jsonify({"message": tr("Your account is marked sensitive.") if wanted else tr("Your account is no longer marked sensitive.")})
 
 
 @app.route("/admin/sensitive/user", methods=["POST"])
@@ -1108,7 +1116,7 @@ def settings_sensitive_account(v):
 def admin_sensitive_user(v):
     """Force an account sensitive (the member can't switch it off), or unlock it (the member decides again). Only an
     account below the admin's own level, the bar for banning. The account is told."""
-    from ruqqus.helpers.alerts import send_notification
+    from ruqqus.helpers.alerts import notify
 
     target = get_user(request.form.get("username", ""), graceful=True)
     if target is None or target.is_deleted or v.admin_level <= (target.admin_level or 0):
@@ -1119,11 +1127,11 @@ def admin_sensitive_user(v):
         target.is_sensitive = True
     g.db.add(target)
     g.db.commit()
-    send_notification(target, "An admin marked your account sensitive: your posts are left out of All and For You "
-                              "unless someone chooses to see sensitive content, and your new posts are blurred. "
-                              "Only an admin can change this." if force else
-                              "An admin unlocked the sensitive setting on your account. You can change it in "
-                              "Settings > Content.")
+    notify(target, N_("An admin marked your account sensitive: your posts are left out of All and For You "
+                      "unless someone chooses to see sensitive content, and your new posts are blurred. "
+                      "Only an admin can change this.") if force else
+           N_("An admin unlocked the sensitive setting on your account. You can change it in "
+              "Settings > Content."))
     return redirect(target.permalink)
 
 
@@ -1133,7 +1141,7 @@ def admin_sensitive_user(v):
 def admin_sensitive_guild(v):
     """Force a guild sensitive (its guildmasters can't switch it off), or unlock it. Written to the guild's public mod
     log; its guildmasters are told."""
-    from ruqqus.helpers.alerts import send_notification
+    from ruqqus.helpers.alerts import notify
     from ruqqus.helpers.get import get_guild
 
     board = get_guild(request.form.get("guild", ""), graceful=True)
@@ -1148,12 +1156,12 @@ def admin_sensitive_guild(v):
                        note="sensitive content forced on by the site's admins" if force
                        else "sensitive content unlocked by the site's admins"))
     g.db.commit()
-    message = (f"An admin marked +{board.name} sensitive: its posts are left out of All and For You unless someone "
-               "chooses to see sensitive content. Only an admin can change this." if force else
-               f"An admin unlocked the sensitive setting of +{board.name}. Its guildmasters can change it again.")
+    message = (N_("An admin marked +%(guild)s sensitive: its posts are left out of All and For You unless someone "
+                  "chooses to see sensitive content. Only an admin can change this.") if force else
+               N_("An admin unlocked the sensitive setting of +%(guild)s. Its guildmasters can change it again."))
     for guildmaster in board.mods:
         if not guildmaster.is_deleted:
-            send_notification(guildmaster, message)
+            notify(guildmaster, message, guild=board.name)
     return redirect(board.permalink)
 
 
@@ -1164,7 +1172,7 @@ def settings_badge_recheck(v):
 
     v.refresh_selfset_badges()
 
-    return jsonify({"message":"Badges Refreshed"})
+    return jsonify({"message":tr("Badges Refreshed")})
 
 
 @app.route("/settings/export", methods=["POST"])
@@ -1175,7 +1183,7 @@ def settings_export(v):
     """Download your data: one JSON file of what the site keeps about this account (helpers/data_export.py, audit
     I-06). The password is asked again: the file holds your sign-in addresses and private lists."""
     if not v.verifyPass(request.form.get("password", "")):
-        return render_template("settings_security.html", v=v, error="Incorrect password"), 401
+        return render_template("settings_security.html", v=v, error=tr("Incorrect password")), 401
     from ruqqus.helpers import data_export
     body = data_export.as_json(data_export.build(g.db, v.id))
     resp = make_response(body)

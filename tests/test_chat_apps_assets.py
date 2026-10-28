@@ -23,7 +23,7 @@ def test_the_routes_are_loaded_and_the_settings_menu_links_the_page():
     assert "from .chat_apps import *" in routes and "from .oidc_pages import *" in routes
     nav = read("ruqqus", "templates", "settings.html")
     assert nav.count('href="/settings/chat_apps"') == 2, "desktop and phone menus"
-    assert 'aria-label="Chat apps"' in nav
+    assert 'aria-label="{{ _(\'Chat apps\') }}"' in nav
 
 
 def test_the_pages_never_write_html_from_data():

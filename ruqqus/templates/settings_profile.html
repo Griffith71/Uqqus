@@ -1,6 +1,6 @@
 {% extends "settings.html" %}
 
-{% block pagetitle %}Profile Settings - {{ 'SITE_NAME' | app_config }}{% endblock %}
+{% block pagetitle %}{{ _("Profile Settings - %(site)s") }}{% endblock %}
 
 {% block content %}
 
@@ -11,7 +11,7 @@
 
     <div class="settings">
 
-      <h2 class="h5">Profile Picture</h2>
+      <h2 class="h5">{{ _("Profile Picture") }}</h2>
 
       <div class="settings-section rounded">
 
@@ -32,13 +32,13 @@
                 <form action="/settings/images/profile" method="post" enctype="multipart/form-data">
                   <input type="hidden" name="formkey" value="{{ v.formkey }}">
                   <label class="btn btn-secondary text-capitalize mr-2 mb-0">
-                    Update<input type="file" hidden name="profile" onchange="form.submit()">
+                    {{ pgettext("button", "Update") }}<input type="file" hidden name="profile" onchange="form.submit()">
                   </label>
                 </form>
 
                 {% else %}
 
-                <div class="text-muted">You can add a custom avatar after earning 300 Rep.{% if request.headers.get("cf-ipcountry")=="T1" and not v.is_activated %} Additionally, you must have a verified email address to upload images via Tor.{% endif %}</div>
+                <div class="text-muted">{{ _("You can add a custom avatar after earning 300 Rep.") }}{% if request.headers.get("cf-ipcountry")=="T1" and not v.is_activated %} {{ _("Additionally, you must have a verified email address to upload images via Tor.") }}{% endif %}</div>
 
                 {% endif %}
 
@@ -48,7 +48,7 @@
               <div>
                 <form action="/settings/delete/profile" method="post">
                   <input type="hidden" name="formkey" value="{{ v.formkey }}">
-                  <button type="submit" value="Delete" class="btn btn-link fa-lg"><i class="far fa-trash-alt text-danger"></i></button>
+                  <button type="submit" value="{{ pgettext('button', 'Delete') }}" class="btn btn-link fa-lg"><i class="far fa-trash-alt text-danger"></i></button>
                 </form>
               </div>
               {% endif %}
@@ -57,7 +57,7 @@
 
             {% if v.can_upload_avatar %}
 
-            <div class="text-small-extra text-muted mt-3">JPG, PNG, GIF files supported. Max file size 16MB.</div>
+            <div class="text-small-extra text-muted mt-3">{{ _("JPG, PNG, GIF files supported. Max file size 16MB.") }}</div>
 
             {% endif %}
 
@@ -66,14 +66,14 @@
         </div>
 
       </div>
-      <h2 class="h5">Profile Banner</h2>
+      <h2 class="h5">{{ _("Profile Banner") }}</h2>
 
       <div class="settings-section rounded">
 
         <div class="d-flex">
 
           <div class="title w-lg-75 text-md-center banner-preview">
-            <img alt="Banner" src="{{ v.banner_url }}" class="banner-pic-135">
+            <img alt="{{ _('Banner') }}" src="{{ v.banner_url }}" class="banner-pic-135">
           </div>
 
           <div class="body w-lg-100 my-auto">
@@ -87,13 +87,13 @@
                 <form action="/settings/images/banner" method="post" enctype="multipart/form-data">
                   <input type="hidden" name="formkey" value="{{ v.formkey }}">
                   <label class="btn btn-secondary text-capitalize mr-2 mb-0">
-                    Update<input type="file" hidden name="banner" onchange="form.submit()">
+                    {{ pgettext("button", "Update") }}<input type="file" hidden name="banner" onchange="form.submit()">
                   </label>
                 </form>
 
                 {% else %}
 
-                <div class="text-muted">You can add a custom banner after earning 500 Rep.{% if request.headers.get("cf-ipcountry")=="T1" and not v.is_activated %} Additionally, you must have a verified email address to upload images via Tor.{% endif %}</div>
+                <div class="text-muted">{{ _("You can add a custom banner after earning 500 Rep.") }}{% if request.headers.get("cf-ipcountry")=="T1" and not v.is_activated %} {{ _("Additionally, you must have a verified email address to upload images via Tor.") }}{% endif %}</div>
 
                 {% endif %}
 
@@ -104,7 +104,7 @@
                 {% if v.has_banner %}
                 <form action="/settings/delete/banner" method="post">
                   <input type="hidden" name="formkey" value="{{ v.formkey }}">
-                  <button type="submit" value="Delete" class="btn btn-link fa-lg"><i class="far fa-trash-alt text-danger"></i></button>
+                  <button type="submit" value="{{ pgettext('button', 'Delete') }}" class="btn btn-link fa-lg"><i class="far fa-trash-alt text-danger"></i></button>
                 </form>{% endif %}
 
               </div>
@@ -113,7 +113,7 @@
 
             {% if v.can_upload_banner %}
 
-            <div class="text-small-extra text-muted mt-3">JPG, PNG, GIF files supported. Max file size 16MB. (Recommend 1400x250 pixels)</div>
+            <div class="text-small-extra text-muted mt-3">{{ _("JPG, PNG, GIF files supported. Max file size 16MB. (Recommend 1400x250 pixels)") }}</div>
 
             {% endif %}
 
@@ -123,9 +123,9 @@
 
       </div>
 
-          <h2 class="h5" name="referral">Linked Accounts</h2>
+          <h2 class="h5" name="referral">{{ _("Linked Accounts") }}</h2>
 
-          <p class="text-small text-muted">Manage your connections to other services.</p>
+          <p class="text-small text-muted">{{ _("Manage your connections to other services.") }}</p>
 
           <div class="settings-section rounded">
 
@@ -140,13 +140,13 @@
                 {% if v.discord_id %}
                 <form action="/settings/remove_discord" method="post">
                   <input type="hidden" name="formkey" value="{{ v.formkey }}">
-                  <input type="submit" class="btn btn-secondary text-capitalize mr-2 mb-0 mt-2" value="Disconnect Discord">
+                  <input type="submit" class="btn btn-secondary text-capitalize mr-2 mb-0 mt-2" value="{{ _('Disconnect Discord') }}">
                 </form>
 
-                <div class="text-small-extra text-muted mt-3">Disconnecting your Discord account will remove you from the {{ 'SITE_NAME' | app_config }} Discord server.</div>
+                <div class="text-small-extra text-muted mt-3">{{ _("Disconnecting your Discord account will remove you from the %(site)s Discord server.") }}</div>
                 {% else %}
-                <a href="/discord" class="btn btn-primary">Link Discord</a>
-                <div class="text-small-extra text-muted mt-3">Link your Discord account to join the {{ 'SITE_NAME' | app_config }} Discord server.</div>
+                <a href="/discord" class="btn btn-primary">{{ _("Link Discord") }}</a>
+                <div class="text-small-extra text-muted mt-3">{{ _("Link your Discord account to join the %(site)s Discord server.") }}</div>
                 {% endif %}
 
               </div>
@@ -157,27 +157,27 @@
 
     
     
-          <h2 class="h5" name="referral">RSS Feed</h2>
+          <h2 class="h5" name="referral">{{ _("RSS Feed") }}</h2>
 
-          <p class="text-small text-muted">Subscribe to your own personal {{ 'SITE_NAME' | app_config }} rss feed.</p>
+          <p class="text-small text-muted">{{ _("Subscribe to your own personal %(site)s rss feed.") }}</p>
 
           <div class="settings-section rounded">
 
             <div class="d-lg-flex">
 
               <div class="title w-lg-25">
-                <label for="referral_code">Custom User Feed</label>
+                <label for="referral_code">{{ _("Custom User Feed") }}</label>
               </div>
 
               <div class="body w-lg-100">
 
-                <input type="text" readonly="" class="form-control copy-link" id="rss_feed" aria-label="Your RSS feed address" value="{{ ('/feeds/@' + v.username + '/' + v.feedkey + '/hot') | full_link }}" data-clipboard-text="{{ ('/feeds/@' + v.username + '/' + v.feedkey + '/hot') | full_link }}">
+                <input type="text" readonly="" class="form-control copy-link" id="rss_feed" aria-label="{{ _('Your RSS feed address') }}" value="{{ ('/feeds/@' + v.username + '/' + v.feedkey + '/hot') | full_link }}" data-clipboard-text="{{ ('/feeds/@' + v.username + '/' + v.feedkey + '/hot') | full_link }}">
                 <form action="/settings/new_feedkey" method="post">
                   <input type="hidden" name="formkey" value="{{ v.formkey }}">
-                  <input type="submit" class="btn btn-secondary text-capitalize mr-2 mb-0 mt-2" value="Generate new URL">
+                  <input type="submit" class="btn btn-secondary text-capitalize mr-2 mb-0 mt-2" value="{{ _('Generate new URL') }}">
                 </form>
 
-                <div class="text-small-extra text-muted mt-3">You can change the feed by replacing "hot" with either top, or disputed.</div>
+                <div class="text-small-extra text-muted mt-3">{{ _('You can change the feed by replacing "hot" with either top, or disputed.') }}</div>
 
               </div>
 
@@ -185,25 +185,25 @@
 
           </div>
 
-            <h2 class="h5" id="bio" name="bio">Your Profile</h2>
+            <h2 class="h5" id="bio" name="bio">{{ _("Your Profile") }}</h2>
 
-            <p class="text-small text-muted">Edit how others see you on {{ 'SITE_NAME' | app_config }}.</p>
+            <p class="text-small text-muted">{{ _("Edit how others see you on %(site)s.") }}</p>
 
             <div class="settings-section rounded mb-0">
 
               <div class="body d-lg-flex border-bottom" id="display-name">
 
-                <label for="display-name-input" class="text-black w-lg-25">Display Name</label>
+                <label for="display-name-input" class="text-black w-lg-25">{{ _("Display Name") }}</label>
 
                 <div class="w-lg-100">
-                  <p>How your name reads next to your posts and comments and on your profile, with your <code>@{{ v.username }}</code> beside it. It can be anything up to 50 characters, with spaces and emoji, and you can change it whenever you like at no cost. It is not unique and not an address: people still find you, mention you and link to you by your username.</p>
+                  <p>{{ _("How your name reads next to your posts and comments and on your profile, with your <code>@%(name)s</code> beside it. It can be anything up to 50 characters, with spaces and emoji, and you can change it whenever you like at no cost. It is not unique and not an address: people still find you, mention you and link to you by your username.", name=v.username) }}</p>
                   <form id="profile-display-name" action="/settings/profile" method="post">
                     <input type="hidden" name="formkey" value="{{ v.formkey }}">
                     <input type="hidden" name="display_name_form" value="1">
                     <input type="text" class="form-control" id="display-name-input" name="display_name" data-weighted-max="50" value="{{ v.display_name or '' }}" placeholder="{{ v.username }}" autocomplete="nickname">
                     <div class="d-flex mt-2">
-                      <small>Leave it empty to show your username. No <code>@</code>, <code>&lt;</code> or <code>&gt;</code>.</small>
-                      <input class="btn btn-primary ml-auto" id="displayNameSave" type="submit" value="Save Display Name">
+                      <small>{{ _("Leave it empty to show your username. No <code>@</code>, <code>&lt;</code> or <code>&gt;</code>.") }}</small>
+                      <input class="btn btn-primary ml-auto" id="displayNameSave" type="submit" value="{{ _('Save Display Name') }}">
                     </div>
                   </form>
                 </div>
@@ -212,24 +212,24 @@
 
               <div class="body d-lg-flex border-bottom" id="username">
 
-                <label for="username-input" class="text-black w-lg-25">Username</label>
+                <label for="username-input" class="text-black w-lg-25">{{ _("Username") }}</label>
 
                 <div class="w-lg-100">
-                  <p>Your username is your unique <code>@handle</code>: the address of your profile, and what people mention and search for. Changing it costs 20 Coins and may be done once every 7 days. To change how your name reads without that, use your display name above.</p>
+                  <p>{{ _("Your username is your unique <code>@handle</code>: the address of your profile, and what people mention and search for. Changing it costs 20 Coins and may be done once every 7 days. To change how your name reads without that, use your display name above.") }}</p>
 
 
                   <form id="profile-settings" action="/settings/name_change" method="post">
                     <input type="hidden" name="formkey" value="{{ v.formkey }}">
                     <input type="text" name="name" id="username-input" class="form-control" value="{{ v.username }}" autocomplete="username">
-                    <small>Your original username will always stay reserved for you: <code>{{ v.original_username }}</code></small>
+                    <small>{{ _("Your original username will always stay reserved for you: <code>%(name)s</code>", name=v.original_username) }}</small>
                     <div class="d-flex mt-2">
-                      <small>5-25 characters, including letters, numbers, and _</small>
+                      <small>{{ _("5-25 characters, including letters, numbers, and _") }}</small>
                       {% if v.can_change_name %}
-                      <input class="btn btn-primary ml-auto" id="nameSave" type="submit" value="Change Username">
+                      <input class="btn btn-primary ml-auto" id="nameSave" type="submit" value="{{ _('Change Username') }}">
                       {% elif g.timestamp-v.name_changed_utc < 60*60*24*7 %}
-                      <input class="btn btn-primary ml-auto" id="nameSave" type="submit" value="{{ 7-((g.timestamp-v.name_changed_utc)//(60*60*24)) }} days remaining" disabled>
+                      {# Translators: days left before the username can be changed again; the English uses "days" for every number #}<input class="btn btn-primary ml-auto" id="nameSave" type="submit" value="{{ ngettext('%(num)s days remaining', '%(num)s days remaining', 7-((g.timestamp-v.name_changed_utc)//(60*60*24))) }}" disabled>
                       {% else %}
-                      <a class="btn btn-primary ml-auto" id="nameSave" href="/settings/premium">20 Coins required</a>
+                      <a class="btn btn-primary ml-auto" id="nameSave" href="/settings/premium">{{ _("20 Coins required") }}</a>
                       {% endif %}
                     </div>
                   </form>
@@ -238,7 +238,7 @@
               </div>
               <div class="body d-lg-flex border-bottom">
 
-                <label for="bio" class="text-black w-lg-25">Bio</label>
+                <label for="bio" class="text-black w-lg-25">{{ _("Bio") }}</label>
 
                 <div class="w-lg-100">
 
@@ -251,8 +251,8 @@
                       rows="3" name="bio" form="profile-bio" data-weighted-max="256">{{ v.bio }}</textarea>
                     </div>
                     <div class="d-flex">
-                      <small>Limit of 256 characters</small>
-                      <input class="btn btn-primary ml-auto" id="bioSave" type="submit" value="Save Changes">
+                      <small>{{ _("Limit of 256 characters") }}</small>
+                      <input class="btn btn-primary ml-auto" id="bioSave" type="submit" value="{{ _('Save Changes') }}">
                     </div>
                   </form>
                 </div>
@@ -262,28 +262,28 @@
               {# shown under the bio on your profile (helpers/profile_details.py); the region beside them comes from the site #}
               <div class="body d-lg-flex border-bottom" id="details">
 
-                <label for="profile-job" class="text-black w-lg-25">Details</label>
+                <label for="profile-job" class="text-black w-lg-25">{{ _("Details") }}</label>
 
                 <div class="w-lg-100">
-                  <p>Shown under your bio. Your region ({{ v.display_region_name }}) is shown beside them and comes from where you use {{ 'SITE_NAME' | app_config }}.</p>
+                  <p>{{ _("Shown under your bio. Your region (%(region)s) is shown beside them and comes from where you use %(site)s.", region=msg_text(v.display_region_name)) }}</p>
                   <form id="profile-details" action="/settings/profile" method="post">
                     <input type="hidden" name="formkey" value="{{ v.formkey }}">
                     <input type="hidden" name="details" value="1">
                     <div class="form-group mb-2">
-                      <label for="profile-job" class="text-small text-muted mb-1">Job</label>
-                      <input type="text" class="form-control" id="profile-job" name="profile_job" maxlength="60" value="{{ v.profile_job or '' }}" placeholder="What you do" autocomplete="organization-title">
+                      <label for="profile-job" class="text-small text-muted mb-1">{{ _("Job") }}</label>
+                      <input type="text" class="form-control" id="profile-job" name="profile_job" maxlength="60" value="{{ v.profile_job or '' }}" placeholder="{{ _('What you do') }}" autocomplete="organization-title">
                     </div>
                     <div class="form-group mb-2">
-                      <label for="profile-location" class="text-small text-muted mb-1">Location</label>
-                      <input type="text" class="form-control" id="profile-location" name="profile_location" maxlength="60" value="{{ v.profile_location or '' }}" placeholder="Where you are, in your words">
+                      <label for="profile-location" class="text-small text-muted mb-1">{{ _("Location") }}</label>
+                      <input type="text" class="form-control" id="profile-location" name="profile_location" maxlength="60" value="{{ v.profile_location or '' }}" placeholder="{{ _('Where you are, in your words') }}">
                     </div>
                     <div class="form-group mb-2">
-                      <label for="profile-website" class="text-small text-muted mb-1">Website</label>
+                      <label for="profile-website" class="text-small text-muted mb-1">{{ _("Website") }}</label>
                       <input type="text" class="form-control" id="profile-website" name="profile_website" maxlength="200" value="{{ v.profile_website or '' }}" placeholder="https://example.com" autocomplete="url" inputmode="url">
                     </div>
                     <div class="d-flex">
-                      <small>Each is optional. Leave one empty to remove it.</small>
-                      <input class="btn btn-primary ml-auto" id="detailsSave" type="submit" value="Save Changes">
+                      <small>{{ _("Each is optional. Leave one empty to remove it.") }}</small>
+                      <input class="btn btn-primary ml-auto" id="detailsSave" type="submit" value="{{ _('Save Changes') }}">
                     </div>
                   </form>
                 </div>
@@ -293,31 +293,31 @@
               {# who may open each list on your profile (routes/profile_lists.py, helpers/follow_lists.py) #}
               <div class="body d-lg-flex border-bottom" id="lists">
 
-                <label for="list-following" class="text-black w-lg-25">Who can see your lists</label>
+                <label for="list-following" class="text-black w-lg-25">{{ _("Who can see your lists") }}</label>
 
                 <div class="w-lg-100">
-                  <p>The numbers are always shown on your profile. This decides who can open each list and see the accounts on it. An account is only listed where its own setting allows it too.</p>
+                  <p>{{ _("The numbers are always shown on your profile. This decides who can open each list and see the accounts on it. An account is only listed where its own setting allows it too.") }}</p>
                   <form id="list-visibility" action="/settings/list_visibility" method="post">
                     <input type="hidden" name="formkey" value="{{ v.formkey }}">
                     <input type="hidden" name="back" value="1">
                     {% for key, label, help in [
-                      ("following", "Who you follow", "Following"),
-                      ("followers", "Who follows you", "Followers"),
-                      ("subscribers", "Who subscribes to your Circle", "Subscribers"),
-                      ("subscriptions", "Circles you subscribe to", "Subscriptions")] %}
+                      ("following", _("Who you follow"), pgettext("list", "Following")),
+                      ("followers", _("Who follows you"), pgettext("list", "Followers")),
+                      ("subscribers", _("Who subscribes to your Circle"), pgettext("list", "Subscribers")),
+                      ("subscriptions", _("Circles you subscribe to"), pgettext("list", "Subscriptions"))] %}
                     {% set current = v[key ~ '_visibility'] if v[key ~ '_visibility'] is not none else 2 %}
                     <div class="form-group d-sm-flex align-items-center mb-2">
                       <label for="list-{{ key }}" class="mb-1 mb-sm-0 flex-grow-1">{{ label }} <span class="text-muted text-small">({{ help }})</span></label>
                       <select class="form-control w-auto" id="list-{{ key }}" name="{{ key }}">
-                        <option value="0"{{ ' selected' if current == 0 else '' }}>Everyone</option>
-                        <option value="1"{{ ' selected' if current == 1 else '' }}>Your followers</option>
-                        <option value="2"{{ ' selected' if current == 2 else '' }}>Only you</option>
+                        <option value="0"{{ ' selected' if current == 0 else '' }}>{{ _("Everyone") }}</option>
+                        <option value="1"{{ ' selected' if current == 1 else '' }}>{{ _("Your followers") }}</option>
+                        <option value="2"{{ ' selected' if current == 2 else '' }}>{{ _("Only you") }}</option>
                       </select>
                     </div>
                     {% endfor %}
                     <div class="d-flex">
-                      <small>Close Friends are never shown on any list.</small>
-                      <input class="btn btn-primary ml-auto" id="listsSave" type="submit" value="Save Changes">
+                      <small>{{ _("Close Friends are never shown on any list.") }}</small>
+                      <input class="btn btn-primary ml-auto" id="listsSave" type="submit" value="{{ _('Save Changes') }}">
                     </div>
                   </form>
                 </div>
@@ -325,33 +325,33 @@
               </div>
 
               <div class="body d-lg-flex border-bottom">
-                <label for="bio" class="text-black w-lg-25">Title</label>
+                <label for="bio" class="text-black w-lg-25">{{ pgettext("profile title", "Title") }}</label>
 
                 <div class="w-lg-100">
-                  <p>Titles change the way your name is displayed across {{ 'SITE_NAME' | app_config }}, allowing you to show off a site achievement.</p>
+                  <p>{{ _("Titles change the way your name is displayed across %(site)s, allowing you to show off a site achievement.") }}</p>
                   <div class="input-group mb2">
-                    <select id='title-selector' aria-label="Title" class="form-control" form="profile-settings" name="title_id" onchange="post_toast('/settings/profile?title_id='+document.getElementById('title-selector').value)">
-                     <option value="0"{{ ' selected' if v.title_id==0 else '' }}>No title</option>
+                    <select id='title-selector' aria-label="{{ pgettext('profile title', 'Title') }}" class="form-control" form="profile-settings" name="title_id" onchange="post_toast('/settings/profile?title_id='+document.getElementById('title-selector').value)">
+                     <option value="0"{{ ' selected' if v.title_id==0 else '' }}>{{ _("No title") }}</option>
                      {% for entry in v.available_titles %}
                      <option value="{{ entry.id }}"{{ ' selected' if v.title_id==entry.id else '' }}>{{ entry.text }}</option>
                      {% endfor %}
                    </select>
                  </div>
-                 <div class="text-small-extra text-muted mt-3"><a class="inline-link" href="/help/titles" target="_blank">Click here</a> to see all titles and the requirements to unlock them.</div>
+                 <div class="text-small-extra text-muted mt-3">{{ _('<a class="inline-link" href="/help/titles" target="_blank">Click here</a> to see all titles and the requirements to unlock them.') }}</div>
 
                </div>
 
              </div>
 
              <div class="body d-lg-flex border-bottom">
-                <label for="bio" class="text-black w-lg-25">Default Sorting</label>
+                <label for="bio" class="text-black w-lg-25">{{ _("Default Sorting") }}</label>
 
                 <div class="w-lg-100">
-                  <p>Change the default sorting for posts.</p>
+                  <p>{{ _("Change the default sorting for posts.") }}</p>
                   <div class="input-group mb2">
-                    <select id='defaultsorting' aria-label="Default sort" class="form-control" form="profile-settings" name="defaultsorting" onchange="post_toast('/settings/profile?defaultsorting='+document.getElementById('defaultsorting').value)">
-                     {% for entry in ["hot", "new", "old", "top", "disputed", "activity"] %}
-                     <option value="{{ entry }}"{{ ' selected' if v.defaultsorting==entry else '' }}>{{ entry }}</option>
+                    <select id='defaultsorting' aria-label="{{ _('Default sort') }}" class="form-control" form="profile-settings" name="defaultsorting" onchange="post_toast('/settings/profile?defaultsorting='+document.getElementById('defaultsorting').value)">
+                     {% for entry, label in [("hot", pgettext("sort", "hot")), ("new", pgettext("sort", "new")), ("old", pgettext("sort", "old")), ("top", pgettext("sort", "top")), ("disputed", pgettext("sort", "disputed")), ("activity", pgettext("sort", "activity"))] %}
+                     <option value="{{ entry }}"{{ ' selected' if v.defaultsorting==entry else '' }}>{{ label }}</option>
                      {% endfor %}
                    </select>
                   </div>
@@ -361,14 +361,14 @@
              </div>
 
              <div class="body d-lg-flex border-bottom">
-                <label for="bio" class="text-black w-lg-25">Default Time Filter</label>
+                <label for="bio" class="text-black w-lg-25">{{ _("Default Time Filter") }}</label>
 
                 <div class="w-lg-100">
-                  <p>Change the default time filter for posts.</p>
+                  <p>{{ _("Change the default time filter for posts.") }}</p>
                   <div class="input-group mb2">
-                    <select id='defaulttime' aria-label="Default time range" class="form-control" form="profile-settings" name="defaulttime" onchange="post_toast('/settings/profile?defaulttime='+document.getElementById('defaulttime').value)">
-                     {% for entry in ["day", "week", "month", "year", "all"] %}
-                     <option value="{{ entry }}"{{ ' selected' if v.defaulttime==entry else '' }}>{{ entry }}</option>
+                    <select id='defaulttime' aria-label="{{ _('Default time range') }}" class="form-control" form="profile-settings" name="defaulttime" onchange="post_toast('/settings/profile?defaulttime='+document.getElementById('defaulttime').value)">
+                     {% for entry, label in [("day", pgettext("time filter", "day")), ("week", pgettext("time filter", "week")), ("month", pgettext("time filter", "month")), ("year", pgettext("time filter", "year")), ("all", pgettext("time filter", "all"))] %}
+                     <option value="{{ entry }}"{{ ' selected' if v.defaulttime==entry else '' }}>{{ label }}</option>
                      {% endfor %}
                    </select>
                   </div>
@@ -380,7 +380,7 @@
              <div class="d-lg-flex border-bottom">
 
               <div class="title w-lg-25">
-                <label for="privateswitch">Private Mode</label>
+                <label for="privateswitch">{{ _("Private Mode") }}</label>
               </div>
 
               <div class="body w-lg-100">
@@ -390,7 +390,7 @@
                   <label class="custom-control-label" for="privateswitch"></label>
                 </div>
 
-                <span class="text-small-extra text-muted">This will hide your post and comment history from others. We will also ask search engines to not index your profile page. (Your content will still be accessible via direct link.)</span>
+                <span class="text-small-extra text-muted">{{ _("This will hide your post and comment history from others. We will also ask search engines to not index your profile page. (Your content will still be accessible via direct link.)") }}</span>
 
               </div>
 
@@ -398,7 +398,7 @@
              <div class="d-lg-flex border-bottom">
 
               <div class="title w-lg-25">
-                <label for="nofollowswitch">Disable Subscriptions</label>
+                <label for="nofollowswitch">{{ _("Disable Subscriptions") }}</label>
               </div>
 
               <div class="body w-lg-100">
@@ -408,7 +408,7 @@
                   <label class="custom-control-label" for="nofollowswitch"></label>
                 </div>
 
-                <span class="text-small-extra text-muted">Prevent other users from subscribing to you.</span>
+                <span class="text-small-extra text-muted">{{ _("Prevent other users from subscribing to you.") }}</span>
 
               </div>
 
@@ -416,7 +416,7 @@
              <div class="d-lg-flex">
 
               <div class="title w-lg-25">
-                <label for="chatswitch">Automatically Join Chats</label>
+                <label for="chatswitch">{{ _("Automatically Join Chats") }}</label>
               </div>
 
               <div class="body w-lg-100">
@@ -426,7 +426,7 @@
                   <label class="custom-control-label" for="chatswitch"></label>
                 </div>
 
-                <span class="text-small-extra text-muted">Automatically join Guild chat channels.</span>
+                <span class="text-small-extra text-muted">{{ _("Automatically join Guild chat channels.") }}</span>
 
               </div>
 

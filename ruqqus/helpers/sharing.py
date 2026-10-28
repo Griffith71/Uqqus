@@ -14,8 +14,9 @@ Pure: it only reads the objects it is given. The share controls are drawn only w
 repost of a post or a comment). Sending in a chat has no server side to refuse: the message is written by the
 browser's encrypted chat client, so the menu item is the control (tests/test_sharing.py).
 """
+from ruqqus.helpers.i18n_runtime import tr, tr_lazy, trn
 
-REFUSAL = "Only the author can share this: it isn't public."
+REFUSAL = tr_lazy("Only the author can share this: it isn't public.")
 
 
 def _viewer(v):
@@ -58,13 +59,16 @@ def narrowing_note(own_guilds, others, reposted):
     None when nothing was shared. What was public stays where others put it: copies other people forwarded stay in
     their guilds, and reposts follow the post itself, so they show it only to people who may see it now. The forward
     copies the author made are theirs, and are taken down with it (`own_guilds`: the guilds' names)."""
+    from ruqqus.helpers.text import word_list
     parts = []
     if own_guilds:
         names = ["+" + name for name in own_guilds]
-        listed = names[0] if len(names) == 1 else ", ".join(names[:-1]) + " and " + names[-1]
-        parts.append(f"The {'copy' if len(names) == 1 else 'copies'} you forwarded to {listed} will be taken down.")
+        # Translators: %(guilds)s is a list of guild names, such as "+a, +b and +c"
+        parts.append(trn("The copy you forwarded to %(guilds)s will be taken down.",
+                         "The copies you forwarded to %(guilds)s will be taken down.", len(names), guilds=word_list(names)))
     if others:
-        parts.append(f"{'The copy' if others == 1 else f'The {others} copies'} other people forwarded to guilds will stay there.")
+        parts.append(trn("The copy other people forwarded to guilds will stay there.",
+                         "The %(num)s copies other people forwarded to guilds will stay there.", others))
     if reposted:
-        parts.append("Reposts of it will show it only to people who can see it.")
+        parts.append(tr("Reposts of it will show it only to people who can see it."))
     return " ".join(parts) or None

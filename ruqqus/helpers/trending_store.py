@@ -188,7 +188,8 @@ def compute(db, now=None, own_hosts=(), log=None):
 
 def scopes_for(regions=(), languages=()):
     """The lists a viewer's region and language filters name, regions first."""
-    return [f"region:{code}" for code in regions or ()] + [f"lang:{code}" for code in languages or ()]
+    return [f"region:{code}" for code in regions or ()] + [f"lang:{code}" for code in languages or ()
+                                                           if code != UNKNOWN]
 
 
 def current(db, level, regions=(), languages=(), now=None):

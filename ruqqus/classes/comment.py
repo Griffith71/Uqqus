@@ -11,23 +11,10 @@ from ruqqus.helpers import anonymity
 from ruqqus.helpers import permalinks
 from ruqqus.helpers import community_notes
 from ruqqus.helpers.lazy import lazy
+from ruqqus.helpers.i18n_runtime import tr
 from ruqqus.__main__ import Base, cache
 from .votes import CommentVote
 from .flags import CommentFlag
-
-
-def _render_comment_markdown(raw):
-    """Render a raw markdown fragment through the same pipeline used for
-    posts/comments (deferred imports - these helpers pull in ruqqus.classes
-    via .get, which would circular-import if done at module load time)."""
-    from ruqqus.helpers.markdown import preprocess, CustomRenderer
-    from ruqqus.helpers.sanitize import sanitize
-    import mistletoe
-
-    text = preprocess(raw)
-    with CustomRenderer() as renderer:
-        md = renderer.render(mistletoe.Document(text))
-    return sanitize(md, linkgen=True)
 
 
 class CommentAux(Base):
@@ -260,19 +247,23 @@ class Comment(Base, Age_times, Scores, Stndrd, Fuzzing):
         else:
             return self.flag_count
 
-    def visibility_reason(self, v):
+    def private_note(self, v):
+        """The eye's tooltip on a comment in a private guild: "Private content, visible because ...", one whole
+        sentence per reason."""
         if not v or self.author_id == v.id:
-            return "this is your content."
+            return tr("Private content, visible because this is your content.")
         elif not self.board:
-            return None
+            return "Private content, visible because None"
         elif self.board.has_mod(v):
-            return f"you are a guildmaster of +{self.board.name}."
+            return tr("Private content, visible because you are a guildmaster of +%(guild)s.", guild=self.board.name)
         elif self.board.has_contributor(v):
-            return f"you are an approved contributor in +{self.board.name}."
+            return tr("Private content, visible because you are an approved contributor in +%(guild)s.",
+                      guild=self.board.name)
         elif self.parent.author_id == v.id:
-            return "this is a comment on your content."
+            return tr("Private content, visible because this is a comment on your content.")
         elif v.admin_level >= 4:
-            return "you are a Ruqqus admin."
+            return tr("Private content, visible because you are a Ruqqus admin.")
+        return "Private content, visible because None"
 
     @property
     def json_raw(self):
@@ -425,27 +416,11 @@ class Comment(Base, Age_times, Scores, Stndrd, Fuzzing):
     @property
     @lazy
     def is_long(self):
+        # long enough to draw clamped, with "Show more" (comments.html, _comments.scss .comment-clamp): the whole
+        # text is on the page either way, never cut in two
         from bs4 import BeautifulSoup
         plain = BeautifulSoup(self.body_html or "", "html.parser").get_text()
         return len(plain) > 280
-
-    @property
-    @lazy
-    def preview_body_html(self):
-        if not self.is_long:
-            return self.body_html
-        from ruqqus.helpers.text import split_title_body
-        preview_raw, _ = split_title_body(self.body or "", max_title=280)
-        return _render_comment_markdown(preview_raw)
-
-    @property
-    @lazy
-    def overflow_body_html(self):
-        if not self.is_long:
-            return None
-        from ruqqus.helpers.text import split_title_body
-        _, overflow_raw = split_title_body(self.body or "", max_title=280)
-        return _render_comment_markdown(overflow_raw) if overflow_raw else None
 
     @property
     def ban_reason(self):

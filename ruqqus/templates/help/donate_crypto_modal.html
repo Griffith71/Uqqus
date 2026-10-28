@@ -4,8 +4,8 @@
   <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">Donate with Cryptocurrency</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <h5 class="modal-title">{{ _("Donate with Cryptocurrency") }}</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="{{ _('Close') }}">
           <span aria-hidden="true"><i class="fas fa-times"></i></span>
         </button>
       </div>
@@ -17,7 +17,7 @@
 
          <div class="" data-toggle="collapse" href="#bitcoinCollapse" role="button" aria-expanded="true" aria-controls="bitcoinCollapse">
           <i class="fab fa-bitcoin text-lg text-center mr-1" style="color: #F39231; width: 1.25rem;"></i>
-          <span class="h6 text-muted">Bitcoin Address</span>
+          <span class="h6 text-muted">{# Translators: a cryptocurrency's name, then the word for the address to send it to. #}{{ _("%(coin)s Address", coin="Bitcoin") }}</span>
           <span class="float-right"><i class="fa text-gray-400"></i></span>
         </div>
 
@@ -43,7 +43,7 @@
 
        <div class="collapsed" data-toggle="collapse" href="#litecoinCollapse" role="button" aria-expanded="true" aria-controls="ethereumCollapse">
         <svg xmlns="http://www.w3.org/2000/svg" height="17" viewBox=".847 .876 329.254 329.256" width="17" class="mr-1" style="width: 1.25rem;"><path d="m330.102 165.503c0 90.922-73.705 164.629-164.626 164.629-90.922 0-164.628-73.707-164.628-164.629 0-90.921 73.706-164.627 164.628-164.627 90.92 0 164.626 73.706 164.626 164.627" fill="#bebebe"/><path d="m295.15 165.505c0 71.613-58.057 129.675-129.674 129.675-71.616 0-129.677-58.062-129.677-129.675 0-71.619 58.061-129.677 129.677-129.677 71.618 0 129.674 58.057 129.674 129.677" fill="#bebebe"/><path d="m155.854 209.482 10.693-40.264 25.316-9.249 6.297-23.663-.215-.587-24.92 9.104 17.955-67.608h-50.921l-23.481 88.23-19.605 7.162-6.478 24.395 19.59-7.156-13.839 51.998h135.521l8.688-32.362z" fill="#fff"/></svg>
-        <span class="h6 text-muted align-bottom">Litecoin Address</span>
+        <span class="h6 text-muted align-bottom">{# Translators: a cryptocurrency's name, then the word for the address to send it to. #}{{ _("%(coin)s Address", coin="Litecoin") }}</span>
         <span class="float-right"><i class="fa text-gray-400"></i></span>
       </div>
 
@@ -51,7 +51,7 @@
 
         <div class="mt-3 text-center">
 
-          <img src="/assets/images/icons/ltc_qr_code.png" class="img-fluid" style="width: 135px; height: 135px;" alt="Litecoin receiving address QR code">
+          <img src="/assets/images/icons/ltc_qr_code.png" class="img-fluid" style="width: 135px; height: 135px;" alt="{{ _('%(coin)s receiving address QR code', coin="Litecoin") }}">
 
           <div class="mt-3">
             <input class="copy-link form-control mr-3" role="button" value="LNDKsNhHjiNBJ6YBWtE8io8H1W3Fv5mtEd" data-clipboard-text="LNDKsNhHjiNBJ6YBWtE8io8H1W3Fv5mtEd" aria-describedby="litecoinAddress" readonly>
@@ -69,7 +69,7 @@
 
      <div class="collapsed" data-toggle="collapse" href="#ethereumCollapse" role="button" aria-expanded="true" aria-controls="ethereumCollapse">
       <i class="fab fa-ethereum text-lg text-center mr-1" style="color: #617EEA; width:1.25rem;"></i>
-      <span class="h6 text-muted">Ethereum Address</span>
+      <span class="h6 text-muted">{# Translators: a cryptocurrency's name, then the word for the address to send it to. #}{{ _("%(coin)s Address", coin="Ethereum") }}</span>
       <span class="float-right"><i class="fa text-gray-400"></i></span>
     </div>
 
@@ -95,14 +95,14 @@
 
      <div class="collapsed" data-toggle="collapse" href="#bchCollapse" role="button" aria-expanded="true" aria-controls="bchCollapse">
       <i class="fab fa-ethereum text-lg text-center mr-1" style="color: #617EEA; width:1.25rem;"></i>
-      <span class="h6 text-muted">Bitcoin Cash Address</span>
+      <span class="h6 text-muted">{# Translators: a cryptocurrency's name, then the word for the address to send it to. #}{{ _("%(coin)s Address", coin="Bitcoin Cash") }}</span>
       <span class="float-right"><i class="fa text-gray-400"></i></span>
     </div>
 
     <div id="bchCollapse" class="collapse" data-parent="#cryptoAccordion">
 
       <div class="mt-3 text-center">
-           <img src="/assets/images/icons/bch_qr_code.png" class="img-fluid" style="width: 135px; height: 135px;" alt="Bitcoin Cash receiving address QR code">
+           <img src="/assets/images/icons/bch_qr_code.png" class="img-fluid" style="width: 135px; height: 135px;" alt="{{ _('%(coin)s receiving address QR code', coin="Bitcoin Cash") }}">
 
         <div class="mt-3">
           <input class="copy-link form-control mr-3" role="button" value="qpcg2czl2fa8x43z807ta5kpuzd3g4suecuu9lmqug" data-clipboard-text="qpcg2czl2fa8x43z807ta5kpuzd3g4suecuu9lmqug" aria-describedby="bitcoinCashAddress" readonly>
@@ -121,7 +121,7 @@
 
      <div class="collapsed" data-toggle="collapse" href="#moneroCollapse" role="button" aria-expanded="true" aria-controls="moneroCollapse">
       <i class="fab fa-monero text-lg text-center mr-1" style="color: #FF6600; width:1.25rem;"></i>
-      <span class="h6 text-muted">Monero Address</span>
+      <span class="h6 text-muted">{# Translators: a cryptocurrency's name, then the word for the address to send it to. #}{{ _("%(coin)s Address", coin="Monero") }}</span>
       <span class="float-right"><i class="fa text-gray-400"></i></span>
     </div>
 
@@ -129,7 +129,7 @@
 
       <div class="mt-3 text-center">
 
-        <img src="/assets/images/icons/xmr_qr_code.png" class="img-fluid" style="width: 135px; height: 135px;" alt="Monero receiving address QR code">
+        <img src="/assets/images/icons/xmr_qr_code.png" class="img-fluid" style="width: 135px; height: 135px;" alt="{{ _('%(coin)s receiving address QR code', coin="Monero") }}">
 
         <div class="mt-3">
           <input class="copy-link form-control mr-3" role="button" value="89UjHAzWjYpEhtpc7QTbDoQdGG79gy1FFWbDQPquSH6vEFsDHVbMCWYT5Ujkn3rk1LYPUGNv8aXnpLbkjYnwCUpbK36Ci1V" data-clipboard-text="89UjHAzWjYpEhtpc7QTbDoQdGG79gy1FFWbDQPquSH6vEFsDHVbMCWYT5Ujkn3rk1LYPUGNv8aXnpLbkjYnwCUpbK36Ci1V" aria-describedby="moneroAddress" readonly>
@@ -148,7 +148,7 @@
 
      <div class="collapsed" data-toggle="collapse" href="#zcashCollapse" role="button" aria-expanded="true" aria-controls="zcashCollapse">
       <i class="fab fa-ethereum text-lg text-center mr-1" style="color: #617EEA; width:1.25rem;"></i>
-      <span class="h6 text-muted">Zcash Address</span>
+      <span class="h6 text-muted">{# Translators: a cryptocurrency's name, then the word for the address to send it to. #}{{ _("%(coin)s Address", coin="Zcash") }}</span>
       <span class="float-right"><i class="fa text-gray-400"></i></span>
     </div>
 
@@ -156,7 +156,7 @@
 
       <div class="mt-3 text-center">
 
-        <img src="/assets/images/icons/zec_qr_code.png" class="img-fluid" style="width: 135px; height: 135px;" alt="Monero receiving address QR code">
+        <img src="/assets/images/icons/zec_qr_code.png" class="img-fluid" style="width: 135px; height: 135px;" alt="{{ _('%(coin)s receiving address QR code', coin="Monero") }}">
 
         <div class="mt-3">
           <input class="copy-link form-control mr-3" role="button" value="t1VqHznyeQnS9hNaU32ksijfT9s9DTXgUSv" data-clipboard-text="t1VqHznyeQnS9hNaU32ksijfT9s9DTXgUSv" aria-describedby="zcashAddress" readonly>
@@ -175,7 +175,7 @@
 
      <div class="collapsed" data-toggle="collapse" href="#rippleCollapse" role="button" aria-expanded="true" aria-controls="rippleCollapse">
       <i class="fab fa-ethereum text-lg text-center mr-1" style="color: #617EEA; width:1.25rem;"></i>
-      <span class="h6 text-muted">Ripple Address</span>
+      <span class="h6 text-muted">{# Translators: a cryptocurrency's name, then the word for the address to send it to. #}{{ _("%(coin)s Address", coin="Ripple") }}</span>
       <span class="float-right"><i class="fa text-gray-400"></i></span>
     </div>
 
@@ -183,7 +183,7 @@
 
       <div class="mt-3 text-center">
 
-        <img src="/assets/images/icons/xrp_qr_code.png" class="img-fluid" style="width: 135px; height: 135px;" alt="Ripple receiving address QR code">
+        <img src="/assets/images/icons/xrp_qr_code.png" class="img-fluid" style="width: 135px; height: 135px;" alt="{{ _('%(coin)s receiving address QR code', coin="Ripple") }}">
 
         <div class="mt-3">
           <input class="copy-link form-control mr-3" role="button" value="rBWWxvREbRPSqMGNqwpBVbSJMPkmLum5xR" data-clipboard-text="rBWWxvREbRPSqMGNqwpBVbSJMPkmLum5xR" aria-describedby="rippleAddress" readonly>
@@ -202,7 +202,7 @@
 
      <div class="collapsed" data-toggle="collapse" href="#lumenCollapse" role="button" aria-expanded="true" aria-controls="lumenCollapse">
       <i class="fab fa-ethereum text-lg text-center mr-1" style="color: #617EEA; width:1.25rem;"></i>
-      <span class="h6 text-muted">Stellar Lumen Address</span>
+      <span class="h6 text-muted">{# Translators: a cryptocurrency's name, then the word for the address to send it to. #}{{ _("%(coin)s Address", coin="Stellar Lumen") }}</span>
       <span class="float-right"><i class="fa text-gray-400"></i></span>
     </div>
 
@@ -210,7 +210,7 @@
 
       <div class="mt-3 text-center">
 
-        <img src="/assets/images/icons/xlm_qr_code.png" class="img-fluid" style="width: 135px; height: 135px;" alt="Stellar Lumen receiving address QR code">
+        <img src="/assets/images/icons/xlm_qr_code.png" class="img-fluid" style="width: 135px; height: 135px;" alt="{{ _('%(coin)s receiving address QR code', coin="Stellar Lumen") }}">
 
         <div class="mt-3">
           <input class="copy-link form-control mr-3" role="button" value="GBB4FE2UYMUPHCYYLZFT3WSAOSEKI7YIBSOLNEPU6GPWAU64OXOQOA3Q" data-clipboard-text="GBB4FE2UYMUPHCYYLZFT3WSAOSEKI7YIBSOLNEPU6GPWAU64OXOQOA3Q" aria-describedby="lumenAddress" readonly>
@@ -229,7 +229,7 @@
 
      <div class="collapsed" data-toggle="collapse" href="#dashCollapse" role="button" aria-expanded="true" aria-controls="dashCollapse">
       <i class="fab fa-ethereum text-lg text-center mr-1" style="color: #617EEA; width:1.25rem;"></i>
-      <span class="h6 text-muted">Dash Address</span>
+      <span class="h6 text-muted">{# Translators: a cryptocurrency's name, then the word for the address to send it to. #}{{ _("%(coin)s Address", coin="Dash") }}</span>
       <span class="float-right"><i class="fa text-gray-400"></i></span>
     </div>
 
@@ -237,7 +237,7 @@
 
       <div class="mt-3 text-center">
 
-        <img src="/assets/images/icons/dash_qr_code.png" class="img-fluid" style="width: 135px; height: 135px;" alt="Dash receiving address QR code">
+        <img src="/assets/images/icons/dash_qr_code.png" class="img-fluid" style="width: 135px; height: 135px;" alt="{{ _('%(coin)s receiving address QR code', coin="Dash") }}">
 
         <div class="mt-3">
           <input class="copy-link form-control mr-3" role="button" value="Xj5dmVJXVjCxuyKRhTmSJ6p1i3ehWLV9gT" data-clipboard-text="Xj5dmVJXVjCxuyKRhTmSJ6p1i3ehWLV9gT" aria-describedby="dashAddress" readonly>
@@ -256,7 +256,7 @@
 
      <div class="collapsed" data-toggle="collapse" href="#dogeCollapse" role="button" aria-expanded="true" aria-controls="dogeCollapse">
       <i class="fab fa-ethereum text-lg text-center mr-1" style="color: #617EEA; width:1.25rem;"></i>
-      <span class="h6 text-muted">Dogecoin Address</span>
+      <span class="h6 text-muted">{# Translators: a cryptocurrency's name, then the word for the address to send it to. #}{{ _("%(coin)s Address", coin="Dogecoin") }}</span>
       <span class="float-right"><i class="fa text-gray-400"></i></span>
     </div>
 
@@ -264,7 +264,7 @@
 
       <div class="mt-3 text-center">
 
-        <img src="/assets/images/icons/doge_qr_code.png" class="img-fluid" style="width: 135px; height: 135px;" alt="Doge receiving address QR code">
+        <img src="/assets/images/icons/doge_qr_code.png" class="img-fluid" style="width: 135px; height: 135px;" alt="{{ _('%(coin)s receiving address QR code', coin="Doge") }}">
 
         <div class="mt-3">
           <input class="copy-link form-control mr-3" role="button" value="DT9j54NhxcH3VTU1QeuWcifyaLayTPuv1U" data-clipboard-text="DT9j54NhxcH3VTU1QeuWcifyaLayTPuv1U" aria-describedby="dogeAddress" readonly>
@@ -283,7 +283,7 @@
 
      <div class="collapsed" data-toggle="collapse" href="#vertCollapse" role="button" aria-expanded="true" aria-controls="vertCollapse">
       <i class="fab fa-ethereum text-lg text-center mr-1" style="color: #617EEA; width:1.25rem;"></i>
-      <span class="h6 text-muted">Vertcoin Address</span>
+      <span class="h6 text-muted">{# Translators: a cryptocurrency's name, then the word for the address to send it to. #}{{ _("%(coin)s Address", coin="Vertcoin") }}</span>
       <span class="float-right"><i class="fa text-gray-400"></i></span>
     </div>
 
@@ -291,7 +291,7 @@
 
       <div class="mt-3 text-center">
 
-        <img src="/assets/images/icons/vtc_qr_code.png" class="img-fluid" style="width: 135px; height: 135px;" alt="Monero receiving address QR code">
+        <img src="/assets/images/icons/vtc_qr_code.png" class="img-fluid" style="width: 135px; height: 135px;" alt="{{ _('%(coin)s receiving address QR code', coin="Monero") }}">
 
         <div class="mt-3">
           <input class="copy-link form-control mr-3" role="button" value="3Lq9vNtphMM3rtuzLhtNUjn5WhSk7ZMQYK" data-clipboard-text="3Lq9vNtphMM3rtuzLhtNUjn5WhSk7ZMQYK" aria-describedby="bitcoinAddress" readonly>
@@ -310,7 +310,7 @@
 
      <div class="collapsed" data-toggle="collapse" href="#pivxCollapse" role="button" aria-expanded="true" aria-controls="pivxCollapse">
       <i class="fab fa-ethereum text-lg text-center mr-1" style="color: #617EEA; width:1.25rem;"></i>
-      <span class="h6 text-muted">PivX Address</span>
+      <span class="h6 text-muted">{# Translators: a cryptocurrency's name, then the word for the address to send it to. #}{{ _("%(coin)s Address", coin="PivX") }}</span>
       <span class="float-right"><i class="fa text-gray-400"></i></span>
     </div>
 
@@ -318,7 +318,7 @@
 
       <div class="mt-3 text-center">
 
-        <img src="/assets/images/icons/pivx_qr_code.png" class="img-fluid" style="width: 135px; height: 135px;" alt="Monero receiving address QR code">
+        <img src="/assets/images/icons/pivx_qr_code.png" class="img-fluid" style="width: 135px; height: 135px;" alt="{{ _('%(coin)s receiving address QR code', coin="Monero") }}">
 
         <div class="mt-3">
           <input class="copy-link form-control mr-3" role="button" value="DSgD6hxu1EgRiULn6RNbnv5tRvij5BGtUa" data-clipboard-text="DSgD6hxu1EgRiULn6RNbnv5tRvij5BGtUa" aria-describedby="pivxAddress" readonly>
@@ -333,7 +333,7 @@
 
 
 
-  <p class="text-small text-muted text-center pt-1 mb-1">Your preferred coin not listed? <a href="https://twitter.com/ruqqus" target="_blank">Tweet us</a>!</p>
+  <p class="text-small text-muted text-center pt-1 mb-1">{{ _('Your preferred coin not listed? <a href="%(url)s" target="_blank">Tweet us</a>!', url="https://twitter.com/ruqqus") }}</p>
 
 </div>
 </div>

@@ -1,65 +1,65 @@
 {% extends "docs_default.html" %}
 
 {% block title %}
-<title>{{ 'SITE_NAME' | app_config }} - OAuth2</title>
-<meta name="description" content="{{ 'SITE_NAME' | app_config }} OAuth2 Guide">
+<title>{{ _("%(site)s - OAuth2") }}</title>
+<meta name="description" content="{{ _('%(site)s OAuth2 Guide') }}">
 {% endblock %}
 
 {% block content %}
 {% filter markdown %}
-# OAuth2
+# {% trans %}OAuth2{% endtrans %}
 
-The OAuth2 authorization flow is used to enable users to authorize third-party applications to access their {{ 'SITE_NAME' | app_config }} account without having to provide their login information to the application.
+{% trans site='SITE_NAME' | app_config %}The OAuth2 authorization flow is used to enable users to authorize third-party applications to access their {{ site }} account without having to provide their login information to the application.{% endtrans %}
 
-This page explains how to obtain API application keys, how to prompt a user for authorization, and how to obtain and use access tokens. 
+{% trans %}This page explains how to obtain API application keys, how to prompt a user for authorization, and how to obtain and use access tokens.{% endtrans %} 
 
-## Step 1: Create your Application
+## {% trans %}Step 1: Create your Application{% endtrans %}
 
-In the [apps tab of {{ 'SITE_NAME' | app_config }} settings](/settings/apps), fill in and submit the form to request new API keys. You will need:
+{% trans site='SITE_NAME' | app_config %}In the [apps tab of {{ site }} settings](/settings/apps), fill in and submit the form to request new API keys. You will need:{% endtrans %}
 
-* an application name
-* a Redirect URI, or a comma-separated list of redirect URIs. May not use HTTP unless using localhost (use HTTPS instead).
-* a brief description of what your application is intended to do
+* {% trans %}an application name{% endtrans %}
+* {% trans %}a Redirect URI, or a comma-separated list of redirect URIs. May not use HTTP unless using localhost (use HTTPS instead).{% endtrans %}
+* {% trans %}a brief description of what your application is intended to do{% endtrans %}
 
-Don't worry too much about accuracy; you will be able to change all of these later.
+{% trans %}Don't worry too much about accuracy; you will be able to change all of these later.{% endtrans %}
 
-DO NOT reveal your Client Secret. Anyone with your Client Secret will be able to pretend to be you. You are responsible for keeping your Client Secret a secret!
+{% trans %}DO NOT reveal your Client Secret. Anyone with your Client Secret will be able to pretend to be you. You are responsible for keeping your Client Secret a secret!{% endtrans %}
 
 <img src="/assets/images/illustrations/app.png" style="border:1px solid #2ca1ea">
 
-## Step 2: Prompt Your User for Authorization
+## {% trans %}Step 2: Prompt Your User for Authorization{% endtrans %}
 
-Send your user to `https://ruqqus.com/oauth/authorize`, with the following URL parameters:
+{# Translators: text between backticks (`...`) is code or an address: keep it exactly as it is on this page. #}{% trans %}Send your user to `https://ruqqus.com/oauth/authorize`, with the following URL parameters:{% endtrans %}
 
-* `client_id` - Your application's Client ID
-* `redirect_uri` - The redirect URI (or one of the URIs) specified in your application information. Must not use HTTP unless using localhost (use HTTPS instead). 
-* `state` - This is your own anti-cross-site-forgery token. We don't do anything with this, except give it to the user to pass back to you later. You are responsible for generating and validating the state token.
-* `scope` - A comma-separated list of permission scopes that you are requesting. Valid scopes are: `identity`, `create`, `read`, `update`, `delete`, `vote`, and `guildmaster`.
-* `permanent` - optional. Set to `true` if you are requesting indefinite access. Omit if not.
+* {% trans %}`client_id` - Your application's Client ID{% endtrans %}
+* {% trans %}`redirect_uri` - The redirect URI (or one of the URIs) specified in your application information. Must not use HTTP unless using localhost (use HTTPS instead).{% endtrans %} 
+* {% trans %}`state` - This is your own anti-cross-site-forgery token. We don't do anything with this, except give it to the user to pass back to you later. You are responsible for generating and validating the state token.{% endtrans %}
+* {% trans %}`scope` - A comma-separated list of permission scopes that you are requesting. Valid scopes are: `identity`, `create`, `read`, `update`, `delete`, `vote`, and `guildmaster`.{% endtrans %}
+* {% trans %}`permanent` - optional. Set to `true` if you are requesting indefinite access. Omit if not.{% endtrans %}
 
-If done correctly, the user will see that your application wants to access their {{ 'SITE_NAME' | app_config }} account, and be prompted to approve or deny the request.
+{% trans site='SITE_NAME' | app_config %}If done correctly, the user will see that your application wants to access their {{ site }} account, and be prompted to approve or deny the request.{% endtrans %}
 
 <img src="/assets/images/illustrations/reader.png" style="border:1px solid #2ca1ea">
 
-## Step 3: Catch the redirect
+## {% trans %}Step 3: Catch the redirect{% endtrans %}
 
-The user clicks "Authorize". {{ 'SITE_NAME' | app_config }} will redirect the user's browser to GET the designated redirect URI. The following URL parameters will be included, which your server should process:
+{% trans site='SITE_NAME' | app_config %}The user clicks "Authorize". {{ site }} will redirect the user's browser to GET the designated redirect URI. The following URL parameters will be included, which your server should process:{% endtrans %}
 
-* `code` - a **single-use** authorization code.
-* `state` - The state token from earlier.
+* {% trans %}`code` - a **single-use** authorization code.{% endtrans %}
+* {% trans %}`state` - The state token from earlier.{% endtrans %}
 
-Validate the state token. How you do this is up to you.
+{% trans %}Validate the state token. How you do this is up to you.{% endtrans %}
 
-## Step 4: Exchange code for access token
+## {% trans %}Step 4: Exchange code for access token{% endtrans %}
 
-Make a POST request to `https://ruqqus.com/oauth/grant`. Include the following form parameters:
+{% trans %}Make a POST request to `https://ruqqus.com/oauth/grant`. Include the following form parameters:{% endtrans %}
 
-* `client_id` - Your application's Client ID
-* `client_secret` - Your application's Client Secret
-* `grant_type` - Set to the word "code"
-* `code` - The `code` parameter that was given to you in the previous step.
+* {% trans %}`client_id` - Your application's Client ID{% endtrans %}
+* {% trans %}`client_secret` - Your application's Client Secret{% endtrans %}
+* {# Translators: the word in quotes is a value the application sends as it is: keep it in English. #}{% trans %}`grant_type` - Set to the word "code"{% endtrans %}
+* {% trans %}`code` - The `code` parameter that was given to you in the previous step.{% endtrans %}
 
-Python example:
+{% trans %}Python example:{% endtrans %}
 
 <pre>
 	import requests
@@ -80,7 +80,7 @@ Python example:
 	pprint.pprint(r.json())
 </pre>
 
-If everything is good, we will respond with the following (example) JSON body:
+{% trans %}If everything is good, we will respond with the following (example) JSON body:{% endtrans %}
 
 <pre>
 	{
@@ -92,13 +92,13 @@ If everything is good, we will respond with the following (example) JSON body:
 	}
 </pre>
 
-Store the access and refresh tokens. You should also store expiration timestamp and the scopes list, so that you can avoid sending invalid requests to {{ 'SITE_NAME' | app_config }}.
+{% trans site='SITE_NAME' | app_config %}Store the access and refresh tokens. You should also store expiration timestamp and the scopes list, so that you can avoid sending invalid requests to {{ site }}.{% endtrans %}
 
-## Step 5: Using the Access Token
+## {% trans %}Step 5: Using the Access Token{% endtrans %}
 
-To use the access token, include the following header in subsequent API requests to {{ 'SITE_NAME' | app_config }}: `Authorization: Bearer access_token_goes_here`
+{% trans site='SITE_NAME' | app_config %}To use the access token, include the following header in subsequent API requests to {{ site }}: `Authorization: Bearer access_token_goes_here`{% endtrans %}
 
-Python example, presuming that the application has obtained a valid `read` authorization:
+{% trans %}Python example, presuming that the application has obtained a valid `read` authorization:{% endtrans %}
 
 <pre>
 	import requests
@@ -113,22 +113,22 @@ Python example, presuming that the application has obtained a valid `read` autho
 	pprint.pprint(r.json())
 </pre>
 
-The expected result of this would be a large JSON representation of the submissions that make up the user's personal front page.
+{% trans %}The expected result of this would be a large JSON representation of the submissions that make up the user's personal front page.{% endtrans %}
 
-For more endpoints, see documentation [here](/help/docs)
+{% trans %}For more endpoints, see documentation [here](/help/docs){% endtrans %}
 
-## Step 6: Maintain Access
+## {% trans %}Step 6: Maintain Access{% endtrans %}
 
-Access tokens expire one hour after they are issued. To maintain ongoing access, you will need to use the refresh token to obtain a new access token.
+{% trans %}Access tokens expire one hour after they are issued. To maintain ongoing access, you will need to use the refresh token to obtain a new access token.{% endtrans %}
 
-Make a POST request to `https://ruqqus.com/oauth/grant` with the following form parameters:
+{% trans %}Make a POST request to `https://ruqqus.com/oauth/grant` with the following form parameters:{% endtrans %}
 
-* `client_id` - Your application's Client ID
-* `client_secret` - Your application's Client Secret
-* `grant_type` - set to the word "refresh"
-* `refresh_token` - the refresh token which you obtained during Step 3
+* {% trans %}`client_id` - Your application's Client ID{% endtrans %}
+* {% trans %}`client_secret` - Your application's Client Secret{% endtrans %}
+* {# Translators: the word in quotes is a value the application sends as it is: keep it in English. #}{% trans %}`grant_type` - set to the word "refresh"{% endtrans %}
+* {% trans %}`refresh_token` - the refresh token which you obtained during Step 3{% endtrans %}
 
-Python example:
+{% trans %}Python example:{% endtrans %}
 
 <pre>
 	import requests
@@ -147,7 +147,7 @@ Python example:
 	pprint.pprint(r.json())
 </pre>
 
-A successful refresh will result in the following response:
+{% trans %}A successful refresh will result in the following response:{% endtrans %}
 
 <pre>
 	{
@@ -156,7 +156,7 @@ A successful refresh will result in the following response:
 	}
 </pre>
 
-You should overwrite the previous access code and expiration timestamp with this new information. Continue to use the access token as in Step 5, until it expires.
+{% trans %}You should overwrite the previous access code and expiration timestamp with this new information. Continue to use the access token as in Step 5, until it expires.{% endtrans %}
 
 {% endfilter %}
 {% endblock %}

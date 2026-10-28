@@ -21,6 +21,8 @@ import time
 
 from sqlalchemy import bindparam, text
 
+from ruqqus.helpers.i18n_runtime import tr, trn
+
 PER_PERSON = 5
 PER_IP = 5
 WINDOW = 90 * 24 * 60 * 60
@@ -44,11 +46,12 @@ def refusal(led_by_person, led_on_ip, admin_level=0):
 def say(kind, username=None):
     """The message for a refusal, to the account itself or (with a username) about another one."""
     if username:
-        return f"@{username} can't lead another guild right now."
+        return tr("@%(name)s can't lead another guild right now.", name=username)
     if kind == PERSON:
-        return f"You already lead {PER_PERSON} guilds. Step down from one before you lead another."
-    return (f"Too many guilds are already led from your network (at most {PER_IP}). "
-            "You can't lead another one right now.")
+        return trn("You already lead %(num)s guild. Step down from one before you lead another.",
+                   "You already lead %(num)s guilds. Step down from one before you lead another.", PER_PERSON)
+    return tr("Too many guilds are already led from your network (at most %(limit)s). "
+              "You can't lead another one right now.", limit=PER_IP)
 
 
 _IPS = text("""

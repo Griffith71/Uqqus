@@ -16,15 +16,17 @@ Use the `filter_*` functions on listing queries (so pages stay full) and the
 """
 from sqlalchemy import and_, or_, select
 
+from ruqqus.helpers.i18n_runtime import tr_lazy
 from ruqqus.helpers.wordfilter import is_hidden
 
 OFF = 0
 STANDARD = 1
 CHILD = 2
 
-NOTICE_TITLE = "Hidden by your word filter"
-NOTICE_TEXT = ("This isn't shown at your current word filter level. "
-               "You can review your word filter in your content settings.")
+# shown only (a page's notice, an API error): translated each time they are used
+NOTICE_TITLE = tr_lazy("Hidden by your word filter")
+NOTICE_TEXT = tr_lazy("This isn't shown at your current word filter level. "
+                      "You can review your word filter in your content settings.")
 
 
 def viewer_level(v):

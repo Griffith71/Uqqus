@@ -1,43 +1,45 @@
 {% extends "docs_default.html" %}
 
 {% block title %}
-<title>{{ 'SITE_NAME' | app_config }} - FAQ</title>
-<meta name="description" content="{{ 'SITE_NAME' | app_config }} FAQ">
+<title>{{ _("%(site)s - FAQ") }}</title>
+<meta name="description" content="{{ _("%(site)s FAQ") }}">
 {% endblock %}
 
-{% block content %}
+{% block content %}{% set site = 'SITE_NAME' | app_config %}
 {% filter markdown %}
 
-# Developer Help
+# {% trans %}Developer Help{% endtrans %}
 
-Tips to help ensure your website works nicely with {{ 'SITE_NAME' | app_config }}
+{% trans %}Tips to help ensure your website works nicely with {{ site }}{% endtrans %}
 
-## SSL Required
+## {% trans %}SSL Required{% endtrans %}
 
-To help protect user privacy and safety, {{ 'SITE_NAME' | app_config }} forces HTTPS on all assets uploaded and submitted to {{ 'SITE_NAME' | app_config }}. This includes automatic conversion of all "http://" schemas into "https://".
+{% trans %}To help protect user privacy and safety, {{ site }} forces HTTPS on all assets uploaded and submitted to {{ site }}. This includes automatic conversion of all "http://" schemas into "https://".{% endtrans %}
 
-Make sure your website has a valid SSL certificate in order to ensure that {{ 'SITE_NAME' | app_config }} users can navigate to it from {{ 'SITE_NAME' | app_config }}. 
+{% trans %}Make sure your website has a valid SSL certificate in order to ensure that {{ site }} users can navigate to it from {{ site }}.{% endtrans %} 
 
-We will not grant exemptions to https conversion.
+{% trans %}We will not grant exemptions to https conversion.{% endtrans %}
 
-## Share to {{ 'SITE_NAME' | app_config }}
+## {% trans %}Share to {{ site }}{% endtrans %}
 
-To create a "share to {{ 'SITE_NAME' | app_config }}" button, create an element which has `onclick="window.location.href='https://ruqqus.com/submit?url='+window.location.href"`
+{# Translators: keep the code between backticks exactly as it is #}
+{% trans %}To create a "share to {{ site }}" button, create an element which has `onclick="window.location.href='https://ruqqus.com/submit?url='+window.location.href"`{% endtrans %}
 
-Use [{{ 'SITE_NAME' | app_config }} branding and assets](/help/press) to style your "share to {{ 'SITE_NAME' | app_config }}" button.
+{% trans %}Use [{{ site }} branding and assets](/help/press) to style your "share to {{ site }}" button.{% endtrans %}
 
 
-## Thumbnails
+## {% trans %}Thumbnails{% endtrans %}
 
-Thumbnail images for posts are determined by using the first successful condition below:
+{% trans %}Thumbnail images for posts are determined by using the first successful condition below:{% endtrans %}
 
-1. If the submitted link has a `Content-Type: image/*` header, the link itself is used as the thumbnail asset.
-2. If the submitted link has a `Content-Type: text/html` header, and there is a `<meta name="thumbnail">` element, the `content` attribute of that element will be scraped and used as the thumbnail. (Use this option to explicitly set a thumbnail)
-3. If the submitted link has a `Content-Type: text/html` header, and no thumbnail meta element is found, the `src` attribute of the first `img` element will be scraped and used as the thumbnail.
+{# Translators: keep the code between backticks exactly as it is #}
+1. {% trans %}If the submitted link has a `Content-Type: image/*` header, the link itself is used as the thumbnail asset.{% endtrans %}
+2. {# Translators: keep the code between backticks exactly as it is #}{% trans %}If the submitted link has a `Content-Type: text/html` header, and there is a `<meta name="thumbnail">` element, the `content` attribute of that element will be scraped and used as the thumbnail. (Use this option to explicitly set a thumbnail){% endtrans %}
+3. {# Translators: keep the code between backticks exactly as it is #}{% trans %}If the submitted link has a `Content-Type: text/html` header, and no thumbnail meta element is found, the `src` attribute of the first `img` element will be scraped and used as the thumbnail.{% endtrans %}
 
-## Applications
+## {% trans %}Applications{% endtrans %}
 
-To request ruqqus API keys, visit [this page](/help/apps)
+{% trans %}To request ruqqus API keys, visit [this page](/help/apps){% endtrans %}
 
 {% endfilter %}
 {% endblock %}

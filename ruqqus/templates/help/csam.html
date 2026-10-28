@@ -8,6 +8,8 @@
 
 {% block content %}
 
+{% if ui_locale() != "en" %}<p class="legal-english-note text-muted text-small">{{ _("This page is in English: the English text is the binding version.") }}</p>{% endif %}
+<div lang="en" dir="ltr">
 {% filter markdown %}
 
 #{{ 'SITE_NAME' | app_config }} Child Sexual Abuse Material (CSAM) Policy
@@ -44,4 +46,5 @@ Any and all content that depicts or promotes child sexual exploitation.
 Any discussions which relate to the phenomenon of child sexual exploitation or attraction towards minors are permitted. This is of course provided that they do not promote or otherwise glorify the act of child sexual exploitation in any way.
 
 {% endfilter %}
+</div>
 {% endblock %}

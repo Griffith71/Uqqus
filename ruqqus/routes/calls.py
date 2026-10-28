@@ -24,6 +24,7 @@ from ruqqus.helpers import chat_groups as group_rules
 from ruqqus.helpers import chat_group_store as group_store
 from ruqqus.helpers import live_bus, turn_usage, turn_usage_store
 from ruqqus.helpers.chat_permissions import is_blocked
+from ruqqus.helpers.i18n_runtime import tr, trn
 from ruqqus.helpers.visibility import user_hidden
 
 _DEVICE = re.compile(r"^[A-Za-z0-9_.=-]{1,64}$")
@@ -32,6 +33,8 @@ _ROOM = re.compile(r"^![A-Za-z0-9._~=+/-]{1,255}(:[A-Za-z0-9.:-]{1,255})?$")
 
 
 def _error(message, status=400):
+    """`message` is already in the reader's language: a refusal of the rules goes through `call_rules.shown` first
+    (their constants stay English: they are compared)."""
     return jsonify({"error": message}), status
 
 
@@ -96,7 +99,7 @@ def _tell_roster(call_id):
 
 def _finish(room_id, now, reason=None):
     """The call is over: Redis forgets it, the history row gets its end, everyone still listening is told.
-    Returns the summary line for the chat (None when it never really took place)."""
+    Returns the summary line for the chat and the same as data (None when it never really took place)."""
     info = call_store.end(r, room_id)
     if not info:
         return None
@@ -104,7 +107,7 @@ def _finish(room_id, now, reason=None):
     live_bus.publish(r, live_bus.topic_channel(f"call:{info['call_id']}"), "call.ended", {"reason": reason or "ended"})
     if seconds is None:
         return None
-    return call_rules.summary(info["kind"], seconds)
+    return call_rules.summary(info["kind"], seconds), call_rules.summary_data(info["kind"], seconds)
 
 
 def voice_max_seconds():
@@ -130,6 +133,7 @@ def call_window(room_id, v):
     if room is None:
         abort(404)
     kind = call_rules.AUDIO if room["kind"] == "voice" else call_rules.parse_kind(request.args.get("kind"))
+    refusal = call_rules.shown(refusal)
     boot = {
         "formkey": v.formkey, "userId": v.id, "roomId": room_id, "kind": kind, "label": room["label"],
         "isGroup": room["kind"] != "pair", "isVoice": room["kind"] == "voice", "answer": bool(request.args.get("answer")),
@@ -158,7 +162,7 @@ def _room_and_device(v):
 def call_join(v):
     room, refusal, room_id, device_id = _room_and_device(v)
     if refusal:
-        return _error(refusal, 403)
+        return _error(call_rules.shown(refusal), 403)
     if r is None:
         return _error(turn_usage.UNAVAILABLE, 503)
     now = int(time.time())
@@ -170,7 +174,7 @@ def call_join(v):
     voice = room["kind"] == "voice"
     roster = call_store.roster(r, room_id, now)
     if any(e["user_id"] == v.id and e["device_id"] != device_id for e in roster):
-        return _error("You're already in this call in another window.", 409)
+        return _error(tr("You're already in this call in another window."), 409)
     already = any(e["user_id"] == v.id and e["device_id"] == device_id for e in roster)
     people = {e["user_id"] for e in roster if e["user_id"] != v.id}
     current = call_store.meta(r, room_id)
@@ -178,14 +182,14 @@ def call_join(v):
     starts = call_store.starts_since(g.db, v.id, now - 3600) if current is None and not voice else 0
     refusal = call_rules.join_refusal(already, len(people), current is None and not voice, starts)
     if refusal:
-        return _error(call_rules.VOICE_FULL if voice and refusal == call_rules.FULL else refusal,
+        return _error(call_rules.shown(call_rules.VOICE_FULL if voice and refusal == call_rules.FULL else refusal),
                       429 if refusal == call_rules.TOO_MANY_STARTS else 409)
     if voice and not already:
         from ruqqus.routes import guild_channels as channels
         if channels.voice_blocked(v, people):
-            return _error("This voice channel isn't available right now.", 403)      # a block, never named
+            return _error(tr("This voice channel isn't available right now."), 403)      # a block, never named
         if not channels.voice_joins_ok(v, now):
-            return _error("You've joined voice channels a lot in the last hour. Try again later.", 429)
+            return _error(tr("You've joined voice channels a lot in the last hour. Try again later."), 429)
         failed = channels.voice_enter(v, room)
         if failed:
             return failed
@@ -235,7 +239,7 @@ def call_heartbeat(v):
         # no longer allowed in this chat (a block, removed from the group): out of its call
         if r is not None and room_id:
             call_store.leave_user(r, room_id, v.id)
-        return jsonify({"in_call": False, "reason": "You can't be in this call any more."})
+        return jsonify({"in_call": False, "reason": tr("You can't be in this call any more.")})
     if r is None:
         return jsonify({"in_call": False})          # no Redis: no call (join answers the same; it was a 500 here)
     info = call_store.meta(r, room_id)
@@ -250,11 +254,13 @@ def call_heartbeat(v):
             from ruqqus.routes import guild_channels as channels
             channels.voice_exit(v, room)
             g.db.commit()
-            return jsonify({"in_call": False, "reason": "You've been in this voice channel for 12 hours. Join again if you're still here."})
+            return jsonify({"in_call": False, "reason": trn(
+                "You've been in this voice channel for %(num)s hour. Join again if you're still here.",
+                "You've been in this voice channel for %(num)s hours. Join again if you're still here.", 12)})
     elif now - info["started_utc"] > call_rules.MAX_CALL_SECONDS:
         _finish(room_id, now, "too_long")
         g.db.commit()
-        return jsonify({"in_call": False, "reason": "Calls end after 4 hours."})
+        return jsonify({"in_call": False, "reason": trn("Calls end after %(num)s hour.", "Calls end after %(num)s hours.", 4)})
     return jsonify({"in_call": True, "peers": _peers(call_store.roster(r, room_id, now), v.id, device_id)})
 
 
@@ -282,9 +288,12 @@ def call_leave(v):
         call_store.stop_ringing(r, room_id)
         live_bus.publish_to_user(r, callee, "call.cancelled", {"room_id": room_id})
     if not left or (room["kind"] == "pair" and len({e["user_id"] for e in left}) < 2 and callee is None):
-        summary = _finish(room_id, now)
+        finished = _finish(room_id, now)
         g.db.commit()
-        return jsonify({"ended": True, "summary": None if room["kind"] == "voice" else summary})
+        summary, data = finished or (None, None)
+        # the line stays English (the room reads one event); its data lets each reader's chat draw it in their language
+        return jsonify({"ended": True, "summary": None if room["kind"] == "voice" else summary,
+                        "summary_data": None if room["kind"] == "voice" else data})
     _tell_roster(info["call_id"])
     return jsonify({"ended": False, "summary": None})
 
@@ -316,7 +325,7 @@ def call_status(v):
     if room is None:
         abort(404)
     if r is None or refusal:
-        return jsonify({"active": False, "can_call": False, "reason": refusal})
+        return jsonify({"active": False, "can_call": False, "reason": call_rules.shown(refusal)})
     now = int(time.time())
     info = call_store.meta(r, room_id)
     roster = call_store.roster(r, room_id, now) if info else []

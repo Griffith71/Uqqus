@@ -32,7 +32,7 @@ def studio(v):
         "studio.html", v=v, studio_tab="overview",
         rows=rows, recent=recent, total=total, coins=rules.coins, window=rules.WINDOW_DAYS,
         paid_circles=len(paid), subscribers=studio_store.subscribers_now(g.db, v.id, now),
-        taking_part=bool(v.creator_fund_opt_in_utc), month_name=fund_rules.month_name(month), points=points,
+        taking_part=bool(v.creator_fund_opt_in_utc), month_name=fund_rules.month_text(month), points=points,
         min_points=fund_rules.min_points(),
         post_count=len(posts), views=sum(row["views"] for row in posts),
     )

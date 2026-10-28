@@ -16,6 +16,7 @@ from flask import Response, g, jsonify, redirect, render_template, request, sess
 from ruqqus.__main__ import app, limiter
 from ruqqus.classes import Board, MediaAccount, MediaAsset, User
 from ruqqus.helpers import circle_guard, circles
+from ruqqus.helpers.i18n_runtime import tr, tr_lazy
 from ruqqus.helpers.media import attach, cdn, dev, google_oauth, oauth, registry, rules, safety
 from ruqqus.helpers.media.base import AccountLost, MediaGone, ProviderDown
 from ruqqus.helpers.secret_box import encrypt_secret
@@ -93,8 +94,8 @@ def _lost(account):
         g.db.commit()
 
 
-RECONNECT = "Your media storage needs connecting again."
-BUSY = "The storage service is not answering right now. Try again in a moment."
+RECONNECT = tr_lazy("Your media storage needs connecting again.")
+BUSY = tr_lazy("The storage service is not answering right now. Try again in a moment.")
 
 
 def _set_status(asset, status):
@@ -199,7 +200,7 @@ def settings_media_google_connect(v):
     YouTube (only when they first add a video); otherwise only the Drive files this site makes."""
     _remember_popup()
     if not google_oauth.configured():
-        return _finish("google", "Google storage is not set up on this site.", False)
+        return _finish("google", tr("Google storage is not set up on this site."), False)
     want = "video" if request.args.get("want") == "video" else "storage"
     state = google_oauth.make_state(v.id, want, int(time.time()), generate_hash)
     return redirect(google_oauth.authorize_url(_google_redirect_uri(), state, want))
@@ -213,29 +214,29 @@ def settings_media_google_callback(v):
         return _finish("google", message, key == "msg")
 
     if not google_oauth.configured():
-        return back("Google storage is not set up on this site.")
+        return back(tr("Google storage is not set up on this site."))
     want = google_oauth.read_state(request.args.get("state"), v.id, int(time.time()), validate_hash)
     if want is None:
-        return back("That connection attempt expired. Try again.")
+        return back(tr("That connection attempt expired. Try again."))
     if request.args.get("error") or not request.args.get("code"):
-        return back("Nothing was connected: Google access was not approved.")
+        return back(tr("Nothing was connected: Google access was not approved."))
 
     try:
         granted = google_oauth.exchange(request.args["code"], _google_redirect_uri())
     except ValueError as e:
         return back(str(e))
     except ProviderDown:
-        return back("Google is not answering right now. Try again in a moment.")
+        return back(tr("Google is not answering right now. Try again in a moment."))
     if google_oauth.SCOPE_DRIVE not in granted["scopes"]:
-        return back("To store your uploads, tick the box that lets this site manage the files it creates in your Google Drive.")
+        return back(tr("To store your uploads, tick the box that lets this site manage the files it creates in your Google Drive."))
 
     account = _link(v, "google", external_id=granted["sub"], scopes=" ".join(granted["scopes"]),
                     refresh_token_encrypted=encrypt_secret(granted["refresh_token"]))
     google_oauth.forget(account)
     g.db.commit()
     if want == "video" and google_oauth.SCOPE_YOUTUBE not in granted["scopes"]:
-        return back("Pictures and audio are connected. Video was not: YouTube access was not approved.", "msg")
-    return back("Media storage is on. Your uploads now go to your Google account.", "msg")
+        return back(tr("Pictures and audio are connected. Video was not: YouTube access was not approved."), "msg")
+    return back(tr("Media storage is on. Your uploads now go to your Google account."), "msg")
 
 
 def _service_redirect_uri(name):
@@ -249,7 +250,7 @@ def settings_media_service_connect(name, v):
     _remember_popup()
     service = registry.SERVICES[name]
     if not service.configured():
-        return _finish(name, f"{service.label} is not set up on this site.", False)
+        return _finish(name, tr("%(service)s is not set up on this site.", service=service.label), False)
     want = next(iter(service.wants))
     state = service.make_state(v.id, want, int(time.time()), generate_hash)
     return redirect(service.authorize_url(_service_redirect_uri(name), state, want))
@@ -261,29 +262,34 @@ def settings_media_service_callback(name, v):
     """The service sends the member back here with a code, or with why not."""
     service = registry.SERVICES[name]
     if not service.configured():
-        return _finish(name, f"{service.label} is not set up on this site.", False)
+        return _finish(name, tr("%(service)s is not set up on this site.", service=service.label), False)
     want = service.read_state(request.args.get("state"), v.id, int(time.time()), validate_hash)
     if want is None:
-        return _finish(name, "That connection attempt expired. Try again.", False)
+        return _finish(name, tr("That connection attempt expired. Try again."), False)
     if request.args.get("error") or not request.args.get("code"):
-        return _finish(name, f"Nothing was connected: {service.label} access was not approved.", False)
+        return _finish(name, tr("Nothing was connected: %(service)s access was not approved.", service=service.label), False)
     try:
         granted = service.exchange(request.args["code"], _service_redirect_uri(name), want)
     except ValueError as e:
         return _finish(name, str(e), False)
     except ProviderDown:
-        return _finish(name, f"{service.label} is not answering right now. Try again in a moment.", False)
+        return _finish(name, tr("%(service)s is not answering right now. Try again in a moment.", service=service.label), False)
     if not service.has_scope(granted["scopes"], service.required):
-        return _finish(name, f"Nothing was connected: the access this site needs at {service.label} was not approved.", False)
+        return _finish(name, tr("Nothing was connected: the access this site needs at %(service)s was not approved.",
+                                 service=service.label), False)
 
     account = _link(v, name, external_id=granted["sub"], scopes=" ".join(granted["scopes"]),
                     refresh_token_encrypted=encrypt_secret(granted["refresh_token"]))
     service.forget(account)
     g.db.commit()
     kinds = rules.PROVIDERS.get(name, {})
-    what = "Your videos now go to your Dailymotion channel." if rules.VIDEO in kinds and len(kinds) == 1 else \
-        f"Your pictures and audio can now go to your {rules.PROVIDER_LABELS.get(kinds.get(rules.IMAGE), service.label)}."
-    return _finish(name, f"{service.label} is connected. {what}", True)
+    if rules.VIDEO in kinds and len(kinds) == 1:
+        done = tr("%(service)s is connected. Your videos now go to your Dailymotion channel.", service=service.label)
+    else:
+        # Translators: %(storage)s is the storage the files go to, such as OneDrive
+        done = tr("%(service)s is connected. Your pictures and audio can now go to your %(storage)s.",
+                  service=service.label, storage=rules.PROVIDER_LABELS.get(kinds.get(rules.IMAGE), service.label))
+    return _finish(name, done, True)
 
 
 @app.post("/settings/media/dev/enable")
@@ -293,13 +299,13 @@ def settings_media_dev_enable(v):
     """Link the stand-in storage (development only, see helpers/media/dev.py)."""
     if not dev.enabled():
         if request.values.get("json"):
-            return _error("That storage is not available here.", 404)
-        return redirect("/settings/media?error=That+storage+is+not+available+here.")
+            return _error(tr("That storage is not available here."), 404)
+        return redirect("/settings/media?" + urlencode({"error": tr("That storage is not available here.")}))
     _link(v, "dev", external_id=f"dev-{v.id}")
     g.db.commit()
     if request.values.get("json"):            # the composer links it without leaving the page
-        return jsonify({"message": "Test storage is on."})
-    return redirect("/settings/media?msg=Media+storage+is+on.")
+        return jsonify({"message": tr("Test storage is on.")})
+    return redirect("/settings/media?" + urlencode({"msg": tr("Media storage is on.")}))
 
 
 @app.post("/settings/media/<provider>/disconnect")
@@ -311,7 +317,7 @@ def settings_media_disconnect(provider, v):
         return redirect("/settings/media")
     _unlink(account)
     g.db.commit()
-    return redirect("/settings/media?msg=Disconnected.")
+    return redirect("/settings/media?" + urlencode({"msg": tr("Disconnected.")}))
 
 
 def _link(v, provider, external_id, scopes="", refresh_token_encrypted=""):
@@ -430,10 +436,18 @@ def media_default(v):
     """The composer's "Change": where this kind of file goes from now on."""
     kind, service = request.form.get("kind", ""), request.form.get("service", "")
     if not _set_default(v, kind, service):
-        return _error("That account can't take this kind of file.", 400)
+        return _error(tr("That account can't take this kind of file."), 400)
     g.db.commit()
-    return jsonify({"message": f"From now on your {kind} files go to your "
-                               f"{rules.PROVIDER_LABELS.get(rules.provider_for(service, kind), service)}."})
+    where = rules.PROVIDER_LABELS.get(rules.provider_for(service, kind), service)
+    moved = {
+        # Translators: %(service)s is the storage the files go to, such as Google Drive or OneDrive
+        rules.IMAGE: tr("From now on your image files go to your %(service)s.", service=where),
+        # Translators: %(service)s is the storage the files go to, such as Google Drive or OneDrive
+        rules.AUDIO: tr("From now on your audio files go to your %(service)s.", service=where),
+        # Translators: %(service)s is the storage the files go to, such as YouTube or Dailymotion
+        rules.VIDEO: tr("From now on your video files go to your %(service)s.", service=where),
+    }
+    return jsonify({"message": moved[kind]})
 
 
 @app.post("/settings/media/default")
@@ -447,7 +461,7 @@ def settings_media_default(v):
         if service:
             changed = _set_default(v, kind, service) or changed
     g.db.commit()
-    return redirect("/settings/media?msg=Saved." if changed else "/settings/media")
+    return redirect("/settings/media?" + urlencode({"msg": tr("Saved.")}) if changed else "/settings/media")
 
 
 @app.post("/api/media/uploads")
@@ -463,7 +477,7 @@ Answers with where the browser sends the bytes (`upload.url`, `upload.method`,
 `upload.headers`) and the asset's `id`. Then call `/api/media/uploads/<id>/complete`.
 """
     if not rules.may_upload(v):
-        return _error("Your account cannot upload right now.", 403)
+        return _error(tr("Your account cannot upload right now."), 403)
 
     kind = (request.form.get("kind") or "").strip()
     try:
@@ -473,12 +487,12 @@ Answers with where the browser sends the bytes (`upload.url`, `upload.method`,
 
     account, provider = _account_for(v, kind, request.form.get("account") or None)
     if provider is None:
-        return _error("Turn on media storage to upload.", 409, need="storage", settings="/settings/media")
+        return _error(tr("Turn on media storage to upload."), 409, need="storage", settings="/settings/media")
 
     now = int(time.time())
     recent = g.db.query(MediaAsset).filter(MediaAsset.user_id == v.id, MediaAsset.created_utc > now - 3600).count()
     if recent >= rules.UPLOADS_PER_HOUR:
-        return _error("You have uploaded a lot in the last hour. Try again a little later.", 429)
+        return _error(tr("You have uploaded a lot in the last hour. Try again a little later."), 429)
 
     asset = MediaAsset(user_id=v.id, account_id=account.id, provider=provider.name, kind=kind,
                        token=secrets.token_urlsafe(18), ext=ext, size=int(request.form.get("size")),
@@ -515,16 +529,16 @@ def media_upload_complete(aid, v):
     """The browser finished sending the bytes: check the file and make it usable."""
     asset = _my_asset(v, aid)
     if not asset:
-        return _error("That upload was not found.", 404)
+        return _error(tr("That upload was not found."), 404)
     if asset.status == rules.READY:
         return jsonify(asset.json)
     if asset.status != rules.PENDING:
-        return _error("That upload can no longer be used.", 410)
+        return _error(tr("That upload can no longer be used."), 410)
 
     account = g.db.query(MediaAccount).filter_by(id=asset.account_id).first()
     provider = registry.get(asset.provider)
     if provider is None or not account or not account.is_active:
-        return _error("Your media storage is no longer connected.", 409, need="storage", settings="/settings/media")
+        return _error(tr("Your media storage is no longer connected."), 409, need="storage", settings="/settings/media")
 
     temp = None
     restricted = False
@@ -549,7 +563,7 @@ def media_upload_complete(aid, v):
                     safety.ban_uploader(g.db, v, match.ban_reason, match.ban_time or 0)
                     _set_status(asset, rules.REMOVED)
                     g.db.commit()
-                    return _error("That image is not allowed here.", 403)
+                    return _error(tr("That image is not allowed here."), 403)
     except rules.MediaError as e:
         _set_status(asset, rules.REMOVED)
         g.db.commit()
@@ -561,7 +575,7 @@ def media_upload_complete(aid, v):
     except MediaGone:
         _set_status(asset, rules.REMOVED)
         g.db.commit()
-        return _error("The upload did not arrive. Try again.", 400)
+        return _error(tr("The upload did not arrive. Try again."), 400)
     except ProviderDown:
         g.db.rollback()
         return _error(BUSY, 503)          # still pending: the browser may ask again
@@ -573,8 +587,8 @@ def media_upload_complete(aid, v):
         # the hosting site took the file but will not show it to anyone else
         _set_status(asset, rules.RESTRICTED)
         g.db.commit()
-        return _error("Your video was uploaded to YouTube, but YouTube is keeping it private because this site's "
-                      "access is still waiting for YouTube's approval. It cannot be shown in a post yet.", 409,
+        return _error(tr("Your video was uploaded to YouTube, but YouTube is keeping it private because this site's "
+                         "access is still waiting for YouTube's approval. It cannot be shown in a post yet."), 409,
                       restricted=True, asset=asset.json)
 
     _set_status(asset, rules.READY)
@@ -596,7 +610,7 @@ def settings_media_dailymotion_video(v):
     account.updated_utc = int(time.time())
     g.db.add(account)
     g.db.commit()
-    return redirect("/settings/media?msg=Saved.")
+    return redirect("/settings/media?" + urlencode({"msg": tr("Saved.")}))
 
 
 @app.post("/settings/media/google/video")
@@ -611,7 +625,7 @@ def settings_media_google_video(v):
     account.updated_utc = int(time.time())
     g.db.add(account)
     g.db.commit()
-    return redirect("/settings/media?msg=Saved.")
+    return redirect("/settings/media?" + urlencode({"msg": tr("Saved.")}))
 
 
 @app.put("/api/media/dev_upload/<aid>/<token>")
@@ -620,10 +634,10 @@ def media_dev_upload(aid, token, v):
     """Where the browser sends the bytes for the stand-in storage (development only).
     A real provider's own address takes this place."""
     if not dev.enabled():
-        return _error("Not found.", 404)
+        return _error(tr("Not found."), 404)
     asset = _my_asset(v, aid)
     if not asset or asset.provider != "dev" or asset.status != rules.PENDING or not hmac.compare_digest(asset.token, token):
-        return _error("That upload was not found.", 404)
+        return _error(tr("That upload was not found."), 404)
     limit = rules.SIZE_MAX.get(asset.kind, 0)
     written = 0
     with open(dev.file_path(asset), "wb") as out:
@@ -637,7 +651,7 @@ def media_dev_upload(aid, token, v):
             out.write(block)
     if written > limit:
         safety.discard(dev.file_path(asset))
-        return _error("That file is too big.", 413)
+        return _error(tr("That file is too big."), 413)
     return jsonify({"received": written})
 
 

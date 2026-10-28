@@ -29,7 +29,7 @@
 
 {% block title %}
 <title>{{ u.username }}</title>
-<meta name="description" content="[banned]">
+<meta name="description" content="{{ _('[banned]') }}">
 {% endblock %}
 
 {% block sidebar %}{% endblock %}
@@ -71,14 +71,14 @@
         <i class="fas fa-square text-danger opacity-25 fa-stack-2x"></i>
         <i class="fas text-danger fa-user-slash fa-stack-1x text-lg"></i>
       </span>
-      <h2 class="h5">@{{ u.username }} is banned</h2>
+      <h2 class="h5">{{ _("@%(name)s is banned", name=u.username) }}</h2>
       {% if u.unban_utc %}
-      <p class="text-muted">This account has been temporarily suspended from {{ 'SITE_NAME' | app_config }}. Check back later.</p>
+      <p class="text-muted">{{ _("This account has been temporarily suspended from %(site)s. Check back later.") }}</p>
       {% else %}
-      <p class="text-muted">This account has been permanently suspended from {{ 'SITE_NAME' | app_config }}.</p>
+      <p class="text-muted">{{ _("This account has been permanently suspended from %(site)s.") }}</p>
       {% endif %}
       {% if u.ban_reason %}
-      <p class="text-small text-muted"><span class="font-weight-bold">Reason:</span> {{ u.ban_reason }}</p>
+      <p class="text-small text-muted"><span class="font-weight-bold">{{ _("Reason:") }}</span> {{ msg_text(u.ban_reason) }}</p>
       {% endif %}
     </div>
   </div>

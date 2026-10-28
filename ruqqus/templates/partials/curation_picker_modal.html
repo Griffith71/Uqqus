@@ -10,25 +10,25 @@
   <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="curationPickerTitle">Add to curation</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <h5 class="modal-title" id="curationPickerTitle">{{ _("Add to curation") }}</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="{{ _('Close') }}">
           <span aria-hidden="true"><i class="fas fa-times"></i></span>
         </button>
       </div>
       <div class="modal-body">
         <fieldset id="curation-picker-what" class="mb-3">
-          <legend class="text-small text-muted mb-2">Add</legend>
+          <legend class="text-small text-muted mb-2">{{ pgettext("verb", "Add") }}</legend>
           <div class="custom-control custom-radio" id="curation-picker-author-row">
             <input type="radio" class="custom-control-input" id="curation-picker-author" name="curation-picker-what" value="author">
-            <label class="custom-control-label" for="curation-picker-author" id="curation-picker-author-label">The author</label>
+            <label class="custom-control-label" for="curation-picker-author" id="curation-picker-author-label">{{ _("The author") }}</label>
           </div>
           <div class="custom-control custom-radio" id="curation-picker-guild-row">
             <input type="radio" class="custom-control-input" id="curation-picker-guild" name="curation-picker-what" value="guild">
-            <label class="custom-control-label" for="curation-picker-guild" id="curation-picker-guild-label">The guild</label>
+            <label class="custom-control-label" for="curation-picker-guild" id="curation-picker-guild-label">{{ _("The guild") }}</label>
           </div>
         </fieldset>
         <div id="curation-picker-list" class="curation-picker-list" aria-live="polite"></div>
-        <a id="curation-picker-create" class="btn btn-link px-0 mt-2" href="/curations/create">Create a curation</a>
+        <a id="curation-picker-create" class="btn btn-link px-0 mt-2" href="/curations/create">{{ _("Create a curation") }}</a>
         <div id="curation-picker-status" class="text-small mt-2" role="status"></div>
       </div>
     </div>

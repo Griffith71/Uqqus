@@ -20,6 +20,7 @@ from ruqqus.helpers import feed_filters as ff
 from ruqqus.helpers import search_filters
 from ruqqus.helpers import search_query as sq
 from ruqqus.helpers.feed_algorithm import like_pattern
+from ruqqus.helpers.i18n_runtime import tr, tr_lazy
 
 PROFILE_BOARD_NAME = "systemprofile"          # classes/boards.py: the reserved guild every profile post is on
 
@@ -31,8 +32,13 @@ _collab = table("collab_docs", column("post_id"))
 _spaces = table("spaces", column("post_id"), column("status"), column("started_utc"), column("record"),
                 column("replay_asset_id"), column("kind"), column("replay_link"))
 
-LEFT_OUT = "{} It is left out of the filter."
-DATES_CLASH = "The dates leave no days."
+DATES_CLASH = tr_lazy("The dates leave no days.")
+
+
+def left_out(problem):
+    """A problem with one part of the filter (a sentence, already in the reader's language), and that it is left out."""
+    # Translators: %(problem)s is a whole sentence saying what is wrong, such as "No guild called +x."
+    return tr("%(problem)s It is left out of the filter.", problem=problem)
 
 # the conditions that read SubmissionAux (the feed must join it, once)
 AUX_TYPES = ("text", "link", "image", "video")
@@ -55,7 +61,7 @@ def prepare(spec, types, v):
     notices = []
     no_days = sq.NO_DAYS in query.problems
     if no_days:
-        notices.append(LEFT_OUT.format(DATES_CLASH))
+        notices.append(left_out(DATES_CLASH))
     parts = []
     for part in query.parts:
         if no_days and part.kind in sq.DATE_KEYS:
@@ -64,7 +70,7 @@ def prepare(spec, types, v):
             # one name at a time: a name that does not resolve is left out, and its notice says so
             one, _ = search_filters.resolve(sq.Query(parts=(part,)), v)
             if one.problems:
-                notices += [LEFT_OUT.format(problem) for problem in one.problems]
+                notices += [left_out(problem) for problem in one.problems]
                 continue
             part = one.parts[0]
         parts.append(part)

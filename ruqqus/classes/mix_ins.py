@@ -1,5 +1,6 @@
 from ruqqus.helpers.base36 import *
 from ruqqus.helpers.lazy import lazy
+from ruqqus.helpers.i18n_runtime import date_text, datetime_text, tr, trn, trp
 import math
 import random
 import time
@@ -17,13 +18,12 @@ class Stndrd:
     @property
     @lazy
     def created_date(self):
-        return time.strftime("%d %B %Y", time.gmtime(self.created_utc))
+        return date_text(self.created_utc, "%d %B %Y")
 
     @property
     @lazy
     def created_datetime(self):
-        return time.strftime("%d %B %Y at %H:%M:%S",
-                             time.gmtime(self.created_utc))
+        return datetime_text(self.created_utc, "%d %B %Y at %H:%M:%S")
 
     @property
     @lazy
@@ -51,84 +51,38 @@ class Age_times:
     def created_date(self):
         # the same format as Stndrd.created_date: Submission and Comment list these mix-ins in a different
         # order, so whichever wins, a post and a comment show their dates alike
-        return time.strftime("%d %B %Y", time.gmtime(self.created_utc))
+        return date_text(self.created_utc, "%d %B %Y")
 
     @property
     def created_datetime(self):
 
-        return time.strftime("%d %B %Y at %H:%M:%S",
-                             time.gmtime(self.created_utc))
+        return datetime_text(self.created_utc, "%d %B %Y at %H:%M:%S")
 
     @property
     def age_string(self):
 
         age = self.age
 
-        if age < 60:
-            return "just now"
-        elif age < 3600:
-            minutes = int(age / 60)
-            return f"{minutes} minute{'s' if minutes > 1 else ''} ago"
-        elif age < 86400:
-            hours = int(age / 3600)
-            return f"{hours} hour{'s' if hours > 1 else ''} ago"
-        elif age < 2678400:
-            days = int(age / 86400)
-            return f"{days} day{'s' if days > 1 else ''} ago"
-
-        now = time.gmtime()
-        ctd = time.gmtime(self.created_utc)
-
-        # compute number of months
-        months = now.tm_mon - ctd.tm_mon + 12 * (now.tm_year - ctd.tm_year)
-        # remove a month count if current day of month < creation day of month
-        if now.tm_mday < ctd.tm_mday:
-            months -= 1
-
-        if months < 12:
-            return f"{months} month{'s' if months > 1 else ''} ago"
-        else:
-            years = int(months / 12)
-            return f"{years} year{'s' if years > 1 else ''} ago"
+        return _ago(age, self.created_utc, whole_months=True)
 
     @property
     def edited_string(self):
 
         if not self.edited_utc:
-            return "never"
+            # Translators: when a post or comment was last edited, for one that never was
+            return trp("edited", "never")
 
         age = int(time.time()) - self.edited_utc
 
-        if age < 60:
-            return "just now"
-        elif age < 3600:
-            minutes = int(age / 60)
-            return f"{minutes} minute{'s' if minutes > 1 else ''} ago"
-        elif age < 86400:
-            hours = int(age / 3600)
-            return f"{hours} hour{'s' if hours > 1 else ''} ago"
-        elif age < 2678400:
-            days = int(age / 86400)
-            return f"{days} day{'s' if days > 1 else ''} ago"
-
-        now = time.gmtime()
-        ctd = time.gmtime(self.edited_utc)
-        months = now.tm_mon - ctd.tm_mon + 12 * (now.tm_year - ctd.tm_year)
-
-        if months < 12:
-            return f"{months} month{'s' if months > 1 else ''} ago"
-        else:
-            years = now.tm_year - ctd.tm_year
-            return f"{years} year{'s' if years > 1 else ''} ago"
+        return _ago(age, self.edited_utc, whole_months=False)
 
     @property
     def edited_date(self):
-        return time.strftime("%d %B %Y", time.gmtime(self.edited_utc))
+        return date_text(self.edited_utc, "%d %B %Y")
 
     @property
     def edited_datetime(self):
-        return time.strftime("%d %B %Y at %H:%M:%S",
-                             time.gmtime(self.edited_utc))
+        return datetime_text(self.edited_utc, "%d %B %Y at %H:%M:%S")
     
     @property
     @lazy
@@ -143,6 +97,35 @@ class Age_times:
             years-=1
             
         return years
+
+
+def _ago(age, then_utc, whole_months):
+    """"just now", "5 minutes ago", "3 months ago": how long ago a time `age` seconds back was (`then_utc`). Under a
+    month it counts minutes, hours and days; then calendar months, and with `whole_months` a month counts only once
+    its day of the month has come round again. Every number here is at least 1."""
+    if age < 60:
+        # Translators: how long ago something was posted or edited
+        return tr("just now")
+    elif age < 3600:
+        return trn("%(num)s minute ago", "%(num)s minutes ago", int(age / 60))
+    elif age < 86400:
+        return trn("%(num)s hour ago", "%(num)s hours ago", int(age / 3600))
+    elif age < 2678400:
+        return trn("%(num)s day ago", "%(num)s days ago", int(age / 86400))
+
+    now = time.gmtime()
+    ctd = time.gmtime(then_utc)
+
+    # compute number of months
+    months = now.tm_mon - ctd.tm_mon + 12 * (now.tm_year - ctd.tm_year)
+    # remove a month count if current day of month < creation day of month
+    if whole_months and now.tm_mday < ctd.tm_mday:
+        months -= 1
+
+    if months < 12:
+        return trn("%(num)s month ago", "%(num)s months ago", months)
+    years = int(months / 12) if whole_months else now.tm_year - ctd.tm_year
+    return trn("%(num)s year ago", "%(num)s years ago", years)
 
 
 class Scores:

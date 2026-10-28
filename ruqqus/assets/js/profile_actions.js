@@ -19,11 +19,11 @@
   }
 
   function copy(url) {
-    var done = function () { toast('Link copied.', true); };
+    var done = function () { toast(tr('Link copied.'), true); };
     if (navigator.clipboard && navigator.clipboard.writeText) {
-      navigator.clipboard.writeText(url).then(done, function () { window.prompt('Copy this link:', url); });
+      navigator.clipboard.writeText(url).then(done, function () { window.prompt(tr('Copy this link:'), url); });
     } else {
-      window.prompt('Copy this link:', url);
+      window.prompt(tr('Copy this link:'), url);
     }
   }
 
@@ -41,7 +41,7 @@
     if (!NAME.test(name || '')) return;
 
     if (item.hasAttribute('data-profile-block')) {
-      if (!window.confirm('Block @' + name + '? They won\'t be able to follow you, message you or comment on your posts, and you won\'t see their posts. You can unblock them any time.')) return;
+      if (!window.confirm(tr('Block @%(name)s? They won\'t be able to follow you, message you or comment on your posts, and you won\'t see their posts. You can unblock them any time.', {name: name}))) return;
       post_toast('/settings/block?username=' + encodeURIComponent(name), function () { window.location.reload(); });
       return;
     }
@@ -66,9 +66,9 @@
       var send = document.getElementById('report-account-send');
       var reason = document.getElementById('report-account-reason').value.trim();
       if (!NAME.test(name)) return;
-      if (!reason) { status.textContent = 'Say what is wrong with this account.'; return; }
+      if (!reason) { status.textContent = tr('Say what is wrong with this account.'); return; }
       send.disabled = true;
-      status.textContent = 'Sending...';
+      status.textContent = tr('Sending...');
       var body = new URLSearchParams();
       body.set('formkey', formkey());
       body.set('reason', reason);
@@ -77,11 +77,11 @@
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: body
       }).then(function (r) { return r.json().then(function (data) { return { ok: r.ok, data: data }; }); })
         .then(function (res) {
-          if (!res.ok) { send.disabled = false; status.textContent = res.data.error || 'Could not send the report.'; return; }
+          if (!res.ok) { send.disabled = false; status.textContent = res.data.error || tr('Could not send the report.'); return; }
           $(modal).modal('hide');
-          toast(res.data.message || 'Thanks. An admin will look at it.', true);
+          toast(res.data.message || tr('Thanks. An admin will look at it.'), true);
         })
-        .catch(function () { send.disabled = false; status.textContent = 'Could not send the report. Try again.'; });
+        .catch(function () { send.disabled = false; status.textContent = tr('Could not send the report. Try again.'); });
     });
   }
 })();

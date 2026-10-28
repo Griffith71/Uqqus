@@ -14,6 +14,7 @@ from ruqqus.helpers.chat_events import is_new_message
 from ruqqus.helpers import broadcast_store, chat_group_store, chat_devices, guild_channel_store
 from ruqqus.helpers import guild_channels as guild_channel_rules
 from ruqqus.helpers.visibility import filter_users, post_hidden, user_hidden
+from ruqqus.helpers.i18n_runtime import tr, trn, trp
 from ruqqus.helpers.secret_box import encrypt_secret, decrypt_secret
 from ruqqus.classes import *
 import ruqqus.helpers.matrix_client as matrix
@@ -115,11 +116,11 @@ def chat_key_set(v):
         if value is None:
             continue
         if not _BLOB.match(value):
-            return jsonify({"error": "That key couldn't be saved."}), 400
+            return jsonify({"error": tr("That key couldn't be saved.")}), 400
         setattr(identity, column, value)
         changed = True
     if not changed:
-        return jsonify({"error": "Nothing to save."}), 400
+        return jsonify({"error": tr("Nothing to save.")}), 400
     if identity.key_blob_password:
         identity.recovery_key_encrypted = None          # the server can no longer read the key
     g.db.add(identity)
@@ -346,24 +347,24 @@ def chat_post_preview(pid, v):
     the same visibility rules as opening the post, and never the author (so an anonymous post
     stays anonymous). When they may not see it the card says so instead."""
     if not POST_ID.match(pid):
-        return jsonify({"ok": False, "notice": "This post does not exist."})
+        return jsonify({"ok": False, "notice": tr("This post does not exist.")})
     post = get_post(pid, v=v, graceful=True)
     if post is None:
-        return jsonify({"ok": False, "notice": "This post does not exist."})
+        return jsonify({"ok": False, "notice": tr("This post does not exist.")})
 
     admin = v.admin_level >= 3
     if (post.is_banned or post.board.is_banned) and not admin:
-        return jsonify({"ok": False, "notice": "This post was removed."})
+        return jsonify({"ok": False, "notice": tr("This post was removed.")})
     if post.deleted_utc and not admin:
-        return jsonify({"ok": False, "notice": "This post was deleted."})
+        return jsonify({"ok": False, "notice": tr("This post was deleted.")})
     if post_hidden(post, v):
-        return jsonify({"ok": False, "notice": "Hidden by your word filter."})
+        return jsonify({"ok": False, "notice": tr("Hidden by your word filter.")})
     # the post page's own rule for private guilds, and a block either way hides it as a quote card does (audit
     # M-12); an anonymous post is never hidden for whose it is
     if post.in_private_guild_for(v):
-        return jsonify({"ok": False, "notice": "Not available to you."})
+        return jsonify({"ok": False, "notice": tr("Not available to you.")})
     if not post.is_anonymous and post.author_id != v.id and post.author and v.any_block_exists(post.author):
-        return jsonify({"ok": False, "notice": "Not available to you."})
+        return jsonify({"ok": False, "notice": tr("Not available to you.")})
 
     return jsonify({
         "ok": True,
@@ -656,13 +657,16 @@ def chat_search(v):
     for row in chat_group_store.groups_for(g.db, v.id, "joined", limit=200):
         group = group_json(row[:8], chat_group_store.member(g.db, row[0], v.id), v)
         if holds(group["label"]):
+            # Translators: under a group chat's name in the chat search; the number of people in the group
+            sub = trn("Group · %(num)s people", "Group · %(num)s people", group["size"])
             found["chats"].append({"kind": "group", "key": group["key"], "room_id": group["room_id"],
-                                   "label": group["label"], "sub": f"Group · {group['size']} people", "avatar": None})
+                                   "label": group["label"], "sub": sub, "avatar": None})
     for row in broadcast_store.joined_by(g.db, v.id, limit=100):
         channel = channel_json(row[:8], (row[8], row[9], 0), v)
         if holds(channel["label"]):
             found["chats"].append({"kind": "channel", "key": channel["key"], "room_id": channel["room_id"],
-                                   "label": channel["label"], "sub": "Channel", "avatar": None})
+                                   "label": channel["label"], "sub": trp("chat kind", "Channel"),
+                                   "avatar": None})
     found["chats"] = found["chats"][:SEARCH_EACH]
 
     # public channels you are not in (routes/broadcasts.py: never an owner in a block either way, a name your filter

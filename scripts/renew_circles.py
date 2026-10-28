@@ -19,7 +19,8 @@ from flask import g
 from ruqqus.__main__ import app, db_session
 from ruqqus.classes import Board, User
 from ruqqus.helpers import circle_store, circles
-from ruqqus.helpers.alerts import send_notification
+from ruqqus.helpers.alerts import notify
+from ruqqus.helpers.i18n_runtime import N_
 
 POLL_SECONDS = 3600
 
@@ -62,15 +63,15 @@ def tick(now=None):
                         continue
                     board = g.db.query(Board).filter_by(id=board_id).first() if board_id else None
                     if board is not None:
-                        send_notification(
-                            payer,
-                            f"Your membership of [+{board.name}](/+{board.name}) ended: "
-                            f"you didn't have the {coins} coins it renews for. You can join again from its page.")
+                        notify(payer, N_("Your membership of [+%(guild)s](/+%(guild)s) ended: you didn't have the "
+                                         "%(coins)s coins it renews for. You can join again from its page."),
+                               guild=board.name, coins=coins)
                         continue
-                    send_notification(
-                        payer,
-                        f"Your subscription to {circles.plain_name(circle_name)} by [@{owner.username}](/@{owner.username}) ended: "
-                        f"you didn't have the {coins} coins it renews for. You can subscribe again from their profile.")
+                    # Translators: %(circle)s is the name of a paid circle someone subscribed to
+                    notify(payer, N_("Your subscription to %(circle)s by [@%(name)s](/@%(name)s) ended: you didn't "
+                                     "have the %(coins)s coins it renews for. You can subscribe again from their "
+                                     "profile."),
+                           circle=circles.plain_name(circle_name), name=owner.username, coins=coins)
             finally:
                 db_session.remove()
     if circles_failed is not None:

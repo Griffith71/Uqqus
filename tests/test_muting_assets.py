@@ -124,7 +124,7 @@ def test_the_menus_offer_mute_where_they_offer_block():
 def test_a_muted_comment_is_a_notice_and_the_replies_stay():
     comments = read("ruqqus", "templates", "comments.html")
     assert "or is_muted(c, v)) and not c.distinguish_level and not (v and v.admin_level>=3)" in comments
-    assert "You muted @{{ author_of(c, v).username }}" in comments and "/settings/unmute?username=" in comments
+    assert '{{ _("You muted @%(name)s", name=author_of(c, v).username) }}' in comments and "/settings/unmute?username=" in comments
 
 
 def test_a_profile_and_the_settings_page_can_mute_and_unmute():

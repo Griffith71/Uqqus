@@ -5,7 +5,7 @@
 {% if copy %}
 <div class="space-title">
   <a href="{{ copy.permalink }}" class="font-weight-bold">+{{ copy.board.name }}</a>
-  <span class="text-muted text-small">{{ copy.comment_count }} comment{{ '' if copy.comment_count == 1 else 's' }} &middot; <a href="{{ copy.permalink }}">Open in the guild</a></span>
+  <span class="text-muted text-small">{{ ngettext("%(num)s comment", "%(num)s comments", copy.comment_count) }} &middot; <a href="{{ copy.permalink }}">{{ _("Open in the guild") }}</a></span>
 </div>
 {% include "partials/comment_form.html" %}
 {% if copy.nested_comments %}
@@ -13,12 +13,12 @@
   {% with comments=copy.nested_comments %}{% include "comments.html" %}{% endwith %}
 </div>
 {% else %}
-<div class="text-muted text-center py-5">No comments in +{{ copy.board.name }} yet.</div>
+<div class="text-muted text-center py-5">{{ _("No comments in +%(guild)s yet.", guild=copy.board.name) }}</div>
 {% endif %}
 {% else %}
 <div class="space-title">
-  <span class="font-weight-bold">All guilds</span>
-  <span class="text-muted text-small">Every guild's comments in one list. Open a guild to comment in it.</span>
+  <span class="font-weight-bold">{{ _("All guilds") }}</span>
+  <span class="text-muted text-small">{{ _("Every guild's comments in one list. Open a guild to comment in it.") }}</span>
 </div>
 {% for c, thread in entries %}
 <div class="space-thread">
@@ -26,6 +26,6 @@
   {% with comments=[thread], p=c, is_allowed_to_comment=false, comment_restriction=none %}{% include "comments.html" %}{% endwith %}
 </div>
 {% else %}
-<div class="text-muted text-center py-5">No comments in these guilds yet.</div>
+<div class="text-muted text-center py-5">{{ _("No comments in these guilds yet.") }}</div>
 {% endfor %}
 {% endif %}

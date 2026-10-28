@@ -29,7 +29,7 @@
 
 {% block title %}
 <title>{{ u.username }}</title>
-<meta name="description" content="[banned]">
+<meta name="description" content="{{ _('[banned]') }}">
 {% endblock %}
 
 {% block sidebar %}{% endblock %}
@@ -71,8 +71,8 @@
         <i class="fas fa-square text-danger opacity-25 fa-stack-2x"></i>
         <i class="fas text-danger fa-user-cog fa-stack-1x text-lg"></i>
       </span>
-      <h2 class="h5">@{{ u.username }} has blocked you.</h2>
-      <p class="text-muted">You can't see their profile.</p>
+      <h2 class="h5">{{ _("@%(name)s has blocked you.", name=u.username) }}</h2>
+      <p class="text-muted">{{ _("You can't see their profile.") }}</p>
     </div>
   </div>
 </div>

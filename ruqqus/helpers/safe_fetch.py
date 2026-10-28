@@ -26,6 +26,8 @@ import ssl
 import time
 from urllib.parse import urlencode, urlsplit
 
+from ruqqus.helpers.i18n_runtime import tr
+
 try:
     import gevent
 except ImportError:          # the unit tests run without it
@@ -73,30 +75,30 @@ def check_url(url, allow_local=None, max_len=MAX_URL):
     member linked (helpers/page_fetch.py) than for a server they name."""
     allow_local = local_allowed() if allow_local is None else allow_local
     if not isinstance(url, str) or not url.strip() or len(url) > max_len or any(c.isspace() or ord(c) < 32 for c in url.strip()):
-        raise FetchError("That is not a usable address.")
+        raise FetchError(tr("That is not a usable address."))
     try:
         parts = urlsplit(url.strip())
         port = parts.port
     except ValueError:
-        raise FetchError("That is not a usable address.")
+        raise FetchError(tr("That is not a usable address."))
 
     if parts.scheme != "https" and not (allow_local and parts.scheme == "http"):
-        raise FetchError("A feed server address must start with https://")
+        raise FetchError(tr("A feed server address must start with https://"))
     if parts.username is not None or parts.password is not None:
-        raise FetchError("A feed server address cannot hold a user name or password.")
+        raise FetchError(tr("A feed server address cannot hold a user name or password."))
     host = (parts.hostname or "").lower().rstrip(".")
     if not host:
-        raise FetchError("That address has no server name.")
+        raise FetchError(tr("That address has no server name."))
     if not allow_local:
         if port not in (None, 443):
-            raise FetchError("A feed server must use the usual https port.")
+            raise FetchError(tr("A feed server must use the usual https port."))
         try:
             ipaddress.ip_address(host)
             literal = True
         except ValueError:
             literal = False
         if literal or "." not in host or host.endswith((".local", ".internal", ".localhost", ".lan", ".home")):
-            raise FetchError("A feed server needs a public server name, like feeds.example.org")
+            raise FetchError(tr("A feed server needs a public server name, like feeds.example.org"))
     path = parts.path or "/"
     if parts.query:
         path += "?" + parts.query
@@ -113,11 +115,11 @@ def vetted_address(host, port, allow_local=None):
     try:
         found = [info[4][0] for info in _lookup(host, port)]
     except (OSError, UnicodeError):
-        raise FetchError(f"The name {host} could not be found.")
+        raise FetchError(tr("The name %(host)s could not be found.", host=host))
     if not found:
-        raise FetchError(f"The name {host} could not be found.")
+        raise FetchError(tr("The name %(host)s could not be found.", host=host))
     if not allow_local and not all(is_public(address) for address in found):
-        raise FetchError("That server is not on the public internet.")
+        raise FetchError(tr("That server is not on the public internet."))
     return found[0]
 
 
@@ -151,7 +153,7 @@ def get_json(url, params=None, allow_local=None, timeout=TIMEOUT, max_bytes=MAX_
     if params:
         path += ("&" if "?" in path else "?") + urlencode(params)
 
-    slow = FetchError("The feed server took too long to answer.")
+    slow = FetchError(tr("The feed server took too long to answer."))
     deadline = time.monotonic() + timeout
     context = ssl.create_default_context() if scheme == "https" else None
     connection = _Pinned(host, port, address, timeout, context)
@@ -163,9 +165,10 @@ def get_json(url, params=None, allow_local=None, timeout=TIMEOUT, max_bytes=MAX_
         connection.request("GET", path, headers={"Accept": "application/json", "User-Agent": USER_AGENT, "Connection": "close"})
         response = connection.getresponse()
         if 300 <= response.status < 400:
-            raise FetchError("The feed server answered with a redirect, which is not followed.")
+            raise FetchError(tr("The feed server answered with a redirect, which is not followed."))
         if response.status != 200:
-            raise FetchError(f"The feed server answered with an error ({response.status}).")
+            # Translators: status is an HTTP status code, such as 404
+            raise FetchError(tr("The feed server answered with an error (%(status)s).", status=response.status))
         body = b""
         while len(body) <= max_bytes:
             if time.monotonic() > deadline:
@@ -175,13 +178,13 @@ def get_json(url, params=None, allow_local=None, timeout=TIMEOUT, max_bytes=MAX_
                 break
             body += chunk
         if len(body) > max_bytes:
-            raise FetchError("The feed server's answer is too large.")
+            raise FetchError(tr("The feed server's answer is too large."))
     except FetchError:
         raise
     except ssl.SSLError:
-        raise FetchError("The feed server's certificate could not be checked.")
+        raise FetchError(tr("The feed server's certificate could not be checked."))
     except (OSError, http.client.HTTPException):
-        raise FetchError("The feed server did not answer in time.")
+        raise FetchError(tr("The feed server did not answer in time."))
     finally:
         if guard is not None:
             guard.close()
@@ -190,7 +193,7 @@ def get_json(url, params=None, allow_local=None, timeout=TIMEOUT, max_bytes=MAX_
     try:
         data = json.loads(body.decode("utf-8"))
     except (ValueError, UnicodeDecodeError):
-        raise FetchError("The feed server's answer is not JSON.")
+        raise FetchError(tr("The feed server's answer is not JSON."))
     if not isinstance(data, dict):
-        raise FetchError("The feed server's answer is not a JSON object.")
+        raise FetchError(tr("The feed server's answer is not a JSON object."))
     return data

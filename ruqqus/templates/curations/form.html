@@ -4,126 +4,126 @@
 {% block pagetype %}curations{% endblock %}
 
 {% block title %}
-<title>{% if curation %}Edit {{ curation.name }}{% else %}Create a Curation{% endif %} - {{ 'SITE_NAME' | app_config }}</title>
+<title>{% if curation %}{{ _("Edit %(name)s - %(site)s", name=curation.name) }}{% else %}{{ _("Create a Curation - %(site)s") }}{% endif %}</title>
 {% endblock %}
 
 {% block content %}
 <div class="col px-md-4 py-4" style="max-width: 600px;">
 
-  <h1 class="h3">{% if curation %}Edit Curation{% else %}Create a Curation{% endif %}</h1>
+  <h1 class="h3">{% if curation %}{{ _("Edit Curation") }}{% else %}{{ _("Create a Curation") }}{% endif %}</h1>
   <p class="text-muted">
-    A Curation is your own named collection of guilds and accounts - like a custom feed, with an algorithm you choose.
-    Keep it private just for yourself, or make it public so others can follow or fork it.
+    {% trans %}A Curation is your own named collection of guilds and accounts - like a custom feed, with an algorithm you choose.
+    Keep it private just for yourself, or make it public so others can follow or fork it.{% endtrans %}
   </p>
 
   <form method="post" action="{% if curation %}{{ curation.permalink }}/edit{% else %}/curations/create{% endif %}">
     <input type="hidden" name="formkey" value="{{ v.formkey }}">
 
     <div class="form-group">
-      <label for="curation-name">Name</label>
+      <label for="curation-name">{{ _("Name") }}</label>
       <input type="text" class="form-control" id="curation-name" name="name" maxlength="100" required
              value="{{ curation.name if curation else '' }}">
     </div>
 
     <div class="form-group">
-      <label for="curation-description">Description (optional)</label>
+      <label for="curation-description">{{ _("Description (optional)") }}</label>
       <textarea class="form-control" id="curation-description" name="description" maxlength="500" rows="3">{{ curation.description if curation else '' }}</textarea>
     </div>
 
     <div class="form-group">
-      <label for="curation-privacy">Visibility</label>
+      <label for="curation-privacy">{{ _("Visibility") }}</label>
       <select class="form-control" id="curation-privacy" name="is_private">
-        <option value="true" {% if not curation or curation.is_private %}selected{% endif %}>Private - only visible to you</option>
-        <option value="false" {% if curation and not curation.is_private %}selected{% endif %}>Public - anyone can view, follow, or fork it</option>
+        <option value="true" {% if not curation or curation.is_private %}selected{% endif %}>{{ _("Private - only visible to you") }}</option>
+        <option value="false" {% if curation and not curation.is_private %}selected{% endif %}>{{ _("Public - anyone can view, follow, or fork it") }}</option>
       </select>
     </div>
 
     {% if not curation %}
     <div class="form-group">
-      <label for="curation-preset">Start from</label>
+      <label for="curation-preset">{{ _("Start from") }}</label>
       <select class="form-control" id="curation-preset" name="preset">
-        <option value="">The usual order - everything from the guilds and accounts you add</option>
+        <option value="">{{ _("The usual order - everything from the guilds and accounts you add") }}</option>
         {% for name, preset in presets.items() %}
         <option value="{{ name }}">{{ preset[0] }} - {{ preset[1] }}</option>
         {% endfor %}
       </select>
-      <small class="form-text text-muted">A starting point for the curation's algorithm. You add guilds and accounts, and can change every part of it, on the next page.</small>
+      <small class="form-text text-muted">{{ _("A starting point for the curation's algorithm. You add guilds and accounts, and can change every part of it, on the next page.") }}</small>
     </div>
     {% endif %}
 
-    <button type="submit" class="btn btn-primary">{% if curation %}Save changes{% else %}Create Curation{% endif %}</button>
-    {% if curation %}<a href="{{ curation.permalink }}" class="btn btn-secondary">Cancel</a>{% endif %}
+    <button type="submit" class="btn btn-primary">{% if curation %}{{ _("Save changes") }}{% else %}{{ _("Create Curation") }}{% endif %}</button>
+    {% if curation %}<a href="{{ curation.permalink }}" class="btn btn-secondary">{{ _("Cancel") }}</a>{% endif %}
   </form>
 
   {% if curation %}
   <hr class="my-4">
 
-  <h2 class="h5">Guilds</h2>
+  <h2 class="h5">{{ _("Guilds") }}</h2>
   <ul class="list-unstyled">
     {% for board in guilds %}
     <li class="d-flex align-items-center justify-content-between mb-1">
       <span>+{{ board.name }}</span>
       <form method="post" action="{{ curation.permalink }}/remove_guild/{{ board.id }}" class="d-inline">
         <input type="hidden" name="formkey" value="{{ v.formkey }}">
-        <button type="submit" class="btn btn-sm btn-outline-danger">Remove</button>
+        <button type="submit" class="btn btn-sm btn-outline-danger">{{ pgettext("button", "Remove") }}</button>
       </form>
     </li>
     {% else %}
-    <li class="text-muted text-small">No guilds added yet.</li>
+    <li class="text-muted text-small">{{ _("No guilds added yet.") }}</li>
     {% endfor %}
   </ul>
   <form method="post" action="{{ curation.permalink }}/add_guild" class="input-group input-group-sm mb-4">
     <input type="hidden" name="formkey" value="{{ v.formkey }}">
-    <input type="text" name="guildname" class="form-control" placeholder="Guild name (without the +)" required>
+    <input type="text" name="guildname" class="form-control" placeholder="{{ _('Guild name (without the +)') }}" required>
     <div class="input-group-append">
-      <button type="submit" class="btn btn-outline-primary">Add guild</button>
+      <button type="submit" class="btn btn-outline-primary">{{ _("Add guild") }}</button>
     </div>
   </form>
 
-  <h2 class="h5">Accounts</h2>
+  <h2 class="h5">{{ _("Accounts") }}</h2>
   <ul class="list-unstyled">
     {% for account in accounts %}
     <li class="d-flex align-items-center justify-content-between mb-1">
       <span>@{{ account.username }}</span>
       <form method="post" action="{{ curation.permalink }}/remove_user/{{ account.id }}" class="d-inline">
         <input type="hidden" name="formkey" value="{{ v.formkey }}">
-        <button type="submit" class="btn btn-sm btn-outline-danger">Remove</button>
+        <button type="submit" class="btn btn-sm btn-outline-danger">{{ pgettext("button", "Remove") }}</button>
       </form>
     </li>
     {% else %}
-    <li class="text-muted text-small">No accounts added yet.</li>
+    <li class="text-muted text-small">{{ _("No accounts added yet.") }}</li>
     {% endfor %}
   </ul>
   <form method="post" action="{{ curation.permalink }}/add_user" class="input-group input-group-sm mb-4">
     <input type="hidden" name="formkey" value="{{ v.formkey }}">
-    <input type="text" name="username" class="form-control" placeholder="Username (without the @)" required>
+    <input type="text" name="username" class="form-control" placeholder="{{ _('Username (without the @)') }}" required>
     <div class="input-group-append">
-      <button type="submit" class="btn btn-outline-primary">Add account</button>
+      <button type="submit" class="btn btn-outline-primary">{{ _("Add account") }}</button>
     </div>
   </form>
 
   {% include "curations/algorithm_form.html" %}
 
-  <h2 class="h5">Filters</h2>
+  <h2 class="h5">{{ _("Filters") }}</h2>
   <p class="text-muted text-small">
-    Optional - narrow this curation to specific regions, languages, or categories. These are part of the curation
-    itself, not your own personal browsing filters, so anyone who views or follows it sees the same result.
+    {% trans %}Optional - narrow this curation to specific regions, languages, or categories. These are part of the curation
+    itself, not your own personal browsing filters, so anyone who views or follows it sees the same result.{% endtrans %}
   </p>
 
-  <h3 class="h6">Regional</h3>
-  {{ filters.filter_panel_body('curation-regional-options', regions_catalog, curation.region_filter_list, 'Search regions…', curation.permalink + '/set_region_filter', 'region', apply_mode='form', formkey=v.formkey) }}
+  <h3 class="h6">{{ _("Regional") }}</h3>
+  {{ filters.filter_panel_body('curation-regional-options', regions_catalog, curation.region_filter_list, _('Search regions…'), curation.permalink + '/set_region_filter', 'region', apply_mode='form', formkey=v.formkey) }}
 
-  <h3 class="h6 mt-4">Language</h3>
-  {{ filters.filter_panel_body('curation-language-options', languages_catalog, curation.language_filter_list, 'Search languages…', curation.permalink + '/set_language_filter', 'codes', apply_mode='form', formkey=v.formkey) }}
+  <h3 class="h6 mt-4">{{ _("Language") }}</h3>
+  {{ filters.filter_panel_body('curation-language-options', languages_catalog, curation.language_filter_list, _('Search languages…'), curation.permalink + '/set_language_filter', 'codes', apply_mode='form', formkey=v.formkey) }}
 
   <h3 class="h6 mt-4">{{ _("Categorical") }}</h3>
   {{ filters.filter_panel_body('curation-categorical-options', none, curation.category_filter_list, _('Search categories…'), curation.permalink + '/set_category_filter', 'cats', apply_mode='form', formkey=v.formkey, groups=categorical_groups) }}
 
   <hr class="my-4">
 
-  <form method="post" action="{{ curation.permalink }}/delete" onsubmit="return confirm('Delete this curation? This cannot be undone.');">
+  <form method="post" action="{{ curation.permalink }}/delete" onsubmit="return confirm({{ _('Delete this curation? This cannot be undone.') | tojson | forceescape }});">
     <input type="hidden" name="formkey" value="{{ v.formkey }}">
-    <button type="submit" class="btn btn-outline-danger">Delete this curation</button>
+    <button type="submit" class="btn btn-outline-danger">{{ _("Delete this curation") }}</button>
   </form>
 
   <script src="{{ asset_url('js/curation_algorithm.js') }}"></script>

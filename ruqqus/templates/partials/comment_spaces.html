@@ -6,21 +6,22 @@
 #}
 <div class="comment-spaces" id="comment-spaces" data-post="{{ p.base36id }}" data-sort="{{ spaces.sort }}">
   <div class="comment-spaces-head">
-    <span class="font-weight-bold">Discussions</span>
-    <span class="text-muted text-small">{% if guilds_only %}This post has no comments on the profile. Choose a guild's.{% else %}Each guild has its own comments, with its own rules.{% endif %}</span>
+    <span class="font-weight-bold">{{ _("Discussions") }}</span>
+    <span class="text-muted text-small">{% if guilds_only %}{{ _("This post has no comments on the profile. Choose a guild's.") }}{% else %}{{ _("Each guild has its own comments, with its own rules.") }}{% endif %}</span>
   </div>
-  <div class="comment-spaces-list" role="tablist" aria-label="Discussions">
+  <div class="comment-spaces-list" role="tablist" aria-label="{{ _('Discussions') }}">
     {% if not guilds_only %}
-    <button type="button" class="space-tab active" role="tab" aria-selected="true" data-space="profile">On the profile <span class="space-count">{{ p.comment_count }}</span></button>
+    <button type="button" class="space-tab active" role="tab" aria-selected="true" data-space="profile">{{ _("On the profile") }} <span class="space-count">{{ p.comment_count }}</span></button>
     {% endif %}
-    <button type="button" class="space-tab" role="tab" aria-selected="false" data-space="all">All guilds <span class="space-count">{{ spaces.total_comments }}</span></button>
+    <button type="button" class="space-tab" role="tab" aria-selected="false" data-space="all">{{ _("All guilds") }} <span class="space-count">{{ spaces.total_comments }}</span></button>
     {% for c in spaces.shown %}
     <button type="button" class="space-tab" role="tab" aria-selected="false" data-space="{{ c.board.name }}" title="+{{ c.board.name }}">+{{ c.board.name }} <span class="space-count">{{ c.comment_count }}</span></button>
     {% endfor %}
     {% if spaces.more %}
     <details class="space-more">
-      <summary>{{ spaces.more | length }} more guilds</summary>
-      <input type="search" class="form-control form-control-sm space-filter" placeholder="Find a guild" aria-label="Find a guild" autocomplete="off">
+      {# Translators: the English is "more guilds" for any number; use your language's plural forms #}
+      <summary>{{ ngettext("%(num)s more guilds", "%(num)s more guilds", spaces.more | length) }}</summary>
+      <input type="search" class="form-control form-control-sm space-filter" placeholder="{{ _('Find a guild') }}" aria-label="{{ _('Find a guild') }}" autocomplete="off">
       <div class="space-more-list">
         {% for c in spaces.more %}
         <button type="button" class="space-tab" role="tab" aria-selected="false" data-space="{{ c.board.name }}">+{{ c.board.name }} <span class="space-count">{{ c.comment_count }}</span></button>

@@ -46,7 +46,7 @@ export async function ensureSession(boot, storageKey = STORAGE_KEY) {
     body,
   });
   if (!resp.ok) {
-    throw new Error("Could not start chat session");
+    throw new Error(window.tr("Could not start chat session"));
   }
   const data = await resp.json();
   const session = {

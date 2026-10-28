@@ -14,6 +14,8 @@ A refusal never says which word it was, so the list is not a game to guess.
 import re
 import unicodedata
 
+from ruqqus.helpers.i18n_runtime import tr, trn
+
 MAX_DAYS = 365
 MAX_WORDS = 50
 WORD_MAX = 40
@@ -25,10 +27,21 @@ class Refused(ValueError):
     """Shown to the guildmaster as it is."""
 
 
+def _days_refusal(label):
+    """The sentence for a number of days that isn't one, whole for each setting the Channels page sends."""
+    if label == "The account age":
+        return tr("The account age must be a whole number of days, 0 to %(max)s.", max=MAX_DAYS)
+    if label == "The time in the guild":
+        return tr("The time in the guild must be a whole number of days, 0 to %(max)s.", max=MAX_DAYS)
+    if label == "The time before links":
+        return tr("The time before links must be a whole number of days, 0 to %(max)s.", max=MAX_DAYS)
+    return tr("%(setting)s must be a whole number of days, 0 to %(max)s.", setting=label, max=MAX_DAYS)
+
+
 def clean_days(value, label):
     text = str(value if value not in (None, "") else 0).strip()
     if not (text.isascii() and text.isdigit()) or int(text) > MAX_DAYS:
-        raise Refused(f"{label} must be a whole number of days, 0 to {MAX_DAYS}.")
+        raise Refused(_days_refusal(label))
     return int(text)
 
 
@@ -40,13 +53,15 @@ def clean_words(value):
         if not word:
             continue
         if len(word) > WORD_MAX:
-            raise Refused(f"A word or phrase can be at most {WORD_MAX} characters.")
+            raise Refused(trn("A word or phrase can be at most %(num)s character.",
+                                  "A word or phrase can be at most %(num)s characters.", WORD_MAX))
         if any(unicodedata.category(c)[0] == "C" for c in word):
-            raise Refused("A word or phrase can't contain control or invisible characters.")
+            raise Refused(tr("A word or phrase can't contain control or invisible characters."))
         if word not in words:
             words.append(word)
     if len(words) > MAX_WORDS:
-        raise Refused(f"You can list at most {MAX_WORDS} words or phrases.")
+        raise Refused(trn("You can list at most %(num)s word or phrase.", "You can list at most %(num)s words or phrases.",
+                          MAX_WORDS))
     return "\n".join(words)
 
 
@@ -69,11 +84,14 @@ def refusal(settings, *, account_days, member_days, body, exempt):
     if settings is None or exempt:
         return None
     if settings.min_account_days and account_days < settings.min_account_days:
-        return "Your account is too new to write in this guild's channels yet."
+        return tr("Your account is too new to write in this guild's channels yet.")
     if settings.min_member_days and member_days < settings.min_member_days:
-        return f"You can write in this guild's channels once you've been in it for {settings.min_member_days} day{'s' if settings.min_member_days != 1 else ''}."
+        return trn("You can write in this guild's channels once you've been in it for %(num)s day.",
+                   "You can write in this guild's channels once you've been in it for %(num)s days.",
+                   settings.min_member_days)
     if settings.link_member_days and member_days < settings.link_member_days and has_link(body):
-        return f"Links can be sent once you've been in the guild for {settings.link_member_days} day{'s' if settings.link_member_days != 1 else ''}."
+        return trn("Links can be sent once you've been in the guild for %(num)s day.",
+                   "Links can be sent once you've been in the guild for %(num)s days.", settings.link_member_days)
     if has_blocked_word(body, settings.blocked_words):
-        return "Your message includes a word this guild doesn't allow."
+        return tr("Your message includes a word this guild doesn't allow.")
     return None

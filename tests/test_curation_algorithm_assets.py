@@ -259,7 +259,7 @@ def test_every_element_the_script_uses_exists_in_the_form():
 
 
 def test_the_form_works_without_script_and_the_script_only_adds_to_it():
-    assert 'action="{{ curation.permalink }}/set_algorithm"' in FORM and '<button type="submit" class="btn btn-primary">Save algorithm</button>' in FORM
+    assert 'action="{{ curation.permalink }}/set_algorithm"' in FORM and '<button type="submit" class="btn btn-primary">{{ _("Save algorithm") }}</button>' in FORM
     assert 'id="alg-presets" hidden' in FORM and 'id="alg-preview-button" hidden' in FORM
     assert "presets.hidden = false" in SCRIPT and "previewButton.hidden = false" in SCRIPT
     # what the server answers is drawn as text; only the server's own post cards are markup
@@ -279,7 +279,8 @@ def test_everyone_who_can_see_a_curation_can_read_its_rules():
 
 
 def test_the_curation_page_can_be_scrolled_like_any_feed():
-    assert 'class="posts"' in PAGE and 'aria-label="Page navigation"' in PAGE and re.search(r">\s*Next\s*<", PAGE)
+    assert 'class="posts"' in PAGE and "aria-label=\"{{ _('Page navigation') }}\"" in PAGE
+    assert re.search(r'rel="next">\{\{ pgettext\("next page", "Next"\) \}\}<', PAGE)
 
 
 def test_both_stylesheets_style_the_section():

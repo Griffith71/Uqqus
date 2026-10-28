@@ -84,7 +84,7 @@ export function forgetPrekey() {
 
 export async function fetchKeyInfo() {
   const resp = await fetch("/api/chat/key", { credentials: "same-origin" });
-  if (!resp.ok) throw new Error("Chat's key isn't available right now.");
+  if (!resp.ok) throw new Error(window.tr("Chat's key isn't available right now."));
   return resp.json();
 }
 
@@ -92,7 +92,7 @@ async function post(url, formkey, fields) {
   const body = new URLSearchParams({ formkey, ...fields });
   const resp = await fetch(url, { method: "POST", credentials: "same-origin", body,
                                   headers: { "Content-Type": "application/x-www-form-urlencoded" } });
-  if (!resp.ok && resp.status !== 204) throw new Error("That couldn't be saved.");
+  if (!resp.ok && resp.status !== 204) throw new Error(window.tr("That couldn't be saved."));
   return resp.status === 204 ? {} : resp.json();
 }
 
@@ -145,7 +145,7 @@ export function dialog({ title, text, field, fieldLabel, confirm, secondary, cod
       out.readOnly = true;
       out.value = code;
       out.className = "form-control chat-key-code mb-2";
-      out.setAttribute("aria-label", "Your recovery code");
+      out.setAttribute("aria-label", window.tr("Your recovery code"));
       out.addEventListener("focus", () => out.select());
       box.append(out);
     }
@@ -191,7 +191,7 @@ export function dialog({ title, text, field, fieldLabel, confirm, secondary, cod
       const value = input ? input.value : null;
       let problem = null;
       if (check) {
-        try { problem = await check(value); } catch (e) { problem = (e && e.message) || "That didn't work."; }
+        try { problem = await check(value); } catch (e) { problem = (e && e.message) || window.tr("That didn't work."); }
       }
       if (problem) {
         error.textContent = problem;

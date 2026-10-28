@@ -14,9 +14,12 @@ text runs on SQLite in the tests.
 """
 from sqlalchemy import text
 
+from ruqqus.helpers.i18n_runtime import N_
+
 LIMIT = 100
 
-NOTE = "Only people you follow who follow you back are listed. Downvotes are never shown."
+# marked with N_, drawn with msg() (routes/voters.py)
+NOTE = N_("Only people you follow who follow you back are listed. Downvotes are never shown.")
 
 _SQL = """
     SELECT v.user_id AS user_id

@@ -48,10 +48,10 @@
     var join = event.target.closest('[data-circle-subscribe]');
     if (join && !join.disabled) {
       join.disabled = true;
-      say(join, 'Subscribing…');
+      say(join, tr('Subscribing…'));
       post_toast('/api/circles/' + encodeURIComponent(join.getAttribute('data-circle-subscribe')) + '/subscribe',
         function () { window.location.reload(); },
-        function (data) { join.disabled = false; say(join, (data && data.error) || 'That didn\'t work. Try again.'); });
+        function (data) { join.disabled = false; say(join, (data && data.error) || tr('That didn\'t work. Try again.')); });
       return;
     }
     var cancel = event.target.closest('[data-circle-cancel]');
@@ -59,15 +59,15 @@
       if (cancel.getAttribute('data-armed') !== '1') {
         // ask once, in place: the first press only says what will happen
         cancel.setAttribute('data-armed', '1');
-        cancel.textContent = 'Yes, cancel it';
-        say(cancel, 'It won\'t renew. You keep access until the day you paid to.');
+        cancel.textContent = tr('Yes, cancel it');
+        say(cancel, tr('It won\'t renew. You keep access until the day you paid to.'));
         return;
       }
       cancel.disabled = true;
-      say(cancel, 'Cancelling…');
+      say(cancel, tr('Cancelling…'));
       post_toast('/api/circles/' + encodeURIComponent(cancel.getAttribute('data-circle-cancel')) + '/cancel',
         function () { window.location.reload(); },
-        function (data) { cancel.disabled = false; say(cancel, (data && data.error) || 'That didn\'t work. Try again.'); });
+        function (data) { cancel.disabled = false; say(cancel, (data && data.error) || tr('That didn\'t work. Try again.')); });
     }
   });
 })();

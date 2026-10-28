@@ -4,7 +4,7 @@
 {% block pagetype %}curations{% endblock %}
 
 {% block title %}
-<title>Co-author invitation - {{ 'SITE_NAME' | app_config }}</title>
+<title>{{ _("Co-author invitation - %(site)s") }}</title>
 {% endblock %}
 
 {% block desktopBanner %}{% endblock %}
@@ -14,32 +14,33 @@
 {% block content %}
 <div class="col px-md-4 py-4">
 
-  <h1 class="h3 mb-3">{% if accepted %}You co-author this post{% else %}Co-author invitation{% endif %}</h1>
+  <h1 class="h3 mb-3">{% if accepted %}{{ _('You co-author this post') }}{% else %}{{ _('Co-author invitation') }}{% endif %}</h1>
 
   <div class="card mb-3">
     <div class="card-body">
       <a href="{{ post.permalink }}" class="h5 d-block mb-1">{{ post.title | safe }}</a>
-      <div class="text-muted text-small">by <a href="{{ author_of(post, v).permalink }}">@{{ author_of(post, v).username }}</a></div>
+      {# Translators: the post's author, under its title #}
+      <div class="text-muted text-small">{{ _('by <a href="%(link)s">@%(name)s</a>', link=author_of(post, v).permalink, name=author_of(post, v).username) }}</div>
     </div>
   </div>
 
   {% if accepted %}
-  <p class="text-muted">The post carries your name and is listed on your profile. Votes, comments and forwards are shared with its author, who edits and deletes it. You can step off at any time: the post stays, without your name.</p>
-  <form method="post" action="/api/coauthor/{{ post.base36id }}/leave" onsubmit="return confirm('Step off as co-author of this post?');">
+  <p class="text-muted">{{ _('The post carries your name and is listed on your profile. Votes, comments and forwards are shared with its author, who edits and deletes it. You can step off at any time: the post stays, without your name.') }}</p>
+  <form method="post" action="/api/coauthor/{{ post.base36id }}/leave" onsubmit="return confirm({{ _('Step off as co-author of this post?') | tojson | forceescape }});">
     <input type="hidden" name="formkey" value="{{ v.formkey }}">
-    <button type="submit" class="btn btn-outline-danger">Step off</button>
-    <a href="{{ post.permalink }}" class="btn btn-link">Back to the post</a>
+    <button type="submit" class="btn btn-outline-danger">{{ pgettext("button", "Step off") }}</button>
+    <a href="{{ post.permalink }}" class="btn btn-link">{{ _('Back to the post') }}</a>
   </form>
   {% else %}
-  <p class="text-muted">@{{ author_of(post, v).username }} invited you to share this post. If you accept, it carries your name and appears on your profile too. Votes, comments and forwards stay shared, and only its author edits or deletes it. You can step off at any time.</p>
+  <p class="text-muted">{{ _('@%(name)s invited you to share this post. If you accept, it carries your name and appears on your profile too. Votes, comments and forwards stay shared, and only its author edits or deletes it. You can step off at any time.', name=author_of(post, v).username) }}</p>
   <div class="d-flex">
     <form method="post" action="/api/coauthor/{{ post.base36id }}/accept" class="mr-2">
       <input type="hidden" name="formkey" value="{{ v.formkey }}">
-      <button type="submit" class="btn btn-primary">Accept</button>
+      <button type="submit" class="btn btn-primary">{{ pgettext("button", "Accept") }}</button>
     </form>
     <form method="post" action="/api/coauthor/{{ post.base36id }}/decline">
       <input type="hidden" name="formkey" value="{{ v.formkey }}">
-      <button type="submit" class="btn btn-secondary">Decline</button>
+      <button type="submit" class="btn btn-secondary">{{ pgettext("button", "Decline") }}</button>
     </form>
   </div>
   {% endif %}

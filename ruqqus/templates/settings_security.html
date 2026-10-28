@@ -1,6 +1,6 @@
 {% extends "settings.html" %}
 
-{% block pagetitle %}Security Settings - {{ 'SITE_NAME' | app_config }}{% endblock %}
+{% block pagetitle %}{{ _("Security Settings - %(site)s") }}{% endblock %}
 
 {% block content %}
 
@@ -12,9 +12,9 @@
 
         <div class="settings">
 
-          <h2 class="h5">Password</h2>
+          <h2 class="h5">{{ _("Password") }}</h2>
 
-          <p class="text-small text-muted">Change your account password.</p>
+          <p class="text-small text-muted">{{ _("Change your account password.") }}</p>
 
           <div class="settings-section rounded">
 
@@ -24,43 +24,38 @@
 
                 <div class="d-lg-flex">
 
-                  <label for="new_password" class="mb-0 w-lg-25">New Password</label>
+                  <label for="new_password" class="mb-0 w-lg-25">{{ _("New Password") }}</label>
 
                   <input class="form-control w-lg-100" id="new_password"
                   aria-describedby="new_password" type="password" name="new_password" autocomplete="off"
                   required>
                   <small id="passwordHelpChange"
-                  class="form-text font-weight-bold text-muted d-none mt-1 w-lg-100">Minimum of 8
-                  characters
-                  required.</small>
+                  class="form-text font-weight-bold text-muted d-none mt-1 w-lg-100">{{ _("Minimum of 8 characters required.") }}</small>
                   <small id="passwordHelpChangeSuccess"
-                  class="form-text font-weight-bold text-success d-none mt-1 w-lg-100">Your password
-                  meets the
-                  requirements.
+                  class="form-text font-weight-bold text-success d-none mt-1 w-lg-100">{{ _("Your password meets the requirements.") }}
                 </small>
 
               </div>
 
               <div class="d-lg-flex mt-3">
 
-                <label for="cnf_password" class="mb-0 w-lg-25">Confirm New Password</label>
+                <label for="cnf_password" class="mb-0 w-lg-25">{{ _("Confirm New Password") }}</label>
 
                 <input class="form-control w-lg-100" id="cnf_password"
                 aria-describedby="cnf_password" type="password" name="cnf_password" autocomplete="off"
                 required>
 
                 <small id="passwordHelpCnf"
-                class="form-text font-weight-bold text-muted d-none mt-1 w-lg-100">Passwords do not
-                match.</small>
+                class="form-text font-weight-bold text-muted d-none mt-1 w-lg-100">{{ _("Passwords do not match.") }}</small>
                 <small id="passwordHelpCnfSuccess"
-                class="form-text font-weight-bold text-success d-none mt-1 w-lg-100">Passwords match.
+                class="form-text font-weight-bold text-success d-none mt-1 w-lg-100">{{ _("Passwords match.") }}
               </small>
 
             </div>
 
             <div class="d-lg-flex mt-5">
 
-              <label for="old_password" class="mb-0 w-lg-25">Old Password</label>
+              <label for="old_password" class="mb-0 w-lg-25">{{ _("Old Password") }}</label>
 
               <input class="form-control mb-2 w-lg-100" id="old_password" autocomplete="off"
               aria-describedby="old_password" type="password" name="old_password"
@@ -78,7 +73,7 @@
             <div class="d-flex">
 
               <input class="btn btn-primary ml-auto"
-              type="submit" value="Change Password">
+              type="submit" value="{{ _('Change Password') }}">
 
             </div>
 
@@ -88,9 +83,9 @@
 
       </div>
 
-      <h2 class="h5">Email</h2>
+      <h2 class="h5">{{ _("Email") }}</h2>
 
-      <p class="text-small text-muted">Change the email address used to sign in to your account.</p>
+      <p class="text-small text-muted">{{ _("Change the email address used to sign in to your account.") }}</p>
 
       <div class="settings-section rounded">
 
@@ -101,16 +96,16 @@
 
             <div class="d-lg-flex">
 
-              <label for="new-email" class="w-lg-25">Email</label>
+              <label for="new-email" class="w-lg-25">{{ _("Email") }}</label>
 
               <div class="w-lg-100">
 
-                <input class="form-control" id="new_email" {% if v.email %}placeholder="{{ v.email }}"{% else %}placeholder="Your email"{% endif %}
+                <input class="form-control" id="new_email" {% if v.email %}placeholder="{{ v.email }}"{% else %}placeholder="{{ _('Your email') }}"{% endif %}
                 aria-describedby="new_email" type="email" name="new_email" required>
                 {% if v.email and not v.is_activated %}
-                <div class="text-danger text-small-extra mt-1" id="email-verify-text">Email not verified. You will not be able to recover your account with this email until you verify it. <u><a href="javascript:void(0)" onclick="post('/api/verify_email');emailVerifyText();" class="text-danger">Verify now.</a></u></div>
+                <div class="text-danger text-small-extra mt-1" id="email-verify-text">{{ _("Email not verified. You will not be able to recover your account with this email until you verify it.") }} <u><a href="javascript:void(0)" onclick="post('/api/verify_email');emailVerifyText();" class="text-danger">{{ _("Verify now.") }}</a></u></div>
                 {% elif not v.email %}
-                <div class="text-danger text-small-extra mt-1" id="email-verify-text">Add an email to secure your account in case you forget your password.</div>
+                <div class="text-danger text-small-extra mt-1" id="email-verify-text">{{ _("Add an email to secure your account in case you forget your password.") }}</div>
                 {% endif %}
 
               </div>
@@ -119,19 +114,19 @@
 
             <div class="d-lg-flex mt-3">
 
-             <label for="email-password" class="w-lg-25 d-none" id="email-password-label">Password</label>
+             <label for="email-password" class="w-lg-25 d-none" id="email-password-label">{{ _("Password") }}</label>
 
              <div class="w-lg-100">
 
                <input autocomplete="new-password" type="password" class="form-control mb-2 d-none" id="email-password" name="password" autocomplete="off" required>
 
-               <small id="emailpasswordRequired" class="form-text font-weight-bold text-danger d-none mt-1">Password required to update your email.</small>
+               <small id="emailpasswordRequired" class="form-text font-weight-bold text-danger d-none mt-1">{{ _("Password required to update your email.") }}</small>
 
              </div>
 
            </div>
 
-           <small id="emailpasswordRequired" class="form-text font-weight-bold text-danger d-none mt-1">Password required to update your email.</small>
+           <small id="emailpasswordRequired" class="form-text font-weight-bold text-danger d-none mt-1">{{ _("Password required to update your email.") }}</small>
 
          </div>
 
@@ -141,10 +136,10 @@
 
             {% if v.email %}
             <input class="btn btn-primary ml-auto"
-            type="submit" value="Update email">
+            type="submit" value="{{ _('Update email') }}">
             {% else %}
             <input class="btn btn-primary ml-auto"
-            type="submit" value="Add email">
+            type="submit" value="{{ _('Add email') }}">
             {% endif %}
 
           </div>
@@ -156,16 +151,16 @@
     </div>
 
 
-    <h2 class="h5">Two-Factor Authentication</h2>
+    <h2 class="h5">{{ _("Two-Factor Authentication") }}</h2>
 
-    <p class="text-small text-muted">Change the two-factor settings for your account.</p>
+    <p class="text-small text-muted">{{ _("Change the two-factor settings for your account.") }}</p>
 
     <div class="settings-section rounded">
 
       <div class="d-lg-flex">
 
         <div class="title w-lg-25">
-          <label for="2faToggle">Use 2-step login</label>
+          <label for="2faToggle">{{ _("Use 2-step login") }}</label>
         </div>
 
         <div class="body w-lg-100">
@@ -175,7 +170,7 @@
           <label class="custom-control-label" for="2faToggle"></label>
           </div>
 
-          <span class="text-small-extra text-muted">This requires entering a randomly-generated, 6-digit code and your password to login. See <a href="#">Google Authenticator</a> or <a href="#">Authy</a> for more details.</span>
+          <span class="text-small-extra text-muted">{{ _('This requires entering a randomly-generated, 6-digit code and your password to login. See <a href="#">Google Authenticator</a> or <a href="#">Authy</a> for more details.') }}</span>
 
         </div>
 
@@ -186,13 +181,13 @@
   {% if new_backup_codes %}
   <div class="settings-section rounded backup-codes-new" id="backup-codes-new" role="alert">
     <div class="body">
-      <h3 class="h6">Your backup codes</h3>
-      <p class="text-small">Save these now. They are shown <strong>once</strong>: the site keeps no copy it can show you again. Each one works a single time, in place of the 6-digit code, and signing in with one leaves two-step login on.</p>
+      <h3 class="h6">{{ _("Your backup codes") }}</h3>
+      <p class="text-small">{% trans %}Save these now. They are shown <strong>once</strong>: the site keeps no copy it can show you again. Each one works a single time, in place of the 6-digit code, and signing in with one leaves two-step login on.{% endtrans %}</p>
       <ul class="backup-codes-list list-unstyled" id="backup-codes-list">{% for code in new_backup_codes %}<li>{{ code }}</li>{% endfor %}</ul>
       <div class="d-flex flex-wrap align-items-center">
-        <button type="button" class="btn btn-secondary btn-sm mr-2" data-backup-copy>Copy</button>
-        <button type="button" class="btn btn-secondary btn-sm mr-2" data-backup-download>Download</button>
-        <button type="button" class="btn btn-secondary btn-sm mr-2" data-backup-print>Print</button>
+        <button type="button" class="btn btn-secondary btn-sm mr-2" data-backup-copy>{{ pgettext("button", "Copy") }}</button>
+        <button type="button" class="btn btn-secondary btn-sm mr-2" data-backup-download>{{ pgettext("button", "Download") }}</button>
+        <button type="button" class="btn btn-secondary btn-sm mr-2" data-backup-print>{{ pgettext("button", "Print") }}</button>
         <span class="text-small text-muted" data-backup-said role="status"></span>
       </div>
     </div>
@@ -200,9 +195,9 @@
   {% endif %}
 
   {% if v.mfa_secret %}
-  <h2 class="h5" id="backup-codes">Backup codes</h2>
+  <h2 class="h5" id="backup-codes">{{ _("Backup codes") }}</h2>
 
-  <p class="text-small text-muted">One-time codes for the day you lose your authenticator. Making a new set replaces every earlier code, used or not.</p>
+  <p class="text-small text-muted">{{ _("One-time codes for the day you lose your authenticator. Making a new set replaces every earlier code, used or not.") }}</p>
 
   <div class="settings-section rounded">
     <form action="/settings/security" method="post">
@@ -210,24 +205,24 @@
       <div class="body">
         <p class="mb-3{% if backup_low %} text-danger{% endif %}">{{ backup_line }}</p>
         <div class="d-lg-flex">
-          <label for="backup-password" class="w-lg-25">Password</label>
+          <label for="backup-password" class="w-lg-25">{{ _("Password") }}</label>
           <div class="w-lg-100"><input type="password" class="form-control mb-2" id="backup-password" name="password" autocomplete="current-password" required></div>
         </div>
         <div class="d-lg-flex">
-          <label for="backup-token" class="w-lg-25">6-digit code</label>
+          <label for="backup-token" class="w-lg-25">{{ _("6-digit code") }}</label>
           <div class="w-lg-100"><input type="text" class="form-control mb-2" id="backup-token" name="new_backup_codes" inputmode="numeric" autocomplete="one-time-code" placeholder="# # # # # #" required></div>
         </div>
       </div>
       <div class="footer">
-        <div class="d-flex"><button type="submit" class="btn btn-secondary ml-auto">Make new backup codes</button></div>
+        <div class="d-flex"><button type="submit" class="btn btn-secondary ml-auto">{{ _("Make new backup codes") }}</button></div>
       </div>
     </form>
   </div>
   {% endif %}
 
-  <h2 class="h5" id="sign-ins">Recent sign-ins</h2>
+  <h2 class="h5" id="sign-ins">{{ _("Recent sign-ins") }}</h2>
 
-  <p class="text-small text-muted">Your last {{ sign_ins | length }} sign-ins. The place is only the country, worked out from the connection. Don't recognise one? Change your password: that signs out every other device.</p>
+  <p class="text-small text-muted">{# Translators: the English uses "sign-ins" for every number #}{{ ngettext("Your last %(num)s sign-ins. The place is only the country, worked out from the connection. Don't recognise one? Change your password: that signs out every other device.", "Your last %(num)s sign-ins. The place is only the country, worked out from the connection. Don't recognise one? Change your password: that signs out every other device.", sign_ins | length) }}</p>
 
   <div class="settings-section rounded">
     <div class="body">
@@ -238,7 +233,7 @@
         {% endfor %}
       </ul>
       {% else %}
-      <p class="mb-0 text-muted">No sign-ins recorded yet.</p>
+      <p class="mb-0 text-muted">{{ _("No sign-ins recorded yet.") }}</p>
       {% endif %}
     </div>
     <form action="/settings/security" method="post" id="signin-alerts">
@@ -247,23 +242,23 @@
       <div class="body border-top">
         <div class="custom-control custom-switch mb-2">
           <input type="checkbox" class="custom-control-input" id="signin_alerts" name="signin_alerts" value="1" {% if v.signin_alerts %}checked{% endif %}>
-          <label class="custom-control-label" for="signin_alerts">Email me about new sign-ins</label>
+          <label class="custom-control-label" for="signin_alerts">{{ _("Email me about new sign-ins") }}</label>
         </div>
-        <p class="text-small text-muted mb-2">We email you when your account is signed in from a country or browser it hasn't used in the last 90 days, at most once a day.{% if not (v.is_activated and v.email) %} <strong>This needs a verified email address.</strong>{% endif %}</p>
+        <p class="text-small text-muted mb-2">{{ _("We email you when your account is signed in from a country or browser it hasn't used in the last 90 days, at most once a day.") }}{% if not (v.is_activated and v.email) %} <strong>{{ _("This needs a verified email address.") }}</strong>{% endif %}</p>
         <div class="d-lg-flex">
-          <label for="signin-alerts-password" class="w-lg-25">Password</label>
+          <label for="signin-alerts-password" class="w-lg-25">{{ _("Password") }}</label>
           <div class="w-lg-100"><input type="password" class="form-control mb-2" id="signin-alerts-password" name="password" autocomplete="current-password" required></div>
         </div>
       </div>
       <div class="footer">
-        <div class="d-flex"><button type="submit" class="btn btn-secondary ml-auto">Save</button></div>
+        <div class="d-flex"><button type="submit" class="btn btn-secondary ml-auto">{{ pgettext("button", "Save") }}</button></div>
       </div>
     </form>
   </div>
 
-  <h2 class="h5">Log Out Everywhere</h2>
+  <h2 class="h5">{{ _("Log Out Everywhere") }}</h2>
 
-  <p class="text-small text-muted">Log all other devices out of your {{ 'SITE_NAME' | app_config }} account.</p>
+  <p class="text-small text-muted">{{ _("Log all other devices out of your %(site)s account.") }}</p>
 
   <div class="settings-section rounded">
 
@@ -274,7 +269,7 @@
 
         <div class="d-lg-flex">
 
-         <label for="forcelog-password" class="w-lg-25" id="email-password-label">Password</label>
+         <label for="forcelog-password" class="w-lg-25" id="email-password-label">{{ _("Password") }}</label>
 
          <div class="w-lg-100">
 
@@ -284,7 +279,7 @@
 
        </div>
 
-       <small id="emailpasswordRequired" class="form-text mt-1">This will also invalidate any existing recovery links associated with this account.</small>
+       <small id="emailpasswordRequired" class="form-text mt-1">{{ _("This will also invalidate any existing recovery links associated with this account.") }}</small>
 
      </div>
 
@@ -293,7 +288,7 @@
       <div class="d-flex">
 
         <input class="btn btn-primary ml-auto"
-        type="submit" value="Log out everywhere">
+        type="submit" value="{{ _('Log out everywhere') }}">
 
       </div>
 
@@ -303,42 +298,42 @@
 
 </div>
 
-  <h2 class="h5">Download your data</h2>
+  <h2 class="h5">{{ _("Download your data") }}</h2>
 
-  <p class="text-small text-muted">One file with your profile, posts, comments, votes, follows, blocks, mutes, bookmarks, drafts, circles, stories, shared drafts and where you signed in from. Chats aren't in it: they're end-to-end encrypted and the site can't read them.</p>
+  <p class="text-small text-muted">{{ _("One file with your profile, posts, comments, votes, follows, blocks, mutes, bookmarks, drafts, circles, stories, shared drafts and where you signed in from. Chats aren't in it: they're end-to-end encrypted and the site can't read them.") }}</p>
 
   <div class="settings-section rounded">
     <form action="/settings/export" method="post" class="body">
       <input type="hidden" name="formkey" value="{{ v.formkey }}">
       <div class="d-lg-flex">
-        <label for="export-password" class="w-lg-25">Password</label>
+        <label for="export-password" class="w-lg-25">{{ _("Password") }}</label>
         <div class="w-lg-100"><input type="password" class="form-control mb-2" id="export-password" name="password" autocomplete="current-password" required></div>
       </div>
-      <div class="d-flex"><button type="submit" class="btn btn-secondary ml-auto">Download my data</button></div>
+      <div class="d-flex"><button type="submit" class="btn btn-secondary ml-auto">{{ _("Download my data") }}</button></div>
     </form>
   </div>
 
-  <h2 class="h5">Message encryption</h2>
+  <h2 class="h5">{{ _("Message encryption") }}</h2>
 
-  <p class="text-small text-muted">Your chats are end-to-end encrypted, and the site can't read them. The key that opens them is kept locked: once with your password, and once with the recovery code you saved when chat was set up. If you forget your password, that code is the only way to read your old messages after a reset.</p>
+  <p class="text-small text-muted">{{ _("Your chats are end-to-end encrypted, and the site can't read them. The key that opens them is kept locked: once with your password, and once with the recovery code you saved when chat was set up. If you forget your password, that code is the only way to read your old messages after a reset.") }}</p>
 
   <div class="settings-section rounded">
     <div class="body">
-      <p class="mb-2">Lost your recovery code? Make a new one: the old one stops working.</p>
-      <a class="btn btn-secondary" href="/chat?recovery=new">Make a new recovery code</a>
+      <p class="mb-2">{{ _("Lost your recovery code? Make a new one: the old one stops working.") }}</p>
+      <a class="btn btn-secondary" href="/chat?recovery=new">{{ _("Make a new recovery code") }}</a>
     </div>
   </div>
 
 
-<h2 class="h5 text-danger ">Danger Zone</h2>
+<h2 class="h5 text-danger ">{{ _("Danger Zone") }}</h2>
 
 <div class="settings-section rounded">
 
   <div class="body">
 
-    <label for="delete_account">Delete Account</label>
+    <label for="delete_account">{{ _("Delete Account") }}</label>
 
-    <p>This will permanently delete your {{ 'SITE_NAME' | app_config }} Account. Be careful, this cannot be undone.</p>
+    <p>{{ _("This will permanently delete your %(site)s Account. Be careful, this cannot be undone.") }}</p>
 
   </div>
 
@@ -350,7 +345,7 @@
 
       <button class="btn btn-outline-danger ml-auto" id="delete_account_confirm"
       data-toggle="modal" data-target="#deleteAccountModal"
-      value="Delete Account">Delete Account</button>
+      value="{{ _('Delete Account') }}">{{ _("Delete Account") }}</button>
 
   </div>
 
@@ -374,8 +369,8 @@
   <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">Delete your {{ 'SITE_NAME' | app_config }} account</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <h5 class="modal-title">{{ _("Delete your %(site)s account") }}</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="{{ _('Close') }}">
           <span aria-hidden="true"><i class="fas fa-times"></i></span>
         </button>
       </div>
@@ -386,7 +381,7 @@
 
             <div class="d-lg-flex">
 
-              <label for="delete-password" class="w-lg-25" id="email-password-label">Password</label>
+              <label for="delete-password" class="w-lg-25" id="email-password-label">{{ _("Password") }}</label>
 
               <div class="w-lg-100">
 
@@ -399,7 +394,7 @@
             {% if v.mfa_secret %}
             <div class="d-lg-flex mt-3">
 
-              <label for="delete-mfa" class="w-lg-25" id="email-password-label">Two-Factor Code</label>
+              <label for="delete-mfa" class="w-lg-25" id="email-password-label">{{ _("Two-Factor Code") }}</label>
 
               <div class="w-lg-100">
 
@@ -412,11 +407,11 @@
 
             <div class="d-lg-flex mt-3">
 
-              <label for="delete-reason" class="w-lg-25" id="email-password-label">Feedback</label>
+              <label for="delete-reason" class="w-lg-25" id="email-password-label">{{ _("Feedback") }}</label>
 
               <div class="w-lg-100">
 
-                  <textarea class="form-control mb-2" id="delete-reason" name="delete_reason" placeholder="Tell us why you're leaving {{ 'SITE_NAME' | app_config }}. (Optional)"></textarea>
+                  <textarea class="form-control mb-2" id="delete-reason" name="delete_reason" placeholder="{{ _("Tell us why you're leaving %(site)s. (Optional)") }}"></textarea>
 
               </div>
 
@@ -424,8 +419,8 @@
 
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-link text-muted" data-dismiss="modal">Cancel</button>
-            <input type="submit" id="deleteAccountBUtton" class="btn btn-danger" value="Delete my account"></button>
+            <button type="button" class="btn btn-link text-muted" data-dismiss="modal">{{ _("Cancel") }}</button>
+            <input type="submit" id="deleteAccountBUtton" class="btn btn-danger" value="{{ _('Delete my account') }}"></button>
           </div>
         </form>
       </div>

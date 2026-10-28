@@ -48,8 +48,8 @@ class World:
         bs.count_post(self.db, bot.user_id, bots.utc_day(NOW))
         return br.outcome("posted", post_id=100 + len(self.posted))
 
-    def notify(self, user_id, message):
-        self.told.append((user_id, message))
+    def notify(self, user_id, message, **values):
+        self.told.append((user_id, message % values))      # alerts.notify: an English message and its values
 
     def run(self, owner_ok=True, now=NOW):
         return br.run_source(self.db, self.source, now, self.fetch, self.submit, self.notify, lambda _: owner_ok)
@@ -160,8 +160,10 @@ def test_classify():
     assert br.classify(302, "/post/abc/title", {}, False).kind == "duplicate"
     assert br.classify(403, "", {"error": "x", "bot_refusal": "wait"}, False).kind == "wait"
     assert br.classify(403, "", {"error": "x", "bot_refusal": "stop"}, False).kind == "stop"
-    assert br.classify(403, "", {"error": "403 - +news disallows bots"}, True).kind == "guild"
-    assert br.classify(403, "", {"error": "403 - +news disallows bots"}, False).kind == "refused"
+    assert br.classify(403, "", {"error": "403 - +news disallows bots", "refusal": "guild"}, True).kind == "guild"
+    assert br.classify(403, "", {"error": "403 - +news disallows bots", "refusal": "guild"}, False).kind == "refused"
+    # read from the field the submit route sets, never from the words (they are in the reader's language)
+    assert br.classify(403, "", {"error": "+news: Zugriff verweigert"}, True).kind == "refused"
     assert br.classify(429, "", {"error": "Slow down"}, False).kind == "wait"
     assert br.classify(503, "", {}, False).kind == "wait"
     assert br.classify(400, "", {"error": "banned domain"}, False) == br.outcome("refused", "banned domain")

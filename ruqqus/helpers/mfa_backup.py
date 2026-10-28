@@ -13,6 +13,8 @@ import hashlib
 import hmac
 import secrets
 
+from ruqqus.helpers.i18n_runtime import tr, trn
+
 ALPHABET = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"        # 32 characters: 5 bits each, no 0 O 1 I
 CODE_LENGTH = 10
 COUNT = 10
@@ -64,8 +66,7 @@ def legacy_code_allowed(has_codes):
 def status_line(unused, has_codes):
     """What Settings says about the codes: (text, running_low)."""
     if not has_codes:
-        return "You haven't made backup codes yet.", True
+        return tr("You haven't made backup codes yet."), True
     if unused == 0:
-        return "You have no unused backup codes left.", True
-    word = "code" if unused == 1 else "codes"
-    return f"{unused} unused backup {word} left.", unused <= LOW
+        return tr("You have no unused backup codes left."), True
+    return trn("%(num)s unused backup code left.", "%(num)s unused backup codes left.", unused), unused <= LOW

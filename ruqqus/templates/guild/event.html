@@ -4,22 +4,24 @@
   `| safe`); a title the reader's word filter hides shows a notice. Going / Interested shows counts and the reader's own
   answer, never who. Add to calendar (.ics) is offered for public guilds only.
 #}
+{% macro count_tag(kind, n) %}<strong data-count="{{ kind }}">{{ n }}</strong>{% endmacro %}
+
 {% block pagetitle %}{{ event.title }}{% endblock %}
 
 {% block guildbody %}
 <article class="event-page" data-event="{{ event.id }}" data-rsvp="{{ b.permalink }}/events/{{ event.id }}/rsvp">
-  <p class="mb-2"><a href="{{ b.permalink }}/events"><i class="fas fa-arrow-left fa-fw" aria-hidden="true"></i>Events</a></p>
-  {% if event.status == 'cancelled' %}<div class="alert alert-secondary" role="status"><i class="fas fa-calendar-xmark mr-2" aria-hidden="true"></i>This event was cancelled.</div>{% endif %}
+  <p class="mb-2"><a href="{{ b.permalink }}/events"><i class="fas fa-arrow-left fa-fw" aria-hidden="true"></i>{{ _("Events") }}</a></p>
+  {% if event.status == 'cancelled' %}<div class="alert alert-secondary" role="status"><i class="fas fa-calendar-xmark mr-2" aria-hidden="true"></i>{{ _("This event was cancelled.") }}</div>{% endif %}
   <h1 class="h4 mb-2">{{ event.title }}</h1>
 
   <dl class="event-facts">
-    <dt><i class="fas fa-clock fa-fw" aria-hidden="true"></i><span class="sr-only">When</span></dt>
+    <dt><i class="fas fa-clock fa-fw" aria-hidden="true"></i><span class="sr-only">{{ _("When") }}</span></dt>
     <dd>
-      <time class="event-time" datetime="{{ event.starts_utc | iso_utc }}" data-utc="{{ event.starts_utc }}" data-end="{{ event.ends_utc }}" data-long>{{ event.starts_utc | timestamp_label }} to {{ event.ends_utc | timestamp_label }}</time>
-      {% if event.status == 'live' %}<span class="badge badge-danger ml-1">Happening now</span>{% elif event.status == 'over' %}<span class="badge badge-light ml-1">Over</span>{% endif %}
+      <time class="event-time" datetime="{{ event.starts_utc | iso_utc }}" data-utc="{{ event.starts_utc }}" data-end="{{ event.ends_utc }}" data-long>{# Translators: when an event starts and ends #}{{ _("%(start)s to %(end)s", start=event.starts_utc | timestamp_label, end=event.ends_utc | timestamp_label) }}</time>
+      {% if event.status == 'live' %}<span class="badge badge-danger ml-1">{{ _("Happening now") }}</span>{% elif event.status == 'over' %}<span class="badge badge-light ml-1">{{ pgettext("event", "Over") }}</span>{% endif %}
     </dd>
     {% if event.location_text or event.location_url %}
-    <dt><i class="fas fa-location-dot fa-fw" aria-hidden="true"></i><span class="sr-only">Where</span></dt>
+    <dt><i class="fas fa-location-dot fa-fw" aria-hidden="true"></i><span class="sr-only">{{ _("Where") }}</span></dt>
     <dd>
       {% if event.location_text %}{{ event.location_text }}{% endif %}
       {% if event.location_url %}{% if event.location_text %} · {% endif %}<a href="{{ event.location_url }}" rel="nofollow ugc noopener noreferrer" target="_blank">{{ event.location_url | link_host }}</a>{% endif %}
@@ -28,16 +30,17 @@
   </dl>
 
   <div class="event-rsvp" aria-live="polite">
-    <div class="event-counts"><strong data-count="going">{{ event.going }}</strong> going · <strong data-count="interested">{{ event.interested }}</strong> interested</div>
+    <div class="event-counts">{# Translators: how many people answered that they are going to an event #}{{ ngettext("%(count)s going", "%(count)s going", event.going, count=count_tag("going", event.going)) }}
+    {#- Translators: how many people answered that they are interested in an event #} · {{ ngettext("%(count)s interested", "%(count)s interested", event.interested, count=count_tag("interested", event.interested)) }}</div>
     {% if not rsvp_refusal %}
-    <div class="event-rsvp-buttons" role="group" aria-label="Your answer">
-      <button type="button" class="btn btn-sm {{ 'btn-primary' if mine == 'going' else 'btn-secondary' }}" data-rsvp-status="going" aria-pressed="{{ 'true' if mine == 'going' else 'false' }}"><i class="fas fa-check fa-fw" aria-hidden="true"></i>Going</button>
-      <button type="button" class="btn btn-sm {{ 'btn-primary' if mine == 'interested' else 'btn-secondary' }}" data-rsvp-status="interested" aria-pressed="{{ 'true' if mine == 'interested' else 'false' }}"><i class="fas fa-star fa-fw" aria-hidden="true"></i>Interested</button>
-      <button type="button" class="btn btn-sm btn-link text-muted" data-rsvp-status="none"{% if not mine %} hidden{% endif %}>Not going</button>
+    <div class="event-rsvp-buttons" role="group" aria-label="{{ _('Your answer') }}">
+      <button type="button" class="btn btn-sm {{ 'btn-primary' if mine == 'going' else 'btn-secondary' }}" data-rsvp-status="going" aria-pressed="{{ 'true' if mine == 'going' else 'false' }}"><i class="fas fa-check fa-fw" aria-hidden="true"></i>{{ pgettext("event answer", "Going") }}</button>
+      <button type="button" class="btn btn-sm {{ 'btn-primary' if mine == 'interested' else 'btn-secondary' }}" data-rsvp-status="interested" aria-pressed="{{ 'true' if mine == 'interested' else 'false' }}"><i class="fas fa-star fa-fw" aria-hidden="true"></i>{{ pgettext("event answer", "Interested") }}</button>
+      <button type="button" class="btn btn-sm btn-link text-muted" data-rsvp-status="none"{% if not mine %} hidden{% endif %}>{{ pgettext("event answer", "Not going") }}</button>
     </div>
-    <div class="text-muted text-small-extra mt-1">Only the numbers are shown: nobody sees who answered. You'll get a reminder an hour before.</div>
+    <div class="text-muted text-small-extra mt-1">{{ _("Only the numbers are shown: nobody sees who answered. You'll get a reminder an hour before.") }}</div>
     {% elif not v %}
-    <a class="btn btn-sm btn-primary" href="/login?redirect={{ request.path | urlencode }}">Sign in to answer</a>
+    <a class="btn btn-sm btn-primary" href="/login?redirect={{ request.path | urlencode }}">{{ _("Sign in to answer") }}</a>
     {% else %}
     <div class="text-muted text-small">{{ rsvp_refusal }}</div>
     {% endif %}
@@ -45,7 +48,7 @@
   </div>
 
   {% if event.hidden %}
-  <div class="alert alert-secondary text-small mt-3" role="status">Hidden by your word filter.</div>
+  <div class="alert alert-secondary text-small mt-3" role="status">{{ _("Hidden by your word filter.") }}</div>
   {% elif event.details_html %}
   <div class="event-details user-text mt-3">{{ event.details_html | safe }}</div>
   {% endif %}
@@ -56,10 +59,10 @@
   {% endif %}
 
   <div class="event-actions mt-4 d-flex flex-wrap align-items-center">
-    {% if ics %}<a class="btn btn-sm btn-link px-0 mr-3" href="{{ b.permalink }}/events/{{ event.id }}.ics"><i class="fas fa-calendar-plus fa-fw" aria-hidden="true"></i>Add to calendar</a>{% endif %}
+    {% if ics %}<a class="btn btn-sm btn-link px-0 mr-3" href="{{ b.permalink }}/events/{{ event.id }}.ics"><i class="fas fa-calendar-plus fa-fw" aria-hidden="true"></i>{{ _("Add to calendar") }}</a>{% endif %}
     {% if gm and event.status != 'cancelled' %}
-    <a class="btn btn-sm btn-link px-0 mr-3" href="{{ b.permalink }}/events/{{ event.id }}/edit"><i class="fas fa-pen fa-fw" aria-hidden="true"></i>Edit</a>
-    <button type="button" class="btn btn-sm btn-link text-danger px-0" data-guild-post="{{ b.permalink }}/events/{{ event.id }}/cancel" data-confirm="Cancel this event? Its page stays, marked Cancelled.">Cancel the event</button>
+    <a class="btn btn-sm btn-link px-0 mr-3" href="{{ b.permalink }}/events/{{ event.id }}/edit"><i class="fas fa-pen fa-fw" aria-hidden="true"></i>{{ pgettext("verb", "Edit") }}</a>
+    <button type="button" class="btn btn-sm btn-link text-danger px-0" data-guild-post="{{ b.permalink }}/events/{{ event.id }}/cancel" data-confirm="{{ _('Cancel this event? Its page stays, marked Cancelled.') }}">{{ _("Cancel the event") }}</button>
     {% endif %}
   </div>
 </article>

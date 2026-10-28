@@ -1,7 +1,7 @@
 {% extends "default.html" %}
 
 {% block title %}
-<title>Unable to post comment</title>
+<title>{{ _("Unable to post comment") }}</title>
 {% endblock %}
 
 {% block pagetype %}message{% endblock %}
@@ -9,16 +9,16 @@
 {% block content %}
 <div class="">
 
-	<h1>Whoops!</h1>
-	<p class="text-left">Although {{ 'SITE_NAME' | app_config }} puts your freedom of speech first, there are a few things that we don't allow here:</p>
+	<h1>{{ _("Whoops!") }}</h1>
+	<p class="text-left">{{ _("Although %(site)s puts your freedom of speech first, there are a few things that we don't allow here:") }}</p>
 	<ul>
-	<li>Digitally malicious content</li>
-	<li>Deceptive URL shorteners</li>
-	<li>Copyright infringement</li>
-	<li>Spam</li>
+	<li>{{ _("Digitally malicious content") }}</li>
+	<li>{{ _("Deceptive URL shorteners") }}</li>
+	<li>{{ _("Copyright infringement") }}</li>
+	<li>{{ _("Spam") }}</li>
 	</ul>
 
-	<p>Please remove the following link(s) from your comment, and then you will be able to post it:</p>
+	<p>{{ _("Please remove the following link(s) from your comment, and then you will be able to post it:") }}</p>
 
 	<ul>
 	{% for site in badlinks %}
@@ -35,14 +35,14 @@
 				{% if parent_fullname %}<input type="hidden" name="parent_fullname" value="{{ parent_fullname }}">{% endif %}
 				{% if parent_submission %}<input type="hidden" name="submission" value="{{ parent_submission }}">{% endif %}
 
-				<textarea name="body" form="comment-failed-form" class="comment-box form-control rounded" id="comment-failed-body" aria-label="With textarea" placeholder="Add your comment..." rows="3">{{ body }}</textarea> 
+				<textarea name="body" form="comment-failed-form" class="comment-box form-control rounded" id="comment-failed-body" aria-label="{{ _('With textarea') }}" placeholder="{{ _('Add your comment...') }}" rows="3">{{ body }}</textarea> 
 
 				<div class="comment-format"> 
-					<small class="format pl-0"><i class="fas fa-bold" aria-hidden="true" onclick="makeBold('comment-failed-body')" data-toggle="tooltip" data-placement="bottom" title="Bold"></i></small> 
-					<small class="format"><i class="fas fa-italic" aria-hidden="true" onclick="makeItalics('comment-failed-body')" data-toggle="tooltip" data-placement="bottom" title="Italicize"></i></small> 
-					<small class="format"><i class="fas fa-quote-right" aria-hidden="true" onclick="makeQuote('comment-failed-body')" data-toggle="tooltip" data-placement="bottom" title="Quote"></i></small> 
+					<small class="format pl-0"><i class="fas fa-bold" aria-hidden="true" onclick="makeBold('comment-failed-body')" data-toggle="tooltip" data-placement="bottom" title="{{ _('Bold') }}"></i></small> 
+					<small class="format"><i class="fas fa-italic" aria-hidden="true" onclick="makeItalics('comment-failed-body')" data-toggle="tooltip" data-placement="bottom" title="{{ _('Italicize') }}"></i></small> 
+					<small class="format"><i class="fas fa-quote-right" aria-hidden="true" onclick="makeQuote('comment-failed-body')" data-toggle="tooltip" data-placement="bottom" title="{{ pgettext('formatting', 'Quote') }}"></i></small> 
 					<small class="format"><i class="fas fa-link" aria-hidden="true"></i></small> 
-					<button form="comment-failed-form" class="btn btn-primary ml-auto">Comment</button> 
+					<button form="comment-failed-form" class="btn btn-primary ml-auto">{{ pgettext('button', 'Comment') }}</button> 
 				</div> 
 			</form> 
 		</div>

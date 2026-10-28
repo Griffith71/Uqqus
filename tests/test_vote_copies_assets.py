@@ -85,15 +85,19 @@ def test_both_post_loaders_attach_where_the_viewer_voted_after_setting_their_own
 # --- the page ---------------------------------------------------------------------------------------------------
 
 def test_a_locked_arrow_is_not_bound_to_the_vote_handlers_and_says_why_when_clicked():
-    for name in ("submission_listing.html", "submission.html"):
+    # the feed card draws its arrows twice (the column from 768px, the phone's vote pill), the post page once
+    for name, arrows in (("submission_listing.html", 4), ("submission.html", 2)):
         html = read("ruqqus", "templates", name)
         assert html.count("{% set locked = p.voted_elsewhere %}") == 1, name
-        assert html.count('onclick="voteLocked(this)"') == 2 and html.count('data-locked-message="{{ locked.message }}"') == 2, name
-        assert html.count('aria-disabled="true" title="{{ locked.message }}"') == 2, name
+        assert html.count('onclick="voteLocked(this)"') == arrows, name
+        assert html.count('data-locked-message="{{ locked.message }}"') == arrows, name
+        assert html.count('aria-disabled="true" title="{{ locked.message }}"') == arrows, name
         # the vote classes and data attributes are only there when the arrow is live
-        assert "{{ 'vote-locked' if locked else 'upvote-button' }}" in html and "{{ 'vote-locked' if locked else 'downvote-button' }}" in html, name
-        assert html.count('{% else %}data-id-up="{{ p.base36id }}" data-content-type="post"{% endif %}') == 1, name
-        assert html.count('{% else %}data-id-down="{{ p.base36id }}" data-content-type="post"{% endif %}') == 1, name
+        assert html.count("{{ 'vote-locked' if locked else 'upvote-button' }}") == arrows // 2, name
+        assert html.count("{{ 'vote-locked' if locked else 'downvote-button' }}") == arrows // 2, name
+        live_up = re.findall(r'\{% else %\}(?:aria-pressed="[^"]*" )?data-id-up="\{\{ p\.base36id \}\}" data-content-type="post"\{% endif %\}', html)
+        live_down = re.findall(r'\{% else %\}(?:aria-pressed="[^"]*" )?data-id-down="\{\{ p\.base36id \}\}" data-content-type="post"\{% endif %\}', html)
+        assert len(live_up) == arrows // 2 and len(live_down) == arrows // 2, name
 
 
 def test_a_refused_vote_puts_the_arrow_and_the_score_back():

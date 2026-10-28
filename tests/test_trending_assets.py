@@ -96,6 +96,7 @@ def test_a_viewers_list_comes_from_their_filters_regions_first():
 
     assert ts.scopes_for(["AU", "NZ"], ["en"]) == ["region:AU", "region:NZ", "lang:en"]
     assert ts.scopes_for() == [] and ts.scopes_for(None, None) == []
+    assert ts.scopes_for([], ["und", "es"]) == ["lang:es"]          # "Other or unknown" has no list of its own
     assert "_resolve_active_filters(v)" in ROUTES
 
 
@@ -145,8 +146,8 @@ def test_the_box_is_in_the_right_sidebar_of_both_page_shells_for_everyone():
 
 def test_the_topic_page_can_be_scrolled_like_any_feed():
     html = read("ruqqus", "templates", "trending_topic.html")
-    assert 'aria-label="Page navigation"' in html and 'class="pagination' in html
-    assert re.search(r">\s*Next\s*<", html) and 'class="posts' in html
+    assert "aria-label=\"{{ _('Page navigation') }}\"" in html and 'class="pagination' in html
+    assert 'rel="next"' in html and 'class="posts' in html          # the next page is found by rel, not by its label
     assert '{% include "submission_listing.html" %}' in html       # authors are drawn by the shared card
 
 

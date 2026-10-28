@@ -28,7 +28,8 @@ def test_one_field_keeps_the_radio_and_the_ticks_in_step_before_anyone_reads_it(
 
 
 def test_the_pill_names_what_is_chosen_and_stays_open_while_ticking():
-    assert "return name + ' +1';" in CARD and "return chosen.circles.length + ' circles';" in CARD
+    assert "return tr('%(name)s +1', {name: name});" in CARD
+    assert "return trn('%(num)s circle', '%(num)s circles', chosen.circles.length);" in CARD
     assert "if (input.name === 'audience' && input.value === '0') window.setTimeout(function () { pill.open = false; }, 120);" in CARD
     assert "audience.dispatchEvent(new Event('change', { bubbles: true }));" in INLINE_JS          # after a post, the pill is redrawn
 

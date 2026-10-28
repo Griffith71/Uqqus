@@ -2,7 +2,8 @@
 
 {% block title %}
 <title>{{ p.title | safe}}</title>
-<meta name="description" content="posted {{ p.age_string }} by @{{ author_of(p, v).username }} in +{{ p.board.name }}">
+{# Translators: a post's description for link previews: when it was posted ("5 minutes ago"), who posted it and in which guild #}
+<meta name="description" content="{{ _('posted %(age)s by @%(name)s in +%(guild)s', age=p.age_string, name=author_of(p, v).username, guild=p.board.name) }}">
 {% endblock %}
 
 {% block pagetype %}thread{% endblock %}

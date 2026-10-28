@@ -119,15 +119,15 @@
   function runPreview() {
     if (!form.dataset.preview) return;
     previewButton.disabled = true;
-    say('Working it out…', false);
+    say(tr('Working it out…'), false);
     fetch(form.dataset.preview, { method: 'POST', body: new FormData(form), credentials: 'same-origin' })
       .then(function (r) {
         return r.json().then(function (data) { return { ok: r.ok, data: data }; });
       })
       .then(function (answer) {
         var data = answer.data || {};
-        if (data.summary) drawSummary(data.summary, 'What it would do (not saved yet)');
-        if (!answer.ok) { say(data.error || 'Could not preview that. Try again.', true); return; }
+        if (data.summary) drawSummary(data.summary, tr('What it would do (not saved yet)'));
+        if (!answer.ok) { say(data.error || tr('Could not preview that. Try again.'), true); return; }
         preview.innerHTML = data.html;
         if (data.note) {
           var note = document.createElement('p');
@@ -137,7 +137,7 @@
         }
         if (typeof bindPostCards === 'function') bindPostCards(preview);
       })
-      .catch(function () { say('Could not preview that. Try again.', true); })
+      .catch(function () { say(tr('Could not preview that. Try again.'), true); })
       .then(function () { previewButton.disabled = false; });
   }
 

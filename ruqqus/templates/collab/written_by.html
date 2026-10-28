@@ -4,27 +4,29 @@
   who typed it, with a legend and shares. Public for a published revision; for a draft, its authors only. Tints are
   fixed classes (.collab-tint-0..7 in both stylesheets); every stretch also says who typed it on hover.
 #}
-{% block pagetitle %}Who wrote what{% endblock %}
-{% block heading %}Who wrote what{% endblock %}
+{% block pagetitle %}{{ _("Who wrote what") }}{% endblock %}
+{% block heading %}{{ _("Who wrote what") }}{% endblock %}
 {% block robots %}{% endblock %}
 
 {% block page %}
 {% if draft %}
-<p class="mb-2"><a href="/collab/{{ doc[0] }}"><i class="fas fa-arrow-left fa-fw" aria-hidden="true"></i>Back to the draft</a></p>
-<p class="text-muted text-small">The working copy as it is now. Only its authors can see this until it's published.</p>
+<p class="mb-2"><a href="/collab/{{ doc[0] }}"><i class="fas fa-arrow-left fa-fw" aria-hidden="true"></i>{{ _("Back to the draft") }}</a></p>
+<p class="text-muted text-small">{{ _("The working copy as it is now. Only its authors can see this until it's published.") }}</p>
 {% else %}
-<p class="mb-2"><a href="{{ p.permalink }}"><i class="fas fa-arrow-left fa-fw" aria-hidden="true"></i>Back to the post</a> · <a href="/post/{{ p.base36id }}/revisions">Revisions</a></p>
-<p class="text-muted text-small">Revision {{ row[1] }}, published <span title="{{ row[7] | timestamp_label }}">{{ row[7] | age_label }}</span>. Every character is credited to whoever typed or pasted it.</p>
+<p class="mb-2"><a href="{{ p.permalink }}"><i class="fas fa-arrow-left fa-fw" aria-hidden="true"></i>{{ _("Back to the post") }}</a> · <a href="/post/{{ p.base36id }}/revisions">{{ _("Revisions") }}</a></p>
+{% set published %}<span title="{{ row[7] | timestamp_label }}">{{ row[7] | age_label }}</span>{% endset %}
+{# Translators: %(age)s is how long ago it was published, such as "3 days ago" #}
+<p class="text-muted text-small">{{ _("Revision %(number)s, published %(age)s.", number=row[1], age=published) }} {{ _("Every character is credited to whoever typed or pasted it.") }}</p>
 {% endif %}
 
-<div class="collab-legend" aria-label="Authors">
+<div class="collab-legend" aria-label="{{ _('Authors') }}">
   {% for s in legend %}
-  <span class="collab-share"><span class="collab-swatch collab-tint-{{ s.tint }}" aria-hidden="true"></span>{% if s.link %}<a href="{{ s.link }}">{{ s.name }}</a>{% else %}{{ s.name }}{% endif %} {{ s.percent }}%{% if s.from_original %} <span class="text-muted">(from the original)</span>{% endif %}</span>
+  <span class="collab-share"><span class="collab-swatch collab-tint-{{ s.tint }}" aria-hidden="true"></span>{% if s.link %}<a href="{{ s.link }}">{{ s.name }}</a>{% else %}{{ s.name }}{% endif %} {{ _("%(percent)s%%", percent=s.percent) }}{% if s.from_original %} <span class="text-muted">{{ _("(from the original)") }}</span>{% endif %}</span>
   {% else %}
-  <span class="text-muted text-small">Nothing written yet.</span>
+  <span class="text-muted text-small">{{ _("Nothing written yet.") }}</span>
   {% endfor %}
 </div>
 
-<h1 class="h5 collab-blame collab-blame-title">{% for who, piece in title_pieces %}<span class="collab-tint-{{ who.tint if who.tint is not none else 'none' }}" title="Typed by {{ who.name }}">{{ piece }}</span>{% endfor %}</h1>
-<div class="collab-blame">{% for who, piece in body_pieces %}<span class="collab-tint-{{ who.tint if who.tint is not none else 'none' }}" title="Typed by {{ who.name }}">{{ piece }}</span>{% endfor %}</div>
+<h1 class="h5 collab-blame collab-blame-title">{% for who, piece in title_pieces %}<span class="collab-tint-{{ who.tint if who.tint is not none else 'none' }}" title="{{ _('Typed by %(name)s', name=who.name) }}">{{ piece }}</span>{% endfor %}</h1>
+<div class="collab-blame">{% for who, piece in body_pieces %}<span class="collab-tint-{{ who.tint if who.tint is not none else 'none' }}" title="{{ _('Typed by %(name)s', name=who.name) }}">{{ piece }}</span>{% endfor %}</div>
 {% endblock %}

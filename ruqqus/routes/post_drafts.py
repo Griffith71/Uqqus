@@ -7,6 +7,7 @@ from flask import g, jsonify, request
 from ruqqus.__main__ import app, limiter
 from ruqqus.classes import PostDraft
 from ruqqus.helpers import post_drafts as pd
+from ruqqus.helpers.i18n_runtime import tr
 from ruqqus.helpers.wrappers import auth_required, validate_formkey
 
 
@@ -44,7 +45,7 @@ Form data: the composer's own fields (`title`, `url`, `body`, `forward_guilds`,
     try:
         fields = pd.clean_fields(request.form)
         if pd.is_empty(fields):
-            raise pd.PostFieldError("There is nothing to save yet.")
+            raise pd.PostFieldError(tr("There is nothing to save yet."))
 
         now = int(time.time())
         raw_when = (request.form.get("publish_utc") or "").strip()
@@ -65,11 +66,11 @@ Form data: the composer's own fields (`title`, `url`, `body`, `forward_guilds`,
         if draft is None or draft.status == "published":
             draft = None   # gone or already published: this save becomes a new draft
         elif draft.status == "publishing":
-            return jsonify({"error": "That post is being published right now."}), 409
+            return jsonify({"error": tr("That post is being published right now.")}), 409
 
     if draft is None:
         if _open_drafts(v).count() >= pd.DRAFT_LIMIT:
-            return jsonify({"error": f"You can keep {pd.DRAFT_LIMIT} drafts. Delete one to save another."}), 400
+            return jsonify({"error": tr("You can keep %(limit)s drafts. Delete one to save another.", limit=pd.DRAFT_LIMIT)}), 400
         draft = PostDraft(user_id=v.id, created_utc=now)
 
     draft.set_fields(fields)
@@ -95,7 +96,7 @@ def unschedule_draft(did, v):
     """Turn a scheduled post back into a plain draft."""
     draft = _mine(v, did)
     if not draft or draft.status not in ("scheduled", "failed"):
-        return jsonify({"error": "That post isn't scheduled."}), 404
+        return jsonify({"error": tr("That post isn't scheduled.")}), 404
     draft.status = "draft"
     draft.publish_utc = None
     draft.updated_utc = int(time.time())
@@ -110,8 +111,8 @@ def delete_draft(did, v):
     """Delete a draft or cancel a scheduled post."""
     draft = _mine(v, did)
     if not draft:
-        return jsonify({"error": "That draft doesn't exist."}), 404
+        return jsonify({"error": tr("That draft doesn't exist.")}), 404
     if draft.status == "publishing":
-        return jsonify({"error": "That post is being published right now."}), 409
+        return jsonify({"error": tr("That post is being published right now.")}), 409
     g.db.delete(draft)
     return jsonify({"deleted": did})

@@ -20,7 +20,8 @@ from ruqqus.helpers.get import *
 from ruqqus.helpers.thumbs import *
 from ruqqus.helpers.session_helpers import *
 from ruqqus.helpers.aws import *
-from ruqqus.helpers.alerts import send_notification
+from ruqqus.helpers.alerts import notify
+from ruqqus.helpers.i18n_runtime import N_, msg, tr, tr_lazy
 from ruqqus.helpers.text import split_title_body
 from ruqqus.helpers.languages import detect_language
 from ruqqus.helpers.post_fields import clean_title, check_body, normalize_url, flag, PostFieldError
@@ -48,15 +49,15 @@ from flask import session as flask_session
 
 
 BAN_REASONS = ['',  #placeholder
-               "Deceptive URL shorteners are not permitted.",
+               N_("Deceptive URL shorteners are not permitted."),
                "",  # placeholder, formerly "no porn"
-               "Copyright infringement is not permitted.",
-               "Digitally malicious content is not permitted.",
-               "Spam",
-               "No doxxing",
-               "Sexualizing minors",
-               'User safety - This site is a Ruqqus clone which is still displaying "Ruqqus" as its site name.',
-               "Engaging in or planning unlawful activity"
+               N_("Copyright infringement is not permitted."),
+               N_("Digitally malicious content is not permitted."),
+               N_("Spam"),
+               N_("No doxxing"),
+               N_("Sexualizing minors"),
+               N_('User safety - This site is a Ruqqus clone which is still displaying "Ruqqus" as its site name.'),
+               N_("Engaging in or planning unlawful activity")
                ]
 
 BUCKET = app.config.get("S3_BUCKET", "")
@@ -292,14 +293,15 @@ Optional file data:
     return apply_post_edit(p, primary, v, request.form, request.files.get("file"))
 
 
-COLLAB_EDIT_REFUSAL = "Edit this post in its shared draft, then publish the changes."
+COLLAB_EDIT_REFUSAL = tr_lazy("Edit this post in its shared draft, then publish the changes.")
 
 
 # the older picture upload stores files in the site's public bucket, where anyone with the address can open them, so a
 # post that isn't public (for circles, or in a Circle guild) never uses it; linked-media pictures follow the post's
 # audience (helpers/media/attach.py). Audit, carried from BACKEND_AUDIT_FINDINGS ("body_image to the public bucket").
-PUBLIC_UPLOAD_REFUSAL = ("A post that isn't public can't use this picture upload: its files can be opened by anyone "
-                         "with the address. Add the picture from your linked storage instead (Settings > Media).")
+PUBLIC_UPLOAD_REFUSAL = tr_lazy("A post that isn't public can't use this picture upload: its files can be opened by "
+                                "anyone with the address. Add the picture from your linked storage instead "
+                                "(Settings > Media).")
 
 
 def apply_post_edit(p, primary, v, form, upload, media_owner_ids=None):
@@ -325,7 +327,7 @@ def apply_post_edit(p, primary, v, form, upload, media_owner_ids=None):
     if "comment_permission" in form:
         comment_permission = cperm.parse(form["comment_permission"])
         if comment_permission is None:
-            return _edit_error("Choose who can comment.")
+            return _edit_error(tr("Choose who can comment."))
         refused = cperm.refusal(comment_permission, primary.is_anonymous)
         if refused:
             return _edit_error(refused)
@@ -341,7 +343,7 @@ def apply_post_edit(p, primary, v, form, upload, media_owner_ids=None):
         if (request.content_length or 0) > 16 * 1024 * 1024 and not v.has_premium:
             abort(413)
         if not (upload.content_type or "").startswith("image/"):
-            return _edit_error("Image files only.")
+            return _edit_error(tr("Image files only."))
     elif (form.get("remove_image") and url == old_url
           and (old_image_key or media_attach.is_media_url(old_url, app.config["SERVER_NAME"]))):
         url = ""
@@ -363,13 +365,15 @@ def apply_post_edit(p, primary, v, form, upload, media_owner_ids=None):
         bans = filter_comment_html(body_html)
         if bans:
             ban = bans[0]
-            reason = f"Remove the {ban.domain} link from your post and try again."
             if ban.reason:
-                reason += f" {ban.reason_text}"
+                reason = tr("Remove the %(domain)s link from your post and try again. %(reason)s", domain=ban.domain,
+                            reason=msg(ban.reason_text))
+            else:
+                reason = tr("Remove the %(domain)s link from your post and try again.", domain=ban.domain)
 
             #auto ban for digitally malicious content
             if any([x.reason==4 for x in bans]):
-                v.ban(days=30, reason="Digitally malicious content is not allowed.")
+                v.ban(days=30, reason=N_("Digitally malicious content is not allowed."))
                 abort(403)
 
             return _edit_error(reason, 403)
@@ -383,7 +387,7 @@ def apply_post_edit(p, primary, v, form, upload, media_owner_ids=None):
         domain_obj = get_domain(urlparse(url).netloc)
         if domain_obj and not domain_obj.can_submit:
             reason = BAN_REASONS[domain_obj.reason] if 0 < (domain_obj.reason or 0) < len(BAN_REASONS) else ""
-            return _edit_error(reason or "Links to that site aren't allowed.", 403)
+            return _edit_error(msg(reason) or tr("Links to that site aren't allowed."), 403)
         if domain_obj and domain_obj.embed_function:
             try:
                 embed = eval(domain_obj.embed_function)(url)
@@ -413,14 +417,14 @@ def apply_post_edit(p, primary, v, form, upload, media_owner_ids=None):
                 BadLink.link)).first()
         if badlink:
             if badlink.autoban:
-                text = f"Your {app.config['SITE_NAME']} account has been suspended for 1 day for the following reason:\n\n> Too much spam!"
-                send_notification(v, text)
+                notify(v, N_("Your %(site)s account has been suspended for 1 day for the following reason:\n\n> Too much spam!"))
                 v.ban(days=1, reason="spam")
 
                 return redirect('/notifications')
             else:
 
-                return _edit_error(f"The link `{badlink.link}` is not allowed. Reason: {badlink.reason}", 403)
+                return _edit_error(tr("The link `%(link)s` is not allowed. Reason: %(reason)s", link=badlink.link,
+                                      reason=badlink.reason), 403)
 
     if primary.is_profile_post and comment_permission != cperm.mode_of(primary):
         primary.comment_permission = comment_permission
@@ -613,10 +617,10 @@ def get_post_title(v):
     try:
         x = page_fetch.get(url, user_agent=page_fetch.BROWSER_AGENT)
     except page_fetch.FetchError:
-        return jsonify({"error": "Could not reach page"}), 400
+        return jsonify({"error": tr("Could not reach page")}), 400
 
     if not x.status == 200:
-        return jsonify({"error": f"Page returned {x.status}"}), x.status
+        return jsonify({"error": tr("Page returned %(status)s", status=x.status)}), x.status
 
 
     try:
@@ -628,7 +632,7 @@ def get_post_title(v):
 
         return jsonify(data)
     except BaseException:
-        return jsonify({"error": f"Could not find a title"}), 400
+        return jsonify({"error": tr("Could not find a title")}), 400
 
 
 def _build_standalone_submission(author_id, target, title, body, body_html,
@@ -911,7 +915,7 @@ Optional file data:
 
     raw_permission = request.form.get("comment_permission", "")
     comment_permission = cperm.EVERYONE if raw_permission.strip() == "" else cperm.parse(raw_permission)
-    permission_error = "Choose who can comment." if comment_permission is None else \
+    permission_error = tr("Choose who can comment.") if comment_permission is None else \
         cperm.refusal(comment_permission, flag(request.form, "anonymous"))
     if permission_error:
         return {"html": lambda: (render_template("submit.html",
@@ -935,23 +939,23 @@ Optional file data:
     to_profile = True if for_circles or space_wanted else flag(request.form, "post_to_profile", True)
     guilds_only = bool(forward_guild_names) and not to_profile
     if not to_profile and not forward_guild_names and not request.form.get("circle_guild"):
-        return {"html": lambda: (render_template("submit.html", v=v, error="Choose where to post.", title=title, url=url,
+        return {"html": lambda: (render_template("submit.html", v=v, error=tr("Choose where to post."), title=title, url=url,
                                                  body=body, text=text_for_redisplay, b=None,
                                                  forward_guild_names=forward_guild_names), 400),
-                "api": lambda: ({"error": "Choose where to post."}, 400)
+                "api": lambda: ({"error": tr("Choose where to post.")}, 400)
                 }
 
     if not title:
         return {"html": lambda: (render_template("submit.html",
                                                  v=v,
-                                                 error="Please enter a better title.",
+                                                 error=tr("Please enter a better title."),
                                                  title=title,
                                                  url=url,
                                                  body=body,
                                                  text=text_for_redisplay,
                                                  b=None, forward_guild_names=forward_guild_names
                                                  ), 400),
-                "api": lambda: ({"error": "Please enter a better title"}, 400)
+                "api": lambda: ({"error": tr("Please enter a better title")}, 400)
                 }
 
     # if len(title)<10:
@@ -1026,15 +1030,15 @@ Optional file data:
         if not domain_obj.can_submit:
           
             if domain_obj.reason==4:
-                v.ban(days=30, reason="Digitally malicious content")
+                v.ban(days=30, reason=N_("Digitally malicious content"))
             elif domain_obj.reason==9:
-                v.ban(days=7, reason="Engaging in illegal activity")
+                v.ban(days=7, reason=N_("Engaging in illegal activity"))
             elif domain_obj.reason==7:
-                v.ban(reason="Sexualizing minors")
+                v.ban(reason=N_("Sexualizing minors"))
 
             # the link is refused, as when editing a post (edit_post)
             reason = BAN_REASONS[domain_obj.reason] if 0 < (domain_obj.reason or 0) < len(BAN_REASONS) else ""
-            reason = reason or "Links to that site aren't allowed."
+            reason = msg(reason) or tr("Links to that site aren't allowed.")
             return {"html": lambda: (render_template("submit.html",
                                                      v=v,
                                                      error=reason,
@@ -1068,13 +1072,13 @@ Optional file data:
     if circle_guild_name:
         circle_board = get_guild(circle_guild_name, graceful=True)
         if circle_board is None or not circle_board.is_circle or circle_board.is_banned:
-            circle_problem = "That isn't a Circle guild."
+            circle_problem = tr("That isn't a Circle guild.")
         elif circle_board.has_ban(v):
-            circle_problem = f"You are exiled from +{circle_board.name}."
+            circle_problem = tr("You are exiled from +%(guild)s.", guild=circle_board.name)
         elif not (circle_board.has_contributor(v) or circle_board.has_mod(v)) and v.admin_level < 4:
-            circle_problem = f"Only members of +{circle_board.name} can post in it."
+            circle_problem = tr("Only members of +%(guild)s can post in it.", guild=circle_board.name)
         elif forward_guild_names:
-            circle_problem = "A post in a Circle guild can't be forwarded to another guild."
+            circle_problem = tr("A post in a Circle guild can't be forwarded to another guild.")
         else:
             circle_problem = None
         if circle_problem:
@@ -1096,63 +1100,68 @@ Optional file data:
         if not target or target.name.lower() == PROFILE_BOARD_NAME:
             return {"html": lambda fn=forward_name: (render_template("submit.html",
                                                      v=v,
-                                                     error=f"+{fn} doesn't exist.",
+                                                     error=tr("+%(guild)s doesn't exist.", guild=fn),
                                                      title=title,
                                                      url=url, body=body, text=text_for_redisplay,
                                                      b=None, forward_guild_names=forward_guild_names
                                                      ), 400),
-                    "api": lambda fn=forward_name: ({"error": f"+{fn} doesn't exist."}, 400)
+                    "api": lambda fn=forward_name: ({"error": tr("+%(guild)s doesn't exist.", guild=fn), "refusal": "guild"}, 400)
                     }
 
         if target.is_banned:
             return {"html": lambda: (render_template("submit.html",
                                                      v=v,
-                                                     error=f"+{target.name} has been banned.",
+                                                     error=tr("+%(guild)s has been banned.", guild=target.name),
                                                      title=title,
                                                      url=url, body=body, text=text_for_redisplay,
                                                      b=None, forward_guild_names=forward_guild_names
                                                      ), 403),
-                    "api": lambda: ({"error": f"403 Forbidden - +{target.name} has been banned."}, 403)
+                    "api": lambda: ({"error": tr("403 Forbidden - +%(guild)s has been banned.", guild=target.name),
+                                     "refusal": "guild"}, 403)
                     }
 
         if target.has_ban(v):
             return {"html": lambda: (render_template("submit.html",
                                                      v=v,
-                                                     error=f"You are exiled from +{target.name}.",
+                                                     error=tr("You are exiled from +%(guild)s.", guild=target.name),
                                                      title=title,
                                                      url=url, body=body, text=text_for_redisplay,
                                                      b=None, forward_guild_names=forward_guild_names
                                                      ), 403),
-                    "api": lambda: ({"error": f"403 Not Authorized - You are exiled from +{target.name}"}, 403)
+                    "api": lambda: ({"error": tr("403 Not Authorized - You are exiled from +%(guild)s", guild=target.name),
+                                     "refusal": "guild"}, 403)
                     }
 
         if (target.restricted_forwarding or target.is_private) and not (
                 target.can_forward(v)):
             return {"html": lambda: (render_template("submit.html",
                                                      v=v,
-                                                     error=f"You can't forward to +{target.name}: it only accepts forwards from approved contributors.",
+                                                     error=tr("You can't forward to +%(guild)s: it only accepts forwards "
+                                                              "from approved contributors.", guild=target.name),
                                                      title=title,
                                                      url=url,
                                                      body=body,
                                                      text=text_for_redisplay,
                                                      b=None, forward_guild_names=forward_guild_names
                                                      ), 403),
-                    "api": lambda: ({"error": f"403 Not Authorized - +{target.name} only accepts forwards from approved contributors"}, 403)
+                    "api": lambda: ({"error": tr("403 Not Authorized - +%(guild)s only accepts forwards from approved contributors",
+                                                guild=target.name), "refusal": "guild"}, 403)
                     }
 
         if target.disallowbots and (request.headers.get("X-User-Type", "").lower() == "bot" or v.is_bot):
-            return {"api": lambda: ({"error": f"403 Not Authorized - +{target.name} disallows bots from forwarding!"}, 403)}
+            return {"api": lambda: ({"error": tr("403 Not Authorized - +%(guild)s disallows bots from forwarding!",
+                                                    guild=target.name), "refusal": "guild"}, 403)}
 
         # a guild that requires a flair is forwarded to from the post's own Forward dialog, where one is picked
         # (helpers/guild_flair.py): "Forward to guilds" names several guilds and can't pick one for each
         if target.require_flair and flair_store.ids_of(g.db, target.id):
-            flair_error = flair_rules.COMPOSER_REQUIRED.format(guild=target.name)
+            flair_error = flair_rules.composer_required(target.name)
             return {"html": lambda fe=flair_error: (render_template("submit.html", v=v, error=fe, title=title, url=url,
                                                                    body=body, text=text_for_redisplay, b=None,
                                                                    forward_guild_names=forward_guild_names), 403),
-                    # 403 naming the guild, like every other guild refusal: a bot then posts again without forwarding
+                    # 403 with refusal "guild", like every other guild refusal: a bot then posts again without forwarding
                     # (helpers/bot_runner.classify); 409 read as "already posted", so the item was dropped (audit G-02)
-                    "api": lambda fe=flair_error: ({"error": fe}, 403)}
+                    "api": lambda fe=flair_error: ({"error": fe, "refusal": "guild"}, 403)}
 
         forward_boards.append(target)
 
@@ -1231,7 +1240,7 @@ Optional file data:
     if automated and max(len(similar_urls), len(similar_posts)) >= threshold:
         # the feed is repeating itself: this item is not posted, and nobody is suspended for it (the runner reads a
         # 409 as already posted: the item is marked seen and never tried again, bot_runner.classify)
-        message = "This is too much like what was posted automatically today."
+        message = tr("This is too much like what was posted automatically today.")
         return {"html": lambda: (render_template("submit.html", v=v, error=message, title=title, url=url, body=body,
                                                  text=text_for_redisplay, b=None,
                                                  forward_guild_names=forward_guild_names), 409),
@@ -1239,20 +1248,20 @@ Optional file data:
 
     if max(len(similar_urls), len(similar_posts)) >= threshold:
 
-        text = f"Your {app.config['SITE_NAME']} account has been suspended for 1 day for the following reason:\n\n> Too much spam!"
-        send_notification(v, text)
+        notify(v, N_("Your %(site)s account has been suspended for 1 day for the following reason:\n\n> Too much spam!"))
 
-        v.ban(reason="Spamming.",
+        v.ban(reason=N_("Spamming."),
               days=1)
 
         for alt in v.alts:
             if not alt.is_suspended:
-                alt.ban(reason="Spamming.", days=1)
+                alt.ban(reason=N_("Spamming."), days=1)
 
         for post in similar_posts + similar_urls:
             post.is_banned = True
             post.is_pinned = False
-            post.ban_reason = "Automatic spam removal. This happened because the post's creator submitted too much similar content too quickly."
+            post.ban_reason = N_("Automatic spam removal. This happened because the post's creator submitted too much "
+                                 "similar content too quickly.")
             g.db.add(post)
             ma=ModAction(
                     user_id=1,
@@ -1284,14 +1293,14 @@ Optional file data:
 
         return {"html": lambda: (render_template("submit.html",
                                                  v=v,
-                                                 error="2048 character limit for URLs.",
+                                                 error=tr("2048 character limit for URLs."),
                                                  title=title,
                                                  url=url,
                                                  body=body,
                                                  text=text_for_redisplay,
                                                  b=None, forward_guild_names=forward_guild_names
                                                  ), 400),
-                "api": lambda: ({"error": "2048 character limit for URLs."}, 400)
+                "api": lambda: ({"error": tr("2048 character limit for URLs.")}, 400)
                 }
 
     # render text
@@ -1306,13 +1315,15 @@ Optional file data:
     bans = filter_comment_html(body_html)
     if bans:
         ban = bans[0]
-        reason = f"Remove the {ban.domain} link from your post and try again."
         if ban.reason:
-            reason += f" {ban.reason_text}"
+            reason = tr("Remove the %(domain)s link from your post and try again. %(reason)s", domain=ban.domain,
+                        reason=msg(ban.reason_text))
+        else:
+            reason = tr("Remove the %(domain)s link from your post and try again.", domain=ban.domain)
             
         #auto ban for digitally malicious content
         if any([x.reason==4 for x in bans]):
-            v.ban(days=30, reason="Digitally malicious content is not allowed.")
+            v.ban(days=30, reason=N_("Digitally malicious content is not allowed."))
             abort(403)
             
         return {"html": lambda: (render_template("submit.html",
@@ -1349,8 +1360,7 @@ Optional file data:
                 BadLink.link)).first()
         if badlink:
             if badlink.autoban:
-                text = f"Your {app.config['SITE_NAME']} account has been suspended for 1 day for the following reason:\n\n> Too much spam!"
-                send_notification(v, text)
+                notify(v, N_("Your %(site)s account has been suspended for 1 day for the following reason:\n\n> Too much spam!"))
                 v.ban(days=1, reason="spam")
 
                 return redirect('/notifications')
@@ -1358,14 +1368,16 @@ Optional file data:
 
                 return {"html": lambda: (render_template("submit.html",
                                                          v=v,
-                                                         error=f"The link `{badlink.link}` is not allowed. Reason: {badlink.reason}.",
+                                                         error=tr("The link `%(link)s` is not allowed. Reason: %(reason)s.",
+                                                                  link=badlink.link, reason=badlink.reason),
                                                          title=title,
                                                          url=url,
                                                          body=body,
                                                          text=text_for_redisplay,
                                                          b=None, forward_guild_names=forward_guild_names
                                                          ), 400),
-                        "api": lambda: ({"error": f"The link `{badlink.link}` is not allowed. Reason: {badlink.reason}"}, 400)
+                        "api": lambda: ({"error": tr("The link `%(link)s` is not allowed. Reason: %(reason)s",
+                                                     link=badlink.link, reason=badlink.reason)}, 400)
                         }
 
     # check for embeddable video
@@ -1387,7 +1399,7 @@ Optional file data:
 
     if existing_dup_url and request.values.get("no_repost"):
         return {'html':lambda:redirect(existing_dup_url.permalink),
-		'api': lambda:({"error":"This content has already been posted", "repost":existing_dup_url.json}, 409)
+		'api': lambda:({"error": tr("This content has already been posted"), "repost":existing_dup_url.json}, 409)
 	       }
 
     if request.files.get('file') and not v.can_submit_image:
@@ -1467,7 +1479,7 @@ Optional file data:
     if circle_board is not None:
         raw_flair = request.form.get("guild_flair", "")
         circle_flair_id = flair_rules.parse_id(raw_flair) if raw_flair else None
-        circle_flair_error = "That isn't a flair." if raw_flair and circle_flair_id is None else flair_rules.forward_refusal(
+        circle_flair_error = tr("That isn't a flair.") if raw_flair and circle_flair_id is None else flair_rules.forward_refusal(
             circle_board.require_flair, circle_flair_id, flair_store.ids_of(g.db, circle_board.id), circle_board.name)
         if circle_flair_error:
             return {"html": lambda: (render_template("submit.html", v=v, error=circle_flair_error,
@@ -1565,10 +1577,10 @@ Optional file data:
         main_media = media_attach.own_asset(g.db, v.id, request.form.get("media"), kinds=("image",))
         if main_media is None:
             g.db.rollback()
-            return {"html": lambda: (render_template("submit.html", v=v, error="That upload can no longer be used. Add it again.",
+            return {"html": lambda: (render_template("submit.html", v=v, error=tr("That upload can no longer be used. Add it again."),
                                                      title=title, url=url, body=body, text=text_for_redisplay,
                                                      b=None, forward_guild_names=forward_guild_names), 400),
-                    "api": lambda: ({"error": "That upload can no longer be used. Add it again."}, 400)
+                    "api": lambda: ({"error": tr("That upload can no longer be used. Add it again.")}, 400)
                     }
         new_post.url = media_cdn.absolute(main_media.path)
         new_post.is_image = True
@@ -1589,14 +1601,14 @@ Optional file data:
         if not file.content_type.startswith('image/'):
             return {"html": lambda: (render_template("submit.html",
                                                          v=v,
-                                                         error=f"Image files only.",
+                                                         error=tr("Image files only."),
                                                          title=title,
                                                          url=url,
                                                          body=body,
                                                          text=text_for_redisplay,
                                                          b=None, forward_guild_names=forward_guild_names
                                                          ), 400),
-                        "api": lambda: ({"error": f"Image files only"}, 400)
+                        "api": lambda: ({"error": tr("Image files only")}, 400)
                         }
 
         name = f'post/{new_post.base36id}/{secrets.token_urlsafe(8)}'
@@ -1856,37 +1868,37 @@ Required form data:
         return {"error": refusal}, 403
 
     if primary.is_banned or primary.deleted_utc or primary.purged_utc:
-        return {"error": "This post can't be forwarded."}, 400
+        return {"error": tr("This post can't be forwarded.")}, 400
 
     if primary.audience:
-        return {"error": "A post for a Circle can't be forwarded to a guild."}, 403
+        return {"error": tr("A post for a Circle can't be forwarded to a guild.")}, 403
 
     target = get_guild(request.form.get("board", ""), graceful=True)
     if not target or target.name.lower() == PROFILE_BOARD_NAME:
-        return {"error": "That guild doesn't exist."}, 400
+        return {"error": tr("That guild doesn't exist.")}, 400
 
     if target.is_banned:
-        return {"error": f"+{target.name} has been banned."}, 403
+        return {"error": tr("+%(guild)s has been banned.", guild=target.name)}, 403
 
     if target.has_ban(v):
-        return {"error": f"Exiled from +{target.name}."}, 403
+        return {"error": tr("Exiled from +%(guild)s.", guild=target.name)}, 403
 
     if (target.restricted_forwarding or target.is_private) and not target.can_forward(v):
-        return {"error": f"+{target.name} only accepts forwards from approved contributors."}, 403
+        return {"error": tr("+%(guild)s only accepts forwards from approved contributors.", guild=target.name)}, 403
 
     if target.disallowbots and (request.headers.get("X-User-Type", "").lower() == "bot" or primary.is_bot or v.is_bot):
-        return {"error": f"403 Not Authorized - +{target.name} disallows bots from forwarding!"}, 403
+        return {"error": tr("403 Not Authorized - +%(guild)s disallows bots from forwarding!", guild=target.name)}, 403
 
     already = g.db.query(ForwardRelationship).filter_by(
         primary_submission_id=primary.id, board_id=target.id).first()
     if already:
-        return {"error": f"Already forwarded to +{target.name}."}, 409
+        return {"error": tr("Already forwarded to +%(guild)s.", guild=target.name)}, 409
 
     # the flair the forwarder picked for the guild's copy (helpers/guild_flair.py): one of the guild's, or required
     raw_flair = request.form.get("flair", "")
     flair_id = flair_rules.parse_id(raw_flair) if raw_flair else None
     if raw_flair and flair_id is None:
-        return {"error": "That isn't a flair."}, 400
+        return {"error": tr("That isn't a flair.")}, 400
     flair_refusal = flair_rules.forward_refusal(target.require_flair, flair_id, flair_store.ids_of(g.db, target.id),
                                                 target.name)
     if flair_refusal:
@@ -1935,7 +1947,8 @@ URL path parameters:
     return delete_post_as(post, v)
 
 
-COLLAB_DELETE_REFUSAL = "Deleting a collaborative post needs its authors' agreement: propose it in its shared draft."
+COLLAB_DELETE_REFUSAL = tr_lazy("Deleting a collaborative post needs its authors' agreement: propose it in its shared "
+                                "draft.")
 
 
 def delete_post_as(post, v):
@@ -2086,7 +2099,7 @@ def save_post(base36id, v):
         except:
             abort(422)
 
-    return jsonify({"message": "Post bookmarked."})
+    return jsonify({"message": tr("Post bookmarked.")})
 
 
 @app.route("/unsave_post/<base36id>", methods=["POST"])
@@ -2102,7 +2115,7 @@ def unsave_post(base36id, v):
     if save:
         g.db.delete(save)
 
-    return jsonify({"message": "Bookmark removed."})
+    return jsonify({"message": tr("Bookmark removed.")})
 
 
 @app.route("/post/<base36id>/repost", methods=["POST"])
@@ -2135,18 +2148,18 @@ def repost_post(base36id, v):
         return {"error": refusal}, 403
 
     if primary.is_banned or primary.deleted_utc or primary.purged_utc:
-        return {"error": "This post can't be reposted."}, 400
+        return {"error": tr("This post can't be reposted.")}, 400
 
     if primary.audience:
-        return {"error": "A post for a Circle can't be reposted."}, 400
+        return {"error": tr("A post for a Circle can't be reposted.")}, 400
 
     if primary.is_anonymous and primary.author_id == v.id:
-        return {"error": "You can't repost your own anonymous post: it would put it on your profile."}, 400
+        return {"error": tr("You can't repost your own anonymous post: it would put it on your profile.")}, 400
 
     existing = g.db.query(RepostRelationship).filter_by(
         user_id=v.id, submission_id=primary.id).first()
     if existing:
-        return {"error": "You've already reposted this."}, 409
+        return {"error": tr("You've already reposted this.")}, 409
 
     g.db.add(RepostRelationship(
         user_id=v.id,
@@ -2161,7 +2174,7 @@ def repost_post(base36id, v):
     if not primary.in_private_guild_for(None):
         bell_rules.ring_account(v, bell_rules.REPOST, primary.id, f"/post/{primary.base36id}")
 
-    return jsonify({"message": "Reposted to your profile."})
+    return jsonify({"message": tr("Reposted to your profile.")})
 
 
 @app.route("/post/<base36id>/unrepost", methods=["POST"])
@@ -2180,4 +2193,4 @@ def unrepost_post(base36id, v):
         g.db.commit()
         cache.delete_memoized(User.userpagelisting, v)
 
-    return jsonify({"message": "Repost removed."})
+    return jsonify({"message": tr("Repost removed.")})

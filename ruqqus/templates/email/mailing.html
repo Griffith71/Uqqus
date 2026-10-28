@@ -7,19 +7,19 @@
 {% block content %}
 {% filter markdown %}
 
-Hey there, {{ user.username }}
+{% trans name=user.username %}Hey there, {{ name }}{% endtrans %}
 
-Thanks for using Two-Factor Authentication to help secure your {{ 'SITE_NAME' | app_config }} account.
+{% trans site='SITE_NAME' | app_config %}Thanks for using Two-Factor Authentication to help secure your {{ site }} account.{% endtrans %}
 
-We recently rolled out the ability to generate a **Two-Factor Recovery Code** when setting up Two-Factor Authentication. Because this provides a cryptographically secure method of recovering a Two-Factor account, **we will be removing the existing 24-hour wait recovery** before the end of the month.
+{% trans %}We recently rolled out the ability to generate a **Two-Factor Recovery Code** when setting up Two-Factor Authentication. Because this provides a cryptographically secure method of recovering a Two-Factor account, **we will be removing the existing 24-hour wait recovery** before the end of the month.{% endtrans %}
 
-Once that happens, **it will not be possible to recover a Two-Factor account without a Recovery Code.**
+{% trans %}Once that happens, **it will not be possible to recover a Two-Factor account without a Recovery Code.**{% endtrans %}
 
-To obtain a Two-Factor Recovery Code, navigate to your account security settings, and remove and re-add Two Factor Authentication to your account.
+{% trans %}To obtain a Two-Factor Recovery Code, navigate to your account security settings, and remove and re-add Two Factor Authentication to your account.{% endtrans %}
 
-Thanks for using {{ 'SITE_NAME' | app_config }}!
+{% trans site='SITE_NAME' | app_config %}Thanks for using {{ site }}!{% endtrans %}
 
--The {{ 'SITE_NAME' | app_config }} team
+{% trans site='SITE_NAME' | app_config %}-The {{ site }} team{% endtrans %}
 
 {% endfilter %}
 {% endblock %}

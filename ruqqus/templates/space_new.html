@@ -11,7 +11,7 @@
 {% block pagetype %}explore{% endblock %}
 
 {% block title %}
-<title>Start a Space - {{ 'SITE_NAME' | app_config }}</title>
+<title>{{ _('Start a Space') }} - {{ 'SITE_NAME' | app_config }}</title>
 {% endblock %}
 
 {% block leftSidebarBlock %}
@@ -24,25 +24,25 @@
 <div class="explore space-new">
   <div class="explore-head">
     <div>
-      <h1 class="explore-title">Start a Space</h1>
-      <p class="explore-lead">A Space is live for a while: a board, a live thread or a call. It is kept for replay, or it is gone when it ends.</p>
+      <h1 class="explore-title">{{ _("Start a Space") }}</h1>
+      <p class="explore-lead">{{ _("A Space is live for a while: a board, a live thread or a call. It is kept for replay, or it is gone when it ends.") }}</p>
     </div>
-    <a href="/spaces" class="btn btn-link text-muted btn-sm">Back to Spaces</a>
+    <a href="/spaces" class="btn btn-link text-muted btn-sm">{{ _("Back to Spaces") }}</a>
   </div>
 
   <form id="space-form" class="composer-card" autocomplete="off" novalidate>
     <input type="hidden" name="formkey" value="{{ v.formkey }}">
 
     <fieldset class="space-kinds">
-      <legend class="font-weight-bold mb-2" style="font-size: 1rem;">What kind of Space?</legend>
+      <legend class="font-weight-bold mb-2" style="font-size: 1rem;">{{ _("What kind of Space?") }}</legend>
       <div class="space-kind-grid">
         {% for kind in space_kinds %}
         <label class="space-kind" for="space-kind-{{ kind }}">
           <input type="radio" class="space-kind-input" id="space-kind-{{ kind }}" name="space_kind" value="{{ kind }}"{% if loop.first %} checked{% endif %}>
           <span class="space-kind-body">
             <i class="fas {{ kind_icons[kind] }} space-kind-icon" aria-hidden="true"></i>
-            <span class="space-kind-name">{{ kind_labels[kind] }}</span>
-            <span class="space-kind-hint">{{ kind_hints[kind] }}</span>
+            <span class="space-kind-name">{{ msg_text(kind_labels[kind]) }}</span>
+            <span class="space-kind-hint">{{ msg_text(kind_hints[kind]) }}</span>
           </span>
         </label>
         {% endfor %}
@@ -57,36 +57,39 @@
 
     <div class="space-composer mt-3" data-space-composer>
       <div class="space-options">
-        <label class="d-block font-weight-bold" for="space-when">When</label>
+        <label class="d-block font-weight-bold" for="space-when">{{ _("When") }}</label>
         <input type="datetime-local" class="form-control" id="space-when" data-space-when style="max-width: 18rem;">
         <input type="hidden" name="space_start" value="">
-        <small class="form-text text-muted">Leave it empty to start now. Up to {{ space_schedule_days }} days ahead.</small>
+        <small class="form-text text-muted">{{ _("Leave it empty to start now.") }} {{ ngettext("Up to %(num)s day ahead.", "Up to %(num)s days ahead.", space_schedule_days) }}</small>
 
         <div data-space-for="board live">
-          <label class="d-block font-weight-bold mt-3" for="space-hours">How long</label>
+          <label class="d-block font-weight-bold mt-3" for="space-hours">{{ _("How long") }}</label>
           <select class="custom-select" id="space-hours" name="space_hours" style="max-width: 18rem;">
-            {% for hours, label in space_lengths %}<option value="{{ hours }}"{% if hours == space_default_hours %} selected{% endif %}>{{ label }}</option>{% endfor %}
+            {% for hours, label in space_lengths %}<option value="{{ hours }}"{% if hours == space_default_hours %} selected{% endif %}>{{ msg_text(label) }}</option>{% endfor %}
           </select>
-          <small class="form-text text-muted">It ends by itself after this. You can end it sooner.</small>
+          <small class="form-text text-muted">{{ _("It ends by itself after this. You can end it sooner.") }}</small>
         </div>
 
-        <label class="d-block font-weight-bold mt-3">Recording</label>
+        <label class="d-block font-weight-bold mt-3">{{ pgettext("noun", "Recording") }}</label>
         <div class="custom-control custom-radio">
           <input type="radio" class="custom-control-input" id="space-record-no" name="space_record" value="" checked>
-          <label class="custom-control-label" for="space-record-no">Not recorded <span class="text-muted text-small">when it ends it disappears, with everything in it</span></label>
+          <label class="custom-control-label" for="space-record-no">{{ _("Not recorded") }} <span class="text-muted text-small">{{ _("when it ends it disappears, with everything in it") }}</span></label>
         </div>
         <div class="custom-control custom-radio">
           <input type="radio" class="custom-control-input" id="space-record-yes" name="space_record" value="true">
-          <label class="custom-control-label" for="space-record-yes">Recorded <span class="text-muted text-small" data-space-for="board live">it stays to read when it ends</span><span class="text-muted text-small" data-space-for="call" hidden>kept as a replay in your own storage; everyone is told before they join</span></label>
+          <label class="custom-control-label" for="space-record-yes">{{ _("Recorded") }} <span class="text-muted text-small" data-space-for="board live">{{ _("it stays to read when it ends") }}</span><span class="text-muted text-small" data-space-for="call" hidden>{{ _("kept as a replay in your own storage; everyone is told before they join") }}</span></label>
         </div>
 
         <div data-space-for="call" hidden>
-          <label class="d-block font-weight-bold mt-3">Video</label>
+          <label class="d-block font-weight-bold mt-3">{{ pgettext("noun", "Video") }}</label>
           <div class="custom-control custom-checkbox">
             <input type="checkbox" class="custom-control-input" id="space-video" name="space_video" value="true">
-            <label class="custom-control-label" for="space-video">Allow video <span class="text-muted text-small">up to {{ space_video_stage }} people on stage can turn their camera on while the call has {{ space_video_people }} people or fewer. A recorded call keeps the video too, on your own YouTube or Dailymotion; a call for circles keeps the sound only.</span></label>
+            {# Translators: %(people)s is the largest number of people a call may have for video #}
+            {% set video_hint = ngettext("up to %(num)s person on stage can turn their camera on while the call has %(people)s people or fewer.", "up to %(num)s people on stage can turn their camera on while the call has %(people)s people or fewer.", space_video_stage, people=space_video_people) %}
+            <label class="custom-control-label" for="space-video">{{ _("Allow video") }} <span class="text-muted text-small">{{ video_hint }} {{ _("A recorded call keeps the video too, on your own YouTube or Dailymotion; a call for circles keeps the sound only.") }}</span></label>
           </div>
-          <small class="form-text text-muted">A call has up to {{ space_max_stage }} people on stage and {{ space_max_listeners }} listening, for at most 4 hours. Everyone in it can see who is there.</small>
+          {# Translators: %(listeners)s is the largest number of people listening #}
+          <small class="form-text text-muted">{{ ngettext("A call has up to %(num)s person on stage and %(listeners)s listening, for at most 4 hours.", "A call has up to %(num)s people on stage and %(listeners)s listening, for at most 4 hours.", space_max_stage, listeners=space_max_listeners) }} {{ _("Everyone in it can see who is there.") }}</small>
         </div>
       </div>
     </div>
@@ -95,21 +98,21 @@
       {{ post_options.audience_field(0, "space-audience", (), circle_choices(v), "cards", noun="Space") }}
     </div>
 
-    <label for="space-guild-input" class="font-weight-bold mt-3 mb-0">Show its card in guilds <span class="text-muted font-weight-normal">(optional)</span></label>
+    <label for="space-guild-input" class="font-weight-bold mt-3 mb-0">{{ _("Show its card in guilds") }} <span class="text-muted font-weight-normal">{{ _("(optional)") }}</span></label>
     {# the guild search and the circles lock (where_to_post.js); a Space always lives on its host's profile, so the
        profile switch is not shown (space-where-fixed) and the server forces it on #}
     <div class="space-where-fixed">{{ post_options.where_profile("space-where", "space-guild-input", "space-guild-add", true) }}</div>
     <div id="space-guild-chips" class="mb-2"></div>
     <div id="space-guild-inputs"></div>
     <div class="input-group">
-      <input class="form-control" id="space-guild-input" type="text" placeholder="Search guilds" autocomplete="off">
-      <div class="input-group-append"><button class="btn btn-secondary" id="space-guild-add" type="button">Add</button></div>
+      <input class="form-control" id="space-guild-input" type="text" placeholder="{{ _('Search guilds') }}" autocomplete="off">
+      <div class="input-group-append"><button class="btn btn-secondary" id="space-guild-add" type="button">{{ pgettext("button", "Add") }}</button></div>
     </div>
-    <small class="form-text text-muted">It lives on your profile, under Spaces. A guild shows its card, with votes and shares, and opens the Space.</small>
+    <small class="form-text text-muted">{{ _("It lives on your profile, under Spaces. A guild shows its card, with votes and shares, and opens the Space.") }}</small>
 
     <div class="text-danger small mt-3" id="space-error" role="alert" hidden></div>
     <div class="d-flex justify-content-end mt-3">
-      <button type="submit" class="btn btn-primary" id="space-submit">Start the Space</button>
+      <button type="submit" class="btn btn-primary" id="space-submit">{{ _("Start the Space") }}</button>
     </div>
   </form>
 </div>

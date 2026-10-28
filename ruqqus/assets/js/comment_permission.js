@@ -61,14 +61,14 @@
 
   save.addEventListener('click', function () {
     var value = chosen();
-    if (!target || value === null) { say('Choose who can comment.', true); return; }
+    if (!target || value === null) { say(tr('Choose who can comment.'), true); return; }
     if (value === target.mode) { $('#commentPermissionModal').modal('hide'); return; }
-    say('Saving\u2026');
+    say(tr('Saving\u2026'));
     save.disabled = true;
     post('/api/post/' + encodeURIComponent(target.id) + '/comment_permission', { comment_permission: value }).then(function (res) {
       save.disabled = false;
-      if (!res.ok) { say(res.data.error || 'Could not change that.', true); return; }
+      if (!res.ok) { say(res.data.error || tr('Could not change that.'), true); return; }
       window.location.reload();
-    }).catch(function () { save.disabled = false; say('Could not change that. Try again.', true); });
+    }).catch(function () { save.disabled = false; say(tr('Could not change that. Try again.'), true); });
   });
 })();

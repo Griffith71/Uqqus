@@ -13,7 +13,7 @@
 #}
 {% macro live_badge(p) %}
 {% set lv = live_of(p) %}
-{% if lv and lv.live %}<span class="live-badge" title="Live thread{% if lv.ends_utc %}: ends {{ lv.ends_utc | space_time }}{% endif %}"><span class="space-live-dot" aria-hidden="true"></span>LIVE</span>{% endif %}
+{% if lv and lv.live %}<span class="live-badge" title="{% if lv.ends_utc %}{{ _('Live thread: ends %(time)s', time=lv.ends_utc | space_time) }}{% else %}{{ _('Live thread') }}{% endif %}"><span class="space-live-dot" aria-hidden="true"></span>{{ pgettext("badge", "LIVE") }}</span>{% endif %}
 {% endmacro %}
 
 {% macro stream_block(p) %}
@@ -22,7 +22,7 @@
 <a class="stream-card stream-{{ s.status or 'unknown' }}" href="{{ s.url }}" target="_blank" rel="nofollow noopener">
   <i class="fab fa-{{ s.service }}" aria-hidden="true"></i>
   <span class="stream-card-text">{% if s.status == 'live' %}<span class="space-live-dot" aria-hidden="true"></span>{% endif %}{{ s.text }}</span>
-  <span class="stream-card-go">Watch <i class="fas fa-up-right-from-square" aria-hidden="true"></i></span>
+  <span class="stream-card-go">{{ pgettext("button", "Watch") }} <i class="fas fa-up-right-from-square" aria-hidden="true"></i></span>
 </a>
 {% endif %}
 {% endmacro %}
@@ -32,18 +32,22 @@
 {% set may = may_run_live(p, v) %}
 {% if lv %}
 {% set t = live_thread_of(p, v) %}
-<section class="live-panel{% if t.live %} is-live{% endif %}" id="live-panel" data-post="{{ lv.post36 if lv else p.base36id }}" data-live="{{ 'true' if t.live else 'false' }}" data-may="{{ 'true' if may else 'false' }}" aria-label="Live thread">
+<section class="live-panel{% if t.live %} is-live{% endif %}" id="live-panel" data-post="{{ lv.post36 if lv else p.base36id }}" data-live="{{ 'true' if t.live else 'false' }}" data-may="{{ 'true' if may else 'false' }}" aria-label="{{ _('Live thread') }}">
   <div class="live-panel-head">
     <div class="live-status">
-      <span class="live-badge" id="live-panel-badge"{% if not t.live %} hidden{% endif %}><span class="space-live-dot" aria-hidden="true"></span>LIVE</span>
+      <span class="live-badge" id="live-panel-badge"{% if not t.live %} hidden{% endif %}><span class="space-live-dot" aria-hidden="true"></span>{{ pgettext("badge", "LIVE") }}</span>
       {% if t.live %}
-      <span class="live-status-text">ends <time id="live-ends" data-live-until="{{ t.ends_utc }}">{{ t.ends_utc | space_time }}</time></span>
-      <span class="live-status-text" id="live-watching" hidden>· <span id="live-watching-count">0</span> watching</span>
+      {% set ends_at %}<time id="live-ends" data-live-until="{{ t.ends_utc }}">{{ t.ends_utc | space_time }}</time>{% endset %}
+      {# Translators: beside LIVE on a live thread: time is when it ends ("in 5 h", a date), kept up to date by the page #}
+      <span class="live-status-text">{{ _("ends %(time)s", time=ends_at) }}</span>
+      {% set watching_count %}<span id="live-watching-count">0</span>{% endset %}
+      {# Translators: beside LIVE on a live thread: count is how many people are reading it now, kept up to date by the page #}
+      <span class="live-status-text" id="live-watching" hidden>· {{ _("%(count)s watching", count=watching_count) }}</span>
       {% elif t.exists %}
-      <span class="live-ended" id="live-panel-ended">This live thread has ended</span>
+      <span class="live-ended" id="live-panel-ended">{{ _("This live thread has ended") }}</span>
       <time class="live-status-text" data-live-time="{{ t.ended_utc }}">{{ t.ended_utc | space_time }}</time>
       {% else %}
-      <span class="live-panel-title">Live thread</span>
+      <span class="live-panel-title">{{ _("Live thread") }}</span>
       {% endif %}
     </div>
     <div class="live-runners text-small text-muted">{{ t.runners }}</div>
@@ -52,19 +56,19 @@
   {% if may %}
   <div class="live-controls" id="live-controls">
     {% if t.live %}
-    <label class="sr-only" for="live-extend-hours">Extend for</label>
+    <label class="sr-only" for="live-extend-hours">{{ _("Extend for") }}</label>
     <select class="custom-select custom-select-sm w-auto" id="live-extend-hours">
-      {% for h, label in live_durations %}<option value="{{ h }}"{% if h == live_default_hours %} selected{% endif %}>{{ label }} from now</option>{% endfor %}
+      {% for h, label in live_durations %}<option value="{{ h }}"{% if h == live_default_hours %} selected{% endif %}>{{ _("%(length)s from now", length=label) }}</option>{% endfor %}
     </select>
-    <button type="button" class="btn btn-sm btn-secondary" id="live-extend">Extend</button>
-    <button type="button" class="btn btn-sm btn-outline-danger ml-auto" id="live-end">End now</button>
+    <button type="button" class="btn btn-sm btn-secondary" id="live-extend">{{ pgettext("button", "Extend") }}</button>
+    <button type="button" class="btn btn-sm btn-outline-danger ml-auto" id="live-end">{{ _("End now") }}</button>
     {% else %}
-    <p class="text-small text-muted mb-2 w-100" id="live-start-help">{% if t.exists %}Go live again{% else %}Going live puts timestamped updates above the comments, pushed to everyone reading, like a Reddit live thread. The people who follow this post are told.{% endif %}</p>
-    <label class="sr-only" for="live-start-hours">How long it runs</label>
+    <p class="text-small text-muted mb-2 w-100" id="live-start-help">{% if t.exists %}{{ _("Go live again") }}{% else %}{{ _("Going live puts timestamped updates above the comments, pushed to everyone reading, like a Reddit live thread. The people who follow this post are told.") }}{% endif %}</p>
+    <label class="sr-only" for="live-start-hours">{{ _("How long it runs") }}</label>
     <select class="custom-select custom-select-sm w-auto" id="live-start-hours">
-      {% for h, label in live_durations %}<option value="{{ h }}"{% if h == live_default_hours %} selected{% endif %}>for {{ label }}</option>{% endfor %}
+      {% for h, label in live_durations %}<option value="{{ h }}"{% if h == live_default_hours %} selected{% endif %}>{{ _("for %(length)s", length=label) }}</option>{% endfor %}
     </select>
-    <button type="button" class="btn btn-sm btn-primary" id="live-start">Go live</button>
+    <button type="button" class="btn btn-sm btn-primary" id="live-start">{{ _("Go live") }}</button>
     {% endif %}
     <span class="text-small w-100" id="live-control-status" role="status"></span>
   </div>
@@ -72,16 +76,16 @@
 
   {% if t.summary_html or t.summary_hidden or (may and t.exists) %}
   <div class="live-summary" id="live-summary">
-    <div class="live-summary-head"><span class="live-summary-title">Summary</span>{% if may %}<button type="button" class="btn btn-link btn-sm p-0 ml-auto" id="live-summary-edit">Edit summary</button>{% endif %}</div>
+    <div class="live-summary-head"><span class="live-summary-title">{{ _("Summary") }}</span>{% if may %}<button type="button" class="btn btn-link btn-sm p-0 ml-auto" id="live-summary-edit">{{ _("Edit summary") }}</button>{% endif %}</div>
     <div class="live-summary-body" id="live-summary-body">
-      {%- if t.summary_html %}{{ t.summary_html | safe }}{% elif t.summary_hidden %}<p class="font-italic text-muted mb-0">Hidden by your word filter</p>{% else %}<p class="text-muted mb-0">Key facts and links people should see first.</p>{% endif -%}
+      {%- if t.summary_html %}{{ t.summary_html | safe }}{% elif t.summary_hidden %}<p class="font-italic text-muted mb-0">{{ _("Hidden by your word filter") }}</p>{% else %}<p class="text-muted mb-0">{{ _("Key facts and links people should see first.") }}</p>{% endif -%}
     </div>
     {% if may %}
     <form class="live-summary-form" id="live-summary-form" hidden onsubmit="return false;">
-      <label class="sr-only" for="live-summary-text">Summary</label>
+      <label class="sr-only" for="live-summary-text">{{ _("Summary") }}</label>
       <textarea class="form-control" id="live-summary-text" rows="3" maxlength="1000">{{ t.summary or '' }}</textarea>
-      <button type="submit" class="btn btn-primary btn-sm mt-2">Save summary</button>
-      <button type="button" class="btn btn-link btn-sm mt-2" id="live-summary-cancel">Cancel</button>
+      <button type="submit" class="btn btn-primary btn-sm mt-2">{{ _("Save summary") }}</button>
+      <button type="button" class="btn btn-link btn-sm mt-2" id="live-summary-cancel">{{ _("Cancel") }}</button>
     </form>
     {% endif %}
   </div>
@@ -89,19 +93,19 @@
 
   {% if may %}
   <form class="live-panel-form{% if not t.live %} d-none{% endif %}" id="live-update-form" onsubmit="return false;">
-    <label class="sr-only" for="live-update-body">Update</label>
-    <textarea class="form-control" id="live-update-body" rows="2" maxlength="2000" placeholder="Post an update"></textarea>
-    <button type="submit" class="btn btn-primary btn-sm mt-2">Post update</button>
+    <label class="sr-only" for="live-update-body">{{ pgettext("noun", "Update") }}</label>
+    <textarea class="form-control" id="live-update-body" rows="2" maxlength="2000" placeholder="{{ _('Post an update') }}"></textarea>
+    <button type="submit" class="btn btn-primary btn-sm mt-2">{{ _("Post update") }}</button>
     <span class="text-small ml-2" id="live-update-status" role="status"></span>
   </form>
   {% endif %}
   <button type="button" class="live-new-pill" id="live-new-updates" hidden></button>
-  <div class="live-new-comments d-none" id="live-new-comments" role="status"><a href="#comments" onclick="window.location.reload(); return false;">New comments · Show them</a></div>
+  <div class="live-new-comments d-none" id="live-new-comments" role="status"><a href="#comments" onclick="window.location.reload(); return false;">{{ _("New comments · Show them") }}</a></div>
   <div class="live-updates" id="live-updates" role="list" aria-live="polite">
     {% for u in live_updates_of(p, v) %}
     <div class="live-update{% if u.struck %} is-struck{% endif %}" role="listitem" data-update="{{ u.id }}"{% if u.may_change %} data-may-change="true"{% endif %}>
-      <div class="live-update-meta text-small text-muted"><time data-live-time="{{ u.created_utc }}">{{ u.created_utc | space_time }}</time>{% if u.author %} · {{ u.author }}{% endif %}{% if u.struck %} · <span class="live-corrected">Corrected</span>{% endif %}</div>
-      {% if u.hidden %}<div class="live-update-body font-italic text-muted">Hidden by your word filter</div>{% else %}<div class="live-update-body">{{ u.body_html | safe }}</div>{% endif %}
+      <div class="live-update-meta text-small text-muted"><time data-live-time="{{ u.created_utc }}">{{ u.created_utc | space_time }}</time>{% if u.author %} · {{ u.author }}{% endif %}{% if u.struck %} · <span class="live-corrected">{{ _("Corrected") }}</span>{% endif %}</div>
+      {% if u.hidden %}<div class="live-update-body font-italic text-muted">{{ _("Hidden by your word filter") }}</div>{% else %}<div class="live-update-body">{{ u.body_html | safe }}</div>{% endif %}
     </div>
     {% endfor %}
   </div>

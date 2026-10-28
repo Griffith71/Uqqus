@@ -6,6 +6,7 @@ import time
 
 from ruqqus.helpers import call_store, space_store
 from ruqqus.helpers import spaces as rules
+from ruqqus.helpers.i18n_runtime import msg, tr
 
 
 def _redis():
@@ -36,7 +37,8 @@ def attach(db, posts, v):
             people = len({e["user_id"] for e in call_store.roster(r, space_store.room(sid), now)})
         p.space_data = {
             "id": sid, "status": status, "label": rules.state_label(status, scheduled_utc, now),
-            "kind": kind, "kind_label": rules.KIND_LABELS.get(kind, "Space"), "icon": rules.KIND_ICONS.get(kind),
+            "kind": kind, "kind_label": msg(rules.KIND_LABELS[kind]) if kind in rules.KIND_LABELS else tr("Space"),
+            "icon": rules.KIND_ICONS.get(kind),
             "ends_utc": ends_utc,
             "scheduled_utc": scheduled_utc, "record": bool(row[7]), "video": bool(row[12]), "people": people, "peak": row[9],
             "is_host": v is not None and v.id == host_id,

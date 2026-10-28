@@ -15,7 +15,7 @@ export async function listConversations(status) {
   const resp = await fetch(`/api/chat/conversations?status=${status}`, {
     credentials: "same-origin",
   });
-  if (!resp.ok) throw new Error("Could not load conversations");
+  if (!resp.ok) throw new Error(window.tr("Could not load conversations"));
   const data = await resp.json();
   return data.conversations;
 }
@@ -27,7 +27,7 @@ export async function acceptConversation(formkey, conversationId) {
     headers: { "Content-Type": "application/x-www-form-urlencoded" },
     body: formBody(formkey),
   });
-  if (!resp.ok) throw new Error("Could not accept conversation");
+  if (!resp.ok) throw new Error(window.tr("Could not accept conversation"));
 }
 
 export async function declineConversation(formkey, conversationId) {
@@ -37,7 +37,7 @@ export async function declineConversation(formkey, conversationId) {
     headers: { "Content-Type": "application/x-www-form-urlencoded" },
     body: formBody(formkey),
   });
-  if (!resp.ok) throw new Error("Could not decline conversation");
+  if (!resp.ok) throw new Error(window.tr("Could not decline conversation"));
 }
 
 export async function markRead(formkey, conversationId) {
@@ -47,7 +47,7 @@ export async function markRead(formkey, conversationId) {
     headers: { "Content-Type": "application/x-www-form-urlencoded" },
     body: formBody(formkey),
   });
-  if (!resp.ok) throw new Error("Could not mark conversation read");
+  if (!resp.ok) throw new Error(window.tr("Could not mark conversation read"));
 }
 
 // --- groups (routes/chat_groups.py) ---------------------------------------------------------------
@@ -66,19 +66,19 @@ async function postJSON(url, formkey, extra) {
   } catch (e) {
     data = null;
   }
-  if (!resp.ok) throw new Error((data && data.error) || "That didn't work. Try again.");
+  if (!resp.ok) throw new Error((data && data.error) || window.tr("That didn't work. Try again."));
   return data;
 }
 
 export async function groupInfo(groupId) {
   const resp = await fetch(`/api/chat/groups/${groupId}`, { credentials: "same-origin" });
-  if (!resp.ok) throw new Error("Could not load the group");
+  if (!resp.ok) throw new Error(window.tr("Could not load the group"));
   return resp.json();
 }
 
 export async function searchPeople(q) {
   const resp = await fetch(`/api/chat/people?q=${encodeURIComponent(q || "")}`, { credentials: "same-origin" });
-  if (!resp.ok) throw new Error("Could not search");
+  if (!resp.ok) throw new Error(window.tr("Could not search"));
   return (await resp.json()).people || [];
 }
 
@@ -122,7 +122,7 @@ export const removeGuildChannelMessage = (formkey, channelId, eventId) =>
 // names for the people who wrote in a channel: only people who did are ever answered
 export async function guildChannelSenders(channelId, userIds) {
   const resp = await fetch(`/api/guilds/channels/${channelId}/senders?ids=${userIds.join(",")}`, { credentials: "same-origin" });
-  if (!resp.ok) throw new Error("Could not load names");
+  if (!resp.ok) throw new Error(window.tr("Could not load names"));
   return (await resp.json()).senders || {};
 }
 export const pinGuildChannelMessage = (formkey, channelId, eventId, on) =>
@@ -133,13 +133,13 @@ export const acceptGuildChannelRules = (formkey, channelId) => postJSON(`/api/gu
 
 export async function guildChannelPins(channelId) {
   const resp = await fetch(`/api/guilds/channels/${channelId}/pins`, { credentials: "same-origin" });
-  if (!resp.ok) throw new Error("Could not load the pinned messages");
+  if (!resp.ok) throw new Error(window.tr("Could not load the pinned messages"));
   return (await resp.json()).pins || [];
 }
 
 export async function searchGuildChannel(channelId, query) {
   const resp = await fetch(`/api/guilds/channels/${channelId}/search?q=${encodeURIComponent(query)}`, { credentials: "same-origin" });
-  if (resp.status === 429) throw new Error("Searching too fast. Wait a moment.");
-  if (!resp.ok) throw new Error("Could not search");
+  if (resp.status === 429) throw new Error(window.tr("Searching too fast. Wait a moment."));
+  if (!resp.ok) throw new Error(window.tr("Could not search"));
   return resp.json();
 }

@@ -6,6 +6,8 @@ after 90 days (helpers/retention.py); the label is worked out when it is shown.
 """
 import re
 
+from ruqqus.helpers.i18n_runtime import N_, msg, tr
+
 STORED_LENGTH = 200
 
 # order matters: Edge, Opera and the others say "Chrome" too, and Chrome says "Safari"
@@ -30,6 +32,9 @@ _SYSTEMS = (
     ("Linux", ("linux", "x11")),
 )
 
+# compared with what parse() gave for earlier sign-ins (helpers/signin_alerts.py): English, marked, drawn with msg()
+APP_OR_SCRIPT = N_("An app or script")
+
 _CONTROL = re.compile(r"[\x00-\x1f\x7f]")
 
 
@@ -45,7 +50,7 @@ def parse(user_agent):
     if not text:
         return None, None
     if any(tool in text for tool in _TOOLS):
-        return "An app or script", None
+        return APP_OR_SCRIPT, None
     browser = None
     for name, needles in _BROWSERS:
         if any(needle in text for needle in needles):
@@ -64,10 +69,14 @@ def parse(user_agent):
 def describe(user_agent):
     """"Chrome on Windows", "Firefox", "Unknown browser on Android", "Unknown browser"."""
     browser, system = parse(user_agent)
+    if browser == APP_OR_SCRIPT:
+        browser = msg(browser)
     if browser and system:
-        return f"{browser} on {system}"
+        # Translators: a browser and the system it runs on, such as "Chrome on Windows"
+        return tr("%(browser)s on %(system)s", browser=browser, system=system)
     if browser:
         return browser
     if system:
-        return f"Unknown browser on {system}"
-    return "Unknown browser"
+        # Translators: %(system)s is a system such as Windows or Android
+        return tr("Unknown browser on %(system)s", system=system)
+    return tr("Unknown browser")

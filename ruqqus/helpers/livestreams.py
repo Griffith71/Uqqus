@@ -14,6 +14,7 @@ it (helpers/live_threads.py). A YouTube link already draws the site's existing v
 import re
 from urllib.parse import urlsplit
 
+from ruqqus.helpers.i18n_runtime import tr
 from ruqqus.helpers.social_embeds import youtube_id
 
 YOUTUBE, TWITCH = "youtube", "twitch"
@@ -54,11 +55,12 @@ def card(ref, status):
         return None
     label = LABELS[service]
     if status == LIVE:
-        text = f"Live now on {label}"
+        # Translators: %(service)s is YouTube or Twitch
+        text = tr("Live now on %(service)s", service=label)
     elif status == UPCOMING:
-        text = f"Starting soon on {label}"
+        text = tr("Starting soon on %(service)s", service=label)
     elif status == OFFLINE:
-        text = f"Offline on {label}"
+        text = tr("Offline on %(service)s", service=label)
     else:
-        text = f"Stream on {label}"
+        text = tr("Stream on %(service)s", service=label)
     return {"service": service, "label": label, "status": status, "text": text, "url": watch_url(ref)}

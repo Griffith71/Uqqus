@@ -7,7 +7,8 @@ A "view" is a page open by someone other than the author, that is not a robot or
 repeat from the same viewer within half an hour."""
 import hashlib
 import re
-import time
+
+from ruqqus.helpers.i18n_runtime import date_text
 
 RANGES = (7, 28)
 DEFAULT_DAYS = 7
@@ -62,9 +63,9 @@ def bar_heights(values, floor=4):
 
 
 def label(day):
-    """A day number as "8 Oct" (UTC)."""
-    stamp = time.gmtime(day_start(day))
-    return f"{stamp.tm_mday} {time.strftime('%b', stamp)}"
+    """A day number as "8 Oct" (UTC); the day and short month as the reader's language writes them."""
+    from ruqqus.helpers.text import date_pattern
+    return date_text(day_start(day), "%d %b", date_pattern("MMMd", "d MMM")).lstrip("0")
 
 
 def is_robot(user_agent):

@@ -10,12 +10,13 @@
 {% from "partials/theme.html" import html_attrs, font_faces, theme_color %}
 <html{{ html_attrs() }}>
 <head>
+{% from "partials/i18n_boot.html" import i18n_boot %}{{ i18n_boot() }}
   <meta charset="utf-8">
 {{ font_faces() }}
 {{ theme_color() }}
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="robots" content="noindex">
-  <title>{{ "Connected" if ok else "Not connected" }} - {{ 'SITE_NAME' | app_config }}</title>
+  <title>{{ _("Connected - %(site)s") if ok else _("Not connected - %(site)s") }}</title>
   <style>
     body { margin: 0; font: 16px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif; color: #1a202c; background: #fff; }
     main { max-width: 26rem; margin: 18vh auto 0; padding: 0 1.25rem; text-align: center; }
@@ -27,8 +28,8 @@
 <body>
   <main>
     <p id="media-connected-message">{{ message }}</p>
-    <p class="muted" id="media-connected-close">You can close this window.</p>
-    <p class="muted"><a href="/settings/media">Media settings</a></p>
+    <p class="muted" id="media-connected-close">{{ _("You can close this window.") }}</p>
+    <p class="muted"><a href="/settings/media">{{ _("Media settings") }}</a></p>
   </main>
   <script>
     (function () {

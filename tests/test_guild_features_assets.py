@@ -17,7 +17,7 @@ def test_the_guild_page_draws_tabs_resources_pinned_and_next_event():
     assert '{% include "partials/guild_sidebar.html" %}' in board
     assert '{% include "partials/guild_next_event.html" %}' in sidebar
     for path in ("/mod/resources", "/wiki", "/events"):
-        assert f'href="/+{{{{ b.name }}}}{path}"' in board
+        assert f'href="/+{{{{ b.name }}}}{path}"' in sidebar
     route = read("ruqqus", "routes", "boards.py")
     assert "listing=feed_posts," in route and "pinned_posts=pinned_posts," in route
     assert '"data": [x.json for x in posts]' in route                     # the API keeps pinned posts first

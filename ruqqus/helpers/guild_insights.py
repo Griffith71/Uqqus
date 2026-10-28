@@ -11,7 +11,9 @@ at one person, so the per-day figures are drawn only for a guild of at least `MI
 **The numbers start the day this shipped.** The database never recorded when someone left a guild, nor who looked at a
 guild's page, and a re-join keeps the original join date, so growth cannot be rebuilt from history. The page says so.
 """
-import time
+from babel.support import LazyProxy
+
+from ruqqus.helpers.i18n_runtime import date_text, tr_lazy, trn
 
 WINDOWS = (7, 28)
 DEFAULT_DAYS = 28
@@ -20,10 +22,14 @@ KEEP_DAYS = 400                 # helpers/retention.py
 DEBOUNCE_SECONDS = 1800         # the same viewer opening the page again within half an hour counts once
 DAY = 86400
 
-STARTED_NOTE = ("These counts start from the day guild insights were switched on: before that the site did not record "
-                "when people left a guild or how often its page was opened.")
-PRIVACY_NOTE = ("Only counts are shown, never who. Day-by-day figures appear once a guild has "
-                f"{MIN_CHART_MEMBERS} members, so a small guild's numbers can't point at one person.")
+# shown only: worked out each time they are read, in that request's language
+STARTED_NOTE = tr_lazy("These counts start from the day guild insights were switched on: before that the site did not "
+                       "record when people left a guild or how often its page was opened.")
+PRIVACY_NOTE = LazyProxy(lambda: trn(
+    "Only counts are shown, never who. Day-by-day figures appear once a guild has %(num)s member, so a small guild's "
+    "numbers can't point at one person.",
+    "Only counts are shown, never who. Day-by-day figures appear once a guild has %(num)s members, so a small guild's "
+    "numbers can't point at one person.", MIN_CHART_MEMBERS), enable_cache=False)
 
 
 def parse_days(raw):
@@ -51,7 +57,9 @@ def chart_allowed(members):
 
 
 def day_label(day):
-    return time.strftime("%d %b", time.gmtime(day * DAY)).lstrip("0")
+    # "8 Oct" (UTC); the day and short month as the reader's language writes them
+    from ruqqus.helpers.text import date_pattern
+    return date_text(day * DAY, "%d %b", date_pattern("MMMd", "d MMM")).lstrip("0")
 
 
 def fill_days(rows, now, days):

@@ -26,7 +26,7 @@
     var list = document.createElement('ul');
     list.className = 'where-suggest';
     list.setAttribute('role', 'listbox');
-    list.setAttribute('aria-label', 'Guilds');
+    list.setAttribute('aria-label', tr('Guilds'));
     list.hidden = true;
     var anchor = input.closest('.input-group') || input;
     anchor.parentNode.insertBefore(list, anchor.nextSibling);
@@ -52,7 +52,7 @@
         name.textContent = '+' + guild.name;
         var members = document.createElement('span');
         members.className = 'text-muted text-small';
-        members.textContent = ' ' + guild.members + ' member' + (guild.members === 1 ? '' : 's');
+        members.textContent = ' ' + trn('%(num)s member', '%(num)s members', guild.members);
         button.appendChild(name);
         button.appendChild(members);
         button.addEventListener('click', function () {
@@ -107,15 +107,21 @@
 
       Array.prototype.forEach.call(document.querySelectorAll('[data-where-comment]'), function (box) { box.hidden = !profile.checked; });
 
-      var places = (profile.checked ? ['your profile'] : []).concat(names.map(function (n) { return '+' + n; }));
-      var line = places.length ? 'Posting to ' + places.join(', ') : 'Choose where to post';
+      var guilds = names.map(function (n) { return '+' + n; }).join(', ');
+      var line;
+      // Translators: where a new post goes; %(guilds)s is a list of guild names ("+pets, +news")
+      if (profile.checked && names.length) line = tr('Posting to your profile, %(guilds)s', {guilds: guilds});
+      else if (profile.checked) line = tr('Posting to your profile');
+      else if (names.length) line = tr('Posting to %(guilds)s', {guilds: guilds});
+      else line = tr('Choose where to post');
       Array.prototype.forEach.call(document.querySelectorAll('[data-where-line]'), function (el) { say(el, line); });
-      say(summary, names.length ? '+ ' + names.length + ' guild' + (names.length === 1 ? '' : 's') : '');
+      // Translators: beside the My profile switch: how many guilds the post also goes to
+      say(summary, names.length ? trn('+ %(num)s guild', '+ %(num)s guilds', names.length) : '');
 
       var message = '';
-      if (on) message = 'A post for Circles is only on your profile.';
-      else if (!profile.checked && !names.length) message = 'Choose your profile or at least one guild.';
-      else if (!profile.checked) message = 'It is still listed on your profile, but its comments are in the guilds.';
+      if (on) message = tr('A post for Circles is only on your profile.');
+      else if (!profile.checked && !names.length) message = tr('Choose your profile or at least one guild.');
+      else if (!profile.checked) message = tr('It is still listed on your profile, but its comments are in the guilds.');
       say(note, message);
       note.hidden = !message;
     }

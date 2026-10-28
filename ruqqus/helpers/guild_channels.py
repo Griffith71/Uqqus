@@ -24,20 +24,24 @@ import re
 import unicodedata
 
 from ruqqus.helpers import broadcasts, display_names
+from ruqqus.helpers.i18n_runtime import N_, number_text, tr, tr_lazy, trn, trp
 
 _EVENT_ID = re.compile(r"\$[A-Za-z0-9_+/=\-]{10,120}")
 
 TEXT, ANNOUNCEMENT, VOICE, STAGE = "text", "announcement", "voice", "stage"
 KINDS = (TEXT, ANNOUNCEMENT, VOICE, STAGE)
-KIND_LABELS = {TEXT: "Text channel", ANNOUNCEMENT: "Announcement channel", VOICE: "Voice channel", STAGE: "Stage (shows a Space)"}
+# Translators: kinds of channel in a guild's chat. A Space is the site's live audio room or message board.
+KIND_LABELS = {TEXT: N_("Text channel"), ANNOUNCEMENT: N_("Announcement channel"), VOICE: N_("Voice channel"),
+               STAGE: N_("Stage (shows a Space)")}
 MESSAGE_KINDS = (TEXT, ANNOUNCEMENT)               # the kinds whose room holds messages
 ROOMLESS = (STAGE,)                                 # no Matrix room at all: the row holds a placeholder
 
 MEMBERS, APPROVED, MODS = "members", "approved", "mods"
 LEVELS = (MEMBERS, APPROVED, MODS)
 _RANK = {MEMBERS: 0, APPROVED: 1, MODS: 2}
-LEVEL_LABELS = {MEMBERS: "Everyone in the guild", APPROVED: "Approved members and guildmasters",
-                MODS: "Guildmasters only"}
+# Translators: who may read or write in a guild's channel.
+LEVEL_LABELS = {MEMBERS: N_("Everyone in the guild"), APPROVED: N_("Approved members and guildmasters"),
+                MODS: N_("Guildmasters only")}
 
 MAX_CHANNELS = 20
 MAX_MEMBERS = broadcasts.MAX_PUBLIC_MEMBERS          # people in one channel's room
@@ -73,10 +77,11 @@ SEVERITY_KEY = broadcasts.SEVERITY_KEY               # a message's word-filter r
 SITE_KEY = broadcasts.SITE_KEY                       # the site's signature
 NONCE_KEY = "org.uqqus.nonce"                        # what makes a signature good once
 
-UNAVAILABLE = "This channel isn't available."
-RULES_PENDING = "Read and accept this channel's rules to write here."
-JOIN_FIRST = "Join the guild to read its channels."
-CLOSED = "This guild's channels are closed."
+# shown only (compared by identity in the routes, never stored): translated each time they are used
+UNAVAILABLE = tr_lazy("This channel isn't available.")
+RULES_PENDING = tr_lazy("Read and accept this channel's rules to write here.")
+JOIN_FIRST = tr_lazy("Join the guild to read its channels.")
+CLOSED = tr_lazy("This guild's channels are closed.")
 
 
 class Refused(ValueError):
@@ -88,8 +93,23 @@ class Refused(ValueError):
 _KEEP = {chr(0x200D), chr(0xFE0F)}                   # emoji sequences are glued with a joiner and a variation selector
 
 
-def _plain(value, limit, label, multiline=False):
-    """Plain text: spaces collapsed, no control or invisible characters (they make one name look like another)."""
+def _invisible_refusal(which):
+    if which == "rules":
+        return tr("The rules can't contain control or invisible characters.")
+    return tr("A topic can't contain control or invisible characters.")
+
+
+def _too_long_refusal(which, limit):
+    if which == "rules":
+        return trn("The rules can be at most %(count)s character.", "The rules can be at most %(count)s characters.",
+                   limit, count=number_text(limit))
+    return trn("A topic can be at most %(count)s character.", "A topic can be at most %(count)s characters.",
+               limit, count=number_text(limit))
+
+
+def _plain(value, limit, which, multiline=False):
+    """Plain text: spaces collapsed, no control or invisible characters (they make one name look like another).
+    `which` is "topic" or "rules": whose text it is, which the refusals name."""
     text = unicodedata.normalize("NFC", str(value or ""))
     if multiline:
         lines = [" ".join(line.split()) for line in text.replace("\r\n", "\n").replace("\r", "\n").split("\n")]
@@ -103,40 +123,41 @@ def _plain(value, limit, label, multiline=False):
             continue
         category = unicodedata.category(char)
         if category[0] == "C" or category in ("Zl", "Zp"):
-            raise Refused(f"{label} can't contain control or invisible characters.")
+            raise Refused(_invisible_refusal(which))
     if len(text) > limit:
-        raise Refused(f"{label} can be at most {limit:,} characters.")
+        raise Refused(_too_long_refusal(which, limit))
     return text
 
 
 def clean_name(value):
     """A channel's name as it is stored: plain text without a leading #, which the page draws."""
     try:
-        name = display_names.clean(str(value or "").strip().lstrip("#"))
+        name = display_names.clean(str(value or "").strip().lstrip("#"), kind=display_names.CHANNEL)
     except display_names.Refused as e:
-        raise Refused(str(e).replace("A display name", "A channel name"))
+        raise Refused(str(e))
     if not name:
-        raise Refused("Give the channel a name.")
+        raise Refused(tr("Give the channel a name."))
     if len(name) > NAME_MAX:
-        raise Refused(f"A channel name can be at most {NAME_MAX} characters.")
+        raise Refused(trn("A channel name can be at most %(num)s character.",
+                          "A channel name can be at most %(num)s characters.", NAME_MAX))
     return name
 
 
 def clean_topic(value):
-    return _plain(value, TOPIC_MAX, "A topic")
+    return _plain(value, TOPIC_MAX, "topic")
 
 
 def clean_rules(value):
-    return _plain(value, RULES_MAX, "The rules", multiline=True)
+    return _plain(value, RULES_MAX, "rules", multiline=True)
 
 
 def clean_slow(value):
     try:
         seconds = int(value or 0)
     except (TypeError, ValueError):
-        raise Refused("Choose how long people wait between messages.")
+        raise Refused(tr("Choose how long people wait between messages."))
     if seconds not in SLOW_CHOICES:
-        raise Refused("Choose how long people wait between messages.")
+        raise Refused(tr("Choose how long people wait between messages."))
     return seconds
 
 
@@ -144,30 +165,31 @@ def clean_settings(kind, read_level, write_level, slow):
     """(kind, read_level, write_level, slow_mode_seconds) as they are stored. An announcement channel is written by
     guildmasters, so it needs no slow mode; writing is never looser than reading."""
     if kind not in KINDS:
-        raise Refused("Choose a kind of channel.")
+        raise Refused(tr("Choose a kind of channel."))
     if read_level not in LEVELS:
-        raise Refused("Choose who can read the channel.")
+        raise Refused(tr("Choose who can read the channel."))
     if kind in (ANNOUNCEMENT, STAGE):
         write_level, slow = MODS, 0
     elif write_level not in LEVELS:
-        raise Refused("Choose who can write in the channel." if kind != VOICE else "Choose who can speak in the channel.")
+        raise Refused(tr("Choose who can write in the channel.") if kind != VOICE else tr("Choose who can speak in the channel."))
     if kind == VOICE:
         slow = 0                                    # nobody types in it
     if _RANK[write_level] < _RANK[read_level]:
-        raise Refused("People who can't read a channel can't write in it." if kind != VOICE else "People who can't see a channel can't speak in it.")
+        raise Refused(tr("People who can't read a channel can't write in it.") if kind != VOICE
+                      else tr("People who can't see a channel can't speak in it."))
     return kind, read_level, write_level, clean_slow(slow)
 
 
 def make_refusal(count, name_taken):
     if count >= MAX_CHANNELS:
-        return f"A guild can have at most {MAX_CHANNELS} channels."
+        return trn("A guild can have at most %(num)s channel.", "A guild can have at most %(num)s channels.", MAX_CHANNELS)
     if name_taken:
-        return "The guild already has a channel with that name."
+        return tr("The guild already has a channel with that name.")
     return None
 
 
 def rename_refusal(name_taken):
-    return "The guild already has a channel with that name." if name_taken else None
+    return tr("The guild already has a channel with that name.") if name_taken else None
 
 
 # --- who may read and write -------------------------------------------------------------------------------------------
@@ -206,17 +228,17 @@ def write_refusal(write_level, read_result, *, suspended, muted, joined, contrib
     if read_result:
         return read_result
     if suspended:
-        return "Your account is suspended."
+        return tr("Your account is suspended.")
     if muted:
-        return "A guildmaster has muted you in this guild's channels."
+        return tr("A guildmaster has muted you in this guild's channels.")
     if role_write is True:
         refusal = None
     elif role_write is False and not mod:
-        refusal = "You can't write in this channel."
+        refusal = tr("You can't write in this channel.")
     elif write_level == MODS:
-        refusal = None if content_mod else "Only the guild's guildmasters write in this channel."
+        refusal = None if content_mod else tr("Only the guild's guildmasters write in this channel.")
     elif write_level == APPROVED:
-        refusal = None if (contributor or mod) else "Only approved members write in this channel."
+        refusal = None if (contributor or mod) else tr("Only approved members write in this channel.")
     else:
         refusal = None if (joined or contributor or mod) else JOIN_FIRST
     if refusal is None and rules_pending and not mod:
@@ -225,10 +247,11 @@ def write_refusal(write_level, read_result, *, suspended, muted, joined, contrib
 
 
 def full_refusal(size, encrypted=False):
-    return "This channel is full." if size >= (MAX_ENCRYPTED_MEMBERS if encrypted else MAX_MEMBERS) else None
+    return tr("This channel is full.") if size >= (MAX_ENCRYPTED_MEMBERS if encrypted else MAX_MEMBERS) else None
 
 
-ENCRYPTED_REFUSAL = "This channel is end-to-end encrypted: the site can't read it, so it has no word filter, slow mode, pins, search or reports."
+ENCRYPTED_REFUSAL = tr_lazy("This channel is end-to-end encrypted: the site can't read it, so it has no word filter, "
+                            "slow mode, pins, search or reports.")
 
 
 def encrypted_refusal(kind, encrypted, guild_private, read_level, write_level, gate):
@@ -238,26 +261,26 @@ def encrypted_refusal(kind, encrypted, guild_private, read_level, write_level, g
     if not encrypted:
         return None
     if kind != TEXT:
-        return "Only a text channel can be end-to-end encrypted."
+        return tr("Only a text channel can be end-to-end encrypted.")
     if not guild_private:
-        return "Only a private or Circle guild's channels can be end-to-end encrypted."
+        return tr("Only a private or Circle guild's channels can be end-to-end encrypted.")
     if read_level != write_level:
-        return "An encrypted channel is written by everyone who can read it."
+        return tr("An encrypted channel is written by everyone who can read it.")
     if gate:
-        return "An encrypted channel can't ask for its rules to be accepted: the site can't check who wrote."
+        return tr("An encrypted channel can't ask for its rules to be accepted: the site can't check who wrote.")
     return None
 
 
 def slow_label(seconds):
+    """A slow mode choice's label (seconds is one of SLOW_CHOICES)."""
     if not seconds:
-        return "Off"
+        # Translators: slow mode in a guild's channel is switched off.
+        return trp("slow mode", "Off")
     if seconds < 60:
-        return f"{seconds} seconds"
+        return trn("%(num)s second", "%(num)s seconds", seconds)
     if seconds < 3600:
-        minutes = seconds // 60
-        return f"{minutes} minute{'s' if minutes != 1 else ''}"
-    hours = seconds // 3600
-    return f"{hours} hour{'s' if hours != 1 else ''}"
+        return trn("%(num)s minute", "%(num)s minutes", seconds // 60)
+    return trn("%(num)s hour", "%(num)s hours", seconds // 3600)
 
 
 def slow_exempt(mod):
@@ -267,25 +290,29 @@ def slow_exempt(mod):
 def slow_message(seconds):
     seconds = max(1, int(seconds or 0))
     if seconds >= 120:
-        return f"Slow mode: wait {(seconds + 59) // 60} minutes before your next message."
-    return f"Slow mode: wait {seconds} second{'s' if seconds != 1 else ''} before your next message."
+        return trn("Slow mode: wait %(num)s minute before your next message.",
+                   "Slow mode: wait %(num)s minutes before your next message.", (seconds + 59) // 60)
+    return trn("Slow mode: wait %(num)s second before your next message.",
+               "Slow mode: wait %(num)s seconds before your next message.", seconds)
 
 
 def clean_message(text):
     body = (text or "").strip()
     if not body:
-        raise Refused("Write something first.")
+        raise Refused(tr("Write something first."))
     if len(body) > MESSAGE_MAX:
-        raise Refused(f"A message can be at most {MESSAGE_MAX:,} characters.")
+        raise Refused(trn("A message can be at most %(count)s character.", "A message can be at most %(count)s characters.",
+                          MESSAGE_MAX, count=number_text(MESSAGE_MAX)))
     return body
 
 
 def message_refusal(in_minute, today):
     """`in_minute`: this person's messages in this channel this minute, counting the one being sent."""
     if in_minute > PER_MINUTE:
-        return "You're sending messages too quickly. Wait a moment."
+        return tr("You're sending messages too quickly. Wait a moment.")
     if today >= PER_DAY:
-        return f"You can send at most {PER_DAY:,} messages a day in a channel."
+        return trn("You can send at most %(count)s message a day in a channel.",
+                   "You can send at most %(count)s messages a day in a channel.", PER_DAY, count=number_text(PER_DAY))
     return None
 
 
@@ -328,21 +355,23 @@ def quoted_event_id(value):
 def clean_category(value):
     """A category's name: plain text, like a channel's."""
     try:
-        name = display_names.clean(str(value or "").strip().lstrip("#"))
+        name = display_names.clean(str(value or "").strip().lstrip("#"), display_names.CATEGORY)
     except display_names.Refused as e:
-        raise Refused(str(e).replace("A display name", "A category name"))
+        raise Refused(str(e))
     if not name:
-        raise Refused("Give the category a name.")
+        raise Refused(tr("Give the category a name."))
     if len(name) > CATEGORY_MAX:
-        raise Refused(f"A category name can be at most {CATEGORY_MAX} characters.")
+        raise Refused(trn("A category name can be at most %(num)s character.",
+                          "A category name can be at most %(num)s characters.", CATEGORY_MAX))
     return name
 
 
 def category_refusal(count, name_taken):
     if count >= MAX_CATEGORIES:
-        return f"A guild can have at most {MAX_CATEGORIES} categories."
+        return trn("A guild can have at most %(num)s category.", "A guild can have at most %(num)s categories.",
+                   MAX_CATEGORIES)
     if name_taken:
-        return "The guild already has a category with that name."
+        return tr("The guild already has a category with that name.")
     return None
 
 
@@ -356,7 +385,7 @@ def rules_pending(gate, channel_rules, acked_key):
 
 
 def gate_refusal(gate, channel_rules):
-    return "Write the channel's rules first: there is nothing to accept." if gate and not channel_rules else None
+    return tr("Write the channel's rules first: there is nothing to accept.") if gate and not channel_rules else None
 
 
 _MENTION = re.compile(r"(?<![\w@])@([A-Za-z0-9_]{3,25})(?![\w@])")
@@ -374,11 +403,23 @@ def parse_mentions(body):
     return out
 
 
-def mention_text(writer, channel_name, guild_name, url):
-    """A mention's notification (markdown: the names are stripped of anything that could make a link)."""
+# Translators: a notification. %(name)s is a username, %(channel)s a channel's name (after #), %(guild)s a guild's name
+# (after +).
+_MENTION_NOTICE = N_("@%(name)s mentioned you in #%(channel)s of +%(guild)s.\n\n[Open the channel](%(link)s)")
+
+
+def mention_notice(writer, channel_name, guild_name, url):
+    """(message, values) of a mention's notification for alerts.notify (markdown: the names are stripped of anything
+    that could make a link). Stored in English with its values, read in each reader's own language."""
     from ruqqus.helpers import circles
-    return (f"@{circles.plain_name(writer)} mentioned you in #{circles.plain_name(channel_name)} of +{circles.plain_name(guild_name)}.\n\n"
-            f"[Open the channel]({url})")
+    return _MENTION_NOTICE, {"name": circles.plain_name(writer), "channel": circles.plain_name(channel_name),
+                             "guild": circles.plain_name(guild_name), "link": url}
+
+
+def mention_text(writer, channel_name, guild_name, url):
+    """A mention's notification as it is stored (English)."""
+    message, values = mention_notice(writer, channel_name, guild_name, url)
+    return message % values
 
 
 def mute_until(hours, now):
@@ -386,11 +427,11 @@ def mute_until(hours, now):
     try:
         hours = int(hours)
     except (TypeError, ValueError):
-        raise Refused("Choose how long to mute the channel.")
+        raise Refused(tr("Choose how long to mute the channel."))
     if hours == 0:
         return 0
     if hours not in MUTE_CHOICES:
-        raise Refused("Choose how long to mute the channel.")
+        raise Refused(tr("Choose how long to mute the channel."))
     return FOREVER if hours < 0 else now + hours * 3600
 
 
@@ -402,9 +443,9 @@ def thread_refusal(root):
     """Why a message can't start or join a thread (None: it can). `root`: (id, author_id, body, removed_utc,
     thread_event_id) of the message it would be under. Threads are one level deep, as Matrix's are."""
     if root is None or root[3]:
-        return "That message can't have a thread."
+        return tr("That message can't have a thread.")
     if root[4]:
-        return "A message in a thread can't have a thread of its own."
+        return tr("A message in a thread can't have a thread of its own.")
     return None
 
 
@@ -425,7 +466,7 @@ def clean_space_ref(value):
     try:
         return guild_wiki.clean_resource_target("post", value)[1]
     except guild_wiki.Refused:
-        raise Refused("Give the Space's post address or id.")
+        raise Refused(tr("Give the Space's post address or id."))
 
 
 def voice_label(channel_name, guild_name):

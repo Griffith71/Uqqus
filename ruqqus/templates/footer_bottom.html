@@ -1,18 +1,20 @@
+{% from "partials/language_switcher.html" import language_switcher %}
 	<footer class="text-center d-none d-md-block py-5">
     <ul class="list-inline text-small mb-0">
-      <li class="list-inline-item"><a href="/help/about" class="text-gray-500">About</a></li>
-      <li class="list-inline-item d-none"><a href="/help/contact" class="text-gray-500">Contact</a></li>
-      <li class="list-inline-item"><a href="/help/terms" class="text-gray-500">Terms</a></li>
-      <li class="list-inline-item"><a href="/help/privacy" class="text-gray-500">Privacy Policy</a></li>
-      <li class="list-inline-item"><a href="/help/donate" class="text-gray-500">Donate</a></li>
-      <li class="list-inline-item"><a href="/help/press" class="text-gray-500">Press</a></li>
-      <li class="list-inline-item"><a href="/help" class="text-gray-500">Help</a></li>
-      <li class="list-inline-item"><a href="/regions" class="text-gray-500">Regions</a></li>
+      <li class="list-inline-item"><a href="/help/about" class="text-gray-500">{{ _("About") }}</a></li>
+      <li class="list-inline-item d-none"><a href="/help/contact" class="text-gray-500">{{ _("Contact") }}</a></li>
+      <li class="list-inline-item"><a href="/help/terms" class="text-gray-500">{{ _("Terms") }}</a></li>
+      <li class="list-inline-item"><a href="/help/privacy" class="text-gray-500">{{ _("Privacy Policy") }}</a></li>
+      <li class="list-inline-item"><a href="/help/donate" class="text-gray-500">{{ _("Donate") }}</a></li>
+      <li class="list-inline-item"><a href="/help/press" class="text-gray-500">{{ pgettext("link to the page for journalists", "Press") }}</a></li>
+      <li class="list-inline-item"><a href="/help" class="text-gray-500">{{ _("Help") }}</a></li>
+      <li class="list-inline-item"><a href="/regions" class="text-gray-500">{{ _("Regions") }}</a></li>
       <li class="list-inline-item"><a href="https://www.twitter.com/ruqqus" class="text-gray-500">Twitter</a></li>
       <li class="list-inline-item"><a href="https://github.com/ruqqus/ruqqus" class="text-gray-500">GitHub</a></li>
       <li class="list-inline-item"><a href="/discord" class="text-gray-500">Discord</a></li>
     </ul>
 
-    <div class="text-muted text-small-extra mt-1">v. 2.38.0, © 2021 {{ 'COMPANY_NAME' | app_config }}</div>
+    {{ language_switcher() }}
+        <div class="text-muted text-small-extra mt-1">{# Translators: "v." is short for version; the name is the company that runs the site #}{{ _("v. %(version)s, © 2021 %(company)s", version="2.38.0", company='COMPANY_NAME' | app_config) }}</div>
 
   </footer>

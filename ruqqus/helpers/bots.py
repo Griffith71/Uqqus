@@ -18,7 +18,7 @@ A bot account is an ordinary `users` row with `is_bot` (and `bot_owner_id` for a
 verifies, and login refuses it too: nobody logs into a bot, so it is never anyone's alt.
 Bots post and forward; they never comment, vote, chat, take tips or lead a guild.
 
-Pure rules, stdlib only. The database side is helpers/bot_store.py.
+Pure rules (stdlib, and the interface's languages: helpers/i18n_runtime.py). The database side is helpers/bot_store.py.
 """
 import email.utils
 import hashlib
@@ -29,15 +29,20 @@ import re
 import time
 from urllib.parse import urlsplit, urlunsplit
 
+from ruqqus.helpers.i18n_runtime import N_, tr, tr_lazy, trn
+
 PENDING, APPROVED, REJECTED, PAUSED = "pending", "approved", "rejected", "paused"
 STATUSES = (PENDING, APPROVED, REJECTED, PAUSED)
-STATUS_LABELS = {PENDING: "Waiting for approval", APPROVED: "Running", REJECTED: "Rejected", PAUSED: "Paused"}
+# Translators: the state of a bot account, shown as a badge on its page.
+STATUS_LABELS = {PENDING: tr_lazy("Waiting for approval"), APPROVED: tr_lazy("Running"), REJECTED: tr_lazy("Rejected"),
+                 PAUSED: tr_lazy("Paused")}
 
 SITE, MEMBER, SELF = "site", "member", "self"
 KINDS = (SITE, MEMBER, SELF)
 # SELF: automated posting on the member's OWN account, which they keep using as themselves (the owner, 2026-10-21).
 # Its row's user_id is the member's account; nothing that deletes, renames or edits a bot account may touch it.
-KIND_LABELS = {SITE: "Site bot", MEMBER: "Member bot", SELF: "Own account"}
+# Translators: kinds of bot. "Own account": a member's own account that posts from feeds automatically.
+KIND_LABELS = {SITE: tr_lazy("Site bot"), MEMBER: tr_lazy("Member bot"), SELF: tr_lazy("Own account")}
 
 IMAGE_MAX_BYTES = 8 * 1024 * 1024            # a bot's picture or banner
 IMAGE_FORMATS = ("PNG", "JPEG", "GIF", "WEBP")
@@ -104,17 +109,17 @@ def owner_refusal(owner, bots_owned, now=None):
     is_suspended; `bots_owned` counts their member bots that are not rejected and their site-bot proposals still
     waiting (`bot_store.active_count`). Admins (who also make site bots) are held to neither the age nor the count."""
     if owner is None or getattr(owner, "is_deleted", False):
-        return "Sign in to apply for a bot."
+        return tr("Sign in to apply for a bot.")
     if getattr(owner, "is_bot", False):
-        return "A bot can't run bots."
+        return tr("A bot can't run bots.")
     if getattr(owner, "is_suspended", False):
-        return "You can't apply for a bot while your account is suspended."
+        return tr("You can't apply for a bot while your account is suspended.")
     if is_admin(owner):
         return None
     if _now(now) - (owner.created_utc or 0) < OWNER_MIN_AGE:
-        return "Your account needs to be at least 30 days old to run a bot."
+        return tr("Your account needs to be at least 30 days old to run a bot.")
     if bots_owned >= MAX_BOTS:
-        return f"You can run at most {MAX_BOTS} bots."
+        return trn("You can run at most %(num)s bot.", "You can run at most %(num)s bots.", MAX_BOTS)
     return None
 
 
@@ -132,15 +137,15 @@ def self_refusal(owner, has_one, now=None):
     """Why this member may not set up automated posting on their own account, or None. One per account, beside (not
     counted with) the bot accounts they run; the account must be in good standing and 30 days old, as for a bot."""
     if has_one:
-        return "Your account already posts automatically. Change its feeds on its page."
+        return tr("Your account already posts automatically. Change its feeds on its page.")
     if owner is None or getattr(owner, "is_deleted", False):
-        return "Sign in to post automatically."
+        return tr("Sign in to post automatically.")
     if getattr(owner, "is_bot", False):
-        return "A bot can't run bots."
+        return tr("A bot can't run bots.")
     if getattr(owner, "is_suspended", False):
-        return "Your account can't post automatically while it is suspended."
+        return tr("Your account can't post automatically while it is suspended.")
     if not is_admin(owner) and _now(now) - (owner.created_utc or 0) < OWNER_MIN_AGE:
-        return "Your account needs to be at least 30 days old to post automatically."
+        return tr("Your account needs to be at least 30 days old to post automatically.")
     return None
 
 
@@ -148,11 +153,11 @@ def kind_refusal(kind, feed_count):
     """A site bot is the free kind: it reads feeds, so it needs at least one. A member bot may have none (it posts with
     its member's key). Automated posting on one's own account is feeds only."""
     if kind not in KINDS:
-        return "Choose what kind of bot it is."
+        return tr("Choose what kind of bot it is.")
     if kind == SITE and not feed_count:
-        return "A site bot reads at least one feed: that is what makes it free to run."
+        return tr("A site bot reads at least one feed: that is what makes it free to run.")
     if kind == SELF and not feed_count:
-        return "Add at least one feed for your account to post from."
+        return tr("Add at least one feed for your account to post from.")
     return None
 
 
@@ -175,6 +180,29 @@ def subject(bot, capital=True):
     return words[0].upper() + words[1:] if capital else words
 
 
+# What a bot's member is told (alerts.notify: stored in English with the values, read in their own language). A whole
+# sentence for a bot account and another for a member's own account: `subject` glued into a sentence can't be translated.
+_NOTICES = {
+    ("paused", False): N_("Your bot @%(name)s has been paused: %(reason)s"),
+    ("paused", True): N_("Your account's automated posting has been paused: %(reason)s"),
+    # Translators: %(fails)s is a number of failed tries in a row (at least 10); %(reason)s is the last error, a sentence.
+    ("stopped_reading", False): N_("Your bot @%(name)s stopped reading %(url)s after %(fails)s failed tries: %(reason)s "
+                                   "Start it again from Settings > Bots once it works."),
+    ("stopped_reading", True): N_("Your account's automated posting stopped reading %(url)s after %(fails)s failed tries: "
+                                  "%(reason)s Start it again from Settings > Bots once it works."),
+    ("admin_paused", False): N_("An admin paused your bot @%(name)s: %(reason)s"),
+    ("admin_paused", True): N_("An admin paused your account's automated posting: %(reason)s"),
+    ("running_again", False): N_("Your bot @%(name)s is running again."),
+    ("running_again", True): N_("Your account's automated posting is running again."),
+}
+
+
+def notice(bot, which, **values):
+    """(message, values) for alerts.notify: what the member who runs `bot` is told. `which` is "paused",
+    "stopped_reading" (url, fails, reason), "admin_paused" (reason) or "running_again"."""
+    return _NOTICES[(which, is_self(bot))], {"name": bot.username, **values}
+
+
 def responsible_id(bot):
     """Who is told about a bot: its member (member bot, own account) or whoever proposed it, for the decision on a
     site bot."""
@@ -187,7 +215,7 @@ def parse_username(raw):
     """(name, error) for a bot's username: the same characters as any account's."""
     name = str(raw or "").strip().lstrip("@")
     if not USERNAME.fullmatch(name):
-        return None, "A bot's name is 3 to 25 letters, numbers or underscores."
+        return None, tr("A bot's name is 3 to 25 letters, numbers or underscores.")
     return name, None
 
 
@@ -199,7 +227,7 @@ def plain_text(raw, limit):
 def parse_purpose(raw):
     purpose = plain_text(raw, PURPOSE_MAX)
     if len(purpose) < 10:
-        return None, "Say what the bot will post and where it comes from (at least 10 characters)."
+        return None, tr("Say what the bot will post and where it comes from (at least 10 characters).")
     return purpose, None
 
 
@@ -211,11 +239,12 @@ def parse_guild_names(raw):
         if not name:
             continue
         if not GUILD_NAME.fullmatch(name):
-            return None, f"\"{name[:30]}\" is not a guild name."
+            return None, tr("\"%(guild)s\" is not a guild name.", guild=name[:30])
         if name.lower() not in (n.lower() for n in names):
             names.append(name)
     if len(names) > MAX_FORWARD_GUILDS:
-        return None, f"A bot can forward to at most {MAX_FORWARD_GUILDS} guilds."
+        return None, trn("A bot can forward to at most %(num)s guild.", "A bot can forward to at most %(num)s guilds.",
+                         MAX_FORWARD_GUILDS)
     return names, None
 
 
@@ -245,23 +274,23 @@ def parse_feed_url(raw, allow_local=False, site_host=None):
     site. Where the name leads is judged when it is fetched (helpers/feed_fetch.py, through helpers/safe_fetch.py)."""
     url = str(raw or "").strip()
     if not url:
-        return None, "Enter the feed's address."
+        return None, tr("Enter the feed's address.")
     if len(url) > URL_MAX or any(c.isspace() for c in url):
-        return None, "That feed address is too long or has spaces in it."
+        return None, tr("That feed address is too long or has spaces in it.")
     try:
         parts = urlsplit(url)
         parts.port                      # reading it raises ValueError for a port that is not a number
     except ValueError:
-        return None, "That is not a usable address."
+        return None, tr("That is not a usable address.")
     if parts.scheme != "https" and not (allow_local and parts.scheme == "http"):
-        return None, "A feed's address must start with https://"
+        return None, tr("A feed's address must start with https://")
     if parts.username is not None or parts.password is not None:
-        return None, "A feed's address can't hold a user name or password."
+        return None, tr("A feed's address can't hold a user name or password.")
     host = (parts.hostname or "").lower().rstrip(".")
     if not host:
-        return None, "That address has no server name."
+        return None, tr("That address has no server name.")
     if is_own_host(host, None if site_host is None else {site_host.lower()} - {""}):
-        return None, "A bot can't read this site itself."
+        return None, tr("A bot can't read this site itself.")
     return url, None
 
 
@@ -317,12 +346,12 @@ def cadence_label(check_minutes, asked_minutes, status=APPROVED):
         return ""
     minutes = max(FLOOR_MINUTES, int(check_minutes or FLOOR_MINUTES))
     shortest = max(FLOOR_MINUTES, int(asked_minutes or 0))
-    text = f"Read every {minutes} minutes"
     if minutes > shortest:
-        return text + " (quiet lately)"
+        return trn("Read every %(num)s minute (quiet lately)", "Read every %(num)s minutes (quiet lately)", minutes)
     if shortest > FLOOR_MINUTES:
-        return text + f" (the feed asks for at least {shortest})"
-    return text
+        return trn("Read every %(num)s minute (the feed asks for at least %(shortest)s)",
+                   "Read every %(num)s minutes (the feed asks for at least %(shortest)s)", minutes, shortest=shortest)
+    return trn("Read every %(num)s minute", "Read every %(num)s minutes", minutes)
 
 
 def retry_wait(header, now=None):
@@ -351,14 +380,14 @@ def post_refusal(bot, owner, posts_today, is_on=None):
     comes from the job or from a bot key. `bot` is the `bots` row (status, kind), `owner` the member who runs a member
     bot (a site bot has none: the site runs it)."""
     if not (enabled() if is_on is None else is_on):
-        return "Bots are switched off on this site for now."
+        return tr("Bots are switched off on this site for now.")
     if bot is None or bot.status != APPROVED:
-        return "This bot is not running." if bot is not None and bot.status == PAUSED else "This bot has not been approved."
+        return tr("This bot is not running.") if bot is not None and bot.status == PAUSED else tr("This bot has not been approved.")
     if getattr(bot, "kind", MEMBER) in (MEMBER, SELF) and (
             owner is None or getattr(owner, "is_deleted", False) or getattr(owner, "is_suspended", False)):
-        return "This bot's owner can't run it right now."
+        return tr("This bot's owner can't run it right now.")
     if posts_today >= DAILY_CAP:
-        return f"A bot can post at most {DAILY_CAP} times a day."
+        return trn("A bot can post at most %(num)s time a day.", "A bot can post at most %(num)s times a day.", DAILY_CAP)
     return None
 
 
@@ -374,11 +403,11 @@ def is_automated(account_is_bot, says_bot, bot):
 def option_refusal(anonymous, audience, coauthors):
     """A bot's post is public, signed and its own: never anonymous, never for a Circle, never co-authored."""
     if anonymous:
-        return "A bot can't post anonymously."
+        return tr("A bot can't post anonymously.")
     if audience:
-        return "A bot's posts are public."
+        return tr("A bot's posts are public.")
     if coauthors:
-        return "A bot's posts can't have co-authors."
+        return tr("A bot's posts can't have co-authors.")
     return None
 
 

@@ -152,7 +152,7 @@ def test_the_listing_the_forward_and_the_composer():
     posts = read("ruqqus", "routes", "posts.py")
     forward = posts.split("def forward_post(", 1)[1].split("\n@app.route", 1)[0]
     assert forward.index("flair_rules.forward_refusal(target.require_flair") < forward.index("create_forward_post(")
-    assert "flair_rules.COMPOSER_REQUIRED.format(guild=target.name)" in posts
+    assert "flair_rules.composer_required(target.name)" in posts
     assert "guild_flair_store.attach(g.db, posts)" in read("ruqqus", "helpers", "get.py")
     for name in ("submission_listing.html", "submission.html"):
         t = read("ruqqus", "templates", name)
@@ -174,9 +174,9 @@ def test_the_schema_mirrors_the_migration():
 
 def test_a_bot_forward_refused_for_flair_posts_again_without_forwarding():
     """Audit G-02: the composer's refusal was a 409, which the bot runner reads as "already posted", so the item
-    vanished. A 403 naming the guild is a guild refusal: posted again on the profile alone."""
+    vanished. A 403 marked as a guild refusal is posted again on the profile alone."""
     from ruqqus.helpers import bot_runner
     message = rules.COMPOSER_REQUIRED.format(guild="pets")
-    assert bot_runner.classify(403, None, {"error": message}, True)[0] == "guild"
+    assert bot_runner.classify(403, None, {"error": message, "refusal": "guild"}, True)[0] == "guild"
     posts = read("ruqqus", "routes", "posts.py")
-    assert '"api": lambda fe=flair_error: ({"error": fe}, 403)}' in posts
+    assert '"api": lambda fe=flair_error: ({"error": fe, "refusal": "guild"}, 403)}' in posts

@@ -7,10 +7,13 @@ import requests
 from werkzeug.wrappers.response import Response as RespObj
 import time
 import random
+import json
 
 from ruqqus.classes import *
 from .get import *
 from .alerts import send_notification
+from .i18n_runtime import N_, tr
+from .i18n_runtime import site_name as _site_name
 from ruqqus.__main__ import Base, app, db_session
 from ruqqus.helpers.session_helpers import *
 
@@ -111,15 +114,18 @@ def check_ban_evade(v):
         return
     
     if random.randint(0,30) < v.ban_evade and not v.is_suspended:
-        v.ban(reason="Evading a site-wide ban")
-        send_notification(v, f"Your {app.config['SITE_NAME']} account has been permanently suspended for the following reason:\n\n> ban evasion")
+        v.ban(reason=N_("Evading a site-wide ban"))
+        # stored in English with its message and values, so each reader sees it in their language (alerts.notify)
+        notice = N_("Your %(site)s account has been permanently suspended for the following reason:\n\n> ban evasion")
+        values = {"site": _site_name()}
+        send_notification(v, notice % values, notice=(notice, json.dumps(values, sort_keys=True)))
 
         for post in g.db.query(Submission).filter_by(author_id=v.id).all():
             if post.is_banned:
                 continue
 
             post.is_banned=True
-            post.ban_reason="Ban evasion. This submission's owner was banned on another account."
+            post.ban_reason=N_("Ban evasion. This submission's owner was banned on another account.")
             g.db.add(post)
 
             ma=ModAction(
@@ -127,7 +133,7 @@ def check_ban_evade(v):
                 user_id=1,
                 target_submission_id=post.id,
                 board_id=post.board_id,
-                note="ban evasion"
+                note=N_("ban evasion")
                 )
             g.db.add(ma)
 
@@ -138,7 +144,7 @@ def check_ban_evade(v):
                 continue
 
             comment.is_banned=True
-            comment.ban_reason="Ban evasion. This comment's owner was banned on another account."
+            comment.ban_reason=N_("Ban evasion. This comment's owner was banned on another account.")
             g.db.add(comment)
 
             ma=ModAction(
@@ -146,7 +152,7 @@ def check_ban_evade(v):
                 user_id=1,
                 target_comment_id=comment.id,
                 board_id=comment.post.board_id,
-                note="ban evasion"
+                note=N_("ban evasion")
                 )
             g.db.add(ma)
 
@@ -309,7 +315,7 @@ def no_negative_balance(s):
 
             if v.negative_balance_cents:
                 if s=="toast":
-                    return (jsonify({"error":"You can't do that while your account balance is negative. Visit your account settings to bring your balance up to zero."}), 402)
+                    return (jsonify({"error": tr("You can't do that while your account balance is negative. Visit your account settings to bring your balance up to zero.")}), 402)
                 elif s=="html":
                     raise(PaymentRequired)
                 else:
@@ -351,6 +357,9 @@ def not_quarantined(action):
     return wrapper_maker
 
 
+COOLDOWN_MESSAGE = N_("Slow down - cooldown active for another %(minutes)s:%(seconds)s.")
+
+
 def _response_status(resp):
     if isinstance(resp, tuple):
         return resp[1] if len(resp) > 1 else 200
@@ -375,7 +384,8 @@ def throttle_check(f):
         remaining = content_cooldown_remaining(v.id, ip)
         if remaining > 0:
             m, s = divmod(int(remaining) + 1, 60)
-            return jsonify({"error": f"Slow down - cooldown active for another {m}:{s:02d}."}), 429
+            # English for everyone: the scheduler reads the time back out of it (post_drafts.cooldown_seconds)
+            return jsonify({"error": COOLDOWN_MESSAGE % {"minutes": m, "seconds": f"{s:02d}"}}), 429
 
         resp = f(*args, **kwargs)
 
@@ -418,7 +428,9 @@ def throttle_check_ip(namespace):
             remaining = cooldown_remaining(namespace, ip)
             if remaining > 0:
                 m, s = divmod(int(remaining) + 1, 60)
-                return jsonify({"error": f"Slow down - try again in {m}:{s:02d}."}), 429
+                # Translators: a waiting time in minutes and seconds, as 4:07
+                return jsonify({"error": tr("Slow down - try again in %(minutes)s:%(seconds)s.",
+                                            minutes=m, seconds=f"{s:02d}")}), 429
 
             resp = f(*args, **kwargs)
             register_action(namespace, ip)
@@ -451,16 +463,16 @@ def is_guildmaster(*perms):
             elif bid:
                 board = get_board(bid)
             else:
-                return jsonify({"error": f"no guild specified"}), 400
+                return jsonify({"error": tr("no guild specified")}), 400
 
             m=board.has_mod(v)
             if not m:
-                return jsonify({"error":f"You aren't a guildmaster of +{board.name}"}), 403
+                return jsonify({"error": tr("You aren't a guildmaster of +%(guild)s", guild=board.name)}), 403
 
             if perms:
                 for perm in perms:
                     if not m.__dict__.get(f"perm_{perm}") and not m.perm_full:
-                        return jsonify({"error":f"Permission `{perm}` required"}), 403
+                        return jsonify({"error": tr("Permission `%(permission)s` required", permission=perm)}), 403
 
 
             # a guildmaster under any ban, temporary or permanent, can't moderate
@@ -558,7 +570,7 @@ def no_cors(f):
 
         if origin and origin != "https://" + app.config["SERVER_NAME"] and app.config["FORCE_HTTPS"]==1:
 
-            return "This page may not be embedded in other webpages.", 403
+            return tr("This page may not be embedded in other webpages."), 403
 
         resp = make_response(f(*args, **kwargs))
         resp.headers.add("Access-Control-Allow-Origin",
@@ -597,27 +609,28 @@ def api(*scopes, error_handler=False):
 
                     if not v or not client:
                         return jsonify(
-                            {"error": "401 Not Authorized. Invalid or Expired Token"}), 401
+                            {"error": tr("401 Not Authorized. Invalid or Expired Token")}), 401
 
                     kwargs.pop('c')
 
                     # validate app associated with token
                     if client.application.is_banned:
-                        return jsonify({"error": f"403 Forbidden. The application `{client.application.app_name}` is suspended."}), 403
+                        return jsonify({"error": tr("403 Forbidden. The application `%(app)s` is suspended.",
+                                                       app=client.application.app_name)}), 403
 
                     # validate correct scopes for request
                     for scope in scopes:
                         if not client.__dict__.get(f"scope_{scope}"):
-                            return jsonify({"error": f"401 Not Authorized. Scope `{scope}` is required."}), 403
+                            return jsonify({"error": tr("401 Not Authorized. Scope `%(scope)s` is required.", scope=scope)}), 403
 
                 if not v:
-                    return jsonify({"error": f"401 Not Authorized. You must log in."}), 401
+                    return jsonify({"error": tr("401 Not Authorized. You must log in.")}), 401
 
                 if v.is_suspended:
-                    return jsonify({"error": f"403 Forbidden. You are banned."}), 403
+                    return jsonify({"error": tr("403 Forbidden. You are banned.")}), 403
 
                 if request.method != "GET" and not client:
-                    return jsonify({"error": f"401 Not Authorized. You must use an OAuth access token to create or edit content."}), 401
+                    return jsonify({"error": tr("401 Not Authorized. You must use an OAuth access token to create or edit content.")}), 401
                     
 
                 result = f(*args, **kwargs)

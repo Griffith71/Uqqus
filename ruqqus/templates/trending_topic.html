@@ -3,7 +3,7 @@
 {% block pagetype %}curations{% endblock %}
 
 {% block title %}
-<title>{{ label or 'Trending' }} - {{ 'SITE_NAME' | app_config }}</title>
+<title>{{ _("%(topic)s - %(site)s", topic=(label or _("Trending"))) }}</title>
 {% endblock %}
 
 {% block desktopBanner %}{% endblock %}
@@ -14,13 +14,13 @@
 {% block content %}
 <div class="col px-md-4 py-4">
 
-  <div class="text-small"><a href="/trending{% if scope_all %}?scope=all{% endif %}"><i class="fas fa-chart-line mr-1"></i>Trending</a></div>
+  <div class="text-small"><a href="/trending{% if scope_all %}?scope=all{% endif %}"><i class="fas fa-chart-line mr-1"></i>{{ _("Trending") }}</a></div>
 
   {% if label %}
   <h1 class="h3 mb-3">{{ label }}</h1>
 
   <ul class="nav settings-nav mb-3">
-    {% for key, name in [("new", "Latest"), ("top", "Top")] %}
+    {% for key, name in [("new", _("Latest")), ("top", pgettext("sort", "Top"))] %}
     <li class="nav-item"><a class="nav-link{% if sort_method == key %} active{% endif %}" href="?sort={{ key }}{{ scope_query }}"{% if sort_method == key %} aria-current="page"{% endif %}>{{ name }}</a></li>
     {% endfor %}
   </ul>
@@ -30,12 +30,12 @@
   </div>
 
   {% if not listing %}
-  <p class="text-muted">No posts on this topic that you can see.</p>
+  <p class="text-muted">{{ _("No posts on this topic that you can see.") }}</p>
   {% endif %}
 
   {% else %}
-  <h1 class="h3 mb-1">Not trending any more</h1>
-  <p class="text-muted">This topic has dropped off the list. <a href="/trending">See what is trending now</a>.</p>
+  <h1 class="h3 mb-1">{{ _("Not trending any more") }}</h1>
+  <p class="text-muted">{{ _('This topic has dropped off the list. <a href="/trending">See what is trending now</a>.') }}</p>
   {% endif %}
 
 </div>
@@ -43,17 +43,17 @@
 
 {% block pagenav %}
 {% if label and listing %}
-<nav aria-label="Page navigation">
+<nav aria-label="{{ _('Page navigation') }}">
   <ul class="pagination pagination-sm mb-0">
     {% if page>1 %}
-    <li class="page-item"><small><a class="page-link" href="?sort={{ sort_method }}&page={{ page-1 }}{{ scope_query }}">Prev</a></small></li>
+    <li class="page-item"><small><a class="page-link" href="?sort={{ sort_method }}&page={{ page-1 }}{{ scope_query }}">{{ pgettext("previous page", "Prev") }}</a></small></li>
     {% else %}
-    <li class="page-item disabled"><span class="page-link">Prev</span></li>
+    <li class="page-item disabled"><span class="page-link">{{ pgettext("previous page", "Prev") }}</span></li>
     {% endif %}
     {% if next_exists %}
-    <li class="page-item"><small><a class="page-link" href="?sort={{ sort_method }}&page={{ page+1 }}{{ scope_query }}">Next</a></small></li>
+    <li class="page-item"><small><a class="page-link" href="?sort={{ sort_method }}&page={{ page+1 }}{{ scope_query }}" rel="next">{{ pgettext("next page", "Next") }}</a></small></li>
     {% else %}
-    <li class="page-item disabled"><span class="page-link">Next</span></li>
+    <li class="page-item disabled"><span class="page-link">{{ pgettext("next page", "Next") }}</span></li>
     {% endif %}
   </ul>
 </nav>

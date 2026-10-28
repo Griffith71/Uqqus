@@ -1,6 +1,8 @@
 """Quote cards (ruqqus/helpers/quote_cards.py): a linked post reads like a post quoted on X. The card of a social site's
 post from the snippets those sites really send, the date, which links are posts at all, a link to a post on this site,
 and what a reader is told instead of a post they may not read."""
+import copy
+import time
 from pathlib import Path
 
 import pytest
@@ -115,6 +117,12 @@ def test_a_link_that_is_not_a_post_keeps_the_link_preview(url):
 ])
 def test_dates_read_as_the_site_writes_them(raw, shown):
     assert qc._when(raw) == shown
+    # the same day for the reader's language (the template's date_text), or 0 when it isn't a date
+    when_utc = qc._when_utc(raw)
+    if shown in ("yesterday", "x" * 40, ""):
+        assert when_utc == 0
+    else:
+        assert time.strftime("%-d %B %Y", time.gmtime(when_utc)) == shown
 
 
 @pytest.mark.parametrize("url, b36", [
@@ -168,6 +176,16 @@ def test_a_quoted_post_that_quotes_says_so_in_one_line():
     assert qc.quoting_line(REDDIT_URL, "example.org") == "Quoting a post on Reddit"
     assert qc.quoting_line("https://example.com/news", "example.org") == ""
     assert qc.quoting_line(None, "example.org") == ""
+    # the parts the template translates the line from, whole (partials/quote_card.html quoting_text)
+    line = qc.quoting_line(X_URL, "example.org")
+    assert (line.who, line.service) == ("@elonmusk", "X")
+    line = qc.quoting_line(REDDIT_URL, "example.org")
+    assert (line.who, line.service) == ("", "Reddit")
+    line = qc.quoting_line("https://example.org/post/zz", "example.org")
+    assert (line.who, line.service) == ("", "")
+    # a copied line is the same line, text and parts
+    copied = copy.deepcopy(qc.quoting_line(X_URL, "example.org"))
+    assert copied == "Quoting @elonmusk on X" and (copied.who, copied.service) == ("@elonmusk", "X")
 
 
 def test_every_site_icon_is_a_font_awesome_free_brand():

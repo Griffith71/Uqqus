@@ -1,6 +1,6 @@
 {% extends "settings.html" %}
 
-{% block pagetitle %}Creator fund - {{ 'SITE_NAME' | app_config }}{% endblock %}
+{% block pagetitle %}{{ _("Creator fund - %(site)s") }}{% endblock %}
 
 {# The creator fund, as a member sees it (routes/creator_fund.py; the rules are helpers/creator_fund.py). Only the
    member's own points and payouts are here: nothing anywhere lists who earned what. #}
@@ -10,12 +10,10 @@
   <div class="col col-lg-8">
     <div class="settings" id="creator-fund-settings">
 
-      <h2 class="h5">Creator fund</h2>
+      <h2 class="h5">{{ _("Creator fund") }}</h2>
       <p class="text-small text-muted">
-        Each month {{ 'SITE_NAME' | app_config }} sets aside a budget of coins and shares it among the members whose posts
-        and comments other people valued most. You earn a point each time an established account upvotes one of your
-        posts or comments, or comments on one of your posts. Members with at least {{ min_points }} points in a month
-        share that month's budget by their points.
+        {{ _("Each month %(site)s sets aside a budget of coins and shares it among the members whose posts and comments other people valued most. You earn a point each time an established account upvotes one of your posts or comments, or comments on one of your posts.") }}
+        {{ ngettext("Members with at least %(num)s point in a month share that month's budget by their points.", "Members with at least %(num)s points in a month share that month's budget by their points.", min_points) }}
       </p>
 
       {% if msg %}<div class="alert alert-success" role="status">{{ msg }}</div>{% endif %}
@@ -25,54 +23,55 @@
         <div class="d-lg-flex">
           <div class="title w-lg-25"><label>{{ month_name }}</label></div>
           <div class="body w-lg-100">
-            <span id="creator-fund-points"><strong>{{ points }}</strong> point{{ 's' if points != 1 }} so far, from {{ accounts }} account{{ 's' if accounts != 1 }}.</span>
+            {# Translators: %(accounts)s is a count of accounts, such as "3 accounts" #}
+            <span id="creator-fund-points">{{ ngettext("<strong>%(num)s</strong> point so far, from %(accounts)s.", "<strong>%(num)s</strong> points so far, from %(accounts)s.", points, accounts=ngettext("%(num)s account", "%(num)s accounts", accounts)) }}</span>
             <span class="d-block text-small-extra text-muted">
-              {% if points >= min_points %}Enough to share this month's budget{% if not taking_part %} if you take part{% endif %}.{% else %}{{ min_points - points }} more to share this month's budget.{% endif %}
-              Updated every few minutes.
+              {% if points >= min_points %}{% if taking_part %}{{ _("Enough to share this month's budget.") }}{% else %}{{ _("Enough to share this month's budget if you take part.") }}{% endif %}{% else %}{{ ngettext("%(num)s more to share this month's budget.", "%(num)s more to share this month's budget.", min_points - points) }}{% endif %}
+              {{ _("Updated every few minutes.") }}
             </span>
           </div>
         </div>
 
         <div class="d-lg-flex border-top">
-          <div class="title w-lg-25"><label for="creator-fund-agree">Take part</label></div>
+          <div class="title w-lg-25"><label for="creator-fund-agree">{{ _("Take part") }}</label></div>
           <div class="body w-lg-100">
             <form action="/settings/creator_fund" method="post">
               <input type="hidden" name="formkey" value="{{ v.formkey }}">
               {% if taking_part %}
-              <p class="mb-2">You are taking part.</p>
+              <p class="mb-2">{{ _("You are taking part.") }}</p>
               <input type="hidden" name="action" value="leave">
-              <button type="submit" class="btn btn-secondary">Leave the creator fund</button>
+              <button type="submit" class="btn btn-secondary">{{ _("Leave the creator fund") }}</button>
               {% else %}
               <div class="custom-control custom-checkbox mb-2">
                 <input type="checkbox" class="custom-control-input" id="creator-fund-agree" name="agree" value="1" required>
-                <label class="custom-control-label creator-fund-agree" for="creator-fund-agree">I agree to the rules below.</label>
+                <label class="custom-control-label creator-fund-agree" for="creator-fund-agree">{{ _("I agree to the rules below.") }}</label>
               </div>
-              <button type="submit" class="btn btn-primary">Take part</button>
+              <button type="submit" class="btn btn-primary">{{ _("Take part") }}</button>
               {% endif %}
             </form>
           </div>
         </div>
       </div>
 
-      <h3 class="h6 mt-4">The rules</h3>
+      <h3 class="h6 mt-4">{{ _("The rules") }}</h3>
       <ul class="text-small creator-fund-rules">
-        <li>A point needs an account at least {{ rules.ACCOUNT_AGE_DAYS }} days old that is not banned or deleted. Your own votes and comments never count.</li>
-        <li>One account gives you at most {{ rules.POINTS_PER_ACCOUNT }} points a month, however much it votes and comments.</li>
-        <li>Only public posts and comments count: not Circle posts or posts in private guilds, and not anything removed or deleted.</li>
-        <li>Anonymous posts and comments count for you like any other. Your points and earnings are shown only to you; the site's admins see the payout list.</li>
-        <li>Nobody gets more than {{ (rules.MAX_SHARE * 100) | int }}% of a month's budget. Shares are rounded down to whole coins.</li>
-        <li>Votes or comments from accounts that are paid, fake, or run by you or for you are not allowed. A payout that relies on them can be held, and you can be taken out of the fund.</li>
-        <li>To be paid you must be taking part, have an account at least {{ rules.ACCOUNT_AGE_DAYS }} days old, and owe nothing to the site.</li>
-        <li>A month is paid after it ends, in coins added to your balance. You get a notification.</li>
+        <li>{{ ngettext("A point needs an account at least %(num)s day old that is not banned or deleted. Your own votes and comments never count.", "A point needs an account at least %(num)s days old that is not banned or deleted. Your own votes and comments never count.", rules.ACCOUNT_AGE_DAYS) }}</li>
+        <li>{{ ngettext("One account gives you at most %(num)s point a month, however much it votes and comments.", "One account gives you at most %(num)s points a month, however much it votes and comments.", rules.POINTS_PER_ACCOUNT) }}</li>
+        <li>{{ _("Only public posts and comments count: not Circle posts or posts in private guilds, and not anything removed or deleted.") }}</li>
+        <li>{{ _("Anonymous posts and comments count for you like any other. Your points and earnings are shown only to you; the site's admins see the payout list.") }}</li>
+        <li>{{ _("Nobody gets more than %(share)s%% of a month's budget. Shares are rounded down to whole coins.", share=(rules.MAX_SHARE * 100) | int) }}</li>
+        <li>{{ _("Votes or comments from accounts that are paid, fake, or run by you or for you are not allowed. A payout that relies on them can be held, and you can be taken out of the fund.") }}</li>
+        <li>{{ ngettext("To be paid you must be taking part, have an account at least %(num)s day old, and owe nothing to the site.", "To be paid you must be taking part, have an account at least %(num)s days old, and owe nothing to the site.", rules.ACCOUNT_AGE_DAYS) }}</li>
+        <li>{{ _("A month is paid after it ends, in coins added to your balance. You get a notification.") }}</li>
       </ul>
 
       {% if payouts %}
-      <h3 class="h6 mt-4">Your payouts</h3>
+      <h3 class="h6 mt-4">{{ _("Your payouts") }}</h3>
       <table class="table table-sm text-small">
-        <thead><tr><th scope="col">Month</th><th scope="col">Points</th><th scope="col">Coins</th></tr></thead>
+        <thead><tr><th scope="col">{{ pgettext("table heading", "Month") }}</th><th scope="col">{{ pgettext("table heading", "Points") }}</th><th scope="col">{{ pgettext("table heading", "Coins") }}</th></tr></thead>
         <tbody>
           {% for month, p, c, status in payouts %}
-          <tr><td>{{ month }}</td><td>{{ p }}</td><td>{{ c }}{% if status == 'held' %} <span class="text-muted">(on hold)</span>{% endif %}</td></tr>
+          <tr><td>{{ month }}</td><td>{{ p }}</td><td>{{ c }}{% if status == 'held' %} <span class="text-muted">{{ _("(on hold)") }}</span>{% endif %}</td></tr>
           {% endfor %}
         </tbody>
       </table>

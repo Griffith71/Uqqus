@@ -143,7 +143,7 @@ def test_the_owners_form_shows_names_and_everyone_else_only_a_count():
     assert "left_out.users | join(', ')" in FORM and "left_out.guilds | join(', ')" in FORM
     assert "left_out=_left_out_names(curation.algorithm_spec)" in _body(ROUTES, "curation_edit_get", "\n\n\n@app.route")
     # the public page shows describe(), which only counts
-    assert 'f"{accounts} account' in _read("ruqqus", "helpers", "feed_algorithm.py")
+    assert 'trn("%(num)s account", "%(num)s accounts", accounts)' in _read("ruqqus", "helpers", "feed_algorithm.py")
     assert "A fork gets the rules but not this list." in FORM
 
 

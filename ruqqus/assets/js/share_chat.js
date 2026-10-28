@@ -41,7 +41,8 @@
     var frame = document.createElement('iframe');
     frame.src = '/chat?embed=1';
     frame.hidden = true;
-    frame.title = 'Chat';
+    // Translators: the name of a hidden frame holding the chat page (read by screen readers)
+    frame.title = tr('Chat');
     document.body.appendChild(frame);
     return frame;
   }
@@ -53,7 +54,7 @@
       var timer = setInterval(function () {
         if (Date.now() - started > READY_WAIT) {
           clearInterval(timer);
-          reject(new Error('Chat is still starting. Try again in a moment.'));
+          reject(new Error(tr('Chat is still starting. Try again in a moment.')));
           return;
         }
         if (frame.contentWindow) frame.contentWindow.postMessage({ type: 'ruqqus-chat-ping' }, window.location.origin);
@@ -77,7 +78,7 @@
       var entry = waiting[data.id];
       delete waiting[data.id];
       clearTimeout(entry.timer);
-      if (data.ok) entry.resolve(); else entry.reject(new Error(typeof data.error === 'string' ? data.error : 'Could not send.'));
+      if (data.ok) entry.resolve(); else entry.reject(new Error(typeof data.error === 'string' ? data.error : tr('Could not send.')));
     }
   });
 
@@ -90,7 +91,7 @@
           resolve: resolve,
           reject: reject,
           // a frame that stopped answering (it was reloaded) is started afresh next time
-          timer: setTimeout(function () { delete waiting[id]; chat = null; reject(new Error('Chat did not answer. Try again.')); }, SEND_WAIT)
+          timer: setTimeout(function () { delete waiting[id]; chat = null; reject(new Error(tr('Chat did not answer. Try again.'))); }, SEND_WAIT)
         };
         session.frame.contentWindow.postMessage({ type: 'ruqqus-chat-send', id: id, room_id: roomId, text: text }, window.location.origin);
       });
@@ -113,27 +114,29 @@
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
       body: body
     }).then(function (r) {
-      if (!r.ok) throw new Error(r.status === 403 ? 'You can\'t message that person.' : 'Could not start that chat.');
+      if (!r.ok) throw new Error(r.status === 403 ? tr('You can\'t message that person.') : tr('Could not start that chat.'));
       return r.json();
     }).then(function (data) { return data.room_id; });
   }
 
   function sendTo(target, button) {
     button.disabled = true;
-    button.textContent = 'Sending…';
+    button.textContent = tr('Sending…');
     say('');
     var room = target.room_id ? Promise.resolve(target.room_id) : startConversation(target.username);
     room.then(function (roomId) {
       target.room_id = roomId;
       return sendMessage(roomId, messageText());
     }).then(function () {
-      button.textContent = 'Sent';
+      // Translators: a button's state once the post was sent in the chat
+      button.textContent = tr('Sent');
       button.classList.remove('btn-primary');
       button.classList.add('btn-secondary');
     }).catch(function (error) {
       button.disabled = false;
-      button.textContent = 'Retry';
-      say(error && error.message ? error.message : 'Could not send.', true);
+      // Translators: a button (a verb): try sending the post in this chat again
+      button.textContent = tr('Retry');
+      say(error && error.message ? error.message : tr('Could not send.'), true);
     });
   }
 
@@ -169,7 +172,8 @@
     var button = document.createElement('button');
     button.type = 'button';
     button.className = 'btn btn-primary btn-sm ml-2';
-    button.textContent = 'Send';
+    // Translators: a button (a verb): send the post in this chat
+    button.textContent = tr('Send');
     button.addEventListener('click', function () { sendTo(target, button); });
     item.appendChild(avatar);
     item.appendChild(name);
@@ -190,16 +194,16 @@
       var empty = document.createElement('p');
       empty.className = 'text-muted text-small mb-0';
       empty.textContent = search.value.trim()
-        ? 'No one matches. You can send to your chats and to people you follow.'
-        : 'Nobody to send to yet. Follow someone, or start a chat from their profile.';
+        ? tr('No one matches. You can send to your chats and to people you follow.')
+        : tr('Nobody to send to yet. Follow someone, or start a chat from their profile.');
       list.appendChild(empty);
       return;
     }
     var recent = targets.filter(function (t) { return t.recent; });
     var people = targets.filter(function (t) { return !t.recent; });
-    if (recent.length) list.appendChild(heading('Chats'));
+    if (recent.length) list.appendChild(heading(tr('Chats')));
     recent.forEach(function (t) { list.appendChild(row(t)); });
-    if (people.length) list.appendChild(heading('People you follow'));
+    if (people.length) list.appendChild(heading(tr('People you follow')));
     people.forEach(function (t) { list.appendChild(row(t)); });
   }
 
@@ -208,7 +212,7 @@
     fetch('/api/chat/share_targets?q=' + encodeURIComponent(search.value.trim()), { credentials: 'same-origin' })
       .then(function (r) { if (!r.ok) throw new Error('failed'); return r.json(); })
       .then(function (data) { if (token === loadToken) draw(data.targets || []); })
-      .catch(function () { if (token === loadToken) { list.textContent = ''; say('Could not load your chats. Try again.', true); } });
+      .catch(function () { if (token === loadToken) { list.textContent = ''; say(tr('Could not load your chats. Try again.'), true); } });
   }
 
   search.addEventListener('input', function () {

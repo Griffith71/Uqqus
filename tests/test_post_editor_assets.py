@@ -62,13 +62,13 @@ def test_the_toolbar_never_builds_html_from_user_text():
 
 def test_undo_redo_then_what_goes_into_the_text_then_the_folded_formatting():
     # the owner (2026-10-21): Reddit's order, the formatting folded behind "Aa" at the top of the box
-    order = [JS.index(x) for x in ("tbButton('Undo'", "tbButton('Redo'", "uploadStub('image'", "uploadStub('video'",
-                                   "uploadStub('audio'", "tbButton('GIF'", "tbButton('Emoji'", "tbButton('Link (Ctrl+K)'",
-                                   "'post-tb-toggle'", "dropdown('Text style'")]
+    order = [JS.index(x) for x in ("tbButton(tr('Undo')", "tbButton(tr('Redo')", "uploadStub('image'", "uploadStub('video'",
+                                   "uploadStub('audio'", "tbButton(tr('GIF')", "tbButton(tr('Emoji')",
+                                   "tbButton(tr('Link (Ctrl+K)')", "'post-tb-toggle'", "dropdown(tr('Text style')")]
     assert order == sorted(order)
     assert "extras.forEach(function (g) { g.classList.add('post-tb-extra'); });" in JS
     assert "setFolded(!startOpen, false);" in JS and "localStorage" in JS and "try {" in JS
-    more = JS.split("dropdown('More'", 1)[1].split("})\n    ));", 1)[0]
+    more = JS.split("dropdown(tr('More')", 1)[1].split("})\n    ));", 1)[0]
     assert "'Emoji'" not in more and "'GIF'" not in more          # moved to the front, not twice
     assert "use: function (kind, textarea)" in JS and "'posteditor:register'" in JS
 

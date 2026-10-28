@@ -3,56 +3,59 @@
 {% block pagetype %}content_history{% endblock %}
 
 {% block title %}
-<title>History - {{ 'SITE_NAME' | app_config }}</title>
+<title>{{ _("History - %(site)s") }}</title>
 {% endblock %}
 
 {% block content %}
 <div class="col px-md-4 py-4">
 
   <h1 class="h4 mb-3">
-    History of this {{ "post" if target_type=="post" else "comment" }}
-    <a href="{{ target.permalink }}" class="text-small font-weight-normal">(view current)</a>
+    {% if target_type=="post" %}{{ _('History of this post') }}{% else %}{{ _('History of this comment') }}{% endif %}
+    <a href="{{ target.permalink }}" class="text-small font-weight-normal">{{ _('(view current)') }}</a>
   </h1>
 
   {% if not entries and not obliteration %}
-  <p class="text-muted">No edits or removals recorded for this {{ "post" if target_type=="post" else "comment" }} yet.</p>
+  <p class="text-muted">{% if target_type=="post" %}{{ _('No edits or removals recorded for this post yet.') }}{% else %}{{ _('No edits or removals recorded for this comment yet.') }}{% endif %}</p>
   {% endif %}
 
   {% for entry in entries %}
   <div class="card mb-3 p-3">
     <div class="mb-1">
+      {% if entry.action in ("edit", "delete", "author_hide", "author_restore") %}
+      {% set actor %}{% if anon_hidden(target, v) and entry.actor_id == target.author_id %}{{ _('Anonymous') }}{% else %}<a href="{{ entry.actor.permalink }}">@{{ entry.actor.username }}</a>{% endif %}{% endset %}
+      {% endif %}
       <strong>
         {% if entry.action == "edit" %}
-        Edited by {% if anon_hidden(target, v) and entry.actor_id == target.author_id %}Anonymous{% else %}<a href="{{ entry.actor.permalink }}">@{{ entry.actor.username }}</a>{% endif %}
+        {{ _('Edited by %(who)s', who=actor) }}
         {% elif entry.action == "delete" %}
-        Deleted by {% if anon_hidden(target, v) and entry.actor_id == target.author_id %}Anonymous{% else %}<a href="{{ entry.actor.permalink }}">@{{ entry.actor.username }}</a>{% endif %}
+        {{ _('Deleted by %(who)s', who=actor) }}
         {% elif entry.action == "guild_hide" %}
-        Removed by guildmasters of <a href="{{ entry.board.permalink }}">+{{ entry.board.name }}</a>
+        {{ _('Removed by guildmasters of <a href="%(link)s">+%(guild)s</a>', link=entry.board.permalink, guild=entry.board.name) }}
         {% elif entry.action == "guild_unhide" %}
-        Restored by guildmasters of <a href="{{ entry.board.permalink }}">+{{ entry.board.name }}</a>
+        {{ _('Restored by guildmasters of <a href="%(link)s">+%(guild)s</a>', link=entry.board.permalink, guild=entry.board.name) }}
         {% elif entry.action == "author_hide" %}
-        Removed by the post's author, {% if anon_hidden(target, v) and entry.actor_id == target.author_id %}Anonymous{% else %}<a href="{{ entry.actor.permalink }}">@{{ entry.actor.username }}</a>{% endif %}
+        {{ _("Removed by the post's author, %(who)s", who=actor) }}
         {% elif entry.action == "author_restore" %}
-        Restored by the post's author, {% if anon_hidden(target, v) and entry.actor_id == target.author_id %}Anonymous{% else %}<a href="{{ entry.actor.permalink }}">@{{ entry.actor.username }}</a>{% endif %}
+        {{ _("Restored by the post's author, %(who)s", who=actor) }}
         {% endif %}
       </strong>
-      <span class="text-muted text-small">&middot; {{ entry.created_date }}</span>
+      <span class="text-muted text-small">&middot; {{ date_text(entry.created_utc, "%d %B %Y") }}</span>
     </div>
 
     {% if entry.reason %}
-    <div class="text-danger text-small mb-2">Reason: {{ entry.reason }}</div>
+    <div class="text-danger text-small mb-2">{{ _('Reason: %(reason)s', reason=entry.reason) }}</div>
     {% endif %}
 
     {% if not show_text %}
-    {% if loop.first %}<div class="text-muted text-small mb-1">The text isn't shown: this was removed by the site's administrators.</div>{% endif %}
+    {% if loop.first %}<div class="text-muted text-small mb-1">{{ _("The text isn't shown: this was removed by the site's administrators.") }}</div>{% endif %}
     {% elif entry.previous_body_html or entry.previous_title or entry.previous_url %}
-    <div class="text-muted text-small mb-1">Content immediately before this action:</div>
+    <div class="text-muted text-small mb-1">{{ _('Content immediately before this action:') }}</div>
     <div class="border rounded p-2">
       {% if target_type == "post" and entry.previous_title %}
       <div class="font-weight-bold mb-1">{{ entry.previous_title }}</div>
       {% endif %}
       {% if target_type == "post" and entry.previous_url %}
-      <div class="text-small mb-1">Link: <span class="text-break">{{ entry.previous_url }}</span></div>
+      <div class="text-small mb-1">{{ _('Link: <span class="text-break">%(url)s</span>', url=entry.previous_url) }}</div>
       {% endif %}
       {% if entry.previous_body_html %}
       <div>{{ entry.previous_body_html | safe }}</div>
@@ -64,11 +67,12 @@
 
   {% if obliteration %}
   <div class="card mb-3 p-3 border-danger">
-    <strong class="text-danger">Permanently removed by site administrators</strong>
-    <span class="text-muted text-small">&middot; {{ obliteration.created_date }}</span>
-    <div class="text-small mt-1">Category: {{ obliteration.reason_category }}</div>
-    <div class="text-small">Reason: {{ obliteration.reason }}</div>
-    <div class="text-muted text-small mt-2">The original content is not retained anywhere, including in this history.</div>
+    <strong class="text-danger">{{ _('Permanently removed by site administrators') }}</strong>
+    <span class="text-muted text-small">&middot; {{ date_text(obliteration.created_utc, "%d %B %Y") }}</span>
+    {# Translators: the value is a fixed code (illegal_content, legal_takedown, other) #}
+    <div class="text-small mt-1">{{ _('Category: %(category)s', category=obliteration.reason_category) }}</div>
+    <div class="text-small">{{ _('Reason: %(reason)s', reason=obliteration.reason) }}</div>
+    <div class="text-muted text-small mt-2">{{ _('The original content is not retained anywhere, including in this history.') }}</div>
   </div>
   {% endif %}
 

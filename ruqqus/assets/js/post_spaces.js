@@ -47,7 +47,7 @@
     }
     if (profile) profile.hidden = true;
     body.hidden = false;
-    body.textContent = 'Loading…';
+    body.textContent = tr('Loading…');
     var mine = ++token;
     fetch('/post/' + encodeURIComponent(post) + '/space/' + encodeURIComponent(name) + '?sort=' + encodeURIComponent(sort), { credentials: 'same-origin' })
       .then(function (r) { return r.ok ? r.text() : Promise.reject(new Error(String(r.status))); })
@@ -58,7 +58,7 @@
         if (window.jQuery) window.jQuery(body).find('[data-toggle="tooltip"]').tooltip();
       })
       .catch(function () {
-        if (mine === token) body.textContent = 'These comments could not be loaded. Try again.';
+        if (mine === token) body.textContent = tr('These comments could not be loaded. Try again.');
       });
   }
 

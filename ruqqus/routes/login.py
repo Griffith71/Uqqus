@@ -308,6 +308,11 @@ def sign_up_get(v):
 
 # the signup guard: what this sign-up looks like (helpers/signup_risk.py), from the form, the request and the counts
 
+class _Guard:
+    def __init__(self, verdict, network, shape):
+        self.verdict, self.network, self.shape = verdict, network, shape
+
+
 def _signup_guard(username, email, form_utc, now, ban_evade):
     network = signup_signals.network_hash(signup_risk.ip_prefix(request.remote_addr), app.config.get("SECRET_KEY"))
     shape = signup_risk.name_shape(username)
@@ -380,36 +385,36 @@ def sign_up_post(v):
         return redirect(f"/signup?{urlencode({'error': error})}")
 
     if app.config["DISABLE_SIGNUPS"]:
-        return new_signup("New account registration is currently closed. Please come back later.")
+        return new_signup(tr("New account registration is currently closed. Please come back later."))
 
     if not (form_timestamp.isascii() and form_timestamp.isdigit() and len(form_timestamp) <= 12) or now - int(form_timestamp) < 5:
         #print(f"signup fail - {username } - too fast")
-        return new_signup("There was a problem. Please try again.")
+        return new_signup(tr("There was a problem. Please try again."))
 
     if not hmac.compare_digest(correct_formkey, form_formkey):
         #print(f"signup fail - {username } - mismatched formkeys")
-        return new_signup("There was a problem. Please try again.")
+        return new_signup(tr("There was a problem. Please try again."))
 
     # check for matched passwords
     if not request.form.get(
             "password") == request.form.get("password_confirm"):
-        return new_signup("Passwords did not match. Please try again.")
+        return new_signup(tr("Passwords did not match. Please try again."))
 
     # check username/pass conditions
     if not re.fullmatch(valid_username_regex, username):
         #print(f"signup fail - {username } - mismatched passwords")
-        return new_signup("Invalid username")
+        return new_signup(tr("Invalid username"))
 
     if not re.fullmatch(valid_password_regex, request.form.get("password") or ""):
         #print(f"signup fail - {username } - invalid password")
-        return new_signup("Password must be between 8 and 100 characters.")
+        return new_signup(tr("Password must be between 8 and 100 characters."))
 
     # Check for existing acocunts
     email = (request.form.get("email") or "").strip()
     if not email:
         email = None
     elif len(email) > 255 or not valid_email_regex.match(email):
-        return new_signup("That email address doesn't look right. You can also leave it empty.")
+        return new_signup(tr("That email address doesn't look right. You can also leave it empty."))
 
     #counteract gmail username+2 and extra period tricks - convert submitted email to actual inbox
     if email and email.endswith("@gmail.com"):
@@ -419,7 +424,7 @@ def sign_up_post(v):
         email=f"{gmail_username}@gmail.com"
 
 
-    existing_account = get_user(request.form.get("username"), graceful=True)
+    existing_account = get_user(username, graceful=True)
     if existing_account and existing_account.reserved:
         return redirect(existing_account.permalink)
 
@@ -427,7 +432,7 @@ def sign_up_post(v):
             User).filter(func.lower(User.email) == email.lower()).first()):
         # #print(f"signup fail - {username } - email already exists")
         return new_signup(
-            "An account with that username or email already exists.")
+            tr("An account with that username or email already exists."))
 
 
     # ip ratelimit
@@ -485,7 +490,7 @@ def sign_up_post(v):
 
     except Exception as e:
         print(f"sign-up failed: {type(e).__name__}: {e}", flush=True)
-        return new_signup("Your account couldn't be created. Please try again.")
+        return new_signup(tr("Your account couldn't be created. Please try again."))
 
     g.db.add(new_user)
     g.db.commit()
@@ -521,14 +526,16 @@ def sign_up_post(v):
     # send welcome message
     # the welcome message (audit U-02: it named another site, linked to ruqqus.com and promised a front page that is
     # never ranked, which For You and the ads made untrue)
-    site = app.config["SITE_NAME"]
-    text = f"""Welcome to {site}, {new_user.username}. We're glad to have you here.
+    notify(new_user, N_("""Welcome to %(site)s, %(name)s. We're glad to have you here.
 \n\nA few things to start with:
 - Follow people and [join some guilds](/browse) so your Following feed has something in it
 - Read the [rules](/help/rules) and the [help pages](/help)
 - Choose how much you see in [Settings > Content](/settings/content)
-\n\n-The {site} team"""
-    send_notification(new_user, text)
+\n\n-The %(site)s team"""), name=new_user.username)
+    if held:
+        notify(new_user, N_("""Your account is waiting for a quick check before you can post, comment, vote or follow. \
+You can look around and set up your profile in the meantime.
+\n\nTo skip the wait, add and verify an email address in [Settings > Security](/settings/security)."""))
 
     session["user_id"] = new_user.id
     session["session_id"] = token_hex(16)
@@ -574,7 +581,8 @@ def post_forgot():
         send_mail(to_address=user.email, subject=subject, html=body)
 
     return render_template("forgot_password.html", v=None,
-                           msg="If the username and email matches an account, you will be sent a password reset email. You have ten minutes to complete the password reset process.",
+                           msg=tr("If the username and email matches an account, you will be sent a password reset email. You "
+                                  "have ten minutes to complete the password reset process."),
                            i=random_image())
 
 
@@ -592,8 +600,8 @@ def get_reset():
 
     if now - timestamp > 600:
         return render_template("message.html", v=None,
-            title="Password reset link expired",
-            error="That password reset link has expired.")
+            title=tr("Password reset link expired"),
+            error=tr("That password reset link has expired."))
 
     user = g.db.query(User).filter_by(id=int(user_id)).first()
 
@@ -636,8 +644,8 @@ def post_reset(v):
 
     if now - timestamp > 600:
         return render_template("message.html", v=None,
-                               title="Password reset expired",
-                               error="That password reset form has expired.")
+                               title=tr("Password reset expired"),
+                               error=tr("That password reset form has expired."))
 
     user = g.db.query(User).filter_by(id=int(user_id)).first()
 
@@ -654,7 +662,7 @@ def post_reset(v):
                                token=token,
                                time=timestamp,
                                i=random_image(),
-                               error="Passwords didn't match.")
+                               error=tr("Passwords didn't match."))
 
     # the same rule as signing up (bug hunt H6: a reset saved any password, an empty one included)
     if not re.fullmatch(valid_password_regex, password):
@@ -663,7 +671,7 @@ def post_reset(v):
                                token=token,
                                time=timestamp,
                                i=random_image(),
-                               error="Password must be between 8 and 100 characters.")
+                               error=tr("Password must be between 8 and 100 characters."))
 
     user.passhash = hash_password(password)
     # every sign-in of the account ends, and this reset link stops working (its token holds the nonce); so does
@@ -673,5 +681,5 @@ def post_reset(v):
     g.db.add(user)
 
     return render_template("message_success.html", v=None,
-                           title="Password reset successful!",
-                           message="Login normally to access your account.")
+                           title=tr("Password reset successful!"),
+                           message=tr("Login normally to access your account."))

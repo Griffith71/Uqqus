@@ -3,4 +3,4 @@
   post author's paid circles, and both of them let this viewer see it. Set per page by subscriber_badges.attach; never
   on an anonymous item. Plain text only.
 #}
-{% macro subscriber_mark(item) %}{% set b = subscriber_badge(item) %}{% if b %} <span class="subscriber-badge" data-toggle="tooltip" data-placement="bottom" title="Subscribes to {{ b.circle }} by @{{ b.owner }}"><i class="fas fa-user-check" aria-hidden="true"></i>Subscriber</span>{% endif %}{% endmacro %}
+{% macro subscriber_mark(item) %}{% set b = subscriber_badge(item) %}{% if b %} <span class="subscriber-badge" data-toggle="tooltip" data-placement="bottom" title="{{ _('Subscribes to %(circle)s by @%(name)s', circle=b.circle, name=b.owner) }}"><i class="fas fa-user-check" aria-hidden="true"></i>{{ _("Subscriber") }}</span>{% endif %}{% endmacro %}

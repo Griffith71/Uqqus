@@ -11,6 +11,13 @@
 
   var RING_MS = 45000;
   var shown = {};          // room id -> { el, timer }
+  // the tab's title while a call rings, split around the page's own title (English: "(Call) " before it)
+  // Translators: the browser tab's title while a call is ringing; %(title)s is the page's own title
+  var RINGING = tr('(Call) %(title)s', {title: '\u0000'}).split('\u0000');
+
+  function ringing(title) {
+    return title.length >= RINGING[0].length + RINGING[1].length && title.startsWith(RINGING[0]) && title.endsWith(RINGING[1]);
+  }
 
   function openCall(roomId, kind, answer) {
     var url = '/call/' + encodeURIComponent(roomId) + '?kind=' + (kind === 'video' ? 'video' : 'audio') + (answer ? '&answer=1' : '');
@@ -24,7 +31,9 @@
     clearTimeout(item.timer);
     item.el.remove();
     delete shown[roomId];
-    if (!Object.keys(shown).length) document.title = document.title.replace(/^\(Call\) /, '');
+    if (!Object.keys(shown).length && ringing(document.title)) {
+      document.title = document.title.slice(RINGING[0].length, document.title.length - RINGING[1].length);
+    }
   }
 
   function button(label, className, icon, onClick) {
@@ -56,11 +65,14 @@
     var text = document.createElement('div');
     var name = document.createElement('div');
     name.className = 'font-weight-bold text-truncate';
-    name.textContent = data.from || 'Someone';
+    // Translators: shown in place of the caller's name when it is unknown
+    name.textContent = data.from || tr('Someone');
     var what = document.createElement('div');
     what.className = 'small text-muted';
     var video = data.kind === 'video';
-    what.textContent = group ? 'started a ' + (video ? 'video' : 'voice') + ' call in a group' : (video ? 'Video call' : 'Voice call');
+    // Translators: shown under the caller's name, on its own line
+    if (group) what.textContent = video ? tr('started a video call in a group') : tr('started a voice call in a group');
+    else what.textContent = video ? tr('Video call') : tr('Voice call');
     text.appendChild(name);
     text.appendChild(what);
     who.appendChild(img);
@@ -68,20 +80,22 @@
     var actions = document.createElement('div');
     actions.className = 'call-ring-actions';
     if (group) {
-      actions.appendChild(button('Not now', 'btn-secondary', 'fa-xmark', function () { hide(data.room_id); }));
-      actions.appendChild(button('Join', 'btn-primary', video ? 'fa-video' : 'fa-phone', function () {
+      actions.appendChild(button(tr('Not now'), 'btn-secondary', 'fa-xmark', function () { hide(data.room_id); }));
+      // Translators: a button that joins the group call that has just started
+      actions.appendChild(button(tr('Join'), 'btn-primary', video ? 'fa-video' : 'fa-phone', function () {
         hide(data.room_id);
         openCall(data.room_id, data.kind, true);
       }));
     } else {
-      actions.appendChild(button('Decline', 'btn-danger', 'fa-phone-slash', function () {
+      actions.appendChild(button(tr('Decline'), 'btn-danger', 'fa-phone-slash', function () {
         hide(data.room_id);
         var body = new URLSearchParams();
         body.set('formkey', formkey());
         body.set('room', data.room_id);
         fetch('/api/calls/decline', { method: 'POST', credentials: 'same-origin', body: body }).catch(function () {});
       }));
-      actions.appendChild(button('Answer', 'btn-success', video ? 'fa-video' : 'fa-phone', function () {
+      // Translators: a button that answers (picks up) the incoming call
+      actions.appendChild(button(tr('Answer'), 'btn-success', video ? 'fa-video' : 'fa-phone', function () {
         hide(data.room_id);
         openCall(data.room_id, data.kind, true);
       }));
@@ -90,7 +104,7 @@
     box.appendChild(actions);
     document.body.appendChild(box);
     shown[data.room_id] = { el: box, timer: setTimeout(function () { hide(data.room_id); }, RING_MS) };
-    if (!/^\(Call\) /.test(document.title)) document.title = '(Call) ' + document.title;
+    if (!ringing(document.title)) document.title = tr('(Call) %(title)s', {title: document.title});
     actions.lastChild.focus({ preventScroll: true });
   }
 

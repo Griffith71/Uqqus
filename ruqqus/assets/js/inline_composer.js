@@ -142,7 +142,7 @@
       var remove = document.createElement('button');
       remove.type = 'button';
       remove.className = 'ic-chip-remove';
-      remove.setAttribute('aria-label', 'Do not forward to +' + name);
+      remove.setAttribute('aria-label', tr('Do not forward to +%(guild)s', {guild: name}));
       remove.innerHTML = '&times;';
       remove.addEventListener('click', function () {
         forwards.splice(i, 1);
@@ -164,7 +164,7 @@
     var name = forwardInput.value.trim().replace(/^\+/, '');
     forwardInput.value = '';
     if (!name || hasGuild(name)) return;
-    if (forwards.length >= FORWARD_MAX) { fail('Forward to at most ' + FORWARD_MAX + ' guilds.'); return; }
+    if (forwards.length >= FORWARD_MAX) { fail(trn('Forward to at most %(num)s guild.', 'Forward to at most %(num)s guilds.', FORWARD_MAX)); return; }
     errorBox.hidden = true;
     forwards.push(name);
     renderForwards();
@@ -273,7 +273,7 @@
     if (busy || post.disabled) return;
     busy = true;
     errorBox.hidden = true;
-    post.textContent = 'Posting…';
+    post.textContent = tr('Posting…');
     update();
 
     var data = new FormData(form);
@@ -292,7 +292,7 @@
     }).then(function (result) {
       if (!result) return;
       if (!result.ok || !result.body || !result.body.id) {
-        fail((result.body && result.body.error) || 'Could not post. Try again, or use the full editor.');
+        fail((result.body && result.body.error) || tr('Could not post. Try again, or use the full editor.'));
         return;
       }
       return addCard(result.body.id).then(function () {
@@ -300,13 +300,14 @@
       }, function () {
         // posted, but the card could not be fetched: the feed just needs a reload to show it
         reset();
-        fail('Posted. Reload the page to see it.');
+        fail(tr('Posted. Reload the page to see it.'));
       });
     }).catch(function () {
-      fail('Could not post. Check your connection and try again.');
+      fail(tr('Could not post. Check your connection and try again.'));
     }).then(function () {
       busy = false;
-      post.textContent = 'Post';
+      // Translators: the button that publishes the post (a verb)
+      post.textContent = tr('Post');
       update();
     });
   }

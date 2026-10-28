@@ -19,6 +19,7 @@ from ruqqus.__main__ import app, cache
 from ruqqus.helpers import guild_flair as flair_rules
 from ruqqus.helpers import guild_flair_store as flair_store
 from ruqqus.helpers.visibility import text_hidden
+from ruqqus.helpers.i18n_runtime import tr
 
 
 def _error(message, status=400):
@@ -66,7 +67,7 @@ def mod_flair_add(bid, board, v):
         return _error(refusal, 409)
     new_id = flair_store.add(g.db, board.id, name, colour, _severity(name), int(time.time()))
     if new_id is None:
-        return _error(f"+{board.name} has a flair called {name} already.", 409)
+        return _error(tr("+%(guild)s has a flair called %(name)s already.", guild=board.name, name=name), 409)
     _log(board, v, "flair_create", name)
     g.db.commit()
     return jsonify({"id": new_id, "name": name, "colour": colour})
@@ -85,7 +86,7 @@ def mod_flair_edit(bid, fid, board, v):
     except flair_rules.Refused as e:
         return _error(str(e))
     if not flair_store.edit(g.db, board.id, fid, name, colour, _severity(name)):
-        return _error(f"+{board.name} has a flair called {name} already.", 409)
+        return _error(tr("+%(guild)s has a flair called %(name)s already.", guild=board.name, name=name), 409)
     _log(board, v, "flair_edit", name)
     g.db.commit()
     return jsonify({"id": fid, "name": name, "colour": colour})
@@ -161,18 +162,18 @@ def post_flair_set(pid, v):
         abort(404)
     board = post.board
     if board is None or board.name == PROFILE_BOARD_NAME or not (post.repost_id or board.is_circle):
-        return _error("Only a guild's copy of a post has a flair.", 409)
+        return _error(tr("Only a guild's copy of a post has a flair."), 409)
     mod = board.has_mod(v)
     is_content_gm = bool(mod) and (mod.perm_content or mod.perm_full) and not v.is_suspended
     # the forwarder only while they still take part (bug hunt: an exiled or suspended forwarder, and a Circle guild's
     # author who had left it, could still label the copy in a guild that no longer has them)
     takes_part = not (v.is_suspended or board.is_banned or board.has_ban(v) or not board.can_view(v))
     if not flair_rules.may_set(v.id, _forwarder_id(post), is_content_gm) or not (is_content_gm or takes_part):
-        return _error("Only whoever forwarded this post and the guild's guildmasters can change its flair.", 403)
+        return _error(tr("Only whoever forwarded this post and the guild's guildmasters can change its flair."), 403)
     raw = request.values.get("flair", "")
     flair_id = flair_rules.parse_id(raw) if raw else None
     if raw and flair_id is None:
-        return _error("That isn't a flair.")
+        return _error(tr("That isn't a flair."))
     refusal = flair_rules.forward_refusal(board.require_flair and not is_content_gm, flair_id,
                                           flair_store.ids_of(g.db, board.id), board.name)
     if refusal:

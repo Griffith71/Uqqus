@@ -25,14 +25,14 @@
     var button = event.target.closest ? event.target.closest('.wtf-action') : null;
     if (!button || button.disabled) return;
     button.disabled = true;
-    var done = button.getAttribute('data-done') || 'Done';
+    var done = button.getAttribute('data-done') || tr('Done');
     var label = button.textContent;
     button.textContent = '…';
     post(button.getAttribute('data-url'), function () {
       button.textContent = done;
       button.classList.remove('btn-primary');
       button.classList.add('btn-secondary');
-    }, 'Could not do that. Try again.');
+    }, tr('Could not do that. Try again.'));
     // post() alerts on a network error; give the button back if nothing changed
     setTimeout(function () {
       if (button.textContent === '…') { button.disabled = false; button.textContent = label; }

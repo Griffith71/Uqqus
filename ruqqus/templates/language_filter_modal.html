@@ -4,13 +4,13 @@
   <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="languageFilterModalTitle">Language</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <h5 class="modal-title" id="languageFilterModalTitle">{{ _("Language") }}</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="{{ _('Close') }}">
           <span aria-hidden="true"><i class="fas fa-times"></i></span>
         </button>
       </div>
       <div class="modal-body" style="overflow-y: scroll;">
-        {{ filters.filter_panel_body('mobile-language-options', languages_catalog, active_languages, 'Search languages…', '/language', 'codes') }}
+        {{ filters.filter_panel_body('mobile-language-options', languages_catalog, active_languages, _('Search languages…'), '/language', 'codes') }}
       </div>
     </div>
   </div>

@@ -22,6 +22,7 @@ from sqlalchemy import bindparam, text
 
 from ruqqus.helpers.base36 import base36encode
 from ruqqus.helpers.coauthors import primary_post_id
+from ruqqus.helpers.i18n_runtime import N_, msg, tr
 
 ARCHIVE_AFTER_SECONDS = 60 * 60 * 24 * 180      # the same age as Submission.is_archived
 
@@ -37,15 +38,25 @@ def is_archived(created_utc, now):
     return int(now) - int(created_utc) > ARCHIVE_AFTER_SECONDS
 
 
+# the place of a vote on the original post (it sits on the author's profile): English, marked, read with msg()
+ORIGINAL = N_("the original post")
+
+
 def place_label(guild_name, profile_name):
-    """Where a vote is, as a person reads it: "the original post" (it sits on the author's profile) or "+guild"."""
-    return "the original post" if (guild_name or "").lower() == profile_name.lower() else f"+{guild_name}"
+    """Where a vote is: ORIGINAL (the original post, which sits on the author's profile) or "+guild". Shown with
+    msg()."""
+    return ORIGINAL if (guild_name or "").lower() == profile_name.lower() else f"+{guild_name}"
 
 
 def message(label, archived):
+    """The sentence for a vote that sits in another copy, whole for the original post and for a guild."""
+    if label == ORIGINAL:
+        if archived:
+            return tr("You already voted on this post, in the original post, and that vote can't be changed any more.")
+        return tr("You already voted on this post, in the original post. Remove that vote to vote here.")
     if archived:
-        return f"You already voted on this post, in {label}, and that vote can't be changed any more."
-    return f"You already voted on this post, in {label}. Remove that vote to vote here."
+        return tr("You already voted on this post, in %(guild)s, and that vote can't be changed any more.", guild=label)
+    return tr("You already voted on this post, in %(guild)s. Remove that vote to vote here.", guild=label)
 
 
 # --- the database --------------------------------------------------------------------------------------
@@ -110,7 +121,7 @@ def refusal(db, viewer, post, now):
 
     label = place_label(row.guild, _profile_name())
     return {"error": message(label, is_archived(row.created, now)),
-            "voted_in": {"id": base36encode(row.id), "guild": row.guild, "label": label}}
+            "voted_in": {"id": base36encode(row.id), "guild": row.guild, "label": msg(label)}}
 
 
 def attach(db, posts, viewer, now):
@@ -138,5 +149,5 @@ def attach(db, posts, viewer, now):
         if elsewhere:
             row = elsewhere[0]
             label = place_label(row.guild, profile)
-            post._voted_elsewhere = {"id": base36encode(row.id), "guild": row.guild, "label": label,
+            post._voted_elsewhere = {"id": base36encode(row.id), "guild": row.guild, "label": msg(label),
                                      "message": message(label, is_archived(row.created, now))}

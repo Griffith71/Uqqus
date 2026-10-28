@@ -195,8 +195,8 @@ def test_part_two_threads_mentions_pins_search_and_the_navbar():
     message = func(ROUTES, "guild_channel_message")
     assert message.index("rules.thread_refusal(") < message.index("matrix.send_as(")
     assert '"rel_type": "m.thread"' in message and "store.record_post(g.db, cid, v.id, event_id, body, severity, now, thread)" in message
-    # people are told only after the message is committed (send_notification commits on its own)
-    assert message.index("_mentioned(row, board, v, post_id, body, now)") < message.index("g.db.commit()") < message.index("send_notification(target, text_)")
+    # people are told only after the message is committed (notify commits on its own)
+    assert message.index("_mentioned(row, board, v, post_id, body, now)") < message.index("g.db.commit()") < message.index("notify(target, message, **values)")
     mentioned = func(ROUTES, "_mentioned")
     for needle in ("v.any_block_exists(target)", "_read_refusal(standing, target,", "UserMute", "rules.is_muted(standing.muted_until, now)",
                    "store.notice_due(r, row.id, v.id, target.id)", "target.is_bot"):

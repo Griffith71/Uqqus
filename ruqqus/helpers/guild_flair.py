@@ -16,6 +16,8 @@ post on its author's profile.
 """
 import re
 
+from ruqqus.helpers.i18n_runtime import tr, trn
+
 MAX_FLAIRS = 30
 NAME_MAX = 24
 MAX_FILTER = 10                 # flairs one filter may combine
@@ -24,10 +26,10 @@ MAX_FILTER = 10                 # flairs one filter may combine
 COLOURS = ("gray", "red", "orange", "yellow", "green", "teal", "blue", "indigo", "purple", "pink")
 DEFAULT_COLOUR = "gray"
 
-REQUIRED = "+{guild} needs a flair on every forward. Pick one."
+# The English the composer's refusal had, for a caller that still formats it itself (routes/posts.py); the reader's
+# language is composer_required's.
 COMPOSER_REQUIRED = ("+{guild} needs a flair on every forward: post first, then forward it from the post's menu "
                      "(Forward), where you can pick one.")
-NOT_THIS_GUILD = "That flair isn't one of +{guild}'s."
 
 _SPACE = re.compile(r"\s+")
 
@@ -40,11 +42,12 @@ def clean_name(value):
     """A flair's name: one line of plain text, NAME_MAX characters, no markup characters."""
     name = _SPACE.sub(" ", str(value or "")).strip()
     if not name:
-        raise Refused("Name the flair.")
+        raise Refused(tr("Name the flair."))
     if len(name) > NAME_MAX:
-        raise Refused(f"A flair can be at most {NAME_MAX} characters.")
+        raise Refused(trn("A flair can be at most %(num)s character.", "A flair can be at most %(num)s characters.",
+                          NAME_MAX))
     if any(c in name for c in "<>{}[]`\\") or any(ord(c) < 32 for c in name):
-        raise Refused("A flair is plain text: no < > { } [ ] ` or \\.")
+        raise Refused(tr("A flair is plain text: no < > { } [ ] ` or \\."))
     return name
 
 
@@ -53,12 +56,14 @@ def clean_colour(value):
     if not colour:
         return DEFAULT_COLOUR
     if colour not in COLOURS:
-        raise Refused("Pick one of the colours.")
+        raise Refused(tr("Pick one of the colours."))
     return colour
 
 
 def make_refusal(count):
-    return f"A guild can have at most {MAX_FLAIRS} flairs." if count >= MAX_FLAIRS else None
+    if count >= MAX_FLAIRS:
+        return trn("A guild can have at most %(num)s flair.", "A guild can have at most %(num)s flairs.", MAX_FLAIRS)
+    return None
 
 
 def parse_id(value):
@@ -84,7 +89,15 @@ def may_set(viewer_id, forwarder_id, is_content_guildmaster):
 def forward_refusal(require_flair, flair_id, guild_flair_ids, guild_name):
     """Why a forward (or a Circle-guild post) with this flair can't go into the guild, or None."""
     if flair_id is not None and flair_id not in set(guild_flair_ids or ()):
-        return NOT_THIS_GUILD.format(guild=guild_name)
+        # Translators: %(guild)s is a guild's name, written after a +.
+        return tr("That flair isn't one of +%(guild)s's.", guild=guild_name)
     if require_flair and flair_id is None and guild_flair_ids:
-        return REQUIRED.format(guild=guild_name)
+        return tr("+%(guild)s needs a flair on every forward. Pick one.", guild=guild_name)
     return None
+
+
+def composer_required(guild_name):
+    """The composer's refusal for a guild that requires a flair: it can't pick one per guild."""
+    # Translators: "Forward" is the name of the item in a post's menu.
+    return tr("+%(guild)s needs a flair on every forward: post first, then forward it from the post's menu (Forward), "
+              "where you can pick one.", guild=guild_name)

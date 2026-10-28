@@ -7,22 +7,22 @@
 {% if p.embed_kind == 'image' %}
 <div class="embed-image mb-3">
   {% if p.embed_url.endswith('.mp4') %}
-  <video src="{{ p.embed_url }}" autoplay loop muted playsinline{% if p.preview_image_url %} poster="{{ p.preview_image_url }}"{% endif %} aria-label="GIF from {{ p.domain }}"></video>
+  <video src="{{ p.embed_url }}" autoplay loop muted playsinline{% if p.preview_image_url %} poster="{{ p.preview_image_url }}"{% endif %} aria-label="{{ _('GIF from %(domain)s', domain=p.domain) }}"></video>
   {% else %}
-  <img src="{{ p.embed_url }}" alt="Picture from {{ p.domain }}" loading="lazy" referrerpolicy="no-referrer" onerror="hideBrokenMedia(this)">
+  <img src="{{ p.embed_url }}" alt="{{ _('Picture from %(domain)s', domain=p.domain) }}" loading="lazy" referrerpolicy="no-referrer" onerror="hideBrokenMedia(this)">
   {% endif %}
 </div>
 {% else %}
 <div class="embed-lg mb-3" data-embed-kind="{{ p.embed_kind }}" data-embed-src="{{ p.embed_url }}" data-embed-load="{{ layout.load }}"
-     data-embed-title="{{ 'Audio' if p.embed_kind == 'audio' else 'Video' }} from {{ p.domain }}"
+     data-embed-title="{{ _('Audio from %(domain)s', domain=p.domain) if p.embed_kind == 'audio' else _('Video from %(domain)s', domain=p.domain) }}"
      {%- if layout.aspect %} data-embed-aspect="{{ layout.aspect }}"{% endif %}
      {%- if layout.height %} data-embed-height="{{ layout.height }}" style="height: {{ layout.height }}px"{% endif %}>
   <div class="feed-video-thumb">
     {% if p.preview_image_url %}<img src="{{ p.preview_image_url }}" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="hideBrokenMedia(this)">{% endif %}
     {# a real button for keyboards and screen readers; a click anywhere on the thumbnail plays too #}
-    <button type="button" class="embed-lg-play" aria-label="Play {{ 'audio' if p.embed_kind == 'audio' else 'video' }} from {{ p.domain }}"><i class="fas fa-play-circle" aria-hidden="true"></i></button>
+    <button type="button" class="embed-lg-play" aria-label="{{ _('Play audio from %(domain)s', domain=p.domain) if p.embed_kind == 'audio' else _('Play video from %(domain)s', domain=p.domain) }}"><i class="fas fa-play-circle" aria-hidden="true"></i></button>
     <div class="post-img-overlay">{{ p.domain }}
-      {% if link %}<a href="{{ link }}" rel="{% if nofollow %}nofollow {% endif %}noopener" class="text-white" onclick="event.stopPropagation()" aria-label="Open the post"><i class="fas fa-external-link-alt text-small ml-1"></i></a>{% endif %}
+      {% if link %}<a href="{{ link }}" rel="{% if nofollow %}nofollow {% endif %}noopener" class="text-white" onclick="event.stopPropagation()" aria-label="{{ _('Open the post') }}"><i class="fas fa-external-link-alt text-small ml-1"></i></a>{% endif %}
     </div>
   </div>
 </div>

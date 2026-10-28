@@ -17,138 +17,142 @@
   <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered" role="document">
     <div class="modal-content">
       <div class="modal-header align-items-center">
-        <button type="button" class="close ml-0 mr-2 p-2" data-dismiss="modal" aria-label="Close">
+        <button type="button" class="close ml-0 mr-2 p-2" data-dismiss="modal" aria-label="{{ _('Close') }}">
           <span aria-hidden="true"><i class="fas fa-times"></i></span>
         </button>
-        <h5 class="modal-title mr-auto" id="advancedFilterTitle">Advanced filter</h5>
-        <button type="submit" form="advanced-filter-form" class="btn btn-purple btn-sm adv-filter-apply">Apply</button>
+        <h5 class="modal-title mr-auto" id="advancedFilterTitle">{{ _("Advanced filter") }}</h5>
+        <button type="submit" form="advanced-filter-form" class="btn btn-purple btn-sm adv-filter-apply">{{ pgettext("button", "Apply") }}</button>
       </div>
       <div class="modal-body">
         <form id="advanced-filter-form" action="/feed_filter" method="get" class="adv-filter-form">
 
           <section class="adv-filter-section" aria-labelledby="adv-words">
-            <h6 class="adv-filter-heading" id="adv-words">Words</h6>
+            <h6 class="adv-filter-heading" id="adv-words">{{ _("Words") }}</h6>
             <div class="form-group">
-              <label for="adv-all_words">All of these words</label>
+              <label for="adv-all_words">{{ _("All of these words") }}</label>
               <input type="text" class="form-control" id="adv-all_words" name="all_words" value="{{ f.all_words }}" maxlength="200" autocomplete="off">
-              <small class="form-text text-muted">Example: cats dogs · has both "cats" and "dogs"</small>
+              <small class="form-text text-muted">{{ _('Example: cats dogs · has both "cats" and "dogs"') }}</small>
             </div>
             <div class="form-group">
-              <label for="adv-phrase">This exact phrase</label>
+              <label for="adv-phrase">{{ _("This exact phrase") }}</label>
               <input type="text" class="form-control" id="adv-phrase" name="phrase" value="{{ f.phrase }}" maxlength="80" autocomplete="off">
-              <small class="form-text text-muted">Example: happy hour · has the exact phrase "happy hour"</small>
+              <small class="form-text text-muted">{{ _('Example: happy hour · has the exact phrase "happy hour"') }}</small>
             </div>
             <div class="form-group">
-              <label for="adv-any_words">Any of these words</label>
+              <label for="adv-any_words">{{ _("Any of these words") }}</label>
               <input type="text" class="form-control" id="adv-any_words" name="any_words" value="{{ f.any_words }}" maxlength="200" autocomplete="off">
-              <small class="form-text text-muted">Example: cats dogs · has either "cats" or "dogs" (or both)</small>
+              <small class="form-text text-muted">{{ _('Example: cats dogs · has either "cats" or "dogs" (or both)') }}</small>
             </div>
             <div class="form-group">
-              <label for="adv-none_words">None of these words</label>
+              <label for="adv-none_words">{{ _("None of these words") }}</label>
               <input type="text" class="form-control" id="adv-none_words" name="none_words" value="{{ f.none_words }}" maxlength="200" autocomplete="off">
-              <small class="form-text text-muted">Example: cats dogs · has neither "cats" nor "dogs"</small>
+              <small class="form-text text-muted">{{ _('Example: cats dogs · has neither "cats" nor "dogs"') }}</small>
             </div>
             <div class="form-group">
-              <label for="adv-topics">These topics</label>
+              <label for="adv-topics">{{ _("These topics") }}</label>
               <input type="text" class="form-control" id="adv-topics" name="topics" value="{{ f.topics }}" maxlength="100" autocomplete="off">
-              <small class="form-text text-muted">Example: #gaming · posts in that topic's guilds</small>
+              <small class="form-text text-muted">{# Translators: %(typed)s is exactly what a reader types into the field; it stays as it is #}{{ _("Example: %(typed)s · posts in that topic's guilds", typed="#gaming") }}</small>
             </div>
           </section>
 
           <section class="adv-filter-section" aria-labelledby="adv-accounts">
-            <h6 class="adv-filter-heading" id="adv-accounts">Accounts</h6>
+            <h6 class="adv-filter-heading" id="adv-accounts">{{ _("Accounts") }}</h6>
             <div class="form-group">
-              <label for="adv-from">From these accounts</label>
+              <label for="adv-from">{{ _("From these accounts") }}</label>
               <input type="text" class="form-control" id="adv-from" name="from" value="{{ f['from'] }}" maxlength="100" autocomplete="off">
-              <small class="form-text text-muted">Example: @alice · posted by @alice</small>
+              <small class="form-text text-muted">{# Translators: %(typed)s is exactly what a reader types into the field; it stays as it is #}{{ _("Example: %(typed)s · posted by %(account)s", typed="@alice", account="@alice") }}</small>
             </div>
             <div class="form-group">
-              <label for="adv-not_from">Not from these accounts</label>
+              <label for="adv-not_from">{{ _("Not from these accounts") }}</label>
               <input type="text" class="form-control" id="adv-not_from" name="not_from" value="{{ f.not_from }}" maxlength="100" autocomplete="off">
-              <small class="form-text text-muted">Example: @bob · leaves out what @bob posted</small>
+              <small class="form-text text-muted">{# Translators: %(typed)s is exactly what a reader types into the field; it stays as it is #}{{ _("Example: %(typed)s · leaves out what %(account)s posted", typed="@bob", account="@bob") }}</small>
             </div>
             <div class="form-group">
-              <label for="adv-mentioning">Mentioning these accounts</label>
+              <label for="adv-mentioning">{{ _("Mentioning these accounts") }}</label>
               <input type="text" class="form-control" id="adv-mentioning" name="mentioning" value="{{ f.mentioning }}" maxlength="100" autocomplete="off">
-              <small class="form-text text-muted">Example: @alice · mentions @alice</small>
+              <small class="form-text text-muted">{# Translators: %(typed)s is exactly what a reader types into the field; it stays as it is #}{{ _("Example: %(typed)s · mentions %(account)s", typed="@alice", account="@alice") }}</small>
             </div>
           </section>
 
           <section class="adv-filter-section" aria-labelledby="adv-guilds">
-            <h6 class="adv-filter-heading" id="adv-guilds">Guilds</h6>
+            <h6 class="adv-filter-heading" id="adv-guilds">{{ _("Guilds") }}</h6>
             <div class="form-group">
-              <label for="adv-in_guilds">In these guilds</label>
+              <label for="adv-in_guilds">{{ _("In these guilds") }}</label>
               <input type="text" class="form-control" id="adv-in_guilds" name="in_guilds" value="{{ f.in_guilds }}" maxlength="100" autocomplete="off">
-              <small class="form-text text-muted">Example: +pets · a public curation works too: &amp;news</small>
+              <small class="form-text text-muted">{# Translators: %(typed)s is exactly what a reader types into the field; it stays as it is #}{{ _("Example: %(typed)s · a public curation works too: %(curation)s", typed="+pets", curation="&news") }}</small>
             </div>
             <div class="form-group">
-              <label for="adv-not_in_guilds">Not in these guilds</label>
+              <label for="adv-not_in_guilds">{{ _("Not in these guilds") }}</label>
               <input type="text" class="form-control" id="adv-not_in_guilds" name="not_in_guilds" value="{{ f.not_in_guilds }}" maxlength="100" autocomplete="off">
             </div>
             <div class="form-group">
-              <label for="adv-domain">Linking to this site</label>
+              <label for="adv-domain">{{ _("Linking to this site") }}</label>
               <input type="text" class="form-control" id="adv-domain" name="domain" value="{{ f.domain }}" maxlength="100" autocomplete="off" inputmode="url">
-              <small class="form-text text-muted">Example: example.com · or one of its subdomains</small>
+              <small class="form-text text-muted">{# Translators: %(typed)s is exactly what a reader types into the field; it stays as it is #}{{ _("Example: %(typed)s · or one of its subdomains", typed="example.com") }}</small>
             </div>
           </section>
 
           <section class="adv-filter-section" aria-labelledby="adv-labels">
-            <h6 class="adv-filter-heading" id="adv-labels">Filters</h6>
+            <h6 class="adv-filter-heading" id="adv-labels">{{ _("Filters") }}</h6>
             <div class="adv-filter-row">
-              <span id="adv-ai-label">Made with AI</span>
-              {{ choice("ai", (("show", "Include"), ("only", "Only"), ("hide", "Leave out")), f.ai) }}
+              <span id="adv-ai-label">{{ _("Made with AI") }}</span>
+              {{ choice("ai", (("show", _("Include")), ("only", pgettext("filter choice", "Only")), ("hide", _("Leave out"))), f.ai) }}
             </div>
             <div class="adv-filter-row">
-              <span id="adv-partnership-label">Commercial promotion</span>
-              {{ choice("partnership", (("show", "Include"), ("only", "Only"), ("hide", "Leave out")), f.partnership) }}
+              <span id="adv-partnership-label">{{ _("Commercial promotion") }}</span>
+              {{ choice("partnership", (("show", _("Include")), ("only", pgettext("filter choice", "Only")), ("hide", _("Leave out"))), f.partnership) }}
             </div>
             <div class="adv-filter-row">
-              <span id="adv-forwards-label">Forwarded copies</span>
-              {{ choice("forwards", (("show", "Include"), ("hide", "Leave out")), f.forwards) }}
+              <span id="adv-forwards-label">{{ _("Forwarded copies") }}</span>
+              {{ choice("forwards", (("show", _("Include")), ("hide", _("Leave out"))), f.forwards) }}
+            </div>
+            <div class="adv-filter-row">
+              <span id="adv-bots-label">{{ _("Bots") }}</span>
+              {{ choice("bots", (("show", _("Include")), ("only", pgettext("filter choice", "Only")), ("hide", _("Leave out"))), f.bots) }}
             </div>
           </section>
 
           <section class="adv-filter-section" aria-labelledby="adv-engagement">
-            <h6 class="adv-filter-heading" id="adv-engagement">Engagement</h6>
+            <h6 class="adv-filter-heading" id="adv-engagement">{{ _("Engagement") }}</h6>
             <div class="form-row">
               <div class="form-group col-6">
-                <label for="adv-min_votes">Minimum votes</label>
+                <label for="adv-min_votes">{{ _("Minimum votes") }}</label>
                 <input type="number" class="form-control" id="adv-min_votes" name="min_votes" value="{{ f.min_votes }}" min="1" max="1000000" step="1" inputmode="numeric" placeholder="10">
               </div>
               <div class="form-group col-6">
-                <label for="adv-min_comments">Minimum comments</label>
+                <label for="adv-min_comments">{{ _("Minimum comments") }}</label>
                 <input type="number" class="form-control" id="adv-min_comments" name="min_comments" value="{{ f.min_comments }}" min="1" max="1000000" step="1" inputmode="numeric" placeholder="5">
               </div>
             </div>
           </section>
 
           <section class="adv-filter-section" aria-labelledby="adv-dates">
-            <h6 class="adv-filter-heading" id="adv-dates">Dates</h6>
+            <h6 class="adv-filter-heading" id="adv-dates">{{ _("Dates") }}</h6>
             <div class="form-row">
               <div class="form-group col-6">
-                <label for="adv-since">From</label>
+                <label for="adv-since">{{ pgettext("start date", "From") }}</label>
                 <input type="date" class="form-control" id="adv-since" name="since" value="{{ f.since }}">
               </div>
               <div class="form-group col-6">
-                <label for="adv-until">To</label>
+                <label for="adv-until">{{ pgettext("end date", "To") }}</label>
                 <input type="date" class="form-control" id="adv-until" name="until" value="{{ f.until }}">
               </div>
             </div>
-            <small class="form-text text-muted mt-0">Days in UTC; both days are included.</small>
+            <small class="form-text text-muted mt-0">{{ _("Days in UTC; both days are included.") }}</small>
           </section>
 
-          <p class="text-small text-muted mb-0">Narrows All, For You and Following. Regional, Language, Categorical and Post type are their own filters in the sidebar; profiles and guild pages are never filtered.</p>
+          <p class="text-small text-muted mb-0">{{ _("Narrows All, For You and Following. Regional, Language, Categorical and Post type are their own filters in the sidebar; profiles and guild pages are never filtered.") }}</p>
         </form>
       </div>
       <div class="modal-footer justify-content-between">
-        <a href="/feed_filter?clear=1" class="btn btn-link text-muted px-0">Clear filter</a>
+        <a href="/feed_filter?clear=1" class="btn btn-link text-muted px-0">{{ _("Clear filter") }}</a>
         {% if v %}{# saves what is applied now, all five filters (routes/front.py feed_defaults); the sidebar has it too #}
         <form method="post" action="/settings/feed_defaults" class="m-0 d-lg-none">
           <input type="hidden" name="formkey" value="{{ v.formkey }}">
-          <button type="submit" name="action" value="save" class="btn btn-link text-muted px-0"{% if feed_defaults_state == 'same' %} disabled{% endif %}>{% if feed_defaults_state == 'same' %}Your default{% else %}Save as my default{% endif %}</button>
+          <button type="submit" name="action" value="save" class="btn btn-link text-muted px-0"{% if feed_defaults_state == 'same' %} disabled{% endif %}>{% if feed_defaults_state == 'same' %}{{ _("Saved as your default") }}{% else %}{{ _("Save as my default") }}{% endif %}</button>
         </form>
         {% endif %}
-        <button type="submit" form="advanced-filter-form" class="btn btn-purple">Apply</button>
+        <button type="submit" form="advanced-filter-form" class="btn btn-purple">{{ pgettext("button", "Apply") }}</button>
       </div>
     </div>
   </div>

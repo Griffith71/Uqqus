@@ -10,6 +10,7 @@ import time
 from sqlalchemy import text
 
 from ruqqus.helpers import user_agents
+from ruqqus.helpers.i18n_runtime import datetime_text, tr
 
 SHOWN = 10
 TOR = "T1"                          # Cloudflare's code for the Tor network
@@ -26,18 +27,23 @@ def place(code, names):
     """A country as words: "United Kingdom", "Tor network", or "Unknown location"."""
     code = (code or "").strip().upper()
     if code == TOR:
-        return "Tor network"
-    return names.get(code) or "Unknown location"
+        return tr("Tor network")
+    return names.get(code) or tr("Unknown location")
 
 
 def label(created_utc):
-    return time.strftime("%d %b %Y, %H:%M UTC", time.gmtime(created_utc or 0)).lstrip("0")
+    """"8 Oct 2026, 14:03 UTC"; in another language the reader's own date and time to the minute, still said to be
+    UTC."""
+    from ruqqus.helpers.text import datetime_pattern
+    when = datetime_text(created_utc or 0, "%d %b %Y, %H:%M", datetime_pattern("yMMMd", "medium")).lstrip("0")
+    # Translators: a date and time, such as "8 Oct 2026, 14:03", in UTC
+    return tr("%(time)s UTC", time=when)
 
 
 def entries(rows, names):
     """The rows as the page draws them: {"when", "iso", "place", "browser"}."""
     return [{"when": label(created), "iso": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime(created or 0)),
-             "place": place(country, names), "browser": user_agents.describe(agent) if agent else "Browser not recorded"}
+             "place": place(country, names), "browser": user_agents.describe(agent) if agent else tr("Browser not recorded")}
             for created, country, agent in rows]
 
 

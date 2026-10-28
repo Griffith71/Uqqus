@@ -37,6 +37,8 @@ from ruqqus.helpers import deletion_log as log_rules
 from ruqqus.helpers import guild_flair, guild_flair_store
 from ruqqus.helpers import category_filter
 from ruqqus.helpers import bell as bell_rules
+from ruqqus.helpers.alerts import notify
+from ruqqus.helpers.i18n_runtime import N_, msg, tr, trn
 
 # the templates quote the per-person cap (home sidebar, siege help) from the one place that sets it
 app.jinja_env.globals.update(GUILD_LIMIT_PER_PERSON=guild_limits.PER_PERSON,
@@ -49,6 +51,8 @@ INTERNAL_BOARDS = (1, 2)
 valid_board_regex = re.compile(r"^[a-zA-Z0-9][a-zA-Z0-9_]{2,24}\Z")
 DESCRIPTION_MAX = 1500           # boards.description; its HTML has 5000 (a longer one was a 500)
 DESCRIPTION_HTML_MAX = 5000
+# Translators: shown on a guild's Appearance page after a picture or the colour was saved
+SAVED_NOTICE = N_("Success")         # travels in the address (?msg=); the page draws it with msg()
 
 @app.route("/m/<name>", methods=["GET"])
 @app.route("/api/v1/multi/<name>/listing", methods=["GET"])
@@ -147,14 +151,17 @@ def create_board_get(v):
     if not v.can_make_guild:
         return render_template("message.html",
                                v=v,
-                               title=f"You already lead {guild_limits.PER_PERSON} guilds." if not v.can_join_gms else "Unable to make a guild. For now.",
-                               message="You need to step down from a guild before you can make any more." if not v.can_join_gms else "You need more Reputation.")
+                               title=(trn("You already lead %(num)s guild.", "You already lead %(num)s guilds.",
+                                          guild_limits.PER_PERSON)
+                                      if not v.can_join_gms else tr("Unable to make a guild. For now.")),
+                               message=(tr("You need to step down from a guild before you can make any more.")
+                                        if not v.can_join_gms else tr("You need more Reputation.")))
 
     refused = v.gm_limit_refusal()
     if refused:
         return render_template("message.html",
                                v=v,
-                               title="Unable to make a guild. For now.",
+                               title=tr("Unable to make a guild. For now."),
                                message=guild_limits.say(refused))
 
     # check # recent boards made by user
@@ -165,8 +172,8 @@ def create_board_get(v):
     if v.admin_level<3 and len([x for x in recent]) >= 2:
         return render_template("message.html",
                                v=v,
-                               title="You need to wait a bit.",
-                               message="You can only create up to 2 guilds per day. Try again later."
+                               title=tr("You need to wait a bit."),
+                               message=tr("You can only create up to 2 guilds per day. Try again later.")
                                ), 429
 
     return render_template(
@@ -199,6 +206,7 @@ Create a Guild
 
 Required form data:
 * `name` - Name of Guild to create
+* `category` - The id of the guild's subcategory, or `-<id>` for a category alone (`-1` is Arts). `/api/v1/categories` lists both.
 
 Optional form data:
 * `description` - Guild description
@@ -207,36 +215,38 @@ Optional form data:
     if not v.can_make_guild:
         return render_template("make_board.html",
                                v=v,
-                               title="Unable to make board",
+                               title=tr("Unable to make board"),
                                error=(guild_limits.say(guild_limits.PERSON) if not v.can_join_gms
-                                      else "You need more Reputation before you can make a Guild.")
+                                      else tr("You need more Reputation before you can make a Guild."))
                                )
 
     refused = v.gm_limit_refusal()
     if refused:
         return render_template("make_board.html",
                                v=v,
-                               title="Unable to make board",
+                               title=tr("Unable to make board"),
                                error=guild_limits.say(refused)
                                )
 
     board_name = (request.form.get("name") or "").lstrip("+")
     description = request.form.get("description") or ""          # optional (bug hunt: missing was a 500)
     if len(description) > DESCRIPTION_MAX:
-        return render_template("make_board.html", v=v, error=f"A description is at most {DESCRIPTION_MAX} characters.",
+        return render_template("make_board.html", v=v,
+                               error=trn("A description is at most %(num)s character.",
+                                         "A description is at most %(num)s characters.", DESCRIPTION_MAX),
                                description=description[:DESCRIPTION_MAX])
 
     if not re.match(valid_board_regex, board_name):
         return render_template("make_board.html",
                                v=v,
-                               error="Guild names must be 3-25 letters or numbers.",
+                               error=tr("Guild names must be 3-25 letters or numbers."),
                                description=description
                                )
 
     if board_name.lower() == PROFILE_BOARD_NAME:
         return render_template("make_board.html",
                                v=v,
-                               error="That name is reserved.",
+                               error=tr("That name is reserved."),
                                description=description
                                )
 
@@ -244,7 +254,7 @@ Optional form data:
     if get_guild(board_name, graceful=True):
         return render_template("make_board.html",
                                v=v,
-                               error="That Guild already exists.",
+                               error=tr("That Guild already exists."),
                                description=description
                                )
 
@@ -257,8 +267,8 @@ Optional form data:
         Board.created_utc >= cutoff).all()
     if v.admin_level<3 and len([x for x in recent]) >= 2:
         return render_template("message.html", v=v,
-                               title="You need to wait a bit.",
-                               message="You can only create up to 2 guilds per day. Try again later."
+                               title=tr("You need to wait a bit."),
+                               message=tr("You can only create up to 2 guilds per day. Try again later.")
                                ), 429
 
     raw_category = (request.form.get("category") or "").strip()     # the form's placeholder is ""
@@ -267,7 +277,7 @@ Optional form data:
         # the form again, with what was typed, rather than a dead-end page
         return render_template("make_board.html",
                                v=v,
-                               error="Choose a category for the guild.",
+                               error=tr("Choose a category for the guild."),
                                description=description
                                ), 400
 
@@ -276,7 +286,7 @@ Optional form data:
         description_md = renderer.render(mistletoe.Document(description))
     description_html = sanitize(description_md, linkgen=True)
     if len(description_html) > DESCRIPTION_HTML_MAX:
-        return render_template("make_board.html", v=v, error="That description is too long once formatted.",
+        return render_template("make_board.html", v=v, error=tr("That description is too long once formatted."),
                                description=description), 400
 
     # make the board
@@ -289,7 +299,6 @@ Optional form data:
                       description_html=description_html,
                       is_sensitive=bool(request.form.get("sensitive", "")),
                       creator_id=v.id,
-                      subcat_id=subcat.id,
                       is_private=circle,
                       is_circle=circle
                       )
@@ -370,7 +379,8 @@ Optional query parameters:
                                                  b=board,
                                                  p=True
                                                  ), 410),
-                'api': lambda: (jsonify({'error': f'410 Gone - +{board.name} is banned.'}), 410)
+                # Translators: an answer of the API; "410 Gone" is the HTTP status, +%(guild)s a guild
+                'api': lambda: (jsonify({'error': tr('410 Gone - +%(guild)s is banned.', guild=board.name)}), 410)
                 }
     guild_insights_pages.count_page_view(v, board)
 
@@ -579,7 +589,7 @@ Required form data:
 
     reason = request.form.get("reason", "").strip()
     if not reason:
-        return jsonify({"error": "A reason is required."}), 400
+        return jsonify({"error": tr("A reason is required.")}), 400
 
     post.hidden_by_guild = True
     post.hidden_reason = reason
@@ -691,7 +701,7 @@ URL path parameters:
         abort(400)
 
     if post.mod_approved:
-        return ({"error":"Already approved"})
+        return ({"error": tr("Already approved")})
 
     post.mod_approved = v.id
     g.db.add(post)
@@ -741,13 +751,14 @@ Optional form data:
     if item:
         item=get_from_fullname(item)
         if not isinstance(item, (Submission, Comment)):
-            return jsonify({"error": "That isn't a post or comment."}), 400   # a user, a guild or nothing (bug hunt: a 500)
+            return jsonify({"error": tr("That isn't a post or comment.")}), 400   # a user, a guild or nothing (bug hunt: a 500)
 
         if item.original_board_id != board.id:
-            return jsonify({"error":f"That was originally created in +{item.original_board.name}, not +{board.name}"}), 400
+            return jsonify({"error": tr("That was originally created in +%(original)s, not +%(guild)s",
+                                            original=item.original_board.name, guild=board.name)}), 400
 
     if not user or user.is_deleted:
-        return jsonify({"error": "That user doesn't exist."}), 404
+        return jsonify({"error": tr("That user doesn't exist.")}), 404
 
     if item:
         if item.is_anonymous:
@@ -758,25 +769,27 @@ Optional form data:
             # a guild's copy belongs to whoever forwarded it here (it keeps the original author's id): that is who an
             # exile with it is about, as has_participant counts them (bug hunt: a forwarder couldn't be exiled with it)
             if _exile_item_owner(item) != user.id:
-                return jsonify({"error": f"That isn't @{user.username}'s."}), 400
+                return jsonify({"error": tr("That isn't @%(name)s's.", name=user.username)}), 400
         elif _exile_item_owner(item) != user.id:
-            return jsonify({"error": f"That isn't @{user.username}'s."}), 400   # its author, but someone else forwarded it
+            return jsonify({"error": tr("That isn't @%(name)s's.", name=user.username)}), 400   # its author, but someone else forwarded it
 
     if user.id == v.id:
-        return jsonify({"error": "You can't exile yourself."}), 409
+        return jsonify({"error": tr("You can't exile yourself.")}), 409
 
     if g.db.query(BanRelationship).filter_by(user_id=user.id, board_id=board.id, is_active=True).first():
-        return jsonify({"error": f"@{user.username} is already exiled from +{board.name}."}), 409
+        return jsonify({"error": tr("@%(name)s is already exiled from +%(guild)s.",
+                                    name=user.username, guild=board.name)}), 409
 
     if board.has_contributor(user):
-        return jsonify({"error": f"@{user.username} is an approved contributor to +{board.name} and can't currently be exiled."}), 409
+        return jsonify({"error": tr("@%(name)s is an approved contributor to +%(guild)s and can't currently be exiled.",
+                                    name=user.username, guild=board.name)}), 409
 
     if board.has_mod(user):
-        return jsonify({"error": "You can't exile other guildmasters."}), 409
+        return jsonify({"error": tr("You can't exile other guildmasters.")}), 409
 
     # you can only exile a user who has previously participated in the guild
     if not board.has_participant(user):
-        return jsonify({"error": f"@{user.username} hasn't participated in +{board.name}."}), 403
+        return jsonify({"error": tr("@%(name)s hasn't participated in +%(guild)s.", name=user.username, guild=board.name)}), 403
 
     if item:
         if isinstance(item, Submission):
@@ -807,13 +820,22 @@ Optional form data:
                                   is_active=True)
         g.db.add(new_ban)
 
-        text = f"You have been exiled from +{board.name}.\n\nNone of your existing posts or comments have been removed, however, you will not be able to forward posts to +{board.name} or comment in it."
-        if item:
-            text+= "\n\nYou were exiled for [this "
-            text+= "comment" if isinstance(item, Comment) else "post"
-            text+= f"]({item.permalink})."
-
-        send_notification(user, text)
+        # one whole message for each case (the item it was for, if any): stored in English, read in each reader's
+        # language (helpers/alerts.py notify)
+        if not item:
+            notify(user, N_("You have been exiled from +%(guild)s.\n\nNone of your existing posts or comments have been "
+                            "removed, however, you will not be able to forward posts to +%(guild)s or comment in it."),
+                   guild=board.name)
+        elif isinstance(item, Comment):
+            notify(user, N_("You have been exiled from +%(guild)s.\n\nNone of your existing posts or comments have been "
+                            "removed, however, you will not be able to forward posts to +%(guild)s or comment in it."
+                            "\n\nYou were exiled for [this comment](%(link)s)."),
+                   guild=board.name, link=item.permalink)
+        else:
+            notify(user, N_("You have been exiled from +%(guild)s.\n\nNone of your existing posts or comments have been "
+                            "removed, however, you will not be able to forward posts to +%(guild)s or comment in it."
+                            "\n\nYou were exiled for [this post](%(link)s)."),
+                   guild=board.name, link=item.permalink)
 
 
     ma=ModAction(
@@ -833,7 +855,7 @@ Optional form data:
     g.db.commit()
 
     if request.args.get("toast"):
-        return jsonify({"message": f"@{user.username} was exiled from +{board.name}"})
+        return jsonify({"message": tr("@%(name)s was exiled from +%(guild)s", name=user.username, guild=board.name)})
     else:
         return "", 204
 
@@ -885,28 +907,29 @@ def mod_invite_username(bid, board, v):
     username = request.form.get("username", '').lstrip('@')
     user = get_user(username)
     if not user:
-        return jsonify({"error": "That user doesn't exist."}), 404
+        return jsonify({"error": tr("That user doesn't exist.")}), 404
 
     if board.has_ban(user):
-        return jsonify({"error": f"@{user.username} is exiled from +{board.name} and can't currently become a guildmaster."}), 409
+        return jsonify({"error": tr("@%(name)s is exiled from +%(guild)s and can't currently become a guildmaster.",
+                                    name=user.username, guild=board.name)}), 409
     refused = user.gm_limit_refusal()
     if refused:
         return jsonify({"error": guild_limits.say(refused, user.username)}), 409
         
     if user.is_deleted:
-        return jsonify({"error": f"@{user.username} is deleted."}), 409
+        return jsonify({"error": tr("@%(name)s is deleted.", name=user.username)}), 409
         
     if user.is_suspended:
-        return jsonify({"error": f"@{user.username} is suspended."}), 409
+        return jsonify({"error": tr("@%(name)s is suspended.", name=user.username)}), 409
 
     x = g.db.query(ModRelationship).filter_by(
         user_id=user.id, board_id=board.id).first()
 
     if x and x.accepted:
-        return jsonify({"error": f"@{user.username} is already a mod."}), 409
+        return jsonify({"error": tr("@%(name)s is already a mod.", name=user.username)}), 409
 
     if x and not x.invite_rescinded:
-        return jsonify({"error": f"@{user.username} has already been invited."}), 409
+        return jsonify({"error": tr("@%(name)s has already been invited.", name=user.username)}), 409
 
     if x:
         # a withdrawn invitation's row goes, and the new one is made after everyone appointed meanwhile: seniority is
@@ -928,8 +951,9 @@ def mod_invite_username(bid, board, v):
 
     g.db.add(x)               # before the notice, which commits: the replaced row and the new one go together
 
-    text = f"You have been invited to join +{board.name} as a guildmaster. You can [click here]({board.permalink}/mod/mods) and accept this invitation. Or, if you weren't expecting this, you can ignore it."
-    send_notification(user, text)
+    notify(user, N_("You have been invited to join +%(guild)s as a guildmaster. You can [click here](%(link)s) and accept "
+                    "this invitation. Or, if you weren't expecting this, you can ignore it."),
+           guild=board.name, link=f"{board.permalink}/mod/mods")
 
     ma=ModAction(
         kind="invite_mod",
@@ -990,13 +1014,14 @@ def mod_accept_board(bid, v):
         ).first()
 
     if not x:
-        return jsonify({"error":"Unable to find invitation"}), 404
+        return jsonify({"error": tr("Unable to find invitation")}), 404
 
     refused = v.gm_limit_refusal()
     if refused:
         return jsonify({"error": guild_limits.say(refused)}), 409
     if board.has_ban(v):
-        return jsonify({"error": f"You are exiled from +{board.name} and can't currently become a guildmaster."}), 409
+        return jsonify({"error": tr("You are exiled from +%(guild)s and can't currently become a guildmaster.",
+                                    guild=board.name)}), 409
     x.accepted = True
     x.created_utc=int(time.time())
     g.db.add(x)
@@ -1073,7 +1098,7 @@ def mod_remove_username(bid, username, board, v):
         abort(403)
 
     if user.id == v.id:
-        return jsonify({"error": "To leave the guild's guildmasters, use Step down."}), 409
+        return jsonify({"error": tr("To leave the guild's guildmasters, use Step down.")}), 409
 
     g.db.delete(u_mod)
 
@@ -1125,7 +1150,7 @@ def mod_bid_settings_sensitive(bid, board, v):
     # an admin may have forced it on (helpers/sensitive.py): then only an admin unlocks it
     refused = sensitive_rules.owner_refusal(board.sensitive_forced, wanted)
     if refused:
-        return jsonify({"error": refused}), 403
+        return jsonify({"error": msg(refused)}), 403
     board.is_sensitive = wanted
 
     g.db.add(board)
@@ -1233,7 +1258,7 @@ def mod_bid_settings_restricted(bid, board, v):
 def mod_bid_settings_private(bid, board, v):
 
     if board.is_circle:
-        return jsonify({"error": "A Circle guild is always private."}), 409
+        return jsonify({"error": tr("A Circle guild is always private.")}), 409
 
     # toggle privacy setting
     board.is_private = bool(request.form.get("guildprivacy", False) == 'true')
@@ -1304,12 +1329,13 @@ def mod_bid_settings_description(bid, board, v):
     # board description
     description = request.form.get("description") or ""
     if len(description) > DESCRIPTION_MAX:
-        return jsonify({"error": f"A description is at most {DESCRIPTION_MAX} characters."}), 400
+        return jsonify({"error": trn("A description is at most %(num)s character.",
+                                  "A description is at most %(num)s characters.", DESCRIPTION_MAX)}), 400
     with CustomRenderer() as renderer:
         description_md = renderer.render(mistletoe.Document(description))
     description_html = sanitize(description_md, linkgen=True)
     if len(description_html) > DESCRIPTION_HTML_MAX:
-        return jsonify({"error": "That description is too long once formatted."}), 400
+        return jsonify({"error": tr("That description is too long once formatted.")}), 400
 
     board.description = description
     board.description_html = description_html
@@ -1357,9 +1383,9 @@ def mod_add_rule(bid, board, v):
     rule = (request.form.get("rule1") or "").strip()
     if request.form.get("rule2"):
         # adding several rules at once was never built: refuse instead of answering success for nothing
-        return jsonify({"error": "Add one rule at a time."}), 400
+        return jsonify({"error": tr("Add one rule at a time.")}), 400
     if not rule:
-        return jsonify({"error": "Write the rule first."}), 400
+        return jsonify({"error": tr("Write the rule first.")}), 400
 
     with CustomRenderer() as renderer:
         rule_md = renderer.render(mistletoe.Document(rule))
@@ -1442,7 +1468,7 @@ URL path parameters:
     if board.is_banned and not (v and v.admin_level >= 3):   # as the guild page (board_name)
         return {
         "html":lambda:(render_template("board_banned.html", v=v, b=board), 403),
-        "api":lambda:(jsonify({"error":f"+{board.name} is banned"}), 403)
+        "api":lambda:(jsonify({"error": tr("+%(guild)s is banned", guild=board.name)}), 403)
         }
 
     me = board.has_mod(v)
@@ -1464,7 +1490,7 @@ def board_about_css(guildname, v):
     if board.is_banned and not (v and v.admin_level >= 3):   # as the guild page (board_name)
         return {
         "html":lambda:(render_template("board_banned.html", v=v, b=board), 403),
-        "api":lambda:(jsonify({"error":f"+{board.name} is banned"}), 403)
+        "api":lambda:(jsonify({"error": tr("+%(guild)s is banned", guild=board.name)}), 403)
         }
 
     me = board.has_mod(v)
@@ -1508,7 +1534,7 @@ def board_edit_css(bid, board, v):
 
     def clean_block(rule):
         if not any([isinstance(rule, x) for x in allowed_rules]):
-            return jsonify({"error": f"Invalid rule: {str(rule)}"}), 422
+            return jsonify({"error": tr("Invalid rule: %(rule)s", rule=str(rule))}), 422
         
         if isinstance(rule, cssutils.css.CSSStyleRule):
             
@@ -1518,7 +1544,7 @@ def board_edit_css(bid, board, v):
                         domain = urlparse(pv.uri).netloc
 
                         if domain != app.config["S3_BUCKET"]:
-                            return jsonify({"error":"No external links allowed."}), 422
+                            return jsonify({"error": tr("No external links allowed.")}), 422
 
         # a nested rule's refusal counts (bug hunt M1: it was thrown away, so `@media all { ... url(...) }` passed)
         if getattr(rule, "children", None):
@@ -1541,7 +1567,7 @@ def board_edit_css(bid, board, v):
     # anything else that loads an address outside the site's bucket
     refused = guild_css.refusal(css, app.config["S3_BUCKET"])
     if refused:
-        return jsonify({"error": refused}), 422
+        return jsonify({"error": msg(refused)}), 422
 
     board.css = css
     board.css_nonce += 1
@@ -1708,14 +1734,14 @@ URL path parameters:
     board = get_guild(guildname, v=v)
 
     if board.name.lower() == PROFILE_BOARD_NAME:
-        return jsonify({"error": "That guild doesn't exist."}), 404
+        return jsonify({"error": tr("That guild doesn't exist.")}), 404
 
     # check for existing subscription, canceled or otherwise
     sub = g.db.query(Subscription).filter_by(
         user_id=v.id, board_id=board.id).first()
     if sub:
         if sub.is_active:
-            return jsonify({"error": f"You are already a member of +{board.name}"}), 409
+            return jsonify({"error": tr("You are already a member of +%(guild)s", guild=board.name)}), 409
         else:
             # reactivate canceled sub
             sub.is_active = True
@@ -1741,7 +1767,7 @@ URL path parameters:
     # guild insights count the join (counts only, best effort; helpers/guild_insights_store.py)
     guild_insights_store.bump(g.db, board.id, "joins", int(time.time()))
 
-    return jsonify({"message": f"Joined +{board.name}"}), 200
+    return jsonify({"message": tr("Joined +%(guild)s", guild=board.name)}), 200
 
 
 @app.route("/api/unsubscribe/<guildname>", methods=["POST"])
@@ -1760,14 +1786,14 @@ URL path parameters:
     board = get_guild(guildname, v=v)
 
     if board.name.lower() == PROFILE_BOARD_NAME:
-        return jsonify({"error": "That guild doesn't exist."}), 404
+        return jsonify({"error": tr("That guild doesn't exist.")}), 404
 
     # check for existing subscription
     sub = g.db.query(Subscription).filter_by(
         user_id=v.id, board_id=board.id).first()
 
     if not sub or not sub.is_active:
-        return jsonify({"error": f"You aren't a member of +{board.name}"}), 409
+        return jsonify({"error": tr("You aren't a member of +%(guild)s", guild=board.name)}), 409
 
     sub.is_active = False
 
@@ -1786,7 +1812,7 @@ URL path parameters:
 
     guild_insights_store.bump(g.db, board.id, "leaves", int(time.time()))
 
-    return jsonify({"message": f"Left +{board.name}"}), 200
+    return jsonify({"message": tr("Left +%(guild)s", guild=board.name)}), 200
 
 
 @app.route("/+<guildname>/mod/queue", methods=["GET"])
@@ -1878,7 +1904,7 @@ def all_mod_queue(v):
 def mod_board_images_profile(bid, board, v):
 
     if request.headers.get("cf-ipcountry")=="T1" and not v.is_activated:
-        return jsonify({"error":"You must have a verified email address to upload images via Tor."}), 401
+        return jsonify({"error": tr("You must have a verified email address to upload images via Tor.")}), 401
 
     board.set_profile(request.files["profile"])
 
@@ -1898,7 +1924,7 @@ def mod_board_images_profile(bid, board, v):
         )
     g.db.add(ma)
 
-    return redirect(f"/+{board.name}/mod/appearance?msg=Success#images")
+    return redirect(f"/+{board.name}/mod/appearance?msg={SAVED_NOTICE}#images")
 
 
 @app.route("/mod/<bid>/images/banner", methods=["POST"])
@@ -1908,7 +1934,7 @@ def mod_board_images_profile(bid, board, v):
 def mod_board_images_banner(bid, board, v):
 
     if request.headers.get("cf-ipcountry")=="T1" and not v.is_activated:
-        return jsonify({"error":"You must have a verified email address to upload images via Tor."}), 401
+        return jsonify({"error": tr("You must have a verified email address to upload images via Tor.")}), 401
 
     board.set_banner(request.files["banner"])
 
@@ -1928,7 +1954,7 @@ def mod_board_images_banner(bid, board, v):
         )
     g.db.add(ma)
 
-    return redirect(f"/+{board.name}/mod/appearance?msg=Success#images")
+    return redirect(f"/+{board.name}/mod/appearance?msg={SAVED_NOTICE}#images")
 
 
 @app.route("/mod/<bid>/delete/profile", methods=["POST"])
@@ -1947,7 +1973,7 @@ def mod_board_images_delete_profile(bid, board, v):
         )
     g.db.add(ma)
 
-    return redirect(f"/+{board.name}/mod/appearance?msg=Success#images")
+    return redirect(f"/+{board.name}/mod/appearance?msg={SAVED_NOTICE}#images")
 
 
 @app.route("/mod/<bid>/delete/banner", methods=["POST"])
@@ -1966,13 +1992,12 @@ def mod_board_images_delete_banner(bid, board, v):
         )
     g.db.add(ma)
 
-    return redirect(f"/+{board.name}/mod/appearance?msg=Success#images")
+    return redirect(f"/+{board.name}/mod/appearance?msg={SAVED_NOTICE}#images")
 
 
 # the site's own stylesheets are never rate limited: a page that loses one renders unstyled
 @app.route("/assets/<board_fullname>/<theme>/<x>.css", methods=["GET"])
 @limiter.exempt
-@cache.memoize()
 def board_css(board_fullname, theme, x):
 
     if theme not in ["main", "dark"]:
@@ -2007,31 +2032,25 @@ def board_css(board_fullname, theme, x):
 
     return resp
 
-    if theme=="main":
-        path=f"{app.config['RUQQUSPATH']}/assets/style/main.scss"
-    else:
-        path=f"{app.config['RUQQUSPATH']}/assets/style/main_dark.scss"
 
 @cache.memoize()
 def _compiled_board_css(colour, sheet, style_version, rtl=False):
     """The site's stylesheet compiled with a guild's colour (mirrored for right-to-left languages when `rtl`: a
     guild's own custom CSS is not mirrored); None when the file is missing or doesn't compile."""
     try:
-        with open(path, "r") as file:
+        with open(f"{app.config['RUQQUSPATH']}/assets/style/{sheet}.scss", "r") as file:
             raw = file.read()
     except FileNotFoundError:
-        return redirect("/assets/style/main.css")
+        return None
 
     # This doesn't use python's string formatting because
     # of some odd behavior with css files
-    # the site's internal boards (general, systemprofile) are the site's own colour, never Ruqqus's old purple
-    colour = app.config["SITE_COLOR"] if board.id in INTERNAL_BOARDS else board.color
     scss = raw.replace("{boardcolor}", colour)
     scss = scss.replace("{maincolor}", app.config["SITE_COLOR"])
     scss = scss.replace("{ruqquspath}", app.config["RUQQUSPATH"])
 
     try:
-        resp = Response(sass.compile(string=scss), mimetype='text/css')
+        css = sass.compile(string=scss)
     except sass.CompileError:
         return None
     return css_flip.flip(css) if rtl else css
@@ -2051,7 +2070,7 @@ def mod_board_color(bid, board, v):
 
     if len(color) != 6:
         return render_template("guild/appearance.html",
-                               v=v, b=board, error="Invalid color code."), 400
+                               v=v, b=board, error=tr("Invalid color code.")), 400
 
     red = color[0:1]
     green = color[2:3]
@@ -2060,20 +2079,15 @@ def mod_board_color(bid, board, v):
     try:
         if any([int(x, 16) > 255 for x in [red, green, blue]]):
             return render_template(
-                "guild/appearance.html", v=v, b=board, error="Invalid color code."), 400
+                "guild/appearance.html", v=v, b=board, error=tr("Invalid color code.")), 400
     except ValueError:
         return render_template("guild/appearance.html",
-                               v=v, b=board, error="Invalid color code."), 400
+                               v=v, b=board, error=tr("Invalid color code.")), 400
 
     board.color = color
     board.color_nonce += 1
 
     g.db.add(board)
-
-    try:
-        cache.delete_memoized(board_css, board.name)
-    except BaseException:
-        pass
 
     ma=ModAction(
         kind="update_appearance",
@@ -2083,7 +2097,7 @@ def mod_board_color(bid, board, v):
         )
     g.db.add(ma)
 
-    return redirect(f"/+{board.name}/mod/appearance?msg=Success")
+    return redirect(f"/+{board.name}/mod/appearance?msg={SAVED_NOTICE}")
 
 
 @app.route("/mod/approve/<guildname>", methods=["POST"])
@@ -2106,12 +2120,13 @@ Required form data:
     user = get_user(request.values.get("username"), graceful=True)
 
     if not user or user.is_deleted:
-        return jsonify({"error": "That user doesn't exist."}), 404
+        return jsonify({"error": tr("That user doesn't exist.")}), 404
 
     if board.has_ban(user):
-        return jsonify({"error": f"@{user.username} is exiled from +{board.name} and can't currently be approved."}), 409
+        return jsonify({"error": tr("@%(name)s is exiled from +%(guild)s and can't currently be approved.",
+                                    name=user.username, guild=board.name)}), 409
     if board.has_contributor(user):
-        return jsonify({"error": f"@{user.username} is already an approved user."})
+        return jsonify({"error": tr("@%(name)s is already an approved user.", name=user.username)})
 
     # check for an existing deactivated approval
     existing_contrib = g.db.query(ContributorRelationship).filter_by(
@@ -2130,8 +2145,7 @@ Required form data:
         g.db.commit()
 
         if user.id != v.id:
-            text = f"You have been added as an approved contributor to +{board.name}."
-            send_notification(user, text)
+            notify(user, N_("You have been added as an approved contributor to +%(guild)s."), guild=board.name)
 
     ma=ModAction(
         kind="contrib_user",
@@ -2227,7 +2241,7 @@ URL path parameters:
         abort(400)
 
     if x and not board.can_pin_another:
-        return jsonify({"error": f"+{board.name} already has the maximum number of pinned posts."}), 409
+        return jsonify({"error": tr("+%(guild)s already has the maximum number of pinned posts.", guild=board.name)}), 409
 
     post.is_pinned = x
 
@@ -2281,7 +2295,8 @@ Optional query parameters:
     # the same gate as the guild page (board_name)
     if b.is_banned and not (v and v.admin_level >= 3):
         return {'html': lambda: (render_template("board_banned.html", v=v, b=b, p=True), 410),
-                'api': lambda: (jsonify({'error': f'410 Gone - +{b.name} is banned.'}), 410)
+                # Translators: an answer of the API; "410 Gone" is the HTTP status, +%(guild)s a guild
+                'api': lambda: (jsonify({'error': tr('410 Gone - +%(guild)s is banned.', guild=b.name)}), 410)
                 }
 
     page = max(page_number(), 1)
@@ -2323,21 +2338,25 @@ def change_guild_category(v, board, bid, category):
         return jsonify({"error": tr("Invalid category id")}), 400
 
     if board.is_locked_category:
-        return jsonify({"error": "You can't do that right now."}), 403
+        return jsonify({"error": tr("You can't do that right now.")}), 403
 
     category_filter.file_under(board, token)
     g.db.add(board)
     g.db.flush()
 
+    parent, sub = choice
     ma=ModAction(
         kind="update_settings",
         user_id=v.id,
         board_id=board.id,
-        note=f"category={sc.category.name} / {sc.name}"
+        note=f"category={parent.name} / {sub.name}" if sub else f"category={parent.name}"
     )
     g.db.add(ma)
 
-    return jsonify({"message": f"Category changed to {sc.category.name} / {sc.name}"})
+    if not sub:
+        return jsonify({"message": tr("Category changed to %(category)s", category=parent.name)})
+    return jsonify({"message": tr("Category changed to %(category)s / %(subcategory)s",
+                                category=parent.name, subcategory=sub.name)})
 
 
 
@@ -2365,7 +2384,7 @@ Optional query parameters
     if board.is_banned and not (v and v.admin_level>=3):     # one level for a banned guild's read-only pages
         return {
             "html":lambda:(render_template("board_banned.html", v=v, b=board), 403),
-            "api":lambda:(jsonify({"error":f"+{board.name} is banned"}), 403)
+            "api":lambda:(jsonify({"error": tr("+%(guild)s is banned", guild=board.name)}), 403)
             }
 
     # a private (or Circle) guild's log names its members: only those who can view the guild read it
@@ -2459,10 +2478,10 @@ def board_mod_perms_change(guildname, board, v):
     u_mod=board.has_mod_record(user)
 
     if not u_mod:
-        return jsonify({"error": f"@{user.username} isn't a guildmaster of +{board.name}."}), 400
+        return jsonify({"error": tr("@%(name)s isn't a guildmaster of +%(guild)s.", name=user.username, guild=board.name)}), 400
 
     if v_mod.id > u_mod.id:
-        return jsonify({"error":"You can't change perms on guildmasters above you."}), 403
+        return jsonify({"error": tr("You can't change perms on guildmasters above you.")}), 403
 
     #print({x:request.form.get(x) for x in request.form})
 
@@ -2580,15 +2599,15 @@ def siege_guild(v):
     if v.last_siege_utc > now - (60 * 60 * 24 * 7):
         return render_template("message.html",
                                v=v,
-                               title=f"Siege against +{guild.name} Failed",
-                               error="You need to wait 7 days between siege attempts."
+                               title=tr("Siege against +%(guild)s Failed", guild=guild.name),
+                               error=tr("You need to wait 7 days between siege attempts.")
                                ), 403
     # check guild count
     refused = v.gm_limit_refusal() if guild not in v.boards_modded else None
     if refused:
         return render_template("message.html",
                                v=v,
-                               title=f"Siege against +{guild.name} Failed",
+                               title=tr("Siege against +%(guild)s Failed", guild=guild.name),
                                error=guild_limits.say(refused)
                                ), 403
                                
@@ -2596,8 +2615,8 @@ def siege_guild(v):
     if guild.is_banned:
         return render_template("message.html",
                                v=v,
-                               title=f"Siege against +{guild.name} Failed",
-                               error=f"+{guild.name} is banned."
+                               title=tr("Siege against +%(guild)s Failed", guild=guild.name),
+                               error=tr("+%(guild)s is banned.", guild=guild.name)
                                ), 403
 
     # Can't siege if exiled
@@ -2605,16 +2624,16 @@ def siege_guild(v):
         return render_template(
             "message.html",
             v=v,
-            title=f"Siege against +{guild.name} Failed",
-            error=f"You may not siege guilds that you are exiled from."
+            title=tr("Siege against +%(guild)s Failed", guild=guild.name),
+            error=tr("You may not siege guilds that you are exiled from.")
             ), 403
 
     # Cannot siege +general, +ruqqus, +ruqquspress, +ruqqusdmca
     if not guild.is_siegable:
         return render_template("message.html",
                                v=v,
-                               title=f"Siege against +{guild.name} Failed",
-                               error=f"+{guild.name} is an admin-controlled guild and is immune to siege."
+                               title=tr("Siege against +%(guild)s Failed", guild=guild.name),
+                               error=tr("+%(guild)s is an admin-controlled guild and is immune to siege.", guild=guild.name)
                                ), 403
 
     # update siege date
@@ -2633,8 +2652,10 @@ def siege_guild(v):
         return render_template(
             "message.html",
             v=v,
-            title=f"Siege against +{guild.name} Failed",
-            error=f"You do not have enough recent Reputation in +{guild.name} to siege it. +{guild.name} currently requires {guild.siege_rep_requirement} Rep within the last 180 days, and you only have {v.guild_rep(guild, recent=180)}. You may try again in 7 days."
+            title=tr("Siege against +%(guild)s Failed", guild=guild.name),
+            error=tr("You do not have enough recent Reputation in +%(guild)s to siege it. +%(guild)s currently requires "
+                     "%(required)s Rep within the last 180 days, and you only have %(rep)s. You may try again in 7 days.",
+                     guild=guild.name, required=guild.siege_rep_requirement, rep=v.guild_rep(guild, recent=180))
             ), 403
 
     # Assemble list of mod ids to check
@@ -2665,10 +2686,11 @@ def siege_guild(v):
         if post:
             return render_template("message.html",
                                    v=v,
-                                   title=f"Siege against +{guild.name} Failed",
-                                   error=f"Your siege failed. One of the guildmasters had a post forwarded to +{guild.name}, or edited one there, within the last 60 days. You may try again in 7 days.",
+                                   title=tr("Siege against +%(guild)s Failed", guild=guild.name),
+                                   error=tr("Your siege failed. One of the guildmasters had a post forwarded to +%(guild)s, or edited one "
+                                            "there, within the last 60 days. You may try again in 7 days.", guild=guild.name),
                                    link=post.permalink,
-                                   link_text="View post"
+                                   link_text=tr("View post")
                                    ), 403
 
         # check comments
@@ -2682,10 +2704,11 @@ def siege_guild(v):
         if comment:
             return render_template("message.html",
                                    v=v,
-                                   title=f"Siege against +{guild.name} Failed",
-                                   error=f"Your siege failed. One of the guildmasters created or edited a comment in +{guild.name} within the last 60 days. You may try again in 7 days.",
+                                   title=tr("Siege against +%(guild)s Failed", guild=guild.name),
+                                   error=tr("Your siege failed. One of the guildmasters created or edited a comment in +%(guild)s within "
+                                            "the last 60 days. You may try again in 7 days.", guild=guild.name),
                                    link=comment.permalink,
-                                   link_text="View comment"
+                                   link_text=tr("View comment")
                                    ), 403
 
         # check mod actions
@@ -2709,10 +2732,11 @@ def siege_guild(v):
         if ma:
             return render_template("message.html",
                                    v=v,
-                                   title=f"Siege against +{guild.name} Failed",
-                                   error=f"Your siege failed. One of the guildmasters has performed a mod action in +{guild.name} within the last 60 days. You may try again in 7 days.",
+                                   title=tr("Siege against +%(guild)s Failed", guild=guild.name),
+                                   error=tr("Your siege failed. One of the guildmasters has performed a mod action in +%(guild)s within "
+                                            "the last 60 days. You may try again in 7 days.", guild=guild.name),
                                    link=ma.permalink,
-                                   link_text="View mod log record"
+                                   link_text=tr("View mod log record")
                                    ), 403
 
     #Siege is successful
@@ -2727,8 +2751,7 @@ def siege_guild(v):
             continue
 
         if x.accepted:
-            send_notification(x.user,
-                              f"You have been overthrown from +{guild.name}.")
+            notify(x.user, N_("You have been overthrown from +%(guild)s."), guild=guild.name)
 
 
             ma=ModAction(
@@ -2808,11 +2831,11 @@ URL path parameters:
 
     guild=get_guild(guildname, v=v, graceful=True)
     if not guild:
-        return jsonify({"error": f"Guild '+{guildname}' not found."}), 404
+        return jsonify({"error": tr("Guild '+%(guild)s' not found.", guild=guildname)}), 404
 
     sub=g.db.query(Subscription).filter_by(user_id=v.id, board_id=guild.id, is_active=True).first()
     if not sub:
-        return jsonify({"error": f"You aren't a member of +{guild.name}"}), 404
+        return jsonify({"error": tr("You aren't a member of +%(guild)s", guild=guild.name)}), 404
 
     sub.get_notifs = not sub.get_notifs
     g.db.add(sub)
@@ -2820,5 +2843,5 @@ URL path parameters:
 
     # the guild's bell rings for its guildmasters' announcements only (helpers/bell.py)
     if sub.get_notifs:
-        return jsonify({"message": f"You'll be told when +{guild.name}'s guildmasters make an announcement."})
-    return jsonify({"message": f"Announcements from +{guild.name} turned off."})
+        return jsonify({"message": tr("You'll be told when +%(guild)s's guildmasters make an announcement.", guild=guild.name)})
+    return jsonify({"message": tr("Announcements from +%(guild)s turned off.", guild=guild.name)})

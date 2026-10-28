@@ -24,7 +24,8 @@ export function createSenders(channelId, onChange) {
     guildChannelSenders(channelId, ids)
       .then((senders) => {
         for (const id of ids) {
-          known.set(id, senders[String(id)] || { shown_name: "Someone who left", username: null, blocked: false, muted: false });
+          // Translators: in place of the name of someone who wrote in a channel and has left it
+          known.set(id, senders[String(id)] || { shown_name: window.tr("Someone who left"), username: null, blocked: false, muted: false });
         }
         onChange();
       })
@@ -46,15 +47,17 @@ export function createSenders(channelId, onChange) {
 
 // the line under the composer: slow mode, or why it can't be used
 export function composerNote(channel) {
-  if (channel.encrypted && channel.may_write) return "End-to-end encrypted: only the people in this channel can read it.";
+  if (channel.encrypted && channel.may_write) return window.tr("End-to-end encrypted: only the people in this channel can read it.");
   if (!channel.may_write) {
     return channel.channel_kind === "announcement"
-      ? "Only the guild's guildmasters write here. You can react to messages."
-      : "You can read this channel but not write in it.";
+      ? window.tr("Only the guild's guildmasters write here. You can react to messages.")
+      : window.tr("You can read this channel but not write in it.");
   }
   const seconds = Number(channel.slow_mode_seconds) || 0;
   if (!seconds) return "";
-  return seconds >= 120 ? `Slow mode: one message every ${Math.round(seconds / 60)} minutes.` : `Slow mode: one message every ${seconds} seconds.`;
+  return seconds >= 120
+    ? window.trn("Slow mode: one message every %(num)s minute.", "Slow mode: one message every %(num)s minutes.", Math.round(seconds / 60))
+    : window.trn("Slow mode: one message every %(num)s second.", "Slow mode: one message every %(num)s seconds.", seconds);
 }
 
 // --- the panels over a channel's messages: pinned messages, search, notifications -------------------------------------------
@@ -71,15 +74,17 @@ export function whenLabel(utc) {
   if (!utc) return "";
   const d = new Date(utc * 1000);
   return d.toDateString() === new Date().toDateString()
-    ? d.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" })
-    : d.toLocaleDateString([], { month: "short", day: "numeric", year: "numeric" });
+    ? d.toLocaleTimeString(window.I18N.intl, { hour: "numeric", minute: "2-digit" })
+    : d.toLocaleDateString(window.I18N.intl, { month: "short", day: "numeric", year: "numeric" });
 }
 
 // A message as a row of a list (pinned, found): who wrote it, when, and the words
 function messageRow(who, written, bodyText, note) {
   const row = el("div", "border-bottom py-2 chat-panel-row");
   const head = el("div", "small text-muted");
-  head.textContent = `${who && who.shown_name ? who.shown_name : "Someone who left"} · ${whenLabel(written)}`;
+  const name = who && who.shown_name ? who.shown_name : window.tr("Someone who left");
+  // Translators: above a pinned or found message: who wrote it and when ("Ann · 14:05")
+  head.textContent = window.tr("%(name)s · %(when)s", { name, when: whenLabel(written) });
   row.appendChild(head);
   const text = el("div", note ? "font-italic text-muted" : "chat-bubble", note || bodyText);
   row.appendChild(text);
@@ -89,14 +94,14 @@ function messageRow(who, written, bodyText, note) {
 export function renderPins(body, pins, canModerate, onUnpin) {
   body.textContent = "";
   if (!pins.length) {
-    body.appendChild(el("div", "text-muted text-center p-3", "Nothing is pinned in this channel."));
+    body.appendChild(el("div", "text-muted text-center p-3", window.tr("Nothing is pinned in this channel.")));
     return;
   }
   for (const pin of pins) {
-    const note = pin.blocked ? "A message from someone you blocked" : pin.hidden ? "Hidden by your word filter" : "";
+    const note = pin.blocked ? window.tr("A message from someone you blocked") : pin.hidden ? window.tr("Hidden by your word filter") : "";
     const row = messageRow(pin.author, pin.written_utc, pin.body, note);
     if (canModerate) {
-      const unpin = el("button", "btn btn-link btn-sm px-0", "Unpin");
+      const unpin = el("button", "btn btn-link btn-sm px-0", window.tr("Unpin"));
       unpin.type = "button";
       unpin.addEventListener("click", () => onUnpin(pin));
       row.appendChild(unpin);
@@ -111,10 +116,11 @@ export function renderSearch(body, foot, onSearch) {
   const form = el("form", "d-flex");
   const input = el("input", "form-control mr-2");
   input.type = "search";
-  input.placeholder = "Search this channel";
-  input.setAttribute("aria-label", "Search this channel");
+  input.placeholder = window.tr("Search this channel");
+  input.setAttribute("aria-label", window.tr("Search this channel"));
   input.maxLength = 100;
-  const go = el("button", "btn btn-primary", "Search");
+  // Translators: a button that searches a channel's messages
+  const go = el("button", "btn btn-primary", window.tr("Search"));
   go.type = "submit";
   form.append(input, go);
   form.addEventListener("submit", (e) => {
@@ -122,7 +128,7 @@ export function renderSearch(body, foot, onSearch) {
     if (input.value.trim()) onSearch(input.value.trim());
   });
   foot.appendChild(form);
-  body.appendChild(el("div", "text-muted text-center p-3", "Type words to look for."));
+  body.appendChild(el("div", "text-muted text-center p-3", window.tr("Type words to look for.")));
   input.focus();
 }
 
@@ -130,27 +136,34 @@ export function renderResults(body, data) {
   body.textContent = "";
   const results = data.results || [];
   if (!results.length) {
-    body.appendChild(el("div", "text-muted text-center p-3", "Nothing found."));
+    body.appendChild(el("div", "text-muted text-center p-3", window.tr("Nothing found.")));
   }
   for (const found of results) body.appendChild(messageRow(found.author, found.written_utc, found.body, ""));
-  body.appendChild(el("div", "small text-muted text-center py-2", `Searches the last ${Number(data.days) || 90} days of messages.`));
+  body.appendChild(el("div", "small text-muted text-center py-2", window.trn(
+    "Searches the last %(num)s day of messages.", "Searches the last %(num)s days of messages.", Number(data.days) || 90)));
 }
 
-const MUTE_CHOICES = [[1, "For 1 hour"], [8, "For 8 hours"], [24, "For 24 hours"], [-1, "Until I turn it back on"]];
+// how long to mute a channel for (hours; -1 until turned back on), labelled in the page's language when drawn
+function muteChoices() {
+  return [
+    ...[1, 8, 24].map((hours) => [hours, window.trn("For %(num)s hour", "For %(num)s hours", hours)]),
+    [-1, window.tr("Until I turn it back on")],
+  ];
+}
 
 export function renderMute(body, muted, onChoose) {
   body.textContent = "";
   body.appendChild(el("p", "small text-muted", muted
-    ? "This channel is muted for you: no unread dot and no mention notifications."
-    : "Muting a channel hides its unread dot and stops its mention notifications. Nobody else is told."));
-  for (const [hours, label] of MUTE_CHOICES) {
+    ? window.tr("This channel is muted for you: no unread dot and no mention notifications.")
+    : window.tr("Muting a channel hides its unread dot and stops its mention notifications. Nobody else is told.")));
+  for (const [hours, label] of muteChoices()) {
     const button = el("button", "btn btn-outline-secondary btn-block text-left", label);
     button.type = "button";
     button.addEventListener("click", () => onChoose(hours));
     body.appendChild(button);
   }
   if (muted) {
-    const on = el("button", "btn btn-primary btn-block", "Turn notifications back on");
+    const on = el("button", "btn btn-primary btn-block", window.tr("Turn notifications back on"));
     on.type = "button";
     on.addEventListener("click", () => onChoose(0));
     body.appendChild(on);
@@ -174,7 +187,7 @@ export function stopCards() {
   voiceTimer = null;
 }
 
-function cardShell(pane, conv, icon, kindLabel) {
+function cardShell(pane, conv, icon, kindLine) {
   pane.textContent = "";
   const box = el("div", "p-4");
   const head = el("div", "d-flex align-items-center mb-2");
@@ -184,7 +197,7 @@ function cardShell(pane, conv, icon, kindLabel) {
   i.setAttribute("aria-hidden", "true");
   mark.appendChild(i);
   const title = el("div", "flex-grow-1 overflow-hidden");
-  title.append(el("div", "font-weight-bold text-truncate", conv.label), el("div", "small text-muted", `${kindLabel} · +${conv.guild}`));
+  title.append(el("div", "font-weight-bold text-truncate", conv.label), el("div", "small text-muted", kindLine));
   head.append(mark, title);
   box.appendChild(head);
   if (conv.topic) box.appendChild(el("p", "text-muted", conv.topic));
@@ -201,25 +214,28 @@ function personRow(person) {
     img.src = person.profile_url;
     row.appendChild(img);
   }
-  row.appendChild(el("span", "", person.shown_name || "Someone"));
+  row.appendChild(el("span", "", person.shown_name || window.tr("Someone")));
   return row;
 }
 
 export function renderVoiceCard(pane, conv, join) {
   stopCards();
-  const box = cardShell(pane, conv, "fa-volume-high", "Voice channel");
-  const status = el("div", "text-muted mb-2", "Loading…");
+  // Translators: under a voice channel's name: its kind and its guild ("Voice channel · +pets")
+  const box = cardShell(pane, conv, "fa-volume-high", window.tr("Voice channel · +%(guild)s", { guild: conv.guild }));
+  const status = el("div", "text-muted mb-2", window.tr("Loading…"));
   const people = el("div", "mb-3");
-  const button = el("button", "btn btn-primary", "Join voice");
+  const button = el("button", "btn btn-primary", window.tr("Join voice"));
   button.type = "button";
-  const note = el("div", "small text-muted mt-2", "Voice goes browser to browser through the site's relay, so nobody sees anyone's address. Up to 8 people.");
+  const note = el("div", "small text-muted mt-2", window.trn(
+    "Voice goes browser to browser through the site's relay, so nobody sees anyone's address. Up to %(num)s person.",
+    "Voice goes browser to browser through the site's relay, so nobody sees anyone's address. Up to %(num)s people.", 8));
   box.append(status, people, button, note);
   let full = false;
 
   button.addEventListener("click", () => join());
   if (!conv.may_write) {
     button.disabled = true;
-    note.textContent = "You can see who is here, but you can't speak in this channel.";
+    note.textContent = window.tr("You can see who is here, but you can't speak in this channel.");
   }
 
   const refresh = async () => {
@@ -231,9 +247,9 @@ export function renderVoiceCard(pane, conv, join) {
       for (const person of data.who || []) people.appendChild(personRow(person));
       const n = Number(data.people) || 0;
       full = n >= 8 && !data.in_call;
-      status.textContent = n ? `${n} ${n === 1 ? "person" : "people"} in the call` : "Nobody is here yet.";
+      status.textContent = n ? window.trn("%(num)s person in the call", "%(num)s people in the call", n) : window.tr("Nobody is here yet.");
       if (conv.may_write) button.disabled = full;
-      if (full) note.textContent = "This voice channel is full (8 people).";
+      if (full) note.textContent = window.trn("This voice channel is full (%(num)s person).", "This voice channel is full (%(num)s people).", 8);
     } catch (e) {
       /* the next try */
     }
@@ -244,17 +260,20 @@ export function renderVoiceCard(pane, conv, join) {
 
 export function renderStageCard(pane, conv) {
   stopCards();
-  const box = cardShell(pane, conv, "fa-podcast", "Stage");
+  // Translators: under a stage channel's name: its kind and its guild ("Stage · +pets")
+  const box = cardShell(pane, conv, "fa-podcast", window.tr("Stage · +%(guild)s", { guild: conv.guild }));
   const space = conv.space || { status: "none" };
   if (space.status === "none") {
-    box.appendChild(el("p", "text-muted", "No Space is shown on this stage right now."));
+    box.appendChild(el("p", "text-muted", window.tr("No Space is shown on this stage right now.")));
     return;
   }
-  const label = { live: "Live now", scheduled: "Coming up", ended: "Ended" }[space.status] || space.status;
-  box.appendChild(el("div", "font-weight-bold", space.title || "A Space"));
+  // Translators: whether the Space on a stage channel is live, scheduled or over
+  const labels = { live: window.tr("Live now"), scheduled: window.tr("Coming up"), ended: window.tr("Ended") };
+  const label = labels[space.status] || space.status;
+  box.appendChild(el("div", "font-weight-bold", space.title || window.tr("A Space")));
   box.appendChild(el("div", "text-muted mb-3", label));
   if (space.status !== "ended") {
-    const link = el("a", "btn btn-primary", space.status === "live" ? "Listen" : "Open the Space");
+    const link = el("a", "btn btn-primary", space.status === "live" ? window.tr("Listen") : window.tr("Open the Space"));
     if (typeof space.url === "string" && space.url.startsWith("/space/")) link.href = space.url;
     link.target = "_top";
     box.appendChild(link);

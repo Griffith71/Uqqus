@@ -168,7 +168,7 @@ def test_one_notice_is_one_message_for_many_people_and_old_rings_are_pruned():
 
 def test_the_bells_say_what_they_do():
     header = read("ruqqus", "templates", "partials", "profile_header.html")
-    assert "Notify me about everything @{{ u.username }} does" in header
+    assert "_('Notify me about everything @%(name)s does', name=u.username)" in header
     board = read("ruqqus", "templates", "board.html")
     assert "Be told when the guildmasters make an announcement" in board
     assert "Be notified when this guild has new content" not in board

@@ -7,13 +7,13 @@
     <div class="flex-row box-shadow-bottom d-flex justify-content-center justify-content-md-between align-items-center">
       <ul class="nav settings-nav">
         <li class="nav-item">
-          <a class="nav-link" href="/@{{ u.username}}">Posts</a>
+          <a class="nav-link" href="/@{{ u.username}}">{{ _("Posts") }}</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="/@{{ u.username}}/comments">Comments</a>
+          <a class="nav-link" href="/@{{ u.username}}/comments">{{ _("Comments") }}</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link active" href="/@{{ u.username}}/forwarded">Forwarded</a>
+          <a class="nav-link active" href="/@{{ u.username}}/forwarded">{{ pgettext("profile tab", "Forwarded") }}</a>
         </li>
       </ul>
     </div>
@@ -35,11 +35,11 @@
         <i class="fas text-gray-500 fa-share fa-stack-1x text-lg"></i>
       </span>
       {% if v and v.id == u.id %}
-      <h2 class="h5">You haven't forwarded anything yet</h2>
-      <p class="text-muted mb-md-5">Posts you forward to a guild, and comments you forward into a new post, will show here.</p>
+      <h2 class="h5">{{ _("You haven't forwarded anything yet") }}</h2>
+      <p class="text-muted mb-md-5">{{ _("Posts you forward to a guild, and comments you forward into a new post, will show here.") }}</p>
       {% else %}
-      <h2 class="h5">@{{ u.username }} hasn't forwarded anything yet</h2>
-      <p class="text-muted">Their forwarding activity will show here.</p>
+      <h2 class="h5">{{ _("@%(name)s hasn't forwarded anything yet", name=u.username) }}</h2>
+      <p class="text-muted">{{ _("Their forwarding activity will show here.") }}</p>
       {% endif %}
     </div>
 

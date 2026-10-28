@@ -37,7 +37,7 @@ async function post(url, formkey, fields = {}) {
   const resp = await fetch(url, { method: "POST", credentials: "same-origin", headers: { Accept: "application/json" }, body });
   let data = null;
   try { data = await resp.json(); } catch (e) { data = null; }
-  if (!resp.ok) throw new Error((data && data.error) || "That didn't work. Try again.");
+  if (!resp.ok) throw new Error((data && data.error) || window.tr("That didn't work. Try again."));
   return data;
 }
 
@@ -104,15 +104,19 @@ function button(label, className, onClick, ariaLabel) {
 function when(utc) {
   const d = new Date(utc * 1000);
   const today = new Date();
-  if (d.toDateString() === today.toDateString()) return d.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
-  return d.toLocaleDateString([], { day: "numeric", month: "short" });
+  if (d.toDateString() === today.toDateString()) return d.toLocaleTimeString(window.I18N.intl, { hour: "numeric", minute: "2-digit" });
+  return d.toLocaleDateString(window.I18N.intl, { day: "numeric", month: "short" });
 }
 
 function length(seconds) {
-  if (seconds == null) return "no answer or still going";
-  if (seconds < 60) return `${seconds} s`;
+  // Translators: how long a call in the Calls tab lasted, when it has no length
+  if (seconds == null) return window.tr("no answer or still going");
+  // Translators: a call's length in seconds, abbreviated ("45 s")
+  if (seconds < 60) return window.trn("%(num)s s", "%(num)s s", seconds);
   const minutes = Math.round(seconds / 60);
-  return minutes < 60 ? `${minutes} min` : `${Math.floor(minutes / 60)} h ${minutes % 60} min`;
+  if (minutes < 60) return window.trn("%(num)s min", "%(num)s min", minutes);
+  // Translators: a call's length in hours and minutes, abbreviated ("1 h 5 min")
+  return window.tr("%(hours)s h %(minutes)s min", { hours: Math.floor(minutes / 60), minutes: minutes % 60 });
 }
 
 function emptyNote(container, text) {
@@ -130,14 +134,14 @@ export function initExtras({ boot, openRoom, openKey, startCall, refreshLists, s
   let token = 0;
 
   async function begin(username) {
-    say(status, "Starting the chat…");
+    say(status, window.tr("Starting the chat…"));
     try {
       const resp = await fetch("/api/chat/start?json=1", {
         method: "POST", credentials: "same-origin", headers: { Accept: "application/json" },
         body: new URLSearchParams({ formkey: boot.formkey, username }),
       });
       const data = await resp.json().catch(() => ({}));
-      if (!resp.ok || !data.room_id) throw new Error(data.error || "You can't start a chat with them.");
+      if (!resp.ok || !data.room_id) throw new Error(data.error || window.tr("You can't start a chat with them."));
       sheet("chatNew", "hide");
       await openRoom(data.room_id);
     } catch (e) {
@@ -152,17 +156,18 @@ export function initExtras({ boot, openRoom, openKey, startCall, refreshLists, s
         picture: person.profile_url,
         title: person.shown_name || person.display_name || `@${person.username}`,
         sub: `@${person.username}`,
-        action: button("Chat", "btn-primary", () => begin(person.username), `Chat with @${person.username}`),
+        // Translators: a button that starts a chat with someone
+        action: button(window.tr("Chat"), "btn-primary", () => begin(person.username), window.tr("Chat with @%(name)s", { name: person.username })),
       }));
     }
     const handle = typed.replace(/^@/, "");
     if (HANDLE.test(typed) && !people.some((p) => p.username.toLowerCase() === handle.toLowerCase())) {
       results.appendChild(row({
-        icon: "fa-at", title: `@${handle}`, sub: "Someone you don't follow gets a message request",
-        action: button("Chat", "btn-outline-primary", () => begin(handle), `Chat with @${handle}`),
+        icon: "fa-at", title: `@${handle}`, sub: window.tr("Someone you don't follow gets a message request"),
+        action: button(window.tr("Chat"), "btn-outline-primary", () => begin(handle), window.tr("Chat with @%(name)s", { name: handle })),
       }));
     }
-    if (!results.children.length) emptyNote(results, typed ? "Nobody matches. Type their whole @handle." : "Follow someone, or type their @handle.");
+    if (!results.children.length) emptyNote(results, typed ? window.tr("Nobody matches. Type their whole @handle.") : window.tr("Follow someone, or type their @handle."));
   }
 
   function load() {
@@ -170,7 +175,7 @@ export function initExtras({ boot, openRoom, openKey, startCall, refreshLists, s
     const typed = search.value.trim();
     searchPeople(typed)
       .then((people) => { if (mine === token) draw(people, typed); })
-      .catch(() => { if (mine === token) say(status, "Could not search. Try again.", true); });
+      .catch(() => { if (mine === token) say(status, window.tr("Could not search. Try again."), true); });
   }
 
   if (search) {
@@ -186,7 +191,7 @@ export function initExtras({ boot, openRoom, openKey, startCall, refreshLists, s
   // --- the Calls tab ----------------------------------------------------------------------------------------------
   async function renderCalls(container) {
     container.textContent = "";
-    emptyNote(container, "Loading…");
+    emptyNote(container, window.tr("Loading…"));
     let calls = [];
     try {
       const resp = await fetch("/api/calls/history", { credentials: "same-origin" });
@@ -195,15 +200,21 @@ export function initExtras({ boot, openRoom, openKey, startCall, refreshLists, s
       calls = [];
     }
     container.textContent = "";
-    if (!calls.length) return emptyNote(container, "No calls yet. Start one from a chat's Voice call or Video call.");
+    if (!calls.length) return emptyNote(container, window.tr("No calls yet. Start one from a chat's Voice call or Video call."));
     for (const call of calls) {
       const video = call.call_kind === "video";
-      const sub = `${call.outgoing ? "You called" : "Called you"} · ${video ? "video" : "voice"} · ${when(call.started_utc)} · ${length(call.seconds)}`;
+      const values = { when: when(call.started_utc), length: length(call.seconds) };
+      // Translators: a line in the Calls tab: who called, voice or video, when, how long ("You called · video · 14:05 · 3 min")
+      const sub = call.outgoing
+        ? (video ? window.tr("You called · video · %(when)s · %(length)s", values) : window.tr("You called · voice · %(when)s · %(length)s", values))
+        : (video ? window.tr("Called you · video · %(when)s · %(length)s", values) : window.tr("Called you · voice · %(when)s · %(length)s", values));
+      // Translators: buttons in the Calls tab that call the person or group again
+      const again = video ? window.tr("Video call") : window.tr("Call");
+      const againLabel = video ? window.tr("Video call %(name)s", { name: call.label }) : window.tr("Call %(name)s", { name: call.label });
       container.appendChild(row({
         picture: call.avatar, icon: call.kind === "group" ? "fa-user-group" : null,
         title: call.label, sub,
-        action: button(video ? "Video call" : "Call", "btn-outline-primary", () => startCall(call.room_id, call.call_kind),
-          `${video ? "Video call" : "Call"} ${call.label}`),
+        action: button(again, "btn-outline-primary", () => startCall(call.room_id, call.call_kind), againLabel),
       }));
     }
   }
@@ -220,7 +231,7 @@ export function initExtras({ boot, openRoom, openKey, startCall, refreshLists, s
       await openRoom(channel.room_id);
     } catch (e) {
       joinButton.disabled = false;
-      joinButton.textContent = "Try again";
+      joinButton.textContent = window.tr("Try again");
       joinButton.title = e.message;
     }
   }
@@ -230,9 +241,9 @@ export function initExtras({ boot, openRoom, openKey, startCall, refreshLists, s
     bar.className = "d-flex align-items-center justify-content-between px-3 py-2 border-bottom";
     const label = document.createElement("span");
     label.className = "text-small text-muted";
-    label.textContent = "Channels you are in";
+    label.textContent = window.tr("Channels you are in");
     bar.appendChild(label);
-    bar.appendChild(button("New channel", "btn-primary", () => {
+    bar.appendChild(button(window.tr("New channel"), "btn-primary", () => {
       channelName.value = "";
       say(channelStatus, "");
       sheet("chatChannelNew", "show");
@@ -248,14 +259,15 @@ export function initExtras({ boot, openRoom, openKey, startCall, refreshLists, s
     if (!channels.length || !container.isConnected) return;
     const heading = document.createElement("div");
     heading.className = "text-small text-muted font-weight-bold px-3 pt-3 pb-1";
-    heading.textContent = "From people you follow";
+    heading.textContent = window.tr("From people you follow");
     container.appendChild(heading);
     for (const channel of channels) {
       const owner = channel.owner || {};
-      const join = button("Join", "btn-outline-primary", () => joinChannel(channel, join), `Join ${channel.label}`);
+      const join = button(window.tr("Join"), "btn-outline-primary", () => joinChannel(channel, join), window.tr("Join %(channel)s", { channel: channel.label }));
       container.appendChild(row({
         picture: owner.profile_url, title: channel.label,
-        sub: `${owner.shown_name || owner.username || ""} · ${channel.size} ${channel.size === 1 ? "member" : "members"}`,
+        // Translators: under a channel's name: its owner and how many are in it ("Ann · 12 members")
+        sub: window.trn("%(owner)s · %(num)s member", "%(owner)s · %(num)s members", channel.size, { owner: owner.shown_name || owner.username || "" }),
         action: join,
       }));
     }
@@ -265,7 +277,7 @@ export function initExtras({ boot, openRoom, openKey, startCall, refreshLists, s
   if (create) {
     create.addEventListener("click", async () => {
       create.disabled = true;
-      say(channelStatus, "Making the channel…");
+      say(channelStatus, window.tr("Making the channel…"));
       try {
         // public, or for the Friends circle (everyone you follow who follows you back); other circles are picked on
         // your channels page (/@you/channels)
@@ -300,50 +312,50 @@ export function initExtras({ boot, openRoom, openKey, startCall, refreshLists, s
   function drawFound(found) {
     list.textContent = "";
     const empty = !found.chats.length && !found.channels.length && !found.guild_chats.length && !found.guilds.length;
-    if (empty) return emptyNote(list, "Nothing matches. Groups are private: only the ones you are in are found.");
+    if (empty) return emptyNote(list, window.tr("Nothing matches. Groups are private: only the ones you are in are found."));
     if (found.chats.length) {
-      section("Your chats");
+      section(window.tr("Your chats"));
       for (const chat of found.chats) {
         list.appendChild(row({
           picture: chat.avatar, icon: chat.kind === "group" ? "fa-user-group" : chat.kind === "channel" ? "fa-tower-broadcast" : null,
           title: chat.label, sub: chat.sub,
-          action: button("Open", "btn-outline-primary", () => { clear(); openKey(chat.key, chat.room_id); }, `Open ${chat.label}`),
+          action: button(window.tr("Open"), "btn-outline-primary", () => { clear(); openKey(chat.key, chat.room_id); }, window.tr("Open %(name)s", { name: chat.label })),
         }));
       }
     }
     if (found.channels.length) {
-      section("Channels");
+      section(window.tr("Channels"));
       for (const channel of found.channels) {
         const owner = channel.owner || {};
-        const join = button("Join", "btn-outline-primary", async () => { clear(); await joinChannel(channel, join); }, `Join ${channel.label}`);
+        const join = button(window.tr("Join"), "btn-outline-primary", async () => { clear(); await joinChannel(channel, join); }, window.tr("Join %(channel)s", { channel: channel.label }));
         list.appendChild(row({
           picture: owner.profile_url, title: channel.label,
-          sub: `${owner.shown_name || owner.username || ""} · ${channel.size} ${channel.size === 1 ? "member" : "members"}`,
+          sub: window.trn("%(owner)s · %(num)s member", "%(owner)s · %(num)s members", channel.size, { owner: owner.shown_name || owner.username || "" }),
           action: join,
         }));
       }
     }
     if (found.guild_chats.length) {
-      section("Your guilds' chats");
+      section(window.tr("Your guilds' chats"));
       for (const chat of found.guild_chats) {
         list.appendChild(row({
           icon: chat.channel_kind === "voice" ? "fa-volume-high" : "fa-hashtag", title: chat.label, sub: `+${chat.guild}`,
-          action: button("Open", "btn-outline-primary", () => { clear(); openKey(chat.key, chat.room_id); }, `Open ${chat.label}`),
+          action: button(window.tr("Open"), "btn-outline-primary", () => { clear(); openKey(chat.key, chat.room_id); }, window.tr("Open %(name)s", { name: chat.label })),
         }));
       }
     }
     if (found.guilds.length) {
-      section("Guilds with chat");
+      section(window.tr("Guilds with chat"));
       for (const guild of found.guilds) {
         const link = document.createElement("a");
         link.className = "btn btn-sm btn-outline-primary ml-2 flex-shrink-0";
         link.href = guild.url.startsWith("/+") ? guild.url : "/";
         link.target = "_top";
-        link.textContent = "Open";
-        link.setAttribute("aria-label", `Open the chat of +${guild.name}`);
+        link.textContent = window.tr("Open");
+        link.setAttribute("aria-label", window.tr("Open the chat of +%(guild)s", { guild: guild.name }));
         list.appendChild(row({
           picture: guild.avatar, title: `+${guild.name}`,
-          sub: `${guild.channels} ${guild.channels === 1 ? "channel" : "channels"}`, action: link,
+          sub: window.trn("%(num)s channel", "%(num)s channels", guild.channels), action: link,
         }));
       }
     }
@@ -369,7 +381,7 @@ export function initExtras({ boot, openRoom, openKey, startCall, refreshLists, s
       if (mine !== searchToken || !found) return;
       drawFound(found);
     } catch (e) {
-      if (mine === searchToken) emptyNote(list, "Could not search. Try again.");
+      if (mine === searchToken) emptyNote(list, window.tr("Could not search. Try again."));
     }
   }
 

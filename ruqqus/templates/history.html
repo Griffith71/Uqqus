@@ -1,7 +1,11 @@
 {% extends "default.html" %}
 
+{% block sidebar %}{% endblock %}
+{# no right sidebar; a list, so its content is centred at the feed's width (default.html main_row_class, _screens.scss) #}
+{% block main_row_class %} wide-main is-focused{% endblock %}
+
 {% block title %}
-<title>History - {{ "SITE_NAME" | app_config }}</title>
+<title>{{ _("History - %(site)s") }}</title>
 {% endblock %}
 
 {% block desktopBanner %}
@@ -36,7 +40,7 @@
 <div class="row border-bottom bg-white sticky d-none d-md-block guild-border-top" style="overflow: visible;">
   <div class="col">
     <div class="d-flex justify-content-between align-items-center">
-      <div class="font-weight-bold py-3">History</div>
+      <div class="font-weight-bold py-3">{{ _('History') }}</div>
     </div>
   </div>
 </div>
@@ -45,15 +49,15 @@
   <div class="row">
     <div class="col">
       <div class="d-flex flex-row-reverse justify-content-end">
-        <ul class="nav settings-nav" style="margin-left: -15px;">
+        <ul class="nav settings-nav" style="margin-inline-start: -15px;">
           <li class="nav-item">
-            <a class="nav-link{% if active_tab=='bookmarked' %} active{% endif %}" href="/history"><i class="fas fa-bookmark"></i>Bookmarked</a>
+            <a class="nav-link{% if active_tab=='bookmarked' %} active{% endif %}" href="/history"><i class="fas fa-bookmark"></i>{{ _('Bookmarked') }}</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link{% if active_tab=='viewed' %} active{% endif %}" href="/history/viewed"><i class="fas fa-history"></i>History</a>
+            <a class="nav-link{% if active_tab=='viewed' %} active{% endif %}" href="/history/viewed"><i class="fas fa-history"></i>{{ _('History') }}</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link{% if active_tab=='upvoted' %} active{% endif %}" href="/history/upvoted"><i class="fas fa-arrow-up"></i>Upvoted</a>
+            <a class="nav-link{% if active_tab=='upvoted' %} active{% endif %}" href="/history/upvoted"><i class="fas fa-arrow-up"></i>{{ _('Upvoted') }}</a>
           </li>
           <li class="nav-item">
             <a class="nav-link{% if active_tab=='downvoted' %} active{% endif %}" href="/history/downvoted"><i class="fas fa-arrow-down"></i>{{ _('Downvoted') }}</a>
@@ -67,16 +71,16 @@
   </div>
 </div>
 
-{% if active_tab in ('bookmarked', 'upvoted', 'downvoted') %}
-<div class="container-fluid bg-light box-shadow-bottom">
+{% if active_tab in ('bookmarked', 'upvoted', 'downvoted', 'anonymous') %}
+<div class="container-fluid bg-light box-shadow-bottom history-show-bar">
   <div class="row py-2">
     <div class="col">
-      <div class="d-flex align-items-center">
-        <span class="text-small text-muted mr-2">Show:</span>
-        <div class="btn-group btn-group-sm" role="group">
-          <a href="{{ request.path }}?type=all{% if active_tab == 'bookmarked' and folder_query %}&folder={{ folder_query }}{% endif %}" class="btn btn-sm {% if content_type=='all' %}btn-secondary{% else %}btn-link text-muted{% endif %}">All</a>
-          <a href="{{ request.path }}?type=posts{% if active_tab == 'bookmarked' and folder_query %}&folder={{ folder_query }}{% endif %}" class="btn btn-sm {% if content_type=='posts' %}btn-secondary{% else %}btn-link text-muted{% endif %}">Posts</a>
-          <a href="{{ request.path }}?type=comments{% if active_tab == 'bookmarked' and folder_query %}&folder={{ folder_query }}{% endif %}" class="btn btn-sm {% if content_type=='comments' %}btn-secondary{% else %}btn-link text-muted{% endif %}">Comments</a>
+      <div class="d-flex flex-wrap align-items-center">
+        <span class="text-small text-muted mr-2">{{ pgettext("filter", "Show:") }}</span>
+        <div class="btn-group btn-group-sm btn-group-fit" role="group">
+          <a href="{{ request.path }}?type=all{% if active_tab == 'bookmarked' and folder_query %}&folder={{ folder_query }}{% endif %}" class="btn btn-sm {% if content_type=='all' %}btn-secondary{% else %}btn-link text-muted{% endif %}">{{ pgettext("filter", "All") }}</a>
+          <a href="{{ request.path }}?type=posts{% if active_tab == 'bookmarked' and folder_query %}&folder={{ folder_query }}{% endif %}" class="btn btn-sm {% if content_type=='posts' %}btn-secondary{% else %}btn-link text-muted{% endif %}">{{ pgettext("noun", "Posts") }}</a>
+          <a href="{{ request.path }}?type=comments{% if active_tab == 'bookmarked' and folder_query %}&folder={{ folder_query }}{% endif %}" class="btn btn-sm {% if content_type=='comments' %}btn-secondary{% else %}btn-link text-muted{% endif %}">{{ pgettext("noun", "Comments") }}</a>
         </div>
       </div>
     </div>
@@ -89,49 +93,25 @@
   <div class="row py-2">
     <div class="col">
       <div class="folder-chips d-flex flex-wrap align-items-center">
-        <span class="text-small text-muted mr-2">Folder:</span>
-        <a class="folder-chip{% if folder_kind == 'all' %} active{% endif %}" href="/history?type={{ content_type }}">All</a>
-        <a class="folder-chip{% if folder_kind == 'none' %} active{% endif %}" href="/history?type={{ content_type }}&folder=none">Unsorted</a>
+        <span class="text-small text-muted mr-2">{{ _('Folder:') }}</span>
+        <a class="folder-chip{% if folder_kind == 'all' %} active{% endif %}" href="/history?type={{ content_type }}">{{ pgettext("filter", "All") }}</a>
+        <a class="folder-chip{% if folder_kind == 'none' %} active{% endif %}" href="/history?type={{ content_type }}&folder=none">{{ _('Unsorted') }}</a>
         {% for f in folders %}
         <a class="folder-chip{% if folder and folder.id == f.id %} active{% endif %}" href="/history?type={{ content_type }}&folder={{ f.id }}"><i class="fas fa-folder fa-fw mr-1"></i>{{ f.name }}</a>
         {% endfor %}
-        <button type="button" class="folder-chip folder-chip-new" id="folder-new"><i class="fas fa-plus fa-fw mr-1"></i>New folder</button>
+        <button type="button" class="folder-chip folder-chip-new" id="folder-new"><i class="fas fa-plus fa-fw mr-1"></i>{{ _('New folder') }}</button>
         {% if folder %}
         <span class="folder-tools ml-auto">
-          <button type="button" class="btn btn-link btn-sm text-muted" id="folder-rename">Rename</button>
-          <button type="button" class="btn btn-link btn-sm text-danger" id="folder-delete">Delete folder</button>
+          <button type="button" class="btn btn-link btn-sm text-muted" id="folder-rename">{{ pgettext("button", "Rename") }}</button>
+          <button type="button" class="btn btn-link btn-sm text-danger" id="folder-delete">{{ _('Delete folder') }}</button>
         </span>
         {% endif %}
       </div>
-      <div class="text-small text-muted mt-1">To sort a bookmark, open its &hellip; menu and choose <strong>Move to folder</strong>.</div>
+      <div class="text-small text-muted mt-1">{{ _('To sort a bookmark, open its &hellip; menu and choose <strong>Move to folder</strong>.') }}</div>
     </div>
   </div>
 </div>
 {% endif %}
-
-<!-- Mobile tab bar -->
-<div class="container-fluid bg-white box-shadow-bottom d-block d-md-none">
-  <div class="row">
-    <div class="col">
-      <div class="d-flex justify-content-center">
-        <ul class="nav settings-nav">
-          <li class="nav-item">
-            <a class="nav-link{% if active_tab=='bookmarked' %} active{% endif %}" href="/history"><i class="fas fa-bookmark"></i></a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link{% if active_tab=='viewed' %} active{% endif %}" href="/history/viewed"><i class="fas fa-history"></i></a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link{% if active_tab=='upvoted' %} active{% endif %}" href="/history/upvoted"><i class="fas fa-arrow-up"></i></a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link{% if active_tab=='downvoted' %} active{% endif %}" href="/history/downvoted"><i class="fas fa-arrow-down"></i></a>
-          </li>
-        </ul>
-      </div>
-    </div>
-  </div>
-</div>
 
 {% endblock %}
 
@@ -184,21 +164,21 @@
 {% endblock %}
 
 {% block pagenav %}
-<nav aria-label="Page navigation">
+<nav aria-label="{{ _('Page navigation') }}">
   <ul class="pagination pagination-sm py-3 pl-3 mb-0">
     {% if page>1 %}
     <li class="page-item">
-      <small><a class="page-link" href="?page={{ page-1 }}{% if content_type and content_type != 'all' %}&type={{ content_type }}{% endif %}{% if active_tab == 'bookmarked' and folder_query %}&folder={{ folder_query }}{% endif %}" tabindex="-1">Prev</a></small>
+      <small><a class="page-link" href="?page={{ page-1 }}{% if content_type and content_type != 'all' %}&type={{ content_type }}{% endif %}{% if active_tab == 'bookmarked' and folder_query %}&folder={{ folder_query }}{% endif %}" tabindex="-1">{{ pgettext("previous page", "Prev") }}</a></small>
     </li>
     {% else %}
-    <li class="page-item disabled"><span class="page-link">Prev</span></li>
+    <li class="page-item disabled"><span class="page-link">{{ pgettext("previous page", "Prev") }}</span></li>
     {% endif %}
     {% if next_exists %}
     <li class="page-item">
-      <small><a class="page-link" href="?page={{ page+1 }}{% if content_type and content_type != 'all' %}&type={{ content_type }}{% endif %}{% if active_tab == 'bookmarked' and folder_query %}&folder={{ folder_query }}{% endif %}">Next</a></small>
+      <small><a class="page-link" href="?page={{ page+1 }}{% if content_type and content_type != 'all' %}&type={{ content_type }}{% endif %}{% if active_tab == 'bookmarked' and folder_query %}&folder={{ folder_query }}{% endif %}" rel="next">{{ pgettext("next page", "Next") }}</a></small>
     </li>
     {% else %}
-    <li class="page-item disabled"><span class="page-link">Next</span></li>
+    <li class="page-item disabled"><span class="page-link">{{ pgettext("next page", "Next") }}</span></li>
     {% endif %}
   </ul>
 </nav>

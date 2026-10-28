@@ -7,6 +7,7 @@ from ruqqus.helpers.sanitize import *
 from ruqqus.helpers.get import *
 from ruqqus.classes import *
 from ruqqus.helpers import vote_copies
+from ruqqus.helpers.i18n_runtime import tr
 from ruqqus.__main__ import app
 
 
@@ -48,7 +49,7 @@ URL path parameters:
             Vote.vote_type==-1
             ).count()
         if count >=15:
-            return jsonify({"error": "You're doing that too much. Try again later."}), 403
+            return jsonify({"error": tr("You're doing that too much. Try again later.")}), 403
 
     post = get_post(pid, v=v, no_text=True)
 
@@ -57,17 +58,17 @@ URL path parameters:
 
     # an anonymous post is never refused for a block: the message would say who wrote it
     if post.is_blocking and not post.is_anonymous:
-        return jsonify({"error":"You can't vote on posts made by users who you are blocking."}), 403
+        return jsonify({"error":tr("You can't vote on posts made by users who you are blocking.")}), 403
     if post.is_blocked and not post.is_anonymous:
-        return jsonify({"error":"You can't vote on posts made by users who are blocking you."}), 403
+        return jsonify({"error":tr("You can't vote on posts made by users who are blocking you.")}), 403
 
 
     if post.is_banned:
-        return jsonify({"error":"That post has been removed."}), 403
+        return jsonify({"error":tr("That post has been removed.")}), 403
     elif post.deleted_utc > 0:
-        return jsonify({"error":"That post has been deleted."}), 403
+        return jsonify({"error":tr("That post has been deleted.")}), 403
     elif post.is_archived:
-        return jsonify({"error":"That post is archived and can no longer be voted on."}), 403
+        return jsonify({"error":tr("That post is archived and can no longer be voted on.")}), 403
 
     # one vote per person across the copies of a post (helpers/vote_copies.py); taking a vote back is always allowed
     if x != 0:
@@ -98,7 +99,7 @@ URL path parameters:
         g.db.flush()
     except:
         g.db.rollback()          # else after_request commits the failed transaction and answers 500 (bug hunt M3)
-        return jsonify({"error":"Vote already exists."}), 422
+        return jsonify({"error":tr("Vote already exists.")}), 422
         
     post.upvotes = post.ups
     post.downvotes = post.downs
@@ -155,16 +156,16 @@ URL path parameters:
 
     # an anonymous comment is never refused for a block: the message would say who wrote it
     if comment.is_blocking and not comment.is_anonymous:
-        return jsonify({"error":"You can't vote on comments made by users who you are blocking."}), 403
+        return jsonify({"error":tr("You can't vote on comments made by users who you are blocking.")}), 403
     if comment.is_blocked and not comment.is_anonymous:
-        return jsonify({"error":"You can't vote on comments made by users who are blocking you."}), 403
+        return jsonify({"error":tr("You can't vote on comments made by users who are blocking you.")}), 403
 
     if comment.is_banned:
-        return jsonify({"error":"That comment has been removed."}), 403
+        return jsonify({"error":tr("That comment has been removed.")}), 403
     elif comment.deleted_utc > 0:
-        return jsonify({"error":"That comment has been deleted."}), 403
+        return jsonify({"error":tr("That comment has been deleted.")}), 403
     elif comment.post.is_archived:
-        return jsonify({"error":"This post and its comments are archived and can no longer be voted on."}), 403
+        return jsonify({"error":tr("This post and its comments are archived and can no longer be voted on.")}), 403
 
     # check for existing vote
     existing = g.db.query(CommentVote).filter_by(
@@ -186,7 +187,7 @@ URL path parameters:
         g.db.flush()
     except:
         g.db.rollback()          # else after_request commits the failed transaction and answers 500 (bug hunt M3)
-        return jsonify({"error":"Vote already exists."}), 422
+        return jsonify({"error":tr("Vote already exists.")}), 422
 
     comment.upvotes = comment.ups
     comment.downvotes = comment.downs

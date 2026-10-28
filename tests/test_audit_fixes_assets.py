@@ -199,7 +199,8 @@ def test_a_block_never_drops_an_anonymous_item_from_a_list():
 def test_profile_meta_counts_leave_anonymous_items_out():
     page = read("templates", "userpage.html")
     assert "u.post_count" not in page and "u.comment_count" not in page
-    assert page.count("u.public_post_count }} Posts") == 2
+    assert 'ngettext("%(num)s Posts", "%(num)s Posts", u.public_post_count)' in page
+    assert page.count("{{ posts_text }}") == 2
 
 
 def test_bots_cannot_comment():
@@ -312,7 +313,7 @@ def test_the_guild_mod_queue_has_prev_and_next():
     page = read("templates", "guild", "reported_posts.html")
     assert "{% block pagenav %}" not in page
     content = page.split("{% block content %}")[1]
-    assert "next_exists" in content and ">Next</a>" in content
+    assert "next_exists" in content and '>{{ _("Next") }}</a>' in content
 
 
 def test_guild_buttons_send_the_name_the_route_needs():
@@ -337,7 +338,8 @@ def test_delete_dialogs_say_the_text_stays_in_the_public_log():
     # owner's rule (2026-10-09): author deletes stay public, with their text, in the Deletion log
     for name in ("delete_post_modal.html", "delete_comment_modal.html"):
         page = read("templates", name)
-        assert "removed everywhere" not in page and 'href="/log/deleted"' in page, name
+        assert "removed everywhere" not in page and '<a href="%(url)s">Deletion log</a>' in page, name
+        assert 'url="/log/deleted"' in page, name
     privacy = read("templates", "help", "privacy.html")
     assert "### Deleting and editing" in privacy and "(/log/deleted)" in privacy
 
@@ -412,7 +414,7 @@ def test_follow_respects_blocks_and_account_state_and_a_block_ends_follows():
     block = func(read("routes", "settings.py"), "settings_block_user")
     assert "blocklist.block_account(g.db, v, user)" in block         # the Block button and the import share one routine
     shared = read("helpers", "blocklist.py")
-    assert "db.query(Follow).filter(or_(" in shared and "You can't block @{name}." in shared
+    assert "db.query(Follow).filter(or_(" in shared and "You can't block @%(name)s." in shared
     page = read("templates", "userpage.html")
     assert page.count("not u.is_private and not u.is_nofollow") >= 2   # desktop and phone
 
@@ -593,7 +595,7 @@ def test_menus_agree_with_the_server():
     comments = read("templates", "comments.html")
     assert "and is_allowed_to_comment %}" not in comments.split("report_commentModal")[0].rsplit("{% if", 1)[1]
     assert "'[is_deleted]'" not in comments
-    block = comments.split("Block user</a>")[0].rsplit("{% if not anon_hidden(c, v) %}", 1)[1]
+    block = comments.split('{{ _("Block user") }}</a>')[0].rsplit("{% if not anon_hidden(c, v) %}", 1)[1]
     assert "{% endif %}" not in block   # Block user sits inside the not-anonymous condition, with Mute
     listing = read("templates", "submission_listing.html")
     assert "and not anon_hidden(p, v) %}\n                <a class=\"dropdown-item\" href=\"javascript:void(0)\" data-toggle=\"modal\" data-target=\"#reportPostModal\"" not in listing
@@ -728,7 +730,7 @@ def test_every_template_compiles():
             return self[key]
 
     env = jinja2.Environment(loader=jinja2.FileSystemLoader(str(ROOT / "ruqqus" / "templates")),
-                             extensions=["jinja2.ext.do", "jinja2.ext.loopcontrols"])
+                             extensions=["jinja2.ext.do", "jinja2.ext.loopcontrols", "jinja2.ext.i18n"])
     env.filters = AnyName(env.filters)
     env.tests = AnyName(env.tests)
     broken = []

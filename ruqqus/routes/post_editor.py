@@ -7,6 +7,7 @@ from flask import g, jsonify, request
 
 from ruqqus.__main__ import app, limiter
 from ruqqus.classes import PostTemplate
+from ruqqus.helpers.i18n_runtime import tr, trn
 from ruqqus.helpers.markdown import CustomRenderer, preprocess
 from ruqqus.helpers.post_fields import (
     PostFieldError, TEMPLATE_LIMIT, check_body, check_template_body, clean_template_name)
@@ -72,7 +73,9 @@ Required form data:
         saved = existing
     else:
         if len(mine) >= TEMPLATE_LIMIT:
-            return jsonify({"error": f"You can keep {TEMPLATE_LIMIT} templates. Delete one to save another."}), 400
+            return jsonify({"error": trn("You can keep %(num)s template. Delete one to save another.",
+                                          "You can keep %(num)s templates. Delete one to save another.",
+                                          TEMPLATE_LIMIT)}), 400
         saved = PostTemplate(user_id=v.id, name=name, body=body, created_utc=int(time.time()))
         g.db.add(saved)
 
@@ -87,7 +90,7 @@ def delete_post_template(tid, v):
     """Delete one of your saved post templates."""
     template = g.db.query(PostTemplate).filter_by(id=tid, user_id=v.id).first()
     if not template:
-        return jsonify({"error": "That template doesn't exist."}), 404
+        return jsonify({"error": tr("That template doesn't exist.")}), 404
 
     g.db.delete(template)
     return jsonify({"deleted": tid})

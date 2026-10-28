@@ -113,7 +113,7 @@ def test_the_post_forms_use_the_same_labels_and_values_as_the_helper():
 
     macro = (Path(__file__).resolve().parent.parent / "ruqqus" / "templates" / "partials" / "post_options.html").read_text(encoding="utf-8")
     for value, label in cp.CHOICES:
-        assert f'({value}, "{label}")' in macro, f"post_options.html is out of step with CHOICES for {label!r}"
+        assert f'({value}, _("{label}"))' in macro, f"post_options.html is out of step with CHOICES for {label!r}"
 
 
 def test_accounts_you_follow_never_applies_to_an_anonymous_post():

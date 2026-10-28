@@ -40,7 +40,7 @@ def parse_kind(raw):
     text = (raw or "").strip().lower()
     if text in KINDS:
         return text, None
-    return None, "Choose a picture, a text card or a video."
+    return None, tr("Choose a picture, a text card or a video.")
 
 
 def parse_background(raw):
@@ -72,14 +72,15 @@ def parse_video(raw):
 def refusal(kind, audience, text, has_picture, video_ref):
     """Why this story cannot be made, or None."""
     if kind == TEXT and not text:
-        return "Write something for your text card."
+        return tr("Write something for your text card.")
     if kind == IMAGE and not has_picture:
-        return "Add a picture."
+        return tr("Add a picture.")
     if kind == VIDEO:
         if not video_ref:
-            return "Paste a YouTube link."
+            return tr("Paste a YouTube link.")
         if audience != circles.PUBLIC:
-            return "A video can only go on a public story: anyone with its link can watch it, so it can't be kept for your circles."
+            return tr("A video can only go on a public story: anyone with its link can watch it, so it can't be kept for your "
+                      "circles.")
     return None
 
 
@@ -104,9 +105,10 @@ def parse_title(raw):
     """(title, None) or (None, message) for a Highlight."""
     text = _CONTROL.sub("", raw or "").strip()
     if not text:
-        return None, "Give the highlight a name."
+        return None, tr("Give the highlight a name.")
     if len(text) > TITLE_MAX:
-        return None, f"A highlight's name can be {TITLE_MAX} characters at most."
+        return None, trn("A highlight's name can be %(num)s character at most.",
+                         "A highlight's name can be %(num)s characters at most.", TITLE_MAX)
     return text, None
 
 
@@ -131,7 +133,10 @@ def describe_left(expires_utc, now):
     """How long a story has left, in words ("23h left", "40m left", "ended")."""
     seconds = int(expires_utc) - int(now)
     if seconds <= 0:
-        return "ended"
+        # Translators: a story that is no longer up
+        return tr("ended")
     if seconds < 3600:
-        return f"{max(1, seconds // 60)}m left"
-    return f"{seconds // 3600}h left"
+        # Translators: minutes a story has left, short ("40m left")
+        return trn("%(num)sm left", "%(num)sm left", max(1, seconds // 60))
+    # Translators: hours a story has left, short ("23h left")
+    return trn("%(num)sh left", "%(num)sh left", seconds // 3600)

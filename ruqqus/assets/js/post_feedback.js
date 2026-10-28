@@ -24,8 +24,9 @@
     if (node.classList.contains('post-fewer')) return;
     var note = make('div', 'post-fewer-note');
     note.setAttribute('role', 'status');
-    note.appendChild(make('span', 'post-fewer-text', "We'll show fewer posts like this."));
-    var undo = make('button', 'btn btn-link btn-sm post-fewer-undo', 'Undo');
+    note.appendChild(make('span', 'post-fewer-text', tr("We'll show fewer posts like this.")));
+    // Translators: a button that takes back "Show fewer posts like this"
+    var undo = make('button', 'btn btn-link btn-sm post-fewer-undo', tr('Undo'));
     undo.type = 'button';
     undo.addEventListener('click', function () {
       undo.disabled = true;

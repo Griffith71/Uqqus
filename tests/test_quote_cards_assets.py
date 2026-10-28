@@ -83,7 +83,7 @@ def test_a_card_draws_what_its_post_quotes_inside_it_one_level_only():
     post = PARTIAL[PARTIAL.index("{% elif q.kind == 'post' %}"):]
     for branch in (social, post):
         assert "{% if q.inner %}{{ quote_card(q.inner, p, v, full) }}" in branch
-        assert "{{ q.quoting }}" in branch
+        assert "{{ quoting_text(q.quoting) }}" in branch
     for name, scss in STYLES.items():
         nested = _block(scss, ".quote-card .quote-card {", "}")
         assert "font-size: inherit;" in nested, name                    # the size of the card around it

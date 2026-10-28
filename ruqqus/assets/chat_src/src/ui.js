@@ -13,14 +13,19 @@ function escapeHtml(s) {
   return div.innerHTML;
 }
 
+// text for an attribute value written into markup (a translation may hold quotes)
+function escapeAttr(s) {
+  return escapeHtml(s).replace(/"/g, "&quot;");
+}
+
 function timeLabel(ms) {
   if (!ms) return "";
   const d = new Date(ms);
   const now = new Date();
   if (d.toDateString() === now.toDateString()) {
-    return d.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
+    return d.toLocaleTimeString(window.I18N.intl, { hour: "numeric", minute: "2-digit" });
   }
-  return d.toLocaleDateString([], { month: "short", day: "numeric" });
+  return d.toLocaleDateString(window.I18N.intl, { month: "short", day: "numeric" });
 }
 
 // A message that holds a link to one of this site's posts gets a small card under it (made for the
@@ -40,7 +45,7 @@ function fillPostCard(card, data) {
   if (!data || !data.ok) {
     const notice = document.createElement("div");
     notice.className = "small text-muted p-2";
-    notice.textContent = data && data.notice ? data.notice : "This post can't be shown.";
+    notice.textContent = data && data.notice ? data.notice : window.tr("This post can't be shown.");
     card.appendChild(notice);
     return;
   }
@@ -59,11 +64,14 @@ function fillPostCard(card, data) {
   text.className = "p-2 overflow-hidden";
   const title = document.createElement("div");
   title.className = "font-weight-bold chat-post-title";
-  title.textContent = data.title || "(untitled post)";
+  title.textContent = data.title || window.tr("(untitled post)");
   const meta = document.createElement("div");
   meta.className = "small text-muted text-truncate";
   const count = Number(data.comments) || 0;
-  meta.textContent = `${data.guild ? "+" + data.guild + " · " : ""}${count} comment${count === 1 ? "" : "s"}`;
+  // Translators: under a shared post's title: the guild it is in and how many comments it has ("+pets · 3 comments")
+  meta.textContent = data.guild
+    ? window.trn("+%(guild)s · %(num)s comment", "+%(guild)s · %(num)s comments", count, { guild: data.guild })
+    : window.trn("%(num)s comment", "%(num)s comments", count);
   text.appendChild(title);
   text.appendChild(meta);
   link.appendChild(text);
@@ -78,12 +86,15 @@ function postCard(id) {
     fillPostCard(card, previews.get(id));
     return card;
   }
-  card.innerHTML = '<div class="small text-muted p-2">Loading post…</div>';
+  const loading = document.createElement("div");
+  loading.className = "small text-muted p-2";
+  loading.textContent = window.tr("Loading post…");
+  card.replaceChildren(loading);
   if (!asking.has(id)) {
     asking.add(id);
     fetch(`/api/chat/post_preview/${id}`, { credentials: "same-origin" })
-      .then((r) => (r.ok ? r.json() : { ok: false, notice: "This post can't be shown." }))
-      .catch(() => ({ ok: false, notice: "This post can't be shown." }))
+      .then((r) => (r.ok ? r.json() : { ok: false, notice: window.tr("This post can't be shown.") }))
+      .catch(() => ({ ok: false, notice: window.tr("This post can't be shown.") }))
       .then((data) => {
         previews.set(id, data);
         asking.delete(id);
@@ -108,7 +119,7 @@ export function renderConversationList(container, conversations, activeConversat
   if (!conversations.length) {
     const empty = document.createElement("div");
     empty.className = "text-muted text-center p-4";
-    empty.textContent = "Nothing here yet.";
+    empty.textContent = window.tr("Nothing here yet.");
     container.appendChild(empty);
     return;
   }
@@ -126,28 +137,39 @@ export function renderConversationList(container, conversations, activeConversat
     if (convo.kind === "guild_channel") {
       // a guild's channel (routes/guild_channels.py): its name, and the guild it is in
       const icon = { announcement: "fa-bullhorn", voice: "fa-volume-high", stage: "fa-podcast" }[convo.channel_kind] || "fa-hashtag";
+      // Translators: a label after a guild channel's guild in the chat list: the channel is for announcements
+      const announcements = convo.channel_kind === "announcement" ? " · " + escapeHtml(window.tr("Announcements")) : "";
+      const voicePeople = Number(convo.voice_people);
+      const mentions = Number(convo.mentions);
+      const inCall = escapeAttr(window.trn("%(num)s in the call", "%(num)s in the call", voicePeople));
+      // Translators: the number of unread mentions of you in a guild channel (read out by screen readers)
+      const unreadMentions = escapeAttr(window.trn("%(num)s unread mentions", "%(num)s unread mentions", mentions));
+      const muted = escapeAttr(window.tr("Muted"));
       row.innerHTML = `
         <span class="chat-group-avatar rounded-circle mr-2 flex-shrink-0" style="width:40px;height:40px" aria-hidden="true"><i class="fas ${icon}"></i></span>
         <div class="flex-grow-1 overflow-hidden">
           <div class="font-weight-bold text-truncate">${escapeHtml(convo.label)}${unreadDot}</div>
-          <div class="small text-muted text-truncate">${convo.encrypted ? '<i class="fas fa-lock" aria-hidden="true"></i> ' : ""}+${escapeHtml(convo.guild)}${convo.category ? " · " + escapeHtml(convo.category) : ""}${convo.channel_kind === "announcement" ? " · Announcements" : ""}</div>
+          <div class="small text-muted text-truncate">${convo.encrypted ? '<i class="fas fa-lock" aria-hidden="true"></i> ' : ""}+${escapeHtml(convo.guild)}${convo.category ? " · " + escapeHtml(convo.category) : ""}${announcements}</div>
         </div>
-        ${convo.voice_people ? `<span class="badge badge-secondary badge-pill ml-1" aria-label="${Number(convo.voice_people)} in the call">${Number(convo.voice_people)}</span>` : ""}
-        ${convo.mentions ? `<span class="badge badge-danger badge-pill ml-1" aria-label="${Number(convo.mentions)} unread mentions">${Number(convo.mentions)}</span>` : ""}
-        ${convo.muted ? '<i class="fas fa-bell-slash text-muted ml-1" title="Muted" aria-hidden="true"></i>' : ""}
+        ${convo.voice_people ? `<span class="badge badge-secondary badge-pill ml-1" aria-label="${inCall}">${voicePeople}</span>` : ""}
+        ${convo.mentions ? `<span class="badge badge-danger badge-pill ml-1" aria-label="${unreadMentions}">${mentions}</span>` : ""}
+        ${convo.muted ? `<i class="fas fa-bell-slash text-muted ml-1" title="${muted}" aria-hidden="true"></i>` : ""}
       `;
     } else if (convo.kind === "channel") {
       // a broadcast channel (routes/broadcasts.py): its name and how many are in it
+      const members = escapeHtml(window.trn("Channel · %(num)s member", "Channel · %(num)s members", Number(convo.size) || 0));
       row.innerHTML = `
         <span class="chat-group-avatar rounded-circle mr-2 flex-shrink-0" style="width:40px;height:40px" aria-hidden="true"><i class="fas fa-tower-broadcast"></i></span>
         <div class="flex-grow-1 overflow-hidden">
           <div class="font-weight-bold text-truncate">${escapeHtml(convo.label)}${unreadDot}</div>
-          <div class="small text-muted text-truncate">Channel · ${Number(convo.size) || 0} member${Number(convo.size) === 1 ? "" : "s"}</div>
+          <div class="small text-muted text-truncate">${members}</div>
         </div>
       `;
     } else if (convo.kind === "group") {
       // a group: its name (or the first members' names), how many people, and who invited you to it
-      const invited = convo.invited_by ? `Invited by @${escapeHtml(convo.invited_by.username)}` : `${Number(convo.size) || 0} people`;
+      const invited = escapeHtml(convo.invited_by
+        ? window.tr("Invited by @%(name)s", { name: convo.invited_by.username })
+        : window.trn("%(num)s people", "%(num)s people", Number(convo.size) || 0));
       row.innerHTML = `
         ${groupAvatar(40)}
         <div class="flex-grow-1 overflow-hidden">
@@ -178,62 +200,105 @@ function groupAvatar(size) {
 }
 
 function peopleLabel(n) {
-  const count = Number(n) || 0;
-  return `${count} ${count === 1 ? "person" : "people"}`;
+  return window.trn("%(num)s person", "%(num)s people", Number(n) || 0);
+}
+
+// the line a call leaves in the chat ("Voice call · 12 min"), drawn in the reader's language from the event's data
+// (call.js, helpers/calls.py summary); the English body is kept for anything that can't read the data
+function callSummaryText(data) {
+  if (!data || (data.kind !== "audio" && data.kind !== "video") || !Number.isFinite(Number(data.seconds))) return null;
+  const seconds = Math.max(0, Math.floor(Number(data.seconds)));
+  const hours = Math.floor(seconds / 3600);
+  const minutes = Math.floor((seconds % 3600) / 60);
+  const video = data.kind === "video";
+  // Translators: the note a call leaves in a chat: its kind and how long it lasted ("Video call · 1 h 5 min")
+  if (hours) return video ? window.tr("Video call · %(hours)s h %(minutes)s min", { hours, minutes })
+    : window.tr("Voice call · %(hours)s h %(minutes)s min", { hours, minutes });
+  // Translators: the note a call leaves in a chat: its kind and how long it lasted, in minutes ("Voice call · 12 min")
+  if (minutes) return video ? window.trn("Video call · %(num)s min", "Video call · %(num)s min", minutes)
+    : window.trn("Voice call · %(num)s min", "Voice call · %(num)s min", minutes);
+  // Translators: the note a call leaves in a chat: its kind and how long it lasted, in seconds ("Voice call · 40 s")
+  return video ? window.trn("Video call · %(num)s s", "Video call · %(num)s s", seconds % 60)
+    : window.trn("Voice call · %(num)s s", "Voice call · %(num)s s", seconds % 60);
 }
 
 // callbacks: onAccept, onDecline, onSend(text), onTyping(isTyping), onCancelContext(), onInfo() (a group's sheet),
 // onCall(kind) (a voice or video call: routes/calls.py). A 1:1 chat passes otherUser; a group passes group
 // ({ label, size }) and requestText for an invitation.
 export function renderThreadShell(pane, { otherUser, group, channel, guildChannel, onSearch, onPins, onMute, onAcceptRules, requestText, isRequest, onAccept, onDecline, onSend, onTyping, onCancelContext, onInfo, onCall, onLeave }) {
+  const voiceCall = escapeAttr(window.tr("Voice call"));
+  const videoCall = escapeAttr(window.tr("Video call"));
   const callButtons = !isRequest && onCall ? `
-      <button type="button" class="btn btn-link btn-sm text-muted" data-call="audio" title="Voice call" aria-label="Voice call"><i class="fas fa-phone"></i></button>
-      <button type="button" class="btn btn-link btn-sm text-muted" data-call="video" title="Video call" aria-label="Video call"><i class="fas fa-video"></i></button>` : "";
+      <button type="button" class="btn btn-link btn-sm text-muted" data-call="audio" title="${voiceCall}" aria-label="${voiceCall}"><i class="fas fa-phone"></i></button>
+      <button type="button" class="btn btn-link btn-sm text-muted" data-call="video" title="${videoCall}" aria-label="${videoCall}"><i class="fas fa-video"></i></button>` : "";
+  const encrypted = escapeAttr(window.tr("End-to-end encrypted"));
+  const searchChannel = escapeAttr(window.tr("Search this channel"));
+  const pinned = escapeAttr(window.tr("Pinned messages"));
+  const notifications = escapeAttr(window.tr("Notifications"));
+  const groupInfo = escapeAttr(window.tr("Group info"));
+  const channelLine = channel ? escapeHtml(channel.public
+    ? window.trn("Public channel · %(num)s member", "Public channel · %(num)s members", Number(channel.size) || 0)
+    : window.trn("Channel for circles · end-to-end encrypted · %(num)s member",
+      "Channel for circles · end-to-end encrypted · %(num)s members", Number(channel.size) || 0)) : "";
+  // Translators: a button that leaves a channel
+  const leaveLabel = escapeHtml(window.tr("Leave"));
+  // Translators: a button that joins a call going on in a chat
+  const joinLabel = escapeHtml(window.tr("Join"));
+  // Translators: buttons that delete or accept a message request
+  const deleteLabel = escapeHtml(window.tr("Delete"));
+  const acceptLabel = escapeHtml(window.tr("Accept"));
+  const closeLabel = escapeAttr(window.tr("Close"));
+  const cancelLabel = escapeAttr(window.tr("Cancel"));
+  const placeholder = escapeAttr(window.tr("Start a message..."));
+  // Translators: the label of the box a chat message is written in
+  const messageLabel = escapeAttr(window.tr("Message"));
+  // Translators: a button that sends a message
+  const sendLabel = escapeHtml(window.tr("Send"));
   const header = guildChannel ? `
       <span class="chat-gc-id chat-group-avatar rounded-circle mr-2 flex-shrink-0" style="width:36px;height:36px" aria-hidden="true"><i class="fas ${guildChannel.channel_kind === "announcement" ? "fa-bullhorn" : "fa-hashtag"}"></i></span>
       <div class="chat-gc-id flex-grow-1 overflow-hidden">
         <div class="font-weight-bold text-truncate" id="chat-thread-title">${escapeHtml(guildChannel.label)}</div>
         <div class="small text-muted text-truncate">+${escapeHtml(guildChannel.guild)}${guildChannel.topic ? " · " + escapeHtml(guildChannel.topic) : ""}</div>
       </div>
-      ${guildChannel.encrypted ? '<span class="text-muted px-1" title="End-to-end encrypted" aria-label="End-to-end encrypted"><i class="fas fa-lock" aria-hidden="true"></i></span>' : `<button type="button" class="btn btn-link btn-sm text-muted" id="chat-gc-search" title="Search this channel" aria-label="Search this channel"><i class="fas fa-magnifying-glass" aria-hidden="true"></i></button>
-      <button type="button" class="btn btn-link btn-sm text-muted" id="chat-gc-pins" title="Pinned messages" aria-label="Pinned messages"><i class="fas fa-thumbtack" aria-hidden="true"></i></button>`}
-      <button type="button" class="btn btn-link btn-sm text-muted" id="chat-gc-mute" title="Notifications" aria-label="Notifications"><i class="fas ${guildChannel.muted ? "fa-bell-slash" : "fa-bell"}" aria-hidden="true"></i></button>` : channel ? `
+      ${guildChannel.encrypted ? `<span class="text-muted px-1" title="${encrypted}" aria-label="${encrypted}"><i class="fas fa-lock" aria-hidden="true"></i></span>` : `<button type="button" class="btn btn-link btn-sm text-muted" id="chat-gc-search" title="${searchChannel}" aria-label="${searchChannel}"><i class="fas fa-magnifying-glass" aria-hidden="true"></i></button>
+      <button type="button" class="btn btn-link btn-sm text-muted" id="chat-gc-pins" title="${pinned}" aria-label="${pinned}"><i class="fas fa-thumbtack" aria-hidden="true"></i></button>`}
+      <button type="button" class="btn btn-link btn-sm text-muted" id="chat-gc-mute" title="${notifications}" aria-label="${notifications}"><i class="fas ${guildChannel.muted ? "fa-bell-slash" : "fa-bell"}" aria-hidden="true"></i></button>` : channel ? `
       <span class="chat-group-avatar rounded-circle mr-2 flex-shrink-0" style="width:36px;height:36px" aria-hidden="true"><i class="fas fa-tower-broadcast"></i></span>
       <div class="flex-grow-1 overflow-hidden">
         <div class="font-weight-bold text-truncate" id="chat-thread-title">${escapeHtml(channel.label)}</div>
-        <div class="small text-muted">${channel.public ? "Public channel" : "Channel for circles · end-to-end encrypted"} · ${Number(channel.size) || 0} member${Number(channel.size) === 1 ? "" : "s"}</div>
+        <div class="small text-muted">${channelLine}</div>
       </div>
-      ${channel.role === "owner" ? "" : `<button type="button" class="btn btn-link btn-sm text-muted" id="chat-channel-leave">Leave</button>`}` : group ? `
+      ${channel.role === "owner" ? "" : `<button type="button" class="btn btn-link btn-sm text-muted" id="chat-channel-leave">${leaveLabel}</button>`}` : group ? `
       ${groupAvatar(36)}
       <div class="flex-grow-1 overflow-hidden">
         <div class="font-weight-bold text-truncate" id="chat-thread-title">${escapeHtml(group.label)}</div>
-        <div class="small text-muted" id="chat-thread-subtitle">${peopleLabel(group.size)}</div>
+        <div class="small text-muted" id="chat-thread-subtitle">${escapeHtml(peopleLabel(group.size))}</div>
       </div>${callButtons}
-      <button type="button" class="btn btn-link btn-sm text-muted" id="chat-group-info-btn" title="Group info" aria-label="Group info"><i class="fas fa-users"></i></button>` : `
+      <button type="button" class="btn btn-link btn-sm text-muted" id="chat-group-info-btn" title="${groupInfo}" aria-label="${groupInfo}"><i class="fas fa-users"></i></button>` : `
       <img src="${escapeHtml(otherUser.profile_url)}" class="rounded-circle mr-2" width="36" height="36">
       <div class="font-weight-bold flex-grow-1">@${escapeHtml(otherUser.username)}</div>${callButtons}`;
-  const notice = requestText || "Message request. They won't know you've seen this until you accept.";
+  const notice = requestText || window.tr("Message request. They won't know you've seen this until you accept.");
   pane.innerHTML = `
     <div class="d-flex align-items-center border-bottom px-3 py-2" id="chat-thread-header">${header}
     </div>
     <div class="chat-call-bar d-none" id="chat-call-bar" role="status">
       <i class="fas fa-phone text-primary" aria-hidden="true"></i>
       <span class="flex-grow-1" id="chat-call-bar-text"></span>
-      <button type="button" class="btn btn-primary btn-sm" id="chat-call-join">Join</button>
+      <button type="button" class="btn btn-primary btn-sm" id="chat-call-join">${joinLabel}</button>
     </div>
     ${isRequest ? `
     <div class="d-flex align-items-center justify-content-between px-3 py-2 bg-light border-bottom">
       <div class="text-muted small" id="chat-request-text"></div>
       <div>
-        <button type="button" class="btn btn-sm btn-secondary mr-2" id="chat-decline-btn">Delete</button>
-        <button type="button" class="btn btn-sm btn-primary" id="chat-accept-btn">Accept</button>
+        <button type="button" class="btn btn-sm btn-secondary mr-2" id="chat-decline-btn">${deleteLabel}</button>
+        <button type="button" class="btn btn-sm btn-primary" id="chat-accept-btn">${acceptLabel}</button>
       </div>
     </div>` : ""}
     <div class="flex-grow-1 overflow-auto px-3 py-2" id="chat-messages"></div>
     <div class="chat-panel d-none" id="chat-panel" role="dialog" aria-modal="false">
       <div class="d-flex align-items-center border-bottom px-3 py-2">
         <div class="font-weight-bold flex-grow-1 text-truncate" id="chat-panel-title"></div>
-        <button type="button" class="btn btn-link btn-sm text-muted" id="chat-panel-close" aria-label="Close">&times;</button>
+        <button type="button" class="btn btn-link btn-sm text-muted" id="chat-panel-close" aria-label="${closeLabel}">&times;</button>
       </div>
       <div class="flex-grow-1 overflow-auto px-3 py-2" id="chat-panel-body"></div>
       <div class="border-top p-2 d-none" id="chat-panel-foot"></div>
@@ -241,12 +306,12 @@ export function renderThreadShell(pane, { otherUser, group, channel, guildChanne
     <div id="chat-typing" class="px-3 small text-muted chat-typing" aria-live="polite"></div>
     <div id="chat-context" class="d-none align-items-center border-top px-3 py-1 small bg-light">
       <div class="flex-grow-1 text-truncate" id="chat-context-text"></div>
-      <button type="button" class="btn btn-link btn-sm text-muted" id="chat-context-cancel" aria-label="Cancel">&times;</button>
+      <button type="button" class="btn btn-link btn-sm text-muted" id="chat-context-cancel" aria-label="${cancelLabel}">&times;</button>
     </div>
     <div class="border-top p-2">
       <form id="chat-composer" class="d-flex">
-        <textarea class="form-control mr-2 chat-composer-input" id="chat-composer-input" rows="1" placeholder="Start a message..." aria-label="Message" autocomplete="off"></textarea>
-        <button type="submit" class="btn btn-primary align-self-end">Send</button>
+        <textarea class="form-control mr-2 chat-composer-input" id="chat-composer-input" rows="1" placeholder="${placeholder}" aria-label="${messageLabel}" autocomplete="off"></textarea>
+        <button type="submit" class="btn btn-primary align-self-end">${sendLabel}</button>
       </form>
     </div>
   `;
@@ -320,7 +385,7 @@ export function renderThreadShell(pane, { otherUser, group, channel, guildChanne
       box.className = "px-2 py-2";
       const title = document.createElement("div");
       title.className = "font-weight-bold small mb-1";
-      title.textContent = "Rules of this channel";
+      title.textContent = window.tr("Rules of this channel");
       const text = document.createElement("div");
       text.className = "small chat-rules-text mb-2";
       text.textContent = guildChannel.rules;
@@ -328,7 +393,7 @@ export function renderThreadShell(pane, { otherUser, group, channel, guildChanne
       agree.type = "button";
       agree.className = "btn btn-primary btn-sm";
       agree.id = "chat-accept-rules";
-      agree.textContent = "I agree to the rules";
+      agree.textContent = window.tr("I agree to the rules");
       agree.addEventListener("click", () => onAcceptRules && onAcceptRules());
       box.append(title, text, agree);
       form.parentElement.appendChild(box);
@@ -349,7 +414,7 @@ export function renderThreadShell(pane, { otherUser, group, channel, guildChanne
     form.classList.replace("d-flex", "d-none");      // d-flex is !important: the hidden attribute would lose
     const note = document.createElement("div");
     note.className = "small text-muted text-center py-2";
-    note.textContent = "Only the channel's owner and helpers write here. You can react to their messages.";
+    note.textContent = window.tr("Only the channel's owner and helpers write here. You can react to their messages.");
     form.parentElement.appendChild(note);
   }
 
@@ -374,8 +439,9 @@ export function renderThreadShell(pane, { otherUser, group, channel, guildChanne
       if (!show) return;
       callKind = status.kind === "video" ? "video" : "audio";
       const people = Number(status.people) || 0;
-      pane.querySelector("#chat-call-bar-text").textContent =
-        `${callKind === "video" ? "Video" : "Voice"} call going on · ${people} ${people === 1 ? "person" : "people"}`;
+      pane.querySelector("#chat-call-bar-text").textContent = callKind === "video"
+        ? window.trn("Video call going on · %(num)s person", "Video call going on · %(num)s people", people)
+        : window.trn("Voice call going on · %(num)s person", "Voice call going on · %(num)s people", people);
     },
     // a panel over the messages (a thread, the pinned messages, search, notifications): { body, foot, close }
     openPanel(title, onClose) {
@@ -423,7 +489,7 @@ export function renderMessages(messagesEl, items, handlers, more) {
     button.type = "button";
     button.className = "btn btn-sm btn-link";
     button.id = "chat-load-earlier";
-    button.textContent = "Load earlier messages";
+    button.textContent = window.tr("Load earlier messages");
     button.addEventListener("click", () => more.onLoad());
     older.appendChild(button);
     messagesEl.appendChild(older);
@@ -461,7 +527,7 @@ function buildMessage(item, handlers) {
     icon.className = "fas fa-phone mr-1";
     icon.setAttribute("aria-hidden", "true");
     note.appendChild(icon);
-    note.appendChild(document.createTextNode(item.body));
+    note.appendChild(document.createTextNode(callSummaryText(item.callSummary) || item.body));
     row.appendChild(note);
     return row;
   }
@@ -483,7 +549,7 @@ function buildMessage(item, handlers) {
   if (item.filtered) {
     const hidden = document.createElement("div");
     hidden.className = "px-3 py-2 rounded chat-bubble bg-light font-italic text-muted";
-    hidden.textContent = "Hidden by your word filter";
+    hidden.textContent = window.tr("Hidden by your word filter");
     column.appendChild(hidden);
     row.appendChild(column);
     return row;
@@ -493,7 +559,7 @@ function buildMessage(item, handlers) {
     // the blocker's own view only: the other person is never told (helpers/chat_groups.py)
     const hidden = document.createElement("div");
     hidden.className = "px-3 py-2 rounded chat-bubble bg-light font-italic text-muted";
-    hidden.textContent = "A message from someone you blocked";
+    hidden.textContent = window.tr("A message from someone you blocked");
     column.appendChild(hidden);
     row.appendChild(column);
     return row;
@@ -515,14 +581,14 @@ function buildMessage(item, handlers) {
   const shared = !item.deleted && item.body ? POST_LINK.exec(item.body) : null;
   if (item.deleted) {
     bubble.classList.add("font-italic");
-    bubble.textContent = "Message deleted";
+    bubble.textContent = window.tr("Message deleted");
   } else {
     // a shared post: the words around the link (if any), and the card under the message
-    bubble.textContent = shared ? item.body.replace(shared[0], "").trim() || "Shared a post" : item.body;
+    bubble.textContent = shared ? item.body.replace(shared[0], "").trim() || window.tr("Shared a post") : item.body;
     if (item.edited) {
       const mark = document.createElement("span");
       mark.className = "small ml-2 chat-edited";
-      mark.textContent = "(edited)";
+      mark.textContent = window.tr("(edited)");
       bubble.appendChild(mark);
     }
   }
@@ -532,8 +598,8 @@ function buildMessage(item, handlers) {
   } else {
     const actions = document.createElement("div");
     actions.className = "chat-actions d-flex align-items-center";
-    if (handlers.onQuote) actions.appendChild(iconButton("Quote this message", "fas fa-quote-left", () => handlers.onQuote(item)));
-    if (item.threadable && handlers.onThread) actions.appendChild(iconButton("Start or open a thread", "far fa-comments", () => handlers.onThread(item)));
+    if (handlers.onQuote) actions.appendChild(iconButton(window.tr("Quote this message"), "fas fa-quote-left", () => handlers.onQuote(item)));
+    if (item.threadable && handlers.onThread) actions.appendChild(iconButton(window.tr("Start or open a thread"), "far fa-comments", () => handlers.onThread(item)));
 
     const picker = document.createElement("div");
     picker.className = "chat-picker d-none";
@@ -542,27 +608,28 @@ function buildMessage(item, handlers) {
       choice.type = "button";
       choice.className = "btn btn-link btn-sm px-1";
       choice.textContent = key;
-      choice.setAttribute("aria-label", `React with ${key}`);
+      choice.setAttribute("aria-label", window.tr("React with %(emoji)s", { emoji: key }));
       choice.addEventListener("click", () => handlers.onReact(item, key));
       picker.appendChild(choice);
     }
-    actions.appendChild(iconButton("React", "far fa-smile", () => picker.classList.toggle("d-none")));
+    // Translators: a button that opens the emoji to react to a message with
+    actions.appendChild(iconButton(window.tr("React"), "far fa-smile", () => picker.classList.toggle("d-none")));
     actions.appendChild(picker);
 
     if (item.mine && item.canEdit) {
-      actions.appendChild(iconButton("Edit this message", "fas fa-pen", () => handlers.onEdit(item)));
+      actions.appendChild(iconButton(window.tr("Edit this message"), "fas fa-pen", () => handlers.onEdit(item)));
     }
     if (item.reportable && handlers.onReport) {
-      actions.appendChild(iconButton("Report this message", "fas fa-flag", () => handlers.onReport(item)));
+      actions.appendChild(iconButton(window.tr("Report this message"), "fas fa-flag", () => handlers.onReport(item)));
     }
     if (item.pinnable && handlers.onPin) {
-      actions.appendChild(iconButton(item.pinned ? "Unpin this message" : "Pin this message", "fas fa-thumbtack", () => handlers.onPin(item)));
+      actions.appendChild(iconButton(item.pinned ? window.tr("Unpin this message") : window.tr("Pin this message"), "fas fa-thumbtack", () => handlers.onPin(item)));
     }
     if (item.removable && handlers.onRemove) {
-      actions.appendChild(iconButton("Remove this message (guildmaster)", "fas fa-comment-slash", () => handlers.onRemove(item)));
+      actions.appendChild(iconButton(window.tr("Remove this message (guildmaster)"), "fas fa-comment-slash", () => handlers.onRemove(item)));
     }
     if (item.mine) {
-      actions.appendChild(iconButton("Delete this message", "fas fa-trash", () => handlers.onDelete(item)));
+      actions.appendChild(iconButton(window.tr("Delete this message"), "fas fa-trash", () => handlers.onDelete(item)));
     }
 
     if (item.mine) {
@@ -581,7 +648,7 @@ function buildMessage(item, handlers) {
     const link = document.createElement("button");
     link.type = "button";
     link.className = "btn btn-link btn-sm px-0 chat-thread-link";
-    link.textContent = `${item.threadCount} message${item.threadCount === 1 ? "" : "s"} in thread`;
+    link.textContent = window.trn("%(num)s message in thread", "%(num)s messages in thread", item.threadCount);
     link.addEventListener("click", () => handlers.onThread(item));
     column.appendChild(link);
   }
@@ -604,7 +671,8 @@ function buildMessage(item, handlers) {
   if (item.seen) {
     const seen = document.createElement("div");
     seen.className = "small text-muted chat-seen";
-    seen.textContent = item.seenBy ? `Seen by ${item.seenBy}` : "Seen";
+    // Translators: under your last message in a group chat: how many of the others have read it ("Seen by 3")
+    seen.textContent = item.seenBy ? window.trn("Seen by %(num)s", "Seen by %(num)s", item.seenBy) : window.tr("Seen");
     column.appendChild(seen);
   }
 

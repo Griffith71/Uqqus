@@ -148,7 +148,7 @@ def test_the_default_is_loaded_into_a_new_session_once_and_checked_again():
     once = _function(FRONT, "_apply_saved_defaults")
     assert "feed_defaults_for" in once
     saved = _function(FRONT, "_saved_defaults")
-    assert "known_regions=REGION_CENTROIDS" in saved and "known_categories=ALL_SUBCAT_IDS" in saved
+    assert "known_regions=REGION_CENTROIDS" in saved and "known_categories=ALL_CATEGORY_CHOICES" in saved
 
 
 def test_the_sidebar_and_the_phone_sheet_offer_it_to_members_only():

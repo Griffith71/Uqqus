@@ -1,64 +1,78 @@
 {% extends "circles_base.html" %}
 
-{% block pagetitle %}Your circles - {{ 'SITE_NAME' | app_config }}{% endblock %}
+{% block pagetitle %}{{ _("Your circles - %(site)s") }}{% endblock %}
 
 {# Your circles (routes/circles.py, helpers/circles.py): Friends (automatic), circles of your own, paid circles. Each of
    your own and paid circles is managed on its own page (settings_circle_one.html). assets/js/circle_settings.js sends
    the forms. #}
 
+{% block circles_focus %}{% endblock %}
+
 {% block content %}
 <div class="row">
-  <div class="col col-lg-8">
+  <div class="col">
     <div class="settings" id="circle-settings">
 
-      <h2 class="h5">Your circles</h2>
+      <h2 class="h5">{{ _("Your circles") }}</h2>
       <p class="text-small text-muted">
-        Share a post or a story with some of your circles instead of everyone. Only the people in them see it, and
-        nobody is ever told which of your circles they are in. Only you can see this page.
+        {{ _("Share a post or a story with some of your circles instead of everyone. Only the people in them see it, and nobody is ever told which of your circles they are in. Only you can see this page.") }}
       </p>
       <div id="circle-status" class="text-small" role="status"></div>
+
+      {# two columns on a wide page (_screens.scss .circle-grid): who you share with for free, and paid circles. Each
+         starts with its heading and then its card, so the two cards line up side by side #}
+      <div class="circle-grid">
+      <section class="circle-col" aria-labelledby="circle-free">
+      <h2 class="h6 mb-2" id="circle-free">{{ _("Free circles") }}</h2>
 
       <div class="settings-section rounded circle-card" id="circle-friends">
         <div class="d-flex align-items-start px-3 py-3">
           <span class="circle-mark circle-mark-friends mr-3" aria-hidden="true"><i class="fas fa-user-friends"></i></span>
           <div class="flex-grow-1 min-w-0">
-            <div class="font-weight-bold">Friends <span class="circle-tag">Automatic</span></div>
-            <div class="text-small text-muted">{{ friends_count }} {{ 'person' if friends_count == 1 else 'people' }}: everyone you follow who follows you back. It changes by itself as people follow and unfollow.</div>
+            {# Translators: "Friends" is the name of the automatic circle of people who follow each other #}
+            <div class="font-weight-bold">{{ pgettext("circle name", "Friends") }} <span class="circle-tag">{{ pgettext("circle kind", "Automatic") }}</span></div>
+            <div class="text-small text-muted">{{ ngettext("%(num)s person: everyone you follow who follows you back. It changes by itself as people follow and unfollow.", "%(num)s people: everyone you follow who follows you back. It changes by itself as people follow and unfollow.", friends_count) }}</div>
           </div>
         </div>
       </div>
 
-      <h2 class="h6 mt-5 mb-2" id="circle-custom">Circles of your own <span class="text-muted text-small font-weight-normal">{{ custom | length }} of {{ custom_limit }}</span></h2>
+      <h3 class="h6 mt-5 mb-2" id="circle-custom">{{ _("Circles of your own") }} <span class="text-muted text-small font-weight-normal">
+        {#- Translators: "%(count)s of %(limit)s": how many circles you have, out of the most you may have -#}
+        {{- _("%(count)s of %(limit)s", count=custom | length, limit=custom_limit) }}</span></h3>
       <div class="settings-section rounded">
         {% for c in custom %}
         <a class="d-flex align-items-center justify-content-between px-3 py-3 circle-row{% if not loop.first %} border-top{% endif %}" href="/circles/{{ c.id }}">
           <span class="min-w-0 text-truncate"><span class="font-weight-bold">{{ c.name }}</span>
-            <span class="text-muted text-small">&middot; {{ c.count }} {{ 'person' if c.count == 1 else 'people' }}</span></span>
+            <span class="text-muted text-small">&middot; {{ ngettext("%(num)s person", "%(num)s people", c.count) }}</span></span>
           <i class="fas fa-chevron-right text-muted" aria-hidden="true"></i>
         </a>
         {% else %}
-        <div class="px-3 py-3 text-muted text-small" id="circle-custom-empty">None yet. Make one for your family, a group of friends, a team.</div>
+        <div class="px-3 py-3 text-muted text-small" id="circle-custom-empty">{{ _("None yet. Make one for your family, a group of friends, a team.") }}</div>
         {% endfor %}
         {% if custom | length < custom_limit %}
         <form class="border-top px-3 py-3" data-circle-form action="/api/circles" id="circle-new">
           <input type="hidden" name="kind" value="custom">
-          <label for="circle-new-name" class="font-weight-bold text-small mb-1">New circle</label>
+          <label for="circle-new-name" class="font-weight-bold text-small mb-1">{{ _("New circle") }}</label>
           <div class="input-group" style="max-width: 26rem;">
-            <input type="text" class="form-control" id="circle-new-name" name="name" maxlength="{{ name_max }}" autocomplete="off" placeholder="Family, Uni friends…" required>
-            <div class="input-group-append"><button type="submit" class="btn btn-primary">Make circle</button></div>
+            {# Translators: examples of names for a circle #}
+            <input type="text" class="form-control" id="circle-new-name" name="name" maxlength="{{ name_max }}" autocomplete="off" placeholder="{{ _('Family, Uni friends…') }}" required>
+            <div class="input-group-append"><button type="submit" class="btn btn-primary">{{ _("Make circle") }}</button></div>
           </div>
           <div data-circle-status class="text-small mt-2" role="status"></div>
         </form>
         {% endif %}
       </div>
 
-      <h2 class="h6 mt-5 mb-2" id="circle-paid">Paid circles <span class="text-muted text-small font-weight-normal">{{ paid | length }} of {{ paid_limit }}</span></h2>
-      <p class="text-small text-muted mb-2">People pay you in coins every 30 days to be in one. They see its name, since they chose to join, and it shows on your profile.</p>
+      </section>
+
+      <section class="circle-col" aria-labelledby="circle-paid">
+      <h2 class="h6 mb-2" id="circle-paid">{{ _("Paid circles") }} <span class="text-muted text-small font-weight-normal">{{ _("%(count)s of %(limit)s", count=paid | length, limit=paid_limit) }}</span></h2>
       <div class="settings-section rounded">
+        <div class="px-3 py-3 text-small text-muted border-bottom">{{ _("People pay you in coins every 30 days to be in one. They see its name, since they chose to join, and it shows on your profile.") }}</div>
         {% for c in paid %}
         <a class="d-flex align-items-center justify-content-between px-3 py-3 circle-row{% if not loop.first %} border-top{% endif %}" href="/circles/{{ c.id }}">
           <span class="min-w-0 text-truncate"><span class="font-weight-bold">{{ c.name }}</span>
-            <span class="text-muted text-small">&middot; {{ describe_price(c.price) }} &middot; {{ c.count }} subscriber{{ '' if c.count == 1 else 's' }}</span></span>
+            <span class="text-muted text-small">&middot; {{ describe_price(c.price) }} &middot; {{ ngettext("%(num)s subscriber", "%(num)s subscribers", c.count) }}</span></span>
           <i class="fas fa-chevron-right text-muted" aria-hidden="true"></i>
         </a>
         {% endfor %}
@@ -67,28 +81,32 @@
           <input type="hidden" name="kind" value="paid">
           <div class="d-sm-flex">
             <div class="mr-sm-2 mb-2 mb-sm-0 flex-grow-1" style="max-width: 18rem;">
-              <label for="circle-paid-name" class="font-weight-bold text-small mb-1">New paid circle</label>
-              <input type="text" class="form-control" id="circle-paid-name" name="name" maxlength="{{ name_max }}" autocomplete="off" placeholder="Supporters…" required>
+              <label for="circle-paid-name" class="font-weight-bold text-small mb-1">{{ _("New paid circle") }}</label>
+              {# Translators: an example of a name for a paid circle #}
+              <input type="text" class="form-control" id="circle-paid-name" name="name" maxlength="{{ name_max }}" autocomplete="off" placeholder="{{ _('Supporters…') }}" required>
             </div>
             <div style="max-width: 11rem;">
-              <label for="circle-paid-price" class="font-weight-bold text-small mb-1">Coins every 30 days</label>
+              <label for="circle-paid-price" class="font-weight-bold text-small mb-1">{{ _("Coins every 30 days") }}</label>
               <input type="number" class="form-control" id="circle-paid-price" name="price" autocomplete="off" min="1" max="{{ price_max }}" step="1" value="5" required>
             </div>
           </div>
-          <button type="submit" class="btn btn-primary mt-2">Make paid circle</button>
+          <button type="submit" class="btn btn-primary mt-2">{{ _("Make paid circle") }}</button>
           <div data-circle-status class="text-small mt-2" role="status"></div>
         </form>
         {% elif not has_premium %}
         <div class="{% if paid %}border-top {% endif %}px-3 py-3 text-small" id="circle-paid-premium">
-          Making a paid circle is part of Premium. <a href="/settings/premium">Get Premium</a>{% if paid %}. The paid circles you have keep working and renewing.{% endif %}
+          {% if paid %}{{ _('Making a paid circle is part of Premium. <a href="%(url)s">Get Premium</a>. The paid circles you have keep working and renewing.', url="/settings/premium") }}
+          {% else %}{{ _('Making a paid circle is part of Premium. <a href="%(url)s">Get Premium</a>', url="/settings/premium") }}{% endif %}
         </div>
         {% endif %}
         {% if paid %}
-        <div class="border-top px-3 py-3 text-small" id="circle-earned">Coins received: {{ earned_30 }} in the last 30 days &middot; {{ earned_all }} in all. They go straight to your coin balance.</div>
+        <div class="border-top px-3 py-3 text-small" id="circle-earned">{{ _("Coins received: %(recent)s in the last 30 days &middot; %(total)s in all. They go straight to your coin balance.", recent=earned_30, total=earned_all) }}</div>
         {% endif %}
       </div>
 
-      <p class="mt-4 text-small"><a href="/circles/in">Paid circles you are in</a></p>
+      <p class="mt-4 text-small"><a href="/circles/in">{{ _("Paid circles you are in") }}</a></p>
+      </section>
+      </div>
 
     </div>
   </div>

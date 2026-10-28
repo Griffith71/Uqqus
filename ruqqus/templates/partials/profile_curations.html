@@ -6,7 +6,7 @@
 {% set shown_curations, more_curations = profile_curations(profile_user, v) %}
 {% if shown_curations %}
 <div class="sidebar-section profile-about profile-curations">
-  <div class="title"><i class="fas fa-layer-group mr-2"></i>Curations</div>
+  <div class="title"><i class="fas fa-layer-group mr-2"></i>{{ _("Curations") }}</div>
   <div class="body">
     <ul class="profile-about-list">
       {% for c in shown_curations %}
@@ -19,7 +19,7 @@
       </li>
       {% endfor %}
     </ul>
-    {% if more_curations %}<div class="text-muted text-small mt-1">and {{ more_curations }} more</div>{% endif %}
+    {% if more_curations %}<div class="text-muted text-small mt-1">{{ ngettext("and %(num)s more", "and %(num)s more", more_curations) }}</div>{% endif %}
   </div>
 </div>
 {% endif %}

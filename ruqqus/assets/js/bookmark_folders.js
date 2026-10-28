@@ -44,31 +44,31 @@
 
     var fresh = document.getElementById('folder-new');
     if (fresh) fresh.addEventListener('click', function () {
-      var name = window.prompt('Name your folder');
+      var name = window.prompt(tr('Name your folder'));
       if (name === null) return;
       post('/bookmarks/folders', { name: name }).then(function (res) {
-        if (!res.ok) { toast(true, res.data.error || 'Could not make the folder.'); return; }
+        if (!res.ok) { toast(true, res.data.error || tr('Could not make the folder.')); return; }
         window.location.href = back + '&folder=' + res.data.id;
-      }).catch(function () { toast(true, 'Could not make the folder. Try again.'); });
+      }).catch(function () { toast(true, tr('Could not make the folder. Try again.')); });
     });
 
     var rename = document.getElementById('folder-rename');
     if (rename && current) rename.addEventListener('click', function () {
-      var name = window.prompt('Rename this folder', currentName);
+      var name = window.prompt(tr('Rename this folder'), currentName);
       if (name === null) return;
       post('/bookmarks/folders/' + current + '/rename', { name: name }).then(function (res) {
-        if (!res.ok) { toast(true, res.data.error || 'Could not rename the folder.'); return; }
+        if (!res.ok) { toast(true, res.data.error || tr('Could not rename the folder.')); return; }
         window.location.reload();
-      }).catch(function () { toast(true, 'Could not rename the folder. Try again.'); });
+      }).catch(function () { toast(true, tr('Could not rename the folder. Try again.')); });
     });
 
     var remove = document.getElementById('folder-delete');
     if (remove && current) remove.addEventListener('click', function () {
-      if (!window.confirm('Delete this folder? Its bookmarks are kept, as unsorted.')) return;
+      if (!window.confirm(tr('Delete this folder? Its bookmarks are kept, as unsorted.'))) return;
       post('/bookmarks/folders/' + current + '/delete').then(function (res) {
-        if (!res.ok) { toast(true, res.data.error || 'Could not delete the folder.'); return; }
+        if (!res.ok) { toast(true, res.data.error || tr('Could not delete the folder.')); return; }
         window.location.href = back;
-      }).catch(function () { toast(true, 'Could not delete the folder. Try again.'); });
+      }).catch(function () { toast(true, tr('Could not delete the folder. Try again.')); });
     });
   }
 
@@ -102,14 +102,14 @@
   function file(folderId) {
     say('');
     post('/bookmarks/move', { kind: target.kind, id: target.id, folder_id: folderId === null ? '' : String(folderId) }).then(function (res) {
-      if (!res.ok) { say(res.data.error || 'Could not do that.', true); return; }
+      if (!res.ok) { say(res.data.error || tr('Could not do that.'), true); return; }
       showSaved(target.kind, target.id);
       $('#bookmarkFolderModal').modal('hide');
       toast(false, res.data.message);
       // on a filtered Bookmarked tab the item may no longer belong there
       var row = document.getElementById('bookmark-folders');
       if (row && row.getAttribute('data-folder-kind') !== 'all') window.setTimeout(function () { window.location.reload(); }, 700);
-    }).catch(function () { say('Could not do that. Try again.', true); });
+    }).catch(function () { say(tr('Could not do that. Try again.'), true); });
   }
 
   function choice(label, folderId, isCurrent, icon) {
@@ -134,17 +134,18 @@
 
   function draw(data) {
     list.textContent = '';
-    list.appendChild(choice('Unsorted', null, !!data.bookmarked && data.current === null, 'fa-bookmark'));
+    // Translators: the choice that keeps a bookmark in no folder
+    list.appendChild(choice(tr('Unsorted'), null, !!data.bookmarked && data.current === null, 'fa-bookmark'));
     data.folders.forEach(function (folder) { list.appendChild(choice(folder.name, folder.id, data.current === folder.id)); });
     form.hidden = data.folders.length >= data.limit;
-    if (form.hidden) say('You can have ' + data.limit + ' folders at most.');
+    if (form.hidden) say(trn('You can have %(num)s folder at most.', 'You can have %(num)s folders at most.', data.limit));
   }
 
   function load() {
     fetch('/bookmarks/folders?kind=' + encodeURIComponent(target.kind) + '&id=' + encodeURIComponent(target.id), { credentials: 'same-origin' })
       .then(function (r) { if (!r.ok) throw new Error('failed'); return r.json(); })
       .then(draw)
-      .catch(function () { list.textContent = ''; say('Could not load your folders. Try again.', true); });
+      .catch(function () { list.textContent = ''; say(tr('Could not load your folders. Try again.'), true); });
   }
 
   form.addEventListener('submit', function () {
@@ -154,10 +155,10 @@
     say('');
     post('/bookmarks/folders', { name: name }).then(function (res) {
       button.disabled = false;
-      if (!res.ok) { say(res.data.error || 'Could not make the folder.', true); return; }
+      if (!res.ok) { say(res.data.error || tr('Could not make the folder.'), true); return; }
       input.value = '';
       file(res.data.id);
-    }).catch(function () { button.disabled = false; say('Could not make the folder. Try again.', true); });
+    }).catch(function () { button.disabled = false; say(tr('Could not make the folder. Try again.'), true); });
   });
 
   document.addEventListener('click', function (event) {

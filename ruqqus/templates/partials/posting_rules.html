@@ -55,7 +55,7 @@
 {% endmacro %}
 
 {% macro rules_card(prefix) %}
-<div class="sidebar-section sidebar-rules">
+<div class="sidebar-section sidebar-rules" lang="en" dir="ltr">
   <div class="title bg-purple"><span><i class="fas fa-scroll mr-2"></i>Rules and guidelines</span></div>
   <div class="body">
     {{ rules_list(prefix) }}
@@ -64,7 +64,7 @@
 {% endmacro %}
 
 {% macro rules_panel(prefix) %}
-<div class="d-lg-none mt-4">
+<div class="d-lg-none mt-4" lang="en" dir="ltr">
   <a class="rules-toggle text-black font-weight-bold collapsed" data-toggle="collapse" href="#{{ prefix }}Panel" role="button" aria-expanded="false" aria-controls="{{ prefix }}Panel"><span><i class="fas fa-scroll mr-2"></i>Rules and guidelines</span><span class="rules-chevron"><i class="fa"></i></span></a>
   <div id="{{ prefix }}Panel" class="collapse mt-2">
     {{ rules_list(prefix) }}

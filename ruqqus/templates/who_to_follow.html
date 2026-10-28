@@ -5,7 +5,7 @@
 {% block pagetype %}curations{% endblock %}
 
 {% block title %}
-<title>Who to follow - {{ 'SITE_NAME' | app_config }}</title>
+<title>{{ _("Who to follow - %(site)s") }}</title>
 {% endblock %}
 
 {% block desktopBanner %}{% endblock %}
@@ -15,11 +15,11 @@
 {% block content %}
 <div class="col px-md-4 py-4">
 
-  <h1 class="h3 mb-1">Who to follow</h1>
-  <p class="text-muted">Suggested from the accounts you follow, the guilds you joined and what you read and vote on.</p>
+  <h1 class="h3 mb-1">{{ _("Who to follow") }}</h1>
+  <p class="text-muted">{{ _("Suggested from the accounts you follow, the guilds you joined and what you read and vote on.") }}</p>
 
   <ul class="nav settings-nav mb-3">
-    {% for k, label in [("users", "Users"), ("guilds", "Guilds"), ("curations", "Curations")] %}
+    {% for k, label in [("users", _("Users")), ("guilds", _("Guilds")), ("curations", _("Curations"))] %}
     <li class="nav-item"><a class="nav-link{% if kind == k %} active{% endif %}" href="/who_to_follow?kind={{ k }}"{% if kind == k %} aria-current="page"{% endif %}>{{ label }}</a></li>
     {% endfor %}
   </ul>
@@ -28,7 +28,7 @@
     {% for item, reason in items %}
     {{ suggestion_row(kind, item, reason, full=true) }}
     {% else %}
-    <p class="text-muted">Nothing to suggest here yet. Follow a few accounts or join a guild and suggestions will appear.</p>
+    <p class="text-muted">{{ _("Nothing to suggest here yet. Follow a few accounts or join a guild and suggestions will appear.") }}</p>
     {% endfor %}
   </div>
 

@@ -10,6 +10,7 @@ from jinja2 import Undefined
 from ruqqus.classes import User, UserMute
 from ruqqus.helpers import muting
 from ruqqus.helpers.get import get_user
+from ruqqus.helpers.i18n_runtime import tr
 from ruqqus.helpers.wrappers import auth_required, validate_formkey
 from ruqqus.__main__ import app
 
@@ -20,13 +21,13 @@ def _target(v):
     user = get_user(username, graceful=True) if username else None
 
     if not user:
-        return None, (jsonify({"error": "That user doesn't exist."}), 404)
+        return None, (jsonify({"error": tr("That user doesn't exist.")}), 404)
     if user.id == v.id:
-        return None, (jsonify({"error": "You can't mute yourself."}), 409)
+        return None, (jsonify({"error": tr("You can't mute yourself.")}), 409)
     if user.id == 1:
-        return None, (jsonify({"error": f"You can't mute @{user.username}."}), 409)
+        return None, (jsonify({"error": tr("You can't mute @%(name)s.", name=user.username)}), 409)
     if user.is_deleted:
-        return None, (jsonify({"error": "That account has been deactivated"}), 410)
+        return None, (jsonify({"error": tr("That account has been deactivated")}), 410)
     return user, None
 
 
@@ -39,14 +40,14 @@ def settings_mute_user(v):
         return error
 
     if g.db.query(UserMute).filter_by(user_id=v.id, target_id=user.id).first():
-        return jsonify({"error": f"You have already muted @{user.username}."}), 409
+        return jsonify({"error": tr("You have already muted @%(name)s.", name=user.username)}), 409
 
     g.db.add(UserMute(user_id=v.id, target_id=user.id, created_utc=int(time.time())))
     g.db.commit()
 
     muting.forget(v)
     muting.clear_cached_feeds(v)
-    return jsonify({"message": f"@{user.username} muted."})
+    return jsonify({"message": tr("@%(name)s muted.", name=user.username)})
 
 
 @app.route("/settings/unmute", methods=["POST"])
@@ -59,14 +60,14 @@ def settings_unmute_user(v):
 
     mute = g.db.query(UserMute).filter_by(user_id=v.id, target_id=user.id).first()
     if not mute:
-        return jsonify({"error": f"You have not muted @{user.username}."}), 409
+        return jsonify({"error": tr("You have not muted @%(name)s.", name=user.username)}), 409
 
     g.db.delete(mute)
     g.db.commit()
 
     muting.forget(v)
     muting.clear_cached_feeds(v)
-    return jsonify({"message": f"@{user.username} unmuted."})
+    return jsonify({"message": tr("@%(name)s unmuted.", name=user.username)})
 
 
 def muted_accounts(v):

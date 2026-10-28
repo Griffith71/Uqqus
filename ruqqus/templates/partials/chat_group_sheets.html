@@ -8,16 +8,16 @@
   <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="chatNewTitle">New chat</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <h5 class="modal-title" id="chatNewTitle">{{ _("New chat") }}</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="{{ _('Close') }}">
           <span aria-hidden="true"><i class="fas fa-times"></i></span>
         </button>
       </div>
       <div class="modal-body p-0">
         <div class="px-3 pt-3 pb-2">
-          <label class="sr-only" for="chat-new-search">Search people</label>
-          <input type="search" id="chat-new-search" class="form-control" maxlength="40" autocomplete="off" placeholder="Search people, or type an @handle">
-          <p class="text-small text-muted mt-2 mb-0">Someone who follows you gets your message in their Inbox; anyone else gets it as a request. Chats are end-to-end encrypted.</p>
+          <label class="sr-only" for="chat-new-search">{{ _("Search people") }}</label>
+          <input type="search" id="chat-new-search" class="form-control" maxlength="40" autocomplete="off" placeholder="{{ _('Search people, or type an @handle') }}">
+          <p class="text-small text-muted mt-2 mb-0">{{ _("Someone who follows you gets your message in their Inbox; anyone else gets it as a request. Chats are end-to-end encrypted.") }}</p>
           <div id="chat-new-status" class="text-small mt-1" role="status"></div>
         </div>
         <div id="chat-new-results" class="border-top"></div>
@@ -30,31 +30,31 @@
   <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="chatChannelNewTitle">New channel</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <h5 class="modal-title" id="chatChannelNewTitle">{{ _("New channel") }}</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="{{ _('Close') }}">
           <span aria-hidden="true"><i class="fas fa-times"></i></span>
         </button>
       </div>
       <div class="modal-body">
-        <label class="text-small font-weight-bold mb-1" for="chat-channel-name">Name</label>
-        <input type="text" id="chat-channel-name" class="form-control mb-3" maxlength="50" autocomplete="off" placeholder="Behind the scenes">
+        <label class="text-small font-weight-bold mb-1" for="chat-channel-name">{{ _("Name") }}</label>
+        <input type="text" id="chat-channel-name" class="form-control mb-3" maxlength="50" autocomplete="off" placeholder="{{ _('Behind the scenes') }}">
         <fieldset>
-          <legend class="text-small font-weight-bold mb-1">Who can join</legend>
+          <legend class="text-small font-weight-bold mb-1">{{ _("Who can join") }}</legend>
           <div class="custom-control custom-radio">
             <input type="radio" class="custom-control-input" id="chat-channel-public" name="chat-channel-audience" value="0" checked>
-            <label class="custom-control-label" for="chat-channel-public">Anyone <span class="text-muted text-small">public, moderated, not end-to-end encrypted</span></label>
+            <label class="custom-control-label" for="chat-channel-public">{{ _("Anyone") }} <span class="text-muted text-small">{{ _("public, moderated, not end-to-end encrypted") }}</span></label>
           </div>
           <div class="custom-control custom-radio">
             <input type="radio" class="custom-control-input" id="chat-channel-friends" name="chat-channel-audience" value="friends">
-            <label class="custom-control-label" for="chat-channel-friends">My Friends <span class="text-muted text-small">people you follow who follow you back; end-to-end encrypted</span></label>
+            <label class="custom-control-label" for="chat-channel-friends">{{ _("My Friends") }} <span class="text-muted text-small">{{ _("people you follow who follow you back; end-to-end encrypted") }}</span></label>
           </div>
         </fieldset>
-        <p class="text-small text-muted mt-2 mb-0">You and up to 3 helpers write; members read and react. For other circles, make it on <a href="/@{{ v.username }}/channels">your channels page</a>. You can have up to 3 channels.</p>
+        <p class="text-small text-muted mt-2 mb-0">{{ _('You and up to 3 helpers write; members read and react. For other circles, make it on <a href="%(url)s">your channels page</a>. You can have up to 3 channels.', url="/@" ~ v.username ~ "/channels") }}</p>
         <div id="chat-channel-status" class="text-small mt-2" role="status"></div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-        <button type="button" id="chat-channel-create" class="btn btn-primary">Make the channel</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">{{ _("Cancel") }}</button>
+        <button type="button" id="chat-channel-create" class="btn btn-primary">{{ _("Make the channel") }}</button>
       </div>
     </div>
   </div>
@@ -64,24 +64,24 @@
   <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="chatGroupNewTitle">New group</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <h5 class="modal-title" id="chatGroupNewTitle">{{ _("New group") }}</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="{{ _('Close') }}">
           <span aria-hidden="true"><i class="fas fa-times"></i></span>
         </button>
       </div>
       <div class="modal-body">
-        <label class="text-small font-weight-bold mb-1" for="chat-group-name">Name <span class="text-muted font-weight-normal">(optional)</span></label>
-        <input type="text" id="chat-group-name" class="form-control mb-3" maxlength="50" autocomplete="off" placeholder="Weekend plans">
-        <label class="text-small font-weight-bold mb-1" for="chat-group-search">People</label>
+        <label class="text-small font-weight-bold mb-1" for="chat-group-name">{{ _("Name") }} <span class="text-muted font-weight-normal">{{ _("(optional)") }}</span></label>
+        <input type="text" id="chat-group-name" class="form-control mb-3" maxlength="50" autocomplete="off" placeholder="{{ _('Weekend plans') }}">
+        <label class="text-small font-weight-bold mb-1" for="chat-group-search">{{ _("People") }}</label>
         <div id="chat-group-chosen" class="chat-chips mb-2" aria-live="polite"></div>
-        <input type="search" id="chat-group-search" class="form-control" maxlength="40" autocomplete="off" placeholder="Search people you follow">
+        <input type="search" id="chat-group-search" class="form-control" maxlength="40" autocomplete="off" placeholder="{{ _('Search people you follow') }}">
         <div id="chat-group-results" class="chat-people-list mt-2"></div>
-        <p class="text-small text-muted mt-2 mb-0">People who follow you, or whom you follow, are in at once. Anyone else gets an invitation in their Requests. A group has up to {{ chat_group_max }} people and is end-to-end encrypted.</p>
+        <p class="text-small text-muted mt-2 mb-0">{{ ngettext("People who follow you, or whom you follow, are in at once. Anyone else gets an invitation in their Requests. A group has up to %(num)s person and is end-to-end encrypted.", "People who follow you, or whom you follow, are in at once. Anyone else gets an invitation in their Requests. A group has up to %(num)s people and is end-to-end encrypted.", chat_group_max) }}</p>
         <div id="chat-group-new-status" class="text-small mt-2" role="status"></div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-        <button type="button" id="chat-group-create" class="btn btn-primary" disabled>Create group</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">{{ _("Cancel") }}</button>
+        <button type="button" id="chat-group-create" class="btn btn-primary" disabled>{{ _("Create group") }}</button>
       </div>
     </div>
   </div>
@@ -91,30 +91,30 @@
   <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title text-truncate" id="chatGroupInfoTitle">Group</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <h5 class="modal-title text-truncate" id="chatGroupInfoTitle">{{ pgettext("noun", "Group") }}</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="{{ _('Close') }}">
           <span aria-hidden="true"><i class="fas fa-times"></i></span>
         </button>
       </div>
       <div class="modal-body">
         <form id="chat-group-rename" class="d-none mb-3" onsubmit="return false;">
-          <label class="text-small font-weight-bold mb-1" for="chat-group-rename-input">Name</label>
+          <label class="text-small font-weight-bold mb-1" for="chat-group-rename-input">{{ _("Name") }}</label>
           <div class="input-group">
             <input type="text" id="chat-group-rename-input" class="form-control" maxlength="50" autocomplete="off">
             <div class="input-group-append">
-              <button type="submit" class="btn btn-secondary">Save</button>
+              <button type="submit" class="btn btn-secondary">{{ pgettext("button", "Save") }}</button>
             </div>
           </div>
         </form>
         <div class="text-small font-weight-bold mb-1" id="chat-group-count"></div>
         <div id="chat-group-members" class="chat-people-list mb-3"></div>
         <div id="chat-group-add" class="d-none mb-3">
-          <label class="text-small font-weight-bold mb-1" for="chat-group-add-search"><i class="fas fa-user-plus mr-1" aria-hidden="true"></i>Add people</label>
-          <input type="search" id="chat-group-add-search" class="form-control" maxlength="40" autocomplete="off" placeholder="Search people you follow">
+          <label class="text-small font-weight-bold mb-1" for="chat-group-add-search"><i class="fas fa-user-plus mr-1" aria-hidden="true"></i>{{ _("Add people") }}</label>
+          <input type="search" id="chat-group-add-search" class="form-control" maxlength="40" autocomplete="off" placeholder="{{ _('Search people you follow') }}">
           <div id="chat-group-add-results" class="chat-people-list mt-2"></div>
         </div>
         <div id="chat-group-info-status" class="text-small mb-2" role="status"></div>
-        <button type="button" id="chat-group-leave" class="btn btn-outline-danger btn-sm"><i class="fas fa-right-from-bracket mr-1" aria-hidden="true"></i>Leave group</button>
+        <button type="button" id="chat-group-leave" class="btn btn-outline-danger btn-sm"><i class="fas fa-right-from-bracket mr-1" aria-hidden="true"></i>{{ _("Leave group") }}</button>
       </div>
     </div>
   </div>

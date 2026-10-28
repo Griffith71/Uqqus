@@ -70,8 +70,7 @@ def legal_final(v):
             body = render_template("email/legal.html", data=data)
         send_mail(environ.get("admin_email"),
                   "Legal request submission",
-                  render_template("email/legal.html",
-                                  data=data),
+                  body,
                   files=files
                   )
     except BaseException:
@@ -184,8 +183,7 @@ def counter_dmca_post(v):
             body = render_template("email/counter_dmca.html", data=data)
         send_mail(environ.get("admin_email"),
                   "DMCA Counter Notice",
-                  render_template("email/counter_dmca.html",
-                                  data=data),
+                  body,
                   plaintext=str(data)
                   )
     except BaseException:

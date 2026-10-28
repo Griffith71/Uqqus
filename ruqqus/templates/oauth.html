@@ -1,7 +1,7 @@
 {% extends "login.html" %}
 
 {% block title %}
-<title>Application Request for Access</title>
+<title>{{ _('Application Request for Access') }}</title>
 {% endblock %}
 
 {% block content %}
@@ -10,8 +10,9 @@
 
     <h1 class="h2">{{ application.app_name}}</h1>
 
-    <p class="mb-md-5">wants to access your @{{ v.username }} account.</p>
-    <p>It will be able to:</p>
+    {# Translators: follows the app's name, shown just above as a heading #}
+    <p class="mb-md-5">{{ _('wants to access your @%(name)s account.', name=v.username) }}</p>
+    <p>{{ _('It will be able to:') }}</p>
     <ul>
     {% for scope in scopes %}
         <li>{{ SCOPES[scope] }}</li>
@@ -19,12 +20,12 @@
     </ul>
 
     {% if permanent %}
-    <p>{{ application.app_name }} will be able to maintain this access indefinitely, unless and until you revoke it.</p>
+    <p>{{ _('%(app)s will be able to maintain this access indefinitely, unless and until you revoke it.', app=application.app_name) }}</p>
     {% else %}
-    <p>This access will expire in one hour, or earlier if you revoke it.</p>
+    <p>{{ _('This access will expire in one hour, or earlier if you revoke it.') }}</p>
     {% endif %}
 
-    <p class="mb-md-5">It will not be able to see your password or personal data, or change your account settings.</p>
+    <p class="mb-md-5">{{ _('It will not be able to see your password or personal data, or change your account settings.') }}</p>
 
     <form action="/oauth/authorize" method="post" class="mt-md-3" id="login">
 
@@ -35,9 +36,9 @@
         <input type="hidden" name="client_id" value="{{ application.client_id }}">
         <input type="hidden" name="state" value="{{ state }}">
 
-        <input type="submit" class="btn btn-primary" id="auth_button" value="Authorize {{ application.app_name }}">
+        <input type="submit" class="btn btn-primary" id="auth_button" value="{{ _('Authorize %(app)s', app=application.app_name) }}">
 
-        <a href="/" class="btn btn-secondary">No, back to {{ 'SITE_NAME' | app_config }}</a>
+        <a href="/" class="btn btn-secondary">{{ _('No, back to %(site)s') }}</a>
 
     </form>
 

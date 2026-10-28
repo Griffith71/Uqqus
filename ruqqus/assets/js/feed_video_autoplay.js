@@ -66,7 +66,8 @@
       // without loosening the site-wide header for anything else.
       media.referrerPolicy = 'strict-origin-when-cross-origin';
       media.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen';
-      media.title = container.dataset.embedTitle || 'Video';
+      // Translators: the name of a video player frame when the post gives it no title
+      media.title = container.dataset.embedTitle || tr('Video');
       media.allowFullscreen = true;
       // iframe_untrusted = extracted from an arbitrary page's own
       // og:video tag, not a vetted oEmbed provider - no allow-same-origin/

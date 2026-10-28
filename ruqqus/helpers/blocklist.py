@@ -15,23 +15,41 @@ import io
 import re
 import time
 
+from babel.support import LazyProxy
 from sqlalchemy import and_, or_
+
+from ruqqus.helpers.i18n_runtime import N_, msg, tr, tr_lazy, trn
 
 MAX_NAMES = 200
 MAX_CHARS = 30000
 NAME = re.compile(r"^[A-Za-z0-9_]{3,25}$")
 KINDS = ("block", "mute")
 
+
+class _Refusal(str):
+    """A refusal's English, marked with N_ (a plain str, what is compared); `format(name=...)`, which the Block route
+    calls, draws it in the reader's language with the name filled in."""
+
+    def format(self, *args, **values):
+        values.setdefault("name", "")
+        try:
+            return msg(str(self)) % values
+        except (KeyError, ValueError, TypeError):
+            return str(self) % values
+
+
 REFUSALS = {
-    "missing": ("That user doesn't exist.", 404),
-    "self": ("You can't block yourself.", 409),
-    "already": ("You have already blocked @{name}.", 409),
-    "protected": ("You can't block @{name}.", 409),
-    "deleted": ("That account has been deactivated", 410),
+    "missing": (_Refusal(N_("That user doesn't exist.")), 404),
+    "self": (_Refusal(N_("You can't block yourself.")), 409),
+    "already": (_Refusal(N_("You have already blocked @%(name)s.")), 409),
+    "protected": (_Refusal(N_("You can't block @%(name)s.")), 409),
+    "deleted": (_Refusal(N_("That account has been deactivated")), 410),
 }
 SITE_ACCOUNT = 1
-PROBLEMS = {"size": "That file is too large to import.", "count": f"Import at most {MAX_NAMES} names at a time.",
-            "empty": "There were no names in that file."}
+PROBLEMS = {"size": tr_lazy("That file is too large to import."),
+            "count": LazyProxy(lambda: trn("Import at most %(num)s name at a time.",
+                                           "Import at most %(num)s names at a time.", MAX_NAMES), enable_cache=False),
+            "empty": tr_lazy("There were no names in that file.")}
 
 
 def refusal(blocker, target):
@@ -175,16 +193,24 @@ def run_import(db, owner, rows, find):
 
 def summary(counts):
     """The sentence an import ends with."""
+    from ruqqus.helpers.text import word_list
     parts = []
     if counts["blocked"]:
-        parts.append(f"{counts['blocked']} blocked")
+        # Translators: one part of "Imported: 2 blocked, 1 muted, 1 already on your list, 5 not found." (accounts)
+        parts.append(trn("%(num)s blocked", "%(num)s blocked", counts["blocked"]))
     if counts["muted"]:
-        parts.append(f"{counts['muted']} muted")
+        # Translators: one part of "Imported: 2 blocked, 1 muted, ..." (accounts)
+        parts.append(trn("%(num)s muted", "%(num)s muted", counts["muted"]))
     if counts["already"]:
-        parts.append(f"{counts['already']} already on your list")
+        # Translators: one part of "Imported: 2 blocked, 1 already on your list, ..." (accounts)
+        parts.append(trn("%(num)s already on your list", "%(num)s already on your list", counts["already"]))
     if counts["not_found"]:
-        parts.append(f"{counts['not_found']} not found")
-    return ("Imported: " + ", ".join(parts) + ".") if parts else "Nothing was imported."
+        # Translators: one part of "Imported: 2 blocked, 5 not found." (account names)
+        parts.append(trn("%(num)s not found", "%(num)s not found", counts["not_found"]))
+    if not parts:
+        return tr("Nothing was imported.")
+    # Translators: what a block list import did, such as "2 blocked, 1 muted, 5 not found"
+    return tr("Imported: %(parts)s.", parts=word_list(parts, english_last=", "))
 
 
 def counts_from_query(args):

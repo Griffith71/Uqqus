@@ -69,6 +69,7 @@ def test_the_result_travels_in_the_address_as_numbers_only():
 def test_the_refusals_keep_the_block_buttons_messages_and_statuses():
     assert blocklist.REFUSALS["missing"] == ("That user doesn't exist.", 404)
     assert blocklist.REFUSALS["self"] == ("You can't block yourself.", 409)
-    assert blocklist.REFUSALS["already"][1] == 409 and "{name}" in blocklist.REFUSALS["already"][0]
+    assert blocklist.REFUSALS["already"][1] == 409 and "%(name)s" in blocklist.REFUSALS["already"][0]
+    assert blocklist.REFUSALS["already"][0].format(name="x") == "You have already blocked @x."
     assert blocklist.REFUSALS["protected"][1] == 409
     assert blocklist.REFUSALS["deleted"] == ("That account has been deactivated", 410)

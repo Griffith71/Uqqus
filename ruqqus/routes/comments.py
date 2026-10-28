@@ -20,6 +20,8 @@ from ruqqus.helpers import circle_guard
 from ruqqus.helpers import post_follows
 from ruqqus.helpers.session_helpers import *
 from ruqqus.helpers.alerts import *
+from ruqqus.helpers.alerts import notify
+from ruqqus.helpers.i18n_runtime import N_, msg, tr
 from ruqqus.helpers.aws import *
 from ruqqus.helpers.word_filter_store import apply_comment_severity
 from ruqqus.helpers.languages import detect_language
@@ -98,7 +100,7 @@ Optional query parameters:
                                                 v=v,
                                                 b=board),
 
-                'api': lambda: {'error': f'+{board.name} is banned.'}
+                'api': lambda: {'error': tr('+%(guild)s is banned.', guild=board.name)}
 
                 }
 
@@ -282,7 +284,7 @@ Optional file data:
 """
     # bots may post, forward and help moderate, but never comment (or vote, routes/votes.py)
     if request.headers.get("X-User-Type", "").lower() == "bot" or v.is_bot:
-        return jsonify({"error": "Bots can't comment."}), 403
+        return jsonify({"error": tr("Bots can't comment.")}), 403
 
     parent_fullname = request.form.get("parent_fullname")
 
@@ -310,7 +312,7 @@ Optional file data:
         return jsonify({"error": text_length.limit_message("Comments", COMMENT_MAX)}), 400
 
     if not body and not (v.has_premium and request.files.get('file')):
-        return jsonify({"error":"You need to actually write something!"}), 400
+        return jsonify({"error": tr("You need to actually write something!")}), 400
     
     body=preprocess(body)
     with CustomRenderer(post_id=parent_id) as renderer:
@@ -322,18 +324,20 @@ Optional file data:
 
     if bans:
         ban = bans[0]
-        reason = f"Remove the {ban.domain} link from your comment and try again."
         if ban.reason:
-            reason += f" {ban.reason_text}"
-            
+            reason = tr("Remove the %(domain)s link from your comment and try again. %(reason)s", domain=ban.domain,
+                        reason=msg(ban.reason_text))
+        else:
+            reason = tr("Remove the %(domain)s link from your comment and try again.", domain=ban.domain)
+
         #auto ban for digitally malicious content
         banned = True
         if any([x.reason==7 for x in bans]):
-            v.ban(reason="Sexualizing minors")
+            v.ban(reason=N_("Sexualizing minors"))
         elif any([x.reason==4 for x in bans]):
-            v.ban(days=30, reason="Digitally malicious content")
+            v.ban(days=30, reason=N_("Digitally malicious content"))
         elif any([x.reason==9 for x in bans]):
-            v.ban(days=7, reason="Engaging in illegal activity")
+            v.ban(days=7, reason=N_("Engaging in illegal activity"))
         else:
             banned = False
 
@@ -349,29 +353,29 @@ Optional file data:
                                                            CommentAux.body == body
                                                            ).options(contains_eager(Comment.comment_aux)).first()
     if existing:
-        return jsonify({"error": f"You already made that comment: {existing.permalink}"}), 409
+        return jsonify({"error": tr("You already made that comment: %(link)s", link=existing.permalink)}), 409
 
     # No commenting on deleted/removed things
     if parent.is_banned or parent.deleted_utc > 0:
         return jsonify(
-            {"error": "You can't comment on things that have been deleted."}), 403
+            {"error": tr("You can't comment on things that have been deleted.")}), 403
 
     # an anonymous author is not "blocking" anyone: the refusal would say who they are
     if parent.is_blocking and not parent.is_anonymous and not v.admin_level>=3 and not parent.board.has_mod(v, "content"):
         return jsonify(
-            {"error": "You can't comment on content from users that you're blocking."}
+            {"error": tr("You can't comment on content from users that you're blocking.")}
             ), 403
 
     if parent.is_blocked and not parent.is_anonymous and not v.admin_level>=3 and not parent.board.has_mod(v, "content"):
         return jsonify(
-            {"error": "You can't comment on content from users that are blocking you."}
+            {"error": tr("You can't comment on content from users that are blocking you.")}
             ), 403
 
     # check for archive and ban state
     post = get_post(parent_id)
     if post.is_archived or not post.board.can_comment(v):
 
-        return jsonify({"error": "You can't comment on this."}), 403
+        return jsonify({"error": tr("You can't comment on this.")}), 403
 
     # the author may limit who can comment on the post on their profile
     limited = cperm.restriction(post, v)
@@ -403,19 +407,19 @@ Optional file data:
             threshold *= 2
 
         if len(similar_comments) > threshold:
-            text = f"Your {app.config['SITE_NAME']} account has been suspended for 1 day for the following reason:\n\n> Too much spam!"
-            send_notification(v, text)
+            notify(v, N_("Your %(site)s account has been suspended for 1 day for the following reason:\n\n> Too much spam!"))
 
-            v.ban(reason="Spamming.",
+            v.ban(reason=N_("Spamming."),
                   days=1)
 
             for alt in v.alts:
                 if not alt.is_suspended:
-                    alt.ban(reason="Spamming.", days=1)
+                    alt.ban(reason=N_("Spamming."), days=1)
 
             for comment in similar_comments:
                 comment.is_banned = True
-                comment.ban_reason = "Automatic spam removal. This happened because the post's creator submitted too much similar content too quickly."
+                comment.ban_reason = N_("Automatic spam removal. This happened because the post's creator submitted too much "
+                                         "similar content too quickly.")
                 g.db.add(comment)
                 ma=ModAction(
                     user_id=1,
@@ -427,7 +431,7 @@ Optional file data:
                 g.db.add(ma)
 
             g.db.commit()
-            return jsonify({"error": "Too much spam!"}), 403
+            return jsonify({"error": tr("Too much spam!")}), 403
 
     # check badlinks
     soup = BeautifulSoup(body_html, features="html.parser")
@@ -448,7 +452,8 @@ Optional file data:
                 BadLink.link)).first()
 
         if badlink:
-            return jsonify({"error": f"Remove the following link and try again: `{check_url}`. Reason: {badlink.reason_text}"}), 403
+            return jsonify({"error": tr("Remove the following link and try again: `%(link)s`. Reason: %(reason)s", link=check_url,
+                                       reason=msg(badlink.reason_text))}), 403
 
     # create comment
     c = Comment(author_id=v.id,
@@ -476,7 +481,7 @@ Optional file data:
         if request.files.get("file"):
             file=request.files["file"]
             if not file.content_type.startswith('image/'):
-                return jsonify({"error": "That wasn't an image!"}), 400
+                return jsonify({"error": tr("That wasn't an image!")}), 400
             
             name = f'comment/{c.base36id}/{secrets.token_urlsafe(8)}'
             upload_file(name, file)
@@ -586,10 +591,13 @@ Optional file data:
     # print(f"Content Event: @{v.username} comment {c.base36id}")
 
 
+    # drawn as the page draws it after a refresh: at its own depth, with the (empty) container its own comments will go
+    # into, so the page can place it under its parent and the member can answer it at once (assets/js/all_js.js post_comment)
     return {"html": lambda: jsonify({"html": render_template("comments.html",
                                                              v=v,
                                                              comments=[c],
-                                                             render_child_comments=False,
+                                                             render_child_comments=True,
+                                                             start_level=level,
                                                              is_allowed_to_comment=True
                                                              )}),
             "api": lambda: c.json
@@ -642,20 +650,20 @@ Optional form data (left out: unchanged):
     if bans:
         
         ban = bans[0]
-        reason = f"Remove the {ban.domain} link from your comment and try again."
 
         #auto ban for digitally malicious content
         # (bug hunt L2: this answered 200, which the page took for a saved edit: the comment read "undefined")
         if any([x.reason==4 for x in bans]):
-            v.ban(days=30, reason="Digitally malicious content is not allowed.")
-            return jsonify({"error":"Digitally malicious content is not allowed."}), 403
+            v.ban(days=30, reason=N_("Digitally malicious content is not allowed."))
+            return jsonify({"error": tr("Digitally malicious content is not allowed.")}), 403
         
         if ban.reason:
-            reason += f" {ban.reason_text}"    
-          
-        return jsonify({"error": reason}), 400
+            reason = tr("Remove the %(domain)s link from your comment and try again. %(reason)s", domain=ban.domain,
+                        reason=msg(ban.reason_text))
+        else:
+            reason = tr("Remove the %(domain)s link from your comment and try again.", domain=ban.domain)
 
-    apply_comment_severity(c, body_html)
+        return jsonify({"error": reason}), 400
 
     # check badlinks
     soup = BeautifulSoup(body_html, features="html.parser")
@@ -676,7 +684,8 @@ Optional form data (left out: unchanged):
                 BadLink.link)).first()
 
         if badlink:
-            return jsonify({"error": f"Remove the following link and try again: `{check_url}`. Reason: {badlink.reason_text}"}), 403
+            return jsonify({"error": tr("Remove the following link and try again: `%(link)s`. Reason: %(reason)s", link=check_url,
+                                       reason=msg(badlink.reason_text))}), 403
 
     # check spam - this should hopefully be faster
     now = int(time.time())
@@ -702,20 +711,20 @@ Optional form data (left out: unchanged):
         threshold *= 2
 
     if len(similar_comments) > threshold:
-        text = f"Your {app.config['SITE_NAME']} account has been suspended for 1 day for the following reason:\n\n> Too much spam!"
-        send_notification(v, text)
+        notify(v, N_("Your %(site)s account has been suspended for 1 day for the following reason:\n\n> Too much spam!"))
 
-        v.ban(reason="Spamming.",
+        v.ban(reason=N_("Spamming."),
               include_alts=True,
               days=1)
 
         for comment in similar_comments:
             comment.is_banned = True
-            comment.ban_reason = "Automatic spam removal. This happened because the post's creator submitted too much similar content too quickly."
+            comment.ban_reason = N_("Automatic spam removal. This happened because the post's creator submitted too much "
+                                     "similar content too quickly.")
             g.db.add(comment)
 
         g.db.commit()
-        return jsonify({"error": "Too much spam!"}), 403
+        return jsonify({"error": tr("Too much spam!")}), 403
 
     now = int(time.time())
 
@@ -872,7 +881,7 @@ def save_comment(cid, v):
         except:
             abort(422)
 
-    return jsonify({"message": "Comment bookmarked."})
+    return jsonify({"message": tr("Comment bookmarked.")})
 
 
 @app.route("/unsave_comment/<cid>", methods=["POST"])
@@ -888,7 +897,7 @@ def unsave_comment(cid, v):
     if existing:
         g.db.delete(existing)
 
-    return jsonify({"message": "Bookmark removed."})
+    return jsonify({"message": tr("Bookmark removed.")})
 
 
 @app.route("/comment/<cid>/toggle_sensitive", methods=["POST"])
@@ -946,7 +955,7 @@ def repost_comment(cid, v):
     comment = get_comment(cid)
 
     if comment.is_banned or comment.deleted_utc or comment.purged_utc:
-        return {"error": "This comment can't be reposted."}, 400
+        return {"error": tr("This comment can't be reposted.")}, 400
 
     if comment.post and comment.post.in_private_guild_for(v):
         abort(403)
@@ -956,15 +965,15 @@ def repost_comment(cid, v):
         return {"error": refusal}, 403
 
     if circle_guard.under_audience(g.db, comment):
-        return {"error": "A comment on a post for a Circle can't be reposted."}, 400
+        return {"error": tr("A comment on a post for a Circle can't be reposted.")}, 400
 
     if comment.is_anonymous and comment.author_id == v.id:
-        return {"error": "You can't repost your own anonymous comment: it would put it on your profile."}, 400
+        return {"error": tr("You can't repost your own anonymous comment: it would put it on your profile.")}, 400
 
     existing = g.db.query(CommentRepostRelationship).filter_by(
         user_id=v.id, comment_id=comment.id).first()
     if existing:
-        return {"error": "You've already reposted this."}, 409
+        return {"error": tr("You've already reposted this.")}, 409
 
     g.db.add(CommentRepostRelationship(
         user_id=v.id,
@@ -979,7 +988,7 @@ def repost_comment(cid, v):
     if not (comment.post and comment.post.in_private_guild_for(None)):
         bell_rules.ring_account(v, bell_rules.COMMENT_REPOST, comment.id, f"/comment/{comment.base36id}")
 
-    return jsonify({"message": "Reposted to your profile."})
+    return jsonify({"message": tr("Reposted to your profile.")})
 
 
 @app.route("/comment/<cid>/unrepost", methods=["POST"])
@@ -997,7 +1006,7 @@ def unrepost_comment(cid, v):
         g.db.commit()
         cache.delete_memoized(User.commentlisting, v)
 
-    return jsonify({"message": "Repost removed."})
+    return jsonify({"message": tr("Repost removed.")})
 
 
 @app.route("/comment/<cid>/forward", methods=["POST"])
@@ -1027,7 +1036,7 @@ def forward_comment(cid, v):
     comment = get_comment(cid)
 
     if comment.is_banned or comment.deleted_utc or comment.purged_utc:
-        return {"error": "This comment can't be forwarded."}, 400
+        return {"error": tr("This comment can't be forwarded.")}, 400
 
     if comment.post and comment.post.in_private_guild_for(v):
         abort(403)
@@ -1037,35 +1046,35 @@ def forward_comment(cid, v):
         return {"error": refusal}, 403
 
     if circle_guard.under_audience(g.db, comment):
-        return {"error": "A comment on a post for a Circle can't be forwarded to a guild."}, 400
+        return {"error": tr("A comment on a post for a Circle can't be forwarded to a guild.")}, 400
 
     target = get_guild(request.form.get("board", ""), graceful=True)
     if not target or target.name.lower() == PROFILE_BOARD_NAME:
-        return {"error": "That guild doesn't exist."}, 400
+        return {"error": tr("That guild doesn't exist.")}, 400
 
     if target.is_banned:
-        return {"error": f"+{target.name} has been banned."}, 403
+        return {"error": tr("+%(guild)s has been banned.", guild=target.name)}, 403
 
     if target.has_ban(v):
-        return {"error": f"Exiled from +{target.name}."}, 403
+        return {"error": tr("Exiled from +%(guild)s.", guild=target.name)}, 403
 
     if (target.restricted_forwarding or target.is_private) and not target.can_forward(v):
-        return {"error": f"+{target.name} only accepts forwards from approved contributors."}, 403
+        return {"error": tr("+%(guild)s only accepts forwards from approved contributors.", guild=target.name)}, 403
 
     if target.disallowbots and (request.headers.get("X-User-Type", "").lower() == "bot" or comment.is_bot or v.is_bot):
-        return {"error": f"403 Not Authorized - +{target.name} disallows bots from forwarding!"}, 403
+        return {"error": tr("403 Not Authorized - +%(guild)s disallows bots from forwarding!", guild=target.name)}, 403
 
     already = g.db.query(CommentForwardRelationship).filter_by(
         comment_id=comment.id, board_id=target.id).first()
     if already:
-        return {"error": f"Already forwarded to +{target.name}."}, 409
+        return {"error": tr("Already forwarded to +%(guild)s.", guild=target.name)}, 409
 
     # the guild's required flair applies to a forwarded comment as to a forwarded post (audit G-01)
     from ruqqus.helpers import guild_flair as flair_rules, guild_flair_store as flair_store
     raw_flair = request.form.get("flair", "")
     flair_id = flair_rules.parse_id(raw_flair) if raw_flair else None
     if raw_flair and flair_id is None:
-        return {"error": "That isn't a flair."}, 400
+        return {"error": tr("That isn't a flair.")}, 400
     flair_refusal = flair_rules.forward_refusal(target.require_flair, flair_id, flair_store.ids_of(g.db, target.id),
                                                 target.name)
     if flair_refusal:
@@ -1103,7 +1112,7 @@ def embed_comment_cid(cid, pid=None):
 
     if comment.is_banned or comment.deleted_utc > 0:
         if request.path.startswith("/api/"):
-            return jsonify({'error': f'Comment {cid} has been removed'}), 410
+            return jsonify({'error': tr('Comment %(id)s has been removed', id=cid)}), 410
         return render_template("embeds/comment_removed.html", c=comment, v=None), 410
 
     if comment.board.is_banned:
@@ -1198,7 +1207,7 @@ Required form data:
 
     reason = request.form.get("reason", "").strip()
     if not reason:
-        return jsonify({"error": "A reason is required."}), 400
+        return jsonify({"error": tr("A reason is required.")}), 400
 
     comment.hidden_by_guild = True
     comment.hidden_reason = reason
@@ -1310,14 +1319,15 @@ Required form data:
     comment = get_comment(cid, v=v)
 
     if not comment.post.is_profile_post:
-        return jsonify({"error": "This comment is on a copy forwarded to a guild - ask that guild's guildmasters to remove it instead."}), 403
+        return jsonify({"error": tr("This comment is on a copy forwarded to a guild - ask that guild's guildmasters to remove it "
+                                       "instead.")}), 403
 
     if comment.post.author_id != v.id:
         abort(403)
 
     reason = request.form.get("reason", "").strip()
     if not reason:
-        return jsonify({"error": "A reason is required."}), 400
+        return jsonify({"error": tr("A reason is required.")}), 400
 
     comment.author_hidden = True
     comment.author_hidden_reason = reason

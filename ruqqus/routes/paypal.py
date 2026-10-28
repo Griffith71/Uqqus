@@ -13,7 +13,8 @@ import logging as _logging       # a later star import rebinds `logging` to flas
 from ruqqus.classes import *
 from ruqqus.helpers.wrappers import *
 from ruqqus.helpers.security import *
-from ruqqus.helpers.alerts import send_notification
+from ruqqus.helpers.alerts import notify
+from ruqqus.helpers.i18n_runtime import N_, tr
 from ruqqus.helpers.base36 import *
 from ruqqus.helpers.get import *
 from ruqqus.__main__ import app
@@ -56,7 +57,7 @@ def shop_get_price():
     coins=int(coins) if coins.isascii() and coins.isdigit() else 0
 
     if not coins>=1:
-        return jsonify({"error": "Must attempt to buy at least one coin"}), 400
+        return jsonify({"error": tr("Must attempt to buy at least one coin")}), 400
 
     code=request.args.get("promo","")
     promo=get_promocode(code)
@@ -114,7 +115,7 @@ def _start_order(new_txn):
 
     if not new_txn.paypal_id:
         g.db.rollback()
-        return jsonify({"error": "PayPal couldn't start this order. Please try again later."}), 502
+        return jsonify({"error": tr("PayPal couldn't start this order. Please try again later.")}), 502
 
     g.db.add(new_txn)
     g.db.commit()
@@ -157,7 +158,8 @@ def shop_buy_coins_completed(v):
         abort(400)
 
     if txn.promo and not txn.promo.promo_is_active:
-        return jsonify({"error":f"The promo code `{txn.promo.code}` is not currently valid. Please begin a new transaction."}), 422
+        return jsonify({"error": tr("The promo code `%(code)s` is not currently valid. Please begin a new transaction.",
+                                  code=txn.promo.code)}), 422
 
     outcome=CLIENT.capture(txn)
     if not outcome:
@@ -172,7 +174,7 @@ def shop_buy_coins_completed(v):
         # PayPal is still checking the payment: nothing is given until PAYMENT.CAPTURE.COMPLETED says it cleared
         g.db.commit()
         return render_template("single_txn.html", v=v, txns=[txn],
-                               msg="PayPal is still checking this payment. Your coins arrive as soon as it clears.")
+                               msg=tr("PayPal is still checking this payment. Your coins arrive as soon as it clears."))
 
     _credit(txn, v)
     g.db.commit()
@@ -181,7 +183,7 @@ def shop_buy_coins_completed(v):
         "single_txn.html",
         v=v,
         txns=[txn],
-        msg="The Royal Bank has minted your Coins. Here is a copy of your order."
+        msg=tr("The Royal Bank has minted your Coins. Here is a copy of your order.")
         )
 
 
@@ -314,12 +316,33 @@ def _event_txn(event):
 
 
 def _tip_notification(kind, permalink, coins, recipient):
-    """What the author is told of a tip. Tips are anonymous: never who sent it."""
-    text = f"Someone liked [your {kind}]({permalink}) and has tipped you {coins} coin{'s' if coins != 1 else ''}!\n\n"
+    """What the author is told of a tip: a message for alerts.notify and its values. Tips are anonymous: never who
+    sent it. One whole message for each kind of item, and for one coin or several (a notice is stored as one English
+    message, drawn in each reader's language)."""
+    one = coins == 1
     # coins buy Premium only when the member asks, or with auto-renew switched on (helpers/premium.py, audit $-04)
-    text += (f"The coins are in your balance: keep them, tip someone, or redeem a week of "
-             f"[{app.config['SITE_NAME']} Premium](/settings/premium) per coin.")
-    return text
+    if kind == "comment":
+        message = N_("Someone liked [your comment](%(link)s) and has tipped you %(coins)s coin!\n\n"
+                     "The coins are in your balance: keep them, tip someone, or redeem a week of "
+                     "[%(site)s Premium](/settings/premium) per coin.") if one else \
+            N_("Someone liked [your comment](%(link)s) and has tipped you %(coins)s coins!\n\n"
+               "The coins are in your balance: keep them, tip someone, or redeem a week of "
+               "[%(site)s Premium](/settings/premium) per coin.")
+    elif kind == "bot's post":
+        message = N_("Someone liked [your bot's post](%(link)s) and has tipped you %(coins)s coin!\n\n"
+                     "The coins are in your balance: keep them, tip someone, or redeem a week of "
+                     "[%(site)s Premium](/settings/premium) per coin.") if one else \
+            N_("Someone liked [your bot's post](%(link)s) and has tipped you %(coins)s coins!\n\n"
+               "The coins are in your balance: keep them, tip someone, or redeem a week of "
+               "[%(site)s Premium](/settings/premium) per coin.")
+    else:
+        message = N_("Someone liked [your post](%(link)s) and has tipped you %(coins)s coin!\n\n"
+                     "The coins are in your balance: keep them, tip someone, or redeem a week of "
+                     "[%(site)s Premium](/settings/premium) per coin.") if one else \
+            N_("Someone liked [your post](%(link)s) and has tipped you %(coins)s coins!\n\n"
+               "The coins are in your balance: keep them, tip someone, or redeem a week of "
+               "[%(site)s Premium](/settings/premium) per coin.")
+    return message, {"link": permalink, "coins": coins}
 
 
 @app.route("/gift_post/<pid>", methods=["POST"])
@@ -336,28 +359,28 @@ def gift_post_pid(pid, v):
         abort(403)
 
     if post.author_id==v.id:
-        return jsonify({"error":"You can't give awards to yourself."}), 403   
+        return jsonify({"error": tr("You can't give awards to yourself.")}), 403
 
     if post.is_anonymous:
-        return jsonify({"error":"You can't give awards to anonymous posts."}), 403
+        return jsonify({"error": tr("You can't give awards to anonymous posts.")}), 403
 
     if post.deleted_utc > 0:
-        return jsonify({"error":"You can't give awards to deleted posts"}), 403
+        return jsonify({"error": tr("You can't give awards to deleted posts")}), 403
 
     if post.is_banned:
-        return jsonify({"error":"You can't give awards to removed posts"}), 403
+        return jsonify({"error": tr("You can't give awards to removed posts")}), 403
 
     if post.author.is_deleted:
-        return jsonify({"error":"You can't give awards to deleted accounts"}), 403
+        return jsonify({"error": tr("You can't give awards to deleted accounts")}), 403
 
     if post.author.is_banned and not post.author.unban_utc:
-        return jsonify({"error":"You can't give awards to banned accounts"}), 403
+        return jsonify({"error": tr("You can't give awards to banned accounts")}), 403
 
     u=get_user(post.author.username, v=v)
 
     if u.is_blocking or u.is_blocked:
         # one message either way: it never says who blocked whom (bug hunt: the second told a tipper they were blocked)
-        return jsonify({"error": "You can't tip this account."}), 403
+        return jsonify({"error": tr("You can't tip this account.")}), 403
 
     # a bot's post takes tips too (the owner, 2026-10-20): a member bot's coins go to the member who runs it, a site
     # bot's to nobody, spent only to lift the post (helpers/tips.py recipient_id)
@@ -366,16 +389,16 @@ def gift_post_pid(pid, v):
         owner_id = tips.recipient_id(u.id, True, u.bot_owner_id)
         receiver = g.db.query(User).filter_by(id=owner_id).first() if owner_id else None
         if owner_id and receiver is None:
-            return jsonify({"error":"This bot can't take tips right now."}), 403
+            return jsonify({"error": tr("This bot can't take tips right now.")}), 403
         if receiver is not None:
             if receiver.id == v.id:
-                return jsonify({"error":"You can't tip your own bot: the coins would come back to you."}), 403
+                return jsonify({"error": tr("You can't tip your own bot: the coins would come back to you.")}), 403
             if receiver.is_deleted or (receiver.is_banned and not receiver.unban_utc) or v.any_block_exists(receiver):
-                return jsonify({"error":"This bot can't take tips right now."}), 403
+                return jsonify({"error": tr("This bot can't take tips right now.")}), 403
 
     coins = tips.parse_coins(request.args.get("coins"))
     if coins is None:
-        return jsonify({"error": f"A tip is a whole number of coins, from 1 to {tips.MAX_TIP}."}), 400
+        return jsonify({"error": tr("A tip is a whole number of coins, from 1 to %(max)s.", max=tips.MAX_TIP)}), 400
 
     # one conditional statement checks and moves the coins (helpers/coins.py): parallel tips can't create coins
     g.db.flush()
@@ -383,7 +406,7 @@ def gift_post_pid(pid, v):
              else coins_store.spend(g.db, v.id, coins))
     if not moved:
         g.db.rollback()
-        return jsonify({"error":"You don't have that many coins to give!"}), 403
+        return jsonify({"error": tr("You don't have that many coins to give!")}), 403
     g.db.refresh(v)
     if receiver is not None:
         g.db.refresh(receiver)
@@ -399,13 +422,15 @@ def gift_post_pid(pid, v):
     g.db.add(post)
     g.db.commit()
 
-    # send_notification commits on its own (helpers/alerts.py): only once the tip is safe; a site bot's tip tells nobody
+    # notify commits on its own (send_notification, helpers/alerts.py): only once the tip is safe; a site bot's tip
+    # tells nobody
     if receiver is not None:
         kind = "bot's post" if u.is_bot else "post"
-        send_notification(receiver, _tip_notification(kind, post.permalink, coins, receiver))
+        message, values = _tip_notification(kind, post.permalink, coins, receiver)
+        notify(receiver, message, **values)
         g.db.commit()
 
-    return jsonify({"message":"Tip Successful!"})
+    return jsonify({"message": tr("Tip Successful!")})
 
 @app.route("/gift_comment/<cid>", methods=["POST"])
 @no_sanctions
@@ -421,52 +446,53 @@ def gift_comment_pid(cid, v):
         abort(403)
 
     if comment.author_id==v.id:
-        return jsonify({"error":"You can't give awards to yourself."}), 403      
+        return jsonify({"error": tr("You can't give awards to yourself.")}), 403
 
     if comment.is_anonymous:
-        return jsonify({"error":"You can't give awards to anonymous comments."}), 403
+        return jsonify({"error": tr("You can't give awards to anonymous comments.")}), 403
 
     if comment.author.is_bot:
-        return jsonify({"error":"Bots don't take tips."}), 403
+        return jsonify({"error": tr("Bots don't take tips.")}), 403
 
     if comment.deleted_utc > 0:
-        return jsonify({"error":"You can't give awards to deleted posts"}), 403
+        return jsonify({"error": tr("You can't give awards to deleted posts")}), 403
 
     if comment.is_banned:
-        return jsonify({"error":"You can't give awards to removed posts"}), 403
+        return jsonify({"error": tr("You can't give awards to removed posts")}), 403
 
     if comment.author.is_deleted:
-        return jsonify({"error":"You can't give awards to deleted accounts"}), 403
+        return jsonify({"error": tr("You can't give awards to deleted accounts")}), 403
 
     if comment.author.is_banned and not comment.author.unban_utc:
-        return jsonify({"error":"You can't give awards to banned accounts"}), 403
+        return jsonify({"error": tr("You can't give awards to banned accounts")}), 403
 
     u=get_user(comment.author.username, v=v)
 
     if u.is_blocking or u.is_blocked:
         # one message either way: it never says who blocked whom (bug hunt: the second told a tipper they were blocked)
-        return jsonify({"error": "You can't tip this account."}), 403
+        return jsonify({"error": tr("You can't tip this account.")}), 403
 
     coins = tips.parse_coins(request.args.get("coins"))
     if coins is None:
-        return jsonify({"error": f"A tip is a whole number of coins, from 1 to {tips.MAX_TIP}."}), 400
+        return jsonify({"error": tr("A tip is a whole number of coins, from 1 to %(max)s.", max=tips.MAX_TIP)}), 400
 
     # one conditional statement checks and moves the coins (helpers/coins.py): parallel tips can't create coins
     g.db.flush()
     if not coins_store.move(g.db, v.id, u.id, coins):
         g.db.rollback()
-        return jsonify({"error":"You don't have that many coins to give!"}), 403
+        return jsonify({"error": tr("You don't have that many coins to give!")}), 403
     g.db.refresh(v)
     g.db.refresh(u)
 
     tips_store.record(g.db, v.id, coins, comment_id=comment.id)
     g.db.commit()
 
-    # send_notification commits on its own (helpers/alerts.py): only once the tip is safe
-    send_notification(u, _tip_notification("comment", comment.permalink, coins, u))
+    # notify commits on its own (send_notification, helpers/alerts.py): only once the tip is safe
+    message, values = _tip_notification("comment", comment.permalink, coins, u)
+    notify(u, message, **values)
     g.db.commit()
 
-    return jsonify({"message":"Tip Successful!"})
+    return jsonify({"message": tr("Tip Successful!")})
 
 
 @app.route("/paypaltxn/<txid>")
@@ -491,13 +517,14 @@ def paypaltxn_txid(txid, v):
 def premium_redeem(v):
     """Spend one coin on a week of Premium, added after any time left (helpers/premium.py). Only when asked."""
     if v.negative_balance_cents:
-        return jsonify({"error": "Settle your balance first."}), 402
+        return jsonify({"error": tr("Settle your balance first.")}), 402
     if not premium.redeem_week(g.db, v, int(time.time())):
         g.db.rollback()
-        return jsonify({"error": "You don't have a coin to redeem."}), 403
+        return jsonify({"error": tr("You don't have a coin to redeem.")}), 403
     add_role(v, "premium")
     g.db.commit()
-    return jsonify({"message": f"Premium until {v.renew_premium_time} UTC."})
+    # User.renew_premium_time is the date in the reader's language (English exactly as before)
+    return jsonify({"message": tr("Premium until %(date)s UTC.", date=v.renew_premium_time)})
 
 
 @app.route("/settings/premium/auto_renew", methods=["POST"])

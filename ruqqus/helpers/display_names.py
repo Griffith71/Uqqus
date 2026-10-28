@@ -20,6 +20,11 @@ from ruqqus.helpers.i18n_runtime import tr, tr_lazy, trn
 
 MAX_LEN = 50
 
+# Whose name is being checked: the same rules serve a channel's name (helpers/broadcasts.py, helpers/guild_channels.py),
+# a role's (helpers/guild_roles.py), a group chat's (helpers/chat_groups.py) and a channel category's
+# (helpers/guild_channels.py), each refused in a whole sentence of its own.
+DISPLAY, CHANNEL, ROLE, GROUP, CATEGORY = "display", "channel", "role", "group", "category"
+
 _SPACES = re.compile(r"\s+")
 _KEEP = {chr(0x200D), chr(0xFE0F)}                  # emoji sequences are glued with a joiner and a variation selector
 _SEPARATORS = re.compile(r"[\s._-]+")
@@ -102,9 +107,9 @@ def clean(value, kind=DISPLAY):
             continue
         category = unicodedata.category(char)
         if char in "<>":
-            raise Refused("A display name can't contain < or >.")
+            raise Refused(_angle(kind))
         if char == "@":
-            raise Refused("A display name can't contain @: it would read as a handle.")
+            raise Refused(_at(kind))
         if category[0] == "C" or category in ("Zl", "Zp"):
             raise Refused(_invisible(kind))
     if text_length.over_limit(text, MAX_LEN, stored_max=MAX_LEN):
@@ -137,7 +142,7 @@ _ASCII_LOOKALIKES = (("rn", "m"), ("vv", "w"), ("0", "o"), ("1", "l"), ("i", "l"
 
 RESERVED_WORDS = ("admin", "administrator", "moderator", "moderators", "mod team", "staff", "official", "support team",
                   "trust and safety", "system")
-RESERVED = "That name is kept for the site's staff."
+RESERVED = tr_lazy("That name is kept for the site's staff.")
 
 
 def skeleton(name):

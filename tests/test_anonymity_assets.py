@@ -68,8 +68,13 @@ def test_every_list_scoped_to_an_author_leaves_anonymous_rows_out():
     assert "not_(and_(Submission.author_id == part.ref, not_(Submission.is_anonymous)))" in from_part
     assert "search_filters.apply(posts, query, v)" in search
     assert "not_(Submission.is_anonymous)" in user.split("def idlist")[1][:3000]       # the Following feed
+    # the region filter DOES match an anonymous post through its author (the owner's choice, 2026-10-27: they show in All
+    # under a region filter and so tell which region they come from); the composer's anonymous switch says so
     front = read("ruqqus", "routes", "front.py")
-    assert front.count("not_(Submission.is_anonymous)") >= 2 or "Submission.is_anonymous" in front  # the region filter
+    region = front.split("def region_filter_condition(")[1].split("\n@app")[0]
+    assert "is_anonymous" not in region.split('"""')[2]
+    options = read("ruqqus", "templates", "partials", "post_options.html")
+    assert options.count("A region filter still shows which region it comes from.") == 2
 
 
 def test_a_curation_does_not_list_its_accounts_anonymous_posts():

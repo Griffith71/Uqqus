@@ -14,6 +14,8 @@ The member needs a YouTube channel on the Google account they linked.
 """
 import json
 
+from ruqqus.helpers.i18n_runtime import tr
+
 from . import google_oauth, rules
 from .base import Provider, ProviderDown
 
@@ -51,7 +53,7 @@ class YouTubeProvider(Provider):
 
     def begin_upload(self, account, asset, origin, details=None):
         if not self.can_upload(account):
-            raise rules.MediaError("To add videos, allow uploads to your YouTube channel once.", 409,
+            raise rules.MediaError(tr("To add videos, allow uploads to your YouTube channel once."), 409,
                                    need="video", settings=CONNECT_VIDEO)
         details = details or {}
         wanted = rules.video_visibility(details.get("visibility") or account.setting("youtube_visibility"))
@@ -71,12 +73,12 @@ class YouTubeProvider(Provider):
         if r.status_code != 200 or not location:
             reasons = _reasons(r)
             if "youtubeSignupRequired" in reasons:
-                raise rules.MediaError("This Google account has no YouTube channel yet. Create one at youtube.com, then try again.", 409)
+                raise rules.MediaError(tr("This Google account has no YouTube channel yet. Create one at youtube.com, then try again."), 409)
             if reasons & {"insufficientPermissions", "forbidden"} and r.status_code == 403:
-                raise rules.MediaError("To add videos, allow uploads to your YouTube channel once.", 409,
+                raise rules.MediaError(tr("To add videos, allow uploads to your YouTube channel once."), 409,
                                        need="video", settings=CONNECT_VIDEO)
             if reasons & {"quotaExceeded", "uploadLimitExceeded", "rateLimitExceeded", "dailyLimitExceeded"}:
-                raise rules.MediaError("YouTube is not taking more uploads right now. Try again later.", 429)
+                raise rules.MediaError(tr("YouTube is not taking more uploads right now. Try again later."), 429)
             raise ProviderDown(f"YouTube did not start the upload ({r.status_code})")
 
         # the video's id is only known once the bytes are in: remember the session to ask it
@@ -86,21 +88,21 @@ class YouTubeProvider(Provider):
     def finish_upload(self, account, asset):
         raw = google_oauth.recall(_session_key(asset))
         if not raw:
-            raise rules.MediaError("That upload expired. Add the video again.")
+            raise rules.MediaError(tr("That upload expired. Add the video again."))
         session = json.loads(raw)
         r = google_oauth.api(account, "PUT", session["url"], headers={
             "Content-Length": "0", "Content-Range": f"bytes */{int(asset.size)}"})
         if r.status_code == 308:
-            raise rules.MediaError("The video did not finish uploading. Add it again.")
+            raise rules.MediaError(tr("The video did not finish uploading. Add it again."))
         if r.status_code == 404:
-            raise rules.MediaError("That upload expired. Add the video again.")
+            raise rules.MediaError(tr("That upload expired. Add the video again."))
         video = _json(r)
         if r.status_code not in (200, 201) or not video.get("id"):
             raise ProviderDown(f"YouTube answered {r.status_code}")
 
         status = video.get("status") or {}
         if status.get("uploadStatus") in ("rejected", "failed"):
-            raise rules.MediaError("YouTube did not accept that video.")
+            raise rules.MediaError(tr("YouTube did not accept that video."))
         google_oauth.forget_key(_session_key(asset))
         # asked for unlisted or public, got private: the API project is not approved yet
         restricted = status.get("privacyStatus") == "private" and session.get("wanted") != "private"

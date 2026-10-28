@@ -98,8 +98,8 @@ def activate(v):
     token = request.args.get("token", "")
 
     if int(time.time()) - timestamp > 3600:
-        return render_template("message.html", v=v, title="Verification link expired.",
-                               message="That link has expired. Visit your settings to send yourself another verification email."), 410
+        return render_template("message.html", v=v, title=tr("Verification link expired."),
+                               message=tr("That link has expired. Visit your settings to send yourself another verification email.")), 410
 
     if not validate_hash(f"{email}+{id}+{timestamp}", token):
         abort(403)
@@ -110,13 +110,13 @@ def activate(v):
 
     if user.is_activated and user.email == email:
         return render_template("message_success.html", v=v,
-                               title="Email already verified.", message="Email already verified."), 404
+                               title=tr("Email already verified."), message=tr("Email already verified.")), 404
 
     # still free: the check when the change was asked for is up to an hour old (bug hunt: another account could take
     # the address meanwhile, and two accounts then shared it: sign-in by email and resets pick one)
     if g.db.query(User).filter(User.id != user.id, func.lower(User.email) == email.lower()).first():
-        return render_template("message.html", v=v, title="That email address is already in use.",
-                               message="Another account uses that address now. Visit your settings to use another."), 409
+        return render_template("message.html", v=v, title=tr("That email address is already in use."),
+                               message=tr("Another account uses that address now. Visit your settings to use another.")), 409
 
     user.email = email
     user.is_activated = True
@@ -134,4 +134,5 @@ def activate(v):
 
     g.db.add(user)
 
-    return render_template("message_success.html", v=v, title="Email verified.", message=f"Your email {email} has been verified. Thank you.")
+    return render_template("message_success.html", v=v, title=tr("Email verified."),
+                           message=tr("Your email %(email)s has been verified. Thank you.", email=email))

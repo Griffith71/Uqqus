@@ -7,22 +7,27 @@
     <i class="fas text-gray-500 fa-history fa-stack-1x text-lg"></i>
     {% elif active_tab == 'upvoted' %}
     <i class="fas text-gray-500 fa-arrow-up fa-stack-1x text-lg"></i>
+    {% elif active_tab == 'anonymous' %}
+    <i class="fas text-gray-500 fa-user-secret fa-stack-1x text-lg"></i>
     {% else %}
     <i class="fas text-gray-500 fa-arrow-down fa-stack-1x text-lg"></i>
     {% endif %}
   </span>
 
   {% if active_tab == 'bookmarked' %}
-  <h2 class="h5">Nothing bookmarked yet</h2>
-  <p class="text-muted">Posts you save will show up here.</p>
+  <h2 class="h5">{{ _('Nothing bookmarked yet') }}</h2>
+  <p class="text-muted">{{ _('Posts you save will show up here.') }}</p>
   {% elif active_tab == 'viewed' %}
-  <h2 class="h5">No browsing history yet</h2>
-  <p class="text-muted">Posts you view will show up here.</p>
+  <h2 class="h5">{{ _('No browsing history yet') }}</h2>
+  <p class="text-muted">{{ _('Posts you view will show up here.') }}</p>
+  {% elif active_tab == 'anonymous' %}
+  <h2 class="h5">{{ _('Nothing posted anonymously yet') }}</h2>
+  <p class="text-muted">{{ _('Posts and comments you make anonymously show up here. Your profile does not list them, and only you can see this list.') }}</p>
   {% elif active_tab == 'upvoted' %}
-  <h2 class="h5">Nothing upvoted yet{% if content_type and content_type != 'all' %} ({{ content_type }}){% endif %}</h2>
-  <p class="text-muted">Posts and comments you upvote will show up here.</p>
+  <h2 class="h5">{% if content_type == 'posts' %}{{ _('Nothing upvoted yet (posts)') }}{% elif content_type == 'comments' %}{{ _('Nothing upvoted yet (comments)') }}{% else %}{{ _('Nothing upvoted yet') }}{% endif %}</h2>
+  <p class="text-muted">{{ _('Posts and comments you upvote will show up here.') }}</p>
   {% else %}
-  <h2 class="h5">Nothing downvoted yet{% if content_type and content_type != 'all' %} ({{ content_type }}){% endif %}</h2>
-  <p class="text-muted">Posts and comments you downvote will show up here.</p>
+  <h2 class="h5">{% if content_type == 'posts' %}{{ _('Nothing downvoted yet (posts)') }}{% elif content_type == 'comments' %}{{ _('Nothing downvoted yet (comments)') }}{% else %}{{ _('Nothing downvoted yet') }}{% endif %}</h2>
+  <p class="text-muted">{{ _('Posts and comments you downvote will show up here.') }}</p>
   {% endif %}
 </div>

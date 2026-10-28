@@ -21,20 +21,24 @@
 
   // --- times ---------------------------------------------------------------------------------------------------
   function ago(seconds) {
-    if (seconds < 45) return 'just now';
-    if (seconds < 3600) return Math.round(seconds / 60) + ' min ago';
-    if (seconds < 86400) return Math.round(seconds / 3600) + ' h ago';
+    if (seconds < 45) return tr('just now');
+    if (seconds < 3600) return trn('%(num)s min ago', '%(num)s min ago', Math.round(seconds / 60));
+    if (seconds < 86400) return trn('%(num)s h ago', '%(num)s h ago', Math.round(seconds / 3600));
     return null;
   }
 
+  // when a live thread ends, shown as "ends <this>" ("ends in 5 h", "ends now")
   function until(seconds) {
-    if (seconds <= 0) return 'now';
+    // Translators: when a live thread ends, shown after "ends" ("ends now")
+    if (seconds <= 0) return tr('now');
     var total = Math.max(1, Math.round(seconds / 60));     // whole minutes first, so it never says "60 min"
     var hours = Math.floor(total / 60);
     var minutes = total % 60;
-    if (hours >= 48) return 'in ' + Math.round(hours / 24) + ' days';
-    if (hours >= 1) return 'in ' + hours + ' h' + (minutes ? ' ' + minutes + ' min' : '');
-    return 'in ' + total + ' min';
+    if (hours >= 48) return trn('in %(num)s day', 'in %(num)s days', Math.round(hours / 24));
+    // Translators: when a live thread ends, shown after "ends": hours and minutes from now
+    if (hours >= 1 && minutes) return tr('in %(hours)s h %(minutes)s min', {hours: hours, minutes: minutes});
+    if (hours >= 1) return trn('in %(num)s h', 'in %(num)s h', hours);
+    return trn('in %(num)s min', 'in %(num)s min', total);
   }
 
   function formatTimes(root) {
@@ -42,14 +46,14 @@
     root.querySelectorAll('[data-live-time]').forEach(function (el) {
       var at = Number(el.getAttribute('data-live-time'));
       var when = new Date(at * 1000);
-      el.textContent = ago(now - at) || when.toLocaleString([], { day: 'numeric', month: 'short', hour: 'numeric', minute: '2-digit' });
-      el.title = when.toLocaleString();
+      el.textContent = ago(now - at) || when.toLocaleString(I18N.intl, { day: 'numeric', month: 'short', hour: 'numeric', minute: '2-digit' });
+      el.title = when.toLocaleString(I18N.intl);
       el.setAttribute('datetime', when.toISOString());
     });
     root.querySelectorAll('[data-live-until]').forEach(function (el) {
       var at = Number(el.getAttribute('data-live-until'));
       el.textContent = until(at - now);
-      el.title = new Date(at * 1000).toLocaleString();
+      el.title = new Date(at * 1000).toLocaleString(I18N.intl);
       if (live && at - now <= 0) markEnded();
     });
   }
@@ -69,7 +73,7 @@
         var ended = document.createElement('span');
         ended.className = 'live-ended';
         ended.id = 'live-panel-ended';
-        ended.textContent = 'This live thread has ended';
+        ended.textContent = tr('This live thread has ended');
         status.appendChild(ended);
       }
     }
@@ -100,14 +104,15 @@
       meta.appendChild(document.createTextNode(' · '));
       var corrected = document.createElement('span');
       corrected.className = 'live-corrected';
-      corrected.textContent = 'Corrected';
+      // Translators: a label on a live thread's update that its author crossed out
+      corrected.textContent = tr('Corrected');
       meta.appendChild(corrected);
     }
     var body = document.createElement('div');
     body.className = 'live-update-body';
     if (u.hidden) {
       body.classList.add('font-italic', 'text-muted');
-      body.textContent = 'Hidden by your word filter';
+      body.textContent = tr('Hidden by your word filter');
     } else {
       body.innerHTML = u.body_html || '';            // sanitized when it was written
     }
@@ -126,7 +131,7 @@
     // the reader has scrolled past the top of the thread: say so instead of moving the page
     if (panel.getBoundingClientRect().top < 0) {
       unseen += 1;
-      pill.textContent = unseen === 1 ? '1 new update' : unseen + ' new updates';
+      pill.textContent = trn('%(num)s new update', '%(num)s new updates', unseen);
       pill.hidden = false;
     }
   }
@@ -165,7 +170,7 @@
       .then(function (r) {
         if (r.status === 204) return {};
         return r.json().catch(function () { return {}; }).then(function (data) {
-          if (!r.ok) throw new Error(data.error || 'That didn’t work.');
+          if (!r.ok) throw new Error(data.error || tr('That didn’t work.'));
           return data;
         });
       });
@@ -181,7 +186,7 @@
     var cross = document.createElement('button');
     cross.type = 'button';
     cross.className = 'btn btn-link btn-sm p-0';
-    cross.textContent = struck ? 'Undo correction' : 'Cross out';
+    cross.textContent = struck ? tr('Undo correction') : tr('Cross out');
     cross.addEventListener('click', function () {
       send('/api/live_updates/' + id + '/strike', { on: struck ? '0' : '1' }).then(replace)
         .catch(function (e) { window.alert(e.message); });
@@ -189,9 +194,10 @@
     var del = document.createElement('button');
     del.type = 'button';
     del.className = 'btn btn-link btn-sm p-0 text-danger ml-3';
-    del.textContent = 'Delete';
+    // Translators: a button that deletes a live thread's update
+    del.textContent = tr('Delete');
     del.addEventListener('click', function () {
-      if (!window.confirm('Delete this update? This can’t be undone.')) return;
+      if (!window.confirm(tr('Delete this update? This can’t be undone.'))) return;
       send('/api/live_updates/' + id + '/delete').then(function () { replace({ id: id, gone: true }); })
         .catch(function (e) { window.alert(e.message); });
     });
@@ -205,7 +211,7 @@
   var controlStatus = document.getElementById('live-control-status');
   function control(fields, confirmText) {
     if (confirmText && !window.confirm(confirmText)) return;
-    if (controlStatus) controlStatus.textContent = 'Saving…';
+    if (controlStatus) controlStatus.textContent = tr('Saving…');
     send('/api/post/' + post + '/live', fields).then(function () { window.location.reload(); })
       .catch(function (e) { if (controlStatus) controlStatus.textContent = e.message; });
   }
@@ -223,7 +229,7 @@
   }
   var endButton = document.getElementById('live-end');
   if (endButton) {
-    endButton.addEventListener('click', function () { control({ on: '0' }, 'End the live thread now?'); });
+    endButton.addEventListener('click', function () { control({ on: '0' }, tr('End the live thread now?')); });
   }
 
   var form = document.getElementById('live-update-form');
@@ -233,7 +239,7 @@
     form.addEventListener('submit', function () {
       var text = box.value.trim();
       if (!text) return;
-      status.textContent = 'Posting…';
+      status.textContent = tr('Posting…');
       send('/api/post/' + post + '/live_updates', { body: text }).then(function (u) {
         box.value = '';
         status.textContent = '';
@@ -253,7 +259,7 @@
     summaryBody.textContent = '';
     var note = document.createElement('p');
     note.className = 'mb-0 text-muted' + (thread.summary_hidden ? ' font-italic' : '');
-    note.textContent = thread.summary_hidden ? 'Hidden by your word filter' : 'Key facts and links people should see first.';
+    note.textContent = thread.summary_hidden ? tr('Hidden by your word filter') : tr('Key facts and links people should see first.');
     summaryBody.appendChild(note);
   }
   var summaryForm = document.getElementById('live-summary-form');
@@ -295,7 +301,9 @@
     }).then(function (r) { return r.ok ? r.json() : null; }).then(function (data) {
       if (!data) return;
       if (watching && data.watching > 0) {
-        document.getElementById('live-watching-count').textContent = String(data.watching);
+        // a whole plural for the count (the first paint's line holds a count span, hidden until now)
+        // Translators: how many people are watching a live thread now
+        watching.textContent = '\u00b7 ' + trn('%(num)s watching', '%(num)s watching', data.watching);
         watching.hidden = false;
       }
       if (!data.live) markEnded();

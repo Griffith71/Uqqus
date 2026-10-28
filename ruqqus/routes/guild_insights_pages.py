@@ -10,6 +10,7 @@ import time
 from flask import abort, g, jsonify, render_template, request
 
 from ruqqus.classes.boards import PROFILE_BOARD_NAME
+from ruqqus.classes.mod_logs import MOD_ACTION_LABELS
 from ruqqus.helpers import guild_insights as rules
 from ruqqus.helpers import guild_insights_store as store
 from ruqqus.helpers import insights as view_rules
@@ -66,7 +67,7 @@ def guild_insights_page(guildname, v):
     peak = max([1] + [max(day["joins"], day["leaves"], day["posts"], day["comments"], day["views"]) for day in (data["series"] or [])])
     return render_template("guild/insights.html", v=v, b=board, data=data, windows=rules.WINDOWS, peak=peak,
                            started_note=rules.STARTED_NOTE, privacy_note=rules.PRIVACY_NOTE, signed=rules.signed,
-                           min_chart=rules.MIN_CHART_MEMBERS)
+                           min_chart=rules.MIN_CHART_MEMBERS, action_labels=MOD_ACTION_LABELS)
 
 
 @app.route("/+<guildname>/mod/insights.json", methods=["GET"])

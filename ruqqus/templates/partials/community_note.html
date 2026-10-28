@@ -9,9 +9,9 @@
 {% set note = community_note_of(item) %}
 {% if note %}
 <div class="community-note my-2" role="note">
-  <div class="community-note-title"><i class="fas fa-info-circle mr-1" aria-hidden="true"></i>Community note</div>
+  <div class="community-note-title"><i class="fas fa-info-circle mr-1" aria-hidden="true"></i>{{ _("Community note") }}</div>
   <div class="community-note-body">{{ note.body }}</div>
-  <div class="community-note-by text-small text-muted">Added by {{ 'SITE_NAME' | app_config }} moderators after members asked for context</div>
+  <div class="community-note-by text-small text-muted">{{ _("Added by %(site)s moderators after members asked for context") }}</div>
 </div>
 {% endif %}
 {% endmacro %}

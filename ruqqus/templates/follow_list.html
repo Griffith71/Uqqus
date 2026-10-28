@@ -8,13 +8,21 @@
 {% block pagetype %}curations{% endblock %}
 
 {% block title %}
-<title>{{ title }} · @{{ u.username }} - {{ 'SITE_NAME' | app_config }}</title>
+{% set page_titles = {"following": _("Following · @%(name)s - %(site)s", name=u.username), "followers": _("Followers · @%(name)s - %(site)s", name=u.username), "subscribers": _("Subscribers · @%(name)s - %(site)s", name=u.username), "subscriptions": _("Subscriptions · @%(name)s - %(site)s", name=u.username)} %}
+<title>{{ page_titles[name] }}</title>
 <meta name="robots" content="noindex">
 {% endblock %}
 
 {% block desktopBanner %}{% endblock %}
 {% block PseudoSubmitForm %}{% endblock %}
 {% block pagenav %}{% endblock %}
+
+{% block sidebarblock %}
+{# one of this account's pages, so the sidebar reads as the account's own: Similar accounts in place of Who to follow, its
+   public curations, no Support (partials/sidebar_common.html reads profile_user; the About box stays on the profile) #}
+{% set profile_user = u %}
+{% include "partials/sidebar_common.html" %}
+{% endblock %}
 
 {% block content %}
 <div class="col px-md-4 py-4 follow-list">
@@ -27,7 +35,7 @@
   <ul class="nav settings-nav mb-3">
     {% for key in ("following", "followers", "subscribers", "subscriptions") %}
     {% if key != "subscribers" or lists.show_subscribers %}
-    <li class="nav-item"><a class="nav-link{% if name == key %} active{% endif %}" href="{{ lists[key].url }}"{% if name == key %} aria-current="page"{% endif %}>{{ {"following": "Following", "followers": "Followers", "subscribers": "Subscribers", "subscriptions": "Subscriptions"}[key] }}</a></li>
+    <li class="nav-item"><a class="nav-link{% if name == key %} active{% endif %}" href="{{ lists[key].url }}"{% if name == key %} aria-current="page"{% endif %}>{{ {"following": pgettext("list", "Following"), "followers": _("Followers"), "subscribers": _("Subscribers"), "subscriptions": _("Subscriptions")}[key] }}</a></li>
     {% endif %}
     {% endfor %}
   </ul>
@@ -35,11 +43,15 @@
   {% if closed %}
   <div class="follow-list-closed text-center py-5">
     <i class="fas fa-lock fa-2x text-muted mb-3"></i>
-    <h1 class="h5">@{{ u.username }} keeps this list private</h1>
-    <p class="text-muted mb-0">{{ lists[name].count }} {{ title | lower }}. Only the people @{{ u.username }} chose can see who they are.</p>
+    <h1 class="h5">{{ _("@%(name)s keeps this list private", name=u.username) }}</h1>
+    {# Translators: the number of accounts on a private list, then who may see them; English uses the same words for one and many #}
+    {% set n = lists[name].count %}
+    {% set closed_texts = {"following": ngettext("%(num)s following. Only the people @%(name)s chose can see who they are.", "%(num)s following. Only the people @%(name)s chose can see who they are.", n, name=u.username), "followers": ngettext("%(num)s followers. Only the people @%(name)s chose can see who they are.", "%(num)s followers. Only the people @%(name)s chose can see who they are.", n, name=u.username), "subscribers": ngettext("%(num)s subscribers. Only the people @%(name)s chose can see who they are.", "%(num)s subscribers. Only the people @%(name)s chose can see who they are.", n, name=u.username), "subscriptions": ngettext("%(num)s subscriptions. Only the people @%(name)s chose can see who they are.", "%(num)s subscriptions. Only the people @%(name)s chose can see who they are.", n, name=u.username)} %}
+    <p class="text-muted mb-0">{{ closed_texts[name] }}</p>
   </div>
   {% else %}
-  <h1 class="sr-only">{{ title }} of @{{ u.username }}</h1>
+  {% set list_headings = {"following": _("Following of @%(name)s", name=u.username), "followers": _("Followers of @%(name)s", name=u.username), "subscribers": _("Subscribers of @%(name)s", name=u.username), "subscriptions": _("Subscriptions of @%(name)s", name=u.username)} %}
+  <h1 class="sr-only">{{ list_headings[name] }}</h1>
   <div class="follow-list-rows">
     {% for x in users %}
     <div class="wtf-row d-flex align-items-center" id="list-row-{{ x.id }}">
@@ -52,26 +64,26 @@
       </div>
       {% if v and x.id != v.id %}
         {% if x.id in following %}
-        <span class="text-small text-muted ml-2">Following</span>
+        <span class="text-small text-muted ml-2">{{ pgettext("status", "Following") }}</span>
         {% elif not x.is_nofollow and not x.is_private %}
-        <button type="button" class="btn btn-primary btn-sm wtf-action ml-2" data-url="/api/follow/{{ x.username }}" data-done="Following">Follow</button>
+        <button type="button" class="btn btn-primary btn-sm wtf-action ml-2" data-url="/api/follow/{{ x.username }}" data-done="{{ pgettext('status', 'Following') }}">{{ pgettext("button", "Follow") }}</button>
         {% endif %}
       {% endif %}
     </div>
     {% else %}
-    <p class="text-muted">{% if lists[name].count %}The accounts on this list keep it to themselves.{% else %}Nobody here yet.{% endif %}</p>
+    <p class="text-muted">{% if lists[name].count %}{{ _("The accounts on this list keep it to themselves.") }}{% else %}{{ _("Nobody here yet.") }}{% endif %}</p>
     {% endfor %}
   </div>
 
   {% if hidden %}
-  <p class="text-muted text-small mt-3 mb-0"><i class="fas fa-lock mr-1"></i>Some accounts keep this private, so {{ hidden }} {{ 'isn\'t' if hidden == 1 else 'aren\'t' }} listed.</p>
+  <p class="text-muted text-small mt-3 mb-0"><i class="fas fa-lock mr-1"></i>{{ ngettext("Some accounts keep this private, so %(num)s isn't listed.", "Some accounts keep this private, so %(num)s aren't listed.", hidden) }}</p>
   {% endif %}
 
   {% if page > 1 or next_exists %}
-  <nav aria-label="Pages" class="mt-3">
+  <nav aria-label="{{ _('Pages') }}" class="mt-3">
     <ul class="pagination pagination-sm mb-0">
-      <li class="page-item{% if page <= 1 %} disabled{% endif %}"><a class="page-link" href="?page={{ page - 1 }}">Prev</a></li>
-      <li class="page-item{% if not next_exists %} disabled{% endif %}"><a class="page-link" href="?page={{ page + 1 }}">Next</a></li>
+      <li class="page-item{% if page <= 1 %} disabled{% endif %}"><a class="page-link" href="?page={{ page - 1 }}">{{ pgettext("previous page", "Prev") }}</a></li>
+      <li class="page-item{% if not next_exists %} disabled{% endif %}"><a class="page-link" href="?page={{ page + 1 }}" rel="next">{{ pgettext("next page", "Next") }}</a></li>
     </ul>
   </nav>
   {% endif %}

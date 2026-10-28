@@ -46,9 +46,9 @@
       say('');
       post('/api/circles/' + encodeURIComponent(circle.id) + (adding ? '/add' : '/remove'), { username: username }).then(function (res) {
         box.disabled = false;
-        if (!res.ok) { box.checked = !adding; say(res.data.error || 'Could not change that.', true); return; }
+        if (!res.ok) { box.checked = !adding; say(res.data.error || tr('Could not change that.'), true); return; }
         say(res.data.message || '');
-      }).catch(function () { box.disabled = false; box.checked = !adding; say('Could not change that. Try again.', true); });
+      }).catch(function () { box.disabled = false; box.checked = !adding; say(tr('Could not change that. Try again.'), true); });
     });
     wrap.appendChild(box);
     wrap.appendChild(label);
@@ -62,22 +62,22 @@
     username = item.getAttribute('data-circle-member');
     who.textContent = '@' + username;
     list.textContent = '';
-    say('Loading your circles…');
+    say(tr('Loading your circles…'));
     $('#circleMemberModal').modal('show');
     fetch('/api/circles/for/' + encodeURIComponent(username), { credentials: 'same-origin', headers: { Accept: 'application/json' } })
       .then(function (r) { return r.json().then(function (data) { return { ok: r.ok, data: data }; }); })
       .then(function (res) {
-        if (!res.ok) { say(res.data.error || 'Could not load your circles.', true); return; }
+        if (!res.ok) { say(res.data.error || tr('Could not load your circles.'), true); return; }
         say('');
         if (!res.data.circles.length) {
           var empty = document.createElement('p');
           empty.className = 'text-small text-muted mb-0';
-          empty.textContent = "You haven't made a circle of your own yet. Your Friends circle is automatic: it is everyone you follow who follows you back.";
+          empty.textContent = tr("You haven't made a circle of your own yet. Your Friends circle is automatic: it is everyone you follow who follows you back.");
           list.appendChild(empty);
           return;
         }
         res.data.circles.forEach(function (circle) { list.appendChild(row(circle)); });
       })
-      .catch(function () { say('Could not load your circles. Try again.', true); });
+      .catch(function () { say(tr('Could not load your circles. Try again.'), true); });
   });
 })();

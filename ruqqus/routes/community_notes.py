@@ -12,12 +12,19 @@ from sqlalchemy import func
 
 from ruqqus.classes import Comment, CommunityNote, NoteRequest, Submission, User
 from ruqqus.helpers import community_notes
-from ruqqus.helpers.alerts import send_notification
+from ruqqus.helpers.alerts import notify
+from ruqqus.helpers.i18n_runtime import N_
 from ruqqus.helpers.wrappers import admin_level_required, validate_formkey
 from ruqqus.__main__ import app
 
 SHOWN = 50           # most-requested items on the page
 NOTIFY_LIMIT = 200   # requesters told when a note is added
+
+# what a requester is told (stored in English, drawn in each reader's language: helpers/alerts.py notify)
+NOTE_ADDED = {
+    "post": N_("A community note was added to a post you asked about: [view it](%(link)s)"),
+    "comment": N_("A community note was added to a comment you asked about: [view it](%(link)s)"),
+}
 
 
 def _back(message=None, error=None):
@@ -115,7 +122,7 @@ def admin_note_write(kind, target_id, v):
     # best effort and the link only: nothing about the author, and one failure tells nobody else off
     for user in g.db.query(User).filter(User.id.in_(requesters), User.is_deleted == False).all():
         try:
-            send_notification(user, f"A community note was added to a {kind} you asked about: [view it]({item.permalink})")
+            notify(user, NOTE_ADDED[kind], link=item.permalink)
         except Exception:
             g.db.rollback()
     return _back("Note added.")

@@ -1,6 +1,6 @@
 {% extends "guild/guild_settings.html" %}
 
-{% block pagetitle %}+{{ b.name }} CSS - {{ 'SITE_NAME' | app_config }} Guildmaster Tools{% endblock %}
+{% block pagetitle %}{{ _("+%(guild)s CSS - %(site)s Guildmaster Tools", guild=b.name) }}{% endblock %}
 
 
 {% block content %}
@@ -14,18 +14,18 @@
       <span>
         {{ error if error else request.args.get('error') }}
       </span>
-      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+      <button type="button" class="close" data-dismiss="alert" aria-label="{{ _('Close') }}">
         <span aria-hidden="true"><i class="fas fa-times"></i></span>
       </button>
     </div>
     {% endif %}
-    {% if request.args.get('msg') or msg %}
+    {% if request.args.get('msg') or (msg is string and msg) %}
     <div class="alert alert-success alert-dismissible fade show my-3" role="alert">
       <i class="fas fa-check-circle my-auto" aria-hidden="true"></i>
       <span>
-        {{ msg if msg else request.args.get('msg') }}
+        {{ msg if (msg is string and msg) else msg_text(request.args.get('msg')) }}
       </span>
-      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+      <button type="button" class="close" data-dismiss="alert" aria-label="{{ _('Close') }}">
         <span aria-hidden="true"><i class="fas fa-times"></i></span>
       </button>
     </div>
@@ -58,12 +58,12 @@
 
         <div id="description">
 
-          <h2 class="h5" id="guild-css-block" name="guild_css">Guild Styling</h2>
+          <h2 class="h5" id="guild-css-block" name="guild_css">{{ _("Guild Styling") }}</h2>
 
 
           {% set mod = b.has_mod(v) %}
           {% if mod and mod.perm_config and mod.perm_appearance %}
-          <p class="text-small text-muted">Edit the guild's css file.</p>
+          <p class="text-small text-muted">{{ _("Edit the guild's css file.") }}</p>
 
           <div class="settings-section rounded">
 
@@ -73,10 +73,10 @@
 
               <div class="w-lg-100">
                 <div class="input-group mb-2">
-                  <textarea class="form-control rounded" id="css" aria-label="With textarea" placeholder="custom_css" rows="{{ b.css | lines }}" name="css" form="profile-settings" maxlength="50000" style="font-family:monospace">{{ b.css }}</textarea>
+                  <textarea class="form-control rounded" id="css" aria-label="{{ _('With textarea') }}" placeholder="custom_css" rows="{{ b.css | lines }}" name="css" form="profile-settings" maxlength="50000" style="font-family:monospace">{{ b.css }}</textarea>
                 </div>
 
-                <small>Limit of 50000 characters</small>
+                <small>{{ ngettext("Limit of %(num)s character", "Limit of %(num)s characters", 50000) }}</small>
 
               </div>
 
@@ -92,7 +92,7 @@
                 </p>
                 {% endif %}
 
-                <button class="btn btn-primary ml-auto" id="save-css" onclick="mod_post('/mod/{{ b.base36id }}/settings/css', 'css', 'save-css');">Save</button>
+                <button class="btn btn-primary ml-auto" id="save-css" onclick="mod_post('/mod/{{ b.base36id }}/settings/css', 'css', 'save-css');">{{ pgettext("button", "Save") }}</button>
 
               </div>
 
@@ -100,7 +100,7 @@
 
           </div>
           {% else %}
-          <p class="text-small text-muted">This is the guild's custom CSS file.</p>
+          <p class="text-small text-muted">{{ _("This is the guild's custom CSS file.") }}</p>
 
           <div class="settings-section rounded">
 
@@ -110,7 +110,7 @@
 
               <div class="w-lg-100">
                 <div class="input-group mb-2">
-                  <textarea class="form-control rounded" id="css" aria-label="With textarea" placeholder="custom_css" rows="{{ b.css | lines }}" name="description" form="profile-settings" maxlength="1000" style="font-family:monospace;"readonly>{{ b.css }}</textarea>
+                  <textarea class="form-control rounded" id="css" aria-label="{{ _('With textarea') }}" placeholder="custom_css" rows="{{ b.css | lines }}" name="description" form="profile-settings" maxlength="1000" style="font-family:monospace;"readonly>{{ b.css }}</textarea>
                 </div>
 
               </div>

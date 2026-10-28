@@ -13,8 +13,8 @@
 
 {% macro flair_filter(b, flairs, chosen, sort, t) %}
 {% if flairs %}
-<nav class="flair-filter" aria-label="Filter +{{ b.name }} by flair">
-  <a class="flair-filter-all{% if not chosen %} is-on{% endif %}" href="{{ b.permalink }}?sort={{ sort }}&t={{ t }}"{% if not chosen %} aria-current="true"{% endif %}>All</a>
+<nav class="flair-filter" aria-label="{{ _('Filter +%(guild)s by flair', guild=b.name) }}">
+  <a class="flair-filter-all{% if not chosen %} is-on{% endif %}" href="{{ b.permalink }}?sort={{ sort }}&t={{ t }}"{% if not chosen %} aria-current="true"{% endif %}>{{ pgettext("filter", "All") }}</a>
   {% for f in flairs %}
     {% set on = f[0] in chosen %}
     {% set next = (chosen | reject("equalto", f[0]) | list) if on else ((chosen | list) + [f[0]]) %}
@@ -27,12 +27,12 @@
 
 {% macro flair_item(p, v) %}
 {% if may_set_flair(p, v) %}
-<a class="dropdown-item" href="javascript:void(0)" data-set-flair="{{ p.base36id }}" data-guild="{{ p.board.name }}"><i class="fas fa-tag fa-fw"></i>Set flair</a>
+<a class="dropdown-item" href="javascript:void(0)" data-set-flair="{{ p.base36id }}" data-guild="{{ p.board.name }}"><i class="fas fa-tag fa-fw"></i>{{ _("Set flair") }}</a>
 {% endif %}
 {% endmacro %}
 
 {% macro flair_button(p, v) %}
 {% if may_set_flair(p, v) %}
-<button class="btn btn-link btn-block btn-lg text-left text-muted" data-dismiss="modal" data-set-flair="{{ p.base36id }}" data-guild="{{ p.board.name }}"><i class="fas fa-tag fa-fw text-center text-muted mr-3"></i>Set flair</button>
+<button class="btn btn-link btn-block btn-lg text-left text-muted" data-dismiss="modal" data-set-flair="{{ p.base36id }}" data-guild="{{ p.board.name }}"><i class="fas fa-tag fa-fw text-center text-muted mr-3"></i>{{ _("Set flair") }}</button>
 {% endif %}
 {% endmacro %}

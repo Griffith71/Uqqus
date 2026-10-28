@@ -11,6 +11,8 @@ import hmac
 import json
 import re
 
+from ruqqus.helpers.i18n_runtime import tr_lazy
+
 CODE_SECONDS = 60             # an authorization code is used within a minute, once
 TOKEN_SECONDS = 300           # the access token only reads /oidc/userinfo, right after the code is swapped
 ID_TOKEN_SECONDS = 300
@@ -19,8 +21,9 @@ _VERIFIER = re.compile(r"^[A-Za-z0-9\-._~]{43,128}$")
 _CHALLENGE = re.compile(r"^[A-Za-z0-9\-_]{43}$")
 _STATE = re.compile(r"^[\x21-\x7e]{1,512}$")       # printable ASCII, no spaces: it goes back in the address
 
-NOT_SET_UP = "Open Chat on the site once first, so your chats and their keys are ready."
-REFUSED = "This account can't use chat apps."
+# shown only (the sign-in page of a chat app): translated each time they are used
+NOT_SET_UP = tr_lazy("Open Chat on the site once first, so your chats and their keys are ready.")
+REFUSED = tr_lazy("This account can't use chat apps.")
 
 
 def b64url(raw):

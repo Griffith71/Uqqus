@@ -51,7 +51,7 @@ def test_where_to_post_is_the_dropdown_in_the_head_like_on_create_a_post():
     assert "Where to post" in head and "Where to post" in submit
     assert '<div id="ic-head" class="ic-head d-flex align-items-center justify-content-between">' in PARTIAL   # no hidden
     assert '<div id="ic-bar" class="ic-bar d-flex align-items-center mt-2">' in PARTIAL
-    tooltip = re.search(r'title="(Your post is listed on your profile either way[^"]+)"', submit).group(1)
+    tooltip = re.search(r'''title="\{\{ _\('(Your post is listed on your profile either way[^']+)'\) \}\}"''', submit).group(1)
     assert tooltip in PARTIAL, "the info tooltip must say the same thing as on Create a post"
     assert "Search guilds to post to" in PARTIAL and "Search guilds to post to" in submit
     # My profile is one place beside the guilds; on a guild's page the guild is the place and the profile is off
@@ -89,7 +89,7 @@ def test_it_is_desktop_only_and_loaded_for_members():
 
 def test_the_wording_is_the_communitys_on_every_page():
     # the same invitation on the feed and on a guild page; and no "post to a guild"
-    assert "Share something with the {{ 'SITE_NAME' | app_config }} community..." in PARTIAL
+    assert "Share something with the %(site)s community..." in PARTIAL
     assert "Forwarding to" in PARTIAL and "'+' + name" in SCRIPT
     assert not re.search(r"post(ed)? (to|in) (a |the |this )?guild", PARTIAL, re.I)
 
@@ -100,7 +100,7 @@ def test_the_composer_has_what_the_full_editor_has():
     assert 'class="post-preview d-none"' in PARTIAL
     # from the blue row a GIF is the post's link and the emoji goes into the title; the body toolbar has its own
     assert "commentForm('ic-url');getGif()" in PARTIAL and "commentForm('ic-title');loadEmojis()" in PARTIAL
-    assert 'id="ic-url" name="url" class="form-control" placeholder="Link" aria-label="Link" data-attach-link' in PARTIAL
+    assert '''id="ic-url" name="url" class="form-control" placeholder="{{ pgettext('noun', 'Link') }}" aria-label="{{ pgettext('noun', 'Link') }}" data-attach-link''' in PARTIAL
     # the poll is under the blue row, and anonymity in the audience pill: never under More options
     options = PARTIAL[PARTIAL.index('<div id="ic-options"'):]
     assert "poll_field(" not in options and "anonymous_field(" not in options

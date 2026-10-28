@@ -19,6 +19,7 @@ from ruqqus.__main__ import app
 from ruqqus.helpers import guild_roles as rules
 from ruqqus.helpers import guild_role_store as store
 from ruqqus.helpers import guild_channel_store as channel_store
+from ruqqus.helpers.i18n_runtime import tr
 
 
 def _now():
@@ -86,7 +87,7 @@ def guild_role_create(guildname, board, v):
     store.make_role(g.db, board.id, name, _severity(name), colour, perms)
     _log(board, v, "role_create", name)
     g.db.commit()
-    return _page(board, v, notice=f"The role {name} was made.")[0]
+    return _page(board, v, notice=tr("The role %(role)s was made.", role=name))[0]
 
 
 @app.route("/+<guildname>/mod/roles/<int:role_id>/edit", methods=["POST"])
@@ -107,7 +108,7 @@ def guild_role_edit(guildname, role_id, board, v):
     store.update_role(g.db, board.id, role_id, name, _severity(name), colour, perms)
     _log(board, v, "role_edit", name)
     g.db.commit()
-    return _page(board, v, notice=f"The role {name} was saved.")[0]
+    return _page(board, v, notice=tr("The role %(role)s was saved.", role=name))[0]
 
 
 @app.route("/+<guildname>/mod/roles/<int:role_id>/delete", methods=["POST"])
@@ -119,7 +120,7 @@ def guild_role_delete(guildname, role_id, board, v):
     store.delete_role(g.db, board.id, role_id)
     _log(board, v, "role_delete", found.name)
     g.db.commit()
-    return _page(board, v, notice=f"The role {found.name} was deleted.")[0]
+    return _page(board, v, notice=tr("The role %(role)s was deleted.", role=found.name))[0]
 
 
 @app.route("/+<guildname>/mod/roles/order", methods=["POST"])
@@ -150,7 +151,7 @@ def guild_role_add(guildname, role_id, board, v):
     found = _role_or_404(board, role_id)
     target = _person(board)
     if target is None:
-        return _page(board, v, error="There's no account with that name.", status=404)
+        return _page(board, v, error=tr("There's no account with that name."), status=404)
     joined = channel_store.standing_sets(g.db, board.id, [target.id])
     in_guild = bool(joined["joined"] or joined["contributor"] or joined["mod"])
     refusal = rules.member_refusal(
@@ -158,11 +159,13 @@ def guild_role_add(guildname, role_id, board, v):
         gone=bool(target.is_deleted or target.is_banned), count=store.member_count(g.db, role_id),
         already=store.has_role(g.db, role_id, target.id))
     if refusal:
-        return _page(board, v, error=f"@{target.username}: {refusal}", status=409)
+        # Translators: an account's @handle, then why it can't be given the role (a whole sentence of its own)
+        return _page(board, v, error=tr("@%(name)s: %(refusal)s", name=target.username, refusal=refusal), status=409)
     store.add_member(g.db, role_id, target.id, v.id, _now())
     _log(board, v, "role_assign", found.name, target_user_id=target.id)
     g.db.commit()
-    return _page(board, v, notice=f"@{target.username} now has the role {found.name}.")[0]
+    return _page(board, v, notice=tr("@%(name)s now has the role %(role)s.", name=target.username,
+                                                 role=found.name))[0]
 
 
 @app.route("/+<guildname>/mod/roles/<int:role_id>/remove", methods=["POST"])
@@ -173,7 +176,8 @@ def guild_role_remove(guildname, role_id, board, v):
     found = _role_or_404(board, role_id)
     target = _person(board)
     if target is None or not store.remove_member(g.db, role_id, target.id):
-        return _page(board, v, error="They don't have this role.", status=404)
+        return _page(board, v, error=tr("They don't have this role."), status=404)
     _log(board, v, "role_unassign", found.name, target_user_id=target.id)
     g.db.commit()
-    return _page(board, v, notice=f"@{target.username} no longer has the role {found.name}.")[0]
+    return _page(board, v, notice=tr("@%(name)s no longer has the role %(role)s.", name=target.username,
+                                                 role=found.name))[0]

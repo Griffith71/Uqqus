@@ -8,20 +8,20 @@
   <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="bookmarkFolderTitle">Move to folder</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <h5 class="modal-title" id="bookmarkFolderTitle">{{ _("Move to folder") }}</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="{{ _('Close') }}">
           <span aria-hidden="true"><i class="fas fa-times"></i></span>
         </button>
       </div>
       <div class="modal-body">
-        <p class="text-small text-muted">Pick a folder for this bookmark. Only you see your folders.</p>
+        <p class="text-small text-muted">{{ _("Pick a folder for this bookmark. Only you see your folders.") }}</p>
         <div id="bookmark-folder-list" class="bookmark-folder-list mb-3" aria-live="polite"></div>
         <form id="bookmark-folder-form" onsubmit="return false;">
-          <label class="sr-only" for="bookmark-folder-input">New folder</label>
+          <label class="sr-only" for="bookmark-folder-input">{{ _("New folder") }}</label>
           <div class="input-group">
-            <input type="text" id="bookmark-folder-input" class="form-control" maxlength="40" placeholder="New folder" autocomplete="off">
+            <input type="text" id="bookmark-folder-input" class="form-control" maxlength="40" placeholder="{{ _('New folder') }}" autocomplete="off">
             <div class="input-group-append">
-              <button type="submit" id="bookmark-folder-create" class="btn btn-primary">Create &amp; move</button>
+              <button type="submit" id="bookmark-folder-create" class="btn btn-primary">{{ _("Create &amp; move") }}</button>
             </div>
           </div>
         </form>

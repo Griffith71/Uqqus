@@ -22,6 +22,8 @@ import time
 
 from sqlalchemy import text
 
+from ruqqus.helpers.i18n_runtime import N_
+
 MAX_RINGS = 1000
 
 # kinds of thing that ring (bell_rings.kind)
@@ -96,7 +98,7 @@ def ring_account(actor, kind, target_id, link, guild_name=None, only=None):
     either a set of ids (a circle's people) or a function from a list of ids to the ones that may; None when anyone who
     may see the account may."""
     from flask import g
-    from ruqqus.helpers.alerts import send_to_many
+    from ruqqus.helpers.alerts import notify_many
     try:
         if not claim(g.db, actor.id, kind, target_id):
             g.db.rollback()
@@ -107,7 +109,8 @@ def ring_account(actor, kind, target_id, link, guild_name=None, only=None):
         elif only is not None:
             ids = [i for i in ids if i in only]
         g.db.commit()
-        return send_to_many(ids, account_notice(actor.username, kind, link, guild_name))
+        message, values = account_message(actor.username, kind, link, guild_name)
+        return notify_many(ids, message, **values)
     except Exception as error:          # the action stands; only its bell failed
         g.db.rollback()
         print(f"bell: {kind} {target_id} did not ring: {error}", flush=True)
@@ -117,7 +120,7 @@ def ring_account(actor, kind, target_id, link, guild_name=None, only=None):
 def ring_guild(board, actor, kind, target_id, link):
     """Tell the people who rang `board`'s bell of a guildmaster's announcement, once per (guild, kind, target)."""
     from flask import g
-    from ruqqus.helpers.alerts import send_to_many
+    from ruqqus.helpers.alerts import notify_many
     try:
         if not claim(g.db, board.id, kind, target_id):
             g.db.rollback()
@@ -125,7 +128,8 @@ def ring_guild(board, actor, kind, target_id, link):
         members_only = bool(board.is_private or getattr(board, "is_circle", False))
         ids = guild_ring_ids(g.db, board.id, actor.id, members_only)
         g.db.commit()
-        return send_to_many(ids, guild_notice(board.name, kind, link))
+        message, values = guild_message(board.name, kind, link)
+        return notify_many(ids, message, **values)
     except Exception as error:
         g.db.rollback()
         print(f"bell: +{board.name} {kind} {target_id} did not ring: {error}", flush=True)
@@ -133,36 +137,58 @@ def ring_guild(board, actor, kind, target_id, link):
 
 
 # --- what a notice says: who did it, and a link; never a title or text --------------------------------------------
+# Each notice is stored in English with its message and values (alerts.notify_many), so every reader sees it in their
+# own interface language.
+
+_ACCOUNT_NOTICES = {
+    # Translators: a bell notice. %(name)s is a username, %(guild)s a guild's name (shown after + and @ as here).
+    FORWARD: N_("@%(name)s forwarded [a post](%(link)s) to +%(guild)s."),
+    COMMENT_FORWARD: N_("@%(name)s forwarded [a comment](%(link)s) to +%(guild)s."),
+    REPOST: N_("@%(name)s reposted [a post](%(link)s)."),
+    COMMENT_REPOST: N_("@%(name)s reposted [a comment](%(link)s)."),
+    # Translators: a Space is the site's live audio room or message board.
+    SPACE_LIVE: N_("@%(name)s is live in [a Space](%(link)s)."),
+    STORY: N_("@%(name)s shared [a story](%(link)s)."),
+}
+
+_GUILD_NOTICES = {
+    # Translators: a guild's bell notice. %(guild)s is the guild's name, written after a +.
+    HERALD: N_("+%(guild)s: the guildmasters made [an announcement](%(link)s)."),
+    PIN: N_("+%(guild)s: the guildmasters pinned [a post](%(link)s)."),
+    EVENT: N_("+%(guild)s has [a new event](%(link)s)."),
+}
+
+
 # the stored messages (`notice_msgid`) of each sort, so the notifications page can tell a bell notice from any other
 # notice and bundle the ones from one account or one guild (helpers/notification_groups.py)
 ACCOUNT_NOTICE_IDS = frozenset(_ACCOUNT_NOTICES.values())
 GUILD_NOTICE_IDS = frozenset(_GUILD_NOTICES.values())
 
 
+def account_message(username, kind, link, guild_name=None):
+    """(the notice's English message, its values) for something an account did."""
+    if kind not in _ACCOUNT_NOTICES:
+        raise ValueError(kind)
+    values = {"name": username, "link": link}
+    if kind in (FORWARD, COMMENT_FORWARD):
+        values["guild"] = guild_name
+    return _ACCOUNT_NOTICES[kind], values
+
+
+def guild_message(guild_name, kind, link):
+    """(the notice's English message, its values) for a guild's announcement."""
+    if kind not in _GUILD_NOTICES:
+        raise ValueError(kind)
+    return _GUILD_NOTICES[kind], {"guild": guild_name, "link": link}
+
 
 def account_notice(username, kind, link, guild_name=None):
-    who = f"@{username}"
-    if kind == FORWARD:
-        return f"{who} forwarded [a post]({link}) to +{guild_name}."
-    if kind == COMMENT_FORWARD:
-        return f"{who} forwarded [a comment]({link}) to +{guild_name}."
-    if kind == REPOST:
-        return f"{who} reposted [a post]({link})."
-    if kind == COMMENT_REPOST:
-        return f"{who} reposted [a comment]({link})."
-    if kind == SPACE_LIVE:
-        return f"{who} is live in [a Space]({link})."
-    if kind == STORY:
-        return f"{who} shared [a story]({link})."
-    raise ValueError(kind)
+    """The notice as it is stored (English)."""
+    message, values = account_message(username, kind, link, guild_name)
+    return message % values
 
 
 def guild_notice(guild_name, kind, link):
-    who = f"+{guild_name}"
-    if kind == HERALD:
-        return f"{who}: the guildmasters made [an announcement]({link})."
-    if kind == PIN:
-        return f"{who}: the guildmasters pinned [a post]({link})."
-    if kind == EVENT:
-        return f"{who} has [a new event]({link})."
-    raise ValueError(kind)
+    """The notice as it is stored (English)."""
+    message, values = guild_message(guild_name, kind, link)
+    return message % values

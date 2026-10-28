@@ -11,15 +11,16 @@ from jinja2 import Undefined
 from ruqqus.classes import Submission
 from ruqqus.helpers import comment_permission as cperm
 from ruqqus.helpers.get import get_post
+from ruqqus.helpers.i18n_runtime import tr, tr_lazy
 from ruqqus.helpers.wrappers import is_not_banned, validate_formkey
 from ruqqus.__main__ import app
 
 PERMISSION_CHANGED = {
-    cperm.EVERYONE: "Everyone can comment on this post now.",
-    cperm.FOLLOWED: "Only accounts you follow can comment on this post now.",
-    cperm.PREMIUM: "Only Premium accounts can comment on this post now.",
+    cperm.EVERYONE: tr_lazy("Everyone can comment on this post now."),
+    cperm.FOLLOWED: tr_lazy("Only accounts you follow can comment on this post now."),
+    cperm.PREMIUM: tr_lazy("Only Premium accounts can comment on this post now."),
     cperm.NOBODY: cperm.CLOSED_NOTICE,
-    cperm.GUILDS: "This post has no comments on your profile now. Its comments are in the guilds.",
+    cperm.GUILDS: tr_lazy("This post has no comments on your profile now. Its comments are in the guilds."),
 }
 
 
@@ -40,22 +41,22 @@ def post_comment_permission(pid, v):
     if post.is_deleted or post.is_banned:
         abort(404)
     if post.repost_id not in (0, None) or not post.is_profile_post:
-        return _fail("Only a post on your own profile has this setting. A copy in a guild follows that guild's rules.")
+        return _fail(tr("Only a post on your own profile has this setting. A copy in a guild follows that guild's rules."))
 
     raw = request.values.get("comment_permission")
     mode = cperm.parse(raw, allow_guilds=True) if raw is not None else None
     if mode is None:
-        return _fail("Choose who can comment.")
+        return _fail(tr("Choose who can comment."))
     if mode == cperm.GUILDS:
         # the comments move to the guilds, so there have to be some to hold them (routes/post_spaces.py)
         from ruqqus.routes.post_spaces import spaces_of
         if not spaces_of(post, v):
-            return _fail("This post isn't in any guild, so its comments can only be on your profile.")
+            return _fail(tr("This post isn't in any guild, so its comments can only be on your profile."))
     refused = cperm.refusal(mode, bool(post.is_anonymous))
     if refused:
         return _fail(refused)
     if mode == cperm.mode_of(post):
-        return jsonify({"message": "Nothing changed."})
+        return jsonify({"message": tr("Nothing changed.")})
 
     post.comment_permission = mode
     g.db.add(post)

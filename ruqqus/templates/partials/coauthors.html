@@ -8,5 +8,16 @@
 #}
 {% macro coauthor_line(p, v, dot=true) %}
 {%- set people = coauthors_of(p, v) -%}
-{%- if people %}{{ ' · ' if dot else '' }}<span class="coauthors">with {% for u in people[:5] %}<a href="{{ u.permalink }}" class="user-name"><img src="{{ u.profile_url }}" class="profile-pic-20 mr-1" alt=""><span class="user-name-inner">{{ u.shown_name }}</span>{{ handle_tag(u) }}</a>{% if not loop.last %}, {% endif %}{% endfor %}{% if people | length > 5 %} and <a href="/post/{{ p.base36id }}/written_by">{{ people | length - 5 }} other{{ 's' if people | length - 5 != 1 else '' }}</a>{% endif %}</span>{% endif -%}
+{%- if people -%}
+{%- set names %}{% for u in people[:5] %}<a href="{{ u.permalink }}" class="user-name"><img src="{{ u.profile_url }}" class="profile-pic-20 mr-1" alt=""><span class="user-name-inner">{{ u.shown_name }}</span>{{ handle_tag(u) }}</a>{% if not loop.last %}, {% endif %}{% endfor %}{% endset -%}
+{{ ' · ' if dot else '' }}<span class="coauthors">
+{%- if people | length > 5 -%}
+{#- Translators: beside a post's author, its co-authors: names is the first five, linked; num is how many more there are -#}
+{{ ngettext('with %(names)s and <a href="%(url)s">%(num)s other</a>', 'with %(names)s and <a href="%(url)s">%(num)s others</a>', people | length - 5, names=names, url="/post/" ~ p.base36id ~ "/written_by") }}
+{%- else -%}
+{#- Translators: beside a post's author, its co-authors: names is their names, linked -#}
+{{ _("with %(names)s", names=names) }}
+{%- endif -%}
+</span>
+{%- endif -%}
 {% endmacro %}

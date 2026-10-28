@@ -39,20 +39,20 @@
           <div class="flex-grow-1 ic-main">
             {# the head: where it goes (left) and who sees it (right), both usable before anything is typed #}
             <div id="ic-head" class="ic-head d-flex align-items-center justify-content-between">
-              {% if circle_guild %}<span class="composer-where">Posting to +{{ board.name }}</span>{% else %}
+              {% if circle_guild %}<span class="composer-where">{{ _("Posting to +%(guild)s", guild=board.name) }}</span>{% else %}
               {# Where to post (assets/js/where_to_post.js): My profile and guilds, with a guild search, in one dropdown #}
               <details class="composer-pill composer-where-pill" id="composer-where">
-                <summary aria-label="Where to post"><i class="fas fa-location-arrow" aria-hidden="true"></i><span id="ic-where-line" class="composer-where-text" data-where-line>Posting to {{ '+' ~ board.name if board else 'your profile' }}</span><i class="fas fa-chevron-down composer-pill-caret"></i></summary>
+                <summary aria-label="{{ _('Where to post') }}"><i class="fas fa-location-arrow" aria-hidden="true"></i><span id="ic-where-line" class="composer-where-text" data-where-line>{% if board %}{{ _("Posting to +%(guild)s", guild=board.name) }}{% else %}{{ _("Posting to your profile") }}{% endif %}</span><i class="fas fa-chevron-down composer-pill-caret"></i></summary>
                 <div class="composer-pill-menu composer-where-menu">
-                  <label for="ic-forward-input" class="audience-title d-block">Where to post<i class="fas fa-info-circle text-gray-400 ml-1" data-toggle="tooltip" data-placement="top" title="Your post is listed on your profile either way. Choose My profile to have its comments there too, and add guilds to post it straight into them: each guild gets its own copy with its own votes and comments."></i></label>
+                  <label for="ic-forward-input" class="audience-title d-block">{{ _("Where to post") }}<i class="fas fa-info-circle text-gray-400 ml-1" data-toggle="tooltip" data-placement="top" title="{{ _('Your post is listed on your profile either way. Choose My profile to have its comments there too, and add guilds to post it straight into them: each guild gets its own copy with its own votes and comments.') }}"></i></label>
                   {{ where_profile("ic-where", "ic-forward-input", "ic-forward-add", not board) }}
                   <div id="ic-forward-chips" class="ic-forward-chips mt-2" hidden>
-                    <span class="text-small text-muted mr-1">Forwarding to</span><span id="ic-forward-chip-list"></span>
+                    <span class="text-small text-muted mr-1">{{ _("Forwarding to") }}</span><span id="ic-forward-chip-list"></span>
                   </div>
                   <div class="input-group mt-2">
-                    <input class="form-control" id="ic-forward-input" type="text" maxlength="50" placeholder="Search guilds to post to" autocomplete="off">
+                    <input class="form-control" id="ic-forward-input" type="text" maxlength="50" placeholder="{{ _('Search guilds to post to') }}" autocomplete="off">
                     <div class="input-group-append">
-                      <button class="btn btn-secondary" id="ic-forward-add" type="button">Add</button>
+                      <button class="btn btn-secondary" id="ic-forward-add" type="button">{{ pgettext("button", "Add") }}</button>
                     </div>
                   </div>
                 </div>
@@ -60,44 +60,44 @@
               {% endif %}
               {% if not circle_guild %}
               <details class="composer-pill" id="composer-audience">
-                <summary aria-label="Who can see this post">
+                <summary aria-label="{{ _('Who can see this post') }}">
                   <i class="fas fa-globe-americas" id="composer-audience-icon" aria-hidden="true"></i>
-                  <span id="composer-audience-label">Public</span>
+                  <span id="composer-audience-label">{{ pgettext("audience", "Public") }}</span>
                   <i class="fas fa-chevron-down composer-pill-caret"></i>
                 </summary>
                 <div class="composer-pill-menu">{{ audience_field(0, "ic-audience", (), circle_choices(v)) }}{{ anonymous_field(false, "ic-anonymous", compact=true) }}</div>
               </details>
               {% endif %}
             </div>
-            <textarea id="ic-title" name="title" rows="1" maxlength="280" class="form-control ic-title" placeholder="Share something with the {{ 'SITE_NAME' | app_config }} community..." aria-label="Post title"></textarea>
+            <textarea id="ic-title" name="title" rows="1" class="form-control ic-title" placeholder="{{ _('Share something with the %(site)s community...') }}" aria-label="{{ _('Post title') }}"></textarea>
 
             <div id="ic-more" class="ic-more" hidden>
               {# the blue row, right under the title: what is attached here is the post's own (shown on its card in feeds) #}
-              <div class="composer-tools ic-tools" role="toolbar" aria-label="Add to your post">
+              <div class="composer-tools ic-tools" role="toolbar" aria-label="{{ _('Add to your post') }}">
                 {# with linked storage (helpers/media) the picture goes to the member's own account and the form carries its id #}
                 {% if v.can_submit_image or media_offered() %}
-                <label class="composer-tool" for="ic-file" title="Add a picture"><i class="fas fa-image"></i><span class="sr-only">Add a picture</span></label>
+                <label class="composer-tool" for="ic-file" title="{{ _('Add a picture') }}"><i class="fas fa-image"></i><span class="sr-only">{{ _("Add a picture") }}</span></label>
                 <input type="file" id="ic-file" name="file" accept="image/*" hidden{% if media_offered() %} data-media-main="ic-media"{% endif %}>
                 {% if media_offered() %}<input type="hidden" name="media" id="ic-media" value="">{% endif %}
                 {% endif %}
                 {# a video (to the member's own channel, the post links to it) or a sound: shown once the uploader is there #}
-                <button type="button" class="composer-tool" data-post-media="video" data-target="ic-body" title="Add a video" aria-label="Add a video" hidden><i class="fas fa-video"></i></button>
-                <button type="button" class="composer-tool" data-post-media="audio" data-target="ic-body" title="Add a sound" aria-label="Add a sound" hidden><i class="fas fa-volume-up"></i></button>
-                <button type="button" class="composer-tool" id="ic-link-btn" title="Add a link" aria-label="Add a link"><i class="fas fa-link"></i></button>
-                <button type="button" class="composer-tool composer-tool-text" id="ic-gif-btn" onclick="commentForm('ic-url');getGif()" data-toggle="modal" data-target="#gifModal" title="Add a GIF" aria-label="Add a GIF">GIF</button>
-                <button type="button" class="composer-tool" id="ic-emoji-btn" onclick="commentForm('ic-title');loadEmojis()" data-toggle="modal" data-target="#emojiModal" title="Add an emoji" aria-label="Add an emoji"><i class="fas fa-smile-beam"></i></button>
-                <button type="button" class="composer-tool" id="composer-poll-btn" title="Add a poll" aria-label="Add a poll"><i class="fas fa-chart-bar"></i></button>
+                <button type="button" class="composer-tool" data-post-media="video" data-target="ic-body" title="{{ _('Add a video') }}" aria-label="{{ _('Add a video') }}" hidden><i class="fas fa-video"></i></button>
+                <button type="button" class="composer-tool" data-post-media="audio" data-target="ic-body" title="{{ _('Add a sound') }}" aria-label="{{ _('Add a sound') }}" hidden><i class="fas fa-volume-up"></i></button>
+                <button type="button" class="composer-tool" id="ic-link-btn" title="{{ _('Add a link') }}" aria-label="{{ _('Add a link') }}"><i class="fas fa-link"></i></button>
+                <button type="button" class="composer-tool composer-tool-text" id="ic-gif-btn" onclick="commentForm('ic-url');getGif()" data-toggle="modal" data-target="#gifModal" title="{{ _('Add a GIF') }}" aria-label="{{ _('Add a GIF') }}">GIF</button>
+                <button type="button" class="composer-tool" id="ic-emoji-btn" onclick="commentForm('ic-title');loadEmojis()" data-toggle="modal" data-target="#emojiModal" title="{{ _('Add an emoji') }}" aria-label="{{ _('Add an emoji') }}"><i class="fas fa-smile-beam"></i></button>
+                <button type="button" class="composer-tool" id="composer-poll-btn" title="{{ _('Add a poll') }}" aria-label="{{ _('Add a poll') }}"><i class="fas fa-chart-bar"></i></button>
                 <span id="ic-file-name" class="text-small text-muted text-truncate ic-file-name"></span>
               </div>
               <div id="ic-link-row" class="composer-attach-link" hidden>
-                <input type="url" id="ic-url" name="url" class="form-control" placeholder="Link" aria-label="Link" data-attach-link>
+                <input type="url" id="ic-url" name="url" class="form-control" placeholder="{{ pgettext('noun', 'Link') }}" aria-label="{{ pgettext('noun', 'Link') }}" data-attach-link>
               </div>
               <div class="composer-poll">{{ poll_field([], poll_default_hours, "ic-poll") }}</div>
 
               <div class="comment-write post-editor mt-2">
                 <div class="post-toolbar" data-target="ic-body"></div>
                 <div class="input-group">
-                  <textarea id="ic-body" name="body" rows="3" class="form-control" placeholder="Add more (optional, markdown works)" aria-label="Post text"></textarea>
+                  <textarea id="ic-body" name="body" rows="3" class="form-control" placeholder="{{ _('Add more (optional, markdown works)') }}" aria-label="{{ _('Post text') }}"></textarea>
                 </div>
                 <div class="post-preview d-none"></div>
                 {# a picture in the text without linked storage: the body toolbar's Image opens this (composer_card.js) #}
@@ -105,30 +105,30 @@
                 <input type="file" id="ic-body-image" name="body_image" accept="image/*" hidden>
                 {% endif %}
               </div>
-              <div class="form-text text-small"><a href="/help/formatting" target="_blank" rel="noopener">Formatting help</a></div>
+              <div class="form-text text-small"><a href="/help/formatting" target="_blank" rel="noopener">{{ _("Formatting help") }}</a></div>
 
               <div id="ic-options" class="ic-options mt-2" hidden>
                 {% if circle_guild %}{% set circle_flairs = flairs_for_guild(board, v) %}{% if circle_flairs %}
                 {# a Circle guild's post is made straight in it: its author picks the flair (helpers/guild_flair.py) #}
-                <label class="mt-3 d-block" for="ic-guild-flair">Flair{% if board.require_flair %} <span class="text-muted font-weight-normal">(required)</span>{% endif %}</label>
+                <label class="mt-3 d-block" for="ic-guild-flair">{{ _("Flair") }}{% if board.require_flair %} <span class="text-muted font-weight-normal">{{ _("(required)") }}</span>{% endif %}</label>
                 <select class="custom-select" id="ic-guild-flair" name="guild_flair">
-                  <option value="">{{ 'Pick a flair' if board.require_flair else 'No flair' }}</option>
+                  <option value="">{{ _('Pick a flair') if board.require_flair else _('No flair') }}</option>
                   {% for f in circle_flairs %}<option value="{{ f.id }}">{{ f.name }}</option>{% endfor %}
                 </select>
                 {% endif %}{% endif %}
                 <div data-where-comment>{{ comment_permission_field(0, "ic-permission") }}</div>
                 {{ disclosure_field(false, false, "ic-disclosure") }}
-                <label class="mt-3 d-block">Sensitive content</label>
+                <label class="mt-3 d-block">{{ _("Sensitive content") }}</label>
                 <div class="custom-control custom-checkbox">
                   <input type="checkbox" class="custom-control-input" id="ic-sensitive" name="sensitive"{% if board and board.is_sensitive %} checked disabled{% endif %}>
-                  <label class="custom-control-label" for="ic-sensitive">Blur this post until viewers click to reveal it.</label>
+                  <label class="custom-control-label" for="ic-sensitive">{{ _("Blur this post until viewers click to reveal it.") }}</label>
                 </div>
                 {% if not circle_guild %}
                 <div class="ic-later mt-3">
-                  <label class="d-block">Save for later</label>
-                  <button type="button" class="btn btn-secondary btn-sm" id="save-draft"><i class="far fa-save mr-1"></i>Save draft</button>
-                  <button type="button" class="btn btn-secondary btn-sm" id="schedule-open" aria-haspopup="dialog" aria-expanded="false"><i class="far fa-clock mr-1"></i>Schedule</button>
-                  <button type="button" class="btn btn-link btn-sm text-muted" id="drafts-open" data-toggle="modal" data-target="#draftsModal"><i class="far fa-folder-open mr-1"></i>Drafts<span class="badge badge-pill badge-secondary ml-1 d-none" id="drafts-count"></span></button>
+                  <label class="d-block">{{ _("Save for later") }}</label>
+                  <button type="button" class="btn btn-secondary btn-sm" id="save-draft"><i class="far fa-save mr-1"></i>{{ _("Save draft") }}</button>
+                  <button type="button" class="btn btn-secondary btn-sm" id="schedule-open" aria-haspopup="dialog" aria-expanded="false"><i class="far fa-clock mr-1"></i>{{ pgettext("button", "Schedule") }}</button>
+                  <button type="button" class="btn btn-link btn-sm text-muted" id="drafts-open" data-toggle="modal" data-target="#draftsModal"><i class="far fa-folder-open mr-1"></i>{{ _("Drafts") }}<span class="badge badge-pill badge-secondary ml-1 d-none" id="drafts-count"></span></button>
                   <span id="draft-status" class="d-block text-small text-muted mt-1" role="status"></span>
                 </div>
                 {% endif %}
@@ -136,10 +136,10 @@
             </div>
 
             <div id="ic-bar" class="ic-bar d-flex align-items-center mt-2">
-              <button type="button" id="ic-options-toggle" class="btn btn-link btn-sm text-muted px-1" aria-expanded="false" aria-controls="ic-options">More options<i class="fas fa-chevron-down composer-pill-caret ml-1"></i></button>
-              <a href="/submit{% if board %}?guild={{ board.name | urlencode }}{% endif %}" class="btn btn-link btn-sm text-muted px-1">Full editor</a>
+              <button type="button" id="ic-options-toggle" class="btn btn-link btn-sm text-muted px-1" aria-expanded="false" aria-controls="ic-options">{{ _("More options") }}<i class="fas fa-chevron-down composer-pill-caret ml-1"></i></button>
+              <a href="/submit{% if board %}?guild={{ board.name | urlencode }}{% endif %}" class="btn btn-link btn-sm text-muted px-1">{{ _("Full editor") }}</a>
               <span id="ic-count" class="ml-auto mr-3 text-small text-muted" aria-live="polite"></span>
-              <button type="submit" id="ic-post" class="btn btn-primary btn-sm" disabled>Post</button>
+              <button type="submit" id="ic-post" class="btn btn-primary btn-sm" disabled>{{ pgettext("button", "Post") }}</button>
             </div>
             <div id="ic-error" class="text-danger text-small mt-2" role="alert" hidden></div>
           </div>
@@ -148,7 +148,7 @@
       {% else %}
       <div class="card-body">
         <a href="/signup">
-          <input type="text" class="form-control" placeholder="Share something with the {{ 'SITE_NAME' | app_config }} community..." aria-label="Share something" readonly>
+          <input type="text" class="form-control" placeholder="{{ _('Share something with the %(site)s community...') }}" aria-label="{{ _('Share something') }}" readonly>
         </a>
       </div>
       {% endif %}

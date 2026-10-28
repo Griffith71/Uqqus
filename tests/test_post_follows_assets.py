@@ -85,8 +85,10 @@ def test_the_partial_defines_every_macro_the_menus_call():
 
 def test_the_menu_macros_render():
     """Rendered for real: a macro that is missing is an UndefinedError on every feed page."""
-    from jinja2 import Environment, FileSystemLoader
-    env = Environment(loader=FileSystemLoader(str(RUQQUS / "templates")))
+    from jinja2 import FileSystemLoader
+    from ruqqus.helpers.i18n_jinja import environment
+    env = environment(loader=FileSystemLoader(str(RUQQUS / "templates")))
+    env.install_null_translations(newstyle=True)                      # the menus' text is marked (docs/i18n.md)
     env.globals["author_of"] = lambda item, viewer: item.author       # the site's Jinja global (helpers/anonymity.py)
     module = env.get_template("partials/post_menu_items.html").make_module()
     post = NS(base36id="7k", follow_state="can_follow", is_banned=False, deleted_utc=0, author_id=1)

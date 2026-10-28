@@ -14,6 +14,8 @@ modules next to this one (base.py is their interface).
 """
 import re
 
+from ruqqus.helpers.i18n_runtime import tr, tr_lazy
+
 MIB = 1024 * 1024
 
 IMAGE, AUDIO, VIDEO = "image", "audio", "video"
@@ -70,19 +72,23 @@ HOSTED = ("youtube", "dailymotion")
 
 # the order linked-account kinds are offered in, and how the composer names them
 SERVICE_ORDER = ("google", "microsoft", "dailymotion", "dev")
-SERVICE_LABELS = {"google": "Google", "microsoft": "Microsoft", "dailymotion": "Dailymotion", "dev": "Test storage"}
+# the services' own names stay as they are; the stand-in for local testing is described (translated when shown)
+SERVICE_LABELS = {"google": "Google", "microsoft": "Microsoft", "dailymotion": "Dailymotion",
+                  "dev": tr_lazy("Test storage")}
 PROVIDER_LABELS = {"gdrive": "Google Drive", "onedrive": "OneDrive", "youtube": "YouTube",
-                   "dailymotion": "Dailymotion", "dev": "test storage"}
+                   "dailymotion": "Dailymotion",
+                   # Translators: the stand-in storage used when testing the site, as in "your test storage"
+                   "dev": tr_lazy("test storage")}
 # what a member gets, said on the button that links the account (each service's own free allowance)
 SERVICE_HINTS = {
-    ("google", IMAGE): "15 GB free in your Google Drive",
-    ("google", AUDIO): "15 GB free in your Google Drive",
-    ("google", VIDEO): "On your own YouTube channel",
-    ("microsoft", IMAGE): "5 GB free in your OneDrive",
-    ("microsoft", AUDIO): "5 GB free in your OneDrive",
-    ("dailymotion", VIDEO): "On your own Dailymotion channel, up to 15 videos a day",
-    ("dev", IMAGE): "On this machine, for testing",
-    ("dev", AUDIO): "On this machine, for testing",
+    ("google", IMAGE): tr_lazy("15 GB free in your Google Drive"),
+    ("google", AUDIO): tr_lazy("15 GB free in your Google Drive"),
+    ("google", VIDEO): tr_lazy("On your own YouTube channel"),
+    ("microsoft", IMAGE): tr_lazy("5 GB free in your OneDrive"),
+    ("microsoft", AUDIO): tr_lazy("5 GB free in your OneDrive"),
+    ("dailymotion", VIDEO): tr_lazy("On your own Dailymotion channel, up to 15 videos a day"),
+    ("dev", IMAGE): tr_lazy("On this machine, for testing"),
+    ("dev", AUDIO): tr_lazy("On this machine, for testing"),
 }
 
 
@@ -166,17 +172,32 @@ def may_upload(user):
     return bool(user) and not getattr(user, "is_suspended", False) and not getattr(user, "is_deleted", False)
 
 
+def _too_big(kind, limit):
+    """Whole for each kind Ruqqus serves itself (video is the hosting site's to limit)."""
+    if kind == AUDIO:
+        return tr("That file is too big. The limit for audio files is %(size)s MB.", size=limit // MIB)
+    return tr("That file is too big. The limit for image files is %(size)s MB.", size=limit // MIB)
+
+
+def _not_that_kind(kind):
+    if kind == AUDIO:
+        return tr("That does not look like an audio file.")
+    if kind == VIDEO:
+        return tr("That does not look like a video file.")
+    return tr("That does not look like an image file.")
+
+
 def check_request(kind, filename, size):
     """What a new upload must satisfy before the provider is asked for an address.
     Returns the ext to expect. Raises MediaError with a message for the member."""
     if kind not in KINDS:
-        raise MediaError("Choose an image, audio or video file.")
+        raise MediaError(tr("Choose an image, audio or video file."))
     try:
         size = int(size)
     except (TypeError, ValueError):
-        raise MediaError("The file's size is missing.")
+        raise MediaError(tr("The file's size is missing."))
     if size <= 0:
-        raise MediaError("That file is empty.")
+        raise MediaError(tr("That file is empty."))
 
     if kind == VIDEO:
         return ""        # the video site decides formats and length
@@ -184,10 +205,11 @@ def check_request(kind, filename, size):
     ext = ext_from_name(filename)
     if kind_of(ext) != kind:
         allowed = ", ".join(sorted(e for e, (k, _) in TYPES.items() if k == kind))
-        raise MediaError(f"That file type is not supported here. Use one of: {allowed}.")
+        # Translators: %(types)s is a list of file extensions, such as "gif, jpg, png, webp"
+        raise MediaError(tr("That file type is not supported here. Use one of: %(types)s.", types=allowed))
     limit = SIZE_MAX[kind]
     if size > limit:
-        raise MediaError(f"That file is too big. The limit for {kind} files is {limit // MIB} MB.", 413)
+        raise MediaError(_too_big(kind, limit), 413)
     return ext
 
 
@@ -195,9 +217,9 @@ def check_uploaded(kind, head, size):
     """After the upload: the bytes themselves decide. Returns the real ext."""
     ext = sniff(head)
     if ext is None or kind_of(ext) != kind:
-        raise MediaError(f"That does not look like {'an' if kind in (IMAGE, AUDIO) else 'a'} {kind} file.")
+        raise MediaError(_not_that_kind(kind))
     if size is not None and int(size) > SIZE_MAX[kind]:
-        raise MediaError(f"That file is too big. The limit for {kind} files is {SIZE_MAX[kind] // MIB} MB.", 413)
+        raise MediaError(_too_big(kind, SIZE_MAX[kind]), 413)
     return ext
 
 

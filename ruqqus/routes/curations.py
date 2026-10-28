@@ -13,12 +13,13 @@ from ruqqus.helpers.blocks import hide_blocked
 from ruqqus.helpers.get import *
 from ruqqus.classes import *
 from ruqqus.__main__ import app, cache
-from ruqqus.routes.front import region_filter_condition, ALL_SUBCAT_IDS
+from ruqqus.routes.front import region_filter_condition, ALL_CATEGORY_CHOICES
 from ruqqus.helpers.regions import REGION_CENTROIDS
 from ruqqus.helpers.languages import LANGUAGE_NAMES, choosable, known_codes, language_condition
 from ruqqus.helpers.base36 import base36decode
 from ruqqus.helpers import category_filter, curation_feed, feed_algorithm, feed_server, safe_fetch, search_filters
 from ruqqus.helpers import curation_members
+from ruqqus.helpers.i18n_runtime import tr, trn
 from urllib.parse import quote
 
 PREVIEW_POSTS = 10
@@ -439,7 +440,7 @@ def curation_edit_post(slug, v):
         # private and Circle guilds only: a banned guild is in no list and no feed, so it neither leaks a name nor
         # should keep the owner from publishing with a message about private guilds
         if any(b.is_private or getattr(b, "is_circle", False) for b in boards):
-            return jsonify({"error": "A private guild can only go in a private curation. Take it out first."}), 409
+            return jsonify({"error": tr("A private guild can only go in a private curation. Take it out first.")}), 409
 
     curation.name = name
     curation.description = description[:500]
@@ -607,8 +608,9 @@ def user_add_to_curation(username, v):
     if curation_members.add_user(g.db, curation.id, target.id):
         g.db.commit()
         _invalidate_curation_feed(curation.id)
-        return jsonify({"message": f"@{target.username} added to {curation.name}."})
-    return jsonify({"message": f"@{target.username} is already in {curation.name}."})
+        return jsonify({"message": tr("@%(name)s added to %(curation)s.", name=target.username, curation=curation.name)})
+    return jsonify({"message": tr("@%(name)s is already in %(curation)s.", name=target.username,
+                                   curation=curation.name)})
 
 
 @app.route("/api/guild/<name>/add_to_curation", methods=["POST"])
@@ -624,8 +626,9 @@ def guild_add_to_curation(name, v):
     if curation_members.add_guild(g.db, curation.id, board.id):
         g.db.commit()
         _invalidate_curation_feed(curation.id)
-        return jsonify({"message": f"+{board.name} added to {curation.name}."})
-    return jsonify({"message": f"+{board.name} is already in {curation.name}."})
+        return jsonify({"message": tr("+%(guild)s added to %(curation)s.", guild=board.name, curation=curation.name)})
+    return jsonify({"message": tr("+%(guild)s is already in %(curation)s.", guild=board.name,
+                                   curation=curation.name)})
 
 
 @app.route("/&<slug>/set_region_filter", methods=["POST"])
@@ -657,7 +660,7 @@ def curation_set_language_filter(slug, v):
     requested = request.form.get("codes", "")
     codes = [x for x in requested.split(",") if x]
     for code in codes:
-        if code not in LANGUAGE_NAMES:
+        if not choosable(code):
             abort(404)
 
     curation.language_filter = ",".join(known_codes(codes))     # row keys
@@ -677,7 +680,7 @@ def curation_set_category_filter(slug, v):
     requested = request.form.get("cats", "")
     ids = [category_filter.parse_token(x) for x in requested.split(",") if x]
     for i in ids:
-        if not i.isdigit() or int(i) not in ALL_SUBCAT_IDS:
+        if i not in ALL_CATEGORY_CHOICES:        # not a number, or no such subcategory or category (-N: filed under it alone)
             abort(404)
 
     # "0007" and a repeated id are one category: stored once as a plain number, so the value stays short
@@ -730,21 +733,21 @@ def _left_out_ids(form, v):
     limit = feed_algorithm.MAX_EXCLUDED
     accounts, guilds = _typed_names(form.get("exclude_users")), _typed_names(form.get("exclude_guilds"))
     if len(accounts) > limit:
-        raise feed_algorithm.AlgorithmError(f"Leave out these accounts: {limit} at most.")
+        raise feed_algorithm.AlgorithmError(tr("Leave out these accounts: %(limit)s at most.", limit=limit))
     if len(guilds) > limit:
-        raise feed_algorithm.AlgorithmError(f"Leave out these guilds: {limit} at most.")
+        raise feed_algorithm.AlgorithmError(tr("Leave out these guilds: %(limit)s at most.", limit=limit))
 
     user_ids, guild_ids = [], []
     for name in accounts:
         user = _account_to_leave_out(name, v)
         if user is None:
-            raise feed_algorithm.AlgorithmError(f"No account called @{name[:30]}.")
+            raise feed_algorithm.AlgorithmError(tr("No account called @%(name)s.", name=name[:30]))
         if user.id not in user_ids:
             user_ids.append(user.id)
     for name in guilds:
         board = search_filters.find_guild(name, v)
         if board is None:
-            raise feed_algorithm.AlgorithmError(f"No guild called +{name[:30]}.")
+            raise feed_algorithm.AlgorithmError(tr("No guild called +%(guild)s.", guild=name[:30]))
         if board.id not in guild_ids:
             guild_ids.append(board.id)
     return {"exclude_users": ",".join(str(i) for i in user_ids), "exclude_guilds": ",".join(str(i) for i in guild_ids)}
@@ -794,7 +797,7 @@ def curation_set_algorithm(slug, v):
     g.db.commit()
     _invalidate_curation_feed(curation.id)
 
-    return redirect(f"{curation.permalink}/edit?alg_msg={quote('Algorithm saved.')}#algorithm")
+    return redirect(f"{curation.permalink}/edit?alg_msg={quote(tr('Algorithm saved.'))}#algorithm")
 
 
 @app.route("/&<slug>/preview_algorithm", methods=["POST"])
@@ -819,7 +822,8 @@ def curation_preview_algorithm(slug, v):
             return jsonify({"error": error.message, "summary": feed_algorithm.describe(spec)}), 400
         ids = feed_server.keep_order(named, _seen_among(curation, named, v))
         ids = curation_feed.drop_left_out(g.db, ids, spec)
-        note = f"The server named {len(named)} post{'' if len(named) == 1 else 's'}; you can see {len(ids)} of them."
+        note = trn("The server named %(num)s post; you can see %(seen)s of them.",
+                   "The server named %(num)s posts; you can see %(seen)s of them.", len(named), seen=len(ids))
     else:
         try:
             ids = curation_feed.limited(g.db, lambda: _curation_ids(

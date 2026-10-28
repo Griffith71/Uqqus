@@ -11,11 +11,11 @@ export class MediaRefused extends Error {}
 function explain(error) {
   const name = error && error.name;
   if (name === "NotAllowedError" || name === "SecurityError") {
-    return "The browser didn't allow the microphone. Allow it for this site in the address bar, then try again.";
+    return window.tr("The browser didn't allow the microphone. Allow it for this site in the address bar, then try again.");
   }
-  if (name === "NotFoundError" || name === "OverconstrainedError") return "No microphone was found.";
-  if (name === "NotReadableError") return "The microphone is in use by another app.";
-  return "The microphone couldn't be started.";
+  if (name === "NotFoundError" || name === "OverconstrainedError") return window.tr("No microphone was found.");
+  if (name === "NotReadableError") return window.tr("The microphone is in use by another app.");
+  return window.tr("The microphone couldn't be started.");
 }
 
 export class LocalMedia {
@@ -30,7 +30,7 @@ export class LocalMedia {
   // video: whether to ask for the camera (the server may have said audio only)
   static async open(video) {
     if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-      throw new MediaRefused("This browser can't make calls.");
+      throw new MediaRefused(window.tr("This browser can't make calls."));
     }
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: AUDIO_CONSTRAINTS, video: video ? VIDEO_CONSTRAINTS : false });
@@ -116,11 +116,11 @@ export class LocalMedia {
     } catch (error) {
       const name = error && error.name;
       if (name === "NotAllowedError" || name === "SecurityError") {
-        throw new MediaRefused("The browser didn't allow the camera. Allow it for this site in the address bar, then try again.");
+        throw new MediaRefused(window.tr("The browser didn't allow the camera. Allow it for this site in the address bar, then try again."));
       }
-      if (name === "NotFoundError" || name === "OverconstrainedError") throw new MediaRefused("No camera was found.");
-      if (name === "NotReadableError") throw new MediaRefused("The camera is in use by another app.");
-      throw new MediaRefused("The camera couldn't be started.");
+      if (name === "NotFoundError" || name === "OverconstrainedError") throw new MediaRefused(window.tr("No camera was found."));
+      if (name === "NotReadableError") throw new MediaRefused(window.tr("The camera is in use by another app."));
+      throw new MediaRefused(window.tr("The camera couldn't be started."));
     }
     const track = fresh.getVideoTracks()[0];
     this.stream.addTrack(track);

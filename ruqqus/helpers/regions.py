@@ -1,6 +1,8 @@
 import time
+from functools import lru_cache
 from math import radians, sin, cos, asin, sqrt
 
+from babel.support import LazyProxy
 from flask import g
 
 from ruqqus.classes.paypal import PayPalTxn
@@ -142,8 +144,9 @@ COUNTRY_TO_REGION = {
 
 # Display-only: ISO alpha-2 -> human-readable name, generated 1:1 from the
 # MapChart export's labels. Not used for any geo-resolution logic - purely for
-# rendering a readable country list on the /regions page.
-COUNTRY_NAMES = {
+# rendering a readable country list on the /regions page. The English as the site
+# always wrote it; COUNTRY_NAMES below names each country in the reader's language.
+ENGLISH_COUNTRY_NAMES = {
     "AD": "Andorra", "AE": "United Arab Emirates", "AF": "Afghanistan",
     "AG": "Antigua and Barbuda", "AI": "Anguilla", "AL": "Albania", "AM": "Armenia",
     "AO": "Angola", "AR": "Argentina", "AS": "American Samoa", "AT": "Austria", "AU": "Australia",
@@ -199,6 +202,7 @@ COUNTRY_NAMES = {
 }
 
 
+
 @lru_cache(maxsize=64)
 def _territories(babel_code):
     """CLDR's country names in one language (Babel), never typed: {code: name}."""
@@ -207,6 +211,23 @@ def _territories(babel_code):
         return dict(Locale.parse(babel_code).territories)
     except (ValueError, TypeError):
         return {}
+
+
+def country_name(code, english=None):
+    """A country named for the reader: in English exactly the table's name (so English pages don't change), in another
+    interface language CLDR's (helpers/i18n.py names languages the same way), falling back to the English."""
+    from ruqqus.helpers import i18n
+    from ruqqus.helpers.i18n_runtime import current_locale
+    english = english if english is not None else ENGLISH_COUNTRY_NAMES.get(code, code)
+    key = current_locale()
+    if key in (i18n.ENGLISH, i18n.PSEUDO, i18n.PSEUDO_RTL):
+        return english
+    return _territories(i18n.babel_code(key)).get(code) or english
+
+
+# ISO alpha-2 -> the name shown (worked out each time it is used, in that request's language: never stored or cached)
+COUNTRY_NAMES = {_code: LazyProxy(country_name, _code, _name, enable_cache=False)
+                 for _code, _name in ENGLISH_COUNTRY_NAMES.items()}
 
 
 # Reverse of COUNTRY_TO_REGION: region code -> sorted list of its country codes.

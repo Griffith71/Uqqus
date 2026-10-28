@@ -3,91 +3,95 @@
 {# The search operators. Every row comes from search.OPERATORS (helpers/search_query.py), so a new operator shows here by itself. #}
 
 {% block title %}
-<title>Search tips - {{ 'SITE_NAME' | app_config }}</title>
-<meta name="description" content="Find posts by account, guild, date, language and more.">
+<title>{{ _("Search tips - %(site)s") }}</title>
+<meta name="description" content="{{ _("Find posts by account, guild, date, language and more.") }}">
 {% endblock %}
 
 {% block content %}
 
-<h1>Search tips</h1>
+<h1>{{ _("Search tips") }}</h1>
 
-<p>Type words to find posts with them in the title or the text. Add operators to narrow the search, in any order:</p>
+<p>{{ _("Type words to find posts with them in the title or the text. Add operators to narrow the search, in any order:") }}</p>
 
 <pre class="search-help-example"><code>cats "black cat" -dogs from:@alice in:+pets since:2026-01-01 has:image lang:en</code></pre>
 
-<h2>Start with a symbol</h2>
+<h2>{{ _("Tabs") }}</h2>
 
-<p>The same four symbols work in the search box, in posts and comments, and in <code>in:</code> and <code>from:</code>:</p>
+<p>{{ _("The tabs on the results page choose what is searched: <b>Posts</b>, <b>Comments</b>, <b>Guilds</b>, <b>Accounts</b> or <b>Curations</b>. A tab keeps your words, and the search box keeps the tab when you search for something else. Guild, account and curation searches look at the words only: the operators below work on posts and comments. A guild's own search has Posts and Comments.") }}</p>
 
-<ul>
-  <li><code>+pets</code>: a guild. Search <code>+pets</code> to find guilds with that in their name.</li>
-  <li><code>@alice</code>: an account. Search <code>@alice</code> to find accounts.</li>
-  <li><code>#gaming</code>: a topic, one of the site's categories or subcategories (Arts, Gaming, News, Film &amp; TV: letters and numbers only, so <code>#filmtv</code>). Search <code>#gam</code> to find the guilds in the topics with that in their name; <code>in:#gaming</code> narrows a post search to them.</li>
-  <li><code>&amp;news</code>: a public curation, by its name or the short name under it. Search <code>&amp;news</code> to find them; <code>in:&amp;news</code> narrows a post search to that curation's guilds and accounts. Private curations are never found.</li>
-</ul>
+<h2>{{ _("Start with a symbol") }}</h2>
 
-<p>To search for the words themselves, put them in quotes: <code>"#gaming"</code>.</p>
-
-<h2>Words</h2>
+{# Translators: on this page, keep everything inside <code>...</code> exactly as it is: it is what a reader types #}<p>{{ _("The same four symbols work in the search box, in posts and comments, and in <code>%(in_op)s</code> and <code>%(from_op)s</code>. Typing one first is the same as choosing its tab, and wins over the tab you are on:", in_op="in:", from_op="from:") }}</p>
 
 <ul>
-  <li><code>black cat</code>: posts with both words, anywhere in the title or the text.</li>
-  <li><code>"black cat"</code>: posts with those words together, in that order.</li>
-  <li><code>-dogs</code> or <code>-"hot dogs"</code>: leaves out posts with that word or those words.</li>
+  <li>{{ _("<code>+pets</code>: a guild. Search <code>+pets</code> to find guilds with that in their name.") }}</li>
+  <li>{{ _("<code>@alice</code>: an account. Search <code>@alice</code> to find accounts.") }}</li>
+  <li>{{ _("<code>#gaming</code>: a topic, one of the site's categories or subcategories (Arts, Gaming, News, Film &amp; TV: letters and numbers only, so <code>#filmtv</code>). Search <code>#gam</code> to find the guilds in the topics with that in their name; <code>%(in_topic)s</code> narrows a post search to them.", in_topic="in:#gaming") }}</li>
+  {% set curation_name %}<code>&amp;news</code>{% endset %}<li>{{ _("%(curation)s: a public curation, by its name or the short name under it. Search %(curation)s to find them; <code>%(in_curation)s</code> narrows a post search to that curation's guilds and accounts. Private curations are never found.", curation=curation_name, in_curation="in:&news") }}</li>
 </ul>
 
-<h2>Operators</h2>
+<p>{{ _('To search for the words themselves, put them in quotes: <code>"#gaming"</code>.') }}</p>
+
+<h2>{{ _("Words") }}</h2>
+
+<ul>
+  <li>{{ _("<code>black cat</code>: posts with both words, anywhere in the title or the text.") }}</li>
+  <li>{{ _('<code>"black cat"</code>: posts with those words together, in that order.') }}</li>
+  <li>{{ _('<code>-dogs</code> or <code>-"hot dogs"</code>: leaves out posts with that word or those words.') }}</li>
+</ul>
+
+<h2>{{ _("Operators") }}</h2>
 
 <div class="table-responsive">
 <table class="table search-help-table">
   <thead>
-    <tr><th scope="col">Operator</th><th scope="col">Finds</th></tr>
+    <tr><th scope="col">{{ pgettext("search operators table column", "Operator") }}</th><th scope="col">{{ pgettext("search operators table column", "Finds") }}</th></tr>
   </thead>
   <tbody>
     {% for op in search.OPERATORS %}
     <tr id="op-{{ op.key }}">
       <td>
         <code>{{ op.example }}</code>
-        {% if op.aliases %}<div class="text-muted text-small">also {% for a in op.aliases %}<code>{{ a }}:</code>{% if not loop.last %}, {% endif %}{% endfor %}</div>{% endif %}
-        <div class="text-muted text-small">{% if op.negatable %}<code>-{{ op.key }}:</code> leaves them out{% else %}no minus{% endif %}</div>
+        {% if op.aliases %}{% set alias_names %}{% for a in op.aliases %}<code>{{ a }}:</code>{% if not loop.last %}, {% endif %}{% endfor %}{% endset %}<div class="text-muted text-small">{# Translators: names is a list of other names for the same search operator #}{{ _("also %(names)s", names=alias_names) }}</div>{% endif %}
+        <div class="text-muted text-small">{% if op.negatable %}{{ _("<code>-%(key)s:</code> leaves them out", key=op.key) }}{% else %}{{ pgettext("search operator that can't be negated with a minus sign", "no minus") }}{% endif %}</div>
       </td>
-      <td>{{ op.help }}{% if op.values %}<div class="text-muted text-small">{% for value in op.values %}<code>{{ op.key }}:{{ value }}</code>{% if not loop.last %} {% endif %}{% endfor %}</div>{% endif %}</td>
+      <td>{{ msg_text(op.help) }}{% if op.values %}<div class="text-muted text-small">{% for value in op.values %}<code>{{ op.key }}:{{ value }}</code>{% if not loop.last %} {% endif %}{% endfor %}</div>{% endif %}</td>
     </tr>
     {% endfor %}
   </tbody>
 </table>
 </div>
 
-<h2>Good to know</h2>
+<h2>{{ _("Good to know") }}</h2>
 
 <ul>
-  <li>Days are in UTC. <code>before:</code> and <code>after:</code> leave the day itself out; <code>since:</code> and <code>until:</code> include it.</li>
-  <li><code>from:</code> never finds an account's anonymous posts, and <code>-from:</code> never hides them. Nobody can find out who wrote an anonymous post by searching.</li>
-  <li>A search only finds what you could see anyway: your word filter, blocks, mutes and private guilds all still apply. A search for one account (<code>from:</code>) shows their posts even if you muted them.</li>
-  <li>An account, guild, topic or curation you can't see reads as one that does not exist.</li>
-  <li>A search can hold up to {{ search.MAX_PARTS }} words and operators, and up to {{ search.MAX_CHARS }} characters.</li>
-  <li>The search page has an <b>Advanced search</b> form that writes the operators for you.</li>
+  <li>{{ _("Days are in UTC. <code>%(before)s</code> and <code>%(after)s</code> leave the day itself out; <code>%(since)s</code> and <code>%(until)s</code> include it.", before="before:", after="after:", since="since:", until="until:") }}</li>
+  <li>{{ _("<code>%(from_op)s</code> never finds an account's anonymous posts, and <code>%(not_from)s</code> never hides them. Nobody can find out who wrote an anonymous post by searching.", from_op="from:", not_from="-from:") }}</li>
+  <li>{{ _("A search only finds what you could see anyway: your word filter, blocks, mutes and private guilds all still apply. A search for one account (<code>%(from_op)s</code>) shows their posts even if you muted them.", from_op="from:") }}</li>
+  <li>{{ _("An account, guild, topic or curation you can't see reads as one that does not exist.") }}</li>
+  {# Translators: parts is the most words and operators a search can hold, chars the most characters #}<li>{{ _("A search can hold up to %(parts)s words and operators, and up to %(chars)s characters.", parts=search.MAX_PARTS, chars=search.MAX_CHARS) }}</li>
+  <li>{{ _("The search page has an <b>Advanced search</b> form that writes the operators for you.") }}</li>
 </ul>
 
-<h2>Searching comments</h2>
+<h2>{{ _("Searching comments") }}</h2>
 
-<p>On the search page, switch from <b>Posts</b> to <b>Comments</b> to search what people wrote in comments (the same switch is on a guild's own search). Words, "phrases" and <code>-words</code> are looked for in the comment's text. These operators work on comments: <code>from:</code>, <code>in:</code> (where the comment is: its post's guild, topic or curation), <code>since:</code>, <code>until:</code>, <code>after:</code>, <code>before:</code>, <code>on:</code>, <code>min_votes:</code>, <code>is:ai</code> and <code>is:partnership</code>. The ones about a post's own content (<code>has:</code>, <code>lang:</code>, <code>domain:</code>, <code>url:</code>, <code>flair:</code>, <code>is:forward</code>, <code>min_comments:</code>) are left out with a note.</p>
+<p>{{ _("On the search page, open the <b>Comments</b> tab to search what people wrote in comments (a guild's own search has it too). Words, \"phrases\" and <code>-words</code> are looked for in the comment's text. These operators work on comments: <code>%(from_op)s</code>, <code>%(in_op)s</code> (where the comment is: its post's guild, topic or curation), <code>%(since)s</code>, <code>%(until)s</code>, <code>%(after)s</code>, <code>%(before)s</code>, <code>%(on)s</code>, <code>%(min_votes)s</code>, <code>%(is_ai)s</code> and <code>%(is_partnership)s</code>. The ones about a post's own content (<code>%(has)s</code>, <code>%(lang)s</code>, <code>%(domain)s</code>, <code>%(url)s</code>, <code>%(flair)s</code>, <code>%(is_forward)s</code>, <code>%(min_comments)s</code>) are left out with a note.", from_op="from:", in_op="in:", since="since:", until="until:", after="after:", before="before:", on="on:", min_votes="min_votes:", is_ai="is:ai", is_partnership="is:partnership", has="has:", lang="lang:", domain="domain:", url="url:", flair="flair:", is_forward="is:forward", min_comments="min_comments:") }}</p>
 
 <ul>
-  <li>A comment search needs a word of at least 3 letters, or <code>from:</code> or <code>in:</code>.</li>
-  <li>Comments follow the same rules as everywhere else: your word filter, the accounts you blocked or muted, and private guilds and Circle posts you can't open are never shown. Comments under a post you can't open are left out, so a page can have fewer than 25 results.</li>
-  <li>Anonymous comments are never found with <code>from:</code>.</li>
+  <li>{{ _("A comment search needs a word of at least 3 letters, or <code>%(from_op)s</code> or <code>%(in_op)s</code>.", from_op="from:", in_op="in:") }}</li>
+  <li>{{ _("Comments follow the same rules as everywhere else: your word filter, the accounts you blocked or muted, and private guilds and Circle posts you can't open are never shown. Comments under a post you can't open are left out, so a page can have fewer than 25 results.") }}</li>
+  <li>{{ _("Anonymous comments are never found with <code>%(from_op)s</code>.", from_op="from:") }}</li>
 </ul>
 
-<h2>Examples</h2>
+<h2>{{ _("Examples") }}</h2>
 
-<ul>
-  <li><code>from:@alice has:poll</code>: Alice's polls.</li>
-  <li><code>in:+news domain:example.com since:2026-01-01</code>: links to example.com in +news this year.</li>
-  <li><code>in:#gaming has:video</code>: videos in any guild about gaming.</li>
-  <li><code>recipe lang:es -is:forward</code>: recipes in Spanish, each post once.</li>
-  <li><code>"open source" min_votes:50 min_comments:10</code>: well-discussed posts about open source.</li>
-  <li>Comments: <code>from:@alice since:2026-01-01 recipe</code>, or <code>in:+pets "vet bill"</code>.</li>
+{# Translators: each example is a search as it is typed: it stays as it is #}<ul>
+  <li>{{ _("<code>%(example)s</code>: Alice's polls.", example="from:@alice has:poll") }}</li>
+  <li>{{ _("<code>%(example)s</code>: links to example.com in +news this year.", example="in:+news domain:example.com since:2026-01-01") }}</li>
+  <li>{{ _("<code>%(example)s</code>: videos in any guild about gaming.", example="in:#gaming has:video") }}</li>
+  <li>{{ _("<code>%(example)s</code>: recipes in Spanish, each post once.", example="recipe lang:es -is:forward") }}</li>
+  {% set open_source %}"open source" min_votes:50 min_comments:10{% endset %}<li>{{ _("<code>%(example)s</code>: well-discussed posts about open source.", example=open_source) }}</li>
+  {% set vet_bill %}in:+pets "vet bill"{% endset %}<li>{{ _("Comments: <code>%(example)s</code>, or <code>%(other)s</code>.", example="from:@alice since:2026-01-01 recipe", other=vet_bill) }}</li>
 </ul>
 
 {% endblock %}

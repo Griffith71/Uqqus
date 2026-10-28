@@ -8,19 +8,21 @@
   <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="circleMemberTitle">Add to circles</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <h5 class="modal-title" id="circleMemberTitle">{{ _("Add to circles") }}</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="{{ _('Close') }}">
           <span aria-hidden="true"><i class="fas fa-times"></i></span>
         </button>
       </div>
       <div class="modal-body">
-        <p class="text-small text-muted" id="circle-member-note">Your own circles. <span id="circle-member-name"></span> is not told.</p>
+        {% set circle_member_name %}<span id="circle-member-name"></span>{% endset %}
+        {# Translators: %(who)s is the @handle of the account being added, filled in by the page #}
+        <p class="text-small text-muted" id="circle-member-note">{{ _("Your own circles. %(who)s is not told.", who=circle_member_name) }}</p>
         <div id="circle-member-list" role="group" aria-labelledby="circleMemberTitle"></div>
         <div id="circle-member-status" class="text-small mt-2" role="status"></div>
       </div>
       <div class="modal-footer">
-        <a href="/circles" class="btn btn-link text-muted mr-auto">Make or change your circles</a>
-        <button type="button" class="btn btn-primary" data-dismiss="modal">Done</button>
+        <a href="/circles" class="btn btn-link text-muted mr-auto">{{ _("Make or change your circles") }}</a>
+        <button type="button" class="btn btn-primary" data-dismiss="modal">{{ _("Done") }}</button>
       </div>
     </div>
   </div>

@@ -22,11 +22,14 @@ from ruqqus.__main__ import app
 from ruqqus.helpers import guild_wiki as wiki_rules
 from ruqqus.helpers import guild_wiki_store as wiki_store
 from ruqqus.helpers.visibility import board_hidden, text_hidden
+from ruqqus.helpers.i18n_runtime import datetime_text, msg, tr, trn
 
 _DAY = 86400
 
 
 def _error(message, status=400):
+    """An error answer. `message` is shown as it is: translated already (tr), or a helper's English drawn with msg at
+    the call."""
     return jsonify({"error": message}), status
 
 
@@ -78,18 +81,18 @@ def _member_days(board, v):
 def edit_refusal_for(board, page, v):
     """Why `v` can't edit this page now (None: they can). `page` None: making a new page (guildmasters only)."""
     if v is None:
-        return "Sign in to edit the wiki."
+        return tr("Sign in to edit the wiki.")
     gm = _content_gm(board, v)
     if page is None:
         if not gm:
-            return "Only the guild's guildmasters can make new pages."
-        return wiki_rules.page_refusal(wiki_store.page_count(g.db, board.id))
+            return tr("Only the guild's guildmasters can make new pages.")
+        return msg(wiki_rules.page_refusal(wiki_store.page_count(g.db, board.id)))
     founder = g.db.query(User).filter_by(id=board.creator_id).first()
-    return wiki_rules.edit_refusal(
+    return msg(wiki_rules.edit_refusal(
         level=page[4], locked=bool(page[7]), is_content_gm=gm, is_contributor=bool(board.has_contributor(v)),
         member_days=_member_days(board, v), exiled=bool(board.has_ban(v)), suspended=bool(v.is_suspended),
         bot=bool(v.is_bot), blocked_with_founder=bool(founder and founder.id != v.id and v.any_block_exists(founder)),
-        edits_today=wiki_store.edits_since(g.db, board.id, v.id, int(time.time()) - _DAY))
+        edits_today=wiki_store.edits_since(g.db, board.id, v.id, int(time.time()) - _DAY)))
 
 
 def _shown(rev, v):
@@ -98,16 +101,16 @@ def _shown(rev, v):
     if rev is None:
         return None, None
     if rev[8] and not (v and v.admin_level >= 3):
-        return None, "This revision was removed by the site's admins."
+        return None, tr("This revision was removed by the site's admins.")
     if text_hidden(rev[5], v, owner_id=rev[2]):
-        return None, "Hidden by your word filter."
+        return None, tr("Hidden by your word filter.")
     return rev[4], None
 
 
 def _editor_names(rows):
     ids = {row[2] for row in rows}
     users = {u.id: u for u in g.db.query(User).filter(User.id.in_(ids)).all()} if ids else {}
-    return {uid: ("Deleted account" if users.get(uid) is None or users[uid].is_deleted else users[uid].username)
+    return {uid: (tr("Deleted account") if users.get(uid) is None or users[uid].is_deleted else users[uid].username)
             for uid in ids}
 
 
@@ -198,7 +201,7 @@ def guild_wiki_diff(guildname, slug, v):
         abort(404)
     # text an admin removed or the reader's filter hides is not shown in a diff either
     if _shown(a, v)[1] or _shown(b, v)[1]:
-        lines, notice = [], "One of these revisions can't be shown to you."
+        lines, notice = [], tr("One of these revisions can't be shown to you.")
     else:
         lines, notice = wiki_rules.diff(a[3], b[3]), None
     return render_template("guild/wiki_history.html", v=v, b=board, page=page, revisions=None, diff=lines,
@@ -239,14 +242,14 @@ def guild_wiki_save(guildname, slug, v):
         title = wiki_rules.clean_title(request.values.get("title"), slug)
         body = wiki_rules.clean_body(request.values.get("body"))
     except wiki_rules.Refused as e:
-        return _error(str(e))
+        return _error(msg(str(e)))
     now = int(time.time())
     # the revision the editor started from: someone else saving in the meantime is an edit conflict, never a silent
     # overwrite (audit G-03). The typed text stays in the form; the page shows what changed.
     base = request.values.get("base_revision", type=int)
     if page is not None and base is not None and page[5] and base != page[5]:
-        return _error("Someone saved this page while you were editing. Your text is still here: copy it, reload the "
-                      "page to see their changes, and add yours again.", 409)
+        return _error(tr("Someone saved this page while you were editing. Your text is still here: copy it, reload "
+                         "the page to see their changes, and add yours again."), 409)
     if page is None:
         page = wiki_store.create_page(g.db, board.id, slug, title, wiki_rules.MODS, now)
     current = wiki_store.revision(g.db, page[0], page[5]) if page[5] else None
@@ -294,7 +297,7 @@ def guild_wiki_settings(guildname, slug, v):
     try:
         level = wiki_rules.clean_level(request.values.get("edit_level"))
     except wiki_rules.Refused as e:
-        return _error(str(e))
+        return _error(msg(str(e)))
     wiki_store.set_settings(g.db, board.id, page[0], level, request.values.get("locked") == "true")
     _log(board, v, "wiki_settings", slug)
     g.db.commit()
@@ -312,7 +315,7 @@ def guild_wiki_delete(guildname, slug, v):
     if page is None:
         abort(404)
     if slug == wiki_rules.INDEX:
-        return _error("The wiki's first page can be emptied but not deleted.", 409)
+        return _error(tr("The wiki's first page can be emptied but not deleted."), 409)
     wiki_store.delete_page(g.db, board.id, page[0])
     _log(board, v, "wiki_delete", slug)
     g.db.commit()
@@ -361,14 +364,14 @@ def mod_resource_add(bid, board, v):
         label = wiki_rules.clean_label(request.values.get("label"))
         kind, target = wiki_rules.clean_resource_target(request.values.get("kind"), request.values.get("target"))
     except wiki_rules.Refused as e:
-        return _error(str(e))
+        return _error(msg(str(e)))
     refusal = wiki_rules.resources_refusal(len(wiki_store.resources_of(g.db, board.id)))
     if refusal:
-        return _error(refusal, 409)
+        return _error(msg(refusal), 409)
     if kind == wiki_rules.LINK:
         from ruqqus.helpers.filters import filter_comment_html
         if filter_comment_html(f'<a href="{html.escape(target)}">x</a>'):
-            return _error("That site can't be linked here.")
+            return _error(tr("That site can't be linked here."))
     wiki_store.add_resource(g.db, board.id, label, kind, target, label_severity=_severity(label))
     _log(board, v, "resources_edit", label)
     g.db.commit()
@@ -418,7 +421,7 @@ def resources_for(board, v):
 
 def wiki_title(page, v):
     """A page's title as this reader may see it: "Hidden page" when their word filter hides it (audit G-04)."""
-    return "Hidden page" if text_hidden(page[8] or 0, v) else page[3]
+    return tr("Hidden page") if text_hidden(page[8] or 0, v) else page[3]
 
 
 app.jinja_env.globals.update(guild_resources_for=resources_for, wiki_title=wiki_title)
@@ -426,7 +429,8 @@ app.jinja_env.globals.update(guild_resources_for=resources_for, wiki_title=wiki_
 
 @app.template_filter("timestamp_label")
 def timestamp_label(utc):
-    return time.strftime("%d %b %Y, %H:%M UTC", time.gmtime(int(utc or 0)))
+    # Translators: a date and time, followed by the time zone it is in (UTC)
+    return tr("%(time)s UTC", time=datetime_text(int(utc or 0), "%d %b %Y, %H:%M"))
 
 
 @app.template_filter("age_label")
@@ -435,6 +439,15 @@ def age_label(utc):
     age = max(0, int(time.time()) - int(utc or 0))
     for size, unit in ((31536000, "year"), (2592000, "month"), (86400, "day"), (3600, "hour"), (60, "minute")):
         if age >= size:
-            n = age // size
-            return f"{n} {unit}{'s' if n != 1 else ''} ago"
-    return "just now"
+            return _AGES[unit](age // size)
+    return tr("just now")
+
+
+# one whole phrase per unit, for the plural forms of each language
+_AGES = {
+    "year": lambda n: trn("%(num)s year ago", "%(num)s years ago", n),
+    "month": lambda n: trn("%(num)s month ago", "%(num)s months ago", n),
+    "day": lambda n: trn("%(num)s day ago", "%(num)s days ago", n),
+    "hour": lambda n: trn("%(num)s hour ago", "%(num)s hours ago", n),
+    "minute": lambda n: trn("%(num)s minute ago", "%(num)s minutes ago", n),
+}

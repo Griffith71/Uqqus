@@ -115,13 +115,14 @@
         picture.src = story.picture;
         els.card.appendChild(picture);
       } else {
-        els.card.appendChild(element('p', 'story-text', 'This picture is no longer available.'));
+        els.card.appendChild(element('p', 'story-text', tr('This picture is no longer available.')));
       }
       if (story.text) els.card.appendChild(element('p', 'story-caption', story.text));
     } else if (story.kind === 'video' && YOUTUBE_ID.test(story.video || '')) {
       var frame = element('iframe', 'story-frame');
       frame.src = 'https://www.youtube.com/embed/' + story.video + '?autoplay=1&rel=0&playsinline=1';
-      frame.title = 'Video';
+      // Translators: the name of a story's video player (read by screen readers)
+      frame.title = tr('Video');
       frame.allow = 'autoplay; encrypted-media; picture-in-picture';
       frame.setAttribute('allowfullscreen', '');
       els.card.appendChild(frame);
@@ -132,14 +133,17 @@
     els.actions.textContent = '';
     els.views.textContent = '';
     if (state.data.mine) {
-      if (typeof story.views === 'number') els.views.textContent = story.views + (story.views === 1 ? ' view' : ' views');
-      els.actions.appendChild(button('Delete', 'story-action', function () { removeStory(story); }));
+      if (typeof story.views === 'number') els.views.textContent = trn('%(num)s view', '%(num)s views', story.views);
+      // Translators: a button that deletes the story being watched
+      els.actions.appendChild(button(tr('Delete'), 'story-action', function () { removeStory(story); }));
       if (state.kind === 'highlight') {
-        els.actions.appendChild(button('Rename', 'story-action', renameHighlight));
-        els.actions.appendChild(button('Delete highlight', 'story-action', deleteHighlight));
+        // Translators: a button that renames the Highlight being watched
+        els.actions.appendChild(button(tr('Rename'), 'story-action', renameHighlight));
+        els.actions.appendChild(button(tr('Delete highlight'), 'story-action', deleteHighlight));
       }
     } else {
-      els.actions.appendChild(button('Report', 'story-action', function () { reportStory(story); }));
+      // Translators: a button that reports the story being watched
+      els.actions.appendChild(button(tr('Report'), 'story-action', function () { reportStory(story); }));
     }
   }
 
@@ -246,55 +250,55 @@
   // ------------------------------------------------------------------ the viewer's actions
 
   function removeStory(story) {
-    if (!window.confirm('Delete this story? It leaves every Highlight too.')) return;
+    if (!window.confirm(tr('Delete this story? It leaves every Highlight too.'))) return;
     send('/api/stories/' + story.id + '/delete').then(function (res) {
-      if (!res.ok) { say(res.data.error || 'Could not delete that.'); return; }
+      if (!res.ok) { say(res.data.error || tr('Could not delete that.')); return; }
       var stories = state.data.stories;
       stories.splice(state.index, 1);
       if (!stories.length) { closeViewer(); window.location.reload(); return; }
       buildBars();
       show(Math.min(state.index, stories.length - 1));
-    }).catch(function () { say('Could not delete that. Try again.'); });
+    }).catch(function () { say(tr('Could not delete that. Try again.')); });
   }
 
   function reportStory(story) {
-    var reason = window.prompt('Why are you reporting this story? (optional)', '');
+    var reason = window.prompt(tr('Why are you reporting this story? (optional)'), '');
     if (reason === null) return;
     pause();
     send('/api/stories/' + story.id + '/report', { reason: reason }).then(function (res) {
-      say(res.ok ? (res.data.message || 'Thanks.') : (res.data.error || 'Could not report that.'));
-    }).catch(function () { say('Could not report that. Try again.'); });
+      say(res.ok ? (res.data.message || tr('Thanks.')) : (res.data.error || tr('Could not report that.')));
+    }).catch(function () { say(tr('Could not report that. Try again.')); });
   }
 
   function renameHighlight() {
-    var title = window.prompt('Name this highlight', state.data.title);
+    var title = window.prompt(tr('Name this highlight'), state.data.title);
     if (title === null) return;
     send('/api/highlights/' + state.data.id + '/rename', { title: title }).then(function (res) {
-      if (!res.ok) { say(res.data.error || 'Could not rename that.'); return; }
+      if (!res.ok) { say(res.data.error || tr('Could not rename that.')); return; }
       window.location.reload();
-    }).catch(function () { say('Could not rename that. Try again.'); });
+    }).catch(function () { say(tr('Could not rename that. Try again.')); });
   }
 
   function deleteHighlight() {
-    if (!window.confirm('Delete this highlight? Its stories stay in your archive.')) return;
+    if (!window.confirm(tr('Delete this highlight? Its stories stay in your archive.'))) return;
     send('/api/highlights/' + state.data.id + '/delete').then(function (res) {
-      if (!res.ok) { say(res.data.error || 'Could not delete that.'); return; }
+      if (!res.ok) { say(res.data.error || tr('Could not delete that.')); return; }
       window.location.reload();
-    }).catch(function () { say('Could not delete that. Try again.'); });
+    }).catch(function () { say(tr('Could not delete that. Try again.')); });
   }
 
   // ------------------------------------------------------------------ opening one
 
   function openUser(username) {
     getJSON('/api/stories/' + encodeURIComponent(username)).then(function (res) {
-      if (!res.ok || !openViewer(res.data, 'user')) window.alert('There is nothing to watch right now.');
-    }).catch(function () { window.alert('Could not load that. Try again.'); });
+      if (!res.ok || !openViewer(res.data, 'user')) window.alert(tr('There is nothing to watch right now.'));
+    }).catch(function () { window.alert(tr('Could not load that. Try again.')); });
   }
 
   function openHighlight(id) {
     getJSON('/api/highlights/' + encodeURIComponent(id)).then(function (res) {
-      if (!res.ok || !openViewer(res.data, 'highlight')) window.alert('There is nothing to watch right now.');
-    }).catch(function () { window.alert('Could not load that. Try again.'); });
+      if (!res.ok || !openViewer(res.data, 'highlight')) window.alert(tr('There is nothing to watch right now.'));
+    }).catch(function () { window.alert(tr('Could not load that. Try again.')); });
   }
 
   document.addEventListener('click', function (event) {
@@ -314,8 +318,9 @@
     if (!viewer.hidden) {
       if (event.key === 'Tab') { keepFocusInside(event); return; }
       if (event.key === 'Escape') { event.preventDefault(); closeViewer(); }
-      else if (event.key === 'ArrowRight') { event.preventDefault(); step(1); }
-      else if (event.key === 'ArrowLeft') { event.preventDefault(); step(-1); }
+      // the arrow pointing the way the page reads goes forward (left, in a right-to-left page)
+      else if (event.key === 'ArrowRight') { event.preventDefault(); step(document.documentElement.dir === 'rtl' ? -1 : 1); }
+      else if (event.key === 'ArrowLeft') { event.preventDefault(); step(document.documentElement.dir === 'rtl' ? 1 : -1); }
       return;
     }
     var ring = event.target.closest ? event.target.closest('[data-story-user]') : null;
@@ -385,7 +390,7 @@
     sayComposer('');
     if (kind === 'image' && window.MediaUpload) {
       window.MediaUpload.status().then(function (s) {
-        if (!s.offered) sayComposer('Picture stories are not available on this site yet.', true);
+        if (!s.offered) sayComposer(tr('Picture stories are not available on this site yet.'), true);
       });
     }
   }
@@ -423,23 +428,23 @@
       var kind = checked('kind');
       var chosen = window.AudienceField ? window.AudienceField.read(field('story-audience').querySelector('[data-audience-field]'))
         : { audience: checked('audience') || '0', circles: [] };
-      if (chosen.audience === '4' && !chosen.circles.length) { sayComposer('Choose at least one circle, or make it public.', true); return; }
+      if (chosen.audience === '4' && !chosen.circles.length) { sayComposer(tr('Choose at least one circle, or make it public.'), true); return; }
       var fields = { kind: kind, audience: chosen.audience, circles: chosen.circles };
       if (kind === 'text') { fields.text = field('story-text').value; fields.background = checked('background'); }
       if (kind === 'image') {
         fields.text = field('story-caption').value;
         fields.media = field('story-media').value;
-        if (!fields.media) { sayComposer('Choose a picture and wait for it to finish uploading.', true); return; }
+        if (!fields.media) { sayComposer(tr('Choose a picture and wait for it to finish uploading.'), true); return; }
       }
       if (kind === 'video') fields.video = field('story-video').value;
       var share = field('story-share');
       share.disabled = true;
-      sayComposer('Sharing…');
+      sayComposer(tr('Sharing…'));
       send('/api/stories', fields).then(function (res) {
         share.disabled = false;
-        if (!res.ok) { sayComposer(res.data.error || 'Could not share that.', true); return; }
+        if (!res.ok) { sayComposer(res.data.error || tr('Could not share that.'), true); return; }
         window.location.reload();
-      }).catch(function () { share.disabled = false; sayComposer('Could not share that. Try again.', true); });
+      }).catch(function () { share.disabled = false; sayComposer(tr('Could not share that. Try again.'), true); });
     });
   }
 
@@ -460,12 +465,12 @@
     sayHighlight('');
     var list = field('highlight-list');
     list.textContent = '';
-    list.appendChild(element('div', 'text-small text-muted', 'Loading your stories…'));
+    list.appendChild(element('div', 'text-small text-muted', tr('Loading your stories…')));
     if (window.jQuery) window.jQuery('#highlightModal').modal('show');
     getJSON('/api/stories/archive').then(function (res) {
       list.textContent = '';
       var stories = res.ok ? res.data.stories : [];
-      if (!stories.length) { list.appendChild(element('div', 'text-small text-muted', 'You have no stories yet. Share one first.')); return; }
+      if (!stories.length) { list.appendChild(element('div', 'text-small text-muted', tr('You have no stories yet. Share one first.'))); return; }
       stories.forEach(function (story) {
         var row = element('label', 'highlight-pick');
         var box = element('input');
@@ -473,15 +478,16 @@
         box.name = 'story';
         box.value = String(story.id);
         row.appendChild(box);
-        var label = story.kind === 'text' ? story.text : (story.kind === 'image' ? (story.text || 'Picture') : 'Video');
+        // Translators: what a story is, in a list of your stories: a picture story without a caption, or a video story
+        var label = story.kind === 'text' ? story.text : (story.kind === 'image' ? (story.text || tr('Picture')) : tr('Video'));
         if (label.length > 60) label = label.slice(0, 57) + '…';
         row.appendChild(element('span', 'highlight-pick-text', label));
-        row.appendChild(element('span', 'highlight-pick-date', new Date(story.created * 1000).toLocaleDateString()));
+        row.appendChild(element('span', 'highlight-pick-date', new Date(story.created * 1000).toLocaleDateString(I18N.intl)));
         list.appendChild(row);
       });
     }).catch(function () {
       list.textContent = '';
-      list.appendChild(element('div', 'text-small text-danger', 'Could not load your stories.'));
+      list.appendChild(element('div', 'text-small text-danger', tr('Could not load your stories.')));
     });
   }
 
@@ -493,9 +499,9 @@
       save.disabled = true;
       send('/api/highlights', { title: field('highlight-name').value, story: ids }).then(function (res) {
         save.disabled = false;
-        if (!res.ok) { sayHighlight(res.data.error || 'Could not save that.', true); return; }
+        if (!res.ok) { sayHighlight(res.data.error || tr('Could not save that.'), true); return; }
         window.location.reload();
-      }).catch(function () { save.disabled = false; sayHighlight('Could not save that. Try again.', true); });
+      }).catch(function () { save.disabled = false; sayHighlight(tr('Could not save that. Try again.'), true); });
     });
   }
 })();

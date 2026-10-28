@@ -9,6 +9,7 @@ from ruqqus.helpers.security import *
 from ruqqus.helpers.jinja2 import full_link
 from ruqqus.helpers.get import *
 from ruqqus.helpers import anonymity
+from ruqqus.helpers.i18n_runtime import tr
 from yattag import Doc
 
 from ruqqus.__main__ import app, limiter
@@ -50,7 +51,8 @@ def feeds_user(sort=None, username=None, key=None):
 
     with tag("feed", ("xmlns:media","http://search.yahoo.com/mrss/"), xmlns="http://www.w3.org/2005/Atom",):
         with tag("title", type="text"):
-            text(f"{sort} posts from {domain}")
+            # Translators: the title of a feed reader's subscription; %(sort)s is the sort's code (hot, new, top...)
+            text(tr("%(sort)s posts from %(domain)s", sort=sort, domain=domain))
 
         doc.stag("link", href=request.url)
         doc.stag("link", href=request.url_root)
@@ -82,7 +84,7 @@ def feeds_user(sort=None, username=None, key=None):
                             text(anonymity.LABEL)
                     elif post.author.is_deleted:
                         with tag("name"):
-                            text("[deleted account]")
+                            text(tr("[deleted account]"))
                     else:
                         with tag("name"):
                             text(post.author.username)

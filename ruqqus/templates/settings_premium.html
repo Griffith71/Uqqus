@@ -1,6 +1,6 @@
 {% extends "settings.html" %}
 
-{% block pagetitle %}Premium Settings - {{ 'SITE_NAME' | app_config }}{% endblock %}
+{% block pagetitle %}{{ _("Premium Settings - %(site)s") }}{% endblock %}
 
 {% block content %}
 
@@ -17,116 +17,117 @@
 
 
                 {% if v.negative_balance_cents %}
-          <h2 id="ruqqus-premium" class="h5">Payments</h2>
+          <h2 id="ruqqus-premium" class="h5">{{ _("Payments") }}</h2>
 
           <div class="settings-section rounded">
             <div class="d-lg-flex border-bottom">
               <div class="title w-lg-25">
-                <label for="buypremium">Account Balance</label>
+                <label for="buypremium">{{ _("Account Balance") }}</label>
               </div>
               <div class="body w-lg-100">
                   <p class="font-weight-bold text-danger">-${{ v.negative_balance_cents/100 }}</p>
-                  <p>Your account balance is negative. You will not be able to participate on {{ 'SITE_NAME' | app_config }} until you bring your balance up to zero.</p>
+                  <p>{{ _("Your account balance is negative. You will not be able to participate on %(site)s until you bring your balance up to zero.") }}</p>
                   <form action="/shop/negative_balance" method="post">
                     <input type="hidden" name="formkey" value="{{ v.formkey }}">
-                    <input id="buy-coin-btn" type="submit" class="btn btn-primary mt-2" value="Pay ${{ v.negative_balance_cents/100 }}">
+                    <input id="buy-coin-btn" type="submit" class="btn btn-primary mt-2" value="{{ _('Pay $%(amount)s', amount=v.negative_balance_cents/100) }}">
                   </form>
               </div>
             </div>
           </div>
                 {% else %}
 
-          <h2 id="ruqqus-premium" class="h5">{{ 'SITE_NAME' | app_config }} Premium</h2>
+          <h2 id="ruqqus-premium" class="h5">{{ _("%(site)s Premium") }}</h2>
 
           {% if request.args.get('msg')=="success" %}
-          <p>Your purchase was successful. A receipt will be emailed to you from Paypal.</p>
+          <p>{{ _("Your purchase was successful. A receipt will be emailed to you from Paypal.") }}</p>
           {% endif %}
 
           <div class="settings-section rounded">
             <div class="d-lg-flex border-bottom">
               <div class="title w-lg-25">
-                <label for="buypremium">Coins</label>
+                <label for="buypremium">{{ _("Coins") }}</label>
               </div>
               <div class="body w-lg-100">
-                  <p>One coin buys one week of Premium. Coins are only spent on Premium when you redeem one or switch on renewal below.</p>
-                  <p class="text-muted">Current balance: <span class="text-black font-weight-bold">{{ v.coin_balance }} Coin{{ '' if v.coin_balance==1 else 's' }}</span></p>
+                  <p>{{ _("One coin buys one week of Premium. Coins are only spent on Premium when you redeem one or switch on renewal below.") }}</p>
+                  <p class="text-muted">{{ ngettext('Current balance: <span class="text-black font-weight-bold">%(num)s Coin</span>', 'Current balance: <span class="text-black font-weight-bold">%(num)s Coins</span>', v.coin_balance) }}</p>
                   {% if v.has_premium %}
-                  <p class="text-muted">Premium until: <span class="text-black font-weight-bold">{{ v.renew_premium_time }} UTC</span></p>
+                  {# Translators: %(time)s is a date and time #}
+                  <p class="text-muted">{{ _('Premium until: <span class="text-black font-weight-bold">%(time)s UTC</span>', time=v.renew_premium_time) }}</p>
                   {% else %}
-                  <p class="text-muted">You don't have Premium right now.</p>
+                  <p class="text-muted">{{ _("You don't have Premium right now.") }}</p>
                   {% endif %}
                   <div class="d-flex flex-wrap align-items-center mb-3" style="gap: 0.75rem;">
                     <button type="button" class="btn btn-secondary" {% if v.coin_balance < 1 %}disabled{% endif %}
-                      onclick="post_toast('/settings/premium/redeem', callback=function(){window.location.reload()})">Redeem 1 coin for a week</button>
+                      onclick="post_toast('/settings/premium/redeem', callback=function(){window.location.reload()})">{{ _("Redeem 1 coin for a week") }}</button>
                     <div class="custom-control custom-switch">
                       <input type="checkbox" class="custom-control-input" id="premium-auto-renew"{% if v.premium_auto_renew %} checked{% endif %}
                         onchange="post_toast('/settings/premium/auto_renew?setting=' + this.checked)">
-                      <label class="custom-control-label" for="premium-auto-renew">Renew automatically from my coins when a week runs out</label>
+                      <label class="custom-control-label" for="premium-auto-renew">{{ _("Renew automatically from my coins when a week runs out") }}</label>
                     </div>
                   </div>
-                  <div class="d-none d-md-block"><div class="text-muted">Perks:</div>
+                  <div class="d-none d-md-block"><div class="text-muted">{{ _("Perks:") }}</div>
                     <ul class="mb-0 pl-0 no-bullets font-weight-bold">
                       <li class="py-1"><span class="fa-stack fa-1x mr-2">
                       <i class="fas fa-square fa-stack-2x" style="color: #a2d2f6!important; font-size: 2rem!important;"></i>
                       <i class="fas fa-unlock fa-stack-1x text-info text-base fa-inverse"></i>
-                      </span>Unlock all Rep-gated features
+                      </span>{{ _("Unlock all Rep-gated features") }}
                       </li>
                       <li class="py-1"><span class="fa-stack fa-1x mr-2">
                       <i class="fas fa-square fa-stack-2x" style="color: #dabef9!important; font-size: 2rem!important;"></i>
                       <i class="fas fa-image fa-stack-1x text-primary text-base fa-inverse"></i>
-                      </span>Direct image uploads in comments
+                      </span>{{ _("Direct image uploads in comments") }}
                       </li>
                       <li class="py-1"><span class="fa-stack fa-1x mr-2">
                       <i class="fas fa-square fa-stack-2x" style="color: #f9efbe!important; font-size: 2rem!important;"></i>
                       <i class="fas fa-file-upload fa-stack-1x text-warning text-base fa-inverse"></i>
-                      </span>Increased upload file size limit
+                      </span>{{ _("Increased upload file size limit") }}
                       </li>
                       <li class="py-1"><span class="fa-stack fa-1x mr-2">
                       <i class="fas fa-square fa-stack-2x" style="color: #f9c5c5!important; font-size: 2rem!important;"></i>
                       <i class="fas fa-chart-line fa-stack-1x text-danger text-base fa-inverse"></i>
-                      </span><a href="/insights" class="text-body">Insights on your posts</a>
+                      </span><a href="/insights" class="text-body">{{ _("Insights on your posts") }}</a>
                       </li>
                       <li class="py-1"><span class="fa-stack fa-1x mr-2">
                       <i class="fas fa-square fa-stack-2x" style="color: #c5f0f9!important; font-size: 2rem!important;"></i>
                       <i class="fas fa-chart-pie fa-stack-1x text-info text-base fa-inverse"></i>
-                      </span><a href="/studio" class="text-body">Creator Studio: your earnings and paid circles</a>
+                      </span><a href="/studio" class="text-body">{{ _("Creator Studio: your earnings and paid circles") }}</a>
                       </li>
                       {% if ads_configured() %}
                       <li class="py-1"><span class="fa-stack fa-1x mr-2">
                       <i class="fas fa-square fa-stack-2x" style="color: #c5d4f9!important; font-size: 2rem!important;"></i>
                       <i class="fas fa-ban fa-stack-1x text-info text-base fa-inverse"></i>
-                      </span>No ads
+                      </span>{{ _("No ads") }}
                       </li>
                       {% endif %}
                       <li class="py-1"><span class="fa-stack fa-1x mr-2">
                       <i class="fas fa-square fa-stack-2x" style="color: #bef9cc!important; font-size: 2rem!important;"></i>
                       <i class="fas fa-hand-peace fa-stack-1x text-success text-base fa-inverse"></i>
-                      </span>Keeping the {{ 'SITE_NAME' | app_config }} servers alive
+                      </span>{{ _("Keeping the %(site)s servers alive") }}
                       </li>
                     </ul>
                   </div>
 
                   <form action="/shop/buy_coins" method="post">
                     <input type="hidden" name="formkey" value="{{ v.formkey }}">
-                    <label for="select-coins">Select Package</label>
+                    <label for="select-coins">{{ _("Select Package") }}</label>
                     <select id="select-coins" name="coin_count" class="form-control" onchange="coin_quote()">
-                      <option value="1">1 Coin</option>
-                      <option value="4" selected>4 Coins</option>
-                      <option value="12">11 Coins + 1 Free</option>
-                      <option value="26">22 Coins + 4 Free</option>
-                      <option value="52">42 Coins + 10 Free</option>
+                      <option value="1">{{ ngettext("%(num)s Coin", "%(num)s Coins", 1) }}</option>
+                      <option value="4" selected>{{ ngettext("%(num)s Coin", "%(num)s Coins", 4) }}</option>
+                      <option value="12">{{ ngettext("%(num)s Coin + %(free)s Free", "%(num)s Coins + %(free)s Free", 11, free=1) }}</option>
+                      <option value="26">{{ ngettext("%(num)s Coin + %(free)s Free", "%(num)s Coins + %(free)s Free", 22, free=4) }}</option>
+                      <option value="52">{{ ngettext("%(num)s Coin + %(free)s Free", "%(num)s Coins + %(free)s Free", 42, free=10) }}</option>
                     </select>
-                    <label for="promo-code">Promo Code</label>
-                    <input id="promo-code" class="form-control" type="text" placeholder="Optional" name="promo" oninput="coin_quote()">
+                    <label for="promo-code">{{ _("Promo Code") }}</label>
+                    <input id="promo-code" class="form-control" type="text" placeholder="{{ _('Optional') }}" name="promo" oninput="coin_quote()">
                     {% if not v.has_premium %}
-                      <p class="text-small-extra text-muted">Buying coins without Premium running redeems the first one for a week.</p>
+                      <p class="text-small-extra text-muted">{{ _("Buying coins without Premium running redeems the first one for a week.") }}</p>
                     {% endif %}
                     <p id="promo-text" class="text-small text-danger"></p>
-                    <input id="buy-coin-btn" type="submit" class="btn btn-primary mt-2" value="Buy Coins">
+                    <input id="buy-coin-btn" type="submit" class="btn btn-primary mt-2" value="{{ _('Buy Coins') }}">
                   </form>
-                <p class="text-small-extra text-muted">Coins have no cash value. They buy Premium time and username changes, and you can give them to other members as tips or for paid circles. The creator fund pays members in coins.</p>
+                <p class="text-small-extra text-muted">{{ _("Coins have no cash value. They buy Premium time and username changes, and you can give them to other members as tips or for paid circles. The creator fund pays members in coins.") }}</p>
 
-                <p class="text-small-extra text-muted"><a href="/settings/purchase_history" target="_blank">Purchase history</a></p>
+                <p class="text-small-extra text-muted"><a href="/settings/purchase_history" target="_blank">{{ _("Purchase history") }}</a></p>
 
 
               </div>

@@ -3,6 +3,8 @@
 stylesheets. Used for an account's Rep (helpers/rep_store.py) and, for viewers who read scores as upvotes, for the
 score of a post or comment (partials/score.html)."""
 
+from ruqqus.helpers.i18n_runtime import number_text, tr, trn
+
 STEPS = 10
 
 
@@ -24,6 +26,10 @@ def ratio_class(ups, downs):
 def ratio_label(ups, downs):
     """What hovering a count says: '1,234 upvotes · 56 downvotes (96% up)'."""
     ups, downs = max(int(ups or 0), 0), max(int(downs or 0), 0)
-    text = f"{ups:,} upvote{'' if ups == 1 else 's'} · {downs:,} downvote{'' if downs == 1 else 's'}"
+    upvotes = trn("%(count)s upvote", "%(count)s upvotes", ups, count=number_text(ups))
+    downvotes = trn("%(count)s downvote", "%(count)s downvotes", downs, count=number_text(downs))
+    # Translators: an account's or an item's votes, such as "1,234 upvotes · 56 downvotes"
+    text = tr("%(upvotes)s · %(downvotes)s", upvotes=upvotes, downvotes=downvotes)
     share = ratio(ups, downs)
-    return text if share is None else f"{text} ({round(share * 100)}% up)"
+    # Translators: the votes, then the share of upvotes, such as "1,234 upvotes · 56 downvotes (96% up)"
+    return text if share is None else tr("%(votes)s (%(share)s%% up)", votes=text, share=round(share * 100))

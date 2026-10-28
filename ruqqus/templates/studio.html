@@ -1,12 +1,16 @@
 {% extends "home.html" %}
 
+{% block sidebar %}{% endblock %}
+{# no right sidebar: the main column takes its room (default.html main_row_class, _screens.scss) #}
+{% block main_row_class %} wide-main{% endblock %}
+
 {# The Creator Studio's overview (routes/studio.py): coins earned by source, then the way to paid circles, the creator
    fund and post insights. Counts only, never who; nothing about ad money (helpers/studio.py). #}
 
 {% block pagetype %}curations{% endblock %}
 
 {% block title %}
-<title>Creator Studio - {{ 'SITE_NAME' | app_config }}</title>
+<title>{{ _("Creator Studio - %(site)s") }}</title>
 {% endblock %}
 
 {% block desktopBanner %}{% endblock %}
@@ -20,23 +24,24 @@
 
   <section class="card mb-3 studio-earnings" aria-labelledby="studio-earned-title">
     <div class="card-body">
-      <h2 class="h6 text-muted mb-1" id="studio-earned-title">Earned in the last {{ window }} days</h2>
-      <div class="studio-big">{{ coins(recent) }}</div>
-      <div class="text-muted text-small mb-3">{{ coins(total) }} in all. Coins go straight to your balance.</div>
+      <h2 class="h6 text-muted mb-1" id="studio-earned-title">{{ ngettext("Earned in the last %(num)s day", "Earned in the last %(num)s days", window) }}</h2>
+      <div class="studio-big">{{ ngettext("%(count)s coin", "%(count)s coins", recent, count=number_text(recent)) }}</div>
+      <div class="text-muted text-small mb-3">{{ ngettext("%(count)s coin in all. Coins go straight to your balance.", "%(count)s coins in all. Coins go straight to your balance.", total, count=number_text(total)) }}</div>
       <table class="table table-sm mb-0 studio-table">
         <thead>
           <tr>
-            <th scope="col">From</th>
-            <th scope="col" class="text-right">Last {{ window }} days</th>
-            <th scope="col" class="text-right">All time</th>
+            {# Translators: the column naming where coins came from (tips, paid circles, the creator fund) #}
+            <th scope="col">{{ pgettext("source of coins", "From") }}</th>
+            <th scope="col" class="text-right">{{ ngettext("Last %(num)s day", "Last %(num)s days", window) }}</th>
+            <th scope="col" class="text-right">{{ _("All time") }}</th>
           </tr>
         </thead>
         <tbody>
           {% for row in rows %}
           <tr id="studio-source-{{ row.key }}">
-            <td>{{ row.label }}<div class="text-muted text-small">{{ row.hint }}</div></td>
-            <td class="text-right">{{ "{:,}".format(row.recent) }}</td>
-            <td class="text-right">{{ "{:,}".format(row.total) }}</td>
+            <td>{{ msg_text(row.label) }}<div class="text-muted text-small">{{ msg_text(row.hint) }}</div></td>
+            <td class="text-right">{{ number_text(row.recent) }}</td>
+            <td class="text-right">{{ number_text(row.total) }}</td>
           </tr>
           {% endfor %}
         </tbody>
@@ -48,30 +53,31 @@
     <a class="card studio-card" href="/circles#circle-paid" id="studio-circles">
       <div class="card-body">
         <div class="studio-card-icon" aria-hidden="true"><i class="fas fa-circle-notch"></i></div>
-        <h2 class="h6 mb-1">Paid circles</h2>
+        <h2 class="h6 mb-1">{{ _("Paid circles") }}</h2>
         {% if paid_circles %}
-        <p class="text-small text-muted mb-0">{{ paid_circles }} paid circle{{ '' if paid_circles == 1 else 's' }} &middot; {{ "{:,}".format(subscribers) }} subscriber{{ '' if subscribers == 1 else 's' }} now</p>
+        <p class="text-small text-muted mb-0">{{ ngettext("%(num)s paid circle", "%(num)s paid circles", paid_circles) }} &middot; {{ ngettext("%(count)s subscriber now", "%(count)s subscribers now", subscribers, count=number_text(subscribers)) }}</p>
         {% else %}
-        <p class="text-small text-muted mb-0">Make a circle people pay to be in, every 30 days, for what you share with it.</p>
+        <p class="text-small text-muted mb-0">{{ _("Make a circle people pay to be in, every 30 days, for what you share with it.") }}</p>
         {% endif %}
       </div>
     </a>
     <a class="card studio-card" href="/settings/creator_fund" id="studio-fund">
       <div class="card-body">
         <div class="studio-card-icon" aria-hidden="true"><i class="fas fa-hand-holding-heart"></i></div>
-        <h2 class="h6 mb-1">Creator fund</h2>
+        <h2 class="h6 mb-1">{{ _("Creator fund") }}</h2>
         {% if taking_part %}
-        <p class="text-small text-muted mb-0">Taking part &middot; {{ "{:,}".format(points) }} point{{ '' if points == 1 else 's' }} in {{ month_name }} so far (a share needs {{ min_points }})</p>
+        {# Translators: %(month)s is a month and year, e.g. "October 2026"; %(min)s is the points a share of the fund needs #}
+        <p class="text-small text-muted mb-0">{{ _("Taking part") }} &middot; {{ ngettext("%(count)s point in %(month)s so far (a share needs %(min)s)", "%(count)s points in %(month)s so far (a share needs %(min)s)", points, count=number_text(points), month=month_name, min=min_points) }}</p>
         {% else %}
-        <p class="text-small text-muted mb-0">A monthly budget shared among the members whose posts and comments people valued most. Join from here.</p>
+        <p class="text-small text-muted mb-0">{{ _("A monthly budget shared among the members whose posts and comments people valued most. Join from here.") }}</p>
         {% endif %}
       </div>
     </a>
     <a class="card studio-card" href="/studio/insights" id="studio-insights">
       <div class="card-body">
         <div class="studio-card-icon" aria-hidden="true"><i class="fas fa-chart-line"></i></div>
-        <h2 class="h6 mb-1">Post insights</h2>
-        <p class="text-small text-muted mb-0">{{ post_count }} post{{ '' if post_count == 1 else 's' }} in the last 28 days &middot; {{ "{:,}".format(views) }} view{{ '' if views == 1 else 's' }}</p>
+        <h2 class="h6 mb-1">{{ _("Post insights") }}</h2>
+        <p class="text-small text-muted mb-0">{{ ngettext("%(num)s post in the last 28 days", "%(num)s posts in the last 28 days", post_count) }} &middot; {{ ngettext("%(count)s view", "%(count)s views", views, count=number_text(views)) }}</p>
       </div>
     </a>
   </div>

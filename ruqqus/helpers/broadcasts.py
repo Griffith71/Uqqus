@@ -17,6 +17,7 @@ members read it and react. A channel is a Matrix room made by the site's bot, wh
 """
 
 from ruqqus.helpers import display_names
+from ruqqus.helpers.i18n_runtime import number_text, tr, tr_lazy, trn
 
 PUBLIC, CIRCLES = 0, 4
 MAX_PER_OWNER = 3
@@ -32,7 +33,7 @@ REACTION_MAX = 8                          # a reaction is an emoji, never free t
 
 OWNER, HELPER, MEMBER = "owner", "helper", "member"
 
-UNAVAILABLE = "This channel isn't available."
+UNAVAILABLE = tr_lazy("This channel isn't available.")
 
 
 class Refused(ValueError):
@@ -41,23 +42,23 @@ class Refused(ValueError):
 
 def clean_name(value):
     try:
-        name = display_names.clean(value)
+        name = display_names.clean(value, display_names.CHANNEL)
     except display_names.Refused as e:
-        raise Refused(str(e).replace("A display name", "A channel name"))
+        raise Refused(str(e))
     if not name:
-        raise Refused("Give the channel a name.")
+        raise Refused(tr("Give the channel a name."))
     return name
 
 
 def make_refusal(is_bot, owned, audience, circle_ids):
     if is_bot:
-        return "Bots can't have channels."
+        return tr("Bots can't have channels.")
     if owned >= MAX_PER_OWNER:
-        return f"You can have at most {MAX_PER_OWNER} channels."
+        return trn("You can have at most %(num)s channel.", "You can have at most %(num)s channels.", MAX_PER_OWNER)
     if audience not in (PUBLIC, CIRCLES):
-        return "Choose who can join."
+        return tr("Choose who can join.")
     if audience == CIRCLES and not circle_ids:
-        return "Choose at least one of your circles."
+        return tr("Choose at least one of your circles.")
     return None
 
 
@@ -65,7 +66,7 @@ def join_refusal(deleted, blocked, may_see, size, audience):
     if deleted or blocked or not may_see:
         return UNAVAILABLE
     if size >= (MAX_CIRCLE_MEMBERS if audience == CIRCLES else MAX_PUBLIC_MEMBERS):
-        return "This channel is full."
+        return tr("This channel is full.")
     return None
 
 
@@ -75,34 +76,36 @@ def may_write(role):
 
 def helper_refusal(actor_role, target_role, helpers, adding):
     if actor_role != OWNER:
-        return "Only the channel's owner chooses its helpers."
+        return tr("Only the channel's owner chooses its helpers.")
     if target_role is None:
-        return "They need to join the channel first."
+        return tr("They need to join the channel first.")
     if target_role == OWNER:
-        return "That's the owner."
+        return tr("That's the owner.")
     if adding and target_role == HELPER:
-        return "They're already a helper."
+        return tr("They're already a helper.")
     if adding and helpers >= MAX_HELPERS:
-        return f"A channel can have at most {MAX_HELPERS} helpers."
+        return trn("A channel can have at most %(num)s helper.", "A channel can have at most %(num)s helpers.", MAX_HELPERS)
     return None
 
 
 def clean_message(text):
     body = (text or "").strip()
     if not body:
-        raise Refused("Write something first.")
+        raise Refused(tr("Write something first."))
     if len(body) > MESSAGE_MAX:
-        raise Refused(f"A message can be at most {MESSAGE_MAX:,} characters.")
+        raise Refused(trn("A message can be at most %(num)s character.", "A message can be at most %(num)s characters.",
+                           MESSAGE_MAX, num=number_text(MESSAGE_MAX)))
     return body
 
 
 def post_refusal(role, suspended, posts_today):
     if not may_write(role):
-        return "Only the channel's owner and helpers write in it."
+        return tr("Only the channel's owner and helpers write in it.")
     if suspended:
-        return "Your account is suspended."
+        return tr("Your account is suspended.")
     if posts_today >= POSTS_PER_DAY:
-        return f"A channel can have at most {POSTS_PER_DAY} messages a day."
+        return trn("A channel can have at most %(num)s message a day.", "A channel can have at most %(num)s messages a day.",
+                   POSTS_PER_DAY)
     return None
 
 

@@ -14,27 +14,40 @@ import re
 from datetime import datetime
 
 from ruqqus.helpers import search_query as sq
+from ruqqus.helpers.i18n_runtime import tr, tr_lazy
+
+# The groups of the dropdown (each one object, so the template's `in_group == group` compares like with like)
+# Translators: a group of post types in the Post type filter (text, links, pictures...)
+CONTENT = tr_lazy("Content")
+# Translators: a group of post types in the Post type filter (forwarded to guilds, for circles)
+WHERE = tr_lazy("Where")
+# Translators: a group of post types in the Post type filter (co-authored, collaborative, anonymous)
+WHO_WROTE_IT = tr_lazy("Who wrote it")
+# Translators: a group of post types in the Post type filter (live, upcoming and recorded Spaces)
+SPACES = tr_lazy("Spaces")
 
 # (key, label, group). The order is the dropdown's.
 POST_TYPES = (
-    ("text", "Text", "Content"),
-    ("link", "Links", "Content"),
-    ("image", "Pictures", "Content"),
-    ("video", "Videos", "Content"),
-    ("audio", "Sounds", "Content"),
-    ("poll", "Polls", "Content"),
-    ("guilds", "Forwarded to guilds", "Where"),
-    ("circles", "For circles", "Where"),
-    ("coauthored", "Co-authored", "Who wrote it"),
-    ("collab", "Collaborative", "Who wrote it"),
-    ("anonymous", "Anonymous", "Who wrote it"),
-    ("space_live", "Live Spaces", "Spaces"),
-    ("space_upcoming", "Upcoming Spaces", "Spaces"),
-    ("space_recording", "Space recordings", "Spaces"),
+    # Translators: a kind of post in the Post type filter: posts of text only
+    ("text", tr_lazy("Text"), CONTENT),
+    ("link", tr_lazy("Links"), CONTENT),
+    ("image", tr_lazy("Pictures"), CONTENT),
+    ("video", tr_lazy("Videos"), CONTENT),
+    ("audio", tr_lazy("Sounds"), CONTENT),
+    ("poll", tr_lazy("Polls"), CONTENT),
+    ("guilds", tr_lazy("Forwarded to guilds"), WHERE),
+    ("circles", tr_lazy("For circles"), WHERE),
+    ("coauthored", tr_lazy("Co-authored"), WHO_WROTE_IT),
+    ("collab", tr_lazy("Collaborative"), WHO_WROTE_IT),
+    # Translators: a kind of post in the Post type filter: posts made anonymously
+    ("anonymous", tr_lazy("Anonymous"), WHO_WROTE_IT),
+    ("space_live", tr_lazy("Live Spaces"), SPACES),
+    ("space_upcoming", tr_lazy("Upcoming Spaces"), SPACES),
+    ("space_recording", tr_lazy("Space recordings"), SPACES),
 )
 TYPE_KEYS = tuple(key for key, _, _ in POST_TYPES)
 TYPE_LABELS = {key: label for key, label, _ in POST_TYPES}
-GROUPS = tuple(dict.fromkeys(group for _, _, group in POST_TYPES))
+GROUPS = (CONTENT, WHERE, WHO_WROTE_IT, SPACES)
 
 # The filter lives in the session, which is a signed cookie that also holds the sign-in: a cookie over the browser's
 # 4 KB is dropped whole, signing the member out. These limits keep a filter with every field full near 1 KB, and
@@ -44,7 +57,8 @@ WORD_CHARS = 30
 PHRASE_CHARS = 80
 MAX_NAMES = 3
 SHOW, ONLY, HIDE = "show", "only", "hide"
-LABEL_CHOICES = {"ai": (SHOW, ONLY, HIDE), "partnership": (SHOW, ONLY, HIDE), "forwards": (SHOW, HIDE)}
+LABEL_CHOICES = {"ai": (SHOW, ONLY, HIDE), "partnership": (SHOW, ONLY, HIDE), "forwards": (SHOW, HIDE),
+                 "bots": (SHOW, ONLY, HIDE)}         # the owner, 2026-10-27: "filter for bot posts"
 
 WORD_FIELDS = ("all_words", "any_words", "none_words")
 NAME_FIELDS = ("from", "not_from", "mentioning", "in_guilds", "not_in_guilds", "topics")
@@ -74,8 +88,11 @@ def type_summary(keys):
     """What the Post type row says it shows: "All posts", "Polls", "Polls +2"."""
     labels = type_labels(keys)
     if not labels:
-        return "All posts"
-    return labels[0] if len(labels) == 1 else f"{labels[0]} +{len(labels) - 1}"
+        return tr("All posts")
+    if len(labels) == 1:
+        return str(labels[0])
+    # Translators: the first post type ticked, then how many more are ticked ("Polls +2")
+    return tr("%(type)s +%(more)s", type=labels[0], more=len(labels) - 1)
 
 
 def _words(value):
@@ -185,7 +202,7 @@ def query_text(spec):
     out += [f"-{_guild_operator(n)}" for n in spec["not_in_guilds"]]
     if spec["domain"]:
         out.append(f"domain:{spec['domain']}")
-    for f, operator in (("ai", "is:ai"), ("partnership", "is:partnership"), ("forwards", "is:forward")):
+    for f, operator in (("ai", "is:ai"), ("partnership", "is:partnership"), ("forwards", "is:forward"), ("bots", "is:bot")):
         if spec[f] == ONLY:
             out.append(operator)
         elif spec[f] == HIDE:
@@ -222,7 +239,7 @@ def form_values(spec):
 # All five filters as one JSON object. Written by "Save as my default" in the sidebar, read into a new session once.
 
 DEFAULT_KEYS = ("regions", "languages", "categories", "types", "advanced")
-MAX_DEFAULT_ITEMS = 200            # more regions or categories than exist is not a default, it is a mistake
+MAX_DEFAULT_ITEMS = 500            # more regions, languages or categories than exist (about 310 categories) is a mistake
 
 
 def defaults_payload(regions, languages, categories, types, spec):
@@ -269,6 +286,7 @@ def chips(query, spec):
     spec = clean(spec or {})
     out = [sq.label(part) for part in query.parts] if query is not None else []
     if spec["any_words"]:
-        out.append("Any of " + ", ".join(f'"{w}"' for w in spec["any_words"]))
-    out += [f"Mentioning @{n}" for n in spec["mentioning"]]
+        # Translators: words is a list of words in quotation marks, separated by commas
+        out.append(tr("Any of %(words)s", words=", ".join(f'"{w}"' for w in spec["any_words"])))
+    out += [tr("Mentioning @%(name)s", name=n) for n in spec["mentioning"]]
     return out

@@ -20,6 +20,7 @@ from ruqqus.helpers import anonymity, live_bus
 from ruqqus.helpers.blocks import hide_blocked
 from ruqqus.helpers.muting import hide_muted
 from ruqqus.helpers.visibility import filter_comments, post_hidden
+from ruqqus.helpers.i18n_runtime import tr
 
 LIVE_PAGE = 50
 _ID = re.compile(r"^[0-9a-z]{1,10}$")
@@ -56,7 +57,7 @@ def comment_json(c, v):
     return {
         "id": c.base36id,
         "parent": base36encode(c.parent_comment_id) if c.parent_comment_id else None,
-        "author": "Anonymous" if hidden else author.shown_name,
+        "author": tr("Anonymous") if hidden else author.shown_name,
         "username": None if hidden else author.username,
         "avatar": anonymity.DEFAULT_AVATAR if hidden else author.profile_url,
         "body_html": c.body_html or "",           # sanitized when it was written

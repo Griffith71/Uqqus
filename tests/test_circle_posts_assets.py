@@ -79,7 +79,7 @@ def test_a_page_request_gets_a_gate_that_shows_nothing_of_the_post_and_an_api_re
     body = func(ERRORS, "error_circle_only", "\n@app.errorhandler(403)")
     assert "@app.errorhandler(CircleOnly)" in ERRORS and "@api(error_handler=True)" in ERRORS.split("def error_circle_only")[0][-80:]
     assert 'response.headers["Cache-Control"] = "private, no-store"' in body and ", 403)" in body
-    assert '"api": lambda: (jsonify({"error": "404 Not Found"}), 404)' in body
+    assert '"api": lambda: (jsonify({"error": tr("404 Not Found")}), 404)' in body
     # only paid circles with a price are offered; a custom circle is never named
     assert "row.kind == circles.PAID and row.price_coins > 0" in body
     gate = read("ruqqus", "templates", "errors", "circle_gate.html")

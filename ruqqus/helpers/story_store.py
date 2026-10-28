@@ -12,6 +12,7 @@ import time
 from sqlalchemy import bindparam, text
 
 from ruqqus.helpers import circle_guard, circle_store, circles, stories as rules
+from ruqqus.helpers.i18n_runtime import tr, trn
 from ruqqus.helpers.media import rules as media_rules
 from ruqqus.helpers.visibility import viewer_level
 from ruqqus.helpers.wordfilter import is_hidden
@@ -196,15 +197,16 @@ def create_highlight(db, user_id, title, story_ids, now=None):
     """Make a Highlight of the member's own stories. Returns (id, None) or (None, message)."""
     now = _now(now)
     if int(db.execute(text("SELECT COUNT(*) FROM highlights WHERE user_id = :u"), {"u": user_id}).scalar() or 0) >= rules.HIGHLIGHTS_MAX:
-        return None, f"You can have {rules.HIGHLIGHTS_MAX} highlights at most."
+        return None, trn("You can have %(num)s highlight at most.", "You can have %(num)s highlights at most.",
+                         rules.HIGHLIGHTS_MAX)
     ids = rules.clean_ids(story_ids)
     if not ids:
-        return None, "Choose at least one story."
+        return None, tr("Choose at least one story.")
     mine = {r[0] for r in db.execute(text("SELECT id FROM stories WHERE user_id = :u AND deleted_utc = 0 AND id IN :ids").bindparams(bindparam("ids", expanding=True)),
                                      {"u": user_id, "ids": ids}).fetchall()}
     chosen = [i for i in ids if i in mine]
     if not chosen:
-        return None, "Choose at least one story."
+        return None, tr("Choose at least one story.")
     position = int(db.execute(text("SELECT COALESCE(MAX(position), -1) + 1 FROM highlights WHERE user_id = :u"), {"u": user_id}).scalar() or 0)
     hid = db.execute(text("INSERT INTO highlights (user_id, title, position, created_utc) VALUES (:u, :t, :p, :n) RETURNING id"),
                      {"u": user_id, "t": title, "p": position, "n": now}).scalar()

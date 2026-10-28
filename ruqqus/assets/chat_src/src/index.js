@@ -76,7 +76,10 @@ async function sendWaiting() {
 function waitingNotice(conversation) {
   const count = (loadWaiting()[conversation.room_id] || []).length;
   if (!count || !conversation.other_user) return "";
-  return `@${conversation.other_user.username} hasn't opened chat yet. Your ${count === 1 ? "message" : `${count} messages`} will be sent when they do.`;
+  return window.trn(
+    "@%(name)s hasn't opened chat yet. Your message will be sent when they do.",
+    "@%(name)s hasn't opened chat yet. Your %(num)s messages will be sent when they do.",
+    count, { name: conversation.other_user.username });
 }
 
 function isMessageLikeEvent(event) {
@@ -126,10 +129,10 @@ function isShownMessage(event) {
 
 function textOf(event) {
   // first: on a failure the SDK puts its own error text in the body ("** Unable to decrypt: …")
-  if (event.isDecryptionFailure()) return "This message can't be read on this device.";
+  if (event.isDecryptionFailure()) return window.tr("This message can't be read on this device.");
   const body = event.getContent().body;   // an edited message reads as its latest text
   if (body) return body;
-  if (event.isBeingDecrypted() || event.getType() === EventType.RoomMessageEncrypted) return "Decrypting…";
+  if (event.isBeingDecrypted() || event.getType() === EventType.RoomMessageEncrypted) return window.tr("Decrypting…");
   return "";
 }
 
@@ -231,16 +234,20 @@ function renderActiveThread() {
       status: event.status,
       edited: !deleted && !!event.replacingEventId(),
       deleted,
-      quote: quoted && !quoted.isRedacted() ? (quotedBlocked ? "A message from someone you blocked" : textOf(quoted)) : null,
+      quote: quoted && !quoted.isRedacted() ? (quotedBlocked ? window.tr("A message from someone you blocked") : textOf(quoted)) : null,
       reactions: deleted ? [] : reactionsOf(room, event, myMxid),
       seen: event.getId() === seenId,
       seenBy: group ? seenBy : 0,
       canEdit: mine && !deleted && (!gchannel || gchannel.encrypted) && event.getContent().msgtype === "m.text",
       // a line the call window writes when a call ends ("Voice call · 12 min"): drawn as a note, not a bubble
       notice: !deleted && event.getContent().msgtype === "m.notice",
+      // ...and what it says as data (call.js), so it is drawn in the reader's own language (ui.js)
+      callSummary: !deleted && event.getContent().msgtype === "m.notice" ? event.getContent()["org.uqqus.call_summary"] || null : null,
       // in a group, who wrote it (someone who has left has no row any more); in a channel, which writer
-      sender: group && !mine ? (author ? author.shown_name : "Someone who left")
-        : channel && !mine ? (writerOf(event) ? writerOf(event).shown_name : "A former helper")
+      // Translators: in place of the name of someone who wrote in a group chat and has left it
+      sender: group && !mine ? (author ? author.shown_name : window.tr("Someone who left"))
+        // Translators: in place of the name of someone who used to write in a channel and no longer does
+        : channel && !mine ? (writerOf(event) ? writerOf(event).shown_name : window.tr("A former helper"))
         : gchannel && !mine ? (info ? info.shown_name : "…") : null,
       blocked: !!(author && author.blocked) || !!(info && info.blocked),
       filtered: !!(channel && channel.public && !mine && !deleted && filteredOut(event)) || !!(gchannel && !mine && !deleted && filteredOut(event)),
@@ -291,7 +298,7 @@ async function loadEarlier() {
   try {
     await state.client.scrollback(active.room, 50);
   } catch (e) {
-    window.alert("Couldn't load earlier messages. Try again in a moment.");
+    window.alert(window.tr("Couldn't load earlier messages. Try again in a moment."));
   }
   if (state.active !== active) return;
   renderActiveThread();
@@ -314,18 +321,20 @@ async function openThread(rootId) {
     older = [];
   }
   if (state.active !== active) return;
-  const panel = state.thread.openPanel("Thread", () => { active.threadPanel = null; });
+  // Translators: the title of the panel that shows a message's thread in a guild channel
+  const panel = state.thread.openPanel(window.tr("Thread"), () => { active.threadPanel = null; });
   const form = document.createElement("form");
   form.className = "d-flex";
   const input = document.createElement("textarea");
   input.className = "form-control mr-2 chat-composer-input";
   input.rows = 1;
-  input.placeholder = "Add to the thread...";
-  input.setAttribute("aria-label", "Add to the thread");
+  input.placeholder = window.tr("Add to the thread...");
+  input.setAttribute("aria-label", window.tr("Add to the thread"));
   const send = document.createElement("button");
   send.type = "submit";
   send.className = "btn btn-primary align-self-end";
-  send.textContent = "Send";
+  // Translators: a button that sends a message
+  send.textContent = window.tr("Send");
   form.append(input, send);
   if (active.gchannel.may_write) {
     panel.foot.appendChild(form);
@@ -395,7 +404,7 @@ async function loadPins() {
 async function openPins() {
   const active = state.active;
   if (!active || !active.gchannel || !state.thread) return;
-  const panel = state.thread.openPanel("Pinned messages");
+  const panel = state.thread.openPanel(window.tr("Pinned messages"));
   try {
     const pins = await guildChannelPins(active.conversation.channel_id);
     active.pinned = new Set(pins.map((p) => p.event_id));
@@ -418,7 +427,8 @@ async function openPins() {
 function openSearch() {
   const active = state.active;
   if (!active || !active.gchannel || !state.thread) return;
-  const panel = state.thread.openPanel("Search");
+  // Translators: the title of the panel that searches a channel's messages
+  const panel = state.thread.openPanel(window.tr("Search"));
   panel.showFoot();
   renderSearch(panel.body, panel.foot, async (query) => {
     try {
@@ -432,7 +442,7 @@ function openSearch() {
 function openMute() {
   const active = state.active;
   if (!active || !active.gchannel || !state.thread) return;
-  const panel = state.thread.openPanel("Notifications");
+  const panel = state.thread.openPanel(window.tr("Notifications"));
   const draw = () => renderMute(panel.body, !!active.gchannel.muted, async (hours) => {
     try {
       const answer = await muteGuildChannel(boot.formkey, active.conversation.channel_id, hours);
@@ -483,7 +493,7 @@ function updateTyping() {
   if (channel || gchannel) return;
   if (!group) {
     const other = room.getMember(otherMxidOf(conversation));
-    state.thread.setTyping(other && other.typing ? `@${conversation.other_user.username} is typing…` : null);
+    state.thread.setTyping(other && other.typing ? window.tr("@%(name)s is typing…", { name: conversation.other_user.username }) : null);
     return;
   }
   const me = state.client.getUserId();
@@ -491,9 +501,9 @@ function updateTyping() {
     .filter((m) => m.mxid !== me && !m.blocked && room.getMember(m.mxid)?.typing)
     .map((m) => m.shown_name);
   let text = null;
-  if (typing.length === 1) text = `${typing[0]} is typing…`;
-  else if (typing.length === 2) text = `${typing[0]} and ${typing[1]} are typing…`;
-  else if (typing.length > 2) text = "Several people are typing…";
+  if (typing.length === 1) text = window.tr("%(name)s is typing…", { name: typing[0] });
+  else if (typing.length === 2) text = window.tr("%(first)s and %(second)s are typing…", { first: typing[0], second: typing[1] });
+  else if (typing.length > 2) text = window.tr("Several people are typing…");
   state.thread.setTyping(text);
 }
 
@@ -526,8 +536,9 @@ function setContext(context) {
   state.context = context;
   if (!state.thread) return;
   if (!context) state.thread.setContext(null);
-  else if (context.type === "edit") state.thread.setContext("Editing message");
-  else state.thread.setContext(`Quoting: ${textOf(context.event)}`);
+  else if (context.type === "edit") state.thread.setContext(window.tr("Editing message"));
+  // Translators: above the message box while quoting a message; the quoted message's text follows
+  else state.thread.setContext(window.tr("Quoting: %(text)s", { text: textOf(context.event) }));
 }
 
 const messageHandlers = {
@@ -560,15 +571,15 @@ const messageHandlers = {
   },
   async onReport(item) {
     const { conversation, gchannel } = state.active;
-    const reason = window.prompt("What's wrong with this message? (optional)");
+    const reason = window.prompt(window.tr("What's wrong with this message? (optional)"));
     if (reason === null) return;
     try {
       if (gchannel) {
         await reportGuildChannelMessage(boot.formkey, conversation.channel_id, item.eventId, reason);
-        window.alert("Thanks: the guild's guildmasters will take a look.");
+        window.alert(window.tr("Thanks: the guild's guildmasters will take a look."));
       } else {
         await reportChannelMessage(boot.formkey, conversation.channel_id, item.eventId, reason);
-        window.alert("Thanks: the site's admins will take a look.");
+        window.alert(window.tr("Thanks: the site's admins will take a look."));
       }
     } catch (e) {
       window.alert(e.message);
@@ -592,7 +603,7 @@ const messageHandlers = {
   },
   async onRemove(item) {
     const { conversation } = state.active;
-    if (!window.confirm("Remove this message for everyone? The guild's log will say you did.")) return;
+    if (!window.confirm(window.tr("Remove this message for everyone? The guild's log will say you did."))) return;
     try {
       await removeGuildChannelMessage(boot.formkey, conversation.channel_id, item.eventId);
     } catch (e) {
@@ -600,7 +611,7 @@ const messageHandlers = {
     }
   },
   onDelete(item) {
-    if (!window.confirm("Delete this message for everyone?")) return;
+    if (!window.confirm(window.tr("Delete this message for everyone?"))) return;
     state.client.redactEvent(state.active.room.roomId, item.eventId).catch(() => {});
   },
 };
@@ -660,11 +671,12 @@ async function openConversation(conversation) {
   queueMicrotask(() => showThreadNotice(isGroup || isChannel || isGuildChannel ? "" : waitingNotice(conversation)));
 
   const pane = document.getElementById("chat-thread-pane");
-  const inviter = isGroup && conversation.invited_by ? `@${conversation.invited_by.username}` : "Someone";
   state.thread = renderThreadShell(pane, {
     otherUser: conversation.other_user,
     group: group ? { label: group.info.label, size: group.info.size } : null,
-    requestText: isGroup ? `${inviter} added you to this group. Accept to read it and write in it.` : null,
+    requestText: !isGroup ? null : conversation.invited_by
+      ? window.tr("@%(name)s added you to this group. Accept to read it and write in it.", { name: conversation.invited_by.username })
+      : window.tr("Someone added you to this group. Accept to read it and write in it."),
     onInfo: group ? () => groupSheets.openInfo(state.active.group.info) : null,
     onCall: isChannel || isGuildChannel ? null : (kind) => startCall(conversation.room_id, kind),
     channel,
@@ -700,7 +712,7 @@ async function openConversation(conversation) {
 }
 
 async function onLeaveChannel(conversation) {
-  if (!window.confirm("Leave this channel?")) return;
+  if (!window.confirm(window.tr("Leave this channel?"))) return;
   try {
     await leaveChannel(boot.formkey, conversation.channel_id);
   } catch (e) {
@@ -728,7 +740,7 @@ function onSend(room, text) {
     return;
   }
   if (state.locked) {
-    window.alert("Unlock your messages first: reload the page to enter your password.");
+    window.alert(window.tr("Unlock your messages first: reload the page to enter your password."));
     return;
   }
   const pair = state.active && state.active.conversation && state.active.conversation.other_user;
@@ -792,8 +804,10 @@ function closeThread() {
   stopCards();
   state.active = null;
   state.thread = null;
-  document.getElementById("chat-thread-pane").innerHTML =
-    '<div class="d-flex align-items-center justify-content-center h-100 text-muted">Select a conversation</div>';
+  const empty = document.createElement("div");
+  empty.className = "d-flex align-items-center justify-content-center h-100 text-muted";
+  empty.textContent = window.tr("Select a conversation");
+  document.getElementById("chat-thread-pane").replaceChildren(empty);
   document.getElementById("chat-app")?.classList.remove("chat-has-room");
 }
 
@@ -1012,9 +1026,9 @@ function tellParent(message) {
 }
 
 async function sendShared({ room_id: roomId, text }) {
-  if (!isReady) throw new Error("Chat is still starting.");
+  if (!isReady) throw new Error(window.tr("Chat is still starting."));
   if (typeof roomId !== "string" || typeof text !== "string" || !text.trim() || text.length > 2000) {
-    throw new Error("That message can't be sent.");
+    throw new Error(window.tr("That message can't be sent."));
   }
   const find = () => [...state.conversations.inbox, ...state.conversations.group].find((c) => c.room_id === roomId);
   let convo = find();
@@ -1024,8 +1038,8 @@ async function sendShared({ room_id: roomId, text }) {
   }
   // the inbox holds every chat you can write in, including the ones you started yourself;
   // a request waiting for you to accept it is not in it
-  if (!convo) throw new Error("You can't send to that chat.");
-  if (state.locked) throw new Error("Open Chat once to unlock your messages, then try again.");
+  if (!convo) throw new Error(window.tr("You can't send to that chat."));
+  if (state.locked) throw new Error(window.tr("Open Chat once to unlock your messages, then try again."));
   if (convo.other_user && convo.other_user.ready === false) {
     waitFor(roomId, text);                // sent when they've opened chat (M-04)
     return;
@@ -1046,7 +1060,7 @@ window.addEventListener("message", async (event) => {
     await sendShared(data);
     tellParent({ type: "ruqqus-chat-sent", id: data.id, ok: true });
   } catch (e) {
-    tellParent({ type: "ruqqus-chat-sent", id: data.id, ok: false, error: e && e.message ? e.message : "Could not send." });
+    tellParent({ type: "ruqqus-chat-sent", id: data.id, ok: false, error: e && e.message ? e.message : window.tr("Could not send.") });
   }
 });
 
@@ -1069,11 +1083,11 @@ function holdChatLock() {
         const note = document.createElement("div");
         note.className = "text-center text-muted p-4";
         const text = document.createElement("p");
-        text.textContent = "Chat is open in another tab.";
+        text.textContent = window.tr("Chat is open in another tab.");
         const again = document.createElement("button");
         again.type = "button";
         again.className = "btn btn-primary btn-sm";
-        again.textContent = "Use it here";
+        again.textContent = window.tr("Use it here");
         again.addEventListener("click", () => window.location.reload());
         note.append(text, again);
         if (list) list.replaceChildren(note);

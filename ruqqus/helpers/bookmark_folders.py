@@ -5,6 +5,8 @@ The History page's Bookmarked tab is filtered with `?folder=`: absent = everythi
 unsorted bookmarks, or a folder's id."""
 import re
 
+from ruqqus.helpers.i18n_runtime import tr, trn
+
 MAX_FOLDERS = 30
 NAME_CHARS = 40
 
@@ -24,13 +26,14 @@ def clean_name(raw):
     """The folder name as it is kept: one line, single spaces, 1 to NAME_CHARS characters."""
     name = re.sub(r"\s+", " ", (raw or "").replace("\x00", " ")).strip()
     if any(ord(ch) < 32 or ord(ch) == 127 for ch in name):
-        raise FolderError("A folder name can't hold control characters.")
+        raise FolderError(tr("A folder name can't hold control characters."))
     if not name:
-        raise FolderError("Give the folder a name.")
+        raise FolderError(tr("Give the folder a name."))
     if len(name) > NAME_CHARS:
-        raise FolderError(f"A folder name can be {NAME_CHARS} characters at most.")
+        raise FolderError(trn("A folder name can be %(num)s character at most.",
+                                 "A folder name can be %(num)s characters at most.", NAME_CHARS))
     if name.lower() in RESERVED:
-        raise FolderError(f"“{name}” is already used for a view of your bookmarks. Pick another name.")
+        raise FolderError(tr("“%(name)s” is already used for a view of your bookmarks. Pick another name.", name=name))
     return name
 
 
@@ -39,16 +42,16 @@ def check_new(name, existing_names, count):
     folder names), or None. `name` is already clean."""
     taken = {other.lower() for other in existing_names}
     if name.lower() in taken:
-        return f"You already have a folder called {name}."
+        return tr("You already have a folder called %(name)s.", name=name)
     if count >= MAX_FOLDERS:
-        return f"You can have {MAX_FOLDERS} folders at most."
+        return trn("You can have %(num)s folder at most.", "You can have %(num)s folders at most.", MAX_FOLDERS)
     return None
 
 
 def check_rename(name, existing_names_without_this_one):
     taken = {other.lower() for other in existing_names_without_this_one}
     if name.lower() in taken:
-        return f"You already have a folder called {name}."
+        return tr("You already have a folder called %(name)s.", name=name)
     return None
 
 

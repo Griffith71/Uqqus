@@ -276,7 +276,17 @@ def region_country_list(region_code):
     if not region_code:
         return []
     codes = REGION_COUNTRIES.get(region_code, [])
-    return sorted(COUNTRY_NAMES.get(c, c) for c in codes)
+    from ruqqus.helpers import i18n
+    from ruqqus.helpers.i18n_runtime import babel_locale, current_locale
+    if current_locale() == i18n.ENGLISH:
+        return sorted(COUNTRY_NAMES.get(c, c) for c in codes)
+    # another interface language: CLDR's names for the countries (English for one it doesn't name)
+    from babel import Locale
+    try:
+        names = Locale.parse(babel_locale()).territories
+    except (ValueError, LookupError):
+        names = {}
+    return sorted(names.get(c) or COUNTRY_NAMES.get(c, c) for c in codes)
 
 
 @app.template_filter("source_code")
