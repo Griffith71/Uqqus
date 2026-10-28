@@ -41,9 +41,9 @@ def test_in_takes_a_guild_a_topic_or_a_public_curation():
 
 
 def test_a_topic_or_curation_that_cannot_exist_reads_as_one_that_does_not():
-    assert sq.parse("in:#a.b").problems == (sq.NO_TOPIC.format("a.b"),)
+    assert sq.parse("in:#a.b").problems == (sq.NO_TOPIC % {"name": "a.b"},)
     assert sq.parse("in:&a b").problems == ()        # "b" is a word; the operator ends at the space
-    assert sq.parse("in:&a%b").problems == (sq.NO_CURATION.format("a%b"),)
+    assert sq.parse("in:&a%b").problems == (sq.NO_CURATION % {"name": "a%b"},)
     assert sq.parse("in:#").problems == ("in: needs something after it, such as in:+pets.",)
     assert sq.parse("in:&").problems == ("in: needs something after it, such as in:+pets.",)
 
@@ -95,10 +95,19 @@ def test_has_and_is_take_their_values_and_a_few_plurals():
 
 
 def test_languages_by_code_or_name_and_only_listed_ones():
-    assert kinds("lang:EN language:english lang:Modern-Greek") == [
+    assert kinds("lang:EN language:english lang:Greek") == [
         ("lang", "en", False), ("lang", "en", False), ("lang", "el", False)]
     assert sq.parse("lang:la").problems[0].startswith('No language called "la"')   # Latin was taken off the list
+    assert sq.parse("lang:esperanto").problems and sq.parse("lang:ht").problems   # and Esperanto and the creoles
     assert sq.parse("lang:klingon").problems
+
+
+def test_a_language_means_its_row():
+    # alike languages share a row (helpers/languages.py): a member code, its name or the row's name all find it
+    assert kinds("lang:mk lang:macedonian lang:bulgarian lang:norwegian-nynorsk") == [
+        ("lang", "bg", False), ("lang", "bg", False), ("lang", "bg", False), ("lang", "no", False)]
+    assert sq.parse("lang:walloon").problems             # the site doesn't offer it: no row to search
+    assert sq.parse("lang:croatian").problems            # nor Croatian, since LibreTranslate is the only service
 
 
 def test_domains_are_host_names():
@@ -115,8 +124,8 @@ def test_numbers_are_whole_and_bounded():
 
 
 def test_a_name_that_cannot_exist_reads_as_one_that_does_not():
-    assert sq.parse("from:@a%b").problems == (sq.NO_ACCOUNT.format("a%b"),)
-    assert sq.parse("in:+a.b").problems == (sq.NO_GUILD.format("a.b"),)
+    assert sq.parse("from:@a%b").problems == (sq.NO_ACCOUNT % {"name": "a%b"},)
+    assert sq.parse("in:+a.b").problems == (sq.NO_GUILD % {"name": "a.b"},)
     assert sq.parse("from:@").problems == ("from: needs something after it, such as from:@alice.",)
 
 

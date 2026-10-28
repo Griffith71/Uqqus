@@ -1,0 +1,14 @@
+{% extends "search.html" %}
+
+{# A guild, account or curation tab with nothing typed (routes/search.py `search`): the page with its tab bar and no results.
+   Typing a bare + @ & still lists everything of that kind, as it always did; a tab never does. #}
+
+{% block navbar %}
+      <div class="font-weight-bold py-3">{{ _('%(site)s Search') }}</div>
+{% endblock %}
+
+{% block listing_template %}
+<p class="text-muted text-center my-5">{{ _('Nothing was searched.') }}</p>
+{% endblock %}
+
+{% block pagenav %}{% endblock %}

@@ -1,0 +1,61 @@
+// The tab bar of a search results page: Posts, Comments, Guilds, Accounts, Curations (templates/partials/search_tabs.html,
+// helpers/search_tabs.py, assets/js/search_tabs.js), as reddit.com's. An underline bar like the notifications page's, in
+// tokens only so the colours follow the theme and the text meets AA. It scrolls sideways when the labels do not fit a phone
+// (they are longer in other languages), never wraps, and nothing is animated: hover and press answer at once.
+
+.search-tabs {
+    display: flex;
+    gap: var(--space-2);
+    margin: var(--space-4) 0 var(--space-3);
+    overflow-x: auto;
+    border-bottom: 1px solid var(--border);
+    scrollbar-width: none;
+
+    &::-webkit-scrollbar {
+        display: none;
+    }
+}
+
+.search-tab {
+    flex: 0 0 auto;
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-3);
+    min-height: 2.5rem;                    // a target well over 24px
+    margin-bottom: -1px;                   // the underline sits on the bar's own line
+    padding: 0 var(--space-4);
+    border-bottom: 3px solid transparent;
+    font-weight: var(--weight-semibold);
+    white-space: nowrap;
+    color: var(--text-muted);
+
+    .fas {
+        color: var(--text-muted);
+    }
+
+    &:hover,
+    &:focus {
+        color: var(--text);
+        text-decoration: none;
+    }
+
+    &:active {
+        background-color: var(--press);
+    }
+
+    &.active {
+        color: var(--text);
+        border-bottom-color: var(--brand-strong);
+    }
+}
+
+@media (hover: hover) and (pointer: fine) {
+    .search-tab:hover {
+        background-color: var(--hover);
+    }
+}
+
+// the keyboard's ring, inside the tab so the bar's own scrolling cannot cut it
+body:not(.using-mouse) .search-tab:focus-visible {
+    outline-offset: -2px;
+}

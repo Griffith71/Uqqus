@@ -12,14 +12,15 @@ from sqlalchemy import *
 from flask import *
 from ruqqus.classes.domains import reasons as REASONS
 from ruqqus.__main__ import app, cache
-from ruqqus.helpers import search_comments, search_filters, search_query
+from ruqqus.helpers import category_filter, search_comments, search_filters, search_query, search_tabs
 from ruqqus.helpers.get import LIKE_ESCAPE, like_literal
 from ruqqus.helpers import topics as topic_rules
 from ruqqus.helpers.curation_feed import FeedTooSlow, limited
-from ruqqus.helpers.languages import LANGUAGE_NAMES
+from ruqqus.helpers.languages import UNKNOWN as LANGUAGE_UNKNOWN, catalogue as language_catalogue
 from ruqqus.helpers.profile_about import shown_curations
 from ruqqus.helpers.word_filter_store import name_severity
 from ruqqus.helpers.wordfilter import is_hidden
+from ruqqus.helpers.i18n_runtime import msg
 
 
 
@@ -78,6 +79,11 @@ def guild_search(v):
     response = jsonify({"guilds": found})
     response.headers["Cache-Control"] = "private, no-store"
     return response
+
+
+def shown_notices(notices):
+    """The notices about a query as this reader reads them (the helpers' sentences are English, drawn with msg)."""
+    return [msg(n) for n in notices]
 
 
 def sort_of(raw, default):
@@ -305,6 +311,7 @@ def comment_search_response(query, v, page, b=None):
     sort = sort_of(request.args.get("sort"), "top")
     sort = sort if sort in COMMENT_SORTS else "top"
     total, ids, parsed, notices = comment_search(query, v, page, sort, b=b)
+    notices = shown_notices(notices)
     next_exists = len(ids) == 26
     comments = comments_for(ids[0:25], v)
     return {"html": lambda: render_template("search_comments.html",
@@ -331,8 +338,20 @@ def search_page(query):
     chips = [(search_query.label(p), search_query.without(query, i))
              for i, p in enumerate(query.parts) if p.kind not in search_query.TEXT]
     return {"chips": chips, "form": search_query.form_fields(query), "post_search": True,
-            "languages": sorted(LANGUAGE_NAMES.items(), key=lambda x: x[1]),
-            "has_kinds": search_query.FORM_HAS, "has_labels": search_query.HAS_LABELS}
+            "languages": _language_choices(), "has_kinds": search_query.FORM_HAS}
+
+
+def _language_choices():
+    """The Advanced search form's languages, named in the reader's interface language (English exactly the row
+    labels, in their order; other languages sort by their own names)."""
+    from ruqqus.helpers import i18n
+    from ruqqus.helpers.i18n_runtime import current_locale
+    key = current_locale()
+    rows = [(row["value"], i18n.language_name(row["value"], key) or row["label"])
+            for row in language_catalogue() if row["value"] != LANGUAGE_UNKNOWN]
+    if key != i18n.ENGLISH:
+        rows.sort(key=lambda row: row[1].casefold())
+    return rows
 
 
 def advanced_redirect(base):
@@ -355,9 +374,19 @@ def search(v, search_type="posts"):
     if request.args.get("adv"):
         return advanced_redirect("/search")
 
-    query = request.args.get("q", '').lstrip().rstrip()
+    # which kind of search this is (helpers/search_tabs.py): a typed symbol wins, else `?type=` (a tab or the navbar box),
+    # written as the symbol it stands for so the branches below stay as they were
+    resolved = search_tabs.resolve(request.args.get("q", ''), request.args.get("type"))
+    query = resolved.query
 
     page = page_number()
+
+    if resolved.refused:
+        # a tab-driven search of a whole kind with nothing to look for: it lists nothing (typing a bare symbol still lists)
+        return {"html": lambda: render_template("search_nothing.html", v=v, query="", total=0, page=1, listing=[],
+                                                sort_method="top", time_filter="all", next_exists=False,
+                                                tab_kind=resolved.kind),
+                "api": lambda: jsonify({"data": [], "next_exists": False, "type": resolved.kind})}
 
     if query.startswith("+"):
 
@@ -412,18 +441,18 @@ def search(v, search_type="posts"):
                                sort_method=sort,
                                next_exists=next_exists
                                ),
-                "api":lambda:jsonify({"data":[x.json for x in boards]})
+                "api":lambda:jsonify({"data":[x.json for x in boards], "next_exists": next_exists, "type": "guilds"})
                 }
 
     elif query.startswith("#"):
 
         # topic search: `#gam` is the topics whose name holds "gam" (a category or a subcategory, helpers/topics.py), and
-        # the results are the guilds in them
+        # the results are the guilds in them, those filed under a topic's category alone included (-N in its ids)
         found = topic_rules.matching(query)
-        subcat_ids = sorted({i for t in found for i in t.subcat_ids})
+        topic_ids = sorted({i for t in found for i in t.ids})
 
         boards = g.db.query(Board).filter(
-            Board.subcat_id.in_(subcat_ids) if subcat_ids else false(),
+            category_filter.board_clause(topic_ids, Board.subcat_id, Board.cat_id),
             func.lower(Board.name) != PROFILE_BOARD_NAME)
         boards = listable_boards(boards, v).order_by(Board.stored_subscriber_count.desc(), Board.name.asc())
 
@@ -444,7 +473,7 @@ def search(v, search_type="posts"):
                                next_exists=next_exists
                                ),
                 "api":lambda:jsonify({"topics": [{"name": t.label, "slug": t.slug, "permalink": t.url} for t in found],
-                                      "data":[x.json for x in boards]})
+                                      "data":[x.json for x in boards], "next_exists": next_exists, "type": "guilds"})
                 }
 
     elif query.startswith("&"):
@@ -486,7 +515,7 @@ def search(v, search_type="posts"):
                                ),
                 "api":lambda:jsonify({"data":[{"name": c.name, "slug": c.slug, "description": c.description,
                                                "owner": c.owner.username, "permalink": c.permalink}
-                                              for c in curations]})
+                                              for c in curations], "next_exists": next_exists, "type": "curations"})
                 }
 
     elif query.startswith("@"):
@@ -536,7 +565,7 @@ def search(v, search_type="posts"):
                        users=users,
                        next_exists=next_exists
                       ),
-                "api":lambda:jsonify({"data":[x.json for x in users]})
+                "api":lambda:jsonify({"data":[x.json for x in users], "next_exists": next_exists, "type": "accounts"})
                 }
                    
     
@@ -551,6 +580,7 @@ def search(v, search_type="posts"):
         # posts search
 
         total, ids, parsed, notices = post_search(query, v, page, t, sort)
+        notices = shown_notices(notices)
 
         next_exists = (len(ids) == 26)
         ids = ids[0:25]
@@ -578,6 +608,7 @@ def search(v, search_type="posts"):
                                domain=domain,
                                domain_obj=domain_obj,
                                reasons=REASONS,
+                               sortable=True,
                                **search_page(parsed)
                                ),
                 "api":lambda:jsonify({"data":[x.json for x in posts], "next_exists": next_exists,
@@ -597,7 +628,7 @@ def search_guild(name, v, search_type="posts"):
 
     query=request.args.get("q","").lstrip().rstrip()
 
-    if query.startswith(("+","@")):
+    if query.startswith(("+","@","#","&")):
         return redirect(f"/search?q={quote(query)}")
 
     b = get_guild(name, graceful=True)
@@ -620,6 +651,7 @@ def search_guild(name, v, search_type="posts"):
     #posts search
 
     total, ids, parsed, notices = post_search(query, v, page, t, sort, b=b)
+    notices = shown_notices(notices)
 
     next_exists=(len(ids)==26)
     ids=ids[0:25]
@@ -637,7 +669,26 @@ def search_guild(name, v, search_type="posts"):
                time_filter=t,
                            notices=notices,
                            b=b,
+                           sortable=True,
                            **search_page(parsed)
                    ),
             "api": lambda: jsonify({"data": [x.json for x in posts], "next_exists": next_exists, "notices": notices})
             }
+
+
+def _tab_bar(query, b=None, comment_search=False, kind=None):
+    """The results page's tab bar for the search that ran as `query` (templates/partials/search_tabs.html)."""
+    return search_tabs.tabs(query, comment_search=comment_search, guild_name=b.name if b else None, kind=kind)
+
+
+def _kept_type():
+    """The `type` the navbar's search boxes send again, so searching for something else stays on the tab."""
+    return search_tabs.kept_type(request.path, request.args)
+
+
+def _filters_ignored():
+    """True on a guild, account or curation tab reached by `?type=` whose query carried operators they do not use."""
+    return search_tabs.filters_ignored(request.args.get("q", ""), request.args.get("type"))
+
+
+app.jinja_env.globals.update(search_tab_bar=_tab_bar, search_kept_type=_kept_type, search_filters_ignored=_filters_ignored)

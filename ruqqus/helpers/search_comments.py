@@ -16,14 +16,32 @@ only x's non-anonymous ones.
 """
 from sqlalchemy import and_, func, not_, select
 
-from ruqqus.helpers import anonymity
+from ruqqus.helpers import anonymity, category_filter
 from ruqqus.helpers import search_query as sq
 from ruqqus.helpers.curation_feed import member_condition
 from ruqqus.helpers.feed_algorithm import like_pattern
+from babel.support import LazyProxy
+
+from ruqqus.helpers.i18n_runtime import tr, trn
 
 MIN_WORD = 3
-NOT_USED = "{} is not used when searching comments."
-TOO_BROAD = f"Add a word of at least {MIN_WORD} letters, or from: or in:, to search comments."
+
+
+def _too_broad():
+    # Translators: "from:" and "in:" are search operators, typed as they are: keep them untranslated.
+    return trn("Add a word of at least %(num)s letter, or from: or in:, to search comments.",
+               "Add a word of at least %(num)s letters, or from: or in:, to search comments.", MIN_WORD)
+
+
+# shown only: translated each time it is used, as tr_lazy (a plural, so through trn)
+TOO_BROAD = LazyProxy(_too_broad, enable_cache=False)
+
+
+def not_used(operator):
+    """The notice for an operator a comment search drops."""
+    # Translators: %(operator)s is a search operator as it is typed (has:, lang:, is:forward...).
+    return tr("%(operator)s is not used when searching comments.", operator=operator)
+
 
 KEPT = ("from", "in", "since", "until", "after", "before", "on", "min_votes", "is")
 IS_KEPT = ("ai", "partnership")
@@ -37,11 +55,11 @@ def prepare(query):
     for part in query.parts:
         if part.kind in sq.TEXT or part.kind in KEPT:
             if part.kind == "is" and part.value not in IS_KEPT:
-                notes.append(NOT_USED.format(f"is:{part.value}"))
+                notes.append(not_used(f"is:{part.value}"))
                 continue
             parts.append(part)
         else:
-            notes.append(NOT_USED.format(part.kind + ":"))
+            notes.append(not_used(part.kind + ":"))
     return replace(query, parts=tuple(parts)), list(dict.fromkeys(notes))
 
 
@@ -79,7 +97,8 @@ def _condition(part, v):
         return and_(Comment.author_id == part.ref, anonymity.hide_anonymous(Comment, v))
     if k == "in":
         if value[:1] == "#":
-            in_topic = Submission.board_id.in_(select(Board.id).where(Board.subcat_id.in_(part.refs or (-1,))))
+            in_topic = Submission.board_id.in_(select(Board.id).where(
+                category_filter.board_clause(part.refs, Board.subcat_id, Board.cat_id)))
             return not_(in_topic) if negated else in_topic
         if value[:1] == "&":
             in_curation = member_condition(part.ref)

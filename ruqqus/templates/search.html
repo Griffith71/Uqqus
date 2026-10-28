@@ -3,8 +3,8 @@
 {% block pagetype %}search{% endblock %}
 
 {% block title %}
-<title>Search {% if b %}+{{ b.name }} {% endif %}for "{{ query }}" - {{ 'SITE_NAME' | app_config }}"</title> <!-- include dynamic jinja-generated text in title -->
-<meta name="description" content="{{ total }} result{{ 's' if total != 1 else '' }}">
+<title>{% if b %}{{ _('Search +%(guild)s for "%(query)s" - %(site)s', guild=b.name, query=query) }}{% else %}{{ _('Search for "%(query)s" - %(site)s', query=query) }}{% endif %}</title> <!-- include dynamic jinja-generated text in title -->
+<meta name="description" content="{{ ngettext('%(num)s result', '%(num)s results', total) }}">
 {% endblock %}
 
 
@@ -12,10 +12,13 @@
 {% block PseudoSubmitForm %}{% endblock %}
 
 {% block navbar %}
-      <div class="font-weight-bold py-3">{{ 'SITE_NAME' | app_config }} Search</div>
+      <div class="font-weight-bold py-3">{{ _('%(site)s Search') }}</div>
+      {% set time_labels = {"day": pgettext("time range", "Day"), "week": pgettext("time range", "Week"), "month": pgettext("time range", "Month"), "year": pgettext("time range", "Year"), "all": pgettext("time range", "All")} %}
+      {% set sort_labels = {"hot": pgettext("sort", "Hot"), "top": pgettext("sort", "Top"), "new": pgettext("sort", "New"), "old": pgettext("sort", "Old"), "disputed": pgettext("sort", "Disputed"), "activity": pgettext("sort", "Activity")} %}
 
+      {% if sortable %}
       <div class="d-flex align-items-center">
-        <div class="text-small font-weight-bold mr-2">Filter by</div>
+        <div class="text-small font-weight-bold mr-2">{{ _("Filter by") }}</div>
         <div class="dropdown dropdown-actions">
           <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             {% if time_filter=="day" %}<i class="fas fa-calendar-day mr-1"></i>{% endif %}
@@ -23,18 +26,18 @@
             {% if time_filter=="month" %}<i class="fas fa-calendar-alt mr-1"></i>{% endif %}
             {% if time_filter=="year" %}<i class="fas fa-calendar mr-1"></i>{% endif %}
             {% if time_filter=="all" %}<i class="fas fa-infinity mr-1"></i>{% endif %}
-            {{ time_filter | capitalize }}
+            {{ time_labels.get(time_filter, time_filter | capitalize) }}
           </button>
           <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 31px, 0px);">
-            {% if not time_filter=="day" %}<a class="dropdown-item" href="?q={{ query | urlencode }}&sort={{ sort_method }}&t=day"><i class="fas fa-calendar-day mr-2"></i>Day</a>{% endif %}
-            {% if not time_filter=="week" %}<a class="dropdown-item" href="?q={{ query | urlencode }}&sort={{ sort_method }}&t=week"><i class="fas fa-calendar-week mr-2"></i>Week</a>{% endif %}
-            {% if not time_filter=="month" %}<a class="dropdown-item" href="?q={{ query | urlencode }}&sort={{ sort_method }}&t=month"><i class="fas fa-calendar-alt mr-2"></i>Month</a>{% endif %}
-            {% if not time_filter=="year" %}<a class="dropdown-item" href="?q={{ query | urlencode }}&sort={{ sort_method }}&t=year"><i class="fas fa-calendar mr-2"></i>Year</a>{% endif %}
-            {% if not time_filter=="all" %}<a class="dropdown-item" href="?q={{ query | urlencode }}&sort={{ sort_method }}"><i class="fas fa-infinity mr-2"></i>All</a>{% endif %}
+            {% if not time_filter=="day" %}<a class="dropdown-item" href="?q={{ query | urlencode }}&sort={{ sort_method }}&t=day"><i class="fas fa-calendar-day mr-2"></i>{{ pgettext("time range", "Day") }}</a>{% endif %}
+            {% if not time_filter=="week" %}<a class="dropdown-item" href="?q={{ query | urlencode }}&sort={{ sort_method }}&t=week"><i class="fas fa-calendar-week mr-2"></i>{{ pgettext("time range", "Week") }}</a>{% endif %}
+            {% if not time_filter=="month" %}<a class="dropdown-item" href="?q={{ query | urlencode }}&sort={{ sort_method }}&t=month"><i class="fas fa-calendar-alt mr-2"></i>{{ pgettext("time range", "Month") }}</a>{% endif %}
+            {% if not time_filter=="year" %}<a class="dropdown-item" href="?q={{ query | urlencode }}&sort={{ sort_method }}&t=year"><i class="fas fa-calendar mr-2"></i>{{ pgettext("time range", "Year") }}</a>{% endif %}
+            {% if not time_filter=="all" %}<a class="dropdown-item" href="?q={{ query | urlencode }}&sort={{ sort_method }}"><i class="fas fa-infinity mr-2"></i>{{ pgettext("time range", "All") }}</a>{% endif %}
           </div>
         </div>
 
-        <div class="text-small font-weight-bold ml-3 mr-2">Sort by</div>
+        <div class="text-small font-weight-bold ml-3 mr-2">{{ _("Sort by") }}</div>
         <div class="dropdown dropdown-actions">
           <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             {% if sort_method=="hot" %}<i class="fas fa-fire mr-1"></i>{% endif %}
@@ -43,19 +46,23 @@
             {% if sort_method=="old" %}<i class="fas fa-book mr-1"></i>{% endif %}
             {% if sort_method=="disputed" %}<i class="fas fa-bullhorn mr-1"></i>{% endif %}
             {% if sort_method=="activity" %}<i class="fas fa-comments mr-1"></i>{% endif %}
-            {{ sort_method | capitalize }}
+            {{ sort_labels.get(sort_method, sort_method | capitalize) }}
           </button>
           <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 31px, 0px);">
-            {% if not sort_method=="hot" %}<a class="dropdown-item" href="?q={{ query | urlencode }}&sort=hot&t={{ time_filter }}"><i class="fas fa-fire mr-2"></i>Hot</a>{% endif %}
-            {% if not sort_method=="top" %}<a class="dropdown-item" href="?q={{ query | urlencode }}&sort=top&t={{ time_filter }}"><i class="fas fa-arrow-alt-circle-up mr-2"></i>Top</a>{% endif %}
-            {% if not sort_method=="new" %}<a class="dropdown-item" href="?q={{ query | urlencode }}&sort=new&t={{ time_filter }}"><i class="fas fa-star mr-2"></i>New</a>{% endif %}
-            {% if not sort_method=="old" %}<a class="dropdown-item" href="?q={{ query | urlencode }}&sort=old&t={{ time_filter }}"><i class="fas fa-book mr-2"></i>Old</a>{% endif %}
-            {% if not sort_method=="disputed" %}<a class="dropdown-item" href="?q={{ query | urlencode }}&sort=disputed&t={{ time_filter }}"><i class="fas fa-bullhorn mr-2"></i>Disputed</a>{% endif %}
-            {% if not sort_method=="activity" %}<a class="dropdown-item" href="?q={{ query | urlencode }}&sort=activity&t={{ time_filter }}"><i class="fas fa-comments mr-2"></i>Activity</a>{% endif %}
+            {% if not sort_method=="hot" %}<a class="dropdown-item" href="?q={{ query | urlencode }}&sort=hot&t={{ time_filter }}"><i class="fas fa-fire mr-2"></i>{{ pgettext("sort", "Hot") }}</a>{% endif %}
+            {% if not sort_method=="top" %}<a class="dropdown-item" href="?q={{ query | urlencode }}&sort=top&t={{ time_filter }}"><i class="fas fa-arrow-alt-circle-up mr-2"></i>{{ pgettext("sort", "Top") }}</a>{% endif %}
+            {% if not sort_method=="new" %}<a class="dropdown-item" href="?q={{ query | urlencode }}&sort=new&t={{ time_filter }}"><i class="fas fa-star mr-2"></i>{{ pgettext("sort", "New") }}</a>{% endif %}
+            {% if not sort_method=="old" %}<a class="dropdown-item" href="?q={{ query | urlencode }}&sort=old&t={{ time_filter }}"><i class="fas fa-book mr-2"></i>{{ pgettext("sort", "Old") }}</a>{% endif %}
+            {% if not sort_method=="disputed" %}<a class="dropdown-item" href="?q={{ query | urlencode }}&sort=disputed&t={{ time_filter }}"><i class="fas fa-bullhorn mr-2"></i>{{ pgettext("sort", "Disputed") }}</a>{% endif %}
+            {% if not sort_method=="activity" %}<a class="dropdown-item" href="?q={{ query | urlencode }}&sort=activity&t={{ time_filter }}"><i class="fas fa-comments mr-2"></i>{{ pgettext("sort", "Activity") }}</a>{% endif %}
           </div>
         </div>
       </div>
+      {% endif %}
       {% endblock %}
+
+{# the All / For You / Following pills of the feeds are no use on a search page: the tab bar below is its row #}
+{% block mobileFeedTabs %}{% endblock %}
 
 
 {% block content %}
@@ -76,20 +83,25 @@
       <div class="card-body">
         <div class="pl-md-3">
 
-          <div class="text-muted text-small mb-1">Showing {% block listinglength %}{{ listing | length }}{% endblock %} of {{ total }} result{{ 's' if total != 1 else '' }} for</div>
+          {% set shown %}{% block listinglength %}{{ listing | length }}{% endblock %}{% endset %}
+          {# Translators: the search's own words follow, as a heading #}
+          <div class="text-muted text-small mb-1">{{ ngettext('Showing %(shown)s of %(num)s result for', 'Showing %(shown)s of %(num)s results for', total, shown=shown) }}</div>
           <h1 class="h4 mb-0">{{ query }}</h1>
-          {% if b %}<div class="text-muted text-small mb-1">Showing results in +{{ b.name }}. <a href="/search?q={{ query | urlencode }}">Did you want to search all of {{ 'SITE_NAME' | app_config }} instead?</a></div>{% endif %}
+          {% if b %}<div class="text-muted text-small mb-1">{{ _('Showing results in +%(guild)s. <a href="%(url)s">Did you want to search all of %(site)s instead?</a>', guild=b.name, url="/search?q=" ~ (query | urlencode)) }}</div>{% endif %}
+
+          {# what the search is of: Posts, Comments, Guilds, Accounts or Curations (helpers/search_tabs.py), on every results page #}
+          {% include "partials/search_tabs.html" %}
+          {% if search_filters_ignored() %}
+          {# Translators: from: and since: are search operators and stay as they are #}
+          <div class="search-notice" role="status"><p>{{ _("Filters such as from: and since: only apply to posts and comments.") }}</p></div>
+          {% endif %}
 
           {% if post_search %}
-          <nav class="btn-group btn-group-sm search-types mt-2 mb-1" aria-label="What to search">
-            <a href="{% if b %}/+{{ b.name }}{% endif %}/search?q={{ query | urlencode }}" class="btn btn-sm {% if comment_search %}btn-link text-muted{% else %}btn-secondary{% endif %}"{% if not comment_search %} aria-current="page"{% endif %}><i class="fas fa-align-left mr-1" aria-hidden="true"></i>Posts</a>
-            <a href="{% if b %}/+{{ b.name }}{% endif %}/search?q={{ query | urlencode }}&type=comments" class="btn btn-sm {% if comment_search %}btn-secondary{% else %}btn-link text-muted{% endif %}"{% if comment_search %} aria-current="page"{% endif %}><i class="fas fa-comment mr-1" aria-hidden="true"></i>Comments</a>
-          </nav>
           {# the operators of this search (helpers/search_query.py), each with a link to the search without it #}
           {% if chips %}
-          <div class="search-chips" role="group" aria-label="Filters in this search">
+          <div class="search-chips" role="group" aria-label="{{ _('Filters in this search') }}">
             {% for chip_label, rest in chips %}
-            <span class="search-chip">{{ chip_label }} <a href="?q={{ rest | urlencode }}&sort={{ sort_method }}&t={{ time_filter }}{% if comment_search %}&type=comments{% endif %}" aria-label="Remove the filter: {{ chip_label }}">&times;</a></span>
+            <span class="search-chip">{{ chip_label }} <a href="?q={{ rest | urlencode }}&sort={{ sort_method }}&t={{ time_filter }}{% if comment_search %}&type=comments{% endif %}" aria-label="{{ _('Remove the filter: %(filter)s', filter=chip_label) }}">&times;</a></span>
             {% endfor %}
           </div>
           {% endif %}
@@ -102,40 +114,42 @@
 
           <div class="search-tools">
             {% if not comment_search %}<details class="search-advanced">
-              <summary>Advanced search</summary>
+              <summary>{{ _('Advanced search') }}</summary>
               <form action="{% if b %}/+{{ b.name }}{% endif %}/search" method="get" class="search-advanced-form">
                 <input type="hidden" name="adv" value="1">
                 <input type="hidden" name="sort" value="{{ sort_method }}">
-                <label class="search-field search-field-wide"><span>Words</span>
+                <label class="search-field search-field-wide"><span>{{ _("Words") }}</span>
                   <input class="form-control" type="search" name="words" value="{{ form.words }}" placeholder='cats "black cat" -dogs' autocomplete="off"></label>
-                <label class="search-field"><span>From</span>
-                  <input class="form-control" type="text" name="from" value="{{ form['from'] }}" placeholder="Any account" autocomplete="off" autocapitalize="off" spellcheck="false"></label>
+                <label class="search-field"><span>{{ pgettext("search field", "From") }}</span>
+                  <input class="form-control" type="text" name="from" value="{{ form['from'] }}" placeholder="{{ _('Any account') }}" autocomplete="off" autocapitalize="off" spellcheck="false"></label>
                 {% if not b %}
-                <label class="search-field"><span>In guild</span>
-                  <input class="form-control" type="text" name="in" value="{{ form['in'] }}" placeholder="Any guild" autocomplete="off" autocapitalize="off" spellcheck="false"></label>
+                <label class="search-field"><span>{{ _('In guild') }}</span>
+                  <input class="form-control" type="text" name="in" value="{{ form['in'] }}" placeholder="{{ _('Any guild') }}" autocomplete="off" autocapitalize="off" spellcheck="false"></label>
                 {% endif %}
-                <label class="search-field"><span>Since</span>
+                <label class="search-field"><span>{{ pgettext("search field", "Since") }}</span>
                   <input class="form-control" type="date" name="since" value="{{ form.since }}"></label>
-                <label class="search-field"><span>Until</span>
+                <label class="search-field"><span>{{ pgettext("search field", "Until") }}</span>
                   <input class="form-control" type="date" name="until" value="{{ form.until }}"></label>
-                <label class="search-field"><span>Language</span>
+                <label class="search-field"><span>{{ _("Language") }}</span>
                   <select class="form-control" name="lang">
-                    <option value="">Any language</option>
+                    <option value="">{{ _('Any language') }}</option>
                     {% for code, name in languages %}<option value="{{ code }}"{% if form.lang == code %} selected{% endif %}>{{ name }}</option>{% endfor %}
                   </select></label>
                 <fieldset class="search-field search-field-wide">
-                  <legend>With</legend>
+                  {# Translators: posts with a link, a picture, a video... (the ticks below) #}
+                  <legend>{{ pgettext("search field", "With") }}</legend>
+                  {% set has_names = {"link": pgettext("noun", "Link"), "image": pgettext("noun", "Picture"), "video": pgettext("noun", "Video"), "audio": pgettext("noun", "Sound"), "poll": pgettext("noun", "Poll")} %}
                   {% for kind in has_kinds %}
-                  <label class="search-check"><input type="checkbox" name="has" value="{{ kind }}"{% if kind in form.has %} checked{% endif %}> {{ has_labels[kind].split(' ', 1)[1] | capitalize }}</label>
+                  <label class="search-check"><input type="checkbox" name="has" value="{{ kind }}"{% if kind in form.has %} checked{% endif %}> {{ has_names[kind] }}</label>
                   {% endfor %}
-                  <label class="search-check"><input type="checkbox" name="no_forwards" value="1"{% if form.no_forwards %} checked{% endif %}> Leave out forwarded copies</label>
+                  <label class="search-check"><input type="checkbox" name="no_forwards" value="1"{% if form.no_forwards %} checked{% endif %}> {{ _('Leave out forwarded copies') }}</label>
                 </fieldset>
                 <div class="search-field-wide">
-                  <button type="submit" class="btn btn-primary">Search</button>
+                  <button type="submit" class="btn btn-primary">{{ _('Search') }}</button>
                 </div>
               </form>
             </details>{% endif %}
-            <a class="search-tips-link" href="/help/search">Search tips</a>
+            <a class="search-tips-link" href="/help/search">{{ _("Search tips") }}</a>
           </div>
           {% endif %}
 
@@ -153,22 +167,22 @@
   <ul class="nav post-nav mr-auto">
     <li class="nav-item">
 
-      <a class="nav-link{% if sort_method=='hot' %} active{% endif %}" href="?sort=hot&q={{ query | urlencode }}&t={{ time_filter }}"><i class="fas fa-fire"></i>Hot</a>
+      <a class="nav-link{% if sort_method=='hot' %} active{% endif %}" href="?sort=hot&q={{ query | urlencode }}&t={{ time_filter }}"><i class="fas fa-fire"></i>{{ pgettext("sort", "Hot") }}</a>
     </li>
     <li class="nav-item">
-      <a class="nav-link{% if sort_method=='top' %} active{% endif %}" href="?sort=top&q={{ query | urlencode }}&t={{ time_filter }}"><i class="fas fa-arrow-alt-circle-up"></i>Top</a>
+      <a class="nav-link{% if sort_method=='top' %} active{% endif %}" href="?sort=top&q={{ query | urlencode }}&t={{ time_filter }}"><i class="fas fa-arrow-alt-circle-up"></i>{{ pgettext("sort", "Top") }}</a>
     </li>
     <li class="nav-item">
-      <a class="nav-link{% if sort_method=='new' %} active{% endif %}" href="?sort=new&q={{ query | urlencode }}&t={{ time_filter }}"><i class="fas fa-star"></i>New</a> 
+      <a class="nav-link{% if sort_method=='new' %} active{% endif %}" href="?sort=new&q={{ query | urlencode }}&t={{ time_filter }}"><i class="fas fa-star"></i>{{ pgettext("sort", "New") }}</a> 
     </li>
     <li class="nav-item">
-      <a class="nav-link{% if sort_method=='old' %} active{% endif %}" href="?sort=old&q={{ query | urlencode }}&t={{ time_filter }}"><i class="fas fa-book"></i>Old</a> 
+      <a class="nav-link{% if sort_method=='old' %} active{% endif %}" href="?sort=old&q={{ query | urlencode }}&t={{ time_filter }}"><i class="fas fa-book"></i>{{ pgettext("sort", "Old") }}</a> 
     </li>
     <li class="nav-item">
-      <a class="nav-link{% if sort_method=='disputed' %} active{% endif %}" href="?sort=disputed&q={{ query | urlencode }}&t={{ time_filter }}"><i class="fas fa-bullhorn"></i>Disputed</a>
+      <a class="nav-link{% if sort_method=='disputed' %} active{% endif %}" href="?sort=disputed&q={{ query | urlencode }}&t={{ time_filter }}"><i class="fas fa-bullhorn"></i>{{ pgettext("sort", "Disputed") }}</a>
     </li>
     <li class="nav-item ">
-      <a class="nav-link {% if sort_method=='activity' %} active{% endif %}" href="?sort=activity&q={{ query | urlencode }}&t={{ time_filter }}"><i class="fas fa-comments"></i>Activity</a>
+      <a class="nav-link {% if sort_method=='activity' %} active{% endif %}" href="?sort=activity&q={{ query | urlencode }}&t={{ time_filter }}"><i class="fas fa-comments"></i>{{ pgettext("sort", "Activity") }}</a>
     </li>
   </ul>
 
@@ -176,28 +190,28 @@
     <ul class="nav toggle-view ml-auto">
       <li class="nav-item" style="">
         <button class="btn nav-link active pr-3 pb-0 pl-0" id="toggle-list-view-btn" style="box-shadow: none;" onclick="toggle_list_view()">
-          <i class="fas fa-list"></i>List</button>
+          <i class="fas fa-list"></i>{{ pgettext("view", "List") }}</button>
         </li>
         <li class="nav-item" style="">
           <button class="btn nav-link p-0" style="box-shadow: none;" id="toggle-card-view-btn" onclick="toggle_card_view()">
-            <i class="fas fa-th-large"></i>Card</button>
+            <i class="fas fa-th-large"></i>{{ pgettext("view", "Card") }}</button>
           </li>
         </ul>
       </div>
 
       <div class="post-filter pb-2">
-        <span>Sort By:</span>
+        <span>{{ _("Sort By:") }}</span>
         <span class="dropdown">
           <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown"
           aria-haspopup="true" aria-expanded="false">
-          Time
+          {{ _("Time") }}
         </a>
 
         <span class="dropdown-menu border-0 shadow" aria-labelledby="dropdownMenuLink">
-          <a class="dropdown-item" href="#">Day</a>
-          <a class="dropdown-item" href="#">Month</a>
-          <a class="dropdown-item" href="#">Year</a>
-          <a class="dropdown-item" href="#">All Time</a>
+          <a class="dropdown-item" href="#">{{ pgettext("time range", "Day") }}</a>
+          <a class="dropdown-item" href="#">{{ pgettext("time range", "Month") }}</a>
+          <a class="dropdown-item" href="#">{{ pgettext("time range", "Year") }}</a>
+          <a class="dropdown-item" href="#">{{ _("All Time") }}</a>
         </span>
       </span>
 
@@ -221,6 +235,8 @@
     </div>
   </div>
 
+  {% block mobile_sort_bar %}
+  {% if sortable %}
   <div class="row fixed-top bg-white border-top d-inline-flex d-md-none py-2 px-3" id="fixed-bar-mobile" style="z-index: 100; top: 49px; transition: top cubic-bezier(0, 0, 0.2, 1) 220ms;">
 
     <div class="col">
@@ -230,6 +246,8 @@
         <div class="post-filter">
 
           <div class="d-flex align-items-center">
+            {% set time_labels = {"day": pgettext("time range", "Day"), "week": pgettext("time range", "Week"), "month": pgettext("time range", "Month"), "year": pgettext("time range", "Year"), "all": pgettext("time range", "All")} %}
+            {% set sort_labels = {"hot": pgettext("sort", "Hot"), "top": pgettext("sort", "Top"), "new": pgettext("sort", "New"), "old": pgettext("sort", "Old"), "disputed": pgettext("sort", "Disputed"), "activity": pgettext("sort", "Activity")} %}
 
             <div class="dropdown dropdown-actions">
               <button class="btn btn-link text-capitalize text-muted font-weight-normal dropdown-toggle px-0" type="button" id="dropdownMenuButtonMobile" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -239,15 +257,15 @@
                 {% if sort_method=="old" %}<i class="fas fa-book mr-1"></i>{% endif %}
                 {% if sort_method=="disputed" %}<i class="fas fa-bullhorn mr-1"></i>{% endif %}
                 {% if sort_method=="activity" %}<i class="fas fa-comments mr-1"></i>{% endif %}
-                {{ sort_method }}
+                {{ sort_labels.get(sort_method, sort_method) }}
               </button>
               <div class="dropdown-menu" id="mobileSortDropdown" aria-labelledby="dropdownMenuButtonMobile" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 31px, 0px);">
-                {% if not sort_method=="hot" %}<a class="dropdown-item" href="?sort=hot&q={{ query | urlencode }}&t={{ time_filter }}"><i class="fas fa-fire text-primary mr-3"></i>Hot</a>{% endif %}
-                {% if not sort_method=="top" %}<a class="dropdown-item" href="?sort=top&q={{ query | urlencode }}&t={{ time_filter }}"><i class="fas fa-arrow-alt-circle-up text-primary mr-3"></i>Top</a>{% endif %}
-                {% if not sort_method=="new" %}<a class="dropdown-item" href="?sort=new&q={{ query | urlencode }}&t={{ time_filter }}"><i class="fas fa-star text-primary mr-3"></i>New</a>{% endif %}
-                {% if not sort_method=="old" %}<a class="dropdown-item" href="?sort=old&q={{ query | urlencode }}&t={{ time_filter }}"><i class="fas fa-book text-primary mr-3"></i>Old</a>{% endif %}
-                {% if not sort_method=="disputed" %}<a class="dropdown-item" href="?sort=disputed&q={{ query | urlencode }}&t={{ time_filter }}"><i class="fas fa-bullhorn text-primary mr-3"></i>Disputed</a>{% endif %}
-                {% if not sort_method=="activity" %}<a class="dropdown-item" href="?sort=activity&q={{ query | urlencode }}&t={{ time_filter }}"><i class="fas fa-comments text-primary mr-3"></i>Activity</a>{% endif %}
+                {% if not sort_method=="hot" %}<a class="dropdown-item" href="?sort=hot&q={{ query | urlencode }}&t={{ time_filter }}"><i class="fas fa-fire text-primary mr-3"></i>{{ pgettext("sort", "Hot") }}</a>{% endif %}
+                {% if not sort_method=="top" %}<a class="dropdown-item" href="?sort=top&q={{ query | urlencode }}&t={{ time_filter }}"><i class="fas fa-arrow-alt-circle-up text-primary mr-3"></i>{{ pgettext("sort", "Top") }}</a>{% endif %}
+                {% if not sort_method=="new" %}<a class="dropdown-item" href="?sort=new&q={{ query | urlencode }}&t={{ time_filter }}"><i class="fas fa-star text-primary mr-3"></i>{{ pgettext("sort", "New") }}</a>{% endif %}
+                {% if not sort_method=="old" %}<a class="dropdown-item" href="?sort=old&q={{ query | urlencode }}&t={{ time_filter }}"><i class="fas fa-book text-primary mr-3"></i>{{ pgettext("sort", "Old") }}</a>{% endif %}
+                {% if not sort_method=="disputed" %}<a class="dropdown-item" href="?sort=disputed&q={{ query | urlencode }}&t={{ time_filter }}"><i class="fas fa-bullhorn text-primary mr-3"></i>{{ pgettext("sort", "Disputed") }}</a>{% endif %}
+                {% if not sort_method=="activity" %}<a class="dropdown-item" href="?sort=activity&q={{ query | urlencode }}&t={{ time_filter }}"><i class="fas fa-comments text-primary mr-3"></i>{{ pgettext("sort", "Activity") }}</a>{% endif %}
               </div>
             </div>
 
@@ -258,14 +276,14 @@
                 {% if time_filter=="month" %}<i class="fas fa-calendar-days mr-1"></i>{% endif %}
                 {% if time_filter=="year" %}<i class="fas fa-calendar mr-1"></i>{% endif %}
                 {% if time_filter=="all" %}<i class="fas fa-infinity mr-1"></i>{% endif %}
-                {{ time_filter | capitalize }}
+                {{ time_labels.get(time_filter, time_filter | capitalize) }}
               </button>
               <div class="dropdown-menu" id="mobileSortDropdown" aria-labelledby="dropdownMenuButtonMobile" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 31px, 0px);">
-                {% if not time_filter=="day" %}<a class="dropdown-item" href="?q={{ query | urlencode }}&sort={{ sort_method }}&t=day"><i class="fas fa-calendar-day text-primary mr-3"></i>Day</a>{% endif %}
-                {% if not time_filter=="week" %}<a class="dropdown-item" href="?q={{ query | urlencode }}&sort={{ sort_method }}&t=week"><i class="fas fa-calendar-week text-primary mr-3"></i>Week</a>{% endif %}
-                {% if not time_filter=="month" %}<a class="dropdown-item" href="?q={{ query | urlencode }}&sort={{ sort_method }}&t=month"><i class="fas fa-calendar-alt text-primary mr-3"></i>Month</a>{% endif %}
-                {% if not time_filter=="year" %}<a class="dropdown-item" href="?q={{ query | urlencode }}&sort={{ sort_method }}&t=year"><i class="fas fa-calendar text-primary mr-3"></i>Year</a>{% endif %}
-                {% if not time_filter=="all" %}<a class="dropdown-item" href="?q={{ query | urlencode }}&sort={{ sort_method }}"><i class="fas fa-infinity text-primary mr-3"></i>All</a>{% endif %}
+                {% if not time_filter=="day" %}<a class="dropdown-item" href="?q={{ query | urlencode }}&sort={{ sort_method }}&t=day"><i class="fas fa-calendar-day text-primary mr-3"></i>{{ pgettext("time range", "Day") }}</a>{% endif %}
+                {% if not time_filter=="week" %}<a class="dropdown-item" href="?q={{ query | urlencode }}&sort={{ sort_method }}&t=week"><i class="fas fa-calendar-week text-primary mr-3"></i>{{ pgettext("time range", "Week") }}</a>{% endif %}
+                {% if not time_filter=="month" %}<a class="dropdown-item" href="?q={{ query | urlencode }}&sort={{ sort_method }}&t=month"><i class="fas fa-calendar-alt text-primary mr-3"></i>{{ pgettext("time range", "Month") }}</a>{% endif %}
+                {% if not time_filter=="year" %}<a class="dropdown-item" href="?q={{ query | urlencode }}&sort={{ sort_method }}&t=year"><i class="fas fa-calendar text-primary mr-3"></i>{{ pgettext("time range", "Year") }}</a>{% endif %}
+                {% if not time_filter=="all" %}<a class="dropdown-item" href="?q={{ query | urlencode }}&sort={{ sort_method }}"><i class="fas fa-infinity text-primary mr-3"></i>{{ pgettext("time range", "All") }}</a>{% endif %}
               </div>
             </div>
 
@@ -280,19 +298,23 @@
     </div>
 
   </div>
+  {% endif %}
+  {% endblock %}
+
+  <script src="{{ asset_url('js/search_tabs.js') }}"></script>
 
   {% endblock %}
 
   {% block pagenav %}
   {% if listing %}
-  <nav aria-label="Page navigation">
+  <nav aria-label="{{ _('Page navigation') }}">
     <ul class="pagination pagination-sm mb-0">
       <li class="page-item{% if page==1 %} disabled{% endif %}">
 
-        <small><a class="page-link" href="?sort={{ sort_method }}&q={{ query | urlencode }}&t={{ time_filter }}&page={{ page-1 }}" tabindex="-1"{% if page==1 %} aria-disabled="true"{% endif %}>Back</a></small>
+        <small><a class="page-link" href="?sort={{ sort_method }}&q={{ query | urlencode }}&t={{ time_filter }}&page={{ page-1 }}" tabindex="-1"{% if page==1 %} aria-disabled="true"{% endif %}>{{ pgettext("previous page", "Back") }}</a></small>
       </li>
       <li class="page-item{% if not next_exists %} disabled{% endif %}">
-        <small><a class="page-link" href="?sort={{ sort_method }}&q={{ query | urlencode }}&t={{ time_filter }}&page={{ page+1 }}">Next</a></small>
+        <small><a class="page-link" href="?sort={{ sort_method }}&q={{ query | urlencode }}&t={{ time_filter }}&page={{ page+1 }}" rel="next">{{ pgettext("next page", "Next") }}</a></small>
 
       </li>
     </ul>

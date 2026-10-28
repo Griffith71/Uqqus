@@ -3,28 +3,29 @@
 {% block listing_template %}
 {# `#text` in the search box: the topics it names, then the guilds in them (routes/search.py) #}
 {% if topics_found is defined %}
-<div class="explore-chips mt-3 mx-md-3" role="group" aria-label="Topics">
-  {% for t in topics_found %}<a class="explore-chip" href="{{ t.url }}">#{{ t.label }}</a>{% else %}<span class="text-muted text-small">No topic called {{ query }}.</span>{% endfor %}
+<div class="explore-chips mt-3 mx-md-3" role="group" aria-label="{{ _('Topics') }}">
+  {% for t in topics_found %}<a class="explore-chip" href="{{ t.url }}">#{{ t.label }}</a>{% else %}<span class="text-muted text-small">{{ _('No topic called %(query)s.', query=query) }}</span>{% endfor %}
 </div>
-{% if topics_found and not boards %}<p class="text-muted text-small mt-3 mx-md-3">No guilds are in {{ 'this topic' if topics_found | length == 1 else 'these topics' }} yet.</p>{% endif %}
+{% if topics_found and not boards %}<p class="text-muted text-small mt-3 mx-md-3">{{ ngettext('No guilds are in this topic yet.', 'No guilds are in these topics yet.', topics_found | length) }}</p>{% endif %}
 {% endif %}
 <div class="row row-cols-1 row-cols-md-3 mt-3 mx-0">
 {% include "board_listing.html" %}
 </div>
+{% if not boards and topics_found is not defined %}<p class="text-muted text-center my-5">{{ _('No matches.') }}</p>{% endif %}
 {% endblock %}
 
 {% block listinglength %}{{ boards | length }}{% endblock %}
 
 {% block pagenav %}
   {% if boards %}
-  <nav aria-label="Page navigation">
+  <nav aria-label="{{ _('Page navigation') }}">
     <ul class="pagination pagination-sm mb-0">
       <li class="page-item{% if page==1 %} disabled{% endif %}">
 
-        <small><a class="page-link" href="?sort={{ sort_method }}&q={{ query | urlencode }}&t={{ time_filter }}&page={{ page-1 }}" tabindex="-1"{% if page==1 %} aria-disabled="true"{% endif %}>Back</a></small>
+        <small><a class="page-link" href="?sort={{ sort_method }}&q={{ query | urlencode }}&t={{ time_filter }}&page={{ page-1 }}" tabindex="-1"{% if page==1 %} aria-disabled="true"{% endif %}>{{ pgettext("previous page", "Back") }}</a></small>
       </li>
       <li class="page-item{% if not next_exists %} disabled{% endif %}">
-        <small><a class="page-link" href="?sort={{ sort_method }}&q={{ query | urlencode }}&t={{ time_filter }}&page={{ page+1 }}">Next</a></small>
+        <small><a class="page-link" href="?sort={{ sort_method }}&q={{ query | urlencode }}&t={{ time_filter }}&page={{ page+1 }}" rel="next">{{ pgettext("next page", "Next") }}</a></small>
 
       </li>
     </ul>

@@ -57,10 +57,11 @@ def test_an_account_the_viewer_may_not_see_reads_as_one_that_does_not_exist():
                   "board.can_view(v)"):
         assert check in guild, check
     resolve = body(FILTERS, "resolve")
-    assert "sq.NO_ACCOUNT.format(part.value)" in resolve and "sq.NO_GUILD.format(part.value)" in resolve
-    # no other message names an account or a guild
-    assert re.findall(r'"No (account|guild)', FILTERS) == []
-    assert sq.NO_ACCOUNT == "No account called @{}." and sq.NO_GUILD == "No guild called +{}."
+    assert 'tr("No account called @%(name)s.", name=part.value)' in resolve
+    assert 'tr("No guild called +%(name)s.", name=part.value)' in resolve
+    # no other message names an account or a guild: those two, in resolve, and nowhere else
+    assert re.findall(r'"No (account|guild)', FILTERS) == ["account", "guild"]
+    assert sq.NO_ACCOUNT == "No account called @%(name)s." and sq.NO_GUILD == "No guild called +%(name)s."
 
 
 def test_nothing_typed_is_run_as_a_pattern_or_as_sql():
@@ -112,3 +113,68 @@ def test_both_stylesheets_style_the_search_tools():
                      ".search-advanced summary {", ".search-advanced-form {", ".search-field-wide {",
                      ".search-help-example {"):
             assert rule in css, (sheet, rule)
+
+
+APP_TEMPLATES = ROOT / "ruqqus" / "templates"
+
+
+# --- the tab bar (the owner, 2026-10-26: Posts, Comments, Guilds, Accounts, Curations) -------------------------------------------
+
+def test_every_results_page_has_the_tab_bar_and_only_the_posts_search_has_the_sort_dropdowns():
+    page = (APP_TEMPLATES / "search.html").read_text(encoding="utf-8")
+    assert page.count("{% if post_search %}") == 1                         # test_the_results_page_escapes_what_was_typed splits on it
+    assert page.index('{% include "partials/search_tabs.html" %}') < page.index("{% if post_search %}")   # outside it: every kind
+    assert "search-types" not in page                                      # the Posts | Comments pair is the bar now
+    assert page.count("{% if sortable %}") == 2 and "sortable=True" in ROUTE.split("def search_guild(")[1]
+    assert ROUTE.count("sortable=True") == 2                               # the site's post search and a guild's
+    assert "{% block mobileFeedTabs %}{% endblock %}" in page              # the feed pills are no use on a search page
+    assert '{% endif %}</title>' in page and '{% endif %}"</title>' not in page
+    bar = (APP_TEMPLATES / "partials" / "search_tabs.html").read_text(encoding="utf-8")
+    assert '<nav class="search-tabs" aria-label="{{ _(\'What to search\') }}"' in bar and 'aria-current="page"' in bar
+    assert "role=\"tablist\"" not in bar and "| safe" not in bar and 'aria-hidden="true"' in bar
+    comments = (APP_TEMPLATES / "search_comments.html").read_text(encoding="utf-8")
+    assert "{% block mobile_sort_bar %}" in comments and comments.count("&type=comments&sort=") >= 3     # the phone bar stays on comments
+
+
+def test_the_tab_decides_the_kind_before_the_prefix_branches_and_never_changes_them():
+    head = ROUTE.split("def search(v, search_type=\"posts\"):")[1].split('if query.startswith("+"):')[0]
+    assert 'search_tabs.resolve(request.args.get("q", \'\'), request.args.get("type"))' in head
+    assert "query = resolved.query" in head and "resolved.refused" in head and "search_nothing.html" in head
+    for branch in ('if query.startswith("+"):', 'elif query.startswith("#"):', 'elif query.startswith("&"):', 'elif query.startswith("@"):',
+                   'elif request.args.get("type") == "comments":'):
+        assert branch in ROUTE, branch
+    guild = ROUTE.split("def search_guild(")[1]
+    assert 'query.startswith(("+","@","#","&"))' in guild                  # the site's kinds are the site's, in a guild too
+    for kind in ("guilds", "curations", "accounts"):
+        assert f'"type": "{kind}"' in ROUTE                                # the JSON says what it is (keys added, none renamed)
+
+
+def test_the_navbar_boxes_keep_the_tab_and_the_placeholders_are_untouched():
+    for name in ("default.html", "header.html"):
+        src = (APP_TEMPLATES / name).read_text(encoding="utf-8")
+        assert src.count('name="type" value="{{ search_kept_type() }}"') == 2, name
+        assert src.count("+guilds, @users, #topics, &curations") == 4, name
+
+
+def test_the_pagers_of_the_name_pages_ask_for_what_they_have():
+    users = (APP_TEMPLATES / "search_users.html").read_text(encoding="utf-8")
+    assert "{% if users %}" in users and "{% if boards %}" not in users    # account results never showed Back / Next
+    for name in ("search_users.html", "search_boards.html"):
+        assert "No matches." in (APP_TEMPLATES / name).read_text(encoding="utf-8")
+    nothing = (APP_TEMPLATES / "search_nothing.html").read_text(encoding="utf-8")
+    assert nothing.startswith('{% extends "search.html" %}') and "Nothing was searched." in nothing
+
+
+def test_the_tab_styles_are_tokens_only_in_a_shared_partial_both_sheets_import():
+    code = re.sub(r"/\*.*?\*/|//[^\n]*", "", (ROOT / "ruqqus" / "assets" / "style" / "_search_tabs.scss").read_text(encoding="utf-8"), flags=re.S)
+    assert not re.search(r"#[0-9a-fA-F]{3,8}\b", code) and not re.search(r"\$(primary|purple|info|upvote|downvote)\b", code)
+    assert "!important" not in code and "transition" not in code and "animation" not in code and "--text-subtle" not in code
+    assert "overflow-x: auto" in code and "flex: 0 0 auto" in code and "white-space: nowrap" in code      # a phone scrolls the bar
+    assert "@media (hover: hover) and (pointer: fine)" in code
+    for sheet in ("main.scss", "main_dark.scss"):
+        text = (ROOT / "ruqqus" / "assets" / "style" / sheet).read_text(encoding="utf-8")
+        mark = '@import "{ruqquspath}/assets/style/_search_tabs";'
+        assert mark in text and text.index(mark) < text.index('@import "{ruqquspath}/assets/style/_motion";'), sheet
+    script = (ROOT / "ruqqus" / "assets" / "js" / "search_tabs.js").read_text(encoding="utf-8")
+    code = re.sub(r"/\*.*?\*/|//[^\n]*", "", script, flags=re.S)
+    assert "scrollIntoView" not in code and "smooth" not in code and "scrollLeft" in code    # never animate on load; only the bar scrolls

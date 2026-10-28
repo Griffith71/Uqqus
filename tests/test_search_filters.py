@@ -30,6 +30,7 @@ class Submission(Base):
     language_code = Column(String)
     made_with_ai = Column(Boolean)
     paid_partnership = Column(Boolean)
+    is_bot = Column(Boolean)
     upvotes = Column(Integer, default=0)
     downvotes = Column(Integer, default=0)
     created_utc = Column(Integer)
@@ -63,6 +64,7 @@ class Board(Base):
     __tablename__ = "boards"
     id = Column(Integer, primary_key=True)
     subcat_id = Column(Integer)
+    cat_id = Column(Integer)
 
 
 class CurationGuild(Base):
@@ -132,7 +134,8 @@ def found(db, text, viewer=None):
     query = sq.parse(text)
     assert not query.problems, query.problems
     ids = {"a": A, "b": B, "pets": PETS, "news": NEWS}
-    topics = {"#animals": (5,), "#headlines": (6,), "#nothing": ()}        # subcategory ids, as search_filters.resolve sets them
+    # a topic's ids, as search_filters.resolve sets them: subcategories, and -N for guilds filed under category N alone
+    topics = {"#animals": (5,), "#headlines": (6,), "#nothing": (), "#whole": (5, -2), "#wholeonly": (-2,)}
     curations = {"&mix": 1, "&justa": 2}
 
     def resolved(p):
@@ -193,6 +196,19 @@ def test_topics_are_the_guilds_of_their_subcategories(db):
     assert found(db, "-in:#nothing") == [1, 2, 3, 4, 5, 6, 7]
 
 
+def test_a_topic_named_after_a_category_includes_the_guilds_filed_under_it_alone(db):
+    whole = 12
+    db.add_all([Board(id=whole, subcat_id=0, cat_id=2),
+                Submission(id=8, author_id=A, board_id=whole, created_utc=JAN_1 + 8 * DAY),
+                SubmissionAux(id=8, title="Dogs", body=None, url=None)])
+    db.commit()
+    assert found(db, "in:#whole") == [1, 2, 5, 7, 8]
+    assert found(db, "-in:#whole") == [3, 4, 6]
+    assert found(db, "in:#wholeonly") == [8]
+    assert found(db, "in:#animals") == [1, 2, 5, 7]         # a topic of subcategories alone leaves such a guild out
+    assert found(db, "-in:#nothing") == [1, 2, 3, 4, 5, 6, 7, 8]
+
+
 def test_a_curation_is_its_guilds_and_the_non_anonymous_posts_of_its_accounts(db):
     assert found(db, "in:&mix") == [3, 4, 5, 6, 7]     # +news (3, 4, 6) and b's posts (3, 4, 5, 7)
     assert found(db, "-in:&mix") == [1, 2]
@@ -213,14 +229,26 @@ def test_has(db):
 def test_language_and_a_minus_language_keeps_untagged_posts(db):
     assert found(db, "lang:en") == [3]
     assert found(db, "-lang:en") == [1, 2, 4, 5, 6, 7]
+    assert found(db, "lang:french") == [7]
 
 
 def test_is_and_numbers(db):
     assert found(db, "is:forward") == [6]
     assert found(db, "-is:forward") == [1, 2, 3, 4, 5, 7]
     assert found(db, "is:ai") == [7]
+    assert found(db, "is:bot") == [] and found(db, "-is:bot") == [1, 2, 3, 4, 5, 6, 7]       # (bots: test_is_bot)
     assert found(db, "min_votes:10") == [5]
     assert found(db, "min_comments:3") == [5]
+
+
+def test_is_bot(db):
+    # posts by bot accounts and a member's own automated posts (the owner, 2026-10-27: a filter for bot posts)
+    db.add_all([Submission(id=8, author_id=A, board_id=PETS, created_utc=JAN_1 + 8 * DAY, is_bot=True),
+                SubmissionAux(id=8, title="Feed item", body=None, url=None)])
+    db.commit()
+    assert found(db, "is:bot") == [8]
+    assert found(db, "-is:bot") == [1, 2, 3, 4, 5, 6, 7]                       # NULL is not a bot
+    assert found(db, "is:bots") == [8]                                         # an alias
 
 
 def test_urls(db):

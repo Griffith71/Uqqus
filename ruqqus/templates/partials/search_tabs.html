@@ -1,0 +1,14 @@
+{#
+  The tab bar of a results page: what is being searched, Posts, Comments, Guilds, Accounts or Curations (the owner,
+  2026-10-26, as reddit.com's). Drawn once in search.html's results card, so all five result pages have it; a guild's own
+  search has Posts and Comments only. helpers/search_tabs.py decides the kind and builds the links (the Jinja global
+  `search_tab_bar`, routes/search.py): a typed + @ # & still wins over a tab, and every tab link starts from the query without
+  its symbol. A bar whose links load another page is a <nav> with aria-current, as the site's other tab bars (not a tablist).
+  assets/js/search_tabs.js brings the active tab into view on a phone.
+#}
+{% set tab_labels = {"posts": pgettext("noun", "Posts"), "comments": pgettext("noun", "Comments"), "guilds": _("Guilds"), "accounts": _("Accounts"), "curations": _("Curations")} %}
+<nav class="search-tabs" aria-label="{{ _('What to search') }}" data-search-tabs>
+  {% for tab in search_tab_bar(query, b, comment_search, tab_kind) %}
+  <a class="search-tab{% if tab.active %} active{% endif %}" href="{{ tab.href }}"{% if tab.active %} aria-current="page"{% endif %}><i class="fas {{ tab.icon }} fa-fw" aria-hidden="true"></i><span>{{ tab_labels[tab.key] }}</span></a>
+  {% endfor %}
+</nav>
