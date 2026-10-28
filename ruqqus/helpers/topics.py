@@ -29,6 +29,13 @@ class Topic:
     slug: str
     label: str
     subcat_ids: tuple          # the subcategories whose guilds it holds
+    cat_ids: tuple = ()        # the categories it is named after: a guild filed under one alone (cat_id) belongs too
+
+    @property
+    def ids(self):
+        """The topic as a guild filter lists it (helpers/category_filter.py): its subcategories, and `-N` (the guilds filed
+        under that category alone) for each category."""
+        return self.subcat_ids + tuple(-c for c in self.cat_ids)
 
     @property
     def url(self):
@@ -44,7 +51,7 @@ def shown(category):
 def build(categories):
     """{slug: Topic} from categories (visible, not NSFW) and their visible subcategories. A category's own name comes
     first, so it is the label when a subcategory carries the same name."""
-    labels, ids = {}, {}
+    labels, ids, cat_ids = {}, {}, {}
     for category in categories:
         if category.is_nsfw or not category.visible:
             continue
@@ -53,6 +60,7 @@ def build(categories):
             key = slug(category.name)
             labels.setdefault(key, category.name)
             ids.setdefault(key, []).extend(own)
+            cat_ids.setdefault(key, set()).add(category.id)       # kept when a same-named subcategory merges below
     for category in categories:
         if category.is_nsfw or not category.visible:
             continue
@@ -60,7 +68,8 @@ def build(categories):
             key = slug(sub.name)
             labels.setdefault(key, sub.name)
             ids.setdefault(key, []).append(sub.id)
-    return {key: Topic(key, labels[key], tuple(sorted(set(found)))) for key, found in ids.items() if key}
+    return {key: Topic(key, labels[key], tuple(sorted(set(found))), tuple(sorted(cat_ids.get(key, ()))))
+            for key, found in ids.items() if key}
 
 
 _topics = None

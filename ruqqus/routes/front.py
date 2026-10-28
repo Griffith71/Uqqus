@@ -20,6 +20,8 @@ from ruqqus.classes.categories import CATEGORIES
 from ruqqus.classes.votes import Vote
 from ruqqus.helpers import topics as topic_rules
 from ruqqus.helpers import feed_filters as feed_filter_rules
+from ruqqus.helpers import category_catalog
+from ruqqus.helpers import category_filter
 from ruqqus.helpers import feed_filter_sql
 from ruqqus.helpers import all_feed
 from ruqqus.helpers import notification_feed
@@ -232,7 +234,8 @@ def frontlist(v=None, sort=None, page=1,
     posts = posts.filter(Board.is_banned == False)
 
     if categories:
-        posts=posts.filter(Board.subcat_id.in_(tuple(categories)))
+        posts=posts.filter(category_filter.board_clause(categories, Board.subcat_id, Board.cat_id,
+                                                        known=ALL_CATEGORY_CHOICES))
 
     if region:
         region_list = region if isinstance(region, (list, tuple)) else [region]
@@ -325,6 +328,12 @@ SUBCAT_NAME_BY_ID = {id_: name for name, id_, catname in ALL_SUBCATS}
 # filter" (it used to check every single box and save the full id list
 # explicitly).
 ALL_SUBCAT_IDS = set(SUBCAT_NAME_BY_ID.keys())
+
+# -N is the guilds filed under category N alone (helpers/category_filter.py), the heading of each category in the
+# Categorical list, which ticks the category's subcategories with it. The ids a visitor posts, a member saves and a
+# curation stores are checked against ALL_CATEGORY_CHOICES.
+CATEGORY_TOKENS = {-cat.id for cat in CATEGORIES if cat.subcats}
+ALL_CATEGORY_CHOICES = ALL_SUBCAT_IDS | CATEGORY_TOKENS
 
 
 def _session_filters():
@@ -427,7 +436,7 @@ def _filter_display_context(region_codes, language_codes, subcat_ids):
         # named in the reader's language (helpers/i18n.py: English exactly the row label)
         "language_names_list": [i18n.language_name(c, current_locale()) or language_label(c) for c in language_codes],
         "current_subcats": subcat_ids,
-        "subcat_names": [SUBCAT_NAME_BY_ID[i] for i in subcat_ids if i in SUBCAT_NAME_BY_ID],
+        "subcat_names": category_catalog.notice_names(ALL_SUBCATS, subcat_ids, msg, CATEGORIES),
     }
 
 
@@ -508,10 +517,10 @@ def inject_sidebar_filter_data():
         flask_session['catids'] = []
         flask_session.modified = True
 
-    categorical_catalog = [
-        {"value": id_, "label": name, "search": f"{name} {catname}".strip()}
-        for name, id_, catname in ALL_SUBCATS
-    ]
+    # the site's own topic and region names, in the reader's language (helpers/taxonomy_names.py lists them for the
+    # catalogues); typing the English still finds them. The topics sit under their category's name.
+    locale = current_locale()
+    categorical_groups = category_catalog.cached(locale, translations(locale), CATEGORIES, msg)
 
     # an error page can render before before_request opened g.db (the rate
     # limiter answers first); it gets an empty region list instead of a 500
@@ -534,7 +543,7 @@ def inject_sidebar_filter_data():
         "CATEGORIES": CATEGORIES,
         "regions_catalog": regions_catalog,
         "languages_catalog": languages_catalog,
-        "categorical_catalog": categorical_catalog,
+        "categorical_groups": categorical_groups,
         "active_regions": active_regions,
         "active_languages": active_languages,
         "active_subcats": active_subcats,
@@ -873,6 +882,13 @@ def _filter_change_from_another_site():
 def _id_text(x):
     """A category or group id as text: ASCII digits inside an integer (bug hunt: anything else was a 500)."""
     return x.isascii() and x.isdigit() and len(x) <= 9
+
+
+def _category_choices(text):
+    """The ids a posted Categorical list means, in the order given: each a real choice (a subcategory, 0, or -N for the
+    guilds filed under a category alone), once. That is at most what exists, which keeps the session cookie small (it also holds the sign-in)."""
+    found = (category_filter.parse_token(x) for x in text.split(','))
+    return list(dict.fromkeys(i for i in found if i in ALL_CATEGORY_CHOICES))
 
 
 def _feed_home():
@@ -1219,7 +1235,8 @@ def guild_ids(sort="subs", page=1, cats=[], filter_level=1):
     guilds = filter_boards(guilds, None, level=filter_level)
 
     if cats:
-        guilds=guilds.filter(Board.subcat_id.in_(tuple(cats)))
+        guilds=guilds.filter(category_filter.board_clause(cats, Board.subcat_id, Board.cat_id,
+                                                          known=ALL_CATEGORY_CHOICES))
 
     if sort == "subs":
         guilds = guilds.order_by(Board.stored_subscriber_count.desc())

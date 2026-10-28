@@ -1,4 +1,17 @@
-{% macro filter_panel_body(list_id, options, active_set, search_placeholder, apply_url, apply_param, apply_mode='get', formkey=none) %}
+{# One row of a filter list, ticked or not: the flat lists (Regional, Language) and the grouped one (Categorical) draw
+   their rows alike. #}
+{% macro filter_row(opt, list_id, on) -%}
+<li data-filter-row data-filter-text="{{ opt.search }}" data-value="{{ opt.value }}" class="py-1{% if on %} is-selected{% endif %}" onclick="toggleSidebarFilterOption(this, '{{ list_id }}')">
+    <a href="javascript:void(0)" class="text-decoration-none {% if on %}text-purple font-weight-bold{% else %}text-black{% endif %} d-flex align-items-center"><i class="fas fa-check mr-1{% if not on %} invisible{% endif %}"></i><span class="sidebar-filter-text" onmouseenter="startSidebarFilterMarquee(this)" onmouseleave="stopSidebarFilterMarquee(this)">{{ opt.label }}</span></a>
+  </li>
+{%- endmacro %}
+
+{# `groups` (helpers/category_catalog.py) draws the options under headings instead, in their own order (data-keep-order:
+   ticking one doesn't move it to the top). A heading is the first row of its group's list and a row of its own (`-N`, the
+   guilds filed under the category alone): the script (all_js.js) ticks or unticks every row of the group with it, and a row
+   never changes its heading. The label on a ticked heading says which of the three it stands for (data-state-*, the texts
+   drawn here so the script only picks one). #}
+{% macro filter_panel_body(list_id, options, active_set, search_placeholder, apply_url, apply_param, apply_mode='get', formkey=none, groups=none) %}
 {% if apply_mode == 'form' %}
 <form method="post" action="{{ apply_url }}" id="{{ list_id }}-form">
 <input type="hidden" name="formkey" value="{{ formkey }}">

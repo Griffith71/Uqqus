@@ -9,7 +9,7 @@ import pyotp
 from flask import session, g, request
 
 from ruqqus.helpers.base36 import *
-from ruqqus.helpers import anonymity, circle_clause, circles, guild_limits, post_follows
+from ruqqus.helpers import anonymity, category_filter, circle_clause, circles, guild_limits, post_follows
 from .coauthors import PostCoauthor
 from ruqqus.helpers.muting import hide_muted, hide_muted_guilds
 from ruqqus.helpers.feed_family import one_per_family
@@ -371,7 +371,7 @@ class User(Base, Stndrd, Age_times):
 
         categories = kwargs.get("categories")
         if categories:
-            board_ids_in_cats = select(Board.id).where(Board.subcat_id.in_(tuple(categories)))
+            board_ids_in_cats = select(Board.id).where(category_filter.board_clause(categories, Board.subcat_id, Board.cat_id))
             posts = posts.filter(Submission.board_id.in_(board_ids_in_cats))
 
         region = kwargs.get("region")
@@ -462,37 +462,38 @@ class User(Base, Stndrd, Age_times):
         # a guild the member muted teaches For You nothing: not its subscription, not its votes
         muted_boards = select(BoardBlock.board_id).filter_by(user_id=self.id)
 
-        sub_subcats = g.db.query(Board.subcat_id).join(
+        # a guild filed under a category alone is counted as that category, -N (helpers/category_filter.py token_of)
+        sub_subcats = g.db.query(Board.subcat_id, Board.cat_id).join(
             Subscription, Subscription.board_id == Board.id
         ).filter(
             Subscription.user_id == self.id,
             Subscription.is_active == True,
             Board.id.notin_(muted_boards)
         ).all()
-        add_scores([x[0] for x in sub_subcats], 3)
+        add_scores([category_filter.token_of(*x) for x in sub_subcats], 3)
 
         followed_ids = select(Follow.target_id).filter_by(user_id=self.id)
-        follow_subcats = g.db.query(Board.subcat_id).join(
+        follow_subcats = g.db.query(Board.subcat_id, Board.cat_id).join(
             Subscription, Subscription.board_id == Board.id
         ).filter(
             Subscription.user_id.in_(followed_ids),
             Subscription.is_active == True,
             Board.id.notin_(muted_boards)
         ).all()
-        add_scores([x[0] for x in follow_subcats], 2)
+        add_scores([category_filter.token_of(*x) for x in follow_subcats], 2)
 
         CANDIDATE_CAP = 500
         recent_upvoted_submissions = select(Vote.submission_id).filter(
             Vote.user_id == self.id,
             Vote.vote_type == 1
         ).order_by(Vote.created_utc.desc()).limit(CANDIDATE_CAP)
-        vote_subcats = g.db.query(Board.subcat_id).join(
+        vote_subcats = g.db.query(Board.subcat_id, Board.cat_id).join(
             Submission, Submission.board_id == Board.id
         ).filter(
             Submission.id.in_(recent_upvoted_submissions),
             Board.id.notin_(muted_boards)
         ).all()
-        add_scores([x[0] for x in vote_subcats], 1)
+        add_scores([category_filter.token_of(*x) for x in vote_subcats], 1)
 
         # "Show fewer posts like this": each click of the last 60 days lowers its category
         add_scores(post_feedback.penalties(g.db, self.id).subcat_ids, -post_feedback.SUBCAT_PENALTY)
@@ -586,7 +587,7 @@ class User(Base, Stndrd, Age_times):
         )
 
         posts = posts.filter(Board.is_banned == False, or_(
-            Board.subcat_id.in_(tuple(subcats)),
+            category_filter.board_clause(subcats, Board.subcat_id, Board.cat_id),
             Submission.id.in_(social_proof_ids)
         ))
 
@@ -595,7 +596,7 @@ class User(Base, Stndrd, Age_times):
         # rather than replaces either
         explicit_categories = kwargs.get("categories")
         if explicit_categories:
-            posts = posts.filter(Board.subcat_id.in_(tuple(explicit_categories)))
+            posts = posts.filter(category_filter.board_clause(explicit_categories, Board.subcat_id, Board.cat_id))
 
         region = kwargs.get("region")
         if region:

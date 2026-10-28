@@ -21,6 +21,7 @@ from sqlalchemy import or_
 from ruqqus.helpers.wordfilter import WordFilter
 from ruqqus.helpers import wordfilter_seed
 from ruqqus.helpers import guild_limits
+from ruqqus.helpers import category_filter
 from ruqqus.helpers.word_filter_store import get_filter, rescan
 from ruqqus.classes.domains import reasons as REASONS
 from ruqqus.routes.admin_api import create_plot, user_stat_data
@@ -707,16 +708,25 @@ def admin_category_lock(v):
 
     board=get_guild(request.form.get("board"))
 
-    cat_id=int(request.form.get("category"))
-
-    sc=g.db.query(SubCategory).filter_by(id=cat_id).first()
-    if not sc:
-        abort(400)
-
-    board.subcat_id=cat_id
     lock=bool(request.form.get("lock"))
 
-    g.db.add(board)
+    # a locked guild's select is disabled, so the browser leaves it out: then only the lock changes
+    raw_category = request.form.get("category")
+    if raw_category is not None:
+        token = category_filter.parse_token(raw_category)
+        choice = category_filter.choice_of(token, CATEGORIES)
+        if not choice:
+            abort(400)
+
+        category_filter.file_under(board, token)
+        parent, sub = choice
+        ma1=ModAction(
+            board_id=board.id,
+            user_id=v.id,
+            kind="update_settings",
+            note=f"category={parent.name} / {sub.name} | admin action" if sub else f"category={parent.name} | admin action"
+            )
+        g.db.add(ma1)
 
     ma1=ModAction(
         board_id=board.id,

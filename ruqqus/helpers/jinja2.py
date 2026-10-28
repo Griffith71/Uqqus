@@ -33,6 +33,24 @@ def language_name(code):
     return i18n.language_name(code, current_locale()) or ""
 
 
+@app.template_global("guild_topic")
+def guild_topic(b):
+    """The topic a guild is in (helpers/topics.py: /topic/<slug>), or None: an Uncategorized, hidden or NSFW one has
+    none. A guild filed under a category alone is in the category's topic."""
+    from ruqqus.helpers import topics
+    if b is None:
+        return None
+    if b.cat_id:
+        category = b.category
+        found = topics.find(category.name) if category is not None else None
+        return found if found is not None and b.cat_id in found.cat_ids else None
+    sub = getattr(b, "subcat", None)
+    if sub is None:
+        return None
+    found = topics.find(sub.name)
+    return found if found is not None and b.subcat_id in found.subcat_ids else None
+
+
 @app.template_global("score_mode")
 def score_mode(v):
     return SCORE_NET if v is not None and getattr(v, "score_display", 0) == SCORE_NET else SCORE_UPVOTES

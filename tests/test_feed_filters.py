@@ -159,6 +159,7 @@ class Board(Base):
     id = Column(Integer, primary_key=True)
     name = Column(String)
     subcat_id = Column(Integer)
+    cat_id = Column(Integer)
     is_private = Column(Boolean, default=False)
     is_banned = Column(Boolean, default=False)
 
@@ -293,6 +294,24 @@ def test_in_a_guild_finds_the_original_of_a_copy_there_since_a_feed_shows_one_ca
 def test_a_topic_finds_originals_only_through_open_guilds(db):
     animals = sq.Part("in", "#animals", refs=(5,))          # +pets and the private +secret
     assert shown(db, sql.FeedFilter(query=sq.Query(parts=(animals,)))) == [1, 2, 11, 16, 18]   # never 17
+
+
+def test_a_topic_named_after_a_category_finds_the_guilds_filed_under_it_alone_through_open_ones_only(db):
+    # +whole and +hidden are filed under category 2 alone (no subcategory); a copy in the private +hidden of the public
+    # post 20 must not make it match, as for any private guild
+    db.add_all([Board(id=13, name="whole", subcat_id=0, cat_id=2),
+                Board(id=14, name="hidden", subcat_id=0, cat_id=2, is_private=True),
+                Submission(id=19, author_id=A, board_id=13), SubmissionAux(id=19, title="Sent to the category"),
+                Submission(id=20, author_id=A, board_id=PROFILE), SubmissionAux(id=20, title="Sent somewhere private"),
+                Submission(id=21, author_id=A, board_id=14, repost_id=20), SubmissionAux(id=21, title="Sent somewhere private"),
+                Forward(primary_submission_id=20, forward_submission_id=21, board_id=14)])
+    db.commit()
+    whole = sq.Part("in", "#pets", refs=(5, -2))
+    assert shown(db, sql.FeedFilter(query=sq.Query(parts=(whole,)))) == [1, 2, 11, 16, 18, 19, 21]       # never 17 or 20
+    only = sq.Part("in", "#pets", refs=(-2,))
+    assert shown(db, sql.FeedFilter(query=sq.Query(parts=(only,)))) == [19, 21]
+    nothing = sq.Part("in", "#nothing", refs=())
+    assert shown(db, sql.FeedFilter(query=sq.Query(parts=(nothing,)))) == []      # never a stand-in id that matches a guild
 
 
 def test_polls_and_links(db):

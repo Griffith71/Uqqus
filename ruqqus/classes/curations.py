@@ -33,7 +33,7 @@ class Curation(Base, Stndrd, Age_times):
     # array-column precedent exists elsewhere in this schema.
     region_filter = Column(String(500), default="")
     language_filter = Column(String(500), default="")
-    category_filter = Column(String(500), default="")
+    category_filter = Column(String(2000), default="")
 
     # The curation's own algorithm: which posts it shows and how it orders them, as
     # JSON. Only ever written from feed_algorithm.dump() and read with .algorithm_spec

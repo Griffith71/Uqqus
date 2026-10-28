@@ -10,7 +10,7 @@
         </button>
       </div>
       <div class="modal-body" style="overflow-y: scroll;">
-        {{ filters.filter_panel_body('mobile-categorical-options', categorical_catalog, active_subcats, 'Search categories…', '/categorical', 'cats') }}
+        {{ filters.filter_panel_body('mobile-categorical-options', none, active_subcats, _('Search categories…'), '/categorical', 'cats', groups=categorical_groups) }}
       </div>
     </div>
   </div>

@@ -106,7 +106,11 @@ def test_error_pages_know_who_is_signed_in():
 
 def test_a_guild_without_a_category_returns_to_the_form():
     route = func(read("routes", "boards.py"), "create_board_post") if "\ndef create_board_post(" in read("routes", "boards.py") else read("routes", "boards.py")
-    assert 'error="Choose a category for the guild."' in route
-    assert "raw_category.isascii() and raw_category.isdigit()" in route
+    assert 'error=tr("Choose a category for the guild.")' in route
+    # the posted text goes through the one parser (ASCII digits, an optional minus: a category alone is -<id>)
+    assert "token = category_filter.parse_token(raw_category)" in route
+    assert "if token is None or not category_filter.valid_choice(token, CATEGORIES):" in route
+    assert "category_filter.file_under(new_board, token)" in route
+    assert "raw_category.isascii()" not in route and "int(raw_category)" not in route
     form = read("templates", "make_board.html")
     assert 'name="category" class="form-control" required>' in form and '<option value="" selected disabled>' in form

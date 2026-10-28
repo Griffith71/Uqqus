@@ -45,8 +45,11 @@ def hide_fewer(query, v, model):
     return query.filter(func.coalesce(func.nullif(model.repost_id, 0), model.id).notin_(asked))
 
 
+# subcat_id is the guild's category as User.interest_subcats counts it: -N for a guild filed under category N alone
+# (helpers/category_filter.py token_of), else its subcategory
 _PENALTIES = text("""
-    SELECT f.board_id AS board_id, f.author_id AS author_id, b.subcat_id AS subcat_id
+    SELECT f.board_id AS board_id, f.author_id AS author_id,
+           CASE WHEN b.cat_id IS NOT NULL THEN -b.cat_id ELSE b.subcat_id END AS subcat_id
     FROM post_feedback f
     LEFT JOIN boards b ON b.id = f.board_id
     WHERE f.user_id = :u AND f.created_utc >= :since

@@ -106,7 +106,8 @@ CREATE TABLE public.boards (
     css character varying(65536) DEFAULT ''::character varying,
     name_severity smallint DEFAULT 0 NOT NULL,
     description_severity smallint DEFAULT 0 NOT NULL,
-    is_circle boolean DEFAULT false NOT NULL
+    is_circle boolean DEFAULT false NOT NULL,
+    cat_id integer
 );
 
 
@@ -4280,6 +4281,13 @@ CREATE INDEX boards_subcat_idx ON public.boards USING btree (subcat_id);
 
 
 --
+-- Name: boards_cat_idx; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX boards_cat_idx ON public.boards USING btree (cat_id);
+
+
+--
 -- Name: cflag_user_idx; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -5408,7 +5416,7 @@ CREATE TABLE public.curations (
     forked_from_id bigint,
     region_filter character varying(500) DEFAULT ''::character varying,
     language_filter character varying(500) DEFAULT ''::character varying,
-    category_filter character varying(500) DEFAULT ''::character varying,
+    category_filter character varying(2000) DEFAULT ''::character varying,
     algorithm text DEFAULT '{}' NOT NULL
 );
 

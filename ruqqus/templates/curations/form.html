@@ -116,8 +116,8 @@
   <h3 class="h6 mt-4">Language</h3>
   {{ filters.filter_panel_body('curation-language-options', languages_catalog, curation.language_filter_list, 'Search languages…', curation.permalink + '/set_language_filter', 'codes', apply_mode='form', formkey=v.formkey) }}
 
-  <h3 class="h6 mt-4">Categorical</h3>
-  {{ filters.filter_panel_body('curation-categorical-options', categorical_catalog, curation.category_filter_list, 'Search categories…', curation.permalink + '/set_category_filter', 'cats', apply_mode='form', formkey=v.formkey) }}
+  <h3 class="h6 mt-4">{{ _("Categorical") }}</h3>
+  {{ filters.filter_panel_body('curation-categorical-options', none, curation.category_filter_list, _('Search categories…'), curation.permalink + '/set_category_filter', 'cats', apply_mode='form', formkey=v.formkey, groups=categorical_groups) }}
 
   <hr class="my-4">
 

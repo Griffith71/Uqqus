@@ -128,6 +128,9 @@ def test_the_search_box_has_the_two_branches_and_every_search_box_says_so():
     cards = read("ruqqus", "templates", "search_curations.html")
     assert "curation_card(c, v, c.id in followed_ids)" in cards and "partials/explore.html" in cards
     assert "topics_found" in read("ruqqus", "templates", "search_boards.html")
+    topics_branch = route.split('elif query.startswith("#"):')[1].split('elif query.startswith("&"):')[0]
+    assert "for i in t.ids" in topics_branch and "category_filter.board_clause(topic_ids, Board.subcat_id, Board.cat_id)" in topics_branch
+    assert "expand" not in topics_branch
 
 
 def test_a_topic_link_lands_on_explore_and_explore_filters_by_topic():
@@ -136,6 +139,8 @@ def test_a_topic_link_lands_on_explore_and_explore_filters_by_topic():
     browse = front.split("def browse_guilds(", 1)[1].split("\n@app", 1)[0]
     assert 'request.args.get("topic", "")' in browse and "x.visible" not in browse and "topics=chips" in browse
     assert "Board.subcat_id != topic_rules.UNLISTED_SUBCAT" in front
+    # a topic filters by its own ids as they are (`-N`: the guilds filed under its category alone, helpers/category_filter.py)
+    assert "cats = list(topic.ids)" in browse and "expand" not in browse
     assert re.search(r"topic=\{\{ t\.slug \}\}", read("ruqqus", "templates", "boards.html"))
 
 

@@ -15,6 +15,7 @@ from dataclasses import dataclass
 
 from sqlalchemy import and_, column, exists, false, func, not_, or_, select, table, true
 
+from ruqqus.helpers import category_filter
 from ruqqus.helpers import feed_filters as ff
 from ruqqus.helpers import search_filters
 from ruqqus.helpers import search_query as sq
@@ -22,7 +23,8 @@ from ruqqus.helpers.feed_algorithm import like_pattern
 
 PROFILE_BOARD_NAME = "systemprofile"          # classes/boards.py: the reserved guild every profile post is on
 
-_boards = table("boards", column("id"), column("name"), column("subcat_id"), column("is_private"), column("is_banned"))
+_boards = table("boards", column("id"), column("name"), column("subcat_id"), column("cat_id"), column("is_private"),
+                column("is_banned"))
 _forwards = table("forwardrels", column("primary_submission_id"), column("forward_submission_id"), column("board_id"))
 _coauthors = table("post_coauthors", column("post_id"), column("status"))
 _collab = table("collab_docs", column("post_id"))
@@ -118,8 +120,9 @@ def _in_guilds(board_ids, copies_in):
 def _guild_condition(part):
     """`in:+guild` and `in:#topic` for a feed (a curation, `in:&news`, is search's own condition)."""
     if part.value[:1] == "#":
-        in_topic = select(_boards.c.id).where(_boards.c.subcat_id.in_(part.refs or (-1,)))
-        condition = _in_guilds(in_topic, _open_guilds(_boards.c.subcat_id.in_(part.refs or (-1,))))
+        # the topic's subcategories and the guilds filed under its category alone (an empty list matches nothing)
+        of_topic = category_filter.board_clause(part.refs, _boards.c.subcat_id, _boards.c.cat_id)
+        condition = _in_guilds(select(_boards.c.id).where(of_topic), _open_guilds(of_topic))
     else:
         # the viewer named the guild and may see it (search_filters.find_guild), so any copy there counts
         condition = _in_guilds((part.ref,), (part.ref,))

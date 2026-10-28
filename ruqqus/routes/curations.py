@@ -17,7 +17,7 @@ from ruqqus.routes.front import region_filter_condition, ALL_SUBCAT_IDS
 from ruqqus.helpers.regions import REGION_CENTROIDS
 from ruqqus.helpers.languages import LANGUAGE_NAMES, choosable, known_codes, language_condition
 from ruqqus.helpers.base36 import base36decode
-from ruqqus.helpers import curation_feed, feed_algorithm, feed_server, safe_fetch, search_filters
+from ruqqus.helpers import category_filter, curation_feed, feed_algorithm, feed_server, safe_fetch, search_filters
 from ruqqus.helpers import curation_members
 from urllib.parse import quote
 
@@ -101,7 +101,8 @@ def _own_filters(posts, curation):
     if curation.language_filter_list:
         posts = posts.filter(language_condition(Submission.language_code, curation.language_filter_list))
     if curation.category_filter_list:
-        board_ids_in_cats = select(Board.id).where(Board.subcat_id.in_(tuple(curation.category_filter_list)))
+        board_ids_in_cats = select(Board.id).where(category_filter.board_clause(
+            curation.category_filter_list, Board.subcat_id, Board.cat_id, known=ALL_CATEGORY_CHOICES))
         posts = posts.filter(Submission.board_id.in_(board_ids_in_cats))
     return posts
 
@@ -674,12 +675,13 @@ def curation_set_category_filter(slug, v):
 
     curation = _owned_curation_or_404(slug, v)
     requested = request.form.get("cats", "")
-    ids = [x for x in requested.split(",") if x]
+    ids = [category_filter.parse_token(x) for x in requested.split(",") if x]
     for i in ids:
         if not i.isdigit() or int(i) not in ALL_SUBCAT_IDS:
             abort(404)
 
-    curation.category_filter = ",".join(ids)
+    # "0007" and a repeated id are one category: stored once as a plain number, so the value stays short
+    curation.category_filter = ",".join(str(i) for i in sorted(set(ids)))
     g.db.add(curation)
     g.db.commit()
     _invalidate_curation_feed(curation.id)

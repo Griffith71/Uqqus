@@ -40,6 +40,31 @@ def get_profile_board_id():
     return _profile_board_id
 
 
+_categories_by_id = None
+_categories_by_subcat = None
+
+def _category_with_id(category_id):
+    """The Category with this id from the start-up list (classes/categories.py reads it once), or None. A dict, not a
+    relationship: Category._subcats is loaded joined, so every guild read would pull the whole category in."""
+
+    global _categories_by_id
+    if _categories_by_id is None:
+        from ruqqus.classes.categories import CATEGORIES
+        _categories_by_id = {c.id: c for c in CATEGORIES}
+    return _categories_by_id.get(category_id)
+
+
+def _category_with_subcat(subcat_id):
+    """The Category holding this subcategory id, from the same list (a guild's `subcat` is stale in the request that
+    changed it, and reading it costs a query per guild)."""
+
+    global _categories_by_subcat
+    if _categories_by_subcat is None:
+        from ruqqus.classes.categories import CATEGORIES
+        _categories_by_subcat = {s.id: c for c in CATEGORIES for s in c.subcats}
+    return _categories_by_subcat.get(subcat_id)
+
+
 class Board(Base, Stndrd, Age_times):
 
     __tablename__ = "boards"
@@ -79,6 +104,8 @@ class Board(Base, Stndrd, Age_times):
     is_siegable=Column(Boolean, default=True)
     is_locked_category = Column(Boolean, default=False)
     subcat_id=Column(Integer, ForeignKey("subcategories.id"), default=0)
+    # a guild filed under a broad category alone (subcat_id is then 0); helpers/category_filter.py keeps the two in step
+    cat_id=Column(Integer, nullable=True)
     secondary_color=Column(String(6), default="ffffff")
     public_chat=Column(Boolean, default=False)
     motd = Column(String(1000), default='')
@@ -156,6 +183,14 @@ class Board(Base, Stndrd, Age_times):
     def permalink(self):
 
         return f"/+{self.name}"
+
+    @property
+    def category(self):
+        # cat_id first, then the subcategory by id: `subcat` is stale in the request that changed the guild's category
+        if self.cat_id:
+            return _category_with_id(self.cat_id)
+        found = _category_with_subcat(self.subcat_id) if self.subcat_id else None
+        return found or (self.subcat.category if self.subcat else None)
 
     def can_take(self, post):
         if self.is_banned:

@@ -35,6 +35,7 @@ from ruqqus.helpers import guild_insights_store
 from ruqqus.routes import guild_insights_pages
 from ruqqus.helpers import deletion_log as log_rules
 from ruqqus.helpers import guild_flair, guild_flair_store
+from ruqqus.helpers import category_filter
 from ruqqus.helpers import bell as bell_rules
 
 # the templates quote the per-person cap (home sidebar, siege help) from the one place that sets it
@@ -261,9 +262,8 @@ Optional form data:
                                ), 429
 
     raw_category = (request.form.get("category") or "").strip()     # the form's placeholder is ""
-    subcat = int(raw_category) if raw_category.isascii() and raw_category.isdigit() else 0
-    subcat=g.db.query(SubCategory).filter_by(id=subcat).first()
-    if not subcat:
+    token = category_filter.parse_token(raw_category)
+    if token is None or not category_filter.valid_choice(token, CATEGORIES):
         # the form again, with what was typed, rather than a dead-end page
         return render_template("make_board.html",
                                v=v,
@@ -293,6 +293,7 @@ Optional form data:
                       is_private=circle,
                       is_circle=circle
                       )
+    category_filter.file_under(new_board, token)
     apply_board_severity(new_board)
 
     g.db.add(new_board)
@@ -2311,16 +2312,15 @@ Optional query parameters:
 @validate_formkey
 def change_guild_category(v, board, bid, category):
 
-    category = int(category)
-
-    sc=g.db.query(SubCategory).filter_by(id=category).first()
-    if not sc:
-        return jsonify({"error": f"Invalid category id"}), 400
+    token = category_filter.parse_token(category)
+    choice = category_filter.choice_of(token, CATEGORIES)
+    if not choice:
+        return jsonify({"error": tr("Invalid category id")}), 400
 
     if board.is_locked_category:
         return jsonify({"error": "You can't do that right now."}), 403
 
-    board.subcat_id=sc.id
+    category_filter.file_under(board, token)
     g.db.add(board)
     g.db.flush()
 

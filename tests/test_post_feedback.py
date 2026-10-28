@@ -19,11 +19,13 @@ ORIGINAL, COPY, UNRELATED = 100, 101, 102
 def db():
     engine = create_engine("sqlite://")
     with engine.begin() as conn:
-        conn.execute(text("CREATE TABLE boards (id integer PRIMARY KEY, subcat_id integer)"))
+        conn.execute(text("CREATE TABLE boards (id integer PRIMARY KEY, subcat_id integer, cat_id integer)"))
         conn.execute(text("CREATE TABLE post_feedback (id integer PRIMARY KEY AUTOINCREMENT, user_id integer NOT NULL, "
                           "post_id integer NOT NULL, board_id integer, author_id integer, created_utc integer DEFAULT 0, "
                           "UNIQUE (user_id, post_id))"))
-        conn.execute(text("INSERT INTO boards (id, subcat_id) VALUES (1, 5), (2, 6), (3, NULL)"))
+        # guild 4 is filed under category 7 alone: no subcategory (0) and a category
+        conn.execute(text("INSERT INTO boards (id, subcat_id, cat_id) VALUES (1, 5, NULL), (2, 6, NULL), (3, NULL, NULL), "
+                          "(4, 0, 7)"))
     session = Session(engine)
     yield session
     session.close()
@@ -97,6 +99,13 @@ def test_a_click_lowers_its_category_once_per_click(db):
     pf.add(db, ME, post(301, board=1, author=OTHER_AUTHOR), NOW)
     pf.add(db, ME, post(302, board=3), NOW)             # a guild without a category
     assert sorted(pf.penalties(db, ME, NOW).subcat_ids) == [5, 5]
+
+
+def test_a_guild_filed_under_a_category_alone_lowers_its_category_alone_token(db):
+    # counted as -7, the id interest_subcats gives that guild's joins and votes (helpers/category_filter.py token_of)
+    pf.add(db, ME, post(300, board=4), NOW)
+    pf.add(db, ME, post(301, board=1), NOW)
+    assert sorted(pf.penalties(db, ME, NOW).subcat_ids) == [-7, 5]
 
 
 def test_one_member_never_lowers_for_another(db):
