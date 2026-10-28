@@ -36,7 +36,9 @@ def test_an_option_has_a_length_limit_no_duplicates_and_no_control_characters():
     assert p.clean_options(["x" * p.OPTION_CHARS, "y"]) == ["x" * p.OPTION_CHARS, "y"]
     with pytest.raises(p.PollError) as err:
         p.clean_options(["x" * (p.OPTION_CHARS + 1), "y"])
-    assert "40 characters at most" in err.value.message
+    assert "can be 40 characters" in err.value.message
+    with pytest.raises(p.PollError):                                        # weighted: CJK counts 2
+        p.clean_options(["字" * 21, "y"])
     with pytest.raises(p.PollError) as err:
         p.clean_options(["Yes", "yes"])
     assert "is in the poll twice" in err.value.message

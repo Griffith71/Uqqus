@@ -2418,7 +2418,16 @@ makeLink = function (form) {
   editorReplace(el, s, e, '[' + label + '](' + url + ')');
 }
 
-// Character Count
+// Character Count: weighted as the server counts (text_length.js, helpers/text_length.py: Chinese, Japanese and
+// Korean characters and emoji count 2), so the number shown is the number that will be checked
+
+function weightedLength(s) {
+  return window.TextLength ? TextLength.weighted(s) : String(s || "").length;
+}
+
+function weightedClip(s, limit) {
+  return window.TextLength ? TextLength.clip(s, limit) : String(s || "").slice(0, limit);
+}
 
 function charLimit(form, text) {
 
@@ -2426,9 +2435,9 @@ function charLimit(form, text) {
 
   var text = document.getElementById(text);
 
-  var length = input.value.length;
+  var length = weightedLength(input.value);
 
-  var maxLength = input.getAttribute("maxlength");
+  var maxLength = Number(input.getAttribute("data-weighted-max") || input.getAttribute("maxlength"));
 
   if (length >= maxLength) {
     text.style.color = "#E53E3E";
@@ -2443,6 +2452,37 @@ function charLimit(form, text) {
   text.innerText = maxLength - length;
 
 }
+
+// Any field with data-weighted-max="N" (a comment, the bio, a display name...): it counts as the server does, says how
+// much room is left once it is nearly full (a small counter after it, read out politely), and is marked invalid past
+// the limit so a plain form won't send it. One listener for the whole page, so a comment box added later counts too;
+// the server checks again either way.
+function updateWeightedLimit(field) {
+  var max = Number(field.getAttribute("data-weighted-max"));
+  var used = weightedLength(field.value);
+  var left = max - used;
+  // Translators: %(num)s is how far past the limit the text is; %(note)s says how characters are counted
+  field.setCustomValidity(left < 0 ? trn("Too long by %(num)s (%(note)s)", "Too long by %(num)s (%(note)s)", -left, {note: window.TextLength ? TextLength.NOTE : ""}) : "");
+  var counter = field.nextElementSibling && field.nextElementSibling.classList.contains("weighted-count") ? field.nextElementSibling : null;
+  var near = used >= max * 0.8;
+  if (near && !counter) {
+    counter = document.createElement("small");
+    counter.className = "weighted-count";
+    counter.setAttribute("aria-live", "polite");
+    field.insertAdjacentElement("afterend", counter);
+  }
+  if (counter) {
+    counter.hidden = !near;
+    // Translators: how much room is left in a field that is nearly full, or how far past its limit it is
+    counter.textContent = left < 0 ? trn("%(num)s over the limit", "%(num)s over the limit", -left) : trn("%(num)s left", "%(num)s left", left);
+    counter.classList.toggle("is-over", left < 0);
+  }
+}
+
+document.addEventListener("input", function (event) {
+  var field = event.target;
+  if (field && field.matches && field.matches("[data-weighted-max]")) updateWeightedLimit(field);
+});
 
 // Reveal the collapsed body writing-space (and its toolbar) without
 // stealing keyboard focus - used when overflow spills in while the
@@ -2479,7 +2519,7 @@ function syncTitleOverflow() {
   var body = document.getElementById("post-body");
   var t = title.value;
 
-  if (t.length > TITLE_MAX) {
+  if (weightedLength(t) > TITLE_MAX) {
 
     var stillSynced = titleOverflowBuffer !== null && body.value.startsWith(titleOverflowBuffer);
     // Each keystroke past the boundary only pushes the single newly-typed
@@ -2487,8 +2527,10 @@ function syncTitleOverflow() {
     // overflow already sitting in the body - so it has to be appended to
     // the existing buffer, not treated as the whole overflow on its own,
     // or repeated keystrokes would just clobber each other one at a time.
-    var overflow = stillSynced ? titleOverflowBuffer + t.slice(TITLE_MAX) : t.slice(TITLE_MAX);
-    title.value = t.slice(0, TITLE_MAX);
+    // cut where the weighted count reaches the limit, never inside a character (text_length.js)
+    var head = weightedClip(t, TITLE_MAX);
+    var overflow = stillSynced ? titleOverflowBuffer + t.slice(head.length) : t.slice(head.length);
+    title.value = head;
 
     if (stillSynced) {
       body.value = overflow + body.value.slice(titleOverflowBuffer.length);
@@ -2501,9 +2543,9 @@ function syncTitleOverflow() {
   } else if (titleOverflowBuffer !== null) {
 
     if (body.value.startsWith(titleOverflowBuffer)) {
-      var room = TITLE_MAX - t.length;
-      var pullBack = titleOverflowBuffer.slice(0, room);
-      var remaining = titleOverflowBuffer.slice(room);
+      var room = TITLE_MAX - weightedLength(t);
+      var pullBack = weightedClip(titleOverflowBuffer, room);
+      var remaining = titleOverflowBuffer.slice(pullBack.length);
       title.value = t + pullBack;
       body.value = remaining + body.value.slice(titleOverflowBuffer.length);
       titleOverflowBuffer = remaining.length ? remaining : null;
@@ -2514,7 +2556,7 @@ function syncTitleOverflow() {
   }
 
   charLimit("post-body", "character-count-body");
-  document.getElementById("character-count-title").innerText = TITLE_MAX - title.value.length;
+  document.getElementById("character-count-title").innerText = TITLE_MAX - weightedLength(title.value);
 
 }
 

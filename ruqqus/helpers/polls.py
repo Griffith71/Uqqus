@@ -9,6 +9,9 @@ voted for what."""
 import math
 import re
 
+from ruqqus.helpers import text_length
+from ruqqus.helpers.i18n_runtime import tr, trn
+
 MIN_OPTIONS = 2
 MAX_OPTIONS = 4
 OPTION_CHARS = 40
@@ -35,9 +38,13 @@ def clean_options(raw, complete=True):
         if not text:
             continue
         if any(ord(ch) < 32 or ord(ch) == 127 for ch in text):
-            raise PollError("A poll option can't hold control characters.")
-        if len(text) > OPTION_CHARS:
-            raise PollError(f"A poll option can be {OPTION_CHARS} characters at most.")
+            raise PollError(tr("A poll option can't hold control characters."))
+        if text_length.over_limit(text, OPTION_CHARS, stored_max=OPTION_CHARS):
+            # the same sentence as text_length.limit_message, written whole
+            raise PollError(trn("A poll option can be %(num)s character (Chinese, Japanese and Korean characters and emoji "
+                                "count as 2).",
+                                "A poll option can be %(num)s characters (Chinese, Japanese and Korean characters and emoji "
+                                "count as 2).", OPTION_CHARS))
         key = text.casefold()
         if key in seen:
             raise PollError(f"“{text}” is in the poll twice.")

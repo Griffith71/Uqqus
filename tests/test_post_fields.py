@@ -36,6 +36,15 @@ def test_title_length_limit():
     assert clean_title("x" * 280) == "x" * 280
     with pytest.raises(PostFieldError, match="280 character limit"):
         clean_title("x" * 281)
+    # weighted (helpers/text_length.py): 140 CJK characters fill a title
+    assert clean_title("字" * 140) == "字" * 140
+    with pytest.raises(PostFieldError):
+        clean_title("字" * 141)
+    # counted as typed: "&" is one character, though it is stored escaped
+    assert clean_title("a & b" * 50).count("&amp;") == 50
+    # but the escaped title must still fit its 500-character column
+    with pytest.raises(PostFieldError):
+        clean_title("&" * 200)
 
 
 def test_body_length_limit():

@@ -25,6 +25,7 @@ from ruqqus.helpers import totp as totp_rules
 from ruqqus.helpers import post_feedback as post_feedback_rules
 from ruqqus.helpers import muting as muting_rules
 from ruqqus.helpers import sensitive as sensitive_rules
+from ruqqus.helpers import text_length
 from ruqqus.mail import *
 from .front import frontlist
 from ruqqus.__main__ import app, cache, limiter, r
@@ -144,7 +145,12 @@ def settings_profile_post(v):
                 "api": lambda: jsonify({"message": "Your profile details have been updated."})}
 
     if request.values.get("bio") is not None:
-        bio = request.values.get("bio")[0:256]
+        bio = request.values.get("bio")
+        # refused when too long, weighted (helpers/text_length.py), rather than silently cut at 256; the column is 300
+        if text_length.over_limit(bio, 256, stored_max=300):
+            message = text_length.limit_message("A bio", 256)
+            return {"html": lambda: render_template("settings_profile.html", v=v, error=message),
+                    "api": lambda: (jsonify({"error": message}), 400)}
 
         bio=preprocess(bio)
 

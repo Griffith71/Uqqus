@@ -11,6 +11,9 @@ Only fixed names and values are ever stored (`clean_rules`), never free text.
 """
 import re
 
+from ruqqus.helpers import text_length
+from ruqqus.helpers.i18n_runtime import N_, msg, tr, trn
+
 DAY = 86400
 
 UNANIMOUS, TWO_THIRDS, MAJORITY = "unanimous", "two_thirds", "majority"
@@ -177,9 +180,9 @@ def invite_open(passed_utc, now):
 def check_title(value):
     title = re.sub(r"\s+", " ", str(value or "")).strip()
     if not title:
-        raise Refused("Give the post a title before publishing.")
-    if len(title) > TITLE_MAX:
-        raise Refused(f"A title can be at most {TITLE_MAX} characters.")
+        raise Refused(tr("Give the post a title before publishing."))
+    if text_length.too_long(title, TITLE_MAX):
+        raise Refused(text_length.limit_message("Titles", TITLE_MAX))
     return title
 
 

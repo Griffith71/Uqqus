@@ -7,6 +7,9 @@ from urllib.parse import urlparse, ParseResult, urlunparse
 
 import bleach
 
+from ruqqus.helpers import text_length
+from ruqqus.helpers.i18n_runtime import tr, trn
+
 TITLE_MAX = 280
 BODY_MAX = 25000
 URL_MAX = 2048
@@ -22,16 +25,17 @@ def clean_title(raw):
     title = bleach.clean(title)
 
     if not title:
-        raise PostFieldError("A post needs a title.")
-    if len(title) > TITLE_MAX:
-        raise PostFieldError(f"{TITLE_MAX} character limit for titles.")
+        raise PostFieldError(tr("A post needs a title."))
+    # counted as typed, weighted (helpers/text_length.py), not after escaping ("&" was 5)
+    if text_length.over_limit(typed, TITLE_MAX, stored=title, stored_max=TITLE_COLUMN):
+        raise PostFieldError(text_length.limit_message("Titles", TITLE_MAX))
     return title
 
 
 def check_body(raw):
     body = raw or ""
-    if len(body) > BODY_MAX:
-        raise PostFieldError(f"{BODY_MAX} character limit for text body.")
+    if text_length.over_limit(body, BODY_MAX, stored_max=BODY_MAX):
+        raise PostFieldError(text_length.limit_message("A post's text", BODY_MAX))
     return body
 
 

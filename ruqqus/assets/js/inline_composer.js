@@ -72,7 +72,8 @@
   }
 
   function update() {
-    var length = title.value.length;
+    // weighted as the server counts it (text_length.js: CJK characters and emoji count 2)
+    var length = window.TextLength ? TextLength.weighted(title.value) : title.value.length;
     var left = TITLE_MAX - length;
     count.textContent = length ? String(left) : '';
     count.classList.toggle('text-danger', left < 0);

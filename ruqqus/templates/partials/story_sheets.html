@@ -39,8 +39,8 @@
           </div>
 
           <div id="story-pane-text">
-            <label for="story-text" class="sr-only">What to say</label>
-            <textarea id="story-text" class="form-control" rows="3" maxlength="300" placeholder="What do you want to say?"></textarea>
+            <label for="story-text" class="sr-only">{{ _("What to say") }}</label>
+            <textarea id="story-text" class="form-control" rows="3" data-weighted-max="300" placeholder="{{ _('What do you want to say?') }}"></textarea>
             <div class="text-small text-muted mt-1"><span id="story-count">0</span> / 300</div>
             <div class="story-swatches mt-2" role="radiogroup" aria-label="Background">
               {% for name in story_backgrounds %}
@@ -55,9 +55,9 @@
               <input type="file" id="story-file" accept="image/*" hidden data-media-main="story-media">
               <input type="hidden" id="story-media" value="">
             </div>
-            <p class="text-small text-muted mb-0">The picture goes to your own linked storage, not to this site. You can add a few words under it.</p>
-            <label for="story-caption" class="sr-only">A few words (optional)</label>
-            <textarea id="story-caption" class="form-control mt-2" rows="2" maxlength="300" placeholder="A few words (optional)"></textarea>
+            <p class="text-small text-muted mb-0">{{ _("The picture goes to your own linked storage, not to this site. You can add a few words under it.") }}</p>
+            <label for="story-caption" class="sr-only">{{ _("A few words (optional)") }}</label>
+            <textarea id="story-caption" class="form-control mt-2" rows="2" data-weighted-max="300" placeholder="{{ _('A few words (optional)') }}"></textarea>
           </div>
 
           <div id="story-pane-video" hidden>

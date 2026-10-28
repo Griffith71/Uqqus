@@ -15,6 +15,9 @@ with the unchanging @handle beside it. Pure rules, no I/O (tests/test_display_na
 import re
 import unicodedata
 
+from ruqqus.helpers import text_length
+from ruqqus.helpers.i18n_runtime import tr, tr_lazy, trn
+
 MAX_LEN = 50
 
 _SPACES = re.compile(r"\s+")
@@ -26,8 +29,73 @@ class Refused(ValueError):
     """A value that cannot be saved; the message is shown to the member."""
 
 
-def clean(value):
-    """The display name to store: one line, spaces collapsed, at most MAX_LEN characters. "" clears it."""
+def _angle(kind):
+    if kind == CHANNEL:
+        return tr("A channel name can't contain < or >.")
+    if kind == ROLE:
+        return tr("A role name can't contain < or >.")
+    if kind == GROUP:
+        return tr("A group name can't contain < or >.")
+    if kind == CATEGORY:
+        return tr("A category name can't contain < or >.")
+    return tr("A display name can't contain < or >.")
+
+
+def _at(kind):
+    if kind == CHANNEL:
+        return tr("A channel name can't contain @: it would read as a handle.")
+    if kind == ROLE:
+        return tr("A role name can't contain @: it would read as a handle.")
+    if kind == GROUP:
+        return tr("A group name can't contain @: it would read as a handle.")
+    if kind == CATEGORY:
+        return tr("A category name can't contain @: it would read as a handle.")
+    return tr("A display name can't contain @: it would read as a handle.")
+
+
+def _invisible(kind):
+    if kind == CHANNEL:
+        return tr("A channel name can't contain control or invisible characters.")
+    if kind == ROLE:
+        return tr("A role name can't contain control or invisible characters.")
+    if kind == GROUP:
+        return tr("A group name can't contain control or invisible characters.")
+    if kind == CATEGORY:
+        return tr("A category name can't contain control or invisible characters.")
+    return tr("A display name can't contain control or invisible characters.")
+
+
+def _too_long(kind):
+    # the same sentence as text_length.limit_message, written whole for each kind of name
+    if kind == CHANNEL:
+        return trn("A channel name can be %(num)s character (Chinese, Japanese and Korean characters and emoji "
+                   "count as 2).",
+                   "A channel name can be %(num)s characters (Chinese, Japanese and Korean characters and emoji "
+                   "count as 2).", MAX_LEN)
+    if kind == ROLE:
+        return trn("A role name can be %(num)s character (Chinese, Japanese and Korean characters and emoji "
+                   "count as 2).",
+                   "A role name can be %(num)s characters (Chinese, Japanese and Korean characters and emoji "
+                   "count as 2).", MAX_LEN)
+    if kind == GROUP:
+        return trn("A group name can be %(num)s character (Chinese, Japanese and Korean characters and emoji "
+                   "count as 2).",
+                   "A group name can be %(num)s characters (Chinese, Japanese and Korean characters and emoji "
+                   "count as 2).", MAX_LEN)
+    if kind == CATEGORY:
+        return trn("A category name can be %(num)s character (Chinese, Japanese and Korean characters and emoji "
+                   "count as 2).",
+                   "A category name can be %(num)s characters (Chinese, Japanese and Korean characters and emoji "
+                   "count as 2).", MAX_LEN)
+    return trn("A display name can be %(num)s character (Chinese, Japanese and Korean characters and emoji "
+               "count as 2).",
+               "A display name can be %(num)s characters (Chinese, Japanese and Korean characters and emoji "
+               "count as 2).", MAX_LEN)
+
+
+def clean(value, kind=DISPLAY):
+    """The display name to store: one line, spaces collapsed, at most MAX_LEN characters. "" clears it. `kind` says
+    whose name it is (DISPLAY, CHANNEL, ROLE, GROUP, CATEGORY), which the refusals name."""
     text = _SPACES.sub(" ", unicodedata.normalize("NFC", str(value or ""))).strip()    # a pasted newline or tab is a space
     for char in text:
         if char in _KEEP:
@@ -38,9 +106,9 @@ def clean(value):
         if char == "@":
             raise Refused("A display name can't contain @: it would read as a handle.")
         if category[0] == "C" or category in ("Zl", "Zp"):
-            raise Refused("A display name can't contain control or invisible characters.")
-    if len(text) > MAX_LEN:
-        raise Refused(f"A display name can be at most {MAX_LEN} characters.")
+            raise Refused(_invisible(kind))
+    if text_length.over_limit(text, MAX_LEN, stored_max=MAX_LEN):
+        raise Refused(_too_long(kind))
     return text
 
 

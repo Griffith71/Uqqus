@@ -10,6 +10,8 @@ A video cannot be kept private: a YouTube link works for anyone who holds it, so
 import re
 
 from ruqqus.helpers import circles
+from ruqqus.helpers import text_length
+from ruqqus.helpers.i18n_runtime import tr, trn
 
 TTL = 24 * 60 * 60
 TEXT_MAX = 300
@@ -50,8 +52,11 @@ def parse_background(raw):
 def clean_text(raw):
     """(text, None) or (None, message): control characters out, ends trimmed, at most TEXT_MAX characters."""
     text = _CONTROL.sub("", raw or "").strip()
-    if len(text) > TEXT_MAX:
-        return None, f"A story can say {TEXT_MAX} characters at most."
+    if text_length.too_long(text, TEXT_MAX):
+        # the same sentence as text_length.limit_message, written whole
+        return None, trn("A story can be %(num)s character (Chinese, Japanese and Korean characters and emoji count as 2).",
+                         "A story can be %(num)s characters (Chinese, Japanese and Korean characters and emoji count as 2).",
+                         TEXT_MAX)
     return text, None
 
 

@@ -33,6 +33,10 @@ def test_the_length_limit_counts_characters():
     with pytest.raises(dn.Refused, match="at most 50"):
         dn.clean("x" * (dn.MAX_LEN + 1))
     assert dn.clean("é" * dn.MAX_LEN) == "é" * dn.MAX_LEN                  # characters, not bytes
+    # weighted (helpers/text_length.py): a CJK character counts 2
+    assert dn.clean("字" * 25) == "字" * 25
+    with pytest.raises(dn.Refused):
+        dn.clean("字" * 26)
 
 
 @pytest.mark.parametrize("value,words", [

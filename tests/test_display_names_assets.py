@@ -46,7 +46,7 @@ def test_settings_saves_it_free_with_the_rules_and_the_impersonation_check():
 def test_the_username_box_is_no_longer_called_the_display_name():
     page = read("ruqqus", "templates", "settings_profile.html")
     new = page.split('id="display-name"')[1].split('id="username"')[0]
-    assert 'name="display_name"' in new and 'name="display_name_form"' in new and 'maxlength="50"' in new
+    assert 'name="display_name"' in new and 'name="display_name_form"' in new and 'data-weighted-max="50"' in new   # weighted (helpers/text_length.py)
     assert 'autocomplete="nickname"' in new and "at no cost" in new
     old = page.split('id="username"')[1].split("</form>")[0]
     assert 'action="/settings/name_change"' in old and "Change Username" in old and "Change Display Name" not in page

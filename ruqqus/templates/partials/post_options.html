@@ -168,7 +168,7 @@
     <div class="poll-rows">
       {% for i in range(poll_max_options) %}
       <div class="poll-row input-group mb-2"{% if i >= poll_min_options and i >= options | length %} hidden{% endif %}>
-        <input type="text" class="form-control" name="poll_option" maxlength="{{ poll_option_chars }}" placeholder="Option {{ i + 1 }}" aria-label="Poll option {{ i + 1 }}" value="{{ options[i] if i < options | length else '' }}" autocomplete="off"{% if not options %} disabled{% endif %}>
+        <input type="text" class="form-control" name="poll_option" data-weighted-max="{{ poll_option_chars }}" placeholder="{{ _('Option %(number)s', number=i + 1) }}" aria-label="{{ _('Poll option %(number)s', number=i + 1) }}" value="{{ options[i] if i < options | length else '' }}" autocomplete="off"{% if not options %} disabled{% endif %}>
         {% if i >= poll_min_options %}
         <div class="input-group-append"><button type="button" class="btn btn-outline-secondary poll-row-remove" aria-label="Remove option {{ i + 1 }}">&times;</button></div>
         {% endif %}

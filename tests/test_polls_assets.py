@@ -221,7 +221,7 @@ def test_the_poll_panel_is_in_both_composers_and_closed_panels_send_nothing():
     # a closed panel's fields are disabled, so they are not in the form that is posted
     macro = OPTIONS.split("{% macro poll_field(")[1].split("{% endmacro %}")[0]
     assert macro.count("{% if not options %} disabled{% endif %}") == 2
-    assert 'name="poll_option"' in macro and 'name="poll_hours"' in macro and 'maxlength="{{ poll_option_chars }}"' in macro  # helpers/polls.py OPTION_CHARS
+    assert 'name="poll_option"' in macro and 'name="poll_hours"' in macro and 'data-weighted-max="{{ poll_option_chars }}"' in macro  # helpers/polls.py OPTION_CHARS
     assert "{% for h, label in poll_durations %}" in macro and "range(poll_max_options)" in macro
     assert "field.disabled = true" in COMPOSER_SCRIPT and "'reset'" in COMPOSER_SCRIPT and "MAX_ROWS = 4" in COMPOSER_SCRIPT
     assert "poll_composer.js" in read("ruqqus", "templates", "default.html")

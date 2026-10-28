@@ -481,10 +481,16 @@ def test_content_rules():
     assert "Links to that site aren't allowed." in func(posts, "submit_post")
     comments = read("routes", "comments.py")
     assert "if c.deleted_utc > 0:\n        abort(404)" in func(comments, "delete_comment")
-    assert "[0:10000]" not in comments and comments.count("len(body") >= 2 and "COMMENT_MAX = 10000" in comments
+    assert "[0:10000]" not in comments and comments.count("text_length.over_limit(body") >= 2 and "COMMENT_MAX = 10000" in comments
     for name in ("submission.html", "comments.html"):
         page = read("templates", name)
-        assert page.count('class="comment-box') == page.count('maxlength="10000"'), name
+        # a post's own edit box shares the comment-box look but takes a post's 25000 (post_fields.BODY_MAX); it once
+        # carried maxlength twice, and the browser kept the first, 10000
+        post_edit = re.findall(r'<textarea[^>]*id="post-edit-box-[^>]*>', page)
+        for box in post_edit:
+            # weighted limits (helpers/text_length.py): data-weighted-max, which counts as the server does
+            assert box.count("data-weighted-max=") == 1 and 'data-weighted-max="25000"' in box, name
+        assert page.count('class="comment-box') - len(post_edit) == page.count('data-weighted-max="10000"'), name
 
 
 def test_votes_refresh_every_score_and_is_valid_counts_temporary_bans():

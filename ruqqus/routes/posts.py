@@ -39,6 +39,7 @@ from ruqqus.helpers import insights_store
 from ruqqus.helpers import permalinks
 from ruqqus.helpers import bots as bot_rules, bot_store
 from ruqqus.helpers import sensitive as sensitive_rules
+from ruqqus.helpers import text_length
 from ruqqus.helpers import sharing
 from ruqqus.helpers import bell as bell_rules
 from .front import frontlist
@@ -864,7 +865,8 @@ Optional file data:
     title = title.replace("\r", "")
     title = title.replace("\t", "")
 
-    # sanitize title
+    # sanitize title (counted as typed, before escaping: helpers/text_length.py)
+    typed_title = title
     title = bleach.clean(title)
 
     url = request.form.get("url", "")
@@ -961,17 +963,17 @@ Optional file data:
     #                            )
 
 
-    elif len(title) > 280:
+    elif text_length.over_limit(typed_title, 280, stored=title, stored_max=500):
         return {"html": lambda: (render_template("submit.html",
                                                  v=v,
-                                                 error="280 character limit for titles.",
-                                                 title=title[0:280],
+                                                 error=text_length.limit_message("Titles", 280),
+                                                 title=text_length.clip(title, 280),
                                                  url=url,
                                                  body=body,
                                                  text=text_for_redisplay,
                                                  b=None, forward_guild_names=forward_guild_names
                                                  ), 400),
-                "api": lambda: ({"error": "280 character limit for titles"}, 400)
+                "api": lambda: ({"error": text_length.limit_message("Titles", 280)}, 400)
                 }
 
     parsed_url = urlparse(url)
@@ -1262,18 +1264,18 @@ Optional file data:
         return redirect("/notifications")
 
     # catch too-long body
-    if len(str(body)) > 25000:
+    if text_length.over_limit(str(body), 25000, stored_max=25000):
 
         return {"html": lambda: (render_template("submit.html",
                                                  v=v,
-                                                 error="25000 character limit for text body.",
+                                                 error=text_length.limit_message("A post's text", 25000),
                                                  title=title,
                                                  url=url,
                                                  body=body,
                                                  text=text_for_redisplay,
                                                  b=None, forward_guild_names=forward_guild_names
                                                  ), 400),
-                "api": lambda: ({"error": "25000 character limit for text body."}, 400)
+                "api": lambda: ({"error": text_length.limit_message("A post's text", 25000)}, 400)
                 }
 
     if len(url) > 2048:

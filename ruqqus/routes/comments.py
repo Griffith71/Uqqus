@@ -30,6 +30,7 @@ from ruqqus.classes import *
 from flask import *
 from ruqqus.helpers import sharing
 from ruqqus.helpers import bell as bell_rules
+from ruqqus.helpers import text_length
 from ruqqus.__main__ import app, limiter, db_session
 from .front import frontlist
 from .posts import canonical_redirect
@@ -304,8 +305,8 @@ Optional file data:
 
     #process and sanitize
     body = request.form.get("body", "").strip()
-    if len(body) > COMMENT_MAX:
-        return jsonify({"error": f"Comments can be {COMMENT_MAX:,} characters at most."}), 400
+    if text_length.over_limit(body, COMMENT_MAX, stored_max=COMMENT_MAX):
+        return jsonify({"error": text_length.limit_message("Comments", COMMENT_MAX)}), 400
 
     if not body and not (v.has_premium and request.files.get('file')):
         return jsonify({"error":"You need to actually write something!"}), 400
@@ -627,8 +628,8 @@ Optional form data (left out: unchanged):
         abort(403)
 
     body = request.form.get("body", "")
-    if len(body.strip()) > COMMENT_MAX:
-        return jsonify({"error": f"Comments can be {COMMENT_MAX:,} characters at most."}), 400
+    if text_length.over_limit(body.strip(), COMMENT_MAX, stored_max=COMMENT_MAX):
+        return jsonify({"error": text_length.limit_message("Comments", COMMENT_MAX)}), 400
     body=preprocess(body)
     with CustomRenderer(post_id=c.post.base36id) as renderer:
         body_md = renderer.render(mistletoe.Document(body))

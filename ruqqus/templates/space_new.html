@@ -49,11 +49,11 @@
       </div>
     </fieldset>
 
-    <label for="space-title" class="font-weight-bold mt-3">What is it about?</label>
-    <input type="text" id="space-title" name="title" class="form-control" maxlength="280" placeholder="Title" required>
+    <label for="space-title" class="font-weight-bold mt-3">{{ _("What is it about?") }}</label>
+    <input type="text" id="space-title" name="title" class="form-control" data-weighted-max="280" placeholder="{{ _('Title') }}" required>
 
-    <label for="space-body" class="font-weight-bold mt-3">Description <span class="text-muted font-weight-normal">(optional)</span></label>
-    <textarea id="space-body" name="body" class="form-control" rows="3" maxlength="10000" placeholder="What is it for?"></textarea>
+    <label for="space-body" class="font-weight-bold mt-3">{{ _("Description") }} <span class="text-muted font-weight-normal">{{ _("(optional)") }}</span></label>
+    <textarea id="space-body" name="body" class="form-control" rows="3" data-weighted-max="10000" placeholder="{{ _('What is it for?') }}"></textarea>
 
     <div class="space-composer mt-3" data-space-composer>
       <div class="space-options">
