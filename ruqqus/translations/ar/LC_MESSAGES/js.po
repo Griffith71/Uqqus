@@ -1,0 +1,3811 @@
+# Arabic translations for ruqqus.
+# Copyright (C) 2026 ORGANIZATION
+# This file is distributed under the same license as the ruqqus project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: ruqqus VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2026-10-26 09:01+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: ar\n"
+"Language-Team: ar <LL@li.org>\n"
+"Plural-Forms: nplurals=6; plural=(n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=0 && n%100<=2 ? 4 : 5);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#. when a scheduled Space starts; %(date)s is a short date ("Fri, 24 Oct"),
+#. %(time)s a time of day
+#, machine, python-format
+msgid "%(date)s, %(time)s"
+msgstr "%(date)s, %(time)s"
+
+#. joins names in "who is typing" ("Ann and Bob", then "Ann and Bob and Cy")
+#, machine, python-format
+msgid "%(first)s and %(second)s"
+msgstr "%(first)sو %(second)s"
+
+#, machine, python-format
+msgid "%(first)s and %(second)s are typing…"
+msgstr "%(first)s و %(second)s…"
+
+#. a call's length in hours and minutes, abbreviated ("1 h 5 min")
+#, machine, plain1, python-format
+msgid "%(hours)s h %(minutes)s min"
+msgstr "%(hours)s {h %(minutes)s دقائق }"
+
+#. a chat device's line, e.g. "An app · Last used 3 Oct 2026"
+#, machine, python-format
+msgid "%(kind)s · %(used)s"
+msgstr "%(kind)s · %(used)s"
+
+#. a circle's name and one more circle, on the composer's audience button
+#, machine, python-format
+msgid "%(name)s +1"
+msgstr "%(name)s +1"
+
+#, machine, python-format
+msgid "%(name)s is typing…"
+msgstr "%(name)s هو الطباعة…"
+
+#. above a pinned or found message: who wrote it and when ("Ann · 14:05")
+#, machine, python-format
+msgid "%(name)s · %(when)s"
+msgstr "%(name)s · %(when)s"
+
+#. a quoted board message: who wrote it and its words ("Ann: see you there")
+#, machine, python-format
+msgid "%(name)s: %(text)s"
+msgstr "%(name)s: %(text)s"
+
+#. a quoted board message the reader's word filter hides: who wrote it
+#, machine, python-format
+msgid "%(name)s: hidden by your word filter"
+msgstr "%(name)sمخبأة بواسطتك"
+
+#, machine, python-format
+msgid "%(names)s is typing…"
+msgid_plural "%(names)s are typing…"
+msgstr[0] "%(names)s يرسم…"
+msgstr[1] "%(names)s هو الطباعة…"
+msgstr[2] "%(names)s يرسم…"
+msgstr[3] "%(names)s يرسم…"
+msgstr[4] "%(names)s يرسم…"
+msgstr[5] "%(names)s يرسم…"
+
+#, machine, python-format
+msgid "%(num)s channel"
+msgid_plural "%(num)s channels"
+msgstr[0] "%(num)s قنوات"
+msgstr[1] "قناة واحدة"
+msgstr[2] "طريقتان"
+msgstr[3] "%(num)s قنوات"
+msgstr[4] "%(num)s قناة"
+msgstr[5] "%(num)s قناة"
+
+#, machine, python-format
+msgid "%(num)s circle"
+msgid_plural "%(num)s circles"
+msgstr[0] "صفر دائرة"
+msgstr[1] "دائرة واحدة"
+msgstr[2] "دائرتان"
+msgstr[3] "%(num)s دوائر"
+msgstr[4] "%(num)s دائرة"
+msgstr[5] "%(num)s دائرة"
+
+#, machine, python-format
+msgid "%(num)s comment"
+msgid_plural "%(num)s comments"
+msgstr[0] "صفر من التعليقات"
+msgstr[1] "تعليق واحد"
+msgstr[2] "تعليقان"
+msgstr[3] "%(num)s تعليقات"
+msgstr[4] "%(num)s تعليق"
+msgstr[5] "%(num)s تعليقا"
+
+#, machine, python-format
+msgid "%(num)s h ago"
+msgid_plural "%(num)s h ago"
+msgstr[0] "قبل صفر"
+msgstr[1] "قبل %(num)s ح"
+msgstr[2] "قبل %(num)s ساعة"
+msgstr[3] "قبل %(num)s ح"
+msgstr[4] "قبل %(num)s ساعة"
+msgstr[5] "قبل %(num)s ساعة"
+
+#. how many people are in a Space's call
+#, machine, python-format
+msgid "%(num)s in the Space"
+msgid_plural "%(num)s in the Space"
+msgstr[0] "صفر في الفضاء"
+msgstr[1] "%(num)s في الفضاء"
+msgstr[2] "%(num)s في الفضاء"
+msgstr[3] "%(num)s في الفضاء"
+msgstr[4] "%(num)s في الفضاء"
+msgstr[5] "%(num)s في الفضاء"
+
+#, machine, python-format
+msgid "%(num)s in the call"
+msgid_plural "%(num)s in the call"
+msgstr[0] "صفر في المكالمة"
+msgstr[1] "%(num)s في المكالمة"
+msgstr[2] "%(num)s في المكالمة"
+msgstr[3] "%(num)s في المكالمة"
+msgstr[4] "%(num)s في المكالمة"
+msgstr[5] "%(num)s في المكالمة"
+
+#, machine, python-format
+msgid "%(num)s left"
+msgid_plural "%(num)s left"
+msgstr[0] "صفر"
+msgstr[1] "%(num)s يسار"
+msgstr[2] "%(num)s يسار"
+msgstr[3] "%(num)s يسار"
+msgstr[4] "%(num)s متر"
+msgstr[5] "%(num)s يسار"
+
+#, machine, python-format
+msgid "%(num)s member"
+msgid_plural "%(num)s members"
+msgstr[0] "صفر أعضاء"
+msgstr[1] "عضو واحد"
+msgstr[2] "عضوان"
+msgstr[3] "%(num)s أعضاء"
+msgstr[4] "%(num)s عضو"
+msgstr[5] "%(num)s عضوا"
+
+#, machine, python-format
+msgid "%(num)s message in thread"
+msgid_plural "%(num)s messages in thread"
+msgstr[0] "لا رسائل في الخيط"
+msgstr[1] "رسالة واحدة في الخيط"
+msgstr[2] "رسالتان في الخيط"
+msgstr[3] "%(num)s رسائل في خيط"
+msgstr[4] "%(num)s رسالة في الخيط"
+msgstr[5] "%(num)s رسالة في خيط"
+
+#, machine, plain1, python-format
+msgid "%(num)s min"
+msgid_plural "%(num)s min"
+msgstr[0] "عشر دقائق"
+msgstr[1] "دقيقة واحدة"
+msgstr[2] "دقيقتان"
+msgstr[3] "%(num)s دقائق"
+msgstr[4] "%(num)s دقيقة"
+msgstr[5] "%(num)s دقيقة"
+
+#, python-format
+msgid "%(num)s min ago"
+msgid_plural "%(num)s min ago"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
+msgstr[4] ""
+msgstr[5] ""
+
+#, machine, plain1, python-format
+msgid "%(num)s more"
+msgid_plural "%(num)s more"
+msgstr[0] "صفر أكثر"
+msgstr[1] "%(num)s أكثر"
+msgstr[2] "%(num)s أكثر"
+msgstr[3] "%(num)s أكثر"
+msgstr[4] "%(num)s أكثر"
+msgstr[5] "%(num)s مرة أخرى"
+
+#, machine, python-format
+msgid "%(num)s new post"
+msgid_plural "%(num)s new posts"
+msgstr[0] "صفر وظائف جديدة"
+msgstr[1] "وظيفة جديدة"
+msgstr[2] "وظيفتان جديدتان"
+msgstr[3] "%(num)s وظائف جديدة"
+msgstr[4] "%(num)s وظيفة جديدة"
+msgstr[5] "%(num)s وظيفة جديدة"
+
+#, machine, python-format
+msgid "%(num)s new update"
+msgid_plural "%(num)s new updates"
+msgstr[0] "لا تحديثات جديدة"
+msgstr[1] "تحديث جديد"
+msgstr[2] "تحديثان جديدان"
+msgstr[3] "%(num)s تحديثات جديدة"
+msgstr[4] "%(num)s تحديث جديد"
+msgstr[5] "%(num)s تحديثا جديدا"
+
+#. how much room is left in a field that is nearly full, or how far past its
+#. limit it is
+#, machine, python-format
+msgid "%(num)s over the limit"
+msgid_plural "%(num)s over the limit"
+msgstr[0] "صفر على الحد"
+msgstr[1] "%(num)s على الحد الأقصى"
+msgstr[2] "%(num)s على الحد الأقصى"
+msgstr[3] "%(num)s على الحد الأقصى"
+msgstr[4] "%(num)s على الحد الأقصى"
+msgstr[5] "%(num)s على الحد الأقصى"
+
+#, machine, python-format
+msgid "%(num)s people"
+msgid_plural "%(num)s people"
+msgstr[0] "%(num)s أشخاص"
+msgstr[1] "%(num)s أشخاص"
+msgstr[2] "شخصان"
+msgstr[3] "%(num)s أشخاص"
+msgstr[4] "%(num)s شخص"
+msgstr[5] "%(num)s شخصا"
+
+#, machine, python-format
+msgid "%(num)s person"
+msgid_plural "%(num)s people"
+msgstr[0] "%(num)s أشخاص"
+msgstr[1] "شخص واحد"
+msgstr[2] "شخصان"
+msgstr[3] "%(num)s أشخاص"
+msgstr[4] "%(num)s شخص"
+msgstr[5] "%(num)s شخصا"
+
+#, machine, python-format
+msgid "%(num)s person in the call"
+msgid_plural "%(num)s people in the call"
+msgstr[0] "%(num)s أشخاص في المكالمة"
+msgstr[1] "شخص واحد في المكالمة"
+msgstr[2] "شخصان في المكالمة"
+msgstr[3] "%(num)s أشخاص في المكالمة"
+msgstr[4] "%(num)s شخص في المكالمة"
+msgstr[5] "%(num)s شخصاً في المكالمة"
+
+#. a call's length in seconds, abbreviated ("45 s")
+#, machine, python-format
+msgid "%(num)s s"
+msgid_plural "%(num)s s"
+msgstr[0] "%(num)s s"
+msgstr[1] "%(num)s s"
+msgstr[2] "%(num)s s"
+msgstr[3] "%(num)s s"
+msgstr[4] "%(num)s s"
+msgstr[5] "%(num)s s"
+
+#. how many options of a sidebar filter are ticked
+#, machine, python-format
+msgid "%(num)s selected"
+msgid_plural "%(num)s selected"
+msgstr[0] "صفر مختار"
+msgstr[1] "%(num)s منتقاة"
+msgstr[2] "%(num)s مختارة"
+msgstr[3] "%(num)s مختارة"
+msgstr[4] "%(num)s مختار"
+msgstr[5] "%(num)s مختارا"
+
+#. the number of unread mentions of you in a guild channel (read out by screen
+#. readers)
+#, machine, python-format
+msgid "%(num)s unread mentions"
+msgid_plural "%(num)s unread mentions"
+msgstr[0] "لا توجد إشارة غير واضحة"
+msgstr[1] "ذكر واحد غير واضح"
+msgstr[2] "ذكران غير واضحين"
+msgstr[3] "%(num)s إشارات غير واضحة"
+msgstr[4] "%(num)s إشارة غير واضحة"
+msgstr[5] "%(num)s إشارة غير واضحة"
+
+#, machine, python-format
+msgid "%(num)s view"
+msgid_plural "%(num)s views"
+msgstr[0] "صفر"
+msgstr[1] "رأي واحد"
+msgstr[2] "رأيان"
+msgstr[3] "%(num)s وجهات نظر"
+msgstr[4] "%(num)s رأي"
+msgstr[5] "%(num)s رأي"
+
+#. how many people are watching a live thread now
+#, machine, python-format
+msgid "%(num)s watching"
+msgid_plural "%(num)s watching"
+msgstr[0] "مشاهدة"
+msgstr[1] "مشاهدة"
+msgstr[2] "%(num)s مشاهدة"
+msgstr[3] "%(num)s ساعات"
+msgstr[4] "%(num)s مشاهدة"
+msgstr[5] "%(num)s مشاهدة"
+
+#. under a channel's name: its owner and how many are in it ("Ann · 12
+#. members")
+#, machine, python-format
+msgid "%(owner)s · %(num)s member"
+msgid_plural "%(owner)s · %(num)s members"
+msgstr[0] "%(owner)s : صفر من الأعضاء"
+msgstr[1] "%(owner)s عضو واحد"
+msgstr[2] "%(owner)s عضوان"
+msgstr[3] "%(owner)s: %(num)s أعضاء"
+msgstr[4] "%(owner)s %(num)s عضو"
+msgstr[5] "%(owner)s: %(num)s عضوا"
+
+#. %(problem)s is the server's sentence saying what saving would do
+#, machine, python-format
+msgid "%(problem)s Save anyway?"
+msgstr "%(problem)s إنقاذ على أية حال؟"
+
+#. the browser tab's title while a call is ringing; %(title)s is the page's own
+#. title
+#, machine, python-format
+msgid "(Call) %(title)s"
+msgstr "(Call) %(title)s"
+
+#, machine
+msgid "(edited)"
+msgstr "(محرر)"
+
+#, machine
+msgid "(untitled post)"
+msgstr "(وظيفة غير مترجمة)"
+
+#. beside the My profile switch: how many guilds the post also goes to
+#, machine, python-format
+msgid "+ %(num)s guild"
+msgid_plural "+ %(num)s guilds"
+msgstr[0] "+ صفر"
+msgstr[1] "+ %(num)s guild"
+msgstr[2] "+ %(num)s guilds"
+msgstr[3] "+ %(num)s guilds"
+msgstr[4] "+ %(num)s guilds"
+msgstr[5] "+ %(num)s guilds"
+
+#, machine, plain1, python-format
+msgid "+%(guild)s has no flairs yet."
+msgstr "+ %(guild)s ليس لديه علامات بعد."
+
+#, machine, python-format
+msgid "+%(guild)s · %(num)s comment"
+msgid_plural "+%(guild)s · %(num)s comments"
+msgstr[0] "+ %(guild)s {لا تعليقات"
+msgstr[1] "+ %(guild)s } تعليق واحد"
+msgstr[2] "+%(guild)s : تعليقان"
+msgstr[3] "+ %(guild)s } %(num)s تعليقات"
+msgstr[4] "+ %(guild)s } %(num)s تعليق"
+msgstr[5] "+ %(guild)s {%(num)s تعليقات"
+
+#, machine, python-format
+msgid "@%(name)s added you to this group. Accept to read it and write in it."
+msgstr "@%(name)s أضفتك إلى هذه المجموعة تقبل قراءتها وتكتب بها."
+
+#, machine, python-format
+msgid "@%(name)s hasn't opened chat yet. Your message will be sent when they do."
+msgid_plural "@%(name)s hasn't opened chat yet. Your %(num)s messages will be sent when they do."
+msgstr[0] "@ %(name)s لم يفتح الدردشة بعد رسائلك صفر سترسل عندما تفعل."
+msgstr[1] "@ %(name)s لم يفتح الدردشة بعد رسالتك سترسل عندما يفعلون."
+msgstr[2] "@ %(name)s لم يفتح الدردشة بعد رسائلك سترسل عندما تفعل."
+msgstr[3] "@ %(name)s لم يفتح الدردشة بعد رسائلك الثلاثة سترسل عندما يفعلون."
+msgstr[4] "@ %(name)s لم يفتح الدردشة بعد رسائلك الـ%(num)s سترسل عندما تفعل."
+msgstr[5] "@ %(name)s لم يفتح الدردشة بعد رسائلك الـ%(num)s سترسل عندما تفعل."
+
+#, machine, python-format
+msgid "@%(name)s is typing…"
+msgstr "@ %(name)s هو الطباعة…"
+
+#, machine
+msgid "A Space"
+msgstr "الفضاء"
+
+#, machine
+msgid "A browser on this site"
+msgstr "منظف في هذا الموقع"
+
+#, machine
+msgid "A call is already open in another window."
+msgstr "مكالمة مفتوحة بالفعل في نافذة أخرى."
+
+#, machine
+msgid "A call or a Space is already open in another window."
+msgstr "الاتصال أو الفضاء مفتوح بالفعل في نافذة أخرى."
+
+#, machine, python-format
+msgid "A chat app signed in to your account (%(device)s) asks to be verified from this browser."
+msgstr "تطبيق الدردشة وقع على حسابك%(device)sيطلب أن يتم التحقق من هذا المستذئب"
+
+#, machine
+msgid "A chat app signed in to your account asks to be verified from this browser."
+msgstr "تطبيق دردشة موقّع على حسابك يطلب التحقق منه."
+
+#. in place of the name of someone who used to write in a channel and no longer
+#. does
+#, machine
+msgid "A former helper"
+msgstr "مساعد سابق"
+
+#, machine, python-format
+msgid "A group can have at most %(num)s person."
+msgid_plural "A group can have at most %(num)s people."
+msgstr[0] "أي مجموعة يُمْكِنُ أَنْ يَكُونَ عِنْدَهُ على الأكثر %(num)s أشخاصِ."
+msgstr[1] "مجموعة يمكن أن يكون لديها شخص واحد."
+msgstr[2] "مجموعة يمكن أن يكون لها أكثر من شخصين."
+msgstr[3] "أي مجموعة يُمْكِنُ أَنْ يَكُونَ عِنْدَها على أكثر من %(num)s أشخاصِ."
+msgstr[4] "مجموعة يمكن أن يكون أكثر من %(num)s شخص."
+msgstr[5] "أي مجموعة يُمْكِنُ أَنْ يَكُونَ عِنْدَها على أكثر من %(num)s شخص."
+
+#. placeholder text a member replaces: the quotation of a "Pull quote" block,
+#. and who said it
+#, machine
+msgid "A line worth quoting"
+msgstr "خط يستحق الاقتباس"
+
+#, machine
+msgid "A message from someone you blocked"
+msgstr "رسالة من شخص ما قمت بحجبه"
+
+#, machine
+msgid "A message that isn't there any more"
+msgstr "رسالة لم تعد موجودة"
+
+#, machine, python-format
+msgid "A post can have %(num)s co-author at most."
+msgid_plural "A post can have %(num)s co-authors at most."
+msgstr[0] "أي وظيفة يُمْكِنُ أَنْ يَكُونَ عِنْدَهُ صفر مشتركِ في الأغلب."
+msgstr[1] "وظيفة يمكن أن يكون لها واحد الكاتب المشارك على الأكثر."
+msgstr[2] "يمكن أن يكون للوظيفة اثنين من الكاتبين على الأكثر."
+msgstr[3] "يمكن للمنصب أن يحصل على %(num)s من الكاتبين."
+msgstr[4] "أي وظيفة يُمْكِنُ أَنْ يَكُونَ عِنْدَهُ %(num)s مؤلف مشارك على الأكثر."
+msgstr[5] "أي وظيفة يُمْكِنُ أَنْ يَكُونَ عِنْدَهُ %(num)s مؤلف مشارك على الأكثر."
+
+#, machine
+msgid "A post for Circles is only on your profile."
+msgstr "وظيفة للسيركل هي فقط على ملفك الشخصي."
+
+#, machine
+msgid "A scheduled post needs a title."
+msgstr "وظيفة مقررة تحتاج لقب."
+
+#, machine
+msgid "Accept"
+msgstr "قبول"
+
+#. a button that adds a person to a group chat
+#, glossary, machine, plain1
+msgid "Add"
+msgstr "إضافة"
+
+#, machine
+msgid "Add image"
+msgstr "الصورة"
+
+#, machine
+msgid "Add sound"
+msgstr "الصوت"
+
+#, machine
+msgid "Add to the thread"
+msgstr "إضافة إلى الخيط"
+
+#, machine
+msgid "Add to the thread..."
+msgstr "إضافة إلى الخيط..."
+
+#, machine
+msgid "Add video"
+msgstr "مضافا إليه الفيديو"
+
+#. beside a curation's name: already holds it / can't take a private guild /
+#. the curation is private or public
+#. a button that adds a person to a new group chat, and the same button once
+#. pressed
+#, machine
+msgid "Added"
+msgstr "مضاف إليها"
+
+#, machine
+msgid "Added."
+msgstr "مضاف."
+
+#, machine
+msgid "Adding..."
+msgstr "إضافة..."
+
+#. a person's role in a group chat, shown beside their name
+#, glossary, machine, plain1
+msgid "Admin"
+msgstr "مسؤول"
+
+#. the GIF picker's categories, each a feeling or reaction shown over a picture
+#, glossary, machine, plain1
+msgid "Agree"
+msgstr "أوافق"
+
+#, machine
+msgid "Align center"
+msgstr "مركز علين"
+
+#, machine
+msgid "Align left"
+msgstr "على اليسار"
+
+#, machine
+msgid "Align right"
+msgstr "Align right"
+
+#, machine
+msgid "Alignment"
+msgstr "الإلغاء"
+
+#. %(names)s is a list of the other authors who have this draft open
+#, machine, python-format
+msgid "Also here: %(names)s"
+msgstr "وهنا أيضا: %(names)s"
+
+#, machine
+msgid "An app"
+msgstr "تطبيق"
+
+#, glossary, machine, plain1
+msgid "Angry"
+msgstr "غاضب"
+
+#. a label after a guild channel's guild in the chat list: the channel is for
+#. announcements
+#, machine
+msgid "Announcements"
+msgstr "إعلانات"
+
+#, glossary, machine, plain1
+msgid "Anonymous"
+msgstr "مجهول"
+
+#. a button that answers (picks up) the incoming call
+#, machine
+msgid "Answer"
+msgstr "الإجابة"
+
+#, machine
+msgid "Ask to mute"
+msgstr "إسألْ عن الطينِ"
+
+#, machine
+msgid "Attach a link to this post"
+msgstr "وصل إلى هذه الوظيفة"
+
+#, machine, plain1
+msgid "Aw shucks. No GIFs found..."
+msgstr "تباً لا GIFs وجدت..."
+
+#, glossary, machine, plain1
+msgid "Awesome"
+msgstr "رائع"
+
+#, glossary, machine, plain1
+msgid "Awkward"
+msgstr "محرج"
+
+#, glossary, machine, plain1
+msgid "Back to top"
+msgstr "العودة إلى الأعلى"
+
+#, machine, python-format
+msgid "Block @%(name)s? They won't be able to follow you, message you or comment on your posts, and you won't see their posts. You can unblock them any time."
+msgstr "Block @ %(name)s؟ لن يكونوا قادرين على ملاحقتك، رسالة أو تعليقك على وظائفك، ولن ترى وظائفهم. يمكنك فتحها في أي وقت."
+
+#, machine
+msgid "Bold (Ctrl+B)"
+msgstr "Bold (Ctrl+B)"
+
+#, machine
+msgid "Bulleted list"
+msgstr "القائمة المنشورة"
+
+#. a toolbar button that inserts a button (a link drawn as a button) into the
+#. post
+#, machine
+msgid "Button"
+msgstr "Button"
+
+#, machine
+msgid "Button label"
+msgstr "Button label"
+
+#, machine
+msgid "Button text"
+msgstr "Button text"
+
+#. a button; %(num)s is the number of coins, %(price)s the price in US dollars
+#, machine, python-format
+msgid "Buy %(num)s Coin: $%(price)s"
+msgid_plural "Buy %(num)s Coins: $%(price)s"
+msgstr[0] "شراء %(num)s عملات: %(price)s"
+msgstr[1] "شراء القطعة الأولى: %(price)s"
+msgstr[2] "شراء عملتين: %(price)s"
+msgstr[3] "شراء %(num)s عملات: %(price)s"
+msgstr[4] "شراء %(num)s قطعة نقدية: %(price)s"
+msgstr[5] "شراء %(num)s قطعة نقدية: %(price)s"
+
+#, machine
+msgid "Call"
+msgstr "اتصل"
+
+#, machine, python-format
+msgid "Call %(name)s"
+msgstr "نداء %(name)s"
+
+#, machine
+msgid "Call ended."
+msgstr "انتهى الإتصال."
+
+#. the name of a ready-made block for a post: a centred headline and a button
+#, machine
+msgid "Call to action"
+msgstr "دعوة للعمل"
+
+#, machine, python-format
+msgid "Called you · video · %(when)s · %(length)s"
+msgstr "دعاك بالفيديو %(when)s · %(length)s"
+
+#, machine, python-format
+msgid "Called you · voice · %(when)s · %(length)s"
+msgstr "دعا لك صوت %(when)s · %(length)s"
+
+#, machine
+msgid "Calls are unavailable right now. Try again later."
+msgstr "المكالمات غير متاحة الآن حاول مرة أخرى لاحقا."
+
+#, machine
+msgid "Camera"
+msgstr "آلة تصوير"
+
+#, machine, python-format
+msgid "Camera %(number)s"
+msgstr "Camera %(number)s"
+
+#. the camera button in a Space's call: what pressing it does
+#, machine
+msgid "Camera off"
+msgstr "آلة تصوير"
+
+#. the label of the camera button in a call (what pressing it does)
+#, machine
+msgid "Camera on"
+msgstr "آلة تصوير"
+
+#, glossary, machine, plain1
+msgid "Cancel"
+msgstr "إلغاء"
+
+#, machine
+msgid "Cancelling…"
+msgstr "إلغاء…"
+
+#, machine
+msgid "Cell"
+msgstr "Cell"
+
+#, machine
+msgid "Change where audio go"
+msgstr "تغيير حيث يذهب الصوت"
+
+#, machine
+msgid "Change where pictures go"
+msgstr "تغيير الصور"
+
+#, machine
+msgid "Change where videos go"
+msgstr "تغيير حيث أشرطة الفيديو تذهب"
+
+#, machine, python-format
+msgid "Channel for circles · end-to-end encrypted · %(num)s member"
+msgid_plural "Channel for circles · end-to-end encrypted · %(num)s members"
+msgstr[0] "قناة للدوائر · End to-end encrypted · %(num)s members"
+msgstr[1] "قناة للدوائر؛ مشفوعة من نهاية إلى نهاية؛ عضو واحد"
+msgstr[2] "قناة للدوائر؛ عضوان مشفران من نهاية إلى نهاية؛ عضوان"
+msgstr[3] "قناة للدوائر - %(num)s أعضاء مشفرة من نهاية إلى نهاية"
+msgstr[4] "قناة الدوائر؛ مشفوعة من نهاية إلى نهاية؛ %(num)s عضو"
+msgstr[5] "قناة للدوائر - تم تشفير %(num)s عضوا"
+
+#, machine, python-format
+msgid "Channel · %(num)s member"
+msgid_plural "Channel · %(num)s members"
+msgstr[0] "القناة صفر من الأعضاء"
+msgstr[1] "القناة؛ عضو واحد"
+msgstr[2] "القناة؛ عضوان"
+msgstr[3] "%(num)s أعضاء"
+msgstr[4] "القناة %(num)s عضو"
+msgstr[5] "القناة %(num)s"
+
+#, glossary, machine, plain1
+msgid "Channels"
+msgstr "القنوات"
+
+#, machine
+msgid "Channels you are in"
+msgstr "القناة التي دخلت فيها"
+
+#. the name of a hidden frame holding the chat page (read by screen readers)
+#. a button that starts a chat with someone
+#, glossary, machine, plain1
+msgid "Chat"
+msgstr "الدردشة"
+
+#, machine
+msgid "Chat did not answer. Try again."
+msgstr "تشات لم يجيب حاول مرة أخرى."
+
+#, machine
+msgid "Chat is open in another tab."
+msgstr "الشات مفتوح في حساب آخر."
+
+#, machine
+msgid "Chat is still starting."
+msgstr "(تشات) مازال يبدأ."
+
+#, machine
+msgid "Chat is still starting. Try again in a moment."
+msgstr "(تشات) مازال يبدأ حاول مرة أخرى في لحظة."
+
+#, machine, python-format
+msgid "Chat with @%(name)s"
+msgstr "Chat with @%(name)s"
+
+#, machine
+msgid "Chat's key isn't available right now."
+msgstr "مفتاح الشات ليس متاحاً الآن."
+
+#, glossary, machine, plain1
+msgid "Chats"
+msgstr "الدردشات"
+
+#, machine
+msgid "Checking…"
+msgstr "التحقق…"
+
+#, machine
+msgid "Chinese, Japanese and Korean characters and emoji count as 2"
+msgstr "الشخصيات الصينية واليابانية والكورية والإيموجي يحسبان كشخصين"
+
+#, machine, plain1
+msgid "Choose a PNG, JPEG or WebP picture."
+msgstr "اختر PNG. JPEG أو WebP صورة"
+
+#, machine
+msgid "Choose a picture and wait for it to finish uploading."
+msgstr "اختر الصورة وانتظر أن تنتهي من تحميلها."
+
+#, machine
+msgid "Choose at least one circle, or make it public."
+msgstr "اختر دائرة واحدة على الأقل أو جعلها علنية."
+
+#, machine
+msgid "Choose where to post"
+msgstr "اختر مكان الوظيفة"
+
+#, machine
+msgid "Choose who can comment."
+msgstr "اختر من يستطيع التعليق."
+
+#, machine
+msgid "Choose who can see this."
+msgstr "اختر من يستطيع رؤية هذا."
+
+#, machine
+msgid "Choose your profile or at least one guild."
+msgstr "اختر ملفك أو على الأقل غيلد واحد."
+
+#, glossary, machine, plain1
+msgid "Circles"
+msgstr "الدوائر"
+
+#, glossary, machine, plain1
+msgid "Close"
+msgstr "إغلاق"
+
+#. a person's role in a Space's call, shown under their name
+#, machine
+msgid "Co-host"
+msgstr "مشترك"
+
+#. a toolbar button: format the selected words as computer code
+#, machine
+msgid "Code"
+msgstr "المدونة"
+
+#, machine
+msgid "Code block"
+msgstr "كتلة رمزية"
+
+#. placeholder text a member replaces: a table's column heading and one of its
+#. cells
+#, machine
+msgid "Column"
+msgstr "Column"
+
+#, machine
+msgid "Coming up"
+msgstr "قادم"
+
+#, machine
+msgid "Compare them with the ones your app shows, in the same order."
+msgstr "قارنهم بالذي يظهره تطبيقك بنفس الترتيب."
+
+#, machine
+msgid "Confirm in the app as well."
+msgstr "تأكد في التطبيق أيضا."
+
+#, glossary, machine, plain1
+msgid "Confused"
+msgstr "مرتبك"
+
+#, machine
+msgid "Connect again"
+msgstr "الاتصال مرة أخرى"
+
+#. under a storage service's name: it is linked to your account, or needs
+#. linking again
+#, machine
+msgid "Connected"
+msgstr "متصل"
+
+#, machine, python-format
+msgid "Connecting %(service)s. Finish in the window that opened."
+msgstr "التواصل %(service)s أنهي النافذة التي فتحت."
+
+#, machine
+msgid "Connecting…"
+msgstr "التواصل…"
+
+#, machine
+msgid "Continue"
+msgstr "استمر"
+
+#, machine
+msgid "Copied"
+msgstr "Copied"
+
+#, machine
+msgid "Copied."
+msgstr "مقطع."
+
+#, machine
+msgid "Copy"
+msgstr "نسخ"
+
+#, machine
+msgid "Copy this link:"
+msgstr "تلقيت هذه الرابطه"
+
+#. a label on a live thread's update that its author crossed out
+#. beside a live update its writer crossed out
+#, machine
+msgid "Corrected"
+msgstr "تصحيحها"
+
+#, machine
+msgid "Could not accept conversation"
+msgstr "لا يمكن قبول المحادثة"
+
+#, machine
+msgid "Could not add it."
+msgstr "لم أستطع إضافتها."
+
+#, machine
+msgid "Could not add it. Try again."
+msgstr "لم أستطع إضافتها حاول مرة أخرى."
+
+#. %(reason)s is why a scheduled post could not be published
+#, machine, python-format
+msgid "Could not be published: %(reason)s"
+msgstr "لا يمكن نشرها: %(reason)s"
+
+#, machine
+msgid "Could not change that."
+msgstr "لا يمكن تغيير ذلك."
+
+#, machine
+msgid "Could not change that. Try again."
+msgstr "لا يمكن تغيير ذلك. حاول مرة أخرى."
+
+#, machine
+msgid "Could not count your vote."
+msgstr "لا يمكن عد صوتك."
+
+#, machine
+msgid "Could not count your vote. Try again."
+msgstr "لا يمكن عد صوتك حاول مرة أخرى."
+
+#, machine
+msgid "Could not decline conversation"
+msgstr "لم أستطع أن أرفض المحادثة"
+
+#, machine
+msgid "Could not delete that."
+msgstr "لا يمكن حذف ذلك."
+
+#, machine
+msgid "Could not delete that. Try again."
+msgstr "لا يمكن حذف ذلك. حاول مرة أخرى."
+
+#, machine
+msgid "Could not delete the folder."
+msgstr "لا يمكن حذف الملف."
+
+#, machine
+msgid "Could not delete the folder. Try again."
+msgstr "لا يمكن حذف الملف حاول مرة أخرى."
+
+#, machine
+msgid "Could not do that."
+msgstr "لا أستطيع فعل ذلك."
+
+#, machine
+msgid "Could not do that. Try again."
+msgstr "لا أستطيع فعل ذلك حاول مرة أخرى."
+
+#, machine
+msgid "Could not invite. Try again."
+msgstr "لا يمكن دعوة. حاول مرة أخرى."
+
+#, machine
+msgid "Could not load conversations"
+msgstr "لا يمكن تحميل المحادثات"
+
+#, machine
+msgid "Could not load more posts."
+msgstr "لا يمكن تحميل المزيد من الوظائف."
+
+#, machine
+msgid "Could not load names"
+msgstr "لا يمكن تحميل الأسماء"
+
+#, machine
+msgid "Could not load that. Try again."
+msgstr "لا يمكن تحميل ذلك. حاول مرة أخرى."
+
+#, machine
+msgid "Could not load the co-authors. Try again."
+msgstr "لا يمكن تحميل الكاتب المشارك. حاول مرة أخرى."
+
+#, machine, plain1
+msgid "Could not load the flairs."
+msgstr "لا يمكن تحميل العلامات."
+
+#, machine
+msgid "Could not load the group"
+msgstr "لا يمكن تحميل المجموعة"
+
+#, machine
+msgid "Could not load the list."
+msgstr "لا يمكن تحميل القائمة."
+
+#, machine
+msgid "Could not load the pinned messages"
+msgstr "لا يمكن تحميل الرسائل الملصقة"
+
+#, machine
+msgid "Could not load the preview."
+msgstr "لا يمكن تحميل العرض التمهيدي."
+
+#, machine
+msgid "Could not load your chats. Try again."
+msgstr "لا يمكن تحميل الدردشة الخاصة بك. حاول مرة أخرى."
+
+#, machine
+msgid "Could not load your circles."
+msgstr "لا يمكن تحميل دوائرك."
+
+#, machine
+msgid "Could not load your circles. Try again."
+msgstr "لا يمكن تحميل دوائرك. حاول مرة أخرى."
+
+#, machine, plain1
+msgid "Could not load your curations."
+msgstr "لا يمكن تحميل التغذية المكشوفة الخاص بك."
+
+#, machine, plain1
+msgid "Could not load your curations. Try again."
+msgstr "لا يمكن تحميل التغذية المكشوفة الخاص بك. حاول مرة أخرى."
+
+#, machine
+msgid "Could not load your drafts."
+msgstr "لا يمكن تحميل مشاريعك."
+
+#, machine
+msgid "Could not load your folders. Try again."
+msgstr "لا يمكن تحميل ملفاتك. حاول مرة أخرى."
+
+#, machine
+msgid "Could not load your stories."
+msgstr "لا يمكن تحميل قصصك."
+
+#, machine
+msgid "Could not load your templates."
+msgstr "لا يمكن تحميل نماذج الخاص بك."
+
+#, machine
+msgid "Could not make the folder."
+msgstr "لا يمكن أن تجعل الملف."
+
+#, machine
+msgid "Could not make the folder. Try again."
+msgstr "لا يمكن أن تجعل الملف. حاول مرة أخرى."
+
+#, machine
+msgid "Could not mark conversation read"
+msgstr "لا يمكن أن يقرأ المحادثة"
+
+#, machine
+msgid "Could not post. Check your connection and try again."
+msgstr "لا يمكن أن ينشر. تحقق من اتصالك وحاول مرة أخرى."
+
+#, machine
+msgid "Could not post. Try again, or use the full editor."
+msgstr "لا يمكن أن ينشر. حاول مرة أخرى، أو استخدام المحرّر الكامل."
+
+#, machine
+msgid "Could not preview that. Try again."
+msgstr "لا يمكن أن تسبق ذلك. حاول مرة أخرى."
+
+#, machine
+msgid "Could not refresh"
+msgstr "لا يمكن أن ننعش"
+
+#, machine
+msgid "Could not rename that."
+msgstr "لا يمكن إعادة تسمية ذلك."
+
+#, machine
+msgid "Could not rename that. Try again."
+msgstr "لا يمكن إعادة تسمية ذلك. حاول مرة أخرى."
+
+#, machine
+msgid "Could not rename the folder."
+msgstr "لا يمكن إعادة تسمية الملف."
+
+#, machine
+msgid "Could not rename the folder. Try again."
+msgstr "لا يمكن إعادة تسمية الملف حاول مرة أخرى."
+
+#, machine
+msgid "Could not report that."
+msgstr "لم أستطع الإبلاغ عن ذلك."
+
+#, machine
+msgid "Could not report that. Try again."
+msgstr "لم أستطع الإبلاغ عن ذلك حاول مرة أخرى."
+
+#, machine
+msgid "Could not save that."
+msgstr "لا يمكن إنقاذ ذلك."
+
+#, machine
+msgid "Could not save that. Try again."
+msgstr "لا يمكن إنقاذ ذلك. حاول مرة أخرى."
+
+#, machine
+msgid "Could not save the draft."
+msgstr "لا يمكن إنقاذ المشروع."
+
+#, machine
+msgid "Could not save the draft. Check your connection."
+msgstr "لا يمكن إنقاذ المشروع تحقق من اتصالك."
+
+#, machine
+msgid "Could not save the template."
+msgstr "لا يمكن إنقاذ النموذج."
+
+#, machine
+msgid "Could not search"
+msgstr "لم أستطع البحث"
+
+#, machine
+msgid "Could not search. Try again."
+msgstr "لم أستطع البحث حاول مرة أخرى."
+
+#, machine
+msgid "Could not send the report."
+msgstr "لم أستطع إرسال التقرير."
+
+#, machine
+msgid "Could not send the report. Try again."
+msgstr "لم أستطع إرسال التقرير حاول مرة أخرى."
+
+#, machine, plain1
+msgid "Could not send your feedback. Try again."
+msgstr "لم أستطع إرسال تعليقاتك حاول مرة أخرى."
+
+#, machine
+msgid "Could not send."
+msgstr "لا يمكن إرسال."
+
+#, machine
+msgid "Could not share that."
+msgstr "لا يمكن مشاركة ذلك."
+
+#, machine
+msgid "Could not share that. Try again."
+msgstr "لا يمكن مشاركة ذلك. حاول مرة أخرى."
+
+#, machine
+msgid "Could not start chat session"
+msgstr "لا يمكن أن تبدأ جلسة الدردشة"
+
+#, machine
+msgid "Could not start that chat."
+msgstr "لا يمكن أن تبدأ تلك الدردشة."
+
+#, machine
+msgid "Couldn't connect"
+msgstr "لا يمكن التواصل"
+
+#, machine
+msgid "Couldn't copy: select the codes and copy them."
+msgstr "لا يمكن أن ننسخ: اختيار الرموز ونسخها."
+
+#, machine
+msgid "Couldn't load earlier messages. Try again in a moment."
+msgstr "لا يمكن تحميل رسائل سابقة. حاول مرة أخرى في لحظة."
+
+#, glossary, machine, plain1
+msgid "Creating post"
+msgstr "جارٍ إنشاء المنشور"
+
+#, machine
+msgid "Creating…"
+msgstr "خلق…"
+
+#, glossary, machine, plain1
+msgid "Cringe"
+msgstr "كرينج"
+
+#, machine
+msgid "Cross out"
+msgstr "الصليب"
+
+#, glossary, machine, plain1
+msgid "Dark mode"
+msgstr "الوضع الداكن"
+
+#. %(zone)s is a time zone name such as Europe/London
+#, machine, python-format
+msgid "Days and times are in your time zone (%(zone)s)."
+msgstr "والأيام والأوقات في منطقتك الزمنية (%(zone)s)."
+
+#, machine
+msgid "Decline"
+msgstr "Decline"
+
+#, machine
+msgid "Decrypting…"
+msgstr "التشفير…"
+
+#. a button that deletes a live thread's update
+#. a button that deletes a draft
+#. a button that deletes the story being watched
+#. buttons that delete or accept a message request
+#, machine
+msgid "Delete"
+msgstr "تحذف"
+
+#, machine, python-format
+msgid "Delete \"%(name)s\""
+msgstr "تحذف كلمة %(name)s\""
+
+#, machine
+msgid "Delete highlight"
+msgstr "تحذف الإشارة"
+
+#, machine, plain1, python-format
+msgid "Delete the flair %(name)s? Posts that have it lose it; no post is deleted."
+msgstr "تحذف العلامة %(name)s؟ الوظائف التي فقدتها؛ لا تحذف أي وظيفة."
+
+#, machine
+msgid "Delete this folder? Its bookmarks are kept, as unsorted."
+msgstr "حذف هذا الملف؟ علامات كتابها محتفظ بها كما لم يتم حفظها."
+
+#, machine
+msgid "Delete this highlight? Its stories stay in your archive."
+msgstr "تحذف هذه الملامح؟ قصصه تبقى في محفوظاتك."
+
+#, machine
+msgid "Delete this message"
+msgstr "تحذف هذه الرسالة"
+
+#, machine
+msgid "Delete this message for everyone?"
+msgstr "تحذف هذه الرسالة للجميع؟?"
+
+#, machine
+msgid "Delete this message?"
+msgstr "تحذف هذه الرسالة؟?"
+
+#, machine
+msgid "Delete this story? It leaves every Highlight too."
+msgstr "تحذف هذه القصة؟ إنها تترك كل الأضواء أيضاً."
+
+#, machine
+msgid "Delete this update?"
+msgstr "حذف هذا التحديث؟?"
+
+#, machine
+msgid "Delete this update? This can’t be undone."
+msgstr "حذف هذا التحديث؟ ولا يمكن أن يكون ذلك غير مقصود."
+
+#, glossary, machine, plain1
+msgid "Deleting comment"
+msgstr "جارٍ حذف التعليق"
+
+#, glossary, machine, plain1
+msgid "Deleting post"
+msgstr "جارٍ حذف المنشور"
+
+#. the name of a ready-made block for a post: a horizontal line
+#, machine
+msgid "Divider"
+msgstr "Divider"
+
+#, machine, python-format
+msgid "Do not forward to +%(guild)s"
+msgstr "لا تقدم إلى + %(guild)s"
+
+#, machine, python-format
+msgid "Do not post to +%(guild)s"
+msgstr "لا تُشغلْ + %(guild)s"
+
+#, machine
+msgid "Do these emoji match?"
+msgstr "هل هذه تطابق (إيموجي)؟?"
+
+#, machine
+msgid "Done"
+msgstr "تم"
+
+#, machine, plain1
+msgid "Done."
+msgstr "تم."
+
+#, machine
+msgid "Downloaded."
+msgstr "تحميل."
+
+#, machine
+msgid "Draft saved."
+msgstr "تم إنقاذ المشروع."
+
+#, machine
+msgid "Draft saved. Images are not kept in drafts, so add it again later."
+msgstr "تم إنقاذ المشروع الصور لا تُحفظ في مشاريع، لذا إضافتها لاحقاً."
+
+#. %(time)s is when the draft was last saved, such as 24 Oct 2026, 15:00
+#, machine, python-format
+msgid "Draft, saved %(time)s"
+msgstr "Draft, Save %(time)s"
+
+#, machine
+msgid "Edit this message"
+msgstr "إدل هذه الرسالة"
+
+#, machine
+msgid "Editing a draft. Post it now, or schedule it."
+msgstr "تحرير مشروع شغله الآن، أو جدوله."
+
+#, machine
+msgid "Editing message"
+msgstr "رسالة تحرير"
+
+#, machine
+msgid "Emoji"
+msgstr "Emoji"
+
+#, machine
+msgid "End the live thread now?"
+msgstr "انهي الخيط الحي الآن؟?"
+
+#, machine
+msgid "End this Space for everyone?"
+msgstr "إنهاء هذا الفضاء للجميع؟?"
+
+#, machine
+msgid "End-to-end encrypted"
+msgstr "من نهاية إلى النهاية مشفرة"
+
+#, machine
+msgid "End-to-end encrypted: only the people in this channel can read it."
+msgstr "النهاية مشفرة: فقط الناس في هذه القناة يمكنهم قراءتها."
+
+#, machine
+msgid "Ended"
+msgstr "انتهت"
+
+#, glossary, machine, plain1
+msgid "Enter a URL"
+msgstr "أدخل رابطًا"
+
+#, machine
+msgid "Enter a web address, like https://example.com"
+msgstr "أدخل عنواناً على الشبكة https://example.com"
+
+#, machine
+msgid "Enter your password once. It locks the key to your messages in this browser, so the site can never read them."
+msgstr "أدخل كلمة المرور مرة إنه يغلق مفتاح رسائلك في هذا المصفح حتى لا يستطيع الموقع قراءتها."
+
+#, machine
+msgid "Enter your password to read your messages on this device. It stays in this browser: the site can't read your chats."
+msgstr "أدخل كلمة المرور لقراءة رسائلك على هذا الجهاز الموقع لا يستطيع قراءة الدردشة."
+
+#, machine
+msgid "Enter your password."
+msgstr "أدخل كلمة المرور."
+
+#, machine
+msgid "Enter your recovery code"
+msgstr "أدخل رمز استردادك"
+
+#, machine, plain1
+msgid "Final"
+msgstr "الختامي"
+
+#, machine
+msgid "Follow someone to add them to a group."
+msgstr "اتبع شخص ما ليضيفهم إلى مجموعة."
+
+#, machine
+msgid "Follow someone, or type their @handle."
+msgstr "إتبع شخصاً ما أو أطبع @handle."
+
+#, machine, python-format
+msgid "For %(num)s hour"
+msgid_plural "For %(num)s hours"
+msgstr[0] "لمدة صفر ساعة"
+msgstr[1] "لمدة ساعة واحدة"
+msgstr[2] "لمدة ساعتين"
+msgstr[3] "لمدة %(num)s ساعات"
+msgstr[4] "لمدة %(num)s ساعة"
+msgstr[5] "لمدة %(num)s ساعة"
+
+#, machine
+msgid "Formatting"
+msgstr "Formatting"
+
+#. a button: forward (share) the post or comment with a guild
+#, glossary, machine, plain1
+msgid "Forward"
+msgstr "إعادة توجيه"
+
+#, machine, python-format
+msgid "Forward to at most %(num)s guild."
+msgid_plural "Forward to at most %(num)s guilds."
+msgstr[0] "إلى أكثر من %(num)s غيلد."
+msgstr[1] "إلى أقصى حد."
+msgstr[2] "إلى أكثر من اثنين من الغيلان."
+msgstr[3] "إلى أكثر من %(num)s رجال."
+msgstr[4] "إلى أكثر من %(num)s غيلد."
+msgstr[5] "إلى أكثر من %(num)s غيلد."
+
+#, glossary, machine, plain1
+msgid "Forwarding"
+msgstr "جارٍ إعادة التوجيه"
+
+#, machine
+msgid "Friends"
+msgstr "الأصدقاء"
+
+#, machine, python-format
+msgid "From now on your audio go to your %(service)s."
+msgstr "من الآن فصاعداً صوتك يذهب إلى %(service)s."
+
+#, machine, python-format
+msgid "From now on your pictures go to your %(service)s."
+msgstr "من الآن وصاعداً صورك تذهب إلى %(service)s."
+
+#, machine, python-format
+msgid "From now on your videos go to your %(service)s."
+msgstr "من الآن فصاعدا الفيديو الخاص بك تذهب إلى %(service)s."
+
+#, machine
+msgid "From people you follow"
+msgstr "من الناس الذين تتبعهم"
+
+#, machine, plain1
+msgid "GIF"
+msgstr "GIF"
+
+#, machine
+msgid "Give the Space a title."
+msgstr "أعطِ الفضاء لقب."
+
+#, machine
+msgid "Give the button some text."
+msgstr "أعط الزر بعض النص."
+
+#, machine
+msgid "Give the template a name."
+msgstr "أعطي النموذج اسماً."
+
+#, glossary, machine, plain1
+msgid "Go to website"
+msgstr "الانتقال إلى الموقع"
+
+#, glossary, machine, plain1
+msgid "Gross"
+msgstr "مقرف"
+
+#, machine
+msgid "Group info"
+msgstr "معلومات الفريق"
+
+#, glossary, machine, plain1
+msgid "Guilds"
+msgstr "المجتمعات"
+
+#, machine
+msgid "Guilds with chat"
+msgstr "مذنبون بالثرثرة"
+
+#, machine
+msgid "Hand raised"
+msgstr "رفع اليد"
+
+#, glossary, machine, plain1
+msgid "Happy"
+msgstr "سعيد"
+
+#, machine, python-format
+msgid "Heading %(level)s"
+msgstr "Heading %(level)s"
+
+#, machine
+msgid "Hidden by your word filter"
+msgstr "مخبأ بوعدك"
+
+#, machine
+msgid "Hide formatting"
+msgstr "الاختباء"
+
+#. a toolbar menu: colour the background of the selected words, as a
+#. highlighter pen does
+#, machine
+msgid "Highlight"
+msgstr "Highlight"
+
+#, machine, python-format
+msgid "Highlight %(colour)s"
+msgstr "Highlight %(colour)s"
+
+#, machine
+msgid "Horizontal rule"
+msgstr "الحكم الأفقي"
+
+#. a person's role in a Space's call, shown under their name
+#, machine
+msgid "Host"
+msgstr "المضيفة"
+
+#. drawn into a Space's video replay, under its title, while no camera is on
+#. (in the host's language)
+#, machine, python-format
+msgid "Hosted by %(name)s"
+msgstr "Hosted by %(name)s"
+
+#, machine
+msgid "I agree to the rules"
+msgstr "أوافق على القواعد"
+
+#, machine
+msgid "I don't have it: start over"
+msgstr "لا أملكها، ابدأ من جديد"
+
+#, machine
+msgid "I've saved it"
+msgstr "لقد أنقذته"
+
+#, machine
+msgid "If you ever forget your password, this code is the only way to read your old messages. Keep it somewhere safe, like a password manager."
+msgstr "إذا نسيت كلمة السر هذه هي الطريقة الوحيدة لقراءة رسائلك القديمة أبقيه في مكان آمن مثل مدير كلمة السر."
+
+#, machine
+msgid "Image (coming soon)"
+msgstr "الصورة (سيصدر قريبا)"
+
+#, machine
+msgid "In the app, choose to compare emoji."
+msgstr "في التطبيق، اختيار لمقارنة إيموجي."
+
+#, machine
+msgid "In your local time."
+msgstr "في وقتك المحلي."
+
+#. a button (a verb): put the link or button into the post
+#, machine
+msgid "Insert"
+msgstr "Insert"
+
+#, machine
+msgid "Insert button"
+msgstr "زر الإرسال"
+
+#, machine
+msgid "Insert link"
+msgstr "وصلة Insert"
+
+#, machine
+msgid "Invite to speak"
+msgstr "دعوة للحديث"
+
+#. beside someone invited to a group chat who hasn't joined yet
+#, machine
+msgid "Invited"
+msgstr "المدعوون"
+
+#, machine, python-format
+msgid "Invited %(names)s."
+msgstr "Invited %(names)s."
+
+#. %(names)s is a list of usernames; %(problems)s is the server's sentences
+#. about the names that could not be invited
+#, machine, python-format
+msgid "Invited %(names)s. %(problems)s"
+msgstr "Invited %(names)s. %(problems)s"
+
+#, machine, python-format
+msgid "Invited by @%(name)s"
+msgstr "Invited by @%(name)s"
+
+#, machine
+msgid "It can now read your messages. You can sign it out in Settings > Chat apps."
+msgstr "يمكنها الآن قراءة رسائلك يمكنك التوقيع عليه في ستينغز تطبيقات شات."
+
+#, machine
+msgid "It couldn’t be published."
+msgstr "ولا يمكن نشره."
+
+#, machine
+msgid "It couldn’t be published. Try again."
+msgstr "ولا يمكن نشره. حاول مرة أخرى."
+
+#, machine
+msgid "It is still listed on your profile, but its comments are in the guilds."
+msgstr "لا تزال مدرجة في ملفك الشخصي لكن تعليقاتها في الضواحي."
+
+#, machine
+msgid "It won't be shown again."
+msgstr "لن يظهر ثانية."
+
+#, machine
+msgid "It won't renew. You keep access until the day you paid to."
+msgstr "لن يجدد استمر بالدخول حتى اليوم الذي دفعت له."
+
+#, machine
+msgid "Italic (Ctrl+I)"
+msgstr "Italic (Ctrl+I)"
+
+#. a button that joins the group call that has just started
+#. a button that joins a call going on in a chat
+#, glossary, machine, plain1
+msgid "Join"
+msgstr "انضمام"
+
+#, glossary, machine, plain1, python-format
+msgid "Join %(channel)s"
+msgstr "انضم إلى %(channel)s"
+
+#, machine
+msgid "Join the Space to write in its chat."
+msgstr "انضم للفضاء ليكتب في دردشة."
+
+#, machine
+msgid "Join voice"
+msgstr "صوت الانضمام"
+
+#, machine
+msgid "Joining…"
+msgstr "الانضمام…"
+
+#, machine
+msgid "Key facts and links people should see first."
+msgstr "الحقائق والوصلات الرئيسية ينبغي أن يرى الناس أولا."
+
+#, machine, python-format
+msgid "Last used %(date)s"
+msgstr "آخر مستخدم %(date)s"
+
+#, glossary, machine, plain1
+msgid "Laugh"
+msgstr "ضحك"
+
+#. a button that leaves a channel
+#, glossary, machine, plain1
+msgid "Leave"
+msgstr "مغادرة"
+
+#, machine
+msgid "Leave this channel?"
+msgstr "أترك هذه القناة؟?"
+
+#, machine
+msgid "Leave this group? Someone else in it becomes its owner."
+msgstr "ترك هذه المجموعة؟ شخص آخر فيه يصبح مالكه."
+
+#, machine
+msgid "Leave this group? You won't see new messages unless someone adds you again."
+msgstr "ترك هذه المجموعة؟ لن ترى رسائل جديدة إلا إذا قام شخص ما بإضافتك مرة أخرى."
+
+#, glossary, machine, plain1
+msgid "Light mode"
+msgstr "الوضع الفاتح"
+
+#, machine
+msgid "Link (Ctrl+K)"
+msgstr "Link (Ctrl+K)"
+
+#, machine
+msgid "Link copied."
+msgstr "تم نسخ لينك."
+
+#, machine
+msgid "Link text"
+msgstr "نص الوثيقة"
+
+#, machine
+msgid "Links must start with http:// or https://."
+msgstr "Links must start with http:// or https://."
+
+#, machine
+msgid "Listen"
+msgstr "اسمع"
+
+#. the heading over the listeners of a Space's call, with how many there are
+#. ("Listeners (12)")
+#, machine, python-format
+msgid "Listeners (%(num)s)"
+msgid_plural "Listeners (%(num)s)"
+msgstr[0] "المستمعون (%(num)s)"
+msgstr[1] "المستمعون (%(num)s)"
+msgstr[2] "المستمعون (%(num)s)"
+msgstr[3] "المستمعون (%(num)s)"
+msgstr[4] "المستمعون (%(num)s)"
+msgstr[5] "المستمعون (%(num)s)"
+
+#, machine, plain1
+msgid "Live"
+msgstr "مباشرة"
+
+#. whether the Space on a stage channel is live, scheduled or over
+#, machine
+msgid "Live now"
+msgstr "عيشي الآن"
+
+#, machine
+msgid "Load earlier messages"
+msgstr "رسائل سابقة"
+
+#, machine
+msgid "Loading post…"
+msgstr "موقع التعبئة…"
+
+msgid "Loading preview..."
+msgstr ""
+
+#, machine
+msgid "Loading your circles…"
+msgstr "وضع دوائرك…"
+
+#, machine
+msgid "Loading your stories…"
+msgstr "تحمل قصصك…"
+
+#, machine
+msgid "Loading your templates..."
+msgstr "وضع نماذجك..."
+
+#, machine
+msgid "Loading..."
+msgstr "التعبئة..."
+
+#, glossary, machine, plain1
+msgid "Loading…"
+msgstr "جارٍ التحميل…"
+
+#, glossary, machine, plain1
+msgid "Love"
+msgstr "حب"
+
+#, machine
+msgid "Lower hand"
+msgstr "اليد السفلية"
+
+#, machine
+msgid "Make admin"
+msgstr "اجعل الإعلان"
+
+#, machine
+msgid "Make co-host"
+msgstr "جعل المشاركة في استضافة"
+
+#, machine
+msgid "Make this post public? Everyone will be able to see it."
+msgstr "جعل هذا المنصب علناً؟ الجميع سيتمكن من رؤيته."
+
+#, machine
+msgid "Making the channel…"
+msgstr "صنع القناة…"
+
+#, glossary, machine, plain1
+msgid "Meh"
+msgstr "عادي"
+
+#. the label of the box a chat message is written in
+#, machine
+msgid "Message"
+msgstr "الرسالة"
+
+#, machine
+msgid "Message deleted"
+msgstr "الرسالة حذفت"
+
+#, machine
+msgid "Message request. They won't know you've seen this until you accept."
+msgstr "طلب رسالة لن يعلموا أنك رأيت هذا حتى تقبل."
+
+#. a device with no name of its own in the call's device list, e.g. "Microphone
+#. 2"
+#, machine
+msgid "Microphone"
+msgstr "مايكروفون"
+
+#, machine, python-format
+msgid "Microphone %(number)s"
+msgstr "Microphone %(number)s"
+
+#. a toolbar menu with more formatting
+#, glossary, machine, plain1
+msgid "More"
+msgstr "المزيد"
+
+#, machine
+msgid "Move to listeners"
+msgstr "نقل إلى المستمعين"
+
+#, glossary, machine, plain1
+msgid "Mute"
+msgstr "كتم"
+
+#, glossary, machine, plain1
+msgid "Muted"
+msgstr "مكتوم"
+
+#, machine
+msgid "Muting a channel hides its unread dot and stops its mention notifications. Nobody else is told."
+msgstr "تمزيق قناة تخفي نقطة غير مُخطّطة وتوقف الإخطارات عن ذكرها لا أحد آخر يقال."
+
+#, machine
+msgid "Name this highlight"
+msgstr "الاسم هذا"
+
+#, machine
+msgid "Name your folder"
+msgstr "اسم ملفك"
+
+#, machine
+msgid "New channel"
+msgstr "قناة جديدة"
+
+#, glossary, machine, plain1
+msgid "No"
+msgstr "لا"
+
+#, machine
+msgid "No Space is shown on this stage right now."
+msgstr "لا يوجد مكان في هذه المرحلة الآن."
+
+#, machine
+msgid "No answer."
+msgstr "لا إجابة."
+
+#, machine
+msgid "No calls yet. Start one from a chat's Voice call or Video call."
+msgstr "لا مكالمات بعد ابدأي بواحدة من نداء صوت الدردشة أو مكالمة فيديو."
+
+#, machine
+msgid "No camera was found."
+msgstr "لم يتم العثور على الكاميرا."
+
+#, machine
+msgid "No co-authors yet."
+msgstr "لا يوجد مساعدين بعد."
+
+#, machine
+msgid "No devices yet. Open Chat to start."
+msgstr "لا أجهزة بعد افتحي الباب للبدء."
+
+#, glossary, machine, plain1
+msgid "No flair"
+msgstr "بدون شارة"
+
+#, machine
+msgid "No microphone was found."
+msgstr "لم يتم العثور على ميكروفون."
+
+#, machine
+msgid "No one matches. You can send to your chats and to people you follow."
+msgstr "لا أحد يتطابق يمكنك إرسال الدردشة إلى الناس الذين تتبعهم."
+
+#, machine
+msgid "No special characters or spaces allowed."
+msgstr "لا يوجد شخصيات أو أماكن خاصة مسموح بها."
+
+#, machine
+msgid "Nobody else matches."
+msgstr "لا أحد آخر يتطابق."
+
+#, machine
+msgid "Nobody is here yet."
+msgstr "لا أحد هنا بعد."
+
+#, machine
+msgid "Nobody matches."
+msgstr "لا أحد يتطابق."
+
+#, machine
+msgid "Nobody matches. Type their whole @handle."
+msgstr "لا أحد يتطابق @handle."
+
+#, machine
+msgid "Nobody to send to yet. Follow someone, or start a chat from their profile."
+msgstr "لا أحد سيرسلها بعد اتبع شخص ما، أو بدء الحديث من ملفهم الشخصي."
+
+#, machine
+msgid "Nobody was invited."
+msgstr "لم يتم دعوة أحد."
+
+#, machine
+msgid "None of the people you follow back have upvoted this yet."
+msgstr "لا أحد من الأشخاص الذين تتبعونهم قد أثار هذا بعد."
+
+#, machine
+msgid "Not now"
+msgstr "ليس الآن"
+
+#, machine
+msgid "Not saved"
+msgstr "لم ينقذ"
+
+#, machine
+msgid "Not used yet"
+msgstr "لم تستخدم بعد"
+
+#, machine
+msgid "Nothing found."
+msgstr "لم نجد شيئاً."
+
+#, machine
+msgid "Nothing here yet."
+msgstr "لا شيء هنا بعد."
+
+#, machine
+msgid "Nothing is pinned in this channel."
+msgstr "لا شيء عالق في هذه القناة."
+
+#, machine
+msgid "Nothing matches. Groups are private: only the ones you are in are found."
+msgstr "لا شيء يتطابق المجموعات خاصة: فقط التي أنت فيها وجدت."
+
+#, machine
+msgid "Nothing saved yet. Save draft keeps what you have written here, and Schedule posts it later."
+msgstr "لم ينقذ شيء بعد حافظ على مشروعك يبقي ما كتبته هنا، وتضعه لاحقاً."
+
+#, machine
+msgid "Nothing to preview yet."
+msgstr "لا شيء لمقابلته بعد."
+
+#, machine
+msgid "Nothing was connected."
+msgstr "لا شيء كان متصل."
+
+#, glossary, machine, plain1
+msgid "Notifications"
+msgstr "الإشعارات"
+
+#, machine
+msgid "Numbered list"
+msgstr "القائمة المرقمة"
+
+#, glossary, machine, plain1
+msgid "OMG"
+msgstr "يا إلهي"
+
+#, machine
+msgid "Offline"
+msgstr "Offline"
+
+#, machine
+msgid "Offline · retrying"
+msgstr "إعادة التأهيل"
+
+#, machine
+msgid "Only go on if you are signing in to an app right now. If not, choose Not now and sign it out in Settings > Chat apps."
+msgstr "استمر فقط إذا كنت ستوقع على تطبيق الآن إذا لم يكن، اختيار ليس الآن والتوقيع عليه في ستينغز تطبيقات شات."
+
+#, machine
+msgid "Only the author can see this."
+msgstr "فقط صاحب البلاغ يمكنه رؤية هذا."
+
+#, machine
+msgid "Only the channel's owner and helpers write here. You can react to their messages."
+msgstr "فقط مالك القناة ومساعديها يكتبون هنا يمكنك الرد على رسائلهم."
+
+#, machine, plain1
+msgid "Only the guild's guildmasters write here. You can react to messages."
+msgstr "فقط المُديرين الغاليين يكتبون هنا يمكنك الرد على الرسائل."
+
+#. a button that opens a draft in the editor
+#, machine
+msgid "Open"
+msgstr "مفتوح"
+
+#, machine, python-format
+msgid "Open %(name)s"
+msgstr "فتح %(name)s"
+
+#, machine
+msgid "Open Chat once on this site first, so your key is set up."
+msgstr "مفتوح مطاردة مرة واحدة في هذا الموقع أولا، لذلك مفتاح الخاص بك هو الإعداد."
+
+#, machine
+msgid "Open Chat once to unlock your messages, then try again."
+msgstr "افتحي (تشات) مرة لفتح رسائلك ثم حاولي مرة أخرى."
+
+#, machine
+msgid "Open media settings"
+msgstr "وسائط الإعلام المفتوحة"
+
+#, machine
+msgid "Open the Space"
+msgstr "فتح الفضاء"
+
+#, machine, python-format
+msgid "Open the chat of +%(guild)s"
+msgstr "افتح الدردشة%(guild)s"
+
+#, machine
+msgid "Options saved."
+msgstr "الخيارات الموفرة."
+
+#. a person's role in a group chat, shown beside their name
+#, machine
+msgid "Owner"
+msgstr "المالك"
+
+#, machine
+msgid "Paragraph"
+msgstr "الفقرة"
+
+#, machine
+msgid "Password"
+msgstr "كلمة السر"
+
+#, machine
+msgid "People you follow"
+msgstr "الناس الذين تتبع"
+
+#, machine
+msgid "Pick a date and time."
+msgstr "اختر موعد و وقت."
+
+#, glossary, machine, plain1
+msgid "Pick a flair"
+msgstr "اختر شارة"
+
+#. what a story is, in a list of your stories: a picture story without a
+#. caption, or a video story
+#, machine
+msgid "Picture"
+msgstr "الصورة"
+
+#, machine, python-format
+msgid "Picture added to your %(service)s."
+msgstr "الصورة أضافت إلى %(service)s."
+
+#, machine
+msgid "Picture added."
+msgstr "صورة مضافة."
+
+#, machine, python-format
+msgid "Picture added: %(file)s"
+msgstr "Picture added: %(file)s"
+
+#, machine, python-format
+msgid "Picture added: %(file)s (in your %(service)s)"
+msgstr "Picture added: %(file)s (in your %(service)s)"
+
+#, machine
+msgid "Picture stories are not available on this site yet."
+msgstr "قصص الصور غير متاحة في هذا الموقع بعد."
+
+#, machine
+msgid "Pin this message"
+msgstr "Pin هذه الرسالة"
+
+#, machine
+msgid "Pinned messages"
+msgstr "الرسائل"
+
+#, glossary, machine, plain1
+msgid "Please"
+msgstr "أرجوك"
+
+#, machine, plain1
+msgid "Please enter a valid URL (including http:// or https://)."
+msgstr "Please enter a valid URL (including http:// or https://).)"
+
+#, glossary, machine, plain1
+msgid "Please log in again."
+msgstr "يُرجى تسجيل الدخول مجددًا."
+
+#. the button that publishes the post (a verb)
+#, glossary, machine, plain1
+msgid "Post"
+msgstr "نشر"
+
+#, machine
+msgid "Posted. Reload the page to see it."
+msgstr "مؤجل أعد تحميل الصفحة لرؤيتها."
+
+#, machine, python-format
+msgid "Posting to %(guilds)s"
+msgstr "Posting to %(guilds)s"
+
+#, glossary, machine, plain1
+msgid "Posting to your profile"
+msgstr "النشر في ملفك الشخصي"
+
+#. where a new post goes; %(guilds)s is a list of guild names ("+pets, +news")
+#, machine, python-format
+msgid "Posting to your profile, %(guilds)s"
+msgstr "نشر ملفك الشخصي %(guilds)s"
+
+#, glossary, machine, plain1
+msgid "Posting…"
+msgstr "جارٍ النشر…"
+
+#, machine
+msgid "Preparing…"
+msgstr "الإعداد…"
+
+#. a tab: see the post's text as it will look (beside Write)
+#, machine
+msgid "Preview"
+msgstr "Preview"
+
+#, machine
+msgid "Private"
+msgstr "خاص"
+
+#, machine, plain1
+msgid "Private guilds need a private curation"
+msgstr "العجائز الخاصة تحتاج لتغذية خاصة"
+
+#, machine
+msgid "Protect your messages"
+msgstr "احمي رسائلك"
+
+#. who can see a post, shown on the composer's audience button
+#, machine
+msgid "Public"
+msgstr "الجمهور"
+
+#, machine
+msgid "Public (on your channel)"
+msgstr "عامة (على قناة)"
+
+#, machine, python-format
+msgid "Public channel · %(num)s member"
+msgid_plural "Public channel · %(num)s members"
+msgstr[0] "القناة العامة %(num)s أعضاء"
+msgstr[1] "القناة العامة؛ عضو واحد"
+msgstr[2] "القناة العامة: عضوان"
+msgstr[3] "القناة العامة %(num)s أعضاء"
+msgstr[4] "القناة العامة: %(num)s عضو"
+msgstr[5] "القناة العامة: %(num)s عضوا"
+
+#, machine
+msgid "Published."
+msgstr "نُشرت."
+
+#, machine
+msgid "Publishing is put to a vote: the other authors have been asked."
+msgstr "ويُطرح النشر للتصويت: وقد طُلب من أصحاب البلاغ الآخرين."
+
+#, machine
+msgid "Publishing now"
+msgstr "النشر الآن"
+
+#. the name of a ready-made block for a post: a quotation set apart
+#, machine
+msgid "Pull quote"
+msgstr "سحب اقتباس"
+
+#, machine
+msgid "Pull to refresh"
+msgstr "سحب لإعادة التجديد"
+
+#. a text style in the editor: make the lines a quotation
+#. a button that quotes a message on a Space's board
+#, machine
+msgid "Quote"
+msgstr "Quote"
+
+#, machine
+msgid "Quote this message"
+msgstr "إجمع هذه الرسالة"
+
+#. above the message box while quoting a message; the quoted message's text
+#. follows
+#, machine, python-format
+msgid "Quoting: %(text)s"
+msgstr "الحصص: %(text)s"
+
+#, machine
+msgid "Raise hand"
+msgstr "ارفع يدك"
+
+#, machine
+msgid "Raised hands"
+msgstr "اليدان المتحركتان"
+
+#. a button that opens the emoji to react to a message with
+#, machine
+msgid "React"
+msgstr "رد الفعل"
+
+#, machine, python-format
+msgid "React with %(emoji)s"
+msgstr "React with %(emoji)s"
+
+#, machine
+msgid "Recovery code"
+msgstr "رمز الإنعاش"
+
+#, machine
+msgid "Redo"
+msgstr "Redo"
+
+msgid "Refreshing…"
+msgstr ""
+
+#, glossary, machine, plain1
+msgid "Registering"
+msgstr "جارٍ التسجيل"
+
+#, machine
+msgid "Release to refresh"
+msgstr "الإفراج عن التجديد"
+
+#, machine
+msgid "Remind me"
+msgstr "ذكريني"
+
+#, machine
+msgid "Reminder set"
+msgstr "مجموعة تذكير"
+
+#. buttons beside a co-author: remove an accepted co-author, or cancel an
+#. invitation not answered yet
+#. a button that takes the picture just added off the form
+#. a button that removes a person from a group chat
+#. a button that removes a message from a Space's board for everyone
+#, glossary, machine, plain1
+msgid "Remove"
+msgstr "إزالة"
+
+#, machine, python-format
+msgid "Remove %(name)s"
+msgstr "Remove %(name)s"
+
+#, machine, python-format
+msgid "Remove @%(name)s from the group?"
+msgstr "نقل @ %(name)s من المجموعة؟?"
+
+#, machine
+msgid "Remove admin"
+msgstr "إزالة الألغام"
+
+#, machine
+msgid "Remove alignment"
+msgstr "Remove alignment"
+
+#, machine
+msgid "Remove as co-host"
+msgstr "نقل كشريك في استضافة"
+
+#, machine
+msgid "Remove colour"
+msgstr "إزالة اللون"
+
+#, machine
+msgid "Remove from the Space"
+msgstr "نقل من الفضاء"
+
+#, machine
+msgid "Remove highlight"
+msgstr "إلقاء الضوء"
+
+#, machine, plain1
+msgid "Remove this message (guildmaster)"
+msgstr "نقل هذه الرسالة (مدير توجيه)"
+
+#, machine
+msgid "Remove this message for everyone? The guild's log will say you did."
+msgstr "نقل هذه الرسالة للجميع؟ سجل (غيلد) سيقول أنك فعلت."
+
+#, machine
+msgid "Remove this message from the board for everyone?"
+msgstr "إزالة هذه الرسالة من اللوحة للجميع؟?"
+
+#. a button that renames the Highlight being watched
+#, machine
+msgid "Rename"
+msgstr "الاسم"
+
+#, machine
+msgid "Rename this folder"
+msgstr "Rename this folder"
+
+#. a button that reports the story being watched
+#. a button that reports a message on a Space's board
+#, glossary, machine, plain1
+msgid "Report"
+msgstr "إبلاغ"
+
+#, glossary, machine, plain1
+msgid "Report comment"
+msgstr "الإبلاغ عن التعليق"
+
+#, glossary, machine, plain1
+msgid "Report post"
+msgstr "الإبلاغ عن المنشور"
+
+#, machine
+msgid "Report this message"
+msgstr "تقرير هذه الرسالة"
+
+#, glossary, machine, plain1
+msgid "Reporting comment"
+msgstr "جارٍ الإبلاغ عن التعليق"
+
+#, glossary, machine, plain1
+msgid "Reporting post"
+msgstr "جارٍ الإبلاغ عن المنشور"
+
+#. a button (a verb): try sending the post in this chat again
+#, machine
+msgid "Retry"
+msgstr "Retry"
+
+#, machine
+msgid "Ringing…"
+msgstr "الرنين…"
+
+#, machine
+msgid "Rules of this channel"
+msgstr "قواعد هذه القناة"
+
+#, glossary, machine, plain1
+msgid "Sad"
+msgstr "حزين"
+
+#. a button that saves a guild setting
+#. a button that saves a template
+#, glossary, machine, plain1
+msgid "Save"
+msgstr "حفظ"
+
+#, machine
+msgid "Save as template"
+msgstr "وفر كنموذج"
+
+#, machine
+msgid "Save as template..."
+msgstr "وفر كنموذج..."
+
+#, machine
+msgid "Save your recovery code"
+msgstr "أنقذ شفرة الإنعاش"
+
+#, glossary, machine, plain1
+msgid "Saved"
+msgstr "تم الحفظ"
+
+#, glossary, machine, plain1
+msgid "Saving"
+msgstr "جارٍ الحفظ"
+
+#, machine
+msgid "Saving a draft unschedules it; Schedule changes the time."
+msgstr "إنقاذ مشروع غير جدول له؛ الجدول الزمني يغير الوقت."
+
+#, machine
+msgid "Saving options…"
+msgstr "إنقاذ الخيارات…"
+
+#, machine
+msgid "Saving the replay to your linked storage…"
+msgstr "إنقاذ إعادة العزف على مخزنك…"
+
+#, machine
+msgid "Saving the replay to your own video channel… keep this tab open."
+msgstr "إنقاذ إعادة اللعب إلى قناة الفيديو الخاصة بك. إبقاء هذا الشريط مفتوحا."
+
+#. while a Space's replay uploads, how much of it has gone ("Saving the replay…
+#. 40%")
+#, machine, python-format
+msgid "Saving the replay… %(percent)s%%"
+msgstr "إنقاذ إعادة اللعب. %(percent)s%%"
+
+#, machine
+msgid "Saving…"
+msgstr "إنقاذ…"
+
+#, machine
+msgid "Say what is wrong with this account."
+msgstr "قل ما الخطأ في هذا الحساب."
+
+#, glossary, machine, plain1
+msgid "Scared"
+msgstr "خائف"
+
+#, machine
+msgid "Schedule the Space"
+msgstr "الجدول الزمني للفضاء"
+
+#, machine, python-format
+msgid "Scheduled for %(time)s"
+msgstr "الجدول الزمني %(time)s"
+
+#. %(time)s is a date and time, such as 24 Oct 2026, 15:00
+#, machine, python-format
+msgid "Scheduled for %(time)s."
+msgstr "من المقرر %(time)s."
+
+#. a button that searches a channel's messages
+#. the title of the panel that searches a channel's messages
+#, glossary, machine, plain1
+msgid "Search"
+msgstr "بحث"
+
+#, machine
+msgid "Search for someone to add."
+msgstr "ابحث عن شخص ليضيفه."
+
+#, machine
+msgid "Search this channel"
+msgstr "ابحث عن هذه القناة"
+
+#, python-format
+msgid "Searches the last %(num)s day of messages."
+msgid_plural "Searches the last %(num)s days of messages."
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
+msgstr[4] ""
+msgstr[5] ""
+
+#, machine
+msgid "Searching too fast. Wait a moment."
+msgstr "البحث سريع جدا. انتظر لحظة."
+
+#, machine
+msgid "Seen"
+msgstr "Seen"
+
+#. under your last message in a group chat: how many of the others have read it
+#. ("Seen by 3")
+#, machine, python-format
+msgid "Seen by %(num)s"
+msgid_plural "Seen by %(num)s"
+msgstr[0] "رُؤى من صفر"
+msgstr[1] "شوهدت في %(num)s"
+msgstr[2] "Seen by %(num)s"
+msgstr[3] "Seen by %(num)s"
+msgstr[4] "Seen by %(num)s"
+msgstr[5] "Seen by %(num)s"
+
+#, glossary, machine, plain1
+msgid "Select a conversation"
+msgstr "اختر محادثة"
+
+#. a button (a verb): send the post in this chat
+#. a button that sends a message
+#, machine
+msgid "Send"
+msgstr "أرسل"
+
+#, machine
+msgid "Send it somewhere else:"
+msgstr "أرسلها لمكان آخر"
+
+#, machine
+msgid "Send your next audio to:"
+msgstr "أرسل صوتك التالي إلى:"
+
+#, machine
+msgid "Send your next pictures to:"
+msgstr "أرسل صورك التالية إلى:"
+
+#, machine
+msgid "Send your next videos to:"
+msgstr "أرسل فيديوك القادم إلى:"
+
+#, machine
+msgid "Sending..."
+msgstr "إرسال..."
+
+#, machine
+msgid "Sending…"
+msgstr "إرسال…"
+
+#. a button's state once the post was sent in the chat
+#, machine
+msgid "Sent"
+msgstr "Sent"
+
+#, machine
+msgid "Several people are typing…"
+msgstr "العديد من الناس يرسمون…"
+
+#, machine
+msgid "Shared a post"
+msgstr "تقاسم وظيفة"
+
+#, machine
+msgid "Sharing…"
+msgstr "مشاركة…"
+
+#, machine, python-format
+msgid "Show %(num)s new post"
+msgid_plural "Show %(num)s new posts"
+msgstr[0] "صفر وظائف جديدة"
+msgstr[1] "وظيفة جديدة"
+msgstr[2] "عرض وظيفتين جديدتين"
+msgstr[3] "%(num)s وظائف جديدة"
+msgstr[4] "%(num)s وظيفة جديدة"
+msgstr[5] "%(num)s وظيفة جديدة"
+
+#, machine
+msgid "Show formatting"
+msgstr "شكل العرض"
+
+#, glossary, machine, plain1
+msgid "Show less"
+msgstr "عرض أقل"
+
+#, glossary, machine, plain1
+msgid "Show more"
+msgstr "عرض المزيد"
+
+#, machine
+msgid "Show original"
+msgstr "العرض الأصلي"
+
+#. a button that translates a post or a comment (a verb)
+#, machine
+msgid "Show translation"
+msgstr "ترجمة"
+
+#, machine
+msgid "Sign out"
+msgstr "وقع"
+
+#, machine, python-format
+msgid "Sign out %(device)s"
+msgstr "وقع %(device)s"
+
+#, machine, python-format
+msgid "Sign out %(device)s? It will need to sign in again to read your chats."
+msgstr "توقيع %(device)s؟ سيحتاج للتوقيع مجدداً لقراءة دردشاتك."
+
+#, glossary, machine, plain1
+msgid "Signing in"
+msgstr "جارٍ تسجيل الدخول"
+
+#, machine
+msgid "Slow mode off"
+msgstr "بطيئة"
+
+#. above a Space's board while slow mode is on, with how long between messages
+#. ("Slow mode · 30 seconds")
+#, machine, python-format
+msgid "Slow mode · %(length)s"
+msgstr "بطيئة النمط %(length)s"
+
+#, python-format
+msgid "Slow mode: one message every %(num)s minute."
+msgid_plural "Slow mode: one message every %(num)s minutes."
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
+msgstr[4] ""
+msgstr[5] ""
+
+#, python-format
+msgid "Slow mode: one message every %(num)s second."
+msgid_plural "Slow mode: one message every %(num)s seconds."
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
+msgstr[4] ""
+msgstr[5] ""
+
+#. a choice of slow mode for a Space's board, with how long between messages
+#. ("Slow · 30 seconds")
+#, machine, python-format
+msgid "Slow · %(length)s"
+msgstr "بطيئة %(length)s"
+
+#. shown in place of the caller's name when it is unknown
+#, machine
+msgid "Someone"
+msgstr "شخص ما"
+
+#, machine
+msgid "Someone added you to this group. Accept to read it and write in it."
+msgstr "شخص ما أضافك إلى هذه المجموعة تقبل قراءتها وتكتب بها."
+
+#. in place of the name of someone who wrote in a channel and has left it
+#. in place of the name of someone who wrote in a group chat and has left it
+#, machine
+msgid "Someone who left"
+msgstr "شخص ما غادر"
+
+#, machine
+msgid "Someone you don't follow gets a message request"
+msgstr "شخص لا تتبعه يحصل على طلب رسالة"
+
+#, machine
+msgid "Something went wrong. Please try again."
+msgstr "حدث شيء خاطئ حاول مرة أخرى."
+
+#, machine, plain1
+msgid "Something went wrong. Try again."
+msgstr "حدث شيء خاطئ حاول مرة أخرى."
+
+#, machine
+msgid "Sound (coming soon)"
+msgstr "الصوت (سيصدر قريبا)"
+
+#, machine, python-format
+msgid "Sound added to your %(service)s."
+msgstr "الصوت أضاف إلى %(service)s."
+
+#, machine
+msgid "Sound added."
+msgstr "الصوت مضاف."
+
+#, machine
+msgid "Spaces are unavailable right now. Try again later."
+msgstr "الفضاء غير متاح الآن حاول مرة أخرى لاحقا."
+
+#. a person's role in a Space's call, shown under their name
+#, machine
+msgid "Speaker"
+msgstr "المتكلم"
+
+#. a menu item: hide the selected words until a reader taps them
+#, machine
+msgid "Spoiler"
+msgstr "Spoiler"
+
+#. under a stage channel's name: its kind and its guild ("Stage · +pets")
+#, machine, python-format
+msgid "Stage · +%(guild)s"
+msgstr "المرحلة +%(guild)s"
+
+#, machine
+msgid "Start a message..."
+msgstr "ابدأ رسالة."
+
+#, machine
+msgid "Start or open a thread"
+msgstr "بدء أو فتح خيط"
+
+#, machine
+msgid "Start over"
+msgstr "ابدأ"
+
+#, machine
+msgid "Start over?"
+msgstr "نبدأ من جديد؟?"
+
+#, machine
+msgid "Start the Space"
+msgstr "ابدأوا الفضاء"
+
+#, machine
+msgid "Starting the chat…"
+msgstr "بدء الدردشة…"
+
+#, machine
+msgid "Starting…"
+msgstr "بدء…"
+
+#, machine
+msgid "Strikethrough"
+msgstr "Strikethrough"
+
+msgid "Subscribing…"
+msgstr ""
+
+#, machine
+msgid "Subscript"
+msgstr "Subscript"
+
+#, machine
+msgid "Superscript"
+msgstr "السيناريو"
+
+#. a menu item: insert a table into the post
+#, machine
+msgid "Table"
+msgstr "الجدول"
+
+#. a toolbar menu of ready-made blocks to insert into the post
+#, machine
+msgid "Template"
+msgstr "النموذج"
+
+#, machine
+msgid "Template name"
+msgstr "اسم النموذج"
+
+#, machine
+msgid "Template saved."
+msgstr "تم حفظ النموذج."
+
+#, machine
+msgid "Text colour"
+msgstr "لون النص"
+
+#, machine, python-format
+msgid "Text colour %(colour)s"
+msgstr "لون النص %(colour)s"
+
+#, machine
+msgid "Text formatting"
+msgstr "صياغة النصوص"
+
+#, machine
+msgid "Text style"
+msgstr "أسلوب النص"
+
+#, glossary, machine, plain1
+msgid "Thank you for asking"
+msgstr "شكرًا على طلبك"
+
+#, machine
+msgid "Thank you for reporting this comment!"
+msgstr "شكراً لإبلاغك بهذا التعليق!"
+
+#, machine
+msgid "Thank you for reporting this post!"
+msgstr "شكراً على الإبلاغ عن هذه الوظيفة!"
+
+#, machine
+msgid "Thanks."
+msgstr "شكراً."
+
+#, machine
+msgid "Thanks. An admin will look at it."
+msgstr "شكراً سينظر إليها أحد الأذكياء."
+
+#, machine, plain1
+msgid "Thanks: the guild's guildmasters will take a look."
+msgstr "المُديرون الغاليون سيلقون نظرة."
+
+#, machine
+msgid "Thanks: the site's admins will take a look."
+msgstr "إعلانات الموقع ستلقي نظرة."
+
+#, machine
+msgid "That code doesn't open it. Check for typos."
+msgstr "هذا الرمز لا يفتحه تحقق من الإطار."
+
+#, glossary, machine, plain1
+msgid "That couldn't be saved."
+msgstr "تعذّر الحفظ."
+
+#, machine
+msgid "That device couldn't be signed out right now."
+msgstr "هذا الجهاز لا يمكن توقيعه الآن."
+
+#, machine
+msgid "That device couldn't be used."
+msgstr "هذا الجهاز لا يمكن استخدامه."
+
+#, glossary, machine, plain1
+msgid "That didn't go through"
+msgstr "لم يتم الإرسال"
+
+#, machine
+msgid "That didn't work."
+msgstr "هذا لم ينجح."
+
+#, machine
+msgid "That didn't work. Try again."
+msgstr "هذا لم ينجح حاول مرة أخرى."
+
+#, machine
+msgid "That didn’t work."
+msgstr "ولم ينجح ذلك."
+
+#, machine
+msgid "That didn’t work. Try again."
+msgstr "ولم ينجح ذلك. حاول مرة أخرى."
+
+#, machine
+msgid "That edit couldn’t be saved."
+msgstr "وهذا التحرير لا يمكن إنقاذه."
+
+#, machine
+msgid "That file is too big."
+msgstr "هذا الملف كبير جداً."
+
+#, machine
+msgid "That isn't there any more."
+msgstr "لم يعد هناك المزيد."
+
+#, machine
+msgid "That isn't your password."
+msgstr "هذه ليست كلمة سرك."
+
+#, machine
+msgid "That message can't be sent."
+msgstr "تلك الرسالة لا يمكن إرسالها."
+
+#, machine
+msgid "That password isn't right."
+msgstr "كلمة السر هذه ليست صحيحة."
+
+#, machine
+msgid "That picture could not be prepared for upload. It may be damaged or too large."
+msgstr "هذه الصورة لا يمكن إعدادها للتحميل. قد تدمر أو كبيرة جدا."
+
+#, machine, plain1
+msgid "That picture could not be prepared. It may be damaged or too large."
+msgstr "هذه الصورة لا يمكن إعدادها قد تدمر أو كبيرة جدا."
+
+#, machine, plain1
+msgid "That picture is too big."
+msgstr "هذه الصورة كبيرة جداً."
+
+#, machine
+msgid "The Space could not be made."
+msgstr "الفضاء لا يمكن صنعه."
+
+#, machine
+msgid "The Space could not be made. Check your connection."
+msgstr "الفضاء لا يمكن صنعه تحقق من اتصالك."
+
+#, machine, python-format
+msgid "The account, @%(name)s"
+msgstr "The account, %(name)s"
+
+#, machine
+msgid "The app wasn't verified. You can start again from the app, or use your security key instead."
+msgstr "لم يتم التحقق من التطبيق يمكنك البدء مرة أخرى من التطبيق، أو استخدام مفتاح الأمن الخاص بك بدلا من ذلك."
+
+#, machine
+msgid "The board is closed: this Space has ended."
+msgstr "المجلس مغلق، هذا الفضاء انتهى."
+
+#, machine
+msgid "The board is open while the Space is live."
+msgstr "اللوحة مفتوحة بينما الفضاء على الهواء."
+
+#, machine
+msgid "The board opens when the Space starts."
+msgstr "اللوحة تفتح عندما يبدأ الفضاء."
+
+#, machine
+msgid "The browser didn't allow the camera. Allow it for this site in the address bar, then try again."
+msgstr "المصفف لم يسمح للكاميرا دعه لهذا الموقع في حانة العنوان ثم حاول مرة أخرى."
+
+#, machine
+msgid "The browser didn't allow the microphone. Allow it for this site in the address bar, then try again."
+msgstr "المصفف لم يسمح بالميكروفون دعه لهذا الموقع في حانة العنوان ثم حاول مرة أخرى."
+
+#, machine
+msgid "The call couldn't continue."
+msgstr "المكالمة لم تستطع الاستمرار."
+
+#, machine
+msgid "The call couldn't start. Close this window and try again."
+msgstr "المكالمة لم تستطع البدء أغلق هذه النافذة وحاول مرة أخرى."
+
+#, machine
+msgid "The call ended."
+msgstr "انتهت المكالمة."
+
+#, machine
+msgid "The camera couldn't be started."
+msgstr "الكاميرا لا يمكن أن تبدأ."
+
+#, machine
+msgid "The camera couldn't be started: you're on audio."
+msgstr "الكاميرا لا يمكن أن تبدأ أنت على الصوت."
+
+#, machine
+msgid "The camera is in use by another app."
+msgstr "الكاميرا تستخدم بواسطة تطبيق آخر."
+
+#, machine
+msgid "The chat is closed: this Space has ended."
+msgstr "الدردشة مغلقة هذا الفضاء انتهى."
+
+#, machine
+msgid "The chat opens when the Space starts."
+msgstr "الدردشة تفتح عندما يبدأ الفضاء."
+
+#, machine
+msgid "The draft changed under your last edit, so it was reloaded. Check your last few words."
+msgstr "المشروع تغير تحت آخر تحرير لك، لذلك أعيد تحميله. تحقق من كلماتك الأخيرة."
+
+#, machine
+msgid "The emoji to compare"
+msgstr "العاطفة لمقارنة"
+
+#, machine, python-format
+msgid "The guild, +%(name)s"
+msgstr "الغيمة، + %(name)s"
+
+#, machine
+msgid "The host asked you to mute."
+msgstr "المضيف طلب منك أن تتحول."
+
+#, machine
+msgid "The link couldn't be copied."
+msgstr "الرابط لا يمكن نسخه."
+
+#, machine
+msgid "The microphone couldn't be started."
+msgstr "الميكروفون لا يمكن أن يبدأ."
+
+#, machine
+msgid "The microphone is in use by another app."
+msgstr "الميكروفون يستخدم بواسطة تطبيق آخر."
+
+#, machine
+msgid "The moderators will consider adding a community note. If they do, you will be told."
+msgstr "وسينظر المشرفون في إضافة مذكرة مجتمعية. إذا فعلوا، سوف يقال لك."
+
+#, machine
+msgid "The options couldn’t be saved."
+msgstr "ولا يمكن إنقاذ الخيارات."
+
+#, machine
+msgid "The options couldn’t be saved. Check your connection."
+msgstr "ولا يمكن إنقاذ الخيارات. تحقق من اتصالك."
+
+#, machine
+msgid "The replay couldn't be saved here."
+msgstr "إعادة اللعب لا يمكن إنقاذها هنا."
+
+#, machine
+msgid "The replay is saved."
+msgstr "تم إنقاذ إعادة اللعب."
+
+#, machine
+msgid "The replay is saved: it plays here once your video service has it ready."
+msgstr "لقد تم إنقاذ إعادة اللعب إنها تعزف هنا بمجرد أن تكون خدمة الفيديو جاهزة."
+
+#. a Space's replay could not be uploaded; the reason follows the colon
+#, machine, python-format
+msgid "The replay wasn't saved: %(reason)s. You can download it instead."
+msgstr "لم يتم إنقاذ إعادة اللعب %(reason)sيمكنك تحميله بدلاً من ذلك"
+
+#, machine
+msgid "The replay wasn't saved: the upload failed. You can download it instead."
+msgstr "لم يتم إنقاذ إعادة التشغيل، لقد فشلت الحمولة يمكنك تحميله بدلاً من ذلك."
+
+#, machine
+msgid "The summary is hidden by your word filter."
+msgstr "الملخص مخبأ من قبل مرشح كلماتك."
+
+#, machine
+msgid "The upload could not be started. Try again."
+msgstr "الحمولة لا يمكن أن تبدأ حاول مرة أخرى."
+
+#, machine
+msgid "The upload did not go through. Try again."
+msgstr "الحمولة لم تمر حاول مرة أخرى."
+
+#, machine
+msgid "The upload was interrupted. Check your connection and try again."
+msgstr "تم قطع الحمولة تحقق من اتصالك وحاول مرة أخرى."
+
+#, machine
+msgid "The video service did not say where the upload went. Try again."
+msgstr "خدمة الفيديو لم تقل أين ذهبت الحمولة حاول مرة أخرى."
+
+#, machine
+msgid "The vote didn't go through."
+msgstr "التصويت لم يمر."
+
+#, machine
+msgid "There is nothing to watch right now."
+msgstr "ليس هناك ما نشاهده الآن."
+
+#, machine
+msgid "There is nowhere else to send them on this site yet."
+msgstr "لا يوجد مكان آخر لإرسالهم إلى هذا الموقع بعد."
+
+#, machine
+msgid "These comments could not be loaded. Try again."
+msgstr "ولا يمكن تحميل هذه التعليقات. حاول مرة أخرى."
+
+#, machine
+msgid "They declined the call."
+msgstr "لقد رفضوا الإتصال."
+
+#, machine
+msgid "They don't match"
+msgstr "هم لا يتطابقون"
+
+#, machine
+msgid "They match"
+msgstr "تطابق"
+
+#, machine
+msgid "This Space has ended."
+msgstr "هذا الفضاء انتهى."
+
+#, machine
+msgid "This browser"
+msgstr "هذا المستنقع"
+
+#, machine
+msgid "This browser can't make calls."
+msgstr "هذا المستذئب لا يمكنه إجراء اتصالات."
+
+#, machine
+msgid "This browser can't record the Space."
+msgstr "هذا المستنقع لا يستطيع تسجيل الفضاء."
+
+#, machine
+msgid "This browser cannot prepare pictures for upload. Try another browser."
+msgstr "هذا المستنقع لا يستطيع إعداد الصور للشحن جرب منظف آخر."
+
+#, machine
+msgid "This channel is muted for you: no unread dot and no mention notifications."
+msgstr "هذه القناة محشوة بالنسبة لك: لا نقطة غير واضحة ولا إشارات."
+
+#, machine
+msgid "This live thread has ended"
+msgstr "هذا الخيط الحي انتهى"
+
+#, machine
+msgid "This message can't be read on this device."
+msgstr "لا يمكن قراءة هذه الرسالة على هذا الجهاز."
+
+#, machine
+msgid "This picture is no longer available."
+msgstr "ولم تعد هذه الصورة متاحة."
+
+#, machine
+msgid "This post can't be shown."
+msgstr "هذه الوظيفة لا يمكن أن تظهر."
+
+#. a reason in the report form; %(guild)s is the guild's name, after its + sign
+#, machine, python-format
+msgid "This post is off-topic for +%(guild)s"
+msgstr "This post is off-topic for +%(guild)s"
+
+#, machine, python-format
+msgid "This voice channel is full (%(num)s person)."
+msgid_plural "This voice channel is full (%(num)s people)."
+msgstr[0] "هذه القناة الصوتية كاملة (%(num)s أشخاص)."
+msgstr[1] "هذه القناة الصوتية كاملة (شخص واحد)."
+msgstr[2] "هذه القناة الصوتية كاملة (شخصان)."
+msgstr[3] "هذه القناة الصوتية كاملة (%(num)s أشخاص)."
+msgstr[4] "هذه القناة الصوتية كاملة (%(num)s شخص)."
+msgstr[5] "وهذه القناة الصوتية كاملة (%(num)s شخصا)."
+
+#, machine
+msgid "Thou've reached the end of the list!"
+msgstr "لقد وصلت إلى نهاية القائمة!"
+
+#. the title of the panel that shows a message's thread in a guild channel
+#, machine
+msgid "Thread"
+msgstr "خيط"
+
+#. %(zone)s is a time zone name such as Europe/London
+#, machine, python-format
+msgid "Times are in your time zone (%(zone)s)."
+msgstr "Times are in your time zone (%(zone)s)."
+
+#, machine
+msgid "Times are in your time zone."
+msgstr "الوقت في منطقتك الزمنية."
+
+#. when a scheduled Space starts; %(time)s is a time of day
+#, machine, python-format
+msgid "Today, %(time)s"
+msgstr "اليوم، %(time)s"
+
+#. %(num)s is how far past the limit the text is; %(note)s says how characters
+#. are counted
+#, machine, python-format
+msgid "Too long by %(num)s (%(note)s)"
+msgid_plural "Too long by %(num)s (%(note)s)"
+msgstr[0] "وقت طويل جداً (%(note)s)"
+msgstr[1] "وقت طويل جداً بـ %(num)s (%(note)s)"
+msgstr[2] "وقت طويل جداً بـ %(num)s (%(note)s)"
+msgstr[3] "وقت طويل جداً بـ %(num)s (%(note)s)"
+msgstr[4] "وقت طويل جداً بـ %(num)s (%(note)s)"
+msgstr[5] "وقت طويل جداً بحلول %(num)s (%(note)s)"
+
+#, glossary, machine, plain1
+msgid "Too many requests today"
+msgstr "طلبات كثيرة جدًا اليوم"
+
+#. a button that translates a post or a comment (a verb)
+#, machine
+msgid "Translate"
+msgstr "التحويل"
+
+#. %(language)s is the language the text was written in, %(service)s the
+#. translator (LibreTranslate)
+#, machine, python-format
+msgid "Translated from %(language)s by %(service)s"
+msgstr "Translated from %(language)s by %(service)s"
+
+#, machine
+msgid "Translating…"
+msgstr "ترجمة…"
+
+#, machine
+msgid "Translation isn't available right now."
+msgstr "الترجمة غير متاحة الآن."
+
+#, machine
+msgid "Try again"
+msgstr "حاول مرة أخرى"
+
+#, glossary, machine, plain1
+msgid "Try again tomorrow."
+msgstr "حاول مجددًا غدًا."
+
+#, machine
+msgid "Turn notifications back on"
+msgstr "تشغيل الإخطارات مرة أخرى"
+
+#, machine
+msgid "Type words to look for."
+msgstr "طباعة الكلمات للبحث عنها."
+
+#, machine
+msgid "Unable to approve post at this time. Please try again later."
+msgstr "غير قادر على الموافقة على الوظيفة في هذا الوقت حاول مرة أخرى لاحقاً."
+
+#, machine
+msgid "Unable to approve the comment at this time. Please try again later."
+msgstr "غير قادر على الموافقة على التعليق في هذا الوقت. حاول مرة أخرى لاحقاً."
+
+#, machine
+msgid "Unable to forward this comment."
+msgstr "غير قادر على إحالة هذا التعليق."
+
+#, machine
+msgid "Unable to forward this post."
+msgstr "غير قادر على نقل هذه الوظيفة."
+
+#, machine
+msgid "Unable to remove post at this time. Please try again later."
+msgstr "غير قادر على إزالة الوظيفة في هذا الوقت حاول مرة أخرى لاحقاً."
+
+#, machine
+msgid "Unable to remove the comment at this time. Please try again later."
+msgstr "غير قادر على إزالة التعليق في هذا الوقت. حاول مرة أخرى لاحقاً."
+
+#, machine
+msgid "Unable to vote at this time. Please try again later."
+msgstr "غير قادر على التصويت في هذا الوقت حاول مرة أخرى لاحقاً."
+
+#. a button that takes back "Show fewer posts like this"
+#, machine
+msgid "Undo"
+msgstr "Undo"
+
+#, machine
+msgid "Undo correction"
+msgstr "تصويب غير صحيح"
+
+#, machine
+msgid "Unlisted (only here and by link)"
+msgstr "غير مدرجة في القائمة (فقط هنا وبالربط)"
+
+#, machine
+msgid "Unlock"
+msgstr "إفتح"
+
+#, machine
+msgid "Unlock your messages"
+msgstr "افتح رسائلك"
+
+#, machine
+msgid "Unlock your messages first: reload the page to enter your password."
+msgstr "افتحوا رسائلكم أولاً: أعدوا تحميل الصفحة للدخول إلى كلمة السر."
+
+#. the label of the microphone button in a call
+#. the microphone button in a Space's call: what pressing it does
+#, glossary, machine, plain1
+msgid "Unmute"
+msgstr "إلغاء الكتم"
+
+#, glossary, machine, plain1
+msgid "Unpin"
+msgstr "إلغاء التثبيت"
+
+#, machine
+msgid "Unpin this message"
+msgstr "دع هذه الرسالة"
+
+#, machine
+msgid "Unschedule"
+msgstr "غير مقرر"
+
+#. the choice that keeps a bookmark in no folder
+#, machine
+msgid "Unsorted"
+msgstr "غير مأذون به"
+
+#, machine
+msgid "Until I turn it back on"
+msgstr "حتى أرجعها"
+
+#, machine
+msgid "Untitled"
+msgstr "غير مترجم"
+
+#. a button (a verb): send the video to the video site
+#, machine
+msgid "Upload"
+msgstr "تحميل"
+
+#. %(service)s is the video site (YouTube); %(choice)s is a menu: "Unlisted
+#. (only here and by link)" or "Public (on your channel)"
+#, machine, python-format
+msgid "Upload \"%(file)s\" to your %(service)s channel as %(choice)s"
+msgstr "تحميل%(file)s\"لك\" %(service)s القناة %(choice)s"
+
+#, machine
+msgid "Upload cancelled."
+msgstr "تم إلغاء الحمولة."
+
+#, machine, python-format
+msgid "Uploading %(percent)s%%"
+msgstr "Uploading %(percent)s %%"
+
+#, machine
+msgid "Upvoted by"
+msgstr "مُنحت"
+
+#, machine
+msgid "Use it here"
+msgstr "استخدمه هنا"
+
+#, machine
+msgid "Use my recovery code instead"
+msgstr "استخدم شفرة الإنعاش خاصتي"
+
+#, glossary, machine, plain1
+msgid "Username already taken :("
+msgstr "اسم المستخدم مأخوذ بالفعل :("
+
+#, glossary, machine, plain1
+msgid "Username is a-okay!"
+msgstr "اسم المستخدم مناسب تمامًا!"
+
+#, machine
+msgid "Username must be 25 characters or less."
+msgstr "يجب أن يكون لقب المستخدم 25 شخصية أو أقل."
+
+#, machine
+msgid "Username must be at least 3 characters long."
+msgstr "يجب أن يكون اسم المستخدم على الأقل 3 شخصيات طويلة."
+
+#, machine
+msgid "Verification email sent! Please check your inbox."
+msgstr "إرسال بريد إلكتروني للتحقق! من فضلك تحقق من صندوقك."
+
+#, machine
+msgid "Verification stopped"
+msgstr "توقف التحقق"
+
+#, machine
+msgid "Verify"
+msgstr "التصديق"
+
+#, machine
+msgid "Verify your new chat app?"
+msgstr "التحقق من تطبيق الدردشة الجديد الخاص بك؟?"
+
+#. the name of a video player frame when the post gives it no title
+#. the name of a story's video player (read by screen readers)
+#, machine
+msgid "Video"
+msgstr "Video"
+
+#, machine
+msgid "Video (coming soon)"
+msgstr "فيديو (سيصدر قريبا)"
+
+#. %(service)s is the video site (YouTube)
+#, machine, python-format
+msgid "Video added. %(service)s may take a few minutes before it plays."
+msgstr "أضافت الفيديو %(service)s قد يستغرق بضع دقائق قبل أن يلعب."
+
+#. buttons in the Calls tab that call the person or group again
+#, machine
+msgid "Video call"
+msgstr "دعوة فيديو"
+
+#, machine, python-format
+msgid "Video call %(name)s"
+msgstr "دعوة فيديو %(name)s"
+
+#, machine, python-format
+msgid "Video call going on · %(num)s person"
+msgid_plural "Video call going on · %(num)s people"
+msgstr[0] "دعوة فيديو مستمرة %(num)s أشخاص"
+msgstr[1] "دعوة فيديو مستمرة لشخص واحد"
+msgstr[2] "دعوة فيديو مستمرة لشخصين"
+msgstr[3] "نداء فيديو يجري %(num)s أشخاص"
+msgstr[4] "دعوة فيديو مستمرة %(num)s شخص"
+msgstr[5] "دعوة فيديو مستمرة %(num)s شخصاً"
+
+#. the note a call leaves in a chat: its kind and how long it lasted ("Video
+#. call · 1 h 5 min")
+#, machine, plain1, python-format
+msgid "Video call · %(hours)s h %(minutes)s min"
+msgstr "دعوة فيديو %(hours)sh %(minutes)s دقائق"
+
+#. the note a call leaves in a chat: its kind and how long it lasted, in
+#. minutes ("Voice call · 12 min")
+#, machine, plain1, python-format
+msgid "Video call · %(num)s min"
+msgid_plural "Video call · %(num)s min"
+msgstr[0] "دعوة فيديو %(num)s دقائق"
+msgstr[1] "دعوة فيديو لمدة دقيقة واحدة"
+msgstr[2] "الاتصال بالفيديو لمدة دقيقتين"
+msgstr[3] "الاتصال بالفيديو %(num)s دقائق"
+msgstr[4] "دعوة فيديو %(num)s دقيقة"
+msgstr[5] "دعوة فيديو %(num)s دقيقة"
+
+#. the note a call leaves in a chat: its kind and how long it lasted, in
+#. seconds ("Voice call · 40 s")
+#, machine, python-format
+msgid "Video call · %(num)s s"
+msgid_plural "Video call · %(num)s s"
+msgstr[0] "نداء الفيديو"
+msgstr[1] "دعوة فيديو"
+msgstr[2] "دعوة فيديو"
+msgstr[3] "نداء الفيديو %(num)s"
+msgstr[4] "نداء الفيديو %(num)s"
+msgstr[5] "نداء الفيديو %(num)s"
+
+#, machine
+msgid "Video is off in this call: you're on audio."
+msgstr "الفيديو مغلق في هذه المكالمة أنت على الصوت."
+
+#, glossary, machine, plain1
+msgid "View original"
+msgstr "عرض الأصل"
+
+#, machine
+msgid "Voice call"
+msgstr "مكالمة صوتية"
+
+#, machine, python-format
+msgid "Voice call going on · %(num)s person"
+msgid_plural "Voice call going on · %(num)s people"
+msgstr[0] "نداء صوتي مستمر"
+msgstr[1] "نداء صوتي يجري لشخص واحد"
+msgstr[2] "نداء صوتي يجري لشخصين"
+msgstr[3] "نداء صوتي يجري %(num)s أشخاص"
+msgstr[4] "نداء صوتي مستمر %(num)s شخص"
+msgstr[5] "نداء الصوت يستمر %(num)s شخصاً"
+
+#, machine, plain1, python-format
+msgid "Voice call · %(hours)s h %(minutes)s min"
+msgstr "مكالمة صوتية %(hours)s h %(minutes)s دقائق"
+
+#, machine, plain1, python-format
+msgid "Voice call · %(num)s min"
+msgid_plural "Voice call · %(num)s min"
+msgstr[0] "مكالمة صوتية %(num)s دقائق"
+msgstr[1] "مكالمة صوتية - دقيقة واحدة"
+msgstr[2] "نداء الصوت: دقيقتان"
+msgstr[3] "%(num)s دقائق"
+msgstr[4] "نداء الصوت: %(num)s دقيقة"
+msgstr[5] "مكالمة صوتية %(num)s دقيقة"
+
+#, machine, python-format
+msgid "Voice call · %(num)s s"
+msgid_plural "Voice call · %(num)s s"
+msgstr[0] "مكالمة صوتية صفر"
+msgstr[1] "مكالمة صوتية واحدة"
+msgstr[2] "نداء الصوت: %(num)s"
+msgstr[3] "مكالمة صوتية %(num)s"
+msgstr[4] "نداء الصوت: %(num)s s"
+msgstr[5] "مكالمة صوتية: %(num)s صفحة"
+
+#. under a voice channel's name: its kind and its guild ("Voice channel ·
+#. +pets")
+#, machine, python-format
+msgid "Voice channel · +%(guild)s"
+msgstr "قناة الصوت %(guild)s"
+
+#, machine, python-format
+msgid "Voice goes browser to browser through the site's relay, so nobody sees anyone's address. Up to %(num)s person."
+msgid_plural "Voice goes browser to browser through the site's relay, so nobody sees anyone's address. Up to %(num)s people."
+msgstr[0] "الصوت يَذْهبُ بروزر إلى بروزر خلال إعادةِ الموقعِ، لذا لا أحد يَرى عنوانَ أي واحد. حتى %(num)s أشخاص."
+msgstr[1] "الصوت يَذْهبُ بروزر إلى بروزر خلال إعادةِ الموقعِ، لذا لا أحد يَرى عنوانَ أي واحد. حتى شخص واحد."
+msgstr[2] "الصوت يَذْهبُ بروزر إلى بروزر خلال إعادةِ الموقعِ، لذا لا أحد يَرى عنوانَ أي واحد. حتى شخصين."
+msgstr[3] "الصوت يَذْهبُ بروزر إلى بروزر خلال إعادةِ الموقعِ، لذا لا أحد يَرى عنوانَ أي واحد. حتى %(num)s أشخاص."
+msgstr[4] "الصوت يَذْهبُ بروزر إلى بروزر خلال إعادةِ الموقعِ، لذا لا أحد يَرى عنوانَ أي واحد. حتى %(num)s شخص."
+msgstr[5] "الصوت يَذْهبُ بروزر إلى بروزر خلال إعادةِ الموقعِ، لذا لا أحد يَرى عنوانَ أي واحد. حتى %(num)s شخصاً."
+
+#, machine
+msgid "Wait a moment: your last changes are still being saved."
+msgstr "انتظر لحظة تغيراتك الأخيرة لا تزال تنقذ."
+
+#, machine
+msgid "Waiting for the app"
+msgstr "تنتظر التطبيق"
+
+#, machine
+msgid "We'll show fewer posts like this."
+msgstr "سنظهر عدد أقل من الوظائف مثل هذه."
+
+#, machine
+msgid "We'll take it from here."
+msgstr "سنأخذها من هنا."
+
+#, machine
+msgid "What it would do (not saved yet)"
+msgstr "ما سيفعله (لم ينقذ بعد)"
+
+#, machine
+msgid "What's wrong with this Space? (optional)"
+msgstr "ما خطب هذا الفضاء؟ (اختياري)"
+
+#, machine
+msgid "What's wrong with this message? (optional)"
+msgstr "ما خطب هذه الرسالة؟ (اختياري)"
+
+#, machine
+msgid "Where should your audio go?"
+msgstr "أين يجب أن يذهب صوتك؟?"
+
+#, machine
+msgid "Where should your pictures go?"
+msgstr "أين تذهب صورك؟?"
+
+#, machine
+msgid "Where should your videos go?"
+msgstr "أين يجب أن تذهب أشرطة الفيديو الخاصة بك؟?"
+
+#. %(service)s is the video site (YouTube)
+#, machine, python-format
+msgid "Who can find the video on %(service)s"
+msgstr "الذي يمكن أن يجد الفيديو على %(service)s"
+
+#, machine
+msgid "Who said it"
+msgstr "من قالها"
+
+#, machine
+msgid "Who upvoted"
+msgstr "الذي بعث"
+
+#, glossary, machine, plain1
+msgid "Why"
+msgstr "لماذا"
+
+#, machine
+msgid "Why are you reporting this story? (optional)"
+msgstr "لماذا تبلّغ هذه القصة؟ (اختياري)"
+
+#, machine
+msgid "Why does this break your guild's rules? This will be shown to anyone who looks up this comment's history."
+msgstr "لماذا هذا يكسر قواعد غيلد الخاص بك؟ هذا سيظهر لأي شخص ينظر إلى تاريخ هذا التعليق."
+
+#, machine
+msgid "Why does this break your guild's rules? This will be shown to anyone who looks up this post/comment's history."
+msgstr "لماذا هذا يكسر قواعد غيلد الخاص بك؟ هذا سيظهر لأي شخص ينظر إلى تاريخ ما بعد/العملية."
+
+#, machine
+msgid "Working it out…"
+msgstr "أعمل عليه…"
+
+#. a tab: write the post's text (beside Preview)
+#, machine
+msgid "Write"
+msgstr "الكتابة"
+
+#, machine
+msgid "Write something first."
+msgstr "أكتب شيئاً أولاً."
+
+#, machine, plain1
+msgid "Write what you want to tell us."
+msgstr "أكتب ما تريد إخبارنا به."
+
+#, glossary, machine, plain1
+msgid "Yes"
+msgstr "نعم"
+
+#, machine
+msgid "Yes, cancel it"
+msgstr "نعم، ألغيه"
+
+#. the name under your own picture in a call; "Someone" stands for a person
+#. whose name is unknown
+#. beside your own name in a group chat's list of people
+#. in place of your own name among the people in a Space
+#. the label on your own camera's picture in a Space's call
+#. in place of your own name over your messages on a Space's board
+#, machine
+msgid "You"
+msgstr "أنت"
+
+#, glossary, machine, plain1
+msgid "You already did that"
+msgstr "لقد فعلت ذلك بالفعل"
+
+#, machine
+msgid "You already reported this comment."
+msgstr "لقد أبلغت عن هذا التعليق."
+
+#, machine
+msgid "You already reported this post."
+msgstr "لقد أبلغت عن هذه الوظيفة."
+
+#, machine
+msgid "You already voted on this post."
+msgstr "لقد صوتت بالفعل على هذا المنصب."
+
+#, machine, plain1, python-format
+msgid "You are following @%(name)s."
+msgstr "أنت تتبع %(name)s."
+
+#, machine, python-format
+msgid "You called · video · %(when)s · %(length)s"
+msgstr "أنت تُدْعَى بالفيديو %(when)s %(length)s"
+
+#, machine, python-format
+msgid "You called · voice · %(when)s · %(length)s"
+msgstr "أنت تَدْعو صوتَ %(when)s } %(length)s"
+
+#, machine
+msgid "You can ask for a community note once for each comment, and not on your own comment."
+msgstr "يمكنك طلب مذكرة مجتمعية مرة لكل تعليق وليس على تعليقك الخاص."
+
+#, machine
+msgid "You can ask for a community note once for each post, and not on your own post."
+msgstr "يمكنك طلب مذكرة مجتمعية مرة لكل منصب وليس بموقعك الخاص."
+
+#, machine, python-format
+msgid "You can have %(num)s folder at most."
+msgid_plural "You can have %(num)s folders at most."
+msgstr[0] "يمكنك الحصول على صفر من الملفات على الأكثر."
+msgstr[1] "يمكنك الحصول على ملف واحد على الأكثر."
+msgstr[2] "يمكنك الحصول على ملفين على الأكثر."
+msgstr[3] "يمكنك الحصول على %(num)s ملفات على الأكثر."
+msgstr[4] "يمكنك الحصول على %(num)s ملف على الأكثر."
+msgstr[5] "يمكنك الحصول على %(num)s ملفاً على الأكثر."
+
+#, machine
+msgid "You can read this channel but not write in it."
+msgstr "يمكنك قراءة هذه القناة لكن لا تكتب بها."
+
+#, machine
+msgid "You can see who is here, but you can't speak in this channel."
+msgstr "يمكنك أن ترى من هنا، ولكن لا يمكنك التحدث في هذه القناة."
+
+#, glossary, machine, plain1
+msgid "You can't do that."
+msgstr "لا يمكنك فعل ذلك."
+
+#, machine
+msgid "You can't message that person."
+msgstr "لا يمكنك رسالة ذلك الشخص."
+
+#, machine
+msgid "You can't send to that chat."
+msgstr "لا يمكنك إرسال ذلك الدردشة."
+
+#, machine
+msgid "You can't start a chat with them."
+msgstr "لا يمكنك أن تبدأ بالحديث معهم."
+
+#, machine
+msgid "You can’t edit this draft any more (you may have left it or been removed)."
+msgstr "ولا يمكنك تحرير هذا المشروع بعد الآن )ربما تركته أو أزيلت منه(."
+
+#, machine
+msgid "You ended the Space."
+msgstr "لقد أنهيت الفضاء."
+
+#, machine, plain1
+msgid "You have no curations yet."
+msgstr "ليس لديك أي تغذية مشوهة حتى الآن."
+
+#, machine
+msgid "You have no stories yet. Share one first."
+msgstr "ليس لديك قصص بعد نتشارك واحدة أولاً."
+
+#, machine
+msgid "You haven't made a circle of your own yet. Your Friends circle is automatic: it is everyone you follow who follows you back."
+msgstr "أنت لم تصنع دائرة خاصة بك بعد دائرة أصدقاءك تلقائية كل من تتبعه هو من يتبعك."
+
+#, machine
+msgid "You left the Space."
+msgstr "لقد تركت الفضاء."
+
+#, machine
+msgid "You left the call."
+msgstr "لقد تركت الإتصال."
+
+#, machine, plain1, python-format
+msgid "You unfollowed @%(name)s."
+msgstr "أنت غير مأهولة%(name)s."
+
+#, machine
+msgid "You were removed from this Space."
+msgstr "لقد أزيلت من هذا الفضاء."
+
+#, machine
+msgid "You're doing that too much. Try again later."
+msgstr "أنت تفعل ذلك كثيراً حاول مرة أخرى لاحقا."
+
+#, machine
+msgid "You're no longer in this Space."
+msgstr "لم تعد في هذا الفضاء."
+
+#, machine
+msgid "You're the only one here."
+msgstr "أنت الوحيد هنا."
+
+#, machine
+msgid "Your app is verified"
+msgstr "تم التحقق من تطبيقك"
+
+#, machine
+msgid "Your browser blocked the window for connecting. Allow pop-ups for this site, or connect in the settings."
+msgstr "منظفك أقفل النافذة للتواصل إسمحوا بفتح هذا الموقع أو ربطهم بالأماكن."
+
+#, machine
+msgid "Your chat devices can't be listed right now."
+msgstr "أجهزة الدردشة الخاصة بك لا يمكن إدراجها الآن."
+
+#, machine
+msgid "Your chats"
+msgstr "دردشاتك"
+
+#, machine
+msgid "Your chats will work again on this device, but messages from before can't be read here (or anywhere without your old key)."
+msgstr "دردشة الخاص بك ستعمل مرة أخرى على هذا الجهاز، ولكن الرسائل من قبل لا يمكن قراءة هنا (أو أي مكان من دون مفتاحك القديم)."
+
+#, machine
+msgid "Your comment could not be posted. Try again."
+msgstr "تعليقك لا يمكن نشره حاول مرة أخرى."
+
+#, machine
+msgid "Your edit couldn't be saved. Please check your connection and try again."
+msgstr "محررتك لا يمكن إنقاذها أرجوك تحقق من إتصالك وحاول مرة أخرى."
+
+#, machine
+msgid "Your edit couldn't be saved. Please try again."
+msgstr "محررتك لا يمكن إنقاذها حاول مرة أخرى."
+
+#, machine
+msgid "Your files stay in your own account there, using its free space. This site only shows them in your posts."
+msgstr "ملفاتك تبقى في حسابك هناك، باستخدام مساحة مجانية هذا الموقع يظهرهم فقط في مواقعكم."
+
+#, machine
+msgid "Your guilds' chats"
+msgstr "دردشاتك"
+
+#. placeholder text a member replaces: the headline of a "Call to action"
+#. block, and its button's label
+#, machine
+msgid "Your headline"
+msgstr "عنوانك"
+
+#, machine
+msgid "Your key can't be shown right now."
+msgstr "مفتاحك لا يمكن أن يظهر الآن."
+
+#, machine
+msgid "Your key was locked with an older password. Open Chat on this site and enter your recovery code once; then it opens here."
+msgstr "مفتاحك كان مقفلاً بكلمة مرور أقدم افتحي الشات في هذا الموقع و أدخلي شفرة الإنعاش مرة واحدة ثم يفتح هنا."
+
+#, machine
+msgid "Your password changed since this chat key was locked with it. The recovery code you saved when chat was set up opens it."
+msgstr "لقد تغيرت كلمة سرك منذ أن كان مفتاح الدردشة مغلقاً بها شفرة التعافي التي أنقذتها عندما كانت الدردشة مفتوحة."
+
+#, machine
+msgid "Your recovery code"
+msgstr "شفرة استردادك"
+
+#, machine
+msgid "Your saved templates show up here."
+msgstr "نماذجك المنقذة تظهر هنا."
+
+#, machine
+msgid "Your settings have been updated."
+msgstr "لقد تم تحديث أطرك."
+
+#, machine
+msgid "Your storage needs connecting again. Send your audio to:"
+msgstr "مخزنك يحتاج للتواصل مرة أخرى أرسل صوتك إلى:"
+
+#, machine
+msgid "Your storage needs connecting again. Send your pictures to:"
+msgstr "مخزنك يحتاج للتواصل مرة أخرى أرسل صورك إلى:"
+
+#, machine
+msgid "Your storage needs connecting again. Send your videos to:"
+msgstr "مخزنك يحتاج للتواصل مرة أخرى أرسل الفيديو الخاص بك إلى:"
+
+#. %(zone)s is a time zone name such as Europe/London
+#, machine, python-format
+msgid "Your time zone: %(zone)s"
+msgstr "منطقة وقتك: %(zone)s"
+
+#, machine
+msgid "Your vote is on another copy of this Space, or it can't change any more."
+msgstr "صوتك على نسخة أخرى من هذا الفضاء، أو أنه لا يمكن تغيير أكثر."
+
+#, machine
+msgid "You’re all caught up"
+msgstr "جميعكم محاصرون"
+
+#, machine
+msgid "You’re all caught up."
+msgstr "جميعكم محاصرون."
+
+#, machine
+msgid "blue"
+msgstr "الأزرق"
+
+#. a noun, what is being tipped (a post or a comment)
+#, glossary, machine, plain1
+msgid "comment"
+msgstr "تعليق"
+
+#, machine
+msgid "gray"
+msgstr "رمادي"
+
+#, machine
+msgid "green"
+msgstr "أخضر"
+
+#. when a live thread ends, shown after "ends": hours and minutes from now
+#, machine, plain1, python-format
+msgid "in %(hours)s h %(minutes)s min"
+msgstr "في %(hours)sh %(minutes)s دقائق"
+
+#, machine, python-format
+msgid "in %(num)s day"
+msgid_plural "in %(num)s days"
+msgstr[0] "في غضون صفر يوما"
+msgstr[1] "في يوم واحد"
+msgstr[2] "في يومين"
+msgstr[3] "%(num)s أيام"
+msgstr[4] "في %(num)s يوم"
+msgstr[5] "في %(num)s يوما"
+
+#, machine, python-format
+msgid "in %(num)s h"
+msgid_plural "in %(num)s h"
+msgstr[0] "في صفر"
+msgstr[1] "%(num)s ح"
+msgstr[2] "%(num)s ح"
+msgstr[3] "في %(num)s ح"
+msgstr[4] "%(num)s ساعة"
+msgstr[5] "في %(num)s ساعة"
+
+#, python-format
+msgid "in %(num)s hour"
+msgid_plural "in %(num)s hours"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
+msgstr[4] ""
+msgstr[5] ""
+
+#, machine, plain1, python-format
+msgid "in %(num)s min"
+msgid_plural "in %(num)s min"
+msgstr[0] "خلال عشر دقائق"
+msgstr[1] "بعد دقيقة"
+msgstr[2] "بعد دقيقتين"
+msgstr[3] "خلال %(num)s دقائق"
+msgstr[4] "بعد %(num)s دقيقة"
+msgstr[5] "في %(num)s دقيقة"
+
+#, machine, plain1, python-format
+msgid "in %(num)s minute"
+msgid_plural "in %(num)s minutes"
+msgstr[0] "خلال عشر دقائق"
+msgstr[1] "في دقيقة واحدة"
+msgstr[2] "بعد دقيقتين"
+msgstr[3] "خلال %(num)s دقائق"
+msgstr[4] "بعد %(num)s دقيقة"
+msgstr[5] "في %(num)s دقيقة"
+
+#. next to a name in the co-authors list: invited, has not answered yet
+#, machine
+msgid "invited"
+msgstr "المدعوة"
+
+#, machine
+msgid "just now"
+msgstr "الآن"
+
+#. how long a call in the Calls tab lasted, when it has no length
+#, machine
+msgid "no answer or still going"
+msgstr "لا جواب أو ما زال"
+
+#. when a live thread ends, shown after "ends" ("ends now")
+#, machine
+msgid "now"
+msgstr "الآن"
+
+#, machine
+msgid "orange"
+msgstr "البرتقال"
+
+#, machine
+msgid "pink"
+msgstr "وردي"
+
+#, glossary, machine, plain1
+msgid "post"
+msgstr "منشور"
+
+#, machine
+msgid "purple"
+msgstr "الأرجواني"
+
+#. a colour, in "Text colour %(colour)s" and "Highlight %(colour)s"
+#, machine
+msgid "red"
+msgstr "أحمر"
+
+#. shown under the caller's name, on its own line
+#, machine
+msgid "started a video call in a group"
+msgstr "بدأت مكالمة فيديو في مجموعة"
+
+#, machine
+msgid "started a voice call in a group"
+msgstr "بدأت مكالمة صوتية في مجموعة"
+
+#. stands in for the video site's name in "Upload "x" to your video channel as
+#. ..."
+#, machine
+msgid "video"
+msgstr "فيديو"
+
+#, machine
+msgid "yellow"
+msgstr "أصفر"
+
