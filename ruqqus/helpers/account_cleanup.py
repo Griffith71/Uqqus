@@ -35,6 +35,12 @@ STEPS = (
     ("remove Space reminders", "DELETE FROM space_reminders WHERE user_id = :u"),
     ("remove followed posts", "DELETE FROM post_follows WHERE user_id = :u"),
     ("remove fewer-like-this", "DELETE FROM post_feedback WHERE user_id = :u"),
+    # feedback sent to the admins (helpers/site_feedback.py): the screenshots first, they are found through the items
+    ("remove feedback screenshots", "DELETE FROM site_feedback_images WHERE feedback_id IN "
+                                    "(SELECT id FROM site_feedback WHERE user_id = :u)"),
+    ("remove feedback", "DELETE FROM site_feedback WHERE user_id = :u"),
+    # what the signup guard thought of the sign-up (helpers/signup_review_store.py)
+    ("remove sign-up review", "DELETE FROM signup_reviews WHERE user_id = :u"),
     ("remove bookmarks", "DELETE FROM save_relationship WHERE user_id = :u"),
     ("remove comment bookmarks", "DELETE FROM comment_save_relationship WHERE user_id = :u"),
     ("remove bookmark folders", "DELETE FROM bookmark_folders WHERE user_id = :u"),

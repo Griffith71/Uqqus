@@ -6087,6 +6087,29 @@ CREATE TABLE public.user_reports (
 CREATE INDEX user_reports_open_idx ON public.user_reports (user_id) WHERE resolved_utc = 0;
 CREATE INDEX user_reports_reporter_idx ON public.user_reports (reporter_id, created_utc);
 
+-- members' feedback about the site (scripts/migrations/2026-11-30_site_feedback.sql)
+CREATE TABLE public.site_feedback (
+    id SERIAL PRIMARY KEY,
+    user_id integer NOT NULL,
+    kind character varying(16) DEFAULT 'other' NOT NULL,
+    message character varying(2000) DEFAULT '' NOT NULL,
+    page character varying(300) DEFAULT '' NOT NULL,
+    context text DEFAULT '' NOT NULL,
+    status character varying(16) DEFAULT 'open' NOT NULL,
+    response character varying(1000) DEFAULT '' NOT NULL,
+    created_utc integer DEFAULT 0 NOT NULL,
+    resolved_utc integer DEFAULT 0 NOT NULL
+);
+CREATE INDEX site_feedback_status_idx ON public.site_feedback (status, created_utc);
+CREATE INDEX site_feedback_user_idx ON public.site_feedback (user_id, created_utc);
+
+CREATE TABLE public.site_feedback_images (
+    feedback_id integer PRIMARY KEY,
+    mime character varying(32) NOT NULL,
+    data bytea NOT NULL,
+    created_utc integer DEFAULT 0 NOT NULL
+);
+
 -- the signup guard (scripts/migrations/2026-12-04_signup_guard.sql)
 CREATE INDEX users_quarantined_idx ON public.users (quarantined_utc) WHERE quarantined_utc > 0;
 

@@ -1,0 +1,72 @@
+{% extends "docs_default.html" %}
+
+{% block sidebarblock %}{% endblock %}
+{% block sidebarLeftblock %}{% endblock %}
+
+{% block title %}
+<title>{{ 'SITE_NAME' | app_config }} - Feedback</title>
+{% endblock %}
+
+{% block content %}
+
+<h1>Feedback</h1>
+
+<p class="text-muted">What members send from "Send feedback" in the account menu (helpers/site_feedback.py). Mark an item <em>seen</em>, <em>fixed</em> or <em>declined</em>; a response you write is sent to the member as a notification, once when it is new, and again when you close the item. A screenshot is deleted a month after the item is closed, and everything goes with the member's account. Members never see each other's feedback.</p>
+
+<p class="text-small mb-1">
+  {% for key, label in (('waiting', 'Waiting'), ('seen', 'Seen'), ('fixed', 'Fixed'), ('declined', 'Declined'), ('all', 'All')) %}
+  <a href="/admin/feedback?status={{ key }}{% if kind %}&amp;kind={{ kind }}{% endif %}" class="mr-3{% if status == key %} font-weight-bold{% endif %}"{% if status == key %} aria-current="true"{% endif %}>{{ label }}</a>
+  {% endfor %}
+</p>
+<p class="text-small mb-4">
+  <a href="/admin/feedback?status={{ status }}" class="mr-3{% if not kind %} font-weight-bold{% endif %}">Any kind</a>
+  {% for k in kinds %}
+  <a href="/admin/feedback?status={{ status }}&amp;kind={{ k }}" class="mr-3{% if kind == k %} font-weight-bold{% endif %}"{% if kind == k %} aria-current="true"{% endif %}>{{ {'bug': 'Broken', 'design': 'Looks', 'idea': 'Ideas', 'other': 'Other'}[k] }}</a>
+  {% endfor %}
+</p>
+
+{% for f in items %}
+<div class="card mb-3 site-feedback-item" id="feedback-{{ f.id }}">
+  <div class="card-body">
+    <div class="d-flex justify-content-between align-items-start flex-wrap">
+      <div>
+        <span class="badge badge-secondary mr-1">{{ {'bug': 'Broken', 'design': 'Looks', 'idea': 'Idea', 'other': 'Other'}[f.kind] or f.kind }}</span>
+        {% if f.username %}<a href="/@{{ f.username }}" target="_blank" rel="noopener" class="font-weight-bold">@{{ f.username }}</a>{% else %}<span class="text-muted">(account gone)</span>{% endif %}
+      </div>
+      <div class="text-muted text-small">{{ datetime_text(f.created_utc, "%d %B %Y at %H:%M") }} &middot; {{ f.status }}{% if f.resolved_utc %} {{ datetime_text(f.resolved_utc, "%d %B %Y") }}{% endif %}</div>
+    </div>
+
+    <p class="mt-2 mb-2" style="white-space: pre-wrap">{{ f.message }}</p>
+
+    <div class="text-small text-muted mb-2">
+      {% if f.page %}On <a href="{{ f.page }}" target="_blank" rel="noopener">{{ f.page }}</a>{% endif %}
+      {% set c = f.context %}
+      {% if c %}
+      <br>{% if c.theme %}{{ c.theme }}{% endif %}{% if c.density %}, {{ c.density }}{% endif %}{% if c.width and c.height %}, window {{ c.width }}&times;{{ c.height }}{% endif %}{% if c.lang %}, {{ c.lang }}{% endif %}{% if c.browser %}<br>{{ c.browser }}{% endif %}
+      {% endif %}
+    </div>
+
+    {% if f.has_image %}
+    <a href="/admin/feedback/{{ f.id }}/image" target="_blank" rel="noopener" class="d-inline-block mb-2">
+      <img src="/admin/feedback/{{ f.id }}/image" loading="lazy" alt="Screenshot sent with this feedback" class="img-fluid border rounded" style="max-height: 260px">
+    </a>
+    {% endif %}
+
+    {% if f.response %}<p class="text-small border-left pl-2 mb-2"><strong>Response sent:</strong> {{ f.response }}</p>{% endif %}
+
+    <form action="/admin/feedback/{{ f.id }}/status" method="post">
+      <input type="hidden" name="formkey" value="{{ v.formkey }}">
+      <input type="hidden" name="back" value="{{ request.full_path.rstrip('?') }}#feedback-{{ f.id }}">
+      <label for="feedback-response-{{ f.id }}" class="text-small text-muted mb-1">Response to the member (optional, sent as a notification)</label>
+      <textarea id="feedback-response-{{ f.id }}" name="response" class="form-control form-control-sm mb-2" rows="2" maxlength="1000"></textarea>
+      {% for s, label in (('seen', 'Mark seen'), ('fixed', 'Mark fixed'), ('declined', 'Decline'), ('open', 'Reopen')) %}
+      {% if s != f.status %}<button name="status" value="{{ s }}" class="btn btn-sm {{ 'btn-primary' if s == 'fixed' else 'btn-secondary' }} mr-1">{{ label }}</button>{% endif %}
+      {% endfor %}
+    </form>
+  </div>
+</div>
+{% else %}
+<p class="text-muted" id="site-feedback-empty">Nothing here.</p>
+{% endfor %}
+
+{% endblock %}

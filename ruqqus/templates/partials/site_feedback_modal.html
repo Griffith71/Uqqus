@@ -1,0 +1,65 @@
+{#
+  "Send feedback": the sheet a signed-in member opens from the account menu or the phone menu (a link marked
+  data-feedback-open; assets/js/site_feedback.js, POST /api/feedback, helpers/site_feedback.py). Admins read it at
+  /admin/feedback and may write back; the answer reaches the sender as a notification. Included once, in default.html.
+  The page sends along its path, light or dark, the density, the window's size and language, and the request carries
+  the browser's own text: nothing else (the sentence below says so, and so does the privacy page).
+#}
+<div class="modal fade modal-sm-bottom" id="siteFeedbackModal" tabindex="-1" role="dialog" aria-labelledby="siteFeedbackTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <form id="site-feedback-form" novalidate>
+        <div class="modal-header">
+          <h5 class="modal-title" id="siteFeedbackTitle">{{ _("Send feedback") }}</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="{{ _('Close') }}">
+            <span aria-hidden="true"><i class="fas fa-xmark"></i></span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <fieldset class="site-feedback-kinds mb-3">
+            <legend class="text-small text-muted mb-2">{{ _("What is it about?") }}</legend>
+            <div class="custom-control custom-radio custom-control-inline">
+              <input type="radio" class="custom-control-input" name="kind" id="site-feedback-kind-bug" value="bug" checked>
+              <label class="custom-control-label" for="site-feedback-kind-bug"><i class="fas fa-bug fa-fw mr-1" aria-hidden="true"></i>{{ _("Something is broken") }}</label>
+            </div>
+            <div class="custom-control custom-radio custom-control-inline">
+              <input type="radio" class="custom-control-input" name="kind" id="site-feedback-kind-design" value="design">
+              <label class="custom-control-label" for="site-feedback-kind-design"><i class="fas fa-palette fa-fw mr-1" aria-hidden="true"></i>{{ _("How it looks") }}</label>
+            </div>
+            <div class="custom-control custom-radio custom-control-inline">
+              <input type="radio" class="custom-control-input" name="kind" id="site-feedback-kind-idea" value="idea">
+              <label class="custom-control-label" for="site-feedback-kind-idea"><i class="fas fa-lightbulb fa-fw mr-1" aria-hidden="true"></i>{{ _("An idea") }}</label>
+            </div>
+            <div class="custom-control custom-radio custom-control-inline">
+              <input type="radio" class="custom-control-input" name="kind" id="site-feedback-kind-other" value="other">
+              <label class="custom-control-label" for="site-feedback-kind-other"><i class="fas fa-ellipsis fa-fw mr-1" aria-hidden="true"></i>{{ _("Something else") }}</label>
+            </div>
+          </fieldset>
+
+          <label for="site-feedback-message" class="text-small text-muted">{{ _("Tell us what happened, what looks off, or what you would like. For a bug, say what you did and what you expected.") }}</label>
+          <textarea id="site-feedback-message" class="form-control" rows="5" maxlength="2000" required></textarea>
+          <div class="d-flex justify-content-between text-small text-muted mt-1">
+            <span>{{ _("You can paste a screenshot here.") }}</span>
+            <span id="site-feedback-count" aria-hidden="true">0 / 2000</span>
+          </div>
+
+          <div class="site-feedback-shot mt-3">
+            <input type="file" id="site-feedback-file" class="sr-only" tabindex="-1" aria-label="{{ _('Add a screenshot') }}" accept="image/png,image/jpeg,image/webp">
+            <button type="button" class="btn btn-secondary btn-sm" id="site-feedback-pick"><i class="fas fa-image mr-1" aria-hidden="true"></i>{{ _("Add a screenshot") }}</button>
+            <div id="site-feedback-preview" class="site-feedback-preview mt-2" hidden>
+              <img id="site-feedback-thumb" alt="{{ _('The screenshot you are sending') }}">
+              <button type="button" class="btn btn-link btn-sm text-muted" id="site-feedback-remove">{{ _("Remove screenshot") }}</button>
+            </div>
+          </div>
+
+          <p class="text-small text-muted mt-3 mb-0">{{ _("We attach the page you are on, whether it is light or dark, your window size and your browser, and nothing else. Only the site's admins can read your feedback and screenshot.") }}</p>
+          <div id="site-feedback-status" class="text-small text-danger mt-2" role="status" aria-live="polite"></div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-link text-muted" data-dismiss="modal">{{ _("Cancel") }}</button>
+          <button type="submit" class="btn btn-primary" id="site-feedback-send">{{ _("Send feedback") }}</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

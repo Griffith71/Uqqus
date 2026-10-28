@@ -59,6 +59,7 @@ from .creator_fund import *
 from .studio import *
 from .profile_lists import *
 from .account_reports import *
+from .site_feedback import *
 from .signup_guard_pages import *
 from .bot_accounts import *
 from .guild_flair import *

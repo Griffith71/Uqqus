@@ -298,12 +298,26 @@
 
     {% endblock %}
 
+    {# the post toasts every other page shell has (default.html, settings.html): site_feedback.js confirms or refuses a send with them #}
+    <div class="toast" id="toast-post-success" style="position: fixed; bottom: 1.5rem; margin: 0 auto; left: 0; right: 0; width: 275px; z-index: 1000" role="alert" aria-live="assertive" aria-atomic="true" data-animation="true" data-autohide="true" data-delay="5000">
+      <div class="toast-body bg-success text-center text-white">
+        <i class="fas fa-check-circle mr-2"></i><span id="toast-post-success-text"></span>
+      </div>
+    </div>
+    <div class="toast" id="toast-post-error" style="position: fixed; bottom: 1.5rem; margin: 0 auto; left: 0; right: 0; width: 275px; z-index: 1000" role="alert" aria-live="assertive" aria-atomic="true" data-animation="true" data-autohide="true" data-delay="5000">
+      <div class="toast-body bg-danger text-center text-white">
+        <i class="fas fa-exclamation-circle mr-2"></i><span id="toast-post-error-text"></span>
+      </div>
+    </div>
+    {% if v %}{% include "partials/site_feedback_modal.html" %}{% endif %}{# "Send feedback" in the account menu (partials/account_menu.html) #}
+
     {% include "bootstrap.html" %}
 
     <!-- Ruqqus JS -->
 
     <script src="{{ asset_url('js/text_length.js') }}"></script>{# weighted lengths for the counters (helpers/text_length.py) #}
     <script src="{{ asset_url('js/all_js.js') }}"></script>
+    {% if v %}<script src="{{ asset_url('js/site_feedback.js') }}"></script>{% endif %}
     <script src="{{ asset_url('js/post_editor.js') }}"></script>
     <script src="{{ asset_url('js/post_drafts.js') }}"></script>
     <script src="{{ asset_url('js/poll_composer.js') }}"></script>

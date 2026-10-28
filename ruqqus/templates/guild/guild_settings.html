@@ -334,6 +334,8 @@
 {% block errorToasts %}
 {% endblock %}
 
+{% if v %}{% include "partials/site_feedback_modal.html" %}{% endif %}{# "Send feedback" in the account menu (partials/account_menu.html) #}
+
 {% include "bootstrap.html" %}
 
 <!-- ClipboardJS -->
@@ -360,6 +362,7 @@
 </script>
 
 <script src="{{ asset_url('js/all_js.js') }}"></script>
+{% if v %}<script src="{{ asset_url('js/site_feedback.js') }}"></script>{% endif %}
 
   {% block scripts %}
   {% endblock %}
