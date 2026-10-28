@@ -25,6 +25,7 @@ from ruqqus.helpers.sensitive import hide_sensitive
 from ruqqus.helpers.muting import hide_muted
 from ruqqus.helpers.blocks import hide_blocked
 from ruqqus.helpers.wordfilter import is_hidden
+from ruqqus.helpers.languages import UNKNOWN, key_of
 
 SITE = "all"
 LEVELS = (0, 1, 2)
@@ -104,8 +105,9 @@ def _visible_ids(db, since, level):
 def scopes_of(row):
     """The lists a post counts for."""
     scopes = [SITE]
-    if row.language_code:
-        scopes.append(f"lang:{row.language_code}")
+    language = key_of(row.language_code)                 # its row (helpers/languages.py): a Macedonian post is "bg"
+    if language and language != UNKNOWN:
+        scopes.append(f"lang:{language}")
     if row.display_region and not row.is_anonymous:
         scopes.append(f"region:{row.display_region}")
     return scopes

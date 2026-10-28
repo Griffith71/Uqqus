@@ -1,0 +1,470 @@
+{
+ "_note": "Detection test vectors (tests/test_detection_vectors.py). truth: what the text really is (a row key, or null when nothing should be claimed). expect: what helpers/languages.py decide() answers with py3langid and LibreTranslate's recorded /detect answer (libre), LibreTranslate having the 'loaded' languages. An expect of null where truth is a language is a known miss: unknown rather than wrong.",
+ "loaded": [
+  "ar",
+  "de",
+  "en",
+  "es",
+  "fr",
+  "hi",
+  "it",
+  "ja",
+  "ko",
+  "nl",
+  "pl",
+  "pt",
+  "ru",
+  "tr",
+  "uk",
+  "zh"
+ ],
+ "cases": [
+  {
+   "text": "Morning fog over the reservoir",
+   "truth": "en",
+   "expect": "en",
+   "libre": [
+    "en",
+    100.0
+   ]
+  },
+  {
+   "text": "First roll through a 1970s rangefinder: what I learned about metering",
+   "truth": "en",
+   "expect": "en",
+   "libre": [
+    "en",
+    100.0
+   ]
+  },
+  {
+   "text": "great shot!",
+   "truth": "en",
+   "expect": "en",
+   "libre": [
+    "en",
+    45.0
+   ]
+  },
+  {
+   "text": "Ten-minute miso butter noodles",
+   "truth": null,
+   "expect": null,
+   "libre": [
+    "en",
+    29.0
+   ]
+  },
+  {
+   "text": "lol",
+   "truth": null,
+   "expect": null,
+   "libre": [
+    "en",
+    30.0
+   ]
+  },
+  {
+   "text": "ok",
+   "truth": null,
+   "expect": null,
+   "libre": [
+    "en",
+    8.0
+   ]
+  },
+  {
+   "text": "lmao same",
+   "truth": null,
+   "expect": null,
+   "libre": [
+    "en",
+    90.0
+   ]
+  },
+  {
+   "text": "omg 😂😂😂",
+   "truth": null,
+   "expect": null,
+   "libre": [
+    "en",
+    90.0
+   ]
+  },
+  {
+   "text": "+1",
+   "truth": null,
+   "expect": null,
+   "libre": null
+  },
+  {
+   "text": "Best pizza in town",
+   "truth": "en",
+   "expect": null,
+   "libre": [
+    "en",
+    45.0
+   ]
+  },
+  {
+   "text": "Hola a todos",
+   "truth": "es",
+   "expect": "es",
+   "libre": [
+    "es",
+    90.0
+   ]
+  },
+  {
+   "text": "¡Muchas gracias!",
+   "truth": "es",
+   "expect": "es",
+   "libre": [
+    "es",
+    90.0
+   ]
+  },
+  {
+   "text": "Qué bonito",
+   "truth": "es",
+   "expect": "es",
+   "libre": [
+    "es",
+    90.0
+   ]
+  },
+  {
+   "text": "Buenos días",
+   "truth": "es",
+   "expect": "es",
+   "libre": [
+    "es",
+    90.0
+   ]
+  },
+  {
+   "text": "Receta fácil: tortilla de patatas para principiantes",
+   "truth": "es",
+   "expect": "es",
+   "libre": [
+    "it",
+    57.0
+   ]
+  },
+  {
+   "text": "Bonjour tout le monde",
+   "truth": "fr",
+   "expect": "fr",
+   "libre": [
+    "fr",
+    100.0
+   ]
+  },
+  {
+   "text": "Merci beaucoup",
+   "truth": "fr",
+   "expect": "fr",
+   "libre": [
+    "fr",
+    90.0
+   ]
+  },
+  {
+   "text": "Grazie mille",
+   "truth": "it",
+   "expect": "it",
+   "libre": [
+    "it",
+    90.0
+   ]
+  },
+  {
+   "text": "Ciao",
+   "truth": null,
+   "expect": null,
+   "libre": [
+    "en",
+    30.0
+   ]
+  },
+  {
+   "text": "Guten Morgen",
+   "truth": "de",
+   "expect": "de",
+   "libre": [
+    "de",
+    90.0
+   ]
+  },
+  {
+   "text": "Das ist ein schöner Tag",
+   "truth": "de",
+   "expect": "de",
+   "libre": [
+    "de",
+    100.0
+   ]
+  },
+  {
+   "text": "Bom dia a todos",
+   "truth": "pt",
+   "expect": "pt",
+   "libre": [
+    "pt",
+    90.0
+   ]
+  },
+  {
+   "text": "Привет как дела",
+   "truth": "ru",
+   "expect": "ru",
+   "libre": [
+    "ru",
+    45.0
+   ]
+  },
+  {
+   "text": "Привет всем",
+   "truth": "ru",
+   "expect": "ru",
+   "libre": [
+    "ru",
+    45.0
+   ]
+  },
+  {
+   "text": "Дякую",
+   "truth": "uk",
+   "expect": null,
+   "libre": [
+    "uk",
+    90.0
+   ]
+  },
+  {
+   "text": "Дякую за допомогу, друзі",
+   "truth": "uk",
+   "expect": "uk",
+   "libre": [
+    "uk",
+    100.0
+   ]
+  },
+  {
+   "text": "谢谢",
+   "truth": "zh",
+   "expect": "zh",
+   "libre": [
+    "zh",
+    90.0
+   ]
+  },
+  {
+   "text": "你好，世界",
+   "truth": "zh",
+   "expect": "zh",
+   "libre": [
+    "zh",
+    90.0
+   ]
+  },
+  {
+   "text": "今日はいい天気ですね",
+   "truth": "ja",
+   "expect": "ja",
+   "libre": [
+    "ja",
+    90.0
+   ]
+  },
+  {
+   "text": "안녕하세요 여러분",
+   "truth": "ko",
+   "expect": "ko",
+   "libre": [
+    "ko",
+    90.0
+   ]
+  },
+  {
+   "text": "مرحبا بالجميع، هذه أول مشاركة لي في هذا الموقع",
+   "truth": "ar",
+   "expect": "ar",
+   "libre": [
+    "ar",
+    100.0
+   ]
+  },
+  {
+   "text": "نمستے",
+   "truth": null,
+   "expect": null,
+   "libre": [
+    "en",
+    0.0
+   ]
+  },
+  {
+   "text": "नमस्ते दोस्तों",
+   "truth": "hi",
+   "expect": null,
+   "libre": [
+    "hi",
+    100.0
+   ]
+  },
+  {
+   "text": "Selamat pagi semuanya",
+   "truth": "id",
+   "expect": "id",
+   "libre": [
+    "en",
+    0.0
+   ]
+  },
+  {
+   "text": "Hej allihopa",
+   "truth": null,
+   "expect": null,
+   "libre": [
+    "pl",
+    90.0
+   ]
+  },
+  {
+   "text": "Hej, hur mår du idag? Det är en fin dag.",
+   "truth": "sv",
+   "expect": "sv",
+   "libre": [
+    "en",
+    0.0
+   ]
+  },
+  {
+   "text": "Dobrý den, jak se máte? Dnes je krásný den.",
+   "truth": "cs",
+   "expect": "cs",
+   "libre": [
+    "en",
+    0.0
+   ]
+  },
+  {
+   "text": "Добро утро, как си?",
+   "truth": null,
+   "expect": null,
+   "libre": [
+    "ru",
+    90.0
+   ]
+  },
+  {
+   "text": "Добро утро на сите, како сте денеска?",
+   "truth": "bg",
+   "expect": "bg",
+   "libre": [
+    "en",
+    0.0
+   ]
+  },
+  {
+   "text": "Dobro jutro svima, kako ste danas?",
+   "truth": "hr",
+   "expect": "hr",
+   "libre": [
+    "en",
+    0.0
+   ]
+  },
+  {
+   "text": "Добрай раніцы, як справы? Сёння добры дзень.",
+   "truth": "be",
+   "expect": "be",
+   "libre": [
+    "uk",
+    71.0
+   ]
+  },
+  {
+   "text": "Қайырлы таң, қалайсыз? Бүгін жақсы күн.",
+   "truth": "kk",
+   "expect": "kk",
+   "libre": [
+    "ru",
+    57.0
+   ]
+  },
+  {
+   "text": "Bos días a todos, como estades hoxe?",
+   "truth": "gl",
+   "expect": "gl",
+   "libre": [
+    "es",
+    86.0
+   ]
+  },
+  {
+   "text": "Merhaba arkadaşlar, bugün hava çok güzel",
+   "truth": "tr",
+   "expect": "tr",
+   "libre": [
+    "tr",
+    100.0
+   ]
+  },
+  {
+   "text": "Witam wszystkich, jak się macie?",
+   "truth": "pl",
+   "expect": "pl",
+   "libre": [
+    "pl",
+    100.0
+   ]
+  },
+  {
+   "text": "Goedemorgen allemaal, hoe gaat het?",
+   "truth": "nl",
+   "expect": "nl",
+   "libre": [
+    "nl",
+    100.0
+   ]
+  },
+  {
+   "text": "Xin chào mọi người, hôm nay thế nào?",
+   "truth": "vi",
+   "expect": "vi",
+   "libre": [
+    "en",
+    0.0
+   ]
+  },
+  {
+   "text": "สวัสดีครับทุกคน วันนี้เป็นอย่างไรบ้าง",
+   "truth": "th",
+   "expect": "th",
+   "libre": [
+    "en",
+    0.0
+   ]
+  },
+  {
+   "text": "Γεια σας φίλοι, πώς είστε σήμερα;",
+   "truth": "el",
+   "expect": "el",
+   "libre": [
+    "en",
+    0.0
+   ]
+  },
+  {
+   "text": "שלום לכולם, מה שלומכם היום?",
+   "truth": "he",
+   "expect": "he",
+   "libre": [
+    "en",
+    0.0
+   ]
+  }
+ ]
+}

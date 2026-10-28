@@ -15,7 +15,7 @@ from ruqqus.classes import *
 from ruqqus.__main__ import app, cache
 from ruqqus.routes.front import region_filter_condition, ALL_SUBCAT_IDS
 from ruqqus.helpers.regions import REGION_CENTROIDS
-from ruqqus.helpers.languages import LANGUAGE_NAMES
+from ruqqus.helpers.languages import LANGUAGE_NAMES, choosable, known_codes, language_condition
 from ruqqus.helpers.base36 import base36decode
 from ruqqus.helpers import curation_feed, feed_algorithm, feed_server, safe_fetch, search_filters
 from ruqqus.helpers import curation_members
@@ -99,7 +99,7 @@ def _own_filters(posts, curation):
     if curation.region_filter_list:
         posts = posts.filter(region_filter_condition(curation.region_filter_list))
     if curation.language_filter_list:
-        posts = posts.filter(Submission.language_code.in_(curation.language_filter_list))
+        posts = posts.filter(language_condition(Submission.language_code, curation.language_filter_list))
     if curation.category_filter_list:
         board_ids_in_cats = select(Board.id).where(Board.subcat_id.in_(tuple(curation.category_filter_list)))
         posts = posts.filter(Submission.board_id.in_(board_ids_in_cats))
@@ -659,7 +659,7 @@ def curation_set_language_filter(slug, v):
         if code not in LANGUAGE_NAMES:
             abort(404)
 
-    curation.language_filter = ",".join(codes)
+    curation.language_filter = ",".join(known_codes(codes))     # row keys
     g.db.add(curation)
     g.db.commit()
     _invalidate_curation_feed(curation.id)

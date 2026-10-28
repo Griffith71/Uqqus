@@ -69,7 +69,10 @@ class Curation(Base, Stndrd, Age_times):
 
     @property
     def language_filter_list(self):
-        return [x for x in self.language_filter.split(',') if x] if self.language_filter else []
+        # as row keys (helpers/languages.py): an older saved "mk" is the Bulgarian row, so the edit form
+        # ticks the right row
+        from ruqqus.helpers.languages import known_codes
+        return known_codes([x for x in self.language_filter.split(',') if x]) if self.language_filter else []
 
     @property
     def category_filter_list(self):

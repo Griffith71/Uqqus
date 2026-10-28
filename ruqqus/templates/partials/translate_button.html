@@ -1,0 +1,15 @@
+{#
+  The Translate button under a post or a comment (helpers/translation.py, routes/translation_pages.py): drawn only for
+  a signed-in member, under something whose detected language is in none of theirs and that a service can translate
+  (translate_offered). Pressing it (assets/js/translate.js) replaces the text in place: the title, the first lines and
+  the full text of a post, the text of a comment (the parts marked data-translate-part); the line then says who
+  translated it ("Translated from Japanese by LibreTranslate") and the button becomes "Show original". Never automatic. The row is in the interface's language and direction whatever the post's language.
+#}
+{% macro translate_row(kind, item, v, extra_class="") %}
+{% if translate_offered(item, v) %}
+<div class="translate-row{% if extra_class %} {{ extra_class }}{% endif %}" data-translate-kind="{{ kind }}" data-translate-id="{{ item.base36id }}" lang="{{ ui_lang() }}" dir="{{ ui_dir() }}">
+  <span class="translate-status" aria-live="polite"></span>
+  <button type="button" class="translate-btn"><i class="fas fa-language" aria-hidden="true"></i><span class="translate-btn-label">{{ _("Translate") }}</span></button>
+</div>
+{% endif %}
+{% endmacro %}

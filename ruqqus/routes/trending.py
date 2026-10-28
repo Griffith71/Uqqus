@@ -5,8 +5,10 @@ from flask import abort, g, redirect, render_template, request
 from ruqqus.helpers.wrappers import admin_level_required, auth_desired, validate_formkey
 from ruqqus.helpers.get import get_posts
 from ruqqus.helpers.visibility import viewer_level
-from ruqqus.helpers.languages import LANGUAGE_NAMES
+from ruqqus.helpers.languages import label as language_label
 from ruqqus.helpers import trending_store
+from ruqqus.helpers.i18n import language_name
+from ruqqus.helpers.i18n_runtime import current_locale, tr
 from ruqqus.classes import Region, TrendingBlocked
 from ruqqus.routes.front import _resolve_active_filters
 from ruqqus.__main__ import app
@@ -30,7 +32,7 @@ def _place(scopes):
         return "your filters"
     kind, _, code = scopes[0].partition(":")
     if kind == "lang":
-        return LANGUAGE_NAMES.get(code, code)
+        return language_name(code, current_locale()) or language_label(code) or code
     region = g.db.query(Region).filter_by(code=code).first()
     return region.current_name if region else code
 

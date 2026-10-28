@@ -50,6 +50,10 @@ services:
       # page-view statistics from your own Plausible server (ruqqus/helpers/analytics.py): empty = off
       - PLAUSIBLE_SRC=${PLAUSIBLE_SRC:-}
       - PLAUSIBLE_DOMAIN=${PLAUSIBLE_DOMAIN:-}
+      # the Translate button (ruqqus/helpers/translation.py): the site's own LibreTranslate (the `libretranslate`
+      # service below: http://libretranslate:5000), its only translator. Empty = no Translate button
+      - LIBRETRANSLATE_URL=${LIBRETRANSLATE_URL:-}
+      - LIBRETRANSLATE_API_KEY=${LIBRETRANSLATE_API_KEY:-}
 
       - HCAPTCHA_SECRET=5436ertfgcvbnfgcy
       - CLOUDFLARE_KEY=5436ertfgcvbnfgcy
@@ -181,6 +185,30 @@ services:
       timeout: 5s
       retries: 5
 
+  # LibreTranslate (open source), the site's own translator for the Translate button (ruqqus/helpers/translators.py)
+  # and the machine translation of the interface (scripts/i18n_translate.py). Opt-in: it downloads its language models
+  # on first start (about 9 GB for every language the site supports), so it runs only with
+  # `docker compose --profile translation up -d libretranslate`, and the button shows only once LIBRETRANSLATE_URL is
+  # set in .env (http://libretranslate:5000). No published port: only the app reaches it. LT_LOAD_ONLY names the models
+  # it downloads (languages.libre_load_only(): every language the site supports, in LibreTranslate's codes); a model is
+  # loaded into memory the first time it is used (about 250 MB idle, a few hundred MB more per language in use).
+  libretranslate:
+    image: libretranslate/libretranslate:v1.9.6
+    profiles: ["translation"]
+    environment:
+      - LT_LOAD_ONLY=${LT_LOAD_ONLY:-en,ar,az,bg,bn,ca,cs,da,de,el,es,et,eu,fa,fi,fr,ga,gl,he,hi,hu,id,it,ja,ko,ky,lt,lv,ms,nb,nl,pl,pt,ro,ru,sk,sl,sq,sv,sw,th,tl,tr,uk,ur,vi,zh}
+      - LT_DISABLE_WEB_UI=true
+      - LT_UPDATE_MODELS=false
+    volumes:
+      - "libretranslate_models:/home/libretranslate/.local"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "./venv/bin/python scripts/healthcheck.py"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 10m
+
   # A daily dump of the site's database and Synapse's, as a pair, into the `backups` volume (scripts/backup_loop.sh).
   # The postgres:15 client reads both servers. Restore: scripts/restore.sh; the restore drill: scripts/verify_backup.sh;
   # what it does NOT cover (a copy off this machine, the media volumes): RESTORE.md.
@@ -221,6 +249,7 @@ services:
 
 volumes:
   backups:
+  libretranslate_models:
   media-dev:
   synapse-media:
   synapse-signing-key:

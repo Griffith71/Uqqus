@@ -3025,7 +3025,16 @@ comment_edit=function(id){
   xhr.onload=function(){
     if (xhr.status==200) {
       var commentText=document.getElementById('comment-text-'+id);
-      commentText.innerHTML=JSON.parse(xhr.response)["html"];
+      // the new text goes into the comment's own text part (its clamp, or its wrapper), so the clamp's toggle and a
+      // sensitive comment's blur stay; a translation on show is put back first and forgotten (assets/js/translate.js),
+      // and the Translate row follows the new text's language
+      var scope = commentText.closest('.comment-main') || commentText;
+      if (window.Translate) Translate.reset(scope, {offered: Boolean(answer.translate), kind: 'comment', id: id, after: commentText});
+      var part = commentText.querySelector('[data-translate-part="body"]') || commentText;
+      part.innerHTML = answer.html;
+      commentText.setAttribute('dir', 'auto');
+      if (answer.language_code) commentText.setAttribute('lang', answer.language_code);
+      else commentText.removeAttribute('lang');
       if (flagsChanged) { window.location.reload(); return; }
       document.getElementById('cancel-edit-'+id).click()
       $('#toast-comment-success').toast('dispose');

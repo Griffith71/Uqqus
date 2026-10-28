@@ -19,6 +19,8 @@ from ruqqus.helpers.security import *
 from ruqqus.helpers.lazy import lazy
 from ruqqus.helpers.visibility import filter_posts, filter_comments, viewer_level, text_hidden
 from ruqqus.helpers.sensitive import hide_sensitive
+from ruqqus.helpers.languages import language_condition
+from ruqqus.helpers.i18n_runtime import date_text, datetime_text, tr
 import ruqqus.helpers.aws as aws
 from ruqqus.helpers.discord import add_role, delete_role, discord_log_event
 #from ruqqus.helpers.alerts import send_notification
@@ -127,6 +129,7 @@ class User(Base, Stndrd, Age_times):
     profile_location = Column(String(60), default="")
     profile_website = Column(String(200), default="")
     display_name = Column(String(50), default="")      # free text, set in Settings > Profile (helpers/display_names.py)
+    languages = Column(String(200), default="")         # the languages they read (Settings > Content; helpers/translation.py)
     # a sensitive account (helpers/sensitive.py): its posts are left out of All and For You by default, like a
     # sensitive guild's; sensitive_forced means an admin set it and the member can't switch it off
     is_sensitive = Column(Boolean, default=False)
@@ -380,7 +383,7 @@ class User(Base, Stndrd, Age_times):
         language = kwargs.get("language")
         if language:
             language_list = language if isinstance(language, (list, tuple)) else [language]
-            posts = posts.filter(Submission.language_code.in_(language_list))
+            posts = posts.filter(language_condition(Submission.language_code, language_list))
 
         # Post type and the Advanced filter only narrow; SubmissionAux is joined once for them and the word filter
         from ruqqus.helpers import feed_filter_sql
@@ -603,7 +606,7 @@ class User(Base, Stndrd, Age_times):
         language = kwargs.get("language")
         if language:
             language_list = language if isinstance(language, (list, tuple)) else [language]
-            posts = posts.filter(Submission.language_code.in_(language_list))
+            posts = posts.filter(language_condition(Submission.language_code, language_list))
 
         # Following already covers subscribed guilds + followed accounts -
         # keep For You additive/discovery-oriented rather than duplicating it

@@ -95,6 +95,9 @@ class Comment(Base, Age_times, Scores, Stndrd, Fuzzing):
     is_bot = Column(Boolean, default=False)
     is_pinned = Column(Boolean, default=False)
     hidden_by_guild = Column(Boolean, default=False)
+    # the language its text is in, detected when written (helpers/languages.py; NULL when unsure): it decides when
+    # the Translate button shows (helpers/translation.py)
+    language_code = Column(String(5), default=None)
     author_hidden = Column(Boolean, default=False)
     creation_region=Column(String(2), default=None)
 

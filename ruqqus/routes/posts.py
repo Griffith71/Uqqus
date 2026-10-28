@@ -440,7 +440,7 @@ def apply_post_edit(p, primary, v, form, upload, media_owner_ids=None):
 
         word_severity, word_filter_version = post_severity(title, body_html, extra=poll_store.option_text(g.db, primary.id))
 
-        language_code = detect_language(title, body)
+        language_code = detect_language(title, body, keep=primary.language_code)
 
         now = int(time.time())
 

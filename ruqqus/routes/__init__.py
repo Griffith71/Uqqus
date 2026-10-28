@@ -66,3 +66,5 @@ from .guild_events import *
 from .guild_channels import *
 from .guild_roles import *
 from .collab import *
+from .translation_pages import *
+from .interface_language_pages import *

@@ -11,6 +11,8 @@ from ruqqus.classes import *
 from ruqqus.helpers.wrappers import *
 from ruqqus.helpers.aws import delete_file
 from ruqqus.helpers.media import attach as media_attach, cdn as media_cdn
+from ruqqus.helpers import translation_store
+from ruqqus.helpers.i18n_runtime import N_
 from ruqqus.helpers.base36 import *
 from ruqqus.helpers.alerts import *
 from ruqqus.helpers.sanitize import *
@@ -191,6 +193,7 @@ nothing that references it breaks; only the text itself is gone.
     post.url = ""
 
     g.db.add(post)
+    translation_store.forget(g.db, "post", [post.id])
 
     cache.delete_memoized(Board.idlist, post.board)
 
@@ -337,6 +340,7 @@ nothing that references it breaks; only the text itself is gone.
     comment.body_html = ""
 
     g.db.add(comment)
+    translation_store.forget(g.db, "comment", [comment.id])
     ma=ModAction(
         kind="purge_comment",
         user_id=v.id,
@@ -449,6 +453,10 @@ Required form data:
         c.body_html = ""
         g.db.add(c)
 
+    # and every translation kept of any of it
+    translation_store.forget(g.db, "post", target_ids)
+    translation_store.forget(g.db, "comment", comment_ids)
+
     g.db.add(ObliterationRecord(
         actor_id=v.id,
         author_id=author_id,
@@ -507,6 +515,7 @@ Required form data:
     comment.body = ""
     comment.body_html = ""
     g.db.add(comment)
+    translation_store.forget(g.db, "comment", [comment.id])
 
     g.db.add(ObliterationRecord(
         actor_id=v.id,

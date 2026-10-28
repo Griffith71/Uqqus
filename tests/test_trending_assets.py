@@ -86,6 +86,9 @@ def test_a_region_list_never_counts_an_anonymous_post():
     assert ts.scopes_of(named) == ["all", "lang:fr", "region:FR"]
     assert ts.scopes_of(hidden) == ["all", "lang:fr"]
     assert ts.scopes_of(NS(language_code=None, display_region=None, is_anonymous=False)) == ["all"]
+    # a language's list is its row's (helpers/languages.py); one no service translates has none
+    assert ts.scopes_of(NS(language_code="mk", display_region=None, is_anonymous=False)) == ["all", "lang:bg"]
+    assert ts.scopes_of(NS(language_code="wa", display_region=None, is_anonymous=False)) == ["all"]
 
 
 def test_a_viewers_list_comes_from_their_filters_regions_first():

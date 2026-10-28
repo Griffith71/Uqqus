@@ -21,7 +21,10 @@ from ruqqus.classes.votes import Vote
 from ruqqus.helpers import topics as topic_rules
 from ruqqus.helpers import feed_filters as feed_filter_rules
 from ruqqus.helpers import feed_filter_sql
-from ruqqus.helpers.languages import LANGUAGE_NAMES, known_codes
+from ruqqus.helpers import all_feed
+from ruqqus.helpers import notification_feed
+from ruqqus.helpers.languages import LANGUAGE_NAMES, known_codes, choosable, language_condition
+from ruqqus.helpers.languages import catalogue as language_catalogue, label as language_label, UNKNOWN as LANGUAGE_UNKNOWN
 from ruqqus.helpers.regions import REGION_CENTROIDS
 
 
@@ -237,7 +240,7 @@ def frontlist(v=None, sort=None, page=1,
 
     if language:
         language_list = language if isinstance(language, (list, tuple)) else [language]
-        posts = posts.filter(Submission.language_code.in_(language_list))
+        posts = posts.filter(language_condition(Submission.language_code, language_list))
 
 
     posts=posts.options(contains_eager(Submission.board))
@@ -337,8 +340,16 @@ def _saved_defaults(v):
     """A member's saved default filters, every part checked again, or None."""
     if v is None:
         return None
-    return feed_filter_rules.read_defaults(v.feed_defaults or "", known_regions=REGION_CENTROIDS,
-                                           known_languages=LANGUAGE_NAMES, known_categories=ALL_SUBCAT_IDS)
+    saved = feed_filter_rules.read_defaults(v.feed_defaults or "", known_regions=REGION_CENTROIDS,
+                                            known_languages=_SAVED_LANGUAGE_CODES, known_categories=ALL_CATEGORY_CHOICES)
+    if saved is not None:
+        # as the session holds them: row keys ("mk" -> "bg"), "Other or unknown" kept, so "same" can be "same"
+        saved["languages"] = known_codes(saved["languages"])
+    return saved
+
+
+# what a saved default may hold for a language: any listed code (an old one becomes its row) or "Other or unknown"
+_SAVED_LANGUAGE_CODES = frozenset(LANGUAGE_NAMES) | {LANGUAGE_UNKNOWN}
 
 
 def _load_into_session(saved):
@@ -384,6 +395,25 @@ def _resolve_active_filters(v):
     return region_codes, language_codes, subcat_ids
 
 
+def _languages_catalog():
+    """The Language filter's choices, named in the reader's language (helpers/i18n.py: English exactly the row labels,
+    in their order; other languages sort by their own names, still searchable by the English ones)."""
+    rows = language_catalogue()
+    key = current_locale()
+    if key == i18n.ENGLISH:
+        return rows
+    named = []
+    for row in rows:
+        if row["value"] == LANGUAGE_UNKNOWN:
+            # Translators: the Language filter's choice for posts with no detected language (or one the site doesn't offer)
+            label = tr("Other or unknown")
+        else:
+            label = i18n.language_name(row["value"], key) or row["label"]
+        named.append(dict(row, label=label, search=f"{label} {row['search']}"))
+    known = sorted((row for row in named if row["value"] != LANGUAGE_UNKNOWN), key=lambda row: row["label"].casefold())
+    return known + [row for row in named if row["value"] == LANGUAGE_UNKNOWN]
+
+
 def _filter_display_context(region_codes, language_codes, subcat_ids):
     """The display-name context vars the 'Showing posts from/detected as/in
     X' notices in home.html need, shared by All/For You/Following now that
@@ -394,7 +424,8 @@ def _filter_display_context(region_codes, language_codes, subcat_ids):
         "current_regions": region_codes,
         "region_names": [r.current_name for r in region_objs],
         "current_languages": language_codes,
-        "language_names_list": [LANGUAGE_NAMES.get(c) for c in language_codes],
+        # named in the reader's language (helpers/i18n.py: English exactly the row label)
+        "language_names_list": [i18n.language_name(c, current_locale()) or language_label(c) for c in language_codes],
         "current_subcats": subcat_ids,
         "subcat_names": [SUBCAT_NAME_BY_ID[i] for i in subcat_ids if i in SUBCAT_NAME_BY_ID],
     }
@@ -1006,7 +1037,7 @@ Optional query parameters:
         for c in codes:
             if c not in LANGUAGE_NAMES:
                 abort(404)
-        flask_session['langcodes'] = codes
+        flask_session['langcodes'] = known_codes(codes)          # row keys: "mk" is the Bulgarian row
         flask_session.modified = True
 
     base_feed = flask_session.get('base_feed', 'for_you')

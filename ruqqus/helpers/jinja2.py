@@ -23,6 +23,16 @@ post_regex = re.compile(r"^https?://[a-zA-Z0-9_.-]+/\+\w+/post/(\w+)(/[a-zA-Z0-9
 SCORE_UPVOTES, SCORE_NET = 0, 1
 
 
+@app.template_global("language_name")
+def language_name(code):
+    """A language's row label from a stored code (helpers/languages.py: "mk" reads "Bulgarian"), or ""
+    for no language or one no service translates. Named in the reader's interface language (helpers/i18n.py: English
+    is exactly the row label)."""
+    from ruqqus.helpers import i18n
+    from ruqqus.helpers.i18n_runtime import current_locale
+    return i18n.language_name(code, current_locale()) or ""
+
+
 @app.template_global("score_mode")
 def score_mode(v):
     return SCORE_NET if v is not None and getattr(v, "score_display", 0) == SCORE_NET else SCORE_UPVOTES

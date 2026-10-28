@@ -22,6 +22,7 @@ from ruqqus.helpers.session_helpers import *
 from ruqqus.helpers.alerts import *
 from ruqqus.helpers.aws import *
 from ruqqus.helpers.word_filter_store import apply_comment_severity
+from ruqqus.helpers.languages import detect_language
 from ruqqus.helpers.post_fields import flag
 from ruqqus.helpers import comment_permission as cperm
 from ruqqus.helpers import anonymity
@@ -512,6 +513,7 @@ Optional file data:
 
     g.db.add(c_aux)
     apply_comment_severity(c, body_html)
+    c.language_code = detect_language(body)
     g.db.flush()
 
     notify_users = set()
@@ -729,6 +731,10 @@ Optional form data (left out: unchanged):
         ))
         c.edited_utc = now
 
+    # stamped only once the edit is accepted: a refused edit (a bad link, the spam check, which commits) must leave
+    # the comment's rating and language as they were
+    apply_comment_severity(c, body_html)
+    c.language_code = detect_language(body, keep=c.language_code)
     c.body = body
     c.body_html = body_html
     c.paid_partnership = flag(request.form, "paid_partnership", c.paid_partnership)
@@ -743,7 +749,9 @@ Optional form data (left out: unchanged):
 
     path = request.form.get("current_page", "/")
 
-    return jsonify({"html": c.body_html})
+    # the new text's language, and whether Translate still applies to it (all_js.js comment_edit)
+    from ruqqus.routes.translation_pages import translate_offered
+    return jsonify({"html": c.body_html, "language_code": c.language_code, "translate": translate_offered(c, v)})
 
 
 @app.route("/delete/comment/<cid>", methods=["POST"])

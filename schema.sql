@@ -158,6 +158,7 @@ CREATE TABLE public.comments (
     creation_region character(2) DEFAULT NULL::bpchar,
     purged_utc integer DEFAULT 0,
     hidden_by_guild boolean DEFAULT false,
+    language_code character varying(5) DEFAULT NULL,
     author_hidden boolean DEFAULT false,
     word_severity smallint DEFAULT 0 NOT NULL,
     word_filter_version character varying(12),
@@ -335,6 +336,7 @@ CREATE TABLE public.users (
     profile_location character varying(60) DEFAULT '' NOT NULL,
     profile_website character varying(200) DEFAULT '' NOT NULL,
     display_name character varying(50) DEFAULT '' NOT NULL,
+    languages character varying(200) DEFAULT '' NOT NULL,
     is_sensitive boolean DEFAULT false NOT NULL,
     sensitive_forced boolean DEFAULT false NOT NULL,
     all_shows_sensitive boolean DEFAULT false NOT NULL,
@@ -6919,6 +6921,31 @@ CREATE TABLE public.paypal_events (
 
 -- what an account owes is never below 0 (bug hunt 2026-10, H4; 2026-11-23_owed_never_below_zero.sql)
 ALTER TABLE public.users ADD CONSTRAINT users_owed_never_below_zero CHECK (negative_balance_cents >= 0);
+
+-- translations kept so a text is translated once per language, and what an outside translator was sent each month
+-- (2026-11-26_languages_and_translation.sql; helpers/translation_store.py)
+CREATE TABLE public.translations (
+    id serial PRIMARY KEY,
+    kind character varying(10) NOT NULL,
+    item_id integer NOT NULL,
+    source_hash character varying(64) NOT NULL,
+    source_lang character varying(5),
+    target character varying(5) NOT NULL,
+    engine character varying(20) NOT NULL,
+    title text DEFAULT '' NOT NULL,
+    text_html text DEFAULT '' NOT NULL,
+    created_utc integer NOT NULL,
+    CONSTRAINT translations_kind CHECK (kind IN ('post', 'comment'))
+);
+CREATE UNIQUE INDEX translations_key ON public.translations (kind, item_id, target, engine, source_hash);
+CREATE INDEX translations_created_idx ON public.translations (created_utc);
+
+CREATE TABLE public.translation_usage (
+    month character varying(7) NOT NULL,
+    engine character varying(20) NOT NULL,
+    chars bigint DEFAULT 0 NOT NULL,
+    PRIMARY KEY (month, engine)
+);
 
 CREATE TABLE public.schema_migrations (
     name character varying(255) PRIMARY KEY,
