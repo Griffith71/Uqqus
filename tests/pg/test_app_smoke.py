@@ -72,7 +72,10 @@ def get(client, path):
 
 
 PUBLIC_PAGES = ["/", "/all", "/forgot", "/login", "/signup", "/robots.txt", "/spaces", "/browse", "/curations", "/search?q=smoke", "/help/terms",
-                "/help/rules", "/+general", "/@ci_member", "/log/deleted", "/trending"]
+                "/help/rules", "/+general", "/@ci_member", "/log/deleted", "/trending", "/happening", "/happening/trending",
+                "/happening/live", "/happening/calendar", "/happening/calendar?month=2026-11", "/inpage/happening",
+                "/@ci_member/followers", "/@ci_member/following", "/inpage/similar_accounts/ci_member",
+                "/inpage/similar_guilds/general", "/inpage/similar_guilds/nosuchguild"]
 
 
 # Not listed: /chat and the call and Space windows, which talk to Matrix (Synapse) while they draw.
@@ -95,6 +98,16 @@ def test_a_visitor_can_open(site, path):
 def test_a_member_can_open(site, path):
     response = get(site.as_member(), path)
     assert response.status_code < 500, (path, response.status_code)
+
+
+def test_the_happening_box_is_private_and_answers_204_when_nothing_changed(site):
+    """/inpage/happening (the sidebar box): one Cache-Control, private; the signature it hands out answers 204 the next time."""
+    for client in (site.visitor(), site.as_member()):
+        first = get(client, "/inpage/happening")
+        assert first.status_code == 200, first.status_code
+        assert first.headers.getlist("Cache-Control") == ["private, no-cache"]
+        rev = re.search(r'data-rev="(\d+)"', first.get_data(as_text=True)).group(1)
+        assert get(client, f"/inpage/happening?rev={rev}").status_code == 204
 
 
 def test_a_post_and_its_embeds_render(site):

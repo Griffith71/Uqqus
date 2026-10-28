@@ -154,6 +154,9 @@ def rescan(db, batch=500, log=None):
     guild_channel_store.rescan_category_severities(db, f.severity)
     from ruqqus.helpers import guild_role_store
     guild_role_store.rescan_severities(db, f.severity)
+    # the "What's happening" events (helpers/site_events.py): a title, details and a score line a source or an admin wrote
+    from ruqqus.helpers import site_event_store
+    site_event_store.rescan_severities(db, f.severity, f.version)
     db.commit()
 
     return changed

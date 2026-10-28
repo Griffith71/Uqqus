@@ -40,6 +40,7 @@ from .muting import *
 from .suggestions import *
 from .media import *
 from .trending import *
+from .happening_pages import *
 from .community_notes import *
 from .coauthors import *
 from .bookmark_folders import *

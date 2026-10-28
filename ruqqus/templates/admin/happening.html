@@ -1,0 +1,183 @@
+{% extends "docs_default.html" %}
+
+{% block sidebarblock %}{% endblock %}
+{% block sidebarLeftblock %}{% endblock %}
+
+{% block title %}
+<title>{{ 'SITE_NAME' | app_config }} - What's happening</title>
+{% endblock %}
+
+{# The admin page of the "What's happening" layer (routes/happening_pages.py). English and untranslated, like the other admin
+   pages. Level 3 reads, level 4 changes. Times are UTC. #}
+
+{% macro field(name, label, value='', help='', placeholder='') %}
+<div class="form-group col-md-4">
+  <label for="f-{{ name }}">{{ label }}</label>
+  <input type="text" class="form-control" id="f-{{ name }}" name="{{ name }}" value="{{ value }}" placeholder="{{ placeholder }}" autocomplete="off">
+  {% if help %}<small class="form-text text-muted">{{ help }}</small>{% endif %}
+</div>
+{% endmacro %}
+
+{% macro event_form(action, f, edit) %}
+<form action="{{ action }}" method="post" class="mb-4">
+  <input type="hidden" name="formkey" value="{{ v.formkey }}">
+  {% if edit %}<input type="hidden" name="expected" value="{{ edit.updated_utc }}">{% endif %}
+  <div class="form-row">
+    <div class="form-group col-md-3">
+      <label for="f-kind">Kind</label>
+      <select class="form-control" id="f-kind" name="kind">
+        {% for k in kinds %}<option value="{{ k }}"{% if f.get('kind') == k %} selected{% endif %}>{{ k }}</option>{% endfor %}
+      </select>
+    </div>
+    <div class="form-group col-md-9">
+      <label for="f-title">Title <span class="text-muted">(what readers see: a team and a score line is built from the fields below)</span></label>
+      <input type="text" class="form-control" id="f-title" name="title" value="{{ f.get('title', '') }}" maxlength="200" required>
+    </div>
+  </div>
+  <div class="form-row">
+    {{ field('link_url', 'Link (https)', f.get('link_url', ''), 'Required for alerts, news and elections: the source, opened in a new tab. Never rewrite what a source said.') }}
+    {{ field('details', 'Details (plain text, 600 characters)', f.get('details', '')) }}
+    {{ field('title_lang', 'Language of the title', f.get('title_lang', ''), 'e.g. en. Leave empty if unsure.') }}
+  </div>
+  <div class="form-row">
+    <div class="form-group col-md-3">
+      <label for="f-date_kind">Time is</label>
+      <select class="form-control" id="f-date_kind" name="date_kind">
+        <option value=""{% if not f.get('date_kind') %} selected{% endif %}>by kind (a holiday or observance is a day, the rest an instant)</option>
+        <option value="instant"{% if f.get('date_kind') == 'instant' %} selected{% endif %}>an instant (UTC)</option>
+        <option value="civil"{% if f.get('date_kind') == 'civil' %} selected{% endif %}>a calendar day (the same for everyone)</option>
+      </select>
+    </div>
+    {{ field('starts', 'Starts', f.get('starts', ''), 'YYYY-MM-DD HH:MM in UTC, or YYYY-MM-DD for a day') }}
+    {{ field('ends', 'Ends', f.get('ends', ''), 'A match defaults to 3 hours, a countdown to 1. A poll or a prediction needs the time it closes.') }}
+  </div>
+  <div class="form-row">
+    {{ field('expires', 'Expires', f.get('expires', ''), 'Alerts need one (default: a day, at most 7). Headlines default to a day.') }}
+    {{ field('show_from', 'Show from', f.get('show_from', ''), 'Start showing it in the box at this time (a countdown weeks away).') }}
+    <div class="form-group col-md-4">
+      <label for="f-status">Status</label>
+      <select class="form-control" id="f-status" name="status">
+        {% for s in statuses %}<option value="{{ s }}"{% if f.get('status', 'scheduled') == s %} selected{% endif %}>{{ s }}</option>{% endfor %}
+      </select>
+      <small class="form-text text-muted">Worked out from the times unless final, cancelled, postponed or ended.</small>
+    </div>
+  </div>
+  <div class="form-row">
+    {{ field('poll_post', 'Poll post', f.get('poll_post', ''), 'Polls and predictions: paste the address of the ordinary poll post.') }}
+    {{ field('priority', 'Priority (-10 to 10)', f.get('priority', '0')) }}
+    <div class="form-group col-md-4 pt-4">
+      <label class="mr-3"><input type="checkbox" name="featured" value="1"{% if f.get('featured') %} checked{% endif %}> Featured (above the rest of Live)</label>
+      <label class="mr-3"><input type="checkbox" name="tentative" value="1"{% if f.get('tentative') %} checked{% endif %}> Expected (date may differ)</label>
+      <label><input type="checkbox" name="is_sensitive" value="1"{% if f.get('is_sensitive') %} checked{% endif %}> Sensitive</label>
+    </div>
+  </div>
+  <h3 class="h6 text-uppercase text-muted mt-2">By kind</h3>
+  <div class="form-row">
+    {{ field('state_home', 'Score: home team', f.get('state_home', '')) }}
+    {{ field('state_away', 'Score: away team', f.get('state_away', '')) }}
+    {{ field('state_period', 'Score: period', f.get('state_period', ''), 'e.g. 2nd half') }}
+  </div>
+  <div class="form-row">
+    {{ field('state_home_score', 'Score: home goals', f.get('state_home_score', '')) }}
+    {{ field('state_away_score', 'Score: away goals', f.get('state_away_score', '')) }}
+    {{ field('state_clock', 'Score: clock', f.get('state_clock', ''), "e.g. 67'") }}
+  </div>
+  <div class="form-row">
+    {{ field('state_status', 'Election: upcoming, polls_open or results', f.get('state_status', '')) }}
+    {{ field('state_outcome', 'Prediction: the outcome, once known', f.get('state_outcome', '')) }}
+    {{ field('state_severity', 'Alert: minor, moderate, severe or extreme', f.get('state_severity', '')) }}
+  </div>
+  <div class="form-row">
+    {{ field('state_source', 'Source name (election, alert, news)', f.get('state_source', ''), 'Shown on the line: "Results: see <source>", "<source> - automatic, not an official warning".') }}
+  </div>
+  <button class="btn btn-primary">{% if edit %}Save{% else %}Add{% endif %}</button>
+</form>
+{% endmacro %}
+
+{% block content %}
+<h1>What's happening</h1>
+
+<p class="text-muted">The box in the right sidebar and the <a href="/happening">/happening</a> page show trending topics and threads, what is live, and the calendar. Everything on this page is entered by hand: scores, polls and predictions, countdowns, elections, and alerts and news that <strong>link out</strong> to their source. Times are <strong>UTC</strong>. Holidays, observances, equinoxes, moon phases and eclipses need no entry: the site works them out.</p>
+
+{% if not enabled %}<div class="alert alert-warning">The layer is switched off (<code>HAPPENING_ENABLED=0</code>): the sidebar shows the Trending box alone and /happening is a 404.</div>{% endif %}
+{% if msg %}<div class="alert alert-success">{{ msg }}</div>{% endif %}
+{% if error %}<div class="alert alert-danger">{{ error }}</div>{% endif %}
+
+{% if edit %}
+<p><a href="/admin/happening">&larr; All events</a></p>
+<h2>{{ edit.title }} <small class="text-muted">{{ edit.kind }}, {{ edit.source }}{% if edit.hidden_utc %}, hidden{% endif %}</small></h2>
+{% if can_edit %}
+  <h3 class="h5">Quick edit</h3>
+  <p class="text-muted">For a match under way or a prediction that has resolved: the status and the kind's own fields only.</p>
+  <form action="/admin/happening/{{ edit.id }}/state" method="post" class="mb-4">
+    <input type="hidden" name="formkey" value="{{ v.formkey }}">
+    <input type="hidden" name="expected" value="{{ edit.updated_utc }}">
+    <div class="form-row">
+      <div class="form-group col-md-3">
+        <label for="q-status">Status</label>
+        <select class="form-control" id="q-status" name="status">
+          {% for s in statuses %}<option value="{{ s }}"{% if edit.status == s %} selected{% endif %}>{{ s }}</option>{% endfor %}
+        </select>
+      </div>
+      {% if edit.kind == 'score' %}
+        {{ field('state_home_score', 'Home goals', f.get('state_home_score', '')) }}
+        {{ field('state_away_score', 'Away goals', f.get('state_away_score', '')) }}
+        {{ field('state_period', 'Period', f.get('state_period', '')) }}
+        {{ field('state_clock', 'Clock', f.get('state_clock', '')) }}
+      {% elif edit.kind == 'prediction' %}
+        {{ field('state_outcome', 'Outcome', f.get('state_outcome', '')) }}
+      {% elif edit.kind == 'election' %}
+        {{ field('state_status', 'Election status', f.get('state_status', '')) }}
+        {{ field('state_source', 'Source name', f.get('state_source', '')) }}
+      {% endif %}
+    </div>
+    <button class="btn btn-secondary">Update</button>
+  </form>
+  <h3 class="h5">All fields</h3>
+  {{ event_form('/admin/happening/' ~ edit.id ~ '/edit', f, edit) }}
+  <form action="/admin/happening/{{ edit.id }}/{{ 'unhide' if edit.hidden_utc else 'hide' }}" method="post" class="mb-4">
+    <input type="hidden" name="formkey" value="{{ v.formkey }}">
+    <button class="btn btn-sm {{ 'btn-secondary' if edit.hidden_utc else 'btn-danger' }}">{{ 'Show again' if edit.hidden_utc else 'Hide everywhere' }}</button>
+  </form>
+{% endif %}
+<h3 class="h5">Changes</h3>
+<table class="table table-sm">
+  <tbody>
+    {% for entry in log %}<tr><td class="text-nowrap">{{ entry.created_utc | timestamp_label if entry.created_utc else '' }}</td><td>{{ entry.action }}</td><td>{{ entry.detail }}</td><td class="text-muted">admin #{{ entry.admin_id }}</td></tr>
+    {% else %}<tr><td class="text-muted">Nothing yet.</td></tr>{% endfor %}
+  </tbody>
+</table>
+
+{% else %}
+
+{% if can_edit %}
+<h2>Add an event</h2>
+{{ event_form('/admin/happening/create', {}, none) }}
+
+<form action="/admin/happening/seed" method="post" class="mb-4">
+  <input type="hidden" name="formkey" value="{{ v.formkey }}">
+  <p class="text-muted mb-2">The reviewed events that ship with the site (<code>helpers/happening_seed.json</code>) can be loaded or refreshed here. It never undoes a hide, an edit or a priority set below.</p>
+  <button class="btn btn-secondary btn-sm">Load the built-in events</button>
+</form>
+{% endif %}
+
+<h2>Events</h2>
+<table class="table table-sm">
+  <thead><tr><th>Kind</th><th>Title</th><th>When (UTC)</th><th>Status</th><th>Source</th><th></th></tr></thead>
+  <tbody>
+    {% for e in events %}
+    <tr{% if e.hidden_utc %} class="text-muted"{% endif %}>
+      <td>{{ e.kind }}</td>
+      <td><a href="/admin/happening/{{ e.id }}">{{ e.title }}</a>{% if e.hidden_utc %} <span class="badge badge-secondary">hidden</span>{% endif %}</td>
+      <td class="text-nowrap">{% if e.date_kind == 'civil' %}{{ e.starts_date }}{% if e.ends_date %} to {{ e.ends_date }}{% endif %}{% else %}{{ e.starts_utc | timestamp_label if e.starts_utc else '' }}{% endif %}</td>
+      <td>{{ e.view.status }}</td>
+      <td>{{ e.source }}</td>
+      <td class="text-right"><a class="btn btn-sm btn-outline-secondary" href="/admin/happening/{{ e.id }}">Open</a></td>
+    </tr>
+    {% else %}
+    <tr><td colspan="6" class="text-muted">Nothing yet. Add an event above{% if can_edit %}, or load the built-in events{% endif %}.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endif %}
+{% endblock %}

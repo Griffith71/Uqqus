@@ -1,0 +1,502 @@
+// The "What's happening" box in the right sidebar and the /happening page (templates/partials/happening_box.html,
+// happening_rows.html, happening.html; assets/js/happening.js, happening_page.js). Tokens only, so the colours follow the
+// theme and the text meets AA; nothing is animated: hover and press answer at once, and nothing moves on load.
+//
+// Grouped like iOS Settings: the panel (--panel) holds three WELLS (--surface-raised), one for Trending, one for Live and
+// one for Today, each with its heading and its link above it on the panel. The panel's radius is 16px and a well is inset
+// 8px, so the well's 8px radius is concentric with it. The text stays 16px from the panel's edge (8px of panel, 8px inside
+// the well), where the heading above the box puts it. Two surface steps at most; no cards inside the wells.
+//
+// The box never changes height: each list reserves three rows (`--happening-rows`), whatever it holds, and each heading row
+// is always there (its link may or may not be), so a score arriving or a row leaving moves nothing below it (the sidebar
+// "paints right the first time", CLAUDE.md). A first visit, with no remembered height yet, reserves a default for the same
+// reason (partials/late_boxes.html).
+
+.happening-box {
+    --happening-row: 3.6rem;         // a two-line row (the page's root font is 14px: about 50px)
+    --happening-rows: 3;
+    --happening-head: 2rem;          // a section's heading row, with its link at the end
+
+    .title {
+        display: flex;
+        align-items: baseline;
+        flex-wrap: wrap;
+    }
+
+    .happening-all {
+        margin-inline-start: auto;
+        font-size: var(--text-sm);
+        font-weight: var(--weight-regular);
+        color: var(--link);
+    }
+
+    &.is-stale .happening-list {
+        opacity: 0.7;
+    }
+}
+
+// (ID-led: _nav.scss gives every sidebar box's body padding at (1,4,0), which a lone class would lose to)
+#main-content-row > .sidebar:not(.sidebar-left) .happening-box .body {
+    padding: var(--space-2) var(--space-3) var(--space-3);
+}
+
+.happening-section + .happening-section {
+    margin-top: var(--space-2);
+}
+
+// the heading row of a section, above its well: the label at the start, the section's link at the end
+.happening-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-3);
+    height: var(--happening-head);
+    padding: 0 var(--space-3);
+}
+
+.happening-box .happening-head {         // (scoped: the legacy `.sidebar h3` gives a 1rem bottom margin, which a lone class loses to)
+    min-width: 0;
+    margin: 0;
+    font-size: var(--text-xs);
+    font-weight: var(--weight-semibold);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+}
+
+// a dot before "Live" while something is: the word still says it, so the colour is never the only cue
+.happening-box .happening-head.is-on::before {
+    content: "";
+    display: inline-block;
+    width: 0.45em;
+    height: 0.45em;
+    margin-inline-end: 0.4em;
+    border-radius: 50%;
+    background-color: var(--danger);
+}
+
+.happening-box .happening-more {
+    display: flex;
+    align-items: center;
+    align-self: stretch;                   // the whole heading row is the target (28px tall)
+    min-width: 0;
+    min-height: 0;
+    margin: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: var(--text-sm);
+    color: var(--link);
+}
+
+.happening-well {
+    overflow: hidden;
+    border-radius: var(--radius-sm);
+    background-color: var(--surface-raised);
+    // in light a soft shadow and a hairline; in dark --shadow-sm is none, so the ring carries the edge (depth is lightness there)
+    box-shadow: var(--shadow-sm), 0 0 0 1px var(--border);
+}
+
+.happening-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.happening-box .happening-list {
+    display: flex;
+    flex-direction: column;
+    min-height: calc(var(--happening-row) * var(--happening-rows));
+}
+
+.happening-row {
+    margin: 0;
+    padding: 0;
+    min-height: var(--happening-row);     // every row is this tall, so a list of three is exactly what its box reserves
+    // the rule between two rows: a hairline inset to the text edge, drawn as a background so it needs no pseudo-element
+    // (the legacy `ol > li::before` numbers would pollute one) and mirrors in right-to-left by itself
+    background-image: linear-gradient(var(--border), var(--border));
+    background-repeat: no-repeat;
+    background-position: 50% 0;
+    background-size: calc(100% - var(--space-5)) 1px;
+
+    &:first-child,
+    &.is-first {                    // (is-first: assets/js/time_phrases.js marks the first row SHOWN, when the first is hidden)
+        background-image: none;
+    }
+
+    &::before {
+        content: none;
+    }
+}
+
+.happening-link {
+    display: flex;
+    align-items: baseline;
+    gap: var(--space-2);
+    padding: var(--space-2) var(--space-3);
+    color: inherit;
+
+    &:hover,
+    &:focus {
+        color: inherit;
+        text-decoration: none;
+    }
+}
+
+// in the box a row is exactly one row tall, whatever font a script falls back to or how far the text is zoomed
+.happening-box .happening-link {
+    align-items: center;
+    height: var(--happening-row);
+    overflow: hidden;
+}
+
+// Only a link answers the pointer (a score row is not clickable), and it answers at once: no fade on a list people move
+// down many times a day. Hover is for a real pointer, so a touch does not leave a row lit.
+@media (hover: hover) and (pointer: fine) {
+    a.happening-link:hover {
+        background-color: var(--hover);
+    }
+}
+
+a.happening-link:active {
+    background-color: var(--press);
+}
+
+// (--text-muted falls under 4.5:1 on --press, so the second line takes the full text colour while the pointer is down)
+a.happening-link:active .happening-line2 {
+    color: var(--text);
+}
+
+// the keyboard's ring, drawn inside the row so the well's rounded edge cannot cut it
+body:not(.using-mouse) a.happening-link:focus-visible {
+    outline-offset: -2px;
+    background-color: var(--hover);
+}
+
+.happening-main {
+    min-width: 0;
+    flex: 1 1 auto;
+}
+
+.happening-line1 {
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: var(--text-base);
+    line-height: var(--leading-tight);
+    color: var(--text);
+}
+
+.happening-title {
+    font-weight: var(--weight-medium);
+}
+
+// what is over is quieter than what is on
+.happening-row.is-ended .happening-title,
+.happening-row.is-final .happening-title {
+    color: var(--text-muted);
+}
+
+.happening-line2 {
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: var(--text-sm);
+    font-variant-numeric: tabular-nums;     // counts and times keep their width as they tick
+    color: var(--text-muted);
+}
+
+// the pieces of the second line (a date, a note, a countdown, a time) are told apart by a dot between them
+.happening-line2 > * + *::before {
+    content: "\a0\00b7\a0";
+    white-space: pre;
+}
+
+// a countdown or a time is never broken across two lines
+.happening-until,
+.happening-at {
+    white-space: nowrap;
+}
+
+.happening-out {
+    flex: 0 0 auto;
+    font-size: var(--text-xs);
+    color: var(--text-muted);
+}
+
+.trend-rank {
+    color: var(--text-muted);
+    font-variant-numeric: tabular-nums;
+}
+
+// a short label before the title: a text label always, never colour alone. No outline of its own: the tint is enough, and
+// one line weight fewer next to the rows' hairlines
+.happening-badge {
+    display: inline-block;
+    margin-inline-end: var(--space-1);
+    padding: 0 var(--space-2);
+    border-radius: var(--radius-pill);
+    background-color: var(--hover);
+    font-size: var(--text-xs);
+    font-weight: var(--weight-semibold);
+    line-height: 1.4;
+    letter-spacing: 0.02em;
+    color: var(--text);
+    vertical-align: 0.05em;
+}
+
+.happening-row.is-live .happening-badge::before,
+.happening-row.is-alert .happening-badge::before {
+    content: "";
+    display: inline-block;
+    width: 0.45em;
+    height: 0.45em;
+    margin-inline-end: 0.35em;
+    border-radius: 50%;
+    background-color: var(--danger);
+}
+
+.happening-empty {
+    padding: var(--space-2) 0;
+    font-size: var(--text-sm);
+    color: var(--text-muted);
+}
+
+// in the box the empty line sits in the middle of the reserved well, so it reads as chosen, not as a gap
+.happening-box .happening-empty {
+    margin: auto;
+    padding: var(--space-3);
+    text-align: center;
+}
+
+// on the page a link under a list
+.happening-more {
+    display: inline-flex;
+    align-items: center;
+    min-height: 1.75rem;                   // a target of at least 24px (WCAG 2.2)
+    margin-top: var(--space-1);
+    font-size: var(--text-sm);
+    color: var(--link);
+}
+
+.happening-box .trend-link {
+    align-items: baseline;
+}
+
+// --- the page ---------------------------------------------------------------------------------------------------------
+
+// The page uses the box's idiom at full size: each column is a panel with its heading row (title at the start, link at the
+// end) above a well, so the box and the page read as one system. No fixed height here: a long title wraps, and the wells
+// stretch (`flex: 1 1 auto`) so the three columns end together.
+.happening-page {
+    .happening-cols {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr);
+        gap: var(--space-6);
+        margin-top: var(--space-5);
+    }
+
+    .happening-col {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-2);
+        min-width: 0;
+        padding: var(--space-3);
+        border-radius: var(--radius-lg);
+        background-color: var(--panel);
+    }
+
+    .happening-col-top {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: baseline;
+        justify-content: space-between;
+        gap: var(--space-2) var(--space-3);
+        padding: var(--space-4) var(--space-3) var(--space-2);
+    }
+
+    .happening-col-title {
+        margin: 0;
+        font-size: var(--text-title);
+        font-weight: var(--weight-semibold);
+        letter-spacing: var(--tracking-title);
+        color: var(--text);
+    }
+
+    .happening-col-top .happening-more {
+        margin: 0;
+    }
+
+    .happening-col .happening-well {
+        flex: 1 1 auto;
+    }
+
+    // wide rows: more room, and the text edge 16px in from the well like the box's
+    .happening-link {
+        padding: var(--space-3) var(--space-4);
+    }
+
+    .happening-row {
+        background-size: calc(100% - var(--space-8)) 1px;
+    }
+
+    // a list that sits straight on the page is its own well, one step up from the page
+    .happening-list-page {
+        margin-top: var(--space-4);
+        overflow: hidden;
+        border-radius: var(--radius-md);
+        background-color: var(--panel);
+    }
+
+    .happening-list-page > .happening-empty {
+        padding: var(--space-4);
+    }
+
+    .happening-row-wide .happening-line1,
+    .happening-row-wide .happening-line2 {
+        white-space: normal;
+    }
+
+    .happening-note {
+        margin-top: var(--space-5);
+    }
+}
+
+@media (min-width: 992px) {
+    .happening-page .happening-cols {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .happening-page .happening-cols-2 {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+// --- the calendar -------------------------------------------------------------------------------------------------------
+
+// the grid is one rounded frame: the wrapper draws the outer edge, so a cell keeps only the lines that divide it from the
+// cell above and the cell before it
+.cal-wrap {
+    overflow: hidden;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+}
+
+.cal {
+    width: 100%;
+    table-layout: fixed;
+    border-collapse: collapse;
+
+    th {
+        background-color: var(--panel);
+        padding: var(--space-2);
+        font-size: var(--text-xs);
+        font-weight: var(--weight-semibold);
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        text-align: start;
+        color: var(--text-muted);
+    }
+}
+
+.cal-day {
+    height: 9.25rem;
+    padding: var(--space-1) var(--space-2);
+    vertical-align: top;
+    border: 0;
+    border-top: 1px solid var(--border);
+    border-inline-start: 1px solid var(--border);
+    overflow: hidden;
+
+    &:first-child {
+        border-inline-start: 0;
+    }
+
+    &.is-other {
+        background-color: var(--panel);
+    }
+
+    &.is-today {
+        background-color: var(--brand-soft);
+    }
+
+    &.is-other .cal-num {
+        color: var(--text-muted);
+    }
+
+    &.is-today .cal-num {
+        background-color: var(--brand-strong);
+        color: var(--on-brand);
+    }
+}
+
+.cal-num {
+    display: inline-block;
+    min-width: 1.6rem;
+    margin-bottom: var(--space-1);
+    padding: 0 var(--space-1);
+    border-radius: var(--radius-pill);
+    font-size: var(--text-sm);
+    font-variant-numeric: tabular-nums;
+    text-align: center;
+    color: var(--text);
+}
+
+.cal-chip {
+    display: block;
+    overflow: hidden;
+    min-height: 1.75rem;
+    margin-bottom: 2px;
+    padding: 1px var(--space-2);
+    border-radius: var(--radius-xs);
+    background-color: var(--hover);
+    font-size: var(--text-xs);
+    line-height: 1.35;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    color: var(--text);
+
+    &.is-major {
+        font-weight: var(--weight-semibold);
+        border-inline-start: 3px solid var(--border-strong);
+    }
+
+    &:hover,
+    &:focus {
+        color: var(--text);
+        text-decoration: underline;
+    }
+}
+
+.cal-chip[hidden] {
+    display: none;
+}
+
+.cal-more {
+    display: flex;
+    align-items: center;
+    min-height: 1.75rem;
+    font-size: var(--text-xs);
+    color: var(--text-muted);
+}
+
+@media (max-width: 575.98px) {
+    .cal-day {
+        height: 3.25rem;
+        padding: var(--space-1);
+    }
+
+    .cal-chip,
+    .cal-more {
+        display: none;
+    }
+
+    .cal-day.has-events .cal-num::after {
+        content: "\2022";                // a dot: something is on this day (the list below says what)
+        margin-inline-start: 2px;
+        color: var(--brand-strong);
+    }
+}

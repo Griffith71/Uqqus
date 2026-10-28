@@ -1,0 +1,57 @@
+{#
+  The rows of the "What's happening" box and page (helpers/happening_box.py `present` makes `r`; routes/happening_pages.py).
+  Nothing here names a member. The times are the server's UTC text; assets/js/happening.js shows them in the reader's zone
+  and keeps a countdown (`data-until-utc`) ticking. A row an admin or a source wrote is drawn exactly as written; a link out
+  (an alert, a headline, an election's source) opens in a new tab with no referrer.
+
+  A date or time a row carries for the script: `data-date` / `data-end-date` (a civil day, the same for everyone) or
+  `data-utc` / `data-end-utc` (an instant).
+#}
+
+{% macro event_row(r, hidden=false, wide=false, today=false) %}
+<li class="happening-row is-{{ r.status }}{% if r.alert %} is-alert{% endif %}{% if wide %} happening-row-wide{% endif %}" data-key="{{ r.key }}" data-kind="{{ r.kind }}"
+    {%- if r.civil %} data-date="{{ r.date }}"{% if r.end_date %} data-end-date="{{ r.end_date }}"{% endif %}
+    {%- elif r.starts_utc is not none %} data-utc="{{ r.starts_utc }}"{% if r.ends_utc is not none %} data-end-utc="{{ r.ends_utc }}"{% endif %}{% endif %}
+    {%- if hidden or (today and not r.today_utc) %} hidden{% endif %}>
+  {% if r.link %}<a class="happening-link" href="{{ r.link }}" title="{{ r.line1 }}"{% if r.external %} rel="noopener noreferrer nofollow" target="_blank"{% endif %}>{% else %}<div class="happening-link">{% endif %}
+    <span class="happening-main">
+      <span class="happening-line1">{% if r.badge %}<span class="happening-badge is-{{ r.kind }}">{{ r.badge }}</span> {% endif %}<span class="happening-title"{% if r.lang %} lang="{{ r.lang }}"{% endif %}{% if r.foreign %} dir="auto"{% endif %}>{{ r.line1 }}</span></span>
+      {%- if r.line2 or r.until_text or r.at_text or (wide and r.when_text) %}
+      <span class="happening-line2">
+        {%- if wide and r.when_text %}{% if r.starts_utc is not none %}<time class="happening-at" data-utc="{{ r.starts_utc }}" data-full="1">{{ r.when_text }}</time>{% else %}<span>{{ r.when_text }}</span>{% endif %}{% endif -%}
+        {%- if r.until_text %}<time class="happening-until" data-until-utc="{{ r.until_utc }}">{{ r.until_text }}</time>{% endif -%}
+        {%- if not wide and r.at_text %}<time class="happening-at" data-utc="{{ r.starts_utc }}">{{ r.at_text }}</time>{% endif -%}
+        {%- if r.line2 and not (wide and r.line2 == r.when_text) %}<span>{{ r.line2 }}</span>{% endif -%}
+      </span>
+      {%- endif %}
+    </span>
+    {% if r.external %}<i class="fas fa-arrow-up-right-from-square happening-out" aria-hidden="true"></i><span class="sr-only">{{ _("Opens the source in a new tab") }}</span>{% endif %}
+  {% if r.link %}</a>{% else %}</div>{% endif %}
+</li>
+{% endmacro %}
+
+{# a trending topic (a TrendingTopic row, helpers/trending_store.py): the same rows as the Trending box #}
+{% macro topic_row(t, rank) %}
+<li class="happening-row">
+  <a href="{{ t.permalink }}" class="happening-link trend-link">
+    <span class="trend-rank">{{ rank }}</span>
+    <span class="happening-main">
+      <span class="happening-line1"><span class="happening-title">{{ t.label }}</span></span>
+      <span class="happening-line2">{{ ngettext("%(num)s post", "%(num)s posts", t.post_count) }}</span>
+    </span>
+  </a>
+</li>
+{% endmacro %}
+
+{# a hot thread (an original post as get_posts returns it, already filtered for this reader): its title, as every list
+   draws it (stored, sanitized HTML), and how many comments it has. Never who wrote it: counts only. #}
+{% macro hot_row(p) %}
+<li class="happening-row">
+  <a href="{{ p.permalink }}" class="happening-link">
+    <span class="happening-main">
+      <span class="happening-line1"><span class="happening-title" dir="auto">{{ p.title | safe }}</span></span>
+      <span class="happening-line2">{{ ngettext("%(num)s comment", "%(num)s comments", p.comment_count) }}</span>
+    </span>
+  </a>
+</li>
+{% endmacro %}

@@ -13,7 +13,18 @@ cycle; plain `text()` SQL, each rule in its own savepoint (tests/test_retention.
   checks look back, helpers/guild_limits.py), the row after `LOGIN_EVENT_DAYS`. **Not sooner than 400 days**: the
   region logic (helpers/regions.py `LOOKBACK_DAYS`) reads a year of country and region to decide whether an account
   has moved, and pruning earlier would stop regions ever migrating (tests/test_retention.py checks the two agree).
+- `translations`: kept so a text is translated once per language (helpers/translation_store.py), for
+  `TRANSLATION_DAYS`; one asked for after that is made again.
+- `site_feedback_images`: a screenshot sent with feedback (helpers/site_feedback.py) goes `FEEDBACK_IMAGE_DAYS` after
+  the admins closed the item (fixed or declined). An item nobody has closed keeps its screenshot.
+- `signup_reviews`: what the signup guard thought of a sign-up (helpers/signup_review_store.py) goes
+  `SIGNUP_REVIEW_DAYS` after it was decided (or let through). A row whose account is still held stays.
+- `site_events` (helpers/site_events.py) that ended more than `EVENT_DAYS` ago go with their change log: a score, an alert, a
+  countdown. (Reloading the seed file (helpers/happening_seed.json) puts back any entry still in it, so an entry that is over is
+  taken out of the file when the file is reviewed.)
 """
+import time
+
 from sqlalchemy import text
 
 from ruqqus.helpers.collab_rules import RESYNC_AFTER
@@ -25,6 +36,10 @@ BELL_DAYS = 90                  # helpers/bell.py KEEP_DAYS
 LOGIN_ADDRESS_DAYS = 90         # helpers/guild_limits.py WINDOW
 GUILD_COUNTER_DAYS = 400         # helpers/guild_insights.py KEEP_DAYS
 LOGIN_EVENT_DAYS = 410          # more than helpers/regions.py LOOKBACK_DAYS (400)
+TRANSLATION_DAYS = 90           # helpers/translation_store.py: a kept translation is made again when asked after
+FEEDBACK_IMAGE_DAYS = 30        # helpers/site_feedback.py: a month after the item was closed
+EVENT_DAYS = 400                # helpers/site_events.py: an event that ended over a year ago
+SIGNUP_REVIEW_DAYS = 90         # helpers/signup_review_store.py KEEP_DAYS: what the signup guard thought, once decided
 DAY = 86400
 
 RULES = (
@@ -41,6 +56,16 @@ RULES = (
     ("old sign-in addresses", "UPDATE login_events SET ip = NULL, user_agent = NULL "
                               "WHERE created_utc < :addresses AND (ip IS NOT NULL OR user_agent IS NOT NULL)"),
     ("old sign-ins", "DELETE FROM login_events WHERE created_utc < :sign_ins"),
+    ("old translations", "DELETE FROM translations WHERE created_utc < :translations"),
+    ("change log of old events", "DELETE FROM site_event_log WHERE event_id IN (SELECT id FROM site_events WHERE "
+                                 "(date_kind = 'instant' AND COALESCE(ends_utc, starts_utc) < :events) OR "
+                                 "(date_kind = 'civil' AND COALESCE(ends_date, starts_date) < :events_day))"),
+    ("old events", "DELETE FROM site_events WHERE (date_kind = 'instant' AND COALESCE(ends_utc, starts_utc) < :events) OR "
+                   "(date_kind = 'civil' AND COALESCE(ends_date, starts_date) < :events_day)"),
+    ("screenshots of closed feedback", "DELETE FROM site_feedback_images WHERE feedback_id IN "
+                                       "(SELECT id FROM site_feedback WHERE resolved_utc > 0 AND resolved_utc < :feedback_images)"),
+    ("decided sign-up reviews", "DELETE FROM signup_reviews WHERE decision <> '' AND "
+                                "CASE WHEN decided_utc > 0 THEN decided_utc ELSE created_utc END < :signup_reviews"),
 )
 
 
@@ -50,7 +75,10 @@ def prune(db, now):
               "deleted": now - DELETED_UPDATE_DAYS * DAY, "day": now // DAY - VIEW_DAYS_KEPT,
               "bells": now - BELL_DAYS * DAY, "addresses": now - LOGIN_ADDRESS_DAYS * DAY,
               "sign_ins": now - LOGIN_EVENT_DAYS * DAY,
-              "guild_day": now // DAY - GUILD_COUNTER_DAYS}
+              "guild_day": now // DAY - GUILD_COUNTER_DAYS, "translations": now - TRANSLATION_DAYS * DAY,
+              "feedback_images": now - FEEDBACK_IMAGE_DAYS * DAY,
+              "signup_reviews": now - SIGNUP_REVIEW_DAYS * DAY,
+              "events": now - EVENT_DAYS * DAY, "events_day": time.strftime("%Y-%m-%d", time.gmtime(now - EVENT_DAYS * DAY))}
     done = {}
     for name, sql in RULES:
         savepoint = db.begin_nested()

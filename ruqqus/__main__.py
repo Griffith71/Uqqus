@@ -565,6 +565,11 @@ def after_request(response):
             response.headers["Cache-Control"] = "public, max-age=600"
         else:
             response.headers["Cache-Control"] = "private, no-cache"
+    # the "What's happening" box and its polls depend on the viewer's filters and on the moment: private, asked again
+    # each time. Assigned, not added: auth_desired adds "public" for a visitor (helpers/wrappers.py), and the two would
+    # sit side by side, contradicting each other (routes/happening_pages.py, tests/test_happening_assets.py)
+    if request.path.startswith("/inpage/happening"):
+        response.headers["Cache-Control"] = "private, no-cache"
     # a versioned asset (helpers/page_assets.asset_url, ?v= is a hash of its content) never changes at that
     # address: kept for a year, never asked for again. Not a stylesheet answering with its last good copy because
     # its sources don't compile (routes/static.py says no-store): that copy is not what the hash names

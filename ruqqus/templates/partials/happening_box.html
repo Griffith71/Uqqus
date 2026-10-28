@@ -1,0 +1,70 @@
+{#
+  The "What's happening" box in the right sidebar (routes/happening_pages.py /inpage/happening, loaded after the page by
+  assets/js/happening.js; helpers/happening_box.py makes `m`). Three sections of at most three rows, each with a line of
+  its own when it is empty, so the box is never absent (Trending's box drew nothing when nothing trended, and looked gone).
+
+  Live and Today are not drawn at all while they have nothing (the owner, 2026-10-27: "completely disappear from vision"): the
+  server sends their <section> hidden, happening.js takes `hidden` from each answer, and time_phrases.js applyToday hides Today
+  when no row falls on the reader's own day. Trending keeps its empty line, so the box never vanishes. The empty lines stay in the
+  markup for the moment a section has something to say again.
+
+  Grouped like iOS Settings (_happening.scss): each section is a heading row on the panel (its label, and its link at the
+  end) above a well that holds its rows.
+
+  The box keeps one height: each list reserves three rows in CSS (_happening.scss) and each heading row is always there,
+  so a row or a link arriving or leaving moves nothing below it. Today's rows are all sent hidden (a window around UTC today, the same for everyone) and the script
+  shows the ones that fall on the reader's own today. `data-rev` is what the poll sends back to get a 204 when nothing
+  changed; `data-next` is how soon to ask again; `data-day` is the UTC day the window is centred on.
+
+  No `aria-live` here: one visually hidden status line (`data-happening-status`) is spoken when a match changes state.
+#}
+{% from "partials/happening_rows.html" import event_row, topic_row, hot_row with context %}
+<div class="sidebar-section happening-box" data-rev="{{ m.rev }}" data-next="{{ m.next }}" data-day="{{ m.day }}">
+  <div class="title">
+    <span role="heading" aria-level="2"><i class="fas fa-bolt mr-2" aria-hidden="true"></i>{{ _("What's happening") }}</span>
+    <a href="/happening" class="happening-all">{{ _("See all") }}</a>
+  </div>
+  <div class="body">
+
+    <section class="happening-section" data-section="trending" aria-labelledby="happening-h-trending">
+      <div class="happening-top">
+        <h3 class="happening-head" id="happening-h-trending">{% if m.topics %}{{ heading }}{% elif m.hot %}{{ _("Busy posts") }}{% else %}{{ _("Trending") }}{% endif %}</h3>
+      </div>
+      <div class="happening-well">
+        <ul class="happening-list list-unstyled mb-0">
+          {% for t in m.topics %}{{ topic_row(t, loop.index) }}{% endfor %}
+          {% for p in m.hot %}{{ hot_row(p) }}{% endfor %}
+          {% if not m.topics and not m.hot %}<li class="happening-empty">{{ _("Nothing is trending right now.") }}</li>{% endif %}
+        </ul>
+      </div>
+    </section>
+
+    <section class="happening-section" data-section="live" aria-labelledby="happening-h-live"{% if not m.live %} hidden{% endif %}>
+      <div class="happening-top">
+        <h3 class="happening-head{% if m.live_on %} is-on{% endif %}" id="happening-h-live">{{ _("Live") }}</h3>
+        {% if m.live_more %}{% set more_live = ngettext("See %(num)s more", "See %(num)s more", m.live_more) %}<a href="/happening/live" class="happening-more" title="{{ more_live }}">{{ more_live }}</a>{% endif %}
+      </div>
+      <div class="happening-well">
+        <ul class="happening-list list-unstyled mb-0">
+          {% for r in m.live %}{{ event_row(r) }}{% endfor %}
+          {% if not m.live %}<li class="happening-empty">{{ _("Nothing live right now.") }}</li>{% endif %}
+        </ul>
+      </div>
+    </section>
+
+    <section class="happening-section" data-section="today" aria-labelledby="happening-h-today"{% if not (m.today | selectattr("today_utc") | list) %} hidden{% endif %}>
+      <div class="happening-top">
+        <h3 class="happening-head" id="happening-h-today">{{ _("Today") }}</h3>
+        {% set open_calendar = _("Open the calendar") %}<a href="/happening/calendar" class="happening-more" title="{{ open_calendar }}">{{ open_calendar }}</a>
+      </div>
+      <div class="happening-well">
+        <ul class="happening-list list-unstyled mb-0" data-today-list>
+          {% for r in m.today %}{{ event_row(r, today=true) }}{% endfor %}
+          <li class="happening-empty" data-today-empty{% if m.today | selectattr("today_utc") | list %} hidden{% endif %}>{{ _("Nothing marked for today.") }}</li>
+        </ul>
+      </div>
+    </section>
+
+    <span class="sr-only" role="status" data-happening-status></span>
+  </div>
+</div>

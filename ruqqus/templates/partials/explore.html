@@ -12,9 +12,11 @@
   </div>
   {% if active == 'curations' and v %}<a href="/curations/create" class="btn btn-primary btn-sm rounded-pill px-3">Create a curation</a>{% endif %}
 </div>
-<nav class="explore-tabs" aria-label="Explore">
-  <a href="/browse" class="explore-tab{% if active == 'guilds' %} active{% endif %}"{% if active == 'guilds' %} aria-current="page"{% endif %}>Guilds</a>
-  <a href="/curations" class="explore-tab{% if active == 'curations' %} active{% endif %}"{% if active == 'curations' %} aria-current="page"{% endif %}>Curations</a>
+<nav class="explore-tabs" aria-label="{{ _('Explore') }}">
+  <a href="/browse" class="explore-tab{% if active == 'guilds' %} active{% endif %}"{% if active == 'guilds' %} aria-current="page"{% endif %}>{{ _("Guilds") }}</a>
+  <a href="/curations" class="explore-tab{% if active == 'curations' %} active{% endif %}"{% if active == 'curations' %} aria-current="page"{% endif %}>{{ _("Curations") }}</a>
+  {# what is trending, live and on the calendar: the way to it from a phone, which has no right sidebar (/happening) #}
+  {% if happening_enabled() %}<a href="/happening" class="explore-tab">{{ pgettext("tab: what is happening now", "Happening") }}</a>{% endif %}
 </nav>
 {% endmacro %}
 

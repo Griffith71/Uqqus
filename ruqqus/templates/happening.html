@@ -1,0 +1,169 @@
+{% extends "default.html" %}
+{% from "partials/happening_rows.html" import event_row, topic_row, hot_row with context %}
+
+{# a calendar chip: a link out when the item has one; `hide` for the fourth and later of a day (the script counts the rest) #}
+{% macro chip(c, hide=false) %}{% if c.link %}<a class="cal-chip is-{{ c.kind }}{% if c.major %} is-major{% endif %}" href="{{ c.link }}"{% if c.external %} rel="noopener noreferrer nofollow" target="_blank"{% endif %}{% if c.starts_utc is not none %} data-utc="{{ c.starts_utc }}"{% endif %}{% if hide %} hidden{% endif %} data-chip>{{ c.short }}</a>{% else %}<span class="cal-chip is-{{ c.kind }}{% if c.major %} is-major{% endif %}"{% if c.starts_utc is not none %} data-utc="{{ c.starts_utc }}"{% endif %}{% if hide %} hidden{% endif %} data-chip>{{ c.short }}</span>{% endif %}{% endmacro %}
+
+{# The "What's happening" page (routes/happening_pages.py): the box's three parts at full size and a calendar of the month.
+   Laid out like Explore and Spaces: the left sidebar where the home feed has it, no right sidebar, no ad (the page has no
+   listing, and the sidebar ad is only for pages that show posts). The server draws times in UTC; assets/js/happening_page.js
+   shows them in the reader's zone and puts an instant on the reader's own day. #}
+
+{% block pagetype %}explore{% endblock %}
+
+{% block title %}
+<title>{{ _("What's happening") }} - {{ 'SITE_NAME' | app_config }}</title>
+{% endblock %}
+
+{% block leftSidebarBlock %}
+{% include "sidebar-left.html" %}
+{% endblock %}
+
+{% block sidebar %}{% endblock %}
+
+{% block content %}
+<div class="explore happening-page" id="happening-page" data-tab="{{ tab }}">
+  <div class="explore-head">
+    <div>
+      <h1 class="explore-title">{{ _("What's happening") }}</h1>
+      <p class="explore-lead">{{ _("What people are talking about, what is on now, and what is coming up, in one place.") }}</p>
+    </div>
+  </div>
+  <nav class="explore-tabs" aria-label="{{ _("What's happening") }}">
+    {% set labels = {"overview": _("Overview"), "trending": _("Trending"), "live": _("Live"), "calendar": _("Calendar")} %}
+    {% for key in tabs %}
+    <a href="{{ '/happening' if key == 'overview' else '/happening/' ~ key }}" class="explore-tab{% if tab == key %} active{% endif %}"{% if tab == key %} aria-current="page"{% endif %}>{{ labels[key] }}</a>
+    {% endfor %}
+  </nav>
+
+  {% if tab == "overview" %}
+  <div class="happening-cols">
+    <section class="happening-col" aria-labelledby="hp-trending">
+      <div class="happening-col-top">
+        <h2 class="happening-col-title" id="hp-trending">{% if m.topics %}{{ heading }}{% elif m.hot %}{{ _("Busy posts") }}{% else %}{{ _("Trending") }}{% endif %}</h2>
+        <a class="happening-more" href="/happening/trending">{{ _("See what is trending") }}</a>
+      </div>
+      <div class="happening-well">
+        <ul class="happening-list list-unstyled mb-0">
+          {% for t in m.topics %}{{ topic_row(t, loop.index) }}{% endfor %}
+          {% for p in m.hot %}{{ hot_row(p) }}{% endfor %}
+          {% if not m.topics and not m.hot %}<li class="happening-empty">{{ _("Nothing is trending right now.") }}</li>{% endif %}
+        </ul>
+      </div>
+    </section>
+    <section class="happening-col" aria-labelledby="hp-live">
+      <div class="happening-col-top">
+        <h2 class="happening-col-title" id="hp-live">{{ _("Live") }}</h2>
+        <a class="happening-more" href="/happening/live">{{ _("See everything live") }}</a>
+      </div>
+      <div class="happening-well">
+        <ul class="happening-list list-unstyled mb-0">
+          {% for r in m.live %}{{ event_row(r, wide=true) }}{% endfor %}
+          {% if not m.live %}<li class="happening-empty">{{ _("Nothing live right now.") }}</li>{% endif %}
+        </ul>
+      </div>
+    </section>
+    <section class="happening-col" aria-labelledby="hp-today">
+      <div class="happening-col-top">
+        <h2 class="happening-col-title" id="hp-today">{{ _("Today") }}</h2>
+        <a class="happening-more" href="/happening/calendar">{{ _("Open the calendar") }}</a>
+      </div>
+      <div class="happening-well">
+        <ul class="happening-list list-unstyled mb-0" data-today-list data-today-rows="{{ 6 }}">
+          {% for r in m.today %}{{ event_row(r, today=true, wide=true) }}{% endfor %}
+          <li class="happening-empty" data-today-empty{% if m.today | selectattr("today_utc") | list %} hidden{% endif %}>{{ _("Nothing marked for today.") }}</li>
+        </ul>
+      </div>
+    </section>
+  </div>
+
+  {% elif tab == "trending" %}
+  <div class="happening-cols happening-cols-2">
+    <section class="happening-col" aria-labelledby="hp-topics">
+      <div class="happening-col-top">
+        <h2 class="happening-col-title" id="hp-topics">{{ heading }}</h2>
+        <a class="happening-more" href="/trending">{{ _("How this list is made") }}</a>
+      </div>
+      <div class="happening-well">
+        <ol class="trend-list trend-list-full list-unstyled happening-list mb-0">
+          {% for t in topics %}{{ topic_row(t, loop.index) }}{% else %}
+          <li class="happening-empty">{{ _("Nothing is trending right now. Topics appear here when several people post about the same thing.") }}</li>
+          {% endfor %}
+        </ol>
+      </div>
+    </section>
+    <section class="happening-col" aria-labelledby="hp-hot">
+      <div class="happening-col-top">
+        <h2 class="happening-col-title" id="hp-hot">{{ _("Busy posts") }}</h2>
+      </div>
+      <div class="happening-well">
+        <ul class="happening-list list-unstyled mb-0">
+          {% for p in hot %}{{ hot_row(p) }}{% else %}
+          <li class="happening-empty">{{ _("No posts are busy right now.") }}</li>
+          {% endfor %}
+        </ul>
+      </div>
+    </section>
+  </div>
+
+  {% elif tab == "live" %}
+  <nav class="explore-chips" aria-label="{{ _('Kinds of event') }}">
+    <a href="/happening/live" class="explore-chip{% if not kind %} active{% endif %}"{% if not kind %} aria-current="true"{% endif %}>{{ pgettext("filter", "All") }}</a>
+    {% for k in kinds %}
+    <a href="/happening/live?kind={{ k }}" class="explore-chip{% if kind == k %} active{% endif %}"{% if kind == k %} aria-current="true"{% endif %}>{{ kind_labels[k] }}</a>
+    {% endfor %}
+  </nav>
+  <ul class="happening-list happening-list-page list-unstyled">
+    {% for r in live %}{{ event_row(r, wide=true) }}{% else %}
+    <li class="happening-empty">{{ _("Nothing live right now.") }}</li>
+    {% endfor %}
+  </ul>
+  {% if live_cut %}<p class="text-muted text-small">{{ _("Showing the first rows. Choose a kind to see fewer.") }}</p>{% endif %}
+  <p class="text-muted text-small happening-note">{{ _("Alerts and headlines come from the source named on each line, shown as it published them. They are automatic and are not an official warning: follow the link for the full, official text.") }}</p>
+
+  {% else %}
+  {% set cal = cal %}
+  <div class="cal-nav d-flex align-items-center mb-2">
+    <a class="btn btn-sm btn-link" href="/happening/calendar?month={{ cal.prev }}" aria-label="{{ _('Previous month') }}"><i class="fas fa-chevron-{{ 'right' if ui_dir() == 'rtl' else 'left' }}" aria-hidden="true"></i></a>
+    <h2 class="h5 mb-0 mx-2" id="cal-title">{{ month_year(cal.month, cal.year) }}</h2>
+    <a class="btn btn-sm btn-link" href="/happening/calendar?month={{ cal.next }}" aria-label="{{ _('Next month') }}"><i class="fas fa-chevron-{{ 'left' if ui_dir() == 'rtl' else 'right' }}" aria-hidden="true"></i></a>
+  </div>
+  <div class="cal-wrap">
+  <table class="cal" data-calendar data-today="{{ cal.today }}">
+    <caption class="sr-only">{{ month_year(cal.month, cal.year) }}</caption>
+    <thead>
+      <tr>
+        {% for d in [pgettext("weekday", "Mon"), pgettext("weekday", "Tue"), pgettext("weekday", "Wed"), pgettext("weekday", "Thu"), pgettext("weekday", "Fri"), pgettext("weekday", "Sat"), pgettext("weekday", "Sun")] %}<th scope="col">{{ d }}</th>{% endfor %}
+      </tr>
+    </thead>
+    <tbody>
+      {% for week in cal.weeks %}
+      <tr>
+        {% for day in week %}
+        <td class="cal-day{% if day.chips or day.more %} has-events{% endif %}{% if day.other %} is-other{% endif %}{% if day.iso == cal.today %} is-today{% endif %}" data-day="{{ day.iso }}"{% if day.iso == cal.today %} aria-current="date"{% endif %}>
+          <span class="cal-num">{{ day.date.day }}</span>
+          {% for c in day.chips %}{{ chip(c, loop.index > 3) }}{% endfor %}
+          {% if day.more %}<a class="cal-more" href="#cal-list">{{ ngettext("%(num)s more", "%(num)s more", day.more) }}</a>{% endif %}
+        </td>
+        {% endfor %}
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  </div>
+  {# instants just outside the grid by UTC that fall inside it for a reader in another zone: the script puts them in their cell #}
+  <div hidden data-spill>{% for c in cal.spill %}{{ chip(c) }}{% endfor %}</div>
+  <p class="text-muted text-small mt-2" data-zone-note>{{ _("Days and times are in UTC.") }}</p>
+  {% if cal.cut %}<p class="text-muted text-small">{{ _("Showing the first events of this month; some are not listed.") }}</p>{% endif %}
+
+  <h2 class="h6 text-muted text-uppercase mt-4" id="cal-list">{{ _("This month") }}</h2>
+  <ul class="happening-list happening-list-page list-unstyled">
+    {% for r in cal.list %}{{ event_row(r, wide=true) }}{% else %}
+    <li class="happening-empty">{{ _("Nothing is marked for this month.") }}</li>
+    {% endfor %}
+  </ul>
+  <p class="text-muted text-small">{{ _("Dates marked Expected depend on a moon sighting and can differ by a day where you are.") }}</p>
+  {% endif %}
+</div>
+<script src="{{ asset_url('js/happening_page.js') }}"></script>
+{% endblock %}

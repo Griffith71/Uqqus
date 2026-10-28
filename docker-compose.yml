@@ -27,6 +27,8 @@ services:
       - DAILYMOTION_API_SECRET=${DAILYMOTION_API_SECRET:-}
       # trending topics (ruqqus/helpers/trending.py): accounts a topic needs
       - TRENDING_MIN_AUTHORS=${TRENDING_MIN_AUTHORS:-3}
+      # the "What's happening" box and page (ruqqus/routes/happening_pages.py): 0 switches the layer off
+      - HAPPENING_ENABLED=${HAPPENING_ENABLED:-1}
       # outside feed servers for curations (ruqqus/helpers/feed_server.py). ALLOW_LOCAL lets a
       # test server on this machine be used: local testing only, never on a live site
       - FEED_SERVERS_ENABLED=${FEED_SERVERS_ENABLED:-1}
