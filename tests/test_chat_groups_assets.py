@@ -50,7 +50,9 @@ def test_every_change_is_a_post_with_the_form_key_and_a_group_you_are_not_in_is_
             assert "@validate_formkey" in decorators, name
     # adding people, making and renaming a group need an account in good standing
     for name in ("chat_group_create", "chat_group_add", "chat_group_rename"):
-        assert re.search(rf"@is_not_banned\n@validate_formkey\ndef {name}\(", ROUTES), name
+        # (a held account, helpers/quarantine.py, can't make a group: its wrapper may sit between the two)
+        assert re.search(rf"@is_not_banned\n(?:@not_quarantined\(\"\w+\"\)\n)?@validate_formkey\ndef {name}\(",
+                         ROUTES), name
     membership = ROUTES.split("def _membership", 1)[1].split("\ndef ", 1)[0]
     assert "abort(404)" in membership
     for name in ("chat_group_info", "chat_group_add", "chat_group_remove", "chat_group_leave", "chat_group_accept",

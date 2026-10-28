@@ -5,12 +5,13 @@ from flask import abort, g, jsonify, redirect, render_template, request
 from ruqqus.helpers import user_reports
 from ruqqus.helpers.get import get_user
 from ruqqus.helpers.visibility import user_hidden
-from ruqqus.helpers.wrappers import admin_level_required, auth_required, validate_formkey
+from ruqqus.helpers.wrappers import admin_level_required, auth_required, not_quarantined, validate_formkey
 from ruqqus.__main__ import app
 
 
 @app.post("/api/user/<username>/report")
 @auth_required
+@not_quarantined("report")
 @validate_formkey
 def report_account(username, v):
     target = get_user(username, v=v, graceful=True)

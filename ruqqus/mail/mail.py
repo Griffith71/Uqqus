@@ -8,6 +8,8 @@ from urllib.parse import quote
 
 from ruqqus.helpers.security import *
 from ruqqus.helpers.wrappers import *
+from ruqqus.helpers.i18n_runtime import force_locale, locale_for_user, tr
+from ruqqus.helpers import signup_review_store, signup_signals
 from ruqqus.classes import *
 from ruqqus.__main__ import app
 
@@ -118,6 +120,11 @@ def activate(v):
 
     user.email = email
     user.is_activated = True
+
+    # an account the signup guard held goes free with an address that isn't a throwaway (helpers/quarantine.py)
+    if user.quarantined_utc and not signup_signals.disposable(email):
+        signup_review_store.release(g.db, user.id, "verified", int(time.time()))
+        user.quarantined_utc = 0
 
     if not any([b.badge_id == 2 for b in user.badges]):
         mail_badge = Badge(user_id=user.id,

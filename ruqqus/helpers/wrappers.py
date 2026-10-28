@@ -324,6 +324,33 @@ def no_negative_balance(s):
     return wrapper_maker
 
 
+def not_quarantined(action):
+    """Refuse an account the signup guard is holding (helpers/quarantine.py). Goes under the route's sign-in wrapper,
+    so `v` is known, and right above its `@validate_formkey` (several tests pin that line right above the function). A
+    form the browser navigated with gets the message page, anything else (the site's scripts, the API) a 403 JSON
+    error."""
+
+    def wrapper_maker(f):
+
+        def wrapper(*args, **kwargs):
+            from ruqqus.__main__ import r
+            from .quarantine import HELD_TITLE, refusal
+            from .i18n_runtime import msg
+            held = refusal(kwargs.get("v"), action, r)
+            if held:
+                if request.headers.get("Sec-Fetch-Mode") == "navigate" and not request.path.startswith("/api/"):
+                    return render_template("message.html", v=kwargs.get("v"), title=msg(HELD_TITLE), message=held,
+                                           link="/settings/security", link_text=tr("Verify an email")), 403
+                return jsonify({"error": held}), 403
+            return f(*args, **kwargs)
+
+        wrapper.__name__ = f.__name__
+        wrapper.__doc__ = f.__doc__
+        return wrapper
+
+    return wrapper_maker
+
+
 def _response_status(resp):
     if isinstance(resp, tuple):
         return resp[1] if len(resp) > 1 else 200

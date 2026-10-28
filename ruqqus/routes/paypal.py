@@ -326,6 +326,7 @@ def _tip_notification(kind, permalink, coins, recipient):
 @no_sanctions
 @is_not_banned
 @no_negative_balance("toast")
+@not_quarantined("tip")
 @validate_formkey
 def gift_post_pid(pid, v):
 
@@ -410,6 +411,7 @@ def gift_post_pid(pid, v):
 @no_sanctions
 @is_not_banned
 @no_negative_balance("toast")
+@not_quarantined("tip")
 @validate_formkey
 def gift_comment_pid(cid, v):
 

@@ -332,6 +332,7 @@ CREATE TABLE public.users (
     last_active_utc integer DEFAULT 0 NOT NULL,
     premium_auto_renew boolean DEFAULT false NOT NULL,
     signin_alerts boolean DEFAULT true NOT NULL,
+    quarantined_utc integer DEFAULT 0 NOT NULL,
     score_display smallint DEFAULT 0 NOT NULL,
     profile_job character varying(60) DEFAULT '' NOT NULL,
     profile_location character varying(60) DEFAULT '' NOT NULL,
@@ -6085,6 +6086,26 @@ CREATE TABLE public.user_reports (
 );
 CREATE INDEX user_reports_open_idx ON public.user_reports (user_id) WHERE resolved_utc = 0;
 CREATE INDEX user_reports_reporter_idx ON public.user_reports (reporter_id, created_utc);
+
+-- the signup guard (scripts/migrations/2026-12-04_signup_guard.sql)
+CREATE INDEX users_quarantined_idx ON public.users (quarantined_utc) WHERE quarantined_utc > 0;
+
+CREATE TABLE public.signup_reviews (
+    id SERIAL PRIMARY KEY,
+    user_id integer NOT NULL,
+    created_utc integer DEFAULT 0 NOT NULL,
+    score smallint DEFAULT 0 NOT NULL,
+    reasons character varying(300) DEFAULT '' NOT NULL,
+    network character varying(16) DEFAULT '' NOT NULL,
+    name_shape character varying(40) DEFAULT '' NOT NULL,
+    decision character varying(16) DEFAULT '' NOT NULL,
+    decided_utc integer DEFAULT 0 NOT NULL,
+    decided_by integer DEFAULT 0 NOT NULL,
+    CONSTRAINT signup_reviews_user_key UNIQUE (user_id)
+);
+CREATE INDEX signup_reviews_waiting_idx ON public.signup_reviews (created_utc) WHERE decision = '';
+CREATE INDEX signup_reviews_network_idx ON public.signup_reviews (network, created_utc);
+CREATE INDEX signup_reviews_shape_idx ON public.signup_reviews (name_shape, created_utc);
 
 -- bot accounts (scripts/migrations/2026-10-15_bots.sql)
 CREATE INDEX users_bot_owner_idx ON public.users (bot_owner_id) WHERE bot_owner_id IS NOT NULL;

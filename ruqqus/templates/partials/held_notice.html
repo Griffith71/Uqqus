@@ -1,0 +1,6 @@
+{# an account the signup guard is holding (helpers/quarantine.py), on every page of default.html until it is released #}
+<div class="held-notice" role="status" id="held-notice">
+  <strong>{{ _('Your account is being checked.') }}</strong>
+  {{ _("You can look around and set up your profile; posting, comments, votes and follows open once the check is done.") }}
+  <a href="/settings/security">{{ _('Verify an email to skip the wait') }}</a>
+</div>

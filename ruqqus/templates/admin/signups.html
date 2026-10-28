@@ -1,0 +1,144 @@
+{% extends "docs_default.html" %}
+
+{% block sidebarblock %}{% endblock %}
+{% block sidebarLeftblock %}{% endblock %}
+
+{% block title %}
+<title>{{ 'SITE_NAME' | app_config }} - Sign-ups</title>
+{% endblock %}
+
+{% block content %}
+
+<h1>Sign-ups</h1>
+
+<p class="text-muted">The signup guard (helpers/signup_risk.py) refuses a sign-up on a hard sign of a bot, holds one whose soft signs add up to the threshold, and lets the rest through. A held account can read and change its settings but can't post, comment, vote, follow, tip, report or start a chat until you approve it here or it verifies an email that isn't a throwaway. Nothing here names an address: a network is a keyed hash of its /24 or /64.</p>
+
+{% if msg %}<div class="alert alert-success py-2" role="status">{{ msg }}</div>{% endif %}
+
+<div class="row mb-4" id="signup-guard-status">
+  <div class="col-md-6 mb-3">
+    <div class="card h-100"><div class="card-body text-small">
+      <h2 class="h6">Now</h2>
+      <p class="mb-1">Captcha: {% if captcha_provider %}<strong>{{ captcha_provider }}</strong>{% else %}<strong class="text-danger">off</strong> (set CAPTCHA_PROVIDER and its keys on a live site){% endif %}</p>
+      <p class="mb-1">Accounts made in the last hour: <strong>{{ site_hour }}</strong> (surge at {{ settings.surge_ceiling }})</p>
+      <p class="mb-1">Surge switch: <strong>{{ 'on: every new account is held' if settings.surge else 'off' }}</strong></p>
+      <p class="mb-0">Held at a score of <strong>{{ settings.quarantine_at }}</strong> or more.</p>
+    </div></div>
+  </div>
+  <div class="col-md-6 mb-3">
+    <div class="card h-100"><div class="card-body text-small">
+      <h2 class="h6">Outcomes</h2>
+      <table class="table table-sm mb-0">
+        <thead><tr><th scope="col"></th><th scope="col" class="text-right">24 hours</th><th scope="col" class="text-right">7 days</th></tr></thead>
+        <tbody>
+          <tr><th scope="row" class="font-weight-normal">Allowed</th><td class="text-right">{{ day.allowed }}</td><td class="text-right">{{ week.allowed }}</td></tr>
+          <tr><th scope="row" class="font-weight-normal">Held</th><td class="text-right">{{ day.held }}</td><td class="text-right">{{ week.held }}</td></tr>
+          <tr><th scope="row" class="font-weight-normal">Refused</th><td class="text-right">{{ day.refused_total }}</td><td class="text-right">{{ week.refused_total }}</td></tr>
+        </tbody>
+      </table>
+      {% if week.refused %}
+      <p class="mt-2 mb-0 text-muted">Refused this week: {% for label, n in week.refused %}{{ label }} ({{ n }}){% if not loop.last %}, {% endif %}{% endfor %}</p>
+      {% endif %}
+    </div></div>
+  </div>
+</div>
+
+{% if v.admin_level >= 4 %}
+<details class="mb-4">
+  <summary class="font-weight-bold">Threshold and surge</summary>
+  <form action="/admin/signups/settings" method="post" class="mt-2 text-small" style="max-width: 32rem">
+    <input type="hidden" name="formkey" value="{{ v.formkey }}">
+    <label for="quarantine-at">Hold at this score or more (1 to 500)</label>
+    <input id="quarantine-at" name="quarantine_at" type="number" min="1" max="500" value="{{ settings.quarantine_at }}" class="form-control form-control-sm mb-2">
+    <label for="surge-ceiling">Accounts in an hour that switch surge on by themselves</label>
+    <input id="surge-ceiling" name="surge_ceiling" type="number" min="1" max="10000" value="{{ settings.surge_ceiling }}" class="form-control form-control-sm mb-2">
+    <div class="custom-control custom-checkbox mb-2">
+      <input type="checkbox" class="custom-control-input" id="surge" name="surge" value="1"{% if settings.surge %} checked{% endif %}>
+      <label class="custom-control-label" for="surge">Surge: hold every new account until this is switched off</label>
+    </div>
+    <button class="btn btn-primary btn-sm">Save</button>
+    <p class="text-muted mt-3 mb-1">Weights: {% for label, w in weights %}{{ label }} {{ w }}{% if not loop.last %}; {% endif %}{% endfor %}.</p>
+    <p class="text-muted mb-0">Always refused: {{ refusals | join('; ') }}.</p>
+  </form>
+</details>
+{% endif %}
+
+<p class="text-small mb-3">
+  <a href="/admin/signups?show=waiting" class="mr-3{% if show == 'waiting' %} font-weight-bold{% endif %}"{% if show == 'waiting' %} aria-current="true"{% endif %}>Held ({{ waiting }})</a>
+  <a href="/admin/signups?show=recent" class="mr-3{% if show == 'recent' %} font-weight-bold{% endif %}"{% if show == 'recent' %} aria-current="true"{% endif %}>Every sign-up, last 7 days</a>
+</p>
+
+{% if show == 'waiting' %}
+<form action="/admin/signups/decide" method="post" id="signup-queue">
+  <input type="hidden" name="formkey" value="{{ v.formkey }}">
+  {% for row in rows %}
+  <div class="card mb-2 signup-row" id="signup-{{ row.user_id }}">
+    <div class="card-body py-2 text-small">
+      <div class="d-flex flex-wrap align-items-center">
+        <div class="custom-control custom-checkbox mr-2">
+          <input type="checkbox" class="custom-control-input" id="pick-{{ row.user_id }}" name="uid" value="{{ row.user_id }}">
+          <label class="custom-control-label" for="pick-{{ row.user_id }}"><span class="sr-only">Select @{{ row.username }}</span></label>
+        </div>
+        <a href="/@{{ row.username }}" target="_blank" rel="noopener" class="font-weight-bold mr-2">@{{ row.username }}</a>
+        <span class="text-muted mr-2">{{ datetime_text(row.created_utc, "%d %B %Y at %H:%M") }}</span>
+        <span class="badge badge-secondary mr-2">score {{ row.score }}</span>
+        {% if row.is_banned %}<span class="badge badge-danger mr-2">banned</span>{% endif %}
+      </div>
+      <div class="mt-1">{% for label in row.labels %}<span class="badge badge-light border mr-1">{{ label }}</span>{% endfor %}</div>
+      <div class="mt-1 text-muted">
+        Network: {{ row.network_size }} account{{ 's' if row.network_size != 1 }} this week{% if row.network_size > 1 %}
+        <button class="btn btn-link btn-sm p-0 align-baseline" formaction="/admin/signups/cluster" name="cluster" value="ban|network:{{ row.network }}">ban the held ones</button>{% endif %}
+        {% if row.shape_size %} &middot; Name pattern <code>{{ row.name_shape }}</code>: {{ row.shape_size }} this week{% if row.shape_size > 1 %}
+        <button class="btn btn-link btn-sm p-0 align-baseline" formaction="/admin/signups/cluster" name="cluster" value="ban|name_shape:{{ row.name_shape }}">ban the held ones</button>{% endif %}{% endif %}
+        {% if row.alts %} &middot; {{ row.alts }} alt{{ 's' if row.alts != 1 }}{% endif %}
+      </div>
+      {% if row.tried %}<div class="mt-1">Tried to: {% for action, n in row.tried %}{{ action }} &times;{{ n }}{% if not loop.last %}, {% endif %}{% endfor %}</div>{% endif %}
+    </div>
+  </div>
+  {% else %}
+  <p class="text-muted" id="signup-queue-empty">Nobody is held.</p>
+  {% endfor %}
+
+  {% if rows %}
+  <div class="d-flex flex-wrap align-items-center mt-3">
+    <button class="btn btn-primary btn-sm mr-2 mb-2" name="decision" value="approve">Approve selected</button>
+    <button class="btn btn-outline-secondary btn-sm text-danger mr-3 mb-2" name="decision" value="ban">Ban selected</button>
+    <div class="custom-control custom-checkbox mb-2">
+      <input type="checkbox" class="custom-control-input" id="with-alts" name="with_alts" value="1">
+      <label class="custom-control-label" for="with-alts">Also ban their alts when banning</label>
+    </div>
+  </div>
+  <p class="text-small text-muted">A cluster button acts only on the held accounts in it (up to 200), never on accounts that were let through. An address can be banned from the account's admin panel.</p>
+  {% endif %}
+</form>
+
+<nav aria-label="Pages" class="mt-3">
+  <ul class="pagination pagination-sm">
+    {% if page > 1 %}<li class="page-item"><a class="page-link" href="/admin/signups?show=waiting&amp;page={{ page - 1 }}">Prev</a></li>{% else %}<li class="page-item disabled"><span class="page-link">Prev</span></li>{% endif %}
+    {% if next_exists %}<li class="page-item"><a class="page-link" rel="next" href="/admin/signups?show=waiting&amp;page={{ page + 1 }}">Next</a></li>{% else %}<li class="page-item disabled"><span class="page-link">Next</span></li>{% endif %}
+  </ul>
+</nav>
+
+{% else %}
+<div class="table-responsive">
+<table class="table table-sm text-small" id="signup-recent">
+  <thead><tr><th scope="col">Account</th><th scope="col">Made</th><th scope="col">Score</th><th scope="col">Why</th><th scope="col">Network this week</th><th scope="col">Outcome</th></tr></thead>
+  <tbody>
+  {% for row in rows %}
+  <tr>
+    <td><a href="/@{{ row.username }}" target="_blank" rel="noopener">@{{ row.username }}</a>{% if row.is_banned %} <span class="badge badge-danger">banned</span>{% endif %}</td>
+    <td class="text-nowrap">{{ datetime_text(row.created_utc, "%d %b %H:%M") }}</td>
+    <td>{{ row.score }}</td>
+    <td>{{ row.labels | join(', ') }}</td>
+    <td>{{ row.network_size }}</td>
+    <td>{{ {'': 'held', 'allowed': 'let through', 'approved': 'approved', 'verified': 'verified an email', 'banned': 'banned'}.get(row.decision, row.decision) }}</td>
+  </tr>
+  {% else %}
+  <tr><td colspan="6" class="text-muted">No sign-ups in the last 7 days.</td></tr>
+  {% endfor %}
+  </tbody>
+</table>
+</div>
+{% endif %}
+
+{% endblock %}

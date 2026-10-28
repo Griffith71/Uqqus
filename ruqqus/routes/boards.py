@@ -1695,6 +1695,7 @@ Optional query parameters
 @app.post("/api/v2/me/subscriptions/<guildname>")
 @auth_required
 @api("update")        # an app's token needs the update scope (bug hunt: no scope was checked)
+@not_quarantined("join_guild")
 @validate_formkey
 def subscribe_board(guildname, v):
     """

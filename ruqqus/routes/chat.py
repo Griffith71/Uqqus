@@ -177,6 +177,7 @@ def _started(room_id, status):
 
 @app.route("/api/chat/start", methods=["POST"])
 @auth_required
+@not_quarantined("chat")
 @validate_formkey
 def chat_start(v):
     target = get_user(request.values.get("username", ""), graceful=True)

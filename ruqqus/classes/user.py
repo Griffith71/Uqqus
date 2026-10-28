@@ -121,6 +121,7 @@ class User(Base, Stndrd, Age_times):
     for_you_reset_utc = Column(Integer, default=0)
     creator_fund_opt_in_utc = Column(Integer, default=0)     # the creator fund (helpers/creator_fund.py); 0 = not taking part
     signin_alerts = Column(Boolean, default=True)             # email a verified address about a sign-in from somewhere new (helpers/signin_alerts.py)
+    quarantined_utc = Column(Integer, default=0)            # held by the signup guard (helpers/quarantine.py); 0 = not held
     premium_auto_renew = Column(Boolean, default=False)       # spend a coin on the next week when one runs out (helpers/premium.py)
     last_active_utc = Column(Integer, default=0)             # stamped at most daily (wrappers._note_active); shared drafts don't count authors gone longer than their rules say
     score_display = Column(SmallInteger, default=0)   # how scores read: 0 upvotes, coloured (default); 1 upvotes minus downvotes
@@ -1812,6 +1813,11 @@ class User(Base, Stndrd, Age_times):
     def is_suspended(self):
         return (self.is_banned and (self.unban_utc ==
                                     0 or self.unban_utc > time.time()))
+
+    @property
+    def is_quarantined(self):
+        # held by the signup guard until an admin approves it or it verifies an email (helpers/quarantine.py)
+        return bool(self.quarantined_utc) and not self.admin_level and not self.is_bot
 
     @property
     def is_blocking(self):

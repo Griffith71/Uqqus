@@ -203,6 +203,11 @@ app.config["CACHE_DIR"] = environ.get("CACHE_DIR", "ruqquscache")
 app.config["HCAPTCHA_SITEKEY"] = environ.get("HCAPTCHA_SITEKEY","").lstrip().rstrip()
 app.config["HCAPTCHA_SECRET"] = environ.get(
     "HCAPTCHA_SECRET","").lstrip().rstrip()
+# the signup guard's captcha (helpers/captcha.py): "hcaptcha", "turnstile" or "none"; unset with an hCaptcha site key
+# is hCaptcha, as before
+app.config["CAPTCHA_PROVIDER"] = environ.get("CAPTCHA_PROVIDER", "").strip().lower()
+app.config["TURNSTILE_SITEKEY"] = environ.get("TURNSTILE_SITEKEY", "").strip()
+app.config["TURNSTILE_SECRET"] = environ.get("TURNSTILE_SECRET", "").strip()
 app.config["SIGNUP_HOURLY_LIMIT"]=int(environ.get("SIGNUP_HOURLY_LIMIT",0))
 
 # antispam configs

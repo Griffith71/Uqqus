@@ -20,6 +20,7 @@ from ruqqus.helpers.regions import resolve_region
 from ruqqus.helpers.redirects import same_site
 from ruqqus.helpers import same_origin
 from ruqqus.helpers import account_sessions, chat_devices, mfa_backup, mfa_backup_store, signin_alerts, user_agents
+from ruqqus.helpers import captcha, signup_review_store, signup_risk, signup_signals
 from ruqqus.helpers.regions import COUNTRY_NAMES
 from ruqqus.helpers.alerts import notify
 from ruqqus.helpers import i18n
@@ -302,8 +303,35 @@ def sign_up_get(v):
                            i=random_image(),
                            redirect=redir,
                            error=error,
-                           hcaptcha=app.config["HCAPTCHA_SITEKEY"]
+                           captcha=captcha.widget(app.config)
                            )
+
+# the signup guard: what this sign-up looks like (helpers/signup_risk.py), from the form, the request and the counts
+
+def _signup_guard(username, email, form_utc, now, ban_evade):
+    network = signup_signals.network_hash(signup_risk.ip_prefix(request.remote_addr), app.config.get("SECRET_KEY"))
+    shape = signup_risk.name_shape(username)
+    settings = signup_signals.settings(r)
+    answer = captcha.answer_of(app.config, request.form)
+    facts = signup_risk.Facts(
+        # the cheap refusals are judged without asking the captcha provider: a filled hidden field is refused anyway
+        captcha="off" if (request.form.get("website") or "").strip() else captcha.verify(app.config, answer,
+                                                                                           request.remote_addr),
+        honeypot=request.form.get("website") or "",
+        form_age=now - form_utc,
+        user_agent=request.headers.get("User-Agent", ""),
+        accept_language=request.headers.get("Accept-Language", ""),
+        disposable_email=signup_signals.disposable(email),
+        tor=request.headers.get("cf-ipcountry") == "T1",
+        prefix_recent=signup_signals.recent(r, "pfx", network),
+        shape_recent=signup_signals.recent(r, "shape", shape) if signup_risk.shape_counts(shape) else 0,
+        username=username,
+        ban_evasion=ban_evade,
+        surge=signup_risk.in_surge(signup_signals.recent(r, "all", "site"), settings["surge"], settings["surge_ceiling"]),
+        quarantine_at=settings["quarantine_at"],
+    )
+    return _Guard(signup_risk.assess(facts), network, shape)
+
 
 # signup api
 
@@ -410,22 +438,16 @@ def sign_up_post(v):
     if previous:
         abort(429)
 
-    # check bot
-    if app.config.get("HCAPTCHA_SITEKEY"):
-        token = request.form.get("h-captcha-response")
-        if not token:
-            return new_signup("Unable to verify captcha [1].")
-
-        data = {"secret": app.config["HCAPTCHA_SECRET"],
-                "response": token,
-                "sitekey": app.config["HCAPTCHA_SITEKEY"]}
-        url = "https://hcaptcha.com/siteverify"
-
-        x = requests.post(url, data=data)
-
-        if not x.json()["success"]:
-            #print(x.json())
-            return new_signup("Unable to verify captcha [2].")
+    # the signup guard (helpers/signup_risk.py): refuse, hold or let through
+    session_history = tuple(flask_session.get("history", []))
+    ban_evade = int(any([x.is_suspended for x in g.db.query(User).filter(User.id.in_(session_history)).all() if x]))
+    guard = _signup_guard(username, email, int(form_timestamp), now, bool(ban_evade))
+    signup_signals.tally(r, guard.verdict.action if guard.verdict.action != signup_risk.REFUSE else guard.verdict.reasons[0])
+    if guard.verdict.action == signup_risk.REFUSE:
+        if guard.verdict.reasons == ("disposable_email",):
+            return new_signup(tr("Please use an email address from a provider you keep, or leave it empty."))
+        return new_signup(tr("There was a problem. Please try again."))
+    held = guard.verdict.action == signup_risk.QUARANTINE
 
     # kill tokens
     flask_session.pop("signup_token")
@@ -452,7 +474,12 @@ def sign_up_post(v):
             # a new account's lists start open to everyone, as on X (existing accounts were left at Only me by the
             # migration); the sign-up page says so and Settings > Profile changes it (helpers/follow_lists.py)
             following_visibility=0, followers_visibility=0, subscribers_visibility=0, subscriptions_visibility=0,
-            ban_evade =  int(any([x.is_suspended for x in g.db.query(User).filter(User.id.in_(tuple(flask_session.get("history", [])))).all() if x]))
+            # the language the sign-up page was shown in becomes the account's own "Your language" (helpers/i18n.py:
+            # a visitor's footer choice or browser language), so the site stays in it after signing in; English
+            # leaves the choice open (the browser's languages decide until they choose)
+            languages=current_locale() if current_locale() in i18n.interface_keys() and current_locale() != "en" else "",
+            ban_evade=ban_evade,
+            quarantined_utc=signup_utc if held else 0,
             )
         apply_user_severity(new_user)
 
@@ -462,6 +489,16 @@ def sign_up_post(v):
 
     g.db.add(new_user)
     g.db.commit()
+
+    # what the guard thought of it, for /admin/signups (best effort: the account is made either way)
+    try:
+        with g.db.begin_nested():
+            signup_review_store.record(g.db, new_user.id, signup_utc, guard.verdict, guard.network, guard.shape, held)
+        g.db.commit()
+    except Exception as e:
+        g.db.rollback()
+        print(f"sign-up review not recorded: {type(e).__name__}", flush=True)
+    signup_signals.note_sign_up(r, guard.network, guard.shape)
 
     g.db.add(LoginEvent(
         user_id=new_user.id,

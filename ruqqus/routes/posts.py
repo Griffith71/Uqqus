@@ -240,6 +240,7 @@ def _edit_error(message, code=400):
 @is_not_banned
 @no_negative_balance("html")
 @api("update")
+@not_quarantined("edit_post")
 @validate_formkey
 def edit_post(pid, v):
     """
@@ -806,6 +807,7 @@ def _bot_refusal(v, bot=None):
 @throttle_check
 @no_negative_balance('html')
 @tos_agreed
+@not_quarantined("post")
 @validate_formkey
 @api("create")
 def submit_post(v):
@@ -1818,6 +1820,7 @@ the copy forwarded to that guild (what a guild's feed lists) when there is one.
 @app.route("/post/<pid>/forward", methods=["POST"])
 @auth_required
 @throttle_check
+@not_quarantined("forward")
 @validate_formkey
 def forward_post(pid, v):
     """
@@ -2105,6 +2108,7 @@ def unsave_post(base36id, v):
 @app.route("/post/<base36id>/repost", methods=["POST"])
 @auth_required
 @throttle_check
+@not_quarantined("repost")
 @validate_formkey
 def repost_post(base36id, v):
     """Repost a post to your own profile, Twitter-retweet style - your

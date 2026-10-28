@@ -64,7 +64,9 @@ def real_app(pg_url):
 def forget_leftovers(r):
     """Redis outlives a database made again from schema.sql, and user ids start over: what an earlier run left under an
     id or an address (posting and sign-in heat, "already emailed today", spent authenticator codes) would answer for
-    an account that is not the same one. Cleared once, when the app is first imported. In CI Redis is new anyway."""
+    an account that is not the same one. Cleared once, when the app is first imported. In CI Redis is new anyway. The
+signup guard's counts (`su:*`, `signup:*`) too: a site-wide count left by earlier runs would put every sign-up in a
+surge."""
     if r is None:
         return
     for pattern in ("throttle:*", "signin_alert:*", "totp:*"):

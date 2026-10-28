@@ -145,6 +145,7 @@ def _daily_adds_left(v, now):
 
 @app.route("/api/chat/groups", methods=["POST"])
 @is_not_banned
+@not_quarantined("group")
 @validate_formkey
 def chat_group_create(v):
     if v.is_bot:

@@ -12,6 +12,7 @@ from ruqqus.__main__ import app
 
 @app.route("/api/flag/post/<pid>", methods=["POST"])
 @is_not_banned
+@not_quarantined("report")
 @validate_formkey
 def api_flag_post(pid, v):
 
@@ -85,6 +86,7 @@ def _note_refusal(v, author_id, post_id=None, comment_id=None):
 
 @app.route("/api/flag/comment/<cid>", methods=["POST"])
 @is_not_banned
+@not_quarantined("report")
 @validate_formkey
 def api_flag_comment(cid, v):
 

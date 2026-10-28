@@ -11,7 +11,9 @@ from sqlalchemy import text
 
 SECTIONS = (
     ("account", "SELECT id, username, display_name, email, bio, profile_job, profile_location, profile_website, "
-                "created_utc, coin_balance, premium_expires_utc, filter_level, signin_alerts FROM users WHERE id = :u"),
+                "created_utc, coin_balance, premium_expires_utc, filter_level, signin_alerts, languages, feed_defaults, "
+                # held by the signup guard since (0: not held); its score and reasons are the admins' and stay out
+                "quarantined_utc FROM users WHERE id = :u"),
     ("posts", "SELECT s.id, s.created_utc, s.edited_utc, s.deleted_utc, a.title, a.url, a.body, s.board_id, "
               "s.is_anonymous FROM submissions s JOIN submissions_aux a ON a.id = s.id "
               "WHERE s.author_id = :u ORDER BY s.id"),

@@ -260,6 +260,7 @@ Optional query parameters:
 @throttle_check
 @no_negative_balance('toast')
 @tos_agreed
+@not_quarantined("comment")
 @validate_formkey
 @api("create")
 def api_comment(v):
@@ -932,6 +933,7 @@ URL path parameters:
 @app.route("/comment/<cid>/repost", methods=["POST"])
 @auth_required
 @throttle_check
+@not_quarantined("repost")
 @validate_formkey
 def repost_comment(cid, v):
     """Repost a comment to your own profile, Twitter-retweet style - your
@@ -1001,6 +1003,7 @@ def unrepost_comment(cid, v):
 @app.route("/comment/<cid>/forward", methods=["POST"])
 @auth_required
 @throttle_check
+@not_quarantined("forward")
 @validate_formkey
 def forward_comment(cid, v):
     """Forward a comment's text into a brand-new, independent post in a

@@ -14,7 +14,7 @@ from ruqqus.helpers import polls as rules
 from ruqqus.helpers.coauthors import primary_post_id
 from ruqqus.helpers.get import get_post
 from ruqqus.helpers.visibility import post_hidden
-from ruqqus.helpers.wrappers import is_not_banned, validate_formkey
+from ruqqus.helpers.wrappers import is_not_banned, not_quarantined, validate_formkey
 from ruqqus.__main__ import app
 
 _UNSET = object()
@@ -51,6 +51,7 @@ def _back(post):
 
 @app.route("/api/poll/<pid>/vote", methods=["POST"])
 @is_not_banned
+@not_quarantined("poll_vote")
 @validate_formkey
 def poll_vote(pid, v):
     """Count the caller's vote. One vote each, final, before the poll closes, on a post the caller may see.

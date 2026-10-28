@@ -449,6 +449,7 @@ def profile_json_refusal(u, v):
 @app.post("/api/v2/users/<username>/follow")
 @auth_required
 @api("update")        # an app's token needs the update scope (bug hunt: no scope was checked)
+@not_quarantined("follow")
 @validate_formkey
 def follow_user(username, v):
     """

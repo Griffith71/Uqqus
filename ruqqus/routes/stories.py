@@ -13,7 +13,7 @@ from ruqqus.helpers.get import get_user
 from ruqqus.helpers.media import attach as media_attach, safety as media_safety
 from ruqqus.helpers.visibility import text_hidden, user_hidden
 from ruqqus.helpers.word_filter_store import get_filter
-from ruqqus.helpers.wrappers import admin_level_required, auth_required, is_not_banned, validate_formkey
+from ruqqus.helpers.wrappers import admin_level_required, auth_required, is_not_banned, not_quarantined, validate_formkey
 from ruqqus.__main__ import app
 
 
@@ -139,6 +139,7 @@ def _owner_by_id(user_id, v):
 
 @app.route("/api/stories", methods=["POST"])
 @is_not_banned
+@not_quarantined("story")
 @validate_formkey
 def story_create(v):
     kind, error = rules.parse_kind(request.form.get("kind"))
