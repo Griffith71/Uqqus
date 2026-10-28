@@ -7143,4 +7143,13 @@ INSERT INTO public.schema_migrations (name) VALUES
     ('2026-11-22_escape_mod_log_notes.sql'),
     ('2026-11-23_owed_never_below_zero.sql'),
     ('2026-11-24_paypal_reversals.sql'),
-    ('2026-11-25_deleted_accounts_app_grants.sql');
+    ('2026-11-25_deleted_accounts_app_grants.sql'),
+    ('2026-11-26_languages_and_translation.sql'),
+    ('2026-11-27_removed_languages.sql'),
+    ('2026-11-28_notice_text.sql'),
+    ('2026-11-29_category_expansion.sql'),
+    ('2026-11-30_site_feedback.sql'),
+    ('2026-12-02_guild_category_alone.sql'),
+    ('2026-12-03_site_events.sql'),
+    ('2026-12-04_signup_guard.sql'),
+    ('2026-12-05_account_all_opt_out.sql');
