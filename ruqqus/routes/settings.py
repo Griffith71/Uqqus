@@ -1069,7 +1069,20 @@ def settings_all_shows_sensitive(v):
     g.db.add(v)
     g.db.commit()
     muting_rules.clear_cached_feeds(v)
-    return jsonify({"message": "Saved."})
+    return jsonify({"message": tr("Saved.")})
+
+
+@app.route("/settings/all_opt_out", methods=["POST"])
+@auth_required
+@validate_formkey
+def settings_all_opt_out(v):
+    """Keep your profile posts out of All (helpers/all_feed.py). Your anonymous posts and the guild copies of your posts
+    stay in All. Your own cached feeds are dropped at once; other people's All catches up within its 15 minutes."""
+    v.all_opt_out = request.values.get("on") == "true"
+    g.db.add(v)
+    g.db.commit()
+    muting_rules.clear_cached_feeds(v)
+    return jsonify({"message": tr("Your posts are kept out of All.") if v.all_opt_out else tr("Your posts can appear in All.")})
 
 
 @app.route("/settings/sensitive_account", methods=["POST"])

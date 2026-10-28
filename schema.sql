@@ -342,6 +342,7 @@ CREATE TABLE public.users (
     is_sensitive boolean DEFAULT false NOT NULL,
     sensitive_forced boolean DEFAULT false NOT NULL,
     all_shows_sensitive boolean DEFAULT false NOT NULL,
+    all_opt_out boolean DEFAULT false NOT NULL,
     following_visibility smallint DEFAULT 2 NOT NULL,
     followers_visibility smallint DEFAULT 2 NOT NULL,
     subscribers_visibility smallint DEFAULT 2 NOT NULL,
@@ -4265,6 +4266,7 @@ CREATE INDEX boards_sensitive_idx ON public.boards USING btree (is_sensitive);
 
 
 CREATE INDEX users_sensitive_idx ON public.users USING btree (id) WHERE is_sensitive;
+CREATE INDEX users_all_opt_out_idx ON public.users USING btree (id) WHERE all_opt_out;
 
 
 --

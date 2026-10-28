@@ -169,8 +169,11 @@ def frontlist(v=None, sort=None, page=1,
     posts = hide_fewer(posts, v, Submission)
     # All is everything except sensitive content, unless the viewer chose to see it (helpers/sensitive.py)
     posts = hide_sensitive(posts, v, Submission)
-    # one card per post: a guild copy leaves when its original is in All too (helpers/feed_family.py, audit F-01)
-    posts = one_per_family(posts, Submission)
+    # an account may keep its profile posts out of All; never its anonymous posts (helpers/all_feed.py, 2026-10-27)
+    posts = posts.filter(all_feed.in_all(Submission, v, User))
+    # one card per post: a guild copy leaves when its original is in All too (helpers/feed_family.py, audit F-01), so a
+    # copy of an opted-out account's post still shows under its guild's own rule
+    posts = one_per_family(posts, Submission, lambda original: all_feed.in_all(original, v, User))
     
     if v and v.hide_bot:
         posts = posts.filter(Submission.is_bot==False)

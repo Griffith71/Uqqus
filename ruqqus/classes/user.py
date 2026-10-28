@@ -136,6 +136,7 @@ class User(Base, Stndrd, Age_times):
     is_sensitive = Column(Boolean, default=False)
     sensitive_forced = Column(Boolean, default=False)
     all_shows_sensitive = Column(Boolean, default=False)   # the viewer chose to see sensitive content in All / For You
+    all_opt_out = Column(Boolean, default=False)           # keep my profile posts out of All (helpers/all_feed.py)
     # who may open each list (helpers/follow_lists.py): 0 everyone, 1 followers, 2 only me (existing accounts: 2)
     following_visibility = Column(SmallInteger, default=2)
     followers_visibility = Column(SmallInteger, default=2)
@@ -746,8 +747,9 @@ class User(Base, Stndrd, Age_times):
         )
         authored = apply_common_filters(authored)
         authored = authored.filter(Submission.is_space == bool(spaces))
-        # a profile does not list the user's anonymous posts (to anyone but them and admins)
-        authored = authored.filter(anonymity.hide_anonymous(Submission, v))
+        # a profile does not list the user's anonymous posts, to anyone but admins: the author finds them in History >
+        # Anonymous (anonymity.off_profile, the owner, 2026-10-27)
+        authored = authored.filter(anonymity.off_profile(Submission, v))
         # what someone writes inside a Circle guild stays in the guild: it is not on their profile, for anyone
         authored = authored.filter(Submission.audience != circles.GUILD)
 
@@ -884,7 +886,7 @@ class User(Base, Stndrd, Age_times):
         if not (v and (v.admin_level >= 3 or v.id == self.id)):
             authored = authored.filter(Comment.is_banned == False)
         authored = apply_common_filters(authored)
-        authored = authored.filter(anonymity.hide_anonymous(Comment, v))
+        authored = authored.filter(anonymity.off_profile(Comment, v))
         authored = apply_visibility(authored)
         authored = authored.with_entities(Comment.id, authored_sort_expr)
 
@@ -2002,8 +2004,8 @@ class User(Base, Stndrd, Age_times):
             activity, activity.c.sid == Submission.id
         )
         posts = filter_posts(posts, v)
-        # forwarding your own anonymous post makes a copy that would list under your name
-        posts = posts.filter(anonymity.hide_anonymous(Submission, v))
+        # forwarding your own anonymous post makes a copy that would list under your name (not for the author either)
+        posts = posts.filter(anonymity.off_profile(Submission, v))
 
         if not (v and v.admin_level >= 3):
             posts = posts.filter(Submission.deleted_utc == 0, Submission.is_banned == False)
@@ -2034,6 +2036,29 @@ class User(Base, Stndrd, Age_times):
 
         return [row[0].id for row in posts.offset(25 * (page - 1)).limit(26).all()]
 
+
+    def anonymous_idlist(self, page=1):
+        """This member's own anonymous posts, newest first: History > Anonymous (routes/history.py). Only ever built for
+        the signed-in member themselves, so no visibility rule but their own deletions and removals: the originals only
+        (a guild copy of the same post would list it twice)."""
+        posts = g.db.query(Submission.id).filter(
+            Submission.author_id == self.id,
+            Submission.is_anonymous == True,
+            Submission.deleted_utc == 0,
+            Submission.is_banned == False,
+            or_(Submission.repost_id.is_(None), Submission.repost_id == 0),
+        ).order_by(Submission.created_utc.desc(), Submission.id.desc())
+        return [x[0] for x in posts.offset(25 * (page - 1)).limit(26).all()]
+
+    def anonymous_comment_idlist(self, page=1):
+        """This member's own anonymous comments, newest first: History > Anonymous."""
+        comments = g.db.query(Comment.id).filter(
+            Comment.author_id == self.id,
+            Comment.is_anonymous == True,
+            Comment.deleted_utc == 0,
+            Comment.is_banned == False,
+        ).order_by(Comment.created_utc.desc(), Comment.id.desc())
+        return [x[0] for x in comments.offset(25 * (page - 1)).limit(26).all()]
 
     def history_idlist(self, page=1):
         """Posts viewed by this user, most recently viewed first - for the History tab."""

@@ -57,9 +57,10 @@ def test_the_flag_cannot_be_changed_by_editing():
 
 def test_every_list_scoped_to_an_author_leaves_anonymous_rows_out():
     user, search = read("ruqqus", "classes", "user.py"), read("ruqqus", "routes", "search.py")
-    assert "anonymity.hide_anonymous(Submission, v)" in user.split("def userpagelisting")[1].split("def commentlisting")[0]
-    assert "anonymity.hide_anonymous(Comment, v)" in user.split("def commentlisting")[1].split("def mods_anything")[0]
-    assert "anonymity.hide_anonymous(Submission, v)" in user.split("def forwarded_idlist")[1].split("def history_idlist")[0]
+    # a profile's own tabs leave them out for the author too (they are in History > Anonymous); admins still see them
+    assert "anonymity.off_profile(Submission, v)" in user.split("def userpagelisting")[1].split("def commentlisting")[0]
+    assert "anonymity.off_profile(Comment, v)" in user.split("def commentlisting")[1].split("def mods_anything")[0]
+    assert "anonymity.off_profile(Submission, v)" in user.split("def forwarded_idlist")[1].split("def history_idlist")[0]
     # the from: operator (helpers/search_filters.py), and -from: never hides an anonymous post either
     rules = read("ruqqus", "helpers", "search_filters.py")
     from_part = rules.split('if k == "from":')[1][:400]

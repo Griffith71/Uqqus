@@ -100,6 +100,16 @@ def must_be_anonymous(post, commenter):
     return bool(getattr(post, "is_anonymous", False)) and post.author_id == commenter.id
 
 
+def off_profile(model, viewer):
+    """A query condition for a profile's own tabs (posts, comments, forwarded): anonymous rows are left out for everyone,
+    their author too, and shown only to site admins, who moderate (the owner, 2026-10-27: a profile is the account's
+    public face; the author finds their own anonymous posts and comments in History > Anonymous, history_anonymous).
+    Searches by author, the Following feed and the Deletion log keep `hide_anonymous`."""
+    if viewer is not None and (getattr(viewer, "admin_level", 0) or 0) >= ADMIN_LEVEL:
+        return true()
+    return not_(model.is_anonymous)
+
+
 def hide_anonymous(model, viewer):
     """A query condition for a list of one author's posts or comments (their
     profile tabs, an author: search, the Following feed): anonymous rows are

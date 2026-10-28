@@ -6,6 +6,33 @@
 
 {% block desktopBanner %}
 
+{# the phone's tabs, first: the Show and Folder bars below belong to the tab chosen #}
+<div class="container-fluid bg-white box-shadow-bottom d-block d-md-none history-tabs">
+  <div class="row">
+    <div class="col">
+      <div class="d-flex justify-content-center">
+        <ul class="nav settings-nav">
+          <li class="nav-item">
+            <a class="nav-link{% if active_tab=='bookmarked' %} active{% endif %}" href="/history" aria-label="{{ _('Bookmarked') }}"><i class="fas fa-bookmark" aria-hidden="true"></i></a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link{% if active_tab=='viewed' %} active{% endif %}" href="/history/viewed" aria-label="{{ _('History') }}"><i class="fas fa-history" aria-hidden="true"></i></a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link{% if active_tab=='upvoted' %} active{% endif %}" href="/history/upvoted" aria-label="{{ _('Upvoted') }}"><i class="fas fa-arrow-up" aria-hidden="true"></i></a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link{% if active_tab=='downvoted' %} active{% endif %}" href="/history/downvoted" aria-label="{{ _('Downvoted') }}"><i class="fas fa-arrow-down" aria-hidden="true"></i></a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link{% if active_tab=='anonymous' %} active{% endif %}" href="/history/anonymous" aria-label="{{ pgettext('label', 'Anonymous') }}"><i class="fas fa-user-secret" aria-hidden="true"></i></a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div class="row border-bottom bg-white sticky d-none d-md-block guild-border-top" style="overflow: visible;">
   <div class="col">
     <div class="d-flex justify-content-between align-items-center">
@@ -29,7 +56,10 @@
             <a class="nav-link{% if active_tab=='upvoted' %} active{% endif %}" href="/history/upvoted"><i class="fas fa-arrow-up"></i>Upvoted</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link{% if active_tab=='downvoted' %} active{% endif %}" href="/history/downvoted"><i class="fas fa-arrow-down"></i>Downvoted</a>
+            <a class="nav-link{% if active_tab=='downvoted' %} active{% endif %}" href="/history/downvoted"><i class="fas fa-arrow-down"></i>{{ _('Downvoted') }}</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link{% if active_tab=='anonymous' %} active{% endif %}" href="/history/anonymous"><i class="fas fa-user-secret"></i>{{ pgettext('label', 'Anonymous') }}</a>
           </li>
         </ul>
       </div>

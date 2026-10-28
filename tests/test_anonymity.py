@@ -119,6 +119,14 @@ def sql(viewer):
     return str(an.hide_anonymous(Row, viewer).compile(dialect=postgresql.dialect(), compile_kwargs={"literal_binds": True}))
 
 
+def test_a_profile_leaves_anonymous_rows_out_for_everyone_but_admins_the_author_included():
+    # the owner, 2026-10-27: the author finds their own in History > Anonymous, not on their profile
+    def off(viewer):
+        return str(an.off_profile(Row, viewer).compile(dialect=postgresql.dialect(), compile_kwargs={"literal_binds": True}))
+    assert off(None) == "NOT rows.is_anonymous" and off(user(id=5)) == "NOT rows.is_anonymous"
+    assert off(user(id=5, admin=3)) == "true" and off(user(id=5, admin=2)) == "NOT rows.is_anonymous"
+
+
 def test_an_authors_list_leaves_anonymous_rows_out_for_everyone_but_them_and_admins():
     assert "NOT rows.is_anonymous" in sql(None) and "author_id" not in sql(None)
     other = sql(user(id=5))

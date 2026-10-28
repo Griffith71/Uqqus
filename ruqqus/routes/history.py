@@ -237,6 +237,51 @@ def _vote_times(v, kind, vote_type, ids):
     return [times.get(i, 0) for i in ids]
 
 
+@app.route("/history/anonymous", methods=["GET"])
+@auth_required
+@api("read")
+def history_anonymous(v):
+    """The Anonymous tab of the History page: your own anonymous posts and comments, which no profile lists (the owner,
+    2026-10-27). Only ever yours: the lists are built from the signed-in member's own id, and nothing names them."""
+
+    page = page_number()
+    content_type = request.args.get("type", "all")
+    if content_type not in ("all", "posts", "comments"):
+        content_type = "all"
+
+    post_ids = v.anonymous_idlist(page=page) if content_type in ("all", "posts") else []
+    comment_ids = v.anonymous_comment_idlist(page=page) if content_type in ("all", "comments") else []
+    listing, mixed_listing, next_exists = [], None, False
+
+    if content_type == "posts":
+        next_exists = len(post_ids) == 26
+        listing = get_posts(post_ids[0:25], v=v)
+    elif content_type == "comments":
+        next_exists = len(comment_ids) == 26
+        listing = get_comments(comment_ids[0:25], v=v)
+        listing = sorted(listing, key=lambda c: comment_ids[0:25].index(c.id))
+    else:
+        # "all": posts and comments merged by when they were written
+        post_times = dict(g.db.query(Submission.id, Submission.created_utc).filter(Submission.id.in_(post_ids)).all()) if post_ids else {}
+        comment_times = dict(g.db.query(Comment.id, Comment.created_utc).filter(Comment.id.in_(comment_ids)).all()) if comment_ids else {}
+        mixed_listing, next_exists = _mixed_listing(
+            v, post_ids[0:26], comment_ids[0:26], post_times, comment_times, page)
+
+    return {"html": lambda: render_template("history.html",
+                                            v=v,
+                                            active_tab="anonymous",
+                                            content_type=content_type,
+                                            listing=listing,
+                                            mixed_listing=mixed_listing,
+                                            page=page,
+                                            next_exists=next_exists),
+            "api": lambda: jsonify({"data": [
+                x.json for x in (listing if listing else
+                                 [item[1] for item in (mixed_listing or [])])
+            ]})
+            }
+
+
 @app.route("/history/upvoted", methods=["GET"])
 @auth_required
 @api("read")
