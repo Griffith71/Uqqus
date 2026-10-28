@@ -7,8 +7,8 @@
       <div class="mb-4">
         <div class="sidebar-collapsed-hidden collapsed-toggle-parent">
           <div class="d-flex justify-content-between align-items-center mb-3">
-            <div class="text-small font-weight-bold text-muted text-uppercase" style="letter-spacing: 0.025rem;">{{ "SITE_NAME" | app_config }} Feeds</div>
-            <button class="btn" data-toggle="tooltip" data-placement="right" title="Collapse" aria-label="Fold the sidebar" onclick="toggle_sidebar_collapse();"><span class="collapsed-toggle"></span></button>
+            <div class="text-small font-weight-bold text-muted text-uppercase sidebar-row-label" style="letter-spacing: 0.025rem;" title="{{ _('%(site)s Feeds') }}">{{ _("%(site)s Feeds") }}</div>
+            <button class="btn" data-toggle="tooltip" data-placement="right" title="{{ _('Collapse') }}" aria-label="{{ _('Fold the sidebar') }}" onclick="toggle_sidebar_collapse();"><span class="collapsed-toggle"></span></button>
           </div>
         </div>
         <div class="sidebar-collapsed-visible collapsed-toggle-parent">
@@ -21,35 +21,35 @@
         </div>
         <ul class="no-bullets guild-recommendations-list pl-0 sidebar-collapsed-hidden">
           <li class="guild-recommendations-item">
-            <a href="/all">
+            <a href="/all"{% if request.path == '/all' %} aria-current="page"{% endif %}>
               <div class="d-flex">
                 <span class="fa-stack">
                   <i class="fa-2x fas fa-circle text-purple fa-stack-2x" style=""></i>
                   <i class="fa-stack-1x fas fa-globe-americas fa-inverse d-inline-block text-white"></i>
                 </span>
-                <span class="my-auto ml-2 text-black font-weight-normal">All</span>
+                <span class="my-auto ml-2 text-black font-weight-normal sidebar-row-label" title="{{ pgettext('feed', 'All') }}">{{ pgettext("feed", "All") }}</span>
               </div>
               </a>
             </li>
             <li class="guild-recommendations-item">
-              <a href="/for_you">
+              <a href="/for_you"{% if request.path in ('/', '/for_you') %} aria-current="page"{% endif %}>
                 <div class="d-flex">
                   <span class="fa-stack">
                     <i class="fa-2x fas fa-circle text-purple fa-stack-2x" style=""></i>
                     <i class="fa-stack-1x fas fa-star fa-inverse d-inline-block text-white"></i>
                   </span>
-                  <span class="my-auto ml-2 text-black font-weight-normal">For You</span>
+                  <span class="my-auto ml-2 text-black font-weight-normal sidebar-row-label" title="{{ _('For You') }}">{{ _("For You") }}</span>
                 </div>
               </a>
             </li>
             <li class="guild-recommendations-item">
-              <a href="/following">
+              <a href="/following"{% if request.path == '/following' %} aria-current="page"{% endif %}>
                 <div class="d-flex">
                   <span class="fa-stack">
                     <i class="fa-2x fas fa-circle text-purple fa-stack-2x" style=""></i>
                     <i class="fa-stack-1x fas fa-user-friends fa-inverse d-inline-block text-white"></i>
                   </span>
-                  <span class="my-auto ml-2 text-black font-weight-normal">Following</span>
+                  <span class="my-auto ml-2 text-black font-weight-normal sidebar-row-label" title="{{ pgettext('feed', 'Following') }}">{{ pgettext("feed", "Following") }}</span>
                 </div>
               </a>
               </li>
@@ -57,7 +57,7 @@
               <!-- Show this list when sidebar is collapsed-->
               <ul class="no-bullets guild-recommendations-list pl-0 sidebar-collapsed-visible">
                 <li class="guild-recommendations-item">
-                  <a href="/all">
+                  <a href="/all"{% if request.path == '/all' %} aria-current="page"{% endif %}>
                     <span class="fa-stack">
                       <i class="fa-2x fas fa-circle text-purple fa-stack-2x" style=""></i>
                       <i class="fa-stack-1x fas fa-globe-americas fa-inverse d-inline-block text-white"></i>
@@ -65,7 +65,7 @@
                   </a>
                 </li>
                 <li class="guild-recommendations-item">
-                  <a href="/for_you">
+                  <a href="/for_you"{% if request.path in ('/', '/for_you') %} aria-current="page"{% endif %}>
                     <span class="fa-stack">
                       <i class="fa-2x fas fa-circle text-purple fa-stack-2x" style=""></i>
                       <i class="fa-stack-1x fas fa-star fa-inverse d-inline-block text-white"></i>
@@ -73,7 +73,7 @@
                   </a>
                 </li>
                 <li class="guild-recommendations-item">
-                  <a href="/following">
+                  <a href="/following"{% if request.path == '/following' %} aria-current="page"{% endif %}>
                     <span class="fa-stack">
                       <i class="fa-2x fas fa-circle text-purple fa-stack-2x" style=""></i>
                       <i class="fa-stack-1x fas fa-user-friends fa-inverse d-inline-block text-white"></i>
@@ -81,7 +81,7 @@
                   </a>
                 </li>
                 <li class="guild-recommendations-item">
-                  <a href="javascript:void(0)" onclick="openSidebarFilter('regional')" role="button" aria-label="Regional" title="Regional">
+                  <a href="javascript:void(0)" onclick="openSidebarFilter('regional')" role="button" aria-label="{{ _('Regional') }}" title="{{ _('Regional') }}">
                     <span class="fa-stack">
                       <i class="fa-2x fas fa-circle text-purple fa-stack-2x" style=""></i>
                       <i class="fa-stack-1x fas fa-map-marker-alt fa-inverse d-inline-block text-white"></i>
@@ -89,7 +89,7 @@
                   </a>
                 </li>
                 <li class="guild-recommendations-item">
-                  <a href="javascript:void(0)" onclick="openSidebarFilter('language')" role="button" aria-label="Language" title="Language">
+                  <a href="javascript:void(0)" onclick="openSidebarFilter('language')" role="button" aria-label="{{ _('Language') }}" title="{{ _('Language') }}">
                     <span class="fa-stack">
                       <i class="fa-2x fas fa-circle text-purple fa-stack-2x" style=""></i>
                       <i class="fa-stack-1x fas fa-language fa-inverse d-inline-block text-white"></i>
@@ -97,7 +97,7 @@
                   </a>
                 </li>
                 <li class="guild-recommendations-item">
-                  <a href="javascript:void(0)" onclick="openSidebarFilter('categorical')" role="button" aria-label="Categorical" title="Categorical">
+                  <a href="javascript:void(0)" onclick="openSidebarFilter('categorical')" role="button" aria-label="{{ _('Categorical') }}" title="{{ _('Categorical') }}">
                     <span class="fa-stack">
                       <i class="fa-2x fas fa-circle text-purple fa-stack-2x" style=""></i>
                       <i class="fa-stack-1x fas fa-layer-group fa-inverse d-inline-block text-white"></i>
@@ -105,7 +105,7 @@
                   </a>
                 </li>
                 <li class="guild-recommendations-item">
-                  <a href="javascript:void(0)" onclick="openSidebarFilter('post_type')" role="button" aria-label="Post type" title="Post type">
+                  <a href="javascript:void(0)" onclick="openSidebarFilter('post_type')" role="button" aria-label="{{ _('Post type') }}" title="{{ _('Post type') }}">
                     <span class="fa-stack">
                       <i class="fa-2x fas fa-circle text-purple fa-stack-2x" style=""></i>
                       <i class="fa-stack-1x fas fa-shapes fa-inverse d-inline-block text-white"></i>
@@ -113,18 +113,30 @@
                   </a>
                 </li>
                 <li class="guild-recommendations-item">
-                  <a href="javascript:void(0)" onclick="openSidebarFilter('advanced')" role="button" aria-label="Advanced filter" title="Advanced filter">
+                  <a href="javascript:void(0)" onclick="openSidebarFilter('advanced')" role="button" aria-label="{{ _('Advanced filter') }}" title="{{ _('Advanced filter') }}">
                     <span class="fa-stack">
                       <i class="fa-2x fas fa-circle text-purple fa-stack-2x" style=""></i>
                       <i class="fa-stack-1x fas fa-sliders fa-inverse d-inline-block text-white"></i>
                     </span>
                   </a>
                 </li>
+                {% if v %}{# the rail is the whole sidebar from 992 to 1199px: Save as my default is here too #}
+                <li class="guild-recommendations-item feed-defaults-rail">
+                  <form method="post" action="/settings/feed_defaults" class="m-0">
+                    <input type="hidden" name="formkey" value="{{ v.formkey }}">
+                    {% if feed_defaults_state == 'same' %}
+                    <button type="button" class="btn feed-defaults-rail-btn is-saved" disabled aria-label="{{ _('These filters are saved as your default') }}" title="{{ _('Saved as your default') }}"><i class="fas fa-circle-check" aria-hidden="true"></i></button>
+                    {% else %}
+                    <button type="submit" name="action" value="save" class="btn feed-defaults-rail-btn" aria-label="{{ _('Save these filters as my default') }}" title="{{ _('Save these filters as my default') }}"><i class="far fa-floppy-disk" aria-hidden="true"></i></button>
+                    {% endif %}
+                  </form>
+                </li>
+                {% endif %}
               </ul>
 
               <hr class="my-3 sidebar-collapsed-hidden">
               <div class="mb-2 sidebar-collapsed-hidden">
-                <div class="text-small font-weight-bold text-muted text-uppercase" style="letter-spacing: 0.025rem;">Filters</div>
+                <div class="text-small font-weight-bold text-muted text-uppercase" style="letter-spacing: 0.025rem;">{{ _("Filters") }}</div>
               </div>
 
               <ul class="no-bullets guild-recommendations-list pl-0 sidebar-collapsed-hidden" id="sidebar-filters-list">
@@ -135,11 +147,11 @@
                         <i class="fa-2x fas fa-circle text-purple fa-stack-2x" style=""></i>
                         <i class="fa-stack-1x fas fa-map-marker-alt fa-inverse d-inline-block text-white"></i>
                       </span>
-                      <span class="my-auto ml-2 text-black font-weight-normal">Regional</span>
+                      <span class="my-auto ml-2 text-black font-weight-normal sidebar-row-label" title="{{ _('Regional') }}">{{ _("Regional") }}</span>
                     </div>
                   </a>
                   <div class="collapse mt-2 ml-2 mr-2" id="sidebar-filter-regional">
-                    {{ filters.filter_panel_body('sidebar-regional-options', regions_catalog, active_regions, 'Search regions…', '/regional', 'region') }}
+                    {{ filters.filter_panel_body('sidebar-regional-options', regions_catalog, active_regions, _('Search regions…'), '/regional', 'region') }}
                   </div>
                 </li>
                 <li class="guild-recommendations-item">
@@ -149,11 +161,11 @@
                         <i class="fa-2x fas fa-circle text-purple fa-stack-2x" style=""></i>
                         <i class="fa-stack-1x fas fa-language fa-inverse d-inline-block text-white"></i>
                       </span>
-                      <span class="my-auto ml-2 text-black font-weight-normal">Language</span>
+                      <span class="my-auto ml-2 text-black font-weight-normal sidebar-row-label" title="{{ _('Language') }}">{{ _("Language") }}</span>
                     </div>
                   </a>
                   <div class="collapse mt-2 ml-2 mr-2" id="sidebar-filter-language">
-                    {{ filters.filter_panel_body('sidebar-language-options', languages_catalog, active_languages, 'Search languages…', '/language', 'codes') }}
+                    {{ filters.filter_panel_body('sidebar-language-options', languages_catalog, active_languages, _('Search languages…'), '/language', 'codes') }}
                   </div>
                 </li>
                 <li class="guild-recommendations-item">
@@ -163,11 +175,11 @@
                         <i class="fa-2x fas fa-circle text-purple fa-stack-2x" style=""></i>
                         <i class="fa-stack-1x fas fa-layer-group fa-inverse d-inline-block text-white"></i>
                       </span>
-                      <span class="my-auto ml-2 text-black font-weight-normal">Categorical</span>
+                      <span class="my-auto ml-2 text-black font-weight-normal sidebar-row-label" title="{{ _('Categorical') }}">{{ _("Categorical") }}</span>
                     </div>
                   </a>
                   <div class="collapse mt-2 ml-2 mr-2" id="sidebar-filter-categorical">
-                    {{ filters.filter_panel_body('sidebar-categorical-options', categorical_catalog, active_subcats, 'Search categories…', '/categorical', 'cats') }}
+                    {{ filters.filter_panel_body('sidebar-categorical-options', none, active_subcats, _('Search categories…'), '/categorical', 'cats', groups=categorical_groups) }}
                   </div>
                 </li>
                 <li class="guild-recommendations-item">
@@ -177,8 +189,8 @@
                         <i class="fa-2x fas fa-circle text-purple fa-stack-2x" style=""></i>
                         <i class="fa-stack-1x fas fa-shapes fa-inverse d-inline-block text-white"></i>
                       </span>
-                      <span class="my-auto ml-2 text-black font-weight-normal">Post type</span>
-                      <span class="my-auto ml-auto post-type-choice{% if active_post_types %} is-set{% endif %}">{{ post_type_summary }}<i class="fas fa-caret-down ml-1" aria-hidden="true"></i></span>
+                      <span class="my-auto ml-2 text-black font-weight-normal sidebar-row-label" title="{{ _('Post type') }}">{{ _("Post type") }}</span>
+                      <span class="my-auto ml-auto post-type-choice sidebar-row-value{% if active_post_types %} is-set{% endif %}" title="{{ post_type_summary }}">{{ post_type_summary }}<i class="fas fa-caret-down ml-1" aria-hidden="true"></i></span>
                     </div>
                   </a>
                   <div class="collapse mt-2 ml-2 mr-2" id="sidebar-filter-post_type">
@@ -192,34 +204,33 @@
                         <i class="fa-2x fas fa-circle text-purple fa-stack-2x" style=""></i>
                         <i class="fa-stack-1x fas fa-sliders fa-inverse d-inline-block text-white"></i>
                       </span>
-                      <span class="my-auto ml-2 text-black font-weight-normal">Advanced filter</span>
-                      {% if feed_filter_count %}<span class="my-auto ml-auto badge badge-pill badge-purple" title="{{ feed_filter_count }} set">{{ feed_filter_count }}</span>{% endif %}
+                      <span class="my-auto ml-2 text-black font-weight-normal sidebar-row-label" title="{{ _('Advanced filter') }}">{{ _("Advanced filter") }}</span>
+                      {% if feed_filter_count %}<span class="my-auto ml-auto badge badge-pill badge-purple" title="{{ ngettext('%(num)s set', '%(num)s set', feed_filter_count) }}">{{ feed_filter_count }}</span>{% endif %}
                     </div>
                   </a>
                 </li>
                 {% if v %}{# the member's default filters, loaded into every new session (routes/front.py feed_defaults) #}
                 <li class="guild-recommendations-item feed-defaults">
+                  {# not a filter: an action under them, so it is drawn as a button (no purple circle), and once the
+                     filters are the saved default, as a line saying so (_nav.scss "Save as my default") #}
                   <form method="post" action="/settings/feed_defaults" class="m-0">
                     <input type="hidden" name="formkey" value="{{ v.formkey }}">
-                    <button type="submit" name="action" value="save" class="btn btn-link p-0 text-left w-100 text-decoration-none"{% if feed_defaults_state == 'same' %} disabled aria-disabled="true"{% endif %}>
-                      <div class="d-flex">
-                        <span class="fa-stack">
-                          <i class="fa-2x fas fa-circle text-purple fa-stack-2x" style=""></i>
-                          <i class="fa-stack-1x fas fa-floppy-disk fa-inverse d-inline-block text-white"></i>
-                        </span>
-                        <span class="my-auto ml-2 text-black font-weight-normal">{% if feed_defaults_state == 'same' %}These are your default{% else %}Save as my default{% endif %}</span>
-                      </div>
-                    </button>
+                    {% if feed_defaults_state == 'same' %}
+                    <div class="feed-defaults-status">
+                      <i class="fas fa-circle-check" aria-hidden="true"></i>
+                      <span>{{ _("Saved as your default") }}</span>
+                      <button type="submit" name="action" value="clear" class="btn btn-link p-0 ml-auto" aria-label="{{ _('Forget my default') }}">{{ pgettext("button: forget the saved default filters", "Forget") }}</button>
+                    </div>
+                    {% else %}
+                    <button type="submit" name="action" value="save" class="btn feed-defaults-save"><i class="far fa-floppy-disk" aria-hidden="true"></i>{{ _("Save as my default") }}</button>
                     {% if feed_defaults_state == 'differs' %}
                     <div class="feed-defaults-actions">
-                      <button type="submit" name="action" value="reset" class="btn btn-link p-0">Reset to my default</button>
+                      <span>{{ _("Not your default:") }}</span>
+                      <button type="submit" name="action" value="reset" class="btn btn-link p-0" aria-label="{{ _('Reset to my default') }}">{{ pgettext("button: go back to the saved default filters", "Reset") }}</button>
                       <span aria-hidden="true">·</span>
-                      <button type="submit" name="action" value="clear" class="btn btn-link p-0">Forget my default</button>
+                      <button type="submit" name="action" value="clear" class="btn btn-link p-0" aria-label="{{ _('Forget my default') }}">{{ pgettext("button: forget the saved default filters", "Forget") }}</button>
                     </div>
-                    {% elif feed_defaults_state == 'same' %}
-                    <div class="feed-defaults-actions">
-                      <button type="submit" name="action" value="clear" class="btn btn-link p-0">Forget my default</button>
-                    </div>
+                    {% endif %}
                     {% endif %}
                   </form>
                 </li>
@@ -231,8 +242,8 @@
             <div class="mb-4">
               <div class="sidebar-collapsed-hidden">
                 <div class="d-flex justify-content-between align-items-center mb-3">
-                  <div class="text-small font-weight-bold text-muted text-uppercase" style="letter-spacing: 0.025rem;">My guilds</div>
-                  <span><a href="/browse" class="btn btn-link text-small-extra font-weight-normal text-purple px-0">Discover guilds</a></span>
+                  <div class="text-small font-weight-bold text-muted text-uppercase sidebar-row-label" style="letter-spacing: 0.025rem;" title="{{ _('My guilds') }}">{{ _("My guilds") }}</div>
+                  <span class="sidebar-row-value ml-2" title="{{ _('Discover guilds') }}"><a href="/browse" class="btn btn-link text-small-extra font-weight-normal text-purple px-0">{{ _("Discover guilds") }}</a></span>
                 </div>
               </div>
               <div class="sidebar-collapsed-visible">
@@ -256,7 +267,7 @@
                 </li>
                 {% endfor %}
               </ul>
-              <a class="btn btn-outline-gray-300 text-muted btn-block btn-sm text-small sidebar-collapsed-hidden" href="/mine">View more</a>
+              <a class="btn btn-outline-gray-300 text-muted btn-block btn-sm text-small sidebar-collapsed-hidden" href="/mine">{{ _("View more") }}</a>
               <!-- Show this list when sidebar is collapsed -->
               <ul class="no-bullets guild-recommendations-list pl-0 sidebar-collapsed-visible">
                 {% for board in v.boards_subscribed[0:10] %}
@@ -272,18 +283,18 @@
             {% elif v and not v.subscribed_to_anything %}
             <div class="sidebar-collapsed-hidden">
               <div class="mb-3">
-                <div class="text-small font-weight-bold text-muted text-uppercase" style="letter-spacing: 0.025rem;">My guilds</div>
+                <div class="text-small font-weight-bold text-muted text-uppercase" style="letter-spacing: 0.025rem;">{{ _("My guilds") }}</div>
               </div>
-              <p>You are not a member of any guilds. Guilds you participate in will be displayed here.</p>
-              <a href="/browse" class="btn btn-outline-gray-300 text-muted btn-block btn-sm text-small sidebar-collapsed-hidden">Discover guilds</a>
+              <p>{{ _("You are not a member of any guilds. Guilds you participate in will be displayed here.") }}</p>
+              <a href="/browse" class="btn btn-outline-gray-300 text-muted btn-block btn-sm text-small sidebar-collapsed-hidden">{{ _("Discover guilds") }}</a>
             </div>
             {% endif %}
 
             {% if v and v.mods_anything %}
             <div class="sidebar-collapsed-hidden">
               <div class="d-flex justify-content-between align-items-center mb-3">
-                <div class="text-small font-weight-bold text-muted text-uppercase" style="letter-spacing: 0.025rem;">Guildmaster of</div>
-                <span><a href="/mod/queue" class="btn btn-link text-small-extra font-weight-normal px-0">Mod Queue</a></span>
+                <div class="text-small font-weight-bold text-muted text-uppercase sidebar-row-label" style="letter-spacing: 0.025rem;" title="{{ _('Guildmaster of') }}">{{ _("Guildmaster of") }}</div>
+                <span class="sidebar-row-value ml-2" title="{{ _('Mod Queue') }}"><a href="/mod/queue" class="btn btn-link text-small-extra font-weight-normal px-0">{{ _("Mod Queue") }}</a></span>
               </div>
             </div>
             <div class="sidebar-collapsed-visible">
@@ -324,8 +335,8 @@
             <div class="mb-4 mt-4">
               <div class="sidebar-collapsed-hidden">
                 <div class="d-flex justify-content-between align-items-center mb-3">
-                  <div class="text-small font-weight-bold text-muted text-uppercase" style="letter-spacing: 0.025rem;">My Curations</div>
-                  <span><a href="/curations" class="btn btn-link text-small-extra font-weight-normal text-purple px-0">Discover Curations</a></span>
+                  <div class="text-small font-weight-bold text-muted text-uppercase sidebar-row-label" style="letter-spacing: 0.025rem;" title="{{ _('My Curations') }}">{{ _("My Curations") }}</div>
+                  <span class="sidebar-row-value ml-2" title="{{ _('Discover Curations') }}"><a href="/curations" class="btn btn-link text-small-extra font-weight-normal text-purple px-0">{{ _("Discover Curations") }}</a></span>
                 </div>
               </div>
               <div class="sidebar-collapsed-visible">
@@ -335,7 +346,7 @@
               </div>
 
               {% if v.curations_owned %}
-              <div class="sidebar-collapsed-hidden text-small-extra text-muted font-weight-bold mb-1">Owned</div>
+              <div class="sidebar-collapsed-hidden text-small-extra text-muted font-weight-bold mb-1">{{ pgettext("curations you made", "Owned") }}</div>
               <ul class="no-bullets guild-recommendations-list pl-0 sidebar-collapsed-hidden">
                 {% for curation in v.curations_owned[0:10] %}
                 <li class="guild-recommendations-item">
@@ -348,7 +359,7 @@
                       <div class="my-auto ml-2">
                         <div class="text-black font-weight-normal">
                           {{ curation.name }}
-                          {% if curation.is_private %}<span class="badge badge-secondary">Private</span>{% else %}<span class="badge badge-info">Public</span>{% endif %}
+                          {% if curation.is_private %}<span class="badge badge-secondary">{{ pgettext("curation", "Private") }}</span>{% else %}<span class="badge badge-info">{{ pgettext("curation", "Public") }}</span>{% endif %}
                         </div>
                       </div>
                     </div>
@@ -359,7 +370,7 @@
               {% endif %}
 
               {% if v.curations_followed %}
-              <div class="sidebar-collapsed-hidden text-small-extra text-muted font-weight-bold mb-1 mt-2">Following</div>
+              <div class="sidebar-collapsed-hidden text-small-extra text-muted font-weight-bold mb-1 mt-2">{{ pgettext("curations you follow", "Following") }}</div>
               <ul class="no-bullets guild-recommendations-list pl-0 sidebar-collapsed-hidden">
                 {% for curation in v.curations_followed[0:10] %}
                 <li class="guild-recommendations-item">
@@ -372,7 +383,7 @@
                       <div class="my-auto ml-2">
                         <div class="text-black font-weight-normal">
                           {{ curation.name }}
-                          {% if curation.is_private %}<span class="badge badge-secondary">Private</span>{% else %}<span class="badge badge-info">Public</span>{% endif %}
+                          {% if curation.is_private %}<span class="badge badge-secondary">{{ pgettext("curation", "Private") }}</span>{% else %}<span class="badge badge-info">{{ pgettext("curation", "Public") }}</span>{% endif %}
                         </div>
                       </div>
                     </div>
@@ -399,17 +410,17 @@
             {% elif v and not v.curations_anything %}
             <div class="sidebar-collapsed-hidden mt-4">
               <div class="mb-3">
-                <div class="text-small font-weight-bold text-muted text-uppercase" style="letter-spacing: 0.025rem;">My Curations</div>
+                <div class="text-small font-weight-bold text-muted text-uppercase" style="letter-spacing: 0.025rem;">{{ _("My Curations") }}</div>
               </div>
-              <p>You haven't created or followed any curations yet.</p>
-              <a href="/curations" class="btn btn-outline-gray-300 text-muted btn-block btn-sm text-small sidebar-collapsed-hidden">Discover Curations</a>
+              <p>{{ _("You haven't created or followed any curations yet.") }}</p>
+              <a href="/curations" class="btn btn-outline-gray-300 text-muted btn-block btn-sm text-small sidebar-collapsed-hidden">{{ _("Discover Curations") }}</a>
             </div>
             {% endif %}
 
             {# Spaces, under My Curations (the owner, 2026-10-21: not a navbar button): live boards, live threads and calls #}
             <div class="mb-4 mt-4 sidebar-spaces">
               <div class="sidebar-collapsed-hidden">
-                <div class="text-small font-weight-bold text-muted text-uppercase mb-2" style="letter-spacing: 0.025rem;">Spaces</div>
+                <div class="text-small font-weight-bold text-muted text-uppercase mb-2" style="letter-spacing: 0.025rem;">{{ _("Spaces") }}</div>
                 <ul class="no-bullets guild-recommendations-list pl-0">
                   <li class="guild-recommendations-item">
                     <a href="/spaces">
@@ -418,7 +429,7 @@
                           <i class="fa-2x fas fa-circle text-purple fa-stack-2x"></i>
                           <i class="fa-stack-1x fas fa-microphone-lines fa-inverse d-inline-block text-white"></i>
                         </span>
-                        <div class="my-auto ml-2 text-black font-weight-normal">Live and upcoming</div>
+                        <div class="my-auto ml-2 text-black font-weight-normal sidebar-row-label" title="{{ _('Live and upcoming') }}">{{ _("Live and upcoming") }}</div>
                       </div>
                     </a>
                   </li>
@@ -430,7 +441,7 @@
                           <i class="fa-2x fas fa-circle text-gray-400 fa-stack-2x"></i>
                           <i class="fa-stack-1x fas fa-plus fa-inverse d-inline-block text-white"></i>
                         </span>
-                        <div class="my-auto ml-2 text-black font-weight-normal">Start a Space</div>
+                        <div class="my-auto ml-2 text-black font-weight-normal sidebar-row-label" title="{{ _('Start a Space') }}">{{ _("Start a Space") }}</div>
                       </div>
                     </a>
                   </li>
@@ -439,7 +450,7 @@
               </div>
               <ul class="no-bullets guild-recommendations-list pl-0 sidebar-collapsed-visible">
                 <li class="guild-recommendations-item">
-                  <a href="/spaces" data-toggle="tooltip" data-placement="right" title="Spaces" aria-label="Spaces">
+                  <a href="/spaces" data-toggle="tooltip" data-placement="right" title="{{ _('Spaces') }}' aria-label='{{ _('Spaces') }}">
                     <span class="fa-stack">
                       <i class="fa-2x fas fa-circle text-purple fa-stack-2x"></i>
                       <i class="fa-stack-1x fas fa-microphone-lines fa-inverse d-inline-block text-white"></i>
@@ -457,9 +468,9 @@
             <div class="my-3" style="">
               <i class="fas fa-binoculars text-purple" style="font-size:3rem"></i>
             </div>
-            <h5>Discover amazing communities across <span class="text-purple">{{ "SITE_NAME" | app_config }}</span>.</h5>
-            <p class="text-small">Create a {{ "SITE_NAME" | app_config }} account and join your favorite communities, no email address required.</p>
-            <a href="/signup" class="btn btn-purple btn-block">Sign up</a>
+            <h5>{{ _('Discover amazing communities across <span class="text-purple">%(site)s</span>.') }}</h5>
+            <p class="text-small">{{ _("Create a %(site)s account and join your favorite communities, no email address required.") }}</p>
+            <a href="/signup" class="btn btn-purple btn-block">{{ _("Sign up") }}</a>
           </div>
         </div>
         {% endif %}

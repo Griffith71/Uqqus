@@ -143,7 +143,114 @@
               <div class="d-lg-flex">
 
                 <div class="title w-lg-25">
-                  <label for="score-display">How scores read</label>
+                  <label for="all-opt-out">{{ _("Keep my posts out of All") }}</label>
+                </div>
+
+                <div class="body w-lg-100">
+
+                  {# helpers/all_feed.py: the account's profile posts leave All; its anonymous posts and guild copies stay #}
+                  <div class="custom-control custom-switch">
+                    <input type="checkbox" class="custom-control-input" id="all-opt-out"{% if v.all_opt_out %} checked{% endif %} onchange="post_toast('/settings/all_opt_out?on=' + this.checked)">
+                    <label class="custom-control-label" for="all-opt-out"></label>
+                  </div>
+
+                  <span class="text-small-extra text-muted">{{ _("Your posts stay on your profile and in the feeds of people who follow you, but All leaves them out. Copies you forward to a guild follow that guild's own setting, and anonymous posts always appear in All, so nobody can tell which ones are yours.") }}</span>
+
+                </div>
+
+              </div>
+
+            </div>
+
+          <h2 class="h5 mt-5" id="layout">{{ _("Layout") }}</h2>
+
+            <div class="settings-section rounded">
+
+              <div class="d-lg-flex">
+
+                <div class="title w-lg-25">
+                  <label for="density">{{ _("Density") }}</label>
+                </div>
+
+                <div class="body w-lg-100">
+
+                  {# the `density` cookie, kept by this browser and read before the page is drawn (partials/theme.html
+                     html_attrs; _tokens.scss narrows the spacing, the snippets and the media) #}
+                  <select class="form-control" id="density" onchange="setDensity(this.value)">
+                    <option value="comfortable"{% if request.cookies.get('density') != 'compact' %} selected{% endif %}>{{ _("Comfortable: more room, longer previews") }}</option>
+                    <option value="compact"{% if request.cookies.get('density') == 'compact' %} selected{% endif %}>{{ _("Compact: more posts on the screen") }}</option>
+                  </select>
+
+                  <span class="d-block mt-2 text-small-extra text-muted">{{ _("Compact shows two lines of a post's text, smaller pictures and no text above them. Saved on this device.") }}</span>
+
+                </div>
+
+              </div>
+
+            </div>
+
+          <h2 class="h5 mt-5" id="languages">{{ _("My languages") }}</h2>
+
+            {# the account's languages (users.languages, routes/translation_pages.py): the first is its language, the one
+               the site is shown in (helpers/i18n_runtime.py) and translations are made into; "Translate" shows under
+               posts and comments in none of them. Until they choose, the ones their browser asks for. Alike languages
+               share a row (helpers/languages.py). Each language also says its own name, so a reader finds theirs #}
+            {% set my_langs, my_langs_chosen = my_languages(v) %}
+            <div class="settings-section rounded">
+
+              <form action="/settings/languages" method="post">
+                <input type="hidden" name="formkey" value="{{ v.formkey }}">
+
+                <div class="d-lg-flex">
+                  <div class="title w-lg-25">
+                    <label for="my-language-0">{{ _("Your language") }}</label>
+                  </div>
+                  <div class="body w-lg-100">
+                    <select class="form-control" id="my-language-0" name="languages">
+                      {# only languages the interface is ready in (helpers/i18n_runtime.py READY_SHARE), and the member's
+                         own choice even before it is, so saving the page never changes it #}
+                      {% for code, name in language_choices %}
+                      {% if has_interface(code) or (my_langs and code == my_langs[0]) %}
+                      {% set own = own_language_name(code) %}
+                      <option value="{{ code }}"{% if my_langs and code == my_langs[0] %} selected{% endif %}>{{ name }}{% if own != name %} · {{ own }}{% endif %}</option>
+                      {% endif %}
+                      {% endfor %}
+                    </select>
+                    <span class="d-block mt-2 text-small-extra text-muted">{{ _("%(site)s is shown in this language, and translations are made into it.") }}{% if my_langs and not has_interface(my_langs[0]) %} {{ _("%(site)s isn't available in this language yet, so it is shown in English.") }}{% endif %}{% if my_langs and not translatable_into(my_langs[0]) %} {{ _("Nothing on %(site)s can translate into it right now, so the Translate button won't show.") }}{% endif %}</span>
+                  </div>
+                </div>
+
+                <div class="d-lg-flex mt-3">
+                  <div class="title w-lg-25">
+                    <label for="my-language-1">{{ _("Other languages you read") }}</label>
+                  </div>
+                  <div class="body w-lg-100">
+                    {% for i in range(1, 3) %}
+                    {% set chosen = my_langs[i] if my_langs | length > i else '' %}
+                    <select class="form-control{% if i > 1 %} mt-2{% endif %}" id="my-language-{{ i }}" name="languages"{% if i > 1 %} aria-label="{{ _('Another language you read') }}"{% endif %}>
+                      <option value=""{% if not chosen %} selected{% endif %}>{{ pgettext("no language", "None") }}</option>
+                      {% for code, name in language_choices %}
+                      <option value="{{ code }}"{% if code == chosen %} selected{% endif %}>{{ name }}</option>
+                      {% endfor %}
+                    </select>
+                    {% endfor %}
+
+                    <span class="d-block mt-2 text-small-extra text-muted">{% if not my_langs_chosen %}{{ _("You haven't chosen yet, so these are the languages your browser asks for.") }} {% endif %}{{ _("A Translate button shows under posts and comments in none of your languages. Nothing is translated unless you press it.") }}</span>
+                    <button type="submit" class="btn btn-primary mt-2">{{ _("Save languages") }}</button>
+                  </div>
+                </div>
+              </form>
+
+            </div>
+
+          <h2 class="h5 mt-5" id="scores">{{ _("Scores") }}</h2>
+
+            <div class="settings-section rounded">
+
+              <div class="d-lg-flex">
+
+                <div class="title w-lg-25">
+                  <label for="score-display">{{ _("How scores read") }}</label>
                 </div>
 
                 <div class="body w-lg-100">

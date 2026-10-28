@@ -1,0 +1,395 @@
+// The feed (the UI modernisation, 2026-10): posts sit on the page itself, as on X and Reddit, divided by hairlines,
+// with an 18px title, the body's first lines, rounded media and pill-shaped actions. Imported at the end of both theme
+// sheets, after the components. The selectors repeat the legacy ones (#frontpage .posts .card and its siblings) so
+// that, coming later, they replace them; the card's markup, ids and hooks (submission_listing.html, bindPostCards)
+// are unchanged.
+
+$feeds: "#frontpage .posts", "#userpage .posts", "#search .posts", "#guild .posts", "#settings-guild .posts";
+
+@function feed-select($suffix) {
+    $list: ();
+    @each $feed in $feeds {
+        // the post cards only: a card nested in one (the full body behind "Show more") is not a post
+        $list: append($list, unquote("#{$feed} > #{$suffix}"), comma);
+    }
+    @return $list;
+}
+
+// --- the page ---------------------------------------------------------------------------------------------------
+// One colour behind everything (white or black); the columns keep their hairlines between them.
+
+body {
+    background-color: var(--bg);
+}
+
+#main-content-row > #main-content-col.bg-white,
+#main-content-row > .col.sidebar.bg-white {
+    background-color: var(--bg) !important;
+}
+
+// --- the post ---------------------------------------------------------------------------------------------------
+// No fill and no frame: a hairline under each post (inset to the text, as Reddit's), and on a mouse a soft rounded
+// tint under the post being pointed at, with the hairlines either side of it faded so the tint reads as one block.
+
+#{feed-select(".card")},
+#{feed-select(".card:first-of-type")},
+#{feed-select(".card:nth-last-of-type(2)")},
+#{feed-select(".card:last-of-type")} {
+    background-color: transparent;
+    border: 0;
+    border-radius: var(--radius-md);
+    padding: var(--card-pad) var(--card-pad) var(--space-4);
+    margin: 0 0 1px;
+    transition: background-color var(--dur-fast) var(--ease-out);
+}
+
+#{feed-select(".card::after")} {
+    content: "";
+    position: absolute;
+    left: var(--card-pad);
+    right: var(--card-pad);
+    bottom: -1px;
+    height: 1px;
+    background-color: var(--border);
+    pointer-events: none;
+    transition: opacity var(--dur-fast) var(--ease-out);
+}
+
+#{feed-select(".card:not(:has(~ .card))::after")} {
+    display: none;
+}
+
+#{feed-select(".card:hover")} {
+    background-color: transparent;
+}
+
+@media (hover: hover) and (pointer: fine) {
+    #{feed-select(".card:hover")} {
+        background-color: var(--hover);
+    }
+
+    #{feed-select(".card:hover::after")},
+    #{feed-select(".card:has(+ .card:hover)::after")} {
+        opacity: 0;
+    }
+}
+
+// a phone: edge to edge, the hairline across the whole width (X)
+@media (max-width: 575.98px) {
+    #{feed-select(".card")},
+    #{feed-select(".card:first-of-type")},
+    #{feed-select(".card:nth-last-of-type(2)")},
+    #{feed-select(".card:last-of-type")} {
+        border-radius: 0;
+    }
+
+    #{feed-select(".card::after")} {
+        left: 0;
+        right: 0;
+    }
+}
+
+// the vote column from 768px, centred beside the post; on a phone the pill in the action row has the arrows. It takes
+// 40px + the 8px gap - the 4px pull = 44px: $layout-vote in both sheets, which the feed's width adds to Reddit's 738px
+.card .voting {
+    min-width: 40px;
+    margin: 0 var(--space-3) 0 calc(-1 * var(--space-2)) !important;
+    padding: 0 !important;
+    align-self: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+@media (max-width: 767.98px) {
+    .card:has(.vote-pill) > .d-flex > .voting {
+        display: none;
+    }
+}
+
+// The vote column votes from the card's whole height (the owner, 2026-10-23): its top half is the upvote, its bottom
+// half the downvote, from the card's top edge to its bottom one. Each zone is its arrow's own ::after, so a click there
+// is a click on the arrow (all_js.js reads the arrow's data attributes) and a locked vote still explains itself.
+// Hovering a half fills it with a faint pill of its colour and lights the arrow, so it's clear what a click will do.
+// A mouse only: on a touch screen a tap or a scroll near the edge never votes (the arrows keep their 44px tap areas).
+// The column (.voting, main.scss) is already a stacking layer above the title's stretched link; the score stays
+// above the zones, so its tooltip and the author's "who upvoted" still open.
+@media (hover: hover) and (pointer: fine) {
+    .card .voting {
+        // from the column to the card's edges (its padding + my-2: 16px above, 12px below), less 2px so the tint
+        // never touches the hairline between cards
+        --vote-reach-top: 14px;
+        --vote-reach-bottom: 10px;
+        align-self: stretch;
+        justify-content: center;
+    }
+
+    .card .voting .arrow-up::after, .card .voting .arrow-down::after {
+        content: "";
+        position: absolute;
+        left: -4px;
+        right: -4px;
+        z-index: 1;
+        border-radius: var(--radius-lg);
+        background-color: transparent;
+        transition: background-color var(--dur-fast) var(--ease-out);
+    }
+
+    .card .voting .arrow-up::after {
+        top: calc(-1 * var(--vote-reach-top));
+        bottom: 50%;
+    }
+
+    .card .voting .arrow-down::after {
+        top: 50%;
+        bottom: calc(-1 * var(--vote-reach-bottom));
+    }
+
+    // the glyph and the score above their zone
+    .card .voting .arrow-up::before, .card .voting .arrow-down::before {
+        position: relative;
+        z-index: 2;
+    }
+
+    .card .voting .score, .card .voting .score-up, .card .voting .score-down {    // a vote swaps .score for the others
+        position: relative;
+        z-index: 3;
+    }
+
+    .card .voting .arrow-up:not(.vote-locked):hover::after {
+        background-color: color-mix(in srgb, var(--upvote) 10%, transparent);
+    }
+
+    .card .voting .arrow-down:not(.vote-locked):hover::after {
+        background-color: color-mix(in srgb, var(--downvote) 10%, transparent);
+    }
+
+    .card .voting .vote-locked:hover::after {
+        background-color: var(--hover);
+    }
+
+    // the zone shows the colour now: the arrow's own round tint would be a second, smaller one inside it
+    .card .voting .arrow-up:not(.vote-locked):hover, .card .voting .arrow-down:not(.vote-locked):hover {
+        background-color: transparent;
+    }
+}
+
+// --- inside the card --------------------------------------------------------------------------------------------
+
+.post-meta {
+    color: var(--text-muted);
+    font-size: var(--text-sm);
+    line-height: 1.5;
+}
+
+.post-meta .user-name, .post-meta .user-name-inner {
+    color: var(--text);
+    font-weight: var(--weight-medium);
+}
+
+.post-meta .profile-pic-20 {
+    border-radius: 50%;
+}
+
+.post-title, #frontpage .post-title {
+    font-size: var(--text-title);
+    font-weight: var(--weight-semibold);
+    letter-spacing: var(--tracking-title);
+    line-height: var(--leading-tight);
+    margin-top: var(--space-1);
+}
+
+.post-title.w-lg-75 {
+    width: 100% !important;
+}
+
+.post-title a, #frontpage .post-title a,
+.post-title a:hover, .post-title a:focus, .post-title a:active,
+#frontpage .post-title a:hover, #frontpage .post-title a:focus, #frontpage .post-title a:active {
+    color: var(--text);
+    text-decoration: none;
+}
+
+// the body's first lines (helpers/post_excerpt.py): four on a text post, two above a picture or link, fewer or none
+// in compact density. Plain text, so a long word or address wraps instead of widening the card.
+.post-snippet {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: var(--snippet-lines);
+    line-clamp: var(--snippet-lines);
+    overflow: hidden;
+    overflow-wrap: anywhere;
+    margin: var(--space-2) 0 0;
+    font-size: var(--text-base);
+    line-height: 1.5;
+    color: var(--text-muted);
+    position: relative;
+    z-index: 2;
+    pointer-events: none;            // the card's own link (the title's stretched-link) still opens the post
+}
+
+.post-snippet.is-with-media {
+    -webkit-line-clamp: var(--snippet-lines-media);
+    line-clamp: var(--snippet-lines-media);
+}
+
+html[data-density="compact"] .post-snippet.is-with-media {
+    display: none;
+}
+
+.posts > .card .post-media-frame, .posts > .card .embed-lg, .posts > .card .post-preview-lg {
+    margin-top: var(--space-4);
+    border-radius: var(--radius-sm);
+}
+
+// a picture or player is shorter when text sits above it, so a post with both is not twice as tall
+.posts > .card .post-img-lg img:not(.post-img-backdrop), .posts > .card .embed-lg img {
+    max-height: var(--media-max-h);
+}
+
+.posts > .card .post-snippet ~ * .post-img-lg img:not(.post-img-backdrop),
+.posts > .card .post-snippet ~ * .embed-lg img {
+    max-height: var(--media-max-h-with-text);
+}
+
+// the frame of a picture: a soft blurred copy of it behind, so a narrow or tall one is not set on bare page colour
+.posts > .card .post-media-frame {
+    background-color: var(--surface-sunken);
+    isolation: isolate;
+}
+
+.posts > .card .post-media-frame .post-img-lg img:not(.post-img-backdrop) {
+    position: relative;
+    z-index: 1;
+}
+
+// the picture's address label stays above the picture
+.posts > .card .post-media-frame .post-img-overlay {
+    z-index: 2;
+}
+
+// drawn at a tenth of the frame and scaled up: the blur works on a hundredth of the pixels (a full-size blurred copy on
+// every picture made long feeds stutter on slower phones)
+.post-media-frame .post-img-lg img.post-img-backdrop {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 10%;
+    height: 10%;
+    max-width: none;
+    max-height: none;
+    min-height: 0;
+    object-fit: cover;
+    transform-origin: 0 0;
+    transform: scale(10.5);
+    filter: blur(2.5px);
+    opacity: 0.55;
+    z-index: 0;
+    pointer-events: none;
+}
+
+// the full body, once "Show more" is pressed: the post's own text, not a box inside the post
+.posts > .card .expandable-post-text {
+    margin: var(--space-3) 0 0 !important;
+    padding: 0 !important;
+    border: 0 !important;
+    background: transparent;
+    font-size: var(--text-body);
+    line-height: var(--leading-body);
+    color: var(--text);
+}
+
+.posts .card .post-preview-lg {
+    border-color: var(--border);
+}
+
+.show-more-link, .text-expand {
+    font-size: var(--text-sm);
+    font-weight: var(--weight-semibold);
+    color: var(--text-muted);
+}
+
+// --- the action row ---------------------------------------------------------------------------------------------
+
+.post-actions {
+    color: var(--text-muted);
+    font-size: var(--text-sm);
+    margin-top: var(--space-4) !important;
+}
+
+.post-actions > ul {
+    flex-wrap: wrap;
+    gap: var(--space-3);
+    margin-bottom: 0;
+}
+
+.post-actions .list-inline-item:not(:last-child), .post-actions .post-action-item {
+    margin-right: 0;
+}
+
+.post-actions .post-action {
+    min-height: 32px;
+    padding: 0 var(--space-4);
+    border-radius: var(--radius-pill);
+    background-color: var(--surface-sunken);
+    color: var(--text);
+    font-weight: var(--weight-semibold);
+    font-size: var(--text-sm);
+    gap: 6px;
+    transition: background-color var(--dur-fast) var(--ease-out);
+}
+
+.post-actions .post-action .fa, .post-actions .post-action .fas, .post-actions .post-action .far {
+    width: auto;
+    font-size: 13px;
+    color: var(--text-muted);
+}
+
+.post-actions .post-action-bookmark.is-on, .post-actions .post-action-bookmark.is-on .fas {
+    color: var(--link);
+}
+
+@media (hover: hover) and (pointer: fine) {
+    .post-actions a.post-action:hover {
+        color: var(--text);
+        background-color: var(--border);
+    }
+
+    .post-actions a.post-action:hover .fa, .post-actions a.post-action:hover .fas, .post-actions a.post-action:hover .far {
+        color: var(--text);
+    }
+}
+
+// the "..." at the end: a round icon button
+.post-actions .post-action-more > a, .post-actions .post-action-more .dropdown > a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    color: var(--text-muted);
+}
+
+@media (hover: hover) and (pointer: fine) {
+    .post-actions .post-action-more > a:hover, .post-actions .post-action-more .dropdown > a:hover {
+        background-color: var(--hover);
+        color: var(--text);
+    }
+}
+
+#{feed-select(".card .card-footer")} {
+    margin-top: 0 !important;
+}
+
+// brought back on screen after "Show less": below the fixed navbar, not under it
+.posts > .card {
+    scroll-margin-top: 72px;
+}
+
+// the card's body on a phone clipped sideways for its scrolling meta line, which also stopped "Show less" staying pinned:
+// clip keeps the sideways clipping without making the body a scroll container
+.posts > .card .x-scroll-parent {
+    overflow-x: clip;
+    overflow-y: visible;
+}

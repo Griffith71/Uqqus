@@ -35,9 +35,9 @@ def test_every_element_the_script_uses_is_in_the_page_shell():
 
 def test_the_panel_widens_into_the_folded_sidebars_room_and_folds_it_only_when_needed():
     # the owner (2026-10-21): the panel is the right sidebar's width plus the 207px the left sidebar gives up when it
-    # folds, whenever the window holds the 1326px block with the rail; the left sidebar folds only while there is no
+    # folds, whenever the window holds the 1370px block with the rail; the left sidebar folds only while there is no
     # room for it, and only while the panel is open
-    assert "var LEFT_OPEN = 272, RAIL = 65, FEED = 738, RIGHT = 316, GIVEN_UP = 207, GUTTERS = 30;" in PANELS_JS
+    assert "var LEFT_OPEN = 272, RAIL = 65, FEED = 782, RIGHT = 316, GIVEN_UP = 207, GUTTERS = 30;" in PANELS_JS
     assert "var WIDE_PANEL = RAIL + FEED + RIGHT + GIVEN_UP + GUTTERS;" in PANELS_JS
     assert "var room = LEFT_OPEN + FEED + (widePanel ? RIGHT + GIVEN_UP : RIGHT) + GUTTERS;" in PANELS_JS
     assert "if (width < room) fold(); else unfold();" in PANELS_JS

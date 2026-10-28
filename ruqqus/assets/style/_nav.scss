@@ -1,0 +1,565 @@
+// The navbar and the sidebars (the UI modernisation, 2026-10). Imported at the end of both theme sheets. Markup:
+// default.html (#navbar), header.html (the settings and Create post navbar), sidebar-left.html, the right sidebar's
+// `.sidebar-section > .title + .body` boxes (partials/sidebar_common.html, late_boxes.html, profile_about.html, a
+// guild's boxes in board.html). Heights and widths stay what nav_align.js and the paint rules expect (55px, the
+// 272 / 782 / 316 block: 738 of content beside the 44px vote column); only the look changes.
+
+// --- the top bar --------------------------------------------------------------------------------------------------
+// The page's own colour, slightly see-through, with what scrolls under it softly blurred: the one translucent
+// surface on the site. A hairline instead of a shadow.
+
+#navbar.navbar-light, #navbar {
+    background-color: color-mix(in srgb, var(--surface) 86%, transparent);
+    -webkit-backdrop-filter: saturate(180%) blur(14px);
+    backdrop-filter: saturate(180%) blur(14px);
+    border-bottom: 1px solid var(--border);
+    box-shadow: none !important;
+}
+
+// where the blur can't be drawn, the bar is solid
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+    #navbar.navbar-light, #navbar {
+        background-color: var(--surface);
+    }
+}
+
+// the search box: a pill on the page's sunken colour
+#navbar .form-inline.search .form-control {
+    height: 38px;
+    min-height: 38px;
+    border-radius: var(--radius-pill);
+    background-color: var(--surface-sunken);
+    border: 1px solid transparent;
+    padding-left: var(--space-5);
+    padding-right: 2.75rem;
+    font-size: var(--text-base);
+}
+
+#navbar .form-inline.search .form-control:focus {
+    background-color: var(--surface);
+    border-color: var(--link);
+    box-shadow: 0 0 0 3px var(--focus-ring);
+}
+
+// the icons: round targets that show themselves on hover
+#navbar #navbar-icon-row .nav-link:not(.dropdown-toggle):not(#dropdownMenuLink) {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    border-radius: 50%;
+    color: var(--text-muted);
+    transition: background-color var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out);
+}
+
+@media (hover: hover) and (pointer: fine) {
+    #navbar #navbar-icon-row .nav-link:not(.dropdown-toggle):not(#dropdownMenuLink):hover {
+        background-color: var(--hover);
+        color: var(--text);
+    }
+}
+
+#navbar .profile-pic-35 {
+    border-radius: 50%;
+}
+
+// the icons sit together (they were 45px apart: 38px targets with margins either side); the account stands apart
+@media (min-width: 768px) {
+    #navbar #navbar-icon-row {
+        align-items: center;
+        gap: 2px;
+    }
+
+    #navbar #navbar-icon-row > .nav-item {
+        margin: 0 !important;
+    }
+
+    #navbar #navbar-icon-row > .nav-item:has(#dropdownMenuLink),
+    #navbar #navbar-icon-row > .nav-item:has(> .btn) {
+        margin-left: var(--space-3) !important;
+    }
+}
+
+// --- the phone's top bar: one row --------------------------------------------------------------------------------
+// It wrapped its icons onto a second line under the logo. On a phone: the logo, search, the bell, chat and the
+// account's picture (members); the logo, search, Sign In and the menu (visitors). Create post and Random live in the
+// bottom bar and the menus; Sign Up is in the bottom bar.
+
+@media (max-width: 767.98px) {
+    #navbar > .container-fluid {
+        flex-wrap: nowrap;
+        gap: var(--space-2);
+    }
+
+    #navbar #navbar-icon-row {
+        flex-direction: row;
+        align-items: center;
+        margin-left: auto;
+    }
+
+    #navbar #navbar-icon-row .nav-item {
+        margin: 0 !important;
+    }
+
+    #navbar #navbar-icon-row .nav-item:has(> a[href="/random"]),
+    #navbar #navbar-icon-row .nav-item:has(> a[data-compose]),
+    #navbar #navbar-icon-row .nav-item:has(> a[href^="/signup"]) {
+        display: none !important;
+    }
+
+    // the account: its picture only (the name and Rep are in its menu)
+    #navbar #dropdownMenuLink .text-left.pl-2 {
+        display: none;
+    }
+
+    #navbar #navbar-icon-row .btn {
+        padding: 0.375rem 0.875rem;
+        font-size: var(--text-sm);
+    }
+
+    #navbar .mobile-nav-icon {
+        width: 38px;
+        height: 38px;
+        justify-content: center;
+        margin-left: auto;
+    }
+}
+
+// --- the left sidebar ---------------------------------------------------------------------------------------------
+
+// Reddit's rhythm: rows close together (2px apart, not 1rem: main.scss .guild-recommendations-item), with room inside
+// each, so the hover tint and the selected feed's highlight never hug the icon or the label. The negative margin keeps
+// the icons on the section headings' edge.
+#sidebar-left .guild-recommendations-list .guild-recommendations-item {
+    margin-top: 0;
+}
+
+// the left sidebar's sections are frameless, so nothing to clip; .sidebar-section's overflow: hidden (main.scss) cut
+// the rows' highlight off square at the content's edge
+#sidebar-left .sidebar-section {
+    overflow: visible;
+}
+
+#sidebar-left .guild-recommendations-item > a {
+    display: block;
+    margin: 2px -12px;
+    padding: 8px 12px;
+    border-radius: 10px;
+    text-decoration: none;
+    transition: background-color var(--dur-fast) var(--ease-out);
+}
+
+@media (hover: hover) and (pointer: fine) {
+    #sidebar-left .guild-recommendations-item > a:hover {
+        background-color: var(--hover);
+    }
+}
+
+// --- Save as my default: an action under the filters, not one of them (sidebar-left.html) ---
+// a quiet outlined pill with a plain icon, a little apart from the rows; once the filters are the saved default, a line
+// saying so instead of a button that does nothing
+
+#sidebar-left .feed-defaults {
+    margin-top: var(--space-4);
+}
+
+#sidebar-left .feed-defaults-save {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-3);
+    width: 100%;
+    min-height: 36px;
+    padding: 6px var(--space-5);
+    border: 1px solid var(--border-strong);
+    border-radius: var(--radius-pill);
+    background-color: transparent;
+    color: var(--text);
+    font-size: 13px;
+    font-weight: var(--weight-semibold);
+    box-shadow: none;
+    transition: background-color var(--dur-fast) var(--ease-out), border-color var(--dur-fast) var(--ease-out);
+}
+
+#sidebar-left .feed-defaults-save .fa-floppy-disk {
+    color: var(--text-muted);
+}
+
+@media (hover: hover) and (pointer: fine) {
+    #sidebar-left .feed-defaults-save:hover {
+        background-color: var(--hover);
+        border-color: var(--link);
+    }
+}
+
+#sidebar-left .feed-defaults-status {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    min-height: 36px;
+    font-size: 13px;
+    color: var(--text-muted);
+}
+
+#sidebar-left .feed-defaults-status .fa-circle-check {
+    color: var(--success);
+}
+
+#sidebar-left .feed-defaults-status .btn-link,
+#sidebar-left .feed-defaults .feed-defaults-actions .btn-link {
+    font-size: 13px;
+    font-weight: var(--weight-regular);
+    color: var(--link);
+    vertical-align: baseline;
+}
+
+#sidebar-left .feed-defaults .feed-defaults-actions {
+    margin-top: var(--space-2);
+    padding: 0;
+    text-align: center;
+    font-size: 13px;
+    color: var(--text-muted);
+}
+
+// on the rail: the same action as an outlined circle, set apart from the filled filter symbols above it
+#sidebar-left .feed-defaults-rail {
+    margin-top: var(--space-3) !important;
+    text-align: center;
+}
+
+#sidebar-left .feed-defaults-rail-btn {
+    width: 34px;
+    height: 34px;
+    padding: 0;
+    border: 1.5px solid var(--border-strong);
+    border-radius: 50%;
+    background-color: transparent;
+    color: var(--text-muted);
+    box-shadow: none;
+}
+
+#sidebar-left .feed-defaults-rail-btn.is-saved {
+    opacity: 1;
+    color: var(--success);
+    border-style: dashed;
+}
+
+@media (hover: hover) and (pointer: fine) {
+    #sidebar-left .feed-defaults-rail-btn:not(:disabled):hover {
+        color: var(--text);
+        border-color: var(--link);
+        background-color: var(--hover);
+    }
+}
+
+// the feed being read (All, For You, Following)
+#sidebar-left .guild-recommendations-item > a[aria-current="page"] {
+    background-color: var(--brand-soft);
+}
+
+#sidebar-left .guild-recommendations-item > a[aria-current="page"] .text-black {
+    color: var(--text) !important;
+    font-weight: var(--weight-semibold) !important;
+}
+
+// the visitor's "Discover amazing communities" box: a panel on the page (it was a light grey, and in the dark theme
+// a washed-out one: the dark sheet's grey scale runs the other way)
+#sidebar-left .sidebar-guild-recommendations.bg-gray-100 {
+    background-color: var(--panel) !important;
+    border-radius: var(--radius-lg);
+}
+
+#sidebar-left .sidebar-guild-recommendations h5 {
+    color: var(--text);
+    font-weight: var(--weight-semibold);
+    letter-spacing: var(--tracking-title);
+}
+
+// --- the right sidebar's boxes ------------------------------------------------------------------------------------
+// Soft panels on the page with a plain heading, in place of a frame under a solid blue bar.
+
+#main-content-row > .sidebar:not(.sidebar-left) .sidebar-section {
+    margin-bottom: var(--space-5);
+    background-color: var(--panel);
+    border: 0;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+}
+
+#main-content-row > .sidebar:not(.sidebar-left) .sidebar-section .title {
+    padding: var(--space-5) var(--space-5) var(--space-2);
+    background-color: transparent;
+    color: var(--text);
+    font-size: 15px;
+    font-weight: var(--weight-semibold);
+    letter-spacing: var(--tracking-title);
+    text-transform: none;
+    border: 0;
+}
+
+#main-content-row > .sidebar:not(.sidebar-left) .sidebar-section .title .fas,
+#main-content-row > .sidebar:not(.sidebar-left) .sidebar-section .title .far,
+#main-content-row > .sidebar:not(.sidebar-left) .sidebar-section .title .fa {
+    color: var(--text-muted);
+}
+
+#main-content-row > .sidebar:not(.sidebar-left) .sidebar-section .body {
+    padding: var(--space-3) var(--space-5) var(--space-5);
+    background-color: transparent;
+    border: 0;
+    border-radius: 0;
+}
+
+#main-content-row > .sidebar:not(.sidebar-left) .sidebar-section .body .btn-link {
+    border-radius: var(--radius-sm);
+}
+
+// --- the guild's stats (partials/guild_sidebar.html) ------------------------------------------------------------------
+// Members and Founded, label over value as reddit.com's community sidebar, each as wide as it needs
+
+.guild-about-stats {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: var(--space-4) var(--space-8);
+    margin: var(--space-4) 0 var(--space-5);
+}
+
+.guild-about-stats dt {
+    color: var(--text-muted);
+    font-size: 12px;
+    font-weight: var(--weight-semibold);
+}
+
+.guild-about-stats dd {
+    margin: 0;
+    color: var(--text);
+    font-size: 16px;
+    font-weight: var(--weight-semibold);
+    font-variant-numeric: tabular-nums;
+}
+
+// --- Post Info (submission.html): what the post above doesn't show -----------------------------------------------------
+// its standing, the other places it is discussed (three, then the rest behind a <details>), one line of facts
+
+.post-standing {
+    margin: 0 0 var(--space-5);
+    padding: 0;
+    list-style: none;
+}
+
+.post-standing li {
+    display: flex;
+    gap: var(--space-3);
+    align-items: baseline;
+    padding: 3px 0;
+    color: var(--text);
+    font-size: 14px;
+    font-weight: var(--weight-medium);
+}
+
+.post-standing .fa-fw {
+    flex-shrink: 0;
+    color: var(--link);
+}
+
+.post-places {
+    margin: 0 0 var(--space-4);
+}
+
+.post-places-head {
+    margin-bottom: var(--space-2);
+    color: var(--text-muted);
+    font-size: 12px;
+    font-weight: var(--weight-semibold);
+}
+
+.post-places-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.post-place {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+    min-width: 0;
+    padding: 5px 0;
+    font-size: 14px;
+}
+
+.post-place-name {
+    flex: 1 1 auto;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-weight: var(--weight-medium);
+}
+
+.post-place-count {
+    flex-shrink: 0;
+    min-width: 3.25em;
+    color: var(--text-muted);
+    font-size: 13px;
+    font-variant-numeric: tabular-nums;
+    text-align: right;
+
+    i {
+        margin-right: 4px;
+        font-size: 12px;
+    }
+}
+
+.post-places-list.is-collapsed .post-place-extra {
+    display: none;
+}
+
+.post-places-rest {
+    color: var(--text-muted);
+    font-size: 13px;
+}
+
+.post-places-toggle {
+    margin-top: var(--space-2);
+    padding: 0;
+    border: 0;
+    background: none;
+    color: var(--link);
+    font-size: 13px;
+    font-weight: var(--weight-semibold);
+    cursor: pointer;
+}
+
+.post-places-toggle:hover {
+    text-decoration: underline;
+}
+
+.post-info-facts-line {
+    padding-top: var(--space-4);
+    border-top: 1px solid var(--border);
+    color: var(--text-muted);
+    font-size: 13px;
+}
+
+.post-standing + .post-info-facts-line, .post-info-facts-line:first-child {
+    padding-top: 0;
+    border-top: 0;
+}
+
+// whose account an About box is, on a post page (partials/profile_about.html `about_identity`)
+.profile-about-identity {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+    margin: 0 0 var(--space-4);
+    color: var(--text) !important;
+    text-decoration: none !important;
+}
+
+.profile-about-identity img {
+    flex-shrink: 0;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+// --- the cooldown meter (partials/throttle_meter.html) ---------------------------------------------------------------
+// The owner (2026-10-23): vertical and thicker, at the far right of the account block, filling from the bottom. The
+// gradient is as tall as the track and pinned to its bottom, so a colour belongs to a height: a low level shows only
+// blue, and red shows once it nears the top. Its boil is in _motion.scss.
+
+.boil-meter {
+    --meter-h: 36px;                 // the avatar's height beside it
+    position: relative;
+    display: inline-block;
+    flex-shrink: 0;
+    align-self: center;
+    width: 8px;
+    height: var(--meter-h);
+    border-radius: var(--radius-pill);
+    background-color: var(--surface-sunken);
+    box-shadow: inset 0 0 0 1px var(--border);
+    overflow: hidden;
+    vertical-align: middle;
+}
+
+.boil-meter-nav {
+    margin-left: var(--space-4);
+}
+
+.boil-meter-menu {
+    --meter-h: 28px;
+    width: 6px;
+}
+
+.boil-fill {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: calc(var(--level, 0) * 1%);
+    border-radius: var(--radius-pill);
+    background-image: linear-gradient(to top, var(--boil-cool) 0%, var(--boil-mid) 40%, var(--boil-warm) 72%, var(--boil-hot) 100%);
+    background-size: 100% var(--meter-h);
+    background-position: bottom;
+    background-repeat: no-repeat;
+}
+
+// in the account menu: the meter beside its words
+.boil-meter-row {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    margin-top: var(--space-3);
+}
+
+.boil-meter-text {
+    color: var(--text-muted);
+    font-size: 12px;
+    line-height: 1.3;
+}
+
+.boil-meter-text.is-cooling {
+    color: var(--danger);
+    font-weight: var(--weight-semibold);
+}
+
+// --- the account menu's first row: the avatar, "My profile" and the @handle under it (the owner, 2026-10-24, as Reddit's) ---
+
+.account-menu-profile {
+    display: flex;
+    align-items: center;
+    padding-top: var(--space-2);
+    padding-bottom: var(--space-2);
+    margin-bottom: var(--space-1);
+    border-bottom: 1px solid var(--border);
+    border-radius: var(--radius-md) var(--radius-md) 0 0;
+}
+
+.account-menu-profile .profile-pic-35 {
+    flex: none;
+}
+
+.account-menu-profile-text {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    line-height: 1.25;
+}
+
+.account-menu-profile-title {
+    font-weight: var(--weight-semibold);
+    color: var(--text);
+}
+
+.account-menu-profile-handle {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: var(--text-sm);
+    color: var(--text-muted);
+}

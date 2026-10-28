@@ -7,9 +7,12 @@
   joining a call, the sheet says that everyone in it can see who is there (the owner's choice) and, for a recorded
   Space, that it is recorded. Names and messages go in as text; `boot` is drawn with |tojson.
 #}
-<html lang="en">
+{% from "partials/theme.html" import html_attrs, font_faces, theme_color %}
+<html{{ html_attrs() }}>
 <head>
   <meta charset="utf-8">
+{{ font_faces() }}
+{{ theme_color() }}
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="robots" content="noindex">
   <title>Space - {{ 'SITE_NAME' | app_config }}</title>

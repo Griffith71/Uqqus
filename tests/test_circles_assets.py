@@ -194,8 +194,10 @@ def test_circles_are_in_the_account_menu_and_not_a_settings_tab():
     assert "/circles" not in settings and "/settings/circle" not in settings
     for shell in ("default.html", "header.html"):
         page = read("ruqqus", "templates", shell)
-        # the account dropdown and the phone menu
-        assert page.count('href="/circles"') == 2, shell
+        # the phone menu is in the shell; the account dropdown is partials/account_menu.html, which both shells include
+        assert page.count('href="/circles"') == 1, shell
+        assert '{% include "partials/account_menu.html" %}' in page, shell
+    assert read("ruqqus", "templates", "partials", "account_menu.html").count('href="/circles"') == 1
     routes = read("ruqqus", "routes", "circles.py")
     for old in ('"/settings/circle"', '"/settings/circle/<int:cid>"', '"/settings/circles"'):
         assert f"@app.route({old}" in routes and "redirect(" in routes      # old links still arrive

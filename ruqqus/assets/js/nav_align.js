@@ -11,6 +11,9 @@
  * variables on <html>; below 992px it removes them.
  *
  * A side with no column (chat, settings) keeps the default block edge.
+ *
+ * Right to left (<html dir="rtl">: helpers/i18n.py), the stylesheet is mirrored (helpers/css_flip.py), so the
+ * "left" variables are read on the start side, the right: every edge is measured from the start of the line.
  */
 (function () {
   'use strict';
@@ -20,13 +23,20 @@
 
   var root = document.documentElement;
   var wide = window.matchMedia('(min-width: 992px)');
-  var BLOCK = 1326;       // sidebar 272 + feed 738 + sidebar 316 (main.scss $layout-*)
+  var BLOCK = 1370;       // sidebar 272 + feed 782 (738 of content + the 44px vote column) + sidebar 316 (main.scss $layout-*)
   var GUTTER = 15;        // the padding of a column: where its content starts
   var SEARCH_MAX = 500;
   var SEARCH_GAP = 16;    // kept clear between the search box and the icons
   var VARS = ['--nav-inset-left', '--nav-inset-right', '--nav-search-left', '--nav-search-width'];
 
   function shown(el) { return !!el && el.getClientRects().length > 0; }
+
+  // a box's edges measured from the start of the line (the left, or the right in a right-to-left page)
+  function span(el, viewport) {
+    var r = el.getBoundingClientRect();
+    return root.dir === 'rtl' ? { start: viewport - r.right, end: viewport - r.left, width: r.width }
+                              : { start: r.left, end: r.right, width: r.width };
+  }
 
   function clear() {
     VARS.forEach(function (name) { root.style.removeProperty(name); });
@@ -41,13 +51,13 @@
     var right = left + blockWidth;
 
     var leftColumn = document.getElementById('sidebar-left');
-    if (shown(leftColumn)) left = leftColumn.getBoundingClientRect().left;
+    if (shown(leftColumn)) left = span(leftColumn, viewport).start;
 
     var panel = document.getElementById('side-panel');
     var rightColumn = panel && !panel.hidden && shown(panel)
       ? panel
       : document.querySelector('#main-content-row > .sidebar:not(#sidebar-left)');
-    if (shown(rightColumn)) right = rightColumn.getBoundingClientRect().right;
+    if (shown(rightColumn)) right = span(rightColumn, viewport).end;
 
     root.style.setProperty('--nav-inset-left', (left + GUTTER) + 'px');
     root.style.setProperty('--nav-inset-right', (viewport - (right - GUTTER)) + 'px');
@@ -60,15 +70,15 @@
 
     root.style.removeProperty('--nav-search-left');
     root.style.removeProperty('--nav-search-width');
-    var space = wrap.getBoundingClientRect();
+    var space = span(wrap, viewport);
     var main = document.getElementById('main-content-col');
-    var feed = shown(main) ? main.getBoundingClientRect() : null;
-    var centre = feed ? (feed.left + feed.right) / 2 : viewport / 2;
+    var feed = shown(main) ? span(main, viewport) : null;
+    var centre = feed ? (feed.start + feed.end) / 2 : viewport / 2;
 
     var width = Math.max(0, Math.min(SEARCH_MAX, space.width - SEARCH_GAP));
-    var start = Math.min(Math.max(centre - width / 2, space.left), space.right - SEARCH_GAP - width);
+    var start = Math.min(Math.max(centre - width / 2, space.start), space.end - SEARCH_GAP - width);
     root.style.setProperty('--nav-search-width', width + 'px');
-    root.style.setProperty('--nav-search-left', Math.max(0, start - space.left) + 'px');
+    root.style.setProperty('--nav-search-left', Math.max(0, start - space.start) + 'px');
   }
 
   var queued = false;

@@ -39,6 +39,44 @@ def compact_age(timestamp, now=None):
             "d": lambda: tr("%(num)sd", num=number)}[unit]()
 
 
+@app.template_global("fold_comments")
+def fold_comments(c, v, linked=None):
+    """(shown, folded): the comments under `c`, the low-scoring ones held back behind "Show N more comments"
+    (helpers/reply_fold.py), by the score this reader sees. Never folded: the reader's own comments, and `linked`
+    (the comment a permalink points to) with the comments above it."""
+    from ruqqus.helpers.reply_fold import fold
+    net = score_mode(v) == SCORE_NET
+
+    def score_of(x):
+        return x.score_fuzzed if net else x.upvotes_fuzzed
+
+    path = set()
+    node, steps = linked, 0
+    while node is not None and steps < 8:
+        path.add(node.id)
+        node, steps = getattr(node, "parent_comment", None), steps + 1
+
+    def keep(x):
+        return x.id in path or (v is not None and x.author_id == v.id)
+
+    return fold(score_of(c), c.nested_comments, score_of, keep)
+
+
+@app.template_global("excerpt_of")
+def excerpt_of(p, with_media=False):
+    """(text, more): the first lines of a post's body for its feed card (helpers/post_excerpt.py); a card that also
+    shows a picture or link shows two lines, not four."""
+    from ruqqus.helpers.post_excerpt import SHOWS_TEXT, SHOWS_WITH_MEDIA, excerpt
+    return excerpt(p.body_html, shows=SHOWS_WITH_MEDIA if with_media else SHOWS_TEXT)
+
+
+@app.template_filter("compact_count")
+def compact_count_filter(count):
+    """999, 1.2k, 12k, 1.2M (helpers/compact_count.py): scores and counts where room is short."""
+    from ruqqus.helpers.compact_count import compact
+    return compact(count)
+
+
 @app.template_global("language_name")
 def language_name(code):
     """A language's row label from a stored code (helpers/languages.py: "mk" reads "Bulgarian"), or ""

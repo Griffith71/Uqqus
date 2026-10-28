@@ -28,7 +28,7 @@
   var pagination = document.querySelector('ul.pagination');
   if (!pagination) return;                                 // not a paged feed
 
-  var control = document.querySelector('nav[aria-label="Page navigation"]') || pagination;
+  var control = pagination.closest('nav') || pagination;   // never found by its label: it is translated
   var nextUrl = nextLink(document);
   var startPage = parseInt(new URL(window.location.href).searchParams.get('page'), 10) || 1;
   var POST_ID = /^post-[0-9a-z]+$/;
@@ -57,16 +57,12 @@
 
   if (nextUrl) observer.observe(sentinel); else finish();
 
-  // the href of the enabled "Next" link of a page (in the live document or a fetched one)
+  // the href of the enabled next-page link of a page (in the live document or a fetched one): found by rel="next",
+  // never by its label, which is in the reader's language
   function nextLink(doc) {
-    var links = doc.querySelectorAll('ul.pagination a.page-link');
-    for (var i = 0; i < links.length; i++) {
-      var a = links[i];
-      if (a.textContent.trim() !== 'Next') continue;
-      if (a.closest('li.page-item.disabled')) return null;
-      return a.getAttribute('href');
-    }
-    return null;
+    var a = doc.querySelector('ul.pagination a.page-link[rel~="next"]');
+    if (!a || a.closest('li.page-item.disabled')) return null;
+    return a.getAttribute('href');
   }
 
   // fetch a feed page and hand back its cards (the children of its post list)
@@ -106,24 +102,47 @@
   function finish() {
     observer.disconnect();
     sentinel.textContent = '';
+    sentinel.removeAttribute('aria-busy');
     if (!postCards(Array.prototype.slice.call(container.children)).length) return;
-    sentinel.appendChild(document.createTextNode('You\u2019re all caught up. '));
+    sentinel.appendChild(document.createTextNode(tr('You\u2019re all caught up.') + ' '));
     var top = document.createElement('button');
     top.type = 'button';
     top.className = 'btn btn-link btn-sm p-0 align-baseline';
-    top.textContent = 'Back to top';
+    top.textContent = tr('Back to top');
     top.addEventListener('click', function () { window.scrollTo({ top: 0, behavior: calm ? 'auto' : 'smooth' }); });
     sentinel.appendChild(top);
   }
 
   function showError() {
-    sentinel.textContent = 'Could not load more posts. ';
+    sentinel.textContent = tr('Could not load more posts.') + ' ';
+    sentinel.removeAttribute('aria-busy');
     var retry = document.createElement('button');
     retry.type = 'button';
     retry.className = 'btn btn-link btn-sm p-0 align-baseline';
-    retry.textContent = 'Try again';
+    retry.textContent = tr('Try again');
     retry.addEventListener('click', loadMore);
     sentinel.appendChild(retry);
+  }
+
+  // while the next page loads: two cards' shapes where the posts will be (all_js .skeleton-card), read as "Loading"
+  function showSkeletons() {
+    sentinel.textContent = '';
+    sentinel.setAttribute('aria-busy', 'true');
+    var label = document.createElement('span');
+    label.className = 'sr-only';
+    label.textContent = tr('Loading\u2026');
+    sentinel.appendChild(label);
+    for (var i = 0; i < 2; i++) {
+      var card = document.createElement('div');
+      card.className = 'skeleton-card text-left';
+      card.setAttribute('aria-hidden', 'true');
+      ['is-meta', 'is-title', '', 'is-short'].forEach(function (kind) {
+        var line = document.createElement('span');
+        line.className = 'skeleton-line' + (kind ? ' ' + kind : '');
+        card.appendChild(line);
+      });
+      sentinel.appendChild(card);
+    }
   }
 
   // --- older posts, at the bottom ----------------------------------------------------------
@@ -131,7 +150,7 @@
   function loadMore() {
     if (loading || !nextUrl) return;
     loading = true;
-    sentinel.textContent = 'Loading\u2026';
+    showSkeletons();
 
     fetchPage(nextUrl)
       .then(function (page) {
@@ -142,6 +161,7 @@
 
         nextUrl = nextLink(page.doc);
         sentinel.textContent = '';
+        sentinel.removeAttribute('aria-busy');
         loading = false;
         if (!nextUrl) {
           finish();
@@ -192,7 +212,7 @@
   }
 
   function say(count) {
-    return count === 1 ? '1 new post' : count + ' new posts';
+    return trn('%(num)s new post', '%(num)s new posts', count);
   }
 
   // the pill: "Show N new posts", at the top of the feed, for anyone (a mouse has nothing to pull)
@@ -213,7 +233,7 @@
     var button = document.createElement('button');
     button.type = 'button';
     button.className = 'feed-pill';
-    button.textContent = 'Show ' + say(count);
+    button.textContent = trn('Show %(num)s new post', 'Show %(num)s new posts', count);
     button.addEventListener('click', function () {
       var cards = pillCards;
       dropPill();
@@ -271,7 +291,7 @@
     indicator.classList.toggle('busy', !!busy);
     var icon = indicator.firstChild;
     icon.className = busy ? 'fas fa-spinner fa-spin' : 'fas fa-arrow-down';
-    indicator.lastChild.textContent = text || (distance >= PULL_AT ? 'Release to refresh' : 'Pull to refresh');
+    indicator.lastChild.textContent = text || (distance >= PULL_AT ? tr('Release to refresh') : tr('Pull to refresh'));
   }
 
   function putAway(delay) {
@@ -310,13 +330,13 @@
     startY = null;
     pulling = false;
     if (!go) { putAway(0); return; }
-    place(PULL_AT, 'Refreshing\u2026', true);
+    place(PULL_AT, tr('Refreshing\u2026'), true);
     refresh().then(function (count) {
-      place(PULL_AT, count ? say(count) : 'You\u2019re all caught up', false);
+      place(PULL_AT, count ? say(count) : tr('You\u2019re all caught up'), false);
       if (indicator) indicator.firstChild.className = 'fas fa-check';
       putAway(1400);
     }, function () {
-      place(PULL_AT, 'Could not refresh', false);
+      place(PULL_AT, tr('Could not refresh'), false);
       putAway(1800);
     });
   }

@@ -578,9 +578,22 @@ $('#new_email').on('input', function () {
 
 function collapse_comment(comment_id) {
 
-  var comment = "comment-" + comment_id;
+  var el = document.getElementById("comment-" + comment_id);
+  var folded = el.classList.toggle("collapsed");
+  // its own header toggle (not one of the comments under it) says whether it is open
+  var toggle = el.querySelector(":scope > .comment-body > .comment-main .comment-toggle");
+  if (toggle) toggle.setAttribute("aria-expanded", folded ? "false" : "true");
+  if (folded) bringBackIntoView(el);
 
-  document.getElementById(comment).classList.toggle("collapsed");
+};
+
+// Comfortable or Compact (Settings > Content > Layout): a cookie the server reads before the page is drawn
+// (partials/theme.html html_attrs), and the page switches at once without a reload.
+function setDensity(value) {
+  var density = value === "compact" ? "compact" : "comfortable";
+  document.cookie = "density=" + density + "; path=/; max-age=31536000; samesite=lax";
+  document.documentElement.setAttribute("data-density", density);
+};
 
 // Post Info's "Discussed in" (submission.html): three places, then the rest of the list opened and closed in place
 function togglePostPlaces(button) {
@@ -591,18 +604,73 @@ function togglePostPlaces(button) {
   button.textContent = open ? button.getAttribute("data-less") : button.getAttribute("data-more");
 };
 
+// "Show N more comments": the comments under a comment that scored under a third of it (helpers/reply_fold.py) are
+// already in the page, hidden at the end of its branch; show them in place. Their arrows were bound at load.
+function showFoldedReplies(comment_id) {
+  var group = document.getElementById("folded-of-" + comment_id);
+  var button = document.getElementById("more-folded-" + comment_id);
+  if (group) group.classList.remove("d-none");
+  if (button) button.remove();
+  if (!group) return;
+  settleCommentClamps(group);          // measured only now: hidden, they had no height
+  var first = group.querySelector(".comment-main");
+  if (first) {
+    first.setAttribute("tabindex", "-1");
+    first.focus({ preventScroll: true });
+  }
 };
 
 // Toggle a long comment's collapsed overflow text
-function toggleCommentOverflow(comment_id, linkEl) {
+// The whole comment is on the page, clamped to its first lines (comments.html .comment-clamp): this lifts or puts back
+// the clamp. Closing a long one from far down brings its start back on screen, so the reader isn't left lost.
+function toggleCommentOverflow(comment_id, button) {
+
+  var clamp = document.getElementById("comment-clamp-" + comment_id);
+  var opening = clamp.classList.contains("is-clamped");
+
+  clamp.classList.toggle("is-clamped", !opening);
+  button.classList.toggle("is-open", opening);
+  button.setAttribute("aria-expanded", opening ? "true" : "false");
+  button.textContent = opening ? tr("Show less") : tr("Show more");
+  if (!opening) bringBackIntoView(document.getElementById("comment-" + comment_id));
 
   var overflow = document.getElementById("comment-overflow-" + comment_id);
   var expanded = !overflow.classList.contains("d-none");
 
-  overflow.classList.toggle("d-none");
-  linkEl.textContent = expanded ? "Show more" : "Show less";
-
+// After closing something long, scroll its start back on screen if it is now above the top (under the navbar).
+function bringBackIntoView(el) {
+  if (!el) return;
+  if (el.getBoundingClientRect().top < 72) {
+    var still = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
+    el.scrollIntoView({ block: "start", behavior: still ? "auto" : "smooth" });
+  }
 };
+
+// A comment that is long by its characters can still fit its clamped lines on a wide screen: then there is nothing
+// more to show, so it is drawn whole and its button goes (runs at once, before the page is shown).
+function settleCommentClamps(root) {
+  var clamps = (root || document).querySelectorAll(".comment-clamp.is-clamped");
+  var fits = [];
+  for (var i = 0; i < clamps.length; i++) {
+    var c = clamps[i];
+    if (c.offsetParent !== null && c.clientHeight > 0 && c.scrollHeight <= c.clientHeight + 2) fits.push(c);
+  }
+  fits.forEach(function (c) {
+    c.classList.remove("is-clamped");
+    var button = document.getElementById(c.id.replace("comment-clamp-", "comment-overflow-toggle-"));
+    if (button) button.remove();
+  });
+};
+settleCommentClamps();
+
+// tabbing to a link hidden in a clamped comment opens the comment (the clamp would otherwise scroll inside itself)
+document.addEventListener("focusin", function (event) {
+  var clamp = event.target.closest && event.target.closest(".comment-clamp.is-clamped");
+  if (!clamp) return;
+  var id = clamp.id.replace("comment-clamp-", "");
+  var button = document.getElementById("comment-overflow-toggle-" + id);
+  if (button) toggleCommentOverflow(id, button);
+});
 
 // Reveal a blurred sensitive-content wrapper for this page view only -
 // pure client-side state, no server call, so it re-blurs on reload.
@@ -929,6 +997,13 @@ function apply_theme(theme) {
     document.body.classList.toggle("light", theme != "dark");
     document.body.classList.remove("theme-auto");
     show_theme_toggles(theme);
+    // the phone's browser bar takes the page's colour (partials/theme.html theme_color): one tag, this theme's
+    var metas = document.querySelectorAll('meta[name="theme-color"]');
+    for (var i = 1; i < metas.length; i++) metas[i].remove();
+    if (metas[0]) {
+      metas[0].removeAttribute("media");
+      metas[0].setAttribute("content", theme == "dark" ? "#000000" : "#ffffff");
+    }
   };
   css.parentNode.insertBefore(next, css.nextSibling);
 }
@@ -1860,6 +1935,18 @@ function snapshotVote(type, id) {
 // upvotes and downvotes move by (dUp, dDown) and it is redrawn the way the viewer reads scores: upvotes coloured by
 // their share of the votes (data-mode "0", the default; helpers/vote_colour.py) or upvotes minus downvotes ("1").
 // `fallback` is the plain arithmetic, for markup without the counts.
+// How a count reads where room is short: 999, 1.2k, 12k, 1.2M (helpers/compact_count.py is the same rule).
+function compactCount(count) {
+  var n = Math.abs(Math.trunc(Number(count) || 0));
+  var sign = Number(count) < 0 ? '-' : '';
+  var text;
+  if (n >= 1000000) text = (Math.floor(n / 100000) / 10).toFixed(1).replace('.0', '') + 'M';
+  else if (n >= 10000) text = Math.floor(n / 1000) + 'k';
+  else if (n >= 1000) text = (Math.floor(n / 100) / 10).toFixed(1).replace('.0', '') + 'k';
+  else text = String(n);
+  return sign + text;
+}
+
 function voteCounts(el, dUp, dDown, fallback) {
   if (el.dataset.ups === undefined) { el.textContent = fallback; return; }
   var ups = Math.max(Number(el.dataset.ups) + dUp, 0);
@@ -1867,9 +1954,17 @@ function voteCounts(el, dUp, dDown, fallback) {
   el.dataset.ups = ups;
   el.dataset.downs = downs;
   var net = el.dataset.mode === '1';
-  el.textContent = net ? ups - downs : ups;
+  el.textContent = compactCount(net ? ups - downs : ups);
   el.className = el.className.replace(/\s*vote-ratio-\d+/g, '');
   if (!net && ups + downs > 0) el.classList.add('vote-ratio-' + Math.round(ups / (ups + downs) * 10));
+}
+
+// The arrow just cast gives a small pop (_components.scss .vote-pop; none under reduced motion): feedback that the vote
+// was heard. Only from a click, so a page that loads with votes already cast stays still.
+function popVote(el) {
+  el.classList.remove('vote-pop');
+  void el.offsetWidth;
+  el.classList.add('vote-pop');
 }
 
 // An arrow that is locked because the viewer's vote on this post is on another copy of it
@@ -1904,11 +1999,13 @@ var upvote = function(event) {
       voteDirection = "0"
     } else if (thisDownvoteButton.classList.contains('active')) {
       thisUpvoteButton.classList.add('active')
+      popVote(thisUpvoteButton)
       thisDownvoteButton.classList.remove('active')
       voteCounts(thisScoreText, 1, -1, thisScore + 2)
       voteDirection = "1"
     } else {
       thisUpvoteButton.classList.add('active')
+      popVote(thisUpvoteButton)
       voteCounts(thisScoreText, 1, 0, thisScore + 1)
       voteDirection = "1"
     }
@@ -1955,11 +2052,13 @@ var downvote = function(event) {
       voteDirection = "0"
     } else if (thisUpvoteButton.classList.contains('active')) {
       thisDownvoteButton.classList.add('active')
+      popVote(thisDownvoteButton)
       thisUpvoteButton.classList.remove('active')
       voteCounts(thisScoreText, -1, 1, thisScore - 2)
       voteDirection = "-1"
     } else {
       thisDownvoteButton.classList.add('active')
+      popVote(thisDownvoteButton)
       voteCounts(thisScoreText, 0, 1, thisScore - 1)
       voteDirection = "-1"
     }
@@ -3088,6 +3187,8 @@ comment_edit=function(id){
       else commentText.removeAttribute('lang');
       if (flagsChanged) { window.location.reload(); return; }
       document.getElementById('cancel-edit-'+id).click()
+      // measured only now: while the edit box was open the text was hidden and had no height
+      if (typeof settleCommentClamps === 'function') settleCommentClamps(scope);
       $('#toast-comment-success').toast('dispose');
       $('#toast-comment-error').toast('dispose');
       $('#toast-comment-success').toast('show');
@@ -3407,7 +3508,13 @@ function onTextExpandClick(event){
 
 
   $('#post-text-'+id).toggleClass('d-none');
+  // the card's first lines give way to the full body, and come back with "Show less" (helpers/post_excerpt.py)
+  $('#post-snippet-'+id).toggleClass('d-none');
   $('.text-expand-label-'+id).toggleClass('d-none');
+  // while open, "Show less" stays in reach at the bottom of the screen (_feed.scss); closing brings the post back
+  var open = !$('#post-text-'+id).hasClass('d-none');
+  $(this).toggleClass('is-open', open).attr('aria-expanded', open ? 'true' : 'false');
+  if (!open) bringBackIntoView(document.getElementById('post-'+id));
 
 }
 

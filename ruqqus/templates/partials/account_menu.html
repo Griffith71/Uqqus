@@ -1,0 +1,50 @@
+{#
+  The account menu's items: the dropdown under the avatar in the navbar. Shared by default.html and header.html (the shell
+  of the Settings, Create post and Guild settings pages), so the two cannot drift apart (a new item once reached only one).
+  The wrapper (`.dropdown-menu.account-menu`) is each shell's own. Groups, told apart by a line (the owner's choice, 2026-10:
+  dividers, no headings): the profile row, then Make (Create post, Creator Studio, Circles), Talk (Inbox, Chat, Spaces),
+  You (History, Settings, Dark mode), and Help and exit (Send feedback, Log out).
+  The Dark mode row is what show_theme_toggles() in assets/js/all_js.js looks for (`id="dark-switch"`, `switch_css`, its
+  first <i>): keep its shape. Icons are Font Awesome 6.4 Free names (tests/data/fa_free_6_4_0_names.txt); none repeats
+  another's, and Send feedback is not a speech bubble, which Chat already is. tests/test_account_menu_assets.py.
+#}
+<div class="px-2">
+  <a class="dropdown-item account-menu-profile" href="{{ v.permalink }}"><img alt="" src="{{ v.profile_url }}" class="profile-pic-35 mr-3"><span class="account-menu-profile-text"><span class="account-menu-profile-title">{{ _("My profile") }}</span><span class="account-menu-profile-handle">@{{ v.username }}</span></span></a>
+
+  <a class="dropdown-item" href="/submit"><i class="fas fa-feather-alt fa-fw text-left mr-3"></i>{{ _("Create post") }}</a>
+  <a class="dropdown-item" href="/studio"><i class="fas fa-chart-pie fa-fw text-left mr-3"></i>{{ _("Creator Studio") }}</a>
+  <a class="dropdown-item" href="/circles"><i class="fas fa-circle-notch fa-fw text-left mr-3"></i>{{ _("Circles") }}</a>
+
+  <div class="dropdown-divider" role="separator"></div>
+
+  {% if v.notifications_count %}
+  <a class="dropdown-item" href="/notifications"><i class="fas fa-inbox fa-fw text-left mr-3"></i>{{ _("Inbox") }}<span
+    class="badge badge-danger rounded-circle align-top ml-1">{{ v.notifications_count }}</span></a>
+  {% else %}
+  <a class="dropdown-item" href="/notifications?all=true"><i class="fas fa-inbox fa-fw text-left mr-3"></i>{{ _("Inbox") }}</a>
+  {% endif %}
+  {% set chat_badge = (v.chat_unread_count + v.chat_requests_count) %}
+  {% if chat_badge %}
+  <a class="dropdown-item" href="/chat"><i class="fas fa-comment-dots fa-fw text-left mr-3"></i>{{ _("Chat") }}<span
+    class="badge badge-danger rounded-circle align-top ml-1">{{ chat_badge }}</span></a>
+  {% else %}
+  <a class="dropdown-item" href="/chat"><i class="fas fa-comment-dots fa-fw text-left mr-3"></i>{{ _("Chat") }}</a>
+  {% endif %}
+  <a class="dropdown-item" href="/spaces"><i class="fas fa-microphone-lines fa-fw text-left mr-3"></i>{{ _("Spaces") }}</a>
+
+  <div class="dropdown-divider" role="separator"></div>
+
+  <a class="dropdown-item" href="/history"><i class="fas fa-history fa-fw text-left mr-3"></i>{{ _("History") }}</a>
+  <a class="dropdown-item" href="/settings"><i class="fas fa-cog fa-fw text-left mr-3"></i>{{ _("Settings") }}</a>
+  {% if v.can_use_darkmode and theme_choice() == "dark" %}
+  <a class="dropdown-item" href="javascript:void(0)" onclick="switch_css()"><i class="fas fa-toggle-on fa-fw text-left mr-3" id="dark-switch"></i>{{ _("Dark mode") }}</a>
+  {% elif v.can_use_darkmode %}
+  <a class="dropdown-item" href="javascript:void(0)" onclick="switch_css()"><i class="fas fa-toggle-off fa-fw text-left mr-3" id="dark-switch"></i>{{ _("Dark mode") }}</a>
+  {% endif %}
+
+  <div class="dropdown-divider" role="separator"></div>
+
+  {# the sheet is partials/site_feedback_modal.html; without scripts this is the old contact page #}
+  <a class="dropdown-item" href="/help/contact" data-feedback-open><i class="fas fa-bullhorn fa-fw text-left mr-3"></i>{{ _("Send feedback") }}</a>
+  <a class="dropdown-item" href="javascript:void(0)" data-logout onclick="try{localStorage.removeItem('uqqus_chat_prekey')}catch(e){};post('/logout', callback=function(){window.location.reload(true)})"><i class="fas fa-sign-out fa-fw text-left mr-3"></i>{{ _("Log out") }}</a>
+</div>

@@ -36,10 +36,10 @@ def test_the_default_is_the_centered_block_with_the_column_gutter():
     for css in STYLES:
         block = _block(css)
         assert "@media (min-width: 992px)" in block
-        assert "1326px" in block and "15px" in block
+        assert "1370px" in block and "15px" in block
         assert "#navbar > .container-fluid" in block
         assert "margin-left: var(--nav-search-left, auto) !important" in block   # .mx-auto is !important
-    assert "BLOCK = 1326" in SCRIPT and "GUTTER = 15" in SCRIPT
+    assert "BLOCK = 1370" in SCRIPT and "GUTTER = 15" in SCRIPT
     assert "(min-width: 992px)" in SCRIPT
 
 
@@ -66,7 +66,7 @@ def test_chat_and_settings_are_as_wide_as_the_navbars_content():
     block = int(re.search(r"BLOCK = (\d+)", SCRIPT).group(1))
     gutter = int(re.search(r"GUTTER = (\d+)", SCRIPT).group(1))
     content = block - 2 * gutter
-    assert content == 1296
+    assert content == 1340
     for css in STYLES:
         # not in the 726px feed group any more
         feed = re.search(r"#frontpage #main-content-col, [^{]*\{", css).group(0)

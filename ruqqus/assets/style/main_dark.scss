@@ -1,3 +1,6 @@
+// Which theme this sheet is: the shared partials (_tokens.scss) work out their colours from it
+$theme: "dark";
+
 // Colors
 
 $primary: #{boardcolor};
@@ -77,7 +80,8 @@ $text-white: $white;
 
 // Fonts
 
-$font-family-sans-serif: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+// Inter (partials/theme.html font_faces), then a fallback with its measurements, then the system's
+$font-family-sans-serif: "Inter", "Inter Fallback", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
 
 // Font size
 
@@ -147,13 +151,19 @@ $yiq-contrasted-threshold:  160 !default;
     }
   }
 
-// The page's three columns, one block centred on the page (Reddit's 272 / 740 / 316, two pixels off the feed so the block
-// stays the navbar's 1326px). The notifications / chat panel takes the right sidebar's width, so opening it moves nothing.
+// The page's three columns, one block centred on the page: Reddit's 272 / 316 sidebars around a feed of Reddit's 738px of
+// content plus the 44px vote column beside it (the owner, 2026-10-23): 272 + 782 + 316 = 1370px, the navbar's block. The
+// notifications / chat panel takes the right sidebar's width, so opening it moves nothing.
 $layout-left: 272px;
-$layout-feed: 738px;
+$layout-feed-content: 738px;   // Reddit's content width: what sits beside the vote column
+$layout-vote: 44px;            // the vote column (_feed.scss .card .voting: 40px + an 8px gap - a 4px pull)
+$layout-feed: $layout-feed-content + $layout-vote;   // 782px: the feed is Reddit's content plus the votes (2026-10-23)
 $layout-right: 316px;
 
+@import "{ruqquspath}/assets/style/_bootstrap_vars";
 @import "{ruqquspath}/assets/style/node_modules/bootstrap/scss/bootstrap.scss";
+@import "{ruqquspath}/assets/style/_bootstrap_compat";
+@import "{ruqquspath}/assets/style/_tokens";
 
 html {
     font-size: 14px;
@@ -176,9 +186,6 @@ html {
     max-width: 500px;
 }
 
-@supports (font-variation-settings: normal) {
-    html { font-family: 'Inter var', sans-serif; }
-  }
 
 body {
     color: $black;
@@ -1926,7 +1933,7 @@ body.embedded .share-chat-item {
         border-left: 1px solid $border-color;
     }
 
-    // wide enough for the 1326px block with the rail: the panel takes the 207px the folded left sidebar gives up
+    // wide enough for the 1370px block with the rail: the panel takes the 207px the folded left sidebar gives up
     // (assets/js/side_panels.js decides; the left sidebar folds only while there is no room for it)
     html.panel-wide #main-content-row.panel-open > #side-panel {
         flex: 0 0 calc(#{$layout-right} + 207px);
@@ -2498,7 +2505,7 @@ body.embedded #chat-app {
 // The navbar lines up with the page's columns (assets/js/nav_align.js): the logo
 // with the left sidebar's content, the account section with the right sidebar's,
 // and the search box with the feed. The page is a block of sidebar (272px) + feed (738px)
-// + sidebar (316px), 1326px, centered; each side adds the 15px column gutter. These are the
+// + sidebar (316px), 1370px, centered; each side adds the 15px column gutter. These are the
 // values for that default block; the script replaces them with the real column edges
 // when the left sidebar is collapsed or a side panel is open.
 @media (min-width: 992px) {
@@ -2508,15 +2515,15 @@ body.embedded #chat-app {
     }
 
     #navbar > .container-fluid {
-        padding-left: var(--nav-inset-left, #{"max(15px, calc((100% - 1326px) / 2 + 15px))"});
-        padding-right: var(--nav-inset-right, #{"max(15px, calc((100% - 1326px) / 2 + 15px))"});
+        padding-left: var(--nav-inset-left, #{"max(15px, calc((100% - 1370px) / 2 + 15px))"});
+        padding-right: var(--nav-inset-right, #{"max(15px, calc((100% - 1370px) / 2 + 15px))"});
     }
 
     // left sidebar folded to its 65px rail (the sidebar_pref cookie, html.sidebar-folded): a block of
-    // 65 + 738 + 316 = 1119px, centered, so the first paint is already right
+    // 65 + 782 + 316 = 1163px, centered, so the first paint is already right
     html.sidebar-folded #navbar > .container-fluid {
-        padding-left: var(--nav-inset-left, #{"max(15px, calc((100% - 1119px) / 2 + 15px))"});
-        padding-right: var(--nav-inset-right, #{"max(15px, calc((100% - 1119px) / 2 + 15px))"});
+        padding-left: var(--nav-inset-left, #{"max(15px, calc((100% - 1163px) / 2 + 15px))"});
+        padding-right: var(--nav-inset-right, #{"max(15px, calc((100% - 1163px) / 2 + 15px))"});
     }
 
     // the search box is centered over the feed by the script (it depends on the logo's width): it is hidden
@@ -3298,6 +3305,9 @@ html.feed-live {
 .sidebar {
     -ms-flex: 0 0 $layout-right;
     flex: 0 0 $layout-right;
+    // a flex item is never narrower than its longest unbreakable line by default: a long display name used to
+    // widen the right sidebar past its 316px and squeeze the feed
+    min-width: 0;
     background-color: $gray-600!important;
 }
 
@@ -6103,7 +6113,7 @@ textarea, input[type=text] {
     }
 }
 
-// Regions (templates/regions.html): a map page with no sidebars, as wide as the navbar's content (the block's 1326px
+// Regions (templates/regions.html): a map page with no sidebars, as wide as the navbar's content (the block's 1370px
 // less the 15px gutter each side), so its edges are the logo's and the account area's. Chat and Settings do the same.
 @media (min-width: 992px) {
     #regions #main-content-row {
@@ -6111,7 +6121,7 @@ textarea, input[type=text] {
     }
 
     #regions #main-content-col {
-        max-width: 1296px;
+        max-width: 1340px;
         min-width: 0;
         padding-left: 0;
         padding-right: 0;
@@ -6122,13 +6132,13 @@ textarea, input[type=text] {
 }
 
 // Chat has no sidebars: just the conversation list and the thread, in one
-// column as wide as the navbar's content (the block's 1326px less the 15px gutter
-// on each side, 1296px), so its edges line up with the logo and the account area
+// column as wide as the navbar's content (the block's 1370px less the 15px gutter
+// on each side, 1340px), so its edges line up with the logo and the account area
 // (see "The navbar lines up with the page's columns"). The 15px margins keep it
 // on the navbar's inset on screens narrower than the block.
 @media (min-width: 992px) {
     #chat #main-content-col {
-        max-width: 1296px;
+        max-width: 1340px;
         min-width: 0;
         margin-left: 15px;
         margin-right: 15px;
@@ -6156,7 +6166,7 @@ textarea, input[type=text] {
 
 // Settings: one centered column with the tab bar above it. Up to a tablet it is as
 // wide as a feed card column (726px, 696px of content). On desktop it is as wide as
-// the navbar's content: the container's 15px padding leaves 1296px, so the heading,
+// the navbar's content: the container's 15px padding leaves 1340px, so the heading,
 // the tab bar and the content line up with the logo and the account area. The pages'
 // own col-lg-8 would squeeze the content to two thirds of that, so it takes the
 // full width.
@@ -6166,7 +6176,7 @@ textarea, input[type=text] {
 
 @media (min-width: 992px) {
     #settings .container {
-        max-width: 1326px;
+        max-width: 1370px;
     }
 }
 
@@ -9572,6 +9582,42 @@ $ex-muted: $muted;
     }
 }
 
+// The Categorical list's category headings (templates/_sidebar_filter_macros.html): the first row of a group. Ticking it
+// ticks all the group's rows (the list's script); on its own it means the guilds filed under the category alone. Not
+// .post-type-group, whose first-child rule would drop the space between groups
+.filter-group-heading {
+    list-style: none;
+    padding: .375rem 0 .25rem;
+    font-size: .6875rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .025rem;
+    color: $muted;
+    margin: .125rem 0 0;
+    cursor: pointer;
+
+    a {
+        color: inherit;
+    }
+
+    &:hover {
+        color: var(--link);
+    }
+
+    &.is-selected {
+        color: var(--link);
+    }
+
+    // what a ticked heading stands for, written by the list's script (the texts are the macro's)
+    .filter-group-state {
+        margin-left: .5rem;
+        font-weight: 400;
+        text-transform: none;
+        letter-spacing: normal;
+        color: $muted;
+    }
+}
+
 .adv-filter-modal {
     // X's Advanced search is a narrow column, not a wide form
     @media (min-width: 576px) {
@@ -10506,3 +10552,15 @@ $cc-muted: $muted;
 .inline-composer .post-editor .post-preview {
     padding: 0.5rem 0.75rem;
 }
+
+// Core components on the design tokens: last, so they replace the legacy rules above (assets/style/_components.scss)
+@import "{ruqquspath}/assets/style/_components";
+@import "{ruqquspath}/assets/style/_feed";
+@import "{ruqquspath}/assets/style/_comments";
+@import "{ruqquspath}/assets/style/_nav";
+@import "{ruqquspath}/assets/style/_screens";
+@import "{ruqquspath}/assets/style/_notifications";
+@import "{ruqquspath}/assets/style/_happening";
+@import "{ruqquspath}/assets/style/_search_tabs";
+@import "{ruqquspath}/assets/style/_motion";
+@import "{ruqquspath}/assets/style/_mobile";

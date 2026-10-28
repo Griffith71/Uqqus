@@ -1,0 +1,20 @@
+{#
+  The posting cooldown meter (User.throttle_state, helpers/throttle.get_display_state): how close the account is to a
+  cooldown, as a vertical bar that fills from the bottom, blue low and red high, boiling while it heats (the owner,
+  2026-10-23; _nav.scss "the cooldown meter", _motion.scss). The server draws it on each page; nothing ticks it.
+  place: "nav" (the navbar's account block, at its far right) or "menu" (the account menu, beside cooldown_text).
+#}
+{% macro cooldown_text(state) -%}
+{%- if state.in_cooldown -%}
+{#- Translators: the time is minutes:seconds until the posting cooldown ends -#}
+{{ _("Cooldown: %(time)s remaining", time='%d:%02d'|format(state.cooldown_remaining // 60, state.cooldown_remaining % 60)) }}
+{%- else -%}
+{#- Translators: "~" means about; an action is a post or comment counted towards the posting cooldown -#}
+{{ ngettext("~%(num)s action left before a cooldown", "~%(num)s actions left before a cooldown", state.remaining_actions) }}
+{%- endif -%}
+{%- endmacro %}
+
+{% macro throttle_meter(state, place="nav") -%}
+{%- set level = 100 if state.in_cooldown else [[state.boil_pct or 0, 0] | max, 100] | min -%}
+<span class="boil-meter boil-meter-{{ place }}{% if state.in_cooldown %} is-cooling{% elif level >= 10 %} is-heating{% endif %}" style="--level: {{ level }}" role="progressbar" aria-label="{{ _('Posting cooldown') if state.in_cooldown else _('Actions left before a cooldown') }}" aria-valuenow="{{ level }}" aria-valuemin="0" aria-valuemax="100" aria-valuetext="{{ cooldown_text(state) }}"{% if place == "nav" %} data-toggle="tooltip" data-placement="bottom" title="{{ cooldown_text(state) }}"{% endif %}><span class="boil-fill"></span></span>
+{%- endmacro %}

@@ -14,17 +14,20 @@
     <div class="d-flex justify-content-between align-items-center">
 
       {% block navbar %}
-      <div class="font-weight-bold py-3">{{ 'SITE_NAME' | app_config }}
-        {% if request.path=="/all" %}All
-        {% elif request.path=="/" or request.path=="/for_you" %}For You
-        {% elif request.path=="/following" %}Following
-        {% elif request.path.startswith("/curation") %}Curations
-        {% else %}Homepage
+      {# Translators: the site's name and the feed being read, as a heading #}
+      <div class="font-weight-bold py-3">
+        {% if request.path=="/all" %}{{ _("%(site)s All") }}
+        {% elif request.path=="/" or request.path=="/for_you" %}{{ _("%(site)s For You") }}
+        {% elif request.path=="/following" %}{{ _("%(site)s Following") }}
+        {% elif request.path.startswith("/curation") %}{{ _("%(site)s Curations") }}
+        {% else %}{{ _("%(site)s Homepage") }}
         {% endif %}
       </div>
+      {% set time_labels = {"day": pgettext("time range", "Day"), "week": pgettext("time range", "Week"), "month": pgettext("time range", "Month"), "year": pgettext("time range", "Year"), "all": pgettext("time range", "All")} %}
+      {% set sort_labels = {"hot": pgettext("sort", "Hot"), "top": pgettext("sort", "Top"), "new": pgettext("sort", "New"), "old": pgettext("sort", "Old"), "disputed": pgettext("sort", "Disputed"), "activity": pgettext("sort", "Activity")} %}
 
       <div class="d-flex align-items-center">
-        <div class="text-small font-weight-bold mr-2">Filter by</div>
+        <div class="text-small font-weight-bold mr-2">{{ _("Filter by") }}</div>
         <div class="dropdown dropdown-actions">
           <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             {% if time_filter=="day" %}<i class="fas fa-calendar-day mr-1"></i>{% endif %}
@@ -32,18 +35,18 @@
             {% if time_filter=="month" %}<i class="fas fa-calendar-alt mr-1"></i>{% endif %}
             {% if time_filter=="year" %}<i class="fas fa-calendar mr-1"></i>{% endif %}
             {% if time_filter=="all" %}<i class="fas fa-infinity mr-1"></i>{% endif %}
-            {{ time_filter | capitalize }}
+            {{ time_labels.get(time_filter, time_filter | capitalize) }}
           </button>
           <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 31px, 0px);">
-            {% if not time_filter=="day" %}<a class="dropdown-item" href="?sort={{ sort_method }}&t=day"><i class="fas fa-calendar-day mr-2"></i>Day</a>{% endif %}
-            {% if not time_filter=="week" %}<a class="dropdown-item" href="?sort={{ sort_method }}&t=week"><i class="fas fa-calendar-week mr-2"></i>Week</a>{% endif %}
-            {% if not time_filter=="month" %}<a class="dropdown-item" href="?sort={{ sort_method }}&t=month"><i class="fas fa-calendar-alt mr-2"></i>Month</a>{% endif %}
-            {% if not time_filter=="year" %}<a class="dropdown-item" href="?sort={{ sort_method }}&t=year"><i class="fas fa-calendar mr-2"></i>Year</a>{% endif %}
-            {% if not time_filter=="all" %}<a class="dropdown-item" href="?sort={{ sort_method }}&t=all"><i class="fas fa-infinity mr-2"></i>All</a>{% endif %}
+            {% if not time_filter=="day" %}<a class="dropdown-item" href="?sort={{ sort_method }}&t=day"><i class="fas fa-calendar-day mr-2"></i>{{ pgettext("time range", "Day") }}</a>{% endif %}
+            {% if not time_filter=="week" %}<a class="dropdown-item" href="?sort={{ sort_method }}&t=week"><i class="fas fa-calendar-week mr-2"></i>{{ pgettext("time range", "Week") }}</a>{% endif %}
+            {% if not time_filter=="month" %}<a class="dropdown-item" href="?sort={{ sort_method }}&t=month"><i class="fas fa-calendar-alt mr-2"></i>{{ pgettext("time range", "Month") }}</a>{% endif %}
+            {% if not time_filter=="year" %}<a class="dropdown-item" href="?sort={{ sort_method }}&t=year"><i class="fas fa-calendar mr-2"></i>{{ pgettext("time range", "Year") }}</a>{% endif %}
+            {% if not time_filter=="all" %}<a class="dropdown-item" href="?sort={{ sort_method }}&t=all"><i class="fas fa-infinity mr-2"></i>{{ pgettext("time range", "All") }}</a>{% endif %}
           </div>
         </div>
 
-        <div class="text-small font-weight-bold ml-3 mr-2">Sort by</div>
+        <div class="text-small font-weight-bold ml-3 mr-2">{{ _("Sort by") }}</div>
         <div class="dropdown dropdown-actions">
           <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             {% if sort_method=="hot" %}<i class="fas fa-fire mr-1"></i>{% endif %}
@@ -52,15 +55,15 @@
             {% if sort_method=="old" %}<i class="fas fa-book mr-1"></i>{% endif %}
             {% if sort_method=="disputed" %}<i class="fas fa-bullhorn mr-1"></i>{% endif %}
             {% if sort_method=="activity" %}<i class="fas fa-comments mr-1"></i>{% endif %}
-            {{ sort_method | capitalize }}
+            {{ sort_labels.get(sort_method, sort_method | capitalize) }}
           </button>
           <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 31px, 0px);">
-            {% if not sort_method=="hot" %}<a class="dropdown-item" href="?sort=hot&t={{ time_filter }}"><i class="fas fa-fire mr-2"></i>Hot</a>{% endif %}
-            {% if not sort_method=="top" %}<a class="dropdown-item" href="?sort=top&t={{ time_filter }}"><i class="fas fa-arrow-alt-circle-up mr-2"></i>Top</a>{% endif %}
-            {% if not sort_method=="new" %}<a class="dropdown-item" href="?sort=new&t={{ time_filter }}"><i class="fas fa-star mr-2"></i>New</a>{% endif %}
-            {% if not sort_method=="old" %}<a class="dropdown-item" href="?sort=old&t={{ time_filter }}"><i class="fas fa-book mr-2"></i>Old</a>{% endif %}
-            {% if not sort_method=="disputed" %}<a class="dropdown-item" href="?sort=disputed&t={{ time_filter }}"><i class="fas fa-bullhorn mr-2"></i>Disputed</a>{% endif %}
-            {% if not sort_method=="activity" %}<a class="dropdown-item" href="?sort=activity&t={{ time_filter }}"><i class="fas fa-comments mr-2"></i>Activity</a>{% endif %}
+            {% if not sort_method=="hot" %}<a class="dropdown-item" href="?sort=hot&t={{ time_filter }}"><i class="fas fa-fire mr-2"></i>{{ pgettext("sort", "Hot") }}</a>{% endif %}
+            {% if not sort_method=="top" %}<a class="dropdown-item" href="?sort=top&t={{ time_filter }}"><i class="fas fa-arrow-alt-circle-up mr-2"></i>{{ pgettext("sort", "Top") }}</a>{% endif %}
+            {% if not sort_method=="new" %}<a class="dropdown-item" href="?sort=new&t={{ time_filter }}"><i class="fas fa-star mr-2"></i>{{ pgettext("sort", "New") }}</a>{% endif %}
+            {% if not sort_method=="old" %}<a class="dropdown-item" href="?sort=old&t={{ time_filter }}"><i class="fas fa-book mr-2"></i>{{ pgettext("sort", "Old") }}</a>{% endif %}
+            {% if not sort_method=="disputed" %}<a class="dropdown-item" href="?sort=disputed&t={{ time_filter }}"><i class="fas fa-bullhorn mr-2"></i>{{ pgettext("sort", "Disputed") }}</a>{% endif %}
+            {% if not sort_method=="activity" %}<a class="dropdown-item" href="?sort=activity&t={{ time_filter }}"><i class="fas fa-comments mr-2"></i>{{ pgettext("sort", "Activity") }}</a>{% endif %}
           </div>
         </div>
       </div>
@@ -74,17 +77,17 @@
 {% block mobileFeedTabs %}
 <div class="d-lg-none bg-white border-bottom embedded-hidden">
   <ul class="nav nav-pills flex-nowrap overflow-auto px-2 py-2 mb-0" style="white-space: nowrap;">
-    <li class="nav-item"><a class="nav-link {% if request.path=='/all' %}active{% endif %}" href="/all">All</a></li>
-    <li class="nav-item"><a class="nav-link {% if request.path=='/' or request.path=='/for_you' %}active{% endif %}" href="/for_you">For You</a></li>
-    <li class="nav-item"><a class="nav-link {% if request.path=='/following' %}active{% endif %}" href="/following">Following</a></li>
+    <li class="nav-item"><a class="nav-link {% if request.path=='/all' %}active{% endif %}" href="/all">{{ pgettext("feed", "All") }}</a></li>
+    <li class="nav-item"><a class="nav-link {% if request.path=='/' or request.path=='/for_you' %}active{% endif %}" href="/for_you">{{ _("For You") }}</a></li>
+    <li class="nav-item"><a class="nav-link {% if request.path=='/following' %}active{% endif %}" href="/following">{{ pgettext("feed", "Following") }}</a></li>
     <li class="nav-item d-flex align-items-center"><div class="border-left mx-1" style="height: 1.5rem;"></div></li>
-    <li class="nav-item"><a class="nav-link" href="javascript:void(0)" data-toggle="modal" data-target="#regionalFilterModal">Regional{% if active_regions %}<span class="badge badge-pill badge-light ml-1">{{ active_regions|length }}</span>{% endif %}</a></li>
-    <li class="nav-item"><a class="nav-link" href="javascript:void(0)" data-toggle="modal" data-target="#languageFilterModal">Language{% if active_languages %}<span class="badge badge-pill badge-light ml-1">{{ active_languages|length }}</span>{% endif %}</a></li>
-    <li class="nav-item"><a class="nav-link" href="javascript:void(0)" data-toggle="modal" data-target="#categoricalFilterModal">Categorical{% if active_subcats %}<span class="badge badge-pill badge-light ml-1">{{ active_subcats|length }}</span>{% endif %}</a></li>
-    <li class="nav-item"><a class="nav-link" href="javascript:void(0)" data-toggle="modal" data-target="#postTypeFilterModal">Post type{% if active_post_types %}<span class="badge badge-pill badge-light ml-1">{{ active_post_types|length }}</span>{% endif %}</a></li>
-    <li class="nav-item"><a class="nav-link" href="javascript:void(0)" data-toggle="modal" data-target="#advancedFilterModal">Advanced{% if feed_filter_count %}<span class="badge badge-pill badge-light ml-1">{{ feed_filter_count }}</span>{% endif %}</a></li>
+    <li class="nav-item"><a class="nav-link" href="javascript:void(0)" data-toggle="modal" data-target="#regionalFilterModal">{{ _("Regional") }}{% if active_regions %}<span class="badge badge-pill badge-light ml-1">{{ active_regions|length }}</span>{% endif %}</a></li>
+    <li class="nav-item"><a class="nav-link" href="javascript:void(0)" data-toggle="modal" data-target="#languageFilterModal">{{ _("Language") }}{% if active_languages %}<span class="badge badge-pill badge-light ml-1">{{ active_languages|length }}</span>{% endif %}</a></li>
+    <li class="nav-item"><a class="nav-link" href="javascript:void(0)" data-toggle="modal" data-target="#categoricalFilterModal">{{ _("Categorical") }}{% if active_subcats %}<span class="badge badge-pill badge-light ml-1">{{ active_subcats|length }}</span>{% endif %}</a></li>
+    <li class="nav-item"><a class="nav-link" href="javascript:void(0)" data-toggle="modal" data-target="#postTypeFilterModal">{{ _("Post type") }}{% if active_post_types %}<span class="badge badge-pill badge-light ml-1">{{ active_post_types|length }}</span>{% endif %}</a></li>
+    <li class="nav-item"><a class="nav-link" href="javascript:void(0)" data-toggle="modal" data-target="#advancedFilterModal">{{ pgettext("the Advanced filter, as a short tab", "Advanced") }}{% if feed_filter_count %}<span class="badge badge-pill badge-light ml-1">{{ feed_filter_count }}</span>{% endif %}</a></li>
     <li class="nav-item d-flex align-items-center"><div class="border-left mx-1" style="height: 1.5rem;"></div></li>
-    <li class="nav-item"><a class="nav-link {% if request.path.startswith('/curation') %}active{% endif %}" href="/curations">Curation</a></li>
+    <li class="nav-item"><a class="nav-link {% if request.path.startswith('/curation') %}active{% endif %}" href="/curations">{{ _("Curation") }}</a></li>
   </ul>
 </div>
 {% endblock %}
@@ -112,11 +115,11 @@
     <ul class="nav toggle-view">
       <li class="nav-item">
         <button class="btn nav-link pr-3 active" id="toggle-list-view-btn" onclick="toggle_list_view()">
-          <i class="fas fa-list"></i>List</button>
+          <i class="fas fa-list"></i>{{ pgettext("view", "List") }}</button>
         </li>
         <li class="nav-item" style="">
           <button class="btn nav-link" id="toggle-card-view-btn" onclick="toggle_card_view()">
-            <i class="fas fa-th-large"></i>Card</button>
+            <i class="fas fa-th-large"></i>{{ pgettext("view", "Card") }}</button>
           </li>
         </ul>
       </div>
@@ -129,7 +132,8 @@
     <div class="row no-gutters mt-3">
       <div class="col-12">
         <div class="alert alert-secondary text-small mb-0">
-          <i class="fas fa-map-marker-alt mr-2"></i>Showing posts from <strong>{% if region_names|length <= 3 %}{{ region_names|join(', ') }}{% else %}{{ region_names|length }} regions{% endif %}</strong>. <a href="javascript:void(0)" onclick="openSidebarFilter('regional')">Change regions</a>
+          {% if region_names|length <= 3 %}{% set shown = region_names|join(', ') %}{% else %}{% set shown = ngettext("%(num)s region", "%(num)s regions", region_names|length) %}{% endif %}
+          <i class="fas fa-map-marker-alt mr-2"></i>{{ _("Showing posts from <strong>%(regions)s</strong>.", regions=shown) }} <a href="javascript:void(0)" onclick="openSidebarFilter('regional')">{{ _("Change regions") }}</a>
         </div>
       </div>
     </div>
@@ -139,7 +143,8 @@
     <div class="row no-gutters mt-3">
       <div class="col-12">
         <div class="alert alert-secondary text-small mb-0">
-          <i class="fas fa-language mr-2"></i>Showing posts detected as <strong>{% if language_names_list|length <= 3 %}{{ language_names_list|join(', ') }}{% else %}{{ language_names_list|length }} languages{% endif %}</strong>. <a href="javascript:void(0)" onclick="openSidebarFilter('language')">Change languages</a>
+          {% if language_names_list|length <= 3 %}{% set shown = language_names_list|join(', ') %}{% else %}{% set shown = ngettext("%(num)s language", "%(num)s languages", language_names_list|length) %}{% endif %}
+          <i class="fas fa-language mr-2"></i>{{ _("Showing posts detected as <strong>%(languages)s</strong>.", languages=shown) }} <a href="javascript:void(0)" onclick="openSidebarFilter('language')">{{ _("Change languages") }}</a>
         </div>
       </div>
     </div>
@@ -149,7 +154,8 @@
     <div class="row no-gutters mt-3">
       <div class="col-12">
         <div class="alert alert-secondary text-small mb-0">
-          <i class="fas fa-layer-group mr-2"></i>Showing posts in <strong>{% if subcat_names|length <= 3 %}{{ subcat_names|join(', ') }}{% else %}{{ subcat_names|length }} categories{% endif %}</strong>. <a href="javascript:void(0)" onclick="openSidebarFilter('categorical')">Change categories</a>
+          {% if subcat_names|length <= 3 %}{% set shown = subcat_names|join(', ') %}{% else %}{% set shown = ngettext("%(num)s category", "%(num)s categories", subcat_names|length) %}{% endif %}
+          <i class="fas fa-layer-group mr-2"></i>{{ _("Showing posts in <strong>%(categories)s</strong>.", categories=shown) }} <a href="javascript:void(0)" onclick="openSidebarFilter('categorical')">{{ _("Change categories") }}</a>
         </div>
       </div>
     </div>
@@ -159,7 +165,9 @@
     <div class="row no-gutters mt-3">
       <div class="col-12">
         <div class="alert alert-secondary text-small mb-0">
-          <i class="fas fa-shapes mr-2"></i>Showing <strong>{% if post_type_names|length <= 3 %}{{ post_type_names|join(', ') }}{% else %}{{ post_type_names|length }} types of post{% endif %}</strong>. <a href="javascript:void(0)" onclick="openSidebarFilter('post_type')">Change post types</a>
+          {% if post_type_names|length <= 3 %}{% set shown = post_type_names|join(', ') %}{% else %}{% set shown = ngettext("%(num)s type of post", "%(num)s types of post", post_type_names|length) %}{% endif %}
+          {# Translators: the kinds of post the feed is narrowed to, e.g. "Showing Polls, Videos." #}
+          <i class="fas fa-shapes mr-2"></i>{{ _("Showing <strong>%(types)s</strong>.", types=shown) }} <a href="javascript:void(0)" onclick="openSidebarFilter('post_type')">{{ _("Change post types") }}</a>
         </div>
       </div>
     </div>
@@ -169,9 +177,9 @@
     <div class="row no-gutters mt-3">
       <div class="col-12">
         <div class="alert alert-secondary text-small mb-0 feed-filter-notice">
-          <i class="fas fa-sliders mr-2"></i>Advanced filter:
+          <i class="fas fa-sliders mr-2"></i>{{ _("Advanced filter:") }}
           {% for chip in feed_filter_chips %}<span class="feed-filter-chip">{{ chip }}</span>{% endfor %}
-          <a href="javascript:void(0)" onclick="openSidebarFilter('advanced')">Edit</a> · <a href="/feed_filter?clear=1">Clear</a>
+          <a href="javascript:void(0)" onclick="openSidebarFilter('advanced')">{{ pgettext("button: edit the advanced filter", "Edit") }}</a> · <a href="/feed_filter?clear=1">{{ pgettext("button: clear the advanced filter", "Clear") }}</a>
           {% for notice in feed_filter_notices %}<div class="text-danger mt-1" role="status">{{ notice }}</div>{% endfor %}
         </div>
       </div>
@@ -202,6 +210,8 @@
         <div class="d-flex flex-row flex-nowrap justify-content-between">
 
           {% block sortnav %}
+          {% set time_labels = {"day": pgettext("time range", "Day"), "week": pgettext("time range", "Week"), "month": pgettext("time range", "Month"), "year": pgettext("time range", "Year"), "all": pgettext("time range", "All")} %}
+          {% set sort_labels = {"hot": pgettext("sort", "Hot"), "top": pgettext("sort", "Top"), "new": pgettext("sort", "New"), "old": pgettext("sort", "Old"), "disputed": pgettext("sort", "Disputed"), "activity": pgettext("sort", "Activity")} %}
 
           <div class="post-filter">
 
@@ -215,15 +225,15 @@
                   {% if sort_method=="old" %}<i class="fas fa-book mr-1"></i>{% endif %}
                   {% if sort_method=="disputed" %}<i class="fas fa-bullhorn mr-1"></i>{% endif %}
                   {% if sort_method=="activity" %}<i class="fas fa-comments mr-1"></i>{% endif %}
-                  {{ sort_method | capitalize }}
+                  {{ sort_labels.get(sort_method, sort_method | capitalize) }}
                 </button>
                 <div class="dropdown-menu" id="mobileSortDropdown" aria-labelledby="dropdownMenuButtonMobile" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 31px, 0px);">
-                  {% if not sort_method=="hot" %}<a class="dropdown-item" href="?sort=hot&t={{ time_filter }}"><i class="fas fa-fire text-primary mr-3"></i>Hot</a>{% endif %}
-                  {% if not sort_method=="top" %}<a class="dropdown-item" href="?sort=top&t={{ time_filter }}"><i class="fas fa-arrow-alt-circle-up text-primary mr-3"></i>Top</a>{% endif %}
-                  {% if not sort_method=="new" %}<a class="dropdown-item" href="?sort=new&t={{ time_filter }}"><i class="fas fa-star text-primary mr-3"></i>New</a>{% endif %}
-                  {% if not sort_method=="old" %}<a class="dropdown-item" href="?sort=old&t={{ time_filter }}"><i class="fas fa-book text-primary mr-3"></i>Old</a>{% endif %}
-                  {% if not sort_method=="disputed" %}<a class="dropdown-item" href="?sort=disputed&t={{ time_filter }}"><i class="fas fa-bullhorn text-primary mr-3"></i>Disputed</a>{% endif %}
-                  {% if not sort_method=="activity" %}<a class="dropdown-item" href="?sort=activity&t={{ time_filter }}"><i class="fas fa-comments text-primary mr-3"></i>Activity</a>{% endif %}
+                  {% if not sort_method=="hot" %}<a class="dropdown-item" href="?sort=hot&t={{ time_filter }}"><i class="fas fa-fire text-primary mr-3"></i>{{ pgettext("sort", "Hot") }}</a>{% endif %}
+                  {% if not sort_method=="top" %}<a class="dropdown-item" href="?sort=top&t={{ time_filter }}"><i class="fas fa-arrow-alt-circle-up text-primary mr-3"></i>{{ pgettext("sort", "Top") }}</a>{% endif %}
+                  {% if not sort_method=="new" %}<a class="dropdown-item" href="?sort=new&t={{ time_filter }}"><i class="fas fa-star text-primary mr-3"></i>{{ pgettext("sort", "New") }}</a>{% endif %}
+                  {% if not sort_method=="old" %}<a class="dropdown-item" href="?sort=old&t={{ time_filter }}"><i class="fas fa-book text-primary mr-3"></i>{{ pgettext("sort", "Old") }}</a>{% endif %}
+                  {% if not sort_method=="disputed" %}<a class="dropdown-item" href="?sort=disputed&t={{ time_filter }}"><i class="fas fa-bullhorn text-primary mr-3"></i>{{ pgettext("sort", "Disputed") }}</a>{% endif %}
+                  {% if not sort_method=="activity" %}<a class="dropdown-item" href="?sort=activity&t={{ time_filter }}"><i class="fas fa-comments text-primary mr-3"></i>{{ pgettext("sort", "Activity") }}</a>{% endif %}
                 </div>
               </div>
 
@@ -234,14 +244,14 @@
                   {% if time_filter=="month" %}<i class="fas fa-calendar-days mr-1"></i>{% endif %}
                   {% if time_filter=="year" %}<i class="fas fa-calendar mr-1"></i>{% endif %}
                   {% if time_filter=="all" %}<i class="fas fa-infinity mr-1"></i>{% endif %}
-                  {{ time_filter | capitalize }}
+                  {{ time_labels.get(time_filter, time_filter | capitalize) }}
                 </button>
                 <div class="dropdown-menu" id="mobileSortDropdown" aria-labelledby="dropdownMenuButtonMobile" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 31px, 0px);">
-                  {% if not time_filter=="day" %}<a class="dropdown-item" href="?sort={{ sort_method }}&t=day"><i class="fas fa-calendar-day text-primary mr-3"></i>Day</a>{% endif %}
-                  {% if not time_filter=="week" %}<a class="dropdown-item" href="?sort={{ sort_method }}&t=week"><i class="fas fa-calendar-week text-primary mr-3"></i>Week</a>{% endif %}
-                  {% if not time_filter=="month" %}<a class="dropdown-item" href="?sort={{ sort_method }}&t=month"><i class="fas fa-calendar-alt text-primary mr-3"></i>Month</a>{% endif %}
-                  {% if not time_filter=="year" %}<a class="dropdown-item" href="?sort={{ sort_method }}&t=year"><i class="fas fa-calendar text-primary mr-3"></i>Year</a>{% endif %}
-                  {% if not time_filter=="all" %}<a class="dropdown-item" href="?sort={{ sort_method }}&t=all"><i class="fas fa-infinity text-primary mr-3"></i>All</a>{% endif %}
+                  {% if not time_filter=="day" %}<a class="dropdown-item" href="?sort={{ sort_method }}&t=day"><i class="fas fa-calendar-day text-primary mr-3"></i>{{ pgettext("time range", "Day") }}</a>{% endif %}
+                  {% if not time_filter=="week" %}<a class="dropdown-item" href="?sort={{ sort_method }}&t=week"><i class="fas fa-calendar-week text-primary mr-3"></i>{{ pgettext("time range", "Week") }}</a>{% endif %}
+                  {% if not time_filter=="month" %}<a class="dropdown-item" href="?sort={{ sort_method }}&t=month"><i class="fas fa-calendar-alt text-primary mr-3"></i>{{ pgettext("time range", "Month") }}</a>{% endif %}
+                  {% if not time_filter=="year" %}<a class="dropdown-item" href="?sort={{ sort_method }}&t=year"><i class="fas fa-calendar text-primary mr-3"></i>{{ pgettext("time range", "Year") }}</a>{% endif %}
+                  {% if not time_filter=="all" %}<a class="dropdown-item" href="?sort={{ sort_method }}&t=all"><i class="fas fa-infinity text-primary mr-3"></i>{{ pgettext("time range", "All") }}</a>{% endif %}
                 </div>
               </div>
 
@@ -250,16 +260,16 @@
           </div>
 
           <div class="post-filter d-none">
-            <span>From:</span>
+            <span>{{ _("From:") }}</span>
             <span class="dropdown">
               <a class="dropdown-toggle" href="#" role="button" id="dropdownFrom" data-toggle="dropdown"
-              aria-haspopup="true" aria-expanded="false">Time</a>
+              aria-haspopup="true" aria-expanded="false">{{ _("Time") }}</a>
 
               <span class="dropdown-menu border-0 shadow" id="dropdownMenuFrom" aria-labelledby="dropdownFrom">
-                <a class="dropdown-item" href="#">Past Day</a>
-                <a class="dropdown-item" href="#">Past Month</a>
-                <a class="dropdown-item" href="#">Past Year</a>
-                <a class="dropdown-item" href="#">All Time</a>
+                <a class="dropdown-item" href="#">{{ _("Past Day") }}</a>
+                <a class="dropdown-item" href="#">{{ _("Past Month") }}</a>
+                <a class="dropdown-item" href="#">{{ _("Past Year") }}</a>
+                <a class="dropdown-item" href="#">{{ _("All Time") }}</a>
               </span>
             </span>
 
@@ -277,21 +287,21 @@
     
     {% block pagenav %}
     {% if listing %}
-    <nav aria-label="Page navigation">
+    <nav aria-label="{{ _('Page navigation') }}">
       <ul class="pagination pagination-sm mb-0">
         {% if page>1 %}
         <li class="page-item">
-          <small><a class="page-link" href="?sort={{ sort_method }}&page={{ page-1 }}&t={{ time_filter }}{% if only %}&only={{ only }}{% endif %}" tabindex="-1">Prev</a></small>
+          <small><a class="page-link" href="?sort={{ sort_method }}&page={{ page-1 }}&t={{ time_filter }}{% if only %}&only={{ only }}{% endif %}" tabindex="-1">{{ pgettext("previous page", "Prev") }}</a></small>
         </li>
         {% else %}
-        <li class="page-item disabled"><span class="page-link">Prev</span></li>
+        <li class="page-item disabled"><span class="page-link">{{ pgettext("previous page", "Prev") }}</span></li>
         {% endif %}
         {% if next_exists %}
         <li class="page-item">
-          <small><a class="page-link" href="?sort={{ sort_method }}&page={{ page+1 }}&t={{ time_filter }}{% if only %}&only={{ only }}{% endif %}">Next</a></small>
+          <small><a class="page-link" href="?sort={{ sort_method }}&page={{ page+1 }}&t={{ time_filter }}{% if only %}&only={{ only }}{% endif %}" rel="next">{{ pgettext("next page", "Next") }}</a></small>
         </li>
         {% else %}
-        <li class="page-item disabled"><span class="page-link">Next</span></li>
+        <li class="page-item disabled"><span class="page-link">{{ pgettext("next page", "Next") }}</span></li>
         {% endif %}
       </ul>
     </nav>

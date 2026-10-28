@@ -1,0 +1,236 @@
+// Page-level touches (the UI modernisation, 2026-10): the guild's header bar, the profile header, Explore. Imported at
+// the end of both theme sheets. Markup: board.html, partials/profile_header.html, partials/explore.html.
+
+// --- a guild's bar under its banner --------------------------------------------------------------------------------
+// It held the name, Guildmasters, Members, the menu, two labelled filters and Join / Leave on one line, wider than the
+// feed: Leave and its bell spilled over the About box. Now it wraps, the filter labels are read out but not drawn
+// (board.html), and it sits on the page's colour.
+
+.guild-border-top.bg-white {
+    background-color: var(--bg) !important;
+    border-bottom-color: var(--border) !important;
+}
+
+.guild-border-top > .col > .d-flex {
+    flex-wrap: wrap;
+    row-gap: var(--space-2);
+    column-gap: var(--space-2);
+    padding: var(--space-2) 0;
+}
+
+.guild-border-top > .col > .d-flex > .border-right,
+.guild-border-top > .col > .d-flex > .p-3 {
+    border-right: 0 !important;
+    padding: var(--space-2) var(--space-3) !important;
+}
+
+.guild-border-top > .col > .d-flex > .ml-auto {
+    flex-shrink: 0;
+}
+
+.guild-border-top .h6 {
+    font-weight: var(--weight-semibold);
+    letter-spacing: var(--tracking-title);
+}
+
+.guild-border-top .profile-pic-35 {
+    border-radius: 50%;
+}
+
+// --- pages without the right sidebar take its room (History, the Creator Studio) --------------------------------------
+// default.html main_row_class: the same as Explore's, Spaces' and Circles' own rule (by page id in both sheets), as an
+// opt-in a page can use without changing its id (History keeps #frontpage for its post cards).
+
+#main-content-row.wide-main {
+    flex-wrap: nowrap;
+}
+
+@media (min-width: 992px) {
+    #main-content-row.wide-main {
+        justify-content: center !important;
+    }
+
+    #main-content-row.wide-main > #main-content-col {
+        max-width: $layout-feed + $layout-right;
+        min-width: 0;
+        margin-left: 0;
+        margin-right: 0;
+        float: none;
+    }
+
+    // a post card across the wide column keeps its lines readable: the title and the first lines stop at 72
+    // characters; pictures and the action row keep the whole width
+    #main-content-row.wide-main .posts > .card .post-title,
+    #main-content-row.wide-main .posts > .card .post-snippet {
+        max-width: 72ch;
+    }
+}
+
+// a list on a wide page (Inbox, History, one circle, a locked page): its content centred at the feed's width, so it reads
+// like the feed rather than a narrow strip on the left of an empty page (default.html main_row_class " wide-main
+// is-focused"). The column keeps its width, so the left sidebar stays where the home feed has it.
+// (its children are centred, not the column padded: a percentage padding is of the row, not of the column)
+@media (min-width: 992px) {
+    #main-content-row.wide-main.is-focused > #main-content-col > * {
+        max-width: $layout-feed;
+        margin-left: auto !important;
+        margin-right: auto !important;
+    }
+
+    // a list is already at a reading width: no 72-character cap on its cards
+    #main-content-row.wide-main.is-focused .posts > .card .post-title,
+    #main-content-row.wide-main.is-focused .posts > .card .post-snippet {
+        max-width: none;
+    }
+}
+
+// --- Circles: two columns side by side on a wide page --------------------------------------------------------------
+
+.circle-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+    gap: var(--space-5) var(--space-8);
+    align-items: start;
+    margin-top: var(--space-5);
+}
+
+.circle-grid > .circle-col > h2:first-child, .circle-grid > .circle-col > .settings-section:first-child {
+    margin-top: 0 !important;
+}
+
+#circle-settings > p.text-muted {
+    max-width: 72ch;
+}
+
+// --- History's bars: on the page, with a segmented "Show" control -----------------------------------------------------
+
+.history-show-bar.bg-light, #bookmark-folders.bg-white {
+    background-color: transparent !important;
+    box-shadow: none !important;
+    border-bottom: 1px solid var(--border);
+}
+
+// separate pills, not a joined group: Bootstrap's .btn-group squares the inner corners of its buttons
+.history-show-bar .btn-group {
+    gap: 2px;
+}
+
+.history-show-bar .btn-group > .btn-sm {
+    padding: 6px 14px;
+    border-radius: var(--radius-pill);
+    font-weight: var(--weight-semibold);
+}
+
+// on a phone the History page has no feed pills under the navbar (#frontpage keeps 98px for them, main.scss)
+@media (max-width: 767.98px) {
+    #frontpage:has(.history-tabs) {
+        padding-top: var(--navbar-height, 55px);
+    }
+}
+
+.history-show-bar .btn-sm.btn-secondary {
+    color: var(--text);
+    background-color: var(--surface-sunken);
+}
+
+#bookmark-folders .folder-chip {
+    padding: 5px 14px;
+    border-radius: var(--radius-pill);
+}
+
+#bookmark-folders .folder-chip.active {
+    background-color: var(--brand-strong);
+    border-color: var(--brand-strong);
+    color: var(--on-brand);
+}
+
+#bookmark-folders .folder-chip:not(.active):hover, #bookmark-folders .folder-chip:not(.active):focus {
+    color: var(--link);
+    border-color: var(--link);
+}
+
+// --- Profile header (partials/profile_header.html) -------------------------------------------------------------------
+// The owner (2026-10-23): the banner reaches 48px further down, into the strip the actions used to sit in, the avatar
+// stays exactly where it was (so more of it is over the banner), and the actions sit on the name's line. The banner is
+// its old 6:1 plus that strip; the avatar's -67px (half of it over a 6:1 banner) grows by the same 48px.
+
+.profile-x-banner {
+    aspect-ratio: auto;
+}
+
+.profile-x-banner::before {
+    content: "";
+    display: block;
+    padding-top: calc(100% / 6 + 48px);         // a percentage padding is of the width: 6:1, then the strip
+}
+
+.profile-x-banner-img {
+    position: absolute;
+    inset: 0;
+}
+
+.profile-x-avatar {
+    margin-top: -115px;
+}
+
+// the name on the left, the actions on its line at the right; on a narrow screen they wrap under it, still right
+.profile-x-headline {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: var(--space-3) var(--space-5);
+}
+
+.profile-x-headline > .profile-x-names {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+.profile-x-headline > .profile-x-actions {
+    flex: 0 0 auto;
+    margin-left: auto;
+    margin-top: -7px;                            // the 36px buttons centred on the name's 23px line
+    padding: 0;
+}
+
+@media (max-width: 575.98px) {
+    .profile-x-banner::before {
+        padding-top: calc(100% / 6 + 24px);
+    }
+
+    .profile-x-avatar {
+        margin-top: -64px;                       // the 80px avatar's -40px, plus the phone's 24px strip
+    }
+
+    .profile-x-headline > .profile-x-actions {
+        padding: 0;
+    }
+}
+
+// --- the chat page: exactly the screen between the bars ---------------------------------------------------------------
+// chat.html sizes #chat-app inline as 100vh less 56px, an older navbar's height: 3px short of the bar on a desktop, and
+// on a phone it ran on under the bottom bar (the page scrolled 80px and a conversation's box sat behind the bar). The
+// side-panel frame (body.embedded) keeps its own full height (main.scss, _mobile.scss).
+
+body:not(.embedded)#chat #chat-app {
+    height: calc(100vh - var(--navbar-height, 59px)) !important;
+}
+
+@media (max-width: 991.98px) {
+    body:not(.embedded)#chat #chat-app {
+        height: calc(100vh - var(--navbar-height, 59px) - 56px - env(safe-area-inset-bottom)) !important;
+    }
+}
+
+@supports (height: 100dvh) {
+    body:not(.embedded)#chat #chat-app {
+        height: calc(100dvh - var(--navbar-height, 59px)) !important;
+    }
+
+    @media (max-width: 991.98px) {
+        body:not(.embedded)#chat #chat-app {
+            height: calc(100dvh - var(--navbar-height, 59px) - 56px - env(safe-area-inset-bottom)) !important;
+        }
+    }
+}

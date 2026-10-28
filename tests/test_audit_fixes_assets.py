@@ -627,8 +627,8 @@ def test_front_end_glitches():
     assert "if (el) el.classList.toggle('d-none');" in toggle
     assert '{% include "emoji_modal.html" %}' not in read("templates", "comments.html")
     assert read("templates", "default.html").count('{% include "emoji_modal.html" %}') == 1
-    for name in ("default.html", "header.html"):
-        assert 'fa-shapes fa-fw text-left mr-3" id="dark-switch"' not in read("templates", name), name
+    for name in ("default.html", "header.html", "partials/account_menu.html"):
+        assert 'fa-shapes fa-fw text-left mr-3" id="dark-switch"' not in read("templates", *name.split("/")), name
     assert "b=board," in func(read("routes", "boards.py"), "mod_hide_bid_pid")
 
 

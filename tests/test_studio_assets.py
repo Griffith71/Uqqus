@@ -57,9 +57,10 @@ def test_the_tabs_put_insights_in_the_studio_and_keep_its_old_address():
 
 
 def test_every_way_in_leads_to_the_studio():
-    for name in ("default.html", "header.html"):
-        menu = read("ruqqus", "templates", name)
-        assert menu.count('href="/studio"><i class="fas fa-chart-pie fa-fw text-left mr-3"></i>Creator Studio</a>') == 1, name
+    menu = read("ruqqus", "templates", "partials", "account_menu.html")
+    assert menu.count('href="/studio"><i class="fas fa-chart-pie fa-fw text-left mr-3"></i>{{ _("Creator Studio") }}</a>') == 1
+    for name in ("default.html", "header.html"):          # the one menu, in both page shells
+        assert '{% include "partials/account_menu.html" %}' in read("ruqqus", "templates", name), name
     premium = read("ruqqus", "templates", "settings_premium.html")
     assert 'href="/studio"' in premium and 'href="/insights"' in premium
     assert 'href="/settings/premium"' in LOCKED

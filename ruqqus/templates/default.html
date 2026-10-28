@@ -1,48 +1,47 @@
 <!DOCTYPE html>
-{% from "partials/theme.html" import theme_links, body_theme_class, body_theme_script %}
-<html lang="en"{% if request.cookies.get('sidebar_pref') == 'collapsed' %} class="sidebar-folded"{% endif %}>
+{% from "partials/theme.html" import theme_links, body_theme_class, body_theme_script, html_attrs, font_faces, theme_color %}
+<html{{ html_attrs() }}{% if request.cookies.get('sidebar_pref') == 'collapsed' %} class="sidebar-folded"{% endif %}>
 <head>
+{% from "partials/i18n_boot.html" import i18n_boot %}{{ i18n_boot() }}
   {# nav_align.js runs on this page: the search box waits for it (main.scss) #}
   {% if not request.args.get('embed') %}<script>document.documentElement.classList.add("nav-align")</script>{% endif %}
 
 	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+{{ font_faces() }}
+{{ theme_color() }}
+	<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 
 	<meta name="thumbnail" content="/assets/images/preview-images/ruqqus_og_image.png">
 
   <link rel="icon" type="image/png" href="/assets/images/logo/favicon.png">
   
 	{% block title %}
-	<title>{{ "SITE_NAME" | app_config }}: The Open-Source Platform for Independent Internet Communities</title>
+	<title>{{ _("%(site)s: The Open-Source Platform for Independent Internet Communities") }}</title>
 
   <meta property="og:type" content="article" />
-  <meta property="og:title" content="{{ 'SITE_NAME' | app_config }}: The Open-Source Platform for Independent Internet Communities" />
+  <meta property="og:title" content="{{ _('%(site)s: The Open-Source Platform for Independent Internet Communities') }}" />
   <meta property="og:site_name" content="{{ 'SERVER_NAME' | app_config }}" />
   <meta property="og:image" content="{{ '/assets/images/preview-images/ruqqus_og_image.png' | full_link }}" />
   <meta property="og:url" content="{{ request.path | full_link }}">
-  <meta property="og:description" name="description" content="{{ 'SITE_NAME' | app_config }} is an open-source platform for online communities, free of censorship and moderator abuse by design.">
+  <meta property="og:description" name="description" content="{{ _('%(site)s is an open-source platform for online communities, free of censorship and moderator abuse by design.') }}">
   <meta property="og:author" name="author" content="@{{ 'SITE_NAME' | app_config }}" />
   <meta property="og:site_name" content="{{ 'SERVER_NAME' | app_config }}" />
 
   <meta name="twitter:card" content="summary_large_image"/>
   <meta name="twitter:site" content="@{{ 'SITE_NAME' | app_config }}">
-  <meta name="twitter:title" content="{{ 'SITE_NAME' | app_config }}: The Open-Source Platform for Independent Internet Communities" />
+  <meta name="twitter:title" content="{{ _('%(site)s: The Open-Source Platform for Independent Internet Communities') }}" />
   <meta name="twitter:creator" content="@{{ 'SITE_NAME' | app_config }}">
-  <meta name="twitter:description" content="{{ 'SITE_NAME' | app_config }} is an open-source platform for online communities, free of censorship and moderator abuse by design." />
+  <meta name="twitter:description" content="{{ _('%(site)s is an open-source platform for online communities, free of censorship and moderator abuse by design.') }}" />
   <meta name="twitter:image" content="/assets/images/preview-images/ruqqus_og_image.png" />
   <meta name="twitter:url" content="{{ request.path | full_link }}" />
   {% endblock %}
 
   <!-- third-party hosts the page needs before it can draw: start the connections at once -->
-  <link rel="preconnect" href="https://maxcdn.bootstrapcdn.com" crossorigin>
   <link rel="preconnect" href="https://cdnjs.cloudflare.com">
   <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
   <link rel="preconnect" href="https://code.jquery.com" crossorigin>
   <link rel="preconnect" href="https://stackpath.bootstrapcdn.com" crossorigin>
 
-  <!-- Bootstrap core CSS -->
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
-  integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 
   <!-- Font Awesome (free) -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -51,7 +50,6 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-touch-fullscreen" content="yes">
   <meta name="format-detection" content="telephone=no">
-  <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
 
   <link rel="apple-touch-icon" sizes="180x180" href="/assets/images/favicons/apple-touch-icon.png">
   <!---<link rel="icon" type="image/png" sizes="32x32" href="/assets/images/favicons/favicon-32x32.png">
@@ -63,7 +61,6 @@
     <meta name="application-name" content="{{ 'SITE_NAME' | app_config }}">
     <meta name="msapplication-TileColor" content="#2ca1ea">
     <meta name="msapplication-config" content="/assets/images/favicons/browserconfig.xml">
-    <meta name="theme-color" content="#2ca1ea">
 
 
 
@@ -259,7 +256,7 @@
   {% if request.path=='/' and g.system and g.timestamp>session.get('tooltip_last_dismissed',0)+60*60*24 and (g.system.endswith('/chrome') or g.system.endswith('/other')) %}
   <div class="row fixed-top" style="z-index:2000" id="mobile-prompt-row">
     <div id="mobile-prompt-container" class="ml-auto mr-5">
-      <div id="mobile-prompt" href="javascript:void(0)" data-toggle="tooltip" data-container="#mobile-prompt-row" data-placement="top" data-trigger="click" title="" data-original-title="Install the {{ 'SITE_NAME' | app_config }} webapp by saving this page to your home screen!">
+      <div id="mobile-prompt" href="javascript:void(0)" data-toggle="tooltip" data-container="#mobile-prompt-row" data-placement="top" data-trigger="click" title="" data-original-title="{{ _('Install the %(site)s webapp by saving this page to your home screen!') }}">
       </div>
     </div>
   </div>
@@ -270,21 +267,21 @@
   <!-- Navigation -->
   <nav class="navbar navbar-expand-md navbar-light shadow shadow-md fixed-top" id="navbar">
     <div class="container-fluid">
-      <div><a href="/" class="navbar-brand text-purple logo-gradient"><span class="brand-main">ɸLaba</span><span class="text-small-extra text-uppercase text-gray-400"> Beta</span></a></div>
+      <div><a href="/" class="navbar-brand text-purple logo-gradient"><span class="brand-main">ɸLaba</span><span class="text-small-extra text-uppercase text-gray-400"> {{ _("Beta") }}</span></a></div>
       <div class="flex-grow-1 d-fl d-none d-md-block" id="navbar-search-wrap">
         <form id="searchform" class="form-inline search flex-nowrap mx-auto" action="{% if b %}/+{{ b.name }}{% endif %}/search" method="get">
-          <input class="form-control w-100" type="search" placeholder="Search posts{% if b %} in +{{ b.name }}{% else %}, +guilds, @users, #topics, &curations{% endif %}" aria-label="Search posts{% if b %} in +{{ b.name }}{% else %}, +guilds, @users, #topics, &curations{% endif %}" name="q" value="{{ request.args.get('q', '') }}">
+          <input class="form-control w-100" type="search" placeholder="{% if b %}{{ _('Search posts in +%(guild)s', guild=b.name) }}{% else %}{{ _('Search posts, +guilds, @users, #topics, &curations') }}{% endif %}" aria-label="{% if b %}{{ _('Search posts in +%(guild)s', guild=b.name) }}{% else %}{{ _('Search posts, +guilds, @users, #topics, &curations') }}{% endif %}" name="q" value="{{ request.args.get('q', '') }}">{% if search_kept_type() %}<input type="hidden" name="type" value="{{ search_kept_type() }}">{% endif %}
           <span class="input-group-append">
-            <span class="input-group-text border-0 bg-transparent" style="margin-left: -2.5rem;" onclick="document.getElementById('searchform').submit()">
+            <span class="input-group-text border-0 bg-transparent" style="margin-inline-start: -2.5rem;" onclick="document.getElementById('searchform').submit()">
               <i class="fa fa-search" aria-hidden="true"></i>
             </span>
           </span>
         </form>
       </div>
-      <a href="javascript:void(0)" class="mobile-nav-icon d-flex d-md-none align-items-center" onclick="toggleMobileSearch()" aria-label="Search"><i class="fas fa-search align-middle text-gray-500"></i></a>
+      <a href="javascript:void(0)" class="mobile-nav-icon d-flex d-md-none align-items-center" onclick="toggleMobileSearch()" aria-label="{{ pgettext('button', 'Search') }}"><i class="fas fa-search align-middle text-gray-500"></i></a>
       {% if not v %}
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive"
-      aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+      aria-controls="navbarResponsive" aria-expanded="false" aria-label="{{ _('Toggle navigation') }}">
       <span class="navbar-toggler-icon"><i class="fas fa-bars text-gray-500"></i>
       </span>
     </button>
@@ -293,7 +290,7 @@
 
         {% if v and v.mods_anything %}
         <li class="nav-item d-flex align-items-center justify-content-center text-center mx-1">
-          <a class="nav-link" href="/mod/queue" data-toggle="tooltip" data-placement="bottom" data-delay='{"show":"700", "hide":"0"}' title="Guildmaster tools"><i class="fas fa-crown{% if v.has_report_queue %} text-warning{% endif %}"></i></a>
+          <a class="nav-link" href="/mod/queue" data-toggle="tooltip" data-placement="bottom" data-delay='{"show":"700", "hide":"0"}' title="{{ _('Guildmaster tools') }}" aria-label="{{ _('Guildmaster tools') }}"><i class="fas fa-crown{% if v.has_report_queue %} text-warning{% endif %}"></i></a>
         </li>
         {% endif %}
 
@@ -302,117 +299,61 @@
         {% if v.notifications_count %}
 
         <li class="nav-item d-flex align-items-center text-center justify-content-center mx-1">
-          <a class="nav-link position-relative" href="/notifications" data-side-panel="notifications" data-toggle="tooltip" data-placement="bottom" title="Notifications"><i class="fas fa-bell text-danger"></i><span class="badge-count font-weight-bolder">{{ v.notifications_count }}</span></a>
+          <a class="nav-link position-relative" href="/notifications" data-side-panel="notifications" aria-label="{{ ngettext('Notifications, %(num)s new', 'Notifications, %(num)s new', v.notifications_count) }}" data-toggle="tooltip" data-placement="bottom" title="{{ _('Notifications') }}"><i class="fas fa-bell text-danger"></i><span class="badge-count font-weight-bolder">{{ v.notifications_count }}</span></a>
         </li>
 
         {% else %}
 
         <li class="nav-item d-flex align-items-center text-center justify-content-center mx-1">
-          <a class="nav-link" href="/notifications/all" data-side-panel="notifications" data-toggle="tooltip" data-placement="bottom" data-delay='{"show":"700", "hide":"0"}' title="Notifications"><i class="fas fa-bell"></i></a>
+          <a class="nav-link" href="/notifications/all" data-side-panel="notifications" aria-label="{{ _('Notifications') }}" data-toggle="tooltip" data-placement="bottom" data-delay='{"show":"700", "hide":"0"}' title="{{ _('Notifications') }}"><i class="fas fa-bell"></i></a>
         </li>
 
         {% endif %}
 
         <li class="nav-item d-flex align-items-center text-center justify-content-center mx-1">
-          <a class="nav-link position-relative" href="/chat" data-side-panel="chat" aria-label="Chat" data-toggle="tooltip" data-placement="bottom" data-delay='{"show":"700", "hide":"0"}' title="Chat"><i id="chat-nav-icon" class="fas fa-comment-dots{% if v.chat_unread_messages %} text-danger{% endif %}"></i><span id="chat-nav-badge" class="badge-count font-weight-bolder{% if not v.chat_unread_messages %} d-none{% endif %}">{{ '99+' if v.chat_unread_messages > 99 else v.chat_unread_messages }}</span></a>
+          <a class="nav-link position-relative" href="/chat" data-side-panel="chat" aria-label="{{ _('Chat') }}" data-toggle="tooltip" data-placement="bottom" data-delay='{"show":"700", "hide":"0"}' title="{{ _('Chat') }}"><i id="chat-nav-icon" class="fas fa-comment-dots{% if v.chat_unread_messages %} text-danger{% endif %}"></i><span id="chat-nav-badge" class="badge-count font-weight-bolder{% if not v.chat_unread_messages %} d-none{% endif %}">{{ '99+' if v.chat_unread_messages > 99 else v.chat_unread_messages }}</span></a>
         </li>
 
         <li class="nav-item d-flex align-items-center justify-content-center text-center mx-1">
-          <a class="nav-link" href="/submit" data-compose aria-label="Create post" data-toggle="tooltip" data-placement="bottom" data-delay='{"show":"700", "hide":"0"}' title="Create post"><i class="fas fa-feather-alt"></i></a>
+          <a class="nav-link" href="/submit" data-compose aria-label="{{ _('Create post') }}" data-toggle="tooltip" data-placement="bottom" data-delay='{"show":"700", "hide":"0"}' title="{{ _('Create post') }}"><i class="fas fa-feather-alt"></i></a>
         </li>
 
         <li class="nav-item d-flex align-items-center justify-content-center text-center mx-1">
           {# one click: a random guild, post or comment, a third of the time each (routes/front.py random_anything) #}
-          <a class="nav-link" href="/random" aria-label="Random guild, post or comment" data-toggle="tooltip" data-placement="bottom" data-delay='{"show":"700", "hide":"0"}' title="Random guild, post or comment"><i class="fas fa-random"></i></a>
+          <a class="nav-link" href="/random" aria-label="{{ _('Random guild, post or comment') }}" data-toggle="tooltip" data-placement="bottom" data-delay='{"show":"700", "hide":"0"}' title="{{ _('Random guild, post or comment') }}"><i class="fas fa-random"></i></a>
         </li>
 
         <li class="nav-item d-flex align-items-center justify-content-center text-center">
           <div class="dropdown">
-            <a class="nav-link bg-transparent py-0 pr-0" href="{{ v.permalink }}" role="button" id="dropdownMenuLink" data-toggle="dropdown"
+            <a class="nav-link bg-transparent py-0 pr-0" href="{{ v.permalink }}" role="button" aria-label="{{ _('Your account') }}" id="dropdownMenuLink" data-toggle="dropdown"
             aria-haspopup="true" aria-expanded="false">
-            {% set throttle_state = v.throttle_state %}
+            {% set throttle_state = v.throttle_state %}{% from "partials/throttle_meter.html" import throttle_meter %}
             <div class="d-flex">
               <div><img alt="" src="{{ v.profile_url }}" class="profile-pic-35"></div>
               <div class="text-left pl-2 position-relative">
                 <div class="text-small font-weight-bold">{{ v.username }}</div>
-                <div class="text-small-extra text-purple"><i class="fas fa-diamond mr-1"></i><span class="rep-count {{ v.rep_class }}" title="{{ v.rep_label }}">{{ v.true_score }}</span> Rep</div>
-                {% if throttle_state.in_cooldown %}
-                <div class="progress" style="height:3px; border-radius:2px; position:absolute; top:100%; left:0; right:0; margin-top:2px;" data-toggle="tooltip" data-placement="bottom" title="Cooldown: {{ '%d:%02d'|format(throttle_state.cooldown_remaining // 60, throttle_state.cooldown_remaining % 60) }} remaining">
-                  <div class="progress-bar bg-danger" role="progressbar" aria-label="Posting cooldown" style="width: 100%;" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
-                </div>
-                {% else %}
-                <div class="progress" style="height:3px; border-radius:2px; position:absolute; top:100%; left:0; right:0; margin-top:2px;" data-toggle="tooltip" data-placement="bottom" title="~{{ throttle_state.remaining_actions }} action{{ 's' if throttle_state.remaining_actions != 1 else '' }} left before a cooldown">
-                  <div class="progress-bar bg-warning" role="progressbar" aria-label="Actions left before a cooldown" style="width: {{ throttle_state.boil_pct }}%;" aria-valuenow="{{ throttle_state.boil_pct }}" aria-valuemin="0" aria-valuemax="100"></div>
-                </div>
-                {% endif %}
+                {% set rep_number %}<span class="rep-count {{ v.rep_class }}" title="{{ v.rep_label }}">{{ v.true_score }}</span>{% endset %}
+                {# Translators: the member's reputation in the navbar, e.g. "1234 Rep" (Rep: the upvotes other people gave them) #}
+                <div class="text-small-extra text-purple"><i class="fas fa-diamond mr-1"></i>{{ _("%(score)s Rep", score=rep_number) }}</div>
               </div>
+              {{ throttle_meter(throttle_state, "nav") }}
             </div>
           </a>
-          <div class="dropdown-menu dropdown-menu-right dropdown-menu-lg-left border-0 shadow fade px-0 mt-2" id="accountDropdownMenu"
+          <div class="dropdown-menu dropdown-menu-right border-0 shadow fade px-0 mt-2 account-menu" id="accountDropdownMenu"
           aria-labelledby="dropdownMenuButton">
-          <div class="px-2">
-            <div class="dropdown-meta">
-              <div class="font-weight-bold mb-2">{{ v.username }}</div>
-              <div class="text-small text-purple"><i class="fas fa-diamond mr-1"></i><span class="rep-count {{ v.rep_class }}" title="{{ v.rep_label }}">{{ v.true_score }}</span> Rep</div>
-              {% if throttle_state.in_cooldown %}
-              <div class="progress mt-1" style="height:4px; border-radius:2px;" data-toggle="tooltip" data-placement="bottom" title="Cooldown: {{ '%d:%02d'|format(throttle_state.cooldown_remaining // 60, throttle_state.cooldown_remaining % 60) }} remaining">
-                <div class="progress-bar bg-danger" role="progressbar" aria-label="Posting cooldown" style="width: 100%;" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
-              </div>
-              {% else %}
-              <div class="progress mt-1" style="height:4px; border-radius:2px;" data-toggle="tooltip" data-placement="bottom" title="~{{ throttle_state.remaining_actions }} action{{ 's' if throttle_state.remaining_actions != 1 else '' }} left before a cooldown">
-                <div class="progress-bar bg-warning" role="progressbar" aria-label="Actions left before a cooldown" style="width: {{ throttle_state.boil_pct }}%;" aria-valuenow="{{ throttle_state.boil_pct }}" aria-valuemin="0" aria-valuemax="100"></div>
-              </div>
-              {% endif %}
-            </div>
-          </div>
-          <hr class="my-2">
-          <div class="px-2">
-            <a class="dropdown-item" href="{{ v.permalink }}"><i class="fas fa-user-circle fa-fw text-left mr-3"></i>My
-            profile</a>
-            <a class="dropdown-item" href="/submit"><i class="fas fa-feather-alt fa-fw text-left mr-3"></i>Create post</a>
-            <a class="dropdown-item" href="/history"><i class="fas fa-history fa-fw text-left mr-3"></i>History</a>
-            {% if v.notifications_count %}
-            <a class="dropdown-item" href="/notifications"><i class="fas fa-inbox fa-fw text-left mr-3"></i>Inbox<span
-              class="badge badge-danger rounded-circle align-top ml-1">{{ v.notifications_count }}</span></a>
-              {% else %}
-              <a class="dropdown-item" href="/notifications?all=true"><i class="fas fa-inbox fa-fw text-left mr-3"></i>Inbox</a>
-              {% endif %}
-              {% set chat_badge = (v.chat_unread_count + v.chat_requests_count) %}
-              {% if chat_badge %}
-              <a class="dropdown-item" href="/chat"><i class="fas fa-comment-dots fa-fw text-left mr-3"></i>Chat<span
-                class="badge badge-danger rounded-circle align-top ml-1">{{ chat_badge }}</span></a>
-              {% else %}
-              <a class="dropdown-item" href="/chat"><i class="fas fa-comment-dots fa-fw text-left mr-3"></i>Chat</a>
-              {% endif %}
-            <a class="dropdown-item" href="/spaces"><i class="fas fa-microphone-lines fa-fw text-left mr-3"></i>Spaces</a>
-              <a class="dropdown-item" href="/studio"><i class="fas fa-chart-pie fa-fw text-left mr-3"></i>Creator Studio</a>
-              <a class="dropdown-item" href="/circles"><i class="fas fa-circle-notch fa-fw text-left mr-3"></i>Circles</a>
-              <a class="dropdown-item" href="/settings"><i class="fas fa-cog fa-fw text-left mr-3"></i>Settings</a>
-
-              {% block darkswitch %}
-              {% if v and v.can_use_darkmode and theme_choice() == "dark" %}
-              <a class="dropdown-item" href="javascript:void(0)" onclick="switch_css()"><i class="fas fa-toggle-on fa-fw text-left mr-3" id="dark-switch"></i>Dark mode</a>
-              {% elif v and v.can_use_darkmode %}
-              <a class="dropdown-item" href="javascript:void(0)" onclick="switch_css()"><i class="fas fa-toggle-off fa-fw text-left mr-3" id="dark-switch"></i>Dark mode</a>
-              {% endif %}
-              {% endblock %}
-            </div>
-            <hr class="my-2">
-            <div class="px-2">
-              <a class="dropdown-item" href="javascript:void(0)" data-logout onclick="try{localStorage.removeItem('uqqus_chat_prekey')}catch(e){};post('/logout', callback=function(){window.location.reload(true)})"><i class="fas fa-sign-out fa-fw text-left mr-3"></i>Log out</a>
-            </div>
+          {% include "partials/account_menu.html" %}
           </div>
         </div>
       </li>
       {% else %}
       <li class="nav-item d-flex align-items-center justify-content-center text-center mx-1">
-        <a class="nav-link" href="/random" aria-label="Random guild, post or comment" data-toggle="tooltip" data-placement="bottom" data-delay='{"show":"700", "hide":"0"}' title="Random guild, post or comment"><i class="fas fa-random"></i></a>
+        <a class="nav-link" href="/random" aria-label="{{ _('Random guild, post or comment') }}" data-toggle="tooltip" data-placement="bottom" data-delay='{"show":"700", "hide":"0"}' title="{{ _('Random guild, post or comment') }}"><i class="fas fa-random"></i></a>
       </li>
       <li class="nav-item d-flex align-items-center justify-content-center mx-1">
-       <a class="btn btn-outline-purple" href="/login?redirect={{ request.path | urlencode}}">Sign In</a>
+       <a class="btn btn-outline-purple" href="/login?redirect={{ request.path | urlencode}}">{{ _("Sign In") }}</a>
      </li>
      <li class="nav-item d-flex align-items-center justify-content-center mx-1">
-       <a class="btn btn-purple" href="/signup?redirect={{ request.path | urlencode}}">Sign Up</a>
+       <a class="btn btn-purple" href="/signup?redirect={{ request.path | urlencode}}">{{ _("Sign Up") }}</a>
      </li>
      {% endif %}
    </ul>
@@ -423,9 +364,9 @@
    <ul class="navbar-nav ml-auto d-flex d-md-none mt-3">
      <li class="nav-item pb-3">
       <form class="form-inline search flex-nowrap mx-0 mx-lg-auto" action="{% if b %}/+{{ b.name }}{% endif %}/search" method="get">
-        <input class="form-control form-control-sm w-100" type="search" placeholder="Search posts{% if b %} in +{{ b.name }}{% else %}, +guilds, @users, #topics, &curations{% endif %}" aria-label="Search posts{% if b %} in +{{ b.name }}{% else %}, +guilds, @users, #topics, &curations{% endif %}" name="q" value="{{ request.args.get('q', '') }}">
+        <input class="form-control form-control-sm w-100" type="search" placeholder="{% if b %}{{ _('Search posts in +%(guild)s', guild=b.name) }}{% else %}{{ _('Search posts, +guilds, @users, #topics, &curations') }}{% endif %}" aria-label="{% if b %}{{ _('Search posts in +%(guild)s', guild=b.name) }}{% else %}{{ _('Search posts, +guilds, @users, #topics, &curations') }}{% endif %}" name="q" value="{{ request.args.get('q', '') }}">{% if search_kept_type() %}<input type="hidden" name="type" value="{{ search_kept_type() }}">{% endif %}
         <span class="input-group-append">
-          <span class="input-group-text border-0 bg-transparent" style="margin-left: -2.5rem;">
+          <span class="input-group-text border-0 bg-transparent" style="margin-inline-start: -2.5rem;">
             <i class="fa fa-search" aria-hidden="true"></i>
           </span>
         </span>
@@ -436,78 +377,78 @@
       <a class="nav-link" href="{{ v.permalink }}"><i class="fas fa-user-circle fa-fw mr-3"></i>@{{ v.username }}</a>
     </li>
     <li class="nav-item">
-      <a class="nav-link" href="/history"><i class="fas fa-history fa-fw mr-3"></i>History</a>
+      <a class="nav-link" href="/history"><i class="fas fa-history fa-fw mr-3"></i>{{ _("History") }}</a>
     </li>
     <li class="nav-item">
       <a class="nav-link {% if v.notifications_count %}position-relative{% endif %}" href="/notifications{% if not v.notifications_count %}?all=true{% endif %}">
-        <i class="fas fa-envelope fa-fw mr-3"></i>Inbox
+        <i class="fas fa-envelope fa-fw mr-3"></i>{{ _("Inbox") }}
         {% if v.notifications_count %}
-        <i class="fas fa-circle text-danger position-absolute" style="left: 19px; top: 5px; font-size: 10px;"></i>
+        <i class="fas fa-circle text-danger position-absolute" style="inset-inline-start: 19px; top: 5px; font-size: 10px;"></i>
         {% endif %}
       </a>
     </li>
     <li class="nav-item">
       <a class="nav-link {% if (v.chat_unread_count + v.chat_requests_count) %}position-relative{% endif %}" href="/chat">
-        <i class="fas fa-comment-dots fa-fw mr-3"></i>Chat
+        <i class="fas fa-comment-dots fa-fw mr-3"></i>{{ _("Chat") }}
         {% if (v.chat_unread_count + v.chat_requests_count) %}
-        <i class="fas fa-circle text-danger position-absolute" style="left: 19px; top: 5px; font-size: 10px;"></i>
+        <i class="fas fa-circle text-danger position-absolute" style="inset-inline-start: 19px; top: 5px; font-size: 10px;"></i>
         {% endif %}
       </a>
     </li>
     <li class="nav-item">
-      <a class="nav-link" href="/spaces"><i class="fas fa-microphone-lines fa-fw mr-3"></i>Spaces</a>
+      <a class="nav-link" href="/spaces"><i class="fas fa-microphone-lines fa-fw mr-3"></i>{{ _("Spaces") }}</a>
     </li>
     <li class="nav-item">
-      <a class="nav-link" href="/submit"><i class="fas fa-feather-alt fa-fw mr-3"></i>Create post</a>
+      <a class="nav-link" href="/submit"><i class="fas fa-feather-alt fa-fw mr-3"></i>{{ _("Create post") }}</a>
     </li>
     <li class="nav-item">
-      <a class="nav-link" href="/circles"><i class="fas fa-circle-notch fa-fw mr-3"></i>Circles</a>
+      <a class="nav-link" href="/circles"><i class="fas fa-circle-notch fa-fw mr-3"></i>{{ _("Circles") }}</a>
     </li>
     <li class="nav-item">
-      <a class="nav-link" href="/settings"><i class="fas fa-cog fa-fw mr-3"></i>My account</a>
+      <a class="nav-link" href="/settings"><i class="fas fa-cog fa-fw mr-3"></i>{{ _("My account") }}</a>
     </li>
     {% if v.can_make_guild %}
     <li class="nav-item">
-      <a class="nav-link" href="/create_guild"><i class="fas fa-chess-rook fa-fw mr-3"></i>Create Guild</a>
+      <a class="nav-link" href="/create_guild"><i class="fas fa-chess-rook fa-fw mr-3"></i>{{ _("Create Guild") }}</a>
     </li>
     {% endif %}
     {% endif %}
     {% if v %}
     {% block darkswitchMobile %}
     {% if theme_choice() == "dark" %}
-    <li class="nav-item"><a class="nav-link" href="javascript:void(0)" onclick="switch_css()"><i class="fas fa-toggle-on fa-fw mr-3" id="dark-switch-mobile"></i>Dark mode</a></li>
+    <li class="nav-item"><a class="nav-link" href="javascript:void(0)" onclick="switch_css()"><i class="fas fa-toggle-on fa-fw mr-3" id="dark-switch-mobile"></i>{{ _("Dark mode") }}</a></li>
     {% else %}
-    <li class="nav-item"><a class="nav-link" href="javascript:void(0)" onclick="switch_css()"><i class="fas fa-toggle-off fa-fw mr-3" id="dark-switch-mobile"></i>Dark mode</a></li>
+    <li class="nav-item"><a class="nav-link" href="javascript:void(0)" onclick="switch_css()"><i class="fas fa-toggle-off fa-fw mr-3" id="dark-switch-mobile"></i>{{ _("Dark mode") }}</a></li>
     {% endif %}
     {% endblock %}
     {% endif %}
 
     {% if v %}
     <li class="nav-item border-top mt-2 pt-2">
-      <a class="nav-link" href="javascript:void(0)" data-logout onclick="try{localStorage.removeItem('uqqus_chat_prekey')}catch(e){};post('/logout', callback=function(){window.location.reload(true)})"><i class="fas fa-sign-out fa-fw mr-3 text-danger"></i>Log out</a>
+      <a class="nav-link" href="javascript:void(0)" data-logout onclick="try{localStorage.removeItem('uqqus_chat_prekey')}catch(e){};post('/logout', callback=function(){window.location.reload(true)})"><i class="fas fa-sign-out fa-fw mr-3 text-danger"></i>{{ _("Log out") }}</a>
     </li>
     {% else %}
     <li class="nav-item d-flex align-items-center justify-content-center pb-3">
-      <a class="btn btn-outline-purple btn-block" href="/login?redirect={{ request.path | urlencode}}">Sign in</a>
+      <a class="btn btn-outline-purple btn-block" href="/login?redirect={{ request.path | urlencode}}">{{ _("Sign in") }}</a>
     </li>
     <li class="nav-item d-flex align-items-center justify-content-center">
-      <a class="btn btn-purple btn-block" href="/signup?redirect={{ request.path | urlencode}}">Sign up</a>
+      <a class="btn btn-purple btn-block" href="/signup?redirect={{ request.path | urlencode}}">{{ _("Sign up") }}</a>
     </li>
     {% endif %}
     <li class="nav-item border-top mt-2 pt-2">
-      <a class="nav-link text-small-extra" href="/help/about">About</a>
+      <a class="nav-link text-small-extra" href="/help/about">{{ _("About") }}</a>
     </li>
     <li class="nav-item">
-      <a class="nav-link text-small-extra" href="/help/terms">Terms</a>
+      <a class="nav-link text-small-extra" href="/help/terms">{{ _("Terms") }}</a>
     </li>
     <li class="nav-item">
-      <a class="nav-link text-small-extra" href="/help/privacy">Privacy</a>
+      <a class="nav-link text-small-extra" href="/help/privacy">{{ _("Privacy") }}</a>
     </li>
     <li class="nav-item">
-      <a class="nav-link text-small-extra" href="/help/contact">Contact</a>
+      <a class="nav-link text-small-extra" href="/help/contact">{{ _("Contact") }}</a>
     </li>
     <li class="nav-item">
-      <a class="nav-link text-small-extra" href="/log/deleted">Deletion log</a>
+      <a class="nav-link text-small-extra" href="/log/deleted">{{ _("Deletion log") }}</a>
     </li>
     <li class="nav-item">
       <a class="nav-link text-small-extra" href="https://github.com/ruqqus/ruqqus">GitHub</a>
@@ -539,7 +480,9 @@
    still arriving, so the feed does not jump sideways when it does); printed in its place below #}
 {% set right_sidebar = self.sidebar() %}
 <div class="container-fluid">
-  <div class="row justify-content-around{% if right_sidebar | trim %} expects-right-sidebar{% endif %}" id="main-content-row">
+  {# a page with no right sidebar can take its room too: {% block main_row_class %} wide-main{% endblock %} (_screens.scss),
+     as History and the Creator Studio do; Explore, Spaces and Circles widen through their own page ids #}
+  <div class="row justify-content-around{% if right_sidebar | trim %} expects-right-sidebar{% endif %}{% block main_row_class %}{% endblock %}" id="main-content-row">
 
     {% block leftSidebar %}
     {% block leftSidebarBlock %}
@@ -547,6 +490,8 @@
     {% endblock %}
 
     <div class="col h-100 bg-white {% block customPadding %}custom-gutters{% endblock %}" id="main-content-col">
+
+      {% if v and v.is_quarantined and not request.args.get('embed') %}{% include "partials/held_notice.html" %}{% endif %}
 
       {% block desktopUserBanner %}
       {% endblock %}
@@ -601,11 +546,11 @@
 
     {% if v and not request.args.get('embed') %}
     <!-- Notifications and chat open here on a wide screen, in the right sidebar's place (assets/js/side_panels.js) -->
-    <aside id="side-panel" class="side-panel" aria-label="Side panel" hidden>
+    <aside id="side-panel" class="side-panel" aria-label="{{ _('Side panel') }}" hidden>
       <div class="side-panel-head d-flex align-items-center">
         <div id="side-panel-title" class="font-weight-bold flex-grow-1"></div>
-        <a id="side-panel-full" href="#" class="btn btn-link btn-sm text-muted" target="_top">Open page</a>
-        <button type="button" id="side-panel-close" class="btn btn-link btn-sm text-muted" aria-label="Close panel"><i class="fas fa-times"></i></button>
+        <a id="side-panel-full" href="#" class="btn btn-link btn-sm text-muted" target="_top">{{ _("Open page") }}</a>
+        <button type="button" id="side-panel-close" class="btn btn-link btn-sm text-muted" aria-label="{{ _('Close panel') }}"><i class="fas fa-times"></i></button>
       </div>
       <div id="side-panel-body" class="side-panel-body"></div>
     </aside>
@@ -639,13 +584,13 @@
 
 <div class="toast clipboard" id="toast-success" role="alert" aria-live="assertive" aria-atomic="true" data-animation="true" data-autohide="true" data-delay="5000">
 	<div class="toast-body text-center">
-		<i class="fas fa-check-circle text-success mr-2"></i>Link copied to clipboard
+		<i class="fas fa-check-circle text-success mr-2"></i>{{ _("Link copied to clipboard") }}
 	</div>
 </div>
 
 <div class="toast clipboard" id="toast-error" role="alert" aria-live="assertive" aria-atomic="true" data-animation="true" data-autohide="true" data-delay="5000">
 	<div class="toast-body text-center">
-		<i class="fas fa-exclamation-circle text-danger mr-2"></i>Unable to copy link
+		<i class="fas fa-exclamation-circle text-danger mr-2"></i>{{ _("Unable to copy link") }}
 	</div>
 </div>
 
@@ -684,6 +629,7 @@
 
 {% include "bootstrap.html" %}
 
+{% if v and not request.args.get('embed') %}{% include "partials/site_feedback_modal.html" %}{% endif %}
 {% if v and not request.args.get('embed') %}{% include "partials/share_chat_modal.html" %}{% include "partials/coauthors_modal.html" %}{% include "partials/audience_modal.html" %}{% include "partials/comment_permission_modal.html" %}{% endif %}
 {% if v and organise_bookmarks and not request.args.get('embed') %}{% include "partials/bookmark_folder_modal.html" %}{% endif %}
 {% if v and not request.args.get('embed') %}{% include "partials/curation_picker_modal.html" %}{% endif %}
@@ -691,11 +637,15 @@
 {% if v and composer_drafts %}{% include "partials/drafts_ui.html" %}{% endif %}
 {% if v and story_ui and not request.args.get('embed') %}{% include "partials/story_sheets.html" %}{% endif %}
 
+<script src="{{ asset_url('js/text_length.js') }}"></script>{# weighted lengths for the counters (helpers/text_length.py) #}
 <script src="{{ asset_url('js/all_js.js') }}" importance="high" ></script>
 <script src="{{ asset_url('js/feed_video_autoplay.js') }}"></script>
 {% if v %}<script src="{{ asset_url('js/guild_flair.js') }}"></script>{% endif %}
+{% if v %}<script src="{{ asset_url('js/translate.js') }}"></script>{% endif %}{# the Translate button (partials/translate_button.html) #}
 <script src="{{ asset_url('js/infinite_scroll.js') }}"></script>
 <script src="{{ asset_url('js/trending.js') }}"></script>
+<script src="{{ asset_url('js/time_phrases.js') }}"></script>
+<script src="{{ asset_url('js/happening.js') }}"></script>
 {% if v and not request.args.get('embed') %}<script src="{{ asset_url('js/side_panels.js') }}"></script>{% endif %}
 {% if not request.args.get('embed') %}<script src="{{ asset_url('js/nav_align.js') }}"></script>{% endif %}
 {% if request.args.get('embed') %}<script src="{{ asset_url('js/embedded.js') }}"></script>{% endif %}
@@ -712,6 +662,7 @@
 {% if v %}<script src="{{ asset_url('js/space_composer.js') }}"></script>{% endif %}
 {% if v %}<script src="{{ asset_url('js/voters.js') }}"></script>{% endif %}
 {% if v %}<script src="{{ asset_url('js/post_feedback.js') }}"></script>{% endif %}
+{% if v and not request.args.get('embed') %}<script src="{{ asset_url('js/site_feedback.js') }}"></script>{% endif %}{# "Send feedback" (partials/site_feedback_modal.html) #}
 {# the feed composer: toolbar, drafts, pill and poll button (they return early without their elements) #}
 {% if v %}<script src="{{ asset_url('js/post_editor.js') }}"></script>
 <script src="{{ asset_url('js/post_drafts.js') }}"></script>
@@ -776,7 +727,7 @@
 {% if request.path=='/' and g.system and g.timestamp>session.get('tooltip_last_dismissed',0)+60*60*24 and (not g.system.endswith('/chrome') and not g.system.endswith('/other')) and not g.system.endswith('/webview') %}
 
 <div id="mobile-prompt-container" class="fixed-bottom">
-  <div id="mobile-prompt" href="javascript:void(0)" data-toggle="tooltip" data-container="#mobile-prompt-container" data-placement="top" data-trigger="click" title="Install the {{ "SITE_NAME" | app_config }} webapp by saving this page to your home screen!"></div>
+  <div id="mobile-prompt" href="javascript:void(0)" data-toggle="tooltip" data-container="#mobile-prompt-container" data-placement="top" data-trigger="click" title="{{ _('Install the %(site)s webapp by saving this page to your home screen!') }}"></div>
 </div>
 {% endif %}
 

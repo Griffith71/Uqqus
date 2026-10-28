@@ -19,10 +19,11 @@
   {% if live_space %}
   <a class="profile-live-banner" href="/space/{{ live_space.id }}">
     <span class="space-live-dot" aria-hidden="true"></span>
-    <strong>Live now</strong>
+    <strong>{{ _("Live now") }}</strong>
     <span class="profile-live-title">{{ live_space.title }}</span>
-    <span class="profile-live-people">{{ live_space.people }} in it</span>
-    <span class="btn btn-primary btn-sm">Join</span>
+    {# Translators: how many people are in a live Space right now #}
+    <span class="profile-live-people">{{ ngettext("%(num)s in it", "%(num)s in it", live_space.people) }}</span>
+    <span class="btn btn-primary btn-sm">{{ pgettext("button", "Join") }}</span>
   </a>
   {% endif %}
 
@@ -30,101 +31,105 @@
     {% if u.has_banner %}<img src="{{ u.banner_url }}" alt="" class="profile-x-banner-img">{% endif %}
   </div>
 
+  {# the avatar alone: it overlaps the banner's lower part, and the actions sit on the name's line below
+     (_screens.scss "Profile header") #}
   <div class="profile-x-top">
     <div class="profile-x-avatar">{{ story_avatar(u, v, "profile-x-avatar-img") }}</div>
-
-    <div class="profile-x-actions">
-      <div class="dropdown">
-        <button type="button" class="btn profile-x-icon" id="profile-x-more" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" aria-label="More">
-          <i class="fas fa-ellipsis-h"></i>
-        </button>
-        <div class="dropdown-menu dropdown-menu-right border-0 shadow profile-x-menu" aria-labelledby="profile-x-more">
-          <a class="dropdown-item" href="#" data-profile-copy="{{ u.permalink }}"><i class="fas fa-link fa-fw"></i>Copy link to profile</a>
-          {% if own %}
-          <a class="dropdown-item" href="/settings/profile"><i class="fas fa-pen fa-fw"></i>Edit profile</a>
-          <a class="dropdown-item" href="/settings/profile#lists"><i class="fas fa-user-lock fa-fw"></i>Who can see your lists</a>
-          <a class="dropdown-item" href="/circles"><i class="fas fa-circle-notch fa-fw"></i>Your circles</a>
-          <a class="dropdown-item" href="/@{{ u.username }}/channels"><i class="fas fa-tower-broadcast fa-fw"></i>Your channels</a>
-          {% elif v %}
-          <a class="dropdown-item" href="#" data-curation-user="{{ u.username }}"><i class="fas fa-layer-group fa-fw"></i>Add to curation</a>
-          {% if st %}{# your own circles only; nobody is told they are in one (partials/circle_member_modal.html) #}
-          <a class="dropdown-item" href="#" data-circle-member="{{ u.username }}"><i class="fas fa-circle-notch fa-fw"></i>Add to circles</a>
-          {% endif %}
-          {% if not u.is_bot %}{# their broadcast channels you may join (routes/broadcasts.py) #}
-          <a class="dropdown-item" href="/@{{ u.username }}/channels"><i class="fas fa-tower-broadcast fa-fw"></i>Channels</a>
-          {% endif %}
-          <div class="dropdown-divider"></div>
-          {% if u.id != 1 %}{# the site's own account can't be muted or blocked (routes/muting.py, settings_block_user) #}
-          <a class="dropdown-item{% if has_muted(u, v) %} d-none{% endif %}" id="mute-profile" href="#" onclick="post_toast('/settings/mute?username={{ u.username }}', function(){document.getElementById('mute-profile').classList.toggle('d-none');document.getElementById('unmute-profile').classList.toggle('d-none');}); return false;"><i class="fas fa-volume-mute fa-fw"></i>Mute @{{ u.username }}</a>
-          <a class="dropdown-item{% if not has_muted(u, v) %} d-none{% endif %}" id="unmute-profile" href="#" onclick="post_toast('/settings/unmute?username={{ u.username }}', function(){document.getElementById('mute-profile').classList.toggle('d-none');document.getElementById('unmute-profile').classList.toggle('d-none');}); return false;"><i class="fas fa-volume-up fa-fw"></i>Unmute @{{ u.username }}</a>
-          <a class="dropdown-item" href="#" data-profile-block="{{ u.username }}"><i class="fas fa-ban fa-fw"></i>Block @{{ u.username }}</a>
-          {% endif %}
-          <a class="dropdown-item text-danger" href="#" data-profile-report="{{ u.username }}"><i class="fas fa-flag fa-fw"></i>Report @{{ u.username }}</a>
-          {% endif %}
-        </div>
-      </div>
-
-      {% if own %}
-      <a href="/settings/profile" class="btn profile-x-outline profile-x-pill">Edit profile</a>
-      {% elif v %}
-      {% if not u.is_bot %}{# nobody reads a bot's chats (helpers/bots.py) #}
-      <form method="POST" action="/api/chat/start" class="d-inline">
-        <input type="hidden" name="username" value="{{ u.username }}">
-        <input type="hidden" name="formkey" value="{{ v.formkey }}">
-        <button type="submit" class="btn profile-x-icon" aria-label="Message @{{ u.username }}" title="Message"><i class="far fa-envelope"></i></button>
-      </form>
-      {% endif %}
-      {% if st and st.paid %}{# paid circles only: what a custom circle holds is never shown to the people in it. The
-         button opens the subscribe sheet (partials/circle_subscribe_modal.html), which has the price, what the owner
-         says subscribers get, the terms and Subscribe / Cancel #}
-        {% if st.joinable %}
-        {% set c = st.joinable[0] %}
-        <button type="button" class="btn btn-outline-primary profile-x-pill circle-join" data-circle-open="{{ c.id }}" aria-haspopup="dialog">
-          {% if st.joinable | length == 1 %}{% if c.cancelled %}Resume{% else %}Subscribe{% endif %}<span class="profile-x-price">&nbsp;· {{ c.price }} coin{{ '' if c.price == 1 else 's' }}/mo</span>{% else %}Subscribe{% endif %}</button>
-        {% elif st.subscribed %}
-        <button type="button" class="btn profile-x-outline profile-x-pill circle-badge" data-circle-open="{{ st.paid[0].id }}" aria-haspopup="dialog">Subscribed</button>
-        {% endif %}
-      {% endif %}
-      {% if can_follow %}
-      <div id="button-sub" class="profile-x-follow{% if is_following %} d-none{% endif %}">
-        <button type="button" class="btn btn-primary profile-x-pill" onclick="post('/api/follow/{{ u.username }}', callback=toggleSub)">Follow</button>
-      </div>
-      <div id="button-unsub" class="profile-x-follow{% if not is_following %} d-none{% endif %}">
-        <button type="button" class="btn profile-x-icon bell-button" data-toggle="tooltip" data-placement="bottom" title="Notify me about everything @{{ u.username }} does: posts, forwards, reposts, Spaces and stories" data-url="/@{{ u.username }}/toggle_bell" aria-label="Notify me about everything @{{ u.username }} does">
-          <i class="fas fa-fw bell-icon {% if u.is_following and u.is_following.get_notifs %}fa-bell text-purple{% else %}fa-bell-slash{% endif %}"></i>
-        </button>
-        <button type="button" class="btn profile-x-outline profile-x-pill profile-x-following" onclick="post('/api/unfollow/{{ u.username }}', callback=toggleSub)">
-          <span class="profile-x-following-label">Following</span><span class="profile-x-unfollow-label">Unfollow</span>
-        </button>
-      </div>
-      {% endif %}
-      {% else %}
-      {% if lists.circle_price > 0 %}<a href="/login?redirect={{ u.permalink | urlencode }}" class="btn btn-outline-primary profile-x-pill">Subscribe</a>{% endif %}
-      {% if not u.is_private and not u.is_nofollow %}<a href="/login?redirect={{ u.permalink | urlencode }}" class="btn btn-primary profile-x-pill">Follow</a>{% endif %}
-      {% endif %}
-    </div>
   </div>
 
   <div class="profile-x-body">
-    <div class="profile-x-names">
-      <h1 class="profile-x-name" id="profile-x-name">{{ u.shown_name }}
-        {% if u.admin_level > 1 %}<i class="fas fa-shield text-admin" data-toggle="tooltip" data-placement="bottom" title="Admin"></i>
-        {% elif u.admin_level == 1 %}<i class="fas fa-shield text-muted" data-toggle="tooltip" data-placement="bottom" title="Former Admin"></i>{% endif %}
-        {% if u.username != u.original_username %}<i class="fas fa-user-tag text-info" data-toggle="tooltip" data-placement="bottom" title="Original username: @{{ u.original_username }}"></i>{% endif %}
-        {% if u.is_bot %}<i class="fas fa-robot text-info" data-toggle="tooltip" data-placement="bottom" title="Automated account" aria-label="Automated account"></i>{% endif %}
-      </h1>
-      <div class="profile-x-handle">@{{ u.username }}
-        {% if v and not own and v.has_follower(u) and not v.is_nofollow %}<span class="profile-x-chip">Follows you</span>{% endif %}
-        {% if u.is_sensitive %}<span class="profile-x-chip profile-x-sensitive" data-toggle="tooltip" data-placement="bottom" title="This account posts about sensitive topics">Sensitive content</span>{% endif %}
-        {% if u.is_bot %}{% set bot_owner = u.bot_owner %}
-        {# a site bot is the site's own (nobody's); a member bot names the member who runs it (helpers/bots.py) #}
-        <span class="profile-x-chip profile-x-bot">Automated{% if u.bot_kind == 'site' %} by {{ 'SITE_NAME' | app_config }}{% elif bot_owner and not bot_owner.is_deleted %} by <a href="{{ bot_owner.permalink }}">@{{ bot_owner.username }}</a>{% endif %}</span>
-        {% if u.bot_status != "approved" and v and u.bot_row and (v.admin_level >= 3 or v.id in (u.bot_row.owner_id, u.bot_row.proposed_by_id)) %}<span class="profile-x-chip">{{ {"pending": "Waiting for approval", "paused": "Paused", "rejected": "Rejected"}.get(u.bot_status, "") }}</span>{% endif %}
+    <div class="profile-x-headline">
+      <div class="profile-x-names">
+        <h1 class="profile-x-name" id="profile-x-name">{{ u.shown_name }}
+          {% if u.admin_level > 1 %}<i class="fas fa-shield text-admin" data-toggle="tooltip" data-placement="bottom" title="{{ _('Admin') }}"></i>
+          {% elif u.admin_level == 1 %}<i class="fas fa-shield text-muted" data-toggle="tooltip" data-placement="bottom" title="{{ _('Former Admin') }}"></i>{% endif %}
+          {% if u.username != u.original_username %}<i class="fas fa-user-tag text-info" data-toggle="tooltip" data-placement="bottom" title="{{ _('Original username: @%(name)s', name=u.original_username) }}"></i>{% endif %}
+          {% if u.is_bot %}<i class="fas fa-robot text-info" data-toggle="tooltip" data-placement="bottom" title="{{ _('Automated account') }}" aria-label="{{ _('Automated account') }}"></i>{% endif %}
+        </h1>
+        <div class="profile-x-handle">@{{ u.username }}
+          {% if v and not own and v.has_follower(u) and not v.is_nofollow %}<span class="profile-x-chip">{{ _("Follows you") }}</span>{% endif %}
+          {% if u.is_sensitive %}<span class="profile-x-chip profile-x-sensitive" data-toggle="tooltip" data-placement="bottom" title="{{ _('This account posts about sensitive topics') }}">{{ _("Sensitive content") }}</span>{% endif %}
+          {% if u.is_bot %}{% set bot_owner = u.bot_owner %}
+          {# a site bot is the site's own (nobody's); a member bot names the member who runs it (helpers/bots.py) #}
+          <span class="profile-x-chip profile-x-bot">{% if u.bot_kind == 'site' %}{{ _("Automated by %(site)s") }}{% elif bot_owner and not bot_owner.is_deleted %}{% set bot_owner_link %}<a href="{{ bot_owner.permalink }}">@{{ bot_owner.username }}</a>{% endset %}{{ _("Automated by %(owner)s", owner=bot_owner_link) }}{% else %}{{ _("Automated") }}{% endif %}</span>
+          {% if u.bot_status != "approved" and v and u.bot_row and (v.admin_level >= 3 or v.id in (u.bot_row.owner_id, u.bot_row.proposed_by_id)) %}<span class="profile-x-chip">{{ {"pending": _("Waiting for approval"), "paused": pgettext("bot status", "Paused"), "rejected": pgettext("bot status", "Rejected")}.get(u.bot_status, "") }}</span>{% endif %}
+          {% endif %}
+          {# a person's own account that also posts from feeds by itself (helpers/bots.py SELF): their posts from feeds
+             carry the robot mark; the account is theirs and used as always #}
+          {% if not u.is_bot and automates(u) %}<a href="/help/bots#own-account" class="profile-x-chip profile-x-bot" id="profile-automates"><i class="fas fa-robot fa-fw mr-1" aria-hidden="true"></i>{{ _("Some posts are automated") }}</a>{% endif %}
+          {% if u.real_id %}<span class="badge badge-pill text-white badge-info ml-1">{{ u.real_id }}</span>{% endif %}
+        </div>
+      </div>
+
+      <div class="profile-x-actions">
+        <div class="dropdown">
+          <button type="button" class="btn profile-x-icon" id="profile-x-more" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" aria-label="{{ _('More') }}">
+            <i class="fas fa-ellipsis-h"></i>
+          </button>
+          <div class="dropdown-menu dropdown-menu-right border-0 shadow profile-x-menu" aria-labelledby="profile-x-more">
+            <a class="dropdown-item" href="#" data-profile-copy="{{ u.permalink }}"><i class="fas fa-link fa-fw"></i>{{ _("Copy link to profile") }}</a>
+            {% if own %}
+            <a class="dropdown-item" href="/settings/profile"><i class="fas fa-pen fa-fw"></i>{{ _("Edit profile") }}</a>
+            <a class="dropdown-item" href="/settings/profile#lists"><i class="fas fa-user-lock fa-fw"></i>{{ _("Who can see your lists") }}</a>
+            <a class="dropdown-item" href="/circles"><i class="fas fa-circle-notch fa-fw"></i>{{ _("Your circles") }}</a>
+            <a class="dropdown-item" href="/@{{ u.username }}/channels"><i class="fas fa-tower-broadcast fa-fw"></i>{{ _("Your channels") }}</a>
+            {% elif v %}
+            <a class="dropdown-item" href="#" data-curation-user="{{ u.username }}"><i class="fas fa-layer-group fa-fw"></i>{{ _("Add to curation") }}</a>
+            {% if st %}{# your own circles only; nobody is told they are in one (partials/circle_member_modal.html) #}
+            <a class="dropdown-item" href="#" data-circle-member="{{ u.username }}"><i class="fas fa-circle-notch fa-fw"></i>{{ _("Add to circles") }}</a>
+            {% endif %}
+            {% if not u.is_bot %}{# their broadcast channels you may join (routes/broadcasts.py) #}
+            <a class="dropdown-item" href="/@{{ u.username }}/channels"><i class="fas fa-tower-broadcast fa-fw"></i>{{ _("Channels") }}</a>
+            {% endif %}
+            <div class="dropdown-divider"></div>
+            {% if u.id != 1 %}{# the site's own account can't be muted or blocked (routes/muting.py, settings_block_user) #}
+            <a class="dropdown-item{% if has_muted(u, v) %} d-none{% endif %}" id="mute-profile" href="#" onclick="post_toast('/settings/mute?username={{ u.username }}', function(){document.getElementById('mute-profile').classList.toggle('d-none');document.getElementById('unmute-profile').classList.toggle('d-none');}); return false;"><i class="fas fa-volume-mute fa-fw"></i>{{ _("Mute @%(name)s", name=u.username) }}</a>
+            <a class="dropdown-item{% if not has_muted(u, v) %} d-none{% endif %}" id="unmute-profile" href="#" onclick="post_toast('/settings/unmute?username={{ u.username }}', function(){document.getElementById('mute-profile').classList.toggle('d-none');document.getElementById('unmute-profile').classList.toggle('d-none');}); return false;"><i class="fas fa-volume-up fa-fw"></i>{{ _("Unmute @%(name)s", name=u.username) }}</a>
+            <a class="dropdown-item" href="#" data-profile-block="{{ u.username }}"><i class="fas fa-ban fa-fw"></i>{{ _("Block @%(name)s", name=u.username) }}</a>
+            {% endif %}
+            <a class="dropdown-item text-danger" href="#" data-profile-report="{{ u.username }}"><i class="fas fa-flag fa-fw"></i>{{ _("Report @%(name)s", name=u.username) }}</a>
+            {% endif %}
+          </div>
+        </div>
+
+        {% if own %}
+        <a href="/settings/profile" class="btn profile-x-outline profile-x-pill">{{ _("Edit profile") }}</a>
+        {% elif v %}
+        {% if not u.is_bot %}{# nobody reads a bot's chats (helpers/bots.py) #}
+        <form method="POST" action="/api/chat/start" class="d-inline">
+          <input type="hidden" name="username" value="{{ u.username }}">
+          <input type="hidden" name="formkey" value="{{ v.formkey }}">
+          <button type="submit" class="btn profile-x-icon" aria-label="{{ _('Message @%(name)s', name=u.username) }}" title="{{ pgettext('button', 'Message') }}"><i class="far fa-envelope"></i></button>
+        </form>
         {% endif %}
-        {# a person's own account that also posts from feeds by itself (helpers/bots.py SELF): their posts from feeds
-           carry the robot mark; the account is theirs and used as always #}
-        {% if not u.is_bot and automates(u) %}<a href="/help/bots#own-account" class="profile-x-chip profile-x-bot" id="profile-automates"><i class="fas fa-robot fa-fw mr-1" aria-hidden="true"></i>Some posts are automated</a>{% endif %}
-        {% if u.real_id %}<span class="badge badge-pill text-white badge-info ml-1">{{ u.real_id }}</span>{% endif %}
+        {% if st and st.paid %}{# paid circles only: what a custom circle holds is never shown to the people in it. The
+           button opens the subscribe sheet (partials/circle_subscribe_modal.html), which has the price, what the owner
+           says subscribers get, the terms and Subscribe / Cancel #}
+          {% if st.joinable %}
+          {% set c = st.joinable[0] %}
+          <button type="button" class="btn btn-outline-primary profile-x-pill circle-join" data-circle-open="{{ c.id }}" aria-haspopup="dialog">
+            {% if st.joinable | length == 1 %}{% if c.cancelled %}{{ ngettext('Resume<span class="profile-x-price">&nbsp;· %(num)s coin/mo</span>', 'Resume<span class="profile-x-price">&nbsp;· %(num)s coins/mo</span>', c.price) }}{% else %}{{ ngettext('Subscribe<span class="profile-x-price">&nbsp;· %(num)s coin/mo</span>', 'Subscribe<span class="profile-x-price">&nbsp;· %(num)s coins/mo</span>', c.price) }}{% endif %}{% else %}{{ pgettext("button", "Subscribe") }}{% endif %}</button>
+          {% elif st.subscribed %}
+          <button type="button" class="btn profile-x-outline profile-x-pill circle-badge" data-circle-open="{{ st.paid[0].id }}" aria-haspopup="dialog">{{ _("Subscribed") }}</button>
+          {% endif %}
+        {% endif %}
+        {% if can_follow %}
+        <div id="button-sub" class="profile-x-follow{% if is_following %} d-none{% endif %}">
+          <button type="button" class="btn btn-primary profile-x-pill" onclick="post('/api/follow/{{ u.username }}', callback=toggleSub)">{{ pgettext("button", "Follow") }}</button>
+        </div>
+        <div id="button-unsub" class="profile-x-follow{% if not is_following %} d-none{% endif %}">
+          <button type="button" class="btn profile-x-icon bell-button" data-toggle="tooltip" data-placement="bottom" title="{{ _('Notify me about everything @%(name)s does: posts, forwards, reposts, Spaces and stories', name=u.username) }}" data-url="/@{{ u.username }}/toggle_bell" aria-label="{{ _('Notify me about everything @%(name)s does', name=u.username) }}">
+            <i class="fas fa-fw bell-icon {% if u.is_following and u.is_following.get_notifs %}fa-bell text-purple{% else %}fa-bell-slash{% endif %}"></i>
+          </button>
+          <button type="button" class="btn profile-x-outline profile-x-pill profile-x-following" onclick="post('/api/unfollow/{{ u.username }}', callback=toggleSub)">
+            <span class="profile-x-following-label">{{ pgettext("status", "Following") }}</span><span class="profile-x-unfollow-label">{{ pgettext("button", "Unfollow") }}</span>
+          </button>
+        </div>
+        {% endif %}
+        {% else %}
+        {% if lists.circle_price > 0 %}<a href="/login?redirect={{ u.permalink | urlencode }}" class="btn btn-outline-primary profile-x-pill">{{ pgettext("button", "Subscribe") }}</a>{% endif %}
+        {% if not u.is_private and not u.is_nofollow %}<a href="/login?redirect={{ u.permalink | urlencode }}" class="btn btn-primary profile-x-pill">{{ pgettext("button", "Follow") }}</a>{% endif %}
+        {% endif %}
       </div>
     </div>
 
@@ -136,28 +141,32 @@
       {# the region is in the sidebar's About box from 992px; phones (no sidebar) get it here, on every account #}
       <li class="d-lg-none">
         {% if u.display_region %}
-        <button type="button" class="profile-x-region" data-toggle="modal" data-target="#aboutAccountModal" title="Where this account is based, from where it uses {{ 'SITE_NAME' | app_config }}">
-          <i class="fas fa-globe-americas fa-fw"></i>{{ u.display_region_name }}
-          {% if u.region_suspicion_flag %}<i class="fas fa-exclamation-triangle text-warning ml-1" aria-label="We can't confirm this account's region"></i>{% endif %}
+        <button type="button" class="profile-x-region" data-toggle="modal" data-target="#aboutAccountModal" title="{{ _('Where this account is based, from where it uses %(site)s') }}">
+          <i class="fas fa-globe-americas fa-fw"></i>{{ msg_text(u.display_region_name) }}
+          {% if u.region_suspicion_flag %}<i class="fas fa-exclamation-triangle text-warning ml-1" aria-label="{{ _("We can't confirm this account's region") }}"></i>{% endif %}
         </button>
         {% else %}
-        <i class="fas fa-globe-americas fa-fw"></i>Region not known yet
+        <i class="fas fa-globe-americas fa-fw"></i>{{ _("Region not known yet") }}
         {% endif %}
       </li>
       {% if details.website %}<li><i class="fas fa-link fa-fw"></i><a href="{{ details.website }}" rel="nofollow ugc noopener noreferrer" target="_blank">{{ details.website_label }}</a></li>{% endif %}
-      <li><i class="far fa-calendar-alt fa-fw"></i><span data-toggle="tooltip" data-placement="bottom" title="{{ u.created_datetime }}">Joined {{ u.joined_month }}</span></li>
+      <li><i class="far fa-calendar-alt fa-fw"></i><span data-toggle="tooltip" data-placement="bottom" title="{{ datetime_text(u.created_utc, '%d %B %Y at %H:%M:%S') }}">{{ _("Joined %(date)s", date=date_text(u.created_utc, "%B %Y", "LLLL y")) }}</span></li>
     </ul>
 
     <ul class="profile-x-counts">
-      {% for key, label in [("following", "Following"), ("followers", "Follower" if lists.followers.count == 1 else "Followers"), ("subscribers", "Subscriber" if lists.subscribers.count == 1 else "Subscribers")] %}
+      {% for key in ("following", "followers", "subscribers") %}
       {% if key != "subscribers" or lists.show_subscribers %}
+      {% set n = lists[key].count %}
+      {# Translators: a count on a profile, the number in bold; "Following" is the same word for one and many in English #}
+      {% set count_label = {"following": ngettext("<strong>%(num)s</strong> Following", "<strong>%(num)s</strong> Following", n), "followers": ngettext("<strong>%(num)s</strong> Follower", "<strong>%(num)s</strong> Followers", n), "subscribers": ngettext("<strong>%(num)s</strong> Subscriber", "<strong>%(num)s</strong> Subscribers", n)}[key] %}
       <li>
-        {% if lists[key].open %}<a href="{{ lists[key].url }}" class="profile-x-count"><strong>{{ lists[key].count }}</strong> {{ label }}</a>
-        {% else %}<span class="profile-x-count" title="@{{ u.username }} keeps this list private"><strong>{{ lists[key].count }}</strong> {{ label }}</span>{% endif %}
+        {% if lists[key].open %}<a href="{{ lists[key].url }}" class="profile-x-count">{{ count_label }}</a>
+        {% else %}<span class="profile-x-count" title="{{ _('@%(name)s keeps this list private', name=u.username) }}">{{ count_label }}</span>{% endif %}
       </li>
       {% endif %}
       {% endfor %}
-      <li><span class="profile-x-count"><strong class="rep-count {{ u.rep_class }}" title="{{ u.rep_label }}">{{ u.true_score }}</strong> Rep</span></li>
+      {% set rep_number %}<strong class="rep-count {{ u.rep_class }}" title="{{ u.rep_label }}">{{ u.true_score }}</strong>{% endset %}
+      <li><span class="profile-x-count">{{ _("%(score)s Rep", score=rep_number) }}</span></li>
     </ul>
   </div>
 

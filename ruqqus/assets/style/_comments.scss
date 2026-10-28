@@ -1,0 +1,348 @@
+// Comments (the owner's review, 2026-10-23): on the page itself like the posts, no box around each one; the comment
+// being pointed at is tinted (x.com); the line down the side is the gutter beside a comment's comments, ending at the
+// last of them. Imported at the end of both theme sheets, after _feed. Markup: templates/comments.html, where
+// `#comment-<id>-only.comment-main` is a comment's own parts (header to actions) and `#comments-of-<id>.comment-children`
+// holds what answers it, with the click strip (`.comment-collapse`) over its line and, at its end, the comments held
+// back behind "Show N more comments" (helpers/reply_fold.py).
+
+$gutter: 11px;          // the line sits under the middle of the 25px avatar (11px + half of its 2px)
+$indent: 16px;          // from the line to the comments beside it
+$indent-phone: 10px;
+
+// --- no box --------------------------------------------------------------------------------------------------------
+
+.comment-section {
+    background-color: transparent;
+}
+
+.comment {
+    display: block;
+    margin-top: var(--space-3);
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    background-color: transparent;
+}
+
+.comment:hover {
+    background-color: transparent;
+}
+
+.comment .comment-body {
+    width: 100%;
+}
+
+// a comment's own parts: the tint goes here, so pointing at a comment never tints what answers it
+.comment .comment-main {
+    margin: 0 calc(-1 * var(--space-3));
+    padding: var(--space-2) var(--space-3);
+    border-radius: var(--radius-md);
+    transition: background-color var(--dur-fast) var(--ease-out);
+}
+
+@media (hover: hover) and (pointer: fine) {
+    .comment .comment-main:hover {
+        background-color: var(--hover);
+    }
+}
+
+.comment .comment-body .user-info {
+    font-size: var(--text-sm);
+    color: var(--text-muted);
+    margin: 0 0 var(--space-1);
+}
+
+.comment .comment-body .user-name, .comment .comment-body .user-name-inner {
+    color: var(--text);
+    font-weight: var(--weight-semibold);
+}
+
+.comment .user-info .profile-pic-25 {
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+}
+
+.comment .comment-body .comment-text {
+    // contains its floats without clipping (overflow: hidden here stopped "Show less" staying pinned on screen)
+    overflow: visible;
+    display: flow-root;
+    overflow-wrap: anywhere;
+    font-size: var(--text-body);
+    line-height: var(--leading-body);
+    color: var(--text);
+    padding-left: calc(25px + var(--space-3));     // under the name, not under the avatar
+}
+
+.comment .comment-text p:last-child {
+    margin-bottom: 0;
+}
+
+// --- the line: the gutter beside a comment's comments -----------------------------------------------------------------
+
+.comment .comment-children {
+    position: relative;
+    margin-left: $gutter;
+    padding-left: $indent;
+    border-left: 2px solid var(--border-strong);
+    transition: border-color var(--dur-fast) var(--ease-out);
+}
+
+.comment .comment-children:empty, .comment .comment-children:not(:has(.comment, > .more-folded)) {
+    border-left-color: transparent;
+}
+
+// the click strip over the line: wider than the line so it is easy to hit, invisible itself
+.comment .comment-children > .comment-collapse {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: -9px;
+    width: 16px;
+    padding: 0;
+    cursor: pointer;
+    z-index: 1;
+}
+
+.comment .comment-children > .comment-collapse::before {
+    content: none;
+    border: 0;
+}
+
+.comment .comment-children:has(> .comment-collapse:hover) {
+    border-left-color: var(--brand);
+}
+
+@media (max-width: 767.98px) {
+    .comment .comment-children {
+        padding-left: $indent-phone;
+    }
+}
+
+// --- the header toggle: every comment folds and opens from its header ------------------------------------------------
+
+.comment .comment-toggle {
+    border: 0;
+    background: transparent;
+    color: inherit;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    margin-left: var(--space-2);
+    padding: 0;
+    border-radius: 50%;
+    vertical-align: middle;
+    cursor: pointer;
+}
+
+.comment .comment-toggle::before, .comment .comment-toggle:hover::before {
+    content: "\f056";
+    position: static;
+    font-family: "Font Awesome 6 Free";
+    font-weight: 900;
+    font-size: 12px;
+    color: var(--text-muted);
+    border: 0;
+    width: auto;
+    height: auto;
+    top: auto;
+    left: auto;
+}
+
+@media (hover: hover) and (pointer: fine) {
+    .comment .comment-toggle {
+        opacity: 0;
+        transition: opacity var(--dur-fast) var(--ease-out);
+    }
+
+    .comment .comment-main:hover .comment-toggle, .comment .comment-toggle:focus-visible {
+        opacity: 1;
+    }
+
+    .comment .comment-toggle:hover {
+        background-color: var(--hover);
+    }
+}
+
+// --- folded ---------------------------------------------------------------------------------------------------------
+// One line: the header with its avatar, name and age, and the toggle showing "open".
+
+.comment.collapsed .comment-toggle {
+    opacity: 1;
+}
+
+.comment.collapsed .comment-toggle::before, .comment.collapsed .comment-toggle:hover::before {
+    content: "\f055";
+    color: var(--link);
+}
+
+.comment.collapsed .comment-children, .comment.collapsed .more-comments, .comment.collapsed .more-folded,
+.comment.collapsed .translate-row {
+    display: none;
+}
+
+.comment.collapsed .comment-body {
+    opacity: 1;
+}
+
+.comment.collapsed .comment-body .user-name, .comment.collapsed .comment-body .user-name-inner {
+    color: var(--text-muted);
+}
+
+.comment.collapsed .comment-body .profile-pic-25 {
+    opacity: 0.6;
+}
+
+// --- the action row -------------------------------------------------------------------------------------------------
+
+.comment .comment-actions {
+    padding-left: calc(25px + var(--space-3) - 6px);    // the first button's own padding lines its icon up with the text
+    margin-top: var(--space-1);
+    font-weight: var(--weight-semibold);
+    font-size: var(--text-sm);
+}
+
+.comment .comment-actions .list-inline {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 2px;
+    margin-bottom: 0;
+}
+
+// the arrows and the score sit together; the spacing comes from the gap, not the old per-item margins (mr-2)
+.comment .comment-actions .list-inline .list-inline-item {
+    margin-right: 0 !important;
+}
+
+.comment .comment-actions .list-inline .arrow-down + .list-inline-item {
+    margin-left: var(--space-3) !important;
+}
+
+// the arrows are round 28px targets with the glyph centred (_components.scss). Their markup says which width shows them
+// with Bootstrap's display utilities, which are !important, so the centring display is set per width the same way
+// relative, never static: on a touch screen each arrow's larger tap area (main.scss, pointer: coarse, an ::after) is
+// placed against the arrow; with the arrow static it stretched over the whole comment and every tap downvoted it
+.comment .comment-actions .list-inline .arrow-up, .comment .comment-actions .list-inline .arrow-down {
+    position: relative;
+    vertical-align: middle;
+}
+
+@media (min-width: 768px) {
+    .comment .comment-actions .arrow-up.d-md-inline-block, .comment .comment-actions .arrow-down.d-md-inline-block {
+        display: inline-flex !important;
+    }
+}
+
+@media (max-width: 767.98px) {
+    .comment .comment-actions .arrow-up.d-inline-block.d-md-none,
+    .comment .comment-actions .arrow-down.d-inline-block.d-md-none {
+        display: inline-flex !important;
+    }
+}
+
+.comment .comment-actions .score, .comment .comment-actions .score-up, .comment .comment-actions .score-down {
+    display: inline-block;
+    min-width: 2.5ch;
+    text-align: center;
+    font-size: var(--text-sm);
+    font-weight: var(--weight-semibold);
+}
+
+// Comment, Share, Bookmark, Repost and "...": quiet buttons that show themselves on hover
+.comment .comment-actions .list-inline-item > a,
+.comment .comment-actions .list-inline-item > .dropdown > a {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    height: 28px;
+    padding: 0 10px;
+    border-radius: var(--radius-pill);
+    color: var(--text-muted);
+    text-decoration: none;
+    transition: background-color var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out);
+}
+
+.comment .comment-actions .list-inline-item > a .fa, .comment .comment-actions .list-inline-item > a .fas,
+.comment .comment-actions .list-inline-item > a .far,
+.comment .comment-actions .list-inline-item > .dropdown > a .fa, .comment .comment-actions .list-inline-item > .dropdown > a .fas,
+.comment .comment-actions .list-inline-item > .dropdown > a .far {
+    margin-right: 0;
+    color: inherit;
+    font-size: 12px;
+}
+
+@media (hover: hover) and (pointer: fine) {
+    .comment .comment-actions .list-inline-item > a:hover,
+    .comment .comment-actions .list-inline-item > .dropdown > a:hover {
+        background-color: var(--hover);
+        color: var(--text);
+    }
+}
+
+// --- more ----------------------------------------------------------------------------------------------------------
+
+// "Show N more comments": the comments that scored under a third of the one they answer
+.more-folded {
+    display: inline-flex;
+    align-items: center;
+    height: 28px;
+    margin: var(--space-2) 0 0 -10px;
+    padding: 0 10px;
+    border: 0;
+    border-radius: var(--radius-pill);
+    background: transparent;
+    color: var(--link);
+    font-size: var(--text-sm);
+    font-weight: var(--weight-semibold);
+    cursor: pointer;
+}
+
+@media (hover: hover) and (pointer: fine) {
+    .more-folded:hover {
+        background-color: var(--hover);
+    }
+}
+
+// past the depth the page draws: "More comments", to the comment's own page
+.comment .more-comments {
+    margin-top: var(--space-2) !important;
+    padding-left: calc(25px + var(--space-3));
+    font-size: var(--text-sm);
+    font-weight: var(--weight-semibold);
+}
+
+.comment .more-comments a {
+    color: var(--link);
+}
+
+// a long comment: its first six lines, fading out, until "Show more" (the whole text is there, never cut in two)
+.comment .comment-clamp.is-clamped {
+    max-height: calc(1em * var(--leading-body) * 6);
+    overflow: hidden;
+    -webkit-mask-image: linear-gradient(to bottom, #000 65%, transparent);
+    mask-image: linear-gradient(to bottom, #000 65%, transparent);
+}
+
+.comment .comment-clamp > :last-child {
+    margin-bottom: 0;
+}
+
+// brought back on screen after "Show less": below the fixed navbar, not under it
+.comment {
+    scroll-margin-top: 72px;
+}
+
+// a long name deep in a thread on a phone gives way (ellipsis) so the age and the toggle stay on its line
+@media (max-width: 575.98px) {
+    .comment .user-info .user-name-inner {
+        display: inline-block;
+        max-width: 42vw;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        vertical-align: bottom;
+    }
+}

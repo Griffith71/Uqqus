@@ -167,11 +167,13 @@ def test_a_space_is_set_up_in_the_spaces_area_not_in_the_composers():
     script = read("ruqqus", "assets", "js", "space_new.js")
     assert "fetch('/api/spaces'" in script and "/api/vue/submit" not in script and "innerHTML" not in script
     assert "asset_url('js/space_composer.js')" in read("ruqqus", "templates", "default.html")
-    # not a navbar button (the owner, 2026-10-21): the account menu and the phone menu in each shell, and the left
-    # sidebar's own Spaces section under My Curations (open and folded)
+    # not a navbar button (the owner, 2026-10-21): the account menu (partials/account_menu.html, drawn by both shells) and
+    # the phone menu in each shell, and the left sidebar's own Spaces section under My Curations (open and folded)
+    assert read("ruqqus", "templates", "partials", "account_menu.html").count('href="/spaces"') == 1
     for shell in ("default.html", "header.html"):
         page = read("ruqqus", "templates", shell)
-        assert page.count('href="/spaces"') == 2, shell
+        assert page.count('href="/spaces"') == 1, shell                  # the phone menu
+        assert '{% include "partials/account_menu.html" %}' in page, shell
         assert 'href="/spaces" aria-label="Spaces"' not in page, shell
     sidebar = read("ruqqus", "templates", "sidebar-left.html")
     assert sidebar.count('href="/spaces"') == 2 and 'href="/spaces/new"' in sidebar

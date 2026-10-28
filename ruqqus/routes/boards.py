@@ -2012,6 +2012,10 @@ def board_css(board_fullname, theme, x):
     else:
         path=f"{app.config['RUQQUSPATH']}/assets/style/main_dark.scss"
 
+@cache.memoize()
+def _compiled_board_css(colour, sheet, style_version, rtl=False):
+    """The site's stylesheet compiled with a guild's colour (mirrored for right-to-left languages when `rtl`: a
+    guild's own custom CSS is not mirrored); None when the file is missing or doesn't compile."""
     try:
         with open(path, "r") as file:
             raw = file.read()

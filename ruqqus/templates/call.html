@@ -5,9 +5,12 @@
   the only kind of page (with a Space's) allowed to use the microphone and camera (helpers/device_access.py).
   Names and the chat's label are put in by the script as text; `boot` is drawn with |tojson.
 #}
-<html lang="en">
+{% from "partials/theme.html" import html_attrs, font_faces, theme_color %}
+<html{{ html_attrs() }}>
 <head>
   <meta charset="utf-8">
+{{ font_faces() }}
+{{ theme_color() }}
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="robots" content="noindex">
   <title>{{ "Video call" if kind == "video" else "Voice call" }} - {{ 'SITE_NAME' | app_config }}</title>

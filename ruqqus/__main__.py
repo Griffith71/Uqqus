@@ -399,7 +399,8 @@ import ruqqus.helpers.page_assets
 ruqqus.helpers.page_assets.register(app)
 
 #purge css from cache
-cache.delete_memoized(ruqqus.routes.board_css)
+from ruqqus.routes.boards import _compiled_board_css
+cache.delete_memoized(_compiled_board_css)
 
 
 @cache.memoize(UA_BAN_CACHE_TTL)

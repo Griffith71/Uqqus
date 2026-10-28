@@ -1,47 +1,44 @@
-<div class="container d-inline-flex d-lg-none">
+{#
+  The phone's bottom bar (below 992px). Members: Home, Guilds, Create (in the middle), Explore, their profile; the
+  top bar already has notifications and chat. Visitors: Home, Explore, Sign up. The page being read is marked
+  (aria-current). It slides away while scrolling down (all_js.js .is-hidden, _motion.scss) and sits above the
+  phone's home indicator (_mobile.scss).
+#}
+{% macro tab(href, icon, label, current) %}
+        <div class="col px-0">
+            <a href="{{ href }}" class="bottom-tab text-decoration-none"{% if current %} aria-current="page"{% endif %}>
+                <i class="fas {{ icon }}" aria-hidden="true"></i>
+                <span class="bottom-tab-label">{{ label }}</span>
+            </a>
+        </div>
+{% endmacro %}
+{# a plain block holding only the fixed bar, so it takes no room (an inline-flex box here sat on a line of its own and
+   left 21px of empty page under everything on a phone) #}
+<div class="d-lg-none">
 
-    <div class="row fixed-bottom bg-white border-top p-2" id="mobile-bottom-navigation-bar"
-    style="z-index: 100; bottom: 0px; transition: bottom cubic-bezier(0, 0, 0.2, 1) 220ms;">
+    <nav class="row fixed-bottom bg-white border-top" id="mobile-bottom-navigation-bar" aria-label="{{ pgettext('navigation landmark', 'Main') }}"
+    style="z-index: 100;">{# it hides while scrolling down: a transform (all_js.js .is-hidden, _motion.scss) #}
 
 {% if v %}
+        {{ tab("/", "fa-house", _("Home"), request.path in ('/', '/for_you')) }}
+        {{ tab("/mine/guilds", "fa-chess-rook", _("Guilds"), request.path.startswith('/mine')) }}
         <div class="col px-0">
-            <a href="/" class="text-decoration-none" role="button">
-                <div class="text-center {% if request.path=='/' %}text-purple{% else %}text-muted{% endif %}">
-                    <i class="fas fa-home-alt text-lg d-block"></i>
-                    <div class="text-small">Home</div>
-                </div>
+            <a href="/submit" class="bottom-tab bottom-tab-create text-decoration-none"{% if request.path == '/submit' %} aria-current="page"{% endif %}>
+                <span class="bottom-tab-create-icon"><i class="fas fa-plus" aria-hidden="true"></i></span>
+                <span class="bottom-tab-label">{{ pgettext("bottom bar button that opens Create post", "Create") }}</span>
             </a>
         </div>
+        {{ tab("/browse", "fa-compass", _("Explore"), request.path == '/browse') }}
+        <div class="col px-0">
+            <a href="{{ v.permalink }}" class="bottom-tab text-decoration-none"{% if request.path == v.permalink %} aria-current="page"{% endif %}>
+                <img alt="" src="{{ v.profile_url }}" class="bottom-tab-avatar" width="22" height="22">
+                <span class="bottom-tab-label">{{ _("Profile") }}</span>
+            </a>
+        </div>
+{% else %}
+        {{ tab("/all", "fa-house", _("Home"), request.path in ('/', '/all')) }}
+        {{ tab("/browse", "fa-compass", _("Explore"), request.path == '/browse') }}
+        {{ tab("/signup", "fa-user-plus", _("Sign Up"), false) }}
 {% endif %}
-{% if v %}
-        <div class="col px-0">
-            <a href="/mine/guilds" class="text-decoration-none" role="button">
-                <div class="text-center {% if request.path.startswith('/mine') %}text-purple{% else %}text-muted{% endif %}">
-                    <i class="fas fa-chess-rook text-lg d-block"></i>
-                    <div class="text-small">Guilds</div>
-                </div>
-            </a>
-        </div>
-{% endif %}
-        <div class="col px-0">
-            <a href="/browse" class="text-decoration-none" role="button">
-                <div class="text-center {% if request.path=='/browse' %}text-purple{% else %}text-muted{% endif %}">
-                    <i class="fas fa-compass text-lg d-block"></i>
-                    <div class="text-small">Browse</div>
-                </div>
-            </a>
-        </div>
-{% if not v %}
-        <div class="col px-0">
-            <a href="/signup" class="text-decoration-none" role="button">
-                <div class="text-center text-muted">
-                    <i class="fas fa-user-plus text-lg d-block"></i>
-                    <div class="text-small">Sign Up</div>
-                </div>
-            </a>
-        </div>
-{% endif %}
-
-    </div>
-
+    </nav>
 </div>

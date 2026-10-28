@@ -18,13 +18,7 @@
   Counts only: nothing here says who shared, bookmarked or tipped.
 #}
 
-{% macro _n(count) -%}
-{%- set count = count or 0 -%}
-{%- if count >= 1000000 -%}{{ "%.1f" | format(count / 1000000) | replace(".0", "") }}M
-{%- elif count >= 10000 -%}{{ (count // 1000) }}k
-{%- elif count >= 1000 -%}{{ "%.1f" | format(count / 1000) | replace(".0", "") }}k
-{%- else -%}{{ count }}{%- endif -%}
-{%- endmacro %}
+{% macro _n(count) -%}{{ count | compact_count }}{%- endmacro %}
 
 {% macro counted_actions(p, v, saved, part="") %}
 {% set mobile = part == "mobile-" %}
@@ -35,7 +29,7 @@
 
 <li class="list-inline-item post-action-item">
   <a href="{{ p.permalink }}" class="post-action post-action-comments"{% if author_of(p, v).is_private %} rel="nofollow"{% endif %}
-     title="{{ p.space_comment_count }} comment{{ '' if p.space_comment_count == 1 else 's' }}" aria-label="{{ p.space_comment_count }} comment{{ '' if p.space_comment_count == 1 else 's' }}">
+     title="{{ ngettext('%(num)s comment', '%(num)s comments', p.space_comment_count) }}" aria-label="{{ ngettext('%(num)s comment', '%(num)s comments', p.space_comment_count) }}">
     <i class="fas fa-comment-dots" aria-hidden="true"></i><span class="post-action-count">{{ _n(p.space_comment_count) }}</span>
   </a>
 </li>
@@ -44,23 +38,23 @@
   {% if may_share(p, v) %}
   <div class="dropdown d-inline">
     <a href="#" role="button" class="post-action post-action-shares" id="shareDropdownLink{{ 'Mobile' if mobile }}-{{ p.base36id }}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
-       title="Share ({{ shares }} share{{ '' if shares == 1 else 's' }})" aria-label="Share, {{ shares }} share{{ '' if shares == 1 else 's' }}">
+       title="{{ ngettext('Share (%(num)s share)', 'Share (%(num)s shares)', shares) }}" aria-label="{{ ngettext('Share, %(num)s share', 'Share, %(num)s shares', shares) }}">
       <i class="fas fa-share-alt" aria-hidden="true"></i><span class="post-action-count">{{ _n(shares) }}</span>
     </a>
     <div class="dropdown-menu border-0 shadow{% if mobile %} dropdown-menu-right{% endif %}" aria-labelledby="shareDropdownLink{{ 'Mobile' if mobile }}-{{ p.base36id }}">
-      <a class="dropdown-item copy-link" href="javascript:void(0);" role="button" data-clipboard-text="{{ p.permalink | full_link }}"><i class="fas fa-copy fa-fw"></i>Copy link</a>
-      {% if v %}<a class="dropdown-item share-chat-item" href="javascript:void(0);" role="button" data-share-url="{{ p.permalink | full_link }}"><i class="fas fa-paper-plane fa-fw"></i>Send in chat</a>{% endif %}
+      <a class="dropdown-item copy-link" href="javascript:void(0);" role="button" data-clipboard-text="{{ p.permalink | full_link }}"><i class="fas fa-copy fa-fw"></i>{{ _("Copy link") }}</a>
+      {% if v %}<a class="dropdown-item share-chat-item" href="javascript:void(0);" role="button" data-share-url="{{ p.permalink | full_link }}"><i class="fas fa-paper-plane fa-fw"></i>{{ _("Send in chat") }}</a>{% endif %}
       {# a post made for a Circle is never forwarded or reposted (circles.post_refusal); its author may still send it #}
       {% if v and not p.audience %}
-      <a class="dropdown-item" href="javascript:void(0)" data-toggle="modal" data-target="#forwardPostModal" onclick="forward_postModal('{{ p.base36id }}')"><i class="fas fa-share fa-fw"></i>Forward</a>
-      <a id="repost-{{ part }}{{ p.base36id }}" class="dropdown-item{% if p.reposted %} d-none{% endif %}" href="javascript:void(0)" onclick="post_toast('/post/{{ p.base36id }}/repost', callback=function(){document.getElementById('repost-{{ part }}{{ p.base36id }}').classList.toggle('d-none');document.getElementById('unrepost-{{ part }}{{ p.base36id }}').classList.toggle('d-none');})"><i class="fas fa-retweet fa-fw"></i>Repost</a>
-      <a id="unrepost-{{ part }}{{ p.base36id }}" class="dropdown-item text-success{% if not p.reposted %} d-none{% endif %}" href="javascript:void(0)" onclick="post_toast('/post/{{ p.base36id }}/unrepost', callback=function(){document.getElementById('repost-{{ part }}{{ p.base36id }}').classList.toggle('d-none');document.getElementById('unrepost-{{ part }}{{ p.base36id }}').classList.toggle('d-none');})"><i class="fas fa-retweet fa-fw"></i>Reposted</a>
+      <a class="dropdown-item" href="javascript:void(0)" data-toggle="modal" data-target="#forwardPostModal" onclick="forward_postModal('{{ p.base36id }}')"><i class="fas fa-share fa-fw"></i>{{ pgettext("verb", "Forward") }}</a>
+      <a id="repost-{{ part }}{{ p.base36id }}" class="dropdown-item{% if p.reposted %} d-none{% endif %}" href="javascript:void(0)" onclick="post_toast('/post/{{ p.base36id }}/repost', callback=function(){document.getElementById('repost-{{ part }}{{ p.base36id }}').classList.toggle('d-none');document.getElementById('unrepost-{{ part }}{{ p.base36id }}').classList.toggle('d-none');})"><i class="fas fa-retweet fa-fw"></i>{{ pgettext("verb", "Repost") }}</a>
+      <a id="unrepost-{{ part }}{{ p.base36id }}" class="dropdown-item text-success{% if not p.reposted %} d-none{% endif %}" href="javascript:void(0)" onclick="post_toast('/post/{{ p.base36id }}/unrepost', callback=function(){document.getElementById('repost-{{ part }}{{ p.base36id }}').classList.toggle('d-none');document.getElementById('unrepost-{{ part }}{{ p.base36id }}').classList.toggle('d-none');})"><i class="fas fa-retweet fa-fw"></i>{{ _("Reposted") }}</a>
       {% endif %}
     </div>
   </div>
   {% else %}
-  <span class="post-action post-action-shares" title="Only the author can share this post">
-    <i class="fas fa-share-alt" aria-hidden="true"></i><span class="post-action-count">{{ _n(shares) }}</span><span class="sr-only"> share{{ '' if shares == 1 else 's' }}. Only the author can share this post.</span>
+  <span class="post-action post-action-shares" title="{{ _('Only the author can share this post') }}">
+    <i class="fas fa-share-alt" aria-hidden="true"></i><span class="post-action-count">{{ _n(shares) }}</span>{# Translators: read right after the number of shares, which is shown just before it #}<span class="sr-only"> {{ ngettext('share. Only the author can share this post.', 'shares. Only the author can share this post.', shares) }}</span>
   </span>
   {% endif %}
 </li>
@@ -69,27 +63,27 @@
   {% if v %}
   <a id="bookmark-{{ part }}{{ p.base36id }}" href="javascript:void(0)" class="post-action post-action-bookmark{% if saved %} d-none{% endif %}"
      onclick="post_toast('/save_post/{{ p.base36id }}', callback=function(){showBookmarked('{{ p.base36id }}', true);})"
-     title="Bookmark" aria-label="Bookmark, {{ base }} bookmark{{ '' if base == 1 else 's' }}">
+     title="{{ pgettext('verb', 'Bookmark') }}" aria-label="{{ ngettext('Bookmark, %(num)s bookmark', 'Bookmark, %(num)s bookmarks', base) }}">
     <i class="far fa-bookmark" aria-hidden="true"></i><span class="post-action-count">{{ _n(base) }}</span>
   </a>
   <a id="unbookmark-{{ part }}{{ p.base36id }}" href="javascript:void(0)" class="post-action post-action-bookmark is-on{% if not saved %} d-none{% endif %}"
      onclick="post_toast('/unsave_post/{{ p.base36id }}', callback=function(){showBookmarked('{{ p.base36id }}', false);})"
-     title="Remove bookmark" aria-label="Remove bookmark, {{ base + 1 }} bookmark{{ '' if base + 1 == 1 else 's' }}">
+     title="{{ _('Remove bookmark') }}" aria-label="{{ ngettext('Remove bookmark, %(num)s bookmark', 'Remove bookmark, %(num)s bookmarks', base + 1) }}">
     <i class="fas fa-bookmark" aria-hidden="true"></i><span class="post-action-count">{{ _n(base + 1) }}</span>
   </a>
   {% else %}
-  <a href="/login" class="post-action post-action-bookmark" title="Log in to bookmark" aria-label="{{ bookmarks }} bookmark{{ '' if bookmarks == 1 else 's' }}">
+  <a href="/login" class="post-action post-action-bookmark" title="{{ _('Log in to bookmark') }}" aria-label="{{ ngettext('%(num)s bookmark', '%(num)s bookmarks', bookmarks) }}">
     <i class="far fa-bookmark" aria-hidden="true"></i><span class="post-action-count">{{ _n(bookmarks) }}</span>
   </a>
   {% endif %}
 </li>
 
 <li class="list-inline-item post-action-item">
-  {% set tip_label = coins ~ " coin" ~ ("" if coins == 1 else "s") ~ " tipped" %}
+  {% set tip_label = ngettext("%(num)s coin tipped", "%(num)s coins tipped", coins) %}
   {% if v and v.id != p.author_id and not p.is_anonymous and not author_of(p, v).is_deleted and v.id != author_of(p, v).bot_owner_id and not anon_hidden(p, v) and p.deleted_utc == 0 and not p.is_banned %}
   <a href="javascript:void(0)" class="post-action post-action-tip" data-toggle="modal" data-target="#tipModal"
      onclick="tipModal2('{{ p.base36id }}','post','{{ p.permalink }}','{{ author_of(p, v).username }}','{{ author_of(p, v).profile_url }}')"
-     title="Tip ({{ tip_label }})" aria-label="Tip, {{ tip_label }}">
+     title="{{ ngettext('Tip (%(num)s coin tipped)', 'Tip (%(num)s coins tipped)', coins) }}" aria-label="{{ ngettext('Tip, %(num)s coin tipped', 'Tip, %(num)s coins tipped', coins) }}">
   {% else %}
   <span class="post-action post-action-tip" title="{{ tip_label }}" aria-label="{{ tip_label }}">
   {% endif %}

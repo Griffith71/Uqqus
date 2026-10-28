@@ -5,8 +5,12 @@
   the device decides: both stylesheets are listed with a media query, the browser applies the matching one at
   once and fetches the other at low priority. Nothing switches the stylesheet after load; switch_css() in
   all_js.js reads data-light / data-dark, so a guild's coloured stylesheets toggle the same way.
+
+  A right-to-left interface (Arabic, Persian, Hebrew, Urdu: helpers/i18n.py) gets the same sheets mirrored
+  (main.rtl.css: helpers/css_flip.py), so every caller passes the left-to-right addresses as before.
 #}
 {% macro theme_links(light, dark) %}
+{% if ui_rtl() %}{% set light = rtl_css(light) %}{% set dark = rtl_css(dark) %}{% endif %}
 {% set choice = theme_choice() %}
 {% if choice == "dark" %}
 <link id="css-link" rel="stylesheet" href="{{ dark }}" data-light="{{ light }}" data-dark="{{ dark }}">
@@ -24,4 +28,51 @@
 {# First thing in <body>: with no saved choice, name the device's theme before anything is drawn. #}
 {% macro body_theme_script() %}
 {% if not theme_choice() %}<script>if (window.matchMedia && matchMedia("(prefers-color-scheme: dark)").matches) { document.body.classList.remove("light"); document.body.classList.add("dark"); }</script>{% endif %}
+{% endmacro %}
+
+{# On every page shell's <html>: what the stylesheets read before anything is drawn. `lang` and `dir` are the reader's
+   interface language (helpers/i18n_runtime.py: Arabic, Persian, Hebrew and Urdu read right to left); `density` is
+   their Comfortable / Compact choice (a cookie, as `sidebar_pref`: assets/style/_tokens.scss narrows a few tokens). #}
+{% macro html_attrs() %} lang="{{ ui_lang() }}" dir="{{ ui_dir() }}" data-density="{{ 'compact' if request.cookies.get('density') == 'compact' else 'comfortable' }}"{% endmacro %}
+
+{# In every page shell's <head>, before the stylesheet: the site's typeface (Inter, OFL: assets/fonts/Inter-OFL.txt).
+   Declared here, not in the SCSS, so the preload and the @font-face name the same versioned address. "Inter Fallback"
+   is the system's Arial stretched to Inter's measurements, so swapping to Inter when it arrives moves nothing. #}
+{% macro font_faces() %}
+<link rel="preload" href="{{ asset_url('fonts/inter-latin.woff2') }}" as="font" type="font/woff2" crossorigin>
+<style>
+@font-face { font-family: "Inter"; font-style: normal; font-weight: 100 900; font-display: swap;
+  src: url("{{ asset_url('fonts/inter-latin.woff2') }}") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+@font-face { font-family: "Inter"; font-style: normal; font-weight: 100 900; font-display: swap;
+  src: url("{{ asset_url('fonts/inter-latin-ext.woff2') }}") format("woff2");
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF; }
+@font-face { font-family: "Inter"; font-style: normal; font-weight: 100 900; font-display: swap;
+  src: url("{{ asset_url('fonts/inter-cyrillic-ext.woff2') }}") format("woff2");
+  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F; }
+@font-face { font-family: "Inter"; font-style: normal; font-weight: 100 900; font-display: swap;
+  src: url("{{ asset_url('fonts/inter-cyrillic.woff2') }}") format("woff2");
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116; }
+@font-face { font-family: "Inter"; font-style: normal; font-weight: 100 900; font-display: swap;
+  src: url("{{ asset_url('fonts/inter-greek-ext.woff2') }}") format("woff2");
+  unicode-range: U+1F00-1FFF; }
+@font-face { font-family: "Inter"; font-style: normal; font-weight: 100 900; font-display: swap;
+  src: url("{{ asset_url('fonts/inter-greek.woff2') }}") format("woff2");
+  unicode-range: U+0370-0377, U+037A-037F, U+0384-038A, U+038C, U+038E-03A1, U+03A3-03FF; }
+@font-face { font-family: "Inter"; font-style: normal; font-weight: 100 900; font-display: swap;
+  src: url("{{ asset_url('fonts/inter-vietnamese.woff2') }}") format("woff2");
+  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB; }
+@font-face { font-family: "Inter Fallback"; src: local("Arial");
+  ascent-override: 90.44%; descent-override: 22.52%; line-gap-override: 0%; size-adjust: 107.12%; }
+</style>
+{% endmacro %}
+
+{# The colour the phone's browser and status bar take: the page's own (white or black), by the saved theme or the
+   device's (it was the brand's light blue on every page). #}
+{% macro theme_color() %}
+{% set choice = theme_choice() %}
+{% if choice == "dark" %}<meta name="theme-color" content="#000000">
+{% elif choice == "light" %}<meta name="theme-color" content="#ffffff">
+{% else %}<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)">{% endif %}
 {% endmacro %}

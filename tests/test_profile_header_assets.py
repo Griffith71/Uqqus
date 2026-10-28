@@ -26,7 +26,7 @@ def test_the_profile_draws_one_header_for_every_width():
 def test_the_header_shows_what_an_x_profile_shows():
     for needle in ("profile-x-banner", "story_avatar(u, v,", "highlights_row(u, v)", "u.bio_html_for(v)",
                    "u.details_for(v)", "details.job", "details.location", "u.display_region_name",
-                   'data-target="#aboutAccountModal"', "details.website", "Joined {{ u.joined_month }}",
+                   'data-target="#aboutAccountModal"', "details.website", '_("Joined %(date)s", date=date_text(u.created_utc, "%B %Y", "LLLL y"))',
                    "profile_lists(u, v)", "lists[key].open", "u.rep_class", "Follows you"):
         assert needle in HEADER, needle
 
@@ -55,7 +55,7 @@ def test_the_actions_for_someone_else_the_owner_and_a_visitor():
 def test_the_menu_script_checks_names_and_draws_text_only():
     js = read("ruqqus", "assets", "js", "profile_actions.js")
     assert "innerHTML" not in js and "/^[A-Za-z0-9_]{3,25}$/" in js
-    assert "window.confirm('Block @'" in js and "'/settings/block?username=' + encodeURIComponent(name)" in js
+    assert "window.confirm(tr('Block @%(name)s?" in js and "'/settings/block?username=' + encodeURIComponent(name)" in js
     assert "'/api/user/' + encodeURIComponent(name) + '/report'" in js
 
 
@@ -94,7 +94,8 @@ def test_new_accounts_start_open_and_existing_ones_private():
 
 def test_reports_need_a_sign_in_and_the_form_key_and_the_queue_is_for_admins():
     routes = read("ruqqus", "routes", "account_reports.py")
-    assert '@app.post("/api/user/<username>/report")\n@auth_required\n@validate_formkey' in routes
+    # a held account (helpers/quarantine.py) can't report: its wrapper sits between the sign-in and the form key
+    assert '@app.post("/api/user/<username>/report")\n@auth_required\n@not_quarantined("report")\n@validate_formkey' in routes
     assert '@app.get("/admin/user_reports")\n@admin_level_required(3)' in routes
     assert "@admin_level_required(3)\n@validate_formkey\ndef admin_user_reports_dismiss(" in routes
     page = read("ruqqus", "templates", "admin", "user_reports.html")
@@ -125,3 +126,18 @@ def test_both_stylesheets_style_the_header():
                      ".profile-x-following {"):
             assert rule in css, (sheet, rule)
         assert re.search(r"\$profile-x-surface: \$(white|gray-600);", css), sheet
+
+
+def test_the_banner_reaches_lower_and_the_actions_sit_on_the_names_line():
+    # the owner (2026-10-23): the banner grows 48px down into the strip the actions sat in (24px on a phone), the
+    # avatar stays where it was (its -67px / -40px grow by the same), and the actions move onto the name's line
+    top = HEADER.split('<div class="profile-x-top">')[1].split('<div class="profile-x-body">')[0]
+    assert "profile-x-avatar" in top and "profile-x-actions" not in top
+    headline = HEADER.split('<div class="profile-x-headline">')[1]
+    assert headline.index('<div class="profile-x-names">') < headline.index('<div class="profile-x-actions">')
+    assert headline.index('<div class="profile-x-actions">') < headline.index("{% if bio %}")
+    screens = read("ruqqus", "assets", "style", "_screens.scss").split("// --- Profile header")[1]
+    assert "padding-top: calc(100% / 6 + 48px);" in screens and "margin-top: -115px;" in screens
+    phone = screens.split("@media (max-width: 575.98px)")[1]
+    assert "padding-top: calc(100% / 6 + 24px);" in phone and "margin-top: -64px;" in phone
+    assert 67 + 48 == 115 and 40 + 24 == 64                    # the old overlap plus the strip: the avatar doesn't move

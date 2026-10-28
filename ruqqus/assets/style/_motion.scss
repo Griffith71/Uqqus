@@ -1,0 +1,136 @@
+// Motion (the UI modernisation, 2026-10; emil-design-eng's rules): only where it answers what the person did, short,
+// ease-out, from the place the thing came from. Nothing moves on page load, nothing loops but the loading skeleton,
+// and under prefers-reduced-motion every one of these stops (the durations in _tokens.scss also go to 0).
+// The sheets' "Interface polish" block keeps the press scale, the dialog and sheet curves and the toast rise.
+
+@media (prefers-reduced-motion: no-preference) {
+
+    // a vote just cast: the arrow pops once (all_js.js popVote: from a click only, never on load)
+    @keyframes vote-pop {
+        0% { transform: scale(1); }
+        40% { transform: scale(1.28); }
+        100% { transform: scale(1); }
+    }
+
+    .arrow-up.vote-pop::before, .arrow-down.vote-pop::before {
+        display: inline-block;
+        animation: vote-pop 220ms var(--ease-out);
+    }
+
+    // a menu grows out of the button that opened it. Bootstrap's Popper places it with an inline `transform`, so the
+    // growth uses the separate `scale` property, from the corner nearest the button (Popper's x-placement)
+    @keyframes menu-in {
+        from {
+            opacity: 0;
+            scale: 0.96;
+        }
+    }
+
+    .dropdown-menu.show {
+        animation: menu-in 160ms var(--ease-out);
+        transform-origin: top left;
+    }
+
+    .dropdown-menu.dropdown-menu-right.show, .dropdown-menu.show[x-placement$="-end"] {
+        transform-origin: top right;
+    }
+
+    .dropdown-menu.show[x-placement^="top"] {
+        transform-origin: bottom left;
+    }
+
+    .dropdown-menu.show[x-placement^="top"][x-placement$="-end"] {
+        transform-origin: bottom right;
+    }
+
+    // posts that arrive by infinite scroll fade in (all_js.js bindPostCards: only those, never the page's own)
+    @keyframes card-arrive {
+        from { opacity: 0; }
+    }
+
+    // `backwards`, not `both`: a finished fade must leave nothing behind (a held opacity made each arrived card its own
+    // layer and trapped its "..." menu under the next card); all_js.js also takes the class off when it ends
+    .posts > .card.is-arriving {
+        animation: card-arrive 180ms ease-out backwards;
+    }
+}
+
+// the phone's bottom bar slides out of the way while scrolling down (all_js.js: a class, not a moving edge)
+#mobile-bottom-navigation-bar {
+    transition: transform var(--dur-base) var(--ease-out);
+}
+
+#mobile-bottom-navigation-bar.is-hidden {
+    transform: translateY(calc(100% + 1px));
+}
+
+// never hidden while it holds the keyboard's focus
+#mobile-bottom-navigation-bar.is-hidden:focus-within {
+    transform: none;
+}
+
+// the loading skeletons at the end of a feed (infinite_scroll.js showSkeletons)
+// shaped like the posts they stand for: on the page, no frame
+#infinite-sentinel .skeleton-card {
+    margin: 0;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    text-align: left;
+}
+
+// the cooldown meter boils (partials/throttle_meter.html, _nav.scss): bubbles rise through the fill, faster the hotter
+// it is, and a meter in cooldown glows. The one loop that runs by itself, at the owner's ask (2026-10-23); it stops
+// under prefers-reduced-motion like everything here.
+@media (prefers-reduced-motion: no-preference) {
+    @keyframes boil-rise {
+        0% { bottom: 0; opacity: 0; transform: translateX(0) scale(0.6); }
+        20% { opacity: 0.9; }
+        50% { transform: translateX(0.5px) scale(1); }
+        85% { opacity: 0.8; }
+        100% { bottom: calc(100% - 3px); opacity: 0; transform: translateX(-0.5px) scale(0.9); }
+    }
+
+    @keyframes boil-glow {
+        from { box-shadow: inset 0 0 0 1px var(--border), 0 0 0 0 rgba(232, 69, 44, 0); }
+        to { box-shadow: inset 0 0 0 1px var(--boil-hot), 0 0 7px 1px rgba(232, 69, 44, 0.55); }
+    }
+
+    .boil-meter.is-heating .boil-fill::before, .boil-meter.is-heating .boil-fill::after,
+    .boil-meter.is-cooling .boil-fill::before, .boil-meter.is-cooling .boil-fill::after {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        left: 1px;
+        width: 3px;
+        height: 3px;
+        border-radius: 50%;
+        background-color: rgba(255, 255, 255, 0.8);
+        animation: boil-rise calc(2.8s - var(--level, 0) * 0.016s) ease-in infinite;
+    }
+
+    .boil-meter .boil-fill::after {
+        left: 4px;
+        width: 2px;
+        height: 2px;
+        animation-delay: -1.2s;
+    }
+
+    .boil-meter-menu .boil-fill::before {
+        left: 1px;
+        width: 2px;
+        height: 2px;
+    }
+
+    .boil-meter-menu .boil-fill::after {
+        left: 3px;
+    }
+
+    .boil-meter.is-cooling .boil-fill::before, .boil-meter.is-cooling .boil-fill::after {
+        animation-duration: 0.9s;
+    }
+
+    .boil-meter.is-cooling {
+        animation: boil-glow 1.1s ease-in-out infinite alternate;
+    }
+}

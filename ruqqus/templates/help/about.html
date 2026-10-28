@@ -1,9 +1,12 @@
 <!DOCTYPE html>
-<html lang="en">
+{% from "partials/theme.html" import html_attrs, font_faces, theme_color %}
+<html{{ html_attrs() }}>
 
 <head>
 
   <meta charset="utf-8">
+{{ font_faces() }}
+{{ theme_color() }}
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   
   <meta name="author" content="">

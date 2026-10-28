@@ -77,8 +77,11 @@ def score_span(html, marker):
 
 
 def render(snippet, **context):
-    env = Environment()
+    from ruqqus.helpers.compact_count import compact
+    env = Environment(extensions=["jinja2.ext.i18n"])
+    env.install_null_translations(newstyle=True)   # the tooltip's text is marked (docs/i18n.md)
     env.globals["may_see_voters"] = lambda item, viewer: context.pop("see")
+    env.filters["compact_count"] = compact     # helpers/jinja2.py registers it on the app
     return env.from_string(snippet).render(**context)
 
 

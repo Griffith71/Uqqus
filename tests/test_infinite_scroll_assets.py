@@ -18,14 +18,25 @@ def test_the_page_shell_loads_the_script():
 
 
 def test_the_script_uses_the_markers_the_feed_templates_render():
-    assert "nav[aria-label=\"Page navigation\"]" in SCRIPT and "ul.pagination a.page-link" in SCRIPT
-    assert "'Next'" in SCRIPT
+    # the pager is found by its markup, never by its label (the interface is translated)
+    assert "pagination.closest('nav')" in SCRIPT and "ul.pagination a.page-link" in SCRIPT
+    assert "aria-label" not in SCRIPT
+    # the next-page link is found by rel="next", never by its label (the interface is translated)
+    assert 'a.page-link[rel~="next"]' in SCRIPT and "'Next'" not in SCRIPT
     for name in FEEDS:
         html = (TEMPLATES / name).read_text(encoding="utf-8")
-        assert 'aria-label="Page navigation"' in html, name
+        assert "aria-label=\"{{ _('Page navigation') }}\"" in html, name
         assert 'class="pagination' in html, name
-        assert re.search(r">\s*Next\s*<", html), f"{name} must label its next-page link exactly 'Next'"
+        assert 'rel="next"' in html, f"{name} must mark its next-page link rel=\"next\""
         assert 'class="posts' in html, name
+
+
+def test_every_next_page_link_is_marked():
+    # every enabled next-page link on any paged list carries rel="next" (the continuous feed follows it)
+    for path in TEMPLATES.rglob("*.html"):
+        html = path.read_text(encoding="utf-8")
+        for link in re.findall(r'<a class="page-link"[^>]*>\s*Next\s*</a>', html):
+            assert 'rel="next"' in link, (path.name, link)
 
 
 def test_all_js_can_wire_up_cards_added_after_load():
@@ -49,7 +60,7 @@ def test_the_page_buttons_go_away_even_when_there_is_no_next_page():
     assert "if (!pagination) return;" in SCRIPT                        # a page with no paging is left alone
     assert SCRIPT.index("control.hidden = true;") < SCRIPT.index("if (nextUrl) observer.observe(sentinel); else finish();")
     # at the end the feed says so, with a way back up, instead of buttons
-    assert "You\\u2019re all caught up. " in SCRIPT and "Back to top" in SCRIPT
+    assert "tr('You\\u2019re all caught up.') + ' '" in SCRIPT and "tr('Back to top')" in SCRIPT
     assert "function finish()" in SCRIPT and "finish();" in SCRIPT.split("nextUrl = nextLink(page.doc);")[1]
 
 
@@ -70,7 +81,7 @@ def test_the_pill_checks_in_the_background_only_while_the_tab_is_visible():
     check = SCRIPT.split("function checkNew()")[1].split("if (startPage === 1)")[0]
     assert "document.hidden" in check and "pill" in check and "refreshing" in check
     assert "window.FEED_POLL_MS || 120000" in SCRIPT                    # two minutes; the override is for tests
-    assert "'Show ' + say(count)" in SCRIPT and "visibilitychange" in SCRIPT
+    assert "trn('Show %(num)s new post', 'Show %(num)s new posts', count)" in SCRIPT and "visibilitychange" in SCRIPT
 
 
 def test_pull_to_refresh_only_starts_at_the_top_and_never_over_a_form_or_sheet():

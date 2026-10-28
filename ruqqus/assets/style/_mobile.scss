@@ -1,0 +1,234 @@
+// Feeling native on a phone (the UI modernisation, 2026-10; the mobile-native checklist). Imported at the end of both
+// theme sheets. The viewport now allows zooming and reaches the screen's edges (default.html viewport-fit=cover), so
+// the bars keep clear of the notch and the home indicator here.
+
+// --- taps ---------------------------------------------------------------------------------------------------------
+// No grey flash on tap (the controls have their own pressed states), no 300ms double-tap wait, and a long press on a
+// control doesn't select its label. Content stays selectable.
+
+a, button, .btn, [role="button"], .arrow-up, .arrow-down, label, summary, .bottom-tab, .post-action, .nav-link {
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+}
+
+.btn, button, .bottom-tab, .post-action, .arrow-up, .arrow-down, .nav-link, .dropdown-item, .page-link, .more-folded,
+.text-expand-btn, .comment-toggle {
+    -webkit-user-select: none;
+    user-select: none;
+}
+
+// a pressed state where there is no hover
+@media (hover: none) {
+    .post-actions .post-action:active, .comment .comment-actions .list-inline-item > a:active,
+    .dropdown-item:active, .bottom-tab:active, .more-folded:active {
+        background-color: var(--press);
+    }
+}
+
+// --- the screen's edges ---------------------------------------------------------------------------------------------
+
+:root {
+    // the fixed top bar grows by the status bar's height when the site runs full screen (0 in a browser tab)
+    --navbar-height: calc(55px + env(safe-area-inset-top));
+}
+
+// From 992px nav_align.js insets the navbar's content to the sidebars' edges, so the bar itself adds only the safe
+// area (0 in a browser tab): any more pushed the logo off the left sidebar's edge. Below 992px nothing insets it, and
+// the bar keeps at least 1rem from the screen's edges.
+#navbar {
+    padding-top: calc(0.7rem + env(safe-area-inset-top));
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+}
+
+@media (max-width: 991.98px) {
+    #navbar {
+        padding-left: #{"max(1rem, env(safe-area-inset-left))"};      // libsass needs CSS max() as a string
+        padding-right: #{"max(1rem, env(safe-area-inset-right))"};
+    }
+}
+
+// what the keyboard focuses, and what a link jumps to, is scrolled clear of the fixed bars
+html {
+    scroll-padding-top: calc(var(--navbar-height, 55px) + 12px);
+}
+
+@media (max-width: 991.98px) {
+    html {
+        scroll-padding-bottom: calc(68px + env(safe-area-inset-bottom));
+    }
+}
+
+#main-content-row {
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+}
+
+// --- the bottom bar ---------------------------------------------------------------------------------------------------
+
+#mobile-bottom-navigation-bar {
+    margin: 0;                     // a Bootstrap row's -15px sides made it 30px wider than the screen
+    min-height: 56px;
+    padding: var(--space-1) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+    align-items: center;
+    background-color: color-mix(in srgb, var(--surface) 92%, transparent) !important;
+    -webkit-backdrop-filter: saturate(180%) blur(14px);
+    backdrop-filter: saturate(180%) blur(14px);
+    border-top: 1px solid var(--border) !important;
+}
+
+.bottom-tab {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    min-height: 48px;
+    margin: 0 var(--space-1);
+    border-radius: var(--radius-md);
+    color: var(--text-muted);
+    font-size: 12px;
+    font-weight: var(--weight-medium);
+}
+
+.bottom-tab .fas {
+    font-size: 19px;
+    line-height: 1;
+}
+
+// every tab's picture takes the same height, so the labels line up (Create's pill is taller than an icon)
+.bottom-tab > .fas, .bottom-tab > .bottom-tab-avatar, .bottom-tab > .bottom-tab-create-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 26px;
+}
+
+.bottom-tab[aria-current="page"] {
+    color: var(--text);
+}
+
+.bottom-tab[aria-current="page"] .fas {
+    color: var(--brand);
+}
+
+.bottom-tab-avatar {
+    width: 22px;
+    height: 22px !important;      // the picture itself: inside the 26px row
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.bottom-tab[aria-current="page"] .bottom-tab-avatar {
+    box-shadow: 0 0 0 2px var(--brand);
+}
+
+// Create: the one filled control in the bar
+.bottom-tab-create-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 26px;
+    border-radius: var(--radius-pill);
+    background-color: var(--brand-strong);
+}
+
+.bottom-tab-create .bottom-tab-create-icon .fas {
+    font-size: 14px;
+    color: var(--on-brand);
+}
+
+// the page's last lines stay above the bar (not in a side panel's frame, which has no bar: body.embedded)
+@media (max-width: 991.98px) {
+    body:not(.embedded) {
+        padding-bottom: calc(56px + env(safe-area-inset-bottom));
+    }
+}
+
+// --- heights that follow the visible screen -------------------------------------------------------------------------
+// 100vh on a phone is the screen with the browser's bars hidden, so a full-height panel ran under the address bar.
+// The dynamic unit is the screen as it is now; browsers without it keep the 100vh rules above.
+
+@supports (height: 100dvh) {
+    .chat-key-box {
+        max-height: calc(100dvh - 2rem);
+    }
+
+    body.embedded #chat-app {
+        height: 100dvh !important;
+    }
+
+    .story-stage {
+        max-height: 100dvh;
+    }
+
+    // each at the width its 100vh rule is for (a later desktop rule resets the menu's height: overriding it at every
+    // width once made the sign-in page's menu cover the page)
+    @media (max-width: 767.98px) {
+        #navbarResponsive .navbar-nav {
+            height: 100dvh;
+        }
+
+        // as tall as it needs, never past the bottom of the screen (it opens a little below the bar)
+        #navbar-icon-row #accountDropdownMenu {
+            height: auto;
+            max-height: calc(100dvh - var(--navbar-height, 55px) - 24px);
+            overflow-y: auto;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .story-stage {
+            height: 100dvh;
+        }
+    }
+}
+
+// --- scrolling ---------------------------------------------------------------------------------------------------------
+// A sheet, a menu or a panel that scrolls keeps its scroll to itself: reaching its end doesn't scroll the page behind.
+
+.modal, .dropdown-menu, #side-panel, #chat-app, .comment-clamp, #accountDropdownMenu {
+    overscroll-behavior: contain;
+}
+
+// --- a phone's action row: one line ---------------------------------------------------------------------------------
+@media (max-width: 767.98px) {
+    .card-footer .post-actions > ul {
+        flex-wrap: nowrap;
+        gap: 6px;
+    }
+
+    .card-footer .post-actions .post-action {
+        padding: 0 10px;
+    }
+
+    .card-footer .post-actions .post-action-more {
+        flex-shrink: 0;
+        margin-left: auto !important;
+    }
+}
+
+// the narrowest phones: the tips count goes (the post's own page has it)
+@media (max-width: 374.98px) {
+    .card-footer .post-actions .post-action-item:has(> .post-action-tip) {
+        display: none;
+    }
+}
+
+// --- touch targets ------------------------------------------------------------------------------------------------
+// The controls are drawn 24-32px; on a touch screen each gets a larger invisible tap area around it (the drawing and
+// the layout don't move). The arrows already have theirs (main.scss, pointer: coarse).
+@media (pointer: coarse) {
+    .comment .comment-toggle, .vote-pill .arrow-up, .vote-pill .arrow-down, .post-actions .post-action, .more-folded,
+    .text-expand-btn, .comment .comment-actions .list-inline-item > a {
+        position: relative;
+    }
+
+    .comment .comment-toggle::after, .post-actions .post-action::after, .more-folded::after, .text-expand-btn::after,
+    .comment .comment-actions .list-inline-item > a::after {
+        content: "";
+        position: absolute;
+        inset: -8px -4px;
+    }
+}

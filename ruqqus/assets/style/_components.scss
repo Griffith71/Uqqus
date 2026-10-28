@@ -1,0 +1,984 @@
+// Core components on the design tokens (the UI modernisation, 2026-10): the page's type and colour, buttons, fields,
+// menus, dialogs and phone sheets, toasts, the empty state and the loading skeleton. Imported at the END of both
+// theme sheets, so a rule here replaces a legacy rule with the same selector; legacy rules that only differ by a
+// page's context (the search box, the composer) stay until that screen's own pass.
+//
+// Motion stays in the sheets' "Interface polish" block (press scale, menu fade, sheet curve); this file changes shape
+// and colour only, and every transition here uses the duration tokens (0 under prefers-reduced-motion).
+
+// --- the page ---------------------------------------------------------------------------------------------------
+
+html {
+    color-scheme: if($theme == "dark", dark, light);
+    -webkit-text-size-adjust: 100%;
+}
+
+body {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+}
+
+// counts never change width as they change (1.2k to 1.3k, a vote taken back)
+.score, .score-up, .score-down, .post-action-count, .rep-count, .badge-count, .vote-count {
+    font-variant-numeric: tabular-nums;
+}
+
+// --- buttons ----------------------------------------------------------------------------------------------------
+
+.btn {
+    font-weight: var(--weight-semibold);
+    font-size: var(--text-base);
+    line-height: 1.4;
+    border-radius: var(--radius-pill);
+}
+
+.btn-sm {
+    font-size: var(--text-sm);
+}
+
+.btn.login, .btn.register {
+    height: auto;
+    border-radius: var(--radius-pill);
+}
+
+// the brand fill is the deep shade, so its white label reads at AA whatever the guild's colour
+.btn-primary,
+.btn-primary:not(:disabled):not(.disabled):active,
+.btn-primary:not(:disabled):not(.disabled).active {
+    background-color: var(--brand-strong);
+    border-color: var(--brand-strong);
+    color: var(--on-brand);
+}
+
+.btn-primary:focus, .btn-primary.focus {
+    background-color: var(--brand-strong);
+    border-color: var(--brand-strong);
+    color: var(--on-brand);
+}
+
+@media (hover: hover) and (pointer: fine) {
+    .btn-primary:hover {
+        background-color: color-mix(in srgb, var(--brand-strong) 86%, #000);
+        border-color: color-mix(in srgb, var(--brand-strong) 86%, #000);
+        color: var(--on-brand);
+    }
+}
+
+.btn-outline-primary {
+    color: var(--link);
+    border-color: var(--border-strong);
+    background-color: transparent;
+}
+
+@media (hover: hover) and (pointer: fine) {
+    .btn-outline-primary:hover {
+        color: var(--link);
+        border-color: var(--link);
+        background-color: var(--brand-soft);
+    }
+}
+
+// a quiet button on the page's own surface, the default for everything that isn't the one main action
+.btn-secondary,
+.btn-secondary:focus,
+.btn-secondary:not(:disabled):not(.disabled):active {
+    color: var(--text);
+    background-color: var(--surface-sunken);
+    border-color: transparent;
+}
+
+@media (hover: hover) and (pointer: fine) {
+    .btn-secondary:hover {
+        color: var(--text);
+        background-color: var(--border);
+        border-color: transparent;
+    }
+}
+
+.btn-link {
+    color: var(--link);
+    font-weight: var(--weight-semibold);
+}
+
+// --- fields -----------------------------------------------------------------------------------------------------
+
+.form-control {
+    color: var(--text);
+    background-color: var(--surface-sunken);
+    border: 1px solid transparent;
+    border-radius: var(--radius-sm);
+    min-height: 40px;
+    transition: border-color var(--dur-fast) var(--ease-out), box-shadow var(--dur-fast) var(--ease-out),
+        background-color var(--dur-fast) var(--ease-out);
+}
+
+textarea.form-control {
+    min-height: 0;
+}
+
+.form-control::placeholder {
+    color: var(--text-muted);
+    opacity: 1;
+}
+
+@media (hover: hover) and (pointer: fine) {
+    .form-control:hover {
+        color: var(--text);
+        background-color: var(--surface-sunken);
+        border-color: var(--border-strong);
+    }
+}
+
+.form-control:focus, .form-control:active {
+    color: var(--text);
+    background-color: var(--surface);
+    border-color: var(--link);                       // the derived shade: 3:1 on the page whatever the guild's colour
+    box-shadow: 0 0 0 3px var(--focus-ring);
+    outline: 0;
+}
+
+// the keyboard's focus ring (the sheets' polish block drew it in the raw brand colour)
+body:not(.using-mouse) :focus-visible:not(.form-control) {
+    outline: 2px solid var(--link);
+    outline-offset: 2px;
+}
+
+.form-control:disabled, .form-control[readonly] {
+    color: var(--text-muted);
+    background-color: var(--surface-sunken);
+    opacity: 1;
+}
+
+// labels read as sentence case (they were small capitals: "USERNAME OR EMAIL ADDRESS")
+label {
+    text-transform: none;
+    font-size: var(--text-sm);
+    font-weight: var(--weight-semibold);
+    letter-spacing: 0;
+    color: var(--text);
+}
+
+.form-check-label {
+    font-weight: var(--weight-regular);
+    font-size: var(--text-base);
+}
+
+// iOS zooms the page into a field whose text is under 16px and never zooms back (mobile-native)
+@media (pointer: coarse) {
+    input.form-control, textarea.form-control, select.form-control, .custom-select {
+        font-size: 16px;
+    }
+}
+
+// --- menus ------------------------------------------------------------------------------------------------------
+
+.dropdown-menu {
+    padding: var(--space-2);
+    background-color: var(--surface-raised);
+    border: 0;
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-md);
+    color: var(--text);
+    font-size: var(--text-base);
+}
+
+.dropdown-item {
+    color: var(--text);
+    padding: var(--space-3) var(--space-4);
+    border-radius: var(--radius-sm);
+    font-weight: var(--weight-medium);
+    transition: background-color var(--dur-fast) var(--ease-out);
+}
+
+.dropdown-item:hover, .dropdown-item:focus, .dropdown-item.active {
+    color: var(--text);
+    background-color: var(--hover);
+}
+
+.dropdown-item:active {
+    color: var(--text);
+    background-color: var(--press);
+}
+
+.dropdown-divider {
+    border-top-color: var(--border);
+    margin: var(--space-2) var(--space-3);
+}
+
+// --- dialogs and phone sheets -----------------------------------------------------------------------------------
+
+.modal-content {
+    background-color: var(--surface-raised);
+    color: var(--text);
+    border: 0;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-lg);
+}
+
+.modal-header {
+    border-bottom: 0;
+}
+
+.modal-footer {
+    background-color: transparent;
+    border-top: 1px solid var(--border);
+    border-bottom-right-radius: var(--radius-lg);
+    border-bottom-left-radius: var(--radius-lg);
+}
+
+.modal-backdrop.show {
+    opacity: 1;
+    background-color: var(--overlay);
+}
+
+@media (max-width: 767.98px) {
+    // a phone sheet: square at the bottom edge, rounded at the top, a grabber that says it came from below
+    .modal.modal-sm-bottom .modal-content {
+        border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+        padding-bottom: env(safe-area-inset-bottom);
+        max-height: 88dvh;
+        overflow-y: auto;
+        overscroll-behavior: contain;
+    }
+
+    .modal.modal-sm-bottom .modal-content::before {
+        content: "";
+        display: block;
+        width: 36px;
+        height: 4px;
+        margin: var(--space-3) auto 0;
+        border-radius: var(--radius-pill);
+        background-color: var(--border-strong);
+        flex-shrink: 0;
+    }
+
+    .modal.modal-sm-bottom .modal-header {
+        border-radius: 0;
+    }
+}
+
+// --- toasts -----------------------------------------------------------------------------------------------------
+// The inverse of the page, a pill at the bottom centre, above the phone's bottom bar and the home indicator. Many
+// templates still place their toasts with inline styles, so the position is set firmly here.
+
+.toast {
+    position: fixed !important;
+    left: 50% !important;
+    right: auto !important;
+    bottom: calc(var(--space-7) + env(safe-area-inset-bottom)) !important;
+    width: max-content !important;
+    max-width: calc(100vw - 2 * var(--space-5)) !important;
+    margin: 0 !important;
+    translate: -50% 0;
+    z-index: var(--z-toast) !important;
+    color: var(--toast-fg);
+    background-color: var(--toast-bg);
+    border: 0;
+    border-radius: var(--radius-pill);
+    box-shadow: var(--shadow-lg);
+    font-size: var(--text-base);
+    font-weight: var(--weight-medium);
+    overflow: hidden;
+}
+
+@media (max-width: 991.98px) {
+    .toast {
+        bottom: calc(72px + env(safe-area-inset-bottom)) !important;
+    }
+}
+
+.toast .toast-body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-3);
+    padding: 10px var(--space-5);
+    color: inherit !important;
+    background-color: transparent !important;
+    border-radius: inherit;
+}
+
+.toast .toast-body .mr-2 {
+    margin-right: 0 !important;
+}
+
+.toast .toast-body.bg-success i, .toast .toast-body.bg-success .fas {
+    color: var(--toast-success);
+}
+
+.toast .toast-body.bg-danger i, .toast .toast-body.bg-danger .fas {
+    color: var(--toast-danger);
+}
+
+// --- empty states -----------------------------------------------------------------------------------------------
+// The feeds' empty states draw a large muted icon stack (a square with a ghost, a scroll, people) over a heading and
+// a line. Quietened to one muted icon in a soft circle. Scoped to exactly that shape: other icon stacks (the Support
+// box's coloured tiles) are left alone.
+
+$empty-icon: ".text-center > .fa-stack.fa-2x.text-muted:has(> .fa-square)";
+
+.text-center:has(> .fa-stack.fa-2x.text-muted > .fa-square) {
+    padding-top: var(--space-9);
+    padding-bottom: var(--space-9);
+}
+
+#{$empty-icon} {
+    width: 64px;
+    height: 64px;
+    line-height: 64px;
+    margin-bottom: var(--space-5) !important;
+    border-radius: 50%;
+    background-color: var(--surface-sunken);
+}
+
+#{$empty-icon} > .fa-square {
+    display: none;
+}
+
+#{$empty-icon} > .fa-stack-1x {
+    color: var(--text-muted) !important;
+    font-size: 24px;
+    line-height: 64px;
+}
+
+#{$empty-icon} ~ .h5, #{$empty-icon} ~ h2 {
+    font-size: var(--text-title);
+    font-weight: var(--weight-semibold);
+    letter-spacing: var(--tracking-title);
+    color: var(--text);
+}
+
+// --- loading ----------------------------------------------------------------------------------------------------
+// A skeleton is the shape of what is coming (a card's meta line, title and actions), so nothing jumps when it
+// arrives. The shimmer is the one looping motion on the site, and it stops for reduced motion.
+
+.skeleton-card {
+    padding: var(--card-pad);
+}
+
+.skeleton-line {
+    display: block;
+    height: 12px;
+    margin-bottom: var(--space-3);
+    border-radius: var(--radius-pill);
+    background-color: var(--surface-sunken);
+}
+
+.skeleton-line.is-title {
+    height: 18px;
+    width: 80%;
+    margin-bottom: var(--space-4);
+}
+
+.skeleton-line.is-meta {
+    width: 40%;
+}
+
+.skeleton-line.is-short {
+    width: 55%;
+    margin-bottom: 0;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+    @keyframes skeleton-pulse {
+        50% { opacity: 0.55; }
+    }
+
+    .skeleton-line {
+        animation: skeleton-pulse 1.4s ease-in-out infinite;
+    }
+}
+
+// --- the vote control -------------------------------------------------------------------------------------------
+// Arrows drawn with Font Awesome's arrow glyphs (they were CSS triangles) on a round target, the score between them.
+// The arrow element itself stays the click target: upvote() / downvote() read its data attributes from event.target,
+// so the glyph is a pseudo-element, never a child. Colours: muted at rest, the vote colour when cast.
+
+.arrow-up, .arrow-down {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    transition: background-color var(--dur-fast) var(--ease-out);
+}
+
+.arrow-up::before, .arrow-down::before,
+.arrow-up:hover::before, .arrow-down:hover::before {
+    content: "\f062";
+    font-family: "Font Awesome 6 Free";
+    font-weight: 900;
+    font-size: 14px;
+    line-height: 1;
+    width: auto;
+    height: auto;
+    border: 0;
+    color: var(--text-muted);
+    opacity: 1;
+}
+
+.arrow-down::before, .arrow-down:hover::before {
+    content: "\f063";
+}
+
+@media (hover: hover) and (pointer: fine) {
+    .arrow-up:not(.vote-locked):hover {
+        background-color: color-mix(in srgb, var(--upvote) 14%, transparent);
+    }
+
+    .arrow-up:not(.vote-locked):hover::before {
+        color: var(--upvote-text);
+    }
+
+    .arrow-down:not(.vote-locked):hover {
+        background-color: color-mix(in srgb, var(--downvote) 14%, transparent);
+    }
+
+    .arrow-down:not(.vote-locked):hover::before {
+        color: var(--downvote-text);
+    }
+}
+
+.active.arrow-up::before, .active.arrow-up:hover::before {
+    color: var(--upvote-text);
+}
+
+.active.arrow-down::before, .active.arrow-down:hover::before {
+    color: var(--downvote-text);
+}
+
+.arrow-up.vote-locked, .arrow-down.vote-locked {
+    cursor: not-allowed;
+}
+
+.arrow-up.vote-locked::before, .arrow-down.vote-locked::before,
+.arrow-up.vote-locked:hover::before, .arrow-down.vote-locked:hover::before {
+    color: var(--text-muted);
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+.voting .score, .voting .score-up, .voting .score-down {
+    display: block;
+    font-size: var(--text-sm);
+    font-weight: var(--weight-semibold);
+    line-height: 1.4;
+    padding: 2px 0;
+}
+
+.score-up {
+    color: var(--upvote-text) !important;
+}
+
+.score-down {
+    color: var(--downvote-text) !important;
+}
+
+// the phone's vote pill (submission_listing.html): one rounded segment, tinted once a vote is cast
+.vote-pill {
+    display: inline-flex;
+    align-items: center;
+    height: 32px;
+    border-radius: var(--radius-pill);
+    background-color: var(--surface-sunken);
+    transition: background-color var(--dur-fast) var(--ease-out);
+}
+
+.vote-pill .arrow-up, .vote-pill .arrow-down {
+    width: 32px;
+    height: 32px;
+}
+
+.vote-pill .score, .vote-pill .score-up, .vote-pill .score-down {
+    min-width: 2.5ch;
+    text-align: center;
+    font-size: var(--text-sm);
+    font-weight: var(--weight-semibold);
+    color: var(--text);
+}
+
+.vote-pill:has(.arrow-up.active) {
+    background-color: color-mix(in srgb, var(--upvote) 16%, var(--surface));
+}
+
+.vote-pill:has(.arrow-down.active) {
+    background-color: color-mix(in srgb, var(--downvote) 16%, var(--surface));
+}
+
+// --- long text: "Show more" / "Show less" -------------------------------------------------------------------------
+// A long comment is drawn whole and clamped (comments.html .comment-clamp); a feed card swaps its first lines for the
+// whole body (_feed.scss). While either is open its "Show less" is pinned to the bottom of the screen, so closing it
+// never means scrolling back to where it began; closing brings the start back on screen (all_js.js bringBackIntoView).
+
+.text-expand-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: var(--space-1);
+    padding: 4px 0;
+    border: 0;
+    background: none;
+    color: var(--link);
+    font-size: var(--text-sm);
+    font-weight: var(--weight-semibold);
+    cursor: pointer;
+}
+
+.text-expand-btn.is-open, .text-expand.is-open {
+    position: sticky;
+    bottom: calc(var(--space-5) + env(safe-area-inset-bottom));
+    z-index: 4;
+    margin-top: var(--space-3);
+    padding: 6px 14px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-pill);
+    background-color: var(--surface-raised);
+    box-shadow: var(--shadow-md);
+    color: var(--text);
+}
+
+// above the phone's bottom bar
+@media (max-width: 991.98px) {
+    .text-expand-btn.is-open, .text-expand.is-open {
+        bottom: calc(68px + env(safe-area-inset-bottom));
+    }
+}
+
+// --- the older button styles and pagination ------------------------------------------------------------------------
+// "Sign Up" and a few calls to action use .btn-purple / .btn-outline-purple ($purple is the site's colour): the same
+// deep fill as .btn-primary, so the white label reads at AA.
+
+.btn-purple, .btn-purple:focus, .btn-purple:not(:disabled):not(.disabled):active {
+    background-color: var(--brand-strong);
+    border-color: var(--brand-strong);
+    color: var(--on-brand);
+}
+
+.btn-outline-purple, .btn-outline-purple:focus {
+    color: var(--link);
+    border-color: var(--border-strong);
+    background-color: transparent;
+}
+
+@media (hover: hover) and (pointer: fine) {
+    .btn-purple:hover {
+        background-color: color-mix(in srgb, var(--brand-strong) 86%, #000);
+        border-color: color-mix(in srgb, var(--brand-strong) 86%, #000);
+        color: var(--on-brand);
+    }
+
+    .btn-outline-purple:hover {
+        color: var(--link);
+        border-color: var(--link);
+        background-color: var(--brand-soft);
+    }
+}
+
+.pagination {
+    gap: var(--space-2);
+}
+
+.pagination .page-link, .pagination .page-item:first-child .page-link, .pagination .page-item:last-child .page-link {
+    border: 1px solid var(--border);
+    border-radius: var(--radius-pill);
+    background-color: transparent;
+    color: var(--text);
+    font-weight: var(--weight-semibold);
+    font-size: var(--text-sm);
+    padding: 6px 14px;
+    margin-left: 0;
+}
+
+
+@media (hover: hover) and (pointer: fine) {
+    .pagination .page-link:hover {
+        background-color: var(--hover);
+        color: var(--text);
+    }
+}
+
+// --- contrast: older colours used as text (the axe audit of 2026-10-23) ---------------------------------------------
+// The brand colour and its cousins ($purple, $info, the raw $upvote) were used as text colours in places the redesign
+// hadn't reached; each is now the derived text colour of the same family (_tokens.scss), AA on the page.
+
+a {
+    color: var(--link);
+}
+
+a:hover {
+    color: var(--link);
+}
+
+.text-purple, .text-primary, .text-info {
+    color: var(--link) !important;
+}
+
+.text-success {
+    color: var(--success) !important;
+}
+
+.text-danger {
+    color: var(--danger) !important;
+}
+
+// a score coloured by its share of upvotes (helpers/vote_colour.py): the same eleven steps from blue to red as the
+// sheets' own @for, each shade moved just far enough to read on the page
+@for $i from 0 through 10 {
+    .vote-ratio-#{$i} {
+        $shade: mix($upvote, $downvote, $i * 10%);
+        color: if($theme == "dark", strong-on-dark($shade), strong-on-light($shade)) !important;
+    }
+}
+
+// the selected tab or pill: the deep fill under white, or the link colour as text
+.nav:not(.navbar-nav) .nav-link.active {
+    color: var(--link);
+}
+
+.nav-pills .nav-link.active, .nav-pills .show > .nav-link {
+    background-color: var(--brand-strong);
+    color: var(--on-brand) !important;
+}
+
+.space-tab.active, .space-tab.active:hover {
+    background: var(--brand-strong);
+    color: var(--on-brand);
+}
+
+.space-tab.active .space-count {
+    color: var(--on-brand);
+}
+
+// inline code: the pink, deep enough to read
+code {
+    color: if($theme == "dark", strong-on-dark(#e83e8c), strong-on-light(#e83e8c));
+}
+
+// a link inside a sentence is underlined, not told apart by colour alone
+p a:not(.btn):not(.badge):not(.user-name):not(.stretched-link), .comment-text a:not(.btn), .post-body a:not(.btn) {
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 2px;
+}
+
+// the right sidebar's Support links: the coloured tile carries the colour, the label is the page's text
+.sidebar-section .body > a.btn-link.btn-block {
+    color: var(--text) !important;
+}
+
+.explore-chip.active, .explore-chip.active:hover {
+    background-color: var(--brand-strong);
+    border-color: var(--brand-strong);
+    color: var(--on-brand);
+}
+
+
+#composer-audience-label, summary {
+    color: var(--link);
+}
+
+// a Prev or Next with nowhere to go: quieter, still readable
+.pagination .page-item.disabled .page-link {
+    opacity: 1;
+    color: var(--text-muted);
+    border-color: var(--border);
+}
+
+.search-advanced summary {
+    color: var(--link);
+}
+
+// "Show more" on a feed card is a button (it was a link to nowhere): drawn like the link it was
+button.text-expand {
+    padding: 0;
+    border: 0;
+    background: none;
+    font: inherit;
+    cursor: pointer;
+}
+
+// how much room is left in a field with a weighted limit (all_js.js updateWeightedLimit): appears near the limit
+.weighted-count {
+    display: block;
+    margin-top: var(--space-2);
+    color: var(--text-muted);
+    font-size: var(--text-xs);
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+}
+
+.weighted-count.is-over {
+    color: var(--danger);
+    font-weight: var(--weight-semibold);
+}
+
+// --- the Translate button (partials/translate_button.html, assets/js/translate.js) ---------------------------------
+// a quiet line under the text: "Translate"; once pressed the text itself is the translation, and the line says so
+// ("Translated from Spanish by LibreTranslate · Show original")
+
+.translate-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0 var(--space-2);
+    margin: var(--space-2) 0 var(--space-3);
+    font-size: var(--text-sm);
+}
+
+// on a feed card, above the card's own link (its stretched-link), so a press translates rather than opening the post
+.translate-row.is-in-card {
+    position: relative;
+    z-index: 3;
+}
+
+.translate-status {
+    color: var(--text-muted);
+}
+
+.translate-status:empty {
+    display: none;
+}
+
+.translate-row.is-translated .translate-status::after {
+    content: "·";
+    margin: 0 0 0 var(--space-2);
+    color: var(--text-muted);
+}
+
+.translate-row.is-error .translate-status {
+    color: var(--danger);
+}
+
+.translate-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding: 2px 0;
+    border: 0;
+    background: none;
+    color: var(--link);
+    font-size: var(--text-sm);
+    font-weight: var(--weight-semibold);
+    cursor: pointer;
+}
+
+.translate-btn:hover {
+    text-decoration: underline;
+}
+
+.translate-row.is-busy .translate-btn {
+    opacity: 0.6;
+    cursor: progress;
+}
+
+.translate-row.is-translated .translate-btn .fa-language {
+    display: none;                     // "Show original" reads as a link back, not a second Translate
+}
+
+// --- the interface language, in the footer (partials/language_switcher.html) ----------------------------------------
+// A plain list of links, each language in its own name; folded until opened.
+
+.language-switcher {
+    margin-top: var(--space-2);
+    font-size: var(--text-sm);
+}
+
+.language-switcher summary {
+    color: var(--text-muted);                     // AA on the page (text-gray-500 was 2.25:1)
+    display: inline-flex;
+    align-items: center;
+    cursor: pointer;
+    list-style: none;
+}
+
+.language-switcher summary::-webkit-details-marker {
+    display: none;
+}
+
+.language-switcher-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(9rem, 1fr));
+    gap: var(--space-1) var(--space-3);
+    margin: var(--space-2) 0 0;
+    padding: 0;
+}
+
+.language-switcher-list a {
+    color: var(--text-muted);
+}
+
+.language-switcher-list a[aria-current="true"] {
+    color: var(--text);
+    font-weight: var(--weight-semibold);
+}
+
+.language-switcher-on-dark .language-switcher summary,
+.language-switcher-on-dark .language-switcher-list a {
+    color: rgba(255, 255, 255, 0.8);
+}
+
+// a legal page in English, under a translated interface: the note that the English is binding
+.legal-english-note {
+    margin-bottom: var(--space-3);
+}
+
+// --- member text in either direction ---------------------------------------------------------------------------------
+// Bootstrap sets `body { text-align: left }`, which a right-to-left page mirrors to `right` and everything inherits, so
+// an English post in an Arabic interface (or the other way round) would be aligned against its own reading. Text that
+// says it may be in any language (dir="auto": titles, post text, comments) is aligned to the start of its own
+// direction instead; `.text-start` does the same where a title used `.text-left`.
+[dir="auto"] {
+    text-align: start;
+}
+
+.text-start {
+    text-align: start !important;
+}
+
+// --- labels that must stay on one line, in every language ------------------------------------------------------------
+// A sidebar row's label (All, For You, Post type, My guilds...) sits beside an icon and a value in a fixed column: a
+// longer translation is cut with an ellipsis instead of wrapping the row (the owner, 2026-10-25: translations longer
+// than the design). The value beside it (the chosen post types, "Discover guilds") gets only the room the label leaves;
+// each has its whole text as its title. A count keeps its size.
+.sidebar-row-label,
+.sidebar-row-value {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.sidebar-row-value {
+    flex: 1 1 0;              // only the room the label leaves: the label is cut only when it can't fit alone
+    text-align: end;
+}
+
+.sidebar-row-label ~ .badge {
+    flex-shrink: 0;
+}
+
+.sidebar-row-value > a {
+    display: inline;          // a button's inline-block can't be cut by the ellipsis
+}
+
+// --- Send feedback ----------------------------------------------------------------------------------------------------
+// The sheet in partials/site_feedback_modal.html. The four kinds wrap on a narrow screen (a translation may be longer
+// than the English); the screenshot is shown as a small thumbnail the member can check before it is sent.
+.site-feedback-kinds {
+    min-width: 0;
+    margin: 0;
+    padding: 0;
+    border: 0;
+}
+
+.site-feedback-kinds .custom-control-inline {
+    margin-right: var(--space-4);
+    margin-bottom: var(--space-2);
+}
+
+.site-feedback-preview img {
+    display: block;
+    max-width: 100%;
+    max-height: 180px;
+    margin-bottom: var(--space-1);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+}
+
+@media (max-width: 767.98px) {
+    // a phone sheet is only as tall as the screen allows (88dvh), and once a screenshot is attached it is taller than
+    // that: the text scrolls inside it and Send stays in reach below, instead of the whole sheet scrolling away from it
+    // the header, body and footer are the form's children, so the form is the column (the content holds only it)
+    #siteFeedbackModal .modal-content {
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+    }
+
+    #siteFeedbackModal form {
+        display: flex;
+        flex: 1 1 auto;
+        flex-direction: column;
+        min-height: 0;
+    }
+
+    #siteFeedbackModal .modal-body {
+        flex: 1 1 auto;
+        min-height: 0;
+        overflow-y: auto;
+        overscroll-behavior: contain;
+    }
+
+    #siteFeedbackModal .modal-header,
+    #siteFeedbackModal .modal-footer {
+        flex-shrink: 0;
+    }
+}
+
+// --- the account menu ---------------------------------------------------------------------------------------------------
+// partials/account_menu.html: groups told apart by a line (the owner's choice, no headings). The menu has three more
+// dividers than it had, so each item is a step tighter than a general menu's, and the menu never narrows below what
+// "Send feedback" and an unread badge need. The icons are a quiet guide with the label carrying the weight; the Dark mode
+// toggle takes the brand's AA shade while it is on. Keyed on .account-menu, which both shells' menus carry (default.html,
+// header.html), not on #accountDropdownMenu, which only the first has.
+.account-menu {
+    min-width: 15rem;
+}
+
+.account-menu .dropdown-item {
+    padding-top: var(--space-2);
+    padding-bottom: var(--space-2);
+}
+
+.account-menu .dropdown-item > .fa-fw {
+    color: var(--text-muted);
+}
+
+.account-menu .dropdown-item > .fa-toggle-on {
+    color: var(--brand-strong);
+}
+
+.account-menu .dropdown-divider {
+    margin: var(--space-1) var(--space-3);
+}
+
+// A row of choices (All | Posts | Comments) that a longer translation can't fit on a phone wraps rather than making
+// the page scroll sideways (Hungarian on /history, 2026-10-25)
+.btn-group-fit {
+    flex-wrap: wrap;
+    max-width: 100%;
+}
+
+// the sign-up form's hidden field (sign_up.html, helpers/signup_risk.py "honeypot"): out of sight and out of the tab
+// order for people, still in the form for a bot that fills in every input. Not display:none, which bots skip.
+.signup-extra {
+    position: absolute;
+    left: -10000px;
+    top: auto;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+}
+
+// the notice a held account sees (partials/held_notice.html, helpers/quarantine.py): the brand's tint with the page's own
+// text colour, so it reads at AA in both themes (Bootstrap's .alert-info kept its light fill in dark mode)
+.held-notice {
+    margin: var(--space-4) 0 0;
+    padding: var(--space-3) var(--space-4);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    background: var(--brand-soft);
+    color: var(--text);
+    font-size: var(--text-sm);
+    line-height: 1.45;
+
+    a {
+        color: var(--text);
+        font-weight: 600;
+        text-decoration: underline;
+    }
+}

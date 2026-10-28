@@ -1,0 +1,277 @@
+// Design tokens (the UI modernisation, 2026-10): the values new and restyled components are written against, as CSS
+// custom properties. Imported by both theme sheets right after Bootstrap, so `$primary` is the page's colour (the
+// site's, or a guild's on its own pages) and `$theme` says which sheet this is. Colours are worked out here once per
+// theme; everything else is the same in both. tests/test_design_tokens_assets.py compiles both sheets and checks
+// that text and controls meet WCAG AA on the surfaces they sit on.
+//
+// Density: html[data-density="compact"] (the `density` cookie, partials/theme.html html_attrs) narrows a few.
+// Motion: durations go to 0 under prefers-reduced-motion, so a transition written with them needs no query of its own.
+
+// --- WCAG contrast, worked out at compile time ---------------------------------------------------------------------
+// A guild picks any colour, so the shades used for text are found, not chosen: the colour is darkened (or lightened)
+// in small steps until it reads at 4.5:1 on the hardest surface it sits on. libsass has no pow(), so the 2.4 power of
+// the sRGB curve is x^2 times the fifth root of x^2, by Newton's method.
+
+@function _fifth-root($a) {
+    @if $a <= 0 {
+        @return 0;
+    }
+    $y: 1;
+    @for $i from 1 through 24 {
+        $y: $y - ($y * $y * $y * $y * $y - $a) / (5 * $y * $y * $y * $y);
+    }
+    @return $y;
+}
+
+@function _channel($value) {
+    $c: $value / 255;
+    @if $c <= 0.03928 {
+        @return $c / 12.92;
+    }
+    $x: ($c + 0.055) / 1.055;
+    @return $x * $x * _fifth-root($x * $x);
+}
+
+@function luminance($colour) {
+    @return 0.2126 * _channel(red($colour)) + 0.7152 * _channel(green($colour)) + 0.0722 * _channel(blue($colour));
+}
+
+@function contrast($a, $b) {
+    $la: luminance($a);
+    $lb: luminance($b);
+    @if $la < $lb {
+        $t: $la;
+        $la: $lb;
+        $lb: $t;
+    }
+    @return ($la + 0.05) / ($lb + 0.05);
+}
+
+// the colour, darkened until it reads on the sunken grey of pills and fields (#edf2f7, the hardest light surface
+// text sits on) and holds white text
+@function strong-on-light($colour) {
+    $c: $colour;
+    @while contrast($c, #edf2f7) < 4.6 and lightness($c) > 0% {
+        $c: darken($c, 2%);
+    }
+    @return $c;
+}
+
+// and lightened until it reads on the raised dark surface (#202327, the hardest dark one)
+@function strong-on-dark($colour) {
+    $c: $colour;
+    @while contrast($c, #202327) < 4.6 and lightness($c) < 100% {
+        $c: lighten($c, 2%);
+    }
+    @return $c;
+}
+
+:root {
+    // type
+    --font-sans: "Inter", "Inter Fallback", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial,
+        sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+    --text-xs: 12px;
+    --text-sm: 13px;
+    --text-base: 14px;
+    --text-body: 15px;
+    --text-title: 18px;
+    --text-title-lg: 22px;
+    --text-display: 28px;
+    --leading-tight: 1.3;
+    --leading-body: 1.55;
+    --tracking-title: -0.011em;
+    --weight-regular: 400;
+    --weight-medium: 500;
+    --weight-semibold: 600;
+    --weight-bold: 700;
+
+    // spacing: a 4px grid
+    --space-1: 2px;
+    --space-2: 4px;
+    --space-3: 8px;
+    --space-4: 12px;
+    --space-5: 16px;
+    --space-6: 20px;
+    --space-7: 24px;
+    --space-8: 32px;
+    --space-9: 40px;
+    --space-10: 48px;
+
+    // radii, by what holds what: a chip inside a card inside a sheet
+    --radius-xs: 6px;
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 16px;
+    --radius-pill: 999px;
+
+    // density (comfortable; compact below)
+    --card-pad: 16px;
+    --card-gap: 12px;
+    --media-max-h: 512px;              // a picture or player with no text under the title
+    --media-max-h-with-text: 400px;    // one with a snippet above it: the card stays about the same height
+    --snippet-lines: 4;                // the body's first lines on a text-only card
+    --snippet-lines-media: 2;          // and on a card that also shows a picture or link
+    --avatar-sm: 24px;
+    --control-h: 36px;
+    --hit-min: 32px;
+
+    // motion: ease-out for anything the person started, the drawer curve for sheets (emil-design-eng)
+    --dur-fast: 120ms;
+    --dur-base: 180ms;
+    --dur-sheet: 300ms;
+    --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+    --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
+
+    // stacking, in Bootstrap's own order
+    --z-sticky: 10;
+    --z-nav: 1030;
+    --z-sheet: 1040;
+    --z-modal: 1050;
+    --z-toast: 1080;
+
+    // the cooldown meter (partials/throttle_meter.html): cool blue at the bottom to boiling red at the top. Fixed, so a
+    // guild's colour never changes them
+    --boil-cool: #2f8cff;
+    --boil-mid: #8b5cf6;
+    --boil-warm: #f97316;
+    --boil-hot: #e8452c;
+
+    // colour
+    --brand: #{$primary};
+    --on-brand: #fff;
+    --upvote: #{$upvote};
+    --downvote: #{$downvote};
+
+    @if $theme == "dark" {
+        --bg: #000000;
+        --surface: #16181c;
+        --surface-raised: #202327;
+        --surface-sunken: #1c1f23;
+        --panel: #16181c;                // the sidebars' boxes, on the page
+        --surface-hover: #1d2024;
+        --border: #2f3336;
+        --border-strong: #3e4348;
+        --text: #e7e9ea;
+        --text-muted: #8b98a5;
+        --text-subtle: #5b6670;          // decorative only: never the only carrier of meaning
+        --brand-strong: #{strong-on-light($primary)};   // fills under white text: the deep shade in both themes
+        --link: #{strong-on-dark($primary)};
+        --brand-soft: #{rgba($primary, 0.18)};
+        --upvote-text: #{strong-on-dark($upvote)};
+        --downvote-text: #{strong-on-dark($downvote)};
+        --danger: #f87171;
+        --success: #4ade80;
+        --focus-ring: #{rgba(strong-on-dark($primary), 0.55)};
+        --overlay: rgba(0, 0, 0, 0.6);
+        --hover: rgba(255, 255, 255, 0.06);     // laid over any surface: rows, menu items, icon buttons
+        --press: rgba(255, 255, 255, 0.1);
+        --toast-bg: #e7e9ea;                     // toasts are the inverse of the page
+        --toast-fg: #0f1419;
+        --toast-success: #15803d;
+        --toast-danger: #b91c1c;
+        // on dark surfaces depth is lightness and a border, not a shadow
+        --shadow-sm: none;
+        --shadow-md: 0 0 0 1px #2f3336, 0 8px 24px rgba(0, 0, 0, 0.5);
+        --shadow-lg: 0 0 0 1px #2f3336, 0 16px 48px rgba(0, 0, 0, 0.6);
+    } @else {
+        --bg: #ffffff;                   // posts sit on the page itself, divided by hairlines (X, Reddit)
+        --surface: #ffffff;
+        --surface-raised: #ffffff;
+        --surface-sunken: #edf2f7;
+        --panel: #f6f8fa;                // the sidebars' boxes, on the page
+        --surface-hover: #f1f4f8;
+        --border: #e2e8f0;
+        --border-strong: #cbd5e0;
+        --text: #1a202c;
+        --text-muted: #5f6e82;
+        --text-subtle: #a0aec0;          // decorative only: never the only carrier of meaning
+        --brand-strong: #{strong-on-light($primary)};
+        --link: #{strong-on-light($primary)};
+        --brand-soft: #{rgba($primary, 0.12)};
+        --upvote-text: #{strong-on-light($upvote)};
+        --downvote-text: #{strong-on-light($downvote)};
+        --danger: #{strong-on-light(#c53030)};
+        --success: #{strong-on-light(#2f855a)};
+        --focus-ring: #{rgba($primary, 0.45)};
+        --overlay: rgba(15, 23, 42, 0.5);
+        --hover: rgba(15, 23, 42, 0.05);        // laid over any surface: rows, menu items, icon buttons
+        --press: rgba(15, 23, 42, 0.09);
+        --toast-bg: #1a202c;                     // toasts are the inverse of the page
+        --toast-fg: #ffffff;
+        --toast-success: #4ade80;
+        --toast-danger: #f87171;
+        --shadow-sm: 0 1px 2px rgba(16, 24, 40, 0.06);
+        --shadow-md: 0 4px 16px rgba(16, 24, 40, 0.08), 0 1px 3px rgba(16, 24, 40, 0.06);
+        --shadow-lg: 0 16px 48px rgba(16, 24, 40, 0.16), 0 2px 6px rgba(16, 24, 40, 0.06);
+    }
+}
+
+html[data-density="compact"] {
+    --card-pad: 10px;
+    --card-gap: 4px;
+    --media-max-h: 320px;
+    --media-max-h-with-text: 240px;
+    --snippet-lines: 2;
+    --snippet-lines-media: 0;          // compact: a card with media shows no text
+    --avatar-sm: 20px;
+    --control-h: 32px;
+}
+
+// a coarse pointer gets the 44px Apple and Google ask for
+@media (pointer: coarse) {
+    :root {
+        --hit-min: 44px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    :root {
+        --dur-fast: 0ms;
+        --dur-base: 0ms;
+        --dur-sheet: 0ms;
+    }
+}
+
+// --- scripts Inter doesn't draw --------------------------------------------------------------------------------------
+// The interface in another language (helpers/i18n.py: <html lang>) and member text that says its language (lang on a
+// post, a comment): the system's own font for that script comes straight after Inter, so Chinese, Japanese and Korean
+// take their own glyph shapes (Han unification: the same character is drawn differently in each) and Arabic script,
+// Hebrew, Devanagari, Bengali and Thai a font made for them, instead of whatever the browser happens to fall back to.
+// On the element that carries the lang only, so icons keep their own font.
+[lang|="ja"] {
+    font-family: "Inter", "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Yu Gothic UI", "Yu Gothic", Meiryo,
+        "Noto Sans JP", "Noto Sans CJK JP", sans-serif;
+}
+
+[lang|="zh"] {
+    font-family: "Inter", "PingFang SC", "Microsoft YaHei UI", "Microsoft YaHei", "Noto Sans SC",
+        "Noto Sans CJK SC", "Source Han Sans SC", sans-serif;
+}
+
+[lang|="ko"] {
+    font-family: "Inter", "Apple SD Gothic Neo", "Malgun Gothic", "Noto Sans KR", "Noto Sans CJK KR", sans-serif;
+}
+
+[lang|="ar"], [lang|="fa"] {
+    font-family: "Inter", "Geeza Pro", "Segoe UI", "Noto Sans Arabic", Tahoma, sans-serif;
+}
+
+[lang|="ur"] {
+    font-family: "Inter", "Noto Nastaliq Urdu", "Jameel Noori Nastaleeq", "Geeza Pro", "Segoe UI", Tahoma, sans-serif;
+}
+
+[lang|="he"] {
+    font-family: "Inter", "Arial Hebrew", "Segoe UI", "Noto Sans Hebrew", Arial, sans-serif;
+}
+
+[lang|="hi"] {
+    font-family: "Inter", "Kohinoor Devanagari", "Nirmala UI", "Noto Sans Devanagari", sans-serif;
+}
+
+[lang|="bn"] {
+    font-family: "Inter", "Kohinoor Bangla", "Nirmala UI", "Noto Sans Bengali", sans-serif;
+}
+
+[lang|="th"] {
+    font-family: "Inter", "Thonburi", "Leelawadee UI", "Noto Sans Thai", sans-serif;
+}

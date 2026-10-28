@@ -6,7 +6,7 @@
  *
  * Its width (the owner, 2026-10-21): the right sidebar's plus the 207px the left sidebar
  * gives up when it folds to its rail (316 + 207 = 523px), whenever the window holds the
- * normal 1326px block with the rail (WIDE_PANEL); on a narrower one it is the right
+ * normal 1370px block with the rail (WIDE_PANEL); on a narrower one it is the right
  * sidebar's width. The left sidebar folds to its rail only when it, the feed and the
  * panel don't fit, and only while the panel is open, so the feed keeps its width: the
  * member's own choice (the sidebar_pref cookie) is never changed, and a sidebar they
@@ -25,8 +25,8 @@
   if (!panel || !row) return;
 
   var PANELS = {
-    notifications: { title: 'Notifications', src: '/notifications?embed=1', page: '/notifications', fresh: true },
-    chat: { title: 'Chat', src: '/chat?embed=1', page: '/chat' }
+    notifications: { title: tr('Notifications'), src: '/notifications?embed=1', page: '/notifications', fresh: true },
+    chat: { title: tr('Chat'), src: '/chat?embed=1', page: '/chat' }
   };
 
   var wide = window.matchMedia('(min-width: 992px)');
@@ -39,8 +39,8 @@
   var html = document.documentElement;
   var sidebar = document.getElementById('sidebar-left');
   // the columns ($layout-* in the stylesheets), the 207px the folded sidebar gives up, the 15px gutter each side
-  var LEFT_OPEN = 272, RAIL = 65, FEED = 738, RIGHT = 316, GIVEN_UP = 207, GUTTERS = 30;
-  var WIDE_PANEL = RAIL + FEED + RIGHT + GIVEN_UP + GUTTERS;      // 1356: the 1326px block with the rail
+  var LEFT_OPEN = 272, RAIL = 65, FEED = 782, RIGHT = 316, GIVEN_UP = 207, GUTTERS = 30;
+  var WIDE_PANEL = RAIL + FEED + RIGHT + GIVEN_UP + GUTTERS;      // 1400: the 1370px block with the rail
   var foldedByPanel = false;
 
   function fold() {

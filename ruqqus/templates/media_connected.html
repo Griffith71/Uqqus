@@ -7,9 +7,12 @@
   The composer only takes a message carrying the `n` it made, and only from this origin.
   `payload` is drawn with |tojson, never as markup.
 #}
-<html lang="en">
+{% from "partials/theme.html" import html_attrs, font_faces, theme_color %}
+<html{{ html_attrs() }}>
 <head>
   <meta charset="utf-8">
+{{ font_faces() }}
+{{ theme_color() }}
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="robots" content="noindex">
   <title>{{ "Connected" if ok else "Not connected" }} - {{ 'SITE_NAME' | app_config }}</title>
