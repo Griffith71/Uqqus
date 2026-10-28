@@ -1,0 +1,18 @@
+{#
+  The interface language, chosen from the footer (routes/interface_language_pages.py; helpers/i18n.py): every language
+  with a catalogue, each in its own name, a plain link (it works without script). A visitor's choice is a cookie; a
+  member's becomes their "Your language" (Settings > Content). Hidden while English is the only language.
+#}
+{% macro language_switcher() %}
+{% set choices = interface_choices() %}
+{% if choices | length > 1 %}
+<details class="language-switcher">
+  <summary><i class="fas fa-globe mr-1" aria-hidden="true"></i><span class="sr-only">{{ _("Language") }}: </span><span lang="{{ ui_lang() }}">{{ own_language_name(ui_locale()) }}</span></summary>
+  <ul class="language-switcher-list list-unstyled">
+    {% for key, name in choices %}
+    <li><a href="/interface_language?lang={{ key }}&amp;next={{ request.full_path | urlencode }}" lang="{{ html_lang(key) }}" dir="auto"{% if key == ui_locale() %} aria-current="true"{% endif %}>{{ name }}</a></li>
+    {% endfor %}
+  </ul>
+</details>
+{% endif %}
+{% endmacro %}

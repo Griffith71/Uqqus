@@ -1,0 +1,13 @@
+{#
+  The interface language for the page's scripts (helpers/i18n_runtime.py; docs/i18n.md). First thing in every page
+  shell's <head>, before any other script: window.I18N names the language, its direction and the tag to format dates
+  and numbers with; assets/js/i18n.js defines window.tr / window.trn; assets/i18n/<key>.js (when the language has one)
+  fills I18N.messages and I18N.plural. English has no table: tr answers the English it is given.
+#}
+{% macro i18n_boot() %}
+{% set key = ui_locale() %}
+<script>window.I18N = {lang: {{ ui_lang() | tojson }}, intl: {{ ui_lang() | tojson }}, dir: {{ ui_dir() | tojson }}, pseudo: {{ (key in ("en-XA", "ar-XB")) | tojson }}};</script>
+<script src="{{ asset_url('js/i18n.js') }}"></script>
+{% set table = i18n_script(key) %}
+{% if table %}<script src="{{ table }}"></script>{% endif %}
+{% endmacro %}

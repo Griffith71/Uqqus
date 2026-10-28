@@ -11,6 +11,7 @@ from ruqqus.helpers.wrappers import *
 from ruqqus.helpers.markdown import CustomRenderer
 from ruqqus.helpers.sanitize import *
 from ruqqus.mail.mail import send_mail
+from ruqqus.helpers.i18n_runtime import force_locale
 from ruqqus.__main__ import app, limiter
 
 
@@ -65,6 +66,8 @@ def legal_final(v):
             request.files[x].filename): request.files[x] for x in request.files}
 
     try:
+        with force_locale("en"):        # an email to the admins: always English (its layout's footer is marked)
+            body = render_template("email/legal.html", data=data)
         send_mail(environ.get("admin_email"),
                   "Legal request submission",
                   render_template("email/legal.html",
@@ -177,6 +180,8 @@ def counter_dmca_post(v):
 
     data = sorted(data, key=lambda x: x[0])
     try:
+        with force_locale("en"):        # an email to the admins: always English (its layout's footer is marked)
+            body = render_template("email/counter_dmca.html", data=data)
         send_mail(environ.get("admin_email"),
                   "DMCA Counter Notice",
                   render_template("email/counter_dmca.html",

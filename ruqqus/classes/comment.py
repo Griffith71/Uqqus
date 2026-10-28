@@ -41,6 +41,9 @@ class CommentAux(Base):
     ban_reason = Column(String(256), default='')
     hidden_reason = Column(String(256), default='')
     author_hidden_reason = Column(String(256), default='')
+    # a system notice's message and values (helpers/alerts.py notify), drawn again in each reader's language
+    notice_msgid = Column(String, default=None)
+    notice_params = Column(String, default=None)
 
 
 class Comment(Base, Age_times, Scores, Stndrd, Fuzzing):

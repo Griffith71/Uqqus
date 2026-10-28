@@ -9,4 +9,5 @@ PY=.venv/Scripts/python
 [ -x "$PY" ] || { echo "Missing .venv - run: python -m venv .venv && .venv/bin/pip install -r requirements-dev.txt"; exit 1; }
 
 echo "== ruff";   "$PY" -m ruff check .
+echo "== i18n";   PYTHONPATH=. "$PY" scripts/i18n_lint.py && PYTHONPATH=. "$PY" scripts/i18n_catalogs.py check
 echo "== pytest"; "$PY" -m pytest -q

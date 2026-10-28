@@ -30,6 +30,8 @@ from .front import frontlist
 from ruqqus.__main__ import app, cache, limiter, r
 from flask import session as flask_session
 from markupsafe import escape        # flask.escape went with Flask 3: every message of the security form crashed
+from urllib.parse import quote         # a message in an address (?msg=, ?error=): escape() cut it at an apostrophe
+from ruqqus.helpers.i18n_runtime import N_, force_locale, locale_for_user, msg, tr, trn
 
 
 valid_username_regex = re.compile(r"^[a-zA-Z0-9_]{3,25}$")
@@ -334,12 +336,14 @@ def settings_security_post(v):
 
         link = url + params
 
-        send_mail(to_address=new_email,
-                  subject="Verify your email address.",
-                  html=render_template("email/email_change.html",
-                                       action_url=link,
-                                       v=v)
-                  )
+        # in the account's own language, the subject too
+        with force_locale(locale_for_user(v)):
+            send_mail(to_address=new_email,
+                      subject=tr("Verify your email address."),
+                      html=render_template("email/email_change.html",
+                                           action_url=link,
+                                           v=v)
+                      )
 
         return redirect("/settings/security?msg=" + escape(
             "Check your email and click the verification link to complete the email change."))

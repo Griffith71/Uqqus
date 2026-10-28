@@ -199,6 +199,16 @@ COUNTRY_NAMES = {
 }
 
 
+@lru_cache(maxsize=64)
+def _territories(babel_code):
+    """CLDR's country names in one language (Babel), never typed: {code: name}."""
+    from babel import Locale
+    try:
+        return dict(Locale.parse(babel_code).territories)
+    except (ValueError, TypeError):
+        return {}
+
+
 # Reverse of COUNTRY_TO_REGION: region code -> sorted list of its country codes.
 # Used by the /regions map page to colour each country by its region.
 REGION_COUNTRIES = {}

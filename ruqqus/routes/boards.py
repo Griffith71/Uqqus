@@ -4,7 +4,8 @@ from urllib.parse import urlparse
 import gevent
 from bs4 import BeautifulSoup 
 import cssutils
-from ruqqus.helpers import guild_css
+from ruqqus.helpers import css_flip, guild_css
+from ruqqus.helpers.page_assets import asset_version
 import sass
 
 from ruqqus.helpers.wrappers import *
@@ -1974,6 +1975,9 @@ def board_css(board_fullname, theme, x):
 
     if theme not in ["main", "dark"]:
         abort(404)
+    # <nonce>.rtl.css: the same sheet mirrored for right-to-left languages (helpers/css_flip.py)
+    rtl = x.endswith(".rtl")
+    x = x[:-4] if rtl else x
 
     try:
         b36id=board_fullname.split('_')[1]
@@ -1983,8 +1987,23 @@ def board_css(board_fullname, theme, x):
 
     board = get_board(b36id)
 
-    if int(x) != board.color_nonce:
-        return redirect(board.css_url)
+    if not x.isdigit() or int(x) != board.color_nonce:
+        url = board.css_url if theme == "main" else board.css_dark_url
+        return redirect(url[:-4] + ".rtl.css" if rtl else url)
+
+    # the site's internal boards (general, systemprofile) are the site's own colour, never Ruqqus's old purple
+    colour = app.config["SITE_COLOR"] if board.id in INTERNAL_BOARDS else board.color
+    sheet = "main" if theme == "main" else "main_dark"
+    # keyed on the colour and on the sheet's version (its own text and the shared partials, helpers/page_assets.py):
+    # a deploy that changes either is compiled afresh, never an old copy under the new ?v=
+    css = _compiled_board_css(colour, sheet, asset_version(f"style/{sheet}.css"), rtl)
+    if css is None:
+        return redirect("/assets/style/main.rtl.css" if rtl else "/assets/style/main.css")
+
+    resp = Response(css, mimetype='text/css')
+    resp.headers.add("Cache-Control", "public")
+
+    return resp
 
     if theme=="main":
         path=f"{app.config['RUQQUSPATH']}/assets/style/main.scss"
@@ -2008,11 +2027,8 @@ def board_css(board_fullname, theme, x):
     try:
         resp = Response(sass.compile(string=scss), mimetype='text/css')
     except sass.CompileError:
-        return redirect("/assets/style/main.css")
-
-    resp.headers.add("Cache-Control", "public")
-
-    return resp
+        return None
+    return css_flip.flip(css) if rtl else css
 
 
 @app.route("/mod/<bid>/color", methods=["POST"])

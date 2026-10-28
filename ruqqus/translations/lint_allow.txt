@@ -1,0 +1,163 @@
+# Exceptions to scripts/i18n_lint.py, one per line: `path: text`, the text exactly as reported. Only for text
+# that is not interface text (a code, a brand, an example a reader types as it is). Never for text a reader reads.
+
+# What stays English: admin panels inside shared pages, legal text and admin emails, code samples and syntax a
+# reader types in the help pages, brand names and the logo, class names and markup the lint reads as text.
+ruqqus/__main__.py: Too many requests. You are in time out for 1 hour. Rate limit is 100/min; less for authentication and content creation endpoints.
+ruqqus/__main__.py: is currently in read-only mode.
+ruqqus/assets/chat_src/src/call.js: ${kind}:${d.deviceId}
+ruqqus/assets/chat_src/src/call.js: audio:${current}
+ruqqus/assets/chat_src/src/ui.js: ${reaction.key} ${reaction.count}
+ruqqus/helpers/space_store.py: id, space_id, author_id, body, word_severity, quote_id, created_utc, deleted_utc, removed_utc
+ruqqus/helpers/wrappers.py: No admin api access
+ruqqus/routes/admin.py: + is an admin-controlled guild and is immune to siege.
+ruqqus/routes/admin.py: @ is deleted/suspended.
+ruqqus/routes/admin.py: @ is exiled from +.
+ruqqus/routes/admin.py: @ sieged + within the past 7 days.
+ruqqus/routes/admin.py: @'s account is too new.
+ruqqus/routes/admin.py: Badge successfully assigned
+ruqqus/routes/admin.py: One of the guildmasters created a comment in + within the last 60 days. You may try again in 7 days.
+ruqqus/routes/admin.py: One of the guildmasters had a post forwarded to + within the last 60 days. You may try again in 7 days.
+ruqqus/routes/admin.py: One of the guildmasters has performed a mod action in + within the last 60 days. You may try again in 7 days.
+ruqqus/routes/admin.py: This guild isn't banned
+ruqqus/routes/admin_api.py: Internal cache cleared.
+ruqqus/routes/legal.py: Unable to save your request. Please try again later.
+ruqqus/routes/legal.py: Your request has been saved.
+ruqqus/templates/board.html: Ban Reason
+ruqqus/templates/board.html: Ban guild
+ruqqus/templates/board.html: Force sensitive (locked)
+ruqqus/templates/board.html: Mod Self
+ruqqus/templates/board.html: Purge All Hosted Images
+ruqqus/templates/board.html: Reason:
+ruqqus/templates/board.html: Unban guild
+ruqqus/templates/board.html: Unlock sensitive setting
+ruqqus/templates/circles_base.html: px-3 px-md-4 py-4
+ruqqus/templates/curations/algorithm_form.html: example.org, news.example.com
+ruqqus/templates/default.html: Admin Panel
+ruqqus/templates/default.html: Discord
+ruqqus/templates/default.html: GitHub
+ruqqus/templates/default.html: No admin actions available
+ruqqus/templates/default.html: ɸLaba
+ruqqus/templates/docs_header.html: Twitter
+ruqqus/templates/email/contactform.html: Contact form Submission
+ruqqus/templates/email/counter_dmca.html: DMCA Counter-Notice
+ruqqus/templates/email/default.html: 300 Delaware Ave.
+ruqqus/templates/email/default.html: Suite 210-A
+ruqqus/templates/email/default.html: Title Goes Here
+ruqqus/templates/email/default.html: Wilmington, DE 19801
+ruqqus/templates/email/legal.html: Legal Request Submission
+ruqqus/templates/email/press.html: Press Submission
+ruqqus/templates/email/press.html: press submission
+ruqqus/templates/footer.html: Discord
+ruqqus/templates/footer.html: Github
+ruqqus/templates/footer.html: Twitter
+ruqqus/templates/footer_article.html: Discord
+ruqqus/templates/footer_article.html: GitHub
+ruqqus/templates/footer_article.html: Twitter
+ruqqus/templates/footer_bottom.html: Discord
+ruqqus/templates/footer_bottom.html: GitHub
+ruqqus/templates/footer_bottom.html: Twitter
+ruqqus/templates/guild/mods.html: Mod Self
+ruqqus/templates/guild/wiki_history.html: Remove (admin)
+ruqqus/templates/header.html: Discord
+ruqqus/templates/header.html: GitHub
+ruqqus/templates/header.html: ɸLaba
+ruqqus/templates/help/about.html: Created with Sketch.
+ruqqus/templates/help/about.html: import time from ruqqus.helpers.wrappers import * from flask import * from ruqqus.__main__ import app, db, cache from ruqqus.classes import * @cache.memoize(timeout = 30) def frontlist(sort = "hot", page = 1): cutoff = int(time.time()) - (60 * 60 * 24 * 30) posts = db.query(Submission).filter(Submission.created_utc >= cutoff, Submission.is_banned == False, Submission.stickied == False) if sort == "hot": posts = posts.order_by(text("submissions.rank_hot desc")) elif sort == "new": posts = posts.order_by(Submission.created_utc.desc()) elif sort == "fiery": posts = posts.order_by(text("submissions.rank_fiery desc")) elif sort == "top": posts = posts.order_by(text("submissions.score desc")) posts = [x.id for x in posts.offset(25 * (page - 1)).limit(25).all() ] return posts @app.route("/", methods = ["GET"]) @auth_desired def home(v): page = int(request.args.get("page", 1)) sort_method = request.args.get("sort", "hot") # get list of ids ids = frontlist(sort = sort_method, page = page) # assemble list of tuples i = 1 tups = [] for x in ids: tups.append((x, i)) i += 1 # tuple string tups = str(tups).lstrip("[").rstrip("]") # hit db for entries posts = db.query(Submission).from_statement( text(f "" " select submissions.*, submissions.ups, submissions.downs from submissions join(values { tups }) as x(id, n) on submissions.id = x.id order by x.n "" " )).all() # If page 1, check for sticky if page == 1: sticky = [] sticky = db.query(Submission).filter_by(stickied = True).first() if sticky: posts = [sticky] + posts return render_template("home.html", v = v, listing = posts, sort_method = sort_method)
+ruqqus/templates/help/bots.html: ``` POST /api/v1/submit Authorization: Bearer
+ruqqus/templates/help/bots.html: ``` POST /oauth/grant client_id=
+ruqqus/templates/help/chat.html: ](https://ruqqus.com)
+ruqqus/templates/help/chat.html: assets/images/illustrations/reader.png)
+ruqqus/templates/help/donate.html: import time from ruqqus.helpers.wrappers import * from flask import * from ruqqus.__main__ import app, db, cache from ruqqus.classes import * @cache.memoize(timeout = 30) def frontlist(sort = "hot", page = 1): cutoff = int(time.time()) - (60 * 60 * 24 * 30) posts = db.query(Submission).filter(Submission.created_utc >= cutoff, Submission.is_banned == False, Submission.stickied == False) if sort == "hot": posts = posts.order_by(text("submissions.rank_hot desc")) elif sort == "new": posts = posts.order_by(Submission.created_utc.desc()) elif sort == "fiery": posts = posts.order_by(text("submissions.rank_fiery desc")) elif sort == "top": posts = posts.order_by(text("submissions.score desc")) posts = [x.id for x in posts.offset(25 * (page - 1)).limit(25).all() ] return posts @app.route("/", methods = ["GET"]) @auth_desired def home(v): page = int(request.args.get("page", 1)) sort_method = request.args.get("sort", "hot") # get list of ids ids = frontlist(sort = sort_method, page = page) # assemble list of tuples i = 1 tups = [] for x in ids: tups.append((x, i)) i += 1 # tuple string tups = str(tups).lstrip("[").rstrip("]") # hit db for entries posts = db.query(Submission).from_statement( text(f "" " select submissions.*, submissions.ups, submissions.downs from submissions join(values { tups }) as x(id, n) on submissions.id = x.id order by x.n "" " )).all() # If page 1, check for sticky if page == 1: sticky = [] sticky = db.query(Submission).filter_by(stickied = True).first() if sticky: posts = [sticky] + posts return render_template("home.html", v = v, listing = posts, sort_method = sort_method)
+ruqqus/templates/help/feed_servers.html: GET https://feeds.example.org/my-feed?limit=
+ruqqus/templates/help/feed_servers.html: ``` GET https://feeds.example.org/my-feed?limit=
+ruqqus/templates/help/feed_servers.html: ``` import json from http.server import BaseHTTPRequestHandler, HTTPServer from urllib.parse import parse_qs, urlsplit POSTS = ["2k1", "2jz", "2jx"] # post ids, best first: build this list however you like class Feed(BaseHTTPRequestHandler): def do_GET(self): query = parse_qs(urlsplit(self.path).query) start = int(query.get("cursor", ["0"])[0]) limit = min(int(query.get("limit", ["100"])[0]), 100) answer = {"posts": POSTS[start:start + limit]} if start + limit
+ruqqus/templates/help/feed_servers.html: ``` {"posts": ["2k1", "2jz", "2jx"], "cursor": "page-2"} ```
+ruqqus/templates/help/feed_servers.html: len(POSTS): answer["cursor"] = str(start + limit) body = json.dumps(answer).encode() self.send_response(200) self.send_header("Content-Type", "application/json") self.send_header("Content-Length", str(len(body))) self.end_headers() self.wfile.write(body) HTTPServer(("0.0.0.0", 8099), Feed).serve_forever() ```
+ruqqus/templates/help/formatting.html: ::: center
+ruqqus/templates/help/formatting.html: ](https://ruqqus.com)
+ruqqus/templates/help/formatting.html: ](https://ruqqus.com){.button}
+ruqqus/templates/help/formatting.html: assets/images/illustrations/reader.png)
+ruqqus/templates/help/formatting.html: left, center, right
+ruqqus/templates/help/formatting.html: red, orange, green, blue, purple, pink, gray
+ruqqus/templates/help/formatting.html: yellow, green, blue, pink
+ruqqus/templates/help/formatting.html: {c:red}
+ruqqus/templates/help/formatting.html: {h:blue}
+ruqqus/templates/help/oauth.html: import requests import pprint code=request.args.get("code") headers={"User-Agent": "Porpl Reader v1 by @captainmeta4"} url="https://ruqqus.com/oauth/grant" data={"client_id": my_client_id, "client_secret": my_client_secret, "grant_type": "code", "code": code } r=requests.post(url, headers=headers, data=data) pprint.pprint(r.json())
+ruqqus/templates/help/oauth.html: import requests import pprint headers={"Authorization": "Bearer " + access_token, "User-Agent": "Porpl Reader v1 by @captainmeta4"} url="https://ruqqus.com/api/v2/me/submissions" r=requests.get(url, headers=headers) pprint.pprint(r.json())
+ruqqus/templates/help/oauth.html: import requests import pprint headers={"User-Agent": "Porpl Reader v1 by @captainmeta4"} url="https://ruqqus.com/oauth/grant" data={"client_id": my_client_id, "client_secret": my_client_secret, "grant_type": "refresh", "refresh_token": my_users_refresh_token } r=requests.post(url, headers=headers, data=data) pprint.pprint(r.json())
+ruqqus/templates/help/oauth.html: { "access_token": #Access token "expires_at": #Unix epoch integer time at which access token expires }
+ruqqus/templates/help/oauth.html: { "access_token": #Access token "scopes": #Comma-separated list of scopes included in authorization "expires_at": #Unix epoch integer time at which access token expires "token_type": "Bearer" "refresh_token": #This key is omitted in temporary authorizations }
+ruqqus/templates/help/search.html: "open source" min_votes:50 min_comments:10
+ruqqus/templates/help/search.html: cats "black cat" -dogs from:@alice in:+pets since:2026-01-01 has:image lang:en
+ruqqus/templates/help/search.html: in:+pets "vet bill"
+ruqqus/templates/history.html: wide-main is-focused
+ruqqus/templates/home.html: Admin Home
+ruqqus/templates/insights_locked.html: wide-main is-focused
+ruqqus/templates/legal_default.html: Legal Request
+ruqqus/templates/make_board.html: Discord
+ruqqus/templates/make_board.html: Github
+ruqqus/templates/make_board.html: Twitter
+ruqqus/templates/notifications.html: wide-main is-focused
+ruqqus/templates/partials/theme.html: " data-density="
+ruqqus/templates/partials/theme.html: " dir="
+ruqqus/templates/partials/theme.html: lang="
+ruqqus/templates/search.html: ---Select Ban Reason---
+ruqqus/templates/search.html: Select Ban reason
+ruqqus/templates/search.html: cats "black cat" -dogs
+ruqqus/templates/settings_blocks.html: alice bob
+ruqqus/templates/settings_bots.html: +technology, +news
+ruqqus/templates/settings_media.html: Dailymotion
+ruqqus/templates/settings_profile.html: Discord
+ruqqus/templates/studio_locked.html: wide-main is-focused
+ruqqus/templates/submission.html: Approve Post
+ruqqus/templates/submission.html: Author:
+ruqqus/templates/submission.html: Purge Post (permanent)
+ruqqus/templates/submission.html: Removal Reason
+ruqqus/templates/submission.html: Remove Post
+ruqqus/templates/submission_banned.html: Approve Post
+ruqqus/templates/submission_banned.html: Remove Post
+ruqqus/templates/submission_banned.html: Score: +
+ruqqus/templates/submission_deleted.html: Author:
+ruqqus/templates/submission_deleted.html: Purge Post (permanent)
+ruqqus/templates/submission_deleted.html: Score: +
+ruqqus/templates/submit.html: Discord
+ruqqus/templates/submit.html: GitHub
+ruqqus/templates/submit.html: Twitter
+ruqqus/templates/userpage.html: Alts:
+ruqqus/templates/userpage.html: Ban Evasion Counter:
+ruqqus/templates/userpage.html: Ban Message Reason
+ruqqus/templates/userpage.html: Ban Reason (public)
+ruqqus/templates/userpage.html: Ban user
+ruqqus/templates/userpage.html: Banned by:
+ruqqus/templates/userpage.html: Confirm De-Mod User
+ruqqus/templates/userpage.html: Days (blank = permanent)
+ruqqus/templates/userpage.html: De-Mod User
+ruqqus/templates/userpage.html: Nuke User's Content
+ruqqus/templates/userpage.html: Premium:
+ruqqus/templates/userpage.html: Reason:
+ruqqus/templates/userpage.html: Remove display name
+ruqqus/templates/userpage.html: Unban user
+ruqqus/templates/userpage.html: User account is deleted
+ruqqus/templates/userpage.html: User has private mode enabled.
+ruqqus/templates/userpage.html: user id:
+ruqqus/templates/userpage_banned.html: Account Creation IP
+ruqqus/templates/userpage_banned.html: Ban user
+ruqqus/templates/userpage_banned.html: Key
+ruqqus/templates/userpage_banned.html: Unban user
+ruqqus/templates/userpage_banned.html: Value
+ruqqus/templates/userpage_blocked.html: Account Creation IP
+ruqqus/templates/userpage_blocked.html: Ban user
+ruqqus/templates/userpage_blocked.html: Key
+ruqqus/templates/userpage_blocked.html: Unban user
+ruqqus/templates/userpage_blocked.html: Value
+ruqqus/templates/userpage_blocking.html: Account Creation IP
+ruqqus/templates/userpage_blocking.html: Ban user
+ruqqus/templates/userpage_blocking.html: Key
+ruqqus/templates/userpage_blocking.html: Unban user
+ruqqus/templates/userpage_blocking.html: Value
+ruqqus/templates/userpage_deleted.html: Account Creation IP
+ruqqus/templates/userpage_deleted.html: Ban user
+ruqqus/templates/userpage_deleted.html: Key
+ruqqus/templates/userpage_deleted.html: Unban user
+ruqqus/templates/userpage_deleted.html: Value

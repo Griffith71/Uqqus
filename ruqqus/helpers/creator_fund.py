@@ -72,6 +72,11 @@ def month_name(month):
     return datetime.fromtimestamp(start, tz=timezone.utc).strftime("%B %Y")
 
 
+def month_text(month):
+    """The month as a member reads it: in English exactly month_name, in another language Babel's month and year."""
+    return date_text(month_bounds(month)[0], "%B %Y", "LLLL y")
+
+
 def parse_budget(text):
     """A whole number of coins from 1 to MAX_BUDGET, or None."""
     raw = (text or "").strip()

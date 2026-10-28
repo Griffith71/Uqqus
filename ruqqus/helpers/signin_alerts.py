@@ -58,7 +58,8 @@ def claim_today(redis, user_id):
 
 def check(db, user, country, user_agent, now, redis, names):
     """None, or what the email says ({"browser", "place", "when", "why"}), for a sign-in about to be recorded.
-    Call it BEFORE the sign-in is added to `login_events`, or it would be compared with itself."""
+    Call it BEFORE the sign-in is added to `login_events`, or it would be compared with itself. The words are in the
+    language this runs in: call it inside `force_locale(locale_for_user(user))`, as routes/login.py does."""
     if not wants_email(user):
         return None
     why = reasons(previous(db, user.id, now), country, user_agent)
@@ -69,4 +70,6 @@ def check(db, user, country, user_agent, now, redis, names):
 
 
 def subject(site_name):
-    return f"New sign-in to your {site_name} account"
+    """The email's subject, in the language it is rendered in (the caller forces the account's own:
+    `force_locale(locale_for_user(user))`, as for the email itself)."""
+    return tr("New sign-in to your %(site)s account", site=site_name)

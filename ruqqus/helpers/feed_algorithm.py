@@ -328,7 +328,9 @@ _FADE_WORDS = {6: "6 hours", 12: "12 hours", 24: "a day", 72: "3 days", 168: "a 
 
 
 def _listed(items, last="and"):
-    items = list(items)
+    """"a, b and c" (or "a, b or c"): in English as the site always wrote it, in another language as CLDR joins a list
+    there (Babel's format_list)."""
+    items = [str(item) for item in items]
     if len(items) <= 1:
         return "".join(items)
     return ", ".join(items[:-1]) + f" {last} " + items[-1]

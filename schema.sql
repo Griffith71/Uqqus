@@ -1726,7 +1726,9 @@ CREATE TABLE public.comments_aux (
     ban_reason character varying(128),
     hidden_reason character varying(256) DEFAULT ''::character varying,
     author_hidden_reason character varying(256) DEFAULT ''::character varying,
-    key_id integer NOT NULL
+    key_id integer NOT NULL,
+    notice_msgid text,
+    notice_params text
 );
 
 

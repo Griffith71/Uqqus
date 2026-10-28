@@ -21,6 +21,9 @@ from ruqqus.helpers.redirects import same_site
 from ruqqus.helpers import same_origin
 from ruqqus.helpers import account_sessions, chat_devices, mfa_backup, mfa_backup_store, signin_alerts, user_agents
 from ruqqus.helpers.regions import COUNTRY_NAMES
+from ruqqus.helpers.alerts import notify
+from ruqqus.helpers import i18n
+from ruqqus.helpers.i18n_runtime import N_, current_locale, force_locale, locale_for_user, tr
 from ruqqus.mail import send_verification_email
 from secrets import token_hex
 
@@ -197,7 +200,9 @@ def login_post():
     # a sign-in from somewhere new is emailed to a verified address (helpers/signin_alerts.py). Worked out BEFORE this
     # sign-in is recorded, or it would be compared with itself; sent after, and nothing here can stop the sign-in
     try:
-        alert = signin_alerts.check(g.db, account, cf_country, agent, signed_in_utc, r, COUNTRY_NAMES)
+        # in the account's own language: what the email says is worked out here (helpers/signin_alerts.py)
+        with force_locale(locale_for_user(account)):
+            alert = signin_alerts.check(g.db, account, cf_country, agent, signed_in_utc, r, COUNTRY_NAMES)
     except Exception as e:
         print(f"sign-in alert not checked: {type(e).__name__}", flush=True)
         alert = None
@@ -212,9 +217,14 @@ def login_post():
     g.db.commit()
     if alert:
         try:
-            html = render_template("email/new_signin.html", v=account, action_url=f"https://{app.config['SERVER_NAME']}/settings/security",
-                                   settings_url=f"https://{app.config['SERVER_NAME']}/settings/security#sign-ins", **alert)
-            gevent.spawn(send_mail_quietly, account.email, signin_alerts.subject(app.config["SITE_NAME"]), html)
+            # the email and its subject in the account's own language
+            with force_locale(locale_for_user(account)):
+                html = render_template("email/new_signin.html", v=account,
+                                       action_url=f"https://{app.config['SERVER_NAME']}/settings/security",
+                                       settings_url=f"https://{app.config['SERVER_NAME']}/settings/security#sign-ins",
+                                       **alert)
+                subject = signin_alerts.subject(app.config["SITE_NAME"])
+            gevent.spawn(send_mail_quietly, account.email, subject, html)
         except Exception as e:
             print(f"sign-in alert not sent: {type(e).__name__}", flush=True)
 
@@ -520,12 +530,11 @@ def post_forgot():
         token = generate_hash(f"{user.id}+{now}+forgot+{user.login_nonce}")
         url = f"https://{app.config['SERVER_NAME']}/reset?id={user.id}&time={now}&token={token}"
 
-        send_mail(to_address=user.email,
-                  subject=f"{app.config['SITE_NAME']} - Password Reset Request",
-                  html=render_template("email/password_reset.html",
-                                       action_url=url,
-                                       v=user)
-                  )
+        # in the account's own language, subject included
+        with force_locale(locale_for_user(user)):
+            subject = tr("%(site)s - Password Reset Request")
+            body = render_template("email/password_reset.html", action_url=url, v=user)
+        send_mail(to_address=user.email, subject=subject, html=body)
 
     return render_template("forgot_password.html", v=None,
                            msg="If the username and email matches an account, you will be sent a password reset email. You have ten minutes to complete the password reset process.",

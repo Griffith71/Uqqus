@@ -388,6 +388,41 @@ $('#new_email').on('input', function () {
 
   }
 
+  // Text for innerHTML: a translation is never trusted as markup
+  // ([>] rather than a bare > in the pattern: Babel's extractor reads "/>" as the end of a JSX tag and then misses
+  // every marked string after it)
+  function escapeHtmlText(text) {
+    return String(text).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/[>]/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+  }
+
+  // The GIF picker's categories: the word searched for, its label and its picture
+  function gifCategoryCards() {
+    var categories = [
+      // Translators: the GIF picker's categories, each a feeling or reaction shown over a picture
+      ['agree', tr('Agree'), 'wGhYz3FHaRJgk'],
+      ['laugh', tr('Laugh'), 'O5NyCibf93upy'],
+      ['confused', tr('Confused'), '3o7btPCcdNniyf0ArS'],
+      ['sad', tr('Sad'), 'ISOckXUybVfQ4'],
+      ['happy', tr('Happy'), 'XR9Dp54ZC4dji'],
+      ['awesome', tr('Awesome'), '3ohzdIuqJoo8QdKlnW'],
+      ['yes', tr('Yes'), 'J336VCs1JC42zGRhjH'],
+      ['no', tr('No'), '1zSz5MVw4zKg0'],
+      ['love', tr('Love'), '4N1wOi78ZGzSB6H7vK'],
+      ['please', tr('Please'), 'qUIm5wu6LAAog'],
+      ['scared', tr('Scared'), 'bEVKYB487Lqxy'],
+      ['angry', tr('Angry'), '12Pb87uq0Vwq2c'],
+      ['awkward', tr('Awkward'), 'unFLKoAV3TkXe'],
+      ['cringe', tr('Cringe'), '1jDvQyhGd3L2g'],
+      ['omg', tr('OMG'), '3o72F8t9TDi2xVnxOE'],
+      ['why', tr('Why'), '1M9fmo1WAFVK0'],
+      ['gross', tr('Gross'), 'pVAMI8QYM42n6'],
+      ['meh', tr('Meh'), 'xT77XTpyEzJ4OJO06c']
+    ];
+    return categories.map(function (c) {
+      return '<div class="card" onclick="getGif(\'' + c[0] + '\');" style="overflow: hidden;"> <div class="gif-cat-overlay"> <div style="position: relative;top: 50%;transform: translateY(-50%);color: #ffffff;font-weight: bold;">' + escapeHtmlText(c[1]) + '</div> </div> <img class="img-fluid" src="https://media.giphy.com/media/' + c[2] + '/200w_d.gif"> </div>';
+    }).join(' ');
+  }
+
 	function getGif(searchTerm) {
 
 		if (searchTerm !== undefined) {

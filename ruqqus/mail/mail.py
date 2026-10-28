@@ -65,12 +65,11 @@ def send_verification_email(user, email=None):
 
     link = url + params
 
-    send_mail(to_address=email,
-              html=render_template("email/email_verify.html",
-                                   action_url=link,
-                                   v=user),
-              subject=f"Validate your {app.config['SITE_NAME']} account email."
-              )
+    # in the member's own language, the subject too
+    with force_locale(locale_for_user(user)):
+        html = render_template("email/email_verify.html", action_url=link, v=user)
+        subject = tr("Validate your %(site)s account email.")
+    send_mail(to_address=email, html=html, subject=subject)
 
 
 @app.route("/api/verify_email", methods=["POST"])

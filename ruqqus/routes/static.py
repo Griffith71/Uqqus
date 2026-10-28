@@ -15,7 +15,9 @@ from ruqqus.helpers.markdown import *
 import ruqqus.classes
 from ruqqus.classes import *
 from ruqqus.mail import *
-from ruqqus.helpers import mfa_backup_store, sign_in_history
+from ruqqus.helpers import mfa_backup_store, sign_in_history, page_assets
+from ruqqus.helpers.i18n_runtime import current_locale, force_locale, tr
+from ruqqus.helpers import css_flip
 from ruqqus.helpers.regions import COUNTRY_NAMES
 from ruqqus.__main__ import app, limiter, db_session
 
@@ -47,17 +49,23 @@ def web_manifest():
 @limiter.exempt
 def main_css(file):
 
-	if file not in ["main", "main_dark"]:
+	if file not in ["main", "main_dark", "main.rtl", "main_dark.rtl"]:
 		abort(404)
+	# main.rtl / main_dark.rtl: the same sheet mirrored for right-to-left languages (helpers/css_flip.py)
+	rtl = file.endswith(".rtl")
+	file = file[:-4] if rtl else file
 
 	name=f"{app.config['RUQQUSPATH']}/assets/style/{file}.scss"
 	try:
-		mtime = os.stat(name).st_mtime
+		# the sheet and the shared partials it imports (helpers/page_assets.py): a change to either recompiles
+		stamp = page_assets.style_stamp(file)
 	except FileNotFoundError:
 		return make_response(send_file(f'./assets/style/{file}.css'))
 
-	css = _compiled_css.get(file)
-	if not css or css[0] != mtime:
+	key = f"{file}.rtl" if rtl else file
+	css = _compiled_css.get(key)
+	stale = False
+	if not css or css[0] != stamp:
 		with open(name, "r") as scss_file:
 			raw = scss_file.read()
 
@@ -68,16 +76,20 @@ def main_css(file):
 		scss = scss.replace("{ruqquspath}", app.config["RUQQUSPATH"])
 
 		try:
-			css = (mtime, sass.compile(string=scss))
+			compiled = sass.compile(string=scss)
+			css = (stamp, css_flip.flip(compiled) if rtl else compiled)
 		except sass.CompileError as e:
 			# keep serving the last stylesheet that compiled; never an empty one
 			print(f"[main_css] {file}.scss does not compile: {e}", flush=True)
 			if not css:
 				abort(500)
-		_compiled_css[file] = css
+			stale = True
+		if not stale:
+			_compiled_css[key] = css
 
 	resp = Response(css[1], mimetype='text/css')
-	resp.headers.add("Cache-Control", "public")
+	# an old copy answering a new ?v= must not be kept for a year: no-store until the sources compile again
+	resp.headers.add("Cache-Control", "no-store" if stale else "public")
 
 	return resp
 
@@ -265,20 +277,20 @@ def press_inquiry(v):
 		email_template = "email/contactform.html"
 
 	try:
+		with force_locale("en"):        # an email to the admins: always English (its layout's footer is marked)
+			body = render_template(email_template, data=data)
 		send_mail(environ.get("admin_email"),
 				  "Press Submission",
-				  render_template(email_template,
-								  data=data
-								  ),
+				  body,
 				  plaintext=str(data)
 				  )
 	except BaseException:
 		return render_template("/help/press.html",
-							   error="Unable to save your inquiry. Please try again later.",
+							   error=tr("Unable to save your inquiry. Please try again later."),
 							   v=v)
 
 	return render_template("/help/press.html",
-						   msg="Your inquiry has been saved.",
+						   msg=tr("Your inquiry has been saved."),
 						   v=v)
 
 
@@ -306,8 +318,13 @@ def dismiss_mobile_tip():
 	return "", 204
 
 @app.route("/help/docs")
-@cache.memoize(10)
 def docs():
+	# the page is drawn in the reader's interface language (helpers/i18n_runtime.py), so it is cached per language
+	return _docs_page(current_locale())
+
+
+@cache.memoize(10)
+def _docs_page(locale):
 
 	class Doc():
 
@@ -321,7 +338,7 @@ def docs():
 
 	    @property
 	    def docstring(self):
-	    	return self.target_function.__doc__ if self.target_function.__doc__ else "[doc pending]"
+	    	return self.target_function.__doc__ if self.target_function.__doc__ else tr("[doc pending]")
 
 	    @property
 	    def docstring_html(self):

@@ -185,6 +185,11 @@ app.config["DISABLE_SIGNUPS"]=int(environ.get("DISABLE_SIGNUPS",0))
 
 app.jinja_env.cache = {}
 
+# the interface languages (helpers/i18n_runtime.py): Jinja's i18n and `do` extensions, _() and friends, lazy strings in
+# JSON. {% do list.append(x) %}, never {% set _ = ... %}: `_` is gettext in templates
+from ruqqus.helpers import i18n_runtime
+i18n_runtime.install(app)
+
 app.config["UserAgent"] = f"Content Aquisition for Porpl message board v{_version}."
 
 if "localhost" in app.config["SERVER_NAME"]:
@@ -545,14 +550,21 @@ def after_request(response):
     # that set its own keeps it (/media/..., the .ics feeds, anything no-store); assets that aren't versioned are
     # kept ten minutes; every page is personal (the viewer, their filter, their form key), so it is private and
     # asked for again each time.
+    # a page and the site's own JSON are in the reader's interface language, which a visitor's browser picks
+    # (helpers/i18n_runtime.py): a cache keeps one copy per Accept-Language (the ui_lang cookie is under Cookie, which
+    # the session already adds)
+    if not request.path.startswith("/assets/"):
+        response.vary.add("Accept-Language")
     if "Cache-Control" not in response.headers:
         if request.path.startswith("/assets/"):
             response.headers["Cache-Control"] = "public, max-age=600"
         else:
             response.headers["Cache-Control"] = "private, no-cache"
     # a versioned asset (helpers/page_assets.asset_url, ?v= is a hash of its content) never changes at that
-    # address: kept for a year, never asked for again
-    if request.path.startswith("/assets/") and request.args.get("v") and response.status_code == 200:
+    # address: kept for a year, never asked for again. Not a stylesheet answering with its last good copy because
+    # its sources don't compile (routes/static.py says no-store): that copy is not what the hash names
+    if request.path.startswith("/assets/") and request.args.get("v") and response.status_code == 200 \
+            and "no-store" not in response.headers.get("Cache-Control", ""):
         response.headers["Cache-Control"] = "public, max-age=31536000, immutable"
     response.headers.add("Strict-Transport-Security", "max-age=31536000")
     # Google's consent banner for ads does not serve without a cross-origin referrer (support.google.com/adsense/
