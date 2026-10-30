@@ -14,24 +14,41 @@
 <link rel="apple-touch-icon" sizes="180x180" href="/assets/images/favicons/apple-touch-icon.png">
 
 <link rel="manifest" href="/manifest.json">
-<link rel="mask-icon" href="/assets/images/favicons/safari-pinned-tab.svg" color="#2ca1ea">
+<link rel="mask-icon" href="/assets/images/favicons/safari-pinned-tab.svg" color="#23a9f2">
 <link rel="shortcut icon" href="/assets/images/favicons/favicon.ico">
 <meta name="apple-mobile-web-app-title" content="{{ 'SITE_NAME' | app_config }}">
 <meta name="application-name" content="{{ 'SITE_NAME' | app_config }}">
-<meta name="msapplication-TileColor" content="#2ca1ea">
+<meta name="msapplication-TileColor" content="#23a9f2">
 <meta name="msapplication-config" content="/assets/images/favicons/browserconfig.xml">
-<meta name="theme-color" content="#2ca1ea">
+<meta name="theme-color" content="#23a9f2">
 <link rel="icon" type="image/png" href="/assets/images/logo/favicon.png">
 
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"> 
+<style>
+/* Served by the proxy when the app is down, so it carries what it needs: no site stylesheet, no site fonts. The same look as the site: Noto Sans where
+   the device has it (then the system's), neutral greys, the brand blue on the button and the mark, flat, with the dark page for a dark device. */
+body { font-family: "Noto Sans", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; background: #fff; color: #121212; }
+#navbar { background: #fff; border-bottom: 1px solid #e6e6e6; box-shadow: none; padding: 9.5px 0; }
+#navbar .navbar-brand { padding: 0; line-height: 1; font-weight: 700; font-size: 1.9rem; color: #23a9f2; }
+#navbar .navbar-brand .small-beta { font-size: .75rem; font-weight: 400; letter-spacing: .02em; text-transform: uppercase; color: #636363; }
+.text-muted { color: #636363 !important; }
+.btn-primary { background-color: #23a9f2; border-color: #23a9f2; color: #fff; border-radius: 999px; font-weight: 600; padding: .5rem 1.25rem; box-shadow: none; }
+.btn-primary:hover, .btn-primary:focus { background-color: #1e92d0; border-color: #1e92d0; color: #fff; }
+.btn-primary:active { background-color: #1a82bb; border-color: #1a82bb; }
+@media (prefers-color-scheme: dark) {
+  body { background: #000; color: #f1f1f1; }
+  #navbar { background: #121212; border-bottom-color: #2a2a2a; }
+  #navbar .navbar-brand .small-beta, .text-muted { color: #a0a0a0 !important; }
+}
+</style>
 </head>
 <body id="error-502" class="using-mouse">
 
 
-<nav class="navbar navbar-expand-md navbar-light shadow shadow-md fixed-top" id="navbar">
+<nav class="navbar navbar-expand-md navbar-light fixed-top" id="navbar">
 <div class="container-fluid">
-<div class="flex-grow-1"><a href="/" class="navbar-brand">ruqqus<span class="text-small-extra text-uppercase text-gray-400"> Beta</span></a></div>
+<div class="flex-grow-1"><a href="/" class="navbar-brand" aria-label="{{ 'SITE_NAME' | app_config }}"><span aria-hidden="true">ɸ</span> <span class="small-beta">Beta</span></a></div>
 
 
 
@@ -44,7 +61,7 @@
 <div class="col h-100 " id="main-content-col">
 <div class="row justify-content-center">
 <div class="col-10 col-md-5">
-<div class="text-center px-3 my-8">
+<div class="text-center px-3" style="margin-top: 7rem;">
 <i class="fas fa-shield-halved text-muted mb-5" style="font-size: 5rem;"></i>
 <h1 class="h5">502 Bad Gateway</h1>
 <p class="text-muted">Don't go this way, stranger. The gate is closed, and the guards are saying:</p>

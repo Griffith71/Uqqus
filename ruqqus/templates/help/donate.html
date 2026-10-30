@@ -50,29 +50,8 @@
 
 <body id="page">
 
-	<!-- Navigation -->
-	<nav class="navbar navbar-expand-md navbar-light bg-white border-bottom fixed-top">
-		<div class="container">
-			<a class="navbar-brand" href="/">ruqqus</a>
-			<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive"
-			aria-controls="navbarResponsive" aria-expanded="false" aria-label="{{ _('Toggle navigation') }}">
-			<span class="navbar-toggler-icon"><i class="fas fa-bars text-gray-500" style="font-size: 2rem;"></i></span>
-		</button>
-		<div class="collapse navbar-collapse" id="navbarResponsive">
-			<ul class="navbar-nav ml-auto">
-				<li class="nav-item">
-					<a class="nav-link" href="/help/about">{{ _("About") }}</a>
-				</li>
-				<li class="nav-item">
-					<a class="nav-link" href="mailto:info@ruqqus.com">{{ _("Contact") }}</a>
-				</li>
-				<li class="nav-item">
-					<a class="nav-link" href="https://www.twitter.com/ruqqus">{{ _("Twitter") }}</a>
-				</li>
-			</ul>
-		</div>
-	</div>
-</nav>
+    <!-- Navigation: the same bar as the help pages (partials/site_bar.html) -->
+    {% from "partials/site_bar.html" import site_bar %}{{ site_bar("/") }}
 
 <!-- Hero -->
 
@@ -216,7 +195,7 @@
 
 			<div class="col-12 col-md-6 d-none d-md-block">
 
-				<div class="row no-gutters mb-3" style="border-bottom: 2px solid #E0E4E9;">
+				<div class="row no-gutters mb-3" style="border-bottom: 2px solid #E6E6E6;">
 
 					<div class="col">
 

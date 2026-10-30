@@ -1,8 +1,11 @@
 <!DOCTYPE html>
+{% from "partials/theme.html" import theme_links, font_faces, theme_color %}
 <html lang="en">
 <head>
 
 	<meta charset="utf-8">
+{{ font_faces() }}
+{{ theme_color() }}
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
 	<meta name="author" content="">
@@ -24,7 +27,7 @@
 
 	<!-- Ruqqus CSS -->
 	
-	<link id="css-link" rel="stylesheet" href="{{ asset_url('style/main.css') }}">
+	{{ theme_links(asset_url("style/main.css"), asset_url("style/main_dark.css")) }}
 	
 	<!-- Font Awesome -->
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -36,9 +39,10 @@
 
 <!--Header -->
 <!-- Navigation -->
-<nav class="navbar navbar-expand-md navbar-light bg-white shadow shadow-md fixed-top" id="navbar">
+{% include "partials/logo_style.html" %}
+<nav class="navbar navbar-expand-md navbar-light fixed-top" id="navbar">
   <div class="container">
-    <div class="flex-grow-1"><span class="text-primary navbar-brand">ruqqus</span></div>
+    <div class="flex-grow-1"><a href="/" class="navbar-brand text-purple logo-gradient" aria-label="{{ 'SITE_NAME' | app_config }}"><span class="brand-main" aria-hidden="true">ɸ</span><span class="text-small-extra text-uppercase text-gray-400"> Beta</span></a></div>
 
    
     

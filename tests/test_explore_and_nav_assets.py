@@ -138,8 +138,12 @@ def test_the_account_menu_has_a_create_post_item_and_the_navbar_button_opens_the
 
 def test_the_site_name_is_never_shown_all_lowercase():
     assert 'environ.get("SITE_NAME", "Laba")' in read("__main__.py")
-    for shell in ("default.html", "header.html"):
-        assert "ɸLaba" in read("templates", shell) and "ɸlaba" not in read("templates", shell), shell
+    for shell in ("default.html", "header.html", "partials/site_bar.html"):
+        page = read("templates", *shell.split("/"))
+        # the navbar shows the mark alone (the owner, 2026-10-29: "just the ɸ will do"); the name is the link's accessible name,
+        # drawn from SITE_NAME, never written out and never lowercased
+        assert '<span class="brand-main" aria-hidden="true">ɸ</span>' in page, shell
+        assert "aria-label=\"{{ 'SITE_NAME' | app_config }}\"" in page and "ɸLaba" not in page and "ɸlaba" not in page, shell
     for template in (ROOT / "templates").rglob("*.html"):
         for line in template.read_text(encoding="utf-8").splitlines():
             if re.search(r"SITE_NAME[^|}]*\|\s*app_config\s*\|\s*lower", line):

@@ -1,0 +1,34 @@
+{# The top bar of the pages that have no member navbar: help, the legal pages, About and Donate. It is the same `#navbar` the member shells draw (the 56px
+   bar, the hairline and the glass in _nav.scss and _glass.scss are all keyed on that id), with the mark, three links and, where it is given, the way back.
+   The links and their words are the ones these pages always had (the addresses are the old ones, as on the help pages: CLAUDE.md). Drawn as
+   {% from "partials/site_bar.html" import site_bar %}{{ site_bar("/help", back=True) }}. #}
+{% macro site_bar(brand_href="/", back=False) %}
+{% include "partials/logo_style.html" %}
+<nav class="navbar navbar-expand-md navbar-light fixed-top site-bar" id="navbar">
+  <div class="container">
+    <a href="{{ brand_href }}" class="navbar-brand text-purple logo-gradient" aria-label="{{ 'SITE_NAME' | app_config }}"><span class="brand-main" aria-hidden="true">ɸ</span><span class="text-small-extra text-uppercase text-gray-400"> {{ _("Beta") }}</span></a>
+    <button class="navbar-toggler collapsed" type="button" data-toggle="collapse" data-target="#siteBarMenu" aria-controls="siteBarMenu" aria-expanded="false" aria-label="{{ _('Toggle navigation') }}">
+      <span class="navbar-toggler-icon"><i class="fas fa-bars text-gray-500"></i></span>
+    </button>
+    <div class="navbar-collapse collapse" id="siteBarMenu">
+      <ul class="navbar-nav align-items-md-center ml-auto">
+        <li class="nav-item">
+          <a class="nav-link" href="/help/about">{{ _("About") }}</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="mailto:info@ruqqus.com">{{ _("Contact") }}</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="https://www.twitter.com/ruqqus">{{ _("Twitter") }}</a>
+        </li>
+        {% if back %}
+        <li class="nav-item">
+          <a class="btn btn-primary" href="/"><i class="fas fa-sign-out mr-2"></i>{{ _("Back to %(site)s") }}</a>
+        </li>
+        {% endif %}
+      </ul>
+    </div>
+  </div>
+</nav>
+<script src="{{ asset_url('js/navbar_height.js') }}"></script>{# --navbar-height, measured: the page's top padding follows it #}
+{% endmacro %}

@@ -46,7 +46,7 @@
     align-items: center;
     justify-content: center;
     width: var(--control-h);
-    height: 36px;
+    height: var(--control-h);
     padding: 0;
     border-radius: 50%;
     color: var(--text-muted);
@@ -158,6 +158,53 @@
     // the menu button is a control like the rest, so a bar with nothing else in it (the help pages') is as tall as the others. (Never `display` here:
     // Bootstrap hides the toggler from 768px with a rule this id would beat.)
     #navbar .navbar-toggler {
+        min-width: var(--control-h);
+        min-height: var(--control-h);
+        padding-top: 0;
+        padding-bottom: 0;
+    }
+}
+
+// --- the plain site bar (partials/site_bar.html) -----------------------------------------------------------------
+// Help, the legal pages, About and Donate have no member navbar. They draw the same #navbar (everything above, the hairline and the glass are keyed on
+// written with the id and two classes because the help pages' older `#article .navbar-light .navbar-nav .nav-link` rules (black text, a transparent
+// hover) are as specific and come first.
+#navbar.site-bar .navbar-nav .nav-link {
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--control-h);
+    padding: 0 var(--space-4);
+    border-radius: var(--radius-pill);
+    color: var(--text-muted);
+    transition: background-color var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out);
+}
+
+@media (hover: hover) and (pointer: fine) {
+    #navbar.site-bar .navbar-nav .nav-link:hover {
+        background-color: var(--hover);
+        color: var(--text);
+    }
+}
+
+@media (min-width: 768px) {
+    #navbar.site-bar .navbar-nav .nav-item > .btn {
+        margin-left: var(--space-3);
+    }
+}
+
+// below 768px the links fold into the toggler's menu: full-width rows, the button on its own line
+@media (max-width: 767.98px) {
+    #navbar.site-bar .navbar-collapse {
+        padding-bottom: var(--space-3);
+    }
+
+    #navbar.site-bar .navbar-nav .nav-link {
+        display: flex;
+    }
+
+    #navbar.site-bar .navbar-nav .nav-item > .btn {
+        display: block;
+        margin: var(--space-3) var(--space-4) 0;
     }
 }
 
@@ -205,13 +252,13 @@
     justify-content: center;
     gap: var(--space-3);
     width: 100%;
-    min-height: 36px;
+    min-height: var(--control-h);
     padding: 6px var(--space-5);
     border: 1px solid var(--border-strong);
     border-radius: var(--radius-pill);
     background-color: transparent;
     color: var(--text);
-    font-size: 13px;
+    font-size: px2rem(13px);
     font-weight: var(--weight-semibold);
     box-shadow: none;
     transition: background-color var(--dur-fast) var(--ease-out), border-color var(--dur-fast) var(--ease-out);
@@ -232,8 +279,8 @@
     display: flex;
     align-items: center;
     gap: var(--space-3);
-    min-height: 36px;
-    font-size: 13px;
+    min-height: var(--control-h);
+    font-size: px2rem(13px);
     color: var(--text-muted);
 }
 
@@ -243,7 +290,7 @@
 
 #sidebar-left .feed-defaults-status .btn-link,
 #sidebar-left .feed-defaults .feed-defaults-actions .btn-link {
-    font-size: 13px;
+    font-size: px2rem(13px);
     font-weight: var(--weight-regular);
     color: var(--link);
     vertical-align: baseline;
@@ -326,7 +373,7 @@
     padding: var(--space-5) var(--space-5) var(--space-2);
     background-color: transparent;
     color: var(--text);
-    font-size: 15px;
+    font-size: px2rem(15px);
     font-weight: var(--weight-semibold);
     letter-spacing: var(--tracking-title);
     text-transform: none;
@@ -369,7 +416,7 @@
 .guild-about-stats dd {
     margin: 0;
     color: var(--text);
-    font-size: 16px;
+    font-size: px2rem(16px);
     font-weight: var(--weight-semibold);
     font-variant-numeric: tabular-nums;
 }
@@ -389,7 +436,7 @@
     align-items: baseline;
     padding: 3px 0;
     color: var(--text);
-    font-size: 14px;
+    font-size: px2rem(14px);
     font-weight: var(--weight-medium);
 }
 
@@ -405,7 +452,7 @@
 .post-places-head {
     margin-bottom: var(--space-2);
     color: var(--text-muted);
-    font-size: 12px;
+    font-size: px2rem(12px);
     font-weight: var(--weight-semibold);
 }
 
@@ -421,7 +468,7 @@
     gap: var(--space-4);
     min-width: 0;
     padding: 5px 0;
-    font-size: 14px;
+    font-size: px2rem(14px);
 }
 
 .post-place-name {
@@ -437,13 +484,13 @@
     flex-shrink: 0;
     min-width: 3.25em;
     color: var(--text-muted);
-    font-size: 13px;
+    font-size: px2rem(13px);
     font-variant-numeric: tabular-nums;
     text-align: right;
 
     i {
         margin-right: 4px;
-        font-size: 12px;
+        font-size: px2rem(12px);
     }
 }
 
@@ -453,7 +500,7 @@
 
 .post-places-rest {
     color: var(--text-muted);
-    font-size: 13px;
+    font-size: px2rem(13px);
 }
 
 .post-places-toggle {
@@ -462,7 +509,7 @@
     border: 0;
     background: none;
     color: var(--link);
-    font-size: 13px;
+    font-size: px2rem(13px);
     font-weight: var(--weight-semibold);
     cursor: pointer;
 }
@@ -475,7 +522,7 @@
     padding-top: var(--space-4);
     border-top: 1px solid var(--border);
     color: var(--text-muted);
-    font-size: 13px;
+    font-size: px2rem(13px);
 }
 
 .post-standing + .post-info-facts-line, .post-info-facts-line:first-child {
@@ -507,7 +554,7 @@
 // blue, and red shows once it nears the top. Its boil is in _motion.scss.
 
 .boil-meter {
-    --meter-h: 36px;                 // the avatar's height beside it
+    --meter-h: var(--control-h);     // the bar's control height (36; 32 in Compact): what sets the bar's height beside the avatar
     position: relative;
     display: inline-block;
     flex-shrink: 0;
@@ -553,7 +600,7 @@
 
 .boil-meter-text {
     color: var(--text-muted);
-    font-size: 12px;
+    font-size: px2rem(12px);
     line-height: 1.3;
 }
 
@@ -564,14 +611,16 @@
 
 // --- the account menu's first row: the avatar, "My profile" and the @handle under it (the owner, 2026-10-24, as Reddit's) ---
 
-.account-menu-profile {
+.account-menu .account-menu-profile {
     display: flex;
     align-items: center;
+    gap: var(--space-4);
+    min-height: 56px;
     padding-top: var(--space-2);
     padding-bottom: var(--space-2);
     margin-bottom: var(--space-2);
     border-bottom: 1px solid var(--border);
-    border-radius: var(--radius-md) var(--radius-md) 0 0;
+    border-radius: var(--radius-sm) var(--radius-sm) 0 0;
 }
 
 .account-menu .account-menu-profile .profile-pic-35 {

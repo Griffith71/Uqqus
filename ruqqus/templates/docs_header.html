@@ -1,25 +1,2 @@
-<!-- Navigation -->
-<nav class="navbar navbar-expand-md navbar-light bg-white border-bottom">
-        <div class="container">
-            <a class="navbar-brand text-purple" href="/help">{{ "SITE_NAME" | app_config }}</a>
-            <button class="navbar-toggler collapsed" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="{{ _('Toggle navigation') }}">
-            <span class="navbar-toggler-icon"><i class="fas fa-bars text-dark" style="font-size: 2rem;"></i></span>
-        </button>
-        <div class="navbar-collapse collapse" id="navbarResponsive" style="">
-            <ul class="navbar-nav align-items-center ml-auto">
-                <li class="nav-item">
-                    <a class="nav-link" href="/help/about">{{ _('About') }}</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="mailto:info@ruqqus.com">{{ _('Contact') }}</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="https://www.twitter.com/ruqqus">Twitter</a>
-                </li>
-                <li class="py-md-0 py-1 px-md-2">
-                    <a class="btn btn-primary" href="/"><i class="fas fa-sign-out mr-2"></i>{{ _('Back to %(site)s') }}</a>
-                </li>
-            </ul>
-        </div>
-    </div>
-</nav>
+<!-- Navigation: the same bar as About and Donate (partials/site_bar.html), with the way back to the site -->
+{% from "partials/site_bar.html" import site_bar %}{{ site_bar("/help", back=True) }}

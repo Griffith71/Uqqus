@@ -35,29 +35,8 @@
 
 <body id="page">
 
-    <!-- Navigation -->
-    <nav class="navbar navbar-expand-md navbar-light bg-white border-bottom fixed-top">
-        <div class="container">
-            <a class="navbar-brand" href="/">ruqqus</a>
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive"
-            aria-controls="navbarResponsive" aria-expanded="false" aria-label="{{ _('Toggle navigation') }}">
-            <span class="navbar-toggler-icon"><i class="fas fa-bars text-gray-500" style="font-size: 2rem;"></i></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarResponsive">
-            <ul class="navbar-nav ml-auto">
-                <li class="nav-item">
-                    <a class="nav-link" href="/help/about">{{ _("About") }}</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="mailto:info@ruqqus.com">{{ _("Contact") }}</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="https://www.twitter.com/ruqqus">{{ _("Twitter") }}</a>
-                </li>
-            </ul>
-        </div>
-    </div>
-</nav>
+    <!-- Navigation: the same bar as the help pages (partials/site_bar.html) -->
+    {% from "partials/site_bar.html" import site_bar %}{{ site_bar("/") }}
 
 <!-- Hero -->
 
@@ -68,7 +47,7 @@
             <h1 class="text-capitalize font-weight-bolder">{{ _("The open-Source platform for independent internet communities") }}</h1>
             <p class="text-lg mb-6">{{ _("%(site)s is an open-source platform that powers independent online communities.") }}</p>
             <div class="text-center">
-                <a href="/" class="btn btn-lg btn-primary shadow-md">{{ _("Enter %(site)s.com") }}</a>
+                <a href="/" class="btn btn-lg btn-primary">{{ _("Enter %(site)s.com") }}</a>
                 <p class="text-small mt-3">{{ _('Already using %(site)s? <a href="%(url)s">Sign in</a>', url="/login") }}</p>
             </div>
         </div>
@@ -203,13 +182,13 @@
                     </li>
                 </ul>
 
-                <a href="https://github.com/ruqqus/ruqqus" class="btn btn-lg btn-primary shadow-md d-none d-md-inline-block">{{ _("View our code") }}</a>
+                <a href="https://github.com/ruqqus/ruqqus" class="btn btn-lg btn-primary d-none d-md-inline-block">{{ _("View our code") }}</a>
 
             </div>
 
             <div class="col-12 col-md-6 d-none d-md-block">
 
-                <div class="row no-gutters mb-3" style="border-bottom: 2px solid #E0E4E9;">
+                <div class="row no-gutters mb-3" style="border-bottom: 2px solid #E6E6E6;">
 
                     <div class="col">
 

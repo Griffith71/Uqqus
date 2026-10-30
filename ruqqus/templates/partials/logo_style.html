@@ -1,0 +1,25 @@
+{# The navbar's mark (the ɸ in Noto Sans, the brand's gradient drifting slowly). One copy for every bar that draws it: default.html, header.html and
+   partials/site_bar.html (tests/test_fonts_assets.py reads it here). #}
+<style>
+.logo-gradient .brand-main {
+  font-family: "Noto Sans", "Noto Sans Fallback", sans-serif;
+  font-weight: 700;
+  font-size: 1.9rem;
+  background: linear-gradient(90deg,#23a9f2, #23a9f2, #0085d0, #23a9f2);
+  background-size: 300% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+  animation: gradient-move 15s linear infinite;
+  display: inline-block;
+}
+@keyframes gradient-move {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .logo-gradient .brand-main { animation: none; background-size: 100% 100%; }
+}
+</style>

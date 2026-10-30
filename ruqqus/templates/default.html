@@ -202,28 +202,6 @@
 
     <!-- Animated logo gradient (one copy, for every bar that draws the mark) -->
     {% include "partials/logo_style.html" %}
-    .logo-gradient .brand-main {
-      font-family: Impact, Haettenschweiler, "Arial Black", sans-serif;
-      font-weight: 700;
-      font-size: 1.9rem;
-      background: linear-gradient(90deg,#91deff, #1a7fba,#17a6ff,#2ca1ea);
-      background-size: 300% 100%;
-      -webkit-background-clip: text;
-      background-clip: text;
-      -webkit-text-fill-color: transparent;
-      color: transparent;
-      animation: gradient-move 15s linear infinite;
-      display: inline-block;
-    }
-    @keyframes gradient-move {
-      0% { background-position: 0% 50%; }
-      50% { background-position: 100% 50%; }
-      100% { background-position: 0% 50%; }
-    }
-    @media (prefers-reduced-motion: reduce) {
-      .logo-gradient .brand-main { animation: none; background-size: 100% 100%; }
-    }
-    </style>
 
 
     {% block fixedMobileBarJS %}
@@ -267,7 +245,7 @@
   <!-- Navigation -->
   <nav class="navbar navbar-expand-md navbar-light shadow shadow-md fixed-top" id="navbar">
     <div class="container-fluid">
-      <div><a href="/" class="navbar-brand text-purple logo-gradient"><span class="brand-main">ɸLaba</span><span class="text-small-extra text-uppercase text-gray-400"> {{ _("Beta") }}</span></a></div>
+      <div><a href="/" class="navbar-brand text-purple logo-gradient" aria-label="{{ 'SITE_NAME' | app_config }}"><span class="brand-main" aria-hidden="true">ɸ</span><span class="text-small-extra text-uppercase text-gray-400"> {{ _("Beta") }}</span></a></div>
       <div class="flex-grow-1 d-fl d-none d-md-block" id="navbar-search-wrap">
         <form id="searchform" class="form-inline search flex-nowrap mx-auto" action="{% if b %}/+{{ b.name }}{% endif %}/search" method="get">
           <input class="form-control w-100" type="search" placeholder="{% if b %}{{ _('Search posts in +%(guild)s', guild=b.name) }}{% else %}{{ _('Search posts, +guilds, @users, #topics, &curations') }}{% endif %}" aria-label="{% if b %}{{ _('Search posts in +%(guild)s', guild=b.name) }}{% else %}{{ _('Search posts, +guilds, @users, #topics, &curations') }}{% endif %}" name="q" value="{{ request.args.get('q', '') }}">{% if search_kept_type() %}<input type="hidden" name="type" value="{{ search_kept_type() }}">{% endif %}
@@ -629,6 +607,7 @@
 
 {% include "bootstrap.html" %}
 
+{% if v %}{% include "partials/confirm_sheet.html" %}{% endif %}{# the "are you sure?" sheet and the toast with Undo (assets/js/confirm_sheet.js) #}
 {% if v and not request.args.get('embed') %}{% include "partials/site_feedback_modal.html" %}{% endif %}
 {% if v and not request.args.get('embed') %}{% include "partials/share_chat_modal.html" %}{% include "partials/coauthors_modal.html" %}{% include "partials/audience_modal.html" %}{% include "partials/comment_permission_modal.html" %}{% endif %}
 {% if v and organise_bookmarks and not request.args.get('embed') %}{% include "partials/bookmark_folder_modal.html" %}{% endif %}
@@ -639,9 +618,11 @@
 
 <script src="{{ asset_url('js/text_length.js') }}"></script>{# weighted lengths for the counters (helpers/text_length.py) #}
 <script src="{{ asset_url('js/all_js.js') }}" importance="high" ></script>
+{% if v %}<script src="{{ asset_url('js/confirm_sheet.js') }}"></script>{% endif %}{# confirmSheet(), blockUser(): every Block asks first (partials/confirm_sheet.html) #}
 <script src="{{ asset_url('js/video_playback.js') }}"></script>{# the reader's video choices (Settings > Content > Video playback) #}
 <script src="{{ asset_url('js/feed_video_autoplay.js') }}"></script>
 <script src="{{ asset_url('js/audio_playback.js') }}"></script>{# the volume of a post's own sound, remembered (before background_media.js reads it on play) #}
+<script src="{{ asset_url('js/background_media.js') }}"></script>{# a post's sound keeps going with the phone locked #}
 {% if v %}<script src="{{ asset_url('js/guild_flair.js') }}"></script>{% endif %}
 {% if v %}<script src="{{ asset_url('js/translate.js') }}"></script>{% endif %}{# the Translate button (partials/translate_button.html) #}
 <script src="{{ asset_url('js/infinite_scroll.js') }}"></script>
@@ -703,9 +684,7 @@
 	});
 </script>
 
-<script>
-  (function(){
-    const nav = document.getElementById('navbar');
+<script src="{{ asset_url('js/navbar_height.js') }}"></script>{# --navbar-height, measured: what sits under the bar follows it (Text size) #}
     function updateNavHeight(){
       if(!nav) return;
       // Measure and set CSS variable on root

@@ -1,32 +1,10 @@
 <!-- Navigation -->
 
-<style>
-.logo-gradient .brand-main {
-  font-family: Impact, Haettenschweiler, "Arial Black", sans-serif;
-  font-weight: 700;
-  font-size: 1.9rem;
-  background: linear-gradient(90deg,#91deff, #1a7fba, #17a6ff, #2ca1ea);
-  background-size: 300% 100%;
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  color: transparent;
-  animation: gradient-move 15s linear infinite;
-  display: inline-block;
-}
-@keyframes gradient-move {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
-}
-@media (prefers-reduced-motion: reduce) {
-  .logo-gradient .brand-main { animation: none; background-size: 100% 100%; }
-}
-</style>
+{% include "partials/logo_style.html" %}
 
 <nav class="navbar navbar-expand-md navbar-light shadow shadow-md fixed-top" id="navbar">
   <div class="container-fluid">
-    <div class="flex-grow-1"><a href="/" class="navbar-brand text-purple logo-gradient"><span class="brand-main">ɸLaba</span><span class="text-small-extra text-uppercase text-gray-400"> {{ _("Beta") }}</span></a></div>
+    <div class="flex-grow-1"><a href="/" class="navbar-brand text-purple logo-gradient" aria-label="{{ 'SITE_NAME' | app_config }}"><span class="brand-main" aria-hidden="true">ɸ</span><span class="text-small-extra text-uppercase text-gray-400"> {{ _("Beta") }}</span></a></div>
     <div class="flex-grow-1 d-fl d-none d-md-block">
       <form id="searchform" class="form-inline search flex-nowrap mx-0 mx-lg-auto" action="{% if b %}/+{{ b.name }}{% endif %}/search" method="get">
         <input class="form-control w-100" type="search" placeholder="{% if b %}{{ _('Search posts in +%(guild)s', guild=b.name) }}{% else %}{{ _('Search posts, +guilds, @users, #topics, &curations') }}{% endif %}" aria-label="{% if b %}{{ _('Search posts in +%(guild)s', guild=b.name) }}{% else %}{{ _('Search posts, +guilds, @users, #topics, &curations') }}{% endif %}" name="q" value="{{ request.args.get('q', '') }}">{% if search_kept_type() %}<input type="hidden" name="type" value="{{ search_kept_type() }}">{% endif %}
@@ -51,7 +29,8 @@
     </span>
   </button>
   <div class="collapse navbar-collapse" id="navbarResponsive">
-    <ul class="navbar-nav ml-auto d-none d-md-flex">
+    {# the same id as default.html's icon row: the 36px targets, the gap and the account's spacing (_nav.scss) are written for it #}
+    <ul class="navbar-nav ml-auto d-none d-md-flex flex-nowrap" id="navbar-icon-row">
 
       {% if v and v.mods_anything %}
       <li class="nav-item d-flex align-items-center justify-content-center text-center mx-1">
