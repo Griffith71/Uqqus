@@ -1,0 +1,126 @@
+{% extends "default.html" %}
+
+{# The words the word filter looks for (routes/filtered_words_pages.py, helpers/filtered_words.py): members only, a
+   warning first ("warning"), the list with ?show=1 ("list"), and nothing on the Child filter ("child"). Every word is
+   drawn escaped in its own language's lang and dir="auto"; nothing here is ever marked safe. No ads, no right sidebar. #}
+
+{% block sidebar %}{% endblock %}
+{% block main_row_class %} wide-main is-focused{% endblock %}
+
+{% block title %}
+<title>{{ _("Filtered words - %(site)s") }}</title>
+<meta name="robots" content="noindex, nofollow">
+{% endblock %}
+
+{% block leftSidebarBlock %}
+{% include "sidebar-left.html" %}
+{% endblock %}
+
+{% block content %}
+<div class="col px-3 px-md-4 py-4" id="filtered-words">
+
+{% if state == "child" %}
+
+  <section class="fw-notice" aria-labelledby="fw-child-title">
+    <div class="fw-notice-icon" aria-hidden="true"><i class="fas fa-child"></i></div>
+    <h1 class="fw-notice-title" id="fw-child-title">{{ _("The list isn't shown on the Child filter") }}</h1>
+    <p class="fw-notice-text">{{ _("Your word filter is set to Child, which hides these words, so this page doesn't show them.") }}</p>
+    <p class="fw-notice-text"><a href="/settings/content">{{ _("Change your word filter") }}</a></p>
+  </section>
+
+{% elif state == "warning" %}
+
+  <section class="fw-notice" role="alert" aria-labelledby="fw-warning-title">
+    <div class="fw-notice-icon fw-notice-icon-warn" aria-hidden="true"><i class="fas fa-triangle-exclamation"></i></div>
+    <h1 class="fw-notice-title" id="fw-warning-title">{{ _("This page lists offensive words") }}</h1>
+    <p class="fw-notice-text">{{ _("It shows, in full, every word and phrase the word filter looks for, in every language it covers. That includes slurs and other extremely offensive language.") }}</p>
+    <p class="fw-notice-text">{{ _("The list is open to members so that anyone can see what the filter hides and why. Nothing on it is removed from the site: each member's own filter decides what they see.") }}</p>
+    <div class="fw-notice-actions">
+      <a class="btn btn-primary" href="?show=1" rel="nofollow">{{ _("Show the list") }}</a>
+      <a class="btn btn-secondary" href="{{ back }}">{{ _("Go back") }}</a>
+    </div>
+  </section>
+
+{% else %}
+
+  <header class="fw-head">
+    <h1 class="fw-title">{{ _("Filtered words") }}</h1>
+    <p class="fw-lead">{{ _("Posts, comments and names that contain one of these words are hidden from members whose word filter hides it. Nothing is removed for anyone else, and your own posts and comments are always shown to you.") }}</p>
+    <p class="fw-lead"><a href="/settings/content">{{ _("Change your word filter") }}</a></p>
+    <p class="fw-total">{{ ngettext("%(count)s entry in all", "%(count)s entries in all", total, count=number_text(total)) }}</p>
+  </header>
+
+  {% if grouped | length > 1 %}
+  {# Translators: the label of a list of links that jump to each language's part of the list #}
+  <nav class="fw-jump" aria-label="{{ _('Languages on this page') }}">
+    <ul class="fw-jump-list">
+      {% for group in grouped %}
+      <li><a class="fw-jump-link" href="#{{ group.anchor }}">{{ group.name }} <span class="fw-count">{{ number_text(group.count) }}</span></a></li>
+      {% endfor %}
+    </ul>
+  </nav>
+  {% endif %}
+
+  <section class="fw-how" aria-labelledby="fw-how-title">
+    <h2 class="fw-how-title" id="fw-how-title">{{ _("How words are matched") }}</h2>
+    <ul class="fw-how-list">
+      <li>{{ _("Capitals, accents and repeated letters don't change anything: a word reads the same in capitals, with accents or with a letter written several times.") }}</li>
+      <li>{{ _("Look-alike letters from other alphabets, and numbers or symbols used for letters (a 3 for an e, an @ for an a), are read as the letters they stand for.") }}</li>
+      <li>{{ _("Letters spaced out or split by dots or other marks are read as one word.") }}</li>
+      <li>{{ _("A word is matched as a whole word, so an innocent longer word that contains it is not hidden, except where an entry says it is also found inside other words.") }}</li>
+      <li>{{ _("A word in another alphabet is matched in that alphabet. Words in scripts written without spaces, such as Chinese, Japanese, Korean and Thai, are found anywhere in the text.") }}</li>
+      <li>{{ _("Entries under Never counted are innocent words and phrases that contain a listed word or look like one: they are never hidden.") }}</li>
+    </ul>
+  </section>
+
+  {% if not grouped %}
+  <p class="fw-empty">{{ _("The word filter has no words at the moment.") }}</p>
+  {% endif %}
+
+  {% for group in grouped %}
+  <section class="fw-language" id="{{ group.anchor }}" aria-labelledby="{{ group.anchor }}-title">
+    <h2 class="fw-language-title" id="{{ group.anchor }}-title">{{ group.name }} <span class="fw-count">{{ ngettext("%(count)s entry", "%(count)s entries", group.count, count=number_text(group.count)) }}</span></h2>
+
+    {% for section in group.sections %}
+    {% set n = section["items"] | length %}
+    {% set sep = list_separator() %}
+    <div class="fw-section fw-section-{{ section.key }}">
+      <h3 class="fw-section-title">
+        {% if section.key == "extreme" %}{{ _("Hidden on the Standard and Child filters") }}{% elif section.key == "profanity" %}{{ _("Hidden on the Child filter") }}{% else %}{{ _("Never counted") }}{% endif %}
+        <span class="fw-count">{{ number_text(n) }}</span>
+      </h3>
+      <ul class="fw-words">
+        {% for item in section["items"] %}
+        <li class="fw-word">
+          <span class="fw-term" lang="{{ item.lang }}" dir="auto">{{ item.word }}</span>
+          {% if item.phrase %}<span class="fw-tag">{{ pgettext("word filter entry", "Phrase") }}</span>{% endif %}
+          {% if item.anywhere %}<span class="fw-tag">{{ _("Also inside other words") }}</span>{% endif %}
+          {% if item.variants %}
+          <span class="fw-more">{{ _("Other spellings:") }} <span lang="{{ item.lang }}" dir="auto">{{ item.variants | join(sep) }}</span></span>
+          {% endif %}
+          {% if not item.anywhere and not item.phrase %}
+            {% if item.suffixes is none %}
+          <span class="fw-more">{{ _("With the usual English endings") }}</span>
+            {% elif item.suffixes %}
+          {# Translators: followed by word endings such as -s, -ed #}
+          <span class="fw-more">{{ _("Endings:") }} <span lang="{{ item.lang }}" dir="auto">{% for s in item.suffixes %}<span class="fw-ending">-{{ s }}</span>{% if not loop.last %}{{ sep }}{% endif %}{% endfor %}</span></span>
+            {% endif %}
+          {% endif %}
+        </li>
+        {% endfor %}
+      </ul>
+    </div>
+    {% endfor %}
+  </section>
+  {% endfor %}
+
+  {% if credit and (source.url or "").startswith("https://") %}
+  {% set source_link %}<a href="{{ source.url }}" rel="noopener noreferrer" target="_blank" lang="en">{{ source.source }}</a>{% endset %}
+  {% set licence_link %}{% if (source.license_url or "").startswith("https://") %}<a href="{{ source.license_url }}" rel="noopener noreferrer license" target="_blank">{{ source.license }}</a>{% else %}{{ source.license }}{% endif %}{% endset %}
+  <p class="fw-credit">{{ _("The words for other languages are adapted from %(source)s (%(licence)s): words that are also ordinary, innocent words were left out.", source=source_link, licence=licence_link) }}</p>
+  {% endif %}
+
+{% endif %}
+
+</div>
+{% endblock %}

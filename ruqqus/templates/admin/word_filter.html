@@ -13,6 +13,8 @@
 
 <p class="text-muted">Content containing a listed word is hidden from viewers according to their own word filter setting; nothing is removed. <strong>Extreme</strong> words are hidden for the Standard and Child filters, <strong>Profanity</strong> for the Child filter only. Enter plain words: capitals, accents, repeated letters, digits or symbols for letters, look-alike alphabets, punctuation or spaces between letters are all caught automatically. Words may be in any script: a word in another alphabet (Cyrillic, Arabic, Hebrew, Devanagari...) is matched in that alphabet only, and a word in a script written without spaces (Chinese, Japanese, Korean, Thai, Lao, Khmer, Burmese) is found anywhere in the text, so list it with at least two characters and add the innocent words that contain it as Allowed.</p>
 
+<p><a href="/filtered_words?show=1">See the list as members read it</a> (members only, behind a warning; not shown on the Child filter).</p>
+
 {% if msg %}<div class="alert alert-success">{{ msg }}</div>{% endif %}
 {% if error %}<div class="alert alert-danger">{{ error }}</div>{% endif %}
 

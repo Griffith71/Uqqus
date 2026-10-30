@@ -391,6 +391,16 @@ def number_text(n):
     return format_decimal(int(n), locale=babel_locale())
 
 
+# what goes between the items of a list of words in each language (CLDR's list comma): the Arabic comma for the
+# Arabic-script languages, the ideographic one for Chinese and Japanese, a comma and a space everywhere else
+_LIST_SEPARATORS = {"ar": "، ", "fa": "، ", "ur": "، ", "ps": "، ", "ja": "、", "zh": "、"}
+
+
+def list_separator():
+    """The separator between the items of a plain list (words, endings) in the reader's language."""
+    return _LIST_SEPARATORS.get(current_locale().split("-", 1)[0], ", ")
+
+
 # --- JSON ------------------------------------------------------------------------------------------------------------
 
 class I18nJSONProvider(DefaultJSONProvider):
@@ -524,6 +534,6 @@ def install(app):
         has_interface=lambda key: key in available(),
         own_language_name=lambda key: i18n.own_name(key) if key in i18n.interface_keys() else "English",
         html_lang=i18n.html_lang, language_name_here=lambda code: i18n.language_name(code, current_locale()), date_text=date_text, datetime_text=datetime_text,
-        number_text=number_text,
+        number_text=number_text, list_separator=list_separator,
     )
     app.json = I18nJSONProvider(app)

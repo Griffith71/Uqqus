@@ -71,3 +71,4 @@ from .guild_roles import *
 from .collab import *
 from .translation_pages import *
 from .interface_language_pages import *
+from .filtered_words_pages import *
