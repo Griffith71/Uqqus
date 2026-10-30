@@ -156,6 +156,12 @@ body:not(.using-mouse) :focus-visible:not(.form-control) {
     outline-offset: 2px;
 }
 
+// a row that scrolls sideways cuts off what pokes out of it (overflow-x: auto clips the other axis too), so a chip's ring sits INSIDE
+// it: the first chip's ring was cut off at the row's start and top edges (found checking flat buttons, 2026-10-29)
+body:not(.using-mouse) .explore-chips .explore-chip:focus-visible {
+    outline-offset: -2px;
+}
+
 .form-control:disabled, .form-control[readonly] {
     color: var(--text-muted);
     background-color: var(--surface-sunken);
@@ -179,7 +185,7 @@ label {
 // iOS zooms the page into a field whose text is under 16px and never zooms back (mobile-native)
 @media (pointer: coarse) {
     input.form-control, textarea.form-control, select.form-control, .custom-select {
-        font-size: 16px;
+        font-size: #{"max(16px, 1rem)"};
     }
 }
 
@@ -244,6 +250,16 @@ label {
     background-color: var(--overlay);
 }
 
+// a confirmation asked from inside a full-screen layer of the site's own (the story viewer, z-index 2000) goes over it
+// (assets/js/confirm_sheet.js sets the class while the sheet is open)
+body.confirm-over-overlay .modal-backdrop {
+    z-index: 2090;
+}
+
+body.confirm-over-overlay #confirmSheet {
+    z-index: 2100;
+}
+
 @media (max-width: 767.98px) {
     // a phone sheet: square at the bottom edge, rounded at the top, a grabber that says it came from below
     .modal.modal-sm-bottom .modal-content {
@@ -268,6 +284,14 @@ label {
     .modal.modal-sm-bottom .modal-header {
         border-radius: 0;
     }
+}
+
+// --- the destructive button ---------------------------------------------------------------------------------------------------
+// Its label is white, and Bootstrap's own red gave 4.13:1 (the owner's one exception to AA is the site's brand fill, not this). The sheet that
+// now asks before every Block, Purge and Delete makes it the most-seen button there is: #c53030 is 5.5:1 under white, and a hover and a press
+// only darken it.
+.btn-danger {
+    background-color: #c53030;
 }
 
 // --- toasts -----------------------------------------------------------------------------------------------------
@@ -1007,14 +1031,26 @@ button.text-expand {
 // header.html), not on #accountDropdownMenu, which only the first has.
 .account-menu {
     min-width: 15rem;
+        max-height: calc(100dvh - var(--navbar-height, 56px) - 16px);        // a short window scrolls the menu, not the page
+        overflow-y: auto;
+    }
 }
 
 .account-menu .dropdown-item {
-    padding-top: var(--space-2);
-    padding-bottom: var(--space-2);
+    display: flex;
+    align-items: center;
+    min-height: #{"max(var(--control-h), var(--hit-min))"};
+    padding: var(--space-2) var(--space-4);
+    border-radius: var(--radius-xs);
+    white-space: nowrap;
 }
 
 .account-menu .dropdown-item > .fa-fw {
+    flex: none;
+    width: px2rem(20px);
+    margin-right: var(--space-4) !important;      // (the markup's mr-3 is 14px: tests pin the markup, so the gap is set here)
+    font-size: px2rem(16px);
+    text-align: center;
     color: var(--text-muted);
 }
 
@@ -1023,7 +1059,7 @@ button.text-expand {
 }
 
 .account-menu .dropdown-divider {
-    margin: var(--space-1) var(--space-3);
+    margin: var(--space-2) var(--space-3);
 }
 
 // A row of choices (All | Posts | Comments) that a longer translation can't fit on a phone wraps rather than making
@@ -1060,5 +1096,70 @@ button.text-expand {
         color: var(--text);
         font-weight: 600;
         text-decoration: underline;
+    }
+}
+
+// --- the size ladder, applied (the owner chose "B · Balanced", 2026-10-29; tokens in _tokens.scss, CLAUDE.md "Sizing and spacing") --------------------------
+// A control is one of --control-xs / -sm / -h / -lg and is at least --hit-min under a coarse pointer. These only RAISE what was a few pixels short
+// (a Bootstrap button was 35.6px, a small one 29 to 31, a link 17): padding stays as it was, so no control got bigger than its rung.
+// --btn-h is the rung a button is on; min-height follows it, and so does an <a>'s or <label>'s padding (below).
+
+.btn {
+    --btn-h: var(--control-h);
+    min-height: var(--btn-h);
+}
+
+.btn-sm {
+    --btn-h: var(--control-sm);
+    min-height: var(--btn-h);
+}
+
+.btn-lg {
+    --btn-h: var(--control-lg);
+    min-height: var(--btn-h);
+}
+
+// A <button> or <input> centres its label inside a box that min-height made taller; an <a> or a <label> does not and left it at the top (5 to 7px high
+// under a finger). Their vertical padding is derived from the rung: (the rung - one line - the borders) / 2, so the label sits in the middle and the box is
+// the rung's height with no min-height needed. (1.5em is Bootstrap's line-height for a button.)
+a.btn, label.btn {
+    padding-top: calc((var(--btn-h) - 1.5em - 2px) / 2);
+    padding-bottom: calc((var(--btn-h) - 1.5em - 2px) / 2);
+}
+
+// Under a coarse pointer a menu row is a hit target: padding, not flex, so a row that holds anything keeps its layout. (1.5em is the row's own line, so a
+// row set in a smaller type comes close, and min-height does the rest: it was 41 for the post and comment menus with the line taken as 1.5rem.)
+@media (pointer: coarse) {
+    .dropdown-item {
+        padding-top: #{"max(var(--space-3), calc((var(--hit-min) - 1.5em) / 2))"};
+        padding-bottom: #{"max(var(--space-3), calc((var(--hit-min) - 1.5em) / 2))"};
+        min-height: var(--hit-min);                // the floor: a menu whose line is under 1.5 (the post and comment menus' is 1.4) still reaches 44
+    }
+
+    .btn, .btn-sm {
+        --btn-h: var(--hit-min);
+    }
+
+    // Two bars are measured and have things placed from their height: the top bar (a visitor's Sign In made it 64px, the member's 56) and the phone's fixed
+    // sort bar (it grew 6px over the feed's tabs). Their buttons stay on the default rung, as they were; the top bar's icons get their reach from an ::after.
+    #navbar .btn, #fixed-bar-mobile .btn {
+        --btn-h: var(--control-h);
+    }
+
+    // A fixed-size round icon (the profile's circles, the editor's toolbar) keeps its own box: a taller min-height made ovals and a 44px toolbar row.
+    // Its touch area is an invisible 44px around it, as the navbar's icons have: the drawing does not move.
+    .btn.profile-x-icon, .post-tb-btn {
+        min-height: 0;
+        position: relative;
+    }
+
+    .btn.profile-x-icon::after, .post-tb-btn::after {
+        content: "";
+        position: absolute;
+        inset: -4px;
+    }
+
+    .post-tb-btn::after {
+        inset: -8px;
     }
 }

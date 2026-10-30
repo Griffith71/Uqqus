@@ -12,12 +12,23 @@
   var timer = null;
   var inflight = false;
   var stopped = false;
+  var last = parseInt(badge.textContent, 10) || 0; // what the server drew: the first render is not a rise
+
+  // one small pop when the number goes up (the light language: _light.scss .is-popped; the class goes when it ends)
+  function pop() {
+    badge.classList.remove("is-popped");
+    void badge.offsetWidth;
+    badge.classList.add("is-popped");
+  }
+  badge.addEventListener("animationend", function () { badge.classList.remove("is-popped"); });
 
   function render(n) {
     n = Number(n) || 0;
     badge.textContent = n > 99 ? "99+" : String(n);
     badge.classList.toggle("d-none", n === 0);
     if (icon) icon.classList.toggle("text-danger", n > 0);
+    if (Math.min(n, 100) > Math.min(last, 100)) pop();      // what it shows: "99+" is one number
+    last = n;
   }
 
   function schedule() {

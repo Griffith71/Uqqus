@@ -292,7 +292,7 @@ body.using-mouse :focus {
 .sticky {
     position: -webkit-sticky;
     position: sticky;
-    top: 55px;
+    top: calc(var(--navbar-height, 59px) - 4px);
     height: auto;
     overflow-y: auto;
     z-index: 4;
@@ -345,7 +345,7 @@ body.using-mouse :focus {
 }
 
 #page p {
-    font-size: 16px;
+    font-size: px2rem(16px);
 }
 
 // Links
@@ -901,7 +901,7 @@ label.color-radio span {
 label {
     text-transform: uppercase;
     font-weight: $font-weight-bold;
-    font-size: 12px;
+    font-size: px2rem(12px);
     letter-spacing: 0.025rem;
     color: $black;
 }
@@ -913,7 +913,7 @@ label {
 label.terms {
     font-weight: normal;
     text-transform: none;
-    font-size: 13px;
+    font-size: px2rem(13px);
     color: $black;
     vertical-align: middle;
     padding: .1rem 0;
@@ -1422,7 +1422,7 @@ $profile-x-surface: $gray-600;
 .profile-x-tag {
     border: 1px solid $border-color;
     color: $muted;
-    font-size: 14px;
+    font-size: px2rem(14px);
 }
 
 .profile-x-follow {
@@ -1472,7 +1472,7 @@ $profile-x-surface: $gray-600;
 
 .profile-x-handle {
     color: $muted;
-    font-size: 15px;
+    font-size: px2rem(15px);
 }
 
 .profile-x-chip {
@@ -1481,7 +1481,7 @@ $profile-x-surface: $gray-600;
     border-radius: 4px;
     background-color: $light;
     color: $muted;
-    font-size: 12px;
+    font-size: px2rem(12px);
 }
 
 // a sensitive account (helpers/sensitive.py), drawn like a sensitive guild's "Sensitive Content" badge
@@ -1506,7 +1506,7 @@ $profile-x-surface: $gray-600;
     padding: 0;
     list-style: none;
     color: $muted;
-    font-size: 15px;
+    font-size: px2rem(15px);
 }
 
 .profile-x-details {
@@ -1882,7 +1882,7 @@ body.embedded .share-chat-item {
 }
 
 .chat-key-code {
-    font-family: SFMono-Regular, Menlo, Consolas, monospace;
+    font-family: $font-family-monospace;
     letter-spacing: 0.02em;
 }
 
@@ -3014,7 +3014,7 @@ body.embedded #chat-app {
 .search-field > legend {
     margin-bottom: 0.25rem;
     color: $muted;
-    font-size: 12px;
+    font-size: px2rem(12px);
     font-weight: $font-weight-bold;
     letter-spacing: 0.025rem;
     text-transform: uppercase;
@@ -5673,7 +5673,7 @@ pre .clo, pre .opn, pre .pun, code .clo, code .opn, code .pun {
 @media (max-width: 767.98px) {
 
 html {
-    font-size: 14px;
+    font-size: 87.5%;
 }
 
 .container {
@@ -5754,7 +5754,7 @@ body, #settings, #notifications, #submit {
 }
 
 #frontpage, #search, #guild {
-    padding-top: 98px;
+    padding-top: calc(var(--navbar-height, 59px) + 39px);
     background-color: $gray-600;
 }
 
@@ -6081,7 +6081,7 @@ input[type="url"],
 input[type="week"],
 select:focus,
 textarea {
-  font-size: 16px!important;
+  font-size: #{"max(16px, 1rem)"}!important;
 }
 
 textarea, input[type=text] {

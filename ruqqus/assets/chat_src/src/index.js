@@ -15,7 +15,8 @@ import {
   joinGuildChannel, postToGuildChannel, markGuildChannelRead, reportGuildChannelMessage, removeGuildChannelMessage,
   pinGuildChannelMessage, muteGuildChannel, acceptGuildChannelRules, guildChannelPins, searchGuildChannel,
 } from "./api.js";
-import { renderConversationList, renderThreadShell, renderMessages, setTabBadge } from "./ui.js";
+import { renderConversationList, renderThreadShell, renderMessages, setTabBadge, noteUnreadCounts } from "./ui.js";
+import { createFresh } from "./fresh.js";
 import { initGroups } from "./groups.js";
 import { initExtras } from "./chat_extras.js";
 import {
@@ -34,6 +35,7 @@ const state = {
   typingSent: 0, // when we last told the room we are typing (0: not typing)
   typingTimer: null,
   renderQueued: false,
+  fresh: createFresh(), // which message just arrived or was just sent: its bubble glints once (fresh.js, ui.js .is-new)
   locked: true,  // until this device has unlocked its encryption (crypto.js), nothing is sent from it
 };
 
@@ -227,8 +229,12 @@ function renderActiveThread() {
     const author = !mine ? memberOf(event) : null;
     const info = infoOf(event);
     const quotedBlocked = quoted && (memberOf(quoted)?.blocked || (gchannel && infoOf(quoted)?.blocked));
+    const age = state.fresh.age(event);
     return {
       eventId: event.getId(),
+      // glinting for about a second after it arrived (ui.js): how far into it, so a redraw carries on
+      isNew: age >= 0,
+      newAge: age,
       mine,
       body: deleted ? "" : textOf(event),
       status: event.status,
@@ -667,6 +673,7 @@ async function openConversation(conversation) {
   stopTyping();
   closePanels();
   state.context = null;
+  state.fresh = createFresh();
   state.active = { conversation, room, isRequest, group, channel, gchannel };
   queueMicrotask(() => showThreadNotice(isGroup || isChannel || isGuildChannel ? "" : waitingNotice(conversation)));
 
@@ -933,6 +940,7 @@ async function refreshLists() {
   state.conversations.request = request;
   state.conversations.channel = channel;
   state.conversations.guild = guild;
+  noteUnreadCounts([...inbox, ...group, ...request, ...channel, ...guild], state.active ? state.active.conversation.key : null);
   setTabBadge(document.getElementById("chat-channels-badge"), channel.filter((c) => c.unread_count > 0).length);
   setTabBadge(document.getElementById("chat-guilds-badge"), guild.filter((c) => c.unread_count > 0).length);
 
@@ -970,8 +978,9 @@ function queueRefresh() {
 }
 
 function wireGlobalEvents(client) {
-  client.on(RoomEvent.Timeline, (event, room) => {
+  client.on(RoomEvent.Timeline, (event, room, toStartOfTimeline, removed, data) => {
     if (state.active && room && room.roomId === state.active.room.roomId) {
+      state.fresh.note(event, toStartOfTimeline, data, isShownMessage(event));
       scheduleRender();   // a message, or a reaction or edit of one
     }
     if (isShownMessage(event)) queueRefresh();

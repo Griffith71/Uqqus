@@ -6,6 +6,7 @@
 // Message text only ever goes in through textContent, never innerHTML.
 
 import { composerNote } from "./guild_channels.js";
+import { createUnreadBumps } from "./fresh.js";
 
 function escapeHtml(s) {
   const div = document.createElement("div");
@@ -113,6 +114,14 @@ function postCard(id) {
 // the emoji offered under "React"
 export const REACTION_CHOICES = ["👍", "❤️", "😂", "😮", "😢", "🙏"];
 
+// The conversation list is rebuilt every few hundred ms, so what a row remembers lives in fresh.js: which conversations just gained
+// unread messages (the light language: one glint, _light.scss .is-bumped). index.js tells it about EVERY list when they are fetched.
+const bumps = createUnreadBumps();
+
+export function noteUnreadCounts(conversations, activeKey) {
+  bumps.observe(conversations, activeKey);
+}
+
 export function renderConversationList(container, conversations, activeConversationId, onSelect) {
   container.innerHTML = "";
 
@@ -129,6 +138,14 @@ export function renderConversationList(container, conversations, activeConversat
     row.href = "#";
     row.className = "d-flex align-items-center px-3 py-2 border-bottom text-decoration-none text-body chat-list-row";
     if (convo.key === activeConversationId) row.classList.add("bg-light");
+    if (convo.unread_count > 0) row.classList.add("is-unread");
+    // one glint when the unread count went up (fresh.js saw it when the lists were fetched); a redraw part-way carries on
+    const bumpAge = bumps.age(convo.key);
+    if (bumpAge >= 0) {
+      row.classList.add("is-bumped");
+      row.style.setProperty("--glint-delay", `${-bumpAge}ms`);
+      row.addEventListener("animationend", () => row.classList.remove("is-bumped"), { once: true });
+    }
 
     const unreadDot = convo.unread_count > 0
       ? '<span class="badge badge-danger rounded-circle align-top ml-1">&nbsp;</span>'
@@ -578,6 +595,19 @@ function buildMessage(item, handlers) {
   const bubble = document.createElement("div");
   bubble.className = `px-3 py-2 rounded chat-bubble ${item.mine ? "bg-primary text-white" : "bg-light"}${item.mentionsMe ? " chat-mention" : ""}`;
   if (item.status) bubble.style.opacity = "0.6";
+  if (item.isNew && !item.deleted) {
+    // the light language: one glint across a message that just arrived or was sent (_light.scss .is-new). A redraw part-way
+    // through carries on from where it was (a negative delay), and the class goes when the glint ends. Only the glint's own end
+    // counts: your bubble's scroll-linked shade is an animation too (light-ramp), and its events reach the bubble as well
+    bubble.classList.add("is-new");
+    bubble.style.setProperty("--glint-delay", `${-Math.max(0, item.newAge)}ms`);
+    const glintEnded = (e) => {
+      if (e.animationName !== "light-glint") return;
+      bubble.removeEventListener("animationend", glintEnded);
+      bubble.classList.remove("is-new");
+    };
+    bubble.addEventListener("animationend", glintEnded);
+  }
   const shared = !item.deleted && item.body ? POST_LINK.exec(item.body) : null;
   if (item.deleted) {
     bubble.classList.add("font-italic");

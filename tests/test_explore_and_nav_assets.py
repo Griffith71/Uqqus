@@ -223,3 +223,13 @@ def test_save_as_my_default_is_an_action_not_a_filter():
     nav = read("assets", "style", "_nav.scss")
     assert 'feed-defaults button[value="save"]' not in nav
     assert "#sidebar-left .feed-defaults-save {" in nav and "#sidebar-left .feed-defaults-rail-btn {" in nav
+
+
+def test_a_focused_chip_in_a_row_that_scrolls_sideways_keeps_its_whole_ring():
+    """`overflow-x: auto` clips the other axis too, so the keyboard ring (2px, offset 2px) was cut off at the row's start and top edges on
+    the first chip. It sits inside the chip there. The selector is as specific as the global ring's (`body:not(.using-mouse) ...`), or it
+    would lose to it."""
+    css = read("assets", "style", "_components.scss")
+    rule = css[css.index("body:not(.using-mouse) .explore-chips .explore-chip:focus-visible {"):]
+    assert "outline-offset: -2px;" in rule[:rule.index("}")]
+    assert css.index("body:not(.using-mouse) :focus-visible:not(.form-control) {") < css.index("body:not(.using-mouse) .explore-chips .explore-chip:focus-visible {")

@@ -123,17 +123,25 @@ $noto-scripts: "Noto Sans Arabic", "Noto Nastaliq Urdu", "Noto Sans Hebrew", "No
 $system-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji",
     "Segoe UI Emoji", "Segoe UI Symbol";
 $font-sans: join(join(("Noto Sans",), $noto-scripts, comma), join(("Noto Sans Fallback",), $system-sans, comma), comma);
+
+// A language's own stack: Noto Sans (its Latin letters), the language's Noto family, the Arial fallback (it draws Latin
+// while Noto Sans loads), the system's own fonts for that script, then the default stack's other families.
+@function script-stack($own, $system...) {
+    @return join(join(("Noto Sans", $own, "Noto Sans Fallback"), $system, comma), join($noto-scripts, $system-sans, comma), comma);
+}
+
 :root {
-    // type
-    --font-sans: "Inter", "Inter Fallback", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial,
-        sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
-    --text-xs: 12px;
-    --text-sm: 13px;
-    --text-base: 14px;
-    --text-body: 15px;
-    --text-title: 18px;
-    --text-title-lg: 22px;
-    --text-display: 28px;
+    // type: body and everything Bootstrap sets in $font-family-base read this, so a [lang] below that redefines it
+    // reaches every element under it (an element that names its own font, an icon or code, keeps it)
+    --font-sans: #{inspect($font-sans)};
+    // in rem at the site's 14px root (see px2rem above): the same px at the default, bigger with Text size
+    --text-xs: calc(12rem / 14);
+    --text-sm: calc(13rem / 14);
+    --text-base: 1rem;
+    --text-body: calc(15rem / 14);
+    --text-title: calc(18rem / 14);
+    --text-title-lg: calc(22rem / 14);
+    --text-display: 2rem;
     --leading-tight: 1.3;
     --leading-body: 1.55;
     --tracking-title: -0.011em;
@@ -169,8 +177,11 @@ $font-sans: join(join(("Noto Sans",), $noto-scripts, comma), join(("Noto Sans Fa
     --snippet-lines: 4;                // the body's first lines on a text-only card
     --snippet-lines-media: 2;          // and on a card that also shows a picture or link
     --avatar-sm: 24px;
-    --control-h: 36px;
-    --hit-min: 32px;
+    // the size ladder (the owner chose "B · Balanced", 2026-10-29, after comparing Reddit, YouTube, Instagram, GitHub, Radix, Bluesky, Telegram
+    // and Material: CLAUDE.md "Sizing and spacing"): a control is one of these, its padding is whatever makes it that tall, and under a coarse
+    // pointer it is at least --hit-min. 24 is WCAG 2.5.8's floor, not a goal.
+    --control-xs: 24px;                // chips and tiny controls
+    --control-sm: 28px;                // a small button, a dense tab
     --control-h: 36px;                 // the default: a button, the search pill, a nav icon, a menu row
     --control-lg: 40px;                // a field, a large button
     --hit-min: 32px;                   // the floor for anything pressed (44px under a coarse pointer, below)
@@ -220,6 +231,14 @@ $font-sans: join(join(("Noto Sans",), $noto-scripts, comma), join(("Noto Sans Fa
     // TINT is what keeps text readable (blur can't be relied on), so each is set per theme below.
     --glass-fx: saturate(180%) blur(20px);
     --glass-fx-bar: saturate(180%) blur(14px);
+    --glass-fx-chip: saturate(160%) blur(10px);
+    --glass-fx-scrim: blur(6px);
+    --glass-solid: var(--surface-raised);              // what a surface becomes where the blur is switched off (reduced transparency, more contrast, forced colours)
+    --glass-chip: rgba(0, 0, 0, 0.6);                  // a chip over a picture or video: white text on it is 4.7:1 over a white picture
+    // the glint: a band that crosses a 5px strip along the TOP edge of a message (never its middle, where the text is)
+    --glint: linear-gradient(90deg, transparent 30%, color-mix(in srgb, #fff calc(45% * var(--light-k)), transparent) 50%, transparent 70%);
+    --glint-brand: linear-gradient(90deg, transparent 30%, color-mix(in srgb, #{$glow} calc(#{34% * $light-damp} * var(--light-k)), transparent) 50%, transparent 70%);
+
     @if $theme == "dark" {
         --bg: #000000;
         --surface: #121212;
@@ -240,6 +259,11 @@ $font-sans: join(join(("Noto Sans",), $noto-scripts, comma), join(("Noto Sans Fa
         --success: #4ade80;
         --focus-ring: #{rgba(strong-on-dark($primary), 0.55)};
         --overlay: rgba(0, 0, 0, 0.6);
+        // glass, dark: near-opaque (muted text, links and danger red stay >= 4.5:1 over pure white behind, the worst case)
+        --glass-bg: rgba(30, 30, 30, 0.92);          // menus, dialogs, sheets (.92: the danger red needs it over a white backdrop)
+        --glass-bar: rgba(0, 0, 0, 0.86);            // the top and bottom bars: black, as the dark bar always was
+        --glass-line: rgba(255, 255, 255, 0.1);      // the hairline round a glass card
+        --glass-toast: rgba(241, 241, 241, 0.92);    // a toast is the inverse of the page
         --hover: rgba(255, 255, 255, 0.06);     // laid over any surface: rows, menu items, icon buttons
         --press: rgba(255, 255, 255, 0.1);
         --toast-bg: #f1f1f1;                     // toasts are the inverse of the page
@@ -250,8 +274,16 @@ $font-sans: join(join(("Noto Sans",), $noto-scripts, comma), join(("Noto Sans Fa
         --shadow-sm: none;
         --shadow-md: 0 0 0 1px #2a2a2a, 0 8px 24px rgba(0, 0, 0, 0.5);
         --shadow-lg: 0 0 0 1px #2a2a2a, 0 16px 48px rgba(0, 0, 0, 0.6);
+        // light, dark: depth is a ring and a bloom (black on black has no edge, so a hairline of light gives it one)
+        --edge: inset 0 1px 0 color-mix(in srgb, #fff calc(8% * var(--light-k)), transparent);
+        --ring: 0 0 0 1px color-mix(in srgb, #{$glow} calc(#{38% * $light-damp} * var(--light-k)), transparent);
+        --halo-sm: 0 0 0 0 transparent;
+        --bloom-sm: 0 0 12px -3px color-mix(in srgb, #{$glow} calc(#{50% * $light-damp} * var(--light-k)), transparent);
         --lit: 0 0 12px 0 color-mix(in srgb, #{$glow} calc(#{55% * $light-damp} * var(--light-k)), transparent);                   // a lit bar
         --rail: inset 0 -9px 10px -9px color-mix(in srgb, #{$glow} calc(#{60% * $light-damp} * var(--light-k)), transparent);      // a tab's underline rising into the tab
+        --rail-up: 0 -4px 10px -3px color-mix(in srgb, #{$glow} calc(#{60% * $light-damp} * var(--light-k)), transparent);         // the same, for a bar drawn as a pseudo-element
+        --soft-a: #{40% * $light-damp};                    // how much of a soft light (a stripe's spill, a badge's halo) a state gets
+        --hairline: 0 0 0 1px color-mix(in srgb, #fff calc(6% * var(--light-k)), transparent);             // an edge for a dark grey box on black
     } @else {
         --bg: #ffffff;                   // posts sit on the page itself, divided by hairlines (X, Reddit)
         --surface: #ffffff;
@@ -272,9 +304,11 @@ $font-sans: join(join(("Noto Sans",), $noto-scripts, comma), join(("Noto Sans Fa
         --success: #{strong-on-light(#2f855a)};
         --focus-ring: #{rgba($primary, 0.45)};
         --overlay: rgba(0, 0, 0, 0.5);
-        --hover: rgba(15, 23, 42, 0.05);        // laid over any surface: rows, menu items, icon buttons
-        --press: rgba(15, 23, 42, 0.09);
-        --toast-bg: #1a202c;                     // toasts are the inverse of the page
+        // glass, light: near-opaque (pure black behind is the worst case: the muted grey needs .88, the danger red .92)
+        --glass-bg: rgba(255, 255, 255, 0.92);       // (.92: the danger red needs it over a black backdrop)
+        --glass-bar: rgba(255, 255, 255, 0.92);
+        --glass-line: rgba(0, 0, 0, 0.08);
+        --glass-toast: rgba(22, 22, 22, 0.92);
         --hover: rgba(0, 0, 0, 0.05);        // laid over any surface: rows, menu items, icon buttons
         --press: rgba(0, 0, 0, 0.09);
         --toast-bg: #161616;                     // toasts are the inverse of the page
@@ -284,7 +318,21 @@ $font-sans: join(join(("Noto Sans",), $noto-scripts, comma), join(("Noto Sans Fa
         --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.06);
         --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.08), 0 1px 3px rgba(0, 0, 0, 0.06);
         --shadow-lg: 0 16px 48px rgba(0, 0, 0, 0.16), 0 2px 6px rgba(0, 0, 0, 0.06);
+        // light, light: polish, not glow (a bloom on white is a smudge): a top edge and a tinted shadow
+        --edge: inset 0 1px 0 color-mix(in srgb, #fff calc(60% * var(--light-k)), transparent);
+        --ring: 0 0 0 0 transparent;
+        --halo-sm: 0 3px 8px -5px color-mix(in srgb, #{$glow} calc(#{50% * $light-damp} * var(--light-k)), transparent);
+        --bloom-sm: 0 0 0 0 transparent;
+        --lit: 0 0 0 0 transparent;
+        --rail: 0 0 0 0 transparent;
+        --rail-up: 0 0 0 0 transparent;
+        --soft-a: 0%;
+        --hairline: 0 0 0 0 transparent;
     }
+}
+
+// Text size: Large is the browser's own size (16px at its default), Extra large 112.5% of it. The attribute is named
+// by partials/theme.html html_attrs only for these two values; the default is 87.5% in each sheet's own `html` rule.
 html[data-text-size="large"] {
     font-size: 100%;
 }
@@ -328,6 +376,11 @@ html[data-density="compact"] {
 // the script follows, for a character the Noto slices don't hold. The stack is --font-sans, which body and Bootstrap's
 // $font-family-base read, so it reaches everything under the element that carries the lang (<html> included), and the
 // element itself takes it.
+@mixin lang-stack($stack) {
+    --font-sans: #{inspect($stack)};
+    font-family: var(--font-sans);
+}
+
 [lang|="ja"] {
     @include lang-stack(script-stack("Noto Sans JP", "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Yu Gothic UI",
         "Yu Gothic", Meiryo));
@@ -336,14 +389,18 @@ html[data-density="compact"] {
 [lang|="zh"] {
     @include lang-stack(script-stack("Noto Sans SC", "PingFang SC", "Microsoft YaHei UI", "Microsoft YaHei"));
 }
+
+// Traditional Chinese (and Cantonese) after the zh rule, which also matches zh-Hant
+[lang|="zh-Hant"], [lang|="zh-TW"], [lang|="zh-HK"], [lang|="zh-MO"], [lang|="yue"] {
+    @include lang-stack(script-stack("Noto Sans TC", "PingFang TC", "Microsoft JhengHei UI", "Microsoft JhengHei"));
 }
 
 [lang|="ko"] {
-    font-family: "Inter", "Apple SD Gothic Neo", "Malgun Gothic", "Noto Sans KR", "Noto Sans CJK KR", sans-serif;
+    @include lang-stack(script-stack("Noto Sans KR", "Apple SD Gothic Neo", "Malgun Gothic"));
 }
 
 [lang|="ar"], [lang|="fa"] {
-    font-family: "Inter", "Geeza Pro", "Segoe UI", "Noto Sans Arabic", Tahoma, sans-serif;
+    @include lang-stack(script-stack("Noto Sans Arabic", "Geeza Pro", "Segoe UI", Tahoma));
 }
 
 [lang|="ur"] {

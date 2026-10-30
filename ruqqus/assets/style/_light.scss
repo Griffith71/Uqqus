@@ -1,0 +1,376 @@
+// The light language (the owner's, 2026-10-29: CLAUDE.md "The light language"; the proposal is the artifact linked there).
+// Light marks meaning: yours (your own message), current (selected, unread, live) and rewarded (an upvote, a tip, Premium).
+// It is added only along edges and at corners, never behind running text (behind it the surface only gets darker), it is still
+// by default, and a glint plays once, 300ms, when something arrived. BUTTONS ARE FLAT (the owner, 2026-10-29: "remove the shine on
+// buttons"; TikTok, Instagram, Threads, Discord, Mastodon, Bluesky, Stripe, Radix and Material all ship a flat fill with a darker
+// hover and press, and nothing that sweeps): their hover is in _components.scss and their press is below. What moves with a
+// scroll is your own message's shade (below). Everything is drawn from the tokens in _tokens.scss (--edge, --ramp, --ring, --wash,
+// --glint), which come from the page's own brand colour, so a guild's colour carries through, and one dial, --light-k, scales it all.
+//
+// For the mirrored sheet (helpers/css_flip.py): the glint band is symmetric and moves with literal offsets, which it flips;
+// nothing here puts var() or calc() in a translateX or a shadow's x offset.
+//
+// Phase 1, private messages. Phase 2, tabs and selection (the controls themselves are flat). Phase 3, notifications and live signals. Phase 4,
+// posts, votes and rewards. Phase 5, surfaces. Light still to be given: the story ring, a Premium tile, the sign-in photo (see
+// CLAUDE.md "The light language").
+
+// --- the dial: off for anyone who asked for less ----------------------------------------------------------------------
+
+@media (prefers-reduced-transparency: reduce), (prefers-contrast: more) {
+    :root {
+        --light-k: 0;
+    }
+}
+
+// A browser without color-mix() (Chrome before 111, Safari before 16.2, Firefox before 113) would compute a shadow list with one of these
+// tokens in it to `none`, and take the menu's, the dialog's and the focus ring's own shadow with it. So none of the rules below apply there:
+// the site is exactly what it was.
+@supports (color: color-mix(in srgb, red, blue)) {
+
+// --- private messages (assets/chat_src/src/ui.js buildMessage) --------------------------------------------------------
+// Your bubble is the flat AA deep blue (running white text) and its shade follows the scroll (below). Theirs is a raised
+// surface with a hairline, so yours are the ones that carry light. A filtered, blocked or deleted bubble also has .bg-light
+// and .font-italic: it gets nothing.
+
+.chat-msg .chat-bubble {
+    position: relative;
+    overflow: hidden;                     // the glint stays inside the bubble
+    isolation: isolate;                   // the shade (z-index -1) sits between the bubble's fill and its text, not behind the fill
+}
+
+.chat-msg .chat-bubble.bg-light:not(.font-italic) {
+    box-shadow: var(--edge), 0 0 0 1px var(--border);
+}
+
+// "(edited)" is running text on your bubble: not dimmed by an alpha
+.chat-bubble.bg-primary .chat-edited {
+    opacity: 1;
+}
+
+// a message that just arrived, or that you just sent, glints once: ui.js adds .is-new for about a second after it, with a
+// negative --glint-delay so a redraw part-way through carries on instead of starting again
+.chat-bubble.is-new::after, .chat-list-row.is-bumped::after {
+    content: "";
+    position: absolute;
+    inset: 0 0 auto 0;                    // light only along the top edge, never across a label
+    height: 5px;
+    pointer-events: none;
+    opacity: 0;
+    background: var(--glint-brand);
+}
+
+.chat-bubble.bg-primary.is-new::after {
+    background: var(--glint);
+}
+
+// --- the shade that follows the scroll (the owner, 2026-10-29: on TikTok the shine in messages happens WHILE YOU SCROLL) -------
+// What the messengers whose source is public all do (Signal Desktop, Telegram Desktop and iOS; Messenger documents it): one
+// colour ramp pinned to the screen, so each bubble shows a different slice of it and its colour slides as the list moves, still
+// when it stops. No white gloss anywhere in it: white over the deep blue takes running white text under 4.5:1 (it has 4.63:1,
+// room for about 1.6% white), so the ramp only DARKENS, from the plain deep blue at the top of the thread to --ramp (10% black,
+// 5.5:1) at the bottom. Done as a scroll-driven animation (no script, off the main thread): a black layer under the text whose
+// opacity follows how far the bubble has travelled through its scroller, from 1 as it comes in at the bottom to 0 as it leaves at
+// the top. A browser without scroll-driven animations (Safari and iOS before 26, Firefox before 159) keeps the flat blue.
+// The timeline is NAMED and defined on the bubble, so its subject is the bubble and its scroller the thread (an anonymous
+// view() on the pseudo-element would find the bubble itself, which overflow: hidden makes a scroll container).
+@media (prefers-reduced-motion: no-preference) {
+    @supports (animation-timeline: view()) {
+        @keyframes light-ramp {
+            from { opacity: 1; }
+            to { opacity: 0; }
+        }
+
+        .chat-msg .chat-bubble.bg-primary:not(.font-italic) {
+            view-timeline: --bubble block;
+        }
+
+        .chat-msg .chat-bubble.bg-primary:not(.font-italic)::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            z-index: -1;
+            pointer-events: none;
+            background: var(--ramp);
+            animation: light-ramp linear both;
+            animation-timeline: --bubble;       // after the shorthand, which resets it
+            animation-range: cover 0% cover 100%;
+        }
+    }
+}
+
+// --- the conversation list --------------------------------------------------------------------------------------------
+// An unread conversation: a wash from the start edge and a lit bar; its red dot (ui.js) keeps its own colour.
+
+.chat-list-row {
+    position: relative;
+    overflow: hidden;
+}
+
+.chat-list-row.is-unread {
+    box-shadow: inset 3px 0 0 var(--glow);
+}
+
+// `background` with `to right`, because the mirrored sheet flips that keyword and not an angle; the open row has its own fill
+.chat-list-row.is-unread:not(.bg-light) {
+    background: linear-gradient(to right, var(--wash), transparent 70%);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+    // the band fades in, crosses the strip at an even pace (the transform has no keyframe between its ends, so the timing function
+    // is `linear` in every use) and fades out; at +-70% a band 40% wide is wholly outside the element
+    @keyframes light-glint {
+        0% { opacity: 0; transform: translateX(-70%); }
+        18% { opacity: 1; }
+        82% { opacity: 1; }
+        100% { opacity: 0; transform: translateX(70%); }
+    }
+
+    .chat-bubble.is-new::after, .chat-list-row.is-bumped::after {
+        animation: light-glint 300ms linear var(--glint-delay, 0ms) 1 backwards;
+    }
+
+    // a count badge pops once when its number goes up (assets/js/chat_badge.js adds .is-popped, and takes it off at the end)
+    @keyframes light-pop {
+        0% { transform: scale(0.8); }
+        55% { transform: scale(1.18); }
+        100% { transform: scale(1); }
+    }
+
+    .nav-link .badge-count.is-popped {
+        animation: light-pop 240ms cubic-bezier(0.2, 0.7, 0.3, 1) 1 backwards;
+    }
+}
+
+// =====================================================================================================================
+// Phase 2: buttons, pills, tabs and selection
+// =====================================================================================================================
+
+// --- buttons, pills and chips are FLAT (the owner, 2026-10-29: "remove the shine on buttons") ------------------------------------
+// A flat fill, a darker hover (_components.scss) and a deeper press, as TikTok, Instagram, Discord, Mastodon, Bluesky, Radix and
+// Material do: no sheen, no highlight, no glow, no sweep. A darker fill only raises a white label's contrast (2.62:1 on the bare
+// fill, 3.2:1 at 10% black). The press is here, as the legacy sheet gave it no step of its own. (:active:focus too: a mouse press
+// focuses the button, and Bootstrap's own `:active:focus` rule is as specific as the others.)
+
+.btn-primary:not(:disabled):not(.disabled):active, .btn-primary:not(:disabled):not(.disabled):active:focus,
+.btn-primary:not(:disabled):not(.disabled).active, .btn-primary:not(:disabled):not(.disabled).active:focus,
+.btn-purple:not(:disabled):not(.disabled):active, .btn-purple:not(:disabled):not(.disabled):active:focus,
+.btn-purple:not(:disabled):not(.disabled).active, .btn-purple:not(:disabled):not(.disabled).active:focus {
+    background-color: color-mix(in srgb, var(--brand-fill) 80%, #000);
+    border-color: color-mix(in srgb, var(--brand-fill) 80%, #000);
+}
+
+// --- tabs: a lit rail under the selected one (dark pages; a light page keeps its plain underline) -------------------
+
+.search-tab.active, .explore-tab.active, .guild-tab.is-on, .composer-mode.active {
+    box-shadow: var(--rail);
+}
+
+.notif-tabs .settings-nav > .nav-item > .nav-link.active::after {
+    box-shadow: var(--rail-up);
+}
+
+// (Settings, the profile and History draw the selected tab's underline as an inset shadow: it is kept, and the rail added)
+.settings-nav > .nav-item > .nav-link.active {
+    box-shadow: inset 0 -2px 0 var(--brand), var(--rail);
+}
+
+// --- the selected row of the left sidebar (All, For You, Following): a lit bar at its start edge ---------------------
+
+#sidebar-left .guild-recommendations-item > a[aria-current="page"] {
+    position: relative;
+}
+
+#sidebar-left .guild-recommendations-item > a[aria-current="page"]::before {
+    content: "";
+    position: absolute;
+    inset-inline-start: 0;
+    top: 8px;
+    bottom: 8px;
+    width: 3px;
+    border-radius: 3px;
+    background: var(--glow);
+    box-shadow: var(--lit);
+}
+
+.inline-composer .form-control.ic-title:focus-visible {
+    outline: 2px solid var(--link);
+    outline-offset: 2px;
+}
+
+// --- focus: one language, the site's soft ring, and on a dark page a small bloom with it --------------------------------
+// (the composer's title and editor had a hard 1px ring in the raw brand colour, the form controls a soft 3px one)
+
+.form-control:focus, .form-control:active,
+#navbar .form-inline.search .form-control:focus {
+    box-shadow: 0 0 0 3px var(--focus-ring), var(--bloom-sm);
+}
+
+.composer-card .composer-title-input:focus,
+.composer-card .post-editor:focus-within, .inline-composer .post-editor:focus-within {
+    border-color: var(--link);
+    box-shadow: 0 0 0 3px var(--focus-ring), var(--bloom-sm);
+}
+
+// =====================================================================================================================
+// Phase 3: notifications and live signals
+// =====================================================================================================================
+
+// --- an unread notification: the brand tint it has, and a stripe that is lit (on a dark page it spills a little) -----
+// (the literal 3px and 14px offsets: the mirrored sheet flips them, a var() in an offset it cannot)
+
+.notif.is-new {
+    box-shadow: inset 3px 0 0 var(--glow), inset 14px 0 16px -12px color-mix(in srgb, var(--glow) calc(var(--soft-a) * var(--light-k)), transparent);
+}
+
+// --- the count badges on the bell and the chat button: a soft red halo on a dark page; one small pop when the number rises ---
+
+.nav-link .badge-count {
+    box-shadow: 0 0 10px -1px color-mix(in srgb, var(--danger) calc(var(--soft-a) * var(--light-k) * 1.4), transparent);
+}
+
+// --- live: the dot and the badge are lit, still (a pulse would be a loop) ---------------------------------------------
+// The colour is the live red they already have; the halo is a ring of its own tint, so on white it is a clear mark and not a smudge.
+
+.space-live-dot, .happening-box .happening-head.is-on::before, .happening-row.is-live .happening-badge::before, .happening-row.is-alert .happening-badge::before {
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--danger) calc(20% * var(--light-k)), transparent);
+}
+
+.live-badge {
+    box-shadow: var(--edge), 0 3px 8px -5px color-mix(in srgb, var(--danger) calc(55% * var(--light-k)), transparent);
+}
+
+.live-badge .space-live-dot {
+    box-shadow: none;                     // inside the badge it is a white dot on the red: no halo
+}
+
+// a channel with something unread in a guild's chat list
+.guild-chat-dot {
+    box-shadow: 0 0 0 3px var(--wash);
+}
+
+// =====================================================================================================================
+// Phase 4: posts, votes and rewards
+// =====================================================================================================================
+// A feed card gets nothing at rest (it already has its hairline, and an effect per card would multiply by every page of the
+// continuous feed): only what the reader did or earned is lit.
+
+// --- a vote you cast: the arrow's circle takes the upvote's tint, and on a dark page a ring and a small bloom -------------
+// (the upvote colour, not the page's: a guild's page keeps the upvote blue; the score's own colour is unchanged)
+
+.arrow-up.active:not(.vote-locked), .card .voting .arrow-up.active:not(.vote-locked):hover {
+    background-color: color-mix(in srgb, var(--upvote) calc(14% * var(--light-k)), transparent);
+    box-shadow: 0 0 0 1px color-mix(in srgb, var(--upvote) calc(var(--soft-a) * var(--light-k) * 0.9), transparent),
+        0 0 12px -3px color-mix(in srgb, var(--upvote) calc(var(--soft-a) * var(--light-k) * 1.25), transparent);
+}
+
+// on the phone the pill round the arrows is already tinted by a vote: one state, not a tint in a tint
+.vote-pill .arrow-up.active:not(.vote-locked), .vote-pill .arrow-up.active:not(.vote-locked):hover {
+    background-color: transparent;
+    box-shadow: none;
+}
+
+// --- a saved post's bookmark, in the action row ------------------------------------------------------------------------
+
+.post-actions .post-action-bookmark.is-on, .post-actions a.post-action.post-action-bookmark.is-on:hover {
+    background-color: var(--wash);
+    box-shadow: var(--edge), var(--ring), var(--halo-sm), var(--bloom-sm);
+}
+
+// --- Creator Studio's cards and a poll vote that is yours ----------------------------------------------------------------
+
+a.studio-card:hover, a.studio-card:focus-visible {
+    box-shadow: var(--ring), var(--halo-sm), var(--bloom-sm);
+}
+
+.poll-result.mine .poll-bar {
+    box-shadow: var(--edge), var(--ring);
+}
+
+// =====================================================================================================================
+// Phase 5: surfaces
+// =====================================================================================================================
+// A raised surface (a menu, a dialog, a toast) catches a hairline of light along its top edge; in the dark a dark grey box
+// on black (the right sidebar's) gets a hairline all round, which it has never had.
+
+.dropdown-menu {
+    box-shadow: var(--edge), var(--shadow-md);
+}
+
+// the account menu and the post menus also have Bootstrap's `.shadow`, which is `!important`: the one place this partial must be too
+.dropdown-menu.shadow {
+    box-shadow: var(--edge), var(--shadow-md) !important;
+}
+
+.modal-content {
+    box-shadow: var(--edge), var(--shadow-lg);
+}
+
+.toast {
+    box-shadow: var(--edge), var(--shadow-lg);
+}
+
+#main-content-row > .sidebar:not(.sidebar-left) .sidebar-section {
+    box-shadow: var(--hairline);
+}
+
+// --- forced colours: the system draws the colours, so the effects go and a border says whose message it is -----------
+
+@media (forced-colors: active) {
+    // The browser already draws no gradient and no shadow here; what has to hold is that a SELECTED state still differs from an
+    // unselected one without them, and that no row moves when it becomes one (an outline, or a transparent border that changes colour).
+
+    // chat (as specific as the rules they undo: a plain .chat-bubble selector would lose to .bg-primary:not(.font-italic))
+    .chat-msg .chat-bubble, .chat-msg .chat-bubble.bg-primary:not(.font-italic), .chat-msg .chat-bubble.bg-light:not(.font-italic) {
+        border-width: 1px;
+        border-style: solid;
+        border-color: CanvasText;
+    }
+
+    .chat-msg .chat-bubble.bg-primary:not(.font-italic) {
+        border-width: 2px;
+    }
+
+    // the scroll-linked shade is a black layer over a fill the system replaces: it goes
+    .chat-msg .chat-bubble.bg-primary:not(.font-italic)::before {
+        display: none;
+    }
+
+    .chat-msg .chat-bubble.chat-mention {
+        border-left-width: 3px;               // the @mention marker the border above would otherwise replace
+    }
+
+    .chat-list-row, .notif {
+        border-inline-start: 4px solid transparent;
+    }
+
+    .chat-list-row.is-unread, .chat-list-row.is-unread:not(.bg-light), .notif.is-new {
+        border-inline-start-color: Highlight;
+    }
+
+    // selected chips, pills and the current page
+    .explore-chip.active, .explore-chip.active:hover, .space-tab.active, .space-tab.active:hover, .folder-chip.active,
+    .nav-pills .nav-link.active, .nav-pills .show > .nav-link, .page-item.active .page-link,
+    .where-profile-input:checked + .where-chip, .audience-chip-input:checked + .audience-chip {
+        outline: 2px solid Highlight;
+        outline-offset: -2px;
+        font-weight: 700;
+    }
+
+    // selected tabs: the underline in the system's colour
+    .search-tab.active, .explore-tab.active, .guild-tab.is-on, .composer-mode.active, .settings-nav > .nav-item > .nav-link.active {
+        border-bottom-color: Highlight;
+        font-weight: 700;
+    }
+
+    #sidebar-left .guild-recommendations-item > a[aria-current="page"], .arrow-up.active, .post-actions .post-action-bookmark.is-on {
+        outline: 2px solid Highlight;
+        outline-offset: -2px;
+    }
+
+    // the system draws these in its own colours; keep a plain edge so they still read as raised
+    .dropdown-menu, .modal-content, .toast {
+        border: 1px solid CanvasText;
+    }
+}
+
+}

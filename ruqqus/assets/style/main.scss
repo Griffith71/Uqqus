@@ -1638,7 +1638,7 @@ $profile-x-surface: $white;
         flex-shrink: 0;
         padding-left: 0.5rem;
         color: $muted;
-        font-size: 12px;
+        font-size: px2rem(12px);
     }
 }
 
@@ -1855,7 +1855,7 @@ body.embedded .share-chat-item {
 }
 
 .chat-key-code {
-    font-family: SFMono-Regular, Menlo, Consolas, monospace;
+    font-family: $font-family-monospace;
     letter-spacing: 0.02em;
 }
 
@@ -3097,7 +3097,7 @@ fieldset.search-field {
 .score-display-legend {
     margin-bottom: 0.5rem;
     color: $muted;
-    font-size: 12px;
+    font-size: px2rem(12px);
     font-weight: $font-weight-bold;
     letter-spacing: 0.025rem;
     text-transform: uppercase;
@@ -3416,9 +3416,9 @@ html.feed-live {
 .sidebar.sidebar-left {
     position: -webkit-sticky;
     position: sticky;
-    top: 55px;
+    top: calc(var(--navbar-height, 59px) - 4px);
     z-index: 1000;
-    height: calc(100vh - 55px);
+    height: calc(100vh - var(--navbar-height, 59px) + 4px);
     overflow-y: auto;
     overflow-x: hidden;
 }
@@ -3959,7 +3959,7 @@ a.bg-dark:hover, a.bg-dark:focus, button.bg-dark:hover, button.bg-dark:focus {
 }
 
 .post-title {
-    font-size: 16px;
+    font-size: px2rem(16px);
     font-weight: $font-weight-bold;
     word-break: break-word;
     overflow: hidden;
@@ -4451,7 +4451,7 @@ a.bg-dark:hover, a.bg-dark:focus, button.bg-dark:hover, button.bg-dark:focus {
     z-index: 2;
     display: inline-block;
     color: $muted;
-    font-size: 13px;
+    font-size: px2rem(13px);
     font-weight: 600;
     margin-top: .25rem;
     margin-bottom: .5rem;
@@ -5025,7 +5025,7 @@ ul.comment-section {
     gap: 0.35rem 1.5rem;
     margin: 0 0 1rem;
     padding: 0;
-    font-family: monospace;
+    font-family: $font-family-monospace;
     font-size: 1.05rem;
     letter-spacing: 0.06em;
 }
@@ -5699,7 +5699,7 @@ body, #settings, #notifications, #submit{
 }
 
 #frontpage, #search, #guild{
-    padding-top: 98px;
+    padding-top: calc(var(--navbar-height, 59px) + 39px);
 }
 
 #search .search-results.card  {
@@ -5809,7 +5809,7 @@ body, #settings, #notifications, #submit{
 }
 
 .post-title {
-    font-size: 14px;
+    font-size: px2rem(14px);
     font-weight: $font-weight-normal;
     line-height: normal;
     overflow: hidden;
@@ -10520,3 +10520,4 @@ $cc-muted: $muted;
 @import "{ruqquspath}/assets/style/_mobile";
 @import "{ruqquspath}/assets/style/_light";
 @import "{ruqquspath}/assets/style/_glass";
+@import "{ruqquspath}/assets/style/_text_size";
