@@ -7,10 +7,19 @@
 // content wrapper. A container with data-embed-load="click" (a social site's
 // player, music: helpers/social_embeds.player_layout) is never started by
 // scrolling: only pressing its thumbnail builds the player, and it stays.
+// While the page is hidden (the phone locked, another app) nothing is started,
+// paused or taken down, so a sound the reader is listening to keeps going
+// (background_media.js); the feed is settled again when the page is back.
+// The post page uses the same players (partials/player.html), so the reader's video choices (Settings > Content >
+// Video playback: video_playback.js, read from <html data-video-*>) are applied here and nowhere else: tap to
+// play instead of autoplay (also for a device asking for reduced motion or data saving), captions by default, and
+// the sound a pressed player starts with.
 
 (function () {
-  if (!('IntersectionObserver' in window)) return;
+  if (!('IntersectionObserver' in window) || !window.VideoPlayback) return;
 
+  var VP = window.VideoPlayback;
+  var page = document.documentElement.dataset;
   var ACTIVATION_RATIO = 0.6;
   var currentlyPlaying = null;
   var deactivateTimer = null;
@@ -31,6 +40,31 @@
     return !!(wrap && !wrap.classList.contains('revealed'));
   }
 
+  // localStorage can be missing or throw (a private window, blocked site data): the volume is then just not remembered
+  function storage() {
+    try {
+      return window.localStorage;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  // Remember the volume and mute the reader sets on a direct video file (an embedded player is its site's to
+  // handle: reaching into it would mean loading that site's scripts). What the page sets itself is not the
+  // reader's choice, so the returned function wraps such a change and takes it out of what is remembered.
+  function rememberVolume(media) {
+    var last = { volume: media.volume, muted: media.muted };
+    media.addEventListener('volumechange', function () {
+      if (media.volume === last.volume && media.muted === last.muted) return;
+      last = { volume: media.volume, muted: media.muted };
+      VP.writeSaved(storage(), last);
+    });
+    return function ours(change) {
+      change();
+      last = { volume: media.volume, muted: media.muted };
+    };
+  }
+
   function buildMedia(container, chosen) {
     var existing = container.querySelector('.feed-video-media');
     if (existing) return existing;
@@ -38,26 +72,34 @@
     var kind = container.dataset.embedKind;
     var src = container.dataset.embedSrc;
     var media;
-    // pressed by the reader: it may play with sound; started by scrolling: muted
-    var startParams = chosen ? 'autoplay=1' : 'autoplay=1&mute=1';
+    var ours = null;
+    // pressed by the reader: it may play with sound (unless they chose to always start muted); started by scrolling: muted
+    var muted = page.videoSound === 'muted';
 
     if (kind === 'video') {
       media = document.createElement('video');
-      media.muted = true;
+      var start = VP.videoStart(VP.readSaved(storage()), { chosen: !!chosen, muted: muted });
+      media.muted = start.muted;
+      media.volume = start.volume;
       media.autoplay = true;
       media.loop = true;
       media.playsInline = true;
       media.controls = true;
       media.src = src;
+      ours = rememberVolume(media);
     } else {
       media = document.createElement('iframe');
       // Some providers (Twitch, Bilibili) need their own autoplay/mute
       // param names and already bake them into the src server-side -
       // appending YouTube-style autoplay=1&mute=1 on top would just be
-      // ignored or conflict, so only add it if nothing's there yet.
-      media.src = /[?&]autoplay=/i.test(src)
-        ? src
-        : src + (src.indexOf('?') === -1 ? '?' : '&') + startParams;
+      // ignored or conflict, so video_playback.js only adds it if nothing's there yet.
+      media.src = VP.playerSrc(src, {
+        chosen: !!chosen,
+        muted: muted,
+        audio: kind === 'audio',
+        captions: page.videoCaptions === 'on',
+        lang: document.documentElement.lang
+      });
       media.frameBorder = '0';
       // Ruqqus sends Referrer-Policy: same-origin site-wide, which starves
       // YouTube's embedded player of the cross-origin referrer it needs to
@@ -98,6 +140,18 @@
     var thumb = container.querySelector('.feed-video-thumb');
     if (thumb) thumb.style.display = 'none';
 
+    // A pressed video with sound is started inside the press (Safari only allows that), and falls back to muted
+    // if the browser still refuses, which is not something the reader chose and so is not remembered.
+    if (ours && !media.muted) {
+      var started = media.play();
+      if (started && started.catch) {
+        started.catch(function () {
+          ours(function () { media.muted = true; });
+          media.play().catch(function () {});
+        });
+      }
+    }
+
     return media;
   }
 
@@ -109,7 +163,11 @@
         return;
       }
     }
-    buildMedia(container);
+    // a press on the thumbnail of a player that would have started by itself still counts as pressing play,
+    // once: a later start by scrolling (after it was taken down) is muted again
+    var pressed = container.dataset.pressed === '1';
+    delete container.dataset.pressed;
+    buildMedia(container, pressed);
   }
 
   function deactivateNow(container) {
@@ -145,6 +203,7 @@
   }
 
   function reconcile() {
+    if (document.hidden) return;
     var candidate = bestCandidate();
 
     if (candidate === currentlyPlaying) {
@@ -172,6 +231,7 @@
       var toDeactivate = currentlyPlaying;
       deactivateTimer = setTimeout(function () {
         deactivateTimer = null;
+        if (document.hidden) return;
         if (!bestCandidate()) {
           deactivateNow(toDeactivate);
           if (currentlyPlaying === toDeactivate) currentlyPlaying = null;
@@ -191,8 +251,22 @@
     buildMedia(container, true);
   }
 
+  // what decides whether scrolling may start a player: the reader's Tap to play, or a device asking for less
+  // motion or less data (the setting, and the other two, apply from the next page opened)
+  function environment() {
+    var connection = navigator.connection;
+    return {
+      pref: page.videoAutoplay,
+      reducedMotion: !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches),
+      saveData: !!(connection && connection.saveData)
+    };
+  }
+
   function observeAll() {
+    // when scrolling may not start a player, every player is a press-to-play one, like a social site's
+    var pressOnly = !VP.autoplayAllowed(environment());
     document.querySelectorAll('[data-embed-kind]').forEach(function (container) {
+      if (pressOnly) container.dataset.embedLoad = 'click';
       if (container.dataset.embedLoad === 'click') {
         var button = container.querySelector('.feed-video-thumb');
         if (button && !button.dataset.clickBound) {
@@ -211,6 +285,7 @@
       if (thumb && !thumb.dataset.clickBound) {
         thumb.dataset.clickBound = '1';
         thumb.addEventListener('click', function () {
+          container.dataset.pressed = '1';
           ratios.set(container, 1);
           reconcile();
         });
@@ -232,6 +307,16 @@
     observeAll();
     calmGifs();
   }
+
+  document.addEventListener('visibilitychange', function () {
+    if (!document.hidden) reconcile();
+  });
+
+  // "View anyway" on a sensitive post: the observer only reports a change in how much of a player is on screen,
+  // and revealing it changes none, so settle the feed again once the blur is off
+  document.addEventListener('click', function (event) {
+    if (event.target.closest && event.target.closest('.sensitive-overlay')) setTimeout(reconcile, 0);
+  });
 
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', start);

@@ -578,22 +578,12 @@
             <div class="position-relative{% if p.is_sensitive %} sensitive-content-wrap{% endif %}" id="sensitive-embed-{{ p.base36id }}">
               <div class="{% if p.is_sensitive %}sensitive-blur{% endif %}"{% if p.is_sensitive %} inert{% endif %}>
                 {% set layout = player_of(p) %}
-                {% if layout and (layout.load != 'auto' or p.embed_kind == 'vertical') %}
-                {# music, a GIF, or a social site's video (loaded on click): partials/player.html #}
+                {% if layout %}
+                {# every player, as the feed card draws it (partials/player.html): feed_video_autoplay.js starts it as it
+                   scrolls into view, or when the reader presses play (a social site's video, music, or Tap to play in
+                   Settings > Content > Video playback). It never starts behind the sensitive blur, and the reader's
+                   captions and sound choices are applied there and nowhere else. #}
                 {{ player_box(p, layout) }}
-                {% elif p.embed_kind == 'video' %}
-                <div class="embed-responsive embed-responsive-16by9 mb-3">
-                  <video src="{{ p.embed_url }}" controls autoplay muted playsinline class="w-100 h-100"></video>
-                </div>
-                {% elif p.embed_kind in ('iframe', 'iframe_untrusted') %}
-                <div class="embed-responsive embed-responsive-16by9 mb-3">
-                  {% if 'autoplay=' in p.embed_url %}
-                  {# some providers (Twitch, Bilibili) need their own autoplay/mute param names and already bake them in - appending YouTube-style autoplay=1&mute=1 on top would just be ignored or conflict #}
-                  <iframe src="{{ p.embed_url }}" frameborder="0" referrerpolicy="strict-origin-when-cross-origin" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture; fullscreen" title="{{ _('Video from %(domain)s', domain=p.domain) }}" {% if p.embed_kind == 'iframe_untrusted' %}sandbox="allow-scripts"{% endif %} allowfullscreen></iframe>
-                  {% else %}
-                  <iframe src="{{ p.embed_url }}{{ '&' if '?' in p.embed_url else '?' }}autoplay=1&mute=1" frameborder="0" referrerpolicy="strict-origin-when-cross-origin" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture; fullscreen" title="{{ _('Video from %(domain)s', domain=p.domain) }}" {% if p.embed_kind == 'iframe_untrusted' %}sandbox="allow-scripts"{% endif %} allowfullscreen></iframe>
-                  {% endif %}
-                </div>
                 {% endif %}
               </div>
               {% if p.is_sensitive %}

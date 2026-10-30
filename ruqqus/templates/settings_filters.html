@@ -232,6 +232,72 @@
 
             </div>
 
+          <h2 class="h5 mt-5" id="video">{{ _("Video and audio") }}</h2>
+
+            {# three cookies kept by this browser (setVideoPref in all_js.js), named on <html> before the page is drawn
+               (partials/theme.html html_attrs) and applied by assets/js/video_playback.js + feed_video_autoplay.js, which
+               draw every player on the feed and the post page. Only the one non-default value is ever a cookie. #}
+            <div class="settings-section rounded">
+
+              <div class="d-lg-flex border-bottom">
+
+                <div class="title w-lg-25">
+                  <label for="video-autoplay">{{ _("Autoplay") }}</label>
+                </div>
+
+                <div class="body w-lg-100">
+
+                  <select class="form-control" id="video-autoplay" onchange="setVideoPref('autoplay', this.value)">
+                    <option value="auto"{% if request.cookies.get('video_autoplay') != 'tap' %} selected{% endif %}>{{ _("Automatic") }}</option>
+                    <option value="tap"{% if request.cookies.get('video_autoplay') == 'tap' %} selected{% endif %}>{{ _("Tap to play") }}</option>
+                  </select>
+
+                  <span class="d-block mt-2 text-small-extra text-muted">{{ _("Automatic plays videos, muted, as you scroll to them, unless your device asks for reduced motion or to save data. With tap to play, a video site's player is not loaded, and gets nothing from your browser, until you press play. Audio never plays by itself.") }}</span>
+
+                </div>
+
+              </div>
+
+              <div class="d-lg-flex border-bottom">
+
+                <div class="title w-lg-25">
+                  <label for="video-captions">{{ _("Captions") }}</label>
+                </div>
+
+                <div class="body w-lg-100">
+
+                  <select class="form-control" id="video-captions" onchange="setVideoPref('captions', this.value)">
+                    <option value="off"{% if request.cookies.get('video_captions') != 'on' %} selected{% endif %}>{{ _("Only when I turn them on") }}</option>
+                    <option value="on"{% if request.cookies.get('video_captions') == 'on' %} selected{% endif %}>{{ _("On by default") }}</option>
+                  </select>
+
+                  <span class="d-block mt-2 text-small-extra text-muted">{{ _("Turns captions on in YouTube and Dailymotion videos, in your language when the video has them. Other sites keep their own setting.") }}</span>
+
+                </div>
+
+              </div>
+
+              <div class="d-lg-flex">
+
+                <div class="title w-lg-25">
+                  <label for="video-sound">{{ _("Sound") }}</label>
+                </div>
+
+                <div class="body w-lg-100">
+
+                  <select class="form-control" id="video-sound" onchange="setVideoPref('sound', this.value)">
+                    <option value="remember"{% if request.cookies.get('video_sound') != 'muted' %} selected{% endif %}>{{ _("Play with sound") }}</option>
+                    <option value="muted"{% if request.cookies.get('video_sound') == 'muted' %} selected{% endif %}>{{ _("Always start videos muted") }}</option>
+                  </select>
+
+                  <span class="d-block mt-2 text-small-extra text-muted">{{ _("When you press play, a video starts with sound, at the volume you last used (video files only: videos from other sites keep their own volume). A video that starts by scrolling is always muted. Audio players also start at the volume you last used, and are never muted by this. Saved on this device, and used from the next page you open.") }}</span>
+
+                </div>
+
+              </div>
+
+            </div>
+
           <h2 class="h5 mt-5" id="languages">{{ _("My languages") }}</h2>
 
             {# the account's languages (users.languages, routes/translation_pages.py): the first is its language, the one

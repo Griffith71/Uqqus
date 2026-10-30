@@ -595,6 +595,19 @@ function setDensity(value) {
   document.documentElement.setAttribute("data-density", density);
 };
 
+// Video playback (Settings > Content > Video playback): three cookies kept by this browser and read by the server
+// before the page is drawn (partials/theme.html html_attrs puts the non-default ones on <html>, where
+// video_playback.js and feed_video_autoplay.js read them). Only the one value that differs from the default is
+// written; the page's players pick it up from the next page opened.
+function setVideoPref(name, value) {
+  var kept = { autoplay: ["video_autoplay", "tap"], captions: ["video_captions", "on"], sound: ["video_sound", "muted"] }[name];
+  if (!kept) return;
+  var on = value === kept[1];
+  document.cookie = kept[0] + "=" + (on ? kept[1] : "") + "; path=/; max-age=" + (on ? 31536000 : 0) + "; samesite=lax";
+  if (on) document.documentElement.setAttribute("data-video-" + name, kept[1]);
+  else document.documentElement.removeAttribute("data-video-" + name);
+};
+
 // Text size (Settings > Content > Layout): the `text_size` cookie, kept by this browser and named on <html> before the
 // page is drawn (partials/theme.html html_attrs; assets/style/_tokens.scss sets the root size from it). The page
 // changes at once. The top bar is as tall as its text, so a resize event makes navbar_height.js measure it again.
