@@ -292,6 +292,17 @@ body.confirm-over-overlay #confirmSheet {
 // only darken it.
 .btn-danger {
     background-color: #c53030;
+    border-color: #c53030;
+}
+
+.btn-danger:hover {
+    background-color: #b02a2a;
+    border-color: #b02a2a;
+}
+
+.btn-danger:not(:disabled):not(.disabled):active, .btn-danger:not(:disabled):not(.disabled).active, .show > .btn-danger.dropdown-toggle {
+    background-color: #9b2424;
+    border-color: #9b2424;
 }
 
 // --- toasts -----------------------------------------------------------------------------------------------------
@@ -337,6 +348,23 @@ body.confirm-over-overlay #confirmSheet {
 
 .toast .toast-body .mr-2 {
     margin-right: 0 !important;
+}
+
+// the toast that offers to take an action back (assets/js/confirm_sheet.js, partials/confirm_sheet.html)
+.toast .toast-action {
+    padding: 0;
+    border: 0;
+    background: none;
+    color: inherit;
+    font: inherit;
+    font-weight: var(--weight-bold);
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+    outline: 2px solid currentColor;
+    outline-offset: 2px;
+    border-radius: 2px;
 }
 
 .toast .toast-body.bg-success i, .toast .toast-body.bg-success .fas {
@@ -1029,8 +1057,26 @@ button.text-expand {
 // "Send feedback" and an unread badge need. The icons are a quiet guide with the label carrying the weight; the Dark mode
 // toggle takes the brand's AA shade while it is on. Keyed on .account-menu, which both shells' menus carry (default.html,
 // header.html), not on #accountDropdownMenu, which only the first has.
+// Sized by the ladder (the owner, 2026-10-29: "the account drop down could be bigger"; it was 210px wide with 29px rows, the smallest of every
+// product compared: Reddit's is 256 wide with 48px rows, YouTube's 300 with 40): 264px wide (never past the screen), a row is a default control
+// (36px; 32 in Compact; 44 under a coarse pointer), 16px glyphs in a 20px box 12px from the label, 12px of padding, menu padding 8px, item radius
+// 6px inside the menu's 12 (a radius is the container's minus its padding), 1px dividers with 4px above and below. The wrapper's own px-2 is gone
+// from the markup: it added 7px more at each side.
 .account-menu {
-    min-width: 15rem;
+    min-width: px2rem(264px);
+    max-width: calc(100vw - 16px);
+    padding-top: var(--space-3);
+    padding-bottom: var(--space-3);
+}
+
+// the sides: the markup's px-0 is !important, so the inset is the wrapper's (a row's highlight stops 8px short of the menu's edge, as in the menus compared)
+.account-menu > div {
+    padding-left: var(--space-3);
+    padding-right: var(--space-3);
+}
+
+@media (min-width: 768px) {
+    .account-menu {
         max-height: calc(100dvh - var(--navbar-height, 56px) - 16px);        // a short window scrolls the menu, not the page
         overflow-y: auto;
     }
@@ -1162,4 +1208,32 @@ a.btn, label.btn {
     .post-tb-btn::after {
         inset: -8px;
     }
+}
+
+// WCAG 2.5.8 (AA) sets 24 x 24 CSS px as the floor for a target. The audit found text links of 17 to 21px with nothing around them (the sidebar footer,
+// "See all", a user name in a comment, "Show more") and two chat buttons 22px wide. An inline link grows by padding (the line, and so the layout, is
+// untouched; the target grows); a button gets a minimum.
+.footer a, .list-inline-item > a, .comment a.user-name, a.user-name {
+    padding-top: var(--space-2);
+    padding-bottom: var(--space-2);
+}
+
+// A link that is a block in a column (What's happening's "See N more", Who to follow's names) would push what is under it down by the padding: the same
+// amount of negative margin takes it back, so the target grows and the layout does not (the reserved heights of those boxes stay true).
+a.happening-all, a.wtf-name {
+    padding-top: var(--space-2);
+    padding-bottom: var(--space-2);
+    margin-top: calc(-1 * var(--space-2));
+    margin-bottom: calc(-1 * var(--space-2));
+}
+
+button.show-more-link, button.translate-btn, .btn-link.btn-sm {
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--control-xs);
+}
+
+#chat-new-chat, #chat-new-group, .ic-chip-remove {
+    min-width: var(--control-sm);
+    min-height: var(--control-sm);
 }

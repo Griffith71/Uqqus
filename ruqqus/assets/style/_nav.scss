@@ -5,13 +5,10 @@
 // 272 / 782 / 316 block: 738 of content beside the 44px vote column); only the look changes.
 
 // --- the top bar --------------------------------------------------------------------------------------------------
-// The page's own colour, slightly see-through, with what scrolls under it softly blurred: the one translucent
-// surface on the site. A hairline instead of a shadow.
+// The page's own colour, frosted over what scrolls under it (its glass is in _glass.scss, on a layer behind the bar). A hairline
+// instead of a shadow.
 
 #navbar.navbar-light, #navbar {
-    background-color: color-mix(in srgb, var(--surface) 86%, transparent);
-    -webkit-backdrop-filter: saturate(180%) blur(14px);
-    backdrop-filter: saturate(180%) blur(14px);
     border-bottom: 1px solid var(--border);
     box-shadow: none !important;
 }

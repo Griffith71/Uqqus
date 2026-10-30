@@ -197,9 +197,11 @@
     // Translators: a button that deletes a live thread's update
     del.textContent = tr('Delete');
     del.addEventListener('click', function () {
-      if (!window.confirm(tr('Delete this update? This can’t be undone.'))) return;
-      send('/api/live_updates/' + id + '/delete').then(function () { replace({ id: id, gone: true }); })
-        .catch(function (e) { window.alert(e.message); });
+      confirmSheet({ title: tr('Delete this update?'), text: tr('This can’t be undone.'), ok: tr('Delete'), icon: 'fa-trash-alt' }).then(function (yes) {
+        if (!yes) return;
+        send('/api/live_updates/' + id + '/delete').then(function () { replace({ id: id, gone: true }); })
+          .catch(function (e) { window.alert(e.message); });
+      });
     });
     actions.appendChild(cross);
     actions.appendChild(del);

@@ -249,16 +249,27 @@
 
   // ------------------------------------------------------------------ the viewer's actions
 
+  // The question is asked in the page's own sheet, which (unlike the browser's confirm()) doesn't freeze the page: the card is held
+  // while it is open, so "Delete" is the story that was on show, and a cancelled question lets it carry on.
   function removeStory(story) {
-    if (!window.confirm(tr('Delete this story? It leaves every Highlight too.'))) return;
+    pause();
+    confirmSheet({ title: tr('Delete this story?'), text: tr('It leaves every Highlight too.'), ok: tr('Delete'), icon: 'fa-trash-alt' }).then(function (yes) {
+      if (yes) doRemoveStory(story); else resume();
+    });
+  }
+
+  function doRemoveStory(story) {
     send('/api/stories/' + story.id + '/delete').then(function (res) {
-      if (!res.ok) { say(res.data.error || tr('Could not delete that.')); return; }
+      if (!res.ok) { say(res.data.error || tr('Could not delete that.')); resume(); return; }
+      if (!state) return;                                              // the viewer was closed while the request was on its way
       var stories = state.data.stories;
-      stories.splice(state.index, 1);
+      var at = stories.findIndex(function (s) { return s.id === story.id; });      // by id, never "the card now on show"
+      if (at < 0) return;
+      stories.splice(at, 1);
       if (!stories.length) { closeViewer(); window.location.reload(); return; }
       buildBars();
-      show(Math.min(state.index, stories.length - 1));
-    }).catch(function () { say(tr('Could not delete that. Try again.')); });
+      show(Math.min(at, stories.length - 1));
+    }).catch(function () { say(tr('Could not delete that. Try again.')); resume(); });
   }
 
   function reportStory(story) {
@@ -280,11 +291,18 @@
   }
 
   function deleteHighlight() {
-    if (!window.confirm(tr('Delete this highlight? Its stories stay in your archive.'))) return;
-    send('/api/highlights/' + state.data.id + '/delete').then(function (res) {
-      if (!res.ok) { say(res.data.error || tr('Could not delete that.')); return; }
+    pause();
+    var id = state.data.id;
+    confirmSheet({ title: tr('Delete this highlight?'), text: tr('Its stories stay in your archive.'), ok: tr('Delete'), icon: 'fa-trash-alt' }).then(function (yes) {
+      if (yes) doDeleteHighlight(id); else resume();
+    });
+  }
+
+  function doDeleteHighlight(id) {
+    send('/api/highlights/' + id + '/delete').then(function (res) {
+      if (!res.ok) { say(res.data.error || tr('Could not delete that.')); resume(); return; }
       window.location.reload();
-    }).catch(function () { say(tr('Could not delete that. Try again.')); });
+    }).catch(function () { say(tr('Could not delete that. Try again.')); resume(); });
   }
 
   // ------------------------------------------------------------------ opening one
@@ -316,6 +334,9 @@
 
   document.addEventListener('keydown', function (event) {
     if (!viewer.hidden) {
+      // a dialog over the viewer (the page's "are you sure?" sheet) owns Tab, Escape and the arrows: without this the viewer pulled focus
+      // back to its own first button, so the sheet's buttons could not be reached, and Escape closed the viewer as well
+      if (document.querySelector('.modal.show')) return;
       if (event.key === 'Tab') { keepFocusInside(event); return; }
       if (event.key === 'Escape') { event.preventDefault(); closeViewer(); }
       // the arrow pointing the way the page reads goes forward (left, in a right-to-left page)

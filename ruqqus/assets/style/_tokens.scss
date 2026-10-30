@@ -404,7 +404,10 @@ html[data-density="compact"] {
 }
 
 [lang|="ur"] {
-    font-family: "Inter", "Noto Nastaliq Urdu", "Jameel Noori Nastaleeq", "Geeza Pro", "Segoe UI", Tahoma, sans-serif;
+    @include lang-stack(script-stack("Noto Nastaliq Urdu", "Jameel Noori Nastaleeq", "Geeza Pro", "Segoe UI", Tahoma));
+}
+
+// Nastaliq's letters reach far above and below the line (the font's own line is about twice its size): a heading's 1.2
 // made two lines of Urdu run into each other and a paragraph's 1.5 made them touch. Text in Urdu only (:lang follows
 // the nearest lang, so an English post in the Urdu interface keeps its own); controls keep their heights.
 h1:lang(ur), h2:lang(ur), h3:lang(ur), h4:lang(ur), h5:lang(ur), h6:lang(ur),
@@ -418,14 +421,17 @@ p:lang(ur), li:lang(ur), blockquote:lang(ur) {
 
 // Controls in Urdu: a small pill's 1.4 line put Nastaliq's tall letters over its top border (the sidebar's "Discover
 // guilds", a 28px pill; 1.9 still touched it, 2.1 is measured clear). The size ladder stays the floor (min-height), so a
+// control only grows, and an <a> or <label> button's padding (derived from its rung) still centres the label.
+.btn:lang(ur), .badge:lang(ur), .custom-control-label:lang(ur), .dropdown-item:lang(ur), .nav-link:lang(ur) {
+    line-height: 2.1;
 }
 
 [lang|="he"] {
-    font-family: "Inter", "Arial Hebrew", "Segoe UI", "Noto Sans Hebrew", Arial, sans-serif;
+    @include lang-stack(script-stack("Noto Sans Hebrew", "Arial Hebrew", "Segoe UI"));
 }
 
 [lang|="hi"] {
-    font-family: "Inter", "Kohinoor Devanagari", "Nirmala UI", "Noto Sans Devanagari", sans-serif;
+    @include lang-stack(script-stack("Noto Sans", "Kohinoor Devanagari", "Nirmala UI"));
 }
 
 [lang|="bn"] {

@@ -6272,7 +6272,7 @@ textarea, input[type=text] {
 
 .posting-rules .rule-body p,
 .posting-rules .rule-body li {
-    font-size: 14px;
+    font-size: px2rem(14px);
 }
 
 .posting-rules .rule-body ul {
@@ -6884,7 +6884,7 @@ img.emoji {
     display: block;
     max-width: 64px;
     overflow: hidden;
-    font-size: 12px;
+    font-size: px2rem(12px);
     text-overflow: ellipsis;
     white-space: nowrap;
 }
@@ -8547,7 +8547,7 @@ $gp-removed-fg: #ffc9c9;
     border: 1px solid $gp-border;
     border-radius: 8px;
     overflow-x: auto;
-    font-family: SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-family: $font-family-monospace;
     font-size: 0.8125rem;
 }
 
@@ -9914,7 +9914,7 @@ $ex-muted: $muted;
 
 .insight-sub {
     color: $muted;
-    font-size: 11px;
+    font-size: px2rem(11px);
     margin-top: 0.15rem;
 }
 
@@ -10569,5 +10569,6 @@ $cc-muted: $muted;
 @import "{ruqquspath}/assets/style/_filtered_words";
 @import "{ruqquspath}/assets/style/_motion";
 @import "{ruqquspath}/assets/style/_mobile";
+@import "{ruqquspath}/assets/style/_light";
 @import "{ruqquspath}/assets/style/_glass";
 @import "{ruqquspath}/assets/style/_text_size";

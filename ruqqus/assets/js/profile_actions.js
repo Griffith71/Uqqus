@@ -41,8 +41,7 @@
     if (!NAME.test(name || '')) return;
 
     if (item.hasAttribute('data-profile-block')) {
-      if (!window.confirm(tr('Block @%(name)s? They won\'t be able to follow you, message you or comment on your posts, and you won\'t see their posts. You can unblock them any time.', {name: name}))) return;
-      post_toast('/settings/block?username=' + encodeURIComponent(name), function () { window.location.reload(); });
+      blockUser(name, function () { window.location.reload(); }, { toast: false });
       return;
     }
 

@@ -676,7 +676,13 @@ document.addEventListener("focusin", function (event) {
 function revealSensitive(wrapId) {
 
   var wrap = document.getElementById(wrapId);
-  if (wrap) wrap.classList.add("revealed");
+  if (!wrap) return;
+  wrap.classList.add("revealed");
+  // the covered content was inert (nothing in it could be focused or read out while it was blurred): it is not any more, and the
+  // keyboard, whose focus was on the cover that has just gone, lands on the content
+  wrap.querySelectorAll(".sensitive-blur[inert]").forEach(function (el) { el.removeAttribute("inert"); });
+  wrap.setAttribute("tabindex", "-1");
+  wrap.focus({ preventScroll: true });
 
 };
 
@@ -1597,7 +1603,7 @@ function post_toast_with_reason(url, callback) {
           $('#toast-post-success').toast('show');
           document.getElementById('toast-post-success-text').innerText = data.message;
         }
-        callback(xhr)
+        if (callback) callback(xhr)
         return true
 
       } else if (xhr.status >= 300 && xhr.status < 400 && data && data.redirect) {
@@ -1680,7 +1686,7 @@ function post_toast(url, callback, onError) {
           $('#toast-post-success').toast('show');
           document.getElementById('toast-post-success-text').innerText = data.message;
         }
-        callback(xhr)
+        if (callback) callback(xhr)
         return true
 
       } else if (xhr.status >= 300 && xhr.status < 400 && data && data.redirect) {

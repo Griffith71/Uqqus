@@ -318,7 +318,7 @@
 {% endif %}
 {% endif %}
 {% if v.admin_level >=3 and not p.purged_utc %}
-<form action="/api/purge_post/{{ p.base36id }}" method="post" onsubmit="return confirm('This permanently erases the post title/body/url. It cannot be undone, even by an admin. Continue?');">
+<form action="/api/purge_post/{{ p.base36id }}" method="post" onsubmit="return confirmForm(event, {{ {'title': _('Erase this post for good?'), 'text': _('This permanently erases the post title, text and link. It cannot be undone, even by an admin.'), 'ok': pgettext('verb', 'Purge'), 'icon': 'fa-fire'} | tojson | forceescape }})">
   <input type="hidden" name="formkey", value="{{ v.formkey }}">
   <input type="submit" class="btn btn-danger" value="Purge Post (permanent)">
 </form>
@@ -415,7 +415,7 @@
           ><i class="fas fa-volume-mute fa-fw text-center text-muted mr-3"></i>{{ _("Mute @%(name)s", name=author_of(p, v).username) }}</button>
           <button id="unmute-user-button-{{ p.base36id }}" class="btn btn-link btn-block btn-lg text-left text-muted{% if not is_muted(p, v) %} d-none{% endif %}" data-dismiss="modal" onclick="post_toast('/settings/unmute?username={{ author_of(p, v).username }}', callback=function(){document.getElementById('mute-user-button-{{ p.base36id }}').classList.toggle('d-none');document.getElementById('unmute-user-button-{{ p.base36id }}').classList.toggle('d-none');})"
           ><i class="fas fa-volume-up fa-fw text-center text-muted mr-3"></i>{{ _("Unmute @%(name)s", name=author_of(p, v).username) }}</button>
-          <button id="block-user-button-{{ p.base36id }}" class="btn btn-link btn-block btn-lg text-left text-danger{% if p.is_blocking and not anon_hidden(p, v) %} d-none{% endif %}" data-dismiss="modal" onclick="post_toast('/settings/block?username={{ author_of(p, v).username }}', callback=function(){document.getElementById('block-user-button-{{ p.base36id }}').classList.toggle('d-none');document.getElementById('unblock-user-button-{{ p.base36id }}').classList.toggle('d-none');})"
+          <button id="block-user-button-{{ p.base36id }}" class="btn btn-link btn-block btn-lg text-left text-danger{% if p.is_blocking and not anon_hidden(p, v) %} d-none{% endif %}" data-dismiss="modal" onclick="blockUser('{{ author_of(p, v).username }}', function(){document.getElementById('block-user-button-{{ p.base36id }}').classList.toggle('d-none');document.getElementById('unblock-user-button-{{ p.base36id }}').classList.toggle('d-none');})"
           ><i class="fas fa-user-slash text-danger mr-3"></i>{{ _("Block @%(name)s", name=author_of(p, v).username) }}</button>
           <button id="unblock-user-button-{{ p.base36id }}" class="btn btn-link btn-block btn-lg text-left text-danger{% if not p.is_blocking %} d-none{% endif %}" data-dismiss="modal" onclick="post_toast('/settings/unblock?username={{ author_of(p, v).username }}', callback=function(){document.getElementById('block-user-button-{{ p.base36id }}').classList.toggle('d-none');document.getElementById('unblock-user-button-{{ p.base36id }}').classList.toggle('d-none');})"
           ><i class="fas fa-user-slash text-danger mr-3"></i>{{ _("Unblock @%(name)s", name=author_of(p, v).username) }}</button>
@@ -475,7 +475,7 @@
           {% set quote = quote_of(p, v) %}
           {% if p.is_image or (p.url and not quote and (not p.embed_url or p.embed_kind == 'widget')) %}
           <div class="position-relative{% if p.is_sensitive %} sensitive-content-wrap{% endif %}" id="sensitive-media-{{ p.base36id }}">
-            <div class="{% if p.is_sensitive %}sensitive-blur{% endif %}">
+            <div class="{% if p.is_sensitive %}sensitive-blur{% endif %}"{% if p.is_sensitive %} inert{% endif %}>
 
             {% if p.is_image %}
             <div class="post-media-frame mb-2">
@@ -507,7 +507,7 @@
 
             </div>
             {% if p.is_sensitive %}
-            <div class="sensitive-overlay" onclick="revealSensitive('sensitive-media-{{ p.base36id }}')">
+            <div class="sensitive-overlay" role="button" tabindex="0" onclick="revealSensitive('sensitive-media-{{ p.base36id }}')" onkeydown="if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); revealSensitive('sensitive-media-{{ p.base36id }}'); }">
               <i class="fas fa-eye-slash"></i>
               <span class="text-small font-weight-bold">{{ _("Sensitive Content") }}</span>
               <span class="btn btn-sm btn-light">{{ _("View anyway") }}</span>
@@ -538,8 +538,8 @@
 
             {% if p.body_html and p.is_sensitive %}
             <div class="position-relative sensitive-content-wrap sensitive-text" id="sensitive-body-{{ p.base36id }}">
-              <div class="sensitive-blur"><div class="post-text" data-translate-part="body" dir="auto"{% if p.language_code %} lang="{{ p.language_code }}"{% endif %}>{{ p.body_html | safe }}</div></div>
-              <div class="sensitive-overlay" onclick="revealSensitive('sensitive-body-{{ p.base36id }}')">
+              <div class="sensitive-blur" inert><div class="post-text" data-translate-part="body" dir="auto"{% if p.language_code %} lang="{{ p.language_code }}"{% endif %}>{{ p.body_html | safe }}</div></div>
+              <div class="sensitive-overlay" role="button" tabindex="0" onclick="revealSensitive('sensitive-body-{{ p.base36id }}')" onkeydown="if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); revealSensitive('sensitive-body-{{ p.base36id }}'); }">
                 <i class="fas fa-eye-slash"></i>
                 <span class="text-small font-weight-bold">{{ _("Sensitive Content") }}</span>
                 <span class="btn btn-sm btn-light">{{ _("View anyway") }}</span>
@@ -555,9 +555,9 @@
             {% if quote %}
             {# what the post quotes, right under the member's own words (helpers/quote_cards.py) #}
             <div class="position-relative{% if p.is_sensitive %} sensitive-content-wrap{% endif %}" id="sensitive-quote-{{ p.base36id }}">
-              <div class="{% if p.is_sensitive %}sensitive-blur{% endif %}">{{ quote_card(quote, p, v, true) }}</div>
+              <div class="{% if p.is_sensitive %}sensitive-blur{% endif %}"{% if p.is_sensitive %} inert{% endif %}>{{ quote_card(quote, p, v, true) }}</div>
               {% if p.is_sensitive %}
-              <div class="sensitive-overlay" onclick="revealSensitive('sensitive-quote-{{ p.base36id }}')">
+              <div class="sensitive-overlay" role="button" tabindex="0" onclick="revealSensitive('sensitive-quote-{{ p.base36id }}')" onkeydown="if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); revealSensitive('sensitive-quote-{{ p.base36id }}'); }">
                 <i class="fas fa-eye-slash"></i>
                 <span class="text-small font-weight-bold">{{ _("Sensitive Content") }}</span>
                 <span class="btn btn-sm btn-light">{{ _("View anyway") }}</span>
@@ -576,7 +576,7 @@
 
             {% if p.embed_kind and p.embed_kind != 'widget' %}
             <div class="position-relative{% if p.is_sensitive %} sensitive-content-wrap{% endif %}" id="sensitive-embed-{{ p.base36id }}">
-              <div class="{% if p.is_sensitive %}sensitive-blur{% endif %}">
+              <div class="{% if p.is_sensitive %}sensitive-blur{% endif %}"{% if p.is_sensitive %} inert{% endif %}>
                 {% set layout = player_of(p) %}
                 {% if layout and (layout.load != 'auto' or p.embed_kind == 'vertical') %}
                 {# music, a GIF, or a social site's video (loaded on click): partials/player.html #}
@@ -597,7 +597,7 @@
                 {% endif %}
               </div>
               {% if p.is_sensitive %}
-              <div class="sensitive-overlay" onclick="revealSensitive('sensitive-embed-{{ p.base36id }}')">
+              <div class="sensitive-overlay" role="button" tabindex="0" onclick="revealSensitive('sensitive-embed-{{ p.base36id }}')" onkeydown="if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); revealSensitive('sensitive-embed-{{ p.base36id }}'); }">
                 <i class="fas fa-eye-slash"></i>
                 <span class="text-small font-weight-bold">{{ _("Sensitive Content") }}</span>
                 <span class="btn btn-sm btn-light">{{ _("View anyway") }}</span>
@@ -772,7 +772,7 @@
                         ><i class="fas fa-volume-mute fa-fw"></i>{{ _("Mute user") }}</a>
                         <a id="unmute-user-{{ p.base36id }}" class="dropdown-item{% if not is_muted(p, v) %} d-none{% endif %}" href="javascript:void(0)" onclick="post_toast('/settings/unmute?username={{ author_of(p, v).username }}', callback=function(){document.getElementById('mute-user-{{ p.base36id }}').classList.toggle('d-none');document.getElementById('unmute-user-{{ p.base36id }}').classList.toggle('d-none');})"
                         ><i class="fas fa-volume-up fa-fw"></i>{{ _("Unmute user") }}</a>
-                        <a id="block-user-{{ p.base36id }}" class="dropdown-item text-danger{% if p.is_blocking and not anon_hidden(p, v) %} d-none{% endif %}" href="javascript:void(0)" onclick="post_toast('/settings/block?username={{ author_of(p, v).username }}', callback=function(){document.getElementById('block-user-{{ p.base36id }}').classList.toggle('d-none');document.getElementById('unblock-user-{{ p.base36id }}').classList.toggle('d-none');})"
+                        <a id="block-user-{{ p.base36id }}" class="dropdown-item text-danger{% if p.is_blocking and not anon_hidden(p, v) %} d-none{% endif %}" href="javascript:void(0)" onclick="blockUser('{{ author_of(p, v).username }}', function(){document.getElementById('block-user-{{ p.base36id }}').classList.toggle('d-none');document.getElementById('unblock-user-{{ p.base36id }}').classList.toggle('d-none');})"
                         ><i class="fas fa-user-slash fa-fw text-danger"></i>{{ _("Block user") }}</a>
                         <a id="unblock-user-{{ p.base36id }}" class="dropdown-item text-danger{% if not p.is_blocking %} d-none{% endif %}" href="javascript:void(0)" onclick="post_toast('/settings/unblock?username={{ author_of(p, v).username }}', callback=function(){document.getElementById('block-user-{{ p.base36id }}').classList.toggle('d-none');document.getElementById('unblock-user-{{ p.base36id }}').classList.toggle('d-none');})"
                         ><i class="fas fa-user-slash fa-fw text-danger"></i>{{ _("Unblock user") }}</a>

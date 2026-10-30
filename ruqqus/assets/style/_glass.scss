@@ -1,0 +1,365 @@
+// Glass (the owner, 2026-10-29: "Instagram uses glass-like overlays for many aspects of the site ... apply that same principle where
+// possible"). CLAUDE.md "Glass" has the whole story; the short version:
+//
+// What the big products do (studied from Instagram's live CSS, Apple's HIG and WWDC25 "Meet Liquid Glass", Telegram, Linear, Discord):
+// the layer that FLOATS above the content is frosted (bars, menus, dialogs and sheets, toasts, small chips over a picture or a video)
+// and the content never is (cards, comments, forms, sidebars, tooltips), and glass is never laid on glass. Instagram's own web Block
+// dialog is a solid card on a flat dim scrim; its glass is its toasts, floating media controls, bars, menus and newer dialogs, and
+// Threads frosts the scrim behind a dialog. Here a dialog is a frosted card on a blurred, dimmed page.
+//
+// Rules (each measured in Chromium 153 and compiled with libsass 3.6.6):
+//  1. ADDITIVE. The opaque surface is written first, with no condition; the translucent tint and both backdrop properties come inside
+//     `when-glass`. The tint alone is AA over the worst case (pure black or pure white behind: .92 for the light and dark card, bars .92 and .86), so
+//     nothing relies on the blur, which can silently not be drawn (an ancestor with opacity, filter or mask, an old GPU).
+//  2. OFF BY POSITIVE QUERIES ONLY (`when-solid`): reduced transparency, more contrast and forced colours. Never `no-preference` or `not`:
+//     Safari and Firefox evaluate an unknown feature's `no-preference` as false and the glass would vanish for every iOS user.
+//  3. NEVER on a feed `.card` or an ancestor of one (backdrop-filter is a backdrop root and a containing block for fixed descendants: it
+//     would trap the "..." menu), never inside another glass element, never on repeated items. At most three glass surfaces at once.
+//  4. A fade of OPACITY on an ancestor of a glass element (Bootstrap's `.modal.fade`, the legacy dialog's opacity) makes the page show
+//     through sharp until the fade ends and then snaps the blur on: the scrim and the card's OWN opacity fade, the dialog moves by transform.
+//  5. A cover over content blurs the PIXELS (`filter: blur()` on the content), never the backdrop: the backdrop blur disappears under
+//     reduced transparency and the picture would show sharp.
+//  6. Never animate the blur. No CSS `contrast()` filter in this file (Sass has a function of that name).
+//  7. Nothing here is mangled by the right-to-left mirror (css_flip.py leaves backdrop-filter and custom properties alone).
+
+@mixin when-glass {
+    @supports ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+        @content;
+    }
+}
+
+@mixin when-solid {
+    @media (prefers-reduced-transparency: reduce), (prefers-contrast: more), (forced-colors: active) {
+        @content;
+    }
+}
+
+// --- the top bar: its blur lives on a layer BEHIND it ------------------------------------------------------------------------------
+// With the blur on #navbar itself the bar is a backdrop root (a menu inside it could only blur what is inside the bar, not the page) and
+// the containing block of the phone's fixed account menu. A ::before layer in an isolated stacking context has neither effect.
+
+// (!important: the dark sheet's legacy `.navbar-light { background-color: $gray-600 !important }` made the dark bar opaque black, so its blur
+// never showed)
+#navbar.navbar-light, #navbar {
+    background-color: var(--surface) !important;
+}
+
+@include when-glass {
+    #navbar.navbar-light, #navbar {
+        background-color: transparent !important;
+        isolation: isolate;
+    }
+
+    #navbar::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        z-index: -1;
+        pointer-events: none;
+        background-color: var(--glass-bar);
+        -webkit-backdrop-filter: var(--glass-fx-bar);
+        backdrop-filter: var(--glass-fx-bar);
+    }
+}
+
+@include when-solid {
+    #navbar.navbar-light, #navbar {
+        background-color: var(--surface) !important;
+    }
+
+    #navbar::before {
+        display: none;
+    }
+}
+
+// --- the phone's bottom bar ------------------------------------------------------------------------------------------------------
+// (!important: the markup carries Bootstrap's .bg-white. It slides away on scroll by a transform, which does not stop a blur.)
+
+#mobile-bottom-navigation-bar {
+    background-color: var(--surface) !important;
+}
+
+@include when-glass {
+    #mobile-bottom-navigation-bar {
+        background-color: var(--glass-bar) !important;
+        -webkit-backdrop-filter: var(--glass-fx-bar);
+        backdrop-filter: var(--glass-fx-bar);
+    }
+}
+
+@include when-solid {
+    #mobile-bottom-navigation-bar {
+        background-color: var(--surface) !important;
+        -webkit-backdrop-filter: none;
+        backdrop-filter: none;
+    }
+}
+
+// --- the scrim behind every Bootstrap dialog and sheet (55 of them) ------------------------------------------------------------------
+// A body-level, childless sibling of .modal: the one place a blur can't trap anything. The dim stays (--overlay); the page is softened.
+
+@include when-glass {
+    .modal-backdrop.show {
+        -webkit-backdrop-filter: var(--glass-fx-scrim);
+        backdrop-filter: var(--glass-fx-scrim);
+    }
+}
+
+@include when-solid {
+    .modal-backdrop.show {
+        -webkit-backdrop-filter: none;
+        backdrop-filter: none;
+        background-color: rgba(0, 0, 0, 0.8);
+    }
+}
+
+// --- the phone's account menu: a top sheet with the page dimmed under it ----------------------------------------------------------------
+// (the owner, 2026-10-29). Nothing dimmed it before; a tap on the dim is a tap on the page, which closes the menu like any dropdown. The dim starts
+// below the bar (the bar's own menu button stays clear) and sits under the menu and over the page and the bottom bar. The menu's z-index (1040)
+// is inside the NAVBAR's stacking context (1030), so the dim must be under 1030: at 1035 it covered the menu and blurred it.
+@media (max-width: 767.98px) {
+    // the page behind the dim holds still while the sheet is open (it scrolled under the dim; the sheet scrolls inside itself)
+    body:has(#accountDropdownMenu.show) {
+        overflow: hidden;
+    }
+
+    body:has(#accountDropdownMenu.show)::before {
+        content: "";
+        position: fixed;
+        inset: var(--navbar-height, 56px) 0 0 0;
+        z-index: 1029;
+        background-color: var(--overlay);
+    }
+
+    @include when-glass {
+        body:has(#accountDropdownMenu.show)::before {
+            -webkit-backdrop-filter: var(--glass-fx-scrim);
+            backdrop-filter: var(--glass-fx-scrim);
+        }
+    }
+
+    @include when-solid {
+        body:has(#accountDropdownMenu.show)::before {
+            -webkit-backdrop-filter: none;
+            backdrop-filter: none;
+            background-color: rgba(0, 0, 0, 0.8);
+        }
+    }
+}
+
+// --- dialogs and phone sheets ---------------------------------------------------------------------------------------------------------
+// Bootstrap fades .modal and the legacy sheet fades .modal-dialog (opacity: an ancestor of the glass card): neither may, or the blur
+// pops in at the end of the fade. The dialog keeps its transform; the CARD fades by its own opacity (and a phone sheet only slides).
+
+.modal.fade, .modal.fade.show, .modal.fade:not(.show) {
+    opacity: 1;
+}
+
+.modal.fade .modal-dialog {
+    opacity: 1;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+    .modal.fade .modal-content {
+        opacity: 0;
+        transition: opacity 150ms var(--ease-out);
+    }
+
+    .modal.fade.show .modal-content {
+        opacity: 1;
+    }
+}
+
+@media (max-width: 767.98px) {
+    .modal.fade.modal-sm-bottom .modal-content {
+        opacity: 1;
+        transition: none;
+    }
+}
+
+@include when-glass {
+    .modal-content {
+        background-color: var(--glass-bg);
+        -webkit-backdrop-filter: var(--glass-fx);
+        backdrop-filter: var(--glass-fx);
+        box-shadow: inset 0 0 0 1px var(--glass-line), var(--shadow-lg);
+    }
+
+    // the legacy sheets give the header an opaque fill (white, or grey in the dark one, with a shadow) and the dark footer an opaque
+    // gradient: one card, one frost
+    .modal-header, .modal-footer {
+        background-color: transparent;
+    }
+
+    .modal-header {
+        box-shadow: none;
+    }
+
+    .modal-footer {
+        background-image: none !important;
+    }
+}
+
+@include when-solid {
+    .modal-content {
+        background-color: var(--glass-solid);
+        -webkit-backdrop-filter: none;
+        backdrop-filter: none;
+    }
+}
+
+// --- menus ------------------------------------------------------------------------------------------------------------------------------
+// The "..." menus, the sort and filter menus, the account menu. A menu inside a dialog would be glass on glass (the dialog is a backdrop
+// root: the blur would see nothing), and the phone's account menu is a top sheet over a page already blurred and dimmed behind it: both stay solid.
+
+@include when-glass {
+    .dropdown-menu {
+        background-color: var(--glass-bg);
+        -webkit-backdrop-filter: var(--glass-fx);
+        backdrop-filter: var(--glass-fx);
+    }
+
+    .modal-content .dropdown-menu {
+        background-color: var(--glass-solid);
+        -webkit-backdrop-filter: none;
+        backdrop-filter: none;
+    }
+}
+
+@media (max-width: 767.98px) {
+    #navbar-icon-row #accountDropdownMenu {
+        -webkit-backdrop-filter: none;
+        backdrop-filter: none;
+    }
+}
+
+@include when-solid {
+    .dropdown-menu {
+        background-color: var(--glass-solid);
+        -webkit-backdrop-filter: none;
+        backdrop-filter: none;
+    }
+}
+
+// --- toasts -----------------------------------------------------------------------------------------------------------------------------
+// The inverse of the page (a dark pill on a light page): .92 keeps white text at 14:1 over anything. Instagram's own snackbar is 50% and
+// gives 2.9:1 over a white page; this is not that.
+
+// (Bootstrap's own .toast carries a blur(10px) of its own: the base is opaque, the glass is added below)
+.toast {
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+}
+
+@include when-glass {
+    .toast {
+        background-color: var(--glass-toast);
+        -webkit-backdrop-filter: var(--glass-fx);
+        backdrop-filter: var(--glass-fx);
+    }
+}
+
+@include when-solid {
+    .toast {
+        background-color: var(--toast-bg);
+        -webkit-backdrop-filter: none;
+        backdrop-filter: none;
+    }
+}
+
+// --- chips over a picture or a video -------------------------------------------------------------------------------------------------
+// A feed has one of these per link or video post, so they get the TINT and no blur (a blur per card makes a long feed stutter on a phone:
+// _feed.scss already caps its own blurred copy at a tenth of the size). The tint is also the contrast fix: white text over a white picture
+// was 3.95:1 on rgba(0,0,0,.5) and is 4.7:1 on .6. One-off chips (the story viewer's caption and note) get the blur too.
+
+.post-img-overlay {
+    background-color: var(--glass-chip);
+}
+
+// the play glyph is a bare white circle: it vanished on a pale thumbnail, so it gets a soft shadow
+.embed-lg-play {
+    text-shadow: 0 1px 8px rgba(0, 0, 0, 0.5);
+}
+
+.story-caption {
+    background-color: var(--glass-chip);
+}
+
+@include when-glass {
+    .story-caption, .story-note {
+        -webkit-backdrop-filter: var(--glass-fx-chip);
+        backdrop-filter: var(--glass-fx-chip);
+    }
+}
+
+@include when-solid {
+    .story-caption, .story-note {
+        -webkit-backdrop-filter: none;
+        backdrop-filter: none;
+        background-color: rgba(0, 0, 0, 0.82);
+    }
+}
+
+// --- floating panels and the chat key dialog -----------------------------------------------------------------------------------------------
+// #voters-panel (assets/js/voters.js, appended to <body>) and the chat's hand-built key dialogs (.chat-key-dialog is the scrim, .chat-key-box
+// the card; above Bootstrap's modals at z-index 1060). Each is one, short-lived, and never inside a card.
+
+@include when-glass {
+    #voters-panel, .chat-key-box {
+        background-color: var(--glass-bg);
+        -webkit-backdrop-filter: var(--glass-fx);
+        backdrop-filter: var(--glass-fx);
+    }
+
+    .chat-key-dialog {
+        -webkit-backdrop-filter: var(--glass-fx-scrim);
+        backdrop-filter: var(--glass-fx-scrim);
+    }
+}
+
+@include when-solid {
+    #voters-panel, .chat-key-box {
+        background-color: var(--glass-solid);
+        -webkit-backdrop-filter: none;
+        backdrop-filter: none;
+    }
+
+    .chat-key-dialog {
+        -webkit-backdrop-filter: none;
+        backdrop-filter: none;
+        background-color: rgba(0, 0, 0, 0.8);
+    }
+}
+
+// --- the sensitive-content cover -------------------------------------------------------------------------------------------------------
+// Instagram blurs the PIXELS (a downscaled canvas, so the sharp image is not even in the page) under a flat scrim and a solid pill: no
+// backdrop-filter. Here the content is already blurred by `filter: blur()` on .sensitive-blur (main.scss / main_dark.scss), which cannot
+// vanish under reduced transparency or forced colours; the cover is a flat scrim, which is why it is not frosted. Only content the viewer is
+// already allowed to see is ever covered (anything they may not see is not sent at all). The scrim was .45 on the light sheet (white text
+// over a white picture: 3.4:1); .6 is 5.7:1 and the dark sheet's own value. The cover is a button now (the templates give it role, tabindex
+// and Enter / Space; all_js.js revealSensitive takes the content out of `inert`).
+
+.sensitive-overlay {
+    background-color: rgba(0, 0, 0, 0.6);
+}
+
+// (as specific as the global keyboard ring, which sits OUTSIDE the cover and is clipped by the wrapper's overflow: hidden)
+body:not(.using-mouse) .sensitive-overlay:focus-visible {
+    outline: 2px solid #fff;
+    outline-offset: -4px;
+}
+
+// --- a dialog's own panels --------------------------------------------------------------------------------------------------------
+// The Tip dialog (and others) paint Bootstrap's opaque .bg-light and .bg-white on the body, an inner panel and the footer, so the glass
+// card showed only as a border and the dark footer was a pure-black strip against the card. The body and footer take the card's own
+// surface; an inner panel is a quiet sunken box on it.
+@include when-glass {
+    .modal-content .modal-body.bg-light, .modal-content .modal-body.bg-white, .modal-content .modal-footer.bg-light, .modal-content .modal-footer.bg-white {
+        background-color: transparent !important;
+    }
+
+    .modal-content .bg-white.rounded-lg, .modal-content .bg-white.shadow-sm {
+        background-color: var(--surface-sunken) !important;
+        box-shadow: none !important;
+    }
+}

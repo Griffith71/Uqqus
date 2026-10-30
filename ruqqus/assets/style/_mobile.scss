@@ -70,10 +70,7 @@ html {
     margin: 0;                     // a Bootstrap row's -15px sides made it 30px wider than the screen
     min-height: 56px;
     padding: var(--space-1) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
-    align-items: center;
-    background-color: color-mix(in srgb, var(--surface) 92%, transparent) !important;
-    -webkit-backdrop-filter: saturate(180%) blur(14px);
-    backdrop-filter: saturate(180%) blur(14px);
+    align-items: center;                // (its glass is in _glass.scss)
     border-top: 1px solid var(--border) !important;
 }
 

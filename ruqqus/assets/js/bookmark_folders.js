@@ -64,11 +64,13 @@
 
     var remove = document.getElementById('folder-delete');
     if (remove && current) remove.addEventListener('click', function () {
-      if (!window.confirm(tr('Delete this folder? Its bookmarks are kept, as unsorted.'))) return;
-      post('/bookmarks/folders/' + current + '/delete').then(function (res) {
-        if (!res.ok) { toast(true, res.data.error || tr('Could not delete the folder.')); return; }
-        window.location.href = back;
-      }).catch(function () { toast(true, tr('Could not delete the folder. Try again.')); });
+      confirmSheet({ title: tr('Delete this folder?'), text: tr('Its bookmarks are kept, as unsorted.'), ok: tr('Delete'), icon: 'fa-trash-alt' }).then(function (yes) {
+        if (!yes) return;
+        post('/bookmarks/folders/' + current + '/delete').then(function (res) {
+          if (!res.ok) { toast(true, res.data.error || tr('Could not delete the folder.')); return; }
+          window.location.href = back;
+        }).catch(function () { toast(true, tr('Could not delete the folder. Try again.')); });
+      });
     });
   }
 

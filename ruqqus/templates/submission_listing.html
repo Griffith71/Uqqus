@@ -124,7 +124,7 @@
       {{ translate_row("post", p, v, "is-in-card") }}
       {% if has_media %}
       <div class="position-relative{% if p.is_sensitive %} sensitive-content-wrap{% endif %}" style="z-index: 3;" id="sensitive-media-{{ p.base36id }}">
-        <div class="{% if p.is_sensitive %}sensitive-blur{% endif %}">
+        <div class="{% if p.is_sensitive %}sensitive-blur{% endif %}"{% if p.is_sensitive %} inert{% endif %}>
 
         {% if quote %}
         {# a post on a social site or on this site, quoted as X quotes a post (helpers/quote_cards.py) #}
@@ -176,7 +176,7 @@
 
         </div>
         {% if p.is_sensitive %}
-        <div class="sensitive-overlay" onclick="revealSensitive('sensitive-media-{{ p.base36id }}')">
+        <div class="sensitive-overlay" role="button" tabindex="0" onclick="revealSensitive('sensitive-media-{{ p.base36id }}')" onkeydown="if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); revealSensitive('sensitive-media-{{ p.base36id }}'); }">
           <i class="fas fa-eye-slash"></i>
           <span class="text-small font-weight-bold">{{ _("Sensitive Content") }}</span>
           <span class="btn btn-sm btn-light">{{ _("View anyway") }}</span>
@@ -275,7 +275,7 @@
                 ><i class="fas fa-volume-mute fa-fw"></i>{{ _("Mute user") }}</a>
                 <a id="unmute-user-{{ p.base36id }}" class="dropdown-item{% if not is_muted(p, v) %} d-none{% endif %}" href="javascript:void(0)" onclick="post_toast('/settings/unmute?username={{ author_of(p, v).username }}', callback=function(){document.getElementById('mute-user-{{ p.base36id }}').classList.toggle('d-none');document.getElementById('unmute-user-{{ p.base36id }}').classList.toggle('d-none');})"
                 ><i class="fas fa-volume-up fa-fw"></i>{{ _("Unmute user") }}</a>
-                <a id="block-user-{{ p.base36id }}" class="dropdown-item text-danger{% if p.is_blocking and not anon_hidden(p, v) %} d-none{% endif %}" href="javascript:void(0)" onclick="post_toast('/settings/block?username={{ author_of(p, v).username }}', callback=function(){document.getElementById('block-user-{{ p.base36id }}').classList.toggle('d-none');document.getElementById('unblock-user-{{ p.base36id }}').classList.toggle('d-none');})"
+                <a id="block-user-{{ p.base36id }}" class="dropdown-item text-danger{% if p.is_blocking and not anon_hidden(p, v) %} d-none{% endif %}" href="javascript:void(0)" onclick="blockUser('{{ author_of(p, v).username }}', function(){document.getElementById('block-user-{{ p.base36id }}').classList.toggle('d-none');document.getElementById('unblock-user-{{ p.base36id }}').classList.toggle('d-none');})"
                 ><i class="fas fa-user-slash fa-fw text-danger"></i>{{ _("Block user") }}</a>
                 <a id="unblock-user-{{ p.base36id }}" class="dropdown-item text-danger{% if not p.is_blocking %} d-none{% endif %}" href="javascript:void(0)" onclick="post_toast('/settings/unblock?username={{ author_of(p, v).username }}', callback=function(){document.getElementById('block-user-{{ p.base36id }}').classList.toggle('d-none');document.getElementById('unblock-user-{{ p.base36id }}').classList.toggle('d-none');})"
                 ><i class="fas fa-user-slash fa-fw text-danger"></i>{{ _("Unblock user") }}</a>
@@ -412,7 +412,7 @@
           ><i class="fas fa-volume-mute fa-fw text-center text-muted mr-3"></i>{{ _("Mute @%(name)s", name=author_of(p, v).username) }}</button>
           <button id="unmute-user-button-{{ p.base36id }}" class="btn btn-link btn-block btn-lg text-left text-muted{% if not is_muted(p, v) %} d-none{% endif %}" data-dismiss="modal" onclick="post_toast('/settings/unmute?username={{ author_of(p, v).username }}', callback=function(){document.getElementById('mute-user-button-{{ p.base36id }}').classList.toggle('d-none');document.getElementById('unmute-user-button-{{ p.base36id }}').classList.toggle('d-none');})"
           ><i class="fas fa-volume-up fa-fw text-center text-muted mr-3"></i>{{ _("Unmute @%(name)s", name=author_of(p, v).username) }}</button>
-          <button id="block-user-button-{{ p.base36id }}" class="btn btn-link btn-block btn-lg text-left text-danger{% if p.is_blocking and not anon_hidden(p, v) %} d-none{% endif %}" data-dismiss="modal" onclick="post_toast('/settings/block?username={{ author_of(p, v).username }}', callback=function(){document.getElementById('block-user-button-{{ p.base36id }}').classList.toggle('d-none');document.getElementById('unblock-user-button-{{ p.base36id }}').classList.toggle('d-none');})"
+          <button id="block-user-button-{{ p.base36id }}" class="btn btn-link btn-block btn-lg text-left text-danger{% if p.is_blocking and not anon_hidden(p, v) %} d-none{% endif %}" data-dismiss="modal" onclick="blockUser('{{ author_of(p, v).username }}', function(){document.getElementById('block-user-button-{{ p.base36id }}').classList.toggle('d-none');document.getElementById('unblock-user-button-{{ p.base36id }}').classList.toggle('d-none');})"
           ><i class="fas fa-user-slash fa-fw text-danger mr-3"></i>{{ _("Block @%(name)s", name=author_of(p, v).username) }}</button>
           <button id="unblock-user-button-{{ p.base36id }}" class="btn btn-link btn-block btn-lg text-left text-danger{% if not p.is_blocking %} d-none{% endif %}" data-dismiss="modal" onclick="post_toast('/settings/unblock?username={{ author_of(p, v).username }}', callback=function(){document.getElementById('block-user-button-{{ p.base36id }}').classList.toggle('d-none');document.getElementById('unblock-user-button-{{ p.base36id }}').classList.toggle('d-none');})"
           ><i class="fas fa-user-slash fa-fw text-danger mr-3"></i>{{ _("Unblock @%(name)s", name=author_of(p, v).username) }}</button>

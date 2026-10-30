@@ -55,7 +55,10 @@ def test_the_actions_for_someone_else_the_owner_and_a_visitor():
 def test_the_menu_script_checks_names_and_draws_text_only():
     js = read("ruqqus", "assets", "js", "profile_actions.js")
     assert "innerHTML" not in js and "/^[A-Za-z0-9_]{3,25}$/" in js
-    assert "window.confirm(tr('Block @%(name)s?" in js and "'/settings/block?username=' + encodeURIComponent(name)" in js
+    # blocking asks in the page's frosted sheet (assets/js/confirm_sheet.js), not the browser's own pop-up, then reloads into "You are blocking"
+    assert "window.confirm" not in js and "blockUser(name, function () { window.location.reload(); }, { toast: false });" in js      # (a reload would take the Undo toast with it: the page it lands on has the Unblock button)
+    sheet = read("ruqqus", "assets", "js", "confirm_sheet.js")
+    assert "'/settings/block?username=' + encodeURIComponent(name)" in sheet and "/^[A-Za-z0-9_]{3,25}$/" in sheet
     assert "'/api/user/' + encodeURIComponent(name) + '/report'" in js
 
 

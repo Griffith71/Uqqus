@@ -200,8 +200,8 @@
 
     {% if request.args.get('embed') %}<base target="_top">{% endif %}
 
-    <!-- Animated logo gradient (scoped) -->
-    <style>
+    <!-- Animated logo gradient (one copy, for every bar that draws the mark) -->
+    {% include "partials/logo_style.html" %}
     .logo-gradient .brand-main {
       font-family: Impact, Haettenschweiler, "Arial Black", sans-serif;
       font-weight: 700;
@@ -639,7 +639,9 @@
 
 <script src="{{ asset_url('js/text_length.js') }}"></script>{# weighted lengths for the counters (helpers/text_length.py) #}
 <script src="{{ asset_url('js/all_js.js') }}" importance="high" ></script>
+<script src="{{ asset_url('js/video_playback.js') }}"></script>{# the reader's video choices (Settings > Content > Video playback) #}
 <script src="{{ asset_url('js/feed_video_autoplay.js') }}"></script>
+<script src="{{ asset_url('js/audio_playback.js') }}"></script>{# the volume of a post's own sound, remembered (before background_media.js reads it on play) #}
 {% if v %}<script src="{{ asset_url('js/guild_flair.js') }}"></script>{% endif %}
 {% if v %}<script src="{{ asset_url('js/translate.js') }}"></script>{% endif %}{# the Translate button (partials/translate_button.html) #}
 <script src="{{ asset_url('js/infinite_scroll.js') }}"></script>

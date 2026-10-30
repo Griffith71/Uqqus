@@ -1,0 +1,29 @@
+{# The page's one "are you sure?" sheet and the toast with Undo (assets/js/confirm_sheet.js: confirmSheet({title, text, ok, icon}) answers a
+   promise, blockUser(name, done) asks and blocks). A bottom sheet under 768px and a centred card above (.modal-sm-bottom), frosted like
+   every dialog (_glass.scss). It replaces the browser's own confirm(), which can't be styled. Texts are set by the script with
+   textContent (they are marked there with tr()), so nothing here carries a name. #}
+<div class="modal fade modal-sm-bottom" id="confirmSheet" tabindex="-1" role="alertdialog" aria-modal="true" aria-labelledby="confirm-sheet-title" aria-describedby="confirm-sheet-text" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-body text-center">
+        <div class="py-3">
+          <span class="fa-stack fa-2x">
+            <i class="fas fa-circle text-danger opacity-25 fa-stack-2x"></i>
+            <i class="fas fa-user-slash text-danger fa-stack-1x" id="confirm-sheet-icon"></i>
+          </span>
+        </div>
+        <div class="h4" id="confirm-sheet-title"></div>
+        <p class="text-muted" id="confirm-sheet-text"></p>
+        <button type="button" id="confirm-sheet-ok" class="btn btn-danger btn-block btn-lg"></button>
+        <button type="button" class="btn btn-secondary btn-block btn-lg" data-dismiss="modal">{{ _("Cancel") }}</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast-undo" role="status" aria-live="polite" aria-atomic="true" data-animation="true" data-autohide="true" data-delay="8000">
+  <div class="toast-body text-center">
+    <span id="toast-undo-text"></span>
+    <button type="button" class="toast-action" id="toast-undo-button">{{ _("Undo") }}</button>
+  </div>
+</div>
