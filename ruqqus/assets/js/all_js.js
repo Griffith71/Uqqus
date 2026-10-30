@@ -2568,7 +2568,7 @@ function charLimit(form, text) {
     text.style.color = "#FFC107";
   }
   else {
-    text.style.color = "#A0AEC0";
+    text.style.color = "var(--text-muted)";
   }
 
   text.innerText = maxLength - length;

@@ -127,7 +127,7 @@ def test_the_stylesheet_is_one_partial_both_themes_import_and_uses_only_tokens()
         assert text.count('@import "{ruqquspath}/assets/style/_notifications";') == 1, sheet
         assert text.index("_screens") < text.index("_notifications") < text.index("_motion"), sheet
     assert not re.search(r"#[0-9a-fA-F]{3,8}\b", STYLE) and not re.search(r"\$primary|\$purple|\$info", STYLE)
-    for token in ("--brand-soft", "--brand-strong", "--text-muted", "--border", "--hover", "--focus-ring"):
+    for token in ("--brand-soft", "--brand-fill", "--text-muted", "--border", "--hover", "--focus-ring"):
         assert token in STYLE, token
     assert "@media (max-width: 575.98px)" in STYLE and ".notif-open" in STYLE
     assert "animation" not in STYLE                          # nothing moves on load; the only motion is a hover colour on the tokens' durations

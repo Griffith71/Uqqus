@@ -7152,4 +7152,5 @@ INSERT INTO public.schema_migrations (name) VALUES
     ('2026-12-02_guild_category_alone.sql'),
     ('2026-12-03_site_events.sql'),
     ('2026-12-04_signup_guard.sql'),
-    ('2026-12-05_account_all_opt_out.sql');
+    ('2026-12-05_account_all_opt_out.sql'),
+    ('2026-12-06_brand_blue_default.sql');

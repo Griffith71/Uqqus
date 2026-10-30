@@ -42,25 +42,26 @@ body {
     border-radius: var(--radius-pill);
 }
 
-// the brand fill is the deep shade, so its white label reads at AA whatever the guild's colour
+// the brand fill: the site's own colour as it is, a guild's colour as the deep shade that holds its white label at AA
+// (--brand-fill, _tokens.scss)
 .btn-primary,
 .btn-primary:not(:disabled):not(.disabled):active,
 .btn-primary:not(:disabled):not(.disabled).active {
-    background-color: var(--brand-strong);
-    border-color: var(--brand-strong);
+    background-color: var(--brand-fill);
+    border-color: var(--brand-fill);
     color: var(--on-brand);
 }
 
 .btn-primary:focus, .btn-primary.focus {
-    background-color: var(--brand-strong);
-    border-color: var(--brand-strong);
+    background-color: var(--brand-fill);
+    border-color: var(--brand-fill);
     color: var(--on-brand);
 }
 
 @media (hover: hover) and (pointer: fine) {
     .btn-primary:hover {
-        background-color: color-mix(in srgb, var(--brand-strong) 86%, #000);
-        border-color: color-mix(in srgb, var(--brand-strong) 86%, #000);
+        background-color: color-mix(in srgb, var(--brand-fill) 86%, #000);
+        border-color: color-mix(in srgb, var(--brand-fill) 86%, #000);
         color: var(--on-brand);
     }
 }
@@ -99,6 +100,17 @@ body {
 .btn-link {
     color: var(--link);
     font-weight: var(--weight-semibold);
+}
+
+.btn-link:hover, .btn-link:focus {
+    color: var(--link);
+    text-decoration: underline;
+}
+
+// a selected tab (the emoji picker's) sits on the page's own surface, not Bootstrap's white: the link colour reads on it
+.nav-tabs .nav-link.active {
+    background-color: var(--surface);
+    border-color: var(--border) var(--border) var(--surface);
 }
 
 // --- fields -----------------------------------------------------------------------------------------------------
@@ -550,11 +562,11 @@ $empty-icon: ".text-center > .fa-stack.fa-2x.text-muted:has(> .fa-square)";
 
 // --- the older button styles and pagination ------------------------------------------------------------------------
 // "Sign Up" and a few calls to action use .btn-purple / .btn-outline-purple ($purple is the site's colour): the same
-// deep fill as .btn-primary, so the white label reads at AA.
+// fill as .btn-primary.
 
 .btn-purple, .btn-purple:focus, .btn-purple:not(:disabled):not(.disabled):active {
-    background-color: var(--brand-strong);
-    border-color: var(--brand-strong);
+    background-color: var(--brand-fill);
+    border-color: var(--brand-fill);
     color: var(--on-brand);
 }
 
@@ -566,8 +578,8 @@ $empty-icon: ".text-center > .fa-stack.fa-2x.text-muted:has(> .fa-square)";
 
 @media (hover: hover) and (pointer: fine) {
     .btn-purple:hover {
-        background-color: color-mix(in srgb, var(--brand-strong) 86%, #000);
-        border-color: color-mix(in srgb, var(--brand-strong) 86%, #000);
+        background-color: color-mix(in srgb, var(--brand-fill) 86%, #000);
+        border-color: color-mix(in srgb, var(--brand-fill) 86%, #000);
         color: var(--on-brand);
     }
 
@@ -576,6 +588,62 @@ $empty-icon: ".text-center > .fa-stack.fa-2x.text-muted:has(> .fa-square)";
         border-color: var(--link);
         background-color: var(--brand-soft);
     }
+}
+
+// --- white labels on the brand colour ---------------------------------------------------------------------------------
+// Bootstrap compiled its own brand fills (.bg-primary, the badges, the active list item and page, a pressed outline
+// button) from $primary / $purple before the tokens existed, each under white: a surface with running text on it (the
+// footer, a table head, an own chat bubble) sits on the AA --brand-deep, a control's label on --brand-fill.
+// (A dropdown item is not one: its hover and press tints are the site's own, above.)
+
+.bg-primary, .bg-purple {
+    background-color: var(--brand-deep) !important;
+}
+
+.badge-primary, .badge-purple {
+    background-color: var(--brand-deep);
+    color: var(--on-brand);
+}
+
+.list-group-item.active {
+    background-color: var(--brand-deep);
+    border-color: var(--brand-deep);
+}
+
+.page-item.active .page-link {
+    background-color: var(--brand-fill);
+    border-color: var(--brand-fill);
+}
+
+.btn-outline-primary:not(:disabled):not(.disabled):active,
+.btn-outline-primary:not(:disabled):not(.disabled).active,
+.show > .btn-outline-primary.dropdown-toggle,
+.btn-outline-purple:not(:disabled):not(.disabled):active,
+.btn-outline-purple:not(:disabled):not(.disabled).active,
+.show > .btn-outline-purple.dropdown-toggle {
+    background-color: var(--brand-fill);
+    border-color: var(--brand-fill);
+    color: var(--on-brand);
+}
+
+// a touch screen has no hover to tint: its "hover" is a tap that stays, so it takes the fill under the white label
+@media (hover: none), (pointer: coarse) {
+    .btn-primary:not(:disabled):not(.disabled):hover, .btn-purple:not(:disabled):not(.disabled):hover {
+        background-color: var(--brand-fill);
+        border-color: var(--brand-fill);
+        color: var(--on-brand);
+    }
+
+    .btn-outline-primary:not(:disabled):not(.disabled):hover, .btn-outline-purple:not(:disabled):not(.disabled):hover {
+        background-color: var(--brand-fill);
+        border-color: var(--brand-fill);
+        color: var(--on-brand);
+    }
+}
+
+// the native radio and checkbox (Create account's "how should scores read?") take the brand, not the system's colour
+input[type="radio"], input[type="checkbox"] {
+    accent-color: var(--brand-fill);
 }
 
 .pagination {
@@ -617,6 +685,18 @@ a:hover {
     color: var(--link) !important;
 }
 
+// the disc behind a white glyph (the sidebar's rows, the menus) is a graphic, not text: the brand itself in both themes
+.fa-stack-2x.fa-circle.text-purple, .fa-stack-2x.fa-circle.text-primary {
+    color: var(--brand) !important;
+}
+
+// and so is any other icon that takes the brand's text class (not a glyph stacked on a tile: that one sits on a pale
+// square and needs a deeper colour of its own)
+.fas.text-purple:not(.fa-stack-1x), .far.text-purple:not(.fa-stack-1x), .fab.text-purple:not(.fa-stack-1x),
+.fas.text-primary:not(.fa-stack-1x), .far.text-primary:not(.fa-stack-1x), .fab.text-primary:not(.fa-stack-1x) {
+    color: var(--brand) !important;
+}
+
 .text-success {
     color: var(--success) !important;
 }
@@ -630,22 +710,22 @@ a:hover {
 @for $i from 0 through 10 {
     .vote-ratio-#{$i} {
         $shade: mix($upvote, $downvote, $i * 10%);
-        color: if($theme == "dark", strong-on-dark($shade), strong-on-light($shade)) !important;
+        color: if($theme == "dark", strong-on-dark($shade, 18%), strong-on-light($shade, 20%)) !important;
     }
 }
 
-// the selected tab or pill: the deep fill under white, or the link colour as text
+// the selected tab or pill: the brand fill under white, or the link colour as text
 .nav:not(.navbar-nav) .nav-link.active {
     color: var(--link);
 }
 
 .nav-pills .nav-link.active, .nav-pills .show > .nav-link {
-    background-color: var(--brand-strong);
+    background-color: var(--brand-fill);
     color: var(--on-brand) !important;
 }
 
 .space-tab.active, .space-tab.active:hover {
-    background: var(--brand-strong);
+    background: var(--brand-fill);
     color: var(--on-brand);
 }
 
@@ -671,8 +751,8 @@ p a:not(.btn):not(.badge):not(.user-name):not(.stretched-link), .comment-text a:
 }
 
 .explore-chip.active, .explore-chip.active:hover {
-    background-color: var(--brand-strong);
-    border-color: var(--brand-strong);
+    background-color: var(--brand-fill);
+    border-color: var(--brand-fill);
     color: var(--on-brand);
 }
 
@@ -818,7 +898,7 @@ button.text-expand {
 
 .language-switcher-on-dark .language-switcher summary,
 .language-switcher-on-dark .language-switcher-list a {
-    color: rgba(255, 255, 255, 0.8);
+    color: #fff;
 }
 
 // a legal page in English, under a translated interface: the note that the English is binding
@@ -939,7 +1019,7 @@ button.text-expand {
 }
 
 .account-menu .dropdown-item > .fa-toggle-on {
-    color: var(--brand-strong);
+    color: var(--link);            // the AA shade, not the raw brand: a guild's dark colour made the switch vanish on the dark page
 }
 
 .account-menu .dropdown-divider {

@@ -360,15 +360,15 @@ async function cameraOff(reason) {
 const FRAME_MS = 1000 / 15;
 
 function drawFrame(ctx, canvas) {
-  ctx.fillStyle = "#0f1114";
+  ctx.fillStyle = "#000000";
   ctx.fillRect(0, 0, canvas.width, canvas.height);
   const videos = Array.from(document.querySelectorAll("#space-videos video")).filter((v) => v.readyState >= 2);
   if (!videos.length) {
-    ctx.fillStyle = "#e8eaed";
+    ctx.fillStyle = "#f1f1f1";
     ctx.font = "600 40px system-ui, sans-serif";
     ctx.textAlign = "center";
     ctx.fillText(boot.title.slice(0, 60), canvas.width / 2, canvas.height / 2 - 10);
-    ctx.fillStyle = "#9aa3ad";
+    ctx.fillStyle = "#a0a0a0";
     ctx.font = "28px system-ui, sans-serif";
     // Translators: drawn into a Space's video replay, under its title, while no camera is on (in the host's language)
     ctx.fillText(window.tr("Hosted by %(name)s", { name: boot.host.shown_name }), canvas.width / 2, canvas.height / 2 + 40);

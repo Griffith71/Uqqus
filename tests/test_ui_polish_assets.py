@@ -47,7 +47,7 @@ def test_hover_only_where_a_pointer_hovers_and_touch_targets_grow():
 
 def test_light_theme_text_passes_contrast():
     assert "$link-color: darken($primary, 20%);" in LIGHT.split('@import "{ruqquspath}/assets/style/node_modules/bootstrap')[0]
-    assert "$muted: #5f6e82;" in LIGHT and "$gray-600: #5f6e82;" in LIGHT
+    assert "$muted: #636363;" in LIGHT and "$gray-600: #636363;" in LIGHT
     for needle in ("a.text-gray-500 {", ".badge.text-warning {", "a.text-warning, button.text-warning", ".score-up {"):
         assert needle in polish(LIGHT), needle
     # the dark theme keeps the brand blue on near-black

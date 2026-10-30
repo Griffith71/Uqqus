@@ -1,22 +1,25 @@
 """Design tokens (assets/style/_tokens.scss, the UI modernisation of 2026-10): both theme sheets carry them, and the
 colours they give meet WCAG AA where they are used: text 4.5:1 on the surfaces it sits on, white on the brand fill.
 The owner chose AA over keeping the old blue and greys for text (2026-10-23); the brand colour itself stays for
-icons, fills and the focus ring. Checked on the compiled CSS, with the site's colour and with guild colours."""
+icons, fills and the focus ring. The site's colour is VS Code's Light Blue, #23a9f2 (the owner's choice, 2026-10-29), and
+the one exception, the owner's: it is the fill of its buttons as it is (--brand-fill, 2.6:1 under a white label); a
+guild's colour, or a site colour too pale for white, is darkened until the label holds AA. Links and text stay AA.
+Checked on the compiled CSS, with the site's colour and with guild colours."""
 import re
 from pathlib import Path
 
 import pytest
 
 ROOT = Path(__file__).resolve().parent.parent / "ruqqus"
-SITE_COLOUR = "148fd5"
+SITE_COLOUR = "23a9f2"
 # guild colours that are hard for a derived text colour: very light, very dark, saturated warm ones
 GUILD_COLOURS = ("ffd60a", "fcd5ce", "1a1a2e", "e85d04", "2c7be5", "805ad5", "07c20c", "ffffff", "000000")
 
 
-def compile_sheet(name, colour):
+def compile_sheet(name, colour, site=SITE_COLOUR):
     sass = pytest.importorskip("sass")
     scss = (ROOT / "assets" / "style" / name).read_text(encoding="utf-8")
-    scss = scss.replace("{boardcolor}", colour).replace("{maincolor}", SITE_COLOUR).replace("{ruqquspath}", str(ROOT))
+    scss = scss.replace("{boardcolor}", colour).replace("{maincolor}", site).replace("{ruqquspath}", str(ROOT))
     return sass.compile(string=scss)
 
 
@@ -41,9 +44,16 @@ def contrast(a, b):
     return (la + 0.05) / (lb + 0.05)
 
 
+# the names libsass writes in place of a hex where the name is shorter
+NAMES = {"white": "#ffffff", "black": "#000000", "red": "#ff0000", "blue": "#0000ff", "lime": "#00ff00",
+         "yellow": "#ffff00", "aqua": "#00ffff", "fuchsia": "#ff00ff", "gray": "#808080", "green": "#008000",
+         "maroon": "#800000", "navy": "#000080", "olive": "#808000", "purple": "#800080", "silver": "#c0c0c0",
+         "teal": "#008080", "#fff": "#ffffff", "#000": "#000000"}
+
+
 def named(value):
     value = value.strip()
-    return {"#fff": "#ffffff", "white": "#ffffff", "#000": "#000000"}.get(value, value)
+    return NAMES.get(value, value)
 
 
 TEXT_ON = {
@@ -64,7 +74,32 @@ def test_text_tokens_meet_aa_on_their_surfaces(name):
         for surface in surfaces:
             ratio = contrast(named(t[fg]), named(t[surface]))
             assert ratio >= 4.5, (name, fg, surface, round(ratio, 2))
-    assert contrast(named(t["--on-brand"]), named(t["--brand-strong"])) >= 4.5, name
+
+
+@pytest.mark.parametrize("name", ["main.scss", "main_dark.scss"])
+def test_the_sites_own_colour_is_its_button_fill_as_it_is_in_both_themes(name):
+    t = tokens(compile_sheet(name, SITE_COLOUR))
+    assert t["--brand"].strip() == f"#{SITE_COLOUR}", t["--brand"]
+    assert t["--brand-fill"].strip() == t["--brand"].strip()
+    # the owner's exception to AA: a white label on the bright blue is not 4.5:1, but it must stay readable
+    assert contrast(named(t["--on-brand"]), named(t["--brand-fill"])) >= 2.4, name
+    # a surface with running white text on it (a chat bubble, the footer) is the AA shade, the site's own colour included
+    deep = named(t["--brand-deep"])
+    assert contrast(named(t["--on-brand"]), deep) >= 4.5 and deep != named(t["--brand"]), (name, deep)
+    # the text and links on the page are not the bright blue in the light theme (2.3:1), they stay AA
+    assert contrast(named(t["--link"]), named(t["--surface"])) >= 4.5, name
+
+
+def test_the_link_is_the_bright_blue_itself_in_the_dark_theme():
+    t = tokens(compile_sheet("main_dark.scss", SITE_COLOUR))
+    assert named(t["--link"]) == f"#{SITE_COLOUR}", t["--link"]
+
+
+@pytest.mark.parametrize("name", ["main.scss", "main_dark.scss"])
+def test_a_site_colour_too_pale_for_a_white_label_falls_back_to_the_aa_fill(name):
+    t = tokens(compile_sheet(name, "fcd5ce", site="fcd5ce"))
+    assert t["--brand-fill"].strip() != "#fcd5ce"
+    assert contrast(named(t["--on-brand"]), named(t["--brand-fill"])) >= 4.5, name
 
 
 @pytest.mark.parametrize("name", ["main.scss", "main_dark.scss"])
@@ -75,8 +110,9 @@ def test_a_guild_colour_still_gives_readable_links_and_buttons(name, colour):
     for surface in ("--surface", "--bg"):
         ratio = contrast(named(t["--link"]), named(t[surface]))
         assert ratio >= 4.5, (name, colour, surface, round(ratio, 2))
-    ratio = contrast(named(t["--on-brand"]), named(t["--brand-strong"]))
-    assert ratio >= 4.5, (name, colour, round(ratio, 2))
+    for token in ("--brand-fill", "--brand-deep"):
+        ratio = contrast(named(t["--on-brand"]), named(t[token]))
+        assert ratio >= 4.5, (name, colour, token, round(ratio, 2))
 
 
 def test_both_sheets_import_the_tokens_after_bootstrap():
@@ -113,3 +149,48 @@ def test_every_page_shell_names_the_density_before_the_first_paint():
         rel = path.relative_to(ROOT / "templates").with_suffix("").as_posix()
         if "<html lang" in path.read_text(encoding="utf-8") and not rel.startswith(("email/", "errors/50")):
             assert rel in SHELLS, rel
+
+
+def compile_tokens(theme, colour, site=None):
+    """Just the tokens partial, for any colour: quick enough to try a grid of them. `site` is the site's own colour
+    ($purple): the page's colour is a guild's unless it is the same."""
+    sass = pytest.importorskip("sass")
+    site = site or ("23a9f2" if colour != "23a9f2" else "000000")
+    src = (f'$theme: "{theme}"; $primary: #{colour}; $purple: #{site}; $upvote: #23a9f2; $downvote: #e8452c;\n'
+           f'@import "{ROOT}/assets/style/_tokens";')
+    return tokens(sass.compile(string=src))
+
+
+def mixed(top, bottom, share):
+    """`top` laid over `bottom` at `share` (0-1): a tint of a colour on a surface."""
+    a = [int(top.lstrip("#")[i:i + 2], 16) for i in (0, 2, 4)]
+    b = [int(bottom.lstrip("#")[i:i + 2], 16) for i in (0, 2, 4)]
+    return "#" + "".join(f"{round(x * share + y * (1 - share)):02x}" for x, y in zip(a, b))
+
+
+GRID = [f"{r:02x}{g:02x}{b:02x}" for r in range(0, 256, 51) for g in range(0, 256, 51) for b in range(0, 256, 51)]
+
+
+@pytest.mark.parametrize("theme", ["light", "dark"])
+def test_the_fill_under_a_white_label_is_aa_for_any_colour_after_the_css_rounds_it(theme):
+    for colour in GRID + ["0085d0", "2aabee", "148fd5", "ffd60a", "ffffff", "000000"]:
+        t = compile_tokens(theme, colour)
+        for token in ("--brand-fill", "--brand-deep"):
+            fill = named(t[token])
+            assert contrast("#ffffff", fill) >= 4.5, (theme, colour, token, fill, round(contrast("#ffffff", fill), 3))
+
+
+# pills, quotes and hovers are brand-tinted: the link and vote-score shades must read on their tint too
+TINTS = {"light": [("--surface", 0.16), ("--panel", 0.16), ("--surface-sunken", 0.12)],
+         "dark": [("--surface", 0.18), ("--surface-raised", 0.18), ("--panel", 0.18)]}
+
+
+@pytest.mark.parametrize("theme", ["light", "dark"])
+@pytest.mark.parametrize("colour", (SITE_COLOUR,) + GUILD_COLOURS)
+def test_a_link_reads_on_its_own_tint(theme, colour):
+    t = compile_tokens(theme, colour)
+    raw = named(t["--brand"])
+    for surface, share in TINTS[theme]:
+        tint = mixed(raw, named(t[surface]), share)
+        ratio = contrast(named(t["--link"]), tint)
+        assert ratio >= 4.5, (theme, colour, surface, tint, round(ratio, 2))

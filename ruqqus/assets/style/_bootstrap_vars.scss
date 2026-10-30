@@ -12,13 +12,13 @@ $border-radius-pill: 999px;
 
 // depth: soft shadows in the light theme; on near-black a shadow can't be seen, so a hairline ring does the work
 @if $theme == "dark" {
-    $box-shadow-sm: 0 0 0 1px #2f3336 !global;
-    $box-shadow: 0 0 0 1px #2f3336, 0 8px 24px rgba(0, 0, 0, 0.5) !global;
-    $box-shadow-lg: 0 0 0 1px #2f3336, 0 16px 48px rgba(0, 0, 0, 0.6) !global;
+    $box-shadow-sm: 0 0 0 1px #2a2a2a !global;
+    $box-shadow: 0 0 0 1px #2a2a2a, 0 8px 24px rgba(0, 0, 0, 0.5) !global;
+    $box-shadow-lg: 0 0 0 1px #2a2a2a, 0 16px 48px rgba(0, 0, 0, 0.6) !global;
 } @else {
-    $box-shadow-sm: 0 1px 2px rgba(16, 24, 40, 0.06) !global;
-    $box-shadow: 0 4px 16px rgba(16, 24, 40, 0.08), 0 1px 3px rgba(16, 24, 40, 0.06) !global;
-    $box-shadow-lg: 0 16px 48px rgba(16, 24, 40, 0.16), 0 2px 6px rgba(16, 24, 40, 0.06) !global;
+    $box-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.06) !global;
+    $box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08), 0 1px 3px rgba(0, 0, 0, 0.06) !global;
+    $box-shadow-lg: 0 16px 48px rgba(0, 0, 0, 0.16), 0 2px 6px rgba(0, 0, 0, 0.06) !global;
 }
 
 // buttons: pills, semibold, the focus ring is the site's own (:focus-visible), not Bootstrap's glow on every click

@@ -47,24 +47,49 @@
     @return ($la + 0.05) / ($lb + 0.05);
 }
 
-// the colour, darkened until it reads on the sunken grey of pills and fields (#edf2f7, the hardest light surface
-// text sits on) and holds white text
-@function strong-on-light($colour) {
+// the colour, darkened until it reads on the sunken grey of pills and fields (#f1f1f2, the hardest light surface
+// text sits on) and holds white text. `$tint` is the share of the colour itself in the surface it sits on (a pill, a
+// quote and a hover are tinted with it): that surface is darker, so the text must be too
+@function strong-on-light($colour, $tint: 0%) {
     $c: $colour;
-    @while contrast($c, #edf2f7) < 4.6 and lightness($c) > 0% {
+    $surface: mix($colour, #f1f1f2, $tint);
+    @while contrast($c, $surface) < 4.6 and lightness($c) > 0% {
         $c: darken($c, 2%);
     }
     @return $c;
 }
 
-// and lightened until it reads on the raised dark surface (#202327, the hardest dark one)
-@function strong-on-dark($colour) {
+// and lightened until it reads on the raised dark surface (#1e1e1e, the hardest dark one), tinted or not
+@function strong-on-dark($colour, $tint: 0%) {
     $c: $colour;
-    @while contrast($c, #202327) < 4.6 and lightness($c) < 100% {
+    $surface: mix($colour, #1e1e1e, $tint);
+    @while contrast($c, $surface) < 4.6 and lightness($c) < 100% {
         $c: lighten($c, 2%);
     }
     @return $c;
 }
+
+// The fill under a white label (--on-brand). The site's own colour is its fill as it is (the owner's choice, 2026-10-29:
+// the Light Blue #23a9f2, 2.6:1 under white, below AA) for a CONTROL's short label (a button, a pill, a tab) while white
+// still reads on it at all (2.4:1: a paler site colour falls back). Every other colour, a guild's included, is darkened only until the label holds AA, with a margin for the
+// rounding the CSS makes. --brand-strong goes further, for what sits beside text on the page's own greys.
+@function fill-under-white($colour) {
+    $c: $colour;
+    @while contrast(#fff, $c) < 4.55 and lightness($c) > 0% {
+        $c: darken($c, 1%);
+    }
+    @return $c;
+}
+
+$brand-fill: if($primary == $purple and contrast(#fff, $primary) >= 2.4, $primary, fill-under-white($primary));
+
+// The same colour for a surface that carries running white TEXT (a chat bubble, the docs footer, a table head, a
+// badge), not a short control label: always the AA shade, the site's own colour included.
+$brand-deep: fill-under-white($primary);
+
+// The brand variables as text, for the older rules that write `color: $primary` / `color: $purple`: AA on the page
+$primary-text: if($theme == "dark", strong-on-dark($primary, 18%), strong-on-light($primary, 20%));
+$purple-text: if($theme == "dark", strong-on-dark($purple, 18%), strong-on-light($purple, 20%));
 
 :root {
     // type
@@ -138,71 +163,74 @@
 
     // colour
     --brand: #{$primary};
+    --brand-fill: #{$brand-fill};      // fills under the white label (--on-brand): see $brand-fill
+    --brand-deep: #{$brand-deep};      // surfaces with running white text on them: always AA
     --on-brand: #fff;
     --upvote: #{$upvote};
     --downvote: #{$downvote};
 
     @if $theme == "dark" {
         --bg: #000000;
-        --surface: #16181c;
-        --surface-raised: #202327;
-        --surface-sunken: #1c1f23;
-        --panel: #16181c;                // the sidebars' boxes, on the page
-        --surface-hover: #1d2024;
-        --border: #2f3336;
-        --border-strong: #3e4348;
-        --text: #e7e9ea;
-        --text-muted: #8b98a5;
-        --text-subtle: #5b6670;          // decorative only: never the only carrier of meaning
-        --brand-strong: #{strong-on-light($primary)};   // fills under white text: the deep shade in both themes
-        --link: #{strong-on-dark($primary)};
+        --surface: #121212;
+        --surface-raised: #1e1e1e;
+        --surface-sunken: #171717;
+        --panel: #121212;                // the sidebars' boxes, on the page
+        --surface-hover: #1a1a1a;
+        --border: #2a2a2a;
+        --border-strong: #3d3d3d;
+        --text: #f1f1f1;
+        --text-muted: #a0a0a0;
+        --text-subtle: #6b6b6b;          // decorative only: never the only carrier of meaning
+        --link: #{strong-on-dark($primary, 18%)};
         --brand-soft: #{rgba($primary, 0.18)};
-        --upvote-text: #{strong-on-dark($upvote)};
-        --downvote-text: #{strong-on-dark($downvote)};
+        --upvote-text: #{strong-on-dark($upvote, 18%)};
+        --downvote-text: #{strong-on-dark($downvote, 18%)};
         --danger: #f87171;
         --success: #4ade80;
         --focus-ring: #{rgba(strong-on-dark($primary), 0.55)};
         --overlay: rgba(0, 0, 0, 0.6);
         --hover: rgba(255, 255, 255, 0.06);     // laid over any surface: rows, menu items, icon buttons
         --press: rgba(255, 255, 255, 0.1);
-        --toast-bg: #e7e9ea;                     // toasts are the inverse of the page
-        --toast-fg: #0f1419;
+        --toast-bg: #f1f1f1;                     // toasts are the inverse of the page
+        --toast-fg: #121212;
         --toast-success: #15803d;
         --toast-danger: #b91c1c;
         // on dark surfaces depth is lightness and a border, not a shadow
         --shadow-sm: none;
-        --shadow-md: 0 0 0 1px #2f3336, 0 8px 24px rgba(0, 0, 0, 0.5);
-        --shadow-lg: 0 0 0 1px #2f3336, 0 16px 48px rgba(0, 0, 0, 0.6);
+        --shadow-md: 0 0 0 1px #2a2a2a, 0 8px 24px rgba(0, 0, 0, 0.5);
+        --shadow-lg: 0 0 0 1px #2a2a2a, 0 16px 48px rgba(0, 0, 0, 0.6);
     } @else {
         --bg: #ffffff;                   // posts sit on the page itself, divided by hairlines (X, Reddit)
         --surface: #ffffff;
         --surface-raised: #ffffff;
-        --surface-sunken: #edf2f7;
-        --panel: #f6f8fa;                // the sidebars' boxes, on the page
-        --surface-hover: #f1f4f8;
-        --border: #e2e8f0;
-        --border-strong: #cbd5e0;
-        --text: #1a202c;
-        --text-muted: #5f6e82;
-        --text-subtle: #a0aec0;          // decorative only: never the only carrier of meaning
-        --brand-strong: #{strong-on-light($primary)};
-        --link: #{strong-on-light($primary)};
+        --surface-sunken: #f1f1f2;
+        --panel: #f7f7f7;                // the sidebars' boxes, on the page
+        --surface-hover: #f4f4f4;
+        --border: #e6e6e6;
+        --border-strong: #d2d2d2;
+        --text: #121212;
+        --text-muted: #636363;
+        --text-subtle: #a3a3a3;          // decorative only: never the only carrier of meaning
+        --link: #{strong-on-light($primary, 20%)};
         --brand-soft: #{rgba($primary, 0.12)};
-        --upvote-text: #{strong-on-light($upvote)};
-        --downvote-text: #{strong-on-light($downvote)};
+        --upvote-text: #{strong-on-light($upvote, 20%)};
+        --downvote-text: #{strong-on-light($downvote, 20%)};
         --danger: #{strong-on-light(#c53030)};
         --success: #{strong-on-light(#2f855a)};
         --focus-ring: #{rgba($primary, 0.45)};
-        --overlay: rgba(15, 23, 42, 0.5);
+        --overlay: rgba(0, 0, 0, 0.5);
         --hover: rgba(15, 23, 42, 0.05);        // laid over any surface: rows, menu items, icon buttons
         --press: rgba(15, 23, 42, 0.09);
         --toast-bg: #1a202c;                     // toasts are the inverse of the page
+        --hover: rgba(0, 0, 0, 0.05);        // laid over any surface: rows, menu items, icon buttons
+        --press: rgba(0, 0, 0, 0.09);
+        --toast-bg: #161616;                     // toasts are the inverse of the page
         --toast-fg: #ffffff;
         --toast-success: #4ade80;
         --toast-danger: #f87171;
-        --shadow-sm: 0 1px 2px rgba(16, 24, 40, 0.06);
-        --shadow-md: 0 4px 16px rgba(16, 24, 40, 0.08), 0 1px 3px rgba(16, 24, 40, 0.06);
-        --shadow-lg: 0 16px 48px rgba(16, 24, 40, 0.16), 0 2px 6px rgba(16, 24, 40, 0.06);
+        --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.06);
+        --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.08), 0 1px 3px rgba(0, 0, 0, 0.06);
+        --shadow-lg: 0 16px 48px rgba(0, 0, 0, 0.16), 0 2px 6px rgba(0, 0, 0, 0.06);
     }
 }
 

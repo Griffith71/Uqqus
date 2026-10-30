@@ -9,10 +9,10 @@ $secondary: #383838;
 $danger: #E53E3E;
 $white: #FFFFFF;
 $black: #CFCFCF;
-$light: #16181c;
+$light: #121212;
 $success: #38A169;
 $muted: #AAAAAA;
-$info: #168EEA;
+$info: #0076B8;
 
 $purple: #{maincolor};
 $red:  #E53E3E;
@@ -21,15 +21,15 @@ $green: #38A169;
 
 $gray-100: #AAAAAA;
 $gray-200: #8f8f90;
-$gray-300: #202327;
-$gray-400: #2f3336;
-$gray-500: #16181c;
+$gray-300: #1e1e1e;
+$gray-400: #2a2a2a;
+$gray-500: #121212;
 $gray-600: #000000;
-$gray-700: #16181c;
-$gray-800: #16181c;
+$gray-700: #121212;
+$gray-800: #121212;
 $gray-900: #0a0a0a;
 
-$upvote: #2ca1ea;
+$upvote: #23A9F2;
 $downvote: #e8452c;       // red, as strong as $upvote's blue (was teal #38B2AC)
 $admin: #E53E3E;
 $banned: #960000;
@@ -244,12 +244,12 @@ body.using-mouse :focus {
 
 #article .navbar-light .navbar-nav .nav-link:hover {
     background-color: transparent;
-    color: $primary;
+    color: $primary-text;
 }
 
 #article .navbar-light .navbar-nav .nav-link:focus {
     background-color: transparent;
-    color: $primary;
+    color: $primary-text;
 }
 
 .article-title {
@@ -539,7 +539,7 @@ ol > li::before {
 
 #page .navbar-light .navbar-nav .nav-link:hover {
     background-color: transparent;
-    color: $primary;
+    color: $primary-text;
 }
 
 .navbar-brand, .navbar-light .navbar-brand {
@@ -609,7 +609,7 @@ ol > li::before {
 }
 
 .navbar-light .navbar-nav .btn-outline-primary.nav-link {
-    color: $primary;
+    color: $primary-text;
 }
 
 .navbar-light .navbar-nav .btn-outline-primary.nav-link:hover {
@@ -674,17 +674,17 @@ ol > li::before {
 }
 
 .post-nav > .nav-item > .nav-link.active {
-    color: $primary;
+    color: $primary-text;
     //box-shadow: inset 0 -2px 0 $primary;
 }
 
 .settings-nav > .nav-item > .nav-link.active {
-    color: $primary;
+    color: $primary-text;
     box-shadow: inset 0 -2px 0 $primary;
 }
 
 .post-nav .nav-link:hover, .post-nav .nav-link:focus, .settings-nav .nav-link:hover, .settings-nav .nav-link:focus {
-    color: $primary;
+    color: $primary-text;
 }
 
 .post-nav .nav-link:hover .fa , .post-nav .nav-link:focus .fa, .post-nav .nav-link:hover .fas, .post-nav .nav-link:focus .fas, .post-nav .nav-link:hover .far, .post-nav .nav-link:focus .far, .post-nav .nav-link:hover .fab , .post-nav .nav-link:focus .fab {
@@ -704,7 +704,7 @@ ol > li::before {
 // Settings navigation
 
 .settings-nav > .nav-item > .nav-link.active {
-    color: $primary;
+    color: $primary-text;
     box-shadow: inset 0 -2px 0 $primary;
 }
 
@@ -753,18 +753,18 @@ label.color-radio span {
 }
 
 #page .nav-pills .nav-link:hover {
-    color: $primary;
+    color: $primary-text;
 }
 
 #page .nav-pills .nav-link.active, .nav-pills .show > .nav-link {
-    color: $primary;
+    color: $primary-text;
     background-color: transparent;
     transition: ease 0.25s;
     border-bottom: 2px solid $primary;
 }
 
 #page .bg-light .nav-pills .nav-link.active, .bg-light .nav-pills .show > .nav-link {
-    color: $primary;
+    color: $primary-text;
     background-color: transparent;
     transition: ease 0.25s;
     border-bottom: 2px solid $primary;
@@ -1228,7 +1228,7 @@ color: $dark;
 #frontpage .pseudo-submit-form.card, #search .search-results.card, #guild .pseudo-submit-form.card {
     background-color: $gray-600;
     border-radius: $border-radius;
-    border: none;
+    border: 1px solid $gray-400;   // black on black has no edge without it
     //box-shadow: $box-shadow-sm;
 }
 
@@ -1289,7 +1289,7 @@ color: $dark;
     background: none;
     color: inherit;
     line-height: 1;
-    opacity: 0.8;
+    opacity: 1;
 }
 
 .inline-composer .ic-chip-remove:hover {
@@ -1649,7 +1649,7 @@ $profile-x-surface: $gray-600;
         padding: 0;
         border: 0;
         background: none;
-        color: $info;          // the brand blue, as links in the dark theme
+        color: var(--link);    // the brand blue, as links in the dark theme
         cursor: pointer;
 
         &:hover {
@@ -1744,7 +1744,7 @@ body.embedded .share-chat-item {
 .community-note-title {
     font-weight: $font-weight-bold;
     font-size: $small-font-size;
-    color: $primary;
+    color: $primary-text;
 }
 
 .community-note-body {
@@ -1774,7 +1774,7 @@ body.embedded .share-chat-item {
     margin-left: 0.25rem;
     font-weight: $font-weight-bold;
     font-variant-numeric: tabular-nums;
-    color: $primary;
+    color: $primary-text;
 }
 
 .curation-algorithm .alg-summary, .curation-how {
@@ -1800,7 +1800,7 @@ body.embedded .share-chat-item {
 }
 
 .curation-own-algorithm {
-    color: $primary;
+    color: $primary-text;
 }
 
 // Trending (templates/partials/trending_box.html, trending.html)
@@ -1827,7 +1827,7 @@ body.embedded .share-chat-item {
 }
 
 .trend-link:hover .trend-label, .trend-link:focus .trend-label {
-    color: $primary;
+    color: $primary-text;
 }
 
 .trend-rank {
@@ -2570,7 +2570,7 @@ body.embedded #chat-app {
 
 .folder-chip:hover,
 .folder-chip:focus {
-    color: $primary;
+    color: $primary-text;
     border-color: $primary;
     text-decoration: none;
     outline: none;
@@ -2578,8 +2578,8 @@ body.embedded #chat-app {
 
 .folder-chip.active,
 .folder-chip.active:hover {
-    background-color: $primary;
-    border-color: $primary;
+    background-color: $brand-fill;
+    border-color: $brand-fill;
     color: #ffffff;
 }
 
@@ -2617,7 +2617,7 @@ body.embedded #chat-app {
 }
 
 .bookmark-folder-row.active {
-    color: $primary;
+    color: $primary-text;
     font-weight: $font-weight-bold;
 }
 
@@ -2637,7 +2637,7 @@ body.embedded #chat-app {
     border: 1px solid $primary;
     border-radius: 2rem;
     background: transparent;
-    color: $primary;
+    color: $primary-text;
     font-size: $small-font-size;
     font-weight: $font-weight-bold;
     text-align: center;
@@ -2647,7 +2647,7 @@ body.embedded #chat-app {
 .poll-option:hover:not(:disabled),
 .poll-option:focus {
     background-color: rgba($primary, 0.1);
-    color: $primary;
+    color: $primary-text;
     text-decoration: none;
     outline: none;
 }
@@ -2906,7 +2906,7 @@ body.embedded #chat-app {
 
 .deletion-chip a:hover,
 .deletion-chip a:focus {
-    color: $primary;
+    color: $primary-text;
 }
 
 .deletion-text {
@@ -2949,7 +2949,7 @@ body.embedded #chat-app {
 
 .search-chip a:hover,
 .search-chip a:focus {
-    color: $primary;
+    color: $primary-text;
 }
 
 .search-notice {
@@ -2982,7 +2982,7 @@ body.embedded #chat-app {
 }
 
 .search-advanced summary {
-    color: $primary;
+    color: $primary-text;
     font-weight: $font-weight-bold;
     cursor: pointer;
 }
@@ -3206,7 +3206,7 @@ html.feed-live {
     padding: 0.45rem 1rem;
     border: 0;
     border-radius: 2rem;
-    background-color: $primary;
+    background-color: $brand-fill;
     color: #ffffff;
     font-size: $small-font-size;
     font-weight: $font-weight-bold;
@@ -3216,7 +3216,7 @@ html.feed-live {
 
 .feed-pill:hover,
 .feed-pill:focus {
-    background-color: darken($primary, 6%);
+    background-color: darken($brand-fill, 6%);
     outline: none;
 }
 
@@ -3287,13 +3287,13 @@ html.feed-live {
 }
 
 .scrollspy.sidebar-sticky .list-group .list-group-item:focus, .scrollspy.sidebar-sticky .list-group .list-group-item:hover {
-    color: $primary;
+    color: $primary-text;
     border-left: 2px solid $primary;
 }
 
 .scrollspy.sidebar-sticky .list-group .list-group-item.active {
     background-color: transparent;
-    color: $primary;
+    color: $primary-text;
     font-weight: $font-weight-bold;
     left: -1px;
     border-left: solid 2px $primary;
@@ -3320,7 +3320,7 @@ html.feed-live {
     font-weight: $font-weight-bold;
     letter-spacing: 0.025rem;
     color: $white;
-    background-color: $primary;
+    background-color: $brand-deep;
     padding: 0.75rem 1rem;
     text-transform: uppercase;
 }
@@ -3522,7 +3522,7 @@ html.feed-live {
 }
 
 .filter-link:hover, .filter-link:focus {
-    color: $primary;
+    color: $primary-text;
 }
 
 // Guild recommendations section
@@ -3578,7 +3578,7 @@ html.feed-live {
 }
 
 .guild-recommendations-link:hover, .guild-recommendations-link:focus {
-    color: $primary;
+    color: $primary-text;
 }
 
 .guild-icon-square-35 {
@@ -3623,7 +3623,7 @@ html.feed-live {
 }
 
 .dashboard-list > .dashboard-item > .dashboard-link.active {
-    color: $primary;
+    color: $primary-text;
 }
 
 .dashboard-list .dashboard-item .fa, .dashboard-list .dashboard-item .fas, .dashboard-list .dashboard-item .far, .dashboard-list .dashboard-item .fab, .dashboard-list .dashboard-item .fal {
@@ -3642,7 +3642,7 @@ html.feed-live {
 }
 
 .dashboard-link:hover, .dashboard-link:focus {
-    color: $primary;
+    color: $primary-text;
 }
 
 .list-group-item-action {
@@ -3910,7 +3910,7 @@ a.bg-dark:hover, a.bg-dark:focus, button.bg-dark:hover, button.bg-dark:focus {
 }
 
 .toggle-view .nav-link:hover, .toggle-view .nav-link:focus {
-    color: $primary;
+    color: $primary-text;
 }
 
 .toggle-view > .nav-item > .nav-link.active .fa, .toggle-view > .nav-item > .nav-link.active .fas, .toggle-view > .nav-item > .nav-link.active .far, .toggle-view > .nav-item > .nav-link.active .fab {
@@ -3988,7 +3988,7 @@ a.bg-dark:hover, a.bg-dark:focus, button.bg-dark:hover, button.bg-dark:focus {
 
 .post-title a:hover, .post-title a:active, .post-title a:focus  {
     text-decoration: none;
-    color: $primary;
+    color: $primary-text;
 }
 
 #frontpage .post-title a {
@@ -4001,7 +4001,7 @@ a.bg-dark:hover, a.bg-dark:focus, button.bg-dark:hover, button.bg-dark:focus {
 }
 
 .stretched-link a:hover {
-    color: $purple
+    color: $purple-text
 }
 
 .post-meta {
@@ -4497,7 +4497,7 @@ a.bg-dark:hover, a.bg-dark:focus, button.bg-dark:hover, button.bg-dark:focus {
 }
 
 .show-more-link:hover {
-    color: $primary;
+    color: $primary-text;
     text-decoration: none;
 }
 
@@ -4643,7 +4643,7 @@ blockquote {
     color: $black;
     font-size: $font-size-base;
     font-weight: $font-weight-normal;
-    background-color: #46444a;
+    background-color: #1e1e1e;
     padding: 0.5rem 1rem;
     margin: 0.5rem 0rem 1rem 0.5rem;
 }
@@ -4938,8 +4938,8 @@ ul.comment-section {
 
 .reaction .reacted {
     border-color: $purple;
-    background-color: rgba(60, 173, 243, 0.08);
-    color: $purple
+    background-color: rgba($purple, 0.08);
+    color: $purple-text
 }
 
 // Sidebar
@@ -4992,7 +4992,7 @@ ul.comment-section {
     width: 100%;
     height: 100%;
     background-color: rgba(127, 127, 127, 0.25);
-    background-image: linear-gradient(135deg, rgba(30, 30, 36, 0.1) 0%, rgba(99, 80, 205, 0.75) 76%);
+    background-image: linear-gradient(135deg, rgba(30, 30, 36, 0.1) 0%, rgba($info, 0.75) 76%);
 
 }
 
@@ -5166,7 +5166,6 @@ ul.comment-section {
 
 #page .footer a, #article .footer a {
     color: $white;
-    opacity: .8;
 }
 
 #page .footer li, #article .footer li {
@@ -5470,8 +5469,8 @@ ul.comment-section {
 
 .custom-control-input:checked ~ .custom-control-label::before {
     opacity: 1;
-    background-color: $success;
-    border: $success solid 1px;
+    background-color: $brand-fill;
+    border: $brand-fill solid 1px;
 
 }
 
@@ -5779,7 +5778,7 @@ body, #settings, #notifications, #submit {
 }
 
 #frontpage .posts .card:hover .post-title a, #search .posts .card:hover .post-title a{
-    color: $primary;
+    color: $primary-text;
 }
 
 #frontpage .posts .card .post-img, #search .posts .card .post-img {
@@ -5856,7 +5855,7 @@ body, #settings, #notifications, #submit {
 }
 
 .post-title a:hover, .post-title a:active, .post-title a:focus {
-    color: $primary;
+    color: $primary-text;
 }
 
 #thread .voting {
@@ -6286,7 +6285,7 @@ textarea, input[type=text] {
 .tc-blue { color: #63b3ed; }
 .tc-purple { color: #b794f4; }
 .tc-pink { color: #f687b3; }
-.tc-gray { color: #a0aec0; }
+.tc-gray { color: #a3a3a3; }
 
 mark {
     color: inherit;
@@ -6308,7 +6307,7 @@ a.post-button {
     padding: 0.5rem 1.25rem;
     margin: 0.25rem 0;
     border-radius: 0.375rem;
-    background-color: $primary;
+    background-color: $brand-fill;
     color: #fff !important;
     font-weight: 600;
     text-decoration: none !important;
@@ -6766,7 +6765,7 @@ img.emoji {
     bottom: -6px;
     left: -6px;
     border-radius: 50%;
-    background: #4b5057;
+    background: #3d3d3d;
 }
 
 .story-ring-unseen::before,
@@ -6862,7 +6861,7 @@ img.emoji {
     border: 2px solid $border-color;
     border-radius: 50%;
     overflow: hidden;
-    background-color: #4b5057;
+    background-color: #3d3d3d;
     color: inherit;
 }
 
@@ -7604,12 +7603,12 @@ button.embed-lg-play:focus-visible {
 }
 
 .post-action-bookmark.is-on {
-    color: $primary;
+    color: $primary-text;
 }
 
 @media (hover: hover) {
     .post-actions a.post-action:hover {
-        color: $primary;
+        color: $primary-text;
         text-decoration: none;
     }
 
@@ -7793,8 +7792,8 @@ $audience-hover: $gray-400;
 
 .audience-chip-input:checked + .audience-chip {
     color: #fff;
-    background: $primary;
-    border-color: $primary;
+    background: $brand-fill;
+    border-color: $brand-fill;
 }
 
 .audience-chip-input:checked + .audience-chip small {
@@ -7876,7 +7875,7 @@ a.circle-row:focus-visible {
 }
 
 .studio-tabs .nav-link.active {
-    color: $primary;
+    color: $primary-text;
     border-bottom-color: $primary;
 }
 
@@ -8044,7 +8043,7 @@ $quote-hover: rgba(255, 255, 255, 0.05);
 .quote-card-foot a {
     position: relative;
     z-index: 2;                          // a link in the text opens itself, not the card
-    color: $primary;
+    color: $primary-text;
 }
 
 .quote-card-title {
@@ -8203,7 +8202,7 @@ $quote-hover: rgba(255, 255, 255, 0.05);
     box-shadow: 0 0 0 2px currentColor;
 }
 
-@each $name, $bg, $fg in (gray #343a40 #e9ecef, red #5c1416 #ffc9c9, orange #5a2a00 #ffd8a8, yellow #4d3d00 #ffec99,
+@each $name, $bg, $fg in (gray #2a2a2a #e6e6e6, red #5c1416 #ffc9c9, orange #5a2a00 #ffd8a8, yellow #4d3d00 #ffec99,
                           green #173d22 #b2f2bb, teal #0b3b33 #96f2d7, blue #0b2e4f #a5d8ff, indigo #1f2a63 #bac8ff,
                           purple #45144f #eebefa, pink #5c1230 #fcc2d7) {
     .flair-#{$name} {
@@ -8693,7 +8692,7 @@ $gp-removed-fg: #ffc9c9;
 }
 
 .events-calendar-day.is-today .events-calendar-num {
-    background: $primary;
+    background: $brand-deep;
     color: #ffffff;
 }
 
@@ -9022,7 +9021,7 @@ $ex-muted: $muted;
 .explore-chip.active,
 .explore-chip.active:hover {
     color: #fff;
-    background: $primary;
+    background: $brand-fill;
 }
 
 .explore-chip:focus-visible,
@@ -9248,7 +9247,7 @@ $ex-muted: $muted;
 .space-tab.active,
 .space-tab.active:hover {
     color: #fff;
-    background: $primary;
+    background: $brand-fill;
 }
 
 .space-tab:focus-visible,
@@ -9361,8 +9360,8 @@ $ex-muted: $muted;
 
 .where-profile-input:checked + .where-chip {
     color: #fff;
-    background: $primary;
-    border-color: $primary;
+    background: $brand-fill;
+    border-color: $brand-fill;
 }
 
 .where-profile-input:disabled + .where-chip {
@@ -9564,7 +9563,7 @@ $ex-muted: $muted;
     padding-left: .5rem;
 
     &.is-set {
-        color: $purple;
+        color: $purple-text;
         font-weight: 600;
     }
 }
@@ -9693,7 +9692,7 @@ $ex-muted: $muted;
     }
 
     input:checked + label {
-        background-color: $purple;
+        background-color: $brand-fill;
         color: #ffffff;
     }
 
@@ -9747,7 +9746,7 @@ $ex-muted: $muted;
     padding: 0 .375rem;
     border: 1px solid $purple;
     border-radius: 999px;
-    color: $purple;
+    color: $purple-text;
     font-size: .6875rem;
     font-weight: 600;
     line-height: 1.4;
@@ -10031,7 +10030,7 @@ $cc-muted: $muted;
     padding: 0 0.85rem;
     font-size: 0.875rem;
     font-weight: 600;
-    color: $primary;
+    color: $primary-text;
     border: 1px solid $cc-border;
     border-radius: 999px;
 }
@@ -10183,6 +10182,7 @@ $cc-muted: $muted;
     font-size: 0.75rem;
     font-weight: 800;
     letter-spacing: 0.02em;
+    color: $primary-text;                // text, not a glyph: the AA shade
 }
 
 .composer-forward {

@@ -99,7 +99,7 @@ app.config["SITE_NAME"]=environ.get("SITE_NAME", "Laba").lstrip().rstrip()
 # the legal entity named in the terms, the legal pages and the footer; the site's own name until it is set
 app.config["COMPANY_NAME"]=(environ.get("COMPANY_NAME") or "").strip() or app.config["SITE_NAME"]
 
-app.config["SITE_COLOR"]=environ.get("SITE_COLOR", "148fd5").lstrip().rstrip()
+app.config["SITE_COLOR"]=(environ.get("SITE_COLOR") or "23a9f2").strip()
 app.config["ERROR_TRACKING_ON"] = ERROR_TRACKING_ON      # the privacy page names the service only while it runs
 
 app.config["RUQQUSPATH"]=environ.get("RUQQUSPATH", os.path.dirname(os.path.realpath(__file__)))

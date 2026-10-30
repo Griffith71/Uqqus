@@ -253,7 +253,7 @@ def seed():
     photography = guild("ui_photography", "2c7be5", alice, "Film, digital and everything between. Critique welcome.")
     cooking = guild("ui_cooking", "e85d04", bob, "Recipes that work on a weeknight.", FOOD_CATEGORY_ID)
     midnight = guild("ui_midnight", "1a1a2e", carol, "A guild with a very dark colour, to check contrast.")
-    guild("ui_empty", "148fd5", carol, "Nothing has been forwarded here yet.")
+    guild("ui_empty", "23a9f2", carol, "Nothing has been forwarded here yet.")
     for user in (bob, carol, viewer, long_name):
         db.add(Subscription(user_id=user.id, board_id=photography.id))
     db.add(Subscription(user_id=viewer.id, board_id=cooking.id))

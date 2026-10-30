@@ -9,7 +9,7 @@ import gevent
 
 from ruqqus.helpers.wrappers import *
 from ruqqus.helpers.visibility import viewer_level, user_hidden, hidden_notice
-from ruqqus.helpers import subscriber_badges
+from ruqqus.helpers import subscriber_badges, qr_colour
 from ruqqus.helpers.base36 import *
 from ruqqus.helpers.sanitize import *
 from ruqqus.helpers.filters import *
@@ -35,7 +35,7 @@ def mfa_qr(secret, v):
         error_correction=qrcode.constants.ERROR_CORRECT_L
     )
     qr.add_data(x.provisioning_uri(v.username, issuer_name=app.config["SITE_NAME"]))
-    img = qr.make_image(fill_color="#"+app.config["SITE_COLOR"], back_color="white")
+    img = qr.make_image(fill_color=qr_colour.on_white(app.config["SITE_COLOR"]), back_color="white")
 
     mem = io.BytesIO()
 
