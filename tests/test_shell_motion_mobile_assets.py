@@ -89,7 +89,7 @@ def test_the_navbar_lines_up_with_the_sidebars_on_desktop_and_keeps_off_a_phones
     phone = MOBILE.split("@media (max-width: 991.98px) {\n    #navbar {")[1].split("}")[0]
     assert 'max(1rem, env(safe-area-inset-left))' in phone
     icons = NAV.split("@media (min-width: 768px) {\n    #navbar #navbar-icon-row {")[1].split("}")[0]
-    assert "gap: 2px;" in icons
+    assert "gap: 0;" in icons            # (the glyphs grew to 20px in the same 36px buttons: the white between them fell from 24px to 16)
 
 
 def test_the_cooldown_meter_is_one_vertical_boiling_bar():

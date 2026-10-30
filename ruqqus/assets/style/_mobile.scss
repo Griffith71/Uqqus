@@ -29,14 +29,14 @@ a, button, .btn, [role="button"], .arrow-up, .arrow-down, label, summary, .botto
 
 :root {
     // the fixed top bar grows by the status bar's height when the site runs full screen (0 in a browser tab)
-    --navbar-height: calc(55px + env(safe-area-inset-top));
+    --navbar-height: calc(56px + env(safe-area-inset-top));
 }
 
 // From 992px nav_align.js insets the navbar's content to the sidebars' edges, so the bar itself adds only the safe
 // area (0 in a browser tab): any more pushed the logo off the left sidebar's edge. Below 992px nothing insets it, and
 // the bar keeps at least 1rem from the screen's edges.
 #navbar {
-    padding-top: calc(0.7rem + env(safe-area-inset-top));
+    padding-top: calc(var(--bar-pad) + env(safe-area-inset-top));
     padding-left: env(safe-area-inset-left);
     padding-right: env(safe-area-inset-right);
 }
@@ -169,6 +169,7 @@ html {
 
         // as tall as it needs, never past the bottom of the screen (it opens a little below the bar)
         #navbar-icon-row #accountDropdownMenu {
+            margin-top: 0 !important;                  // attached to the bar: the markup's mt-2 left a 7px strip of page between them
             height: auto;
             max-height: calc(100dvh - var(--navbar-height, 55px) - 24px);
             overflow-y: auto;

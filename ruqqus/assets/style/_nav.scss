@@ -13,17 +13,19 @@
     box-shadow: none !important;
 }
 
-// where the blur can't be drawn, the bar is solid
-@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
-    #navbar.navbar-light, #navbar {
-        background-color: var(--surface);
-    }
+// The bar is a control (--control-h) and --bar-pad above and below, so it is 56px (52 in Compact), not the 58.6px Bootstrap's .7rem made it:
+// every control in it, the search pill, the icons, the account, is one height. (_mobile.scss adds the status bar on top.)
+#navbar {
+    padding-top: var(--bar-pad);
+    padding-bottom: var(--bar-pad);
 }
 
 // the search box: a pill on the page's sunken colour
 #navbar .form-inline.search .form-control {
-    height: 38px;
-    min-height: 38px;
+    height: auto;                       // as tall as its text (Text size), never under the default control (36px)
+    min-height: var(--control-h);
+    padding-top: var(--space-2);
+    padding-bottom: var(--space-2);
     border-radius: var(--radius-pill);
     background-color: var(--surface-sunken);
     border: 1px solid transparent;
@@ -43,7 +45,7 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 36px;
+    width: var(--control-h);
     height: 36px;
     padding: 0;
     border-radius: 50%;
@@ -62,11 +64,41 @@
     border-radius: 50%;
 }
 
+// The glyphs stay at Bootstrap's own 14px (main.scss `.navbar-light .navbar-nav .nav-link .fas`). They were 20px for a day (2026-10-29: a glyph fills
+// about half its button on YouTube and Primer) and the owner found them too big and put them back; the tighter bar comes from the 36px pitch with no gap.
+
+// the logo's glyph is 26.6px, and Bootstrap's own 4.4px above and below made it 35px: taller than a Compact control, so it was the logo that set the
+// bar's height there. The bar centres it either way.
+#navbar .navbar-brand, #navbar .navbar-brand .brand-main {
+    line-height: 1;
+}
+
+#navbar .navbar-brand {
+    padding-top: 0;
+    padding-bottom: 0;
+}
+
+// the account's name and Rep are two lines beside the avatar: at 1.5 they were 34.5px tall, taller than a Compact control (32) and so the bar
+#navbar #dropdownMenuLink .text-left > div {
+    line-height: 1.25;
+}
+
+// the avatar in the bar: 32 (Primer's header avatar, Twitch's user menu)
+#navbar #dropdownMenuLink .profile-pic-35 {
+    width: 32px;
+    height: 32px;
+}
+
+// the avatar and the two lines beside it sit on the icon row's centre line (they were 2px above it, top-aligned in a 36px link)
+#navbar #dropdownMenuLink > .d-flex {
+    align-items: center;
+}
+
 // the icons sit together (they were 45px apart: 38px targets with margins either side); the account stands apart
 @media (min-width: 768px) {
     #navbar #navbar-icon-row {
         align-items: center;
-        gap: 2px;
+        gap: 0;
     }
 
     #navbar #navbar-icon-row > .nav-item {
@@ -117,10 +149,15 @@
     }
 
     #navbar .mobile-nav-icon {
-        width: 38px;
-        height: 38px;
+        width: var(--control-h);
+        height: var(--control-h);
         justify-content: center;
         margin-left: auto;
+    }
+
+    // the menu button is a control like the rest, so a bar with nothing else in it (the help pages') is as tall as the others. (Never `display` here:
+    // Bootstrap hides the toggler from 768px with a rule this id would beat.)
+    #navbar .navbar-toggler {
     }
 }
 
@@ -216,7 +253,7 @@
     margin-top: var(--space-2);
     padding: 0;
     text-align: center;
-    font-size: 13px;
+    font-size: px2rem(13px);
     color: var(--text-muted);
 }
 
@@ -325,7 +362,7 @@
 
 .guild-about-stats dt {
     color: var(--text-muted);
-    font-size: 12px;
+    font-size: px2rem(12px);
     font-weight: var(--weight-semibold);
 }
 
@@ -532,13 +569,16 @@
     align-items: center;
     padding-top: var(--space-2);
     padding-bottom: var(--space-2);
-    margin-bottom: var(--space-1);
+    margin-bottom: var(--space-2);
     border-bottom: 1px solid var(--border);
     border-radius: var(--radius-md) var(--radius-md) 0 0;
 }
 
-.account-menu-profile .profile-pic-35 {
+.account-menu .account-menu-profile .profile-pic-35 {
     flex: none;
+    width: 40px;
+    height: 40px;
+    margin-right: 0 !important;           // (the markup's mr-3: the row's gap is the one gap)
 }
 
 .account-menu-profile-text {
