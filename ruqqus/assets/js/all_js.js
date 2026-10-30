@@ -595,6 +595,26 @@ function setDensity(value) {
   document.documentElement.setAttribute("data-density", density);
 };
 
+// Text size (Settings > Content > Layout): the `text_size` cookie, kept by this browser and named on <html> before the
+// page is drawn (partials/theme.html html_attrs; assets/style/_tokens.scss sets the root size from it). The page
+// changes at once. The top bar is as tall as its text, so a resize event makes navbar_height.js measure it again.
+function setTextSize(value) {
+  var size = value === "large" || value === "xlarge" ? value : "";
+  document.cookie = "text_size=" + size + "; path=/; max-age=" + (size ? 31536000 : 0) + "; samesite=lax";
+  if (size) document.documentElement.setAttribute("data-text-size", size);
+  else document.documentElement.removeAttribute("data-text-size");
+  window.dispatchEvent(new Event("resize"));
+};
+
+// Feed (Settings > Content > Layout): continuous scroll, or pages with Prev and Next. The `feed_paging` cookie, named on
+// <html> as data-feed-paging; infinite_scroll.js reads it, so it applies from the next page opened.
+function setFeedPaging(value) {
+  var pages = value === "pages";
+  document.cookie = "feed_paging=" + (pages ? "pages" : "") + "; path=/; max-age=" + (pages ? 31536000 : 0) + "; samesite=lax";
+  if (pages) document.documentElement.setAttribute("data-feed-paging", "pages");
+  else document.documentElement.removeAttribute("data-feed-paging");
+};
+
 // Post Info's "Discussed in" (submission.html): three places, then the rest of the list opened and closed in place
 function togglePostPlaces(button) {
   var list = document.getElementById(button.getAttribute("aria-controls"));

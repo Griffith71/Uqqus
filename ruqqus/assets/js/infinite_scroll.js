@@ -16,6 +16,7 @@
  *     fetched in the background; if it holds posts that are not on the page, a
  *     "Show N new posts" pill appears at the top of the feed.
  * Nothing is refreshed when the page was opened at ?page=N (N > 1).
+ * A reader who chose pages (html data-feed-paging="pages") gets none of this: see the early return below.
  *
  * Added cards are wired up by bindPostCards() in all_js.js.
  */
@@ -29,6 +30,16 @@
   if (!pagination) return;                                 // not a paged feed
 
   var control = pagination.closest('nav') || pagination;   // never found by its label: it is translated
+
+  // The reader chose pages (Settings > Content > Layout > Feed: the feed_paging cookie, named on <html> by
+  // partials/theme.html): the page buttons stay, the browser's own pull-to-reload stays, and nothing is fetched in
+  // the background for newer posts. A feed that is only one page has two disabled buttons and nothing to turn to,
+  // so that pager is put away.
+  if (document.documentElement.dataset.feedPaging === 'pages') {
+    if (!pagination.querySelector('a.page-link')) control.hidden = true;
+    return;
+  }
+
   var nextUrl = nextLink(document);
   var startPage = parseInt(new URL(window.location.href).searchParams.get('page'), 10) || 1;
   var POST_ID = /^post-[0-9a-z]+$/;

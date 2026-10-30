@@ -685,22 +685,6 @@
 </script>
 
 <script src="{{ asset_url('js/navbar_height.js') }}"></script>{# --navbar-height, measured: what sits under the bar follows it (Text size) #}
-    function updateNavHeight(){
-      if(!nav) return;
-      // Measure and set CSS variable on root
-      const h = nav.offsetHeight || 49;
-      document.documentElement.style.setProperty('--navbar-height', h + 'px');
-    }
-    // Initial set and delayed re-check for fonts/layout
-    document.addEventListener('DOMContentLoaded', function(){ requestAnimationFrame(updateNavHeight); setTimeout(updateNavHeight, 250); });
-    window.addEventListener('resize', function(){ requestAnimationFrame(updateNavHeight); });
-    // Observe changes inside navbar (e.g., text size changes)
-    if(window.MutationObserver && nav){
-      const obs = new MutationObserver(function(){ requestAnimationFrame(updateNavHeight); });
-      obs.observe(nav, { childList: true, subtree: true, characterData: true, attributes: true });
-    }
-  })();
-</script>
 
 <!-- Mobile "install the app" tooltip -->
 

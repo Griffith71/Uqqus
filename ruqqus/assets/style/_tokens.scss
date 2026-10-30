@@ -6,6 +6,17 @@
 //
 // Density: html[data-density="compact"] (the `density` cookie, partials/theme.html html_attrs) narrows a few.
 // Motion: durations go to 0 under prefers-reduced-motion, so a transition written with them needs no query of its own.
+// Text size: the root is 87.5% of the browser's own size (14px at its default of 16px, so nothing moves for most
+// readers, and a reader who raised the browser's size gets it), and html[data-text-size="large" | "xlarge"] (the
+// `text_size` cookie, Settings > Content > Layout) makes it 100% or 112.5%. Everything written in rem scales with it,
+// so type is written in rem, as px2rem(13px) (13px at the default root), never as px: a size that must not move
+// with the text (an icon in a fixed box, a badge, a quote card) is the exception and is left in px.
+
+// a size drawn at the site's own 14px root, as rem: px2rem(13px) is calc(13rem / 14), exactly 13px at the default and
+// bigger with the text (a computed rem value would be cut to ten decimals and be 12.9999px)
+@function px2rem($px) {
+    @return unquote("calc(#{$px / 1px}rem / 14)");
+}
 
 // --- WCAG contrast, worked out at compile time ---------------------------------------------------------------------
 // A guild picks any colour, so the shades used for text are found, not chosen: the colour is darkened (or lightened)

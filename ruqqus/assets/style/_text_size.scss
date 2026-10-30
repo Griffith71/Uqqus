@@ -1,0 +1,31 @@
+// Text size (Settings > Content > Layout > Text size: html[data-text-size="large" | "xlarge"], _tokens.scss): what a bigger
+// root size would otherwise cut off or push out. Each rule fixes a box that was sized to its text at the default size.
+// They also hold at the default size, where these boxes already fit, so nothing moves there. Imported last by both
+// sheets. A new box that clips or overflows at Extra large is fixed here, with the reason.
+
+// Who to follow, Follow and Join in a list row: the button keeps its text's width instead of being squeezed by the
+// name beside it, which cut "Follow" to "Follo"
+.wtf-row .btn {
+    flex: 0 0 auto;
+    white-space: nowrap;
+}
+
+// A row of tabs that no longer fits scrolls on its own instead of widening the page (What's happening, Explore). Its
+// line is an inset shadow, not a border, so clipping the row to scroll it cannot cut the active tab's underline.
+.explore-tabs {
+    overflow-x: auto;
+    overflow-y: hidden;
+    scrollbar-width: none;
+    border-bottom: 0;
+    box-shadow: inset 0 -1px 0 $ex-border;
+}
+
+.explore-tabs::-webkit-scrollbar {
+    display: none;
+}
+
+.explore-tab {
+    flex: 0 0 auto;
+    margin-bottom: 0;
+    white-space: nowrap;
+}

@@ -166,7 +166,7 @@
 
             <div class="settings-section rounded">
 
-              <div class="d-lg-flex">
+              <div class="d-lg-flex border-bottom">
 
                 <div class="title w-lg-25">
                   <label for="density">{{ _("Density") }}</label>
@@ -182,6 +182,49 @@
                   </select>
 
                   <span class="d-block mt-2 text-small-extra text-muted">{{ _("Compact shows two lines of a post's text, smaller pictures and no text above them. Saved on this device.") }}</span>
+
+                </div>
+
+              </div>
+
+              <div class="d-lg-flex border-bottom">
+
+                <div class="title w-lg-25">
+                  <label for="text-size">{{ _("Text size") }}</label>
+                </div>
+
+                <div class="body w-lg-100">
+
+                  {# the `text_size` cookie (setTextSize in all_js.js), named on <html> before the page is drawn (partials/theme.html
+                     html_attrs): assets/style/_tokens.scss sets the root size, and everything written in rem follows it #}
+                  <select class="form-control" id="text-size" onchange="setTextSize(this.value)">
+                    <option value="default"{% if request.cookies.get('text_size') not in ('large', 'xlarge') %} selected{% endif %}>{{ _("Default") }}</option>
+                    <option value="large"{% if request.cookies.get('text_size') == 'large' %} selected{% endif %}>{{ _("Large") }}</option>
+                    <option value="xlarge"{% if request.cookies.get('text_size') == 'xlarge' %} selected{% endif %}>{{ _("Extra large") }}</option>
+                  </select>
+
+                  <span class="d-block mt-2 text-small-extra text-muted">{{ _("Makes text, and the buttons and boxes around it, bigger. It starts from your browser's own text size, so raising that makes the default bigger too. Saved on this device.") }}</span>
+
+                </div>
+
+              </div>
+
+              <div class="d-lg-flex">
+
+                <div class="title w-lg-25">
+                  <label for="feed-paging">{{ _("Feeds") }}</label>
+                </div>
+
+                <div class="body w-lg-100">
+
+                  {# the `feed_paging` cookie (setFeedPaging in all_js.js), named on <html> as data-feed-paging: infinite_scroll.js leaves a feed
+                     as the server drew it, a page of posts with Prev and Next #}
+                  <select class="form-control" id="feed-paging" onchange="setFeedPaging(this.value)">
+                    <option value="scroll"{% if request.cookies.get('feed_paging') != 'pages' %} selected{% endif %}>{{ _("Continuous scroll") }}</option>
+                    <option value="pages"{% if request.cookies.get('feed_paging') == 'pages' %} selected{% endif %}>{{ _("Pages") }}</option>
+                  </select>
+
+                  <span class="d-block mt-2 text-small-extra text-muted">{{ _("Pages keeps Prev and Next buttons under each feed and does not look for newer posts in the background. Saved on this device, and used from the next page you open.") }}</span>
 
                 </div>
 
