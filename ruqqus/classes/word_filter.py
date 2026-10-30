@@ -27,6 +27,9 @@ class WordFilterEntry(Base):
     enabled = Column(Boolean, nullable=False, default=True)
     note = Column(String(256), default="")
     created_utc = Column(Integer, default=0)
+    # the language the word belongs to (a code from helpers/languages.LANGUAGE_NAMES); NULL for none in particular
+    # and for the English starter list. It never changes how the word is matched.
+    language = Column(String(16), default=None)
 
     def __repr__(self):
         return f"<WordFilterEntry(id={self.id}, severity={self.severity})>"
@@ -43,4 +46,5 @@ class WordFilterEntry(Base):
             "mode": self.mode or "word",
             "variants": self._split(self.variants),
             "suffixes": None if self.suffixes is None else self._split(self.suffixes),
+            "language": self.language or None,
         }

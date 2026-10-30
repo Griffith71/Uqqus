@@ -5737,6 +5737,7 @@ CREATE TABLE public.word_filter_entries (
     enabled boolean DEFAULT true NOT NULL,
     note character varying(256) DEFAULT ''::character varying,
     created_utc integer DEFAULT 0,
+    language character varying(16) DEFAULT NULL,
     CONSTRAINT word_filter_entries_word_key UNIQUE (word)
 );
 
@@ -7153,4 +7154,5 @@ INSERT INTO public.schema_migrations (name) VALUES
     ('2026-12-03_site_events.sql'),
     ('2026-12-04_signup_guard.sql'),
     ('2026-12-05_account_all_opt_out.sql'),
-    ('2026-12-06_brand_blue_default.sql');
+    ('2026-12-06_brand_blue_default.sql'),
+    ('2026-12-07_word_filter_language.sql');

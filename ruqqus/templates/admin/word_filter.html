@@ -11,7 +11,7 @@
 
 <h1>Word filter</h1>
 
-<p class="text-muted">Content containing a listed word is hidden from viewers according to their own word filter setting; nothing is removed. <strong>Extreme</strong> words are hidden for the Standard and Child filters, <strong>Profanity</strong> for the Child filter only. Enter plain words: capitals, accents, repeated letters, digits or symbols for letters, look-alike alphabets, punctuation or spaces between letters are all caught automatically.</p>
+<p class="text-muted">Content containing a listed word is hidden from viewers according to their own word filter setting; nothing is removed. <strong>Extreme</strong> words are hidden for the Standard and Child filters, <strong>Profanity</strong> for the Child filter only. Enter plain words: capitals, accents, repeated letters, digits or symbols for letters, look-alike alphabets, punctuation or spaces between letters are all caught automatically. Words may be in any script: a word in another alphabet (Cyrillic, Arabic, Hebrew, Devanagari...) is matched in that alphabet only, and a word in a script written without spaces (Chinese, Japanese, Korean, Thai, Lao, Khmer, Burmese) is found anywhere in the text, so list it with at least two characters and add the innocent words that contain it as Allowed.</p>
 
 {% if msg %}<div class="alert alert-success">{{ msg }}</div>{% endif %}
 {% if error %}<div class="alert alert-danger">{{ error }}</div>{% endif %}
@@ -53,6 +53,14 @@
     <div class="col-md-3 mb-2"><input type="text" name="note" class="form-control" maxlength="256" placeholder="note (optional)"></div>
   </div>
   <div class="form-row">
+    <div class="col-md-3 mb-2">
+      <select name="language" class="form-control" aria-label="Language">
+        <option value="" selected>No particular language</option>
+        {% for code, name in languages %}<option value="{{ code }}">{{ name }} ({{ code }})</option>{% endfor %}
+      </select>
+    </div>
+  </div>
+  <div class="form-row">
     <div class="col-md-6 mb-2"><input type="text" name="variants" class="form-control" maxlength="512" placeholder="other spellings, comma separated (optional)"></div>
     <div class="col-md-3 mb-2">
       <select name="suffix_mode" class="form-control">
@@ -68,21 +76,27 @@
 
 <h2>Current list</h2>
 {% if using_starter %}
-<div class="alert alert-info">No entries yet, so the built-in starter list ({{ starter_count }} entries) is in use. Copy it in to edit it.</div>
+<div class="alert alert-info">No entries yet, so the built-in starter list ({{ starter_count }} words, with {{ intl_count }} words and phrases for other languages) is in use. Copy it in to edit it.</div>
 <form action="/admin/word_filter/starter" method="post">
   <input type="hidden" name="formkey" value="{{ v.formkey }}">
   <button class="btn btn-secondary">Copy the starter list into the table</button>
 </form>
 {% else %}
+<form action="/admin/word_filter/builtin_intl" method="post" class="mb-3">
+  <input type="hidden" name="formkey" value="{{ v.formkey }}">
+  <button class="btn btn-secondary"{% if not intl_missing %} disabled{% endif %}>Add the built-in words for other languages</button>
+  <span class="text-small text-muted ml-2">{% if intl_missing %}{{ intl_missing }} of the {{ intl_count }} built-in words and phrases for other languages are not on the list. Words already on it are left as they are; re-scan afterwards.{% else %}All {{ intl_count }} built-in words and phrases for other languages are on the list.{% endif %}{% if intl_source.source %} From the {{ intl_source.source }}, {{ intl_source.license }}.{% endif %}</span>
+</form>
 <div class="table-responsive"><table class="table table-sm">
-  <thead><tr><th>Word</th><th>Level</th><th>Match</th><th>Other spellings</th><th>Endings</th><th>Note</th><th></th></tr></thead>
+  <thead><tr><th>Word</th><th>Language</th><th>Level</th><th>Match</th><th>Other spellings</th><th>Endings</th><th>Note</th><th></th></tr></thead>
   <tbody>
   {% for e in entries %}
     <tr{% if not e.enabled %} class="text-muted"{% endif %}>
-      <td><code>{{ e.word }}</code>{% if not e.enabled %} (off){% endif %}</td>
+      <td><code dir="auto">{{ e.word }}</code>{% if not e.enabled %} (off){% endif %}</td>
+      <td>{{ language_names.get(e.language, e.language) if e.language else "" }}</td>
       <td>{{ ["Allowed", "Profanity", "Extreme"][e.severity] }}</td>
       <td>{{ "anywhere" if e.mode == "anywhere" else "whole word" }}</td>
-      <td>{{ e.variants }}</td>
+      <td dir="auto">{{ e.variants }}</td>
       <td>{{ "usual" if e.suffixes is none else (e.suffixes or "none") }}</td>
       <td>{{ e.note }}</td>
       <td class="text-nowrap">

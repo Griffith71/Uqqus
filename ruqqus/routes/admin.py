@@ -1435,13 +1435,20 @@ def admin_word_filter(v):
     ).count()
 
     test_text = request.args.get("test", "")
+    from ruqqus.helpers.languages import LANGUAGE_NAMES
+    from ruqqus.helpers.word_filter_store import add_builtin
 
     return render_template(
         "admin/word_filter.html",
         v=v,
         entries=entries,
         using_starter=not entries,
-        starter_count=len(wordfilter_seed.ENTRIES),
+        starter_count=len(wordfilter_seed.BUILTIN_ENTRIES),
+        intl_count=len(wordfilter_seed.INTL_ENTRIES) + len(wordfilter_seed.INTL_ALLOW_PHRASES),
+        intl_missing=len(add_builtin(g.db, "intl", dry_run=True)) if entries else 0,
+        intl_source=wordfilter_seed.INTL_SOURCE,
+        languages=sorted(LANGUAGE_NAMES.items(), key=lambda item: item[1]),
+        language_names=LANGUAGE_NAMES,
         version=word_filter.version,
         stale=stale,
         test_text=test_text,
@@ -1458,13 +1465,30 @@ def admin_word_filter(v):
 def admin_word_filter_add(v):
 
     # entries are plain letters (digits and symbols in text are read as
-    # stand-ins for letters), so store the word the way it will be matched
-    word = " ".join(filter(None, (WordFilter._letters(part) for part in request.form.get("word", "").split())))[:64]
-    if not word:
-        return _word_filter_redirect(error="Enter a word made of letters.")
-
+    # stand-ins for letters), so store the word the way it will be matched;
+    # a word in another script keeps its own letters (helpers/wordfilter.py)
     severity = request.form.get("severity", "1")
     if severity not in ("0", "1", "2"):
+        abort(400)
+
+    parts = request.form.get("word", "").split()
+    if severity == "0" and len(parts) == 1:
+        # an allowed word with letters beyond a-z ("kút") is kept as written: cleaned to a-z it would allow the
+        # listed word its skeleton spells ("kut")
+        word = WordFilter.allowed_form(parts[0])
+    else:
+        word = " ".join(filter(None, (WordFilter.clean_word(part) for part in parts)))
+    if not word:
+        return _word_filter_redirect(error="Enter a word made of letters (in any script).")
+    if len(word) > 64:
+        return _word_filter_redirect(error="That word is too long (64 characters at most).")
+    if severity == "0" and len(parts) == 1 and get_filter(force=True).listed_severity(word) >= 2:
+        return _word_filter_redirect(error="That word reads as a listed extreme word, so it can't be allowed. To stop "
+                                           "counting the listed word, turn it off or delete it.")
+
+    from ruqqus.helpers.languages import LANGUAGE_NAMES
+    language = request.form.get("language", "").strip() or None
+    if language is not None and language not in LANGUAGE_NAMES:
         abort(400)
     mode = request.form.get("mode", "word")
     if mode not in ("word", "anywhere"):
@@ -1485,7 +1509,8 @@ def admin_word_filter_add(v):
         suffixes=suffixes,
         enabled=True,
         note=request.form.get("note", "")[:256],
-        created_utc=int(time.time())
+        created_utc=int(time.time()),
+        language=language
     ))
     g.db.commit()
     get_filter(force=True)
@@ -1528,30 +1553,38 @@ def admin_word_filter_delete(eid, v):
 @admin_level_required(4)
 @validate_formkey
 def admin_word_filter_starter(v):
-    """Copy the built-in starter list into the table so it can be edited."""
+    """Copy the built-in starter list (with the other languages' words) into the table so it can be edited."""
 
     if g.db.query(WordFilterEntry).first():
         return _word_filter_redirect(error="The list already has entries.")
 
-    now = int(time.time())
-    for entry in wordfilter_seed.ENTRIES:
-        g.db.add(WordFilterEntry(
-            word=entry["word"],
-            severity=entry["severity"],
-            mode=entry["mode"],
-            variants=",".join(entry["variants"]),
-            suffixes=None if entry["suffixes"] is None else ",".join(entry["suffixes"]),
-            enabled=True,
-            note="starter list",
-            created_utc=now
-        ))
-    for phrase in wordfilter_seed.ALLOW_PHRASES:
-        g.db.add(WordFilterEntry(word=phrase, severity=0, mode="word", variants="", suffixes="",
-                                 enabled=True, note="starter list: allowed phrase", created_utc=now))
+    from ruqqus.helpers.word_filter_store import add_builtin
+    add_builtin(g.db, "all")
     g.db.commit()
     get_filter(force=True)
 
     return _word_filter_redirect("Starter list copied in. You can edit it now.")
+
+
+@app.route("/admin/word_filter/builtin_intl", methods=["POST"])
+@admin_level_required(4)
+@validate_formkey
+def admin_word_filter_builtin_intl(v):
+    """Add the built-in words for other languages (helpers/wordfilter_intl.json) that the table lacks. A word already
+    on the list, on or off, is left as it is."""
+
+    if not g.db.query(WordFilterEntry).first():
+        return _word_filter_redirect(error="The list is empty, so the built-in list, with these words, is already in use.")
+
+    from ruqqus.helpers.word_filter_store import add_builtin
+    added = add_builtin(g.db, "intl")
+    g.db.commit()
+    get_filter(force=True)
+
+    if not added:
+        return _word_filter_redirect("Every built-in word for other languages is already on the list.")
+    return _word_filter_redirect(f"Added {len(added)} built-in word(s) for other languages. "
+                                 "Re-scan to apply them to existing content.")
 
 
 @app.route("/admin/word_filter/rescan", methods=["POST"])

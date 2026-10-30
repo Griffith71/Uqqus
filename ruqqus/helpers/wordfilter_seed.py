@@ -13,7 +13,15 @@ severity 0:             explicitly allowed (innocent look-alikes)
 Fields: word, severity, mode ("word" = whole token, "anywhere" = also inside
 longer tokens), variants (other spellings), suffixes (None = the engine's
 default endings: s, es, ed, er, ers, ing, in).
+
+Words in other languages are in wordfilter_intl.json (from LDNOOBW, CC BY 4.0,
+credited where the list is shown), read below: the BUILT-IN list is this file's
+English list plus those (BUILTIN_ENTRIES, BUILTIN_ALLOW_PHRASES). Each of them
+carries a `language` and an explicit list of endings (the English defaults
+never apply to them).
 """
+import json
+from pathlib import Path
 
 EXTREME = 2
 PROFANITY = 1
@@ -124,3 +132,57 @@ ALLOW_PHRASES = [
     "spotted dick",
     "van dyke",
 ]
+
+
+# ------------------------------------------------------------------ other languages
+INTL_FILE = Path(__file__).with_name("wordfilter_intl.json")
+
+
+def _intl_entry(raw):
+    """One entry of the JSON file as an engine entry, or None when it is not one."""
+    if not isinstance(raw, dict):
+        return None
+    word = raw.get("word")
+    severity = raw.get("severity")
+    mode = raw.get("mode") or "word"
+    if not isinstance(word, str) or not word.strip() or severity not in (0, 1, 2) or mode not in ("word", "anywhere"):
+        return None
+    language = raw.get("language")
+    return {
+        "word": word.strip(),
+        "severity": severity,
+        "mode": mode,
+        "variants": [v.strip() for v in raw.get("variants") or [] if isinstance(v, str) and v.strip()],
+        # always a list: None would mean the English endings
+        "suffixes": [x.strip() for x in raw.get("suffixes") or [] if isinstance(x, str) and x.strip()],
+        "language": language.strip() if isinstance(language, str) and language.strip() else None,
+    }
+
+
+def load_intl(path=INTL_FILE):
+    """(source, entries, allow_phrases) from the JSON file. source: the credit fields (source, url, license,
+    license_url, fetched, adapted); entries: engine entries with `language`; allow_phrases: [{"phrase", "language"}].
+    A missing or broken file is an empty list, never an error at start-up."""
+    try:
+        data = json.loads(Path(path).read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return {}, [], []
+    if not isinstance(data, dict):
+        return {}, [], []
+    source = {k: data[k] for k in ("source", "url", "license", "license_url", "fetched", "adapted")
+              if isinstance(data.get(k), str)}
+    entries = [e for e in (_intl_entry(x) for x in data.get("entries") or []) if e]
+    phrases = []
+    for raw in data.get("allow_phrases") or []:
+        if isinstance(raw, dict) and isinstance(raw.get("phrase"), str) and raw["phrase"].strip():
+            language = raw.get("language")
+            phrases.append({"phrase": raw["phrase"].strip(),
+                            "language": language.strip() if isinstance(language, str) and language.strip() else None})
+    return source, entries, phrases
+
+
+INTL_SOURCE, INTL_ENTRIES, INTL_ALLOW_PHRASES = load_intl()
+
+# what the filter uses while the table is empty, and what "Copy the starter list" copies in
+BUILTIN_ENTRIES = ENTRIES + INTL_ENTRIES
+BUILTIN_ALLOW_PHRASES = ALLOW_PHRASES + [p["phrase"] for p in INTL_ALLOW_PHRASES]
