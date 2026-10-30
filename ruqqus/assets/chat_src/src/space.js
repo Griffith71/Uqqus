@@ -358,6 +358,10 @@ async function cameraOff(reason) {
 // A video replay is a 1280x720 canvas the host's browser draws the on-stage cameras into, as a grid, 15 times a
 // second (a timer, not animation frames, so it keeps drawing in a background tab), recorded with the mixed sound.
 const FRAME_MS = 1000 / 15;
+// The page's own stack (space.html): Noto Sans, then the Noto family of each script it doesn't draw (linked by
+// script_fonts.js once the page holds that script, as a title or a name in it does)
+const CANVAS_SANS = '"Noto Sans", "Noto Sans Arabic", "Noto Nastaliq Urdu", "Noto Sans Hebrew", "Noto Sans Bengali", ' +
+  '"Noto Sans Thai", "Noto Sans SC", "Noto Sans KR", "Noto Sans JP", "Noto Sans TC", system-ui, sans-serif';
 
 function drawFrame(ctx, canvas) {
   ctx.fillStyle = "#000000";
@@ -365,11 +369,11 @@ function drawFrame(ctx, canvas) {
   const videos = Array.from(document.querySelectorAll("#space-videos video")).filter((v) => v.readyState >= 2);
   if (!videos.length) {
     ctx.fillStyle = "#f1f1f1";
-    ctx.font = "600 40px system-ui, sans-serif";
+    ctx.font = "600 40px " + CANVAS_SANS;
     ctx.textAlign = "center";
     ctx.fillText(boot.title.slice(0, 60), canvas.width / 2, canvas.height / 2 - 10);
     ctx.fillStyle = "#a0a0a0";
-    ctx.font = "28px system-ui, sans-serif";
+    ctx.font = "28px " + CANVAS_SANS;
     // Translators: drawn into a Space's video replay, under its title, while no camera is on (in the host's language)
     ctx.fillText(window.tr("Hosted by %(name)s", { name: boot.host.shown_name }), canvas.width / 2, canvas.height / 2 + 40);
     return;

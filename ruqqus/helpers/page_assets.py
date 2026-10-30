@@ -77,5 +77,17 @@ def asset_url(path):
     return f"/assets/{path}?v={asset_version(path)}"
 
 
+def script_font_links(lang):
+    """The stylesheets of the Noto families the interface language `lang` is drawn in (helpers/script_fonts.py)."""
+    from ruqqus.helpers import script_fonts
+    return [(key, asset_url(script_fonts.FAMILIES[key][1])) for key in script_fonts.interface_keys(lang)]
+
+
+def script_font_sheets():
+    from ruqqus.helpers import script_fonts
+    return script_fonts.sheets(asset_url)
+
+
 def register(app):
-    app.jinja_env.globals.update(theme_choice=theme_choice, asset_url=asset_url, asset_version=asset_version)
+    app.jinja_env.globals.update(theme_choice=theme_choice, asset_url=asset_url, asset_version=asset_version,
+                                 script_font_links=script_font_links, script_font_sheets=script_font_sheets)

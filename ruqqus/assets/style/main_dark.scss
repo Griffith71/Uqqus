@@ -80,16 +80,19 @@ $text-white: $white;
 
 // Fonts
 
-// Inter (partials/theme.html font_faces), then a fallback with its measurements, then the system's
-$font-family-sans-serif: "Inter", "Inter Fallback", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+// Noto Sans (partials/theme.html font_faces), then a fallback with its measurements, then the system's
+// the stack is --font-sans (_tokens.scss): Noto Sans, the Noto family of each other script, then the system's fonts;
+// a [lang] redefines it for everything under it
+$font-family-sans-serif: var(--font-sans);
+$font-family-monospace: "Noto Sans Mono", "Noto Sans Arabic", "Noto Sans Hebrew", "Noto Sans Bengali", "Noto Sans Thai", "Noto Sans SC", "Noto Sans KR", "Noto Sans JP", "Noto Sans TC", SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
 
 // Font size
 
 $font-size-base: 1rem;
 
-$small-font-size: 12px;
+$small-font-size: #{"calc(12rem / 14)"};
 
-$extra-small-font-size: 11px;
+$extra-small-font-size: #{"calc(11rem / 14)"};
 
 $display5-size:  3rem !default;
 
@@ -166,11 +169,11 @@ $layout-right: 316px;
 @import "{ruqquspath}/assets/style/_tokens";
 
 html {
-    font-size: 14px;
+    font-size: 87.5%;
 }
 
 :root {
-    --navbar-height: 55px;
+    --navbar-height: 56px;
 }
 
 .navbar {
@@ -202,7 +205,7 @@ body {
 }
 
 p {
-    font-size: 14px;
+    font-size: px2rem(14px);
 }
 
 pre {
@@ -218,7 +221,7 @@ body.using-mouse :focus {
 }
 
 #settings, #submit {
-    padding-top: 98px;
+    padding-top: calc(var(--navbar-height, 59px) + 39px);
     background-color: $gray-600;
 }
 
@@ -227,8 +230,9 @@ body.using-mouse :focus {
     background-color: $gray-600;
 }
 
+// the help and legal pages: under the fixed bar (partials/site_bar.html), as #page is
 #article {
-    padding-top: 0;
+    padding-top: var(--navbar-height, 56px);
     background-color: $gray-600;
 }
 
@@ -1602,7 +1606,7 @@ $profile-x-surface: $gray-600;
 
     dt, .profile-about-heading {
         color: $muted;
-        font-size: 12px;
+        font-size: px2rem(12px);
         font-weight: $font-weight-bold;
         letter-spacing: 0.025rem;
         text-transform: uppercase;
@@ -1661,7 +1665,7 @@ $profile-x-surface: $gray-600;
         flex-shrink: 0;
         padding-left: 0.5rem;
         color: $muted;
-        font-size: 12px;
+        font-size: px2rem(12px);
     }
 }
 
@@ -3060,7 +3064,7 @@ fieldset.search-field {
 .ad-slot-label {
     margin-bottom: 0.35rem;
     color: $muted;
-    font-size: 11px;
+    font-size: px2rem(11px);
     font-weight: $font-weight-bold;
     letter-spacing: 0.03rem;
     text-transform: uppercase;
@@ -3120,7 +3124,7 @@ fieldset.search-field {
 .score-display-legend {
     margin-bottom: 0.5rem;
     color: $muted;
-    font-size: 12px;
+    font-size: px2rem(12px);
     font-weight: $font-weight-bold;
     letter-spacing: 0.025rem;
     text-transform: uppercase;
@@ -3430,9 +3434,9 @@ html.feed-live {
 .sidebar.sidebar-left {
     position: -webkit-sticky;
     position: sticky;
-    top: 55px;
+    top: calc(var(--navbar-height, 59px) - 4px);
     z-index: 1000;
-    height: calc(100vh - 55px);
+    height: calc(100vh - var(--navbar-height, 59px) + 4px);
     overflow-y: auto;
     overflow-x: hidden;
     background-color: $gray-600!important;
@@ -3976,7 +3980,7 @@ a.bg-dark:hover, a.bg-dark:focus, button.bg-dark:hover, button.bg-dark:focus {
 }
 
 .post-title {
-    font-size: 16px;
+    font-size: px2rem(16px);
     font-weight: $font-weight-bold;
     word-break: break-word;
     overflow: hidden;
@@ -4192,7 +4196,7 @@ a.bg-dark:hover, a.bg-dark:focus, button.bg-dark:hover, button.bg-dark:focus {
         border-top-left-radius: 1rem;
     }
     #frontpage, #search, #guild {
-        padding-top: 98px;
+        padding-top: calc(var(--navbar-height, 59px) + 39px);
         background-color: $gray-600;
     }
 }
@@ -4490,7 +4494,7 @@ a.bg-dark:hover, a.bg-dark:focus, button.bg-dark:hover, button.bg-dark:focus {
     z-index: 2;
     display: inline-block;
     color: $muted;
-    font-size: 13px;
+    font-size: px2rem(13px);
     font-weight: 600;
     margin-top: .25rem;
     margin-bottom: .5rem;
@@ -5076,7 +5080,7 @@ ul.comment-section {
     gap: 0.35rem 1.5rem;
     margin: 0 0 1rem;
     padding: 0;
-    font-family: monospace;
+    font-family: $font-family-monospace;
     font-size: 1.05rem;
     letter-spacing: 0.06em;
 }
@@ -5138,7 +5142,7 @@ ul.comment-section {
 }
 
 .profile-actions .dropdown-item {
-    font-size: 13px;
+    font-size: px2rem(13px);
 }
 
 .profile-actions .dropdown .dropdown-menu .dropdown-item .fa, .profile-actions .dropdown .dropdown-menu .dropdown-item .fas, .profile-actions .dropdown .dropdown-menu .dropdown-item .far {
@@ -5874,7 +5878,7 @@ body, #settings, #notifications, #submit {
 }
 
 .post-title {
-    font-size: 14px;
+    font-size: px2rem(14px);
     font-weight: $font-weight-normal;
     line-height: normal;
     overflow: hidden;
@@ -6004,7 +6008,7 @@ body, #settings, #notifications, #submit {
 }
 
 #thread .post-title {
-    font-size: 16px;
+    font-size: px2rem(16px);
 }
 
 #submit .submission {
@@ -10562,5 +10566,8 @@ $cc-muted: $muted;
 @import "{ruqquspath}/assets/style/_notifications";
 @import "{ruqquspath}/assets/style/_happening";
 @import "{ruqquspath}/assets/style/_search_tabs";
+@import "{ruqquspath}/assets/style/_filtered_words";
 @import "{ruqquspath}/assets/style/_motion";
 @import "{ruqquspath}/assets/style/_mobile";
+@import "{ruqquspath}/assets/style/_glass";
+@import "{ruqquspath}/assets/style/_text_size";

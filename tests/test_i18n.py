@@ -368,9 +368,9 @@ def test_right_to_left_pages_get_the_mirrored_sheets(app):
     assert rt.rtl_css("/assets/t2_x/dark/12.css?v=1") == "/assets/t2_x/dark/12.rtl.css?v=1"
     theme = read("ruqqus", "templates", "partials", "theme.html")
     assert "{% if ui_rtl() %}{% set light = rtl_css(light) %}{% set dark = rtl_css(dark) %}{% endif %}" in theme
-    for subset in ("cyrillic", "cyrillic-ext", "greek", "greek-ext", "vietnamese"):
-        assert f"fonts/inter-{subset}.woff2" in theme and (ROOT / "ruqqus" / "assets" / "fonts" /
-                                                           f"inter-{subset}.woff2").exists(), subset
+    for subset in ("cyrillic", "cyrillic-ext", "greek", "greek-ext", "vietnamese", "devanagari"):
+        assert f"fonts/noto-sans-{subset}.woff2" in theme and (ROOT / "ruqqus" / "assets" / "fonts" /
+                                                               f"noto-sans-{subset}.woff2").exists(), subset
     static = read("ruqqus", "routes", "static.py")
     assert '"main.rtl", "main_dark.rtl"' in static and "css_flip.flip(compiled) if rtl else compiled" in static
     boards = read("ruqqus", "routes", "boards.py")

@@ -24,7 +24,7 @@
     * { box-sizing: border-box; }
     [hidden] { display: none !important; }
     html, body { min-height: 100%; }
-    body { margin: 0; background: var(--bg); color: var(--text); font: 15px/1.45 system-ui, -apple-system, "Segoe UI", sans-serif;
+    body { margin: 0; background: var(--bg); color: var(--text); font: 15px/1.45 "Noto Sans", "Noto Sans Arabic", "Noto Nastaliq Urdu", "Noto Sans Hebrew", "Noto Sans Bengali", "Noto Sans Thai", "Noto Sans SC", "Noto Sans KR", "Noto Sans JP", "Noto Sans TC", "Noto Sans Fallback", system-ui, -apple-system, "Segoe UI", sans-serif;
            -webkit-font-smoothing: antialiased; }
     a { color: var(--accent); }
     .space-wrap { max-width: 1180px; margin: 0 auto; padding: 1rem; padding-top: max(1rem, env(safe-area-inset-top));
@@ -65,8 +65,8 @@
                     font: inherit; padding: 0.25rem; border-radius: 10px; cursor: default; min-width: 0; }
     .space-person:focus-visible { outline: 2px solid var(--accent); }
     .space-face { position: relative; display: inline-block; border-radius: 50%; outline: 3px solid transparent; outline-offset: 2px;
-                  transition: outline-color 120ms ease-out; }
-    .space-person.speaking .space-face { outline-color: var(--speaking); }
+                  transition: outline-color 120ms ease-out, box-shadow 120ms ease-out; }
+    .space-person.speaking .space-face { outline-color: var(--speaking); box-shadow: 0 0 22px -4px color-mix(in srgb, var(--speaking) 55%, transparent); }
     .space-face img { display: block; border-radius: 50%; object-fit: cover; background: var(--line); }
     .space-hand-mark { position: absolute; right: -4px; bottom: -4px; background: #f5b400; color: #111; border-radius: 50%;
                        font-size: 0.7rem; padding: 0.25rem; }
@@ -94,7 +94,7 @@
     /* video: the people on stage with their camera on, above the stage's faces */
     .space-videos { display: grid; gap: 0.5rem; grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr)); margin-bottom: 0.75rem; }
     .space-video { position: relative; background: #000; border-radius: 12px; overflow: hidden; aspect-ratio: 16 / 9;
-                   outline: 3px solid transparent; outline-offset: -3px; transition: outline-color 120ms ease-out; }
+                   outline: 3px solid transparent; outline-offset: -3px; transition: outline-color 120ms ease-out, box-shadow 120ms ease-out; }
     .space-video.speaking { outline-color: var(--speaking); }
     .space-video video { width: 100%; height: 100%; object-fit: cover; display: block; }
     .space-video.mine video { transform: scaleX(-1); }
@@ -151,6 +151,7 @@
     #space-play { position: fixed; left: 50%; transform: translateX(-50%); bottom: 1rem; }
     .muted { color: var(--muted); }
     @media (prefers-reduced-motion: reduce) { .space-btn, .space-face { transition: none; } }
+    @media (prefers-reduced-transparency: reduce), (prefers-contrast: more) { .space-person.speaking .space-face, .space-video.speaking { box-shadow: none; } }
   </style>
 </head>
 <body>

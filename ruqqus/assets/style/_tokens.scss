@@ -91,6 +91,38 @@ $brand-deep: fill-under-white($primary);
 $primary-text: if($theme == "dark", strong-on-dark($primary, 18%), strong-on-light($primary, 20%));
 $purple-text: if($theme == "dark", strong-on-dark($purple, 18%), strong-on-light($purple, 20%));
 
+// a glow on a light page needs 3:1 against it (a yellow bar on white is invisible): a colour already at 2.2:1 or better, the
+// site's own #23a9f2 (2.6:1) included, is left as it is
+@function glow-on-light($colour) {
+    $c: $colour;
+    @while contrast($c, #fff) < 3 and lightness($c) > 0% {
+        $c: darken($c, 2%);
+    }
+    @return $c;
+}
+
+// --- the light language (the owner's, 2026-10-29; CLAUDE.md "The light language") --------------------------------------
+// The colour a glow is drawn in. The brand where it shows; lightened until it reads on a dark page (a navy guild's glow
+// would vanish on black); darkened on a pale brand (a white or yellow glow is invisible on white, and olive when it
+// tints a shadow).
+$glow: if($theme == "dark", strong-on-dark($primary), if(contrast($primary, #fff) < 2.2, glow-on-light($primary), $primary));
+
+// A warm brand (red, orange, amber) sits beside the semantic reds (LIVE, downvote, danger, the cooldown meter): a glowing
+// Join button must not read as a warning, so its light is damped. So is a near-white brand: a white bloom on black is a
+// spotlight.
+$warm: (hue($primary) >= 340deg or hue($primary) <= 45deg) and saturation($primary) > 45%;
+$pale: lightness($primary) > 85%;
+$light-damp: if($warm, 0.6, if($pale, 0.45, 1));
+
+// The site's typeface (partials/theme.html, helpers/script_fonts.py): Noto Sans for Latin, Cyrillic, Greek, Vietnamese and
+// Devanagari, then the Noto family of each script it doesn't draw (self-hosted, assets/fonts/scripts/: a family's
+// stylesheet is linked only on a page that holds its script, so on any other page these names are skipped), then the
+// fallback measured against Arial and the system's fonts. Han with no language is drawn in SC, Korean letters in KR.
+$noto-scripts: "Noto Sans Arabic", "Noto Nastaliq Urdu", "Noto Sans Hebrew", "Noto Sans Bengali", "Noto Sans Thai", "Noto Sans SC",
+    "Noto Sans KR", "Noto Sans JP", "Noto Sans TC";
+$system-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji",
+    "Segoe UI Emoji", "Segoe UI Symbol";
+$font-sans: join(join(("Noto Sans",), $noto-scripts, comma), join(("Noto Sans Fallback",), $system-sans, comma), comma);
 :root {
     // type
     --font-sans: "Inter", "Inter Fallback", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial,
@@ -139,6 +171,11 @@ $purple-text: if($theme == "dark", strong-on-dark($purple, 18%), strong-on-light
     --avatar-sm: 24px;
     --control-h: 36px;
     --hit-min: 32px;
+    --control-h: 36px;                 // the default: a button, the search pill, a nav icon, a menu row
+    --control-lg: 40px;                // a field, a large button
+    --hit-min: 32px;                   // the floor for anything pressed (44px under a coarse pointer, below)
+    --bar-h: 56px;                     // the top bar, its hairline included (YouTube, Reddit and Stack Overflow are 56): a control and 2 x 9.5px
+    --bar-pad: calc((var(--bar-h) - 1px - var(--control-h)) / 2);
 
     // motion: ease-out for anything the person started, the drawer curve for sheets (emil-design-eng)
     --dur-fast: 120ms;
@@ -169,6 +206,20 @@ $purple-text: if($theme == "dark", strong-on-dark($purple, 18%), strong-on-light
     --upvote: #{$upvote};
     --downvote: #{$downvote};
 
+    // light: one dial scales every alpha (0 off, .6 whisper, 1 subtle, 1.5 expressive); reduced transparency and more
+    // contrast set it to 0 (_light.scss)
+    --light-k: 1;
+    --glow: #{$glow};
+    --wash: color-mix(in srgb, #{$glow} calc(#{14% * $light-damp} * var(--light-k)), transparent);       // a state's tint
+    // the shade of your own message at the bottom of the thread (_light.scss): black, never white, since the bubble's text has
+    // 4.63:1 on the deep blue and white over it takes that under 4.5:1; 10% black is 5.5:1, so the whole ramp is AA
+    --ramp: color-mix(in srgb, #000 calc(10% * var(--light-k)), transparent);
+    // glass (_glass.scss; the owner, 2026-10-29): what floats above the content (bars, menus, dialogs, sheets, toasts, chips over media) is
+    // frosted. The blur is the same family everywhere (Instagram's dialogs, apple.com and Linear use 20px with saturate(180%)); the bars
+    // keep today's 14px because they repaint on every scroll frame, a chip over media is small, a dialog's scrim is a gentle 6px. The
+    // TINT is what keeps text readable (blur can't be relied on), so each is set per theme below.
+    --glass-fx: saturate(180%) blur(20px);
+    --glass-fx-bar: saturate(180%) blur(14px);
     @if $theme == "dark" {
         --bg: #000000;
         --surface: #121212;
@@ -199,6 +250,8 @@ $purple-text: if($theme == "dark", strong-on-dark($purple, 18%), strong-on-light
         --shadow-sm: none;
         --shadow-md: 0 0 0 1px #2a2a2a, 0 8px 24px rgba(0, 0, 0, 0.5);
         --shadow-lg: 0 0 0 1px #2a2a2a, 0 16px 48px rgba(0, 0, 0, 0.6);
+        --lit: 0 0 12px 0 color-mix(in srgb, #{$glow} calc(#{55% * $light-damp} * var(--light-k)), transparent);                   // a lit bar
+        --rail: inset 0 -9px 10px -9px color-mix(in srgb, #{$glow} calc(#{60% * $light-damp} * var(--light-k)), transparent);      // a tab's underline rising into the tab
     } @else {
         --bg: #ffffff;                   // posts sit on the page itself, divided by hairlines (X, Reddit)
         --surface: #ffffff;
@@ -232,6 +285,12 @@ $purple-text: if($theme == "dark", strong-on-dark($purple, 18%), strong-on-light
         --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.08), 0 1px 3px rgba(0, 0, 0, 0.06);
         --shadow-lg: 0 16px 48px rgba(0, 0, 0, 0.16), 0 2px 6px rgba(0, 0, 0, 0.06);
     }
+html[data-text-size="large"] {
+    font-size: 100%;
+}
+
+html[data-text-size="xlarge"] {
+    font-size: 112.5%;
 }
 
 html[data-density="compact"] {
@@ -243,6 +302,7 @@ html[data-density="compact"] {
     --snippet-lines-media: 0;          // compact: a card with media shows no text
     --avatar-sm: 20px;
     --control-h: 32px;
+    --bar-h: 52px;                     // (Twitch is 50)
 }
 
 // a coarse pointer gets the 44px Apple and Google ask for
@@ -260,20 +320,22 @@ html[data-density="compact"] {
     }
 }
 
-// --- scripts Inter doesn't draw --------------------------------------------------------------------------------------
+// --- scripts Noto Sans doesn't draw --------------------------------------------------------------------------------------
 // The interface in another language (helpers/i18n.py: <html lang>) and member text that says its language (lang on a
-// post, a comment): the system's own font for that script comes straight after Inter, so Chinese, Japanese and Korean
-// take their own glyph shapes (Han unification: the same character is drawn differently in each) and Arabic script,
-// Hebrew, Devanagari, Bengali and Thai a font made for them, instead of whatever the browser happens to fall back to.
-// On the element that carries the lang only, so icons keep their own font.
+// post, a comment): the language's own Noto family comes straight after Noto Sans (self-hosted: helpers/script_fonts.py),
+// so Chinese, Japanese and Korean take their own glyph shapes (Han unification: the same character is drawn differently
+// in each) and Arabic script, Urdu (Nastaliq), Hebrew, Bengali and Thai a font made for them; the system's own font for
+// the script follows, for a character the Noto slices don't hold. The stack is --font-sans, which body and Bootstrap's
+// $font-family-base read, so it reaches everything under the element that carries the lang (<html> included), and the
+// element itself takes it.
 [lang|="ja"] {
-    font-family: "Inter", "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Yu Gothic UI", "Yu Gothic", Meiryo,
-        "Noto Sans JP", "Noto Sans CJK JP", sans-serif;
+    @include lang-stack(script-stack("Noto Sans JP", "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Yu Gothic UI",
+        "Yu Gothic", Meiryo));
 }
 
 [lang|="zh"] {
-    font-family: "Inter", "PingFang SC", "Microsoft YaHei UI", "Microsoft YaHei", "Noto Sans SC",
-        "Noto Sans CJK SC", "Source Han Sans SC", sans-serif;
+    @include lang-stack(script-stack("Noto Sans SC", "PingFang SC", "Microsoft YaHei UI", "Microsoft YaHei"));
+}
 }
 
 [lang|="ko"] {
@@ -286,6 +348,19 @@ html[data-density="compact"] {
 
 [lang|="ur"] {
     font-family: "Inter", "Noto Nastaliq Urdu", "Jameel Noori Nastaleeq", "Geeza Pro", "Segoe UI", Tahoma, sans-serif;
+// made two lines of Urdu run into each other and a paragraph's 1.5 made them touch. Text in Urdu only (:lang follows
+// the nearest lang, so an English post in the Urdu interface keeps its own); controls keep their heights.
+h1:lang(ur), h2:lang(ur), h3:lang(ur), h4:lang(ur), h5:lang(ur), h6:lang(ur),
+.h1:lang(ur), .h2:lang(ur), .h3:lang(ur), .h4:lang(ur), .h5:lang(ur), .h6:lang(ur) {
+    line-height: 1.6;
+}
+
+p:lang(ur), li:lang(ur), blockquote:lang(ur) {
+    line-height: 1.9;
+}
+
+// Controls in Urdu: a small pill's 1.4 line put Nastaliq's tall letters over its top border (the sidebar's "Discover
+// guilds", a 28px pill; 1.9 still touched it, 2.1 is measured clear). The size ladder stays the floor (min-height), so a
 }
 
 [lang|="he"] {
@@ -297,9 +372,9 @@ html[data-density="compact"] {
 }
 
 [lang|="bn"] {
-    font-family: "Inter", "Kohinoor Bangla", "Nirmala UI", "Noto Sans Bengali", sans-serif;
+    @include lang-stack(script-stack("Noto Sans Bengali", "Kohinoor Bangla", "Nirmala UI"));
 }
 
 [lang|="th"] {
-    font-family: "Inter", "Thonburi", "Leelawadee UI", "Noto Sans Thai", sans-serif;
+    @include lang-stack(script-stack("Noto Sans Thai", "Thonburi", "Leelawadee UI"));
 }

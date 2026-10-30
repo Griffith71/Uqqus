@@ -9,7 +9,11 @@
     <style type="text/css" rel="stylesheet" media="all">
     /* Base ------------------------------ */
     
-    @import url('https://fonts.googleapis.com/css?family=Roboto:400,500&display=swap');
+    /* the site's own font from the site's own address (mail apps that load web fonts do; the others use the next in the stack) */
+    @font-face {
+      font-family: "Noto Sans"; font-style: normal; font-weight: 100 900;
+      src: url("https://{{ 'SERVER_NAME' | app_config }}/assets/fonts/noto-sans-latin.woff2") format("woff2");
+    }
 
     html {
         font-size: 14px;
@@ -50,7 +54,7 @@
     body,
     td,
     th {
-      font-family: "Roboto", Helvetica, Arial, sans-serif;
+      font-family: "Noto Sans", Helvetica, Arial, sans-serif;
     }
     
     h1 {
