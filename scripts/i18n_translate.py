@@ -360,9 +360,11 @@ def ascii_digits(text):
     return "".join(str(unicodedata.decimal(c)) if c.isdecimal() and not c.isascii() else c for c in text)
 
 
-# LibreTranslate repeats a mark it should write once ("已转发给 +%(guild)s。 。 。", "%(title)s - - - %(site)s", Hindi's
-# "।." after a sentence it already ended)
+# LibreTranslate repeats a mark it should write once ("已转发给 +%(guild)s。 。 。", "%(title)s - - - %(site)s")
 _MARK_RUN = re.compile(r"([。．.！？!?:：;；,，、|·\-–—])((?:[ \u3000]*\1)+)")
+# ...or ends a sentence with its own script's mark and then the English one as well (Hindi "।.", Arabic, Persian and
+# Urdu "؟?", Chinese and Japanese "？?" and "。."): the first is kept
+_NATIVE_THEN_LATIN = (("।.", "।"), ("؟?", "؟"), ("？?", "？"), ("。.", "。"), ("！!", "！"))
 
 
 def tidy(english, text):
@@ -378,8 +380,9 @@ def tidy(english, text):
             return match.group(0)
         return mark
     text = _MARK_RUN.sub(once, text)
-    if "।." not in english:
-        text = text.replace("।.", "।")
+    for pair, mark in _NATIVE_THEN_LATIN:
+        if pair not in english:
+            text = text.replace(pair, mark)
     return text
 
 

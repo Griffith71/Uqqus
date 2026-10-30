@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ruqqus VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-26 09:01+0000\n"
+"POT-Creation-Date: 2026-10-29 20:40+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: uk\n"
@@ -495,9 +495,17 @@ msgstr "Ніяково"
 msgid "Back to top"
 msgstr "Нагору"
 
+#, glossary, machine, plain1
+msgid "Block"
+msgstr "Заблокувати"
+
+#, glossary, machine, plain1, python-format
+msgid "Block @%(name)s?"
+msgstr "Заблокувати @%(name)s?"
+
 #, machine, plain1, python-format
-msgid "Block @%(name)s? They won't be able to follow you, message you or comment on your posts, and you won't see their posts. You can unblock them any time."
-msgstr "Блок @%(name)s? Ви не зможете слідувати за вами, повідомленням або коментарями на ваших постах, і ви не побачите їх повідомлення. Ви можете розблокувати будь-який час."
+msgid "Blocked @%(name)s."
+msgstr "Заблоковано @%(name)s."
 
 #, machine, plain1
 msgid "Bold (Ctrl+B)"
@@ -1099,12 +1107,12 @@ msgid "Delete the flair %(name)s? Posts that have it lose it; no post is deleted
 msgstr "Видалити етикетку %(name)s? Повідомлень, які втратили його; немає повідомлення видалено."
 
 #, machine, plain1
-msgid "Delete this folder? Its bookmarks are kept, as unsorted."
-msgstr "Видалення цієї папки? Його закладки зберігаються, як несортовані."
+msgid "Delete this folder?"
+msgstr "Видалення цієї папки?"
 
 #, machine, plain1
-msgid "Delete this highlight? Its stories stay in your archive."
-msgstr "Видалити цю родзинку? Його історії залишаються у вашому архіві."
+msgid "Delete this highlight?"
+msgstr "Видалити цю родзинку?"
 
 #, machine, plain1
 msgid "Delete this message"
@@ -1119,16 +1127,12 @@ msgid "Delete this message?"
 msgstr "Видалення цього повідомлення?"
 
 #, machine, plain1
-msgid "Delete this story? It leaves every Highlight too."
-msgstr "Видалити цю історію? Це залишає за собою кожен з них."
+msgid "Delete this story?"
+msgstr "Видалити цю історію?"
 
 #, machine, plain1
 msgid "Delete this update?"
 msgstr "Видалення цього оновлення?"
-
-#, machine, plain1
-msgid "Delete this update? This can’t be undone."
-msgstr "Видалення цього оновлення? Це не може бути неоновим."
 
 #, glossary, machine, plain1
 msgid "Deleting comment"
@@ -1461,6 +1465,10 @@ msgid "It is still listed on your profile, but its comments are in the guilds."
 msgstr "На Вашому профілі все ще входить його коментарі."
 
 #, machine, plain1
+msgid "It leaves every Highlight too."
+msgstr "Це залишає за собою кожен з них."
+
+#, machine, plain1
 msgid "It won't be shown again."
 msgstr "Не буде показано знову."
 
@@ -1471,6 +1479,14 @@ msgstr "Не заново. Ви зберігаєте доступ до дати 
 #, machine, plain1
 msgid "Italic (Ctrl+I)"
 msgstr "(Ctrl+I)"
+
+#, machine, plain1
+msgid "Its bookmarks are kept, as unsorted."
+msgstr "Його закладки зберігаються, як несортовані."
+
+#, machine, plain1
+msgid "Its stories stay in your archive."
+msgstr "Його історії залишаються у вашому архіві."
 
 #. a button that joins the group call that has just started
 #. a button that joins a call going on in a chat
@@ -2833,6 +2849,10 @@ msgid "They match"
 msgstr "Вони відповідають"
 
 #, machine, plain1
+msgid "They won't be able to follow you, message you or comment on your posts, and you won't see their posts. You can unblock them any time."
+msgstr "Ви не зможете слідувати за вами, повідомленням або коментарями на ваших постах, і ви не побачите їх повідомлення. Ви можете розблокувати будь-який час."
+
+#, machine, plain1
 msgid "This Space has ended."
 msgstr "Цей простір закінчився."
 
@@ -2851,6 +2871,10 @@ msgstr "Цей браузер не може записувати простір.
 #, machine, plain1
 msgid "This browser cannot prepare pictures for upload. Try another browser."
 msgstr "Цей браузер не може підготувати фотографії для завантаження. Спробуйте ще один браузер."
+
+#, machine, plain1
+msgid "This can’t be undone."
+msgstr "Це не може бути неоновим."
 
 #, machine, plain1
 msgid "This channel is muted for you: no unread dot and no mention notifications."
@@ -2983,10 +3007,14 @@ msgstr "Неможливо видалити коментар в цей час. �
 msgid "Unable to vote at this time. Please try again later."
 msgstr "Не можна голосувати за цей час. Будь ласка, спробуйте ще раз."
 
+#, glossary, machine, plain1
+msgid "Unblock"
+msgstr "Розблокувати"
+
 #. a button that takes back "Show fewer posts like this"
-#, machine, plain1
+#, glossary, machine, plain1
 msgid "Undo"
-msgstr "Недо"
+msgstr "Скасувати"
 
 #, machine, plain1
 msgid "Undo correction"
@@ -3326,6 +3354,10 @@ msgstr "Ви вже повідомляли про це повідомлення.
 #, machine, plain1
 msgid "You already voted on this post."
 msgstr "Ви вже проголосили на цій посаді."
+
+#, glossary, machine, plain1, python-format
+msgid "You are blocking @%(name)s"
+msgstr "Ви заблокували @%(name)s"
 
 #, machine, plain1, python-format
 msgid "You are following @%(name)s."

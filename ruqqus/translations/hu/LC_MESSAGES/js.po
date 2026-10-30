@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ruqqus VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-26 09:01+0000\n"
+"POT-Creation-Date: 2026-10-29 20:40+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: hu\n"
@@ -435,9 +435,17 @@ msgstr "Kínos"
 msgid "Back to top"
 msgstr "Vissza a tetejére"
 
+#, glossary, machine, plain1
+msgid "Block"
+msgstr "Letiltás"
+
+#, glossary, machine, plain1, python-format
+msgid "Block @%(name)s?"
+msgstr "@%(name)s letiltása?"
+
 #, machine, plain1, python-format
-msgid "Block @%(name)s? They won't be able to follow you, message you or comment on your posts, and you won't see their posts. You can unblock them any time."
-msgstr "Block @ %(name)s? Nem lesznek képesek követni, üzenni vagy kommentálni a posztjukat, és nem fogják látni a posztjukat. Bármikor feloldhatod őket."
+msgid "Blocked @%(name)s."
+msgstr "Blokkolva @ %(name)s."
 
 #, machine, plain1
 msgid "Bold (Ctrl+B)"
@@ -1033,12 +1041,12 @@ msgid "Delete the flair %(name)s? Posts that have it lose it; no post is deleted
 msgstr "A címke törlése %(name)s? Az álláshelyek elvesztették, nem törölték."
 
 #, machine, plain1
-msgid "Delete this folder? Its bookmarks are kept, as unsorted."
-msgstr "Törölni ezt a mappát? A könyvjelzőket nem válogatták."
+msgid "Delete this folder?"
+msgstr "Törölni ezt a mappát?"
 
 #, machine, plain1
-msgid "Delete this highlight? Its stories stay in your archive."
-msgstr "Törölni ezt a fényképet? A történetei az archívumban maradnak."
+msgid "Delete this highlight?"
+msgstr "Törölni ezt a fényképet?"
 
 #, machine, plain1
 msgid "Delete this message"
@@ -1053,16 +1061,12 @@ msgid "Delete this message?"
 msgstr "Törölni ezt az üzenetet?"
 
 #, machine, plain1
-msgid "Delete this story? It leaves every Highlight too."
-msgstr "Törölni ezt a történetet? Minden Fighlight-ot elhagy."
+msgid "Delete this story?"
+msgstr "Törölni ezt a történetet?"
 
 #, machine, plain1
 msgid "Delete this update?"
 msgstr "Törölni ezt a frissítést?"
-
-#, machine, plain1
-msgid "Delete this update? This can’t be undone."
-msgstr "Törölni ezt a frissítést? Ezt nem lehet visszacsinálni."
 
 #, glossary, machine, plain1
 msgid "Deleting comment"
@@ -1391,6 +1395,10 @@ msgid "It is still listed on your profile, but its comments are in the guilds."
 msgstr "Még mindig szerepel a profilodon, de a megjegyzései benne vannak a céhben."
 
 #, machine, plain1
+msgid "It leaves every Highlight too."
+msgstr "Minden Fighlight-ot elhagy."
+
+#, machine, plain1
 msgid "It won't be shown again."
 msgstr "Nem fogják újra megmutatni."
 
@@ -1401,6 +1409,14 @@ msgstr "Nem fog megújulni. Addig a napig, amíg ki nem fizeted."
 #, machine, plain1
 msgid "Italic (Ctrl+I)"
 msgstr "Olasz (Ctrl + I)"
+
+#, machine, plain1
+msgid "Its bookmarks are kept, as unsorted."
+msgstr "A könyvjelzőket nem válogatták."
+
+#, machine, plain1
+msgid "Its stories stay in your archive."
+msgstr "A történetei az archívumban maradnak."
 
 #. a button that joins the group call that has just started
 #. a button that joins a call going on in a chat
@@ -2749,6 +2765,10 @@ msgid "They match"
 msgstr "Egyezik"
 
 #, machine, plain1
+msgid "They won't be able to follow you, message you or comment on your posts, and you won't see their posts. You can unblock them any time."
+msgstr "Nem lesznek képesek követni, üzenni vagy kommentálni a posztjukat, és nem fogják látni a posztjukat. Bármikor feloldhatod őket."
+
+#, machine, plain1
 msgid "This Space has ended."
 msgstr "Ez a tér véget ért."
 
@@ -2767,6 +2787,10 @@ msgstr "Ez a böngésző nem tudja felvenni az űrt."
 #, machine, plain1
 msgid "This browser cannot prepare pictures for upload. Try another browser."
 msgstr "A böngésző nem tud képeket készíteni a feltöltéshez. Próbáljon meg egy másik böngészőt."
+
+#, machine, plain1
+msgid "This can’t be undone."
+msgstr "Ezt nem lehet visszacsinálni."
 
 #, machine, plain1
 msgid "This channel is muted for you: no unread dot and no mention notifications."
@@ -2895,8 +2919,12 @@ msgstr "Nem sikerült eltávolítani a megjegyzést ebben az időben. Kérem, pr
 msgid "Unable to vote at this time. Please try again later."
 msgstr "Jelenleg nem lehet szavazni. Kérem, próbálja meg később."
 
+#, glossary, machine, plain1
+msgid "Unblock"
+msgstr "Letiltás feloldása"
+
 #. a button that takes back "Show fewer posts like this"
-#, machine, plain1
+#, glossary, machine, plain1
 msgid "Undo"
 msgstr "Visszavonás"
 
@@ -3224,6 +3252,10 @@ msgstr "Már jelentette ezt a posztot."
 #, machine, plain1
 msgid "You already voted on this post."
 msgstr "Már szavaztál erről a posztról."
+
+#, glossary, machine, plain1, python-format
+msgid "You are blocking @%(name)s"
+msgstr "Letiltottad: @%(name)s"
 
 #, machine, plain1, python-format
 msgid "You are following @%(name)s."

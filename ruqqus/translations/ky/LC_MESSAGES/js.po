@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ruqqus VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-26 09:01+0000\n"
+"POT-Creation-Date: 2026-10-29 20:40+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: ky\n"
@@ -465,9 +465,17 @@ msgstr "Ыңгайсыз"
 msgid "Back to top"
 msgstr "Өйдө кайтуу"
 
+#, glossary, machine, plain1
+msgid "Block"
+msgstr "Бөгөттөө"
+
+#, glossary, machine, plain1, python-format
+msgid "Block @%(name)s?"
+msgstr "@%(name)s бөгөттөлсүнбү?"
+
 #, machine, plain1, python-format
-msgid "Block @%(name)s? They won't be able to follow you, message you or comment on your posts, and you won't see their posts. You can unblock them any time."
-msgstr "Блок @%(name)sАлар сизди ээрчип, сизге кабарлай алышпайт же сиздин билдирүүлөрүңүзгө комментарий бере алышпайт, жана сиз алардын билдирүүлөрүн көрө албайсыз. Аларды каалаган убакта чечсеңер болот."
+msgid "Blocked @%(name)s."
+msgstr "Блокадаланган @%(name)s."
 
 #, machine, plain1
 msgid "Bold (Ctrl+B)"
@@ -1066,12 +1074,12 @@ msgid "Delete the flair %(name)s? Posts that have it lose it; no post is deleted
 msgstr "Этикетканы жокко чыгаруу %(name)s? Аны камтыган посттор аны жоготот; эч кандай пост өчүрүлбөйт."
 
 #, machine, plain1
-msgid "Delete this folder? Its bookmarks are kept, as unsorted."
-msgstr "Бул папканы өчүрүңүзбү? Анын белгилери сорттолбогондой сакталат."
+msgid "Delete this folder?"
+msgstr "Бул папканы өчүрүңүзбү?"
 
 #, machine, plain1
-msgid "Delete this highlight? Its stories stay in your archive."
-msgstr "Бул көрүнүштү жокко чыгаруу? Анын окуялары сиздин архивиңизде сакталып турат."
+msgid "Delete this highlight?"
+msgstr "Бул көрүнүштү жокко чыгаруу?"
 
 #, machine, plain1
 msgid "Delete this message"
@@ -1086,16 +1094,12 @@ msgid "Delete this message?"
 msgstr "Бул билдирүүнү жокко чыгаруу?"
 
 #, machine, plain1
-msgid "Delete this story? It leaves every Highlight too."
-msgstr "Бул окуяны жокко чыгаруу? Ошондой эле ал бардык нерселерди эске салат."
+msgid "Delete this story?"
+msgstr "Бул окуяны жокко чыгаруу?"
 
 #, machine, plain1
 msgid "Delete this update?"
 msgstr "Бул жаңыртууну жокко чыгаруу?"
-
-#, machine, plain1
-msgid "Delete this update? This can’t be undone."
-msgstr "Бул жаңыртууну жокко чыгаруу? Муну жокко чыгаруу мүмкүн эмес."
 
 #, glossary, machine, plain1
 msgid "Deleting comment"
@@ -1425,6 +1429,10 @@ msgid "It is still listed on your profile, but its comments are in the guilds."
 msgstr "Ал дагы деле сиздин профилиңизде көрсөтүлгөн, бирок анын комментарийлери гильдияларда."
 
 #, machine, plain1
+msgid "It leaves every Highlight too."
+msgstr "Ошондой эле ал бардык нерселерди эске салат."
+
+#, machine, plain1
 msgid "It won't be shown again."
 msgstr "Бул экинчи жолу көрсөтүлбөйт."
 
@@ -1435,6 +1443,14 @@ msgstr "Ал жаңыланбайт. Сиз төлөгөн күнгө чейин
 #, machine, plain1
 msgid "Italic (Ctrl+I)"
 msgstr "Курал (Ctrl+I)"
+
+#, machine, plain1
+msgid "Its bookmarks are kept, as unsorted."
+msgstr "Анын белгилери сорттолбогондой сакталат."
+
+#, machine, plain1
+msgid "Its stories stay in your archive."
+msgstr "Анын окуялары сиздин архивиңизде сакталып турат."
 
 #. a button that joins the group call that has just started
 #. a button that joins a call going on in a chat
@@ -2788,6 +2804,10 @@ msgid "They match"
 msgstr "Алар дал келет"
 
 #, machine, plain1
+msgid "They won't be able to follow you, message you or comment on your posts, and you won't see their posts. You can unblock them any time."
+msgstr "Алар сизди ээрчип, сизге кабарлай алышпайт же сиздин билдирүүлөрүңүзгө комментарий бере алышпайт, жана сиз алардын билдирүүлөрүн көрө албайсыз. Аларды каалаган убакта чечсеңер болот."
+
+#, machine, plain1
 msgid "This Space has ended."
 msgstr "Бул мейкиндик аяктады."
 
@@ -2806,6 +2826,10 @@ msgstr "Бул браузер мейкиндикти жаздыра албайт
 #, machine, plain1
 msgid "This browser cannot prepare pictures for upload. Try another browser."
 msgstr "Бул браузер сүрөттөрдү жүктөө үчүн даярдай албайт. Дагы бир браузерди сынап көргүлө."
+
+#, machine, plain1
+msgid "This can’t be undone."
+msgstr "Муну жокко чыгаруу мүмкүн эмес."
 
 #, machine, plain1
 msgid "This channel is muted for you: no unread dot and no mention notifications."
@@ -2936,10 +2960,14 @@ msgstr "Бул учурда комментарийди алып салууга �
 msgid "Unable to vote at this time. Please try again later."
 msgstr "Азырынча добуш бере албай жатабыз. Сураныч, кийинчерээк дагы бир жолу аракет кылыңыз."
 
+#, glossary, machine, plain1
+msgid "Unblock"
+msgstr "Бөгөттөн чыгаруу"
+
 #. a button that takes back "Show fewer posts like this"
-#, machine, plain1
+#, glossary, machine, plain1
 msgid "Undo"
-msgstr "Ундо"
+msgstr "Артка кайтаруу"
 
 #, machine, plain1
 msgid "Undo correction"
@@ -3272,6 +3300,10 @@ msgstr "Сиз буга чейин эле бул билдирүүнү билди
 #, machine, plain1
 msgid "You already voted on this post."
 msgstr "Сиз буга чейин эле бул кызмат боюнча добуш бердиңиз."
+
+#, glossary, machine, plain1, python-format
+msgid "You are blocking @%(name)s"
+msgstr "Сиз @%(name)s бөгөттөгөнсүз"
 
 #, machine, plain1, python-format
 msgid "You are following @%(name)s."

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ruqqus VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-26 09:01+0000\n"
+"POT-Creation-Date: 2026-10-29 20:40+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: sw\n"
@@ -465,9 +465,17 @@ msgstr "Kuona haya"
 msgid "Back to top"
 msgstr "Rudi juu"
 
+#, glossary, machine, plain1
+msgid "Block"
+msgstr "Zuia"
+
+#, glossary, machine, plain1, python-format
+msgid "Block @%(name)s?"
+msgstr "Zuia @%(name)s?"
+
 #, machine, plain1, python-format
-msgid "Block @%(name)s? They won't be able to follow you, message you or comment on your posts, and you won't see their posts. You can unblock them any time."
-msgstr "Bonyeza @%(name)sHawataweza kukufuata, kukutuma au kutoa maoni kwenye machapisho yako, na hutaona machapisho yao. Unaweza kujiondoa wakati wowote."
+msgid "Blocked @%(name)s."
+msgstr "Kuondolewa @%(name)s."
 
 #, machine, plain1
 msgid "Bold (Ctrl+B)"
@@ -1065,12 +1073,12 @@ msgid "Delete the flair %(name)s? Posts that have it lose it; no post is deleted
 msgstr "Kuacha alama %(name)sPicha zote na Wizara ya Mambo ya Ndani ya Nchi."
 
 #, machine, plain1
-msgid "Delete this folder? Its bookmarks are kept, as unsorted."
-msgstr "Je, unaweza kuondoa folda hii? Vitabu vyake vinahifadhiwa, kama vile ambavyo haijajumuishwa."
+msgid "Delete this folder?"
+msgstr "Je, unaweza kuondoa folda hii?"
 
 #, machine, plain1
-msgid "Delete this highlight? Its stories stay in your archive."
-msgstr "Je, unaacha alama hii? Maelezo yake yapo kwenye archive yako."
+msgid "Delete this highlight?"
+msgstr "Je, unaacha alama hii?"
 
 #, machine, plain1
 msgid "Delete this message"
@@ -1085,16 +1093,12 @@ msgid "Delete this message?"
 msgstr "Je, unauzuia ujumbe huu?"
 
 #, machine, plain1
-msgid "Delete this story? It leaves every Highlight too."
-msgstr "Unaacha hadithi hii? Pia hutoa mwanga wa kila kitu."
+msgid "Delete this story?"
+msgstr "Unaacha hadithi hii?"
 
 #, machine, plain1
 msgid "Delete this update?"
 msgstr "Je, si update hii?"
-
-#, machine, plain1
-msgid "Delete this update? This can’t be undone."
-msgstr "Je, si update hii? Hii haiwezi kupuuzwa."
 
 #, glossary, machine, plain1
 msgid "Deleting comment"
@@ -1425,6 +1429,10 @@ msgid "It is still listed on your profile, but its comments are in the guilds."
 msgstr "Bado imeorodheshwa kwenye wasifu wako, lakini maoni yake ni katika vikundi."
 
 #, machine, plain1
+msgid "It leaves every Highlight too."
+msgstr "Pia hutoa mwanga wa kila kitu."
+
+#, machine, plain1
 msgid "It won't be shown again."
 msgstr "Hautaonyeshwa tena."
 
@@ -1435,6 +1443,14 @@ msgstr "Hautakuwa upya. Endelea na huduma hii mpaka siku utakapopata malipo yako
 #, machine, plain1
 msgid "Italic (Ctrl+I)"
 msgstr "Kiambatisho (Ctrl + I)"
+
+#, machine, plain1
+msgid "Its bookmarks are kept, as unsorted."
+msgstr "Vitabu vyake vinahifadhiwa, kama vile ambavyo haijajumuishwa."
+
+#, machine, plain1
+msgid "Its stories stay in your archive."
+msgstr "Maelezo yake yapo kwenye archive yako."
 
 #. a button that joins the group call that has just started
 #. a button that joins a call going on in a chat
@@ -2789,6 +2805,10 @@ msgid "They match"
 msgstr "Wanacheza"
 
 #, machine, plain1
+msgid "They won't be able to follow you, message you or comment on your posts, and you won't see their posts. You can unblock them any time."
+msgstr "Hawataweza kukufuata, kukutuma au kutoa maoni kwenye machapisho yako, na hutaona machapisho yao. Unaweza kujiondoa wakati wowote."
+
+#, machine, plain1
 msgid "This Space has ended."
 msgstr "Nafasi hii ilikwisha."
 
@@ -2807,6 +2827,10 @@ msgstr "Tovuti hii haiwezi kurekodi nafasi."
 #, machine, plain1
 msgid "This browser cannot prepare pictures for upload. Try another browser."
 msgstr "Kivinjari hiki hakiwezi kuandaa picha za kupakia. Jaribu browser nyingine."
+
+#, machine, plain1
+msgid "This can’t be undone."
+msgstr "Hii haiwezi kupuuzwa."
 
 #, machine, plain1
 msgid "This channel is muted for you: no unread dot and no mention notifications."
@@ -2937,10 +2961,14 @@ msgstr "Haiwezi kuacha maoni wakati huu. Tafadhali jaribu tena baadaye."
 msgid "Unable to vote at this time. Please try again later."
 msgstr "Kushindwa kupiga kura kwa wakati huu. Tafadhali jaribu tena baadaye."
 
+#, glossary, machine, plain1
+msgid "Unblock"
+msgstr "Ondoa kizuizi"
+
 #. a button that takes back "Show fewer posts like this"
-#, machine, plain1
+#, glossary, machine, plain1
 msgid "Undo"
-msgstr "Ya"
+msgstr "Tendua"
 
 #, machine, plain1
 msgid "Undo correction"
@@ -3273,6 +3301,10 @@ msgstr "Tayari umechapisha makala hii."
 #, machine, plain1
 msgid "You already voted on this post."
 msgstr "Tayari umepiga kura katika makala hii."
+
+#, glossary, machine, plain1, python-format
+msgid "You are blocking @%(name)s"
+msgstr "Umemzuia @%(name)s"
 
 #, machine, plain1, python-format
 msgid "You are following @%(name)s."

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ruqqus VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-26 09:01+0000\n"
+"POT-Creation-Date: 2026-10-29 20:40+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: el\n"
@@ -465,9 +465,17 @@ msgstr "Αμήχανο"
 msgid "Back to top"
 msgstr "Επιστροφή στην κορυφή"
 
+#, glossary, machine, plain1
+msgid "Block"
+msgstr "Αποκλεισμός"
+
+#, glossary, machine, plain1, python-format
+msgid "Block @%(name)s?"
+msgstr "Αποκλεισμός του @%(name)s;"
+
 #, machine, plain1, python-format
-msgid "Block @%(name)s? They won't be able to follow you, message you or comment on your posts, and you won't see their posts. You can unblock them any time."
-msgstr "Μπλοκάρετε το @%(name)s; Δεν θα μπορούν να σε ακολουθήσουν, να σου στείλουν μήνυμα ή να σχολιάσουν τις θέσεις σου, και δεν θα βλέπεις τις θέσεις τους. Μπορείς να τους ξεμπλοκάρεις όποτε θες."
+msgid "Blocked @%(name)s."
+msgstr "Μπλοκαρισμένο @%(name)s."
 
 #, machine, plain1
 msgid "Bold (Ctrl+B)"
@@ -1066,12 +1074,12 @@ msgid "Delete the flair %(name)s? Posts that have it lose it; no post is deleted
 msgstr "Διαγραφή της ετικέτας %(name)s; Θέσεις που το έχουν χάσει· καμία θέση δεν διαγράφεται."
 
 #, machine, plain1
-msgid "Delete this folder? Its bookmarks are kept, as unsorted."
-msgstr "Διαγραφή του φακέλου; Οι σελιδοδείκτες της φυλάσσονται, ως αταξινόμητοι."
+msgid "Delete this folder?"
+msgstr "Διαγραφή του φακέλου?"
 
 #, machine, plain1
-msgid "Delete this highlight? Its stories stay in your archive."
-msgstr "Διαγραφή αυτής της επισήμανσης; Οι ιστορίες του παραμένουν στο αρχείο σου."
+msgid "Delete this highlight?"
+msgstr "Διαγραφή αυτής της επισήμανσης?"
 
 #, machine, plain1
 msgid "Delete this message"
@@ -1086,16 +1094,12 @@ msgid "Delete this message?"
 msgstr "Διαγραφή αυτού του μηνύματος?"
 
 #, machine, plain1
-msgid "Delete this story? It leaves every Highlight too."
-msgstr "Διαγραφή αυτής της ιστορίας; Αφήνει και κάθε επισήμανση."
+msgid "Delete this story?"
+msgstr "Διαγραφή αυτής της ιστορίας?"
 
 #, machine, plain1
 msgid "Delete this update?"
 msgstr "Διαγραφή αυτής της ενημέρωσης?"
-
-#, machine, plain1
-msgid "Delete this update? This can’t be undone."
-msgstr "Διαγραφή αυτής της ενημέρωσης; Αυτό δεν μπορεί να αναιρεθεί."
 
 #, glossary, machine, plain1
 msgid "Deleting comment"
@@ -1426,6 +1430,10 @@ msgid "It is still listed on your profile, but its comments are in the guilds."
 msgstr "Είναι ακόμα καταχωρημένο στο προφίλ σας, αλλά τα σχόλιά του βρίσκονται στις συντεχνίες."
 
 #, machine, plain1
+msgid "It leaves every Highlight too."
+msgstr "Αφήνει και κάθε επισήμανση."
+
+#, machine, plain1
 msgid "It won't be shown again."
 msgstr "Δεν θα προβληθεί ξανά."
 
@@ -1436,6 +1444,14 @@ msgstr "Δεν θα ανανεωθεί. Κρατάς πρόσβαση μέχρι
 #, machine, plain1
 msgid "Italic (Ctrl+I)"
 msgstr "Πλάγια (Ctrl+I)"
+
+#, machine, plain1
+msgid "Its bookmarks are kept, as unsorted."
+msgstr "Οι σελιδοδείκτες της φυλάσσονται, ως αταξινόμητοι."
+
+#, machine, plain1
+msgid "Its stories stay in your archive."
+msgstr "Οι ιστορίες του παραμένουν στο αρχείο σου."
 
 #. a button that joins the group call that has just started
 #. a button that joins a call going on in a chat
@@ -2791,6 +2807,10 @@ msgid "They match"
 msgstr "Ταιριάζουν"
 
 #, machine, plain1
+msgid "They won't be able to follow you, message you or comment on your posts, and you won't see their posts. You can unblock them any time."
+msgstr "Δεν θα μπορούν να σε ακολουθήσουν, να σου στείλουν μήνυμα ή να σχολιάσουν τις θέσεις σου, και δεν θα βλέπεις τις θέσεις τους. Μπορείς να τους ξεμπλοκάρεις όποτε θες."
+
+#, machine, plain1
 msgid "This Space has ended."
 msgstr "Αυτός ο χώρος τελείωσε."
 
@@ -2809,6 +2829,10 @@ msgstr "Αυτός ο περιηγητής δεν μπορεί να καταγρ
 #, machine, plain1
 msgid "This browser cannot prepare pictures for upload. Try another browser."
 msgstr "Αυτό το πρόγραμμα περιήγησης δεν μπορεί να προετοιμάσει φωτογραφίες για αποστολή. Δοκίμασε άλλο πρόγραμμα περιήγησης."
+
+#, machine, plain1
+msgid "This can’t be undone."
+msgstr "Αυτό δεν μπορεί να αναιρεθεί."
 
 #, machine, plain1
 msgid "This channel is muted for you: no unread dot and no mention notifications."
@@ -2939,8 +2963,12 @@ msgstr "Αδυναμία αφαίρεσης του σχολίου αυτή τη 
 msgid "Unable to vote at this time. Please try again later."
 msgstr "Δεν μπορώ να ψηφίσω αυτή τη στιγμή. Παρακαλώ προσπαθήστε ξανά αργότερα."
 
+#, glossary, machine, plain1
+msgid "Unblock"
+msgstr "Άρση αποκλεισμού"
+
 #. a button that takes back "Show fewer posts like this"
-#, machine, plain1
+#, glossary, machine, plain1
 msgid "Undo"
 msgstr "Αναίρεση"
 
@@ -3275,6 +3303,10 @@ msgstr "Έχεις ήδη αναφέρει αυτό το πόστο."
 #, machine, plain1
 msgid "You already voted on this post."
 msgstr "Έχετε ήδη ψηφίσει σε αυτό το αξίωμα."
+
+#, glossary, machine, plain1, python-format
+msgid "You are blocking @%(name)s"
+msgstr "Έχετε αποκλείσει τον χρήστη @%(name)s"
 
 #, machine, plain1, python-format
 msgid "You are following @%(name)s."

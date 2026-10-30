@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ruqqus VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-26 09:01+0000\n"
+"POT-Creation-Date: 2026-10-29 20:40+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: ga\n"
@@ -555,9 +555,17 @@ msgstr "Amscaí"
 msgid "Back to top"
 msgstr "Ar ais go barr"
 
+#, glossary, machine, plain1
+msgid "Block"
+msgstr "Bac"
+
+#, glossary, machine, plain1, python-format
+msgid "Block @%(name)s?"
+msgstr "Bac @%(name)s?"
+
 #, machine, plain1, python-format
-msgid "Block @%(name)s? They won't be able to follow you, message you or comment on your posts, and you won't see their posts. You can unblock them any time."
-msgstr "Díroghnaigh gach rud%(name)sNí bheidh siad in ann a leanúint leat, teachtaireacht tú nó trácht ar do phoist, agus ní bheidh tú a fheiceáil a gcuid post. Is féidir leat iad a dhíblocáil am ar bith."
+msgid "Blocked @%(name)s."
+msgstr "Díchoisc @%(name)s."
 
 #, machine, plain1
 msgid "Bold (Ctrl+B)"
@@ -1165,12 +1173,12 @@ msgid "Delete the flair %(name)s? Posts that have it lose it; no post is deleted
 msgstr "Scrios an lipéad %(name)s? Poist a bhfuil sé chailleadh é; Níl aon phost a scriosadh."
 
 #, machine, plain1
-msgid "Delete this folder? Its bookmarks are kept, as unsorted."
-msgstr "Scrios an fillteán seo? A leabharmharcanna a choimeádtar, mar unsorted."
+msgid "Delete this folder?"
+msgstr "Scrios an fillteán seo?"
 
 #, machine, plain1
-msgid "Delete this highlight? Its stories stay in your archive."
-msgstr "Scrios an aird seo? A scéalta fanacht i do chartlann."
+msgid "Delete this highlight?"
+msgstr "Scrios an aird seo?"
 
 #, machine, plain1
 msgid "Delete this message"
@@ -1185,16 +1193,12 @@ msgid "Delete this message?"
 msgstr "Scrios an teachtaireacht seo?"
 
 #, machine, plain1
-msgid "Delete this story? It leaves every Highlight too."
-msgstr "Scrios an scéal seo? Fágann sé gach Ard-éadrom freisin."
+msgid "Delete this story?"
+msgstr "Scrios an scéal seo?"
 
 #, machine, plain1
 msgid "Delete this update?"
 msgstr "Scrios an nuashonrú seo?"
-
-#, machine, plain1
-msgid "Delete this update? This can’t be undone."
-msgstr "Scrios an nuashonrú seo? Ní féidir é seo a bheith gan amhras."
 
 #, glossary, machine, plain1
 msgid "Deleting comment"
@@ -1531,6 +1535,10 @@ msgid "It is still listed on your profile, but its comments are in the guilds."
 msgstr "Tá sé liostaithe go fóill ar do phróifíl, ach tá a chuid tuairimí sna guilds."
 
 #, machine, plain1
+msgid "It leaves every Highlight too."
+msgstr "Fágann sé gach Ard-éadrom freisin."
+
+#, machine, plain1
 msgid "It won't be shown again."
 msgstr "Ní bheidh sé a thaispeáint arís."
 
@@ -1541,6 +1549,14 @@ msgstr "Ní dhéanfaidh sé athnuachan. Coinníonn tú rochtain go dtí an lá a
 #, machine, plain1
 msgid "Italic (Ctrl+I)"
 msgstr "Taiseachas aeir: fliuch"
+
+#, machine, plain1
+msgid "Its bookmarks are kept, as unsorted."
+msgstr "A leabharmharcanna a choimeádtar, mar unsorted."
+
+#, machine, plain1
+msgid "Its stories stay in your archive."
+msgstr "A scéalta fanacht i do chartlann."
 
 #. a button that joins the group call that has just started
 #. a button that joins a call going on in a chat
@@ -2917,6 +2933,10 @@ msgid "They match"
 msgstr "Siad a mheaitseáil"
 
 #, machine, plain1
+msgid "They won't be able to follow you, message you or comment on your posts, and you won't see their posts. You can unblock them any time."
+msgstr "Ní bheidh siad in ann a leanúint leat, teachtaireacht tú nó trácht ar do phoist, agus ní bheidh tú a fheiceáil a gcuid post. Is féidir leat iad a dhíblocáil am ar bith."
+
+#, machine, plain1
 msgid "This Space has ended."
 msgstr "Tá an Spás dar críoch."
 
@@ -2935,6 +2955,10 @@ msgstr "Ní féidir leis an bhrabhsálaí seo an Spás a thaifeadadh."
 #, machine, plain1
 msgid "This browser cannot prepare pictures for upload. Try another browser."
 msgstr "Ní féidir leis an bhrabhsálaí pictiúir a ullmhú le haghaidh uaslódáil. Bain triail as bhrabhsálaí eile."
+
+#, machine, plain1
+msgid "This can’t be undone."
+msgstr "Ní féidir é seo a bheith gan amhras."
 
 #, machine, plain1
 msgid "This channel is muted for you: no unread dot and no mention notifications."
@@ -3071,10 +3095,14 @@ msgstr "Ní féidir a bhaint as an trácht ag an am seo. Déan iarracht arís n�
 msgid "Unable to vote at this time. Please try again later."
 msgstr "Ní féidir vótáil an tráth sin. Déan iarracht arís níos déanaí."
 
+#, glossary, machine, plain1
+msgid "Unblock"
+msgstr "Díbhac"
+
 #. a button that takes back "Show fewer posts like this"
-#, machine, plain1
+#, glossary, machine, plain1
 msgid "Undo"
-msgstr "Rinne sé"
+msgstr "Cealaigh"
 
 #, machine, plain1
 msgid "Undo correction"
@@ -3428,6 +3456,10 @@ msgstr "Thuairiscigh tú an post seo cheana féin."
 #, machine, plain1
 msgid "You already voted on this post."
 msgstr "Vótáil tú cheana féin ar an bpost seo."
+
+#, glossary, machine, plain1, python-format
+msgid "You are blocking @%(name)s"
+msgstr "Tá @%(name)s bactha agat"
 
 #, machine, plain1, python-format
 msgid "You are following @%(name)s."

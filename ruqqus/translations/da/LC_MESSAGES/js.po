@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ruqqus VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-26 09:01+0000\n"
+"POT-Creation-Date: 2026-10-29 20:40+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: da\n"
@@ -465,9 +465,17 @@ msgstr "Akavet"
 msgid "Back to top"
 msgstr "Til toppen"
 
+#, glossary, machine, plain1
+msgid "Block"
+msgstr "Bloker"
+
+#, glossary, machine, plain1, python-format
+msgid "Block @%(name)s?"
+msgstr "Bloker @%(name)s?"
+
 #, machine, plain1, python-format
-msgid "Block @%(name)s? They won't be able to follow you, message you or comment on your posts, and you won't see their posts. You can unblock them any time."
-msgstr "Block @ %(name)s? De vil ikke være i stand til at følge dig, besked dig eller kommentere dine indlæg, og du vil ikke se deres indlæg. Du kan afspærre dem når som helst."
+msgid "Blocked @%(name)s."
+msgstr "Blokeret @ %(name)s."
 
 #, machine, plain1
 msgid "Bold (Ctrl+B)"
@@ -1066,12 +1074,12 @@ msgid "Delete the flair %(name)s? Posts that have it lose it; no post is deleted
 msgstr "Slet etiketten %(name)s? Stillinger, der har det mister det; ingen post er slettet."
 
 #, machine, plain1
-msgid "Delete this folder? Its bookmarks are kept, as unsorted."
-msgstr "Slet denne mappe? Dets bogmærker er usorterede."
+msgid "Delete this folder?"
+msgstr "Slet denne mappe?"
 
 #, machine, plain1
-msgid "Delete this highlight? Its stories stay in your archive."
-msgstr "Slet dette højdepunkt? Dens historier bliver i dit arkiv."
+msgid "Delete this highlight?"
+msgstr "Slet dette højdepunkt?"
 
 #, machine, plain1
 msgid "Delete this message"
@@ -1086,16 +1094,12 @@ msgid "Delete this message?"
 msgstr "Slet denne besked?"
 
 #, machine, plain1
-msgid "Delete this story? It leaves every Highlight too."
-msgstr "Slet historien? Det efterlader også alle Highlight."
+msgid "Delete this story?"
+msgstr "Slet historien?"
 
 #, machine, plain1
 msgid "Delete this update?"
 msgstr "Slet denne opdatering?"
-
-#, machine, plain1
-msgid "Delete this update? This can’t be undone."
-msgstr "Slet denne opdatering? Det kan ikke gøres om."
 
 #, glossary, machine, plain1
 msgid "Deleting comment"
@@ -1426,6 +1430,10 @@ msgid "It is still listed on your profile, but its comments are in the guilds."
 msgstr "Det er stadig anført på din profil, men dens kommentarer er i guilds."
 
 #, machine, plain1
+msgid "It leaves every Highlight too."
+msgstr "Det efterlader også alle Highlight."
+
+#, machine, plain1
 msgid "It won't be shown again."
 msgstr "Det vil ikke blive vist igen."
 
@@ -1436,6 +1444,14 @@ msgstr "Den vil ikke forny sig. Du har adgang indtil den dag, du betalte til."
 #, machine, plain1
 msgid "Italic (Ctrl+I)"
 msgstr "Kursiv (Ctrl + I)"
+
+#, machine, plain1
+msgid "Its bookmarks are kept, as unsorted."
+msgstr "Dets bogmærker er usorterede."
+
+#, machine, plain1
+msgid "Its stories stay in your archive."
+msgstr "Dens historier bliver i dit arkiv."
 
 #. a button that joins the group call that has just started
 #. a button that joins a call going on in a chat
@@ -2791,6 +2807,10 @@ msgid "They match"
 msgstr "De matcher"
 
 #, machine, plain1
+msgid "They won't be able to follow you, message you or comment on your posts, and you won't see their posts. You can unblock them any time."
+msgstr "De vil ikke være i stand til at følge dig, besked dig eller kommentere dine indlæg, og du vil ikke se deres indlæg. Du kan afspærre dem når som helst."
+
+#, machine, plain1
 msgid "This Space has ended."
 msgstr "Rummet er slut."
 
@@ -2809,6 +2829,10 @@ msgstr "Denne browser kan ikke optage rummet."
 #, machine, plain1
 msgid "This browser cannot prepare pictures for upload. Try another browser."
 msgstr "Denne browser kan ikke forberede billeder til upload. Prøv en anden browser."
+
+#, machine, plain1
+msgid "This can’t be undone."
+msgstr "Det kan ikke gøres om."
 
 #, machine, plain1
 msgid "This channel is muted for you: no unread dot and no mention notifications."
@@ -2939,8 +2963,12 @@ msgstr "Kan ikke fjerne kommentaren på dette tidspunkt. Prøv igen senere."
 msgid "Unable to vote at this time. Please try again later."
 msgstr "Kan ikke stemme på dette tidspunkt. Prøv igen senere."
 
+#, glossary, machine, plain1
+msgid "Unblock"
+msgstr "Fjern blokering"
+
 #. a button that takes back "Show fewer posts like this"
-#, machine, plain1
+#, glossary, machine, plain1
 msgid "Undo"
 msgstr "Fortryd"
 
@@ -3275,6 +3303,10 @@ msgstr "Du har allerede rapporteret dette indlæg."
 #, machine, plain1
 msgid "You already voted on this post."
 msgstr "De har allerede stemt om dette indlæg."
+
+#, glossary, machine, plain1, python-format
+msgid "You are blocking @%(name)s"
+msgstr "Du blokerer @%(name)s"
 
 #, machine, plain1, python-format
 msgid "You are following @%(name)s."

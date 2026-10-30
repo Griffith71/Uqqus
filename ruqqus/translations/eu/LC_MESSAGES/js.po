@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ruqqus VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-26 09:01+0000\n"
+"POT-Creation-Date: 2026-10-29 20:40+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: eu\n"
@@ -465,9 +465,17 @@ msgstr "Deseroso"
 msgid "Back to top"
 msgstr "Itzuli gora"
 
+#, glossary, machine, plain1
+msgid "Block"
+msgstr "Blokeatu"
+
+#, glossary, machine, plain1, python-format
+msgid "Block @%(name)s?"
+msgstr "Blokeatu @%(name)s?"
+
 #, machine, plain1, python-format
-msgid "Block @%(name)s? They won't be able to follow you, message you or comment on your posts, and you won't see their posts. You can unblock them any time."
-msgstr "@%(name)s blokea? Ezingo dizute jarraitu, mezu bat bidali edo zure mezuei iruzkinik egin, eta ez dituzu haien mezuak ikusiko. Edozein unetan desblokea ditzakezu."
+msgid "Blocked @%(name)s."
+msgstr "@%(name)s blokeatua."
 
 #, machine, plain1
 msgid "Bold (Ctrl+B)"
@@ -1066,12 +1074,12 @@ msgid "Delete the flair %(name)s? Posts that have it lose it; no post is deleted
 msgstr "Ezabatu %(name)s etiketa? Mezuak galdu egiten dira; ez da mezurik ezabatzen."
 
 #, machine, plain1
-msgid "Delete this folder? Its bookmarks are kept, as unsorted."
-msgstr "Ezabatu karpeta hau? Laster-markak gorde egiten dira, ordenatu gabe."
+msgid "Delete this folder?"
+msgstr "Ezabatu karpeta hau?"
 
 #, machine, plain1
-msgid "Delete this highlight? Its stories stay in your archive."
-msgstr "Ezabatu nabarmentzea? Bere istorioak zure artxiboan daude."
+msgid "Delete this highlight?"
+msgstr "Ezabatu nabarmentzea?"
 
 #, machine, plain1
 msgid "Delete this message"
@@ -1086,16 +1094,12 @@ msgid "Delete this message?"
 msgstr "Ezabatu mezu hau?"
 
 #, machine, plain1
-msgid "Delete this story? It leaves every Highlight too."
-msgstr "Ezabatu istorio hau? Nabarmendu guztiak ere uzten ditu."
+msgid "Delete this story?"
+msgstr "Ezabatu istorio hau?"
 
 #, machine, plain1
 msgid "Delete this update?"
 msgstr "Ezabatu eguneraketa hau?"
-
-#, machine, plain1
-msgid "Delete this update? This can’t be undone."
-msgstr "Ezabatu eguneraketa hau? Ezin da desegin."
 
 #, glossary, machine, plain1
 msgid "Deleting comment"
@@ -1426,6 +1430,10 @@ msgid "It is still listed on your profile, but its comments are in the guilds."
 msgstr "Oraindik zure profilean dago zerrendatuta, baina bere iruzkinak txilinetan daude."
 
 #, machine, plain1
+msgid "It leaves every Highlight too."
+msgstr "Nabarmendu guztiak ere uzten ditu."
+
+#, machine, plain1
 msgid "It won't be shown again."
 msgstr "Ez da berriro erakutsiko."
 
@@ -1436,6 +1444,14 @@ msgstr "Ez da berrituko. Sartzen jarraitzen duzu ordaindu arte."
 #, machine, plain1
 msgid "Italic (Ctrl+I)"
 msgstr "Etzana (Ktrl+I)"
+
+#, machine, plain1
+msgid "Its bookmarks are kept, as unsorted."
+msgstr "Laster-markak gorde egiten dira, ordenatu gabe."
+
+#, machine, plain1
+msgid "Its stories stay in your archive."
+msgstr "Bere istorioak zure artxiboan daude."
 
 #. a button that joins the group call that has just started
 #. a button that joins a call going on in a chat
@@ -2791,6 +2807,10 @@ msgid "They match"
 msgstr "Bat datoz"
 
 #, machine, plain1
+msgid "They won't be able to follow you, message you or comment on your posts, and you won't see their posts. You can unblock them any time."
+msgstr "Ezingo dizute jarraitu, mezu bat bidali edo zure mezuei iruzkinik egin, eta ez dituzu haien mezuak ikusiko. Edozein unetan desblokea ditzakezu."
+
+#, machine, plain1
 msgid "This Space has ended."
 msgstr "Espazio hau amaitu da."
 
@@ -2809,6 +2829,10 @@ msgstr "Arakatzaileak ezin du espazioa grabatu."
 #, machine, plain1
 msgid "This browser cannot prepare pictures for upload. Try another browser."
 msgstr "Arakatzaileak ezin ditu argazkiak igo. Saiatu beste arakatzaile batekin."
+
+#, machine, plain1
+msgid "This can’t be undone."
+msgstr "Ezin da desegin."
 
 #, machine, plain1
 msgid "This channel is muted for you: no unread dot and no mention notifications."
@@ -2939,8 +2963,12 @@ msgstr "Ezin da iruzkina kendu une honetan. Saiatu berriro beranduago."
 msgid "Unable to vote at this time. Please try again later."
 msgstr "Une honetan ezin da bozkatu. Saiatu berriro beranduago."
 
+#, glossary, machine, plain1
+msgid "Unblock"
+msgstr "Desblokeatu"
+
 #. a button that takes back "Show fewer posts like this"
-#, machine, plain1
+#, glossary, machine, plain1
 msgid "Undo"
 msgstr "Desegin"
 
@@ -3275,6 +3303,10 @@ msgstr "Mezu honen berri eman duzu dagoeneko."
 #, machine, plain1
 msgid "You already voted on this post."
 msgstr "Post honetan bozkatu duzu dagoeneko."
+
+#, glossary, machine, plain1, python-format
+msgid "You are blocking @%(name)s"
+msgstr "@%(name)s blokeatuta duzu"
 
 #, machine, plain1, python-format
 msgid "You are following @%(name)s."

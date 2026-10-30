@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ruqqus VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-26 09:01+0000\n"
+"POT-Creation-Date: 2026-10-29 20:40+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: vi\n"
@@ -435,9 +435,17 @@ msgstr "Ngại ngùng"
 msgid "Back to top"
 msgstr "Lên đầu trang"
 
+#, glossary, machine, plain1
+msgid "Block"
+msgstr "Chặn"
+
+#, glossary, machine, plain1, python-format
+msgid "Block @%(name)s?"
+msgstr "Chặn @%(name)s?"
+
 #, machine, plain1, python-format
-msgid "Block @%(name)s? They won't be able to follow you, message you or comment on your posts, and you won't see their posts. You can unblock them any time."
-msgstr "Block @%(name)s? Họ sẽ không thể theo bạn, nhắn tin cho bạn hay bình luận về các bài viết của bạn, và bạn sẽ không thấy các bài viết của họ. Anh có thể tháo chúng ra bất cứ lúc nào."
+msgid "Blocked @%(name)s."
+msgstr "Bị chặn%(name)s."
 
 #, machine, plain1
 msgid "Bold (Ctrl+B)"
@@ -1033,12 +1041,12 @@ msgid "Delete the flair %(name)s? Posts that have it lose it; no post is deleted
 msgstr "Xoá nhãn %(name)s♪ Những bài viết làm mất nó; không có bài nào bị xóa."
 
 #, machine, plain1
-msgid "Delete this folder? Its bookmarks are kept, as unsorted."
-msgstr "Xoá thư mục này? Các đánh dấu của nó được lưu giữ, như là chưa được xác định."
+msgid "Delete this folder?"
+msgstr "Xoá thư mục này?"
 
 #, machine, plain1
-msgid "Delete this highlight? Its stories stay in your archive."
-msgstr "Xoá điểm nổi bật này? Những câu chuyện của nó vẫn còn trong kho lưu trữ của anh."
+msgid "Delete this highlight?"
+msgstr "Xoá điểm nổi bật này?"
 
 #, machine, plain1
 msgid "Delete this message"
@@ -1053,16 +1061,12 @@ msgid "Delete this message?"
 msgstr "Xoá thông điệp này?"
 
 #, machine, plain1
-msgid "Delete this story? It leaves every Highlight too."
-msgstr "Xóa câu chuyện này? Nó cũng để lại mọi điểm nổi bật."
+msgid "Delete this story?"
+msgstr "Xóa câu chuyện này?"
 
 #, machine, plain1
 msgid "Delete this update?"
 msgstr "Xoá bản cập nhật này không?"
-
-#, machine, plain1
-msgid "Delete this update? This can’t be undone."
-msgstr "Xoá bản cập nhật này không? Điều này không thể thay đổi được."
 
 #, glossary, machine, plain1
 msgid "Deleting comment"
@@ -1391,6 +1395,10 @@ msgid "It is still listed on your profile, but its comments are in the guilds."
 msgstr "Nó vẫn được liệt kê trong hồ sơ của bạn, nhưng những lời bình luận của nó nằm trong đoạn băng."
 
 #, machine, plain1
+msgid "It leaves every Highlight too."
+msgstr "Nó cũng để lại mọi điểm nổi bật."
+
+#, machine, plain1
 msgid "It won't be shown again."
 msgstr "Nó sẽ không được chiếu lại."
 
@@ -1401,6 +1409,14 @@ msgstr "Nó sẽ không tái diễn. Anh giữ quyền truy cập cho đến ng�
 #, machine, plain1
 msgid "Italic (Ctrl+I)"
 msgstr "Chữ viết tắt (Ctrl+I)"
+
+#, machine, plain1
+msgid "Its bookmarks are kept, as unsorted."
+msgstr "Các đánh dấu của nó được lưu giữ, như là chưa được xác định."
+
+#, machine, plain1
+msgid "Its stories stay in your archive."
+msgstr "Những câu chuyện của nó vẫn còn trong kho lưu trữ của anh."
 
 #. a button that joins the group call that has just started
 #. a button that joins a call going on in a chat
@@ -2749,6 +2765,10 @@ msgid "They match"
 msgstr "Chúng trùng nhau"
 
 #, machine, plain1
+msgid "They won't be able to follow you, message you or comment on your posts, and you won't see their posts. You can unblock them any time."
+msgstr "Họ sẽ không thể theo bạn, nhắn tin cho bạn hay bình luận về các bài viết của bạn, và bạn sẽ không thấy các bài viết của họ. Anh có thể tháo chúng ra bất cứ lúc nào."
+
+#, machine, plain1
 msgid "This Space has ended."
 msgstr "Không gian này đã kết thúc."
 
@@ -2767,6 +2787,10 @@ msgstr "Trình duyệt này không thể ghi lại không gian."
 #, machine, plain1
 msgid "This browser cannot prepare pictures for upload. Try another browser."
 msgstr "Trình duyệt này không thể chuẩn bị ảnh để tải lên. Thử trình duyệt khác xem."
+
+#, machine, plain1
+msgid "This can’t be undone."
+msgstr "Điều này không thể thay đổi được."
 
 #, machine, plain1
 msgid "This channel is muted for you: no unread dot and no mention notifications."
@@ -2895,10 +2919,14 @@ msgstr "Không thể gỡ bỏ chú thích vào lúc này. Vui lòng gọi lại
 msgid "Unable to vote at this time. Please try again later."
 msgstr "Không thể bỏ phiếu lúc này. Vui lòng gọi lại sau."
 
+#, glossary, machine, plain1
+msgid "Unblock"
+msgstr "Bỏ chặn"
+
 #. a button that takes back "Show fewer posts like this"
-#, machine, plain1
+#, glossary, machine, plain1
 msgid "Undo"
-msgstr "Hủy bước"
+msgstr "Hoàn tác"
 
 #, machine, plain1
 msgid "Undo correction"
@@ -3224,6 +3252,10 @@ msgstr "Anh đã báo cáo rồi."
 #, machine, plain1
 msgid "You already voted on this post."
 msgstr "Anh đã bỏ phiếu rồi."
+
+#, glossary, machine, plain1, python-format
+msgid "You are blocking @%(name)s"
+msgstr "Bạn đang chặn @%(name)s"
 
 #, machine, plain1, python-format
 msgid "You are following @%(name)s."

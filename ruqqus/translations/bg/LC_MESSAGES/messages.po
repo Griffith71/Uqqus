@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ruqqus VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-27 05:46+0000\n"
+"POT-Creation-Date: 2026-10-29 21:56+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: bg\n"
@@ -204,6 +204,18 @@ msgid "%(count)s downvote"
 msgid_plural "%(count)s downvotes"
 msgstr[0] "%(count)s надолу"
 msgstr[1] "%(count)s низходящо гласуване"
+
+#, machine, plain1, python-format
+msgid "%(count)s entry"
+msgid_plural "%(count)s entries"
+msgstr[0] "%(count)s вписване"
+msgstr[1] "%(count)s Записи"
+
+#, machine, plain1, python-format
+msgid "%(count)s entry in all"
+msgid_plural "%(count)s entries in all"
+msgstr[0] "%(count)s вписване във всички"
+msgstr[1] "%(count)s вписвания във всички"
 
 #. how many people answered that they are going to an event
 #, machine, plain1, python-format
@@ -3374,6 +3386,14 @@ msgstr "Видео качено на вашия YouTube или Dailymotion Ка�
 msgid "A week"
 msgstr "Седмица"
 
+#, machine, plain1
+msgid "A word in another alphabet is matched in that alphabet. Words in scripts written without spaces, such as Chinese, Japanese, Korean and Thai, are found anywhere in the text."
+msgstr "Думата в друга азбука е равна на тази азбука. Думите в скриптове, написани без интервали, като например китайски, японски, корейски и тайландски, се намират навсякъде в текста."
+
+#, machine, plain1
+msgid "A word is matched as a whole word, so an innocent longer word that contains it is not hidden, except where an entry says it is also found inside other words."
+msgstr "Думата се съчетава като цяла дума, така че една невинна по-дълга дума, която я съдържа, не е скрита, освен когато записът казва, че се намира и в други думи."
+
 #, machine, plain1, python-format
 msgid "A word or phrase can be %(num)s character at most: \"%(word)s...\""
 msgid_plural "A word or phrase can be %(num)s characters at most: \"%(word)s...\""
@@ -3826,6 +3846,10 @@ msgstr "Сигналите и заглавията идват от източн�
 msgid "Algorithm"
 msgstr "Алгоритъм"
 
+#, machine, plain1
+msgid "Algorithm saved."
+msgstr "Алгоритъмът е спасен."
+
 #, glossary, machine, plain1
 msgctxt "feed"
 msgid "All"
@@ -3947,9 +3971,17 @@ msgstr "Също и за %(topic)s"
 msgid "Also active in +%(guild)s"
 msgstr "Също активен в +%(guild)s"
 
+#, machine, plain1
+msgid "Also inside other words"
+msgstr "Също и в други думи"
+
 #, machine, plain1, python-format
 msgid "Although %(site)s puts your freedom of speech first, there are a few things that we don't allow here:"
 msgstr "Въпреки че %(site)s поставя свободата на словото на първо място, има някои неща, които не допускаме тук:"
+
+#, machine, plain1
+msgid "Always start videos muted"
+msgstr "Винаги заглушавайте видеоклиповете"
 
 #, machine, plain1
 msgid "Amazonian Shield"
@@ -4482,9 +4514,17 @@ msgid "Automated posting on your own account is set up in its own section."
 msgstr "Автоматизираното публикуване на вашата собствена сметка се извършва в собствената си секция."
 
 #, glossary, machine, plain1
+msgid "Automatic"
+msgstr "Автоматично"
+
+#, glossary, machine, plain1
 msgctxt "circle kind"
 msgid "Automatic"
 msgstr "Автоматичен"
+
+#, machine, plain1
+msgid "Automatic plays videos, muted, as you scroll to them, unless your device asks for reduced motion or to save data. With tap to play, a video site's player is not loaded, and gets nothing from your browser, until you press play. Audio never plays by itself."
+msgstr "Автоматично играе видеоклипове, заглушен, докато превъртате към тях, освен ако вашето устройство не поиска намалено движение или да запази данни. С докоснете, за да играете, играч на видео сайт не е зареден, и не получава нищо от вашия браузър, докато не натиснете игра. Звукът никога не свири сам."
 
 #, machine, plain1
 msgid "Automatic spam removal. This happened because the post's creator submitted too much similar content too quickly."
@@ -4510,6 +4550,10 @@ msgstr "Бот"
 msgctxt "guildmaster action"
 msgid "Automod settings"
 msgstr "Настройки на автоматичното движение"
+
+#, glossary, machine, plain1
+msgid "Autoplay"
+msgstr "Автоматично пускане"
 
 #, machine, plain1
 msgid "Avatars require 300 reputation."
@@ -5021,6 +5065,14 @@ msgid "Cancelled"
 msgstr "Отказан"
 
 #, machine, plain1
+msgid "Capitals, accents and repeated letters don't change anything: a word reads the same in capitals, with accents or with a letter written several times."
+msgstr "Капитали, акценти и повтарящи се букви не променят нищо: една дума чете същото в столици, с акценти или с писмо, написано няколко пъти."
+
+#, glossary, machine, plain1
+msgid "Captions"
+msgstr "Субтитри"
+
+#, machine, plain1
 msgid "Car Repair"
 msgstr "Ремонт на автомобили"
 
@@ -5207,6 +5259,10 @@ msgstr "Промяна на паролата"
 #, machine, plain1
 msgid "Change your password."
 msgstr "Смени си паролата."
+
+#, glossary, machine, plain1
+msgid "Change your word filter"
+msgstr "Променете филтъра на думи"
 
 #, machine, plain1
 msgid "Changed lines"
@@ -5898,6 +5954,10 @@ msgctxt "button"
 msgid "Continue"
 msgstr "Продължение"
 
+#, glossary, machine, plain1
+msgid "Continuous scroll"
+msgstr "Непрекъснато превъртане"
+
 #, machine, plain1
 msgctxt "guildmaster action"
 msgid "Contrib user"
@@ -6310,6 +6370,10 @@ msgstr "Измамник URL Съкращенията не са позволен
 msgctxt "button"
 msgid "Decline"
 msgstr "Наклон"
+
+#, glossary, machine, plain1
+msgid "Default"
+msgstr "Стандартен"
 
 #, glossary, machine, plain1
 msgid "Default Sorting"
@@ -6994,6 +7058,11 @@ msgctxt "a Space"
 msgid "Ended"
 msgstr "Край"
 
+#. followed by word endings such as -s, -ed
+#, machine, plain1
+msgid "Endings:"
+msgstr "Край:"
+
 #, machine, plain1
 msgctxt "event"
 msgid "Ends <span class=\"text-muted font-weight-normal\">(optional)</span>"
@@ -7052,12 +7121,24 @@ msgid "Entrepreneurship"
 msgstr "Предприемачество"
 
 #, machine, plain1
+msgid "Entries under Never counted are innocent words and phrases that contain a listed word or look like one: they are never hidden."
+msgstr "Вписванията в \"Никога не се броят\" са невинни думи и фрази, които съдържат дадена дума или изглеждат като такава: те никога не са скрити."
+
+#, machine, plain1
 msgid "Environment"
 msgstr "Околна среда"
 
 #, machine, plain1
 msgid "Equatorial Nile"
 msgstr "Екваториална нилска"
+
+#, machine, plain1
+msgid "Erase this comment for good?"
+msgstr "Да изтрия този коментар завинаги?"
+
+#, machine, plain1
+msgid "Erase this post for good?"
+msgstr "Да изтрия този пост завинаги?"
 
 #, machine, plain1
 msgid "Error. Please try again."
@@ -7313,6 +7394,10 @@ msgstr "Разширяване"
 msgid "Extend for"
 msgstr "Разширяване"
 
+#, glossary, machine, plain1
+msgid "Extra large"
+msgstr "Много голям"
+
 #, machine, plain1
 msgid "Extreme"
 msgstr "Екстремни"
@@ -7385,6 +7470,14 @@ msgstr "Филтър + %(guild)s с етикет"
 #, glossary, machine, plain1
 msgid "Filter by"
 msgstr "Филтриране по"
+
+#, glossary, machine, plain1
+msgid "Filtered words"
+msgstr "Филтрирани думи"
+
+#, glossary, machine, plain1, python-format
+msgid "Filtered words - %(site)s"
+msgstr "Филтрирани думи - %(site)s"
 
 #, glossary, machine, plain1
 msgid "Filters"
@@ -8048,6 +8141,10 @@ msgid "Glad to have you back. Make a %(site)s!"
 msgstr "Радваме се, че се върнахте. Пуснете %(site)s!"
 
 #, machine, plain1
+msgid "Go back"
+msgstr "Върни се"
+
+#, machine, plain1
 msgid "Go live"
 msgstr "Върви да живееш"
 
@@ -8405,6 +8502,14 @@ msgid "Hidden name"
 msgstr "Скрито наименование"
 
 #, machine, plain1
+msgid "Hidden on the Child filter"
+msgstr "Скрити на филтъра за деца"
+
+#, machine, plain1
+msgid "Hidden on the Standard and Child filters"
+msgstr "Скрити на стандартните и детските филтри"
+
+#, machine, plain1
 msgid "Hidden page"
 msgstr "Скрита страница"
 
@@ -8598,6 +8703,10 @@ msgstr "Как да използвате ключ"
 #, machine, plain1
 msgid "How to write this post"
 msgstr "Как да напишете тази публикация"
+
+#, glossary, machine, plain1
+msgid "How words are matched"
+msgstr "Как се разпознават думите"
 
 #, machine, plain1, python-format
 msgid "How your name reads next to your posts and comments and on your profile, with your <code>@%(name)s</code> beside it. It can be anything up to 50 characters, with spaces and emoji, and you can change it whenever you like at no cost. It is not unique and not an address: people still find you, mention you and link to you by your username."
@@ -9023,6 +9132,10 @@ msgstr "Живее в профила ти, под Космоса. Гилдият
 msgid "It only orders posts you are allowed to see."
 msgstr "Тя само поръчки постове можете да видите."
 
+#, machine, plain1
+msgid "It shows, in full, every word and phrase the word filter looks for, in every language it covers. That includes slurs and other extremely offensive language."
+msgstr "Тя показва, в пълен размер, всяка дума и фраза, думата филтър търси, на всеки език, който обхваща. Това включва мръсотии и други крайно обидни езици."
+
 #, machine, plain1, python-format
 msgid "It was not approved last time. The admins said: %(note)s"
 msgstr "Последният път не беше одобрено. Администрите казаха: %(note)s"
@@ -9291,6 +9404,15 @@ msgstr "Език"
 msgid "Language Learning"
 msgstr "Езиково обучение"
 
+#. the label of a list of links that jump to each language's part of the list
+#, machine, plain1
+msgid "Languages on this page"
+msgstr "Езици на тази страница"
+
+#, glossary, machine, plain1
+msgid "Large"
+msgstr "Голям"
+
 #, machine, plain1, python-format
 msgid "Last %(num)s day"
 msgid_plural "Last %(num)s days"
@@ -9456,6 +9578,10 @@ msgstr "Правни искания"
 #, machine, plain1
 msgid "Leonids meteor shower"
 msgstr "Метеоритен дъжд Леонид"
+
+#, machine, plain1
+msgid "Letters spaced out or split by dots or other marks are read as one word."
+msgstr "Буквите, разделени на точки или други знаци, се четат като една дума."
 
 #, machine, plain1
 msgid "Libertarian"
@@ -9689,6 +9815,10 @@ msgid "Login normally to access your account."
 msgstr "Обикновено влизате в профила си."
 
 #, machine, plain1
+msgid "Look-alike letters from other alphabets, and numbers or symbols used for letters (a 3 for an e, an @ for an a), are read as the letters they stand for."
+msgstr "Подобни букви от други азбуки и цифри или символи, използвани за букви (а 3 за e, @ за a), се четат като буквите, за които те стоят."
+
+#, machine, plain1
 msgid "Lost your recovery code? Make a new one: the old one stops working."
 msgstr "Изгубил си кода за възстановяване? Направете нов: старият спира да работи."
 
@@ -9773,6 +9903,10 @@ msgstr "Направете канал"
 #, machine, plain1
 msgid "Make this a Circle guild"
 msgstr "Направи това гилдия на Кръга"
+
+#, machine, plain1
+msgid "Makes text, and the buttons and boxes around it, bigger. It starts from your browser's own text size, so raising that makes the default bigger too. Saved on this device."
+msgstr "Прави текст, и копчетата и кутиите около него, по-големи. Тя започва от собствения размер на текста на браузъра си, така че повишаване, което прави по-голям и по подразбиране. Спасен от това устройство."
 
 #, machine, plain1, python-format
 msgid "Making a paid circle is part of Premium. <a href=\"%(url)s\">Get Premium</a>"
@@ -10281,6 +10415,10 @@ msgstr "Нетни гласове"
 #, machine, plain1
 msgid "Neuroscience"
 msgstr "Неврология"
+
+#, glossary, machine, plain1
+msgid "Never counted"
+msgstr "Никога не се броят"
 
 #, machine, plain1, python-format
 msgid "Never links to %(sites)s."
@@ -11145,6 +11283,10 @@ msgid "On Ruqqus for one year"
 msgstr "На Рукус за една година"
 
 #, machine, plain1
+msgid "On by default"
+msgstr "По подразбиране"
+
+#, machine, plain1
 msgid "On one page, from the same author or guild"
 msgstr "На една страница от същия автор или гилдия"
 
@@ -11526,6 +11668,10 @@ msgid "Only the post's author and co-authors can run its live updates."
 msgstr "Само авторът на публикацията и съавторите могат да работят на живо."
 
 #, machine, plain1
+msgid "Only when I turn them on"
+msgstr "Само когато ги включа"
+
+#, machine, plain1
 msgid "Only whoever forwarded this post and the guild's guildmasters can change its flair."
 msgstr "Само този, който е изпратил този пост и гилдията, модераторите могат да променят етикета му."
 
@@ -11733,6 +11879,10 @@ msgstr "Други езици, които четеш"
 msgid "Other or unknown"
 msgstr "Други или неизвестни"
 
+#, glossary, machine, plain1
+msgid "Other spellings:"
+msgstr "Други изписвания:"
+
 #, machine, plain1
 msgid "Other users see Anonymous instead of your name. You and site admins can still see it, it follows the same rules as any post, and it cannot be undone after posting. A region filter still shows which region it comes from. It is not listed on your profile: you find it in History, under Anonymous."
 msgstr "Други потребители виждат Анонимен вместо вашето име. Вие и администраторите на сайта все още можете да го видите, той следва същите правила като всеки пост, и не може да бъде поправен след публикуване. Регионален филтър все още показва от коя област идва. Няма го в профила ви: намирате го в историята, под Анонимните."
@@ -11806,6 +11956,10 @@ msgstr "Преглед на страниците"
 #, machine, plain1
 msgid "Pages"
 msgstr "Страници"
+
+#, machine, plain1
+msgid "Pages keeps Prev and Next buttons under each feed and does not look for newer posts in the background. Saved on this device, and used from the next page you open."
+msgstr "Страници пазят Prev и Next бутони под всеки фураж и не търсят по-нови постове във фонов режим. Записан на това устройство и използван от следващата страница, която отваряте."
 
 #, machine, plain1
 msgid "Paid circle"
@@ -12106,6 +12260,11 @@ msgstr "Снимка или видео"
 msgid "Photography"
 msgstr "Фотография"
 
+#, glossary, machine, plain1
+msgctxt "word filter entry"
+msgid "Phrase"
+msgstr "Фраза"
+
 #, machine, plain1
 msgid "Physics"
 msgstr "Физика"
@@ -12293,6 +12452,10 @@ msgstr "Изсвири звук"
 #, machine, plain1, python-format
 msgid "Play video from %(domain)s"
 msgstr "Пусни видео от %(domain)s"
+
+#, machine, plain1
+msgid "Play with sound"
+msgstr "Играйте със звука"
 
 #, machine, plain1
 msgid "Please enter a better title"
@@ -12635,6 +12798,10 @@ msgstr "Запазените публикации ще се появят тук.
 #, machine, plain1
 msgid "Posts you view will show up here."
 msgstr "Постовете, които виждате ще се появят тук."
+
+#, machine, plain1
+msgid "Posts, comments and names that contain one of these words are hidden from members whose word filter hides it. Nothing is removed for anyone else, and your own posts and comments are always shown to you."
+msgstr "Постове, коментари и имена, които съдържат една от тези думи са скрити от членове, чиито думи филтър го крие. Нищо не се отстранява за някой друг, и вашите собствени мнения и коментари винаги са показани на вас."
 
 #, machine, plain1
 msgid "Prediction"
@@ -14171,6 +14338,10 @@ msgstr "Да видя всичко живо"
 msgid "See the current page"
 msgstr "Вижте текущата страница"
 
+#, glossary, machine, plain1
+msgid "See the filtered words"
+msgstr "Вижте филтрираните думи"
+
 #, machine, plain1
 msgid "See the post"
 msgstr "Вижте публикацията"
@@ -14474,6 +14645,10 @@ msgstr "Покажи още"
 #, machine, plain1
 msgid "Show my security key"
 msgstr "Покажи ми ключа за сигурността"
+
+#, machine, plain1
+msgid "Show the list"
+msgstr "Показване на списъка"
 
 #, machine, plain1
 msgctxt "filter"
@@ -15286,6 +15461,10 @@ msgstr "Да вземем това окован сигнал от външния
 msgid "Taking part"
 msgstr "Участие"
 
+#, glossary, machine, plain1
+msgid "Tap to play"
+msgstr "Докоснете за пускане"
+
 #, machine, plain1
 msgid "Teaching"
 msgstr "Преподаване"
@@ -15373,6 +15552,10 @@ msgstr "Текстов канал"
 #, machine, plain1
 msgid "Text posts"
 msgstr "Текстови мнения"
+
+#, glossary, machine, plain1
+msgid "Text size"
+msgstr "Размер на текста"
 
 #, machine, plain1
 msgid "Thank you for reporting this comment!"
@@ -16226,6 +16409,14 @@ msgstr "Връзката трябва да започне с https:// или htt
 msgid "The link needs a full address, such as example.com."
 msgstr "Линкът се нуждае от пълен адрес, като например.com."
 
+#, machine, plain1
+msgid "The list is open to members so that anyone can see what the filter hides and why. Nothing on it is removed from the site: each member's own filter decides what they see."
+msgstr "Списъкът е отворен за членове, така че всеки може да види какво филтъра крие и защо. Нищо на него не се отстранява от сайта: собственият филтър на всеки член решава какво виждат."
+
+#, machine, plain1
+msgid "The list isn't shown on the Child filter"
+msgstr "Списъкът не е показан на филтъра за деца"
+
 #, machine, plain1, python-format
 msgid "The most a circle can ask is %(num)s coin every 30 days."
 msgid_plural "The most a circle can ask is %(num)s coins every 30 days."
@@ -16468,6 +16659,14 @@ msgstr "Уикито е изключено: само гилдията модер
 #, machine, plain1
 msgid "The wiki's first page can be emptied but not deleted."
 msgstr "Първата страница на Уики може да бъде изпразнена, но не и изтрита."
+
+#, machine, plain1
+msgid "The word filter has no words at the moment."
+msgstr "В момента няма думи."
+
+#, machine, plain1, python-format
+msgid "The words for other languages are adapted from %(source)s (%(licence)s): words that are also ordinary, innocent words were left out."
+msgstr "Думите за други езици са адаптирани от %(source)s (%(licence)s): думи, които също са обикновени, невинни думи бяха пропуснати."
 
 #, machine, plain1
 msgid "The working copy as it is now. Only its authors can see this until it's published."
@@ -16982,12 +17181,20 @@ msgid "This page is generated by the %(site)s application introspecting its own 
 msgstr "Тази страница се генерира от приложението %(site)s интроспекция на собствените му маршрути. Готино."
 
 #, machine, plain1
+msgid "This page lists offensive words"
+msgstr "Тази страница съдържа обидни думи"
+
+#, machine, plain1
 msgid "This page may not be embedded in other webpages."
 msgstr "Тази страница не може да бъде вградена в други уеб страници."
 
 #, machine, plain1
-msgid "This permanently erases the comment text. It cannot be undone, even by an admin. Continue?"
-msgstr "Това постоянно изтрива текста на коментара. Не може да се поправи, дори от администратор. Да продължа?"
+msgid "This permanently erases the comment text. It cannot be undone, even by an admin."
+msgstr "Това постоянно изтрива текста на коментара. Не може да се поправи, дори от администратор."
+
+#, machine, plain1
+msgid "This permanently erases the post title, text and link. It cannot be undone, even by an admin."
+msgstr "Това постоянно изтрива заглавието, текста и линк. Не може да се поправи, дори от администратор."
 
 #, machine, plain1
 msgid "This person is blocking you."
@@ -17487,6 +17694,14 @@ msgid "Turn on two-factor authentication first."
 msgstr "Първо включи двуфакторната идентификация."
 
 #, machine, plain1
+msgid "Turns captions on in YouTube and Dailymotion videos, in your language when the video has them. Other sites keep their own setting."
+msgstr "Включва надписите в YouTube както и Dailymotion видеоклипове на вашия език, когато видеото ги има. Други сайтове поддържат своя собствена настройка."
+
+#, machine, plain1
+msgid "Twitter"
+msgstr "Twitter"
+
+#, machine, plain1
 msgid "Two thirds of the authors agree"
 msgstr "Две трети от авторите са съгласни"
 
@@ -17584,9 +17799,9 @@ msgctxt "guildmaster action"
 msgid "Unban post"
 msgstr "Unban post"
 
-#, machine, plain1
+#, glossary, machine, plain1
 msgid "Unblock"
-msgstr "Отблокиране"
+msgstr "Отблокирай"
 
 #, glossary, machine, plain1, python-format
 msgid "Unblock @%(name)s"
@@ -17619,6 +17834,10 @@ msgstr "Uncontrib потребител"
 #, glossary, machine, plain1
 msgid "Undistinguish"
 msgstr "Премахни отличаването"
+
+#, glossary, machine, plain1
+msgid "Undo"
+msgstr "Отмени"
 
 #, machine, plain1
 msgctxt "guildmaster action"
@@ -18145,6 +18364,10 @@ msgctxt "noun"
 msgid "Video"
 msgstr "Видео"
 
+#, machine, plain1
+msgid "Video and audio"
+msgstr "Видео и аудио"
+
 #, machine, plain1, python-format
 msgid "Video call - %(site)s"
 msgstr "Видео разговор - %(site)s"
@@ -18565,6 +18788,10 @@ msgid "When the app asks to verify itself, enter your <strong>security key</stro
 msgstr "Когато приложението поиска да се провери, въведете <strong>ключ за сигурността</strong> (под). Докато не се потвърди, че не може да чете съобщенията ви, и не се изпращат ничии съобщения."
 
 #, machine, plain1
+msgid "When you press play, a video starts with sound, at the volume you last used (video files only: videos from other sites keep their own volume). A video that starts by scrolling is always muted. Audio players also start at the volume you last used, and are never muted by this. Saved on this device, and used from the next page you open."
+msgstr "Когато натиснете игра, видео започва със звук, в обема, който последно сте използвали (само видео файлове: видеоклипове от други сайтове пазят свой собствен обем). Видеото, което започва с превъртане, винаги се заглушава. Аудио плейърите също започват от звука, който сте използвали за последно и никога не са заглушени от това. Записан на това устройство и използван от следващата страница, която отваряте."
+
+#, machine, plain1
 msgid "When you receive new posts, comments, or mentions, they will show up here."
 msgstr "Когато получите нови постове, коментари, или споменава, те ще се появят тук."
 
@@ -18813,6 +19040,10 @@ msgstr "С видео"
 #, glossary, machine, plain1
 msgid "With textarea"
 msgstr "Текстово поле"
+
+#, machine, plain1
+msgid "With the usual English endings"
+msgstr "С обичайния английски край"
 
 #, machine, plain1
 msgid "Withdraw"
@@ -20593,6 +20824,10 @@ msgstr "Видеото ти беше качено на YouTube, но YouTube е 
 msgid "Your vote"
 msgstr "Вашият глас"
 
+#, machine, plain1
+msgid "Your word filter is set to Child, which hides these words, so this page doesn't show them."
+msgstr "Вашият филтър на думата е настроен за Дете, което крие тези думи, така че тази страница не ги показва."
+
 #, python-format
 msgid "[@%(name)s](/@%(name)s) joined [+%(guild)s](/+%(guild)s)."
 msgstr ""
@@ -20719,6 +20954,11 @@ msgstr "[заличен]"
 msgid "[doc pending]"
 msgstr "[док чака]"
 
+#. stands in a deleted post's text where a picture was
+#, machine, plain1
+msgid "[picture]"
+msgstr "[ снимка]"
+
 #, machine, plain1
 msgid "[removed by admin]"
 msgstr "[премести се от администратор]"
@@ -20729,6 +20969,11 @@ msgstr "[премести от администратори]"
 
 msgid "[removed by guildmasters]"
 msgstr ""
+
+#. stands in a deleted post's text where a sound was
+#, machine, plain1
+msgid "[sound]"
+msgstr "[звук]"
 
 #, machine, plain1
 msgid "a day"

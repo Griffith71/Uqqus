@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ruqqus VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-26 09:01+0000\n"
+"POT-Creation-Date: 2026-10-29 20:40+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: fa\n"
@@ -206,7 +206,7 @@ msgstr[0] "%(owner)s · %(num)s اعضا"
 #. %(problem)s is the server's sentence saying what saving would do
 #, machine, plain1, python-format
 msgid "%(problem)s Save anyway?"
-msgstr "%(problem)s نجات در هر صورت؟?"
+msgstr "%(problem)s نجات در هر صورت؟"
 
 #. the browser tab's title while a call is ringing; %(title)s is the page's own
 #. title
@@ -434,9 +434,17 @@ msgstr "معذب"
 msgid "Back to top"
 msgstr "بازگشت به بالا"
 
+#, glossary, machine, plain1
+msgid "Block"
+msgstr "مسدود کردن"
+
+#, glossary, machine, plain1, python-format
+msgid "Block @%(name)s?"
+msgstr "مسدود کردن @%(name)s؟"
+
 #, machine, plain1, python-format
-msgid "Block @%(name)s? They won't be able to follow you, message you or comment on your posts, and you won't see their posts. You can unblock them any time."
-msgstr "بلوک @%(name)sآنها نمی توانند شما را دنبال کنند، به شما پیام بدهند یا درباره پست های شما نظر بدهند و پست های آنها را نخواهید دید. شما می توانید هر بار آنها را مسدود کنید."
+msgid "Blocked @%(name)s."
+msgstr "مسدود شده @%(name)s."
 
 #, machine, plain1
 msgid "Bold (Ctrl+B)"
@@ -1032,12 +1040,12 @@ msgid "Delete the flair %(name)s? Posts that have it lose it; no post is deleted
 msgstr "برچسب ها را حذف کنید %(name)sپست هایی که آن را از دست داده اند؛ هیچ پست حذف نمی شود."
 
 #, machine, plain1
-msgid "Delete this folder? Its bookmarks are kept, as unsorted."
-msgstr "این پوشه را حذف کنید؟ نشانه های آن حفظ می شوند، به عنوان بی نظیر."
+msgid "Delete this folder?"
+msgstr "این پوشه را حذف کنید؟"
 
 #, machine, plain1
-msgid "Delete this highlight? Its stories stay in your archive."
-msgstr "این نکته را حذف کنید؟ داستان های آن در آرشیو شما باقی می ماند."
+msgid "Delete this highlight?"
+msgstr "این نکته را حذف کنید؟"
 
 #, machine, plain1
 msgid "Delete this message"
@@ -1045,23 +1053,19 @@ msgstr "حذف این پیام"
 
 #, machine, plain1
 msgid "Delete this message for everyone?"
-msgstr "این پیام را برای همه حذف کنید؟?"
+msgstr "این پیام را برای همه حذف کنید؟"
 
 #, machine, plain1
 msgid "Delete this message?"
-msgstr "این پیام را حذف کنید؟?"
+msgstr "این پیام را حذف کنید؟"
 
 #, machine, plain1
-msgid "Delete this story? It leaves every Highlight too."
-msgstr "این داستان را حذف کنید؟ همچنین همه چراغ ها را ترک می کند."
+msgid "Delete this story?"
+msgstr "این داستان را حذف کنید؟"
 
 #, machine, plain1
 msgid "Delete this update?"
-msgstr "این بروزرسانی را حذف کنید؟?"
-
-#, machine, plain1
-msgid "Delete this update? This can’t be undone."
-msgstr "این بروزرسانی را حذف کنید؟ این را نمی توان انجام داد."
+msgstr "این بروزرسانی را حذف کنید؟"
 
 #, glossary, machine, plain1
 msgid "Deleting comment"
@@ -1086,7 +1090,7 @@ msgstr "به + ارسال نکنید%(guild)s"
 
 #, machine, plain1
 msgid "Do these emoji match?"
-msgstr "آیا این ایموجی ها مطابقت دارند؟?"
+msgstr "آیا این ایموجی ها مطابقت دارند؟"
 
 #, machine, plain1
 msgid "Done"
@@ -1131,7 +1135,7 @@ msgstr "Emoji"
 
 #, machine, plain1
 msgid "End the live thread now?"
-msgstr "حالا موضوع زندگی را پایان دهید؟?"
+msgstr "حالا موضوع زندگی را پایان دهید؟"
 
 #, machine, plain1
 msgid "End this Space for everyone?"
@@ -1390,6 +1394,10 @@ msgid "It is still listed on your profile, but its comments are in the guilds."
 msgstr "هنوز در پروفایل شما ذکر شده است، اما نظرات آن در معاملات است."
 
 #, machine, plain1
+msgid "It leaves every Highlight too."
+msgstr "همچنین همه چراغ ها را ترک می کند."
+
+#, machine, plain1
 msgid "It won't be shown again."
 msgstr "دوباره نشان داده نخواهد شد."
 
@@ -1400,6 +1408,14 @@ msgstr "تجدید نخواهد کرد. شما دسترسی را تا زمانی
 #, machine, plain1
 msgid "Italic (Ctrl+I)"
 msgstr "(Ctrl+I)"
+
+#, machine, plain1
+msgid "Its bookmarks are kept, as unsorted."
+msgstr "نشانه های آن حفظ می شوند، به عنوان بی نظیر."
+
+#, machine, plain1
+msgid "Its stories stay in your archive."
+msgstr "داستان های آن در آرشیو شما باقی می ماند."
 
 #. a button that joins the group call that has just started
 #. a button that joins a call going on in a chat
@@ -1442,7 +1458,7 @@ msgstr "خروج"
 
 #, machine, plain1
 msgid "Leave this channel?"
-msgstr "این کانال را ترک کنید؟?"
+msgstr "این کانال را ترک کنید؟"
 
 #, machine, plain1
 msgid "Leave this group? Someone else in it becomes its owner."
@@ -2053,7 +2069,7 @@ msgstr "این پیام را برای همه حذف کنید؟ این گزارش
 
 #, machine, plain1
 msgid "Remove this message from the board for everyone?"
-msgstr "این پیام را از هیئت مدیره برای همه حذف کنید؟?"
+msgstr "این پیام را از هیئت مدیره برای همه حذف کنید؟"
 
 #. a button that renames the Highlight being watched
 #, machine, plain1
@@ -2405,7 +2421,7 @@ msgstr "شروع بیش از حد"
 
 #, machine, plain1
 msgid "Start over?"
-msgstr "شروع کنید؟?"
+msgstr "شروع کنید؟"
 
 #, machine, plain1
 msgid "Start the Space"
@@ -2747,6 +2763,10 @@ msgid "They match"
 msgstr "بازی می کنند"
 
 #, machine, plain1
+msgid "They won't be able to follow you, message you or comment on your posts, and you won't see their posts. You can unblock them any time."
+msgstr "آنها نمی توانند شما را دنبال کنند، به شما پیام بدهند یا در مورد پست های شما اظهار نظر کنند و شما پست های آنها را نخواهید دید. شما می توانید هر بار آنها را مسدود کنید."
+
+#, machine, plain1
 msgid "This Space has ended."
 msgstr "این فضا به پایان رسیده است."
 
@@ -2765,6 +2785,10 @@ msgstr "این مرورگر نمی تواند فضا را ضبط کند."
 #, machine, plain1
 msgid "This browser cannot prepare pictures for upload. Try another browser."
 msgstr "این مرورگر نمی تواند تصاویر را برای آپلود آماده کند. مرورگر دیگری را امتحان کنید."
+
+#, machine, plain1
+msgid "This can’t be undone."
+msgstr "این را نمی توان انجام داد."
 
 #, machine, plain1
 msgid "This channel is muted for you: no unread dot and no mention notifications."
@@ -2893,10 +2917,14 @@ msgstr "غیر قابل انکار است که در این زمان نظر را 
 msgid "Unable to vote at this time. Please try again later."
 msgstr "نمی توان در این زمان رای داد. لطفا دوباره امتحان کنید."
 
+#, glossary, machine, plain1
+msgid "Unblock"
+msgstr "رفع مسدودیت"
+
 #. a button that takes back "Show fewer posts like this"
-#, machine, plain1
+#, glossary, machine, plain1
 msgid "Undo"
-msgstr "Undo"
+msgstr "واگرد"
 
 #, machine, plain1
 msgid "Undo correction"
@@ -3010,7 +3038,7 @@ msgstr "بررسی"
 
 #, machine, plain1
 msgid "Verify your new chat app?"
-msgstr "برنامه چت جدید خود را بررسی کنید؟?"
+msgstr "برنامه چت جدید خود را بررسی کنید؟"
 
 #. the name of a video player frame when the post gives it no title
 #. the name of a story's video player (read by screen readers)
@@ -3133,15 +3161,15 @@ msgstr "با این پیام چه مشکلی دارد؟ (اختیاری)"
 
 #, machine, plain1
 msgid "Where should your audio go?"
-msgstr "صدای شما کجا می رود؟?"
+msgstr "صدای شما کجا می رود؟"
 
 #, machine, plain1
 msgid "Where should your pictures go?"
-msgstr "عکس های شما کجا می روند؟?"
+msgstr "عکس های شما کجا می روند؟"
 
 #, machine, plain1
 msgid "Where should your videos go?"
-msgstr "فیلم های شما کجا باید بروند؟?"
+msgstr "فیلم های شما کجا باید بروند؟"
 
 #. %(service)s is the video site (YouTube)
 #, machine, plain1, python-format
@@ -3222,6 +3250,10 @@ msgstr "شما این پست را گزارش کرده اید."
 #, machine, plain1
 msgid "You already voted on this post."
 msgstr "شما در این پست رای داده اید."
+
+#, glossary, machine, plain1, python-format
+msgid "You are blocking @%(name)s"
+msgstr "@%(name)s را مسدود کرده‌اید"
 
 #, machine, plain1, python-format
 msgid "You are following @%(name)s."

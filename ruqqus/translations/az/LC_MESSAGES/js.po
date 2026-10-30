@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ruqqus VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-26 09:01+0000\n"
+"POT-Creation-Date: 2026-10-29 20:40+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: az\n"
@@ -463,9 +463,17 @@ msgstr "Yöndəmsiz"
 msgid "Back to top"
 msgstr "Yuxarı qayıt"
 
+#, glossary, machine, plain1
+msgid "Block"
+msgstr "Blokla"
+
+#, glossary, machine, plain1, python-format
+msgid "Block @%(name)s?"
+msgstr "@%(name)s bloklansın?"
+
 #, machine, plain1, python-format
-msgid "Block @%(name)s? They won't be able to follow you, message you or comment on your posts, and you won't see their posts. You can unblock them any time."
-msgstr "Block @%(name)s Onlar sizi izləyə bilməyəcək, mesaj siz və ya yazılarınızı bildirmək, və onların yazılarını görməyəm. Siz hər zaman onları blok ola bilərsiniz."
+msgid "Blocked @%(name)s."
+msgstr "Bakı%(name)s."
 
 #, machine, plain1
 msgid "Bold (Ctrl+B)"
@@ -1063,12 +1071,12 @@ msgid "Delete the flair %(name)s? Posts that have it lose it; no post is deleted
 msgstr "Etiket %(name)s delete Bu itirdiyiniz mesajlar; heç bir post silinir."
 
 #, machine, plain1
-msgid "Delete this folder? Its bookmarks are kept, as unsorted."
-msgstr "Bu qrupu daxil edin?  book ."
+msgid "Delete this folder?"
+msgstr "Bu qrupu daxil edin?"
 
 #, machine, plain1
-msgid "Delete this highlight? Its stories stay in your archive."
-msgstr "Delete bu mövzu? Oxunub: ."
+msgid "Delete this highlight?"
+msgstr "Delete bu mövzu?"
 
 #, machine, plain1
 msgid "Delete this message"
@@ -1083,16 +1091,12 @@ msgid "Delete this message?"
 msgstr "Delete bu mesaj?"
 
 #, machine, plain1
-msgid "Delete this story? It leaves every Highlight too."
-msgstr "Bu hesab? Bu, hər bir yüksək dəyişdirir."
+msgid "Delete this story?"
+msgstr "Bu hesab?"
 
 #, machine, plain1
 msgid "Delete this update?"
 msgstr "Bu yeniləşdirilməsi?"
-
-#, machine, plain1
-msgid "Delete this update? This can’t be undone."
-msgstr "Bu yeniləşdirilməsi? Bu qazanmaq deyil."
 
 #, glossary, machine, plain1
 msgid "Deleting comment"
@@ -1423,6 +1427,10 @@ msgid "It is still listed on your profile, but its comments are in the guilds."
 msgstr "Bu halda profilinizdə qeyd edilir, lakin onun şərhlər guilds var."
 
 #, machine, plain1
+msgid "It leaves every Highlight too."
+msgstr "Bu, hər bir yüksək dəyişdirir."
+
+#, machine, plain1
 msgid "It won't be shown again."
 msgstr "Bu daha göstərilməz."
 
@@ -1433,6 +1441,14 @@ msgstr "Bu yeniləmir. Ödəniş edirik günə qəbul edirəm."
 #, machine, plain1
 msgid "Italic (Ctrl+I)"
 msgstr "Bualic (Ctrl+I)"
+
+#, machine, plain1
+msgid "Its bookmarks are kept, as unsorted."
+msgstr "Book ."
+
+#, machine, plain1
+msgid "Its stories stay in your archive."
+msgstr "Oxunub: ."
 
 #. a button that joins the group call that has just started
 #. a button that joins a call going on in a chat
@@ -2787,6 +2803,10 @@ msgid "They match"
 msgstr "Oxu"
 
 #, machine, plain1
+msgid "They won't be able to follow you, message you or comment on your posts, and you won't see their posts. You can unblock them any time."
+msgstr "Onlar sizi izləyə bilməyəcək, mesaj siz və ya yazılarınızı bildirmək, və onların yazılarını görməyəm. Siz hər zaman onları blok ola bilərsiniz."
+
+#, machine, plain1
 msgid "This Space has ended."
 msgstr "Bu Space sona çatdı."
 
@@ -2805,6 +2825,10 @@ msgstr "Bu browser Space rekorya bilməz."
 #, machine, plain1
 msgid "This browser cannot prepare pictures for upload. Try another browser."
 msgstr "Bu browser yükləmək üçün şəkil hazırlayır. Digər browser baxın."
+
+#, machine, plain1
+msgid "This can’t be undone."
+msgstr "Bu qazanmaq deyil."
 
 #, machine, plain1
 msgid "This channel is muted for you: no unread dot and no mention notifications."
@@ -2935,10 +2959,14 @@ msgstr "Bu vaxtda deyil. Daha sonra əlaqə edin."
 msgid "Unable to vote at this time. Please try again later."
 msgstr "Bu vaxtda pulsuz. Daha sonra əlaqə edin."
 
+#, glossary, machine, plain1
+msgid "Unblock"
+msgstr "Blokdan çıxar"
+
 #. a button that takes back "Show fewer posts like this"
-#, machine, plain1
+#, glossary, machine, plain1
 msgid "Undo"
-msgstr "Qeydiyyat"
+msgstr "Geri al"
 
 #, machine, plain1
 msgid "Undo correction"
@@ -3271,6 +3299,10 @@ msgstr "Siz artıq bu post bildirdi."
 #, machine, plain1
 msgid "You already voted on this post."
 msgstr "Siz artıq bu post oy verdi."
+
+#, glossary, machine, plain1, python-format
+msgid "You are blocking @%(name)s"
+msgstr "@%(name)s bloklamısınız"
 
 #, machine, plain1, python-format
 msgid "You are following @%(name)s."

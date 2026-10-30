@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ruqqus VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-26 09:01+0000\n"
+"POT-Creation-Date: 2026-10-29 20:40+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: sl\n"
@@ -525,9 +525,17 @@ msgstr "Nerodno"
 msgid "Back to top"
 msgstr "Na vrh"
 
+#, glossary, machine, plain1
+msgid "Block"
+msgstr "Blokiraj"
+
+#, glossary, machine, plain1, python-format
+msgid "Block @%(name)s?"
+msgstr "Blokiraj @%(name)s?"
+
 #, machine, plain1, python-format
-msgid "Block @%(name)s? They won't be able to follow you, message you or comment on your posts, and you won't see their posts. You can unblock them any time."
-msgstr "Blok.%(name)sNe bodo vam mogli slediti, vam sporočil ali komentirati vaših objav in ne boste videli njihovih objav. Kadarkoli jih lahko odblokiraš."
+msgid "Blocked @%(name)s."
+msgstr "Blokirana @ %(name)s."
 
 #, machine, plain1
 msgid "Bold (Ctrl+B)"
@@ -1132,12 +1140,12 @@ msgid "Delete the flair %(name)s? Posts that have it lose it; no post is deleted
 msgstr "Zbrišem oznako %(name)s? Postave, ki jo imajo, jo izgubijo; nobena objava se ne izbriše."
 
 #, machine, plain1
-msgid "Delete this folder? Its bookmarks are kept, as unsorted."
-msgstr "Zbrišem to mapo? Njeni zaznamki so ohranjeni, kot nesortirani."
+msgid "Delete this folder?"
+msgstr "Zbrišem to mapo?"
 
 #, machine, plain1
-msgid "Delete this highlight? Its stories stay in your archive."
-msgstr "Zbrišem to poudarjanje? Njegove zgodbe ostanejo v tvojem arhivu."
+msgid "Delete this highlight?"
+msgstr "Zbrišem to poudarjanje?"
 
 #, machine, plain1
 msgid "Delete this message"
@@ -1152,16 +1160,12 @@ msgid "Delete this message?"
 msgstr "Zbrišem to sporočilo?"
 
 #, machine, plain1
-msgid "Delete this story? It leaves every Highlight too."
-msgstr "Izbrisati to zgodbo? Ostane vsak Poudarek preveč."
+msgid "Delete this story?"
+msgstr "Izbrisati to zgodbo?"
 
 #, machine, plain1
 msgid "Delete this update?"
 msgstr "Zbrišem to posodobitev?"
-
-#, machine, plain1
-msgid "Delete this update? This can’t be undone."
-msgstr "Zbrišem to posodobitev? Tega ni mogoče popraviti."
 
 #, glossary, machine, plain1
 msgid "Deleting comment"
@@ -1496,6 +1500,10 @@ msgid "It is still listed on your profile, but its comments are in the guilds."
 msgstr "Še vedno je na seznamu na vašem profilu, vendar so njegove pripombe v cehih."
 
 #, machine, plain1
+msgid "It leaves every Highlight too."
+msgstr "Ostane vsak Poudarek preveč."
+
+#, machine, plain1
 msgid "It won't be shown again."
 msgstr "Ne bo več prikazano."
 
@@ -1506,6 +1514,14 @@ msgstr "Ne bo se obnovilo. Dostop imaš do dneva, ko si plačal."
 #, machine, plain1
 msgid "Italic (Ctrl+I)"
 msgstr "Poševna (Ctrl+I)"
+
+#, machine, plain1
+msgid "Its bookmarks are kept, as unsorted."
+msgstr "Njeni zaznamki so ohranjeni, kot nesortirani."
+
+#, machine, plain1
+msgid "Its stories stay in your archive."
+msgstr "Njegove zgodbe ostanejo v tvojem arhivu."
 
 #. a button that joins the group call that has just started
 #. a button that joins a call going on in a chat
@@ -2875,6 +2891,10 @@ msgid "They match"
 msgstr "Ujemajo se"
 
 #, machine, plain1
+msgid "They won't be able to follow you, message you or comment on your posts, and you won't see their posts. You can unblock them any time."
+msgstr "Ne bodo vam mogli slediti, vam sporočila ali komentar na vaše objave, in ne boste videli njihove objave. Kadarkoli jih lahko odblokiraš."
+
+#, machine, plain1
 msgid "This Space has ended."
 msgstr "Vesolje se je končalo."
 
@@ -2893,6 +2913,10 @@ msgstr "Ta brskalnik ne more posneti Vesolja."
 #, machine, plain1
 msgid "This browser cannot prepare pictures for upload. Try another browser."
 msgstr "Ta brskalnik ne more pripraviti slik za pošiljanje. Poskusite z drugim brskalnikom."
+
+#, machine, plain1
+msgid "This can’t be undone."
+msgstr "Tega ni mogoče popraviti."
 
 #, machine, plain1
 msgid "This channel is muted for you: no unread dot and no mention notifications."
@@ -3027,8 +3051,12 @@ msgstr "Trenutno ni moč odstraniti komentarja. Prosim, poskusite kasneje."
 msgid "Unable to vote at this time. Please try again later."
 msgstr "Trenutno ni moč glasovati. Prosim, poskusite kasneje."
 
+#, glossary, machine, plain1
+msgid "Unblock"
+msgstr "Odblokiraj"
+
 #. a button that takes back "Show fewer posts like this"
-#, machine, plain1
+#, glossary, machine, plain1
 msgid "Undo"
 msgstr "Razveljavi"
 
@@ -3377,6 +3405,10 @@ msgstr "To si že prijavil."
 #, machine, plain1
 msgid "You already voted on this post."
 msgstr "Na tem mestu ste že glasovali."
+
+#, glossary, machine, plain1, python-format
+msgid "You are blocking @%(name)s"
+msgstr "Blokiraš @%(name)s"
 
 #, machine, plain1, python-format
 msgid "You are following @%(name)s."

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ruqqus VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-26 09:01+0000\n"
+"POT-Creation-Date: 2026-10-29 20:40+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: lt\n"
@@ -495,9 +495,17 @@ msgstr "Nepatogu"
 msgid "Back to top"
 msgstr "Grįžti į viršų"
 
+#, glossary, machine, plain1
+msgid "Block"
+msgstr "Blokuoti"
+
+#, glossary, machine, plain1, python-format
+msgid "Block @%(name)s?"
+msgstr "Blokuoti @%(name)s?"
+
 #, machine, plain1, python-format
-msgid "Block @%(name)s? They won't be able to follow you, message you or comment on your posts, and you won't see their posts. You can unblock them any time."
-msgstr "Blokas @ %(name)s? Jie negalės sekti paskui jus, pranešti jums ar komentuoti savo pranešimų, ir jūs nematote savo pranešimų. Gali juos bet kada atblokuoti."
+msgid "Blocked @%(name)s."
+msgstr "Blokuotas @ %(name)s."
 
 #, machine, plain1
 msgid "Bold (Ctrl+B)"
@@ -1099,12 +1107,12 @@ msgid "Delete the flair %(name)s? Posts that have it lose it; no post is deleted
 msgstr "Ištrinti etiketę %(name)s? Pareigybės, kad ji praranda jį; nėra įrašas išbraukiamas."
 
 #, machine, plain1
-msgid "Delete this folder? Its bookmarks are kept, as unsorted."
-msgstr "Ištrinti šį aplanką? Jo žymelės saugomos kaip nerūšiuotos."
+msgid "Delete this folder?"
+msgstr "Ištrinti šį aplanką?"
 
 #, machine, plain1
-msgid "Delete this highlight? Its stories stay in your archive."
-msgstr "Pašalinti šį paryškinimą? Jos istorijos lieka archyve."
+msgid "Delete this highlight?"
+msgstr "Pašalinti šį paryškinimą?"
 
 #, machine, plain1
 msgid "Delete this message"
@@ -1119,16 +1127,12 @@ msgid "Delete this message?"
 msgstr "Ištrinti šį laišką?"
 
 #, machine, plain1
-msgid "Delete this story? It leaves every Highlight too."
-msgstr "Ištrinti šią istoriją? Jis palieka kiekvieną Šviesą taip pat."
+msgid "Delete this story?"
+msgstr "Ištrinti šią istoriją?"
 
 #, machine, plain1
 msgid "Delete this update?"
 msgstr "Pašalinti šį atnaujinimą?"
-
-#, machine, plain1
-msgid "Delete this update? This can’t be undone."
-msgstr "Pašalinti šį atnaujinimą? To negalima panaikinti."
 
 #, glossary, machine, plain1
 msgid "Deleting comment"
@@ -1461,6 +1465,10 @@ msgid "It is still listed on your profile, but its comments are in the guilds."
 msgstr "Jis vis dar yra įtrauktas į jūsų profilį, bet jo komentarai yra kaltės."
 
 #, machine, plain1
+msgid "It leaves every Highlight too."
+msgstr "Jis palieka kiekvieną Šviesą taip pat."
+
+#, machine, plain1
 msgid "It won't be shown again."
 msgstr "Jis daugiau nebus rodomas."
 
@@ -1471,6 +1479,14 @@ msgstr "Jis neatsinaujins. Laikyk priėjimą iki tos dienos, kai sumokėjai."
 #, machine, plain1
 msgid "Italic (Ctrl+I)"
 msgstr "Kursyvas (Ctrl + I)"
+
+#, machine, plain1
+msgid "Its bookmarks are kept, as unsorted."
+msgstr "Jo žymelės saugomos kaip nerūšiuotos."
+
+#, machine, plain1
+msgid "Its stories stay in your archive."
+msgstr "Jos istorijos lieka archyve."
 
 #. a button that joins the group call that has just started
 #. a button that joins a call going on in a chat
@@ -2833,6 +2849,10 @@ msgid "They match"
 msgstr "Jie sutampa"
 
 #, machine, plain1
+msgid "They won't be able to follow you, message you or comment on your posts, and you won't see their posts. You can unblock them any time."
+msgstr "Jie negalės sekti paskui jus, pranešti jums ar komentuoti savo pranešimų, ir jūs nematote savo pranešimų. Gali juos bet kada atblokuoti."
+
+#, machine, plain1
 msgid "This Space has ended."
 msgstr "Kosmosas baigėsi."
 
@@ -2851,6 +2871,10 @@ msgstr "Ši naršyklė negali įrašyti kosmoso."
 #, machine, plain1
 msgid "This browser cannot prepare pictures for upload. Try another browser."
 msgstr "Ši naršyklė negali parengti nuotraukų įkėlimui. Pabandykite kitą naršyklę."
+
+#, machine, plain1
+msgid "This can’t be undone."
+msgstr "To negalima panaikinti."
 
 #, machine, plain1
 msgid "This channel is muted for you: no unread dot and no mention notifications."
@@ -2983,10 +3007,14 @@ msgstr "Šiuo metu komentaro pašalinti nepavyko. Pabandykite vėliau."
 msgid "Unable to vote at this time. Please try again later."
 msgstr "Šiuo metu negali balsuoti. Pabandykite vėliau."
 
+#, glossary, machine, plain1
+msgid "Unblock"
+msgstr "Atblokuoti"
+
 #. a button that takes back "Show fewer posts like this"
-#, machine, plain1
+#, glossary, machine, plain1
 msgid "Undo"
-msgstr "Atšaukti"
+msgstr "Anuliuoti"
 
 #, machine, plain1
 msgid "Undo correction"
@@ -3326,6 +3354,10 @@ msgstr "Jūs jau pranešėte apie šį postą."
 #, machine, plain1
 msgid "You already voted on this post."
 msgstr "Jūs jau balsavome dėl šio posto."
+
+#, glossary, machine, plain1, python-format
+msgid "You are blocking @%(name)s"
+msgstr "Jūs blokuojate @%(name)s"
 
 #, machine, plain1, python-format
 msgid "You are following @%(name)s."

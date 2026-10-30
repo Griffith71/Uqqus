@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ruqqus VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-26 09:01+0000\n"
+"POT-Creation-Date: 2026-10-29 20:40+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: zh_Hans\n"
@@ -435,9 +435,17 @@ msgstr "尴尬"
 msgid "Back to top"
 msgstr "回到顶部"
 
-#, machine, python-format
-msgid "Block @%(name)s? They won't be able to follow you, message you or comment on your posts, and you won't see their posts. You can unblock them any time."
-msgstr "块@%(name)s他们将无法跟随你, 留言或评论你的文章, 而你不会看到他们的文章。 你可以随时解锁他们"
+#, glossary, machine, plain1
+msgid "Block"
+msgstr "屏蔽"
+
+#, glossary, machine, plain1, python-format
+msgid "Block @%(name)s?"
+msgstr "要屏蔽 @%(name)s 吗？"
+
+#, machine, plain1, python-format
+msgid "Blocked @%(name)s."
+msgstr "封锁@%(name)s。"
 
 #, machine
 msgid "Bold (Ctrl+B)"
@@ -1032,13 +1040,13 @@ msgstr "删除突出显示"
 msgid "Delete the flair %(name)s? Posts that have it lose it; no post is deleted."
 msgstr "删除标签%(name)s ? 失去该员额的员额;没有员额被删除."
 
-#, machine
-msgid "Delete this folder? Its bookmarks are kept, as unsorted."
-msgstr "删除此文件夹吗 ? 它的书签是保存的,作为无种类的."
+#, machine, plain1
+msgid "Delete this folder?"
+msgstr "删除此文件夹吗 ?"
 
-#, machine
-msgid "Delete this highlight? Its stories stay in your archive."
-msgstr "删除此突出显示 ? 它的故事留在你的档案里."
+#, machine, plain1
+msgid "Delete this highlight?"
+msgstr "删除此突出显示 ?"
 
 #, machine
 msgid "Delete this message"
@@ -1052,17 +1060,13 @@ msgstr "要删除此信件吗 ?"
 msgid "Delete this message?"
 msgstr "删除此信件吗 ?"
 
-#, machine
-msgid "Delete this story? It leaves every Highlight too."
-msgstr "删除这个故事吗 ? 它离开每一个突出亮度."
+#, machine, plain1
+msgid "Delete this story?"
+msgstr "删除这个故事吗 ?"
 
 #, machine
 msgid "Delete this update?"
 msgstr "删除此更新 ?"
-
-#, machine
-msgid "Delete this update? This can’t be undone."
-msgstr "删除此更新 ? 这不能消除."
 
 #, glossary, machine, plain1
 msgid "Deleting comment"
@@ -1390,6 +1394,10 @@ msgstr "无法出版。 再试一次."
 msgid "It is still listed on your profile, but its comments are in the guilds."
 msgstr "它仍然在您的档案中列出, 但它的评论在盾."
 
+#, machine, plain1
+msgid "It leaves every Highlight too."
+msgstr "它离开每一个突出亮度."
+
 #, machine
 msgid "It won't be shown again."
 msgstr "不会再出现."
@@ -1401,6 +1409,14 @@ msgstr "它不会更新。 你一直保持访问直到你付钱的那一天."
 #, machine
 msgid "Italic (Ctrl+I)"
 msgstr "斜体( Ctrl+I)"
+
+#, machine, plain1
+msgid "Its bookmarks are kept, as unsorted."
+msgstr "它的书签是保存的,作为无种类的."
+
+#, machine, plain1
+msgid "Its stories stay in your archive."
+msgstr "它的故事留在你的档案里."
 
 #. a button that joins the group call that has just started
 #. a button that joins a call going on in a chat
@@ -2748,6 +2764,10 @@ msgstr "他们不匹配"
 msgid "They match"
 msgstr "它们很匹配"
 
+#, machine, plain1
+msgid "They won't be able to follow you, message you or comment on your posts, and you won't see their posts. You can unblock them any time."
+msgstr "他们不会跟随你,留言或评论你的文章,你也不会看到他们的文章. 你可以随时解锁他们."
+
 #, machine
 msgid "This Space has ended."
 msgstr "这个空间已经结束了."
@@ -2767,6 +2787,10 @@ msgstr "此浏览器无法记录空间 ."
 #, machine
 msgid "This browser cannot prepare pictures for upload. Try another browser."
 msgstr "此浏览器无法为上传准备图片 。 尝试另一个浏览器 ."
+
+#, machine, plain1
+msgid "This can’t be undone."
+msgstr "这不能消除."
 
 #, machine
 msgid "This channel is muted for you: no unread dot and no mention notifications."
@@ -2895,8 +2919,12 @@ msgstr "此时无法删除注释 。 请稍候再试."
 msgid "Unable to vote at this time. Please try again later."
 msgstr "此时无法投票. 请稍候再试."
 
+#, glossary, machine, plain1
+msgid "Unblock"
+msgstr "取消屏蔽"
+
 #. a button that takes back "Show fewer posts like this"
-#, machine
+#, glossary, machine, plain1
 msgid "Undo"
 msgstr "撤销"
 
@@ -3224,6 +3252,10 @@ msgstr "你已经报告过了."
 #, machine
 msgid "You already voted on this post."
 msgstr "你已经投票了."
+
+#, glossary, machine, plain1, python-format
+msgid "You are blocking @%(name)s"
+msgstr "你已屏蔽 @%(name)s"
 
 #, machine, plain1, python-format
 msgid "You are following @%(name)s."

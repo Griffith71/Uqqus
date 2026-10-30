@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ruqqus VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-26 09:01+0000\n"
+"POT-Creation-Date: 2026-10-29 20:40+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: lv\n"
@@ -495,9 +495,17 @@ msgstr "Neveikli"
 msgid "Back to top"
 msgstr "Atpakaļ uz augšu"
 
+#, glossary, machine, plain1
+msgid "Block"
+msgstr "Bloķēt"
+
+#, glossary, machine, plain1, python-format
+msgid "Block @%(name)s?"
+msgstr "Bloķēt @%(name)s?"
+
 #, machine, plain1, python-format
-msgid "Block @%(name)s? They won't be able to follow you, message you or comment on your posts, and you won't see their posts. You can unblock them any time."
-msgstr "Bloks @ %(name)s? Viņi nevarēs sekot jums, ziņa jums vai komentārs par jūsu posts, un jūs neredzēsiet viņu posts. Jūs varat tos atbloķēt jebkurā laikā."
+msgid "Blocked @%(name)s."
+msgstr "Bloķēts @%(name)s."
 
 #, machine, plain1
 msgid "Bold (Ctrl+B)"
@@ -1099,12 +1107,12 @@ msgid "Delete the flair %(name)s? Posts that have it lose it; no post is deleted
 msgstr "Dzēst etiķeti %(name)s? Posts, kas ir tas zaudēt to; neviens post tiek dzēsts."
 
 #, machine, plain1
-msgid "Delete this folder? Its bookmarks are kept, as unsorted."
-msgstr "Dzēst šo mapi? Tās grāmatzīmes tiek turētas kā nešķirotas."
+msgid "Delete this folder?"
+msgstr "Dzēst šo mapi?"
 
 #, machine, plain1
-msgid "Delete this highlight? Its stories stay in your archive."
-msgstr "Dzēst šo izcēlumu? Tās stāsti paliek jūsu arhīvā."
+msgid "Delete this highlight?"
+msgstr "Dzēst šo izcēlumu?"
 
 #, machine, plain1
 msgid "Delete this message"
@@ -1119,16 +1127,12 @@ msgid "Delete this message?"
 msgstr "Dzēst šo vēstuli?"
 
 #, machine, plain1
-msgid "Delete this story? It leaves every Highlight too."
-msgstr "Dzēst šo stāstu? Tas atstāj katru Izceltais pārāk."
+msgid "Delete this story?"
+msgstr "Dzēst šo stāstu?"
 
 #, machine, plain1
 msgid "Delete this update?"
 msgstr "Dzēst atjauninājumu?"
-
-#, machine, plain1
-msgid "Delete this update? This can’t be undone."
-msgstr "Dzēst atjauninājumu? To nevar novērst."
 
 #, glossary, machine, plain1
 msgid "Deleting comment"
@@ -1461,6 +1465,10 @@ msgid "It is still listed on your profile, but its comments are in the guilds."
 msgstr "Tas joprojām ir minēts jūsu profilā, bet tās komentāri ir ģildēs."
 
 #, machine, plain1
+msgid "It leaves every Highlight too."
+msgstr "Tas atstāj katru Izceltais pārāk."
+
+#, machine, plain1
 msgid "It won't be shown again."
 msgstr "Tas vairs netiks parādīts."
 
@@ -1471,6 +1479,14 @@ msgstr "Tas neatjaunosies. Jūs varat piekļūt līdz dienai, kad samaksājāt."
 #, machine, plain1
 msgid "Italic (Ctrl+I)"
 msgstr "Kursīvs (Ctrl+I)"
+
+#, machine, plain1
+msgid "Its bookmarks are kept, as unsorted."
+msgstr "Tās grāmatzīmes tiek turētas kā nešķirotas."
+
+#, machine, plain1
+msgid "Its stories stay in your archive."
+msgstr "Tās stāsti paliek jūsu arhīvā."
 
 #. a button that joins the group call that has just started
 #. a button that joins a call going on in a chat
@@ -2833,6 +2849,10 @@ msgid "They match"
 msgstr "Viņi atbilst"
 
 #, machine, plain1
+msgid "They won't be able to follow you, message you or comment on your posts, and you won't see their posts. You can unblock them any time."
+msgstr "Viņi nevarēs sekot jums, ziņa jums vai komentārs par jūsu posts, un jūs neredzēsiet viņu posts. Jūs varat tos atbloķēt jebkurā laikā."
+
+#, machine, plain1
 msgid "This Space has ended."
 msgstr "Šī telpa ir beigusies."
 
@@ -2851,6 +2871,10 @@ msgstr "Šī pārlūkprogramma nevar ierakstīt Visumu."
 #, machine, plain1
 msgid "This browser cannot prepare pictures for upload. Try another browser."
 msgstr "Šī pārlūkprogramma nevar sagatavot attēlus augšupielādēšanai. Mēģini citu pārlūku."
+
+#, machine, plain1
+msgid "This can’t be undone."
+msgstr "To nevar novērst."
 
 #, machine, plain1
 msgid "This channel is muted for you: no unread dot and no mention notifications."
@@ -2983,8 +3007,12 @@ msgstr "Neizdevās izņemt komentāru šajā laikā. Lūdzu, mēģiniet vēlāk 
 msgid "Unable to vote at this time. Please try again later."
 msgstr "Šajā laikā nevar balsot. Lūdzu, mēģiniet vēlāk vēlreiz."
 
+#, glossary, machine, plain1
+msgid "Unblock"
+msgstr "Atbloķēt"
+
 #. a button that takes back "Show fewer posts like this"
-#, machine, plain1
+#, glossary, machine, plain1
 msgid "Undo"
 msgstr "Atsaukt"
 
@@ -3326,6 +3354,10 @@ msgstr "Jūs jau ziņojāt par šo ziņu."
 #, machine, plain1
 msgid "You already voted on this post."
 msgstr "Jūs jau balsojāt par šo amatu."
+
+#, glossary, machine, plain1, python-format
+msgid "You are blocking @%(name)s"
+msgstr "Jūs bloķējat @%(name)s"
 
 #, machine, plain1, python-format
 msgid "You are following @%(name)s."

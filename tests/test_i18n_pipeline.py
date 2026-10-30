@@ -327,6 +327,9 @@ def test_marks_the_machine_doubled_are_written_once():
     assert tx.tidy("%(who)s comments on %(title)s - %(site)s",
                    "%(who)s コメント %(title)s - - - %(site)s") == "%(who)s コメント %(title)s - %(site)s"
     assert tx.tidy("Done.", "हो गया।.") == "हो गया।"
+    assert tx.tidy("Delete this story?", "تحذف هذه القصة؟?") == "تحذف هذه القصة؟"
+    assert tx.tidy("Delete this story?", "删除这个故事？?") == "删除这个故事？"
+    assert tx.tidy("Saved.", "保存しました。.") == "保存しました。"
     assert tx.tidy("Loading...", "Chargement...") == "Chargement..."           # the English's own
     assert tx.tidy("Loading…", "Cargando...") == "Cargando…" and tx.tidy("Loading…", "Cargando.") == "Cargando…"
     catalog = Catalog(locale="zh", domain="messages")

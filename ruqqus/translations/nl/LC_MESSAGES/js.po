@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ruqqus VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-26 09:01+0000\n"
+"POT-Creation-Date: 2026-10-29 20:40+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: nl\n"
@@ -465,9 +465,17 @@ msgstr "Ongemakkelijk"
 msgid "Back to top"
 msgstr "Terug naar boven"
 
-#, machine, python-format
-msgid "Block @%(name)s? They won't be able to follow you, message you or comment on your posts, and you won't see their posts. You can unblock them any time."
-msgstr "Blokkeren @%(name)s? Ze zullen niet in staat zijn om u te volgen, bericht u of commentaar op uw berichten, en je zult hun berichten niet zien. Je kunt ze altijd deblokkeren."
+#, glossary, machine, plain1
+msgid "Block"
+msgstr "Blokkeren"
+
+#, glossary, machine, plain1, python-format
+msgid "Block @%(name)s?"
+msgstr "@%(name)s blokkeren?"
+
+#, machine, plain1, python-format
+msgid "Blocked @%(name)s."
+msgstr "Geblokkeerd @%(name)s."
 
 #, machine
 msgid "Bold (Ctrl+B)"
@@ -1065,13 +1073,13 @@ msgstr "Markering verwijderen"
 msgid "Delete the flair %(name)s? Posts that have it lose it; no post is deleted."
 msgstr "Het label %(name)s verwijderen? Berichten die het verliezen; geen post wordt verwijderd."
 
-#, machine
-msgid "Delete this folder? Its bookmarks are kept, as unsorted."
-msgstr "Deze map verwijderen? Zijn bladwijzers worden bewaard, als ongesorteerd."
+#, machine, plain1
+msgid "Delete this folder?"
+msgstr "Deze map verwijderen?"
 
-#, machine
-msgid "Delete this highlight? Its stories stay in your archive."
-msgstr "Dit hoogtepunt verwijderen? De verhalen blijven in je archief."
+#, machine, plain1
+msgid "Delete this highlight?"
+msgstr "Dit hoogtepunt verwijderen?"
 
 #, machine
 msgid "Delete this message"
@@ -1085,17 +1093,13 @@ msgstr "Dit bericht voor iedereen verwijderen?"
 msgid "Delete this message?"
 msgstr "Dit bericht verwijderen?"
 
-#, machine
-msgid "Delete this story? It leaves every Highlight too."
-msgstr "Dit verhaal verwijderen? Het laat ook elke Highlight achter."
+#, machine, plain1
+msgid "Delete this story?"
+msgstr "Dit verhaal verwijderen?"
 
 #, machine
 msgid "Delete this update?"
 msgstr "Deze update verwijderen?"
-
-#, machine
-msgid "Delete this update? This can’t be undone."
-msgstr "Deze update verwijderen? Dit kan niet ongedaan worden gemaakt."
 
 #, glossary, machine, plain1
 msgid "Deleting comment"
@@ -1425,6 +1429,10 @@ msgstr "Het kon niet gepubliceerd worden. Probeer het nog eens."
 msgid "It is still listed on your profile, but its comments are in the guilds."
 msgstr "Het staat nog steeds op uw profiel, maar de commentaren staan in de gilden."
 
+#, machine, plain1
+msgid "It leaves every Highlight too."
+msgstr "Het laat ook elke Highlight achter."
+
 #, machine
 msgid "It won't be shown again."
 msgstr "Het zal niet meer getoond worden."
@@ -1436,6 +1444,14 @@ msgstr "Het zal niet vernieuwen. Je houdt toegang tot de dag waarop je betaald h
 #, machine
 msgid "Italic (Ctrl+I)"
 msgstr "Cursief (Ctrl+I)"
+
+#, machine, plain1
+msgid "Its bookmarks are kept, as unsorted."
+msgstr "Zijn bladwijzers worden bewaard, als ongesorteerd."
+
+#, machine, plain1
+msgid "Its stories stay in your archive."
+msgstr "De verhalen blijven in je archief."
 
 #. a button that joins the group call that has just started
 #. a button that joins a call going on in a chat
@@ -2790,6 +2806,10 @@ msgstr "Ze komen niet overeen"
 msgid "They match"
 msgstr "Ze komen overeen"
 
+#, machine, plain1
+msgid "They won't be able to follow you, message you or comment on your posts, and you won't see their posts. You can unblock them any time."
+msgstr "Ze zullen niet in staat zijn om u te volgen, bericht u of commentaar op uw berichten, en je zult hun berichten niet zien. Je kunt ze altijd deblokkeren."
+
 #, machine
 msgid "This Space has ended."
 msgstr "Deze ruimte is voorbij."
@@ -2809,6 +2829,10 @@ msgstr "Deze browser kan de ruimte niet opnemen."
 #, machine
 msgid "This browser cannot prepare pictures for upload. Try another browser."
 msgstr "Deze browser kan geen foto's voorbereiden voor upload. Probeer een andere browser."
+
+#, machine, plain1
+msgid "This can’t be undone."
+msgstr "Dit kan niet ongedaan worden gemaakt."
 
 #, machine
 msgid "This channel is muted for you: no unread dot and no mention notifications."
@@ -2939,8 +2963,12 @@ msgstr "Kan het commentaar op dit moment niet verwijderen. Probeer het later nog
 msgid "Unable to vote at this time. Please try again later."
 msgstr "Ik kan nu niet stemmen. Probeer het later nog eens."
 
+#, glossary, machine, plain1
+msgid "Unblock"
+msgstr "Deblokkeren"
+
 #. a button that takes back "Show fewer posts like this"
-#, machine
+#, glossary, machine, plain1
 msgid "Undo"
 msgstr "Ongedaan maken"
 
@@ -3275,6 +3303,10 @@ msgstr "Je hebt dit bericht al gemeld."
 #, machine
 msgid "You already voted on this post."
 msgstr "U hebt al over deze functie gestemd."
+
+#, glossary, machine, plain1, python-format
+msgid "You are blocking @%(name)s"
+msgstr "Je blokkeert @%(name)s"
 
 #, machine, plain1, python-format
 msgid "You are following @%(name)s."

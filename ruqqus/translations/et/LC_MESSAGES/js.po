@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ruqqus VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-26 09:01+0000\n"
+"POT-Creation-Date: 2026-10-29 20:40+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: et\n"
@@ -465,9 +465,17 @@ msgstr "Piinlik"
 msgid "Back to top"
 msgstr "Tagasi üles"
 
+#, glossary, machine, plain1
+msgid "Block"
+msgstr "Blokeeri"
+
+#, glossary, machine, plain1, python-format
+msgid "Block @%(name)s?"
+msgstr "Blokeeri @%(name)s?"
+
 #, machine, plain1, python-format
-msgid "Block @%(name)s? They won't be able to follow you, message you or comment on your posts, and you won't see their posts. You can unblock them any time."
-msgstr "Blokeeri @%(name)s? Nad ei saa teid jälgida, teile sõnumeid saata ega teie postitusi kommenteerida ja te ei näe nende postitusi. Sa võid nad igal ajal blokeerida."
+msgid "Blocked @%(name)s."
+msgstr "Blokeeritud @%(name)s."
 
 #, machine, plain1
 msgid "Bold (Ctrl+B)"
@@ -1066,12 +1074,12 @@ msgid "Delete the flair %(name)s? Posts that have it lose it; no post is deleted
 msgstr "Kustuta pealdis %(name)s? Postid, millel see on, kaotavad selle; ühtegi postitust ei kustutata."
 
 #, machine, plain1
-msgid "Delete this folder? Its bookmarks are kept, as unsorted."
-msgstr "Kustuta see kaust? Selle järjehoidjaid hoitakse, nagu sorteerimata."
+msgid "Delete this folder?"
+msgstr "Kustuta see kaust?"
 
 #, machine, plain1
-msgid "Delete this highlight? Its stories stay in your archive."
-msgstr "Kustuta see tipphetk? Selle lood jäävad sinu arhiivi."
+msgid "Delete this highlight?"
+msgstr "Kustuta see tipphetk?"
 
 #, machine, plain1
 msgid "Delete this message"
@@ -1086,16 +1094,12 @@ msgid "Delete this message?"
 msgstr "Kustuta see teade?"
 
 #, machine, plain1
-msgid "Delete this story? It leaves every Highlight too."
-msgstr "Kustuta see lugu? See jätab ka kõik Highlight'id."
+msgid "Delete this story?"
+msgstr "Kustuta see lugu?"
 
 #, machine, plain1
 msgid "Delete this update?"
 msgstr "Kas kustutada see värskendus?"
-
-#, machine, plain1
-msgid "Delete this update? This can’t be undone."
-msgstr "Kas kustutada see värskendus? Seda ei saa tagasi võtta."
 
 #, glossary, machine, plain1
 msgid "Deleting comment"
@@ -1426,6 +1430,10 @@ msgid "It is still listed on your profile, but its comments are in the guilds."
 msgstr "See on endiselt teie profiilis, kuid selle kommentaarid on gildides."
 
 #, machine, plain1
+msgid "It leaves every Highlight too."
+msgstr "See jätab ka kõik Highlight'id."
+
+#, machine, plain1
 msgid "It won't be shown again."
 msgstr "Seda enam ei näidata."
 
@@ -1436,6 +1444,14 @@ msgstr "See ei uuene. Sa hoiad ligipääsu kuni päevani, mille eest sa maksid."
 #, machine, plain1
 msgid "Italic (Ctrl+I)"
 msgstr "Itaalia (Ctrl+I)"
+
+#, machine, plain1
+msgid "Its bookmarks are kept, as unsorted."
+msgstr "Selle järjehoidjaid hoitakse, nagu sorteerimata."
+
+#, machine, plain1
+msgid "Its stories stay in your archive."
+msgstr "Selle lood jäävad sinu arhiivi."
 
 #. a button that joins the group call that has just started
 #. a button that joins a call going on in a chat
@@ -2791,6 +2807,10 @@ msgid "They match"
 msgstr "Sobib"
 
 #, machine, plain1
+msgid "They won't be able to follow you, message you or comment on your posts, and you won't see their posts. You can unblock them any time."
+msgstr "Nad ei saa teid jälgida, teile sõnumeid saata ega teie postitusi kommenteerida ja te ei näe nende postitusi. Sa võid nad igal ajal blokeerida."
+
+#, machine, plain1
 msgid "This Space has ended."
 msgstr "See ruum on lõppenud."
 
@@ -2809,6 +2829,10 @@ msgstr "See brauser ei saa ruumi salvestada."
 #, machine, plain1
 msgid "This browser cannot prepare pictures for upload. Try another browser."
 msgstr "See brauser ei saa pilte üleslaadimiseks ette valmistada. Proovi teist brauserit."
+
+#, machine, plain1
+msgid "This can’t be undone."
+msgstr "Seda ei saa tagasi võtta."
 
 #, machine, plain1
 msgid "This channel is muted for you: no unread dot and no mention notifications."
@@ -2939,8 +2963,12 @@ msgstr "Kommentaari eemaldamine hetkel nurjus. Palun proovi hiljem uuesti."
 msgid "Unable to vote at this time. Please try again later."
 msgstr "Praegu ei saa hääletada. Palun proovi hiljem uuesti."
 
+#, glossary, machine, plain1
+msgid "Unblock"
+msgstr "Tühista blokeering"
+
 #. a button that takes back "Show fewer posts like this"
-#, machine, plain1
+#, glossary, machine, plain1
 msgid "Undo"
 msgstr "Võta tagasi"
 
@@ -3275,6 +3303,10 @@ msgstr "Sa juba teatasid sellest postitusest."
 #, machine, plain1
 msgid "You already voted on this post."
 msgstr "Te juba hääletasite selle postituse üle."
+
+#, glossary, machine, plain1, python-format
+msgid "You are blocking @%(name)s"
+msgstr "Oled kasutaja @%(name)s blokeerinud"
 
 #, machine, plain1, python-format
 msgid "You are following @%(name)s."

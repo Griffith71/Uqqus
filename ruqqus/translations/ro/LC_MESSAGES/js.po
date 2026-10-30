@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ruqqus VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-26 09:01+0000\n"
+"POT-Creation-Date: 2026-10-29 20:40+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: ro\n"
@@ -495,9 +495,17 @@ msgstr "Penibil"
 msgid "Back to top"
 msgstr "Înapoi sus"
 
+#, glossary, machine, plain1
+msgid "Block"
+msgstr "Blochează"
+
+#, glossary, machine, plain1, python-format
+msgid "Block @%(name)s?"
+msgstr "Blochează @%(name)s?"
+
 #, machine, plain1, python-format
-msgid "Block @%(name)s? They won't be able to follow you, message you or comment on your posts, and you won't see their posts. You can unblock them any time."
-msgstr "Block @ %(name)s? Nu vor putea să te urmărească, să-ţi transmită sau să comenteze mesajele tale, şi nu le vei vedea mesajele. Poţi să le deblochezi oricând."
+msgid "Blocked @%(name)s."
+msgstr "Blocat @ %(name)s."
 
 #, machine, plain1
 msgid "Bold (Ctrl+B)"
@@ -1099,12 +1107,12 @@ msgid "Delete the flair %(name)s? Posts that have it lose it; no post is deleted
 msgstr "Se elimină eticheta %(name)s? Posturi care au pierdut-o; nici un post nu este șters."
 
 #, machine, plain1
-msgid "Delete this folder? Its bookmarks are kept, as unsorted."
-msgstr "Ștergeți acest dosar? Semnele sale de carte sunt păstrate, ca nesortate."
+msgid "Delete this folder?"
+msgstr "Ștergeți acest dosar?"
 
 #, machine, plain1
-msgid "Delete this highlight? Its stories stay in your archive."
-msgstr "Ştergeţi acest punct? Poveştile ei rămân în arhiva ta."
+msgid "Delete this highlight?"
+msgstr "Ştergeţi acest punct?"
 
 #, machine, plain1
 msgid "Delete this message"
@@ -1119,16 +1127,12 @@ msgid "Delete this message?"
 msgstr "Şterge acest mesaj?"
 
 #, machine, plain1
-msgid "Delete this story? It leaves every Highlight too."
-msgstr "Să şterg povestea asta? Lasa fiecare Highlight prea."
+msgid "Delete this story?"
+msgstr "Să şterg povestea asta?"
 
 #, machine, plain1
 msgid "Delete this update?"
 msgstr "Ștergeți această actualizare?"
-
-#, machine, plain1
-msgid "Delete this update? This can’t be undone."
-msgstr "Ștergeți această actualizare? Acest lucru nu poate fi anulată."
 
 #, glossary, machine, plain1
 msgid "Deleting comment"
@@ -1461,6 +1465,10 @@ msgid "It is still listed on your profile, but its comments are in the guilds."
 msgstr "Acesta este încă listat pe profilul dvs., dar comentariile sale sunt în bresle."
 
 #, machine, plain1
+msgid "It leaves every Highlight too."
+msgstr "Lasa fiecare Highlight prea."
+
+#, machine, plain1
 msgid "It won't be shown again."
 msgstr "Nu va mai fi arătat."
 
@@ -1471,6 +1479,14 @@ msgstr "Nu se va reînnoi. Ai acces până în ziua în care ai plătit."
 #, machine, plain1
 msgid "Italic (Ctrl+I)"
 msgstr "Italic (Ctrl+I)"
+
+#, machine, plain1
+msgid "Its bookmarks are kept, as unsorted."
+msgstr "Semnele sale de carte sunt păstrate, ca nesortate."
+
+#, machine, plain1
+msgid "Its stories stay in your archive."
+msgstr "Poveştile ei rămân în arhiva ta."
 
 #. a button that joins the group call that has just started
 #. a button that joins a call going on in a chat
@@ -2833,6 +2849,10 @@ msgid "They match"
 msgstr "Se potrivesc"
 
 #, machine, plain1
+msgid "They won't be able to follow you, message you or comment on your posts, and you won't see their posts. You can unblock them any time."
+msgstr "Nu vor putea să te urmărească, să-ţi transmită sau să comenteze mesajele tale, şi nu le vei vedea mesajele. Poţi să le deblochezi oricând."
+
+#, machine, plain1
 msgid "This Space has ended."
 msgstr "Acest spațiu sa încheiat."
 
@@ -2851,6 +2871,10 @@ msgstr "Acest browser nu poate înregistra spaţiul."
 #, machine, plain1
 msgid "This browser cannot prepare pictures for upload. Try another browser."
 msgstr "Acest browser nu poate pregăti fotografii pentru încărcare. Încearcă alt browser."
+
+#, machine, plain1
+msgid "This can’t be undone."
+msgstr "Acest lucru nu poate fi anulată."
 
 #, machine, plain1
 msgid "This channel is muted for you: no unread dot and no mention notifications."
@@ -2983,10 +3007,14 @@ msgstr "Imposibil de eliminat comentariul în acest moment. Vă rugăm să înce
 msgid "Unable to vote at this time. Please try again later."
 msgstr "Nu pot vota în acest moment. Vă rugăm să încercați din nou mai târziu."
 
+#, glossary, machine, plain1
+msgid "Unblock"
+msgstr "Deblochează"
+
 #. a button that takes back "Show fewer posts like this"
-#, machine, plain1
+#, glossary, machine, plain1
 msgid "Undo"
-msgstr "Desfă"
+msgstr "Anulează"
 
 #, machine, plain1
 msgid "Undo correction"
@@ -3326,6 +3354,10 @@ msgstr "Ai raportat deja acest post."
 #, machine, plain1
 msgid "You already voted on this post."
 msgstr "Deja ai votat pentru acest post."
+
+#, glossary, machine, plain1, python-format
+msgid "You are blocking @%(name)s"
+msgstr "Ai blocat contul @%(name)s"
 
 #, machine, plain1, python-format
 msgid "You are following @%(name)s."

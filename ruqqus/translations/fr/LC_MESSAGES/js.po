@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ruqqus VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-26 09:01+0000\n"
+"POT-Creation-Date: 2026-10-29 20:40+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: fr\n"
@@ -465,9 +465,17 @@ msgstr "Gênant"
 msgid "Back to top"
 msgstr "Retour en haut"
 
-#, machine, python-format
-msgid "Block @%(name)s? They won't be able to follow you, message you or comment on your posts, and you won't see their posts. You can unblock them any time."
-msgstr "Bloc @%(name)s ? Ils ne seront pas en mesure de vous suivre, de vous envoyer un message ou de commenter vos messages, et vous ne verrez pas leurs messages. Vous pouvez les débloquer à tout moment."
+#, glossary, machine, plain1
+msgid "Block"
+msgstr "Bloquer"
+
+#, glossary, machine, plain1, python-format
+msgid "Block @%(name)s?"
+msgstr "Bloquer @%(name)s ?"
+
+#, machine, plain1, python-format
+msgid "Blocked @%(name)s."
+msgstr "Bloqué @%(name)s."
 
 #, machine
 msgid "Bold (Ctrl+B)"
@@ -1065,13 +1073,13 @@ msgstr "Supprimer le point fort"
 msgid "Delete the flair %(name)s? Posts that have it lose it; no post is deleted."
 msgstr "Supprimer l'étiquette %(name)s? Postes qui l'ont perdu; aucun poste n'est supprimé."
 
-#, machine
-msgid "Delete this folder? Its bookmarks are kept, as unsorted."
-msgstr "Supprimer ce dossier ? Ses signets sont conservés, comme non triés."
+#, machine, plain1
+msgid "Delete this folder?"
+msgstr "Supprimer ce dossier ?"
 
-#, machine
-msgid "Delete this highlight? Its stories stay in your archive."
-msgstr "Supprimer ce point fort ? Ses histoires restent dans vos archives."
+#, machine, plain1
+msgid "Delete this highlight?"
+msgstr "Supprimer ce point fort ?"
 
 #, machine
 msgid "Delete this message"
@@ -1085,17 +1093,13 @@ msgstr "Supprimer ce message pour tout le monde ?"
 msgid "Delete this message?"
 msgstr "Supprimer ce message ?"
 
-#, machine
-msgid "Delete this story? It leaves every Highlight too."
-msgstr "Supprimer cette histoire ? Il laisse chaque Highlight aussi."
+#, machine, plain1
+msgid "Delete this story?"
+msgstr "Supprimer cette histoire ?"
 
 #, machine
 msgid "Delete this update?"
 msgstr "Supprimer cette mise à jour?"
-
-#, machine
-msgid "Delete this update? This can’t be undone."
-msgstr "Supprimer cette mise à jour? Ça ne peut pas être annulé."
 
 #, glossary, machine, plain1
 msgid "Deleting comment"
@@ -1425,6 +1429,10 @@ msgstr "Il ne pouvait pas être publié. Essaie encore."
 msgid "It is still listed on your profile, but its comments are in the guilds."
 msgstr "Il est toujours listé sur votre profil, mais ses commentaires sont dans les guildes."
 
+#, machine, plain1
+msgid "It leaves every Highlight too."
+msgstr "Il laisse chaque Highlight aussi."
+
 #, machine
 msgid "It won't be shown again."
 msgstr "Il ne sera plus montré."
@@ -1436,6 +1444,14 @@ msgstr "Ça ne se renouvellera pas. Vous gardez l'accès jusqu'au jour où vous 
 #, machine
 msgid "Italic (Ctrl+I)"
 msgstr "Italique (Ctrl+I)"
+
+#, machine, plain1
+msgid "Its bookmarks are kept, as unsorted."
+msgstr "Ses signets sont conservés, comme non triés."
+
+#, machine, plain1
+msgid "Its stories stay in your archive."
+msgstr "Ses histoires restent dans vos archives."
 
 #. a button that joins the group call that has just started
 #. a button that joins a call going on in a chat
@@ -2790,6 +2806,10 @@ msgstr "Ils ne correspondent pas"
 msgid "They match"
 msgstr "Ils correspondent"
 
+#, machine, plain1
+msgid "They won't be able to follow you, message you or comment on your posts, and you won't see their posts. You can unblock them any time."
+msgstr "Ils ne seront pas en mesure de vous suivre, de vous envoyer un message ou de commenter vos messages, et vous ne verrez pas leurs messages. Vous pouvez les débloquer à tout moment."
+
 #, machine
 msgid "This Space has ended."
 msgstr "Cet espace est terminé."
@@ -2809,6 +2829,10 @@ msgstr "Ce navigateur ne peut pas enregistrer l'espace."
 #, machine
 msgid "This browser cannot prepare pictures for upload. Try another browser."
 msgstr "Ce navigateur ne peut pas préparer des images pour le téléchargement. Essayez un autre navigateur."
+
+#, machine, plain1
+msgid "This can’t be undone."
+msgstr "Ça ne peut pas être annulé."
 
 #, machine
 msgid "This channel is muted for you: no unread dot and no mention notifications."
@@ -2939,8 +2963,12 @@ msgstr "Impossible de supprimer le commentaire pour le moment. Veuillez réessay
 msgid "Unable to vote at this time. Please try again later."
 msgstr "Impossible de voter pour le moment. Veuillez réessayer plus tard."
 
+#, glossary, machine, plain1
+msgid "Unblock"
+msgstr "Débloquer"
+
 #. a button that takes back "Show fewer posts like this"
-#, machine
+#, glossary, machine, plain1
 msgid "Undo"
 msgstr "Annuler"
 
@@ -3275,6 +3303,10 @@ msgstr "Vous avez déjà signalé ce billet."
 #, machine
 msgid "You already voted on this post."
 msgstr "Vous avez déjà voté sur ce poste."
+
+#, glossary, machine, plain1, python-format
+msgid "You are blocking @%(name)s"
+msgstr "Vous bloquez @%(name)s"
 
 #, machine, plain1, python-format
 msgid "You are following @%(name)s."

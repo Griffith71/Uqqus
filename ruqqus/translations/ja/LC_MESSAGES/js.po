@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ruqqus VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-26 09:01+0000\n"
+"POT-Creation-Date: 2026-10-29 20:40+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: ja\n"
@@ -435,9 +435,17 @@ msgstr "気まずい"
 msgid "Back to top"
 msgstr "トップに戻る"
 
-#, machine, python-format
-msgid "Block @%(name)s? They won't be able to follow you, message you or comment on your posts, and you won't see their posts. You can unblock them any time."
-msgstr "ブロック @%(name)s? あなたの投稿にあなたをフォローしたり、コメントしたりすることはできません。 いつでもブロック解除できます."
+#, glossary, machine, plain1
+msgid "Block"
+msgstr "ブロック"
+
+#, glossary, machine, plain1, python-format
+msgid "Block @%(name)s?"
+msgstr "@%(name)s をブロック？"
+
+#, machine, plain1, python-format
+msgid "Blocked @%(name)s."
+msgstr "ブロックされた @%(name)s."
 
 #, machine
 msgid "Bold (Ctrl+B)"
@@ -1032,13 +1040,13 @@ msgstr "ハイライトを削除"
 msgid "Delete the flair %(name)s? Posts that have it lose it; no post is deleted."
 msgstr "ラベル%(name)sを削除しますか? それを失う投稿。投稿は削除されません."
 
-#, machine
-msgid "Delete this folder? Its bookmarks are kept, as unsorted."
-msgstr "このフォルダを削除しますか? そのブックマークは、無ソートとして保存されます."
+#, machine, plain1
+msgid "Delete this folder?"
+msgstr "このフォルダを削除しますか?"
 
-#, machine
-msgid "Delete this highlight? Its stories stay in your archive."
-msgstr "このハイライトを削除する? アーカイブに滞在するストーリー."
+#, machine, plain1
+msgid "Delete this highlight?"
+msgstr "このハイライトを削除する?"
 
 #, machine
 msgid "Delete this message"
@@ -1052,17 +1060,13 @@ msgstr "みんなのためにこのメッセージを削除しますか?"
 msgid "Delete this message?"
 msgstr "このメッセージを削除します?"
 
-#, machine
-msgid "Delete this story? It leaves every Highlight too."
-msgstr "このストーリーを削除する それはすべてのハイライトを残します."
+#, machine, plain1
+msgid "Delete this story?"
+msgstr "このストーリーを削除する?"
 
 #, machine
 msgid "Delete this update?"
 msgstr "この更新を削除しますか?"
-
-#, machine
-msgid "Delete this update? This can’t be undone."
-msgstr "この更新を削除しますか? これは元に戻すことができません."
 
 #, glossary, machine, plain1
 msgid "Deleting comment"
@@ -1390,6 +1394,10 @@ msgstr "公開できませんでした。 もう一度お試しください."
 msgid "It is still listed on your profile, but its comments are in the guilds."
 msgstr "あなたのプロフィールにはまだリストされていますが、そのコメントはギルドにあります."
 
+#, machine, plain1
+msgid "It leaves every Highlight too."
+msgstr "それはすべてのハイライトを残します."
+
 #, machine
 msgid "It won't be shown again."
 msgstr "再び表示されません."
@@ -1401,6 +1409,14 @@ msgstr "更新しません。 お支払いいただいた日までのアクセ�
 #, machine
 msgid "Italic (Ctrl+I)"
 msgstr "イタリック(Ctrl+I)"
+
+#, machine, plain1
+msgid "Its bookmarks are kept, as unsorted."
+msgstr "そのブックマークは、無ソートとして保存されます."
+
+#, machine, plain1
+msgid "Its stories stay in your archive."
+msgstr "アーカイブに滞在するストーリー."
 
 #. a button that joins the group call that has just started
 #. a button that joins a call going on in a chat
@@ -2748,6 +2764,10 @@ msgstr "一致しない"
 msgid "They match"
 msgstr "彼らは一致します"
 
+#, machine, plain1
+msgid "They won't be able to follow you, message you or comment on your posts, and you won't see their posts. You can unblock them any time."
+msgstr "あなたの投稿にあなたをフォローしたり、コメントしたりすることはできません。 いつでもブロック解除できます."
+
 #, machine
 msgid "This Space has ended."
 msgstr "終了いたしました."
@@ -2767,6 +2787,10 @@ msgstr "このブラウザはスペースを記録できません."
 #, machine
 msgid "This browser cannot prepare pictures for upload. Try another browser."
 msgstr "このブラウザはアップロード用の写真を用意できません。 別のブラウザをお試しください."
+
+#, machine, plain1
+msgid "This can’t be undone."
+msgstr "これは元に戻すことができません."
 
 #, machine
 msgid "This channel is muted for you: no unread dot and no mention notifications."
@@ -2895,10 +2919,14 @@ msgstr "この時点でコメントを削除できません。 もう一度お�
 msgid "Unable to vote at this time. Please try again later."
 msgstr "今回は投票できません。 もう一度お試しください."
 
+#, glossary, machine, plain1
+msgid "Unblock"
+msgstr "ブロックを解除"
+
 #. a button that takes back "Show fewer posts like this"
-#, machine
+#, glossary, machine, plain1
 msgid "Undo"
-msgstr "ログイン"
+msgstr "元に戻す"
 
 #, machine
 msgid "Undo correction"
@@ -3224,6 +3252,10 @@ msgstr "この投稿を既に報告しています."
 #, machine
 msgid "You already voted on this post."
 msgstr "すでにこの投稿に投票しました."
+
+#, glossary, machine, plain1, python-format
+msgid "You are blocking @%(name)s"
+msgstr "@%(name)s をブロックしています"
 
 #, machine, plain1, python-format
 msgid "You are following @%(name)s."

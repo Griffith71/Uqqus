@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ruqqus VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-26 09:01+0000\n"
+"POT-Creation-Date: 2026-10-29 20:40+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: es\n"
@@ -465,9 +465,17 @@ msgstr "Incómodo"
 msgid "Back to top"
 msgstr "Volver arriba"
 
-#, machine, python-format
-msgid "Block @%(name)s? They won't be able to follow you, message you or comment on your posts, and you won't see their posts. You can unblock them any time."
-msgstr "Bloqueo%(name)sNo podrán seguirte, enviarte mensajes o comentar tus mensajes, y no verás sus mensajes. Puedes desbloquearlos en cualquier momento."
+#, glossary, machine, plain1
+msgid "Block"
+msgstr "Bloquear"
+
+#, glossary, machine, plain1, python-format
+msgid "Block @%(name)s?"
+msgstr "¿Bloquear a @%(name)s?"
+
+#, machine, plain1, python-format
+msgid "Blocked @%(name)s."
+msgstr "Bloqueado @%(name)s."
 
 #, machine
 msgid "Bold (Ctrl+B)"
@@ -1065,13 +1073,13 @@ msgstr "Suprímase el punto de referencia"
 msgid "Delete the flair %(name)s? Posts that have it lose it; no post is deleted."
 msgstr "Eliminar la etiqueta %(name)s? Puestos que lo tienen perder; no se elimina ningún puesto."
 
-#, machine
-msgid "Delete this folder? Its bookmarks are kept, as unsorted."
-msgstr "Eliminar esta carpeta? Sus marcadores son mantenidos, sin surtido."
+#, machine, plain1
+msgid "Delete this folder?"
+msgstr "Eliminar esta carpeta?"
 
-#, machine
-msgid "Delete this highlight? Its stories stay in your archive."
-msgstr "Eliminar este punto culminante? Sus historias permanecen en su archivo."
+#, machine, plain1
+msgid "Delete this highlight?"
+msgstr "Eliminar este punto culminante?"
 
 #, machine
 msgid "Delete this message"
@@ -1085,17 +1093,13 @@ msgstr "Eliminar este mensaje para todos?"
 msgid "Delete this message?"
 msgstr "Eliminar este mensaje?"
 
-#, machine
-msgid "Delete this story? It leaves every Highlight too."
-msgstr "¿Eliminar esta historia? También deja todo Highlight."
+#, machine, plain1
+msgid "Delete this story?"
+msgstr "¿Eliminar esta historia?"
 
 #, machine
 msgid "Delete this update?"
 msgstr "Eliminar esta actualización?"
-
-#, machine
-msgid "Delete this update? This can’t be undone."
-msgstr "Eliminar esta actualización? Esto no se puede deshacer."
 
 #, glossary, machine, plain1
 msgid "Deleting comment"
@@ -1425,6 +1429,10 @@ msgstr "No podía ser publicado. Prueba otra vez."
 msgid "It is still listed on your profile, but its comments are in the guilds."
 msgstr "Todavía está lista en su perfil, pero sus comentarios están en los gremios."
 
+#, machine, plain1
+msgid "It leaves every Highlight too."
+msgstr "También deja todo Highlight."
+
 #, machine
 msgid "It won't be shown again."
 msgstr "No se mostrará de nuevo."
@@ -1436,6 +1444,14 @@ msgstr "No se renovará. Tienes acceso hasta el día que pagaste."
 #, machine
 msgid "Italic (Ctrl+I)"
 msgstr "Itálico (Ctrl+I)"
+
+#, machine, plain1
+msgid "Its bookmarks are kept, as unsorted."
+msgstr "Sus marcadores son mantenidos, sin surtido."
+
+#, machine, plain1
+msgid "Its stories stay in your archive."
+msgstr "Sus historias permanecen en su archivo."
 
 #. a button that joins the group call that has just started
 #. a button that joins a call going on in a chat
@@ -2790,6 +2806,10 @@ msgstr "No coinciden"
 msgid "They match"
 msgstr "Ellos coinciden"
 
+#, machine, plain1
+msgid "They won't be able to follow you, message you or comment on your posts, and you won't see their posts. You can unblock them any time."
+msgstr "No podrán seguirte, enviarte mensajes o comentar tus mensajes, y no verás sus mensajes. Puedes desbloquearlos en cualquier momento."
+
 #, machine
 msgid "This Space has ended."
 msgstr "Este espacio ha terminado."
@@ -2809,6 +2829,10 @@ msgstr "Este navegador no puede grabar el espacio."
 #, machine
 msgid "This browser cannot prepare pictures for upload. Try another browser."
 msgstr "Este navegador no puede preparar imágenes para subir. Prueba otro navegador."
+
+#, machine, plain1
+msgid "This can’t be undone."
+msgstr "Esto no se puede deshacer."
 
 #, machine
 msgid "This channel is muted for you: no unread dot and no mention notifications."
@@ -2939,10 +2963,14 @@ msgstr "Incapaz de eliminar el comentario en este momento. Por favor, intente de
 msgid "Unable to vote at this time. Please try again later."
 msgstr "No se puede votar en este momento. Por favor, intente de nuevo más tarde."
 
+#, glossary, machine, plain1
+msgid "Unblock"
+msgstr "Desbloquear"
+
 #. a button that takes back "Show fewer posts like this"
-#, machine
+#, glossary, machine, plain1
 msgid "Undo"
-msgstr "Undo"
+msgstr "Deshacer"
 
 #, machine
 msgid "Undo correction"
@@ -3275,6 +3303,10 @@ msgstr "Ya reportaste este post."
 #, machine
 msgid "You already voted on this post."
 msgstr "Ya votó en este post."
+
+#, glossary, machine, plain1, python-format
+msgid "You are blocking @%(name)s"
+msgstr "Estás bloqueando a @%(name)s"
 
 #, machine, plain1, python-format
 msgid "You are following @%(name)s."

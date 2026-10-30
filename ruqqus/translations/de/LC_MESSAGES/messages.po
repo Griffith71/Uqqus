@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ruqqus VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-27 05:46+0000\n"
+"POT-Creation-Date: 2026-10-29 21:56+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: de\n"
@@ -204,6 +204,18 @@ msgid "%(count)s downvote"
 msgid_plural "%(count)s downvotes"
 msgstr[0] "%(count)s downvote"
 msgstr[1] "%(count)s downvotes"
+
+#, machine, plain1, python-format
+msgid "%(count)s entry"
+msgid_plural "%(count)s entries"
+msgstr[0] "%(count)s eintrag"
+msgstr[1] "%(count)s einträge"
+
+#, machine, plain1, python-format
+msgid "%(count)s entry in all"
+msgid_plural "%(count)s entries in all"
+msgstr[0] "%(count)s eintrag in allen"
+msgstr[1] "%(count)s einträge in allen"
 
 #. how many people answered that they are going to an event
 #, machine, python-format
@@ -3374,6 +3386,14 @@ msgstr "Ein Video, das auf deine YouTube oder Dailymotion hochgeladen wurde Kana
 msgid "A week"
 msgstr "Eine Woche"
 
+#, machine, plain1
+msgid "A word in another alphabet is matched in that alphabet. Words in scripts written without spaces, such as Chinese, Japanese, Korean and Thai, are found anywhere in the text."
+msgstr "Ein Wort in einem anderen Alphabet wird in diesem Alphabet abgestimmt. Wörter in Skripten, die ohne Leerzeichen geschrieben wurden, wie Chinesisch, Japanisch, Koreanisch und Thailändisch, finden sich überall im Text."
+
+#, machine, plain1
+msgid "A word is matched as a whole word, so an innocent longer word that contains it is not hidden, except where an entry says it is also found inside other words."
+msgstr "Ein Wort wird als ganzes Wort zusammengefügt, so dass ein unschuldiges längeres Wort, das es enthält, nicht verborgen ist, außer wenn ein Eintrag sagt, dass es auch in anderen Wörtern gefunden wird."
+
 #, machine, python-format
 msgid "A word or phrase can be %(num)s character at most: \"%(word)s...\""
 msgid_plural "A word or phrase can be %(num)s characters at most: \"%(word)s...\""
@@ -3826,6 +3846,10 @@ msgstr "Warnungen und Schlagzeilen kommen von der Quelle, die in jeder Zeile gen
 msgid "Algorithm"
 msgstr "Algorithmus"
 
+#, machine, plain1
+msgid "Algorithm saved."
+msgstr "Algorithmus gespeichert."
+
 #, glossary, machine, plain1
 msgctxt "feed"
 msgid "All"
@@ -3947,9 +3971,17 @@ msgstr "Auch über %(topic)s"
 msgid "Also active in +%(guild)s"
 msgstr "Auch aktiv in +%(guild)s"
 
+#, machine, plain1
+msgid "Also inside other words"
+msgstr "Auch in anderen Worten"
+
 #, machine, python-format
 msgid "Although %(site)s puts your freedom of speech first, there are a few things that we don't allow here:"
 msgstr "Obwohl %(site)s Ihre Redefreiheit an erster Stelle steht, gibt es ein paar Dinge, die wir hier nicht zulassen:"
+
+#, machine, plain1
+msgid "Always start videos muted"
+msgstr "Immer Videos stumm starten"
 
 #, machine
 msgid "Amazonian Shield"
@@ -4482,9 +4514,17 @@ msgid "Automated posting on your own account is set up in its own section."
 msgstr "Die automatisierte Buchung auf Ihrem eigenen Konto wird in einem eigenen Abschnitt eingerichtet."
 
 #, glossary, machine, plain1
+msgid "Automatic"
+msgstr "Automatisch"
+
+#, glossary, machine, plain1
 msgctxt "circle kind"
 msgid "Automatic"
 msgstr "Automatisch"
+
+#, machine, plain1
+msgid "Automatic plays videos, muted, as you scroll to them, unless your device asks for reduced motion or to save data. With tap to play, a video site's player is not loaded, and gets nothing from your browser, until you press play. Audio never plays by itself."
+msgstr "Automatische Wiedergabe von Videos, stummgeschaltet, während Sie zu ihnen scrollen, es sei denn, Ihr Gerät fordert reduzierte Bewegung oder Daten zu speichern. Mit Tap zum Abspielen wird der Player einer Videoseite nicht geladen und erhält nichts von Ihrem Browser, bis Sie Play drücken. Audio spielt sich nie von selbst ab."
 
 #, machine
 msgid "Automatic spam removal. This happened because the post's creator submitted too much similar content too quickly."
@@ -4510,6 +4550,10 @@ msgstr "Bot"
 msgctxt "guildmaster action"
 msgid "Automod settings"
 msgstr "Automod-Einstellungen"
+
+#, glossary, machine, plain1
+msgid "Autoplay"
+msgstr "Autoplay"
 
 #, machine
 msgid "Avatars require 300 reputation."
@@ -5021,6 +5065,14 @@ msgid "Cancelled"
 msgstr "Storniert"
 
 #, machine, plain1
+msgid "Capitals, accents and repeated letters don't change anything: a word reads the same in capitals, with accents or with a letter written several times."
+msgstr "Großbuchstaben, Akzente und wiederholte Buchstaben ändern nichts: Ein Wort liest sich in Großbuchstaben gleich, mit Akzenten oder mit einem mehrmals geschriebenen Brief."
+
+#, glossary, machine, plain1
+msgid "Captions"
+msgstr "Untertitel"
+
+#, machine, plain1
 msgid "Car Repair"
 msgstr "Auto reparieren"
 
@@ -5207,6 +5259,10 @@ msgstr "Ändern Sie Ihr Passwort"
 #, machine
 msgid "Change your password."
 msgstr "Ändern Sie Ihr Passwort."
+
+#, glossary, machine, plain1
+msgid "Change your word filter"
+msgstr "Wortfilter ändern"
 
 #, machine
 msgid "Changed lines"
@@ -5898,6 +5954,10 @@ msgctxt "button"
 msgid "Continue"
 msgstr "Weiterfahren"
 
+#, glossary, machine, plain1
+msgid "Continuous scroll"
+msgstr "Endloses Scrollen"
+
 #, machine
 msgctxt "guildmaster action"
 msgid "Contrib user"
@@ -6310,6 +6370,10 @@ msgstr "Trügerische URL Verkürzungen sind nicht erlaubt."
 msgctxt "button"
 msgid "Decline"
 msgstr "Rückgang"
+
+#, glossary, machine, plain1
+msgid "Default"
+msgstr "Standard"
 
 #, glossary, machine, plain1
 msgid "Default Sorting"
@@ -6994,6 +7058,11 @@ msgctxt "a Space"
 msgid "Ended"
 msgstr "Ended"
 
+#. followed by word endings such as -s, -ed
+#, machine, plain1
+msgid "Endings:"
+msgstr "Enden:"
+
 #, machine
 msgctxt "event"
 msgid "Ends <span class=\"text-muted font-weight-normal\">(optional)</span>"
@@ -7052,12 +7121,24 @@ msgid "Entrepreneurship"
 msgstr "Unternehmergeist"
 
 #, machine, plain1
+msgid "Entries under Never counted are innocent words and phrases that contain a listed word or look like one: they are never hidden."
+msgstr "Einträge unter Nie gezählt sind unschuldige Wörter und Phrasen, die ein aufgelistetes Wort enthalten oder wie eines aussehen: Sie sind nie verborgen."
+
+#, machine, plain1
 msgid "Environment"
 msgstr "Umwelt"
 
 #, machine
 msgid "Equatorial Nile"
 msgstr "Äquatorialer Nil"
+
+#, machine, plain1
+msgid "Erase this comment for good?"
+msgstr "Löschen Sie diesen Kommentar für immer?"
+
+#, machine, plain1
+msgid "Erase this post for good?"
+msgstr "Löschen Sie diesen Post für immer?"
 
 #, machine
 msgid "Error. Please try again."
@@ -7313,6 +7394,10 @@ msgstr "Dehnung"
 msgid "Extend for"
 msgstr "Verlängerung für"
 
+#, glossary, machine, plain1
+msgid "Extra large"
+msgstr "Sehr groß"
+
 #, machine
 msgid "Extreme"
 msgstr "Extrem"
@@ -7385,6 +7470,14 @@ msgstr "Filter +%(guild)s nach Label"
 #, glossary, machine, plain1
 msgid "Filter by"
 msgstr "Filtern nach"
+
+#, glossary, machine, plain1
+msgid "Filtered words"
+msgstr "Gefilterte Wörter"
+
+#, glossary, machine, plain1, python-format
+msgid "Filtered words - %(site)s"
+msgstr "Gefilterte Wörter - %(site)s"
 
 #, glossary, machine, plain1
 msgid "Filters"
@@ -8047,6 +8140,10 @@ msgstr "Geben Sie diesem Ruqqie einen Tipp!"
 msgid "Glad to have you back. Make a %(site)s!"
 msgstr "Schön, dass du wieder da bist. Poste auf %(site)s!"
 
+#, machine, plain1
+msgid "Go back"
+msgstr "Gehen Sie zurück"
+
 #, machine
 msgid "Go live"
 msgstr "Go live"
@@ -8404,6 +8501,14 @@ msgstr "Versteckt durch deinen Wortfilter."
 msgid "Hidden name"
 msgstr "Versteckter Name"
 
+#, machine, plain1
+msgid "Hidden on the Child filter"
+msgstr "Versteckt auf dem Child Filter"
+
+#, machine, plain1
+msgid "Hidden on the Standard and Child filters"
+msgstr "Versteckt auf dem Standard- und Child-Filter"
+
 #, machine
 msgid "Hidden page"
 msgstr "Versteckte Seite"
@@ -8598,6 +8703,10 @@ msgstr "Wie man einen Schlüssel benutzt"
 #, machine
 msgid "How to write this post"
 msgstr "Wie schreibe ich diesen Post"
+
+#, glossary, machine, plain1
+msgid "How words are matched"
+msgstr "Wie Wörter erkannt werden"
 
 #, machine, python-format
 msgid "How your name reads next to your posts and comments and on your profile, with your <code>@%(name)s</code> beside it. It can be anything up to 50 characters, with spaces and emoji, and you can change it whenever you like at no cost. It is not unique and not an address: people still find you, mention you and link to you by your username."
@@ -9023,6 +9132,10 @@ msgstr "Es lebt in Ihrem Profil, unter Spaces. Eine Gilde zeigt ihre Karte mit S
 msgid "It only orders posts you are allowed to see."
 msgstr "Es bestellt nur Posts, die Sie sehen dürfen."
 
+#, machine, plain1
+msgid "It shows, in full, every word and phrase the word filter looks for, in every language it covers. That includes slurs and other extremely offensive language."
+msgstr "Es zeigt vollständig jedes Wort und jede Phrase, nach denen der Wortfilter sucht, in jeder Sprache, die er abdeckt. Dazu gehören verunglimpfungen und andere extrem beleidigende sprache."
+
 #, machine, python-format
 msgid "It was not approved last time. The admins said: %(note)s"
 msgstr "Sie wurde beim letzten Mal nicht genehmigt. Die Admins sagten: %(note)s"
@@ -9291,6 +9404,15 @@ msgstr "Sprache"
 msgid "Language Learning"
 msgstr "Sprachenlernen"
 
+#. the label of a list of links that jump to each language's part of the list
+#, machine, plain1
+msgid "Languages on this page"
+msgstr "Sprachen auf dieser Seite"
+
+#, glossary, machine, plain1
+msgid "Large"
+msgstr "Groß"
+
 #, machine, python-format
 msgid "Last %(num)s day"
 msgid_plural "Last %(num)s days"
@@ -9456,6 +9578,10 @@ msgstr "Rechtliche Anträge"
 #, machine, plain1
 msgid "Leonids meteor shower"
 msgstr "Leoniden Meteorschauer"
+
+#, machine, plain1
+msgid "Letters spaced out or split by dots or other marks are read as one word."
+msgstr "Buchstaben, die durch Punkte oder andere Markierungen beabstandet oder geteilt sind, werden als ein Wort gelesen."
 
 #, machine
 msgid "Libertarian"
@@ -9688,6 +9814,10 @@ msgstr "Login - %(site)s"
 msgid "Login normally to access your account."
 msgstr "Loggen Sie sich normalerweise ein, um auf Ihr Konto zuzugreifen."
 
+#, machine, plain1
+msgid "Look-alike letters from other alphabets, and numbers or symbols used for letters (a 3 for an e, an @ for an a), are read as the letters they stand for."
+msgstr "Ähnliche Buchstaben aus anderen Alphabeten und Zahlen oder Symbole, die für Buchstaben verwendet werden (a 3 für ein e, ein @ für ein a), werden als die Buchstaben gelesen, für die sie stehen."
+
 #, machine
 msgid "Lost your recovery code? Make a new one: the old one stops working."
 msgstr "Haben Sie Ihren Wiederherstellungscode verloren? Machen Sie eine neue: die alte hört auf zu arbeiten."
@@ -9773,6 +9903,10 @@ msgstr "Machen Sie den Kanal"
 #, machine
 msgid "Make this a Circle guild"
 msgstr "Machen Sie dies zu einer Circle Gilde"
+
+#, machine, plain1
+msgid "Makes text, and the buttons and boxes around it, bigger. It starts from your browser's own text size, so raising that makes the default bigger too. Saved on this device."
+msgstr "Macht Text und die Knöpfe und Boxen um ihn herum größer. Es beginnt mit der eigenen textgröße ihres browsers, so dass das anheben den standard auch größer macht. Auf diesem Gerät gespeichert."
 
 #, machine, plain1, python-format
 msgid "Making a paid circle is part of Premium. <a href=\"%(url)s\">Get Premium</a>"
@@ -10281,6 +10415,10 @@ msgstr "Nettostimmen"
 #, machine, plain1
 msgid "Neuroscience"
 msgstr "Neurowissenschaften"
+
+#, glossary, machine, plain1
+msgid "Never counted"
+msgstr "Werden nie gezählt"
 
 #, machine, python-format
 msgid "Never links to %(sites)s."
@@ -11144,6 +11282,10 @@ msgstr "Auf %(date)s"
 msgid "On Ruqqus for one year"
 msgstr "Auf Ruqqus für ein Jahr"
 
+#, machine, plain1
+msgid "On by default"
+msgstr "Standardmäßig eingeschaltet"
+
 #, machine
 msgid "On one page, from the same author or guild"
 msgstr "Auf einer Seite, vom gleichen Autor oder Gilde"
@@ -11526,6 +11668,10 @@ msgid "Only the post's author and co-authors can run its live updates."
 msgstr "Nur der Autor und Co-Autoren der Post können ihre Live-Updates ausführen."
 
 #, machine, plain1
+msgid "Only when I turn them on"
+msgstr "Nur wenn ich sie einschalte"
+
+#, machine, plain1
 msgid "Only whoever forwarded this post and the guild's guildmasters can change its flair."
 msgstr "Nur wer diesen Beitrag weitergeleitet hat und die Gildenmoderatoren können das Label ändern."
 
@@ -11733,6 +11879,10 @@ msgstr "Andere Sprachen, die Sie lesen"
 msgid "Other or unknown"
 msgstr "Andere oder unbekannte"
 
+#, glossary, machine, plain1
+msgid "Other spellings:"
+msgstr "Andere Schreibweisen:"
+
 #, machine, plain1
 msgid "Other users see Anonymous instead of your name. You and site admins can still see it, it follows the same rules as any post, and it cannot be undone after posting. A region filter still shows which region it comes from. It is not listed on your profile: you find it in History, under Anonymous."
 msgstr "Andere benutzer sehen anonymous anstelle ihres namens. Sie und site-admins können es immer noch sehen, es folgt den gleichen regeln wie jeder beitrag, und es kann nicht nach dem posten rückgängig gemacht werden. Ein Regionsfilter zeigt immer noch, aus welcher Region er stammt. Es ist nicht in Ihrem Profil aufgeführt: Sie finden es in History, unter Anonym."
@@ -11806,6 +11956,10 @@ msgstr "Seitenansichten"
 #, machine
 msgid "Pages"
 msgstr "Seiten"
+
+#, machine, plain1
+msgid "Pages keeps Prev and Next buttons under each feed and does not look for newer posts in the background. Saved on this device, and used from the next page you open."
+msgstr "Pages behält die Prev- und Next-Buttons unter jedem Feed und sucht nicht nach neueren Posts im Hintergrund. Auf diesem Gerät gespeichert und von der nächsten Seite verwendet, die Sie öffnen."
 
 #, machine
 msgid "Paid circle"
@@ -12106,6 +12260,11 @@ msgstr "Foto oder Video"
 msgid "Photography"
 msgstr "Fotografie"
 
+#, glossary, machine, plain1
+msgctxt "word filter entry"
+msgid "Phrase"
+msgstr "Wortgruppe"
+
 #, machine, plain1
 msgid "Physics"
 msgstr "Physik"
@@ -12293,6 +12452,10 @@ msgstr "Spielsound"
 #, machine, python-format
 msgid "Play video from %(domain)s"
 msgstr "Video abspielen von %(domain)s"
+
+#, machine, plain1
+msgid "Play with sound"
+msgstr "Spielen mit Sound"
 
 #, machine
 msgid "Please enter a better title"
@@ -12635,6 +12798,10 @@ msgstr "Gespeicherte Beiträge erscheinen hier."
 #, machine
 msgid "Posts you view will show up here."
 msgstr "Posts, die Sie sehen, werden hier angezeigt."
+
+#, machine, plain1
+msgid "Posts, comments and names that contain one of these words are hidden from members whose word filter hides it. Nothing is removed for anyone else, and your own posts and comments are always shown to you."
+msgstr "Beiträge, kommentare und namen, die eines dieser wörter enthalten, werden vor mitgliedern verborgen, deren wortfilter es verbirgt. Nichts wird für andere entfernt, und Ihre eigenen Beiträge und Kommentare werden Ihnen immer angezeigt."
 
 #, machine, plain1
 msgid "Prediction"
@@ -14171,6 +14338,10 @@ msgstr "Alles live sehen"
 msgid "See the current page"
 msgstr "Siehe die aktuelle Seite"
 
+#, glossary, machine, plain1
+msgid "See the filtered words"
+msgstr "Gefilterte Wörter ansehen"
+
 #, machine
 msgid "See the post"
 msgstr "Siehe Post"
@@ -14474,6 +14645,10 @@ msgstr "Mehr anzeigen"
 #, machine
 msgid "Show my security key"
 msgstr "Zeigen Sie meinen Sicherheitsschlüssel"
+
+#, machine, plain1
+msgid "Show the list"
+msgstr "Liste anzeigen"
 
 #, machine
 msgctxt "filter"
@@ -15285,6 +15460,10 @@ msgstr "Nehmen Sie diesen kuratierten Feed von seinem externen Server?"
 msgid "Taking part"
 msgstr "Teilnehmende"
 
+#, glossary, machine, plain1
+msgid "Tap to play"
+msgstr "Zum Abspielen tippen"
+
 #, machine, plain1
 msgid "Teaching"
 msgstr "Lehre"
@@ -15372,6 +15551,10 @@ msgstr "Textkanal"
 #, machine
 msgid "Text posts"
 msgstr "Textposts"
+
+#, glossary, machine, plain1
+msgid "Text size"
+msgstr "Textgröße"
 
 #, machine
 msgid "Thank you for reporting this comment!"
@@ -16225,6 +16408,14 @@ msgstr "Der Link muss mit https:// oder http://. beginnen"
 msgid "The link needs a full address, such as example.com."
 msgstr "Der Link benötigt eine vollständige Adresse, wie z.B. example.com."
 
+#, machine, plain1
+msgid "The list is open to members so that anyone can see what the filter hides and why. Nothing on it is removed from the site: each member's own filter decides what they see."
+msgstr "Die liste ist offen für mitglieder, so dass jeder sehen kann, was der filter verbirgt und warum. Nichts davon wird von der Website entfernt: Der Filter jedes Mitglieds entscheidet, was es sieht."
+
+#, machine, plain1
+msgid "The list isn't shown on the Child filter"
+msgstr "Die Liste wird nicht im Child-Filter angezeigt"
+
 #, machine, python-format
 msgid "The most a circle can ask is %(num)s coin every 30 days."
 msgid_plural "The most a circle can ask is %(num)s coins every 30 days."
@@ -16467,6 +16658,14 @@ msgstr "Das Wiki ist aus: Nur Gildenmoderatoren sehen es."
 #, machine
 msgid "The wiki's first page can be emptied but not deleted."
 msgstr "Die erste Seite des Wikis kann geleert, aber nicht gelöscht werden."
+
+#, machine, plain1
+msgid "The word filter has no words at the moment."
+msgstr "Der Wortfilter hat im Moment keine Wörter."
+
+#, machine, plain1, python-format
+msgid "The words for other languages are adapted from %(source)s (%(licence)s): words that are also ordinary, innocent words were left out."
+msgstr "Die Wörter für andere Sprachen werden von %(source)s (%(licence)s) angepasst: Wörter, die auch gewöhnliche, unschuldige Wörter sind, wurden ausgelassen."
 
 #, machine
 msgid "The working copy as it is now. Only its authors can see this until it's published."
@@ -16980,13 +17179,21 @@ msgstr "Diese Seite ist leer."
 msgid "This page is generated by the %(site)s application introspecting its own routing functions. Nifty."
 msgstr "Diese Seite wird erzeugt, indem die %(site)s-Anwendung ihre eigenen Routing-Funktionen introspektiert. Nifty."
 
+#, machine, plain1
+msgid "This page lists offensive words"
+msgstr "Diese Seite listet beleidigende Wörter auf"
+
 #, machine
 msgid "This page may not be embedded in other webpages."
 msgstr "Diese Seite ist möglicherweise nicht in andere Webseiten eingebettet."
 
-#, machine
-msgid "This permanently erases the comment text. It cannot be undone, even by an admin. Continue?"
-msgstr "Dadurch wird der Kommentartext dauerhaft gelöscht. Es kann nicht rückgängig gemacht werden, auch nicht von einem admin. Weiter so?"
+#, machine, plain1
+msgid "This permanently erases the comment text. It cannot be undone, even by an admin."
+msgstr "Dadurch wird der Kommentartext dauerhaft gelöscht. Es kann nicht rückgängig gemacht werden, auch nicht von einem admin."
+
+#, machine, plain1
+msgid "This permanently erases the post title, text and link. It cannot be undone, even by an admin."
+msgstr "Dadurch werden Titel, Text und Link dauerhaft gelöscht. Es kann nicht rückgängig gemacht werden, auch nicht von einem admin."
 
 #, machine
 msgid "This person is blocking you."
@@ -17485,6 +17692,14 @@ msgstr "Schalten Sie Benachrichtigungen von @%(name)s ein"
 msgid "Turn on two-factor authentication first."
 msgstr "Schalten Sie zuerst die Zwei-Faktor-Authentifizierung ein."
 
+#, machine, plain1
+msgid "Turns captions on in YouTube and Dailymotion videos, in your language when the video has them. Other sites keep their own setting."
+msgstr "Schaltet Bildunterschriften in YouTube und Dailymotion Videos ein, in deiner Sprache, wenn das Video sie hat. Andere Websites behalten ihre eigene Einstellung."
+
+#, machine, plain1
+msgid "Twitter"
+msgstr "Twitter"
+
 #, machine
 msgid "Two thirds of the authors agree"
 msgstr "Zwei Drittel der Autoren sind sich einig"
@@ -17583,9 +17798,9 @@ msgctxt "guildmaster action"
 msgid "Unban post"
 msgstr "Unban Post"
 
-#, machine
+#, glossary, machine, plain1
 msgid "Unblock"
-msgstr "Entsperrung"
+msgstr "Entblocken"
 
 #, glossary, machine, plain1, python-format
 msgid "Unblock @%(name)s"
@@ -17618,6 +17833,10 @@ msgstr "Uncontrib-Benutzer"
 #, glossary, machine, plain1
 msgid "Undistinguish"
 msgstr "Nicht mehr offiziell"
+
+#, glossary, machine, plain1
+msgid "Undo"
+msgstr "Rückgängig"
 
 #, machine
 msgctxt "guildmaster action"
@@ -18144,6 +18363,10 @@ msgctxt "noun"
 msgid "Video"
 msgstr "Video"
 
+#, machine, plain1
+msgid "Video and audio"
+msgstr "Video und Audio"
+
 #, machine, python-format
 msgid "Video call - %(site)s"
 msgstr "Videoanruf - %(site)s"
@@ -18573,6 +18796,10 @@ msgstr "Wenn jemand in +%(guild)s kommentiert, wird es hier angezeigt."
 msgid "When the app asks to verify itself, enter your <strong>security key</strong> (below). Until it is verified it can't read your messages, and nobody's messages are sent to it."
 msgstr "Wenn die App sich selbst verifizieren möchte, geben Sie Ihre <strong>Sicherheitsschlüssel</strong> (unten). Bis es verifiziert ist, kann es ihre nachrichten nicht lesen, und niemandes nachrichten werden an sie gesendet."
 
+#, machine, plain1
+msgid "When you press play, a video starts with sound, at the volume you last used (video files only: videos from other sites keep their own volume). A video that starts by scrolling is always muted. Audio players also start at the volume you last used, and are never muted by this. Saved on this device, and used from the next page you open."
+msgstr "Wenn Sie die Wiedergabe drücken, beginnt ein Video mit Ton, bei der zuletzt verwendeten Lautstärke (nur Videodateien: Videos von anderen Websites behalten ihre eigene Lautstärke). Ein Video, das mit dem Scrollen beginnt, ist immer stummgeschaltet. Audio-Player starten auch bei der Lautstärke, die Sie zuletzt verwendet haben, und werden nie stummgeschaltet. Auf diesem Gerät gespeichert und von der nächsten Seite verwendet, die Sie öffnen."
+
 #, machine
 msgid "When you receive new posts, comments, or mentions, they will show up here."
 msgstr "Wenn Sie neue Beiträge, Kommentare oder Erwähnungen erhalten, werden sie hier angezeigt."
@@ -18822,6 +19049,10 @@ msgstr "Mit einem Video"
 #, glossary, machine, plain1
 msgid "With textarea"
 msgstr "Textfeld"
+
+#, machine, plain1
+msgid "With the usual English endings"
+msgstr "Mit den üblichen englischen Endungen"
 
 #, machine
 msgid "Withdraw"
@@ -20608,6 +20839,10 @@ msgstr "Dein Video wurde auf YouTube hochgeladen, aber YouTube hält es privat, 
 msgid "Your vote"
 msgstr "Ihre Stimme"
 
+#, machine, plain1
+msgid "Your word filter is set to Child, which hides these words, so this page doesn't show them."
+msgstr "Ihr Wortfilter ist auf Child gesetzt, der diese Wörter verbirgt, so dass diese Seite sie nicht zeigt."
+
 #, python-format
 msgid "[@%(name)s](/@%(name)s) joined [+%(guild)s](/+%(guild)s)."
 msgstr ""
@@ -20744,6 +20979,11 @@ msgstr "[gelöscht]"
 msgid "[doc pending]"
 msgstr "[doc pending]"
 
+#. stands in a deleted post's text where a picture was
+#, machine, plain1
+msgid "[picture]"
+msgstr "[bild]"
+
 #, machine
 msgid "[removed by admin]"
 msgstr "[entfernt von admin]"
@@ -20755,6 +20995,11 @@ msgstr "[entfernt von admins]"
 #, machine, plain1
 msgid "[removed by guildmasters]"
 msgstr "[entfernt von gildenmoderatoren]"
+
+#. stands in a deleted post's text where a sound was
+#, machine, plain1
+msgid "[sound]"
+msgstr "[klang]"
 
 #, machine
 msgid "a day"
