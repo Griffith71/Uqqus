@@ -738,7 +738,8 @@ a:hover {
     color: var(--link) !important;
 }
 
-// the disc behind a white glyph (the sidebar's rows, the menus) is a graphic, not text: the brand itself in both themes
+// a disc behind a white glyph is a graphic, not text: the brand itself in both themes (the left sidebar's rows were these until 2026-10-30:
+// they are plain glyphs in the text colour now, see `.sidebar-icon` in _nav.scss)
 .fa-stack-2x.fa-circle.text-purple, .fa-stack-2x.fa-circle.text-primary {
     color: var(--brand) !important;
 }
@@ -998,6 +999,35 @@ button.text-expand {
     display: inline;          // a button's inline-block can't be cut by the ellipsis
 }
 
+// --- the Regional filter's link to the Regions page and its countries tooltip (templates/_sidebar_filter_macros.html) -----------------------
+.regions-link {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    min-height: var(--control-xs);
+    margin-bottom: var(--space-2);
+    color: var(--link);
+    font-size: var(--text-xs);
+    text-decoration: none;
+}
+
+.regions-link:hover,
+.regions-link:focus-visible {
+    text-decoration: underline;
+}
+
+.region-tooltip {
+    pointer-events: none;                 // a tip that lands on the list it describes never swallows a click
+}
+
+.region-tooltip .tooltip-inner {
+    max-width: 18rem;
+    text-align: start;
+    font-size: var(--text-xs);
+    font-weight: var(--weight-regular);
+    line-height: 1.45;
+}
+
 // --- Send feedback ----------------------------------------------------------------------------------------------------
 // The sheet in partials/site_feedback_modal.html. The four kinds wrap on a narrow screen (a translation may be longer
 // than the English); the screenshot is shown as a small thumbnail the member can check before it is sent.
@@ -1144,6 +1174,76 @@ button.text-expand {
         font-weight: 600;
         text-decoration: underline;
     }
+}
+
+// the question a member from before the age declaration is asked (partials/age_notice.html, helpers/age_declaration.py): the
+// held notice's look, in the page's flow at the top of the column, so it moves nothing after load and covers nothing
+.age-notice {
+    margin: var(--space-4) 0 0;
+    padding: var(--space-3) var(--space-4);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    background: var(--brand-soft);
+    color: var(--text);
+    font-size: var(--text-sm);
+    line-height: 1.45;
+
+    a {
+        color: var(--text);
+        font-weight: 600;
+        text-decoration: underline;
+    }
+}
+
+.age-notice-title {
+    display: block;
+    margin: 0 0 var(--space-1);
+    color: var(--text);
+    font-size: var(--text-base);
+    font-weight: 600;
+}
+
+.age-notice-lead {
+    margin: 0 0 var(--space-3);
+}
+
+.age-means {
+    display: block;
+    margin-top: var(--space-2);
+    color: var(--text-muted);
+    font-size: var(--text-xs);
+    line-height: 1.45;
+}
+
+// on the brand's tint the muted grey is too near AA to trust: the notice keeps the page's own text colour
+.age-notice .age-means {
+    color: var(--text);
+}
+
+.age-form .btn {
+    margin-top: var(--space-3);
+}
+
+// each choice is a row at least a target tall (32, 44 under a finger: an answer the member can't take back, beside the other
+// one), padded from its own line; Bootstrap's radio is drawn on the label, so it moves down with the text
+.age-choice .custom-control-label {
+    --age-choice-pad: calc((var(--hit-min) - 1.5em) / 2);
+    display: block;
+    min-height: var(--hit-min);
+    padding-top: var(--age-choice-pad);
+    padding-bottom: var(--age-choice-pad);
+    font-size: var(--text-base);
+    line-height: 1.5;
+
+    &::before,
+    &::after {
+        top: calc(var(--age-choice-pad) + .25rem);
+    }
+}
+
+// a link inside a sentence has to be told apart by more than its colour
+.age-state a {
+    text-decoration: underline;
 }
 
 // --- the size ladder, applied (the owner chose "B · Balanced", 2026-10-29; tokens in _tokens.scss, CLAUDE.md "Sizing and spacing") --------------------------

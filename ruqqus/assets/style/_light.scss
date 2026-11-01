@@ -211,6 +211,16 @@
     box-shadow: 0 0 0 3px var(--focus-ring), var(--bloom-sm);
 }
 
+// From 992px the toolbar is a column outside the text box (_post_rail.scss), so the ring is on the box alone and a toolbar
+// button that has the keyboard's focus does not light the text up
+@media (min-width: 992px) {
+    .composer-card .post-editor > .input-group:focus-within,
+    .inline-composer .post-editor > .input-group:focus-within {
+        border-color: var(--link);
+        box-shadow: 0 0 0 3px var(--focus-ring), var(--bloom-sm);
+    }
+}
+
 // =====================================================================================================================
 // Phase 3: notifications and live signals
 // =====================================================================================================================

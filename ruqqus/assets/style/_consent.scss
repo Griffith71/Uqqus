@@ -1,0 +1,190 @@
+// The video consent banner and the line on a player that waits for a press (partials/consent_banner.html, partials/player.html,
+// CLAUDE.md "Video consent"). Tokens only, both themes. The banner is fixed over the page, so it moves nothing when it appears or
+// goes, and it never animates (it appears by itself, and motion answers what the person did). A Space's page has no site stylesheet:
+// it draws the same banner from its own <style> (templates/space.html).
+
+.consent-banner {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: var(--space-4);
+    z-index: 990;                       // over the phone's bottom bar (100) and the page; under a toast (1000), a menu and a dialog
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-3) var(--space-5);
+    width: calc(100vw - var(--space-5));
+    max-width: px2rem(720px);
+    margin: 0 auto;
+    padding: var(--space-4) var(--space-5);
+    color: var(--text);
+    background: var(--surface-raised);
+    border: 1px solid var(--border-strong);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-lg);
+}
+
+// the phone's bottom bar: 56px and the home indicator (_mobile.scss), which only slides away while scrolling down
+@media (max-width: 991.98px) {
+    .consent-banner {
+        bottom: calc(56px + env(safe-area-inset-bottom) + var(--space-3));
+        padding: var(--space-4);
+        max-height: calc(100vh - var(--navbar-height, 56px) - 56px - env(safe-area-inset-bottom) - var(--space-5));
+        overflow-y: auto;
+        overscroll-behavior: contain;
+    }
+}
+
+.consent-words {
+    flex: 1 1 px2rem(280px);
+    min-width: 0;
+}
+
+.consent-text, .consent-now {
+    margin: 0;
+    font-size: var(--text-sm);
+    line-height: 1.5;
+}
+
+.consent-now {
+    margin-top: var(--space-2);
+    color: var(--text-muted);
+}
+
+.consent-text a {
+    color: var(--link);
+    text-decoration: underline;
+}
+
+.consent-actions {
+    display: flex;
+    flex: 0 0 auto;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+    margin-inline-start: auto;
+}
+
+// on a phone the two share the row, the same width, so neither reads as the one to press
+@media (max-width: 575.98px) {
+    .consent-actions {
+        flex: 1 1 100%;
+    }
+
+    .consent-actions .btn {
+        flex: 1 1 0;
+    }
+}
+
+// what the reader has now, on a banner they opened themselves
+.consent-actions .btn[aria-pressed="true"] {
+    font-weight: var(--weight-bold);
+    border-width: 2px;
+}
+
+.consent-close {
+    position: absolute;
+    top: var(--space-2);
+    right: var(--space-2);
+    width: var(--hit-min);              // 32px, 44 under a finger
+    height: var(--hit-min);
+    padding: 0;
+    color: var(--text-muted);
+    touch-action: manipulation;
+    background: none;
+    border: 0;
+    border-radius: var(--radius-xs);
+}
+
+// the button comes first in the markup, so its room can be kept here
+.consent-close:not([hidden]) ~ .consent-words {
+    padding-inline-end: var(--hit-min);
+}
+
+.consent-close:hover {
+    background: var(--hover);
+}
+
+@media (forced-colors: active) {
+    .consent-banner {
+        border-color: CanvasText;
+    }
+}
+
+// --- the line on a player's thumbnail ------------------------------------------------------------------------------------------------
+// Inside the box the player keeps its shape in, so nothing moves. Only while the reader's answer is ask or no: after Allow videos it
+// goes without a reload. White on the same tint as the domain chip (--glass-chip), which holds AA over a white picture.
+
+.embed-consent-note {
+    display: none;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1;
+    margin: 0;
+    padding: var(--space-2) var(--space-3);
+    color: #fff;
+    background: var(--glass-chip);
+    font-size: var(--text-xs);
+    line-height: 1.4;
+    text-align: start;
+    pointer-events: none;
+}
+
+html[data-video-consent="ask"] .embed-consent-note,
+html[data-video-consent="no"] .embed-consent-note {
+    display: block;
+}
+
+// A box with no room for the line above a centred play button, while the line shows. A music box can be 120px tall (Bandcamp, Mixcloud:
+// social_embeds.audio_height): the button is at the start of the box and the line beside it, and the line is the short one for that reason
+// (partials/player.html). A 16:9 video on a phone is about 150px tall: its whole sentence needs the box's width, so the button goes under
+// it, at the start, and a little smaller. A 9:16 video has room to spare.
+html[data-video-consent="ask"] .embed-lg[data-embed-kind="audio"] .embed-lg-play,
+html[data-video-consent="no"] .embed-lg[data-embed-kind="audio"] .embed-lg-play {
+    left: var(--space-3);
+    font-size: 3rem;
+    transform: translateY(-50%);
+}
+
+html[data-video-consent="ask"] .embed-lg[data-embed-kind="audio"] .embed-consent-note,
+html[data-video-consent="no"] .embed-lg[data-embed-kind="audio"] .embed-consent-note {
+    left: calc(3rem + 2 * var(--space-3));
+}
+
+@media (max-width: 575.98px) {
+    html[data-video-consent="ask"] .embed-lg:not([data-embed-kind="vertical"]):not([data-embed-kind="audio"]) .embed-lg-play,
+    html[data-video-consent="no"] .embed-lg:not([data-embed-kind="vertical"]):not([data-embed-kind="audio"]) .embed-lg-play {
+        top: auto;
+        bottom: 0;
+        left: var(--space-3);
+        z-index: 1;                     // over the domain's bar, which would dim it
+        font-size: 2.5rem;
+        transform: none;
+    }
+}
+
+// a story's video, while it waits for a press (assets/js/stories.js)
+.story-video-press {
+    position: absolute;
+    top: 50%;
+    left: 15%;
+    right: 15%;
+    z-index: 3;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-3);
+    padding: var(--space-4);
+    transform: translateY(-50%);
+    color: #fff;
+    background: var(--glass-chip);
+    border: 0;
+    border-radius: var(--radius-md);
+    font-size: var(--text-sm);
+    line-height: 1.4;
+}
+
+.story-video-press .fas {
+    font-size: 2.5rem;
+}

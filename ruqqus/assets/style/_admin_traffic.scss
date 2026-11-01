@@ -1,0 +1,190 @@
+// The admin page of page requests (templates/admin/traffic.html, routes/admin_traffic_pages.py): numbers in tiles, one series of
+// bars, ranked tables. Tokens only, so both themes follow; bars are graphics in the brand colour and every number is also
+// in a table; the text stays in text colours. Narrow first: at 390px nothing scrolls sideways and a long host name wraps.
+// The admins' money page (templates/admin/money.html) is drawn with the same heading, table and note.
+
+#admin-traffic,
+#admin-money {
+    max-width: 100%;
+    overflow-wrap: anywhere;
+    color: var(--text);
+}
+
+.money-section {
+    margin: var(--space-7) 0;
+}
+
+.traffic-lead {
+    max-width: px2rem(720px);
+    font-size: var(--text-base);
+}
+
+.traffic-windows {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    margin: var(--space-5) 0;
+}
+
+.traffic-tiles {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-4);
+    margin-bottom: var(--space-7);
+}
+
+@media (min-width: 768px) {
+    .traffic-tiles {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+}
+
+.traffic-tile {
+    display: flex;
+    flex-direction: column;
+    padding: var(--space-4);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+}
+
+.traffic-number {
+    font-size: var(--text-title-lg);
+    font-weight: 700;
+    line-height: 1.2;
+    font-variant-numeric: tabular-nums;
+}
+
+.traffic-label,
+.traffic-axis,
+.traffic-note {
+    color: var(--text-muted);
+    font-size: var(--text-sm);
+}
+
+.traffic-heading {
+    margin: 0 0 var(--space-4);
+    font-size: var(--text-title);
+    font-weight: 700;
+}
+
+// one bar per day; the whole column is the hover target, so a 2px bar still has its tooltip
+.traffic-bars {
+    display: flex;
+    align-items: flex-end;
+    height: px2rem(140px);
+    border-bottom: 1px solid var(--border);
+}
+
+.traffic-bar-col {
+    display: flex;
+    flex: 1 1 0;
+    align-items: flex-end;
+    min-width: 0;
+    height: 100%;
+    padding: 0 1px;
+}
+
+.traffic-bar-col:hover {
+    background-color: var(--surface-sunken);
+}
+
+.traffic-bar {
+    width: 100%;
+    max-width: px2rem(24px);
+    margin: 0 auto;
+    border-radius: 2px 2px 0 0;
+    background-color: var(--brand);
+}
+
+.traffic-axis {
+    display: flex;
+    justify-content: space-between;
+    margin-top: var(--space-2);
+}
+
+.traffic-days {
+    margin-top: var(--space-4);
+    font-size: var(--text-sm);
+}
+
+.traffic-days summary {
+    display: inline-block;
+    min-height: var(--control-xs);
+    cursor: pointer;
+    color: var(--link);
+}
+
+// Day by day has five columns of numbers that don't wrap: past what the narrowest phone holds it scrolls here, never the page
+.traffic-scroll {
+    overflow-x: auto;
+}
+
+// or the page's `overflow-wrap: anywhere` lets the numbers squeeze a day to a letter a line, however much room the box scrolls to
+.traffic-scroll th {
+    white-space: nowrap;
+}
+
+.traffic-table {
+    width: 100%;
+    margin-top: var(--space-3);
+    border-collapse: collapse;
+    font-size: var(--text-sm);
+}
+
+.traffic-table th,
+.traffic-table td {
+    padding: var(--space-3) var(--space-2);
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+}
+
+.traffic-table thead th {
+    color: var(--text-muted);
+    font-size: var(--text-xs);
+    font-weight: 600;
+}
+
+.traffic-table tbody th {
+    font-weight: 400;
+}
+
+.traffic-num {
+    text-align: right;
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+}
+
+.traffic-ranks {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-7);
+    margin-top: var(--space-7);
+}
+
+@media (min-width: 992px) {
+    .traffic-ranks {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+.traffic-rank-label {
+    display: block;
+}
+
+.traffic-rank-bar {
+    display: block;
+    height: 4px;
+    min-width: 2px;
+    margin-top: var(--space-2);
+    border-radius: 2px;
+    background-color: var(--brand);
+}
+
+.traffic-note {
+    margin: var(--space-3) 0 0;
+}
+
+.traffic-foot {
+    max-width: px2rem(720px);
+    margin-top: var(--space-8);
+}

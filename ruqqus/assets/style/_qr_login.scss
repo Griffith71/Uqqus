@@ -1,0 +1,151 @@
+// QR sign-in: the panel on the sign-in page and the phone's screen (templates/login.html, login_qr_approve.html,
+// assets/js/qr_login.js). Logical properties, so the mirrored sheet has nothing to flip, and nothing moves.
+
+// every view sits in one cell, so the panel is as tall as its tallest view whichever is showing: a hidden view takes no focus
+.qr-panel {
+    display: grid;
+    margin-block-start: var(--space-4);
+
+    &[hidden] {
+        display: none;
+    }
+}
+
+// the live region takes no room in the grid (Bootstrap's .sr-only is out of flow)
+.qr-view {
+    grid-area: 1 / 1;
+    visibility: hidden;
+    scroll-margin-block-start: var(--space-4);
+
+    &.is-current {
+        visibility: visible;
+    }
+
+    // focus put here by the script, never by a key: nothing here to press, so no ring
+    &:focus {
+        outline: 0;
+    }
+}
+
+// a code is dark on white in any theme, or a camera doesn't read it: its own paper, with the quiet zone drawn into the picture
+.qr-box {
+    width: #{"min(15rem, 100%)"};
+    aspect-ratio: 1;
+    margin-inline: auto;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    background: white;
+    overflow: hidden;
+
+    img {
+        display: block;
+        width: 100%;
+        height: 100%;
+        image-rendering: pixelated;
+    }
+}
+
+.qr-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+    margin-block-start: var(--space-4);
+
+    .btn {
+        flex: 1 1 8rem;
+    }
+}
+
+.qr-line {
+    margin-block: var(--space-3) 0;
+    color: var(--text-muted);
+    font-size: var(--text-sm);
+    text-align: center;
+}
+
+// the phone's screen
+
+// shown by a <noscript> rule in the page's head
+.qr-no-script {
+    display: none;
+}
+
+.qr-approve-account {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    margin-block-end: var(--space-4);
+    font-weight: 600;
+
+    img {
+        width: var(--control-lg);
+        height: var(--control-lg);
+        border-radius: 50%;
+    }
+}
+
+.qr-facts {
+    margin: 0 0 var(--space-2);
+    font-size: var(--text-sm);
+
+    div {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0 var(--space-2);
+        padding-block: var(--space-1);
+        border-block-end: 1px solid var(--border);
+    }
+
+    dt {
+        font-weight: 600;
+    }
+
+    dd {
+        margin: 0;
+    }
+}
+
+.qr-warning {
+    margin-block: var(--space-4);
+    padding: var(--space-3) var(--space-4);
+    border: 1px solid var(--border);
+    border-inline-start: 4px solid var(--danger);
+    border-radius: var(--radius-sm);
+    color: var(--text);
+    font-size: var(--text-sm);
+    line-height: 1.45;
+
+    + .qr-warning {
+        margin-block-start: calc(-1 * var(--space-2));
+    }
+}
+
+.qr-reported {
+    color: var(--text-muted);
+    font-size: var(--text-sm);
+}
+
+.qr-error {
+    margin-block: var(--space-2) 0;
+    color: var(--danger);
+    font-size: var(--text-sm);
+}
+
+.qr-links {
+    margin: var(--space-2) 0 0;
+    padding: 0;
+    list-style: none;
+}
+
+.qr-later {
+    margin-block: var(--space-2) 0;
+    text-align: center;
+}
+
+// links on a line of their own, so a target's size is theirs alone
+.qr-links a,
+.qr-later a {
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--hit-min);
+}

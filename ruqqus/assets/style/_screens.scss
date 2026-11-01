@@ -208,6 +208,185 @@
     }
 }
 
+// --- the Edit profile pop-up (partials/profile_edit_modal.html, assets/js/profile_edit.js) -----------------------------
+// Scoped by id, not by .profile-x: the script moves the pop-up to <body>, out of the header's stacking context. The banner
+// is drawn as the header draws it (6:1 and the strip the avatar overlaps) so the preview crops as the profile will. Tokens
+// only; the card's glass, its phone sheet (.modal-sm-bottom) and its fade are _glass.scss and _components.scss.
+
+#profileEditModal {
+    // the site draws form labels in capitals; X's reads as plain sentences
+    label {
+        text-transform: none;
+        letter-spacing: normal;
+    }
+
+    @media (min-width: 576px) {
+        .modal-dialog {
+            max-width: 600px;
+        }
+    }
+
+    .modal-header .close {
+        float: none;
+        margin: 0;
+        min-width: var(--hit-min);
+        min-height: var(--hit-min);
+    }
+
+    // the avatar hangs half below the banner: room for that half, and a gap
+    .pe-media {
+        position: relative;
+        margin-bottom: calc(var(--space-10) + var(--space-4));
+    }
+
+    .pe-banner {
+        position: relative;
+        overflow: hidden;
+        border-radius: var(--radius-md);
+        background-color: var(--surface-sunken);
+    }
+
+    .pe-banner::before {
+        content: "";
+        display: block;
+        padding-top: calc(100% / 6 + var(--space-10));
+    }
+
+    .pe-banner-img {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .pe-avatar {
+        position: absolute;
+        left: var(--space-4);
+        bottom: calc(-1 * var(--space-10));
+        width: calc(var(--space-9) * 3);
+        height: calc(var(--space-9) * 3);
+        border: var(--space-2) solid var(--surface);
+        border-radius: 50%;
+        overflow: hidden;
+        background-color: var(--surface-sunken);
+    }
+
+    .pe-avatar-img {
+        display: block;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .pe-avatar-none {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--text-muted);
+    }
+
+    // the camera and the remove button over a picture: a chip tint (no blur: there are two), white glyphs
+    .pe-media-actions {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: var(--space-3);
+        pointer-events: none;
+    }
+
+    .pe-avatar .pe-media-actions {
+        gap: var(--space-2);
+    }
+
+    // the banner's chips at the end of its line, away from the avatar over its start (the two sides swap in right-to-left, as the avatar's does)
+    .pe-banner .pe-media-actions {
+        justify-content: flex-end;
+        padding: 0 var(--space-4);
+    }
+
+    .pe-round {
+        pointer-events: auto;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: var(--control-lg);
+        height: var(--control-lg);
+        min-width: var(--hit-min);
+        min-height: var(--hit-min);
+        padding: 0;
+        border: 0;
+        border-radius: 50%;
+        background-color: var(--glass-chip);
+        color: var(--on-brand);
+    }
+
+    // a halo of the same tint, so a chip over any picture reads as pressable (hover is not a colour change a picture could hide)
+    .pe-round:hover {
+        box-shadow: 0 0 0 var(--space-2) var(--glass-chip);
+    }
+
+    .pe-round:focus-visible {
+        outline: 2px solid var(--on-brand);
+        outline-offset: calc(-1 * var(--space-2));
+    }
+
+    // forced colours draw no tint: the chip needs an edge of its own
+    @media (forced-colors: active) {
+        .pe-round {
+            border: 1px solid ButtonText;
+        }
+    }
+
+    &.is-busy .pe-round {
+        pointer-events: none;
+        opacity: 0.6;
+    }
+
+    .pe-notes {
+        margin-bottom: var(--space-4);
+    }
+
+    .pe-notes p {
+        margin-bottom: var(--space-2);
+    }
+
+    .pe-notes p:last-child {
+        margin-bottom: 0;
+    }
+
+    .pe-error {
+        margin-top: var(--space-2);
+    }
+
+    .pe-status {
+        margin-top: var(--space-4);
+    }
+
+    .pe-status:empty {
+        display: none;
+    }
+
+    // "Discard changes?", between the form and the footer
+    .pe-discard {
+        display: flex;
+        align-items: center;
+        gap: var(--space-3);
+        padding: var(--space-3) var(--space-5);
+        border-top: 1px solid var(--border);
+        background-color: var(--surface-sunken);
+    }
+
+    .pe-discard-text {
+        flex: 1 1 auto;
+        font-weight: var(--weight-semibold);
+    }
+}
+
 // --- the chat page: exactly the screen between the bars ---------------------------------------------------------------
 // chat.html sizes #chat-app inline as 100vh less 56px, an older navbar's height: 3px short of the bar on a desktop, and
 // on a phone it ran on under the bottom bar (the page scrolled 80px and a conversation's box sat behind the bar). The

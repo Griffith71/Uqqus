@@ -156,6 +156,7 @@ $font-sans: join(join(("Noto Sans",), $noto-scripts, comma), join(("Noto Sans Fa
     --leading-tight: 1.3;
     --leading-body: 1.55;
     --tracking-title: -0.011em;
+    --tracking-label: 0.025rem;       // the small uppercase labels (a section's heading, a box's title, a group's name): one letter-spacing everywhere
     --weight-regular: 400;
     --weight-medium: 500;
     --weight-semibold: 600;
@@ -277,6 +278,8 @@ $font-sans: join(join(("Noto Sans",), $noto-scripts, comma), join(("Noto Sans Fa
         --glass-toast: rgba(241, 241, 241, 0.92);    // a toast is the inverse of the page
         --hover: rgba(255, 255, 255, 0.06);     // laid over any surface: rows, menu items, icon buttons
         --press: rgba(255, 255, 255, 0.1);
+        --selected: var(--brand-soft);           // a chosen row (the selected feed, a filter that is narrowing): a light shade of the site's blue
+        --filter-on: var(--brand);               // the ring round a narrowing filter's symbol: the site's blue itself, 6.8:1 on the page
         --toast-bg: #f1f1f1;                     // toasts are the inverse of the page
         --toast-fg: #121212;
         --toast-success: #15803d;
@@ -322,6 +325,8 @@ $font-sans: join(join(("Noto Sans",), $noto-scripts, comma), join(("Noto Sans Fa
         --glass-toast: rgba(22, 22, 22, 0.92);
         --hover: rgba(0, 0, 0, 0.05);        // laid over any surface: rows, menu items, icon buttons
         --press: rgba(0, 0, 0, 0.09);
+        --selected: var(--brand-soft);           // a chosen row (the selected feed, a filter that is narrowing): a light shade of the site's blue
+        --filter-on: var(--brand);               // the ring round a narrowing filter's symbol: the site's blue itself (2.6:1 on white: a graphic, the owner's call, as the site colour on any graphic)
         --toast-bg: #161616;                     // toasts are the inverse of the page
         --toast-fg: #ffffff;
         --toast-success: #4ade80;
@@ -339,6 +344,16 @@ $font-sans: join(join(("Noto Sans",), $noto-scripts, comma), join(("Noto Sans Fa
         --rail-up: 0 0 0 0 transparent;
         --soft-a: 0%;
         --hairline: 0 0 0 0 transparent;
+    }
+}
+
+// More contrast: a chosen row's wash is a little stronger in the light theme, so it still reads as a different surface (20% is the share the link
+// colour is derived against; the dark theme's 18% is already that share)
+@if $theme == "light" {
+    @media (prefers-contrast: more) {
+        :root {
+            --selected: #{rgba($primary, 0.2)};
+        }
     }
 }
 

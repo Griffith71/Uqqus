@@ -91,7 +91,7 @@ $font-size-base: 1rem;
 
 $small-font-size: #{"calc(12rem / 14)"};
 
-$extra-small-font-size: #{"calc(11rem / 14)"};
+$extra-small-font-size: #{"calc(12rem / 14)"};            // (11px until 2026-10-30: one type scale, _type_scale.scss)
 
 $display5-size:  3rem !default;
 
@@ -1910,13 +1910,6 @@ body.embedded .share-chat-item {
         border-left: 1px solid $border-color;
     }
 
-    // wide enough for the 1370px block with the rail: the panel takes the 207px the folded left sidebar gives up
-    // (assets/js/side_panels.js decides; the left sidebar folds only while there is no room for it)
-    html.panel-wide #main-content-row.panel-open > #side-panel {
-        flex: 0 0 calc(#{$layout-right} + 207px);
-        max-width: calc(#{$layout-right} + 207px);
-    }
-
     #side-panel .side-panel-head {
         padding: 0.25rem 0.5rem 0.25rem 1rem;
         border-bottom: 1px solid $border-color;
@@ -2862,7 +2855,7 @@ body.embedded #chat-app {
     }
 }
 
-// The deletion log (templates/deletion_log.html): the filter chips and the text each entry kept
+// The Log (templates/log.html, log_copy.html): the filter chips and the preserved copy's text
 .deletion-chip {
     display: inline-flex;
     align-items: center;
@@ -2884,6 +2877,11 @@ body.embedded #chat-app {
 .deletion-chip a:hover,
 .deletion-chip a:focus {
     color: $primary-text;
+}
+
+// a link inside a muted line of the Log (the guild's name) is told from the words around it by more than its colour
+.log-entry .text-muted a {
+    text-decoration: underline;
 }
 
 .deletion-text {
@@ -9535,39 +9533,48 @@ $ex-muted: $muted;
 }
 
 // The Categorical list's category headings (templates/_sidebar_filter_macros.html): the first row of a group. Ticking it
-// ticks all the group's rows (the list's script); on its own it means the guilds filed under the category alone. Not
-// .post-type-group, whose first-child rule would drop the space between groups
+// ticks all the group's rows (the list's script); on its own it means the guilds filed under the category alone. It is drawn
+// as a row like the ones under it (the same size, face and colour, as .sidebar-filter-text rows are: the owner, 2026-10-30:
+// "the exact same font except bolded"), and the rows are indented one tick step beneath it. Not .post-type-group, whose
+// first-child rule would drop the space between groups
 .filter-group-heading {
     list-style: none;
-    padding: .375rem 0 .25rem;
-    font-size: .6875rem;
+    padding: .25rem 0;
+    margin: 0;
     font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: .025rem;
-    color: $muted;
-    margin: .125rem 0 0;
+    color: $black;                       // the rows' own colour (.text-black), in each sheet
     cursor: pointer;
 
     a {
         color: inherit;
-    }
-
-    &:hover {
-        color: var(--link);
+        flex-wrap: wrap;
     }
 
     &.is-selected {
         color: var(--link);
     }
 
-    // what a ticked heading stands for, written by the list's script (the texts are the macro's)
+    // what a ticked heading stands for, written by the list's script (the texts are the macro's): on a line of its own under
+    // the name, in step with it, so the name keeps the whole row (beside it, the long ones squeezed the name mid-word)
     .filter-group-state {
-        margin-left: .5rem;
+        flex: 1 0 100%;
+        padding-left: 1.125rem;
+        font-size: .875rem;
         font-weight: 400;
         text-transform: none;
         letter-spacing: normal;
         color: $muted;
     }
+}
+
+// a group after another has room above its heading (they are all one size now), and its rows are one tick step (the check
+// glyph and its gap) in from it, so each row's tick is under the category's name (the lone Uncategorized row has no heading to be under)
+[data-filter-group] ~ [data-filter-group] > ul > .filter-group-heading {
+    margin-top: .5rem;
+}
+
+[data-filter-group] > ul > .filter-group-heading ~ [data-filter-row] {
+    padding-left: 1.125rem;
 }
 
 .adv-filter-modal {
@@ -10516,8 +10523,13 @@ $cc-muted: $muted;
 @import "{ruqquspath}/assets/style/_happening";
 @import "{ruqquspath}/assets/style/_search_tabs";
 @import "{ruqquspath}/assets/style/_filtered_words";
+@import "{ruqquspath}/assets/style/_admin_traffic";
+@import "{ruqquspath}/assets/style/_consent";
+@import "{ruqquspath}/assets/style/_qr_login";
+@import "{ruqquspath}/assets/style/_type_scale";
 @import "{ruqquspath}/assets/style/_motion";
 @import "{ruqquspath}/assets/style/_mobile";
 @import "{ruqquspath}/assets/style/_light";
 @import "{ruqquspath}/assets/style/_glass";
 @import "{ruqquspath}/assets/style/_text_size";
+@import "{ruqquspath}/assets/style/_post_rail";

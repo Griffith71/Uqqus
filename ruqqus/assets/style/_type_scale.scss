@@ -1,0 +1,64 @@
+// One type scale across the site (the owner, 2026-10-30: "I want the text sizing to be consistent across the website"). The scale is the one
+// _tokens.scss already defines, in rem at the site's 14px root:
+//
+//     --text-xs 12   captions, hints, handles, chips, counts, and every small UPPERCASE label (letter-spacing --tracking-label)
+//     --text-sm 13   meta lines, action counts, the lead line of a page
+//     --text-base 14 the text of a row, a list, a button, a post's body
+//     --text-body 15 a figure or a small section's title
+//     --text-title 18 a post's title, a name, a card's heading
+//     --text-title-lg 22
+//
+// The legacy rules below were written for a 16px root and came out at 9.6, 10.5, 11, 11.4, 11.7, 12.25, 13.1, 15.75, 16 and 17.5px at the
+// 14px one, each its own size. Each now takes the nearest step (1px or less), in one place, after the legacy rules, so the same selector
+// wins by order. The page titles above 22px (Explore, Creator Studio), the logo, a badge's 75% and code's 87.5% are proportions of their
+// surroundings or a heading ladder of their own, and stay. (Imported before _motion and _mobile: a phone rule can still set its own size.) tests/test_type_scale_assets.py keeps the list; scripts/ui/type_scale.spec.ts
+// measures every page for a size that is on no step.
+
+// 12: small captions and labels
+.circle-tag,
+.post-type-choice,
+.audience-note,
+.composer-count,
+.composer-tool-text,
+.explore-meta,
+.explore-chip,
+.explore-desc,
+.space-card-meta,
+.space-card-rec,
+.space-tab,
+.where-chip,
+.audience-hint,
+.audience-title,
+.audience-manage {
+    font-size: var(--text-xs);
+}
+
+.composer-pill > summary,
+.inline-composer .ic-head .composer-pill > summary,
+.composer-who .composer-where-pill > summary {
+    font-size: var(--text-xs);
+}
+
+// the muted @handle after a display name (it was 90% of the name's 13px)
+.user-name .user-handle {
+    font-size: var(--text-xs);
+}
+
+// 13: the lead line of a page, an empty list's line, the search filters' check labels, and a disclosure's summary
+.explore-lead,
+.explore-empty,
+.search-check,
+.composer-more > summary {
+    font-size: var(--text-sm);
+}
+
+// 15 and 18: a section's title, and the Bootstrap h5 and a profile's name
+.explore-section-title {
+    font-size: var(--text-body);
+}
+
+h5,
+.h5,
+.profile-x-name {
+    font-size: var(--text-title);
+}

@@ -346,3 +346,73 @@ $indent-phone: 10px;
         vertical-align: bottom;
     }
 }
+
+// --- the tools under a comment box (partials/comment_tools.html, the four comment forms) ---------------------------
+// One shape for every tool in the row, as the navbar's icons: a round target of the control's height, its glyph or word in
+// the middle, muted, tinted on hover. They were bare glyphs (bold, italic, quote) beside grey ovals of four widths whose
+// glyph sat 7px above the middle (a <label> styled as a .btn takes its padding from the top). A tool that is switched on
+// keeps the colour its markup gives it (.text-info for a disclosure, .text-warning for Sensitive).
+
+.comment-write .comment-format {
+    gap: var(--space-1);
+}
+
+.comment-write .comment-format .format {
+    display: inline-flex;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    min-width: var(--control-h);
+    height: var(--control-h);
+    margin: 0;
+    padding: 0 var(--space-2);          // "GIF" fits the circle too; a picked file's name widens it into a pill
+    font-size: var(--text-base);
+    line-height: 1;
+    color: var(--text-muted);
+    background-color: transparent;
+    border: 0;
+    border-radius: var(--radius-pill);
+    cursor: pointer;
+    transition: background-color var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out);
+}
+
+@media (hover: hover) and (pointer: fine) {
+    .comment-write .comment-format .format:hover {
+        background-color: var(--hover);
+        color: var(--text);
+    }
+}
+
+// a word in place of a glyph: "Aa" and "GIF", as the post editor and the Create post card write them
+.comment-write .comment-format .format-text,
+.post-tb-text {
+    font-size: px2rem(12px);
+    font-weight: 800;
+    letter-spacing: 0.02em;
+}
+
+// "Aa" while the formatting is open: pressed, in the page's own greys (the brand blue is an accent)
+.comment-write .comment-format .comment-format-toggle[aria-expanded="true"] {
+    background-color: var(--hover);
+    color: var(--text);
+}
+
+// the phone keeps its comment row to the Comment button, as before (main.scss hides the tools under 768px; the rule above
+// would bring them back)
+@media (max-width: 767.98px) {
+    .comment-write .comment-format .format {
+        display: none;
+    }
+}
+
+// the formatting above the box, once "Aa" opens it: a row of its own in the form (a wrapping input group), joined to the
+// box under it as the post editor's bar is
+.comment-write .comment-toolbar {
+    flex: 0 0 100%;
+    width: 100%;
+}
+
+.comment-write .comment-toolbar:not([hidden]) + .comment-box {
+    border-top-left-radius: 0 !important;       // the box's .rounded is !important
+    border-top-right-radius: 0 !important;
+}

@@ -1,0 +1,378 @@
+// The post editor's toolbar as a column beside the text box (assets/js/post_editor.js builds the buttons). On the Create a
+// post card, the shared draft (same card) and the feed composer, from 992px (the owner, 2026-10-30): it sits just outside the
+// body box on the end side, with bigger symbols, and it is sticky, so it follows the writer down the page while the body
+// grows with the text (growEditorBody in all_js.js). Narrower screens, the edit form, the wiki and the event editors keep the
+// row at the top of the box. Imported last by both sheets; tokens only, so it holds in both themes and every guild colour.
+//
+// Why each piece is the way it is:
+//  - the box (border, radius, focus ring) moves from .post-editor to its .input-group and .post-preview, so the column is
+//    outside it; the grid column has a fixed width, so the box does not change width when the script builds the buttons;
+//  - .post-editor must not clip (overflow: hidden would make IT the scroll container the sticky column sticks to);
+//  - the column is as tall as its folded buttons at most (--post-rail-h) and scrolls by itself past that or past the window,
+//    so a long formatting list stays reachable; the text box is never shorter than the folded column (min-height), so the
+//    two always end together;
+//  - a scrolling column clips what is placed inside it: the menus, the link dialog and the status line are fixed to the
+//    window beside it (post_editor.js placeBeside), which is why they are styled here and not left where they were.
+
+// Preview shows the post as the post page does: its title, then its text (post_editor.js setPreview). The title is the post
+// page's own (`.post-title`: the type tokens in _feed.scss), at the width the text has; the break rules are the post body's.
+.post-preview-title {
+    margin: 0 0 1rem;
+    font-size: var(--text-title);
+    font-weight: var(--weight-semibold);
+    letter-spacing: var(--tracking-title);
+    line-height: var(--leading-tight);
+    color: var(--text);
+    overflow-wrap: break-word;
+    word-break: break-word;
+}
+
+.post-preview-text {
+    overflow-wrap: break-word;
+    word-break: break-word;
+}
+
+// The Preview overlay (post_editor.js openPreviewOverlay): the post page's card, built by the server (partials/post_preview.html), at
+// the post page's own card width (--preview-card-w, measured), so the browser lays its text out as it lays out the post. The
+// dialog is that card and the body's padding: a long post scrolls the whole overlay, never an inner scroller, whose scrollbar
+// would take width from the text and move the wrap.
+.post-preview-dialog {
+    max-width: calc(var(--preview-card-w, 40rem) + 2 * var(--space-6));
+}
+
+.post-preview-dialog .modal-body {
+    padding: var(--space-6);
+}
+
+.post-preview-sheet {
+    width: var(--preview-card-w);
+    max-width: 100%;
+}
+
+// the post page sets its vote column narrower than the feed's (its `#thread .voting` rules, which an id keeps to that page): the
+// text is what is left of the card beside it, so this is what makes the text as wide as the post's
+.post-preview-card .voting {
+    min-width: 15px;
+    overflow-wrap: normal;
+}
+
+// drawn, not used: the card's vote column and action row do nothing here
+.post-preview-card {
+    background: transparent;
+}
+
+.post-preview-card .voting,
+.post-preview-card .post-actions,
+.post-preview-card a {
+    pointer-events: none;
+}
+
+// a top toolbar shows the tabs' words; the column shows an icon. Font Awesome's own `.fas { display: inline-block }` is loaded
+// after the site's sheets and wins a tie, hence the second class
+.post-toolbar .post-tb-tab-icon {
+    display: none;
+}
+
+@media (min-width: 992px) {
+    // on the root: the Create a post column, which is above the card, adds the column's width to its own (below)
+    :root {
+        --post-rail-w: calc(var(--control-h) + var(--space-2) + 2px);              // a button, 2px each side, the border (it was 4px each side: 46px, before the symbols came down to the comment box's size, 2026-10-30)
+        --post-rail-h: calc(9 * var(--control-h) + 47px);                          // the folded column: 9 buttons, its separators, padding and border (scripts/ui/post_rail.spec.ts fails when the toolbar's buttons and this drift apart)
+    }
+
+    .composer-card,
+    .inline-composer {
+        --post-rail-top: calc(var(--navbar-height, 56px) + var(--space-4));
+        --post-rail-bottom: var(--space-4);
+    }
+
+    // Create a post: the fixed bar along the bottom (Cancel, Drafts, Post) covers the last 72px of the window
+    #submit .composer-card {
+        --post-rail-bottom: calc(var(--space-4) + 72px);
+    }
+
+    // the feed: the sort bar is stuck under the top bar (62px, as the "new posts" pill below it counts it)
+    .inline-composer {
+        --post-rail-top: calc(var(--navbar-height, 56px) + 62px + var(--space-4));
+    }
+
+    .composer-card .post-editor,
+    .inline-composer .post-editor {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) var(--post-rail-w);
+        column-gap: var(--space-3);
+        overflow: visible;
+        background: transparent;
+        border: 0;
+        border-radius: 0;
+    }
+
+    // the older focus ring is on the whole wrapper; it is on the text box now (_light.scss)
+    .composer-card .post-editor:focus-within,
+    .inline-composer .post-editor:focus-within {
+        border-color: transparent;
+        box-shadow: none;
+    }
+
+    .composer-card .post-editor > .input-group,
+    .composer-card .post-editor > .post-preview,
+    .inline-composer .post-editor > .input-group,
+    .inline-composer .post-editor > .post-preview {
+        grid-column: 1;
+        grid-row: 1;
+        overflow: hidden;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-lg);
+    }
+
+    .inline-composer .post-editor > .input-group,
+    .inline-composer .post-editor > .post-preview {
+        border-radius: var(--radius-md);
+    }
+
+    // the box's two borders are the input group's: the text is as tall as the column less them, so the two are one height
+    .composer-card .post-editor textarea,
+    .inline-composer .post-editor textarea {
+        min-height: calc(var(--post-rail-h) - 2px);
+    }
+
+    // not drawn until the script has built the buttons: an empty column is a bare outline
+    .composer-card .post-editor > .post-toolbar:empty,
+    .inline-composer .post-editor > .post-toolbar:empty {
+        visibility: hidden;
+    }
+
+    .composer-card .post-editor > .post-toolbar,
+    .inline-composer .post-editor > .post-toolbar {
+        --post-rail: 1;                // post_editor.js isRail() reads this, so the 992px lives here only
+        grid-column: 2;
+        grid-row: 1;
+        align-self: start;
+        position: sticky;
+        top: var(--post-rail-top);
+        z-index: 4;                    // over the text box's character count (3), whose popover this column's menus overlap
+        display: flex;
+        flex-flow: column nowrap;
+        align-items: center;
+        gap: 0;
+        box-sizing: border-box;
+        width: var(--post-rail-w);
+        max-height: unquote("min(calc(100vh - var(--post-rail-top) - var(--post-rail-bottom)), var(--post-rail-h))");
+        padding: var(--space-2) var(--space-1);   // 4px above and below (the folded column's height, --post-rail-h), 2px at the sides
+        overflow-x: hidden;
+        overflow-y: auto;
+        overscroll-behavior: contain;
+        scrollbar-width: none;         // a classic scrollbar would take a quarter of the 36px buttons' width; the wheel, touch and
+                                       // the keyboard's focus scroll it, and a half-hidden button at the edge says there is more
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-lg);
+
+        &::-webkit-scrollbar {
+            display: none;
+        }
+
+        // with the formatting open there are 27 buttons: the column takes the window's height (the text box stretches to match)
+        // and scrolls by itself past that
+        &:not(.post-tb-collapsed) {
+            max-height: calc(100vh - var(--post-rail-top) - var(--post-rail-bottom));
+        }
+
+        .post-tb-group {
+            flex-direction: column;
+            gap: var(--space-1);
+            width: 100%;
+        }
+
+        .post-tb-group + .post-tb-group {
+            margin: var(--space-2) 0 0;
+            padding: var(--space-2) 0 0;
+            border-left: 0;
+            border-top: 1px solid var(--border);
+        }
+
+        // the gap before Write and Preview is the spacer, drawn as the same line
+        .post-tb-spacer {
+            flex: 0 0 1px;
+            width: 100%;
+            height: 1px;
+            margin: var(--space-2) 0;
+            background: var(--border);
+        }
+
+        .post-tb-group.post-tb-tabs {
+            margin: 0;
+            padding: 0;
+            border: 0;
+        }
+
+        // 36px buttons (the old ones were about 26px), their symbols the size of the comment box's tools beside the same
+        // 36px (the owner, 2026-10-30: they were 16px, "Aa" 15px, and read bigger): 14px glyphs, the words "Aa" and
+        // "GIF" at 12px (_comments.scss "the tools under a comment box")
+        .post-tb-btn {
+            display: inline-flex;
+            flex: 0 0 auto;
+            align-items: center;
+            justify-content: center;
+            width: var(--control-h);
+            height: var(--control-h);
+            min-height: 0;
+            padding: 0;
+            font-size: var(--text-base);
+            border-radius: var(--radius-sm);
+        }
+
+        .post-tb-toggle-text {
+            font-size: var(--text-xs);
+            font-weight: 800;
+        }
+
+        .post-tb-tab {
+            font-size: var(--text-base);
+            font-weight: 400;
+        }
+
+        .post-tb-tab-icon {
+            display: inline-block;
+        }
+
+        // Preview opens an overlay from here (post_editor.js overlayWanted): there is no Write to go back to
+        .post-tb-tab-write {
+            display: none;
+        }
+
+        // the words stay for screen readers (the button's label is the same)
+        .post-tb-tab-text {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            margin: -1px;
+            padding: 0;
+            overflow: hidden;
+            white-space: nowrap;
+            clip: rect(0, 0, 0, 0);
+            border: 0;
+        }
+
+        // fixed to the window beside the column by post_editor.js (it sets the place); their looks are here
+        .post-tb-menu {
+            position: fixed;
+            box-shadow: var(--shadow-md);
+        }
+
+        .post-tb-status,
+        .post-tb-dialog {
+            position: fixed;
+            z-index: 1050;
+            box-sizing: border-box;
+            background: var(--surface-raised);
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow-md);
+        }
+
+        .post-tb-status {
+            flex: 0 0 auto;
+            width: max-content;
+            max-width: 16rem;
+            padding: var(--space-3) var(--space-4);
+            border-radius: var(--radius-sm);
+        }
+
+        .post-tb-dialog {
+            width: 20rem;
+            max-width: calc(100vw - 2rem);
+            padding: var(--space-4);
+            gap: var(--space-3);
+            border-radius: var(--radius-md);
+
+            .form-control {
+                flex: 1 1 100%;
+                width: 100%;
+            }
+        }
+    }
+}
+
+// ---------------------------------------------------------------------------------------------------------------------------
+// Create a post looks like the post it makes (the owner, 2026-10-30: "the pre-post to look identical to what it would look like
+// when it's posted"). The words of the box wrap where they will wrap on the post page, so the text column of the box (the
+// textarea, and the Preview pane) is exactly the width the posted text has at this window, and the page's column grows or
+// shrinks with it. Create a post and the shared draft only (their column carries .posted-width): Create a guild, the drafts
+// list and the feed composer keep their own widths. Another reader's window reflows the text anyway; this is the author's own.
+//
+// The posted text is the post page's column less its two 15px gutters, then shared with the 28px vote column (margins -4px and
+// 8px) by the flex row they sit in, which shrinks both in proportion: W (W - 4) / (W + 28), about 60.5 to 60.8px less than the
+// column, whatever the text size, the density or the score. The column is the feed's 782px, or what the window leaves between
+// the left sidebar (272px, or its 65px rail below 1200px and when the member folded it: the sidebar_pref cookie, named as
+// .posted-left-rail on <body>) and the 316px right sidebar. `--sbw` is the page's scrollbar (a classic one takes room from the
+// window, 0 where it overlays). Both numbers come from the script at the top of the body in templates/submit.html.
+// scripts/ui/post_rail.spec.ts holds the two widths together at six window widths, either sidebar and two text sizes.
+
+@media (min-width: 992px) {
+    body#submit {
+        --posted-left: 65px;
+        --posted-col: min(#{$layout-feed}, calc(100vw - var(--sbw, 0px) - var(--posted-left) - #{$layout-right}));
+        // the script's exact figure (see the probe in templates/submit.html); without it, the middle of the range the exact one covers
+        --posted-text-w: var(--posted-text-js, calc(var(--posted-col) - 60.6px));
+        --box-inset: 0.875rem;                      // the text box's side padding, what a form field has always had here
+        --create-col-pad: 1rem;                     // Bootstrap's p-3 on the column
+        --create-card-pad: 1.25rem;                 // the card's side padding
+        // the text, the box's padding and its two borders, the gap and the toolbar column, the card's padding and border,
+        // the page column's padding
+        --create-col-w: calc(var(--posted-text-w) + 2 * var(--box-inset) + 2px + var(--space-3) + var(--post-rail-w) + 2 * var(--create-card-pad) + 2px + 2 * var(--create-col-pad));
+    }
+
+    #posted-width-probe {
+        position: absolute;
+        width: var(--posted-col);
+        height: 0;
+        visibility: hidden;
+        pointer-events: none;
+    }
+
+    // the sidebar is its 272px from 1200px, unless the member folded it to its rail
+    @media (min-width: 1199.98px) {
+        body#submit:not(.posted-left-rail) {
+            --posted-left: #{$layout-left};
+        }
+    }
+
+    // Where the post page's column is the narrow one (its sidebar is a 65px rail below 1200px, or folded) the box needs about
+    // 20px more than the Create page's window leaves (it has no sidebar and a 316px one on the other side). The column's and the
+    // card's padding give them back, in px so that a larger Text size (whose rem paddings grow) does not take them again.
+    // Windows from 1260px, wide enough for either, keep the roomier card.
+    @media (max-width: 1259.98px) {
+        body#submit {
+            --create-col-pad: 0.25rem;
+            --create-card-pad: var(--space-4);
+        }
+    }
+
+    #submit .submit-main-col.posted-width {
+        -ms-flex: 0 1 var(--create-col-w);
+        flex: 0 1 var(--create-col-w);
+        max-width: var(--create-col-w);
+        padding-left: var(--create-col-pad) !important;       // Bootstrap's p-3 is !important
+        padding-right: var(--create-col-pad) !important;
+    }
+
+    #submit .posted-width .composer-card {
+        padding-left: var(--create-card-pad);
+        padding-right: var(--create-card-pad);
+    }
+
+    // both containers (the page and the bar along the bottom) so Cancel and Post stay under the card's edges
+    #submit:has(.submit-main-col.posted-width) .container {
+        max-width: calc(var(--create-col-w) + #{$layout-right});
+    }
+
+    // the text column of the box: explicit padding on the text and on the Preview, so it is the posted width and nothing else.
+    // .comment-write.collapsed (put there when the title overflows into the body) pads it differently, hence the ids
+    #submit .posted-width .composer-card .post-editor > .input-group > textarea {
+        padding-left: var(--box-inset);
+        padding-right: var(--box-inset);
+        box-sizing: border-box;
+        word-break: break-word;                    // as the post page's .post-body
+    }
+}
