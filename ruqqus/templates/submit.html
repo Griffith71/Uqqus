@@ -55,7 +55,32 @@
 
 </head>
 
-<body id="submit">
+<body id="submit"{% if request.cookies.get('sidebar_pref') == 'collapsed' %} class="posted-left-rail"{% endif %}>
+
+    {# The box's text is as wide as the posted text will be (assets/style/_post_rail.scss). The probe is as wide as the post page's
+       column (--posted-col, which the stylesheet works out from the window and the sidebar); the script tells the stylesheet two
+       numbers: the page's scrollbar (a classic one takes room from the window, 0 where it overlays) and the posted text's width.
+       The post page lays the text and its 28px vote column (margin -4px and 8px) out as one flex row inside the card (the column
+       less 30px of gutters), and the row shrinks both in proportion, so the text is W (W - 4) / (W + 28) wide: not a constant
+       inset, and CSS cannot divide by a length. scripts/ui/post_rail.spec.ts holds this to the post page, to a few hundredths of a pixel. #}
+    <div id="posted-width-probe" aria-hidden="true"></div>
+    <script>
+        (function () {
+            var root = document.documentElement, probe = document.getElementById('posted-width-probe');
+            var wide = window.matchMedia('(min-width: 992px)');
+            function measure() {
+                root.style.setProperty('--sbw', (window.innerWidth - root.clientWidth) + 'px');
+                var card = probe.getBoundingClientRect().width - 30;
+                if (wide.matches && card > 0) {
+                    var vote = Math.round((28 - 896 / (card + 28)) * 64) / 64;      // the vote column after the shrink, in the 1/64 px the engines lay out in
+                    root.style.setProperty('--posted-text-js', (card - 4 - vote) + 'px');
+                }
+            }
+            measure();
+            window.addEventListener('resize', measure);
+            window.addEventListener('load', measure);
+        })();
+    </script>
 
     <!-- Navigation -->
     {% include "header.html" %}
@@ -73,7 +98,7 @@
 
             <div class="row justify-content-center mb-4 pb-7">
 
-                <div class="col col-md-6 p-3 py-md-0 submit-main-col">
+                <div class="col col-md-6 p-3 py-md-0 submit-main-col posted-width">
 
                     <h1 class="d-none d-md-block composer-heading">{{ _("Create a post") }}</h1>
 
@@ -223,11 +248,11 @@
 
                                 {{ post_options.disclosure_field(draft.option("paid_partnership", false) if draft else request.form.getlist("paid_partnership") | select | list | length > 0, draft.option("made_with_ai", false) if draft else request.form.getlist("made_with_ai") | select | list | length > 0, "post-disc") }}
 
-                                <label for="sensitive" class="text-warning mt-3">{{ _("Sensitive Content?") }}<i class="fas fa-info-circle text-gray-400 ml-1" data-toggle="tooltip" data-placement="top" title="{{ _('Not a rule violation - just something that could be upsetting. Shown blurred with a click-to-reveal instead of being blocked.') }}"></i></label>
+                                <label for="sensitive" class="text-warning mt-3">{{ _("Sensitive Content?") }}<i class="fas fa-info-circle text-gray-400 ml-1" data-toggle="tooltip" data-placement="top" title="{{ _('Sexual content must be marked sensitive, and so may anything that could be upsetting. Not a rule violation: shown blurred with a click-to-reveal instead of being blocked.') }}"></i></label>
 
                         <div class="custom-control custom-checkbox">
                             <input type="checkbox" class="custom-control-input" id="sensitiveCheck" name="sensitive"{% if b and b.is_sensitive %} checked disabled {% elif draft and draft.option("sensitive") %} checked{% endif %}>
-                            <label class="custom-control-label" for="sensitiveCheck">{{ _("Blur this post until viewers click to reveal it.") }}</label>
+                            <label class="custom-control-label" for="sensitiveCheck">{{ _("Sexual or upsetting? Blur this post until viewers click to reveal it.") }}</label>
                         </div>
 
                             </div>
@@ -251,6 +276,7 @@
                             <li class="list-inline-item d-none"><a href="/help/contact" class="text-gray-500">{{ pgettext("footer link", "Contact") }}</a></li>
                             <li class="list-inline-item"><a href="/help/terms" class="text-gray-500">{{ pgettext("footer link", "Terms") }}</a></li>
                             <li class="list-inline-item"><a href="/help/privacy" class="text-gray-500">{{ _("Privacy Policy") }}</a></li>
+                            <li class="list-inline-item"><a href="/help/privacy#videos" class="text-gray-500" data-consent-open>{{ _("Cookie choices") }}</a></li>
                             <li class="list-inline-item"><a href="/help/donate" class="text-gray-500">{{ pgettext("footer link", "Donate") }}</a></li>
                             <li class="list-inline-item"><a href="/help/press" class="text-gray-500">{{ pgettext("footer link", "Press") }}</a></li>
                             <li class="list-inline-item"><a href="/help" class="text-gray-500">{{ pgettext("footer link", "Help") }}</a></li>

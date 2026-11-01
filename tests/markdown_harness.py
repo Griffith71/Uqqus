@@ -30,11 +30,12 @@ def load(monkeypatch, image_hosts=("i.imgur.com",), topics=None):
     return markdown, sanitize
 
 
-def render(monkeypatch, text, **load_kwargs):
-    """Markdown text -> the sanitized HTML that is stored as body_html."""
+def render(monkeypatch, text, breaks=False, **load_kwargs):
+    """Markdown text -> the sanitized HTML that is stored as body_html. `breaks`: how a post or a comment is rendered
+    (a single Enter is a line break); the default is the standard markdown the wiki, bios and notices use."""
     import mistletoe
 
     markdown, sanitize = load(monkeypatch, **load_kwargs)
-    with markdown.CustomRenderer() as renderer:
+    with markdown.CustomRenderer(breaks=breaks) as renderer:
         html = renderer.render(mistletoe.Document(markdown.preprocess(text)))
     return sanitize.sanitize(html, linkgen=True)

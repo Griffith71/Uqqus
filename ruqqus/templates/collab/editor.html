@@ -21,7 +21,7 @@
 <div class="container">
   <div class="row justify-content-center mb-4 pb-7">
 
-    <div class="col col-md-6 p-3 py-md-0 submit-main-col">
+    <div class="col col-md-6 p-3 py-md-0 submit-main-col posted-width">
 
       <h1 class="d-none d-md-block composer-heading">{{ _("Write with others") }}</h1>
       {{ composer_modes("together") }}
@@ -89,10 +89,10 @@
               {{ post_options.comment_permission_field(options.comment_permission, "collab-cp") }}
               {{ post_options.disclosure_field(options.paid_partnership, options.made_with_ai, "collab-disc") }}
 
-              <label for="collab-sensitive" class="text-warning mt-3">{{ _("Sensitive Content?") }}<i class="fas fa-info-circle text-gray-400 ml-1" data-toggle="tooltip" data-placement="top" title="{{ _('Not a rule violation - just something that could be upsetting. Shown blurred with a click-to-reveal instead of being blocked.') }}"></i></label>
+              <label for="collab-sensitive" class="text-warning mt-3">{{ _("Sensitive Content?") }}<i class="fas fa-info-circle text-gray-400 ml-1" data-toggle="tooltip" data-placement="top" title="{{ _('Sexual content must be marked sensitive, and so may anything that could be upsetting. Not a rule violation: shown blurred with a click-to-reveal instead of being blocked.') }}"></i></label>
               <div class="custom-control custom-checkbox">
                 <input type="checkbox" class="custom-control-input" id="collab-sensitive" name="sensitive"{% if options.sensitive %} checked{% endif %}>
-                <label class="custom-control-label" for="collab-sensitive">{{ _("Blur this post until viewers click to reveal it.") }}</label>
+                <label class="custom-control-label" for="collab-sensitive">{{ _("Sexual or upsetting? Blur this post until viewers click to reveal it.") }}</label>
               </div>
               <p class="text-muted text-small mt-3 mb-0">{{ _("A post written together is public and can't be anonymous, shared with circles, or have a poll. Its authors are its co-authors. These options are shared by every author and used each time you publish.") }}</p>
             </div>

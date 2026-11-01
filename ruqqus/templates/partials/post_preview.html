@@ -1,0 +1,78 @@
+{#
+  The post as its own page draws it: the card of the Preview overlay (routes/post_editor.py `post_preview`, opened from
+  assets/js/post_editor.js `openPreviewOverlay`). It has the real card's classes and nesting (submission.html): the vote
+  column beside a card block holding the byline, the title, the disclosure badges, the link's row, the text and the
+  action row, so the browser lays it out as it lays out the post: the text is as wide, and wraps where it will wrap.
+  scripts/ui/post_rail.spec.ts holds its boxes and type to a real post page.
+
+  `p` is a stand-in for the post (the title and text as they will be stored, the link, the flags); `v` is the person
+  writing it, who sees their own post as its author does (an anonymous post shows their name and the "Anonymous"
+  badge, as on their own page). The vote column and the action row are drawn, not used: aria-hidden, no links, no ids.
+  Only the existing messages are used here; a new string would lower every catalogue's share until it is translated.
+  Not drawn: a picture, a poll, a fetched link preview (the real card's row for a site that gives none is drawn),
+  embedded players, the audience mark, the "Forwarded to" line.
+#}
+{% from "partials/post_options.html" import disclosure_row %}
+{% set author = author_of(p, v) %}
+<div class="card border-0 post-preview-card">
+  <div class="d-flex flex-row-reverse flex-nowrap justify-content-end">
+
+    <div class="card-block w-100 my-md-auto">
+
+      <div class="post-meta text-left mb-md-2">
+        <span>{{ _("just now") }}</span> {% set by_author %}<a href="javascript:void(0)" tabindex="-1" class="user-name"><img alt="" src="{{ author.profile_url }}" class="profile-pic-20 mr-1"/><span class="user-name-inner">{{ author.shown_name }}</span>{{ handle_tag(author) }}</a>{% if author.title %}{{ author.title.rendered | safe }}{% endif %}{% endset %}{{ _("by %(author)s", author=by_author) }}
+        · ({% if p.url %}{{ p.domain }}{% else %}{{ _("text post") }}{% endif %}){% if p.is_sensitive %} · <span class="badge text-warning border-warning border-1 text-small-extra">{{ _("sensitive content") }}</span>{% endif %}
+      </div>
+
+      {% if p.title %}
+      <h1 dir="auto" class="card-title post-title text-start mb-md-2 pb-md-1"><span dir="auto">{{ p.title | safe }}</span></h1>
+      {% endif %}
+      {{ disclosure_row(p, v) }}
+
+      {% if p.url %}
+      <div class="position-relative">
+        <div>
+          <a href="javascript:void(0)" tabindex="-1" class="post-preview-lg mb-3 d-block">
+            <div class="d-flex justify-content-between align-items-center border rounded p-2">
+              <span>{{ p.domain | truncate(30, True) }}</span>
+              <i class="fas fa-external-link-alt text-small"></i>
+            </div>
+          </a>
+        </div>
+      </div>
+      {% endif %}
+
+      <div class="post-body mt-3">
+        {% if p.body_html %}<div class="post-text" dir="auto">{{ p.body_html | safe }}</div>{% endif %}
+      </div>
+
+      <div class="d-flex justify-content-between align-items-center mt-2" aria-hidden="true">
+        <div class="post-actions mt-2 flex-grow-1">
+          <ul class="list-inline text-right d-flex">
+            <li class="list-inline-item post-action-item">
+              <span class="post-action post-action-comments"><i class="fas fa-comment-dots"></i><span class="post-action-count">0</span></span>
+            </li>
+            <li class="list-inline-item post-action-item">
+              <span class="post-action post-action-shares"><i class="fas fa-share-alt"></i><span class="post-action-count">0</span></span>
+            </li>
+            <li class="list-inline-item post-action-item">
+              <span class="post-action post-action-bookmark"><i class="far fa-bookmark"></i><span class="post-action-count">0</span></span>
+            </li>
+            <li class="list-inline-item post-action-item">
+              <span class="post-action post-action-tip"><img src="{{ asset_url('images/icons/ruqqus-coin.png') }}" alt="" width="15" height="15" class="post-action-coin"><span class="post-action-count">0</span></span>
+            </li>
+            <li class="list-inline-item d-inline-block ml-auto post-action-more"><div class="dropdown show"><a href="javascript:void(0)" tabindex="-1"><i class="fas fa-ellipsis-h text-small mr-0"></i></a></div></li>
+          </ul>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="voting mb-auto" aria-hidden="true">
+      <div class="mx-auto arrow-up"></div>
+      <span class="score vote-ratio-10">1</span>
+      <div class="text-muted mx-auto arrow-down"></div>
+    </div>
+
+  </div>
+</div>

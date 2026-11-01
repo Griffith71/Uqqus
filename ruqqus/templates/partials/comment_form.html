@@ -4,6 +4,7 @@
   (templates/post_space.html), where `p` is that guild's copy.
 #}
 {% import "partials/post_options.html" as post_options %}
+{% import "partials/comment_tools.html" as comment_tools %}
   {% if not p.is_banned and is_allowed_to_comment and comment_restriction %}
   <div class="text-muted text-small border rounded p-3 mb-3" id="comment-restriction"><i class="fas fa-lock fa-fw mr-1"></i>{{ comment_restriction }}</div>
   {% endif %}
@@ -15,32 +16,24 @@
       <input type="hidden" name="parent_fullname" value="t2_{{ p.base36id }}">
       <input id="comment-form-submission-{{ p.fullname }}" type="hidden" name="submission" value="{{ p.base36id }}">
       {% if v %}
+      {{ comment_tools.format_bar("comment-form-body-" ~ p.fullname) }}
       <textarea data-weighted-max="10000" id="comment-form-body-{{ p.fullname }}" class="comment-box form-control rounded" id="comment-form" onkeydown="textAreaOnKeyDown(event, (fullname = '{{ p.fullname }}') => post_comment(fullname))" name="body" form="comment-on-{{ p.fullname }}" aria-label="{{ _('With textarea') }}" placeholder="{{ _('Add your comment...') }}" rows="1"></textarea>
       {% endif %}
       <div class="comment-format">
-        <small class="format pl-0"><i class="fas fa-bold" onclick="makeBold('comment-form-body-{{ p.fullname }}')" data-toggle="tooltip" data-placement="bottom" data-delay='{"show":"700", "hide":"300"}' title="{{ _('Bold') }}"></i></small>
-        <small class="format"><i class="fas fa-italic" onclick="makeItalics('comment-form-body-{{ p.fullname }}')" data-toggle="tooltip" data-placement="bottom" data-delay='{"show":"700", "hide":"300"}' title="{{ _('Italicize') }}"></i></small>
-        <small class="format"><i class="fas fa-quote-right" onclick="makeQuote('comment-form-body-{{ p.fullname }}')" data-toggle="tooltip" data-placement="bottom" data-delay='{"show":"700", "hide":"300"}' title="{{ pgettext('formatting', 'Quote') }}"></i></small>
-          <label class="btn btn-secondary format d-inline-block m-0" for="gif-comment-btn-{{ p.fullname }}">
-            <span id="gif-comment-btn-{{ p.fullname }}" class="font-weight-bolder text-uppercase" onclick="getGif();commentForm('comment-form-body-{{ p.fullname }}')" aria-hidden="true" data-toggle="modal" data-target="#gifModal" data-toggle="tooltip" data-placement="bottom" title="{{ _('Add GIF') }}">GIF</span>
-          </label> 
-          &nbsp;
-          <label class="btn btn-secondary format d-inline-block m-0" for="emoji-comment-btn-{{p.fullname}}">
-            <div id="emoji-comment-btn-{{p.fullname}}" onclick="commentForm('comment-form-body-{{p.fullname}}');loadEmojis()" aria-hidden="true" data-toggle="modal" data-target="#emojiModal" data-toggle="tooltip" data-placement="bottom" title="{{ _('Add EMOJI') }}"><i class="fas fa-smile-beam"></i></div>
-          </label> 
+        {{ comment_tools.text_tools("comment-form-body-" ~ p.fullname) }}
           {% if media_offered() %}
-          <button type="button" class="format btn btn-secondary m-0 ml-1 d-inline-block" data-media-upload="image" data-target="comment-form-body-{{ p.fullname }}" data-toggle="tooltip" data-placement="bottom" title="{{ _('Add an image') }}" aria-label="{{ _('Add an image') }}"><i class="far fa-image"></i></button>
-          <button type="button" class="format btn btn-secondary m-0 ml-1 d-inline-block" data-media-upload="audio" data-target="comment-form-body-{{ p.fullname }}" data-toggle="tooltip" data-placement="bottom" title="{{ _('Add audio') }}" aria-label="{{ _('Add audio') }}"><i class="fas fa-volume-up"></i></button>
+          <button type="button" class="format" data-media-upload="image" data-target="comment-form-body-{{ p.fullname }}" title="{{ _('Add an image') }}" aria-label="{{ _('Add an image') }}"><i class="fas fa-image" aria-hidden="true"></i></button>
+          <button type="button" class="format" data-media-upload="audio" data-target="comment-form-body-{{ p.fullname }}" title="{{ _('Add audio') }}" aria-label="{{ _('Add audio') }}"><i class="fas fa-volume-up" aria-hidden="true"></i></button>
           {% endif %}
-          <label class="format btn btn-secondary m-0 ml-1 {% if v.has_premium and not media_offered() %}d-inline-block{% else %}d-none{% endif %}" for="file-upload-comment-{{ p.fullname }}">
-                <div id="filename-show-comment-{{ p.base36id }}"><i class="far fa-image"></i></div>
-                <input id="file-upload-comment-{{ p.fullname }}" type="file" name="file" accept="image/*" onchange="document.getElementById('filename-show-comment-{{ p.base36id }}').innerHTML=document.getElementById('file-upload-comment-{{ p.fullname }}').files[0].name;" hidden>
+          <label class="format{% if not (v.has_premium and not media_offered()) %} d-none{% endif %}" for="file-upload-comment-{{ p.fullname }}" title="{{ _('Add an image') }}">
+                <span id="filename-show-comment-{{ p.base36id }}"><i class="fas fa-image" aria-hidden="true"></i></span>
+                <input id="file-upload-comment-{{ p.fullname }}" type="file" name="file" accept="image/*" onchange="document.getElementById('filename-show-comment-{{ p.base36id }}').textContent=document.getElementById('file-upload-comment-{{ p.fullname }}').files[0].name;" hidden>
           </label>
-          <label id="comment-sensitive-label-{{ p.fullname }}" class="format btn btn-secondary m-0 ml-1 d-inline-block" for="comment-sensitive-{{ p.fullname }}" data-toggle="tooltip" data-placement="bottom" title="{{ _('Mark as Sensitive Content (blurred until clicked)') }}" onclick="document.getElementById('comment-sensitive-label-{{ p.fullname }}').classList.toggle('text-warning')">
+          <label id="comment-sensitive-label-{{ p.fullname }}" class="format" for="comment-sensitive-{{ p.fullname }}" title="{{ _('Mark as Sensitive Content (blurred until clicked)') }}" onclick="document.getElementById('comment-sensitive-label-{{ p.fullname }}').classList.toggle('text-warning')">
                 <input id="comment-sensitive-{{ p.fullname }}" type="checkbox" hidden>
-                <i class="fas fa-eye-slash"></i>
+                <i class="fas fa-eye-slash" aria-hidden="true"></i>
           </label>
-        {{ post_options.disclosure_toggles("comment-disc-" ~ p.fullname, false, false, true, p.is_anonymous and v and v.id == p.author_id) }}
+        {{ post_options.disclosure_toggles("comment-disc-" ~ p.fullname, false, false, true, p.is_anonymous and v and v.id == p.author_id and not anon_hidden(p, v)) }}
         <a id="save-comment-on-{{ p.fullname }}" href="javascript:void(0)" form="comment-on-{{ p.fullname }}" class="btn btn-primary text-whitebtn ml-auto" onclick="post_comment('{{ p.fullname }}')">{{ pgettext('button', 'Comment') }}</a>
       </div>
     </form>

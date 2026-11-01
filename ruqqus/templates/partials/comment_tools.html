@@ -1,0 +1,25 @@
+{#
+  The writing tools of a comment box, shared by its four forms: a new comment on a post (partials/comment_form.html), a
+  comment under a comment and an edit (comments.html), and the form sent back when a link was refused (comment_failed.html).
+
+  format_bar(target): the full formatting toolbar for the text box `target`, as a post's body has it (assets/js/post_editor.js,
+  data-variant="comment": the formatting alone, without undo, the media or Write / Preview). It sits above the box, hidden
+  until its "Aa" is pressed, and is built then: comment boxes are many, and some arrive after the page.
+
+  text_tools(target, media=true): the start of the row under the box. "Aa" (the owner, 2026-10-30: a formatting button like
+  Reddit's, that opens every formatting the body of a post has), then, with `media`, GIF and emoji. Bold, italic and quote
+  are in the bar "Aa" opens, so the row no longer has its own (the owner, 2026-10-30): it keeps only what the bar lacks,
+  the GIF, the emoji and, beside them in each form, pictures, sound and the switches. The symbols are the Create post card's (submit.html's blue row): GIF written out, a solid smile. Every tool in the row is a
+  .format button of one shape (assets/style/_comments.scss "the tools under a comment box").
+#}
+{% macro format_bar(target) -%}
+<div class="post-toolbar comment-toolbar" id="comment-tb-{{ target }}" data-target="{{ target }}" data-variant="comment" hidden></div>
+{%- endmacro %}
+
+{% macro text_tools(target, media=true) -%}
+<button type="button" class="format comment-format-toggle" data-comment-format aria-controls="comment-tb-{{ target }}" aria-expanded="false" title="{{ _('Formatting') }}" aria-label="{{ _('Formatting') }}"><span class="format-text" aria-hidden="true">Aa</span></button>
+{% if media -%}
+<button type="button" class="format" onclick="getGif();commentForm('{{ target }}')" data-toggle="modal" data-target="#gifModal" title="{{ _('Add a GIF') }}" aria-label="{{ _('Add a GIF') }}"><span class="format-text" aria-hidden="true">GIF</span></button>
+<button type="button" class="format" onclick="commentForm('{{ target }}');loadEmojis()" data-toggle="modal" data-target="#emojiModal" title="{{ _('Add an emoji') }}" aria-label="{{ _('Add an emoji') }}"><i class="fas fa-smile-beam" aria-hidden="true"></i></button>
+{%- endif %}
+{%- endmacro %}

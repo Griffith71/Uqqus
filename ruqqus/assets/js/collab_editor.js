@@ -189,6 +189,7 @@
       el.setSelectionRange(OT.transformIndex(op, start), OT.transformIndex(op, end));
     }
     el.scrollTop = scroll;
+    if (el.tagName === 'TEXTAREA' && window.growEditorBody) growEditorBody(el, false);   // another author's text makes the box taller (all_js.js)
   }
 
   function resync(message) {
@@ -202,6 +203,7 @@
         revision = d.revision;
         fields.title.text = fields.title.el.value = d.title;
         fields.body.text = fields.body.el.value = d.body;
+        if (window.growEditorBody) growEditorBody(fields.body.el, false);
         if (message) notice(message);
         setStatus(tr('Saved'));
       })

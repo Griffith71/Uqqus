@@ -1,6 +1,7 @@
 {% from "partials/translate_button.html" import translate_row %}
 {% macro single_comment(c, level=1) %}
 {% import "partials/post_options.html" as post_options %}
+{% import "partials/comment_tools.html" as comment_tools %}
 {% from "partials/community_note.html" import community_note %}
 {% from "partials/subscriber_badge.html" import subscriber_mark %}
 <!---beginning of comment {{ c.id }}--->
@@ -130,10 +131,10 @@
 {% set adjust=0 %}
 {% endif %}
 
-{% set can_edit = v and c.parent_submission and c.author_id==v.id %}
+{% set can_edit = v and c.parent_submission and c.author_id==v.id and not anon_hidden(c, v) %}
 {% set can_moderate = v and v.admin_level>=3 %}
 {% set can_pin = v and c.post and c.is_guildmaster('content') %}
-{% set can_author_prune = v and c.post and c.post.is_profile_post and v.id==c.post.author_id %}
+{% set can_author_prune = v and c.post and c.post.is_profile_post and v.id==c.post.author_id and not anon_hidden(c.post, v) %}
 {# sharing a comment: anyone's on a public post, only its author's otherwise (helpers/sharing.py); a comment on a
    post made for a Circle is never forwarded or reposted (circle_guard.under_audience) #}
 {% set can_share = may_share_comment(c, v) %}
@@ -252,19 +253,15 @@
       {% endif %}
 
       {% if c.parent_submission %}
-      {% if v and v.id==c.author_id and (standalone or is_allowed_to_comment) %}
+      {% if can_edit and (standalone or is_allowed_to_comment) %}
       <div id="comment-edit-{{ c.base36id }}" class="d-none comment-write collapsed child">
        <form id="comment-edit-form-{{ c.base36id }}" action="/edit_comment/{{ c.base36id }}" method="post" class="input-group">
         <input type="hidden" name="formkey" value="{{ v.formkey }}">
+        {{ comment_tools.format_bar("comment-edit-body-" ~ c.base36id) }}
         <textarea data-weighted-max="10000" id="comment-edit-body-{{ c.base36id }}" name="body" form="comment-edit-form-{{ c.base36id }}" class="comment-box form-control rounded" onkeydown="textAreaOnKeyDown(event, (id = '{{ c.base36id }}') => comment_edit(id))" aria-label="{{ _('With textarea') }}" placeholder="{{ _('Add your comment...') }}" rows="3">{{ c.body }}</textarea> 
-        <div class="comment-format"> 
-         <small class="format pl-0"><i class="fas fa-bold" aria-hidden="true" onclick="makeBold('comment-edit-body-{{ c.base36id }}')" data-toggle="tooltip" data-placement="bottom" title="{{ _('Bold') }}"></i></small> 
-         <small class="format"><i class="fas fa-italic" aria-hidden="true" onclick="makeItalics('comment-edit-body-{{ c.base36id }}')" data-toggle="tooltip" data-placement="bottom" title="{{ _('Italicize') }}"></i></small> 
-         <small class="format"><i class="fas fa-quote-right" aria-hidden="true" onclick="makeQuote('comment-edit-body-{{ c.base36id }}')" data-toggle="tooltip" data-placement="bottom" title="{{ pgettext('formatting', 'Quote') }}"></i></small>
-         <small class="format"><span class="font-weight-bolder text-uppercase" aria-hidden="true" onclick="getGif();commentForm('comment-edit-body-{{ c.base36id }}')" data-toggle="modal" data-target="#gifModal" data-toggle="tooltip" data-placement="bottom" data-delay='{"show":"700", "hide":"300"}' title="{{ _('Add GIF') }}">GIF</span></small> 
-         &nbsp;
-         <small class="format"><i class="fas fa-smile-beam" aria-hidden="true" onclick="commentForm('comment-edit-body-{{c.base36id}}');loadEmojis()" data-toggle="modal" data-target="#emojiModal" data-toggle="tooltip" data-placement="bottom"  title="{{ _('Emojis') }}"></i></small>          
-         <small class="format d-none"><i class="fas fa-link" aria-hidden="true"></i></small> 
+        <input type="text" id="comment-edit-summary-{{ c.base36id }}" class="form-control form-control-sm rounded mt-2" maxlength="256" autocomplete="off" aria-label="{{ _('Briefly say what you changed (optional)') }}" placeholder="{{ _('Briefly say what you changed (optional)') }}">
+        <div class="comment-format">
+         {{ comment_tools.text_tools("comment-edit-body-" ~ c.base36id) }}
          <a id="cancel-edit-{{ c.base36id }}" href="javascript:void(0)" onclick="toggleEdit('{{ c.base36id }}')" class="btn btn-link text-muted ml-auto cancel-form">{{ _("Cancel") }}</a> 
          {{ post_options.disclosure_toggles("comment-edit-disc-" ~ c.base36id, c.paid_partnership, c.made_with_ai) }}
          <a href="javascript:void(0)" form="comment-edit-form-{{ c.base36id }}" class="btn btn-primary ml-2" onclick="comment_edit('{{ c.base36id }}')">{{ _("Save Edit") }}</a> </div> </form>
@@ -350,7 +347,7 @@
               <a class="dropdown-item" href="javascript:void(0)" data-toggle="modal" data-target="#tipModal" onclick="tipModal2('{{ c.base36id }}','comment','{{ c.permalink }}','{{ author_of(c, v).username }}','{{ author_of(c, v).profile_url }}')"><i class="fas fa-star fa-fw"></i>{{ pgettext("verb", "Tip") }}</a>
               {% endif %}
 
-              {% if c.parent_submission and not c.author_id==v.id %}{# flagging needs a login only, not the right to comment #}
+              {% if c.parent_submission and (not c.author_id==v.id or anon_hidden(c, v)) %}{# flagging needs a login only, not the right to comment #}
               <a class="dropdown-item" href="javascript:void(0)" data-toggle="modal" data-target="#reportCommentModal" onclick="report_commentModal('{{ c.base36id }}',{{ (_('Anonymous') if anon_hidden(c, v) else (_('[deleted account]') if author_of(c, v).is_deleted else author_of(c, v).username)) | tojson | forceescape }},)"><i class="fas fa-flag fa-fw"></i>{{ pgettext("verb", "Flag") }}</a>
               {% endif %}
 
@@ -412,7 +409,7 @@
               <a class="dropdown-item" href="{{ c.oauth_app.permalink }}/comments"><i class="fas fa-code fa-fw"></i>{{ _("API App") }}</a>
               {% endif %}
 
-              {% if v.id != c.author_id %}
+              {% if v.id != c.author_id or anon_hidden(c, v) %}
               <div class="dropdown-divider"></div>
               {# never on an anonymous comment: it would act on the stand-in name "Anonymous" #}
               {% if not anon_hidden(c, v) %}
@@ -465,36 +462,21 @@
         <input type="hidden" name="formkey" value="{{ v.formkey }}"> 
         <input type="hidden" name="parent_fullname" value="{{ c.fullname }}"> 
         <input id="comment-form-submission-{{ c.fullname }}" type="hidden" name="submission" value="{{ c.post.base36id }}"> 
+        {{ comment_tools.format_bar("comment-form-body-" ~ c.fullname) }}
         <textarea data-weighted-max="10000" name="body" form="comment-on-t3_{{ c.base36id }}" class="comment-box form-control rounded" id="comment-form-body-{{ c.fullname }}" onkeydown="textAreaOnKeyDown(event, (fullname = '{{ c.fullname }}') => post_comment(fullname))" aria-label="{{ _('With textarea') }}" placeholder="{{ _('Add your comment...') }}" rows="3"></textarea> 
-        <div class="comment-format" id="comment-format-bar-{{ c.base36id }}"> 
-          <small class="format pl-0">
-            <i class="fas fa-bold" aria-hidden="true" onclick="makeBold('comment-form-body-{{ c.fullname }}')" data-toggle="tooltip" data-placement="bottom" title="{{ _('Bold') }}"></i>
-          </small> 
-          <small class="format"><i class="fas fa-italic" aria-hidden="true" onclick="makeItalics('comment-form-body-{{ c.fullname }}')" data-toggle="tooltip" data-placement="bottom" title="{{ _('Italicize') }}"></i>
-          </small> 
-          <small class="format">
-            <i class="fas fa-quote-right" aria-hidden="true" onclick="makeQuote('comment-form-body-{{ c.fullname }}')" data-toggle="tooltip" data-placement="bottom" title="{{ pgettext('formatting', 'Quote') }}"></i>
-          </small> 
-          <label class="btn btn-secondary format d-inline-block m-0" for="gif-comment-btn-{{ c.fullname }}">
-            <span id="gif-comment-btn-{{ c.fullname }}" class="font-weight-bolder text-uppercase" onclick="getGif();commentForm('comment-form-body-{{ c.fullname }}')" aria-hidden="true" data-toggle="modal" data-target="#gifModal" data-toggle="tooltip" data-placement="bottom" title="{{ _('Add GIF') }}">GIF</span>
-          </label> 
-
-          &nbsp;
-          <label class="btn btn-secondary format d-inline-block m-0" for="gif-comment-btn-{{c.fullname}}">
-             <i id="emoji-comment-btn-{{c.fullname}}" class="fas fa-smile-beam" onclick="commentForm('comment-form-body-{{c.fullname}}');loadEmojis()" aria-hidden="true" data-toggle="modal" data-target="#emojiModal" data-toggle="tooltip" data-placement="bottom" title="{{ _('Add EMOJI') }}"></i>
-          </label>
-          &nbsp;
+        <div class="comment-format" id="comment-format-bar-{{ c.base36id }}">
+          {{ comment_tools.text_tools("comment-form-body-" ~ c.fullname) }}
 
           {% if media_offered() %}
-          <button type="button" class="format btn btn-secondary m-0 ml-1 d-inline-block" data-media-upload="image" data-target="comment-form-body-{{ c.fullname }}" data-toggle="tooltip" data-placement="bottom" title="{{ _('Add an image') }}" aria-label="{{ _('Add an image') }}"><i class="far fa-image"></i></button>
-          <button type="button" class="format btn btn-secondary m-0 ml-1 d-inline-block" data-media-upload="audio" data-target="comment-form-body-{{ c.fullname }}" data-toggle="tooltip" data-placement="bottom" title="{{ _('Add audio') }}" aria-label="{{ _('Add audio') }}"><i class="fas fa-volume-up"></i></button>
+          <button type="button" class="format" data-media-upload="image" data-target="comment-form-body-{{ c.fullname }}" title="{{ _('Add an image') }}" aria-label="{{ _('Add an image') }}"><i class="fas fa-image" aria-hidden="true"></i></button>
+          <button type="button" class="format" data-media-upload="audio" data-target="comment-form-body-{{ c.fullname }}" title="{{ _('Add audio') }}" aria-label="{{ _('Add audio') }}"><i class="fas fa-volume-up" aria-hidden="true"></i></button>
           {% endif %}
-          <label class="format btn btn-secondary m-0 ml-1 {% if v.can_upload_comment_image and not media_offered() %}d-inline-block{% else %}d-none{% endif %}" for="file-upload-comment-{{ c.fullname }}">
-                <div id="filename-show-comment-{{ c.base36id }}"><i class="far fa-image"></i></div>
-                <input id="file-upload-comment-{{ c.fullname }}" type="file" name="file" accept="image/*" onchange="document.getElementById('filename-show-comment-{{ c.base36id }}').innerHTML=document.getElementById('file-upload-comment-{{ c.fullname }}').files[0].name;" hidden>
+          <label class="format{% if not (v.can_upload_comment_image and not media_offered()) %} d-none{% endif %}" for="file-upload-comment-{{ c.fullname }}" title="{{ _('Add an image') }}">
+                <span id="filename-show-comment-{{ c.base36id }}"><i class="fas fa-image" aria-hidden="true"></i></span>
+                <input id="file-upload-comment-{{ c.fullname }}" type="file" name="file" accept="image/*" onchange="document.getElementById('filename-show-comment-{{ c.base36id }}').textContent=document.getElementById('file-upload-comment-{{ c.fullname }}').files[0].name;" hidden>
           </label>
 
-          {{ post_options.disclosure_toggles("comment-disc-" ~ c.fullname, false, false, true, c.post.is_anonymous and v and v.id == c.post.author_id) }}
+          {{ post_options.disclosure_toggles("comment-disc-" ~ c.fullname, false, false, true, c.post.is_anonymous and v and v.id == c.post.author_id and not anon_hidden(c.post, v)) }}
           <a href="javascript:void(0)" onclick="document.getElementById('comment-on-{{ c.base36id }}').classList.add('d-none')" class="btn btn-link text-muted ml-auto cancel-form">{{ _("Cancel") }}</a> 
           <a id="save-comment-on-{{ c.fullname }}" class="btn btn-primary text-white ml-2" onclick="post_comment('{{ c.fullname }}');" href="javascript:void(0)">{{ pgettext('button', 'Comment') }}</a> 
         </div> 
@@ -582,7 +564,7 @@
           <li class="list-group-item"><a href="javascript:void(0)" data-toggle="modal" data-dismiss="modal" data-target="#tipModal" onclick="tipModal2('{{ c.base36id }}','comment','{{ c.permalink }}','{{ author_of(c, v).username }}','{{ author_of(c, v).profile_url }}')" class="d-block"><i class="fas fa-star"></i><span>{{ pgettext("verb", "Tip") }}</span></a></li>
           {% endif %}
 
-          {% if c.parent_submission and not v.id==c.author_id %}
+          {% if c.parent_submission and (not v.id==c.author_id or anon_hidden(c, v)) %}
           <li class="list-group-item"><a href="javascript:void(0)" data-toggle="modal" data-dismiss="modal" data-target="#reportCommentModal" onclick="report_commentModal('{{ c.base36id }}',{{ (_('Anonymous') if anon_hidden(c, v) else (_('[deleted account]') if author_of(c, v).is_deleted else author_of(c, v).username)) | tojson | forceescape }})" class="d-block"><i class="fas fa-flag"></i>{{ pgettext("verb", "Flag") }}</a></li>
           {% endif %}
 
@@ -641,7 +623,7 @@
           <li class="list-group-item"><a class="d-block" href="{{ c.oauth_app.permalink }}/comments"><i class="fas fa-code"></i>{{ _("API App") }}</a></li>
           {% endif %}
 
-          {% if v.id != c.author_id %}
+          {% if v.id != c.author_id or anon_hidden(c, v) %}
           {% if not anon_hidden(c, v) %}
           <li class="list-group-item">
             <a class="d-block" href="javascript:void(0)" onclick="post_toast('/settings/mute?username={{ author_of(c, v).username }}')"><i class="fas fa-volume-mute"></i>{{ _("Mute user") }}</a>

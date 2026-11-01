@@ -1,4 +1,5 @@
 {% extends "default.html" %}
+{% import "partials/comment_tools.html" as comment_tools %}
 
 {% block title %}
 <title>{{ _("Unable to post comment") }}</title>
@@ -35,13 +36,11 @@
 				{% if parent_fullname %}<input type="hidden" name="parent_fullname" value="{{ parent_fullname }}">{% endif %}
 				{% if parent_submission %}<input type="hidden" name="submission" value="{{ parent_submission }}">{% endif %}
 
+				{{ comment_tools.format_bar("comment-failed-body") }}
 				<textarea name="body" form="comment-failed-form" class="comment-box form-control rounded" id="comment-failed-body" aria-label="{{ _('With textarea') }}" placeholder="{{ _('Add your comment...') }}" rows="3">{{ body }}</textarea> 
 
 				<div class="comment-format"> 
-					<small class="format pl-0"><i class="fas fa-bold" aria-hidden="true" onclick="makeBold('comment-failed-body')" data-toggle="tooltip" data-placement="bottom" title="{{ _('Bold') }}"></i></small> 
-					<small class="format"><i class="fas fa-italic" aria-hidden="true" onclick="makeItalics('comment-failed-body')" data-toggle="tooltip" data-placement="bottom" title="{{ _('Italicize') }}"></i></small> 
-					<small class="format"><i class="fas fa-quote-right" aria-hidden="true" onclick="makeQuote('comment-failed-body')" data-toggle="tooltip" data-placement="bottom" title="{{ pgettext('formatting', 'Quote') }}"></i></small> 
-					<small class="format"><i class="fas fa-link" aria-hidden="true"></i></small> 
+					{{ comment_tools.text_tools("comment-failed-body") }}
 					<button form="comment-failed-form" class="btn btn-primary ml-auto">{{ pgettext('button', 'Comment') }}</button> 
 				</div> 
 			</form> 

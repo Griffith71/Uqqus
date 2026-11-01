@@ -192,7 +192,7 @@ def test_comment_forms_offer_the_picture_button_only_with_linked_storage():
         html = read("ruqqus", "templates", name)
         assert 'data-media-upload="image" data-target="comment-form-body-' in html, name
         button = html[:html.index('data-media-upload="image"')]
-        assert button.rstrip().endswith("<button type=\"button\" class=\"format btn btn-secondary m-0 ml-1 d-inline-block\"")
+        assert button.rstrip().endswith("<button type=\"button\" class=\"format\"")      # the comment row's one tool shape (_comments.scss)
         assert "{% if media_offered() %}" in button[-400:], name
 
 

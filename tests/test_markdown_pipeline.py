@@ -61,6 +61,51 @@ def test_code_blocks_render_with_all_their_lines(md):
         assert word in html
 
 
+# --- line breaks -----------------------------------------------------------
+# The owner (2026-10-30): the writing box has to look like the posted post, so a single Enter in a post or a comment is a
+# line break as typed (`breaks=True`: routes/posts.py, routes/comments.py and /api/preview). The wiki, bios, descriptions
+# and notices keep standard markdown, where the lines of a paragraph are joined.
+
+@pytest.fixture
+def breaks(monkeypatch):
+    return lambda text: mh.render(monkeypatch, text, breaks=True)
+
+
+def test_a_single_enter_is_a_line_break_in_a_post_or_a_comment(breaks):
+    html = breaks("first line\nsecond line\nthird line")
+    assert html.count("<br") == 2 and html.count("<p>") == 1
+    soup = BeautifulSoup(html, "html.parser")
+    assert [t.strip() for t in soup.p.stripped_strings] == ["first line", "second line", "third line"]
+
+
+def test_a_single_enter_is_still_joined_everywhere_else(md):
+    html = md("first line\nsecond line")
+    assert "<br" not in html and "first line\nsecond line" in html
+
+
+def test_a_blank_line_is_still_a_new_paragraph_and_adds_no_break(breaks):
+    html = breaks("one\n\ntwo")
+    assert html.count("<p>") == 2 and "<br" not in html
+
+
+def test_a_hard_break_is_one_break_not_two(breaks):
+    assert breaks("one  \ntwo").count("<br") == 1
+    assert breaks("one\\\ntwo").count("<br") == 1
+
+
+def test_lists_headings_quotes_and_code_get_no_stray_breaks(breaks):
+    assert "<br" not in breaks("- a\n- b\n- c")
+    assert "<br" not in breaks("# Title\nbody")
+    assert "<br" not in breaks("```\nline one\nline two\n```")
+    quote = breaks("> first\n> second")
+    assert quote.count("<br") == 1 and "<blockquote>" in quote
+
+
+def test_the_one_word_column_is_still_kept_as_one_line_with_breaks_on(breaks):
+    html = breaks("intro\napple\nbanana\ncherry\ndone with it")
+    assert "apple banana cherry" in html
+
+
 # --- image links -----------------------------------------------------------
 
 def _onclicks(html):

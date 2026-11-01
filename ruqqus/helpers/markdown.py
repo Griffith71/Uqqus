@@ -189,6 +189,14 @@ class CustomRenderer(HTMLRenderer):
         for i in kwargs:
             self.__dict__[i] = kwargs[i]
 
+    # `breaks=True` (post and comment text, and the editor's Preview of it): a single Enter is a line break, as typed.
+    # Standard markdown joins the lines of a paragraph, so what the writer saw in the box reflowed once posted. Everything
+    # else (the wiki, bios, descriptions, notices) keeps standard markdown.
+    def render_line_break(self, token):
+        if getattr(self, "breaks", False):
+            return '<br />\n'
+        return HTMLRenderer.render_line_break(token)
+
     def render_user_mention(self, token):
         space = token.target[0]
         target = token.target[1]

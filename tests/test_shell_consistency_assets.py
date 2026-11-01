@@ -49,6 +49,36 @@ def test_the_member_shells_draw_the_same_icon_row():
     assert row and "d-md-flex" in row.group(0), "header.html's desktop icon row"
 
 
+@pytest.mark.parametrize("shell", ["default.html", "header.html"])
+def test_the_navbar_post_button_is_first_and_labelled(shell):
+    """The owner (2026-10-30): Create post is the row's first control and says "Post", as Reddit's Create does; it was a feather icon fourth in the row."""
+    page = read("templates", shell)
+    row = page.split('id="navbar-icon-row">', 1)[1]
+    first_item = row.split("<li", 2)[1]                                 # the first <li> after the opening <ul>
+    assert "nav-item-post" in first_item and "nav-post-btn" in first_item, shell
+    assert 'href="/submit"' in first_item and "aria-label=\"{{ _('Create post') }}\"" in first_item, shell
+    assert '<i class="fas fa-plus" aria-hidden="true"></i>{{ pgettext("button", "Post") }}' in first_item, shell      # an existing msgid: no new string to translate
+    assert ("data-compose" in first_item) == (shell == "default.html"), shell                                         # only the feed has a composer to open
+    # before the guildmaster crown, the bell and the chat, and the feather icon is gone from the row
+    icons = row.split("</ul>", 1)[0]
+    assert icons.index("nav-post-btn") < icons.index('href="/mod/queue"') < icons.index('href="/notifications'), shell
+    assert icons.index("nav-post-btn") < icons.index('href="/chat"'), shell
+    assert "fa-feather-alt" not in icons, shell
+
+
+def test_the_post_button_is_a_pill_on_the_control_rung_with_a_gap_after_it():
+    desktop = NAV.split("@media (min-width: 768px) {", 1)[1].split("// --- the phone's top bar", 1)[0]
+    item = desktop.split("#navbar #navbar-icon-row > .nav-item.nav-item-post {", 1)[1].split("}")[0]
+    assert "margin-left: 0 !important;" in item and "margin-right: var(--space-3) !important;" in item
+    # it comes after the rule that gives Sign In and Sign Up their left margin (the same specificity): it has to win
+    assert desktop.index("> .nav-item.nav-item-post {") > desktop.index("> .nav-item:has(> .btn)")
+    button = desktop.split("#navbar #navbar-icon-row .nav-post-btn {", 1)[1].split("}")[0]
+    assert "gap: var(--space-2);" in button and "padding-left: var(--space-4);" in button and "white-space: nowrap;" in button
+    assert not re.search(r"\d+px|#[0-9a-fA-F]{3,8}\b", button + item)             # tokens only, on the 4px grid
+    # the phone's bar keeps hiding it (its bottom bar has Create)
+    assert '#navbar #navbar-icon-row .nav-item:has(> a[data-compose])' in NAV
+
+
 def test_help_legal_about_and_donate_draw_the_site_bar_and_nothing_of_their_own():
     bar = read("templates", "partials", "site_bar.html")
     assert 'id="navbar"' in bar and "fixed-top" in bar

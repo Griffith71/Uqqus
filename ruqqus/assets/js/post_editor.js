@@ -12,6 +12,11 @@
  * sound, GIF, emoji, link), then "Aa", which folds the rest of the formatting away
  * (folded by default; the viewer's choice is kept in localStorage).
  *
+ * On the Create a post card and the feed composer, from 992px, the toolbar is a column that stays beside the text box as
+ * the page scrolls (assets/style/_post_rail.scss); its menus, link dialog and status line are then fixed to the viewport
+ * beside it (isRail, placeBeside) because the column scrolls by itself. Elsewhere (the edit form, narrow screens) it is
+ * the row at the top of the box.
+ *
  * Image, audio and video buttons are placeholders until an uploader exists:
  * PostEditor.register('image', function (ctx) { ... ctx.insert('![](url)') })
  * switches the button on. PostEditor.use(kind, textarea) runs one for another
@@ -84,6 +89,158 @@
     return b;
   }
 
+  // a button whose face is a word ("GIF"), not a glyph
+  function withText(button, text) {
+    button.appendChild(make('span', 'post-tb-text', text));
+    return button;
+  }
+
+  // ------------------------------------------------------- the right-hand rail
+
+  // From 992px the composers' toolbar is a sticky column beside the text box (assets/style/_post_rail.scss, which also
+  // sets --post-rail: 1 on it, so the width threshold lives in the stylesheet only). The column scrolls by itself when the
+  // formatting is open, and that would clip a menu, the link dialog or a status line placed inside it: in the rail those
+  // are fixed to the viewport beside it instead.
+  function isRail(bar) {
+    return !!bar && window.getComputedStyle(bar).getPropertyValue('--post-rail').trim() === '1';
+  }
+
+  // `anchor` (a button) sets the top edge; without it the rail's own top does. The node must be showing, to be measured.
+  // It is held by the edge that faces the rail, so a menu that grows (the templates arrive after it opens) grows away from
+  // the rail and never over it. It stays clear of the top bar and of Create a post's fixed bar along the bottom.
+  function placeBeside(node, bar, anchor) {
+    var rect = bar.getBoundingClientRect();
+    var from = (anchor || bar).getBoundingClientRect();
+    var margin = 8;
+    var navbar = document.getElementById('navbar');
+    var bottomBar = document.querySelector('.composer-bar');
+    var floor = (navbar ? navbar.getBoundingClientRect().bottom : 0) + margin;
+    var ceiling = Math.min(window.innerHeight, bottomBar ? bottomBar.getBoundingClientRect().top : window.innerHeight) - margin;
+    node.style.position = 'fixed';
+    node.style.bottom = 'auto';
+    node.style.margin = '0';
+    if (document.documentElement.dir === 'rtl') {
+      node.style.right = 'auto';
+      node.style.left = (rect.right + margin) + 'px';
+    } else {
+      node.style.left = 'auto';
+      node.style.right = Math.max(margin, document.documentElement.clientWidth - rect.left + margin) + 'px';
+    }
+    node.style.top = Math.max(floor, Math.min(from.top, ceiling - node.offsetHeight)) + 'px';
+  }
+
+  function clearPlacement(node) {
+    ['position', 'left', 'top', 'right', 'bottom', 'margin'].forEach(function (p) { node.style[p] = ''; });
+  }
+
+  // ---------------------------------------------------------------- Preview
+
+  // The title a composer's own field holds (Create a post, a shared draft, the feed composer), for Preview to show as the post
+  // page does. The edit-post box, the wiki and the event editors are in neither and preview the text alone.
+  function titleField(bar) {
+    var scope = bar.closest('.composer-card, .inline-composer');
+    return scope ? scope.querySelector('.composer-title-input, .ic-title') : null;
+  }
+
+  // Everything that is the server's HTML goes in here: the one place this script writes markup (the Preview's text, from the same
+  // pipeline as a posted body, and the overlay's card, built and sanitized by templates/partials/post_preview.html).
+  function setServerHtml(node, html) {
+    node.innerHTML = html;
+  }
+
+  // The width of the post page's card for the composer this toolbar belongs to. The feed composer's own card is exactly as wide as
+  // the post page's; on Create a post (and a shared draft) the probe in templates/submit.html is as wide as the post page's column,
+  // which has the card's two 15px gutters round it.
+  function postedCardWidth(bar) {
+    var feed = bar.closest('.inline-composer-card');
+    if (feed) return feed.getBoundingClientRect().width;
+    var probe = document.getElementById('posted-width-probe');
+    return probe ? probe.getBoundingClientRect().width - 30 : 0;
+  }
+
+  // From 992px the two composers preview in an overlay that looks like the post (below that, and in the edit-post box, the wiki and
+  // the event editors, Preview is the in-place Write / Preview toggle). It holds the post page's own card at the post page's own
+  // width, built by the server (routes/post_editor.py post_preview), so the browser lays the text out as it will lay it out.
+  function overlayWanted(bar) {
+    return isRail(bar) && !!bar.closest('.composer-card, .inline-composer');
+  }
+
+  var overlay = null;     // { modal, dialog, sheet, field, token }, made once on the first Preview
+
+  function previewOverlay() {
+    if (overlay) return overlay;
+    var modal = make('div', 'modal fade');
+    modal.id = 'postPreviewModal';
+    modal.tabIndex = -1;
+    modal.setAttribute('role', 'dialog');
+    modal.setAttribute('aria-labelledby', 'postPreviewTitle');
+    modal.setAttribute('aria-hidden', 'true');
+    var dialog = make('div', 'modal-dialog modal-dialog-centered post-preview-dialog');
+    dialog.setAttribute('role', 'document');
+    var content = make('div', 'modal-content');
+    var head = make('div', 'modal-header');
+    var title = make('h5', 'modal-title', tr('Preview'));
+    title.id = 'postPreviewTitle';
+    var close = make('button', 'close');
+    close.type = 'button';
+    close.setAttribute('data-dismiss', 'modal');
+    close.setAttribute('aria-label', tr('Close'));
+    var mark = make('span');
+    mark.setAttribute('aria-hidden', 'true');
+    mark.appendChild(icon('fas fa-times'));
+    close.appendChild(mark);
+    head.appendChild(title);
+    head.appendChild(close);
+    var body = make('div', 'modal-body');
+    var sheet = make('div', 'post-preview-sheet');
+    body.appendChild(sheet);
+    content.appendChild(head);
+    content.appendChild(body);
+    dialog.appendChild(content);
+    modal.appendChild(dialog);
+    document.body.appendChild(modal);
+    overlay = { modal: modal, dialog: dialog, sheet: sheet, field: null, token: 0 };
+    // an answer that arrives after it closed is let go, and writing carries on in the text box
+    $(modal).on('hidden.bs.modal', function () {
+      overlay.token++;
+      if (overlay.field) overlay.field.focus();
+    });
+    return overlay;
+  }
+
+  // what the composer holds, read from its own card: the title, the text, the link and the four flags
+  function previewFields(bar, el) {
+    var scope = bar.closest('.composer-card, .inline-composer');
+    var form = new FormData();
+    var title = titleField(bar), url = scope.querySelector('[name="url"]');
+    form.append('formkey', formkey());
+    form.append('body', el.value);
+    form.append('title', title ? title.value : '');
+    form.append('url', url ? url.value : '');
+    ['anonymous', 'paid_partnership', 'made_with_ai', 'sensitive'].forEach(function (name) {
+      var box = scope.querySelector('input[type="checkbox"][name="' + name + '"]');
+      if (box && box.checked) form.append(name, '1');
+    });
+    return form;
+  }
+
+  function openPreviewOverlay(bar, el) {
+    var o = previewOverlay();
+    var ticket = ++o.token;
+    o.field = el;
+    o.dialog.style.setProperty('--preview-card-w', postedCardWidth(bar) + 'px');
+    o.sheet.textContent = tr('Loading preview...');
+    $(o.modal).modal('show');
+    fetch('/api/post_preview', { method: 'POST', body: previewFields(bar, el), credentials: 'same-origin' })
+      .then(function (r) { return r.json().then(function (data) { return { ok: r.ok, data: data }; }); })
+      .then(function (res) {
+        if (ticket !== o.token) return;
+        if (!res.ok) { o.sheet.textContent = res.data.error || tr('Could not load the preview.'); return; }
+        setServerHtml(o.sheet, res.data.html || '');
+      })
+      .catch(function () { if (ticket === o.token) o.sheet.textContent = tr('Could not load the preview.'); });
+  }
+
   // ------------------------------------------------------------------ menus
 
   function closeMenus() {
@@ -94,12 +251,19 @@
     openMenus = [];
   }
 
+  // a menu fixed beside the rail would stay put while the page (and the sticky rail with it) moves
+  function closeFloatingMenus() {
+    if (openMenus.some(function (m) { return m.menu.style.position === 'fixed'; })) closeMenus();
+  }
+
   document.addEventListener('click', function (event) {
     if (!event.target.closest || !event.target.closest('.post-tb-menuwrap')) closeMenus();
   });
   document.addEventListener('keydown', function (event) {
     if (event.key === 'Escape') closeMenus();
   });
+  window.addEventListener('scroll', closeFloatingMenus, { passive: true });
+  window.addEventListener('resize', closeFloatingMenus);
 
   // fill(menu, close) builds the menu's items each time it opens
   function dropdown(title, iconClass, fill) {
@@ -113,6 +277,8 @@
       while (menu.firstChild) menu.removeChild(menu.firstChild);
       fill(menu, closeMenus);
       menu.classList.remove('d-none');
+      var bar = button.closest('.post-toolbar');
+      if (isRail(bar)) placeBeside(menu, bar, button); else clearPlacement(menu);
       button.setAttribute('aria-expanded', 'true');
       openMenus.push({ menu: menu, button: button });
     });
@@ -267,8 +433,12 @@
   function PostToolbar(bar) {
     var self = this;
     var id = bar.getAttribute('data-target');
+    // A comment box's bar (partials/comment_tools.html): the formatting alone. The row under the box already has the
+    // pictures, sound, GIF and emoji, its own "Aa" opens and closes this bar, and a comment has no Write / Preview.
+    var forComment = bar.getAttribute('data-variant') === 'comment';
     var statusTimer = null;
     var dialog = null;
+    var dialogMover = null;   // keeps the dialog beside a rail that moves with the page
     var previewing = false;
     var tabs = {};
 
@@ -277,7 +447,10 @@
     function status(message) {
       statusNode.textContent = message || '';
       clearTimeout(statusTimer);
-      if (message) statusTimer = setTimeout(function () { statusNode.textContent = ''; }, 4000);
+      if (message) {
+        if (isRail(bar)) placeBeside(statusNode, bar); else clearPlacement(statusNode);
+        statusTimer = setTimeout(function () { statusNode.textContent = ''; }, 4000);
+      }
     }
 
     // --- a one-row dialog under the buttons (link, button, template name)
@@ -324,6 +497,12 @@
 
       bar.appendChild(form);
       dialog = form;
+      if (isRail(bar)) {
+        placeBeside(form, bar);
+        dialogMover = function () { placeBeside(form, bar); };
+        window.addEventListener('scroll', dialogMover, { passive: true });
+        window.addEventListener('resize', dialogMover);
+      }
       var firstEmpty = spec.fields.filter(function (f) { return !f.value; })[0];
       fields[(firstEmpty || spec.fields[0]).name].focus();
     }
@@ -331,6 +510,11 @@
     function closeDialog() {
       if (dialog && dialog.parentNode) dialog.parentNode.removeChild(dialog);
       dialog = null;
+      if (dialogMover) {
+        window.removeEventListener('scroll', dialogMover);
+        window.removeEventListener('resize', dialogMover);
+        dialogMover = null;
+      }
     }
 
     function linkDialog() {
@@ -453,6 +637,8 @@
       holder.classList.add('d-none');
       area.classList.remove('d-none');
       area.textContent = tr('Loading preview...');
+      var field = titleField(bar);
+      var title = field ? field.value.trim() : '';
       var form = new FormData();
       form.append('formkey', formkey());
       form.append('body', el.value);
@@ -461,9 +647,20 @@
         .then(function (res) {
           if (!previewing) return;
           if (!res.ok) { area.textContent = res.data.error || tr('Could not load the preview.'); return; }
+          // the post as the post page shows it: its title, then its text (the title is the member's own words, set as text)
+          area.textContent = '';
+          if (title) {
+            var heading = make('div', 'post-preview-title');
+            heading.setAttribute('dir', 'auto');
+            heading.textContent = title;
+            area.appendChild(heading);
+          }
+          var text = make('div', 'post-preview-text');
+          text.setAttribute('dir', 'auto');
           // server output: rendered and sanitized by the same pipeline as a posted body
-          area.innerHTML = res.data.html || '';
-          if (!area.textContent.trim() && !area.querySelector('img')) area.textContent = tr('Nothing to preview yet.');
+          setServerHtml(text, res.data.html || '');
+          area.appendChild(text);
+          if (!title && !text.textContent.trim() && !text.querySelector('img')) area.textContent = tr('Nothing to preview yet.');
         })
         .catch(function () { if (previewing) area.textContent = tr('Could not load the preview.'); });
     }
@@ -487,26 +684,34 @@
       };
     }
 
-    // Undo and redo first, then what goes into the text (pictures, video, sound, GIF, emoji, a link), as Reddit's editor
-    // has them; the rest of the formatting folds behind "Aa" (the owner's choice: collapsed, at the top of the box)
-    group(
-      tbButton(tr('Undo'), 'fas fa-undo', exec('undo')),
-      tbButton(tr('Redo'), 'fas fa-redo', exec('redo'))
-    );
-    group(
-      uploadStub('image', tr('Image (coming soon)'), tr('Add image'), 'far fa-image'),
-      uploadStub('video', tr('Video (coming soon)'), tr('Add video'), 'fas fa-video'),
-      uploadStub('audio', tr('Sound (coming soon)'), tr('Add sound'), 'fas fa-volume-up'),
-      tbButton(tr('GIF'), 'fas fa-film', function () { getGif(); commentForm(id); $('#gifModal').modal('show'); }),
-      tbButton(tr('Emoji'), 'far fa-smile-beam', function () { commentForm(id); loadEmojis(); $('#emojiModal').modal('show'); }),
-      tbButton(tr('Link (Ctrl+K)'), 'fas fa-link', linkDialog)
-    );
-    var toggle = tbButton(tr('Formatting'), null, null, 'post-tb-toggle');
-    toggle.appendChild(make('span', 'post-tb-toggle-text', 'Aa'));
-    toggle.setAttribute('aria-expanded', 'false');
-    group(toggle);
+    // Undo and redo first, then what goes into the text (pictures, video, sound, GIF, emoji), as Reddit's editor has them;
+    // the formatting folds behind "Aa" (the owner's choice: collapsed, at the top of the box)
+    // (the symbols are the Create post card's blue row: a solid picture, GIF written out, a solid smile)
+    var toggle = null;
+    if (!forComment) {
+      group(
+        tbButton(tr('Undo'), 'fas fa-undo', exec('undo')),
+        tbButton(tr('Redo'), 'fas fa-redo', exec('redo'))
+      );
+      group(
+        uploadStub('image', tr('Image (coming soon)'), tr('Add image'), 'fas fa-image'),
+        uploadStub('video', tr('Video (coming soon)'), tr('Add video'), 'fas fa-video'),
+        uploadStub('audio', tr('Sound (coming soon)'), tr('Add sound'), 'fas fa-volume-up'),
+        withText(tbButton(tr('GIF'), null, function () { getGif(); commentForm(id); $('#gifModal').modal('show'); }), 'GIF'),
+        tbButton(tr('Emoji'), 'fas fa-smile-beam', function () { commentForm(id); loadEmojis(); $('#emojiModal').modal('show'); })
+      );
+      toggle = tbButton(tr('Formatting'), null, null, 'post-tb-toggle');
+      toggle.appendChild(make('span', 'post-tb-toggle-text', 'Aa'));
+      toggle.setAttribute('aria-expanded', 'false');
+      group(toggle);
+    }
 
+    // A link in the text is formatting: first behind "Aa", in a post's body and a comment alike (the owner, 2026-10-30:
+    // the two editors keep one rule). The main row is what is added (pictures, sound, GIF, emoji), and on the Create post
+    // card the blue row's own link button is the post's link, so the two link symbols no longer sit side by side.
+    // Ctrl+K still opens it without unfolding anything.
     var extras = [];
+    extras.push(group(tbButton(tr('Link (Ctrl+K)'), 'fas fa-link', linkDialog)));
     extras.push(group(dropdown(tr('Text style'), 'fas fa-heading', function (menu) {
       var el = ta();
       menu.appendChild(menuItem(tr('Paragraph'), function () { setHeading(el, 0); }, 'fas fa-paragraph'));
@@ -603,21 +808,37 @@
         try { localStorage.setItem(FOLD_KEY, folded ? '0' : '1'); } catch (err) { /* storage unavailable */ }
       }
     }
-    var startOpen = false;
-    try { startOpen = localStorage.getItem(FOLD_KEY) === '1'; } catch (err) { startOpen = false; }
-    setFolded(!startOpen, false);
-    toggle.addEventListener('click', function () { closeMenus(); setFolded(!bar.classList.contains('post-tb-collapsed'), true); });
+    if (toggle) {
+      var startOpen = false;
+      try { startOpen = localStorage.getItem(FOLD_KEY) === '1'; } catch (err) { startOpen = false; }
+      setFolded(!startOpen, false);
+      toggle.addEventListener('click', function () { closeMenus(); setFolded(!bar.classList.contains('post-tb-collapsed'), true); });
+    }
 
     var statusNode = make('span', 'post-tb-status text-muted text-small');
     statusNode.setAttribute('role', 'status');
+    if (forComment) {
+      bar.appendChild(statusNode);
+      return bindKeys();
+    }
     var spacer = make('span', 'post-tb-spacer');
     var tabGroup = make('span', 'post-tb-group post-tb-tabs');
+    // The tabs carry an icon and their words: a top toolbar shows the words, the right-hand rail (too narrow for them)
+    // shows the icon and keeps the words for screen readers and the tooltip (_post_rail.scss)
     // Translators: a tab: write the post's text (beside Preview)
-    tabs.write = tbButton(tr('Write'), null, function () { if (previewing) setPreview(false); }, 'post-tb-tab active');
-    tabs.write.textContent = tr('Write');
+    tabs.write = tbButton(tr('Write'), 'fas fa-pen post-tb-tab-icon', function () { if (previewing) setPreview(false); }, 'post-tb-tab post-tb-tab-write active');
+    tabs.write.appendChild(make('span', 'post-tb-tab-text', tr('Write')));
     // Translators: a tab: see the post's text as it will look (beside Write)
-    tabs.preview = tbButton(tr('Preview'), null, function () { if (!previewing) setPreview(true); }, 'post-tb-tab');
-    tabs.preview.textContent = tr('Preview');
+    // From 992px, in the composers, Preview is a button that opens the overlay (Write is hidden: there is nothing to go back from)
+    tabs.preview = tbButton(tr('Preview'), 'fas fa-eye post-tb-tab-icon', function () {
+      if (overlayWanted(bar)) {
+        if (previewing) setPreview(false);      // a window widened while previewing in place
+        openPreviewOverlay(bar, ta());
+      } else if (!previewing) {
+        setPreview(true);
+      }
+    }, 'post-tb-tab');
+    tabs.preview.appendChild(make('span', 'post-tb-tab-text', tr('Preview')));
     tabGroup.appendChild(tabs.write);
     tabGroup.appendChild(tabs.preview);
     bar.appendChild(spacer);
@@ -645,15 +866,17 @@
     }
 
     // Ctrl/Cmd + B, I, K
-    ta().addEventListener('keydown', function (event) {
-      if (!(event.ctrlKey || event.metaKey) || event.altKey || event.shiftKey) return;
-      var key = event.key.toLowerCase();
-      if (key === 'b') { event.preventDefault(); makeBold(id); }
-      else if (key === 'i') { event.preventDefault(); makeItalics(id); }
-      else if (key === 'k') { event.preventDefault(); linkDialog(); }
-    });
-
-    self.bar = bar;
+    function bindKeys() {
+      ta().addEventListener('keydown', function (event) {
+        if (!(event.ctrlKey || event.metaKey) || event.altKey || event.shiftKey) return;
+        var key = event.key.toLowerCase();
+        if (key === 'b') { event.preventDefault(); makeBold(id); }
+        else if (key === 'i') { event.preventDefault(); makeItalics(id); }
+        else if (key === 'k') { event.preventDefault(); linkDialog(); }
+      });
+      self.bar = bar;
+    }
+    bindKeys();
   }
 
   function enableStub(entry) {
@@ -687,14 +910,36 @@
     version: 1
   };
 
-  function init() {
-    Array.prototype.forEach.call(document.querySelectorAll('.post-toolbar[data-target]'), function (bar) {
-      if (bar.getAttribute('data-ready')) return;
-      if (!document.getElementById(bar.getAttribute('data-target'))) return;
-      bar.setAttribute('data-ready', '1');
-      new PostToolbar(bar);
-    });
+  function build(bar) {
+    if (bar.getAttribute('data-ready')) return;
+    if (!document.getElementById(bar.getAttribute('data-target'))) return;
+    bar.setAttribute('data-ready', '1');
+    new PostToolbar(bar);
   }
+
+  // a comment box's bar is built the first time its "Aa" opens it (comment boxes are many, and some arrive after the page)
+  function init() {
+    Array.prototype.forEach.call(document.querySelectorAll('.post-toolbar[data-target]:not([data-variant="comment"])'), build);
+  }
+
+  // A comment box's "Aa" (partials/comment_tools.html, data-comment-format) opens and closes the formatting above the box.
+  // On the document, so the forms added later (a comment's own comment box, more comments) need nothing.
+  document.addEventListener('mousedown', function (event) {
+    if (event.target.closest && event.target.closest('[data-comment-format]')) event.preventDefault();   // the caret stays put
+  });
+  document.addEventListener('click', function (event) {
+    var button = event.target.closest && event.target.closest('[data-comment-format]');
+    if (!button) return;
+    var bar = document.getElementById(button.getAttribute('aria-controls'));
+    if (!bar) return;
+    build(bar);
+    var open = bar.hidden;
+    closeMenus();
+    bar.hidden = !open;
+    button.setAttribute('aria-expanded', String(open));
+    var box = document.getElementById(bar.getAttribute('data-target'));
+    if (open && box) box.focus();
+  });
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
   else init();
