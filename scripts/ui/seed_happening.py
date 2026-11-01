@@ -50,7 +50,7 @@ def make_admin():
         print(f"{name} exists.")
         return
     now = int(time.time())
-    db.add(User(username=name, original_username=name, password="ui-Password-1", email=f"{name}@example.com",
+    db.add(User(age_declared=1, username=name, original_username=name, password="ui-Password-1", email=f"{name}@example.com",
                 created_utc=now - 120 * 86400, creation_ip="127.0.0.1", tos_agreed_utc=now - 120 * 86400, admin_level=4))
     db.commit()
     print(f"Made {name} (admin level 4, password ui-Password-1).")

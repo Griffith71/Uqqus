@@ -194,3 +194,38 @@ def test_a_link_reads_on_its_own_tint(theme, colour):
         tint = mixed(raw, named(t[surface]), share)
         ratio = contrast(named(t["--link"]), tint)
         assert ratio >= 4.5, (theme, colour, surface, tint, round(ratio, 2))
+
+
+# the left sidebar's wash (a chosen row: the selected feed, a filter that is narrowing the feed) is a light shade of the site's blue and the ring
+# round a narrowing filter's symbol is the blue itself (the owner, 2026-10-30). Only on the feeds, which are the site's own pages, so only the site's
+# colour is drawn. The ring is a graphic: #23a9f2 is 2.6:1 on white, the exception the site colour already has on every graphic (CLAUDE.md, Colour
+# contrast); the wash, the words "N selected" and the notice above the feed say the same thing. Dark is well over 3:1.
+RING_FLOOR = {"light": (2.5, 2.2), "dark": (3.0, 3.0)}                      # on the page, on the wash
+
+
+@pytest.mark.parametrize("theme", ["light", "dark"])
+def test_a_filters_ring_is_the_sites_blue_and_shows_on_the_page_and_on_the_wash(theme):
+    t = compile_tokens(theme, SITE_COLOUR)
+    assert t["--filter-on"] == "var(--brand)" and t["--selected"] == "var(--brand-soft)"
+    ring = named(t["--brand"])
+    assert ring == "#23a9f2"
+    share = float(re.findall(r"[\d.]+", t["--brand-soft"])[3])
+    on_page, on_wash = RING_FLOOR[theme]
+    for surface in ("--bg", "--surface"):                                    # (the left sidebar is on the page itself, not on the grey --panel of the right one's boxes)
+        page = named(t[surface])
+        assert contrast(ring, page) >= on_page, (theme, surface, round(contrast(ring, page), 2))
+        wash = mixed(ring, page, share)
+        assert contrast(ring, wash) >= on_wash, (theme, surface, wash, round(contrast(ring, wash), 2))
+
+
+@pytest.mark.parametrize("theme", ["light", "dark"])
+def test_the_text_on_the_blue_wash_stays_aa(theme):
+    # the row labels, the muted values beside them and the link-coloured ones ("Polls", a ticked row) sit on the wash, in the default tint and,
+    # in the light theme, the stronger one the more-contrast query asks for
+    t = compile_tokens(theme, SITE_COLOUR)
+    shares = [float(re.findall(r"[\d.]+", t["--brand-soft"])[3])] + ([0.2] if theme == "light" else [])
+    for share in shares:
+        for surface in ("--bg", "--surface", "--panel"):
+            wash = mixed(named(t["--brand"]), named(t[surface]), share)
+            for text in ("--text", "--text-muted", "--link"):
+                assert contrast(named(t[text]), wash) >= 4.5, (theme, share, surface, text, wash, round(contrast(named(t[text]), wash), 2))

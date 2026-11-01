@@ -42,7 +42,7 @@ def test_the_phone_navbar_is_one_row_and_the_sidebar_shows_the_feed_being_read()
 
 def test_the_right_sidebar_boxes_are_panels_without_the_blue_bar():
     title = NAV.split("#main-content-row > .sidebar:not(.sidebar-left) .sidebar-section .title {")[1].split("}")[0]
-    assert "background-color: transparent;" in title and "text-transform: none;" in title
+    assert "background-color: transparent;" in title and "text-transform: uppercase;" in title      # the left sidebar's section label (12px, grey capitals)
 
 
 def test_motion_only_answers_what_the_person_did():

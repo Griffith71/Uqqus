@@ -32,7 +32,7 @@ NAV = (STYLE / "_nav.scss").read_text(encoding="utf-8")
 def html_attrs(cookies):
     macro = THEME.split("{% macro html_attrs() %}")[1].split("{% endmacro %}")[0]
     template = jinja2.Environment().from_string("{% macro html_attrs() %}" + macro + "{% endmacro %}{{ html_attrs() }}")
-    return template.render(request=type("Request", (), {"cookies": cookies})(), ui_lang=lambda: "en", ui_dir=lambda: "ltr")
+    return template.render(request=type("Request", (), {"cookies": cookies})(), ui_lang=lambda: "en", ui_dir=lambda: "ltr", video_consent=lambda: "")
 
 
 def compiled(name):
@@ -142,7 +142,7 @@ def test_px2rem_is_exact_not_a_rounded_decimal():
 def test_the_small_sizes_follow_the_root():
     for name in SHEETS:
         text = (STYLE / name).read_text(encoding="utf-8")
-        assert '$small-font-size: #{"calc(12rem / 14)"};' in text and '$extra-small-font-size: #{"calc(11rem / 14)"};' in text, name
+        assert '$small-font-size: #{"calc(12rem / 14)"};' in text and '$extra-small-font-size: #{"calc(12rem / 14)"};' in text, name
         assert re.search(r"\$small-font-size: \d+px", text) is None, name
 
 

@@ -55,7 +55,7 @@ def test_the_late_box_slot_falls_back_to_the_trending_box():
     assert re.search(r'\{% if happening_enabled\(\) %\}\s*<div id="happening-box" class="late-box" data-src="/inpage/happening"></div>\s*'
                      r'\{% else %\}\s*<div id="trending-box" class="late-box" data-src="/inpage/trending"></div>\s*\{% endif %\}', late)
     assert late.index("happening-box") < late.index("who-to-follow")                      # still above Who to follow
-    assert 'box.id === "happening-box"' in late and "29.8rem" in late                       # a first visit reserves what it holds
+    assert 'box.id === "happening-box"' in late and "29.56rem" in late                       # a first visit reserves what it holds
     default = read("templates", "default.html")
     assert default.index("js/time_phrases.js") < default.index("js/happening.js")         # the helpers load first
     assert re.search(r"^<script src=\"\{\{ asset_url\('js/happening.js'\) \}\}\"></script>$", default, re.M)   # for everyone, no {% if %}
