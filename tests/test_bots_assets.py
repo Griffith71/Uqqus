@@ -178,8 +178,10 @@ def test_a_site_bot_belongs_to_nobody_and_tells_its_proposer_once():
 
 def test_pictures_are_checked_by_opening_them_and_scanned():
     image = func(ROUTES, "_image")
-    assert "file.stream.read(bots.IMAGE_MAX_BYTES + 1)" in image and "picture.verify()" in image
-    assert "kind not in bots.IMAGE_FORMATS" in image and "file.stream.seek(0)" in image
+    assert "profile_edit.check_image(file, bots.IMAGE_MAX_BYTES, bots.IMAGE_FORMATS)" in image    # the member's own check (helpers/profile_edit.py)
+    shared = read("ruqqus", "helpers", "profile_edit.py").split("def check_image(")[1].split("\ndef ")[0]
+    assert "file.stream.read(max_bytes + 1)" in shared and "picture.verify()" in shared
+    assert "kind not in formats" in shared and "file.stream.seek(0)" in shared
     assert "SVG" not in read("ruqqus", "helpers", "bots.py").split("IMAGE_FORMATS")[1].split("\n")[0]
     picture = func(ROUTES, "_set_picture")
     assert "gevent.spawn(check_csam_url, url, v, remove)" in picture

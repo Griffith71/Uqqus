@@ -1,0 +1,120 @@
+{#
+  "Edit profile": the pop-up a member opens from their own profile, as X's and Instagram's (assets/js/profile_edit.js; the
+  button and the "⋯" item in partials/profile_header.html carry data-profile-edit and keep their link to Settings > Profile
+  for when the script can't run). One Save sends everything that changed to POST /settings/profile/edit
+  (routes/profile_edit_pages.py, helpers/profile_edit.py): the banner and avatar, the display name, the bio and the details.
+  The username (it costs coins), who can see your lists, title, sorting and privacy stay on Settings. Included once, only
+  on your own profile and outside the side-panel frames. Everything the member wrote is put in by the script as text.
+#}
+{# the two sentences a picture chosen here is turned away with before anything is sent (assets/js/profile_edit.js); the server says the same #}
+<div class="modal fade modal-sm-bottom" id="profileEditModal" tabindex="-1" role="dialog" aria-labelledby="profileEditTitle" aria-hidden="true"
+  data-too-big="{{ _('That file is too big. The limit for image files is %(size)s MB.', size=16) }}" data-not-picture="{{ _('That file is not a picture.') }}">
+  <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header align-items-center">
+        <button type="button" class="close ml-0 mr-2 p-2" data-dismiss="modal" aria-label="{{ _('Close') }}" id="profile-edit-close">
+          <span aria-hidden="true"><i class="fas fa-times"></i></span>
+        </button>
+        <h5 class="modal-title mr-auto" id="profileEditTitle" tabindex="-1">{{ _("Edit profile") }}</h5>
+        <button type="submit" form="profile-edit-form" class="btn btn-primary btn-sm" id="profile-edit-save" disabled>{{ pgettext("button", "Save") }}</button>
+      </div>
+
+      <div class="modal-body">
+        <form id="profile-edit-form" action="/settings/profile/edit" method="post" enctype="multipart/form-data" autocomplete="off">
+          <input type="hidden" name="formkey" value="{{ v.formkey }}">
+
+          {# the banner and the avatar as the profile draws them: the avatar over the banner's lower edge #}
+          <div class="pe-media">
+            <span class="sr-only" id="pe-change-text">{{ pgettext("button", "Change") }}</span>
+            <span class="sr-only" id="pe-remove-text">{{ pgettext("button", "Remove") }}</span>
+            <span class="sr-only" id="pe-banner-label">{{ _("Profile Banner") }}</span>
+            <span class="sr-only" id="pe-avatar-label">{{ _("Profile Picture") }}</span>
+
+            <div class="pe-banner" id="pe-banner" data-has="{{ 1 if v.has_banner else 0 }}">
+              <img src="{{ v.banner_url }}" alt="" class="pe-banner-img" id="pe-banner-img"{% if not v.has_banner %} hidden{% endif %}>
+              {% if v.can_upload_banner %}
+              <div class="pe-media-actions">
+                <button type="button" class="pe-round" data-pe-pick="banner" aria-labelledby="pe-change-text pe-banner-label"><i class="fas fa-camera" aria-hidden="true"></i></button>
+                <button type="button" class="pe-round" data-pe-remove="banner" aria-labelledby="pe-remove-text pe-banner-label"{% if not v.has_banner %} hidden{% endif %}><i class="fas fa-times" aria-hidden="true"></i></button>
+              </div>
+              <input type="file" class="sr-only" tabindex="-1" aria-hidden="true" name="banner" id="pe-file-banner" accept="image/png,image/jpeg,image/gif,image/webp">
+              {% elif v.has_banner %}
+              <div class="pe-media-actions">
+                <button type="button" class="pe-round" data-pe-remove="banner" aria-labelledby="pe-remove-text pe-banner-label"><i class="fas fa-times" aria-hidden="true"></i></button>
+              </div>
+              {% endif %}
+            </div>
+
+            <div class="pe-avatar" id="pe-avatar" data-has="{{ 1 if v.has_profile else 0 }}">
+              <img src="{{ v.profile_url }}" alt="" class="pe-avatar-img" id="pe-avatar-img">
+              <span class="pe-avatar-none" id="pe-avatar-none" hidden><i class="fas fa-user" aria-hidden="true"></i></span>
+              {% if v.can_upload_avatar %}
+              <div class="pe-media-actions">
+                <button type="button" class="pe-round" data-pe-pick="profile" aria-labelledby="pe-change-text pe-avatar-label"><i class="fas fa-camera" aria-hidden="true"></i></button>
+                <button type="button" class="pe-round" data-pe-remove="profile" aria-labelledby="pe-remove-text pe-avatar-label"{% if not v.has_profile %} hidden{% endif %}><i class="fas fa-times" aria-hidden="true"></i></button>
+              </div>
+              <input type="file" class="sr-only" tabindex="-1" aria-hidden="true" name="profile" id="pe-file-profile" accept="image/png,image/jpeg,image/gif,image/webp">
+              {% elif v.has_profile %}
+              <div class="pe-media-actions">
+                <button type="button" class="pe-round" data-pe-remove="profile" aria-labelledby="pe-remove-text pe-avatar-label"><i class="fas fa-times" aria-hidden="true"></i></button>
+              </div>
+              {% endif %}
+            </div>
+          </div>
+
+          {# what may be uploaded, or why not: with both allowed one line says it (two lines saying the same would not say which picture each is about; the banner's size tip is on the one that is only the banner's) #}
+          <div class="pe-notes text-small text-muted">
+            {% if v.can_upload_avatar and v.can_upload_banner %}<p id="pe-help">{{ _("JPG, PNG, GIF files supported. Max file size 16MB.") }}</p>
+            {% else %}
+            {% if v.can_upload_avatar %}<p id="pe-help">{{ _("JPG, PNG, GIF files supported. Max file size 16MB.") }}</p>
+            {% else %}<p>{{ _("You must have a verified email address to upload images via Tor.") }}</p>{% endif %}
+            {% if v.can_upload_banner %}<p id="pe-help-banner">{{ _("JPG, PNG, GIF files supported. Max file size 16MB. (Recommend 1400x250 pixels)") }}</p>{% endif %}
+            {% endif %}
+          </div>
+          <div class="text-small text-danger pe-error" id="pe-error-profile" role="alert" hidden></div>
+          <div class="text-small text-danger pe-error" id="pe-error-banner" role="alert" hidden></div>
+
+          <div class="form-group">
+            <label for="pe-display-name">{{ _("Display Name") }}</label>
+            <input type="text" class="form-control" id="pe-display-name" name="display_name" data-weighted-max="50" value="{{ v.display_name or '' }}" placeholder="{{ v.username }}" autocomplete="nickname" aria-describedby="pe-display-name-help pe-error-display_name">
+            <small class="form-text text-muted" id="pe-display-name-help">{{ _("Leave it empty to show your username. No <code>@</code>, <code>&lt;</code> or <code>&gt;</code>.") }}</small>
+            <div class="text-small text-danger pe-error" id="pe-error-display_name" hidden></div>
+          </div>
+
+          <div class="form-group">
+            <label for="pe-bio">{{ _("Bio") }}</label>
+            <textarea class="form-control" id="pe-bio" name="bio" rows="3" data-weighted-max="256" placeholder="{{ _('Tell the %(site)s community a bit about yourself.') }}" aria-describedby="pe-bio-help pe-error-bio">{{ v.bio or '' }}</textarea>
+            <small class="form-text text-muted" id="pe-bio-help">{{ _("Limit of 256 characters") }}</small>
+            <div class="text-small text-danger pe-error" id="pe-error-bio" hidden></div>
+          </div>
+
+          <div class="form-group">
+            <label for="pe-job">{{ _("Job") }}</label>
+            <input type="text" class="form-control" id="pe-job" name="profile_job" maxlength="60" value="{{ v.profile_job or '' }}" placeholder="{{ _('What you do') }}" autocomplete="organization-title" aria-describedby="pe-error-profile_job">
+            <div class="text-small text-danger pe-error" id="pe-error-profile_job" hidden></div>
+          </div>
+          <div class="form-group">
+            <label for="pe-location">{{ _("Location") }}</label>
+            <input type="text" class="form-control" id="pe-location" name="profile_location" maxlength="60" value="{{ v.profile_location or '' }}" placeholder="{{ _('Where you are, in your words') }}" aria-describedby="pe-error-profile_location">
+            <div class="text-small text-danger pe-error" id="pe-error-profile_location" hidden></div>
+          </div>
+          <div class="form-group mb-0">
+            <label for="pe-website">{{ _("Website") }}</label>
+            <input type="text" class="form-control" id="pe-website" name="profile_website" maxlength="200" value="{{ v.profile_website or '' }}" placeholder="https://example.com" autocomplete="url" inputmode="url" aria-describedby="pe-details-help pe-error-profile_website">
+            <small class="form-text text-muted" id="pe-details-help">{{ _("Each is optional. Leave one empty to remove it.") }}</small>
+            <div class="text-small text-danger pe-error" id="pe-error-profile_website" hidden></div>
+          </div>
+
+          <div class="text-small pe-status" id="profile-edit-status" role="status" aria-live="polite"></div>
+        </form>
+      </div>
+
+      {# "Discard changes?": drawn by the script when a pop-up with changes is closed. A sheet of the site's own would close this one first #}
+      <div class="pe-discard" id="profile-edit-discard" role="alert" hidden></div>
+
+      <div class="modal-footer justify-content-start">
+        <a class="btn btn-link btn-sm" href="/settings/profile"><i class="fas fa-cog fa-fw" aria-hidden="true"></i> {{ _("Settings") }}</a>
+      </div>
+    </div>
+  </div>
+</div>

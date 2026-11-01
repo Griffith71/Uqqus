@@ -35,8 +35,12 @@ def test_the_shown_name_is_the_display_name_or_the_handle_and_the_json_carries_i
 def test_settings_saves_it_free_with_the_rules_and_the_impersonation_check():
     route = func(SETTINGS, "settings_profile_post")
     saving = route.split('request.values.get("display_name_form") is not None:')[1].split('if request.values.get("details") is not None:')[0]
-    assert "display_names.clean(request.values.get(\"display_name\", \"\"))" in saving
-    assert "display_name_store.takes_a_handle(g.db, v.id, new_name)" in saving
+    # the rules are helpers/profile_edit.py's, shared with the Edit profile pop-up and the bots' forms
+    assert "profile_edit.clean_display_name(request.values.get(\"display_name\", \"\"))" in saving
+    assert "profile_edit.display_name_refusal(g.db, v.id, new_name" in saving
+    helper = read("ruqqus", "helpers", "profile_edit.py")
+    assert "display_names.clean(raw)" in helper and "display_name_store.takes_a_handle(db, user_id, name)" in helper
+    assert "display_names.reserved_refusal(name" in helper
     assert "apply_user_severity(v)" in saving                                    # re-stamped on every write
     for money in ("coin_balance", "name_changed_utc"):
         assert money not in saving, money                                          # free, and no 7-day wait
@@ -102,7 +106,8 @@ def test_the_panels_that_draw_names_from_json_get_it_too():
 def test_bots_have_one_on_the_proposal_form_and_on_their_page():
     routes = read("ruqqus", "routes", "bot_accounts.py")
     helper = func(routes, "_display_name")
-    assert "display_names.clean(raw)" in helper and "display_name_store.takes_a_handle(g.db, account_id, name)" in helper
+    assert "profile_edit.clean_display_name(raw)" in helper and "profile_edit.display_name_refusal(" in helper
+    assert "g.db, account_id, name" in helper
     assert "_display_name(request.form.get(\"display_name\"), None)" in func(routes, "settings_bots_apply")
     assert "account.display_name, error = _display_name(" in func(routes, "settings_bot_profile")
     assert 'name="display_name"' in read("ruqqus", "templates", "settings_bots.html")

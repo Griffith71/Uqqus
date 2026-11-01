@@ -65,9 +65,12 @@ def test_the_menu_script_checks_names_and_draws_text_only():
 def test_details_are_cleaned_rated_and_saved_with_the_form_key():
     settings = read("ruqqus", "routes", "settings.py")
     branch = settings.split('if request.values.get("details") is not None:')[1].split("\n    if request.values.get(\"bio\")")[0]
-    for needle in ("profile_details.clean_text(", "profile_details.clean_website(", "filter_comment_html(",
-                   "apply_user_severity(v)", "escape(website)"):
+    # the checks are helpers/profile_edit.py's, the Edit profile pop-up's as well (tests/test_profile_edit.py)
+    for needle in ("profile_edit.clean_details(", "profile_edit.website_refusal(", "apply_user_severity(v)"):
         assert needle in branch, needle
+    helper = read("ruqqus", "helpers", "profile_edit.py")
+    for needle in ("profile_details.clean_text(", "profile_details.clean_website", "filter_comment_html(", "escape(website)"):
+        assert needle in helper, needle
     store = read("ruqqus", "helpers", "word_filter_store.py")
     assert "rated_text(getattr(user, \"profile_job\"" in store
     page = read("ruqqus", "templates", "settings_profile.html")

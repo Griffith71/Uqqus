@@ -68,8 +68,9 @@
           </button>
           <div class="dropdown-menu dropdown-menu-right border-0 shadow profile-x-menu" aria-labelledby="profile-x-more">
             <a class="dropdown-item" href="#" data-profile-copy="{{ u.permalink }}"><i class="fas fa-link fa-fw"></i>{{ _("Copy link to profile") }}</a>
+            <a class="dropdown-item" href="{{ u.permalink }}/log"><i class="fas fa-clipboard-list fa-fw"></i>{{ _("Log") }}</a>
             {% if own %}
-            <a class="dropdown-item" href="/settings/profile"><i class="fas fa-pen fa-fw"></i>{{ _("Edit profile") }}</a>
+            <a class="dropdown-item" href="/settings/profile" data-profile-edit><i class="fas fa-pen fa-fw"></i>{{ _("Edit profile") }}</a>
             <a class="dropdown-item" href="/settings/profile#lists"><i class="fas fa-user-lock fa-fw"></i>{{ _("Who can see your lists") }}</a>
             <a class="dropdown-item" href="/circles"><i class="fas fa-circle-notch fa-fw"></i>{{ _("Your circles") }}</a>
             <a class="dropdown-item" href="/@{{ u.username }}/channels"><i class="fas fa-tower-broadcast fa-fw"></i>{{ _("Your channels") }}</a>
@@ -93,7 +94,7 @@
         </div>
 
         {% if own %}
-        <a href="/settings/profile" class="btn profile-x-outline profile-x-pill">{{ _("Edit profile") }}</a>
+        <a href="/settings/profile" class="btn profile-x-outline profile-x-pill" data-profile-edit>{{ _("Edit profile") }}</a>
         {% elif v %}
         {% if not u.is_bot %}{# nobody reads a bot's chats (helpers/bots.py) #}
         <form method="POST" action="/api/chat/start" class="d-inline">
