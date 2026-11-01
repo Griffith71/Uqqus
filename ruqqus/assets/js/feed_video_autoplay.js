@@ -13,10 +13,11 @@
 // The post page uses the same players (partials/player.html), so the reader's video choices (Settings > Content >
 // Video playback: video_playback.js, read from <html data-video-*>) are applied here and nowhere else: tap to
 // play instead of autoplay (also for a device asking for reduced motion or data saving), captions by default, and
-// the sound a pressed player starts with.
+// the sound a pressed player starts with. The reader's answer to the consent banner (<html data-video-consent>,
+// consent.js) is one more of those rules: until it allows them, every player waits for a press, and a press loads that one.
 
 (function () {
-  if (!('IntersectionObserver' in window) || !window.VideoPlayback) return;
+  if (!('IntersectionObserver' in window) || !window.VideoPlayback || !window.VideoConsent) return;
 
   var VP = window.VideoPlayback;
   var page = document.documentElement.dataset;
@@ -194,7 +195,7 @@
     var best = null;
     var bestRatio = ACTIVATION_RATIO;
     ratios.forEach(function (ratio, container) {
-      if ((best ? ratio > bestRatio : ratio >= bestRatio) && !isBlurred(container)) {
+      if ((best ? ratio > bestRatio : ratio >= bestRatio) && !isBlurred(container) && container.dataset.embedLoad !== 'click') {
         best = container;
         bestRatio = ratio;
       }
@@ -251,21 +252,17 @@
     buildMedia(container, true);
   }
 
-  // what decides whether scrolling may start a player: the reader's Tap to play, or a device asking for less
-  // motion or less data (the setting, and the other two, apply from the next page opened)
-  function environment() {
-    var connection = navigator.connection;
-    return {
-      pref: page.videoAutoplay,
-      reducedMotion: !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches),
-      saveData: !!(connection && connection.saveData)
-    };
-  }
-
   function observeAll() {
-    // when scrolling may not start a player, every player is a press-to-play one, like a social site's
-    var pressOnly = !VP.autoplayAllowed(environment());
+    // when scrolling may not start a player, every player is a press-to-play one, like a social site's. (The reader's answer to
+    // the consent banner applies at once; their Tap to play and a device's own requests from the next page opened.)
+    var pressOnly = !VP.autoplayAllowed(window.VideoConsent.environment());
     document.querySelectorAll('[data-embed-kind]').forEach(function (container) {
+      // (kept apart from a player that is press-to-play by nature, so Allow videos can give the others back to scrolling)
+      if (pressOnly && container.dataset.embedLoad !== 'click') container.dataset.embedHeld = '1';
+      if (!pressOnly && container.dataset.embedHeld) {
+        delete container.dataset.embedHeld;
+        container.dataset.embedLoad = 'auto';
+      }
       if (pressOnly) container.dataset.embedLoad = 'click';
       if (container.dataset.embedLoad === 'click') {
         var button = container.querySelector('.feed-video-thumb');
@@ -285,6 +282,7 @@
       if (thumb && !thumb.dataset.clickBound) {
         thumb.dataset.clickBound = '1';
         thumb.addEventListener('click', function () {
+          if (container.dataset.embedLoad === 'click') return playChosen(container);     // held since: "Not now" on this page
           container.dataset.pressed = '1';
           ratios.set(container, 1);
           reconcile();
@@ -306,6 +304,26 @@
   function start() {
     observeAll();
     calmGifs();
+    reconcile();
+  }
+
+  // the reader took their consent back: what is loaded goes now, pressed or not, every kind (the next page draws none of it).
+  // Not deactivateNow, which keeps a direct video file so scrolling back resumes it: a <video> left in the page still holds
+  // its address on the other site, and only losing that address and loading again stops it fetching.
+  function takeDown() {
+    document.querySelectorAll('[data-embed-kind]').forEach(function (container) {
+      var media = container.querySelector('.feed-video-media');
+      if (!media) return;
+      if (media.tagName === 'VIDEO') {
+        media.pause();
+        media.removeAttribute('src');
+        media.load();
+      }
+      media.remove();
+      var thumb = container.querySelector('.feed-video-thumb');
+      if (thumb) thumb.style.display = '';
+    });
+    currentlyPlaying = null;
   }
 
   document.addEventListener('visibilitychange', function () {
@@ -326,4 +344,5 @@
 
   // re-scan hook for any future dynamically-loaded content (pagination etc)
   window.observeFeedVideos = start;
+  window.takeDownFeedVideos = takeDown;
 })();

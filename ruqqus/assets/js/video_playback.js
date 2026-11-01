@@ -58,11 +58,18 @@
     return src + (src.indexOf("?") === -1 ? "?" : "&") + params.join("&");
   }
 
-  // May a player start because it scrolled into view? Not when the reader chose to press play, asked their device
-  // for less motion, or asked it to save data (Chrome and Android only; other browsers don't say).
+  // Must the reader press play before another site's player loads, whatever else they chose? While they are being asked
+  // ("ask") and after "Not now" ("no"): <html data-video-consent>, helpers/consent.py. Missing or "yes": no.
+  function consentWaits(consent) {
+    return consent === "ask" || consent === "no";
+  }
+
+  // May a player start because it scrolled into view? Not before the reader's answer allows it (consent), and not when they
+  // chose to press play, asked their device for less motion, or asked it to save data (Chrome and Android only; other
+  // browsers don't say).
   function autoplayAllowed(env) {
     env = env || {};
-    return !(env.pref === "tap" || env.reducedMotion || env.saveData);
+    return !(consentWaits(env.consent) || env.pref === "tap" || env.reducedMotion || env.saveData);
   }
 
   function clamp(n) {
@@ -138,6 +145,7 @@
   var api = {
     playerSrc: playerSrc,
     autoplayAllowed: autoplayAllowed,
+    consentWaits: consentWaits,
     videoStart: videoStart,
     readSaved: readSaved,
     writeSaved: writeSaved,

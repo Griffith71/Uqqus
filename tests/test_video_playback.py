@@ -79,6 +79,19 @@ def test_scrolling_starts_a_player_unless_the_reader_or_their_device_says_not_to
     assert run("vp.autoplayAllowed()") is True
 
 
+def test_until_the_reader_allows_it_scrolling_never_starts_a_player():
+    # <html data-video-consent>: being asked and "Not now" hold every player; "yes" and a reader who isn't asked don't
+    for consent in ("ask", "no"):
+        assert run("vp.autoplayAllowed(%s)" % json.dumps({"consent": consent})) is False, consent
+        assert run("vp.consentWaits(%s)" % json.dumps(consent)) is True, consent
+    for consent in ("yes", "", None):
+        assert run("vp.autoplayAllowed(%s)" % json.dumps({"consent": consent})) is True, consent
+        assert run("vp.consentWaits(%s)" % json.dumps(consent)) is False, consent
+    # "yes" answers the question about consent and nothing else: Tap to play and the device's own requests still hold
+    for env in ({"pref": "tap"}, {"reducedMotion": True}, {"saveData": True}):
+        assert run("vp.autoplayAllowed(%s)" % json.dumps({"consent": "yes", **env})) is False, env
+
+
 # --- what a direct video file starts with ------------------------------------------------------------------------------
 
 def test_a_video_started_by_scrolling_never_has_sound_whatever_was_remembered():

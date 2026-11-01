@@ -34,7 +34,8 @@ def html_attrs(cookies):
     macro = THEME.split("{% macro html_attrs() %}")[1].split("{% endmacro %}")[0]
     env = jinja2.Environment()
     template = env.from_string("{% macro html_attrs() %}" + macro + "{% endmacro %}{{ html_attrs() }}")
-    return template.render(request=type("Request", (), {"cookies": cookies})(), ui_lang=lambda: "en", ui_dir=lambda: "ltr")
+    return template.render(request=type("Request", (), {"cookies": cookies})(), ui_lang=lambda: "en", ui_dir=lambda: "ltr",
+                           video_consent=lambda: "")     # a reader who isn't asked: tests/test_consent_assets.py has the others
 
 
 # --- the <html> attributes -----------------------------------------------------------------------------------------------
@@ -99,16 +100,17 @@ def test_the_rules_load_before_the_script_that_uses_them():
 
 def test_the_feed_script_reads_the_choices_from_html_and_asks_the_rules():
     assert "document.documentElement.dataset" in FEED
-    for key in ("page.videoAutoplay", "page.videoCaptions", "page.videoSound"):
+    for key in ("page.videoCaptions", "page.videoSound"):
         assert key in FEED, key
-    assert "VP.playerSrc(src, {" in FEED and "VP.autoplayAllowed(environment())" in FEED
+    assert "pref: data.videoAutoplay," in (ROOT / "assets" / "js" / "consent.js").read_text(encoding="utf-8")     # with the rest of what scrolling asks
+    assert "VP.playerSrc(src, {" in FEED and "VP.autoplayAllowed(window.VideoConsent.environment())" in FEED
     assert "VP.videoStart(VP.readSaved(storage())" in FEED and "VP.writeSaved(storage(), last)" in FEED
     # the old inline rule is gone: one place builds an address
     assert "startParams" not in FEED
 
 
 def test_a_device_asking_for_less_motion_or_less_data_gets_tap_to_play():
-    env = FEED.split("function environment() {")[1].split("function observeAll()")[0]
+    env = (ROOT / "assets" / "js" / "consent.js").read_text(encoding="utf-8").split("function environment() {")[1].split("api.environment")[0]
     assert "(prefers-reduced-motion: reduce)" in env and "connection.saveData" in env
     observe = FEED.split("function observeAll() {")[1].split("// a looping GIF")[0]
     # every player becomes a press-to-play one before the existing click branch looks at it
