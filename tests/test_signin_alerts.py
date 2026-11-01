@@ -30,7 +30,7 @@ class FakeRedis:
 def db():
     session = Session(create_engine("sqlite://"))
     session.execute(text("CREATE TABLE login_events (id INTEGER PRIMARY KEY AUTOINCREMENT, user_id INTEGER, "
-                         "created_utc INTEGER, ip TEXT, cf_country TEXT, region_code TEXT, user_agent TEXT)"))
+                         "created_utc INTEGER, ip TEXT, cf_country TEXT, region_code TEXT, user_agent TEXT, method TEXT)"))
     return session
 
 
@@ -129,3 +129,46 @@ def test_the_email_never_carries_the_address(db):
 
 def test_the_subject_names_the_site():
     assert signin_alerts.subject("Laba") == "New sign-in to your Laba account"
+
+
+def test_what_an_alert_says_about_the_request_never_holds_an_address():
+    said = signin_alerts.where_and_when("DE", FIREFOX_LINUX, NOW, NAMES)
+    assert set(said) == {"browser", "place", "when"}
+    assert said["browser"] == "Firefox on Linux" and said["place"] == "Germany" and "UTC" in said["when"]
+
+
+def test_the_email_subjects_name_the_site():
+    assert "Laba" in signin_alerts.subject("Laba") and "Laba" in signin_alerts.qr_on_subject("Laba")
+
+
+class RecordsClaims:
+    def __init__(self):
+        self.claims = 0
+
+    def set(self, *args, **kwargs):
+        self.claims += 1
+        return True
+
+
+def test_a_qr_sign_in_is_told_every_time_and_doesnt_take_todays_one_email(db):
+    user = SimpleNamespace(id=1, signin_alerts=True, is_activated=True, email="a@example.com")
+    redis = RecordsClaims()
+    alert = signin_alerts.check(db, user, "GB", "Mozilla/5.0 Chrome/1", NOW, redis, NAMES, force="qr")
+    assert alert["why"] == ["qr"] and {"browser", "place", "when"} <= set(alert)
+    assert redis.claims == 0, "a real alert later today must still go"
+
+
+def test_a_forced_alert_still_needs_a_verified_address_and_the_setting(db):
+    for values in ({"is_activated": False}, {"signin_alerts": False}, {"email": None}):
+        user = SimpleNamespace(**{**dict(id=1, signin_alerts=True, is_activated=True, email="a@example.com"), **values})
+        assert signin_alerts.check(db, user, "GB", "x", NOW, RecordsClaims(), NAMES, force="qr") is None
+
+
+def test_a_qr_sign_in_with_no_password_yet_makes_nothing_old_news(db):
+    """Whoever finished it chose its country and browser: they aren't facts about the member until the password (routes/login.py)."""
+    signed_in(db)
+    db.execute(text("INSERT INTO login_events (user_id, created_utc, cf_country, user_agent, method) VALUES (1, :t, 'DE', :a, 'qr')"),
+               {"t": NOW - DAY, "a": FIREFOX_LINUX})
+    assert {country for country, _ in signin_alerts.previous(db, 1, NOW)} == {"GB"}
+    db.execute(text("UPDATE login_events SET ip = '10.0.0.1' WHERE method = 'qr'"))
+    assert {country for country, _ in signin_alerts.previous(db, 1, NOW)} == {"GB", "DE"}

@@ -14,5 +14,6 @@ class LoginEvent(Base):
     cf_country = Column(String(2), default=None)
     region_code = Column(String(32), default=None)
     user_agent = Column(String(200), default=None)       # helpers/user_agents.py; erased with the address after 90 days
+    method = Column(String(16), default=None)            # how it was made (helpers/sign_in_history.py); NULL: from before it was recorded
 
     user = relationship("User", lazy="joined", overlaps="user")

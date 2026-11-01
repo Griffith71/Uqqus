@@ -68,7 +68,11 @@ def parse(user_agent):
 
 def describe(user_agent):
     """"Chrome on Windows", "Firefox", "Unknown browser on Android", "Unknown browser"."""
-    browser, system = parse(user_agent)
+    return describe_parts(*parse(user_agent))
+
+
+def describe_parts(browser, system):
+    """The same from `parse`'s two words, for what keeps them instead of the header."""
     if browser == APP_OR_SCRIPT:
         browser = msg(browser)
     if browser and system:

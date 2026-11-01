@@ -15,12 +15,20 @@ from ruqqus.helpers.i18n_runtime import datetime_text, tr
 SHOWN = 10
 TOR = "T1"                          # Cloudflare's code for the Tor network
 
+# how a sign-in was made (`login_events.method`); NULL on rows from before it was recorded. A sign-up counts as a password
+# (one was typed), and so does a sign-in that also asked a two-factor code.
+METHOD_PASSWORD = "password"
+METHOD_QR = "qr"
+# Was anything typed on the browser of this row? A QR sign-in whose password hasn't been given says nothing about the member: its row
+# keeps only what Recent sign-ins shows. In SQL, because retention empties `ip` of every older row, past the window this is asked in.
+TYPED_HERE_SQL = "NOT (COALESCE(method, '') = 'qr' AND ip IS NULL)"
+
 
 def recent(db, user_id, limit=SHOWN):
-    """The account's latest sign-ins, newest first: [(created_utc, country code or None, user agent or None)]."""
-    rows = db.execute(text("SELECT created_utc, cf_country, user_agent FROM login_events WHERE user_id = :u "
+    """The account's latest sign-ins, newest first: [(created_utc, country code or None, user agent or None, method or None)]."""
+    rows = db.execute(text("SELECT created_utc, cf_country, user_agent, method FROM login_events WHERE user_id = :u "
                            "ORDER BY created_utc DESC, id DESC LIMIT :n"), {"u": user_id, "n": limit}).all()
-    return [(row[0], row[1], row[2]) for row in rows]
+    return [(row[0], row[1], row[2], row[3]) for row in rows]
 
 
 def place(code, names):
@@ -29,6 +37,15 @@ def place(code, names):
     if code == TOR:
         return tr("Tor network")
     return names.get(code) or tr("Unknown location")
+
+
+def method_label(method):
+    """How a sign-in was made, as words, or None when it wasn't recorded (an older row): the page then says nothing."""
+    if method == METHOD_PASSWORD:
+        return tr("Password")
+    if method == METHOD_QR:
+        return tr("QR code")
+    return None
 
 
 def label(created_utc):
@@ -41,10 +58,11 @@ def label(created_utc):
 
 
 def entries(rows, names):
-    """The rows as the page draws them: {"when", "iso", "place", "browser"}."""
+    """The rows as the page draws them: {"when", "iso", "place", "browser", "method"}."""
     return [{"when": label(created), "iso": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime(created or 0)),
-             "place": place(country, names), "browser": user_agents.describe(agent) if agent else tr("Browser not recorded")}
-            for created, country, agent in rows]
+             "place": place(country, names), "browser": user_agents.describe(agent) if agent else tr("Browser not recorded"),
+             "method": method_label(method)}
+            for created, country, agent, method in rows]
 
 
 def page_context(db, user, names):

@@ -19,13 +19,13 @@ NAMES = {"GB": "United Kingdom", "DE": "Germany"}
 def db():
     session = Session(create_engine("sqlite://"))
     session.execute(text("CREATE TABLE login_events (id INTEGER PRIMARY KEY AUTOINCREMENT, user_id INTEGER, "
-                         "created_utc INTEGER, ip TEXT, cf_country TEXT, region_code TEXT, user_agent TEXT)"))
+                         "created_utc INTEGER, ip TEXT, cf_country TEXT, region_code TEXT, user_agent TEXT, method TEXT)"))
     return session
 
 
-def add(db, user, when, country="GB", agent="Mozilla/5.0 (Windows NT 10.0) Chrome/126.0 Safari/537.36", ip="203.0.113.5"):
-    db.execute(text("INSERT INTO login_events (user_id, created_utc, ip, cf_country, user_agent) VALUES (:u, :t, :ip, :c, :a)"),
-               {"u": user, "t": when, "ip": ip, "c": country, "a": agent})
+def add(db, user, when, country="GB", agent="Mozilla/5.0 (Windows NT 10.0) Chrome/126.0 Safari/537.36", ip="203.0.113.5", method=None):
+    db.execute(text("INSERT INTO login_events (user_id, created_utc, ip, cf_country, user_agent, method) VALUES (:u, :t, :ip, :c, :a, :m)"),
+               {"u": user, "t": when, "ip": ip, "c": country, "a": agent, "m": method})
 
 
 def test_it_lists_only_the_accounts_own_sign_ins_newest_first_and_at_most_ten(db):
@@ -51,6 +51,15 @@ def test_the_page_gets_words_not_addresses(db):
     assert "203.0.113.5" not in repr(shown), "the address must never reach the page"
 
 
+def test_it_says_how_a_sign_in_was_made_and_nothing_for_a_row_from_before_it_was_recorded(db):
+    add(db, 1, NOW, method=sign_in_history.METHOD_QR)
+    add(db, 1, NOW - 100, method=sign_in_history.METHOD_PASSWORD)
+    add(db, 1, NOW - 200)
+    add(db, 1, NOW - 300, method="made up")
+    shown = sign_in_history.entries(sign_in_history.recent(db, 1), NAMES)
+    assert [e["method"] for e in shown] == ["QR code", "Password", None, None]
+
+
 def test_the_query_never_selects_the_address():
     source = (ROOT / "ruqqus/helpers/sign_in_history.py").read_text(encoding="utf-8")
     sql = re.search(r'text\("SELECT (.*?) FROM login_events', source, re.S).group(1)
@@ -67,6 +76,12 @@ def test_the_address_and_browser_go_after_90_days_but_the_country_stays_for_the_
     old, new = rows
     assert old[1] is None and old[3] is None and old[2] == "GB", "past 90 days: no address, no browser, country kept"
     assert new[1] == "203.0.113.5" and new[3] is not None
+
+
+def test_how_a_sign_in_was_made_stays_with_the_country_past_90_days(db):
+    add(db, 1, NOW - 91 * DAY, method=sign_in_history.METHOD_QR)
+    retention.prune(db, NOW)
+    assert db.execute(text("SELECT ip, user_agent, method FROM login_events")).all() == [(None, None, sign_in_history.METHOD_QR)]
 
 
 def test_login_events_are_kept_long_enough_for_the_region_logic():

@@ -22,7 +22,9 @@ ONE_A_DAY = 86400
 
 def previous(db, user_id, now):
     """[(country, user agent)] of the account's sign-ins in the last 90 days, before the one being made."""
-    rows = db.execute(text("SELECT cf_country, user_agent FROM login_events WHERE user_id = :u AND created_utc >= :since"),
+    # not a QR sign-in with no password yet: whoever finished it would otherwise make their own country and browser old news
+    rows = db.execute(text("SELECT cf_country, user_agent FROM login_events WHERE user_id = :u AND created_utc >= :since "
+                           f"AND {sign_in_history.TYPED_HERE_SQL}"),
                       {"u": user_id, "since": now - WINDOW}).all()
     return [(row[0], row[1]) for row in rows]
 
@@ -57,20 +59,34 @@ def claim_today(redis, user_id):
         return False                                # unsure: don't email
 
 
-def check(db, user, country, user_agent, now, redis, names):
+def check(db, user, country, user_agent, now, redis, names, force=None):
     """None, or what the email says ({"browser", "place", "when", "why"}), for a sign-in about to be recorded.
     Call it BEFORE the sign-in is added to `login_events`, or it would be compared with itself. The words are in the
-    language this runs in: call it inside `force_locale(locale_for_user(user))`, as routes/login.py does."""
+    language this runs in: call it inside `force_locale(locale_for_user(user))`, as routes/login.py does.
+    `force` ("qr") is a reason that always counts: a QR sign-in is told every time, and it doesn't take today's one email (`claim_today`),
+    or it would silence the real alert a sign-in from somewhere new should send later that day. An email's own rule still decides."""
     if not wants_email(user):
         return None
+    if force:
+        return {**where_and_when(country, user_agent, now, names), "why": [force]}
     why = reasons(previous(db, user.id, now), country, user_agent)
     if not why or not claim_today(redis, user.id):
         return None
-    return {"browser": user_agents.describe(user_agent), "place": sign_in_history.place(country, names),
-            "when": sign_in_history.label(now), "why": why}
+    return {**where_and_when(country, user_agent, now, names), "why": why}
+
+
+def where_and_when(country, user_agent, now, names):
+    """What an alert says about the request behind it. Never the address."""
+    return {"browser": user_agents.describe(user_agent), "place": str(sign_in_history.place(country, names)),
+            "when": sign_in_history.label(now)}
 
 
 def subject(site_name):
     """The email's subject, in the language it is rendered in (the caller forces the account's own:
     `force_locale(locale_for_user(user))`, as for the email itself)."""
     return tr("New sign-in to your %(site)s account", site=site_name)
+
+
+def qr_on_subject(site_name):
+    """The email's subject when QR sign-in is turned back on, in the language it is rendered in (as `subject`)."""
+    return tr("QR sign-in was turned on for your %(site)s account", site=site_name)

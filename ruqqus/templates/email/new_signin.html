@@ -5,7 +5,7 @@
 {% block title %}{{ _("New sign-in to your %(site)s account") }}{% endblock %}</h1>
 
 {% block content %}
-                        <p>{% if "country" in why and "browser" in why %}{{ _("Hi %(name)s, we noticed a sign-in to your %(site)s account from a place and browser we haven't seen on it recently.", name=v.username) }}{% elif "country" in why %}{{ _("Hi %(name)s, we noticed a sign-in to your %(site)s account from a place we haven't seen on it recently.", name=v.username) }}{% else %}{{ _("Hi %(name)s, we noticed a sign-in to your %(site)s account from a browser we haven't seen on it recently.", name=v.username) }}{% endif %}</p>
+                        <p>{% if "qr" in why %}{{ _("Hi %(name)s, someone signed in to your %(site)s account with a QR code that was approved on your phone.", name=v.username) }}{% elif "country" in why and "browser" in why %}{{ _("Hi %(name)s, we noticed a sign-in to your %(site)s account from a place and browser we haven't seen on it recently.", name=v.username) }}{% elif "country" in why %}{{ _("Hi %(name)s, we noticed a sign-in to your %(site)s account from a place we haven't seen on it recently.", name=v.username) }}{% else %}{{ _("Hi %(name)s, we noticed a sign-in to your %(site)s account from a browser we haven't seen on it recently.", name=v.username) }}{% endif %}</p>
                         <table class="attributes" width="100%" cellpadding="0" cellspacing="0" role="presentation">
                           <tr>
                             <td class="attributes_content">
@@ -25,6 +25,7 @@
                         </table>
                         <p>{{ _("If this was you, there is nothing to do.") }}</p>
                         <p>{{ _("<strong>If it wasn't you,</strong> change your password now. Changing it also signs out every other device.") }}</p>
+                        {% if "qr" in why %}<p>{{ _("Changing your password doesn't end the access of an app you allowed. Check your apps and your chat apps in Settings too.") }}</p>{% endif %}
                         <!-- Action -->
                         <table class="body-action" align="center" width="100%" cellpadding="0" cellspacing="0" role="presentation">
                           <tr>
