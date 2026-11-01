@@ -1,8 +1,11 @@
--- Categories: 12 new ones (ids 16-27) and 196 new subcategories (ids 110-305), 101 of them in the 15 categories that
--- exist and 95 in the new ones (ruqqus/helpers/taxonomy_names.py lists every name for the interface languages).
--- Nothing existing is renamed, moved or removed: guilds hold subcategory ids and 44 (Offensive) and 108 (Identity
--- Politics) are named in the code. Also widens curations.category_filter: a curation can now name all of the
--- subcategories, about 280 ids.
+-- Categories: 12 new ones (ids 16-27) and 191 new subcategories (ids 110-305 but 165, 171, 173, 176 and 194), 96 of them in the 15
+-- categories that exist and 95 in the new ones (ruqqus/helpers/taxonomy_names.py lists every name for the interface languages).
+-- This file was written for 196 rows; 2026-12-08_taxonomy_cleanup.sql (the owner, 2026-10-30) then merged those five away and renamed two
+-- others (125 LGBTQ -> Modern Culture, 172 World Politics -> International Affairs), so the list below holds the FINAL rows: a re-run of this
+-- file (the migration suite runs every file twice) must not put the five back after the clean-up deleted them. A database that applied the
+-- earlier version of this file still has the old rows, which the clean-up moves and renames, and is not run again (the ledger).
+-- Nothing existing is renumbered: guilds hold subcategory ids and 44 (Offensive) is named in the code. Also widens
+-- curations.category_filter: a curation can now name all of the subcategories, about 280 ids.
 --   PYTHONPATH=. python scripts/migrate.py --apply
 -- Fresh databases get the same rows from seed-db.sql. Safe to run twice. The app reads the categories once when it
 -- starts (and so do its background jobs), so restart all of it afterwards.
@@ -39,7 +42,7 @@ INSERT INTO category_expansion_subcategories VALUES
     (122, 3, 'Sociology'),
     (123, 3, 'Mythology & Folklore'),
     (124, 3, 'Spirituality'),
-    (125, 3, 'LGBTQ'),
+    (125, 3, 'Modern Culture'),
     (126, 4, 'Advice'),
     (127, 4, 'Personal Stories'),
     (128, 4, 'Polls & Surveys'),
@@ -79,18 +82,14 @@ INSERT INTO category_expansion_subcategories VALUES
     (162, 10, 'Humor & Jokes'),
     (163, 10, 'Cringe'),
     (164, 10, 'Oddly Satisfying'),
-    (165, 10, 'Interesting'),
     (166, 10, 'Viral & Trending'),
     (167, 11, 'Breaking News'),
     (168, 11, 'Crime & Courts'),
     (169, 11, 'Opinion & Analysis'),
     (170, 11, 'Fact Checks'),
-    (171, 12, 'US Politics'),
-    (172, 12, 'World Politics'),
-    (173, 12, 'Elections'),
+    (172, 12, 'International Affairs'),
     (174, 12, 'Government & Policy'),
     (175, 12, 'Military & Defense'),
-    (176, 12, 'Centrist'),
     (177, 13, 'Biology'),
     (178, 13, 'Chemistry'),
     (179, 13, 'Physics'),
@@ -108,7 +107,6 @@ INSERT INTO category_expansion_subcategories VALUES
     (191, 14, 'Tennis'),
     (192, 14, 'Golf'),
     (193, 14, 'Motorsports'),
-    (194, 14, 'Boxing & MMA'),
     (195, 14, 'Pro Wrestling'),
     (196, 14, 'Cycling'),
     (197, 14, 'Running & Athletics'),

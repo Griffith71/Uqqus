@@ -212,6 +212,7 @@ CREATE TABLE public.submissions (
     is_offensive boolean,
     is_pinned boolean,
     is_sensitive boolean,
+    sensitive_forced boolean DEFAULT false NOT NULL,
     repost_id integer,
     score_best double precision,
     upvotes integer,
@@ -332,6 +333,7 @@ CREATE TABLE public.users (
     last_active_utc integer DEFAULT 0 NOT NULL,
     premium_auto_renew boolean DEFAULT false NOT NULL,
     signin_alerts boolean DEFAULT true NOT NULL,
+    qr_login_off boolean DEFAULT false NOT NULL,
     quarantined_utc integer DEFAULT 0 NOT NULL,
     score_display smallint DEFAULT 0 NOT NULL,
     profile_job character varying(60) DEFAULT '' NOT NULL,
@@ -349,7 +351,9 @@ CREATE TABLE public.users (
     subscriptions_visibility smallint DEFAULT 2 NOT NULL,
     is_bot boolean DEFAULT false NOT NULL,
     bot_owner_id integer,
-    feed_defaults text DEFAULT '' NOT NULL
+    feed_defaults text DEFAULT '' NOT NULL,
+    age_declared smallint,
+    age_declared_utc integer DEFAULT 0 NOT NULL
 );
 
 
@@ -5278,7 +5282,8 @@ CREATE TABLE public.login_events (
     ip character varying(255),
     cf_country character(2),
     region_code character varying(32),
-    user_agent character varying(200)
+    user_agent character varying(200),
+    method character varying(16)
 );
 
 CREATE SEQUENCE public.login_events_id_seq
@@ -5582,7 +5587,10 @@ CREATE TABLE public.content_edit_history (
     previous_url character varying(500),
     previous_body character varying(25000),
     previous_body_html character varying(50000),
-    created_utc integer DEFAULT 0
+    created_utc integer DEFAULT 0,
+    summary character varying(256),
+    hidden_utc bigint DEFAULT 0 NOT NULL,
+    hidden_by integer
 );
 
 CREATE SEQUENCE public.content_edit_history_id_seq
@@ -7015,6 +7023,22 @@ CREATE TABLE public.guild_day_stats (
     PRIMARY KEY (board_id, day)
 );
 
+-- The site's own count of requests for its pages (helpers/traffic.py): one number per UTC day for each kind of page, each
+-- referring host and each country, counted apart. Requests, not people: no id, name, address, user agent or path.
+-- Migration 2026-12-12_site_traffic.sql.
+CREATE TABLE public.site_traffic (
+    day integer NOT NULL,
+    dimension character varying(10) NOT NULL CHECK (dimension IN ('kind', 'referrer', 'country')),
+    value character varying(100) NOT NULL,
+    requests bigint DEFAULT 0 NOT NULL,
+    PRIMARY KEY (day, dimension, value)
+);
+
+CREATE TABLE public.site_traffic_flushes (
+    batch character varying(32) PRIMARY KEY,
+    flushed_utc bigint NOT NULL
+);
+
 -- Which migrations this schema already includes (scripts/migrate.py, audit D-02). A database made from this file
 -- starts with every one recorded; add a line here with each new migration.
 
@@ -7042,6 +7066,11 @@ CREATE TABLE public.paypal_events (
 -- what an account owes is never below 0 (bug hunt 2026-10, H4; 2026-11-23_owed_never_below_zero.sql)
 ALTER TABLE public.users ADD CONSTRAINT users_owed_never_below_zero CHECK (negative_balance_cents >= 0);
 
+-- a child account stays on the Child word filter (helpers/age_declaration.py; 2026-12-10_age_declaration.sql)
+ALTER TABLE public.users ADD CONSTRAINT users_age_declared_rule CHECK (
+    age_declared IS NULL OR age_declared = 1
+    OR (age_declared = 2 AND COALESCE(filter_level, 1) = 2 AND NOT all_shows_sensitive));
+
 -- translations kept so a text is translated once per language, and what an outside translator was sent each month
 -- (2026-11-26_languages_and_translation.sql; helpers/translation_store.py)
 CREATE TABLE public.translations (
@@ -7066,6 +7095,62 @@ CREATE TABLE public.translation_usage (
     chars bigint DEFAULT 0 NOT NULL,
     PRIMARY KEY (month, engine)
 );
+
+-- The Log: one append-only record of what guildmasters and admins decide, and the private copies of what they hid or removed
+-- (migration 2026-12-09_action_log.sql; helpers/action_log.py)
+CREATE TABLE public.log_snapshots (
+    id bigserial PRIMARY KEY,
+    entry_id bigint,
+    author_id integer,
+    board_id integer,
+    target_submission_id integer,
+    target_comment_id integer,
+    legal_hold boolean DEFAULT false NOT NULL,
+    title character varying(500),
+    url character varying(500),
+    body character varying(25000),
+    body_html character varying(50000),
+    created_utc bigint DEFAULT 0 NOT NULL,
+    expires_utc bigint DEFAULT 0 NOT NULL,
+    scrubbed_utc bigint DEFAULT 0 NOT NULL
+);
+
+CREATE INDEX log_snapshots_entry_idx ON public.log_snapshots (entry_id);
+CREATE INDEX log_snapshots_post_idx ON public.log_snapshots (target_submission_id) WHERE target_submission_id IS NOT NULL;
+CREATE INDEX log_snapshots_comment_idx ON public.log_snapshots (target_comment_id) WHERE target_comment_id IS NOT NULL;
+CREATE INDEX log_snapshots_due_idx ON public.log_snapshots (expires_utc) WHERE scrubbed_utc = 0;
+
+CREATE TABLE public.log_entries (
+    id bigserial PRIMARY KEY,
+    created_utc bigint DEFAULT 0 NOT NULL,
+    log_type character varying(12) NOT NULL,
+    action character varying(32) NOT NULL,
+    actor_id integer,
+    actor_role character varying(12) DEFAULT 'guildmaster' NOT NULL,
+    board_id integer,
+    target_user_id integer,
+    target_submission_id integer,
+    target_comment_id integer,
+    rule_key character varying(24) DEFAULT '' NOT NULL,
+    reason character varying(512) DEFAULT '' NOT NULL,
+    staff_note character varying(512) DEFAULT '' NOT NULL,
+    audience smallint DEFAULT 0 NOT NULL,
+    snapshot_id bigint,
+    notice_sent boolean DEFAULT false NOT NULL,
+    redacted_utc bigint DEFAULT 0 NOT NULL,
+    redacted_by integer,
+    legacy_modaction_id bigint,
+    CONSTRAINT log_entries_type CHECK (log_type IN ('content', 'sanction', 'guild', 'suppression')),
+    CONSTRAINT log_entries_role CHECK (actor_role IN ('guildmaster', 'admin', 'system')),
+    CONSTRAINT log_entries_audience CHECK (audience BETWEEN 0 AND 3)
+);
+
+CREATE INDEX log_entries_type_idx ON public.log_entries (log_type, id DESC);
+CREATE INDEX log_entries_board_idx ON public.log_entries (board_id, id DESC);
+CREATE INDEX log_entries_target_user_idx ON public.log_entries (target_user_id);
+CREATE INDEX log_entries_actor_idx ON public.log_entries (actor_id);
+CREATE INDEX log_entries_created_idx ON public.log_entries (created_utc);
+CREATE UNIQUE INDEX log_entries_legacy_idx ON public.log_entries (legacy_modaction_id) WHERE legacy_modaction_id IS NOT NULL;
 
 CREATE TABLE public.schema_migrations (
     name character varying(255) PRIMARY KEY,
@@ -7155,4 +7240,12 @@ INSERT INTO public.schema_migrations (name) VALUES
     ('2026-12-04_signup_guard.sql'),
     ('2026-12-05_account_all_opt_out.sql'),
     ('2026-12-06_brand_blue_default.sql'),
-    ('2026-12-07_word_filter_language.sql');
+    ('2026-12-07_word_filter_language.sql'),
+    ('2026-12-08_taxonomy_cleanup.sql'),
+    ('2026-12-09_action_log.sql'),
+    ('2026-12-10_age_declaration.sql'),
+    ('2026-12-11_post_sensitive_forced.sql'),
+    ('2026-12-12_site_traffic.sql'),
+    ('2026-12-13_qr_login.sql'),
+    ('2026-12-14_log_public.sql'),
+    ('2026-12-15_region_colours.sql');
