@@ -48,6 +48,12 @@ export const PAGES: Target[] = [
   { name: "channels", path: "/@ui_alice/channels", signedIn: true },
 ];
 
+// The member's pages the layout checks (type_scale.spec.ts, overlap.spec.ts) walk: the feeds, a profile, a guild and its settings, a post, Explore and
+// its tabs, notifications, history, Create a post, Circles, the Studio, settings, help, trending, search, the deletion log, a curation, a follow list.
+export const SITE_PATHS = ["/all", "/for_you", "/following", "/@ui_alice", "/+ui_photography", "/post/15", "/browse", "/curations", "/spaces", "/happening", "/notifications",
+  "/history", "/submit", "/circles", "/studio", "/settings/profile", "/settings/content", "/settings/security", "/help/rules", "/help/bots",
+  "/+ui_photography/mod/settings", "/trending", "/search?q=cats", "/log", "/&uisbtheirs0", "/@ui_alice/followers"];
+
 export const WIDTHS = [390, 768, 1280, 1440];
 export const THEMES = ["light", "dark"] as const;
 

@@ -10,10 +10,25 @@
     "light": "playwright test light.spec.ts",
     "glass": "playwright test glass.spec.ts",
     "sizing": "playwright test sizing.spec.ts",
-    "shells": "playwright test shells.spec.ts"
+    "shells": "playwright test shells.spec.ts",
+    "consent": "playwright test consent.spec.ts",
+    "ads": "playwright test ads.spec.ts --workers=1",
+    "age": "playwright test age.spec.ts --workers=1",
+    "traffic": "playwright test traffic.spec.ts --workers=1",
+    "money": "playwright test money.spec.ts --workers=1",
+    "rail": "playwright test post_rail.spec.ts",
+    "sidebar": "playwright test sidebar.spec.ts",
+    "chat-session": "playwright test chat_session.spec.ts --workers=1",
+    "qr-settings": "playwright test qr_settings.spec.ts --workers=1",
+    "qr-login": "playwright test qr_login.spec.ts --workers=1",
+    "typescale": "playwright test type_scale.spec.ts",
+    "profile-edit": "playwright test profile_edit.spec.ts",
+    "overlap": "playwright test overlap.spec.ts",
+    "log": "playwright test log.spec.ts --workers=1"
   },
   "devDependencies": {
     "@axe-core/playwright": "4.14.0",
-    "@playwright/test": "1.63.0"
+    "@playwright/test": "1.63.0",
+    "jsqr": "1.4.0"
   }
 }
