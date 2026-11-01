@@ -178,7 +178,7 @@ def test_a_space_is_set_up_in_the_spaces_area_not_in_the_composers():
         assert 'href="/spaces" aria-label="Spaces"' not in page, shell
     sidebar = read("ruqqus", "templates", "sidebar-left.html")
     assert sidebar.count('href="/spaces"') == 2 and 'href="/spaces/new"' in sidebar
-    assert sidebar.index("My Curations") < sidebar.index('class="mb-4 mt-4 sidebar-spaces"')
+    assert sidebar.index("My Curations") < sidebar.index('class="sidebar-block sidebar-spaces"')
 
 
 def test_a_space_post_takes_no_comments_and_a_not_recorded_space_leaves_nothing():
@@ -193,7 +193,7 @@ def test_a_space_post_takes_no_comments_and_a_not_recorded_space_leaves_nothing(
     take_down = ending.split("def take_down(", 1)[1].split("\ndef ", 1)[0]
     assert "WHERE (id = :p OR repost_id = :p) AND deleted_utc = 0" in take_down
     assert "UPDATE comments SET deleted_utc = :now" in take_down
-    assert "content_edit_history" not in take_down                                        # never in the Deletion log
+    assert "content_edit_history" not in take_down                                        # never kept as a private copy of a delete
     assert "space_ending.end_due(db, space_redis, now)" in read("scripts", "recomputes.py")
     assert "live_space_for(u, v)" in read("ruqqus", "templates", "partials", "profile_header.html")
     migration = read("scripts", "migrations", "2026-11-10_space_posts.sql")

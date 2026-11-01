@@ -23,6 +23,7 @@ from .front import guild_ids
 from ruqqus.classes.rules import *
 from ruqqus.classes.categories import CATEGORIES
 from flask import *
+from sqlalchemy import text as sql_text
 
 from ruqqus.helpers import sensitive as sensitive_rules
 from ruqqus.__main__ import app, limiter, cache
@@ -33,7 +34,8 @@ from ruqqus.helpers import circle_store
 from ruqqus.helpers import guild_channel_access
 from ruqqus.helpers import guild_insights_store
 from ruqqus.routes import guild_insights_pages
-from ruqqus.helpers import deletion_log as log_rules
+from ruqqus.helpers import log_view as log_rules
+from ruqqus.helpers import action_log
 from ruqqus.helpers import guild_flair, guild_flair_store
 from ruqqus.helpers import category_filter
 from ruqqus.helpers import bell as bell_rules
@@ -199,6 +201,7 @@ def api_board_available(name, v):
 @is_not_banned
 @no_negative_balance("html")
 @api("create")
+@not_qr_limited
 @validate_formkey
 def create_board_post(v):
     """
@@ -603,10 +606,7 @@ Required form data:
         target_submission_id=post.id,
         board_id=board.id,
         action="guild_hide",
-        reason=reason,
-        previous_title=post.title,
-        previous_body=post.body,
-        previous_body_html=post.body_html
+        reason=reason
     ))
 
     ma=ModAction(
@@ -617,6 +617,9 @@ Required form data:
         note=html.escape(reason)[:256]          # the log draws notes as HTML (bug hunt C1)
         )
     g.db.add(ma)
+    g.db.flush()
+    # the rule cited, and the post as it was: a private copy for the guild's guildmasters, the author and the admins (not in the entry)
+    action_log.annotate(g.db, ma.id, rule=request.form.get("rule"), snapshot=action_log.snapshot_of(post, board.id))
     g.db.commit()
 
     # the card a guild's feed draws (b: no guild name on it), so it can replace the old one in place
@@ -847,6 +850,9 @@ Optional form data:
         target_comment_id=target_comment_id
         )
     g.db.add(ma)
+    g.db.flush()
+    # the rule and the reason, when the guildmaster gave them (the one-tap exiles in the menus don't ask yet)
+    action_log.annotate(g.db, ma.id, rule=request.form.get("rule"), reason=request.form.get("reason"))
 
     g.db.commit()
 
@@ -997,6 +1003,7 @@ def mod_rescind_bid_username(bid, username, board, v):
 @app.route("/mod/accept/<bid>", methods=["POST"])
 @app.route("/api/v1/accept_invite/<bid>", methods=["POST"])
 @auth_required
+@not_qr_limited
 @validate_formkey
 @api("guildmaster")
 def mod_accept_board(bid, v):
@@ -1860,6 +1867,7 @@ URL path parameters:
 @app.get("/api/v2/me/modqueue")
 @auth_required
 @api("read", "guildmaster")
+@not_qr_limited
 def all_mod_queue(v):
     """Get reported posts in all of your guilds."""
 
@@ -2360,6 +2368,41 @@ def change_guild_category(v, board, bid, category):
 
 
 
+def _guild_log_reader(board, v):
+    """What this reader may see of a guild's log: (level, the guilds whose own entries they may read, the SQL that leaves out the
+    rows whose Log entry is not theirs). A row written while the guild was private stays the members' after it goes public."""
+    level = action_log.staff_level(v.admin_level if v else 0)
+    members = action_log.member_board_ids(g.db, v.id) if v else []
+    condition, params = action_log.not_hidden_from(level, members)
+    return sql_text(condition).bindparams(**params)
+
+
+def _guild_log_gate(board, v):
+    """The answer for a reader who may not open this guild's log, or None. A guild that is private, a Circle guild or hidden
+    from them is a 404, the same as a guild that does not exist: the log never confirms it. A banned guild's log is the
+    admins'."""
+    if board.is_banned and not (v and v.admin_level >= 3):
+        return {
+            "html": lambda: (render_template("board_banned.html", v=v, b=board, hide_reason=True), 404),
+            "api": lambda: (jsonify({"error": tr("Not found")}), 404)
+        }
+    if not board.can_view(v) or (board_hidden(board, v) and not (v and board.leads(v))):
+        abort(404)
+    return None
+
+
+def _guild_log_json(action, notes):
+    """The API's entry: what it always held, and the rule and the written reason the Log now keeps."""
+    data = action.json
+    note = notes.get(action.id)
+    if note:
+        if note["rule_key"]:
+            data["rule"] = note["rule_key"]
+        if note["reason"]:
+            data["reason"] = note["reason"]
+    return data
+
+
 @app.route("/+<guildname>/mod/log", methods=["GET"])
 @app.route("/api/v1/mod_log/<guildname>", methods=["GET"])
 @app.get("/api/v2/guilds/<guildname>/modlogs")
@@ -2381,17 +2424,9 @@ Optional query parameters
     show=log_rules.parse_show(request.args.get("show"))
     board=get_guild(guildname, v=v)
 
-    if board.is_banned and not (v and v.admin_level>=3):     # one level for a banned guild's read-only pages
-        return {
-            "html":lambda:(render_template("board_banned.html", v=v, b=board), 403),
-            "api":lambda:(jsonify({"error": tr("+%(guild)s is banned", guild=board.name)}), 403)
-            }
-
-    # a private (or Circle) guild's log names its members: only those who can view the guild read it
-    if not board.can_view(v):
-        abort(403)
-    if board_hidden(board, v) and not (v and board.has_mod(v)):
-        return hidden_notice(v)
+    refused=_guild_log_gate(board, v)
+    if refused:
+        return refused
 
     actions=g.db.query(ModAction).options(
         joinedload(ModAction.target_post).lazyload('*'),
@@ -2402,7 +2437,7 @@ Optional query parameters
         joinedload(ModAction.board)
         ).filter_by(
         board_id=board.id
-        )
+        ).filter(_guild_log_reader(board, v))
     kinds=log_rules.kinds_for(show)
     if kinds:
         actions=actions.filter(ModAction.kind.in_(kinds))
@@ -2413,6 +2448,9 @@ Optional query parameters
 
     next_exists=len(actions)==26
     actions=actions[0:25]
+    notes=action_log.notes_for(g.db, [a.id for a in actions])
+    # a title is the author's text: only the guild's own guildmasters and the admins see what a hidden post was called
+    titles_shown=bool(v and (v.admin_level>=3 or board.leads(v)))
 
     return {
         "html":lambda:render_template(
@@ -2420,12 +2458,15 @@ Optional query parameters
             v=v,
             b=board,
             actions=actions,
+            notes=notes,
+            titles_shown=titles_shown,
+            log_rules=action_log.RULES,
             next_exists=next_exists,
             page=page,
             show=show,
             show_labels=log_rules.SHOW_LABELS
         ),
-        "api":lambda:jsonify({"data":[x.json for x in actions]})
+        "api":lambda:jsonify({"data":[_guild_log_json(x, notes) for x in actions]})
         }
 
 @app.route("/+<guildname>/mod/log/<id>", methods=["GET"])
@@ -2450,17 +2491,22 @@ URL path parameters:
         abort(404)
 
     board=action.board
-    if board.is_banned and not (v and v.admin_level>=3):
-        abort(403)
-    if not board.can_view(v):
-        abort(403)
-    if board_hidden(board, v) and not (v and board.has_mod(v)):
-        return hidden_notice(v)["html"]()
+    refused=_guild_log_gate(board, v)
+    if refused:
+        return refused["html"]()
 
+    # the entry is the reader's only if its Log entry is: otherwise it is not there
+    if not g.db.query(ModAction.id).filter(ModAction.id==action.id).filter(_guild_log_reader(board, v)).first():
+        abort(404)
+
+    notes=action_log.notes_for(g.db, [action.id])
     return render_template("guild/modlog.html",
         v=v,
         b=action.board,
         actions=[action],
+        notes=notes,
+        titles_shown=bool(v and (v.admin_level>=3 or board.leads(v))),
+        log_rules=action_log.RULES,
         next_exists=False,
         page=1,
         action=action
@@ -2584,6 +2630,7 @@ def mod_unchatban_bid_user(bid, board, v):
 
 @app.route("/siege_guild", methods=["POST"])
 @is_not_banned
+@not_qr_limited
 @validate_formkey
 def siege_guild(v):
 

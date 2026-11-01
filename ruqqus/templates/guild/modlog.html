@@ -12,8 +12,8 @@
 
       <div>
         <h2 class="h5" name="guild_name">{{ _("+%(guild)s Moderation Log", guild=b.name) }}</h2>
-        {% set deletion_log_url %}/log/deleted?guild={{ b.name | urlencode }}{% endset -%}
-        <p class="text-small text-muted mb-md-0">{{ _('This is a log of moderator actions performed in +%(guild)s. What members deleted themselves is in the site-wide <a href="%(url)s">deletion log</a>.', guild=b.name, url=deletion_log_url) }}</p>
+        {% set site_log_url %}/log?guild={{ b.name | urlencode }}{% endset -%}
+        <p class="text-small text-muted mb-md-0">{{ _('This is a log of moderator actions performed in +%(guild)s. The ones everyone may read are also in the site-wide <a href="%(url)s">Log</a>. What members delete themselves is not published.', guild=b.name, url=site_log_url) }}</p>
       </div>
 
     </div>
@@ -58,8 +58,11 @@
                   {{ _("[deleted user]") }}
                 {% endif %}
 
-               <span>{{ ma.string | safe }}</span>
+               <span>{{ ma.string_for(titles_shown) | safe }}</span>
              </div>
+             {% set entry = notes.get(ma.id) %}
+             {% if entry and entry.rule_key in log_rules %}<div class="text-small text-muted">{{ msg_text(log_rules[entry.rule_key]) }}</div>{% endif %}
+             {% if entry and entry.reason and entry.reason not in (ma._note or '') %}<div class="text-small">{{ _('Reason: %(reason)s', reason=entry.reason) }}</div>{% endif %}
 
              <div class="text-gray-500">{{ ma.age_string }} <a href="{{ ma.permalink }}"><i class="fas fa-link ml-1 text-muted"></i></a> <a href="javascript:void(0)" class="copy-link" role="button"data-clipboard-text="{{ ma.permalink | full_link }}"><i class="far fa-copy ml-1 text-muted"></i></a></div>
 

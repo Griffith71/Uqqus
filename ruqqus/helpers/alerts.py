@@ -56,10 +56,12 @@ def send_notification(user, text, notice=None):
     g.db.commit()
 
 
-def notify(user, message, **params):
+def notify(user, message, /, **params):
     """A system notice marked for translation: `message` is an English markdown message marked with N_
     ("Your post [%(title)s](%(link)s) was pinned."), `params` its values. Stored in English, as every notice is, with
-    the message and values, so the notifications page draws it in each reader's language."""
+    the message and values, so the notifications page draws it in each reader's language. (`user` and `message` are
+    positional-only: a message with a value named `message`, such as an admin's own words in a suspension notice, used
+    to fail with "multiple values for argument 'message'" after the ban had been made.)"""
     text, _html, msgid, values = _notice(message, params)
     send_notification(user, text, notice=(msgid, values))
 
@@ -85,7 +87,7 @@ def send_to_many(user_ids, text, notice=None):
     return len(user_ids)
 
 
-def notify_many(user_ids, message, **params):
+def notify_many(user_ids, message, /, **params):
     """send_to_many with a message marked for translation (as notify)."""
     text, _html, msgid, values = _notice(message, params)
     return send_to_many(user_ids, text, notice=(msgid, values))

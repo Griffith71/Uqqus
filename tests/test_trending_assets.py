@@ -98,6 +98,8 @@ def test_a_viewers_list_comes_from_their_filters_regions_first():
     assert ts.scopes_for() == [] and ts.scopes_for(None, None) == []
     assert ts.scopes_for([], ["und", "es"]) == ["lang:es"]          # "Other or unknown" has no list of its own
     assert "_resolve_active_filters(v)" in ROUTES
+    # the Trending box follows what the member chose or saved, never the region their account is based in (2026-10-30)
+    assert "display_region" not in ROUTES
 
 
 def test_one_account_is_never_enough_whatever_the_setting(monkeypatch):

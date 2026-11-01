@@ -155,7 +155,7 @@ def test_history_shows_no_text_an_admin_removed_or_purged():
     body = func(vis, "history_text_shown")
     assert "purged_utc" in body and "is_banned" in body and "admin_level >= 3" in body
     page = read("templates", "content_history.html")
-    assert "{% if not show_text %}" in page
+    assert "{% elif not show_text %}" in page and 'entry.action == "edit"' in page          # only an edit's versions carry text
     for path, name in ((("routes", "posts.py"), "post_history"), (("routes", "comments.py"), "comment_history")):
         assert "show_text=history_text_shown(" in func(read(*path), name), name
 
@@ -245,7 +245,10 @@ def test_small_data_source_fixes():
 def test_a_private_guilds_mod_log_is_for_those_who_can_view_it():
     src = read("routes", "boards.py")
     for name in ("board_mod_log", "mod_log_item"):
-        assert "board.can_view(v)" in func(src, name), name
+        assert "_guild_log_gate(board, v)" in func(src, name), name
+    gate = func(src, "_guild_log_gate")
+    assert "not board.can_view(v)" in gate and "abort(404)" in gate           # a private guild's log is a 404: it confirms nothing
+    assert "abort(403)" not in gate
 
 
 def test_profile_json_has_the_profile_pages_gates():
@@ -334,14 +337,14 @@ def test_admin_answers_keep_their_status():
 
 # --- docs and config -----------------------------------------------------------------------------------------
 
-def test_delete_dialogs_say_the_text_stays_in_the_public_log():
-    # owner's rule (2026-10-09): author deletes stay public, with their text, in the Deletion log
+def test_delete_dialogs_say_the_text_is_kept_privately_not_published():
+    # owner's rule (2026-10-31, reversing 2026-10-09): an author's delete is not public; a private copy is kept 90 days
     for name in ("delete_post_modal.html", "delete_comment_modal.html"):
         page = read("templates", name)
-        assert "removed everywhere" not in page and '<a href="%(url)s">Deletion log</a>' in page, name
-        assert 'url="/log/deleted"' in page, name
+        assert "removed everywhere" not in page and "/log/deleted" not in page, name
+        assert "The site keeps a private copy for 90 days" in page, name
     privacy = read("templates", "help", "privacy.html")
-    assert "### Deleting and editing" in privacy and "(/log/deleted)" in privacy
+    assert "### Deleting and editing" in privacy and "(/log/deleted)" not in privacy and "[Log](/log)" in privacy
 
 
 def test_local_secrets_stay_out_of_the_image():

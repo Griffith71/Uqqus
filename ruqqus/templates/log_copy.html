@@ -1,0 +1,33 @@
+{% extends "default.html" %}
+
+{% block title %}
+<title>{{ _("Preserved copy - %(site)s") }}</title>
+<meta name="robots" content="noindex">
+{% endblock %}
+
+{% block leftSidebarBlock %}
+{% include "sidebar-left.html" %}
+{% endblock %}
+
+{% block content %}
+<div class="col px-md-4 py-4" id="log-copy">
+
+  <h1 class="h4 mb-1">{{ _('Preserved copy') }}</h1>
+  <p class="text-muted text-small mb-3">
+    {{ _("A private copy of this as it was when it was hidden, removed or deleted. Only its author, the guildmasters of the guild it was hidden in and the site's administrators can open it, and it is not kept for ever.") }}
+    <a href="{% if entry %}/log#log-{{ entry.id }}{% else %}/log{% endif %}">{{ _('Back to the log') }}</a>
+  </p>
+
+  {% if kept %}
+  <div class="card p-3">
+    {% if snapshot.title %}<div class="font-weight-bold mb-1">{{ snapshot.title }}</div>{% endif %}
+    {% if snapshot.url %}<div class="text-small mb-1">{{ _('Link: <span class="text-break">%(url)s</span>', url=snapshot.url) }}</div>{% endif %}
+    {# the stored HTML of the post or comment: sanitized when it was written, pictures and sounds replaced by a marker #}
+    {% if snapshot.body_html %}<div class="deletion-text">{{ media_free(snapshot.body_html) | safe }}</div>{% endif %}
+  </div>
+  {% else %}
+  <p class="text-muted">{{ _("This copy is no longer kept.") }}</p>
+  {% endif %}
+
+</div>
+{% endblock %}

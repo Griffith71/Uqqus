@@ -74,7 +74,7 @@ def get(client, path):
 
 
 PUBLIC_PAGES = ["/", "/all", "/forgot", "/login", "/signup", "/robots.txt", "/spaces", "/browse", "/curations", "/search?q=smoke", "/help/terms",
-                "/help/rules", "/+general", "/@ci_member", "/log/deleted", "/trending", "/happening", "/happening/trending",
+                "/help/rules", "/+general", "/@ci_member", "/log", "/trending", "/happening", "/happening/trending",
                 "/happening/live", "/happening/calendar", "/happening/calendar?month=2026-11", "/inpage/happening",
                 "/@ci_member/followers", "/@ci_member/following", "/inpage/similar_accounts/ci_member",
                 "/inpage/similar_guilds/general", "/inpage/similar_guilds/nosuchguild"]

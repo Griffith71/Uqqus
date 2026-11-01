@@ -1,0 +1,67 @@
+{% extends "default.html" %}
+
+{% block title %}
+<title>{{ _("Log - %(site)s") }}</title>
+<meta name="description" content="{{ _('What guildmasters and the site decided: hides, removals, exiles and bans, with the rule and the reason.') }}">
+{% endblock %}
+
+{% block desktopBanner %}
+<div class="row border-bottom bg-white sticky d-none d-md-block guild-border-top" style="overflow: visible;">
+  <div class="col">
+    <div class="d-flex justify-content-between align-items-center">
+      <div class="font-weight-bold py-3">{{ _('Log') }}</div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block leftSidebarBlock %}
+{% include "sidebar-left.html" %}
+{% endblock %}
+
+{% block content %}
+{% set keep %}{% if filters.guild %}&guild={{ filters.guild | urlencode }}{% endif %}{% if filters.by %}&by={{ filters.by | urlencode }}{% endif %}{% if filters.to %}&to={{ filters.to | urlencode }}{% endif %}{% if rule %}&rule={{ rule }}{% endif %}{% endset %}
+<div class="col px-md-4 py-4" id="site-log">
+
+  <h1 class="h4 mb-1 d-md-none">{{ _('Log') }}</h1>
+  <p class="text-muted text-small mb-3">
+    {{ _("What guildmasters and the site decided, newest first: who, when, where, which rule and why. It never shows the title or the text of what was hidden or removed.") }}
+    {{ _("What members delete themselves is not published here.") }}
+  </p>
+
+  <div class="d-flex flex-wrap align-items-center mb-3">
+    <div class="btn-group btn-group-sm mr-3" role="group">
+      {% for t in tabs %}
+      <a href="?type={{ t }}{{ keep }}" class="btn btn-sm {% if tab == t %}btn-secondary{% else %}btn-link text-muted{% endif %}"{% if tab == t %} aria-current="page"{% endif %}>{{ msg_text(tab_labels[t]) }}</a>
+      {% endfor %}
+    </div>
+  </div>
+
+  <form method="get" class="form-inline mb-3" id="log-filter">
+    <input type="hidden" name="type" value="{{ tab }}">
+    <input name="guild" value="{{ filters.guild }}" class="form-control form-control-sm mr-2 mb-2" maxlength="40" placeholder="+ {{ _('Guild') }}" aria-label="{{ _('Guild') }}">
+    <input name="by" value="{{ filters.by }}" class="form-control form-control-sm mr-2 mb-2" maxlength="40" placeholder="@ {{ _('Done by') }}" aria-label="{{ _('Done by') }}">
+    <input name="to" value="{{ filters.to }}" class="form-control form-control-sm mr-2 mb-2" maxlength="40" placeholder="@ {{ _('Done to') }}" aria-label="{{ _('Done to') }}">
+    <select name="rule" class="form-control form-control-sm mr-2 mb-2" aria-label="{{ _('Rule') }}">
+      <option value="">{{ _('Rule') }}</option>
+      {% for key, label in LOG_RULES.items() %}<option value="{{ key }}"{% if rule == key %} selected{% endif %}>{{ msg_text(label) }}</option>{% endfor %}
+    </select>
+    <button class="btn btn-primary btn-sm mb-2" type="submit">{{ _('Filter') }}</button>
+  </form>
+
+  {% if not rows %}
+  <p class="text-muted">{% if filters.guild or filters.by or filters.to or rule %}{{ _('Nothing matches this filter.') }}{% else %}{{ _('Nothing has been logged yet.') }}{% endif %}</p>
+  {% endif %}
+
+  {% include "partials/log_rows.html" %}
+
+  {% if more %}
+  <nav aria-label="{{ _('Page navigation') }}" class="mb-5">
+    <ul class="pagination pagination-sm mb-0">
+      <li class="page-item"><small><a class="page-link" href="?type={{ tab }}&before={{ next_before }}{{ keep }}" rel="next">{{ pgettext("next page", "Next") }}</a></small></li>
+    </ul>
+  </nav>
+  {% endif %}
+
+</div>
+{% endblock %}

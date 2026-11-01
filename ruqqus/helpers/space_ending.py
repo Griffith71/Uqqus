@@ -2,7 +2,7 @@
 (scripts/recomputes.py `end_due`), so a board or a live thread ends at its time even when nobody opens it.
 
 **A Space that is not recorded leaves nothing** (the owner's rule): its backing row and every guild copy are taken
-down **without a history row** (it is not the host deleting it, so nothing appears in the public Deletion log), with
+down **without a history row** (it is not the host deleting it, so nothing is kept of it), with
 its reminders, its board (a reported message waits for the admins) and its live updates; the comments of a live thread
 go with its row (they are only ever reached through it). A recorded Space keeps everything, read-only.
 

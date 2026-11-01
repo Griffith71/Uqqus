@@ -6,6 +6,9 @@ from ruqqus.__main__ import Base, cache, app
 from .mix_ins import *
 from babel.support import LazyProxy
 from ruqqus.helpers.i18n_runtime import N_, msg, tr, trp
+from ruqqus.helpers import action_log
+from sqlalchemy import event
+import logging
 import re
 import time
 
@@ -88,8 +91,12 @@ class ModAction(Base, Stndrd, Age_times):
 
     @property
     def string(self):
+        return self.string_for(True)
 
-        output = self._text("str")
+    def string_for(self, titles=True):
+        """The entry as a line of words. `titles=False` names a post by its id, not its title: a title is the author's
+        text, which only the guild's guildmasters and the admins see in a log (the public Log names none)."""
+        output = self._text("str", titles)
 
         if self.note:
             output += f" <i>({self.note})</i>"
@@ -98,13 +105,17 @@ class ModAction(Base, Stndrd, Age_times):
 
     @property
     def target_link(self):
+        return self._target_link(True)
+
+    def _target_link(self, titles=True):
         if self.target_user:
             if self.target_user.is_deleted:
                 return tr("[deleted user]")
             else:
                 return f'<a href="{self.target_user.permalink}">{self.target_user.username}</a>'
         elif self.target_post:
-            return f'<a href="{self.target_post.permalink}">{self.target_post.title}</a>'
+            label = self.target_post.title if titles else f"#{self.target_post.base36id}"
+            return f'<a href="{self.target_post.permalink}">{label}</a>'
         elif self.target_comment:
             # Translators: a link to a comment in a guild's moderation log ("hid a comment from this guild")
             return tr('<a href="%(link)s">comment</a>', link=self.target_comment.permalink)
@@ -119,7 +130,8 @@ class ModAction(Base, Stndrd, Age_times):
             "guild": self.board.name,
             "kind": self.kind,
             "created_utc": self.created_utc,
-            "mod": self.user.username,
+            # an admin is never named in a public answer, as the page doesn't (the Log: helpers/action_log.py)
+            "mod": app.config['SITE_NAME'] if self.by_admin else self.user.username,
         }
 
         if self.target_user_id and self.target_user:
@@ -152,18 +164,24 @@ class ModAction(Base, Stndrd, Age_times):
     def permalink(self):
         return f"{self.board.permalink}/mod/log/{self.base36id}"
 
-    def _text(self, key):
+    def _text(self, key, titles=True):
         """The entry's "str" or "title" in the reader's language, with the values its English names."""
         template = self.actiontype[key]
-        values = {"target": lambda: self.target_link, "title": lambda: self.target_post.title,
+        values = {"target": lambda: self._target_link(titles),
+                  "title": lambda: self.target_post.title if titles else f"#{self.target_post.base36id}",
                   "name": lambda: self.target_user.username, "guild": lambda: self.board.name,
                   "who": self._who}
         return _filled(template, {name: values[name]() for name in _VALUE.findall(template)})
 
+    @property
+    def by_admin(self):
+        """Done by the site's admins: they are not named in a public entry (the Log: helpers/action_log.py)."""
+        return any(mark in (self._note or "").lower() for mark in action_log.ADMIN_MARKERS)
+
     def _who(self):
         if self.user.is_deleted:
             return tr("[deleted user]")
-        elif 'admin action' in self.note or 'admin_action' in self.note:
+        elif self.by_admin:
             return f"@{app.config['SITE_NAME']}"
         else:
             return f"@{self.user.username}"
@@ -173,6 +191,19 @@ class ModAction(Base, Stndrd, Age_times):
         return self._text("title")
     
     
+
+
+@event.listens_for(ModAction, "after_insert")
+def _copy_into_the_log(mapper, connection, target):
+    """Every guild mod-log row is copied into the Log as it is made (helpers/action_log.py): the 78 places that write
+    one need no change. In a savepoint, so a failed copy never loses the mod action itself; it is logged loudly."""
+    try:
+        with connection.begin_nested():
+            action_log.mirror_modaction(connection, target.id, target.user_id, target.board_id, target.kind,
+                                        target.target_user_id, target.target_submission_id, target.target_comment_id,
+                                        target._note, target.created_utc)
+    except Exception:
+        logging.getLogger(__name__).exception("the Log could not copy mod action %s (%s)", target.id, target.kind)
 
 
 ACTIONTYPES={
@@ -732,6 +763,54 @@ ACTIONTYPES={
 
 # the name of each kind as a guild's insights count them (helpers/guild_insights.py: "What the guildmasters did"):
 # in English exactly the kind with spaces, capitalised, as the page always wrote it
+# What the Log (helpers/action_log.py) records beyond the guild log's own kinds: an account's suspension or ban, a guild's ban,
+# a hidden revision. Public ones are drawn on /log (helpers/log_view.py `sentence`); the staff-only kinds (a display name
+# cleared, a forced sensitive mark, illegal content) are read on /admin/log by their action name.
+ACTIONTYPES.update({
+    # an author's own delete is no decision and has no entry; the log of a post or a profile lists it for its author and the admins
+    "author_delete_post": {
+        # Translators: follows the author's name in the Log; %(target)s is a link to a post
+        "str": N_('deleted post %(target)s'), "icon": "fa-trash-alt", "color": "bg-muted",
+        "title": N_('%(who)s deleted post %(title)s')},
+    "author_delete_comment": {
+        # Translators: follows the author's name in the Log; %(target)s is a link to a comment
+        "str": N_('deleted a %(target)s'), "icon": "fa-trash-alt", "color": "bg-muted",
+        "title": N_('%(who)s deleted a comment')},
+    "suspend_user": {
+        # Translators: follows the moderator's name in the Log; %(target)s is a link to an account
+        "str": N_('suspended %(target)s'), "icon": "fa-user-slash", "color": "bg-danger",
+        "title": N_('%(who)s suspended %(name)s')},
+    "unsuspend_user": {
+        # Translators: follows the moderator's name in the Log; %(target)s is a link to an account
+        "str": N_('lifted the suspension of %(target)s'), "icon": "fa-user-check", "color": "bg-muted",
+        "title": N_('%(who)s lifted the suspension of %(name)s')},
+    "ban_user": {
+        # Translators: follows the moderator's name in the Log; %(target)s is a link to an account
+        "str": N_('banned %(target)s'), "icon": "fa-user-slash", "color": "bg-danger",
+        "title": N_('%(who)s banned %(name)s')},
+    "unban_user": {
+        # Translators: follows the moderator's name in the Log; %(target)s is a link to an account
+        "str": N_('lifted the ban on %(target)s'), "icon": "fa-user-check", "color": "bg-muted",
+        "title": N_('%(who)s lifted the ban on %(name)s')},
+    "ban_guild": {
+        # Translators: follows the moderator's name in the Log; %(guild)s is a guild's name
+        "str": N_('banned the guild +%(guild)s'), "icon": "fa-ban", "color": "bg-danger",
+        "title": N_('%(who)s banned the guild +%(guild)s')},
+    "unban_guild": {
+        # Translators: follows the moderator's name in the Log; %(guild)s is a guild's name
+        "str": N_('lifted the ban on the guild +%(guild)s'), "icon": "fa-ban", "color": "bg-muted",
+        "title": N_('%(who)s lifted the ban on the guild +%(guild)s')},
+    "remove_wiki_revision": {
+        # Translators: follows the moderator's name in the Log
+        "str": N_("removed a revision of a guild's wiki"), "icon": "fa-book", "color": "bg-danger",
+        "title": N_("%(who)s removed a revision of a guild's wiki")},
+    "hide_revision": {
+        # Translators: follows the moderator's name in the Log; %(target)s is a link to a post or a comment
+        "str": N_('hid a revision of %(target)s'), "icon": "fa-eye-slash", "color": "bg-danger",
+        "title": N_('%(who)s hid a revision of %(title)s')},
+})
+
+
 MOD_ACTION_LABELS = {
     # Translators: the kinds of action a guild's guildmasters take, as a guild's insights count them
     "kick_post": LazyProxy(lambda: trp("guildmaster action", "Kick post"), enable_cache=False),

@@ -19,6 +19,9 @@ from ruqqus.helpers.sanitize import sanitize
 from ruqqus.classes import *
 from ruqqus.__main__ import app
 
+from sqlalchemy import text
+
+from ruqqus.helpers import action_log
 from ruqqus.helpers import guild_wiki as wiki_rules
 from ruqqus.helpers import guild_wiki_store as wiki_store
 from ruqqus.helpers.visibility import board_hidden, text_hidden
@@ -340,6 +343,9 @@ def mod_wiki_enable(bid, board, v):
 def admin_wiki_remove_revision(page_id, rid, v):
     """An admin takes a revision's text down (it stays listed in the history with no text)."""
     wiki_store.remove_revision(g.db, page_id, rid, int(time.time()))
+    board_id = g.db.execute(text("SELECT board_id FROM guild_wiki_pages WHERE id = :p"), {"p": page_id}).scalar()
+    action_log.record_quietly(g.db, "remove_wiki_revision", v.id, board_id=board_id, role=action_log.ADMIN,
+                              reason=request.values.get("reason", ""), rule=request.values.get("rule"))
     g.db.commit()
     return jsonify({"ok": True})
 

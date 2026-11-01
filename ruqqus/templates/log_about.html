@@ -1,0 +1,50 @@
+{% extends "default.html" %}
+
+{% block title %}
+<title>{{ _("Log - %(site)s") }}</title>
+<meta name="robots" content="noindex">
+{% endblock %}
+
+{% block leftSidebarBlock %}
+{% include "sidebar-left.html" %}
+{% endblock %}
+
+{% block content %}
+<div class="col px-md-4 py-4" id="site-log">
+
+  {# the heading names the post or comment by id and the account by name: never a title or any words of a post #}
+  <h1 class="h4 mb-1">
+    {% if heading[0] == "post" %}{{ _('Log of post #%(id)s', id=heading[1]) }}
+    {% elif heading[0] == "comment" %}{{ _('Log of this comment') }}
+    {% else %}{{ _('Log of @%(name)s', name=heading[1]) }}{% endif %}
+  </h1>
+  <p class="text-muted text-small mb-3">
+    {{ _("The decisions made about it, newest first: who, when, where, which rule and why. It never shows the title or the text of what was hidden or removed.") }}
+    <a href="{{ back }}">{{ _('Back') }}</a> &middot; <a href="/log">{{ _('Log') }}</a>
+  </p>
+
+  {% if not rows %}
+  <p class="text-muted">{{ _('Nothing has been logged yet.') }}</p>
+  {% endif %}
+
+  {% include "partials/log_rows.html" %}
+
+  {% if page > 1 or more %}
+  <nav aria-label="{{ _('Page navigation') }}" class="mb-5">
+    <ul class="pagination pagination-sm mb-0">
+      {% if page > 1 %}
+      <li class="page-item"><small><a class="page-link" href="?page={{ page - 1 }}" tabindex="-1">{{ pgettext("previous page", "Prev") }}</a></small></li>
+      {% else %}
+      <li class="page-item disabled"><span class="page-link">{{ pgettext("previous page", "Prev") }}</span></li>
+      {% endif %}
+      {% if more %}
+      <li class="page-item"><small><a class="page-link" href="?page={{ page + 1 }}" rel="next">{{ pgettext("next page", "Next") }}</a></small></li>
+      {% else %}
+      <li class="page-item disabled"><span class="page-link">{{ pgettext("next page", "Next") }}</span></li>
+      {% endif %}
+    </ul>
+  </nav>
+  {% endif %}
+
+</div>
+{% endblock %}

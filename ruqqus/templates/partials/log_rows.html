@@ -1,0 +1,21 @@
+{# the lines of a Log page (log.html, log_about.html): `rows` from routes/log_pages.py. A sentence is Markup built from escaped parts. #}
+  <div class="log-list">
+  {% for e in rows %}
+    <div class="card mb-2 p-3 log-entry" id="log-{{ e.id }}">
+      <div class="d-flex align-items-start">
+        <div class="d-flex align-items-center justify-content-center {{ e.color }} mr-3 rounded-lg flex-shrink-0" style="width: 32px;height: 32px;"><i class="far text-center {{ e.icon }} text-white fa-fw" aria-hidden="true"></i></div>
+        <div class="min-width-0">
+          <div>{{ e.sentence }}</div>
+          <div class="text-small text-muted">
+            {{ date_text(e.created_utc, "%d %B %Y") }}
+            {% if e.guild %}&middot; <a href="/log?type={{ e.type }}&guild={{ e.guild | urlencode }}">+{{ e.guild }}</a>{% endif %}
+            {% if e.rule in LOG_RULES %}&middot; {{ msg_text(LOG_RULES[e.rule]) }}{% endif %}
+          </div>
+          {% if e.reason %}<div class="text-small mt-1">{{ _('Reason: %(reason)s', reason=e.reason) }}</div>{% endif %}
+          {% if e.can_open %}<div class="text-small mt-1"><a href="/log/{{ e.id }}/copy" rel="nofollow">{{ _('Open the preserved copy') }}</a></div>{% endif %}
+        </div>
+      </div>
+    </div>
+  {% endfor %}
+  </div>
+

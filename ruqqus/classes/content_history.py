@@ -35,6 +35,9 @@ class ContentEditHistory(Base, Stndrd):
     previous_body_html = Column(String(50000), default=None)
 
     created_utc = Column(Integer, default=0)
+    summary = Column(String(256), default=None)     # what the editor said they changed (optional)
+    hidden_utc = Column(BigInteger, default=0)      # an admin hid this revision's text (the row stays)
+    hidden_by = Column(Integer, default=None)
 
     actor = relationship("User", lazy="joined", primaryjoin="User.id==ContentEditHistory.actor_id")
     board = relationship("Board", lazy="joined")

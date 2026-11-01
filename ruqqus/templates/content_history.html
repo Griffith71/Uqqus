@@ -12,6 +12,7 @@
   <h1 class="h4 mb-3">
     {% if target_type=="post" %}{{ _('History of this post') }}{% else %}{{ _('History of this comment') }}{% endif %}
     <a href="{{ target.permalink }}" class="text-small font-weight-normal">{{ _('(view current)') }}</a>
+    <a href="/{{ target_type }}/{{ target.base36id }}/log" class="text-small font-weight-normal">{{ _('Log') }}</a>
   </h1>
 
   {% if not entries and not obliteration %}
@@ -46,7 +47,13 @@
     <div class="text-danger text-small mb-2">{{ _('Reason: %(reason)s', reason=entry.reason) }}</div>
     {% endif %}
 
-    {% if not show_text %}
+    {% if entry.action == "edit" %}
+    {% if entry.summary %}
+    <div class="text-small mb-2">{{ _('Summary: %(summary)s', summary=entry.summary) }}</div>
+    {% endif %}
+    {% if entry.hidden_utc %}
+    <div class="text-muted text-small mb-1">{{ _("The text of this version was hidden by a site administrator.") }}</div>
+    {% elif not show_text %}
     {% if loop.first %}<div class="text-muted text-small mb-1">{{ _("The text isn't shown: this was removed by the site's administrators.") }}</div>{% endif %}
     {% elif entry.previous_body_html or entry.previous_title or entry.previous_url %}
     <div class="text-muted text-small mb-1">{{ _('Content immediately before this action:') }}</div>
@@ -61,9 +68,21 @@
       <div>{{ entry.previous_body_html | safe }}</div>
       {% endif %}
     </div>
+    {% if v and v.admin_level >= 3 %}
+    <form action="/admin/history/{{ entry.id }}/hide" method="post" class="form-inline mt-2">
+      <input type="hidden" name="formkey" value="{{ v.formkey }}">
+      <input name="reason" required maxlength="256" class="form-control form-control-sm mr-2" aria-label="{{ _('Reason') }}" placeholder="{{ _('Reason') }}">
+      <button type="submit" class="btn btn-outline-danger btn-sm">{{ _("Hide this version") }}</button>
+    </form>
+    {% endif %}
+    {% endif %}
     {% endif %}
   </div>
   {% endfor %}
+
+  {% if copy_url %}
+  <p class="text-small"><a href="{{ copy_url }}" rel="nofollow">{{ _('Open the preserved copy') }}</a></p>
+  {% endif %}
 
   {% if obliteration %}
   <div class="card mb-3 p-3 border-danger">

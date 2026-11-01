@@ -1,0 +1,62 @@
+{% extends "docs_default.html" %}
+
+{% block sidebarblock %}{% endblock %}
+{% block sidebarLeftblock %}{% endblock %}
+
+{% block title %}
+<title>Log - {{ 'SITE_NAME' | app_config }} Admin</title>
+<meta name="description" content="{{ 'SITE_NAME' | app_config }} Admin">
+{% endblock %}
+
+{% block content %}
+<h1>The Log</h1>
+<p>Every decision by guildmasters, admins and the site itself, newest first. <strong>Audience</strong> says who may read an entry:
+public, that guild's members, staff{% if level >= 4 %}, or level-4 admins only{% endif %}. Reasons are plain text. A private copy of
+what was hidden or removed is kept for 90 days (a year for illegal content) and is never in the entry.</p>
+
+<form method="get" class="form-inline mb-3">
+  <select name="type" class="form-control form-control-sm mr-2 mb-2" aria-label="Type">
+    <option value="">Any type</option>
+    {% for t in LOG_TYPES %}{% if t != 'suppression' or level >= 4 %}<option value="{{ t }}"{% if args.type == t %} selected{% endif %}>{{ t }}</option>{% endif %}{% endfor %}
+  </select>
+  <input name="action" value="{{ args.action }}" class="form-control form-control-sm mr-2 mb-2" placeholder="action, e.g. ban_user" maxlength="32">
+  <select name="rule" class="form-control form-control-sm mr-2 mb-2" aria-label="Rule cited">
+    <option value="">Any rule</option>
+    {% for key, label in LOG_RULES.items() %}<option value="{{ key }}"{% if args.rule == key %} selected{% endif %}>{{ label }}</option>{% endfor %}
+  </select>
+  <input name="guild" value="{{ args.guild }}" class="form-control form-control-sm mr-2 mb-2" placeholder="+guild">
+  <input name="actor" value="{{ args.actor }}" class="form-control form-control-sm mr-2 mb-2" placeholder="done by @user">
+  <input name="target" value="{{ args.target }}" class="form-control form-control-sm mr-2 mb-2" placeholder="done to @user">
+  <button class="btn btn-primary btn-sm mb-2" type="submit">Filter</button>
+</form>
+
+<div class="table-responsive mb-4"><table class="table table-striped table-sm mb-0">
+  <thead class="bg-primary text-white">
+    <tr><th>When (UTC)</th><th>Type</th><th>Action</th><th>By</th><th>To</th><th>Guild</th><th>Rule</th><th>Reason</th><th>Staff note</th><th>Audience</th></tr>
+  </thead>
+  {% for e in entries %}
+  <tr>
+    <td>{{ datetime_text(e.created_utc, "%d %b %Y %H:%M") }}</td>
+    <td>{{ e.log_type }}</td>
+    <td>{{ e.action }}</td>
+    <td>{{ e.actor_role }}{% if e.actor_id %} <a href="/@{{ users.get(e.actor_id, '') | urlencode }}">@{{ users.get(e.actor_id, e.actor_id) }}</a>{% endif %}</td>
+    <td>
+      {% if e.target_user_id %}<a href="/@{{ users.get(e.target_user_id, '') | urlencode }}">@{{ users.get(e.target_user_id, e.target_user_id) }}</a>{% endif %}
+      {% if e.target_submission_id %}post {{ e.target_submission_id }}{% endif %}
+      {% if e.target_comment_id %}comment {{ e.target_comment_id }}{% endif %}
+    </td>
+    <td>{% if e.board_id %}+{{ boards.get(e.board_id, e.board_id) }}{% endif %}</td>
+    <td>{{ LOG_RULES.get(e.rule_key, '') }}</td>
+    <td>{{ e.reason }}{% if e.redacted_utc %} <em>(hidden from the public)</em>{% endif %}</td>
+    <td>{{ e.staff_note }}</td>
+    <td>{{ ['public', 'guild', 'staff', 'legal'][e.audience] }}</td>
+  </tr>
+  {% else %}
+  <tr><td colspan="10" class="text-muted">Nothing matches.</td></tr>
+  {% endfor %}
+</table></div>
+
+{% if more %}
+<p><a href="?{% for k, val in args.items() if val %}{{ k }}={{ val | urlencode }}&amp;{% endfor %}before={{ next_before }}" rel="next">Older entries</a></p>
+{% endif %}
+{% endblock %}

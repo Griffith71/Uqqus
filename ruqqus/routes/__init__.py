@@ -23,6 +23,7 @@ from .giphy import *
 from .history import *
 from .legal import *
 from .login import *
+from .qr_login_pages import *
 from .oauth import *
 from .paypal import *
 from .posts import *
@@ -47,7 +48,7 @@ from .bookmark_folders import *
 from .polls import *
 from .insights import *
 from .voters import *
-from .deletion_log import *
+from .log_pages import *
 from .circles import *
 from .post_commenting import *
 from .post_spaces import *
@@ -59,9 +60,11 @@ from .ads import *
 from .creator_fund import *
 from .studio import *
 from .profile_lists import *
+from .profile_edit_pages import *
 from .account_reports import *
 from .site_feedback import *
 from .signup_guard_pages import *
+from .admin_traffic_pages import *
 from .bot_accounts import *
 from .guild_flair import *
 from .guild_wiki import *
@@ -71,4 +74,6 @@ from .guild_roles import *
 from .collab import *
 from .translation_pages import *
 from .interface_language_pages import *
+from .consent_pages import *
 from .filtered_words_pages import *
+from .age_declaration_pages import *

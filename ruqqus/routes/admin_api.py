@@ -12,7 +12,8 @@ from ruqqus.helpers.wrappers import *
 from ruqqus.helpers.aws import delete_file
 from ruqqus.helpers.media import attach as media_attach, cdn as media_cdn
 from ruqqus.helpers import translation_store
-from ruqqus.helpers.i18n_runtime import N_
+from ruqqus.helpers.i18n_runtime import N_, tr
+from ruqqus.helpers import action_log
 from ruqqus.helpers.base36 import *
 from ruqqus.helpers.alerts import *
 from ruqqus.helpers.sanitize import *
@@ -31,6 +32,54 @@ def _outranks(admin, target):
     return (admin.admin_level or 0) > (target.admin_level or 0)
 
 
+_OBLITERATE_RULE = {"illegal_content": "illegal", "legal_takedown": "illegal", "other": "other"}
+
+
+def _obliterated(ma, v, reason_category, reason, author_id, post_id=None, comment_id=None):
+    """An obliteration in the Log: the public sees the stub (the rule only), level-4 admins the reason in full."""
+    _decided(ma, rule=_OBLITERATE_RULE.get(reason_category, "other"))
+    action_log.record(g.db, "suppress_content", v.id, board_id=ma.board_id, target_user_id=author_id, post_id=post_id,
+                      comment_id=comment_id, rule=_OBLITERATE_RULE.get(reason_category, "other"), reason=reason,
+                      staff_note=reason_category, role=action_log.ADMIN)
+
+
+def _decided(ma, rule=None, reason=None):
+    """Save a ModAction the admin made and put what they decided on its entry in the Log (helpers/action_log.py): the rule
+    they cited and the reason they gave, read from the form. A value that is None is left as the Log made it."""
+    g.db.add(ma)
+    g.db.flush()
+    action_log.annotate(g.db, ma.id, rule=rule, reason=reason)
+
+
+
+@app.route("/admin/history/<int:entry_id>/hide", methods=["POST"])
+@admin_level_required(3)
+@validate_formkey
+def admin_hide_revision(entry_id, v):
+    """Hide the text of ONE version in an item's history (Wikipedia's revision deletion): the row stays and says so, its text is
+    emptied, and the Log records who hid it, when, and why. Only a version someone edited away: a delete or a hide keeps no
+    text in the history (it is a private copy), so there is nothing else to hide here."""
+    row = g.db.query(ContentEditHistory).filter_by(id=entry_id).first()
+    if row is None or row.action != "edit":
+        abort(404)
+    reason = action_log.clean_reason(request.form.get("reason"), 256)
+    if not reason:
+        return jsonify({"error": tr("A reason is required.")}), 400
+
+    if not row.hidden_utc:
+        row.previous_title = row.previous_url = row.previous_body = row.previous_body_html = None
+        row.hidden_utc = int(time.time())
+        row.hidden_by = v.id
+        g.db.add(row)
+        action_log.record(g.db, "hide_revision", v.id, board_id=row.board_id or None,
+                          post_id=row.target_submission_id or None, comment_id=row.target_comment_id or None,
+                          rule=request.form.get("rule"), reason=reason, role=action_log.ADMIN, require_reason=True)
+        g.db.commit()
+
+    kind, item_id = ("post", row.target_submission_id) if row.target_submission_id else ("comment", row.target_comment_id)
+    return redirect(f"/{kind}/{base36encode(item_id)}/history", code=303)
+
+
 @app.route("/api/ban_user/<user_id>", methods=["POST"])
 @admin_level_required(3)
 @validate_formkey
@@ -42,11 +91,16 @@ def ban_user(user_id, v):
     days = int(request.form.get("days")) if request.form.get('days') else 0
     reason = request.form.get("reason", "")
     message = request.form.get("message", "")
+    rule = action_log.parse_rule(request.form.get("rule", ""))
 
     if not user:
         abort(400)
     if not _outranks(v, user):
         abort(403)
+    if not action_log.clean_reason(reason):
+        # the paper trail: every suspension says why, in words the public sees (the owner, 2026-10-31)
+        return render_template("message.html", v=v, title=tr("Give a reason"),
+                               message=tr("A suspension or ban needs a public reason, so the Log can say why.")), 400
 
     # the notices go to the member, so they are in the member's language (the admin's own words stay as written)
     if days > 0:
@@ -56,7 +110,7 @@ def ban_user(user_id, v):
         else:
             notice = (N_("Your %(site)s account has been suspended for %(days)s days due to a Terms of Service "
                          "violation."), {"days": days})
-        user.ban(admin=v, reason=reason, days=days)
+        user.ban(admin=v, reason=reason, days=days, rule=rule, staff_note=message, notice_sent=True)
 
     else:
         if message:
@@ -66,12 +120,13 @@ def ban_user(user_id, v):
             notice = (N_("Your %(site)s account has been permanently suspended due to a Terms of Service violation."),
                       {})
 
-        user.ban(admin=v, reason=reason)
+        user.ban(admin=v, reason=reason, rule=rule, staff_note=message, notice_sent=True)
 
 
     for x in user.alts:
         if not x.is_deleted and _outranks(v, x):
-            x.ban(admin=v, reason=reason)
+            # an alt's entry is for the staff: it would tell the public which accounts are linked
+            x.ban(admin=v, reason=reason, rule=rule, staff_note=f"alt of @{user.username}", floor=action_log.STAFF)
 
 
 
@@ -93,7 +148,7 @@ def unban_user(user_id, v):
     if not _outranks(v, user):
         abort(403)
 
-    user.unban()
+    user.unban(admin=v, reason=request.form.get("reason", ""), notice_sent=True)
 
     notify(user, N_("Your %(site)s account has been reinstated. Please carefully review and abide by the [terms of "
                     "service](/help/terms) and [rules and guidelines](/help/rules) to ensure that you don't get "
@@ -112,6 +167,10 @@ def ban_post(post_id, v):
 
     if not post:
         abort(400)
+
+    # a removal says why, in public (the Log shows the rule and the reason, never the text: helpers/action_log.py)
+    if not action_log.clean_reason(request.form.get("reason")):
+        return jsonify({"error": tr("A reason is required.")}), 400
 
     post.is_banned = True
     post.is_approved = 0
@@ -138,7 +197,7 @@ def ban_post(post_id, v):
         board_id=post.board_id,
         note="admin action"
         )
-    g.db.add(ma)
+    _decided(ma, rule=request.form.get("rule"), reason=request.form.get("reason"))
     return (redirect(post.permalink), post)
 
 
@@ -160,7 +219,7 @@ def unban_post(post_id, v):
             board_id=post.board_id,
             note="admin action"
         )
-        g.db.add(ma)
+        _decided(ma, rule=request.form.get("rule"), reason=request.form.get("reason"))
 
     post.is_banned = False
     post.is_approved = v.id
@@ -200,6 +259,7 @@ nothing that references it breaks; only the text itself is gone.
 
     g.db.add(post)
     translation_store.forget(g.db, "post", [post.id])
+    action_log.scrub_for(g.db, post_ids=[post.id])
 
     cache.delete_memoized(Board.idlist, post.board)
 
@@ -210,7 +270,7 @@ nothing that references it breaks; only the text itself is gone.
         board_id=post.board_id,
         note="admin action"
         )
-    g.db.add(ma)
+    _decided(ma, rule=request.form.get("rule"), reason=request.form.get("reason"))
     return (redirect(post.permalink), post)
 
 
@@ -278,6 +338,9 @@ def api_ban_comment(c_id, v):
     if not comment:
         abort(404)
 
+    if not action_log.clean_reason(request.form.get("reason")):
+        return jsonify({"error": tr("A reason is required.")}), 400
+
     comment.is_banned = True
     comment.is_approved = 0
     comment.approved_utc = 0
@@ -291,7 +354,7 @@ def api_ban_comment(c_id, v):
         board_id=comment.post.board_id,
         note="admin action"
         )
-    g.db.add(ma)
+    _decided(ma, rule=request.form.get("rule"), reason=request.form.get("reason"))
     return "", 204
 
 
@@ -313,7 +376,7 @@ def api_unban_comment(c_id, v):
             board_id=comment.post.board_id,
             note="admin action"
             )
-        g.db.add(ma)
+        _decided(ma, rule=request.form.get("rule"), reason=request.form.get("reason"))
 
     comment.is_banned = False
     comment.is_approved = v.id
@@ -347,6 +410,7 @@ nothing that references it breaks; only the text itself is gone.
 
     g.db.add(comment)
     translation_store.forget(g.db, "comment", [comment.id])
+    action_log.scrub_for(g.db, comment_ids=[comment.id])
     ma=ModAction(
         kind="purge_comment",
         user_id=v.id,
@@ -354,7 +418,7 @@ nothing that references it breaks; only the text itself is gone.
         board_id=comment.post.board_id,
         note="admin action"
         )
-    g.db.add(ma)
+    _decided(ma, rule=request.form.get("rule"), reason=request.form.get("reason"))
     return "", 204
 
 
@@ -462,6 +526,7 @@ Required form data:
     # and every translation kept of any of it
     translation_store.forget(g.db, "post", target_ids)
     translation_store.forget(g.db, "comment", comment_ids)
+    action_log.scrub_for(g.db, target_ids, comment_ids)          # a private copy may not outlive the text
 
     g.db.add(ObliterationRecord(
         actor_id=v.id,
@@ -472,13 +537,13 @@ Required form data:
         reason=reason
     ))
 
-    g.db.add(ModAction(
+    _obliterated(ModAction(
         kind="obliterate_post",
         user_id=v.id,
         target_submission_id=post.id,
         board_id=board_id,
         note="admin action"
-    ))
+    ), v, reason_category, reason, author_id, post_id=post.id)
 
     g.db.commit()
 
@@ -522,6 +587,7 @@ Required form data:
     comment.body_html = ""
     g.db.add(comment)
     translation_store.forget(g.db, "comment", [comment.id])
+    action_log.scrub_for(g.db, comment_ids=[comment.id])
 
     g.db.add(ObliterationRecord(
         actor_id=v.id,
@@ -532,13 +598,13 @@ Required form data:
         reason=reason
     ))
 
-    g.db.add(ModAction(
+    _obliterated(ModAction(
         kind="obliterate_comment",
         user_id=v.id,
         target_comment_id=comment.id,
         board_id=board_id,
         note="admin action"
-    ))
+    ), v, reason_category, reason, author_id, comment_id=comment.id)
 
     g.db.commit()
 
@@ -589,6 +655,10 @@ def api_ban_guild(v, bid):
 
     g.db.add(board)
 
+    # a guild's ban reason is public on its page; the entry is public too unless the guild is private (action_log decides)
+    action_log.record_quietly(g.db, "ban_guild", v.id, board_id=board.id, rule=request.form.get("rule"),
+                              reason=board.ban_reason, role=action_log.ADMIN)
+
     return redirect(board.permalink)
 
 
@@ -603,6 +673,9 @@ def api_unban_guild(v, bid):
     board.ban_reason = ""
 
     g.db.add(board)
+
+    action_log.record_quietly(g.db, "unban_guild", v.id, board_id=board.id, reason=request.form.get("reason", ""),
+                              role=action_log.ADMIN)
 
     return redirect(board.permalink)
 
@@ -867,13 +940,21 @@ def admin_csam_nuke(pid, v):
         note="CSAM detected"
         )
     g.db.add(ma)
+    g.db.flush()
+    # the ModAction above is the site account's; the Log says which admin did it, for level-4 admins only, and keeps
+    # what the post said for a year (the preservation duty)
+    action_log.annotate(g.db, ma.id, rule="illegal", reason="CSAM [1]", staff_note=f"decided by @{v.username}",
+                        snapshot=action_log.snapshot_of(post, legal_hold=True))
 
     user = post.author
     user.is_banned = v.id
     g.db.add(user)
+    action_log.record_ban(g.db, user.id, v.id, reason="CSAM [1]", rule="illegal", floor=action_log.LEGAL)
     for alt in user.alts:
         alt.is_banned = v.id
         g.db.add(alt)
+        action_log.record_ban(g.db, alt.id, v.id, reason="CSAM [1]", rule="illegal", floor=action_log.LEGAL,
+                              staff_note=f"alt of @{user.username}")
 
     if app.config["S3_BUCKET"] and post.domain == app.config["S3_BUCKET"]:
 
