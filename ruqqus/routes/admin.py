@@ -14,11 +14,12 @@ from ruqqus.helpers.sanitize import *
 from ruqqus.helpers.get import *
 from ruqqus.classes import *
 from ruqqus.helpers import money_stats as money_rules      # the view below is called money_stats
+from ruqqus.helpers import ads as ads_rules                # /admin/money says whether ads are on, and no figure comes from them
 import re
 import time
 import imagehash
 from jinja2 import TemplateNotFound
-from sqlalchemy import or_
+from sqlalchemy import not_, or_
 from ruqqus.helpers.wordfilter import WordFilter
 from ruqqus.helpers import wordfilter_seed
 from ruqqus.helpers import guild_limits
@@ -298,25 +299,28 @@ def money_stats(v):
     # a reversed order arrived and went back: counted once in each (helpers/money_stats.py, bug hunt M6)
     paid=[x[0] for x in g.db.query(PayPalTxn.usd_cents).filter(PayPalTxn.status.in_(money_rules.PAID), PayPalTxn.created_utc>midnight_year_start).all()]
     refunds=[x[0] for x in g.db.query(func.coalesce(func.nullif(PayPalTxn.refunded_cents, 0), PayPalTxn.usd_cents)).filter(PayPalTxn.status==-2, PayPalTxn.created_utc>midnight_year_start).all()]
-    revenue=money_rules.revenue_cents(paid, refunds)
 
-    data={
-        "cents_received_last_24h":g.db.query(func.sum(PayPalTxn.usd_cents)).filter(PayPalTxn.status==3, PayPalTxn.created_utc>now-60*60*24).scalar(),
-        "cents_received_last_week":g.db.query(func.sum(PayPalTxn.usd_cents)).filter(PayPalTxn.status==3, PayPalTxn.created_utc>now-60*60*24*7).scalar(),
-        "sales_count_last_24h":g.db.query(PayPalTxn).filter(PayPalTxn.status==3, PayPalTxn.created_utc>now-60*60*24).count(),
-        "sales_count_last_week":g.db.query(PayPalTxn).filter(PayPalTxn.status==3, PayPalTxn.created_utc>now-60*60*24*7).count(),
-        "receivables_outstanding_cents": g.db.query(func.sum(User.negative_balance_cents)).filter(User.is_deleted==False, or_(User.is_banned == 0, and_(User.is_banned > 0, User.unban_utc > 0))).scalar(),
-        # owed by accounts that are gone for good: deleted, or banned with no end (a temporary ban still owes it)
-        "cents_written_off":g.db.query(func.sum(User.negative_balance_cents)).filter(or_(User.is_deleted==True, and_(User.is_banned>0, User.unban_utc==0))).scalar(),
-        "coins_redeemed_last_24_hrs": g.db.query(User).filter(User.premium_expires_utc>now+60*60*24*6, User.premium_expires_utc < now+60*60*24*7).count(),
-        "coins_redeemed_last_week": g.db.query(User).filter(User.premium_expires_utc>now, User.premium_expires_utc < now+60*60*24*7).count(),
-        "coins_in_circulation": g.db.query(func.sum(User.coin_balance)).filter(User.is_deleted==False, or_(User.is_banned==0, and_(User.is_banned>0, User.unban_utc>0))).scalar(),
-        "coins_vanished": g.db.query(func.sum(User.coin_balance)).filter(or_(User.is_deleted==True, and_(User.is_banned>0, User.unban_utc==0))).scalar(),
-        "receivables_outstanding_cents": g.db.query(func.sum(User.negative_balance_cents)).filter(User.is_deleted==False, or_(User.is_banned == 0, and_(User.is_banned > 0, User.unban_utc > 0))).scalar(),
+    # every account is in exactly one of these. A temporary ban stays open: it still owes, and still holds its coins
+    gone=money_rules.gone_accounts(User.is_deleted, User.is_banned, User.unban_utc)
+    still_open=not_(gone)
+
+    # what each of these really is, and what the page calls it: helpers/money_stats.py SECTIONS. A sum over no rows is None; it reads as 0 there.
+    figures={
+        "received_cents_24h":g.db.query(func.sum(PayPalTxn.usd_cents)).filter(PayPalTxn.status==3, PayPalTxn.created_utc>now-60*60*24).scalar(),
+        "received_cents_7d":g.db.query(func.sum(PayPalTxn.usd_cents)).filter(PayPalTxn.status==3, PayPalTxn.created_utc>now-60*60*24*7).scalar(),
+        "paid_orders_24h":g.db.query(PayPalTxn).filter(PayPalTxn.status==3, PayPalTxn.created_utc>now-60*60*24).count(),
+        "paid_orders_7d":g.db.query(PayPalTxn).filter(PayPalTxn.status==3, PayPalTxn.created_utc>now-60*60*24*7).count(),
+        "net_cents_ytd":money_rules.revenue_cents(paid, refunds),
         "coins_sold_ytd":g.db.query(func.sum(PayPalTxn.coin_count)).filter(PayPalTxn.status==3, PayPalTxn.created_utc>midnight_year_start).scalar(),
-        "revenue_usd_ytd":money_rules.dollars(revenue)
+        "coins_held_open":g.db.query(func.sum(User.coin_balance)).filter(still_open).scalar(),
+        "coins_held_gone":g.db.query(func.sum(User.coin_balance)).filter(gone).scalar(),
+        "owed_cents_open":g.db.query(func.sum(User.negative_balance_cents)).filter(still_open).scalar(),
+        "owed_cents_gone":g.db.query(func.sum(User.negative_balance_cents)).filter(gone).scalar(),
+        "premium_ending_6_to_7_days":g.db.query(User).filter(User.premium_expires_utc>now+60*60*24*6, User.premium_expires_utc<now+60*60*24*7).count(),
+        "premium_ending_7_days":g.db.query(User).filter(User.premium_expires_utc>now, User.premium_expires_utc<now+60*60*24*7).count(),
     }
-    return render_template("admin/content_stats.html", v=v, title="Financial Statistics", data=data)
+    return render_template("admin/money.html", v=v, sections=money_rules.sections(figures), ad_status=ads_rules.status(ads_rules.config()),
+                           ad_places=ads_rules.PLACE_LABELS, adsense_reports=money_rules.ADSENSE_REPORTS)
 
 
 @app.route("/admin/vote_info", methods=["GET"])

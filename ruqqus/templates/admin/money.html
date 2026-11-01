@@ -1,0 +1,55 @@
+{% extends "docs_default.html" %}
+
+{# The admins' money page (routes/admin.py money_stats). English, as every admin page. What each figure is called and really is:
+   helpers/money_stats.py SECTIONS. Ads: only whether they are on and which places have a slot (helpers/ads.py status), never an id and
+   never a figure; ad income is the owner's, in AdSense's own reports (tests/test_ad_income_stays_out_assets.py).
+   The look is shared with the Traffic page (assets/style/_admin_traffic.scss). #}
+
+{% block sidebarblock %}{% endblock %}
+{% block sidebarLeftblock %}{% endblock %}
+
+{% block title %}
+<title>{{ 'SITE_NAME' | app_config }} - Financial Statistics</title>
+{% endblock %}
+
+{% macro places(names) %}{% for name in names %}{{ ad_places[name] }}{% if not loop.last %}, {% endif %}{% endfor %}{% endmacro %}
+
+{% block content %}
+<div id="admin-money">
+
+<h1>Financial Statistics</h1>
+
+<p class="traffic-lead">What the site's own tables say about PayPal orders and members' balances. Amounts are US dollars. <strong>No ad income is in any of it.</strong></p>
+
+{% for section in sections %}
+<section class="money-section">
+  <h2 class="traffic-heading">{{ section.title }}</h2>
+  <table class="traffic-table">
+    <thead><tr><th scope="col">Figure</th><th scope="col" class="traffic-num">Value</th></tr></thead>
+    <tbody>
+      {% for row in section.rows %}
+      <tr data-stat="{{ row.key }}">
+        <th scope="row">{{ row.label }}<p class="traffic-note">{{ row.note }}</p></th>
+        <td class="traffic-num">{{ row.value }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</section>
+{% endfor %}
+
+<section class="money-section" id="money-ads" data-ad-state="{{ ad_status.state }}">
+  <h2 class="traffic-heading">Ads</h2>
+  {% if ad_status.state == "live" %}
+  <p><strong>On.</strong> The AdSense tag loads, and boxes are drawn where a page may have them: {{ places(ad_status.places) }}.{% if ad_status.unset %} No slot set: {{ places(ad_status.unset) }}.{% endif %}{% if "feed" in ad_status.places and not ad_status.feed_layout_key %} The feed's slot has no layout key, so it is drawn as an ordinary responsive box.{% endif %}</p>
+  <p class="traffic-note">This is what the site is set to do. Whether Google has approved the site or fills the boxes, only AdSense can say.</p>
+  {% elif ad_status.state == "client_only" %}
+  <p><strong>Client id only.</strong> <a href="/ads.txt">/ads.txt</a> is live, so the site can be verified. There is no ad script and no box until a slot is set (ADSENSE_SLOT_FEED, _POST or _SIDEBAR).</p>
+  {% else %}
+  <p><strong>Off.</strong> ADSENSE_CLIENT is not set, or isn't a ca-pub- id: no ad script, no boxes, and /ads.txt is a 404.</p>
+  {% endif %}
+  <p class="traffic-note">Ad income stays the site owner's. The site keeps no figure of it, and it never reaches the creator fund, the Creator Studio or members. Its figures are in <a href="{{ adsense_reports }}" rel="noopener noreferrer">AdSense's own reports</a>.</p>
+</section>
+
+</div>
+{% endblock %}

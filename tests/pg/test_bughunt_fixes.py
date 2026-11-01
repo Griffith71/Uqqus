@@ -553,16 +553,18 @@ def test_h3_paying_an_order_keeps_the_capture_refunds_will_name(make_member, rea
 def _money(admin):
     import re
     page = admin.browser().get("/admin/money", base_url=BASE).get_data(as_text=True)
-    rows = dict(re.findall(r"<td>(\w+)</td>\s*<td>([^<]*)</td>", page))
-    written_off = rows.get("cents_written_off")
-    return (int(written_off) if written_off not in (None, "None", "") else 0), round(float(rows["revenue_usd_ytd"]) * 100)
+    rows = dict(re.findall(r'data-stat="(\w+)".*?<td[^>]*>([^<]*)</td>', page, re.S))
+
+    def cents(key):
+        return round(float(rows[key].replace("$", "").replace(",", "")) * 100)
+    return cents("owed_cents_gone"), cents("net_cents_ytd")
 
 
-def test_m6_written_off_counts_permanent_bans_only_and_a_refund_lowers_revenue_once(make_member):
+def test_m6_owed_by_gone_accounts_counts_permanent_bans_only_and_a_refund_lowers_revenue_once(make_member):
     from ruqqus.helpers import money_stats
     admin = _admin(make_member, 2)
     temporary, permanent, buyer = make_member(), make_member(), make_member()
-    written_off, revenue = _money(admin)
+    owed_gone, revenue = _money(admin)
     db = fresh(admin)
     db.execute(text("UPDATE users SET negative_balance_cents = 1000, is_banned = 1, unban_utc = :t WHERE id = :u"),
                {"t": int(time.time()) + 86400, "u": temporary.id})
@@ -575,7 +577,7 @@ def test_m6_written_off_counts_permanent_bans_only_and_a_refund_lowers_revenue_o
     db.commit()
     try:
         after_off, after_revenue = _money(admin)
-        assert after_off - written_off == 700, "the temporary ban still owes it"
+        assert after_off - owed_gone == 700, "the temporary ban is still an open account's debt"
         assert after_revenue - revenue == 2 * money_stats.net_of_fees(499) - 499
     finally:
         db = fresh(admin)
