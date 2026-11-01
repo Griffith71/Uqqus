@@ -99,6 +99,7 @@ class Submission(Base, Stndrd, Age_times, Scores, Fuzzing):
     score_activity = Column(Float, default=0)
     is_offensive = Column(Boolean, default=False)
     is_sensitive = Column(Boolean, default=False)
+    sensitive_forced = Column(Boolean, default=False)   # an admin's mark, on the primary post (`sensitive_lock`)
     # word filter rating of the title + text: 0 clean, 1 profanity, 2 extreme
     # (see helpers/word_filter_store.py); the version says which list rated it
     word_severity = Column(SmallInteger, default=0)
@@ -333,6 +334,14 @@ class Submission(Base, Stndrd, Age_times, Scores, Fuzzing):
             return False
         return not self.is_public and not self.is_pinned and not self.board.can_view(v)
 
+    @property
+    def sensitive_lock(self):
+        """Did an admin force this post sensitive? Asked of the post a copy copies: one family, one answer, whenever the copy
+        was made (routes/settings.py admin_sensitive_post)."""
+        if self.sensitive_forced or not self.repost_id:
+            return bool(self.sensitive_forced)
+        return bool(g.db.query(Submission.sensitive_forced).filter_by(id=self.repost_id).scalar())
+
     def rendered_page(self, comment=None, comment_info=None, v=None):
 
         # a Space's post that was taken down shows nothing at all, not even its title (a Space that was not recorded
@@ -487,7 +496,7 @@ class Submission(Base, Stndrd, Age_times, Scores, Fuzzing):
             return "shared"
         elif self.is_pinned:
             return "pinned"
-        elif self.board.has_mod(v):
+        elif self.board.leads(v):
             return "guildmaster"
         elif self.board.has_contributor(v):
             return "contributor"

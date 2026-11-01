@@ -132,3 +132,32 @@ def test_claude_md_describes_it():
                  "anonymous", "/admin/sensitive/user", "2026-10-18_sensitive_accounts.sql", "Child"):
         assert part in section, part
     assert not re.search(r"FILTERED_SUBCATS", claude)
+
+
+def test_sexual_content_is_what_sensitive_now_covers_and_the_ban_stays():
+    rules = read("ruqqus", "templates", "help", "rules.html")
+    card = read("ruqqus", "templates", "partials", "posting_rules.html")
+    assert "Sexual content must be marked Sensitive, and other content designated as sensitive must be clearly labelled." in rules
+    assert "Mark sexual content Sensitive, and clearly label other sensitive content." in card
+    for page in (rules, card):
+        assert "erotic material" in page.lower()
+    assert "means sexual content, which must be marked" in read("ruqqus", "helpers", "sensitive.py")
+    label = "Sexual or upsetting? Blur this post until viewers click to reveal it."
+    for name in ("submit.html", "collab/editor.html", "partials/inline_composer.html"):
+        assert label in read("ruqqus", "templates", *name.split("/")), name
+    assert "hold sexual content or deal with upsetting topics" in read("ruqqus", "templates", "settings_filters.html")
+
+
+def test_an_admin_can_force_a_post_sensitive():
+    settings = read("ruqqus", "routes", "settings.py")
+    route = settings.split('@app.route("/admin/sensitive/post"')[1].split("\n\n\n")[0]
+    assert "@admin_level_required(3)" in route and "@validate_formkey" in route and "notify(author" in route
+    assert '"force_sensitive_post"' in route
+    posts = read("ruqqus", "routes", "posts.py")
+    toggle = posts.split("def toggle_post_sensitive")[1].split("\n\n\n")[0]
+    assert "owner_refusal(post.sensitive_lock, not post.is_sensitive)" in toggle
+    assert toggle.index("owner_refusal") < toggle.index("post.is_sensitive = not post.is_sensitive")
+    assert "if primary.sensitive_forced:" in posts
+    assert '"force_sensitive_post"' in read("ruqqus", "helpers", "action_log.py").split("STAFF_ACTIONS =")[1].split("\n")[0]
+    assert "2026-12-11_post_sensitive_forced.sql" in read("schema.sql")
+    assert read("ruqqus", "templates", "submission.html").count("post_menu.admin_sensitive_form(p, v,") == 2

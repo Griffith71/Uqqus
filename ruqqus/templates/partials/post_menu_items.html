@@ -32,13 +32,13 @@
 #}
 
 {% macro fewer_item(p, v) %}
-{% if v and p.author_id != v.id and not p.is_banned and p.deleted_utc == 0 %}
+{% if v and (p.author_id != v.id or anon_hidden(p, v)) and not p.is_banned and p.deleted_utc == 0 %}
 <a class="dropdown-item" href="javascript:void(0)" data-fewer-post="{{ p.base36id }}"><i class="fas fa-minus-circle fa-fw"></i>{{ _("Show fewer posts like this") }}</a>
 {% endif %}
 {% endmacro %}
 
 {% macro fewer_button(p, v) %}
-{% if v and p.author_id != v.id and not p.is_banned and p.deleted_utc == 0 %}
+{% if v and (p.author_id != v.id or anon_hidden(p, v)) and not p.is_banned and p.deleted_utc == 0 %}
 <button class="btn btn-link btn-block btn-lg text-left text-muted" data-dismiss="modal" data-fewer-post="{{ p.base36id }}"><i class="fas fa-minus-circle fa-fw text-center text-muted mr-3"></i>{{ _("Show fewer posts like this") }}</button>
 {% endif %}
 {% endmacro %}
@@ -68,4 +68,15 @@
 {%- if c %} · <a href="/post/{{ p.base36id }}/written_by" class="collab-mark"><i class="fas fa-pen-to-square" aria-hidden="true"></i> {{ _("Written together") }}</a>{% if c.revisions > 1 %} · <a href="/post/{{ p.base36id }}/revisions">{{ ngettext("%(num)s revision", "%(num)s revisions", c.revisions) }}</a>{% endif %}
 {#- Translators: the title of the post it was forked from, a link #}
 {%- if c.fork_post %}{% set fork_link %}<a href="{{ c.fork_post.permalink }}">{{ c.fork_post.title | striptags | truncate(60) }}</a>{% endset %} · <i class="fas fa-code-fork" aria-hidden="true"></i> {{ _("forked from %(post)s", post=fork_link) }}{% endif %}{% endif -%}
+{% endmacro %}
+
+{# An admin (level 3) forces a post sensitive or unlocks it (routes/settings.py admin_sensitive_post). Admin pages and tools stay English. #}
+{% macro admin_sensitive_form(p, v, button_class, icon_class) %}
+{% set locked = p.sensitive_lock %}
+<form action="/admin/sensitive/post" method="post" onsubmit="return confirm('{{ 'Unlock the sensitive setting of this post' if locked else 'Force this post sensitive' }}? Its author is told.');">
+  <input type="hidden" name="formkey" value="{{ v.formkey }}">
+  <input type="hidden" name="post" value="{{ p.base36id }}">
+  <input type="hidden" name="force" value="{{ '0' if locked else '1' }}">
+  <button type="submit" class="{{ button_class }}"><i class="fas {{ 'fa-unlock' if locked else 'fa-lock' }} {{ icon_class }}"></i>{{ 'Unlock sensitive setting' if locked else 'Force sensitive (locked)' }}</button>
+</form>
 {% endmacro %}

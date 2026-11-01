@@ -1,7 +1,9 @@
 """Sensitive content and the two discovery feeds, All and For You.
 
-"Sensitive" on this site means upsetting topics (grief, addiction recovery, ...): a heads-up, not a rule break. A post
-(`submissions.is_sensitive`), a guild (`boards.is_sensitive`) and an account (`users.is_sensitive`) can be sensitive.
+"Sensitive" on this site means sexual content, which must be marked (/help/rules; the owner, 2026-10-30), and upsetting topics
+(grief, addiction recovery, ...): a heads-up, not a rule break. Content consisting entirely of erotic material is still against
+the rules. A post (`submissions.is_sensitive`), a guild (`boards.is_sensitive`) and an account (`users.is_sensitive`) can be
+sensitive.
 
 * All and For You leave sensitive content out unless the viewer chose to see it (`users.all_shows_sensitive`, Settings
   > Content). A visitor never sees it there, and neither does a Child-filter viewer (the word filter hides sensitive
@@ -12,12 +14,14 @@
   sensitive account's new posts are marked sensitive when written (`marks_post`), anonymous or not, so they leave by
   rule (a) and the mark on the post says nothing about who wrote it.
 * The owner of an account and the guildmasters of a guild switch it on and off, unless an admin forced it on
-  (`sensitive_forced`): then only an admin can unlock it (`owner_refusal`).
+  (`sensitive_forced`): then only an admin can unlock it (`owner_refusal`). A post the same: its author and the guild's
+  guildmasters, unless an admin forced it, which is kept on the post a copy copies (`Submission.sensitive_lock`).
 
 Rules here are pure; the two subqueries are functions so tests can stand in for them (tests/test_sensitive.py).
 """
 from sqlalchemy import and_, or_, select
 
+from ruqqus.helpers import anonymity
 from ruqqus.helpers.i18n_runtime import tr_lazy
 
 FORCED = tr_lazy("An admin marked this sensitive, so it can't be switched off here.")
@@ -65,5 +69,5 @@ def hide_sensitive(query, v, model):
         or_(model.is_anonymous.is_(True), model.author_id.notin_(sensitive_user_ids())),
     )
     if v is not None:
-        keep = or_(model.author_id == v.id, keep)
+        keep = or_(anonymity.own(model, v), keep)
     return query.filter(keep)

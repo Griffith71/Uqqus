@@ -27,6 +27,7 @@ CORE = (
     "unsolicited commercial promotion",
     "commercial promotion",
     "created using ai",
+    "sexual content",            # must be marked Sensitive (the owner, 2026-10-30); "erotic" above is the ban, which stays
     "identify themselves as bots",
     "not from",                  # anonymity hides the author from users, not from the site
     "ban",
