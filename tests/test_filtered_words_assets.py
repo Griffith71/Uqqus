@@ -127,7 +127,8 @@ def test_words_are_escaped_and_carry_their_language():
 
 
 def test_the_warning_shows_no_words_and_needs_no_script():
-    warning = PAGE[PAGE.index('{% elif state == "warning" %}'):PAGE.index("{% else %}")]
+    start = PAGE.index('{% elif state == "warning" %}')
+    warning = PAGE[start:PAGE.index("{% else %}", start)]
     assert "This page lists offensive words" in warning
     assert 'href="?show=1"' in warning and 'href="{{ back }}"' in warning
     assert "item." not in warning and "<script" not in PAGE

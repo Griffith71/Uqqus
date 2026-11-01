@@ -52,7 +52,7 @@ def seed():
     for name in names():
         user = db.query(User).filter_by(username=name).first()
         if not user:
-            user = User(username=name, original_username=name, password=PASSWORD, email=f"{name}@example.com",
+            user = User(age_declared=1, username=name, original_username=name, password=PASSWORD, email=f"{name}@example.com",
                         created_utc=now - 90 * 86400, creation_ip="127.0.0.1", tos_agreed_utc=now - 90 * 86400)
             db.add(user)
             made += 1

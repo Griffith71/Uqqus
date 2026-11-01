@@ -88,6 +88,23 @@ def test_a_word_is_escaped(make_member):
         unseed(member, word)
 
 
+def test_a_child_account_is_told_only_an_admin_can_change_it(make_member):
+    member = make_member()
+    db = member.db_session()
+    db.execute(text("UPDATE users SET age_declared = 2, age_declared_utc = 5, filter_level = 2 WHERE id = :u"), {"u": member.id})
+    db.commit()
+    page = get(member.browser(), "/filtered_words").get_data(as_text=True)
+    assert "Change your word filter" not in page
+    assert "its word filter stays on Child. Only an admin can change that." in page
+
+    # a member who chose the Child filter themselves can still change it, and is told so
+    other = make_member()
+    db = other.db_session()
+    db.execute(text("UPDATE users SET filter_level = 2 WHERE id = :u"), {"u": other.id})
+    db.commit()
+    assert "Change your word filter" in get(other.browser(), "/filtered_words").get_data(as_text=True)
+
+
 def test_a_member_on_the_child_filter_sees_no_words(make_member):
     member = make_member()
     db = member.db_session()

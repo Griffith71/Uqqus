@@ -15,6 +15,33 @@
 
             <div class="settings-section rounded">
 
+              {# what the member said about their age (helpers/age_declaration.py): settings pages have no notice, so this is
+                 where it can be answered too. Only an admin changes an answer. #}
+              {% set child_account = v.age_declared == 2 %}
+              <div class="d-lg-flex border-bottom" id="age-declaration">
+
+                <div class="title w-lg-25">
+                  <span>{{ _("Your age") }}</span>
+                </div>
+
+                <div class="body w-lg-100 age-state">
+                  {% if v.age_declared is none %}
+                    <p class="mb-2">{{ _("You haven't told us yet.") }}</p>
+                    {% from "partials/age_question.html" import age_form %}
+                    {{ age_form(v, "/settings/content", "age-settings") }}
+                  {% else %}
+                    {% if child_account %}
+                    <p class="mb-1">{{ _("This is a child account, set up by a parent or guardian, since %(date)s.", date=date_text(v.age_declared_utc, "%d %B %Y")) }}</p>
+                    <span class="d-block text-small-extra text-muted">{{ _("It stays on the Child word filter, which hides profanity and anything marked sensitive, and these settings can't turn that off.") }}</span>
+                    {% else %}
+                    <p class="mb-1">{{ _("This account has been marked 18 or over since %(date)s.", date=date_text(v.age_declared_utc, "%d %B %Y")) }}</p>
+                    {% endif %}
+                    <span class="d-block text-small-extra text-muted">{{ _('You can\'t change this answer yourself. If it\'s wrong, <a href="%(url)s">contact us</a>: only an admin can change it.', url="/help/contact") }}</span>
+                  {% endif %}
+                </div>
+
+              </div>
+
               <div class="d-lg-flex border-bottom">
 
                 <div class="title w-lg-25">
@@ -24,7 +51,7 @@
                 <div class="body w-lg-100">
 
                   {% set level = 1 if v.filter_level is none else v.filter_level %}
-                  <select class="form-control" id="filterlevel" data-current="{{ level }}" onchange="filter_level_changed()">
+                  <select class="form-control" id="filterlevel" data-current="{{ level }}" onchange="filter_level_changed()"{% if child_account %} disabled aria-describedby="filterlevel-locked"{% endif %}>
                     <option value="0"{% if level == 0 %} selected{% endif %}>{{ _("Off - show everything") }}</option>
                     <option value="1"{% if level == 1 %} selected{% endif %}>{{ _("Standard - hide extremely offensive language") }}</option>
                     <option value="2"{% if level == 2 %} selected{% endif %}>{{ _("Child - also hide profanity and sensitive content") }}</option>
@@ -36,9 +63,16 @@
 
                   <button type="button" class="btn btn-primary mt-2 d-none" id="filterlevel-save" onclick="save_filter_level()">{{ _("Save word filter") }}</button>
 
+                  {% if child_account %}
+                  <span class="d-block mt-2 text-small-extra text-muted" id="filterlevel-locked">{{ _("This is a child account, so its word filter stays on Child. Only an admin can change that.") }}</span>
+                  {% else %}
                   <span class="d-block mt-2 text-small-extra text-muted">{{ _("Posts and comments that contain filtered words are hidden from you entirely - they are not removed for anyone else. Content from a user or guild whose name contains a filtered word is hidden too. Your own posts and comments are always shown to you. Turning the Child filter down again needs your account password.") }}</span>
+                  {% endif %}
 
+                  {# the list isn't shown at the Child level (helpers/filtered_words.py), and this account can't leave it #}
+                  {% if not child_account %}
                   <a class="d-inline-block mt-2 text-small" href="/filtered_words" id="filterlevel-words">{{ _("See the filtered words") }}</a>
+                  {% endif %}
 
                 </div>
 
@@ -111,7 +145,7 @@
                     <label class="custom-control-label" for="all-shows-sensitive"></label>
                   </div>
 
-                  <span class="text-small-extra text-muted">{{ _("Sensitive posts, guilds and accounts deal with upsetting topics, such as grief or addiction recovery. They are not against the rules, but All and For You leave them out unless you turn this on. You can always open a sensitive guild or profile, search for it or follow it.") }}{% if child %} {{ _("The Child word filter hides sensitive content everywhere, so this is off.") }}{% endif %}</span>
+                  <span class="text-small-extra text-muted">{{ _("Sensitive posts, guilds and accounts hold sexual content or deal with upsetting topics, such as grief or addiction recovery. They are not against the rules, but All and For You leave them out unless you turn this on. You can always open a sensitive guild or profile, search for it or follow it.") }}{% if child %} {{ _("The Child word filter hides sensitive content everywhere, so this is off.") }}{% endif %}</span>
 
                 </div>
 
@@ -130,7 +164,7 @@
                     <label class="custom-control-label" for="sensitive-account"></label>
                   </div>
 
-                  <span class="text-small-extra text-muted">{% if v.sensitive_forced %}{{ _("An admin marked your account sensitive, so only an admin can change this.") }} {% endif %}{{ _("Turn on if what you post is often upsetting. Your profile shows a Sensitive content badge, your new posts are blurred, and your posts are left out of All and For You for anyone who hasn't chosen to see sensitive content.") }}</span>
+                  <span class="text-small-extra text-muted">{% if v.sensitive_forced %}{{ _("An admin marked your account sensitive, so only an admin can change this.") }} {% endif %}{{ _("Turn on if what you post is often sexual or upsetting. Your profile shows a Sensitive content badge, your new posts are blurred, and your posts are left out of All and For You for anyone who hasn't chosen to see sensitive content.") }}</span>
 
                 </div>
 
@@ -293,6 +327,22 @@
                   </select>
 
                   <span class="d-block mt-2 text-small-extra text-muted">{{ _("When you press play, a video starts with sound, at the volume you last used (video files only: videos from other sites keep their own volume). A video that starts by scrolling is always muted. Audio players also start at the volume you last used, and are never muted by this. Saved on this device, and used from the next page you open.") }}</span>
+
+                </div>
+
+              </div>
+
+              <div class="d-lg-flex border-top">
+
+                <div class="title w-lg-25">
+                  <span class="d-block font-weight-bold">{{ _("Videos from other sites") }}</span>
+                </div>
+
+                <div class="body w-lg-100">
+
+                  <a class="btn btn-secondary" href="/help/privacy#videos" data-consent-open>{{ _("Cookie choices") }}</a>
+
+                  <span class="d-block mt-2 text-small-extra text-muted">{{ _("Whether a video site's player may load before you press play. While it may not, Automatic above has no effect.") }}</span>
 
                 </div>
 

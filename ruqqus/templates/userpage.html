@@ -49,6 +49,9 @@
 {% include "partials/profile_header.html" %}
 {% if v and v.id != u.id %}{% include "partials/report_account_modal.html" %}{% endif %}
 <script src="{{ asset_url('js/profile_actions.js') }}"></script>
+{# the Edit profile pop-up (partials/profile_edit_modal.html): your own profile, and not in a side-panel frame, where the button stays a link to Settings #}
+{% if v and v.id == u.id and not request.args.get('embed') %}{% include "partials/profile_edit_modal.html" %}
+<script src="{{ asset_url('js/profile_edit.js') }}"></script>{% endif %}
 {% endblock %}
 
 {% block mobileUserBanner %}{% endblock %}
@@ -90,7 +93,11 @@
 <form action="/api/ban_user/{{ u.id }}" method="post">
   <input type="hidden" name="formkey" value="{{ v.formkey }}">
   <input id="user-ban-message" type="text" class="form-control" name="message" placeholder="Ban Message Reason" onchange="document.getElementById('user-ban-submit').disabled=false">
-  <input id="user-ban-reason" type="text" class="form-control" name="reason" placeholder="Ban Reason (public)" onchange="document.getElementById('user-ban-submit').disabled=false">
+  <input id="user-ban-reason" type="text" class="form-control" name="reason" placeholder="Ban Reason (public, required)" required maxlength="512" onchange="document.getElementById('user-ban-submit').disabled=false">
+  <select id="user-ban-rule" class="form-control" name="rule" aria-label="Rule broken">
+    <option value="">Rule broken</option>
+    {% for key, label in LOG_RULES.items() %}<option value="{{ key }}">{{ label }}</option>{% endfor %}
+  </select>
   <input id="user-ban-days" type="number" class="form-control" name="days" placeholder="Days (blank = permanent)">
   <input id="user-ban-submit" type="submit" class="btn btn-warning" value="Ban user" disabled>
 </form>
@@ -102,6 +109,20 @@
   <input type="hidden" name="username" value="{{ u.username }}">
   <input type="hidden" name="force" value="{{ '0' if u.sensitive_forced else '1' }}">
   <input type="submit" class="btn btn-outline-warning btn-sm mb-2" value="{{ 'Unlock sensitive setting' if u.sensitive_forced else 'Force sensitive (locked)' }}">
+</form>
+{% endif %}
+{% if v.admin_level >=3 and v.admin_level > u.admin_level and not u.is_bot %}
+<form action="/admin/age_declaration" method="post" class="mb-2" onsubmit="return confirm('Change the age answer of @{{ u.username }}? They are told.');">
+  <input type="hidden" name="formkey" value="{{ v.formkey }}">
+  <input type="hidden" name="username" value="{{ u.username }}">
+  <label for="admin-age-answer">Age answer{% if u.age_declared_utc %} (since {{ date_text(u.age_declared_utc, "%d %B %Y") }}){% endif %}</label>
+  <select class="form-control mb-1" id="admin-age-answer" name="answer">
+    <option value=""{% if u.age_declared is none %} selected{% endif %}>Not asked</option>
+    <option value="1"{% if u.age_declared == 1 %} selected{% endif %}>18 or over</option>
+    <option value="2"{% if u.age_declared == 2 %} selected{% endif %}>Child account (locks the Child filter)</option>
+  </select>
+  <input type="text" class="form-control mb-1" name="reason" maxlength="512" placeholder="Reason (for the staff log)">
+  <input type="submit" class="btn btn-outline-warning btn-sm" value="Change age answer">
 </form>
 {% endif %}
 {% if v.admin_level >=3 and v.admin_level > u.admin_level and u.display_name %}

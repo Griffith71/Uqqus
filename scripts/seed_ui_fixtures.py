@@ -214,7 +214,7 @@ def seed():
         found = db.query(User).filter_by(username=username).first()
         if found:
             return found
-        user = User(username=username, original_username=username, password=PASSWORD,
+        user = User(age_declared=1, username=username, original_username=username, password=PASSWORD,
                     email=f"{username}@example.com", created_utc=now - days * 86400, creation_ip="127.0.0.1",
                     tos_agreed_utc=now - days * 86400, display_name=display_name, bio=bio,
                     following_visibility=0, followers_visibility=0, subscribers_visibility=0,

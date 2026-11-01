@@ -46,6 +46,40 @@ def test_every_step_matches_the_schema_and_does_its_job():
         assert db.execute(text("SELECT key_blob_password FROM chat_identities WHERE user_id = 5")).scalar() is None
 
 
+def test_an_admins_change_of_the_age_answer_leaves_no_copy_of_it():
+    from ruqqus.helpers.age_declaration import ADMIN_NOTICES, CHILD
+    engine = create_engine("sqlite://")
+    with engine.begin() as conn:
+        for statement in _tables(["users", "notifications", "comments_aux", "log_entries"]):
+            conn.execute(text(statement))
+        conn.execute(text("INSERT INTO users (id, age_declared, age_declared_utc) VALUES (5, 2, 9), (6, 2, 9)"))
+        for comment, user, msgid in ((1, 5, ADMIN_NOTICES[CHILD]), (2, 6, ADMIN_NOTICES[CHILD]), (3, 5, "Your post was pinned.")):
+            conn.execute(text("INSERT INTO comments_aux (id, body, body_html, notice_msgid, notice_params) "
+                              "VALUES (:c, :m, :m, :m, '{}')"), {"c": comment, "m": msgid})
+            conn.execute(text("INSERT INTO notifications (id, comment_id, user_id) VALUES (:c, :c, :u)"), {"c": comment, "u": user})
+        conn.execute(text("INSERT INTO log_entries (id, action, target_user_id, reason, staff_note) VALUES "
+                          "(1, 'age_declaration', 5, 'their mother wrote to us: she is 14', 'not asked to child account'), "
+                          "(2, 'age_declaration', 6, 'kept', 'not asked to child account'), "
+                          "(3, 'ban_user', 5, 'spam', 'kept')"))
+    with Session(engine) as db:
+        account_cleanup.close_account(db, 5, 1000)
+        assert db.execute(text("SELECT age_declared, age_declared_utc FROM users WHERE id = 5")).first() == (None, "0")
+
+        entry = db.execute(text("SELECT action, target_user_id, reason, staff_note FROM log_entries WHERE id = 1")).first()
+        assert entry[:3] == ("age_declaration", "5", ""), "the entry stays and the reason goes"
+        assert "child" not in entry[3] and "not asked" not in entry[3]
+
+        notice = db.execute(text("SELECT body, body_html, notice_msgid, notice_params FROM comments_aux WHERE id = 1")).first()
+        assert notice == ("", "", "", None)
+        assert db.execute(text("SELECT user_id FROM notifications ORDER BY id")).scalars().all() == ["6", "5"], "only that notice goes"
+
+        # nobody else's, and nothing else of theirs
+        assert db.execute(text("SELECT reason FROM log_entries WHERE id = 2")).scalar() == "kept"
+        assert db.execute(text("SELECT reason, staff_note FROM log_entries WHERE id = 3")).first() == ("spam", "kept")
+        assert db.execute(text("SELECT body FROM comments_aux WHERE id = 2")).scalar() == ADMIN_NOTICES[CHILD]
+        assert db.execute(text("SELECT body FROM comments_aux WHERE id = 3")).scalar() == "Your post was pinned."
+
+
 def test_a_missing_table_is_skipped_not_fatal():
     engine = create_engine("sqlite://")
     with engine.begin() as conn:

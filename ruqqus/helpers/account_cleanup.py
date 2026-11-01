@@ -10,6 +10,12 @@ in a shared draft stays credited to them, as when anyone leaves one.
 """
 from sqlalchemy import text
 
+from ruqqus.helpers.age_declaration import ADMIN_NOTICES
+
+# the notices an admin's change of the age answer sent (helpers/age_declaration.py); they say what the answer became
+_AGE_NOTICES = {f"age_notice_{n}": message for n, message in enumerate(ADMIN_NOTICES.values())}
+_AGE_NOTICE_MARKS = ", ".join(f":{name}" for name in _AGE_NOTICES)
+
 STEPS = (
     # paid and custom circles: nothing renews, nobody is charged, memberships of others' custom circles go
     ("end their subscriptions", "UPDATE circle_members SET status = 'ended', cancelled = :yes "
@@ -65,6 +71,16 @@ STEPS = (
     ("stop automated posting", "DELETE FROM bots WHERE user_id = :u AND kind = 'self'"),
     # where they signed in from, and what they wrote about themselves
     ("forget sign-in addresses", "DELETE FROM login_events WHERE user_id = :u"),
+    ("forget the age answer", "UPDATE users SET age_declared = NULL, age_declared_utc = 0 WHERE id = :u"),
+    # two more copies of it, where an admin changed it: the Log's row stays (an entry is never deleted, helpers/action_log.py)
+    # and says only that a change was made, and the notice's own words go (each one is that member's own message, notify)
+    ("forget an admin's age note", "UPDATE log_entries SET reason = '', staff_note = 'removed when the account closed' "
+                                   "WHERE target_user_id = :u AND action = 'age_declaration'"),
+    ("empty the age notices", "UPDATE comments_aux SET body = '', body_html = '', notice_params = NULL, notice_msgid = '' "
+                              f"WHERE notice_msgid IN ({_AGE_NOTICE_MARKS}) AND EXISTS (SELECT 1 FROM notifications n "
+                              "WHERE n.comment_id = comments_aux.id AND n.user_id = :u)"),
+    ("remove the age notices", "DELETE FROM notifications WHERE user_id = :u AND EXISTS (SELECT 1 FROM comments_aux a "
+                               "WHERE a.id = notifications.comment_id AND a.notice_msgid = '')"),
     ("clear the profile", "UPDATE users SET display_name = '', bio = '', bio_html = '', profile_job = '', "
                           "profile_location = '', profile_website = '', email = NULL, premium_auto_renew = :no, "
                           "creator_fund_opt_in_utc = 0 WHERE id = :u"),
@@ -92,7 +108,7 @@ def close_account(db, user_id, now):
     for name, sql in STEPS:
         savepoint = db.begin_nested()
         try:
-            db.execute(text(sql), {"u": user_id, "now": now, "yes": True, "no": False})
+            db.execute(text(sql), {"u": user_id, "now": now, "yes": True, "no": False, **_AGE_NOTICES})
             savepoint.commit()
         except Exception as error:
             savepoint.rollback()

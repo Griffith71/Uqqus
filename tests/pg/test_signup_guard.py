@@ -33,7 +33,8 @@ def form_for(client, age=30, agent=AGENT):
     key = hmac.new(key=bytes(os.environ["MASTER_KEY"], "utf-16"), msg=bytes(now + token + agent, "utf-16"),
                    digestmod="md5").hexdigest()
     password = "ci-Password-1"
-    return {"formkey": key, "now": now, "username": name(), "password": password, "password_confirm": password}
+    return {"formkey": key, "now": now, "username": name(), "password": password, "password_confirm": password,
+            "age_declaration": "1"}
 
 
 def sign_up(client, form, ip=None, headers=None):
