@@ -57,7 +57,7 @@
       <div class="card h-100 region-card{% if v and v.display_region == region.code %} is-mine{% endif %}">
         <div class="card-body">
           <div class="d-flex align-items-center mb-2">
-            <span class="rounded-circle d-inline-block mr-2" style="width: 14px; height: 14px; background-color: {{ region.color }}; flex-shrink: 0;"></span>
+            <span class="rounded-circle d-inline-block mr-2" style="width: 14px; height: 14px; background-color: {{ region.color }}; box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .18); flex-shrink: 0;"></span>
             <h6 class="mb-0">{{ msg_text(region.current_name) }}</h6>
           </div>
           <a class="text-muted text-small d-inline-block mb-2" data-toggle="collapse" href="#countries-{{ region.code }}" role="button" aria-expanded="false" aria-controls="countries-{{ region.code }}">
@@ -132,7 +132,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
   // jsvectormap renders each country as an SVG <path data-code="XX">;
   // we set exact per-region hex fills ourselves rather than using its
-  // numeric gradient-scale "series" feature, since our 30 region colors
+  // numeric gradient-scale "series" feature, since our 32 region colors
   // are categorical, not a gradient.
   document.querySelectorAll('#world-map path[data-code]').forEach(function(path) {
     var code = path.getAttribute('data-code');
