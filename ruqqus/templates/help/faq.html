@@ -65,7 +65,7 @@
 
 {% trans site='SITE_NAME' | app_config %}Secondly, {{ site }} is open-source. Anyone is free to examine the inner workings of the {{ site }} platform. We don't have secret algorithms that decide what you should or shouldn't see. Our voting and ranking systems are fully transparent and free of artificial manipulation.{% endtrans %}
 
-{% trans site='SITE_NAME' | app_config %}Thirdly, {{ site }} does not accept advertising or investment funding. Yes, that would make it easier to kickstart the platform, but it would also come with strings attached. We do not want to subject your free speech rights to the whims of potentially censorious funding sources.{% endtrans %}
+{% if ads_live() %}{% trans site='SITE_NAME' | app_config %}Thirdly, {{ site }} does not accept investment funding. Yes, that would make it easier to kickstart the platform, but it would also come with strings attached. It does show ads from Google AdSense, which help pay for the site. No advertiser decides what can be said here, and where Google's rules would keep an ad off a page, that page simply goes without one.{% endtrans %}{% else %}{% trans site='SITE_NAME' | app_config %}Thirdly, {{ site }} does not accept advertising or investment funding. Yes, that would make it easier to kickstart the platform, but it would also come with strings attached. We do not want to subject your free speech rights to the whims of potentially censorious funding sources.{% endtrans %}{% endif %}
 
 ##{% trans %}Objectionable speech{% endtrans %}
 

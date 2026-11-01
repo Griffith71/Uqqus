@@ -1,5 +1,42 @@
 {# AdSense, and the script that fills the ad boxes and puts in-feed ads between post cards (routes/ads.py ads_script).
    Google's consent banner for the UK, EEA and Switzerland comes with the AdSense tag (set up in AdSense,
-   Privacy & messaging). #}
-<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client={{ cfg.client }}" crossorigin="anonymous"></script>
+   Privacy & messaging).
+
+   The tag is loaded from here, by script, so that three things happen first and no request goes to Google before them:
+   - Non-personalised, unless helpers/ads.py personalised_allowed says otherwise, is set before any ad is asked for.
+   - The key made from the member's password goes (CLAUDE.md "Chat encryption"). It lives in this tab's sessionStorage, so a tag running in
+     another tab can't read it, and it is gone before a tag runs in this one. A page kept by the back button brings its running tag back
+     (`pageshow`), so the key goes then too, and an older copy in localStorage goes with it.
+   - A browser holding chat data that isn't this page's account's gets no tag at all and its boxes fold (partials/ad_hold.html).
+
+   All of this is asked when the tag loads. A tag already running in another tab stays until that page is left: it goes on running beside
+   a log out or a chat opened elsewhere. Nothing can stop a script that has started. #}
+{% from "partials/ad_hold.html" import chat_held %}
+<script>
+(function () {
+  window.adsbygoogle = window.adsbygoogle || [];
+  {% if not personalised %}window.adsbygoogle.requestNonPersonalizedAds = 1;{% endif %}
+  function forgetPrekey() {
+    try { sessionStorage.removeItem("uqqus_chat_prekey"); } catch (e) { /* storage blocked: nothing was kept */ }
+    try { localStorage.removeItem("uqqus_chat_prekey"); } catch (e) { /* storage blocked: nothing was kept */ }
+  }
+  window.loadAdTag = function () {
+    if (window.adTagAsked) return true;
+    forgetPrekey();
+    if ({{ chat_held(owner) }}) return false;
+    window.adTagAsked = true;
+    var tag = document.createElement("script");
+    tag.async = true;
+    tag.crossOrigin = "anonymous";
+    tag.src = "https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client={{ cfg.client }}";
+    document.head.appendChild(tag);
+    return true;
+  };
+  window.addEventListener("pageshow", function (event) { if (event.persisted && window.adTagAsked) forgetPrekey(); });
+  {% if not on_press %}if (!window.loadAdTag()) {
+    window.adsHeld = true;
+    document.querySelectorAll(".ad-slot").forEach(function (slot) { slot.classList.add("ad-slot-empty"); });
+  }{% endif %}
+})();
+</script>
 <script src="{{ asset_url('js/ads.js') }}" defer></script>
