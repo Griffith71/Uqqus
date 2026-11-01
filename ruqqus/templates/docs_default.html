@@ -4,6 +4,7 @@
 
 <head>
 {% from "partials/i18n_boot.html" import i18n_boot %}{{ i18n_boot() }}
+{% from "partials/forget_prekey.html" import forget_prekey %}{{ forget_prekey() }}
 
   <meta charset="utf-8">
 {{ font_faces() }}
@@ -43,6 +44,7 @@
 </head>
 
 <body id="{% block pagetype %}article{% endblock %}">
+  {% from "partials/consent_banner.html" import consent_banner %}{{ consent_banner(auto=False) }}
 
   {% include "docs_header.html" %}
 
@@ -182,6 +184,8 @@
 
 
 <script src="{{ asset_url('js/all_js.js') }}"></script>
+<script src="{{ asset_url('js/video_playback.js') }}"></script>{# the rule the banner's "right now" line reads #}
+<script src="{{ asset_url('js/consent.js') }}"></script>
 
 </body>
 

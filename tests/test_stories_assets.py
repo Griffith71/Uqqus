@@ -6,6 +6,7 @@ from pathlib import Path
 
 from ruqqus.helpers import circles
 from ruqqus.helpers import stories as rules
+from stylesheets import expanded
 
 ROOT = Path(__file__).resolve().parent.parent
 
@@ -292,7 +293,7 @@ def test_every_class_the_script_and_templates_set_has_a_rule_in_both_stylesheets
     used -= {"story-ring-unseen", "story-ring-seen", "story-ring-own"}         # built from the ring state, checked below
     assert used
     for cls in sorted(used):
-        for sheet in (MAIN, DARK):
+        for sheet in (expanded("main.scss"), expanded("main_dark.scss")):     # (a partial counts: a story's press-to-play is in _consent.scss)
             assert f".{cls}" in sheet, cls
 
 

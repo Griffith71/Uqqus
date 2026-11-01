@@ -12,32 +12,88 @@
 {% filter markdown %}
 # Privacy
 
-## Cookies
+## Cookies and what your browser keeps
 
-{{ 'SITE_NAME' | app_config }} uses encrypted cookies to maintain secure authenticated sessions. These cookies are randomized with each new session.
+{{ 'SITE_NAME' | app_config }}'s own cookie is called `session_ruqqus`. It is signed, not encrypted: the signature stops it being changed, but anyone with access to your browser can read what is in it. It never holds your password. What it holds, and for how long, depends on you:
 
-These cookies are used for authentication and abuse mitigation purposes only.
+* **If you have never signed in here,** opening a page sets nothing. The cookie is made only when there is something to remember: a feed filter you chose, a feed you opened other than the home page, the one-time token of the sign-up form, or that you dismissed the tip about installing the site. It holds no number that identifies you, and it lasts until you close your browser (a browser set to restore your last session may keep it longer), so a visitor's filters last that long too.
+* **Once you sign in,** it holds your account number, a random number for this sign-in and a counter that lets a sign-in be ended from your Security settings, together with your preferences (light or dark, the feed you were last on, your feed filters, which start as the default you saved if you saved one) and, while you link a storage account, a one-time number for that.{% if ads_live() %} After you sign in with your password, sign up or change your password{% if qr_login_offered() %}, or enter your password after signing in with a QR code{% endif %}, it also holds the time before which no ads are loaded (see Ads).{% endif %} It lasts a year from your last visit.
+* **After you sign out,** the sign-in is taken out of it and your feed filters leave with it, so the next person on this browser doesn't get them; a default you saved comes back when you sign in again. Your other preferences stay (light or dark, the feed you were last on). If someone has signed in here with a password, the numbers of the accounts that have done so stay too, and the cookie lasts a year from your last visit or until you clear it. We compare that list when someone signs in or signs up on the same browser, to connect accounts run by one person and to spot a new account made after a suspension. Otherwise it lasts until you close your browser.
+{% if qr_login_offered() %}* **If you press "Sign in with a QR code",** it holds a number that ties the code to this browser (`qr_pending`), and nothing that says who you are. It goes when you sign in, when you close your browser, or on the first page you open once the code has been out of time for a minute. Pressing the button also keeps the code's number, a short description of this browser and its country for two minutes in the site's short-term memory (Redis), so that the phone approving it can show them, and once a phone has approved it, which account approved it for a minute more, so that this browser can ask you to confirm. That record holds no address. The limits on how often one address may do this are counted apart from it, under the address, in the same memory: about a minute for pressing the button (an hour if an address keeps going over the limit), and up to about ten hours for approving a code on a phone or entering your password after a QR sign-in. The phone is told that whoever started it reported those themselves.
+* **If you signed in with a QR code,** it also holds when that sign-in ends (`qr_expires_utc`, 12 hours after it began; nothing moves it) and that it is limited (`qr_limited`) until you enter your password. Past its end you are signed out on the next page you open, and the sign-in leaves the cookie as it does when you sign out.{% endif %}
 
+These cookies are set only when you choose something. Each holds only that choice, goes only to this site and lasts a year:
+
+* `ui_lang`: the language you picked in the page footer.
+* `density`, `text_size`, `feed_paging`: how compact the layout is, the size of the text, and continuous scrolling or pages.
+* `video_autoplay`, `video_captions`, `video_sound`: your choices under Video and audio in Settings.
+* `sidebar_pref`: that you folded the left sidebar.
+
+`video_consent` is set when you answer the question about videos from other sites. It holds the version of the question, your answer and the date, and goes only to this site. Your answer counts for about six months, when you are asked again; the browser keeps the cookie for up to about 13 months, so that a no is still known when that time comes.
+
+Your browser also keeps some things for this site in its own storage. They are not cookies, and we don't read them from the server:
+
+* `late_box_h:` followed by a box's name: the height of a box in the right sidebar, so the page doesn't jump the next time it loads. It is only a number, and it is written on your first visit, signed in or not.
+* `post_toolbar_open`: whether you keep the formatting tools open.
+* `video_sound`, `audio_volume`: the volume you last used.
+* `ruqqus-media-connect`: for a moment, that a storage account was linked.
+* `profile_edit_saved`: for a moment, in this tab only, that you have just saved your profile.
+* `uqqus_chat_prekey`: a key made from your password, so that chat can unlock itself without asking you to type it. It is kept for the one tab you typed the password in (session storage: another tab can't read it, and closing the tab removes it), and if you open chat in a new tab, chat asks for your password once. It is written each time you send the sign-in or sign-up form, before we have answered and whether or not you use chat, and when you change your password{% if qr_login_offered() %}, and when you enter your password after signing in with a QR code{% endif %}. It is removed as soon as chat has used it, when you log out in that tab, and the next time a page is drawn in that tab for someone who isn't signed in, so a sign-in we refused doesn't leave it behind (the page asking for your two-factor code keeps it, because the sign-in is still going on). If you sign in and never open chat, it stays until you close that tab or log out in it{% if ads_live() %}, or until a page in that tab loads Google's ad script, which removes it first and is never sooner than 15 minutes after you typed your password (chat then asks for your password once){% endif %}. If your sign-in here was ended from another browser, it stays until that tab shows a page for someone who isn't signed in, or is closed.
+* If you use chat: `ruqqus_chat_session` and `ruqqus_call_session` (this browser's sign-in to the chat server and which device it is), `uqqus_chat_waiting` (first messages you wrote, as plain text, until they can be sent), `uqqus_store_retry:` followed by a session's name (in this tab only, that chat has already tried once to replace a key database that wouldn't open), and a browser database holding your chat encryption keys. Pressing Log out removes the chat sign-in and the waiting messages. Which device this was and the database stay, so that the same account takes them up again; they stay until any other account opens chat, a call or a Space on this browser, which clears them first. A sign-in that ends without Log out being pressed leaves the chat sign-in here too, until then.
+
+## Other sites your browser connects to
+
+Parts of a page come from other companies' servers, and your browser fetches them directly, not through us. Each of those sites sees your IP address and your browser, can set and read its own cookies, and has its own privacy policy. We don't control what it does.
+
+{% if video_consent_asked() %}* **Video players.** A link to a video on YouTube, Vimeo, Dailymotion, Twitch, Rumble, Odysee, BitChute, Bilibili, Streamable, Loom, TED and similar sites is drawn in that site's own player. It loads only when you press play, unless you have allowed videos: see [Videos from other sites](#videos).
+{% else %}* **Video players that load on scroll.** A link to a video on YouTube, Vimeo, Dailymotion, Twitch, Rumble, Odysee, BitChute, Bilibili, Streamable, Loom, TED and similar sites is drawn in that site's own player. Where you are, that player loads by itself, muted, as it scrolls into view on a feed or a post page, before you press anything, visitors included, unless you have said no: see [Videos from other sites](#videos). Loading it lets that site set cookies, see your address and record what you watch. If you are signed in you can stop this on feeds and post pages with Tap to play under Video and audio in Settings > Content; a device set to reduce motion or to save data gets the same. None of that reaches a video replay on a Space's page, which loads as it comes into view whatever you have chosen there, or a YouTube video in a story, which loads when that story comes up in the viewer.
+{% endif %}* **Players that wait for you.** Videos from Facebook, Instagram, TikTok and Kick, and music players (Spotify, SoundCloud, Apple Music and Podcasts, Bandcamp, Mixcloud, Deezer), load only when you press play. Pressing play then does what is described above.
+* **Pictures and GIFs.** The pictures in link previews and quote cards, video thumbnails, and GIFs from GIPHY, Tenor and Flickr come straight from the site they are on, as you reach them, and so do pictures someone put in the text of a post, a comment or anything else members write, if they are on [our list of picture hosts](/info/image_hosts) (a picture anywhere else is shown as a link). The GIF picker fetches its pictures from GIPHY and Tenor, and the words you type into its search box go straight to Tenor.
+* **Code and icons.** Pages load icons and code libraries from cdnjs.cloudflare.com (run by Cloudflare: Font Awesome, Popper), code.jquery.com (jQuery), stackpath.bootstrapcdn.com (Bootstrap) and cdn.jsdelivr.net (Clipboard, and the world map on the regions page). The About and Donate pages also load from unpkg.com, and the pages shown while the site is down from maxcdn.bootstrapcdn.com.
+* **The network in front of the site.** Depending on how it is deployed, the site itself may be served through a content delivery network such as Cloudflare. Where it is, that network handles every request: it sees your address and the pages you ask for, and it may set a security cookie of its own.
+{% if captcha_name() %}* **The sign-up check.** The sign-up page loads {{ captcha_name() }} from its own site, to check that you aren't a bot.
+{% endif %}{% if 'S3_BUCKET' | app_config %}* **Pictures on the site's own storage.** Avatars, banners, guild pictures, post thumbnails and pictures uploaded directly to the site for a post or comment are served from its storage on Amazon Web Services.
+{% endif %}{% if media_offered() %}* **Your own storage account.** If you link one to add pictures, sounds or videos, you sign in to it on that service's own page, and your browser sends each file straight to it, not through us: Google Drive or OneDrive for pictures and sounds, YouTube or Dailymotion for videos. That service sees your address and your browser, and keeps the file under its own terms.
+{% endif %}
+{% endfilter %}
+
+<h2 id="videos">Videos from other sites</h2>
+
+<p>Loading a video site's player lets that site set cookies, see your address and record what you watch. So {{ 'SITE_NAME' | app_config }} asks first in the UK, the EEA and Switzerland, and wherever it can't tell which country you are in. It tells from the country the network in front of the site adds to each request, if there is one, and doesn't keep it for this.</p>
+
+<ul>
+<li><strong>Until you answer, and after Not now,</strong> no video site's player loads until you press play, and a press loads that one player. Its thumbnail can still come from that site as you reach it. That covers feeds and post pages, a video replay on a Space's page and a YouTube video in a story.</li>
+<li><strong>After Allow videos,</strong> players load by themselves, muted, as they scroll into view on a feed or a post page, as they do elsewhere. A video replay on a Space's page then loads as it comes into view, and a YouTube video in a story when that story comes up.</li>
+<li><strong>Everywhere else</strong> we don't ask first, and players load that way from the start. You can still say no here, and it holds wherever you go.</li>
+</ul>
+
+<p>Your answer is kept only in your browser, in the <code>video_consent</code> cookie, and we keep no record of it. Your browser writes that cookie and also sends your answer to this site once, so that the site can set the same cookie itself, because some browsers, Safari among them, keep a cookie written by a page's script for only a week. You are asked again after about six months. <a href="#videos" data-consent-open>Cookie choices</a> (also in the page footer, a visitor's phone menu, and Video and audio in Settings &gt; Content) changes it at any time. If you make an account where we ask, the sign-up form asks instead of the banner. Taking it back removes the players from the page you are on and from the next page drawn; what a video site has already set in your browser stays until you clear it there.</p>
+
+<p>The question is about players only. The pictures, thumbnails, GIFs and code listed under "Other sites your browser connects to" load without asking, wherever you are.</p>
+
+{% filter markdown %}
 ## Your information
 
 We collect basic information in order to operate the platform, and to mitigate abuse. This includes:
 
 * Your email address, if you choose to provide it.
 * The IP address from which content is submitted.
-* Where and with what you signed in: the country, a short description of the browser ("Chrome on Windows") and the address. Your Security settings list your last ten sign-ins so you can spot one that isn't you, and if your email address is verified we email you when you sign in from a country or browser you haven't used in 90 days (you can turn that off). The address and the browser text are erased after 90 days; the country is kept for about 14 months, to tell whether you have moved.
-* Whether or not you have indicated that you are 18 years of age.
+* Where, how and with what you signed in: the country, a short description of the browser ("Chrome on Windows"), the address and the way you signed in (your password{% if qr_login_offered() %} or a QR code; after a QR code the address is kept only once you enter your password, and is the one you entered it from{% endif %}). Your Security settings list your last ten sign-ins so you can spot one that isn't you, and if your email address is verified we email you when you sign in from a country or browser you haven't used in 90 days (you can turn that off). The address and the browser text are erased after 90 days; the country is kept for about 14 months, to tell whether you have moved, and the way you signed in goes with it.
+* What you told us about your age, and when: that you are 18 or over, or that a parent or guardian set up your account for a child aged 13 to 17. We ask when you sign up, or once on the site if your account is older than the question. It is what you said: we don't check it. You and the site's admins can see the answer, nobody else, and it is deleted with your account. It is in your Content settings and in your data download. A child account stays on the Child word filter, and an admin can correct the answer: you are told, and the admins' log records the change. When your account is deleted, that record keeps only that an admin changed the answer and when, not what it was or why.
 * Feedback you choose to send from "Send feedback" in the account menu: your message, the address of the page you were on, whether it was light or dark, your window size, your language and your browser, and a screenshot if you attach one. Only the site's admins can read it. A screenshot is deleted a month after the admins close your feedback, and all of it is deleted with your account.
 * Other saved personal preferances.
 
 We use - and then promptly forget - the following information about you from third parties:
 
-* Verification from hCaptcha that you aren't a bot, during account registration
-* Verification of purchase approval from PayPal, during purchase of Coins
+{% if captcha_name() %}* Verification from {{ captcha_name() }} that you aren't a bot, during account registration (we send it your IP address with the question)
+{% endif %}* Verification of purchase approval from PayPal, during purchase of Coins
 
 {{ 'SITE_NAME' | app_config }} will not release your information to third parties, except:
 
 * As required by United States law
 * At our discretion, {{ 'SITE_NAME' | app_config }} may share your information with United States law enforcement in the event of an emergency, if we have good cause to believe that doing so would avert or mitigate the emergency.
+
+That is about what we hand over. What your browser sends to other sites by itself is described under "Other sites your browser connects to" above.
 
 ### Anonymous posts and comments
 
@@ -45,7 +101,7 @@ When you post or comment anonymously, other users see "Anonymous" instead of you
 
 ### Deleting and editing
 
-Deleting a post or comment takes it off your profile, feeds and guilds, but not out of public view: its text, as it was when you deleted it, stays readable in the public [Deletion log](/log/deleted), and the history of a post or comment keeps the versions you edited away. A post or comment that a guild's moderators hide from their guild stays on your profile and is recorded in that guild's public moderation log. Content removed by the site's administrators is not shown to other users.
+Deleting a post or comment takes it off your profile, feeds and guilds. The site keeps a private copy of what it said for 90 days, which only you and the site's administrators can open; after that the text is erased. The history of a post or comment keeps the versions you edited away, with the note you gave for each edit, and is public for a public post. When a guild's guildmasters hide a post or comment, or the site's administrators remove one, the [Log](/log) records who did it, when, where, which rule and the reason they gave, but never the title or the text; its author, the guild's guildmasters and the site's administrators can open a preserved copy, kept for 90 days. What happened in a private guild is visible only to that guild's members and the site's staff. Content removed by the site's administrators is not shown to other users.
 {% endfilter %}
 
 {% if 'ERROR_TRACKING_ON' | app_config %}
@@ -53,6 +109,10 @@ Deleting a post or comment takes it off your profile, feeds and guilds, but not 
 
 <p>When something on {{ 'SITE_NAME' | app_config }} breaks, the error is reported to an error-tracking service so it can be fixed. A report holds the error, the part of the code that failed and which page type it was. Before it leaves our server we remove the rest: what you typed, your cookies, the address you were on beyond its path, your account, your IP address and the values in a database error. It is used to fix errors and for nothing else.</p>
 {% endif %}
+
+<h2 id="requests">How often pages are asked for</h2>
+
+<p>{{ 'SITE_NAME' | app_config }} counts how many requests its pages get, on our own server and with no outside service. For each day (in UTC) it adds one to three totals: one for the kind of page ("a post", "a profile"), one for the site that linked to it (its name only, never the address of the page you were on, and "this site" or "none" when that is what it was), and one for the country, where the network in front of the site tells us. These are requests, not people: the totals can't say how many people there were, and nothing ties them to you or to each other. No account, name, IP address, browser or page address is kept with them, and nothing is stored in your browser for them. We read the name of your browser only to leave out what says it is a robot. Pages a script fetches for itself and pages in a side panel aren't counted. The totals are kept for 400 days and only site admins see them.</p>
 
 {% if 'ANALYTICS_SRC' | app_config %}
 <h2 id="analytics">Page-view statistics</h2>
@@ -66,19 +126,25 @@ Deleting a post or comment takes it off your profile, feeds and guilds, but not 
 <p>When you press Translate under a post or comment, its text is translated for you and kept, so the next person who asks for the same language gets the same translation. Nothing is translated unless someone presses the button. Translation is done by LibreTranslate, open-source software running on our own server: the text doesn't leave {{ 'SITE_NAME' | app_config }}. A kept translation is deleted after 90 days.</p>
 {% endif %}
 
-{% if ads_configured() %}
+{% if ads_live() %}
 <h2 id="ads">Ads</h2>
 
-<p>{{ 'SITE_NAME' | app_config }} shows ads from Google AdSense on feeds and post pages. Premium members see no ads, and neither do accounts on the Child word filter. No ads are shown beside private, Circle or sensitive posts.</p>
+<p>{{ 'SITE_NAME' | app_config }} shows ads from Google AdSense on feeds and post pages and in the right sidebar beside them. Premium members see no ads, and neither does anyone on the Child word filter, which includes every child account. Settings, chat, sign-in, search and help pages have none, and neither do a shared draft's pages.</p>
 
-<p>Google and its partners use cookies and similar technology to show ads and to measure them. In the UK, the EEA and Switzerland they ask for your consent first, through Google's consent banner. You can change your choice at any time with <a href="#ads" data-ad-consent>Privacy and cookie settings</a> (also in the page footer). Elsewhere, you can turn off personalised ads in <a href="https://adssettings.google.com" rel="noopener">Google's ad settings</a>.</p>
+<p>We check what is written on a page before ads go on it. A whole page goes without ads if a post on it is private, removed, marked sensitive, rated by the word filter, by a sensitive account or in a private, Circle or sensitive guild, and a post on this site that another post quotes counts the same way when it is shown. So does a page with a comment that is marked sensitive, rated or by a sensitive account, or that holds a picture or a sound; a post page with neither text nor comments; and a post page with a live thread that is still live, or one that has ended with a rated update or summary, or a picture or sound in one. An anonymous post or comment is never judged by who wrote it.</p>
+
+<p>That is all we check. Comments that load later, when you press to see more, are not checked, and neither is what a post shows from another site (a link preview, a post quoted from elsewhere, a video), a post's own picture, a profile's bio or the other boxes in the sidebar.</p>
+
+<p>Google and its partners use cookies and similar technology to show ads and to measure them. In the UK, the EEA and Switzerland they ask for your consent first, through Google's consent banner. You can change your choice at any time with <a href="#ads" data-ad-consent>Privacy and cookie settings</a> (also in the page footer). If you see no ads, Google's script is not loaded on this page until you press that link.</p>
+
+<p>We ask Google for non-personalised ads in the UK, the EEA and Switzerland, wherever we can't tell which country you are in, whenever you are not signed in, and for any account that hasn't told us it is 18 or over. Only an account that told us it is 18 or over, outside those places, can get personalised ads, and you can turn those off in <a href="https://adssettings.google.com" rel="noopener">Google's ad settings</a>. Non-personalised ads still use cookies, for example to limit how often an ad is shown and to stop fraud.</p>
 
 <p>How Google uses information from sites that use its services: <a href="https://policies.google.com/technologies/partner-sites" rel="noopener">policies.google.com/technologies/partner-sites</a>.</p>
 
 <p>{{ 'SITE_NAME' | app_config }} does not give Google your account, your email address or what you post: the ads see the page you are reading, as any visitor's browser does. While ads are on, a link to another site tells it only which site you came from, never which page.</p>
-{% endif %}
 
-## 
+<p><strong>Ads and your chat keys.</strong> Google's script runs inside the pages of this site, so it could reach what this site keeps in your browser, and we don't control what it does. So we keep it away from what we can. The key made from your password is kept only in the tab you typed the password in. No ads load on this browser for 15 minutes after you sign in with your password, sign up or change your password{% if qr_login_offered() %}, or enter your password after signing in with a QR code{% endif %}, to give chat time to use that key, and the key is removed before the script loads in that tab. A browser that holds chat data of anyone but the account you are signed in with doesn't load the script at all: after you log out, this browser keeps your chat session (<code>ruqqus_chat_session</code> or <code>ruqqus_call_session</code>) and your chat keys, so that you can sign back in without losing messages, and they stay until another account opens chat here or you clear this site's data. While that is so, nobody who isn't signed in and no other account gets ads on this browser. These checks are made when a page loads: a page already open in another tab, with the script running, keeps it until you leave that page, whatever you do in other tabs, such as logging out or signing in. <strong>While you are signed in and see ads, the script runs on the same pages as this browser's sign-in to the chat server and its chat keys.</strong> If that matters to you, Premium has no ads, and neither does a browser that blocks them.</p>
+{% endif %}
 
 {{ ads_script(consent=True) }}
 

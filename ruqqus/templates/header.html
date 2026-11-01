@@ -1,6 +1,8 @@
 <!-- Navigation -->
 
 {% include "partials/logo_style.html" %}
+{# the banner only for the Cookie choices link: these pages draw no players (helpers/consent.py) #}
+{% from "partials/consent_banner.html" import consent_banner %}{{ consent_banner(auto=False) }}
 
 <nav class="navbar navbar-expand-md navbar-light shadow shadow-md fixed-top" id="navbar">
   <div class="container-fluid">
@@ -32,6 +34,12 @@
     {# the same id as default.html's icon row: the 36px targets, the gap and the account's spacing (_nav.scss) are written for it #}
     <ul class="navbar-nav ml-auto d-none d-md-flex flex-nowrap" id="navbar-icon-row">
 
+      {% if v %}
+      <li class="nav-item nav-item-post d-flex align-items-center justify-content-center">
+        <a class="btn btn-outline-purple nav-post-btn" href="/submit" aria-label="{{ _('Create post') }}" data-toggle="tooltip" data-placement="bottom" data-delay='{"show":"700", "hide":"0"}' title="{{ _('Create post') }}"><i class="fas fa-plus" aria-hidden="true"></i>{{ pgettext("button", "Post") }}</a>
+      </li>
+      {% endif %}
+
       {% if v and v.mods_anything %}
       <li class="nav-item d-flex align-items-center justify-content-center text-center mx-1">
         <a class="nav-link" href="/mod/queue" data-toggle="tooltip" data-placement="bottom" data-delay='{"show":"700", "hide":"0"}' title="{{ _('Guildmaster tools') }}" aria-label="{{ _('Guildmaster tools') }}"><i class="fas fa-crown{% if v.has_report_queue %} text-warning{% endif %}"></i></a>
@@ -56,10 +64,6 @@
 
       <li class="nav-item d-flex align-items-center text-center justify-content-center mx-1">
         <a class="nav-link position-relative" href="/chat" aria-label="{{ _('Chat') }}" data-toggle="tooltip" data-placement="bottom" data-delay='{"show":"700", "hide":"0"}' title="{{ _('Chat') }}"><i id="chat-nav-icon" class="fas fa-comment-dots{% if v.chat_unread_messages %} text-danger{% endif %}"></i><span id="chat-nav-badge" class="badge-count font-weight-bolder{% if not v.chat_unread_messages %} d-none{% endif %}">{{ '99+' if v.chat_unread_messages > 99 else v.chat_unread_messages }}</span></a>
-      </li>
-
-      <li class="nav-item d-flex align-items-center justify-content-center text-center mx-1">
-        <a class="nav-link" href="/submit" aria-label="{{ _('Create post') }}" data-toggle="tooltip" data-placement="bottom" data-delay='{"show":"700", "hide":"0"}' title="{{ _('Create post') }}"><i class="fas fa-feather-alt"></i></a>
       </li>
 
       <li class="nav-item d-flex align-items-center justify-content-center text-center mx-1">
@@ -165,13 +169,18 @@
   {% endblock %}
   {% endif %}
 
+  {% if not v %}
+  <li class="nav-item">
+    <a class="nav-link" href="/help/privacy#videos" data-consent-open><i class="fas fa-cookie-bite fa-fw mr-3"></i>{{ _("Cookie choices") }}</a>
+  </li>
+  {% endif %}
   {% if v %}
   {# these pages show members the phone menu below, not the avatar's dropdown (partials/account_menu.html), so it needs its own way in #}
   <li class="nav-item">
     <a class="nav-link" href="/help/contact" data-feedback-open><i class="fas fa-bullhorn fa-fw mr-3"></i>{{ _("Send feedback") }}</a>
   </li>
   <li class="nav-item border-top mt-2 pt-2">
-    <a class="nav-link" href="javascript:void(0)" data-logout onclick="try{localStorage.removeItem('uqqus_chat_prekey')}catch(e){};post('/logout', callback=function(){window.location.reload(true)})"><i class="fas fa-sign-out fa-fw mr-3 text-danger"></i>{{ _("Log out") }}</a>
+    <a class="nav-link" href="javascript:void(0)" data-logout onclick="logOut()"><i class="fas fa-sign-out fa-fw mr-3 text-danger"></i>{{ _("Log out") }}</a>
   </li>
   {% else %}
   <li class="nav-item d-flex align-items-center justify-content-center pb-3">
@@ -204,4 +213,6 @@
 </div>
 </div>
 </nav>
+<script src="{{ asset_url('js/video_playback.js') }}"></script>{# the rule the banner's "right now" line reads #}
+<script src="{{ asset_url('js/consent.js') }}"></script>
 <script src="{{ asset_url('js/navbar_height.js') }}"></script>{# --navbar-height, measured: the page's top padding and its sticky bars follow it (Text size) #}

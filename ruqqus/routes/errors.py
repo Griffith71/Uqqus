@@ -6,6 +6,8 @@ from ruqqus.helpers.wrappers import *
 from ruqqus.helpers.session_helpers import *
 from ruqqus.classes.custom_errors import *
 from ruqqus.helpers import circle_guard, circle_store, circles
+from ruqqus.helpers import consent as consent_rules
+from ruqqus.helpers import qr_login
 from ruqqus.helpers.i18n_runtime import tr
 from urllib.parse import quote, urlencode
 import time
@@ -156,6 +158,11 @@ def error_429(e):
 
     ip = request.remote_addr
 
+    # limited per code, so nobody else's requests can use them up and these say nothing about the address: thirty of them would
+    # put everyone behind it in time out (routes/qr_login_pages.py). A script that ignores the body, so no page is drawn.
+    if request.path in qr_login.PER_CODE_PATHS:
+        return "", 429
+
     #get recent violations
     if r:
         count_429s = r.get(f"429_count_{ip}")
@@ -180,7 +187,10 @@ def error_429(e):
             r.expire(f"ban_ip_{ip}", 3600)
             return "", 429
 
-
+    # the answer to the video question (routes/consent_pages.py): a script that ignores the body, on a route that asks no database
+    # and draws no page. It has counted above like any other.
+    if request.path == consent_rules.ANSWER_PATH:
+        return "", 429
 
     return {"html": lambda: (render_template('errors/429.html', v=_viewer()), 429),
         "api": lambda: (jsonify({"error": tr("429 Too Many Requests")}), 429)

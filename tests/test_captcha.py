@@ -93,3 +93,11 @@ def test_the_provider_saying_no_is_failed():
 ])
 def test_a_provider_that_cannot_be_asked_or_answers_nonsense_is_unavailable(poster):
     assert captcha.verify(HCAPTCHA, "tok", "1.2.3.4", post=poster) == "unavailable"
+
+
+def test_the_privacy_page_gets_the_name_of_the_service_in_use_and_none_without_one():
+    assert captcha.label(HCAPTCHA) == "hCaptcha"
+    assert captcha.label(TURNSTILE) == "Cloudflare Turnstile"
+    assert captcha.label({"CAPTCHA_PROVIDER": "none", "HCAPTCHA_SITEKEY": "x", "HCAPTCHA_SECRET": "y"}) is None
+    assert captcha.label({"CAPTCHA_PROVIDER": "hcaptcha", "HCAPTCHA_SITEKEY": "only half"}) is None
+    assert captcha.label({}) is None

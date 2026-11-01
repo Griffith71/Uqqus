@@ -18,6 +18,9 @@
      {%- if layout.aspect %} data-embed-aspect="{{ layout.aspect }}"{% endif %}
      {%- if layout.height %} data-embed-height="{{ layout.height }}" style="height: {{ layout.height }}px"{% endif %}>
   <div class="feed-video-thumb">
+    {# shown only while the reader's answer is ask or no (assets/style/_consent.scss), inside the box, so nothing moves #}
+    {# (a music box can be 120px tall: the whole sentence doesn't fit in one, and the banner and the privacy page say it) #}
+    <p class="embed-consent-note">{% if p.embed_kind == 'audio' %}{{ _("Pressing play loads %(player)s.", player=player_site(p.embed_url)) }}{% else %}{{ _("Pressing play loads %(player)s, which can set cookies, see your address and record what you watch.", player=player_site(p.embed_url)) }}{% endif %}</p>
     {% if p.preview_image_url %}<img src="{{ p.preview_image_url }}" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="hideBrokenMedia(this)">{% endif %}
     {# a real button for keyboards and screen readers; a click anywhere on the thumbnail plays too #}
     <button type="button" class="embed-lg-play" aria-label="{{ _('Play audio from %(domain)s', domain=p.domain) if p.embed_kind == 'audio' else _('Play video from %(domain)s', domain=p.domain) }}"><i class="fas fa-play-circle" aria-hidden="true"></i></button>

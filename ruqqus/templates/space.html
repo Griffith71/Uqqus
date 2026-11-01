@@ -48,6 +48,23 @@
     #space-downvote[aria-pressed="true"] { color: #e8452c; }
     #space-score { min-width: 1.5rem; text-align: center; font-weight: 700; font-variant-numeric: tabular-nums; }
     .space-replay-frame { width: 100%; aspect-ratio: 16 / 9; border: 0; border-radius: 12px; background: #000; margin: 0.5rem 0; }
+    /* a replay that waits for a press, and the consent banner (the site's stylesheets aren't on this page: _consent.scss is their copy) */
+    .space-replay-wait { position: relative; overflow: hidden; }
+    .space-replay-wait .feed-video-thumb { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; }
+    .space-replay-wait .embed-lg-play { background: none; border: 0; padding: 0.5rem; color: #fff; font-size: 3rem; line-height: 1; cursor: pointer; }
+    .space-replay-wait .embed-lg-play:focus-visible { outline: 2px solid var(--accent); border-radius: 50%; }
+    .embed-consent-note { display: none; position: absolute; top: 0; left: 0; right: 0; margin: 0; padding: 0.25rem 0.5rem; color: #fff; background: rgba(0, 0, 0, 0.6); font-size: 0.75rem; line-height: 1.4; text-align: start; pointer-events: none; }
+    html[data-video-consent="ask"] .embed-consent-note, html[data-video-consent="no"] .embed-consent-note { display: block; }
+    .consent-banner { position: fixed; left: 0; right: 0; bottom: 0.75rem; z-index: 990; display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem 1rem; width: calc(100vw - 1rem); max-width: 45rem; margin: 0 auto; padding: 0.75rem 1rem; background: var(--panel); border: 1px solid var(--line); border-radius: 12px; box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5); }
+    .consent-words { flex: 1 1 17.5rem; min-width: 0; }
+    .consent-text, .consent-now { margin: 0; font-size: 0.875rem; }
+    .consent-now { margin-top: 0.25rem; color: var(--muted); }
+    .consent-actions { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-inline-start: auto; }
+    .consent-actions .space-btn[aria-pressed="true"] { font-weight: 700; border: 2px solid var(--text); }
+    .consent-close { position: absolute; top: 0.25rem; right: 0.25rem; width: 1.75rem; height: 1.75rem; padding: 0; color: var(--muted); background: none; border: 0; border-radius: 6px; cursor: pointer; }
+    .consent-close:not([hidden]) ~ .consent-words { padding-inline-end: 1.5rem; }
+    @media (pointer: coarse) { .consent-close { width: 2.75rem; height: 2.75rem; touch-action: manipulation; } .consent-close:not([hidden]) ~ .consent-words { padding-inline-end: 2.75rem; } }
+    @media (max-width: 575.98px) { .consent-actions { flex: 1 1 100%; } .consent-actions .space-btn { flex: 1 1 0; } }
     header { grid-area: head; display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap; }
     #space-main { grid-area: stage; }
     #space-updates-panel { grid-area: updates; }
@@ -156,6 +173,7 @@
   </style>
 </head>
 <body>
+  {% from "partials/consent_banner.html" import consent_banner %}{{ consent_banner(button="space-btn") }}
   <div class="space-wrap kind-{{ space_kind }}">
     <header>
       <h1 class="space-title" id="space-title"></h1>
@@ -194,12 +212,23 @@
         {% else %}<div class="space-notice"><i class="fas fa-eraser" aria-hidden="true"></i>{{ _("This Space is not recorded: when it ends, it is gone, with everything in it.") }}</div>{% endif %}
         {% if boot.video %}<div class="space-notice"><i class="fas fa-video" aria-hidden="true"></i>{{ _("People on stage may turn their camera on while the Space is small.") }}</div>{% endif %}
         {% elif boot.replayPlayer %}
+        {% if video_consent() in ('ask', 'no') %}
+        {# until the reader's answer allows it, as a feed's player (partials/player.html): the script that starts players builds the frame when they press play #}
+        <div class="embed-lg space-replay-frame space-replay-wait" data-embed-kind="iframe" data-embed-src="{{ boot.replayPlayer }}" data-embed-load="click" data-embed-title="{{ _('Replay of this Space') }}">
+          <div class="feed-video-thumb">
+            <p class="embed-consent-note">{{ _("Pressing play loads %(player)s, which can set cookies, see your address and record what you watch.", player=player_site(boot.replayPlayer)) }}</p>
+            <button type="button" class="embed-lg-play" aria-label="{{ _('Play the replay of this Space') }}"><i class="fas fa-play-circle" aria-hidden="true"></i></button>
+          </div>
+        </div>
+        {% else %}
         <iframe class="space-replay-frame" src="{{ boot.replayPlayer }}" title="{{ _('Replay of this Space') }}" loading="lazy" allow="fullscreen; picture-in-picture" referrerpolicy="strict-origin-when-cross-origin"></iframe>
+        {% endif %}
         {% elif boot.replay %}
         <audio id="space-replay-player" controls preload="none" src="{{ boot.replay }}"></audio>
         {% endif %}
+        {% if boot.qrLimited and space_kind == 'call' and boot.status != 'ended' %}<div class="space-notice" id="space-password-first"><i class="fas fa-lock" aria-hidden="true"></i>{{ _("You signed in with a QR code. Enter your password to join a call.") }} <a href="/login/qr/upgrade?redirect={{ request.path | urlencode }}">{{ _("Enter your password") }}</a></div>{% endif %}
         <div class="space-controls">
-          <button type="button" class="space-btn primary" id="space-join"{% if boot.status != 'live' or space_kind != 'call' %} hidden{% endif %}><i class="fas fa-headphones" aria-hidden="true"></i>{{ _("Join the Space") }}</button>
+          <button type="button" class="space-btn primary" id="space-join"{% if boot.status != 'live' or space_kind != 'call' %} hidden{% endif %}{% if boot.qrLimited %} disabled{% endif %}><i class="fas fa-headphones" aria-hidden="true"></i>{{ _("Join the Space") }}</button>
           {% if boot.status == 'scheduled' and boot.isHost %}
           <button type="button" class="space-btn primary" id="space-start"><i class="fas fa-podcast" aria-hidden="true"></i>{{ _("Start the Space") }}</button>
           {% endif %}
@@ -287,6 +316,8 @@
   <script src="{{ asset_url('js/live_events.js') }}"></script>
   <script src="{{ asset_url('js/media_upload.js') }}"></script>
   <script src="{{ asset_url('js/video_playback.js') }}"></script>
+  <script src="{{ asset_url('js/consent.js') }}"></script>
+  {% if video_consent() in ('ask', 'no') and boot.replayPlayer %}<script src="{{ asset_url('js/feed_video_autoplay.js') }}"></script>{% endif %}
   <script src="{{ asset_url('js/audio_playback.js') }}"></script>{# a replay's volume, remembered (never the live audio, which has no controls) #}
   <script src="{{ asset_url('js/background_media.js') }}"></script>
   <script type="module" src="{{ asset_url('js/space_bundle.js') }}"></script>

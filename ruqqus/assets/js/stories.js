@@ -119,14 +119,35 @@
       }
       if (story.text) els.card.appendChild(element('p', 'story-caption', story.text));
     } else if (story.kind === 'video' && YOUTUBE_ID.test(story.video || '')) {
-      var frame = element('iframe', 'story-frame');
-      frame.src = 'https://www.youtube.com/embed/' + story.video + '?autoplay=1&rel=0&playsinline=1';
-      // Translators: the name of a story's video player (read by screen readers)
-      frame.title = tr('Video');
-      frame.allow = 'autoplay; encrypted-media; picture-in-picture';
-      frame.setAttribute('allowfullscreen', '');
-      els.card.appendChild(frame);
+      if (window.VideoPlayback && window.VideoPlayback.consentWaits(document.documentElement.dataset.videoConsent)) drawVideoPress(story);
+      else drawVideoFrame(story);
     }
+  }
+
+  function drawVideoFrame(story) {
+    var frame = element('iframe', 'story-frame');
+    frame.src = 'https://www.youtube.com/embed/' + story.video + '?autoplay=1&rel=0&playsinline=1';
+    // Translators: the name of a story's video player (read by screen readers)
+    frame.title = tr('Video');
+    frame.allow = 'autoplay; encrypted-media; picture-in-picture';
+    frame.setAttribute('allowfullscreen', '');
+    els.card.appendChild(frame);
+  }
+
+  // Until the reader's answer to the consent banner allows it (consent.js), YouTube is reached only by pressing this
+  function drawVideoPress(story) {
+    var press = element('button', 'story-video-press');
+    press.type = 'button';
+    var icon = element('i', 'fas fa-play-circle');
+    icon.setAttribute('aria-hidden', 'true');
+    press.appendChild(icon);
+    press.appendChild(element('span', '', tr('Pressing play loads %(player)s, which can set cookies, see your address and record what you watch.', { player: 'YouTube' })));
+    press.addEventListener('click', function (event) {
+      event.stopPropagation();
+      press.remove();
+      drawVideoFrame(story);
+    });
+    els.card.appendChild(press);
   }
 
   function drawFooter(story) {

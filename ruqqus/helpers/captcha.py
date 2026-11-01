@@ -40,6 +40,14 @@ def keys(config, name):
     return (config.get(f"{prefix}_SITEKEY") or "").strip(), (config.get(f"{prefix}_SECRET") or "").strip()
 
 
+LABELS = {"hcaptcha": "hCaptcha", "turnstile": "Cloudflare Turnstile"}
+
+
+def label(config):
+    """The service's name as the privacy page writes it, or None when there is no captcha."""
+    return LABELS.get(chosen(config))
+
+
 def chosen(config):
     """The configured provider's name, or None when there is no captcha."""
     name = (config.get("CAPTCHA_PROVIDER") or "").strip().lower()

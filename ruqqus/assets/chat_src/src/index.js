@@ -5,7 +5,7 @@ import { initAsync as initCryptoWasm } from "@matrix-org/matrix-sdk-crypto-wasm"
 import { cryptoCallbacks, ensureEncryptionReady, signOwnDevices } from "./crypto.js";
 import { markReady } from "./keylock.js";
 import { OnlySignedDevicesIsolationMode } from "matrix-js-sdk/lib/crypto-api/index.js";
-import { ensureSession, loadSession, CALL_STORAGE_KEY, STORAGE_KEY } from "./token.js";
+import { ensureSession, loadSession, openCryptoStore, CALL_STORAGE_KEY, PasswordNeeded, STORAGE_KEY, WAITING_KEY } from "./token.js";
 import { startAgainWhenSignedOut } from "./signed_out.js";
 import { answerOwnVerifications } from "./verification.js";
 import {
@@ -42,7 +42,6 @@ const state = {
 // --- messages waiting for someone whose chat isn't set up yet (audit M-04) ---------------------------------------
 // A message encrypted to someone with no device yet could never be read by them. So it waits here, in this browser,
 // and goes as soon as they've opened chat (the conversation list says `ready`).
-const WAITING_KEY = "uqqus_chat_waiting";
 
 function loadWaiting() {
   try { return JSON.parse(localStorage.getItem(WAITING_KEY) || "{}") || {}; } catch (e) { return {}; }
@@ -1074,7 +1073,10 @@ window.addEventListener("message", async (event) => {
 });
 
 // One chat client per browser: they would share one device and its crypto store, and two at once can lose keys.
-// The newest tab (or side panel) takes over; the one it took over from stops and says so.
+// The newest tab (or side panel) takes over; the one it took over from stops and says so. That can happen while this page is
+// still getting its session or opening its store, when there is nothing yet to stop, so main() asks chatLockLost at each step.
+let chatLockLost = false;
+
 function holdChatLock() {
   if (!navigator.locks) return Promise.resolve();
   return new Promise((resolve) => {
@@ -1085,6 +1087,7 @@ function holdChatLock() {
       })
       .catch(() => {
         // taken over by another tab
+        chatLockLost = true;
         if (state.client) state.client.stopClient();
         isReady = false;
         const pane = document.getElementById("chat-thread-pane");
@@ -1109,7 +1112,15 @@ async function main() {
   if (!boot) return;
 
   await holdChatLock();
-  const session = await ensureSession(boot);
+  let session;
+  try {
+    session = await ensureSession(boot);
+  } catch (e) {
+    // this page was open from before a QR sign-in: drawn again, it is the password form, and this client never starts
+    if (e instanceof PasswordNeeded) return window.location.reload();
+    throw e;
+  }
+  if (chatLockLost) return;
 
   const client = sdk.createClient({
     baseUrl: session.homeserver_url,
@@ -1131,7 +1142,8 @@ async function main() {
   // just awaits this same promise instead of re-triggering it.
   await initCryptoWasm("/assets/js/matrix_sdk_crypto_wasm_bg.wasm");
 
-  await client.initRustCrypto();
+  await openCryptoStore(client, STORAGE_KEY);
+  if (chatLockLost) return;
   // message keys only for devices their owner signed: a device made without the owner's key (which the site no
   // longer has) gets nothing, and nothing from one is trusted (crypto.js, audit M-03)
   client.getCrypto().setDeviceIsolationMode(new OnlySignedDevicesIsolationMode());

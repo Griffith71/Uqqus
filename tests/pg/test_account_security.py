@@ -386,3 +386,29 @@ def test_the_sending_domain_and_sender_come_from_the_environment(real_app, monke
     monkeypatch.setenv("MAILGUN_DOMAIN", "mg.example.org")
     monkeypatch.setenv("MAIL_FROM", "Example <hello@example.org>")
     assert mail.mail_settings() == ("k", "mg.example.org", "Example <hello@example.org>")
+
+
+def test_only_a_deletion_that_went_through_clears_the_chat_device_from_the_browser(make_member):
+    member = make_member()
+    here = member.browser()
+    refused = post(here, "/settings/delete_account", {"password": "not-the-password", "formkey": member.formkey(here)})
+    assert "forgetChatDevices" not in refused.get_data(as_text=True).split("all_js.js")[0]
+    assert not member.user().is_deleted and signed_in(here)
+
+    done = post(here, "/settings/delete_account", {"password": member.password, "formkey": member.formkey(here)})
+    page = done.get_data(as_text=True)
+    assert done.status_code == 200
+    assert 'addEventListener("DOMContentLoaded", function () { forgetChatDevices(); })' in page    # all_js.js loads last, so it is named only when called
+    assert page.index("forgetChatDevices") < page.index("js/all_js.js")
+    assert "data-logout" not in page                                            # drawn for a visitor
+    assert member.user().is_deleted and not signed_in(here)
+    # its Sign In comes back somewhere that answers: the page's own address takes only a POST
+    assert "delete_account" not in "".join(re.findall(r'href="([^"]*)"', page))
+    assert 'href="/login?redirect=%2F"' in page and 'href="/signup?redirect=%2F"' in page
+    assert get(here, "/").status_code == 200
+
+
+def test_sign_in_still_comes_back_to_a_page_drawn_for_a_get(real_app):
+    app, _ = real_app
+    feed = app.test_client().get("/all", base_url=BASE, headers=HEADERS, environ_base={"REMOTE_ADDR": fresh_address()}).get_data(as_text=True)
+    assert 'href="/login?redirect=%2Fall"' in feed and 'href="/signup?redirect=%2Fall"' in feed

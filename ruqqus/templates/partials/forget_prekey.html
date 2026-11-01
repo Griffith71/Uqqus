@@ -1,0 +1,13 @@
+{#
+  The key made from the password (`uqqus_chat_prekey`) goes when a page is drawn for someone who isn't signed in.
+
+  assets/js/chat_key.js writes it (in this tab's sessionStorage; an older copy may be in localStorage) when a sign-in or sign-up form is sent, before the site has answered, because the chat page may need it
+  after the redirect. So a refused sign-in leaves it behind, and a visitor has no Log out link to take it. Every shell a visitor can land on
+  calls this at the top of its <head>. It asks the cookie, not `v`: some pages are drawn with v=None for a member too (routes/login.py), and
+  taking the key from a member who hasn't opened chat yet would only make chat ask for the password.
+
+  `always=True` is for the sign-in and sign-up forms themselves: a cookie whose sign-in was ended from another browser still holds `user_id`
+  but gets the form, and the form is about to write a new key anyway. The two-factor page (login_2fa.html) doesn't call this: the sign-in is
+  still going on there, and that page is drawn before `user_id` is set. tests/test_privacy_page_assets.py lists which shell does what.
+#}
+{% macro forget_prekey(always=False) %}{% if always or not session.get("user_id") %}<script>try { sessionStorage.removeItem("uqqus_chat_prekey"); } catch (e) { /* storage blocked: nothing was kept */ } try { localStorage.removeItem("uqqus_chat_prekey"); } catch (e) { /* storage blocked: nothing was kept */ }</script>{% endif %}{% endmacro %}

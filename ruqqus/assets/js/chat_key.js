@@ -3,9 +3,13 @@
  * locked; this file makes the key that locks it, from the member's password, and never sends it anywhere.
  *
  *  - Sign-in and sign-up forms (`data-chat-prekey`): when submitted, the typed password becomes a "pre-key"
- *    (PBKDF2-SHA256, 210,000 rounds, a fixed label as salt), kept in this browser's localStorage until the chat page
- *    uses it to unlock its key, then deleted. The chat client stretches it again with the account's own salt
+ *    (PBKDF2-SHA256, 210,000 rounds, a fixed label as salt), kept in this tab's sessionStorage until the chat page
+ *    uses it to unlock its key, then deleted. Only this tab and the frames in it can read it: Google's ad tag, running
+ *    in another tab of the site, reads localStorage as soon as a sign-in writes it, and can't read this. Chat opened in a new
+ *    tab asks for the password once. The chat client stretches it again with the account's own salt
  *    (assets/chat_src/src/keylock.js), so a stolen database still costs a full PBKDF2 per guess per account.
+ *    It is written before the site has answered, so a refused sign-in leaves it: the next page drawn for someone who
+ *    isn't signed in removes it (partials/forget_prekey.html).
  *  - The password change form (`data-chat-rekey`): unlocks the chat key with the old password and locks it with the
  *    new one before the form goes, sending only the new locked copy (`chat_key_blob`).
  *
@@ -63,7 +67,7 @@
       .then(function (pt) { return new TextDecoder().decode(pt); });
   }
 
-  function remember(text) { try { localStorage.setItem(STORE, text); } catch (e) { /* private mode: chat asks */ } }
+  function remember(text) { try { sessionStorage.setItem(STORE, text); } catch (e) { /* private mode: chat asks */ } }
 
   window.ChatKey = { prekey: prekey, kek: kek, lock: lock, unlock: unlock, remember: remember, STORE: STORE };
 

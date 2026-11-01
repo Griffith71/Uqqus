@@ -1,0 +1,11 @@
+{#
+  Does this browser hold chat data that Google's tag may not run beside? A JavaScript expression, used by partials/ad_script.html before the tag
+  and by partials/ad_slot.html to fold a box before it paints.
+
+  A signed-out browser keeps its chat session (`ruqqus_chat_session`, `ruqqus_call_session`) and the crypto store beside it, so that the same
+  account can sign back in (CLAUDE.md "Chat encryption"). The owner accepted Google's script beside a signed-in member's own chat, and that doesn't
+  reach anyone else's: so the tag stays away from any session in storage that isn't the account this page was drawn for. `owner` is that account's
+  Matrix id (chat_devices.mxid_of, what assets/chat_src/src/token.js compares), and null on a visitor's page, where any session counts.
+  A stored value that doesn't say whose it is counts too. Storage that throws holds nothing.
+#}
+{% macro chat_held(owner) %}(function (owner) { function other(stored) { if (!stored) return false; try { return !owner || JSON.parse(stored).user_id !== owner; } catch (e) { return true; } } try { return other(localStorage.getItem("ruqqus_chat_session")) || other(localStorage.getItem("ruqqus_call_session")); } catch (e) { return false; } })({{ owner | tojson }}){% endmacro %}

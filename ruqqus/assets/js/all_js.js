@@ -879,8 +879,10 @@ function showCommentModeration(cid, removed) {
 }
 
 function removeComment(cid) {
+  var reason = window.prompt(tr("Why is this comment being removed? Your reason is shown in the public log."));
+  if (reason == null || reason.trim() == "") return;
   post("/api/ban_comment/" + cid, function() { showCommentModeration(cid, true); },
-    tr("Unable to remove the comment at this time. Please try again later."));
+    tr("Unable to remove the comment at this time. Please try again later."), {reason: reason.trim()});
 }
 
 function approveComment(cid) {
@@ -980,13 +982,47 @@ function autoExpand (field) {
 
 };
 
+// The body of the Create a post card, the shared draft and the feed composer. From 992px its toolbar is a column that
+// follows the writer down the page (assets/style/_post_rail.scss), so the body grows with the text and the page scrolls,
+// instead of the box scrolling inside itself. It grows by its min-height, not its height, so that the box can still be
+// stretched taller by the toolbar beside it (the formatting open) with the text filling it. The stylesheet's min-height
+// (the folded toolbar's height) is the floor and scrollHeight is never less than that, so the new value is the text's own
+// with the borders added, and nothing extra (autoExpand's 32px would make the box jump by that much on the first key).
+// Typing at the end keeps the new last line in view, above the Create a post page's fixed bottom bar.
+var EDITOR_BODIES = '.composer-card .post-editor textarea, .inline-composer .post-editor textarea';
+
+function growEditorBody(field, follow) {
+  var x = window.scrollX, y = window.scrollY;
+  field.style.minHeight = '';
+  var computed = window.getComputedStyle(field);
+  field.style.minHeight = Math.ceil(field.scrollHeight + parseFloat(computed.borderTopWidth) + parseFloat(computed.borderBottomWidth)) + 'px';
+  window.scrollTo(x, y);   // collapsing the box for a moment can move the page
+  if (follow === false || document.activeElement !== field || field.selectionStart !== field.value.length) return;
+  var bar = document.querySelector('.composer-bar');
+  var limit = (bar ? bar.getBoundingClientRect().top : window.innerHeight) - 16;
+  var below = field.getBoundingClientRect().bottom - limit;
+  if (below > 0) window.scrollBy(0, below);
+}
+
+function growEditorBodies() {
+  document.querySelectorAll(EDITOR_BODIES).forEach(function (field) {
+    if (field.value) growEditorBody(field, false);
+  });
+}
+
+document.addEventListener('DOMContentLoaded', function () {
+  growEditorBodies();   // a draft's text is in the box before any key is pressed
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(growEditorBodies);
+});
+window.addEventListener('resize', growEditorBodies);
+
 document.addEventListener('input', function (event) {
   if (event.target.tagName.toLowerCase() !== 'textarea') return;
-  // The post composer's title (fixed single-line, horizontal-scroll) and
-  // body (fixed initial size, its own scrollbar) are deliberately NOT
-  // auto-growing - only comment/edit boxes use this behavior. The feed composer's title sizes itself to one line at a
-  // time (inline_composer.js autosize); this one's extra 32px left a gap under it.
-  if (event.target.id === 'post-title' || event.target.id === 'post-body' || event.target.id === 'ic-title') return;
+  if (event.target.matches(EDITOR_BODIES)) { growEditorBody(event.target); return; }
+  // The post composer's title (fixed single-line, horizontal-scroll) is deliberately NOT auto-growing - only comment/edit
+  // boxes use this behavior. The feed composer's title sizes itself to one line at a time (inline_composer.js autosize);
+  // this one's extra 32px left a gap under it.
+  if (event.target.id === 'post-title' || event.target.id === 'ic-title') return;
   autoExpand(event.target);
 }, false);
 
@@ -1548,13 +1584,19 @@ function xhrOk(xhr) {
   return xhr.status >= 200 && xhr.status < 300 && !xhrLoggedOut(xhr);
 }
 
-function post(url, callback, errortext) {
+function post(url, callback, errortext, extra, failed) {
   var xhr = new XMLHttpRequest();
   xhr.open("POST", url, true);
   var form = new FormData()
   form.append("formkey", formkey());
+  if (extra) Object.keys(extra).forEach(function(k) { form.append(k, extra[k]); });
   xhr.withCredentials=true;
-  xhr.onerror=function() { alert(errortext || xhrError(xhr, xhrData(xhr))); };
+  xhr.onerror=function() {
+    // "try again" can never help a QR sign-in that needs its password (helpers/wrappers.py qr_limited_answer): the route's own sentence says so
+    var data = xhrData(xhr);
+    alert(data && data.need_password && data.error || errortext || xhrError(xhr, data));
+    if (failed) failed();
+  };
   xhr.onload = function() {
     if (xhrOk(xhr)) {
       callback();
@@ -1564,6 +1606,69 @@ function post(url, callback, errortext) {
   };
   xhr.send(form);
 };
+
+// The Log out links (default.html, header.html, partials/account_menu.html). A browser's chat sessions go with the sign-in: the
+// token leaves this browser, and so do the pre-key and any message still waiting to be sent (it is plain text). What is left is
+// which device this was and whose (`user_id`, `device_id`), with its crypto store: the same account takes them up again with nothing
+// lost, and any other account has them cleared first (assets/chat_src/src/token.js ensureSession). CLAUDE.md "Chat encryption" says what that store holds.
+var CHAT_SESSION_KEYS = ["ruqqus_chat_session", "ruqqus_call_session"];
+var CHAT_CRYPTO_STORES = ["matrix-js-sdk::matrix-sdk-crypto", "matrix-js-sdk::matrix-sdk-crypto-meta", "uqqus-call::matrix-sdk-crypto", "uqqus-call::matrix-sdk-crypto-meta"];
+
+function leaveChatSessions() {
+  forgetChatPrekey();
+  try {
+    localStorage.removeItem('uqqus_chat_waiting');
+    CHAT_SESSION_KEYS.forEach(function (key) {
+      var session = JSON.parse(localStorage.getItem(key));
+      if (session) {
+        localStorage.setItem(key, JSON.stringify({"user_id": session.user_id, "device_id": session.device_id}));
+      }
+    });
+  } catch (e) { /* storage blocked: there is nothing stored to take */ }
+}
+
+function forgetChatPrekey() {
+  try { sessionStorage.removeItem('uqqus_chat_prekey'); } catch (e) { /* storage blocked */ }
+  try { localStorage.removeItem('uqqus_chat_prekey'); } catch (e) { /* an older copy, from before it moved to this tab's storage */ }
+}
+
+// Pressing Log out clears this browser whatever the site answers: the member asked to leave, and once the page is drawn again as a
+// visitor's there is no link left to press. The pre-key goes first, before anything else can run. A redirect means the sign-in is over,
+// whether it led home or (the cookie had already stopped counting: another browser changed the password, or logged out everywhere) to
+// /login, and whether or not the page it led to could be drawn. Only an answer from /logout itself, or none, leaves it in doubt: the
+// member is told, and the page drawn again shows which it was. Nothing is lost if they are still signed in (the device is taken up again).
+function logOut() {
+  forgetChatPrekey();
+  var xhr = new XMLHttpRequest();
+  xhr.open("POST", "/logout", true);
+  xhr.withCredentials = true;
+  var form = new FormData();
+  form.append("formkey", formkey());
+  xhr.onloadend = function () {
+    leaveChatSessions();
+    var landed = xhr.responseURL ? new URL(xhr.responseURL).pathname : "";
+    if (!landed || landed == "/logout") {
+      alert(xhrError(xhr, xhrData(xhr)));
+    }
+    window.location.reload(true);
+  };
+  xhr.send(form);
+}
+
+// Deleting an account signs it out through a form, not a Log out link, and its device is gone from the chat server, so nothing here can
+// ever be taken up again: all of it goes. Called only by the page a deletion that went through answers with (account_deleted.html). A tab
+// still holding a store open hears its session go and reloads (signed_out.js), which lets the delete through.
+function forgetChatDevices() {
+  forgetChatPrekey();
+  try {
+    CHAT_SESSION_KEYS.concat(['uqqus_chat_waiting']).forEach(function (key) {
+      localStorage.removeItem(key);
+    });
+  } catch (e) { /* storage blocked */ }
+  CHAT_CRYPTO_STORES.forEach(function (name) {
+    try { indexedDB.deleteDatabase(name); } catch (e) { /* no IndexedDB here: nothing stored */ }
+  });
+}
 
 function post_with_reason(url, callback, errortext) {
   var reason = window.prompt(tr("Why does this break your guild's rules? This will be shown to anyone who looks up this post/comment's history."));
@@ -2679,6 +2784,7 @@ function syncTitleOverflow() {
   var title = document.getElementById("post-title");
   var body = document.getElementById("post-body");
   var t = title.value;
+  var bodyChanged = false;
 
   if (weightedLength(t) > TITLE_MAX) {
 
@@ -2699,6 +2805,7 @@ function syncTitleOverflow() {
       body.value = overflow + body.value;
     }
     titleOverflowBuffer = overflow;
+    bodyChanged = true;
     revealBody();
 
   } else if (titleOverflowBuffer !== null) {
@@ -2710,6 +2817,7 @@ function syncTitleOverflow() {
       title.value = t + pullBack;
       body.value = remaining + body.value.slice(titleOverflowBuffer.length);
       titleOverflowBuffer = remaining.length ? remaining : null;
+      bodyChanged = true;
     } else {
       titleOverflowBuffer = null;
     }
@@ -2717,6 +2825,7 @@ function syncTitleOverflow() {
   }
 
   charLimit("post-body", "character-count-body");
+  if (bodyChanged) growEditorBody(body, false);   // the overflow was moved into the body by script: no input event
   document.getElementById("character-count-title").innerText = TITLE_MAX - weightedLength(title.value);
 
 }
@@ -2840,6 +2949,20 @@ window.onload = function () {
 
 $(document).ready(function(){
   $('[data-toggle="tooltip"]').tooltip(); 
+  // a region's countries on hover and on keyboard focus (the Regional filter's rows, templates/_sidebar_filter_macros.html): the sidebar
+  // scrolls, so the tip is drawn in <body> and placed against the window, or it flips onto the list it describes. Only where a pointer can
+  // hover: a finger's tap would show it on every row and the tip would sit on the list (the phone's sheet has no data-countries at all)
+  if (window.matchMedia && window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
+    $('[data-countries]').tooltip({
+      title: function() { return this.getAttribute('data-countries'); },
+      placement: 'right',
+      fallbackPlacement: ['left', 'bottom', 'top'],
+      container: 'body',
+      boundary: 'viewport',
+      delay: { show: 250, hide: 0 },
+      template: '<div class="tooltip region-tooltip" role="tooltip"><div class="arrow"></div><div class="tooltip-inner"></div></div>'
+    });
+  }
 });
 
 // Paste to create submission
@@ -3234,6 +3357,8 @@ comment_edit=function(id){
 
   form.append('formkey', formkey());
   form.append('body', document.getElementById('comment-edit-body-'+id).value);
+  var summaryBox = document.getElementById('comment-edit-summary-'+id);
+  if (summaryBox && summaryBox.value) form.append('edit_summary', summaryBox.value);
 
   // content disclosure toggles; the labels are drawn in the comment header, so
   // the page is reloaded when one of them changed

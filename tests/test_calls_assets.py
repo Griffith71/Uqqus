@@ -85,7 +85,7 @@ def test_signals_count_only_from_listed_devices_whose_keys_check_out():
 
 def test_the_call_window_is_its_own_device_and_one_per_browser():
     assert "ensureSession(boot, CALL_STORAGE_KEY)" in CALL_JS
-    assert 'initRustCrypto({ cryptoDatabasePrefix: "uqqus-call" })' in CALL_JS
+    assert 'openCryptoStore(client, CALL_STORAGE_KEY, { cryptoDatabasePrefix: "uqqus-call" })' in CALL_JS
     assert 'navigator.locks.request("uqqus-call", { ifAvailable: true }' in CALL_JS
     assert 'export const CALL_STORAGE_KEY = "ruqqus_call_session";' in read("ruqqus", "assets", "chat_src", "src", "token.js")
     index = read("ruqqus", "assets", "chat_src", "src", "index.js")

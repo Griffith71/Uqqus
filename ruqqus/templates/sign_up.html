@@ -4,6 +4,7 @@
 
 <head>
 {% from "partials/i18n_boot.html" import i18n_boot %}{{ i18n_boot() }}
+{% from "partials/forget_prekey.html" import forget_prekey %}{{ forget_prekey(always=True) }}
 
     <meta charset="utf-8">
 {{ font_faces() }}
@@ -37,7 +38,8 @@
 
 
     <!-- Ruqqus CSS -->
-    <link rel="stylesheet" href="{{ asset_url('style/main.css') }}">
+    {# mirrored for a right-to-left language, as theme_links does on the other shells (the sign-up's radios sit on the left otherwise) #}
+    {% set sheet = asset_url('style/main.css') %}<link rel="stylesheet" href="{{ rtl_css(sheet) if ui_rtl() else sheet }}">
 
 </head>
 
@@ -121,6 +123,31 @@
                             <input class="form-control" id="password_confirm"
                             aria-describedby="passwordConfirmHelp" type="password" name="password_confirm"
                             required="">
+
+                            {# required (helpers/age_declaration.py): the notice on default.html asks in the same words #}
+                            {% from "partials/age_question.html" import age_choices, age_child_means %}
+                            <fieldset class="mt-4 score-display-choice">
+                                <legend class="score-display-legend">{{ _('How old are you?') }}</legend>
+                                {{ age_choices("signup-age") }}
+                                {{ age_child_means() }}
+                            </fieldset>
+
+                            {# the video question (helpers/consent.py), for someone it has to be asked of and who hasn't answered: the banner's
+                               words and choices, nothing ticked first, so the new member isn't asked again on their first page #}
+                            {% if video_consent() == "ask" %}
+                            <fieldset class="mt-4 score-display-choice">
+                                <legend class="score-display-legend">{{ _('Cookie choices') }}</legend>
+                                <p class="text-small text-muted mb-2">{{ _("Videos on this site come from YouTube and other sites. Playing one lets that site set cookies, see your address and record what you watch.") }} <a href="/help/privacy#videos" target="_blank">{{ _("Privacy page") }}</a></p>
+                                <div class="custom-control custom-radio age-choice">
+                                    <input type="radio" class="custom-control-input" id="signup-video-yes" name="video_consent" value="yes" required>
+                                    <label class="custom-control-label" for="signup-video-yes">{{ _("Allow videos") }}</label>
+                                </div>
+                                <div class="custom-control custom-radio age-choice">
+                                    <input type="radio" class="custom-control-input" id="signup-video-no" name="video_consent" value="no" required>
+                                    <label class="custom-control-label" for="signup-video-no">{{ _("Not now") }}</label>
+                                </div>
+                            </fieldset>
+                            {% endif %}
 
                             {# how scores read (users.score_display, helpers/jinja2.py score_mode); changeable in Settings > Content #}
                             <fieldset class="mt-4 score-display-choice">

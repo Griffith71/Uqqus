@@ -72,12 +72,14 @@ export function newRecoveryCode() {
   return chars.match(/.{5}/g).join("-");
 }
 
+// In this tab's sessionStorage (chat_key.js): shared with a frame in this tab, the side panel's chat, never with another tab.
 export function takePrekey() {
-  try { return localStorage.getItem(PREKEY_STORE); } catch (e) { return null; }
+  try { return sessionStorage.getItem(PREKEY_STORE); } catch (e) { return null; }
 }
 
 export function forgetPrekey() {
-  try { localStorage.removeItem(PREKEY_STORE); } catch (e) { /* nothing stored */ }
+  try { sessionStorage.removeItem(PREKEY_STORE); } catch (e) { /* nothing stored */ }
+  try { localStorage.removeItem(PREKEY_STORE); } catch (e) { /* an older copy, from before it moved */ }
 }
 
 // --- talking to the site ---------------------------------------------------------------------------------------

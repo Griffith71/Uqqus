@@ -3,7 +3,7 @@
   of the Settings, Create post and Guild settings pages), so the two cannot drift apart (a new item once reached only one).
   The wrapper (`.dropdown-menu.account-menu`) is each shell's own. Groups, told apart by a line (the owner's choice, 2026-10:
   dividers, no headings): the profile row, then Make (Create post, Creator Studio, Circles), Talk (Inbox, Chat, Spaces),
-  You (History, Settings, Dark mode), and Help and exit (Send feedback, Log out).
+  You (History, Settings, Cookie choices, Dark mode), and Help and exit (Send feedback, Log out).
   The Dark mode row is what show_theme_toggles() in assets/js/all_js.js looks for (`id="dark-switch"`, `switch_css`, its
   first <i>): keep its shape. Icons are Font Awesome 6.4 Free names (tests/data/fa_free_6_4_0_names.txt); none repeats
   another's, and Send feedback is not a speech bubble, which Chat already is. tests/test_account_menu_assets.py.
@@ -46,5 +46,5 @@
 
   {# the sheet is partials/site_feedback_modal.html; without scripts this is the old contact page #}
   <a class="dropdown-item" href="/help/contact" data-feedback-open><i class="fas fa-bullhorn fa-fw text-left mr-3"></i>{{ _("Send feedback") }}</a>
-  <a class="dropdown-item" href="javascript:void(0)" data-logout onclick="try{localStorage.removeItem('uqqus_chat_prekey')}catch(e){};post('/logout', callback=function(){window.location.reload(true)})"><i class="fas fa-sign-out fa-fw text-left mr-3"></i>{{ _("Log out") }}</a>
+  <a class="dropdown-item" href="javascript:void(0)" data-logout onclick="logOut()"><i class="fas fa-sign-out fa-fw text-left mr-3"></i>{{ _("Log out") }}</a>
 </div>

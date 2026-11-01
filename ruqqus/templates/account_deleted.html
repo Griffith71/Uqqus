@@ -1,0 +1,7 @@
+{% extends "message.html" %}
+
+{# Only POST /settings/delete_account draws this, once the deletion has gone through. all_js.js loads at the end of the page. #}
+{% block content %}
+{{ super() }}
+<script>document.addEventListener("DOMContentLoaded", function () { forgetChatDevices(); });</script>
+{% endblock %}

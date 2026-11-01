@@ -1,0 +1,21 @@
+{# May another site's video player load before you press play? (helpers/consent.py, assets/js/consent.js, assets/style/_consent.scss,
+   CLAUDE.md "Video consent".) Fixed over the page, so nothing moves when it appears; not a dialog, so it traps nothing and Escape
+   decides nothing; the two buttons have the same style, so refusing is as easy as accepting. It is first in <body> so a keyboard
+   reaches it before an endless feed. `auto`: a page with players asks by itself; the others carry it only for the Cookie choices
+   link. `button`: the page's own button classes (a Space's page has its own stylesheet). Never in a side panel's frame. #}
+{% macro consent_banner(auto=True, button="btn btn-outline-purple") %}
+{% if not request.args.get('embed') %}
+<section class="consent-banner" id="consent-banner" aria-label="{{ _('Cookie choices') }}" data-consent-auto="{{ '1' if auto else '0' }}" hidden>
+  <button type="button" class="consent-close" data-consent-close aria-label="{{ _('Close') }}" hidden><i class="fas fa-times" aria-hidden="true"></i></button>
+  <div class="consent-words">
+    <p class="consent-text">{{ _("Videos on this site come from YouTube and other sites. Playing one lets that site set cookies, see your address and record what you watch.") }} <a href="/help/privacy#videos">{{ _("Privacy page") }}</a></p>
+    <p class="consent-now" data-consent-now="wait" hidden>{{ _("Right now, a video loads only when you press play.") }}</p>
+    <p class="consent-now" data-consent-now="allowed" hidden>{{ _("Right now, videos load by themselves as you scroll to them.") }}</p>
+  </div>
+  <div class="consent-actions">
+    <button type="button" class="{{ button }}" data-consent-choice="no">{{ _("Not now") }}</button>
+    <button type="button" class="{{ button }}" data-consent-choice="yes">{{ _("Allow videos") }}</button>
+  </div>
+</section>
+{% endif %}
+{% endmacro %}

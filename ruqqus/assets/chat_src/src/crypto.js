@@ -187,6 +187,7 @@ export async function ensureEncryptionReady(client, formkey, { newCode = false }
   const migrate = info.legacy || !info.password_blob || !info.recovery_blob;
 
   if (unlockedHere && !migrate && !newCode) {
+    forgetPrekey();                  // this device kept its keys over a log out, so the sign-in's pre-key has nothing to open
     await afterUnlock(client);
     return true;
   }

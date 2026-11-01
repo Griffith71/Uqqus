@@ -2,18 +2,20 @@ import time
 import json
 from os import environ, path
 from sqlalchemy import text, func
-from flask import g
+from flask import g, request
 import calendar
 import re
 from urllib.parse import quote_plus
 
 from ruqqus.classes.user import User
 from ruqqus.helpers import compact_age as compact_age_rules
+from ruqqus.helpers import consent as consent_rules
+from ruqqus.helpers import qr_login as qr_login_rules
 from .get import *
 from .regions import REGION_COUNTRIES, COUNTRY_NAMES
 import requests
 
-from ruqqus.__main__ import app, cache, db_session
+from ruqqus.__main__ import app, cache, db_session, r
 
 
 post_regex = re.compile(r"^https?://[a-zA-Z0-9_.-]+/\+\w+/post/(\w+)(/[a-zA-Z0-9_-]+/?)?$")
@@ -22,6 +24,38 @@ post_regex = re.compile(r"^https?://[a-zA-Z0-9_.-]+/\+\w+/post/(\w+)(/[a-zA-Z0-9
 # How a viewer reads scores (users.score_display): 0, the default and what visitors get, is upvotes coloured by their
 # share of the votes (helpers/vote_colour.py); 1 is upvotes minus downvotes. Only those two values are ever drawn.
 SCORE_UPVOTES, SCORE_NET = 0, 1
+
+
+@app.template_global("captcha_name")
+def captcha_name():
+    """The sign-up captcha's service, for the privacy page, or None when there is none (helpers/captcha.py)."""
+    from ruqqus.helpers import captcha
+    return captcha.label(app.config)
+
+
+@app.template_global("qr_login_offered")
+def qr_login_offered():
+    """Is QR sign-in on, on this site, right now? What hides the setting, and what the routes ask too (helpers/qr_login.py)."""
+    return qr_login_rules.offered(environ, r, app.config["READ_ONLY"])
+
+
+@app.template_global("video_consent")
+def video_consent():
+    """<html data-video-consent>: ask, yes, no, or "" for a reader who isn't asked (helpers/consent.py). Anyone can send
+    themselves any country, and it decides only what they see themselves; pages say Vary: CF-IPCountry."""
+    return consent_rules.state(request.headers.get("CF-IPCountry"), request.cookies.get(consent_rules.COOKIE), int(time.time()))
+
+
+@app.template_global("video_consent_asked")
+def video_consent_asked():
+    """Do videos wait for this reader's answer wherever they are? True in the asked regions, and for someone being asked again
+    because their "no" lapsed. (What the privacy page tells them.)"""
+    return consent_rules.needs_asking(request.headers.get("CF-IPCountry")) or video_consent() == consent_rules.ASK
+
+
+@app.template_global("player_site")
+def player_site(address):
+    return consent_rules.player_site(address)
 
 
 @app.template_global("compact_age")

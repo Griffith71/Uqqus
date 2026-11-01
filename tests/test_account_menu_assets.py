@@ -91,8 +91,9 @@ def test_the_dark_mode_row_keeps_the_shape_all_js_looks_for():
 
 
 def test_log_out_still_forgets_the_chat_key_and_posts_the_logout():
+    # the two now live in all_js.js's logOut(), with the chat sessions they go with (tests/test_chat_session.py)
     (row,) = [item for item in ITEM.findall(BODY) if label(item) == "Log out"]
-    assert "data-logout" in row and "localStorage.removeItem('uqqus_chat_prekey')" in row and "post('/logout'" in row
+    assert "data-logout" in row and 'onclick="logOut()"' in row
 
 
 def test_the_badges_still_show_what_is_unread():

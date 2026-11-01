@@ -27,6 +27,13 @@ def _mxid(db, user_id):
     return row[0] if row else None
 
 
+def mxid_of(db, user_id):
+    """The Matrix id a member's browser will get from /api/chat/token, for the call and Space pages to compare with the
+    session this browser has stored (assets/chat_src/src/token.js)."""
+    from ruqqus.helpers import matrix_client as matrix
+    return _mxid(db, user_id) or matrix.mxid_for(user_id)
+
+
 def _log(what, user_id, e):
     print(f"chat {what} for {user_id} not done: {type(e).__name__}", flush=True)
 
