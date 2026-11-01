@@ -1,0 +1,11 @@
+{
+  "why": "Endpoints that poll, redirect, answer a fragment or aren't a page: none may be on the allowlist in helpers/traffic.py. Each is a real endpoint: tests/test_traffic.py finds its function and tests/pg/test_traffic.py finds it in the app's URL map, so a name that stops existing fails and doesn't quietly pin nothing.",
+  "endpoints": [
+    "happening_box_fragment", "trending_box", "post_space", "collab_panel", "guild_insights_json", "healthz", "readyz",
+    "video_consent_answer", "admin_traffic", "participation_stats", "embed_post_pid", "call_window", "me", "random_anything",
+    "regional", "categorical", "language_feed", "post_type_filter", "advanced_feed_filter", "robots_txt", "media_file",
+    "get_post_title",
+    "login_qr_start", "login_qr_status", "login_qr_finish", "login_qr_cancel", "login_qr_approve_page", "login_qr_info",
+    "login_qr_approve", "login_qr_deny", "login_qr_upgrade_page", "login_qr_upgrade"
+  ]
+}

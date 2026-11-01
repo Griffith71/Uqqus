@@ -19,10 +19,18 @@ DEBOUNCE_SECONDS = 30 * 60
 
 # who is never counted: robots and link-preview fetchers say so in their user agent, and a request with no
 # user agent at all is not a browser
+# Only ever what an agent says of itself, so a list and never complete (a new crawler reads as a person until it is added).
+# Keep real browsers out of it: an app's own browser (Instagram, Facebook, TikTok, the Google app's GSA/) is a person reading.
 _ROBOT = re.compile(
-    r"bot\b|crawl|spider|slurp|scrape|fetch|preview|facebookexternalhit|embedly|whatsapp|"
-    r"headless|phantom|python-requests|python-urllib|aiohttp|httpclient|okhttp|curl/|wget/|libwww|go-http-client|"
-    r"java/|monitor|uptime|lighthouse|pingdom",
+    r"bot\b|crawl|spider|slurp|scrape|scrapy|httrack|fetch|preview|facebookexternalhit|embedly|iframely|whatsapp|feedly|ia_archiver|"
+    r"headless|phantom|python-requests|python-urllib|httpx|aiohttp|axios|httpclient|okhttp|curl/|wget/|libwww|go-http-client|"
+    r"java/|monitor|uptime|lighthouse|pingdom|statuscake|site24x7|gtmetrix|cloudflare-|"
+    # Google's readers that don't end in "bot": the ads crawler, which reads every page with an ad on it, and the rest
+    r"mediapartners|google-|googleother|apis-google|"
+    # an AI reading on someone's behalf: ChatGPT-User, Claude-User, Perplexity-User, meta-externalagent
+    r"-user\b|externalagent|"
+    # the fediverse's link previews, which fan out: one shared link is a request per server
+    r"mastodon|pleroma|akkoma|misskey|gotosocial|friendica|lemmy|pixelfed|peertube|firefish|sharkey|cardyb",
     re.I,
 )
 

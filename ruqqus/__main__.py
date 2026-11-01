@@ -135,6 +135,10 @@ app.config["SERVER_NAME"] = SERVER_NAME #DomainMatcher(SERVER_NAME, ONION_NAME)
 # page-view analytics from a host the owner runs (helpers/analytics.py): off unless PLAUSIBLE_SRC is set; the
 # privacy page names it only while it is on
 from ruqqus.helpers import analytics
+# how long the site's own cookie lasts, and that a visitor's holds no identifier (helpers/session_cookie.py)
+from ruqqus.helpers import session_cookie
+# the one path that answers the video question and stores nothing (routes/consent_pages.py)
+from ruqqus.helpers import consent as consent_rules
 app.config["ANALYTICS_SRC"], app.config["ANALYTICS_DOMAIN"] = analytics.settings(environ, SERVER_NAME)
 app.config["ANALYTICS_HOST"] = analytics.host_of(app.config["ANALYTICS_SRC"])
 
@@ -440,6 +444,12 @@ def before_request():
         g.skip_session_cookie = True
         return None
 
+    # the answer to the video question (routes/consent_pages.py): it stores nothing, so it opens no database session and asks no
+    # ban table, it works in read-only mode, and it never touches the session cookie. An address in time out still waits.
+    if request.path == consent_rules.ANSWER_PATH:
+        g.skip_session_cookie = True
+        return ("", 429) if r and r.get(f"ban_ip_{request.remote_addr}") else None
+
     if request.method.lower() != "get" and app.config["READ_ONLY"]:
         return jsonify({"error":f"{app.config['SITE_NAME']} is currently in read-only mode."}), 500
 
@@ -480,8 +490,6 @@ def before_request():
 
     g.timestamp = int(time.time())
 
-    flask_session.permanent = True
-
     ua_banned, response_tuple = get_useragent_ban_response(
         request.headers.get("User-Agent", "NoAgent"))
     if ua_banned and request.path != "/robots.txt":
@@ -492,8 +500,8 @@ def before_request():
         url = request.url.replace("http://", "https://", 1)
         return redirect(url, code=301)
 
-    if not flask_session.get("session_id"):
-        flask_session["session_id"] = secrets.token_hex(16)
+    # a visitor has no identifier and no year-long cookie; a member has both (helpers/session_cookie.py)
+    session_cookie.settle(flask_session, lambda: secrets.token_hex(16))
 
     ua=request.headers.get("User-Agent","")
     if "CriOS/" in ua:
@@ -536,6 +544,30 @@ def log_event(name, link):
     print(x.status_code)
 
 
+def _run_after_commit(later):
+    try:
+        later()
+    except Exception:
+        traceback.print_exc()
+
+
+# the count of requests for pages (helpers/traffic.py): requests, not people. Off the request: nothing here does any I/O, and
+# it reads nothing but the method, the endpoint, the path's start and four headers (never the session or the database)
+from ruqqus.helpers import bots as _traffic_bots, traffic as traffic_rules, traffic_sender, traffic_store
+_traffic = traffic_sender.Sender(r, traffic_store.record)
+_TRAFFIC_OWN_HOSTS = _traffic_bots.own_hosts()
+
+
+def _count_request(response):
+    try:
+        hit = traffic_rules.hit_of(request.method, request.endpoint, request.path, response.status_code, response.mimetype,
+                                   "embed" in request.args, request.headers, _TRAFFIC_OWN_HOSTS, time.time())
+        if hit:
+            _traffic.put(hit)
+    except Exception:
+        pass        # a count is never worth a page
+
+
 @app.after_request
 def after_request(response):
 
@@ -548,6 +580,11 @@ def after_request(response):
         g.db.rollback()
         g.db.close()
         abort(500)
+    else:
+        # what a route asked to do once its changes are durable (g.after_commit: an old picture's file, taken away only once the
+        # account points at the new one). Best effort and off the request: a failure here costs a stray file, never the answer
+        for later in getattr(g, "after_commit", ()):
+            gevent.spawn(_run_after_commit, later)
 
     response.headers.add('Access-Control-Allow-Headers',
                          "Origin, X-Requested-With, Content-Type, Accept, x-auth"
@@ -561,6 +598,11 @@ def after_request(response):
     # the session already adds)
     if not request.path.startswith("/assets/"):
         response.vary.add("Accept-Language")
+    # a page's <html data-video-consent> follows the reader's country and their video_consent cookie (helpers/consent.py). Pages
+    # only: a /media/ file is the same for everyone, and is the one thing a shared cache should keep
+    if response.mimetype == "text/html" and not request.path.startswith("/assets/"):
+        response.vary.add("CF-IPCountry")
+        response.vary.add("Cookie")
     if "Cache-Control" not in response.headers:
         if request.path.startswith("/assets/"):
             response.headers["Cache-Control"] = "public, max-age=600"
@@ -571,6 +613,12 @@ def after_request(response):
     # sit side by side, contradicting each other (routes/happening_pages.py, tests/test_happening_assets.py)
     if request.path.startswith("/inpage/happening"):
         response.headers["Cache-Control"] = "private, no-cache"
+    # the answer to the video question, whichever code wrote this response: the route, the limiter's 429, the time out in before_request
+    if request.path == consent_rules.ANSWER_PATH:
+        response.headers["Cache-Control"] = "no-store"
+    # QR sign-in (routes/qr_login_pages.py), whichever code wrote this response: assigned, since auth_desired adds "public" for a visitor
+    if request.path.startswith("/login/qr/"):
+        response.headers["Cache-Control"] = "no-store"
     # a versioned asset (helpers/page_assets.asset_url, ?v= is a hash of its content) never changes at that
     # address: kept for a year, never asked for again. Not a stylesheet answering with its last good copy because
     # its sources don't compile (routes/static.py says no-store): that copy is not what the hash names
@@ -579,9 +627,10 @@ def after_request(response):
         response.headers["Cache-Control"] = "public, max-age=31536000, immutable"
     response.headers.add("Strict-Transport-Security", "max-age=31536000")
     # Google's consent banner for ads does not serve without a cross-origin referrer (support.google.com/adsense/
-    # answer/14660912): the browsers' default policy only while ads are on (helpers/ads.py), otherwise none at all
+    # answer/14660912): the browsers' default policy only while ads are on (helpers/ads.py), otherwise none at all. A client
+    # id with no slot serves /ads.txt and loads no tag, so it changes nothing here
     from ruqqus.helpers import ads
-    response.headers.add("Referrer-Policy", "strict-origin-when-cross-origin" if ads.config() else "same-origin")
+    response.headers.add("Referrer-Policy", "strict-origin-when-cross-origin" if ads.live(ads.config()) else "same-origin")
     # a file is what its Content-Type says, never what the browser guesses from its bytes (audit X-02)
     response.headers["X-Content-Type-Options"] = "nosniff"
     # microphone and camera only on the pages that hold a call or a Space (helpers/device_access.py)
@@ -621,6 +670,8 @@ def after_request(response):
     #     site_performance(req_time)
     # except AttributeError:
     #     pass
+
+    _count_request(response)
 
     return response
 

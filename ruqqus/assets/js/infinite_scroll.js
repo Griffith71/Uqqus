@@ -76,9 +76,10 @@
     return a.getAttribute('href');
   }
 
-  // fetch a feed page and hand back its cards (the children of its post list)
+  // fetch a feed page and hand back its cards (the children of its post list). The header tells the site's count of page
+  // requests that nobody opened this one (helpers/traffic.py): an open feed tab asks every 2 minutes, and scrolling asks too
   function fetchPage(url) {
-    return fetch(new URL(url, window.location.href).href, { credentials: 'same-origin' })
+    return fetch(new URL(url, window.location.href).href, { credentials: 'same-origin', headers: { 'X-Background-Fetch': '1' } })
       .then(function (response) {
         if (!response.ok) throw new Error(String(response.status));
         return response.text();

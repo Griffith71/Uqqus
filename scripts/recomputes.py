@@ -306,6 +306,16 @@ def recompute():
             db.rollback()
             print_(f"guild channel feeds failed: {e}")
 
+        # the counts of requests for pages, from Redis into site_traffic (helpers/traffic_store.py says what a failure does)
+        try:
+            from ruqqus.helpers import traffic_store
+            from ruqqus.__main__ import r as traffic_redis
+            if traffic_redis is not None:
+                print_(f"traffic: {traffic_store.flush(db, traffic_redis, int(time.time()))} requests counted in")
+        except Exception as e:
+            db.rollback()
+            print_(f"traffic flush failed: {e}")
+
         # shared-draft edits, deleted live updates and old view counts are not kept forever (helpers/retention.py)
         try:
             from ruqqus.helpers import retention

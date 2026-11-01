@@ -55,6 +55,7 @@ def test_the_biggest_bar_is_full_and_a_single_view_is_still_seen():
     "Mozilla/5.0 (compatible; bingbot/2.0)", "Discordbot/2.0", "TelegramBot (like TwitterBot)", "facebookexternalhit/1.1",
     "Slackbot-LinkExpanding 1.0", "curl/8.4.0", "python-requests/2.31", "Wget/1.21", "Go-http-client/2.0",
     "Mozilla/5.0 HeadlessChrome/120", "WhatsApp/2.23.20", "Twitterbot/1.0", "AhrefsBot/7.0", "Lighthouse", "", "   ", None,
+    "Mediapartners-Google", "Mastodon/4.2.0 (http.rb/5.1.1; +https://mastodon.social/)", "Bluesky Cardyb/1.1", "ChatGPT-User/1.0", "axios/1.6.8",
 ])
 def test_robots_link_previews_and_no_user_agent_are_not_views(agent):
     assert ins.is_robot(agent)

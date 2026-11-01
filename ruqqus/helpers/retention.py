@@ -22,6 +22,10 @@ cycle; plain `text()` SQL, each rule in its own savepoint (tests/test_retention.
 - `site_events` (helpers/site_events.py) that ended more than `EVENT_DAYS` ago go with their change log: a score, an alert, a
   countdown. (Reloading the seed file (helpers/happening_seed.json) puts back any entry still in it, so an entry that is over is
   taken out of the file when the file is reviewed.)
+- `log_snapshots`: the private copy of what was deleted, hidden or removed (helpers/action_log.py) loses its text on its date
+  (`SNAPSHOT_DAYS` after the action, a year for illegal content); the row and the Log entry stay. The delete dialogs promise 90 days.
+- `site_traffic`: the daily counts of requests (helpers/traffic.py) go after `TRAFFIC_DAYS`; `site_traffic_flushes`, which
+  only stops a flush being counted twice, after `TRAFFIC_BATCH_DAYS`.
 """
 import time
 
@@ -40,6 +44,8 @@ TRANSLATION_DAYS = 90           # helpers/translation_store.py: a kept translati
 FEEDBACK_IMAGE_DAYS = 30        # helpers/site_feedback.py: a month after the item was closed
 EVENT_DAYS = 400                # helpers/site_events.py: an event that ended over a year ago
 SIGNUP_REVIEW_DAYS = 90         # helpers/signup_review_store.py KEEP_DAYS: what the signup guard thought, once decided
+TRAFFIC_DAYS = 400              # helpers/traffic.py KEEP_DAYS
+TRAFFIC_BATCH_DAYS = 14         # more than helpers/traffic_store.py LIVE_DAYS: a batch can wait in Redis that long
 DAY = 86400
 
 RULES = (
@@ -66,18 +72,23 @@ RULES = (
                                        "(SELECT id FROM site_feedback WHERE resolved_utc > 0 AND resolved_utc < :feedback_images)"),
     ("decided sign-up reviews", "DELETE FROM signup_reviews WHERE decision <> '' AND "
                                 "CASE WHEN decided_utc > 0 THEN decided_utc ELSE created_utc END < :signup_reviews"),
+    ("private copies past their date", "UPDATE log_snapshots SET title = NULL, url = NULL, body = NULL, body_html = NULL, "
+                                       "scrubbed_utc = :now WHERE scrubbed_utc = 0 AND expires_utc > 0 AND expires_utc <= :now"),
+    ("old traffic counts", "DELETE FROM site_traffic WHERE day < :traffic_day"),
+    ("old traffic batches", "DELETE FROM site_traffic_flushes WHERE flushed_utc < :traffic_batches"),
 )
 
 
 def prune(db, now):
     """Applies every rule and commits; returns {rule: rows} (-1 for a rule that failed, e.g. a missing table)."""
-    params = {"window": RESYNC_AFTER, "quiet": now - QUIET_DRAFT_DAYS * DAY,
+    params = {"now": now, "window": RESYNC_AFTER, "quiet": now - QUIET_DRAFT_DAYS * DAY,
               "deleted": now - DELETED_UPDATE_DAYS * DAY, "day": now // DAY - VIEW_DAYS_KEPT,
               "bells": now - BELL_DAYS * DAY, "addresses": now - LOGIN_ADDRESS_DAYS * DAY,
               "sign_ins": now - LOGIN_EVENT_DAYS * DAY,
               "guild_day": now // DAY - GUILD_COUNTER_DAYS, "translations": now - TRANSLATION_DAYS * DAY,
               "feedback_images": now - FEEDBACK_IMAGE_DAYS * DAY,
               "signup_reviews": now - SIGNUP_REVIEW_DAYS * DAY,
+              "traffic_day": now // DAY - TRAFFIC_DAYS, "traffic_batches": now - TRAFFIC_BATCH_DAYS * DAY,
               "events": now - EVENT_DAYS * DAY, "events_day": time.strftime("%Y-%m-%d", time.gmtime(now - EVENT_DAYS * DAY))}
     done = {}
     for name, sql in RULES:

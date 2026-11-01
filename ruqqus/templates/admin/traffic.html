@@ -1,0 +1,88 @@
+{% extends "docs_default.html" %}
+
+{# The site's own count of requests for its pages (routes/admin_traffic_pages.py, helpers/traffic.py). English, as every
+   admin page. A referring host is what a request said, so it is drawn as plain text, never a link. #}
+
+{% block sidebarblock %}{% endblock %}
+{% block sidebarLeftblock %}{% endblock %}
+
+{% block title %}
+<title>{{ 'SITE_NAME' | app_config }} - Traffic</title>
+{% endblock %}
+
+{% macro rank_table(title, heading, rows, note) %}
+<section class="traffic-rank">
+  <h2 class="traffic-heading">{{ title }}</h2>
+  {% if rows %}
+  <table class="traffic-table">
+    <thead><tr><th scope="col">{{ heading }}</th><th scope="col" class="traffic-num">Requests</th><th scope="col" class="traffic-num">Share</th></tr></thead>
+    <tbody>
+      {% for row in rows %}
+      <tr>
+        <th scope="row"><span class="traffic-rank-label">{{ row.label }}</span><span class="traffic-rank-bar" style="width: {{ row.width }}%"></span></th>
+        <td class="traffic-num">{{ '{:,}'.format(row.requests) }}</td>
+        <td class="traffic-num">{{ row.share }}%</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <p class="traffic-note">Nothing counted in this time.</p>
+  {% endif %}
+  {% if note %}<p class="traffic-note">{{ note }}</p>{% endif %}
+</section>
+{% endmacro %}
+
+{% block content %}
+<div id="admin-traffic">
+
+<h1>Traffic</h1>
+
+<p class="traffic-lead"><strong>These are requests, not people.</strong> One person opening ten pages is ten requests, and nothing here can say how many people there were. A robot that doesn't say it is one, or that the site's list of robots doesn't know, is counted. If a CDN in front of the site caches HTML, the pages it answers never reach this count, so the numbers fall short.</p>
+
+<nav class="traffic-windows" aria-label="Time range">
+  {% for w in windows %}
+  <a href="?days={{ w }}" class="btn btn-sm {% if w == data.days %}btn-secondary{% else %}btn-link{% endif %}"{% if w == data.days %} aria-current="page"{% endif %}>{{ w }} days</a>
+  {% endfor %}
+</nav>
+
+<div class="traffic-tiles">
+  <div class="traffic-tile"><span class="traffic-number">{{ '{:,}'.format(data.requests) }}</span><span class="traffic-label">Page requests</span></div>
+  <div class="traffic-tile"><span class="traffic-number">{{ '{:,}'.format(data.signups) }}</span><span class="traffic-label">Sign-ups</span></div>
+  <div class="traffic-tile"><span class="traffic-number">{{ '{:,}'.format(data.posts) }}</span><span class="traffic-label">Posts</span></div>
+  <div class="traffic-tile"><span class="traffic-number">{{ '{:,}'.format(data.comments) }}</span><span class="traffic-label">Comments</span></div>
+</div>
+
+<section>
+  <h2 class="traffic-heading">Page requests per day</h2>
+  <div class="traffic-bars" role="img" aria-label="Page requests per day for {{ data.days }} days. The same numbers are in the table below.">
+    {% for day in data.series %}
+    <div class="traffic-bar-col" title="{{ day.label }}: {{ '{:,}'.format(day.requests) }}"><div class="traffic-bar" style="height: {{ day.height }}%"></div></div>
+    {% endfor %}
+  </div>
+  <div class="traffic-axis"><span>{{ data.series[0].label }}</span><span>{{ data.series[-1].label }}</span></div>
+  <details class="traffic-days">
+    <summary>Day by day</summary>
+    <div class="traffic-scroll" tabindex="0" role="region" aria-label="Day by day">
+    <table class="traffic-table">
+      <thead><tr><th scope="col">Day (UTC)</th><th scope="col" class="traffic-num">Requests</th><th scope="col" class="traffic-num">Sign-ups</th><th scope="col" class="traffic-num">Posts</th><th scope="col" class="traffic-num">Comments</th></tr></thead>
+      <tbody>
+        {% for day in data.series | reverse %}
+        <tr><th scope="row">{{ day.label }}</th><td class="traffic-num">{{ '{:,}'.format(day.requests) }}</td><td class="traffic-num">{{ '{:,}'.format(day.signups) }}</td><td class="traffic-num">{{ '{:,}'.format(day.posts) }}</td><td class="traffic-num">{{ '{:,}'.format(day.comments) }}</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    </div>
+  </details>
+</section>
+
+<div class="traffic-ranks">
+  {{ rank_table("Kinds of page", "Kind", kinds, "") }}
+  {{ rank_table("Referrers", "Came from", referrers, "The " ~ top ~ " largest, then Everything else: every other site, and addresses that give no usable name (an IP address, a private machine's name). A site's name only, never the page. A day keeps its " ~ daily_hosts ~ " largest sites; the rest go to Everything else.") }}
+  {{ rank_table("Countries", "Country", countries, "The " ~ top ~ " largest, then the rest in one row. Not known: Tor, or no CDN telling the site (always so on a site with no CDN).") }}
+</div>
+
+<p class="traffic-note traffic-foot">What is counted: a successful GET of a page of one of the kinds above, which is not every page: guildmaster tools, edit forms, the history and revisions of a post or comment and a guild's moderation log aren't on the list, and a new page counts for nothing until it is added. Never the API, this admin area, a page in a side panel, what a script fetches for itself, a prefetch or anything on the site's list of robots. Reloads count. Days are UTC. Sign-ups leave out bot accounts; posts leave out bots' posts, forwarded copies, forwarded comments and Spaces, and include what was later removed or deleted. Page requests reach this table each cycle of the recompute job, so today's are a few minutes behind{% if last_flush %} (last counted in: {{ last_flush }}){% else %} (nothing has been counted in yet){% endif %}. Each day is kept for {{ keep_days }} days. No id, name, address, user agent or path is stored.</p>
+
+</div>
+{% endblock %}
