@@ -100,11 +100,13 @@ ruqqus/templates/make_board.html: Discord
 ruqqus/templates/make_board.html: Github
 ruqqus/templates/make_board.html: Twitter
 ruqqus/templates/notifications.html: wide-main is-focused
+ruqqus/templates/partials/comment_tools.html: Aa
 ruqqus/templates/partials/theme.html: " data-density="
 ruqqus/templates/partials/theme.html: " dir="
 ruqqus/templates/partials/theme.html: data-video-autoplay="tap"
 ruqqus/templates/partials/theme.html: data-video-captions="on"
 ruqqus/templates/partials/theme.html: data-video-sound="muted"
+ruqqus/templates/partials/theme.html: data-video-consent="
 ruqqus/templates/partials/theme.html: data-text-size="
 ruqqus/templates/partials/theme.html: data-feed-paging="pages"
 ruqqus/templates/partials/theme.html: lang="
@@ -167,3 +169,11 @@ ruqqus/templates/userpage_deleted.html: Ban user
 ruqqus/templates/userpage_deleted.html: Key
 ruqqus/templates/userpage_deleted.html: Unban user
 ruqqus/templates/userpage_deleted.html: Value
+ruqqus/templates/userpage.html: Age answer
+ruqqus/templates/userpage.html: (since
+ruqqus/templates/userpage.html: Not asked
+ruqqus/templates/userpage.html: 18 or over
+ruqqus/templates/userpage.html: Child account (locks the Child filter)
+ruqqus/templates/userpage.html: Reason (for the staff log)
+ruqqus/templates/userpage.html: Change age answer
+ruqqus/templates/partials/ad_hold.html: (function (owner) { function other(stored) { if (!stored) return false; try { return !owner || JSON.parse(stored).user_id !== owner; } catch (e) { return true; } } try { return other(localStorage.getItem("ruqqus_chat_session")) || other(localStorage.getItem("ruqqus_call_session")); } catch (e) { return false; } })(

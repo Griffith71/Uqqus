@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ruqqus VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-29 21:56+0800\n"
+"POT-Creation-Date: 2026-10-31 05:16+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: zh_Hans\n"
@@ -1262,21 +1262,9 @@ msgstr "%(who)s 删除一个频道"
 msgid "%(who)s deleted a channel category"
 msgstr "%(who)s 删除频道类别"
 
-#, machine, python-format
-msgid "%(who)s deleted a comment on <a href=\"%(link)s\">%(title)s</a>"
-msgstr "%(who)s 删除关于 <a href=\"%(link)s\">%(title)s</a>"
-
-#, machine, python-format
-msgid "%(who)s deleted a comment on a post that was deleted later"
-msgstr "%(who)s 删除了对一个后来被删除的文章的评论"
-
 #, machine, plain1, python-format
 msgid "%(who)s deleted a flair"
 msgstr "%(who)s 删除标签"
-
-#, machine, python-format
-msgid "%(who)s deleted a post"
-msgstr "%(who)s 删除一个邮件"
 
 #, machine, python-format
 msgid "%(who)s deleted a role"
@@ -3118,10 +3106,6 @@ msgid "A search can hold at most %(num)s word and operator."
 msgid_plural "A search can hold at most %(num)s words and operators."
 msgstr[0] "搜索最多可以持有%(num)s字和运算符."
 
-#, machine
-msgid "A sensitive guild's posts are left out of All and For You for anyone who hasn't chosen to see sensitive content. Enable if your guild discusses topics that could be upsetting (e.g. addiction recovery, grief support) - not a rule violation, just a heads-up. Every post in this guild will be blurred by default."
-msgstr "任何没有选择看到敏感内容的人, 启用 if your guild 讨论可能令人不快的话题( 如戒毒、 悲伤支持) - 不是违反规则, 只是提醒 。 此盾中的每个帖子默认都会模糊."
-
 #, machine, python-format
 msgid "A shared draft can have at most %(num)s author."
 msgid_plural "A shared draft can have at most %(num)s authors."
@@ -3393,14 +3377,6 @@ msgid "Add %(name)s"
 msgstr "添加%(name)s"
 
 #, glossary, machine, plain1
-msgid "Add EMOJI"
-msgstr "添加表情"
-
-#, glossary, machine, plain1
-msgid "Add GIF"
-msgstr "添加 GIF"
-
-#, glossary, machine, plain1
 msgid "Add a GIF"
 msgstr "添加 GIF"
 
@@ -3586,10 +3562,6 @@ msgid "Added. It starts once an admin approves it."
 msgstr "补之. 管理者一批准就开始."
 
 #, machine
-msgid "Additionally, you must have a verified email address to upload images via Tor."
-msgstr "此外,您必须有一个经过验证的电子邮件地址才能通过Tor上传图像."
-
-#, machine
 msgid "Address, page or post"
 msgstr "地址、页面或帖子"
 
@@ -3658,10 +3630,6 @@ msgstr "警报和头条来自每条线上命名的源头,显示于其发布时. 
 #, machine
 msgid "Algorithm"
 msgstr "算法"
-
-#, machine, plain1
-msgid "Algorithm saved."
-msgstr "算法已保存 ."
 
 #, glossary, machine, plain1
 msgctxt "feed"
@@ -3745,6 +3713,10 @@ msgstr "允许"
 
 #, machine
 msgid "Allow video"
+msgstr "允许视频"
+
+#, machine, plain1
+msgid "Allow videos"
 msgstr "允许视频"
 
 #, machine
@@ -3973,10 +3945,6 @@ msgstr "匿名用户"
 msgctxt "label"
 msgid "Anonymous"
 msgstr "匿名"
-
-#, machine
-msgid "Anonymous items show as Anonymous. Items that were not public, and items removed by moderators or administrators, are not listed."
-msgstr "匿名物品显示为匿名. 不公开的项目,以及主持人或管理员删除的项目,不列出."
 
 #, machine
 msgid "Anonymous posts and comments count for you like any other. Your points and earnings are shown only to you; the site's admins see the payout list."
@@ -4262,10 +4230,6 @@ msgid "Austronesian Archipelagic"
 msgstr "澳大利亚群岛"
 
 #, machine
-msgid "Authoritarian"
-msgstr "权威"
-
-#, machine
 msgid "Authorization released"
 msgstr "发放的授权"
 
@@ -4354,10 +4318,6 @@ msgstr "自动调用设置"
 #, glossary, machine, plain1
 msgid "Autoplay"
 msgstr "自动播放"
-
-#, machine
-msgid "Avatars require 300 reputation."
-msgstr "神通需要300个名声."
 
 #, machine, plain1
 msgid "Aviation"
@@ -4475,10 +4435,6 @@ msgstr "Banner 成功删除 ."
 #, machine
 msgid "Banner successfully updated."
 msgstr "Banner 成功更新 ."
-
-#, machine
-msgid "Banners require 500 reputation."
-msgstr "班纳需要500个名声."
 
 #, machine
 msgid "Bantu Corridor"
@@ -4607,10 +4563,6 @@ msgid "Blue"
 msgstr "蓝色"
 
 #, machine
-msgid "Blur this post until viewers click to reveal it."
-msgstr "模糊此帖子直到观众点击显示为止 ."
-
-#, machine
 msgctxt "Space"
 msgid "Board"
 msgstr "董事会"
@@ -4622,10 +4574,6 @@ msgstr "船和帆船"
 #, machine
 msgid "Body text (optional)"
 msgstr "正文文本( 可选)"
-
-#, glossary, machine, plain1
-msgid "Bold"
-msgstr "加粗"
 
 #, machine, plain1
 msgid "Book Discussion"
@@ -4724,10 +4672,6 @@ msgstr "输入此通道的 Bots"
 #, machine
 msgid "Bots post and forward; they never comment, vote or chat."
 msgstr "博茨张贴和转发;他们从不评论,投票或聊天."
-
-#, machine, plain1
-msgid "Boxing & MMA"
-msgstr "拳击和MMA"
 
 #, machine, plain1
 msgid "Breaking News"
@@ -4900,10 +4844,6 @@ msgid "Cast votes as you"
 msgstr "投你一票 投你一票"
 
 #, machine
-msgid "Casual"
-msgstr "临时"
-
-#, machine
 msgid "Casual Discussion"
 msgstr "临时讨论"
 
@@ -4974,10 +4914,6 @@ msgstr "名词"
 #, machine
 msgid "Central Andes"
 msgstr "安第斯中部"
-
-#, machine, plain1
-msgid "Centrist"
-msgstr "中间派"
 
 #, glossary, machine, plain1
 msgctxt "button"
@@ -5437,14 +5373,6 @@ msgid "Clear filter"
 msgstr "清除过滤器"
 
 #, machine
-msgid "Clear the guild filter"
-msgstr "清除盾形过滤器"
-
-#, machine
-msgid "Clear the user filter"
-msgstr "清除用户过滤器"
-
-#, machine
 msgid "Click to show"
 msgstr "单击以显示"
 
@@ -5565,9 +5493,9 @@ msgstr "颜色"
 msgid "Coloured: a post with mostly upvotes shows its upvotes in <span class=\"font-weight-bold vote-ratio-10\">blue</span>, one with mostly downvotes in <span class=\"font-weight-bold vote-ratio-0\">red</span>, and anything between in a shade between. Hover a score to see both counts."
 msgstr "彩色: 以高票为主的帖子显示其高票 。 <span class=\"font-weight-bold vote-ratio-10\">蓝色</span>,其中多数是低选票 <span class=\"font-weight-bold vote-ratio-0\">红色</span>之间有间隙 一分钱就能看清这两点"
 
-#, machine
-msgid "Combat"
-msgstr "战斗"
+#, glossary, machine, plain1
+msgid "Combat Sports"
+msgstr "格斗运动"
 
 #, machine, plain1
 msgid "Comedy Films & Series"
@@ -5791,6 +5719,10 @@ msgstr "贡献给 Ruqqus 艺术品或文本"
 #, machine
 msgid "Contributed to Ruqqus source code"
 msgstr "贡献给 Ruqqus 源代码"
+
+#, machine, plain1
+msgid "Cookie choices"
+msgstr "Cookie 选择"
 
 #, machine, plain1
 msgid "Cooking"
@@ -6079,10 +6011,6 @@ msgid "Danger Zone"
 msgstr "危险区"
 
 #, machine
-msgid "Dank"
-msgstr "邓克"
-
-#, machine
 msgid "Danubian Steppe"
 msgstr "达努比亚草原"
 
@@ -6303,14 +6231,6 @@ msgstr "删除您驱动器中的文件, 或断开连接, 从您的岗位中删�
 #, machine
 msgid "Deleting a file there, or disconnecting, removes it from your posts."
 msgstr "删除文件, 或断开连接, 将它从您的岗位中删除 ."
-
-#, glossary, machine, plain1
-msgid "Deletion log"
-msgstr "删除日志"
-
-#, machine, python-format
-msgid "Deletion log - %(site)s"
-msgstr "删除日志 -%(site)s"
 
 #, machine
 msgid "Density"
@@ -6808,10 +6728,6 @@ msgstr "两步登录所需的电子邮件"
 msgid "Email verified."
 msgstr "电子邮件已确认 ."
 
-#, glossary, machine, plain1
-msgid "Emojis"
-msgstr "表情"
-
 #, machine
 msgid "Enable 2-step login"
 msgstr "启用二步登录"
@@ -6907,6 +6823,10 @@ msgstr "输入您的账户密码, 以关闭 Child 过滤器 ."
 #, machine
 msgid "Entertainment"
 msgstr "娱乐"
+
+#, glossary, machine, plain1
+msgid "Entertainment News"
+msgstr "娱乐新闻"
 
 #, machine
 msgid "Entrepreneurship"
@@ -7592,6 +7512,10 @@ msgstr[0] "伪造%(num)s次."
 msgid "Forked from <a href=\"%(url)s\">%(title)s</a>"
 msgstr "伪造的 <a href=\"%(url)s\">%(title)s</a>"
 
+#, machine, plain1
+msgid "Formatting"
+msgstr "格式化"
+
 #, glossary, machine, plain1
 msgid "Formatting help"
 msgstr "格式帮助"
@@ -7646,15 +7570,6 @@ msgstr "已转发副本"
 #, machine, plain1
 msgid "Forwarded copies (-is:forward leaves them out, so a post is found once), posts made with AI, commercial promotion (paid partnerships, sponsorships, affiliate links), posts by bots (-is:bot leaves them out)."
 msgstr "由AI、商业促销(付费合伙、赞助、附属链接)."
-
-#, machine, python-format
-msgid "Forwarded to %(guilds)s"
-msgstr "已转发至%(guilds)s"
-
-#, machine, python-format
-msgid "Forwarded to %(guilds)s and %(num)s more"
-msgid_plural "Forwarded to %(guilds)s and %(num)s more"
-msgstr[0] "转发到 %(guilds)s 和%(num)s 更多"
 
 #, machine, python-format
 msgid "Forwarded to %(num)s guild"
@@ -7811,9 +7726,9 @@ msgstr "游戏之夜参与者"
 msgid "Gaming"
 msgstr "赌博"
 
-#, machine
-msgid "Gaming news"
-msgstr "赌博新闻"
+#, glossary, machine, plain1
+msgid "Gaming News"
+msgstr "游戏新闻"
 
 #, machine, plain1
 msgid "Gardening"
@@ -7826,6 +7741,14 @@ msgstr "双子座流星雨"
 #, machine
 msgid "General Information"
 msgstr "一般情况"
+
+#, glossary, machine, plain1
+msgid "General Memes"
+msgstr "综合梗图"
+
+#, glossary, machine, plain1
+msgid "General Science"
+msgstr "综合科学"
 
 #, machine, plain1
 msgid "Generate new URL"
@@ -8215,10 +8138,6 @@ msgid "Happening now"
 msgstr "现在发生"
 
 #, machine
-msgid "Hard Sciences"
-msgstr "硬科学"
-
-#, machine
 msgid "Hardware"
 msgstr "硬件"
 
@@ -8520,10 +8439,6 @@ msgstr "冰球"
 msgid "Idea Maker"
 msgstr "思想创造者"
 
-#, machine
-msgid "Identity Politics"
-msgstr "身份政治"
-
 #, machine, python-format
 msgid "If that's you, or if you are their authorized representative, please contact %(site)s staff in order to obtain access to this account."
 msgstr "如果那是你,或者你是他们授权的代表,请联系%(site)s工作人员,以便进入这个账户."
@@ -8679,10 +8594,6 @@ msgid "Indigo"
 msgstr "英迪戈语Name"
 
 #, machine
-msgid "Individual"
-msgstr "个人"
-
-#, machine
 msgid "Indus Subcontinent"
 msgstr "印度河次大陆"
 
@@ -8720,12 +8631,12 @@ msgid "Interested"
 msgstr "有兴趣"
 
 #, machine, plain1
-msgid "Interesting"
-msgstr "有意思,你这混蛋"
-
-#, machine, plain1
 msgid "Interior Design"
 msgstr "内部设计"
+
+#, glossary, machine, plain1
+msgid "International Affairs"
+msgstr "国际事务"
 
 #, machine, plain1
 msgid "International Day for Biological Diversity"
@@ -8942,10 +8853,6 @@ msgstr "它通过你的应用程序工作 <strong>%(app)s</strong> (客户编号
 msgid "It's called %(name)s now."
 msgstr "现在叫%(name)s."
 
-#, glossary, machine, plain1
-msgid "Italicize"
-msgstr "斜体"
-
 #, machine
 msgid "Its feed server has not named any posts you can see."
 msgstr "它的种子服务器没有为您指定任何您可以看到的帖子 ."
@@ -9149,10 +9056,6 @@ msgstr "员额类型 <span class=\"text-muted\">(没有滴答的意思是每一�
 msgid "Knitting & Sewing"
 msgstr "缝纫( S)"
 
-#, machine, plain1
-msgid "LGBTQ"
-msgstr "LGBTQ 语录"
-
 #, glossary, machine, plain1
 msgctxt "badge"
 msgid "LIVE"
@@ -9324,10 +9227,6 @@ msgid_plural "Leaves out posts from %(num)s guilds."
 msgstr[0] "省去了%(num)s盾的帖子."
 
 #, machine
-msgid "Left"
-msgstr "左边"
-
-#, machine
 msgctxt "people who left the guild, table heading"
 msgid "Left"
 msgstr "左边"
@@ -9351,10 +9250,6 @@ msgstr "列昂尼兹流星雨"
 #, machine, plain1
 msgid "Letters spaced out or split by dots or other marks are read as one word."
 msgstr "以圆点或其他标记分隔的字母读作一个单词."
-
-#, machine
-msgid "Libertarian"
-msgstr "自由主义者"
 
 #, glossary, machine, plain1
 msgid "Lifestyle"
@@ -9517,10 +9412,6 @@ msgstr "正在装入..."
 #, glossary, machine, plain1
 msgid "Loading…"
 msgstr "加载中…"
-
-#, machine
-msgid "Local"
-msgstr "当地"
 
 #, glossary, machine, plain1
 msgid "Location"
@@ -9730,10 +9621,6 @@ msgstr "符合你的兴趣"
 #, machine
 msgid "Mathematics"
 msgstr "数学"
-
-#, machine
-msgid "Mechanics"
-msgstr "机械师"
 
 #, glossary, machine, plain1
 msgid "Media"
@@ -9949,6 +9836,10 @@ msgstr "调和"
 msgid "Moderation log"
 msgstr "管理日志"
 
+#, glossary, machine, plain1
+msgid "Modern Culture"
+msgstr "当代文化"
+
 #, machine
 msgctxt "weekday"
 msgid "Mon"
@@ -10150,10 +10041,6 @@ msgstr "姓名必须是3-25个字符"
 #, machine
 msgid "Narrows All, For You and Following. Regional, Language, Categorical and Post type are their own filters in the sidebar; profiles and guild pages are never filtered."
 msgstr "为你和跟随者而缩小范围 区域,语言,分类和邮报类型是他们自己在侧边栏中的过滤器;剖面图和盾形页从不过滤."
-
-#, machine
-msgid "Natural Sciences"
-msgstr "自然科学"
 
 #, machine
 msgid "Nearctic Realm"
@@ -10440,10 +10327,6 @@ msgstr "暂无评论"
 msgid "No comments found."
 msgstr "未找到评论 ."
 
-#, machine
-msgid "No comments have been deleted yet."
-msgstr "尚未删除任何评论."
-
 #, machine, python-format
 msgid "No comments in +%(guild)s yet."
 msgstr "+ 中无评论%(guild)s 还没有。"
@@ -10561,10 +10444,6 @@ msgstr "还没有页面."
 #, machine, plain1
 msgid "No posts are busy right now."
 msgstr "现在没有工作."
-
-#, machine
-msgid "No posts have been deleted yet."
-msgstr "尚未删除任何员额."
 
 #, machine
 msgid "No posts match these rules right now."
@@ -10720,17 +10599,9 @@ msgstr "没有这些字"
 msgid "None yet. Make one for your family, a group of friends, a team."
 msgstr "还没有 为你的家人 一群朋友 一个团队."
 
-#, machine
-msgid "North America"
-msgstr "北美"
-
 #, machine, plain1
 msgid "Nostalgia"
 msgstr "怀旧"
-
-#, machine
-msgid "Not a rule violation - just something that could be upsetting. Shown blurred with a click-to-reveal instead of being blocked."
-msgstr "不是违反规则,只是可能令人不快的东西 显示模糊, 点击到可见而不是被屏蔽 ."
 
 #, machine
 msgid "Not all of us have elephant memory. To reset your password, click the button below:"
@@ -10834,10 +10705,6 @@ msgstr "还没有书签"
 #, machine
 msgid "Nothing changed."
 msgstr "什么都没有改变."
-
-#, machine
-msgid "Nothing deleted matches this filter."
-msgstr "没有删除的匹配此过滤器 ."
 
 #, machine
 msgid "Nothing downvoted yet"
@@ -11619,6 +11486,10 @@ msgstr "原用户名：@%(name)s"
 msgid "Orionids meteor shower"
 msgstr "猎户座流星雨"
 
+#, glossary, machine, plain1
+msgid "Other Sports"
+msgstr "其他运动"
+
 #, machine
 msgid "Other languages you read"
 msgstr "你读过的其他语言"
@@ -11763,10 +11634,6 @@ msgstr "部分月蚀"
 #, machine
 msgid "Participated in a Ruqqus community gaming event"
 msgstr "参加Ruqqus社区游戏活动"
-
-#, machine
-msgid "Partner"
-msgstr "合伙人"
 
 #, machine
 msgctxt "proposal"
@@ -12197,6 +12064,10 @@ msgstr "播放 %(domain)s 的音频"
 msgid "Play sound"
 msgstr "播放声音"
 
+#, machine, plain1
+msgid "Play the replay of this Space"
+msgstr "播放此空格"
+
 #, machine, python-format
 msgid "Play video from %(domain)s"
 msgstr "播放 %(domain)s 的视频"
@@ -12245,6 +12116,14 @@ msgstr "点"
 #, machine
 msgid "Political"
 msgstr "政治"
+
+#, glossary, machine, plain1
+msgid "Political Ideas & Debate"
+msgstr "政治思想与辩论"
+
+#, glossary, machine, plain1
+msgid "Political News"
+msgstr "政治新闻"
 
 #, machine
 msgid "Politics"
@@ -12430,10 +12309,6 @@ msgid "Posts and comments that contain filtered words are hidden from you entire
 msgstr "包含过滤词的帖子和评论完全隐藏在你们身上—它们不会被其他人删除. 用户或荷兰盾的内容,其名称包含一个过滤的单词也被隐藏. 你们自己的文章和评论总是向你们展示。 关闭孩子过滤器需要您的账户密码 ."
 
 #, machine
-msgid "Posts and comments that their authors deleted, newest first. Each entry shows what it said when it was deleted, so deleting something does not take it out of this log."
-msgstr "他们的作者删除的帖子和评论,是最新的第一。 每个条目都显示它被删除时所说的话,所以删除的东西不会从这个日志中取出."
-
-#, machine
 msgid "Posts and comments you downvote will show up here."
 msgstr "文章和评论,你下注会在这里出现."
 
@@ -12605,6 +12480,10 @@ msgctxt "link to the page for journalists"
 msgid "Press"
 msgstr "媒体"
 
+#, machine, plain1, python-format
+msgid "Pressing play loads %(player)s, which can set cookies, see your address and record what you watch."
+msgstr "按下游戏负载%(player)s,它可以设置 cookie,查看您的地址并记录您观看的内容."
+
 #, glossary, machine, plain1
 msgid "Prev"
 msgstr "上一页"
@@ -12656,6 +12535,10 @@ msgstr "隐私政策"
 #, glossary, machine, plain1
 msgid "Privacy and cookie settings"
 msgstr "隐私和 Cookie 设置"
+
+#, machine, plain1
+msgid "Privacy page"
+msgstr "隐私页面"
 
 #, glossary, machine, plain1
 msgctxt "curation"
@@ -12990,11 +12873,6 @@ msgstr "Q&A"
 #, machine, plain1
 msgid "Quadrantids meteor shower"
 msgstr "四方流星雨"
-
-#, glossary, machine, plain1
-msgctxt "formatting"
-msgid "Quote"
-msgstr "引用"
 
 #. on a card quoting a post, what that post quotes in turn: who is a handle
 #. such as @name, service another site such as X or Bluesky
@@ -13676,9 +13554,13 @@ msgstr "废. 使用该密钥的脚本不能再发布."
 msgid "Rhine Expanse"
 msgstr "莱茵出口"
 
-#, machine
-msgid "Right"
-msgstr "对"
+#, machine, plain1
+msgid "Right now, a video loads only when you press play."
+msgstr "现在,一个视频载荷 只有当你按播放."
+
+#, machine, plain1
+msgid "Right now, videos load by themselves as you scroll to them."
+msgstr "现在,视频自己装满 当你滚动到他们."
 
 #, machine, plain1
 msgid "Road Trips"
@@ -13956,6 +13838,10 @@ msgstr "科学- Fi"
 msgid "Science"
 msgstr "科学"
 
+#, glossary, machine, plain1
+msgid "Science News"
+msgstr "科学新闻"
+
 #, machine
 msgid "Scores"
 msgstr "分数"
@@ -14181,10 +14067,6 @@ msgstr "敏感内容"
 #, machine
 msgid "Sensitive media"
 msgstr "敏感媒体"
-
-#, machine
-msgid "Sensitive posts, guilds and accounts deal with upsetting topics, such as grief or addiction recovery. They are not against the rules, but All and For You leave them out unless you turn this on. You can always open a sensitive guild or profile, search for it or follow it."
-msgstr "敏感帖子、盾牌和帐号涉及令人沮丧的话题,如悲伤或戒毒。 他们不违抗规矩,但你们要是打开它,就别管他们。 总是可以打开敏感的盾或剖面图,搜索或跟踪."
 
 #, machine, plain1
 msgid "September equinox"
@@ -14659,17 +14541,21 @@ msgstr "所以我们不会给你们看他们的档案."
 msgid "Soccer"
 msgstr "足球"
 
+#, glossary, machine, plain1
+msgid "Social Issues"
+msgstr "社会议题"
+
 #, machine, plain1
 msgid "Social Media"
 msgstr "社会媒体"
 
+#, glossary, machine, plain1
+msgid "Social Sciences"
+msgstr "社会科学"
+
 #, machine, plain1
 msgid "Sociology"
 msgstr "社会学"
-
-#, machine
-msgid "Soft Sciences"
-msgstr "软科学"
 
 #, machine
 msgid "Software"
@@ -15208,9 +15094,13 @@ msgctxt "colour"
 msgid "Teal"
 msgstr "提尔"
 
-#, machine
-msgid "Team"
-msgstr "团队"
+#, glossary, machine, plain1
+msgid "Tech News"
+msgstr "科技新闻"
+
+#, glossary, machine, plain1
+msgid "Tech Support"
+msgstr "技术支持"
 
 #, machine
 msgid "Technology"
@@ -15395,6 +15285,10 @@ msgstr "该地址不使用RSS, Atom 或JSON feed 回答 ."
 #, machine
 msgid "That address has no server name."
 msgstr "这个地址没有服务器名 ."
+
+#, machine, plain1
+msgid "That bio has too many links or too much formatting. Shorten it."
+msgstr "这个生物有太多的联系 或太多的格式。 缩短."
 
 #, machine
 msgid "That bot already feeds this channel."
@@ -16841,10 +16735,6 @@ msgstr "这是一个空间:它的讨论是在空间。 <a href=\"%(url)s\">打�
 msgid "This is a Space: its host and co-hosts post its updates from the Space."
 msgstr "这是一个空间:它的主机和共同主机从空间发布它的更新."
 
-#, machine, python-format
-msgid "This is a log of moderator actions performed in +%(guild)s. What members deleted themselves is in the site-wide <a href=\"%(url)s\">deletion log</a>."
-msgstr "这是在 + 中执行的主持人动作日志%(guild)s成员删除的是在全网站 <a href=\"%(url)s\">删除日志</a>。"
-
 #, machine
 msgid "This is already in your language."
 msgstr "这已经用你的语言了."
@@ -17107,12 +16997,6 @@ msgstr "通过应用程序"
 msgctxt "weekday"
 msgid "Thu"
 msgstr "图"
-
-#. a hint under the search box of the Categorical list, about the tick box of
-#. each category
-#, machine, plain1
-msgid "Tick a category to tick all its subcategories. Untick them to keep only guilds filed under the category itself."
-msgstr "选中一个类别来勾选其所有子类别 。 解开它们只保留在类下存档的盾 ."
 
 #, machine
 msgid "Tick the box to agree to the rules first."
@@ -17388,10 +17272,6 @@ msgid "Turn off notifications from @%(name)s"
 msgstr "从 @ 关闭通知%(name)s"
 
 #, machine
-msgid "Turn on if what you post is often upsetting. Your profile shows a Sensitive content badge, your new posts are blurred, and your posts are left out of All and For You for anyone who hasn't chosen to see sensitive content."
-msgstr "如果你的帖子经常让人不爽,请打开 您的简介显示一个敏感内容徽章, 您的新帖子是模糊的, 您的帖子被从 All and For You 中遗漏出来, 对于没有选择看到敏感内容的人来说."
-
-#, machine
 msgid "Turn on media storage to upload."
 msgstr "打开媒体存储器上传."
 
@@ -17462,10 +17342,6 @@ msgstr "输入谁要添加."
 #, machine, python-format
 msgid "Typed by %(name)s"
 msgstr "由%(name)s键入"
-
-#, machine, plain1
-msgid "US Politics"
-msgstr "美国政治"
 
 #, machine
 msgid "Unable to copy data"
@@ -18120,6 +17996,10 @@ msgstr "视频必须遵守 <a href=\"%(terms)s\" target=\"_blank\" rel=\"noopene
 msgid "Videos can go to your Dailymotion channel and play in your posts from there."
 msgstr "视频可以转到您的Dailymotion 从那里开始在您的文章中播放."
 
+#, machine, plain1
+msgid "Videos from other sites"
+msgstr "其他网站的录像"
+
 #, machine
 msgid "Videos go to"
 msgstr "视频到"
@@ -18132,10 +18012,9 @@ msgstr "视频到您的 YouTube 频道作为"
 msgid "Videos go to your channel as"
 msgstr "视频作为"
 
-#, machine
-msgctxt "verb"
-msgid "View"
-msgstr "视图"
+#, machine, plain1
+msgid "Videos on this site come from YouTube and other sites. Playing one lets that site set cookies, see your address and record what you watch."
+msgstr "这个网站的视频来自YouTube和其他网站. 播放一个让网站设置饼干, 看到你的地址和记录你看的东西."
 
 #, machine, python-format
 msgid "View %(site)s as you, including private or restricted content"
@@ -18160,10 +18039,6 @@ msgstr "查看完整讨论"
 #, machine, plain1
 msgid "View mod log record"
 msgstr "查看适度日志记录"
-
-#, glossary, machine, plain1
-msgid "View more"
-msgstr "查看更多"
 
 #, machine, python-format
 msgid "View on %(service)s"
@@ -18397,9 +18272,6 @@ msgstr ""
 msgid "West Slavia"
 msgstr "西斯拉维亚"
 
-msgid "What a guild's moderators hid or removed is in that guild's <strong>Moderation log</strong>."
-msgstr ""
-
 #, machine
 msgid "What an unusual number of different people have posted about in the last day, compared with the week before. Every account counts once, so one account cannot make a topic."
 msgstr "与前一周相比,在最后一天公布的人数多得不同寻常。 每个账户都算一次 所以一个账户不能做一个话题."
@@ -18532,6 +18404,10 @@ msgstr "发布位置"
 #, machine
 msgid "Where you are, in your words"
 msgstr "你在哪里,用你的话"
+
+#, machine, plain1
+msgid "Whether a video site's player may load before you press play. While it may not, Automatic above has no effect."
+msgstr "视频网站播放器在按下播放前是否可以加载 。 虽然可能不会,但上面的自动没有效果."
 
 #, machine
 msgid "Which posts"
@@ -18892,10 +18768,6 @@ msgid "World Oceans Day"
 msgstr "世界海洋日"
 
 #, machine, plain1
-msgid "World Politics"
-msgstr "世界政治协会"
-
-#, machine, plain1
 msgid "World Population Day"
 msgstr "世界人口日"
 
@@ -19157,14 +19029,6 @@ msgstr "你没有跟随 @%(name)s"
 #, machine
 msgid "You aren't subscribed to that circle."
 msgstr "你没有加入那个圈子."
-
-#, machine, plain1
-msgid "You can add a custom avatar after earning 300 Rep."
-msgstr "您可以在获得300个名人称号后添加一个自定义的化身 ."
-
-#, machine, plain1
-msgid "You can add a custom banner after earning 500 Rep."
-msgstr "在获得500名声誉后,您可以加入自定义横幅 ."
 
 #, machine, plain1
 msgid "You can add pictures at 500 Rep, or earlier with Premium"
@@ -20075,6 +19939,10 @@ msgid "Your account has been checked and is ready: you can now post, comment, vo
 msgstr "您的账户已被检查并准备就绪:您现在可以张贴、评论、投票和跟踪。 欢迎光临!"
 
 #, machine, plain1
+msgid "Your account has been deleted"
+msgstr "您的账户已被删除"
+
+#, machine, plain1
 msgid "Your account is being checked"
 msgstr "正在检查您的账户"
 
@@ -20196,6 +20064,10 @@ msgstr "您的聊天设备"
 msgid "Your chat devices can't be listed right now."
 msgstr "您的聊天设备现在无法挂载 ."
 
+#, machine, plain1
+msgid "Your chats and their keys have been removed from this browser."
+msgstr "您的聊天及其密钥已经从此浏览器中删除 ."
+
 #, machine
 msgid "Your chats are end-to-end encrypted, and the site can't read them. The key that opens them is kept locked: once with your password, and once with the recovery code you saved when chat was set up. If you forget your password, that code is the only way to read your old messages after a reset."
 msgstr "您的聊天内容是端对端加密的,网站无法读取. 打开它们的密钥被锁定:一次用您的密码,一次用您设定聊天时保存的恢复代码. 如果你忘了密码 那密码是重置后读取你旧消息的唯一方法."
@@ -20211,10 +20083,6 @@ msgstr "你的圈子"
 #, machine, python-format
 msgid "Your circles - %(site)s"
 msgstr "您的圆圈 - %(site)s"
-
-#, machine, python-format
-msgid "Your comment will be taken off the site's pages. Its text stays readable in the public <a href=\"%(url)s\">Deletion log</a>. This can't be undone."
-msgstr "您的评论将被删除 在网站的页面。 其文字可公开阅读 <a href=\"%(url)s\">删除日志</a>无法解除"
 
 #, machine
 msgid "Your commenting history will show here."
@@ -20367,10 +20235,6 @@ msgstr "你的钱"
 #, machine
 msgid "Your post is listed on your profile either way. Choose My profile to have its comments there too, and add guilds to post it straight into them: each guild gets its own copy with its own votes and comments."
 msgstr "你的文章被列在你的档案里 选择 我的简介也在这里发表评论."
-
-#, machine, python-format
-msgid "Your post will be taken off your profile, feeds and guilds. Its text stays readable in the public <a href=\"%(url)s\">Deletion log</a>. This can't be undone."
-msgstr "您的岗位将被删除 您的简介,种子和盾。 其文字可公开阅读 <a href=\"%(url)s\">删除日志</a>无法解除"
 
 #, machine
 msgid "Your posting history will show here."
@@ -20642,11 +20506,6 @@ msgstr "[删除]"
 msgid "[doc pending]"
 msgstr "[待"
 
-#. stands in a deleted post's text where a picture was
-#, machine, plain1
-msgid "[picture]"
-msgstr "[图"
-
 #, machine
 msgid "[removed by admin]"
 msgstr "[被管理员删除]"
@@ -20658,11 +20517,6 @@ msgstr "[被管理员删除]"
 #, machine, plain1
 msgid "[removed by guildmasters]"
 msgstr "[被盾牌主持人删除]"
-
-#. stands in a deleted post's text where a sound was
-#, machine, plain1
-msgid "[sound]"
-msgstr "[声音]"
 
 #, machine
 msgid "a day"
@@ -20794,7 +20648,6 @@ msgstr "由 <a href=\"%(link)s\">页:1%(name)s</a>"
 msgid "by <a href=\"/@%(name)s\">@%(name)s</a>"
 msgstr "由 <a href=\"/@%(name)s\">页:1%(name)s</a>"
 
-#. a filter chip: only entries deleted by this account
 #. a curation that ranks posts with its own algorithm
 #, glossary, machine, plain1, python-format
 msgid "by @%(name)s"
@@ -21131,11 +20984,6 @@ msgid "in %(num)s minute"
 msgid_plural "in %(num)s minutes"
 msgstr[0] "在%(num)s分钟内"
 
-#. a filter chip: only entries in this guild
-#, machine, python-format
-msgid "in +%(guild)s"
-msgstr "单位+%(guild)s"
-
 #. "in:" is a search operator and stays as it is
 #, machine
 msgid "in: is not used when searching one guild."
@@ -21150,11 +20998,6 @@ msgstr "被邀请的盾牌主持人%(target)s"
 #, machine
 msgid "it clashed with something already posted."
 msgstr "它与已经张贴的东西发生冲突."
-
-#. how long a deleted post had been up, such as "3 days"
-#, machine, python-format
-msgid "it had been up for %(time)s"
-msgstr "它已经是%(time)s"
 
 #, machine
 msgid "it is too large."
@@ -21182,10 +21025,6 @@ msgstr "保存在您自己的存储器中作为重播; 每个人在加入之前�
 #, machine, python-format
 msgid "kicked post %(target)s"
 msgstr "脚踢出%(target)s"
-
-#, machine
-msgid "less than a minute"
-msgstr "不到一分钟"
 
 #, glossary, machine, plain1
 msgid "link preview"

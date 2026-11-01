@@ -118,6 +118,25 @@ TERMS = (
     ("Highlights", "", "Stories a person keeps on their profile"),
     ("Exile", "", "Ban someone from one community"),
     ("Siege", "", "Claiming an abandoned community to become its moderator"),
+    # the subcategories the clean-up of 2026-12-08 renamed (scripts/migrations/2026-12-08_taxonomy_cleanup.sql): short names that
+    # headed a category's list and that a machine got wrong (a "Left" came out as "furigana"), so each is written whole
+    ("Modern Culture", "", "Subcategory of Culture: today's culture and its movements, trends and identities (not 'modern art')"),
+    ("Political Ideas & Debate", "", "Subcategory of Politics: political ideologies and the arguments between them (left, right, libertarian...)"),
+    ("International Affairs", "", "Subcategory of Politics: foreign policy, diplomacy and world events between countries"),
+    ("Social Issues", "", "Subcategory of Politics: society's causes and debates, such as identity, rights, equality and justice"),
+    ("Combat Sports", "", "Subcategory of Sports: boxing, MMA, wrestling and the martial arts"),
+    ("Other Sports", "", "Subcategory of Sports: the sports that have no row of their own (team, individual and partner sports)"),
+    ("General Science", "", "Subcategory of Science: science in general, the natural and hard sciences"),
+    ("Social Sciences", "", "Subcategory of Science: sociology, psychology, economics and the other human sciences"),
+    ("General Memes", "", "Subcategory of Memes: everyday memes (casual, dank and interesting ones together)"),
+    ("Tech Support", "", "Subcategory of Technology: asking for and giving help with devices and software"),
+    # four subcategories were all called "News" (the owner, 2026-10-31: every subcategory has its own name): each is the news of its field,
+    # and a machine put the words in the wrong order or the wrong sense ("Gaming" as gambling, "Tech" left in English, "Science" first)
+    ("Entertainment News", "", "Subcategory of Entertainment: news about celebrities, film, TV, music and shows (not 'entertaining news')"),
+    ("Political News", "", "Subcategory of Politics: news about politics and government"),
+    ("Science News", "", "Subcategory of Science: news about scientific discoveries and research"),
+    ("Tech News", "", "Subcategory of Technology: news about gadgets, software and the technology industry"),
+    ("Gaming News", "", "Subcategory of Gaming: news about video games and the games industry (not gambling)"),
 )
 
 HEADINGS = (
