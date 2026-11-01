@@ -1,6 +1,9 @@
-"""The category expansion: 12 categories and 196 subcategories added to the 15 and 86 there were, in seed-db.sql (fresh
+"""The category expansion: 12 categories and 196 subcategories (191 since the clean-up took five back out) added to the 15 and 86 there were, in seed-db.sql (fresh
 databases) and scripts/migrations/2026-11-29_category_expansion.sql (existing ones). Nothing that existed may change:
-guilds hold subcategory ids, and 44 (Offensive) and 108 (Identity Politics) are named in the code."""
+guilds hold subcategory ids, and 44 (Offensive) is named in the code. The clean-up of 2026-12-08 (scripts/migrations/2026-12-08_taxonomy_cleanup.sql)
+then renamed fifteen rows in place and merged sixteen into others: no id was reused or renumbered, 108 (Identity Politics) became the
+ordinary subcategory Social Issues, and (2026-10-31) every subcategory got a name of its own, the News places went (their guilds are filed
+under News alone) and the two Film & TV rows became one."""
 import re
 from collections import Counter
 from pathlib import Path
@@ -15,12 +18,37 @@ QUOTED = r"'((?:[^']|'')*)'"
 LAST_OLD_CATEGORY = 15
 LAST_OLD_SUBCATEGORY = 109
 CATEGORY_COUNT = 27
-SUBCATEGORY_COUNT = 282
+SUBCATEGORY_COUNT = 266           # 282 less the sixteen the clean-up merged away
 LAST_SUBCATEGORY = 305
+CLEANUP = "2026-12-08_taxonomy_cleanup.sql"
+
+# the clean-up: id -> (category id, old name, new name) renamed in place, and id -> (category id, old name, id merged into) retired
+RENAMED = {
+    125: (3, "LGBTQ", "Modern Culture"), 49: (12, "Left", "Political Ideas & Debate"),
+    172: (12, "World Politics", "International Affairs"), 108: (12, "Identity Politics", "Social Issues"),
+    67: (14, "Combat", "Combat Sports"), 91: (14, "Team", "Other Sports"), 98: (13, "Hard Sciences", "General Science"),
+    99: (13, "Soft Sciences", "Social Sciences"), 41: (10, "Casual", "General Memes"), 75: (15, "Help", "Tech Support"),
+    # four subcategories were all "News": each is named for what it is the news of (the owner, 2026-10-31: every subcategory has its own name)
+    23: (5, "News", "Entertainment News"), 55: (12, "News", "Political News"), 60: (13, "News", "Science News"),
+    74: (15, "News", "Tech News"), 28: (6, "Gaming news", "Gaming News"),
+}
+MERGED = {
+    50: (12, "Right", 49), 51: (12, "Authoritarian", 49), 52: (12, "Libertarian", 49), 176: (12, "Centrist", 49),
+    171: (12, "US Politics", 174), 173: (12, "Elections", 174), 194: (14, "Boxing & MMA", 67), 90: (14, "Individual", 91),
+    93: (14, "Partner", 91), 100: (13, "Natural Sciences", 98), 42: (10, "Dank", 41), 165: (10, "Interesting", 41),
+    96: (15, "Mechanics", 97),
+    # the two Film & TV subcategories are one: Entertainment's keeps the name (the only one that changes category)
+    8: (1, "Film & TV", 24),
+    # a place is not a kind of news (the region filter is for that): their guilds are filed under News alone (-11 is category 11 alone)
+    45: (11, "Local", -11), 46: (11, "North America", -11),
+}
+CROSS_CATEGORY = {8}
+# the five merged rows that the expansion itself had added (ids above the old 109): its migration no longer inserts them
+RETIRED_EXPANSION_IDS = {165, 171, 173, 176, 194}
 
 # the same name on purpose: they become one topic (#music, the Explore chip, in:#music), so the chip is not empty
 # and the guilds filed under the old subcategory are found
-SHARED_SLUGS = {"news", "filmtv", "music", "food", "animals", "outdoors"}
+SHARED_SLUGS = {"filmtv", "music", "food", "animals", "outdoors"}
 
 # the rows that existed before the expansion: category id -> (name, {subcategory id: name})
 BEFORE = {
@@ -141,7 +169,8 @@ def test_ids_are_unique_and_run_on_from_the_old_ones():
     assert len({r[0] for r in subcategories}) == len(subcategories) == SUBCATEGORY_COUNT
     new_categories, new_subcategories = expansion_rows()
     assert [r[0] for r in new_categories] == list(range(LAST_OLD_CATEGORY + 1, CATEGORY_COUNT + 1))
-    assert [r[0] for r in new_subcategories] == list(range(LAST_OLD_SUBCATEGORY + 1, LAST_SUBCATEGORY + 1))
+    assert [r[0] for r in new_subcategories] == [
+        i for i in range(LAST_OLD_SUBCATEGORY + 1, LAST_SUBCATEGORY + 1) if i not in RETIRED_EXPANSION_IDS]
     seed = read("seed-db.sql")
     assert f"setval('public.categories_id_seq', {CATEGORY_COUNT}, true)" in seed
     assert f"setval('public.subcategories_id_seq', {LAST_SUBCATEGORY}, true)" in seed
@@ -155,25 +184,74 @@ def test_every_subcategory_has_a_parent():
     assert {r[0] for r in new_categories} <= {r[1] for r in new_subcategories}, "a new category with nothing in it"
 
 
-def test_nothing_that_existed_changed():
+def test_nothing_that_existed_was_renumbered_only_renamed_or_merged_by_the_cleanup():
     categories, subcategories = seed_rows()
     names = {i: name for i, name, icon in categories}
     parents = {i: (cat, name) for i, cat, name in subcategories}
     for cat_id, (name, children) in BEFORE.items():
         assert names[cat_id] == name
         for sub_id, sub_name in children.items():
+            if sub_id in MERGED:
+                assert sub_id not in parents, sub_id
+                continue
+            if sub_id in RENAMED:
+                sub_name = RENAMED[sub_id][2]
             assert parents[sub_id] == (cat_id, sub_name)
     assert sum(len(children) for _, children in BEFORE.values()) == 86
-    assert {i for i in parents if i <= LAST_OLD_SUBCATEGORY} == {i for _, c in BEFORE.values() for i in c}
-    # what the expansion added is as that migration has it
+    assert {i for i in parents if i <= LAST_OLD_SUBCATEGORY} == {i for _, c in BEFORE.values() for i in c if i not in MERGED}
+    # the ids the expansion added are as that migration has them, less none (it no longer inserts the merged ones)
     expansion_categories, expansion_subcategories = expansion_rows()
     assert [r for r in categories if r[0] > LAST_OLD_CATEGORY] == expansion_categories
     assert [r for r in subcategories if r[0] > LAST_OLD_SUBCATEGORY] == expansion_subcategories
-    # named in helpers/suggestions.py (the Child filter hides 44, /browse leaves out 108) and helpers/topics.py
-    assert parents[44] == (10, "Offensive") and parents[108] == (12, "Identity Politics")
+    for sub_id, (cat_id, _old, new) in RENAMED.items():
+        assert parents[sub_id] == (cat_id, new), sub_id
+    for sub_id, (cat_id, _old, into) in MERGED.items():
+        assert sub_id not in parents, sub_id
+        if into < 0:
+            assert -into == cat_id and any(i == cat_id for i, _n, _icon in categories), sub_id         # filed under its own category alone
+        else:
+            assert (parents[into][0] == cat_id) == (sub_id not in CROSS_CATEGORY), sub_id
+    # named in helpers/suggestions.py (the Child filter hides 44) and nowhere else: 108 is an ordinary row now (Social Issues)
+    assert parents[44] == (10, "Offensive") and parents[108] == (12, "Social Issues")
     suggestions = read("ruqqus", "helpers", "suggestions.py")
-    assert "SPECIAL_SUBCATS = (108,)" in suggestions and "CHILD_HIDDEN_SUBCATS = (44,)" in suggestions
-    assert topics.UNLISTED_SUBCAT == 108
+    assert "SPECIAL_SUBCATS" not in suggestions and "CHILD_HIDDEN_SUBCATS = (44,)" in suggestions
+    assert not hasattr(topics, "UNLISTED_SUBCAT")
+    assert "UNLISTED_SUBCAT" not in read("ruqqus", "routes", "front.py") + read("ruqqus", "helpers", "similar_guilds_store.py")
+
+
+def test_the_cleanup_migration_does_what_this_file_says():
+    migration = read("scripts", "migrations", CLEANUP)
+    renames = {int(i): (int(c), old, new) for i, c, old, new in re.findall(
+        rf"\((\d+), (\d+), {QUOTED}, {QUOTED}\)", migration.split("taxonomy_cleanup_rename VALUES", 1)[1].split(";", 1)[0])}
+    merges = {int(i): (int(c), old, int(into)) for i, c, old, into in re.findall(
+        rf"\((\d+), (\d+), {QUOTED}, (-?\d+)\)", migration.split("taxonomy_cleanup_merge VALUES", 1)[1].split(";", 1)[0])}
+    assert renames == RENAMED and merges == MERGED
+    assert len(renames) == 15 and len(merges) == 16 and SUBCATEGORY_COUNT == 282 - len(merges)
+    # the guards, the moves and the deletion come in that order, and a row is removed only once nothing holds it
+    order = [migration.index(x) for x in ("RAISE EXCEPTION", "UPDATE subcategories s SET name", "UPDATE boards b SET subcat_id",
+                                          "UPDATE curations c", "UPDATE users SET feed_defaults", "DELETE FROM subcategories s")]
+    assert order == sorted(order)
+    assert "NOT EXISTS (SELECT 1 FROM boards b WHERE b.subcat_id = s.id)" in migration
+    # a negative target is a category: the guilds are filed under it alone, and a category that is missing stops the file
+    assert "subcat_id = GREATEST(m.new_id, 0), cat_id = CASE WHEN m.new_id < 0 THEN -m.new_id ELSE NULL END" in migration
+    assert "m.new_id < 0 AND NOT EXISTS (SELECT 1 FROM categories c WHERE c.id = -m.new_id)" in migration
+    assert migration.count("CREATE TEMP TABLE") == migration.count("DROP TABLE") == 2
+    # no new row and no new id: the sequences are untouched
+    assert "INSERT INTO subcategories" not in migration and "setval" not in migration
+
+
+def test_the_cleanup_is_in_the_ledger_after_the_others_and_the_seed_has_its_final_names():
+    schema = read("schema.sql")
+    listed = re.findall(r"\('(\d{4}-\d{2}-\d{2}_[\w-]+\.sql)'\)", schema.split("INSERT INTO public.schema_migrations", 1)[1])
+    assert listed == sorted(listed) and listed.index(CLEANUP) > listed.index("2026-12-07_word_filter_language.sql")
+    _, subcategories = seed_rows()
+    seed_names = {name for _, _, name in subcategories}
+    seed_ids = {i for i, _, _ in subcategories}
+    for sub_id, (_cat, old, new) in RENAMED.items():
+        assert new in seed_names and sub_id in seed_ids, (old, new)
+        assert old not in seed_names or old in {"News"} | {n for _c, _o, n in RENAMED.values()}, old      # only a name another row now holds
+    for sub_id, (_cat, old, _into) in MERGED.items():
+        assert sub_id not in seed_ids, old
 
 
 def test_names_are_plain_and_short():
@@ -239,3 +317,41 @@ def test_a_curation_can_name_every_subcategory():
         "scripts", "migrations", MIGRATION)
     _, subcategories = seed_rows()
     assert len(",".join(str(r[0]) for r in subcategories)) < 2000
+
+
+def test_the_retired_ids_and_topics_are_the_migrations_own_tables():
+    """`topics.RETIRED_SUBCATS` (a session's catids, `?cats=`) and `topics.RETIRED` (`/topic/<slug>`, `in:#name`) are what the migration did,
+    not a second list that can drift: every merged id goes to the row it was merged into (a negative one is a category, filed under it
+    alone), and every old name's slug leads to the slug of the row that holds its guilds now."""
+    assert topics.RETIRED_SUBCATS == {old: into for old, (_cat, _name, into) in MERGED.items()}
+    categories, subcategories = seed_rows()
+    final = {i: name for i, _cat, name in subcategories}
+    category_names = {i: name for i, name, _icon in categories}
+    live = {slug(name) for name in final.values()} | {slug(name) for name in category_names.values()}
+
+    def target(into):
+        return category_names[-into] if into < 0 else final[into]
+
+    # a name that is a topic today needs no redirect: "news" (the category) and "Film & TV" stay, and "Gaming news" only changed its case
+    expected = {slug(old): slug(new) for _cat, old, new in RENAMED.values() if slug(old) not in live}
+    expected.update({slug(old): slug(target(into)) for _cat, old, into in MERGED.values() if slug(old) not in live})
+    assert topics.RETIRED == expected
+    assert topics.RETIRED["local"] == topics.RETIRED["northamerica"] == "news"
+    # nothing retired is a name that exists now, or the redirect could never be reached
+    assert not set(topics.RETIRED) & live
+    assert set(topics.RETIRED_SUBCATS).isdisjoint(final)
+    assert topics.current_ids([50, 8, 51, 171, 99, -12, 49, 45, 46]) == [49, 24, 174, 99, -12, -11]
+
+
+def test_every_subcategory_has_a_name_of_its_own_and_news_is_a_kind_not_a_place():
+    """The owner, 2026-10-31: "each sub category must have its own unique name, otherwise the search will turn up multiple news options but
+    they're under different major categories that aren't shown", and "remove north america, local from news category ... things in regard
+    to location can be set by the region filter". A category may share its name with ONE subcategory on purpose (they are one topic)."""
+    categories, subcategories = seed_rows()
+    counts = Counter(slug(name) for _i, _cat, name in subcategories)
+    assert {name for name, count in counts.items() if count > 1} == set()
+    names = {i: name for i, _cat, name in subcategories}
+    assert 45 not in names and 46 not in names and 8 not in names
+    news = {name for _i, cat, name in subcategories if cat == 11}
+    assert news == {"World", "Upbeat", "Breaking News", "Crime & Courts", "Opinion & Analysis", "Fact Checks"}
+    assert [names[i] for i in (23, 55, 60, 74, 28)] == ["Entertainment News", "Political News", "Science News", "Tech News", "Gaming News"]

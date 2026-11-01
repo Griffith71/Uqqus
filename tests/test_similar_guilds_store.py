@@ -108,7 +108,7 @@ def test_a_banned_account_does_not_make_a_pair_reach_the_floor():
     assert store.co_members(one_banned, ANCHOR) == []             # 4 counted in common
 
 
-def test_the_same_topic_fills_in_and_never_matches_uncategorized_or_the_unlisted_subcategory():
+def test_the_same_topic_fills_in_and_never_matches_uncategorized_or_another_topics_subcategory():
     topic = store.Topic(10, "Cooking", 3, "Food", (10, 11, 12))
     boards = [(1, "anchor", {"subcat_id": 10, "cat_id": None}),
               (2, "sub", {"subcat_id": 10, "stored_subscriber_count": 7}),
@@ -116,7 +116,7 @@ def test_the_same_topic_fills_in_and_never_matches_uncategorized_or_the_unlisted
               (4, "alone", {"subcat_id": 0, "cat_id": 3, "stored_subscriber_count": 9}),
               (5, "other", {"subcat_id": 20}),
               (6, "uncategorized", {"subcat_id": 0, "cat_id": None}),
-              (7, "unlisted", {"subcat_id": 108}),
+              (7, "politics", {"subcat_id": 108}),
               (8, "private", {"subcat_id": 10, "is_private": 1}),
               (9, "optout", {"subcat_id": 10, "all_opt_out": 1}),
               (10, "circle", {"subcat_id": 11, "is_circle": 1})]
@@ -150,3 +150,16 @@ def test_the_anchor_is_never_its_own_suggestion():
     rows = store.candidates(make(boards, {1: anchor}), ANCHOR, "anchor", store.Topic(10, "Cooking", 3, "Food", (10,)))
     assert rows == []
 
+
+
+def test_a_social_issues_guild_is_suggested_like_any_other_subcategory():
+    # 108 was "unlisted" until 2026-10-30 and never matched; it is Social Issues now, so it is the anchor's subcategory match and a category
+    # match for a sibling in Politics (review 2026-10-30: the earlier test of this had no guild in the topic at all)
+    topic = store.Topic(108, "Social Issues", 12, "Politics", (49, 108, 174))
+    boards = [(1, "anchor", {"subcat_id": 108}),
+              (2, "same", {"subcat_id": 108, "stored_subscriber_count": 5}),
+              (3, "sibling", {"subcat_id": 49, "stored_subscriber_count": 30}),
+              (4, "elsewhere", {"subcat_id": 41})]
+    rows = store.candidates(make(boards), ANCHOR, "anchor", topic, members=[])
+    assert ids(rows) == [2, 3]
+    assert reason_text(rows[0][2]) == "Also about Social Issues" and reason_text(rows[1][2]) == "Also about Politics"

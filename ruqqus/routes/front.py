@@ -27,7 +27,7 @@ from ruqqus.helpers import all_feed
 from ruqqus.helpers import notification_feed
 from ruqqus.helpers.languages import LANGUAGE_NAMES, known_codes, choosable, language_condition
 from ruqqus.helpers.languages import catalogue as language_catalogue, label as language_label, UNKNOWN as LANGUAGE_UNKNOWN
-from ruqqus.helpers.regions import REGION_CENTROIDS
+from ruqqus.helpers.regions import REGION_CENTROIDS, country_list_text, country_search_text
 from ruqqus.helpers import i18n
 from ruqqus.helpers.i18n_runtime import current_locale, msg, tr, tr_lazy, translations
 
@@ -350,7 +350,7 @@ def _session_filters():
     """The five feed filters exactly as this session holds them (the saved default's shape)."""
     return {"regions": list(flask_session.get('selected_regions') or []),
             "languages": known_codes(flask_session.get('langcodes')),
-            "categories": list(flask_session.get('catids') or []),
+            "categories": topic_rules.current_ids(flask_session.get('catids') or []),
             "types": feed_filter_rules.parse_types(flask_session.get('feed_post_types') or []),
             "advanced": feed_filter_rules.compact(flask_session.get('feed_filter') or {})}
 
@@ -359,11 +359,15 @@ def _saved_defaults(v):
     """A member's saved default filters, every part checked again, or None."""
     if v is None:
         return None
+    # a retired subcategory id is kept as read and mapped below, not dropped: the migration rewrites what is stored, but a default saved by
+    # a worker still on the old code, or by a browser tab left open, can hold one afterwards (the owner would find the filter widened)
     saved = feed_filter_rules.read_defaults(v.feed_defaults or "", known_regions=REGION_CENTROIDS,
-                                            known_languages=_SAVED_LANGUAGE_CODES, known_categories=ALL_CATEGORY_CHOICES)
+                                            known_languages=_SAVED_LANGUAGE_CODES,
+                                            known_categories=ALL_CATEGORY_CHOICES | topic_rules.RETIRED_SUBCATS.keys())
     if saved is not None:
         # as the session holds them: row keys ("mk" -> "bg"), "Other or unknown" kept, so "same" can be "same"
         saved["languages"] = known_codes(saved["languages"])
+        saved["categories"] = [i for i in topic_rules.current_ids(saved["categories"]) if i in ALL_CATEGORY_CHOICES]
     return saved
 
 
@@ -406,11 +410,17 @@ def _feed_defaults_state(v):
 def _resolve_active_filters(v):
     """The combined set of active Regional/Language/Categorical selections,
     shared by all three filter routes so that landing on any one of them
-    applies all three dimensions together, not just its own."""
+    applies all three dimensions together, not just its own.
+
+    Only what the session holds: the member's own choice in the sidebar, or the default they saved
+    (_apply_saved_defaults loads it once per session). Nothing is applied for them. The region their
+    account is based in decides which posts a Regional filter matches, never that one is on, and an
+    empty selection is no filter (the owner, 2026-10-30: "If no filter is selected under region, it
+    should show all")."""
     _apply_saved_defaults(v)
-    region_codes = flask_session.get('selected_regions') or ([v.display_region] if v and v.display_region else [])
+    region_codes = list(flask_session.get('selected_regions') or [])
     language_codes = known_codes(flask_session.get('langcodes'))
-    subcat_ids = flask_session.get('catids') or []
+    subcat_ids = topic_rules.current_ids(flask_session.get('catids') or [])        # a retired id reads as the one it went into
     return region_codes, language_codes, subcat_ids
 
 
@@ -485,8 +495,9 @@ def region_filter_condition(region_list):
     to the caller's query, so it composes safely regardless of what's
     already been joined."""
 
-    # an anonymous post matches through its author too (the owner, 2026-10-27: anonymous posts show in All under a region
-    # filter, and so tell readers which region they come from; the composer's anonymous switch says so). It never names them.
+    # an anonymous post matches through its author too (the owner, 2026-10-27: anonymous posts show under a region filter,
+    # and so tell readers which region they come from; the composer's anonymous switch says so). Since 2026-10-30 a region
+    # filter is only on when the member chose it, so this reaches only them. It never names them.
     author_match = Submission.author_id.in_(select(User.id).where(User.display_region.in_(region_list)))
     forwarder_match = exists(
         select(ForwardRelationship.id)
@@ -531,7 +542,8 @@ def inject_sidebar_filter_data():
     # an error page can render before before_request opened g.db (the rate
     # limiter answers first); it gets an empty region list instead of a 500
     regions_catalog = [
-        {"value": r.code, "label": msg(r.current_name), "search": f"{msg(r.current_name)} {r.current_name}"}
+        {"value": r.code, "label": msg(r.current_name), "search": f"{msg(r.current_name)} {r.current_name} {country_search_text(r.code)}".strip(),
+         "countries": country_list_text(r.code)}              # the hover's list; typing a country finds its region
         for r in sidebar_regions()
     ] if getattr(g, 'db', None) is not None else []
 
@@ -581,9 +593,7 @@ Optional query parameters:
 * `page` - Page of results to return. Default `1`.
 """
 
-    if not request.path.startswith(('/api/', '/inpage/')):
-        flask_session['base_feed'] = 'following'
-        flask_session.modified = True
+    _remember_feed('following')
 
     only = request.args.get("only", None)
     sort = request.args.get("sort", v.defaultsorting if v else "hot")
@@ -671,9 +681,7 @@ Optional query parameters:
 * `page` - Page of results to return. Default `1`.
 """
 
-    if not request.path.startswith(('/api/', '/inpage/')):
-        flask_session['base_feed'] = 'for_you'
-        flask_session.modified = True
+    _remember_feed('for_you')
 
     if v:
         defaultsorting = v.defaultsorting
@@ -797,9 +805,7 @@ Optional query parameters:
 * `page` - Page of results to return. Default `1`.
 """
 
-    if not request.path.startswith(('/api/', '/inpage/')):
-        flask_session['base_feed'] = 'all'
-        flask_session.modified = True
+    _remember_feed('all')
 
     page = page_number()
 
@@ -890,7 +896,17 @@ def _category_choices(text):
     """The ids a posted Categorical list means, in the order given: each a real choice (a subcategory, 0, or -N for the
     guilds filed under a category alone), once. That is at most what exists, which keeps the session cookie small (it also holds the sign-in)."""
     found = (category_filter.parse_token(x) for x in text.split(','))
-    return list(dict.fromkeys(i for i in found if i in ALL_CATEGORY_CHOICES))
+    return list(dict.fromkeys(i for i in topic_rules.current_ids(found) if i in ALL_CATEGORY_CHOICES))
+
+
+def _remember_feed(name):
+    """The feed a filter change goes back to (`_feed_home`). The default is never written, so opening the home page
+    leaves a first-time visitor with no cookie at all (helpers/session_cookie.py)."""
+    if request.path.startswith(('/api/', '/inpage/')):
+        return
+    if flask_session.get('base_feed', 'for_you') != name:
+        flask_session['base_feed'] = name
+        flask_session.modified = True
 
 
 def _feed_home():
@@ -941,7 +957,7 @@ Optional query parameters:
 
     cats_param_present = 'cats' in request.args
     new_cats=request.args.get('cats','')
-    cats = flask_session.get('catids', [])
+    cats = topic_rules.current_ids(flask_session.get('catids', []))        # a retired id reads as the one it went into
 
     if cats_param_present:
         cats = _category_choices(new_cats)
@@ -1231,8 +1247,9 @@ def guild_ids(sort="subs", page=1, cats=[], filter_level=1):
     # cutoff=int(time.time())-(60*60*24*30)
 
     # a Circle guild is found by invitation, never by browsing (its existence names its members' circle)
+    # (a guild with no category at all, the site's own boards, has a NULL subcat_id: the old unlisted-bucket test left those out too, so this says so)
     guilds = g.db.query(Board).filter_by(is_banned=False, is_circle=False).filter(
-        Board.subcat_id != topic_rules.UNLISTED_SUBCAT,
+        Board.subcat_id.isnot(None),
         func.lower(Board.name) != PROFILE_BOARD_NAME
     )
     guilds = filter_boards(guilds, None, level=filter_level)
@@ -1285,7 +1302,7 @@ Optional query parameters:
         chip = None if category.is_nsfw or not category.visible else topic_rules.find(category.name)
         if chip and chip not in chips:
             chips.append(chip)
-    topic = topic_rules.find(request.args.get("topic", ""))
+    topic = topic_rules.find(request.args.get("topic", "")) or topic_rules.find_retired(request.args.get("topic", ""))
     if topic is None and request.args.get("cat", type=int):
         category = next((c for c in CATEGORIES if c.id == request.args.get("cat", type=int)), None)
         topic = topic_rules.find(category.name) if category else None
@@ -1329,7 +1346,7 @@ Optional query parameters:
 @app.route("/topic/<name>", methods=["GET"])
 def topic_page(name):
     """What `#name` links to: the guilds of that topic (a category or subcategory, helpers/topics.py), on Explore."""
-    topic = topic_rules.find(name)
+    topic = topic_rules.find(name) or topic_rules.find_retired(name)
     if topic is None:
         abort(404)
     return redirect(f"/browse?topic={topic.slug}")

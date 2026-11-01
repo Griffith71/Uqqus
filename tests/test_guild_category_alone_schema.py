@@ -7,7 +7,8 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 MIGRATION = "2026-12-02_guild_category_alone.sql"
-GENERAL_ROW = r"INSERT INTO public\.subcategories VALUES \(\d+, \d+, 'General "
+# the earlier design's 27 rows were ids 306-332; "General Science" and "General Memes" (2026-12-08) are renamed old rows
+GENERAL_ROW = r"INSERT INTO public\.subcategories VALUES \(3(?:0[6-9]|[12]\d|3[0-2]), \d+, 'General "
 
 
 def read(*parts):

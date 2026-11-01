@@ -122,8 +122,9 @@ def test_similar_guilds_reasons_name_no_person_and_no_count():
 
 
 def test_hidden_categories_follow_the_word_filter():
-    for subcat in sg.SPECIAL_SUBCATS:
-        assert not sg.guild_eligible(guild(1, subcat_id=subcat), set(), set(), False)
+    # no subcategory is left out of the suggestions any more (108 was the unlisted bucket until 2026-10-30)
+    assert not hasattr(sg, "SPECIAL_SUBCATS")
+    assert sg.guild_eligible(guild(1, subcat_id=108), set(), set(), False)
     for subcat in sg.CHILD_HIDDEN_SUBCATS:
         assert sg.guild_eligible(guild(1, subcat_id=subcat), set(), set(), False)
         assert not sg.guild_eligible(guild(1, subcat_id=subcat), set(), set(), True)

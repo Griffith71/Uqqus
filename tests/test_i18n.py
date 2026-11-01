@@ -270,7 +270,7 @@ def test_a_notice_is_read_in_each_readers_language(app):
         html = rt.notice_html(notice, render=mistletoe.markdown)
         assert "Tu publicación" in html and 'href="/post/1"' in html
     alerts = read("ruqqus", "helpers", "alerts.py")
-    assert "def notify(user, message, **params):" in alerts and "def notify_many(user_ids, message, **params):" in alerts
+    assert "def notify(user, message, /, **params):" in alerts and "def notify_many(user_ids, message, /, **params):" in alerts
     assert "notice_msgid=notice[0] if notice else None" in alerts
 
 

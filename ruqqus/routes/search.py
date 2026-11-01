@@ -449,6 +449,9 @@ def search(v, search_type="posts"):
         # topic search: `#gam` is the topics whose name holds "gam" (a category or a subcategory, helpers/topics.py), and
         # the results are the guilds in them, those filed under a topic's category alone included (-N in its ids)
         found = topic_rules.matching(query)
+        if not found:                       # a name the clean-ups retired (`#local`, `#left`) finds the topic that took over, as /topic/<name> does
+            took_over = topic_rules.find_retired(query)
+            found = [took_over] if took_over else []
         topic_ids = sorted({i for t in found for i in t.ids})
 
         boards = g.db.query(Board).filter(

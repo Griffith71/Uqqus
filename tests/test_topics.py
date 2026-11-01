@@ -27,7 +27,7 @@ def cat(id_, name, subs, visible=True, nsfw=False):
 CATEGORIES = [
     cat(1, "Arts", [sub(8, "Film & TV"), sub(10, "Music"), sub(106, "Visual Arts")]),
     cat(5, "Entertainment", [sub(24, "Film & TV"), sub(23, "News")]),
-    cat(6, "Gaming", [sub(25, "PC"), sub(26, "Console"), sub(0, "Uncategorized"), sub(108, "Hidden away")]),
+    cat(6, "Gaming", [sub(25, "PC"), sub(26, "Console"), sub(0, "Uncategorized")]),
     cat(11, "News", [sub(45, "Local"), sub(47, "World")]),
     cat(20, "Secret", [sub(90, "Quiet")], visible=False),
     cat(21, "Adult", [sub(91, "Adult talk")], nsfw=True),
@@ -49,7 +49,7 @@ def test_a_name_is_its_letters_and_digits():
 
 def test_a_category_is_a_topic_of_all_its_subcategories():
     gaming = topics.find("gaming")
-    assert gaming.label == "Gaming" and gaming.subcat_ids == (25, 26)         # not 0 (uncategorised) or 108 (unlisted)
+    assert gaming.label == "Gaming" and gaming.subcat_ids == (25, 26)         # not 0 (uncategorised)
     assert gaming.url == "/topic/gaming"
     assert topics.find("#Gaming") == gaming and topics.find("GAMING") == gaming
 
@@ -138,7 +138,9 @@ def test_a_topic_link_lands_on_explore_and_explore_filters_by_topic():
     assert '@app.route("/topic/<name>"' in front and 'redirect(f"/browse?topic={topic.slug}")' in front
     browse = front.split("def browse_guilds(", 1)[1].split("\n@app", 1)[0]
     assert 'request.args.get("topic", "")' in browse and "x.visible" not in browse and "topics=chips" in browse
-    assert "Board.subcat_id != topic_rules.UNLISTED_SUBCAT" in front
+    # Explore lists every guild that has a category (a NULL subcat_id is the site's own boards); nothing is an "unlisted" bucket any more
+    guild_list = front.split("def guild_ids(", 1)[1].split("\n@app", 1)[0]
+    assert "Board.subcat_id.isnot(None)" in guild_list and "UNLISTED_SUBCAT" not in front and "!= 108" not in guild_list
     # a topic filters by its own ids as they are (`-N`: the guilds filed under its category alone, helpers/category_filter.py)
     assert "cats = list(topic.ids)" in browse and "expand" not in browse
     assert re.search(r"topic=\{\{ t\.slug \}\}", read("ruqqus", "templates", "boards.html"))
@@ -156,3 +158,37 @@ def test_the_help_pages_say_what_each_symbol_does():
         assert symbol in search, symbol
     formatting = read("ruqqus", "templates", "help", "formatting.html")
     assert "Topic Mention" in formatting and "Curation Mention" in formatting
+
+
+# --- topics that were retired (2026-12-08) --------------------------------------------------------------------------------
+
+def test_a_retired_topic_leads_to_the_one_that_took_over_and_a_live_topic_is_never_shadowed():
+    cats = [
+        cat(3, "Culture", [sub(125, "Modern Culture")]),
+        cat(12, "Politics", [sub(49, "Political Ideas & Debate"), sub(174, "Government & Policy"), sub(108, "Social Issues")]),
+        cat(15, "Technology", [sub(97, "Engineering"), sub(75, "Tech Support")]),
+        cat(9, "Help", [sub(300, "Askers")]),                 # a live topic named like a retired one
+    ]
+    topics.set_categories(cats)
+    assert topics.find_retired("#LGBTQ").slug == "modernculture" and topics.find_retired("left").slug == "politicalideasdebate"
+    assert topics.find_retired("US Politics").slug == "governmentpolicy" and topics.find_retired("mechanics").slug == "engineering"
+    assert topics.find_retired("identitypolitics").slug == "socialissues"
+    assert topics.find("lgbtq") is None and topics.find("left") is None          # a typed #left stays plain text
+    assert topics.find_retired("help") is None and topics.find("help").label == "Help"     # a topic that exists wins
+    assert topics.find_retired("nothing") is None and topics.find_retired(None) is None
+
+
+def test_every_retired_topic_names_a_topic_the_seed_still_has():
+    import re as _re
+    seed = read("seed-db.sql")
+    live = {topics.slug(v.replace("''", "'")) for v in _re.findall(
+        r"INSERT INTO public\.(?:categories|subcategories) VALUES \(\d+, (?:'[0-9a-f]{6}', (?:true|false), )?(?:\d+, )?'((?:[^']|'')*)'", seed)}
+    for old, new in topics.RETIRED.items():
+        assert new in live, (old, new)
+        assert old not in live, old                          # a retired name that is a live topic again would never be reached
+
+
+def test_the_topic_address_tries_the_retired_names_after_the_live_ones():
+    front = read("ruqqus", "routes", "front.py")
+    page = front.split("def topic_page(", 1)[1].split("\n@app", 1)[0]
+    assert "topic_rules.find(name) or topic_rules.find_retired(name)" in page and "abort(404)" in page

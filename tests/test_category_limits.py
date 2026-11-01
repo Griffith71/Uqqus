@@ -12,7 +12,7 @@ from types import SimpleNamespace as NS
 
 import pytest
 
-from ruqqus.helpers import category_filter
+from ruqqus.helpers import category_filter, topics
 from ruqqus.helpers import feed_filters as ff
 
 ROOT = Path(__file__).resolve().parent.parent / "ruqqus"
@@ -168,7 +168,7 @@ def test_saving_goes_back_to_the_edit_page_and_drops_the_curations_cached_feed()
 # --- the Categorical list in the session (routes/front.py `categorical`) ---------------------------------------------
 
 def _categorical(text, known=EVERY_CHOICE):
-    return _function(("routes", "front.py"), "_category_choices", category_filter=category_filter,
+    return _function(("routes", "front.py"), "_category_choices", category_filter=category_filter, topic_rules=topics,
                      ALL_CATEGORY_CHOICES=frozenset(known))(text)
 
 
@@ -188,6 +188,8 @@ def test_the_session_never_holds_more_than_the_choices_that_exist():
     # the session is a cookie that also carries the sign-in
     flood = ",".join(str(i) for i in itertools.islice(itertools.cycle(EVERY_CHOICE), 20000))
     assert len(flood) > 4096
-    kept = _categorical(flood)
-    assert sorted(kept) == EVERY_CHOICE and len(kept) == len(EVERY_CHOICE)
+    # the real choices have no retired id (the 2026-12-08 clean-up merged thirteen away: the app reads one as the id it went into)
+    real = [i for i in EVERY_CHOICE if i not in topics.RETIRED_SUBCATS]
+    kept = _categorical(flood, known=real)
+    assert sorted(kept) == real and len(kept) == len(real)
     assert len(json.dumps(kept)) < 2000                  # under half the 4 KB a cookie may hold

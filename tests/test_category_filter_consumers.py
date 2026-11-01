@@ -5,6 +5,7 @@ The real functions are compiled out of their files and run on SQLite with small 
 does for the curation route: the modules themselves import the whole app (database models, gevent), which the suite never
 does."""
 import ast
+import json
 import sys
 import time
 import types
@@ -51,7 +52,7 @@ ARTS = cat(1, "Arts", [sub(8, "Film & TV"), sub(10, "Music")])
 NEWS_CATEGORY = cat(11, "News", [sub(45, "Local"), sub(47, "World")])
 ENTERTAINMENT = cat(5, "Entertainment", [sub(23, "News"), sub(24, "Film & TV")])
 MEMES = cat(10, "Memes", [sub(44, "Offensive"), sub(50, "Dank")])
-POLITICS = cat(12, "Politics", [sub(108, "Identity Politics"), sub(60, "Debate")])
+POLITICS = cat(12, "Politics", [sub(108, "Social Issues"), sub(60, "Debate")])
 FOOD = cat(18, "Food", [sub(120, "Baking"), sub(121, "Cooking")])
 EMPTY = cat(20, "Empty", [])
 SECRET = cat(30, "Secret", [sub(90, "Quiet")], visible=False)
@@ -131,7 +132,7 @@ GUILDS = {
     3: (0, None),        # Uncategorized
     4: (120, None),      # Food, Baking
     5: (0, 18),          # Food alone
-    6: (108, None),      # Politics, Identity Politics: left out of every guild list
+    6: (108, None),      # Politics, Social Issues: a subcategory like any other since 2026-10-30 (it was the unlisted bucket)
     7: (44, None),       # Memes, Offensive
     8: (0, 10),          # Memes alone
     9: (45, None),       # News (the category), Local
@@ -162,8 +163,16 @@ def guild_ids(db):
                      ALL_CATEGORY_CHOICES=frozenset(CHOICES), abort=lambda status: pytest.fail(f"abort({status})"))
 
 
-def test_discover_guilds_lists_every_guild_but_the_unlisted_subcategory(guild_ids):
-    assert guild_ids(cats=None) == [1, 2, 3, 4, 5, 7, 8, 9]
+def test_discover_guilds_lists_every_guild_that_has_a_category(guild_ids):
+    # Social Issues (108) is listed like any row
+    assert guild_ids(cats=None) == [1, 2, 3, 4, 5, 6, 7, 8, 9]
+
+
+def test_discover_guilds_leaves_out_a_board_with_no_category_at_all(db, guild_ids):
+    # the site's own boards (general, systemprofile) have a NULL subcat_id; `!= 108` used to leave them out as a side effect
+    db.add(Board(id=10, name="general", subcat_id=None, cat_id=None, stored_subscriber_count=1))
+    db.commit()
+    assert 10 not in guild_ids(cats=None)
 
 
 def test_a_category_token_in_a_typed_list_is_only_the_guilds_filed_under_it_alone(guild_ids):
@@ -177,9 +186,9 @@ def test_a_category_token_in_a_typed_list_is_only_the_guilds_filed_under_it_alon
 def test_the_whole_category_is_its_token_and_all_of_its_rows(guild_ids):
     assert guild_ids(cats=[-1, 8, 10]) == [1, 2]
     assert guild_ids(cats=[-18, 120, 121]) == [4, 5]
-    # Memes: the Offensive row is part of it, as in the Categorical list; Politics' unlisted row stays out of every list
+    # Memes: the Offensive row is part of it, as in the Categorical list; Politics' Social Issues row is listed like the others
     assert guild_ids(cats=[-10, 44, 50]) == [7, 8]
-    assert guild_ids(cats=[-12, 108, 60]) == []
+    assert guild_ids(cats=[-12, 108, 60]) == [6]
 
 
 def test_rows_ticked_without_their_heading_leave_the_guilds_filed_under_the_category_alone_out(guild_ids):
@@ -396,3 +405,62 @@ def test_the_notice_names_the_categories_and_the_session_heals_when_everything_i
 def test_no_topic_filter_stands_in_an_id_that_could_name_a_real_category():
     for parts in (("helpers", "search_filters.py"), ("helpers", "search_comments.py"), ("helpers", "feed_filter_sql.py")):
         assert "(-1,)" not in read(*parts), parts
+
+
+# --- ids and topics the 2026-12-08 clean-up retired (review 2026-10-30) ---------------------------------------------------------------
+
+def test_a_retired_id_in_a_typed_list_or_a_session_reads_as_the_row_it_went_into():
+    choose = _function(("routes", "front.py"), "_category_choices", category_filter=category_filter, topic_rules=topics,
+                       ALL_CATEGORY_CHOICES=frozenset({0, 9, 24, 49, 67, 174, -11, -12}))
+    # a saved link's ?cats= or a posted list: 50 (Right) is Political Ideas & Debate now, 171 and 173 Government & Policy, once each, in order
+    assert choose("50,9,171,173,49,x,999,-12") == [49, 9, 174, -12]
+    assert choose("194") == [67]
+    # Local and North America are News filed under the category alone (-11), Arts' Film & TV is Entertainment's
+    assert choose("45,46,8,24") == [-11, 24]
+    front = (RUQQUS / "routes" / "front.py").read_text(encoding="utf-8")
+    resolve = front.split("def _resolve_active_filters(", 1)[1].split("\ndef ", 1)[0]
+    assert "subcat_ids = topic_rules.current_ids(flask_session.get('catids') or [])" in resolve      # a session's cookie from before the migration
+    assert 'topic_rules.current_ids(flask_session.get(\'catids\') or [])' in front.split("def _session_filters(", 1)[1].split("\ndef ", 1)[0]
+
+
+def test_a_saved_default_that_still_holds_a_retired_id_is_mapped_not_widened():
+    """A default saved by a worker still on the old code (or a tab left open) after the migration ran can hold 50, 45 or 8: read, it must
+    mean what the session and `?cats=` mean (49, -11, 24), not lose them and become a wider filter."""
+    from ruqqus.helpers import feed_filters
+    saved_defaults = _function(("routes", "front.py"), "_saved_defaults", feed_filter_rules=feed_filters, REGION_CENTROIDS={},
+                               _SAVED_LANGUAGE_CODES=frozenset(), known_codes=lambda codes: list(codes), topic_rules=topics,
+                               ALL_CATEGORY_CHOICES=frozenset({0, 9, 24, 49, 174, -11, -12}))
+    blob = json.dumps({"regions": [], "languages": [], "categories": [50, 45, 8, 9, 46, -12, 999], "types": [], "advanced": {}})
+    assert saved_defaults(NS(feed_defaults=blob))["categories"] == [49, -11, 24, 9, -12]          # once each, in order; 999 never existed
+    assert saved_defaults(None) is None and saved_defaults(NS(feed_defaults="")) is None
+    front = (RUQQUS / "routes" / "front.py").read_text(encoding="utf-8")
+    assert "known_categories=ALL_CATEGORY_CHOICES | topic_rules.RETIRED_SUBCATS.keys()" in front
+    assert "cats = topic_rules.current_ids(flask_session.get('catids', []))" in front            # the /inpage/categorical partial too
+
+
+def test_the_hash_search_finds_the_topic_that_took_over_from_a_retired_one():
+    search = (RUQQUS / "routes" / "search.py").read_text(encoding="utf-8")
+    branch = search.split('elif query.startswith("#"):', 1)[1].split("topic_ids = ", 1)[0]
+    assert "topic_rules.matching(query)" in branch and "topic_rules.find_retired(query)" in branch
+    topics.set_categories([cat(11, "News", [sub(47, "World")]), cat(12, "Politics", [sub(49, "Political Ideas & Debate")])])
+    try:
+        assert topics.matching("#local") == []                                   # no topic is called that any more ...
+        assert topics.find_retired("#local").slug == topics.find_retired("North America").slug == "news"      # ... and the box lands on News
+        assert topics.find_retired("#news") is None                              # a name that is a topic is never "retired"
+    finally:
+        topics.set_categories(None)
+
+
+def test_an_old_topic_name_still_means_something_in_a_search_and_on_explore(tmp_path):
+    from ruqqus.helpers import search_filters
+    topics.set_categories([cat(12, "Politics", [sub(49, "Political Ideas & Debate"), sub(174, "Government & Policy")])])
+    try:
+        assert search_filters.find_topic("left").slug == "politicalideasdebate"             # in:#left saved before the clean-up
+        assert search_filters.find_topic("#UsPolitics").slug == "governmentpolicy"
+        assert search_filters.find_topic("politics").label == "Politics"                    # a topic that exists is never replaced
+        assert search_filters.find_topic("nothing") is None
+    finally:
+        topics.set_categories(None)
+    front = (RUQQUS / "routes" / "front.py").read_text(encoding="utf-8")
+    browse = front.split("def browse_guilds(", 1)[1].split("\n@app", 1)[0]
+    assert 'topic_rules.find(request.args.get("topic", "")) or topic_rules.find_retired(request.args.get("topic", ""))' in browse

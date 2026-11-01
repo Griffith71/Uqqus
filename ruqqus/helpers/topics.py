@@ -5,8 +5,9 @@ stays plain text. Pure: `build` works on any objects shaped like the category cl
 so the markdown tests need no database.
 
 A topic's name is its `slug`: lowercase, letters and digits only (`Film & TV` is `filmtv`, `Q&A` is `qa`). Every category or
-subcategory with the same slug is one topic (`#news` is every News topic, `#filmtv` is Arts and Entertainment), so a name
-never has to be told apart.
+subcategory with the same slug is one topic (`#filmtv` is the Film & TV category and its subcategory, `#music` the Music category
+and the Arts subcategory), so a name never has to be told apart. Among subcategories every name is its own (the owner, 2026-10-31:
+"each sub category must have its own unique name"): the four that were all "News" are Entertainment, Political, Science and Tech News.
 
 **Never read `SubCategory.visible` here or anywhere that holds the start-up list**: it reads its category lazily and the
 list is detached from its session. `shown` below is the same rule written with the category at hand.
@@ -14,9 +15,9 @@ list is detached from its session. `shown` below is the same rule written with t
 import re
 from dataclasses import dataclass
 
-# 108 is left out of every guild list (routes/front.py guild_ids) and 0 is "Uncategorized": neither is a topic
-UNLISTED_SUBCAT = 108
-EXCLUDED_SUBCATS = (0, UNLISTED_SUBCAT)
+# 0 is "Uncategorized": not a topic. (Subcategory 108 used to be left out of every guild list and of the topics, as the "unlisted" bucket;
+# it is "Social Issues" now, listed like any other: the owner, 2026-10-30.)
+EXCLUDED_SUBCATS = (0,)
 
 
 def slug(name):
@@ -94,6 +95,43 @@ def find(name):
     """The topic `name` writes (with or without its #), or None."""
     all_topics()
     return _topics.get(slug(str(name or "").lstrip("#")))
+
+
+# Topics that went in the clean-up of 2026-12-08 (scripts/migrations/2026-12-08_taxonomy_cleanup.sql) and the topic that holds their guilds
+# now. Only the `/topic/<slug>` address uses it, so a link already written into a post still lands somewhere; a typed `#left` is not a link.
+RETIRED = {
+    "lgbtq": "modernculture",
+    "left": "politicalideasdebate", "right": "politicalideasdebate", "authoritarian": "politicalideasdebate",
+    "libertarian": "politicalideasdebate", "centrist": "politicalideasdebate",
+    "uspolitics": "governmentpolicy", "elections": "governmentpolicy", "worldpolitics": "internationalaffairs",
+    "identitypolitics": "socialissues",
+    "combat": "combatsports", "boxingmma": "combatsports",
+    "team": "othersports", "individual": "othersports", "partner": "othersports",
+    "hardsciences": "generalscience", "naturalsciences": "generalscience", "softsciences": "socialsciences",
+    "casual": "generalmemes", "dank": "generalmemes", "interesting": "generalmemes",
+    "mechanics": "engineering", "help": "techsupport",
+    "local": "news", "northamerica": "news",       # where the news is about is the region filter's job (2026-10-31)
+}
+
+
+# The subcategory ids the same clean-up merged away and the id each went into (the migration's `taxonomy_cleanup_merge`): a session's
+# `catids` cookie, a saved link's `?cats=` and anything else that still holds one reads as the successor, so it matches the guilds that
+# moved instead of nothing. Stored data (guilds, curations, saved defaults) is moved by the migration itself.
+# A negative id is a category (helpers/category_filter.py): Local and North America became "News, filed under the category alone" (-11).
+RETIRED_SUBCATS = {50: 49, 51: 49, 52: 49, 176: 49, 171: 174, 173: 174, 194: 67, 90: 91, 93: 91, 100: 98, 42: 41, 165: 41, 96: 97,
+                   8: 24, 45: -11, 46: -11}
+
+
+def current_ids(ids):
+    """The ids with every retired subcategory replaced by the one it went into, each once, in order."""
+    return list(dict.fromkeys(RETIRED_SUBCATS.get(i, i) for i in ids))
+
+
+def find_retired(name):
+    """The topic that took over from a retired one (`#lgbtq`), or None; never for a name that is a topic today."""
+    if find(name) is not None:
+        return None
+    return find(RETIRED.get(slug(str(name or "").lstrip("#")), ""))
 
 
 def matching(term):

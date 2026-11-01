@@ -29,7 +29,7 @@ def cat(id_, name, subs, visible=True, nsfw=False):
 CATEGORIES = [
     cat(1, "Arts", [sub(8, "Film & TV"), sub(10, "Music"), sub(106, "Visual Arts")]),
     cat(10, "Memes", [sub(44, "Offensive"), sub(50, "Dank")]),
-    cat(12, "Politics", [sub(108, "Identity Politics"), sub(60, "Debate")]),
+    cat(12, "Politics", [sub(108, "Social Issues"), sub(60, "Debate")]),
     cat(18, "Food", [sub(120, "Baking"), sub(121, "Cooking")]),
     cat(20, "Empty", []),
     cat(30, "Secret", [sub(90, "Quiet")], visible=False),
@@ -45,7 +45,7 @@ ROWS = [
     (5, None, None),    # no subcategory at all
     (6, None, 18),      # Food alone, with a NULL subcategory
     (7, 44, None),      # Memes, Offensive (a row the feeds hide)
-    (8, 108, None),     # Politics, Identity Politics (unlisted)
+    (8, 108, None),     # Politics, Social Issues
     (9, 120, None),     # Food, Baking
     (10, 0, 18),        # Food alone
     (11, 90, None),     # a hidden category's row
@@ -126,9 +126,9 @@ def test_the_whole_category_is_its_token_and_all_of_its_subcategory_ids(engine):
     assert found(engine, clause_for([-1, 8, 10, 106])) == found(engine, clause_for([8, 10, 106])) | found(engine, clause_for([-1]))
 
 
-def test_the_hidden_and_unlisted_rows_of_a_category_are_in_it_only_when_listed(engine):
+def test_the_hidden_rows_of_a_category_are_in_it_only_when_listed(engine):
     assert found(engine, clause_for([-10, 44, 50])) == {7, 12, 14}      # 44 is "Offensive"
-    assert found(engine, clause_for([-12, 108, 60])) == {8, 15}         # 108 is unlisted from every guild list
+    assert found(engine, clause_for([-12, 108, 60])) == {8, 15}         # Social Issues (108) is a row like any other
     assert found(engine, clause_for([-30, 90])) == {11}                 # a hidden category
     assert found(engine, clause_for([-31, 92, 93])) == {13}             # a row that is hidden by itself
     assert found(engine, clause_for([-10, 50])) == {12, 14}             # not ticked, so not there
@@ -174,8 +174,8 @@ def test_each_id_is_made_a_number_and_one_that_cannot_be_is_ignored(engine):
 def test_a_topics_ids_are_its_subcategories_and_the_guilds_filed_under_its_category_alone(engine):
     assert topics.find("food").ids == (120, 121, -18)
     assert found(engine, clause_for(topics.find("food").ids)) == {6, 9, 10}
-    # its rows leave out the unlisted 108 and a row hidden by itself, which the Categorical list does show
-    assert topics.find("politics").ids == (60, -12) and found(engine, clause_for(topics.find("politics").ids)) == {15}
+    # Politics holds Social Issues (108) like any row; a row hidden by itself is left out of a topic, which the Categorical list does show
+    assert topics.find("politics").ids == (60, 108, -12) and found(engine, clause_for(topics.find("politics").ids)) == {8, 15}
     assert topics.find("mixed").ids == (92, -31) and found(engine, clause_for(topics.find("mixed").ids)) == set()
     assert found(engine, clause_for(topics.find("arts").ids)) == {1, 2, 3}
 

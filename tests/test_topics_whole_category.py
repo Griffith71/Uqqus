@@ -21,13 +21,13 @@ CATEGORIES = [
     cat(5, "Entertainment", [sub(24, "Film & TV"), sub(23, "News")]),
     cat(6, "Gaming", [sub(25, "PC"), sub(26, "Console")]),
     cat(11, "News", [sub(45, "Local"), sub(47, "World")]),
-    cat(12, "Politics", [sub(108, "Identity Politics"), sub(55, "News"), sub(56, "Debate")]),
+    cat(12, "Politics", [sub(55, "News"), sub(56, "Debate")]),
     cat(24, "Music", [sub(330, "Rock")]),
     cat(25, "Film & TV", [sub(301, "Cult")]),
     cat(20, "Secret", [sub(90, "Quiet")], visible=False),
     cat(21, "Adult", [sub(91, "Adult talk")], nsfw=True),
     cat(22, "Mixed", [sub(92, "Shown", True), sub(93, "Hidden by itself", False)]),
-    cat(23, "Unlisted", [sub(108, "Hidden away")]),
+    cat(23, "Unlisted", [sub(0, "Uncategorized")]),
     cat(26, "Bare", []),
 ]
 
@@ -82,7 +82,7 @@ def test_a_hidden_or_adult_category_adds_no_id_to_any_topic():
 
 
 def test_a_category_with_nothing_to_show_is_no_topic_and_names_no_id():
-    # Unlisted holds 108 only, Bare holds nothing, and the hidden row of Mixed is not shown
+    # Unlisted holds Uncategorized (0) only, Bare holds nothing, and the hidden row of Mixed is not shown
     assert topics.find("unlisted") is None and topics.find("bare") is None
     assert not {-23, -26} & {i for t in topics.all_topics() for i in t.ids}
     assert topics.find("mixed").subcat_ids == (92,) and topics.find("mixed").ids == (92, -22)

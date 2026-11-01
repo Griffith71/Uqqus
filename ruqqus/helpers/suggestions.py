@@ -31,7 +31,6 @@ CACHE_SECONDS = 300
 GUILD_CACHE_SECONDS = 1800        # Similar guilds' ranking: its members-in-common query is the costly one
 SIMILAR_GUILDS_MS = 2500          # and it gives up (leaving the same-topic guilds) after this long
 RECENT_SECONDS = 30 * 86400
-SPECIAL_SUBCATS = (108,)          # never suggested (as /browse)
 CHILD_HIDDEN_SUBCATS = (44,)      # and these when the word filter is on
 PROFILE_BOARD = "systemprofile"
 
@@ -132,7 +131,7 @@ def guild_eligible(b, joined, blocked_board_ids, filter_on):
         return False
     if b.is_banned or b.is_private or b.all_opt_out or b.name == PROFILE_BOARD:
         return False
-    hidden = SPECIAL_SUBCATS + (CHILD_HIDDEN_SUBCATS if filter_on else ())
+    hidden = CHILD_HIDDEN_SUBCATS if filter_on else ()
     return b.subcat_id not in hidden
 
 
@@ -403,11 +402,9 @@ def similar_for(owner, v, limit=SIMILAR_COUNT):
 # --- Similar guilds (a guild's sidebar; the SQL and its rules are in helpers/similar_guilds_store.py) ----------------
 
 def _topic_of(anchor):
-    """What the guild is filed under (similar_guilds_store.Topic), or None for an Uncategorized or unlisted one."""
+    """What the guild is filed under (similar_guilds_store.Topic), or None for an Uncategorized one."""
     from ruqqus.helpers import similar_guilds_store as store
 
-    if anchor.subcat_id in SPECIAL_SUBCATS:
-        return None
     category = anchor.category
     if category is None:
         return None

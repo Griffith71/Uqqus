@@ -68,7 +68,7 @@ def find_guild(name, v):
 def find_topic(name):
     """The topic an `in:#name` names (helpers/topics.py), or None."""
     from ruqqus.helpers import topics
-    return topics.find(name)
+    return topics.find(name) or topics.find_retired(name)       # an `in:#left` saved before the 2026-12-08 clean-up still means something
 
 
 def find_curation(slug, v):

@@ -247,7 +247,7 @@ def test_the_state_label_works_on_the_catalogs_own_groups_and_in_the_phone_sheet
     assert labels == {"-1": ALL, "-14": SOME}
 
 
-def test_the_label_texts_and_the_hint_go_through_the_translating_function():
+def test_the_label_texts_go_through_the_translating_function():
     env = template_env()
     env.install_gettext_callables(lambda text: "[" + text + "]", lambda one, many, n: one, newstyle=True,
                                   pgettext=lambda ctx, text: text, npgettext=lambda ctx, one, many, n: one)
@@ -260,19 +260,23 @@ def test_the_label_texts_and_the_hint_go_through_the_translating_function():
     assert heading["attrs"]["data-state-some"] == f"[{SOME}]"
     assert find(heading, "span", **{"data-filter-state": True})[0]["text"] == f"[{SOME}]"
     assert find(heading, "a", role="checkbox")[0]["attrs"]["title"] == f"[{TITLE}]"
-    assert f"[{HINT}]" in html
+    assert HINT not in html and f"[{HINT}]" not in html                                    # the explanation under the search box is gone
 
 
-def test_a_hint_under_the_search_box_of_the_grouped_lists_only():
+def test_no_explanation_sits_under_the_search_box_of_any_list():
+    # the owner (2026-10-30): "you can also remove the 'Tick a category to tick all its subcategories...' explanation". The heading's
+    # own tooltip (its title, tested above) still says it on hover
     html, root = grouped()
-    hints = [p for p in find(root, "p") if "text-muted" in classes(p)]
-    assert [p["text"] for p in hints] == [HINT] and classes(hints[0]) == ["text-muted", "text-small", "mb-1"]
-    assert html.index("oninput=\"filterSidebarList") < html.index(HINT) < html.index("data-keep-order")   # between the search box and the list
-    again, _ = grouped("mobile-categorical-options", apply_mode="form", formkey="k")
-    assert HINT in again
+    assert HINT not in html and not find(root, "p")
+    again, again_root = grouped("mobile-categorical-options", apply_mode="form", formkey="k")
+    assert HINT not in again and not find(again_root, "p")
     flat = str(macros().filter_panel_body("sidebar-language-options", FLAT, {"a"}, "Search", "/language", "codes"))
     assert HINT not in flat and not find(Tree(flat).root, "p")
     assert HINT not in str(macros().post_type_body("sidebar-post-type-options", [("text", "Text", "Content")], ["Content"], set()))
+    assert "Tick a category" not in MACROS
+    # the search box carries the hook the left sidebar's own (shorter) height is written against
+    box = find(root, "input", type="text")[0]
+    assert classes(box) == ["form-control", "form-control-sm", "filter-search", "mb-2"]
 
 
 def test_the_count_line_and_the_empty_notice_are_the_flat_lists():
@@ -656,24 +660,35 @@ def test_the_script_writes_no_label_text_of_its_own():
 
 # --- the stylesheets -------------------------------------------------------------------------------------------------------
 
-def test_both_stylesheets_draw_the_heading_as_a_list_item_the_same_way():
+def test_both_stylesheets_draw_the_heading_as_a_bold_row_like_the_ones_under_it_the_same_way():
     rules = []
     for name in ("main.scss", "main_dark.scss"):
         css = read("assets", "style", name)
-        assert css.count(".filter-group-heading {") == 1, name
-        rule = css.split(".filter-group-heading {", 1)[1].split("\n}", 1)[0]
-        # it is a <li> now: no button resets, and no :first-child rule (the heading is a row of the group's list)
+        assert css.count("\n.filter-group-heading {") == 1, name
+        rule = css.split("\n.filter-group-heading {", 1)[1].split("\n}", 1)[0]
+        # it is a <li> (no button resets, no :first-child rule: the heading is a row of the group's list)
         assert "first-child" not in rule and "list-style: none" in rule and "cursor: pointer" in rule, name
         assert not {"display: block", "width: 100%", "border: 0", "background: none", "text-align"} & {
             line.strip().rstrip(";") for line in rule.splitlines()}, name
-        assert "padding: .375rem 0 .25rem" in rule and "margin: .125rem 0 0" in rule, name
-        # ticked, it takes the link colour as it does on hover
+        # the owner (2026-10-30): "the exact same font except bolded": a row's own size (inherited), face, case and spacing, the
+        # sheet's own text colour (.text-black is $black), and only the weight is different
+        head = rule.split(".filter-group-state {", 1)[0]
+        assert "font-weight: 700;" in head and "color: $black;" in head and "padding: .25rem 0;" in head and "margin: 0;" in head, name
+        for never in ("font-size", "text-transform", "letter-spacing", "$muted", "var(--text)", "var(--link);\n    }\n\n    &:hover"):
+            assert never not in head, (name, never)
+        # ticked, it takes the link colour, as a ticked row does (.text-purple)
         assert "&.is-selected {\n        color: var(--link);\n    }" in rule, name
-        # the state label beside the name: small and muted, not in capitals, and its margin flips in a right-to-left page
+        # the label of what a ticked heading stands for: on a line of its own under the name and in step with it (beside it, a long one
+        # squeezed the name mid-word), small and muted, and its padding flips in a right-to-left page
+        assert "a {\n        color: inherit;\n        flex-wrap: wrap;\n    }" in rule, name
         state = rule.split(".filter-group-state {", 1)[1].split("\n    }", 1)[0]
-        assert "margin-left: .5rem" in state and "text-transform: none" in state and "font-weight: 400" in state, name
-        assert "color: $muted" in state and "first-child" not in state, name
+        assert "flex: 1 0 100%" in state and "padding-left: 1.125rem" in state and "text-transform: none" in state, name
+        assert "font-weight: 400" in state and "font-size: .875rem" in state and "color: $muted" in state and "first-child" not in state, name
+        # a group after another has room above its heading, and the rows under a heading are one tick step in from it (never the lone
+        # Uncategorized row, which has no heading to be under)
+        assert "[data-filter-group] ~ [data-filter-group] > ul > .filter-group-heading {\n    margin-top: .5rem;\n}" in css, name
+        assert "[data-filter-group] > ul > .filter-group-heading ~ [data-filter-row] {\n    padding-left: 1.125rem;\n}" in css, name
         # the post-type heading keeps its own rule, and the new one sits before the marker guild CSS reads from
-        assert ".post-type-group {" in css and css.index(".filter-group-heading {") < css.index("// Create post card"), name
+        assert ".post-type-group {" in css and css.index("\n.filter-group-heading {") < css.index("// Create post card"), name
         rules.append(rule)
     assert rules[0] == rules[1]

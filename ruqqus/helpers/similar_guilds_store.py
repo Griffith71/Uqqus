@@ -29,7 +29,6 @@ SAMPLE_MEMBERS = 5000         # a bigger guild is read through its newest member
 PER_TIER = 100
 TOPIC_PER_STEP = 25
 PROFILE_BOARD = "systemprofile"
-UNLISTED_SUBCAT = 108         # never a topic (as /browse and the guild lists)
 
 # What a guild is filed under, for tier B: `subcat_id` / `subcat_name` (None when it is filed under a category alone or
 # not at all), `cat_id` / `cat_name` and `sibling_subcats`, the ids of every subcategory of that category.
@@ -66,7 +65,7 @@ GROUP BY s.board_id
 
 _PUBLIC_GUILD = ("COALESCE(b.is_private, :no) = :no AND COALESCE(b.is_banned, :no) = :no "
                  "AND COALESCE(b.is_circle, :no) = :no AND COALESCE(b.all_opt_out, :no) = :no "
-                 "AND b.name <> :profile_board AND COALESCE(b.subcat_id, 0) <> :unlisted AND b.id <> :anchor")
+                 "AND b.name <> :profile_board AND b.id <> :anchor")
 
 _SAME_SUBCAT = text(f"""
 SELECT b.id, COALESCE(b.stored_subscriber_count, 0) FROM boards b
@@ -121,8 +120,8 @@ def same_topic(db, anchor_id, topic):
     if topic is None:
         return []
     out = []
-    flags = _flags(anchor=anchor_id, profile_board=PROFILE_BOARD, unlisted=UNLISTED_SUBCAT, cap=TOPIC_PER_STEP)
-    if topic.subcat_id and topic.subcat_id != UNLISTED_SUBCAT:
+    flags = _flags(anchor=anchor_id, profile_board=PROFILE_BOARD, cap=TOPIC_PER_STEP)
+    if topic.subcat_id:
         for board, n in db.execute(_SAME_SUBCAT, {**flags, "subcat": topic.subcat_id}).fetchall():
             out.append((board, n, "subcategory"))
     if topic.cat_id:
