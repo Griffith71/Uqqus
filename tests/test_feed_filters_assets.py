@@ -151,6 +151,17 @@ def test_the_default_is_loaded_into_a_new_session_once_and_checked_again():
     assert "known_regions=REGION_CENTROIDS" in saved and "known_categories=ALL_CATEGORY_CHOICES" in saved
 
 
+def test_a_region_is_applied_only_when_the_member_chose_it():
+    """The region an account is based in is never a filter (the owner, 2026-10-30: "If no filter is selected under region, it
+    should show all"): Regional, Language and Categorical come from the session alone, whether the member picked them or saved
+    them as their default. Before, an empty Regional selection fell back to the account's own region, so a member with a
+    detected region could not clear it."""
+    body = _function(FRONT, "_resolve_active_filters")
+    assert "display_region" not in body
+    assert "flask_session.get('selected_regions')" in body and "_apply_saved_defaults(v)" in body
+    assert "v.display_region" not in FRONT          # nothing in the module reads the viewer's own region to narrow a feed
+
+
 def test_the_sidebar_and_the_phone_sheet_offer_it_to_members_only():
     row = SIDEBAR.split('class="guild-recommendations-item feed-defaults"', 1)[1].split("</li>", 1)[0]
     before = SIDEBAR.split('class="guild-recommendations-item feed-defaults"', 1)[0]

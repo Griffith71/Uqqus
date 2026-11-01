@@ -28,14 +28,15 @@
     var done = button.getAttribute('data-done') || tr('Done');
     var label = button.textContent;
     button.textContent = '…';
+    var giveBack = function () {
+      if (button.textContent === '…') { button.disabled = false; button.textContent = label; }
+    };
     post(button.getAttribute('data-url'), function () {
       button.textContent = done;
       button.classList.remove('btn-primary');
       button.classList.add('btn-secondary');
-    }, tr('Could not do that. Try again.'));
-    // post() alerts on a network error; give the button back if nothing changed
-    setTimeout(function () {
-      if (button.textContent === '…') { button.disabled = false; button.textContent = label; }
-    }, 8000);
+    }, tr('Could not do that. Try again.'), null, giveBack);
+    // for an answer that never comes
+    setTimeout(giveBack, 8000);
   });
 })();

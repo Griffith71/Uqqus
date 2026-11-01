@@ -175,3 +175,21 @@ def test_a_surface_with_running_white_text_is_the_aa_deep_fill_and_a_control_lab
             assert "$brand-deep" in block[:block.index("}")], (sheet, selector)
     tokens = read("ruqqus", "assets", "style", "_tokens.scss")
     assert "$brand-deep: fill-under-white($primary);" in tokens and "--brand-deep: #{$brand-deep};" in tokens
+
+
+def test_the_left_sidebars_icons_are_plain_glyphs_in_the_text_colour_not_blue_discs():
+    """The owner (2026-10-30, after Reddit): the brand blue is an accent, and a column of white glyphs on blue discs (the feeds, the filters,
+    curations, Spaces and the folded rail) was too much of it. Plain glyphs in the text colour, in the discs' old box so nothing moves."""
+    sidebar = read("ruqqus", "templates", "sidebar-left.html")
+    assert "fa-stack-2x" not in sidebar and "fa-inverse" not in sidebar and "text-white" not in sidebar
+    assert "text-purple fa-stack" not in sidebar
+    # 22 rows' glyphs, and the two ellipsis glyphs of the "See all" row (the open sidebar's and the rail's tile: one macro, two shapes)
+    assert sidebar.count('<span class="sidebar-icon"><i class="fas ') == 24 and sidebar.count('aria-hidden="true"></i></span>') >= 24
+    nav = read("ruqqus", "assets", "style", "_nav.scss")
+    box = nav.split("#sidebar-left .sidebar-icon {", 1)[1].split("}", 1)[0]
+    assert "color: var(--text);" in box and "width: 2.5em;" in box and "height: 2em;" in box      # the disc's box: labels, rows and the rail stay put
+    glyph = nav.split("#sidebar-left .guild-recommendations-item .sidebar-icon .fas {", 1)[1].split("}", 1)[0]
+    assert "color: inherit;" in glyph and "margin-right: 0;" in glyph and "font-size: px2rem(18px);" in glyph
+    # the older rule that greys and indents every .fas in these lists has less weight than the icon's own (an id beats it)
+    assert ".guild-recommendations-list .guild-recommendations-item .fas" in read("ruqqus", "assets", "style", "main.scss")
+    assert not re.search(r"var\(--brand|var\(--link|\$primary|\$purple|#[0-9a-fA-F]{3,8}\b", box + glyph)       # no brand colour, no hex

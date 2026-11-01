@@ -207,8 +207,12 @@ def test_left_sidebar_rows_are_close_together_with_room_inside():
     # highlight not cut square by the section's overflow
     nav = read("assets", "style", "_nav.scss")
     assert "#sidebar-left .guild-recommendations-list .guild-recommendations-item {\n    margin-top: 0;" in nav
-    row = nav.split("#sidebar-left .guild-recommendations-item > a {\n    display: block;")[1].split("}")[0]
-    assert "margin: 2px -12px;" in row and "padding: 8px 12px;" in row
+    row = nav.split("#sidebar-left .guild-recommendations-item > a {\n    display: block;")[1].split("\n}\n")[0]       # (not "}": the min-height holds an interpolation)
+    # the owner (2026-10-30, Reddit's again): 40px rows (44px under a finger: --hit-min), an 8px highlight; the 6px of padding is what the
+    # 28px icon box leaves of the 40 (8px when a finger sets the height, so the box stays centred)
+    assert "margin: 2px -12px;" in row and "padding: 6px 12px;" in row
+    assert 'min-height: #{"max(var(--control-lg), var(--hit-min))"};' in row and "border-radius: var(--radius-sm);" in row
+    assert "@media (pointer: coarse) {\n    #sidebar-left .guild-recommendations-item > a {\n        padding-block: 8px;" in nav
     assert "#sidebar-left .sidebar-section {\n    overflow: visible;" in nav
 
 

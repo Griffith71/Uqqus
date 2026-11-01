@@ -7,6 +7,7 @@ from flask import g
 
 from ruqqus.classes.paypal import PayPalTxn
 from ruqqus.classes.login_events import LoginEvent
+from ruqqus.helpers.sign_in_history import METHOD_QR
 
 # Cloudflare's special pseudo-country code for Tor exit-node traffic.
 # Already used ad-hoc as a literal elsewhere (ruqqus/classes/user.py,
@@ -240,6 +241,33 @@ for _countries in REGION_COUNTRIES.values():
 del _cc, _region_code, _countries
 
 
+# the mark a language puts between the items of a list of names (the others use a comma and a space)
+_LIST_SEPARATORS = {"zh": "、", "ja": "、", "ar": "، ", "fa": "، ", "ur": "، "}
+
+
+def country_list_text(region_code):
+    """The countries of a region as one line in the reader's language, sorted by name: what the Regional filter's hover shows, so a
+    region called "Amazonian Shield" says where it is. Empty for a region with none. In English, "Brazil, Peru, Colombia" as the
+    table names them; in another language CLDR's names, joined by that language's own mark (`_LIST_SEPARATORS`). Babel's list styles
+    were not used: `unit` is a bare space in Russian, Korean and Turkish and nothing at all in Chinese ("古巴圣卢西亚圣基茨"), fails
+    for three names or more in two dozen languages, and `standard` adds an "and" a list of twenty-eight names does not need."""
+    codes = REGION_COUNTRIES.get(region_code, [])
+    if not codes:
+        return ""
+    from ruqqus.helpers.i18n_runtime import current_locale
+    names = sorted((country_name(c) for c in codes), key=str.casefold)
+    return _LIST_SEPARATORS.get(current_locale(), ", ").join(names)
+
+
+def country_search_text(region_code):
+    """The same countries for the filter's search box: the reader's language and, in another one, the English names too, so typing
+    "Peru" finds its region on any page."""
+    codes = REGION_COUNTRIES.get(region_code, [])
+    names = [country_name(c) for c in codes]
+    english = [ENGLISH_COUNTRY_NAMES.get(c, c) for c in codes]
+    return " ".join(dict.fromkeys(names + english))
+
+
 def is_tor(cf_country):
     return cf_country == TOR_COUNTRY_CODE
 
@@ -348,6 +376,9 @@ def compute_region_state(user, db=None):
 
     if not events:
         return {"suspicious": False, "migrate_to": None}
+
+    # a QR sign-in with no password yet says nothing about where the member is (routes/login.py complete_sign_in)
+    events = [e for e in events if not (e.method == METHOD_QR and e.ip is None and e.region_code is None)]
 
     has_tor = any(is_tor(e.cf_country) for e in events)
     resolved_events = [e for e in events if e.region_code and not is_tor(e.cf_country)]

@@ -1,6 +1,7 @@
 """The Categorical filter's list (sidebar, phone sheet, curation form): the site's categories as headings over their
-subcategories, in the reader's language. A subcategory's name is not unique ("News" sits under Entertainment, Politics,
-Science and Technology), so a flat list repeated it; under its parent each row is told apart. Pure: `build` works on any
+subcategories, in the reader's language. A subcategory's name used to repeat ("News" sat under Entertainment, Politics, Science
+and Technology; the site's names are unique now, 2026-10-31), and the headings are still what a reader scans by, so the rows are
+told apart under their parent, and a name that still reads alike in one group (a translation) gets its English one. Pure: `build` works on any
 objects shaped like classes/categories.py and is given the translating function, so the tests need no database;
 routes/front.py hands it the site's CATEGORIES and `msg`.
 

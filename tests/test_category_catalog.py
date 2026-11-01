@@ -168,8 +168,10 @@ def test_the_sites_own_categories_group_without_losing_or_repeating_a_row():
     # one heading per category with rows, for the whole category
     with_rows = {c.id: c.name for c in categories if c.subcats}
     assert {g["heading"]["value"]: g["heading"]["label"] for g in groups[1:]} == {-id_: name for id_, name in with_rows.items()}
-    # the repeat the grouping is for: News is a subcategory of more than one category
-    assert sum(any(o["label"] == "News" for o in g["options"]) for g in groups) >= 2
+    # the repeat the grouping was made for is gone (2026-10-31): News is a category, and no two subcategories share a name, in any
+    # group (the headings are what a reader scans by, but a row must never need its heading to be told apart)
+    every_row = [o["label"] for g in groups for o in g["options"]]
+    assert len(every_row) == len(set(every_row)) and "News" not in every_row
 
 
 def test_the_groups_are_built_once_per_language_and_again_when_the_catalogue_is():

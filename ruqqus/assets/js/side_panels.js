@@ -4,13 +4,10 @@
  * while the feed stays where it is and keeps scrolling. The Create post icon is
  * not a panel: it opens the composer already on the feed (assets/js/inline_composer.js).
  *
- * Its width (the owner, 2026-10-21): the right sidebar's plus the 207px the left sidebar
- * gives up when it folds to its rail (316 + 207 = 523px), whenever the window holds the
- * normal 1370px block with the rail (WIDE_PANEL); on a narrower one it is the right
- * sidebar's width. The left sidebar folds to its rail only when it, the feed and the
- * panel don't fit, and only while the panel is open, so the feed keeps its width: the
- * member's own choice (the sidebar_pref cookie) is never changed, and a sidebar they
- * folded stays so.
+ * Its width (the owner, 2026-10-30): the right sidebar's, 316px, at every window width.
+ * The left sidebar folds to its rail only when it, the feed and the panel don't fit,
+ * and only while the panel is open, so the feed keeps its width: the member's own
+ * choice (the sidebar_pref cookie) is never changed, and a sidebar they folded stays so.
  *
  * Each panel shows the real page in a frame with ?embed=1 (templates/default.html:
  * no navbar or sidebars). Frames are made when first opened and then only hidden,
@@ -38,9 +35,8 @@
   var current = null;
   var html = document.documentElement;
   var sidebar = document.getElementById('sidebar-left');
-  // the columns ($layout-* in the stylesheets), the 207px the folded sidebar gives up, the 15px gutter each side
-  var LEFT_OPEN = 272, RAIL = 65, FEED = 782, RIGHT = 316, GIVEN_UP = 207, GUTTERS = 30;
-  var WIDE_PANEL = RAIL + FEED + RIGHT + GIVEN_UP + GUTTERS;      // 1400: the 1370px block with the rail
+  // the columns ($layout-* in the stylesheets) and the 15px gutter each side
+  var LEFT_OPEN = 272, FEED = 782, RIGHT = 316, GUTTERS = 30;
   var foldedByPanel = false;
 
   function fold() {
@@ -57,19 +53,15 @@
     html.classList.remove('panel-folds-left');
   }
 
-  // the panel's width and the left sidebar, for this window (nav_align.js follows the columns' class changes)
+  // the left sidebar, for this window (nav_align.js follows the columns' class changes)
   function fit() {
     if (current === null) {
-      html.classList.remove('panel-wide');
       unfold();
       return;
     }
-    var width = window.innerWidth;
-    var widePanel = width >= WIDE_PANEL;
-    html.classList.toggle('panel-wide', widePanel);
     // the open left sidebar stays while it, the feed and the panel fit; otherwise it folds to its rail
-    var room = LEFT_OPEN + FEED + (widePanel ? RIGHT + GIVEN_UP : RIGHT) + GUTTERS;
-    if (width < room) fold(); else unfold();
+    var room = LEFT_OPEN + FEED + RIGHT + GUTTERS;
+    if (window.innerWidth < room) fold(); else unfold();
   }
 
   function frameFor(name) {

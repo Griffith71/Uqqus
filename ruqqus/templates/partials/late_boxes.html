@@ -22,7 +22,7 @@
       document.querySelectorAll(".late-box").forEach(function (box) {
         var h = parseInt(localStorage.getItem("late_box_h:" + box.id), 10);
         if (h > 0) box.style.minHeight = h + "px";
-        else if (box.id === "happening-box") box.style.minHeight = "29.8rem";    // the first visit: Trending and one more section (417px at the 14px root, measured); Live and Today are not drawn while empty
+        else if (box.id === "happening-box") box.style.minHeight = "29.56rem";    // the first visit: Trending and one more section (414px at the 14px root, measured; 417 until the box titles became 12px labels); Live and Today are not drawn while empty
       });
     } catch (e) {}
   })();

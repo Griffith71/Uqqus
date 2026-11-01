@@ -1,9 +1,16 @@
 {# One row of a filter list, ticked or not: the flat lists (Regional, Language) and the grouped one (Categorical) draw
    their rows alike. #}
-{% macro filter_row(opt, list_id, on) -%}
+{% macro filter_row(opt, list_id, on, hover_countries=true) -%}
 <li data-filter-row data-filter-text="{{ opt.search }}" data-value="{{ opt.value }}" class="py-1{% if on %} is-selected{% endif %}" onclick="toggleSidebarFilterOption(this, '{{ list_id }}')">
-    <a href="javascript:void(0)" class="text-decoration-none {% if on %}text-purple font-weight-bold{% else %}text-black{% endif %} d-flex align-items-center"><i class="fas fa-check mr-1{% if not on %} invisible{% endif %}"></i><span class="sidebar-filter-text" onmouseenter="startSidebarFilterMarquee(this)" onmouseleave="stopSidebarFilterMarquee(this)">{{ opt.label }}</span></a>
+    <a href="javascript:void(0)" class="text-decoration-none {% if on %}text-purple font-weight-bold{% else %}text-black{% endif %} d-flex align-items-center"{% if hover_countries and opt.countries %} data-countries="{{ opt.countries }}"{% endif %}><i class="fas fa-check mr-1{% if not on %} invisible{% endif %}"></i><span class="sidebar-filter-text" onmouseenter="startSidebarFilterMarquee(this)" onmouseleave="stopSidebarFilterMarquee(this)">{{ opt.label }}</span></a>
   </li>
+{%- endmacro %}
+
+{# The Regional list's way in to the Regions page (the owner, 2026-10-30: "so people know the region"): the first thing in its panel.
+   `hover_countries` is the countries a region's row says on hover: the phone's sheet turns it off (a finger can't hover, and the tip
+   would sit on the list it describes), which also keeps its markup small. #}
+{% macro regions_page_link() -%}
+<a href="/regions" class="regions-link"><i class="fas fa-map-marked-alt" aria-hidden="true"></i>{{ _("Regions") }}</a>
 {%- endmacro %}
 
 {# `groups` (helpers/category_catalog.py) draws the options under headings instead, in their own order (data-keep-order:
@@ -11,21 +18,20 @@
    guilds filed under the category alone): the script (all_js.js) ticks or unticks every row of the group with it, and a row
    never changes its heading. The label on a ticked heading says which of the three it stands for (data-state-*, the texts
    drawn here so the script only picks one). #}
-{% macro filter_panel_body(list_id, options, active_set, search_placeholder, apply_url, apply_param, apply_mode='get', formkey=none, groups=none) %}
+{% macro filter_panel_body(list_id, options, active_set, search_placeholder, apply_url, apply_param, apply_mode='get', formkey=none, groups=none, regions_link=false, hover_countries=true) %}
 {% if apply_mode == 'form' %}
 <form method="post" action="{{ apply_url }}" id="{{ list_id }}-form">
 <input type="hidden" name="formkey" value="{{ formkey }}">
 <input type="hidden" name="{{ apply_param }}" id="{{ list_id }}-hidden-value" value="">
 {% endif %}
-<div class="d-flex justify-content-between align-items-center mb-1">
+{% if regions_link %}{{ regions_page_link() }}{% endif %}
+<div class="d-flex justify-content-between align-items-center mb-2">
   {# Translators: how many options are ticked in a filter list #}
   <span id="{{ list_id }}-count" class="text-small text-muted{% if not active_set %} d-none{% endif %}">{{ ngettext("%(num)s selected", "%(num)s selected", active_set|length) }}</span>
   <a href="javascript:void(0)" class="text-small text-muted" onclick="deselectAllSidebarFilter('{{ list_id }}')">{{ _("Deselect all") }}</a>
 </div>
-<input type="text" class="form-control form-control-sm mb-2" placeholder="{{ search_placeholder }}" oninput="filterSidebarList(this, '{{ list_id }}')">
+<input type="text" class="form-control form-control-sm filter-search mb-2" placeholder="{{ search_placeholder }}" oninput="filterSidebarList(this, '{{ list_id }}')">
 {% if groups -%}
-{# Translators: a hint under the search box of the Categorical list, about the tick box of each category #}
-<p class="text-muted text-small mb-1">{{ _("Tick a category to tick all its subcategories. Untick them to keep only guilds filed under the category itself.") }}</p>
 {# Translators: said beside a ticked category in the Categorical list when it and all its subcategories are ticked #}
 {% set state_all = _("everything in it") %}
 {# Translators: said beside a ticked category in the Categorical list when none of its subcategories is ticked: only the guilds filed under the category itself #}
@@ -46,7 +52,7 @@
       </li>
       {% endif %}
       {% for opt in group.options %}
-      {{ filter_row(opt, list_id, opt.value in active_set) }}
+      {{ filter_row(opt, list_id, opt.value in active_set, hover_countries) }}
       {% endfor %}
     </ul>
   </div>
@@ -55,10 +61,10 @@
 {%- else -%}
 <ul class="no-bullets pl-0 mb-1" id="{{ list_id }}" style="max-height: 220px; overflow-y: auto;">
   {% for opt in options if opt.value in active_set %}
-  {{ filter_row(opt, list_id, true) }}
+  {{ filter_row(opt, list_id, true, hover_countries) }}
   {% endfor %}
   {% for opt in options if opt.value not in active_set %}
-  {{ filter_row(opt, list_id, false) }}
+  {{ filter_row(opt, list_id, false, hover_countries) }}
   {% endfor %}
 </ul>
 {%- endif %}
@@ -74,7 +80,7 @@
 {# Post type (helpers/feed_filters.py POST_TYPES): the same rows and scripts as the lists above, in groups and in their
    own order (data-keep-order: ticking one doesn't move it to the top). Nothing ticked is every type. #}
 {% macro post_type_body(list_id, catalog, groups, active_set) %}
-<div class="d-flex justify-content-between align-items-center mb-1">
+<div class="d-flex justify-content-between align-items-center mb-2">
   {# Translators: how many options are ticked in a filter list #}
   <span id="{{ list_id }}-count" class="text-small text-muted{% if not active_set %} d-none{% endif %}">{{ ngettext("%(num)s selected", "%(num)s selected", active_set|length) }}</span>
   <a href="javascript:void(0)" class="text-small text-muted" onclick="deselectAllSidebarFilter('{{ list_id }}')">{{ _("Deselect all") }}</a>
