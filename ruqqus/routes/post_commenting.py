@@ -9,6 +9,7 @@ from flask import abort, g, jsonify, request
 from jinja2 import Undefined
 
 from ruqqus.classes import Submission
+from ruqqus.helpers import anonymity
 from ruqqus.helpers import comment_permission as cperm
 from ruqqus.helpers.get import get_post
 from ruqqus.helpers.i18n_runtime import tr, tr_lazy
@@ -69,7 +70,7 @@ def _runs(post, viewer):
     open shared draft (audit C-03: the first publisher alone used to)."""
     if viewer is None:
         return False
-    if post.author_id == viewer.id:
+    if anonymity.is_author(post, viewer):
         return True
     from ruqqus.helpers import collab_store, collab_view
     if not collab_view.is_collab(post):

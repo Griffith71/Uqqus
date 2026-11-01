@@ -48,7 +48,7 @@ def test_the_routes_need_a_login_are_get_only_and_compare_the_authors_id():
         head = ROUTES.split(f"def {name}(")[0].rsplit("@app.route(", 1)[1]
         assert 'methods=["GET"]' in head.splitlines()[0] and "@auth_required" in head, name
     answer = ROUTES.split("def _answer(")[1].split("@app.route")[0]
-    assert answer.index("abort(404)") < answer.index("item.author_id != v.id") < answer.index("friends_who_upvoted(")
+    assert answer.index("abort(404)") < answer.index("anonymity.is_author(item, v)") < answer.index("friends_who_upvoted(")
     assert '"Only the author can see who upvoted."' in answer and ", 403" in answer
     assert 'response.headers["Cache-Control"] = "private, no-store"' in answer
 

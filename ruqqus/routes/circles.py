@@ -16,7 +16,7 @@ from ruqqus.helpers.alerts import notify
 from ruqqus.helpers.i18n_runtime import N_, tr, trn
 from ruqqus.helpers.get import get_guild, get_post, get_user
 from ruqqus.helpers.media import attach as media_attach, cdn as media_cdn
-from ruqqus.helpers.wrappers import auth_required, is_guildmaster, is_not_banned, no_negative_balance, validate_formkey
+from ruqqus.helpers.wrappers import not_qr_limited, auth_required, is_guildmaster, is_not_banned, no_negative_balance, validate_formkey
 from ruqqus.__main__ import app, cache
 from ruqqus.routes.front import frontlist
 
@@ -133,6 +133,7 @@ def settings_circles(v):
 
 @app.route("/api/circles", methods=["POST"])
 @is_not_banned
+@not_qr_limited
 @validate_formkey
 def circle_create(v):
     """Make a circle: `kind` custom (anyone, CUSTOM_LIMIT) or paid (Premium, PAID_LIMIT, with a `price`)."""
@@ -158,6 +159,7 @@ def circle_create(v):
 
 @app.route("/api/circles/<int:cid>/rename", methods=["POST"])
 @is_not_banned
+@not_qr_limited
 @validate_formkey
 def circle_rename(cid, v):
     _mine(v, cid)
@@ -173,6 +175,7 @@ def circle_rename(cid, v):
 
 @app.route("/api/circles/<int:cid>/delete", methods=["POST"])
 @is_not_banned
+@not_qr_limited
 @validate_formkey
 def circle_delete(cid, v):
     row = _mine(v, cid)
@@ -185,6 +188,7 @@ def circle_delete(cid, v):
 
 @app.route("/api/circles/<int:cid>/price", methods=["POST"])
 @is_not_banned
+@not_qr_limited
 @validate_formkey
 def circle_price(cid, v):
     _mine(v, cid, kinds=(circles.PAID,))
@@ -202,6 +206,7 @@ def circle_price(cid, v):
 
 @app.route("/api/circles/<int:cid>/description", methods=["POST"])
 @is_not_banned
+@not_qr_limited
 @validate_formkey
 def circle_description(cid, v):
     """What a paid circle's owner says subscribers get (the subscribe sheet). Plain text, rated by the word filter."""
@@ -216,6 +221,7 @@ def circle_description(cid, v):
 
 @app.route("/api/circles/<int:cid>/add", methods=["POST"])
 @is_not_banned
+@not_qr_limited
 @validate_formkey
 def circle_add(cid, v):
     """Put someone in a custom circle. They are not told."""
@@ -230,6 +236,7 @@ def circle_add(cid, v):
 
 @app.route("/api/circles/<int:cid>/remove", methods=["POST"])
 @is_not_banned
+@not_qr_limited
 @validate_formkey
 def circle_remove(cid, v):
     row = _mine(v, cid, kinds=(circles.CUSTOM,))
@@ -274,6 +281,7 @@ def _paid_circle(cid):
 @app.route("/api/circles/<int:cid>/subscribe", methods=["POST"])
 @is_not_banned
 @no_negative_balance("toast")
+@not_qr_limited
 @validate_formkey
 def circle_subscribe(cid, v):
     row, owner = _paid_circle(cid)
@@ -292,6 +300,7 @@ def circle_subscribe(cid, v):
 
 @app.route("/api/circles/<int:cid>/cancel", methods=["POST"])
 @auth_required
+@not_qr_limited
 @validate_formkey
 def circle_cancel(cid, v):
     row, _ = _paid_circle(cid)
@@ -379,6 +388,7 @@ def _withdraw(own, author_id, now):
 
 @app.route("/api/post/<pid>/audience", methods=["POST"])
 @is_not_banned
+@not_qr_limited
 @validate_formkey
 def circle_post_audience(pid, v):
     """The author changes who can see one of their posts: Public, or some of their circles (`audience` 4 and
@@ -513,6 +523,7 @@ def board_circle_price(guildname, board, v):
 @app.route("/api/circle/guild/<guildname>/subscribe", methods=["POST"])
 @is_not_banned
 @no_negative_balance("toast")
+@not_qr_limited
 @validate_formkey
 def circle_guild_subscribe(guildname, v):
     board = _circle_guild(guildname)
@@ -532,6 +543,7 @@ def circle_guild_subscribe(guildname, v):
 
 @app.route("/api/circle/guild/<guildname>/cancel", methods=["POST"])
 @auth_required
+@not_qr_limited
 @validate_formkey
 def circle_guild_cancel(guildname, v):
     board = _circle_guild(guildname)

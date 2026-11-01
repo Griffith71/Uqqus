@@ -4,6 +4,7 @@ The author of a post or comment can open a list of the upvoters they are mutual 
 (not the forwarder of a copy, not an admin), and downvoters are never part of any answer."""
 from flask import abort, g, jsonify
 
+from ruqqus.helpers import anonymity
 from ruqqus.helpers import voters as voter_rules
 from ruqqus.helpers.get import get_comment, get_post
 from ruqqus.helpers.i18n_runtime import msg, tr
@@ -19,7 +20,7 @@ def _is_id(raw):
 def _answer(kind, item, v):
     if item is None or item.is_banned or item.deleted_utc:
         abort(404)
-    if item.author_id != v.id:
+    if not anonymity.is_author(item, v):
         return jsonify({"error": tr("Only the author can see who upvoted.")}), 403
 
     people = voter_rules.friends_who_upvoted(g.db, kind, item.id, item.author_id, v)

@@ -148,7 +148,9 @@
 
 {% endfilter %}
 
-{% if v and v.is_activated and not v.is_suspended %}
+{% if v and v.qr_limited %}
+{% include "partials/qr_password_first.html" %}
+{% elif v and v.is_activated and not v.is_suspended %}
 
 <p>{{ _('Use this form to submit a press inquiry. You must have a press email address set on your account. If you have a generic, non-press email address, please <a target="_blank" href="%(url)s">update it</a> before submitting this form.', url="/settings/security") }}</p>
 

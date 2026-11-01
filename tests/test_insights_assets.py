@@ -82,7 +82,7 @@ def test_the_post_page_counts_after_recording_the_view_and_for_visitors_too():
 def test_a_report_is_for_the_original_author_of_a_live_post_and_a_guild_copy_resolves_to_it():
     body = function(ROUTES, "_mine")
     assert "primary_id = primary_post_id(post)" in body
-    assert "primary.author_id != v.id or primary.is_banned or primary.deleted_utc" in body
+    assert "not anonymity.is_author(primary, v) or primary.is_banned or primary.deleted_utc" in body
     assert body.count("abort(404)") == 3                                 # never a hint that it exists
     for name in ("post_insights", "post_insights_json", "insights_overview"):
         head = ROUTES.split(f"def {name}(")[0].rsplit("@app.route(", 1)[1]
@@ -137,7 +137,7 @@ def test_the_menus_of_the_authors_own_post_offer_insights_beside_co_authors():
             if "may_see_insights" in line:
                 assert "Insights" in line
     helper = ROUTES.split("def _may_see(")[1].split("app.jinja_env")[0]
-    assert "post.author_id == v.id and not post.repost_id and not post.deleted_utc and not post.is_banned" in helper
+    assert "anonymity.is_author(post, v) and not post.repost_id and not post.deleted_utc and not post.is_banned" in helper
     assert "app.jinja_env.globals.update(may_see_insights=_may_see)" in ROUTES
 
 

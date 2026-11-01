@@ -62,7 +62,7 @@ def comment_json(c, v):
         "avatar": anonymity.DEFAULT_AVATAR if hidden else author.profile_url,
         "body_html": c.body_html or "",           # sanitized when it was written
         "created_utc": c.created_utc,
-        "mine": v is not None and c.author_id == v.id,
+        "mine": anonymity.is_author(c, v),
     }
 
 

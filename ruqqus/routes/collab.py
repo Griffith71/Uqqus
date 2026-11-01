@@ -417,6 +417,7 @@ def _settle_all(doc, actor, now):
 
 @app.route("/api/collab/<int:doc_id>/propose", methods=["POST"])
 @is_not_banned
+@not_qr_limited
 @validate_formkey
 def collab_propose(doc_id, v):
     """kind add_author | remove_author (`username`), change_rules (the rules fields), delete_post."""
@@ -483,6 +484,7 @@ def collab_propose(doc_id, v):
 
 @app.route("/api/collab/<int:doc_id>/proposals/<int:pid>/vote", methods=["POST"])
 @is_not_banned
+@not_qr_limited
 @validate_formkey
 def collab_vote(doc_id, pid, v):
     doc = _doc_or_404(doc_id, v)
@@ -506,6 +508,7 @@ def collab_vote(doc_id, pid, v):
 
 @app.route("/api/collab/<int:doc_id>/proposals/<int:pid>/withdraw", methods=["POST"])
 @is_not_banned
+@not_qr_limited
 @validate_formkey
 def collab_withdraw(doc_id, pid, v):
     _doc_or_404(doc_id, v)
@@ -543,6 +546,7 @@ def collab_invite(pid, v):
 
 @app.route("/api/collab/invite/<int:pid>/<answer>", methods=["POST"])
 @is_not_banned
+@not_qr_limited
 @validate_formkey
 def collab_invite_answer(pid, answer, v):
     proposal, doc = _invite_or_404(pid, v)
@@ -572,6 +576,7 @@ def collab_invite_answer(pid, answer, v):
 
 @app.route("/api/collab/<int:doc_id>/leave", methods=["POST"])
 @auth_required
+@not_qr_limited
 @validate_formkey
 def collab_leave(doc_id, v):
     """Anyone can stop being an author at any time; what they typed stays credited to them. A draft nobody writes
@@ -720,6 +725,7 @@ def _publish(doc, publisher, snap, now):
 
 @app.route("/api/collab/<int:doc_id>/publish", methods=["POST"])
 @is_not_banned
+@not_qr_limited
 @validate_formkey
 def collab_publish(doc_id, v):
     """Publish the working copy: at once when any author may, or as a proposal when the rules put it to a vote."""

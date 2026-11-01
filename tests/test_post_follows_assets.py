@@ -79,7 +79,7 @@ def test_the_partial_defines_every_macro_the_menus_call():
     called = set(re.findall(r"post_menu\.(\w+)\(", LISTING + PAGE))
     defined = set(re.findall(r"{% macro (\w+)\(", MENU))
     assert called == {"follow_item", "follow_button", "fewer_item", "fewer_button",
-                      "collab_item", "collab_button", "collab_mark"}
+                      "collab_item", "collab_button", "collab_mark", "admin_sensitive_form"}
     assert called <= defined
 
 
@@ -89,7 +89,8 @@ def test_the_menu_macros_render():
     from ruqqus.helpers.i18n_jinja import environment
     env = environment(loader=FileSystemLoader(str(RUQQUS / "templates")))
     env.install_null_translations(newstyle=True)                      # the menus' text is marked (docs/i18n.md)
-    env.globals["author_of"] = lambda item, viewer: item.author       # the site's Jinja global (helpers/anonymity.py)
+    env.globals["author_of"] = lambda item, viewer: item.author       # the site's Jinja globals (helpers/anonymity.py)
+    env.globals["anon_hidden"] = lambda item, viewer: getattr(item, "held", False)
     module = env.get_template("partials/post_menu_items.html").make_module()
     post = NS(base36id="7k", follow_state="can_follow", is_banned=False, deleted_utc=0, author_id=1)
     viewer = NS(id=2)
@@ -102,6 +103,8 @@ def test_the_menu_macros_render():
     assert str(module.follow_item(post, None)).strip() == ""
     post.author_id = 2
     assert str(module.fewer_item(post, viewer)).strip() == ""
+    post.held = True                                                  # a limited QR sign-in on its own anonymous post is a stranger to it
+    assert "Show fewer posts like this" in str(module.fewer_item(post, viewer))
 
 
 def test_the_table_is_in_the_migration_and_in_the_schema():

@@ -229,7 +229,7 @@ class Board(Base, Stndrd, Age_times):
             else:
                 posts = posts.filter(false())
 
-        if v and not self.has_mod(v) and v.admin_level <= 3:
+        if v and not self.leads(v) and v.admin_level <= 3:
             # blocked either way (helpers/blocks.py)
             posts = hide_blocked(posts, v, Submission)
 
@@ -288,6 +288,20 @@ class Board(Base, Stndrd, Age_times):
 
         if user is None:
             return None
+
+        # a limited QR sign-in holds no guildmaster's powers until its password is given (helpers/qr_login.py). Saying no here,
+        # the one place every route, helper and template asks, covers each of them. What it may read: `leads`.
+        if getattr(user, "qr_limited", False):
+            return False
+
+        return self._mod_row(user, perm)
+
+    def leads(self, user):
+        """Is `user` a guildmaster here, whatever kind of sign-in they are on? For what a guildmaster may READ and for asking for
+        a password. Every power asks `has_mod`."""
+        return bool(user is not None and self._mod_row(user))
+
+    def _mod_row(self, user, perm=None):
 
         if self.is_banned:
             return False
@@ -409,7 +423,7 @@ class Board(Base, Stndrd, Age_times):
         if self.has_ban(user):
             return False
 
-        if self.has_contributor(user) or self.has_mod(user):
+        if self.has_contributor(user) or self.leads(user):
             return True
 
         if self.is_private or self.restricted_forwarding:
@@ -428,7 +442,7 @@ class Board(Base, Stndrd, Age_times):
         if self.has_ban(user):
             return False
 
-        if self.has_contributor(user) or self.has_mod(user):
+        if self.has_contributor(user) or self.leads(user):
             return True
 
         if self.is_private:
@@ -450,7 +464,7 @@ class Board(Base, Stndrd, Age_times):
         if self.has_ban(user) or self.has_chat_ban(user):
             return False
 
-        if self.has_contributor(user) or self.has_mod(user):
+        if self.has_contributor(user) or self.leads(user):
             return True
 
         return self.public_chat
@@ -464,7 +478,7 @@ class Board(Base, Stndrd, Age_times):
         if user.admin_level >= 4:
             return True
 
-        if self.has_contributor(user) or self.has_mod(
+        if self.has_contributor(user) or self.leads(
                 user) or self.has_invite(user):
             return True
 
@@ -661,7 +675,7 @@ class Board(Base, Stndrd, Age_times):
         if v and v.hide_bot and not self.has_mod(v, "content"):
             comments = comments.filter_by(is_bot=False)
 
-        if v and not self.has_mod(v) and v.admin_level <= 3:
+        if v and not self.leads(v) and v.admin_level <= 3:
             # blocks
             blocking = g.db.query(
                 UserBlock.target_id).filter_by(

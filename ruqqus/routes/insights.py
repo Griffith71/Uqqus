@@ -10,6 +10,7 @@ import time
 from flask import abort, g, jsonify, render_template, request
 
 from ruqqus.classes import Submission
+from ruqqus.helpers import anonymity
 from ruqqus.helpers import insights as rules
 from ruqqus.helpers import insights_store
 from ruqqus.helpers.coauthors import primary_post_id
@@ -29,14 +30,14 @@ def _mine(pid, v):
         abort(404)
     primary_id = primary_post_id(post)
     primary = post if primary_id == post.id else g.db.query(Submission).filter_by(id=primary_id).first()
-    if primary is None or primary.author_id != v.id or primary.is_banned or primary.deleted_utc:
+    if primary is None or not anonymity.is_author(primary, v) or primary.is_banned or primary.deleted_utc:
         abort(404)
     return primary
 
 
 def _may_see(post, v):
     """For the menus: the author's own post, not a guild copy."""
-    return bool(v) and post.author_id == v.id and not post.repost_id and not post.deleted_utc and not post.is_banned
+    return bool(v) and anonymity.is_author(post, v) and not post.repost_id and not post.deleted_utc and not post.is_banned
 
 
 app.jinja_env.globals.update(may_see_insights=_may_see)

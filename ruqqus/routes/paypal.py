@@ -79,6 +79,7 @@ def shop_coin_balance(v):
 @no_sanctions
 @is_not_banned
 @no_negative_balance("html")
+@not_qr_limited
 @validate_formkey
 def shop_buy_coins(v):
 
@@ -126,6 +127,7 @@ def _start_order(new_txn):
 @app.route("/shop/negative_balance", methods=["POST"])
 @no_sanctions
 @is_not_banned
+@not_qr_limited
 @validate_formkey
 def shop_negative_balance(v):
 
@@ -144,6 +146,7 @@ def shop_negative_balance(v):
 @app.route("/shop/buy_coins_completed", methods=["GET"])
 @no_sanctions
 @is_not_banned
+@not_qr_limited
 def shop_buy_coins_completed(v):
 
     #look up the txn
@@ -274,6 +277,8 @@ def _handle_event(event, event_id):
             return                          # captured at once (or already settled): nothing waits on this
         if event["event_type"] == "PAYMENT.CAPTURE.COMPLETED":
             txn.status=3
+            # paid now, not when the buyer came back from PayPal: the money page (helpers/money_stats.py) dates an order by this
+            txn.created_utc=int(time.time())
             g.db.add(txn)
             g.db.flush()
             _credit(txn, g.db.query(User).filter_by(id=txn.user_id).first())
@@ -349,6 +354,7 @@ def _tip_notification(kind, permalink, coins, recipient):
 @no_sanctions
 @is_not_banned
 @no_negative_balance("toast")
+@not_qr_limited
 @not_quarantined("tip")
 @validate_formkey
 def gift_post_pid(pid, v):
@@ -436,6 +442,7 @@ def gift_post_pid(pid, v):
 @no_sanctions
 @is_not_banned
 @no_negative_balance("toast")
+@not_qr_limited
 @not_quarantined("tip")
 @validate_formkey
 def gift_comment_pid(cid, v):
@@ -513,6 +520,7 @@ def paypaltxn_txid(txid, v):
 
 @app.route("/settings/premium/redeem", methods=["POST"])
 @is_not_banned
+@not_qr_limited
 @validate_formkey
 def premium_redeem(v):
     """Spend one coin on a week of Premium, added after any time left (helpers/premium.py). Only when asked."""
@@ -529,6 +537,7 @@ def premium_redeem(v):
 
 @app.route("/settings/premium/auto_renew", methods=["POST"])
 @auth_required
+@not_qr_limited
 @validate_formkey
 def premium_auto_renew(v):
     """Whether a coin is spent on the next week when one runs out (`setting=true|false`)."""

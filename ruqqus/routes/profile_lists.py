@@ -9,7 +9,7 @@ from ruqqus.helpers import follow_lists
 from ruqqus.helpers.get import get_user
 from ruqqus.helpers.i18n_runtime import tr
 from ruqqus.helpers.visibility import _cut, user_hidden, viewer_level
-from ruqqus.helpers.wrappers import auth_desired, auth_required, page_number, validate_formkey
+from ruqqus.helpers.wrappers import auth_desired, auth_required, not_qr_limited, page_number, validate_formkey
 from ruqqus.__main__ import app
 
 
@@ -96,6 +96,7 @@ def profile_subscriptions(username, v):
 
 @app.post("/settings/list_visibility")
 @auth_required
+@not_qr_limited
 @validate_formkey
 def settings_list_visibility(v):
     """Who may open each of the caller's lists. Only the four fields, only 0, 1 or 2; a field left out is unchanged."""

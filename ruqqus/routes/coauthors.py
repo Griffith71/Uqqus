@@ -14,7 +14,7 @@ from ruqqus.helpers.alerts import notify
 from ruqqus.helpers.get import get_post, get_user
 from ruqqus.helpers.i18n_runtime import N_, msg, tr
 from ruqqus.helpers.visibility import post_hidden
-from ruqqus.helpers.wrappers import auth_required, validate_formkey
+from ruqqus.helpers.wrappers import auth_required, not_qr_limited, validate_formkey
 from ruqqus.__main__ import app, cache
 
 
@@ -65,6 +65,7 @@ def _collab(post):
 
 @app.post("/api/coauthor/<pid>/invite")
 @auth_required
+@not_qr_limited
 @validate_formkey
 def coauthor_invite(pid, v):
     """The author invites accounts (`usernames`, separated by commas or spaces)."""
@@ -124,6 +125,7 @@ def coauthor_page(pid, v):
 
 @app.post("/api/coauthor/<pid>/accept")
 @auth_required
+@not_qr_limited
 @validate_formkey
 def coauthor_accept(pid, v):
     post = _primary(pid)

@@ -25,6 +25,7 @@ import ruqqus.helpers.matrix_client as matrix
 from ruqqus.__main__ import app, limiter, member_limit_key, r
 
 from ruqqus.helpers import spaces as space_rules
+from ruqqus.helpers import chat_devices
 from ruqqus.helpers import space_store, space_view, space_ending, call_store, live_bus, turn_usage, turn_usage_store
 from ruqqus.helpers import live_thread_store as live_store
 from ruqqus.helpers.alerts import notify
@@ -311,9 +312,10 @@ def _space_page(space, v):
     host = g.db.query(User).filter_by(id=space.host_id).first()
     post = space.post
     boot = {
-        "formkey": v.formkey, "userId": v.id, "spaceId": space.id, "postId": post.base36id,
+        "formkey": v.formkey, "userId": v.id, "mxid": chat_devices.mxid_of(g.db, v.id), "spaceId": space.id, "postId": post.base36id,
+        "qrLimited": v.qr_limited,      # a call needs the chat client, which needs the password first (helpers/qr_login.py)
         "title": post.title, "permalink": post.permalink, "status": space.status, "kind": space.kind,
-        "kindLabel": space_rules.KIND_LABELS[space.kind],
+        "kindLabel": str(space_rules.KIND_LABELS[space.kind]),    # a call's is lazy, and `boot | tojson` refuses that
         "isHost": v.id == space.host_id, "record": bool(space.record), "scheduledUtc": space.scheduled_utc,
         "endsUtc": space.ends_utc,
         "host": {"shown_name": host.shown_name, "username": host.username, "profile_url": host.profile_url},
@@ -335,6 +337,7 @@ def _space_page(space, v):
 
 @app.route("/api/spaces/<sid>/start", methods=["POST"])
 @is_not_banned
+@not_qr_limited
 @validate_formkey
 def space_start(sid, v):
     space = load_space(sid, v)
@@ -401,6 +404,7 @@ def _call_only(space):
 
 @app.route("/api/spaces/<sid>/join", methods=["POST"])
 @auth_required
+@not_qr_limited
 @validate_formkey
 def space_join(sid, v):
     space = load_space(sid, v)

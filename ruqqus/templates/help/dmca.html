@@ -40,7 +40,9 @@ Abuse of this form is a violation of the {{ 'SITE_NAME' | app_config }} [terms o
 
 {% endfilter %}
 
-{% if v and v.is_suspended %}
+{% if v and v.qr_limited %}
+{% include "partials/qr_password_first.html" %}
+{% elif v and v.is_suspended %}
 
 <div>Your {{ 'SITE_NAME' | app_config }} account has been suspended. You are not permitted to submit DMCA takedown requests at this time.</div>
 

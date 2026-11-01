@@ -254,7 +254,7 @@ class Comment(Base, Age_times, Scores, Stndrd, Fuzzing):
             return tr("Private content, visible because this is your content.")
         elif not self.board:
             return "Private content, visible because None"
-        elif self.board.has_mod(v):
+        elif self.board.leads(v):
             return tr("Private content, visible because you are a guildmaster of +%(guild)s.", guild=self.board.name)
         elif self.board.has_contributor(v):
             return tr("Private content, visible because you are an approved contributor in +%(guild)s.",

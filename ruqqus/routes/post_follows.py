@@ -2,6 +2,7 @@
 forwarded it, is told of. Nothing here ever names another follower."""
 from flask import abort, g, jsonify
 
+from ruqqus.helpers import anonymity
 from ruqqus.helpers import post_follows as rules
 from ruqqus.helpers.get import get_post
 from ruqqus.helpers.i18n_runtime import msg, tr
@@ -30,6 +31,8 @@ def _post_or_404(pid, v):
 @validate_formkey
 def follow_post(pid, v):
     post = _post_or_404(pid, v)
+    if anonymity.held_from_own(post, v):        # the refusal would say whose it is; they are told of its comments anyway
+        return jsonify({"message": tr("You'll be notified of comments on this post.")})
     try:
         rules.follow(g.db, v.id, post)
     except rules.FollowError as error:

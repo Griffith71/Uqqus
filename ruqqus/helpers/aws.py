@@ -68,9 +68,18 @@ def upload_from_url(name, url):
     remove(tempname)
 
 
+PNG_MODES = ("1", "L", "LA", "I", "I;16", "P", "RGB", "RGBA")
+
+
 def crop_and_resize(img, resize):
 
-    i = img
+    # a phone's portrait photo is stored sideways with a note saying so: the pop-up's preview (the browser) already honours it
+    from PIL import ImageOps            # here, not at the top: a test stubs PIL with only Image (tests/test_csam_ban.py)
+    i = ImageOps.exif_transpose(img)
+
+    # the result is saved as a PNG, which a CMYK photo (a print JPEG) can't be: it used to fail the save after the old picture was gone
+    if i.mode not in PNG_MODES:
+        i = i.convert("RGBA" if "A" in i.mode else "RGB")
 
     # get constraining dimension
     org_ratio = i.width / i.height
@@ -303,16 +312,18 @@ def check_csam_url(url, v, delete_content_function):
 
         now=int(time.time())
         unban=now+60*60*24*h.ban_time if h.ban_time else 0
-        # ban user and alts
-        v.ban_reason=h.ban_reason
-        v.is_banned=1
-        v.unban_utc = unban
-        db.add(v)
-        for alt in v.alts_threaded(db):
-            alt.ban_reason=h.ban_reason
-            alt.is_banned=1
-            alt.unban_utc = unban
-            db.add(alt)
+        # ban user and alts; the picture goes either way, and a limited QR sign-in bans nobody (helpers/qr_login.py). The match above,
+        # which is the child-abuse list's, does: CLAUDE.md "QR sign-in"
+        if not getattr(v, "qr_limited", False):
+            v.ban_reason=h.ban_reason
+            v.is_banned=1
+            v.unban_utc = unban
+            db.add(v)
+            for alt in v.alts_threaded(db):
+                alt.ban_reason=h.ban_reason
+                alt.is_banned=1
+                alt.unban_utc = unban
+                db.add(alt)
 
         delete_content_function()
 

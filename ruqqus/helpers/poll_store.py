@@ -9,6 +9,7 @@ from flask import g
 from sqlalchemy import func
 
 from ruqqus.classes.poll import Poll, PollOption, PollVote
+from ruqqus.helpers import anonymity
 from ruqqus.helpers import polls as rules
 from ruqqus.helpers.coauthors import primary_post_id
 
@@ -77,7 +78,7 @@ class _Found:
         my_option = self.mine.get(poll.id)
         closed = rules.is_closed(poll.closes_utc, now)
         voted = my_option is not None
-        is_author = viewer is not None and viewer.id == post.author_id
+        is_author = anonymity.is_author(post, viewer)
         results = rules.results_visible(closed, voted, is_author)
         totals = [self.counts.get(option.id, 0) for option in options]
         percents = rules.percentages(totals)
@@ -121,7 +122,6 @@ def json_of(post):
     """The `poll` of a post's JSON: the same visibility as the page (counts are null while hidden)."""
     from flask import has_app_context
 
-    from ruqqus.helpers import anonymity
 
     data = post.__dict__.get("poll_data", False)
     if data is False and not has_app_context():

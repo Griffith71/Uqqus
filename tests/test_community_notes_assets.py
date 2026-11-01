@@ -60,7 +60,7 @@ def test_both_flag_routes_need_the_form_key_and_refuse_what_they_do_not_know():
 
 def test_a_request_is_refused_on_your_own_post_twice_and_past_the_daily_limit():
     refusal = FLAGGING.split("def _note_refusal(")[1].split('@app.route("/api/flag/comment')[0]
-    for rule in ("author_id == v.id", "mine.filter(target).first()", "community_notes.DAILY_REQUESTS", "409", "429"):
+    for rule in ("anonymity.is_author(item, v)", "mine.filter(target).first()", "community_notes.DAILY_REQUESTS", "409", "429"):
         assert rule in refusal, rule
     # a copy's request counts for the post it was copied from
     assert "post_id=community_notes.primary_post_id(post)" in FLAGGING

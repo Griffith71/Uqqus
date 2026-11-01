@@ -14,7 +14,7 @@ import * as sdk from "matrix-js-sdk";
 import { ClientEvent } from "matrix-js-sdk";
 import { initAsync as initCryptoWasm } from "@matrix-org/matrix-sdk-crypto-wasm";
 
-import { ensureSession, CALL_STORAGE_KEY } from "./token.js";
+import { ensureSession, openCryptoStore, CALL_STORAGE_KEY } from "./token.js";
 import { startAgainWhenSignedOut } from "./signed_out.js";
 import { LocalMedia, MediaRefused, levelMeter, resumeAudio } from "./rtc/media.js";
 import { Mesh } from "./rtc/mesh.js";
@@ -937,7 +937,7 @@ async function startMatrix() {
   });
   startAgainWhenSignedOut(client, CALL_STORAGE_KEY, "uqqus-call");
   await initCryptoWasm("/assets/js/matrix_sdk_crypto_wasm_bg.wasm");
-  await client.initRustCrypto({ cryptoDatabasePrefix: "uqqus-call" });
+  await openCryptoStore(client, CALL_STORAGE_KEY, { cryptoDatabasePrefix: "uqqus-call" });
   await new Promise((resolve) => {
     const onSync = (s) => {
       if (s === "PREPARED" || s === "SYNCING") {
@@ -973,6 +973,7 @@ async function join() {
 }
 
 async function joinSpace() {
+  if (boot.qrLimited) return;                            // the page says so: a QR sign-in's password first (helpers/qr_login.py)
   byId("space-join").disabled = true;
   say(window.tr("Joining…"));
   resumeAudio();

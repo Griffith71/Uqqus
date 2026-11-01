@@ -163,7 +163,8 @@ def _state(db, v, groups):
 
 
 def page(db, v, tab, number=1):
-    """The `number`th page of the viewer's rows for `tab`; marks everything on it read (after noting what was new)."""
+    """The `number`th page of the viewer's rows for `tab`; marks everything on it read (after noting what was new), unless the
+    viewer is a limited QR sign-in."""
     if tab not in TABS:
         tab = "all"
     need = PER_PAGE * number
@@ -203,7 +204,8 @@ def page(db, v, tab, number=1):
     for grp in shown:
         grp.menu = ng.controls(grp, state)
     ids = [i.id for grp in shown for i in grp.items if not i.read]
-    if ids:
+    # a limited QR sign-in reads them and leaves them new: the notice of that sign-in has to stay in the member's bell (helpers/qr_login.py)
+    if ids and not v.qr_limited:
         db.query(Notification).filter(Notification.id.in_(ids)).update({"read": True}, synchronize_session=False)
         db.commit()
     return Page(groups=shown, next_exists=len(everything) > need)

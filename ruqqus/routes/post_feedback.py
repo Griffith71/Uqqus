@@ -1,6 +1,7 @@
 """Show fewer posts like this (helpers/post_feedback.py): the member's own, private signal."""
 from flask import g, jsonify, request
 
+from ruqqus.helpers import anonymity
 from ruqqus.helpers import post_feedback as rules
 from ruqqus.helpers.i18n_runtime import tr
 from ruqqus.helpers.wrappers import is_not_banned, validate_formkey
@@ -15,6 +16,8 @@ def post_fewer_like_this(pid, v):
     """Ask for fewer posts like this one; with `undo` take it back. Answering twice is the same answer."""
     post = _post_or_404(pid, v)
     undo = (request.values.get("undo") or "") in ("1", "true")
+    if anonymity.held_from_own(post, v):        # the refusal would say whose it is, and it changes nothing
+        return jsonify({"message": tr("Back to normal.") if undo else tr("We'll show fewer posts like this.")})
     try:
         if undo:
             rules.remove(g.db, v.id, post)

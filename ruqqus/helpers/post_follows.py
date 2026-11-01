@@ -21,6 +21,7 @@ import time
 
 from sqlalchemy import bindparam, text
 
+from ruqqus.helpers import anonymity
 from ruqqus.helpers.i18n_runtime import tr, trn
 
 MAX_FOLLOWED = 500        # posts one account may follow
@@ -153,7 +154,7 @@ def attach(db, posts, viewer):
     who = responsible_ids(db, posts)
     followed = {row[0] for row in db.execute(_FOLLOWED_PAGE, {"u": viewer.id, "ids": [p.id for p in posts]})}
     for post in posts:
-        if who.get(post.id) == viewer.id:
+        if who.get(post.id) == viewer.id and not anonymity.held_from_own(post, viewer):
             post._follow_state = "own"
         else:
             post._follow_state = "following" if post.id in followed else "can_follow"

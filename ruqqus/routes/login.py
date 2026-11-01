@@ -19,12 +19,16 @@ from ruqqus.helpers.get import *
 from ruqqus.helpers.regions import resolve_region
 from ruqqus.helpers.redirects import same_site
 from ruqqus.helpers import same_origin
-from ruqqus.helpers import account_sessions, chat_devices, mfa_backup, mfa_backup_store, signin_alerts, user_agents
+from ruqqus.helpers import account_sessions, chat_devices, mfa_backup, mfa_backup_store, sign_in_history, signin_alerts, user_agents
 from ruqqus.helpers import captcha, signup_review_store, signup_risk, signup_signals
+from ruqqus.helpers import age_declaration
+from ruqqus.helpers import ads as ads_rules
+from ruqqus.helpers import consent as consent_rules
+from ruqqus.helpers import qr_login
 from ruqqus.helpers.regions import COUNTRY_NAMES
 from ruqqus.helpers.alerts import notify
 from ruqqus.helpers import i18n
-from ruqqus.helpers.i18n_runtime import N_, current_locale, force_locale, locale_for_user, tr
+from ruqqus.helpers.i18n_runtime import N_, current_locale, force_locale, locale_for_user, msg, tr
 from ruqqus.mail import send_verification_email
 from secrets import token_hex
 
@@ -189,31 +193,60 @@ def login_post():
         time.sleep(random.uniform(0, 2))
         return render_template("login.html", failed=True, i=random_image()), 400
 
+    # the form left a key for chat to take (assets/js/chat_key.js), so no ad for a while (helpers/ads.py): a password
+    # sign-in's own, which is why it isn't in complete_sign_in
+    ads_rules.hold_after_password(flask_session, int(time.time()))
+    complete_sign_in(account, sign_in_history.METHOD_PASSWORD)
+
+    # check for previous page
+
+    redir = same_site(request.form.get("redirect", "/"))       # only a path on this site (bug hunt H5)
+    if redir:
+        return redirect(redir)
+    else:
+        return redirect(account.url)
+
+
+def complete_sign_in(account, method):
+    """Signs this browser in as `account`, whose right to it the caller has already checked: the session, the sign-in
+    alert, the row in `login_events` with how it was made (`method`, helpers/sign_in_history.py), the alts check and the
+    badges (the alts check only once a password has been typed on this browser). Not the ad hold, which belongs to a sign-in that typed a password here (helpers/ads.py)."""
     # set session and user id
     flask_session["user_id"] = account.id
     flask_session["session_id"] = token_hex(16)
     flask_session["login_nonce"] = account.login_nonce
     flask_session.permanent = True
+    signed_in_utc = int(time.time())
+    # a QR sign-in lasts 12 hours and is limited until its password is given (helpers/qr_login.py); any other sign-in on this
+    # browser replaces it and is whole
+    is_qr = method == sign_in_history.METHOD_QR
+    if is_qr:
+        qr_login.begin_limited(flask_session, signed_in_utc)
+    else:
+        qr_login.end_limited(flask_session)
 
     cf_country = request.headers.get("cf-ipcountry")
     agent = user_agents.stored(request.headers.get("User-Agent"))
-    signed_in_utc = int(time.time())
     # a sign-in from somewhere new is emailed to a verified address (helpers/signin_alerts.py). Worked out BEFORE this
     # sign-in is recorded, or it would be compared with itself; sent after, and nothing here can stop the sign-in
     try:
         # in the account's own language: what the email says is worked out here (helpers/signin_alerts.py)
         with force_locale(locale_for_user(account)):
-            alert = signin_alerts.check(g.db, account, cf_country, agent, signed_in_utc, r, COUNTRY_NAMES)
+            alert = signin_alerts.check(g.db, account, cf_country, agent, signed_in_utc, r, COUNTRY_NAMES, force="qr" if is_qr else None)
     except Exception as e:
         print(f"sign-in alert not checked: {type(e).__name__}", flush=True)
         alert = None
+    # A QR sign-in's address and region stay empty until its password is given (login_qr_upgrade): that browser may be a stranger's,
+    # and both are read as facts about the member (guild_limits, regions), for up to 400 days and past every log out. Its country and
+    # browser are only what Recent sign-ins shows (sign_in_history.TYPED_HERE_SQL keeps them out of what is read as the member's).
     g.db.add(LoginEvent(
         user_id=account.id,
         created_utc=signed_in_utc,
-        ip=request.remote_addr,
+        ip=None if is_qr else request.remote_addr,
         cf_country=cf_country,
-        region_code=resolve_region(cf_country),
+        region_code=None if is_qr else resolve_region(cf_country),
         user_agent=agent,
+        method=method,
     ))
     g.db.commit()
     if alert:
@@ -229,17 +262,12 @@ def login_post():
         except Exception as e:
             print(f"sign-in alert not sent: {type(e).__name__}", flush=True)
 
-    check_for_alts(account.id)
+    # Not for a QR sign-in, whose browser may be a stranger's: this writes a lasting row between the accounts in its cookie and the member,
+    # with nothing typed here, and the spam guard and an admin's ban act on those rows. The password does it (login_qr_upgrade).
+    if not is_qr:
+        check_for_alts(account.id)
 
     account.refresh_selfset_badges()
-
-    # check for previous page
-
-    redir = same_site(request.form.get("redirect", "/"))       # only a path on this site (bug hunt H5)
-    if redir:
-        return redirect(redir)
-    else:
-        return redirect(account.url)
 
 
 @app.route("/me", methods=["GET"])
@@ -409,6 +437,11 @@ def sign_up_post(v):
         #print(f"signup fail - {username } - invalid password")
         return new_signup(tr("Password must be between 8 and 100 characters."))
 
+    # how old: required, and a child account starts on the Child filter it stays on (helpers/age_declaration.py)
+    age_answer = age_declaration.parse(request.form.get("age_declaration"))
+    if age_answer is None:
+        return new_signup(msg(age_declaration.SIGN_UP_NO_ANSWER))
+
     # Check for existing acocunts
     email = (request.form.get("email") or "").strip()
     if not email:
@@ -485,6 +518,7 @@ def sign_up_post(v):
             languages=current_locale() if current_locale() in i18n.interface_keys() and current_locale() != "en" else "",
             ban_evade=ban_evade,
             quarantined_utc=signup_utc if held else 0,
+            **age_declaration.fields_for(age_answer, signup_utc),
             )
         apply_user_severity(new_user)
 
@@ -512,6 +546,7 @@ def sign_up_post(v):
         cf_country=cf_country,
         region_code=signup_region,
         user_agent=user_agents.stored(request.headers.get("User-Agent")),
+        method=sign_in_history.METHOD_PASSWORD,
     ))
     g.db.commit()
 
@@ -539,12 +574,20 @@ You can look around and set up your profile in the meantime.
 
     session["user_id"] = new_user.id
     session["session_id"] = token_hex(16)
+    session.permanent = True
+    ads_rules.hold_after_password(session, int(time.time()))
 
     redir = request.form.get("redirect", None)
 
     # #print(f"Signup event: @{new_user.username}")
 
-    return redirect("/")
+    # the video question, where the form asked it (sign_up.html), so the new member isn't asked again on their first page. A form
+    # with no answer sets nothing: that browser is asked by the banner, and its videos wait for a press until then.
+    answer = redirect("/")
+    video_answer = consent_rules.cookie_value(request.form.get("video_consent"), time.time())
+    if video_answer:
+        consent_rules.set_answer(answer, video_answer, request.is_secure, request.headers.get("Origin"))
+    return answer
 
 
 @app.route("/forgot", methods=["GET"])

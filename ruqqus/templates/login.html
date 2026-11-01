@@ -4,6 +4,7 @@
 
 <head>
 {% from "partials/i18n_boot.html" import i18n_boot %}{{ i18n_boot() }}
+{% from "partials/forget_prekey.html" import forget_prekey %}{{ forget_prekey(always=True) }}
 
     <meta charset="utf-8">
 {{ font_faces() }}
@@ -23,7 +24,9 @@
 
 
     <!-- Ruqqus CSS -->
-    <link rel="stylesheet" href="{{ asset_url('style/main.css') }}">
+    {% set sheet = asset_url('style/main.css') %}<link rel="stylesheet" href="{{ rtl_css(sheet) if ui_rtl() else sheet }}">
+    {% if qr_login_offered() %}<noscript><style>#qr-login { display: none; }</style></noscript>{% endif %}
+    {% block head_extra %}{% endblock %}
 
 </head>
 
@@ -113,6 +116,48 @@
 
                         </form>
 
+                        {# outside the form above: this writes no pre-key and sends no password (assets/js/chat_key.js). Nothing here holds a
+                           code: a press asks for one (routes/qr_login_pages.py) #}
+                        {% if qr_login_offered() %}
+                        <div id="qr-login" data-redirect="{{ redirect }}" data-fault="{{ _("That didn't go through. Wait a moment and try again.") }}">
+                            <button type="button" class="btn btn-outline-primary w-100" id="qr-start">
+                                <i class="fas fa-qrcode mr-2" aria-hidden="true"></i>{{ _("Sign in with a QR code") }}
+                            </button>
+                            <button type="button" class="btn btn-link w-100" id="qr-back" hidden>{{ _("Use your password") }}</button>
+                            <div id="qr-panel" class="qr-panel" hidden>
+                                <p class="qr-say sr-only" aria-live="polite"></p>
+                                <div class="qr-view" data-qr-view="waiting">
+                                    <div class="qr-box">
+                                        <img id="qr-image" aria-label="{{ _('A QR code to sign in with. Scan it with your phone, where you are signed in.') }}" role="img" width="270" height="270">
+                                    </div>
+                                    <p class="qr-line" data-qr-say>{{ _("Point your phone's camera at this. It runs out after two minutes.") }}</p>
+                                </div>
+                                <div class="qr-view" data-qr-view="approved">
+                                    {# Translators: %(name)s is the account's @handle. The script puts it in, as text #}
+                                    <h2 class="h5" tabindex="-1" id="qr-confirm-heading" data-template="{{ _('Sign in as %(name)s?', name='__NAME__') }}"></h2>
+                                    <p class="text-muted" data-qr-say>{{ _("Your phone approved this. Only continue if this is your account.") }}</p>
+                                    <p class="qr-error" id="qr-confirm-error" role="alert" hidden></p>
+                                    <div class="qr-actions">
+                                        <button type="button" class="btn btn-primary" id="qr-confirm">{{ _("Confirm") }}</button>
+                                        <button type="button" class="btn btn-outline-primary" id="qr-cancel">{{ _("Cancel") }}</button>
+                                    </div>
+                                </div>
+                                <div class="qr-view" data-qr-view="denied">
+                                    <p data-qr-say>{{ _("Your phone said no, so nobody was signed in.") }}</p>
+                                    <button type="button" class="btn btn-primary w-100" data-qr-new>{{ _("New code") }}</button>
+                                </div>
+                                <div class="qr-view" data-qr-view="expired">
+                                    <p data-qr-say>{{ _("This code has run out.") }}</p>
+                                    <button type="button" class="btn btn-primary w-100" data-qr-new>{{ _("New code") }}</button>
+                                </div>
+                                <div class="qr-view" data-qr-view="error">
+                                    <p data-qr-say>{{ _("Something went wrong, so this code has stopped. Wait a moment and try a new one.") }}</p>
+                                    <button type="button" class="btn btn-primary w-100" data-qr-new>{{ _("New code") }}</button>
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
+
                     </div>
 
                     {% endblock %}
@@ -145,6 +190,7 @@
 
 <script src="{{ asset_url('js/all_js.js') }}"></script>
 <script src="{{ asset_url('js/chat_key.js') }}"></script>
+{% if qr_login_offered() %}<script src="{{ asset_url('js/qr_login.js') }}"></script>{% endif %}
 
 </body>
 

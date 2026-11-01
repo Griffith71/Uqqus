@@ -28,6 +28,7 @@ from ruqqus.helpers.languages import detect_language
 from ruqqus.helpers.post_fields import flag
 from ruqqus.helpers import comment_permission as cperm
 from ruqqus.helpers import anonymity
+from ruqqus.helpers import action_log
 from ruqqus.classes import *
 from flask import *
 from ruqqus.helpers import sharing
@@ -315,7 +316,7 @@ Optional file data:
         return jsonify({"error": tr("You need to actually write something!")}), 400
     
     body=preprocess(body)
-    with CustomRenderer(post_id=parent_id) as renderer:
+    with CustomRenderer(post_id=parent_id, breaks=True) as renderer:
         body_md = renderer.render(mistletoe.Document(body))
     body_html = sanitize(body_md, linkgen=True)
 
@@ -330,9 +331,11 @@ Optional file data:
         else:
             reason = tr("Remove the %(domain)s link from your comment and try again.", domain=ban.domain)
 
-        #auto ban for digitally malicious content
+        #auto ban for digitally malicious content; a limited QR sign-in is only refused (helpers/qr_login.py)
         banned = True
-        if any([x.reason==7 for x in bans]):
+        if v.qr_limited:
+            banned = False
+        elif any([x.reason==7 for x in bans]):
             v.ban(reason=N_("Sexualizing minors"))
         elif any([x.reason==4 for x in bans]):
             v.ban(days=30, reason=N_("Digitally malicious content"))
@@ -407,6 +410,10 @@ Optional file data:
             threshold *= 2
 
         if len(similar_comments) > threshold:
+            # this would suspend the member and every account linked to them: not on a limited QR sign-in's word (helpers/qr_login.py)
+            if v.qr_limited:
+                return qr_limited_answer(v)
+
             notify(v, N_("Your %(site)s account has been suspended for 1 day for the following reason:\n\n> Too much spam!"))
 
             v.ban(reason=N_("Spamming."),
@@ -488,7 +495,7 @@ Optional file data:
 
             body = request.form.get("body") + f"\n\n![](https://{BUCKET}/{name})"
             body=preprocess(body)
-            with CustomRenderer(post_id=parent_id) as renderer:
+            with CustomRenderer(post_id=parent_id, breaks=True) as renderer:
                 body_md = renderer.render(mistletoe.Document(body))
             body_html = sanitize(body_md, linkgen=True)
             
@@ -621,13 +628,14 @@ Required form data:
 * `body` - The new raw comment text
 
 Optional form data (left out: unchanged):
+* `edit_summary` - A few words on what you changed, shown in the comment's history.
 * `paid_partnership` - `true` if the comment is a paid partnership, empty to unmark it.
 * `made_with_ai` - `true` if the comment was made with AI, empty to unmark it.
 """
 
     c = get_comment(cid, v=v)
 
-    if not c.author_id == v.id:
+    if not anonymity.is_author(c, v):
         abort(403)
 
     if c.is_banned or c.deleted_utc > 0:
@@ -640,7 +648,7 @@ Optional form data (left out: unchanged):
     if text_length.over_limit(body.strip(), COMMENT_MAX, stored_max=COMMENT_MAX):
         return jsonify({"error": text_length.limit_message("Comments", COMMENT_MAX)}), 400
     body=preprocess(body)
-    with CustomRenderer(post_id=c.post.base36id) as renderer:
+    with CustomRenderer(post_id=c.post.base36id, breaks=True) as renderer:
         body_md = renderer.render(mistletoe.Document(body))
     body_html = sanitize(body_md, linkgen=True)
 
@@ -653,7 +661,7 @@ Optional form data (left out: unchanged):
 
         #auto ban for digitally malicious content
         # (bug hunt L2: this answered 200, which the page took for a saved edit: the comment read "undefined")
-        if any([x.reason==4 for x in bans]):
+        if any([x.reason==4 for x in bans]) and not v.qr_limited:
             v.ban(days=30, reason=N_("Digitally malicious content is not allowed."))
             return jsonify({"error": tr("Digitally malicious content is not allowed.")}), 403
         
@@ -711,11 +719,18 @@ Optional form data (left out: unchanged):
         threshold *= 2
 
     if len(similar_comments) > threshold:
+        if v.qr_limited:
+            return qr_limited_answer(v)
+
         notify(v, N_("Your %(site)s account has been suspended for 1 day for the following reason:\n\n> Too much spam!"))
 
         v.ban(reason=N_("Spamming."),
-              include_alts=True,
               days=1)
+
+        # (this call used to pass include_alts=True, which User.ban has never accepted: a TypeError on this path)
+        for alt in v.alts:
+            if not alt.is_suspended:
+                alt.ban(reason=N_("Spamming."), days=1)
 
         for comment in similar_comments:
             comment.is_banned = True
@@ -737,6 +752,7 @@ Optional form data (left out: unchanged):
             target_comment_id=c.id,
             board_id=c.post.board_id,
             action="edit",
+            summary=action_log.clean_reason(request.form.get("edit_summary"), 256) or None,
             previous_body=c.body,
             previous_body_html=c.body_html
         ))
@@ -785,7 +801,7 @@ URL path parameters:
     if not c:
         abort(404)
 
-    if not c.author_id == v.id:
+    if not anonymity.is_author(c, v):
         abort(403)
 
     # already deleted: a 404, as for posts (a second delete wrote a second public deletion-log entry)
@@ -798,14 +814,14 @@ URL path parameters:
     g.db.add(c)
     media_cdn.purge(media_attach.attached_paths(g.db, comment_id=c.id))
 
+    # an author's own delete is not public (the owner, 2026-10-31): the text is a private copy, kept 90 days
     g.db.add(ContentEditHistory(
         actor_id=v.id,
         target_comment_id=c.id,
         board_id=c.post.board_id,
-        action="delete",
-        previous_body=c.body,
-        previous_body_html=c.body_html
+        action="delete"
     ))
+    action_log.keep_snapshot(g.db, action_log.snapshot_of(c, c.post.board_id, comment=True))
 
     for forward_copy in c.forwarded_posts:
         if forward_copy.is_deleted:
@@ -828,11 +844,11 @@ URL path parameters:
 @auth_desired
 def comment_history(cid, v):
     """
-View the edit/removal history of a comment - every edit, self-delete,
-and guild hide/unhide, each showing who, when, and (except for restores)
-what the content looked like immediately before that action. If the
-comment was later obliterated by an admin, only a metadata-only notice
-is shown - no content.
+View the history of a comment - every edit (with the version edited away and the note
+its editor gave), self-delete and guild hide/unhide, each showing who and when. The
+text of a delete or a hide is not here: it is a private copy for the comment's author,
+the guild's guildmasters and the admins (`copy_url`). If the comment was later
+obliterated by an admin, only a metadata-only notice is shown - no content.
 """
 
     comment = get_comment(cid, v=v)
@@ -850,6 +866,9 @@ is shown - no content.
         target_comment_id=comment.id
     ).first()
 
+    copy_url = (f"/comment/{comment.base36id}/copy"
+                if action_log.may_open_copy(action_log.snapshot_for(g.db, comment_id=comment.id), v) else None)
+
     return render_template(
         "content_history.html",
         v=v,
@@ -857,6 +876,7 @@ is shown - no content.
         target_type="comment",
         entries=entries,
         obliteration=obliteration,
+        copy_url=copy_url,
         show_text=history_text_shown(comment, v)
     )
 
@@ -905,9 +925,8 @@ def unsave_comment(cid, v):
 @validate_formkey
 def toggle_comment_sensitive(cid, v):
     """
-Toggle "Sensitive Content" status on a comment - an author-discretionary
-blur-until-clicked flag for material that isn't a rule violation but
-could be upsetting.
+Toggle "Sensitive Content" status on a comment - a blur-until-clicked flag
+for material that isn't a rule violation but is sexual or could be upsetting.
 
 URL path parameters:
 * `cid` - The base 36 comment id.
@@ -917,7 +936,7 @@ URL path parameters:
 
     mod = comment.board.has_mod(v)
 
-    if not comment.author_id == v.id and not v.admin_level >= 3 and not mod:
+    if not anonymity.is_author(comment, v) and not v.admin_level >= 3 and not mod:
         abort(403)
 
     if comment.board.is_sensitive and comment.is_sensitive:
@@ -966,6 +985,10 @@ def repost_comment(cid, v):
 
     if circle_guard.under_audience(g.db, comment):
         return {"error": tr("A comment on a post for a Circle can't be reposted.")}, 400
+
+    # the refusal below would tell a limited QR sign-in whose it is, and a repost of their own would put it on the profile
+    if comment.is_anonymous and v.qr_limited:
+        return qr_limited_answer(v)
 
     if comment.is_anonymous and comment.author_id == v.id:
         return {"error": tr("You can't repost your own anonymous comment: it would put it on your profile.")}, 400
@@ -1218,9 +1241,7 @@ Required form data:
         target_comment_id=comment.id,
         board_id=board.id,
         action="guild_hide",
-        reason=reason,
-        previous_body=comment.body,
-        previous_body_html=comment.body_html
+        reason=reason
     ))
 
     ma=ModAction(
@@ -1231,6 +1252,10 @@ Required form data:
         note=html.escape(reason)[:256]          # the log draws notes as HTML (bug hunt C1)
     )
     g.db.add(ma)
+    g.db.flush()
+    # the rule cited, and the text as it was: a private copy for the guild's guildmasters, the author and the admins (not in the entry)
+    action_log.annotate(g.db, ma.id, rule=request.form.get("rule"),
+                        snapshot=action_log.snapshot_of(comment, board.id, comment=True))
     g.db.commit()
 
     rendered=render_template(
@@ -1322,7 +1347,7 @@ Required form data:
         return jsonify({"error": tr("This comment is on a copy forwarded to a guild - ask that guild's guildmasters to remove it "
                                        "instead.")}), 403
 
-    if comment.post.author_id != v.id:
+    if not anonymity.is_author(comment.post, v):
         abort(403)
 
     reason = request.form.get("reason", "").strip()
@@ -1337,10 +1362,9 @@ Required form data:
         actor_id=v.id,
         target_comment_id=comment.id,
         action="author_hide",
-        reason=reason,
-        previous_body=comment.body,
-        previous_body_html=comment.body_html
+        reason=reason
     ))
+    action_log.keep_snapshot(g.db, action_log.snapshot_of(comment, comment.post.board_id, comment=True))
     g.db.commit()
 
     html=render_template(
@@ -1372,7 +1396,7 @@ URL path parameters:
     if not comment.post.is_profile_post:
         abort(403)
 
-    if comment.post.author_id != v.id:
+    if not anonymity.is_author(comment.post, v):
         abort(403)
 
     comment.author_hidden = False

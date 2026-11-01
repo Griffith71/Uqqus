@@ -211,6 +211,7 @@ def help_admins(v):
 
 @app.route("/settings/security", methods=["GET"])
 @auth_required
+@not_qr_limited
 def settings_security(v):
     mfa_secret=pyotp.random_base32() if not v.mfa_secret else None
     return render_template(
@@ -262,6 +263,7 @@ def help_home(v):
 
 @app.route("/help/submit_contact", methods=["POST"])
 @is_not_banned
+@not_qr_limited
 @validate_formkey
 def press_inquiry(v):
 

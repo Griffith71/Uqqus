@@ -16,6 +16,7 @@ Use the `filter_*` functions on listing queries (so pages stay full) and the
 """
 from sqlalchemy import and_, or_, select
 
+from ruqqus.helpers import anonymity
 from ruqqus.helpers.i18n_runtime import tr_lazy
 from ruqqus.helpers.wordfilter import is_hidden
 
@@ -61,7 +62,7 @@ def board_hidden(board, v):
 
 
 def post_hidden(post, v):
-    if v is not None and post.author_id == v.id:
+    if anonymity.is_author(post, v):
         return False
     level = viewer_level(v)
     if level <= OFF:
@@ -72,7 +73,7 @@ def post_hidden(post, v):
 
 
 def comment_hidden(comment, v):
-    if v is not None and comment.author_id == v.id:
+    if anonymity.is_author(comment, v):
         return False
     level = viewer_level(v)
     if level <= OFF:
@@ -126,7 +127,7 @@ def filter_posts(query, v, level=None):
         conds.append(_not_by_sensitive_account(Submission))
     visible = and_(*conds)
     if v is not None:
-        visible = or_(Submission.author_id == v.id, visible)
+        visible = or_(anonymity.own(Submission, v), visible)
     return query.filter(visible)
 
 
@@ -157,7 +158,7 @@ def filter_comments(query, v, level=None):
                      Comment.parent_submission.notin_(select(Submission.id).where(or_(*hidden_posts)))))
     visible = and_(*conds)
     if v is not None:
-        visible = or_(Comment.author_id == v.id, visible)
+        visible = or_(anonymity.own(Comment, v), visible)
     return query.filter(visible)
 
 

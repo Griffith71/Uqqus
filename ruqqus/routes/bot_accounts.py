@@ -12,7 +12,6 @@ it still waits. Anything else is a 404. Every change is a POST with the form key
 its OAuth grants are the person's own, never a bot's keys (`_not_self`, `settings_bot_delete`).
 """
 import html
-import io
 import secrets
 import time
 import traceback
@@ -22,14 +21,14 @@ from flask import abort, g, make_response, redirect, render_template, request
 from urllib.parse import quote
 
 from ruqqus.classes import ClientAuth, OauthApp, User
-from ruqqus.helpers import bot_store, bots, display_name_store, display_names, feed_fetch, feed_items
+from ruqqus.helpers import bot_store, bots, feed_fetch, feed_items, profile_edit
 from ruqqus.helpers.alerts import notify
 from ruqqus.helpers.aws import check_csam_url
 from ruqqus.helpers.get import get_user
 from ruqqus.helpers.i18n_runtime import N_, tr, trn
 from ruqqus.helpers.safe_fetch import FetchError
 from ruqqus.helpers.word_filter_store import apply_user_severity
-from ruqqus.helpers.wrappers import admin_level_required, auth_required, is_not_banned, validate_formkey
+from ruqqus.helpers.wrappers import not_qr_limited, admin_level_required, auth_required, is_not_banned, validate_formkey
 from ruqqus.__main__ import app, limiter, member_limit_key
 
 # why a bot is paused when nobody gave a reason: stored with the bot (bot_store.set_running), so kept in English
@@ -139,24 +138,12 @@ def _tell_running(row):
 
 def _image(file):
     """(file, error) for a picture or banner sent for a bot: a real picture (PNG, JPEG, GIF or WebP) of at most
-    IMAGE_MAX_BYTES, checked by opening it, not by its name. (None, None) when nothing was sent."""
-    if not file or not file.filename:
-        return None, None
-    data = file.stream.read(bots.IMAGE_MAX_BYTES + 1)
-    if len(data) > bots.IMAGE_MAX_BYTES:
-        return None, tr("A picture can be 8 MB at most.")
-    try:
-        from PIL import Image
-
-        picture = Image.open(io.BytesIO(data))
-        picture.verify()
-        kind = picture.format
-    except Exception:
-        return None, tr("That file is not a picture.")
-    if kind not in bots.IMAGE_FORMATS:
-        return None, tr("A picture must be a PNG, JPEG, GIF or WebP file.")
-    file.stream.seek(0)
-    return file, None
+    IMAGE_MAX_BYTES, checked by opening it, not by its name (helpers/profile_edit.py, as a member's own is).
+    (None, None) when nothing was sent."""
+    picture, code = profile_edit.check_image(file, bots.IMAGE_MAX_BYTES, bots.IMAGE_FORMATS)
+    if code:
+        return None, profile_edit.picture_message(code, bots.IMAGE_MAX_BYTES // (1024 * 1024))
+    return picture, None
 
 
 def _set_picture(account, file, which, v):
@@ -177,15 +164,15 @@ def _set_picture(account, file, which, v):
 
 def _display_name(raw, account_id):
     """(display name, error) for what a member typed for a bot: the same rules as for a member
-    (helpers/display_names.py), including never being another account's @handle."""
-    try:
-        name = display_names.clean(raw)
-    except display_names.Refused as refused:
-        return "", str(refused)
-    if name and display_name_store.takes_a_handle(g.db, account_id, name):
-        return "", tr("That is another account's username, so it can't be a display name.")
-    if name and display_names.reserved_refusal(name, (app.config["SITE_NAME"], "ruqqus", "uqqus")):
-        return "", display_names.RESERVED
+    (helpers/profile_edit.py, helpers/display_names.py), including never being another account's @handle."""
+    name, error = profile_edit.clean_display_name(raw)
+    if error:
+        return "", error
+    error = profile_edit.display_name_refusal(
+        g.db, account_id, name, (app.config["SITE_NAME"], "ruqqus", "uqqus"),
+        handle_message=tr("That is another account's username, so it can't be a display name."))
+    if error:
+        return "", error
     return name, None
 
 
@@ -232,6 +219,7 @@ def _feeds(raw):
 @app.post("/settings/bots/automate")
 @limiter.limit("10/hour", key_func=member_limit_key)    # each reads outside feeds now (bug hunt)
 @is_not_banned
+@not_qr_limited
 @validate_formkey
 def settings_bots_automate(v):
     """Automated posting on the member's OWN account (helpers/bots.py SELF): no new account, nothing about their
@@ -269,6 +257,7 @@ def settings_bots_automate(v):
 @app.post("/settings/bots/apply")
 @limiter.limit("10/hour", key_func=member_limit_key)    # each reads outside feeds now (bug hunt)
 @is_not_banned
+@not_qr_limited
 @validate_formkey
 def settings_bots_apply(v):
     """Propose a bot: its kind, name, what it posts, bio, picture, banner, feeds and guilds. An admin may approve it
@@ -366,6 +355,7 @@ def settings_bot(name, v):
 
 @app.post("/settings/bots/<name>/profile")
 @is_not_banned
+@not_qr_limited
 @validate_formkey
 def settings_bot_profile(name, v):
     account, row, admin = _manageable(name, v)
@@ -390,6 +380,7 @@ def settings_bot_profile(name, v):
 
 @app.post("/settings/bots/<name>/image/<which>")
 @is_not_banned
+@not_qr_limited
 @validate_formkey
 def settings_bot_picture(name, which, v):
     """A new picture (`which` = picture) or banner for the bot."""
@@ -409,6 +400,7 @@ def settings_bot_picture(name, which, v):
 
 @app.post("/settings/bots/<name>/image/<which>/remove")
 @auth_required
+@not_qr_limited
 @validate_formkey
 def settings_bot_picture_remove(name, which, v):
     if which not in ("picture", "banner"):
@@ -433,6 +425,7 @@ def settings_bot_picture_remove(name, which, v):
 @app.post("/settings/bots/<name>/sources/add")
 @limiter.limit("30/hour", key_func=member_limit_key)    # each reads outside feeds now (bug hunt)
 @is_not_banned
+@not_qr_limited
 @validate_formkey
 def settings_bot_add_source(name, v):
     """A member's new feed waits for an admin; one an admin adds is approved at once."""
@@ -457,6 +450,7 @@ def settings_bot_add_source(name, v):
 
 @app.post("/settings/bots/<name>/sources/<int:source_id>/remove")
 @auth_required
+@not_qr_limited
 @validate_formkey
 def settings_bot_remove_source(name, source_id, v):
     account, row, admin = _manageable(name, v)
@@ -468,6 +462,7 @@ def settings_bot_remove_source(name, source_id, v):
 
 @app.post("/settings/bots/<name>/sources/<int:source_id>/restart")
 @is_not_banned
+@not_qr_limited
 @validate_formkey
 def settings_bot_restart_source(name, source_id, v):
     """A source paused after too many failed reads starts again (an admin approved it before; that still holds)."""
@@ -484,6 +479,7 @@ def settings_bot_restart_source(name, source_id, v):
 
 @app.post("/settings/bots/<name>/pause")
 @auth_required
+@not_qr_limited
 @validate_formkey
 def settings_bot_pause(name, v):
     account, row, admin = _manageable(name, v)
@@ -498,6 +494,7 @@ def settings_bot_pause(name, v):
 
 @app.post("/settings/bots/<name>/resume")
 @is_not_banned
+@not_qr_limited
 @validate_formkey
 def settings_bot_resume(name, v):
     account, row, admin = _manageable(name, v)
@@ -511,6 +508,7 @@ def settings_bot_resume(name, v):
 
 @app.post("/settings/bots/<name>/delete")
 @auth_required
+@not_qr_limited
 @validate_formkey
 def settings_bot_delete(name, v):
     """A proposal that still waits is withdrawn: the account goes (it never posted). A bot that ran stops for good:
@@ -551,6 +549,7 @@ KEY_SCOPES = dict(scope_identity=True, scope_read=True, scope_create=True, scope
 
 @app.post("/settings/bots/<name>/keys/create")
 @is_not_banned
+@not_qr_limited
 @validate_formkey
 def settings_bot_create_key(name, v):
     """A key for a member bot, made by its own member through one of their own apps (Settings > Apps): a grant with a
@@ -583,6 +582,7 @@ def settings_bot_create_key(name, v):
 
 @app.post("/settings/bots/<name>/keys/<int:key_id>/revoke")
 @auth_required
+@not_qr_limited
 @validate_formkey
 def settings_bot_revoke_key(name, key_id, v):
     account, row, admin = _manageable(name, v)

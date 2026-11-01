@@ -21,7 +21,7 @@ from ruqqus.helpers.media import attach, cdn, dev, google_oauth, oauth, registry
 from ruqqus.helpers.media.base import AccountLost, MediaGone, ProviderDown
 from ruqqus.helpers.secret_box import encrypt_secret
 from ruqqus.helpers.security import generate_hash, validate_hash
-from ruqqus.helpers.wrappers import auth_required, get_logged_in_user, validate_formkey
+from ruqqus.helpers.wrappers import not_qr_limited, qr_limited_answer, auth_required, get_logged_in_user, validate_formkey
 
 # templates ask this to decide between the linked-storage upload controls and the old ones
 app.jinja_env.globals["media_offered"] = lambda: bool(registry.account_kinds())
@@ -195,6 +195,7 @@ def _google_redirect_uri():
 
 @app.get("/settings/media/google/connect")
 @auth_required
+@not_qr_limited
 def settings_media_google_connect(v):
     """Send the member to Google to approve. `want=video` also asks for uploading to
     YouTube (only when they first add a video); otherwise only the Drive files this site makes."""
@@ -208,6 +209,7 @@ def settings_media_google_connect(v):
 
 @app.get("/settings/media/google/callback")
 @auth_required
+@not_qr_limited
 def settings_media_google_callback(v):
     """Google sends the member back here with a code, or with why not."""
     def back(message, key="error"):
@@ -245,6 +247,7 @@ def _service_redirect_uri(name):
 
 @app.get("/settings/media/<any(microsoft, dailymotion):name>/connect")
 @auth_required
+@not_qr_limited
 def settings_media_service_connect(name, v):
     """Send the member to the service to approve (OneDrive for Microsoft, video for Dailymotion)."""
     _remember_popup()
@@ -258,6 +261,7 @@ def settings_media_service_connect(name, v):
 
 @app.get("/settings/media/<any(microsoft, dailymotion):name>/callback")
 @auth_required
+@not_qr_limited
 def settings_media_service_callback(name, v):
     """The service sends the member back here with a code, or with why not."""
     service = registry.SERVICES[name]
@@ -294,6 +298,7 @@ def settings_media_service_callback(name, v):
 
 @app.post("/settings/media/dev/enable")
 @auth_required
+@not_qr_limited
 @validate_formkey
 def settings_media_dev_enable(v):
     """Link the stand-in storage (development only, see helpers/media/dev.py)."""
@@ -310,6 +315,7 @@ def settings_media_dev_enable(v):
 
 @app.post("/settings/media/<provider>/disconnect")
 @auth_required
+@not_qr_limited
 @validate_formkey
 def settings_media_disconnect(provider, v):
     account = g.db.query(MediaAccount).filter_by(user_id=v.id, provider=provider).first()
@@ -431,6 +437,7 @@ def _set_default(v, kind, service):
 
 @app.post("/api/media/default")
 @auth_required
+@not_qr_limited
 @validate_formkey
 def media_default(v):
     """The composer's "Change": where this kind of file goes from now on."""
@@ -452,6 +459,7 @@ def media_default(v):
 
 @app.post("/settings/media/default")
 @auth_required
+@not_qr_limited
 @validate_formkey
 def settings_media_default(v):
     """The settings page's choice of where each kind of file goes."""
@@ -480,6 +488,10 @@ Answers with where the browser sends the bytes (`upload.url`, `upload.method`,
         return _error(tr("Your account cannot upload right now."), 403)
 
     kind = (request.form.get("kind") or "").strip()
+    # a video is public under the member's own name on YouTube or Dailymotion, through a token this site holds, and stays there
+    # whatever happens to the sign-in (helpers/qr_login.py). A picture or a sound stays private in their storage until it is shown here.
+    if kind == "video" and v.qr_limited:
+        return qr_limited_answer(v)
     try:
         ext = rules.check_request(kind, request.form.get("filename"), request.form.get("size"))
     except rules.MediaError as e:
@@ -559,8 +571,10 @@ def media_upload_complete(aid, v):
                 asset.width, asset.height = safety.image_size(temp)
                 match = safety.banned_match(g.db, temp)
                 if match is not None:
-                    # a picture on the site's banned list: same consequence as the old upload path
-                    safety.ban_uploader(g.db, v, match.ban_reason, match.ban_time or 0)
+                    # a picture on the site's banned list: same consequence as the old upload path, but a limited QR sign-in
+                    # is only refused (helpers/qr_login.py)
+                    if not v.qr_limited:
+                        safety.ban_uploader(g.db, v, match.ban_reason, match.ban_time or 0)
                     _set_status(asset, rules.REMOVED)
                     g.db.commit()
                     return _error(tr("That image is not allowed here."), 403)
@@ -600,6 +614,7 @@ def media_upload_complete(aid, v):
 
 @app.post("/settings/media/dailymotion/video")
 @auth_required
+@not_qr_limited
 @validate_formkey
 def settings_media_dailymotion_video(v):
     """How the member's videos show on their Dailymotion channel by default."""
@@ -615,6 +630,7 @@ def settings_media_dailymotion_video(v):
 
 @app.post("/settings/media/google/video")
 @auth_required
+@not_qr_limited
 @validate_formkey
 def settings_media_google_video(v):
     """How the member's videos show on their YouTube channel by default."""

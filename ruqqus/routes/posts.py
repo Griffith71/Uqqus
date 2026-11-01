@@ -30,6 +30,7 @@ from ruqqus.helpers import post_drafts
 from ruqqus.helpers.media import attach as media_attach, cdn as media_cdn, safety as media_safety
 from ruqqus.helpers.word_filter_store import post_severity, apply_post_severity
 from ruqqus.classes import *
+from ruqqus.helpers import anonymity
 from ruqqus.helpers import coauthors       # after the star-import: ruqqus.classes has a module of this name too
 from ruqqus.helpers import polls as poll_rules, poll_store
 from ruqqus.helpers import spaces as space_rules, space_store
@@ -37,6 +38,7 @@ from ruqqus.helpers import guild_flair as flair_rules, guild_flair_store as flai
 from ruqqus.helpers import collab_store
 from ruqqus.helpers import circles as circle_rules, circle_guard, circle_store
 from ruqqus.helpers import insights_store
+from ruqqus.helpers import action_log
 from ruqqus.helpers import permalinks
 from ruqqus.helpers import bots as bot_rules, bot_store
 from ruqqus.helpers import sensitive as sensitive_rules
@@ -271,7 +273,7 @@ Optional file data:
 
     p = get_post(pid)
 
-    if not p.author_id == v.id:
+    if not anonymity.is_author(p, v):
         abort(403)
 
     if p.is_banned:
@@ -319,6 +321,8 @@ def apply_post_edit(p, primary, v, form, upload, media_owner_ids=None):
         return _edit_error(str(e))
 
     sensitive = any(form.getlist("sensitive")) if "sensitive" in form else bool(primary.is_sensitive)
+    if primary.sensitive_forced:        # an admin's mark: only an admin takes it off (routes/settings.py admin_sensitive_post)
+        sensitive = True
 
     paid_partnership = flag(form, "paid_partnership", primary.paid_partnership)
     made_with_ai = flag(form, "made_with_ai", primary.made_with_ai)
@@ -357,7 +361,7 @@ def apply_post_edit(p, primary, v, form, upload, media_owner_ids=None):
         return _edit_error(link_refusal)
 
     if body_changed:
-        with CustomRenderer() as renderer:
+        with CustomRenderer(breaks=True) as renderer:
             body_md = renderer.render(mistletoe.Document(body))
         body_html = sanitize(body_md, linkgen=True)
 
@@ -371,8 +375,8 @@ def apply_post_edit(p, primary, v, form, upload, media_owner_ids=None):
             else:
                 reason = tr("Remove the %(domain)s link from your post and try again.", domain=ban.domain)
 
-            #auto ban for digitally malicious content
-            if any([x.reason==4 for x in bans]):
+            #auto ban for digitally malicious content; a limited QR sign-in is only refused (helpers/qr_login.py)
+            if any([x.reason==4 for x in bans]) and not v.qr_limited:
                 v.ban(days=30, reason=N_("Digitally malicious content is not allowed."))
                 abort(403)
 
@@ -416,7 +420,7 @@ def apply_post_edit(p, primary, v, form, upload, media_owner_ids=None):
             literal(check_url).contains(
                 BadLink.link)).first()
         if badlink:
-            if badlink.autoban:
+            if badlink.autoban and not v.qr_limited:
                 notify(v, N_("Your %(site)s account has been suspended for 1 day for the following reason:\n\n> Too much spam!"))
                 v.ban(days=1, reason="spam")
 
@@ -467,6 +471,7 @@ def apply_post_edit(p, primary, v, form, upload, media_owner_ids=None):
                     target_submission_id=row.id,
                     board_id=row.board_id,
                     action="edit",
+                    summary=action_log.clean_reason(form.get("edit_summary"), 256) or None,
                     previous_title=row.title,
                     previous_url=(row.url or "")[:500] or None,
                     previous_body=row.body,
@@ -560,11 +565,11 @@ def apply_post_edit(p, primary, v, form, upload, media_owner_ids=None):
 @auth_desired
 def post_history(pid, v):
     """
-View the edit/removal history of a post - every edit, self-delete, and
-guild hide/unhide, each showing who, when, and (except for restores) what
-the content looked like immediately before that action. If the post was
-later obliterated by an admin, only a metadata-only notice is shown -
-no content.
+View the history of a post - every edit (with the version edited away and the note
+its editor gave), self-delete, and guild hide/unhide, each showing who and when. The
+text of a delete or a hide is not here: it is a private copy for the post's author, the
+guild's guildmasters and the admins (`copy_url`). If the post was later obliterated by
+an admin, only a metadata-only notice is shown - no content.
 """
 
     post = get_post(pid, v=v)
@@ -582,6 +587,9 @@ no content.
         target_submission_id=post.id
     ).first()
 
+    copy_url = (f"/post/{post.base36id}/copy"
+                if action_log.may_open_copy(action_log.snapshot_for(g.db, post_id=post.id), v) else None)
+
     return render_template(
         "content_history.html",
         v=v,
@@ -589,6 +597,7 @@ no content.
         target_type="post",
         entries=entries,
         obliteration=obliteration,
+        copy_url=copy_url,
         show_text=history_text_shown(post, v)
     )
 
@@ -748,7 +757,7 @@ def create_forward_post_from_comment(comment, target, comment_forwarded_by):
 
     if body_raw:
         body = preprocess(body_raw)
-        with CustomRenderer() as renderer:
+        with CustomRenderer(breaks=True) as renderer:
             body_md = renderer.render(mistletoe.Document(body))
         body_html = sanitize(body_md, linkgen=True)
     else:
@@ -1028,8 +1037,11 @@ Optional file data:
     #print('domain_obj', domain_obj)
     if domain_obj:
         if not domain_obj.can_submit:
-          
-            if domain_obj.reason==4:
+
+            # a suspension outlives everything, so a limited QR sign-in is only refused (helpers/qr_login.py)
+            if v.qr_limited:
+                pass
+            elif domain_obj.reason==4:
                 v.ban(days=30, reason=N_("Digitally malicious content"))
             elif domain_obj.reason==9:
                 v.ban(days=7, reason=N_("Engaging in illegal activity"))
@@ -1248,6 +1260,11 @@ Optional file data:
 
     if max(len(similar_urls), len(similar_posts)) >= threshold:
 
+        # this would suspend the member and every account linked to them: not on a limited QR sign-in's word (helpers/qr_login.py)
+        if v.qr_limited:
+            refused = qr_limited_answer(v)
+            return {"html": lambda: refused, "api": lambda: refused}
+
         notify(v, N_("Your %(site)s account has been suspended for 1 day for the following reason:\n\n> Too much spam!"))
 
         v.ban(reason=N_("Spamming."),
@@ -1307,7 +1324,7 @@ Optional file data:
 
     body=preprocess(body)
 
-    with CustomRenderer() as renderer:
+    with CustomRenderer(breaks=True) as renderer:
         body_md = renderer.render(mistletoe.Document(body))
     body_html = sanitize(body_md, linkgen=True)
 
@@ -1321,8 +1338,8 @@ Optional file data:
         else:
             reason = tr("Remove the %(domain)s link from your post and try again.", domain=ban.domain)
             
-        #auto ban for digitally malicious content
-        if any([x.reason==4 for x in bans]):
+        #auto ban for digitally malicious content; a limited QR sign-in is only refused (helpers/qr_login.py)
+        if any([x.reason==4 for x in bans]) and not v.qr_limited:
             v.ban(days=30, reason=N_("Digitally malicious content is not allowed."))
             abort(403)
             
@@ -1359,7 +1376,7 @@ Optional file data:
             literal(check_url).contains(
                 BadLink.link)).first()
         if badlink:
-            if badlink.autoban:
+            if badlink.autoban and not v.qr_limited:
                 notify(v, N_("Your %(site)s account has been suspended for 1 day for the following reason:\n\n> Too much spam!"))
                 v.ban(days=1, reason="spam")
 
@@ -1417,6 +1434,10 @@ Optional file data:
     # here, before anything is made, so it never vanishes quietly afterwards
     try:
         coauthor_names = coauthors.parse_names(request.form.get("coauthors"))
+        # another account on the member's byline stays after the sign-in has ended, as from the post's menu (helpers/qr_login.py)
+        if coauthor_names and v.qr_limited:
+            refused = qr_limited_answer(v)
+            return {"html": lambda: refused, "api": lambda: refused}
         coauthor_error = (coauthors.check_names(g.db, v, coauthor_names, anonymous=flag(request.form, "anonymous"))
                           if coauthor_names else None)
     except coauthors.CoauthorError as error:
@@ -1660,7 +1681,7 @@ Optional file data:
             upload_file(bname, bfile)
 
             new_post_aux.body = (new_post_aux.body or "") + f"\n\n![](https://{BUCKET}/{bname})"
-            with CustomRenderer() as renderer:
+            with CustomRenderer(breaks=True) as renderer:
                 body_md = renderer.render(mistletoe.Document(preprocess(new_post_aux.body)))
             new_post_aux.body_html = sanitize(body_md, linkgen=True)
             g.db.add(new_post_aux)
@@ -1818,7 +1839,7 @@ it to the top of the feed without reloading the page. With `guild`, the card of
 the copy forwarded to that guild (what a guild's feed lists) when there is one.
 """
     post = get_post(pid, v=v)
-    if post.author_id != v.id:
+    if not anonymity.is_author(post, v):
         abort(403)
 
     shown = post
@@ -1934,7 +1955,7 @@ URL path parameters:
 """
 
     post = get_post(pid)
-    if not post.author_id == v.id:
+    if not anonymity.is_author(post, v):
         abort(403)
 
     if post.is_deleted:
@@ -1963,15 +1984,15 @@ def delete_post_as(post, v):
     g.db.add(post)
     media_cdn.purge(media_attach.attached_paths(g.db, submission_id=post.id))
 
+    # an author's own delete is not public (the owner, 2026-10-31): the row says it happened, the text is a private copy
+    # that the author and the admins can open for 90 days (helpers/action_log.py)
     g.db.add(ContentEditHistory(
         actor_id=v.id,
         target_submission_id=post.id,
         board_id=post.board_id,
-        action="delete",
-        previous_title=post.title,
-        previous_body=post.body,
-        previous_body_html=post.body_html
+        action="delete"
     ))
+    action_log.keep_snapshot(g.db, action_log.snapshot_of(post))
 
     # clear cache
     cache.delete_memoized(User.userpagelisting, post.author, sort="new")
@@ -2039,9 +2060,8 @@ def embed_post_pid(pid):
 @validate_formkey
 def toggle_post_sensitive(pid, v):
     """
-Toggle "Sensitive Content" status on a post - an author-discretionary
-blur-until-clicked flag for material that isn't a rule violation but
-could be upsetting.
+Toggle "Sensitive Content" status on a post - a blur-until-clicked flag
+for material that isn't a rule violation but is sexual or could be upsetting.
 
 URL path parameters:
 * `pid` - The base 36 post id.
@@ -2051,11 +2071,15 @@ URL path parameters:
 
     mod = post.board.has_mod(v)
 
-    if not post.author_id == v.id and not v.admin_level >= 3 and not mod:
+    if not anonymity.is_author(post, v) and not v.admin_level >= 3 and not mod:
         abort(403)
 
     if post.board.is_sensitive and post.is_sensitive:
         abort(403)
+
+    refused = sensitive_rules.owner_refusal(post.sensitive_lock, not post.is_sensitive)
+    if refused:
+        return jsonify({"error": refused}), 403
 
     post.is_sensitive = not post.is_sensitive
     g.db.add(post)
@@ -2152,6 +2176,10 @@ def repost_post(base36id, v):
 
     if primary.audience:
         return {"error": tr("A post for a Circle can't be reposted.")}, 400
+
+    # the refusal below would tell a limited QR sign-in whose it is, and a repost of their own would put it on the profile
+    if primary.is_anonymous and v.qr_limited:
+        return qr_limited_answer(v)
 
     if primary.is_anonymous and primary.author_id == v.id:
         return {"error": tr("You can't repost your own anonymous post: it would put it on your profile.")}, 400

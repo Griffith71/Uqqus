@@ -14,6 +14,7 @@ text runs on SQLite in the tests.
 """
 from sqlalchemy import text
 
+from ruqqus.helpers import anonymity
 from ruqqus.helpers.i18n_runtime import N_
 
 LIMIT = 100
@@ -48,8 +49,7 @@ _STATEMENTS = {
 
 def may_see(item, viewer):
     """The author of a live post or comment."""
-    return (viewer is not None and item.author_id == viewer.id
-            and not item.is_banned and not item.deleted_utc)
+    return anonymity.is_author(item, viewer) and not item.is_banned and not item.deleted_utc
 
 
 def upvoter_ids(db, kind, item_id, author_id, limit=LIMIT):

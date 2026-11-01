@@ -111,3 +111,61 @@ class FakeRedis:
     def publish(self, channel, message):
         self.published.append((channel, message))
         return 1
+
+    # keys
+    def exists(self, key):
+        return 1 if key in self.data else 0
+
+    def renamenx(self, source, target):
+        if source not in self.data:
+            raise RuntimeError("no such key")
+        if target in self.data:
+            return False
+        self.data[target] = self.data.pop(source)
+        return True
+
+    # sorted sets (a dict of member -> score; order is by score, then member, as in Redis)
+    def zincrby(self, key, amount, member):
+        z = self.data.setdefault(key, {})
+        z[str(member)] = float(z.get(str(member), 0)) + amount
+        return z[str(member)]
+
+    def _ranked(self, key):
+        z = self.data.get(key)
+        return sorted(z.items(), key=lambda kv: (kv[1], kv[0])) if isinstance(z, dict) else []
+
+    def zrange(self, key, start, stop, withscores=False):
+        rows = self._ranked(key)
+        rows = rows[start:] if stop == -1 else rows[start:stop + 1]
+        return rows if withscores else [member for member, _ in rows]
+
+    def zremrangebyrank(self, key, start, stop):
+        rows = self._ranked(key)
+        end = len(rows) + stop + 1 if stop < 0 else stop + 1
+        gone = rows[start:max(end, 0)]
+        for member, _ in gone:
+            del self.data[key][member]
+        if key in self.data and not self.data[key]:
+            del self.data[key]
+        return len(gone)
+
+    def pipeline(self, transaction=True):
+        return FakePipeline(self)
+
+
+class FakePipeline:
+    """Commands queued and run together by `execute`, as a Redis transaction does. A failure leaves nothing done."""
+
+    def __init__(self, redis):
+        self.redis = redis
+        self.queued = []
+
+    def __getattr__(self, name):
+        def queue(*args, **kwargs):
+            self.queued.append((name, args, kwargs))
+            return self
+        return queue
+
+    def execute(self):
+        queued, self.queued = self.queued, []
+        return [getattr(self.redis, name)(*args, **kwargs) for name, args, kwargs in queued]

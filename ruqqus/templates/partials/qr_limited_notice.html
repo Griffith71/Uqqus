@@ -1,0 +1,6 @@
+{# a QR sign-in until its password is given (helpers/qr_login.py), on every page of default.html #}
+<div class="held-notice" role="status" id="qr-limited-notice">
+  <strong>{{ _('You signed in with a QR code.') }}</strong>
+  {{ _("This sign-in lasts 12 hours, and chat, coins, apps, following, who can see what you share and account settings ask for your password first.") }}
+  <a href="/login/qr/upgrade?redirect={{ request.path | urlencode }}">{{ _('Enter your password') }}</a>
+</div>

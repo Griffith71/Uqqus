@@ -240,6 +240,7 @@ def _vote_times(v, kind, vote_type, ids):
 @app.route("/history/anonymous", methods=["GET"])
 @auth_required
 @api("read")
+@not_qr_limited
 def history_anonymous(v):
     """The Anonymous tab of the History page: your own anonymous posts and comments, which no profile lists (the owner,
     2026-10-27). Only ever yours: the lists are built from the signed-in member's own id, and nothing names them."""

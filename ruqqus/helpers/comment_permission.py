@@ -10,6 +10,7 @@ author's choice.
 Kept free of routes, templates and the database so the rule has one home;
 callers pass the post and the viewer.
 """
+from ruqqus.helpers import anonymity
 from ruqqus.helpers.i18n_runtime import N_, tr, tr_lazy
 
 EVERYONE, FOLLOWED, PREMIUM, NOBODY = 0, 1, 2, 3
@@ -120,7 +121,7 @@ def restriction(post, viewer):
         return CLOSED_NOTICE
 
     if viewer is not None:
-        if viewer.id == post.author_id or (viewer.admin_level or 0) >= ADMIN_LEVEL:
+        if anonymity.is_author(post, viewer) or (viewer.admin_level or 0) >= ADMIN_LEVEL:
             return None
         if mode == FOLLOWED and viewer.id in post.author.following_ids:
             return None

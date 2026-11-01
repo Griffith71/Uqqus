@@ -6,7 +6,7 @@ from ruqqus.helpers.base36 import *
 from flask import (
     request, session, g, abort, jsonify, make_response, redirect, render_template
 )
-from ruqqus.helpers import community_notes
+from ruqqus.helpers import anonymity, community_notes
 from ruqqus.helpers.i18n_runtime import tr
 from ruqqus.__main__ import app
 
@@ -52,7 +52,7 @@ def api_flag_post(pid, v):
                       )
     elif kind == "note":
         # "this may need context": a request for a community note, not a policy flag
-        refusal = _note_refusal(v, post.author_id, post_id=community_notes.primary_post_id(post))
+        refusal = _note_refusal(v, post, post_id=community_notes.primary_post_id(post))
         if refusal:
             return refusal
         flag = NoteRequest(post_id=community_notes.primary_post_id(post),
@@ -68,10 +68,10 @@ def api_flag_post(pid, v):
     return "", 204
 
 
-def _note_refusal(v, author_id, post_id=None, comment_id=None):
+def _note_refusal(v, item, post_id=None, comment_id=None):
     """An answer when this member may not ask for a note on this, else None. Not on your
     own post, once each, and not endlessly many a day (the admins read every request)."""
-    if author_id == v.id:
+    if anonymity.is_author(item, v):
         return jsonify({"error": tr("You can't ask for a community note on your own post.")}), 409
 
     mine = g.db.query(NoteRequest).filter_by(user_id=v.id)
@@ -97,7 +97,7 @@ def api_flag_comment(cid, v):
     kind = request.form.get("report_type", "admin")
 
     if kind == "note":
-        refusal = _note_refusal(v, comment.author_id, comment_id=comment.id)
+        refusal = _note_refusal(v, comment, comment_id=comment.id)
         if refusal:
             return refusal
         g.db.add(NoteRequest(comment_id=comment.id, user_id=v.id, created_utc=int(time.time())))

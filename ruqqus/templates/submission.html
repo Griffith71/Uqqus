@@ -16,7 +16,7 @@
 {% set score_mode_now = score_mode(v) %}
 {% set score = ups if score_mode_now == 0 else ups-downs %}
 {% set score_class = ratio_class(ups, downs) if score_mode_now == 0 else '' %}
-{% set can_edit = v and v.id==p.author_id and not v.is_banned %}
+{% set can_edit = v and v.id==p.author_id and not v.is_banned and not anon_hidden(p, v) %}
 {% import "partials/post_options.html" as post_options %}
 {% import "partials/post_menu_items.html" as post_menu %}
 {% set can_moderate = v and v.admin_level>=3 %}
@@ -312,7 +312,11 @@
 {% else %}
 <form action="/api/ban_post/{{ p.base36id }}", method="post">
   <input type="hidden" name="formkey", value="{{ v.formkey }}">
-  <input id="post-ban-reason" type="text" class="form-control" name="reason" placeholder="Removal Reason">
+  <input id="post-ban-reason" type="text" class="form-control" name="reason" placeholder="Removal Reason (public, required)" required maxlength="512">
+  <select name="rule" class="form-control" aria-label="Rule broken">
+    <option value="">Rule broken</option>
+    {% for key, label in LOG_RULES.items() %}<option value="{{ key }}">{{ msg_text(label) }}</option>{% endfor %}
+  </select>
   <input type="submit" class="btn btn-warning" value="Remove Post">
 </form>
 {% endif %}
@@ -357,7 +361,7 @@
           {% if v %}
           <div class="dropdown-divider"></div>
 
-          {% if v.id != p.author_id or p.is_repost or p.is_comment_forward %}
+          {% if v.id != p.author_id or anon_hidden(p, v) or p.is_repost or p.is_comment_forward %}
           <button class="btn btn-link btn-block btn-lg text-left text-muted" data-toggle="modal" data-dismiss="modal" data-target="#reportPostModal" onclick="report_postModal('{{ p.base36id }}','{{ _('Anonymous') if anon_hidden(p, v) else (_('[deleted account]') if author_of(p, v).is_deleted else '@'+author_of(p, v).username) }}','{{ p.board.name }}')"><i class="far fa-flag text-center text-muted mr-3"></i>{{ pgettext("verb", "Flag") }}</button>
           {% endif %}
 
@@ -401,6 +405,7 @@
           <button class="btn btn-link btn-block btn-lg text-danger text-left mod-remove-{{ p.base36id }}{% if p.is_banned %} d-none{% endif %}" href="javascript:void(0)" onclick="removePost('{{ p.base36id }}')"><i class="fas fa-ban text-center text-danger mr-3"></i>{{ _("Remove") }}</button>
           {% endif %}
 
+          {{ post_menu.admin_sensitive_form(p, v, "btn btn-link btn-block btn-lg text-muted text-left", "text-center text-muted mr-3") if can_moderate }}
           {% if v.admin_level >=4 and p.oauth_app %}
           <a class="btn btn-link btn-block btn-lg text-muted text-left" href="{{ p.oauth_app.permalink }}"><i class="fas fa-code text-center text-muted mr-3"></i>{{ _("API App") }}</a>
           {% endif %}
@@ -676,6 +681,8 @@
                 <label class="custom-control-label" for="post-edit-sensitive-{{ p.base36id }}">{{ _("Sensitive content") }}</label>
               </div>
 
+              <input type="text" name="edit_summary" id="post-edit-summary-{{ p.base36id }}" class="form-control form-control-sm rounded mt-3" maxlength="256" autocomplete="off" aria-label="{{ _('Briefly say what you changed (optional)') }}" placeholder="{{ _('Briefly say what you changed (optional)') }}">
+
               <div id="post-edit-error-{{ p.base36id }}" class="text-danger text-small mt-2 d-none" role="alert"></div>
 
               <div class="comment-format">
@@ -703,7 +710,7 @@
                       </a>
                       <div class="dropdown-menu border-0 shadow dropdown-menu-right" aria-labelledby="dropdownMoreLink-{{ p.base36id }}">
 
-                        {% if v.id != p.author_id or p.is_repost or p.is_comment_forward %}
+                        {% if v.id != p.author_id or anon_hidden(p, v) or p.is_repost or p.is_comment_forward %}
                         <a class="dropdown-item" href="javascript:void(0)" data-toggle="modal" data-dismiss="modal" data-target="#reportPostModal" onclick="report_postModal('{{ p.base36id }}','{{ _('Anonymous') if anon_hidden(p, v) else (_('[deleted account]') if author_of(p, v).is_deleted else '@'+author_of(p, v).username) }}','{{ p.board.name }}')"><i class="fas fa-flag fa-fw"></i>{{ pgettext("verb", "Flag") }}</a>
                         {% endif %}
 
@@ -747,6 +754,7 @@
                         <a class="dropdown-item mod-remove-{{ p.base36id }}{% if p.is_banned %} d-none{% endif %}" href="javascript:void(0)" onclick="removePost('{{ p.base36id }}')"><i class="fas fa-ban fa-fw"></i>{{ _("Remove") }}</a>
                         {% endif %}
 
+                        {{ post_menu.admin_sensitive_form(p, v, "dropdown-item text-muted", "fa-fw") if can_moderate }}
                         {% if v.admin_level >= 4 and p.oauth_app %}
                         <a class="dropdown-item" href="{{ p.oauth_app.permalink }}"><i class="fas fa-code fa-fw"></i>{{ _("API App") }}</a>
                         {% endif %}

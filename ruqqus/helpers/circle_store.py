@@ -470,6 +470,16 @@ def cancel(db, circle_id, payer_id):
         AND circle_id IN (SELECT id FROM circles WHERE kind = 'paid')"""), {"yes": YES, "c": circle_id, "u": payer_id}).rowcount > 0
 
 
+def paid_between(db, a_id, b_id):
+    """Would a block between these two end a subscription someone paid for (`end_between`)? Either way round."""
+    for owner, member in ((a_id, b_id), (b_id, a_id)):
+        if db.execute(text("""
+            SELECT 1 FROM circle_members WHERE tier = 'subscriber' AND status = 'active' AND user_id = :m
+            AND circle_id IN (SELECT id FROM circles WHERE user_id = :o) LIMIT 1"""), {"m": member, "o": owner}).first():
+            return True
+    return False
+
+
 def end_between(db, a_id, b_id):
     """A block between two accounts takes each out of the other's circles: they leave each other's custom circles and
     their subscriptions end with no refund (the block also ends the follows, so Friends follows). Returns how many

@@ -48,6 +48,7 @@ def _whole(raw):
 
 @app.route("/oauth/authorize", methods=["GET"])
 @auth_required
+@not_qr_limited
 def oauth_authorize_prompt(v):
     '''
     This page takes the following URL parameters:
@@ -120,6 +121,7 @@ def oauth_authorize_prompt(v):
 
 @app.route("/oauth/authorize", methods=["POST"])
 @auth_required
+@not_qr_limited
 @validate_formkey
 def oauth_authorize_post(v):
 
@@ -273,6 +275,7 @@ def oauth_grant():
 
 @app.route("/help/api_keys", methods=["POST"])
 @is_not_banned
+@not_qr_limited
 @validate_formkey
 def request_api_keys(v):
 
@@ -294,6 +297,7 @@ def request_api_keys(v):
 
 @app.route("/delete_app/<aid>", methods=["POST"])
 @is_not_banned
+@not_qr_limited
 @validate_formkey
 def delete_oauth_app(v, aid):
 
@@ -317,6 +321,7 @@ def delete_oauth_app(v, aid):
 
 @app.route("/edit_app/<aid>", methods=["POST"])
 @is_not_banned
+@not_qr_limited
 @validate_formkey
 def edit_oauth_app(v, aid):
 
@@ -461,6 +466,7 @@ def admin_apps_list(v):
 
 @app.route("/oauth/reroll/<aid>", methods=["POST"])
 @auth_required
+@not_qr_limited
 @validate_formkey
 def reroll_oauth_tokens(aid, v):
 
@@ -486,6 +492,7 @@ def reroll_oauth_tokens(aid, v):
 
 @app.route("/oauth/rescind/<aid>", methods=["POST"])
 @auth_required
+@not_qr_limited
 @validate_formkey
 def oauth_rescind_app(aid, v):
 

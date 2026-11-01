@@ -433,6 +433,9 @@ def curation_edit_post(slug, v):
         abort(400)
 
     if not is_private and curation.is_private:
+        # who can read it gets wider, and stays so after the sign-in has ended (helpers/qr_login.py)
+        if v.qr_limited:
+            return qr_limited_answer(v)
         # a public curation lists its guilds: one with a private or Circle guild in it stays private (bug hunt: this
         # form made it public with them, the rule curation_members.guild_refusal keeps on every add)
         boards = g.db.query(Board).filter(Board.id.in_(

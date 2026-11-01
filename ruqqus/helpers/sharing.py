@@ -14,6 +14,7 @@ Pure: it only reads the objects it is given. The share controls are drawn only w
 repost of a post or a comment). Sending in a chat has no server side to refuse: the message is written by the
 browser's encrypted chat client, so the menu item is the control (tests/test_sharing.py).
 """
+from ruqqus.helpers import anonymity
 from ruqqus.helpers.i18n_runtime import tr, tr_lazy, trn
 
 REFUSAL = tr_lazy("Only the author can share this: it isn't public.")
@@ -31,8 +32,7 @@ def may_share(post, v):
         return False
     if post.is_public:
         return True
-    v = _viewer(v)
-    return bool(v and v.id == post.author_id)
+    return anonymity.is_author(post, _viewer(v))
 
 
 def may_share_comment(comment, v):
@@ -42,8 +42,7 @@ def may_share_comment(comment, v):
     post = getattr(comment, "post", None)
     if post is None or post.is_public:
         return True
-    v = _viewer(v)
-    return bool(v and v.id == comment.author_id)
+    return anonymity.is_author(comment, _viewer(v))
 
 
 def post_refusal(post, v):

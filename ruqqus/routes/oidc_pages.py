@@ -96,6 +96,7 @@ def oidc_jwks():
 
 @app.get("/oidc/authorize")
 @auth_required
+@not_qr_limited
 def oidc_authorize(v):
     _on()
     args = _request_args(request.args)
@@ -112,6 +113,7 @@ def oidc_authorize(v):
 @app.post("/oidc/authorize")
 @limiter.limit("10/minute")
 @auth_required
+@not_qr_limited
 @validate_formkey
 def oidc_authorize_post(v):
     _on()

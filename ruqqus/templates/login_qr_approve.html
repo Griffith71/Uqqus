@@ -1,0 +1,105 @@
+{% extends "login.html" %}
+
+{% block title %}
+<title>{{ _("Sign in with a QR code - %(site)s") }}</title>
+{% endblock %}
+
+{% block head_extra %}
+<noscript><style>#qr-approve [data-qr-view="loading"] { display: none; } #qr-approve .qr-no-script { display: block; }</style></noscript>
+{% endblock %}
+
+{% block content %}
+<div id="qr-approve" data-state="{{ state }}"{% if v %} data-formkey="{{ v.formkey }}"{% endif %} data-fault="{{ _("That didn't go through. Wait a moment and try again.") }}">
+    <h1 class="h2" id="qr-approve-heading">{{ _("Sign in on another screen?") }}</h1>
+
+    {% if state == "signed_out" %}
+    {# no way back to this page from the sign-in: a code someone sent shouldn't walk a person through signing in #}
+    <p>{{ _("Sign in on this phone first, then scan a new code.") }}</p>
+    <a class="btn btn-primary w-100" href="/login">{{ _("Sign in") }}</a>
+
+    {% elif state == "limited" %}
+    <p>{{ _("This phone signed in with a QR code, so it can't approve another one. Enter your password here, then scan a new code.") }}</p>
+    <a class="btn btn-primary w-100" href="/login/qr/upgrade">{{ _("Enter your password") }}</a>
+
+    {% elif state == "refused" %}
+    <p>{{ _("This code can't be used. Get a new one on the computer, or sign in there with your password.") }}</p>
+
+    {% else %}
+    <div class="qr-approve-account">
+        <img src="{{ v.profile_url }}" alt="" width="40" height="40">
+        <span>{{ _("Signed in here as @%(name)s", name=v.username) }}</span>
+    </div>
+
+    <div class="qr-panel">
+        <p class="qr-no-script">{{ _("Approving a code needs script, which is off in this browser. Sign in on the computer with your password instead.") }}</p>
+        <p class="qr-say sr-only" aria-live="polite"></p>
+        <div class="qr-view is-current" data-qr-view="loading">
+            <p class="qr-line" data-qr-say>{{ _("Loading…") }}</p>
+        </div>
+
+        <div class="qr-view" data-qr-view="ready">
+            <dl class="qr-facts">
+                <div><dt>{{ _("Browser") }}</dt><dd id="qr-fact-browser"></dd></div>
+                <div><dt>{{ _("Country") }}</dt><dd id="qr-fact-place"></dd></div>
+                <div><dt>{{ _("Time") }}</dt><dd id="qr-fact-when"></dd></div>
+            </dl>
+            <p class="qr-reported">{{ _("Whoever started this reported that browser and place themselves, so they prove nothing.") }}</p>
+            <p class="qr-warning" id="qr-warning" role="note">{{ _("Only continue if you started this yourself on a screen in front of you. If a post, comment, message or website asked you to scan this, someone may be trying to take your account.") }}</p>
+            {% if from_a_link %}<p class="qr-warning" id="qr-link-warning" role="note"><strong>{{ _("This page was opened from a link, not by your camera.") }}</strong> {{ _("That is how someone would try this on you. Press Not me unless you are sure.") }}</p>{% endif %}
+
+            {# a screen reader lands on this first, past what it is being asked and warned about #}
+            <button type="button" class="btn btn-primary w-100" id="qr-deny" data-qr-deny aria-describedby="qr-approve-heading qr-warning{% if from_a_link %} qr-link-warning{% endif %}">{{ _("Not me") }}</button>
+            <p class="qr-error" role="alert" hidden></p>
+
+            <form id="qr-approve-form" class="mt-4">
+                <label for="qr-answer">{% if v.mfa_secret %}{{ _("Two-factor code or backup code") }}{% else %}{{ _("Password") }}{% endif %}</label>
+                <input class="form-control" id="qr-answer" name="answer" {% if v.mfa_secret %}type="text" autocomplete="one-time-code" spellcheck="false"{% else %}type="password" autocomplete="current-password"{% endif %} required>
+                <p class="qr-error" id="qr-error" role="alert" hidden></p>
+                <button class="btn btn-outline-primary w-100 mt-3" id="qr-approve-button">{{ _("Yes, sign in on that screen") }}</button>
+            </form>
+        </div>
+
+        <div class="qr-view" data-qr-view="denied">
+            <p data-qr-say>{{ _("Nobody was signed in. If someone asked you to scan that code, they can't use it now.") }}</p>
+        </div>
+
+        {# the focus goes to the view itself and the page to its top: its first sentence is the next thing to do #}
+        <div class="qr-view" data-qr-view="approved" data-qr-focus-view>
+            <p data-qr-say>{{ _("Approved. Press Confirm on that screen to finish signing in.") }}</p>
+            <p class="mb-0"><strong>{{ _("Wasn't you?") }}</strong> {{ _("Logging out everywhere ends that sign-in. It doesn't end an app's access, so check those too.") }}</p>
+            <ul class="qr-links">
+                <li><a href="/settings/security#log-out-everywhere">{{ _("Log out everywhere") }}</a></li>
+                <li><a href="/settings/apps">{{ _("Your apps") }}</a></li>
+                <li><a href="/settings/chat_apps">{{ _("Your chat apps") }}</a></li>
+            </ul>
+            {# until the computer has pressed Confirm, the approval can be taken back #}
+            <button type="button" class="btn btn-outline-primary w-100 mt-3" data-qr-deny>{{ _("Not me") }}</button>
+            <p class="qr-error" role="alert" hidden></p>
+        </div>
+
+        <div class="qr-view" data-qr-view="gone">
+            <p data-qr-say>{{ _("This code can't be used. Get a new one on the computer, or sign in there with your password.") }}</p>
+        </div>
+
+        <div class="qr-view" data-qr-view="too-late" data-qr-focus-view>
+            <p data-qr-say>{{ _("It's too late to refuse this code: it has run out or has been used. If you don't recognise a sign-in, log out everywhere, and check your apps too.") }}</p>
+            <ul class="qr-links">
+                <li><a href="/settings/security#log-out-everywhere">{{ _("Log out everywhere") }}</a></li>
+                <li><a href="/settings/apps">{{ _("Your apps") }}</a></li>
+                <li><a href="/settings/chat_apps">{{ _("Your chat apps") }}</a></li>
+            </ul>
+        </div>
+
+        <div class="qr-view" data-qr-view="signed-out">
+            <p data-qr-say>{{ _("Sign in on this phone first, then scan a new code.") }}</p>
+            <a class="btn btn-primary w-100" href="/login">{{ _("Sign in") }}</a>
+        </div>
+
+        <div class="qr-view" data-qr-view="fault">
+            <p data-qr-say>{{ _("That didn't go through. Wait a moment and try again.") }}</p>
+            <button type="button" class="btn btn-primary w-100" id="qr-retry">{{ _("Try again") }}</button>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

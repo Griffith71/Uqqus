@@ -12,6 +12,7 @@ from ruqqus.classes import (Board, Comment, ForwardRelationship, RepostRelations
                             Vote)
 from ruqqus.classes.history import ViewHistory
 from ruqqus.classes.post_view import PostViewDay
+from ruqqus.helpers import anonymity
 from ruqqus.helpers import insights as rules
 from ruqqus.helpers import poll_store
 from ruqqus.__main__ import app, r
@@ -78,7 +79,8 @@ def overview(db, author, now):
     since = int(now) - 28 * rules.SECONDS_PER_DAY
     posts = db.query(Submission).filter(
         Submission.author_id == author.id, Submission.is_banned == False, Submission.deleted_utc == 0,
-        (Submission.repost_id == None) | (Submission.repost_id == 0), Submission.created_utc >= since
+        (Submission.repost_id == None) | (Submission.repost_id == 0), Submission.created_utc >= since,
+        anonymity.hide_anonymous(Submission, author)
     ).order_by(Submission.created_utc.desc()).limit(100).all()
     if not posts:
         return []

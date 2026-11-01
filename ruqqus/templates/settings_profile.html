@@ -38,7 +38,7 @@
 
                 {% else %}
 
-                <div class="text-muted">{{ _("You can add a custom avatar after earning 300 Rep.") }}{% if request.headers.get("cf-ipcountry")=="T1" and not v.is_activated %} {{ _("Additionally, you must have a verified email address to upload images via Tor.") }}{% endif %}</div>
+                <div class="text-muted">{{ _("You must have a verified email address to upload images via Tor.") }}</div>
 
                 {% endif %}
 
@@ -93,7 +93,7 @@
 
                 {% else %}
 
-                <div class="text-muted">{{ _("You can add a custom banner after earning 500 Rep.") }}{% if request.headers.get("cf-ipcountry")=="T1" and not v.is_activated %} {{ _("Additionally, you must have a verified email address to upload images via Tor.") }}{% endif %}</div>
+                <div class="text-muted">{{ _("You must have a verified email address to upload images via Tor.") }}</div>
 
                 {% endif %}
 
@@ -171,12 +171,15 @@
 
               <div class="body w-lg-100">
 
+                {# the address is a secret that outlives "log out everywhere", so a limited QR sign-in doesn't see it (helpers/qr_login.py) #}
+                {% if v.qr_limited %}<a href="/login/qr/upgrade?redirect=/settings/profile">{{ _('Enter your password') }}</a>{% else %}
                 <input type="text" readonly="" class="form-control copy-link" id="rss_feed" aria-label="{{ _('Your RSS feed address') }}" value="{{ ('/feeds/@' + v.username + '/' + v.feedkey + '/hot') | full_link }}" data-clipboard-text="{{ ('/feeds/@' + v.username + '/' + v.feedkey + '/hot') | full_link }}">
                 <form action="/settings/new_feedkey" method="post">
                   <input type="hidden" name="formkey" value="{{ v.formkey }}">
                   <input type="submit" class="btn btn-secondary text-capitalize mr-2 mb-0 mt-2" value="{{ _('Generate new URL') }}">
                 </form>
 
+                {% endif %}
                 <div class="text-small-extra text-muted mt-3">{{ _('You can change the feed by replacing "hot" with either top, or disputed.') }}</div>
 
               </div>

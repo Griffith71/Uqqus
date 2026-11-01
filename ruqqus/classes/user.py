@@ -14,6 +14,7 @@ from .coauthors import PostCoauthor
 from ruqqus.helpers.muting import hide_muted, hide_muted_guilds
 from ruqqus.helpers.feed_family import one_per_family
 from ruqqus.helpers import post_feedback
+from ruqqus.helpers import action_log
 from ruqqus.helpers.blocks import hide_blocked
 from ruqqus.helpers.security import *
 from ruqqus.helpers.lazy import lazy
@@ -48,6 +49,10 @@ from ruqqus.__main__ import Base, cache, app
 class User(Base, Stndrd, Age_times):
 
     __tablename__ = "users"
+    # this request's sign-in is a limited QR one, and the admin level it reads 0 in place of (helpers/wrappers.py). Not columns:
+    # set on the object for the one request, and never saved
+    qr_limited = False
+    qr_held_level = 0
     id = Column(Integer, primary_key=True)
     username = Column(String, default=None)
     email = Column(String, default=None)
@@ -114,6 +119,10 @@ class User(Base, Stndrd, Age_times):
     hide_offensive = Column(Boolean, default=True)  # superseded by filter_level
     # word filter the user browses with: 0 Off, 1 Standard, 2 Child
     filter_level = Column(SmallInteger, default=1)
+    # what the member said about their age (helpers/age_declaration.py): NULL not asked, 1 18 or over, 2 a child account
+    # made by a parent or guardian, which stays on the Child filter. Shown to them and to admins, never to anyone else.
+    age_declared = Column(SmallInteger, default=None)
+    age_declared_utc = Column(Integer, default=0)
     # word filter rating of the username / the bio
     name_severity = Column(SmallInteger, default=0)
     bio_severity = Column(SmallInteger, default=0)
@@ -121,6 +130,7 @@ class User(Base, Stndrd, Age_times):
     for_you_reset_utc = Column(Integer, default=0)
     creator_fund_opt_in_utc = Column(Integer, default=0)     # the creator fund (helpers/creator_fund.py); 0 = not taking part
     signin_alerts = Column(Boolean, default=True)             # email a verified address about a sign-in from somewhere new (helpers/signin_alerts.py)
+    qr_login_off = Column(Boolean, default=False)             # the member switched QR sign-in off (helpers/qr_login.py)
     quarantined_utc = Column(Integer, default=0)            # held by the signup guard (helpers/quarantine.py); 0 = not held
     premium_auto_renew = Column(Boolean, default=False)       # spend a coin on the next week when one runs out (helpers/premium.py)
     last_active_utc = Column(Integer, default=0)             # stamped at most daily (wrappers._note_active); shared drafts don't count authors gone longer than their rules say
@@ -296,7 +306,9 @@ class User(Base, Stndrd, Age_times):
 
         boards = [
             x.board for x in self.subscriptions if x.is_active and not x.board.is_banned]
-        return boards
+        # by name, ignoring case (boards_modded too): the left sidebar shows the first few, so the order must be one a member can predict.
+        # /mine/guilds orders in the database's own collation, which can differ for names with underscores
+        return sorted(boards, key=lambda x: x.name.lower())
 
     @property
     def age(self):
@@ -945,7 +957,8 @@ class User(Base, Stndrd, Age_times):
     @lazy
     def curations_followed(self):
         followed_ids = select(CurationFollow.curation_id).filter_by(user_id=self.id)
-        return g.db.query(Curation).filter(Curation.id.in_(followed_ids)).all()
+        # by name, ignoring case: the left sidebar shows the first few, so the order must be one a member can predict
+        return g.db.query(Curation).filter(Curation.id.in_(followed_ids)).order_by(func.lower(Curation.name), Curation.id).all()
 
     @property
     @lazy
@@ -1023,7 +1036,7 @@ class User(Base, Stndrd, Age_times):
     def boards_modded(self):
 
         z = [x.board for x in self.moderates if x and x.board and x.accepted and not x.board.is_banned]
-        z = sorted(z, key=lambda x: x.name)
+        z = sorted(z, key=lambda x: x.name.lower())     # as boards_subscribed: capitals do not sort before every lowercase name
 
         return z
 
@@ -1186,7 +1199,7 @@ class User(Base, Stndrd, Age_times):
             Comment.is_banned == False,
             Comment.deleted_utc == 0
         )
-        notifications = filter_comments(notifications, self)
+        notifications = self._without_own_anonymous(filter_comments(notifications, self))
         notifications = hide_blocked(hide_muted(notifications, self, Comment), self, Comment)
 
         if tab == "comments":
@@ -1221,6 +1234,17 @@ class User(Base, Stndrd, Age_times):
             notifications = notifications.filter(Notification.read == False)
         return notifications
 
+    def _without_own_anonymous(self, comments):
+        """For a query over notifications joined to their Comment: a limited QR sign-in (helpers/qr_login.py) doesn't get the comments
+        on the member's anonymous posts and under their anonymous comments, because "comment on your post" says whose they are. They
+        wait for the password, still new. Anyone else's list is the query as it came."""
+        if not self.qr_limited:
+            return comments
+        posts = g.db.query(Submission.id).filter(Submission.author_id == self.id, Submission.is_anonymous == True).scalar_subquery()
+        own = g.db.query(Comment.id).filter(Comment.author_id == self.id, Comment.is_anonymous == True).scalar_subquery()
+        return comments.filter(or_(Comment.parent_submission.is_(None), Comment.parent_submission.notin_(posts)),
+                               or_(Comment.parent_comment_id.is_(None), Comment.parent_comment_id.notin_(own)))
+
     def _notification_post_query(self, all_=True):
         """The same for the notifications that point at a post (a post from an account whose bell is on, a mention in a
         post). Not ordered, not marked read."""
@@ -1253,8 +1277,9 @@ class User(Base, Stndrd, Age_times):
         output = []
         results = notifications.all()
         for x in results[0:25]:
-            x.read = True
-            g.db.add(x)
+            if not self.qr_limited:         # the notice of a QR sign-in stays new for the member (helpers/qr_login.py)
+                x.read = True
+                g.db.add(x)
             output.append(x.comment_id)
         g.db.commit()
         return output
@@ -1269,8 +1294,9 @@ class User(Base, Stndrd, Age_times):
 
         output=[]
         for x in notifications[0:25]:
-            x.read=True
-            g.db.add(x)
+            if not self.qr_limited:
+                x.read=True
+                g.db.add(x)
             output.append(x.submission_id)
 
         g.db.commit()
@@ -1281,7 +1307,7 @@ class User(Base, Stndrd, Age_times):
     def mentions_count(self):
         cs=g.db.query(Comment.id).filter(Comment.author_id==self.id).scalar_subquery()
         ps = post_follows.owned_post_ids(self.id)
-        return hide_blocked(filter_comments(hide_muted(self.notifications.options(
+        return hide_blocked(filter_comments(hide_muted(self._without_own_anonymous(self.notifications.options(
             lazyload('*')
             ).join(
             Notification.comment
@@ -1296,7 +1322,7 @@ class User(Base, Stndrd, Age_times):
                     Comment.level>1,
                     Comment.parent_submission.notin_(ps)
                 )
-            ), self, Comment), self), self, Comment).count()
+            )), self, Comment), self), self, Comment).count()
 
 
     @property
@@ -1321,7 +1347,7 @@ class User(Base, Stndrd, Age_times):
                     )
                 )
             )
-        return hide_blocked(hide_muted(filter_comments(q, self), self, Comment), self, Comment).count()
+        return hide_blocked(hide_muted(filter_comments(self._without_own_anonymous(q), self), self, Comment), self, Comment).count()
 
     @property
     @lazy
@@ -1363,7 +1389,7 @@ class User(Base, Stndrd, Age_times):
             Submission.is_banned==False,
             Submission.deleted_utc==0
         )
-        return (hide_blocked(hide_muted(filter_comments(comments, self), self, Comment), self, Comment).count()
+        return (hide_blocked(hide_muted(filter_comments(self._without_own_anonymous(comments), self), self, Comment), self, Comment).count()
                 + hide_blocked(hide_muted(filter_posts(posts, self), self, Submission), self, Submission).count())
 
     @property
@@ -1486,42 +1512,67 @@ class User(Base, Stndrd, Age_times):
         return g.db.query(Follow).filter_by(
             target_id=self.id, user_id=user.id).first()
 
+    @property
+    def profile_key(self):
+        """Where the current picture lives in the bucket (accounts older than 1616443200 keep the old, name-based path)."""
+        if self.profile_set_utc>1616443200:
+            return f"uid/{self.base36id}/profile-{self.profile_nonce}.png"
+        return f"users/{self.username}/profile-{self.profile_nonce}.png"
+
+    @property
+    def banner_key(self):
+        if self.banner_set_utc>1616443200:
+            return f"uid/{self.base36id}/banner-{self.banner_nonce}.png"
+        return f"users/{self.username}/banner-{self.banner_nonce}.png"
+
+    # A new picture is stored under its own key (the nonce is in it) and only then does the account point at it; the old
+    # object is taken away after the commit and a failure there leaves nothing worse than a stray file. It used to be taken
+    # away first, so a picture that could not be stored (or a save that was rolled back) left the account pointing at nothing.
     def set_profile(self, file):
 
-        self.del_profile()
-        self.profile_nonce += 1
-
-        aws.upload_file(name=f"uid/{self.base36id}/profile-{self.profile_nonce}.png",
+        new_nonce = self.profile_nonce + 1
+        aws.upload_file(name=f"uid/{self.base36id}/profile-{new_nonce}.png",
                         file=file,
                         resize=(100, 100)
                         )
+        old_key = self.profile_key if self.has_profile else None
+        self.profile_nonce = new_nonce
         self.has_profile = True
         self.profile_upload_ip=request.remote_addr
         self.profile_set_utc=int(time.time())
         self.profile_upload_region=request.headers.get("cf-ipcountry")
         g.db.add(self)
+        self._drop_stray(old_key)
 
     def set_banner(self, file):
 
-        self.del_banner()
-        self.banner_nonce += 1
-
-        aws.upload_file(name=f"uid/{self.base36id}/banner-{self.banner_nonce}.png",
+        new_nonce = self.banner_nonce + 1
+        aws.upload_file(name=f"uid/{self.base36id}/banner-{new_nonce}.png",
                         file=file)
-
+        old_key = self.banner_key if self.has_banner else None
+        self.banner_nonce = new_nonce
         self.has_banner = True
         self.banner_upload_ip=request.remote_addr
         self.banner_set_utc=int(time.time())
         self.banner_upload_region=request.headers.get("cf-ipcountry")
 
         g.db.add(self)
+        self._drop_stray(old_key)
+
+    @staticmethod
+    def _drop_stray(key):
+        """The object a new picture replaced, taken away once the request's changes are committed (g.after_commit, run by
+        __main__.after_request): until then the account may still point at it, and a failed commit must not leave it pointing at
+        nothing. Best effort there. Outside a request nothing is queued (nothing commits for it)."""
+        if not key:
+            return
+        if not hasattr(g, "after_commit"):
+            g.after_commit = []
+        g.after_commit.append(lambda: aws.delete_file(name=key))
 
     def del_profile(self):
 
-        if self.profile_set_utc>1616443200:
-            aws.delete_file(name=f"uid/{self.base36id}/profile-{self.profile_nonce}.png")
-        else:
-            aws.delete_file(name=f"users/{self.username}/profile-{self.profile_nonce}.png")
+        aws.delete_file(name=self.profile_key)
         self.has_profile = False
         try:
             g.db.add(self)
@@ -1530,10 +1581,7 @@ class User(Base, Stndrd, Age_times):
 
     def del_banner(self):
 
-        if self.banner_set_utc>1616443200:
-            aws.delete_file(name=f"uid/{self.base36id}/banner-{self.banner_nonce}.png")
-        else:
-            aws.delete_file(name=f"users/{self.username}/banner-{self.banner_nonce}.png")
+        aws.delete_file(name=self.banner_key)
         self.has_banner = False
         try:
             g.db.add(self)
@@ -1578,7 +1626,7 @@ class User(Base, Stndrd, Age_times):
 
     @property
     def can_make_guild(self):
-        return (self.has_premium or self.admin_level>=3 or self.true_score >= 0) and self.can_join_gms
+        return (self.has_premium or self.admin_level>=3 or self.true_score >= 250) and self.can_join_gms
 
     @property
     def can_join_gms(self):
@@ -1658,11 +1706,12 @@ class User(Base, Stndrd, Age_times):
 
     @property
     def can_upload_avatar(self):
-        return (self.has_premium or self.true_score >= 300 or self.created_utc <= 1592974538) and (self.is_activated or request.headers.get("cf-ipcountry")!="T1")
+        # no Rep needed (the owner, 2026-10-30); only: connecting through Tor needs a verified email
+        return self.is_activated or request.headers.get("cf-ipcountry")!="T1"
 
     @property
     def can_upload_banner(self):
-        return (self.has_premium or self.true_score >= 500 or self.created_utc <= 1592974538) and (self.is_activated or request.headers.get("cf-ipcountry")!="T1")
+        return self.can_upload_avatar
 
     @property
     def json_raw(self):
@@ -1774,8 +1823,11 @@ class User(Base, Stndrd, Age_times):
         return not (self.is_suspended or self.is_deleted)
     
 
-    def ban(self, admin=None, reason=None,  days=0):
-        
+    def ban(self, admin=None, reason=None,  days=0, rule=None, staff_note="", floor=0, notice_sent=False):
+        """Suspend (`days` > 0) or ban this account. Every ban and suspension, by an admin or by the site's own rules,
+        is written to the Log (helpers/action_log.py), which keeps each one: `ban_reason` below is only the latest.
+        `rule` is the rule cited, `staff_note` a private note, `floor` can narrow who may read the entry."""
+        acting = admin
         admin=admin if admin else g.db.query(User).filter_by(id=1).first()
 
         self.is_banned = admin.id if admin else 1
@@ -1815,7 +1867,10 @@ class User(Base, Stndrd, Age_times):
         discord_ban_action = f"{days} Day Ban" if days else "Perm Ban"
         discord_log_event(discord_ban_action, self, admin, reason=reason)
 
-    def unban(self):
+        action_log.record_ban(g.db, self.id, admin.id if admin else 1, days=days, reason=reason, rule=rule,
+                              staff_note=staff_note, floor=floor, automatic=acting is None, notice_sent=notice_sent)
+
+    def unban(self, admin=None, reason="", notice_sent=False):
 
         # Takes care of all functions needed for account reinstatement.
 
@@ -1827,6 +1882,10 @@ class User(Base, Stndrd, Age_times):
         g.db.add(self)
         
         discord_log_event("Unban", self, g.v, reason=self.ban_reason)
+
+        actor = admin or getattr(g, "v", None)
+        action_log.record_unban(g.db, self.id, actor.id if actor else 1, reason=reason, automatic=actor is None,
+                                notice_sent=notice_sent)
 
 
     @property

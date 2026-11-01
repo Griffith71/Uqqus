@@ -20,6 +20,7 @@ from ruqqus.__main__ import app, limiter, member_limit_key, r
 
 from ruqqus.helpers import calls as call_rules
 from ruqqus.helpers import call_store
+from ruqqus.helpers import chat_devices
 from ruqqus.helpers import chat_groups as group_rules
 from ruqqus.helpers import chat_group_store as group_store
 from ruqqus.helpers import live_bus, turn_usage, turn_usage_store
@@ -128,6 +129,7 @@ live_bus.register_topic("call", _guard_call_topic)
 
 @app.route("/call/<path:room_id>", methods=["GET"])
 @auth_required
+@not_qr_limited
 def call_window(room_id, v):
     room, refusal = chat_room(v, room_id)
     if room is None:
@@ -135,7 +137,7 @@ def call_window(room_id, v):
     kind = call_rules.AUDIO if room["kind"] == "voice" else call_rules.parse_kind(request.args.get("kind"))
     refusal = call_rules.shown(refusal)
     boot = {
-        "formkey": v.formkey, "userId": v.id, "roomId": room_id, "kind": kind, "label": room["label"],
+        "formkey": v.formkey, "userId": v.id, "mxid": chat_devices.mxid_of(g.db, v.id), "roomId": room_id, "kind": kind, "label": room["label"],
         "isGroup": room["kind"] != "pair", "isVoice": room["kind"] == "voice", "answer": bool(request.args.get("answer")),
         "avatar": v.profile_url,
         "refusal": refusal,
@@ -158,6 +160,7 @@ def _room_and_device(v):
 
 @app.route("/api/calls/join", methods=["POST"])
 @auth_required
+@not_qr_limited
 @validate_formkey
 def call_join(v):
     room, refusal, room_id, device_id = _room_and_device(v)
@@ -229,6 +232,7 @@ def call_join(v):
 @app.route("/api/calls/heartbeat", methods=["POST"])
 @limiter.limit("120/minute", key_func=member_limit_key)
 @auth_required
+@not_qr_limited
 @validate_formkey
 def call_heartbeat(v):
     room_id = request.values.get("room", "")
@@ -266,6 +270,7 @@ def call_heartbeat(v):
 
 @app.route("/api/calls/leave", methods=["POST"])
 @auth_required
+@not_qr_limited
 @validate_formkey
 def call_leave(v):
     room_id = request.values.get("room", "")
@@ -300,6 +305,7 @@ def call_leave(v):
 
 @app.route("/api/calls/decline", methods=["POST"])
 @auth_required
+@not_qr_limited
 @validate_formkey
 def call_decline(v):
     room_id = request.values.get("room", "")
@@ -318,6 +324,7 @@ def call_decline(v):
 @app.route("/api/calls/status", methods=["GET"])
 @limiter.limit("120/minute", key_func=member_limit_key)
 @auth_required
+@not_qr_limited
 def call_status(v):
     """Whether this chat has a call going now and how many are in it (the chat's "Join call" bar)."""
     room_id = request.args.get("room", "")
@@ -351,6 +358,7 @@ def _short(room_id):
 
 @app.route("/api/calls/history", methods=["GET"])
 @auth_required
+@not_qr_limited
 def calls_history(v):
     """The member's recent calls: only in chats they are in now (their 1:1 chats and the groups they joined), newest
     first, with the other person or the group, voice or video, when, how long, and whether they started it. Nothing

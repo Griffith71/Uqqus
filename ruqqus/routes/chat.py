@@ -54,18 +54,24 @@ def _user_id_for_mxid(mxid):
 
 @app.route("/chat", methods=["GET"])
 @auth_required
+@not_qr_limited
 def chat_page(v):
-    _ensure_provisioned(v)
+    mxid = _ensure_provisioned(v)
     from ruqqus.helpers.chat_groups import MAX_MEMBERS
-    return render_template("chat.html", v=v, chat_group_max=MAX_MEMBERS)
+    return render_template("chat.html", v=v, chat_group_max=MAX_MEMBERS, chat_mxid=mxid)
 
 
 @app.route("/api/chat/token", methods=["POST"])
 @auth_required
+@not_qr_limited
 @validate_formkey
 def chat_token(v):
     mxid = _ensure_provisioned(v)
     device_id = request.values.get("device_id") or None
+    # the browser's own device, coming back after a log out. Signed out meanwhile (Settings > Chat apps) its keys are gone
+    # from the server, so it can't be taken up again: the answer's new id tells the browser to start afresh (token.js)
+    if device_id and device_id not in {d["device_id"] for d in matrix.list_devices(mxid)}:
+        device_id = None
     token_resp = matrix.login_as(mxid, device_id)
     return jsonify({
         "homeserver_url": app.config["MATRIX_PUBLIC_URL"],
@@ -87,6 +93,7 @@ def _identity(v):
 
 @app.route("/api/chat/key", methods=["GET"])
 @auth_required
+@not_qr_limited
 def chat_key_get(v):
     """The account's LOCKED recovery key copies and the salt the browser derives its password key with (audit M-03).
     Nothing here can unlock anything without the member's password or recovery code, which never reach this route.
@@ -105,6 +112,7 @@ def chat_key_get(v):
 
 @app.route("/api/chat/key", methods=["POST"])
 @auth_required
+@not_qr_limited
 @validate_formkey
 def chat_key_set(v):
     """Saves the locked copies the browser made (`password_blob`, `recovery_blob`: base64url, opaque here). Saving a
@@ -130,6 +138,7 @@ def chat_key_set(v):
 
 @app.route("/api/chat/recovery_key", methods=["GET"])
 @auth_required
+@not_qr_limited
 def chat_recovery_key_legacy(v):
     """The old server-readable copy, only while it still exists: the member's own browser reads it once to lock it
     with their password and a recovery code (POST /api/chat/key then clears it). Never anything for an account
@@ -143,6 +152,7 @@ def chat_recovery_key_legacy(v):
 @app.route("/api/chat/check_password", methods=["POST"])
 @limiter.limit("10/minute")
 @auth_required
+@not_qr_limited
 @validate_formkey
 def chat_check_password(v):
     """Whether a typed password is the account's, before the browser locks the chat key with it (a typo would lock
@@ -152,6 +162,7 @@ def chat_check_password(v):
 
 @app.route("/api/chat/ready", methods=["POST"])
 @auth_required
+@not_qr_limited
 @validate_formkey
 def chat_ready(v):
     """This member's chat has finished setting up encryption: messages waiting for them in other people's browsers
@@ -178,6 +189,7 @@ def _started(room_id, status):
 
 @app.route("/api/chat/start", methods=["POST"])
 @auth_required
+@not_qr_limited
 @not_quarantined("chat")
 @validate_formkey
 def chat_start(v):
@@ -223,6 +235,7 @@ def chat_start(v):
 
 @app.route("/api/chat/conversations", methods=["GET"])
 @auth_required
+@not_qr_limited
 def chat_conversations(v):
     status = request.args.get("status", "inbox")
     before = request.args.get("before", type=int)
@@ -294,6 +307,7 @@ POST_ID = re.compile(r"^[0-9a-z]{1,10}$")
 
 @app.route("/api/chat/share_targets", methods=["GET"])
 @auth_required
+@not_qr_limited
 def chat_share_targets(v):
     """Who a post can be sent to from the share sheet: the chats you can already write in
     (newest first), then people you follow, narrowed by ?q=. Never someone you block or who
@@ -386,6 +400,7 @@ def chat_unread_count(v):
 
 @app.route("/api/chat/conversations/<int:cid>/accept", methods=["POST"])
 @auth_required
+@not_qr_limited
 @validate_formkey
 def chat_accept(v, cid):
     c = g.db.query(ChatConversation).filter_by(id=cid).first()
@@ -399,6 +414,7 @@ def chat_accept(v, cid):
 
 @app.route("/api/chat/conversations/<int:cid>/decline", methods=["POST"])
 @auth_required
+@not_qr_limited
 @validate_formkey
 def chat_decline(v, cid):
     c = g.db.query(ChatConversation).filter_by(id=cid).first()
@@ -422,6 +438,7 @@ def chat_decline(v, cid):
 
 @app.route("/api/chat/conversations/<int:cid>/mark_read", methods=["POST"])
 @auth_required
+@not_qr_limited
 @validate_formkey
 def chat_mark_read(v, cid):
     c = g.db.query(ChatConversation).filter_by(id=cid).first()
@@ -622,6 +639,7 @@ SEARCH_EACH = 20
 @app.route("/api/chat/search", methods=["GET"])
 @limiter.limit("30/minute", key_func=member_limit_key)
 @auth_required
+@not_qr_limited
 def chat_search(v):
     """Find chats (the owner, 2026-10-21): your own 1:1 chats, groups and channels; public broadcast channels you are
     not in; the channels of your guilds you may read; and guilds with chat that you may see. Groups are private and

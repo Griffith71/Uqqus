@@ -133,3 +133,58 @@ def test_an_authors_list_leaves_anonymous_rows_out_for_everyone_but_them_and_adm
     assert "NOT rows.is_anonymous" in other and "rows.author_id = 5" in other     # their own stay
     assert sql(user(id=5, admin=3)) == "true"                                     # admins see all
     assert sql(user(id=5, admin=2)) != "true"
+
+
+# --- a limited QR sign-in (helpers/qr_login.py) ------------------------------------------------------
+
+def limited(id=1):
+    return NS(id=id, admin_level=0, username="alice", qr_limited=True)
+
+
+def test_a_limited_qr_sign_in_is_a_stranger_to_the_members_anonymous_items():
+    me = limited()
+    x = item(me)
+    assert an.identity_hidden(x, me) is True
+    assert an.author_of(x, me) is an.ANONYMOUS
+    assert an.is_author(x, me) is False and an.held_from_own(x, me) is True
+    assert an.op_badge(x, x, me) is True                       # both anonymous: the same unnamed person, as for a stranger
+
+
+def test_a_limited_qr_sign_in_still_owns_what_has_the_members_name_on_it():
+    me = limited()
+    x = item(me, anonymous=False)
+    assert an.identity_hidden(x, me) is False and an.is_author(x, me) is True and an.held_from_own(x, me) is False
+
+
+def test_the_author_with_the_password_and_an_admin_are_as_they_were():
+    me = user(id=1)
+    x = item(me)
+    assert an.is_author(x, me) is True and an.held_from_own(x, me) is False
+    assert an.identity_hidden(x, NS(id=2, admin_level=3, qr_limited=False)) is False
+    assert an.is_author(x, None) is False and an.held_from_own(x, None) is False
+
+
+def test_a_list_by_one_author_leaves_a_limited_sign_in_what_it_leaves_a_stranger():
+    Base = declarative_base()
+
+    class Row(Base):
+        __tablename__ = "rows"
+        id = Column(Integer, primary_key=True)
+        author_id = Column(Integer)
+        is_anonymous = Column(Boolean)
+
+    compiled = lambda viewer: str(an.hide_anonymous(Row, viewer).compile(dialect=postgresql.dialect()))
+    assert compiled(limited()) == compiled(None) and compiled(limited()) != compiled(user(id=1))
+
+
+def test_what_counts_as_your_own_in_a_query_leaves_out_a_limited_sign_ins_anonymous_rows():
+    Base = declarative_base()
+
+    class Row(Base):
+        __tablename__ = "rows"
+        id = Column(Integer, primary_key=True)
+        author_id = Column(Integer)
+        is_anonymous = Column(Boolean)
+
+    assert "is_anonymous" in str(an.own(Row, limited()).compile(dialect=postgresql.dialect()))
+    assert "is_anonymous" not in str(an.own(Row, user(id=1)).compile(dialect=postgresql.dialect()))

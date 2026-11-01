@@ -5,6 +5,8 @@ import gevent
 import mistletoe
 import re
 from ruqqus.helpers.word_filter_store import apply_user_severity
+from ruqqus.helpers import action_log
+from ruqqus.helpers import ads as ads_rules
 from ruqqus.helpers import coins as coins_store
 from ruqqus.classes import *
 from ruqqus.helpers.wrappers import *
@@ -19,19 +21,23 @@ from ruqqus.helpers import circle_store
 from ruqqus.helpers import blocklist
 from ruqqus.helpers import chat_devices
 from ruqqus.helpers import bot_store
-from ruqqus.helpers import account_sessions, mfa_backup, mfa_backup_store, sign_in_history
+from ruqqus.helpers import account_sessions, mfa_backup, mfa_backup_store, sign_in_history, signin_alerts, user_agents
+from ruqqus.helpers.jinja2 import qr_login_offered
 from ruqqus.helpers.regions import COUNTRY_NAMES
 from ruqqus.helpers import totp as totp_rules
 from ruqqus.helpers import post_feedback as post_feedback_rules
 from ruqqus.helpers import muting as muting_rules
 from ruqqus.helpers import sensitive as sensitive_rules
 from ruqqus.helpers import text_length
+from ruqqus.helpers import profile_edit
+from ruqqus.helpers import age_declaration
 from ruqqus.mail import *
 from .front import frontlist
 from ruqqus.__main__ import app, cache, limiter, r
 from flask import session as flask_session
 from markupsafe import escape        # flask.escape went with Flask 3: every message of the security form crashed
 from urllib.parse import quote         # a message in an address (?msg=, ?error=): escape() cut it at an apostrophe
+from ruqqus.helpers.alerts import notify
 from ruqqus.helpers.i18n_runtime import N_, force_locale, locale_for_user, msg, tr, trn
 
 
@@ -43,6 +49,7 @@ valid_password_regex = re.compile(r"^.{8,100}$")
 @app.route("/api/vue/settings/profile", methods=["POST"])
 @auth_required
 @api()
+@not_qr_limited
 @validate_formkey
 def settings_profile_post(v):
 
@@ -56,6 +63,10 @@ def settings_profile_post(v):
         new_level = int(new_level)
         current_level = 1 if v.filter_level is None else v.filter_level
         if new_level != current_level:
+            # a child account's filter stays on Child (helpers/age_declaration.py): its password doesn't change that
+            locked = age_declaration.locked_filter(v, new_level)
+            if locked:
+                return jsonify({"error": msg(locked)}), 403
             # the Child filter is a lock: lowering it takes the account password
             if current_level >= 2 and new_level < 2 and not v.verifyPass(request.values.get("password", "")):
                 return jsonify({"error": tr("Enter your account password to turn the Child filter down.")}), 403
@@ -83,26 +94,16 @@ def settings_profile_post(v):
         v.auto_join_chat = request.values.get("join_chat", None) == 'true'
 
     if request.values.get("display_name_form") is not None:
-        # the display name: free text, changed at any time, never an address (helpers/display_names.py)
-        from ruqqus.helpers import display_name_store, display_names
-        try:
-            new_name = display_names.clean(request.values.get("display_name", ""))
-        except display_names.Refused as refused:
-            message = str(refused)      # the except name is gone by the time the lambdas run
+        # the display name: free text, changed at any time, never an address (helpers/display_names.py); the same
+        # checks as the Edit profile pop-up's (helpers/profile_edit.py). Nobody can wear another account's @handle
+        # (ignoring case, spaces, dots, dashes, underscores), nor the staff's or the site's name unless an admin.
+        new_name, message = profile_edit.clean_display_name(request.values.get("display_name", ""))
+        if not message:
+            message = profile_edit.display_name_refusal(g.db, v.id, new_name, (app.config["SITE_NAME"], "ruqqus", "uqqus"),
+                                                        admin=v.admin_level >= 3)
+        if message:
             return {"html": lambda: render_template("settings_profile.html", v=v, error=message),
                     "api": lambda: (jsonify({"error": message}), 400)}
-
-        if new_name:
-            # nobody can wear another account's @handle as a name (ignoring case, spaces, dots, dashes, underscores)
-            if display_name_store.takes_a_handle(g.db, v.id, new_name):
-                message = tr("That is another account's username, so it can't be your display name.")
-                return {"html": lambda: render_template("settings_profile.html", v=v, error=message),
-                        "api": lambda: (jsonify({"error": message}), 400)}
-            reserved = None if v.admin_level >= 3 else display_names.reserved_refusal(
-                new_name, (app.config["SITE_NAME"], "ruqqus", "uqqus"))
-            if reserved:
-                return {"html": lambda: render_template("settings_profile.html", v=v, error=reserved),
-                        "api": lambda: (jsonify({"error": reserved}), 400)}
 
         if new_name == (v.display_name or ""):
             return {"html": lambda: render_template("settings_profile.html", v=v, error=tr("You didn't change anything")),
@@ -116,29 +117,15 @@ def settings_profile_post(v):
                 "api": lambda: jsonify({"message": done})}
 
     if request.values.get("details") is not None:
-        # job, location and website on the profile header (helpers/profile_details.py)
-        from markupsafe import escape
-        from ruqqus.helpers import profile_details
-        try:
-            job = profile_details.clean_text(request.values.get("profile_job", ""), "Job")
-            location = profile_details.clean_text(request.values.get("profile_location", ""), "Location")
-            website = profile_details.clean_website(request.values.get("profile_website", ""))
-        except profile_details.Refused as refused:
-            message = str(refused)      # the except name is gone by the time the lambdas run
+        # job, location and website on the profile header (helpers/profile_details.py); the same checks as the Edit
+        # profile pop-up's (helpers/profile_edit.py), the banned-domain list included
+        job, location, website, problems = profile_edit.clean_details(
+            request.values.get("profile_job", ""), request.values.get("profile_location", ""),
+            request.values.get("profile_website", ""))
+        message = next(iter(problems.values()), None) or profile_edit.website_refusal(website)
+        if message:
             return {"html": lambda: render_template("settings_profile.html", v=v, error=message),
                     "api": lambda: (jsonify({"error": message}), 400)}
-
-        if website:
-            # the banned-domain list, as for a link in a bio
-            bans = filter_comment_html(f'<a href="{escape(website)}">x</a>')
-            if bans:
-                if bans[0].reason:
-                    reason = tr("%(domain)s can't be linked from a profile. %(reason)s", domain=bans[0].domain,
-                                reason=msg(bans[0].reason_text))
-                else:
-                    reason = tr("%(domain)s can't be linked from a profile.", domain=bans[0].domain)
-                return {"html": lambda: render_template("settings_profile.html", v=v, error=reason),
-                        "api": lambda: (jsonify({"error": reason}), 400)}
 
         v.profile_job, v.profile_location, v.profile_website = job, location, website
         apply_user_severity(v)
@@ -147,59 +134,36 @@ def settings_profile_post(v):
                 "api": lambda: jsonify({"message": tr("Your profile details have been updated.")})}
 
     if request.values.get("bio") is not None:
-        bio = request.values.get("bio")
-        # refused when too long, weighted (helpers/text_length.py), rather than silently cut at 256; the column is 300
-        if text_length.over_limit(bio, 256, stored_max=300):
-            message = text_length.limit_message("A bio", 256)
+        # the same checks as the Edit profile pop-up's (helpers/profile_edit.py): refused when too long, weighted
+        # (helpers/text_length.py), rather than silently cut at 256; the narrow list of tags bios keep; the banned domains
+        check = profile_edit.check_bio(request.values.get("bio"), v.bio)
+
+        if check.code in ("too_long", "formatting"):
+            message = check.message
             return {"html": lambda: render_template("settings_profile.html", v=v, error=message),
                     "api": lambda: (jsonify({"error": message}), 400)}
 
-        bio=preprocess(bio)
+        if check.code == "unchanged":
+            return {"html": lambda: render_template("settings_profile.html", v=v, error=check.message),
+                    "api": lambda: jsonify({"error": check.message})}
 
-        if bio == v.bio:
-            return {"html":lambda:render_template("settings_profile.html",
-                                   v=v,
-                                   error=tr("You didn't change anything")),
-		    "api":lambda:jsonify({"error":tr("You didn't change anything")})
-		   }
-
-
-        with CustomRenderer() as renderer:
-            bio_html = renderer.render(mistletoe.Document(bio))
-        # the bio's own narrow list of tags (links and text styles, no headings, tables or pictures): it was written
-        # for bios and never used (carried from BACKEND_AUDIT_FINDINGS); an older bio keeps its HTML until it is edited
-        bio_html = sanitize(bio_html, bio=True, linkgen=True)
-
-        # Run safety filter
-        bans = filter_comment_html(bio_html)
-
-        if bans:
-            ban = bans[0]
-            if ban.reason:
-                reason = tr("Remove the %(domain)s link from your bio and try again. %(reason)s", domain=ban.domain,
-                            reason=msg(ban.reason_text))
-            else:
-                reason = tr("Remove the %(domain)s link from your bio and try again.", domain=ban.domain)
-                
+        if check.code == "links":
             #auto ban for digitally malicious content
-            if any([x.reason==4 for x in bans]):
+            if check.malicious:
                 v.ban(days=30, reason=N_("Digitally malicious content is not allowed."))
-            return jsonify({"error": reason}), 401
+            return jsonify({"error": check.message}), 401
 
-        v.bio = bio
-        v.bio_html=bio_html
+        v.bio = check.text
+        v.bio_html = check.html
         apply_user_severity(v)
         g.db.add(v)
-        
+
         #seo profile spam
-        if int(time.time())-v.created_utc < 60*60*24 and not v.post_count and not v.comment_count and BeautifulSoup(bio_html).find('a'):
+        if profile_edit.looks_like_link_spam(v, check.html, int(time.time())):
             v.ban(reason="seo spam")
-        
-        
-        return {"html":lambda:render_template("settings_profile.html",
-                               v=v,
-                               msg=tr("Your bio has been updated.")),
-		"api":lambda:jsonify({"message":tr("Your bio has been updated.")})}
+
+        return {"html": lambda: render_template("settings_profile.html", v=v, msg=tr("Your bio has been updated.")),
+                "api": lambda: jsonify({"message": tr("Your bio has been updated.")})}
 
     if request.values.get("filters") is not None:
 
@@ -274,8 +238,34 @@ def _backup_codes_page(v, codes, msg):
     return page
 
 
+def _tell_qr_login_on(v):
+    """QR sign-in was turned back on: a notification always, and an email by the sign-in emails' own rule (a verified
+    address, the setting on). Best effort: it has already been turned on, and neither failing undoes that."""
+    try:
+        notify(v, N_("QR sign-in was turned on for your account. If this wasn't you, change your password in "
+                     "[Settings > Security](/settings/security)."))
+    except Exception as e:
+        g.db.rollback()
+        print(f"QR sign-in notice not sent: {type(e).__name__}", flush=True)
+    if not signin_alerts.wants_email(v):
+        return
+    try:
+        with force_locale(locale_for_user(v)):
+            html = render_template("email/qr_login_on.html", v=v,
+                                   action_url=f"https://{app.config['SERVER_NAME']}/settings/security",
+                                   settings_url=f"https://{app.config['SERVER_NAME']}/settings/security#sign-ins",
+                                   **signin_alerts.where_and_when(request.headers.get("cf-ipcountry"),
+                                                                  user_agents.stored(request.headers.get("User-Agent")),
+                                                                  int(time.time()), COUNTRY_NAMES))
+            subject = signin_alerts.qr_on_subject(app.config["SITE_NAME"])
+        gevent.spawn(send_mail_quietly, v.email, subject, html)
+    except Exception as e:
+        print(f"QR sign-in email not sent: {type(e).__name__}", flush=True)
+
+
 @app.route("/settings/security", methods=["POST"])
 @auth_required
+@not_qr_limited
 @validate_formkey
 def settings_security_post(v):
 
@@ -297,6 +287,7 @@ def settings_security_post(v):
         v.passhash = v.hash_password(request.form.get("new_password"))
         account_sessions.end_other_sessions(v, flask_session)       # whoever held the old password is signed out
         chat_devices.sign_out(g.db, v.id, app.config["SITE_NAME"])  # and so is any chat app signed in with it
+        ads_rules.hold_after_password(flask_session, int(time.time()))   # the form left a new pre-key for chat (chat_key.js)
 
         g.db.add(v)
 
@@ -436,6 +427,28 @@ def settings_security_post(v):
         return redirect("/settings/security?msg=" + quote(
             tr("We'll email you about sign-ins from somewhere new.") if v.signin_alerts else tr("Sign-in emails are off.")))
 
+    # QR sign-in: off takes a way in away, so it asks nothing; back on adds one, so it asks the password and tells the member.
+    # While the site doesn't offer it the form isn't drawn, and a request for it falls through to "Nothing to change"
+    if request.form.get("qr_login_form", "") and qr_login_offered():
+
+        if request.form.get("qr_login") == "off":
+            v.qr_login_off = True
+            g.db.add(v)
+            return redirect("/settings/security?msg=" + quote(tr("QR sign-in is off.")))
+
+        if not v.qr_login_off:                         # on already (another tab): no password asked, nobody told
+            return redirect("/settings/security?msg=" + quote(tr("QR sign-in is on.")))
+
+        if not v.verifyPass(request.form.get("password") or ""):
+            return redirect("/settings/security?error=" + quote(tr("Invalid password.")))
+
+        v.qr_login_off = False
+        g.db.add(v)
+        g.db.commit()
+        _tell_qr_login_on(v)
+
+        return redirect("/settings/security?msg=" + quote(tr("QR sign-in is on.")))
+
     # a form with none of the fields above (audit CR-04: it fell through and answered 500)
     return redirect("/settings/security?error=" + quote(tr("Nothing to change.")))
 
@@ -467,6 +480,7 @@ def settings_dark_mode(x, v):
 
 @app.route("/settings/log_out_all_others", methods=["POST"])
 @auth_required
+@not_qr_limited
 @validate_formkey
 def settings_log_out_others(v):
 
@@ -507,7 +521,7 @@ def settings_images_profile(v):
                                v=v, msg=tr("Profile picture successfully updated."))
 
     return render_template("settings_profile.html", v=v,
-                           msg=tr("Avatars require 300 reputation."))
+                           msg=tr("You must have a verified email address to upload images via Tor."))
 
 
 @app.route("/settings/images/banner", methods=["POST"])
@@ -532,7 +546,7 @@ def settings_images_banner(v):
                                v=v, msg=tr("Banner successfully updated."))
 
     return render_template("settings_profile.html", v=v,
-                           msg=tr("Banners require 500 reputation."))
+                           msg=tr("You must have a verified email address to upload images via Tor."))
 
 
 @app.route("/settings/delete/profile", methods=["POST"])
@@ -548,6 +562,7 @@ def settings_delete_profile(v):
 
 @app.route("/settings/new_feedkey", methods=["POST"])
 @auth_required
+@not_qr_limited
 @validate_formkey
 def settings_new_feedkey(v):
 
@@ -603,6 +618,7 @@ def _leave_chat_groups(v):
 @app.route("/settings/delete_account", methods=["POST"])
 @is_not_banned
 @no_negative_balance("html")
+@not_qr_limited
 @validate_formkey
 def delete_account(v):
 
@@ -690,7 +706,11 @@ def delete_account(v):
 
     g.db.commit()
 
-    return redirect('/')
+    # not a redirect: this answer, which only a deletion that went through ever gets, is what clears the account's chat device
+    # out of this browser. A visitor's home page can be cached, and an address that said so could be linked to.
+    return render_template("account_deleted.html", v=None,
+                           title=tr("Your account has been deleted"),
+                           message=tr("Your chats and their keys have been removed from this browser."))
 
 
 @app.route("/settings/blocks", methods=["GET"])
@@ -726,6 +746,10 @@ def settings_blockedguilds(v):
 def settings_block_user(v):
 
     user = get_user(request.values.get("username"), graceful=True)
+
+    # a block ends paid days with no refund, either way (circle_store.end_between), and coins ask for the password (helpers/qr_login.py)
+    if v.qr_limited and user and circle_store.paid_between(g.db, v.id, user.id):
+        return qr_limited_answer(v)
 
     done = blocklist.block_account(g.db, v, user)
     if done != "blocked":
@@ -763,6 +787,7 @@ def settings_blocks_export(v):
 @app.route("/settings/blocks/import", methods=["POST"])
 @limiter.limit("5/day")
 @auth_required
+@not_qr_limited
 @validate_formkey
 def settings_blocks_import(v):
     """Blocks and mutes the accounts in an uploaded file or a pasted list (at most 200). Every account goes through
@@ -786,6 +811,7 @@ def settings_blocks_import(v):
 
 @app.route("/settings/unblock", methods=["POST"])
 @auth_required
+@not_qr_limited
 @validate_formkey
 def settings_unblock_user(v):
 
@@ -863,6 +889,7 @@ def settings_unblock_guild(v):
 
 @app.route("/settings/apps", methods=["GET"])
 @auth_required
+@not_qr_limited
 def settings_apps(v):
 
     return render_template("settings_apps.html", v=v)
@@ -870,6 +897,7 @@ def settings_apps(v):
 
 @app.route("/settings/remove_discord", methods=["POST"])
 @auth_required
+@not_qr_limited
 @validate_formkey
 def settings_remove_discord(v):
 
@@ -936,6 +964,7 @@ def settings_purchase_history(v):
 @app.route("/settings/name_change", methods=["POST"])
 @is_not_banned                   # a suspended account doesn't rename itself (bug hunt)
 @no_negative_balance("html")     # and no coins are spent while the account owes after a chargeback, as elsewhere
+@not_qr_limited
 @validate_formkey
 def settings_name_change(v):
 
@@ -1058,6 +1087,10 @@ def admin_clear_display_name(v):
     if target is None or target.is_deleted or v.admin_level <= (target.admin_level or 0):
         abort(404)
     if target.display_name:
+        # the name that was removed goes in the staff note: it is gone from the account, and an admin may need it later
+        action_log.record_quietly(g.db, "clear_display_name", v.id, target_user_id=target.id, role=action_log.ADMIN,
+                                  reason=request.form.get("reason", ""), rule=request.form.get("rule"),
+                                  staff_note=f"was: {target.display_name}", notice_sent=True)
         target.display_name = ""
         apply_user_severity(target)
         g.db.add(target)
@@ -1073,6 +1106,9 @@ def admin_clear_display_name(v):
 def settings_all_shows_sensitive(v):
     """The viewer's choice: show sensitive content in All and For You (helpers/sensitive.py). Off by default; the Child
     filter hides sensitive content whatever this says. The member's cached feeds are dropped so it shows at once."""
+    locked = age_declaration.locked_sensitive(v, request.values.get("on") == "true")
+    if locked:
+        return jsonify({"error": msg(locked)}), 403
     v.all_shows_sensitive = request.values.get("on") == "true"
     g.db.add(v)
     g.db.commit()
@@ -1126,6 +1162,9 @@ def admin_sensitive_user(v):
     if force:
         target.is_sensitive = True
     g.db.add(target)
+    action_log.record_quietly(g.db, "force_sensitive_user", v.id, target_user_id=target.id, role=action_log.ADMIN,
+                              reason=request.form.get("reason", ""), staff_note="forced on" if force else "unlocked",
+                              notice_sent=True)
     g.db.commit()
     notify(target, N_("An admin marked your account sensitive: your posts are left out of All and For You "
                       "unless someone chooses to see sensitive content, and your new posts are blurred. "
@@ -1133,6 +1172,47 @@ def admin_sensitive_user(v):
            N_("An admin unlocked the sensitive setting on your account. You can change it in "
               "Settings > Content."))
     return redirect(target.permalink)
+
+
+@app.route("/admin/sensitive/post", methods=["POST"])
+@admin_level_required(3)
+@validate_formkey
+def admin_sensitive_post(v):
+    """Force a post sensitive (its author and the guild's guildmasters can't switch it off), or unlock it (they decide again;
+    the mark stays until they do). It is the same post in every guild it was forwarded to, so the mark goes on all of it and the
+    lock on the original, where a copy made later reads it (`Submission.sensitive_lock`). The author is told, by a link that
+    names nobody, which holds for an anonymous post too."""
+    from ruqqus.helpers.alerts import notify
+    from ruqqus.helpers.base36 import base36decode
+
+    try:
+        post = g.db.query(Submission).filter_by(id=base36decode(request.form.get("post", ""))).first()
+    except ValueError:
+        post = None
+    if post is None:
+        abort(404)
+    primary = g.db.query(Submission).filter_by(id=post.repost_id).first() if post.repost_id else post
+    if primary is None:
+        abort(404)
+    force = request.form.get("force") == "1"
+    primary.sensitive_forced = force
+    g.db.add(primary)
+    if force:
+        for row in g.db.query(Submission).filter((Submission.id == primary.id) | (Submission.repost_id == primary.id)).all():
+            row.is_sensitive = True
+            g.db.add(row)
+    action_log.record_quietly(g.db, "force_sensitive_post", v.id, post_id=primary.id, role=action_log.ADMIN,
+                              reason=request.form.get("reason", ""), staff_note="forced on" if force else "unlocked",
+                              notice_sent=True)
+    g.db.commit()
+    author = primary.author
+    if author and not author.is_deleted:
+        notify(author, N_("An admin marked [your post](%(link)s) sensitive: it is blurred until someone clicks to reveal it, and "
+                          "left out of All and For You unless they choose to see sensitive content. Only an admin can "
+                          "change this.") if force else
+               N_("An admin unlocked the sensitive setting of [your post](%(link)s). You can change it again."),
+               link=primary.permalink)
+    return redirect(post.permalink)
 
 
 @app.route("/admin/sensitive/guild", methods=["POST"])
@@ -1178,6 +1258,7 @@ def settings_badge_recheck(v):
 @app.route("/settings/export", methods=["POST"])
 @limiter.limit("3/hour")
 @auth_required
+@not_qr_limited
 @validate_formkey
 def settings_export(v):
     """Download your data: one JSON file of what the site keeps about this account (helpers/data_export.py, audit

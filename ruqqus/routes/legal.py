@@ -17,12 +17,14 @@ from ruqqus.__main__ import app, limiter
 
 @app.route("/legal", methods=["GET"])
 @auth_desired
+@not_qr_limited
 def legal_1(v):
     return render_template("legal/legal.html", v=v)
 
 
 @app.route("/legal/2", methods=["POST"])
 @is_not_banned
+@not_qr_limited
 @validate_formkey
 def legal_2(v):
 
@@ -51,6 +53,7 @@ def legal_2(v):
 
 @app.route("/legal/final", methods=["POST"])
 @is_not_banned
+@not_qr_limited
 @validate_formkey
 def legal_final(v):
 
@@ -85,6 +88,7 @@ def legal_final(v):
 
 @app.route("/help/dmca", methods=["POST"])
 @is_not_banned
+@not_qr_limited
 @validate_formkey
 def dmca_post(v):
 
@@ -170,6 +174,7 @@ def dmca_post(v):
 
 @app.route("/help/counter_dmca", methods=["POST"])
 @is_not_banned
+@not_qr_limited
 @validate_formkey
 def counter_dmca_post(v):
 

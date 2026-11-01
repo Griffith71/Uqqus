@@ -42,11 +42,11 @@
 {% set saved=false %}
 {% endif %}
 
-{% set can_edit = v and v.id==p.author_id and not v.is_banned %}
+{% set can_edit = v and v.id==p.author_id and not v.is_banned and not anon_hidden(p, v) %}
 {% set can_moderate = v and v.admin_level>=3 %}
 {% set can_pin = v and p.is_guildmaster('content') %}
 
-<div id="post-{{ p.base36id }}" class="card{% if p.is_banned %} banned{% endif %}{% if p.deleted_utc > 0 %} deleted{% endif %}{% if p.stickied %} stickied{% endif %}{% if voted==1 %} upvoted{% elif voted==-1 %} downvoted{% endif %}{% if p.is_sensitive %} sensitive{% endif %}{% if '/post/' in request.path and loop.length==1 %} border rounded{% endif %}">
+<div id="post-{{ p.base36id }}" class="card{% if p.is_banned %} banned{% endif %}{% if p.deleted_utc > 0 %} deleted{% endif %}{% if p.stickied %} stickied{% endif %}{% if voted==1 %} upvoted{% elif voted==-1 %} downvoted{% endif %}{% if p.is_sensitive %} sensitive{% endif %}{% if '/post/' in request.path and loop.length==1 %} border rounded{% endif %}"{{ ad_safe_mark(p) }}>
 
   <div class="d-flex flex-row flex-nowrap justify-content-end">
 
@@ -222,7 +222,7 @@
 
               <div class="dropdown-menu border-0 shadow dropdown-menu-right" aria-labelledby="dropdownMoreLink-{{ p.base36id }}">
 
-                {% if v.id != p.author_id or p.is_repost or p.is_comment_forward %}{# as on the post page: anonymous posts can be reported too #}
+                {% if v.id != p.author_id or anon_hidden(p, v) or p.is_repost or p.is_comment_forward %}{# as on the post page: anonymous posts can be reported too #}
                 <a class="dropdown-item" href="javascript:void(0)" data-toggle="modal" data-target="#reportPostModal" onclick="report_postModal('{{ p.base36id }}',{{ (_('Anonymous') if anon_hidden(p, v) else (_('[deleted account]') if author_of(p, v).is_deleted else '@'+author_of(p, v).username)) | tojson | forceescape }},'{{ p.board.name }}')"><i class="fas fa-flag fa-fw"></i>{{ pgettext("verb", "Flag") }}</a>
                 {% endif %}
 
@@ -358,7 +358,7 @@
 
           {% if v %}
 
-          {% if v.id != p.author_id or p.is_repost or p.is_comment_forward %}{# as on the post page: anonymous posts can be reported too #}
+          {% if v.id != p.author_id or anon_hidden(p, v) or p.is_repost or p.is_comment_forward %}{# as on the post page: anonymous posts can be reported too #}
           <button class="btn btn-link btn-block btn-lg text-left text-muted" data-toggle="modal" data-dismiss="modal" data-target="#reportPostModal" onclick="report_postModal('{{ p.base36id }}',{{ (_('Anonymous') if anon_hidden(p, v) else (_('[deleted account]') if author_of(p, v).is_deleted else '@'+author_of(p, v).username)) | tojson | forceescape }},'{{ p.board.name }}')"><i class="far fa-flag fa-fw text-center text-muted mr-3"></i>{{ pgettext("verb", "Flag") }}</button>
           {% endif %}
 

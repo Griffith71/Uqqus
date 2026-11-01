@@ -229,7 +229,7 @@
       {% if sign_ins %}
       <ul class="list-unstyled mb-0 sign-in-list">
         {% for s in sign_ins %}
-        <li class="sign-in-row"><span class="sign-in-browser">{{ s.browser }}</span> <span class="text-muted">&middot; {{ s.place }} &middot; <time datetime="{{ s.iso }}">{{ s.when }}</time></span></li>
+        <li class="sign-in-row"><span class="sign-in-browser">{{ s.browser }}</span> <span class="text-muted">&middot; {{ s.place }} &middot; <time datetime="{{ s.iso }}">{{ s.when }}</time>{% if s.method %} &middot; {{ s.method }}{% endif %}</span></li>
         {% endfor %}
       </ul>
       {% else %}
@@ -256,9 +256,44 @@
     </form>
   </div>
 
+  {% if qr_login_offered() %}
+  <h2 class="h5" id="qr-login">{{ _("QR sign-in") }}</h2>
+
+  <p class="text-small text-muted">{{ _("Sign in on a computer by scanning a code with a phone that is already signed in. The phone asks for your two-factor code, or your password if you don't use two-factor, before it lets the computer in.") }}</p>
+
+  <div class="settings-section rounded">
+    <form action="/settings/security" method="post">
+      <input type="hidden" name="formkey" value="{{ v.formkey }}">
+      <input type="hidden" name="qr_login_form" value="1">
+      {% if v.qr_login_off %}
+      <input type="hidden" name="qr_login" value="on">
+      <div class="body">
+        <p class="mb-2"><strong>{{ _("QR sign-in is off.") }}</strong> {{ _("Nobody can sign in to your account with a code.") }}</p>
+        <p class="text-small text-muted mb-2">{{ _("Turning it back on needs your password, and we'll tell you it happened.") }}</p>
+        <div class="d-lg-flex">
+          <label for="qr-login-password" class="w-lg-25">{{ _("Password") }}</label>
+          <div class="w-lg-100"><input type="password" class="form-control mb-2" id="qr-login-password" name="password" autocomplete="current-password" required></div>
+        </div>
+      </div>
+      <div class="footer">
+        <div class="d-flex"><button type="submit" class="btn btn-secondary ml-auto">{{ _("Turn on") }}</button></div>
+      </div>
+      {% else %}
+      <input type="hidden" name="qr_login" value="off">
+      <div class="body">
+        <p class="mb-0"><strong>{{ _("QR sign-in is on.") }}</strong> {{ _("Turn it off if you'll never use it: your password keeps working as it does now.") }}</p>
+      </div>
+      <div class="footer">
+        <div class="d-flex"><button type="submit" class="btn btn-secondary ml-auto">{{ _("Turn off") }}</button></div>
+      </div>
+      {% endif %}
+    </form>
+  </div>
+  {% endif %}
+
   <h2 class="h5">{{ _("Log Out Everywhere") }}</h2>
 
-  <p class="text-small text-muted">{{ _("Log all other devices out of your %(site)s account.") }}</p>
+  <p class="text-small text-muted" id="log-out-everywhere">{{ _("Log all other devices out of your %(site)s account.") }}</p>
 
   <div class="settings-section rounded">
 

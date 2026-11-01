@@ -69,11 +69,30 @@ def current_viewer():
     return getattr(g, "v", None) if has_request_context() else None
 
 
+def held_from_own(item, viewer):
+    """A limited QR sign-in (helpers/qr_login.py) looking at the member's own anonymous item. It is a stranger to it until the
+    password is given: which ones are theirs is what anonymity exists to keep, and telling a relayed code once can't be taken back."""
+    return bool(viewer is not None and getattr(viewer, "qr_limited", False) and getattr(item, "is_anonymous", False)
+                and viewer.id == item.author_id)
+
+
+def is_author(item, viewer):
+    """Is `viewer` the author, as far as this request may be told? For anything that draws, or answers differently, for an
+    item's author."""
+    return viewer is not None and viewer.id == item.author_id and not held_from_own(item, viewer)
+
+
+def own(model, viewer):
+    """A query condition for `is_author`: the viewer's own rows of `model`, as far as this request may be told."""
+    mine = model.author_id == viewer.id
+    return and_(mine, not_(model.is_anonymous)) if getattr(viewer, "qr_limited", False) else mine
+
+
 def viewer_sees_identity(item, viewer):
     """Only the author and site admins are told who wrote an anonymous item."""
     if viewer is None:
         return False
-    return viewer.id == item.author_id or (getattr(viewer, "admin_level", 0) or 0) >= ADMIN_LEVEL
+    return is_author(item, viewer) or (getattr(viewer, "admin_level", 0) or 0) >= ADMIN_LEVEL
 
 
 def identity_hidden(item, viewer):
@@ -111,7 +130,7 @@ def off_profile(model, viewer):
     """A query condition for a profile's own tabs (posts, comments, forwarded): anonymous rows are left out for everyone,
     their author too, and shown only to site admins, who moderate (the owner, 2026-10-27: a profile is the account's
     public face; the author finds their own anonymous posts and comments in History > Anonymous, history_anonymous).
-    Searches by author, the Following feed and the Deletion log keep `hide_anonymous`."""
+    Searches by author, the Following feed and the Log keep `hide_anonymous`."""
     if viewer is not None and (getattr(viewer, "admin_level", 0) or 0) >= ADMIN_LEVEL:
         return true()
     return not_(model.is_anonymous)
@@ -126,6 +145,6 @@ def hide_anonymous(model, viewer):
     if viewer is not None and (getattr(viewer, "admin_level", 0) or 0) >= ADMIN_LEVEL:
         return true()
     visible = not_(model.is_anonymous)
-    if viewer is None:
+    if viewer is None or getattr(viewer, "qr_limited", False):
         return visible
     return or_(visible, and_(model.is_anonymous, model.author_id == viewer.id))

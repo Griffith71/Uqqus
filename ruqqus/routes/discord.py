@@ -29,6 +29,7 @@ def guilded_server():
 
 @app.route("/discord", methods=["GET"])
 @auth_required
+@not_qr_limited
 def join_discord(v):
 
     now=int(time.time())
@@ -41,6 +42,7 @@ def join_discord(v):
 
 @app.route("/discord_redirect", methods=["GET"])
 @auth_required
+@not_qr_limited
 def discord_redirect(v):
 
 

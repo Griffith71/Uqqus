@@ -16,6 +16,12 @@ from .i18n_runtime import N_, tr
 from .i18n_runtime import site_name as _site_name
 from ruqqus.__main__ import Base, app, db_session
 from ruqqus.helpers.session_helpers import *
+from urllib.parse import parse_qsl, urlencode, urlsplit
+
+from ruqqus.helpers import qr_login, session_cookie, sign_in_history
+from ruqqus.helpers.redirects import same_site
+from sqlalchemy import event
+from sqlalchemy.orm.attributes import set_committed_value
 
 
 def page_number():
@@ -70,7 +76,8 @@ def get_logged_in_user(db=None):
     elif 'user_id' in flask_session:
         uid = flask_session.get("user_id")
         nonce = flask_session.get("login_nonce", 0)
-        if not uid:
+        # a QR sign-in past its 12 hours is signed out, whatever else the cookie says (helpers/qr_login.py)
+        if not uid or qr_login.session_over(flask_session, time.time()):
             x = (None, None)
         else:
             v = db.query(User).options(
@@ -81,9 +88,12 @@ def get_logged_in_user(db=None):
                 is_deleted=False
             ).first()
 
-            if v and (nonce < v.login_nonce):
+            if not v or nonce < v.login_nonce:
+                session_cookie.forget_sign_in(flask_session)
                 x = (None, None)
             else:
+                if v and qr_login.is_limited(flask_session):
+                    _limit_to_qr_session(v)
                 x = (v, None)
 
     else:
@@ -94,6 +104,26 @@ def get_logged_in_user(db=None):
         _note_active(x[0])
 
     return x
+
+
+def _limit_to_qr_session(user):
+    """This request's `user` object is a limited QR sign-in's (helpers/qr_login.py). Its admin level reads 0 for this request,
+    without changing anything to save (a committed value, so nothing is written): every check of `v.admin_level` that isn't a
+    route's wrapper, in a route, a helper or a template, is then an ordinary member's, so an admin's phone tricked into approving
+    a code never yields admin powers. Its real level stays in `qr_held_level` for `admin_level_required`, to ask for the
+    password rather than say no. `Board.has_mod` reads `qr_limited` the same way."""
+    if user.qr_limited:
+        return
+    user.qr_limited = True
+    user.qr_held_level = user.admin_level or 0
+    set_committed_value(user, "admin_level", 0)
+
+
+@event.listens_for(User, "refresh")
+def _keep_qr_limit_after_a_reload(target, context, attrs):
+    # a commit expires the object and the next read loads it again, the real level with it
+    if getattr(target, "qr_limited", False) and (attrs is None or "admin_level" in attrs):
+        set_committed_value(target, "admin_level", 0)
 
 
 ACTIVE_STAMP_SECONDS = 86400
@@ -357,6 +387,59 @@ def not_quarantined(action):
     return wrapper_maker
 
 
+QR_LIMITED_REFUSAL = N_("You signed in with a QR code. Enter your password to do this.")
+
+
+def _outside_the_frame(address):
+    """A page's address as a page of its own: a side panel's frame asks for /chat?embed=1."""
+    parts = urlsplit(address)
+    query = [(k, value) for k, value in parse_qsl(parts.query, keep_blank_values=True) if k not in ("embed", "single")]
+    return same_site(parts.path + ("?" + urlencode(query) if query else ""))
+
+
+def upgrade_page(v, back="/", failed=False):
+    """The password form that ends a QR sign-in's limits, with where to go after it. In a frame (the chat side panel, `?embed=1`) it is
+    only a link out of the frame: the page around it may hold Google's tag, which would read the pre-key this form writes (a frame shares
+    the tab's sessionStorage, helpers/ads.py), and neither a wrong password's answer nor "Not now" may be drawn in a frame."""
+    ends = flask_session.get(qr_login.EXPIRES_KEY)
+    in_frame = request.args.get("embed") == "1"
+    return render_template("login_qr_upgrade.html", v=v, back=_outside_the_frame(back) if in_frame else back, failed=failed, in_frame=in_frame,
+                           i=random_image(), ends=sign_in_history.label(ends) if ends else None)
+
+
+def _where_they_were():
+    """Where the password form goes back to: the page asked for, or for a form, the page that holds it. Only a path on this site."""
+    if request.method == "GET":
+        return same_site(request.full_path.rstrip("?"))
+    page = urlsplit(request.referrer or "")
+    return same_site(page.path) if page.netloc == request.host else "/"
+
+
+def qr_limited_answer(v):
+    """What a limited QR sign-in gets instead: the password form for a page or a form the browser navigated with, a 403 for a
+    script, which says so with `need_password`, so the site's scripts can tell it from any other refusal."""
+    if request.method == "GET" and not request.path.startswith("/api/") or request.headers.get("Sec-Fetch-Mode") == "navigate":
+        return upgrade_page(v, _where_they_were()), 403
+    from .i18n_runtime import msg
+    return jsonify({"error": msg(QR_LIMITED_REFUSAL), "need_password": True}), 403
+
+
+def not_qr_limited(f):
+    """Refuse a QR sign-in until its password is given (helpers/qr_login.py): whatever outlives "log out all", moves coins or
+    reaches a secret. Goes under the route's sign-in wrapper, right above its `@validate_formkey` like `@not_quarantined`, so a
+    form key from before the sign-in is refused for the right reason. tests/test_qr_login_assets.py holds the list."""
+
+    def wrapper(*args, **kwargs):
+        v = kwargs.get("v")
+        if getattr(v, "qr_limited", False):
+            return qr_limited_answer(v)
+        return f(*args, **kwargs)
+
+    wrapper.__name__ = f.__name__
+    wrapper.__doc__ = f.__doc__
+    return wrapper
+
+
 COOLDOWN_MESSAGE = N_("Slow down - cooldown active for another %(minutes)s:%(seconds)s.")
 
 
@@ -465,6 +548,10 @@ def is_guildmaster(*perms):
             else:
                 return jsonify({"error": tr("no guild specified")}), 400
 
+            # a limited QR sign-in holds no guildmaster's powers until its password is given (`has_mod` says no for it)
+            if getattr(v, "qr_limited", False) and board.leads(v):
+                return qr_limited_answer(v)
+
             m=board.has_mod(v)
             if not m:
                 return jsonify({"error": tr("You aren't a guildmaster of +%(guild)s", guild=board.name)}), 403
@@ -502,6 +589,10 @@ def admin_level_required(x):
 
             if not v:
                 abort(401)
+
+            # a limited QR sign-in is no admin until its password is given: it asks, where the account is one
+            if getattr(v, "qr_limited", False) and v.qr_held_level >= x:
+                return qr_limited_answer(v)
 
             # an expired temporary ban no longer locks an admin out
             if v.is_suspended:

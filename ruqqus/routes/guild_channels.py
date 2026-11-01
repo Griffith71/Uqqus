@@ -226,6 +226,7 @@ app.jinja_env.globals.update(guild_has_chat=has_chat)
 
 @app.route("/api/guilds/<guildname>/channels", methods=["GET"])
 @auth_required
+@not_qr_limited
 def guild_channels_list(guildname, v):
     board = _visible_board(guildname, v)
     rows = store.of_board_for(g.db, board.id, v.id)
@@ -269,6 +270,7 @@ def _sync_writers(row):
 
 @app.route("/api/guilds/channels/<int:cid>/join", methods=["POST"])
 @auth_required
+@not_qr_limited
 @validate_formkey
 def guild_channel_join(cid, v):
     """Put the viewer in the channel's room (they open a channel to join it, never all at once when a guild is joined)."""
@@ -320,6 +322,7 @@ def _mentioned(row, board, v, post_id, body, now):
 
 @app.route("/api/guilds/channels/<int:cid>/messages", methods=["POST"])
 @is_not_banned
+@not_qr_limited
 @validate_formkey
 def guild_channel_message(cid, v):
     """A message, rated and counted here and sent by the site as its writer with the site's signature."""
@@ -399,6 +402,7 @@ def guild_channel_message(cid, v):
 
 @app.route("/api/guilds/channels/<int:cid>/mark_read", methods=["POST"])
 @auth_required
+@not_qr_limited
 @validate_formkey
 def guild_channel_mark_read(cid, v):
     _load(cid, v)
@@ -435,6 +439,7 @@ def _sender_map(user_ids, v, board_id=None):
 
 @app.route("/api/guilds/channels/<int:cid>/senders", methods=["GET"])
 @auth_required
+@not_qr_limited
 def guild_channel_senders(cid, v):
     """Names for the people who wrote in a channel (?ids=1,2,3, at most 50): only people who wrote in this channel are
     ever answered, so this is no way to look an account up."""
@@ -450,6 +455,7 @@ def guild_channel_senders(cid, v):
 
 @app.route("/api/guilds/channels/<int:cid>/report", methods=["POST"])
 @auth_required
+@not_qr_limited
 @validate_formkey
 def guild_channel_report(cid, v):
     row, board = _load(cid, v)
@@ -511,6 +517,7 @@ def _remove_encrypted_message(row, board, v, event_id):
 
 @app.route("/api/guilds/channels/<int:cid>/remove", methods=["POST"])
 @auth_required
+@not_qr_limited
 @validate_formkey
 def guild_channel_remove(cid, v):
     """A guildmaster with the content permission removes a message from the channel's page."""
@@ -533,6 +540,7 @@ def _visible_text(body, severity, v):
 
 @app.route("/api/guilds/channels/<int:cid>/pin", methods=["POST"])
 @auth_required
+@not_qr_limited
 @validate_formkey
 def guild_channel_pin(cid, v):
     """A guildmaster with the content permission pins a message (or takes the pin off with on=0): at most MAX_PINS."""
@@ -560,6 +568,7 @@ def guild_channel_pin(cid, v):
 
 @app.route("/api/guilds/channels/<int:cid>/pins", methods=["GET"])
 @auth_required
+@not_qr_limited
 def guild_channel_pins(cid, v):
     """The pinned messages, for this viewer (their word filter, their blocks and mutes)."""
     _load(cid, v)
@@ -578,6 +587,7 @@ def guild_channel_pins(cid, v):
 
 @app.route("/api/guilds/channels/<int:cid>/mute", methods=["POST"])
 @auth_required
+@not_qr_limited
 @validate_formkey
 def guild_channel_mute_for_me(cid, v):
     """Your own mute of a channel: no unread dot, no mention notifications, for hours (1, 8, 24), -1 until you turn it
@@ -594,6 +604,7 @@ def guild_channel_mute_for_me(cid, v):
 
 @app.route("/api/guilds/channels/<int:cid>/accept_rules", methods=["POST"])
 @auth_required
+@not_qr_limited
 @validate_formkey
 def guild_channel_accept_rules(cid, v):
     """Accept the channel's rules as they are now (a channel that asks for it): change them and everyone is asked again."""
@@ -608,6 +619,7 @@ def guild_channel_accept_rules(cid, v):
 @app.route("/api/guilds/channels/<int:cid>/search", methods=["GET"])
 @limiter.limit("30/minute")
 @auth_required
+@not_qr_limited
 def guild_channel_search(cid, v):
     """Messages in this channel with every word in them (?q=), newest first, among those whose text is still kept
     (KEEP_TEXT_DAYS). A rated message their word filter hides, a removed one, and anything by someone they muted or
