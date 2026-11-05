@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ruqqus VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-11-05 16:56+1100\n"
+"POT-Creation-Date: 2026-11-05 20:16+1100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: id\n"
@@ -1622,12 +1622,24 @@ msgid "(allow beats deny; the channel's own rules apply to everyone else)"
 msgstr "(memungkinkan beats menyangkal; aturan saluran sendiri berlaku untuk orang lain)"
 
 #, machine, plain1
+msgid "(empty)"
+msgstr "(kosong)"
+
+#, machine, plain1
 msgid "(for a stage channel: the post's address or id)"
 msgstr "(untuk sebuah saluran panggung: alamat pos atau id)"
 
 #, machine, plain1
 msgid "(from the original)"
 msgstr "(dari aslinya)"
+
+#, machine, plain1
+msgid "(in a private place)"
+msgstr "(di tempat pribadi)"
+
+#, machine, plain1
+msgid "(no title)"
+msgstr "(tidak ada judul)"
 
 #, glossary, machine, plain1
 msgid "(off)"
@@ -2189,6 +2201,10 @@ msgid "<strong>Username:</strong> %(name)s"
 msgstr "<strong>Nama pengguna:</strong> %(name)s"
 
 #, machine, plain1, python-format
+msgid "@%(name)s - %(site)s"
+msgstr "@%(name)s - %(site)s"
+
+#, machine, plain1, python-format
 msgid "@%(name)s - Bots - %(site)s"
 msgstr "@ %(name)s - Bots - %(site)s"
 
@@ -2203,6 +2219,10 @@ msgstr "@ %(name)s ditambahkan ke %(curation)s."
 #, python-format
 msgid "@%(name)s asked to publish a shared draft you write: your vote counts. [Open the draft](%(link)s)"
 msgstr ""
+
+#, machine, plain1, python-format
+msgid "@%(name)s asked you to turn Private posting off for their account. You can answer in [Settings > Children](/settings/children)."
+msgstr "@ %(name)s meminta Anda untuk mematikan Postingan Pribadi untuk akun mereka. Anda dapat menjawab dalam [Pengaturan > Anak] (/settings/children)."
 
 #, machine, plain1, python-format
 msgid "@%(name)s blocked."
@@ -2246,6 +2266,10 @@ msgstr ""
 #, python-format
 msgid "@%(name)s forwarded [a post](%(link)s) to +%(guild)s."
 msgstr ""
+
+#, machine, plain1, python-format
+msgid "@%(name)s has a new password and is signed out everywhere."
+msgstr "@ %(name)s memiliki sandi baru dan ditandatangani di mana-mana."
 
 #, machine, plain1, python-format
 msgid "@%(name)s has already been invited."
@@ -2415,6 +2439,10 @@ msgstr ""
 msgid "@%(name)s reposted [a post](%(link)s)."
 msgstr ""
 
+#, machine, plain1, python-format
+msgid "@%(name)s says they are 18 or over and asked you to release their account. You can answer in [Settings > Children](/settings/children)."
+msgstr "@ %(name)s mengatakan mereka 18 atau lebih dan meminta Anda untuk melepaskan account mereka. Anda dapat menjawab dalam [Pengaturan > Anak] (/settings/children)."
+
 #, python-format
 msgid "@%(name)s shared [a story](%(link)s)."
 msgstr ""
@@ -2446,6 +2474,10 @@ msgstr "@ %(name)s diasingkan dari + %(guild)s"
 #, machine, plain1, python-format
 msgid "@%(name)s was muted in +%(guild)s's channels."
 msgstr "@ %(name)s telah digumam dalam saluran + %(guild)s."
+
+#, machine, plain1, python-format
+msgid "@%(name)s's age was confirmed as 18 or over, so their account is their own now and you can no longer see it."
+msgstr "@ %(name)s 'usia dikonfirmasi sebagai 18 atau lebih, sehingga account mereka adalah mereka sendiri sekarang dan anda tidak dapat lagi melihatnya."
 
 #, machine, plain1, python-format
 msgid "@%(name)s's new posts will go into #%(channel)s."
@@ -2964,6 +2996,10 @@ msgstr "Sebuah thread hidup mengambil komentar, bukan pesan papan."
 #, machine, plain1
 msgid "A member"
 msgstr "Seorang anggota"
+
+#, machine, plain1
+msgid "A member reported this account."
+msgstr "Seorang anggota melaporkan akun ini."
 
 #, machine, plain1, python-format
 msgid "A message can be at most %(count)s character."
@@ -4097,6 +4133,12 @@ msgid_plural "An update can be at most %(num)s characters."
 msgstr[0] "Pemutakhiran bisa paling banyak %(num)s karakter."
 msgstr[1] "Pemutakhiran dapat paling %(num)s karakter."
 
+#, machine, plain1, python-format
+msgid "And %(num)s private guild, which isn't named."
+msgid_plural "And %(num)s private guilds, which aren't named."
+msgstr[0] "Dan %(num)s serikat pribadi, yang tidak bernama."
+msgstr[1] "Dan %(num)s guilds pribadi, yang tidak bernama."
+
 #, machine, plain1
 msgid "Animals"
 msgstr "Hewan"
@@ -4152,6 +4194,10 @@ msgstr "Anonim"
 msgctxt "label"
 msgid "Anonymous"
 msgstr "Anonim"
+
+#, machine, plain1
+msgid "Anonymous posting and starting guilds"
+msgstr "Posting anonymous dan memulai guilds"
 
 #, machine, plain1
 msgid "Anonymous posts and comments count for you like any other. Your points and earnings are shown only to you; the site's admins see the payout list."
@@ -4363,6 +4409,14 @@ msgstr "Aryan Highlands"
 #, machine, plain1
 msgid "As an author you edit the draft live with them, and every character you type is credited to you. Once the post is published, anyone who can see it can see who wrote what. The authors decide together:"
 msgstr "Sebagai penulis, Anda mengubah draft hidup dengan mereka, dan setiap karakter yang Anda ketik dikreditkan kepada Anda. Setelah posting diterbitkan, siapa pun yang bisa melihatnya bisa melihat siapa yang menulis apa. Penulis memutuskan bersama:"
+
+#, machine, plain1
+msgid "Ask my parent to turn it off"
+msgstr "Meminta orang tua saya untuk mematikannya"
+
+#, machine, plain1
+msgid "Asked you"
+msgstr "Bertanya Anda"
 
 #, machine, plain1, python-format
 msgid "At least %(count)s comments"
@@ -4833,6 +4887,10 @@ msgstr "Boost untuk posting dengan gambar, suara atau video"
 #, machine, plain1
 msgid "Boost for this curation's guilds and accounts"
 msgstr "Boost untuk ini curated feed 's guids dan account"
+
+#, machine, plain1
+msgid "Born"
+msgstr "Lahir"
 
 #, machine, plain1
 msgid "Bot keys"
@@ -5333,6 +5391,10 @@ msgid "Chat isn't answering right now. Try again in a moment."
 msgstr "Percakapan tidak menjawab sekarang. Coba lagi sebentar lagi."
 
 #, machine, plain1
+msgid "Chat, group chats and calls"
+msgstr "Percakapan, grup percakapan dan panggilan"
+
+#, machine, plain1
 msgctxt "guildmaster action"
 msgid "Chatban user"
 msgstr "Pengguna Chatban"
@@ -5356,6 +5418,14 @@ msgstr "Kimia"
 #, machine, plain1
 msgid "Child - also hide profanity and sensitive content"
 msgstr "Anak - juga menyembunyikan kata-kata kotor dan isi sensitif"
+
+#, machine, plain1
+msgid "Children"
+msgstr "Anak"
+
+#, machine, plain1, python-format
+msgid "Children - %(site)s"
+msgstr "Anak - %(site)s"
 
 #. "Sign in with ..." is the button the Matrix app shows for this site's
 #. sign-in
@@ -5688,6 +5758,10 @@ msgid "Coins received: %(recent)s in the last 30 days &middot; %(total)s in all.
 msgstr "Koin diterima: %(recent)s dalam 30 hari terakhir &middot; %(total)s dalam semua. Mereka langsung menuju saldo koinmu."
 
 #, machine, plain1
+msgid "Coins, tips, Premium and paid circles"
+msgstr "Koin, tips, Premium dan lingkaran berbayar"
+
+#, machine, plain1
 msgid "Collaborative"
 msgstr "Kolaboratif"
 
@@ -5751,6 +5825,10 @@ msgstr "Komentar ditandai."
 #, glossary, machine, plain1
 msgid "Comment posted!"
 msgstr "Komentar terkirim!"
+
+#, machine, plain1
+msgid "Commenting"
+msgstr "Mengganti"
 
 #, glossary, machine, plain1
 msgid "Comments"
@@ -6398,8 +6476,16 @@ msgid "Delete role"
 msgstr "Hapus peran"
 
 #, machine, plain1
+msgid "Delete the account"
+msgstr "Hapus akun"
+
+#, machine, plain1
 msgid "Delete the published post"
 msgstr "Hapus posting yang diterbitkan"
+
+#, machine, plain1
+msgid "Delete this account"
+msgstr "Hapus akun ini"
 
 #, machine, plain1
 msgid "Delete this category? Its channels stay."
@@ -6460,6 +6546,10 @@ msgstr "Menghapus berkas dalam Drive Anda, atau memutuskan koneksi, menghapusnya
 #, machine, plain1
 msgid "Deleting a file there, or disconnecting, removes it from your posts."
 msgstr "Menghapus berkas di sana, atau memutus koneksi, menghapusnya dari posting Anda."
+
+#, machine, plain1
+msgid "Deleting your account also deletes your child accounts. You can download their data first in Settings > Children."
+msgstr "Menghapus akun Anda juga menghapus rekening anak Anda. Anda dapat mengunduh data mereka pertama dalam Pengaturan > Anak-anak."
 
 #, machine, plain1
 msgid "Density"
@@ -6702,6 +6792,10 @@ msgid "Done"
 msgstr "Selesai"
 
 #, machine, plain1
+msgid "Download"
+msgstr "Unduh"
+
+#, machine, plain1
 msgctxt "button"
 msgid "Download"
 msgstr "Unduh"
@@ -6715,8 +6809,16 @@ msgid "Download the recording"
 msgstr "Unduh rekaman"
 
 #, machine, plain1
+msgid "Download their data"
+msgstr "Unduh data mereka"
+
+#, machine, plain1
 msgid "Download your data"
 msgstr "Unduh data Anda"
+
+#, machine, plain1
+msgid "Downvote"
+msgstr "Downvote"
 
 #, glossary, machine, plain1
 msgctxt "verb"
@@ -7044,6 +7146,10 @@ msgstr "Masukkan alamat server pakan."
 msgid "Enter the feed's address."
 msgstr "Masukkan alamat feed."
 
+#, machine, plain1
+msgid "Enter the month and year they were born."
+msgstr "Masukkan bulan dan tahun mereka lahir."
+
 #, machine, plain1, python-format
 msgid "Enter the six-digit code generated in the authenticator app and your %(site)s account password."
 msgstr "Masukkan kode enam digit yang dihasilkan dalam aplikasi otentikasi dan sandi akun %(site)s Anda."
@@ -7216,6 +7322,10 @@ msgstr "Semua orang melihat perubahan satu sama lain saat mereka mengetik, dan s
 #, machine, plain1
 msgid "Everything from your guilds and accounts, newest first."
 msgstr "Semuanya dari Anda guilds dan account, yang terbaru pertama."
+
+#, machine, plain1
+msgid "Everything they post goes only to their Friends circle. Turn it off to let them post in public."
+msgstr "Semua yang mereka posting hanya untuk lingkaran teman-teman mereka. Matikan untuk membiarkan mereka posting di depan umum."
 
 #, machine, plain1
 msgid "Everything you post goes only to your Friends circle, the people you follow who follow you back, so nothing is public by accident. Your circles can only hold people like that, and you can't forward, repost or write a shared draft. Comments on other people's posts are still public."
@@ -7872,6 +7982,10 @@ msgstr "Teman"
 msgctxt "circle name"
 msgid "Friends"
 msgstr "Teman"
+
+#, machine, plain1
+msgid "Friends circle"
+msgstr "Teman lingkaran"
 
 #, machine, plain1
 msgid "Friends is everyone you follow who follows you back. To share with family, a team or anyone else, make a circle first, then pick it here."
@@ -8678,6 +8792,10 @@ msgstr "Berburu"
 msgid "I accept the <a href=\"%(url)s\" target=\"_blank\">terms and conditions</a>"
 msgstr "Aku menerima <a href=\"%(url)s\" target=\"_blank\">kondisi dan syarat</a>"
 
+#, machine, plain1, python-format
+msgid "I agree to the <a href=\"%(url)s\" target=\"_blank\">Terms</a> for them."
+msgstr "Saya setuju dengan <a href=\"%(url)s\" target=\"_blank\">Kalimat</a> untuk mereka."
+
 #, machine, plain1
 msgid "I agree to the rules below."
 msgstr "Aku setuju dengan aturan di bawah ini."
@@ -8713,6 +8831,10 @@ msgstr "Jika ada alamat surel yang terkait dengan akun Anda, Anda dapat mengguna
 #, machine, plain1
 msgid "If this was you, there is nothing to do."
 msgstr "Jika ini adalah kau, tidak ada yang bisa dilakukan."
+
+#, machine, plain1
+msgid "If you are 18 or over, say so and your parent or guardian will be asked to release your account."
+msgstr "Jika Anda 18 atau lebih, katakanlah demikian dan orang tua Anda atau wali akan diminta untuk melepaskan account Anda."
 
 #, machine, plain1
 msgid "If you don't have your 2FA device, enter one of your backup codes instead. Each backup code works once. An account that never made backup codes can enter its Recovery Code, which also turns 2FA off."
@@ -9091,6 +9213,14 @@ msgid "It shows, in full, every word and phrase the word filter looks for, in ev
 msgstr "Ini menunjukkan, secara penuh, setiap kata dan frasa kata filter mencari, dalam setiap bahasa yang mencakup. Termasuk slurs dan bahasa yang sangat menyinggung lainnya."
 
 #, machine, plain1
+msgid "It stays a child account with the child lock, but you can no longer see it or change what it can do, and you can't link it again."
+msgstr "Ini tetap rekening anak dengan kunci anak, tetapi Anda tidak dapat lagi melihat atau mengubah apa yang dapat dilakukan, dan Anda tidak dapat menghubungkannya lagi."
+
+#, machine, plain1
+msgid "It stays on the Child word filter, which hides profanity and anything marked sensitive."
+msgstr "Ini tetap pada filter kata Anak, yang menyembunyikan keburukan dan apa pun yang ditandai sensitif."
+
+#, machine, plain1
 msgid "It stays on the Child word filter, which hides profanity and anything marked sensitive. Chat, Spaces, coins, anonymous posting and starting a guild are off, and others can't start a chat or tip you. Your posts go to your Friends circle only unless you turn Private posting off."
 msgstr "Ini tetap pada filter kata Anak, yang menyembunyikan keburukan dan apa pun yang ditandai sensitif. Chat, Spaces, coins, postingan anonim dan memulai serikat pekerja mati, dan yang lain tidak dapat memulai percakapan atau tip Anda. Postingan Anda pergi ke Friends lingkaran kecuali jika Anda menghidupkan Postingan Swasta off."
 
@@ -9254,6 +9384,10 @@ msgstr "Juni solstice"
 #, machine, plain1
 msgid "K-Pop"
 msgstr "K-Pop"
+
+#, machine, plain1
+msgid "Keep it on"
+msgstr "Tetap di"
 
 #, machine, plain1
 msgid "Keep my posts out of All"
@@ -9529,6 +9663,10 @@ msgstr "Leonids hujan meteor"
 msgid "Letters spaced out or split by dots or other marks are read as one word."
 msgstr "Huruf spaced keluar atau split oleh titik atau tanda lain dibaca sebagai satu kata."
 
+#, machine, plain1
+msgid "Letters, numbers and underscores, 3 to 25 characters."
+msgstr "Huruf, angka dan garis bawah, 3 sampai 25 karakter."
+
 #, glossary, machine, plain1
 msgid "Lifestyle"
 msgstr "Gaya hidup"
@@ -9768,6 +9906,10 @@ msgstr "Tahun Baru Imlek"
 msgid "Lyrids meteor shower"
 msgstr "Hujan meteor Lyrids"
 
+#, machine, plain1, python-format
+msgid "Made on %(date)s."
+msgstr "Dibuat pada %(date)s."
+
 #, glossary, machine, plain1
 msgid "Made with AI"
 msgstr "Dibuat dengan AI"
@@ -9786,6 +9928,10 @@ msgid "Make a channel"
 msgstr "Membuat saluran"
 
 #, machine, plain1
+msgid "Make a child account"
+msgstr "Buat akun anak"
+
+#, machine, plain1
 msgid "Make a circle people pay to be in, every 30 days, for what you share with it."
 msgstr "Membuat lingkaran orang membayar untuk berada di, setiap 30 hari, untuk apa yang Anda berbagi dengan itu."
 
@@ -9800,6 +9946,10 @@ msgstr "Buat halaman"
 #, machine, plain1
 msgid "Make a role"
 msgstr "Membuat peran"
+
+#, machine, plain1
+msgid "Make an account for a child under 18 and decide what it can do. You can see what they do on the site (their posts, comments, votes, bookmarks, follows, guilds, the names of who they chat with and their recent sign-ins). The site never shows you what their chats say: chats are end-to-end encrypted. You choose their password, so until they change it you can sign in as them and read their chats: tell them to set their own. They are told all of this in their own Settings."
+msgstr "Buat akun untuk anak dibawah 18 tahun dan putuskan apa yang bisa dilakukannya. Anda dapat melihat apa yang mereka lakukan di situs (posting, komentar, suara, penanda buku, berikut, guilds, nama-nama yang mereka chatting dengan dan tanda-tanda terakhir mereka). Situs ini tidak pernah menunjukkan Anda apa yang dikatakan obrolan mereka: percakapan yang end-to-end dienkripsi. Anda memilih sandi mereka, sehingga sampai mereka mengubahnya Anda dapat masuk sebagai mereka dan membaca percakapan mereka: memberitahu mereka untuk mengatur sendiri. Mereka diberitahu semua ini dalam pengaturan mereka sendiri."
 
 #, machine, plain1, python-format
 msgid "Make an app first in <a href=\"%(url)s\">Settings &gt; Apps</a>; a key works through it."
@@ -10138,6 +10288,10 @@ msgid "Mon"
 msgstr "Mon"
 
 #, machine, plain1
+msgid "Month"
+msgstr "Bulan"
+
+#, machine, plain1
 msgctxt "table heading"
 msgid "Month"
 msgstr "Bulan"
@@ -10146,6 +10300,10 @@ msgstr "Bulan"
 msgctxt "time range"
 msgid "Month"
 msgstr "Bulan ini"
+
+#, machine, plain1
+msgid "Month they were born"
+msgstr "Bulan mereka lahir"
 
 #, machine, plain1
 msgid "Monthly creator fund payouts"
@@ -10485,6 +10643,10 @@ msgstr "Halaman baru: %(address)s"
 #, machine, plain1
 msgid "New paid circle"
 msgstr "Lingkaran baru yang dibayar"
+
+#, machine, plain1
+msgid "New password"
+msgstr "Sandi baru"
 
 #, machine, plain1
 msgid "New posts that are getting attention, with no account filling the page."
@@ -10870,6 +11032,10 @@ msgstr "Tak ada orang baru yang bisa berlangganan. Pelanggan saat ini menyimpan 
 msgid "Nobody types here"
 msgstr "Tidak ada jenis di sini"
 
+#, machine, plain1, python-format
+msgid "Nobody under %(age)s may have an account where you are."
+msgstr "Tak seorang pun di bawah %(age)s mungkin memiliki akun di mana Anda berada."
+
 #, machine, plain1
 msgid "Nobody yet."
 msgstr "Belum ada."
@@ -10990,6 +11156,10 @@ msgstr "Tidak mengambil pelanggan"
 #, machine, plain1
 msgid "Not trending any more"
 msgstr "Tidak trending lagi"
+
+#, machine, plain1
+msgid "Not yet"
+msgstr "Belum"
 
 #, glossary, machine, plain1
 msgid "Not your default:"
@@ -11112,6 +11282,10 @@ msgid "Nothing written yet."
 msgstr "Belum ada yang ditulis."
 
 #, machine, plain1
+msgid "Nothing yet."
+msgstr "Belum ada."
+
+#, machine, plain1
 msgid "Notification types"
 msgstr "Tipe notifikasi"
 
@@ -11159,6 +11333,10 @@ msgstr "Oceania"
 msgid "Oddly Satisfying"
 msgstr "Oddly Memuaskan"
 
+#, machine, plain1
+msgid "Off"
+msgstr "Mati"
+
 #. slow mode in a guild's channel is switched off.
 #, machine, plain1
 msgctxt "slow mode"
@@ -11185,6 +11363,10 @@ msgstr "Terlama"
 #, machine, plain1
 msgid "Old Password"
 msgstr "Sandi Lama"
+
+#, machine, plain1
+msgid "On"
+msgstr "Hidup"
 
 #. "On" marks a linked storage account that is in use
 #, machine, plain1
@@ -11261,6 +11443,10 @@ msgstr "Salah satu revisi ini tidak dapat ditunjukkan kepada Anda."
 #, machine, plain1
 msgid "One of those circles isn't yours any more. Choose again."
 msgstr "Salah satu lingkaran itu bukan milikmu lagi. Pilih lagi."
+
+#, machine, plain1
+msgid "One of your child accounts owes money, so your account can't be deleted yet."
+msgstr "Salah satu rekening anakmu berhutang uang, jadi rekeningmu belum bisa dihapus."
 
 #, machine, plain1
 msgid "One-time codes for the day you lose your authenticator. Making a new set replaces every earlier code, used or not."
@@ -11584,6 +11770,10 @@ msgstr "Hanya penulis dan penulis posting dapat memposting update."
 #, machine, plain1
 msgid "Only the post's author and co-authors can run its live updates."
 msgstr "Hanya penulis dan penulis posting yang dapat menjalankan pemutakhiran langsung."
+
+#, machine, plain1
+msgid "Only used to check their age. It isn't kept."
+msgstr "Hanya digunakan untuk memeriksa usia mereka. Ini tidak disimpan."
 
 #, machine, plain1
 msgid "Only when I turn them on"
@@ -12579,6 +12769,10 @@ msgid "Posted on that day."
 msgstr "Diposting pada hari itu."
 
 #, machine, plain1
+msgid "Posting"
+msgstr "Posting"
+
+#, machine, plain1
 msgid "Posting cooldown"
 msgstr "Posting cooldown"
 
@@ -13416,6 +13610,10 @@ msgid "Relationships"
 msgstr "Hubungan"
 
 #, machine, plain1
+msgid "Release the account"
+msgstr "Rilis akun"
+
+#, machine, plain1
 msgid "Religion"
 msgstr "Agama"
 
@@ -13665,6 +13863,10 @@ msgstr "Pesan yang dilaporkan"
 msgctxt "noun"
 msgid "Reports"
 msgstr "Laporan"
+
+#, machine, plain1
+msgid "Reports about them"
+msgstr "Laporan tentang mereka"
 
 #, machine, plain1
 msgid "Reports opened"
@@ -14003,6 +14205,10 @@ msgctxt "weekday"
 msgid "Sat"
 msgstr "Sab"
 
+#, glossary, machine, plain1
+msgid "Save"
+msgstr "Simpan"
+
 #, machine, plain1
 msgctxt "button"
 msgid "Save"
@@ -14312,6 +14518,10 @@ msgid "See what is trending"
 msgstr "Lihat apa yang trending"
 
 #, machine, plain1
+msgid "See what they do"
+msgstr "Lihat apa yang mereka lakukan"
+
+#, machine, plain1
 msgid "See your username"
 msgstr "Lihat nama pengguna Anda"
 
@@ -14410,6 +14620,10 @@ msgstr "Equinox September"
 #, machine, plain1
 msgid "Serious"
 msgstr "Serius"
+
+#, machine, plain1
+msgid "Set a new password"
+msgstr "Atur sandi baru"
 
 #, machine, plain1
 msgid "Set a price to let people pay to join."
@@ -15059,6 +15273,10 @@ msgid "Spaces"
 msgstr "Space"
 
 #, machine, plain1
+msgid "Spaces and live threads"
+msgstr "Spasi dan benang hidup"
+
+#, machine, plain1
 msgid "Spaces are started in the Spaces area."
 msgstr "Ruang angkasa dimulai dari area ruang angkasa."
 
@@ -15193,6 +15411,14 @@ msgstr "Postingan disematkan"
 #, machine, plain1
 msgid "Still here to read"
 msgstr "Masih di sini untuk membaca"
+
+#, machine, plain1
+msgid "Stop managing"
+msgstr "Berhenti mengelola"
+
+#, machine, plain1
+msgid "Stop managing this account"
+msgstr "Berhenti mengelola akun ini"
 
 #, machine, plain1
 msgid "Stop posting automatically"
@@ -15369,6 +15595,10 @@ msgstr "Pendukung…"
 #, machine, plain1
 msgid "Survival & Bushcraft"
 msgstr "Survival & Bushcraft"
+
+#, machine, plain1
+msgid "Suspended"
+msgstr "Dihentikan"
 
 #, machine, plain1, python-format
 msgid "Switch @%(name)s off for good? Its posts stay; the bot never posts again."
@@ -15842,6 +16072,10 @@ msgid "That isn't a valid username."
 msgstr "Itu bukan nama pengguna yang valid."
 
 #, machine, plain1
+msgid "That isn't something you can switch."
+msgstr "Itu bukan sesuatu yang bisa kau tukar."
+
+#, machine, plain1
 msgid "That key couldn't be saved."
 msgstr "Kunci itu tidak bisa disimpan."
 
@@ -16072,6 +16306,14 @@ msgstr "Sahel"
 #, machine, plain1
 msgid "The Space could not be made."
 msgstr "Ruang angkasa tidak bisa dibuat."
+
+#, machine, plain1, python-format
+msgid "The account @%(name)s is deleted."
+msgstr "Akun @ %(name)s dihapus."
+
+#, machine, plain1, python-format
+msgid "The account @%(name)s is made. They sign in with the username and password you gave."
+msgstr "Akun @ %(name)s dibuat. Mereka masuk dengan nama pengguna dan kata sandi yang kau berikan."
 
 #, machine, plain1, python-format
 msgid "The account age must be a whole number of days, 0 to %(max)s."
@@ -16415,6 +16657,10 @@ msgstr "Postingan yang paling dipilih dari tujuh hari terakhir."
 #, machine, plain1, python-format
 msgid "The name %(host)s could not be found."
 msgstr "Nama %(host)s tak ditemukan."
+
+#, machine, plain1
+msgid "The newest of what they have done. Only the names of who they chat with are shown, never what a chat says: chats are end-to-end encrypted."
+msgstr "Yang terbaru dari apa yang telah mereka lakukan. Hanya nama-nama dari siapa mereka chatting dengan ditampilkan, tidak pernah apa yang chatting mengatakan: percakapan akhir-ke-end terenkripsi."
 
 #, machine, plain1
 msgid "The numbers are always shown on your profile. This decides who can open each list and see the accounts on it. An account is only listed where its own setting allows it too."
@@ -16766,12 +17012,20 @@ msgid "They already have this role."
 msgstr "Mereka sudah memiliki peran ini."
 
 #, machine, plain1
+msgid "They are 18 or over, so they can make their own account."
+msgstr "Mereka 18 atau lebih, sehingga mereka dapat membuat account mereka sendiri."
+
+#, machine, plain1
 msgid "They are already in this circle."
 msgstr "Mereka sudah ada di lingkaran ini."
 
 #, machine, plain1
 msgid "They are not told. Anyone you block leaves your circles."
 msgstr "Mereka tidak diberitahu. Siapapun yang kau halangi meninggalkan lingkaranmu."
+
+#, machine, plain1
+msgid "They are signed out everywhere. If they use chat, they may be asked for their recovery code."
+msgstr "Mereka ditandatangani di mana-mana. Jika mereka menggunakan percakapan, mereka mungkin diminta untuk kode pemulihan mereka."
 
 #, machine, plain1, python-format
 msgid "They aren't in %(circle)s."
@@ -16786,6 +17040,38 @@ msgid "They aren't muted here."
 msgstr "Mereka tidak lumpur di sini."
 
 #, machine, plain1
+msgid "They asked you to turn Private posting off."
+msgstr "Mereka memintamu untuk mematikan posting pribadi."
+
+#, machine, plain1
+msgid "They can buy and spend coins, tip, buy Premium and join or run paid circles."
+msgstr "Mereka dapat membeli dan menghabiskan koin, tip, membeli Premium dan bergabung atau menjalankan lingkaran dibayar."
+
+#, machine, plain1
+msgid "They can comment."
+msgstr "Mereka bisa berkomentar."
+
+#, machine, plain1
+msgid "They can host and join Spaces and run live threads. Voice calls in a Space also need Chat to be on."
+msgstr "Mereka dapat host dan bergabung Spaces dan menjalankan thread hidup. Panggilan suara di ruang angkasa juga perlu obrolan."
+
+#, machine, plain1
+msgid "They can make posts."
+msgstr "Mereka bisa membuat pos."
+
+#, machine, plain1
+msgid "They can message people, join group chats and make calls. The site never shows you what a chat says: chats are end-to-end encrypted. Whoever knows their password can still sign in and read them."
+msgstr "Mereka dapat mengirim pesan kepada orang, bergabung dengan grup dan membuat panggilan. Situs ini tidak pernah menunjukkan apa yang dikatakan percakapan: percakapan adalah end-to-end dienkripsi. Siapapun yang tahu password mereka masih bisa masuk dan membacanya."
+
+#, machine, plain1
+msgid "They can post anonymously and start a guild. You can still see who wrote an anonymous post."
+msgstr "Mereka dapat memposting tanpa nama dan memulai serikat. Kau masih bisa melihat siapa yang menulis pos tanpa nama."
+
+#, machine, plain1
+msgid "They can see what you do on the site: your posts, comments, votes, bookmarks, follows, guilds, who you chat with, that your account was reported, and your recent sign-ins. The site never shows them what your chats say, because chats are end-to-end encrypted. But anyone who knows your password, a parent who chose it included, can sign in as you: change it in Security so that only you know it. They choose which of these are on for your account:"
+msgstr "Mereka dapat melihat apa yang Anda lakukan di situs: posting Anda, komentar, suara, penanda buku, berikut, guilds, yang Anda chatting dengan, bahwa account Anda dilaporkan, dan Anda baru-baru ini tanda-tanda. Situs ini tidak pernah menunjukkan kepada mereka apa yang dikatakan percakapan Anda, karena percakapan berakhir-ke-end terenkripsi. Tapi siapa pun yang tahu kata sandi Anda, orang tua yang memilihnya termasuk, dapat mendaftar seperti Anda: mengubahnya dalam Keamanan sehingga hanya Anda yang tahu itu. Mereka memilih yang mana untuk akun Anda:"
+
+#, machine, plain1
 msgid "They can't comment on your posts or comments, chat with you or notify you by mentioning you. They are not told, but they may work it out if they try to comment on something of yours."
 msgstr "Mereka tidak dapat berkomentar di posting Anda atau komentar, chatting dengan Anda atau memberitahu Anda dengan menyebutkan Anda. Mereka tidak diberitahu, tetapi mereka mungkin bekerja keluar jika mereka mencoba untuk mengomentari sesuatu dari Anda."
 
@@ -16798,12 +17084,20 @@ msgid "They go straight to your coin balance."
 msgstr "Mereka langsung menuju saldo koinmu."
 
 #, machine, plain1
+msgid "They haven't asked for that."
+msgstr "Mereka belum memintanya."
+
+#, machine, plain1
 msgid "They need to be in the guild, and not exiled from it."
 msgstr "Mereka perlu berada di serikat, dan tidak diasingkan dari itu."
 
 #, machine, plain1
 msgid "They need to join the channel first."
 msgstr "Mereka harus bergabung dengan saluran pertama."
+
+#, machine, plain1
+msgid "They say they are 18 or over and asked you to release their account. If you do, it becomes their own and you can no longer see it."
+msgstr "Mereka mengatakan mereka 18 atau lebih dan meminta Anda untuk melepaskan account mereka. Jika Anda melakukannya, itu menjadi mereka sendiri dan Anda tidak dapat lagi melihatnya."
 
 #, machine, plain1
 msgid "They're already a helper."
@@ -16918,6 +17212,14 @@ msgstr "Akun ini telah ditangguhkan sementara dari %(site)s. Periksa kembali nan
 #, machine, plain1
 msgid "This account is private"
 msgstr "Akun ini pribadi"
+
+#, machine, plain1
+msgid "This account is suspended."
+msgstr "Rekening ini ditangguhkan."
+
+#, machine, plain1
+msgid "This account owes money, so it can't be deleted yet."
+msgstr "Akun ini berutang uang, sehingga tidak dapat dihapus belum."
 
 #, machine, plain1
 msgid "This account posts about sensitive topics"
@@ -17053,6 +17355,10 @@ msgstr "Ini curated feed 's guids dan account"
 #, machine, plain1
 msgid "This curation's rules took too long to run. Its owner can make them narrower."
 msgstr "Aturan Kurator ini memakan waktu terlalu lama untuk dijalankan. Pemiliknya dapat membuat mereka lebih sempit."
+
+#, machine, plain1
+msgid "This deletes their account and everything on it. It can't be undone. You can download their data first."
+msgstr "Ini menghapus rekening mereka dan segala sesuatu di atasnya. Ini tidak bisa dibatalkan. Anda dapat mengunduh data mereka terlebih dahulu."
 
 #, machine, plain1
 msgid "This draft hasn't been published."
@@ -17384,6 +17690,10 @@ msgid "Thu"
 msgstr "Thu"
 
 #, machine, plain1
+msgid "Tick the box to agree to the Terms for them."
+msgstr "Centang kotak untuk menyetujui Terms bagi mereka."
+
+#, machine, plain1
 msgid "Tick the box to agree to the rules first."
 msgstr "Centang kotak untuk menyetujui aturan pertama."
 
@@ -17655,6 +17965,10 @@ msgstr "Tue"
 #, machine, plain1
 msgid "Turanian Steppe"
 msgstr "Steppe Turania"
+
+#, machine, plain1
+msgid "Turn it off"
+msgstr "Matikan"
 
 #, machine, plain1, python-format
 msgid "Turn off notifications from +%(guild)s"
@@ -18113,6 +18427,10 @@ msgstr "Upload banner"
 #, machine, plain1
 msgid "Upload picture"
 msgstr "Upload gambar"
+
+#, machine, plain1
+msgid "Upvote"
+msgstr "Upvote"
 
 #, glossary, machine, plain1
 msgctxt "verb"
@@ -18834,6 +19152,10 @@ msgid "Where you are, the law means your age has to be confirmed with an age-che
 msgstr "Di mana Anda berada, hukum berarti usia Anda harus dikonfirmasi dengan usia - cek layanan sebelum Anda dapat melihat isi sensitif atau bahasa yang kuat."
 
 #, machine, plain1
+msgid "Where you are, your age has to be confirmed with an age-check service before you can make a child account."
+msgstr "Di mana Anda berada, usia Anda harus dikonfirmasi dengan usia - cek layanan sebelum Anda dapat membuat rekening anak."
+
+#, machine, plain1
 msgid "Where you are, your age has to be confirmed with an age-check service."
 msgstr "Di mana Anda berada, usia Anda harus dikonfirmasi dengan layanan memeriksa usia."
 
@@ -18925,9 +19247,17 @@ msgstr "Siapa yang memutuskan"
 msgid "Who follows you"
 msgstr "Siapa yang mengikutimu"
 
+#, machine, plain1
+msgid "Who reported them, and what they wrote, isn't shown to anyone but the admins."
+msgstr "Siapa yang melaporkan mereka, dan apa yang mereka tulis, tidak ditunjukkan kepada siapa pun kecuali admins."
+
 #, glossary, machine, plain1
 msgid "Who subscribes to your Circle"
 msgstr "Siapa yang berlangganan Lingkaran Anda"
+
+#, machine, plain1
+msgid "Who they chat with"
+msgstr "Siapa mereka chatting dengan"
 
 #, machine, plain1
 msgid "Who to follow"
@@ -19307,10 +19637,18 @@ msgctxt "guildmaster action"
 msgid "Yank post"
 msgstr "Pos Yank"
 
+#, machine, plain1
+msgid "Year"
+msgstr "Tahun"
+
 #, glossary, machine, plain1
 msgctxt "time range"
 msgid "Year"
 msgstr "Tahun ini"
+
+#, machine, plain1
+msgid "Year they were born"
+msgstr "Tahun mereka lahir"
 
 #, machine, plain1
 msgctxt "colour"
@@ -19473,6 +19811,14 @@ msgid "You aren't subscribed to that circle."
 msgstr "Anda tidak berlangganan untuk lingkaran itu."
 
 #, machine, plain1
+msgid "You asked your parent or guardian to release your account. They haven't answered yet."
+msgstr "Anda meminta orang tua Anda atau wali untuk melepaskan account Anda. Mereka belum menjawab."
+
+#, machine, plain1
+msgid "You asked your parent or guardian to turn this off. They haven't answered yet."
+msgstr "Kau meminta orang tuamu untuk mematikan ini. Mereka belum menjawab."
+
+#, machine, plain1
 msgid "You can add pictures at 500 Rep, or earlier with Premium"
 msgstr "Anda dapat menambahkan gambar pada 500 Reputasi, atau sebelumnya dengan Premium"
 
@@ -19563,6 +19909,16 @@ msgstr[0] "Anda dapat memiliki paling %(num)s saluran."
 msgstr[1] "Anda dapat memiliki paling %(num)s saluran."
 
 #, machine, plain1, python-format
+msgid "You can have at most %(num)s child account."
+msgid_plural "You can have at most %(num)s child accounts."
+msgstr[0] "Anda dapat memiliki paling %(num)s rekening anak."
+msgstr[1] "Anda dapat memiliki paling %(num)s rekening anak."
+
+#, machine, plain1, python-format
+msgid "You can have at most %(num)s child accounts."
+msgstr "Anda dapat memiliki paling banyak akun anak %(num)s."
+
+#, machine, plain1, python-format
 msgid "You can host at most %(num)s Space a day."
 msgid_plural "You can host at most %(num)s Spaces a day."
 msgstr[0] "Kau bisa menjadi tuan rumah paling banyak di %(num)s Space sehari."
@@ -19589,6 +19945,10 @@ msgid "You can look around and set up your profile; posting, comments, votes and
 msgstr "Anda dapat melihat sekeliling dan mengatur profil Anda; posting, komentar, suara dan mengikuti terbuka setelah cek selesai."
 
 #, machine, plain1, python-format
+msgid "You can make %(num)s child accounts a day. Try again tomorrow."
+msgstr "Anda dapat membuat %(num)s akun anak sehari. Coba lagi besok."
+
+#, machine, plain1, python-format
 msgid "You can make %(num)s proposal a day."
 msgid_plural "You can make %(num)s proposals a day."
 msgstr[0] "Anda dapat membuat %(num)s proposal sehari."
@@ -19599,6 +19959,10 @@ msgid "You can make %(num)s wiki edit a day in a guild. Try again tomorrow."
 msgid_plural "You can make %(num)s wiki edits a day in a guild. Try again tomorrow."
 msgstr[0] "Kau bisa membuat %(num)s Wiki mengedit sehari di sebuah serikat. Coba lagi besok."
 msgstr[1] "Anda dapat membuat %(num)s wiki edits sehari di serikat. Coba lagi besok."
+
+#, machine, plain1
+msgid "You can make a child account once your own account is confirmed as 18 or over. You can say so in Settings > Content."
+msgstr "Anda dapat membuat akun anak setelah account Anda sendiri dikonfirmasi sebagai 18 atau lebih. Anda dapat mengatakan demikian dalam Pengaturan > Konten."
 
 #, machine, plain1
 msgid "You can only create up to 2 guilds per day. Try again later."
@@ -19893,6 +20257,10 @@ msgid "You don't have Premium right now."
 msgstr "Anda tidak memiliki Premium sekarang."
 
 #, machine, plain1
+msgid "You don't have a child account called that."
+msgstr "Kau tidak memiliki rekening anak yang disebut itu."
+
+#, machine, plain1
 msgid "You don't have a coin to redeem."
 msgstr "Kau tak punya koin untuk ditebus."
 
@@ -19993,6 +20361,10 @@ msgstr "Anda telah digulingkan dari + %(guild)s."
 #, machine, plain1
 msgid "You have left the creator fund."
 msgstr "Anda telah meninggalkan dana pencipta."
+
+#, machine, plain1, python-format
+msgid "You have made %(num)s child accounts in the last %(days)s days. Try again later."
+msgstr "Anda telah membuat %(num)s akun anak dalam hari terakhir %(days)s. Coba lagi nanti."
 
 #, machine, plain1
 msgid "You have muted this guild. Its posts stay out of All, For You and Following. Visit your settings or click the <i class='fas fa-ellipsis-h text-small'></i> icon to unmute it."
@@ -20393,12 +20765,20 @@ msgid "Your account can also post new items from feeds by itself, while you keep
 msgstr "Akun Anda juga dapat memposting item baru dari feed dengan sendirinya, sementara Anda terus menggunakannya seperti yang Anda lakukan sekarang. Masing-masing posting ditandai sebagai otomatis, dan orang-orang yang menyembunyikan isi bot tidak melihat mereka. Posmu sendiri, komentar, suara dan percakapan tidak berubah. Sebuah admin menyetujui terlebih dahulu."
 
 #, machine, plain1
+msgid "Your account can't post automatically while it is age-restricted."
+msgstr "Akun Anda tidak dapat posting secara otomatis sementara usia - dibatasi."
+
+#, machine, plain1
 msgid "Your account can't post automatically while it is suspended."
 msgstr "Akun Anda tidak dapat posting secara otomatis sementara itu ditangguhkan."
 
 #, machine, plain1
 msgid "Your account can't publish right now."
 msgstr "Rekeningmu tak bisa mempublikasikannya sekarang."
+
+#, machine, plain1
+msgid "Your account can't run a bot while it is age-restricted."
+msgstr "Rekening Anda tidak dapat menjalankan robot sementara berusia - terbatas."
 
 #, machine, plain1
 msgid "Your account cannot upload right now."
@@ -20419,6 +20799,10 @@ msgstr "Akun Anda telah diperiksa dan siap: Anda sekarang dapat posting, komenta
 #, machine, plain1
 msgid "Your account has been deleted"
 msgstr "Akun Anda telah dihapus"
+
+#, machine, plain1, python-format
+msgid "Your account has the child lock on, held by your parent or guardian, since %(date)s."
+msgstr "Akun Anda memiliki kunci anak, dipegang oleh orang tua atau wali Anda, karena %(date)s."
 
 #, machine, plain1, python-format
 msgid "Your account has the child lock on, since %(date)s."
@@ -20471,6 +20855,10 @@ msgstr ""
 "\n"
 "\n"
 "Untuk melewatkan tunggu, menambah dan memverifikasi alamat email dalam [Pengaturan > Keamanan] (/settings/security)."
+
+#, machine, plain1
+msgid "Your account is your own now. It no longer has the child lock and your parent or guardian can no longer see it. They chose your password: change it in [Settings > Security](/settings/security), or they can still sign in as you."
+msgstr "Rekeningmu milikmu sekarang. Ini tidak lagi memiliki kunci anak dan orang tua atau wali Anda tidak bisa lagi melihatnya. Mereka memilih sandi Anda: mengubahnya dalam [Pengaturan > Keamanan] (/settings/security), atau mereka masih dapat mendaftar seperti Anda."
 
 #, machine, plain1
 msgid "Your account needs to be at least 30 days old to post automatically."
@@ -20573,6 +20961,10 @@ msgstr "Percakapan Anda berakhir-to-end dienkripsi, dan situs tidak bisa membaca
 #, machine, plain1, python-format
 msgid "Your chats run on Matrix, an open standard, on %(site)s's own chat server. Besides Chat on this site, you can use them in a Matrix app such as Element (web, desktop and the classic phone apps), FluffyChat or Cinny. They stay end-to-end encrypted there too."
 msgstr "Percakapan Anda berjalan di Matrix, standar terbuka, pada server percakapan sendiri %(site)s. Selain Chat di situs ini, Anda dapat menggunakannya dalam aplikasi Matrix seperti Elemen (web, desktop dan aplikasi telepon klasik), FluffyChat atau Cinny. Mereka akan tetap dienkripsi disana."
+
+#, machine, plain1
+msgid "Your child accounts will be deleted with yours."
+msgstr "Rekening anak Anda akan dihapus dengan Anda."
 
 #, glossary, machine, plain1
 msgid "Your circles"
@@ -20717,8 +21109,52 @@ msgstr[0] ""
 msgstr[1] ""
 
 #, machine, plain1
+msgid "Your own password"
+msgstr "Sandi Anda sendiri"
+
+#, machine, plain1
+msgid "Your parent or guardian didn't agree to release your account."
+msgstr "Orang tua atau wali Anda tidak setuju untuk melepaskan account Anda."
+
+#, machine, plain1
+msgid "Your parent or guardian has been asked to release your account. Nothing changes until they answer."
+msgstr "Orang tua atau wali Anda telah diminta untuk melepaskan account Anda. Tidak ada yang berubah sampai mereka menjawab."
+
+#, machine, plain1
+msgid "Your parent or guardian has been asked to turn Private posting off."
+msgstr "Orang tuamu atau wali telah diminta untuk mematikan posting Prajurit."
+
+#, machine, plain1
 msgid "Your parent or guardian has to agree before Private posting can be turned off."
 msgstr "Orang tua atau wali Anda harus setuju sebelum posting Swasta dapat dimatikan."
+
+#, machine, plain1
+msgid "Your parent or guardian has turned this off for your account."
+msgstr "Orang tuamu atau wali telah mematikan ini untuk rekeningmu."
+
+#, machine, plain1
+msgid "Your parent or guardian made this account for you. They can see what you do on the site (your posts, comments, votes, bookmarks, follows, guilds, who you chat with, that your account was reported and your recent sign-ins; the site never shows them what your chats say) and they choose which features are on. You can see which in [Settings > Content](/settings/content). They chose your password: change it in [Settings > Security](/settings/security) so that only you know it, because anyone who knows it can sign in as you and read your chats."
+msgstr "Orang tuamu atau walimu membuat akun ini untukmu. Mereka dapat melihat apa yang Anda lakukan di situs (posting Anda, komentar, suara, penanda, berikut, guids, yang Anda chatting dengan, bahwa account Anda dilaporkan dan Anda terakhir tanda-in; situs tidak pernah menunjukkan mereka apa yang chats Anda katakan) dan mereka memilih yang fitur berada di. Anda dapat melihat yang mana dalam [Pengaturan > Isi] (/settings/content). Mereka memilih kata sandi Anda: mengubahnya dalam [Pengaturan > Keamanan] (/settings/security) sehingga hanya Anda yang tahu itu, karena siapa pun yang tahu itu dapat masuk sebagai Anda dan membaca percakapan Anda."
+
+#, machine, plain1
+msgid "Your parent or guardian set a new password for your account and you were signed out. Sign in with the new password, then change it in [Settings > Security](/settings/security) so that only you know it."
+msgstr "Orangtua atau wali Anda menetapkan sandi baru untuk akun Anda dan Anda ditandatangani keluar. Masuk dengan sandi baru, kemudian mengubahnya dalam [Pengaturan > Keamanan] (/settings/security) sehingga hanya Anda yang tahu itu."
+
+#, machine, plain1
+msgid "Your parent or guardian stopped managing your account. It keeps the child lock until you confirm your age in Settings > Content. They chose your password: change it in [Settings > Security](/settings/security), or they can still sign in as you."
+msgstr "Orang tua atau wali Anda berhenti mengelola account Anda. Ini menjaga kunci anak sampai Anda mengkonfirmasi usia Anda dalam Pengaturan > Isi. Mereka memilih sandi Anda: mengubahnya dalam [Pengaturan > Keamanan] (/settings/security), atau mereka masih dapat mendaftar seperti Anda."
+
+#, machine, plain1
+msgid "Your parent or guardian turned Private posting off for your account."
+msgstr "Orang tua atau wali Anda menolak posting Private off untuk account Anda."
+
+#, machine, plain1
+msgid "Your parent or guardian wants Private posting to stay on."
+msgstr "Orang tua atau wali Anda ingin Pos pribadi untuk tinggal di."
+
+#, machine, plain1
+msgid "Your parent or guardian's account was suspended, so yours is suspended until theirs is back."
+msgstr "Orang tua atau wali account Anda ditangguhkan, sehingga Anda ditangguhkan sampai mereka kembali."
 
 #, machine, plain1
 msgid "Your password"
@@ -21100,6 +21536,10 @@ msgid "and %(num)s more"
 msgid_plural "and %(num)s more"
 msgstr[0] "dan %(num)s lagi"
 msgstr[1] "dan %(num)s lagi"
+
+#, machine, plain1
+msgid "anonymous"
+msgstr "anonymous"
 
 #, machine, plain1
 msgctxt "guildmaster permission"
@@ -21547,6 +21987,10 @@ msgstr "pratinjau tautan"
 msgid "links"
 msgstr "taut"
 
+#, machine, plain1
+msgid "looked at by the admins"
+msgstr "iooked at the admin"
+
 #. after the moderator's name in a guild's moderation log
 #, machine, plain1
 msgid "made a channel"
@@ -21753,6 +22197,10 @@ msgstr "mengembalikan %(target)s"
 #, machine, plain1, python-format
 msgid "reinstated post %(target)s"
 msgstr "pos yang dikembalikan %(target)s"
+
+#, machine, plain1
+msgid "removed"
+msgstr "dihapus"
 
 #. follows the moderator's name in a guild's moderation log; %(target)s is a
 #. link

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ruqqus VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-11-05 16:56+1100\n"
+"POT-Creation-Date: 2026-11-05 20:16+1100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: hi\n"
@@ -1622,12 +1622,24 @@ msgid "(allow beats deny; the channel's own rules apply to everyone else)"
 msgstr "(प्रत्येक धड़ इनकार करते हैं; चैनल का अपना नियम सभी के लिए लागू होता है)"
 
 #, machine, plain1
+msgid "(empty)"
+msgstr "(empty)"
+
+#, machine, plain1
 msgid "(for a stage channel: the post's address or id)"
 msgstr "(एक मंच चैनल के लिए: पोस्ट का पता या आईडी)"
 
 #, machine, plain1
 msgid "(from the original)"
 msgstr "(मूल से)"
+
+#, machine, plain1
+msgid "(in a private place)"
+msgstr "(एक निजी स्थान पर)"
+
+#, machine, plain1
+msgid "(no title)"
+msgstr "(कोई शीर्षक नहीं)"
 
 #, glossary, machine, plain1
 msgid "(off)"
@@ -2189,6 +2201,10 @@ msgid "<strong>Username:</strong> %(name)s"
 msgstr "<strong>उपयोगकर्ता नाम:</strong> %(name)s"
 
 #, machine, plain1, python-format
+msgid "@%(name)s - %(site)s"
+msgstr "@%(name)s - %(site)s"
+
+#, machine, plain1, python-format
 msgid "@%(name)s - Bots - %(site)s"
 msgstr "%(name)s - Bots - %(site)s"
 
@@ -2203,6 +2219,10 @@ msgstr "%(name)s को %(curation)s में जोड़ा गया।"
 #, python-format
 msgid "@%(name)s asked to publish a shared draft you write: your vote counts. [Open the draft](%(link)s)"
 msgstr ""
+
+#, machine, plain1, python-format
+msgid "@%(name)s asked you to turn Private posting off for their account. You can answer in [Settings > Children](/settings/children)."
+msgstr "@%(name)s ने आपको अपने खाते के लिए निजी पोस्टिंग बंद करने के लिए कहा। आप [सेटिंग> चिल्ड्रन] (/settings/children) में जवाब दे सकते हैं।"
 
 #, machine, plain1, python-format
 msgid "@%(name)s blocked."
@@ -2246,6 +2266,10 @@ msgstr ""
 #, python-format
 msgid "@%(name)s forwarded [a post](%(link)s) to +%(guild)s."
 msgstr ""
+
+#, machine, plain1, python-format
+msgid "@%(name)s has a new password and is signed out everywhere."
+msgstr "@%(name)s का एक नया पासवर्ड है और हर जगह साइन किया जाता है।"
 
 #, machine, plain1, python-format
 msgid "@%(name)s has already been invited."
@@ -2415,6 +2439,10 @@ msgstr ""
 msgid "@%(name)s reposted [a post](%(link)s)."
 msgstr ""
 
+#, machine, plain1, python-format
+msgid "@%(name)s says they are 18 or over and asked you to release their account. You can answer in [Settings > Children](/settings/children)."
+msgstr "@%(name)s कहते हैं कि वे 18 या उससे अधिक हैं और आपको अपने खाते को जारी करने के लिए कहा। आप [सेटिंग> चिल्ड्रन] (/settings/children) में जवाब दे सकते हैं।"
+
 #, python-format
 msgid "@%(name)s shared [a story](%(link)s)."
 msgstr ""
@@ -2446,6 +2474,10 @@ msgstr "@%(name)s को +%(guild)s से निकाल दिया गय�
 #, machine, plain1, python-format
 msgid "@%(name)s was muted in +%(guild)s's channels."
 msgstr "@%(name)s को +%(guild)s के चैनलों में म्यूट किया गया था।"
+
+#, machine, plain1, python-format
+msgid "@%(name)s's age was confirmed as 18 or over, so their account is their own now and you can no longer see it."
+msgstr "@%(name)s की उम्र 18 या उससे अधिक की पुष्टि की गई थी, इसलिए उनका खाता अब अपना है और अब आप इसे नहीं देख सकते।"
 
 #, machine, plain1, python-format
 msgid "@%(name)s's new posts will go into #%(channel)s."
@@ -2964,6 +2996,10 @@ msgstr "एक लाइव थ्रेड टिप्पणी लेता �
 #, machine, plain1
 msgid "A member"
 msgstr "सदस्य"
+
+#, machine, plain1
+msgid "A member reported this account."
+msgstr "एक सदस्य ने इस खाते की सूचना दी।"
 
 #, machine, plain1, python-format
 msgid "A message can be at most %(count)s character."
@@ -4097,6 +4133,12 @@ msgid_plural "An update can be at most %(num)s characters."
 msgstr[0] "अद्यतन %(num)s वर्ण पर हो सकता है।"
 msgstr[1] "एक अद्यतन %(num)s अक्षरों पर हो सकता है।"
 
+#, machine, plain1, python-format
+msgid "And %(num)s private guild, which isn't named."
+msgid_plural "And %(num)s private guilds, which aren't named."
+msgstr[0] "और %(num)s निजी गिल्ड, जिसका नाम नहीं है।"
+msgstr[1] "और %(num)s निजी गिल्ड्स, जिन्हें नाम नहीं दिया गया है।"
+
 #, machine, plain1
 msgid "Animals"
 msgstr "पशु"
@@ -4152,6 +4194,10 @@ msgstr "गुमनाम"
 msgctxt "label"
 msgid "Anonymous"
 msgstr "गुमनाम"
+
+#, machine, plain1
+msgid "Anonymous posting and starting guilds"
+msgstr "अनाम पोस्टिंग और शुरू करना"
 
 #, machine, plain1
 msgid "Anonymous posts and comments count for you like any other. Your points and earnings are shown only to you; the site's admins see the payout list."
@@ -4363,6 +4409,14 @@ msgstr "आर्यन हाइलैंड्स"
 #, machine, plain1
 msgid "As an author you edit the draft live with them, and every character you type is credited to you. Once the post is published, anyone who can see it can see who wrote what. The authors decide together:"
 msgstr "एक लेखक के रूप में आप ड्राफ्ट को उनके साथ जीना संपादित करते हैं, और आपके द्वारा टाइप किए गए प्रत्येक चरित्र को आपके लिए श्रेय दिया जाता है। एक बार पोस्ट प्रकाशित होने के बाद, कोई भी जो इसे देख सकता है कि कौन क्या लिखा है। लेखक एक साथ निर्णय लेते हैं:"
+
+#, machine, plain1
+msgid "Ask my parent to turn it off"
+msgstr "मेरे माता-पिता को यह बंद करने के लिए पूछो"
+
+#, machine, plain1
+msgid "Asked you"
+msgstr "आप पूछो"
 
 #, machine, plain1, python-format
 msgid "At least %(count)s comments"
@@ -4833,6 +4887,10 @@ msgstr "एक तस्वीर, ध्वनि या वीडियो क
 #, machine, plain1
 msgid "Boost for this curation's guilds and accounts"
 msgstr "इस क्यूरेट फ़ीड के गिल्ड्स और खातों के लिए बूस्ट"
+
+#, machine, plain1
+msgid "Born"
+msgstr "जन्म"
 
 #, machine, plain1
 msgid "Bot keys"
@@ -5333,6 +5391,10 @@ msgid "Chat isn't answering right now. Try again in a moment."
 msgstr "अभी चैट नहीं है। एक पल में फिर से प्रयास करें।"
 
 #, machine, plain1
+msgid "Chat, group chats and calls"
+msgstr "चैट, समूह चैट और कॉल"
+
+#, machine, plain1
 msgctxt "guildmaster action"
 msgid "Chatban user"
 msgstr "Chatban उपयोगकर्ता"
@@ -5356,6 +5418,14 @@ msgstr "रसायन"
 #, machine, plain1
 msgid "Child - also hide profanity and sensitive content"
 msgstr "बाल - यह भी profanity और संवेदनशील सामग्री छिपाने"
+
+#, machine, plain1
+msgid "Children"
+msgstr "बच्चे"
+
+#, machine, plain1, python-format
+msgid "Children - %(site)s"
+msgstr "बच्चे - %(site)s"
 
 #. "Sign in with ..." is the button the Matrix app shows for this site's
 #. sign-in
@@ -5688,6 +5758,10 @@ msgid "Coins received: %(recent)s in the last 30 days &middot; %(total)s in all.
 msgstr "प्राप्त सिक्के: %(recent)s पिछले 30 दिनों में &middot; %(total)s सभी में वे सीधे अपने सिक्के संतुलन के लिए जाते हैं।"
 
 #, machine, plain1
+msgid "Coins, tips, Premium and paid circles"
+msgstr "सिक्के, सुझाव, Premium और भुगतान चक्र"
+
+#, machine, plain1
 msgid "Collaborative"
 msgstr "सहयोग"
 
@@ -5751,6 +5825,10 @@ msgstr "टिप्पणी की।"
 #, glossary, machine, plain1
 msgid "Comment posted!"
 msgstr "टिप्पणी पोस्ट हो गई!"
+
+#, machine, plain1
+msgid "Commenting"
+msgstr "टिप्पणी"
 
 #, glossary, machine, plain1
 msgid "Comments"
@@ -6398,8 +6476,16 @@ msgid "Delete role"
 msgstr "भूमिका निभाना"
 
 #, machine, plain1
+msgid "Delete the account"
+msgstr "खाते को हटा दें"
+
+#, machine, plain1
 msgid "Delete the published post"
 msgstr "प्रकाशित पोस्ट को हटा दें"
+
+#, machine, plain1
+msgid "Delete this account"
+msgstr "इस खाते को हटा दें"
 
 #, machine, plain1
 msgid "Delete this category? Its channels stay."
@@ -6460,6 +6546,10 @@ msgstr "अपनी ड्राइव में एक फ़ाइल को 
 #, machine, plain1
 msgid "Deleting a file there, or disconnecting, removes it from your posts."
 msgstr "वहाँ एक फ़ाइल को हटाना, या डिस्कनेक्ट करना, इसे अपने पोस्ट से हटा दें।"
+
+#, machine, plain1
+msgid "Deleting your account also deletes your child accounts. You can download their data first in Settings > Children."
+msgstr "अपने खाते को हटाने से आपके बच्चे के खाते को भी हटा दिया जाता है। आप सेटिंग्स में पहले अपना डेटा डाउनलोड कर सकते हैं > बच्चे."
 
 #, machine, plain1
 msgid "Density"
@@ -6702,6 +6792,10 @@ msgid "Done"
 msgstr "दान"
 
 #, machine, plain1
+msgid "Download"
+msgstr "डाउनलोड"
+
+#, machine, plain1
 msgctxt "button"
 msgid "Download"
 msgstr "डाउनलोड"
@@ -6715,8 +6809,16 @@ msgid "Download the recording"
 msgstr "रिकॉर्डिंग डाउनलोड करें"
 
 #, machine, plain1
+msgid "Download their data"
+msgstr "अपने डेटा को डाउनलोड करें"
+
+#, machine, plain1
 msgid "Download your data"
 msgstr "अपना डेटा डाउनलोड करें"
+
+#, machine, plain1
+msgid "Downvote"
+msgstr "डाउनवर्ड"
 
 #, glossary, machine, plain1
 msgctxt "verb"
@@ -7044,6 +7146,10 @@ msgstr "फ़ीड सर्वर का पता दर्ज करें�
 msgid "Enter the feed's address."
 msgstr "फ़ीड का पता दर्ज करें।"
 
+#, machine, plain1
+msgid "Enter the month and year they were born."
+msgstr "महीने और वर्ष में वे पैदा हुए थे।"
+
 #, machine, plain1, python-format
 msgid "Enter the six-digit code generated in the authenticator app and your %(site)s account password."
 msgstr "प्रमाणीकरणकर्ता ऐप और आपके %(site)s खाता पासवर्ड में उत्पन्न छह-digit कोड दर्ज करें।"
@@ -7216,6 +7322,10 @@ msgstr "हर कोई एक दूसरे के परिवर्तन 
 #, machine, plain1
 msgid "Everything from your guilds and accounts, newest first."
 msgstr "अपने गिल्ड्स और खातों से सब कुछ, सबसे पहले।"
+
+#, machine, plain1
+msgid "Everything they post goes only to their Friends circle. Turn it off to let them post in public."
+msgstr "वे सब कुछ जो पोस्ट करते हैं वे केवल अपने दोस्तों के सर्कल में जाते हैं। उन्हें सार्वजनिक रूप से पोस्ट करने के लिए बंद कर दें।"
 
 #, machine, plain1
 msgid "Everything you post goes only to your Friends circle, the people you follow who follow you back, so nothing is public by accident. Your circles can only hold people like that, and you can't forward, repost or write a shared draft. Comments on other people's posts are still public."
@@ -7872,6 +7982,10 @@ msgstr "दोस्त"
 msgctxt "circle name"
 msgid "Friends"
 msgstr "दोस्त"
+
+#, machine, plain1
+msgid "Friends circle"
+msgstr "दोस्तों सर्कल"
 
 #, machine, plain1
 msgid "Friends is everyone you follow who follows you back. To share with family, a team or anyone else, make a circle first, then pick it here."
@@ -8678,6 +8792,10 @@ msgstr "शिकार"
 msgid "I accept the <a href=\"%(url)s\" target=\"_blank\">terms and conditions</a>"
 msgstr "मैं स्वीकार करता हूँ <a href=\"%(url)s\" target=\"_blank\">नियम और शर्तें</a>"
 
+#, machine, plain1, python-format
+msgid "I agree to the <a href=\"%(url)s\" target=\"_blank\">Terms</a> for them."
+msgstr "मैं सहमत हूँ <a href=\"%(url)s\" target=\"_blank\">नियम</a> उनके लिए"
+
 #, machine, plain1
 msgid "I agree to the rules below."
 msgstr "मैं नीचे दिए गए नियमों से सहमत हूँ।"
@@ -8713,6 +8831,10 @@ msgstr "यदि आपके खाते से जुड़े ईमेल 
 #, machine, plain1
 msgid "If this was you, there is nothing to do."
 msgstr "यदि आप ऐसा करना चाहते हैं तो कुछ भी नहीं है।"
+
+#, machine, plain1
+msgid "If you are 18 or over, say so and your parent or guardian will be asked to release your account."
+msgstr "यदि आप 18 या उससे अधिक हैं तो कहते हैं कि आपके माता-पिता या अभिभावक को आपके खाते को जारी करने के लिए कहा जाएगा।"
 
 #, machine, plain1
 msgid "If you don't have your 2FA device, enter one of your backup codes instead. Each backup code works once. An account that never made backup codes can enter its Recovery Code, which also turns 2FA off."
@@ -9091,6 +9213,14 @@ msgid "It shows, in full, every word and phrase the word filter looks for, in ev
 msgstr "यह दिखाता है, पूर्ण रूप से, हर शब्द और वाक्यांश शब्द फ़िल्टर दिखता है, हर भाषा में यह कवर करता है। इसमें स्लर्स और अन्य अत्यंत आक्रामक भाषा शामिल है।"
 
 #, machine, plain1
+msgid "It stays a child account with the child lock, but you can no longer see it or change what it can do, and you can't link it again."
+msgstr "यह बच्चे के लॉक के साथ एक बच्चे का खाता रहता है, लेकिन अब आप इसे देख सकते हैं या इसे बदल सकते हैं।"
+
+#, machine, plain1
+msgid "It stays on the Child word filter, which hides profanity and anything marked sensitive."
+msgstr "यह बाल शब्द फ़िल्टर पर रहता है, जो प्रशंसनीयता को छिपाता है और कुछ भी संवेदनशील होता है।"
+
+#, machine, plain1
 msgid "It stays on the Child word filter, which hides profanity and anything marked sensitive. Chat, Spaces, coins, anonymous posting and starting a guild are off, and others can't start a chat or tip you. Your posts go to your Friends circle only unless you turn Private posting off."
 msgstr "यह बाल शब्द फ़िल्टर पर रहता है, जो प्रशंसनीयता को छिपाता है और कुछ भी संवेदनशील होता है। चैट, रिक्त स्थान, सिक्कों, अनाम पोस्टिंग और एक गिल्ड शुरू करना बंद है, और दूसरों को एक चैट या टिप आप शुरू नहीं कर सकते हैं। जब तक आप निजी पोस्ट नहीं करते हैं, तब तक आपकी पोस्ट केवल आपके फ्रेंड्स सर्कल में जाती है।"
 
@@ -9254,6 +9384,10 @@ msgstr "जून सोलस्टीस"
 #, machine, plain1
 msgid "K-Pop"
 msgstr "K-Pop"
+
+#, machine, plain1
+msgid "Keep it on"
+msgstr "इसे रखना"
 
 #, machine, plain1
 msgid "Keep my posts out of All"
@@ -9529,6 +9663,10 @@ msgstr "Leonids उल्का बौछार"
 msgid "Letters spaced out or split by dots or other marks are read as one word."
 msgstr "अक्षरों को अलग या डॉट्स या अन्य चिह्नों द्वारा विभाजित किया जाता है, एक शब्द के रूप में पढ़ा जाता है।"
 
+#, machine, plain1
+msgid "Letters, numbers and underscores, 3 to 25 characters."
+msgstr "पत्र, संख्या और अंडरस्कोर, 3 से 25 वर्ण।"
+
 #, glossary, machine, plain1
 msgid "Lifestyle"
 msgstr "जीवनशैली"
@@ -9768,6 +9906,10 @@ msgstr "नव वर्ष"
 msgid "Lyrids meteor shower"
 msgstr "Lyrids उल्का बौछार"
 
+#, machine, plain1, python-format
+msgid "Made on %(date)s."
+msgstr "%(date)s पर बनाया गया।"
+
 #, glossary, machine, plain1
 msgid "Made with AI"
 msgstr "AI से बनाया गया"
@@ -9786,6 +9928,10 @@ msgid "Make a channel"
 msgstr "चैनल बनाना"
 
 #, machine, plain1
+msgid "Make a child account"
+msgstr "बच्चे का खाता बनाना"
+
+#, machine, plain1
 msgid "Make a circle people pay to be in, every 30 days, for what you share with it."
 msgstr "प्रत्येक 30 दिनों में, जो आप इसके साथ साझा करते हैं, उसके लिए सर्कल लोग भुगतान करते हैं।"
 
@@ -9800,6 +9946,10 @@ msgstr "एक पृष्ठ बनाना"
 #, machine, plain1
 msgid "Make a role"
 msgstr "भूमिका निभाना"
+
+#, machine, plain1
+msgid "Make an account for a child under 18 and decide what it can do. You can see what they do on the site (their posts, comments, votes, bookmarks, follows, guilds, the names of who they chat with and their recent sign-ins). The site never shows you what their chats say: chats are end-to-end encrypted. You choose their password, so until they change it you can sign in as them and read their chats: tell them to set their own. They are told all of this in their own Settings."
+msgstr "18 के तहत एक बच्चे के लिए एक खाता बनाएं और यह तय करें कि यह क्या कर सकता है। आप देख सकते हैं कि वे साइट पर क्या करते हैं (उनके पोस्ट, टिप्पणियां, वोट, बुकमार्क, अनुसरण करते हैं, गिल्ड्स, उनके नाम वे किसके साथ चैट करते हैं और उनके हाल के साइन-इन)। साइट आपको कभी नहीं दिखाती है कि उनकी चैट क्या कहती है: चैट एंड-टू-एंड एन्क्रिप्टेड हैं। आप अपना पासवर्ड चुनते हैं, इसलिए जब तक वे इसे बदल देते हैं तो आप उनमें साइन इन कर सकते हैं और अपनी चैट पढ़ सकते हैं: उन्हें अपने आप सेट करने के लिए कहें। उन्हें अपनी सभी सेटिंग्स में बताया गया है।"
 
 #, machine, plain1, python-format
 msgid "Make an app first in <a href=\"%(url)s\">Settings &gt; Apps</a>; a key works through it."
@@ -10138,6 +10288,10 @@ msgid "Mon"
 msgstr "सोम"
 
 #, machine, plain1
+msgid "Month"
+msgstr "महीना"
+
+#, machine, plain1
 msgctxt "table heading"
 msgid "Month"
 msgstr "महीना"
@@ -10146,6 +10300,10 @@ msgstr "महीना"
 msgctxt "time range"
 msgid "Month"
 msgstr "महीना"
+
+#, machine, plain1
+msgid "Month they were born"
+msgstr "वे पैदा हुए थे"
 
 #, machine, plain1
 msgid "Monthly creator fund payouts"
@@ -10485,6 +10643,10 @@ msgstr "नया पेज: %(address)s"
 #, machine, plain1
 msgid "New paid circle"
 msgstr "नया भुगतान चक्र"
+
+#, machine, plain1
+msgid "New password"
+msgstr "नया पासवर्ड"
 
 #, machine, plain1
 msgid "New posts that are getting attention, with no account filling the page."
@@ -10870,6 +11032,10 @@ msgstr "कोई भी नया सदस्यता नहीं दे स
 msgid "Nobody types here"
 msgstr "यहाँ कोई भी प्रकार"
 
+#, machine, plain1, python-format
+msgid "Nobody under %(age)s may have an account where you are."
+msgstr "%(age)s के तहत कोई भी खाता हो सकता है जहाँ आप हैं।"
+
 #, machine, plain1
 msgid "Nobody yet."
 msgstr "अभी तक कोई नहीं।"
@@ -10990,6 +11156,10 @@ msgstr "ग्राहक नहीं लेना"
 #, machine, plain1
 msgid "Not trending any more"
 msgstr "अधिक ट्रेंड नहीं करना"
+
+#, machine, plain1
+msgid "Not yet"
+msgstr "अभी तक नहीं"
 
 #, glossary, machine, plain1
 msgid "Not your default:"
@@ -11112,6 +11282,10 @@ msgid "Nothing written yet."
 msgstr "अभी तक कुछ नहीं लिखा है।"
 
 #, machine, plain1
+msgid "Nothing yet."
+msgstr "अभी तक कुछ नहीं।"
+
+#, machine, plain1
 msgid "Notification types"
 msgstr "अधिसूचना प्रकार"
 
@@ -11159,6 +11333,10 @@ msgstr "ओशिनिया"
 msgid "Oddly Satisfying"
 msgstr "Oddly Satisfy"
 
+#, machine, plain1
+msgid "Off"
+msgstr "बंद"
+
 #. slow mode in a guild's channel is switched off.
 #, machine, plain1
 msgctxt "slow mode"
@@ -11185,6 +11363,10 @@ msgstr "पुराना"
 #, machine, plain1
 msgid "Old Password"
 msgstr "पुराना पासवर्ड"
+
+#, machine, plain1
+msgid "On"
+msgstr "पर"
 
 #. "On" marks a linked storage account that is in use
 #, machine, plain1
@@ -11261,6 +11443,10 @@ msgstr "इन संशोधनों में से एक आपको न
 #, machine, plain1
 msgid "One of those circles isn't yours any more. Choose again."
 msgstr "उन सर्किलों में से एक आपका कोई और नहीं है। फिर से चुनें।"
+
+#, machine, plain1
+msgid "One of your child accounts owes money, so your account can't be deleted yet."
+msgstr "आपके बच्चे के खाते में से एक पैसा है, इसलिए आपका खाता अभी तक नष्ट नहीं किया जा सकता है।"
 
 #, machine, plain1
 msgid "One-time codes for the day you lose your authenticator. Making a new set replaces every earlier code, used or not."
@@ -11584,6 +11770,10 @@ msgstr "केवल पोस्ट के लेखक और सह लेख
 #, machine, plain1
 msgid "Only the post's author and co-authors can run its live updates."
 msgstr "केवल पोस्ट के लेखक और सह-लेखक अपने लाइव अपडेट चला सकते हैं।"
+
+#, machine, plain1
+msgid "Only used to check their age. It isn't kept."
+msgstr "केवल अपनी उम्र की जांच करने के लिए इस्तेमाल किया जाता है। इसे नहीं रखा गया है।"
 
 #, machine, plain1
 msgid "Only when I turn them on"
@@ -12579,6 +12769,10 @@ msgid "Posted on that day."
 msgstr "उस दिन प्रकाशित किया गया।"
 
 #, machine, plain1
+msgid "Posting"
+msgstr "पोस्टिंग"
+
+#, machine, plain1
 msgid "Posting cooldown"
 msgstr "पोस्टिंग कूलडाउन"
 
@@ -13416,6 +13610,10 @@ msgid "Relationships"
 msgstr "संबंध"
 
 #, machine, plain1
+msgid "Release the account"
+msgstr "खाता जारी करना"
+
+#, machine, plain1
 msgid "Religion"
 msgstr "धर्म"
 
@@ -13665,6 +13863,10 @@ msgstr "रिपोर्टिंग संदेश"
 msgctxt "noun"
 msgid "Reports"
 msgstr "रिपोर्ट"
+
+#, machine, plain1
+msgid "Reports about them"
+msgstr "उनके बारे में रिपोर्ट"
 
 #, machine, plain1
 msgid "Reports opened"
@@ -14003,6 +14205,10 @@ msgctxt "weekday"
 msgid "Sat"
 msgstr "सत"
 
+#, glossary, machine, plain1
+msgid "Save"
+msgstr "सहेजें"
+
 #, machine, plain1
 msgctxt "button"
 msgid "Save"
@@ -14312,6 +14518,10 @@ msgid "See what is trending"
 msgstr "ट्रेंडिंग क्या है"
 
 #, machine, plain1
+msgid "See what they do"
+msgstr "वे क्या करते हैं"
+
+#, machine, plain1
 msgid "See your username"
 msgstr "अपना नाम देखें"
 
@@ -14410,6 +14620,10 @@ msgstr "सितंबर इक्विनोक्स"
 #, machine, plain1
 msgid "Serious"
 msgstr "गंभीर"
+
+#, machine, plain1
+msgid "Set a new password"
+msgstr "नया पासवर्ड सेट करें"
 
 #, machine, plain1
 msgid "Set a price to let people pay to join."
@@ -15059,6 +15273,10 @@ msgid "Spaces"
 msgstr "स्पेस"
 
 #, machine, plain1
+msgid "Spaces and live threads"
+msgstr "स्पेस और लाइव थ्रेड"
+
+#, machine, plain1
 msgid "Spaces are started in the Spaces area."
 msgstr "अंतरिक्ष क्षेत्र में शुरू किया जाता है।"
 
@@ -15193,6 +15411,14 @@ msgstr "स्टिकी पोस्ट"
 #, machine, plain1
 msgid "Still here to read"
 msgstr "पढ़ना"
+
+#, machine, plain1
+msgid "Stop managing"
+msgstr "बंद करना"
+
+#, machine, plain1
+msgid "Stop managing this account"
+msgstr "इस खाते को प्रबंधित करना बंद करें"
 
 #, machine, plain1
 msgid "Stop posting automatically"
@@ -15369,6 +15595,10 @@ msgstr "समर्थक…"
 #, machine, plain1
 msgid "Survival & Bushcraft"
 msgstr "सर्वाइवल एंड बुशक्राफ्ट"
+
+#, machine, plain1
+msgid "Suspended"
+msgstr "निलंबित"
 
 #, machine, plain1, python-format
 msgid "Switch @%(name)s off for good? Its posts stay; the bot never posts again."
@@ -15842,6 +16072,10 @@ msgid "That isn't a valid username."
 msgstr "यह एक वैध उपयोगकर्ता नाम नहीं है।"
 
 #, machine, plain1
+msgid "That isn't something you can switch."
+msgstr "ऐसा कुछ नहीं है जिसे आप स्विच कर सकते हैं।"
+
+#, machine, plain1
 msgid "That key couldn't be saved."
 msgstr "वह कुंजी नहीं बचा सकता था।"
 
@@ -16072,6 +16306,14 @@ msgstr "साहेल"
 #, machine, plain1
 msgid "The Space could not be made."
 msgstr "अंतरिक्ष नहीं बनाया जा सकता है।"
+
+#, machine, plain1, python-format
+msgid "The account @%(name)s is deleted."
+msgstr "खाता @%(name)s को हटा दिया गया है।"
+
+#, machine, plain1, python-format
+msgid "The account @%(name)s is made. They sign in with the username and password you gave."
+msgstr "खाता @%(name)s बनाया गया है। वे यूज़रनेम और पासवर्ड के साथ साइन इन करते हैं।"
 
 #, machine, plain1, python-format
 msgid "The account age must be a whole number of days, 0 to %(max)s."
@@ -16415,6 +16657,10 @@ msgstr "पिछले सात दिनों के सबसे अधि�
 #, machine, plain1, python-format
 msgid "The name %(host)s could not be found."
 msgstr "नाम %(host)s नहीं मिला।"
+
+#, machine, plain1
+msgid "The newest of what they have done. Only the names of who they chat with are shown, never what a chat says: chats are end-to-end encrypted."
+msgstr "उन्होंने जो कुछ किया है उनमें से सबसे नया। केवल उन नामों के साथ जो वे चैट करते हैं, कभी नहीं जो चैट कहते हैं: चैट एंड-टू-एंड एन्क्रिप्टेड हैं।"
 
 #, machine, plain1
 msgid "The numbers are always shown on your profile. This decides who can open each list and see the accounts on it. An account is only listed where its own setting allows it too."
@@ -16766,12 +17012,20 @@ msgid "They already have this role."
 msgstr "उनके पास पहले से ही यह भूमिका है।"
 
 #, machine, plain1
+msgid "They are 18 or over, so they can make their own account."
+msgstr "वे 18 या उससे अधिक हैं, इसलिए वे अपना खाता बना सकते हैं।"
+
+#, machine, plain1
 msgid "They are already in this circle."
 msgstr "वे पहले से ही इस चक्र में हैं।"
 
 #, machine, plain1
 msgid "They are not told. Anyone you block leaves your circles."
 msgstr "उन्हें नहीं बताया गया है। कोई भी आप अपने सर्कल को छोड़ देते हैं।"
+
+#, machine, plain1
+msgid "They are signed out everywhere. If they use chat, they may be asked for their recovery code."
+msgstr "वे हर जगह पर हस्ताक्षर किए जाते हैं। यदि वे चैट का उपयोग करते हैं, तो उन्हें उनके रिकवरी कोड के लिए कहा जा सकता है।"
 
 #, machine, plain1, python-format
 msgid "They aren't in %(circle)s."
@@ -16786,6 +17040,38 @@ msgid "They aren't muted here."
 msgstr "वे यहाँ म्यूट नहीं हैं।"
 
 #, machine, plain1
+msgid "They asked you to turn Private posting off."
+msgstr "उन्होंने आपको निजी पोस्टिंग बंद करने के लिए कहा।"
+
+#, machine, plain1
+msgid "They can buy and spend coins, tip, buy Premium and join or run paid circles."
+msgstr "वे सिक्के, टिप खरीद सकते हैं, Premium खरीद सकते हैं और भुगतान किए गए हलकों को शामिल या चला सकते हैं।"
+
+#, machine, plain1
+msgid "They can comment."
+msgstr "वे टिप्पणी कर सकते हैं।"
+
+#, machine, plain1
+msgid "They can host and join Spaces and run live threads. Voice calls in a Space also need Chat to be on."
+msgstr "वे अंतरिक्ष की मेजबानी कर सकते हैं और लाइव धागे चला सकते हैं। वॉयस कॉल को स्पेस में भी चैट करने की आवश्यकता होती है।"
+
+#, machine, plain1
+msgid "They can make posts."
+msgstr "वे पोस्ट बना सकते हैं।"
+
+#, machine, plain1
+msgid "They can message people, join group chats and make calls. The site never shows you what a chat says: chats are end-to-end encrypted. Whoever knows their password can still sign in and read them."
+msgstr "वे लोग संदेश कर सकते हैं, समूह चैट में शामिल हों और कॉल कर सकते हैं। साइट आपको कभी नहीं दिखाती है कि चैट क्या कहती है: चैट अंत-टू-एंड एन्क्रिप्टेड हैं। कौन जानता है कि उनका पासवर्ड अभी भी साइन इन कर सकता है और उन्हें पढ़ सकता है।"
+
+#, machine, plain1
+msgid "They can post anonymously and start a guild. You can still see who wrote an anonymous post."
+msgstr "वे गुमनाम रूप से पोस्ट कर सकते हैं और एक गिल्ड शुरू कर सकते हैं। आप अभी भी देख सकते हैं कि कौन एक गुमनाम पोस्ट लिखा है।"
+
+#, machine, plain1
+msgid "They can see what you do on the site: your posts, comments, votes, bookmarks, follows, guilds, who you chat with, that your account was reported, and your recent sign-ins. The site never shows them what your chats say, because chats are end-to-end encrypted. But anyone who knows your password, a parent who chose it included, can sign in as you: change it in Security so that only you know it. They choose which of these are on for your account:"
+msgstr "वे देख सकते हैं कि आप साइट पर क्या करते हैं: आपके पोस्ट, टिप्पणियां, वोट, बुकमार्क, अनुसरण, गिल्ड्स, जो आप के साथ चैट करते हैं, कि आपका खाता रिपोर्ट किया गया था, और आपका हालिया साइन इन। साइट उन्हें कभी नहीं दिखाती है कि आपकी चैट क्या कहती है, क्योंकि चैट एंड-टू-एंड एन्क्रिप्टेड हैं। लेकिन जो कोई भी आपका पासवर्ड जानता है, वह माता-पिता जिसने इसे चुना, वह आपको बता सकता है: इसे सुरक्षा में बदल दें ताकि केवल आप इसे जान सकें। वे चुनते हैं कि कौन से आपके खाते के लिए हैं:"
+
+#, machine, plain1
 msgid "They can't comment on your posts or comments, chat with you or notify you by mentioning you. They are not told, but they may work it out if they try to comment on something of yours."
 msgstr "वे आपके पोस्ट या टिप्पणियों पर टिप्पणी नहीं कर सकते हैं, आप के साथ चैट करें या आपको सूचित करके आपको सूचित करें। उन्हें नहीं बताया गया है, लेकिन अगर वे आपकी कुछ चीज़ों पर टिप्पणी करने की कोशिश करते हैं तो वे इसे बाहर काम कर सकते हैं।"
 
@@ -16798,12 +17084,20 @@ msgid "They go straight to your coin balance."
 msgstr "वे सीधे अपने सिक्के संतुलन के लिए जाते हैं।"
 
 #, machine, plain1
+msgid "They haven't asked for that."
+msgstr "उन्होंने इसके लिए नहीं कहा है।"
+
+#, machine, plain1
 msgid "They need to be in the guild, and not exiled from it."
 msgstr "उन्हें गिल्ड में रहने की जरूरत है, और इससे बाहर नहीं निकलते।"
 
 #, machine, plain1
 msgid "They need to join the channel first."
 msgstr "उन्हें पहले चैनल में शामिल होने की आवश्यकता है।"
+
+#, machine, plain1
+msgid "They say they are 18 or over and asked you to release their account. If you do, it becomes their own and you can no longer see it."
+msgstr "वे कहते हैं कि वे 18 या उससे अधिक हैं और आपको अपने खाते को छोड़ने के लिए कहा। यदि आप ऐसा करते हैं, तो यह अपना खुद का हो जाता है और अब आप इसे देख सकते हैं।"
 
 #, machine, plain1
 msgid "They're already a helper."
@@ -16918,6 +17212,14 @@ msgstr "इस खाते को अस्थायी रूप से %(site
 #, machine, plain1
 msgid "This account is private"
 msgstr "यह खाता निजी है"
+
+#, machine, plain1
+msgid "This account is suspended."
+msgstr "यह खाता निलंबित कर दिया गया है।"
+
+#, machine, plain1
+msgid "This account owes money, so it can't be deleted yet."
+msgstr "यह खाता धन का बकाया है, इसलिए इसे अभी तक हटाया नहीं जा सकता है।"
 
 #, machine, plain1
 msgid "This account posts about sensitive topics"
@@ -17053,6 +17355,10 @@ msgstr "यह क्यूरेट फीड की गिल्ड्स औ�
 #, machine, plain1
 msgid "This curation's rules took too long to run. Its owner can make them narrower."
 msgstr "इस इलाज के नियमों को चलाने के लिए बहुत लंबे समय तक लिया गया। इसके मालिक उन्हें संकीर्ण बना सकते हैं।"
+
+#, machine, plain1
+msgid "This deletes their account and everything on it. It can't be undone. You can download their data first."
+msgstr "यह उनके खाते और उस पर सब कुछ को हटा देता है। यह नहीं हो सकता है। आप पहले अपना डेटा डाउनलोड कर सकते हैं।"
 
 #, machine, plain1
 msgid "This draft hasn't been published."
@@ -17384,6 +17690,10 @@ msgid "Thu"
 msgstr "गुरु"
 
 #, machine, plain1
+msgid "Tick the box to agree to the Terms for them."
+msgstr "बॉक्स को उनके लिए शर्तों पर सहमत करने के लिए टिक करें।"
+
+#, machine, plain1
 msgid "Tick the box to agree to the rules first."
 msgstr "पहले नियमों से सहमत होने के लिए बॉक्स को टिकें।"
 
@@ -17655,6 +17965,10 @@ msgstr "मंगल"
 #, machine, plain1
 msgid "Turanian Steppe"
 msgstr "Turanian steppe"
+
+#, machine, plain1
+msgid "Turn it off"
+msgstr "इसे बंद करें"
 
 #, machine, plain1, python-format
 msgid "Turn off notifications from +%(guild)s"
@@ -18113,6 +18427,10 @@ msgstr "बैनर अपलोड करें"
 #, machine, plain1
 msgid "Upload picture"
 msgstr "चित्र अपलोड करें"
+
+#, machine, plain1
+msgid "Upvote"
+msgstr "अद्यतन"
 
 #, glossary, machine, plain1
 msgctxt "verb"
@@ -18834,6 +19152,10 @@ msgid "Where you are, the law means your age has to be confirmed with an age-che
 msgstr "जहां आप हैं, कानून का मतलब है कि आपकी उम्र को संवेदनशील सामग्री या मजबूत भाषा देखने से पहले उम्र की जांच सेवा के साथ पुष्टि की जानी चाहिए।"
 
 #, machine, plain1
+msgid "Where you are, your age has to be confirmed with an age-check service before you can make a child account."
+msgstr "जहाँ आप हैं, आपकी आयु की पुष्टि करने से पहले कि आप बच्चे का खाता बना सकते हैं।"
+
+#, machine, plain1
 msgid "Where you are, your age has to be confirmed with an age-check service."
 msgstr "आप कहाँ हैं, आपकी आयु की पुष्टि आयु की जानी चाहिए।"
 
@@ -18925,9 +19247,17 @@ msgstr "कौन तय करता है"
 msgid "Who follows you"
 msgstr "कौन आपका अनुसरण करता है"
 
+#, machine, plain1
+msgid "Who reported them, and what they wrote, isn't shown to anyone but the admins."
+msgstr "जिन्होंने उन्हें बताया, और उन्होंने क्या लिखा, किसी को भी नहीं बल्कि व्यवस्थापक को दिखाया गया है।"
+
 #, glossary, machine, plain1
 msgid "Who subscribes to your Circle"
 msgstr "आपके सर्कल के सब्सक्राइबर कौन हैं"
+
+#, machine, plain1
+msgid "Who they chat with"
+msgstr "वे किसके साथ चैट करते हैं"
 
 #, machine, plain1
 msgid "Who to follow"
@@ -19308,10 +19638,18 @@ msgctxt "guildmaster action"
 msgid "Yank post"
 msgstr "यांक पोस्ट"
 
+#, machine, plain1
+msgid "Year"
+msgstr "साल"
+
 #, glossary, machine, plain1
 msgctxt "time range"
 msgid "Year"
 msgstr "वर्ष"
+
+#, machine, plain1
+msgid "Year they were born"
+msgstr "वर्ष वे पैदा हुए थे"
 
 #, machine, plain1
 msgctxt "colour"
@@ -19474,6 +19812,14 @@ msgid "You aren't subscribed to that circle."
 msgstr "आप उस सर्कल की सदस्यता नहीं लेते हैं।"
 
 #, machine, plain1
+msgid "You asked your parent or guardian to release your account. They haven't answered yet."
+msgstr "आपने अपने माता-पिता या अभिभावक को अपने खाते को जारी करने के लिए कहा। उन्होंने अभी तक जवाब नहीं दिया है।"
+
+#, machine, plain1
+msgid "You asked your parent or guardian to turn this off. They haven't answered yet."
+msgstr "आपने अपने माता-पिता या अभिभावक को इस बंद करने के लिए कहा। उन्होंने अभी तक जवाब नहीं दिया है।"
+
+#, machine, plain1
 msgid "You can add pictures at 500 Rep, or earlier with Premium"
 msgstr "आप 500 प्रतिनियुक्ति पर चित्र जोड़ सकते हैं, या इससे पहले Premium के साथ"
 
@@ -19564,6 +19910,16 @@ msgstr[0] "आप %(num)s चैनल पर हो सकते हैं।"
 msgstr[1] "आपके पास %(num)s चैनल हैं।"
 
 #, machine, plain1, python-format
+msgid "You can have at most %(num)s child account."
+msgid_plural "You can have at most %(num)s child accounts."
+msgstr[0] "आपके पास %(num)s बच्चे का खाता हो सकता है।"
+msgstr[1] "आपके पास %(num)s चाइल्ड अकाउंट हो सकते हैं।"
+
+#, machine, plain1, python-format
+msgid "You can have at most %(num)s child accounts."
+msgstr "आपके पास अधिकांश %(num)s चाइल्ड अकाउंट हो सकते हैं।"
+
+#, machine, plain1, python-format
 msgid "You can host at most %(num)s Space a day."
 msgid_plural "You can host at most %(num)s Spaces a day."
 msgstr[0] "आप दिन में %(num)s स्पेस पर होस्ट कर सकते हैं।"
@@ -19590,6 +19946,10 @@ msgid "You can look around and set up your profile; posting, comments, votes and
 msgstr "आप अपनी प्रोफ़ाइल को देख सकते हैं और सेट कर सकते हैं; पोस्टिंग, टिप्पणियां, वोट और उसके बाद चेक करने के बाद खुला होता है।"
 
 #, machine, plain1, python-format
+msgid "You can make %(num)s child accounts a day. Try again tomorrow."
+msgstr "आप एक दिन में %(num)s बच्चे खाते बना सकते हैं। कल फिर से कोशिश करो।"
+
+#, machine, plain1, python-format
 msgid "You can make %(num)s proposal a day."
 msgid_plural "You can make %(num)s proposals a day."
 msgstr[0] "आप एक दिन %(num)s प्रस्ताव कर सकते हैं।"
@@ -19600,6 +19960,10 @@ msgid "You can make %(num)s wiki edit a day in a guild. Try again tomorrow."
 msgid_plural "You can make %(num)s wiki edits a day in a guild. Try again tomorrow."
 msgstr[0] "आप एक गिल्ड में एक दिन %(num)s विकि संपादित कर सकते हैं। कल फिर से कोशिश करो।"
 msgstr[1] "आप एक गिल्ड में एक दिन %(num)s विकि संपादन कर सकते हैं। कल फिर से कोशिश करो।"
+
+#, machine, plain1
+msgid "You can make a child account once your own account is confirmed as 18 or over. You can say so in Settings > Content."
+msgstr "एक बार जब आपका खाता 18 या उससे अधिक की पुष्टि हो जाती है तो आप एक बच्चे का खाता बना सकते हैं। आप ऐसा कह सकते हैं कि सेटिंग्स > सामग्री।"
 
 #, machine, plain1
 msgid "You can only create up to 2 guilds per day. Try again later."
@@ -19894,6 +20258,10 @@ msgid "You don't have Premium right now."
 msgstr "नहीं Premium अभी"
 
 #, machine, plain1
+msgid "You don't have a child account called that."
+msgstr "आपके पास ऐसा कोई बच्चा नहीं है।"
+
+#, machine, plain1
 msgid "You don't have a coin to redeem."
 msgstr "आपके पास कोई सिक्का नहीं है।"
 
@@ -19994,6 +20362,10 @@ msgstr "आप +%(guild)s से अधिक संख्या में ह�
 #, machine, plain1
 msgid "You have left the creator fund."
 msgstr "आपने निर्माता फंड छोड़ दिया है।"
+
+#, machine, plain1, python-format
+msgid "You have made %(num)s child accounts in the last %(days)s days. Try again later."
+msgstr "आपने पिछले %(days)s दिनों में %(num)s चाइल्ड अकाउंट बनाया है। बाद में फिर से प्रयास करें।"
 
 #, machine, plain1
 msgid "You have muted this guild. Its posts stay out of All, For You and Following. Visit your settings or click the <i class='fas fa-ellipsis-h text-small'></i> icon to unmute it."
@@ -20394,12 +20766,20 @@ msgid "Your account can also post new items from feeds by itself, while you keep
 msgstr "आपका खाता अपने आप में फीड से नए आइटम भी पोस्ट कर सकता है, जबकि आप इसका उपयोग अब करते रहते हैं। उनमें से प्रत्येक पद को स्वचालित रूप से चिह्नित किया जाता है और जो लोग बॉट सामग्री को छिपाते हैं उन्हें नहीं देखते हैं। आपकी पोस्ट, टिप्पणियां, वोट और चैट अपरिवर्तित हैं। एक एडमिन पहले इसे स्वीकार करता है।"
 
 #, machine, plain1
+msgid "Your account can't post automatically while it is age-restricted."
+msgstr "जब यह उम्र-प्रतिबंधित होता है तो आपका खाता स्वचालित रूप से पोस्ट नहीं कर सकता है।"
+
+#, machine, plain1
 msgid "Your account can't post automatically while it is suspended."
 msgstr "जब यह निलंबित हो जाता है तो आपका खाता स्वचालित रूप से पोस्ट नहीं कर सकता है।"
 
 #, machine, plain1
 msgid "Your account can't publish right now."
 msgstr "आपका खाता अभी प्रकाशित नहीं किया जा सकता है।"
+
+#, machine, plain1
+msgid "Your account can't run a bot while it is age-restricted."
+msgstr "जब आपका खाता उम्र-प्रतिबंधित होता है तो आपका खाता नहीं चला सकता।"
 
 #, machine, plain1
 msgid "Your account cannot upload right now."
@@ -20420,6 +20800,10 @@ msgstr "आपका खाता चेक किया गया है और
 #, machine, plain1
 msgid "Your account has been deleted"
 msgstr "आपका खाता हटा दिया गया है"
+
+#, machine, plain1, python-format
+msgid "Your account has the child lock on, held by your parent or guardian, since %(date)s."
+msgstr "आपके खाते में आपके माता-पिता या अभिभावक द्वारा आयोजित बाल लॉक ऑन है, जो %(date)s के बाद से है।"
 
 #, machine, plain1, python-format
 msgid "Your account has the child lock on, since %(date)s."
@@ -20472,6 +20856,10 @@ msgstr ""
 "\n"
 "\n"
 "[सेटिंग्स > सुरक्षा](/settings/security) में एक ईमेल पते को छोड़ने, जोड़ने और सत्यापित करने के लिए।"
+
+#, machine, plain1
+msgid "Your account is your own now. It no longer has the child lock and your parent or guardian can no longer see it. They chose your password: change it in [Settings > Security](/settings/security), or they can still sign in as you."
+msgstr "आपका खाता अभी है। अब इसमें बच्चे का ताला नहीं है और आपका माता-पिता या अभिभावक अब इसे नहीं देख सकते हैं। उन्होंने अपना पासवर्ड चुना: इसे [सेटिंग्स > सुरक्षा](/settings/security) में बदल दिया, या फिर वे अभी भी आपको साइन इन कर सकते हैं।"
 
 #, machine, plain1
 msgid "Your account needs to be at least 30 days old to post automatically."
@@ -20574,6 +20962,10 @@ msgstr "आपकी चैट एंड-टू-एंड एन्क्रि�
 #, machine, plain1, python-format
 msgid "Your chats run on Matrix, an open standard, on %(site)s's own chat server. Besides Chat on this site, you can use them in a Matrix app such as Element (web, desktop and the classic phone apps), FluffyChat or Cinny. They stay end-to-end encrypted there too."
 msgstr "आपका चैट मैट्रिक्स पर चल रहा है, एक खुला मानक, %(site)s के अपने चैट सर्वर पर। इस साइट पर चैट के अलावा, आप उन्हें एक मैट्रिक्स ऐप जैसे एलिमेंट (वेब, डेस्कटॉप और क्लासिक फोन ऐप), FluffyChat या Cinny में इस्तेमाल कर सकते हैं। वे अंत से अंत में एन्क्रिप्टेड रहते हैं।"
+
+#, machine, plain1
+msgid "Your child accounts will be deleted with yours."
+msgstr "आपके बच्चे के खाते को आपके साथ हटा दिया जाएगा।"
 
 #, glossary, machine, plain1
 msgid "Your circles"
@@ -20718,8 +21110,52 @@ msgstr[0] ""
 msgstr[1] ""
 
 #, machine, plain1
+msgid "Your own password"
+msgstr "पासवर्ड"
+
+#, machine, plain1
+msgid "Your parent or guardian didn't agree to release your account."
+msgstr "आपके माता-पिता या अभिभावक अपने खाते को जारी करने के लिए सहमत नहीं थे।"
+
+#, machine, plain1
+msgid "Your parent or guardian has been asked to release your account. Nothing changes until they answer."
+msgstr "आपके माता-पिता या अभिभावक को आपके खाते को छोड़ने के लिए कहा गया है। जब तक वे जवाब नहीं देते तब तक कोई परिवर्तन नहीं होता।"
+
+#, machine, plain1
+msgid "Your parent or guardian has been asked to turn Private posting off."
+msgstr "आपके माता-पिता या अभिभावक को निजी पोस्टिंग बंद करने के लिए कहा गया है।"
+
+#, machine, plain1
 msgid "Your parent or guardian has to agree before Private posting can be turned off."
 msgstr "अपने माता-पिता या अभिभावक को निजी पोस्ट करने से पहले सहमत होना चाहिए।"
+
+#, machine, plain1
+msgid "Your parent or guardian has turned this off for your account."
+msgstr "आपके माता-पिता या अभिभावक ने इसे अपने खाते के लिए बंद कर दिया है।"
+
+#, machine, plain1
+msgid "Your parent or guardian made this account for you. They can see what you do on the site (your posts, comments, votes, bookmarks, follows, guilds, who you chat with, that your account was reported and your recent sign-ins; the site never shows them what your chats say) and they choose which features are on. You can see which in [Settings > Content](/settings/content). They chose your password: change it in [Settings > Security](/settings/security) so that only you know it, because anyone who knows it can sign in as you and read your chats."
+msgstr "आपके माता-पिता या अभिभावक ने आपके लिए यह खाता बनाया। वे देख सकते हैं कि आप साइट पर क्या करते हैं (आपके पोस्ट, टिप्पणियां, वोट, बुकमार्क, अनुसरण करते हैं, गिल्ड्स, जिन्हें आप चैट करते हैं, कि आपका खाता रिपोर्ट किया गया था और आपका हालिया संकेत-इन; साइट उन्हें कभी नहीं दिखाती कि आपका चैट क्या कहती है) और वे चुनती हैं कि कौन सी विशेषताएं हैं। आप देख सकते हैं कि किस में [सेटिंग्स > सामग्री] (/settings/content)। उन्होंने अपना पासवर्ड चुना: इसे [सेटिंग्स > सुरक्षा](/settings/security) में बदल दें ताकि केवल आप इसे जानते हैं, क्योंकि जो लोग जानते हैं कि वह आपके साथ साइन इन कर सकता है और आपकी चैट पढ़ सकता है।"
+
+#, machine, plain1
+msgid "Your parent or guardian set a new password for your account and you were signed out. Sign in with the new password, then change it in [Settings > Security](/settings/security) so that only you know it."
+msgstr "आपके माता-पिता या अभिभावक ने आपके खाते के लिए एक नया पासवर्ड सेट किया और आपको साइन आउट किया गया। नए पासवर्ड के साथ साइन इन करें, फिर इसे [सेटिंग्स> सिक्योरिटी] (/settings/security) में बदल दें ताकि केवल आप इसे जान सकें।"
+
+#, machine, plain1
+msgid "Your parent or guardian stopped managing your account. It keeps the child lock until you confirm your age in Settings > Content. They chose your password: change it in [Settings > Security](/settings/security), or they can still sign in as you."
+msgstr "आपके माता-पिता या अभिभावक ने आपके खाते का प्रबंधन बंद कर दिया। जब तक आप सेटिंग्स में अपनी उम्र की पुष्टि नहीं करते हैं तो यह बच्चे को लॉक रखता है > सामग्री। उन्होंने अपना पासवर्ड चुना: इसे [सेटिंग्स > सुरक्षा](/settings/security) में बदल दिया, या फिर वे अभी भी आपको साइन इन कर सकते हैं।"
+
+#, machine, plain1
+msgid "Your parent or guardian turned Private posting off for your account."
+msgstr "आपके माता-पिता या अभिभावक ने आपके खाते के लिए निजी पोस्टिंग बंद कर दिया।"
+
+#, machine, plain1
+msgid "Your parent or guardian wants Private posting to stay on."
+msgstr "अपने माता-पिता या अभिभावक को निजी पोस्ट करना चाहता है।"
+
+#, machine, plain1
+msgid "Your parent or guardian's account was suspended, so yours is suspended until theirs is back."
+msgstr "आपके माता-पिता या अभिभावक के खाते को निलंबित कर दिया गया था, इसलिए जब तक उनकी पीठ वापस नहीं होती तब तक आपका निलंबित हो जाता है।"
 
 #, machine, plain1
 msgid "Your password"
@@ -21101,6 +21537,10 @@ msgid "and %(num)s more"
 msgid_plural "and %(num)s more"
 msgstr[0] "और %(num)s"
 msgstr[1] "और %(num)s"
+
+#, machine, plain1
+msgid "anonymous"
+msgstr "गुमनाम"
 
 #, machine, plain1
 msgctxt "guildmaster permission"
@@ -21548,6 +21988,10 @@ msgstr "लिंक प्रीव्यू"
 msgid "links"
 msgstr "लिंक"
 
+#, machine, plain1
+msgid "looked at by the admins"
+msgstr "व्यवस्थापक द्वारा देखा गया"
+
 #. after the moderator's name in a guild's moderation log
 #, machine, plain1
 msgid "made a channel"
@@ -21754,6 +22198,10 @@ msgstr "reinstated %(target)s"
 #, machine, plain1, python-format
 msgid "reinstated post %(target)s"
 msgstr "reinstated post %(target)s"
+
+#, machine, plain1
+msgid "removed"
+msgstr "हटाया"
 
 #. follows the moderator's name in a guild's moderation log; %(target)s is a
 #. link

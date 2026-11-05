@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ruqqus VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-11-05 16:56+1100\n"
+"POT-Creation-Date: 2026-11-05 20:16+1100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: fil\n"
@@ -1622,12 +1622,24 @@ msgid "(allow beats deny; the channel's own rules apply to everyone else)"
 msgstr "( ang mga kumpas ay nagtatatwa; ang sariling mga tuntunin ng channel ay kumakapit sa lahat)"
 
 #, machine, plain1
+msgid "(empty)"
+msgstr "(walang laman)"
+
+#, machine, plain1
 msgid "(for a stage channel: the post's address or id)"
 msgstr "(para sa stage channel: adres o id ng post)"
 
 #, machine, plain1
 msgid "(from the original)"
 msgstr "(mula sa orihinal)"
+
+#, machine, plain1
+msgid "(in a private place)"
+msgstr "(sa isang pribadong lugar)"
+
+#, machine, plain1
+msgid "(no title)"
+msgstr "(walang pamagat)"
 
 #, glossary, machine, plain1
 msgid "(off)"
@@ -2189,6 +2201,10 @@ msgid "<strong>Username:</strong> %(name)s"
 msgstr "<strong>Pangalan:</strong> %(name)s"
 
 #, machine, plain1, python-format
+msgid "@%(name)s - %(site)s"
+msgstr "@%(name)s - %(site)s"
+
+#, machine, plain1, python-format
 msgid "@%(name)s - Bots - %(site)s"
 msgstr "@%(name)s - Bots - %(site)s"
 
@@ -2203,6 +2219,10 @@ msgstr "@%(name)s idinagdag %(curation)s."
 #, machine, plain1, python-format
 msgid "@%(name)s asked to publish a shared draft you write: your vote counts. [Open the draft](%(link)s)"
 msgstr "@i%(name)s ay humiling na maglathala ka ng isang share draft na sinulat mo: ang iyong boto ay mahalaga. [Open the draft](%(link)s)"
+
+#, machine, plain1, python-format
+msgid "@%(name)s asked you to turn Private posting off for their account. You can answer in [Settings > Children](/settings/children)."
+msgstr "@i%(name)s ay nag-utos sa iyo na patayin ang Private posting para sa kanilang account. Masasagot mo ito sa [Settings > Children](/settings/children)."
 
 #, machine, plain1, python-format
 msgid "@%(name)s blocked."
@@ -2246,6 +2266,10 @@ msgstr ""
 #, python-format
 msgid "@%(name)s forwarded [a post](%(link)s) to +%(guild)s."
 msgstr ""
+
+#, machine, plain1, python-format
+msgid "@%(name)s has a new password and is signed out everywhere."
+msgstr "@i%(name)s ay may bagong password at naka-sign kahit saan."
 
 #, machine, plain1, python-format
 msgid "@%(name)s has already been invited."
@@ -2415,6 +2439,10 @@ msgstr ""
 msgid "@%(name)s reposted [a post](%(link)s)."
 msgstr ""
 
+#, machine, plain1, python-format
+msgid "@%(name)s says they are 18 or over and asked you to release their account. You can answer in [Settings > Children](/settings/children)."
+msgstr "@i%(name)s ay nagsasabi na sila ay 18 o higit pa at hiniling sa iyo na ilabas mo ang kanilang account. Masasagot mo ito sa [Settings > Children](/settings/children)."
+
 #, python-format
 msgid "@%(name)s shared [a story](%(link)s)."
 msgstr ""
@@ -2446,6 +2474,10 @@ msgstr "@%(name)s ay ipinatapon mula +%(guild)s"
 #, machine, plain1, python-format
 msgid "@%(name)s was muted in +%(guild)s's channels."
 msgstr "@i%(name)s ay napipi sa +%(guild)s's channels."
+
+#, machine, plain1, python-format
+msgid "@%(name)s's age was confirmed as 18 or over, so their account is their own now and you can no longer see it."
+msgstr "ang edad ni @i%(name)s ay napatunayang 18 o higit pa, kaya ang kanilang salaysay ay kanila na ngayon at hindi mo na ito nakikita."
 
 #, machine, plain1, python-format
 msgid "@%(name)s's new posts will go into #%(channel)s."
@@ -2964,6 +2996,10 @@ msgstr "Ang isang buháy na sinulid ay kumukuha ng mga komento, hindi ng mga men
 #, machine, plain1
 msgid "A member"
 msgstr "Isang miyembro"
+
+#, machine, plain1
+msgid "A member reported this account."
+msgstr "Isang miyembro ang nag - ulat ng ulat na ito."
 
 #, machine, plain1, python-format
 msgid "A message can be at most %(count)s character."
@@ -4097,6 +4133,12 @@ msgid_plural "An update can be at most %(num)s characters."
 msgstr[0] "Ang isang update ay maaaring maging sa karamihan ng %(num)s karakter."
 msgstr[1] "Ang isang update ay maaaring sa karamihan ng %(num)s karakter."
 
+#, machine, plain1, python-format
+msgid "And %(num)s private guild, which isn't named."
+msgid_plural "And %(num)s private guilds, which aren't named."
+msgstr[0] "At %(num)s pribadong samahan, na hindi binanggit ang pangalan."
+msgstr[1] "At %(num)s pribadong samahan, na hindi binanggit ang pangalan."
+
 #, machine, plain1
 msgid "Animals"
 msgstr "Mga Hayop"
@@ -4152,6 +4194,10 @@ msgstr "Anonymous"
 msgctxt "label"
 msgid "Anonymous"
 msgstr "Anonymous"
+
+#, machine, plain1
+msgid "Anonymous posting and starting guilds"
+msgstr "Walang - sawang paglalagay at pagpapasimula ng mga samahan"
 
 #, machine, plain1
 msgid "Anonymous posts and comments count for you like any other. Your points and earnings are shown only to you; the site's admins see the payout list."
@@ -4363,6 +4409,14 @@ msgstr "Mga Highland ng Aryan"
 #, machine, plain1
 msgid "As an author you edit the draft live with them, and every character you type is credited to you. Once the post is published, anyone who can see it can see who wrote what. The authors decide together:"
 msgstr "Bilang isang awtor, inaayos mo ang draft live na kasama nila, at ang bawat katangian na uri mo ang kinikilala mong mahalaga sa iyo. Minsang mailathala ang koreo, makikita ng sinumang makakita nito kung sino ang sumulat ng kung ano ang isinulat. Ang mga awtor ay nagpapasiyang magkasama:"
+
+#, machine, plain1
+msgid "Ask my parent to turn it off"
+msgstr "Hilingin sa aking magulang na patayin ito"
+
+#, machine, plain1
+msgid "Asked you"
+msgstr "Tinanong ka"
 
 #, machine, plain1, python-format
 msgid "At least %(count)s comments"
@@ -4833,6 +4887,10 @@ msgstr "Boost para sa mga post na may larawan, tunog o video"
 #, machine, plain1
 msgid "Boost for this curation's guilds and accounts"
 msgstr "Boost para sa kulot na mga guild ng pagkain at mga kuwenta"
+
+#, machine, plain1
+msgid "Born"
+msgstr "Isinilang"
 
 #, machine, plain1
 msgid "Bot keys"
@@ -5333,6 +5391,10 @@ msgid "Chat isn't answering right now. Try again in a moment."
 msgstr "Ang Chat ay hindi sumasagot ngayon. Subukang muli sandali."
 
 #, machine, plain1
+msgid "Chat, group chats and calls"
+msgstr "Chat, group chats and calls"
+
+#, machine, plain1
 msgctxt "guildmaster action"
 msgid "Chatban user"
 msgstr "Gumagamit ng Chatban"
@@ -5356,6 +5418,14 @@ msgstr "Kristika"
 #, machine, plain1
 msgid "Child - also hide profanity and sensitive content"
 msgstr "Itinatago rin ng bata ang kalaswaan at sensitibong nilalaman"
+
+#, machine, plain1
+msgid "Children"
+msgstr "Mga Bata"
+
+#, machine, plain1, python-format
+msgid "Children - %(site)s"
+msgstr "Mga Bata - %(site)s"
 
 #. "Sign in with ..." is the button the Matrix app shows for this site's
 #. sign-in
@@ -5688,6 +5758,10 @@ msgid "Coins received: %(recent)s in the last 30 days &middot; %(total)s in all.
 msgstr "Tumanggap ng mga barya: %(recent)s sa huling 30 araw &middot; %(total)s sa lahat. Ang mga ito ay diretso sa iyong timbangan."
 
 #, machine, plain1
+msgid "Coins, tips, Premium and paid circles"
+msgstr "Mga barya, mga tip, Premium at bayarang mga bilog"
+
+#, machine, plain1
 msgid "Collaborative"
 msgstr "Masalimuot"
 
@@ -5751,6 +5825,10 @@ msgstr "Ang aklat ng komento ay may tanda."
 #, glossary, machine, plain1
 msgid "Comment posted!"
 msgstr "Na-post ang komento!"
+
+#, machine, plain1
+msgid "Commenting"
+msgstr "Pagkukomento"
 
 #, glossary, machine, plain1
 msgid "Comments"
@@ -6398,8 +6476,16 @@ msgid "Delete role"
 msgstr "Ibaba ang papel"
 
 #, machine, plain1
+msgid "Delete the account"
+msgstr "Alisin ang account"
+
+#, machine, plain1
 msgid "Delete the published post"
 msgstr "Itapon ang inilathalang post"
+
+#, machine, plain1
+msgid "Delete this account"
+msgstr "Itala ang ulat na ito"
 
 #, machine, plain1
 msgid "Delete this category? Its channels stay."
@@ -6460,6 +6546,10 @@ msgstr "Ang pag - aalis ng isang file sa iyong Drive, o pagtanggal ng koneksiyon
 #, machine, plain1
 msgid "Deleting a file there, or disconnecting, removes it from your posts."
 msgstr "Ang pag - aalis ng talaksan doon, o pag - aalis ng pagkakakabit, ay nag - aalis nito sa iyong mga poste."
+
+#, machine, plain1
+msgid "Deleting your account also deletes your child accounts. You can download their data first in Settings > Children."
+msgstr "Ang pag - aalis ng inyong ulat ay nag - aalis din sa inyong anak ng mga kuwenta. Maaari mong i - download muna ang kanilang impormasyon sa settings > Mga bata."
 
 #, machine, plain1
 msgid "Density"
@@ -6702,6 +6792,10 @@ msgid "Done"
 msgstr "Tapos"
 
 #, machine, plain1
+msgid "Download"
+msgstr "Ibaba"
+
+#, machine, plain1
 msgctxt "button"
 msgid "Download"
 msgstr "Download"
@@ -6715,8 +6809,16 @@ msgid "Download the recording"
 msgstr "I - download ang rekording"
 
 #, machine, plain1
+msgid "Download their data"
+msgstr "I - download ang kanilang data"
+
+#, machine, plain1
 msgid "Download your data"
 msgstr "I-download ang iyong data"
+
+#, machine, plain1
+msgid "Downvote"
+msgstr "Pagbagsak"
 
 #, glossary, machine, plain1
 msgctxt "verb"
@@ -7044,6 +7146,10 @@ msgstr "Ipasok ang direksiyon ng feed server."
 msgid "Enter the feed's address."
 msgstr "Ipasok ang direksiyon ng pagkain."
 
+#, machine, plain1
+msgid "Enter the month and year they were born."
+msgstr "Pumasok ang buwan at taon na sila ay ipinanganak."
+
 #, machine, plain1, python-format
 msgid "Enter the six-digit code generated in the authenticator app and your %(site)s account password."
 msgstr "Ipasok ang anim-digit code na ginawa sa app ng author at ang iyong %(site)s account password."
@@ -7216,6 +7322,10 @@ msgstr "Nakikita ng lahat ang mga pagbabago ng bawat isa habang sila ay nagmakin
 #, machine, plain1
 msgid "Everything from your guilds and accounts, newest first."
 msgstr "Lahat ng bagay mula sa inyong mga samahan at mga kuwenta, una muna'y bago."
+
+#, machine, plain1
+msgid "Everything they post goes only to their Friends circle. Turn it off to let them post in public."
+msgstr "Lahat ng kanilang ipinadadala ay para lamang sa kanilang mga Kaibigan. Patayin mo na sila sa publiko."
 
 #, machine, plain1
 msgid "Everything you post goes only to your Friends circle, the people you follow who follow you back, so nothing is public by accident. Your circles can only hold people like that, and you can't forward, repost or write a shared draft. Comments on other people's posts are still public."
@@ -7872,6 +7982,10 @@ msgstr "Kaibigan"
 msgctxt "circle name"
 msgid "Friends"
 msgstr "Kaibigan"
+
+#, machine, plain1
+msgid "Friends circle"
+msgstr "Magkabarkada"
 
 #, machine, plain1
 msgid "Friends is everyone you follow who follows you back. To share with family, a team or anyone else, make a circle first, then pick it here."
@@ -8678,6 +8792,10 @@ msgstr "Paghanap"
 msgid "I accept the <a href=\"%(url)s\" target=\"_blank\">terms and conditions</a>"
 msgstr "Tinatanggap ko ang <a href=\"%(url)s\" target=\"_blank\">Mga termino at mga kalagayan</a>"
 
+#, machine, plain1, python-format
+msgid "I agree to the <a href=\"%(url)s\" target=\"_blank\">Terms</a> for them."
+msgstr "Sang - ayon ako sa <a href=\"%(url)s\" target=\"_blank\">Mga Termino</a> para sa kanila."
+
 #, machine, plain1
 msgid "I agree to the rules below."
 msgstr "Sumasang - ayon ako sa mga tuntunin sa ibaba."
@@ -8713,6 +8831,10 @@ msgstr "Kung may adres sa email na nauugnay sa account mo, puwede mo itong gamit
 #, machine, plain1
 msgid "If this was you, there is nothing to do."
 msgstr "Kung ikaw ito, wala kang magagawa."
+
+#, machine, plain1
+msgid "If you are 18 or over, say so and your parent or guardian will be asked to release your account."
+msgstr "Kung ikaw ay 18 o mahigit pa, sabihin mo na ang iyong magulang o tagapag - alaga ay hihilinging ilabas ang iyong kuwenta."
 
 #, machine, plain1
 msgid "If you don't have your 2FA device, enter one of your backup codes instead. Each backup code works once. An account that never made backup codes can enter its Recovery Code, which also turns 2FA off."
@@ -9091,6 +9213,14 @@ msgid "It shows, in full, every word and phrase the word filter looks for, in ev
 msgstr "Ipinakikita nito, nang buo, ang bawat salita at parirala na hinahanap ng salitang pansala, sa bawat wika na sinasaklaw nito. Kasali na riyan ang mga pag - alipusta at iba pang lubhang nakasasakit na pananalita."
 
 #, machine, plain1
+msgid "It stays a child account with the child lock, but you can no longer see it or change what it can do, and you can't link it again."
+msgstr "Nananatili itong isang salaysay sa bata na nakakandado, subalit hindi mo na ito makita o mababago ang magagawa nito, at hindi mo na ito muling mapag - uugnay."
+
+#, machine, plain1
+msgid "It stays on the Child word filter, which hides profanity and anything marked sensitive."
+msgstr "Ito'y nananatili sa salitang Bata na pansala, na nagtatago ng kalaswaan at anumang bagay na kakikitaan ng sensitibong damdamin."
+
+#, machine, plain1
 msgid "It stays on the Child word filter, which hides profanity and anything marked sensitive. Chat, Spaces, coins, anonymous posting and starting a guild are off, and others can't start a chat or tip you. Your posts go to your Friends circle only unless you turn Private posting off."
 msgstr "Ito'y nananatili sa salitang Bata na pansala, na nagtatago ng kalaswaan at anumang bagay na kakikitaan ng sensitibong damdamin. Ang Chat, Spaces, mga barya, di - kilalang paglalagay at pagpapasimula ng isang samahan ay wala na, at ang iba ay hindi makapagsisimula ng isang chat o tip sa iyo. Ang iyong mga post ay nagtutungo lamang sa iyong mga Kaibigan malibang patayin mo ang Private posting."
 
@@ -9254,6 +9384,10 @@ msgstr "Hunyo solstice"
 #, machine, plain1
 msgid "K-Pop"
 msgstr "K-Pop"
+
+#, machine, plain1
+msgid "Keep it on"
+msgstr "Ipagpatuloy ito"
 
 #, machine, plain1
 msgid "Keep my posts out of All"
@@ -9529,6 +9663,10 @@ msgstr "Leonids pag - ulan ng bulalakaw"
 msgid "Letters spaced out or split by dots or other marks are read as one word."
 msgstr "Binabasa bilang isang salita ang mga sulat na nakalinya o nahahati ng mga tuldok o iba pang mga marka."
 
+#, machine, plain1
+msgid "Letters, numbers and underscores, 3 to 25 characters."
+msgstr "Liham, bilang at diin, 3 hanggang 25 karakter."
+
 #, glossary, machine, plain1
 msgid "Lifestyle"
 msgstr "Pamumuhay"
@@ -9768,6 +9906,10 @@ msgstr "Bagong Taon ng Lunar"
 msgid "Lyrids meteor shower"
 msgstr "Lyrids meteor shower"
 
+#, machine, plain1, python-format
+msgid "Made on %(date)s."
+msgstr "Ginawa noong %(date)s."
+
 #, glossary, machine, plain1
 msgid "Made with AI"
 msgstr "Gawa gamit ang AI"
@@ -9786,6 +9928,10 @@ msgid "Make a channel"
 msgstr "Gumawa ng alulod"
 
 #, machine, plain1
+msgid "Make a child account"
+msgstr "Magsalaysay tungkol sa isang bata"
+
+#, machine, plain1
 msgid "Make a circle people pay to be in, every 30 days, for what you share with it."
 msgstr "Gumawa ng bilog na mga tao na magbabayad, tuwing 30 araw, para sa kung ano ang ibinabahagi mo rito."
 
@@ -9800,6 +9946,10 @@ msgstr "Gumawa ng pahina"
 #, machine, plain1
 msgid "Make a role"
 msgstr "Gumawa ng papel"
+
+#, machine, plain1
+msgid "Make an account for a child under 18 and decide what it can do. You can see what they do on the site (their posts, comments, votes, bookmarks, follows, guilds, the names of who they chat with and their recent sign-ins). The site never shows you what their chats say: chats are end-to-end encrypted. You choose their password, so until they change it you can sign in as them and read their chats: tell them to set their own. They are told all of this in their own Settings."
+msgstr "Makipag - usap sa isang batang wala pang 18 anyos at magpasiya kung ano ang magagawa nito. Makikita mo kung ano ang ginagawa nila sa site (ang kanilang mga post, comments, boto, bookmark, sumusunod, guilds, ang mga pangalan kung sino ang kausap nila at ang kanilang mga kamakailang sign-in). Hindi kailanman ipinapakita sa iyo ng site ang sinasabi ng kanilang mga chat: ang mga chat ay end-to-end encrypted. Pinipili mo ang kanilang password, kaya hanggang sa palitan nila ito ay maaari kang pumirma habang sila'y nagsasalita at magbasa ng kanilang mga chat: sabihin mo sa kanila na magtakda ng kanilang sariling mga password. Lahat ng ito ay sinasabi sa kanila sa kanilang sariling Settings."
 
 #, machine, plain1, python-format
 msgid "Make an app first in <a href=\"%(url)s\">Settings &gt; Apps</a>; a key works through it."
@@ -10138,6 +10288,10 @@ msgid "Mon"
 msgstr "Buwan"
 
 #, machine, plain1
+msgid "Month"
+msgstr "Buwan"
+
+#, machine, plain1
 msgctxt "table heading"
 msgid "Month"
 msgstr "Buwan"
@@ -10146,6 +10300,10 @@ msgstr "Buwan"
 msgctxt "time range"
 msgid "Month"
 msgstr "Buwan"
+
+#, machine, plain1
+msgid "Month they were born"
+msgstr "Buwan sila ay isinilang"
 
 #, machine, plain1
 msgid "Monthly creator fund payouts"
@@ -10485,6 +10643,10 @@ msgstr "Bagong pahina: %(address)s"
 #, machine, plain1
 msgid "New paid circle"
 msgstr "Bagong binabayarang bilog"
+
+#, machine, plain1
+msgid "New password"
+msgstr "Bagong password"
 
 #, machine, plain1
 msgid "New posts that are getting attention, with no account filling the page."
@@ -10870,6 +11032,10 @@ msgstr "Walang sinumang baguhan ang maaaring magskribe. Ang kasalukuyang mga sub
 msgid "Nobody types here"
 msgstr "Walang uri dito"
 
+#, machine, plain1, python-format
+msgid "Nobody under %(age)s may have an account where you are."
+msgstr "Walang sinuman sa ilalim ng %(age)s ang maaaring may account kung nasaan ka."
+
 #, machine, plain1
 msgid "Nobody yet."
 msgstr "Wala pa."
@@ -10990,6 +11156,10 @@ msgstr "Hindi tumatanggap ng mga subscriber"
 #, machine, plain1
 msgid "Not trending any more"
 msgstr "Hindi na uso"
+
+#, machine, plain1
+msgid "Not yet"
+msgstr "Hindi pa"
 
 #, glossary, machine, plain1
 msgid "Not your default:"
@@ -11112,6 +11282,10 @@ msgid "Nothing written yet."
 msgstr "Wala pang nakasulat."
 
 #, machine, plain1
+msgid "Nothing yet."
+msgstr "Wala pa."
+
+#, machine, plain1
 msgid "Notification types"
 msgstr "Mga uri ng notasyon"
 
@@ -11159,6 +11333,10 @@ msgstr "Oceania"
 msgid "Oddly Satisfying"
 msgstr "Kakaibang Kasiyahan"
 
+#, machine, plain1
+msgid "Off"
+msgstr "Off"
+
 #. slow mode in a guild's channel is switched off.
 #, machine, plain1
 msgctxt "slow mode"
@@ -11185,6 +11363,10 @@ msgstr "Luma"
 #, machine, plain1
 msgid "Old Password"
 msgstr "Lumang Pasag"
+
+#, machine, plain1
+msgid "On"
+msgstr "Patuloy"
 
 #. "On" marks a linked storage account that is in use
 #, machine, plain1
@@ -11261,6 +11443,10 @@ msgstr "Ang isa sa mga rebisyong ito ay hindi maipakikita sa iyo."
 #, machine, plain1
 msgid "One of those circles isn't yours any more. Choose again."
 msgstr "Ang isa sa mga bilog na iyon ay hindi na iyo. Pumili uli."
+
+#, machine, plain1
+msgid "One of your child accounts owes money, so your account can't be deleted yet."
+msgstr "Isa sa inyong anak ang may utang na salapi, kaya ang inyong kuwenta ay hindi pa maaaring alisin."
 
 #, machine, plain1
 msgid "One-time codes for the day you lose your authenticator. Making a new set replaces every earlier code, used or not."
@@ -11584,6 +11770,10 @@ msgstr "Tanging ang may akda at mga co-author ng post ang maaaring magpaskil ng 
 #, machine, plain1
 msgid "Only the post's author and co-authors can run its live updates."
 msgstr "Tanging ang may akda ng post at mga co-author lamang ang maaaring tumakbo ng live updates nito."
+
+#, machine, plain1
+msgid "Only used to check their age. It isn't kept."
+msgstr "Dati lamang upang suriin ang kanilang edad. Hindi ito itinatago."
 
 #, machine, plain1
 msgid "Only when I turn them on"
@@ -12579,6 +12769,10 @@ msgid "Posted on that day."
 msgstr "Natapos noong araw na iyon."
 
 #, machine, plain1
+msgid "Posting"
+msgstr "Pagpaskil"
+
+#, machine, plain1
 msgid "Posting cooldown"
 msgstr "Paglamig"
 
@@ -13416,6 +13610,10 @@ msgid "Relationships"
 msgstr "Mga Kaugnayan"
 
 #, machine, plain1
+msgid "Release the account"
+msgstr "Ilabas ang ulat"
+
+#, machine, plain1
 msgid "Religion"
 msgstr "Relihiyon"
 
@@ -13665,6 +13863,10 @@ msgstr "Iniulat na mga mensahe"
 msgctxt "noun"
 msgid "Reports"
 msgstr "Mga Report"
+
+#, machine, plain1
+msgid "Reports about them"
+msgstr "Mga ulat tungkol sa mga ito"
 
 #, machine, plain1
 msgid "Reports opened"
@@ -14003,6 +14205,10 @@ msgctxt "weekday"
 msgid "Sat"
 msgstr "Sat"
 
+#, glossary, machine, plain1
+msgid "Save"
+msgstr "I-save"
+
 #, machine, plain1
 msgctxt "button"
 msgid "Save"
@@ -14312,6 +14518,10 @@ msgid "See what is trending"
 msgstr "Tingnan kung ano ang uso"
 
 #, machine, plain1
+msgid "See what they do"
+msgstr "Tingnan kung ano ang ginagawa nila"
+
+#, machine, plain1
 msgid "See your username"
 msgstr "Tingnan ang Pangalan ng inyong gumagamit"
 
@@ -14410,6 +14620,10 @@ msgstr "Setyembre equinox"
 #, machine, plain1
 msgid "Serious"
 msgstr "Malubha"
+
+#, machine, plain1
+msgid "Set a new password"
+msgstr "Maglagay ng bagong password"
 
 #, machine, plain1
 msgid "Set a price to let people pay to join."
@@ -15077,6 +15291,10 @@ msgid "Spaces"
 msgstr "Mga Space"
 
 #, machine, plain1
+msgid "Spaces and live threads"
+msgstr "Mga espasyo at buháy na mga sinulid"
+
+#, machine, plain1
 msgid "Spaces are started in the Spaces area."
 msgstr "Sinimulan ang mga espasyo sa lugar ng Spaces."
 
@@ -15211,6 +15429,14 @@ msgstr "Naka-sticky na post"
 #, machine, plain1
 msgid "Still here to read"
 msgstr "Narito pa upang magbasa"
+
+#, machine, plain1
+msgid "Stop managing"
+msgstr "Itigil ang pangangasiwa"
+
+#, machine, plain1
+msgid "Stop managing this account"
+msgstr "Huwag nang pangasiwaan ang ulat na ito"
 
 #, machine, plain1
 msgid "Stop posting automatically"
@@ -15387,6 +15613,10 @@ msgstr "Mga tagapagtaguyod…"
 #, machine, plain1
 msgid "Survival & Bushcraft"
 msgstr "Kaligtasan & Hurcraft"
+
+#, machine, plain1
+msgid "Suspended"
+msgstr "Nagastos"
 
 #, machine, plain1, python-format
 msgid "Switch @%(name)s off for good? Its posts stay; the bot never posts again."
@@ -15860,6 +16090,10 @@ msgid "That isn't a valid username."
 msgstr "Hindi iyan tanggap na username."
 
 #, machine, plain1
+msgid "That isn't something you can switch."
+msgstr "Hindi iyan isang bagay na maaari mong baguhin."
+
+#, machine, plain1
 msgid "That key couldn't be saved."
 msgstr "Hindi maliligtas ang susing iyon."
 
@@ -16090,6 +16324,14 @@ msgstr "Ang Sahel"
 #, machine, plain1
 msgid "The Space could not be made."
 msgstr "Hindi magawa ang Kalawakan."
+
+#, machine, plain1, python-format
+msgid "The account @%(name)s is deleted."
+msgstr "Inalis ang ulat na @i%(name)s."
+
+#, machine, plain1, python-format
+msgid "The account @%(name)s is made. They sign in with the username and password you gave."
+msgstr "Ginawa ang ulat @i%(name)s. Sila'y lumalagda sa pamamagitan ng username at password na ibinigay ninyo."
 
 #, machine, plain1, python-format
 msgid "The account age must be a whole number of days, 0 to %(max)s."
@@ -16433,6 +16675,10 @@ msgstr "Ang karamihan ay bumoto ng mga puwesto sa nakalipas na pitong araw."
 #, machine, plain1, python-format
 msgid "The name %(host)s could not be found."
 msgstr "Ang pangalang %(host)s ay hindi matagpuan."
+
+#, machine, plain1
+msgid "The newest of what they have done. Only the names of who they chat with are shown, never what a chat says: chats are end-to-end encrypted."
+msgstr "Ang pinakabago sa kanilang nagawa. Mga pangalan lamang ng kung sino ang kausap nila ang ipinapakita, hindi kailanman ang sinasabi ng chat: Ang mga chat ay end-to-end encrypted."
 
 #, machine, plain1
 msgid "The numbers are always shown on your profile. This decides who can open each list and see the accounts on it. An account is only listed where its own setting allows it too."
@@ -16784,12 +17030,20 @@ msgid "They already have this role."
 msgstr "Taglay na nila ang papel na ito."
 
 #, machine, plain1
+msgid "They are 18 or over, so they can make their own account."
+msgstr "Sila'y 18 o mahigit pa, kaya sila'y maaaring gumawa ng kanilang sariling ulat."
+
+#, machine, plain1
 msgid "They are already in this circle."
 msgstr "Nasa bilog na sila."
 
 #, machine, plain1
 msgid "They are not told. Anyone you block leaves your circles."
 msgstr "Hindi sinasabi ang mga ito. Sinumang harangan mo ay iiwan ang iyong bilog."
+
+#, machine, plain1
+msgid "They are signed out everywhere. If they use chat, they may be asked for their recovery code."
+msgstr "Ang mga ito ay nilagdaan sa lahat ng dako. Kung gagamit sila ng chat, maaaring hilingin sa kanila ang kanilang kodigo sa paggaling."
 
 #, machine, plain1, python-format
 msgid "They aren't in %(circle)s."
@@ -16804,6 +17058,38 @@ msgid "They aren't muted here."
 msgstr "Hindi sila pipi rito."
 
 #, machine, plain1
+msgid "They asked you to turn Private posting off."
+msgstr "Hiniling nila sa iyo na patayin mo ang pribadong koreo."
+
+#, machine, plain1
+msgid "They can buy and spend coins, tip, buy Premium and join or run paid circles."
+msgstr "Maaari silang bumili at gumastos ng mga barya, tip, bumili ng Premium at sumali o tumakbo ng mga binabayarang bilog."
+
+#, machine, plain1
+msgid "They can comment."
+msgstr "Maaari silang magkomento."
+
+#, machine, plain1
+msgid "They can host and join Spaces and run live threads. Voice calls in a Space also need Chat to be on."
+msgstr "Ang mga ito ay maaaring maging host at sumali sa Spaces at tumakbo ng mga live na sinulid. Ang mga tawag sa tinig sa isang Kalawakan ay nangangailangan din ng Chat upang gawin."
+
+#, machine, plain1
+msgid "They can make posts."
+msgstr "Maaari silang gumawa ng mga poste."
+
+#, machine, plain1
+msgid "They can message people, join group chats and make calls. The site never shows you what a chat says: chats are end-to-end encrypted. Whoever knows their password can still sign in and read them."
+msgstr "Maaari silang makinig sa mga tao, sumali sa mga usapan ng grupo at tumawag. Hindi kailanman ipinakikita sa iyo ng site kung ano ang sinasabi ng chat: Ang mga chat ay end-to-end encrypted. Sinumang nakaaalam ng kanilang password ay maaari pa ring pumirma at basahin ang mga ito."
+
+#, machine, plain1
+msgid "They can post anonymously and start a guild. You can still see who wrote an anonymous post."
+msgstr "Maaari silang magpaskil nang hindi nagpapakilala at magsimula ng isang samahan. Makikita mo pa rin kung sino ang sumulat ng isang di - kilalang poste."
+
+#, machine, plain1
+msgid "They can see what you do on the site: your posts, comments, votes, bookmarks, follows, guilds, who you chat with, that your account was reported, and your recent sign-ins. The site never shows them what your chats say, because chats are end-to-end encrypted. But anyone who knows your password, a parent who chose it included, can sign in as you: change it in Security so that only you know it. They choose which of these are on for your account:"
+msgstr "Makikita nila kung ano ang ginagawa mo sa site: ang iyong mga post, comments, boto, bookmark, sumusunod, guilds, sino ang kausap mo, na iniulat ang account mo, at ang mga sign-in mo kamakailan. Hindi kailanman ipinapakita sa kanila ng site ang sinasabi ng iyong mga chat, dahil ang mga chat ay end-to-end encrypted. Subalit ang sinumang nakaaalam ng iyong password, isang magulang na pumili nito, ay maaaring pumirma bilang ikaw: baguhin ito sa Seguridad upang ikaw lamang ang makaalam nito. Kanilang pinipili kung alin sa mga ito ang dahil sa iyo:"
+
+#, machine, plain1
 msgid "They can't comment on your posts or comments, chat with you or notify you by mentioning you. They are not told, but they may work it out if they try to comment on something of yours."
 msgstr "Hindi sila makapagkokomento tungkol sa iyong mga post o komento, nakikipag - usap sa iyo o nagpapapansin sa iyo sa pamamagitan ng pagbanggit sa iyo. Hindi sila sinasabihan, subalit maaari nilang lutasin ito kung sisikapin nilang magkomento tungkol sa isang bagay na iyo."
 
@@ -16816,12 +17102,20 @@ msgid "They go straight to your coin balance."
 msgstr "Ang mga ito ay diretso sa iyong timbangan."
 
 #, machine, plain1
+msgid "They haven't asked for that."
+msgstr "Hindi nila hiniling iyon."
+
+#, machine, plain1
 msgid "They need to be in the guild, and not exiled from it."
 msgstr "Kailangan nilang mapabilang sa samahan, at hindi ipatapon mula rito."
 
 #, machine, plain1
 msgid "They need to join the channel first."
 msgstr "Kailangan muna nilang sumama sa channel."
+
+#, machine, plain1
+msgid "They say they are 18 or over and asked you to release their account. If you do, it becomes their own and you can no longer see it."
+msgstr "Sinasabi nilang sila'y 18 o mahigit pa at hiniling sa iyo na ilabas mo ang kanilang kuwenta. Kung gagawin mo ito, magiging sarili nila ito at hindi mo na ito makita."
 
 #, machine, plain1
 msgid "They're already a helper."
@@ -16936,6 +17230,14 @@ msgstr "Ang salaysay na ito ay pansamantalang nasuspinde mula sa %(site)s. Surii
 #, machine, plain1
 msgid "This account is private"
 msgstr "Ang ulat na ito ay pribado"
+
+#, machine, plain1
+msgid "This account is suspended."
+msgstr "Ang ulat na ito ay sinuspinde."
+
+#, machine, plain1
+msgid "This account owes money, so it can't be deleted yet."
+msgstr "Utang ng ulat na ito ang salapi, kaya hindi pa ito maaaring alisin."
 
 #, machine, plain1
 msgid "This account posts about sensitive topics"
@@ -17071,6 +17373,10 @@ msgstr "Ito'y tungkol sa samahan at mga kuwenta ng pagkain"
 #, machine, plain1
 msgid "This curation's rules took too long to run. Its owner can make them narrower."
 msgstr "Ang kulot na mga tuntuning ito ng pagpapakain ay napakatagal tumakbo. Maaari itong gawing mas makitid ng may - ari nito."
+
+#, machine, plain1
+msgid "This deletes their account and everything on it. It can't be undone. You can download their data first."
+msgstr "Ito ang nag - aalis ng kanilang ulat at ng lahat ng nilalaman nito. Hindi ito maaaring baguhin. Maaari mo munang i - download ang kanilang impormasyon."
 
 #, machine, plain1
 msgid "This draft hasn't been published."
@@ -17402,6 +17708,10 @@ msgid "Thu"
 msgstr "Thu"
 
 #, machine, plain1
+msgid "Tick the box to agree to the Terms for them."
+msgstr "Tanggalin ang kahon upang sumang-ayon sa Termino para sa kanila."
+
+#, machine, plain1
 msgid "Tick the box to agree to the rules first."
 msgstr "Hanguin ang kahon upang sumang - ayon sa mga tuntunin."
 
@@ -17673,6 +17983,10 @@ msgstr "Tue"
 #, machine, plain1
 msgid "Turanian Steppe"
 msgstr "Turanian Steppe"
+
+#, machine, plain1
+msgid "Turn it off"
+msgstr "Patayin ito"
 
 #, machine, plain1, python-format
 msgid "Turn off notifications from +%(guild)s"
@@ -18131,6 +18445,10 @@ msgstr "Itaas na baner"
 #, machine, plain1
 msgid "Upload picture"
 msgstr "Larawan sa itaas"
+
+#, machine, plain1
+msgid "Upvote"
+msgstr "Pag - unlad"
 
 #, glossary, machine, plain1
 msgctxt "verb"
@@ -18852,6 +19170,10 @@ msgid "Where you are, the law means your age has to be confirmed with an age-che
 msgstr "Kung nasaan ka, ang ibig sabihin ng batas ay ang edad mo ay kailangang kumpirmahin ng serbisyong age-check bago mo makita ang sensitibong nilalaman o malakas na wika."
 
 #, machine, plain1
+msgid "Where you are, your age has to be confirmed with an age-check service before you can make a child account."
+msgstr "Kung nasaan ka, ang edad mo ay kailangang kumpirmahin sa pamamagitan ng serbisyong age-check bago ka makagawa ng account sa bata."
+
+#, machine, plain1
 msgid "Where you are, your age has to be confirmed with an age-check service."
 msgstr "Kung nasaan ka, ang edad mo ay kailangang kumpirmahin ng serbisyong age-check."
 
@@ -18943,9 +19265,17 @@ msgstr "Sino ang nagpapasiya"
 msgid "Who follows you"
 msgstr "Sino ang sumusunod sa iyo"
 
+#, machine, plain1
+msgid "Who reported them, and what they wrote, isn't shown to anyone but the admins."
+msgstr "Na siyang nag-ulat sa kanila, at sa kanilang isinulat, ay hindi ipinakikita sa kanino man kundi sa mga admin."
+
 #, glossary, machine, plain1
 msgid "Who subscribes to your Circle"
 msgstr "Sino ang naka-subscribe sa Circle mo"
+
+#, machine, plain1
+msgid "Who they chat with"
+msgstr "Kung sino ang kausap nila"
 
 #, machine, plain1
 msgid "Who to follow"
@@ -19326,10 +19656,18 @@ msgctxt "guildmaster action"
 msgid "Yank post"
 msgstr "Post ng Yank"
 
+#, machine, plain1
+msgid "Year"
+msgstr "Taon"
+
 #, glossary, machine, plain1
 msgctxt "time range"
 msgid "Year"
 msgstr "Taon"
+
+#, machine, plain1
+msgid "Year they were born"
+msgstr "Taon na sila ay ipinanganak"
 
 #, machine, plain1
 msgctxt "colour"
@@ -19492,6 +19830,14 @@ msgid "You aren't subscribed to that circle."
 msgstr "Hindi ka umaayon sa bilog na iyon."
 
 #, machine, plain1
+msgid "You asked your parent or guardian to release your account. They haven't answered yet."
+msgstr "Hiniling mo sa iyong magulang o tagapangalaga na ilabas ang iyong kuwenta. Hindi pa sila sumasagot."
+
+#, machine, plain1
+msgid "You asked your parent or guardian to turn this off. They haven't answered yet."
+msgstr "Hiniling mo sa iyong magulang o tagapangalaga na patayin ito. Hindi pa sila sumasagot."
+
+#, machine, plain1
 msgid "You can add pictures at 500 Rep, or earlier with Premium"
 msgstr "Maaari kang magdagdag ng mga larawan sa 500 Reputasyon, o mas maaga rito sa pamamagitan ng Premium"
 
@@ -19582,6 +19928,16 @@ msgstr[0] "Maaari kang magkaroon ng halos %(num)s channel."
 msgstr[1] "Maaari kang magkaroon ng halos %(num)s channel."
 
 #, machine, plain1, python-format
+msgid "You can have at most %(num)s child account."
+msgid_plural "You can have at most %(num)s child accounts."
+msgstr[0] "Maaari kang magkaroon ng halos %(num)s bata."
+msgstr[1] "Maaari kang magkaroon ng halos %(num)s mga kuwenta ng bata."
+
+#, machine, plain1, python-format
+msgid "You can have at most %(num)s child accounts."
+msgstr "Maaari mong taglayin sa paano man %(num)s pag - uulat ng bata."
+
+#, machine, plain1, python-format
 msgid "You can host at most %(num)s Space a day."
 msgid_plural "You can host at most %(num)s Spaces a day."
 msgstr[0] "Maaari kang mag - host sa halos %(num)s Kalawakan sa isang araw."
@@ -19608,6 +19964,10 @@ msgid "You can look around and set up your profile; posting, comments, votes and
 msgstr "Maaari kang tumingin sa paligid at maglagay ng iyong profile; paglalagay, mga komento, boto at kasunod nito ay buksan ang tseke minsang magawa ito."
 
 #, machine, plain1, python-format
+msgid "You can make %(num)s child accounts a day. Try again tomorrow."
+msgstr "Maaari kang mag - ulat sa isang araw ng %(num)s. Subukan muli bukas."
+
+#, machine, plain1, python-format
 msgid "You can make %(num)s proposal a day."
 msgid_plural "You can make %(num)s proposals a day."
 msgstr[0] "Maaari kang gumawa ng %(num)s mungkahi sa isang araw."
@@ -19618,6 +19978,10 @@ msgid "You can make %(num)s wiki edit a day in a guild. Try again tomorrow."
 msgid_plural "You can make %(num)s wiki edits a day in a guild. Try again tomorrow."
 msgstr[0] "Makagagawa ka ng %(num)s wiki editin ang isang araw sa isang guild. Subukan muli bukas."
 msgstr[1] "Makagagawa ka ng %(num)s wiki edites isang araw sa isang guild. Subukan muli bukas."
+
+#, machine, plain1
+msgid "You can make a child account once your own account is confirmed as 18 or over. You can say so in Settings > Content."
+msgstr "Maaari kang gumawa ng isang salaysay sa bata minsang ang iyong sariling salaysay ay mapatunayan na 18 o mahigit pa. Masasabi mo iyan sa settings > Content."
 
 #, machine, plain1
 msgid "You can only create up to 2 guilds per day. Try again later."
@@ -19912,6 +20276,10 @@ msgid "You don't have Premium right now."
 msgstr "Wala kang Premium sa ngayon."
 
 #, machine, plain1
+msgid "You don't have a child account called that."
+msgstr "Wala kang anak."
+
+#, machine, plain1
 msgid "You don't have a coin to redeem."
 msgstr "Wala kang barya para tubusin."
 
@@ -20012,6 +20380,10 @@ msgstr "Ikaw ay naibagsak mula sa +%(guild)s."
 #, machine, plain1
 msgid "You have left the creator fund."
 msgstr "Iniwan mo na ang pondo ng manlilikha."
+
+#, machine, plain1, python-format
+msgid "You have made %(num)s child accounts in the last %(days)s days. Try again later."
+msgstr "Nakagawa ka na ng %(num)s na mga salaysay sa bata sa mga huling araw ng %(days)s. Subukan muli mamaya."
 
 #, machine, plain1
 msgid "You have muted this guild. Its posts stay out of All, For You and Following. Visit your settings or click the <i class='fas fa-ellipsis-h text-small'></i> icon to unmute it."
@@ -20412,12 +20784,20 @@ msgid "Your account can also post new items from feeds by itself, while you keep
 msgstr "Ang inyong ulat ay maaari ring magpaskil ng bagong mga bagay mula sa pagpapakain nang mag - isa, samantalang patuloy ninyong ginagamit ito na gaya ng ginagawa ninyo ngayon. Bawat isa sa mga posteng iyon ay minarkahan bilang automated, at ang mga taong nagtatago ng laman ng bot ay hindi nakikita ang mga ito. Ang iyong sariling mga post, komento, boto at mga chat ay hindi nagbabago. Una itong sinasang - ayunan ng isang admin."
 
 #, machine, plain1
+msgid "Your account can't post automatically while it is age-restricted."
+msgstr "Ang iyong account ay hindi maaaring mag-update nang kusa habang ito ay age-strained."
+
+#, machine, plain1
 msgid "Your account can't post automatically while it is suspended."
 msgstr "Ang iyong account ay hindi maaaring magpaskil nang kusa habang ito'y nakasuspinde."
 
 #, machine, plain1
 msgid "Your account can't publish right now."
 msgstr "Ang inyong ulat ay hindi maaaring maglathala ngayon."
+
+#, machine, plain1
+msgid "Your account can't run a bot while it is age-restricted."
+msgstr "Ang inyong account ay hindi maaaring tumakbo ng bot habang ito ay age-strained."
 
 #, machine, plain1
 msgid "Your account cannot upload right now."
@@ -20438,6 +20818,10 @@ msgstr "Sinuri ang inyong account at handa na: maaari na kayong magpaskil, magko
 #, machine, plain1
 msgid "Your account has been deleted"
 msgstr "Inalis na ang iyong account"
+
+#, machine, plain1, python-format
+msgid "Your account has the child lock on, held by your parent or guardian, since %(date)s."
+msgstr "Ang inyong ulat ay naikakandado ang bata, hawak ng inyong magulang o tagapag - alaga, mula noong %(date)s."
 
 #, machine, plain1, python-format
 msgid "Your account has the child lock on, since %(date)s."
@@ -20490,6 +20874,10 @@ msgstr ""
 "\n"
 "\n"
 "Upang hindi matuloy ang paghihintay, idagdag at tiyakin ang adres ng email sa [Settings > Security](/settings/security)."
+
+#, machine, plain1
+msgid "Your account is your own now. It no longer has the child lock and your parent or guardian can no longer see it. They chose your password: change it in [Settings > Security](/settings/security), or they can still sign in as you."
+msgstr "Ang iyong salaysay ay sarili mo na ngayon. Hindi na nito ipinakulong ang bata at hindi na ito nakikita ng iyong magulang o tagapag - alaga. Pinili nila ang inyong password: palitan ito sa [Settings > Security](/settings/security), o maaari pa rin silang pumirma bilang ikaw."
 
 #, machine, plain1
 msgid "Your account needs to be at least 30 days old to post automatically."
@@ -20592,6 +20980,10 @@ msgstr "Ang inyong mga chat ay end-to-end encrypted, at ang site ay hindi mabasa
 #, machine, plain1, python-format
 msgid "Your chats run on Matrix, an open standard, on %(site)s's own chat server. Besides Chat on this site, you can use them in a Matrix app such as Element (web, desktop and the classic phone apps), FluffyChat or Cinny. They stay end-to-end encrypted there too."
 msgstr "Ang iyong mga chat ay tumatakbo sa Matrix, isang bukas na pamantayan, sa mismong chat server ng %(site)s. Bukod sa Chat sa site na ito, magagamit mo rin ito sa Matrix app tulad ng Element (web, desktop at klasikong phone apps), FluffyChat o Cinny. Sila ay nananatiling dulo-to-end encrypted doon din."
+
+#, machine, plain1
+msgid "Your child accounts will be deleted with yours."
+msgstr "Aalisin sa iyo ang mga account ng iyong anak."
 
 #, glossary, machine, plain1
 msgid "Your circles"
@@ -20736,8 +21128,52 @@ msgstr[0] ""
 msgstr[1] ""
 
 #, machine, plain1
+msgid "Your own password"
+msgstr "Ang iyo mismong kontrasenyas"
+
+#, machine, plain1
+msgid "Your parent or guardian didn't agree to release your account."
+msgstr "Ang iyong magulang o tagapag - alaga ay hindi sumang - ayon na ilabas ang iyong kuwenta."
+
+#, machine, plain1
+msgid "Your parent or guardian has been asked to release your account. Nothing changes until they answer."
+msgstr "Ang iyong magulang o tagapag - alaga ay hinilingang ilabas ang iyong kuwenta. Walang anumang pagbabago hanggang sa sumagot sila."
+
+#, machine, plain1
+msgid "Your parent or guardian has been asked to turn Private posting off."
+msgstr "Ang iyong magulang o ang tagapag - alaga ay hinilingang patayin ang pribadong paglalagay."
+
+#, machine, plain1
 msgid "Your parent or guardian has to agree before Private posting can be turned off."
 msgstr "Ang iyong magulang o tagapag - alaga ay kailangang sumang - ayon bago ang pribadong paglalagay ay maaaring patayin."
+
+#, machine, plain1
+msgid "Your parent or guardian has turned this off for your account."
+msgstr "Pinatay ito ng iyong magulang o tagapag - alaga para sa iyong kuwenta."
+
+#, machine, plain1
+msgid "Your parent or guardian made this account for you. They can see what you do on the site (your posts, comments, votes, bookmarks, follows, guilds, who you chat with, that your account was reported and your recent sign-ins; the site never shows them what your chats say) and they choose which features are on. You can see which in [Settings > Content](/settings/content). They chose your password: change it in [Settings > Security](/settings/security) so that only you know it, because anyone who knows it can sign in as you and read your chats."
+msgstr "Ang iyong magulang o tagapag - alaga ang gumawa nito para sa iyo. Makikita nila kung ano ang ginagawa mo sa site (iyong mga post, comments, boto, bookmark, sumusunod, guilds, sino ang kausap mo, na ang account mo ay iniulat at ang mga post-in mo kamakailan; ang site ay hindi kailanman nagpapakita sa kanila kung ano ang sinasabi ng mga chat mo) at pinipili nila kung anong mga katangian ang meron. Makikita mo kung alin sa [Settings > Contenting](/settings/content). Pinili nila ang inyong password: palitan ito sa [Settings > Security](/settings/security) upang malaman mo lamang ito, sapagkat ang sinumang nakakaalam nito ay maaaring pumirma habang binabasa mo ang iyong mga chat."
+
+#, machine, plain1
+msgid "Your parent or guardian set a new password for your account and you were signed out. Sign in with the new password, then change it in [Settings > Security](/settings/security) so that only you know it."
+msgstr "Ang iyong magulang o tagapag - alaga ay nagtakda ng isang bagong password para sa iyong account at ikaw ay nilagdaan. Hudyat sa pamamagitan ng bagong password, pagkatapos ay palitan ito sa [Settings > Security](/settings/security) upang ikaw lamang ang nakakaalam nito."
+
+#, machine, plain1
+msgid "Your parent or guardian stopped managing your account. It keeps the child lock until you confirm your age in Settings > Content. They chose your password: change it in [Settings > Security](/settings/security), or they can still sign in as you."
+msgstr "Ang iyong magulang o tagapag - alaga ay huminto ng pangangasiwa sa iyong kuwenta. Pinananatili nitong nakakandado ang bata hanggang sa matiyak mo ang iyong edad sa mga setting > Kontento. Pinili nila ang inyong password: palitan ito sa [Settings > Security](/settings/security), o maaari pa rin silang pumirma bilang ikaw."
+
+#, machine, plain1
+msgid "Your parent or guardian turned Private posting off for your account."
+msgstr "Tinanggihan ng iyong magulang o ng tagapag - alaga ang pribadong paglalagay ng pangalan para sa iyong kuwenta."
+
+#, machine, plain1
+msgid "Your parent or guardian wants Private posting to stay on."
+msgstr "Nais ng iyong magulang o tagapag - alaga na manatili ang pribadong koreo."
+
+#, machine, plain1
+msgid "Your parent or guardian's account was suspended, so yours is suspended until theirs is back."
+msgstr "Ang ulat ng iyong magulang o tagapag - alaga ay nasuspinde, kaya ang iyong kuwenta ay nakabitin hanggang sa ang kanila ay bumalik."
 
 #, machine, plain1
 msgid "Your password"
@@ -21116,6 +21552,10 @@ msgid "and %(num)s more"
 msgid_plural "and %(num)s more"
 msgstr[0] "at %(num)s pa"
 msgstr[1] "at %(num)s pa"
+
+#, machine, plain1
+msgid "anonymous"
+msgstr "hindi kilala"
 
 #, machine, plain1
 msgctxt "guildmaster permission"
@@ -21563,6 +22003,10 @@ msgstr "preview ng link"
 msgid "links"
 msgstr "link"
 
+#, machine, plain1
+msgid "looked at by the admins"
+msgstr "tumingin sa admins"
+
 #. after the moderator's name in a guild's moderation log
 #, machine, plain1
 msgid "made a channel"
@@ -21769,6 +22213,10 @@ msgstr "napabalik na %(target)s"
 #, machine, plain1, python-format
 msgid "reinstated post %(target)s"
 msgstr "napabalik pagkatapos ng %(target)s"
+
+#, machine, plain1
+msgid "removed"
+msgstr "tanggalin"
 
 #. follows the moderator's name in a guild's moderation log; %(target)s is a
 #. link

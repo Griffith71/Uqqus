@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ruqqus VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-11-05 16:56+1100\n"
+"POT-Creation-Date: 2026-11-05 20:16+1100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: fi\n"
@@ -1622,12 +1622,24 @@ msgid "(allow beats deny; the channel's own rules apply to everyone else)"
 msgstr "(antaa voittaa kieltää; kanavan omat säännöt koskevat kaikkia muita)"
 
 #, machine, plain1
+msgid "(empty)"
+msgstr "(tyhjä)"
+
+#, machine, plain1
 msgid "(for a stage channel: the post's address or id)"
 msgstr "(lavakanavalle: postin osoite tai id)"
 
 #, machine, plain1
 msgid "(from the original)"
 msgstr "(alkuperäisestä)"
+
+#, machine, plain1
+msgid "(in a private place)"
+msgstr "(yksityisessä paikassa)"
+
+#, machine, plain1
+msgid "(no title)"
+msgstr "(ei otsikkoa)"
 
 #, glossary, machine, plain1
 msgid "(off)"
@@ -2189,6 +2201,10 @@ msgid "<strong>Username:</strong> %(name)s"
 msgstr "<strong>Käyttäjätunnus:</strong> %(name)s"
 
 #, machine, plain1, python-format
+msgid "@%(name)s - %(site)s"
+msgstr "@%(name)s - %(site)s"
+
+#, machine, plain1, python-format
 msgid "@%(name)s - Bots - %(site)s"
 msgstr "@ %(name)s - Botit - %(site)s"
 
@@ -2203,6 +2219,10 @@ msgstr "@ %(name)s lisätty %(curation)s."
 #, python-format
 msgid "@%(name)s asked to publish a shared draft you write: your vote counts. [Open the draft](%(link)s)"
 msgstr ""
+
+#, machine, plain1, python-format
+msgid "@%(name)s asked you to turn Private posting off for their account. You can answer in [Settings > Children](/settings/children)."
+msgstr "@ %(name)s pyysi sinua sammuttamaan Private postituksen tililleen. Voit vastata [Asetukset > Lapset](/settings/children)."
 
 #, machine, plain1, python-format
 msgid "@%(name)s blocked."
@@ -2246,6 +2266,10 @@ msgstr ""
 #, python-format
 msgid "@%(name)s forwarded [a post](%(link)s) to +%(guild)s."
 msgstr ""
+
+#, machine, plain1, python-format
+msgid "@%(name)s has a new password and is signed out everywhere."
+msgstr "@%(name)s on uusi salasana ja on allekirjoitettu kaikkialla."
 
 #, machine, plain1, python-format
 msgid "@%(name)s has already been invited."
@@ -2415,6 +2439,10 @@ msgstr ""
 msgid "@%(name)s reposted [a post](%(link)s)."
 msgstr ""
 
+#, machine, plain1, python-format
+msgid "@%(name)s says they are 18 or over and asked you to release their account. You can answer in [Settings > Children](/settings/children)."
+msgstr "@ %(name)s sanoo, että he ovat 18 tai yli ja pyysi sinua julkaisemaan tilin. Voit vastata [Asetukset > Lapset](/settings/children)."
+
 #, python-format
 msgid "@%(name)s shared [a story](%(link)s)."
 msgstr ""
@@ -2446,6 +2474,10 @@ msgstr "@ %(name)s karkotettiin + %(guild)s"
 #, machine, plain1, python-format
 msgid "@%(name)s was muted in +%(guild)s's channels."
 msgstr "@ %(name)s mykistyi + %(guild)s kanavissa."
+
+#, machine, plain1, python-format
+msgid "@%(name)s's age was confirmed as 18 or over, so their account is their own now and you can no longer see it."
+msgstr "@%(name)s ikä vahvistettiin 18:ksi tai suuremmaksi, joten heidän tilinsä on nyt oma eikä sitä enää näe."
 
 #, machine, plain1, python-format
 msgid "@%(name)s's new posts will go into #%(channel)s."
@@ -2964,6 +2996,10 @@ msgstr "Live lanka ottaa kommentteja, ei levy viestejä."
 #, machine, plain1
 msgid "A member"
 msgstr "Jäsen"
+
+#, machine, plain1
+msgid "A member reported this account."
+msgstr "Eräs jäsen ilmoitti tästä tilistä."
 
 #, machine, plain1, python-format
 msgid "A message can be at most %(count)s character."
@@ -4097,6 +4133,12 @@ msgid_plural "An update can be at most %(num)s characters."
 msgstr[0] "Päivitys voi olla enintään %(num)s merkki."
 msgstr[1] "Päivitys voi olla enintään %(num)s merkkiä."
 
+#, machine, plain1, python-format
+msgid "And %(num)s private guild, which isn't named."
+msgid_plural "And %(num)s private guilds, which aren't named."
+msgstr[0] "Ja yksi yksityinen kilta, jota ei ole nimetty."
+msgstr[1] "Ja %(num)s yksityiskiltaa, joita ei ole nimetty."
+
 #, machine, plain1
 msgid "Animals"
 msgstr "Eläimet"
@@ -4152,6 +4194,10 @@ msgstr "Nimetön"
 msgctxt "label"
 msgid "Anonymous"
 msgstr "Nimetön"
+
+#, machine, plain1
+msgid "Anonymous posting and starting guilds"
+msgstr "Nimetön lähettäminen ja aloituskilta"
 
 #, machine, plain1
 msgid "Anonymous posts and comments count for you like any other. Your points and earnings are shown only to you; the site's admins see the payout list."
@@ -4362,6 +4408,14 @@ msgstr ""
 #, machine, plain1
 msgid "As an author you edit the draft live with them, and every character you type is credited to you. Once the post is published, anyone who can see it can see who wrote what. The authors decide together:"
 msgstr "Kirjoittajana voit muokata luonnoksen elää niiden kanssa, ja jokainen merkki kirjoitat hyvitetään sinulle. Kun posti on julkaistu, kuka tahansa näkee sen voi nähdä kuka kirjoitti mitä. Laatijat päättävät yhdessä:"
+
+#, machine, plain1
+msgid "Ask my parent to turn it off"
+msgstr "Pyydä vanhempiani sammuttamaan se"
+
+#, machine, plain1
+msgid "Asked you"
+msgstr "Kysyin sinulta"
 
 #, machine, plain1, python-format
 msgid "At least %(count)s comments"
@@ -4832,6 +4886,10 @@ msgstr "Tehosta kirjoituksia kuvan, äänen tai videon kanssa"
 #, machine, plain1
 msgid "Boost for this curation's guilds and accounts"
 msgstr "Tehostaa tämän kuratoidun rehun killat ja tilit"
+
+#, machine, plain1
+msgid "Born"
+msgstr "Syntynyt"
 
 #, machine, plain1
 msgid "Bot keys"
@@ -5332,6 +5390,10 @@ msgid "Chat isn't answering right now. Try again in a moment."
 msgstr "Chat ei vastaa juuri nyt. Yritä uudelleen hetken päästä."
 
 #, machine, plain1
+msgid "Chat, group chats and calls"
+msgstr "Chat, ryhmäkeskustelut ja puhelut"
+
+#, machine, plain1
 msgctxt "guildmaster action"
 msgid "Chatban user"
 msgstr "Chatban-käyttäjä"
@@ -5355,6 +5417,14 @@ msgstr "Kemia"
 #, machine, plain1
 msgid "Child - also hide profanity and sensitive content"
 msgstr "Lapsi - piilota myös hävyttömyys ja herkkä sisältö"
+
+#, machine, plain1
+msgid "Children"
+msgstr "Lapset"
+
+#, machine, plain1, python-format
+msgid "Children - %(site)s"
+msgstr "Lapset - %(site)s"
 
 #. "Sign in with ..." is the button the Matrix app shows for this site's
 #. sign-in
@@ -5687,6 +5757,10 @@ msgid "Coins received: %(recent)s in the last 30 days &middot; %(total)s in all.
 msgstr "Saadut kolikot: %(recent)s viimeisten 30 päivän aikana &middot; %(total)s kaikissa. Ne menevät suoraan kolikkotasapainoosi."
 
 #, machine, plain1
+msgid "Coins, tips, Premium and paid circles"
+msgstr "Kolikot, vinkit, Premium ja maksetut ympyrät"
+
+#, machine, plain1
 msgid "Collaborative"
 msgstr "Yhteistyö"
 
@@ -5750,6 +5824,10 @@ msgstr "Kommentti kirjanmerkki."
 #, glossary, machine, plain1
 msgid "Comment posted!"
 msgstr "Kommentti julkaistu!"
+
+#, machine, plain1
+msgid "Commenting"
+msgstr "Kommentti"
 
 #, glossary, machine, plain1
 msgid "Comments"
@@ -6396,8 +6474,16 @@ msgid "Delete role"
 msgstr "Poista rooli"
 
 #, machine, plain1
+msgid "Delete the account"
+msgstr "Poista tili"
+
+#, machine, plain1
 msgid "Delete the published post"
 msgstr "Poista julkaistu viesti"
+
+#, machine, plain1
+msgid "Delete this account"
+msgstr "Poista tämä tili"
 
 #, machine, plain1
 msgid "Delete this category? Its channels stay."
@@ -6458,6 +6544,10 @@ msgstr "Tiedoston poistaminen asemalta tai irrottaminen, poistaa sen viroistasi.
 #, machine, plain1
 msgid "Deleting a file there, or disconnecting, removes it from your posts."
 msgstr "Poistaa tiedoston siellä, tai irrottaa, poistaa sen viroistasi."
+
+#, machine, plain1
+msgid "Deleting your account also deletes your child accounts. You can download their data first in Settings > Children."
+msgstr "Tilisi poistaminen poistaa myös lapsitilisi. Voit ladata niiden tiedot ensin Asetukset > Lapset."
 
 #, machine, plain1
 msgid "Density"
@@ -6700,6 +6790,10 @@ msgid "Done"
 msgstr "Valmis"
 
 #, machine, plain1
+msgid "Download"
+msgstr "Lataa"
+
+#, machine, plain1
 msgctxt "button"
 msgid "Download"
 msgstr "Lataa"
@@ -6713,8 +6807,16 @@ msgid "Download the recording"
 msgstr "Lataa nauhoitus"
 
 #, machine, plain1
+msgid "Download their data"
+msgstr "Lataa tiedot"
+
+#, machine, plain1
 msgid "Download your data"
 msgstr "Lataa tietosi"
+
+#, machine, plain1
+msgid "Downvote"
+msgstr "Downäänestys"
 
 #, glossary, machine, plain1
 msgctxt "verb"
@@ -7042,6 +7144,10 @@ msgstr "Anna syöttöpalvelimen osoite."
 msgid "Enter the feed's address."
 msgstr "Syötä syötteen osoite."
 
+#, machine, plain1
+msgid "Enter the month and year they were born."
+msgstr "Kirjoita kuukausi ja vuosi ne syntyivät."
+
 #, machine, plain1, python-format
 msgid "Enter the six-digit code generated in the authenticator app and your %(site)s account password."
 msgstr "Anna kuusinumeroinen koodi, joka on syntynyt autentikaattorisovelluksessa ja %(site)s-tilin salasanassa."
@@ -7214,6 +7320,10 @@ msgstr "Kaikki näkevät toistensa muutokset niiden mukaan, ja jokainen merkki o
 #, machine, plain1
 msgid "Everything from your guilds and accounts, newest first."
 msgstr "Kaikki killasta ja tileistä, uusin ensin."
+
+#, machine, plain1
+msgid "Everything they post goes only to their Friends circle. Turn it off to let them post in public."
+msgstr "Kaikki mitä he lähettävät menee vain heidän Ystäviensä piiriin. Sammuta se, jotta he voivat olla julkisuudessa."
 
 #, machine, plain1
 msgid "Everything you post goes only to your Friends circle, the people you follow who follow you back, so nothing is public by accident. Your circles can only hold people like that, and you can't forward, repost or write a shared draft. Comments on other people's posts are still public."
@@ -7870,6 +7980,10 @@ msgstr "Ystävät"
 msgctxt "circle name"
 msgid "Friends"
 msgstr "Ystävät"
+
+#, machine, plain1
+msgid "Friends circle"
+msgstr "Ystävien ympyrä"
 
 #, machine, plain1
 msgid "Friends is everyone you follow who follows you back. To share with family, a team or anyone else, make a circle first, then pick it here."
@@ -8676,6 +8790,10 @@ msgstr "Metsästys"
 msgid "I accept the <a href=\"%(url)s\" target=\"_blank\">terms and conditions</a>"
 msgstr "Hyväksyn <a href=\"%(url)s\" target=\"_blank\">ehdot</a>"
 
+#, machine, plain1, python-format
+msgid "I agree to the <a href=\"%(url)s\" target=\"_blank\">Terms</a> for them."
+msgstr "Olen samaa mieltä <a href=\"%(url)s\" target=\"_blank\">Ehdot</a> Heille."
+
 #, machine, plain1
 msgid "I agree to the rules below."
 msgstr "Hyväksyn alla olevat säännöt."
@@ -8711,6 +8829,10 @@ msgstr "Jos tiliisi liittyy sähköpostiosoite, voit käyttää sitä palauttaak
 #, machine, plain1
 msgid "If this was you, there is nothing to do."
 msgstr "Jos se olit sinä, ei ole mitään tekemistä."
+
+#, machine, plain1
+msgid "If you are 18 or over, say so and your parent or guardian will be asked to release your account."
+msgstr "Jos olet 18 tai yli, sano se ja vanhempasi tai huoltajasi pyydetään luovuttamaan tilisi."
 
 #, machine, plain1
 msgid "If you don't have your 2FA device, enter one of your backup codes instead. Each backup code works once. An account that never made backup codes can enter its Recovery Code, which also turns 2FA off."
@@ -9089,6 +9211,14 @@ msgid "It shows, in full, every word and phrase the word filter looks for, in ev
 msgstr "Se näyttää, kokonaisuudessaan, jokainen sana ja sanonta sana suodatin etsii, jokaisella kielellä se kattaa. Se koskee myös liejua ja muuta erittäin loukkaavaa kieltä."
 
 #, machine, plain1
+msgid "It stays a child account with the child lock, but you can no longer see it or change what it can do, and you can't link it again."
+msgstr "Se pysyy lapsen tili lasten lukko, mutta et voi enää nähdä sitä tai muuttaa, mitä se voi tehdä, ja et voi linkittää sitä uudelleen."
+
+#, machine, plain1
+msgid "It stays on the Child word filter, which hides profanity and anything marked sensitive."
+msgstr "Se pysyy lasten sanasuodattimessa, joka kätkee hävyttömyyden ja kaiken herkän."
+
+#, machine, plain1
 msgid "It stays on the Child word filter, which hides profanity and anything marked sensitive. Chat, Spaces, coins, anonymous posting and starting a guild are off, and others can't start a chat or tip you. Your posts go to your Friends circle only unless you turn Private posting off."
 msgstr "Se pysyy lasten sanasuodattimessa, joka kätkee hävyttömyyden ja kaiken herkän. Chat, Spaces, kolikot, anonyymi lähettämistä ja aloittaa killan ovat pois, ja toiset eivät voi aloittaa chat tai kärki sinulle. Sinun viestit menevät Ystävät ympyrän vain ellet sammuta Private lähettämistä pois."
 
@@ -9252,6 +9382,10 @@ msgstr "Kesäkuun seisaus"
 #, machine, plain1
 msgid "K-Pop"
 msgstr "K- Pop"
+
+#, machine, plain1
+msgid "Keep it on"
+msgstr "Pidä se päälläsi"
 
 #, machine, plain1
 msgid "Keep my posts out of All"
@@ -9527,6 +9661,10 @@ msgstr "Leonidsin meteorisuihku"
 msgid "Letters spaced out or split by dots or other marks are read as one word."
 msgstr "Pilkkujen tai muiden merkkien jakamat kirjaimet luetaan yhdeksi sanaksi."
 
+#, machine, plain1
+msgid "Letters, numbers and underscores, 3 to 25 characters."
+msgstr "Kirjaimet, numerot ja alleviivaukset, 3-25 merkkiä."
+
 #, glossary, machine, plain1
 msgid "Lifestyle"
 msgstr "Elämäntapa"
@@ -9766,6 +9904,10 @@ msgstr "Lunar uusi vuosi"
 msgid "Lyrids meteor shower"
 msgstr "Lyridit meteorisuihku"
 
+#, machine, plain1, python-format
+msgid "Made on %(date)s."
+msgstr "Valmistettu %(date)s."
+
 #, glossary, machine, plain1
 msgid "Made with AI"
 msgstr "Tehty tekoälyllä"
@@ -9784,6 +9926,10 @@ msgid "Make a channel"
 msgstr "Tee kanava"
 
 #, machine, plain1
+msgid "Make a child account"
+msgstr "Tee lapsitili"
+
+#, machine, plain1
 msgid "Make a circle people pay to be in, every 30 days, for what you share with it."
 msgstr "Tehdä ympyrän ihmiset maksavat olla, joka 30. päivä, mitä jaat sen kanssa."
 
@@ -9798,6 +9944,10 @@ msgstr "Tee sivu"
 #, machine, plain1
 msgid "Make a role"
 msgstr "Tee rooli"
+
+#, machine, plain1
+msgid "Make an account for a child under 18 and decide what it can do. You can see what they do on the site (their posts, comments, votes, bookmarks, follows, guilds, the names of who they chat with and their recent sign-ins). The site never shows you what their chats say: chats are end-to-end encrypted. You choose their password, so until they change it you can sign in as them and read their chats: tell them to set their own. They are told all of this in their own Settings."
+msgstr "Tee tili alle 18-vuotiaalle lapselle ja päätä mitä se voi tehdä. Voit nähdä, mitä he tekevät sivustolla (niiden viestit, kommentit, äänet, kirjanmerkit, seuraavat, killat, kenen kanssa he keskustelevat ja heidän viimeaikaiset kirjautumisensa). Sivusto ei koskaan näytä, mitä heidän chatit sanovat: chatit ovat aina salattuja. Valitset heidän salasanansa, joten kunnes he vaihtavat sen, voit kirjautua sisään heidän nimellään ja lukea heidän chattejaan: käske heidän asettaa omat. Heille kerrotaan tästä kaikesta omissa asetuksissaan."
 
 #, machine, plain1, python-format
 msgid "Make an app first in <a href=\"%(url)s\">Settings &gt; Apps</a>; a key works through it."
@@ -10136,6 +10286,10 @@ msgid "Mon"
 msgstr "Ma"
 
 #, machine, plain1
+msgid "Month"
+msgstr "Kuukausi"
+
+#, machine, plain1
 msgctxt "table heading"
 msgid "Month"
 msgstr "Kuukausi"
@@ -10144,6 +10298,10 @@ msgstr "Kuukausi"
 msgctxt "time range"
 msgid "Month"
 msgstr "Kuukausi"
+
+#, machine, plain1
+msgid "Month they were born"
+msgstr "Kuukausi he syntyivät"
 
 #, machine, plain1
 msgid "Monthly creator fund payouts"
@@ -10483,6 +10641,10 @@ msgstr "Uusi sivu: %(address)s"
 #, machine, plain1
 msgid "New paid circle"
 msgstr "Uusi maksettu ympyrä"
+
+#, machine, plain1
+msgid "New password"
+msgstr "Uusi salasana"
 
 #, machine, plain1
 msgid "New posts that are getting attention, with no account filling the page."
@@ -10868,6 +11030,10 @@ msgstr "Kukaan uusi ei voi tilata. Nykyiset tilaajat säilyttävät maksamansa."
 msgid "Nobody types here"
 msgstr "Täällä ei ole tyyppejä"
 
+#, machine, plain1, python-format
+msgid "Nobody under %(age)s may have an account where you are."
+msgstr "Kenelläkään %(age)s:n alla ei välttämättä ole tiliä, missä olet."
+
 #, machine, plain1
 msgid "Nobody yet."
 msgstr "Ei ketään vielä."
@@ -10988,6 +11154,10 @@ msgstr "Tilaajien jättäminen ottamatta"
 #, machine, plain1
 msgid "Not trending any more"
 msgstr "Ei ole enää menossa"
+
+#, machine, plain1
+msgid "Not yet"
+msgstr "Ei vielä"
 
 #, glossary, machine, plain1
 msgid "Not your default:"
@@ -11110,6 +11280,10 @@ msgid "Nothing written yet."
 msgstr "Mitään ei ole vielä kirjoitettu."
 
 #, machine, plain1
+msgid "Nothing yet."
+msgstr "Ei vielä mitään."
+
+#, machine, plain1
 msgid "Notification types"
 msgstr "Ilmoitustyypit"
 
@@ -11157,6 +11331,10 @@ msgstr "Oseania"
 msgid "Oddly Satisfying"
 msgstr "Outoa tyydytystä"
 
+#, machine, plain1
+msgid "Off"
+msgstr "Pois"
+
 #. slow mode in a guild's channel is switched off.
 #, machine, plain1
 msgctxt "slow mode"
@@ -11183,6 +11361,10 @@ msgstr "Vanhimmat"
 #, machine, plain1
 msgid "Old Password"
 msgstr "Vanha salasana"
+
+#, machine, plain1
+msgid "On"
+msgstr "On"
 
 #. "On" marks a linked storage account that is in use
 #, machine, plain1
@@ -11259,6 +11441,10 @@ msgstr "Yhtä versiota ei voi näyttää sinulle."
 #, machine, plain1
 msgid "One of those circles isn't yours any more. Choose again."
 msgstr "Yksi niistä piireistä ei ole enää sinun. Valitse uudestaan."
+
+#, machine, plain1
+msgid "One of your child accounts owes money, so your account can't be deleted yet."
+msgstr "Yksi lapsitileistäsi on velkaa, joten tiliäsi ei voi vielä poistaa."
 
 #, machine, plain1
 msgid "One-time codes for the day you lose your authenticator. Making a new set replaces every earlier code, used or not."
@@ -11582,6 +11768,10 @@ msgstr "Vain postin kirjoittaja ja kirjoittajat voivat lähettää päivityksiä
 #, machine, plain1
 msgid "Only the post's author and co-authors can run its live updates."
 msgstr "Vain postin kirjoittaja ja muut kirjoittajat voivat ajaa sen live-päivityksiä."
+
+#, machine, plain1
+msgid "Only used to check their age. It isn't kept."
+msgstr "Tarkistin vain heidän ikänsä. Sitä ei pidetä."
 
 #, machine, plain1
 msgid "Only when I turn them on"
@@ -12577,6 +12767,10 @@ msgid "Posted on that day."
 msgstr "Postitettu sinä päivänä."
 
 #, machine, plain1
+msgid "Posting"
+msgstr "Postitus"
+
+#, machine, plain1
 msgid "Posting cooldown"
 msgstr "Jäähdytetään"
 
@@ -13414,6 +13608,10 @@ msgid "Relationships"
 msgstr "Suhteet"
 
 #, machine, plain1
+msgid "Release the account"
+msgstr "Julkaise tili"
+
+#, machine, plain1
 msgid "Religion"
 msgstr "Uskonto"
 
@@ -13663,6 +13861,10 @@ msgstr "Raportoidut viestit"
 msgctxt "noun"
 msgid "Reports"
 msgstr "Ilmiannot"
+
+#, machine, plain1
+msgid "Reports about them"
+msgstr "Niitä koskevat raportit"
 
 #, machine, plain1
 msgid "Reports opened"
@@ -14001,6 +14203,10 @@ msgctxt "weekday"
 msgid "Sat"
 msgstr "La"
 
+#, glossary, machine, plain1
+msgid "Save"
+msgstr "Tallenna"
+
 #, machine, plain1
 msgctxt "button"
 msgid "Save"
@@ -14310,6 +14516,10 @@ msgid "See what is trending"
 msgstr "Katso, mikä on trendikästä"
 
 #, machine, plain1
+msgid "See what they do"
+msgstr "Katso mitä he tekevät"
+
+#, machine, plain1
 msgid "See your username"
 msgstr "Katso käyttäjätunnustasi"
 
@@ -14408,6 +14618,10 @@ msgstr "Syyskuun päiväntasaus"
 #, machine, plain1
 msgid "Serious"
 msgstr "Vakava"
+
+#, machine, plain1
+msgid "Set a new password"
+msgstr "Aseta uusi salasana"
 
 #, machine, plain1
 msgid "Set a price to let people pay to join."
@@ -15057,6 +15271,10 @@ msgid "Spaces"
 msgstr "Spaces"
 
 #, machine, plain1
+msgid "Spaces and live threads"
+msgstr "Tilat ja elävät langat"
+
+#, machine, plain1
 msgid "Spaces are started in the Spaces area."
 msgstr "Tilat ovat alkaneet avaruusalueella."
 
@@ -15191,6 +15409,14 @@ msgstr "Kiinnitetty julkaisu"
 #, machine, plain1
 msgid "Still here to read"
 msgstr "Yhä täällä lukemassa"
+
+#, machine, plain1
+msgid "Stop managing"
+msgstr "Lopeta hallinta"
+
+#, machine, plain1
+msgid "Stop managing this account"
+msgstr "Lopeta tämän tilin hallinta"
 
 #, machine, plain1
 msgid "Stop posting automatically"
@@ -15367,6 +15593,10 @@ msgstr "Tukijat…"
 #, machine, plain1
 msgid "Survival & Bushcraft"
 msgstr "Survival & Bushcraft"
+
+#, machine, plain1
+msgid "Suspended"
+msgstr "Keskeytetty"
 
 #, machine, plain1, python-format
 msgid "Switch @%(name)s off for good? Its posts stay; the bot never posts again."
@@ -15840,6 +16070,10 @@ msgid "That isn't a valid username."
 msgstr "Se ei ole kelvollinen käyttäjänimi."
 
 #, machine, plain1
+msgid "That isn't something you can switch."
+msgstr "Sitä ei voi vaihtaa."
+
+#, machine, plain1
 msgid "That key couldn't be saved."
 msgstr "Avainta ei voitu pelastaa."
 
@@ -16070,6 +16304,14 @@ msgstr "Sahel"
 #, machine, plain1
 msgid "The Space could not be made."
 msgstr "Avaruutta ei voitu tehdä."
+
+#, machine, plain1, python-format
+msgid "The account @%(name)s is deleted."
+msgstr "Tili @%(name)s poistetaan."
+
+#, machine, plain1, python-format
+msgid "The account @%(name)s is made. They sign in with the username and password you gave."
+msgstr "Tili @%(name)s on tehty. He kirjautuvat käyttäjätunnuksella ja salasanalla."
 
 #, machine, plain1, python-format
 msgid "The account age must be a whole number of days, 0 to %(max)s."
@@ -16413,6 +16655,10 @@ msgstr "Viimeisen seitsemän päivän äänekkäimmät virat."
 #, machine, plain1, python-format
 msgid "The name %(host)s could not be found."
 msgstr "Nimeä %(host)s ei löytynyt."
+
+#, machine, plain1
+msgid "The newest of what they have done. Only the names of who they chat with are shown, never what a chat says: chats are end-to-end encrypted."
+msgstr "Uusinta, mitä he ovat tehneet. Vain niiden nimet, joiden kanssa he juttelevat, näytetään, eivät koskaan mitä chat sanoo: chatit ovat salaisia."
 
 #, machine, plain1
 msgid "The numbers are always shown on your profile. This decides who can open each list and see the accounts on it. An account is only listed where its own setting allows it too."
@@ -16764,12 +17010,20 @@ msgid "They already have this role."
 msgstr "Heillä on jo tämä rooli."
 
 #, machine, plain1
+msgid "They are 18 or over, so they can make their own account."
+msgstr "He ovat 18 tai yli, joten he voivat tehdä oman tilin."
+
+#, machine, plain1
 msgid "They are already in this circle."
 msgstr "He ovat jo tässä piirissä."
 
 #, machine, plain1
 msgid "They are not told. Anyone you block leaves your circles."
 msgstr "Heille ei kerrota. Kaikki, jotka estät, lähtevät ympyrästä."
+
+#, machine, plain1
+msgid "They are signed out everywhere. If they use chat, they may be asked for their recovery code."
+msgstr "Niitä on kaikkialla. Jos he käyttävät chattia, heiltä voidaan pyytää palautuskoodia."
 
 #, machine, plain1, python-format
 msgid "They aren't in %(circle)s."
@@ -16784,6 +17038,38 @@ msgid "They aren't muted here."
 msgstr "Ne eivät ole mykkiä täällä."
 
 #, machine, plain1
+msgid "They asked you to turn Private posting off."
+msgstr "Sinua pyydettiin sulkemaan sotamies."
+
+#, machine, plain1
+msgid "They can buy and spend coins, tip, buy Premium and join or run paid circles."
+msgstr "He voivat ostaa ja viettää kolikoita, kärki, ostaa Premium ja liittyä tai ajaa maksettu piireissä."
+
+#, machine, plain1
+msgid "They can comment."
+msgstr "He voivat kommentoida."
+
+#, machine, plain1
+msgid "They can host and join Spaces and run live threads. Voice calls in a Space also need Chat to be on."
+msgstr "He voivat isännöidä ja liittyä Spaces ja ajaa live lankaa. Äänipuhelut avaruudessa tarvitsevat myös Chatia."
+
+#, machine, plain1
+msgid "They can make posts."
+msgstr "He voivat tehdä töitä."
+
+#, machine, plain1
+msgid "They can message people, join group chats and make calls. The site never shows you what a chat says: chats are end-to-end encrypted. Whoever knows their password can still sign in and read them."
+msgstr "He voivat viestittää ihmisille, liittyä ryhmäkeskusteluihin ja soittaa puheluita. Sivusto ei koskaan näytä, mitä chat sanoo: chatit ovat salattuja. Salasanan tietäjä voi yhä kirjautua sisään ja lukea ne."
+
+#, machine, plain1
+msgid "They can post anonymously and start a guild. You can still see who wrote an anonymous post."
+msgstr "He voivat lähettää nimettömästi ja perustaa killan. Näet yhä, kuka kirjoitti nimettömän postin."
+
+#, machine, plain1
+msgid "They can see what you do on the site: your posts, comments, votes, bookmarks, follows, guilds, who you chat with, that your account was reported, and your recent sign-ins. The site never shows them what your chats say, because chats are end-to-end encrypted. But anyone who knows your password, a parent who chose it included, can sign in as you: change it in Security so that only you know it. They choose which of these are on for your account:"
+msgstr "He voivat nähdä, mitä teet sivustolla: viestit, kommentit, äänet, kirjanmerkit, seuraavat, killat, jonka kanssa keskustelet, että tilisi on raportoitu, ja viimeaikaiset kirjautumisen. Sivusto ei koskaan näytä, mitä chatit sanovat, koska chatit ovat salattuja. Mutta kuka tahansa, joka tietää salasanasi, vanhempi, joka valitsi sen mukaan, voi kirjautua sisään kuten sinä: muuttaa sen Turvallisuus niin, että vain sinä tiedät sen. He valitsevat mitä näistä ovat tilillesi:"
+
+#, machine, plain1
 msgid "They can't comment on your posts or comments, chat with you or notify you by mentioning you. They are not told, but they may work it out if they try to comment on something of yours."
 msgstr "He eivät voi kommentoida viestejäsi tai kommenttejasi, keskustella kanssasi tai ilmoittaa sinulle mainitsemalla sinut. Heille ei kerrota, mutta he voivat selvittää asian, jos he yrittävät kommentoida jotain teidän."
 
@@ -16796,12 +17082,20 @@ msgid "They go straight to your coin balance."
 msgstr "Ne menevät suoraan kolikkotasapainoosi."
 
 #, machine, plain1
+msgid "They haven't asked for that."
+msgstr "He eivät ole pyytäneet sitä."
+
+#, machine, plain1
 msgid "They need to be in the guild, and not exiled from it."
 msgstr "Heidän on oltava killassa eikä karkotettava sitä."
 
 #, machine, plain1
 msgid "They need to join the channel first."
 msgstr "Heidän täytyy liittyä kanavaan ensin."
+
+#, machine, plain1
+msgid "They say they are 18 or over and asked you to release their account. If you do, it becomes their own and you can no longer see it."
+msgstr "He sanovat olevansa 18 tai yli ja pyysivät sinua julkaisemaan tilinsä. Jos teet sen, siitä tulee heidän omansa."
 
 #, machine, plain1
 msgid "They're already a helper."
@@ -16916,6 +17210,14 @@ msgstr "Tämä tili on väliaikaisesti keskeytetty osoitteesta %(site)s. Palaa m
 #, machine, plain1
 msgid "This account is private"
 msgstr "Tämä tili on yksityinen"
+
+#, machine, plain1
+msgid "This account is suspended."
+msgstr "Tämä tili on keskeytetty."
+
+#, machine, plain1
+msgid "This account owes money, so it can't be deleted yet."
+msgstr "Tämä tili on velkaa, joten sitä ei voi vielä poistaa."
 
 #, machine, plain1
 msgid "This account posts about sensitive topics"
@@ -17051,6 +17353,10 @@ msgstr "Tämä kuratoi rehun killat ja tilit"
 #, machine, plain1
 msgid "This curation's rules took too long to run. Its owner can make them narrower."
 msgstr "Tämä kuratoidun rehun säännöt kestivät liian kauan. Sen omistaja voi tehdä niistä kapeampia."
+
+#, machine, plain1
+msgid "This deletes their account and everything on it. It can't be undone. You can download their data first."
+msgstr "Tämä poistaa heidän tilinsä ja kaiken. Sitä ei voi perua. Voit ladata tiedot ensin."
 
 #, machine, plain1
 msgid "This draft hasn't been published."
@@ -17382,6 +17688,10 @@ msgid "Thu"
 msgstr "To"
 
 #, machine, plain1
+msgid "Tick the box to agree to the Terms for them."
+msgstr "Tick ruutuun hyväksyä Ehdot heille."
+
+#, machine, plain1
 msgid "Tick the box to agree to the rules first."
 msgstr "Valitse laatikko hyväksyäksesi säännöt ensin."
 
@@ -17653,6 +17963,10 @@ msgstr "Ti"
 #, machine, plain1
 msgid "Turanian Steppe"
 msgstr "Turanian Steppe"
+
+#, machine, plain1
+msgid "Turn it off"
+msgstr "Sammuta se"
 
 #, machine, plain1, python-format
 msgid "Turn off notifications from +%(guild)s"
@@ -18111,6 +18425,10 @@ msgstr "Lataa banneri"
 #, machine, plain1
 msgid "Upload picture"
 msgstr "Lähetä kuva"
+
+#, machine, plain1
+msgid "Upvote"
+msgstr "Äänestys"
 
 #, glossary, machine, plain1
 msgctxt "verb"
@@ -18832,6 +19150,10 @@ msgid "Where you are, the law means your age has to be confirmed with an age-che
 msgstr "Missä olet, laki tarkoittaa, että ikäsi on vahvistettava ikätarkistuksella, ennen kuin näet arkaluontoista sisältöä tai vahvaa kieltä."
 
 #, machine, plain1
+msgid "Where you are, your age has to be confirmed with an age-check service before you can make a child account."
+msgstr "Missä olet, ikäsi on vahvistettava iän tarkistuspalvelulla ennen kuin voit tehdä lapsen tilin."
+
+#, machine, plain1
 msgid "Where you are, your age has to be confirmed with an age-check service."
 msgstr "Missä olet, ikäsi on vahvistettava iän tarkistuspalvelulla."
 
@@ -18923,9 +19245,17 @@ msgstr "Kuka päättää"
 msgid "Who follows you"
 msgstr "Kuka sinua seuraa"
 
+#, machine, plain1
+msgid "Who reported them, and what they wrote, isn't shown to anyone but the admins."
+msgstr "Kuka heistä raportoi ja mitä he kirjoittivat, ei näy muille kuin viranomaisille."
+
 #, glossary, machine, plain1
 msgid "Who subscribes to your Circle"
 msgstr "Piirisi tilaajat"
+
+#, machine, plain1
+msgid "Who they chat with"
+msgstr "Kenen kanssa he juttelevat"
 
 #, machine, plain1
 msgid "Who to follow"
@@ -19306,10 +19636,18 @@ msgctxt "guildmaster action"
 msgid "Yank post"
 msgstr "Yank-asema"
 
+#, machine, plain1
+msgid "Year"
+msgstr "Vuosi"
+
 #, glossary, machine, plain1
 msgctxt "time range"
 msgid "Year"
 msgstr "Vuosi"
+
+#, machine, plain1
+msgid "Year they were born"
+msgstr "Vuosi he syntyivät"
 
 #, machine, plain1
 msgctxt "colour"
@@ -19472,6 +19810,14 @@ msgid "You aren't subscribed to that circle."
 msgstr "Sinua ei ole merkitty siihen kehään."
 
 #, machine, plain1
+msgid "You asked your parent or guardian to release your account. They haven't answered yet."
+msgstr "Pyysit vanhempaasi tai huoltajaasi luovuttamaan tilisi. He eivät ole vastanneet vielä."
+
+#, machine, plain1
+msgid "You asked your parent or guardian to turn this off. They haven't answered yet."
+msgstr "Pyysit vanhempaasi tai huoltajaasi sammuttamaan tämän. He eivät ole vastanneet vielä."
+
+#, machine, plain1
 msgid "You can add pictures at 500 Rep, or earlier with Premium"
 msgstr "Voit lisätä kuvia 500 Maineen tai aiemmin Premium"
 
@@ -19562,6 +19908,16 @@ msgstr[0] "Saat korkeintaan yhden kanavan."
 msgstr[1] "Voit olla enintään %(num)s kanavaa."
 
 #, machine, plain1, python-format
+msgid "You can have at most %(num)s child account."
+msgid_plural "You can have at most %(num)s child accounts."
+msgstr[0] "Voit saada enintään yhden lapsen tilin."
+msgstr[1] "Voit saada enintään %(num)s lapsitilin."
+
+#, machine, plain1, python-format
+msgid "You can have at most %(num)s child accounts."
+msgstr "Voit saada enintään %(num)s lapsitilejä."
+
+#, machine, plain1, python-format
 msgid "You can host at most %(num)s Space a day."
 msgid_plural "You can host at most %(num)s Spaces a day."
 msgstr[0] "Voit isännöidä enintään %(num)s Space päivässä."
@@ -19588,6 +19944,10 @@ msgid "You can look around and set up your profile; posting, comments, votes and
 msgstr "Voit katsella ympärillesi ja asettaa profiilisi; lähettämistä, kommentteja, äänestyksiä ja seuraa kun tarkistus on tehty."
 
 #, machine, plain1, python-format
+msgid "You can make %(num)s child accounts a day. Try again tomorrow."
+msgstr "Voit tehdä %(num)s lapsen tilin päivässä. Yritä uudelleen huomenna."
+
+#, machine, plain1, python-format
 msgid "You can make %(num)s proposal a day."
 msgid_plural "You can make %(num)s proposals a day."
 msgstr[0] "Voit tehdä yhden ehdotuksen päivässä."
@@ -19598,6 +19958,10 @@ msgid "You can make %(num)s wiki edit a day in a guild. Try again tomorrow."
 msgid_plural "You can make %(num)s wiki edits a day in a guild. Try again tomorrow."
 msgstr[0] "Voit tehdä yhden wiki edit päivittäin killassa. Yritä uudelleen huomenna."
 msgstr[1] "Voit tehdä %(num)s wiki edits päivässä killassa. Yritä uudelleen huomenna."
+
+#, machine, plain1
+msgid "You can make a child account once your own account is confirmed as 18 or over. You can say so in Settings > Content."
+msgstr "Voit tehdä lapsitilin, kun oma tilisi on vahvistettu 18:ksi tai sitä suuremmaksi. Voit sanoa sen Asetuksissa > Sisältö."
 
 #, machine, plain1
 msgid "You can only create up to 2 guilds per day. Try again later."
@@ -19892,6 +20256,10 @@ msgid "You don't have Premium right now."
 msgstr "Sinulla ei ole. Premium Nyt heti."
 
 #, machine, plain1
+msgid "You don't have a child account called that."
+msgstr "Ei sinulla ole lapsitiliä."
+
+#, machine, plain1
 msgid "You don't have a coin to redeem."
 msgstr "Sinulla ei ole kolikkoa."
 
@@ -19992,6 +20360,10 @@ msgstr "Sinut on kaadettu +%(guild)s."
 #, machine, plain1
 msgid "You have left the creator fund."
 msgstr "Jätit luojarahaston."
+
+#, machine, plain1, python-format
+msgid "You have made %(num)s child accounts in the last %(days)s days. Try again later."
+msgstr "Olet tehnyt %(num)s lapsitilin viimeisten %(days)s päivän aikana. Yritä myöhemmin uudestaan."
 
 #, machine, plain1
 msgid "You have muted this guild. Its posts stay out of All, For You and Following. Visit your settings or click the <i class='fas fa-ellipsis-h text-small'></i> icon to unmute it."
@@ -20392,12 +20764,20 @@ msgid "Your account can also post new items from feeds by itself, while you keep
 msgstr "Tilisi voi myös lähettää uusia kohteita syötteistä itse, samalla kun käytät sitä kuten nyt. Jokainen näistä viroista on merkitty automaattiseksi, eivätkä bot-sisältöä piilottelevat ihmiset näe niitä. Omat viestisi, kommenttisi, äänesi ja keskustelusi eivät muutu. Hallinto hyväksyy sen ensin."
 
 #, machine, plain1
+msgid "Your account can't post automatically while it is age-restricted."
+msgstr "Tilisi ei voi lähettää automaattisesti, kun se on ikärajoitettu."
+
+#, machine, plain1
 msgid "Your account can't post automatically while it is suspended."
 msgstr "Tilisi ei voi lähettää automaattisesti, kun se on keskeytetty."
 
 #, machine, plain1
 msgid "Your account can't publish right now."
 msgstr "Tilisi ei voi julkaista juuri nyt."
+
+#, machine, plain1
+msgid "Your account can't run a bot while it is age-restricted."
+msgstr "Tilisi ei voi pyörittää bottia, kun se on ikärajoitteinen."
 
 #, machine, plain1
 msgid "Your account cannot upload right now."
@@ -20418,6 +20798,10 @@ msgstr "Tilisi on tarkistettu ja valmis: voit nyt postittaa, kommentoida, ääne
 #, machine, plain1
 msgid "Your account has been deleted"
 msgstr "Tilisi on poistettu"
+
+#, machine, plain1, python-format
+msgid "Your account has the child lock on, held by your parent or guardian, since %(date)s."
+msgstr "Tilisi on lukinnut lapsen vanhemman tai huoltajan hallussa %(date)s."
 
 #, machine, plain1, python-format
 msgid "Your account has the child lock on, since %(date)s."
@@ -20470,6 +20854,10 @@ msgstr ""
 "\n"
 "\n"
 "Jos haluat jättää odottamisen väliin, lisää ja tarkista sähköpostiosoitteesi [Asetukset > Security](/settings/security)."
+
+#, machine, plain1
+msgid "Your account is your own now. It no longer has the child lock and your parent or guardian can no longer see it. They chose your password: change it in [Settings > Security](/settings/security), or they can still sign in as you."
+msgstr "Tilisi on nyt omasi. Sillä ei ole enää lapsen lukkoa eikä vanhempi tai huoltajasi voi enää nähdä sitä. He valitsivat salasanasi: vaihda se [Asetukset > Turvallisuus](/settings/security), tai he voivat silti kirjautua sisään sinuna."
 
 #, machine, plain1
 msgid "Your account needs to be at least 30 days old to post automatically."
@@ -20572,6 +20960,10 @@ msgstr "Keskustelunne ovat salattuja, eikä sivusto voi lukea niitä. Avain, jok
 #, machine, plain1, python-format
 msgid "Your chats run on Matrix, an open standard, on %(site)s's own chat server. Besides Chat on this site, you can use them in a Matrix app such as Element (web, desktop and the classic phone apps), FluffyChat or Cinny. They stay end-to-end encrypted there too."
 msgstr "Chats toimii Matrix, avoin standardi, on %(site)sOma chat-palvelin. Sitä paitsi Chat tällä sivustolla, voit käyttää niitä Matrix-sovelluksen kuten Element (verkko, työpöytä ja klassinen puhelinsovellukset), FluffyChat tai CinnyNe pysyvät salattuina sielläkin."
+
+#, machine, plain1
+msgid "Your child accounts will be deleted with yours."
+msgstr "Lapsitilisi poistetaan sinun tililtäsi."
 
 #, glossary, machine, plain1
 msgid "Your circles"
@@ -20716,8 +21108,52 @@ msgstr[0] "Sinun oma sekoitus on uusin %(num)s matching post. 0 kytkee osan pois
 msgstr[1] "Oma yhdistelmäsi on uusin nolla vastaavaa virkaa. %(num)s kytkee osan pois päältä, 10 tekee siitä eniten."
 
 #, machine, plain1
+msgid "Your own password"
+msgstr "Oma salasana"
+
+#, machine, plain1
+msgid "Your parent or guardian didn't agree to release your account."
+msgstr "Vanhempasi tai huoltajasi ei suostunut luovuttamaan tiliäsi."
+
+#, machine, plain1
+msgid "Your parent or guardian has been asked to release your account. Nothing changes until they answer."
+msgstr "Vanhempaasi tai huoltajaasi on pyydetty luovuttamaan tilisi. Mikään ei muutu ennen kuin he vastaavat."
+
+#, machine, plain1
+msgid "Your parent or guardian has been asked to turn Private posting off."
+msgstr "Vanhempaasi tai huoltajaasi on pyydetty sulkemaan sotamies."
+
+#, machine, plain1
 msgid "Your parent or guardian has to agree before Private posting can be turned off."
 msgstr "Vanhempasi tai huoltajasi on suostuttava, ennen kuin yksityinen postitus voidaan sulkea."
+
+#, machine, plain1
+msgid "Your parent or guardian has turned this off for your account."
+msgstr "Vanhempasi tai huoltajasi on sulkenut tämän."
+
+#, machine, plain1
+msgid "Your parent or guardian made this account for you. They can see what you do on the site (your posts, comments, votes, bookmarks, follows, guilds, who you chat with, that your account was reported and your recent sign-ins; the site never shows them what your chats say) and they choose which features are on. You can see which in [Settings > Content](/settings/content). They chose your password: change it in [Settings > Security](/settings/security) so that only you know it, because anyone who knows it can sign in as you and read your chats."
+msgstr "Vanhempasi tai holhoojasi teki tämän sinulle. He voivat nähdä, mitä teet sivustolla (viestit, kommentit, äänet, kirjanmerkit, seuraavat, killat, joiden kanssa keskustelet, että tilisi on raportoitu ja viimeaikaiset kirjautuminen; sivusto ei koskaan näytä heille, mitä chats sanovat) ja he valitsevat mitkä ominaisuudet ovat päällä. Voit nähdä, mitä [Asetukset > Sisältö](/settings/content). He valitsivat salasanasi: vaihda se [Asetukset > Security](/settings/security), jotta vain sinä tiedät sen, koska kuka tahansa, joka tietää sen voi kirjautua sisään kuten sinä ja lukea keskustelusi."
+
+#, machine, plain1
+msgid "Your parent or guardian set a new password for your account and you were signed out. Sign in with the new password, then change it in [Settings > Security](/settings/security) so that only you know it."
+msgstr "Vanhempasi tai holhoojasi asetti uuden salasanan tilillesi ja sinut erotettiin. Kirjaudu sisään uudella salasanalla ja vaihda se sitten muotoon [Asetukset > Security](/settings/security), jotta vain sinä tiedät sen."
+
+#, machine, plain1
+msgid "Your parent or guardian stopped managing your account. It keeps the child lock until you confirm your age in Settings > Content. They chose your password: change it in [Settings > Security](/settings/security), or they can still sign in as you."
+msgstr "Vanhempasi tai holhoojasi lopetti tilisi hoitamisen. Se pitää lapsen lukossa, kunnes vahvistat ikäsi Asetuksissa > Sisältö. He valitsivat salasanasi: vaihda se [Asetukset > Turvallisuus](/settings/security), tai he voivat silti kirjautua sisään sinuna."
+
+#, machine, plain1
+msgid "Your parent or guardian turned Private posting off for your account."
+msgstr "Vanhempasi tai holhoojasi hylkäsi Private postauksen tilillesi."
+
+#, machine, plain1
+msgid "Your parent or guardian wants Private posting to stay on."
+msgstr "Vanhempasi tai huoltajasi haluaa yksityiskomennuksen jäävän."
+
+#, machine, plain1
+msgid "Your parent or guardian's account was suspended, so yours is suspended until theirs is back."
+msgstr "Vanhempasi tai holhoojasi tili on hyllytetty."
 
 #, machine, plain1
 msgid "Your password"
@@ -21099,6 +21535,10 @@ msgid "and %(num)s more"
 msgid_plural "and %(num)s more"
 msgstr[0] "ja %(num)s lisää"
 msgstr[1] "ja %(num)s lisää"
+
+#, machine, plain1
+msgid "anonymous"
+msgstr "nimetön"
 
 #, machine, plain1
 msgctxt "guildmaster permission"
@@ -21546,6 +21986,10 @@ msgstr "linkin esikatselu"
 msgid "links"
 msgstr "linkit"
 
+#, machine, plain1
+msgid "looked at by the admins"
+msgstr "katsoa viranomaisten"
+
 #. after the moderator's name in a guild's moderation log
 #, machine, plain1
 msgid "made a channel"
@@ -21752,6 +22196,10 @@ msgstr "palautettu %(target)s"
 #, machine, plain1, python-format
 msgid "reinstated post %(target)s"
 msgstr "palautettu virka %(target)s"
+
+#, machine, plain1
+msgid "removed"
+msgstr "poistettu"
 
 #. follows the moderator's name in a guild's moderation log; %(target)s is a
 #. link

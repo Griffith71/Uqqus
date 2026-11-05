@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ruqqus VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-11-05 16:56+1100\n"
+"POT-Creation-Date: 2026-11-05 20:16+1100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: ko\n"
@@ -1502,6 +1502,10 @@ msgstr "(하지만 당신은해야합니다. 있다 16 MB 모든 파일 업로�
 msgid "(allow beats deny; the channel's own rules apply to everyone else)"
 msgstr "(deny를 이길 수 있습니다. 채널의 자신의 규칙은 다른 사람에게 적용됩니다)"
 
+#, machine, plain1
+msgid "(empty)"
+msgstr "(요금)"
+
 #, machine
 msgid "(for a stage channel: the post's address or id)"
 msgstr "(단계 채널의 경우: 포스트의 주소 또는 id)"
@@ -1509,6 +1513,14 @@ msgstr "(단계 채널의 경우: 포스트의 주소 또는 id)"
 #, machine
 msgid "(from the original)"
 msgstr "(원래에서)"
+
+#, machine, plain1
+msgid "(in a private place)"
+msgstr "(개인 장소에서)"
+
+#, machine, plain1
+msgid "(no title)"
+msgstr "( 제목 없음)"
 
 #, glossary, machine, plain1
 msgid "(off)"
@@ -2062,6 +2074,10 @@ msgstr "<strong>시간:</strong> %(when)s"
 msgid "<strong>Username:</strong> %(name)s"
 msgstr "<strong>사용자 이름:</strong> %(name)s"
 
+#, machine, plain1, python-format
+msgid "@%(name)s - %(site)s"
+msgstr "@%(name)s - %(site)s"
+
 #, machine, python-format
 msgid "@%(name)s - Bots - %(site)s"
 msgstr "@%(name)s - 보츠 - %(site)s"
@@ -2077,6 +2093,10 @@ msgstr "@%(name)s %(curation)s에 추가됨."
 #, python-format
 msgid "@%(name)s asked to publish a shared draft you write: your vote counts. [Open the draft](%(link)s)"
 msgstr ""
+
+#, machine, plain1, python-format
+msgid "@%(name)s asked you to turn Private posting off for their account. You can answer in [Settings > Children](/settings/children)."
+msgstr "@%(name)s 계정에서 개인 게시물을 끄는 것을 요청했습니다. [설정 > 어린이](/settings/children)에 응답할 수 있습니다."
 
 #, machine, python-format
 msgid "@%(name)s blocked."
@@ -2120,6 +2140,10 @@ msgstr ""
 #, python-format
 msgid "@%(name)s forwarded [a post](%(link)s) to +%(guild)s."
 msgstr ""
+
+#, machine, plain1, python-format
+msgid "@%(name)s has a new password and is signed out everywhere."
+msgstr "@%(name)s는 새로운 암호를 가지고 있으며 어디서나 서명됩니다."
 
 #, machine, python-format
 msgid "@%(name)s has already been invited."
@@ -2289,6 +2313,10 @@ msgstr ""
 msgid "@%(name)s reposted [a post](%(link)s)."
 msgstr ""
 
+#, machine, plain1, python-format
+msgid "@%(name)s says they are 18 or over and asked you to release their account. You can answer in [Settings > Children](/settings/children)."
+msgstr "@%(name)s 그들은 18 세 이상이며 계정을 공개하도록 요청했습니다. [설정 > 어린이](/settings/children)에 응답할 수 있습니다."
+
 #, python-format
 msgid "@%(name)s shared [a story](%(link)s)."
 msgstr ""
@@ -2320,6 +2348,10 @@ msgstr "@%(name)s 는 +%(guild)s 에 의거되었습니다"
 #, machine, python-format
 msgid "@%(name)s was muted in +%(guild)s's channels."
 msgstr "@%(name)s는 +%(guild)s의 채널에 매핑되었습니다."
+
+#, machine, plain1, python-format
+msgid "@%(name)s's age was confirmed as 18 or over, so their account is their own now and you can no longer see it."
+msgstr "@%(name)s의 나이는 18 세 이상으로 확인되었으므로 계정은 이제 자신의 계정이며 더 이상 볼 수 없습니다."
 
 #, machine, python-format
 msgid "@%(name)s's new posts will go into #%(channel)s."
@@ -2802,6 +2834,10 @@ msgstr "라이브 스레드는 코멘트를 가지고, 메시지를 표시하지
 #, machine
 msgid "A member"
 msgstr "회원정보"
+
+#, machine, plain1
+msgid "A member reported this account."
+msgstr "회원은이 계정을 보고했습니다."
 
 #, machine, python-format
 msgid "A message can be at most %(count)s character."
@@ -3906,6 +3942,11 @@ msgid "An update can be at most %(num)s character."
 msgid_plural "An update can be at most %(num)s characters."
 msgstr[0] "업데이트는 대부분의 %(num)s 문자에있을 수 있습니다."
 
+#, machine, plain1, python-format
+msgid "And %(num)s private guild, which isn't named."
+msgid_plural "And %(num)s private guilds, which aren't named."
+msgstr[0] "그리고 %(num)s private guilds, 이는 이름이 아닙니다."
+
 #, machine
 msgid "Animals"
 msgstr "동물들"
@@ -3961,6 +4002,10 @@ msgstr "익명"
 msgctxt "label"
 msgid "Anonymous"
 msgstr "익명"
+
+#, machine, plain1
+msgid "Anonymous posting and starting guilds"
+msgstr "익명 게시물 및 guilds 시작"
 
 #, machine
 msgid "Anonymous posts and comments count for you like any other. Your points and earnings are shown only to you; the site's admins see the payout list."
@@ -4171,6 +4216,14 @@ msgstr "Aryan 고원"
 #, machine
 msgid "As an author you edit the draft live with them, and every character you type is credited to you. Once the post is published, anyone who can see it can see who wrote what. The authors decide together:"
 msgstr "작가로서 당신은 그와 함께 초안을 편집하고, 당신이 유형이 당신에게 적립되는 모든 문자. 게시물이 게시되면 누구도 볼 수 있는지 볼 수 있습니다. 저자는 함께 결정한다 :"
+
+#, machine, plain1
+msgid "Ask my parent to turn it off"
+msgstr "내 부모에게 그것을 끄는"
+
+#, machine, plain1
+msgid "Asked you"
+msgstr "자주 묻는 질문"
 
 #, machine, python-format
 msgid "At least %(count)s comments"
@@ -4631,6 +4684,10 @@ msgstr "사진, 소리 또는 비디오로 게시물에 대한 부스트"
 #, machine, plain1
 msgid "Boost for this curation's guilds and accounts"
 msgstr "이 curated feed's guilds 및 계정의 부스트"
+
+#, machine, plain1
+msgid "Born"
+msgstr "이름 *"
 
 #, machine
 msgid "Bot keys"
@@ -5129,6 +5186,10 @@ msgstr "채팅 앱은이 사이트에 아직 전환되지 않습니다."
 msgid "Chat isn't answering right now. Try again in a moment."
 msgstr "채팅은 지금 당장 응답하지 않습니다. 순간에 다시 시도."
 
+#, machine, plain1
+msgid "Chat, group chats and calls"
+msgstr "채팅, 그룹 채팅 및 통화"
+
 #, machine
 msgctxt "guildmaster action"
 msgid "Chatban user"
@@ -5153,6 +5214,14 @@ msgstr "채용정보"
 #, machine
 msgid "Child - also hide profanity and sensitive content"
 msgstr "아이들 - 또한 profanity와 과민한 내용을 숨깁니다"
+
+#, machine, plain1
+msgid "Children"
+msgstr "이름 *"
+
+#, machine, plain1, python-format
+msgid "Children - %(site)s"
+msgstr "어린이 - %(site)s"
 
 #. "Sign in with ..." is the button the Matrix app shows for this site's
 #. sign-in
@@ -5484,6 +5553,10 @@ msgstr "코인 수령"
 msgid "Coins received: %(recent)s in the last 30 days &middot; %(total)s in all. They go straight to your coin balance."
 msgstr "Coins 수신: %(recent)s 마지막 30 일 &middot; %(total)s 모든. 동전 잔액으로 직진합니다."
 
+#, machine, plain1
+msgid "Coins, tips, Premium and paid circles"
+msgstr "동전, 팁, Premium 및 유료 원"
+
 #, machine
 msgid "Collaborative"
 msgstr "회사연혁"
@@ -5548,6 +5621,10 @@ msgstr "댓글 책갈피."
 #, glossary, machine, plain1
 msgid "Comment posted!"
 msgstr "댓글이 게시되었습니다!"
+
+#, machine, plain1
+msgid "Commenting"
+msgstr "이름 *"
 
 #, glossary, machine, plain1
 msgid "Comments"
@@ -6191,9 +6268,17 @@ msgstr "게시물 삭제?"
 msgid "Delete role"
 msgstr "역할 삭제"
 
+#, machine, plain1
+msgid "Delete the account"
+msgstr "계정 삭제"
+
 #, machine
 msgid "Delete the published post"
 msgstr "게시된 게시물 삭제"
+
+#, machine, plain1
+msgid "Delete this account"
+msgstr "이 계정 삭제"
 
 #, machine
 msgid "Delete this category? Its channels stay."
@@ -6254,6 +6339,10 @@ msgstr "드라이브에 파일을 삭제, 또는 차단, 게시물에서 제거.
 #, machine
 msgid "Deleting a file there, or disconnecting, removes it from your posts."
 msgstr "파일 삭제, 또는 연결, 게시물에서 제거."
+
+#, machine, plain1
+msgid "Deleting your account also deletes your child accounts. You can download their data first in Settings > Children."
+msgstr "계정을 삭제하면 자녀 계정을 삭제합니다. 설정에서 데이터를 먼저 다운로드 할 수 > 어린이."
 
 #, machine
 msgid "Density"
@@ -6493,6 +6582,10 @@ msgstr "현금 또는 암호화폐 후원"
 msgid "Done"
 msgstr "이름 *"
 
+#, machine, plain1
+msgid "Download"
+msgstr "다운로드"
+
 #, machine
 msgctxt "button"
 msgid "Download"
@@ -6506,9 +6599,17 @@ msgstr "내 데이터"
 msgid "Download the recording"
 msgstr "다운로드"
 
+#, machine, plain1
+msgid "Download their data"
+msgstr "데이터 다운로드"
+
 #, machine
 msgid "Download your data"
 msgstr "데이터 다운로드"
+
+#, machine, plain1
+msgid "Downvote"
+msgstr "전체장편"
 
 #, glossary, machine, plain1
 msgctxt "verb"
@@ -6835,6 +6936,10 @@ msgstr "피드 서버의 주소를 입력하십시오."
 msgid "Enter the feed's address."
 msgstr "피드의 주소를 입력하십시오."
 
+#, machine, plain1
+msgid "Enter the month and year they were born."
+msgstr "달과 년을 입력하여 탄생했습니다."
+
 #, machine, python-format
 msgid "Enter the six-digit code generated in the authenticator app and your %(site)s account password."
 msgstr "정통 앱과 %(site)s 계정 암호로 생성된 6자리 코드를 입력하십시오."
@@ -7005,6 +7110,10 @@ msgstr "모두가 서로의 변화가 그들이 유형으로 볼 수 있으며, 
 #, machine
 msgid "Everything from your guilds and accounts, newest first."
 msgstr "당신의 길드 및 계정에서 모두, 최신."
+
+#, machine, plain1
+msgid "Everything they post goes only to their Friends circle. Turn it off to let them post in public."
+msgstr "그들은 모든 게시물은 친구에게만 간다. 그것을 끄러워서 그 포스트를 공개합니다."
 
 #, machine, plain1
 msgid "Everything you post goes only to your Friends circle, the people you follow who follow you back, so nothing is public by accident. Your circles can only hold people like that, and you can't forward, repost or write a shared draft. Comments on other people's posts are still public."
@@ -7654,6 +7763,10 @@ msgstr "이름 *"
 msgctxt "circle name"
 msgid "Friends"
 msgstr "이름 *"
+
+#, machine, plain1
+msgid "Friends circle"
+msgstr "친구 원"
 
 #, machine
 msgid "Friends is everyone you follow who follows you back. To share with family, a team or anyone else, make a circle first, then pick it here."
@@ -8457,6 +8570,10 @@ msgstr "관련 기사"
 msgid "I accept the <a href=\"%(url)s\" target=\"_blank\">terms and conditions</a>"
 msgstr "나는 동의 <a href=\"%(url)s\" target=\"_blank\">기간 및 조건</a>"
 
+#, machine, plain1, python-format
+msgid "I agree to the <a href=\"%(url)s\" target=\"_blank\">Terms</a> for them."
+msgstr "나는 동의한다 <a href=\"%(url)s\" target=\"_blank\">제품 정보</a> 그들을 위해."
+
 #, machine
 msgid "I agree to the rules below."
 msgstr "아래 규칙에 동의합니다."
@@ -8492,6 +8609,10 @@ msgstr "계정과 관련된 이메일 주소가 있으면 %(site)s을 복구 할
 #, machine
 msgid "If this was you, there is nothing to do."
 msgstr "이런 일이 있다면, 아무것도 할 수 없습니다."
+
+#, machine, plain1
+msgid "If you are 18 or over, say so and your parent or guardian will be asked to release your account."
+msgstr "18세 이상인 경우 부모와 보호자가 귀하의 계정을 공개하도록 요청합니다."
 
 #, machine, plain1
 msgid "If you don't have your 2FA device, enter one of your backup codes instead. Each backup code works once. An account that never made backup codes can enter its Recovery Code, which also turns 2FA off."
@@ -8868,6 +8989,14 @@ msgid "It shows, in full, every word and phrase the word filter looks for, in ev
 msgstr "그것은 전체에서, 모든 단어와 단어 필터를 구문, 모든 언어에서 그것은 커버. 그것은 slurs와 다른 극단적으로 공격적인 언어를 포함합니다."
 
 #, machine, plain1
+msgid "It stays a child account with the child lock, but you can no longer see it or change what it can do, and you can't link it again."
+msgstr "아이 자물쇠로 어린이 계정을 유지하지만 더 이상 그것을 볼 수 없거나 무엇을 할 수 있는지 변경할 수 없으며 다시 연결할 수 없습니다."
+
+#, machine, plain1
+msgid "It stays on the Child word filter, which hides profanity and anything marked sensitive."
+msgstr "그것은 아이 워드 필터에 머물, 이는 profanity를 숨기고 아무것도 민감한."
+
+#, machine, plain1
 msgid "It stays on the Child word filter, which hides profanity and anything marked sensitive. Chat, Spaces, coins, anonymous posting and starting a guild are off, and others can't start a chat or tip you. Your posts go to your Friends circle only unless you turn Private posting off."
 msgstr "그것은 아이 워드 필터에 머물, 이는 profanity를 숨기고 아무것도 민감한. 채팅, 공간, 동전, 익명 게시 및 guild 시작, 다른 사람은 채팅 또는 팁을 시작할 수 없습니다. 귀하의 게시물은 개인 게시물을 끄지 않고 친구 원으로 이동합니다."
 
@@ -9027,6 +9156,10 @@ msgstr "6월 solstice"
 #, machine, plain1
 msgid "K-Pop"
 msgstr "K-팝"
+
+#, machine, plain1
+msgid "Keep it on"
+msgstr "계속하기"
 
 #, machine, plain1
 msgid "Keep my posts out of All"
@@ -9297,6 +9430,10 @@ msgstr "Leonids meteor 샤워"
 msgid "Letters spaced out or split by dots or other marks are read as one word."
 msgstr "편지는 점 또는 다른 표에 의해 밖으로 또는 분할 한 단어로 읽습니다."
 
+#, machine, plain1
+msgid "Letters, numbers and underscores, 3 to 25 characters."
+msgstr "문자, 숫자 및 밑줄, 3 ~ 25 문자."
+
 #, glossary, machine, plain1
 msgid "Lifestyle"
 msgstr "라이프스타일"
@@ -9533,6 +9670,10 @@ msgstr "새해 복 많이 받으세요"
 msgid "Lyrids meteor shower"
 msgstr "Lyrids meteor 샤워"
 
+#, machine, plain1, python-format
+msgid "Made on %(date)s."
+msgstr "%(date)s에 만든."
+
 #, glossary, machine, plain1
 msgid "Made with AI"
 msgstr "AI로 생성됨"
@@ -9550,6 +9691,10 @@ msgstr "+%(guild)s 개인 정보 보호 정책 앞으로 게시물은 승인 된
 msgid "Make a channel"
 msgstr "채널 만들기"
 
+#, machine, plain1
+msgid "Make a child account"
+msgstr "아이 계정 만들기"
+
 #, machine
 msgid "Make a circle people pay to be in, every 30 days, for what you share with it."
 msgstr "원 사람들이 지불합니다., 30 일마다, 당신이 그것을 공유하는 것을 위해."
@@ -9565,6 +9710,10 @@ msgstr "자주 묻는 질문"
 #, machine
 msgid "Make a role"
 msgstr "역할 만들기"
+
+#, machine, plain1
+msgid "Make an account for a child under 18 and decide what it can do. You can see what they do on the site (their posts, comments, votes, bookmarks, follows, guilds, the names of who they chat with and their recent sign-ins). The site never shows you what their chats say: chats are end-to-end encrypted. You choose their password, so until they change it you can sign in as them and read their chats: tell them to set their own. They are told all of this in their own Settings."
+msgstr "18세 미만의 자녀를 위한 계정을 만들고 무엇을 할 수 있는지 결정하십시오. 그들은 사이트에 무엇을 볼 수 있습니다 (어떤 게시물, 의견, 투표, 북마크, 다음과 같은, 길드, 그들이 채팅하는 사람의 이름 및 최근 로그인). 사이트가 자신의 채팅이 말하는 것을 결코 보여줍니다 : 채팅은 암호화되지 않습니다. 당신은 그들의 암호를 선택, 그래서 그들이 그것을 변경할 때까지 당신은 그들과 채팅을 읽을 수: 그들에게 자신의 설정에 게 말. 그들은 그들의 자신의 설정에서 모두 말했다."
 
 #, machine, python-format
 msgid "Make an app first in <a href=\"%(url)s\">Settings &gt; Apps</a>; a key works through it."
@@ -9895,6 +10044,10 @@ msgctxt "weekday"
 msgid "Mon"
 msgstr "담당자 :"
 
+#, machine, plain1
+msgid "Month"
+msgstr "월 ~ 월"
+
 #, machine
 msgctxt "table heading"
 msgid "Month"
@@ -9904,6 +10057,10 @@ msgstr "월 ~ 월"
 msgctxt "time range"
 msgid "Month"
 msgstr "이번 달"
+
+#, machine, plain1
+msgid "Month they were born"
+msgstr "그들이 태어난 달"
 
 #, machine
 msgid "Monthly creator fund payouts"
@@ -10239,6 +10396,10 @@ msgstr "새로운 페이지: %(address)s"
 #, machine
 msgid "New paid circle"
 msgstr "새로운 유료 원"
+
+#, machine, plain1
+msgid "New password"
+msgstr "새로운 비밀번호"
 
 #, machine
 msgid "New posts that are getting attention, with no account filling the page."
@@ -10622,6 +10783,10 @@ msgstr "Nobody 새로운 구독 할 수 있습니다. 현재 가입자는 그들
 msgid "Nobody types here"
 msgstr "Nobody 유형 여기에"
 
+#, machine, plain1, python-format
+msgid "Nobody under %(age)s may have an account where you are."
+msgstr "%(age)s 미만은 계정이있을 수 있습니다."
+
 #, machine
 msgid "Nobody yet."
 msgstr "아직 아무도."
@@ -10742,6 +10907,10 @@ msgstr "가입안내"
 #, machine
 msgid "Not trending any more"
 msgstr "더 이상 유행하지 않음"
+
+#, machine, plain1
+msgid "Not yet"
+msgstr "아직 없음"
 
 #, glossary, machine, plain1
 msgid "Not your default:"
@@ -10864,6 +11033,10 @@ msgid "Nothing written yet."
 msgstr "아직 작성되지 않았습니다."
 
 #, machine, plain1
+msgid "Nothing yet."
+msgstr "아직 없습니다."
+
+#, machine, plain1
 msgid "Notification types"
 msgstr "공지사항"
 
@@ -10910,6 +11083,10 @@ msgstr "운영 정보"
 msgid "Oddly Satisfying"
 msgstr "Oddly 만족"
 
+#, machine, plain1
+msgid "Off"
+msgstr "이름 *"
+
 #. slow mode in a guild's channel is switched off.
 #, machine
 msgctxt "slow mode"
@@ -10936,6 +11113,10 @@ msgstr "오래된순"
 #, machine
 msgid "Old Password"
 msgstr "비밀번호"
+
+#, machine, plain1
+msgid "On"
+msgstr "이름 *"
 
 #. "On" marks a linked storage account that is in use
 #, machine
@@ -11011,6 +11192,10 @@ msgstr "이 개정 중 하나는 당신에게 표시 할 수 없습니다."
 #, machine
 msgid "One of those circles isn't yours any more. Choose again."
 msgstr "그 원 중 하나는 더 이상 당신의 것이 아닙니다. 자주 묻는 질문."
+
+#, machine, plain1
+msgid "One of your child accounts owes money, so your account can't be deleted yet."
+msgstr "자녀 계정 중 하나는 돈을 owes, 그래서 귀하의 계정은 아직 삭제 될 수 없습니다."
 
 #, machine
 msgid "One-time codes for the day you lose your authenticator. Making a new set replaces every earlier code, used or not."
@@ -11332,6 +11517,10 @@ msgstr "게시물의 저자 및 공동 저자 만 업데이트 할 수 있습니
 #, machine
 msgid "Only the post's author and co-authors can run its live updates."
 msgstr "게시물의 저자 및 공동 저자 만 라이브 업데이트를 실행할 수 있습니다."
+
+#, machine, plain1
+msgid "Only used to check their age. It isn't kept."
+msgstr "만 나이를 확인하는 데 사용됩니다. 그것은 유지되지 않습니다."
 
 #, machine, plain1
 msgid "Only when I turn them on"
@@ -12323,6 +12512,10 @@ msgstr "그날 또는 그날에 게시."
 msgid "Posted on that day."
 msgstr "그 날에 게시 됨."
 
+#, machine, plain1
+msgid "Posting"
+msgstr "이름 *"
+
 #, machine
 msgid "Posting cooldown"
 msgstr "연락처"
@@ -13155,6 +13348,10 @@ msgstr "거부됨"
 msgid "Relationships"
 msgstr "관계"
 
+#, machine, plain1
+msgid "Release the account"
+msgstr "계좌 개설"
+
 #, machine
 msgid "Religion"
 msgstr "종교"
@@ -13404,6 +13601,10 @@ msgstr "메시지 *"
 msgctxt "noun"
 msgid "Reports"
 msgstr "신고"
+
+#, machine, plain1
+msgid "Reports about them"
+msgstr "그들에게 대한 보고서"
 
 #, machine
 msgid "Reports opened"
@@ -13740,6 +13941,10 @@ msgctxt "weekday"
 msgid "Sat"
 msgstr ""
 
+#, glossary, machine, plain1
+msgid "Save"
+msgstr "저장"
+
 #, machine, plain1
 msgctxt "button"
 msgid "Save"
@@ -14047,6 +14252,10 @@ msgstr "전체 사이트 목록 보기"
 msgid "See what is trending"
 msgstr "동향은 무엇입니까"
 
+#, machine, plain1
+msgid "See what they do"
+msgstr "그들이 무엇을 할지"
+
 #, machine
 msgid "See your username"
 msgstr "사용자 이름"
@@ -14146,6 +14355,10 @@ msgstr "9월 equinox"
 #, machine
 msgid "Serious"
 msgstr "이름 *"
+
+#, machine, plain1
+msgid "Set a new password"
+msgstr "새 비밀번호 설정"
 
 #, machine
 msgid "Set a price to let people pay to join."
@@ -14787,6 +15000,10 @@ msgstr "우주 기록"
 msgid "Spaces"
 msgstr "스페이스"
 
+#, machine, plain1
+msgid "Spaces and live threads"
+msgstr "공간과 실"
+
 #, machine
 msgid "Spaces are started in the Spaces area."
 msgstr "우주는 우주에서 시작된다."
@@ -14921,6 +15138,14 @@ msgstr "고정 게시물"
 #, machine
 msgid "Still here to read"
 msgstr "아직도 여기 읽기"
+
+#, machine, plain1
+msgid "Stop managing"
+msgstr "회사연혁"
+
+#, machine, plain1
+msgid "Stop managing this account"
+msgstr "이 계정 관리"
 
 #, machine
 msgid "Stop posting automatically"
@@ -15095,6 +15320,10 @@ msgstr "지원자…"
 #, machine, plain1
 msgid "Survival & Bushcraft"
 msgstr "생존 & 부시"
+
+#, machine, plain1
+msgid "Suspended"
+msgstr "한국어"
 
 #, machine, python-format
 msgid "Switch @%(name)s off for good? Its posts stay; the bot never posts again."
@@ -15567,6 +15796,10 @@ msgstr "그것은 역할을하지 않습니다."
 msgid "That isn't a valid username."
 msgstr "그것은 유효한 사용자 이름이 아닙니다."
 
+#, machine, plain1
+msgid "That isn't something you can switch."
+msgstr "전환 할 수있는 것은 아닙니다."
+
 #, machine
 msgid "That key couldn't be saved."
 msgstr "그 열쇠는 저장될 수 없습니다."
@@ -15798,6 +16031,14 @@ msgstr "사헬"
 #, machine
 msgid "The Space could not be made."
 msgstr "공간은 만들 수 없습니다."
+
+#, machine, plain1, python-format
+msgid "The account @%(name)s is deleted."
+msgstr "계정 @%(name)s은 삭제됩니다."
+
+#, machine, plain1, python-format
+msgid "The account @%(name)s is made. They sign in with the username and password you gave."
+msgstr "계정 @%(name)s가 만들어졌습니다. 그들은 당신이 준 사용자 이름과 암호와 로그인."
 
 #, machine, python-format
 msgid "The account age must be a whole number of days, 0 to %(max)s."
@@ -16135,6 +16376,10 @@ msgstr "마지막 7 일의 가장 투표 된 게시물."
 #, machine, python-format
 msgid "The name %(host)s could not be found."
 msgstr "이름 %(host)s는 찾을 수 없습니다."
+
+#, machine, plain1
+msgid "The newest of what they have done. Only the names of who they chat with are shown, never what a chat says: chats are end-to-end encrypted."
+msgstr "그들이 행한 것의 가장 새로운. 그들이 채팅하는 사람의 이름 만, 채팅이 말하는 것을 결코: 채팅은 암호화되지 않습니다."
 
 #, machine
 msgid "The numbers are always shown on your profile. This decides who can open each list and see the accounts on it. An account is only listed where its own setting allows it too."
@@ -16479,6 +16724,10 @@ msgstr "이 사용자는 온건한 +%(guild)s에 초대되었습니다."
 msgid "They already have this role."
 msgstr "그들은 이미이 역할을합니다."
 
+#, machine, plain1
+msgid "They are 18 or over, so they can make their own account."
+msgstr "그들은 18 세 이상, 그래서 그들은 자신의 계정을 만들 수 있습니다."
+
 #, machine
 msgid "They are already in this circle."
 msgstr "그들은 이미이 원에 있습니다."
@@ -16486,6 +16735,10 @@ msgstr "그들은 이미이 원에 있습니다."
 #, machine
 msgid "They are not told. Anyone you block leaves your circles."
 msgstr "그들은 말하지 않습니다. 누구든지 당신은 당신의 원형을 나눕니다."
+
+#, machine, plain1
+msgid "They are signed out everywhere. If they use chat, they may be asked for their recovery code."
+msgstr "그들은 어디에 나와 있습니다. 그들이 채팅을 사용하는 경우, 그들은 그들의 복구 코드를 요청할 수 있습니다."
 
 #, machine, python-format
 msgid "They aren't in %(circle)s."
@@ -16499,6 +16752,38 @@ msgstr "그들은이 그룹에 있지 않습니다."
 msgid "They aren't muted here."
 msgstr "그들은 여기에 무서워하지 않습니다."
 
+#, machine, plain1
+msgid "They asked you to turn Private posting off."
+msgstr "그들은 개인 게시물을 끄는 것을 물었다."
+
+#, machine, plain1
+msgid "They can buy and spend coins, tip, buy Premium and join or run paid circles."
+msgstr "그들은 동전, 팁, Premium을 구입하고 가입하거나 유료 원을 실행 할 수 있습니다."
+
+#, machine, plain1
+msgid "They can comment."
+msgstr "그들은 할 수 있습니다."
+
+#, machine, plain1
+msgid "They can host and join Spaces and run live threads. Voice calls in a Space also need Chat to be on."
+msgstr "그들은 공간을 호스팅하고 라이브 스레드를 실행할 수 있습니다. 스페이스에서 음성 통화는 채팅이 필요합니다."
+
+#, machine, plain1
+msgid "They can make posts."
+msgstr "그들은 게시물을 만들 수 있습니다."
+
+#, machine, plain1
+msgid "They can message people, join group chats and make calls. The site never shows you what a chat says: chats are end-to-end encrypted. Whoever knows their password can still sign in and read them."
+msgstr "그들은 메시지를 보낼 수 있습니다, 그룹 채팅에 가입하고 통화를합니다. 이 사이트는 채팅이 말하는 것을 결코 보여줍니다 : 채팅은 암호화되지 않습니다. 암호를 아는 사람은 여전히 로그인하고 읽을 수 있습니다."
+
+#, machine, plain1
+msgid "They can post anonymously and start a guild. You can still see who wrote an anonymous post."
+msgstr "그들은 익명으로 게시하고 guild를 시작합니다. 익명 게시물을 썼습니다."
+
+#, machine, plain1
+msgid "They can see what you do on the site: your posts, comments, votes, bookmarks, follows, guilds, who you chat with, that your account was reported, and your recent sign-ins. The site never shows them what your chats say, because chats are end-to-end encrypted. But anyone who knows your password, a parent who chose it included, can sign in as you: change it in Security so that only you know it. They choose which of these are on for your account:"
+msgstr "그들은 사이트에서 할 수있는 것을 볼 수 있습니다 : 귀하의 게시물, 의견, 표, 북마크, 다음과, 길드, 당신은 당신과 채팅, 귀하의 계정이보고되었다, 그리고 최근 로그인. 사이트에는 채팅이 종료되기 때문에 채팅이 말하는 것을 결코 보여줍니다. 그러나 암호를 알고있는 사람, 포함 된 부모, 당신으로 로그인 할 수 있습니다: 보안에서 그것을 변경 그래서 당신은 그것을 알고. 그들은 이러한 계정에 대한 선택:"
+
 #, machine
 msgid "They can't comment on your posts or comments, chat with you or notify you by mentioning you. They are not told, but they may work it out if they try to comment on something of yours."
 msgstr "그들은 당신의 게시물이나 의견에 댓글을 달 수 없습니다, 당신과 채팅하거나 당신을 언급하여 통지. 그들은 말하지 않습니다, 그러나 그들은 그들이 당신의 것의 무언가에 댓글하려고하면 작동 할 수 있습니다."
@@ -16511,6 +16796,10 @@ msgstr "그들은이 역할을하지 않습니다."
 msgid "They go straight to your coin balance."
 msgstr "동전 잔액으로 직진합니다."
 
+#, machine, plain1
+msgid "They haven't asked for that."
+msgstr "그들은 그것을 요청하지 않았다."
+
 #, machine
 msgid "They need to be in the guild, and not exiled from it."
 msgstr "그들은 길드에있을 필요가, 그것에서 exiled."
@@ -16518,6 +16807,10 @@ msgstr "그들은 길드에있을 필요가, 그것에서 exiled."
 #, machine
 msgid "They need to join the channel first."
 msgstr "먼저 채널에 가입해야합니다."
+
+#, machine, plain1
+msgid "They say they are 18 or over and asked you to release their account. If you do, it becomes their own and you can no longer see it."
+msgstr "그들은 18 세 이상이며 계정을 공개하도록 요청했습니다. 당신이 할 경우, 그것은 그들의 자신의되고 더 이상 그것을 볼 수 없습니다."
 
 #, machine
 msgid "They're already a helper."
@@ -16631,6 +16924,14 @@ msgstr "이 계정은 %(site)s에서 일시적으로 중단되었습니다. 나�
 #, machine
 msgid "This account is private"
 msgstr "이 계정은 개인"
+
+#, machine, plain1
+msgid "This account is suspended."
+msgstr "이 계정은 중단됩니다."
+
+#, machine, plain1
+msgid "This account owes money, so it can't be deleted yet."
+msgstr "이 계정 owes 돈, 그래서 아직 삭제 될 수 없습니다."
 
 #, machine
 msgid "This account posts about sensitive topics"
@@ -16765,6 +17066,10 @@ msgstr "이 curated feed's guilds 과 계정"
 #, machine, plain1
 msgid "This curation's rules took too long to run. Its owner can make them narrower."
 msgstr "이 curated feed's 규칙은 너무 오래 걸렸습니다. 그것의 소유자는 그들을 더 좁힐 수 있습니다."
+
+#, machine, plain1
+msgid "This deletes their account and everything on it. It can't be undone. You can download their data first."
+msgstr "이 계정과 모든 것을 삭제합니다. 그것은 undone일 수 없습니다. 먼저 데이터를 다운로드 할 수 있습니다."
 
 #, machine
 msgid "This draft hasn't been published."
@@ -17093,6 +17398,10 @@ msgctxt "weekday"
 msgid "Thu"
 msgstr "₢ 킹"
 
+#, machine, plain1
+msgid "Tick the box to agree to the Terms for them."
+msgstr "약관에 동의합니다."
+
 #, machine
 msgid "Tick the box to agree to the rules first."
 msgstr "규칙에 동의합니다."
@@ -17361,6 +17670,10 @@ msgstr "Tue"
 #, machine
 msgid "Turanian Steppe"
 msgstr "Turanian 단계"
+
+#, machine, plain1
+msgid "Turn it off"
+msgstr "설정하기"
 
 #, machine, plain1, python-format
 msgid "Turn off notifications from +%(guild)s"
@@ -17817,6 +18130,10 @@ msgstr "공지사항"
 #, machine
 msgid "Upload picture"
 msgstr "그림 업로드"
+
+#, machine, plain1
+msgid "Upvote"
+msgstr "전체장편"
 
 #, glossary, machine, plain1
 msgctxt "verb"
@@ -18536,6 +18853,10 @@ msgid "Where you are, the law means your age has to be confirmed with an age-che
 msgstr "당신이 어디에, 법은 당신이 민감한 내용 또는 강한 언어를 볼 수 있기 전에 연령 검사 서비스로 확인해야합니다."
 
 #, machine, plain1
+msgid "Where you are, your age has to be confirmed with an age-check service before you can make a child account."
+msgstr "당신이 어디, 당신의 나이는 자녀 계정을 만들 수 전에 연령 검사 서비스로 확인해야합니다."
+
+#, machine, plain1
 msgid "Where you are, your age has to be confirmed with an age-check service."
 msgstr "당신이 어디에, 당신의 나이는 나이 체크 서비스로 확인되어야 합니다."
 
@@ -18627,9 +18948,17 @@ msgstr "누가 결정"
 msgid "Who follows you"
 msgstr "누가 너를 따르고"
 
+#, machine, plain1
+msgid "Who reported them, and what they wrote, isn't shown to anyone but the admins."
+msgstr "누가 그들을보고, 그들이 쓴 것, 누구에게도 표시되지 않지만 관리자."
+
 #, glossary, machine, plain1
 msgid "Who subscribes to your Circle"
 msgstr "내 서클 구독자"
+
+#, machine, plain1
+msgid "Who they chat with"
+msgstr "그들은 누구와 채팅"
 
 #, machine
 msgid "Who to follow"
@@ -19010,10 +19339,18 @@ msgctxt "guildmaster action"
 msgid "Yank post"
 msgstr "Yank 포스트"
 
+#, machine, plain1
+msgid "Year"
+msgstr "1 년"
+
 #, glossary, machine, plain1
 msgctxt "time range"
 msgid "Year"
 msgstr "올해"
+
+#, machine, plain1
+msgid "Year they were born"
+msgstr "생년월일"
 
 #, machine
 msgctxt "colour"
@@ -19173,6 +19510,14 @@ msgid "You aren't subscribed to that circle."
 msgstr "당신은 그 원에 가입하지 않습니다."
 
 #, machine, plain1
+msgid "You asked your parent or guardian to release your account. They haven't answered yet."
+msgstr "부모 또는 보호자가 계정을 공개하도록 요청했습니다. 아직 대답하지 않았습니다."
+
+#, machine, plain1
+msgid "You asked your parent or guardian to turn this off. They haven't answered yet."
+msgstr "당신은 부모 또는 보호자를 요청하여이 꺼집니다. 아직 대답하지 않았습니다."
+
+#, machine, plain1
 msgid "You can add pictures at 500 Rep, or earlier with Premium"
 msgstr "500 Reputation 또는 Premium에 사진을 추가 할 수 있습니다"
 
@@ -19253,6 +19598,15 @@ msgid "You can have at most %(num)s channel."
 msgid_plural "You can have at most %(num)s channels."
 msgstr[0] "대부분의 %(num)s 채널에서 가질 수 있습니다."
 
+#, machine, plain1, python-format
+msgid "You can have at most %(num)s child account."
+msgid_plural "You can have at most %(num)s child accounts."
+msgstr[0] "당신은 대부분의 %(num)s 어린이 계정에서 가질 수 있습니다."
+
+#, machine, plain1, python-format
+msgid "You can have at most %(num)s child accounts."
+msgstr "당신은 대부분의 %(num)s 어린이 계정에서 가질 수 있습니다."
+
 #, machine, python-format
 msgid "You can host at most %(num)s Space a day."
 msgid_plural "You can host at most %(num)s Spaces a day."
@@ -19276,6 +19630,10 @@ msgstr[0] "대부분의 %(num)s 단어 또는 구문을 나열 할 수 있습니
 msgid "You can look around and set up your profile; posting, comments, votes and follows open once the check is done."
 msgstr "당신은 주변을보고 프로필을 설정할 수 있습니다; 게시물, 댓글, 투표 및 확인을 한 번 열려."
 
+#, machine, plain1, python-format
+msgid "You can make %(num)s child accounts a day. Try again tomorrow."
+msgstr "하루에 %(num)s 어린이 계정을 만들 수 있습니다. 내일 다시 시도하십시오."
+
 #, machine, python-format
 msgid "You can make %(num)s proposal a day."
 msgid_plural "You can make %(num)s proposals a day."
@@ -19285,6 +19643,10 @@ msgstr[0] "하루에 %(num)s 제안을 만들 수 있습니다."
 msgid "You can make %(num)s wiki edit a day in a guild. Try again tomorrow."
 msgid_plural "You can make %(num)s wiki edits a day in a guild. Try again tomorrow."
 msgstr[0] "당신은 만들 수 있습니다 %(num)s 위키 guild에서 하루를 편집합니다. 내일 다시 시도하십시오."
+
+#, machine, plain1
+msgid "You can make a child account once your own account is confirmed as 18 or over. You can say so in Settings > Content."
+msgstr "자신의 계정이 18 이상으로 확인되면 자녀 계정을 만들 수 있습니다. 설정 > 내용에서 이렇게 말할 수 있습니다."
 
 #, machine
 msgid "You can only create up to 2 guilds per day. Try again later."
@@ -19570,6 +19932,10 @@ msgstr "이 게시물을 따르지 않습니다."
 msgid "You don't have Premium right now."
 msgstr "지금 Premium이 없습니다."
 
+#, machine, plain1
+msgid "You don't have a child account called that."
+msgstr "아이 계정이 없습니다."
+
 #, machine
 msgid "You don't have a coin to redeem."
 msgstr "동전이 적습니다."
@@ -19670,6 +20036,10 @@ msgstr "당신은 +%(guild)s에서 overthrown되었습니다."
 #, machine
 msgid "You have left the creator fund."
 msgstr "제작자 기금을 떠났습니다."
+
+#, machine, plain1, python-format
+msgid "You have made %(num)s child accounts in the last %(days)s days. Try again later."
+msgstr "마지막 %(days)s 일에서 %(num)s 어린이 계정을 만들었습니다. 나중에 다시 시도하십시오."
 
 #, machine
 msgid "You have muted this guild. Its posts stay out of All, For You and Following. Visit your settings or click the <i class='fas fa-ellipsis-h text-small'></i> icon to unmute it."
@@ -20064,6 +20434,10 @@ msgstr "계정 잔액은 부정적입니다. %(site)s에 참여할 수 없습니
 msgid "Your account can also post new items from feeds by itself, while you keep using it as you do now. Each of those posts is marked as automated, and people who hide bot content don't see them. Your own posts, comments, votes and chats are unchanged. An admin approves it first."
 msgstr "귀하의 계정은 피드에서 새 항목을 게시 할 수 있습니다. 자체로 유지하면서 지금 할 수 있습니다. 각 게시물은 자동화되고, 봇 콘텐츠를 숨기는 사람들은 그들을 볼 수 없습니다. 자신의 게시물, 의견, 투표 및 채팅은 변경되지 않습니다. 관리자가 먼저 승인합니다."
 
+#, machine, plain1
+msgid "Your account can't post automatically while it is age-restricted."
+msgstr "계정은 자동으로 게시할 수 없습니다."
+
 #, machine
 msgid "Your account can't post automatically while it is suspended."
 msgstr "계정은 자동으로 게시되지 않습니다."
@@ -20071,6 +20445,10 @@ msgstr "계정은 자동으로 게시되지 않습니다."
 #, machine
 msgid "Your account can't publish right now."
 msgstr "귀하의 계정은 지금 바로 게시 할 수 없습니다."
+
+#, machine, plain1
+msgid "Your account can't run a bot while it is age-restricted."
+msgstr "계정은 봇을 실행할 수 없습니다."
 
 #, machine
 msgid "Your account cannot upload right now."
@@ -20091,6 +20469,10 @@ msgstr "귀하의 계정이 검사되고 준비가되어 있습니다 : 지금 �
 #, machine, plain1
 msgid "Your account has been deleted"
 msgstr "계정이 삭제되었습니다"
+
+#, machine, plain1, python-format
+msgid "Your account has the child lock on, held by your parent or guardian, since %(date)s."
+msgstr "귀하의 계정은 부모 또는 보호자가 주최 한 어린이 자물쇠가 있습니다. %(date)s 이후."
 
 #, machine, plain1, python-format
 msgid "Your account has the child lock on, since %(date)s."
@@ -20143,6 +20525,10 @@ msgstr ""
 "\n"
 "\n"
 "대기를 건너뛰기 위해서는 [Settings > Security](/settings/security)의 이메일 주소를 추가하고 확인합니다."
+
+#, machine, plain1
+msgid "Your account is your own now. It no longer has the child lock and your parent or guardian can no longer see it. They chose your password: change it in [Settings > Security](/settings/security), or they can still sign in as you."
+msgstr "당신의 계정은 지금 당신의 것입니다. 그것은 더 이상 아이 자물쇠 및 당신의 부모 또는 보호자는 더 이상 그것을 볼 수 없습니다. 그들은 암호를 선택했습니다 : [설정 > 보안] (/settings/security)에서 변경하거나 여전히 로그인 할 수 있습니다."
 
 #, machine
 msgid "Your account needs to be at least 30 days old to post automatically."
@@ -20245,6 +20631,10 @@ msgstr "채팅은 암호화 된 엔드 투 엔드이며 사이트가 읽을 수 
 #, machine, python-format
 msgid "Your chats run on Matrix, an open standard, on %(site)s's own chat server. Besides Chat on this site, you can use them in a Matrix app such as Element (web, desktop and the classic phone apps), FluffyChat or Cinny. They stay end-to-end encrypted there too."
 msgstr "여러분의 채팅은 Matrix에서 실행되며, 오픈 표준은 %(site)s의 채팅 서버입니다. 이 사이트에 채팅 외에도 Element (웹, 데스크탑 및 고전적인 전화 앱), FluffyChat 또는 Cinny과 같은 Matrix 앱에서 사용할 수 있습니다. 그들은 끝에서 암호화를 유지."
+
+#, machine, plain1
+msgid "Your child accounts will be deleted with yours."
+msgstr "자녀의 계정이 삭제됩니다."
 
 #, glossary, machine, plain1
 msgid "Your circles"
@@ -20387,8 +20777,52 @@ msgid_plural "Your own mix ranks the newest %(num)s matching posts. 0 switches a
 msgstr[0] "당신의 자신의 혼합은 최신 %(num)s 일치하는 게시물을 순위. 0개의 스위치는 떨어져, 10 그것을 가장 조사합니다."
 
 #, machine, plain1
+msgid "Your own password"
+msgstr "비밀번호"
+
+#, machine, plain1
+msgid "Your parent or guardian didn't agree to release your account."
+msgstr "귀하의 부모 또는 보호자는 귀하의 계정을 공개하지 못했습니다."
+
+#, machine, plain1
+msgid "Your parent or guardian has been asked to release your account. Nothing changes until they answer."
+msgstr "귀하의 부모 또는 보호자는 계정을 공개하도록 요청되었습니다. 그들은 응답 할 때까지 아무것도 변경."
+
+#, machine, plain1
+msgid "Your parent or guardian has been asked to turn Private posting off."
+msgstr "귀하의 부모 또는 보호자는 개인 게시물을 끄는 것을 요청했습니다."
+
+#, machine, plain1
 msgid "Your parent or guardian has to agree before Private posting can be turned off."
 msgstr "귀하의 부모 또는 보호자는 개인 게시물이 꺼질 때까지 동의해야합니다."
+
+#, machine, plain1
+msgid "Your parent or guardian has turned this off for your account."
+msgstr "당신의 부모 또는 보호자는 당신의 계정에 이 꺼집니다."
+
+#, machine, plain1
+msgid "Your parent or guardian made this account for you. They can see what you do on the site (your posts, comments, votes, bookmarks, follows, guilds, who you chat with, that your account was reported and your recent sign-ins; the site never shows them what your chats say) and they choose which features are on. You can see which in [Settings > Content](/settings/content). They chose your password: change it in [Settings > Security](/settings/security) so that only you know it, because anyone who knows it can sign in as you and read your chats."
+msgstr "귀하의 부모 또는 보호자는이 계정을 만들었습니다. 그들은 당신이 사이트에 무엇을 볼 수 있습니다 (당신의 게시물, 댓글, 표, 북마크, 다음과, guilds, 당신은과 채팅, 당신의 계정이보고되고 당신의 최근 로그인; 사이트 결코 당신의 채팅이 말하는 것을 보여줍니다) 그들은 어떤 기능을 선택. [설정 > 내용](/settings/content)에서 볼 수 있습니다. 그들은 암호를 선택했습니다 : [설정 > 보안] (/settings/security)에서 변경하여 당신이 그것을 알고 있기 때문에, 당신이 당신과 채팅을 읽을 때 로그인 할 수 있기 때문에."
+
+#, machine, plain1
+msgid "Your parent or guardian set a new password for your account and you were signed out. Sign in with the new password, then change it in [Settings > Security](/settings/security) so that only you know it."
+msgstr "귀하의 부모 또는 보호자는 귀하의 계정에 대한 새로운 암호를 설정하고 서명되었습니다. 새로운 비밀번호로 로그인하면 [설정 > 보안](/settings/security)에서 변경할 수 있습니다."
+
+#, machine, plain1
+msgid "Your parent or guardian stopped managing your account. It keeps the child lock until you confirm your age in Settings > Content. They chose your password: change it in [Settings > Security](/settings/security), or they can still sign in as you."
+msgstr "귀하의 부모 또는 보호자는 계정을 관리 중지. 설정에서 나이를 확인 할 때까지 아이 잠금을 유지 > 이름 * 그들은 암호를 선택했습니다 : [설정 > 보안] (/settings/security)에서 변경하거나 여전히 로그인 할 수 있습니다."
+
+#, machine, plain1
+msgid "Your parent or guardian turned Private posting off for your account."
+msgstr "귀하의 부모 또는 보호자는 귀하의 계정을 위해 개인 게시를 설정."
+
+#, machine, plain1
+msgid "Your parent or guardian wants Private posting to stay on."
+msgstr "귀하의 부모 또는 보호자는 개인 게시물을 원합니다."
+
+#, machine, plain1
+msgid "Your parent or guardian's account was suspended, so yours is suspended until theirs is back."
+msgstr "당신의 부모 또는 보호자의 계정이 중단되었습니다, 그래서 당신의들은 돌아올 때까지 중단됩니다."
 
 #, machine
 msgid "Your password"
@@ -20769,6 +21203,10 @@ msgstr "알 수없는 주소"
 msgid "and %(num)s more"
 msgid_plural "and %(num)s more"
 msgstr[0] "그리고 %(num)s 더"
+
+#, machine, plain1
+msgid "anonymous"
+msgstr "이름 *"
 
 #, machine
 msgctxt "guildmaster permission"
@@ -21211,6 +21649,10 @@ msgstr "링크 미리보기"
 msgid "links"
 msgstr "이름 *"
 
+#, machine, plain1
+msgid "looked at by the admins"
+msgstr "관리자에 의해 봐"
+
 #. after the moderator's name in a guild's moderation log
 #, machine
 msgid "made a channel"
@@ -21417,6 +21859,10 @@ msgstr "재판매 %(target)s"
 #, machine, python-format
 msgid "reinstated post %(target)s"
 msgstr "reinstated 게시물 %(target)s"
+
+#, machine, plain1
+msgid "removed"
+msgstr "이름 *"
 
 #. follows the moderator's name in a guild's moderation log; %(target)s is a
 #. link

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ruqqus VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-11-05 16:56+1100\n"
+"POT-Creation-Date: 2026-11-05 20:16+1100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: uk\n"
@@ -1741,12 +1741,24 @@ msgid "(allow beats deny; the channel's own rules apply to everyone else)"
 msgstr "(повільно збиває заперечення; власні правила каналу поширюються на всі інші)"
 
 #, machine, plain1
+msgid "(empty)"
+msgstr "(порожня)"
+
+#, machine, plain1
 msgid "(for a stage channel: the post's address or id)"
 msgstr "(для сценічного каналу: адреса пошти або ідентифікатор)"
 
 #, machine, plain1
 msgid "(from the original)"
 msgstr "(з оригіналу)"
+
+#, machine, plain1
+msgid "(in a private place)"
+msgstr "(у приватному місці)"
+
+#, machine, plain1
+msgid "(no title)"
+msgstr "(без назви)"
 
 #, glossary, machine, plain1
 msgid "(off)"
@@ -2315,6 +2327,10 @@ msgid "<strong>Username:</strong> %(name)s"
 msgstr "<strong>Ім'я користувача:</strong> %(name)s"
 
 #, machine, plain1, python-format
+msgid "@%(name)s - %(site)s"
+msgstr "@%(name)s - %(site)s"
+
+#, machine, plain1, python-format
 msgid "@%(name)s - Bots - %(site)s"
 msgstr "@%(name)s - Боти - %(site)s"
 
@@ -2329,6 +2345,10 @@ msgstr "@%(name)s додано %(curation)s."
 #, machine, plain1, python-format
 msgid "@%(name)s asked to publish a shared draft you write: your vote counts. [Open the draft](%(link)s)"
 msgstr "@%(name)s попросили публікувати спільний проект, який ви пишете: ваші голосні підрахунки. [Відкрити проект](%(link)s)"
+
+#, machine, plain1, python-format
+msgid "@%(name)s asked you to turn Private posting off for their account. You can answer in [Settings > Children](/settings/children)."
+msgstr "@%(name)s попросили вимкнути приватний повідомлення для свого облікового запису. Ви можете відповісти на [Налаштування](/settings/children)."
 
 #, machine, plain1, python-format
 msgid "@%(name)s blocked."
@@ -2372,6 +2392,10 @@ msgstr "@%(name)s переслане [комент](%(link)s) to +%(guild)s."
 #, machine, plain1, python-format
 msgid "@%(name)s forwarded [a post](%(link)s) to +%(guild)s."
 msgstr "@%(name)s переадресовані [a post](%(link)s) to +%(guild)s."
+
+#, machine, plain1, python-format
+msgid "@%(name)s has a new password and is signed out everywhere."
+msgstr "@%(name)s має новий пароль і підписано всюди."
 
 #, machine, plain1, python-format
 msgid "@%(name)s has already been invited."
@@ -2545,6 +2569,10 @@ msgid "@%(name)s reposted [a post](%(link)s)."
 msgstr "@%(name)s reposted [a post](%(link)s)."
 
 #, machine, plain1, python-format
+msgid "@%(name)s says they are 18 or over and asked you to release their account. You can answer in [Settings > Children](/settings/children)."
+msgstr "@%(name)s каже, що вони 18 або більше і просять вас, щоб звільнити свій обліковий запис. Ви можете відповісти на [Налаштування](/settings/children)."
+
+#, machine, plain1, python-format
 msgid "@%(name)s shared [a story](%(link)s)."
 msgstr "@%(name)s поділитися [a оповідання](%(link)s)."
 
@@ -2575,6 +2603,10 @@ msgstr "@%(name)s було вилучено з +%(guild)s"
 #, machine, plain1, python-format
 msgid "@%(name)s was muted in +%(guild)s's channels."
 msgstr "@%(name)s був приглушений в +%(guild)s's канали."
+
+#, machine, plain1, python-format
+msgid "@%(name)s's age was confirmed as 18 or over, so their account is their own now and you can no longer see it."
+msgstr "@%(name)s років був підтверджений як 18 або більше, тому їх обліковий запис тепер і ви не можете побачити його."
 
 #, machine, plain1, python-format
 msgid "@%(name)s's new posts will go into #%(channel)s."
@@ -3129,6 +3161,10 @@ msgstr "Жива нитка бере коментарі, не дошка пов�
 #, machine, plain1
 msgid "A member"
 msgstr "Учасник"
+
+#, machine, plain1
+msgid "A member reported this account."
+msgstr "Про це повідомляє учасник."
 
 #, machine, plain1, python-format
 msgid "A message can be at most %(count)s character."
@@ -4291,6 +4327,13 @@ msgstr[0] "Оновлення може бути в більшості симво
 msgstr[1] "Оновлення може бути в більшості символів %(num)s."
 msgstr[2] "Оновлення може бути в більшості символів %(num)s."
 
+#, machine, plain1, python-format
+msgid "And %(num)s private guild, which isn't named."
+msgid_plural "And %(num)s private guilds, which aren't named."
+msgstr[0] "І %(num)s приватний прохід, який не названий."
+msgstr[1] "І %(num)s приватні промови, які не названі."
+msgstr[2] "І %(num)s приватних вин, які не названі."
+
 #, machine, plain1
 msgid "Animals"
 msgstr "Тварини"
@@ -4346,6 +4389,10 @@ msgstr "Анонім"
 msgctxt "label"
 msgid "Anonymous"
 msgstr "Анонімно"
+
+#, machine, plain1
+msgid "Anonymous posting and starting guilds"
+msgstr "Анонімний пост і початок провин"
 
 #, machine, plain1
 msgid "Anonymous posts and comments count for you like any other. Your points and earnings are shown only to you; the site's admins see the payout list."
@@ -4558,6 +4605,14 @@ msgstr "Арян Хайлендс"
 #, machine, plain1
 msgid "As an author you edit the draft live with them, and every character you type is credited to you. Once the post is published, anyone who can see it can see who wrote what. The authors decide together:"
 msgstr "Як автору ви відредагуєте проект, який живе з ними, і кожен символ, який ви зараховуються до вас. Після публікації повідомлення, будь-який, хто може побачити його, хто написав що. Автори вирішуються разом:"
+
+#, machine, plain1
+msgid "Ask my parent to turn it off"
+msgstr "Задайте мій батько, щоб вимкнути його"
+
+#, machine, plain1
+msgid "Asked you"
+msgstr "Про нас"
 
 #, machine, plain1, python-format
 msgid "At least %(count)s comments"
@@ -5037,6 +5092,10 @@ msgstr "Боост для постів з малюнком, звуком або 
 #, machine, plain1
 msgid "Boost for this curation's guilds and accounts"
 msgstr "Зростання для кривих кормів та рахунків"
+
+#, machine, plain1
+msgid "Born"
+msgstr "Надія"
 
 #, machine, plain1
 msgid "Bot keys"
@@ -5538,6 +5597,10 @@ msgid "Chat isn't answering right now. Try again in a moment."
 msgstr "Чат не відповідає прямо зараз. Спробуйте ще раз."
 
 #, machine, plain1
+msgid "Chat, group chats and calls"
+msgstr "Чат, групові чати та дзвінки"
+
+#, machine, plain1
 msgctxt "guildmaster action"
 msgid "Chatban user"
 msgstr "Користувач чатбану"
@@ -5561,6 +5624,14 @@ msgstr "Хімія"
 #, machine, plain1
 msgid "Child - also hide profanity and sensitive content"
 msgstr "Дитина - також приховує глибокість і чутливість"
+
+#, machine, plain1
+msgid "Children"
+msgstr "Діти"
+
+#, machine, plain1, python-format
+msgid "Children - %(site)s"
+msgstr "Діти - %(site)s"
 
 #. "Sign in with ..." is the button the Matrix app shows for this site's
 #. sign-in
@@ -5893,6 +5964,10 @@ msgid "Coins received: %(recent)s in the last 30 days &middot; %(total)s in all.
 msgstr "Отримали монети: %(recent)s в останні 30 днів &middot; %(total)s в усіх. Вони йдуть прямо на баланс монет."
 
 #, machine, plain1
+msgid "Coins, tips, Premium and paid circles"
+msgstr "Монети, поради, Premium і платні кола"
+
+#, machine, plain1
 msgid "Collaborative"
 msgstr "Співпраця"
 
@@ -5956,6 +6031,10 @@ msgstr "Коментар зауважень."
 #, glossary, machine, plain1
 msgid "Comment posted!"
 msgstr "Коментар опубліковано!"
+
+#, machine, plain1
+msgid "Commenting"
+msgstr "Коментарі"
 
 #, glossary, machine, plain1
 msgid "Comments"
@@ -6606,8 +6685,16 @@ msgid "Delete role"
 msgstr "Роль видалення"
 
 #, machine, plain1
+msgid "Delete the account"
+msgstr "Видалення облікового запису"
+
+#, machine, plain1
 msgid "Delete the published post"
 msgstr "Видалення опублікованого повідомлення"
+
+#, machine, plain1
+msgid "Delete this account"
+msgstr "Видалити цей обліковий запис"
 
 #, machine, plain1
 msgid "Delete this category? Its channels stay."
@@ -6668,6 +6755,10 @@ msgstr "Видалення файлу у вашому Диску або відк
 #, machine, plain1
 msgid "Deleting a file there, or disconnecting, removes it from your posts."
 msgstr "Видалення файлу, або відключення, видалення його з ваших повідомлень."
+
+#, machine, plain1
+msgid "Deleting your account also deletes your child accounts. You can download their data first in Settings > Children."
+msgstr "Видалення облікового запису також видаляє облікові записи дитини. Ви можете завантажити свої дані першим в налаштуваннях > Діти."
 
 #, machine, plain1
 msgid "Density"
@@ -6912,6 +7003,10 @@ msgid "Done"
 msgstr "Сонце"
 
 #, machine, plain1
+msgid "Download"
+msgstr "Завантажити"
+
+#, machine, plain1
 msgctxt "button"
 msgid "Download"
 msgstr "Завантажити"
@@ -6925,8 +7020,16 @@ msgid "Download the recording"
 msgstr "Завантажити запис"
 
 #, machine, plain1
+msgid "Download their data"
+msgstr "Завантаження даних"
+
+#, machine, plain1
 msgid "Download your data"
 msgstr "Завантажити дані"
+
+#, machine, plain1
+msgid "Downvote"
+msgstr "Поза «69»"
 
 #, glossary, machine, plain1
 msgctxt "verb"
@@ -7255,6 +7358,10 @@ msgstr "Введіть адресу сервера живлення."
 msgid "Enter the feed's address."
 msgstr "Введіть адресу корму."
 
+#, machine, plain1
+msgid "Enter the month and year they were born."
+msgstr "Вкажіть місяць і рік вони народилися."
+
 #, machine, plain1, python-format
 msgid "Enter the six-digit code generated in the authenticator app and your %(site)s account password."
 msgstr "Введіть шестигранний код, який генерується в додатку автентифікатора і пароль облікового запису %(site)s."
@@ -7429,6 +7536,10 @@ msgstr "Кожна людина побачить всі зміни, як вон�
 #, machine, plain1
 msgid "Everything from your guilds and accounts, newest first."
 msgstr "Все з ваших гайок і рахунків, останнє перше."
+
+#, machine, plain1
+msgid "Everything they post goes only to their Friends circle. Turn it off to let them post in public."
+msgstr "Все, що вони розміщують тільки на їх рідному колі. Вимкніть його, щоб дати їм повідомлення в публічному режимі."
 
 #, machine, plain1
 msgid "Everything you post goes only to your Friends circle, the people you follow who follow you back, so nothing is public by accident. Your circles can only hold people like that, and you can't forward, repost or write a shared draft. Comments on other people's posts are still public."
@@ -8091,6 +8202,10 @@ msgstr "Дружини"
 msgctxt "circle name"
 msgid "Friends"
 msgstr "Дружини"
+
+#, machine, plain1
+msgid "Friends circle"
+msgstr "Вечірній коло"
 
 #, machine, plain1
 msgid "Friends is everyone you follow who follows you back. To share with family, a team or anyone else, make a circle first, then pick it here."
@@ -8900,6 +9015,10 @@ msgstr "Мисливець"
 msgid "I accept the <a href=\"%(url)s\" target=\"_blank\">terms and conditions</a>"
 msgstr "Я приймаю <a href=\"%(url)s\" target=\"_blank\">Умови та умови</a>"
 
+#, machine, plain1, python-format
+msgid "I agree to the <a href=\"%(url)s\" target=\"_blank\">Terms</a> for them."
+msgstr "Я погоджуюсь <a href=\"%(url)s\" target=\"_blank\">Умови</a> для них."
+
 #, machine, plain1
 msgid "I agree to the rules below."
 msgstr "Я погоджуюсь на правила нижче."
@@ -8935,6 +9054,10 @@ msgstr "Якщо є адреса електронної пошти, пов'яз�
 #, machine, plain1
 msgid "If this was you, there is nothing to do."
 msgstr "Якщо це було вам, немає нічого спільного."
+
+#, machine, plain1
+msgid "If you are 18 or over, say so and your parent or guardian will be asked to release your account."
+msgstr "Якщо ви є 18 або більше, скажете так і ваш батько або охоронець буде запитати, щоб звільнити ваш обліковий запис."
 
 #, machine, plain1
 msgid "If you don't have your 2FA device, enter one of your backup codes instead. Each backup code works once. An account that never made backup codes can enter its Recovery Code, which also turns 2FA off."
@@ -9315,6 +9438,14 @@ msgid "It shows, in full, every word and phrase the word filter looks for, in ev
 msgstr "Вона показує, в повному обсязі, кожне слово і фраза слова фільтр виглядає для того, що в кожній мові вона охоплює. Що включає в себе шлами та інші надзвичайно образливі мови."
 
 #, machine, plain1
+msgid "It stays a child account with the child lock, but you can no longer see it or change what it can do, and you can't link it again."
+msgstr "Проживання дитини з дитячим фіксатором, але ви не можете побачити його або змінити те, що це може зробити, і ви не можете зв'язатися з ним знову."
+
+#, machine, plain1
+msgid "It stays on the Child word filter, which hides profanity and anything marked sensitive."
+msgstr "Він залишається на фільтрі слово дитини, який приховує глибокість і будь-який помітний чутливий."
+
+#, machine, plain1
 msgid "It stays on the Child word filter, which hides profanity and anything marked sensitive. Chat, Spaces, coins, anonymous posting and starting a guild are off, and others can't start a chat or tip you. Your posts go to your Friends circle only unless you turn Private posting off."
 msgstr "Він залишається на фільтрі слово дитини, який приховує глибокість і будь-який помітний чутливий. Чат, Spaces, монети, анонімне повідомлення та початок провини вимкнено, а інші не можуть запустити чат або наконечник. Ваше повідомлення перейдемо до свого роду друзів тільки якщо ви не вимкнете особисте повідомлення."
 
@@ -9482,6 +9613,10 @@ msgstr "Червень Солтице"
 #, machine, plain1
 msgid "K-Pop"
 msgstr "К-Поп"
+
+#, machine, plain1
+msgid "Keep it on"
+msgstr "Зареєструватися"
 
 #, machine, plain1
 msgid "Keep my posts out of All"
@@ -9761,6 +9896,10 @@ msgstr ""
 msgid "Letters spaced out or split by dots or other marks are read as one word."
 msgstr "Листи, які розкриваються або розщеплюються точками або іншими позначками, як одне слово."
 
+#, machine, plain1
+msgid "Letters, numbers and underscores, 3 to 25 characters."
+msgstr "Листи, цифри та низи, 3 до 25 символів."
+
 #, glossary, machine, plain1
 msgid "Lifestyle"
 msgstr "Стиль життя"
@@ -10003,6 +10142,10 @@ msgstr "Новий рік"
 msgid "Lyrids meteor shower"
 msgstr "Лариси метеор душ"
 
+#, machine, plain1, python-format
+msgid "Made on %(date)s."
+msgstr "Зроблено %(date)s."
+
 #, glossary, machine, plain1
 msgid "Made with AI"
 msgstr "Створено ШІ"
@@ -10021,6 +10164,10 @@ msgid "Make a channel"
 msgstr "Зробити канал"
 
 #, machine, plain1
+msgid "Make a child account"
+msgstr "Зробіть свій обліковий запис"
+
+#, machine, plain1
 msgid "Make a circle people pay to be in, every 30 days, for what you share with it."
 msgstr "Зробіть коло людей, які оплачуються, кожен 30 днів, для чого ви поділитеся з ним."
 
@@ -10035,6 +10182,10 @@ msgstr "Зробіть сторінку"
 #, machine, plain1
 msgid "Make a role"
 msgstr "Зробіть роль"
+
+#, machine, plain1
+msgid "Make an account for a child under 18 and decide what it can do. You can see what they do on the site (their posts, comments, votes, bookmarks, follows, guilds, the names of who they chat with and their recent sign-ins). The site never shows you what their chats say: chats are end-to-end encrypted. You choose their password, so until they change it you can sign in as them and read their chats: tell them to set their own. They are told all of this in their own Settings."
+msgstr "Зробіть обліковий запис для дитини до 18 років і вирішіть, що це може зробити. Ви можете бачити те, що вони роблять на сайті (повідомлення, коментарі, голоси, закладки, сліди, промови, імена, які вони чати з та їх недавніми ознаками). Веб-сайт ніколи не показує, що їх чати кажуть: чати є кінцевими зашифрованими. Ви обираєте пароль, щоб до тих пір, поки вони змінили його, ви можете зареєструватися як їх, так і читати свої чати: розкажіть їх, щоб встановити самостійно. Вони розповідають про це в власних налаштуваннях."
 
 #, machine, plain1, python-format
 msgid "Make an app first in <a href=\"%(url)s\">Settings &gt; Apps</a>; a key works through it."
@@ -10380,6 +10531,10 @@ msgid "Mon"
 msgstr "Сонце"
 
 #, machine, plain1
+msgid "Month"
+msgstr "Місяць"
+
+#, machine, plain1
 msgctxt "table heading"
 msgid "Month"
 msgstr "Місяць"
@@ -10388,6 +10543,10 @@ msgstr "Місяць"
 msgctxt "time range"
 msgid "Month"
 msgstr "Місяць"
+
+#, machine, plain1
+msgid "Month they were born"
+msgstr "Місяць вони народилися"
 
 #, machine, plain1
 msgid "Monthly creator fund payouts"
@@ -10730,6 +10889,10 @@ msgstr "Нова сторінка: %(address)s"
 #, machine, plain1
 msgid "New paid circle"
 msgstr "Нове платне коло"
+
+#, machine, plain1
+msgid "New password"
+msgstr "Новий пароль"
 
 #, machine, plain1
 msgid "New posts that are getting attention, with no account filling the page."
@@ -11117,6 +11280,10 @@ msgstr "Зареєструватися Поточні абоненти збер�
 msgid "Nobody types here"
 msgstr "Без категорії"
 
+#, machine, plain1, python-format
+msgid "Nobody under %(age)s may have an account where you are."
+msgstr "Нібо під %(age)s може мати обліковий запис, де ви знаходитесь."
+
 #, machine, plain1
 msgid "Nobody yet."
 msgstr "Нікому."
@@ -11237,6 +11404,10 @@ msgstr "Не приймати абонентів"
 #, machine, plain1
 msgid "Not trending any more"
 msgstr "Не трендувати більше"
+
+#, machine, plain1
+msgid "Not yet"
+msgstr "Не всі"
 
 #, glossary, machine, plain1
 msgid "Not your default:"
@@ -11359,6 +11530,10 @@ msgid "Nothing written yet."
 msgstr "Немає нічого письмового."
 
 #, machine, plain1
+msgid "Nothing yet."
+msgstr "Немає нічого."
+
+#, machine, plain1
 msgid "Notification types"
 msgstr "Типи повідомлень"
 
@@ -11407,6 +11582,10 @@ msgstr "Океан"
 msgid "Oddly Satisfying"
 msgstr "Поза «69»"
 
+#, machine, plain1
+msgid "Off"
+msgstr "Відправити"
+
 #. slow mode in a guild's channel is switched off.
 #, machine, plain1
 msgctxt "slow mode"
@@ -11433,6 +11612,10 @@ msgstr "Старе"
 #, machine, plain1
 msgid "Old Password"
 msgstr "Старий пароль"
+
+#, machine, plain1
+msgid "On"
+msgstr "Про нас"
 
 #. "On" marks a linked storage account that is in use
 #, machine, plain1
@@ -11510,6 +11693,10 @@ msgstr "Один з цих версій не може бути показани�
 #, machine, plain1
 msgid "One of those circles isn't yours any more. Choose again."
 msgstr "Один з тих кола не є вашими. Виберіть знову."
+
+#, machine, plain1
+msgid "One of your child accounts owes money, so your account can't be deleted yet."
+msgstr "Один з ваших дитячих облікових записів дає гроші, тому ваш обліковий запис не може бути видалений."
 
 #, machine, plain1
 msgid "One-time codes for the day you lose your authenticator. Making a new set replaces every earlier code, used or not."
@@ -11835,6 +12022,10 @@ msgstr "Тільки автор і співавтори можуть розмі�
 #, machine, plain1
 msgid "Only the post's author and co-authors can run its live updates."
 msgstr "Тільки автор посту і співавтори можуть виконувати свої живі оновлення."
+
+#, machine, plain1
+msgid "Only used to check their age. It isn't kept."
+msgstr "Тільки використовується для перевірки віку. Не зберігається."
 
 #, machine, plain1
 msgid "Only when I turn them on"
@@ -12832,6 +13023,10 @@ msgid "Posted on that day."
 msgstr "Опубліковано в цей день."
 
 #, machine, plain1
+msgid "Posting"
+msgstr "Розсилка"
+
+#, machine, plain1
 msgid "Posting cooldown"
 msgstr "Посадка охолодження"
 
@@ -13674,6 +13869,10 @@ msgid "Relationships"
 msgstr "Контакти"
 
 #, machine, plain1
+msgid "Release the account"
+msgstr "Видача рахунку"
+
+#, machine, plain1
 msgid "Religion"
 msgstr "Релігія"
 
@@ -13924,6 +14123,10 @@ msgstr "Повідомлення"
 msgctxt "noun"
 msgid "Reports"
 msgstr "Скарги"
+
+#, machine, plain1
+msgid "Reports about them"
+msgstr "Звіти про них"
 
 #, machine, plain1
 msgid "Reports opened"
@@ -14263,6 +14466,10 @@ msgctxt "weekday"
 msgid "Sat"
 msgstr "Сонце"
 
+#, glossary, machine, plain1
+msgid "Save"
+msgstr "Зберегти"
+
 #, machine, plain1
 msgctxt "button"
 msgid "Save"
@@ -14573,6 +14780,10 @@ msgid "See what is trending"
 msgstr "Дивитися те, що тренди"
 
 #, machine, plain1
+msgid "See what they do"
+msgstr "Дивитися те, що вони роблять"
+
+#, machine, plain1
 msgid "See your username"
 msgstr "Переглянути ім'я користувача"
 
@@ -14671,6 +14882,10 @@ msgstr "Вересень equinox"
 #, machine, plain1
 msgid "Serious"
 msgstr "Серйозний"
+
+#, machine, plain1
+msgid "Set a new password"
+msgstr "Встановити новий пароль"
 
 #, machine, plain1
 msgid "Set a price to let people pay to join."
@@ -15348,6 +15563,10 @@ msgid "Spaces"
 msgstr "Простори"
 
 #, machine, plain1
+msgid "Spaces and live threads"
+msgstr "Простір і живі нитки"
+
+#, machine, plain1
 msgid "Spaces are started in the Spaces area."
 msgstr "У космосі стартують простори."
 
@@ -15482,6 +15701,14 @@ msgstr "Закріплений допис"
 #, machine, plain1
 msgid "Still here to read"
 msgstr "Натюрморт для читання"
+
+#, machine, plain1
+msgid "Stop managing"
+msgstr "Зупинка управління"
+
+#, machine, plain1
+msgid "Stop managing this account"
+msgstr "Зупинити управління цим обліковим записом"
 
 #, machine, plain1
 msgid "Stop posting automatically"
@@ -15660,6 +15887,10 @@ msgstr "Підприємці…"
 #, machine, plain1
 msgid "Survival & Bushcraft"
 msgstr "Виживання & Бушкрафт"
+
+#, machine, plain1
+msgid "Suspended"
+msgstr "Підвіска"
 
 #, machine, plain1, python-format
 msgid "Switch @%(name)s off for good? Its posts stay; the bot never posts again."
@@ -16133,6 +16364,10 @@ msgid "That isn't a valid username."
 msgstr "Що таке ім'я користувача."
 
 #, machine, plain1
+msgid "That isn't something you can switch."
+msgstr "Це не те, що ви можете переключати."
+
+#, machine, plain1
 msgid "That key couldn't be saved."
 msgstr "Цей ключ не може бути збережений."
 
@@ -16362,6 +16597,14 @@ msgstr "Сагель"
 #, machine, plain1
 msgid "The Space could not be made."
 msgstr "Простір не може бути зроблено."
+
+#, machine, plain1, python-format
+msgid "The account @%(name)s is deleted."
+msgstr "Видалено обліковий запис @%(name)s."
+
+#, machine, plain1, python-format
+msgid "The account @%(name)s is made. They sign in with the username and password you gave."
+msgstr "Здійснено обліковий запис @%(name)s. Ви вказали про ім’я користувача та пароль."
 
 #, machine, plain1, python-format
 msgid "The account age must be a whole number of days, 0 to %(max)s."
@@ -16711,6 +16954,10 @@ msgstr "Найпопулярніші повідомлення останніх �
 #, machine, plain1, python-format
 msgid "The name %(host)s could not be found."
 msgstr "Ім'я %(host)s не знайдено."
+
+#, machine, plain1
+msgid "The newest of what they have done. Only the names of who they chat with are shown, never what a chat says: chats are end-to-end encrypted."
+msgstr "Найновіші з чого вони зробили. Тільки імена, які вони чат з показаними, ніколи не те, що говорить чат: чати є кінцевими зашифрованими."
 
 #, machine, plain1
 msgid "The numbers are always shown on your profile. This decides who can open each list and see the accounts on it. An account is only listed where its own setting allows it too."
@@ -17068,12 +17315,20 @@ msgid "They already have this role."
 msgstr "Вони вже мають таку роль."
 
 #, machine, plain1
+msgid "They are 18 or over, so they can make their own account."
+msgstr "Вони є 18 або більше, тому вони можуть зробити свій власний рахунок."
+
+#, machine, plain1
 msgid "They are already in this circle."
 msgstr "Вони вже в цьому колі."
 
 #, machine, plain1
 msgid "They are not told. Anyone you block leaves your circles."
 msgstr "Вони не розповіли. Будь ласка, заблокуйте ваші кола."
+
+#, machine, plain1
+msgid "They are signed out everywhere. If they use chat, they may be asked for their recovery code."
+msgstr "Всі вони підписані всюди. Якщо вони використовують чат, вони можуть попросити їх відновлення."
 
 #, machine, plain1, python-format
 msgid "They aren't in %(circle)s."
@@ -17088,6 +17343,38 @@ msgid "They aren't muted here."
 msgstr "Вони не приглушені тут."
 
 #, machine, plain1
+msgid "They asked you to turn Private posting off."
+msgstr "Вони просять вимкнути Приватне повідомлення."
+
+#, machine, plain1
+msgid "They can buy and spend coins, tip, buy Premium and join or run paid circles."
+msgstr "Вони можуть купувати і витрачати монети, наконечник, купити Premium і приєднатися або запустити сплачені кола."
+
+#, machine, plain1
+msgid "They can comment."
+msgstr "Вони можуть коментувати."
+
+#, machine, plain1
+msgid "They can host and join Spaces and run live threads. Voice calls in a Space also need Chat to be on."
+msgstr "Вони можуть мати і приєднатися до космосу і запустити живі нитки. Голосові дзвінки в космосі також повинні чати."
+
+#, machine, plain1
+msgid "They can make posts."
+msgstr "Вони можуть зробити повідомлення."
+
+#, machine, plain1
+msgid "They can message people, join group chats and make calls. The site never shows you what a chat says: chats are end-to-end encrypted. Whoever knows their password can still sign in and read them."
+msgstr "Вони можуть спілкуватися людей, приєднатися до групових чатів і зробити дзвінки. Веб-сайт ніколи не показує вам, що говорить чат: чати є зашифрованими. Хто знає свого пароля, як і раніше, і читати їх."
+
+#, machine, plain1
+msgid "They can post anonymously and start a guild. You can still see who wrote an anonymous post."
+msgstr "Вони можуть розміщувати анонімно і почати провину. Ви можете побачити, хто написав анонімний пост."
+
+#, machine, plain1
+msgid "They can see what you do on the site: your posts, comments, votes, bookmarks, follows, guilds, who you chat with, that your account was reported, and your recent sign-ins. The site never shows them what your chats say, because chats are end-to-end encrypted. But anyone who knows your password, a parent who chose it included, can sign in as you: change it in Security so that only you know it. They choose which of these are on for your account:"
+msgstr "Вони можуть бачити, що ви робите на сайті: ваші повідомлення, коментарі, голоси, закладки, слід, провини, які ви поспілкуєте з, що ваш обліковий запис був повідомлений, і ваші останні записи. Веб-сайт ніколи не показує їх, які ваші чати кажуть, тому що чати є зашифрованими. Але хто знає ваш пароль, батько, який вибрав його включений, може зареєструватися як ви: змінити його в безпеці, так що тільки ви знаєте його. Для вашого облікового запису оберіть, які з них є:"
+
+#, machine, plain1
 msgid "They can't comment on your posts or comments, chat with you or notify you by mentioning you. They are not told, but they may work it out if they try to comment on something of yours."
 msgstr "Ви не можете прокоментувати свої повідомлення або коментарі, спілкуватися з вами або повідомляти вас, згадуючи вас. Вони не сказали, але вони можуть працювати, якщо вони намагаються коментувати щось своє."
 
@@ -17100,12 +17387,20 @@ msgid "They go straight to your coin balance."
 msgstr "Вони йдуть прямо на баланс монет."
 
 #, machine, plain1
+msgid "They haven't asked for that."
+msgstr "Вони не запрошують цього."
+
+#, machine, plain1
 msgid "They need to be in the guild, and not exiled from it."
 msgstr "Вони повинні бути в провині, і не вилікуються з неї."
 
 #, machine, plain1
 msgid "They need to join the channel first."
 msgstr "Вони повинні приєднатися до каналу."
+
+#, machine, plain1
+msgid "They say they are 18 or over and asked you to release their account. If you do, it becomes their own and you can no longer see it."
+msgstr "Вони кажуть, що вони 18 або більше і запитують вас, щоб звільнити свій обліковий запис. Якщо ви робите, він стає самостійно, і ви не можете побачити його."
 
 #, machine, plain1
 msgid "They're already a helper."
@@ -17221,6 +17516,14 @@ msgstr "Цей обліковий запис тимчасово призупин
 #, machine, plain1
 msgid "This account is private"
 msgstr "Особистий кабінет"
+
+#, machine, plain1
+msgid "This account is suspended."
+msgstr "Цей рахунок призупинено."
+
+#, machine, plain1
+msgid "This account owes money, so it can't be deleted yet."
+msgstr "Цей обліковий запис дає гроші, тому він не може бути видалений."
 
 #, machine, plain1
 msgid "This account posts about sensitive topics"
@@ -17357,6 +17660,10 @@ msgstr "Цей вилікуваний кормовий ключ і рахунк�
 #, machine, plain1
 msgid "This curation's rules took too long to run. Its owner can make them narrower."
 msgstr "Правила, що вилікували корми, приймали занадто довго. Його власник може зробити їх вузьким."
+
+#, machine, plain1
+msgid "This deletes their account and everything on it. It can't be undone. You can download their data first."
+msgstr "Це видаляє свій обліковий запис і все на ньому. Не може бути неоновим. Ви можете завантажити свої дані першим."
 
 #, machine, plain1
 msgid "This draft hasn't been published."
@@ -17690,6 +17997,10 @@ msgid "Thu"
 msgstr "Чорти"
 
 #, machine, plain1
+msgid "Tick the box to agree to the Terms for them."
+msgstr "Зверніть прапорець, щоб погоджуватися з Правилами для них."
+
+#, machine, plain1
 msgid "Tick the box to agree to the rules first."
 msgstr "Зверніть прапорець, щоб згодити правила першими."
 
@@ -17965,6 +18276,10 @@ msgstr "Твитнуть"
 #, machine, plain1
 msgid "Turanian Steppe"
 msgstr "Туранський степ"
+
+#, machine, plain1
+msgid "Turn it off"
+msgstr "Вимкніть"
 
 #, machine, plain1, python-format
 msgid "Turn off notifications from +%(guild)s"
@@ -18425,6 +18740,10 @@ msgstr "Завантажити банер"
 #, machine, plain1
 msgid "Upload picture"
 msgstr "Завантажити зображення"
+
+#, machine, plain1
+msgid "Upvote"
+msgstr "Вступ"
 
 #, glossary, machine, plain1
 msgctxt "verb"
@@ -19148,6 +19467,10 @@ msgid "Where you are, the law means your age has to be confirmed with an age-che
 msgstr "Де ви є, закон означає, що ваш вік повинен бути підтверджений послугою вікового контролю, перш ніж ви можете бачити чутливий контент або сильну мову."
 
 #, machine, plain1
+msgid "Where you are, your age has to be confirmed with an age-check service before you can make a child account."
+msgstr "Якщо ви є, ваш вік повинен бути підтверджений послугою, перш ніж ви можете зробити обліковий запис дитини."
+
+#, machine, plain1
 msgid "Where you are, your age has to be confirmed with an age-check service."
 msgstr "Якщо ви є, ваш вік повинен бути підтверджений послугою вікової категорії."
 
@@ -19239,9 +19562,17 @@ msgstr "Хто вирішує"
 msgid "Who follows you"
 msgstr "Хто слідує вам"
 
+#, machine, plain1
+msgid "Who reported them, and what they wrote, isn't shown to anyone but the admins."
+msgstr "Хто доповідав їм, і що вони писали, не показані нікому, але адміністраторам."
+
 #, glossary, machine, plain1
 msgid "Who subscribes to your Circle"
 msgstr "Хто підписаний на ваше коло"
+
+#, machine, plain1
+msgid "Who they chat with"
+msgstr "Хто вони чат з"
 
 #, machine, plain1
 msgid "Who to follow"
@@ -19622,10 +19953,18 @@ msgctxt "guildmaster action"
 msgid "Yank post"
 msgstr "Янк пост"
 
+#, machine, plain1
+msgid "Year"
+msgstr "Рік"
+
 #, glossary, machine, plain1
 msgctxt "time range"
 msgid "Year"
 msgstr "Рік"
+
+#, machine, plain1
+msgid "Year they were born"
+msgstr "Рік народження"
 
 #, machine, plain1
 msgctxt "colour"
@@ -19791,6 +20130,14 @@ msgid "You aren't subscribed to that circle."
 msgstr "Ви не підписалися на це коло."
 
 #, machine, plain1
+msgid "You asked your parent or guardian to release your account. They haven't answered yet."
+msgstr "Ви попросили свого батька або охоронця, щоб звільнити свій обліковий запис. Не відповів."
+
+#, machine, plain1
+msgid "You asked your parent or guardian to turn this off. They haven't answered yet."
+msgstr "Ви попросили свого батька або охоронця, щоб вимкнути це. Не відповів."
+
+#, machine, plain1
 msgid "You can add pictures at 500 Rep, or earlier with Premium"
 msgstr "Ви можете додати фотографії в 500 Передача, або раніше з Premium"
 
@@ -19890,6 +20237,17 @@ msgstr[1] "Ви можете мати на більшості %(num)s канал
 msgstr[2] "Ви можете мати на більшості %(num)s каналів."
 
 #, machine, plain1, python-format
+msgid "You can have at most %(num)s child account."
+msgid_plural "You can have at most %(num)s child accounts."
+msgstr[0] "Ви можете мати в більшості %(num)s дочірнього рахунку."
+msgstr[1] "Ви можете мати на більшості %(num)s дитячих рахунків."
+msgstr[2] "Ви можете мати на більшості %(num)s дитячих рахунків."
+
+#, machine, plain1, python-format
+msgid "You can have at most %(num)s child accounts."
+msgstr "Ви можете мати на більшості облікових записів %(num)s."
+
+#, machine, plain1, python-format
 msgid "You can host at most %(num)s Space a day."
 msgid_plural "You can host at most %(num)s Spaces a day."
 msgstr[0] "Ви можете завітати в більшості %(num)s Space в день."
@@ -19919,6 +20277,10 @@ msgid "You can look around and set up your profile; posting, comments, votes and
 msgstr "Ви можете подивитися і встановити ваш профіль; повідомлення, коментарі, голоси і наступні дії, як тільки проводиться перевірка."
 
 #, machine, plain1, python-format
+msgid "You can make %(num)s child accounts a day. Try again tomorrow."
+msgstr "Ви можете зробити %(num)s дочірні рахунки в день. Спробуйте ще завтра."
+
+#, machine, plain1, python-format
 msgid "You can make %(num)s proposal a day."
 msgid_plural "You can make %(num)s proposals a day."
 msgstr[0] "Ви можете зробити %(num)s пропозицію на день."
@@ -19931,6 +20293,10 @@ msgid_plural "You can make %(num)s wiki edits a day in a guild. Try again tomorr
 msgstr[0] "Ви можете зробити %(num)s вікі редагувати день в провалі. Спробуйте ще завтра."
 msgstr[1] "Ви можете зробити %(num)s вікі відредагувати день в провалі. Спробуйте ще завтра."
 msgstr[2] "Ви можете зробити %(num)s вікі відредагувати день в провалі. Спробуйте ще завтра."
+
+#, machine, plain1
+msgid "You can make a child account once your own account is confirmed as 18 or over. You can say so in Settings > Content."
+msgstr "Введіть номер мобільного, який Ви вказали при укладаннi договору з банком - для ідентифікації. Ви можете сказати так в налаштуваннях > Контент."
 
 #, machine, plain1
 msgid "You can only create up to 2 guilds per day. Try again later."
@@ -20233,6 +20599,10 @@ msgid "You don't have Premium right now."
 msgstr "Ви не маєте Premium прямо зараз."
 
 #, machine, plain1
+msgid "You don't have a child account called that."
+msgstr "Ви не маєте дитячого облікового запису."
+
+#, machine, plain1
 msgid "You don't have a coin to redeem."
 msgstr "Ви не маєте монети, щоб почервонити."
 
@@ -20344,6 +20714,10 @@ msgstr "Ви були переповнені з +%(guild)s."
 #, machine, plain1
 msgid "You have left the creator fund."
 msgstr "Ви залишили творець фонд."
+
+#, machine, plain1, python-format
+msgid "You have made %(num)s child accounts in the last %(days)s days. Try again later."
+msgstr "Ви зробили %(num)s дочірні рахунки в останні %(days)s дні. Спробуйте ще раз."
 
 #, machine, plain1
 msgid "You have muted this guild. Its posts stay out of All, For You and Following. Visit your settings or click the <i class='fas fa-ellipsis-h text-small'></i> icon to unmute it."
@@ -20749,12 +21123,20 @@ msgid "Your account can also post new items from feeds by itself, while you keep
 msgstr "Ваш обліковий запис також може розміщувати нові елементи з живих продуктів, а ви зберігаєте його, як ви зараз. Кожна з тих постів позначена як автоматизована, і люди, які приховують контент бота, не бачать їх. Ваші власні повідомлення, коментарі, голоси та чати незмінні. Спочатку адміністратор затвердив його."
 
 #, machine, plain1
+msgid "Your account can't post automatically while it is age-restricted."
+msgstr "Ваш обліковий запис не може автоматично розміщуватися, коли він є віковим обмеженням."
+
+#, machine, plain1
 msgid "Your account can't post automatically while it is suspended."
 msgstr "Ваш обліковий запис не може автоматично розміщуватися, коли він підвішений."
 
 #, machine, plain1
 msgid "Your account can't publish right now."
 msgstr "Ваш обліковий запис не може публікуватися прямо зараз."
+
+#, machine, plain1
+msgid "Your account can't run a bot while it is age-restricted."
+msgstr "Ваш обліковий запис не може запустити бота, коли він є віковим обмеженням."
 
 #, machine, plain1
 msgid "Your account cannot upload right now."
@@ -20775,6 +21157,10 @@ msgstr "Ваш обліковий запис був зареєстрований
 #, machine, plain1
 msgid "Your account has been deleted"
 msgstr "Ваш обліковий запис було видалено"
+
+#, machine, plain1, python-format
+msgid "Your account has the child lock on, held by your parent or guardian, since %(date)s."
+msgstr "Ваш обліковий запис має блокування дитини, що проводиться вашим батьком або опікуном, починаючи з %(date)s."
 
 #, machine, plain1, python-format
 msgid "Your account has the child lock on, since %(date)s."
@@ -20827,6 +21213,10 @@ msgstr ""
 "\n"
 "\n"
 "Щоб пропустити очікування, додайте і перевірте адресу електронної пошти в [Налаштування](/settings/security)."
+
+#, machine, plain1
+msgid "Your account is your own now. It no longer has the child lock and your parent or guardian can no longer see it. They chose your password: change it in [Settings > Security](/settings/security), or they can still sign in as you."
+msgstr "Ваш обліковий запис є вашим. Він більше не має блокування дитини і ваших батьків або опікунів більше не бачить його. Ви вибрали пароль: змінити його в [Налаштування](/settings/security), або вони ще можуть зареєструватися як ви."
 
 #, machine, plain1
 msgid "Your account needs to be at least 30 days old to post automatically."
@@ -20929,6 +21319,10 @@ msgstr "Ваші чати зашифровані, і сайт не може пр
 #, machine, plain1, python-format
 msgid "Your chats run on Matrix, an open standard, on %(site)s's own chat server. Besides Chat on this site, you can use them in a Matrix app such as Element (web, desktop and the classic phone apps), FluffyChat or Cinny. They stay end-to-end encrypted there too."
 msgstr "Відкритий стандарт, на сервері %(site)s. Крім чату на цьому сайті ви можете використовувати їх в додатку Matrix, таких як Element (веб, настільний та класичний додаток для телефону), FluffyChat або Cinny. Зашифровані вони занадто зашифровані."
+
+#, machine, plain1
+msgid "Your child accounts will be deleted with yours."
+msgstr "Ваша дитина буде видалена з вами."
 
 #, glossary, machine, plain1
 msgid "Your circles"
@@ -21075,8 +21469,51 @@ msgstr[1] ""
 msgstr[2] ""
 
 #, machine, plain1
+msgid "Your own password"
+msgstr "Ваш пароль"
+
+#, machine, plain1
+msgid "Your parent or guardian didn't agree to release your account."
+msgstr "Ви не погоджуєтесь випускати свій обліковий запис."
+
+#, machine, plain1
+msgid "Your parent or guardian has been asked to release your account. Nothing changes until they answer."
+msgstr "Ваше батьківське або охоронець було запропоновано звільнити свій обліковий запис. Ніяких змін до відповіді."
+
+#, machine, plain1
+msgid "Your parent or guardian has been asked to turn Private posting off."
+msgstr "Ваша батьківська або охоронець запитав, щоб повернути Приватне повідомлення."
+
+#, machine, plain1
 msgid "Your parent or guardian has to agree before Private posting can be turned off."
 msgstr "Ваш батько або охоронець зобов'язаний погоджуватися перед Приватним повідомленням може бути вимкнено."
+
+#, machine, plain1
+msgid "Your parent or guardian has turned this off for your account."
+msgstr "Ваше батьківське або опікунський вимкнено для вашого облікового запису."
+
+#, machine, plain1
+msgid "Your parent or guardian made this account for you. They can see what you do on the site (your posts, comments, votes, bookmarks, follows, guilds, who you chat with, that your account was reported and your recent sign-ins; the site never shows them what your chats say) and they choose which features are on. You can see which in [Settings > Content](/settings/content). They chose your password: change it in [Settings > Security](/settings/security) so that only you know it, because anyone who knows it can sign in as you and read your chats."
+msgstr "Ваш батько або охоронець зробив цей рахунок для вас. Вони можуть бачити те, що ви робите на сайті (Ваші повідомлення, коментарі, голоси, закладки, слід, провини, які ви чат з, що ваш обліковий запис був повідомлений і ваші останні знаки; сайт ніколи не показує їх, що говорить ваш чат) і вони вибирають, які функції знаходяться на. [Налаштування](/settings/content). Ви вибрали пароль: змінити його в [Налаштування](/settings/security) так що тільки ви знаєте його, тому що хтось знає, що він може зареєструватися як ви і читати ваші чати."
+
+msgid "Your parent or guardian set a new password for your account and you were signed out. Sign in with the new password, then change it in [Settings > Security](/settings/security) so that only you know it."
+msgstr ""
+
+#, machine, plain1
+msgid "Your parent or guardian stopped managing your account. It keeps the child lock until you confirm your age in Settings > Content. They chose your password: change it in [Settings > Security](/settings/security), or they can still sign in as you."
+msgstr "Ваша батьківська або охоронна особа припинила управління обліковим записом. Він зберігає замок дитини до підтвердження віку в налаштуваннях > Зміст Ви вибрали пароль: змінити його в [Налаштування](/settings/security), або вони ще можуть зареєструватися як ви."
+
+#, machine, plain1
+msgid "Your parent or guardian turned Private posting off for your account."
+msgstr "Ваша батьківська або охоронна особа виповнила Приватне повідомлення для вашого облікового запису."
+
+#, machine, plain1
+msgid "Your parent or guardian wants Private posting to stay on."
+msgstr "Ваша батьківська або опікунська хоче, щоб зупинитися на сайті."
+
+#, machine, plain1
+msgid "Your parent or guardian's account was suspended, so yours is suspended until theirs is back."
+msgstr "Ваш батьківський або охоронець був призупинений, так що ваш приз підвішений до моменту повернення."
 
 #, machine, plain1
 msgid "Your password"
@@ -21456,6 +21893,10 @@ msgid_plural "and %(num)s more"
 msgstr[0] "до %(num)s"
 msgstr[1] "і %(num)s більше"
 msgstr[2] "і %(num)s більше"
+
+#, machine, plain1
+msgid "anonymous"
+msgstr "анімація"
 
 #, machine, plain1
 msgctxt "guildmaster permission"
@@ -21908,6 +22349,10 @@ msgstr "попередній перегляд посилання"
 msgid "links"
 msgstr "посилання"
 
+#, machine, plain1
+msgid "looked at by the admins"
+msgstr "дивитися на адміністраторів"
+
 #. after the moderator's name in a guild's moderation log
 #, machine, plain1
 msgid "made a channel"
@@ -22114,6 +22559,10 @@ msgstr "переглянуто %(target)s"
 #, machine, plain1, python-format
 msgid "reinstated post %(target)s"
 msgstr "реінституційне повідомлення %(target)s"
+
+#, machine, plain1
+msgid "removed"
+msgstr "видалення"
 
 #. follows the moderator's name in a guild's moderation log; %(target)s is a
 #. link

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ruqqus VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-11-05 16:56+1100\n"
+"POT-Creation-Date: 2026-11-05 20:16+1100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: he\n"
@@ -1622,12 +1622,24 @@ msgid "(allow beats deny; the channel's own rules apply to everyone else)"
 msgstr "(אפשר לנצח; הכללים של הערוץ עצמם חלים על כולם)"
 
 #, machine, plain1
+msgid "(empty)"
+msgstr "(צילום)"
+
+#, machine, plain1
 msgid "(for a stage channel: the post's address or id)"
 msgstr "(עבור ערוץ שלב: כתובת הפוסט או id)"
 
 #, machine, plain1
 msgid "(from the original)"
 msgstr "(מתוך המקור)"
+
+#, machine, plain1
+msgid "(in a private place)"
+msgstr "(במקום פרטי)"
+
+#, machine, plain1
+msgid "(no title)"
+msgstr "(אין כותרת)"
 
 #, glossary, machine, plain1
 msgid "(off)"
@@ -2189,6 +2201,10 @@ msgid "<strong>Username:</strong> %(name)s"
 msgstr "<strong>שם המשתמש:</strong> %(name)s"
 
 #, machine, plain1, python-format
+msgid "@%(name)s - %(site)s"
+msgstr "@%(name)s - %(site)s"
+
+#, machine, plain1, python-format
 msgid "@%(name)s - Bots - %(site)s"
 msgstr "@%(name)s בוטים - %(site)s"
 
@@ -2202,6 +2218,10 @@ msgstr "@%(name)s להוסיף %(curation)s."
 
 #, python-format
 msgid "@%(name)s asked to publish a shared draft you write: your vote counts. [Open the draft](%(link)s)"
+msgstr ""
+
+#, python-format
+msgid "@%(name)s asked you to turn Private posting off for their account. You can answer in [Settings > Children](/settings/children)."
 msgstr ""
 
 #, machine, plain1, python-format
@@ -2246,6 +2266,10 @@ msgstr ""
 #, python-format
 msgid "@%(name)s forwarded [a post](%(link)s) to +%(guild)s."
 msgstr ""
+
+#, machine, plain1, python-format
+msgid "@%(name)s has a new password and is signed out everywhere."
+msgstr "@%(name)s יש סיסמה חדשה וחתומה בכל מקום."
 
 #, machine, plain1, python-format
 msgid "@%(name)s has already been invited."
@@ -2416,6 +2440,10 @@ msgid "@%(name)s reposted [a post](%(link)s)."
 msgstr ""
 
 #, python-format
+msgid "@%(name)s says they are 18 or over and asked you to release their account. You can answer in [Settings > Children](/settings/children)."
+msgstr ""
+
+#, python-format
 msgid "@%(name)s shared [a story](%(link)s)."
 msgstr ""
 
@@ -2446,6 +2474,10 @@ msgstr "@%(name)s הוגלה מ- +%(guild)s"
 #, machine, plain1, python-format
 msgid "@%(name)s was muted in +%(guild)s's channels."
 msgstr "@ %(name)s הואשם בערוצים של + %(guild)s."
+
+#, machine, plain1, python-format
+msgid "@%(name)s's age was confirmed as 18 or over, so their account is their own now and you can no longer see it."
+msgstr "@%(name)sהגיל אושר כבר בגיל 18 או יותר, אז החשבון שלהם הוא שלהם עכשיו, ואתה כבר לא יכול לראות את זה."
 
 #, machine, plain1, python-format
 msgid "@%(name)s's new posts will go into #%(channel)s."
@@ -2962,6 +2994,10 @@ msgstr "חוט חי לוקח הערות, לא הודעות לוח."
 #, machine, plain1
 msgid "A member"
 msgstr "חבר"
+
+#, machine, plain1
+msgid "A member reported this account."
+msgstr "חבר דיווח על החשבון הזה."
 
 #, machine, plain1, python-format
 msgid "A message can be at most %(count)s character."
@@ -4095,6 +4131,12 @@ msgid_plural "An update can be at most %(num)s characters."
 msgstr[0] "עדכון יכול להיות ברוב אחד."
 msgstr[1] "עדכון יכול להיות ברוב %(num)s תווים."
 
+#, machine, plain1, python-format
+msgid "And %(num)s private guild, which isn't named."
+msgid_plural "And %(num)s private guilds, which aren't named."
+msgstr[0] "%(num)s גור פרטי, שלא נקרא."
+msgstr[1] "%(num)s גורים פרטיים, שאינם נקראים."
+
 #, machine, plain1
 msgid "Animals"
 msgstr "בעלי חיים"
@@ -4150,6 +4192,10 @@ msgstr "אנונימי"
 msgctxt "label"
 msgid "Anonymous"
 msgstr "אנונימי"
+
+#, machine, plain1
+msgid "Anonymous posting and starting guilds"
+msgstr "פרסום אנונימי והתחלה של גילולים"
 
 #, machine, plain1
 msgid "Anonymous posts and comments count for you like any other. Your points and earnings are shown only to you; the site's admins see the payout list."
@@ -4361,6 +4407,14 @@ msgstr "Highlands"
 #, machine, plain1
 msgid "As an author you edit the draft live with them, and every character you type is credited to you. Once the post is published, anyone who can see it can see who wrote what. The authors decide together:"
 msgstr "כסופר שאתה עורך את הטיוטה לחיות איתם, וכל דמות שאתה מקל עליה. לאחר פרסום הפוסט, כל מי שיכול לראות מי כתב את מה. הכותבים מחליטים ביחד:"
+
+#, machine, plain1
+msgid "Ask my parent to turn it off"
+msgstr "בקש מההורים לכבות את זה"
+
+#, machine, plain1
+msgid "Asked you"
+msgstr "שואל אותך"
 
 #, machine, plain1, python-format
 msgid "At least %(count)s comments"
@@ -4831,6 +4885,10 @@ msgstr "עקבו אחרי תמונה, קול או וידאו"
 #, machine, plain1
 msgid "Boost for this curation's guilds and accounts"
 msgstr "לשפר את הגוזלים של מזון מחוספס וחשבונות"
+
+#, machine, plain1
+msgid "Born"
+msgstr "נולד"
 
 #, machine, plain1
 msgid "Bot keys"
@@ -5331,6 +5389,10 @@ msgid "Chat isn't answering right now. Try again in a moment."
 msgstr "צ'אט לא עונה כרגע. נסה שוב לרגע."
 
 #, machine, plain1
+msgid "Chat, group chats and calls"
+msgstr "צ'אט, צ'אט קבוצתי ושיחות"
+
+#, machine, plain1
 msgctxt "guildmaster action"
 msgid "Chatban user"
 msgstr "Chatban User"
@@ -5354,6 +5416,14 @@ msgstr "כימיה"
 #, machine, plain1
 msgid "Child - also hide profanity and sensitive content"
 msgstr "הילד - גם מסתיר את ההסתברות ואת התוכן הרגיש"
+
+#, machine, plain1
+msgid "Children"
+msgstr "ילדים"
+
+#, machine, plain1, python-format
+msgid "Children - %(site)s"
+msgstr "ילדים - %(site)s"
 
 #. "Sign in with ..." is the button the Matrix app shows for this site's
 #. sign-in
@@ -5686,6 +5756,10 @@ msgid "Coins received: %(recent)s in the last 30 days &middot; %(total)s in all.
 msgstr "מטבעות שהתקבלו: %(recent)s ב-30 הימים האחרונים &middot; %(total)s בכלל. הם הולכים ישר לאיזון המטבע שלך."
 
 #, machine, plain1
+msgid "Coins, tips, Premium and paid circles"
+msgstr "מטבעות, טיפים Premium מעגלים בתשלום"
+
+#, machine, plain1
 msgid "Collaborative"
 msgstr "שיתוף פעולה"
 
@@ -5748,6 +5822,10 @@ msgstr "הערה מציין."
 #, glossary, machine, plain1
 msgid "Comment posted!"
 msgstr "התגובה פורסמה!"
+
+#, machine, plain1
+msgid "Commenting"
+msgstr "הערות"
 
 #, glossary, machine, plain1
 msgid "Comments"
@@ -6395,8 +6473,16 @@ msgid "Delete role"
 msgstr "מחיקת תפקיד"
 
 #, machine, plain1
+msgid "Delete the account"
+msgstr "למחוק את החשבון"
+
+#, machine, plain1
 msgid "Delete the published post"
 msgstr "למחוק את הפוסט שפורסם"
+
+#, machine, plain1
+msgid "Delete this account"
+msgstr "למחוק את החשבון"
 
 #, machine, plain1
 msgid "Delete this category? Its channels stay."
@@ -6457,6 +6543,10 @@ msgstr "מחיקת קובץ בכונן שלך, או ניתוק, מסיר אות�
 #, machine, plain1
 msgid "Deleting a file there, or disconnecting, removes it from your posts."
 msgstr "הסרת קובץ שם, או ניתוק, מסיר אותו מהפוסטים שלך."
+
+#, machine, plain1
+msgid "Deleting your account also deletes your child accounts. You can download their data first in Settings > Children."
+msgstr "הסרת החשבון שלך גם מחקה את חשבונות הילד שלך. ניתן להוריד את הנתונים הראשונים בהגדרות > ילדים."
 
 #, machine, plain1
 msgid "Density"
@@ -6699,6 +6789,10 @@ msgid "Done"
 msgstr "עשה"
 
 #, machine, plain1
+msgid "Download"
+msgstr "הורד Download"
+
+#, machine, plain1
 msgctxt "button"
 msgid "Download"
 msgstr "הורדה"
@@ -6712,8 +6806,16 @@ msgid "Download the recording"
 msgstr "הורד את ההקלטה"
 
 #, machine, plain1
+msgid "Download their data"
+msgstr "הורד את הנתונים"
+
+#, machine, plain1
 msgid "Download your data"
 msgstr "הורד את הנתונים שלך"
+
+#, machine, plain1
+msgid "Downvote"
+msgstr "Downvote"
 
 #, glossary, machine, plain1
 msgctxt "verb"
@@ -7041,6 +7143,10 @@ msgstr "הזן את הכתובת של שרת להאכיל."
 msgid "Enter the feed's address."
 msgstr "הכנס את הכתובת של להאכיל."
 
+#, machine, plain1
+msgid "Enter the month and year they were born."
+msgstr "להיכנס לחודש ולשנה הם נולדו."
+
 #, machine, plain1, python-format
 msgid "Enter the six-digit code generated in the authenticator app and your %(site)s account password."
 msgstr "הכנס את הקוד השישי שנוצר באפליקציית האותנטיות והקוד שלך %(site)s חשבון סיסמה"
@@ -7213,6 +7319,10 @@ msgstr "כולם רואים את השינויים של אחד את השני כס
 #, machine, plain1
 msgid "Everything from your guilds and accounts, newest first."
 msgstr "הכל מהגילים והחשבונות שלך, קודם כל."
+
+#, machine, plain1
+msgid "Everything they post goes only to their Friends circle. Turn it off to let them post in public."
+msgstr "כל מה שהם מפרסמים הולך רק למעגל החברים שלהם. כבה את זה כדי לאפשר להם לפרסם בפומבי."
 
 #, machine, plain1
 msgid "Everything you post goes only to your Friends circle, the people you follow who follow you back, so nothing is public by accident. Your circles can only hold people like that, and you can't forward, repost or write a shared draft. Comments on other people's posts are still public."
@@ -7869,6 +7979,10 @@ msgstr "חברים"
 msgctxt "circle name"
 msgid "Friends"
 msgstr "חברים"
+
+#, machine, plain1
+msgid "Friends circle"
+msgstr "חברים מעגל"
 
 #, machine, plain1
 msgid "Friends is everyone you follow who follows you back. To share with family, a team or anyone else, make a circle first, then pick it here."
@@ -8675,6 +8789,10 @@ msgstr "ציד"
 msgid "I accept the <a href=\"%(url)s\" target=\"_blank\">terms and conditions</a>"
 msgstr "אני מקבל את <a href=\"%(url)s\" target=\"_blank\">תנאים ותנאים</a>"
 
+#, machine, plain1, python-format
+msgid "I agree to the <a href=\"%(url)s\" target=\"_blank\">Terms</a> for them."
+msgstr "אני מסכים עם <a href=\"%(url)s\" target=\"_blank\">תנאים</a> עבורם."
+
 #, machine, plain1
 msgid "I agree to the rules below."
 msgstr "אני מסכים לחוקים הבאים."
@@ -8710,6 +8828,10 @@ msgstr "אם יש כתובת דואר אלקטרוני הקשורה לחשבון
 #, machine, plain1
 msgid "If this was you, there is nothing to do."
 msgstr "אם זה אתה, אין מה לעשות."
+
+#, machine, plain1
+msgid "If you are 18 or over, say so and your parent or guardian will be asked to release your account."
+msgstr "אם אתה בן 18 או יותר, אמור כך והורה או האפוטרופוס שלך יידרשו לשחרר את החשבון שלך."
 
 #, machine, plain1
 msgid "If you don't have your 2FA device, enter one of your backup codes instead. Each backup code works once. An account that never made backup codes can enter its Recovery Code, which also turns 2FA off."
@@ -9088,6 +9210,14 @@ msgid "It shows, in full, every word and phrase the word filter looks for, in ev
 msgstr "זה מראה, במלואו, כל מילה וביטוי המילה מסנן מחפשים, בכל שפה שהיא מכסה. זה כולל סלורים ושפה פוגענית אחרת."
 
 #, machine, plain1
+msgid "It stays a child account with the child lock, but you can no longer see it or change what it can do, and you can't link it again."
+msgstr "זה נשאר חשבון ילדים עם מנעול הילדים, אבל אתה כבר לא יכול לראות את זה או לשנות מה זה יכול לעשות, ואתה לא יכול לקשר אותו שוב."
+
+#, machine, plain1
+msgid "It stays on the Child word filter, which hides profanity and anything marked sensitive."
+msgstr "הוא נשאר על מסנן המילים של הילד, המסתיר פרוטה וכל דבר רגיש."
+
+#, machine, plain1
 msgid "It stays on the Child word filter, which hides profanity and anything marked sensitive. Chat, Spaces, coins, anonymous posting and starting a guild are off, and others can't start a chat or tip you. Your posts go to your Friends circle only unless you turn Private posting off."
 msgstr "הוא נשאר על מסנן המילים של הילד, המסתיר פרוטה וכל דבר רגיש. צ'אט, חללים, מטבעות, פרסום אנונימי ומתחילים גורים, ואחרים לא יכולים להתחיל צ'אט או טיפ. הפוסטים שלך הולכים למעגל החברים שלך, אלא אם כן אתה מסיר הודעות פרטיות."
 
@@ -9251,6 +9381,10 @@ msgstr "יוני solstice"
 #, machine, plain1
 msgid "K-Pop"
 msgstr "K-Pop"
+
+#, machine, plain1
+msgid "Keep it on"
+msgstr "שמור את זה על"
 
 #, machine, plain1
 msgid "Keep my posts out of All"
@@ -9526,6 +9660,10 @@ msgstr "מקלחות Leonids"
 msgid "Letters spaced out or split by dots or other marks are read as one word."
 msgstr "מכתבים שנחצבו או מפוצלים על ידי דוטים או סימנים אחרים נקראים מילה אחת."
 
+#, machine, plain1
+msgid "Letters, numbers and underscores, 3 to 25 characters."
+msgstr "מכתבים, מספרים ומדגישים, 3 עד 25 תווים."
+
 #, glossary, machine, plain1
 msgid "Lifestyle"
 msgstr "סגנון חיים"
@@ -9765,6 +9903,10 @@ msgstr "ירח השנה החדשה"
 msgid "Lyrids meteor shower"
 msgstr "מקלחות ליריד"
 
+#, machine, plain1, python-format
+msgid "Made on %(date)s."
+msgstr "מיוצר על %(date)s."
+
 #, glossary, machine, plain1
 msgid "Made with AI"
 msgstr "נוצר בבינה מלאכותית"
@@ -9783,6 +9925,10 @@ msgid "Make a channel"
 msgstr "לעשות ערוץ"
 
 #, machine, plain1
+msgid "Make a child account"
+msgstr "לעשות חשבון ילד"
+
+#, machine, plain1
 msgid "Make a circle people pay to be in, every 30 days, for what you share with it."
 msgstr "לעשות מעגל אנשים לשלם כדי להיות בו, כל 30 יום, על מה שאתה משתף איתו."
 
@@ -9797,6 +9943,10 @@ msgstr "לעשות דף"
 #, machine, plain1
 msgid "Make a role"
 msgstr "לעשות תפקיד"
+
+#, machine, plain1
+msgid "Make an account for a child under 18 and decide what it can do. You can see what they do on the site (their posts, comments, votes, bookmarks, follows, guilds, the names of who they chat with and their recent sign-ins). The site never shows you what their chats say: chats are end-to-end encrypted. You choose their password, so until they change it you can sign in as them and read their chats: tell them to set their own. They are told all of this in their own Settings."
+msgstr "לעשות חשבון לילד מתחת לגיל 18 ולהחליט מה הוא יכול לעשות. אתה יכול לראות מה הם עושים באתר (הפוסטים שלהם, הערות, קולות, סימני ספר, להלן, גילידים, השמות של מי הם צ'אט עם ואת הסימנים האחרונים שלהם). האתר אף פעם לא מראה לך מה הצ'אטים שלהם אומרים: צ'אטים הם מוצפנים מקצה לקצה. אתה בוחר את הסיסמה שלהם, אז עד שהם משנים אותה, אתה יכול לחתום עליהם ולקרוא את הצ'אטים שלהם: תגיד להם להגדיר את עצמם. הם אומרים את כל זה בהגדרות שלהם."
 
 #, machine, plain1, python-format
 msgid "Make an app first in <a href=\"%(url)s\">Settings &gt; Apps</a>; a key works through it."
@@ -10135,6 +10285,10 @@ msgid "Mon"
 msgstr "מונמון"
 
 #, machine, plain1
+msgid "Month"
+msgstr "חודש החודש"
+
+#, machine, plain1
 msgctxt "table heading"
 msgid "Month"
 msgstr "חודש החודש"
@@ -10143,6 +10297,10 @@ msgstr "חודש החודש"
 msgctxt "time range"
 msgid "Month"
 msgstr "חודש"
+
+#, machine, plain1
+msgid "Month they were born"
+msgstr "חודש נולד"
 
 #, machine, plain1
 msgid "Monthly creator fund payouts"
@@ -10482,6 +10640,10 @@ msgstr "דף חדש: %(address)s"
 #, machine, plain1
 msgid "New paid circle"
 msgstr "מעגל חדש בתשלום"
+
+#, machine, plain1
+msgid "New password"
+msgstr "סיסמה חדשה"
 
 #, machine, plain1
 msgid "New posts that are getting attention, with no account filling the page."
@@ -10867,6 +11029,10 @@ msgstr "אף אחד חדש לא יכול להירשם. מנויים נוכחיי
 msgid "Nobody types here"
 msgstr "אף אחד לא כאן"
 
+#, machine, plain1, python-format
+msgid "Nobody under %(age)s may have an account where you are."
+msgstr "אף אחד מתחת ל- %(age)s יכול להיות חשבון שבו אתה נמצא."
+
 #, machine, plain1
 msgid "Nobody yet."
 msgstr "אף אחד עדיין לא."
@@ -10987,6 +11153,10 @@ msgstr "לא לקחת מנויים"
 #, machine, plain1
 msgid "Not trending any more"
 msgstr "לא טרנדים יותר"
+
+#, machine, plain1
+msgid "Not yet"
+msgstr "עדיין לא"
 
 #, glossary, machine, plain1
 msgid "Not your default:"
@@ -11109,6 +11279,10 @@ msgid "Nothing written yet."
 msgstr "שום דבר לא נכתב עדיין."
 
 #, machine, plain1
+msgid "Nothing yet."
+msgstr "עדיין לא כלום."
+
+#, machine, plain1
 msgid "Notification types"
 msgstr "המונחים"
 
@@ -11156,6 +11330,10 @@ msgstr "Oceania"
 msgid "Oddly Satisfying"
 msgstr "למרבה הפלא, מפתה"
 
+#, machine, plain1
+msgid "Off"
+msgstr "Off"
+
 #. slow mode in a guild's channel is switched off.
 #, machine, plain1
 msgctxt "slow mode"
@@ -11182,6 +11360,10 @@ msgstr "ישן"
 #, machine, plain1
 msgid "Old Password"
 msgstr "סיסמה ישנה"
+
+#, machine, plain1
+msgid "On"
+msgstr "On"
 
 #. "On" marks a linked storage account that is in use
 #, machine, plain1
@@ -11258,6 +11440,10 @@ msgstr "לא ניתן להציג בפניכם את אחד הגרסאות הלל�
 #, machine, plain1
 msgid "One of those circles isn't yours any more. Choose again."
 msgstr "אחד העיגולים האלה הוא לא שלך יותר. בחרו שוב."
+
+#, machine, plain1
+msgid "One of your child accounts owes money, so your account can't be deleted yet."
+msgstr "אחד הילדים שלך חייב כסף, אז החשבון שלך עדיין לא ניתן למחוק."
 
 #, machine, plain1
 msgid "One-time codes for the day you lose your authenticator. Making a new set replaces every earlier code, used or not."
@@ -11579,6 +11765,10 @@ msgstr "רק המחבר ומחברי המאמר יכולים לפרסם עדכו
 #, machine, plain1
 msgid "Only the post's author and co-authors can run its live updates."
 msgstr "רק המחבר ומחברי המאמר יכולים לנהל את העדכונים החיים שלהם."
+
+#, machine, plain1
+msgid "Only used to check their age. It isn't kept."
+msgstr "רק נהג לבדוק את הגיל שלו. זה לא נשמר."
 
 #, machine, plain1
 msgid "Only when I turn them on"
@@ -12574,6 +12764,10 @@ msgid "Posted on that day."
 msgstr "פורסם באותו יום."
 
 #, machine, plain1
+msgid "Posting"
+msgstr "פוסט"
+
+#, machine, plain1
 msgid "Posting cooldown"
 msgstr "עקבו אחרי Cooldown"
 
@@ -13411,6 +13605,10 @@ msgid "Relationships"
 msgstr "יחסים"
 
 #, machine, plain1
+msgid "Release the account"
+msgstr "לשחרר את החשבון"
+
+#, machine, plain1
 msgid "Religion"
 msgstr "דת"
 
@@ -13660,6 +13858,10 @@ msgstr "הודעות"
 msgctxt "noun"
 msgid "Reports"
 msgstr "דיווחים"
+
+#, machine, plain1
+msgid "Reports about them"
+msgstr "דוחות עליהם"
 
 #, machine, plain1
 msgid "Reports opened"
@@ -13998,6 +14200,10 @@ msgctxt "weekday"
 msgid "Sat"
 msgstr "Sat"
 
+#, glossary, machine, plain1
+msgid "Save"
+msgstr "שמור"
+
 #, machine, plain1
 msgctxt "button"
 msgid "Save"
@@ -14307,6 +14513,10 @@ msgid "See what is trending"
 msgstr "ראה מה הוא טרנד"
 
 #, machine, plain1
+msgid "See what they do"
+msgstr "ראו מה הם עושים"
+
+#, machine, plain1
 msgid "See your username"
 msgstr "ראה שם המשתמש שלך"
 
@@ -14405,6 +14615,10 @@ msgstr "ספטמבר Equinox"
 #, machine, plain1
 msgid "Serious"
 msgstr "רציני"
+
+#, machine, plain1
+msgid "Set a new password"
+msgstr "הגדר סיסמה חדשה"
 
 #, machine, plain1
 msgid "Set a price to let people pay to join."
@@ -15054,6 +15268,10 @@ msgid "Spaces"
 msgstr "מרחבים"
 
 #, machine, plain1
+msgid "Spaces and live threads"
+msgstr "חללים וחוט חי"
+
+#, machine, plain1
 msgid "Spaces are started in the Spaces area."
 msgstr "החללים מתחילים באזור החלל."
 
@@ -15188,6 +15406,14 @@ msgstr "פוסט נעוץ"
 #, machine, plain1
 msgid "Still here to read"
 msgstr "עדיין כאן לקרוא"
+
+#, machine, plain1
+msgid "Stop managing"
+msgstr "תפסיקו לנהל"
+
+#, machine, plain1
+msgid "Stop managing this account"
+msgstr "תפסיקו לנהל את החשבון"
 
 #, machine, plain1
 msgid "Stop posting automatically"
@@ -15364,6 +15590,10 @@ msgstr "תומכים…"
 #, machine, plain1
 msgid "Survival & Bushcraft"
 msgstr "הישרדות & Bushcraft"
+
+#, machine, plain1
+msgid "Suspended"
+msgstr "סיכום"
 
 #, machine, plain1, python-format
 msgid "Switch @%(name)s off for good? Its posts stay; the bot never posts again."
@@ -15837,6 +16067,10 @@ msgid "That isn't a valid username."
 msgstr "זה לא שם משתמש חוקי."
 
 #, machine, plain1
+msgid "That isn't something you can switch."
+msgstr "זה לא משהו שאתה יכול לעבור."
+
+#, machine, plain1
 msgid "That key couldn't be saved."
 msgstr "המפתח הזה לא יכול להינצל."
 
@@ -16067,6 +16301,14 @@ msgstr "הסאהל"
 #, machine, plain1
 msgid "The Space could not be made."
 msgstr "החלל לא יכול להיעשות."
+
+#, machine, plain1, python-format
+msgid "The account @%(name)s is deleted."
+msgstr "החשבון @%(name)s נמחק."
+
+#, machine, plain1, python-format
+msgid "The account @%(name)s is made. They sign in with the username and password you gave."
+msgstr "החשבון @%(name)s זה נעשה. הם חותמים עם שם המשתמש והסיסמה שנתת."
 
 #, machine, plain1, python-format
 msgid "The account age must be a whole number of days, 0 to %(max)s."
@@ -16410,6 +16652,10 @@ msgstr "הפוסטים הנבחרים ביותר של שבעת הימים האח
 #, machine, plain1, python-format
 msgid "The name %(host)s could not be found."
 msgstr "השם %(host)s לא ניתן למצוא."
+
+#, machine, plain1
+msgid "The newest of what they have done. Only the names of who they chat with are shown, never what a chat says: chats are end-to-end encrypted."
+msgstr "החדש של מה שהם עשו. רק השמות של מי הם משוחחים עם מוצגים, לעולם לא מה אומר צ'אט: צ'אטים הם מוצפנים מקצה לקצה."
 
 #, machine, plain1
 msgid "The numbers are always shown on your profile. This decides who can open each list and see the accounts on it. An account is only listed where its own setting allows it too."
@@ -16761,12 +17007,20 @@ msgid "They already have this role."
 msgstr "כבר יש להם את התפקיד הזה."
 
 #, machine, plain1
+msgid "They are 18 or over, so they can make their own account."
+msgstr "הם 18 או יותר, כך שהם יכולים לעשות חשבון משלהם."
+
+#, machine, plain1
 msgid "They are already in this circle."
 msgstr "הם כבר במעגל הזה."
 
 #, machine, plain1
 msgid "They are not told. Anyone you block leaves your circles."
 msgstr "הם לא אמרו. כל מי שאתה חוסם משאיר את המעגלים שלך."
+
+#, machine, plain1
+msgid "They are signed out everywhere. If they use chat, they may be asked for their recovery code."
+msgstr "הם חתמו בכל מקום. אם הם משתמשים בצ'אט, הם עשויים לבקש את קוד ההתאוששות שלהם."
 
 #, machine, plain1, python-format
 msgid "They aren't in %(circle)s."
@@ -16781,6 +17035,38 @@ msgid "They aren't muted here."
 msgstr "הם לא מומסים כאן."
 
 #, machine, plain1
+msgid "They asked you to turn Private posting off."
+msgstr "הם ביקשו ממך להעביר הודעות פרטיות."
+
+#, machine, plain1
+msgid "They can buy and spend coins, tip, buy Premium and join or run paid circles."
+msgstr "הם יכולים לקנות ולבזבז מטבעות, טיפ, לקנות Premium להצטרף או לרוץ מעגלים בתשלום."
+
+#, machine, plain1
+msgid "They can comment."
+msgstr "הם יכולים להגיב."
+
+#, machine, plain1
+msgid "They can host and join Spaces and run live threads. Voice calls in a Space also need Chat to be on."
+msgstr "הם יכולים לארח ולהצטרף לחללים ולרוץ חוטים חיים. שיחות קוליות בחלל זקוקות גם לצ'אט."
+
+#, machine, plain1
+msgid "They can make posts."
+msgstr "הם יכולים לפרסם פוסטים."
+
+#, machine, plain1
+msgid "They can message people, join group chats and make calls. The site never shows you what a chat says: chats are end-to-end encrypted. Whoever knows their password can still sign in and read them."
+msgstr "הם יכולים לשלוח אנשים, להצטרף צ'אטים קבוצתיים ולעשות שיחות. האתר אף פעם לא מראה לך מה צ'אט אומר: צ'אטים הם מוצפנים מקצה לקצה. מי שמכיר את הסיסמה שלו עדיין יכול להיכנס ולקרוא אותם."
+
+#, machine, plain1
+msgid "They can post anonymously and start a guild. You can still see who wrote an anonymous post."
+msgstr "הם יכולים לכתוב בצורה אנונימית ולהתחיל גורד. אפשר לראות מי כתב פוסט אנונימי."
+
+#, machine, plain1
+msgid "They can see what you do on the site: your posts, comments, votes, bookmarks, follows, guilds, who you chat with, that your account was reported, and your recent sign-ins. The site never shows them what your chats say, because chats are end-to-end encrypted. But anyone who knows your password, a parent who chose it included, can sign in as you: change it in Security so that only you know it. They choose which of these are on for your account:"
+msgstr "הם יכולים לראות מה אתה עושה באתר: הפוסטים שלך, התגובות, הקולות, סימניות, להלן, גילידים, מי אתה משוחח עם, כי החשבון שלך דווח, ואת הסימנים האחרונים שלך. האתר אף פעם לא מראה להם מה אומרים הצ'אטים שלך, כי צ'אטים הם מוצפנים מקצה לקצה. אבל כל מי שמכיר את הסיסמה שלך, הורה שבחר בה, יכול להיכנס כפי שאתה: לשנות אותה בביטחון, כך שרק אתה מכיר אותה. הם בוחרים מי מהם על החשבון שלך:"
+
+#, machine, plain1
 msgid "They can't comment on your posts or comments, chat with you or notify you by mentioning you. They are not told, but they may work it out if they try to comment on something of yours."
 msgstr "הם לא יכולים להגיב על הפוסטים או הערות שלך, לשוחח איתך או להודיע לך על ידי אזכור אותך. הם לא אומרים, אבל הם עשויים לעבוד אם הם מנסים להגיב על משהו שלך."
 
@@ -16793,12 +17079,20 @@ msgid "They go straight to your coin balance."
 msgstr "הם הולכים ישר לאיזון המטבע שלך."
 
 #, machine, plain1
+msgid "They haven't asked for that."
+msgstr "הם לא ביקשו את זה."
+
+#, machine, plain1
 msgid "They need to be in the guild, and not exiled from it."
 msgstr "הם צריכים להיות בגור, ולא להיגלה ממנו."
 
 #, machine, plain1
 msgid "They need to join the channel first."
 msgstr "קודם כל צריך להצטרף לערוץ."
+
+#, machine, plain1
+msgid "They say they are 18 or over and asked you to release their account. If you do, it becomes their own and you can no longer see it."
+msgstr "הם אומרים שהם 18 ומעלה וביקשו ממך לשחרר את החשבון שלהם. אם אתה עושה זאת, זה הופך להיות שלהם ואתה כבר לא יכול לראות את זה."
 
 #, machine, plain1
 msgid "They're already a helper."
@@ -16913,6 +17207,14 @@ msgstr "חשבון זה הושעה באופן זמני מ- %(site)s בדוק ש�
 #, machine, plain1
 msgid "This account is private"
 msgstr "חשבון זה פרטי"
+
+#, machine, plain1
+msgid "This account is suspended."
+msgstr "החשבון הזה מושעה."
+
+#, machine, plain1
+msgid "This account owes money, so it can't be deleted yet."
+msgstr "חשבון זה חייב כסף, אז עדיין לא ניתן למחוק אותו."
 
 #, machine, plain1
 msgid "This account posts about sensitive topics"
@@ -17048,6 +17350,10 @@ msgstr "זה מחוספס וחשבונות של מזון"
 #, machine, plain1
 msgid "This curation's rules took too long to run. Its owner can make them narrower."
 msgstr "הכללים של מזון מחוספס זה לקח זמן רב מדי כדי לרוץ. הבעלים יכולים להפוך אותם צרים יותר."
+
+#, machine, plain1
+msgid "This deletes their account and everything on it. It can't be undone. You can download their data first."
+msgstr "זה מחק את החשבון והכל על זה. זה לא יכול להיות בלתי בודד. אתה יכול להוריד את הנתונים קודם."
 
 #, machine, plain1
 msgid "This draft hasn't been published."
@@ -17379,6 +17685,10 @@ msgid "Thu"
 msgstr "תור"
 
 #, machine, plain1
+msgid "Tick the box to agree to the Terms for them."
+msgstr "תכין את הקופסה כדי להסכים לתנאיהם."
+
+#, machine, plain1
 msgid "Tick the box to agree to the rules first."
 msgstr "לחצו על הקופסה כדי להסכים קודם לכללים."
 
@@ -17650,6 +17960,10 @@ msgstr "Tue"
 #, machine, plain1
 msgid "Turanian Steppe"
 msgstr "Turanian Steppe"
+
+#, machine, plain1
+msgid "Turn it off"
+msgstr "סובבו אותו"
 
 #, machine, plain1, python-format
 msgid "Turn off notifications from +%(guild)s"
@@ -18108,6 +18422,10 @@ msgstr "תגית: Upload"
 #, machine, plain1
 msgid "Upload picture"
 msgstr "תמונה Upload"
+
+#, machine, plain1
+msgid "Upvote"
+msgstr "Upvote"
 
 #, glossary, machine, plain1
 msgctxt "verb"
@@ -18818,6 +19136,10 @@ msgid "Where you are, the law means your age has to be confirmed with an age-che
 msgstr "כאשר אתה, החוק אומר שהגיל שלך צריך להיות מאושר עם שירות של גיל לבדוק לפני שאתה יכול לראות תוכן רגיש או שפה חזקה."
 
 #, machine, plain1
+msgid "Where you are, your age has to be confirmed with an age-check service before you can make a child account."
+msgstr "איפה אתה, הגיל שלך צריך להיות מאושר עם שירות בדיקות גיל לפני שאתה יכול לעשות חשבון ילד."
+
+#, machine, plain1
 msgid "Where you are, your age has to be confirmed with an age-check service."
 msgstr "איפה אתה, הגיל שלך צריך להיות מאושר עם שירות גיל."
 
@@ -18909,9 +19231,17 @@ msgstr "מי מחליט"
 msgid "Who follows you"
 msgstr "מי עוקב אחריך"
 
+#, machine, plain1
+msgid "Who reported them, and what they wrote, isn't shown to anyone but the admins."
+msgstr "מי דיווח אותם, ומה שהם כתבו, לא מוצג לאף אחד מלבד המנהלים."
+
 #, glossary, machine, plain1
 msgid "Who subscribes to your Circle"
 msgstr "מי מנוי למעגל שלך"
+
+#, machine, plain1
+msgid "Who they chat with"
+msgstr "מי הם משוחחים עם"
 
 #, machine, plain1
 msgid "Who to follow"
@@ -19292,10 +19622,18 @@ msgctxt "guildmaster action"
 msgid "Yank post"
 msgstr "יאנק פוסט"
 
+#, machine, plain1
+msgid "Year"
+msgstr "שנה"
+
 #, glossary, machine, plain1
 msgctxt "time range"
 msgid "Year"
 msgstr "שנה"
+
+#, machine, plain1
+msgid "Year they were born"
+msgstr "השנה הם נולדו"
 
 #, machine, plain1
 msgctxt "colour"
@@ -19458,6 +19796,14 @@ msgid "You aren't subscribed to that circle."
 msgstr "אתה לא נרשם למעגל הזה."
 
 #, machine, plain1
+msgid "You asked your parent or guardian to release your account. They haven't answered yet."
+msgstr "ביקשת מההורים או מאפוטרופוס לשחרר את החשבון שלך. הם עדיין לא הגיבו."
+
+#, machine, plain1
+msgid "You asked your parent or guardian to turn this off. They haven't answered yet."
+msgstr "ביקשת מההורים או מהאפוטרופוס שלך לכבות את זה. הם עדיין לא הגיבו."
+
+#, machine, plain1
 msgid "You can add pictures at 500 Rep, or earlier with Premium"
 msgstr "ניתן להוסיף תמונות ב-500 מוניטין, או קודם לכן. Premium"
 
@@ -19548,6 +19894,16 @@ msgstr[0] "אתה יכול לקבל כמעט ערוץ אחד."
 msgstr[1] "אתה יכול לקבל כמעט %(num)s ערוצים."
 
 #, machine, plain1, python-format
+msgid "You can have at most %(num)s child account."
+msgid_plural "You can have at most %(num)s child accounts."
+msgstr[0] "אתה יכול לקבל על חשבון ילד אחד."
+msgstr[1] "אתה יכול לקבל כמעט %(num)s חשבונות ילדים."
+
+#, machine, plain1, python-format
+msgid "You can have at most %(num)s child accounts."
+msgstr "אתה יכול להיות ברוב %(num)s חשבונות ילדים"
+
+#, machine, plain1, python-format
 msgid "You can host at most %(num)s Space a day."
 msgid_plural "You can host at most %(num)s Spaces a day."
 msgstr[0] "אתה יכול לארח את רוב שטח %(num)s ביום."
@@ -19574,6 +19930,10 @@ msgid "You can look around and set up your profile; posting, comments, votes and
 msgstr "אתה יכול להסתכל סביב ולהגדיר את הפרופיל שלך; פרסום, הערות, קולות, ולאחר מכן פתוח לאחר ביצוע הבדיקה."
 
 #, machine, plain1, python-format
+msgid "You can make %(num)s child accounts a day. Try again tomorrow."
+msgstr "אתה יכול לעשות %(num)s הילד רואה יום. נסה שוב מחר."
+
+#, machine, plain1, python-format
 msgid "You can make %(num)s proposal a day."
 msgid_plural "You can make %(num)s proposals a day."
 msgstr[0] "אפשר להציע הצעה אחת ביום."
@@ -19584,6 +19944,10 @@ msgid "You can make %(num)s wiki edit a day in a guild. Try again tomorrow."
 msgid_plural "You can make %(num)s wiki edits a day in a guild. Try again tomorrow."
 msgstr[0] "אתה יכול לעשות %(num)s wiki לערוך יום בגור. נסה שוב מחר."
 msgstr[1] "אתה יכול לעשות %(num)s wiki לערוך יום בגור. נסה שוב מחר."
+
+#, machine, plain1
+msgid "You can make a child account once your own account is confirmed as 18 or over. You can say so in Settings > Content."
+msgstr "אתה יכול לעשות חשבון ילד לאחר שהחשבון שלך מוכר 18 או יותר. ניתן לומר זאת בהגדרות > תוכן."
 
 #, machine, plain1
 msgid "You can only create up to 2 guilds per day. Try again later."
@@ -19878,6 +20242,10 @@ msgid "You don't have Premium right now."
 msgstr "אין לך Premium עכשיו."
 
 #, machine, plain1
+msgid "You don't have a child account called that."
+msgstr "אין לך חשבון ילדים בשם זה."
+
+#, machine, plain1
 msgid "You don't have a coin to redeem."
 msgstr "אין לך מטבע לגאול."
 
@@ -19978,6 +20346,10 @@ msgstr "אתה מוריד מ- +%(guild)s."
 #, machine, plain1
 msgid "You have left the creator fund."
 msgstr "עזבת את הקרן היוצרת."
+
+#, machine, plain1, python-format
+msgid "You have made %(num)s child accounts in the last %(days)s days. Try again later."
+msgstr "עשית %(num)s חשבונות ילדים אחרונים %(days)s ימים. נסה שוב מאוחר יותר."
 
 #, machine, plain1
 msgid "You have muted this guild. Its posts stay out of All, For You and Following. Visit your settings or click the <i class='fas fa-ellipsis-h text-small'></i> icon to unmute it."
@@ -20378,12 +20750,20 @@ msgid "Your account can also post new items from feeds by itself, while you keep
 msgstr "החשבון שלך יכול גם לפרסם פריטים חדשים מהזנת עצמו, בעוד שאתה ממשיך להשתמש בו כפי שאתה עושה עכשיו. כל אחד מהפוסטים הללו מסומן כאוטומטי, ואנשים שמסתתרים תוכן בוט לא רואים אותם. הפוסטים שלך, התגובות, הקולות והצ'אטים שלך ללא שינוי. מנהל המערכת אישר את זה קודם."
 
 #, machine, plain1
+msgid "Your account can't post automatically while it is age-restricted."
+msgstr "החשבון שלך לא יכול לפרסם באופן אוטומטי בזמן שהוא מוגבל לגיל."
+
+#, machine, plain1
 msgid "Your account can't post automatically while it is suspended."
 msgstr "החשבון שלך לא יכול לפרסם באופן אוטומטי בזמן שהוא מושעה."
 
 #, machine, plain1
 msgid "Your account can't publish right now."
 msgstr "החשבון שלך לא יכול לפרסם כרגע."
+
+#, machine, plain1
+msgid "Your account can't run a bot while it is age-restricted."
+msgstr "החשבון שלך לא יכול להפעיל בוט בזמן שהוא מוגבל לגיל."
 
 #, machine, plain1
 msgid "Your account cannot upload right now."
@@ -20404,6 +20784,10 @@ msgstr "החשבון שלך נבדק ומוכן: אתה יכול עכשיו לפ
 #, machine, plain1
 msgid "Your account has been deleted"
 msgstr "החשבון שלך נמחק"
+
+#, machine, plain1, python-format
+msgid "Your account has the child lock on, held by your parent or guardian, since %(date)s."
+msgstr "יש לך את הילד נעול, מוחזק על ידי ההורה או האפוטרופוס שלך, מאז %(date)s."
 
 #, machine, plain1, python-format
 msgid "Your account has the child lock on, since %(date)s."
@@ -20450,6 +20834,9 @@ msgid ""
 "\n"
 "\n"
 "To skip the wait, add and verify an email address in [Settings > Security](/settings/security)."
+msgstr ""
+
+msgid "Your account is your own now. It no longer has the child lock and your parent or guardian can no longer see it. They chose your password: change it in [Settings > Security](/settings/security), or they can still sign in as you."
 msgstr ""
 
 #, machine, plain1
@@ -20552,6 +20939,10 @@ msgstr "הצ'אטים שלך מוצפנים מקצה לקצה, והאתר לא �
 #, machine, plain1, python-format
 msgid "Your chats run on Matrix, an open standard, on %(site)s's own chat server. Besides Chat on this site, you can use them in a Matrix app such as Element (web, desktop and the classic phone apps), FluffyChat or Cinny. They stay end-to-end encrypted there too."
 msgstr "הצ'אטים שלך לרוץ על מטריקס, תקן פתוח, על %(site)sשרת צ'אט משלה מלבד צ'אט באתר זה, אתה יכול להשתמש בהם ביישום מטריקס כגון Element (web, שולחן העבודה ואפליקציות הטלפון הקלאסיות), FluffyChat או או Cinnyהם נשארים מוצפנים גם שם."
+
+#, machine, plain1
+msgid "Your child accounts will be deleted with yours."
+msgstr "חשבונות הילד שלך יימחקו עם שלך."
 
 #, glossary, machine, plain1
 msgid "Your circles"
@@ -20696,8 +21087,49 @@ msgstr[0] ""
 msgstr[1] ""
 
 #, machine, plain1
+msgid "Your own password"
+msgstr "הסיסמה שלך"
+
+#, machine, plain1
+msgid "Your parent or guardian didn't agree to release your account."
+msgstr "ההורה או האפוטרופוס שלך לא הסכימו לשחרר את החשבון שלך."
+
+#, machine, plain1
+msgid "Your parent or guardian has been asked to release your account. Nothing changes until they answer."
+msgstr "ההורה או האפוטרופוס שלך התבקש לשחרר את החשבון שלך. שום דבר לא משתנה עד שיענה."
+
+#, machine, plain1
+msgid "Your parent or guardian has been asked to turn Private posting off."
+msgstr "ההורה או האפוטרופוס שלך התבקשו לבטל את הפרסום הפרטי."
+
+#, machine, plain1
 msgid "Your parent or guardian has to agree before Private posting can be turned off."
 msgstr "ההורה או האפוטרופוס שלך צריך להסכים לפני פרסום פרטי ניתן לכבות."
+
+#, machine, plain1
+msgid "Your parent or guardian has turned this off for your account."
+msgstr "ההורה או האפוטרופוס שלך הסירו את זה בחשבון שלך."
+
+msgid "Your parent or guardian made this account for you. They can see what you do on the site (your posts, comments, votes, bookmarks, follows, guilds, who you chat with, that your account was reported and your recent sign-ins; the site never shows them what your chats say) and they choose which features are on. You can see which in [Settings > Content](/settings/content). They chose your password: change it in [Settings > Security](/settings/security) so that only you know it, because anyone who knows it can sign in as you and read your chats."
+msgstr ""
+
+msgid "Your parent or guardian set a new password for your account and you were signed out. Sign in with the new password, then change it in [Settings > Security](/settings/security) so that only you know it."
+msgstr ""
+
+msgid "Your parent or guardian stopped managing your account. It keeps the child lock until you confirm your age in Settings > Content. They chose your password: change it in [Settings > Security](/settings/security), or they can still sign in as you."
+msgstr ""
+
+#, machine, plain1
+msgid "Your parent or guardian turned Private posting off for your account."
+msgstr "ההורה או האפוטרופוס שלך הסירו הודעות פרטיות עבור החשבון שלך."
+
+#, machine, plain1
+msgid "Your parent or guardian wants Private posting to stay on."
+msgstr "ההורה או האפוטרופוס שלך רוצים פרסום פרטי כדי להישאר."
+
+#, machine, plain1
+msgid "Your parent or guardian's account was suspended, so yours is suspended until theirs is back."
+msgstr "חשבון ההורה או האפוטרופוס שלך הושעה, כך שההורים שלך מושעה עד שהם חוזרים."
 
 #, machine, plain1
 msgid "Your password"
@@ -21057,6 +21489,10 @@ msgid "and %(num)s more"
 msgid_plural "and %(num)s more"
 msgstr[0] "ועוד %(num)s"
 msgstr[1] "%(num)s יותר"
+
+#, machine, plain1
+msgid "anonymous"
+msgstr "אנונימי"
 
 #, machine, plain1
 msgctxt "guildmaster permission"
@@ -21504,6 +21940,10 @@ msgstr "תצוגה מקדימה של קישור"
 msgid "links"
 msgstr "קישורים"
 
+#, machine, plain1
+msgid "looked at by the admins"
+msgstr "עקבו אחרי the admins"
+
 #. after the moderator's name in a guild's moderation log
 #, machine, plain1
 msgid "made a channel"
@@ -21708,6 +22148,10 @@ msgstr "מחדש %(target)s"
 #, machine, plain1, python-format
 msgid "reinstated post %(target)s"
 msgstr "המונחים: %(target)s"
+
+#, machine, plain1
+msgid "removed"
+msgstr "הסרת"
 
 #. follows the moderator's name in a guild's moderation log; %(target)s is a
 #. link

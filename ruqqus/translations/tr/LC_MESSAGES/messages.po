@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ruqqus VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-11-05 16:56+1100\n"
+"POT-Creation-Date: 2026-11-05 20:16+1100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: tr\n"
@@ -1502,6 +1502,10 @@ msgstr "(Ama yapmanız gerekir. Tüm dosya yüklemeleri veya 64 MB %(site)s Prem
 msgid "(allow beats deny; the channel's own rules apply to everyone else)"
 msgstr "(geçmişler inkar eder; kanalın kendi kuralları herkes için geçerlidir)"
 
+#, machine, plain1
+msgid "(empty)"
+msgstr "(eylül)"
+
 #, machine
 msgid "(for a stage channel: the post's address or id)"
 msgstr "(bir sahne kanalı için: postanın adresi veya id)"
@@ -1509,6 +1513,14 @@ msgstr "(bir sahne kanalı için: postanın adresi veya id)"
 #, machine
 msgid "(from the original)"
 msgstr "(the original)"
+
+#, machine, plain1
+msgid "(in a private place)"
+msgstr "(özel bir yer)"
+
+#, machine, plain1
+msgid "(no title)"
+msgstr "(hayır adı)"
 
 #, glossary, machine, plain1
 msgid "(off)"
@@ -2057,6 +2069,10 @@ msgstr "<strong>Zaman:</strong> %(when)s"
 msgid "<strong>Username:</strong> %(name)s"
 msgstr "<strong>Username:</strong> %(name)s"
 
+#, machine, plain1, python-format
+msgid "@%(name)s - %(site)s"
+msgstr "@%(name)s - %(site)s"
+
 #, machine, python-format
 msgid "@%(name)s - Bots - %(site)s"
 msgstr "@%(name)s - Bots - %(site)s"
@@ -2072,6 +2088,10 @@ msgstr "@%(name)s %(curation)s. eklendi."
 #, python-format
 msgid "@%(name)s asked to publish a shared draft you write: your vote counts. [Open the draft](%(link)s)"
 msgstr ""
+
+#, machine, plain1, python-format
+msgid "@%(name)s asked you to turn Private posting off for their account. You can answer in [Settings > Children](/settings/children)."
+msgstr "@%(name)s, hesapları için özel yayın açmanızı istedi. [Settings > Çocuklar] (/settings/children) cevap verebilirsiniz."
 
 #, machine, python-format
 msgid "@%(name)s blocked."
@@ -2115,6 +2135,10 @@ msgstr ""
 #, python-format
 msgid "@%(name)s forwarded [a post](%(link)s) to +%(guild)s."
 msgstr ""
+
+#, machine, plain1, python-format
+msgid "@%(name)s has a new password and is signed out everywhere."
+msgstr "@%(name)s yeni bir şifreye sahiptir ve her yerde imzalanır."
 
 #, machine, python-format
 msgid "@%(name)s has already been invited."
@@ -2284,6 +2308,10 @@ msgstr ""
 msgid "@%(name)s reposted [a post](%(link)s)."
 msgstr ""
 
+#, machine, plain1, python-format
+msgid "@%(name)s says they are 18 or over and asked you to release their account. You can answer in [Settings > Children](/settings/children)."
+msgstr "@%(name)s 18 veya üstü olduklarını söylüyor ve hesabınızı serbest bırakmanızı istedi. [Settings > Çocuklar] (/settings/children) cevap verebilirsiniz."
+
 #, python-format
 msgid "@%(name)s shared [a story](%(link)s)."
 msgstr ""
@@ -2315,6 +2343,10 @@ msgstr ""
 #, machine, python-format
 msgid "@%(name)s was muted in +%(guild)s's channels."
 msgstr "@%(name)s +%(guild)s kanallarında çamurlandı."
+
+#, machine, plain1, python-format
+msgid "@%(name)s's age was confirmed as 18 or over, so their account is their own now and you can no longer see it."
+msgstr "@%(name)s'in yaşı 18 veya üstü olarak doğrulandı, bu yüzden onların hesabı şimdi kendidir ve artık bunu göremezsiniz."
 
 #, machine, python-format
 msgid "@%(name)s's new posts will go into #%(channel)s."
@@ -2795,6 +2827,10 @@ msgstr "Canlı bir iplik yorum alır, gemi mesajları değil."
 #, machine
 msgid "A member"
 msgstr "Bir üye"
+
+#, machine, plain1
+msgid "A member reported this account."
+msgstr "Bir üye bu hesabı bildirdi."
 
 #, machine, python-format
 msgid "A message can be at most %(count)s character."
@@ -3899,6 +3935,11 @@ msgid "An update can be at most %(num)s character."
 msgid_plural "An update can be at most %(num)s characters."
 msgstr[0] "Bir güncelleme çoğu %(num)s karakterde olabilir."
 
+#, machine, plain1, python-format
+msgid "And %(num)s private guild, which isn't named."
+msgid_plural "And %(num)s private guilds, which aren't named."
+msgstr[0] "Ve %(num)s özel guilds, bu isim değil."
+
 #, machine
 msgid "Animals"
 msgstr "Hayvanlar"
@@ -3954,6 +3995,10 @@ msgstr "Anonim"
 msgctxt "label"
 msgid "Anonymous"
 msgstr "Anonim"
+
+#, machine, plain1
+msgid "Anonymous posting and starting guilds"
+msgstr "Anonim yayın ve guilds başlatır"
 
 #, machine
 msgid "Anonymous posts and comments count for you like any other. Your points and earnings are shown only to you; the site's admins see the payout list."
@@ -4164,6 +4209,14 @@ msgstr "Aryan Highlands"
 #, machine
 msgid "As an author you edit the draft live with them, and every character you type is credited to you. Once the post is published, anyone who can see it can see who wrote what. The authors decide together:"
 msgstr "Bir yazar olarak, taslakları onlarla birlikte düzenlersiniz ve türüniz her karakter size verilir. Posta yayınlandıktan sonra, kimlerin ne yazdıklarını görebilir. Yazarlar birlikte karar verir:"
+
+#, machine, plain1
+msgid "Ask my parent to turn it off"
+msgstr "Ailemin onu kapatmasını isteyin"
+
+#, machine, plain1
+msgid "Asked you"
+msgstr "Size soruldun"
 
 #, machine, python-format
 msgid "At least %(count)s comments"
@@ -4624,6 +4677,10 @@ msgstr "Bir resim, ses veya video ile mesajları artırmak"
 #, machine, plain1
 msgid "Boost for this curation's guilds and accounts"
 msgstr "Bu tedavi edilen beslemenin guilds ve hesaplar için Boost"
+
+#, machine, plain1
+msgid "Born"
+msgstr "Born Born doğdu"
 
 #, machine
 msgid "Bot keys"
@@ -5121,6 +5178,10 @@ msgstr "Chat uygulamaları henüz bu site için geçmiyor."
 msgid "Chat isn't answering right now. Try again in a moment."
 msgstr "Chat şu anda cevap vermiyor. Bir anda tekrar deneyin."
 
+#, machine, plain1
+msgid "Chat, group chats and calls"
+msgstr "Chat, grup sohbetleri ve çağrıları"
+
 #, machine
 msgctxt "guildmaster action"
 msgid "Chatban user"
@@ -5145,6 +5206,14 @@ msgstr "Kimya"
 #, machine
 msgid "Child - also hide profanity and sensitive content"
 msgstr "Çocuk - ayrıca profanity ve hassas içerik gizler"
+
+#, machine, plain1
+msgid "Children"
+msgstr "Çocuklar"
+
+#, machine, plain1, python-format
+msgid "Children - %(site)s"
+msgstr "Çocuklar - %(site)s"
 
 #. "Sign in with ..." is the button the Matrix app shows for this site's
 #. sign-in
@@ -5476,6 +5545,10 @@ msgstr "Coins aldı"
 msgid "Coins received: %(recent)s in the last 30 days &middot; %(total)s in all. They go straight to your coin balance."
 msgstr "Coins aldı: %(recent)s son 30 günde &middot; %(total)s Doğrudan para bakiyenize giderler."
 
+#, machine, plain1
+msgid "Coins, tips, Premium and paid circles"
+msgstr "Coins, ipuçları, Premium ve ücretli çevreler"
+
 #, machine
 msgid "Collaborative"
 msgstr "Collaborative"
@@ -5539,6 +5612,10 @@ msgstr "Yorum bırakın."
 #, glossary, machine, plain1
 msgid "Comment posted!"
 msgstr "Yorum gönderildi!"
+
+#, machine, plain1
+msgid "Commenting"
+msgstr "Yorum bırakın"
 
 #, glossary, machine, plain1
 msgid "Comments"
@@ -6182,9 +6259,17 @@ msgstr "Delete post?"
 msgid "Delete role"
 msgstr "Delete rolü"
 
+#, machine, plain1
+msgid "Delete the account"
+msgstr "Hesabım"
+
 #, machine
 msgid "Delete the published post"
 msgstr "Delete the published post post"
+
+#, machine, plain1
+msgid "Delete this account"
+msgstr "Delete this account"
 
 #, machine
 msgid "Delete this category? Its channels stay."
@@ -6245,6 +6330,10 @@ msgstr "Drive'da bir dosyayı veya kapatmayı bırakın, mesajlarınızdan çık
 #, machine
 msgid "Deleting a file there, or disconnecting, removes it from your posts."
 msgstr "Orada bir dosyayı bitirmek ya da kesmek, mesajlarınızdan çıkarır."
+
+#, machine, plain1
+msgid "Deleting your account also deletes your child accounts. You can download their data first in Settings > Children."
+msgstr "Hesabınızı silme ayrıca çocuk hesaplarınızı silir. Verileri ilk önce Ayarlar > Çocuklar."
 
 #, machine
 msgid "Density"
@@ -6483,6 +6572,10 @@ msgstr "Nakit veya kripto bağışla"
 msgid "Done"
 msgstr "Done"
 
+#, machine, plain1
+msgid "Download"
+msgstr "Download"
+
 #, machine
 msgctxt "button"
 msgid "Download"
@@ -6496,9 +6589,17 @@ msgstr "Verilerimi İndirin"
 msgid "Download the recording"
 msgstr "Kaydı indirin"
 
+#, machine, plain1
+msgid "Download their data"
+msgstr "Verilerini indirin"
+
 #, machine
 msgid "Download your data"
 msgstr "Verilerinizi İndirin"
+
+#, machine, plain1
+msgid "Downvote"
+msgstr "Downvote"
 
 #, glossary, machine, plain1
 msgctxt "verb"
@@ -6824,6 +6925,10 @@ msgstr "Feed sunucusunun adresini girin."
 msgid "Enter the feed's address."
 msgstr "Feed'in adresini girin."
 
+#, machine, plain1
+msgid "Enter the month and year they were born."
+msgstr "Ay ve yıl içinde doğdular."
+
 #, machine, python-format
 msgid "Enter the six-digit code generated in the authenticator app and your %(site)s account password."
 msgstr "Gerçekçi uygulamada ve %(site)s hesap şifrenizde üretilen altı dijital kod girin."
@@ -6994,6 +7099,10 @@ msgstr "Herkes birbirlerinin değişimlerini türü olarak görür ve her karakt
 #, machine
 msgid "Everything from your guilds and accounts, newest first."
 msgstr "Hayilds ve hesaplarınızdan her şey, ilk önce."
+
+#, machine, plain1
+msgid "Everything they post goes only to their Friends circle. Turn it off to let them post in public."
+msgstr "Her şey sadece arkadaşları çemberine gider. Onları halka göndermelerine izin vermek için bırakın."
 
 #, machine, plain1
 msgid "Everything you post goes only to your Friends circle, the people you follow who follow you back, so nothing is public by accident. Your circles can only hold people like that, and you can't forward, repost or write a shared draft. Comments on other people's posts are still public."
@@ -7643,6 +7752,10 @@ msgstr "Arkadaşları"
 #, machine
 msgctxt "circle name"
 msgid "Friends"
+msgstr "Arkadaşları"
+
+#, machine, plain1
+msgid "Friends circle"
 msgstr "Arkadaşları"
 
 #, machine
@@ -8445,6 +8558,10 @@ msgstr "Hunting"
 msgid "I accept the <a href=\"%(url)s\" target=\"_blank\">terms and conditions</a>"
 msgstr "Kabul ediyorum, <a href=\"%(url)s\" target=\"_blank\">koşullar ve koşullar</a>"
 
+#, machine, plain1, python-format
+msgid "I agree to the <a href=\"%(url)s\" target=\"_blank\">Terms</a> for them."
+msgstr "Ben kabul ediyorum, <a href=\"%(url)s\" target=\"_blank\">Şartlar</a> Onlar için."
+
 #, machine
 msgid "I agree to the rules below."
 msgstr "Aşağıdaki kurallara katılıyorum."
@@ -8480,6 +8597,10 @@ msgstr "Hesabınızla ilişkili bir e-posta adresi varsa, onu %(site)s kurtarmak
 #, machine
 msgid "If this was you, there is nothing to do."
 msgstr "Eğer bu senin olsaydı, yapacak bir şey yok."
+
+#, machine, plain1
+msgid "If you are 18 or over, say so and your parent or guardian will be asked to release your account."
+msgstr "18 veya üstüyseniz, bunu söyleyin ve ebeveyniniz veya koruyucunuz hesabınızı serbest bırakmanız istenecektir."
 
 #, machine, plain1
 msgid "If you don't have your 2FA device, enter one of your backup codes instead. Each backup code works once. An account that never made backup codes can enter its Recovery Code, which also turns 2FA off."
@@ -8856,6 +8977,14 @@ msgid "It shows, in full, every word and phrase the word filter looks for, in ev
 msgstr "Tam olarak, kelime filtrenin her kelimesini ve cümlesini gösterir, her dilde kapsar. Bu, arurs ve diğer son derece saldırgan dil içerir."
 
 #, machine, plain1
+msgid "It stays a child account with the child lock, but you can no longer see it or change what it can do, and you can't link it again."
+msgstr "Çocuk kilidi ile bir çocuk hesabı kalır, ancak artık ne yapabileceğini veya değiştiremezsiniz ve tekrar bağlantı kuramazsınız."
+
+#, machine, plain1
+msgid "It stays on the Child word filter, which hides profanity and anything marked sensitive."
+msgstr "Çocuk kelime filtresinde kalır, bu da profanity'yi gizler ve işaretli hassas bir şey."
+
+#, machine, plain1
 msgid "It stays on the Child word filter, which hides profanity and anything marked sensitive. Chat, Spaces, coins, anonymous posting and starting a guild are off, and others can't start a chat or tip you. Your posts go to your Friends circle only unless you turn Private posting off."
 msgstr "Çocuk kelime filtresinde kalır, bu da profanity'yi gizler ve işaretli hassas bir şey. Chat, Uzaylar, paralar, anonim bir yayın ve bir guild çıkıyor ve diğerleri bir sohbet veya ipucu başlatamaz. Yazılarınız sadece Özel yayınını açmadığınız sürece arkadaşlarınıza gider."
 
@@ -9015,6 +9144,10 @@ msgstr "Haziran Solstice"
 #, machine, plain1
 msgid "K-Pop"
 msgstr "K-Pop"
+
+#, machine, plain1
+msgid "Keep it on"
+msgstr "Keep it on"
 
 #, machine, plain1
 msgid "Keep my posts out of All"
@@ -9282,6 +9415,10 @@ msgstr "Leonids meteor duş"
 msgid "Letters spaced out or split by dots or other marks are read as one word."
 msgstr "Mektuplar, dots veya diğer işaretler tarafından bölünmüş veya bir kelime olarak okunur."
 
+#, machine, plain1
+msgid "Letters, numbers and underscores, 3 to 25 characters."
+msgstr "Mektuplar, sayılar ve alt başlıklar, 3 ila 25 karakter."
+
 #, glossary, machine, plain1
 msgid "Lifestyle"
 msgstr "Yaşam tarzı"
@@ -9518,6 +9655,10 @@ msgstr "Ay Yeni Yıl"
 msgid "Lyrids meteor shower"
 msgstr "Lyrids Meteor Duş"
 
+#, machine, plain1, python-format
+msgid "Made on %(date)s."
+msgstr "Made on %(date)s."
+
 #, glossary, machine, plain1
 msgid "Made with AI"
 msgstr "Yapay zekâ ile yapıldı"
@@ -9535,6 +9676,10 @@ msgstr "+%(guild)s özel yapın. Forwarded posts sadece Guild üyelerini onaylay
 msgid "Make a channel"
 msgstr "Bir kanal yapın"
 
+#, machine, plain1
+msgid "Make a child account"
+msgstr "Bir çocuk hesabı yapın"
+
 #, machine
 msgid "Make a circle people pay to be in, every 30 days, for what you share with it."
 msgstr "Bir çember insanı olmak için öder, her 30 gün, onunla paylaştığınız şey için."
@@ -9550,6 +9695,10 @@ msgstr "Bir sayfa yapın"
 #, machine
 msgid "Make a role"
 msgstr "Bir rol yapın"
+
+#, machine, plain1
+msgid "Make an account for a child under 18 and decide what it can do. You can see what they do on the site (their posts, comments, votes, bookmarks, follows, guilds, the names of who they chat with and their recent sign-ins). The site never shows you what their chats say: chats are end-to-end encrypted. You choose their password, so until they change it you can sign in as them and read their chats: tell them to set their own. They are told all of this in their own Settings."
+msgstr "18 yaşında bir çocuk için bir hesap yapın ve ne yapabileceğini karar verin. Sitede ne yaptıklarını görebilirsiniz (öpücüler, yorumlar, oylar, kitap işaretleri, aşağıdakiler, guilds, kiminle sohbet ettikleri ve son işaretlerinin isimleri). Site size sohbetlerinin ne söylediğini asla göstermiyor: sohbetler son şifreli. Şifrelerini seçin, böylece onları değiştirip sohbetlerini okuyabilirsiniz: Kendilerini ayarlamalarını söyleyin. Bunların hepsine kendi ayarlarında söylenirler."
 
 #, machine, python-format
 msgid "Make an app first in <a href=\"%(url)s\">Settings &gt; Apps</a>; a key works through it."
@@ -9879,6 +10028,10 @@ msgctxt "weekday"
 msgid "Mon"
 msgstr "Mon"
 
+#, machine, plain1
+msgid "Month"
+msgstr "Ay"
+
 #, machine
 msgctxt "table heading"
 msgid "Month"
@@ -9888,6 +10041,10 @@ msgstr "Ay"
 msgctxt "time range"
 msgid "Month"
 msgstr "Ay"
+
+#, machine, plain1
+msgid "Month they were born"
+msgstr "Ay onlar doğdular"
 
 #, machine
 msgid "Monthly creator fund payouts"
@@ -10223,6 +10380,10 @@ msgstr "Yeni sayfa: %(address)s"
 #, machine
 msgid "New paid circle"
 msgstr "Yeni ücretli çember"
+
+#, machine, plain1
+msgid "New password"
+msgstr "Yeni şifre"
 
 #, machine
 msgid "New posts that are getting attention, with no account filling the page."
@@ -10605,6 +10766,10 @@ msgstr "Hiç kimse yeni abone olamaz. Mevcut aboneler ne ödediler."
 msgid "Nobody types here"
 msgstr "Burada kimse türü yok"
 
+#, machine, plain1, python-format
+msgid "Nobody under %(age)s may have an account where you are."
+msgstr "%(age)s altında kimse sizin nerede olduğunuzun bir hesabı olabilir."
+
 #, machine
 msgid "Nobody yet."
 msgstr "Henüz kimse."
@@ -10725,6 +10890,10 @@ msgstr "Abone olun"
 #, machine
 msgid "Not trending any more"
 msgstr "Daha fazla trend yapmamak"
+
+#, machine, plain1
+msgid "Not yet"
+msgstr "Henüz değil"
 
 #, glossary, machine, plain1
 msgid "Not your default:"
@@ -10847,6 +11016,10 @@ msgid "Nothing written yet."
 msgstr "Henüz yazılmadı."
 
 #, machine, plain1
+msgid "Nothing yet."
+msgstr "Henüz bir şey yok."
+
+#, machine, plain1
 msgid "Notification types"
 msgstr "Bildirim türleri"
 
@@ -10893,6 +11066,10 @@ msgstr "Asya"
 msgid "Oddly Satisfying"
 msgstr "Oddly Satisfying"
 
+#, machine, plain1
+msgid "Off"
+msgstr "Off"
+
 #. slow mode in a guild's channel is switched off.
 #, machine
 msgctxt "slow mode"
@@ -10919,6 +11096,10 @@ msgstr "Eski"
 #, machine
 msgid "Old Password"
 msgstr "Eski Şifre"
+
+#, machine, plain1
+msgid "On"
+msgstr "Onda"
 
 #. "On" marks a linked storage account that is in use
 #, machine
@@ -10994,6 +11175,10 @@ msgstr "Bu revizyonlardan biri size gösterilemez."
 #, machine
 msgid "One of those circles isn't yours any more. Choose again."
 msgstr "Bu çevrelerden biri daha fazla değil. Tekrar seçin."
+
+#, machine, plain1
+msgid "One of your child accounts owes money, so your account can't be deleted yet."
+msgstr "Çocuğunuzdan biri para borçludur, bu yüzden hesabınız henüz silinemez."
 
 #, machine
 msgid "One-time codes for the day you lose your authenticator. Making a new set replaces every earlier code, used or not."
@@ -11315,6 +11500,10 @@ msgstr "Sadece yazının yazarı ve ortak yazarları güncelleştirmeleri yayın
 #, machine
 msgid "Only the post's author and co-authors can run its live updates."
 msgstr "Sadece yazının yazarı ve ortak yazarları canlı güncellemelerini çalıştırabilir."
+
+#, machine, plain1
+msgid "Only used to check their age. It isn't kept."
+msgstr "Sadece yaşlarını kontrol etmek için kullanılırdı. Değil."
 
 #, machine, plain1
 msgid "Only when I turn them on"
@@ -12303,6 +12492,10 @@ msgstr "O gün ya da geç."
 msgid "Posted on that day."
 msgstr "Posted on this day."
 
+#, machine, plain1
+msgid "Posting"
+msgstr "Posting"
+
 #, machine
 msgid "Posting cooldown"
 msgstr "Hazırlanma"
@@ -13135,6 +13328,10 @@ msgstr "Reddedildi"
 msgid "Relationships"
 msgstr "İlişkiler"
 
+#, machine, plain1
+msgid "Release the account"
+msgstr "Hesabı yayınlayın"
+
 #, machine
 msgid "Religion"
 msgstr "Din dini"
@@ -13384,6 +13581,10 @@ msgstr "Raporlanmış mesajlar"
 msgctxt "noun"
 msgid "Reports"
 msgstr "Raporlar"
+
+#, machine, plain1
+msgid "Reports about them"
+msgstr "Onlar hakkında raporlar"
 
 #, machine
 msgid "Reports opened"
@@ -13720,6 +13921,10 @@ msgctxt "weekday"
 msgid "Sat"
 msgstr "Sat"
 
+#, glossary, machine, plain1
+msgid "Save"
+msgstr "Kaydet"
+
 #, machine, plain1
 msgctxt "button"
 msgid "Save"
@@ -14025,6 +14230,10 @@ msgstr "Tüm sitenin listesini görün"
 msgid "See what is trending"
 msgstr "Ne eğilimi olduğunu görün"
 
+#, machine, plain1
+msgid "See what they do"
+msgstr "Ne yaptıklarını görün"
+
 #, machine
 msgid "See your username"
 msgstr "Kullanıcı adınızı görün"
@@ -14124,6 +14333,10 @@ msgstr "Eylül equinox"
 #, machine
 msgid "Serious"
 msgstr "Ciddi derecede ciddi ciddi"
+
+#, machine, plain1
+msgid "Set a new password"
+msgstr "Yeni bir şifre oluşturun"
 
 #, machine
 msgid "Set a price to let people pay to join."
@@ -14761,6 +14974,10 @@ msgstr "Uzay kayıtları"
 msgid "Spaces"
 msgstr "Sohbet Odaları"
 
+#, machine, plain1
+msgid "Spaces and live threads"
+msgstr "Uzaylar ve canlı iplikler"
+
 #, machine
 msgid "Spaces are started in the Spaces area."
 msgstr "Uzaylar Uzay bölgesinde başlıyor."
@@ -14896,6 +15113,14 @@ msgstr "Sabit gönderi"
 #, machine
 msgid "Still here to read"
 msgstr "Hala burada okumak için"
+
+#, machine, plain1
+msgid "Stop managing"
+msgstr "Yönetmeyi bırak"
+
+#, machine, plain1
+msgid "Stop managing this account"
+msgstr "Bu hesabı yönetmeyi bırak"
 
 #, machine
 msgid "Stop posting automatically"
@@ -15070,6 +15295,10 @@ msgstr "Destekçiler…"
 #, machine, plain1
 msgid "Survival & Bushcraft"
 msgstr "Survival & Bushcraft"
+
+#, machine, plain1
+msgid "Suspended"
+msgstr "Suspended"
 
 #, machine, python-format
 msgid "Switch @%(name)s off for good? Its posts stay; the bot never posts again."
@@ -15542,6 +15771,10 @@ msgstr "Bu bir rol değil."
 msgid "That isn't a valid username."
 msgstr "Bu geçerli bir kullanıcı değil."
 
+#, machine, plain1
+msgid "That isn't something you can switch."
+msgstr "Bu, değiştirebileceğiniz bir şey değil."
+
 #, machine
 msgid "That key couldn't be saved."
 msgstr "Bu anahtar kurtarılamazdı."
@@ -15773,6 +16006,14 @@ msgstr "Sahel"
 #, machine
 msgid "The Space could not be made."
 msgstr "Uzay yapılamazdı."
+
+#, machine, plain1, python-format
+msgid "The account @%(name)s is deleted."
+msgstr "Hesap @%(name)s silinir."
+
+#, machine, plain1, python-format
+msgid "The account @%(name)s is made. They sign in with the username and password you gave."
+msgstr "Hesap @%(name)s yapılır. Verdiğiniz kullanıcı ve şifre ile imzalar."
 
 #, machine, python-format
 msgid "The account age must be a whole number of days, 0 to %(max)s."
@@ -16110,6 +16351,10 @@ msgstr "En çok geçen yedi günün mesajlarını oy kullandı."
 #, machine, python-format
 msgid "The name %(host)s could not be found."
 msgstr "Adı %(host)s bulunamadı."
+
+#, machine, plain1
+msgid "The newest of what they have done. Only the names of who they chat with are shown, never what a chat says: chats are end-to-end encrypted."
+msgstr "Yaptıklarının en yeni olanı. Sadece kiminle sohbet ettikleri isimleri, asla bir sohbet ne diyor: sohbetler son şifredir."
 
 #, machine
 msgid "The numbers are always shown on your profile. This decides who can open each list and see the accounts on it. An account is only listed where its own setting allows it too."
@@ -16454,6 +16699,10 @@ msgstr "Bu kullanıcılar ılımlı +%(guild)s. için davet edildi."
 msgid "They already have this role."
 msgstr "Zaten bu rolü var."
 
+#, machine, plain1
+msgid "They are 18 or over, so they can make their own account."
+msgstr "18 veya üstü, böylece kendi hesabını yapabilirler."
+
 #, machine
 msgid "They are already in this circle."
 msgstr "Zaten bu çemberdeler."
@@ -16461,6 +16710,10 @@ msgstr "Zaten bu çemberdeler."
 #, machine
 msgid "They are not told. Anyone you block leaves your circles."
 msgstr "Söylenmiyorlar. Blokunuz çevrelerinizi terk eder."
+
+#, machine, plain1
+msgid "They are signed out everywhere. If they use chat, they may be asked for their recovery code."
+msgstr "Her yerde imzalanırlar. Eğer sohbet ederlerse, onların kurtarma kodu için sorulabilirler."
 
 #, machine, python-format
 msgid "They aren't in %(circle)s."
@@ -16474,6 +16727,38 @@ msgstr "Bu grupta değiller."
 msgid "They aren't muted here."
 msgstr "Burada çamur yok değiller."
 
+#, machine, plain1
+msgid "They asked you to turn Private posting off."
+msgstr "Özel yayınlamanızı istediler."
+
+#, machine, plain1
+msgid "They can buy and spend coins, tip, buy Premium and join or run paid circles."
+msgstr "Paraları satın alabilir ve harcayabilirler, Premium satın alabilir ve ücretli çevrelere katılabilirler."
+
+#, machine, plain1
+msgid "They can comment."
+msgstr "Yorum yapabilirler."
+
+#, machine, plain1
+msgid "They can host and join Spaces and run live threads. Voice calls in a Space also need Chat to be on."
+msgstr "Ev sahibi olabilirler ve Uzaylara katılabilirler ve canlı iplikleri çalıştırabilirler. Bir Uzaydaki ses aramaları da Chat'a ihtiyaç duyuyor."
+
+#, machine, plain1
+msgid "They can make posts."
+msgstr "Yazıları yapabilirler."
+
+#, machine, plain1
+msgid "They can message people, join group chats and make calls. The site never shows you what a chat says: chats are end-to-end encrypted. Whoever knows their password can still sign in and read them."
+msgstr "İnsanlara mesaj verebilirler, grup sohbetlerine katılabilirler ve arama yapabilirler. Site asla size bir sohbetin ne söylediğini göstermez: sohbetler son şifredir. Şifrelerini bilen herkes hala imzalayabilir ve onları okuyabilirsiniz."
+
+#, machine, plain1
+msgid "They can post anonymously and start a guild. You can still see who wrote an anonymous post."
+msgstr "Anonim olarak gönderebilirler ve bir guild başlatabilirler. Hala anonim bir yazı kimin yazdığını görebilirsiniz."
+
+#, machine, plain1
+msgid "They can see what you do on the site: your posts, comments, votes, bookmarks, follows, guilds, who you chat with, that your account was reported, and your recent sign-ins. The site never shows them what your chats say, because chats are end-to-end encrypted. But anyone who knows your password, a parent who chose it included, can sign in as you: change it in Security so that only you know it. They choose which of these are on for your account:"
+msgstr "Sitede ne yaptığınızı görebilirler: mesajlarınız, yorumlarınız, oylar, kitap işaretleriniz, aşağıdakiler, sohbet ettiğiniz, hesabınızın rapor edildiği ve son işaretlerinizi. Site asla sohbetlerinizin söylediklerini göstermez, çünkü sohbetler son şifredir. Ancak şifrenizi bilen herkes, dahil ettiği bir ebeveyn, Güvenlik'te bunu değiştirebilir, böylece sadece bunu biliyorsunuz. Bunlardan hangisinin sizin hesabınız için olduğunu seçerler:"
+
 #, machine
 msgid "They can't comment on your posts or comments, chat with you or notify you by mentioning you. They are not told, but they may work it out if they try to comment on something of yours."
 msgstr "Yazılarınızda veya yorumlarınızda yorum yapamazlar, sizinle sohbet edebilir veya sizi sizden söz ederek bilgilendirebilirler. Söylenmiyorlar, ama onlar sizinki bir şey hakkında yorum yapmaya çalışırlarsa çalışabilirler."
@@ -16486,6 +16771,10 @@ msgstr "Bu rolü yok."
 msgid "They go straight to your coin balance."
 msgstr "Doğrudan para bakiyenize giderler."
 
+#, machine, plain1
+msgid "They haven't asked for that."
+msgstr "Bunu istemediler."
+
 #, machine
 msgid "They need to be in the guild, and not exiled from it."
 msgstr "Onlar guild'de olmalı ve ondan sürgün edilmemelidir."
@@ -16493,6 +16782,10 @@ msgstr "Onlar guild'de olmalı ve ondan sürgün edilmemelidir."
 #, machine
 msgid "They need to join the channel first."
 msgstr "İlk önce kanala katılmaları gerekiyor."
+
+#, machine, plain1
+msgid "They say they are 18 or over and asked you to release their account. If you do, it becomes their own and you can no longer see it."
+msgstr "18 ya da üstü olduklarını söylüyorlar ve hesabınızı serbest bırakmanızı istediler. Eğer yaparsan, kendi olur ve artık göremezsiniz."
 
 #, machine
 msgid "They're already a helper."
@@ -16606,6 +16899,14 @@ msgstr "Bu hesap geçici olarak %(site)s.'den askıya alındı. Daha sonra kontr
 #, machine
 msgid "This account is private"
 msgstr "Bu hesap özeldir"
+
+#, machine, plain1
+msgid "This account is suspended."
+msgstr "Bu hesap askıya alındı."
+
+#, machine, plain1
+msgid "This account owes money, so it can't be deleted yet."
+msgstr "Bu hesap para borçlu, bu yüzden henüz silinemez."
 
 #, machine
 msgid "This account posts about sensitive topics"
@@ -16740,6 +17041,10 @@ msgstr "Bu curated feed's guilds ve hesaplar"
 #, machine, plain1
 msgid "This curation's rules took too long to run. Its owner can make them narrower."
 msgstr "Bu tedavi edilen yem kuralları çok uzun sürdü. Sahibi onları dar yapabilir."
+
+#, machine, plain1
+msgid "This deletes their account and everything on it. It can't be undone. You can download their data first."
+msgstr "Bu onların hesabını ve her şeyi silir. Yok olamaz. Önce verilerini indirebilirsiniz."
 
 #, machine
 msgid "This draft hasn't been published."
@@ -17067,6 +17372,10 @@ msgctxt "weekday"
 msgid "Thu"
 msgstr "Thu"
 
+#, machine, plain1
+msgid "Tick the box to agree to the Terms for them."
+msgstr "Kutuyu onlar için Şartlar'a kabul etmek."
+
 #, machine
 msgid "Tick the box to agree to the rules first."
 msgstr "İlk önce kuralları kabul etmek için kutuyu tıklayın."
@@ -17335,6 +17644,10 @@ msgstr "Tue"
 #, machine
 msgid "Turanian Steppe"
 msgstr "Turanian Steppe"
+
+#, machine, plain1
+msgid "Turn it off"
+msgstr "Turn it off"
 
 #, machine, plain1, python-format
 msgid "Turn off notifications from +%(guild)s"
@@ -17791,6 +18104,10 @@ msgstr "İsimli"
 #, machine
 msgid "Upload picture"
 msgstr "Upload Picture"
+
+#, machine, plain1
+msgid "Upvote"
+msgstr "Upvote"
 
 #, glossary, machine, plain1
 msgctxt "verb"
@@ -18507,6 +18824,10 @@ msgid "Where you are, the law means your age has to be confirmed with an age-che
 msgstr "Nerede olursanız olun, yasa, yaşınızın hassas içerik veya güçlü dili görmeden önce bir yaş kontrol servisi ile doğrulanması gerektiği anlamına gelir."
 
 #, machine, plain1
+msgid "Where you are, your age has to be confirmed with an age-check service before you can make a child account."
+msgstr "Nerede olursanız olun, yaşınız bir çocuk hesabı yapabilmeden önce bir yaş kontrol servisi ile doğrulanmalıdır."
+
+#, machine, plain1
 msgid "Where you are, your age has to be confirmed with an age-check service."
 msgstr "Nerede olursanız olun, yaşınız bir yaş kontrol servisi ile doğrulanmalıdır."
 
@@ -18598,9 +18919,17 @@ msgstr "Kim karar verir ki"
 msgid "Who follows you"
 msgstr "Kim seni takip ediyor"
 
+#, machine, plain1
+msgid "Who reported them, and what they wrote, isn't shown to anyone but the admins."
+msgstr "Kim onları bildirdi ve yazdıkları, kimseye değil, yöneticilere gösterildi."
+
 #, glossary, machine, plain1
 msgid "Who subscribes to your Circle"
 msgstr "Çevrenize abone olanlar"
+
+#, machine, plain1
+msgid "Who they chat with"
+msgstr "Kimle sohbet ederler"
 
 #, machine
 msgid "Who to follow"
@@ -18979,10 +19308,17 @@ msgctxt "guildmaster action"
 msgid "Yank post"
 msgstr "Yank post"
 
+msgid "Year"
+msgstr ""
+
 #, glossary, machine, plain1
 msgctxt "time range"
 msgid "Year"
 msgstr "Yıl"
+
+#, machine, plain1
+msgid "Year they were born"
+msgstr "Yıl doğdular"
 
 msgctxt "colour"
 msgid "Yellow"
@@ -19141,6 +19477,14 @@ msgid "You aren't subscribed to that circle."
 msgstr "Bu çembere abone değilsiniz."
 
 #, machine, plain1
+msgid "You asked your parent or guardian to release your account. They haven't answered yet."
+msgstr "Ebeveynleriniz veya koruyucunuzdan hesabınızı serbest bırakmasını istediniz. Henüz cevap vermediler."
+
+#, machine, plain1
+msgid "You asked your parent or guardian to turn this off. They haven't answered yet."
+msgstr "Ebeveynleriniz veya koruyucunuzdan bunu geri çevirmesini istediniz. Henüz cevap vermediler."
+
+#, machine, plain1
 msgid "You can add pictures at 500 Rep, or earlier with Premium"
 msgstr "500 Reputasyonda veya daha önce Premium resimler ekleyebilirsiniz"
 
@@ -19221,6 +19565,15 @@ msgid "You can have at most %(num)s channel."
 msgid_plural "You can have at most %(num)s channels."
 msgstr[0] "En çok %(num)s kanallarına sahip olabilirsiniz."
 
+#, machine, plain1, python-format
+msgid "You can have at most %(num)s child account."
+msgid_plural "You can have at most %(num)s child accounts."
+msgstr[0] "Çoğu %(num)s çocuk hesabına sahip olabilirsiniz."
+
+#, machine, plain1, python-format
+msgid "You can have at most %(num)s child accounts."
+msgstr "Çoğu %(num)s çocuk hesabına sahip olabilirsiniz."
+
 #, machine, python-format
 msgid "You can host at most %(num)s Space a day."
 msgid_plural "You can host at most %(num)s Spaces a day."
@@ -19244,6 +19597,10 @@ msgstr[0] "Çoğu %(num)s kelime veya cümleleri listeleyebilirsiniz."
 msgid "You can look around and set up your profile; posting, comments, votes and follows open once the check is done."
 msgstr "Profilinizi bakabilir ve ayarlayabilirsiniz; yayın, yorumlar, oylar ve bir kez çek yapılır."
 
+#, machine, plain1, python-format
+msgid "You can make %(num)s child accounts a day. Try again tomorrow."
+msgstr "Bir gün %(num)s çocuk hesaplar yapabilirsiniz. Yarın tekrar deneyin."
+
 #, machine, python-format
 msgid "You can make %(num)s proposal a day."
 msgid_plural "You can make %(num)s proposals a day."
@@ -19253,6 +19610,10 @@ msgstr[0] "Bir gün %(num)s önerileri yapabilirsiniz."
 msgid "You can make %(num)s wiki edit a day in a guild. Try again tomorrow."
 msgid_plural "You can make %(num)s wiki edits a day in a guild. Try again tomorrow."
 msgstr[0] "Bir gün bir guild'de %(num)s wiki düzenlemeleri yapabilirsiniz. Yarın tekrar deneyin."
+
+#, machine, plain1
+msgid "You can make a child account once your own account is confirmed as 18 or over. You can say so in Settings > Content."
+msgstr "Kendi hesabınız 18 veya üstü olarak onaylandığında bir çocuk hesabı yapabilirsiniz. Bunu Ayarlar > Content'da söyleyebilirsiniz."
 
 #, machine
 msgid "You can only create up to 2 guilds per day. Try again later."
@@ -19538,6 +19899,10 @@ msgstr "Bu yazıyı takip edemezsiniz."
 msgid "You don't have Premium right now."
 msgstr "Şu anda Premium yok."
 
+#, machine, plain1
+msgid "You don't have a child account called that."
+msgstr "Bunun adı verilen bir çocuk hesabı yok."
+
 #, machine
 msgid "You don't have a coin to redeem."
 msgstr "Tasarruf etmek için bir paranız yok."
@@ -19638,6 +20003,10 @@ msgstr "+%(guild)s.'den devrildin."
 #, machine
 msgid "You have left the creator fund."
 msgstr "Yaratıcı fonu bıraktınız."
+
+#, machine, plain1, python-format
+msgid "You have made %(num)s child accounts in the last %(days)s days. Try again later."
+msgstr "Sen yaptın %(num)s Son zamanlarda çocuk hesapları %(days)s günler. Daha sonra tekrar deneyin."
 
 #, machine
 msgid "You have muted this guild. Its posts stay out of All, For You and Following. Visit your settings or click the <i class='fas fa-ellipsis-h text-small'></i> icon to unmute it."
@@ -20032,6 +20401,10 @@ msgstr "Hesap bakiyeniz negatiftir. %(site)s'a katılabilirsiniz. Dengenizi sıf
 msgid "Your account can also post new items from feeds by itself, while you keep using it as you do now. Each of those posts is marked as automated, and people who hide bot content don't see them. Your own posts, comments, votes and chats are unchanged. An admin approves it first."
 msgstr "Hesabınız aynı zamanda yemlerden gelen yeni eşyaları kendi başına gönderebilirken, şimdi yaptığınız gibi kullanmaya devam edebilirsiniz. Bu yazıların her biri otomatik olarak işaretlenir ve bot içeriğini gizleyen insanlar onları görmezler. Kendi mesajlarınız, yorumlarınız, oylar ve sohbetleriniz değişmemektedir. Bir yönetici ilk önce onaylar."
 
+#, machine, plain1
+msgid "Your account can't post automatically while it is age-restricted."
+msgstr "Hesabınız otomatik olarak yayınlayamaz, çünkü yaşlanır."
+
 #, machine
 msgid "Your account can't post automatically while it is suspended."
 msgstr "Hesabınız, askıya alındığında otomatik olarak yayınlayamaz."
@@ -20039,6 +20412,10 @@ msgstr "Hesabınız, askıya alındığında otomatik olarak yayınlayamaz."
 #, machine
 msgid "Your account can't publish right now."
 msgstr "Hesabınız şu anda yayınlayamaz."
+
+#, machine, plain1
+msgid "Your account can't run a bot while it is age-restricted."
+msgstr "Hesabınız, yaşlandığında bir bot çalıştıramaz."
 
 #, machine
 msgid "Your account cannot upload right now."
@@ -20059,6 +20436,10 @@ msgstr "Hesabınız kontrol edildi ve hazır: Şimdi post, yorum, oylama ve taki
 #, machine, plain1
 msgid "Your account has been deleted"
 msgstr "Hesabınız silindi"
+
+#, machine, plain1, python-format
+msgid "Your account has the child lock on, held by your parent or guardian, since %(date)s."
+msgstr "Hesabınız, ebeveyniniz veya koruyucunuz tarafından tutulan çocuk kilitine sahiptir, çünkü %(date)s."
 
 #, machine, plain1, python-format
 msgid "Your account has the child lock on, since %(date)s."
@@ -20111,6 +20492,10 @@ msgstr ""
 "\n"
 "\n"
 "Beklemeyi atlamak için, [Settings > Security] (/settings/security) bir e-posta adresini ekleyin ve doğrulayın."
+
+#, machine, plain1
+msgid "Your account is your own now. It no longer has the child lock and your parent or guardian can no longer see it. They chose your password: change it in [Settings > Security](/settings/security), or they can still sign in as you."
+msgstr "Hesabınız şu anda kendi. Artık çocuk kilidine sahip değil ve ebeveyniniz veya koruyucunuz artık bunu göremez. Şifrenizi seçtiler: [Settings > Security] (/settings/security) veya hala sizin gibi imzalayabilirler."
 
 #, machine
 msgid "Your account needs to be at least 30 days old to post automatically."
@@ -20213,6 +20598,10 @@ msgstr "Sohbetleriniz sonunda şifrelenir ve site onları okuyamaz. Onları aça
 #, machine, python-format
 msgid "Your chats run on Matrix, an open standard, on %(site)s's own chat server. Besides Chat on this site, you can use them in a Matrix app such as Element (web, desktop and the classic phone apps), FluffyChat or Cinny. They stay end-to-end encrypted there too."
 msgstr "Sohbetleriniz Matrix, açık bir standartta, %(site)s'in kendi sohbet sunucusunda çalışır. Bu sitede Sohbetin yanı sıra, onları Element (web, masaüstü ve klasik telefon uygulamaları) gibi bir Matrix uygulamasında kullanabilirsiniz, FluffyChat veya Cinny. Orada da son şifreli kalırlar."
+
+#, machine, plain1
+msgid "Your child accounts will be deleted with yours."
+msgstr "Çocuk hesaplarınız sizinkilerle silinecektir."
 
 #, glossary, machine, plain1
 msgid "Your circles"
@@ -20355,8 +20744,52 @@ msgid_plural "Your own mix ranks the newest %(num)s matching posts. 0 switches a
 msgstr[0] "Kendi karışımınız en yeni %(num)s eşleştirme mesajlarını sıralar. 0 Bir parça kapat, 10 en çok sayıyor."
 
 #, machine, plain1
+msgid "Your own password"
+msgstr "Kendi şifreniz"
+
+#, machine, plain1
+msgid "Your parent or guardian didn't agree to release your account."
+msgstr "Ebeveynleriniz veya koruyucunuz hesabınızı serbest bırakmayı kabul etmedi."
+
+#, machine, plain1
+msgid "Your parent or guardian has been asked to release your account. Nothing changes until they answer."
+msgstr "Ebeveynleriniz veya koruyucunuz hesabınızı serbest bırakmak için sorulmuştu. Cevap verene kadar hiçbir değişiklik yok."
+
+#, machine, plain1
+msgid "Your parent or guardian has been asked to turn Private posting off."
+msgstr "Annen ya da koruyucunuz Özel posta göndermesini istedi."
+
+#, machine, plain1
 msgid "Your parent or guardian has to agree before Private posting can be turned off."
 msgstr "Anneniz veya koruyucunuz Özel yayından önce kabul etmek zorundadır."
+
+#, machine, plain1
+msgid "Your parent or guardian has turned this off for your account."
+msgstr "Ebeveynleriniz veya koruyucunuz bunu hesabınız için bıraktı."
+
+#, machine, plain1
+msgid "Your parent or guardian made this account for you. They can see what you do on the site (your posts, comments, votes, bookmarks, follows, guilds, who you chat with, that your account was reported and your recent sign-ins; the site never shows them what your chats say) and they choose which features are on. You can see which in [Settings > Content](/settings/content). They chose your password: change it in [Settings > Security](/settings/security) so that only you know it, because anyone who knows it can sign in as you and read your chats."
+msgstr "Ebeveynleriniz veya koruyucunuz bu hesabı sizin için yaptı. Sitede ne yaptığınızı görebilirler (öpücüler, yorumlar, oylar, kitap işaretleri, aşağıdakiler, şakalar, kiminle konuştuğunuz, hesabınızın raporlandığını ve son işaretlerinizi; site asla sohbetlerinizin ne söylediğini göstermez.) Hangisini görebilirsiniz [Settings > Content](/settings/content). Şifrenizi seçtiler: [Settings > Security] (/settings/security) Bu yüzden sadece bunu biliyorsun, çünkü sohbetlerinizi okuyabilen herkes."
+
+#, machine, plain1
+msgid "Your parent or guardian set a new password for your account and you were signed out. Sign in with the new password, then change it in [Settings > Security](/settings/security) so that only you know it."
+msgstr "Ebeveynleriniz veya koruyucunuz hesabınız için yeni bir şifre belirlediniz ve imzalandınız. Yeni şifre ile oturum açın, sonra onu [Settings > Security](/settings/security) değiştirin, böylece sadece bunu biliyorsunuz."
+
+#, machine, plain1
+msgid "Your parent or guardian stopped managing your account. It keeps the child lock until you confirm your age in Settings > Content. They chose your password: change it in [Settings > Security](/settings/security), or they can still sign in as you."
+msgstr "Ebeveynleriniz veya koruyucunuz hesabınızı yönetmeyi bıraktı. Bu, yaşınızı Ayarlarda onaylayana kadar çocuk kilit tutar > İçerik. Şifrenizi seçtiler: [Settings > Security] (/settings/security) veya hala sizin gibi imzalayabilirler."
+
+#, machine, plain1
+msgid "Your parent or guardian turned Private posting off for your account."
+msgstr "Ebeveynleriniz veya koruyucunuz hesabınız için özel bir yayın çıkardı."
+
+#, machine, plain1
+msgid "Your parent or guardian wants Private posting to stay on."
+msgstr "Ebeveynleriniz veya koruyucunuz, kalmak için özel bir yayın istiyor."
+
+#, machine, plain1
+msgid "Your parent or guardian's account was suspended, so yours is suspended until theirs is back."
+msgstr "Annen veya koruyucunun hesabı askıya alındı, bu yüzden sizinkiler geri döndükçe askıya alındı."
 
 #, machine
 msgid "Your password"
@@ -20730,6 +21163,10 @@ msgstr "bilinmeyen bir adres"
 msgid "and %(num)s more"
 msgid_plural "and %(num)s more"
 msgstr[0] "%(num)s daha fazla"
+
+#, machine, plain1
+msgid "anonymous"
+msgstr "anonim"
 
 #, machine
 msgctxt "guildmaster permission"
@@ -21171,6 +21608,10 @@ msgstr "bağlantı önizlemesi"
 msgid "links"
 msgstr "bağlantılar bağlantıları"
 
+#, machine, plain1
+msgid "looked at by the admins"
+msgstr "müdürler tarafından baktı"
+
 #. after the moderator's name in a guild's moderation log
 #, machine
 msgid "made a channel"
@@ -21376,6 +21817,10 @@ msgstr "Yeniden diriltildi %(target)s"
 #, machine, python-format
 msgid "reinstated post %(target)s"
 msgstr "yeniden yayınlandı %(target)s"
+
+#, machine, plain1
+msgid "removed"
+msgstr "kaldır kaldırıldı kaldırıldı"
 
 #. follows the moderator's name in a guild's moderation log; %(target)s is a
 #. link

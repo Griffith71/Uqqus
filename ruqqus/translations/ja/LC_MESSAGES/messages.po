@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ruqqus VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-11-05 16:56+1100\n"
+"POT-Creation-Date: 2026-11-05 20:16+1100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: ja\n"
@@ -1502,6 +1502,10 @@ msgstr "(ただし、必要となります。) 16 MB は、すべてのファイ
 msgid "(allow beats deny; the channel's own rules apply to everyone else)"
 msgstr "(denyを打ち負かし、チャンネルのルールは他の誰にも当てはまる)"
 
+#, machine, plain1
+msgid "(empty)"
+msgstr "(空)"
+
 #, machine
 msgid "(for a stage channel: the post's address or id)"
 msgstr "(ステージチャネルの場合:ポストアドレスまたはid)"
@@ -1509,6 +1513,14 @@ msgstr "(ステージチャネルの場合:ポストアドレスまたはid)"
 #, machine
 msgid "(from the original)"
 msgstr "(オリジナルから)"
+
+#, machine, plain1
+msgid "(in a private place)"
+msgstr "(個室内)"
+
+#, machine, plain1
+msgid "(no title)"
+msgstr "(タイトルなし)"
 
 #, glossary, machine, plain1
 msgid "(off)"
@@ -2062,6 +2074,10 @@ msgstr "<strong>時間:</strong> %(when)s"
 msgid "<strong>Username:</strong> %(name)s"
 msgstr "<strong>ユーザー名:</strong> %(name)s"
 
+#, machine, plain1, python-format
+msgid "@%(name)s - %(site)s"
+msgstr "@%(name)s - %(site)s"
+
 #, machine, python-format
 msgid "@%(name)s - Bots - %(site)s"
 msgstr "@%(name)s - ボット - %(site)s"
@@ -2077,6 +2093,10 @@ msgstr "@%(name)s を %(curation)s に追加しました."
 #, machine, python-format
 msgid "@%(name)s asked to publish a shared draft you write: your vote counts. [Open the draft](%(link)s)"
 msgstr "@%(name)s は、あなたが書いた共有ドラフトを公開するよう求めた: あなたの投票カウント。 [原稿を開く](%(link)s)"
+
+#, machine, plain1, python-format
+msgid "@%(name)s asked you to turn Private posting off for their account. You can answer in [Settings > Children](/settings/children)."
+msgstr "@%(name)s は、アカウントにプライベート投稿をオフにするように依頼しました。 [Settings > Children](/settings/children)で回答できます."
 
 #, machine, python-format
 msgid "@%(name)s blocked."
@@ -2120,6 +2140,10 @@ msgstr ""
 #, python-format
 msgid "@%(name)s forwarded [a post](%(link)s) to +%(guild)s."
 msgstr ""
+
+#, machine, plain1, python-format
+msgid "@%(name)s has a new password and is signed out everywhere."
+msgstr "@%(name)s は新しいパスワードを持ち、どこにでも署名されます."
 
 #, machine, python-format
 msgid "@%(name)s has already been invited."
@@ -2292,6 +2316,10 @@ msgstr ""
 msgid "@%(name)s reposted [a post](%(link)s)."
 msgstr ""
 
+#, machine, plain1, python-format
+msgid "@%(name)s says they are 18 or over and asked you to release their account. You can answer in [Settings > Children](/settings/children)."
+msgstr "@%(name)s は 18 以上であり、アカウントを解放するよう求めたと述べています。 [Settings > Children](/settings/children)で回答できます."
+
 #, python-format
 msgid "@%(name)s shared [a story](%(link)s)."
 msgstr ""
@@ -2323,6 +2351,10 @@ msgstr "@%(name)s は +%(guild)s から除外されました"
 #, machine, python-format
 msgid "@%(name)s was muted in +%(guild)s's channels."
 msgstr "@%(name)s は +%(guild)s のチャンネルでミュートしました."
+
+#, machine, plain1, python-format
+msgid "@%(name)s's age was confirmed as 18 or over, so their account is their own now and you can no longer see it."
+msgstr "@%(name)s の年齢は 18 以上で確認されたので、自分のアカウントが現在存在しており、もう表示できません."
 
 #, machine, python-format
 msgid "@%(name)s's new posts will go into #%(channel)s."
@@ -2805,6 +2837,10 @@ msgstr "ライブスレッドは、ボードメッセージではなくコメン
 #, machine
 msgid "A member"
 msgstr "メンバー"
+
+#, machine, plain1
+msgid "A member reported this account."
+msgstr "会員は、このアカウントを報告しました."
 
 #, machine, python-format
 msgid "A message can be at most %(count)s character."
@@ -3909,6 +3945,11 @@ msgid "An update can be at most %(num)s character."
 msgid_plural "An update can be at most %(num)s characters."
 msgstr[0] "ほとんどの %(num)s 文字で更新できます."
 
+#, machine, plain1, python-format
+msgid "And %(num)s private guild, which isn't named."
+msgid_plural "And %(num)s private guilds, which aren't named."
+msgstr[0] "と %(num)s プライベートギルド, 命名されていない."
+
 #, machine
 msgid "Animals"
 msgstr "アニマル"
@@ -3964,6 +4005,10 @@ msgstr "匿名"
 msgctxt "label"
 msgid "Anonymous"
 msgstr "匿名"
+
+#, machine, plain1
+msgid "Anonymous posting and starting guilds"
+msgstr "匿名投稿とギルドを開始"
 
 #, machine
 msgid "Anonymous posts and comments count for you like any other. Your points and earnings are shown only to you; the site's admins see the payout list."
@@ -4174,6 +4219,14 @@ msgstr "アリアンハイランド"
 #, machine
 msgid "As an author you edit the draft live with them, and every character you type is credited to you. Once the post is published, anyone who can see it can see who wrote what. The authors decide together:"
 msgstr "ドラフトを編集する作者として、あなたが入力したすべてのキャラクターがあなたにクレジットされます。 投稿が公開されると、誰が書いたかが分かります。 著者は一緒に決定します:"
+
+#, machine, plain1
+msgid "Ask my parent to turn it off"
+msgstr "両親にそれをオフにするように依頼する"
+
+#, machine, plain1
+msgid "Asked you"
+msgstr "お問い合わせ"
 
 #, machine, python-format
 msgid "At least %(count)s comments"
@@ -4635,6 +4688,10 @@ msgstr "映像、音、ビデオなどの投稿に最適"
 #, machine, plain1
 msgid "Boost for this curation's guilds and accounts"
 msgstr "このキュレーションフィードのギルドとアカウントのブースト"
+
+#, machine, plain1
+msgid "Born"
+msgstr "ジャンル"
 
 #, machine
 msgid "Bot keys"
@@ -5133,6 +5190,10 @@ msgstr "チャットアプリは、まだこのサイトに切り替えられま
 msgid "Chat isn't answering right now. Try again in a moment."
 msgstr "今すぐチャットが応答しません。 もう一度お試しください."
 
+#, machine, plain1
+msgid "Chat, group chats and calls"
+msgstr "チャット、グループチャット、コール"
+
 #, machine
 msgctxt "guildmaster action"
 msgid "Chatban user"
@@ -5157,6 +5218,14 @@ msgstr "トピックス"
 #, machine
 msgid "Child - also hide profanity and sensitive content"
 msgstr "お子様 - 不貞と敏感なコンテンツも隠します"
+
+#, machine, plain1
+msgid "Children"
+msgstr "お子様"
+
+#, machine, plain1, python-format
+msgid "Children - %(site)s"
+msgstr "子供 - %(site)s"
 
 #. "Sign in with ..." is the button the Matrix app shows for this site's
 #. sign-in
@@ -5488,6 +5557,10 @@ msgstr "コインの受け取り"
 msgid "Coins received: %(recent)s in the last 30 days &middot; %(total)s in all. They go straight to your coin balance."
 msgstr "コインの受け取り: 最後の 30 日 &middot; %(total)s の %(recent)s のすべて。 コインバランスに直進します."
 
+#, machine, plain1
+msgid "Coins, tips, Premium and paid circles"
+msgstr "コイン、ヒント、Premiumおよび有料サークル"
+
 #, machine
 msgid "Collaborative"
 msgstr "コラボレーション"
@@ -5552,6 +5625,10 @@ msgstr "コメントのブックマーク."
 #, glossary, machine, plain1
 msgid "Comment posted!"
 msgstr "コメントを投稿しました！"
+
+#, machine, plain1
+msgid "Commenting"
+msgstr "コメント"
 
 #, glossary, machine, plain1
 msgid "Comments"
@@ -6195,9 +6272,17 @@ msgstr "投稿を削除しますか?"
 msgid "Delete role"
 msgstr "ロール削除"
 
+#, machine, plain1
+msgid "Delete the account"
+msgstr "アカウントの削除"
+
 #, machine
 msgid "Delete the published post"
 msgstr "公開された投稿を削除する"
+
+#, machine, plain1
+msgid "Delete this account"
+msgstr "このアカウントを削除"
 
 #, machine
 msgid "Delete this category? Its channels stay."
@@ -6258,6 +6343,10 @@ msgstr "ドライブにファイルを削除するか、または切断して、
 #, machine
 msgid "Deleting a file there, or disconnecting, removes it from your posts."
 msgstr "そこにファイルを削除するか、または切断して、投稿から削除します."
+
+#, machine, plain1
+msgid "Deleting your account also deletes your child accounts. You can download their data first in Settings > Children."
+msgstr "あなたのアカウントを削除しても、あなたの子供アカウントを削除します。 最初にデータをダウンロードすることができます 設定 > お子様."
 
 #, machine
 msgid "Density"
@@ -6497,6 +6586,10 @@ msgstr "現金・暗号資産で寄付"
 msgid "Done"
 msgstr "ログイン"
 
+#, machine, plain1
+msgid "Download"
+msgstr "ダウンロード"
+
 #, machine
 msgctxt "button"
 msgid "Download"
@@ -6510,9 +6603,17 @@ msgstr "データのダウンロード"
 msgid "Download the recording"
 msgstr "録画をダウンロード"
 
+#, machine, plain1
+msgid "Download their data"
+msgstr "データのダウンロード"
+
 #, machine
 msgid "Download your data"
 msgstr "データをダウンロード"
+
+#, machine, plain1
+msgid "Downvote"
+msgstr "ダウンボルト"
 
 #, glossary, machine, plain1
 msgctxt "verb"
@@ -6839,6 +6940,10 @@ msgstr "フィードサーバーのアドレスを入力します."
 msgid "Enter the feed's address."
 msgstr "フィードのアドレスを入力してください."
 
+#, machine, plain1
+msgid "Enter the month and year they were born."
+msgstr "生まれの月と年を入力します."
+
 #, machine, python-format
 msgid "Enter the six-digit code generated in the authenticator app and your %(site)s account password."
 msgstr "認証アプリで生成された6桁のコードと%(site)sアカウントパスワードを入力します."
@@ -7009,6 +7114,10 @@ msgstr "みんながお互いの変化をタイプして見ているし、すべ
 #, machine
 msgid "Everything from your guilds and accounts, newest first."
 msgstr "あなたのギルドとアカウントからすべて、最初に最新です."
+
+#, machine, plain1
+msgid "Everything they post goes only to their Friends circle. Turn it off to let them post in public."
+msgstr "彼らが投稿するすべてが彼らの友人のサークルにのみ行きます。 それらをパブリックに投稿できるようにオフにします."
 
 #, machine, plain1
 msgid "Everything you post goes only to your Friends circle, the people you follow who follow you back, so nothing is public by accident. Your circles can only hold people like that, and you can't forward, repost or write a shared draft. Comments on other people's posts are still public."
@@ -7656,6 +7765,10 @@ msgstr "スタッフ"
 msgctxt "circle name"
 msgid "Friends"
 msgstr "スタッフ"
+
+#, machine, plain1
+msgid "Friends circle"
+msgstr "フレンズサークル"
 
 #, machine
 msgid "Friends is everyone you follow who follows you back. To share with family, a team or anyone else, make a circle first, then pick it here."
@@ -8459,6 +8572,10 @@ msgstr "ログイン"
 msgid "I accept the <a href=\"%(url)s\" target=\"_blank\">terms and conditions</a>"
 msgstr "お問い合わせ <a href=\"%(url)s\" target=\"_blank\">利用規約</a>"
 
+#, machine, plain1, python-format
+msgid "I agree to the <a href=\"%(url)s\" target=\"_blank\">Terms</a> for them."
+msgstr "同意する <a href=\"%(url)s\" target=\"_blank\">利用規約</a> お問い合わせ"
+
 #, machine
 msgid "I agree to the rules below."
 msgstr "以下のルールに同意します."
@@ -8494,6 +8611,10 @@ msgstr "アカウントに関連付けられているメールアドレスがあ
 #, machine
 msgid "If this was you, there is nothing to do."
 msgstr "もしそうだったら、何もしない."
+
+#, machine, plain1
+msgid "If you are 18 or over, say so and your parent or guardian will be asked to release your account."
+msgstr "18歳以上の場合は、親または保護者がアカウントを解放するように求められます."
 
 #, machine, plain1
 msgid "If you don't have your 2FA device, enter one of your backup codes instead. Each backup code works once. An account that never made backup codes can enter its Recovery Code, which also turns 2FA off."
@@ -8870,6 +8991,14 @@ msgid "It shows, in full, every word and phrase the word filter looks for, in ev
 msgstr "これは、すべての単語、単語のフィルタは、それがカバーするすべての言語で、見ます単語のフィルタを、示します。 これは、スラーや他の非常に攻撃的な言語を含みます."
 
 #, machine, plain1
+msgid "It stays a child account with the child lock, but you can no longer see it or change what it can do, and you can't link it again."
+msgstr "チャイルドロックでチャイルドアカウントを留保しますが、それを見たり変更したりすることはできません。また、再度リンクすることはできません."
+
+#, machine, plain1
+msgid "It stays on the Child word filter, which hides profanity and anything marked sensitive."
+msgstr "子供の単語フィルターに留まっています。これは、不敬とマークされた感度を隠します."
+
+#, machine, plain1
 msgid "It stays on the Child word filter, which hides profanity and anything marked sensitive. Chat, Spaces, coins, anonymous posting and starting a guild are off, and others can't start a chat or tip you. Your posts go to your Friends circle only unless you turn Private posting off."
 msgstr "子供の単語フィルターに留まっています。これは、不敬とマークされた感度を隠します。 チャット、スペース、コイン、匿名投稿、およびギルド開始はオフであり、他の人はチャットやヒントを開始することはできません。 あなたの投稿はプライベート投稿をオフにしない限り、あなたの友人のサークルに行きます."
 
@@ -9029,6 +9158,10 @@ msgstr "6月 至急"
 #, machine, plain1
 msgid "K-Pop"
 msgstr "Kポップ"
+
+#, machine, plain1
+msgid "Keep it on"
+msgstr "お問い合わせ"
 
 #, machine, plain1
 msgid "Keep my posts out of All"
@@ -9299,6 +9432,10 @@ msgstr "Leonidsの流星のシャワー"
 msgid "Letters spaced out or split by dots or other marks are read as one word."
 msgstr "ドットまたは他のマークによってスペースアウトまたは分割されたレターは、1つの単語として読み込まれます."
 
+#, machine, plain1
+msgid "Letters, numbers and underscores, 3 to 25 characters."
+msgstr "文字、数字、アンダースコア、3〜25文字."
+
 #, glossary, machine, plain1
 msgid "Lifestyle"
 msgstr "暮らし"
@@ -9535,6 +9672,10 @@ msgstr "旧正月"
 msgid "Lyrids meteor shower"
 msgstr "Lyridsの流星のシャワー"
 
+#, machine, plain1, python-format
+msgid "Made on %(date)s."
+msgstr "%(date)s で作られました."
+
 #, glossary, machine, plain1
 msgid "Made with AI"
 msgstr "AI生成"
@@ -9552,6 +9693,10 @@ msgstr "+%(guild)s プライベートを作る。 転送された投稿は、承
 msgid "Make a channel"
 msgstr "チャンネルを作る"
 
+#, machine, plain1
+msgid "Make a child account"
+msgstr "お子様のアカウントを作る"
+
 #, machine
 msgid "Make a circle people pay to be in, every 30 days, for what you share with it."
 msgstr "あなたがそれを共有するもののために、30日ごとにサークルの人々を支払う."
@@ -9567,6 +9712,10 @@ msgstr "ページを作る"
 #, machine
 msgid "Make a role"
 msgstr "役割を作る"
+
+#, machine, plain1
+msgid "Make an account for a child under 18 and decide what it can do. You can see what they do on the site (their posts, comments, votes, bookmarks, follows, guilds, the names of who they chat with and their recent sign-ins). The site never shows you what their chats say: chats are end-to-end encrypted. You choose their password, so until they change it you can sign in as them and read their chats: tell them to set their own. They are told all of this in their own Settings."
+msgstr "18歳未満のお子様のアカウントを作成し、できることを決定します。 彼らがサイト上で何をしているかを見ることができます(投稿、コメント、投票、ブックマーク、フォロー、ギルド、彼らがチャットしている人の名前と最近のサインイン)。 チャットは、エンドツーエンドの暗号化です。 パスワードを選択するので、そのパスワードを変更してチャットを読んでください。 自分の設定でこのすべてに伝えられます."
 
 #, machine, python-format
 msgid "Make an app first in <a href=\"%(url)s\">Settings &gt; Apps</a>; a key works through it."
@@ -9897,6 +10046,10 @@ msgctxt "weekday"
 msgid "Mon"
 msgstr "モンテネグロ"
 
+#, machine, plain1
+msgid "Month"
+msgstr "カレンダー"
+
 #, machine
 msgctxt "table heading"
 msgid "Month"
@@ -9906,6 +10059,10 @@ msgstr "カレンダー"
 msgctxt "time range"
 msgid "Month"
 msgstr "今月"
+
+#, machine, plain1
+msgid "Month they were born"
+msgstr "月に生まれた"
 
 #, machine
 msgid "Monthly creator fund payouts"
@@ -10242,6 +10399,10 @@ msgstr "新規ページ:%(address)s"
 #, machine
 msgid "New paid circle"
 msgstr "新しい有料サークル"
+
+#, machine, plain1
+msgid "New password"
+msgstr "新しいパスワード"
 
 #, machine
 msgid "New posts that are getting attention, with no account filling the page."
@@ -10625,6 +10786,10 @@ msgstr "新規登録はできません。 現在の加入者は、彼らが支�
 msgid "Nobody types here"
 msgstr "ここには誰もいません"
 
+#, machine, plain1, python-format
+msgid "Nobody under %(age)s may have an account where you are."
+msgstr "%(age)s で誰もアカウントを持っているかもしれません."
+
 #, machine
 msgid "Nobody yet."
 msgstr "まだ誰もいません."
@@ -10745,6 +10910,10 @@ msgstr "加入者を取らない"
 #, machine
 msgid "Not trending any more"
 msgstr "これ以上のトレンドはありません"
+
+#, machine, plain1
+msgid "Not yet"
+msgstr "未使用"
 
 #, glossary, machine, plain1
 msgid "Not your default:"
@@ -10867,6 +11036,10 @@ msgid "Nothing written yet."
 msgstr "何も書いていません."
 
 #, machine, plain1
+msgid "Nothing yet."
+msgstr "何もない."
+
+#, machine, plain1
 msgid "Notification types"
 msgstr "通知の種類"
 
@@ -10913,6 +11086,10 @@ msgstr "オセアニア"
 msgid "Oddly Satisfying"
 msgstr "オッディ・サティスフィ"
 
+#, machine, plain1
+msgid "Off"
+msgstr "オフ"
+
 #. slow mode in a guild's channel is switched off.
 #, machine
 msgctxt "slow mode"
@@ -10939,6 +11116,10 @@ msgstr "古い順"
 #, machine
 msgid "Old Password"
 msgstr "古いパスワード"
+
+#, machine, plain1
+msgid "On"
+msgstr "お問い合わせ"
 
 #. "On" marks a linked storage account that is in use
 #, machine
@@ -11014,6 +11195,10 @@ msgstr "これらのリビジョンの1つは、あなたに示すことはで�
 #, machine
 msgid "One of those circles isn't yours any more. Choose again."
 msgstr "これらの円の1つは、あなたのものではありません。 お問い合わせ."
+
+#, machine, plain1
+msgid "One of your child accounts owes money, so your account can't be deleted yet."
+msgstr "あなたの子供アカウントの1つはお金を借ります、従ってあなたのアカウントはまだ削除することはできません."
 
 #, machine
 msgid "One-time codes for the day you lose your authenticator. Making a new set replaces every earlier code, used or not."
@@ -11335,6 +11520,10 @@ msgstr "投稿者の著者と共著者だけが更新を投稿することがで
 #, machine
 msgid "Only the post's author and co-authors can run its live updates."
 msgstr "投稿の著者と共著者だけがライブ更新を実行できます."
+
+#, machine, plain1
+msgid "Only used to check their age. It isn't kept."
+msgstr "年齢確認にのみ使用 保存しない."
 
 #, machine, plain1
 msgid "Only when I turn them on"
@@ -12327,6 +12516,10 @@ msgstr "その日以降に掲示されます."
 msgid "Posted on that day."
 msgstr "その日に掲示されます."
 
+#, machine, plain1
+msgid "Posting"
+msgstr "投稿する"
+
 #, machine
 msgid "Posting cooldown"
 msgstr "クールダウン投稿"
@@ -13159,6 +13352,10 @@ msgstr "却下"
 msgid "Relationships"
 msgstr "関連記事"
 
+#, machine, plain1
+msgid "Release the account"
+msgstr "口座開設"
+
 #, machine
 msgid "Religion"
 msgstr "免責事項"
@@ -13408,6 +13605,10 @@ msgstr "レポートメッセージ"
 msgctxt "noun"
 msgid "Reports"
 msgstr "報告"
+
+#, machine, plain1
+msgid "Reports about them"
+msgstr "それらについて"
 
 #, machine
 msgid "Reports opened"
@@ -13745,6 +13946,10 @@ msgctxt "weekday"
 msgid "Sat"
 msgstr "スタッフ"
 
+#, glossary, machine, plain1
+msgid "Save"
+msgstr "保存"
+
 #, machine, plain1
 msgctxt "button"
 msgid "Save"
@@ -14052,6 +14257,10 @@ msgstr "サイト全体のリストを見る"
 msgid "See what is trending"
 msgstr "トレンドとは"
 
+#, machine, plain1
+msgid "See what they do"
+msgstr "彼らが何をするかを見る"
+
 #, machine
 msgid "See your username"
 msgstr "ユーザー名を見る"
@@ -14151,6 +14360,10 @@ msgstr "9月 エキノックス"
 #, machine
 msgid "Serious"
 msgstr "深刻な"
+
+#, machine, plain1
+msgid "Set a new password"
+msgstr "新しいパスワードを設定する"
 
 #, machine
 msgid "Set a price to let people pay to join."
@@ -14788,6 +15001,10 @@ msgstr "スペース録音"
 msgid "Spaces"
 msgstr "スペース"
 
+#, machine, plain1
+msgid "Spaces and live threads"
+msgstr "スペースとライブスレッド"
+
 #, machine
 msgid "Spaces are started in the Spaces area."
 msgstr "スペースはスペースエリアで始まります."
@@ -14923,6 +15140,14 @@ msgstr "固定投稿"
 #, machine
 msgid "Still here to read"
 msgstr "詳しくはこちら"
+
+#, machine, plain1
+msgid "Stop managing"
+msgstr "管理停止"
+
+#, machine, plain1
+msgid "Stop managing this account"
+msgstr "このアカウントの管理を停止する"
 
 #, machine
 msgid "Stop posting automatically"
@@ -15097,6 +15322,10 @@ msgstr "サポーター…"
 #, machine, plain1
 msgid "Survival & Bushcraft"
 msgstr "サバイバル&ブッシュクラフト"
+
+#, machine, plain1
+msgid "Suspended"
+msgstr "サスペンド"
 
 #, machine, python-format
 msgid "Switch @%(name)s off for good? Its posts stay; the bot never posts again."
@@ -15569,6 +15798,10 @@ msgstr "それは役割ではありません."
 msgid "That isn't a valid username."
 msgstr "有効なユーザー名ではありません."
 
+#, machine, plain1
+msgid "That isn't something you can switch."
+msgstr "それはあなたが切り替えることができるものではありません."
+
 #, machine
 msgid "That key couldn't be saved."
 msgstr "そのキーは保存できませんでした."
@@ -15800,6 +16033,14 @@ msgstr "サヘル"
 #, machine
 msgid "The Space could not be made."
 msgstr "スペースは出来ません."
+
+#, machine, plain1, python-format
+msgid "The account @%(name)s is deleted."
+msgstr "@%(name)s は削除されます."
+
+#, machine, plain1, python-format
+msgid "The account @%(name)s is made. They sign in with the username and password you gave."
+msgstr "@%(name)s が作成されます。 与えられたユーザー名とパスワードでサインインします."
 
 #, machine, python-format
 msgid "The account age must be a whole number of days, 0 to %(max)s."
@@ -16137,6 +16378,10 @@ msgstr "過去7日間の最も投票された投稿."
 #, machine, python-format
 msgid "The name %(host)s could not be found."
 msgstr "名前 %(host)s が見つかりませんでした."
+
+#, machine, plain1
+msgid "The newest of what they have done. Only the names of who they chat with are shown, never what a chat says: chats are end-to-end encrypted."
+msgstr "彼らが行っているものの最新の。 チャットでチャットしている人の名前のみが表示されます。チャットは、エンドツーエンド暗号化されます."
 
 #, machine
 msgid "The numbers are always shown on your profile. This decides who can open each list and see the accounts on it. An account is only listed where its own setting allows it too."
@@ -16481,6 +16726,10 @@ msgstr "これらのユーザーは、適度+%(guild)sに招待されていま�
 msgid "They already have this role."
 msgstr "彼らはすでにこの役割を持っています."
 
+#, machine, plain1
+msgid "They are 18 or over, so they can make their own account."
+msgstr "彼らは18歳以上なので、自分のアカウントを作ることができます."
+
 #, machine
 msgid "They are already in this circle."
 msgstr "すでにこのサークルにいます."
@@ -16488,6 +16737,10 @@ msgstr "すでにこのサークルにいます."
 #, machine
 msgid "They are not told. Anyone you block leaves your circles."
 msgstr "言われていない。 あなたがブロックする誰もがあなたの円を残します."
+
+#, machine, plain1
+msgid "They are signed out everywhere. If they use chat, they may be asked for their recovery code."
+msgstr "どこからでも署名されます。 チャットを使用する場合は、回復コードを要求される可能性があります."
 
 #, machine, python-format
 msgid "They aren't in %(circle)s."
@@ -16501,6 +16754,38 @@ msgstr "このグループではそうではありません."
 msgid "They aren't muted here."
 msgstr "ここには変わっていません."
 
+#, machine, plain1
+msgid "They asked you to turn Private posting off."
+msgstr "プライベート投稿をオフにするように依頼しました."
+
+#, machine, plain1
+msgid "They can buy and spend coins, tip, buy Premium and join or run paid circles."
+msgstr "コイン、チップを購入して、Premiumを購入し、有料のサークルを実行したりすることができます."
+
+#, machine, plain1
+msgid "They can comment."
+msgstr "お問い合わせ."
+
+#, machine, plain1
+msgid "They can host and join Spaces and run live threads. Voice calls in a Space also need Chat to be on."
+msgstr "スペースをホストして参加してライブスレッドを実行できます。 スペースでの音声通話もチャットが必要です."
+
+#, machine, plain1
+msgid "They can make posts."
+msgstr "投稿を投稿することができます."
+
+#, machine, plain1
+msgid "They can message people, join group chats and make calls. The site never shows you what a chat says: chats are end-to-end encrypted. Whoever knows their password can still sign in and read them."
+msgstr "グループチャットに参加したり、電話をかけたりすることができます。 チャットが何を言ってもサイトが表示されない:チャットはエンドツーエンド暗号化されます。 パスワードがまだサインインして読むことができることを誰が知っているか."
+
+#, machine, plain1
+msgid "They can post anonymously and start a guild. You can still see who wrote an anonymous post."
+msgstr "彼らは匿名で投稿し、ギルドを開始することができます。 匿名投稿を書いた人はまだ見ることができます."
+
+#, machine, plain1
+msgid "They can see what you do on the site: your posts, comments, votes, bookmarks, follows, guilds, who you chat with, that your account was reported, and your recent sign-ins. The site never shows them what your chats say, because chats are end-to-end encrypted. But anyone who knows your password, a parent who chose it included, can sign in as you: change it in Security so that only you know it. They choose which of these are on for your account:"
+msgstr "あなたの投稿、コメント、投票、ブックマーク、フォロー、ギルド、あなたのアカウントが報告されたこと、そしてあなたの最近のサインインを誰とチャットするかを見ることができます。 チャットがエンドツーエンド暗号化されているため、サイトはチャットが何を言っても表示されません。 しかし、パスワードを知っている人、それを含むことを選択した親は、あなたがそれを知っているように、セキュリティでそれを変更することができます。 これらがあなたのアカウントのどちらであるかを選択します"
+
 #, machine
 msgid "They can't comment on your posts or comments, chat with you or notify you by mentioning you. They are not told, but they may work it out if they try to comment on something of yours."
 msgstr "あなたの投稿やコメントにコメントしたり、あなたとチャットしたり、あなたに言及することによって通知したりすることはできません。 彼らは言われていませんが、彼らはあなたの何かにコメントしようとすると、それをうまくいくかもしれません."
@@ -16513,6 +16798,10 @@ msgstr "この役割を持っていません."
 msgid "They go straight to your coin balance."
 msgstr "コインバランスに直進します."
 
+#, machine, plain1
+msgid "They haven't asked for that."
+msgstr "頼まれない."
+
 #, machine
 msgid "They need to be in the guild, and not exiled from it."
 msgstr "彼らはギルドにいて、それから出ていない必要があります."
@@ -16520,6 +16809,10 @@ msgstr "彼らはギルドにいて、それから出ていない必要があり
 #, machine
 msgid "They need to join the channel first."
 msgstr "最初にチャンネルに参加する必要があります."
+
+#, machine, plain1
+msgid "They say they are 18 or over and asked you to release their account. If you do, it becomes their own and you can no longer see it."
+msgstr "彼らは18歳以上であり、アカウントを解放するように求めていると言います。 もしそうなら、自分なりになり、もう見つかりません."
 
 #, machine
 msgid "They're already a helper."
@@ -16633,6 +16926,14 @@ msgstr "このアカウントは、%(site)s から一時的に中断されてい
 #, machine
 msgid "This account is private"
 msgstr "このアカウントはプライベートです"
+
+#, machine, plain1
+msgid "This account is suspended."
+msgstr "このアカウントは中断されます."
+
+#, machine, plain1
+msgid "This account owes money, so it can't be deleted yet."
+msgstr "このアカウントはお金を借りますので、まだ削除することはできません."
 
 #, machine
 msgid "This account posts about sensitive topics"
@@ -16767,6 +17068,10 @@ msgstr "このキュレーションフィードのギルドとアカウント"
 #, machine, plain1
 msgid "This curation's rules took too long to run. Its owner can make them narrower."
 msgstr "このキュレーションフィードのルールは実行に時間がかかりすぎました。 その所有者はそれらを狭くすることができます."
+
+#, machine, plain1
+msgid "This deletes their account and everything on it. It can't be undone. You can download their data first."
+msgstr "これにより、アカウントとすべてのアカウントが削除されます。 それは元に戻すことができません。 データを最初にダウンロードできます."
 
 #, machine
 msgid "This draft hasn't been published."
@@ -17095,6 +17400,10 @@ msgctxt "weekday"
 msgid "Thu"
 msgstr "日 時"
 
+#, machine, plain1
+msgid "Tick the box to agree to the Terms for them."
+msgstr "それらのための条件に同意するために箱を刻む."
+
 #, machine
 msgid "Tick the box to agree to the rules first."
 msgstr "最初にルールに同意するボックスを切り替えます."
@@ -17363,6 +17672,10 @@ msgstr "火曜日"
 #, machine
 msgid "Turanian Steppe"
 msgstr "ターアンステップ"
+
+#, machine, plain1
+msgid "Turn it off"
+msgstr "オフにする"
 
 #, machine, plain1, python-format
 msgid "Turn off notifications from +%(guild)s"
@@ -17819,6 +18132,10 @@ msgstr "バナーをアップロード"
 #, machine
 msgid "Upload picture"
 msgstr "アップロード画像"
+
+#, machine, plain1
+msgid "Upvote"
+msgstr "アップボット"
 
 #, glossary, machine, plain1
 msgctxt "verb"
@@ -18538,6 +18855,10 @@ msgid "Where you are, the law means your age has to be confirmed with an age-che
 msgstr "あなたがいるところ、法律は、あなたの年齢が敏感なコンテンツや強力な言語を見ることができます前に、年齢チェックサービスで確認しなければならないことを意味します."
 
 #, machine, plain1
+msgid "Where you are, your age has to be confirmed with an age-check service before you can make a child account."
+msgstr "お子様の年齢確認は、お子様の年齢確認サービスをご利用いただく必要があります."
+
+#, machine, plain1
 msgid "Where you are, your age has to be confirmed with an age-check service."
 msgstr "年齢確認サービスで年齢確認が必須です."
 
@@ -18629,9 +18950,17 @@ msgstr "誰が決めるのか"
 msgid "Who follows you"
 msgstr "お問い合わせ"
 
+#, machine, plain1
+msgid "Who reported them, and what they wrote, isn't shown to anyone but the admins."
+msgstr "誰がそれらを報告したのか、そして彼らが書いたもの、誰にも表示されていないが、管理者."
+
 #, glossary, machine, plain1
 msgid "Who subscribes to your Circle"
 msgstr "あなたのサークルの購読者"
+
+#, machine, plain1
+msgid "Who they chat with"
+msgstr "チャットする人"
 
 #, machine
 msgid "Who to follow"
@@ -19012,10 +19341,18 @@ msgctxt "guildmaster action"
 msgid "Yank post"
 msgstr "ヤンクポスト"
 
+#, machine, plain1
+msgid "Year"
+msgstr "年間行事"
+
 #, glossary, machine, plain1
 msgctxt "time range"
 msgid "Year"
 msgstr "今年"
+
+#, machine, plain1
+msgid "Year they were born"
+msgstr "生まれた年"
 
 #, machine
 msgctxt "colour"
@@ -19175,6 +19512,14 @@ msgid "You aren't subscribed to that circle."
 msgstr "その円を購読しません."
 
 #, machine, plain1
+msgid "You asked your parent or guardian to release your account. They haven't answered yet."
+msgstr "親または保護者にアカウントを解放するように依頼しました。 まだ答えていない."
+
+#, machine, plain1
+msgid "You asked your parent or guardian to turn this off. They haven't answered yet."
+msgstr "両親または保護者にこのオフをオフにするように依頼しました。 まだ答えていない."
+
+#, machine, plain1
 msgid "You can add pictures at 500 Rep, or earlier with Premium"
 msgstr "500の評判で、またはPremiumで以前の写真を追加できます"
 
@@ -19255,6 +19600,15 @@ msgid "You can have at most %(num)s channel."
 msgid_plural "You can have at most %(num)s channels."
 msgstr[0] "ほとんどの %(num)s チャンネルで使用できます."
 
+#, machine, plain1, python-format
+msgid "You can have at most %(num)s child account."
+msgid_plural "You can have at most %(num)s child accounts."
+msgstr[0] "ほとんどの %(num)s の子アカウントでアカウントを占有できます."
+
+#, machine, plain1, python-format
+msgid "You can have at most %(num)s child accounts."
+msgstr "ほとんどの %(num)s の子アカウントでアカウントを占有できます."
+
 #, machine, python-format
 msgid "You can host at most %(num)s Space a day."
 msgid_plural "You can host at most %(num)s Spaces a day."
@@ -19278,6 +19632,10 @@ msgstr[0] "ほとんどの %(num)s 単語やフレーズでリストできます
 msgid "You can look around and set up your profile; posting, comments, votes and follows open once the check is done."
 msgstr "プロフィールの投稿、コメント、投票、およびチェックが完了したら開いたフォローしてください."
 
+#, machine, plain1, python-format
+msgid "You can make %(num)s child accounts a day. Try again tomorrow."
+msgstr "%(num)s の子アカウントを 1 日に作成できます。 明日からもう一度お試しください."
+
 #, machine, python-format
 msgid "You can make %(num)s proposal a day."
 msgid_plural "You can make %(num)s proposals a day."
@@ -19287,6 +19645,10 @@ msgstr[0] "%(num)s を 1 日に提案できます."
 msgid "You can make %(num)s wiki edit a day in a guild. Try again tomorrow."
 msgid_plural "You can make %(num)s wiki edits a day in a guild. Try again tomorrow."
 msgstr[0] "%(num)s wiki を guild で編集できます。 明日からもう一度お試しください."
+
+#, machine, plain1
+msgid "You can make a child account once your own account is confirmed as 18 or over. You can say so in Settings > Content."
+msgstr "自分のアカウントが18以上確認されると、お子様のアカウントを作ることができます。 設定 > コンテンツで言うことができます."
 
 #, machine
 msgid "You can only create up to 2 guilds per day. Try again later."
@@ -19572,6 +19934,10 @@ msgstr "この投稿をフォローしないでください."
 msgid "You don't have Premium right now."
 msgstr "今すぐ Premium を持っていません."
 
+#, machine, plain1
+msgid "You don't have a child account called that."
+msgstr "チャイルドアカウントがない場合."
+
 #, machine
 msgid "You don't have a coin to redeem."
 msgstr "償還するコインはありません."
@@ -19682,6 +20048,10 @@ msgstr "+%(guild)s から上書きされている."
 #, machine
 msgid "You have left the creator fund."
 msgstr "クリエイターファンドを離れる."
+
+#, machine, plain1, python-format
+msgid "You have made %(num)s child accounts in the last %(days)s days. Try again later."
+msgstr "最後の %(days)s 日で %(num)s の子アカウントを作成しました。 もう一度お試しください."
 
 #, machine
 msgid "You have muted this guild. Its posts stay out of All, For You and Following. Visit your settings or click the <i class='fas fa-ellipsis-h text-small'></i> icon to unmute it."
@@ -20076,6 +20446,10 @@ msgstr "アカウント残高がマイナスです。 %(site)s に参加でき�
 msgid "Your account can also post new items from feeds by itself, while you keep using it as you do now. Each of those posts is marked as automated, and people who hide bot content don't see them. Your own posts, comments, votes and chats are unchanged. An admin approves it first."
 msgstr "あなたのアカウントは、現在使用している間、フィードから新しいアイテムを投稿することもできます。 これらの投稿のそれぞれが自動でマークされ、ボットコンテンツを隠す人々はそれらを見ることができません。 あなたの投稿、コメント、投票、チャットは変更されません。 管理者はそれを最初に承認します."
 
+#, machine, plain1
+msgid "Your account can't post automatically while it is age-restricted."
+msgstr "年齢制限されている間、アカウントは自動的に投稿できません."
+
 #, machine
 msgid "Your account can't post automatically while it is suspended."
 msgstr "停止中にアカウントは自動的に投稿できません."
@@ -20083,6 +20457,10 @@ msgstr "停止中にアカウントは自動的に投稿できません."
 #, machine
 msgid "Your account can't publish right now."
 msgstr "あなたのアカウントはすぐに公開できません."
+
+#, machine, plain1
+msgid "Your account can't run a bot while it is age-restricted."
+msgstr "年齢制限されている間、アカウントはボットを実行できません."
 
 #, machine
 msgid "Your account cannot upload right now."
@@ -20103,6 +20481,10 @@ msgstr "あなたのアカウントがチェックされ、準備が整ってい
 #, machine, plain1
 msgid "Your account has been deleted"
 msgstr "アカウントが削除されました"
+
+#, machine, plain1, python-format
+msgid "Your account has the child lock on, held by your parent or guardian, since %(date)s."
+msgstr "あなたのアカウントは、あなたの親または保護者が %(date)s から保持して、子供がロックオンを持っています."
 
 #, machine, plain1, python-format
 msgid "Your account has the child lock on, since %(date)s."
@@ -20155,6 +20537,10 @@ msgstr ""
 "\n"
 "\n"
 "[Settings > Security](/settings/security) のメールアドレスを追加して確認します."
+
+#, machine, plain1
+msgid "Your account is your own now. It no longer has the child lock and your parent or guardian can no longer see it. They chose your password: change it in [Settings > Security](/settings/security), or they can still sign in as you."
+msgstr "あなたのアカウントは、現在あなた自身のものです。 チャイルドロックがなくなり、親または保護者が確認できません。 パスワード: [Settings > Security](/settings/security) で変更するか、そのままサインインできます."
 
 #, machine
 msgid "Your account needs to be at least 30 days old to post automatically."
@@ -20257,6 +20643,10 @@ msgstr "チャットはエンドツーエンド暗号化され、サイトは読
 #, machine, python-format
 msgid "Your chats run on Matrix, an open standard, on %(site)s's own chat server. Besides Chat on this site, you can use them in a Matrix app such as Element (web, desktop and the classic phone apps), FluffyChat or Cinny. They stay end-to-end encrypted there too."
 msgstr "チャットは、Matrix 上で実行します。, 開いた標準, に %(site)s 独自のチャットサーバ. 本サイトのチャット以外にも、Element(web、デスクトップ、古典的な電話アプリ)、FluffyChat、CinnyなどのMtrixアプリで使用できます。 エンドツーエンドの暗号化も残っています."
+
+#, machine, plain1
+msgid "Your child accounts will be deleted with yours."
+msgstr "お子様のアカウントが削除されます."
 
 #, glossary, machine, plain1
 msgid "Your circles"
@@ -20399,8 +20789,52 @@ msgid_plural "Your own mix ranks the newest %(num)s matching posts. 0 switches a
 msgstr[0] "独自のミックスは、最新の %(num)s マッチング投稿をランク付けします。 0 部分をオフにし、10 はそれを最もカウントします."
 
 #, machine, plain1
+msgid "Your own password"
+msgstr "パスワード"
+
+#, machine, plain1
+msgid "Your parent or guardian didn't agree to release your account."
+msgstr "親または保護者がアカウントを解放することに同意しませんでした."
+
+#, machine, plain1
+msgid "Your parent or guardian has been asked to release your account. Nothing changes until they answer."
+msgstr "親または保護者がアカウントを解放するように依頼しました。 答えるまで何も変化しません."
+
+#, machine, plain1
+msgid "Your parent or guardian has been asked to turn Private posting off."
+msgstr "親または保護者がプライベート投稿をオフにするように求められている."
+
+#, machine, plain1
 msgid "Your parent or guardian has to agree before Private posting can be turned off."
 msgstr "親または保護者は、プライベート投稿がオフになる前に同意する必要があります."
+
+#, machine, plain1
+msgid "Your parent or guardian has turned this off for your account."
+msgstr "親または保護者がアカウントをオフにしました."
+
+#, machine, plain1
+msgid "Your parent or guardian made this account for you. They can see what you do on the site (your posts, comments, votes, bookmarks, follows, guilds, who you chat with, that your account was reported and your recent sign-ins; the site never shows them what your chats say) and they choose which features are on. You can see which in [Settings > Content](/settings/content). They chose your password: change it in [Settings > Security](/settings/security) so that only you know it, because anyone who knows it can sign in as you and read your chats."
+msgstr "親または保護者がこのアカウントをあなたのために作成しました。 彼らはあなたがサイト上で何をするかを見ることができます(あなたの投稿、コメント、投票、ブックマーク、フォロー、ギルド、あなたがチャットしている人、あなたのアカウントが報告され、あなたの最近のサインイン; サイトは、あなたのチャットが何を言っているかを示すことはありません)そして、彼らはどの機能がオンになっているかを選択します。 [Settings > Content](/settings/content) で表示できます。 パスワード: [Settings > Security](/settings/security) で変更して、それを知っているだけなので、あなたのチャットにサインインして読むことができます."
+
+#, machine, plain1
+msgid "Your parent or guardian set a new password for your account and you were signed out. Sign in with the new password, then change it in [Settings > Security](/settings/security) so that only you know it."
+msgstr "親または保護者がアカウントに新しいパスワードを設定し、署名しました。 新しいパスワードでサインインし、[設定 > セキュリティ](/settings/security)で変更して、それを知っているだけです."
+
+#, machine, plain1
+msgid "Your parent or guardian stopped managing your account. It keeps the child lock until you confirm your age in Settings > Content. They chose your password: change it in [Settings > Security](/settings/security), or they can still sign in as you."
+msgstr "親または保護者がアカウントの管理を中止しました。 設定であなたの年齢を確認するまで、それは子供がロックを維持します > コンテンツ パスワード: [Settings > Security](/settings/security) で変更するか、そのままサインインできます."
+
+#, machine, plain1
+msgid "Your parent or guardian turned Private posting off for your account."
+msgstr "あなたの親または保護者がアカウントにプライベート投稿をオフにしました."
+
+#, machine, plain1
+msgid "Your parent or guardian wants Private posting to stay on."
+msgstr "あなたの親または保護者は、滞在するためにプライベート投稿を望んでいます."
+
+#, machine, plain1
+msgid "Your parent or guardian's account was suspended, so yours is suspended until theirs is back."
+msgstr "親または保護者のアカウントが中断されたため、自分のアカウントが戻ってから停止されます."
 
 #, machine
 msgid "Your password"
@@ -20781,6 +21215,10 @@ msgstr "未知のアドレス"
 msgid "and %(num)s more"
 msgid_plural "and %(num)s more"
 msgstr[0] "と %(num)s もっと"
+
+#, machine, plain1
+msgid "anonymous"
+msgstr "ログイン"
 
 #, machine
 msgctxt "guildmaster permission"
@@ -21223,6 +21661,10 @@ msgstr "リンクのプレビュー"
 msgid "links"
 msgstr "サイトマップ"
 
+#, machine, plain1
+msgid "looked at by the admins"
+msgstr "管理者が見た"
+
 #. after the moderator's name in a guild's moderation log
 #, machine
 msgid "made a channel"
@@ -21429,6 +21871,10 @@ msgstr "再登録 %(target)s"
 #, machine, python-format
 msgid "reinstated post %(target)s"
 msgstr "reinstated投稿 %(target)s"
+
+#, machine, plain1
+msgid "removed"
+msgstr "削除"
 
 #. follows the moderator's name in a guild's moderation log; %(target)s is a
 #. link

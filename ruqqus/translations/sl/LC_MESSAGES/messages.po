@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ruqqus VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-11-05 16:56+1100\n"
+"POT-Creation-Date: 2026-11-05 20:16+1100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: sl\n"
@@ -1860,12 +1860,24 @@ msgid "(allow beats deny; the channel's own rules apply to everyone else)"
 msgstr "(dovoljenje bije zanika; pravila kanala veljajo za vse ostale)"
 
 #, machine, plain1
+msgid "(empty)"
+msgstr "(prazno)"
+
+#, machine, plain1
 msgid "(for a stage channel: the post's address or id)"
 msgstr "(za odrski kanal: naslov pošte ali id)"
 
 #, machine, plain1
 msgid "(from the original)"
 msgstr "(iz izvirnika)"
+
+#, machine, plain1
+msgid "(in a private place)"
+msgstr "(na zasebnem mestu)"
+
+#, machine, plain1
+msgid "(no title)"
+msgstr "(brez naslova)"
 
 #, glossary, machine, plain1
 msgid "(off)"
@@ -2441,6 +2453,10 @@ msgid "<strong>Username:</strong> %(name)s"
 msgstr "<strong>Uporabniško ime:</strong> %(name)s"
 
 #, machine, plain1, python-format
+msgid "@%(name)s - %(site)s"
+msgstr "@%(name)s - %(site)s"
+
+#, machine, plain1, python-format
 msgid "@%(name)s - Bots - %(site)s"
 msgstr "@%(name)s -Bots - %(site)s"
 
@@ -2454,6 +2470,10 @@ msgstr "@ %(name)s dodano v %(curation)s."
 
 #, python-format
 msgid "@%(name)s asked to publish a shared draft you write: your vote counts. [Open the draft](%(link)s)"
+msgstr ""
+
+#, python-format
+msgid "@%(name)s asked you to turn Private posting off for their account. You can answer in [Settings > Children](/settings/children)."
 msgstr ""
 
 #, machine, plain1, python-format
@@ -2498,6 +2518,10 @@ msgstr ""
 #, python-format
 msgid "@%(name)s forwarded [a post](%(link)s) to +%(guild)s."
 msgstr ""
+
+#, machine, plain1, python-format
+msgid "@%(name)s has a new password and is signed out everywhere."
+msgstr "@%(name)s ima novo geslo in je izpisan povsod."
 
 #, machine, plain1, python-format
 msgid "@%(name)s has already been invited."
@@ -2668,6 +2692,10 @@ msgid "@%(name)s reposted [a post](%(link)s)."
 msgstr ""
 
 #, python-format
+msgid "@%(name)s says they are 18 or over and asked you to release their account. You can answer in [Settings > Children](/settings/children)."
+msgstr ""
+
+#, python-format
 msgid "@%(name)s shared [a story](%(link)s)."
 msgstr ""
 
@@ -2698,6 +2726,10 @@ msgstr "@%(name)s je bil izgnan iz +%(guild)s"
 #, machine, plain1, python-format
 msgid "@%(name)s was muted in +%(guild)s's channels."
 msgstr "@ %(name)s je bil utišan v +%(guild)s kanalih."
+
+#, machine, plain1, python-format
+msgid "@%(name)s's age was confirmed as 18 or over, so their account is their own now and you can no longer see it."
+msgstr "@%(name)sStarost je potrjena kot 18 ali več, zato je njihov račun zdaj njihov in ga ne vidiš več."
 
 #, machine, plain1, python-format
 msgid "@%(name)s's new posts will go into #%(channel)s."
@@ -3288,6 +3320,10 @@ msgstr "Nit v živo sprejema komentarje, ne sporočil."
 #, machine, plain1
 msgid "A member"
 msgstr "Član"
+
+#, machine, plain1
+msgid "A member reported this account."
+msgstr "Član je poročal o tem računu."
 
 #, machine, plain1, python-format
 msgid "A message can be at most %(count)s character."
@@ -4479,6 +4515,14 @@ msgstr[1] "Posodobitev je lahko na največ %(num)s znakov."
 msgstr[2] "Posodobitev je lahko največ %(num)s znakov."
 msgstr[3] "Posodobitev je lahko na največ %(num)s znakov."
 
+#, machine, plain1, python-format
+msgid "And %(num)s private guild, which isn't named."
+msgid_plural "And %(num)s private guilds, which aren't named."
+msgstr[0] "In en zasebni ceh, ki se ne imenuje."
+msgstr[1] "In dve zasebni guldni, ki nista imenovani."
+msgstr[2] "In tri zasebne čete, ki niso imenovane."
+msgstr[3] "In %(num)s zasebnih čet, ki niso imenovane."
+
 #, machine, plain1
 msgid "Animals"
 msgstr "Živali"
@@ -4534,6 +4578,10 @@ msgstr "Anonimni uporabnik"
 msgctxt "label"
 msgid "Anonymous"
 msgstr "Anonimno"
+
+#, machine, plain1
+msgid "Anonymous posting and starting guilds"
+msgstr "Anonimno objavljanje in zaganjanje guldnov"
 
 #, machine, plain1
 msgid "Anonymous posts and comments count for you like any other. Your points and earnings are shown only to you; the site's admins see the payout list."
@@ -4747,6 +4795,14 @@ msgstr "Arijsko višavje"
 #, machine, plain1
 msgid "As an author you edit the draft live with them, and every character you type is credited to you. Once the post is published, anyone who can see it can see who wrote what. The authors decide together:"
 msgstr "Kot avtor urejate osnutek v živo z njimi in vsak znak, ki ga vtipkate, vam je pripisan. Ko je objava objavljena, lahko vsakdo, ki vidi, vidi, kdo je napisal kaj. Avtorji se skupaj odločijo:"
+
+#, machine, plain1
+msgid "Ask my parent to turn it off"
+msgstr "Prosi starša, naj ugasne"
+
+#, machine, plain1
+msgid "Asked you"
+msgstr "Vprašal sem te"
 
 #, machine, plain1, python-format
 msgid "At least %(count)s comments"
@@ -5235,6 +5291,10 @@ msgstr "Boost za objave s sliko, zvok ali video"
 #, machine, plain1
 msgid "Boost for this curation's guilds and accounts"
 msgstr "Okrepitev za te kurirane guldne in račune krme"
+
+#, machine, plain1
+msgid "Born"
+msgstr "Rojen"
 
 #, machine, plain1
 msgid "Bot keys"
@@ -5737,6 +5797,10 @@ msgid "Chat isn't answering right now. Try again in a moment."
 msgstr "Klepet se ne oglasi. Poskusite znova v trenutku."
 
 #, machine, plain1
+msgid "Chat, group chats and calls"
+msgstr "Klepet, skupinski klepet in klici"
+
+#, machine, plain1
 msgctxt "guildmaster action"
 msgid "Chatban user"
 msgstr "Uporabnik Chatban"
@@ -5760,6 +5824,14 @@ msgstr "Kemija"
 #, machine, plain1
 msgid "Child - also hide profanity and sensitive content"
 msgstr "Otrok - skriva tudi psovke in občutljive vsebine"
+
+#, machine, plain1
+msgid "Children"
+msgstr "Otroci"
+
+#, machine, plain1, python-format
+msgid "Children - %(site)s"
+msgstr "Otroci - %(site)s"
 
 #. "Sign in with ..." is the button the Matrix app shows for this site's
 #. sign-in
@@ -6092,6 +6164,10 @@ msgid "Coins received: %(recent)s in the last 30 days &middot; %(total)s in all.
 msgstr "Prejeti kovanci: %(recent)s v zadnjih 30 dneh &middot; %(total)s skupaj. Gredo naravnost na vašo bilanco kovancev."
 
 #, machine, plain1
+msgid "Coins, tips, Premium and paid circles"
+msgstr "Kovanci, namigi, Premium in plačani krogi"
+
+#, machine, plain1
 msgid "Collaborative"
 msgstr "Sodelovanje"
 
@@ -6155,6 +6231,10 @@ msgstr "Komentar zaznamek."
 #, glossary, machine, plain1
 msgid "Comment posted!"
 msgstr "Komentar je objavljen!"
+
+#, machine, plain1
+msgid "Commenting"
+msgstr "Komentiranje"
 
 #, glossary, machine, plain1
 msgid "Comments"
@@ -6808,8 +6888,16 @@ msgid "Delete role"
 msgstr "Izbriši vlogo"
 
 #, machine, plain1
+msgid "Delete the account"
+msgstr "Izbriši račun"
+
+#, machine, plain1
 msgid "Delete the published post"
 msgstr "Zbriši objavljeno objavo"
+
+#, machine, plain1
+msgid "Delete this account"
+msgstr "Zbriši ta račun"
 
 #, machine, plain1
 msgid "Delete this category? Its channels stay."
@@ -6870,6 +6958,10 @@ msgstr "Brisanje datoteke v vašem Drive, ali odklop, ga odstrani iz vaših obja
 #, machine, plain1
 msgid "Deleting a file there, or disconnecting, removes it from your posts."
 msgstr "Brisanje datoteke tam, ali odklop, ga odstrani iz vaših objav."
+
+#, machine, plain1
+msgid "Deleting your account also deletes your child accounts. You can download their data first in Settings > Children."
+msgstr "Brisanje računa izbriše tudi račune vašega otroka. Njihove podatke lahko najprej prenesete v Nastavitve > Otroci."
 
 #, machine, plain1
 msgid "Density"
@@ -7116,6 +7208,10 @@ msgid "Done"
 msgstr "Opravljeno"
 
 #, machine, plain1
+msgid "Download"
+msgstr "Prenesi"
+
+#, machine, plain1
 msgctxt "button"
 msgid "Download"
 msgstr "Prenesi"
@@ -7129,8 +7225,16 @@ msgid "Download the recording"
 msgstr "Prenesi posnetek"
 
 #, machine, plain1
+msgid "Download their data"
+msgstr "Prenesi njihove podatke"
+
+#, machine, plain1
 msgid "Download your data"
 msgstr "Prenesi podatke"
+
+#, machine, plain1
+msgid "Downvote"
+msgstr "Preglasovanje"
 
 #, glossary, machine, plain1
 msgctxt "verb"
@@ -7460,6 +7564,10 @@ msgstr "Vnesite naslov strežnika vira."
 msgid "Enter the feed's address."
 msgstr "Vnesite naslov vira."
 
+#, machine, plain1
+msgid "Enter the month and year they were born."
+msgstr "Vnesite mesec in leto rojstva."
+
 #, machine, plain1, python-format
 msgid "Enter the six-digit code generated in the authenticator app and your %(site)s account password."
 msgstr "Vnesite šestmestno kodo, ustvarjeno v aplikaciji za avtentikacijo in geslo vašega računa %(site)s."
@@ -7636,6 +7744,10 @@ msgstr "Vsak vidi med seboj spremembe med tipkanjem in vsak lik se pripisuje tis
 #, machine, plain1
 msgid "Everything from your guilds and accounts, newest first."
 msgstr "Vse iz vaših čet in računov."
+
+#, machine, plain1
+msgid "Everything they post goes only to their Friends circle. Turn it off to let them post in public."
+msgstr "Vse, kar objavijo, gre samo k njihovemu krogu prijateljev. Ugasnite ga, da bodo lahko objavljali v javnosti."
 
 #, machine, plain1
 msgid "Everything you post goes only to your Friends circle, the people you follow who follow you back, so nothing is public by accident. Your circles can only hold people like that, and you can't forward, repost or write a shared draft. Comments on other people's posts are still public."
@@ -8304,6 +8416,10 @@ msgstr "Prijatelji"
 msgctxt "circle name"
 msgid "Friends"
 msgstr "Prijatelji"
+
+#, machine, plain1
+msgid "Friends circle"
+msgstr "Prijatelji krožijo"
 
 #, machine, plain1
 msgid "Friends is everyone you follow who follows you back. To share with family, a team or anyone else, make a circle first, then pick it here."
@@ -9116,6 +9232,10 @@ msgstr "Lov"
 msgid "I accept the <a href=\"%(url)s\" target=\"_blank\">terms and conditions</a>"
 msgstr "Sprejmem <a href=\"%(url)s\" target=\"_blank\">Pogoji</a>"
 
+#, machine, plain1, python-format
+msgid "I agree to the <a href=\"%(url)s\" target=\"_blank\">Terms</a> for them."
+msgstr "Strinjam se z <a href=\"%(url)s\" target=\"_blank\">Pogoji</a> Za njih."
+
 #, machine, plain1
 msgid "I agree to the rules below."
 msgstr "Strinjam se s spodnjimi pravili."
@@ -9151,6 +9271,10 @@ msgstr "Če obstaja e- poštni naslov, povezan z vašim računom, ga lahko upora
 #, machine, plain1
 msgid "If this was you, there is nothing to do."
 msgstr "Če si bil ti, nimaš kaj početi."
+
+#, machine, plain1
+msgid "If you are 18 or over, say so and your parent or guardian will be asked to release your account."
+msgstr "Če ste stari 18 let ali več, to povejte in roditelja ali skrbnika boste prosili, naj vam izda račun."
 
 #, machine, plain1
 msgid "If you don't have your 2FA device, enter one of your backup codes instead. Each backup code works once. An account that never made backup codes can enter its Recovery Code, which also turns 2FA off."
@@ -9533,6 +9657,14 @@ msgid "It shows, in full, every word and phrase the word filter looks for, in ev
 msgstr "V celoti kaže vsako besedo in frazo, ki jo išče filter, v vsakem jeziku, ki ga zajema. To vključuje tudi žaljivke in druge skrajno žaljive besede."
 
 #, machine, plain1
+msgid "It stays a child account with the child lock, but you can no longer see it or change what it can do, and you can't link it again."
+msgstr "Ostaja otroški račun z otroško ključavnico, vendar ga ne morete več videti ali spremeniti, kaj lahko stori, in ga ne morete ponovno povezati."
+
+#, machine, plain1
+msgid "It stays on the Child word filter, which hides profanity and anything marked sensitive."
+msgstr "Ostaja na otroškem besednem filtru, ki skriva psovko in vse zaznamovano občutljivo."
+
+#, machine, plain1
 msgid "It stays on the Child word filter, which hides profanity and anything marked sensitive. Chat, Spaces, coins, anonymous posting and starting a guild are off, and others can't start a chat or tip you. Your posts go to your Friends circle only unless you turn Private posting off."
 msgstr "Ostaja na otroškem besednem filtru, ki skriva psovko in vse zaznamovano občutljivo. Klepet, prostor, kovanci, anonimno objavljanje in zagon ceha so izključeni, drugi pa ne morejo začeti pogovora ali napitnine. Vaši objav gredo k vašemu krogu prijateljev samo, če izključite zasebno objavo."
 
@@ -9704,6 +9836,10 @@ msgstr "Junijski solsticij"
 #, machine, plain1
 msgid "K-Pop"
 msgstr "K- Pop"
+
+#, machine, plain1
+msgid "Keep it on"
+msgstr "Kar tako naprej"
 
 #, machine, plain1
 msgid "Keep my posts out of All"
@@ -9989,6 +10125,10 @@ msgstr "Leonidski meteorski dež"
 msgid "Letters spaced out or split by dots or other marks are read as one word."
 msgstr "Črke, ki so razmaknjene ali razdeljene s pikami ali drugimi oznakami, se berejo kot ena beseda."
 
+#, machine, plain1
+msgid "Letters, numbers and underscores, 3 to 25 characters."
+msgstr "Črke, številke in podčrtaki, 3 do 25 znakov."
+
 #, glossary, machine, plain1
 msgid "Lifestyle"
 msgstr "Življenje"
@@ -10234,6 +10374,10 @@ msgstr "Lunarno novo leto"
 msgid "Lyrids meteor shower"
 msgstr "Liridi meteorski dež"
 
+#, machine, plain1, python-format
+msgid "Made on %(date)s."
+msgstr "Narejeno na %(date)s."
+
 #, glossary, machine, plain1
 msgid "Made with AI"
 msgstr "Ustvarjeno z UI"
@@ -10252,6 +10396,10 @@ msgid "Make a channel"
 msgstr "Naredi kanal"
 
 #, machine, plain1
+msgid "Make a child account"
+msgstr "Naredi račun za otroka"
+
+#, machine, plain1
 msgid "Make a circle people pay to be in, every 30 days, for what you share with it."
 msgstr "Naredite krog, v katerem ljudje plačujejo, da so vsakih 30 dni, za tisto, kar delite z njim."
 
@@ -10266,6 +10414,10 @@ msgstr "Naredi stran"
 #, machine, plain1
 msgid "Make a role"
 msgstr "Naredi vlogo"
+
+#, machine, plain1
+msgid "Make an account for a child under 18 and decide what it can do. You can see what they do on the site (their posts, comments, votes, bookmarks, follows, guilds, the names of who they chat with and their recent sign-ins). The site never shows you what their chats say: chats are end-to-end encrypted. You choose their password, so until they change it you can sign in as them and read their chats: tell them to set their own. They are told all of this in their own Settings."
+msgstr "Naredite račun za otroka, mlajšega od 18 let, in se odločite, kaj lahko stori. Oglejte si, kaj počnejo na spletni strani (njihove objave, komentarji, glasovi, zaznamki, sledi, Guilds, imena, s kom klepetajo in njihove nedavne prijave). Spletna stran vam nikoli ne pokaže, kaj pravijo njihovi klepeti: klepeti so končni šifrirani. Izberete njihovo geslo, tako da dokler ga ne spremenijo, se lahko prijavite kot oni in preberete njihove klepete: recite jim, naj nastavijo svoje. Vse to jim povedo v svojih nastavitvah."
 
 #, machine, plain1, python-format
 msgid "Make an app first in <a href=\"%(url)s\">Settings &gt; Apps</a>; a key works through it."
@@ -10618,6 +10770,10 @@ msgid "Mon"
 msgstr "Naslednji mesec"
 
 #, machine, plain1
+msgid "Month"
+msgstr "Mesec"
+
+#, machine, plain1
 msgctxt "table heading"
 msgid "Month"
 msgstr "Mesec"
@@ -10626,6 +10782,10 @@ msgstr "Mesec"
 msgctxt "time range"
 msgid "Month"
 msgstr "Mesec"
+
+#, machine, plain1
+msgid "Month they were born"
+msgstr "Mesec, ko so se rodili"
 
 #, machine, plain1
 msgid "Monthly creator fund payouts"
@@ -10971,6 +11131,10 @@ msgstr "Nova stran: %(address)s"
 #, machine, plain1
 msgid "New paid circle"
 msgstr "Novi plačani krog"
+
+#, machine, plain1
+msgid "New password"
+msgstr "Novo geslo"
 
 #, machine, plain1
 msgid "New posts that are getting attention, with no account filling the page."
@@ -11360,6 +11524,10 @@ msgstr "Nihče se ne more naročiti. Trenutni naročniki obdržijo, kar so plač
 msgid "Nobody types here"
 msgstr "Tukaj nihče ne tipka"
 
+#, machine, plain1, python-format
+msgid "Nobody under %(age)s may have an account where you are."
+msgstr "Nihče pod %(age)s nima računa, kjer ste."
+
 #, machine, plain1
 msgid "Nobody yet."
 msgstr "Še nihče."
@@ -11480,6 +11648,10 @@ msgstr "Ne jemljite naročnikov"
 #, machine, plain1
 msgid "Not trending any more"
 msgstr "Nič več trenda"
+
+#, machine, plain1
+msgid "Not yet"
+msgstr "Ne še"
 
 #, glossary, machine, plain1
 msgid "Not your default:"
@@ -11602,6 +11774,10 @@ msgid "Nothing written yet."
 msgstr "Nič še ni napisano."
 
 #, machine, plain1
+msgid "Nothing yet."
+msgstr "Še nič."
+
+#, machine, plain1
 msgid "Notification types"
 msgstr "Vrste obvestil"
 
@@ -11651,6 +11827,10 @@ msgstr "Oceanija"
 msgid "Oddly Satisfying"
 msgstr "Nenavadno zadovoljstvo"
 
+#, machine, plain1
+msgid "Off"
+msgstr "Izklopljeno"
+
 #. slow mode in a guild's channel is switched off.
 #, machine, plain1
 msgctxt "slow mode"
@@ -11677,6 +11857,10 @@ msgstr "Staro"
 #, machine, plain1
 msgid "Old Password"
 msgstr "Staro geslo"
+
+#, machine, plain1
+msgid "On"
+msgstr "Vklop"
 
 #. "On" marks a linked storage account that is in use
 #, machine, plain1
@@ -11755,6 +11939,10 @@ msgstr "Ena od teh popravkov se vam ne more pokazati."
 #, machine, plain1
 msgid "One of those circles isn't yours any more. Choose again."
 msgstr "Eden od teh krogov ni več tvoj. Izberi še enkrat."
+
+#, machine, plain1
+msgid "One of your child accounts owes money, so your account can't be deleted yet."
+msgstr "En račun za otroka dolguje denar, tako da ga še ni mogoče izbrisati."
 
 #, machine, plain1
 msgid "One-time codes for the day you lose your authenticator. Making a new set replaces every earlier code, used or not."
@@ -12082,6 +12270,10 @@ msgstr "Posodobitve lahko objavita le avtor in soavtor."
 #, machine, plain1
 msgid "Only the post's author and co-authors can run its live updates."
 msgstr "Samo avtor in soavtorji pošte lahko vodijo njegove posodobitve v živo."
+
+#, machine, plain1
+msgid "Only used to check their age. It isn't kept."
+msgstr "Včasih sem preverjal njihovo starost. Ne zadržuje se."
 
 #, machine, plain1
 msgid "Only when I turn them on"
@@ -13081,6 +13273,10 @@ msgid "Posted on that day."
 msgstr "Objavljeno na ta dan."
 
 #, machine, plain1
+msgid "Posting"
+msgstr "Napotitev"
+
+#, machine, plain1
 msgid "Posting cooldown"
 msgstr "Postopno hlajenje"
 
@@ -13928,6 +14124,10 @@ msgid "Relationships"
 msgstr "Razmerja"
 
 #, machine, plain1
+msgid "Release the account"
+msgstr "Sprostitev računa"
+
+#, machine, plain1
 msgid "Religion"
 msgstr "Religija"
 
@@ -14179,6 +14379,10 @@ msgstr "Sporočena sporočila"
 msgctxt "noun"
 msgid "Reports"
 msgstr "Prijave"
+
+#, machine, plain1
+msgid "Reports about them"
+msgstr "Poročila o njih"
 
 #, machine, plain1
 msgid "Reports opened"
@@ -14519,6 +14723,10 @@ msgctxt "weekday"
 msgid "Sat"
 msgstr "Sob"
 
+#, glossary, machine, plain1
+msgid "Save"
+msgstr "Shrani"
+
 #, machine, plain1
 msgctxt "button"
 msgid "Save"
@@ -14830,6 +15038,10 @@ msgid "See what is trending"
 msgstr "Poglej, kaj se dogaja"
 
 #, machine, plain1
+msgid "See what they do"
+msgstr "Poglej, kaj počnejo"
+
+#, machine, plain1
 msgid "See your username"
 msgstr "Oglejte si svoje uporabniško ime"
 
@@ -14928,6 +15140,10 @@ msgstr "Septembrsko enakonočje"
 #, machine, plain1
 msgid "Serious"
 msgstr "Resno"
+
+#, machine, plain1
+msgid "Set a new password"
+msgstr "Nastavi novo geslo"
 
 #, machine, plain1
 msgid "Set a price to let people pay to join."
@@ -15597,6 +15813,10 @@ msgid "Spaces"
 msgstr "Spaces"
 
 #, machine, plain1
+msgid "Spaces and live threads"
+msgstr "Prostori in žive niti"
+
+#, machine, plain1
 msgid "Spaces are started in the Spaces area."
 msgstr "Prostori se začnejo na območju Spaces."
 
@@ -15731,6 +15951,14 @@ msgstr "Pripeta objava"
 #, machine, plain1
 msgid "Still here to read"
 msgstr "Še vedno sem tukaj, da preberem"
+
+#, machine, plain1
+msgid "Stop managing"
+msgstr "Ustavi upravljanje"
+
+#, machine, plain1
+msgid "Stop managing this account"
+msgstr "Prenehajte upravljati ta račun"
 
 #, machine, plain1
 msgid "Stop posting automatically"
@@ -15911,6 +16139,10 @@ msgstr "Podporniki…"
 #, machine, plain1
 msgid "Survival & Bushcraft"
 msgstr "Preživetje in Bushcraft"
+
+#, machine, plain1
+msgid "Suspended"
+msgstr "Odložen"
 
 #, machine, plain1, python-format
 msgid "Switch @%(name)s off for good? Its posts stay; the bot never posts again."
@@ -16384,6 +16616,10 @@ msgid "That isn't a valid username."
 msgstr "To ni veljavno uporabniško ime."
 
 #, machine, plain1
+msgid "That isn't something you can switch."
+msgstr "Tega ne moreš zamenjati."
+
+#, machine, plain1
 msgid "That key couldn't be saved."
 msgstr "Ključa ni bilo mogoče rešiti."
 
@@ -16614,6 +16850,14 @@ msgstr "Sahel"
 #, machine, plain1
 msgid "The Space could not be made."
 msgstr "Vesolja ni bilo mogoče narediti."
+
+#, machine, plain1, python-format
+msgid "The account @%(name)s is deleted."
+msgstr "Račun @ %(name)s se črta."
+
+#, machine, plain1, python-format
+msgid "The account @%(name)s is made. They sign in with the username and password you gave."
+msgstr "Račun.%(name)s je narejen. Vpišejo se z vašim uporabniškim imenom in geslom."
 
 #, machine, plain1, python-format
 msgid "The account age must be a whole number of days, 0 to %(max)s."
@@ -16969,6 +17213,10 @@ msgstr "Najbolj izglasovana delovna mesta zadnjih sedmih dni."
 #, machine, plain1, python-format
 msgid "The name %(host)s could not be found."
 msgstr "Ime %(host)s ni bilo najdeno."
+
+#, machine, plain1
+msgid "The newest of what they have done. Only the names of who they chat with are shown, never what a chat says: chats are end-to-end encrypted."
+msgstr "Najnovejše, kar so naredili. Prikazana so samo imena, s katerimi klepetajo, nikoli kaj pravi klepet: klepeti so šifrirani."
 
 #, machine, plain1
 msgid "The numbers are always shown on your profile. This decides who can open each list and see the accounts on it. An account is only listed where its own setting allows it too."
@@ -17332,12 +17580,20 @@ msgid "They already have this role."
 msgstr "To vlogo že imajo."
 
 #, machine, plain1
+msgid "They are 18 or over, so they can make their own account."
+msgstr "Stara sta 18 let ali več, zato si lahko ustvarijo svoj račun."
+
+#, machine, plain1
 msgid "They are already in this circle."
 msgstr "So že v tem krogu."
 
 #, machine, plain1
 msgid "They are not told. Anyone you block leaves your circles."
 msgstr "Ne povedo jim. Vsak, ki ga blokiraš, ostane v tvojih krogih."
+
+#, machine, plain1
+msgid "They are signed out everywhere. If they use chat, they may be asked for their recovery code."
+msgstr "Povsod so podpisani. Če uporabljajo klepet, jih lahko prosijo za kodo za okrevanje."
 
 #, machine, plain1, python-format
 msgid "They aren't in %(circle)s."
@@ -17352,6 +17608,38 @@ msgid "They aren't muted here."
 msgstr "Tu niso utišani."
 
 #, machine, plain1
+msgid "They asked you to turn Private posting off."
+msgstr "Prosili so te, da izključiš zasebno delo."
+
+#, machine, plain1
+msgid "They can buy and spend coins, tip, buy Premium and join or run paid circles."
+msgstr "Lahko kupijo in porabijo kovance, napitnino, kupijo Premium in se pridružijo ali vodijo plačane kroge."
+
+#, machine, plain1
+msgid "They can comment."
+msgstr "Lahko komentirajo."
+
+#, machine, plain1
+msgid "They can host and join Spaces and run live threads. Voice calls in a Space also need Chat to be on."
+msgstr "Lahko gostijo in se pridružijo Prostorom in tečejo v živo niti. Glasovi v vesolju potrebujejo tudi klepet."
+
+#, machine, plain1
+msgid "They can make posts."
+msgstr "Lahko delajo položaje."
+
+#, machine, plain1
+msgid "They can message people, join group chats and make calls. The site never shows you what a chat says: chats are end-to-end encrypted. Whoever knows their password can still sign in and read them."
+msgstr "Lahko sporočajo ljudem, se pridružijo skupinskim klepetom in kličejo. Spletna stran vam nikoli ne pokaže, kaj pravi klepet: klepeti so končni šifrirani. Kdor pozna njihovo geslo, se še lahko vpiše in prebere."
+
+#, machine, plain1
+msgid "They can post anonymously and start a guild. You can still see who wrote an anonymous post."
+msgstr "Lahko objavijo anonimno in začnejo z guldnom. Še vedno lahko vidite, kdo je napisal anonimno pošto."
+
+#, machine, plain1
+msgid "They can see what you do on the site: your posts, comments, votes, bookmarks, follows, guilds, who you chat with, that your account was reported, and your recent sign-ins. The site never shows them what your chats say, because chats are end-to-end encrypted. But anyone who knows your password, a parent who chose it included, can sign in as you: change it in Security so that only you know it. They choose which of these are on for your account:"
+msgstr "Vidijo lahko, kaj počnete na spletni strani: vaše objave, komentarji, glasovi, zaznamki, sledi, Guilds, s kom klepetate, da je bil vaš račun prijavljen, in vaše nedavne prijave. Spletna stran jim nikoli ne pokaže, kaj pravijo vaši klepeti, ker so klepeti končni šifrirani. Kdor pa pozna vaše geslo, ki ga je izbral, se lahko vpiše kot vi: spremenite ga v Varnost, tako da ga poznate samo vi. Izberejo, kateri od teh so na vašem računu:"
+
+#, machine, plain1
 msgid "They can't comment on your posts or comments, chat with you or notify you by mentioning you. They are not told, but they may work it out if they try to comment on something of yours."
 msgstr "Ne morejo komentirati vaših objav ali komentarjev, klepetati z vami ali vas obvestiti z omembo. Ne povejo jim, lahko pa se dogovorijo, če skušajo komentirati kaj vašega."
 
@@ -17364,12 +17652,20 @@ msgid "They go straight to your coin balance."
 msgstr "Gredo naravnost na vašo bilanco kovancev."
 
 #, machine, plain1
+msgid "They haven't asked for that."
+msgstr "Tega niso zahtevali."
+
+#, machine, plain1
 msgid "They need to be in the guild, and not exiled from it."
 msgstr "Morajo biti v guldni in ne izgnani iz nje."
 
 #, machine, plain1
 msgid "They need to join the channel first."
 msgstr "Najprej se morajo pridružiti kanalu."
+
+#, machine, plain1
+msgid "They say they are 18 or over and asked you to release their account. If you do, it becomes their own and you can no longer see it."
+msgstr "Pravijo, da so stari 18 let ali več in da te prosijo, da izdaš njihov račun. Če jo boš, bo postala njihova in je ne boš več videl."
 
 #, machine, plain1
 msgid "They're already a helper."
@@ -17486,6 +17782,14 @@ msgstr "Ta račun je bil začasno ustavljen iz %(site)s. Preveri kasneje."
 #, machine, plain1
 msgid "This account is private"
 msgstr "Ta račun je zasebni"
+
+#, machine, plain1
+msgid "This account is suspended."
+msgstr "Ta račun je suspendiran."
+
+#, machine, plain1
+msgid "This account owes money, so it can't be deleted yet."
+msgstr "Ta račun je dolžan denar, zato ga še ni mogoče zbrisati."
 
 #, machine, plain1
 msgid "This account posts about sensitive topics"
@@ -17623,6 +17927,10 @@ msgstr "Gulde in računi te kurirane krme"
 #, machine, plain1
 msgid "This curation's rules took too long to run. Its owner can make them narrower."
 msgstr "Pravila te kurirane krme so predolgo trajala. Lastnik jih lahko oži."
+
+#, machine, plain1
+msgid "This deletes their account and everything on it. It can't be undone. You can download their data first."
+msgstr "To izbriše njihov račun in vse na njem. Ne more se popraviti. Najprej lahko prenesete njihove podatke."
 
 #, machine, plain1
 msgid "This draft hasn't been published."
@@ -17958,6 +18266,10 @@ msgid "Thu"
 msgstr "Čet"
 
 #, machine, plain1
+msgid "Tick the box to agree to the Terms for them."
+msgstr "Izberite polje, da se strinjate s pogoji zanje."
+
+#, machine, plain1
 msgid "Tick the box to agree to the rules first."
 msgstr "Izberite polje, da se najprej strinjate s pravili."
 
@@ -18237,6 +18549,10 @@ msgstr "Tor"
 #, machine, plain1
 msgid "Turanian Steppe"
 msgstr "Turanska stepa"
+
+#, machine, plain1
+msgid "Turn it off"
+msgstr "Ugasni"
 
 #, machine, plain1, python-format
 msgid "Turn off notifications from +%(guild)s"
@@ -18699,6 +19015,10 @@ msgstr "Naloži prapor"
 #, machine, plain1
 msgid "Upload picture"
 msgstr "Pošlji sliko"
+
+#, machine, plain1
+msgid "Upvote"
+msgstr "Glasovanje"
 
 #, glossary, machine, plain1
 msgctxt "verb"
@@ -19414,6 +19734,10 @@ msgid "Where you are, the law means your age has to be confirmed with an age-che
 msgstr "Kjer ste, zakon pomeni, da mora biti vaša starost potrjena s službo za preverjanje starosti, preden lahko vidite občutljivo vsebino ali močan jezik."
 
 #, machine, plain1
+msgid "Where you are, your age has to be confirmed with an age-check service before you can make a child account."
+msgstr "Kjer ste, mora biti vaša starost potrjena s službo za preverjanje starosti, preden lahko naredite račun za otroke."
+
+#, machine, plain1
 msgid "Where you are, your age has to be confirmed with an age-check service."
 msgstr "Kjer ste vi, morate potrditi starost."
 
@@ -19505,9 +19829,17 @@ msgstr "Kdo odloča"
 msgid "Who follows you"
 msgstr "Kdo ti sledi"
 
+#, machine, plain1
+msgid "Who reported them, and what they wrote, isn't shown to anyone but the admins."
+msgstr "Kdo jih je prijavil in kaj so napisali, se ne pokaže nikomur razen administratorjem."
+
 #, glossary, machine, plain1
 msgid "Who subscribes to your Circle"
 msgstr "Kdo je naročen na tvoj Krog"
+
+#, machine, plain1
+msgid "Who they chat with"
+msgstr "S kom klepetajo"
 
 #, machine, plain1
 msgid "Who to follow"
@@ -19888,10 +20220,18 @@ msgctxt "guildmaster action"
 msgid "Yank post"
 msgstr "Yank post"
 
+#, machine, plain1
+msgid "Year"
+msgstr "Leto"
+
 #, glossary, machine, plain1
 msgctxt "time range"
 msgid "Year"
 msgstr "Leto"
+
+#, machine, plain1
+msgid "Year they were born"
+msgstr "Leto rojstva"
 
 #, machine, plain1
 msgctxt "colour"
@@ -20060,6 +20400,14 @@ msgid "You aren't subscribed to that circle."
 msgstr "Nisi naročen na ta krog."
 
 #, machine, plain1
+msgid "You asked your parent or guardian to release your account. They haven't answered yet."
+msgstr "Starša ali skrbnika ste prosili, naj vam da račun. Niso še odgovorili."
+
+#, machine, plain1
+msgid "You asked your parent or guardian to turn this off. They haven't answered yet."
+msgstr "Starša ali skrbnika si prosil, naj to ugasne. Niso še odgovorili."
+
+#, machine, plain1
 msgid "You can add pictures at 500 Rep, or earlier with Premium"
 msgstr "Slike lahko dodate na 500 Ugled, ali prej z Premium"
 
@@ -20168,6 +20516,18 @@ msgstr[2] "Lahko imate največ %(num)s kanale."
 msgstr[3] "Lahko imate največ %(num)s kanalov."
 
 #, machine, plain1, python-format
+msgid "You can have at most %(num)s child account."
+msgid_plural "You can have at most %(num)s child accounts."
+msgstr[0] "Lahko imate največ %(num)s otroški račun."
+msgstr[1] "Lahko imate največ dva otroška računa."
+msgstr[2] "Lahko imate največ %(num)s otroške račune."
+msgstr[3] "Lahko imate največ %(num)s otroških računov."
+
+#, machine, plain1, python-format
+msgid "You can have at most %(num)s child accounts."
+msgstr "Lahko imate največ %(num)s otroške račune."
+
+#, machine, plain1, python-format
 msgid "You can host at most %(num)s Space a day."
 msgid_plural "You can host at most %(num)s Spaces a day."
 msgstr[0] "Gostite lahko največ %(num)s Vesolje na dan."
@@ -20200,6 +20560,10 @@ msgid "You can look around and set up your profile; posting, comments, votes and
 msgstr "Lahko pogledate okoli in nastavite svoj profil; objavljanje, komentarji, glasovi in sledi odprt, ko je preverjanje opravljeno."
 
 #, machine, plain1, python-format
+msgid "You can make %(num)s child accounts a day. Try again tomorrow."
+msgstr "Lahko naredite %(num)s otroške račune na dan. Poskusi znova jutri."
+
+#, machine, plain1, python-format
 msgid "You can make %(num)s proposal a day."
 msgid_plural "You can make %(num)s proposals a day."
 msgstr[0] "En predlog na dan."
@@ -20214,6 +20578,10 @@ msgstr[0] "Lahko naredite %(num)s wiki urejanje na dan v guild. Poskusi znova ju
 msgstr[1] "Lahko naredite %(num)s wiki ureja na dan v guild. Poskusi znova jutri."
 msgstr[2] "Lahko naredite %(num)s wiki ureja na dan v guild. Poskusi znova jutri."
 msgstr[3] "Lahko naredite %(num)s wiki ureja na dan v guild. Poskusi znova jutri."
+
+#, machine, plain1
+msgid "You can make a child account once your own account is confirmed as 18 or over. You can say so in Settings > Content."
+msgstr "Ko je vaš račun potrjen kot 18 ali več, lahko naredite račun za otroke. To lahko rečete v Nastavitve > Vsebina."
 
 #, machine, plain1
 msgid "You can only create up to 2 guilds per day. Try again later."
@@ -20524,6 +20892,10 @@ msgid "You don't have Premium right now."
 msgstr "Trenutno nimate Premium."
 
 #, machine, plain1
+msgid "You don't have a child account called that."
+msgstr "Nimaš otroškega računa."
+
+#, machine, plain1
 msgid "You don't have a coin to redeem."
 msgstr "Nimaš denarja za odkup."
 
@@ -20626,6 +20998,10 @@ msgstr "Ste bili strmoglavljeni iz +%(guild)s."
 #, machine, plain1
 msgid "You have left the creator fund."
 msgstr "Zapustili ste sklad ustvarjalcev."
+
+#, machine, plain1, python-format
+msgid "You have made %(num)s child accounts in the last %(days)s days. Try again later."
+msgstr "Uspelo ti je. %(num)s otroške račune v zadnjem %(days)s dni. Poskusi kasneje."
 
 #, machine, plain1
 msgid "You have muted this guild. Its posts stay out of All, For You and Following. Visit your settings or click the <i class='fas fa-ellipsis-h text-small'></i> icon to unmute it."
@@ -21036,12 +21412,20 @@ msgid "Your account can also post new items from feeds by itself, while you keep
 msgstr "Vaš račun lahko objavi tudi nove postavke iz virov sam, medtem ko ga uporabljate kot zdaj. Vsaka od teh objav je označena kot avtomatizirana in ljudje, ki skrivajo vsebino robota, jih ne vidijo. Vaše objave, komentarji, glasovi in klepeti so nespremenjeni. Administrator najprej odobri."
 
 #, machine, plain1
+msgid "Your account can't post automatically while it is age-restricted."
+msgstr "Vaš račun se ne more samodejno objaviti, dokler je star."
+
+#, machine, plain1
 msgid "Your account can't post automatically while it is suspended."
 msgstr "Vaš račun se ne more samodejno objaviti, dokler je suspendiran."
 
 #, machine, plain1
 msgid "Your account can't publish right now."
 msgstr "Vaš račun trenutno ne more objaviti."
+
+#, machine, plain1
+msgid "Your account can't run a bot while it is age-restricted."
+msgstr "Tvoj račun ne more voditi robota, dokler je star."
 
 #, machine, plain1
 msgid "Your account cannot upload right now."
@@ -21062,6 +21446,10 @@ msgstr "Vaš račun je bil preverjen in je pripravljen: zdaj lahko objavite, kom
 #, machine, plain1
 msgid "Your account has been deleted"
 msgstr "Vaš račun je bil izbrisan"
+
+#, machine, plain1, python-format
+msgid "Your account has the child lock on, held by your parent or guardian, since %(date)s."
+msgstr "Vaš račun je od %(date)s naprej priklenjen na otroka, ki ga ima vaš roditelj ali skrbnik."
 
 #, machine, plain1, python-format
 msgid "Your account has the child lock on, since %(date)s."
@@ -21114,6 +21502,10 @@ msgstr ""
 "\n"
 "\n"
 "Če želite preskočiti čakanje, dodajte in preverite e-poštni naslov v [Nastavitve > Varnost](/settings/security)."
+
+#, machine, plain1
+msgid "Your account is your own now. It no longer has the child lock and your parent or guardian can no longer see it. They chose your password: change it in [Settings > Security](/settings/security), or they can still sign in as you."
+msgstr "Tvoj račun je zdaj tvoj. Nima več ključavnice za otroka in tvoj oče ali skrbnik je ne vidita več. Izbrali so vaše geslo: spremenite ga v [Nastavitve > Varnost](/settings/security), ali pa se še vedno lahko prijavite kot vi."
 
 #, machine, plain1
 msgid "Your account needs to be at least 30 days old to post automatically."
@@ -21216,6 +21608,10 @@ msgstr "Vaši klepeti so šifrirani in stran jih ne more prebrati. Ključ, ki ji
 #, machine, plain1, python-format
 msgid "Your chats run on Matrix, an open standard, on %(site)s's own chat server. Besides Chat on this site, you can use them in a Matrix app such as Element (web, desktop and the classic phone apps), FluffyChat or Cinny. They stay end-to-end encrypted there too."
 msgstr "Vaši klepeti tečejo na Matrix, odprt standard, na %(site)sLastni strežnik za klepet. Poleg tega. Klepetajte na tej spletni strani, lahko jih uporabite v aplikaciji Matrix, kot je Element (spletna, namizna in klasična telefonska aplikacija), FluffyChat ali CinnyTudi tam ostanejo šifrirani."
+
+#, machine, plain1
+msgid "Your child accounts will be deleted with yours."
+msgstr "Računi vašega otroka bodo izbrisani z vašim."
 
 #, glossary, machine, plain1
 msgid "Your circles"
@@ -21364,8 +21760,52 @@ msgstr[2] ""
 msgstr[3] ""
 
 #, machine, plain1
+msgid "Your own password"
+msgstr "Lastno geslo"
+
+#, machine, plain1
+msgid "Your parent or guardian didn't agree to release your account."
+msgstr "Vaš starš ali skrbnik se nista strinjala, da bo izdal vaš račun."
+
+#, machine, plain1
+msgid "Your parent or guardian has been asked to release your account. Nothing changes until they answer."
+msgstr "Vašega starša ali skrbnika so prosili, naj vam izda račun. Nič se ne spremeni, dokler ne odgovorijo."
+
+#, machine, plain1
+msgid "Your parent or guardian has been asked to turn Private posting off."
+msgstr "Vašega starša ali skrbnika so prosili, da izključi zasebno delo."
+
+#, machine, plain1
 msgid "Your parent or guardian has to agree before Private posting can be turned off."
 msgstr "Vaš starš ali skrbnik se mora strinjati, preden se zasebna objava lahko izklopi."
+
+#, machine, plain1
+msgid "Your parent or guardian has turned this off for your account."
+msgstr "Tvoj oče ali skrbnik je to izključil zaradi tvojega računa."
+
+#, machine, plain1
+msgid "Your parent or guardian made this account for you. They can see what you do on the site (your posts, comments, votes, bookmarks, follows, guilds, who you chat with, that your account was reported and your recent sign-ins; the site never shows them what your chats say) and they choose which features are on. You can see which in [Settings > Content](/settings/content). They chose your password: change it in [Settings > Security](/settings/security) so that only you know it, because anyone who knows it can sign in as you and read your chats."
+msgstr "Tvoj oče ali skrbnik je naredil račun zate. Vidijo lahko, kaj počnete na spletni strani (vaših objav, komentarjev, glasov, zaznamkov, sledi, guldnov, s katerimi klepetate, da je bil vaš račun prijavljen in vaše nedavne prijave; stran jim nikoli ne pokaže, kaj pravijo vaši klepeti) in izberejo, katere funkcije so na. Lahko vidite, kateri v [Nastavitve > Vsebina](/settings/content). Izbrali so vaše geslo: spremenite ga v [Nastavitve > Varnost](/settings/security), tako da ga poznate samo vi, ker se lahko vsakdo, ki ga pozna, vpiše kot vi in prebere vaše klepete."
+
+#, machine, plain1
+msgid "Your parent or guardian set a new password for your account and you were signed out. Sign in with the new password, then change it in [Settings > Security](/settings/security) so that only you know it."
+msgstr "Vaš roditelj ali skrbnik je postavil novo geslo za vaš račun in vi ste bili izpisani. Vpišite se z novim geslom, nato pa ga spremenite v [Nastavitve > Varnost](/settings/security), tako da ga poznate samo vi."
+
+#, machine, plain1
+msgid "Your parent or guardian stopped managing your account. It keeps the child lock until you confirm your age in Settings > Content. They chose your password: change it in [Settings > Security](/settings/security), or they can still sign in as you."
+msgstr "Vaš starš ali skrbnik je prenehal upravljati vaš račun. Otroka zaklepa, dokler ne potrdite starosti v Nastavitve > Vsebina. Izbrali so vaše geslo: spremenite ga v [Nastavitve > Varnost](/settings/security), ali pa se še vedno lahko prijavite kot vi."
+
+#, machine, plain1
+msgid "Your parent or guardian turned Private posting off for your account."
+msgstr "Vaš starš ali skrbnik je izključil privatno objavo za vaš račun."
+
+#, machine, plain1
+msgid "Your parent or guardian wants Private posting to stay on."
+msgstr "Tvoj oče ali skrbnik hoče, da Private ostane."
+
+#, machine, plain1
+msgid "Your parent or guardian's account was suspended, so yours is suspended until theirs is back."
+msgstr "Tvoj račun je bil suspendiran, zato je tvoj suspendiran, dokler se ne vrne."
 
 #, machine, plain1
 msgid "Your password"
@@ -21749,6 +22189,10 @@ msgstr[0] "in še %(num)s"
 msgstr[1] "in še %(num)s"
 msgstr[2] "in še %(num)s"
 msgstr[3] "in še %(num)s"
+
+#, machine, plain1
+msgid "anonymous"
+msgstr "anonimno"
 
 #, machine, plain1
 msgctxt "guildmaster permission"
@@ -22206,6 +22650,10 @@ msgstr "predogled povezave"
 msgid "links"
 msgstr "povezave"
 
+#, machine, plain1
+msgid "looked at by the admins"
+msgstr "so ga pogledali administratorji"
+
 #. after the moderator's name in a guild's moderation log
 #, machine, plain1
 msgid "made a channel"
@@ -22412,6 +22860,10 @@ msgstr "vrnjeno %(target)s"
 #, machine, plain1, python-format
 msgid "reinstated post %(target)s"
 msgstr "obnovljeno delovno mesto %(target)s"
+
+#, machine, plain1
+msgid "removed"
+msgstr "odstranjen"
 
 #. follows the moderator's name in a guild's moderation log; %(target)s is a
 #. link

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ruqqus VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-11-05 16:56+1100\n"
+"POT-Creation-Date: 2026-11-05 20:16+1100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: ro\n"
@@ -1741,12 +1741,24 @@ msgid "(allow beats deny; the channel's own rules apply to everyone else)"
 msgstr "(se permite bate nega; propriile reguli ale canalului se aplică tuturor celorlalți)"
 
 #, machine, plain1
+msgid "(empty)"
+msgstr "(gol)"
+
+#, machine, plain1
 msgid "(for a stage channel: the post's address or id)"
 msgstr "(pentru un canal de scenă: adresa postului sau id)"
 
 #, machine, plain1
 msgid "(from the original)"
 msgstr "(din original)"
+
+#, machine, plain1
+msgid "(in a private place)"
+msgstr "(într-un loc privat)"
+
+#, machine, plain1
+msgid "(no title)"
+msgstr "(fără titlu)"
 
 #, glossary, machine, plain1
 msgid "(off)"
@@ -2315,6 +2327,10 @@ msgid "<strong>Username:</strong> %(name)s"
 msgstr "<strong>Nume utilizator:</strong> %(name)s"
 
 #, machine, plain1, python-format
+msgid "@%(name)s - %(site)s"
+msgstr "@%(name)s - %(site)s"
+
+#, machine, plain1, python-format
 msgid "@%(name)s - Bots - %(site)s"
 msgstr "@ %(name)s - Bots - %(site)s"
 
@@ -2329,6 +2345,10 @@ msgstr "@ %(name)s adăugat la %(curation)s."
 #, python-format
 msgid "@%(name)s asked to publish a shared draft you write: your vote counts. [Open the draft](%(link)s)"
 msgstr ""
+
+#, machine, plain1, python-format
+msgid "@%(name)s asked you to turn Private posting off for their account. You can answer in [Settings > Children](/settings/children)."
+msgstr "@ %(name)s a cerut să opriți postarea privată pentru contul lor. Puteţi răspunde la [Setări > Copii] (/settings/children)."
 
 #, machine, plain1, python-format
 msgid "@%(name)s blocked."
@@ -2372,6 +2392,10 @@ msgstr ""
 #, python-format
 msgid "@%(name)s forwarded [a post](%(link)s) to +%(guild)s."
 msgstr ""
+
+#, machine, plain1, python-format
+msgid "@%(name)s has a new password and is signed out everywhere."
+msgstr "@ %(name)s are o nouă parolă și este semnată peste tot."
 
 #, machine, plain1, python-format
 msgid "@%(name)s has already been invited."
@@ -2541,6 +2565,10 @@ msgstr ""
 msgid "@%(name)s reposted [a post](%(link)s)."
 msgstr ""
 
+#, machine, plain1, python-format
+msgid "@%(name)s says they are 18 or over and asked you to release their account. You can answer in [Settings > Children](/settings/children)."
+msgstr "@ %(name)s spune că sunt 18 sau peste și a cerut să elibereze contul lor. Puteţi răspunde la [Setări > Copii] (/settings/children)."
+
 #, python-format
 msgid "@%(name)s shared [a story](%(link)s)."
 msgstr ""
@@ -2572,6 +2600,10 @@ msgstr "@ %(name)s a fost exilat de la + %(guild)s"
 #, machine, plain1, python-format
 msgid "@%(name)s was muted in +%(guild)s's channels."
 msgstr "@ %(name)s a fost mutat în canalele + %(guild)s lui."
+
+#, machine, plain1, python-format
+msgid "@%(name)s's age was confirmed as 18 or over, so their account is their own now and you can no longer see it."
+msgstr "@ %(name)s vârsta lui a fost confirmată ca 18 sau peste, astfel încât contul lor este propriul lor acum și nu se mai poate vedea."
 
 #, machine, plain1, python-format
 msgid "@%(name)s's new posts will go into #%(channel)s."
@@ -3126,6 +3158,10 @@ msgstr "Un fir live ia comentarii, nu mesaje de bord."
 #, machine, plain1
 msgid "A member"
 msgstr "Membru"
+
+#, machine, plain1
+msgid "A member reported this account."
+msgstr "Un membru a raportat acest cont."
 
 #, machine, plain1, python-format
 msgid "A message can be at most %(count)s character."
@@ -4288,6 +4324,13 @@ msgstr[0] "O actualizare poate fi cel mult %(num)s caracter."
 msgstr[1] "O actualizare poate fi cel mult %(num)s caractere."
 msgstr[2] "O actualizare poate fi de cel mult %(num)s de caractere."
 
+#, machine, plain1, python-format
+msgid "And %(num)s private guild, which isn't named."
+msgid_plural "And %(num)s private guilds, which aren't named."
+msgstr[0] "Și o breaslă privată, care nu este numit."
+msgstr[1] "Și %(num)s bresle private, care nu sunt numite."
+msgstr[2] "Şi %(num)s de bresle private, care nu sunt numite."
+
 #, machine, plain1
 msgid "Animals"
 msgstr "Animale"
@@ -4343,6 +4386,10 @@ msgstr "Anonim"
 msgctxt "label"
 msgid "Anonymous"
 msgstr "Anonim"
+
+#, machine, plain1
+msgid "Anonymous posting and starting guilds"
+msgstr "Postare anonimă și bresle de pornire"
 
 #, machine, plain1
 msgid "Anonymous posts and comments count for you like any other. Your points and earnings are shown only to you; the site's admins see the payout list."
@@ -4555,6 +4602,14 @@ msgstr "Aryan Highlands"
 #, machine, plain1
 msgid "As an author you edit the draft live with them, and every character you type is credited to you. Once the post is published, anyone who can see it can see who wrote what. The authors decide together:"
 msgstr "Ca autor editați proiectul live cu ei, și fiecare personaj pe care îl tastați este creditat pentru tine. Odată ce postul este publicat, oricine îl poate vedea poate vedea cine a scris ce. Autorii decid împreună:"
+
+#, machine, plain1
+msgid "Ask my parent to turn it off"
+msgstr "Spune-i părintelui meu să-l oprească"
+
+#, machine, plain1
+msgid "Asked you"
+msgstr "Te-am întrebat"
 
 #, machine, plain1, python-format
 msgid "At least %(count)s comments"
@@ -5034,6 +5089,10 @@ msgstr "Boost pentru posturi cu o imagine, sunet sau video"
 #, machine, plain1
 msgid "Boost for this curation's guilds and accounts"
 msgstr "Boost pentru breslele și conturile acestui feed curatate"
+
+#, machine, plain1
+msgid "Born"
+msgstr "Născut"
 
 #, machine, plain1
 msgid "Bot keys"
@@ -5535,6 +5594,10 @@ msgid "Chat isn't answering right now. Try again in a moment."
 msgstr "Chat nu răspunde acum. Încearcă din nou într-o clipă."
 
 #, machine, plain1
+msgid "Chat, group chats and calls"
+msgstr "Discuţii, discuţii de grup şi apeluri"
+
+#, machine, plain1
 msgctxt "guildmaster action"
 msgid "Chatban user"
 msgstr "Utilizator chatban"
@@ -5558,6 +5621,14 @@ msgstr "Chimie"
 #, machine, plain1
 msgid "Child - also hide profanity and sensitive content"
 msgstr "Copil - ascunde, de asemenea, blasfemie și conținut sensibil"
+
+#, machine, plain1
+msgid "Children"
+msgstr "Copii"
+
+#, machine, plain1, python-format
+msgid "Children - %(site)s"
+msgstr "Copii - %(site)s"
 
 #. "Sign in with ..." is the button the Matrix app shows for this site's
 #. sign-in
@@ -5890,6 +5961,10 @@ msgid "Coins received: %(recent)s in the last 30 days &middot; %(total)s in all.
 msgstr "Monede primite: %(recent)s în ultimele 30 de zile &middot; %(total)s în total. Ei merg direct la soldul monedei."
 
 #, machine, plain1
+msgid "Coins, tips, Premium and paid circles"
+msgstr "Monede, sfaturi, Premium şi cercuri plătite"
+
+#, machine, plain1
 msgid "Collaborative"
 msgstr "Colaborare"
 
@@ -5953,6 +6028,10 @@ msgstr "Comentariu marcat."
 #, glossary, machine, plain1
 msgid "Comment posted!"
 msgstr "Comentariu publicat!"
+
+#, machine, plain1
+msgid "Commenting"
+msgstr "Comentare"
 
 #, glossary, machine, plain1
 msgid "Comments"
@@ -6603,8 +6682,16 @@ msgid "Delete role"
 msgstr "Șterge rolul"
 
 #, machine, plain1
+msgid "Delete the account"
+msgstr "Șterge contul"
+
+#, machine, plain1
 msgid "Delete the published post"
 msgstr "Șterge postul publicat"
+
+#, machine, plain1
+msgid "Delete this account"
+msgstr "Șterge acest cont"
 
 #, machine, plain1
 msgid "Delete this category? Its channels stay."
@@ -6665,6 +6752,10 @@ msgstr "Ștergerea unui fișier în Drive, sau deconectarea, îl elimină de la 
 #, machine, plain1
 msgid "Deleting a file there, or disconnecting, removes it from your posts."
 msgstr "Ștergerea unui fișier acolo, sau deconectarea, îl elimină de la posturi."
+
+#, machine, plain1
+msgid "Deleting your account also deletes your child accounts. You can download their data first in Settings > Children."
+msgstr "Ștergerea contului șterge și conturile copilului. Puteți descărca datele lor mai întâi în Setări > Copii."
 
 #, machine, plain1
 msgid "Density"
@@ -6909,6 +7000,10 @@ msgid "Done"
 msgstr "Gata"
 
 #, machine, plain1
+msgid "Download"
+msgstr "Descărcare"
+
+#, machine, plain1
 msgctxt "button"
 msgid "Download"
 msgstr "Descărcare"
@@ -6922,8 +7017,16 @@ msgid "Download the recording"
 msgstr "Descărcaţi înregistrarea"
 
 #, machine, plain1
+msgid "Download their data"
+msgstr "Descărcați datele lor"
+
+#, machine, plain1
 msgid "Download your data"
 msgstr "Descărcaţi datele"
+
+#, machine, plain1
+msgid "Downvote"
+msgstr "Votare descendentă"
 
 #, glossary, machine, plain1
 msgctxt "verb"
@@ -7252,6 +7355,10 @@ msgstr "Introduceți adresa serverului de alimentare."
 msgid "Enter the feed's address."
 msgstr "Introduceți adresa feed-ului."
 
+#, machine, plain1
+msgid "Enter the month and year they were born."
+msgstr "Intră luna şi anul în care s-au născut."
+
 #, machine, plain1, python-format
 msgid "Enter the six-digit code generated in the authenticator app and your %(site)s account password."
 msgstr "Introduceți codul de șase cifre generat în aplicația de autentificare și parola contului %(site)s."
@@ -7426,6 +7533,10 @@ msgstr "Toată lumea vede schimbările reciproc ca acestea tip, și fiecare pers
 #, machine, plain1
 msgid "Everything from your guilds and accounts, newest first."
 msgstr "Totul din breslele şi conturile tale, cel mai nou mai întâi."
+
+#, machine, plain1
+msgid "Everything they post goes only to their Friends circle. Turn it off to let them post in public."
+msgstr "Tot ce postează merge doar la cercul Prietenilor. Opreşte-l ca să-i laşi să posteze în public."
 
 #, machine, plain1
 msgid "Everything you post goes only to your Friends circle, the people you follow who follow you back, so nothing is public by accident. Your circles can only hold people like that, and you can't forward, repost or write a shared draft. Comments on other people's posts are still public."
@@ -8088,6 +8199,10 @@ msgstr "Prieteni"
 msgctxt "circle name"
 msgid "Friends"
 msgstr "Prieteni"
+
+#, machine, plain1
+msgid "Friends circle"
+msgstr "Prieteni cerc"
 
 #, machine, plain1
 msgid "Friends is everyone you follow who follows you back. To share with family, a team or anyone else, make a circle first, then pick it here."
@@ -8897,6 +9012,10 @@ msgstr "Vânătoare"
 msgid "I accept the <a href=\"%(url)s\" target=\"_blank\">terms and conditions</a>"
 msgstr "Accept <a href=\"%(url)s\" target=\"_blank\">termeni și condiții</a>"
 
+#, machine, plain1, python-format
+msgid "I agree to the <a href=\"%(url)s\" target=\"_blank\">Terms</a> for them."
+msgstr "Sunt de acord cu <a href=\"%(url)s\" target=\"_blank\">Termeni</a> pentru ei."
+
 #, machine, plain1
 msgid "I agree to the rules below."
 msgstr "Sunt de acord cu regulile de mai jos."
@@ -8932,6 +9051,10 @@ msgstr "Dacă există o adresă de e-mail asociată cu contul dvs., îl puteţi 
 #, machine, plain1
 msgid "If this was you, there is nothing to do."
 msgstr "Dacă ai fost tu, nu mai e nimic de făcut."
+
+#, machine, plain1
+msgid "If you are 18 or over, say so and your parent or guardian will be asked to release your account."
+msgstr "Dacă aveţi 18 ani sau peste, spuneţi aşa, iar părintele sau tutorele dumneavoastră va fi rugat să vă elibereze contul."
 
 #, machine, plain1
 msgid "If you don't have your 2FA device, enter one of your backup codes instead. Each backup code works once. An account that never made backup codes can enter its Recovery Code, which also turns 2FA off."
@@ -9312,6 +9435,14 @@ msgid "It shows, in full, every word and phrase the word filter looks for, in ev
 msgstr "Acesta arată, în întregime, fiecare cuvânt și frază filtrul cuvânt caută, în fiecare limbă pe care o acoperă. Asta include insulte şi alte limbaje extrem de jignitoare."
 
 #, machine, plain1
+msgid "It stays a child account with the child lock, but you can no longer see it or change what it can do, and you can't link it again."
+msgstr "Acesta rămâne un cont pentru copii cu blocare pentru copii, dar nu se mai poate vedea sau schimba ceea ce poate face, și nu se poate lega din nou."
+
+#, machine, plain1
+msgid "It stays on the Child word filter, which hides profanity and anything marked sensitive."
+msgstr "Rămâne pe filtrul de cuvinte pentru copii, care ascunde blasfemia și orice lucru marcat sensibil."
+
+#, machine, plain1
 msgid "It stays on the Child word filter, which hides profanity and anything marked sensitive. Chat, Spaces, coins, anonymous posting and starting a guild are off, and others can't start a chat or tip you. Your posts go to your Friends circle only unless you turn Private posting off."
 msgstr "Rămâne pe filtrul de cuvinte pentru copii, care ascunde blasfemia și orice lucru marcat sensibil. Chat, Spații, monede, postare anonimă și de a începe o breaslă sunt oprite, și alții nu pot începe un chat sau vârful tine. Postările tale merg în cercul Prietenilor doar dacă nu opreşti postul privat."
 
@@ -9479,6 +9610,10 @@ msgstr "Solstiţiul iunie"
 #, machine, plain1
 msgid "K-Pop"
 msgstr "K-Pop"
+
+#, machine, plain1
+msgid "Keep it on"
+msgstr "Păstrați-l pe"
 
 #, machine, plain1
 msgid "Keep my posts out of All"
@@ -9759,6 +9894,10 @@ msgstr "Ploaia de meteoriţi Leonids"
 msgid "Letters spaced out or split by dots or other marks are read as one word."
 msgstr "Scrisorile spaţiale sau împărţite prin puncte sau alte semne sunt citite ca un singur cuvânt."
 
+#, machine, plain1
+msgid "Letters, numbers and underscores, 3 to 25 characters."
+msgstr "Scrisori, numere şi accente, 3 până la 25 de caractere."
+
 #, glossary, machine, plain1
 msgid "Lifestyle"
 msgstr "Stil de viață"
@@ -10001,6 +10140,10 @@ msgstr "Anul Nou lunar"
 msgid "Lyrids meteor shower"
 msgstr "Ploaia de meteoriţi Lyrids"
 
+#, machine, plain1, python-format
+msgid "Made on %(date)s."
+msgstr "Făcut pe %(date)s."
+
 #, glossary, machine, plain1
 msgid "Made with AI"
 msgstr "Creat cu IA"
@@ -10019,6 +10162,10 @@ msgid "Make a channel"
 msgstr "Face un canal"
 
 #, machine, plain1
+msgid "Make a child account"
+msgstr "Face un cont pentru copii"
+
+#, machine, plain1
 msgid "Make a circle people pay to be in, every 30 days, for what you share with it."
 msgstr "Face un cerc oamenii plătesc să fie în, la fiecare 30 de zile, pentru ceea ce împărtășesc cu ea."
 
@@ -10033,6 +10180,10 @@ msgstr "Face o pagină"
 #, machine, plain1
 msgid "Make a role"
 msgstr "A face un rol"
+
+#, machine, plain1
+msgid "Make an account for a child under 18 and decide what it can do. You can see what they do on the site (their posts, comments, votes, bookmarks, follows, guilds, the names of who they chat with and their recent sign-ins). The site never shows you what their chats say: chats are end-to-end encrypted. You choose their password, so until they change it you can sign in as them and read their chats: tell them to set their own. They are told all of this in their own Settings."
+msgstr "Faceți un cont pentru un copil sub 18 ani și decideți ce poate face. Puteți vedea ce fac pe site (posturile lor, comentariile, voturile, semnele de carte, următoarele, bresle, numele cu care vorbesc și recentele lor semne). Site-ul nu vă arată niciodată ce spun chat-urile lor: chat-urile sunt criptate până la capăt. Tu alegi parola lor, astfel încât până când o schimbă să te poți conecta ca ei și citi chat-urile lor: spune-le să-și stabilească propria lor. Li se spune toate acestea în propriile lor Setări."
 
 #, machine, plain1, python-format
 msgid "Make an app first in <a href=\"%(url)s\">Settings &gt; Apps</a>; a key works through it."
@@ -10378,6 +10529,10 @@ msgid "Mon"
 msgstr "Luni"
 
 #, machine, plain1
+msgid "Month"
+msgstr "Luna"
+
+#, machine, plain1
 msgctxt "table heading"
 msgid "Month"
 msgstr "Luna"
@@ -10386,6 +10541,10 @@ msgstr "Luna"
 msgctxt "time range"
 msgid "Month"
 msgstr "Lună"
+
+#, machine, plain1
+msgid "Month they were born"
+msgstr "Luna s-au născut"
 
 #, machine, plain1
 msgid "Monthly creator fund payouts"
@@ -10728,6 +10887,10 @@ msgstr "Pagina nouă: %(address)s"
 #, machine, plain1
 msgid "New paid circle"
 msgstr "Nou cerc plătit"
+
+#, machine, plain1
+msgid "New password"
+msgstr "Parolă nouă"
 
 #, machine, plain1
 msgid "New posts that are getting attention, with no account filling the page."
@@ -11115,6 +11278,10 @@ msgstr "Nimeni nou nu se poate abona. Abonații actuali păstrează ceea ce au p
 msgid "Nobody types here"
 msgstr "Nimeni nu scrie aici"
 
+#, machine, plain1, python-format
+msgid "Nobody under %(age)s may have an account where you are."
+msgstr "Nimeni de sub %(age)s poate avea un cont unde te afli."
+
 #, machine, plain1
 msgid "Nobody yet."
 msgstr "Nimeni încă."
@@ -11235,6 +11402,10 @@ msgstr "Nu iau abonați"
 #, machine, plain1
 msgid "Not trending any more"
 msgstr "Nu mai e trend"
+
+#, machine, plain1
+msgid "Not yet"
+msgstr "Nu încă"
 
 #, glossary, machine, plain1
 msgid "Not your default:"
@@ -11357,6 +11528,10 @@ msgid "Nothing written yet."
 msgstr "Nimic scris încă."
 
 #, machine, plain1
+msgid "Nothing yet."
+msgstr "Nimic încă."
+
+#, machine, plain1
 msgid "Notification types"
 msgstr "Tipuri de notificare"
 
@@ -11405,6 +11580,10 @@ msgstr "Oceania"
 msgid "Oddly Satisfying"
 msgstr "Ciudat mulţumitor"
 
+#, machine, plain1
+msgid "Off"
+msgstr "Off"
+
 #. slow mode in a guild's channel is switched off.
 #, machine, plain1
 msgctxt "slow mode"
@@ -11431,6 +11610,10 @@ msgstr "Vechi"
 #, machine, plain1
 msgid "Old Password"
 msgstr "Parolă veche"
+
+#, machine, plain1
+msgid "On"
+msgstr "On"
 
 #. "On" marks a linked storage account that is in use
 #, machine, plain1
@@ -11508,6 +11691,10 @@ msgstr "Una dintre aceste revizuiri nu poate fi arătată."
 #, machine, plain1
 msgid "One of those circles isn't yours any more. Choose again."
 msgstr "Una dintre acele cercuri nu mai este a ta. Alege din nou."
+
+#, machine, plain1
+msgid "One of your child accounts owes money, so your account can't be deleted yet."
+msgstr "Unul din conturile copilului tău datorează bani, aşa că contul tău nu poate fi şters încă."
 
 #, machine, plain1
 msgid "One-time codes for the day you lose your authenticator. Making a new set replaces every earlier code, used or not."
@@ -11833,6 +12020,10 @@ msgstr "Numai autorul și co-autorii postului pot posta actualizări."
 #, machine, plain1
 msgid "Only the post's author and co-authors can run its live updates."
 msgstr "Numai autorul și coautorii postului pot rula actualizările sale live."
+
+#, machine, plain1
+msgid "Only used to check their age. It isn't kept."
+msgstr "Obişnuiam să le verific vârsta. Nu este păstrat."
 
 #, machine, plain1
 msgid "Only when I turn them on"
@@ -12830,6 +13021,10 @@ msgid "Posted on that day."
 msgstr "Postat în acea zi."
 
 #, machine, plain1
+msgid "Posting"
+msgstr "Postare"
+
+#, machine, plain1
 msgid "Posting cooldown"
 msgstr "Postarea răcirii"
 
@@ -13672,6 +13867,10 @@ msgid "Relationships"
 msgstr "Relaţii"
 
 #, machine, plain1
+msgid "Release the account"
+msgstr "Eliberează contul"
+
+#, machine, plain1
 msgid "Religion"
 msgstr "Religia"
 
@@ -13922,6 +14121,10 @@ msgstr "Mesaje raportate"
 msgctxt "noun"
 msgid "Reports"
 msgstr "Rapoarte"
+
+#, machine, plain1
+msgid "Reports about them"
+msgstr "Rapoarte despre ei"
 
 #, machine, plain1
 msgid "Reports opened"
@@ -14261,6 +14464,10 @@ msgctxt "weekday"
 msgid "Sat"
 msgstr "Sat"
 
+#, glossary, machine, plain1
+msgid "Save"
+msgstr "Salvează"
+
 #, machine, plain1
 msgctxt "button"
 msgid "Save"
@@ -14571,6 +14778,10 @@ msgid "See what is trending"
 msgstr "Vezi ce este trend"
 
 #, machine, plain1
+msgid "See what they do"
+msgstr "Vezi ce fac ei"
+
+#, machine, plain1
 msgid "See your username"
 msgstr "Vezi numele de utilizator"
 
@@ -14669,6 +14880,10 @@ msgstr "Echinox din septembrie"
 #, machine, plain1
 msgid "Serious"
 msgstr "Serios"
+
+#, machine, plain1
+msgid "Set a new password"
+msgstr "Setează o parolă nouă"
 
 #, machine, plain1
 msgid "Set a price to let people pay to join."
@@ -15328,6 +15543,10 @@ msgid "Spaces"
 msgstr "Spaces"
 
 #, machine, plain1
+msgid "Spaces and live threads"
+msgstr "Spații și fire vii"
+
+#, machine, plain1
 msgid "Spaces are started in the Spaces area."
 msgstr "Spaţiile au început în zona Spaţiilor."
 
@@ -15462,6 +15681,14 @@ msgstr "Postare fixată"
 #, machine, plain1
 msgid "Still here to read"
 msgstr "Încă aici pentru a citi"
+
+#, machine, plain1
+msgid "Stop managing"
+msgstr "Nu mai administra"
+
+#, machine, plain1
+msgid "Stop managing this account"
+msgstr "Nu mai administra acest cont"
 
 #, machine, plain1
 msgid "Stop posting automatically"
@@ -15640,6 +15867,10 @@ msgstr "Suporteri…"
 #, machine, plain1
 msgid "Survival & Bushcraft"
 msgstr "Supravieţuire şi Bushcraft"
+
+#, machine, plain1
+msgid "Suspended"
+msgstr "Se suspendă"
 
 #, machine, plain1, python-format
 msgid "Switch @%(name)s off for good? Its posts stay; the bot never posts again."
@@ -16113,6 +16344,10 @@ msgid "That isn't a valid username."
 msgstr "Acesta nu este un nume de utilizator valid."
 
 #, machine, plain1
+msgid "That isn't something you can switch."
+msgstr "Nu poţi schimba asta."
+
+#, machine, plain1
 msgid "That key couldn't be saved."
 msgstr "Cheia nu putea fi salvată."
 
@@ -16343,6 +16578,14 @@ msgstr "Sahel"
 #, machine, plain1
 msgid "The Space could not be made."
 msgstr "Spaţiul nu a putut fi făcut."
+
+#, machine, plain1, python-format
+msgid "The account @%(name)s is deleted."
+msgstr "Contul @ %(name)s se elimină."
+
+#, machine, plain1, python-format
+msgid "The account @%(name)s is made. They sign in with the username and password you gave."
+msgstr "Contul @ %(name)s se face. Se conecteaza cu numele de utilizator si parola pe care ai dat-o."
 
 #, machine, plain1, python-format
 msgid "The account age must be a whole number of days, 0 to %(max)s."
@@ -16692,6 +16935,10 @@ msgstr "Cele mai votate posturi din ultimele şapte zile."
 #, machine, plain1, python-format
 msgid "The name %(host)s could not be found."
 msgstr "Numele %(host)s nu a putut fi găsit."
+
+#, machine, plain1
+msgid "The newest of what they have done. Only the names of who they chat with are shown, never what a chat says: chats are end-to-end encrypted."
+msgstr "Cel mai nou lucru pe care l-au făcut. Doar numele celor cu care vorbesc sunt afișate, nu ceea ce spune un chat: chat-urile sunt criptate de la un capăt la altul."
 
 #, machine, plain1
 msgid "The numbers are always shown on your profile. This decides who can open each list and see the accounts on it. An account is only listed where its own setting allows it too."
@@ -17049,12 +17296,20 @@ msgid "They already have this role."
 msgstr "Ei au deja acest rol."
 
 #, machine, plain1
+msgid "They are 18 or over, so they can make their own account."
+msgstr "Au 18 ani sau peste, ca să-şi poată face propriul cont."
+
+#, machine, plain1
 msgid "They are already in this circle."
 msgstr "Sunt deja în acest cerc."
 
 #, machine, plain1
 msgid "They are not told. Anyone you block leaves your circles."
 msgstr "Nu li se spune. Oricine blochezi îţi părăseşte cercurile."
+
+#, machine, plain1
+msgid "They are signed out everywhere. If they use chat, they may be asked for their recovery code."
+msgstr "Sunt semnate peste tot. Dacă folosesc chat-ul, li se poate cere codul de recuperare."
 
 #, machine, plain1, python-format
 msgid "They aren't in %(circle)s."
@@ -17069,6 +17324,38 @@ msgid "They aren't muted here."
 msgstr "Nu sunt mutaţi aici."
 
 #, machine, plain1
+msgid "They asked you to turn Private posting off."
+msgstr "Ţi-au cerut să opreşti postul privat."
+
+#, machine, plain1
+msgid "They can buy and spend coins, tip, buy Premium and join or run paid circles."
+msgstr "Ei pot cumpăra și cheltui monede, bacșiș, cumpăra Premium și se pot alătura sau rula cercuri plătite."
+
+#, machine, plain1
+msgid "They can comment."
+msgstr "Pot comenta."
+
+#, machine, plain1
+msgid "They can host and join Spaces and run live threads. Voice calls in a Space also need Chat to be on."
+msgstr "Ei pot găzdui și alătura Spații și rula fire live. Apelurile vocale într-un spațiu au nevoie, de asemenea, Chat pentru a fi pe."
+
+#, machine, plain1
+msgid "They can make posts."
+msgstr "Ei pot face posturi."
+
+#, machine, plain1
+msgid "They can message people, join group chats and make calls. The site never shows you what a chat says: chats are end-to-end encrypted. Whoever knows their password can still sign in and read them."
+msgstr "Pot să transmită mesaje oamenilor, să se alăture discuţiilor în grup şi să dea telefoane. Site-ul nu vă arată niciodată ce spune un chat: chat-urile sunt criptate până la capăt. Oricine ştie parola lor poate încă să se înscrie şi să le citească."
+
+#, machine, plain1
+msgid "They can post anonymously and start a guild. You can still see who wrote an anonymous post."
+msgstr "Ei pot posta anonim și să înceapă o breaslă. Puteți vedea încă cine a scris un post anonim."
+
+#, machine, plain1
+msgid "They can see what you do on the site: your posts, comments, votes, bookmarks, follows, guilds, who you chat with, that your account was reported, and your recent sign-ins. The site never shows them what your chats say, because chats are end-to-end encrypted. But anyone who knows your password, a parent who chose it included, can sign in as you: change it in Security so that only you know it. They choose which of these are on for your account:"
+msgstr "Ei pot vedea ce faci pe site: postările, comentariile, voturile, semnele de carte, următoarele, breslele, cu care vorbești, că contul tău a fost raportat, și recentele tale semne. Site-ul nu le arată niciodată ce spun chat-urile tale, pentru că chat-urile sunt criptate până la capăt. Dar oricine îţi cunoaşte parola, un părinte care a ales-o inclus, poate să se înscrie ca tine: să o schimbe în Securitate ca doar tu să o ştii. Ei aleg care dintre acestea sunt pe contul dvs.:"
+
+#, machine, plain1
 msgid "They can't comment on your posts or comments, chat with you or notify you by mentioning you. They are not told, but they may work it out if they try to comment on something of yours."
 msgstr "Nu pot comenta cu privire la mesajele sau comentariile dvs., să discute cu dvs. sau să vă anunţe menţionând. Nu li s-a spus, dar s-ar putea să-şi dea seama dacă încearcă să comenteze ceva de-al tău."
 
@@ -17081,12 +17368,20 @@ msgid "They go straight to your coin balance."
 msgstr "Ei merg direct la soldul monedei."
 
 #, machine, plain1
+msgid "They haven't asked for that."
+msgstr "Nu au cerut asta."
+
+#, machine, plain1
 msgid "They need to be in the guild, and not exiled from it."
 msgstr "Trebuie să fie în breaslă, şi nu exilaţi din ea."
 
 #, machine, plain1
 msgid "They need to join the channel first."
 msgstr "Trebuie să se alăture canalului mai întâi."
+
+#, machine, plain1
+msgid "They say they are 18 or over and asked you to release their account. If you do, it becomes their own and you can no longer see it."
+msgstr "Ei spun că au 18 ani sau peste și a cerut să elibereze contul lor. Dacă o faci, devine a lor şi nu o mai poţi vedea."
 
 #, machine, plain1
 msgid "They're already a helper."
@@ -17202,6 +17497,14 @@ msgstr "Acest cont a fost suspendat temporar de la %(site)s. Ne vedem mai târzi
 #, machine, plain1
 msgid "This account is private"
 msgstr "Acest cont este privat"
+
+#, machine, plain1
+msgid "This account is suspended."
+msgstr "Acest cont este suspendat."
+
+#, machine, plain1
+msgid "This account owes money, so it can't be deleted yet."
+msgstr "Acest cont datorează bani, aşa că nu poate fi şters încă."
 
 #, machine, plain1
 msgid "This account posts about sensitive topics"
@@ -17338,6 +17641,10 @@ msgstr "Acest feed curatate bresle și conturi"
 #, machine, plain1
 msgid "This curation's rules took too long to run. Its owner can make them narrower."
 msgstr "Regulile acestui feed curatat au durat prea mult pentru a rula. Proprietarul său le poate face mai înguste."
+
+#, machine, plain1
+msgid "This deletes their account and everything on it. It can't be undone. You can download their data first."
+msgstr "Asta le şterge contul şi tot ce e pe el. Nu poate fi desfăcut. Puteți descărca datele lor mai întâi."
 
 #, machine, plain1
 msgid "This draft hasn't been published."
@@ -17671,6 +17978,10 @@ msgid "Thu"
 msgstr "Thu"
 
 #, machine, plain1
+msgid "Tick the box to agree to the Terms for them."
+msgstr "Tick caseta pentru a fi de acord cu Termenii pentru ei."
+
+#, machine, plain1
 msgid "Tick the box to agree to the rules first."
 msgstr "Tick caseta pentru a fi de acord cu regulile mai întâi."
 
@@ -17946,6 +18257,10 @@ msgstr "Tue"
 #, machine, plain1
 msgid "Turanian Steppe"
 msgstr "Turanian Steppe"
+
+#, machine, plain1
+msgid "Turn it off"
+msgstr "Opreşte-l"
 
 #, machine, plain1, python-format
 msgid "Turn off notifications from +%(guild)s"
@@ -18406,6 +18721,10 @@ msgstr "Încărcare banner"
 #, machine, plain1
 msgid "Upload picture"
 msgstr "Încarcă imaginea"
+
+#, machine, plain1
+msgid "Upvote"
+msgstr "Votare"
 
 #, glossary, machine, plain1
 msgctxt "verb"
@@ -19129,6 +19448,10 @@ msgid "Where you are, the law means your age has to be confirmed with an age-che
 msgstr "În cazul în care sunteți, legea înseamnă vârsta ta trebuie să fie confirmată cu un serviciu de verificare a vârstei înainte de a putea vedea conținut sensibil sau limbaj puternic."
 
 #, machine, plain1
+msgid "Where you are, your age has to be confirmed with an age-check service before you can make a child account."
+msgstr "În cazul în care vă aflați, vârsta ta trebuie să fie confirmată cu un serviciu de verificare a vârstei înainte de a putea face un cont pentru copii."
+
+#, machine, plain1
 msgid "Where you are, your age has to be confirmed with an age-check service."
 msgstr "Unde te afli, vârsta ta trebuie confirmată cu un serviciu de verificare a vârstei."
 
@@ -19220,9 +19543,17 @@ msgstr "Cine decide"
 msgid "Who follows you"
 msgstr "Cine te urmează"
 
+#, machine, plain1
+msgid "Who reported them, and what they wrote, isn't shown to anyone but the admins."
+msgstr "Cine le-a raportat, și ceea ce au scris, nu este arătat la nimeni, dar adminii."
+
 #, glossary, machine, plain1
 msgid "Who subscribes to your Circle"
 msgstr "Cine se abonează la Cercul tău"
+
+#, machine, plain1
+msgid "Who they chat with"
+msgstr "Cu cine vorbesc"
 
 #, machine, plain1
 msgid "Who to follow"
@@ -19603,10 +19934,18 @@ msgctxt "guildmaster action"
 msgid "Yank post"
 msgstr "Postul yankeu"
 
+#, machine, plain1
+msgid "Year"
+msgstr "Anul"
+
 #, glossary, machine, plain1
 msgctxt "time range"
 msgid "Year"
 msgstr "An"
+
+#, machine, plain1
+msgid "Year they were born"
+msgstr "Anul în care s-au născut"
 
 #, machine, plain1
 msgctxt "colour"
@@ -19772,6 +20111,14 @@ msgid "You aren't subscribed to that circle."
 msgstr "Nu eşti abonat la acel cerc."
 
 #, machine, plain1
+msgid "You asked your parent or guardian to release your account. They haven't answered yet."
+msgstr "L-ai rugat pe părintele sau tutorele tău să-ţi elibereze contul. Nu au răspuns încă."
+
+#, machine, plain1
+msgid "You asked your parent or guardian to turn this off. They haven't answered yet."
+msgstr "I-ai cerut părintelui sau tutorelui tău să oprească asta. Nu au răspuns încă."
+
+#, machine, plain1
 msgid "You can add pictures at 500 Rep, or earlier with Premium"
 msgstr "Puteți adăuga imagini la 500 Reputație, sau mai devreme cu Premium"
 
@@ -19871,6 +20218,17 @@ msgstr[1] "Poţi avea cel mult %(num)s canale."
 msgstr[2] "Poţi avea cel mult %(num)s de canale."
 
 #, machine, plain1, python-format
+msgid "You can have at most %(num)s child account."
+msgid_plural "You can have at most %(num)s child accounts."
+msgstr[0] "Puteți avea cel mult un cont pentru copii."
+msgstr[1] "Puteți avea cel mult %(num)s conturi pentru copii."
+msgstr[2] "Poţi avea cel mult %(num)s de conturi pentru copii."
+
+#, machine, plain1, python-format
+msgid "You can have at most %(num)s child accounts."
+msgstr "Puteți avea cel mult %(num)s conturi pentru copii."
+
+#, machine, plain1, python-format
 msgid "You can host at most %(num)s Space a day."
 msgid_plural "You can host at most %(num)s Spaces a day."
 msgstr[0] "Puteți găzdui cel mult %(num)s spațiu pe zi."
@@ -19900,6 +20258,10 @@ msgid "You can look around and set up your profile; posting, comments, votes and
 msgstr "Puteți să vă uitați în jur și să vă creați profilul; postați, comentați, votați și urmați deschis odată ce verificarea este efectuată."
 
 #, machine, plain1, python-format
+msgid "You can make %(num)s child accounts a day. Try again tomorrow."
+msgstr "Puteți face %(num)s copilul contabilizează o zi. Încearcă din nou mâine."
+
+#, machine, plain1, python-format
 msgid "You can make %(num)s proposal a day."
 msgid_plural "You can make %(num)s proposals a day."
 msgstr[0] "Poţi face o propunere pe zi."
@@ -19912,6 +20274,10 @@ msgid_plural "You can make %(num)s wiki edits a day in a guild. Try again tomorr
 msgstr[0] "Puteți face %(num)s wiki edita pe zi într-o breaslă. Încearcă din nou mâine."
 msgstr[1] "Puteți face %(num)s wiki editări pe zi într-o breaslă. Încearcă din nou mâine."
 msgstr[2] "Poţi face %(num)s de editări wiki pe zi într-o breaslă. Încearcă din nou mâine."
+
+#, machine, plain1
+msgid "You can make a child account once your own account is confirmed as 18 or over. You can say so in Settings > Content."
+msgstr "Puteți face un cont pentru copii odată ce contul dumneavoastră este confirmat ca 18 sau peste. Puteți spune acest lucru în Setări > Conținut."
 
 #, machine, plain1
 msgid "You can only create up to 2 guilds per day. Try again later."
@@ -20214,6 +20580,10 @@ msgid "You don't have Premium right now."
 msgstr "Nu ai Premium Chiar acum."
 
 #, machine, plain1
+msgid "You don't have a child account called that."
+msgstr "Nu ai un cont pentru copii numit asta."
+
+#, machine, plain1
 msgid "You don't have a coin to redeem."
 msgstr "Nu ai o monedă de răscumpărat."
 
@@ -20315,6 +20685,10 @@ msgstr "Ai fost răsturnat de la + %(guild)s."
 #, machine, plain1
 msgid "You have left the creator fund."
 msgstr "Ai părăsit fondul creatorului."
+
+#, machine, plain1, python-format
+msgid "You have made %(num)s child accounts in the last %(days)s days. Try again later."
+msgstr "Ai făcut %(num)s conturi pentru copii în ultimul %(days)s zile. Încearcă mai târziu."
 
 #, machine, plain1
 msgid "You have muted this guild. Its posts stay out of All, For You and Following. Visit your settings or click the <i class='fas fa-ellipsis-h text-small'></i> icon to unmute it."
@@ -20720,12 +21094,20 @@ msgid "Your account can also post new items from feeds by itself, while you keep
 msgstr "Contul dvs. poate posta, de asemenea, elemente noi de la feed-uri de la sine, în timp ce continuați să-l utilizați ca acum. Fiecare dintre aceste posturi este marcat ca automatizat, și oamenii care ascund conținut bot nu le văd. Postările voastre, comentariile, voturile şi discuţiile sunt neschimbate. Un administrator îl aprobă primul."
 
 #, machine, plain1
+msgid "Your account can't post automatically while it is age-restricted."
+msgstr "Contul dvs. nu poate posta automat în timp ce este limitat de vârstă."
+
+#, machine, plain1
 msgid "Your account can't post automatically while it is suspended."
 msgstr "Contul dvs. nu poate posta automat în timp ce este suspendat."
 
 #, machine, plain1
 msgid "Your account can't publish right now."
 msgstr "Contul tău nu poate fi publicat acum."
+
+#, machine, plain1
+msgid "Your account can't run a bot while it is age-restricted."
+msgstr "Contul dvs. nu poate rula un bot în timp ce este de vârstă limitată."
 
 #, machine, plain1
 msgid "Your account cannot upload right now."
@@ -20746,6 +21128,10 @@ msgstr "Contul dvs. a fost verificat și este gata: puteți acum posta, comenta,
 #, machine, plain1
 msgid "Your account has been deleted"
 msgstr "Contul tău a fost şters"
+
+#, machine, plain1, python-format
+msgid "Your account has the child lock on, held by your parent or guardian, since %(date)s."
+msgstr "Contul dvs. are sistemul de blocare a copilului, deţinut de către părintele sau tutorele dumneavoastră, de la %(date)s."
 
 #, machine, plain1, python-format
 msgid "Your account has the child lock on, since %(date)s."
@@ -20798,6 +21184,10 @@ msgstr ""
 "\n"
 "\n"
 "Pentru a sări peste așteptare, adăugați și verificați o adresă de e-mail în [Setări > Securitate](/settings/security)."
+
+#, machine, plain1
+msgid "Your account is your own now. It no longer has the child lock and your parent or guardian can no longer see it. They chose your password: change it in [Settings > Security](/settings/security), or they can still sign in as you."
+msgstr "Contul tău e al tău acum. Nu mai are încuietoarea copilului, iar părintele sau tutorele tău nu o mai poate vedea. Ei au ales parola ta: schimba-l în [Setări > Securitate] [/settings/security ], sau pot încă să semneze ca tine."
 
 #, machine, plain1
 msgid "Your account needs to be at least 30 days old to post automatically."
@@ -20900,6 +21290,10 @@ msgstr "Discuţiile tale sunt criptate de la un capăt la altul, iar site-ul nu 
 #, machine, plain1, python-format
 msgid "Your chats run on Matrix, an open standard, on %(site)s's own chat server. Besides Chat on this site, you can use them in a Matrix app such as Element (web, desktop and the classic phone apps), FluffyChat or Cinny. They stay end-to-end encrypted there too."
 msgstr "Discuţiile tale sunt pe Matrix, un standard deschis. %(site)spropriul server de chat. În plus chat pe acest site, le puteți utiliza într-o aplicație Matrix, cum ar fi Element (web, desktop și aplicațiile telefonice clasice), FluffyChat sau CinnyŞi acolo rămân codate."
+
+#, machine, plain1
+msgid "Your child accounts will be deleted with yours."
+msgstr "Conturile tale pentru copii vor fi şterse cu ale tale."
 
 #, glossary, machine, plain1
 msgid "Your circles"
@@ -21046,8 +21440,52 @@ msgstr[1] ""
 msgstr[2] ""
 
 #, machine, plain1
+msgid "Your own password"
+msgstr "Parola ta"
+
+#, machine, plain1
+msgid "Your parent or guardian didn't agree to release your account."
+msgstr "Părinţii sau tutorele tău nu au fost de acord să-ţi elibereze contul."
+
+#, machine, plain1
+msgid "Your parent or guardian has been asked to release your account. Nothing changes until they answer."
+msgstr "Părintele sau tutorele tău a fost rugat să-ţi elibereze contul. Nimic nu se schimbă până nu răspund."
+
+#, machine, plain1
+msgid "Your parent or guardian has been asked to turn Private posting off."
+msgstr "Părintele sau tutorele tău a fost rugat să oprească postarea privată."
+
+#, machine, plain1
 msgid "Your parent or guardian has to agree before Private posting can be turned off."
 msgstr "Părintele sau tutorele tău trebuie să fie de acord înainte ca postarea privată să fie oprită."
+
+#, machine, plain1
+msgid "Your parent or guardian has turned this off for your account."
+msgstr "Părintele sau tutorele tău a oprit asta pentru contul tău."
+
+#, machine, plain1
+msgid "Your parent or guardian made this account for you. They can see what you do on the site (your posts, comments, votes, bookmarks, follows, guilds, who you chat with, that your account was reported and your recent sign-ins; the site never shows them what your chats say) and they choose which features are on. You can see which in [Settings > Content](/settings/content). They chose your password: change it in [Settings > Security](/settings/security) so that only you know it, because anyone who knows it can sign in as you and read your chats."
+msgstr "Părintele sau tutorele tău a făcut acest cont pentru tine. Ei pot vedea ce faci pe site (postările, comentariile, voturile, semnele de carte, următoarele, breslele, cu care vorbești, că contul tău a fost raportat și recentele tale semne; site-ul nu le arată niciodată ce spun chat-urile tale) și aleg care caracteristici sunt pe. Puteţi vedea care din [Setări > conţinut] (/settings/content). Ei au ales parola ta: schimba-l în [Setări > Securitate] (/settings/security) astfel încât numai tu să o știi, pentru că oricine știe că se poate conecta ca tine și citi chat-urile."
+
+#, machine, plain1
+msgid "Your parent or guardian set a new password for your account and you were signed out. Sign in with the new password, then change it in [Settings > Security](/settings/security) so that only you know it."
+msgstr "Părintele sau tutorele tău a stabilit o nouă parolă pentru contul tău şi ai fost eliberat. Conectaţi-vă cu noua parolă, apoi schimbaţi-o în [Setări > Securitate] [/settings/security ], astfel încât numai voi să o ştiţi."
+
+#, machine, plain1
+msgid "Your parent or guardian stopped managing your account. It keeps the child lock until you confirm your age in Settings > Content. They chose your password: change it in [Settings > Security](/settings/security), or they can still sign in as you."
+msgstr "Părintele sau tutorele tău nu ţi-a mai administrat contul. Menţine blocarea copilului până când confirmaţi vârsta dumneavoastră în Setări > Conţinut. Ei au ales parola ta: schimba-l în [Setări > Securitate] [/settings/security ], sau pot încă să semneze ca tine."
+
+#, machine, plain1
+msgid "Your parent or guardian turned Private posting off for your account."
+msgstr "Părintele sau tutorele tău a oprit postarea privată pentru contul tău."
+
+#, machine, plain1
+msgid "Your parent or guardian wants Private posting to stay on."
+msgstr "Părinții sau tutorele tău vrea postare privată să rămână pe."
+
+#, machine, plain1
+msgid "Your parent or guardian's account was suspended, so yours is suspended until theirs is back."
+msgstr "Contul părintelui tău sau al tutorelui a fost suspendat, aşa că al tău e suspendat până se întorc."
 
 #, machine, plain1
 msgid "Your password"
@@ -21429,6 +21867,10 @@ msgid_plural "and %(num)s more"
 msgstr[0] "şi încă %(num)s"
 msgstr[1] "și %(num)s mai mult"
 msgstr[2] "şi încă %(num)s"
+
+#, machine, plain1
+msgid "anonymous"
+msgstr "anonim"
 
 #, machine, plain1
 msgctxt "guildmaster permission"
@@ -21881,6 +22323,10 @@ msgstr "previzualizare link"
 msgid "links"
 msgstr "link-uri"
 
+#, machine, plain1
+msgid "looked at by the admins"
+msgstr "uită-te la admini"
+
 #. after the moderator's name in a guild's moderation log
 #, machine, plain1
 msgid "made a channel"
@@ -22087,6 +22533,10 @@ msgstr "reinstalat %(target)s"
 #, machine, plain1, python-format
 msgid "reinstated post %(target)s"
 msgstr "Post reinstalat %(target)s"
+
+#, machine, plain1
+msgid "removed"
+msgstr "eliminate"
 
 #. follows the moderator's name in a guild's moderation log; %(target)s is a
 #. link

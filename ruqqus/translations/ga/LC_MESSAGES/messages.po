@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ruqqus VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-11-05 16:56+1100\n"
+"POT-Creation-Date: 2026-11-05 20:16+1100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: ga\n"
@@ -1979,12 +1979,24 @@ msgid "(allow beats deny; the channel's own rules apply to everyone else)"
 msgstr "(builleoga a cheadú dhiúltú; baineann rialacha an chainéil féin le gach duine eile)"
 
 #, machine, plain1
+msgid "(empty)"
+msgstr "(empty)"
+
+#, machine, plain1
 msgid "(for a stage channel: the post's address or id)"
 msgstr "(do chainéal stáitse: seoladh nó id an phoist)"
 
 #, machine, plain1
 msgid "(from the original)"
 msgstr "(ón bunaidh)"
+
+#, machine, plain1
+msgid "(in a private place)"
+msgstr "(in áit phríobháideach)"
+
+#, machine, plain1
+msgid "(no title)"
+msgstr "(gan teideal)"
 
 #, glossary, machine, plain1
 msgid "(off)"
@@ -2566,6 +2578,10 @@ msgstr "<strong>Am:</strong> %(when)s"
 msgid "<strong>Username:</strong> %(name)s"
 msgstr "<strong>Ainm Úsáideora:</strong> %(name)s"
 
+#, machine, plain1, python-format
+msgid "@%(name)s - %(site)s"
+msgstr "@%(name)s - %(site)s"
+
 #, python-format
 msgid "@%(name)s - Bots - %(site)s"
 msgstr ""
@@ -2581,6 +2597,10 @@ msgstr "chuir @%(name)s leis, %(curation)s."
 #, python-format
 msgid "@%(name)s asked to publish a shared draft you write: your vote counts. [Open the draft](%(link)s)"
 msgstr ""
+
+#, machine, plain1, python-format
+msgid "@%(name)s asked you to turn Private posting off for their account. You can answer in [Settings > Children](/settings/children)."
+msgstr "@%(name)s d'iarr tú dul Posting Príobháideacha as a gcuntas. Is féidir leat a fhreagairt i [Socruithe × Leanaí](/settings/children)."
 
 #, machine, plain1, python-format
 msgid "@%(name)s blocked."
@@ -2624,6 +2644,10 @@ msgstr "@%(name)s ar aghaidh [a comment](%(link)s) go + %(guild)s."
 #, machine, plain1, python-format
 msgid "@%(name)s forwarded [a post](%(link)s) to +%(guild)s."
 msgstr "@%(name)s ar aghaidh [a post](%(link)s) go + %(guild)s."
+
+#, machine, plain1, python-format
+msgid "@%(name)s has a new password and is signed out everywhere."
+msgstr "@%(name)s tá focal faire nua agus tá sé sínithe amach i ngach áit."
 
 #, machine, plain1, python-format
 msgid "@%(name)s has already been invited."
@@ -2797,6 +2821,10 @@ msgid "@%(name)s reposted [a post](%(link)s)."
 msgstr "@%(name)s reposted [a post](%(link)s."
 
 #, machine, plain1, python-format
+msgid "@%(name)s says they are 18 or over and asked you to release their account. You can answer in [Settings > Children](/settings/children)."
+msgstr "@%(name)s deir go bhfuil siad 18 nó os a chionn agus d'iarr tú a scaoileadh a gcuntas. Is féidir leat a fhreagairt i [Socruithe × Leanaí](/settings/children)."
+
+#, machine, plain1, python-format
 msgid "@%(name)s shared [a story](%(link)s)."
 msgstr "@%(name)s roinnte [scéal](%(link)s."
 
@@ -2827,6 +2855,10 @@ msgstr "bhí exiled @%(name)s ó + %(guild)s"
 #, machine, plain1, python-format
 msgid "@%(name)s was muted in +%(guild)s's channels."
 msgstr "bhí muted @%(name)s i + %(guild)s ar chainéil."
+
+#, machine, plain1, python-format
+msgid "@%(name)s's age was confirmed as 18 or over, so their account is their own now and you can no longer see it."
+msgstr "deimhníodh aois @%(name)s mar 18 nó níos mó, mar sin tá a gcuntas féin anois agus is féidir leat a thuilleadh é a fheiceáil."
 
 #, machine, plain1, python-format
 msgid "@%(name)s's new posts will go into #%(channel)s."
@@ -3453,6 +3485,10 @@ msgstr "Bíonn snáithe beo tuairimí, ní teachtaireachtaí boird."
 #, machine, plain1
 msgid "A member"
 msgstr "Comhalta"
+
+#, machine, plain1
+msgid "A member reported this account."
+msgstr "Thuairiscigh comhalta an cuntas seo."
 
 #, machine, plain1, python-format
 msgid "A message can be at most %(count)s character."
@@ -4673,6 +4709,15 @@ msgstr[2] "Is féidir le nuashonrú a bheith ag an chuid is mó %(num)s carachta
 msgstr[3] "Is féidir le nuashonrú a bheith ar an chuid is mó %(num)s carachtair."
 msgstr[4] "Is féidir nuashonrú a bheith ar an chuid is mó %(num)s carachtair."
 
+#, machine, plain1, python-format
+msgid "And %(num)s private guild, which isn't named."
+msgid_plural "And %(num)s private guilds, which aren't named."
+msgstr[0] "Agus %(num)s guild príobháideach, nach bhfuil ainmnithe."
+msgstr[1] "Agus %(num)s guilds príobháideacha, nach bhfuil ainmnithe."
+msgstr[2] "Agus %(num)s guilds príobháideacha, nach bhfuil ainmnithe."
+msgstr[3] "Agus %(num)s guilds príobháideacha, nach bhfuil ainmnithe."
+msgstr[4] "Agus %(num)s guilds príobháideacha, nach bhfuil ainmnithe."
+
 #, machine, plain1
 msgid "Animals"
 msgstr "Ainmhithe ainmhithe"
@@ -4728,6 +4773,10 @@ msgstr "Gan ainm"
 msgctxt "label"
 msgid "Anonymous"
 msgstr "Gan ainm"
+
+#, machine, plain1
+msgid "Anonymous posting and starting guilds"
+msgstr "Gan ainm postáil agus ag tosú guilds"
 
 #, machine, plain1
 msgid "Anonymous posts and comments count for you like any other. Your points and earnings are shown only to you; the site's admins see the payout list."
@@ -4942,6 +4991,14 @@ msgstr "Ardchríoch na hIarmhí"
 #, machine, plain1
 msgid "As an author you edit the draft live with them, and every character you type is credited to you. Once the post is published, anyone who can see it can see who wrote what. The authors decide together:"
 msgstr "Mar údar in eagar tú an dréacht beo leo, agus tá gach carachtar tú cineál creidiúnaithe a thabhairt duit. Nuair a fhoilsítear an post, is féidir le duine ar bith a fheiceáil a scríobh cad. Cinneann na húdair le chéile:"
+
+#, machine, plain1
+msgid "Ask my parent to turn it off"
+msgstr "Iarr ar mo thuismitheoir dul as"
+
+#, machine, plain1
+msgid "Asked you"
+msgstr "Amharc ar gach eolas"
 
 #, machine, plain1, python-format
 msgid "At least %(count)s comments"
@@ -5439,6 +5496,10 @@ msgstr "Treisiú do phoist le pictiúr, fuaim nó físeán"
 #, machine, plain1
 msgid "Boost for this curation's guilds and accounts"
 msgstr "Treisiú le haghaidh an beatha leasaithe ar guilds agus cuntais"
+
+#, machine, plain1
+msgid "Born"
+msgstr "A rugadh"
 
 #, machine, plain1
 msgid "Bot keys"
@@ -5942,6 +6003,10 @@ msgid "Chat isn't answering right now. Try again in a moment."
 msgstr "Ní Chat freagra ceart anois. Bain triail as arís i láthair."
 
 #, machine, plain1
+msgid "Chat, group chats and calls"
+msgstr "Comhrá, comhráite grúpa agus glaonna"
+
+#, machine, plain1
 msgctxt "guildmaster action"
 msgid "Chatban user"
 msgstr "Úsáideoir Chatban"
@@ -5965,6 +6030,14 @@ msgstr "An tSraith Shinsearach"
 #, machine, plain1
 msgid "Child - also hide profanity and sensitive content"
 msgstr "Leanbh - próifíleacht agus ábhar íogair a cheilt freisin"
+
+#, machine, plain1
+msgid "Children"
+msgstr "Leanaí agus Leanaí"
+
+#, machine, plain1, python-format
+msgid "Children - %(site)s"
+msgstr "Leanaí - %(site)s"
 
 #. "Sign in with ..." is the button the Matrix app shows for this site's
 #. sign-in
@@ -6297,6 +6370,10 @@ msgid "Coins received: %(recent)s in the last 30 days &middot; %(total)s in all.
 msgstr "Coins faighte: %(recent)s sa 30 lá deireanach &middot; %(total)s i ngach. Téann siad díreach chuig do chothromaíocht mona."
 
 #, machine, plain1
+msgid "Coins, tips, Premium and paid circles"
+msgstr "Coins, leideanna, Premium agus ciorcail a íocadh"
+
+#, machine, plain1
 msgid "Collaborative"
 msgstr "Comhoibriú"
 
@@ -6359,6 +6436,10 @@ msgstr "Comment leabharmharcáilte."
 #, glossary, machine, plain1
 msgid "Comment posted!"
 msgstr "Trácht postáilte!"
+
+#, machine, plain1
+msgid "Commenting"
+msgstr "Ag trácht"
 
 #, glossary, machine, plain1
 msgid "Comments"
@@ -7015,8 +7096,16 @@ msgid "Delete role"
 msgstr "Ról a scriosadh"
 
 #, machine, plain1
+msgid "Delete the account"
+msgstr "Scrios an cuntas"
+
+#, machine, plain1
 msgid "Delete the published post"
 msgstr "Scrios an post foilsithe"
+
+#, machine, plain1
+msgid "Delete this account"
+msgstr "Scrios an cuntas seo"
 
 #, machine, plain1
 msgid "Delete this category? Its channels stay."
@@ -7077,6 +7166,10 @@ msgstr "Scriosadh comhad i do Céide, nó dícheangal, Cuireann sé ó do phoist
 #, machine, plain1
 msgid "Deleting a file there, or disconnecting, removes it from your posts."
 msgstr "Scriosadh comhad ann, nó dícheangal, cuireann sé ó do phoist."
+
+#, machine, plain1
+msgid "Deleting your account also deletes your child accounts. You can download their data first in Settings > Children."
+msgstr "Scriostar do chuntas freisin do chuntais linbh. Is féidir leat a gcuid sonraí a íoslódáil ar dtús i Socruithe × Leanaí."
 
 #, machine, plain1
 msgid "Density"
@@ -7325,6 +7418,10 @@ msgid "Done"
 msgstr "Arna dhéanamh in Strasbourg"
 
 #, machine, plain1
+msgid "Download"
+msgstr "Íoslódáil"
+
+#, machine, plain1
 msgctxt "button"
 msgid "Download"
 msgstr "Íoslódáil"
@@ -7338,8 +7435,16 @@ msgid "Download the recording"
 msgstr "Íoslódáil an taifeadadh"
 
 #, machine, plain1
+msgid "Download their data"
+msgstr "Íoslódáil a gcuid sonraí"
+
+#, machine, plain1
 msgid "Download your data"
 msgstr "Íoslódáil do shonraí"
+
+#, machine, plain1
+msgid "Downvote"
+msgstr "Níl an Tweet seo ar fáil"
 
 #, glossary, machine, plain1
 msgctxt "verb"
@@ -7670,6 +7775,10 @@ msgstr "Cuir isteach seoladh an fhreastalaí beatha."
 msgid "Enter the feed's address."
 msgstr "Cuir isteach seoladh an bheatha."
 
+#, machine, plain1
+msgid "Enter the month and year they were born."
+msgstr "Cuir isteach an mhí agus an bhliain rugadh iad."
+
 #, machine, plain1, python-format
 msgid "Enter the six-digit code generated in the authenticator app and your %(site)s account password."
 msgstr "Cuir isteach an cód sé-digit a ghintear sa app fíordheimhnithe agus do %(site)s cuntas focal faire."
@@ -7848,6 +7957,10 @@ msgstr "Feiceann gach duine athruithe ar a chéile mar atá siad cineál, agus t
 #, machine, plain1
 msgid "Everything from your guilds and accounts, newest first."
 msgstr "Gach rud ó do guilds agus cuntais, an chéad nua."
+
+#, machine, plain1
+msgid "Everything they post goes only to their Friends circle. Turn it off to let them post in public."
+msgstr "Gach rud a théann siad sa phost ach amháin chun a gciorcal Cairde. Cas sé amach chun ligean dóibh phost go poiblí."
 
 #, machine, plain1
 msgid "Everything you post goes only to your Friends circle, the people you follow who follow you back, so nothing is public by accident. Your circles can only hold people like that, and you can't forward, repost or write a shared draft. Comments on other people's posts are still public."
@@ -8522,6 +8635,10 @@ msgstr "Amharc ar gach eolas"
 msgctxt "circle name"
 msgid "Friends"
 msgstr "Amharc ar gach eolas"
+
+#, machine, plain1
+msgid "Friends circle"
+msgstr "Ciorcail Cairde"
 
 #, machine, plain1
 msgid "Friends is everyone you follow who follows you back. To share with family, a team or anyone else, make a circle first, then pick it here."
@@ -9337,6 +9454,10 @@ msgstr "Fiach"
 msgid "I accept the <a href=\"%(url)s\" target=\"_blank\">terms and conditions</a>"
 msgstr "Glacaim leis an <a href=\"%(url)s\" target=\"_blank\">téarmaí agus coinníollacha</a>"
 
+#, machine, plain1, python-format
+msgid "I agree to the <a href=\"%(url)s\" target=\"_blank\">Terms</a> for them."
+msgstr "Aontaím leis an <a href=\"%(url)s\" target=\"_blank\">Téarmaí agus Coinníollacha</a> dóibh."
+
 #, machine, plain1
 msgid "I agree to the rules below."
 msgstr "Aontaím leis na rialacha thíos."
@@ -9372,6 +9493,10 @@ msgstr "Má tá seoladh ríomhphoist a bhaineann le do chuntas, is féidir leat 
 #, machine, plain1
 msgid "If this was you, there is nothing to do."
 msgstr "Má bhí sé seo tú, níl aon rud a dhéanamh."
+
+#, machine, plain1
+msgid "If you are 18 or over, say so and your parent or guardian will be asked to release your account."
+msgstr "Má tá tú 18 nó os a chionn, a rá amhlaidh agus beidh do thuismitheoir nó caomhnóir a iarraidh a scaoileadh do chuntas."
 
 #, machine, plain1
 msgid "If you don't have your 2FA device, enter one of your backup codes instead. Each backup code works once. An account that never made backup codes can enter its Recovery Code, which also turns 2FA off."
@@ -9756,6 +9881,14 @@ msgid "It shows, in full, every word and phrase the word filter looks for, in ev
 msgstr "Taispeánann sé, go hiomlán, gach focal agus frása Breathnaíonn an scagaire focal, i ngach teanga a chlúdaíonn sé. Áirítear leis sin slurs agus teanga thar a bheith ionsaitheach eile."
 
 #, machine, plain1
+msgid "It stays a child account with the child lock, but you can no longer see it or change what it can do, and you can't link it again."
+msgstr "Fanann sé cuntas linbh leis an glas leanbh, ach is féidir leat é a fheiceáil nó a athrú cad is féidir é a dhéanamh, agus ní féidir leat é a nascadh arís."
+
+#, machine, plain1
+msgid "It stays on the Child word filter, which hides profanity and anything marked sensitive."
+msgstr "Fanann sé ar an scagaire focal Leanaí, a seithí profanity agus aon rud marcáilte íogair."
+
+#, machine, plain1
 msgid "It stays on the Child word filter, which hides profanity and anything marked sensitive. Chat, Spaces, coins, anonymous posting and starting a guild are off, and others can't start a chat or tip you. Your posts go to your Friends circle only unless you turn Private posting off."
 msgstr "Fanann sé ar an scagaire focal Leanaí, a seithí profanity agus aon rud marcáilte íogair. Chat, Spásanna, boinn, postáil gan ainm agus ag tosú guild atá as, agus ní féidir le daoine eile tús a comhrá nó tip tú. Do phoist dul go dtí do ciorcal Cairde ach amháin má tá tú ag dul postáil Príobháideacha as."
 
@@ -9931,6 +10064,10 @@ msgstr "Meitheamh solstice"
 #, machine, plain1
 msgid "K-Pop"
 msgstr "K-Pop"
+
+#, machine, plain1
+msgid "Keep it on"
+msgstr "Coinnigh sé ar"
 
 #, machine, plain1
 msgid "Keep my posts out of All"
@@ -10221,6 +10358,10 @@ msgstr "Leonids cith meitéarach"
 msgid "Letters spaced out or split by dots or other marks are read as one word."
 msgstr "Léann litreacha atá spásáilte amach nó roinnte ag poncanna nó marcanna eile mar fhocal amháin."
 
+#, machine, plain1
+msgid "Letters, numbers and underscores, 3 to 25 characters."
+msgstr "Litreacha, uimhreacha agus underscores, 3 go 25 carachtair."
+
 #, glossary, machine, plain1
 msgid "Lifestyle"
 msgstr "Stíl saoil"
@@ -10469,6 +10610,10 @@ msgstr "Bliain Nua Lunar"
 msgid "Lyrids meteor shower"
 msgstr "Soilse loingseoireachta E"
 
+#, machine, plain1, python-format
+msgid "Made on %(date)s."
+msgstr "Déanta ar %(date)s."
+
 #, glossary, machine, plain1
 msgid "Made with AI"
 msgstr "Déanta le hIS"
@@ -10487,6 +10632,10 @@ msgid "Make a channel"
 msgstr "Déan cainéal"
 
 #, machine, plain1
+msgid "Make a child account"
+msgstr "Déan cuntas linbh"
+
+#, machine, plain1
 msgid "Make a circle people pay to be in, every 30 days, for what you share with it."
 msgstr "Déan duine ciorcal a íoc a bheith i, gach 30 lá, le haghaidh cad a roinnt tú leis."
 
@@ -10501,6 +10650,10 @@ msgstr "Déan leathanach"
 #, machine, plain1
 msgid "Make a role"
 msgstr "Déan ról"
+
+#, machine, plain1
+msgid "Make an account for a child under 18 and decide what it can do. You can see what they do on the site (their posts, comments, votes, bookmarks, follows, guilds, the names of who they chat with and their recent sign-ins). The site never shows you what their chats say: chats are end-to-end encrypted. You choose their password, so until they change it you can sign in as them and read their chats: tell them to set their own. They are told all of this in their own Settings."
+msgstr "Déan cuntas do leanbh faoi 18 agus cinneadh a dhéanamh cad is féidir é a dhéanamh. Is féidir leat a fheiceáil cad a dhéanann siad ar an suíomh (a gcuid post, tuairimí, vótaí, leabharmharcanna, seo a leanas, guilds, ainmneacha a comhrá siad le déanaí comharthaí-orlach). An suíomh riamh léiríonn tú cad a gcuid comhráite a rá: Tá comhráite deireadh-le-deireadh criptithe. Roghnaíonn tú a gcuid focal faire, mar sin go dtí go n-athróidh siad é is féidir leat a shíniú isteach mar iad agus a léamh a gcuid comhráite: insint dóibh a shocrú a gcuid féin. Deirtear leo seo go léir ina Socruithe féin."
 
 #, machine, plain1, python-format
 msgid "Make an app first in <a href=\"%(url)s\">Settings &gt; Apps</a>; a key works through it."
@@ -10860,6 +11013,10 @@ msgid "Mon"
 msgstr "Uisce agus Séarachas"
 
 #, machine, plain1
+msgid "Month"
+msgstr "Míosa agus Mí"
+
+#, machine, plain1
 msgctxt "table heading"
 msgid "Month"
 msgstr "Míosa agus Mí"
@@ -10868,6 +11025,10 @@ msgstr "Míosa agus Mí"
 msgctxt "time range"
 msgid "Month"
 msgstr "Mí"
+
+#, machine, plain1
+msgid "Month they were born"
+msgstr "Mí a rugadh iad"
 
 #, machine, plain1
 msgid "Monthly creator fund payouts"
@@ -11216,6 +11377,10 @@ msgstr "Leathanach nua: %(address)s"
 #, machine, plain1
 msgid "New paid circle"
 msgstr "Ciorcal íoctha nua"
+
+#, machine, plain1
+msgid "New password"
+msgstr "Focal faire nua"
 
 #, machine, plain1
 msgid "New posts that are getting attention, with no account filling the page."
@@ -11607,6 +11772,10 @@ msgstr "Is féidir aon duine nua síntiús a íoc. Coimeádann síntiúsóirí r
 msgid "Nobody types here"
 msgstr "Cineálacha aon duine anseo"
 
+#, machine, plain1, python-format
+msgid "Nobody under %(age)s may have an account where you are."
+msgstr "D'fhéadfadh aon duine faoi %(age)s bhfuil cuntas áit a bhfuil tú."
+
 #, machine, plain1
 msgid "Nobody yet."
 msgstr "Níl aon duine fós."
@@ -11727,6 +11896,10 @@ msgstr "Gan cur síntiúsóirí"
 #, machine, plain1
 msgid "Not trending any more"
 msgstr "Gan trending aon níos mó"
+
+#, machine, plain1
+msgid "Not yet"
+msgstr "Níl go fóill"
 
 #, glossary, machine, plain1
 msgid "Not your default:"
@@ -11849,6 +12022,10 @@ msgid "Nothing written yet."
 msgstr "Ní dhéanfaidh aon ní scríofa go fóill."
 
 #, machine, plain1
+msgid "Nothing yet."
+msgstr "Ní dhéanfaidh aon ní go fóill."
+
+#, machine, plain1
 msgid "Notification types"
 msgstr "Cineálacha fógra"
 
@@ -11899,6 +12076,10 @@ msgstr "Aigéan Ciúin"
 msgid "Oddly Satisfying"
 msgstr "Go raibh maith agat"
 
+#, machine, plain1
+msgid "Off"
+msgstr "Tairiscint"
+
 #. slow mode in a guild's channel is switched off.
 #, machine, plain1
 msgctxt "slow mode"
@@ -11925,6 +12106,10 @@ msgstr "Sean"
 #, machine, plain1
 msgid "Old Password"
 msgstr "Sean Phasfhocal"
+
+#, machine, plain1
+msgid "On"
+msgstr "Ar an tsráid"
 
 #. "On" marks a linked storage account that is in use
 #, machine, plain1
@@ -12004,6 +12189,10 @@ msgstr "Ní féidir ceann de na hathbhreithnithe a thaispeáint duit."
 #, machine, plain1
 msgid "One of those circles isn't yours any more. Choose again."
 msgstr "1 fhreagra amháin 0 d’atweetálacha 2 chroí Roghnaigh arís."
+
+#, machine, plain1
+msgid "One of your child accounts owes money, so your account can't be deleted yet."
+msgstr "Ceann de do chuntais leanbh dlite airgead, mar sin ní féidir do chuntas a scriosadh go fóill."
 
 #, machine, plain1
 msgid "One-time codes for the day you lose your authenticator. Making a new set replaces every earlier code, used or not."
@@ -12333,6 +12522,10 @@ msgstr "Ní féidir ach údar agus comh-údar an phoist nuashonruithe."
 #, machine, plain1
 msgid "Only the post's author and co-authors can run its live updates."
 msgstr "Ní féidir ach údar agus comh-údar an phoist a reáchtáil a nuashonruithe beo."
+
+#, machine, plain1
+msgid "Only used to check their age. It isn't kept."
+msgstr "Ní úsáidtear ach chun a n-aois a sheiceáil. Níl sé coinnithe."
 
 #, machine, plain1
 msgid "Only when I turn them on"
@@ -13334,6 +13527,10 @@ msgid "Posted on that day."
 msgstr "Posted ar an lá sin."
 
 #, machine, plain1
+msgid "Posting"
+msgstr "Post a fhógairt"
+
+#, machine, plain1
 msgid "Posting cooldown"
 msgstr "Ag Postú cooldown"
 
@@ -14186,6 +14383,10 @@ msgid "Relationships"
 msgstr "Caidreamh"
 
 #, machine, plain1
+msgid "Release the account"
+msgstr "Scaoileadh an cuntas"
+
+#, machine, plain1
 msgid "Religion"
 msgstr "Creideamh agus Creideamh"
 
@@ -14438,6 +14639,10 @@ msgstr "Teachtaireachtaí tuairiscithe"
 msgctxt "noun"
 msgid "Reports"
 msgstr "Tuairiscí"
+
+#, machine, plain1
+msgid "Reports about them"
+msgstr "Tuarascálacha mar gheall orthu"
 
 #, machine, plain1
 msgid "Reports opened"
@@ -14779,6 +14984,10 @@ msgctxt "weekday"
 msgid "Sat"
 msgstr "Déan teagmháil linn"
 
+#, glossary, machine, plain1
+msgid "Save"
+msgstr "Sábháil"
+
 #, machine, plain1
 msgctxt "button"
 msgid "Save"
@@ -15091,6 +15300,10 @@ msgid "See what is trending"
 msgstr "Féach cad é trending"
 
 #, machine, plain1
+msgid "See what they do"
+msgstr "Féach cad a dhéanann siad"
+
+#, machine, plain1
 msgid "See your username"
 msgstr "Féach ar ainm úsáideora"
 
@@ -15189,6 +15402,10 @@ msgstr "Meán Fómhair equinox"
 #, machine, plain1
 msgid "Serious"
 msgstr "Riachtanais uisce: measartha"
+
+#, machine, plain1
+msgid "Set a new password"
+msgstr "Socraigh focal faire nua"
 
 #, machine, plain1
 msgid "Set a price to let people pay to join."
@@ -15868,6 +16085,10 @@ msgid "Spaces"
 msgstr "Spásanna"
 
 #, machine, plain1
+msgid "Spaces and live threads"
+msgstr "Spásanna agus snáitheanna beo"
+
+#, machine, plain1
 msgid "Spaces are started in the Spaces area."
 msgstr "Spásanna atá tosaithe i réimse na Spásanna."
 
@@ -16002,6 +16223,14 @@ msgstr "Postáil phionnáilte"
 #, machine, plain1
 msgid "Still here to read"
 msgstr "Fós anseo le léamh"
+
+#, machine, plain1
+msgid "Stop managing"
+msgstr "Stop bhainistiú"
+
+#, machine, plain1
+msgid "Stop managing this account"
+msgstr "Stop a bhainistiú an cuntas seo"
 
 #, machine, plain1
 msgid "Stop posting automatically"
@@ -16184,6 +16413,10 @@ msgstr "Tacaíochtaí…"
 #, machine, plain1
 msgid "Survival & Bushcraft"
 msgstr "Marthanais agus Bushcraft"
+
+#, machine, plain1
+msgid "Suspended"
+msgstr "An tSeirbhís Garda Tarrthála"
 
 #, machine, plain1, python-format
 msgid "Switch @%(name)s off for good? Its posts stay; the bot never posts again."
@@ -16657,6 +16890,10 @@ msgid "That isn't a valid username."
 msgstr "Ní ainm úsáideora bailí é sin."
 
 #, machine, plain1
+msgid "That isn't something you can switch."
+msgstr "Ní hé sin rud éigin is féidir leat a athrú."
+
+#, machine, plain1
 msgid "That key couldn't be saved."
 msgstr "Ní fhéadfaí an eochair sin a shábháil."
 
@@ -16887,6 +17124,14 @@ msgstr "An Sahel"
 #, machine, plain1
 msgid "The Space could not be made."
 msgstr "Ní fhéadfaí an Spás a dhéanamh."
+
+#, machine, plain1, python-format
+msgid "The account @%(name)s is deleted."
+msgstr "Scriostar an cuntas @%(name)s."
+
+#, machine, plain1, python-format
+msgid "The account @%(name)s is made. They sign in with the username and password you gave."
+msgstr "Déantar an cuntas @%(name)s. Síníonn siad i leis an ainm úsáideora agus do phasfhocal a thug tú."
 
 #, machine, plain1, python-format
 msgid "The account age must be a whole number of days, 0 to %(max)s."
@@ -17248,6 +17493,10 @@ msgstr "Na poist is vótáil ar na seacht lá anuas."
 #, machine, plain1, python-format
 msgid "The name %(host)s could not be found."
 msgstr "Ní fhéadfaí an t-ainm %(host)s a fháil."
+
+#, machine, plain1
+msgid "The newest of what they have done. Only the names of who they chat with are shown, never what a chat says: chats are end-to-end encrypted."
+msgstr "An newest de cad a rinne siad. Ach na hainmneacha a comhrá siad leis a thaispeántar, riamh cad a deir comhrá: Tá comhráite deireadh-le-deireadh criptithe."
 
 #, machine, plain1
 msgid "The numbers are always shown on your profile. This decides who can open each list and see the accounts on it. An account is only listed where its own setting allows it too."
@@ -17617,12 +17866,20 @@ msgid "They already have this role."
 msgstr "Tá an ról seo acu cheana féin."
 
 #, machine, plain1
+msgid "They are 18 or over, so they can make their own account."
+msgstr "Tá siad 18 nó os a chionn, ionas gur féidir leo a gcuntas féin a dhéanamh."
+
+#, machine, plain1
 msgid "They are already in this circle."
 msgstr "Tá siad cheana féin sa chiorcal seo."
 
 #, machine, plain1
 msgid "They are not told. Anyone you block leaves your circles."
 msgstr "Níl siad in iúl. Duine ar bith a fhágann tú bloc do chiorcail."
+
+#, machine, plain1
+msgid "They are signed out everywhere. If they use chat, they may be asked for their recovery code."
+msgstr "Síníodh amach iad i ngach áit. Má úsáideann siad comhrá, d'fhéadfaí iad a iarraidh ar a n-cód a ghnóthú."
 
 #, machine, plain1, python-format
 msgid "They aren't in %(circle)s."
@@ -17637,6 +17894,38 @@ msgid "They aren't muted here."
 msgstr "Níl siad muted anseo."
 
 #, machine, plain1
+msgid "They asked you to turn Private posting off."
+msgstr "D'iarr siad ort dul phost Príobháideacha as."
+
+#, machine, plain1
+msgid "They can buy and spend coins, tip, buy Premium and join or run paid circles."
+msgstr "Is féidir leo boinn a cheannach agus a chaitheamh, barr, a cheannach Premium agus a bheith páirteach nó a reáchtáil ciorcail íoctha."
+
+#, machine, plain1
+msgid "They can comment."
+msgstr "Is féidir leo trácht."
+
+#, machine, plain1
+msgid "They can host and join Spaces and run live threads. Voice calls in a Space also need Chat to be on."
+msgstr "Is féidir leo Spásanna a óstáil agus a bheith páirteach agus snáitheanna beo a reáchtáil. Glaonna Guth i Spás gá freisin Chat a bheith ar."
+
+#, machine, plain1
+msgid "They can make posts."
+msgstr "Is féidir leo poist a dhéanamh."
+
+#, machine, plain1
+msgid "They can message people, join group chats and make calls. The site never shows you what a chat says: chats are end-to-end encrypted. Whoever knows their password can still sign in and read them."
+msgstr "Is féidir leo teachtaireacht daoine, comhráite grúpa a bheith páirteach agus glaonna a dhéanamh. An suíomh riamh léiríonn tú cad a deir comhrá: Tá comhráite deireadh-le-deireadh criptithe. Whoever fhios is féidir a gcuid focal faire a shíniú fós i agus iad a léamh."
+
+#, machine, plain1
+msgid "They can post anonymously and start a guild. You can still see who wrote an anonymous post."
+msgstr "Is féidir leo post gan ainm agus tús a chur le guild. Is féidir leat a fheiceáil fós a scríobh post gan ainm."
+
+#, machine, plain1
+msgid "They can see what you do on the site: your posts, comments, votes, bookmarks, follows, guilds, who you chat with, that your account was reported, and your recent sign-ins. The site never shows them what your chats say, because chats are end-to-end encrypted. But anyone who knows your password, a parent who chose it included, can sign in as you: change it in Security so that only you know it. They choose which of these are on for your account:"
+msgstr "Is féidir leo a fheiceáil cad a dhéanann tú ar an suíomh: do phoist, tuairimí, vótaí, leabharmharcanna, seo a leanas, guilds, a dhéanann tú comhrá le, gur tuairiscíodh do chuntas, agus do shíniú-orlach le déanaí. An suíomh riamh léiríonn iad cad a rá do comhráite, toisc go bhfuil comhráite deireadh-le-deireadh criptithe. Ach is féidir le duine ar bith a bhfuil aithne aige ar do phasfhocal, tuismitheoir a roghnaigh sé san áireamh, síniú isteach mar atá tú: é a athrú i Slándáil ionas go mbeidh a fhios agat ach é. Roghnaíonn siad cé acu de na atá ar do chuntas:"
+
+#, machine, plain1
 msgid "They can't comment on your posts or comments, chat with you or notify you by mentioning you. They are not told, but they may work it out if they try to comment on something of yours."
 msgstr "Ní féidir leo trácht ar do phoist nó tuairimí, comhrá a dhéanamh leat nó fógra a thabhairt duit ag lua tú. Níl siad in iúl, ach d'fhéadfadh siad ag obair amach má iarracht siad chun trácht ar rud éigin de mise."
 
@@ -17649,12 +17938,20 @@ msgid "They go straight to your coin balance."
 msgstr "Téann siad díreach chuig do chothromaíocht mona."
 
 #, machine, plain1
+msgid "They haven't asked for that."
+msgstr "Níor iarr siad sin."
+
+#, machine, plain1
 msgid "They need to be in the guild, and not exiled from it."
 msgstr "Ní mór dóibh a bheith sa guild, agus ní exiled as é."
 
 #, machine, plain1
 msgid "They need to join the channel first."
 msgstr "Ní mór dóibh a bheith ar an cainéal ar dtús."
+
+#, machine, plain1
+msgid "They say they are 18 or over and asked you to release their account. If you do, it becomes their own and you can no longer see it."
+msgstr "Deir siad go bhfuil siad 18 nó os a chionn agus d'iarr tú a scaoileadh a gcuntas. Má dhéanann tú, bíonn sé a gcuid féin agus ní féidir leat é a fheiceáil a thuilleadh."
 
 #, machine, plain1
 msgid "They're already a helper."
@@ -17772,6 +18069,14 @@ msgstr "Tá an cuntas curtha ar fionraí go sealadach ó %(site)s. Seiceáil ar 
 #, machine, plain1
 msgid "This account is private"
 msgstr "Tá an cuntas príobháideach"
+
+#, machine, plain1
+msgid "This account is suspended."
+msgstr "Tá an cuntas seo ar fionraí."
+
+#, machine, plain1
+msgid "This account owes money, so it can't be deleted yet."
+msgstr "Tá an cuntas airgead dlite, mar sin ní féidir é a scriosadh go fóill."
 
 #, machine, plain1
 msgid "This account posts about sensitive topics"
@@ -17910,6 +18215,10 @@ msgstr "An beatha leigheas ar guilds agus cuntais"
 #, machine, plain1
 msgid "This curation's rules took too long to run. Its owner can make them narrower."
 msgstr "Ghlac rialacha an bheatha leasaithe seo ró-fhada le reáchtáil. Is féidir leis an úinéir iad a dhéanamh níos cúinge."
+
+#, machine, plain1
+msgid "This deletes their account and everything on it. It can't be undone. You can download their data first."
+msgstr "Scriosann sé seo a gcuntas agus gach rud air. Ní féidir é a bheith gan amhras. Is féidir leat a gcuid sonraí a íoslódáil ar dtús."
 
 #, machine, plain1
 msgid "This draft hasn't been published."
@@ -18247,6 +18556,10 @@ msgid "Thu"
 msgstr "Thuama"
 
 #, machine, plain1
+msgid "Tick the box to agree to the Terms for them."
+msgstr "Roghnaigh an bosca a aontú leis na Téarmaí dóibh."
+
+#, machine, plain1
 msgid "Tick the box to agree to the rules first."
 msgstr "Cuir tic sa bhosca chun aontú leis na rialacha ar dtús."
 
@@ -18530,6 +18843,10 @@ msgstr "Déan teagmháil linn"
 #, machine, plain1
 msgid "Turanian Steppe"
 msgstr "Tuirbí Céime"
+
+#, machine, plain1
+msgid "Turn it off"
+msgstr "Cas sé amach"
 
 #, machine, plain1, python-format
 msgid "Turn off notifications from +%(guild)s"
@@ -18994,6 +19311,10 @@ msgstr "Uaslódáil banner"
 #, machine, plain1
 msgid "Upload picture"
 msgstr "Pictiúr Upload"
+
+#, machine, plain1
+msgid "Upvote"
+msgstr "Féach ar an bpróifíl"
 
 #, glossary, machine, plain1
 msgctxt "verb"
@@ -19711,6 +20032,10 @@ msgid "Where you are, the law means your age has to be confirmed with an age-che
 msgstr "Sa chás go bhfuil tú, ciallaíonn an dlí go bhfuil do aois a dhaingniú le seirbhís aoise-seiceáil sular féidir leat a fheiceáil ábhar íogair nó teanga láidir."
 
 #, machine, plain1
+msgid "Where you are, your age has to be confirmed with an age-check service before you can make a child account."
+msgstr "Nuair a bhíonn tú, ní mór do aois a dheimhniú le seirbhís aoise sula bhféadtar cuntas linbh a dhéanamh."
+
+#, machine, plain1
 msgid "Where you are, your age has to be confirmed with an age-check service."
 msgstr "Sa chás go bhfuil tú, tá do aois a bheith deimhnithe le seirbhís aoise-seiceáil."
 
@@ -19802,9 +20127,17 @@ msgstr "Cé a chinneann"
 msgid "Who follows you"
 msgstr "Cé a leanann tú"
 
+#, machine, plain1
+msgid "Who reported them, and what they wrote, isn't shown to anyone but the admins."
+msgstr "Cé a thuairiscigh iad, agus cad a scríobh siad, nach bhfuil léirithe do dhuine ar bith ach na admins."
+
 #, glossary, machine, plain1
 msgid "Who subscribes to your Circle"
 msgstr "Cé atá liostáilte le do Chiorcal"
+
+#, machine, plain1
+msgid "Who they chat with"
+msgstr "Cé a comhrá siad le"
 
 #, machine, plain1
 msgid "Who to follow"
@@ -20185,10 +20518,18 @@ msgctxt "guildmaster action"
 msgid "Yank post"
 msgstr "Post Yank"
 
+#, machine, plain1
+msgid "Year"
+msgstr "Bliain agus Bliain"
+
 #, glossary, machine, plain1
 msgctxt "time range"
 msgid "Year"
 msgstr "Bliain"
+
+#, machine, plain1
+msgid "Year they were born"
+msgstr "Bliain a rugadh iad"
 
 #, machine, plain1
 msgctxt "colour"
@@ -20360,6 +20701,14 @@ msgid "You aren't subscribed to that circle."
 msgstr "Nach bhfuil tú suibscríofa go dtí an ciorcal."
 
 #, machine, plain1
+msgid "You asked your parent or guardian to release your account. They haven't answered yet."
+msgstr "D'iarr tú ar do thuismitheoir nó caomhnóir do chuntas a scaoileadh. Níor fhreagair siad go fóill."
+
+#, machine, plain1
+msgid "You asked your parent or guardian to turn this off. They haven't answered yet."
+msgstr "D'iarr tú ar do thuismitheoir nó caomhnóir dul as seo. Níor fhreagair siad go fóill."
+
+#, machine, plain1
 msgid "You can add pictures at 500 Rep, or earlier with Premium"
 msgstr "Is féidir leat pictiúir a chur ar 500 Athchur, nó níos luaithe le Premium"
 
@@ -20477,6 +20826,19 @@ msgstr[3] "Is féidir leat a bheith ag an chuid is mó %(num)s bealaí."
 msgstr[4] "Is féidir leat a bheith ar an chuid is mó %(num)s bealaí."
 
 #, machine, plain1, python-format
+msgid "You can have at most %(num)s child account."
+msgid_plural "You can have at most %(num)s child accounts."
+msgstr[0] "Is féidir leat a bheith ag an chuid is mó %(num)s cuntas leanaí."
+msgstr[1] "Is féidir leat a bheith ag an chuid is mó %(num)s cuntais leanaí."
+msgstr[2] "Is féidir leat a bheith ag an chuid is mó %(num)s cuntais leanbh."
+msgstr[3] "Is féidir leat a bheith ag an chuid is mó %(num)s cuntais leanaí."
+msgstr[4] "Is féidir leat a bheith ar an chuid is mó %(num)s cuntais leanbh."
+
+#, machine, plain1, python-format
+msgid "You can have at most %(num)s child accounts."
+msgstr "Is féidir leat a bheith ar an chuid is mó %(num)s cuntais leanaí."
+
+#, machine, plain1, python-format
 msgid "You can host at most %(num)s Space a day."
 msgid_plural "You can host at most %(num)s Spaces a day."
 msgstr[0] "Is féidir leat a óstáil ag an chuid is mó %(num)s Spás in aghaidh an lae."
@@ -20512,6 +20874,10 @@ msgid "You can look around and set up your profile; posting, comments, votes and
 msgstr "Is féidir leat breathnú thart agus a chur ar bun do phróifíl; postáil, tuairimí, vótaí agus seo a leanas oscailte uair amháin go bhfuil an seiceáil déanta."
 
 #, machine, plain1, python-format
+msgid "You can make %(num)s child accounts a day. Try again tomorrow."
+msgstr "Is féidir leat a dhéanamh %(num)s cuntais leanbh in aghaidh an lae. Bain triail as arís amárach."
+
+#, machine, plain1, python-format
 msgid "You can make %(num)s proposal a day."
 msgid_plural "You can make %(num)s proposals a day."
 msgstr[0] "Is féidir leat togra %(num)s a dhéanamh in aghaidh an lae."
@@ -20528,6 +20894,10 @@ msgstr[1] "Is féidir leat a dhéanamh %(num)s in eagar wiki in aghaidh an lae i
 msgstr[2] "Is féidir leat a dhéanamh %(num)s in eagar wiki in aghaidh an lae i guild. Bain triail as arís amárach."
 msgstr[3] "Is féidir leat a dhéanamh %(num)s in eagar wiki in aghaidh an lae i guild. Bain triail as arís amárach."
 msgstr[4] "Is féidir leat a dhéanamh %(num)s wiki in eagar in aghaidh an lae i guild. Bain triail as arís amárach."
+
+#, machine, plain1
+msgid "You can make a child account once your own account is confirmed as 18 or over. You can say so in Settings > Content."
+msgstr "Is féidir leat cuntas linbh a dhéanamh nuair a dheimhnítear do chuntas féin mar 18 nó níos mó. Is féidir leat a rá mar sin i Socruithe × Ábhar."
 
 #, machine, plain1
 msgid "You can only create up to 2 guilds per day. Try again later."
@@ -20846,6 +21216,10 @@ msgid "You don't have Premium right now."
 msgstr "Ní gá duit Premium ceart anois."
 
 #, machine, plain1
+msgid "You don't have a child account called that."
+msgstr "Ní gá duit cuntas linbh ar a dtugtar sin."
+
+#, machine, plain1
 msgid "You don't have a coin to redeem."
 msgstr "Ní gá duit mona a fhuascailt."
 
@@ -20959,6 +21333,10 @@ msgstr "Tá tú ag gcuifear ó + %(guild)s."
 #, machine, plain1
 msgid "You have left the creator fund."
 msgstr "D'fhág tú an ciste cruthaitheoir."
+
+#, machine, plain1, python-format
+msgid "You have made %(num)s child accounts in the last %(days)s days. Try again later."
+msgstr "Tá tú a rinneadh %(num)s cuntais leanbh sa deireanach %(days)s laethanta. Bain triail as arís ina dhiaidh sin."
 
 #, machine, plain1
 msgid "You have muted this guild. Its posts stay out of All, For You and Following. Visit your settings or click the <i class='fas fa-ellipsis-h text-small'></i> icon to unmute it."
@@ -21374,12 +21752,20 @@ msgid "Your account can also post new items from feeds by itself, while you keep
 msgstr "Is féidir le do chuntas post freisin míreanna nua ó feeds féin, agus a choinneáil tú ag baint úsáide as é mar a dhéanann tú anois. Tá gach ceann de na poist marcáilte mar uathoibrithe, agus nach bhfuil daoine a cheilt ábhar bot iad a fheiceáil. Tá do phoist féin, tuairimí, vótaí agus comhráite gan athrú. Formheasann admin é ar dtús."
 
 #, machine, plain1
+msgid "Your account can't post automatically while it is age-restricted."
+msgstr "Ní féidir do chuntas post go huathoibríoch cé go bhfuil sé aois- srianta."
+
+#, machine, plain1
 msgid "Your account can't post automatically while it is suspended."
 msgstr "Ní féidir do chuntas post go huathoibríoch cé go bhfuil sé ar fionraí."
 
 #, machine, plain1
 msgid "Your account can't publish right now."
 msgstr "Ní féidir do chuntas a fhoilsiú ceart anois."
+
+#, machine, plain1
+msgid "Your account can't run a bot while it is age-restricted."
+msgstr "Ní féidir do chuntas a reáchtáil buidéal agus tá sé aois- srianta."
 
 #, machine, plain1
 msgid "Your account cannot upload right now."
@@ -21400,6 +21786,10 @@ msgstr "Tá do chuntas a sheiceáil agus tá sé réidh: is féidir leat post an
 #, machine, plain1
 msgid "Your account has been deleted"
 msgstr "Scriostar do chuntas"
+
+#, machine, plain1, python-format
+msgid "Your account has the child lock on, held by your parent or guardian, since %(date)s."
+msgstr "Tá do chuntas an glas leanbh ar, i seilbh ag do thuismitheoir nó caomhnóir, ós rud é %(date)s."
 
 #, machine, plain1, python-format
 msgid "Your account has the child lock on, since %(date)s."
@@ -21452,6 +21842,10 @@ msgstr ""
 "\n"
 "\n"
 "Chun skip an fanacht, cuir agus a fhíorú seoladh ríomhphoist i [Socruithe × Slándáil](/settings/security)."
+
+#, machine, plain1
+msgid "Your account is your own now. It no longer has the child lock and your parent or guardian can no longer see it. They chose your password: change it in [Settings > Security](/settings/security), or they can still sign in as you."
+msgstr "Tá do chuntas féin anois. Níl an glas leanbh aige a thuilleadh agus ní féidir le do thuismitheoir nó do chaomhnóir é a fheiceáil a thuilleadh. Roghnaigh siad do phasfhocal: athrú i [Socruithe × Slándáil] (/settings/security), nó is féidir leo a shíniú fós i mar tú."
 
 #, machine, plain1
 msgid "Your account needs to be at least 30 days old to post automatically."
@@ -21554,6 +21948,10 @@ msgstr "Tá do comhráite deireadh-le-deireadh criptithe, agus ní féidir leis 
 #, machine, plain1, python-format
 msgid "Your chats run on Matrix, an open standard, on %(site)s's own chat server. Besides Chat on this site, you can use them in a Matrix app such as Element (web, desktop and the classic phone apps), FluffyChat or Cinny. They stay end-to-end encrypted there too."
 msgstr "Do comhráite reáchtáil ar Maitrís, caighdeán oscailte, ar %(site)s freastalaí comhrá féin. Chomh maith le Comhrá ar an suíomh seo, is féidir leat iad a úsáid i app Maitrís ar nós Element (web, deisce agus na apps fón clasaiceach), FluffyChat nó Cinny. Fanann siad deireadh-le-deireadh criptithe ann freisin."
+
+#, machine, plain1
+msgid "Your child accounts will be deleted with yours."
+msgstr "Scriosfar do chuntais linbh le mise."
 
 #, glossary, machine, plain1
 msgid "Your circles"
@@ -21704,8 +22102,51 @@ msgstr[3] ""
 msgstr[4] ""
 
 #, machine, plain1
+msgid "Your own password"
+msgstr "Do phasfhocal féin"
+
+#, machine, plain1
+msgid "Your parent or guardian didn't agree to release your account."
+msgstr "Ní raibh do thuismitheoir nó caomhnóir aontú a scaoileadh do chuntas."
+
+#, machine, plain1
+msgid "Your parent or guardian has been asked to release your account. Nothing changes until they answer."
+msgstr "Iarradh ar do thuismitheoir nó ar do chaomhnóir do chuntas a scaoileadh. Ní dhéanfaidh aon ní athruithe go dtí go bhfreagraíonn siad."
+
+#, machine, plain1
+msgid "Your parent or guardian has been asked to turn Private posting off."
+msgstr "Iarradh ar do thuismitheoir nó ar do chaomhnóir dul postáil Príobháideach amach."
+
+#, machine, plain1
 msgid "Your parent or guardian has to agree before Private posting can be turned off."
 msgstr "Tá do thuismitheoir nó caomhnóir a aontú sula féidir postáil Príobháideacha a mhúchadh."
+
+#, machine, plain1
+msgid "Your parent or guardian has turned this off for your account."
+msgstr "Tá do thuismitheoir nó caomhnóir iompaithe seo as do chuntas."
+
+#, machine, plain1
+msgid "Your parent or guardian made this account for you. They can see what you do on the site (your posts, comments, votes, bookmarks, follows, guilds, who you chat with, that your account was reported and your recent sign-ins; the site never shows them what your chats say) and they choose which features are on. You can see which in [Settings > Content](/settings/content). They chose your password: change it in [Settings > Security](/settings/security) so that only you know it, because anyone who knows it can sign in as you and read your chats."
+msgstr "Rinne do thuismitheoir nó caomhnóir an cuntas seo duit. Is féidir leo a fheiceáil cad a dhéanann tú ar an suíomh (do phoist, tuairimí, vótaí, leabharmharcanna, seo a leanas, guilds, a dhéanann tú comhrá le, gur tuairiscíodh do chuntas agus do comharthaí le déanaí-orlach; an suíomh riamh léiríonn dóibh cad a rá do comhráite) agus roghnaíonn siad a bhfuil gnéithe ar. Is féidir leat a fheiceáil i [Socruithe × Ábhar](/settings/content). Roghnaigh siad do phasfhocal: athrú sé i [Socruithe × Slándáil] (/settings/security) ionas go mbeidh a fhios agat ach é, mar gheall ar aon duine a bhfuil aithne aige is féidir é a shíniú i mar atá tú, agus a léamh do comhráite."
+
+msgid "Your parent or guardian set a new password for your account and you were signed out. Sign in with the new password, then change it in [Settings > Security](/settings/security) so that only you know it."
+msgstr ""
+
+#, machine, plain1
+msgid "Your parent or guardian stopped managing your account. It keeps the child lock until you confirm your age in Settings > Content. They chose your password: change it in [Settings > Security](/settings/security), or they can still sign in as you."
+msgstr "Stop do thuismitheoir nó caomhnóir do chuntas a bhainistiú. Coinníonn sé an glas leanbh go dtí go ndeimhníonn tú do aois i Socruithe × Ábhar. Roghnaigh siad do phasfhocal: athrú i [Socruithe × Slándáil] (/settings/security), nó is féidir leo a shíniú fós i mar tú."
+
+#, machine, plain1
+msgid "Your parent or guardian turned Private posting off for your account."
+msgstr "D'éirigh le do thuismitheoir nó do chaomhnóir postáil phríobháideach as do chuntas."
+
+#, machine, plain1
+msgid "Your parent or guardian wants Private posting to stay on."
+msgstr "Tá do thuismitheoir nó caomhnóir ag iarraidh postáil Príobháideacha chun fanacht ar."
+
+#, machine, plain1
+msgid "Your parent or guardian's account was suspended, so yours is suspended until theirs is back."
+msgstr "Cuireadh cuntas do thuismitheoir nó do chaomhnóir ar fionraí, mar sin tá mise ar fionraí go dtí go bhfuil a gcuid ar ais."
 
 #, machine, plain1
 msgid "Your password"
@@ -22088,6 +22529,10 @@ msgstr[1] "agus %(num)s níos mó"
 msgstr[2] "agus %(num)s níos mó"
 msgstr[3] "agus %(num)s níos mó"
 msgstr[4] "agus %(num)s níos mó"
+
+#, machine, plain1
+msgid "anonymous"
+msgstr "cineál gas: in airde"
 
 #, machine, plain1
 msgctxt "guildmaster permission"
@@ -22550,6 +22995,10 @@ msgstr "réamhamharc naisc"
 msgid "links"
 msgstr "naisc ábhartha eile"
 
+#, machine, plain1
+msgid "looked at by the admins"
+msgstr "d'fhéach sé ar an admins"
+
 #. after the moderator's name in a guild's moderation log
 #, machine, plain1
 msgid "made a channel"
@@ -22756,6 +23205,10 @@ msgstr "arís %(target)s"
 #, machine, plain1, python-format
 msgid "reinstated post %(target)s"
 msgstr "post a athbhunú %(target)s"
+
+#, machine, plain1
+msgid "removed"
+msgstr "as oifig"
 
 #. follows the moderator's name in a guild's moderation log; %(target)s is a
 #. link

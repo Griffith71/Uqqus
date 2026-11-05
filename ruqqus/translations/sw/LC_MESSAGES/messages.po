@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ruqqus VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-11-05 16:56+1100\n"
+"POT-Creation-Date: 2026-11-05 20:16+1100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: sw\n"
@@ -1614,12 +1614,24 @@ msgid "(allow beats deny; the channel's own rules apply to everyone else)"
 msgstr "(kuruhusu beats kukataa; kanuni za channel mwenyewe zinatumika kwa kila mtu mwingine)"
 
 #, machine, plain1
+msgid "(empty)"
+msgstr "(sauti ya)"
+
+#, machine, plain1
 msgid "(for a stage channel: the post's address or id)"
 msgstr "(kwa ajili ya kituo cha hatua: anwani ya posta au id)"
 
 #, machine, plain1
 msgid "(from the original)"
 msgstr "(elekezwa kutoka mwanzo)"
+
+#, machine, plain1
+msgid "(in a private place)"
+msgstr "(katika sehemu ya kibinafsi)"
+
+#, machine, plain1
+msgid "(no title)"
+msgstr "(hakuna jina)"
 
 #, glossary, machine, plain1
 msgid "(off)"
@@ -2180,6 +2192,10 @@ msgid "<strong>Username:</strong> %(name)s"
 msgstr "<strong>Jina la mtumiaji:</strong> %(name)s"
 
 #, machine, plain1, python-format
+msgid "@%(name)s - %(site)s"
+msgstr "@%(name)s - %(site)s"
+
+#, machine, plain1, python-format
 msgid "@%(name)s - Bots - %(site)s"
 msgstr "@ ya%(name)s Bots - Kuwa %(site)s"
 
@@ -2193,6 +2209,10 @@ msgstr "@ ya%(name)s Aliongeza kuwa %(curation)s."
 
 #, python-format
 msgid "@%(name)s asked to publish a shared draft you write: your vote counts. [Open the draft](%(link)s)"
+msgstr ""
+
+#, python-format
+msgid "@%(name)s asked you to turn Private posting off for their account. You can answer in [Settings > Children](/settings/children)."
 msgstr ""
 
 #, machine, plain1, python-format
@@ -2237,6 +2257,10 @@ msgstr ""
 #, python-format
 msgid "@%(name)s forwarded [a post](%(link)s) to +%(guild)s."
 msgstr ""
+
+#, machine, plain1, python-format
+msgid "@%(name)s has a new password and is signed out everywhere."
+msgstr "@ ya%(name)s Ina password mpya na imewekwa kila mahali."
 
 #, machine, plain1, python-format
 msgid "@%(name)s has already been invited."
@@ -2407,6 +2431,10 @@ msgid "@%(name)s reposted [a post](%(link)s)."
 msgstr ""
 
 #, python-format
+msgid "@%(name)s says they are 18 or over and asked you to release their account. You can answer in [Settings > Children](/settings/children)."
+msgstr ""
+
+#, python-format
 msgid "@%(name)s shared [a story](%(link)s)."
 msgstr ""
 
@@ -2437,6 +2465,10 @@ msgstr "@ ya%(name)s Iliondolewa kutoka kwa +%(guild)s"
 #, machine, plain1, python-format
 msgid "@%(name)s was muted in +%(guild)s's channels."
 msgstr "@ ya%(name)s Imetafsiriwa katika +%(guild)sya channel."
+
+#, machine, plain1, python-format
+msgid "@%(name)s's age was confirmed as 18 or over, so their account is their own now and you can no longer see it."
+msgstr "@ ya%(name)sUmri wake ulithibitishwa kama miaka 18 au zaidi, kwa hivyo akaunti yake ni ya sasa na huwezi kuiona tena."
 
 #, machine, plain1, python-format
 msgid "@%(name)s's new posts will go into #%(channel)s."
@@ -2955,6 +2987,10 @@ msgstr "Thread ya kuishi inachukua maoni, sio ujumbe wa bodi."
 #, machine, plain1
 msgid "A member"
 msgstr "Mwanachama wa"
+
+#, machine, plain1
+msgid "A member reported this account."
+msgstr "Mmoja wao aliwasilisha akaunti hiyo."
 
 #, machine, plain1, python-format
 msgid "A message can be at most %(count)s character."
@@ -4084,6 +4120,12 @@ msgid_plural "An update can be at most %(num)s characters."
 msgstr[0] "Toleo jipya linaweza kuwa zaidi ya tabia moja."
 msgstr[1] "Toleo jipya linaweza kuwa na wahusika zaidi ya %(num)s."
 
+#, python-format
+msgid "And %(num)s private guild, which isn't named."
+msgid_plural "And %(num)s private guilds, which aren't named."
+msgstr[0] ""
+msgstr[1] ""
+
 #, machine, plain1
 msgid "Animals"
 msgstr "Wanyama"
@@ -4139,6 +4181,10 @@ msgstr "Asiyejulikana"
 msgctxt "label"
 msgid "Anonymous"
 msgstr "Asiyejulikana"
+
+#, machine, plain1
+msgid "Anonymous posting and starting guilds"
+msgstr "Anonymous posting na kuanza vyama"
 
 #, machine, plain1
 msgid "Anonymous posts and comments count for you like any other. Your points and earnings are shown only to you; the site's admins see the payout list."
@@ -4350,6 +4396,14 @@ msgstr "Visiwa vya Aryan"
 #, machine, plain1
 msgid "As an author you edit the draft live with them, and every character you type is credited to you. Once the post is published, anyone who can see it can see who wrote what. The authors decide together:"
 msgstr "Kama mwandishi wewe hariri rasimu kuishi nao, na kila tabia wewe aina ni sifa kwa wewe. Mara baada ya kuchapishwa, mtu yeyote ambaye anaweza kuona ni nani aliandika nini. Waandishi wanaamua kwa pamoja:"
+
+#, machine, plain1
+msgid "Ask my parent to turn it off"
+msgstr "Naomba ndugu zangu mnivumilie"
+
+#, machine, plain1
+msgid "Asked you"
+msgstr "Kuuliza yako"
 
 #, machine, plain1, python-format
 msgid "At least %(count)s comments"
@@ -4820,6 +4874,10 @@ msgstr "Kuongeza kwa posts na picha, sauti au video"
 #, machine, plain1
 msgid "Boost for this curation's guilds and accounts"
 msgstr "Kuongeza kwa makundi haya ya chakula na akaunti"
+
+#, machine, plain1
+msgid "Born"
+msgstr "Alizaliwa"
 
 #, machine, plain1
 msgid "Bot keys"
@@ -5320,6 +5378,10 @@ msgid "Chat isn't answering right now. Try again in a moment."
 msgstr "Chat haina kujibu kwa sasa. Jaribu tena kwa wakati mmoja."
 
 #, machine, plain1
+msgid "Chat, group chats and calls"
+msgstr "Chat, mazungumzo ya kikundi na simu"
+
+#, machine, plain1
 msgctxt "guildmaster action"
 msgid "Chatban user"
 msgstr "Watumiaji wa Chat"
@@ -5343,6 +5405,14 @@ msgstr "Kemia ya Kemia"
 #, machine, plain1
 msgid "Child - also hide profanity and sensitive content"
 msgstr "Mtoto - pia kujificha uchafu na maudhui nyeti"
+
+#, machine, plain1
+msgid "Children"
+msgstr "Watoto"
+
+#, machine, plain1, python-format
+msgid "Children - %(site)s"
+msgstr "Watoto – %(site)s"
 
 #. "Sign in with ..." is the button the Matrix app shows for this site's
 #. sign-in
@@ -5675,6 +5745,10 @@ msgid "Coins received: %(recent)s in the last 30 days &middot; %(total)s in all.
 msgstr "Fedha zilizopokelewa: %(recent)s Katika siku 30 zilizopita &middot; %(total)s ya yote. Nenda moja kwa moja kwenye akaunti yako."
 
 #, machine, plain1
+msgid "Coins, tips, Premium and paid circles"
+msgstr "Maelezo ya mchezo Tips, Premium Malipo ya fidia"
+
+#, machine, plain1
 msgid "Collaborative"
 msgstr "Ushirikiano wa Ushirikiano"
 
@@ -5737,6 +5811,10 @@ msgstr "Maoni ya bookmarked."
 #, glossary, machine, plain1
 msgid "Comment posted!"
 msgstr "Maoni yamechapishwa!"
+
+#, machine, plain1
+msgid "Commenting"
+msgstr "Maoni"
 
 #, glossary, machine, plain1
 msgid "Comments"
@@ -6384,8 +6462,16 @@ msgid "Delete role"
 msgstr "Kuondoa nafasi"
 
 #, machine, plain1
+msgid "Delete the account"
+msgstr "Kufuta akaunti"
+
+#, machine, plain1
 msgid "Delete the published post"
 msgstr "Kuacha makala iliyochapishwa"
+
+#, machine, plain1
+msgid "Delete this account"
+msgstr "Kufuta akaunti hii"
 
 #, machine, plain1
 msgid "Delete this category? Its channels stay."
@@ -6446,6 +6532,10 @@ msgstr "Kuhamisha faili katika Hifadhi yako, au kuunganisha, kuiondoa kutoka kwe
 #, machine, plain1
 msgid "Deleting a file there, or disconnecting, removes it from your posts."
 msgstr "Kuhamisha faili huko, au kuunganisha, kuiondoa kutoka kwenye machapisho yako."
+
+#, machine, plain1
+msgid "Deleting your account also deletes your child accounts. You can download their data first in Settings > Children."
+msgstr "Kuhamisha akaunti yako pia huondoa akaunti yako ya mtoto. Unaweza kushusha data yako kwanza katika Mipangilio watoto."
 
 #, machine, plain1
 msgid "Density"
@@ -6688,6 +6778,10 @@ msgid "Done"
 msgstr "Kufanya hivyo"
 
 #, machine, plain1
+msgid "Download"
+msgstr "Download mchezo Download"
+
+#, machine, plain1
 msgctxt "button"
 msgid "Download"
 msgstr "Kuondolewa"
@@ -6701,8 +6795,16 @@ msgid "Download the recording"
 msgstr "Download ya kurekodi"
 
 #, machine, plain1
+msgid "Download their data"
+msgstr "Pakua data yako"
+
+#, machine, plain1
 msgid "Download your data"
 msgstr "Pakua data yako"
+
+#, machine, plain1
+msgid "Downvote"
+msgstr "Chini ya"
 
 #, glossary, machine, plain1
 msgctxt "verb"
@@ -7029,6 +7131,10 @@ msgstr "Ingiza anwani ya seva ya chakula."
 msgid "Enter the feed's address."
 msgstr "Ingiza anwani ya chakula."
 
+#, machine, plain1
+msgid "Enter the month and year they were born."
+msgstr "Kuingia mwezi na mwaka wao kuzaliwa."
+
 #, machine, plain1, python-format
 msgid "Enter the six-digit code generated in the authenticator app and your %(site)s account password."
 msgstr "Ingiza msimbo wa tarakimu sita unaozalishwa katika programu ya kuthibitisha na yako %(site)s Akaunti ya siri."
@@ -7201,6 +7307,10 @@ msgstr "Kila mtu anaona mabadiliko ya kila mmoja kama wao ni aina, na kila tabia
 #, machine, plain1
 msgid "Everything from your guilds and accounts, newest first."
 msgstr "Kila kitu kutoka kwa makundi yako na akaunti, mpya kwanza."
+
+#, machine, plain1
+msgid "Everything they post goes only to their Friends circle. Turn it off to let them post in public."
+msgstr "Kila kitu wanachochapisha kinaenda tu kwenye mzunguko wa marafiki zao. Waache watu wafanye kazi zao kwa umma."
 
 #, machine, plain1
 msgid "Everything you post goes only to your Friends circle, the people you follow who follow you back, so nothing is public by accident. Your circles can only hold people like that, and you can't forward, repost or write a shared draft. Comments on other people's posts are still public."
@@ -7857,6 +7967,10 @@ msgstr "Marafiki"
 msgctxt "circle name"
 msgid "Friends"
 msgstr "Marafiki"
+
+#, machine, plain1
+msgid "Friends circle"
+msgstr "Marafiki wa mduara"
 
 #, machine, plain1
 msgid "Friends is everyone you follow who follows you back. To share with family, a team or anyone else, make a circle first, then pick it here."
@@ -8662,6 +8776,10 @@ msgstr "Uwindaji"
 msgid "I accept the <a href=\"%(url)s\" target=\"_blank\">terms and conditions</a>"
 msgstr "Ninakubali kuwa <a href=\"%(url)s\" target=\"_blank\">Vigezo na Masharti</a>"
 
+#, machine, plain1, python-format
+msgid "I agree to the <a href=\"%(url)s\" target=\"_blank\">Terms</a> for them."
+msgstr "Nakubaliana na wewe kuwa <a href=\"%(url)s\" target=\"_blank\">Vigezo vya</a> kwa ajili yao."
+
 #, machine, plain1
 msgid "I agree to the rules below."
 msgstr "Nakubaliana na kanuni hapo chini."
@@ -8697,6 +8815,10 @@ msgstr "Ikiwa kuna anwani ya barua pepe inayohusishwa na akaunti yako, unaweza k
 #, machine, plain1
 msgid "If this was you, there is nothing to do."
 msgstr "Kama ni wewe, hakuna kitu cha kufanya."
+
+#, machine, plain1
+msgid "If you are 18 or over, say so and your parent or guardian will be asked to release your account."
+msgstr "Ikiwa wewe ni 18 au zaidi, sema hivyo na mzazi wako au mlezi ataombwa kutoa akaunti yako."
 
 #, machine, plain1
 msgid "If you don't have your 2FA device, enter one of your backup codes instead. Each backup code works once. An account that never made backup codes can enter its Recovery Code, which also turns 2FA off."
@@ -9075,6 +9197,14 @@ msgid "It shows, in full, every word and phrase the word filter looks for, in ev
 msgstr "Inaonyesha, kwa ukamilifu, kila neno na maneno filter neno inaonekana kwa, katika kila lugha inashughulikia. Hii ni pamoja na lugha ya matusi na lugha nyingine mbaya."
 
 #, machine, plain1
+msgid "It stays a child account with the child lock, but you can no longer see it or change what it can do, and you can't link it again."
+msgstr "Inabakia akaunti ya mtoto na kufuli mtoto, lakini huwezi kuona tena au kubadilisha nini inaweza kufanya, na huwezi kuunganisha tena."
+
+#, machine, plain1
+msgid "It stays on the Child word filter, which hides profanity and anything marked sensitive."
+msgstr "Inakaa kwenye Neno la Mtoto filter, ambayo huficha uchafu na kitu chochote kilichoonekana nyeti."
+
+#, machine, plain1
 msgid "It stays on the Child word filter, which hides profanity and anything marked sensitive. Chat, Spaces, coins, anonymous posting and starting a guild are off, and others can't start a chat or tip you. Your posts go to your Friends circle only unless you turn Private posting off."
 msgstr "Inakaa kwenye Neno la Mtoto filter, ambayo huficha uchafu na kitu chochote kilichoonekana nyeti. Kuzungumza, nafasi, sarafu, bila majina posting na kuanza chama ni mbali, na wengine hawawezi kuanza kuzungumza au ncha wewe. Machapisho yako kwenda kwa rafiki yako mduara isipokuwa tu kugeuka binafsi posting mbali."
 
@@ -9238,6 +9368,10 @@ msgstr "Mwezi wa Solstice"
 #, machine, plain1
 msgid "K-Pop"
 msgstr "Wa"
+
+#, machine, plain1
+msgid "Keep it on"
+msgstr "Endelea juu ya"
 
 #, machine, plain1
 msgid "Keep my posts out of All"
@@ -9511,6 +9645,10 @@ msgstr "Hali ya hewa ya Leonids"
 msgid "Letters spaced out or split by dots or other marks are read as one word."
 msgstr "Barua zilizowekwa nje au kupasuliwa na dots au alama nyingine zinasomwa kama neno moja."
 
+#, machine, plain1
+msgid "Letters, numbers and underscores, 3 to 25 characters."
+msgstr "Barua, idadi na inaonyesha, 3 kwa wahusika wa 25."
+
 #, glossary, machine, plain1
 msgid "Lifestyle"
 msgstr "Maisha"
@@ -9750,6 +9888,10 @@ msgstr "Mwaka Mpya wa Lunar"
 msgid "Lyrids meteor shower"
 msgstr "Hali ya hewa ya Lyrids"
 
+#, machine, plain1, python-format
+msgid "Made on %(date)s."
+msgstr "unaofanywa na %(date)s."
+
 #, glossary, machine, plain1
 msgid "Made with AI"
 msgstr "Imetengenezwa kwa AI"
@@ -9768,6 +9910,10 @@ msgid "Make a channel"
 msgstr "Kufanya channel"
 
 #, machine, plain1
+msgid "Make a child account"
+msgstr "Tengeneza akaunti ya mtoto"
+
+#, machine, plain1
 msgid "Make a circle people pay to be in, every 30 days, for what you share with it."
 msgstr "Fanya watu wa mzunguko kulipa kuwa, kila siku ya 30, kwa kile unachoshiriki."
 
@@ -9782,6 +9928,10 @@ msgstr "Fanya ukurasa"
 #, machine, plain1
 msgid "Make a role"
 msgstr "Fanya jukumu"
+
+#, machine, plain1
+msgid "Make an account for a child under 18 and decide what it can do. You can see what they do on the site (their posts, comments, votes, bookmarks, follows, guilds, the names of who they chat with and their recent sign-ins). The site never shows you what their chats say: chats are end-to-end encrypted. You choose their password, so until they change it you can sign in as them and read their chats: tell them to set their own. They are told all of this in their own Settings."
+msgstr "Fanya akaunti kwa mtoto chini ya miaka 18 na uamue nini cha kufanya. Unaweza kuona kile wanachofanya kwenye tovuti (machapisho yao, maoni, kura, alama, ifuatavyo, vikundi, majina ya nani wanaongea na na ishara zao za hivi karibuni). Tovuti kamwe inaonyesha nini mazungumzo yao wanasema: mazungumzo ni mwisho-kwa-mwisho encrypted. Wewe kuchagua password yao, hivyo mpaka wao mabadiliko unaweza ishara katika kama wao na kusoma yao chat: kuwaambia kuweka yao wenyewe. Haya yote yanaelezwa katika muktadha wake."
 
 #, machine, plain1, python-format
 msgid "Make an app first in <a href=\"%(url)s\">Settings &gt; Apps</a>; a key works through it."
@@ -10119,6 +10269,10 @@ msgid "Mon"
 msgstr "Mon"
 
 #, machine, plain1
+msgid "Month"
+msgstr "Mwezi wa Mwezi"
+
+#, machine, plain1
 msgctxt "table heading"
 msgid "Month"
 msgstr "Mwezi wa Mwezi"
@@ -10127,6 +10281,10 @@ msgstr "Mwezi wa Mwezi"
 msgctxt "time range"
 msgid "Month"
 msgstr "Mwezi"
+
+#, machine, plain1
+msgid "Month they were born"
+msgstr "Mwezi ambao walizaliwa"
 
 #, machine, plain1
 msgid "Monthly creator fund payouts"
@@ -10466,6 +10624,10 @@ msgstr "Ukurasa Mpya: %(address)s"
 #, machine, plain1
 msgid "New paid circle"
 msgstr "Mzunguko mpya wa malipo"
+
+#, machine, plain1
+msgid "New password"
+msgstr "Password mpya"
 
 #, machine, plain1
 msgid "New posts that are getting attention, with no account filling the page."
@@ -10851,6 +11013,10 @@ msgstr "Hakuna mtu mpya anayeweza kujiandikisha. Watumiaji wa sasa wanashikilia 
 msgid "Nobody types here"
 msgstr "Hakuna mtu wa aina hii hapa"
 
+#, machine, plain1, python-format
+msgid "Nobody under %(age)s may have an account where you are."
+msgstr "Hakuna chini ya %(age)s Unaweza kuwa na akaunti ambapo wewe ni."
+
 #, machine, plain1
 msgid "Nobody yet."
 msgstr "Hakuna mtu bado."
@@ -10971,6 +11137,10 @@ msgstr "Hakuna haja ya kujiandikisha"
 #, machine, plain1
 msgid "Not trending any more"
 msgstr "Hakuna cha zaidi"
+
+#, machine, plain1
+msgid "Not yet"
+msgstr "Bado hakuna"
 
 #, glossary, machine, plain1
 msgid "Not your default:"
@@ -11093,6 +11263,10 @@ msgid "Nothing written yet."
 msgstr "Hakuna kilichoandikwa mpaka sasa."
 
 #, machine, plain1
+msgid "Nothing yet."
+msgstr "Hakuna chochote bado."
+
+#, machine, plain1
 msgid "Notification types"
 msgstr "Aina ya Taarifa"
 
@@ -11140,6 +11314,10 @@ msgstr "Bahari ya Oceania"
 msgid "Oddly Satisfying"
 msgstr "Furaha ya ajabu"
 
+#, machine, plain1
+msgid "Off"
+msgstr "Mbali ya"
+
 #. slow mode in a guild's channel is switched off.
 #, machine, plain1
 msgctxt "slow mode"
@@ -11166,6 +11344,10 @@ msgstr "Za zamani"
 #, machine, plain1
 msgid "Old Password"
 msgstr "Password ya zamani"
+
+#, machine, plain1
+msgid "On"
+msgstr "Juu ya"
 
 #. "On" marks a linked storage account that is in use
 #, machine, plain1
@@ -11241,6 +11423,10 @@ msgstr "Moja ya marekebisho haya haiwezi kuonyeshwa kwako."
 #, machine, plain1
 msgid "One of those circles isn't yours any more. Choose again."
 msgstr "Moja ya njia hizi sio yako tena. Chagua tena."
+
+#, machine, plain1
+msgid "One of your child accounts owes money, so your account can't be deleted yet."
+msgstr "Akaunti ya mtoto wako ina deni la fedha, hivyo akaunti yako haiwezi kufutwa bado."
 
 #, machine, plain1
 msgid "One-time codes for the day you lose your authenticator. Making a new set replaces every earlier code, used or not."
@@ -11562,6 +11748,10 @@ msgstr "Ni mwandishi wa post na waandishi wa ushirikiano tu wanaweza post update
 #, machine, plain1
 msgid "Only the post's author and co-authors can run its live updates."
 msgstr "Ni mwandishi wa post na waandishi wa ushirikiano tu wanaweza kuendesha updates yake ya kuishi."
+
+#, machine, plain1
+msgid "Only used to check their age. It isn't kept."
+msgstr "Ni wakati wa kuangalia umri wao. Haikuhifadhiwa."
 
 #, machine, plain1
 msgid "Only when I turn them on"
@@ -12553,6 +12743,10 @@ msgid "Posted on that day."
 msgstr "Kuchapishwa siku hiyo."
 
 #, machine, plain1
+msgid "Posting"
+msgstr "Posting ya"
+
+#, machine, plain1
 msgid "Posting cooldown"
 msgstr "Kuacha baridi"
 
@@ -13390,6 +13584,10 @@ msgid "Relationships"
 msgstr "Mahusiano ya uhusiano"
 
 #, machine, plain1
+msgid "Release the account"
+msgstr "Kufungua akaunti"
+
+#, machine, plain1
 msgid "Religion"
 msgstr "Dini ya Dini"
 
@@ -13639,6 +13837,10 @@ msgstr "Taarifa ya ujumbe"
 msgctxt "noun"
 msgid "Reports"
 msgstr "Ripoti"
+
+#, machine, plain1
+msgid "Reports about them"
+msgstr "Taarifa kuhusu wao"
 
 #, machine, plain1
 msgid "Reports opened"
@@ -13975,6 +14177,10 @@ msgctxt "weekday"
 msgid "Sat"
 msgstr "Sata ya Sata"
 
+#, glossary, machine, plain1
+msgid "Save"
+msgstr "Hifadhi"
+
 #, machine, plain1
 msgctxt "button"
 msgid "Save"
@@ -14284,6 +14490,10 @@ msgid "See what is trending"
 msgstr "Angalia nini kinaendelea"
 
 #, machine, plain1
+msgid "See what they do"
+msgstr "Angalia hawa wanachokifanya"
+
+#, machine, plain1
 msgid "See your username"
 msgstr "Angalia jina lako la mtumiaji"
 
@@ -14382,6 +14592,10 @@ msgstr "Mwezi wa equinox"
 #, machine, plain1
 msgid "Serious"
 msgstr "Kubwa sana"
+
+#, machine, plain1
+msgid "Set a new password"
+msgstr "Kuweka password mpya"
 
 #, machine, plain1
 msgid "Set a price to let people pay to join."
@@ -15029,6 +15243,10 @@ msgid "Spaces"
 msgstr "Spaces"
 
 #, machine, plain1
+msgid "Spaces and live threads"
+msgstr "Nafasi na kuishi threads"
+
+#, machine, plain1
 msgid "Spaces are started in the Spaces area."
 msgstr "Uwanja wa ndege huanza katika maeneo ya anga."
 
@@ -15163,6 +15381,14 @@ msgstr "Chapisho lililobandikwa"
 #, machine, plain1
 msgid "Still here to read"
 msgstr "Bonyeza hapa kusoma"
+
+#, machine, plain1
+msgid "Stop managing"
+msgstr "Kuacha usimamizi"
+
+#, machine, plain1
+msgid "Stop managing this account"
+msgstr "Kuacha kutumia akaunti hii"
 
 #, machine, plain1
 msgid "Stop posting automatically"
@@ -15339,6 +15565,10 @@ msgstr "Wafuasi wa …"
 #, machine, plain1
 msgid "Survival & Bushcraft"
 msgstr "Maisha ya Bushcraft"
+
+#, machine, plain1
+msgid "Suspended"
+msgstr "Kuondolewa"
 
 #, machine, plain1, python-format
 msgid "Switch @%(name)s off for good? Its posts stay; the bot never posts again."
@@ -15812,6 +16042,10 @@ msgid "That isn't a valid username."
 msgstr "Hii sio jina la mtumiaji halisi."
 
 #, machine, plain1
+msgid "That isn't something you can switch."
+msgstr "Sio kitu ambacho unaweza kubadilisha."
+
+#, machine, plain1
 msgid "That key couldn't be saved."
 msgstr "Msingi huu hauwezi kuhifadhiwa."
 
@@ -16042,6 +16276,14 @@ msgstr "Mkoa wa Sahel"
 #, machine, plain1
 msgid "The Space could not be made."
 msgstr "Eneo hilo halikuweza kujengwa."
+
+#, machine, plain1, python-format
+msgid "The account @%(name)s is deleted."
+msgstr "Akaunti ya @%(name)s Iliondolewa."
+
+#, machine, plain1, python-format
+msgid "The account @%(name)s is made. They sign in with the username and password you gave."
+msgstr "Akaunti ya @%(name)s unaofanywa. Ingiza namba yako ya simu na password unayotaka."
 
 #, machine, plain1, python-format
 msgid "The account age must be a whole number of days, 0 to %(max)s."
@@ -16385,6 +16627,10 @@ msgstr "Idadi ya kura zilizopigwa katika kipindi cha siku saba zilizopita."
 #, machine, plain1, python-format
 msgid "The name %(host)s could not be found."
 msgstr "Majina ya %(host)s Haikuweza kupatikana."
+
+#, machine, plain1
+msgid "The newest of what they have done. Only the names of who they chat with are shown, never what a chat says: chats are end-to-end encrypted."
+msgstr "Kazi mpya wanayoifanya. Tu majina ya ambao wao kuzungumza na ni kuonyeshwa, kamwe nini chat anasema: chat ni mwisho-kwa-mwisho encrypted."
 
 #, machine, plain1
 msgid "The numbers are always shown on your profile. This decides who can open each list and see the accounts on it. An account is only listed where its own setting allows it too."
@@ -16736,12 +16982,20 @@ msgid "They already have this role."
 msgstr "Tayari wana jukumu hilo."
 
 #, machine, plain1
+msgid "They are 18 or over, so they can make their own account."
+msgstr "Wana umri wa miaka 18 au zaidi, hivyo wanaweza kufanya akaunti zao wenyewe."
+
+#, machine, plain1
 msgid "They are already in this circle."
 msgstr "Tayari wapo kwenye kundi hili."
 
 #, machine, plain1
 msgid "They are not told. Anyone you block leaves your circles."
 msgstr "Hawakuambiwa. Mtu yeyote ambaye anazuia majani yako."
+
+#, machine, plain1
+msgid "They are signed out everywhere. If they use chat, they may be asked for their recovery code."
+msgstr "Wao ni kutambuliwa kila mahali. Kama wao kutumia chat, wanaweza kuulizwa kwa ajili ya kodi zao ahueni."
 
 #, machine, plain1, python-format
 msgid "They aren't in %(circle)s."
@@ -16756,6 +17010,38 @@ msgid "They aren't muted here."
 msgstr "Hawana aibu hapa."
 
 #, machine, plain1
+msgid "They asked you to turn Private posting off."
+msgstr "Waliomba ruhusa ya kujiuzulu."
+
+#, machine, plain1
+msgid "They can buy and spend coins, tip, buy Premium and join or run paid circles."
+msgstr "Unaweza kununua na kutumia sarafu, ncha, kununua Premium kujiunga au kujiunga na vyama vya ushirika."
+
+#, machine, plain1
+msgid "They can comment."
+msgstr "Wanaweza kutoa maoni."
+
+#, machine, plain1
+msgid "They can host and join Spaces and run live threads. Voice calls in a Space also need Chat to be on."
+msgstr "Wanaweza kuhudhuria na kujiunga na nafasi na kukimbia nyuzi za kuishi. Sauti wito katika nafasi pia haja ya kuzungumza."
+
+#, machine, plain1
+msgid "They can make posts."
+msgstr "Wanaweza kufanya machapisho."
+
+#, machine, plain1
+msgid "They can message people, join group chats and make calls. The site never shows you what a chat says: chats are end-to-end encrypted. Whoever knows their password can still sign in and read them."
+msgstr "Wanaweza kutuma ujumbe kwa watu, kujiunga na mazungumzo ya kikundi na kufanya simu. Tovuti kamwe inaonyesha nini chat anasema: mazungumzo ni mwisho-kwa-mwisho encrypted. Mtu yeyote ambaye anajua jina lake anaweza kuingia na kusoma."
+
+#, machine, plain1
+msgid "They can post anonymously and start a guild. You can still see who wrote an anonymous post."
+msgstr "Wanaweza kuchapisha bila kujulikana na kuanza kikundi. Unaweza kuona ni nani aliyeandika makala isiyo na jina."
+
+#, machine, plain1
+msgid "They can see what you do on the site: your posts, comments, votes, bookmarks, follows, guilds, who you chat with, that your account was reported, and your recent sign-ins. The site never shows them what your chats say, because chats are end-to-end encrypted. But anyone who knows your password, a parent who chose it included, can sign in as you: change it in Security so that only you know it. They choose which of these are on for your account:"
+msgstr "Wanaweza kuona kile unachofanya kwenye tovuti: machapisho yako, maoni, kura, alama, ifuatavyo, vikundi, ambao unawasiliana nao, kwamba akaunti yako iliripotiwa, na saini zako za hivi karibuni. Tovuti kamwe inaonyesha yao nini chats yako kusema, kwa sababu mazungumzo ni mwisho-kwa-mwisho encrypted. Lakini mtu yeyote ambaye anajua nywila yako, mzazi aliyechagua ni pamoja na, anaweza kuingia kama wewe: kubadilisha katika usalama ili tu wewe kujua. Ni nani kati yao atakayechagua kutoka kwako"
+
+#, machine, plain1
 msgid "They can't comment on your posts or comments, chat with you or notify you by mentioning you. They are not told, but they may work it out if they try to comment on something of yours."
 msgstr "Hawawezi kutoa maoni juu ya machapisho yako au maoni, kuzungumza na wewe au kukujulisha kwa kukutaja. Hawaambiwi, lakini wanaweza kufanya kazi nje ikiwa wanajaribu kutoa maoni juu ya kitu chako."
 
@@ -16768,12 +17054,20 @@ msgid "They go straight to your coin balance."
 msgstr "Nenda moja kwa moja kwenye akaunti yako."
 
 #, machine, plain1
+msgid "They haven't asked for that."
+msgstr "Hawakuwa wanauliza hivyo."
+
+#, machine, plain1
 msgid "They need to be in the guild, and not exiled from it."
 msgstr "Wanapaswa kuwa katika chama, na si kuhamishwa kutoka kwao."
 
 #, machine, plain1
 msgid "They need to join the channel first."
 msgstr "Unahitaji kuingia channel ya kwanza."
+
+#, machine, plain1
+msgid "They say they are 18 or over and asked you to release their account. If you do, it becomes their own and you can no longer see it."
+msgstr "Wanasema wana umri wa miaka 18 au zaidi na wanakuomba ufungue akaunti yao. Kama unaweza kufanya hivyo, ni wao wenyewe na huwezi kuona tena."
 
 #, machine, plain1
 msgid "They're already a helper."
@@ -16888,6 +17182,14 @@ msgstr "Akaunti hii imesimamishwa kwa muda %(site)sAngalia nyuma baadaye."
 #, machine, plain1
 msgid "This account is private"
 msgstr "Akaunti hii ni ya binafsi"
+
+#, machine, plain1
+msgid "This account is suspended."
+msgstr "Akaunti hii imefutwa."
+
+#, machine, plain1
+msgid "This account owes money, so it can't be deleted yet."
+msgstr "Akaunti hii ina deni la fedha, hivyo haiwezi kufutwa bado."
 
 #, machine, plain1
 msgid "This account posts about sensitive topics"
@@ -17023,6 +17325,10 @@ msgstr "Hii ni akaunti ya chakula na akaunti"
 #, machine, plain1
 msgid "This curation's rules took too long to run. Its owner can make them narrower."
 msgstr "Utaratibu huu wa chakula unachukua muda mrefu. Hata hivyo, mmiliki wake anaweza kuwavutia zaidi."
+
+#, machine, plain1
+msgid "This deletes their account and everything on it. It can't be undone. You can download their data first."
+msgstr "Hii inafungua akaunti yako na kila kitu. Haiwezi kuharibiwa. Unaweza kushusha data yako kwanza."
 
 #, machine, plain1
 msgid "This draft hasn't been published."
@@ -17353,6 +17659,10 @@ msgid "Thu"
 msgstr "Kuwa"
 
 #, machine, plain1
+msgid "Tick the box to agree to the Terms for them."
+msgstr "Piga sanduku kukubaliana na Masharti kwa ajili yao."
+
+#, machine, plain1
 msgid "Tick the box to agree to the rules first."
 msgstr "Weka sanduku kukubaliana na sheria kwanza."
 
@@ -17624,6 +17934,10 @@ msgstr "Kuwa"
 #, machine, plain1
 msgid "Turanian Steppe"
 msgstr "Hatua ya"
+
+#, machine, plain1
+msgid "Turn it off"
+msgstr "Acha kuwa mbali"
 
 #, machine, plain1, python-format
 msgid "Turn off notifications from +%(guild)s"
@@ -18081,6 +18395,10 @@ msgstr "Kuongeza bendera"
 #, machine, plain1
 msgid "Upload picture"
 msgstr "Ongeza picha"
+
+#, machine, plain1
+msgid "Upvote"
+msgstr "Ya juu"
 
 #, glossary, machine, plain1
 msgctxt "verb"
@@ -18790,6 +19108,10 @@ msgid "Where you are, the law means your age has to be confirmed with an age-che
 msgstr "Ambapo uko, sheria inamaanisha umri wako lazima uthibitishwe na huduma ya ukaguzi wa umri kabla ya kuona maudhui nyeti au lugha kali."
 
 #, machine, plain1
+msgid "Where you are, your age has to be confirmed with an age-check service before you can make a child account."
+msgstr "Ambapo wewe ni, umri wako lazima kuthibitishwa na huduma ya kuangalia umri kabla ya kufanya akaunti ya mtoto."
+
+#, machine, plain1
 msgid "Where you are, your age has to be confirmed with an age-check service."
 msgstr "Ambapo wewe ni, umri wako ni kuthibitishwa na huduma ya kuangalia umri."
 
@@ -18881,9 +19203,17 @@ msgstr "Nani wa kuamua"
 msgid "Who follows you"
 msgstr "Nani anayekufuata wewe"
 
+#, machine, plain1
+msgid "Who reported them, and what they wrote, isn't shown to anyone but the admins."
+msgstr "Wale walioripoti, na kile walichoandika, hawakuonyeshwa kwa mtu yeyote isipokuwa wasimamizi."
+
 #, glossary, machine, plain1
 msgid "Who subscribes to your Circle"
 msgstr "Wanaojisajili kwenye Mduara wako"
+
+#, machine, plain1
+msgid "Who they chat with"
+msgstr "Ambao ni kuzungumza na"
 
 #, machine, plain1
 msgid "Who to follow"
@@ -19264,10 +19594,18 @@ msgctxt "guildmaster action"
 msgid "Yank post"
 msgstr "Ujumbe wa Yahoo"
 
+#, machine, plain1
+msgid "Year"
+msgstr "Mwaka wa Mwaka"
+
 #, glossary, machine, plain1
 msgctxt "time range"
 msgid "Year"
 msgstr "Mwaka"
+
+#, machine, plain1
+msgid "Year they were born"
+msgstr "Mwaka ambao walizaliwa"
 
 #, machine, plain1
 msgctxt "colour"
@@ -19430,6 +19768,14 @@ msgid "You aren't subscribed to that circle."
 msgstr "Wewe si kutambuliwa katika kundi hili."
 
 #, machine, plain1
+msgid "You asked your parent or guardian to release your account. They haven't answered yet."
+msgstr "Mtakapomjua huyo Baba, mtafahamu ya kuwa Yeye tu ni muhimu kwenu (Maria Mtakatifu amenena hayo kwa nguvu na amkazo sana). Bado hawajajibu."
+
+#, machine, plain1
+msgid "You asked your parent or guardian to turn this off. They haven't answered yet."
+msgstr "Ili uwe mzazi au mlezi ni lazima uwe mlezi. Bado hawajajibu."
+
+#, machine, plain1
 msgid "You can add pictures at 500 Rep, or earlier with Premium"
 msgstr "Unaweza kuongeza picha kwenye Reputation ya 500, au mapema na Premium"
 
@@ -19520,6 +19866,16 @@ msgstr[0] "Unaweza kupata channel zaidi ya moja."
 msgstr[1] "Unaweza kutumia njia zaidi ya %(num)s."
 
 #, machine, plain1, python-format
+msgid "You can have at most %(num)s child account."
+msgid_plural "You can have at most %(num)s child accounts."
+msgstr[0] "Unaweza kuwa na akaunti zaidi ya moja ya watoto."
+msgstr[1] "Unaweza kuwa na akaunti zaidi ya %(num)s ya watoto."
+
+#, machine, plain1, python-format
+msgid "You can have at most %(num)s child accounts."
+msgstr "Unaweza kuwa na zaidi %(num)s Akaunti za watoto."
+
+#, machine, plain1, python-format
 msgid "You can host at most %(num)s Space a day."
 msgid_plural "You can host at most %(num)s Spaces a day."
 msgstr[0] "Unaweza kuwa mwenyeji wa nafasi zaidi ya %(num)s kwa siku."
@@ -19546,6 +19902,10 @@ msgid "You can look around and set up your profile; posting, comments, votes and
 msgstr "Unaweza kuangalia karibu na kuanzisha profile yako; posting, maoni, kura na ifuatavyo wazi mara moja hundi ni kufanyika."
 
 #, machine, plain1, python-format
+msgid "You can make %(num)s child accounts a day. Try again tomorrow."
+msgstr "Unaweza kufanya %(num)s mtoto kwa siku moja. Jaribu tena kesho."
+
+#, machine, plain1, python-format
 msgid "You can make %(num)s proposal a day."
 msgid_plural "You can make %(num)s proposals a day."
 msgstr[0] "Unaweza kufanya pendekezo moja kwa siku."
@@ -19556,6 +19916,10 @@ msgid "You can make %(num)s wiki edit a day in a guild. Try again tomorrow."
 msgid_plural "You can make %(num)s wiki edits a day in a guild. Try again tomorrow."
 msgstr[0] "Unaweza kufanya hariri ya wiki %(num)s kwa siku katika kikundi. Jaribu tena kesho."
 msgstr[1] "Unaweza kufanya hariri za wiki za %(num)s kwa siku katika kikundi. Jaribu tena kesho."
+
+#, machine, plain1
+msgid "You can make a child account once your own account is confirmed as 18 or over. You can say so in Settings > Content."
+msgstr "Unaweza kufanya akaunti ya mtoto mara tu akaunti yako imethibitishwa kama 18 au zaidi. Unaweza kusema hivyo katika Mipangilio > Maudhui."
 
 #, machine, plain1
 msgid "You can only create up to 2 guilds per day. Try again later."
@@ -19850,6 +20214,10 @@ msgid "You don't have Premium right now."
 msgstr "Wewe huna Premium kwa sasa."
 
 #, machine, plain1
+msgid "You don't have a child account called that."
+msgstr "Hakuna akaunti ya mtoto inayoitwa."
+
+#, machine, plain1
 msgid "You don't have a coin to redeem."
 msgstr "Huna haja ya kuwa na sarafu ya kulipa."
 
@@ -19950,6 +20318,10 @@ msgstr "Wewe umeinuliwa kutoka juu.+%(guild)s."
 #, machine, plain1
 msgid "You have left the creator fund."
 msgstr "Umeacha Mfuko wa Muumba."
+
+#, machine, plain1, python-format
+msgid "You have made %(num)s child accounts in the last %(days)s days. Try again later."
+msgstr "Umefanya ya %(num)s Akaunti za watoto katika siku za mwisho %(days)s ya siku. Jaribu tena baadaye."
 
 #, machine, plain1
 msgid "You have muted this guild. Its posts stay out of All, For You and Following. Visit your settings or click the <i class='fas fa-ellipsis-h text-small'></i> icon to unmute it."
@@ -20350,12 +20722,20 @@ msgid "Your account can also post new items from feeds by itself, while you keep
 msgstr "Akaunti yako inaweza pia kuchapisha vitu vipya kutoka kwa malisho yenyewe, wakati unaendelea kuitumia kama unavyofanya sasa. Kila moja ya machapisho hayo ni alama kama automatiska, na watu wanaoficha maudhui ya bot hawayaoni. Machapisho yako mwenyewe, maoni, kura na mazungumzo ni unchanged. Waziri Mkuu ameyasema hayo kwanza."
 
 #, machine, plain1
+msgid "Your account can't post automatically while it is age-restricted."
+msgstr "Akaunti yako haiwezi kuchapisha moja kwa moja wakati imewekwa upya."
+
+#, machine, plain1
 msgid "Your account can't post automatically while it is suspended."
 msgstr "Akaunti yako haiwezi kuchapisha moja kwa moja wakati imesimamishwa."
 
 #, machine, plain1
 msgid "Your account can't publish right now."
 msgstr "Akaunti yako haiwezi kuchapishwa kwa sasa."
+
+#, machine, plain1
+msgid "Your account can't run a bot while it is age-restricted."
+msgstr "Akaunti yako haiwezi kuendesha bot wakati imewekwa."
 
 #, machine, plain1
 msgid "Your account cannot upload right now."
@@ -20376,6 +20756,10 @@ msgstr "Akaunti yako imekuwa checked na ni tayari: unaweza sasa post, maoni, kur
 #, machine, plain1
 msgid "Your account has been deleted"
 msgstr "Akaunti yako imefutwa"
+
+#, machine, plain1, python-format
+msgid "Your account has the child lock on, held by your parent or guardian, since %(date)s."
+msgstr "Mtoto wako ana haki ya kurithi mali ya baba yake au mama yake. %(date)s."
 
 #, machine, plain1, python-format
 msgid "Your account has the child lock on, since %(date)s."
@@ -20428,6 +20812,9 @@ msgstr ""
 "\n"
 "\n"
 "Kuruka kusubiri, kuongeza na kuthibitisha anwani ya barua pepe katika [Settings > Usalama](/settings/security."
+
+msgid "Your account is your own now. It no longer has the child lock and your parent or guardian can no longer see it. They chose your password: change it in [Settings > Security](/settings/security), or they can still sign in as you."
+msgstr ""
 
 #, machine, plain1
 msgid "Your account needs to be at least 30 days old to post automatically."
@@ -20529,6 +20916,10 @@ msgstr "Mazungumzo yako ni ya mwisho-kwa-mwisho encrypted, na tovuti haiwezi kus
 #, machine, plain1, python-format
 msgid "Your chats run on Matrix, an open standard, on %(site)s's own chat server. Besides Chat on this site, you can use them in a Matrix app such as Element (web, desktop and the classic phone apps), FluffyChat or Cinny. They stay end-to-end encrypted there too."
 msgstr "Mazungumzo yako kukimbia juu ya Matrix, kiwango wazi, juu ya %(site)s mwenyewe chat server. Mbali na Chat kwenye tovuti hii, unaweza kutumia yao katika programu Matrix kama vile Element (web, desktop na programu classic simu), FluffyChat au Cinny. Pia, wao ni wa mwisho na wa mwisho hapa."
+
+#, machine, plain1
+msgid "Your child accounts will be deleted with yours."
+msgstr "Akaunti yako ya mtoto itaondolewa na akaunti yako."
 
 #, glossary, machine, plain1
 msgid "Your circles"
@@ -20673,8 +21064,49 @@ msgstr[0] ""
 msgstr[1] ""
 
 #, machine, plain1
+msgid "Your own password"
+msgstr "Password yako mwenyewe"
+
+#, machine, plain1
+msgid "Your parent or guardian didn't agree to release your account."
+msgstr "Mzazi au mlezi wako hakukubali kutoa akaunti yako."
+
+#, machine, plain1
+msgid "Your parent or guardian has been asked to release your account. Nothing changes until they answer."
+msgstr "Mzazi au mlezi wako anaombwa afungue akaunti yako. Hakuna mabadiliko yoyote mpaka pale watakapojibu."
+
+#, machine, plain1
+msgid "Your parent or guardian has been asked to turn Private posting off."
+msgstr "Mzazi au mlezi wako anaombwa aachiliwe huru."
+
+#, machine, plain1
 msgid "Your parent or guardian has to agree before Private posting can be turned off."
 msgstr "Mzazi au mlezi wako lazima kukubaliana kabla ya kutuma binafsi inaweza kuwa akageuka mbali."
+
+#, machine, plain1
+msgid "Your parent or guardian has turned this off for your account."
+msgstr "Mzazi au mlezi unatakiwa uwe mlezi."
+
+msgid "Your parent or guardian made this account for you. They can see what you do on the site (your posts, comments, votes, bookmarks, follows, guilds, who you chat with, that your account was reported and your recent sign-ins; the site never shows them what your chats say) and they choose which features are on. You can see which in [Settings > Content](/settings/content). They chose your password: change it in [Settings > Security](/settings/security) so that only you know it, because anyone who knows it can sign in as you and read your chats."
+msgstr ""
+
+msgid "Your parent or guardian set a new password for your account and you were signed out. Sign in with the new password, then change it in [Settings > Security](/settings/security) so that only you know it."
+msgstr ""
+
+msgid "Your parent or guardian stopped managing your account. It keeps the child lock until you confirm your age in Settings > Content. They chose your password: change it in [Settings > Security](/settings/security), or they can still sign in as you."
+msgstr ""
+
+#, machine, plain1
+msgid "Your parent or guardian turned Private posting off for your account."
+msgstr "Mzazi au mlezi wako ana wajibu wa kutunza kumbukumbu zako."
+
+#, machine, plain1
+msgid "Your parent or guardian wants Private posting to stay on."
+msgstr "Mzazi au mlezi wako anataka uwe mlezi."
+
+#, machine, plain1
+msgid "Your parent or guardian's account was suspended, so yours is suspended until theirs is back."
+msgstr "Mzazi au mlezi wako amesimamishwa kazi na wewe mpaka watakaporudishwa kwako."
 
 #, machine, plain1
 msgid "Your password"
@@ -21034,6 +21466,10 @@ msgid "and %(num)s more"
 msgid_plural "and %(num)s more"
 msgstr[0] "%(num)s zaidi ya"
 msgstr[1] "zaidi ya %(num)s"
+
+#, machine, plain1
+msgid "anonymous"
+msgstr "jina la mtumiaji"
 
 #, machine, plain1
 msgctxt "guildmaster permission"
@@ -21479,6 +21915,10 @@ msgstr "onyesho la awali la kiungo"
 msgid "links"
 msgstr "viungo vya viungo"
 
+#, machine, plain1
+msgid "looked at by the admins"
+msgstr "angalia kwa admins"
+
 #. after the moderator's name in a guild's moderation log
 #, machine, plain1
 msgid "made a channel"
@@ -21685,6 +22125,10 @@ msgstr "Kurudishwa kwa %(target)s"
 #, machine, plain1, python-format
 msgid "reinstated post %(target)s"
 msgstr "ukurasa wa mbele %(target)s"
+
+#, machine, plain1
+msgid "removed"
+msgstr "kuondolewa"
 
 #. follows the moderator's name in a guild's moderation log; %(target)s is a
 #. link

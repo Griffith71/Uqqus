@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ruqqus VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-11-05 16:56+1100\n"
+"POT-Creation-Date: 2026-11-05 20:16+1100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: hu\n"
@@ -1503,12 +1503,24 @@ msgid "(allow beats deny; the channel's own rules apply to everyone else)"
 msgstr "(engedélyezze a beat tagadás; a csatorna saját szabályai vonatkoznak mindenki másra)"
 
 #, machine, plain1
+msgid "(empty)"
+msgstr "(üres)"
+
+#, machine, plain1
 msgid "(for a stage channel: the post's address or id)"
 msgstr "(színpadi csatorna esetében: a posta címe vagy azonosítója)"
 
 #, machine, plain1
 msgid "(from the original)"
 msgstr "(eredeti)"
+
+#, machine, plain1
+msgid "(in a private place)"
+msgstr "(magánhelyen)"
+
+#, machine, plain1
+msgid "(no title)"
+msgstr "(cím nélkül)"
 
 #, glossary, machine, plain1
 msgid "(off)"
@@ -2063,6 +2075,10 @@ msgid "<strong>Username:</strong> %(name)s"
 msgstr "<strong>Felhasználónév:</strong> %(name)s"
 
 #, machine, plain1, python-format
+msgid "@%(name)s - %(site)s"
+msgstr "@%(name)s - %(site)s"
+
+#, machine, plain1, python-format
 msgid "@%(name)s - Bots - %(site)s"
 msgstr "@ %(name)s - Botok - %(site)s"
 
@@ -2077,6 +2093,10 @@ msgstr "@ %(name)s hozzáadva %(curation)s."
 #, python-format
 msgid "@%(name)s asked to publish a shared draft you write: your vote counts. [Open the draft](%(link)s)"
 msgstr ""
+
+#, machine, plain1, python-format
+msgid "@%(name)s asked you to turn Private posting off for their account. You can answer in [Settings > Children](/settings/children)."
+msgstr "@ %(name)s megkért, hogy kapcsold ki a Private posztolást a számlájukra. Válaszolhat a [Beállítások > gyermekek] (/settings/children) rovatban."
 
 #, machine, plain1, python-format
 msgid "@%(name)s blocked."
@@ -2120,6 +2140,10 @@ msgstr ""
 #, python-format
 msgid "@%(name)s forwarded [a post](%(link)s) to +%(guild)s."
 msgstr ""
+
+#, machine, plain1, python-format
+msgid "@%(name)s has a new password and is signed out everywhere."
+msgstr "@ %(name)s van egy új jelszó, és ki van írva mindenhol."
 
 #, machine, plain1, python-format
 msgid "@%(name)s has already been invited."
@@ -2289,6 +2313,10 @@ msgstr ""
 msgid "@%(name)s reposted [a post](%(link)s)."
 msgstr ""
 
+#, machine, plain1, python-format
+msgid "@%(name)s says they are 18 or over and asked you to release their account. You can answer in [Settings > Children](/settings/children)."
+msgstr "@ %(name)s azt mondja, hogy 18 vagy több, és kérte, hogy tegye közzé a számla. Válaszolhat a [Beállítások > gyermekek] (/settings/children) rovatban."
+
 #, python-format
 msgid "@%(name)s shared [a story](%(link)s)."
 msgstr ""
@@ -2320,6 +2348,10 @@ msgstr "@ %(name)s száműzték + %(guild)s"
 #, machine, plain1, python-format
 msgid "@%(name)s was muted in +%(guild)s's channels."
 msgstr "@ %(name)s a + %(guild)s csatornáiban volt."
+
+#, machine, plain1, python-format
+msgid "@%(name)s's age was confirmed as 18 or over, so their account is their own now and you can no longer see it."
+msgstr "@ %(name)s kor megerősítette, hogy 18 vagy több, így a számla a saját most, és már nem látni."
 
 #, python-format
 msgid "@%(name)s's new posts will go into #%(channel)s."
@@ -2802,6 +2834,10 @@ msgstr "Egy élő szál megjegyzéseket tesz, nem üzeneteket."
 #, machine, plain1
 msgid "A member"
 msgstr "Egy tag"
+
+#, machine, plain1
+msgid "A member reported this account."
+msgstr "Egy tag jelentette ezt a számlát."
 
 #, machine, plain1, python-format
 msgid "A message can be at most %(count)s character."
@@ -3906,6 +3942,11 @@ msgid "An update can be at most %(num)s character."
 msgid_plural "An update can be at most %(num)s characters."
 msgstr[0] "A frissítés lehet legfeljebb %(num)s karakter."
 
+#, machine, plain1, python-format
+msgid "And %(num)s private guild, which isn't named."
+msgid_plural "And %(num)s private guilds, which aren't named."
+msgstr[0] "És %(num)s Privát céhek, amiket nem neveztek el."
+
 #, machine, plain1
 msgid "Animals"
 msgstr "Állatok"
@@ -3961,6 +4002,10 @@ msgstr "Névtelen"
 msgctxt "label"
 msgid "Anonymous"
 msgstr "Névtelen"
+
+#, machine, plain1
+msgid "Anonymous posting and starting guilds"
+msgstr "Névtelen kiküldetés és indító céhek"
 
 #, machine, plain1
 msgid "Anonymous posts and comments count for you like any other. Your points and earnings are shown only to you; the site's admins see the payout list."
@@ -4171,6 +4216,14 @@ msgstr "Aryan Highlands"
 #, machine, plain1
 msgid "As an author you edit the draft live with them, and every character you type is credited to you. Once the post is published, anyone who can see it can see who wrote what. The authors decide together:"
 msgstr "Íróként a draft szerkesztése él velük, és minden karakter, amit gépel, az Ön számára jóváírható. Amint kiadják a posztot, bárki láthatja, ki mit írt. A szerzők közösen döntenek:"
+
+#, machine, plain1
+msgid "Ask my parent to turn it off"
+msgstr "Kérd meg a szüleimet, hogy kapcsolják ki"
+
+#, machine, plain1
+msgid "Asked you"
+msgstr "Megkérdeztem"
 
 #, machine, plain1, python-format
 msgid "At least %(count)s comments"
@@ -4632,6 +4685,10 @@ msgstr "Fénykép-, hang- vagy videós oszlopok előhívása"
 #, machine, plain1
 msgid "Boost for this curation's guilds and accounts"
 msgstr "Ennek a kalkulált takarmány-alapítványnak és -számláknak a támogatása"
+
+#, machine, plain1
+msgid "Born"
+msgstr "Született"
 
 #, machine, plain1
 msgid "Bot keys"
@@ -5131,6 +5188,10 @@ msgid "Chat isn't answering right now. Try again in a moment."
 msgstr "Most nem veszi fel. Próbáld újra egy pillanat alatt."
 
 #, machine, plain1
+msgid "Chat, group chats and calls"
+msgstr "Chat, csoportos chat és hívás"
+
+#, machine, plain1
 msgctxt "guildmaster action"
 msgid "Chatban user"
 msgstr "Chatban felhasználó"
@@ -5154,6 +5215,14 @@ msgstr "Kémia"
 #, machine, plain1
 msgid "Child - also hide profanity and sensitive content"
 msgstr "Gyermek - elfedi a káromkodást és az érzékeny tartalmat"
+
+#, machine, plain1
+msgid "Children"
+msgstr "Gyermekek"
+
+#, machine, plain1, python-format
+msgid "Children - %(site)s"
+msgstr "Gyermekek - %(site)s"
 
 #. "Sign in with ..." is the button the Matrix app shows for this site's
 #. sign-in
@@ -5486,6 +5555,10 @@ msgid "Coins received: %(recent)s in the last 30 days &middot; %(total)s in all.
 msgstr "Érméket kapott: %(recent)s az elmúlt 30 napban &middot; %(total)s összesen. Egyenesen az érmére mennek."
 
 #, machine, plain1
+msgid "Coins, tips, Premium and paid circles"
+msgstr "Érmék, tippek, Premium és fizetett körök"
+
+#, machine, plain1
 msgid "Collaborative"
 msgstr "Együttműködés"
 
@@ -5549,6 +5622,10 @@ msgstr "Megjegyzés könyvjelzővel."
 #, glossary, machine, plain1
 msgid "Comment posted!"
 msgstr "Hozzászólás elküldve!"
+
+#, machine, plain1
+msgid "Commenting"
+msgstr "Megjegyzés"
 
 #, glossary, machine, plain1
 msgid "Comments"
@@ -6193,8 +6270,16 @@ msgid "Delete role"
 msgstr "Szerepek törlése"
 
 #, machine, plain1
+msgid "Delete the account"
+msgstr "A számla törlése"
+
+#, machine, plain1
 msgid "Delete the published post"
 msgstr "A közzétett bejegyzés törlése"
+
+#, machine, plain1
+msgid "Delete this account"
+msgstr "A számla törlése"
 
 #, machine, plain1
 msgid "Delete this category? Its channels stay."
@@ -6255,6 +6340,10 @@ msgstr "Törölni egy fájlt a Drive-on, vagy kikapcsolni, eltávolítani a posz
 #, machine, plain1
 msgid "Deleting a file there, or disconnecting, removes it from your posts."
 msgstr "Törölni egy fájlt ott, vagy kikapcsolni, eltávolítani a hozzászólásokat."
+
+#, machine, plain1
+msgid "Deleting your account also deletes your child accounts. You can download their data first in Settings > Children."
+msgstr "A számlájának törlése szintén törli gyermekszámláit. Az adatokat először a Beállítások > -ban lehet letölteni Gyerekek."
 
 #, machine, plain1
 msgid "Density"
@@ -6495,6 +6584,10 @@ msgid "Done"
 msgstr "Kész"
 
 #, machine, plain1
+msgid "Download"
+msgstr "Letöltés"
+
+#, machine, plain1
 msgctxt "button"
 msgid "Download"
 msgstr "Letöltés"
@@ -6508,8 +6601,16 @@ msgid "Download the recording"
 msgstr "A felvétel letöltése"
 
 #, machine, plain1
+msgid "Download their data"
+msgstr "Adataik letöltése"
+
+#, machine, plain1
 msgid "Download your data"
 msgstr "Az adatok letöltése"
+
+#, machine, plain1
+msgid "Downvote"
+msgstr "Lemondás"
 
 #, glossary, machine, plain1
 msgctxt "verb"
@@ -6836,6 +6937,10 @@ msgstr "Adja meg a feed szerver címét."
 msgid "Enter the feed's address."
 msgstr "Adja meg az adás címét."
 
+#, machine, plain1
+msgid "Enter the month and year they were born."
+msgstr "Adja meg a születésük hónapját és évét."
+
 #, machine, plain1, python-format
 msgid "Enter the six-digit code generated in the authenticator app and your %(site)s account password."
 msgstr "Adja meg a hitelesítő alkalmazásban generált hatjegyű kódot és a %(site)s fiók jelszavát."
@@ -7006,6 +7111,10 @@ msgstr "Mindenki úgy látja egymás változásait, ahogy gépelnek, és minden 
 #, machine, plain1
 msgid "Everything from your guilds and accounts, newest first."
 msgstr "Minden a céh és a számlák közül, a legújabb."
+
+#, machine, plain1
+msgid "Everything they post goes only to their Friends circle. Turn it off to let them post in public."
+msgstr "Minden, amit posztolnak, csak a Jóbarátaik köreibe kerül. Kapcsold ki, hogy nyilvánosan kiküldhessék."
 
 #, machine, plain1
 msgid "Everything you post goes only to your Friends circle, the people you follow who follow you back, so nothing is public by accident. Your circles can only hold people like that, and you can't forward, repost or write a shared draft. Comments on other people's posts are still public."
@@ -7656,6 +7765,10 @@ msgstr "Barátok"
 msgctxt "circle name"
 msgid "Friends"
 msgstr "Barátok"
+
+#, machine, plain1
+msgid "Friends circle"
+msgstr "Baráti kör"
 
 #, machine, plain1
 msgid "Friends is everyone you follow who follows you back. To share with family, a team or anyone else, make a circle first, then pick it here."
@@ -8459,6 +8572,10 @@ msgstr "Vadászat"
 msgid "I accept the <a href=\"%(url)s\" target=\"_blank\">terms and conditions</a>"
 msgstr "Elfogadom a <a href=\"%(url)s\" target=\"_blank\">feltételek</a>"
 
+#, machine, plain1, python-format
+msgid "I agree to the <a href=\"%(url)s\" target=\"_blank\">Terms</a> for them."
+msgstr "Egyetértek a <a href=\"%(url)s\" target=\"_blank\">Feltételek</a> Nekik."
+
 #, machine, plain1
 msgid "I agree to the rules below."
 msgstr "Egyetértek az alábbi szabályokkal."
@@ -8494,6 +8611,10 @@ msgstr "Ha van egy e-mail cím kapcsolatban van a fiók, akkor használja vissza
 #, machine, plain1
 msgid "If this was you, there is nothing to do."
 msgstr "Ha ez te lennél, nem lenne mit tenni."
+
+#, machine, plain1
+msgid "If you are 18 or over, say so and your parent or guardian will be asked to release your account."
+msgstr "Ha Ön 18 éves vagy annál idősebb, mondja ezt, és a szüleit vagy gyámjukat felkérik, hogy bocsássák ki számláját."
 
 #, machine, plain1
 msgid "If you don't have your 2FA device, enter one of your backup codes instead. Each backup code works once. An account that never made backup codes can enter its Recovery Code, which also turns 2FA off."
@@ -8870,6 +8991,14 @@ msgid "It shows, in full, every word and phrase the word filter looks for, in ev
 msgstr "Teljes egészében megmutatja, minden szót és kifejezést, amit a szûrõ keres, minden nyelven. Ez magában foglalja a sturst és más rendkívül sértő nyelvet."
 
 #, machine, plain1
+msgid "It stays a child account with the child lock, but you can no longer see it or change what it can do, and you can't link it again."
+msgstr "Ez marad a gyermek számla a gyermek zár, de már nem látni, vagy változtatni, amit tud, és nem tudja összekapcsolni újra."
+
+#, machine, plain1
+msgid "It stays on the Child word filter, which hides profanity and anything marked sensitive."
+msgstr "A Gyermek szó szűrőn marad, ami elrejti a káromkodást, és mindent, ami érzékeny."
+
+#, machine, plain1
 msgid "It stays on the Child word filter, which hides profanity and anything marked sensitive. Chat, Spaces, coins, anonymous posting and starting a guild are off, and others can't start a chat or tip you. Your posts go to your Friends circle only unless you turn Private posting off."
 msgstr "A Gyermek szó szűrőn marad, ami elrejti a káromkodást, és mindent, ami érzékeny. Chat, Spaces, érmék, névtelen kiküldetés és a céh indítása lefújva, és mások nem tudnak elkezdeni egy beszélgetést vagy borravalót. A beosztásaid csak akkor mennek a Jóbarátok körére, ha nem kapcsolod ki a Közlegényt."
 
@@ -9029,6 +9158,10 @@ msgstr "Júniusi napforduló"
 #, machine, plain1
 msgid "K-Pop"
 msgstr "K- Pop"
+
+#, machine, plain1
+msgid "Keep it on"
+msgstr "Tartsd magadon"
 
 #, machine, plain1
 msgid "Keep my posts out of All"
@@ -9299,6 +9432,10 @@ msgstr "Leonyid meteoreső"
 msgid "Letters spaced out or split by dots or other marks are read as one word."
 msgstr "A különböző betűkkel osztott vagy pontokkal kettéosztott betűket vagy más jelöléseket egyetlen szóként kell értelmezni."
 
+#, machine, plain1
+msgid "Letters, numbers and underscores, 3 to 25 characters."
+msgstr "Levelek, számok és aláhúzások, 3-25 karakter."
+
 #, glossary, machine, plain1
 msgid "Lifestyle"
 msgstr "Életmód"
@@ -9535,6 +9672,10 @@ msgstr "Holdújév"
 msgid "Lyrids meteor shower"
 msgstr "Lyrids meteoreső"
 
+#, machine, plain1, python-format
+msgid "Made on %(date)s."
+msgstr "Made on %(date)s."
+
 #, glossary, machine, plain1
 msgid "Made with AI"
 msgstr "MI-vel készült"
@@ -9553,6 +9694,10 @@ msgid "Make a channel"
 msgstr "Csatorna"
 
 #, machine, plain1
+msgid "Make a child account"
+msgstr "Gyermekszámla készítése"
+
+#, machine, plain1
 msgid "Make a circle people pay to be in, every 30 days, for what you share with it."
 msgstr "Egy kör emberek fizetnek, hogy minden 30 nap, amit megosztják vele."
 
@@ -9567,6 +9712,10 @@ msgstr "Make a page"
 #, machine, plain1
 msgid "Make a role"
 msgstr "Szerepet szerezni"
+
+#, machine, plain1
+msgid "Make an account for a child under 18 and decide what it can do. You can see what they do on the site (their posts, comments, votes, bookmarks, follows, guilds, the names of who they chat with and their recent sign-ins). The site never shows you what their chats say: chats are end-to-end encrypted. You choose their password, so until they change it you can sign in as them and read their chats: tell them to set their own. They are told all of this in their own Settings."
+msgstr "Számlát készíteni egy 18 év alatti gyermeknek, és eldönteni, mit tehet. Láthatják, mit csinálnak az oldalon (a posztok, észrevételek, szavazatok, könyvjelzők, követők, céhek, a nevek, akikkel beszélnek, és a legutóbbi bejelentések). Az oldal sosem mutatja meg, mit mondanak a beszélgetéseik: a beszélgetések végtől végig titkosítottak. Kiválasztod a jelszavukat, így amíg nem változtatnak rajta, bejelentkezhetsz, és elolvashatod a beszélgetéseiket: mondd meg nekik, hogy állítsák be a sajátjukat. Mindezt a saját beállításaikban mondják el."
 
 #, machine, plain1, python-format
 msgid "Make an app first in <a href=\"%(url)s\">Settings &gt; Apps</a>; a key works through it."
@@ -9898,6 +10047,10 @@ msgid "Mon"
 msgstr "H"
 
 #, machine, plain1
+msgid "Month"
+msgstr "Hónap"
+
+#, machine, plain1
 msgctxt "table heading"
 msgid "Month"
 msgstr "Hónap"
@@ -9906,6 +10059,10 @@ msgstr "Hónap"
 msgctxt "time range"
 msgid "Month"
 msgstr "Hónap"
+
+#, machine, plain1
+msgid "Month they were born"
+msgstr "Születésük hónapja"
 
 #, machine, plain1
 msgid "Monthly creator fund payouts"
@@ -10242,6 +10399,10 @@ msgstr "Új oldal: %(address)s"
 #, machine, plain1
 msgid "New paid circle"
 msgstr "Új fizetett kör"
+
+#, machine, plain1
+msgid "New password"
+msgstr "Új jelszó"
 
 #, machine, plain1
 msgid "New posts that are getting attention, with no account filling the page."
@@ -10625,6 +10786,10 @@ msgstr "Senki új nem tud feliratkozni. A jelenlegi előfizetők megtartják, am
 msgid "Nobody types here"
 msgstr "Itt senki sem ír"
 
+#, machine, plain1, python-format
+msgid "Nobody under %(age)s may have an account where you are."
+msgstr "A %(age)s alatt senkinek nem lehet számlája, ahol Ön van."
+
 #, machine, plain1
 msgid "Nobody yet."
 msgstr "Még senki."
@@ -10745,6 +10910,10 @@ msgstr "Az előfizetők kihagyása"
 #, machine, plain1
 msgid "Not trending any more"
 msgstr "Nem trendi többé"
+
+#, machine, plain1
+msgid "Not yet"
+msgstr "Még nem"
 
 #, glossary, machine, plain1
 msgid "Not your default:"
@@ -10867,6 +11036,10 @@ msgid "Nothing written yet."
 msgstr "Még semmi."
 
 #, machine, plain1
+msgid "Nothing yet."
+msgstr "Még semmi."
+
+#, machine, plain1
 msgid "Notification types"
 msgstr "Értesítéstípusok"
 
@@ -10913,6 +11086,10 @@ msgstr "Oceania"
 msgid "Oddly Satisfying"
 msgstr "Furcsa módon kielégítő"
 
+#, machine, plain1
+msgid "Off"
+msgstr "Ki"
+
 #. slow mode in a guild's channel is switched off.
 #, machine, plain1
 msgctxt "slow mode"
@@ -10939,6 +11116,10 @@ msgstr "Régi"
 #, machine, plain1
 msgid "Old Password"
 msgstr "Régi jelszó"
+
+#, machine, plain1
+msgid "On"
+msgstr "On"
 
 #. "On" marks a linked storage account that is in use
 #, machine, plain1
@@ -11014,6 +11195,10 @@ msgstr "Az egyik változtatás nem mutatható ki."
 #, machine, plain1
 msgid "One of those circles isn't yours any more. Choose again."
 msgstr "Az egyik kör már nem a tiéd. Válassz újra."
+
+#, machine, plain1
+msgid "One of your child accounts owes money, so your account can't be deleted yet."
+msgstr "Az egyik gyerekszámlája tartozik, így a számláját még nem lehet törölni."
 
 #, machine, plain1
 msgid "One-time codes for the day you lose your authenticator. Making a new set replaces every earlier code, used or not."
@@ -11335,6 +11520,10 @@ msgstr "Csak a posta szerzője és társszerzők posztolhatnak frissítéseket."
 #, machine, plain1
 msgid "Only the post's author and co-authors can run its live updates."
 msgstr "Csak a posta szerzője és társszerzői tudják futtatni az élő frissítéseket."
+
+#, machine, plain1
+msgid "Only used to check their age. It isn't kept."
+msgstr "Csak a korukat ellenőrizték. Nincs megtartva."
 
 #, machine, plain1
 msgid "Only when I turn them on"
@@ -12328,6 +12517,10 @@ msgid "Posted on that day."
 msgstr "Azon a napon."
 
 #, machine, plain1
+msgid "Posting"
+msgstr "Posting"
+
+#, machine, plain1
 msgid "Posting cooldown"
 msgstr "Hidegrázás"
 
@@ -13160,6 +13353,10 @@ msgid "Relationships"
 msgstr "Kapcsolatok"
 
 #, machine, plain1
+msgid "Release the account"
+msgstr "A számla felszabadítása"
+
+#, machine, plain1
 msgid "Religion"
 msgstr "Vallás"
 
@@ -13408,6 +13605,10 @@ msgstr "Jelentett üzenetek"
 msgctxt "noun"
 msgid "Reports"
 msgstr "Jelentések"
+
+#, machine, plain1
+msgid "Reports about them"
+msgstr "Jelentések róluk"
 
 #, machine, plain1
 msgid "Reports opened"
@@ -13745,6 +13946,10 @@ msgctxt "weekday"
 msgid "Sat"
 msgstr "Szaturáció"
 
+#, glossary, machine, plain1
+msgid "Save"
+msgstr "Mentés"
+
 #, machine, plain1
 msgctxt "button"
 msgid "Save"
@@ -14053,6 +14258,10 @@ msgid "See what is trending"
 msgstr "Látod, mi a divat"
 
 #, machine, plain1
+msgid "See what they do"
+msgstr "Lássuk, mit csinálnak"
+
+#, machine, plain1
 msgid "See your username"
 msgstr "Lásd a felhasználóneved"
 
@@ -14151,6 +14360,10 @@ msgstr "Szeptember napéjegyenlőség"
 #, machine, plain1
 msgid "Serious"
 msgstr "Súlyos"
+
+#, machine, plain1
+msgid "Set a new password"
+msgstr "Új jelszó beállítása"
 
 #, machine, plain1
 msgid "Set a price to let people pay to join."
@@ -14790,6 +15003,10 @@ msgid "Spaces"
 msgstr "Terek"
 
 #, machine, plain1
+msgid "Spaces and live threads"
+msgstr "Tűk és élő szálak"
+
+#, machine, plain1
 msgid "Spaces are started in the Spaces area."
 msgstr "A tereket a Spaces területen kezdik."
 
@@ -14924,6 +15141,14 @@ msgstr "Rögzített bejegyzés"
 #, machine, plain1
 msgid "Still here to read"
 msgstr "Még mindig olvasok"
+
+#, machine, plain1
+msgid "Stop managing"
+msgstr "A kezelés leállítása"
+
+#, machine, plain1
+msgid "Stop managing this account"
+msgstr "A számla kezelésének leállítása"
 
 #, machine, plain1
 msgid "Stop posting automatically"
@@ -15098,6 +15323,10 @@ msgstr "Támogatók…"
 #, machine, plain1
 msgid "Survival & Bushcraft"
 msgstr "Túlélés & Bushcraft"
+
+#, machine, plain1
+msgid "Suspended"
+msgstr "Felfüggesztve"
 
 #, machine, plain1, python-format
 msgid "Switch @%(name)s off for good? Its posts stay; the bot never posts again."
@@ -15571,6 +15800,10 @@ msgid "That isn't a valid username."
 msgstr "Ez nem egy érvényes felhasználónév."
 
 #, machine, plain1
+msgid "That isn't something you can switch."
+msgstr "Ezt nem lehet kicserélni."
+
+#, machine, plain1
 msgid "That key couldn't be saved."
 msgstr "A kulcsot nem lehetett megmenteni."
 
@@ -15801,6 +16034,14 @@ msgstr "Sahel-szigetek"
 #, machine, plain1
 msgid "The Space could not be made."
 msgstr "Az űrt nem sikerült létrehozni."
+
+#, machine, plain1, python-format
+msgid "The account @%(name)s is deleted."
+msgstr "A @ %(name)s fiókot el kell hagyni."
+
+#, machine, plain1, python-format
+msgid "The account @%(name)s is made. They sign in with the username and password you gave."
+msgstr "A számla @ %(name)s készült. Bejelentkeznek a felhasználónévvel és a jelszóval, amit adtál."
 
 #, machine, plain1, python-format
 msgid "The account age must be a whole number of days, 0 to %(max)s."
@@ -16138,6 +16379,10 @@ msgstr "Az elmúlt hét nap legszavazatosabb posztjai."
 #, machine, plain1, python-format
 msgid "The name %(host)s could not be found."
 msgstr "A %(host)s név nem található."
+
+#, machine, plain1
+msgid "The newest of what they have done. Only the names of who they chat with are shown, never what a chat says: chats are end-to-end encrypted."
+msgstr "A legújabb, amit tettek. Csak annak a nevét mutatjuk meg, akivel beszélgetnek, soha nem azt, amit egy beszélgetés mond: a beszélgetések végtől végéig titkosítottak."
 
 #, machine, plain1
 msgid "The numbers are always shown on your profile. This decides who can open each list and see the accounts on it. An account is only listed where its own setting allows it too."
@@ -16483,12 +16728,20 @@ msgid "They already have this role."
 msgstr "Már megvan nekik ez a szerep."
 
 #, machine, plain1
+msgid "They are 18 or over, so they can make their own account."
+msgstr "18 évesek vagy annál idősebbek, így saját számlájuk lehet."
+
+#, machine, plain1
 msgid "They are already in this circle."
 msgstr "Már ebben a körben vannak."
 
 #, machine, plain1
 msgid "They are not told. Anyone you block leaves your circles."
 msgstr "Nem mondták el nekik. Bárki, akit blokkolsz, elhagyja a köröket."
+
+#, machine, plain1
+msgid "They are signed out everywhere. If they use chat, they may be asked for their recovery code."
+msgstr "Mindenütt aláírták. Ha chat-et használnak, kérhetik a helyreállítási kódjukat."
 
 #, machine, plain1, python-format
 msgid "They aren't in %(circle)s."
@@ -16503,6 +16756,38 @@ msgid "They aren't muted here."
 msgstr "Itt nincsenek elnémítva."
 
 #, machine, plain1
+msgid "They asked you to turn Private posting off."
+msgstr "Megkértek, hogy kapcsold ki a közlegényt."
+
+#, machine, plain1
+msgid "They can buy and spend coins, tip, buy Premium and join or run paid circles."
+msgstr "Vásárolhatnak és költhetnek érméket, borravalót, vásárolhatnak Premium és csatlakozhatnak vagy futhatnak fizetett köröket."
+
+#, machine, plain1
+msgid "They can comment."
+msgstr "Kommentálhatják."
+
+#, machine, plain1
+msgid "They can host and join Spaces and run live threads. Voice calls in a Space also need Chat to be on."
+msgstr "Ők befogadják és csatlakoznak a Spaces-hez, és élő szálakat futtatnak. Hanghívások egy Space is kell chat be."
+
+#, machine, plain1
+msgid "They can make posts."
+msgstr "Posztolhatnak."
+
+#, machine, plain1
+msgid "They can message people, join group chats and make calls. The site never shows you what a chat says: chats are end-to-end encrypted. Whoever knows their password can still sign in and read them."
+msgstr "Üzenhetnek az embereknek, beszélgethetnek és telefonálhatnak. Az oldal soha nem mutatja meg, mit mond egy chat: chats endo-to-end titkosított. Bárki tudja a jelszavát, még bejelentkezhet és elolvashatja."
+
+#, machine, plain1
+msgid "They can post anonymously and start a guild. You can still see who wrote an anonymous post."
+msgstr "Névtelenül posztolhatnak, és alapíthatnak egy céheket. Még mindig láthatod, ki írt névtelen posztot."
+
+#, machine, plain1
+msgid "They can see what you do on the site: your posts, comments, votes, bookmarks, follows, guilds, who you chat with, that your account was reported, and your recent sign-ins. The site never shows them what your chats say, because chats are end-to-end encrypted. But anyone who knows your password, a parent who chose it included, can sign in as you: change it in Security so that only you know it. They choose which of these are on for your account:"
+msgstr "Láthatják, mit csinálsz az oldalon: a hozzászólásokat, a szavazatokat, a könyvjelzőket, a következő céheket, akikkel beszélsz, hogy a számládat jelentették, és a legutóbbi bejelentéseidet. Az oldal nem mutatja meg nekik, mit mondanak a beszélgetéseitek, mert a beszélgetések végtől-végig titkosítottak. De bárki, aki ismeri a jelszavad, egy szülő, aki ezt választotta, bejelentkezhet, mint te: megváltoztathatja a biztonságiaknál, hogy csak te tudd. Ők döntik el, hogy ezek közül melyik szerepel az Ön számláján:"
+
+#, machine, plain1
 msgid "They can't comment on your posts or comments, chat with you or notify you by mentioning you. They are not told, but they may work it out if they try to comment on something of yours."
 msgstr "Nem nyilatkozhatnak a hozzászólásaidról vagy a hozzászólásaidról, nem beszélgethetnek veled, és nem is értesíthetnek. Nem mondták el nekik, de talán megoldják, ha megpróbálják kommentálni a tiédet."
 
@@ -16515,12 +16800,20 @@ msgid "They go straight to your coin balance."
 msgstr "Egyenesen az érmére mennek."
 
 #, machine, plain1
+msgid "They haven't asked for that."
+msgstr "Ezt még nem kérték."
+
+#, machine, plain1
 msgid "They need to be in the guild, and not exiled from it."
 msgstr "A céhben kell lenniük, és nem száműzve."
 
 #, machine, plain1
 msgid "They need to join the channel first."
 msgstr "Először be kell lépniük a csatornába."
+
+#, machine, plain1
+msgid "They say they are 18 or over and asked you to release their account. If you do, it becomes their own and you can no longer see it."
+msgstr "Azt mondják, 18 évesek vagy annál idősebbek, és megkértek, hogy add ki a számlájukat. Ha megteszed, a sajátjukká válik, és nem látod többé."
 
 #, machine, plain1
 msgid "They're already a helper."
@@ -16634,6 +16927,14 @@ msgstr "Ezt a számlát ideiglenesen felfüggesztették a %(site)s -ről. Késő
 #, machine, plain1
 msgid "This account is private"
 msgstr "Ez a számla privát"
+
+#, machine, plain1
+msgid "This account is suspended."
+msgstr "Ezt a számlát felfüggesztem."
+
+#, machine, plain1
+msgid "This account owes money, so it can't be deleted yet."
+msgstr "Ez a számla tartozik, így még nem lehet törölni."
 
 #, machine, plain1
 msgid "This account posts about sensitive topics"
@@ -16768,6 +17069,10 @@ msgstr "Ez a kalkulált takarmány céhek és számlák"
 #, machine, plain1
 msgid "This curation's rules took too long to run. Its owner can make them narrower."
 msgstr "Túl sokáig tartott, míg ez a kurált takarmány szabálya életbe lépett. A tulaj szűkebbé teheti őket."
+
+#, machine, plain1
+msgid "This deletes their account and everything on it. It can't be undone. You can download their data first."
+msgstr "Ez törli a számlájukat és mindent rajta. Nem lehet visszacsinálni. Először letöltheted az adataikat."
 
 #, machine, plain1
 msgid "This draft hasn't been published."
@@ -17097,6 +17402,10 @@ msgid "Thu"
 msgstr "Thu"
 
 #, machine, plain1
+msgid "Tick the box to agree to the Terms for them."
+msgstr "Jelölje be a rovatot, hogy elfogadja a feltételeket."
+
+#, machine, plain1
 msgid "Tick the box to agree to the rules first."
 msgstr "Előbb jelölje meg a dobozt, hogy elfogadja a szabályokat."
 
@@ -17364,6 +17673,10 @@ msgstr "Sze"
 #, machine, plain1
 msgid "Turanian Steppe"
 msgstr "Turániai sztyeppe"
+
+#, machine, plain1
+msgid "Turn it off"
+msgstr "Kapcsold ki"
 
 #, machine, plain1, python-format
 msgid "Turn off notifications from +%(guild)s"
@@ -17820,6 +18133,10 @@ msgstr "Feltöltés banner"
 #, machine, plain1
 msgid "Upload picture"
 msgstr "Képfeltöltés"
+
+#, machine, plain1
+msgid "Upvote"
+msgstr "Szavazás"
 
 #, glossary, machine, plain1
 msgctxt "verb"
@@ -18529,6 +18846,10 @@ msgid "Where you are, the law means your age has to be confirmed with an age-che
 msgstr "Ahol Ön van, a törvény azt jelenti, hogy a korát meg kell erősíteni egy kor- check szolgáltatás, mielőtt látni érzékeny tartalom vagy erős nyelv."
 
 #, machine, plain1
+msgid "Where you are, your age has to be confirmed with an age-check service before you can make a child account."
+msgstr "Ahol Ön van, a kort korhatárral kell igazolni, mielőtt gyermekszámlát készíthetne."
+
+#, machine, plain1
 msgid "Where you are, your age has to be confirmed with an age-check service."
 msgstr "Ahol vagy, a korodat meg kell erősíteni egy korellenőrző szolgáltatással."
 
@@ -18620,9 +18941,17 @@ msgstr "Ki dönt"
 msgid "Who follows you"
 msgstr "Ki követ téged"
 
+#, machine, plain1
+msgid "Who reported them, and what they wrote, isn't shown to anyone but the admins."
+msgstr "Aki jelentette őket, és amit írtak, azt senki sem mutatta meg, csak az adminok."
+
 #, glossary, machine, plain1
 msgid "Who subscribes to your Circle"
 msgstr "Ki iratkozott fel a Körödre"
+
+#, machine, plain1
+msgid "Who they chat with"
+msgstr "Kivel beszélgetnek"
 
 #, machine, plain1
 msgid "Who to follow"
@@ -19003,10 +19332,18 @@ msgctxt "guildmaster action"
 msgid "Yank post"
 msgstr "Yank post"
 
+#, machine, plain1
+msgid "Year"
+msgstr "Év"
+
 #, glossary, machine, plain1
 msgctxt "time range"
 msgid "Year"
 msgstr "Év"
+
+#, machine, plain1
+msgid "Year they were born"
+msgstr "Születésük éve"
 
 #, machine, plain1
 msgctxt "colour"
@@ -19166,6 +19503,14 @@ msgid "You aren't subscribed to that circle."
 msgstr "Nem vagy előjegyezve arra a körre."
 
 #, machine, plain1
+msgid "You asked your parent or guardian to release your account. They haven't answered yet."
+msgstr "Megkérte a szüleit vagy a gyámjukat, hogy bocsássák ki a számlájukat. Még nem válaszoltak."
+
+#, machine, plain1
+msgid "You asked your parent or guardian to turn this off. They haven't answered yet."
+msgstr "Megkérted a szüleidet vagy a gyámodat, hogy kapcsold ki. Még nem válaszoltak."
+
+#, machine, plain1
 msgid "You can add pictures at 500 Rep, or earlier with Premium"
 msgstr "Képeket is hozzáadhat 500 Reputáció, vagy korábban Premium"
 
@@ -19247,6 +19592,15 @@ msgid_plural "You can have at most %(num)s channels."
 msgstr[0] "Legfeljebb %(num)s csatornák."
 
 #, machine, plain1, python-format
+msgid "You can have at most %(num)s child account."
+msgid_plural "You can have at most %(num)s child accounts."
+msgstr[0] "Legfeljebb %(num)s gyermekszámlák."
+
+#, machine, plain1, python-format
+msgid "You can have at most %(num)s child accounts."
+msgstr "Legfeljebb %(num)s gyermekszámlák."
+
+#, machine, plain1, python-format
 msgid "You can host at most %(num)s Space a day."
 msgid_plural "You can host at most %(num)s Spaces a day."
 msgstr[0] "Legfeljebb %(num)s Naponta egy hely."
@@ -19270,6 +19624,10 @@ msgid "You can look around and set up your profile; posting, comments, votes and
 msgstr "Körbenézhet, és felépítheti a profilját; az ellenőrzés után kiküldetés, észrevételek, szavazatok és követések nyitva."
 
 #, machine, plain1, python-format
+msgid "You can make %(num)s child accounts a day. Try again tomorrow."
+msgstr "You can make %(num)s Gyerekszámlák naponta. Próbáld újra holnap."
+
+#, machine, plain1, python-format
 msgid "You can make %(num)s proposal a day."
 msgid_plural "You can make %(num)s proposals a day."
 msgstr[0] "You can make %(num)s javaslatokat naponta."
@@ -19278,6 +19636,10 @@ msgstr[0] "You can make %(num)s javaslatokat naponta."
 msgid "You can make %(num)s wiki edit a day in a guild. Try again tomorrow."
 msgid_plural "You can make %(num)s wiki edits a day in a guild. Try again tomorrow."
 msgstr[0] "You can make %(num)s Wiki szerkeszti a napot egy céhben. Próbáld újra holnap."
+
+#, machine, plain1
+msgid "You can make a child account once your own account is confirmed as 18 or over. You can say so in Settings > Content."
+msgstr "Gyerekszámlát is készíthet, ha a saját számláját megerősítette, hogy 18 éves vagy idősebb. Ezt lehet mondani a Beállítások > Tartalom."
 
 #, machine, plain1
 msgid "You can only create up to 2 guilds per day. Try again later."
@@ -19564,6 +19926,10 @@ msgid "You don't have Premium right now."
 msgstr "Nincs. Premium Most rögtön."
 
 #, machine, plain1
+msgid "You don't have a child account called that."
+msgstr "Nincs gyerekszámlád, amit így hívnak."
+
+#, machine, plain1
 msgid "You don't have a coin to redeem."
 msgstr "Nincs mit visszafizetni."
 
@@ -19663,6 +20029,10 @@ msgstr "Megbuktál a +%(guild)s."
 #, machine, plain1
 msgid "You have left the creator fund."
 msgstr "Elhagytad az alapítványt."
+
+#, machine, plain1, python-format
+msgid "You have made %(num)s child accounts in the last %(days)s days. Try again later."
+msgstr "You have made %(num)s gyermekszámlák az utolsó %(days)s Napok. Próbáld meg később."
 
 #, machine, plain1
 msgid "You have muted this guild. Its posts stay out of All, For You and Following. Visit your settings or click the <i class='fas fa-ellipsis-h text-small'></i> icon to unmute it."
@@ -20058,12 +20428,20 @@ msgid "Your account can also post new items from feeds by itself, while you keep
 msgstr "A fiók is posztolni új elemeket a takarmány önmagában, miközben továbbra is használja, mint most. Mindegyik álláshely automatizált, és az emberek, akik elrejtik a bot tartalmát, nem látják őket. A saját álláshelyek, megjegyzések, szavazatok és beszélgetések változatlanok. Egy adminisztrátor hagyja jóvá először."
 
 #, machine, plain1
+msgid "Your account can't post automatically while it is age-restricted."
+msgstr "A számlád nem tud automatikusan posztolni, amíg korhatáros."
+
+#, machine, plain1
 msgid "Your account can't post automatically while it is suspended."
 msgstr "A számlád nem képes automatikusan felírni, amíg fel van függesztve."
 
 #, machine, plain1
 msgid "Your account can't publish right now."
 msgstr "A számlád most nem publikálható."
+
+#, machine, plain1
+msgid "Your account can't run a bot while it is age-restricted."
+msgstr "A számlád nem tud futtatni egy robotot, amíg korhatáros."
 
 #, machine, plain1
 msgid "Your account cannot upload right now."
@@ -20084,6 +20462,10 @@ msgstr "Számláját ellenőriztük, és készen áll: most már postázhatja, k
 #, machine, plain1
 msgid "Your account has been deleted"
 msgstr "A számláját törölték"
+
+#, machine, plain1, python-format
+msgid "Your account has the child lock on, held by your parent or guardian, since %(date)s."
+msgstr "A számláján van a gyermek zár, tartja a szülő vagy gyámja, mivel %(date)s."
 
 #, machine, plain1, python-format
 msgid "Your account has the child lock on, since %(date)s."
@@ -20136,6 +20518,10 @@ msgstr ""
 "\n"
 "\n"
 "A várakozás kihagyásához add hozzá és ellenőrizz egy e-mail címet [Beállítások > Biztonság] (/settings/security)."
+
+#, machine, plain1
+msgid "Your account is your own now. It no longer has the child lock and your parent or guardian can no longer see it. They chose your password: change it in [Settings > Security](/settings/security), or they can still sign in as you."
+msgstr "A számlád már a tiéd. Már nincs rajta a gyerekzár, és a szüleid vagy a gyámotok már nem látja. Kiválasztották a jelszót: módosítsa [Beállítások > Biztonság] (/settings/security), vagy még mindig jelentkezhet, mint Ön."
 
 #, machine, plain1
 msgid "Your account needs to be at least 30 days old to post automatically."
@@ -20238,6 +20624,10 @@ msgstr "A beszélgetéseid kódolva vannak, és az oldal nem tudja elolvasni ők
 #, machine, plain1, python-format
 msgid "Your chats run on Matrix, an open standard, on %(site)s's own chat server. Besides Chat on this site, you can use them in a Matrix app such as Element (web, desktop and the classic phone apps), FluffyChat or Cinny. They stay end-to-end encrypted there too."
 msgstr "A beszélgetéseid a Mátrixon futnak, egy nyílt szabványon, a %(site)s saját chat szerverén. Ezen az oldalon a Chat mellett a Matrix alkalmazásban is használható, mint például az Element (web, desktop és a klasszikus telefonalkalmazások), FluffyChat vagy Cinny. Ott is vannak kódolva."
+
+#, machine, plain1
+msgid "Your child accounts will be deleted with yours."
+msgstr "A gyerekszámláit a magáéval együtt törlik."
 
 #, glossary, machine, plain1
 msgid "Your circles"
@@ -20380,8 +20770,52 @@ msgid_plural "Your own mix ranks the newest %(num)s matching posts. 0 switches a
 msgstr[0] "A saját mix rangsorolja a legújabb %(num)s megfelelő pozíciók. A 0 kikapcsolja a részt, a 10 számít a legjobban."
 
 #, machine, plain1
+msgid "Your own password"
+msgstr "Saját jelszó"
+
+#, machine, plain1
+msgid "Your parent or guardian didn't agree to release your account."
+msgstr "A szülei vagy a gyámjuk nem egyezett bele, hogy kiadják a számlájukat."
+
+#, machine, plain1
+msgid "Your parent or guardian has been asked to release your account. Nothing changes until they answer."
+msgstr "A szüleit vagy a gyámjukat felkérték, hogy bocsássák ki a számlájukat. Semmi sem változik, amíg nem válaszolnak."
+
+#, machine, plain1
+msgid "Your parent or guardian has been asked to turn Private posting off."
+msgstr "A szüleit vagy a gyámjukat megkérték, hogy kapcsolják ki a közlegényt."
+
+#, machine, plain1
 msgid "Your parent or guardian has to agree before Private posting can be turned off."
 msgstr "A szüleinek vagy a gyámjuknak egyet kell érteniük, mielőtt a privát posztolást kikapcsolják."
+
+#, machine, plain1
+msgid "Your parent or guardian has turned this off for your account."
+msgstr "A szüleid vagy a gyámod kikapcsolta ezt a számládra."
+
+#, machine, plain1
+msgid "Your parent or guardian made this account for you. They can see what you do on the site (your posts, comments, votes, bookmarks, follows, guilds, who you chat with, that your account was reported and your recent sign-ins; the site never shows them what your chats say) and they choose which features are on. You can see which in [Settings > Content](/settings/content). They chose your password: change it in [Settings > Security](/settings/security) so that only you know it, because anyone who knows it can sign in as you and read your chats."
+msgstr "A szülei vagy a gyámjuk csinálta ezt a számlát. Láthatják, hogy mit csinál az oldalon (a hozzászólások, szavazatok, könyvjelzők, követők, céhek, akikkel beszél, hogy a fiókot jelentették, és a legutóbbi bejelentések; az oldal soha nem mutatja meg nekik, hogy mit a chats mond), és azt választják, hogy mely funkciók vannak. A [Beállítások > Tartalom] -ban (/settings/content) látható. Megválasztották a jelszavadat: változtasd meg a [Beállítások > Biztonság] -ban (/settings/security), hogy csak te tudd, mert bárki, aki tudja, bejelentkezhet, és elolvashatja a beszélgetéseidet."
+
+#, machine, plain1
+msgid "Your parent or guardian set a new password for your account and you were signed out. Sign in with the new password, then change it in [Settings > Security](/settings/security) so that only you know it."
+msgstr "A szülője vagy a gyámja új jelszót állított be a számlájára, és kijelentkezett. Írja be az új jelszót, majd módosítsa [Beállítások > Biztonság] (/settings/security), hogy csak Ön tudja."
+
+#, machine, plain1
+msgid "Your parent or guardian stopped managing your account. It keeps the child lock until you confirm your age in Settings > Content. They chose your password: change it in [Settings > Security](/settings/security), or they can still sign in as you."
+msgstr "A szüleid vagy a gyámotok nem kezelte a számláitokat. Ez tartja a gyermek zár, amíg meg nem erősíti a kort Beállítások > Tartalom. Kiválasztották a jelszót: módosítsa [Beállítások > Biztonság] (/settings/security), vagy még mindig jelentkezhet, mint Ön."
+
+#, machine, plain1
+msgid "Your parent or guardian turned Private posting off for your account."
+msgstr "A szülei vagy a gyámjuk kikapcsolta a magánzárkát a számlájára."
+
+#, machine, plain1
+msgid "Your parent or guardian wants Private posting to stay on."
+msgstr "A szüleid vagy a gyámotok azt akarja, hogy maradjon a privát poszton."
+
+#, machine, plain1
+msgid "Your parent or guardian's account was suspended, so yours is suspended until theirs is back."
+msgstr "A szüleid vagy a gyámod számláját felfüggesztették, szóval a tiédet felfüggesztem, amíg vissza nem jönnek."
 
 #, machine, plain1
 msgid "Your password"
@@ -20761,6 +21195,10 @@ msgstr "ismeretlen cím"
 msgid "and %(num)s more"
 msgid_plural "and %(num)s more"
 msgstr[0] "és %(num)s további"
+
+#, machine, plain1
+msgid "anonymous"
+msgstr "anonim"
 
 #, machine, plain1
 msgctxt "guildmaster permission"
@@ -21203,6 +21641,10 @@ msgstr "link előnézete"
 msgid "links"
 msgstr "linkek"
 
+#, machine, plain1
+msgid "looked at by the admins"
+msgstr "az administrs"
+
 #. after the moderator's name in a guild's moderation log
 #, machine, plain1
 msgid "made a channel"
@@ -21409,6 +21851,10 @@ msgstr "visszahelyezve %(target)s"
 #, machine, plain1, python-format
 msgid "reinstated post %(target)s"
 msgstr "visszahelyezett állás %(target)s"
+
+#, machine, plain1
+msgid "removed"
+msgstr "eltávolítva"
 
 #. follows the moderator's name in a guild's moderation log; %(target)s is a
 #. link

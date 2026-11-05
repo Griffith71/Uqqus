@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ruqqus VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-11-05 16:56+1100\n"
+"POT-Creation-Date: 2026-11-05 20:16+1100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: ky\n"
@@ -1619,12 +1619,24 @@ msgid "(allow beats deny; the channel's own rules apply to everyone else)"
 msgstr "(биттерге уруксат бериңиз; каналдын өз эрежелери башкаларга да тиешелүү)"
 
 #, machine, plain1
+msgid "(empty)"
+msgstr "(боз)"
+
+#, machine, plain1
 msgid "(for a stage channel: the post's address or id)"
 msgstr "(этап каналы үчүн: почта дареги же идентификатору)"
 
 #, machine, plain1
 msgid "(from the original)"
 msgstr "(оригиналдан)"
+
+#, machine, plain1
+msgid "(in a private place)"
+msgstr "(жеке жерде)"
+
+#, machine, plain1
+msgid "(no title)"
+msgstr "(аты-жөнү жок)"
 
 #, glossary, machine, plain1
 msgid "(off)"
@@ -2186,6 +2198,10 @@ msgid "<strong>Username:</strong> %(name)s"
 msgstr "<strong>Колдонуучунун аты:</strong> %(name)s"
 
 #, machine, plain1, python-format
+msgid "@%(name)s - %(site)s"
+msgstr "@%(name)s - %(site)s"
+
+#, machine, plain1, python-format
 msgid "@%(name)s - Bots - %(site)s"
 msgstr "@%(name)s - Боттор - %(site)s"
 
@@ -2199,6 +2215,10 @@ msgstr "@%(name)s кошумчаланган %(curation)s."
 
 #, python-format
 msgid "@%(name)s asked to publish a shared draft you write: your vote counts. [Open the draft](%(link)s)"
+msgstr ""
+
+#, python-format
+msgid "@%(name)s asked you to turn Private posting off for their account. You can answer in [Settings > Children](/settings/children)."
 msgstr ""
 
 #, machine, plain1, python-format
@@ -2243,6 +2263,10 @@ msgstr ""
 #, python-format
 msgid "@%(name)s forwarded [a post](%(link)s) to +%(guild)s."
 msgstr ""
+
+#, machine, plain1, python-format
+msgid "@%(name)s has a new password and is signed out everywhere."
+msgstr "@%(name)s Жаңы сырсөз бар жана бардык жерде кол коюлат."
 
 #, machine, plain1, python-format
 msgid "@%(name)s has already been invited."
@@ -2413,6 +2437,10 @@ msgid "@%(name)s reposted [a post](%(link)s)."
 msgstr ""
 
 #, python-format
+msgid "@%(name)s says they are 18 or over and asked you to release their account. You can answer in [Settings > Children](/settings/children)."
+msgstr ""
+
+#, python-format
 msgid "@%(name)s shared [a story](%(link)s)."
 msgstr ""
 
@@ -2443,6 +2471,10 @@ msgstr "@%(name)s +ден сүргүнгө айдалган%(guild)s"
 #, machine, plain1, python-format
 msgid "@%(name)s was muted in +%(guild)s's channels."
 msgstr "@%(name)s +%(guild)sканалдар."
+
+#, machine, plain1, python-format
+msgid "@%(name)s's age was confirmed as 18 or over, so their account is their own now and you can no longer see it."
+msgstr "@%(name)s\"Алардын курагы 18 жаштан жогору деп тастыкталган, ошондуктан алардын эсеби азыр алардын эсеби болуп саналат жана сиз аны көрө албайсыз. \"\"\""
 
 #, machine, plain1, python-format
 msgid "@%(name)s's new posts will go into #%(channel)s."
@@ -2959,6 +2991,10 @@ msgstr "Билдирүү жип билдирүүлөрдү эмес, комме�
 #, machine, plain1
 msgid "A member"
 msgstr "Мүчө"
+
+#, machine, plain1
+msgid "A member reported this account."
+msgstr "Бир мүчө бул билдирүүнү билдирген."
 
 #, machine, plain1, python-format
 msgid "A message can be at most %(count)s character."
@@ -4092,6 +4128,12 @@ msgid_plural "An update can be at most %(num)s characters."
 msgstr[0] "Жаңыртуу эң көп дегенде бир белги болушу мүмкүн."
 msgstr[1] "Жаңыртуу эң көп дегенде %(num)s белгиден болушу мүмкүн."
 
+#, machine, plain1, python-format
+msgid "And %(num)s private guild, which isn't named."
+msgid_plural "And %(num)s private guilds, which aren't named."
+msgstr[0] "%(num)s жеке гильдия, анын аты-жөнү жок."
+msgstr[1] "%(num)s жеке гильдиялар, алардын аты-жөнү жок."
+
 #, machine, plain1
 msgid "Animals"
 msgstr "Жаныбарлар"
@@ -4147,6 +4189,10 @@ msgstr "Аноним"
 msgctxt "label"
 msgid "Anonymous"
 msgstr "Аноним"
+
+#, machine, plain1
+msgid "Anonymous posting and starting guilds"
+msgstr "Анонимдүү жайгаштыруу жана баштоо гильдиялары"
 
 #, machine, plain1
 msgid "Anonymous posts and comments count for you like any other. Your points and earnings are shown only to you; the site's admins see the payout list."
@@ -4358,6 +4404,14 @@ msgstr "Арий тоолуу аймактары"
 #, machine, plain1
 msgid "As an author you edit the draft live with them, and every character you type is credited to you. Once the post is published, anyone who can see it can see who wrote what. The authors decide together:"
 msgstr "Автор катары сиз долбоорду түз эфирде редакциялайсыз, жана сиз жазган ар бир каарман сизге таандык. Бул билдирүү жарыялангандан кийин, аны көргөн ар бир адам ким эмне жазганын көрө алат. Авторлор биргелешип төмөнкүлөрдү чечишет:"
+
+#, machine, plain1
+msgid "Ask my parent to turn it off"
+msgstr "Ата-энемден аны өчүрүп салууну сурангыла"
+
+#, machine, plain1
+msgid "Asked you"
+msgstr "Сураныч"
 
 #, machine, plain1, python-format
 msgid "At least %(count)s comments"
@@ -4828,6 +4882,10 @@ msgstr "Сүрөт, үн же видео менен постторго көтө�
 #, machine, plain1
 msgid "Boost for this curation's guilds and accounts"
 msgstr "Бул бышырылган тоюттун гильдияларын жана эсеп-кысаптарын жогорулатуу"
+
+#, machine, plain1
+msgid "Born"
+msgstr "Төрөлгөн"
 
 #, machine, plain1
 msgid "Bot keys"
@@ -5326,6 +5384,10 @@ msgid "Chat isn't answering right now. Try again in a moment."
 msgstr "Чат азыр жооп бербейт. Бир аздан кийин дагы бир жолу аракет кылгыла."
 
 #, machine, plain1
+msgid "Chat, group chats and calls"
+msgstr "Чат, топтук чаттар жана чалуулар"
+
+#, machine, plain1
 msgctxt "guildmaster action"
 msgid "Chatban user"
 msgstr "Чатбандын колдонуучусу"
@@ -5349,6 +5411,14 @@ msgstr "Химия"
 #, machine, plain1
 msgid "Child - also hide profanity and sensitive content"
 msgstr "Бала - ошондой эле адепсиздикти жана сезимтал мазмунду жашырат"
+
+#, machine, plain1
+msgid "Children"
+msgstr "Балдар балдар"
+
+#, machine, plain1, python-format
+msgid "Children - %(site)s"
+msgstr "Балдар - %(site)s"
 
 #. "Sign in with ..." is the button the Matrix app shows for this site's
 #. sign-in
@@ -5681,6 +5751,10 @@ msgid "Coins received: %(recent)s in the last 30 days &middot; %(total)s in all.
 msgstr "Алынган монеталар: %(recent)s Акыркы 30 күндүн ичинде &middot; %(total)s бардыгында. Алар түздөн-түз сиздин монета балансыңызга кирет."
 
 #, machine, plain1
+msgid "Coins, tips, Premium and paid circles"
+msgstr "Монеталар, кеңештер, Premium жана төлөнгөн тегеректер"
+
+#, machine, plain1
 msgid "Collaborative"
 msgstr "Кызматташтык"
 
@@ -5743,6 +5817,10 @@ msgstr "Комментарийлер белгиленген."
 #, glossary, machine, plain1
 msgid "Comment posted!"
 msgstr "Комментарий жарыяланды!"
+
+#, machine, plain1
+msgid "Commenting"
+msgstr "Комментарийлер"
 
 #, glossary, machine, plain1
 msgid "Comments"
@@ -6387,8 +6465,16 @@ msgid "Delete role"
 msgstr "Рольду өчүрүү"
 
 #, machine, plain1
+msgid "Delete the account"
+msgstr "Эсепти өчүрүү"
+
+#, machine, plain1
 msgid "Delete the published post"
 msgstr "Жарыяланган билдирүүнү жокко чыгаруу"
+
+#, machine, plain1
+msgid "Delete this account"
+msgstr "Бул эсепти өчүрүү"
 
 #, machine, plain1
 msgid "Delete this category? Its channels stay."
@@ -6449,6 +6535,10 @@ msgstr "Драйвдагы файлды өчүрүү же өчүрүү аны п
 #, machine, plain1
 msgid "Deleting a file there, or disconnecting, removes it from your posts."
 msgstr "Файлды өчүрүү же өчүрүү аны сиздин билдирүүлөрүңүздөн алып салат."
+
+#, machine, plain1
+msgid "Deleting your account also deletes your child accounts. You can download their data first in Settings > Children."
+msgstr "Аккаунтуңузду жокко чыгаруу сиздин балаңыздын аккаунтуңузду да жокко чыгарат. Алардын маалыматтарын алгач орнотууларда жүктөп алсаңыз болот. Балдар."
 
 #, machine, plain1
 msgid "Density"
@@ -6691,6 +6781,10 @@ msgid "Done"
 msgstr "Жок кылынган"
 
 #, machine, plain1
+msgid "Download"
+msgstr "Жүктү түшүрүү"
+
+#, machine, plain1
 msgctxt "button"
 msgid "Download"
 msgstr "Төмөнкү жүктөө"
@@ -6704,8 +6798,16 @@ msgid "Download the recording"
 msgstr "Жазууну жүктөп алыңыз"
 
 #, machine, plain1
+msgid "Download their data"
+msgstr "Алардын маалыматтарын жүктөп алыңыз"
+
+#, machine, plain1
 msgid "Download your data"
 msgstr "Маалыматтарды жүктөп алыңыз"
+
+#, machine, plain1
+msgid "Downvote"
+msgstr "Төмөнкү добуш берүү"
 
 #, glossary, machine, plain1
 msgctxt "verb"
@@ -7032,6 +7134,10 @@ msgstr "Тамак-аш серверинин дарегин киргизиңиз
 msgid "Enter the feed's address."
 msgstr "Тамак-аштын дарегин киргизиңиз."
 
+#, machine, plain1
+msgid "Enter the month and year they were born."
+msgstr "Алар туулган айга жана жылга кириңиз."
+
 #, machine, plain1, python-format
 msgid "Enter the six-digit code generated in the authenticator app and your %(site)s account password."
 msgstr "Аутентификациялоочу тиркемеде түзүлгөн алты орундуу кодду жана %(site)s аккаунт сырсөзүңүздү киргизиңиз."
@@ -7204,6 +7310,10 @@ msgstr "Ар бир адам бири-биринин өзгөрүүлөрүн ө
 #, machine, plain1
 msgid "Everything from your guilds and accounts, newest first."
 msgstr "Сиздин гильдияларыңыздан жана эсептериңизден баштап, эң жаңысы."
+
+#, machine, plain1
+msgid "Everything they post goes only to their Friends circle. Turn it off to let them post in public."
+msgstr "Алар жарыялаган нерселердин баары досторунун чөйрөсүнө гана тиешелүү. Аларды коомчулукка жарыялоого уруксат берүү үчүн өчүрүп салгыла."
 
 #, machine, plain1
 msgid "Everything you post goes only to your Friends circle, the people you follow who follow you back, so nothing is public by accident. Your circles can only hold people like that, and you can't forward, repost or write a shared draft. Comments on other people's posts are still public."
@@ -7859,6 +7969,10 @@ msgstr "Досторум"
 msgctxt "circle name"
 msgid "Friends"
 msgstr "Досторум"
+
+#, machine, plain1
+msgid "Friends circle"
+msgstr "Достордун чөйрөсү"
 
 #, machine, plain1
 msgid "Friends is everyone you follow who follows you back. To share with family, a team or anyone else, make a circle first, then pick it here."
@@ -8662,6 +8776,10 @@ msgstr "Аңчылык кылуу"
 msgid "I accept the <a href=\"%(url)s\" target=\"_blank\">terms and conditions</a>"
 msgstr "Мен кабыл алам <a href=\"%(url)s\" target=\"_blank\">шарттар жана шарттар</a>"
 
+#, machine, plain1, python-format
+msgid "I agree to the <a href=\"%(url)s\" target=\"_blank\">Terms</a> for them."
+msgstr "Мен макулмун <a href=\"%(url)s\" target=\"_blank\">Тартиптер</a> алар үчүн."
+
 #, machine, plain1
 msgid "I agree to the rules below."
 msgstr "Мен төмөнкү эрежелерге кошулам."
@@ -8697,6 +8815,10 @@ msgstr "Эгер сиздин эсебиңизде электрондук поч
 #, machine, plain1
 msgid "If this was you, there is nothing to do."
 msgstr "Эгер бул сен болсоң, анда эч нерсе кыла албайсың."
+
+#, machine, plain1
+msgid "If you are 18 or over, say so and your parent or guardian will be asked to release your account."
+msgstr "Эгер сиз 18 жаштан жогору болсоңуз, анда ата-энеңиз же камкорчуңуз сиздин эсебиңизди ачыкка чыгарышы керек."
 
 #, machine, plain1
 msgid "If you don't have your 2FA device, enter one of your backup codes instead. Each backup code works once. An account that never made backup codes can enter its Recovery Code, which also turns 2FA off."
@@ -9075,6 +9197,14 @@ msgid "It shows, in full, every word and phrase the word filter looks for, in ev
 msgstr "Ал сөз чыпкасы издеген ар бир сөздү жана сөз айкашын, ал камтыган ар бир тилде толук көрсөтөт. Буга жалаа жабуу жана башка өтө эле жагымсыз сөздөр да кирет."
 
 #, machine, plain1
+msgid "It stays a child account with the child lock, but you can no longer see it or change what it can do, and you can't link it again."
+msgstr "Бул балалык аккаунт бойдон калат, бирок сиз аны көрө албайсыз же анын эмне кыла аларын өзгөртө албайсыз жана аны дагы бир жолу байланыштыра албайсыз."
+
+#, machine, plain1
+msgid "It stays on the Child word filter, which hides profanity and anything marked sensitive."
+msgstr "Ал бала сөз чыпкасында калат, ал адепсиздикти жана сезимталдыкты жашырат."
+
+#, machine, plain1
 msgid "It stays on the Child word filter, which hides profanity and anything marked sensitive. Chat, Spaces, coins, anonymous posting and starting a guild are off, and others can't start a chat or tip you. Your posts go to your Friends circle only unless you turn Private posting off."
 msgstr "Ал бала сөз чыпкасында калат, ал адепсиздикти жана сезимталдыкты жашырат. Чат, мейкиндиктер, монеталар, анонимдүү жарыялоо жана гильдияны баштоо жок, ал эми башкалар сизге чат же кеңеш бере алышпайт. Сиздин билдирүүлөрүңүз досторуңуздун чөйрөсүнө жеке билдирүүлөрдү өчүрбөсөңүз гана жөнөтүлөт."
 
@@ -9238,6 +9368,10 @@ msgstr "Июнь айынын күн тутулушу"
 #, machine, plain1
 msgid "K-Pop"
 msgstr "K-Pop"
+
+#, machine, plain1
+msgid "Keep it on"
+msgstr "Аны сактап тургула"
 
 #, machine, plain1
 msgid "Keep my posts out of All"
@@ -9512,6 +9646,10 @@ msgstr "Леониддер метеор жамгыры"
 msgid "Letters spaced out or split by dots or other marks are read as one word."
 msgstr "Токтор же башка белгилер менен бөлүнгөн же бөлүнгөн тамгалар бир сөз катары окулат."
 
+#, machine, plain1
+msgid "Letters, numbers and underscores, 3 to 25 characters."
+msgstr "Каттар, сандар жана төмөнкү көрсөткүчтөр, 3-25 тамга."
+
 #, glossary, machine, plain1
 msgid "Lifestyle"
 msgstr "Жашоо образы"
@@ -9751,6 +9889,10 @@ msgstr "Айдын жаңы жылы"
 msgid "Lyrids meteor shower"
 msgstr "Лиридс метеор жамгыры"
 
+#, machine, plain1, python-format
+msgid "Made on %(date)s."
+msgstr "%(date)s боюнча жасалган."
+
 #, glossary, machine, plain1
 msgid "Made with AI"
 msgstr "ЖИ менен түзүлгөн"
@@ -9769,6 +9911,10 @@ msgid "Make a channel"
 msgstr "Канал жасоо"
 
 #, machine, plain1
+msgid "Make a child account"
+msgstr "Балдардын эсебин түзүңүз"
+
+#, machine, plain1
 msgid "Make a circle people pay to be in, every 30 days, for what you share with it."
 msgstr "Адамдар ар бир 30 күндө бир айлампага кирүү үчүн акча төлөшөт."
 
@@ -9783,6 +9929,10 @@ msgstr "Баракча түзүңүз"
 #, machine, plain1
 msgid "Make a role"
 msgstr "Бир ролду ойноо"
+
+#, machine, plain1
+msgid "Make an account for a child under 18 and decide what it can do. You can see what they do on the site (their posts, comments, votes, bookmarks, follows, guilds, the names of who they chat with and their recent sign-ins). The site never shows you what their chats say: chats are end-to-end encrypted. You choose their password, so until they change it you can sign in as them and read their chats: tell them to set their own. They are told all of this in their own Settings."
+msgstr "18 жашка чейинки бала үчүн эсеп түзүп, анын эмне кыла аларын аныктаңыз. Бул жерде сиз алардын эмне кылганын көрө аласыз (алардын билдирүүлөрү, комментарийлери, добуштары, китепчелери, ээрчигендери, гильдиялары, ким менен сүйлөшкөнү жана жакында кол койгондору). Бул сайтта алардын чаттарынын эмне деп айтканы эч качан көрсөтүлбөйт: чаттар аягына чейин шифрленген. Сиз алардын сырсөзүн тандайсыз, ошондуктан алар аны өзгөртмөйүнчө, сиз алар катары кол коё аласыз жана алардын чаттарын окуй аласыз: аларга өзүлөрүнүн сырсөзүн коюуну айтыңыз. Бул тууралуу аларга өзүлөрүнүн чөйрөсүндө айтылат."
 
 #, machine, plain1, python-format
 msgid "Make an app first in <a href=\"%(url)s\">Settings &gt; Apps</a>; a key works through it."
@@ -10121,6 +10271,10 @@ msgid "Mon"
 msgstr "Мон"
 
 #, machine, plain1
+msgid "Month"
+msgstr "Ай"
+
+#, machine, plain1
 msgctxt "table heading"
 msgid "Month"
 msgstr "Ай"
@@ -10129,6 +10283,10 @@ msgstr "Ай"
 msgctxt "time range"
 msgid "Month"
 msgstr "Ай"
+
+#, machine, plain1
+msgid "Month they were born"
+msgstr "Алар туулган ай"
 
 #, machine, plain1
 msgid "Monthly creator fund payouts"
@@ -10468,6 +10626,10 @@ msgstr "Жаңы барак: %(address)s"
 #, machine, plain1
 msgid "New paid circle"
 msgstr "Жаңы акы төлөнүүчү чөйрө"
+
+#, machine, plain1
+msgid "New password"
+msgstr "Жаңы сыр сыр сырсөз"
 
 #, machine, plain1
 msgid "New posts that are getting attention, with no account filling the page."
@@ -10853,6 +11015,10 @@ msgstr "Жаңы эч ким жазыла албайт. Учурдагы або�
 msgid "Nobody types here"
 msgstr "Бул жерде эч кимдин түрү жок"
 
+#, machine, plain1, python-format
+msgid "Nobody under %(age)s may have an account where you are."
+msgstr "Эч ким %(age)s Сиз турган жерде эсеп болушу мүмкүн."
+
 #, machine, plain1
 msgid "Nobody yet."
 msgstr "Азырынча эч ким жок."
@@ -10973,6 +11139,10 @@ msgstr "Абоненттерди кабыл албагандар"
 #, machine, plain1
 msgid "Not trending any more"
 msgstr "Мындан ары тенденция жок"
+
+#, machine, plain1
+msgid "Not yet"
+msgstr "Азырынча жок"
 
 #, glossary, machine, plain1
 msgid "Not your default:"
@@ -11095,6 +11265,10 @@ msgid "Nothing written yet."
 msgstr "Азырынча эч нерсе жазылган жок."
 
 #, machine, plain1
+msgid "Nothing yet."
+msgstr "Азырынча эч нерсе жок."
+
+#, machine, plain1
 msgid "Notification types"
 msgstr "Билдирүү түрлөрү"
 
@@ -11142,6 +11316,10 @@ msgstr "Океания"
 msgid "Oddly Satisfying"
 msgstr "Таң калыштуу канааттануу"
 
+#, machine, plain1
+msgid "Off"
+msgstr "Жок, жок"
+
 #. slow mode in a guild's channel is switched off.
 #, machine, plain1
 msgctxt "slow mode"
@@ -11168,6 +11346,10 @@ msgstr "Эски"
 #, machine, plain1
 msgid "Old Password"
 msgstr "Эски сырсөз"
+
+#, machine, plain1
+msgid "On"
+msgstr "Кезектеги"
 
 #. "On" marks a linked storage account that is in use
 #, machine, plain1
@@ -11244,6 +11426,10 @@ msgstr "Бул өзгөртүүлөрдүн бирин сизге көрсөтү
 #, machine, plain1
 msgid "One of those circles isn't yours any more. Choose again."
 msgstr "Бул тегеректердин бири азыр силердин эмессиңер. Дагы бир жолу тандагыла."
+
+#, machine, plain1
+msgid "One of your child accounts owes money, so your account can't be deleted yet."
+msgstr "Балаңыздын бир эсеби акчага ээ, ошондуктан аны өчүрүүгө болбойт."
 
 #, machine, plain1
 msgid "One-time codes for the day you lose your authenticator. Making a new set replaces every earlier code, used or not."
@@ -11567,6 +11753,10 @@ msgstr "Посттун автору жана авторлору гана жаң�
 #, machine, plain1
 msgid "Only the post's author and co-authors can run its live updates."
 msgstr "Посттун автору жана авторлору гана анын түз эфирдеги жаңыртууларын жүргүзө алышат."
+
+#, machine, plain1
+msgid "Only used to check their age. It isn't kept."
+msgstr "Алар жаш курагын гана текшеришчү. Ал сакталбайт."
 
 #, machine, plain1
 msgid "Only when I turn them on"
@@ -12560,6 +12750,10 @@ msgid "Posted on that day."
 msgstr "Ошол күнү жарыяланган."
 
 #, machine, plain1
+msgid "Posting"
+msgstr "Кошумча жөнөтүү"
+
+#, machine, plain1
 msgid "Posting cooldown"
 msgstr "Муздаткычты жайгаштыруу"
 
@@ -13397,6 +13591,10 @@ msgid "Relationships"
 msgstr "Мамилелер"
 
 #, machine, plain1
+msgid "Release the account"
+msgstr "Эсепти бошотуу"
+
+#, machine, plain1
 msgid "Religion"
 msgstr "Диний көз караш"
 
@@ -13646,6 +13844,10 @@ msgstr "Маалымат берилген билдирүүлөр"
 msgctxt "noun"
 msgid "Reports"
 msgstr "Даттануулар"
+
+#, machine, plain1
+msgid "Reports about them"
+msgstr "Алар жөнүндө билдирүүлөр"
 
 #, machine, plain1
 msgid "Reports opened"
@@ -13984,6 +14186,10 @@ msgctxt "weekday"
 msgid "Sat"
 msgstr "Саат"
 
+#, glossary, machine, plain1
+msgid "Save"
+msgstr "Сактоо"
+
 #, machine, plain1
 msgctxt "button"
 msgid "Save"
@@ -14293,6 +14499,10 @@ msgid "See what is trending"
 msgstr "Кандай тенденция бар экенин көргүлө"
 
 #, machine, plain1
+msgid "See what they do"
+msgstr "Алардын эмне кылганын көргүлө"
+
+#, machine, plain1
 msgid "See your username"
 msgstr "Колдонуучунун атын караңыз"
 
@@ -14391,6 +14601,10 @@ msgstr "Сентябрь күн-түн теңелүүсү"
 #, machine, plain1
 msgid "Serious"
 msgstr "Оор"
+
+#, machine, plain1
+msgid "Set a new password"
+msgstr "Жаңы сырсөздү орнотуңуз"
 
 #, machine, plain1
 msgid "Set a price to let people pay to join."
@@ -15040,6 +15254,10 @@ msgid "Spaces"
 msgstr "Spaces"
 
 #, machine, plain1
+msgid "Spaces and live threads"
+msgstr "Аянттар жана жандуу жиптер"
+
+#, machine, plain1
 msgid "Spaces are started in the Spaces area."
 msgstr "Аянттар Аянттар аймагында башталат."
 
@@ -15174,6 +15392,14 @@ msgstr "Кадалган пост"
 #, machine, plain1
 msgid "Still here to read"
 msgstr "Дагы эле бул жерде окууга болот"
+
+#, machine, plain1
+msgid "Stop managing"
+msgstr "Башкарууну токтотуу"
+
+#, machine, plain1
+msgid "Stop managing this account"
+msgstr "Бул эсепти башкарууну токтотуу"
 
 #, machine, plain1
 msgid "Stop posting automatically"
@@ -15350,6 +15576,10 @@ msgstr "Колдоочулар…"
 #, machine, plain1
 msgid "Survival & Bushcraft"
 msgstr "Тирүү калуу жана Бушкрафт"
+
+#, machine, plain1
+msgid "Suspended"
+msgstr "Кечиккен"
 
 #, machine, plain1, python-format
 msgid "Switch @%(name)s off for good? Its posts stay; the bot never posts again."
@@ -15823,6 +16053,10 @@ msgid "That isn't a valid username."
 msgstr "Бул колдонуучунун аты эмес."
 
 #, machine, plain1
+msgid "That isn't something you can switch."
+msgstr "Муну сиз алмаштыра албайсыз."
+
+#, machine, plain1
 msgid "That key couldn't be saved."
 msgstr "Бул ачкычты сактап калуу мүмкүн эмес болчу."
 
@@ -16053,6 +16287,14 @@ msgstr "Сахел аймагы"
 #, machine, plain1
 msgid "The Space could not be made."
 msgstr "Аянтты куруу мүмкүн эмес болчу."
+
+#, machine, plain1, python-format
+msgid "The account @%(name)s is deleted."
+msgstr "@%(name)s эсеби алынып салынды."
+
+#, machine, plain1, python-format
+msgid "The account @%(name)s is made. They sign in with the username and password you gave."
+msgstr "Эсеп @%(name)s жасалат. Алар сиз берген колдонуучунун аты жана сырсөз менен жазылышат."
 
 #, machine, plain1, python-format
 msgid "The account age must be a whole number of days, 0 to %(max)s."
@@ -16395,6 +16637,10 @@ msgstr "Акыркы жети күндүн эң көп добуш алган к�
 #, machine, plain1, python-format
 msgid "The name %(host)s could not be found."
 msgstr "Аты-жөнү %(host)s табылган жок."
+
+#, machine, plain1
+msgid "The newest of what they have done. Only the names of who they chat with are shown, never what a chat says: chats are end-to-end encrypted."
+msgstr "Алардын жасаган иштеринин эң жаңысы. Алар ким менен сүйлөшкөнү гана көрсөтүлөт, эч качан чат эмне деп айтпайт: чаттар аягына чейин шифрленет."
 
 #, machine, plain1
 msgid "The numbers are always shown on your profile. This decides who can open each list and see the accounts on it. An account is only listed where its own setting allows it too."
@@ -16746,12 +16992,20 @@ msgid "They already have this role."
 msgstr "Алардын буга чейин эле ушундай ролу бар."
 
 #, machine, plain1
+msgid "They are 18 or over, so they can make their own account."
+msgstr "Алар 18 жаштан жогору, ошондуктан өз эсебин түзө алышат."
+
+#, machine, plain1
 msgid "They are already in this circle."
 msgstr "Алар буга чейин эле ушул чөйрөдө болушкан."
 
 #, machine, plain1
 msgid "They are not told. Anyone you block leaves your circles."
 msgstr "Аларга эч нерсе айтылбайт. Сиз бөгөттөгөн ар бир адам тегерекчеден чыгат."
+
+#, machine, plain1
+msgid "They are signed out everywhere. If they use chat, they may be asked for their recovery code."
+msgstr "Алар бардык жерде катталат. Эгер алар чатты колдонушса, алардан калыбына келтирүү кодун сурашы мүмкүн."
 
 #, machine, plain1, python-format
 msgid "They aren't in %(circle)s."
@@ -16766,6 +17020,38 @@ msgid "They aren't muted here."
 msgstr "Алар бул жерде үнсүз эмес."
 
 #, machine, plain1
+msgid "They asked you to turn Private posting off."
+msgstr "Алар сизден жеке билдирүүлөрдү токтотууну суранышкан."
+
+#, machine, plain1
+msgid "They can buy and spend coins, tip, buy Premium and join or run paid circles."
+msgstr "Алар монеталарды сатып алышат жана сарптай алышат, кеңеш беришет, сатып алышат Premium жана акы төлөнүүчү чөйрөлөргө кошулуу же иштетүү."
+
+#, machine, plain1
+msgid "They can comment."
+msgstr "Алар комментарий бере алышат."
+
+#, machine, plain1
+msgid "They can host and join Spaces and run live threads. Voice calls in a Space also need Chat to be on."
+msgstr "Алар мейкиндиктерди ээлеп, аларга кошулуп, жандуу жиптерди иштете алышат. Аянттагы үн чалуулар да чат болушу керек."
+
+#, machine, plain1
+msgid "They can make posts."
+msgstr "Алар кызмат орундарын түзө алышат."
+
+#, machine, plain1
+msgid "They can message people, join group chats and make calls. The site never shows you what a chat says: chats are end-to-end encrypted. Whoever knows their password can still sign in and read them."
+msgstr "Алар адамдарга кабар айтып, топтук чаттарга кошулуп, телефон чалып турушат. Сайт эч качан чаттын эмне деп айтканын көрсөтпөйт: чаттар аягына чейин шифрленген. Алардын сырсөзүн билген адам дагы деле болсо кол коюп, окуй алат."
+
+#, machine, plain1
+msgid "They can post anonymously and start a guild. You can still see who wrote an anonymous post."
+msgstr "Алар анонимдүү түрдө жарыялап, гильдия жасай алышат. Сиздер дагы деле анонимдүү билдирүү жазгандарды көрө аласыздар."
+
+#, machine, plain1
+msgid "They can see what you do on the site: your posts, comments, votes, bookmarks, follows, guilds, who you chat with, that your account was reported, and your recent sign-ins. The site never shows them what your chats say, because chats are end-to-end encrypted. But anyone who knows your password, a parent who chose it included, can sign in as you: change it in Security so that only you know it. They choose which of these are on for your account:"
+msgstr "Алар сиздин сайтта эмне кылып жатканыңызды көрө алышат: сиздин билдирүүлөрүңүз, комментарийлериңиз, добуштарыңыз, китепчелериңиз, кийинкилериңиз, гильдияларыңыз, ким менен сүйлөшкөнүңүз, сиздин билдирүүңүз жана жакында кол койгонуңуз. Бул сайтта сиздин чаттарыңыз эмне деп айтканы эч качан көрсөтүлбөйт, анткени чаттар аягына чейин шифрленген. Бирок сиздин сырсөзүңүздү билген ар бир адам, аны тандаган ата-эне сиз сыяктуу эле кол коё алат: аны коопсуздукта өзгөртүңүз, ошондуктан сиз гана билесиз. Алар силердин эсебиңерде кайсынысы бар экенин тандашат:"
+
+#, machine, plain1
 msgid "They can't comment on your posts or comments, chat with you or notify you by mentioning you. They are not told, but they may work it out if they try to comment on something of yours."
 msgstr "Алар сиздин билдирүүлөрүңүзгө комментарий бере алышпайт, сиз менен сүйлөшө алышпайт же сизди айтып кабарлай алышпайт. Аларга эч нерсе айтылбайт, бирок алар силердин бир нерсеңерге комментарий берүүгө аракет кылышса, аны ишке ашырышы мүмкүн."
 
@@ -16778,12 +17064,20 @@ msgid "They go straight to your coin balance."
 msgstr "Алар түздөн-түз сиздин монета балансыңызга кирет."
 
 #, machine, plain1
+msgid "They haven't asked for that."
+msgstr "Алар муну сурашкан жок."
+
+#, machine, plain1
 msgid "They need to be in the guild, and not exiled from it."
 msgstr "Алар гильдияда болушу керек, андан сүргүнгө айдалбашы керек."
 
 #, machine, plain1
 msgid "They need to join the channel first."
 msgstr "Алар адегенде каналга кошулушу керек."
+
+#, machine, plain1
+msgid "They say they are 18 or over and asked you to release their account. If you do, it becomes their own and you can no longer see it."
+msgstr "Алар 18 жаштан жогору деп айтышат жана сизден алардын эсебин жарыялоону суранышат. Эгер ошондой болсо, анда ал алардын өзүнө таандык болуп калат жана сиз аны көрө албайсыз."
 
 #, machine, plain1
 msgid "They're already a helper."
@@ -16898,6 +17192,14 @@ msgstr "Бул эсеп убактылуу токтотулган. %(site)s. К�
 #, machine, plain1
 msgid "This account is private"
 msgstr "Бул эсеп жеке"
+
+#, machine, plain1
+msgid "This account is suspended."
+msgstr "Бул эсеп токтотулат."
+
+#, machine, plain1
+msgid "This account owes money, so it can't be deleted yet."
+msgstr "Бул эсеп акчага карыз, ошондуктан аны азырынча өчүрүүгө болбойт."
 
 #, machine, plain1
 msgid "This account posts about sensitive topics"
@@ -17033,6 +17335,10 @@ msgstr "Бул бышырылган тоюттун гильдиялары жан
 #, machine, plain1
 msgid "This curation's rules took too long to run. Its owner can make them narrower."
 msgstr "Бул бышырылган тоюттун эрежелери өтө көп убакытты талап кылган. Анын ээси аларды тарлатышы мүмкүн."
+
+#, machine, plain1
+msgid "This deletes their account and everything on it. It can't be undone. You can download their data first."
+msgstr "Бул алардын билдирүүсүн жана анда камтылган нерселердин бардыгын жокко чыгарат. Аны жокко чыгаруу мүмкүн эмес. Адегенде алардын маалыматтарын жүктөп алсаңар болот."
 
 #, machine, plain1
 msgid "This draft hasn't been published."
@@ -17364,6 +17670,10 @@ msgid "Thu"
 msgstr "Тху"
 
 #, machine, plain1
+msgid "Tick the box to agree to the Terms for them."
+msgstr "Алар үчүн шарттарга макул болуу үчүн кутучаны тандаңыз."
+
+#, machine, plain1
 msgid "Tick the box to agree to the rules first."
 msgstr "Адегенде эрежелерге макул болуу үчүн кутучаны тандаңыз."
 
@@ -17635,6 +17945,10 @@ msgstr "Тюна"
 #, machine, plain1
 msgid "Turanian Steppe"
 msgstr "Турандын тепкичи"
+
+#, machine, plain1
+msgid "Turn it off"
+msgstr "Аны өчүрүп салгыла"
 
 #, machine, plain1, python-format
 msgid "Turn off notifications from +%(guild)s"
@@ -18093,6 +18407,10 @@ msgstr "Жүк ташуучу баннир"
 #, machine, plain1
 msgid "Upload picture"
 msgstr "Жүктөө сүрөтү"
+
+#, machine, plain1
+msgid "Upvote"
+msgstr "Добуш берүү"
 
 #, glossary, machine, plain1
 msgctxt "verb"
@@ -18803,6 +19121,10 @@ msgid "Where you are, the law means your age has to be confirmed with an age-che
 msgstr "Мыйзам сиздин жаш курагыңызды текшерип, сезимтал мазмунду же күчтүү тилди көрө аласыз."
 
 #, machine, plain1
+msgid "Where you are, your age has to be confirmed with an age-check service before you can make a child account."
+msgstr "Балаңыздын жаш курагын текшерүү кызматы менен тастыктаңыз."
+
+#, machine, plain1
 msgid "Where you are, your age has to be confirmed with an age-check service."
 msgstr "Жашыңызды текшерүү кызматы менен тастыктаңыз."
 
@@ -18894,9 +19216,17 @@ msgstr "Ким чечим чыгарат"
 msgid "Who follows you"
 msgstr "Силерди ээрчигендер"
 
+#, machine, plain1
+msgid "Who reported them, and what they wrote, isn't shown to anyone but the admins."
+msgstr "Аларды ким жарыялаганын жана эмне жазганын администраторлордон башка эч кимге көрсөтпөйт."
+
 #, glossary, machine, plain1
 msgid "Who subscribes to your Circle"
 msgstr "Чөйрөңүзгө ким жазылган"
+
+#, machine, plain1
+msgid "Who they chat with"
+msgstr "Алар ким менен сүйлөшөт"
 
 #, machine, plain1
 msgid "Who to follow"
@@ -19277,10 +19607,18 @@ msgctxt "guildmaster action"
 msgid "Yank post"
 msgstr "Янк Пост"
 
+#, machine, plain1
+msgid "Year"
+msgstr "Жылдык жыл"
+
 #, glossary, machine, plain1
 msgctxt "time range"
 msgid "Year"
 msgstr "Жыл"
+
+#, machine, plain1
+msgid "Year they were born"
+msgstr "Алар туулган жылы"
 
 #, machine, plain1
 msgctxt "colour"
@@ -19443,6 +19781,14 @@ msgid "You aren't subscribed to that circle."
 msgstr "Сиз бул чөйрөгө жазылбайсыз."
 
 #, machine, plain1
+msgid "You asked your parent or guardian to release your account. They haven't answered yet."
+msgstr "Ата-энеңизден же камкорчуңуздан аккаунтуңузду бошотууну сурандыңыз. Алар азырынча жооп беришкен жок."
+
+#, machine, plain1
+msgid "You asked your parent or guardian to turn this off. They haven't answered yet."
+msgstr "Ата-энеңизден же камкорчуңуздан муну токтотууну сурандыңыз. Алар азырынча жооп беришкен жок."
+
+#, machine, plain1
 msgid "You can add pictures at 500 Rep, or earlier with Premium"
 msgstr "Сүрөттөрдү 500 репутациядан же андан мурда Premium"
 
@@ -19533,6 +19879,16 @@ msgstr[0] "Сизде эң көп дегенде %(num)s канал болушу
 msgstr[1] "Сизде эң көп дегенде %(num)s канал болушу мүмкүн."
 
 #, machine, plain1, python-format
+msgid "You can have at most %(num)s child account."
+msgid_plural "You can have at most %(num)s child accounts."
+msgstr[0] "Сизде эң көп дегенде %(num)s бала эсеби болушу мүмкүн."
+msgstr[1] "Сизде эң көп дегенде %(num)s бала эсеби болушу мүмкүн."
+
+#, machine, plain1, python-format
+msgid "You can have at most %(num)s child accounts."
+msgstr "Эң көп дегенде %(num)s Балдар үчүн эсептер."
+
+#, machine, plain1, python-format
 msgid "You can host at most %(num)s Space a day."
 msgid_plural "You can host at most %(num)s Spaces a day."
 msgstr[0] "Сиз күнүнө эң көп дегенде %(num)s мейкиндикти жайгаштыра аласыз."
@@ -19559,6 +19915,10 @@ msgid "You can look around and set up your profile; posting, comments, votes and
 msgstr "Сиз айлана-чөйрөгө көз чаптырып, профилиңизди түзө аласыз; жарыялоо, комментарийлер, добуш берүү жана текшерүү аяктагандан кийин ачык болот."
 
 #, machine, plain1, python-format
+msgid "You can make %(num)s child accounts a day. Try again tomorrow."
+msgstr "Сиз жасай аласыз %(num)s Бала бир күндө эсеп берет. Эртең дагы бир жолу аракет кылгыла."
+
+#, machine, plain1, python-format
 msgid "You can make %(num)s proposal a day."
 msgid_plural "You can make %(num)s proposals a day."
 msgstr[0] "Сиз күнүнө бир сунуш киргизе аласыз."
@@ -19569,6 +19929,10 @@ msgid "You can make %(num)s wiki edit a day in a guild. Try again tomorrow."
 msgid_plural "You can make %(num)s wiki edits a day in a guild. Try again tomorrow."
 msgstr[0] "Сиз күнүнө бир вики түзөтүү жасай аласыз гильдияда. Эртең дагы бир жолу аракет кылгыла."
 msgstr[1] "Сиз күнүнө %(num)s вики түзөтүү жасай аласыз. Эртең дагы бир жолу аракет кылгыла."
+
+#, machine, plain1
+msgid "You can make a child account once your own account is confirmed as 18 or over. You can say so in Settings > Content."
+msgstr "Балаңыздын эсеби 18 жаштан жогору деп тастыкталгандан кийин, сиз аны түзө аласыз. Муну орнотуулар > Мазмунда айта аласыз."
 
 #, machine, plain1
 msgid "You can only create up to 2 guilds per day. Try again later."
@@ -19863,6 +20227,10 @@ msgid "You don't have Premium right now."
 msgstr "Сизде жок Premium Азыр эле."
 
 #, machine, plain1
+msgid "You don't have a child account called that."
+msgstr "Сизде мындай деп аталган бала аккаунту жок."
+
+#, machine, plain1
 msgid "You don't have a coin to redeem."
 msgstr "Сиздин акчаңыз жок."
 
@@ -19963,6 +20331,10 @@ msgstr "Сиз +ден кулатылдыңыз%(guild)s."
 #, machine, plain1
 msgid "You have left the creator fund."
 msgstr "Сиз жаратуучу фонддон чыгып кеттиңиз."
+
+#, machine, plain1, python-format
+msgid "You have made %(num)s child accounts in the last %(days)s days. Try again later."
+msgstr "Сиз жасаган %(num)s Акыркы бала эсептери %(days)s күндөр. Кийинчерээк дагы бир жолу аракет кылгыла."
 
 #, machine, plain1
 msgid "You have muted this guild. Its posts stay out of All, For You and Following. Visit your settings or click the <i class='fas fa-ellipsis-h text-small'></i> icon to unmute it."
@@ -20348,12 +20720,20 @@ msgid "Your account can also post new items from feeds by itself, while you keep
 msgstr "Сиздин аккаунтуңуз азык-түлүктөн жаңы буюмдарды өзү жайгаштыра алат, ал эми сиз аны азыркыдай эле колдоносуз. Бул билдирүүлөрдүн ар бири автоматташтырылган деп белгиленет, ал эми бот мазмунун жашырган адамдар аларды көрүшпөйт. Сиздин кызмат орундарыңыз, комментарийлериңиз, добуштарыңыз жана чаттарыңыз өзгөргөн жок. Аны адегенде администратор бекитет."
 
 #, machine, plain1
+msgid "Your account can't post automatically while it is age-restricted."
+msgstr "Сиздин аккаунтуңуз жаш курагына жараша автоматтык түрдө жарыялай албайт."
+
+#, machine, plain1
 msgid "Your account can't post automatically while it is suspended."
 msgstr "Сиздин эсебиңиз токтотулганда автоматтык түрдө жарыялай албайт."
 
 #, machine, plain1
 msgid "Your account can't publish right now."
 msgstr "Сиздин аккаунтуңуз азыр жарыялай албайт."
+
+#, machine, plain1
+msgid "Your account can't run a bot while it is age-restricted."
+msgstr "Сиздин аккаунтуңуз жаш курагына жараша иштей албайт."
 
 #, machine, plain1
 msgid "Your account cannot upload right now."
@@ -20374,6 +20754,10 @@ msgstr "Сиздин эсебиңиз текшерилип, даяр: сиз а�
 #, machine, plain1
 msgid "Your account has been deleted"
 msgstr "Сиздин эсебиңиз өчүрүлдү"
+
+#, machine, plain1, python-format
+msgid "Your account has the child lock on, held by your parent or guardian, since %(date)s."
+msgstr "Балаңыздын аккаунту ата-энеси же камкорчусу тарабынан бекитилген. %(date)s."
 
 #, machine, plain1, python-format
 msgid "Your account has the child lock on, since %(date)s."
@@ -20420,6 +20804,9 @@ msgid ""
 "\n"
 "\n"
 "To skip the wait, add and verify an email address in [Settings > Security](/settings/security)."
+msgstr ""
+
+msgid "Your account is your own now. It no longer has the child lock and your parent or guardian can no longer see it. They chose your password: change it in [Settings > Security](/settings/security), or they can still sign in as you."
 msgstr ""
 
 #, machine, plain1
@@ -20522,6 +20909,10 @@ msgstr "Сиздин чаттарыңыз аягына чейин шифрлен
 #, machine, plain1, python-format
 msgid "Your chats run on Matrix, an open standard, on %(site)s's own chat server. Besides Chat on this site, you can use them in a Matrix app such as Element (web, desktop and the classic phone apps), FluffyChat or Cinny. They stay end-to-end encrypted there too."
 msgstr "Сиздин чаттарыңыз Matrix, ачык стандарт, %(site)s өзүнүн чат серверинде иштейт. Бул сайттагы чаттан тышкары, сиз аларды Element (веб, үстөл жана классикалык телефон тиркемелери), FluffyChat же Cinny сыяктуу матрицалык тиркемеде колдоно аласыз. Алар ошол жерде да шифрленген бойдон калышат."
+
+#, machine, plain1
+msgid "Your child accounts will be deleted with yours."
+msgstr "Балдарыңардын эсептери силердин эсептериңер менен кошо өчүрүлөт."
 
 #, glossary, machine, plain1
 msgid "Your circles"
@@ -20666,8 +21057,49 @@ msgstr[0] ""
 msgstr[1] ""
 
 #, machine, plain1
+msgid "Your own password"
+msgstr "Өз сырсөзүңүз"
+
+#, machine, plain1
+msgid "Your parent or guardian didn't agree to release your account."
+msgstr "Ата-энеңиз же камкорчуңуз сиздин эсебиңизди ачыкка чыгарууга макул болгон эмес."
+
+#, machine, plain1
+msgid "Your parent or guardian has been asked to release your account. Nothing changes until they answer."
+msgstr "Ата-энеңиз же камкорчуңуз сиздин эсебиңизди ачыкка чыгарууну суранды. Алар жооп бермейинче, эч нерсе өзгөрбөйт."
+
+#, machine, plain1
+msgid "Your parent or guardian has been asked to turn Private posting off."
+msgstr "Ата-энеңизден же камкорчуңуздан жекече жөнөтүүнү токтотууну суранышкан."
+
+#, machine, plain1
 msgid "Your parent or guardian has to agree before Private posting can be turned off."
 msgstr "Жеке жөнөтүүнү токтотуу үчүн ата-энеңиз же камкорчуңуз макул болушу керек."
+
+#, machine, plain1
+msgid "Your parent or guardian has turned this off for your account."
+msgstr "Ата-энеңиз же камкорчуңуз муну сиздин эсебиңиз үчүн өчүрүп койду."
+
+msgid "Your parent or guardian made this account for you. They can see what you do on the site (your posts, comments, votes, bookmarks, follows, guilds, who you chat with, that your account was reported and your recent sign-ins; the site never shows them what your chats say) and they choose which features are on. You can see which in [Settings > Content](/settings/content). They chose your password: change it in [Settings > Security](/settings/security) so that only you know it, because anyone who knows it can sign in as you and read your chats."
+msgstr ""
+
+msgid "Your parent or guardian set a new password for your account and you were signed out. Sign in with the new password, then change it in [Settings > Security](/settings/security) so that only you know it."
+msgstr ""
+
+msgid "Your parent or guardian stopped managing your account. It keeps the child lock until you confirm your age in Settings > Content. They chose your password: change it in [Settings > Security](/settings/security), or they can still sign in as you."
+msgstr ""
+
+#, machine, plain1
+msgid "Your parent or guardian turned Private posting off for your account."
+msgstr "Ата-энеңиз же камкорчуңуз сиздин эсебиңизге жеке жөнөтүүнү токтотту."
+
+#, machine, plain1
+msgid "Your parent or guardian wants Private posting to stay on."
+msgstr "Ата-энеңиз же камкорчуңуз жеке жайгаштырууну улантууну каалайт."
+
+#, machine, plain1
+msgid "Your parent or guardian's account was suspended, so yours is suspended until theirs is back."
+msgstr "Ата-энеңиздин же камкорчуңуздун эсеби токтотулган, ошондуктан сиздин эсебиңиз алардын эсебине кайтып келгенге чейин токтотулган."
 
 #, machine, plain1
 msgid "Your password"
@@ -21030,6 +21462,10 @@ msgid "and %(num)s more"
 msgid_plural "and %(num)s more"
 msgstr[0] "жана дагы %(num)s"
 msgstr[1] "%(num)s жана андан көп"
+
+#, machine, plain1
+msgid "anonymous"
+msgstr "анонимдүү"
 
 #, machine, plain1
 msgctxt "guildmaster permission"
@@ -21477,6 +21913,10 @@ msgstr "шилтеменин алдын ала көрүнүшү"
 msgid "links"
 msgstr "шилтемелер"
 
+#, machine, plain1
+msgid "looked at by the admins"
+msgstr "администраторлор тарабынан каралган"
+
 #. after the moderator's name in a guild's moderation log
 #, machine, plain1
 msgid "made a channel"
@@ -21683,6 +22123,10 @@ msgstr "кайра киргизилген %(target)s"
 #, machine, plain1, python-format
 msgid "reinstated post %(target)s"
 msgstr "кайрадан калыбына келтирилген кызмат %(target)s"
+
+#, machine, plain1
+msgid "removed"
+msgstr "алынып салынган"
 
 #. follows the moderator's name in a guild's moderation log; %(target)s is a
 #. link

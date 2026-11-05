@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ruqqus VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-11-05 16:56+1100\n"
+"POT-Creation-Date: 2026-11-05 20:16+1100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: et\n"
@@ -1622,12 +1622,24 @@ msgid "(allow beats deny; the channel's own rules apply to everyone else)"
 msgstr "(lubab lööke eitada; kanali enda reeglid kehtivad kõigile teistele)"
 
 #, machine, plain1
+msgid "(empty)"
+msgstr "(tühi)"
+
+#, machine, plain1
 msgid "(for a stage channel: the post's address or id)"
 msgstr "(lavakanali puhul: postiaadress või id)"
 
 #, machine, plain1
 msgid "(from the original)"
 msgstr "(originaalist)"
+
+#, machine, plain1
+msgid "(in a private place)"
+msgstr "(erakohas)"
+
+#, machine, plain1
+msgid "(no title)"
+msgstr "(pealkiri puudub)"
 
 #, glossary, machine, plain1
 msgid "(off)"
@@ -2189,6 +2201,10 @@ msgid "<strong>Username:</strong> %(name)s"
 msgstr "<strong>Kasutajanimi:</strong> %(name)s"
 
 #, machine, plain1, python-format
+msgid "@%(name)s - %(site)s"
+msgstr "@%(name)s - %(site)s"
+
+#, machine, plain1, python-format
 msgid "@%(name)s - Bots - %(site)s"
 msgstr "@%(name)s - Bots - %(site)s"
 
@@ -2203,6 +2219,10 @@ msgstr "@%(name)s lisatud %(curation)s."
 #, machine, plain1, python-format
 msgid "@%(name)s asked to publish a shared draft you write: your vote counts. [Open the draft](%(link)s)"
 msgstr "@%(name)s palus avaldada teie kirjutatud ühise eelnõu: teie hääl loeb. [Ava mustand](%(link)s"
+
+#, machine, plain1, python-format
+msgid "@%(name)s asked you to turn Private posting off for their account. You can answer in [Settings > Children](/settings/children)."
+msgstr "@%(name)s palus teil oma konto jaoks privaatpostituse välja lülitada. Saate vastata [Seaded > Lapsed](/settings/children)."
 
 #, machine, plain1, python-format
 msgid "@%(name)s blocked."
@@ -2246,6 +2266,10 @@ msgstr ""
 #, python-format
 msgid "@%(name)s forwarded [a post](%(link)s) to +%(guild)s."
 msgstr ""
+
+#, machine, plain1, python-format
+msgid "@%(name)s has a new password and is signed out everywhere."
+msgstr "@%(name)s-l on uus parool ja see on igal pool sisse logitud."
 
 #, machine, plain1, python-format
 msgid "@%(name)s has already been invited."
@@ -2419,6 +2443,10 @@ msgid "@%(name)s reposted [a post](%(link)s)."
 msgstr "@%(name)s uuesti postitatud [a post](%(link)s."
 
 #, machine, plain1, python-format
+msgid "@%(name)s says they are 18 or over and asked you to release their account. You can answer in [Settings > Children](/settings/children)."
+msgstr "@%(name)s ütleb, et nad on 18-aastased või vanemad ja palusid teil oma konto vabastada. Saate vastata [Seaded > Lapsed](/settings/children)."
+
+#, machine, plain1, python-format
 msgid "@%(name)s shared [a story](%(link)s)."
 msgstr "@%(name)s jagatud [lugu](%(link)s."
 
@@ -2449,6 +2477,10 @@ msgstr "@%(name)s oli pagendatud alates +%(guild)s"
 #, machine, plain1, python-format
 msgid "@%(name)s was muted in +%(guild)s's channels."
 msgstr "@%(name)s vaigistati +%(guild)s kanalites."
+
+#, machine, plain1, python-format
+msgid "@%(name)s's age was confirmed as 18 or over, so their account is their own now and you can no longer see it."
+msgstr "@%(name)s vanus kinnitati 18-aastaseks või vanemaks, nii et nende konto on nüüd nende enda ja te ei näe seda enam."
 
 #, machine, plain1, python-format
 msgid "@%(name)s's new posts will go into #%(channel)s."
@@ -2967,6 +2999,10 @@ msgstr "Live niit võtab kommentaare, mitte pardal sõnumeid."
 #, machine, plain1
 msgid "A member"
 msgstr "Liige"
+
+#, machine, plain1
+msgid "A member reported this account."
+msgstr "Üks liige teatas selle konto."
 
 #, machine, plain1, python-format
 msgid "A message can be at most %(count)s character."
@@ -4100,6 +4136,12 @@ msgid_plural "An update can be at most %(num)s characters."
 msgstr[0] "Uuendus võib olla maksimaalselt %(num)s tähemärk."
 msgstr[1] "Uuendus võib olla maksimaalselt %(num)s tähemärki."
 
+#, machine, plain1, python-format
+msgid "And %(num)s private guild, which isn't named."
+msgid_plural "And %(num)s private guilds, which aren't named."
+msgstr[0] "Ja %(num)s privaatne gild, mis pole nime saanud."
+msgstr[1] "Ja %(num)s eragildit, mida pole nimetatud."
+
 #, machine, plain1
 msgid "Animals"
 msgstr "Loomad"
@@ -4155,6 +4197,10 @@ msgstr "Anonüümne"
 msgctxt "label"
 msgid "Anonymous"
 msgstr "Anonüümne"
+
+#, machine, plain1
+msgid "Anonymous posting and starting guilds"
+msgstr "Anonüümsed postitus- ja stardigildid"
 
 #, machine, plain1
 msgid "Anonymous posts and comments count for you like any other. Your points and earnings are shown only to you; the site's admins see the payout list."
@@ -4366,6 +4412,14 @@ msgstr "Aaria mägismaa"
 #, machine, plain1
 msgid "As an author you edit the draft live with them, and every character you type is credited to you. Once the post is published, anyone who can see it can see who wrote what. The authors decide together:"
 msgstr "Autorina redigeerite mustandit nendega koos ja iga tegelane, mida kirjutate, krediteeritakse teile. Kui postitus on avaldatud, saab igaüks, kes seda näeb, näha, kes mida kirjutas. Autorid otsustavad koos:"
+
+#, machine, plain1
+msgid "Ask my parent to turn it off"
+msgstr "Palu mu vanemal see välja lülitada"
+
+#, machine, plain1
+msgid "Asked you"
+msgstr "Küsisin"
 
 #, machine, plain1, python-format
 msgid "At least %(count)s comments"
@@ -4836,6 +4890,10 @@ msgstr "Pildi, heli või videoga postituste võimendamine"
 #, machine, plain1
 msgid "Boost for this curation's guilds and accounts"
 msgstr "Selle kureeritud sööda gildide ja kontode kiirendamine"
+
+#, machine, plain1
+msgid "Born"
+msgstr "Sündinud"
 
 #, machine, plain1
 msgid "Bot keys"
@@ -5336,6 +5394,10 @@ msgid "Chat isn't answering right now. Try again in a moment."
 msgstr "Vestlus ei vasta praegu. Proovi hetke pärast uuesti."
 
 #, machine, plain1
+msgid "Chat, group chats and calls"
+msgstr "Vestlus, grupivestlused ja -kõned"
+
+#, machine, plain1
 msgctxt "guildmaster action"
 msgid "Chatban user"
 msgstr "Chatban kasutaja"
@@ -5359,6 +5421,14 @@ msgstr "Keemia"
 #, machine, plain1
 msgid "Child - also hide profanity and sensitive content"
 msgstr "Laps - peidab ka roppust ja tundlikku sisu"
+
+#, machine, plain1
+msgid "Children"
+msgstr "Lapsed"
+
+#, machine, plain1, python-format
+msgid "Children - %(site)s"
+msgstr "Lapsed - %(site)s"
 
 #. "Sign in with ..." is the button the Matrix app shows for this site's
 #. sign-in
@@ -5691,6 +5761,10 @@ msgid "Coins received: %(recent)s in the last 30 days &middot; %(total)s in all.
 msgstr "Saadud mündid: %(recent)s viimase 30 päeva jooksul &middot; %(total)s kokku. Nad lähevad otse oma mündi tasakaalu."
 
 #, machine, plain1
+msgid "Coins, tips, Premium and paid circles"
+msgstr "Mündid, jootrahad Premium ja tasulised ringid"
+
+#, machine, plain1
 msgid "Collaborative"
 msgstr "Koostööd"
 
@@ -5754,6 +5828,10 @@ msgstr "Kommentaar järjehoidjaga."
 #, glossary, machine, plain1
 msgid "Comment posted!"
 msgstr "Kommentaar avaldatud!"
+
+#, machine, plain1
+msgid "Commenting"
+msgstr "Kommenteerin"
 
 #, glossary, machine, plain1
 msgid "Comments"
@@ -6401,8 +6479,16 @@ msgid "Delete role"
 msgstr "Kustuta roll"
 
 #, machine, plain1
+msgid "Delete the account"
+msgstr "Kustuta konto"
+
+#, machine, plain1
 msgid "Delete the published post"
 msgstr "Kustuta avaldatud postitus"
+
+#, machine, plain1
+msgid "Delete this account"
+msgstr "Kustuta see konto"
 
 #, machine, plain1
 msgid "Delete this category? Its channels stay."
@@ -6463,6 +6549,10 @@ msgstr "Faili kustutamine Drive'is või lahtiühendamine eemaldab selle oma post
 #, machine, plain1
 msgid "Deleting a file there, or disconnecting, removes it from your posts."
 msgstr "Faili kustutamine või lahtiühendamine eemaldab selle oma postitustest."
+
+#, machine, plain1
+msgid "Deleting your account also deletes your child accounts. You can download their data first in Settings > Children."
+msgstr "Teie konto kustutamine kustutab ka teie lapse kontod. Saate oma andmed kõigepealt alla laadida seadistustes > Lapsed."
 
 #, machine, plain1
 msgid "Density"
@@ -6705,6 +6795,10 @@ msgid "Done"
 msgstr "Tehtud"
 
 #, machine, plain1
+msgid "Download"
+msgstr "Laadi alla"
+
+#, machine, plain1
 msgctxt "button"
 msgid "Download"
 msgstr "Allalaadimine"
@@ -6718,8 +6812,16 @@ msgid "Download the recording"
 msgstr "Salvestuse allalaadimine"
 
 #, machine, plain1
+msgid "Download their data"
+msgstr "Andmete allalaadimine"
+
+#, machine, plain1
 msgid "Download your data"
 msgstr "Laadige alla oma andmed"
+
+#, machine, plain1
+msgid "Downvote"
+msgstr "Tagasi lükata"
 
 #, glossary, machine, plain1
 msgctxt "verb"
@@ -7047,6 +7149,10 @@ msgstr "Sisesta kanaliserveri aadress."
 msgid "Enter the feed's address."
 msgstr "Sisesta kanali aadress."
 
+#, machine, plain1
+msgid "Enter the month and year they were born."
+msgstr "Sisestage kuu ja aasta, mil nad sündisid."
+
 #, machine, plain1, python-format
 msgid "Enter the six-digit code generated in the authenticator app and your %(site)s account password."
 msgstr "Sisestage autentimisrakenduses genereeritud kuuekohaline kood ja oma %(site)s konto parool."
@@ -7219,6 +7325,10 @@ msgstr "Igaüks näeb üksteise muudatusi, nagu nad kirjutavad, ja iga tegelane 
 #, machine, plain1
 msgid "Everything from your guilds and accounts, newest first."
 msgstr "Kõik oma gildid ja kontod, uusim kõigepealt."
+
+#, machine, plain1
+msgid "Everything they post goes only to their Friends circle. Turn it off to let them post in public."
+msgstr "Kõik, mida nad postitavad, läheb ainult nende sõprade ringi. Lülitage see välja, et lasta neil avalikult postitada."
 
 #, machine, plain1
 msgid "Everything you post goes only to your Friends circle, the people you follow who follow you back, so nothing is public by accident. Your circles can only hold people like that, and you can't forward, repost or write a shared draft. Comments on other people's posts are still public."
@@ -7875,6 +7985,10 @@ msgstr "Sõbrad"
 msgctxt "circle name"
 msgid "Friends"
 msgstr "Sõbrad"
+
+#, machine, plain1
+msgid "Friends circle"
+msgstr "Sõprade ring"
 
 #, machine, plain1
 msgid "Friends is everyone you follow who follows you back. To share with family, a team or anyone else, make a circle first, then pick it here."
@@ -8681,6 +8795,10 @@ msgstr "Jahipidamine"
 msgid "I accept the <a href=\"%(url)s\" target=\"_blank\">terms and conditions</a>"
 msgstr "Nõustun <a href=\"%(url)s\" target=\"_blank\">tingimused</a>"
 
+#, machine, plain1, python-format
+msgid "I agree to the <a href=\"%(url)s\" target=\"_blank\">Terms</a> for them."
+msgstr "Olen nõus <a href=\"%(url)s\" target=\"_blank\">Tingimused</a> neile."
+
 #, machine, plain1
 msgid "I agree to the rules below."
 msgstr "Nõustun allpool toodud reeglitega."
@@ -8716,6 +8834,10 @@ msgstr "Kui teie kontoga on seotud e-posti aadress, saate seda kasutada oma %(si
 #, machine, plain1
 msgid "If this was you, there is nothing to do."
 msgstr "Kui see oled sina, siis pole midagi teha."
+
+#, machine, plain1
+msgid "If you are 18 or over, say so and your parent or guardian will be asked to release your account."
+msgstr "Kui olete 18-aastane või vanem, öelge seda ja teie vanemal või eestkostjal palutakse teie konto vabastada."
 
 #, machine, plain1
 msgid "If you don't have your 2FA device, enter one of your backup codes instead. Each backup code works once. An account that never made backup codes can enter its Recovery Code, which also turns 2FA off."
@@ -9094,6 +9216,14 @@ msgid "It shows, in full, every word and phrase the word filter looks for, in ev
 msgstr "See näitab täielikult iga sõna ja fraasi, mida sõna filter otsib, igas keeles, mida see hõlmab. See hõlmab solvanguid ja muud äärmiselt solvavat keelt."
 
 #, machine, plain1
+msgid "It stays a child account with the child lock, but you can no longer see it or change what it can do, and you can't link it again."
+msgstr "See jääb lapse lukuga lapse kontole, kuid te ei näe seda enam ega muuda seda, mida see saab teha, ja te ei saa seda uuesti siduda."
+
+#, machine, plain1
+msgid "It stays on the Child word filter, which hides profanity and anything marked sensitive."
+msgstr "See jääb lapse sõna filtrile, mis peidab roppust ja kõike, mis on märgistatud tundlikuks."
+
+#, machine, plain1
 msgid "It stays on the Child word filter, which hides profanity and anything marked sensitive. Chat, Spaces, coins, anonymous posting and starting a guild are off, and others can't start a chat or tip you. Your posts go to your Friends circle only unless you turn Private posting off."
 msgstr "See jääb lapse sõna filtrile, mis peidab roppust ja kõike, mis on märgistatud tundlikuks. Vestlus, ruumid, mündid, anonüümne postitamine ja gildi käivitamine on välja lülitatud ja teised ei saa vestlust alustada ega teid jootta. Teie postitused lähevad teie sõprade ringi, kui te ei lülita privaatset postitust välja."
 
@@ -9257,6 +9387,10 @@ msgstr "Juuni pööripäev"
 #, machine, plain1
 msgid "K-Pop"
 msgstr "K-Pop"
+
+#, machine, plain1
+msgid "Keep it on"
+msgstr "Hoia seda"
 
 #, machine, plain1
 msgid "Keep my posts out of All"
@@ -9532,6 +9666,10 @@ msgstr "Leonidsi meteoorisadu"
 msgid "Letters spaced out or split by dots or other marks are read as one word."
 msgstr "Punktide või muude märkidega eraldatud või jagatud tähti loetakse ühe sõnana."
 
+#, machine, plain1
+msgid "Letters, numbers and underscores, 3 to 25 characters."
+msgstr "Tähed, numbrid ja alakriipsud, 3 kuni 25 märki."
+
 #, glossary, machine, plain1
 msgid "Lifestyle"
 msgstr "Elustiil"
@@ -9771,6 +9909,10 @@ msgstr "Kuu uusaasta"
 msgid "Lyrids meteor shower"
 msgstr "Lyridsi meteoorisadu"
 
+#, machine, plain1, python-format
+msgid "Made on %(date)s."
+msgstr "Tehtud %(date)s."
+
 #, glossary, machine, plain1
 msgid "Made with AI"
 msgstr "Tehtud tehisaruga"
@@ -9789,6 +9931,10 @@ msgid "Make a channel"
 msgstr "Tee kanal"
 
 #, machine, plain1
+msgid "Make a child account"
+msgstr "Tee lapse konto"
+
+#, machine, plain1
 msgid "Make a circle people pay to be in, every 30 days, for what you share with it."
 msgstr "Tee ring, kus inimesed maksavad iga 30 päeva tagant selle eest, mida sa sellega jagad."
 
@@ -9803,6 +9949,10 @@ msgstr "Tee lehekülg"
 #, machine, plain1
 msgid "Make a role"
 msgstr "Mängi rolli"
+
+#, machine, plain1
+msgid "Make an account for a child under 18 and decide what it can do. You can see what they do on the site (their posts, comments, votes, bookmarks, follows, guilds, the names of who they chat with and their recent sign-ins). The site never shows you what their chats say: chats are end-to-end encrypted. You choose their password, so until they change it you can sign in as them and read their chats: tell them to set their own. They are told all of this in their own Settings."
+msgstr "Tehke 18-aastasele lapsele konto ja otsustage, mida ta saab teha. Näete, mida nad saidil teevad (nende postitused, kommentaarid, hääled, järjehoidjad, järgnevad, gildid, nimed, kellega nad vestlevad ja nende hiljutised sisselogimised). Sait ei näita kunagi, mida nende vestlused ütlevad: vestlused on otsast lõpuni krüpteeritud. Valite oma parooli, nii et kuni nad seda muudavad, saate sisse logida nendena ja lugeda nende vestlusi: öelge neile, et nad seaksid oma. Kõike seda räägitakse neile omas keskkonnas."
 
 #, machine, plain1, python-format
 msgid "Make an app first in <a href=\"%(url)s\">Settings &gt; Apps</a>; a key works through it."
@@ -10141,6 +10291,10 @@ msgid "Mon"
 msgstr "Mon"
 
 #, machine, plain1
+msgid "Month"
+msgstr "Kuu"
+
+#, machine, plain1
 msgctxt "table heading"
 msgid "Month"
 msgstr "Kuu"
@@ -10149,6 +10303,10 @@ msgstr "Kuu"
 msgctxt "time range"
 msgid "Month"
 msgstr "Kuu"
+
+#, machine, plain1
+msgid "Month they were born"
+msgstr "Kuu, mil nad sündisid"
 
 #, machine, plain1
 msgid "Monthly creator fund payouts"
@@ -10488,6 +10646,10 @@ msgstr "Uus lehekülg: %(address)s"
 #, machine, plain1
 msgid "New paid circle"
 msgstr "Uus tasustatud ring"
+
+#, machine, plain1
+msgid "New password"
+msgstr "Uus parool"
 
 #, machine, plain1
 msgid "New posts that are getting attention, with no account filling the page."
@@ -10873,6 +11035,10 @@ msgstr "Keegi uus ei saa tellida. Praegused tellijad hoiavad seda, mille eest na
 msgid "Nobody types here"
 msgstr "Siin pole kedagi"
 
+#, machine, plain1, python-format
+msgid "Nobody under %(age)s may have an account where you are."
+msgstr "Kellelgi alla %(age)s ei pruugi olla kontot, kus te olete."
+
 #, machine, plain1
 msgid "Nobody yet."
 msgstr "Mitte keegi veel."
@@ -10993,6 +11159,10 @@ msgstr "Ei võta abonente vastu"
 #, machine, plain1
 msgid "Not trending any more"
 msgstr "Enam trendi ei ole"
+
+#, machine, plain1
+msgid "Not yet"
+msgstr "Veel mitte"
 
 #, glossary, machine, plain1
 msgid "Not your default:"
@@ -11115,6 +11285,10 @@ msgid "Nothing written yet."
 msgstr "Midagi pole veel kirjutatud."
 
 #, machine, plain1
+msgid "Nothing yet."
+msgstr "Veel mitte midagi."
+
+#, machine, plain1
 msgid "Notification types"
 msgstr "Teatise liigid"
 
@@ -11162,6 +11336,10 @@ msgstr "Okeaania"
 msgid "Oddly Satisfying"
 msgstr "Kummaliselt rahuldav"
 
+#, machine, plain1
+msgid "Off"
+msgstr "Välja"
+
 #. slow mode in a guild's channel is switched off.
 #, machine, plain1
 msgctxt "slow mode"
@@ -11188,6 +11366,10 @@ msgstr "Vanad"
 #, machine, plain1
 msgid "Old Password"
 msgstr "Vana salasõna"
+
+#, machine, plain1
+msgid "On"
+msgstr "On"
 
 #. "On" marks a linked storage account that is in use
 #, machine, plain1
@@ -11264,6 +11446,10 @@ msgstr "Ühte neist versioonidest ei saa teile näidata."
 #, machine, plain1
 msgid "One of those circles isn't yours any more. Choose again."
 msgstr "Üks neist ringidest pole enam sinu. Vali uuesti."
+
+#, machine, plain1
+msgid "One of your child accounts owes money, so your account can't be deleted yet."
+msgstr "Üks teie lapse konto võlgneb raha, nii et teie kontot ei saa veel kustutada."
 
 #, machine, plain1
 msgid "One-time codes for the day you lose your authenticator. Making a new set replaces every earlier code, used or not."
@@ -11587,6 +11773,10 @@ msgstr "Ainult postituse autor ja kaasautorid saavad värskendusi postitada."
 #, machine, plain1
 msgid "Only the post's author and co-authors can run its live updates."
 msgstr "Ainult postituse autor ja kaasautorid saavad selle reaalajas värskendusi käivitada."
+
+#, machine, plain1
+msgid "Only used to check their age. It isn't kept."
+msgstr "Ainult nende vanuse kontrollimiseks. Seda ei hoita."
 
 #, machine, plain1
 msgid "Only when I turn them on"
@@ -12582,6 +12772,10 @@ msgid "Posted on that day."
 msgstr "Posted tol päeval."
 
 #, machine, plain1
+msgid "Posting"
+msgstr "Postitan"
+
+#, machine, plain1
 msgid "Posting cooldown"
 msgstr "Jahutuse postitamine"
 
@@ -13419,6 +13613,10 @@ msgid "Relationships"
 msgstr "Suhted"
 
 #, machine, plain1
+msgid "Release the account"
+msgstr "Vabastage konto"
+
+#, machine, plain1
 msgid "Religion"
 msgstr "Religioon"
 
@@ -13668,6 +13866,10 @@ msgstr "Teatatud teated"
 msgctxt "noun"
 msgid "Reports"
 msgstr "Kaebused"
+
+#, machine, plain1
+msgid "Reports about them"
+msgstr "Teated nende kohta"
 
 #, machine, plain1
 msgid "Reports opened"
@@ -14006,6 +14208,10 @@ msgctxt "weekday"
 msgid "Sat"
 msgstr "Sattus"
 
+#, glossary, machine, plain1
+msgid "Save"
+msgstr "Salvesta"
+
 #, machine, plain1
 msgctxt "button"
 msgid "Save"
@@ -14315,6 +14521,10 @@ msgid "See what is trending"
 msgstr "Vaata, mis trend on"
 
 #, machine, plain1
+msgid "See what they do"
+msgstr "Vaata, mida nad teevad"
+
+#, machine, plain1
 msgid "See your username"
 msgstr "Näita oma kasutajanime"
 
@@ -14413,6 +14623,10 @@ msgstr "Septembrikuu pööripäev"
 #, machine, plain1
 msgid "Serious"
 msgstr "Tõsine"
+
+#, machine, plain1
+msgid "Set a new password"
+msgstr "Uue parooli määramine"
 
 #, machine, plain1
 msgid "Set a price to let people pay to join."
@@ -15080,6 +15294,10 @@ msgid "Spaces"
 msgstr "Spaces"
 
 #, machine, plain1
+msgid "Spaces and live threads"
+msgstr "Ruumid ja pingestatud niidid"
+
+#, machine, plain1
 msgid "Spaces are started in the Spaces area."
 msgstr "Kosmosealal alustatakse ruumide loomist."
 
@@ -15214,6 +15432,14 @@ msgstr "Kinnitatud postitus"
 #, machine, plain1
 msgid "Still here to read"
 msgstr "Ikka veel siin lugemiseks"
+
+#, machine, plain1
+msgid "Stop managing"
+msgstr "Peata juhtimine"
+
+#, machine, plain1
+msgid "Stop managing this account"
+msgstr "Lõpeta konto haldamine"
 
 #, machine, plain1
 msgid "Stop posting automatically"
@@ -15390,6 +15616,10 @@ msgstr "Toetajad…"
 #, machine, plain1
 msgid "Survival & Bushcraft"
 msgstr "Ellujäämine ja Bushcraft"
+
+#, machine, plain1
+msgid "Suspended"
+msgstr "Peatatud"
 
 #, machine, plain1, python-format
 msgid "Switch @%(name)s off for good? Its posts stay; the bot never posts again."
@@ -15863,6 +16093,10 @@ msgid "That isn't a valid username."
 msgstr "See pole õige kasutajanimi."
 
 #, machine, plain1
+msgid "That isn't something you can switch."
+msgstr "Seda ei saa vahetada."
+
+#, machine, plain1
 msgid "That key couldn't be saved."
 msgstr "Seda võtit ei saanud salvestada."
 
@@ -16093,6 +16327,14 @@ msgstr "Sahel"
 #, machine, plain1
 msgid "The Space could not be made."
 msgstr "Ruumi ei saanud teha."
+
+#, machine, plain1, python-format
+msgid "The account @%(name)s is deleted."
+msgstr "Konto @%(name)s kustutatakse."
+
+#, machine, plain1, python-format
+msgid "The account @%(name)s is made. They sign in with the username and password you gave."
+msgstr "Konto @%(name)s on tehtud. Nad logivad sisse teie antud kasutajanime ja parooliga."
 
 #, machine, plain1, python-format
 msgid "The account age must be a whole number of days, 0 to %(max)s."
@@ -16436,6 +16678,10 @@ msgstr "Viimase seitsme päeva enim hääletatud postitused."
 #, machine, plain1, python-format
 msgid "The name %(host)s could not be found."
 msgstr "Nime %(host)s ei leitud."
+
+#, machine, plain1
+msgid "The newest of what they have done. Only the names of who they chat with are shown, never what a chat says: chats are end-to-end encrypted."
+msgstr "Kõige uuem, mida nad teinud on. Näidatakse ainult nende nimesid, kellega nad vestlevad, mitte kunagi seda, mida vestlus ütleb: vestlused on otsast lõpuni krüptitud."
 
 #, machine, plain1
 msgid "The numbers are always shown on your profile. This decides who can open each list and see the accounts on it. An account is only listed where its own setting allows it too."
@@ -16787,12 +17033,20 @@ msgid "They already have this role."
 msgstr "Neil on juba see roll."
 
 #, machine, plain1
+msgid "They are 18 or over, so they can make their own account."
+msgstr "Nad on 18-aastased või vanemad, nii et nad saavad oma konto teha."
+
+#, machine, plain1
 msgid "They are already in this circle."
 msgstr "Nad on juba selles ringis."
 
 #, machine, plain1
 msgid "They are not told. Anyone you block leaves your circles."
 msgstr "Neile ei räägita. Kõik, keda blokeerid, lahkuvad ringist."
+
+#, machine, plain1
+msgid "They are signed out everywhere. If they use chat, they may be asked for their recovery code."
+msgstr "Neid kirjutatakse igal pool välja. Kui nad kasutavad chat, nad võivad küsida oma taastamise kood."
 
 #, machine, plain1, python-format
 msgid "They aren't in %(circle)s."
@@ -16807,6 +17061,38 @@ msgid "They aren't muted here."
 msgstr "Nad ei ole siin tummad."
 
 #, machine, plain1
+msgid "They asked you to turn Private posting off."
+msgstr "Nad palusid teil privaatpostituse välja lülitada."
+
+#, machine, plain1
+msgid "They can buy and spend coins, tip, buy Premium and join or run paid circles."
+msgstr "Nad saavad osta ja kulutada münte, jootraha, osta Premium ja liituda või käivitada tasulisi ringe."
+
+#, machine, plain1
+msgid "They can comment."
+msgstr "Nad võivad kommenteerida."
+
+#, machine, plain1
+msgid "They can host and join Spaces and run live threads. Voice calls in a Space also need Chat to be on."
+msgstr "Nad saavad võõrustada ja liituda Spacesiga ning käivitada live-niite. Häälkõned ruumis vajavad ka vestlust."
+
+#, machine, plain1
+msgid "They can make posts."
+msgstr "Nad võivad postitusi teha."
+
+#, machine, plain1
+msgid "They can message people, join group chats and make calls. The site never shows you what a chat says: chats are end-to-end encrypted. Whoever knows their password can still sign in and read them."
+msgstr "Nad saavad inimesi saata, liituda grupivestlustega ja helistada. Sait ei näita kunagi, mida vestlus ütleb: vestlused on otsast lõpuni krüptitud. Kes teab oma salasõna, saab seda ikka sisse logida ja lugeda."
+
+#, machine, plain1
+msgid "They can post anonymously and start a guild. You can still see who wrote an anonymous post."
+msgstr "Nad võivad postitada anonüümselt ja alustada gild. Vaata, kes kirjutas anonüümse postituse."
+
+#, machine, plain1
+msgid "They can see what you do on the site: your posts, comments, votes, bookmarks, follows, guilds, who you chat with, that your account was reported, and your recent sign-ins. The site never shows them what your chats say, because chats are end-to-end encrypted. But anyone who knows your password, a parent who chose it included, can sign in as you: change it in Security so that only you know it. They choose which of these are on for your account:"
+msgstr "Nad näevad, mida te saidil teete: teie postitused, kommentaarid, hääled, järjehoidjad, järgnevad gildid, kellega vestlete, et teie kontost teatati ja teie hiljutised sisselogimised. Sait ei näita neile kunagi, mida teie vestlused ütlevad, sest vestlused on otsast lõpuni krüpteeritud. Kuid igaüks, kes teab teie parooli, vanem, kes valis selle, võib teie sisse logida: muuta seda turvalisuses nii, et ainult sina tead seda. Nad valivad, millised neist on teie kontol:"
+
+#, machine, plain1
 msgid "They can't comment on your posts or comments, chat with you or notify you by mentioning you. They are not told, but they may work it out if they try to comment on something of yours."
 msgstr "Nad ei saa kommenteerida oma postitusi või kommentaare, vestelda teiega või teavitada teid mainides. Neile ei räägita, kuid nad võivad selle välja töötada, kui nad üritavad teie midagi kommenteerida."
 
@@ -16819,12 +17105,20 @@ msgid "They go straight to your coin balance."
 msgstr "Nad lähevad otse oma mündi tasakaalu."
 
 #, machine, plain1
+msgid "They haven't asked for that."
+msgstr "Nad pole seda palunud."
+
+#, machine, plain1
 msgid "They need to be in the guild, and not exiled from it."
 msgstr "Nad peavad olema gildis, mitte pagendatud."
 
 #, machine, plain1
 msgid "They need to join the channel first."
 msgstr "Nad peavad kõigepealt kanaliga liituma."
+
+#, machine, plain1
+msgid "They say they are 18 or over and asked you to release their account. If you do, it becomes their own and you can no longer see it."
+msgstr "Nad ütlesid, et nad on 18-aastased või vanemad ja palusid teil oma konto vabastada. Kui sa seda teed, muutub see sinu omaks ja sa ei näe seda enam."
 
 #, machine, plain1
 msgid "They're already a helper."
@@ -16939,6 +17233,14 @@ msgstr "See konto on ajutiselt peatatud %(site)s. Vaata hiljem tagasi."
 #, machine, plain1
 msgid "This account is private"
 msgstr "See konto on isiklik"
+
+#, machine, plain1
+msgid "This account is suspended."
+msgstr "See konto on peatatud."
+
+#, machine, plain1
+msgid "This account owes money, so it can't be deleted yet."
+msgstr "See konto võlgneb raha, nii et seda ei saa veel kustutada."
 
 #, machine, plain1
 msgid "This account posts about sensitive topics"
@@ -17074,6 +17376,10 @@ msgstr "Selle kureeritud sööda gildid ja kontod"
 #, machine, plain1
 msgid "This curation's rules took too long to run. Its owner can make them narrower."
 msgstr "Selle kureeritud sööda reeglid võtsid liiga kaua aega. Selle omanik võib need kitsamaks teha."
+
+#, machine, plain1
+msgid "This deletes their account and everything on it. It can't be undone. You can download their data first."
+msgstr "See kustutab nende konto ja kõik selle peal. Seda ei saa tagasi võtta. Kõigepealt saate oma andmed alla laadida."
 
 #, machine, plain1
 msgid "This draft hasn't been published."
@@ -17405,6 +17711,10 @@ msgid "Thu"
 msgstr "Thu"
 
 #, machine, plain1
+msgid "Tick the box to agree to the Terms for them."
+msgstr "Märkige kastike, et nõustuda nende tingimustega."
+
+#, machine, plain1
 msgid "Tick the box to agree to the rules first."
 msgstr "Klõpsake kasti, et reeglitega kõigepealt nõustuda."
 
@@ -17676,6 +17986,10 @@ msgstr "Tue"
 #, machine, plain1
 msgid "Turanian Steppe"
 msgstr "Turaniani Steppe"
+
+#, machine, plain1
+msgid "Turn it off"
+msgstr "Lülita see välja"
 
 #, machine, plain1, python-format
 msgid "Turn off notifications from +%(guild)s"
@@ -18134,6 +18448,10 @@ msgstr "Üleslaadimisbänner"
 #, machine, plain1
 msgid "Upload picture"
 msgstr "Pildi üleslaadimine"
+
+#, machine, plain1
+msgid "Upvote"
+msgstr "Üleskutse"
 
 #, glossary, machine, plain1
 msgctxt "verb"
@@ -18855,6 +19173,10 @@ msgid "Where you are, the law means your age has to be confirmed with an age-che
 msgstr "Kui olete, tähendab seadus, et teie vanus tuleb kinnitada vanusekontrolli teenusega, enne kui näete tundlikku sisu või tugevat keelt."
 
 #, machine, plain1
+msgid "Where you are, your age has to be confirmed with an age-check service before you can make a child account."
+msgstr "Kui olete, tuleb teie vanus kinnitada vanusekontrolli teenusega, enne kui saate lapse konto teha."
+
+#, machine, plain1
 msgid "Where you are, your age has to be confirmed with an age-check service."
 msgstr "Kui olete, tuleb teie vanus kinnitada vanusekontrolli teenusega."
 
@@ -18946,9 +19268,17 @@ msgstr "Kes otsustab"
 msgid "Who follows you"
 msgstr "Kes järgneb sulle"
 
+#, machine, plain1
+msgid "Who reported them, and what they wrote, isn't shown to anyone but the admins."
+msgstr "Kes neist teatas ja mida nad kirjutasid, ei näidata kellelegi peale administraatorite."
+
 #, glossary, machine, plain1
 msgid "Who subscribes to your Circle"
 msgstr "Sinu ringi tellijad"
+
+#, machine, plain1
+msgid "Who they chat with"
+msgstr "Kellega nad vestlevad"
 
 #, machine, plain1
 msgid "Who to follow"
@@ -19329,10 +19659,18 @@ msgctxt "guildmaster action"
 msgid "Yank post"
 msgstr "Yanki"
 
+#, machine, plain1
+msgid "Year"
+msgstr "Aasta"
+
 #, glossary, machine, plain1
 msgctxt "time range"
 msgid "Year"
 msgstr "Aasta"
+
+#, machine, plain1
+msgid "Year they were born"
+msgstr "Sünniaasta"
 
 #, machine, plain1
 msgctxt "colour"
@@ -19495,6 +19833,14 @@ msgid "You aren't subscribed to that circle."
 msgstr "Sa pole selle ringiga liitunud."
 
 #, machine, plain1
+msgid "You asked your parent or guardian to release your account. They haven't answered yet."
+msgstr "Palusite oma vanemal või hooldajal oma konto vabastada. Nad pole veel vastanud."
+
+#, machine, plain1
+msgid "You asked your parent or guardian to turn this off. They haven't answered yet."
+msgstr "Sa palusid oma vanemal või hooldajal selle välja lülitada. Nad pole veel vastanud."
+
+#, machine, plain1
 msgid "You can add pictures at 500 Rep, or earlier with Premium"
 msgstr "Võite lisada pilte 500 Reputation või varem Premium"
 
@@ -19585,6 +19931,16 @@ msgstr[0] "Sul võib olla maksimaalselt %(num)s kanal."
 msgstr[1] "Sul võib olla maksimaalselt %(num)s kanalit."
 
 #, machine, plain1, python-format
+msgid "You can have at most %(num)s child account."
+msgid_plural "You can have at most %(num)s child accounts."
+msgstr[0] "Teil võib olla maksimaalselt %(num)s lapse konto."
+msgstr[1] "Teil võib olla maksimaalselt %(num)s lapse kontot."
+
+#, machine, plain1, python-format
+msgid "You can have at most %(num)s child accounts."
+msgstr "Sul võib olla maksimaalselt %(num)s laste kontod."
+
+#, machine, plain1, python-format
 msgid "You can host at most %(num)s Space a day."
 msgid_plural "You can host at most %(num)s Spaces a day."
 msgstr[0] "Võite võõrustada maksimaalselt %(num)s ruumi päevas."
@@ -19611,6 +19967,10 @@ msgid "You can look around and set up your profile; posting, comments, votes and
 msgstr "Saate vaadata ringi ja seadistada oma profiili; postitamine, kommentaarid, hääled ja järgnevad avatud, kui kontroll on tehtud."
 
 #, machine, plain1, python-format
+msgid "You can make %(num)s child accounts a day. Try again tomorrow."
+msgstr "Võite teha %(num)s laste kontod päevas. Proovi homme uuesti."
+
+#, machine, plain1, python-format
 msgid "You can make %(num)s proposal a day."
 msgid_plural "You can make %(num)s proposals a day."
 msgstr[0] "Võite teha %(num)s ettepaneku päevas."
@@ -19621,6 +19981,10 @@ msgid "You can make %(num)s wiki edit a day in a guild. Try again tomorrow."
 msgid_plural "You can make %(num)s wiki edits a day in a guild. Try again tomorrow."
 msgstr[0] "Võite teha %(num)s viki redigeerimist päevas gildis. Proovi homme uuesti."
 msgstr[1] "Võite teha %(num)s viki redigeerimist päevas gildis. Proovi homme uuesti."
+
+#, machine, plain1
+msgid "You can make a child account once your own account is confirmed as 18 or over. You can say so in Settings > Content."
+msgstr "Võite teha lapse konto, kui teie enda konto on kinnitatud 18 või üle selle. Võite seda öelda jaotises Seaded > Sisu."
 
 #, machine, plain1
 msgid "You can only create up to 2 guilds per day. Try again later."
@@ -19915,6 +20279,10 @@ msgid "You don't have Premium right now."
 msgstr "Sul pole Premium kohe."
 
 #, machine, plain1
+msgid "You don't have a child account called that."
+msgstr "Sul ei ole sellist lapse kontot."
+
+#, machine, plain1
 msgid "You don't have a coin to redeem."
 msgstr "Sul pole münti, mida lunastada."
 
@@ -20025,6 +20393,10 @@ msgstr "Sind on kukutatud +%(guild)s-st."
 #, machine, plain1
 msgid "You have left the creator fund."
 msgstr "Sa lahkusid Loojafondist."
+
+#, machine, plain1, python-format
+msgid "You have made %(num)s child accounts in the last %(days)s days. Try again later."
+msgstr "Sa oled teinud %(num)s lapsearved viimase %(days)s päeva jooksul. Proovi hiljem uuesti."
 
 #, machine, plain1
 msgid "You have muted this guild. Its posts stay out of All, For You and Following. Visit your settings or click the <i class='fas fa-ellipsis-h text-small'></i> icon to unmute it."
@@ -20425,12 +20797,20 @@ msgid "Your account can also post new items from feeds by itself, while you keep
 msgstr "Teie konto saab ka ise postitada uusi üksusi kanalitest, samal ajal kui kasutate seda praegu. Kõik need postitused on märgistatud automatiseeritud ja inimesed, kes peidavad boti sisu, neid ei näe. Teie enda postitused, kommentaarid, hääled ja vestlused ei muutu. Enne kiidab administraator selle heaks."
 
 #, machine, plain1
+msgid "Your account can't post automatically while it is age-restricted."
+msgstr "Teie kontot ei saa automaatselt postitada, kui see on vanusepiiranguga."
+
+#, machine, plain1
 msgid "Your account can't post automatically while it is suspended."
 msgstr "Teie konto ei saa automaatselt postitada, kui see on peatatud."
 
 #, machine, plain1
 msgid "Your account can't publish right now."
 msgstr "Teie kontot ei saa praegu avaldada."
+
+#, machine, plain1
+msgid "Your account can't run a bot while it is age-restricted."
+msgstr "Teie konto ei saa robotit käivitada, kui see on vanusepiiranguga."
 
 #, machine, plain1
 msgid "Your account cannot upload right now."
@@ -20451,6 +20831,10 @@ msgstr "Teie konto on kontrollitud ja valmis: saate nüüd postitada, kommenteer
 #, machine, plain1
 msgid "Your account has been deleted"
 msgstr "Teie konto on kustutatud"
+
+#, machine, plain1, python-format
+msgid "Your account has the child lock on, held by your parent or guardian, since %(date)s."
+msgstr "Teie kontol on lapse lukustus, mida hoiab teie vanem või eestkostja, alates %(date)s."
 
 #, machine, plain1, python-format
 msgid "Your account has the child lock on, since %(date)s."
@@ -20503,6 +20887,10 @@ msgstr ""
 "\n"
 "\n"
 "Ootamise vahelejätmiseks lisage ja kinnitage e-posti aadress [Seaded > Turvalisus](/settings/security)."
+
+#, machine, plain1
+msgid "Your account is your own now. It no longer has the child lock and your parent or guardian can no longer see it. They chose your password: change it in [Settings > Security](/settings/security), or they can still sign in as you."
+msgstr "Sinu konto on nüüd sinu oma. See ei ole enam lapse lukk ja teie vanem või hooldaja ei näe seda enam. Nad valisid teie parooli: muutke seda [Seaded > Turvalisus](/settings/security) või nad saavad endiselt sisse logida."
 
 #, machine, plain1
 msgid "Your account needs to be at least 30 days old to post automatically."
@@ -20605,6 +20993,10 @@ msgstr "Teie vestlused on otsast otsani krüpteeritud ja sait ei saa neid lugeda
 #, machine, plain1, python-format
 msgid "Your chats run on Matrix, an open standard, on %(site)s's own chat server. Besides Chat on this site, you can use them in a Matrix app such as Element (web, desktop and the classic phone apps), FluffyChat or Cinny. They stay end-to-end encrypted there too."
 msgstr "Teie vestlused töötavad Matrixis, avatud standardis, %(site)s enda vestlusserveris. Lisaks vestlusele sellel saidil saate neid kasutada Matrixi rakenduses nagu Element (veeb, töölaud ja klassikalised telefonirakendused), FluffyChat või Cinny. Nad jäävad ka otsast otsani krüpteerituks."
+
+#, machine, plain1
+msgid "Your child accounts will be deleted with yours."
+msgstr "Teie lapse kontod kustutatakse teie omadega."
 
 #, glossary, machine, plain1
 msgid "Your circles"
@@ -20749,8 +21141,52 @@ msgstr[0] ""
 msgstr[1] ""
 
 #, machine, plain1
+msgid "Your own password"
+msgstr "Oma parool"
+
+#, machine, plain1
+msgid "Your parent or guardian didn't agree to release your account."
+msgstr "Teie vanem või eestkostja ei nõustunud teie kontot vabastama."
+
+#, machine, plain1
+msgid "Your parent or guardian has been asked to release your account. Nothing changes until they answer."
+msgstr "Teie vanemal või hooldajal on palutud teie konto vabastada. Miski ei muutu enne, kui nad vastavad."
+
+#, machine, plain1
+msgid "Your parent or guardian has been asked to turn Private posting off."
+msgstr "Teie vanemal või eestkostjal on palutud erapostitus välja lülitada."
+
+#, machine, plain1
 msgid "Your parent or guardian has to agree before Private posting can be turned off."
 msgstr "Teie vanem või eestkostja peab enne privaatse postituse väljalülitamist kokku leppima."
+
+#, machine, plain1
+msgid "Your parent or guardian has turned this off for your account."
+msgstr "Teie vanem või hooldaja on selle teie konto jaoks välja lülitanud."
+
+#, machine, plain1
+msgid "Your parent or guardian made this account for you. They can see what you do on the site (your posts, comments, votes, bookmarks, follows, guilds, who you chat with, that your account was reported and your recent sign-ins; the site never shows them what your chats say) and they choose which features are on. You can see which in [Settings > Content](/settings/content). They chose your password: change it in [Settings > Security](/settings/security) so that only you know it, because anyone who knows it can sign in as you and read your chats."
+msgstr "Teie vanem või hooldaja tegi selle konto teile. Nad näevad, mida teete saidil (teie postitused, kommentaarid, hääled, järjehoidjad, järgnevad, gildid, kellega vestlete, et teie kontost teatati ja teie hiljutised sisselogimised; sait ei näita neile kunagi, mida teie vestlused ütlevad) ja nad valivad, millised funktsioonid on sisse lülitatud. Näete, mida [Seaded > Sisu] (/settings/content). Nad valisid oma parooli: muuta seda [Seaded > Turvalisus](/settings/security) nii, et ainult sa tead seda, sest igaüks, kes teab seda saab sisse logida nagu sina ja lugeda oma vestlusi."
+
+#, machine, plain1
+msgid "Your parent or guardian set a new password for your account and you were signed out. Sign in with the new password, then change it in [Settings > Security](/settings/security) so that only you know it."
+msgstr "Teie vanem või eestkostja määras teie kontole uue parooli ja teid registreeriti. Logige sisse uue parooliga, seejärel muutke seda [Seaded > Turvalisus](/settings/security) nii, et ainult teie teate seda."
+
+#, machine, plain1
+msgid "Your parent or guardian stopped managing your account. It keeps the child lock until you confirm your age in Settings > Content. They chose your password: change it in [Settings > Security](/settings/security), or they can still sign in as you."
+msgstr "Teie vanem või hooldaja lõpetas teie konto haldamise. See hoiab lapse lukus, kuni kinnitate oma vanuse seadistustes Sisu. Nad valisid teie parooli: muutke seda [Seaded > Turvalisus](/settings/security) või nad saavad endiselt sisse logida."
+
+#, machine, plain1
+msgid "Your parent or guardian turned Private posting off for your account."
+msgstr "Teie vanem või eestkostja lülitas Privaatpostituse teie konto jaoks välja."
+
+#, machine, plain1
+msgid "Your parent or guardian wants Private posting to stay on."
+msgstr "Teie vanem või eestkostja soovib privaatset postitust."
+
+#, machine, plain1
+msgid "Your parent or guardian's account was suspended, so yours is suspended until theirs is back."
+msgstr "Teie vanema või eestkostja konto peatati, nii et teie oma peatatakse, kuni nende oma on tagasi."
 
 #, machine, plain1
 msgid "Your password"
@@ -21132,6 +21568,10 @@ msgid "and %(num)s more"
 msgid_plural "and %(num)s more"
 msgstr[0] "%(num)s ja veel"
 msgstr[1] "ja %(num)s veel"
+
+#, machine, plain1
+msgid "anonymous"
+msgstr "anonüümse"
 
 #, machine, plain1
 msgctxt "guildmaster permission"
@@ -21579,6 +22019,10 @@ msgstr "lingi eelvaade"
 msgid "links"
 msgstr "lingid"
 
+#, machine, plain1
+msgid "looked at by the admins"
+msgstr "administraatorid"
+
 #. after the moderator's name in a guild's moderation log
 #, machine, plain1
 msgid "made a channel"
@@ -21785,6 +22229,10 @@ msgstr "ennistati %(target)s"
 #, machine, plain1, python-format
 msgid "reinstated post %(target)s"
 msgstr "ennistatud ametikoht %(target)s"
+
+#, machine, plain1
+msgid "removed"
+msgstr "eemaldati"
 
 #. follows the moderator's name in a guild's moderation log; %(target)s is a
 #. link

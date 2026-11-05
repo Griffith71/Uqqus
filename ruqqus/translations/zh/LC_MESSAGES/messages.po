@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ruqqus VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-11-05 16:56+1100\n"
+"POT-Creation-Date: 2026-11-05 20:16+1100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: zh_Hans\n"
@@ -1502,6 +1502,10 @@ msgstr "(但你必须这么做) 对所有文件上传有 16MB 限制, 或 64MB �
 msgid "(allow beats deny; the channel's own rules apply to everyone else)"
 msgstr "(低拍否认;频道自己的规则适用于其他人)"
 
+#, machine, plain1
+msgid "(empty)"
+msgstr "(空着)"
+
 #, machine
 msgid "(for a stage channel: the post's address or id)"
 msgstr "(用于舞台频道:该帖地址或id)"
@@ -1509,6 +1513,14 @@ msgstr "(用于舞台频道:该帖地址或id)"
 #, machine
 msgid "(from the original)"
 msgstr "(原文)"
+
+#, machine, plain1
+msgid "(in a private place)"
+msgstr "(在私人地点)"
+
+#, machine, plain1
+msgid "(no title)"
+msgstr "(无标题)"
 
 #, glossary, machine, plain1
 msgid "(off)"
@@ -2062,6 +2074,10 @@ msgstr "<strong>时间 :</strong> %(when)s"
 msgid "<strong>Username:</strong> %(name)s"
 msgstr "<strong>用户名 :</strong> %(name)s"
 
+#, machine, plain1, python-format
+msgid "@%(name)s - %(site)s"
+msgstr "@%(name)s - %(site)s"
+
 #, machine, python-format
 msgid "@%(name)s - Bots - %(site)s"
 msgstr "页:1%(name)s - 鲍茨 - %(site)s"
@@ -2076,6 +2092,10 @@ msgstr "页:1%(name)s 添加到 %(curation)s。"
 
 #, python-format
 msgid "@%(name)s asked to publish a shared draft you write: your vote counts. [Open the draft](%(link)s)"
+msgstr ""
+
+#, python-format
+msgid "@%(name)s asked you to turn Private posting off for their account. You can answer in [Settings > Children](/settings/children)."
 msgstr ""
 
 #, machine, python-format
@@ -2120,6 +2140,10 @@ msgstr ""
 #, machine, python-format
 msgid "@%(name)s forwarded [a post](%(link)s) to +%(guild)s."
 msgstr "[%(name)s将[一个](%(link)s)转发到}%(guild)s."
+
+#, machine, plain1, python-format
+msgid "@%(name)s has a new password and is signed out everywhere."
+msgstr "页:1%(name)s 拥有新的密码, 并随处签名。"
 
 #, machine, python-format
 msgid "@%(name)s has already been invited."
@@ -2290,6 +2314,10 @@ msgid "@%(name)s reposted [a post](%(link)s)."
 msgstr ""
 
 #, python-format
+msgid "@%(name)s says they are 18 or over and asked you to release their account. You can answer in [Settings > Children](/settings/children)."
+msgstr ""
+
+#, python-format
 msgid "@%(name)s shared [a story](%(link)s)."
 msgstr ""
 
@@ -2320,6 +2348,10 @@ msgstr "页:1%(name)s 被流放于+%(guild)s"
 #, machine, python-format
 msgid "@%(name)s was muted in +%(guild)s's channels."
 msgstr "页:1%(name)s 在 + 中变音%(guild)s频道"
+
+#, machine, plain1, python-format
+msgid "@%(name)s's age was confirmed as 18 or over, so their account is their own now and you can no longer see it."
+msgstr "页:1%(name)s年龄被确认为18岁或18岁以上,所以他们的账户现在是他们自己的,你再也看不到了."
 
 #, machine, python-format
 msgid "@%(name)s's new posts will go into #%(channel)s."
@@ -2802,6 +2834,10 @@ msgstr "活线程需要评论,而不是棋盘消息."
 #, machine
 msgid "A member"
 msgstr "一个成员"
+
+#, machine, plain1
+msgid "A member reported this account."
+msgstr "一位成员报告了这一帐户."
 
 #, machine, python-format
 msgid "A message can be at most %(count)s character."
@@ -3906,6 +3942,11 @@ msgid "An update can be at most %(num)s character."
 msgid_plural "An update can be at most %(num)s characters."
 msgstr[0] "更新最多可以为%(num)s字符."
 
+#, machine, plain1, python-format
+msgid "And %(num)s private guild, which isn't named."
+msgid_plural "And %(num)s private guilds, which aren't named."
+msgstr[0] "和%(num)s私人盾,没有命名."
+
 #, machine
 msgid "Animals"
 msgstr "动物"
@@ -3961,6 +4002,10 @@ msgstr "匿名用户"
 msgctxt "label"
 msgid "Anonymous"
 msgstr "匿名"
+
+#, machine, plain1
+msgid "Anonymous posting and starting guilds"
+msgstr "匿名张贴和开始盾牌"
 
 #, machine
 msgid "Anonymous posts and comments count for you like any other. Your points and earnings are shown only to you; the site's admins see the payout list."
@@ -4171,6 +4216,14 @@ msgstr "亚利安高原"
 #, machine
 msgid "As an author you edit the draft live with them, and every character you type is credited to you. Once the post is published, anyone who can see it can see who wrote what. The authors decide together:"
 msgstr "作为一名作者,您编辑的草稿与他们一起生活,您输入的每一个字符都会归功于您. 文章一经发表,凡能见者,皆能见谁写甚么. 提交人共同决定:"
+
+#, machine, plain1
+msgid "Ask my parent to turn it off"
+msgstr "叫我父母关掉它"
+
+#, machine, plain1
+msgid "Asked you"
+msgstr "问你"
 
 #, machine, python-format
 msgid "At least %(count)s comments"
@@ -4632,6 +4685,10 @@ msgstr "有图片、声音或视频的帖子提示"
 #, machine, plain1
 msgid "Boost for this curation's guilds and accounts"
 msgstr "给这条编织的饲料和账号助推"
+
+#, machine, plain1
+msgid "Born"
+msgstr "诞生"
 
 #, machine
 msgid "Bot keys"
@@ -5130,6 +5187,10 @@ msgstr "聊天的应用程序还没有打开."
 msgid "Chat isn't answering right now. Try again in a moment."
 msgstr "聊天现在不接电话 再试一下."
 
+#, machine, plain1
+msgid "Chat, group chats and calls"
+msgstr "聊天、分组聊天和通话"
+
 #, machine
 msgctxt "guildmaster action"
 msgid "Chatban user"
@@ -5154,6 +5215,14 @@ msgstr "化学"
 #, machine
 msgid "Child - also hide profanity and sensitive content"
 msgstr "儿童-还隐藏亵渎和敏感内容"
+
+#, machine, plain1
+msgid "Children"
+msgstr "儿童"
+
+#, machine, plain1, python-format
+msgid "Children - %(site)s"
+msgstr "孩子们 - %(site)s"
 
 #. "Sign in with ..." is the button the Matrix app shows for this site's
 #. sign-in
@@ -5485,6 +5554,10 @@ msgstr "收受的币"
 msgid "Coins received: %(recent)s in the last 30 days &middot; %(total)s in all. They go straight to your coin balance."
 msgstr "已接收 : %(recent)s 在过去的30天 &middot; %(total)s 共 。 他们直接到你的硬币余额."
 
+#, machine, plain1
+msgid "Coins, tips, Premium and paid circles"
+msgstr "硬币,小费,Premium和付费圆圈"
+
 #, machine
 msgid "Collaborative"
 msgstr "协作"
@@ -5549,6 +5622,10 @@ msgstr "注释书记."
 #, glossary, machine, plain1
 msgid "Comment posted!"
 msgstr "评论已发布！"
+
+#, machine, plain1
+msgid "Commenting"
+msgstr "评论"
 
 #, glossary, machine, plain1
 msgid "Comments"
@@ -6192,9 +6269,17 @@ msgstr "删除帖子 ?"
 msgid "Delete role"
 msgstr "删除角色"
 
+#, machine, plain1
+msgid "Delete the account"
+msgstr "删除账户"
+
 #, machine
 msgid "Delete the published post"
 msgstr "删除已发布的文章"
+
+#, machine, plain1
+msgid "Delete this account"
+msgstr "删除此账户"
 
 #, machine
 msgid "Delete this category? Its channels stay."
@@ -6255,6 +6340,10 @@ msgstr "删除您驱动器中的文件, 或断开连接, 从您的岗位中删�
 #, machine
 msgid "Deleting a file there, or disconnecting, removes it from your posts."
 msgstr "删除文件, 或断开连接, 将它从您的岗位中删除 ."
+
+#, machine, plain1
+msgid "Deleting your account also deletes your child accounts. You can download their data first in Settings > Children."
+msgstr "删除您的账户也会删除您的子账户 。 您可以在设置中先下载数据 > 孩子们."
 
 #, machine
 msgid "Density"
@@ -6494,6 +6583,10 @@ msgstr "捐赠现金或加密货币"
 msgid "Done"
 msgstr "完成"
 
+#, machine, plain1
+msgid "Download"
+msgstr "下载"
+
 #, machine
 msgctxt "button"
 msgid "Download"
@@ -6507,9 +6600,17 @@ msgstr "下载我的数据"
 msgid "Download the recording"
 msgstr "下载录音"
 
+#, machine, plain1
+msgid "Download their data"
+msgstr "下载数据"
+
 #, machine
 msgid "Download your data"
 msgstr "下载您的数据"
+
+#, machine, plain1
+msgid "Downvote"
+msgstr "倒计时"
 
 #, glossary, machine, plain1
 msgctxt "verb"
@@ -6836,6 +6937,10 @@ msgstr "输入种子服务器的地址."
 msgid "Enter the feed's address."
 msgstr "输入种子地址 ."
 
+#, machine, plain1
+msgid "Enter the month and year they were born."
+msgstr "进入他们出生的月份和年份."
+
 #, machine, python-format
 msgid "Enter the six-digit code generated in the authenticator app and your %(site)s account password."
 msgstr "输入认证程序生成的六位数代码和您的%(site)s 账户密码 ."
@@ -7006,6 +7111,10 @@ msgstr "每个人都在打字时看到对方的变化,每个角色都归于打�
 #, machine
 msgid "Everything from your guilds and accounts, newest first."
 msgstr "所有从你的盾和帐户, 最新的第一."
+
+#, machine, plain1
+msgid "Everything they post goes only to their Friends circle. Turn it off to let them post in public."
+msgstr "他们贴的每张都只寄给朋友圈 关掉,让他们公开发表."
 
 #, machine, plain1
 msgid "Everything you post goes only to your Friends circle, the people you follow who follow you back, so nothing is public by accident. Your circles can only hold people like that, and you can't forward, repost or write a shared draft. Comments on other people's posts are still public."
@@ -7656,6 +7765,10 @@ msgstr "朋友们"
 msgctxt "circle name"
 msgid "Friends"
 msgstr "朋友们"
+
+#, machine, plain1
+msgid "Friends circle"
+msgstr "朋友圆圈"
 
 #, machine
 msgid "Friends is everyone you follow who follows you back. To share with family, a team or anyone else, make a circle first, then pick it here."
@@ -8459,6 +8572,10 @@ msgstr "狩猎"
 msgid "I accept the <a href=\"%(url)s\" target=\"_blank\">terms and conditions</a>"
 msgstr "我接受这个 <a href=\"%(url)s\" target=\"_blank\">条款和条件</a>"
 
+#, machine, plain1, python-format
+msgid "I agree to the <a href=\"%(url)s\" target=\"_blank\">Terms</a> for them."
+msgstr "我同意这个 <a href=\"%(url)s\" target=\"_blank\">术语</a> 为了他们"
+
 #, machine
 msgid "I agree to the rules below."
 msgstr "我同意以下规则."
@@ -8494,6 +8611,10 @@ msgstr "如果有与您的账户相关的电子邮件地址, 您可以用它来�
 #, machine
 msgid "If this was you, there is nothing to do."
 msgstr "如果这是你,没什么可做的."
+
+#, machine, plain1
+msgid "If you are 18 or over, say so and your parent or guardian will be asked to release your account."
+msgstr "若您年满18岁, 请您说, 您的父母或监护人将被要求解开您的账户 ."
 
 #, machine, plain1
 msgid "If you don't have your 2FA device, enter one of your backup codes instead. Each backup code works once. An account that never made backup codes can enter its Recovery Code, which also turns 2FA off."
@@ -8870,6 +8991,14 @@ msgid "It shows, in full, every word and phrase the word filter looks for, in ev
 msgstr "它用它覆盖的每一种语言, 完整地显示过滤器所寻找的每一个词和短语。 其中包括流言蜚语和其他极具攻击性的语言."
 
 #, machine, plain1
+msgid "It stays a child account with the child lock, but you can no longer see it or change what it can do, and you can't link it again."
+msgstr "它在孩子锁上留下一个孩子的账户,但是你再也看不到它或者改变它能做什么,并且不能再次链接它."
+
+#, machine, plain1
+msgid "It stays on the Child word filter, which hides profanity and anything marked sensitive."
+msgstr "它停留在童话过滤器上,它隐藏着亵渎和任何标记敏感的事物."
+
+#, machine, plain1
 msgid "It stays on the Child word filter, which hides profanity and anything marked sensitive. Chat, Spaces, coins, anonymous posting and starting a guild are off, and others can't start a chat or tip you. Your posts go to your Friends circle only unless you turn Private posting off."
 msgstr "它停留在童话过滤器上,它隐藏着亵渎和任何标记敏感的事物. 聊天 空间 硬币 匿名贴纸 启动盾牌 其他人无法启动聊天或提示 你的帖子只在朋友圈里 直到你关闭私人帖子为止."
 
@@ -9029,6 +9158,10 @@ msgstr "六月节"
 #, machine, plain1
 msgid "K-Pop"
 msgstr "K- Pop 语句"
+
+#, machine, plain1
+msgid "Keep it on"
+msgstr "继续穿"
 
 #, machine, plain1
 msgid "Keep my posts out of All"
@@ -9299,6 +9432,10 @@ msgstr "列昂尼兹流星雨"
 msgid "Letters spaced out or split by dots or other marks are read as one word."
 msgstr "以圆点或其他标记分隔的字母读作一个单词."
 
+#, machine, plain1
+msgid "Letters, numbers and underscores, 3 to 25 characters."
+msgstr "字母,数字和下划线,3到25个字符."
+
 #, glossary, machine, plain1
 msgid "Lifestyle"
 msgstr "生活"
@@ -9535,6 +9672,10 @@ msgstr "月亮新年(新年)"
 msgid "Lyrids meteor shower"
 msgstr "利里兹流星雨"
 
+#, machine, plain1, python-format
+msgid "Made on %(date)s."
+msgstr "在%(date)s上制造的."
+
 #, glossary, machine, plain1
 msgid "Made with AI"
 msgstr "AI 生成"
@@ -9552,6 +9693,10 @@ msgstr "制作 +%(guild)s 私处. 只有核定会员才能看到转发的员额�
 msgid "Make a channel"
 msgstr "创建频道"
 
+#, machine, plain1
+msgid "Make a child account"
+msgstr "做一个孩子账户"
+
 #, machine
 msgid "Make a circle people pay to be in, every 30 days, for what you share with it."
 msgstr "做一个圈子的人支付 在,每30天, 你分享它."
@@ -9567,6 +9712,10 @@ msgstr "翻页"
 #, machine
 msgid "Make a role"
 msgstr "扮演一个角色"
+
+#, machine, plain1
+msgid "Make an account for a child under 18 and decide what it can do. You can see what they do on the site (their posts, comments, votes, bookmarks, follows, guilds, the names of who they chat with and their recent sign-ins). The site never shows you what their chats say: chats are end-to-end encrypted. You choose their password, so until they change it you can sign in as them and read their chats: tell them to set their own. They are told all of this in their own Settings."
+msgstr "为不满18岁的小孩做一个记账,并决定它能做什么. 你可以在网站上看到他们在做什么(他们的文章、评论、选票、书签、随笔、盾牌、他们与谁交谈的名字以及最近的签注)。 该网站从未显示他们的聊天内容:聊天是端到端加密的. 你选择他们的密码,所以在他们更改密码之前,你可以像他们一样签名,读他们的聊天:告诉他们自己设置. 在他们自己的设置中,他们被告知这一切."
 
 #, machine, python-format
 msgid "Make an app first in <a href=\"%(url)s\">Settings &gt; Apps</a>; a key works through it."
@@ -9897,6 +10046,10 @@ msgctxt "weekday"
 msgid "Mon"
 msgstr "月号"
 
+#, machine, plain1
+msgid "Month"
+msgstr "月数"
+
 #, machine
 msgctxt "table heading"
 msgid "Month"
@@ -9906,6 +10059,10 @@ msgstr "月数"
 msgctxt "time range"
 msgid "Month"
 msgstr "近一个月"
+
+#, machine, plain1
+msgid "Month they were born"
+msgstr "他们出生的月份"
 
 #, machine
 msgid "Monthly creator fund payouts"
@@ -10242,6 +10399,10 @@ msgstr "新页面 : %(address)s"
 #, machine
 msgid "New paid circle"
 msgstr "新建付费圆"
+
+#, machine, plain1
+msgid "New password"
+msgstr "新密码"
 
 #, machine
 msgid "New posts that are getting attention, with no account filling the page."
@@ -10625,6 +10786,10 @@ msgstr "没有人可以订阅。 现时的订户保留他们付的钱."
 msgid "Nobody types here"
 msgstr "这里没人打字"
 
+#, machine, plain1, python-format
+msgid "Nobody under %(age)s may have an account where you are."
+msgstr "%(age)s下面的人可能没有你的账户."
+
 #, machine
 msgid "Nobody yet."
 msgstr "还没有人."
@@ -10745,6 +10910,10 @@ msgstr "不带订户"
 #, machine
 msgid "Not trending any more"
 msgstr "不再有趋势"
+
+#, machine, plain1
+msgid "Not yet"
+msgstr "还没有"
 
 #, glossary, machine, plain1
 msgid "Not your default:"
@@ -10867,6 +11036,10 @@ msgid "Nothing written yet."
 msgstr "还没写出来."
 
 #, machine, plain1
+msgid "Nothing yet."
+msgstr "没有."
+
+#, machine, plain1
 msgid "Notification types"
 msgstr "通知类型"
 
@@ -10913,6 +11086,10 @@ msgstr "大洋洲"
 msgid "Oddly Satisfying"
 msgstr "奇怪的满足"
 
+#, machine, plain1
+msgid "Off"
+msgstr "关"
+
 #. slow mode in a guild's channel is switched off.
 #, machine
 msgctxt "slow mode"
@@ -10939,6 +11116,10 @@ msgstr "最早"
 #, machine
 msgid "Old Password"
 msgstr "旧密码"
+
+#, machine, plain1
+msgid "On"
+msgstr "打开"
 
 #. "On" marks a linked storage account that is in use
 #, machine
@@ -11014,6 +11195,10 @@ msgstr "这些修改之一不能向大家展示."
 #, machine
 msgid "One of those circles isn't yours any more. Choose again."
 msgstr "其中一个圈子不再是你的了 再选一次."
+
+#, machine, plain1
+msgid "One of your child accounts owes money, so your account can't be deleted yet."
+msgstr "你的一个孩子的账户欠了钱 所以你的账户还不能被删除."
 
 #, machine
 msgid "One-time codes for the day you lose your authenticator. Making a new set replaces every earlier code, used or not."
@@ -11335,6 +11520,10 @@ msgstr "只有文章的作者和共同作者可以发布更新."
 #, machine
 msgid "Only the post's author and co-authors can run its live updates."
 msgstr "只有文章的作者和共同作者才能运行其直播更新."
+
+#, machine, plain1
+msgid "Only used to check their age. It isn't kept."
+msgstr "只用来检查他们的年龄. 它没有保存."
 
 #, machine, plain1
 msgid "Only when I turn them on"
@@ -12327,6 +12516,10 @@ msgstr "当天或稍后张贴."
 msgid "Posted on that day."
 msgstr "当天张贴."
 
+#, machine, plain1
+msgid "Posting"
+msgstr "张贴"
+
 #, machine
 msgid "Posting cooldown"
 msgstr "张贴冷却"
@@ -13159,6 +13352,10 @@ msgstr "已拒绝"
 msgid "Relationships"
 msgstr "关系"
 
+#, machine, plain1
+msgid "Release the account"
+msgstr "释放账户"
+
 #, machine
 msgid "Religion"
 msgstr "宗教"
@@ -13408,6 +13605,10 @@ msgstr "已报告消息"
 msgctxt "noun"
 msgid "Reports"
 msgstr "举报"
+
+#, machine, plain1
+msgid "Reports about them"
+msgstr "关于他们的报告"
 
 #, machine
 msgid "Reports opened"
@@ -13745,6 +13946,10 @@ msgctxt "weekday"
 msgid "Sat"
 msgstr "座位"
 
+#, glossary, machine, plain1
+msgid "Save"
+msgstr "保存"
+
 #, machine, plain1
 msgctxt "button"
 msgid "Save"
@@ -14052,6 +14257,10 @@ msgstr "见整个网站的列表"
 msgid "See what is trending"
 msgstr "看什么是趋势"
 
+#, machine, plain1
+msgid "See what they do"
+msgstr "看他们做了什么"
+
 #, machine
 msgid "See your username"
 msgstr "查看您的用户名"
@@ -14151,6 +14360,10 @@ msgstr "九月正数"
 #, machine
 msgid "Serious"
 msgstr "严重"
+
+#, machine, plain1
+msgid "Set a new password"
+msgstr "设置新密码"
 
 #, machine
 msgid "Set a price to let people pay to join."
@@ -14795,6 +15008,10 @@ msgstr "空间录音"
 msgid "Spaces"
 msgstr "空间"
 
+#, machine, plain1
+msgid "Spaces and live threads"
+msgstr "空间和活线"
+
 #, machine
 msgid "Spaces are started in the Spaces area."
 msgstr "空间开始于空间区域."
@@ -14930,6 +15147,14 @@ msgstr "置顶帖"
 #, machine
 msgid "Still here to read"
 msgstr "还在这里读"
+
+#, machine, plain1
+msgid "Stop managing"
+msgstr "停止管理"
+
+#, machine, plain1
+msgid "Stop managing this account"
+msgstr "停止管理此账户"
 
 #, machine
 msgid "Stop posting automatically"
@@ -15104,6 +15329,10 @@ msgstr "支持者们…"
 #, machine, plain1
 msgid "Survival & Bushcraft"
 msgstr "生存和布什手艺"
+
+#, machine, plain1
+msgid "Suspended"
+msgstr "暂停"
 
 #, machine, python-format
 msgid "Switch @%(name)s off for good? Its posts stay; the bot never posts again."
@@ -15576,6 +15805,10 @@ msgstr "这不是一个角色."
 msgid "That isn't a valid username."
 msgstr "这不是一个有效的用户名."
 
+#, machine, plain1
+msgid "That isn't something you can switch."
+msgstr "这不是你能够转换的东西."
+
 #, machine
 msgid "That key couldn't be saved."
 msgstr "钥匙无法保存."
@@ -15807,6 +16040,14 @@ msgstr "萨赫勒"
 #, machine
 msgid "The Space could not be made."
 msgstr "无法创建空间 ."
+
+#, machine, plain1, python-format
+msgid "The account @%(name)s is deleted."
+msgstr "账户 @%(name)s 已删除。"
+
+#, machine, plain1, python-format
+msgid "The account @%(name)s is made. They sign in with the username and password you gave."
+msgstr "账户 @%(name)s 已经制成。 他们签了用户名和密码"
 
 #, machine, python-format
 msgid "The account age must be a whole number of days, 0 to %(max)s."
@@ -16144,6 +16385,10 @@ msgstr "过去七天投票最多的职位."
 #, machine, python-format
 msgid "The name %(host)s could not be found."
 msgstr "找不到 %(host)s 名称 ."
+
+#, machine, plain1
+msgid "The newest of what they have done. Only the names of who they chat with are shown, never what a chat says: chats are end-to-end encrypted."
+msgstr "最新成就. 只有他们聊天的人的名字被显示,从来没有一个聊天说:聊天是端到端加密的."
 
 #, machine
 msgid "The numbers are always shown on your profile. This decides who can open each list and see the accounts on it. An account is only listed where its own setting allows it too."
@@ -16488,6 +16733,10 @@ msgstr "这些用户已被邀请温和+%(guild)s。"
 msgid "They already have this role."
 msgstr "他们已经有这个角色."
 
+#, machine, plain1
+msgid "They are 18 or over, so they can make their own account."
+msgstr "他们已经18岁或18岁以上,所以可以自己开口."
+
 #, machine
 msgid "They are already in this circle."
 msgstr "他们已经在这个圈子里了."
@@ -16495,6 +16744,10 @@ msgstr "他们已经在这个圈子里了."
 #, machine
 msgid "They are not told. Anyone you block leaves your circles."
 msgstr "没有人告诉他们。 任何人你挡住你的圈子."
+
+#, machine, plain1
+msgid "They are signed out everywhere. If they use chat, they may be asked for their recovery code."
+msgstr "到处都签了 如果使用聊天方式,可以要求其恢复代码."
 
 #, machine, python-format
 msgid "They aren't in %(circle)s."
@@ -16508,6 +16761,38 @@ msgstr "他们不是这群人."
 msgid "They aren't muted here."
 msgstr "这里没有哑巴."
 
+#, machine, plain1
+msgid "They asked you to turn Private posting off."
+msgstr "他们让你把私人邮局关了."
+
+#, machine, plain1
+msgid "They can buy and spend coins, tip, buy Premium and join or run paid circles."
+msgstr "他们可以购买和花费硬币,小费,购买Premium,加入或运行付费圈."
+
+#, machine, plain1
+msgid "They can comment."
+msgstr "他们可以评论."
+
+#, machine, plain1
+msgid "They can host and join Spaces and run live threads. Voice calls in a Space also need Chat to be on."
+msgstr "他们可以主持和加入Spaces并运行活线. 太空里的语音通话也需要聊天."
+
+#, machine, plain1
+msgid "They can make posts."
+msgstr "他们可以做职位."
+
+#, machine, plain1
+msgid "They can message people, join group chats and make calls. The site never shows you what a chat says: chats are end-to-end encrypted. Whoever knows their password can still sign in and read them."
+msgstr "他们可以给人留言,加入集体聊天并打电话. 该网站从未显示聊天内容:聊天是端对端加密的. 谁知道他们的密码,仍然可以签入并读取."
+
+#, machine, plain1
+msgid "They can post anonymously and start a guild. You can still see who wrote an anonymous post."
+msgstr "他们可以匿名发邮件 并启动盾。 你仍然可以看到是谁写了一封匿名信."
+
+#, machine, plain1
+msgid "They can see what you do on the site: your posts, comments, votes, bookmarks, follows, guilds, who you chat with, that your account was reported, and your recent sign-ins. The site never shows them what your chats say, because chats are end-to-end encrypted. But anyone who knows your password, a parent who chose it included, can sign in as you: change it in Security so that only you know it. They choose which of these are on for your account:"
+msgstr "他们可以看到你在网站上所做的:你的文章,评论,选票,书签,跟随,盾,你和谁聊天,你的账户被报道,以及你最近的登录. 该网站从不让他们看到你的聊天内容,因为聊天是加密的。 但任何知道密码的人,一个选择密码的家长,都可以以你的身份报名:在安全处更改密码,只有你知道. 他们为你们选择其中哪一种:"
+
 #, machine
 msgid "They can't comment on your posts or comments, chat with you or notify you by mentioning you. They are not told, but they may work it out if they try to comment on something of yours."
 msgstr "他们不能评论你的文章或评论,不能与你聊天,也不能以提及你的方式通知你. 他们没有被告知,但如果他们试图评论你的东西,他们可能会想出办法."
@@ -16520,6 +16805,10 @@ msgstr "他们没有这个角色."
 msgid "They go straight to your coin balance."
 msgstr "他们直接到你的硬币余额."
 
+#, machine, plain1
+msgid "They haven't asked for that."
+msgstr "他们没有要求."
+
 #, machine
 msgid "They need to be in the guild, and not exiled from it."
 msgstr "他们需要留在荷兰,而不是被放逐."
@@ -16527,6 +16816,10 @@ msgstr "他们需要留在荷兰,而不是被放逐."
 #, machine
 msgid "They need to join the channel first."
 msgstr "他们需要先加入频道."
+
+#, machine, plain1
+msgid "They say they are 18 or over and asked you to release their account. If you do, it becomes their own and you can no longer see it."
+msgstr "他们说他们已经18岁或18岁了 请你放出他们的账户 如果你这样做,它变成他们自己的,你再也看不到它了."
 
 #, machine
 msgid "They're already a helper."
@@ -16640,6 +16933,14 @@ msgstr "此账户已从%(site)s 暂时中止 。 待会再查."
 #, machine
 msgid "This account is private"
 msgstr "这个帐户是私人的"
+
+#, machine, plain1
+msgid "This account is suspended."
+msgstr "此账户暂停使用 ."
+
+#, machine, plain1
+msgid "This account owes money, so it can't be deleted yet."
+msgstr "这个账户欠了钱,所以还不能删除."
 
 #, machine
 msgid "This account posts about sensitive topics"
@@ -16774,6 +17075,10 @@ msgstr "这条管线的盾和账号"
 #, machine, plain1
 msgid "This curation's rules took too long to run. Its owner can make them narrower."
 msgstr "饲料的规矩太长了 它的主人可以让他们更窄."
+
+#, machine, plain1
+msgid "This deletes their account and everything on it. It can't be undone. You can download their data first."
+msgstr "这可以删除他们的账户和所有信息。 无法解脱. 你可以先下载他们的数据."
 
 #, machine
 msgid "This draft hasn't been published."
@@ -17102,6 +17407,10 @@ msgctxt "weekday"
 msgid "Thu"
 msgstr "图"
 
+#, machine, plain1
+msgid "Tick the box to agree to the Terms for them."
+msgstr "选中框同意他们的术语 ."
+
 #, machine
 msgid "Tick the box to agree to the rules first."
 msgstr "勾选框先同意规则."
@@ -17370,6 +17679,10 @@ msgstr "图"
 #, machine
 msgid "Turanian Steppe"
 msgstr "杜兰尼亚草原"
+
+#, machine, plain1
+msgid "Turn it off"
+msgstr "关掉"
 
 #, machine, plain1, python-format
 msgid "Turn off notifications from +%(guild)s"
@@ -17826,6 +18139,10 @@ msgstr "上传横幅"
 #, machine
 msgid "Upload picture"
 msgstr "上传图片"
+
+#, machine, plain1
+msgid "Upvote"
+msgstr "投票"
 
 #, glossary, machine, plain1
 msgctxt "verb"
@@ -18534,6 +18851,10 @@ msgid "Where you are, the law means your age has to be confirmed with an age-che
 msgstr "在您所在的地方,法律意味着您的年龄必须经过年龄检查服务才能看到敏感的内容或强壮的语言."
 
 #, machine, plain1
+msgid "Where you are, your age has to be confirmed with an age-check service before you can make a child account."
+msgstr "您的年龄需通过年龄检查服务确认,才能进行儿童账户核算."
+
+#, machine, plain1
 msgid "Where you are, your age has to be confirmed with an age-check service."
 msgstr "您的年龄需通过年龄检查服务确认."
 
@@ -18625,9 +18946,17 @@ msgstr "谁决定"
 msgid "Who follows you"
 msgstr "谁跟着你"
 
+#, machine, plain1
+msgid "Who reported them, and what they wrote, isn't shown to anyone but the admins."
+msgstr "谁报告他们, 和他们写的东西, 没有向任何人显示,只有管理者."
+
 #, glossary, machine, plain1
 msgid "Who subscribes to your Circle"
 msgstr "谁订阅了你的圈子"
+
+#, machine, plain1
+msgid "Who they chat with"
+msgstr "他们和谁聊天"
 
 #, machine
 msgid "Who to follow"
@@ -19008,10 +19337,18 @@ msgctxt "guildmaster action"
 msgid "Yank post"
 msgstr "扬克帖"
 
+#, machine, plain1
+msgid "Year"
+msgstr "年份"
+
 #, glossary, machine, plain1
 msgctxt "time range"
 msgid "Year"
 msgstr "近一年"
+
+#, machine, plain1
+msgid "Year they were born"
+msgstr "他们出生的年份"
 
 #, machine
 msgctxt "colour"
@@ -19171,6 +19508,14 @@ msgid "You aren't subscribed to that circle."
 msgstr "你没有加入那个圈子."
 
 #, machine, plain1
+msgid "You asked your parent or guardian to release your account. They haven't answered yet."
+msgstr "你要求你的父母或监护人释放你的账户。 他们还没有回答."
+
+#, machine, plain1
+msgid "You asked your parent or guardian to turn this off. They haven't answered yet."
+msgstr "你让父母或监护人关掉这个 他们还没有回答."
+
+#, machine, plain1
 msgid "You can add pictures at 500 Rep, or earlier with Premium"
 msgstr "您可以在 500 名声下或更早时添加图片 Premium"
 
@@ -19251,6 +19596,15 @@ msgid "You can have at most %(num)s channel."
 msgid_plural "You can have at most %(num)s channels."
 msgstr[0] "您最多可以拥有 %(num)s 频道 ."
 
+#, machine, plain1, python-format
+msgid "You can have at most %(num)s child account."
+msgid_plural "You can have at most %(num)s child accounts."
+msgstr[0] "您最多可以拥有 %(num)s 子女账户 ."
+
+#, machine, plain1, python-format
+msgid "You can have at most %(num)s child accounts."
+msgstr "您最多可以拥有 %(num)s 子女账户 ."
+
 #, machine, python-format
 msgid "You can host at most %(num)s Space a day."
 msgid_plural "You can host at most %(num)s Spaces a day."
@@ -19274,6 +19628,10 @@ msgstr[0] "您最多可以列出%(num)s 单词或短语 ."
 msgid "You can look around and set up your profile; posting, comments, votes and follows open once the check is done."
 msgstr "检查完成后,您可以四处查看并设置自己的简介;张贴,评论,投票并随即打开."
 
+#, machine, plain1, python-format
+msgid "You can make %(num)s child accounts a day. Try again tomorrow."
+msgstr "你可以每天做%(num)s孩子的账户。 明天再试一次."
+
 #, machine, python-format
 msgid "You can make %(num)s proposal a day."
 msgid_plural "You can make %(num)s proposals a day."
@@ -19283,6 +19641,10 @@ msgstr[0] "你可以每天提出%(num)s建议."
 msgid "You can make %(num)s wiki edit a day in a guild. Try again tomorrow."
 msgid_plural "You can make %(num)s wiki edits a day in a guild. Try again tomorrow."
 msgstr[0] "您可以让 %(num)s wiki 用 guild 编辑一天 。 明天再试一次."
+
+#, machine, plain1
+msgid "You can make a child account once your own account is confirmed as 18 or over. You can say so in Settings > Content."
+msgstr "您的账户确认为18岁或18岁以上后,您可开立儿童账户。 您可以在设置 > 内容中这样说."
 
 #, machine
 msgid "You can only create up to 2 guilds per day. Try again later."
@@ -19568,6 +19930,10 @@ msgstr "你不听这个帖子."
 msgid "You don't have Premium right now."
 msgstr "你现在没有Premium."
 
+#, machine, plain1
+msgid "You don't have a child account called that."
+msgstr "你没有孩子的账号."
+
 #, machine
 msgid "You don't have a coin to redeem."
 msgstr "你没有钱可以赎回."
@@ -19668,6 +20034,10 @@ msgstr "你从+被推翻了%(guild)s。"
 #, machine
 msgid "You have left the creator fund."
 msgstr "你离开了创作基金."
+
+#, machine, plain1, python-format
+msgid "You have made %(num)s child accounts in the last %(days)s days. Try again later."
+msgstr "您在过去的%(days)s 天里做了%(num)s 的孩子账户 。 以后再试."
 
 #, machine
 msgid "You have muted this guild. Its posts stay out of All, For You and Following. Visit your settings or click the <i class='fas fa-ellipsis-h text-small'></i> icon to unmute it."
@@ -20062,6 +20432,10 @@ msgstr "你的账户余额为负数。 您无法参加 %(site)s 直到你把余�
 msgid "Your account can also post new items from feeds by itself, while you keep using it as you do now. Each of those posts is marked as automated, and people who hide bot content don't see them. Your own posts, comments, votes and chats are unchanged. An admin approves it first."
 msgstr "您的账户还可以从种子中发布新项目, 同时您继续使用它 。 每一个这些帖子都被标记为自动化,隐藏机器人内容的人看不到. 你们自己的文章,评论,投票和聊天没有变化. 管理者首先批准它."
 
+#, machine, plain1
+msgid "Your account can't post automatically while it is age-restricted."
+msgstr "您的账户无法自动张贴, 因为它是年龄限制的 ."
+
 #, machine
 msgid "Your account can't post automatically while it is suspended."
 msgstr "您的账户无法在暂停时自动发布 ."
@@ -20069,6 +20443,10 @@ msgstr "您的账户无法在暂停时自动发布 ."
 #, machine
 msgid "Your account can't publish right now."
 msgstr "你的账户现在不能公布."
+
+#, machine, plain1
+msgid "Your account can't run a bot while it is age-restricted."
+msgstr "你的账户不能运行一个机器人 当它是年龄限制."
 
 #, machine
 msgid "Your account cannot upload right now."
@@ -20089,6 +20467,10 @@ msgstr "您的账户已被检查并准备就绪:您现在可以张贴、评论�
 #, machine, plain1
 msgid "Your account has been deleted"
 msgstr "您的账户已被删除"
+
+#, machine, plain1, python-format
+msgid "Your account has the child lock on, held by your parent or guardian, since %(date)s."
+msgstr "您的账户有孩子锁, 由您的父母或监护人持有, 自%(date)s ."
 
 #, machine, plain1, python-format
 msgid "Your account has the child lock on, since %(date)s."
@@ -20141,6 +20523,10 @@ msgstr ""
 "\n"
 "\n"
 "要跳过等待, 在 [Settings > Security] (/settings/security) 中添加和验证电子邮件地址 ."
+
+#, machine, plain1
+msgid "Your account is your own now. It no longer has the child lock and your parent or guardian can no longer see it. They chose your password: change it in [Settings > Security](/settings/security), or they can still sign in as you."
+msgstr "你的账户是你自己的了 它不再有孩子的锁,你的父母或监护人也再也看不到它。 他们选择了您的密码: 在 [Settings > Security] (/settings/security) 中更改它, 或者他们仍然可以和你一样签名 ."
 
 #, machine
 msgid "Your account needs to be at least 30 days old to post automatically."
@@ -20243,6 +20629,10 @@ msgstr "您的聊天内容是端对端加密的,网站无法读取. 打开它们
 #, machine, python-format
 msgid "Your chats run on Matrix, an open standard, on %(site)s's own chat server. Besides Chat on this site, you can use them in a Matrix app such as Element (web, desktop and the classic phone apps), FluffyChat or Cinny. They stay end-to-end encrypted there too."
 msgstr "您的聊天运行在 %(site)s 自己的聊天服务器上的 matrix, 一个开放的标准 。 除此网站的聊天外,您还可以在矩阵应用中如Elements(web,桌面和经典手机应用),FluffyChat或Cinny中使用. 他们也一直加密."
+
+#, machine, plain1
+msgid "Your child accounts will be deleted with yours."
+msgstr "你的孩子的账户将被删除."
 
 #, glossary, machine, plain1
 msgid "Your circles"
@@ -20385,8 +20775,51 @@ msgid_plural "Your own mix ranks the newest %(num)s matching posts. 0 switches a
 msgstr[0] "您的组合排名为最新 %(num)s 匹配的 。 0开关一个部分, 10使其数最多."
 
 #, machine, plain1
+msgid "Your own password"
+msgstr "密码"
+
+#, machine, plain1
+msgid "Your parent or guardian didn't agree to release your account."
+msgstr "你父母或监护人不同意放你账号."
+
+#, machine, plain1
+msgid "Your parent or guardian has been asked to release your account. Nothing changes until they answer."
+msgstr "您的父母或监护人被要求解开您的账户。 除非他们回答 否则一切都不会改变."
+
+#, machine, plain1
+msgid "Your parent or guardian has been asked to turn Private posting off."
+msgstr "您的父母或监护人被要求关闭私人职位."
+
+#, machine, plain1
 msgid "Your parent or guardian has to agree before Private posting can be turned off."
 msgstr "您的父母或监护人必须同意才能关闭私人职位."
+
+#, machine, plain1
+msgid "Your parent or guardian has turned this off for your account."
+msgstr "你的家长或监护人 已经关闭了你的账户."
+
+msgid "Your parent or guardian made this account for you. They can see what you do on the site (your posts, comments, votes, bookmarks, follows, guilds, who you chat with, that your account was reported and your recent sign-ins; the site never shows them what your chats say) and they choose which features are on. You can see which in [Settings > Content](/settings/content). They chose your password: change it in [Settings > Security](/settings/security) so that only you know it, because anyone who knows it can sign in as you and read your chats."
+msgstr ""
+
+#, machine, plain1
+msgid "Your parent or guardian set a new password for your account and you were signed out. Sign in with the new password, then change it in [Settings > Security](/settings/security) so that only you know it."
+msgstr "您的父母或监护人为您的账户设置了新的密码, 您被签出 。 在新密码上签名, 然后在 [Settings > Security] (/settings/security) 中更改, 只有您知道 ."
+
+#, machine, plain1
+msgid "Your parent or guardian stopped managing your account. It keeps the child lock until you confirm your age in Settings > Content. They chose your password: change it in [Settings > Security](/settings/security), or they can still sign in as you."
+msgstr "你的父母或监护人停止管理你的账户。 它会锁住孩子直到您在设置中确认年龄 > 内容。 他们选择了您的密码: 在 [Settings > Security] (/settings/security) 中更改它, 或者他们仍然可以和你一样签名 ."
+
+#, machine, plain1
+msgid "Your parent or guardian turned Private posting off for your account."
+msgstr "你的父母或监护人 关闭私人的账户."
+
+#, machine, plain1
+msgid "Your parent or guardian wants Private posting to stay on."
+msgstr "您的父母或监护人希望私人职位继续工作."
+
+#, machine, plain1
+msgid "Your parent or guardian's account was suspended, so yours is suspended until theirs is back."
+msgstr "你的父母或监护人的账户被中止, 所以你的账户被中止 直到他们回来."
 
 #, machine
 msgid "Your password"
@@ -20764,6 +21197,10 @@ msgstr "一个未知地址"
 msgid "and %(num)s more"
 msgid_plural "and %(num)s more"
 msgstr[0] "和 %(num)s 更多"
+
+#, machine, plain1
+msgid "anonymous"
+msgstr "匿名"
 
 #, machine
 msgctxt "guildmaster permission"
@@ -21206,6 +21643,10 @@ msgstr "链接预览"
 msgid "links"
 msgstr "链接"
 
+#, machine, plain1
+msgid "looked at by the admins"
+msgstr "由管理员看"
+
 #. after the moderator's name in a guild's moderation log
 #, machine
 msgid "made a channel"
@@ -21412,6 +21853,10 @@ msgstr "恢复%(target)s"
 #, machine, python-format
 msgid "reinstated post %(target)s"
 msgstr "恢复职位%(target)s"
+
+#, machine, plain1
+msgid "removed"
+msgstr "删除"
 
 #. follows the moderator's name in a guild's moderation log; %(target)s is a
 #. link

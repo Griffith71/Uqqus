@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ruqqus VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-11-05 16:56+1100\n"
+"POT-Creation-Date: 2026-11-05 20:16+1100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: nl\n"
@@ -1621,6 +1621,10 @@ msgstr "Maar je moet wel. Er is een limiet van 16 MB voor alle bestandsuploads, 
 msgid "(allow beats deny; the channel's own rules apply to everyone else)"
 msgstr "(laten we ontkennen, de eigen regels van het kanaal gelden voor iedereen)"
 
+#, machine, plain1
+msgid "(empty)"
+msgstr "(leeg)"
+
 #, machine
 msgid "(for a stage channel: the post's address or id)"
 msgstr "(voor een podiumkanaal: adres of id van de post)"
@@ -1628,6 +1632,14 @@ msgstr "(voor een podiumkanaal: adres of id van de post)"
 #, machine
 msgid "(from the original)"
 msgstr "(uit het origineel)"
+
+#, machine, plain1
+msgid "(in a private place)"
+msgstr "(op een privé-plaats)"
+
+#, machine, plain1
+msgid "(no title)"
+msgstr "(geen titel)"
 
 #, glossary, machine, plain1
 msgid "(off)"
@@ -2188,6 +2200,10 @@ msgstr "<strong>Tijd:</strong> %(when)s"
 msgid "<strong>Username:</strong> %(name)s"
 msgstr "<strong>Gebruikersnaam:</strong> %(name)s"
 
+#, machine, plain1, python-format
+msgid "@%(name)s - %(site)s"
+msgstr "@%(name)s - %(site)s"
+
 #, machine, python-format
 msgid "@%(name)s - Bots - %(site)s"
 msgstr "@%(name)s - Bots - %(site)s"
@@ -2203,6 +2219,10 @@ msgstr "@%(name)s toegevoegd aan %(curation)s."
 #, machine, python-format
 msgid "@%(name)s asked to publish a shared draft you write: your vote counts. [Open the draft](%(link)s)"
 msgstr "@%(name)s gevraagd om een gedeelde versie te publiceren die u schrijft: uw stem telt. [Open het ontwerp](%(link)s)"
+
+#, machine, plain1, python-format
+msgid "@%(name)s asked you to turn Private posting off for their account. You can answer in [Settings > Children](/settings/children)."
+msgstr "@%(name)s vroeg je om Private posting uit te zetten voor hun account. U kunt antwoorden in [Instellingen > Kinderen](/settings/children)."
 
 #, machine, python-format
 msgid "@%(name)s blocked."
@@ -2246,6 +2266,10 @@ msgstr ""
 #, python-format
 msgid "@%(name)s forwarded [a post](%(link)s) to +%(guild)s."
 msgstr ""
+
+#, machine, plain1, python-format
+msgid "@%(name)s has a new password and is signed out everywhere."
+msgstr "@%(name)s heeft een nieuw wachtwoord en is overal uitgelogd."
 
 #, machine, python-format
 msgid "@%(name)s has already been invited."
@@ -2415,6 +2439,10 @@ msgstr "@%(name)s reposted [a comment](%(link)s)."
 msgid "@%(name)s reposted [a post](%(link)s)."
 msgstr "@%(name)s reposted [a post](%(link)s)."
 
+#, machine, plain1, python-format
+msgid "@%(name)s says they are 18 or over and asked you to release their account. You can answer in [Settings > Children](/settings/children)."
+msgstr "@%(name)s zegt dat ze 18 jaar of ouder zijn en vroeg je om hun account vrij te geven. U kunt antwoorden in [Instellingen > Kinderen](/settings/children)."
+
 #, python-format
 msgid "@%(name)s shared [a story](%(link)s)."
 msgstr ""
@@ -2446,6 +2474,10 @@ msgstr "@%(name)s werd verbannen van +%(guild)s"
 #, machine, python-format
 msgid "@%(name)s was muted in +%(guild)s's channels."
 msgstr "@%(name)s was gedempt in +%(guild)s's kanalen."
+
+#, machine, plain1, python-format
+msgid "@%(name)s's age was confirmed as 18 or over, so their account is their own now and you can no longer see it."
+msgstr "@%(name)s's leeftijd werd bevestigd als 18 jaar of ouder, dus hun account is nu van hen en je kunt het niet meer zien."
 
 #, machine, python-format
 msgid "@%(name)s's new posts will go into #%(channel)s."
@@ -2964,6 +2996,10 @@ msgstr "Een live thread neemt opmerkingen, geen berichten mee."
 #, machine
 msgid "A member"
 msgstr "Lid"
+
+#, machine, plain1
+msgid "A member reported this account."
+msgstr "Een lid meldde deze rekening."
 
 #, machine, python-format
 msgid "A message can be at most %(count)s character."
@@ -4097,6 +4133,12 @@ msgid_plural "An update can be at most %(num)s characters."
 msgstr[0] "Een update kan maximaal %(num)s karakter zijn."
 msgstr[1] "Een update kan maximaal %(num)s tekens zijn."
 
+#, machine, plain1, python-format
+msgid "And %(num)s private guild, which isn't named."
+msgid_plural "And %(num)s private guilds, which aren't named."
+msgstr[0] "En %(num)s privé gilde, die niet genoemd wordt."
+msgstr[1] "En %(num)s privé gilden, die niet genoemd worden."
+
 #, machine
 msgid "Animals"
 msgstr "Dieren"
@@ -4152,6 +4194,10 @@ msgstr "Anoniem"
 msgctxt "label"
 msgid "Anonymous"
 msgstr "Anoniem"
+
+#, machine, plain1
+msgid "Anonymous posting and starting guilds"
+msgstr "Anoniem posten en startende gilden"
 
 #, machine
 msgid "Anonymous posts and comments count for you like any other. Your points and earnings are shown only to you; the site's admins see the payout list."
@@ -4363,6 +4409,14 @@ msgstr "Arische Hooglanden"
 #, machine
 msgid "As an author you edit the draft live with them, and every character you type is credited to you. Once the post is published, anyone who can see it can see who wrote what. The authors decide together:"
 msgstr "Als auteur bewerk je het concept live met hen, en elk teken dat je typt wordt aan je toegeschreven. Zodra de post is gepubliceerd, iedereen die het kan zien kan zien wie schreef wat. De auteurs besluiten samen:"
+
+#, machine, plain1
+msgid "Ask my parent to turn it off"
+msgstr "Vraag mijn ouder het uit te zetten"
+
+#, machine, plain1
+msgid "Asked you"
+msgstr "Vroeg je"
 
 #, machine, python-format
 msgid "At least %(count)s comments"
@@ -4833,6 +4887,10 @@ msgstr "Boost voor berichten met een foto, geluid of video"
 #, machine, plain1
 msgid "Boost for this curation's guilds and accounts"
 msgstr "Boost voor de gilden en rekeningen van dit gecureerde voer"
+
+#, machine, plain1
+msgid "Born"
+msgstr "Geboren"
 
 #, machine
 msgid "Bot keys"
@@ -5332,6 +5390,10 @@ msgstr "Chat apps zijn nog niet ingeschakeld voor deze site."
 msgid "Chat isn't answering right now. Try again in a moment."
 msgstr "Het gesprek neemt nu niet op. Probeer het zo nog eens."
 
+#, machine, plain1
+msgid "Chat, group chats and calls"
+msgstr "Chat, groepsgesprekken en gesprekken"
+
 #, machine
 msgctxt "guildmaster action"
 msgid "Chatban user"
@@ -5356,6 +5418,14 @@ msgstr "Chemie"
 #, machine
 msgid "Child - also hide profanity and sensitive content"
 msgstr "Kind - verberg ook vloek en gevoelige inhoud"
+
+#, machine, plain1
+msgid "Children"
+msgstr "Kinderen"
+
+#, machine, plain1, python-format
+msgid "Children - %(site)s"
+msgstr "Kinderen - %(site)s"
 
 #. "Sign in with ..." is the button the Matrix app shows for this site's
 #. sign-in
@@ -5687,6 +5757,10 @@ msgstr "Ontvangen munten"
 msgid "Coins received: %(recent)s in the last 30 days &middot; %(total)s in all. They go straight to your coin balance."
 msgstr "Munten ontvangen: %(recent)s in de laatste 30 dagen &middot; %(total)s in totaal. Ze gaan direct naar je muntbalans."
 
+#, machine, plain1
+msgid "Coins, tips, Premium and paid circles"
+msgstr "Munten, tips, Premium en betaalde kringen"
+
 #, machine
 msgid "Collaborative"
 msgstr "Samenwerking"
@@ -5751,6 +5825,10 @@ msgstr "Commentaar bladwijzer."
 #, glossary, machine, plain1
 msgid "Comment posted!"
 msgstr "Reactie geplaatst!"
+
+#, machine, plain1
+msgid "Commenting"
+msgstr "Opmerking"
 
 #, glossary, machine, plain1
 msgid "Comments"
@@ -6397,9 +6475,17 @@ msgstr "Post verwijderen?"
 msgid "Delete role"
 msgstr "Rol verwijderen"
 
+#, machine, plain1
+msgid "Delete the account"
+msgstr "Account verwijderen"
+
 #, machine
 msgid "Delete the published post"
 msgstr "Verwijder de gepubliceerde post"
+
+#, machine, plain1
+msgid "Delete this account"
+msgstr "Verwijder dit account"
 
 #, machine
 msgid "Delete this category? Its channels stay."
@@ -6460,6 +6546,10 @@ msgstr "Verwijdert een bestand in uw Drive, of loskoppelt, verwijdert het uit uw
 #, machine
 msgid "Deleting a file there, or disconnecting, removes it from your posts."
 msgstr "Het verwijderen van een bestand daar, of verbreken, verwijdert het uit uw berichten."
+
+#, machine, plain1
+msgid "Deleting your account also deletes your child accounts. You can download their data first in Settings > Children."
+msgstr "Het verwijderen van uw account verwijdert ook uw kindaccounts. U kunt hun gegevens eerst downloaden in Instellingen > Kinderen."
 
 #, machine
 msgid "Density"
@@ -6701,6 +6791,10 @@ msgstr "Geld of crypto doneren"
 msgid "Done"
 msgstr "Klaar"
 
+#, machine, plain1
+msgid "Download"
+msgstr "Downloaden"
+
 #, machine
 msgctxt "button"
 msgid "Download"
@@ -6714,9 +6808,17 @@ msgstr "Mijn gegevens downloaden"
 msgid "Download the recording"
 msgstr "Download de opname"
 
+#, machine, plain1
+msgid "Download their data"
+msgstr "Download hun gegevens"
+
 #, machine
 msgid "Download your data"
 msgstr "Uw gegevens downloaden"
+
+#, machine, plain1
+msgid "Downvote"
+msgstr "Downvote"
 
 #, glossary, machine, plain1
 msgctxt "verb"
@@ -7044,6 +7146,10 @@ msgstr "Voer het adres van de feedserver in."
 msgid "Enter the feed's address."
 msgstr "Voer het adres van de feed in."
 
+#, machine, plain1
+msgid "Enter the month and year they were born."
+msgstr "Voer de maand en het jaar in dat ze geboren zijn."
+
 #, machine, python-format
 msgid "Enter the six-digit code generated in the authenticator app and your %(site)s account password."
 msgstr "Voer de zescijferige code in die is gegenereerd in de aanmeldapp en uw %(site)s-accountwachtwoord."
@@ -7216,6 +7322,10 @@ msgstr "Iedereen ziet elkaars veranderingen terwijl ze typen, en elk teken wordt
 #, machine
 msgid "Everything from your guilds and accounts, newest first."
 msgstr "Alles van je gilden en rekeningen, eerst nieuwste."
+
+#, machine, plain1
+msgid "Everything they post goes only to their Friends circle. Turn it off to let them post in public."
+msgstr "Alles wat ze posten gaat alleen naar hun vriendenkring. Zet het uit om ze in het openbaar te laten posten."
 
 #, machine, plain1
 msgid "Everything you post goes only to your Friends circle, the people you follow who follow you back, so nothing is public by accident. Your circles can only hold people like that, and you can't forward, repost or write a shared draft. Comments on other people's posts are still public."
@@ -7872,6 +7982,10 @@ msgstr "Vrienden"
 msgctxt "circle name"
 msgid "Friends"
 msgstr "Vrienden"
+
+#, machine, plain1
+msgid "Friends circle"
+msgstr "Vriendenkring"
 
 #, machine
 msgid "Friends is everyone you follow who follows you back. To share with family, a team or anyone else, make a circle first, then pick it here."
@@ -8678,6 +8792,10 @@ msgstr "Jacht"
 msgid "I accept the <a href=\"%(url)s\" target=\"_blank\">terms and conditions</a>"
 msgstr "Ik accepteer de <a href=\"%(url)s\" target=\"_blank\">Algemene voorwaarden</a>"
 
+#, machine, plain1, python-format
+msgid "I agree to the <a href=\"%(url)s\" target=\"_blank\">Terms</a> for them."
+msgstr "Ik ga akkoord met de <a href=\"%(url)s\" target=\"_blank\">Voorwaarden</a> Voor hen."
+
 #, machine
 msgid "I agree to the rules below."
 msgstr "Ik ga akkoord met de onderstaande regels."
@@ -8713,6 +8831,10 @@ msgstr "Als er een e-mailadres bij uw account hoort, kunt u het gebruiken om uw 
 #, machine
 msgid "If this was you, there is nothing to do."
 msgstr "Als jij dit was, is er niets te doen."
+
+#, machine, plain1
+msgid "If you are 18 or over, say so and your parent or guardian will be asked to release your account."
+msgstr "Als je 18 jaar of ouder bent, zeg dat dan en je ouder of voogd zal gevraagd worden je rekening vrij te geven."
 
 #, machine, plain1
 msgid "If you don't have your 2FA device, enter one of your backup codes instead. Each backup code works once. An account that never made backup codes can enter its Recovery Code, which also turns 2FA off."
@@ -9091,6 +9213,14 @@ msgid "It shows, in full, every word and phrase the word filter looks for, in ev
 msgstr "Het toont, volledig, elk woord en zin het woord filter zoekt, in elke taal die het dekt. Dat geldt ook voor slurpen en andere uiterst beledigende taal."
 
 #, machine, plain1
+msgid "It stays a child account with the child lock, but you can no longer see it or change what it can do, and you can't link it again."
+msgstr "Het blijft een kind account met het kinderbeveiligingssysteem, maar je kunt het niet meer zien of veranderen wat het kan doen, en je kunt het niet opnieuw koppelen."
+
+#, machine, plain1
+msgid "It stays on the Child word filter, which hides profanity and anything marked sensitive."
+msgstr "Het blijft op het Child word filter, dat verbergt godslastering en alles gemarkeerd gevoelig."
+
+#, machine, plain1
 msgid "It stays on the Child word filter, which hides profanity and anything marked sensitive. Chat, Spaces, coins, anonymous posting and starting a guild are off, and others can't start a chat or tip you. Your posts go to your Friends circle only unless you turn Private posting off."
 msgstr "Het blijft op het Child word filter, dat verbergt godslastering en alles gemarkeerd gevoelig. Chat, Spaces, munten, anonieme posting en het starten van een gilde zijn uit, en anderen kunnen niet beginnen met een chat of tip. Uw berichten gaan naar uw Friends cirkel alleen tenzij u Private posting uitschakelen."
 
@@ -9254,6 +9384,10 @@ msgstr "Juni zonnewende"
 #, machine, plain1
 msgid "K-Pop"
 msgstr "K-Pop"
+
+#, machine, plain1
+msgid "Keep it on"
+msgstr "Hou het aan"
 
 #, machine, plain1
 msgid "Keep my posts out of All"
@@ -9529,6 +9663,10 @@ msgstr "Leonids meteoorregen"
 msgid "Letters spaced out or split by dots or other marks are read as one word."
 msgstr "Brieven die door stippen of andere markeringen zijn uitgespaard of gesplitst, worden als één woord gelezen."
 
+#, machine, plain1
+msgid "Letters, numbers and underscores, 3 to 25 characters."
+msgstr "Brieven, cijfers en onderstrepingen, 3 tot 25 tekens."
+
 #, glossary, machine, plain1
 msgid "Lifestyle"
 msgstr "Lifestyle"
@@ -9768,6 +9906,10 @@ msgstr "Maan Nieuwjaar"
 msgid "Lyrids meteor shower"
 msgstr "Lyrids meteorietenregen"
 
+#, machine, plain1, python-format
+msgid "Made on %(date)s."
+msgstr "Gemaakt op %(date)s."
+
 #, glossary, machine, plain1
 msgid "Made with AI"
 msgstr "Gemaakt met AI"
@@ -9785,6 +9927,10 @@ msgstr "Maak +%(guild)s privé. Voorgestelde posten zullen alleen zichtbaar zijn
 msgid "Make a channel"
 msgstr "Een kanaal maken"
 
+#, machine, plain1
+msgid "Make a child account"
+msgstr "Een dochteraccount maken"
+
 #, machine
 msgid "Make a circle people pay to be in, every 30 days, for what you share with it."
 msgstr "Maak een cirkel mensen betalen om in te zijn, elke 30 dagen, voor wat je deelt met het."
@@ -9800,6 +9946,10 @@ msgstr "Maak een pagina"
 #, machine
 msgid "Make a role"
 msgstr "Een rol spelen"
+
+#, machine, plain1
+msgid "Make an account for a child under 18 and decide what it can do. You can see what they do on the site (their posts, comments, votes, bookmarks, follows, guilds, the names of who they chat with and their recent sign-ins). The site never shows you what their chats say: chats are end-to-end encrypted. You choose their password, so until they change it you can sign in as them and read their chats: tell them to set their own. They are told all of this in their own Settings."
+msgstr "Maak een account aan voor een kind onder de 18 en beslis wat het kan doen. Je kunt zien wat ze doen op de site (hun berichten, opmerkingen, stemmen, bladwijzers, volgt, gilden, de namen van wie ze chatten en hun recente inloggen). De site laat je nooit zien wat hun chats zeggen: chats zijn end-to-end gecodeerd. Je kiest hun wachtwoord, dus totdat ze het veranderen kun je je aanmelden als hen en hun chats lezen: zeg hen om hun eigen te zetten. Dit wordt ze allemaal verteld in hun eigen Instellingen."
 
 #, machine, python-format
 msgid "Make an app first in <a href=\"%(url)s\">Settings &gt; Apps</a>; a key works through it."
@@ -10137,6 +10287,10 @@ msgctxt "weekday"
 msgid "Mon"
 msgstr "Ma"
 
+#, machine, plain1
+msgid "Month"
+msgstr "Maand"
+
 #, machine
 msgctxt "table heading"
 msgid "Month"
@@ -10146,6 +10300,10 @@ msgstr "Maand"
 msgctxt "time range"
 msgid "Month"
 msgstr "Maand"
+
+#, machine, plain1
+msgid "Month they were born"
+msgstr "Maand werden ze geboren"
 
 #, machine
 msgid "Monthly creator fund payouts"
@@ -10485,6 +10643,10 @@ msgstr "Nieuwe pagina: %(address)s"
 #, machine
 msgid "New paid circle"
 msgstr "Nieuwe betaalde cirkel"
+
+#, machine, plain1
+msgid "New password"
+msgstr "Nieuw wachtwoord"
 
 #, machine
 msgid "New posts that are getting attention, with no account filling the page."
@@ -10870,6 +11032,10 @@ msgstr "Niemand kan zich abonneren. Huidige abonnees houden waar ze voor betaald
 msgid "Nobody types here"
 msgstr "Niemand typt hier"
 
+#, machine, plain1, python-format
+msgid "Nobody under %(age)s may have an account where you are."
+msgstr "Niemand onder %(age)s mag een account hebben waar je bent."
+
 #, machine
 msgid "Nobody yet."
 msgstr "Nog niemand."
@@ -10990,6 +11156,10 @@ msgstr "Geen abonnees"
 #, machine
 msgid "Not trending any more"
 msgstr "Niet meer trending"
+
+#, machine, plain1
+msgid "Not yet"
+msgstr "Nog niet"
 
 #, glossary, machine, plain1
 msgid "Not your default:"
@@ -11112,6 +11282,10 @@ msgid "Nothing written yet."
 msgstr "Nog niets geschreven."
 
 #, machine, plain1
+msgid "Nothing yet."
+msgstr "Nog niets."
+
+#, machine, plain1
 msgid "Notification types"
 msgstr "Soorten kennisgevingen"
 
@@ -11159,6 +11333,10 @@ msgstr "Oceanië"
 msgid "Oddly Satisfying"
 msgstr "Vreemd genoeg tevreden"
 
+#, machine, plain1
+msgid "Off"
+msgstr "Uit"
+
 #. slow mode in a guild's channel is switched off.
 #, machine
 msgctxt "slow mode"
@@ -11185,6 +11363,10 @@ msgstr "Oud"
 #, machine
 msgid "Old Password"
 msgstr "Oud wachtwoord"
+
+#, machine, plain1
+msgid "On"
+msgstr "Aan"
 
 #. "On" marks a linked storage account that is in use
 #, machine
@@ -11261,6 +11443,10 @@ msgstr "Een van deze herzieningen kan je niet laten zien."
 #, machine
 msgid "One of those circles isn't yours any more. Choose again."
 msgstr "Een van die cirkels is niet meer van jou. Kies nog eens."
+
+#, machine, plain1
+msgid "One of your child accounts owes money, so your account can't be deleted yet."
+msgstr "Een van uw kinderrekeningen is geld verschuldigd, dus uw rekening kan nog niet verwijderd worden."
 
 #, machine
 msgid "One-time codes for the day you lose your authenticator. Making a new set replaces every earlier code, used or not."
@@ -11584,6 +11770,10 @@ msgstr "Alleen de auteur en medeauteurs van de post kunnen updates plaatsen."
 #, machine
 msgid "Only the post's author and co-authors can run its live updates."
 msgstr "Alleen de auteur en medeauteurs van het bericht kunnen live updates uitvoeren."
+
+#, machine, plain1
+msgid "Only used to check their age. It isn't kept."
+msgstr "Alleen gebruikt om hun leeftijd te controleren. Het wordt niet gehouden."
 
 #, machine, plain1
 msgid "Only when I turn them on"
@@ -12578,6 +12768,10 @@ msgstr "Gepost op die dag of later."
 msgid "Posted on that day."
 msgstr "Gepost op die dag."
 
+#, machine, plain1
+msgid "Posting"
+msgstr "Posting"
+
 #, machine
 msgid "Posting cooldown"
 msgstr "Afkoeling posten"
@@ -13415,6 +13609,10 @@ msgstr "Afgewezen"
 msgid "Relationships"
 msgstr "Relaties"
 
+#, machine, plain1
+msgid "Release the account"
+msgstr "Laat de account vrij"
+
 #, machine
 msgid "Religion"
 msgstr "Religie"
@@ -13665,6 +13863,10 @@ msgstr "Gerapporteerde berichten"
 msgctxt "noun"
 msgid "Reports"
 msgstr "Rapporten"
+
+#, machine, plain1
+msgid "Reports about them"
+msgstr "Verslagen over hen"
 
 #, machine
 msgid "Reports opened"
@@ -14003,6 +14205,10 @@ msgctxt "weekday"
 msgid "Sat"
 msgstr "Zat"
 
+#, glossary, machine, plain1
+msgid "Save"
+msgstr "Opslaan"
+
 #, machine, plain1
 msgctxt "button"
 msgid "Save"
@@ -14311,6 +14517,10 @@ msgstr "Zie de lijst van de hele site"
 msgid "See what is trending"
 msgstr "Zien wat trending is"
 
+#, machine, plain1
+msgid "See what they do"
+msgstr "Kijken wat ze doen"
+
 #, machine
 msgid "See your username"
 msgstr "Gebruikersnaam bekijken"
@@ -14410,6 +14620,10 @@ msgstr "September equinox"
 #, machine
 msgid "Serious"
 msgstr "Serieus"
+
+#, machine, plain1
+msgid "Set a new password"
+msgstr "Een nieuw wachtwoord instellen"
 
 #, machine
 msgid "Set a price to let people pay to join."
@@ -15058,6 +15272,10 @@ msgstr "Ruimte opnames"
 msgid "Spaces"
 msgstr "Spaces"
 
+#, machine, plain1
+msgid "Spaces and live threads"
+msgstr "Spaties en levende draden"
+
 #, machine
 msgid "Spaces are started in the Spaces area."
 msgstr "Ruimtes worden gestart in de ruimtes."
@@ -15193,6 +15411,14 @@ msgstr "Vastgezette post"
 #, machine
 msgid "Still here to read"
 msgstr "Nog steeds hier om te lezen"
+
+#, machine, plain1
+msgid "Stop managing"
+msgstr "Beheren stoppen"
+
+#, machine, plain1
+msgid "Stop managing this account"
+msgstr "Stoppen met beheren van dit account"
 
 #, machine
 msgid "Stop posting automatically"
@@ -15369,6 +15595,10 @@ msgstr "Aanhang…"
 #, machine, plain1
 msgid "Survival & Bushcraft"
 msgstr "Overleving & Bushcraft"
+
+#, machine, plain1
+msgid "Suspended"
+msgstr "Geschorst"
 
 #, machine, python-format
 msgid "Switch @%(name)s off for good? Its posts stay; the bot never posts again."
@@ -15841,6 +16071,10 @@ msgstr "Dat is geen rol."
 msgid "That isn't a valid username."
 msgstr "Dat is geen geldige gebruikersnaam."
 
+#, machine, plain1
+msgid "That isn't something you can switch."
+msgstr "Dat kun je niet veranderen."
+
 #, machine
 msgid "That key couldn't be saved."
 msgstr "Die sleutel kon niet worden opgeslagen."
@@ -16072,6 +16306,14 @@ msgstr "De Sahel"
 #, machine
 msgid "The Space could not be made."
 msgstr "De ruimte kon niet gemaakt worden."
+
+#, machine, plain1, python-format
+msgid "The account @%(name)s is deleted."
+msgstr "Het account @%(name)s wordt verwijderd."
+
+#, machine, plain1, python-format
+msgid "The account @%(name)s is made. They sign in with the username and password you gave."
+msgstr "Het account @%(name)s is gemaakt. Ze melden zich aan met de gebruikersnaam en wachtwoord die je gaf."
 
 #, machine, python-format
 msgid "The account age must be a whole number of days, 0 to %(max)s."
@@ -16415,6 +16657,10 @@ msgstr "De meest gekozen posten van de laatste zeven dagen."
 #, machine, python-format
 msgid "The name %(host)s could not be found."
 msgstr "De naam %(host)s kon niet gevonden worden."
+
+#, machine, plain1
+msgid "The newest of what they have done. Only the names of who they chat with are shown, never what a chat says: chats are end-to-end encrypted."
+msgstr "Het nieuwste van wat ze hebben gedaan. Alleen de namen van wie ze chatten worden getoond, nooit wat een chat zegt: chats zijn end-to-end gecodeerd."
 
 #, machine
 msgid "The numbers are always shown on your profile. This decides who can open each list and see the accounts on it. An account is only listed where its own setting allows it too."
@@ -16765,6 +17011,10 @@ msgstr "Deze gebruikers zijn uitgenodigd om te matigen +%(guild)s."
 msgid "They already have this role."
 msgstr "Die rol hebben ze al."
 
+#, machine, plain1
+msgid "They are 18 or over, so they can make their own account."
+msgstr "Ze zijn 18 of ouder, zodat ze hun eigen rekening kunnen maken."
+
 #, machine
 msgid "They are already in this circle."
 msgstr "Ze zitten al in deze cirkel."
@@ -16772,6 +17022,10 @@ msgstr "Ze zitten al in deze cirkel."
 #, machine
 msgid "They are not told. Anyone you block leaves your circles."
 msgstr "Ze worden niet verteld. Iedereen die je blokkeert laat je cirkels achter."
+
+#, machine, plain1
+msgid "They are signed out everywhere. If they use chat, they may be asked for their recovery code."
+msgstr "Ze zijn overal uitgeschreven. Als ze chat gebruiken, kunnen ze worden gevraagd om hun herstel code."
 
 #, machine, python-format
 msgid "They aren't in %(circle)s."
@@ -16785,6 +17039,38 @@ msgstr "Ze zitten niet in deze groep."
 msgid "They aren't muted here."
 msgstr "Ze zijn hier niet stil."
 
+#, machine, plain1
+msgid "They asked you to turn Private posting off."
+msgstr "Ze vroegen je om Private posting uit te zetten."
+
+#, machine, plain1
+msgid "They can buy and spend coins, tip, buy Premium and join or run paid circles."
+msgstr "Ze kunnen kopen en uitgeven munten, tip, kopen Premium en deelnemen of lopen betaalde cirkels."
+
+#, machine, plain1
+msgid "They can comment."
+msgstr "Ze kunnen commentaar geven."
+
+#, machine, plain1
+msgid "They can host and join Spaces and run live threads. Voice calls in a Space also need Chat to be on."
+msgstr "Ze kunnen gastheer en lid worden van Spaces en live threads draaien. Voice calls in a Space hebben ook een chat nodig."
+
+#, machine, plain1
+msgid "They can make posts."
+msgstr "Ze kunnen posten maken."
+
+#, machine, plain1
+msgid "They can message people, join group chats and make calls. The site never shows you what a chat says: chats are end-to-end encrypted. Whoever knows their password can still sign in and read them."
+msgstr "Ze kunnen mensen berichten, groep chats en telefoontjes plegen. De site laat je nooit zien wat een chat zegt: chats zijn end-to-end gecodeerd. Wie zijn wachtwoord kent, kan zich nog steeds aanmelden en lezen."
+
+#, machine, plain1
+msgid "They can post anonymously and start a guild. You can still see who wrote an anonymous post."
+msgstr "Ze kunnen anoniem posten en een gilde beginnen. Je kunt nog steeds zien wie een anonieme post schreef."
+
+#, machine, plain1
+msgid "They can see what you do on the site: your posts, comments, votes, bookmarks, follows, guilds, who you chat with, that your account was reported, and your recent sign-ins. The site never shows them what your chats say, because chats are end-to-end encrypted. But anyone who knows your password, a parent who chose it included, can sign in as you: change it in Security so that only you know it. They choose which of these are on for your account:"
+msgstr "Ze kunnen zien wat je doet op de site: uw berichten, opmerkingen, stemmen, bladwijzers, volgt, gilden, met wie je praat, dat uw account werd gemeld, en uw recente aanmelden. De site laat hen nooit zien wat uw chats zeggen, omdat chats end-to-end versleuteld zijn. Maar iedereen die uw wachtwoord kent, een ouder die het heeft gekozen, kan zich aanmelden als u: verander het in Beveiliging zodat alleen u het weet. Ze kiezen welke van deze zijn op voor uw rekening:"
+
 #, machine
 msgid "They can't comment on your posts or comments, chat with you or notify you by mentioning you. They are not told, but they may work it out if they try to comment on something of yours."
 msgstr "Ze kunnen geen commentaar geven op uw berichten of opmerkingen, met u chatten of u op de hoogte stellen door u te noemen. Ze worden niet verteld, maar ze kunnen het oplossen als ze proberen te reageren op iets van jou."
@@ -16797,6 +17083,10 @@ msgstr "Ze hebben deze rol niet."
 msgid "They go straight to your coin balance."
 msgstr "Ze gaan direct naar je muntbalans."
 
+#, machine, plain1
+msgid "They haven't asked for that."
+msgstr "Daar hebben ze niet om gevraagd."
+
 #, machine
 msgid "They need to be in the guild, and not exiled from it."
 msgstr "Ze moeten in het gilde, en niet verbannen worden."
@@ -16804,6 +17094,10 @@ msgstr "Ze moeten in het gilde, en niet verbannen worden."
 #, machine
 msgid "They need to join the channel first."
 msgstr "Ze moeten eerst naar het kanaal."
+
+#, machine, plain1
+msgid "They say they are 18 or over and asked you to release their account. If you do, it becomes their own and you can no longer see it."
+msgstr "Ze zeggen dat ze 18 jaar of ouder zijn en vroegen je om hun rekening vrij te geven. Als je dat doet, wordt het hun eigen en kun je het niet meer zien."
 
 #, machine
 msgid "They're already a helper."
@@ -16918,6 +17212,14 @@ msgstr "Dit account is tijdelijk opgeschort van %(site)s. Kom later terug."
 #, machine
 msgid "This account is private"
 msgstr "Deze account is privé"
+
+#, machine, plain1
+msgid "This account is suspended."
+msgstr "Deze rekening is geschorst."
+
+#, machine, plain1
+msgid "This account owes money, so it can't be deleted yet."
+msgstr "Deze rekening is geld verschuldigd, dus het kan nog niet verwijderd worden."
 
 #, machine
 msgid "This account posts about sensitive topics"
@@ -17053,6 +17355,10 @@ msgstr "Deze gecureerde feed gilden en rekeningen"
 #, machine, plain1
 msgid "This curation's rules took too long to run. Its owner can make them narrower."
 msgstr "De regels van dit gecureerde voer duurden te lang. De eigenaar kan ze smaller maken."
+
+#, machine, plain1
+msgid "This deletes their account and everything on it. It can't be undone. You can download their data first."
+msgstr "Dit verwijdert hun account en alles erop. Het kan niet ongedaan worden gemaakt. U kunt hun gegevens eerst downloaden."
 
 #, machine
 msgid "This draft hasn't been published."
@@ -17383,6 +17689,10 @@ msgctxt "weekday"
 msgid "Thu"
 msgstr "Do"
 
+#, machine, plain1
+msgid "Tick the box to agree to the Terms for them."
+msgstr "Vink het vakje aan om akkoord te gaan met de Voorwaarden voor hen."
+
 #, machine
 msgid "Tick the box to agree to the rules first."
 msgstr "Vink eerst de doos aan om de regels goed te keuren."
@@ -17655,6 +17965,10 @@ msgstr "Di"
 #, machine
 msgid "Turanian Steppe"
 msgstr "Turaanse steppe"
+
+#, machine, plain1
+msgid "Turn it off"
+msgstr "Zet het uit"
 
 #, machine, plain1, python-format
 msgid "Turn off notifications from +%(guild)s"
@@ -18113,6 +18427,10 @@ msgstr "Banner uploaden"
 #, machine
 msgid "Upload picture"
 msgstr "Afbeelding uploaden"
+
+#, machine, plain1
+msgid "Upvote"
+msgstr "Upvote"
 
 #, glossary, machine, plain1
 msgctxt "verb"
@@ -18834,6 +19152,10 @@ msgid "Where you are, the law means your age has to be confirmed with an age-che
 msgstr "Waar u bent, betekent de wet dat uw leeftijd moet worden bevestigd met een leeftijdscontrole dienst voordat u gevoelige inhoud of sterke taal kunt zien."
 
 #, machine, plain1
+msgid "Where you are, your age has to be confirmed with an age-check service before you can make a child account."
+msgstr "Waar u bent, moet uw leeftijd worden bevestigd met een leeftijdscontrole dienst voordat u een kind account kunt maken."
+
+#, machine, plain1
 msgid "Where you are, your age has to be confirmed with an age-check service."
 msgstr "Waar u bent, moet uw leeftijd worden bevestigd met een leeftijdscontrole dienst."
 
@@ -18925,9 +19247,17 @@ msgstr "Wie beslist"
 msgid "Who follows you"
 msgstr "Wie volgt jou"
 
+#, machine, plain1
+msgid "Who reported them, and what they wrote, isn't shown to anyone but the admins."
+msgstr "Wie ze meldde en wat ze schreven, wordt alleen aan de beheerders getoond."
+
 #, glossary, machine, plain1
 msgid "Who subscribes to your Circle"
 msgstr "Wie is geabonneerd op je kring"
+
+#, machine, plain1
+msgid "Who they chat with"
+msgstr "Met wie ze praten"
 
 #, machine
 msgid "Who to follow"
@@ -19308,10 +19638,18 @@ msgctxt "guildmaster action"
 msgid "Yank post"
 msgstr "Yank post"
 
+#, machine, plain1
+msgid "Year"
+msgstr "Jaar"
+
 #, glossary, machine, plain1
 msgctxt "time range"
 msgid "Year"
 msgstr "Jaar"
+
+#, machine, plain1
+msgid "Year they were born"
+msgstr "Jaar werden ze geboren"
 
 #, machine
 msgctxt "colour"
@@ -19474,6 +19812,14 @@ msgid "You aren't subscribed to that circle."
 msgstr "Je bent niet ingeschreven op die cirkel."
 
 #, machine, plain1
+msgid "You asked your parent or guardian to release your account. They haven't answered yet."
+msgstr "Je vroeg je ouder of voogd om je account vrij te geven. Ze hebben nog niet geantwoord."
+
+#, machine, plain1
+msgid "You asked your parent or guardian to turn this off. They haven't answered yet."
+msgstr "Je vroeg je ouder of voogd om dit uit te zetten. Ze hebben nog niet geantwoord."
+
+#, machine, plain1
 msgid "You can add pictures at 500 Rep, or earlier with Premium"
 msgstr "U kunt foto's toevoegen op 500 Reputatie, of eerder met Premium"
 
@@ -19563,6 +19909,16 @@ msgid_plural "You can have at most %(num)s channels."
 msgstr[0] "U kunt maximaal %(num)s kanaal hebben."
 msgstr[1] "Je kunt maximaal %(num)s kanalen hebben."
 
+#, machine, plain1, python-format
+msgid "You can have at most %(num)s child account."
+msgid_plural "You can have at most %(num)s child accounts."
+msgstr[0] "U kunt maximaal %(num)s kind account hebben."
+msgstr[1] "U kunt maximaal %(num)s kindaccounts hebben."
+
+#, machine, plain1, python-format
+msgid "You can have at most %(num)s child accounts."
+msgstr "U kunt maximaal %(num)s kinderaccounts hebben."
+
 #, machine, python-format
 msgid "You can host at most %(num)s Space a day."
 msgid_plural "You can host at most %(num)s Spaces a day."
@@ -19589,6 +19945,10 @@ msgstr[1] "U kunt maximaal %(num)s woorden of zinnen noemen."
 msgid "You can look around and set up your profile; posting, comments, votes and follows open once the check is done."
 msgstr "U kunt rondkijken en uw profiel instellen; posten, opmerkingen, stemmen en volgt open zodra de controle is gedaan."
 
+#, machine, plain1, python-format
+msgid "You can make %(num)s child accounts a day. Try again tomorrow."
+msgstr "U kunt %(num)s kinderaccounts per dag maken. Probeer het morgen nog eens."
+
 #, machine, python-format
 msgid "You can make %(num)s proposal a day."
 msgid_plural "You can make %(num)s proposals a day."
@@ -19600,6 +19960,10 @@ msgid "You can make %(num)s wiki edit a day in a guild. Try again tomorrow."
 msgid_plural "You can make %(num)s wiki edits a day in a guild. Try again tomorrow."
 msgstr[0] "Je kunt %(num)s wiki bewerken per dag in een gilde. Probeer het morgen nog eens."
 msgstr[1] "U kunt %(num)s wiki bewerken per dag in een gilde. Probeer het morgen nog eens."
+
+#, machine, plain1
+msgid "You can make a child account once your own account is confirmed as 18 or over. You can say so in Settings > Content."
+msgstr "U kunt een kindaccount aanmaken zodra uw eigen account is bevestigd als 18 of ouder. U kunt dat zeggen in Instellingen > Inhoud."
 
 #, machine
 msgid "You can only create up to 2 guilds per day. Try again later."
@@ -19893,6 +20257,10 @@ msgstr "Je volgt deze post niet."
 msgid "You don't have Premium right now."
 msgstr "Je hebt nu geen Premium."
 
+#, machine, plain1
+msgid "You don't have a child account called that."
+msgstr "Zo heb je geen kinderrekening."
+
 #, machine
 msgid "You don't have a coin to redeem."
 msgstr "Je hebt geen munt te verlossen."
@@ -20004,6 +20372,10 @@ msgstr "U bent omvergeworpen van +%(guild)s."
 #, machine
 msgid "You have left the creator fund."
 msgstr "Je hebt het fonds verlaten."
+
+#, machine, plain1, python-format
+msgid "You have made %(num)s child accounts in the last %(days)s days. Try again later."
+msgstr "U heeft %(num)s kindaccounts gemaakt in de laatste %(days)s dagen. Probeer het later nog eens."
 
 #, machine
 msgid "You have muted this guild. Its posts stay out of All, For You and Following. Visit your settings or click the <i class='fas fa-ellipsis-h text-small'></i> icon to unmute it."
@@ -20403,6 +20775,10 @@ msgstr "Je rekeningsaldo is negatief. U kunt niet deelnemen aan %(site)s Totdat 
 msgid "Your account can also post new items from feeds by itself, while you keep using it as you do now. Each of those posts is marked as automated, and people who hide bot content don't see them. Your own posts, comments, votes and chats are unchanged. An admin approves it first."
 msgstr "Je account kan ook zelf nieuwe items van feeds posten, terwijl je het blijft gebruiken zoals je nu doet. Elk van die berichten is gemarkeerd als geautomatiseerd, en mensen die bot inhoud verbergen zien ze niet. Uw eigen berichten, opmerkingen, stemmen en chats zijn ongewijzigd. Een beheerder keurt het eerst goed."
 
+#, machine, plain1
+msgid "Your account can't post automatically while it is age-restricted."
+msgstr "Uw account kan niet automatisch posten zolang het leeftijdsgebonden is."
+
 #, machine
 msgid "Your account can't post automatically while it is suspended."
 msgstr "Uw account kan niet automatisch posten terwijl het wordt opgeschort."
@@ -20410,6 +20786,10 @@ msgstr "Uw account kan niet automatisch posten terwijl het wordt opgeschort."
 #, machine
 msgid "Your account can't publish right now."
 msgstr "Je account kan nu niet publiceren."
+
+#, machine, plain1
+msgid "Your account can't run a bot while it is age-restricted."
+msgstr "Je account kan geen bot runnen zolang het leeftijdsgebonden is."
 
 #, machine
 msgid "Your account cannot upload right now."
@@ -20430,6 +20810,10 @@ msgstr "Uw account is gecontroleerd en is klaar: u kunt nu posten, commentaar, s
 #, machine, plain1
 msgid "Your account has been deleted"
 msgstr "Uw account is verwijderd"
+
+#, machine, plain1, python-format
+msgid "Your account has the child lock on, held by your parent or guardian, since %(date)s."
+msgstr "Uw account heeft het kind vergrendeld, vastgehouden door uw ouder of voogd, sinds %(date)s."
 
 #, machine, plain1, python-format
 msgid "Your account has the child lock on, since %(date)s."
@@ -20482,6 +20866,10 @@ msgstr ""
 "\n"
 "\n"
 "Om het wachten over te slaan, een e-mailadres toevoegen en verifiëren in [Settings > Security](/settings/security)."
+
+#, machine, plain1
+msgid "Your account is your own now. It no longer has the child lock and your parent or guardian can no longer see it. They chose your password: change it in [Settings > Security](/settings/security), or they can still sign in as you."
+msgstr "Je rekening is nu van jou. Het heeft niet langer het kinderslot en je ouder of voogd kan het niet meer zien. Ze kozen uw wachtwoord: wijzig het in [Settings > Security](/settings/security), of ze kunnen zich nog steeds aanmelden als u."
 
 #, machine
 msgid "Your account needs to be at least 30 days old to post automatically."
@@ -20584,6 +20972,10 @@ msgstr "Je chats zijn end-to-end gecodeerd, en de site kan ze niet lezen. De sle
 #, machine, python-format
 msgid "Your chats run on Matrix, an open standard, on %(site)s's own chat server. Besides Chat on this site, you can use them in a Matrix app such as Element (web, desktop and the classic phone apps), FluffyChat or Cinny. They stay end-to-end encrypted there too."
 msgstr "Uw chats draaien op Matrix, een open standaard, op %(site)s's eigen chatserver. Naast Chat op deze site, kunt u ze gebruiken in een Matrix app zoals Element (web, desktop en de klassieke telefoon apps), FluffyChat of Cinny. Ze blijven daar ook versleuteld."
+
+#, machine, plain1
+msgid "Your child accounts will be deleted with yours."
+msgstr "Uw kindaccounts worden verwijderd met de uwe."
 
 #, glossary, machine, plain1
 msgid "Your circles"
@@ -20728,8 +21120,52 @@ msgstr[0] ""
 msgstr[1] ""
 
 #, machine, plain1
+msgid "Your own password"
+msgstr "Uw eigen wachtwoord"
+
+#, machine, plain1
+msgid "Your parent or guardian didn't agree to release your account."
+msgstr "Je ouder of voogd wilde je rekening niet vrijgeven."
+
+#, machine, plain1
+msgid "Your parent or guardian has been asked to release your account. Nothing changes until they answer."
+msgstr "Uw ouder of voogd is gevraagd om uw rekening vrij te geven. Er verandert niets tot ze antwoorden."
+
+#, machine, plain1
+msgid "Your parent or guardian has been asked to turn Private posting off."
+msgstr "Je ouder of voogd is gevraagd om Private posting uit te zetten."
+
+#, machine, plain1
 msgid "Your parent or guardian has to agree before Private posting can be turned off."
 msgstr "Je ouder of voogd moet het ermee eens zijn voordat Private posting kan worden uitgeschakeld."
+
+#, machine, plain1
+msgid "Your parent or guardian has turned this off for your account."
+msgstr "Uw ouder of voogd heeft dit uitgezet voor uw rekening."
+
+#, machine, plain1
+msgid "Your parent or guardian made this account for you. They can see what you do on the site (your posts, comments, votes, bookmarks, follows, guilds, who you chat with, that your account was reported and your recent sign-ins; the site never shows them what your chats say) and they choose which features are on. You can see which in [Settings > Content](/settings/content). They chose your password: change it in [Settings > Security](/settings/security) so that only you know it, because anyone who knows it can sign in as you and read your chats."
+msgstr "Je ouder of voogd heeft dit voor je gemaakt. Ze kunnen zien wat je doet op de site (uw berichten, opmerkingen, stemmen, bladwijzers, volgt, gilden, met wie je chatten, dat uw account werd gemeld en uw recente aanmelden; de site laat ze nooit zien wat uw chats zeggen) en ze kiezen welke functies zijn op. U kunt zien welke in [Instellingen > Inhoud](/settings/content). Ze kozen je wachtwoord: wijzig het in [Settings > Security](/settings/security) zodat alleen jij het weet, omdat iedereen die het kent zich kan aanmelden als je en je chats kan lezen."
+
+#, machine, plain1
+msgid "Your parent or guardian set a new password for your account and you were signed out. Sign in with the new password, then change it in [Settings > Security](/settings/security) so that only you know it."
+msgstr "Uw ouder of voogd heeft een nieuw wachtwoord voor uw account ingesteld en u bent uitgeschreven. Aanmelden met het nieuwe wachtwoord, dan wijzigen in [Settings > Security](/settings/security) zodat alleen u het weet."
+
+#, machine, plain1
+msgid "Your parent or guardian stopped managing your account. It keeps the child lock until you confirm your age in Settings > Content. They chose your password: change it in [Settings > Security](/settings/security), or they can still sign in as you."
+msgstr "Uw ouder of voogd is gestopt met het beheren van uw account. Het houdt het kind op slot totdat u uw leeftijd bevestigt in Instellingen > Inhoud. Ze kozen uw wachtwoord: wijzig het in [Settings > Security](/settings/security), of ze kunnen zich nog steeds aanmelden als u."
+
+#, machine, plain1
+msgid "Your parent or guardian turned Private posting off for your account."
+msgstr "Je ouder of voogd heeft Private posting voor je rekening uitgezet."
+
+#, machine, plain1
+msgid "Your parent or guardian wants Private posting to stay on."
+msgstr "Je ouder of voogd wil dat Private post blijft."
+
+#, machine, plain1
+msgid "Your parent or guardian's account was suspended, so yours is suspended until theirs is back."
+msgstr "De rekening van je ouder of voogd is geschorst, dus de jouwe is geschorst tot de jouwe terug is."
 
 #, machine
 msgid "Your password"
@@ -21111,6 +21547,10 @@ msgid "and %(num)s more"
 msgid_plural "and %(num)s more"
 msgstr[0] "en nog %(num)s"
 msgstr[1] "en nog eens %(num)s"
+
+#, machine, plain1
+msgid "anonymous"
+msgstr "anoniem"
 
 #, machine
 msgctxt "guildmaster permission"
@@ -21558,6 +21998,10 @@ msgstr "linkvoorbeeld"
 msgid "links"
 msgstr "links"
 
+#, machine, plain1
+msgid "looked at by the admins"
+msgstr "bekeken door de beheerders"
+
 #. after the moderator's name in a guild's moderation log
 #, machine
 msgid "made a channel"
@@ -21764,6 +22208,10 @@ msgstr "opnieuw %(target)s"
 #, machine, python-format
 msgid "reinstated post %(target)s"
 msgstr "opnieuw ingesteld post %(target)s"
+
+#, machine, plain1
+msgid "removed"
+msgstr "verwijderd"
 
 #. follows the moderator's name in a guild's moderation log; %(target)s is a
 #. link
