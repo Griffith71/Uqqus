@@ -21,7 +21,7 @@ from ruqqus.helpers.redirects import same_site
 from ruqqus.helpers import same_origin
 from ruqqus.helpers import account_sessions, chat_devices, mfa_backup, mfa_backup_store, sign_in_history, signin_alerts, user_agents
 from ruqqus.helpers import captcha, signup_review_store, signup_risk, signup_signals
-from ruqqus.helpers import age_declaration
+from ruqqus.helpers import age_declaration, child_store
 from ruqqus.helpers import ads as ads_rules
 from ruqqus.helpers import consent as consent_rules
 from ruqqus.helpers import qr_login
@@ -71,6 +71,11 @@ def check_for_alts(current_id):
     for past_id in flask_session["history"]:
 
         if past_id == current_id:
+            continue
+
+        # a family shares a browser on purpose: a parent and the children it made (even after a link ended) and their siblings are not alts of each other
+        # (it would let one's ban reach the rest: helpers/child_accounts.py)
+        if child_store.related_safely(g.db, current_id, past_id):
             continue
 
         check1 = g.db.query(Alt).filter_by(

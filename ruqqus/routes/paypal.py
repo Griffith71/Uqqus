@@ -14,7 +14,7 @@ from ruqqus.classes import *
 from ruqqus.helpers.wrappers import *
 from ruqqus.helpers.security import *
 from ruqqus.helpers.alerts import notify
-from ruqqus.helpers.i18n_runtime import N_, tr
+from ruqqus.helpers.i18n_runtime import N_, msg, tr
 from ruqqus.helpers.base36 import *
 from ruqqus.helpers.get import *
 from ruqqus.__main__ import app
@@ -390,7 +390,7 @@ def gift_post_pid(pid, v):
         # one message either way: it never says who blocked whom (bug hunt: the second told a tipper they were blocked)
         return jsonify({"error": tr("You can't tip this account.")}), 403
 
-    if age_declaration.target_refusal(u):         # nobody can start a tip with a child-locked account (helpers/age_declaration.py)
+    if age_declaration.target_refusal(u, "money"):         # nobody can start a tip with a child-locked account (helpers/age_declaration.py)
         return jsonify({"error": tr("You can't tip this account.")}), 403
 
     # a bot's post takes tips too (the owner, 2026-10-20): a member bot's coins go to the member who runs it, a site
@@ -405,6 +405,8 @@ def gift_post_pid(pid, v):
             if receiver.id == v.id:
                 return jsonify({"error": tr("You can't tip your own bot: the coins would come back to you.")}), 403
             if receiver.is_deleted or (receiver.is_banned and not receiver.unban_utc) or v.any_block_exists(receiver):
+                return jsonify({"error": tr("This bot can't take tips right now.")}), 403
+            if age_declaration.target_refusal(receiver, "money"):         # the coins of a bot's post go to the member who runs it: not to an age-restricted one
                 return jsonify({"error": tr("This bot can't take tips right now.")}), 403
 
     coins = tips.parse_coins(request.args.get("coins"))
@@ -485,7 +487,7 @@ def gift_comment_pid(cid, v):
         # one message either way: it never says who blocked whom (bug hunt: the second told a tipper they were blocked)
         return jsonify({"error": tr("You can't tip this account.")}), 403
 
-    if age_declaration.target_refusal(u):         # nobody can start a tip with a child-locked account (helpers/age_declaration.py)
+    if age_declaration.target_refusal(u, "money"):         # nobody can start a tip with a child-locked account (helpers/age_declaration.py)
         return jsonify({"error": tr("You can't tip this account.")}), 403
 
     coins = tips.parse_coins(request.args.get("coins"))
@@ -548,11 +550,15 @@ def premium_redeem(v):
 @app.route("/settings/premium/auto_renew", methods=["POST"])
 @auth_required
 @not_qr_limited
-@not_child_locked("money")
 @validate_formkey
 def premium_auto_renew(v):
-    """Whether a coin is spent on the next week when one runs out (`setting=true|false`)."""
-    v.premium_auto_renew = request.values.get("setting") == "true"
+    """Whether a coin is spent on the next week when one runs out (`setting=true|false`). Turning it on is spending, so it asks the lock; turning it off never does:
+    an account that may not spend can always stop a payment."""
+    wanted = request.values.get("setting") == "true"
+    refused = age_declaration.feature_refusal(v, "money") if wanted else None
+    if refused:                                       # before `v` is touched: the request's commit would keep a flag set first
+        return jsonify({"error": msg(refused), "age_locked": True}), 403
+    v.premium_auto_renew = wanted
     g.db.add(v)
     g.db.commit()
     return jsonify({"premium_auto_renew": v.premium_auto_renew})

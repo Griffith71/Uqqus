@@ -13,7 +13,7 @@ from urllib.parse import urlencode
 from flask import *
 
 from ruqqus.helpers.wrappers import *
-from ruqqus.helpers import oidc_provider as oidc
+from ruqqus.helpers import age_declaration, oidc_provider as oidc
 from ruqqus.helpers.alerts import notify
 from ruqqus.helpers.i18n_runtime import N_, tr, tr_lazy
 from ruqqus.classes import *
@@ -65,6 +65,12 @@ ERRORS = {
 }
 
 
+def _refusal(user, chat_ready):
+    """`oidc.account_refusal`, and never an age-restricted account whose chat is off (an outside app is a way into chat that needs no chat page): the same
+    plain refusal, which says nothing of why."""
+    return oidc.account_refusal(user, chat_ready) or (oidc.REFUSED if age_declaration.feature_refusal(user, "chat") else None)
+
+
 def _request_args(source):
     keys = ("client_id", "redirect_uri", "response_type", "scope", "state", "nonce", "code_challenge",
             "code_challenge_method")
@@ -73,7 +79,7 @@ def _request_args(source):
 
 def _consent(v, args, error=None, status=200):
     resp = _no_store(render_template("oidc_consent.html", v=v, i=random_image(), args=args, error=error,
-                                     refusal=oidc.account_refusal(v, _chat_ready(v.id))), status)
+                                     refusal=_refusal(v, _chat_ready(v.id))), status)
     # the site's own policy says forms go only to the site, and a browser holds a form's redirect to that too: this
     # page's answer is a redirect to the chat server's callback, so it alone may also send the browser there
     resp.headers["Content-Security-Policy"] = ("object-src 'none'; base-uri 'self'; "
@@ -124,7 +130,7 @@ def oidc_authorize_post(v):
     back = _redirect() + "?"
     if request.form.get("decision") != "allow":
         return redirect(back + urlencode({"error": "access_denied", "state": args["state"]}))
-    if oidc.account_refusal(v, _chat_ready(v.id)):
+    if _refusal(v, _chat_ready(v.id)):
         return _consent(v, args, status=403)
     if not v.verifyPass(request.form.get("password", "")):
         return _consent(v, args, error=tr("That password isn't right."), status=401)
@@ -169,7 +175,7 @@ def oidc_token():
     if not oidc.pkce_ok(request.form.get("code_verifier"), record["challenge"]):
         return _token_error("invalid_grant")
     user = g.db.query(User).filter_by(id=record["user_id"]).first()
-    if oidc.account_refusal(user, _chat_ready(record["user_id"])):
+    if _refusal(user, _chat_ready(record["user_id"])):
         return _token_error("invalid_grant")
     now = int(time.time())
     access = secrets.token_urlsafe(32)

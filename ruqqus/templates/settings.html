@@ -141,6 +141,11 @@
         <li class="nav-item">
           <a class="nav-link{% if request.path.startswith('/settings/bots') %} active{% endif %}" href="/settings/bots">{{ _("Bots") }}</a>
         </li>
+        {% if parent_tab(v) %}
+        <li class="nav-item">
+          <a class="nav-link{% if request.path.startswith('/settings/children') %} active{% endif %}" href="/settings/children">{{ _("Children") }}</a>
+        </li>
+        {% endif %}
       </ul>
 
     </div>
@@ -180,6 +185,11 @@
         <li class="nav-item">
           <a class="nav-link{% if request.path.startswith('/settings/bots') %} active{% endif %}" href="/settings/bots" aria-label="{{ _('Bots') }}"><i class="fas fa-robot text-lg mr-0"></i></a>
         </li>
+        {% if parent_tab(v) %}
+        <li class="nav-item">
+          <a class="nav-link{% if request.path.startswith('/settings/children') %} active{% endif %}" href="/settings/children" aria-label="{{ _('Children') }}"><i class="fas fa-child text-lg mr-0"></i></a>
+        </li>
+        {% endif %}
       </ul>
 
     </div>

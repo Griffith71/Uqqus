@@ -283,6 +283,11 @@ Optional file data:
     if p.board.has_ban(v):
         abort(403)
 
+    # an edit puts new words in front of readers as a post does: a parent's switch for posting covers it (deleting stays open, so a child can take its own words down)
+    posting_error = age_declaration.activity_refusal(v, "posting")
+    if posting_error:
+        return _edit_error(msg(posting_error), 403)
+
     # A forwarded copy has no content of its own: edit the original, which
     # carries the change to every copy (including the one being looked at).
     primary = p.reposts if (p.is_forward_copy and p.reposts) else p
@@ -925,8 +930,10 @@ Optional file data:
                                     if bot_status == 403 else {"error": bot_error}, bot_status)
                     }
 
-    # a child-locked account can't mark a post Sensitive or post anonymously (helpers/age_declaration.py)
-    locked_error = age_declaration.post_refusal(v, flag(request.form, "sensitive"), flag(request.form, "anonymous"))
+    # a child-locked account can't mark a post Sensitive or post anonymously, and a parent can switch posting off for a sub-account
+    # (helpers/age_declaration.py)
+    locked_error = (age_declaration.activity_refusal(v, "posting")
+                    or age_declaration.post_refusal(v, flag(request.form, "sensitive"), flag(request.form, "anonymous")))
     if locked_error:
         locked_error = msg(locked_error)
         return {"html": lambda: (render_template("submit.html", v=v, error=locked_error, title=title, url=url, body=body,
@@ -1896,6 +1903,9 @@ Required form data:
 * `board` - Name of the guild to forward into
 """
 
+    posting_error = age_declaration.activity_refusal(v, "posting")      # a parent can switch posting off for a sub-account: that covers sharing too
+    if posting_error:
+        return {"error": msg(posting_error)}, 403
     post = get_post(pid, v=v)
     primary = post.reposts if post.is_repost else post
 
@@ -2183,6 +2193,9 @@ def repost_post(base36id, v):
     the option isn't effectively hidden on every forward-copy (which is
     most of what shows up in guild feeds)."""
 
+    posting_error = age_declaration.activity_refusal(v, "posting")      # a parent can switch posting off for a sub-account: that covers sharing too
+    if posting_error:
+        return {"error": msg(posting_error)}, 403
     post = get_post(base36id, v=v)
     primary = post.reposts if post.is_repost else post
 

@@ -19,7 +19,7 @@ import time
 
 from sqlalchemy import bindparam, text
 
-from ruqqus.helpers import circles
+from ruqqus.helpers import child_store, circles
 from ruqqus.helpers.i18n_runtime import msg, tr, trn
 
 YES, NO = True, False
@@ -495,6 +495,15 @@ def cancel(db, circle_id, payer_id):
         AND circle_id IN (SELECT id FROM circles WHERE kind = 'paid')"""), {"yes": YES, "c": circle_id, "u": payer_id}).rowcount > 0
 
 
+def stop_renewals_of(db, user_id):
+    """Stop every paid subscription this account is in or takes from (a paid circle or a Circle guild, as payer or as owner or founder) from renewing: the
+    access already paid for stays, and nothing renews. For an account that may no longer move coins (a parent switched money off)."""
+    return db.execute(text("""
+        UPDATE circle_members SET cancelled = :yes WHERE tier = 'subscriber' AND status = 'active'
+        AND (user_id = :u OR circle_id IN (SELECT id FROM circles WHERE user_id = :u)
+             OR circle_id IN (SELECT c.id FROM circles c JOIN boards b ON b.id = c.board_id WHERE b.creator_id = :u))"""), {"yes": YES, "u": user_id}).rowcount
+
+
 def paid_between(db, a_id, b_id):
     """Would a block between these two end a subscription someone paid for (`end_between`)? Either way round."""
     for owner, member in ((a_id, b_id), (b_id, a_id)):
@@ -548,6 +557,8 @@ def renew_due(db, now=None, limit=500):
             # an account that owes after a chargeback pays nothing on until it is settled, as Premium's renewals
             # (premium.due_ids) and subscribing refuse it (bug hunt: its coins kept going to circle owners)
             decision = circles.LAPSE
+        if decision == circles.RENEW and (child_store.money_locked(db, row.user_id) or child_store.money_locked(db, row.owner_id)):
+            decision = circles.END      # an age-restricted payer or owner whose parent hasn't allowed money: nothing moves, and nobody is told why
         if decision == circles.RENEW and (blocked_between(db, row.owner_id, row.user_id)
                                           or (row.board_id and exiled_from(db, row.board_id, row.user_id))):
             decision = circles.END

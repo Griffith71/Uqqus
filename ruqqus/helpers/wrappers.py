@@ -399,7 +399,7 @@ def not_child_locked(feature):
             from . import age_declaration
             from .i18n_runtime import msg
             v = kwargs.get("v")
-            refused = age_declaration.feature_refusal(v)
+            refused = age_declaration.feature_refusal(v, feature)
             if refused:
                 if request.method == "GET" and not request.path.startswith("/api/") or request.headers.get("Sec-Fetch-Mode") == "navigate":
                     return render_template("message.html", v=v, title=msg(age_declaration.ANSWER_TITLE), error=msg(refused),

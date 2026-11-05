@@ -104,6 +104,13 @@ def is_admin(member):
     return bool(member) and (getattr(member, "admin_level", 0) or 0) >= 3
 
 
+def _age_locked(owner):
+    """Is the member who would run (or runs) a bot under the child lock (helpers/age_declaration.py)? A bot posts publicly under its own name, outside what a
+    parent switched off for a sub-account and outside Private posting, so an age-restricted member neither proposes one, nor gets a key, nor has one post."""
+    from ruqqus.helpers import age_declaration
+    return age_declaration.is_locked(owner)
+
+
 def owner_refusal(owner, bots_owned, now=None):
     """Why this member may not propose another bot, or None. `owner` has created_utc, is_bot, is_deleted and
     is_suspended; `bots_owned` counts their member bots that are not rejected and their site-bot proposals still
@@ -114,6 +121,8 @@ def owner_refusal(owner, bots_owned, now=None):
         return tr("A bot can't run bots.")
     if getattr(owner, "is_suspended", False):
         return tr("You can't apply for a bot while your account is suspended.")
+    if _age_locked(owner):
+        return tr("Your account can't run a bot while it is age-restricted.")
     if is_admin(owner):
         return None
     if _now(now) - (owner.created_utc or 0) < OWNER_MIN_AGE:
@@ -144,6 +153,8 @@ def self_refusal(owner, has_one, now=None):
         return tr("A bot can't run bots.")
     if getattr(owner, "is_suspended", False):
         return tr("Your account can't post automatically while it is suspended.")
+    if _age_locked(owner):
+        return tr("Your account can't post automatically while it is age-restricted.")
     if not is_admin(owner) and _now(now) - (owner.created_utc or 0) < OWNER_MIN_AGE:
         return tr("Your account needs to be at least 30 days old to post automatically.")
     return None
@@ -384,7 +395,7 @@ def post_refusal(bot, owner, posts_today, is_on=None):
     if bot is None or bot.status != APPROVED:
         return tr("This bot is not running.") if bot is not None and bot.status == PAUSED else tr("This bot has not been approved.")
     if getattr(bot, "kind", MEMBER) in (MEMBER, SELF) and (
-            owner is None or getattr(owner, "is_deleted", False) or getattr(owner, "is_suspended", False)):
+            owner is None or getattr(owner, "is_deleted", False) or getattr(owner, "is_suspended", False) or _age_locked(owner)):
         return tr("This bot's owner can't run it right now.")
     if posts_today >= DAILY_CAP:
         return trn("A bot can post at most %(num)s time a day.", "A bot can post at most %(num)s times a day.", DAILY_CAP)

@@ -66,7 +66,7 @@ def test_the_post_shows_coins_never_who_tipped():
     # removed or a deleted post, or one whose author's account is deleted; a bot's post takes tips, but never from the
     # member who runs it (the coins would come back: helpers/tips.py)
     assert actions.count("tipModal2(") == 1
-    gate = "{% if v and v.id != p.author_id and not p.is_anonymous and not author_of(p, v).is_deleted and v.id != author_of(p, v).bot_owner_id and not anon_hidden(p, v) and p.deleted_utc == 0 and not p.is_banned and not child_locked(v) and not child_locked(author_of(p, v)) %}"
+    gate = "{% if v and v.id != p.author_id and not p.is_anonymous and not author_of(p, v).is_deleted and v.id != author_of(p, v).bot_owner_id and not anon_hidden(p, v) and p.deleted_utc == 0 and not p.is_banned and not feature_locked(v, 'money') and not target_locked(author_of(p, v), 'money') %}"
     assert actions.count(gate) == 2
     for page in ("submission_listing.html", "submission.html"):
         assert "tipModal2(" not in read(f"ruqqus/templates/{page}"), page

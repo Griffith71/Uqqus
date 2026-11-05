@@ -82,7 +82,8 @@ def refusal(name, *, anonymous, primary, author_id, candidate, count, blocked, a
         return tr("There is no account named @%(name)s.", name=name)
     if candidate.id == author_id:
         return tr("You are already the author.")
-    if candidate.is_deleted or candidate.is_banned or blocked:
+    from ruqqus.helpers import age_declaration
+    if candidate.is_deleted or candidate.is_banned or blocked or age_declaration.target_refusal(candidate, "chat"):
         return tr("@%(name)s can't be invited.", name=candidate.username)
     if already:
         return tr("@%(name)s was already invited.", name=candidate.username)

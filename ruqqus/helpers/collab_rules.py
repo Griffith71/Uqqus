@@ -160,6 +160,9 @@ def add_refusal(*, name, candidate, authors_now, already, blocked_with_any):
     """Why an account can't be proposed as an author (one message for every reason a block could explain)."""
     if candidate is None or candidate.is_deleted or getattr(candidate, "is_bot", False) or candidate.is_suspended:
         return tr("@%(name)s can't be added.", name=name)
+    from ruqqus.helpers import age_declaration
+    if age_declaration.target_refusal(candidate, "chat"):        # a shared draft is typed in together, live: not with a child whose parent hasn't switched chat on
+        return tr("@%(name)s can't be added.", name=candidate.username)
     if already:
         return tr("@%(name)s is already an author.", name=candidate.username)
     if blocked_with_any:

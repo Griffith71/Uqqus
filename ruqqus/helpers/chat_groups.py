@@ -68,7 +68,7 @@ def add_refusal(adder_id, adder_role, target, blocked_either_way, already_in, si
     if size >= MAX_MEMBERS:
         return trn("A group can have at most %(num)s person.", "A group can have at most %(num)s people.", MAX_MEMBERS)
     if getattr(target, "is_bot", False) or getattr(target, "is_deleted", False) \
-            or getattr(target, "is_suspended", False) or blocked_either_way or age_declaration.target_refusal(target):
+            or getattr(target, "is_suspended", False) or blocked_either_way or age_declaration.target_refusal(target, "chat"):
         # one message for every reason, so a block (or a child lock) is never named
         return tr("@%(name)s can't be added to a group.", name=target.username)
     return None

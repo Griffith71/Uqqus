@@ -83,7 +83,7 @@ def test_every_account_the_site_makes_is_either_asked_or_a_bot():
     for path in python_sources():
         for match in re.finditer(r"(?<![\w.<])(?<!class )User\(", path.read_text(encoding="utf-8")):
             makers.setdefault(path.name, []).append(match.start())
-    assert set(makers) == {"login.py", "bot_accounts.py"}, "a new way to make an account has to decide about the question"
+    assert set(makers) == {"login.py", "bot_accounts.py", "children_pages.py"}, "a new way to make an account has to decide about the question"
     login = read("ruqqus", "routes", "login.py")
     post = login.split("def sign_up_post(", 1)[1].split("\n@app.route", 1)[0]
     assert 'age_declaration.parse(request.form.get("age_declaration"))' in post
@@ -318,10 +318,16 @@ def test_the_terms_and_the_privacy_page_say_what_is_true():
     terms = read("ruqqus", "templates", "help", "terms.html")
     assert "Nobody under 13 may have an account." in terms and "child lock" in terms
     assert "until an age-check service has confirmed that they are 18 or over" in terms
-    assert "a parent or guardian" not in terms.split("## Age", 1)[1].split("## Account Access", 1)[0], "the parent-made account is Stage 2 and not promised"
+    age = terms.split("## Age", 1)[1].split("## Account Access", 1)[0]
+    # the parent-made account exists (Stage 2): the Terms say what a parent agrees to and may see and do
+    assert "A parent or guardian who is 18 or over and whose own age is confirmed may make an account for a child" in age
+    assert "agree to these Terms on the child's behalf" in age and "never what a chat says" in age and "The child is told what the parent can see and do." in age
+    assert "unless a parent or guardian who manages the account has switched that on" in age
     assert "if you indicate as such in your user settings" not in terms
     privacy = read("ruqqus", "templates", "help", "privacy.html")
     assert "Whether or not you have indicated that you are 18" not in privacy
     assert "What you told us about your age, and when" in privacy and "we don't check it" in privacy
     assert "never a birth date, a document or a picture" in privacy and "No such service is set up yet" in privacy
     assert "keeps only that an admin changed the answer and when, not what it was or why" in privacy
+    assert "If a parent or guardian manages your account" in privacy and "never what the reporter wrote or who" in privacy and "never a message" in privacy
+    assert "You, the site's admins and, if a parent or guardian manages your account, that parent can see all of this" in privacy

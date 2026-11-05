@@ -1630,8 +1630,19 @@ class User(Base, Stndrd, Age_times):
         return titles
 
     @property
+    def child_controls(self):
+        """What this account's parent has switched on or off ({name: bool}), for a sub-account (`age_lock` 2) only; {} for anyone else, or outside a
+        request. Read once per instance. Fails closed: with no row every feature is off (helpers/child_accounts.py)."""
+        if self.age_lock != age_declaration.PARENT_LOCK or getattr(g, "db", None) is None:
+            return {}
+        if getattr(self, "_child_controls", None) is None:
+            from ruqqus.helpers import child_store
+            self._child_controls = child_store.controls_of(g.db, self.id) or {}
+        return self._child_controls
+
+    @property
     def can_make_guild(self):
-        return (self.has_premium or self.admin_level>=3 or self.true_score >= 250) and self.can_join_gms and not age_declaration.is_locked(self)
+        return (self.has_premium or self.admin_level>=3 or self.true_score >= 250) and self.can_join_gms and not age_declaration.feature_refusal(self, "guilds")
 
     @property
     def can_join_gms(self):
@@ -1874,8 +1885,53 @@ class User(Base, Stndrd, Age_times):
 
         action_log.record_ban(g.db, self.id, admin.id if admin else 1, days=days, reason=reason, rule=rule,
                               staff_note=staff_note, floor=floor, automatic=acting is None, notice_sent=notice_sent)
+        self._children_follow_ban(days)
 
-    def unban(self, admin=None, reason="", notice_sent=False):
+    def _children_follow_ban(self, days):
+        """A parent's sub-accounts follow it (helpers/child_accounts.py): when the parent is permanently banned they are deleted, and when it is suspended for a time
+        they are suspended until the same moment (`unban` lifts what this gave, and only that). A child banned for good for its own conduct, or for as long, keeps
+        that; a shorter ban of its own is extended to the parent's end and comes back when the parent's is lifted (`child_family.prior_until_utc`). A second
+        suspension of the parent moves the child's end with it, shorter or longer. Both are for the staff's eyes only in the Log, and the public reason is neutral
+        (`child_accounts.SUSPENDED_REASON`): a banned profile and the API print it, and a reason about a parent would say the account is a child's. Taken under the
+        parent's lock (a child being made at this moment waits and is then one of these), written in one go and told after the loop (a notice commits)."""
+        from ruqqus.helpers import child_accounts, child_store
+        from ruqqus.helpers.alerts import notify
+        child_store.lock_parent(g.db, self.id, required=False)
+        told = []
+        for child_id in child_store.child_ids_safely(g.db, self.id):
+            child = g.db.query(User).filter_by(id=child_id).first()
+            if child is None or child.is_deleted:
+                continue
+            if days <= 0:
+                action_log.record_quietly(g.db, "child_removed_with_parent", action_log.SITE_ACCOUNT_ID, target_user_id=child.id,
+                                          role=action_log.SYSTEM, staff_note="its parent's account was permanently banned")
+                child_accounts.close_account(child, "closed with its parent's account")
+                continue
+            end = self.unban_utc
+            until, prior = child_store.suspension(g.db, child.id)
+            if until and (not child.is_banned or child.unban_utc != max(until, prior)):
+                until, prior = 0, 0                 # lifted or banned again by someone since: whatever stands now is the child's own
+                child_store.set_suspension(g.db, child.id, 0, 0)
+            was_suspended = child.is_suspended
+            if until:                               # the parent is suspended again: move the child's end with it
+                child.unban_utc = max(end, prior)
+                child_store.set_suspension(g.db, child.id, end, prior)
+            elif was_suspended:                     # its own ban
+                if child.unban_utc == 0 or child.unban_utc >= end:
+                    continue
+                child_store.set_suspension(g.db, child.id, end, child.unban_utc)
+                child.unban_utc = end               # its own reason stays: the public one says nothing of a parent
+            else:
+                child.ban(reason=child_accounts.SUSPENDED_REASON, days=days)
+                child.unban_utc = end               # the very moment the parent's ends, not a few milliseconds off
+                child_store.set_suspension(g.db, child.id, end, 0)
+            g.db.add(child)
+            if not was_suspended:
+                told.append(child)
+        for child in told:
+            notify(child, child_accounts.SUSPENDED_NOTICE)
+
+    def unban(self, admin=None, reason="", notice_sent=False, floor=0):
 
         # Takes care of all functions needed for account reinstatement.
 
@@ -1890,7 +1946,22 @@ class User(Base, Stndrd, Age_times):
 
         actor = admin or getattr(g, "v", None)
         action_log.record_unban(g.db, self.id, actor.id if actor else 1, reason=reason, automatic=actor is None,
-                                notice_sent=notice_sent)
+                                notice_sent=notice_sent, floor=floor)
+
+        # the sub-accounts the site suspended with a parent come back with it (helpers/child_accounts.py): found by the ledger, which outlives a link that ended
+        # meanwhile, and lifted only while the suspension is still the one the site gave (an admin's later ban is the child's own); a shorter ban of the child's
+        # own that the cascade extended comes back as it was
+        from ruqqus.helpers import child_store
+        now = int(time.time())
+        for child_id, until, prior in child_store.suspended_children_safely(g.db, self.id):
+            child = g.db.query(User).filter_by(id=child_id).first()
+            if child is not None and not child.is_deleted and child.is_banned and child.unban_utc == max(until, prior):
+                if prior > now:
+                    child.unban_utc = prior
+                    g.db.add(child)
+                else:
+                    child.unban(admin=admin, reason="its parent's account was reinstated", notice_sent=True, floor=action_log.STAFF)
+            child_store.set_suspension(g.db, child_id, 0, 0)
 
 
     @property

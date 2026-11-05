@@ -34,7 +34,7 @@ from ruqqus.helpers import collab_authorship as authorship
 from ruqqus.helpers import collab_ot as ot
 from ruqqus.helpers import collab_rules as rules
 from ruqqus.helpers import collab_store as store
-from ruqqus.helpers import collab_view, coauthors, live_bus, private_posting
+from ruqqus.helpers import age_declaration, collab_view, coauthors, live_bus, private_posting
 from ruqqus.helpers.visibility import user_hidden
 from ruqqus.helpers.i18n_runtime import ENVIRON_KEY as UI_LOCALE_KEY, N_, msg, tr, trn, trp
 
@@ -63,6 +63,12 @@ def _doc_or_404(doc_id, v):
 
 def _may_write(v):
     return not (v.is_suspended or v.is_bot or v.is_deleted)
+
+
+def _may_type(v):
+    """May this account be an author who types into a shared draft or joins one? A draft ends as a public post with its authors on the byline, so an age-restricted
+    account whose parent switched posting off, or that has Private posting on (a shared draft is public by nature: helpers/private_posting.py), is no author."""
+    return _may_write(v) and not (age_declaration.activity_refusal(v, "posting") or private_posting.refusal(v))
 
 
 def _users(ids):
@@ -268,7 +274,7 @@ def collab_send_op(doc_id, v):
     """One op on one field, made on revision `base`. Answers {own: the op's revision or null when it changed
     nothing, revision: the draft's revision now}."""
     _doc_or_404(doc_id, v)
-    if not _may_write(v):
+    if not _may_type(v):
         abort(403)
     field = request.form.get("field", "")
     base = request.form.get("base", type=int)
@@ -560,7 +566,7 @@ def collab_invite_answer(pid, answer, v):
         people = _users(current)
         refusal = rules.add_refusal(name=v.username, candidate=v, authors_now=len(current), already=v.id in current,
                                     blocked_with_any=any(u.any_block_exists(v) for u in people.values()))
-        if refusal:
+        if refusal or not _may_type(v):
             return _error(tr("You can't join this draft now."), 409)
     if not store.answer_invite(g.db, pid, "accepted" if answer == "accept" else "declined"):
         return _error(tr("This invitation was already answered."), 409)
@@ -731,6 +737,9 @@ def _publish(doc, publisher, snap, now):
 @validate_formkey
 def collab_publish(doc_id, v):
     """Publish the working copy: at once when any author may, or as a proposal when the rules put it to a vote."""
+    posting_error = age_declaration.activity_refusal(v, "posting")      # publishing a shared draft is posting
+    if posting_error:
+        return _error(msg(posting_error), 403)
     _doc_or_404(doc_id, v)
     # the draft's row stays locked until this publish commits: two authors pressing Publish at once make one post,
     # and the second sees it (audit C-02: it used to make two)

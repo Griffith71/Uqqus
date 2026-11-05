@@ -160,7 +160,7 @@
                                 </summary>
                                 <div class="composer-pill-menu">
                                     {{ post_options.audience_field(audience_now, "post-audience", circles_now, circle_choices(v), locked=private_posting_on(v)) }}
-                                    {% if not child_locked(v) %}{{ post_options.anonymous_field(draft.option("anonymous", false) if draft else request.form.getlist("anonymous") | select | list | length > 0, "post-anon", compact=true) }}{% endif %}
+                                    {% if not feature_locked(v, 'anonymous') %}{{ post_options.anonymous_field(draft.option("anonymous", false) if draft else request.form.getlist("anonymous") | select | list | length > 0, "post-anon", compact=true) }}{% endif %}
                                 </div>
                             </details>
                         </div>

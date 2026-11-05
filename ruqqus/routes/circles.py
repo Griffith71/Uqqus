@@ -9,7 +9,7 @@ import time
 from flask import abort, g, jsonify, redirect, render_template, request
 
 from ruqqus.classes import Board, ForwardRelationship, RepostRelationship, Submission, User
-from ruqqus.helpers import circle_guard, circle_store, circles, coauthors, private_posting, sharing, subscriber_badges
+from ruqqus.helpers import age_declaration, child_store, circle_guard, circle_store, circles, coauthors, private_posting, sharing, subscriber_badges
 from ruqqus.helpers.visibility import text_hidden
 from ruqqus.helpers.word_filter_store import get_filter
 from ruqqus.helpers.alerts import notify
@@ -134,11 +134,14 @@ def settings_circles(v):
 @app.route("/api/circles", methods=["POST"])
 @is_not_banned
 @not_qr_limited
-@not_child_locked("money")
 @validate_formkey
 def circle_create(v):
-    """Make a circle: `kind` custom (anyone, CUSTOM_LIMIT) or paid (Premium, PAID_LIMIT, with a `price`)."""
+    """Make a circle: `kind` custom (anyone, CUSTOM_LIMIT) or paid (Premium, PAID_LIMIT, with a `price`). A custom circle is free, and Private posting relies
+    on having them, so an age lock doesn't stop it; a paid circle is money, which it does."""
     kind = (request.values.get("kind") or circles.CUSTOM).strip()
+    refused = age_declaration.feature_refusal(v, "money") if kind == circles.PAID else None
+    if refused:
+        return jsonify({"error": msg(refused), "age_locked": True}), 403
     name, error = circles.parse_name(request.values.get("name"))
     if error:
         return _fail(error)
@@ -229,6 +232,11 @@ def circle_add(cid, v):
     """Put someone in a custom circle. They are not told."""
     row = _mine(v, cid, kinds=(circles.CUSTOM,))
     target = _target(request.values.get("username"), v)
+    # a circle is a place to talk and to be written to, with no notice to the person in it: not with a child whose parent hasn't switched chat on (a parent may
+    # put their own child in their own circle)
+    refused = age_declaration.target_refusal(target, "chat")
+    if refused and not child_store.linked(g.db, v.id, target.id):
+        return _fail(msg(refused), 403)
     refusal = circle_store.add_member(g.db, v.id, row.id, target.id)
     if refusal:
         return _fail(refusal)
@@ -288,6 +296,9 @@ def _paid_circle(cid):
 @validate_formkey
 def circle_subscribe(cid, v):
     row, owner = _paid_circle(cid)
+    refused = age_declaration.target_refusal(owner, "money")         # coins don't go to an age-restricted account (its parent may switch money on)
+    if refused:
+        return _fail(msg(refused), 403)
     # write the member's own pending changes first (has_premium may have renewed from coins): the payment is raw SQL
     g.db.flush()
     outcome, message = circle_store.subscribe(g.db, row.id, v.id)
@@ -507,6 +518,7 @@ def board_circle_settings(guildname, board, v):
 @app.route("/+<guildname>/mod/circle/price", methods=["POST"])
 @auth_required
 @is_guildmaster("full")
+@not_child_locked("money")
 @validate_formkey
 def board_circle_price(guildname, board, v):
     if not board.is_circle:
@@ -533,6 +545,10 @@ def board_circle_price(guildname, board, v):
 @validate_formkey
 def circle_guild_subscribe(guildname, v):
     board = _circle_guild(guildname)
+    founder = g.db.query(User).filter_by(id=board.creator_id).first()      # the coins go to the founder
+    refused = age_declaration.target_refusal(founder, "money") if founder is not None else None
+    if refused:
+        return _fail(msg(refused), 403)
     g.db.flush()                                   # the payment is raw SQL: write the member's own pending changes first
     outcome, message = circle_store.subscribe_guild(g.db, board.id, v.id)
     if outcome == "refused":
@@ -541,7 +557,6 @@ def circle_guild_subscribe(guildname, v):
     g.db.commit()
     g.db.refresh(v)
     if outcome == "subscribed":
-        founder = g.db.query(User).filter_by(id=board.creator_id).first()
         if founder is not None and founder.id != v.id:
             notify(founder, JOINED_GUILD, name=v.username, guild=board.name)
     return jsonify({"message": message})

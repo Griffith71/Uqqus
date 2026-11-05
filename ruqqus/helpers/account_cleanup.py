@@ -71,6 +71,12 @@ STEPS = (
     ("stop automated posting", "DELETE FROM bots WHERE user_id = :u AND kind = 'self'"),
     # where they signed in from, and what they wrote about themselves
     ("forget sign-in addresses", "DELETE FROM login_events WHERE user_id = :u"),
+    # a parent's sub-accounts (helpers/child_accounts.py): the account's own link and controls as a child, and the links of any children it still had
+    ("forget a parent's switches for its children", "DELETE FROM child_controls WHERE child_id = :u OR child_id IN "
+                                                    "(SELECT child_id FROM account_links WHERE parent_id = :u)"),
+    ("forget the parent and child links", "DELETE FROM account_links WHERE child_id = :u OR parent_id = :u"),
+    ("forget the family ledger of a closing child", "UPDATE child_family SET child_id = NULL WHERE child_id = :u"),
+    ("forget the family ledger of a closing parent", "DELETE FROM child_family WHERE parent_id = :u"),
     ("forget the age answer", "UPDATE users SET age_declared = NULL, age_declared_utc = 0, age_lock = NULL, age_assured_utc = 0, "
                               "age_under_utc = 0, private_posting = FALSE WHERE id = :u"),
     # two more copies of it, where an admin changed it: the Log's row stays (an entry is never deleted, helpers/action_log.py)

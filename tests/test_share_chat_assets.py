@@ -29,7 +29,7 @@ def route(name):
 def test_every_share_menu_of_a_post_offers_send_in_chat_for_a_member():
     # the whole menu is drawn only for whoever may share the post (helpers/sharing.py): anyone when it is public, its
     # author otherwise, so the author of a Circle post may send it to a chat (its card is drawn for each reader)
-    item = ('{% if v and not child_locked(v) %}<a class="dropdown-item share-chat-item" href="javascript:void(0);" role="button" '
+    item = ('{% if v and not feature_locked(v, \'chat\') %}<a class="dropdown-item share-chat-item" href="javascript:void(0);" role="button" '
             'data-share-url="{{ p.permalink | full_link }}"><i class="fas fa-paper-plane fa-fw"></i>{{ _("Send in chat") }}</a>{% endif %}')
     # the share menu of a post is drawn by one partial (partials/post_actions.html), used by the card and the post
     # page, on desktop and on the phone

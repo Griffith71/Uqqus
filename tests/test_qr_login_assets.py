@@ -34,6 +34,8 @@ HELD = {
     "coauthors.py": "coauthor_invite coauthor_accept",
     "discord.py": "join_discord discord_redirect",
     "age_declaration_pages.py": "settings_age_declaration settings_age_assurance_start settings_age_assurance_callback",
+    "children_pages.py": "settings_children children_new children_controls children_answer children_stop children_password children_delete children_export "
+                         "children_activity settings_parent_ask",
     "chat.py": "chat_page chat_token chat_key_get chat_key_set chat_recovery_key_legacy chat_check_password chat_ready chat_start "
                "chat_conversations chat_share_targets chat_accept chat_decline chat_mark_read chat_search",
     "chat_apps.py": "settings_chat_apps chat_devices chat_device_sign_out",

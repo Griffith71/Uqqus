@@ -20,6 +20,8 @@
               {% set child_account = child_locked(v) %}
               {% set restricted = child_account or region_locked(v) %}
               {% set age_note = request.args.get("age") %}
+              {# a parent's sub-account (helpers/child_accounts.py): what its parent decides, and its open requests #}
+              {% set sub = child_view(v) %}
               <div class="d-lg-flex border-bottom" id="age-declaration">
 
                 <div class="title w-lg-25">
@@ -31,6 +33,10 @@
                     <p class="mb-2 text-success" role="status">{{ _("Thanks. Your account no longer has the child lock, and Private posting is off. Posts you made before stay as they were: use Who can see this on a post to change who sees it.") }}</p>
                   {% elif age_note == "under" %}
                     <p class="mb-2" role="status">{{ _("The age check found that you're under 18, so the child lock stays on.") }}</p>
+                  {% elif age_note == "asked_release" %}
+                    <p class="mb-2" role="status">{{ _("Your parent or guardian has been asked to release your account. Nothing changes until they answer.") }}</p>
+                  {% elif age_note == "asked_private" %}
+                    <p class="mb-2" role="status">{{ _("Your parent or guardian has been asked to turn Private posting off.") }}</p>
                   {% elif age_note == "failed" %}
                     <p class="mb-2" role="status">{{ _("The age check didn't finish. Nothing has changed, and you can try again.") }}</p>
                   {% endif %}
@@ -39,9 +45,17 @@
                     {% from "partials/age_question.html" import age_form %}
                     {{ age_form(v, "/settings/content", "age-settings") }}
                   {% else %}
-                    {% if child_account %}
+                    {% if sub %}
+                    <p class="mb-1">{{ _("Your account has the child lock on, held by your parent or guardian, since %(date)s.", date=date_text(v.age_declared_utc, "%d %B %Y")) }}</p>
+                    <span class="d-block text-small-extra text-muted mb-2">{{ _("They can see what you do on the site: your posts, comments, votes, bookmarks, follows, guilds, who you chat with, that your account was reported, and your recent sign-ins. The site never shows them what your chats say, because chats are end-to-end encrypted. But anyone who knows your password, a parent who chose it included, can sign in as you: change it in Security so that only you know it. They choose which of these are on for your account:") }}</span>
+                    <ul class="text-small-extra mb-2" id="parent-controls">
+                      {% for name in sub.order %}<li>{{ msg_text(sub.text_of[name][0]) }}: <strong>{{ _("On") if sub.controls[name] else _("Off") }}</strong></li>{% endfor %}
+                    </ul>
+                    {% elif child_account %}
                     <p class="mb-1">{{ _("Your account has the child lock on, since %(date)s.", date=date_text(v.age_declared_utc, "%d %B %Y")) }}</p>
-                    <span class="d-block text-small-extra text-muted">{{ _("It stays on the Child word filter, which hides profanity and anything marked sensitive. Chat, Spaces, coins, anonymous posting and starting a guild are off, and others can't start a chat or tip you. Your posts go to your Friends circle only unless you turn Private posting off.") }}</span>
+                    {% endif %}
+                    {% if child_account %}
+                    <span class="d-block text-small-extra text-muted">{% if sub %}{{ _("It stays on the Child word filter, which hides profanity and anything marked sensitive.") }}{% else %}{{ _("It stays on the Child word filter, which hides profanity and anything marked sensitive. Chat, Spaces, coins, anonymous posting and starting a guild are off, and others can't start a chat or tip you. Your posts go to your Friends circle only unless you turn Private posting off.") }}{% endif %}</span>
                     {% elif v.age_assured_utc %}
                     <p class="mb-1">{{ _("Your age was confirmed on %(date)s.", date=date_text(v.age_assured_utc, "%d %B %Y")) }}</p>
                     {% else %}
@@ -63,8 +77,10 @@
                         {% else %}
                         <span class="d-block text-small-extra">{{ _("Age confirmation isn't available yet.") }}</span>
                         {% endif %}
+                      {% elif sub and sub.ask_release %}
+                        <span class="d-block text-small-extra" id="release-asked">{{ _("You asked your parent or guardian to release your account. They haven't answered yet.") }}</span>
                       {% else %}
-                        <span class="d-block text-small-extra text-muted mb-2">{{ _("To take the child lock off, confirm that you're 18 or over.") }}</span>
+                        <span class="d-block text-small-extra text-muted mb-2">{% if sub %}{{ _("If you are 18 or over, say so and your parent or guardian will be asked to release your account.") }}{% else %}{{ _("To take the child lock off, confirm that you're 18 or over.") }}{% endif %}</span>
                         <form action="/settings/age_declaration" method="post" class="age-form">
                           <input type="hidden" name="formkey" value="{{ v.formkey }}">
                           <input type="hidden" name="age_declaration" value="1">
@@ -94,6 +110,16 @@
                     <label class="custom-control-label" for="private-posting-switch"></label>
                   </div>
                   <span class="d-block mt-2 text-small-extra text-muted" id="private-posting-help">{{ _("Everything you post goes only to your Friends circle, the people you follow who follow you back, so nothing is public by accident. Your circles can only hold people like that, and you can't forward, repost or write a shared draft. Comments on other people's posts are still public.") }}</span>
+                  {% if sub and v.private_posting %}
+                  {% if sub.ask_private %}
+                  <span class="d-block mt-2 text-small-extra" id="private-asked">{{ _("You asked your parent or guardian to turn this off. They haven't answered yet.") }}</span>
+                  {% else %}
+                  <form action="/settings/parent/ask" method="post" class="mt-2">
+                    <input type="hidden" name="formkey" value="{{ v.formkey }}"><input type="hidden" name="kind" value="private"><input type="hidden" name="next" value="/settings/content">
+                    <button type="submit" class="btn btn-secondary btn-sm">{{ _("Ask my parent to turn it off") }}</button>
+                  </form>
+                  {% endif %}
+                  {% endif %}
                 </div>
 
               </div>

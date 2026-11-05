@@ -606,7 +606,7 @@ def test_menus_agree_with_the_server():
     actions = read("templates", "partials", "post_actions.html")
     # drawn only for whoever may share the post (helpers/sharing.py); never forwarded or reposted when made for a Circle
     menu = actions.split("{% if may_share(p, v) %}")[1].split("{% else %}")[0]
-    assert '{% if v and not child_locked(v) %}<a class="dropdown-item share-chat-item"' in menu
+    assert '{% if v and not feature_locked(v, \'chat\') %}<a class="dropdown-item share-chat-item"' in menu
     assert actions.count("{% if v and not p.audience %}") == 1 and menu.index("share-chat-item") < menu.index("{% if v and not p.audience %}")
     for name in ("submission_listing.html", "submission.html"):
         page = read("templates", name)

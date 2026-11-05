@@ -96,7 +96,7 @@ def _identity(v):
 @app.route("/api/chat/key", methods=["GET"])
 @auth_required
 @not_qr_limited
-@not_child_locked("chat")
+@not_child_locked("messaging")
 def chat_key_get(v):
     """The account's LOCKED recovery key copies and the salt the browser derives its password key with (audit M-03).
     Nothing here can unlock anything without the member's password or recovery code, which never reach this route.
@@ -116,7 +116,7 @@ def chat_key_get(v):
 @app.route("/api/chat/key", methods=["POST"])
 @auth_required
 @not_qr_limited
-@not_child_locked("chat")
+@not_child_locked("messaging")
 @validate_formkey
 def chat_key_set(v):
     """Saves the locked copies the browser made (`password_blob`, `recovery_blob`: base64url, opaque here). Saving a
@@ -143,7 +143,7 @@ def chat_key_set(v):
 @app.route("/api/chat/recovery_key", methods=["GET"])
 @auth_required
 @not_qr_limited
-@not_child_locked("chat")
+@not_child_locked("messaging")
 def chat_recovery_key_legacy(v):
     """The old server-readable copy, only while it still exists: the member's own browser reads it once to lock it
     with their password and a recovery code (POST /api/chat/key then clears it). Never anything for an account
@@ -169,7 +169,7 @@ def chat_check_password(v):
 @app.route("/api/chat/ready", methods=["POST"])
 @auth_required
 @not_qr_limited
-@not_child_locked("chat")
+@not_child_locked("messaging")
 @validate_formkey
 def chat_ready(v):
     """This member's chat has finished setting up encryption: messages waiting for them in other people's browsers
@@ -197,7 +197,7 @@ def _started(room_id, status):
 @app.route("/api/chat/start", methods=["POST"])
 @auth_required
 @not_qr_limited
-@not_child_locked("chat")
+@not_child_locked("messaging")
 @not_quarantined("chat")
 @validate_formkey
 def chat_start(v):
@@ -208,7 +208,7 @@ def chat_start(v):
         abort(403)
     if target.is_bot or v.is_bot:
         abort(403)                  # nobody reads a bot's chats (helpers/bots.py): no room is ever made with one
-    if age_declaration.target_refusal(target):
+    if age_declaration.target_refusal(target, "chat"):
         abort(403)                  # nobody starts a chat with a child-locked account (helpers/age_declaration.py); the page doesn't say why
 
     a_id, b_id = min(v.id, target.id), max(v.id, target.id)

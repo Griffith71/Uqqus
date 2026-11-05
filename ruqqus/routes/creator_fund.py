@@ -9,8 +9,9 @@ from flask import g, redirect, render_template, request
 from ruqqus.helpers import creator_fund as rules
 from ruqqus.helpers import creator_fund_store as store
 from ruqqus.helpers.alerts import notify
-from ruqqus.helpers.i18n_runtime import N_, tr
-from ruqqus.helpers.wrappers import not_child_locked, not_qr_limited, admin_level_required, auth_required, is_not_banned, validate_formkey
+from ruqqus.helpers import age_declaration
+from ruqqus.helpers.i18n_runtime import N_, msg, tr
+from ruqqus.helpers.wrappers import not_qr_limited, admin_level_required, auth_required, is_not_banned, validate_formkey
 from ruqqus.__main__ import app, cache
 
 ADMIN_LEVEL = 4             # coins are money: as /admin/money's most powerful tools
@@ -47,13 +48,15 @@ def settings_creator_fund(v):
 @app.post("/settings/creator_fund")
 @is_not_banned
 @not_qr_limited
-@not_child_locked("money")
 @validate_formkey
 def settings_creator_fund_save(v):
-    if request.form.get("action") == "leave":
+    if request.form.get("action") == "leave":                 # leaving is always allowed, whatever an age lock says
         store.set_opt_in(g.db, v.id, False)
         g.db.commit()
         return redirect("/settings/creator_fund?msg=" + quote(tr("You have left the creator fund.")))
+    refused = age_declaration.feature_refusal(v, "money")      # taking part is earning coins
+    if refused:
+        return redirect("/settings/creator_fund?error=" + quote(msg(refused)))
     if request.form.get("agree") != "1":
         return redirect("/settings/creator_fund?error=" + quote(tr("Tick the box to agree to the rules first.")))
     store.set_opt_in(g.db, v.id, True)

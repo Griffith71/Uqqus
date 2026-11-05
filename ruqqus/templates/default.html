@@ -298,7 +298,7 @@
 
         {% endif %}
 
-        {% if not child_locked(v) %}{# a child-locked account has no chat (helpers/age_declaration.py) #}
+        {% if not feature_locked(v, 'chat') %}{# a child-locked account has no chat unless its parent switched it on (helpers/age_declaration.py) #}
         <li class="nav-item d-flex align-items-center text-center justify-content-center mx-1">
           <a class="nav-link position-relative" href="/chat" data-side-panel="chat" aria-label="{{ _('Chat') }}" data-toggle="tooltip" data-placement="bottom" data-delay='{"show":"700", "hide":"0"}' title="{{ _('Chat') }}"><i id="chat-nav-icon" class="fas fa-comment-dots{% if v.chat_unread_messages %} text-danger{% endif %}"></i><span id="chat-nav-badge" class="badge-count font-weight-bolder{% if not v.chat_unread_messages %} d-none{% endif %}">{{ '99+' if v.chat_unread_messages > 99 else v.chat_unread_messages }}</span></a>
         </li>

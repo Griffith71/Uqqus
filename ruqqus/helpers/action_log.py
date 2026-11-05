@@ -66,12 +66,13 @@ _CONTENT = {
 _SANCTION = {
     "exile_user", "unexile_user", "chatban_user", "unchatban_user", "suspend_user", "unsuspend_user", "ban_user",
     "unban_user", "ban_guild", "unban_guild", "clear_display_name", "force_sensitive_user", "age_declaration",
+    "child_removed_with_parent",
 }
 _SUPPRESSION = {"suppress_content", "legal_removal"}
 
 # What can't be a guild's or the public's business: always these audiences, whatever the guild.
 ACCOUNT_ACTIONS = {"suspend_user", "unsuspend_user", "ban_user", "unban_user"}      # public: no guild, post or comment in them
-STAFF_ACTIONS = {"clear_display_name", "force_sensitive_user", "force_sensitive_post", "remove_story", "age_declaration"}
+STAFF_ACTIONS = {"clear_display_name", "force_sensitive_user", "force_sensitive_post", "child_removed_with_parent", "remove_story", "age_declaration"}
 LEGAL_ACTIONS = {"suppress_content", "legal_removal"}
 
 # Actions that must say why (Wikipedia's reason). A caller with a reason box passes `require_reason=True`.
@@ -585,6 +586,8 @@ AUTOMATIC_REASONS = {
     "spam": ("evasion", PUBLIC),
     "seo spam": ("evasion", PUBLIC),
     "Evading a site-wide ban": ("evasion", STAFF),
+    # a child account suspended with its parent (helpers/child_accounts.SUSPENDED_REASON): a public line would say it has a parent
+    "This account is suspended.": ("", STAFF),
 }
 _log = logging.getLogger(__name__)
 
@@ -614,6 +617,6 @@ def record_ban(db, user_id, actor_id, *, days=0, reason="", rule=None, staff_not
                           floor=floor, notice_sent=notice_sent)
 
 
-def record_unban(db, user_id, actor_id, *, reason="", automatic=False, notice_sent=False):
+def record_unban(db, user_id, actor_id, *, reason="", automatic=False, notice_sent=False, floor=PUBLIC):
     return record_quietly(db, "unban_user", actor_id, target_user_id=user_id, reason=reason or "",
-                          role=SYSTEM if automatic else ADMIN, notice_sent=notice_sent)
+                          role=SYSTEM if automatic else ADMIN, notice_sent=notice_sent, floor=floor)

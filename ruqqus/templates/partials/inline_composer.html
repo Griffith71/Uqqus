@@ -65,7 +65,7 @@
                   <span id="composer-audience-label">{{ pgettext("audience", "Public") }}</span>
                   <i class="fas fa-chevron-down composer-pill-caret"></i>
                 </summary>
-                <div class="composer-pill-menu">{{ audience_field(0, "ic-audience", (), circle_choices(v), locked=private_posting_on(v)) }}{% if not child_locked(v) %}{{ anonymous_field(false, "ic-anonymous", compact=true) }}{% endif %}</div>
+                <div class="composer-pill-menu">{{ audience_field(0, "ic-audience", (), circle_choices(v), locked=private_posting_on(v)) }}{% if not feature_locked(v, 'anonymous') %}{{ anonymous_field(false, "ic-anonymous", compact=true) }}{% endif %}</div>
               </details>
               {% endif %}
             </div>

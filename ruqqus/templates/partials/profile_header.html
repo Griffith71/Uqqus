@@ -77,7 +77,7 @@
             {% elif v %}
             <a class="dropdown-item" href="#" data-curation-user="{{ u.username }}"><i class="fas fa-layer-group fa-fw"></i>{{ _("Add to curation") }}</a>
             {% if st %}{# your own circles only; nobody is told they are in one (partials/circle_member_modal.html) #}
-            <a class="dropdown-item" href="#" data-circle-member="{{ u.username }}"><i class="fas fa-circle-notch fa-fw"></i>{{ _("Add to circles") }}</a>
+            {% if not target_locked(u, 'chat') %}<a class="dropdown-item" href="#" data-circle-member="{{ u.username }}"><i class="fas fa-circle-notch fa-fw"></i>{{ _("Add to circles") }}</a>{% endif %}
             {% endif %}
             {% if not u.is_bot %}{# their broadcast channels you may join (routes/broadcasts.py) #}
             <a class="dropdown-item" href="/@{{ u.username }}/channels"><i class="fas fa-tower-broadcast fa-fw"></i>{{ _("Channels") }}</a>
@@ -96,14 +96,14 @@
         {% if own %}
         <a href="/settings/profile" class="btn profile-x-outline profile-x-pill" data-profile-edit>{{ _("Edit profile") }}</a>
         {% elif v %}
-        {% if not u.is_bot and not child_locked(u) and not child_locked(v) %}{# nobody reads a bot's chats (helpers/bots.py), and a child-locked account has none #}
+        {% if not u.is_bot and not target_locked(u, 'chat') and not feature_locked(v, 'chat') %}{# nobody reads a bot's chats (helpers/bots.py), and a child-locked account has none #}
         <form method="POST" action="/api/chat/start" class="d-inline">
           <input type="hidden" name="username" value="{{ u.username }}">
           <input type="hidden" name="formkey" value="{{ v.formkey }}">
           <button type="submit" class="btn profile-x-icon" aria-label="{{ _('Message @%(name)s', name=u.username) }}" title="{{ pgettext('button', 'Message') }}"><i class="far fa-envelope"></i></button>
         </form>
         {% endif %}
-        {% if st and st.paid %}{# paid circles only: what a custom circle holds is never shown to the people in it. The
+        {% if st and st.paid and not feature_locked(v, 'money') and not target_locked(u, 'money') %}{# paid circles only: what a custom circle holds is never shown to the people in it. The
            button opens the subscribe sheet (partials/circle_subscribe_modal.html), which has the price, what the owner
            says subscribers get, the terms and Subscribe / Cancel #}
           {% if st.joinable %}

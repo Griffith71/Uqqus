@@ -30,6 +30,7 @@ HELD_OUT = {
     ("users.py", "follow_user"): "follow",
     ("boards.py", "subscribe_board"): "join_guild",
     ("chat.py", "chat_start"): "chat",
+    ("children_pages.py", "children_new"): "child",
     ("chat_groups.py", "chat_group_create"): "group",
     ("flagging.py", "api_flag_post"): "report",
     ("flagging.py", "api_flag_comment"): "report",

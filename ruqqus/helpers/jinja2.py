@@ -228,6 +228,49 @@ def child_locked(v):
     return age_declaration.is_locked(v)
 
 
+@app.template_global("parent_tab")
+def parent_tab(v):
+    """Does this member get Settings > Children? An adult (said 18 or over, not under the child lock, not a bot): what they may do there is
+    helpers/child_accounts.parent_refusal's to say."""
+    from ruqqus.helpers import age_declaration
+    return bool(v is not None and getattr(v, "age_declared", None) == age_declaration.ADULT and not age_declaration.is_locked(v)
+                and not getattr(v, "is_bot", False))
+
+
+@app.template_global("children_count")
+def children_count(v):
+    """How many child accounts this member has (they are deleted with it: Settings > Security says so), or 0."""
+    if v is None or getattr(v, "age_declared", None) != 1:
+        return 0
+    from ruqqus.helpers import child_store
+    return child_store.count_children_safely(g.db, v.id)
+
+
+@app.template_global("child_view")
+def child_view(v):
+    """For a parent's sub-account (`age_lock` 2): its switches and its open requests, for its own Settings; None for any other account."""
+    from ruqqus.helpers import age_declaration
+    if v is None or getattr(v, "age_lock", None) != age_declaration.PARENT_LOCK:
+        return None
+    from ruqqus.helpers import child_accounts, child_store
+    return {"controls": child_accounts.switches(v.child_controls), "text_of": child_accounts.CONTROL_TEXT, "order": child_accounts.CONTROLS,
+            "ask_private": child_store.asked(g.db, v.id, "private"), "ask_release": child_store.asked(g.db, v.id, "release")}
+
+
+@app.template_global("feature_locked")
+def feature_locked(v, feature):
+    """Is this feature off for this account (chat, spaces, money, guilds, anonymous)? A child-locked account has it off unless its parent switched it on."""
+    from ruqqus.helpers import age_declaration
+    return bool(age_declaration.feature_refusal(v, feature))
+
+
+@app.template_global("target_locked")
+def target_locked(account, feature):
+    """Can nobody start `feature` (chat, money) with this account? True for a child-locked account whose parent hasn't switched it on."""
+    from ruqqus.helpers import age_declaration
+    return bool(age_declaration.target_refusal(account, feature))
+
+
 @app.template_global("region_locked")
 def region_locked_now(v):
     """Does the regional rule apply to this reader now: in a country that asks for it, with their age not confirmed?"""

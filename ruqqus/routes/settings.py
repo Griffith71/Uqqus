@@ -28,7 +28,7 @@ from ruqqus.helpers import totp as totp_rules
 from ruqqus.helpers import post_feedback as post_feedback_rules
 from ruqqus.helpers import muting as muting_rules
 from ruqqus.helpers import sensitive as sensitive_rules
-from ruqqus.helpers import private_posting
+from ruqqus.helpers import child_accounts, private_posting
 from ruqqus.helpers import text_length
 from ruqqus.helpers import profile_edit
 from ruqqus.helpers import age_declaration
@@ -616,9 +616,17 @@ def _leave_chat_groups(v):
         app.logger.warning(f"delete_account: chat groups not left for {v.id}: {e}")
 
 
-def close_own_account(v, reason):
+def close_own_account(v, reason, sign_out_browser=True):
     """Everything that closing an account does, short of the commit: the member deleting theirs, or the age check finding that
-    the holder is under the youngest age where they are (routes/age_declaration_pages.py). Signs the request's browser out."""
+    the holder is under the youngest age where they are (routes/age_declaration_pages.py). Signs the request's browser out, unless
+    this is another account being closed (`sign_out_browser=False`): a parent's child accounts go with it (helpers/child_accounts.py),
+    and so does a child its parent deletes, from the parent's own request."""
+    from ruqqus.helpers import child_store
+    child_store.lock_parent(g.db, v.id)                              # a child being made at this moment waits, then is one of the children below
+    for child_id in child_store.child_ids_safely(g.db, v.id):          # a parent's children are deleted with it
+        child = g.db.query(User).filter_by(id=child_id).first()
+        if child is not None and not child.is_deleted:
+            close_own_account(child, reason, sign_out_browser=False)
     remove_user(v)
 
     v.discord_id=None
@@ -663,8 +671,9 @@ def close_own_account(v, reason):
             b.all_opt_out = False
             g.db.add(b)
 
-    flask_session.pop("user_id", None)
-    flask_session.pop("session_id", None)
+    if sign_out_browser:
+        flask_session.pop("user_id", None)
+        flask_session.pop("session_id", None)
 
     #deal with throwaway spam - auto nuke content if account age below threshold
     if int(time.time()) - v.created_utc < 60*60*12:
@@ -695,6 +704,9 @@ def close_own_account(v, reason):
             g.db.add(new_ma)
 
 
+child_accounts.closer = close_own_account        # a parent's banned or deleted account closes its children the same way (helpers/child_accounts.py)
+
+
 @app.route("/settings/delete_account", methods=["POST"])
 @is_not_banned
 @no_negative_balance("html")
@@ -708,6 +720,10 @@ def delete_account(v):
         return render_template("settings_security.html", v=v,
                                error=tr("Invalid password or token") if v.mfa_secret else tr("Invalid password"))
 
+    from ruqqus.helpers import child_store
+    if child_store.count_children_safely(g.db, v.id) and child_store.owing_children(g.db, v.id):
+        # an account that owes money isn't deleted to escape it, and deleting its parent would delete it
+        return render_template("settings_security.html", v=v, error=tr("One of your child accounts owes money, so your account can't be deleted yet."))
 
     close_own_account(v, request.form.get("delete_reason", ""))
     g.db.commit()

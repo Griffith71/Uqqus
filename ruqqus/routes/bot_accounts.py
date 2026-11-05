@@ -559,6 +559,8 @@ def settings_bot_create_key(name, v):
     account, row, admin = _manageable(name, v)
     if not _is_owner(row, v):
         abort(404)
+    if bots._age_locked(v):
+        return _back(_page(account), error=tr("Your account can't run a bot while it is age-restricted."))
     if row.status not in (bots.APPROVED, bots.PAUSED):
         return _back(_page(account), error=tr("A bot gets keys once an admin has approved it."))
     if len(_keys_of(account.id)) >= bots.MAX_KEYS:

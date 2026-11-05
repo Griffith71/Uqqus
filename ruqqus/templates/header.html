@@ -62,7 +62,7 @@
 
       {% endif %}
 
-      {% if not child_locked(v) %}
+      {% if not feature_locked(v, 'chat') %}
       <li class="nav-item d-flex align-items-center text-center justify-content-center mx-1">
         <a class="nav-link position-relative" href="/chat" aria-label="{{ _('Chat') }}" data-toggle="tooltip" data-placement="bottom" data-delay='{"show":"700", "hide":"0"}' title="{{ _('Chat') }}"><i id="chat-nav-icon" class="fas fa-comment-dots{% if v.chat_unread_messages %} text-danger{% endif %}"></i><span id="chat-nav-badge" class="badge-count font-weight-bolder{% if not v.chat_unread_messages %} d-none{% endif %}">{{ '99+' if v.chat_unread_messages > 99 else v.chat_unread_messages }}</span></a>
       </li>
@@ -135,7 +135,7 @@
       {% endif %}
     </a>
   </li>
-  {% if not child_locked(v) %}
+  {% if not feature_locked(v, 'chat') %}
   <li class="nav-item">
     <a class="nav-link {% if (v.chat_unread_count + v.chat_requests_count) %}position-relative{% endif %}" href="/chat">
       <i class="fas fa-comment-dots fa-fw mr-3"></i>{{ _("Chat") }}

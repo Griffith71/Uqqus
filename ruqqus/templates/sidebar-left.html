@@ -385,7 +385,7 @@
             </div>
             {% endif %}
 
-            {% if not child_locked(v) %}
+            {% if not feature_locked(v, 'spaces') %}
             {# Spaces, under My Curations (the owner, 2026-10-21: not a navbar button): live boards, live threads and calls #}
             <div class="sidebar-block sidebar-spaces">
               <div class="sidebar-collapsed-hidden">

@@ -71,5 +71,36 @@ def build(db, user_id):
     return out
 
 
+# What a PARENT may download of a child's account (routes/children_pages.py): exactly what the parent's activity page shows (helpers/child_activity.py), in full
+# instead of the newest few, and nothing else the member's own export holds: no sign-in addresses, no messages to the site's admins, no quiet blocks or mutes, no
+# drafts or shared drafts (other members' unpublished words), no email, no private circles or stories, no feed settings, **and none of the words the activity page
+# leaves out**: deleted items, a comment's text on a post other members kept private, the title of such a post, a private or Circle guild's name, other members'
+# reasons for reporting. It is built from the same statements as the page, so the two can't drift apart.
+PARENT_ACCOUNT = "SELECT id, username, display_name, created_utc FROM users WHERE id = :u"
+PARENT_LIMIT = 1000
+
+
+def build_for_parent(db, user_id):
+    """{section: [row dicts]} of one child, for their parent: a short account row and the sections of the parent's activity page."""
+    from ruqqus.helpers import child_activity
+    out = {"note": tr("Chats are end-to-end encrypted and not included: the site can't read them.")}
+    wanted = [("account", lambda: [dict(row._mapping) for row in db.execute(text(PARENT_ACCOUNT), {"u": user_id})]),
+              ("posts", lambda: child_activity.posts(db, user_id, PARENT_LIMIT)),
+              ("comments", lambda: child_activity.comments(db, user_id, PARENT_LIMIT)),
+              ("votes", lambda: child_activity.votes(db, user_id, PARENT_LIMIT)),
+              ("bookmarks", lambda: child_activity.bookmarks(db, user_id, PARENT_LIMIT)),
+              ("following", lambda: child_activity.follows(db, user_id, PARENT_LIMIT)),
+              ("guilds", lambda: child_activity.guilds(db, user_id, PARENT_LIMIT)),
+              ("private_guilds", lambda: [{"count": child_activity.private_guilds(db, user_id)}])]
+    for name, read in wanted:
+        savepoint = db.begin_nested()
+        try:
+            out[name] = read()
+            savepoint.commit()
+        except Exception:
+            savepoint.rollback()
+    return out
+
+
 def as_json(data):
     return json.dumps(data, ensure_ascii=False, indent=1, default=str)

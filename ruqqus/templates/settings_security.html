@@ -370,6 +370,12 @@
 
     <p>{{ _("This will permanently delete your %(site)s Account. Be careful, this cannot be undone.") }}</p>
 
+    {# a parent's child accounts are deleted with it (helpers/child_accounts.py): said here, with the way to download their data first #}
+    {% set kids = children_count(v) %}
+    {% if kids %}
+    <p class="text-danger" id="delete-children-warning">{{ _("Deleting your account also deletes your child accounts. You can download their data first in Settings > Children.") }}</p>
+    {% endif %}
+
   </div>
 
   <div class="footer">
@@ -413,6 +419,8 @@
         <form id="deleteAccountForm" method="post" action="/settings/delete_account">
           <input type="hidden" name="formkey" value="{{ v.formkey }}">
           <div class="modal-body body">
+
+            {% if children_count(v) %}<p class="text-danger">{{ _("Your child accounts will be deleted with yours.") }}</p>{% endif %}
 
             <div class="d-lg-flex">
 

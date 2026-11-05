@@ -1,0 +1,185 @@
+{% extends "settings.html" %}
+
+{% block pagetitle %}{{ _("Children - %(site)s") }}{% endblock %}
+
+{# Settings > Children (routes/children_pages.py; the rules are helpers/child_accounts.py). A parent makes a child account, switches what it may do, answers the
+   child's requests and sees what the child does: never a chat. Every control is a plain form or a switch that posts at once (post_toast); nothing is drawn from
+   anything but the signed-in parent's own children. #}
+
+{% macro proof() %}
+                <input class="form-control mb-2" name="parent_password" type="password" required autocomplete="current-password" aria-label="{{ _('Your own password') }}" placeholder="{{ _('Your own password') }}">
+                {% if v.mfa_secret %}<input class="form-control mb-2" name="twofactor" type="text" required autocomplete="one-time-code" inputmode="text" aria-label="{{ _('Two-Factor Code') }}" placeholder="{{ _('Two-Factor Code') }}">{% endif %}
+{% endmacro %}
+
+{% block content %}
+<div class="row">
+  <div class="col col-lg-8">
+    <div class="settings" id="children-settings">
+
+      <h2 class="h5">{{ _("Children") }}</h2>
+      <p class="text-small text-muted">{{ _("Make an account for a child under 18 and decide what it can do. You can see what they do on the site (their posts, comments, votes, bookmarks, follows, guilds, the names of who they chat with and their recent sign-ins). The site never shows you what their chats say: chats are end-to-end encrypted. You choose their password, so until they change it you can sign in as them and read their chats: tell them to set their own. They are told all of this in their own Settings.") }}</p>
+
+      {% if refusal %}
+      <div class="alert alert-info" role="status" id="children-refused">{{ refusal }}</div>
+      {% elif full_message %}
+      <div class="alert alert-info" role="status" id="children-full">{{ full_message }}</div>
+      {% else %}
+      <div class="settings-section rounded mb-4" id="children-new">
+        <form action="/settings/children/new" method="post" autocomplete="off">
+          <input type="hidden" name="formkey" value="{{ v.formkey }}">
+          <div class="d-lg-flex border-bottom">
+            <div class="title w-lg-25"><label for="child-username">{{ _("Username") }}</label></div>
+            <div class="body w-lg-100">
+              <input class="form-control" id="child-username" name="username" type="text" required minlength="3" maxlength="25" pattern="[A-Za-z0-9_]{3,25}" autocomplete="off">
+              <span class="d-block text-small-extra text-muted mt-1">{{ _("Letters, numbers and underscores, 3 to 25 characters.") }}</span>
+            </div>
+          </div>
+          <div class="d-lg-flex border-bottom">
+            <div class="title w-lg-25"><label for="child-password">{{ _("Password") }}</label></div>
+            <div class="body w-lg-100">
+              <input class="form-control mb-2" id="child-password" name="password" type="password" required minlength="8" maxlength="100" autocomplete="new-password">
+              <input class="form-control" id="child-password-confirm" name="password_confirm" type="password" required minlength="8" maxlength="100" autocomplete="new-password" aria-label="{{ _('Confirm Password') }}" placeholder="{{ _('Confirm Password') }}">
+            </div>
+          </div>
+          <div class="d-lg-flex border-bottom">
+            <div class="title w-lg-25"><label for="child-birth-month">{{ _("Born") }}</label></div>
+            <div class="body w-lg-100">
+              <div class="d-flex">
+                <select class="form-control mr-2" id="child-birth-month" name="birth_month" required aria-label="{{ _('Month they were born') }}">
+                  <option value="" selected disabled>{{ _("Month") }}</option>
+                  {% for number, stamp in months %}<option value="{{ number }}">{{ date_text(stamp, "%B", "LLLL") }}</option>{% endfor %}
+                </select>
+                <input class="form-control" id="child-birth-year" name="birth_year" type="number" inputmode="numeric" required min="1900" max="{{ this_year }}" placeholder="{{ _('Year') }}" aria-label="{{ _('Year they were born') }}">
+              </div>
+              <span class="d-block text-small-extra text-muted mt-1">{{ _("Only used to check their age. It isn't kept.") }}</span>
+            </div>
+          </div>
+          <div class="d-lg-flex">
+            <div class="title w-lg-25"></div>
+            <div class="body w-lg-100">
+              <div class="custom-control custom-checkbox mb-3">
+                <input type="checkbox" class="custom-control-input" id="child-terms" name="terms" value="1" required>
+                <label class="custom-control-label" for="child-terms">{{ _('I agree to the <a href="%(url)s" target="_blank">Terms</a> for them.', url="/help/terms") }}</label>
+              </div>
+              <button type="submit" class="btn btn-primary">{{ _("Make a child account") }}</button>
+              <span class="d-block text-small-extra text-muted mt-2">{{ ngettext("You can have at most %(num)s child account.", "You can have at most %(num)s child accounts.", max_children) }}</span>
+            </div>
+          </div>
+        </form>
+      </div>
+      {% endif %}
+
+      {% for c in children %}
+      <div class="settings-section rounded mb-4" id="child-{{ c.username }}">
+
+        <div class="d-lg-flex border-bottom">
+          <div class="title w-lg-25"><span><a href="/@{{ c.username }}">@{{ c.username }}</a></span></div>
+          <div class="body w-lg-100">
+            <span class="d-block">{{ _("Made on %(date)s.", date=date_text(c.created_utc, "%d %B %Y")) }}{% if c.suspended %} <strong class="text-danger">{{ _("Suspended") }}</strong>{% endif %}</span>
+            <a class="d-inline-block mt-1" href="/settings/children/{{ c.username }}">{{ _("See what they do") }}</a>
+          </div>
+        </div>
+
+        {% if c.ask_private_utc %}
+        <div class="d-lg-flex border-bottom bg-light">
+          <div class="title w-lg-25"><span>{{ _("Asked you") }}</span></div>
+          <div class="body w-lg-100">
+            <span class="d-block mb-2">{{ _("They asked you to turn Private posting off.") }}</span>
+            <form action="/settings/children/{{ c.username }}/answer" method="post">
+              <input type="hidden" name="formkey" value="{{ v.formkey }}"><input type="hidden" name="request" value="private">
+              {{ proof() }}
+              <button type="submit" name="answer" value="allow" class="btn btn-primary btn-sm">{{ _("Turn it off") }}</button>
+              <button type="submit" name="answer" value="deny" formnovalidate class="btn btn-secondary btn-sm">{{ _("Keep it on") }}</button>
+            </form>
+          </div>
+        </div>
+        {% endif %}
+        {% if c.ask_release_utc %}
+        <div class="d-lg-flex border-bottom bg-light">
+          <div class="title w-lg-25"><span>{{ _("Asked you") }}</span></div>
+          <div class="body w-lg-100">
+            <span class="d-block mb-2">{{ _("They say they are 18 or over and asked you to release their account. If you do, it becomes their own and you can no longer see it.") }}</span>
+            <form action="/settings/children/{{ c.username }}/answer" method="post">
+              <input type="hidden" name="formkey" value="{{ v.formkey }}"><input type="hidden" name="request" value="release">
+              {{ proof() }}
+              <button type="submit" name="answer" value="allow" class="btn btn-primary btn-sm">{{ _("Release the account") }}</button>
+              <button type="submit" name="answer" value="deny" formnovalidate class="btn btn-secondary btn-sm">{{ _("Not yet") }}</button>
+            </form>
+          </div>
+        </div>
+        {% endif %}
+
+        {% for name in controls %}
+        <div class="d-lg-flex border-bottom">
+          <div class="title w-lg-25"><label for="child-{{ c.username }}-{{ name }}">{{ msg_text(text_of[name][0]) }}</label></div>
+          <div class="body w-lg-100">
+            <div class="custom-control custom-switch">
+              <input type="checkbox" class="custom-control-input" id="child-{{ c.username }}-{{ name }}" aria-describedby="child-{{ c.username }}-{{ name }}-help"{% if c.controls[name] %} checked{% endif %} onchange="post_toast('/settings/children/{{ c.username }}/controls?control={{ name }}&on=' + this.checked)">
+              <label class="custom-control-label" for="child-{{ c.username }}-{{ name }}"></label>
+            </div>
+            <span class="d-block mt-2 text-small-extra text-muted" id="child-{{ c.username }}-{{ name }}-help">{{ msg_text(text_of[name][1]) }}</span>
+          </div>
+        </div>
+        {% endfor %}
+
+        <div class="d-lg-flex border-bottom">
+          <div class="title w-lg-25"><label for="child-{{ c.username }}-private">{{ _("Private posting") }}</label></div>
+          <div class="body w-lg-100">
+            <div class="custom-control custom-switch">
+              <input type="checkbox" class="custom-control-input" id="child-{{ c.username }}-private" aria-describedby="child-{{ c.username }}-private-help"{% if c.private_posting %} checked{% endif %} onchange="post_toast('/settings/children/{{ c.username }}/controls?control=private_posting&on=' + this.checked)">
+              <label class="custom-control-label" for="child-{{ c.username }}-private"></label>
+            </div>
+            <span class="d-block mt-2 text-small-extra text-muted" id="child-{{ c.username }}-private-help">{{ _("Everything they post goes only to their Friends circle. Turn it off to let them post in public.") }}</span>
+          </div>
+        </div>
+
+        <div class="d-lg-flex">
+          <div class="title w-lg-25"><span>{{ _("Account") }}</span></div>
+          <div class="body w-lg-100">
+            <details class="mb-2">
+              <summary>{{ _("Set a new password") }}</summary>
+              <form action="/settings/children/{{ c.username }}/password" method="post" class="mt-2" autocomplete="off">
+                <input type="hidden" name="formkey" value="{{ v.formkey }}">
+                <input class="form-control mb-2" name="new_password" type="password" required minlength="8" maxlength="100" autocomplete="new-password" aria-label="{{ _('New password') }}" placeholder="{{ _('New password') }}">
+                <input class="form-control mb-2" name="new_password_confirm" type="password" required minlength="8" maxlength="100" autocomplete="new-password" aria-label="{{ _('Confirm Password') }}" placeholder="{{ _('Confirm Password') }}">
+                {{ proof() }}
+                <button type="submit" class="btn btn-primary btn-sm">{{ _("Save") }}</button>
+                <span class="d-block text-small-extra text-muted mt-1">{{ _("They are signed out everywhere. If they use chat, they may be asked for their recovery code.") }}</span>
+              </form>
+            </details>
+            <details class="mb-2">
+              <summary>{{ _("Download their data") }}</summary>
+              <form action="/settings/children/{{ c.username }}/export" method="post" class="mt-2">
+                <input type="hidden" name="formkey" value="{{ v.formkey }}">
+                {{ proof() }}
+                <button type="submit" class="btn btn-secondary btn-sm">{{ _("Download") }}</button>
+              </form>
+            </details>
+            <details class="mb-2">
+              <summary>{{ _("Stop managing this account") }}</summary>
+              <form action="/settings/children/{{ c.username }}/stop" method="post" class="mt-2">
+                <input type="hidden" name="formkey" value="{{ v.formkey }}">
+                <span class="d-block text-small-extra text-muted mb-2">{{ _("It stays a child account with the child lock, but you can no longer see it or change what it can do, and you can't link it again.") }}</span>
+                {{ proof() }}
+                <button type="submit" class="btn btn-secondary btn-sm">{{ _("Stop managing") }}</button>
+              </form>
+            </details>
+            <details>
+              <summary class="text-danger">{{ _("Delete this account") }}</summary>
+              <form action="/settings/children/{{ c.username }}/delete" method="post" class="mt-2">
+                <input type="hidden" name="formkey" value="{{ v.formkey }}">
+                <span class="d-block text-small-extra text-muted mb-2">{{ _("This deletes their account and everything on it. It can't be undone. You can download their data first.") }}</span>
+                {{ proof() }}
+                <button type="submit" class="btn btn-danger btn-sm">{{ _("Delete the account") }}</button>
+              </form>
+            </details>
+          </div>
+        </div>
+
+      </div>
+      {% endfor %}
+
+    </div>
+  </div>
+</div>
+{% endblock %}

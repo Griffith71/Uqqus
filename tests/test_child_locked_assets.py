@@ -9,8 +9,10 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 ROUTES = ROOT / "ruqqus" / "routes"
 
-# module: {route function: feature}. Chat is the site's chat in all its forms; money is coins, tips, Premium and paid circles; spaces
-# are Spaces and their live updates; guilds is starting one. (Anonymous and Sensitive posting are refused in the post and comment routes
+# module: {route function: feature}. Chat is the site's chat in all its forms; messaging is the chat session itself (its token and keys): it is chat, and a call
+# Space runs on it, so a call is a chat feature (helpers/age_declaration.FEATURE_CONTROL; routes/spaces.py asks "chat" for a call); money is coins, tips, Premium and paid circles; spaces
+# are Spaces and their live updates; guilds is starting one. Three routes are open on purpose and ask the lock only for the side that spends: turning Premium's
+# auto-renew OFF, leaving the creator fund, and making a free custom circle (a paid circle asks). (Anonymous and Sensitive posting are refused in the post and comment routes
 # themselves: they are inputs of a route that stays open.)
 GATED = {
     "chat.py": "chat_page chat_token chat_key_get chat_key_set chat_recovery_key_legacy chat_check_password chat_ready chat_start "
@@ -19,14 +21,14 @@ GATED = {
     "chat_groups.py": "chat_group_create chat_group_add chat_group_accept chat_group_info chat_people",
     "calls.py": "call_window call_join",
     "broadcasts.py": "broadcast_create broadcast_join broadcast_message broadcast_info broadcasts_following",
-    "guild_channels.py": "guild_channel_join guild_channel_message guild_channels_list",
+    "guild_channels.py": "guild_channel_join guild_channel_message guild_channels_list guild_channel_mark_read guild_channel_senders guild_channel_report "
+                         "guild_channel_pins guild_channel_mute_for_me guild_channel_accept_rules guild_channel_search",
     "spaces.py": "space_create space_start space_join space_invite space_cohost space_message_add space_update_add",
-    "paypal.py": "shop_buy_coins gift_post_pid gift_comment_pid premium_redeem premium_auto_renew",
-    "circles.py": "circle_create circle_price circle_subscribe circle_guild_subscribe",
-    "creator_fund.py": "settings_creator_fund_save",
+    "paypal.py": "shop_buy_coins gift_post_pid gift_comment_pid premium_redeem",
+    "circles.py": "circle_price board_circle_price circle_subscribe circle_guild_subscribe",
     "boards.py": "create_board_post",
 }
-FEATURES = {"chat", "spaces", "money", "guilds"}
+FEATURES = {"chat", "spaces", "money", "guilds", "messaging"}
 LISTED = {(module, name) for module, names in GATED.items() for name in names.split()}
 
 
@@ -73,7 +75,7 @@ def test_no_other_route_carries_it():
 def test_the_wrapper_asks_the_one_rule_and_answers_a_page_or_a_403():
     wrappers = (ROOT / "ruqqus" / "helpers" / "wrappers.py").read_text(encoding="utf-8")
     body = wrappers.split("def not_child_locked(feature):", 1)[1].split("\n\nQR_LIMITED_REFUSAL", 1)[0]
-    assert "age_declaration.feature_refusal(v)" in body
+    assert "age_declaration.feature_refusal(v, feature)" in body
     assert '"age_locked": True' in body and "403" in body and 'link="/settings/content"' in body
 
 
@@ -92,11 +94,11 @@ def test_anonymous_and_sensitive_are_refused_in_the_routes_that_take_them():
 
 
 def test_starting_something_with_a_locked_account_is_refused_without_saying_why():
-    assert "age_declaration.target_refusal(target)" in (ROUTES / "chat.py").read_text(encoding="utf-8")
+    assert 'age_declaration.target_refusal(target, "chat")' in (ROUTES / "chat.py").read_text(encoding="utf-8")
     paypal = (ROUTES / "paypal.py").read_text(encoding="utf-8")
-    assert paypal.count("age_declaration.target_refusal(u)") == 2
+    assert paypal.count('age_declaration.target_refusal(u, "money")') == 2
     groups = (ROOT / "ruqqus" / "helpers" / "chat_groups.py").read_text(encoding="utf-8")
-    assert "age_declaration.target_refusal(target)" in groups.split("def add_refusal(", 1)[1].split("\ndef ", 1)[0]
+    assert 'age_declaration.target_refusal(target, "chat")' in groups.split("def add_refusal(", 1)[1].split("\ndef ", 1)[0]
 
 
 def test_a_locked_account_is_not_suggested_and_is_found_only_by_its_exact_name():
@@ -105,7 +107,7 @@ def test_a_locked_account_is_not_suggested_and_is_found_only_by_its_exact_name()
     search = (ROUTES / "search.py").read_text(encoding="utf-8")
     assert "User.age_lock.is_(None), User.username.ilike(term, escape=LIKE_ESCAPE)" in search
     assert "can_make_guild" in (ROOT / "ruqqus" / "classes" / "user.py").read_text(encoding="utf-8")
-    assert "and not age_declaration.is_locked(self)" in (ROOT / "ruqqus" / "classes" / "user.py").read_text(encoding="utf-8")
+    assert 'and not age_declaration.feature_refusal(self, "guilds")' in (ROOT / "ruqqus" / "classes" / "user.py").read_text(encoding="utf-8")
 
 
 def test_ads_follow_the_stored_lock_not_the_country():
@@ -127,6 +129,16 @@ def test_the_regional_rule_lives_in_viewer_level_and_nowhere_else():
     visibility = (ROOT / "ruqqus" / "helpers" / "visibility.py").read_text(encoding="utf-8")
     assert visibility.count("current_region_locked(") == 2          # viewer_level, and the notice's wording
     for path in (ROOT / "ruqqus").rglob("*.py"):
-        if path.name in ("visibility.py", "age_declaration.py", "jinja2.py"):
+        if path.name in ("visibility.py", "age_declaration.py", "jinja2.py", "children_pages.py"):
             continue
         assert "current_region_locked(" not in path.read_text(encoding="utf-8") and "region_locked(" not in path.read_text(encoding="utf-8"), path
+
+
+def test_the_routes_that_let_an_account_stop_spending_or_make_a_free_circle_ask_only_for_the_spending_side():
+    paypal = (ROUTES / "paypal.py").read_text(encoding="utf-8").split("def premium_auto_renew(", 1)[1].split("\n@app.", 1)[0]
+    assert 'if wanted else None' in paypal and 'age_declaration.feature_refusal(v, "money")' in paypal
+    assert paypal.index('age_declaration.feature_refusal(v, "money")') < paypal.index("v.premium_auto_renew = wanted"), "refused before the flag is touched: the request's commit would keep it"
+    fund = (ROUTES / "creator_fund.py").read_text(encoding="utf-8").split("def settings_creator_fund_save(", 1)[1].split("\n@app.", 1)[0]
+    assert fund.index('"leave"') < fund.index('age_declaration.feature_refusal(v, "money")'), "leaving comes first and is never refused"
+    circle = (ROUTES / "circles.py").read_text(encoding="utf-8").split("def circle_create(", 1)[1].split("\n@app.", 1)[0]
+    assert 'if kind == circles.PAID else None' in circle and 'age_declaration.feature_refusal(v, "money")' in circle

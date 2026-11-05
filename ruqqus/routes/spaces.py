@@ -24,12 +24,13 @@ from ruqqus.classes import *
 import ruqqus.helpers.matrix_client as matrix
 from ruqqus.__main__ import app, limiter, member_limit_key, r
 
+from ruqqus.helpers import age_declaration
 from ruqqus.helpers import spaces as space_rules
 from ruqqus.helpers import chat_devices
 from ruqqus.helpers import space_store, space_view, space_ending, call_store, live_bus, turn_usage, turn_usage_store
 from ruqqus.helpers import live_thread_store as live_store
 from ruqqus.helpers.alerts import notify
-from ruqqus.helpers.i18n_runtime import ENVIRON_KEY as UI_LOCALE_KEY, N_, current_locale, datetime_text, tr, trn
+from ruqqus.helpers.i18n_runtime import ENVIRON_KEY as UI_LOCALE_KEY, N_, current_locale, datetime_text, msg, tr, trn
 from ruqqus.helpers import bell as bell_rules
 from ruqqus.helpers.media import attach as media_attach, safety as media_safety
 from ruqqus.helpers.visibility import post_hidden
@@ -342,6 +343,8 @@ def _space_page(space, v):
 @validate_formkey
 def space_start(sid, v):
     space = load_space(sid, v)
+    if space.kind == space_rules.CALL and age_declaration.feature_refusal(v, "chat"):        # a call is a chat feature (the switch's own words)
+        return _error(msg(age_declaration.feature_refusal(v, "chat")), 403)
     if v.id != space.host_id:
         return _error(tr("Only the host can start this Space."), 403)
     if space.status != space_rules.SCHEDULED:
@@ -411,6 +414,8 @@ def _call_only(space):
 def space_join(sid, v):
     space = load_space(sid, v)
     _call_only(space)
+    if age_declaration.feature_refusal(v, "chat"):           # a call runs on the chat session, which a child without chat has no way to open
+        return _error(msg(age_declaration.feature_refusal(v, "chat")), 403)
     device_id = request.values.get("device_id", "")
     if not _DEVICE.match(device_id) or r is None:
         abort(400)
@@ -855,6 +860,9 @@ def space_messages(sid, v):
 def space_message_add(sid, v):
     """A message on the board: only from someone in the Space while it is live, rated by the word filter, slowed by slow
     mode (never the host and co-hosts) and capped per minute and per day. Pushed to readers by id only."""
+    parent_off = age_declaration.activity_refusal(v, "commenting")      # a board and a call's chat are the Space's comments: a parent's switch covers them
+    if parent_off:
+        return _error(msg(parent_off), 403)
     space = load_space(sid, v)
     try:
         body = space_rules.clean_message(request.values.get("body"))
@@ -1105,6 +1113,8 @@ def space_create(v):
     space_rules.ENVIRON_KEY, which no browser can set, so a Space is never made anywhere else. A board or a live thread
     asked to start now starts at once; a call waits for its host to open it."""
     from ruqqus.routes.collab import _post_as
+    if space_rules.parse_kind(request.form.get("space_kind")) == space_rules.CALL and age_declaration.feature_refusal(v, "chat"):
+        return _error(msg(age_declaration.feature_refusal(v, "chat")), 403)        # a call is a chat feature
     data = {name: request.form.get(name, "") for name in _CREATE_FIELDS}
     for name in _CREATE_LISTS:
         data[name] = request.form.getlist(name)

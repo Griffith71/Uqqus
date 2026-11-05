@@ -343,7 +343,7 @@
 
               {% if organise_bookmarks %}<a class="dropdown-item bookmark-folder-item" href="javascript:void(0)" data-kind="comment" data-id="{{ c.base36id }}"><i class="fas fa-folder fa-fw"></i>{{ _("Move to folder") }}</a>{% endif %}
 
-              {% if v.id != c.author_id and not author_of(c, v).is_deleted and not anon_hidden(c, v) %}
+              {% if v.id != c.author_id and not author_of(c, v).is_deleted and not anon_hidden(c, v) and not feature_locked(v, 'money') and not target_locked(author_of(c, v), 'money') %}
               <a class="dropdown-item" href="javascript:void(0)" data-toggle="modal" data-target="#tipModal" onclick="tipModal2('{{ c.base36id }}','comment','{{ c.permalink }}','{{ author_of(c, v).username }}','{{ author_of(c, v).profile_url }}')"><i class="fas fa-star fa-fw"></i>{{ pgettext("verb", "Tip") }}</a>
               {% endif %}
 
@@ -560,7 +560,7 @@
           {% if v %}
           <li class="list-group-item"><a href="javascript:void(0)" data-dismiss="modal" target="_blank" onclick="window.open('{{ c.permalink }}?context=3','_blank')" class="d-block"><i class="fas fa-book-open"></i><span>{{ _("Context") }}</span></a></li>
 
-          {% if v.id != c.author_id and not author_of(c, v).is_deleted and not anon_hidden(c, v) %}
+          {% if v.id != c.author_id and not author_of(c, v).is_deleted and not anon_hidden(c, v) and not feature_locked(v, 'money') and not target_locked(author_of(c, v), 'money') %}
           <li class="list-group-item"><a href="javascript:void(0)" data-toggle="modal" data-dismiss="modal" data-target="#tipModal" onclick="tipModal2('{{ c.base36id }}','comment','{{ c.permalink }}','{{ author_of(c, v).username }}','{{ author_of(c, v).profile_url }}')" class="d-block"><i class="fas fa-star"></i><span>{{ pgettext("verb", "Tip") }}</span></a></li>
           {% endif %}
 

@@ -348,8 +348,9 @@ Optional file data:
         # editing a comment answers
         return jsonify({"error": reason}), 403 if banned else 400
 
-    # a child-locked account can't comment anonymously (helpers/age_declaration.py)
-    locked_error = age_declaration.post_refusal(v, False, flag(request.form, "anonymous"))
+    # a child-locked account can't comment anonymously, and a parent can switch commenting off for a sub-account (helpers/age_declaration.py)
+    locked_error = (age_declaration.activity_refusal(v, "commenting")
+                    or age_declaration.post_refusal(v, False, flag(request.form, "anonymous")))
     if locked_error:
         return jsonify({"error": msg(locked_error)}), 403
 
@@ -648,6 +649,10 @@ Optional form data (left out: unchanged):
 
     if c.board.has_ban(v):
         abort(403)
+
+    commenting_error = age_declaration.activity_refusal(v, "commenting")      # an edit puts new words in a thread as a comment does; deleting stays open
+    if commenting_error:
+        return jsonify({"error": msg(commenting_error)}), 403
 
     body = request.form.get("body", "")
     if text_length.over_limit(body.strip(), COMMENT_MAX, stored_max=COMMENT_MAX):
@@ -976,6 +981,9 @@ def repost_comment(cid, v):
     also appear (with an inline "Repost" tag next to its byline) on the
     reposter's Comments tab."""
 
+    posting_error = age_declaration.activity_refusal(v, "posting")      # a parent can switch posting off for a sub-account: that covers sharing too
+    if posting_error:
+        return {"error": msg(posting_error)}, 403
     comment = get_comment(cid)
 
     if comment.is_banned or comment.deleted_utc or comment.purged_utc:
@@ -1061,6 +1069,9 @@ def forward_comment(cid, v):
     The new post's title is generated automatically from the comment's own
     text - there is no user-editable title for a forwarded comment's post.
     """
+    posting_error = age_declaration.activity_refusal(v, "posting")      # a parent can switch posting off for a sub-account: that covers sharing too
+    if posting_error:
+        return {"error": msg(posting_error)}, 403
     from .posts import create_forward_post_from_comment
 
     comment = get_comment(cid)

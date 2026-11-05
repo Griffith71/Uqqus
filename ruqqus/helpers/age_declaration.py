@@ -41,6 +41,8 @@ FILTER_LOCKED = N_("Your account is age-restricted, so its word filter stays on 
 SENSITIVE_LOCKED = N_("Your account is age-restricted, so sensitive content stays hidden until you confirm your age in Settings.")
 FEATURE_LOCKED = N_("This isn't available while your account is age-restricted. You can confirm your age in Settings > Content.")
 TARGET_LOCKED = N_("You can't do that with this account.")
+PARENT_OFF = N_("Your parent or guardian has turned this off for your account.")
+UNDER_18_FOUND = N_("The age check found that you're under 18, so the child lock stays on.")
 DECLARE_NOT_HERE = N_("Where you are, your age has to be confirmed with an age-check service.")
 VENDOR_NOT_READY = N_("Age confirmation isn't available yet.")
 UNDER_AGE_CLOSED_TITLE = N_("Your account was closed")
@@ -179,20 +181,67 @@ def signup_answer(answer, country):
     return answer
 
 
-def feature_refusal(v):
-    """The message when this account may not chat, host Spaces, spend or earn coins, post anonymously or make a guild, else None."""
-    return FEATURE_LOCKED if is_locked(v) else None
+# a feature (what @not_child_locked names) and the switch of a parent's sub-account that turns it on (helpers/child_accounts.py)
+# `messaging` is the Matrix session itself (chat's token and keys): it is chat. A call Space runs on it too, so a call is a chat feature (the switch's own words:
+# "Chat, group chats and calls"): a child with Spaces on and chat off has boards and live threads and no calls, and never holds a Matrix token
+FEATURE_CONTROL = {"chat": "chat", "messaging": "chat", "spaces": "spaces", "money": "money", "guilds": "anonymous_guilds", "anonymous": "anonymous_guilds"}
+
+
+def _controls(v):
+    return getattr(v, "child_controls", None) or {}
+
+
+def parent_allows(v, feature):
+    """Has the parent of this sub-account (`age_lock` 2) switched this feature on? Never true for any other account, and never for a feature the
+    parent has no switch for (Sensitive content and the word filter are not theirs to change)."""
+    if getattr(v, "age_lock", None) != PARENT_LOCK:
+        return False
+    return bool(_controls(v).get(FEATURE_CONTROL.get(feature)))
+
+
+def feature_refusal(v, feature=None):
+    """The message when this account may not chat, host Spaces, spend or earn coins, post anonymously or make a guild (`feature`: chat, spaces, money,
+    guilds, anonymous), else None. A sub-account is allowed what its parent has switched on, and told whose decision it is when not."""
+    if not is_locked(v):
+        return None
+    if feature and parent_allows(v, feature):
+        return None
+    return PARENT_OFF if getattr(v, "age_lock", None) == PARENT_LOCK else FEATURE_LOCKED
+
+
+def activity_refusal(v, what):
+    """The message when a parent has switched off `posting` or `commenting` for this sub-account, else None. They start on. A sub-account with no controls row at
+    all (it can't be read: a lost row) is refused, like every feature: it fails closed."""
+    if getattr(v, "age_lock", None) != PARENT_LOCK:
+        return None
+    controls = _controls(v)
+    return None if controls and controls.get(what, True) else PARENT_OFF
 
 
 def post_refusal(v, sensitive, anonymous):
-    """The message when a locked account's new post asks for something it may not have: to be marked Sensitive (it can't see such
-    content, so it doesn't post it) or anonymous. The composers don't draw those switches for it; this is the server's word."""
-    return FEATURE_LOCKED if is_locked(v) and (sensitive or anonymous) else None
+    """The message when a locked account's new post asks for something it may not have: to be marked Sensitive (it can't see such content, so it doesn't
+    post it, and no parent can switch that) or anonymous (a sub-account's parent can). The composers don't draw those switches for it; this is the server's word."""
+    if not is_locked(v):
+        return None
+    if sensitive:
+        return FEATURE_LOCKED
+    if anonymous and not parent_allows(v, "anonymous"):
+        return PARENT_OFF if getattr(v, "age_lock", None) == PARENT_LOCK else FEATURE_LOCKED
+    return None
 
 
-def target_refusal(target):
-    """The message when somebody may not start something with this account (a chat, a group, a call, a tip). It never says why."""
-    return TARGET_LOCKED if is_locked(target) else None
+def target_refusal(target, feature=None):
+    """The message when somebody may not start something with this account (a chat, a group, a call, a tip: `feature` chat or money). It never says why.
+    A sub-account whose parent has switched the feature on can be reached for it."""
+    if not is_locked(target) or (feature and parent_allows(target, feature)):
+        return None
+    return TARGET_LOCKED
+
+
+def sub_account_fields(now):
+    """The columns of a child account its parent makes: the child lock, held by the parent (`age_lock` 2), the Child filter and Private posting on."""
+    return {"age_declared": CHILD, "age_declared_utc": now, "filter_level": CHILD_FILTER, "hide_offensive": True, "all_shows_sensitive": False,
+            "age_lock": PARENT_LOCK, "private_posting": True}
 
 
 def is_asked(v):

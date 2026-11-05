@@ -6,7 +6,7 @@ import time
 from flask import abort, g, redirect, render_template, request
 
 from ruqqus.classes import User
-from ruqqus.helpers import action_log, age_assurance, age_declaration, muting
+from ruqqus.helpers import action_log, age_assurance, age_declaration, child_store, muting
 from ruqqus.helpers.alerts import notify
 from ruqqus.helpers.get import get_user
 from ruqqus.helpers.i18n_runtime import msg
@@ -54,11 +54,16 @@ def settings_age_declaration(v):
         return redirect(back, code=303)
 
     if age_declaration.is_locked(v) and answer == age_declaration.ADULT:
+        if getattr(v, "age_lock", None) == age_declaration.PARENT_LOCK:
+            from ruqqus.routes.children_pages import ask_parent       # a parent's sub-account asks its parent to release it
+            return ask_parent(v, "release", back)
         if getattr(v, "age_lock", None) != age_declaration.REGION_LOCK:
             return _refused(v, age_declaration.TARGET_LOCKED, 403, back)
         if age_declaration.is_strict(country):
             return _refused(v, age_declaration.DECLARE_NOT_HERE, 403, back)
-        changed = g.db.query(User).filter(User.id == v.id, User.age_lock == age_declaration.REGION_LOCK).update(
+        if v.age_under_utc:                    # an age check found them under 18: a tick doesn't overrule it
+            return _refused(v, age_declaration.UNDER_18_FOUND, 403, back)
+        changed = g.db.query(User).filter(User.id == v.id, User.age_lock == age_declaration.REGION_LOCK, User.age_under_utc == 0).update(
             age_declaration.lift_fields(now, False), synchronize_session=False)
         g.db.commit()
         if not changed:
@@ -103,10 +108,15 @@ def settings_age_assurance_callback(v):
     status = age_assurance.provider().finish(v, request.args)
     now = int(time.time())
     if status == age_assurance.ADULT:
+        was_sub = getattr(v, "age_lock", None) == age_declaration.PARENT_LOCK
         g.db.query(User).filter(User.id == v.id).update(age_declaration.assure_fields(v, now), synchronize_session=False)
+        parent_id = child_store.release(g.db, v.id) if was_sub else None          # an age check releases a sub-account: its parent's access ends
         g.db.commit()
         g.db.refresh(v)
         muting.clear_cached_feeds(v)
+        if was_sub:
+            from ruqqus.routes.children_pages import tell_parent_released
+            tell_parent_released(parent_id, v)
         return redirect("/settings/content?age=confirmed", code=303)
     if status == age_assurance.MINOR:
         g.db.query(User).filter(User.id == v.id).update({"age_under_utc": now}, synchronize_session=False)
@@ -143,6 +153,7 @@ def admin_age_declaration(v):
     if not confirmed and answer == target.age_declared:
         return redirect(target.permalink)
     notice = age_declaration.CONFIRMED if confirmed else answer
+    was_sub = target.age_lock == age_declaration.PARENT_LOCK
     action_log.record_quietly(g.db, "age_declaration", v.id, target_user_id=target.id, role=action_log.ADMIN,
                               reason=request.form.get("reason", ""), notice_sent=True,
                               staff_note=f"{age_declaration.LABELS[was]} to {age_declaration.LABELS[notice]}")
@@ -151,7 +162,12 @@ def admin_age_declaration(v):
     for column, value in fields.items():
         setattr(target, column, value)
     g.db.add(target)
+    # an admin who takes the lock off a parent's sub-account ends the parent's access with it (the switches and the link go; the parent is told)
+    parent_id = child_store.release(g.db, target.id) if was_sub and target.age_lock != age_declaration.PARENT_LOCK else None
     g.db.commit()
     muting.clear_cached_feeds(target)
     notify(target, age_declaration.ADMIN_NOTICES[notice])
+    if parent_id:
+        from ruqqus.routes.children_pages import tell_parent_released
+        tell_parent_released(parent_id, target)
     return redirect(target.permalink)

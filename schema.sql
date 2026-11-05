@@ -7160,6 +7160,41 @@ CREATE INDEX log_entries_actor_idx ON public.log_entries (actor_id);
 CREATE INDEX log_entries_created_idx ON public.log_entries (created_utc);
 CREATE UNIQUE INDEX log_entries_legacy_idx ON public.log_entries (legacy_modaction_id) WHERE legacy_modaction_id IS NOT NULL;
 
+-- parent and child accounts (helpers/child_store.py; 2026-12-18_parent_accounts.sql)
+CREATE TABLE public.account_links (
+    child_id integer PRIMARY KEY,
+    parent_id integer NOT NULL,
+    created_utc integer DEFAULT 0 NOT NULL
+);
+
+CREATE INDEX account_links_parent_idx ON public.account_links USING btree (parent_id);
+
+CREATE TABLE public.child_controls (
+    child_id integer PRIMARY KEY,
+    chat boolean DEFAULT false NOT NULL,
+    spaces boolean DEFAULT false NOT NULL,
+    money boolean DEFAULT false NOT NULL,
+    anonymous_guilds boolean DEFAULT false NOT NULL,
+    posting boolean DEFAULT true NOT NULL,
+    commenting boolean DEFAULT true NOT NULL,
+    ask_private_utc integer DEFAULT 0 NOT NULL,
+    ask_release_utc integer DEFAULT 0 NOT NULL,
+    ask_release_country character varying(2),
+    updated_utc integer DEFAULT 0 NOT NULL
+);
+
+CREATE TABLE public.child_family (
+    id serial PRIMARY KEY,
+    parent_id integer NOT NULL,
+    child_id integer,
+    made_utc integer DEFAULT 0 NOT NULL,
+    suspended_until_utc integer DEFAULT 0 NOT NULL,
+    prior_until_utc integer DEFAULT 0 NOT NULL
+);
+
+CREATE UNIQUE INDEX child_family_child_key ON public.child_family USING btree (child_id) WHERE (child_id IS NOT NULL);
+CREATE INDEX child_family_parent_idx ON public.child_family USING btree (parent_id, made_utc);
+
 CREATE TABLE public.schema_migrations (
     name character varying(255) PRIMARY KEY,
     applied_utc integer DEFAULT 0 NOT NULL
@@ -7258,4 +7293,5 @@ INSERT INTO public.schema_migrations (name) VALUES
     ('2026-12-14_log_public.sql'),
     ('2026-12-15_region_colours.sql'),
     ('2026-12-16_age_assurance.sql'),
-    ('2026-12-17_private_posting.sql');
+    ('2026-12-17_private_posting.sql'),
+    ('2026-12-18_parent_accounts.sql');

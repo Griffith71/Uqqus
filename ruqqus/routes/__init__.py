@@ -77,3 +77,4 @@ from .interface_language_pages import *
 from .consent_pages import *
 from .filtered_words_pages import *
 from .age_declaration_pages import *
+from .children_pages import *

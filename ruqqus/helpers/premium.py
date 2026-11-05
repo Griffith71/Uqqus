@@ -8,7 +8,7 @@ The coin moves with `helpers/coins.spend` (one conditional statement). Nothing h
 """
 from sqlalchemy import text
 
-from ruqqus.helpers import coins
+from ruqqus.helpers import child_store, coins
 
 WEEK = 7 * 86400
 
@@ -28,8 +28,10 @@ def redeem_week(db, user, now):
 
 def due_ids(db, now, limit=500):
     """Accounts that asked to renew automatically and whose week has run out (or runs out within the hour)."""
-    return [r[0] for r in db.execute(text("""SELECT id FROM users WHERE premium_auto_renew = :yes AND coin_balance >= 1
+    ids = [r[0] for r in db.execute(text("""SELECT id FROM users WHERE premium_auto_renew = :yes AND coin_balance >= 1
                                                AND premium_expires_utc > 0 AND premium_expires_utc <= :soon
                                                AND COALESCE(negative_balance_cents, 0) = 0 AND is_deleted = :no
                                              ORDER BY premium_expires_utc LIMIT :n"""),
                                      {"yes": True, "no": False, "soon": now + 3600, "n": limit})]
+    # an age-restricted account whose parent hasn't switched money on spends nothing, whatever it set up before (helpers/child_store.py money_locked)
+    return [i for i in ids if not child_store.money_locked(db, i)]

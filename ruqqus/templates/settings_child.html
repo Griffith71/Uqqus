@@ -1,0 +1,69 @@
+{% extends "settings.html" %}
+
+{% block pagetitle %}{{ _("@%(name)s - %(site)s", name=child.username) }}{% endblock %}
+
+{# What a parent may see of one child's account (routes/children_pages.py children_activity; helpers/child_activity.py): activity and the names of who they chat
+   with. Never a chat's content: chats are end-to-end encrypted and the server holds no text of them. Everything is plain text and escaped. #}
+
+{% macro when(utc) %}{{ date_text(utc, "%d %b %Y") }}{% endmacro %}
+
+{% block content %}
+<div class="row">
+  <div class="col col-lg-8">
+    <div class="settings" id="child-activity">
+
+      <p class="mb-1"><a href="/settings/children"><i class="fas fa-arrow-left fa-fw" aria-hidden="true"></i>{{ _("Children") }}</a></p>
+      <h2 class="h5">@{{ child.username }}</h2>
+      <p class="text-small text-muted">{{ _("The newest of what they have done. Only the names of who they chat with are shown, never what a chat says: chats are end-to-end encrypted.") }}</p>
+
+      <h3 class="h6 mt-4">{{ _("Posts") }}</h3>
+      {% if activity.posts %}<ul class="list-unstyled text-small">
+        {% for p in activity.posts %}<li class="mb-1"><a href="/post/{{ p.b36 }}">{{ p.title or _("(no title)") }}</a> <span class="text-muted">{{ when(p.created_utc) }}{% if p.anonymous %} · {{ _("anonymous") }}{% endif %}{% if p.for_circles %} · {{ _("Friends circle") }}{% endif %}{% if p.removed %} · {{ _("removed") }}{% endif %}</span></li>{% endfor %}
+      </ul>{% else %}<p class="text-small text-muted">{{ _("Nothing yet.") }}</p>{% endif %}
+
+      <h3 class="h6 mt-4">{{ _("Comments") }}</h3>
+      {% if activity.comments %}<ul class="list-unstyled text-small">
+        {% for c in activity.comments %}<li class="mb-1">{% if c.text is none %}<a href="/comment/{{ c.b36 }}">{{ _("(in a private place)") }}</a>{% else %}<a href="/comment/{{ c.b36 }}">{{ c.text or _("(empty)") }}</a>{% endif %} <span class="text-muted">{{ when(c.created_utc) }}{% if c.anonymous %} · {{ _("anonymous") }}{% endif %}</span></li>{% endfor %}
+      </ul>{% else %}<p class="text-small text-muted">{{ _("Nothing yet.") }}</p>{% endif %}
+
+      <h3 class="h6 mt-4">{{ _("Votes") }}</h3>
+      {% if activity.votes %}<ul class="list-unstyled text-small">
+        {% for x in activity.votes %}<li class="mb-1"><i class="fas {{ 'fa-arrow-up' if x.up else 'fa-arrow-down' }} fa-fw" aria-hidden="true"></i><span class="sr-only">{{ _("Upvote") if x.up else _("Downvote") }}</span> <a href="/post/{{ x.b36 }}">{{ x.title or _("(no title)") }}</a> <span class="text-muted">{{ when(x.created_utc) }}</span></li>{% endfor %}
+      </ul>{% else %}<p class="text-small text-muted">{{ _("Nothing yet.") }}</p>{% endif %}
+
+      <h3 class="h6 mt-4">{{ _("Bookmarks") }}</h3>
+      {% if activity.bookmarks %}<ul class="list-unstyled text-small">
+        {% for x in activity.bookmarks %}<li class="mb-1"><a href="/post/{{ x.b36 }}">{{ x.title or _("(no title)") }}</a> <span class="text-muted">{{ when(x.created_utc) }}</span></li>{% endfor %}
+      </ul>{% else %}<p class="text-small text-muted">{{ _("Nothing yet.") }}</p>{% endif %}
+
+      <h3 class="h6 mt-4">{{ _("Following") }}</h3>
+      {% if activity.follows %}<ul class="list-unstyled text-small">
+        {% for x in activity.follows %}<li class="mb-1"><a href="/@{{ x.username }}">@{{ x.username }}</a> <span class="text-muted">{{ when(x.created_utc) }}</span></li>{% endfor %}
+      </ul>{% else %}<p class="text-small text-muted">{{ _("Nothing yet.") }}</p>{% endif %}
+
+      <h3 class="h6 mt-4">{{ _("Guilds") }}</h3>
+      {% if activity.guilds %}<ul class="list-unstyled text-small">
+        {% for x in activity.guilds %}<li class="mb-1">+{{ x.name }} <span class="text-muted">{{ when(x.created_utc) }}</span></li>{% endfor %}
+      </ul>{% elif not activity.private_guilds %}<p class="text-small text-muted">{{ _("Nothing yet.") }}</p>{% endif %}
+      {% if activity.private_guilds %}<p class="text-small text-muted">{{ ngettext("And %(num)s private guild, which isn't named.", "And %(num)s private guilds, which aren't named.", activity.private_guilds) }}</p>{% endif %}
+
+      <h3 class="h6 mt-4">{{ _("Who they chat with") }}</h3>
+      {% if activity.chat_people or activity.chat_groups %}<ul class="list-unstyled text-small">
+        {% for name in activity.chat_people %}<li class="mb-1">@{{ name }}</li>{% endfor %}
+        {% for name, gid in activity.chat_groups %}<li class="mb-1">{{ _("Group chat") }}{% if name %}: {{ name }}{% endif %}</li>{% endfor %}
+      </ul>{% else %}<p class="text-small text-muted">{{ _("Nothing yet.") }}</p>{% endif %}
+
+      <h3 class="h6 mt-4">{{ _("Reports about them") }}</h3>
+      {% if activity.reports %}<ul class="list-unstyled text-small">
+        {% for x in activity.reports %}<li class="mb-1">{{ _("A member reported this account.") }} <span class="text-muted">{{ when(x.created_utc) }}{% if x.resolved %} · {{ _("looked at by the admins") }}{% endif %}</span></li>{% endfor %}
+      </ul><p class="text-small-extra text-muted">{{ _("Who reported them, and what they wrote, isn't shown to anyone but the admins.") }}</p>{% else %}<p class="text-small text-muted">{{ _("Nothing yet.") }}</p>{% endif %}
+
+      <h3 class="h6 mt-4">{{ _("Recent sign-ins") }}</h3>
+      {% if sign_ins %}<ul class="list-unstyled text-small">
+        {% for s in sign_ins %}<li class="mb-1"><time datetime="{{ s.iso }}">{{ s.when }}</time> · {{ s.place }} · {{ s.browser }}</li>{% endfor %}
+      </ul>{% else %}<p class="text-small text-muted">{{ _("Nothing yet.") }}</p>{% endif %}
+
+    </div>
+  </div>
+</div>
+{% endblock %}

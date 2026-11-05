@@ -343,7 +343,7 @@ def test_an_admin_marking_a_child_account_starts_the_lock(make_member):
 # ---------------------------------------------------------------- what a locked account can't do
 
 GATED_PATHS = [("chat_start", {"username": "x"}), ("chat_group_create", {"members": "x"}), ("space_create", {"title": "t"}),
-               ("shop_buy_coins", {"coins": "1"}), ("premium_redeem", {}), ("circle_create", {"name": "n", "kind": "custom"}),
+               ("shop_buy_coins", {"coins": "1"}), ("premium_redeem", {}), ("circle_create", {"name": "n", "kind": "paid", "price": "5"}),
                ("create_board_post", {"name": "lockedguild"})]
 
 
