@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ruqqus VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-31 05:16+0000\n"
+"POT-Creation-Date: 2026-11-05 16:56+1100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: th\n"
@@ -3104,6 +3104,10 @@ msgid "A search can hold at most %(num)s word and operator."
 msgid_plural "A search can hold at most %(num)s words and operators."
 msgstr[0] "การค้นหาสามารถถือได้มากที่สุด %(num)s คําและผู้ดําเนินงาน"
 
+#, machine, plain1
+msgid "A sensitive guild's posts are left out of All and For You for anyone who hasn't chosen to see sensitive content. Enable if your guild allows content that a film or game would rate 15, R or 16+, such as strong sexual content, graphic violence or self-harm - not a rule violation, just a heads-up. Every post in this guild will be blurred by default."
+msgstr "โพสต์ของสมาคมที่อ่อนไหว ถูกทิ้งไว้จากทั้งหมด และสําหรับคุณสําหรับทุกคนที่ยังไม่ได้เลือกที่จะ ดูเนื้อหาที่อ่อนไหว เปิดใช้งาน หากสมาคมของคุณอนุญาตให้แสดงเนื้อหาที่ภาพยนตร์หรือเกมจะมีอัตรา 15, R หรือ 16+ เช่น เนื้อหาทางเพศที่แข็งแรง ความรุนแรงแบบกราฟิก หรือการทําร้ายตัวเอง - ไม่ใช่การละเมิดกฎ แค่การสั่งงาน ทุกตําแหน่งในสมาคมนี้ จะไม่ชัดเจนโดยปริยาย."
+
 #, machine, plain1, python-format
 msgid "A shared draft can have at most %(num)s author."
 msgid_plural "A shared draft can have at most %(num)s authors."
@@ -3614,6 +3618,10 @@ msgid "After %(date)s"
 msgstr "หลัง %(date)s"
 
 #, machine, plain1
+msgid "Age confirmation isn't available yet."
+msgstr "การยืนยันอายุยังไม่มี."
+
+#, machine, plain1
 msgid "Alert"
 msgstr "แจ้งเตือน"
 
@@ -3781,9 +3789,17 @@ msgstr "เอเชีย"
 msgid "An account with that username or email already exists."
 msgstr "มีบัญชีผู้ใช้ที่มีชื่อผู้ใช้หรืออีเมลดังกล่าวอยู่แล้ว."
 
+#, machine, plain1
+msgid "An admin confirmed that you are 18 or over. Your account no longer has the child lock. Your word filter hasn't changed: you can change it in Settings > Content, and turning the Child filter down needs your password."
+msgstr "โฆษณายืนยันว่าคุณอายุ 18 หรือมากกว่า บัญชีของคุณไม่ได้ล็อคเด็ก ตัวกรองคําของคุณยังไม่ได้เปลี่ยน: คุณสามารถเปลี่ยนมันในการตั้งค่า > เนื้อหาและการเปลี่ยนตัวกรองเด็ก ต้องการรหัสผ่านของคุณ."
+
 #, machine, plain1, python-format
 msgid "An admin marked +%(guild)s sensitive: its posts are left out of All and For You unless someone chooses to see sensitive content. Only an admin can change this."
 msgstr "admin ทําเครื่องหมาย +%(guild)s ความไวแสง: โพสต์ของมันจะถูกวางทิ้งไว้จากทั้งหมด และสําหรับท่าน นอกจากจะมีใครเลือกดูเนื้อหาที่อ่อนไหว มีโฆษณาเท่านั้นที่เปลี่ยนแปลงเรื่องนี้ได้"
+
+#, machine, plain1
+msgid "An admin marked this as a child account. It has the child lock: the Child word filter, which hides profanity and anything marked sensitive, and some features are off. You can lift it by confirming your age in Settings > Content."
+msgstr "โฆษณาระบุว่านี่เป็นบัญชีเด็ก มัน มี ล็อก เด็ก: เครื่อง กรอง คํา เด็ก ซึ่ง ซ่อน ความ หยาบ คาย และ สิ่ง ใด ๆ ที่ แสดง ว่า มี ความ ไว สูง และ บาง อย่าง ก็ ไม่ มี การ ใช้. คุณสามารถยกได้โดยยืนยันอายุของคุณในการตั้งค่า > เนื้อหา."
 
 #, machine, plain1
 msgid "An admin marked this sensitive, so it can't be switched off here."
@@ -5606,6 +5622,14 @@ msgstr "ยืนยันรหัสผ่านใหม่"
 msgid "Confirm Password"
 msgstr "ยืนยันรหัสผ่าน"
 
+#, machine, plain1
+msgid "Confirm my age"
+msgstr "ยืนยันอายุของฉัน"
+
+#, machine, plain1
+msgid "Confirm your age"
+msgstr "ยืนยันอายุของคุณ"
+
 #, glossary, machine, plain1
 msgid "Connect"
 msgstr "ติดตามเรา"
@@ -6980,6 +7004,10 @@ msgstr "ทุกคนเห็นการเปลี่ยนแปลงข
 msgid "Everything from your guilds and accounts, newest first."
 msgstr "ทุกอย่างจากสมาคมของคุณ และบัญชีใหม่ล่าสุด."
 
+#, machine, plain1
+msgid "Everything you post goes only to your Friends circle, the people you follow who follow you back, so nothing is public by accident. Your circles can only hold people like that, and you can't forward, repost or write a shared draft. Comments on other people's posts are still public."
+msgstr "ทุกอย่างที่คุณโพสต์ จะไปเฉพาะกับ วงกลมเพื่อนของคุณ คนที่คุณติดตามกลับมา วงกลมของคุณเท่านั้นที่สามารถถือคนเช่นนั้น และคุณไม่สามารถไปข้างหน้า, โพสต์หรือเขียนร่างร่วม ความเห็นบนโพสต์ของคนอื่นๆ ยังคงเป็นที่สาธารณะ."
+
 #. %(typed)s is exactly what a reader types into the field; it stays as it is
 #, machine, plain1, python-format
 msgid "Example: %(typed)s · a public curation works too: %(curation)s"
@@ -8210,6 +8238,10 @@ msgstr "ซ่อนอยู่บนตัวกรองมาตรฐาน
 msgid "Hidden page"
 msgstr "หน้าที่ถูกซ่อน"
 
+#, machine, plain1
+msgid "Hidden until you confirm your age"
+msgstr "ซ่อนไว้จนกระทั่งนายยืนยันอายุ"
+
 #, glossary, machine, plain1
 msgid "Hide"
 msgstr "ซ่อน"
@@ -8428,6 +8460,14 @@ msgstr "ฉันยอมรับ <a href=\"%(url)s\" target=\"_blank\">เง
 msgid "I agree to the rules below."
 msgstr "ฉันเห็นด้วยกับกฎข้างล่าง."
 
+#, machine, plain1, python-format
+msgid "I'm %(min)s or over"
+msgstr "ฉัน %(min)s หรือมากกว่า"
+
+#, machine, plain1, python-format
+msgid "I'm %(min)s to 17"
+msgstr "ฉัน %(min)s ถึง 17"
+
 #, machine, plain1
 msgid "Ice Hockey"
 msgstr "ฮอกกี้น้ําแข็ง"
@@ -8471,6 +8511,10 @@ msgstr "ถ้าคุณก้าวลงมาเป็นตัวจัด
 #, machine, plain1
 msgid "If you're having trouble with the button above, copy and paste the URL below into your web browser."
 msgstr "หากคุณมีปัญหากับปุ่มด้านบน คัดลอกและวาง URL ด้านล่างนี้เป็นเว็บเบราว์เซอร์ของคุณ"
+
+#, machine, plain1
+msgid "If you're under 18 you can still sign up. Your account will have the child lock on, which hides profanity and sensitive content and turns some features off, until you confirm your age in your Settings."
+msgstr "ถ้าคุณอายุต่ํากว่า 18 คุณยังสมัครได้ บัญชีของคุณจะทําให้เด็กล็อค ซึ่งซ่อนเนื้อหาที่หยาบคายและละเอียดอ่อน และปิดคุณสมบัติบางอย่าง จนกว่าคุณจะยืนยันอายุของคุณในการตั้งค่าของคุณ."
 
 #, machine, plain1
 msgid "If you’re having trouble with the button above, copy and paste the URL below into your web browser."
@@ -8821,6 +8865,10 @@ msgstr "มันมีเพียงการสั่งซื้อที่
 #, machine, plain1
 msgid "It shows, in full, every word and phrase the word filter looks for, in every language it covers. That includes slurs and other extremely offensive language."
 msgstr "คํา นี้ แสดง ให้ เห็น คํา และ วลี ที่ ใช้ กรอง ทุก คํา ที่ ใช้ ใน ทุก ภาษา. นั่น หมาย รวม ถึง การ ดื่ม จัด และ ภาษา อื่น ๆ ที่ น่า รังเกียจ อย่าง ยิ่ง."
+
+#, machine, plain1
+msgid "It stays on the Child word filter, which hides profanity and anything marked sensitive. Chat, Spaces, coins, anonymous posting and starting a guild are off, and others can't start a chat or tip you. Your posts go to your Friends circle only unless you turn Private posting off."
+msgstr "มันอยู่บนตัวกรองคําเด็ก ซึ่งซ่อนความไม่สุภาพและอะไรที่โดดเด่น Chart, Spaces, เหรียญ, โพสต์นิรนามและเริ่มต้นสมาคมปิด และคนอื่นไม่สามารถเริ่มต้นการสนทนาหรือเคล็ดลับที่คุณ โพสต์ของคุณไปที่ วงกลมเพื่อนของคุณ จนกว่าคุณจะปิด โพสต์ส่วนตัว."
 
 #, machine, plain1, python-format
 msgid "It was not approved last time. The admins said: %(note)s"
@@ -9593,6 +9641,10 @@ msgstr "มีนาคม"
 #, glossary, machine, plain1
 msgid "Mark Sensitive Content"
 msgstr "ทำเครื่องหมายเนื้อหาละเอียดอ่อน"
+
+#, machine, plain1
+msgid "Mark a post Sensitive if a film or game with the same content would be rated 15, R or 16+, or given a content warning. That means strong sexual content or nudity, graphic violence or injury, strong drug use, self-harm or suicide, or very distressing or frightening scenes. If you're not sure, mark it Sensitive."
+msgstr "ทํา เครื่องหมาย โพสต์ ซิ ทีฟ ถ้า ภาพยนตร์ หรือ เกม ที่ มี เนื้อหา เดียว กัน จะ มี การ จัด เรต 15 R หรือ 16+ หรือ เตือน เนื้อหา. นั่นหมายถึงเนื้อหาทางเพศที่แข็งแรง หรือการโป๊ ภาพความรุนแรง หรือการบาดเจ็บ การใช้ยาเสพติดอย่างหนัก ถ้าคุณไม่แน่ใจ ทําเครื่องหมายไว้."
 
 #, machine, plain1
 msgid "Mark as Sensitive Content (blurred until clicked)"
@@ -12631,6 +12683,26 @@ msgid "Private post, visible to you because you are an approved contributor in +
 msgstr "โพสต์ส่วนตัวที่มองเห็นได้ให้คุณ เพราะคุณเป็นผู้มีส่วนร่วมที่อนุมัติใน +%(guild)s."
 
 #, machine, plain1
+msgid "Private posting"
+msgstr "โพสต์ส่วนตัว"
+
+#, machine, plain1
+msgid "Private posting is off."
+msgstr "การโพสต์ส่วนตัวยกเลิก."
+
+#, machine, plain1
+msgid "Private posting is on, so this can only go to your Friends circle. You can change that in Settings > Content."
+msgstr "การโพสต์ส่วนตัวเปิดขึ้น ดังนั้นนี้สามารถไปเฉพาะ วงกลมเพื่อนของคุณ คุณสามารถเปลี่ยนมันได้ในการตั้งค่า > เนื้อหา."
+
+#, machine, plain1
+msgid "Private posting is on, so this goes only to your Friends circle. You can change that in Settings > Content."
+msgstr "การโพสต์ส่วนตัวเป็นไปดังนั้นนี้จะไปเฉพาะ วงกลมเพื่อนของคุณ คุณสามารถเปลี่ยนมันได้ในการตั้งค่า > เนื้อหา."
+
+#, machine, plain1
+msgid "Private posting is on."
+msgstr "การโพสต์ส่วนตัวเป็นบน."
+
+#, machine, plain1
 msgid "Pro Wrestling"
 msgstr "โปรแกรม Wrestling"
 
@@ -14066,6 +14138,10 @@ msgid "Sensitive media"
 msgstr "สื่อที่อ่อนไหว"
 
 #, machine, plain1
+msgid "Sensitive posts, guilds and accounts are not against the rules, but All and For You leave them out unless you turn this on. You can always open a sensitive guild or profile, search for it or follow it."
+msgstr "โพสต์, สมาคมและบัญชีไม่ขัดกฎ แต่ทั้งหมดและสําหรับ คุณปล่อยให้พวกเขาออก จนกว่าคุณจะเปิดนี้ คุณสามารถเปิดสมาคมหรือโปรไฟล์ที่อ่อนไหวได้ตลอด สืบค้นหรือติดตามมัน."
+
+#, machine, plain1
 msgid "September equinox"
 msgstr "กันยายน"
 
@@ -15234,6 +15310,10 @@ msgid "Thanks. An admin will look at the bot soon; you will get a notification. 
 msgstr "ขอบคุณ admin จะมองไปที่หุ่นเร็ว ๆ นี้คุณจะได้รับการแจ้งเตือน ไม่สามารถจัดเก็บภาพได้ โปรดลองใหม่อีกครั้งจากหน้าของหุ่น."
 
 #, machine, plain1
+msgid "Thanks. Your account no longer has the child lock, and Private posting is off. Posts you made before stay as they were: use Who can see this on a post to change who sees it."
+msgstr "ขอบคุณ บัญชีของคุณไม่ได้ล็อคเด็กอีกต่อไป และการโพสต์ส่วนตัวถูกปิด โพสต์ที่คุณทําก่อนที่จะอยู่เป็นพวกเขา: ใช้ที่สามารถเห็นนี้ในโพสต์เพื่อเปลี่ยนที่ใครเห็นมัน."
+
+#, machine, plain1
 msgid "That Discord account is already in use by another user."
 msgstr "นั่น Discord มีผู้ใช้อื่นใช้งานบัญชีผู้ใช้อยู่แล้ว"
 
@@ -15738,6 +15818,18 @@ msgstr "บัญชีในรายชื่อนี้เก็บไว้
 #, machine, plain1, python-format
 msgid "The admins said: %(note)s"
 msgstr "โฆษณากล่าวว่า %(note)s"
+
+#, machine, plain1
+msgid "The age check didn't finish. Nothing has changed, and you can try again."
+msgstr "เช็คอายุไม่สําเร็จ ไม่มีอะไรเปลี่ยนแปลง และคุณสามารถลองอีกครั้ง."
+
+#, machine, plain1
+msgid "The age check found that you are under the youngest age allowed to have an account where you are."
+msgstr "การ ตรวจ อายุ พบ ว่า คุณ อยู่ ใน วัย ต่ํา สุด ที่ อนุญาต ให้ มี บัญชี ที่ คุณ อยู่."
+
+#, machine, plain1
+msgid "The age check found that you're under 18, so the child lock stays on."
+msgstr "การตรวจอายุพบว่าคุณอายุต่ํากว่า 18 ดังนั้นล็อคเด็กจึงยังอยู่."
 
 #, machine, plain1
 msgid "The author"
@@ -16747,8 +16839,20 @@ msgid "This is too much like what was posted automatically today."
 msgstr "นี่มันเหมือนกับ โพสต์อัตโนมัติมากวันนี้."
 
 #, machine, plain1
+msgid "This isn't available while your account is age-restricted. You can confirm your age in Settings > Content."
+msgstr "นี้ไม่ได้อยู่ในขณะที่บัญชีของคุณถูกจํากัดอายุ คุณสามารถยืนยันอายุของคุณในการตั้งค่า > เนื้อหา."
+
+#, machine, plain1
 msgid "This isn't shown at your current word filter level. You can review your word filter in your content settings."
 msgstr "นี่ไม่ได้แสดงในระดับตัวกรองคําปัจจุบันของคุณ คุณสามารถทบทวนตัวกรองคําของคุณ ในการตั้งค่าเนื้อหาของคุณ."
+
+#, machine, plain1
+msgid "This isn't shown where you are until your age has been confirmed. Sign in to do that in your content settings."
+msgstr "นี้ไม่ได้แสดงให้เห็นว่าคุณอยู่ที่ไหนจนกว่าอายุของคุณได้รับการยืนยัน ลงนามในการทําเช่นนั้นในการตั้งค่าเนื้อหาของคุณ."
+
+#, machine, plain1
+msgid "This isn't shown while your account is age-restricted."
+msgstr "นี่ไม่ได้แสดงในขณะที่ บัญชีของคุณถูกจํากัดอายุ."
 
 #, machine, plain1, python-format
 msgid "This live thread ended a moment ago. It can go live again in %(num)s min."
@@ -17115,6 +17219,10 @@ msgid "To store your uploads, tick the box that lets this site manage the files 
 msgstr "เพื่อเก็บข้อมูลการอัปโหลดของคุณ ให้กาเลือกกล่องที่ทําให้เว็บไซต์นี้จัดการแฟ้มที่สร้างในเครื่องของคุณ Google Drive."
 
 #, machine, plain1
+msgid "To take the child lock off, confirm that you're 18 or over."
+msgstr "เพื่อเอาเด็กออกไป ยืนยันว่าคุณอายุ 18 หรือมากกว่า."
+
+#, machine, plain1
 msgid "To take this site's access away at Microsoft, remove it under your Microsoft account's app permissions."
 msgstr "เพื่อชิงสิทธิ์ของเว็บไซต์นี้จากไมโครซอฟต์ ให้เอาออก ภายใต้สิทธิ์การใช้ของบัญชีผู้ใช้ไมโครซอฟต์ของคุณ."
 
@@ -17260,6 +17368,10 @@ msgstr "ปิดการแจ้งเตือนจาก + %(guild)s"
 #, machine, plain1, python-format
 msgid "Turn off notifications from @%(name)s"
 msgstr "ปิดการแจ้งเตือน%(name)s"
+
+#, machine, plain1
+msgid "Turn on if much of what you post would be rated 15, R or 16+. Your profile shows a Sensitive content badge, your new posts are blurred, and your posts are left out of All and For You for anyone who hasn't chosen to see sensitive content."
+msgstr "เปิด ถ้า สิ่ง ที่ คุณ โพสต์ ส่วน ใหญ่ จะ มี อัตรา 15, อาร์ หรือ 16+. โปรไฟล์ของคุณแสดงตราสารสนเทศ โพสต์ใหม่ของคุณจะเบลอ และโพสต์ของคุณจะถูกทิ้งไว้ จากทั้งหมดและสําหรับคุณสําหรับทุกคนที่ยังไม่ได้เลือกที่จะ ดูเนื้อหาที่อ่อนไหว."
 
 #, machine, plain1
 msgid "Turn on media storage to upload."
@@ -18206,6 +18318,9 @@ msgstr "เราจะจัดการต่อเอง."
 msgid "We're sorry something here is wrong."
 msgstr "เราขอโทษทีที่มีอะไรผิดพลาด."
 
+msgid "We've changed the Age section of our [Terms](/help/terms). An account for someone under 18 now has a child lock, and in the UK, the EU and Australia your age has to be confirmed with an age-check service before the lock comes off or you can see sensitive content. You can say whether you're 18 or over in Settings > Content."
+msgstr ""
+
 #, machine, plain1
 msgid "Web Development"
 msgstr "การพัฒนาเว็บ"
@@ -18395,6 +18510,22 @@ msgstr "โพสต์ที่ไหน"
 #, machine, plain1
 msgid "Where you are, in your words"
 msgstr "ที่ๆคุณอยู่ ในคําพูดของคุณ"
+
+#, machine, plain1
+msgid "Where you are, the law means you have to confirm that you're 18 or over with an age-check service, in your Settings after you sign up. Until then your account has the child lock on, which hides profanity and sensitive content and turns some features off."
+msgstr "ที่ที่คุณอยู่ กฏหมายหมายถึง คุณต้องยืนยันว่าคุณอายุ 18 หรือมากกว่า ในการบริการตรวจสอบอายุ ในการตั้งค่าของคุณ หลังจากที่คุณสมัคร จน กว่า จะ ถึง ตอน นั้น บัญชี ของ คุณ ก็ จะ ปิด ลูก ไว้ ซึ่ง จะ ปิด ซ่อน เนื้อหา ที่ หยาบ คาย และ ละเอียด อ่อน ไว้ และ ปิด บาง อย่าง."
+
+#, machine, plain1
+msgid "Where you are, the law means your age has to be confirmed with an age-check service before the child lock comes off."
+msgstr "ที่ที่คุณอยู่ กฎหมายหมายถึงอายุของคุณ ได้รับการยืนยันด้วยบริการอายุ ก่อนที่จะล็อคเด็กออกมา."
+
+#, machine, plain1
+msgid "Where you are, the law means your age has to be confirmed with an age-check service before you can see sensitive content or strong language."
+msgstr "ที่ที่คุณอยู่ กฎหมายหมายถึงอายุของคุณ ได้รับการยืนยันด้วยบริการอายุ ก่อนที่จะสามารถดูเนื้อหาที่อ่อนไหว หรือภาษาที่แข็งแกร่ง."
+
+#, machine, plain1
+msgid "Where you are, your age has to be confirmed with an age-check service."
+msgstr "ที่ที่คุณอยู่ อายุของคุณจะได้รับการยืนยัน การให้บริการอายุ."
 
 #, machine, plain1
 msgid "Whether a video site's player may load before you press play. While it may not, Automatic above has no effect."
@@ -18593,6 +18724,10 @@ msgid "With Premium you see how each of your posts is doing: views per day, how 
 msgstr "ด้วย Premium คุณจะเห็นวิธีการของแต่ละโพสต์ของคุณทํา: มุมมองต่อวันจํานวนคนที่ลงนามในมา ลงคะแนน, ความเห็น, ที่คั่นหน้า, ไปข้างหน้าและโพสต์, วิธีการทําในแต่ละสมาคม"
 
 #, machine, plain1
+msgid "With Private posting on, a circle can only hold people who follow you and whom you follow."
+msgstr "เมื่อมีการโพสต์ส่วนตัวบนวงกลมเท่านั้นที่สามารถถือ คนที่ตามคุณและคนที่คุณปฏิบัติตาม."
+
+#, machine, plain1
 msgid "With a link"
 msgstr "ด้วยการเชื่อมโยง"
 
@@ -18789,6 +18924,10 @@ msgstr "วัน น้ํา โลก"
 #, machine, plain1
 msgid "World Wildlife Day"
 msgstr "วัน สัตว์ ป่า โลก"
+
+#, machine, plain1
+msgid "Would a film with this be rated 15 or R? Blur this post until viewers click to reveal it."
+msgstr "หนังเรื่องนี้จะมีเรต 15 หรือ R? เบลอโพสต์นี้จนกว่าผู้ชมคลิกที่จะเปิดเผย."
 
 #, machine, plain1
 msgid "Write a username."
@@ -19247,6 +19386,10 @@ msgid "You can't do that while your account balance is negative. Visit your acco
 msgstr "คุณทําอย่างนั้นไม่ได้ ในขณะที่งบบัญชีของคุณเป็นลบ เยี่ยมชมการตั้งค่าบัญชีผู้ใช้ของคุณที่จะนําความสมดุลของคุณขึ้นเป็นศูนย์."
 
 #, machine, plain1
+msgid "You can't do that with this account."
+msgstr "คุณไม่สามารถทําเช่นนั้นกับบัญชีนี้."
+
+#, machine, plain1
 msgid "You can't edit this page."
 msgstr "คุณไม่สามารถแก้ไขหน้านี้ได้."
 
@@ -19592,6 +19735,10 @@ msgstr "คุณ อาจ ไม่ ได้ ยึด สมาคม ที
 msgid "You may not use Ruqqus to engage in or plan unlawful activity."
 msgstr "คุณ อาจ ไม่ ได้ ใช้ รู ค วาส ใน การ เข้า ร่วม หรือ วาง แผน ทํา กิจกรรม ที่ ผิด กฎหมาย."
 
+#, machine, plain1, python-format
+msgid "You must be at least %(min)s to have an account where you are."
+msgstr "อย่างน้อยเธอก็ต้อง %(min)s มีบัญชีที่คุณอยู่"
+
 #, machine, plain1
 msgid "You must have a verified email address to upload images via Tor."
 msgstr "คุณต้องมีที่อยู่อีเมลตรวจสอบเพื่ออัปโหลดภาพต่าง ๆ ผ่านทาง Tor."
@@ -19933,6 +20080,18 @@ msgstr "บัญชีของคุณได้รับการตรวจ
 msgid "Your account has been deleted"
 msgstr "บัญชีของคุณถูกลบแล้ว"
 
+#, machine, plain1, python-format
+msgid "Your account has the child lock on, since %(date)s."
+msgstr "บัญชีของคุณล็อคเด็กตั้งแต่ %(date)s."
+
+#, machine, plain1
+msgid "Your account is age-restricted, so its word filter stays on Child until you confirm your age in Settings."
+msgstr "บัญชีของคุณถูกจํากัดอายุ ดังนั้นคําว่าตัวกรองจะอยู่กับเด็ก จนกว่าคุณจะยืนยันอายุของคุณในการตั้งค่า."
+
+#, machine, plain1
+msgid "Your account is age-restricted, so sensitive content stays hidden until you confirm your age in Settings."
+msgstr "บัญชีของคุณถูกจํากัดอายุ ดังนั้นเนื้อหาที่ละเอียดอ่อนจะซ่อนอยู่ จนกว่าคุณจะยืนยันอายุของคุณในการตั้งค่า."
+
 #, machine, plain1
 msgid "Your account is being checked"
 msgstr "กําลังตรวจหาบัญชีผู้ใช้ของคุณ"
@@ -19984,6 +20143,10 @@ msgstr "บัญชีของคุณไม่ได้โพสต์โด
 msgid "Your account posts from these feeds from now on."
 msgstr "โพสต์บัญชีของคุณจากอาหารเหล่านี้จากนี้ต่อไป."
 
+#, machine, plain1
+msgid "Your account was closed"
+msgstr "บัญชีของคุณถูกปิด"
+
 #, machine, plain1, python-format
 msgid "Your account's automated posting has been paused: %(reason)s"
 msgstr "บัญชีของคุณมีการโพสต์อัตโนมัติแล้ว %(reason)s"
@@ -19998,6 +20161,10 @@ msgstr "บัญชีของคุณมีการโพสต์อัต
 
 msgid "Your account's automated posting was approved. Your feeds' new posts appear on your profile, marked as automated, within a few minutes. Manage it in [Settings > Bots](/settings/bots)."
 msgstr ""
+
+#, machine, plain1, python-format
+msgid "Your age was confirmed on %(date)s."
+msgstr "อายุของคุณได้รับการยืนยันแล้ว %(date)s."
 
 #, machine, plain1
 msgid "Your answer"
@@ -20200,6 +20367,10 @@ msgstr "ส่วนผสมของคุณเอง"
 msgid "Your own mix ranks the newest %(num)s matching post. 0 switches a part off, 10 makes it count the most."
 msgid_plural "Your own mix ranks the newest %(num)s matching posts. 0 switches a part off, 10 makes it count the most."
 msgstr[0] "ส่วนผสมของคุณเองจัดอันดับใหม่ %(num)s ตรงกับโพสต์ 0 สลับส่วน, 10 ทําให้นับได้มากที่สุด"
+
+#, machine, plain1
+msgid "Your parent or guardian has to agree before Private posting can be turned off."
+msgstr "พ่อแม่หรือผู้ปกครองของคุณต้องเห็นด้วย ก่อนที่การโพสต์ส่วนตัวจะถูกปิด."
 
 #, machine, plain1
 msgid "Your password"

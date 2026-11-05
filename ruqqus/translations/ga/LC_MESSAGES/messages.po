@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ruqqus VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-31 05:16+0000\n"
+"POT-Creation-Date: 2026-11-05 16:56+1100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: ga\n"
@@ -3829,6 +3829,10 @@ msgstr[2] "Is féidir cuardach a dhéanamh ag an chuid is mó de na focail agus 
 msgstr[3] "Is féidir le cuardach a dhéanamh ag an chuid is mó de %(num)s focal agus oibreoirí."
 msgstr[4] "Is féidir cuardach a dhéanamh ar an chuid is mó %(num)s focail agus oibreoirí."
 
+#, machine, plain1
+msgid "A sensitive guild's posts are left out of All and For You for anyone who hasn't chosen to see sensitive content. Enable if your guild allows content that a film or game would rate 15, R or 16+, such as strong sexual content, graphic violence or self-harm - not a rule violation, just a heads-up. Every post in this guild will be blurred by default."
+msgstr "A post guild íogair atá fágtha amach as gach agus Do tú do dhuine ar bith nach bhfuil roghnaithe a fheiceáil ábhar íogair. Cumasaigh má cheadaíonn do guild ábhar go mbeadh scannán nó cluiche ráta 15, R nó 16+, ar nós ábhar láidir gnéasach, foréigean grafach nó féin-chógais - ní sárú riail, ach ceann-suas. Beidh gach post sa guild a blurred de réir réamhshocraithe."
+
 #, machine, plain1, python-format
 msgid "A shared draft can have at most %(num)s author."
 msgid_plural "A shared draft can have at most %(num)s authors."
@@ -4367,6 +4371,10 @@ msgid "After %(date)s"
 msgstr "Tar éis %(date)s"
 
 #, machine, plain1
+msgid "Age confirmation isn't available yet."
+msgstr "Níl deimhniú Aois ar fáil go fóill."
+
+#, machine, plain1
 msgid "Alert"
 msgstr "Seans go mbeidh ort:"
 
@@ -4538,9 +4546,17 @@ msgstr "Cliceáil grianghraf a mhéadú"
 msgid "An account with that username or email already exists."
 msgstr "Tá cuntas leis an ainm úsáideora nó ríomhphost ann cheana féin."
 
+#, machine, plain1
+msgid "An admin confirmed that you are 18 or over. Your account no longer has the child lock. Your word filter hasn't changed: you can change it in Settings > Content, and turning the Child filter down needs your password."
+msgstr "An admin dhearbhaigh go bhfuil tú 18 nó os a chionn. Níl an glas leanbh ag do chuntas a thuilleadh. Níor athraigh do scagaire focal: is féidir leat é a athrú i Socruithe × Ábhar, agus ag casadh an scagaire Leanaí síos riachtanais do phasfhocal."
+
 #, machine, plain1, python-format
 msgid "An admin marked +%(guild)s sensitive: its posts are left out of All and For You unless someone chooses to see sensitive content. Only an admin can change this."
 msgstr "An admin marcáilte + %(guild)s íogair: a phoist atá fágtha amach as Gach agus Chun tú mura roghnaíonn duine éigin a fheiceáil ábhar íogair. Is féidir ach admin athrú seo."
+
+#, machine, plain1
+msgid "An admin marked this as a child account. It has the child lock: the Child word filter, which hides profanity and anything marked sensitive, and some features are off. You can lift it by confirming your age in Settings > Content."
+msgstr "An admin marcáilte seo mar chuntas linbh. Tá sé an glas leanbh: an scagaire focal Leanaí, a seithí profanity agus aon rud marcáilte íogair, agus tá roinnt gnéithe as. Is féidir leat é a ardú trí dhearbhú d'aois i Socruithe × Ábhar."
 
 #, machine, plain1
 msgid "An admin marked this sensitive, so it can't be switched off here."
@@ -6422,6 +6438,14 @@ msgstr "Confirm New Password"
 msgid "Confirm Password"
 msgstr "Dídean Pasfhocal"
 
+#, machine, plain1
+msgid "Confirm my age"
+msgstr "Daingniú mo aois"
+
+#, machine, plain1
+msgid "Confirm your age"
+msgstr "Daingniú do aois"
+
 #, glossary, machine, plain1
 msgid "Connect"
 msgstr "Lean sinn"
@@ -7825,6 +7849,10 @@ msgstr "Feiceann gach duine athruithe ar a chéile mar atá siad cineál, agus t
 msgid "Everything from your guilds and accounts, newest first."
 msgstr "Gach rud ó do guilds agus cuntais, an chéad nua."
 
+#, machine, plain1
+msgid "Everything you post goes only to your Friends circle, the people you follow who follow you back, so nothing is public by accident. Your circles can only hold people like that, and you can't forward, repost or write a shared draft. Comments on other people's posts are still public."
+msgstr "Gach rud a phost tú théann ach amháin le do ciorcal Cairde, na daoine a leanann tú a leanann tú ar ais, mar sin tá aon rud poiblí de thaisme. Is féidir le do ciorcail a shealbhú ach daoine mar sin, agus ní féidir leat ar aghaidh, repost nó scríobh dréacht roinnte. Comments on other people's jobs are still public."
+
 #. %(typed)s is exactly what a reader types into the field; it stays as it is
 #, machine, plain1, python-format
 msgid "Example: %(typed)s · a public curation works too: %(curation)s"
@@ -9087,6 +9115,10 @@ msgstr "Hidden ar an Caighdeán agus scagairí Linbh"
 msgid "Hidden page"
 msgstr "Leathanach Hidden"
 
+#, machine, plain1
+msgid "Hidden until you confirm your age"
+msgstr "I bhfolach go dtí go ndeimhníonn tú do aois"
+
 #, glossary, machine, plain1
 msgid "Hide"
 msgstr "Folaigh"
@@ -9309,6 +9341,14 @@ msgstr "Glacaim leis an <a href=\"%(url)s\" target=\"_blank\">téarmaí agus coi
 msgid "I agree to the rules below."
 msgstr "Aontaím leis na rialacha thíos."
 
+#, machine, plain1, python-format
+msgid "I'm %(min)s or over"
+msgstr "Tá mé %(min)s nó níos mó"
+
+#, machine, plain1, python-format
+msgid "I'm %(min)s to 17"
+msgstr "Is maith liom é %(min)s go 17"
+
 #, machine, plain1
 msgid "Ice Hockey"
 msgstr "Riachtanais uisce: measartha"
@@ -9352,6 +9392,10 @@ msgstr "Má chéim tú síos mar moderator guild, caillfidh tú ceadanna iomlán
 #, machine, plain1
 msgid "If you're having trouble with the button above, copy and paste the URL below into your web browser."
 msgstr "Má tá tú ag deacracht leis an gcnaipe thuas, cóip agus greamaigh an URL thíos isteach i do bhrabhsálaí gréasáin."
+
+#, machine, plain1
+msgid "If you're under 18 you can still sign up. Your account will have the child lock on, which hides profanity and sensitive content and turns some features off, until you confirm your age in your Settings."
+msgstr "Má tá tú faoi 18 is féidir leat clárú go fóill. Beidh do chuntas a bheith ar an glas leanbh ar, a seithí profanity agus ábhar íogair agus casadh roinnt gnéithe amach, go dtí go ndeimhníonn tú do aois i do Socruithe."
 
 #, machine, plain1
 msgid "If you’re having trouble with the button above, copy and paste the URL below into your web browser."
@@ -9710,6 +9754,10 @@ msgstr "Tá sé ach orduithe poist go bhfuil tú cead a fheiceáil."
 #, machine, plain1
 msgid "It shows, in full, every word and phrase the word filter looks for, in every language it covers. That includes slurs and other extremely offensive language."
 msgstr "Taispeánann sé, go hiomlán, gach focal agus frása Breathnaíonn an scagaire focal, i ngach teanga a chlúdaíonn sé. Áirítear leis sin slurs agus teanga thar a bheith ionsaitheach eile."
+
+#, machine, plain1
+msgid "It stays on the Child word filter, which hides profanity and anything marked sensitive. Chat, Spaces, coins, anonymous posting and starting a guild are off, and others can't start a chat or tip you. Your posts go to your Friends circle only unless you turn Private posting off."
+msgstr "Fanann sé ar an scagaire focal Leanaí, a seithí profanity agus aon rud marcáilte íogair. Chat, Spásanna, boinn, postáil gan ainm agus ag tosú guild atá as, agus ní féidir le daoine eile tús a comhrá nó tip tú. Do phoist dul go dtí do ciorcal Cairde ach amháin má tá tú ag dul postáil Príobháideacha as."
 
 #, machine, plain1, python-format
 msgid "It was not approved last time. The admins said: %(note)s"
@@ -10530,6 +10578,10 @@ msgstr "Cothromóid Márta"
 #, glossary, machine, plain1
 msgid "Mark Sensitive Content"
 msgstr "Marcáil mar ábhar íogair"
+
+#, machine, plain1
+msgid "Mark a post Sensitive if a film or game with the same content would be rated 15, R or 16+, or given a content warning. That means strong sexual content or nudity, graphic violence or injury, strong drug use, self-harm or suicide, or very distressing or frightening scenes. If you're not sure, mark it Sensitive."
+msgstr "Mark post Sensitive más rud é go mbeadh scannán nó cluiche leis an ábhar céanna a rátáil 15, R nó 16+, nó thug rabhadh ábhar. Ciallaíonn sé sin cion gnéasach láidir nó nudity, foréigean grafach nó díobháil, úsáid drugaí láidir, féin-chógas nó féinmharú, nó radhairc an-aisteach nó scanrúil. Mura bhfuil tú cinnte, marcáil sé Sensitive."
 
 #, machine, plain1
 msgid "Mark as Sensitive Content (blurred until clicked)"
@@ -13644,6 +13696,26 @@ msgid "Private post, visible to you because you are an approved contributor in +
 msgstr "Post príobháideach, le feiceáil a thabhairt duit toisc go bhfuil tú ina ranníocóir ceadaithe i + %(guild)s."
 
 #, machine, plain1
+msgid "Private posting"
+msgstr "Postáil phríobháideach"
+
+#, machine, plain1
+msgid "Private posting is off."
+msgstr "Tá postáil príobháideach as."
+
+#, machine, plain1
+msgid "Private posting is on, so this can only go to your Friends circle. You can change that in Settings > Content."
+msgstr "Tá postáil príobháideach ar, ionas gur féidir é seo ach dul go dtí do ciorcal Cairde. Is féidir leat athrú go i Socruithe × Ábhar."
+
+#, machine, plain1
+msgid "Private posting is on, so this goes only to your Friends circle. You can change that in Settings > Content."
+msgstr "Tá postáil príobháideach ar, mar sin téann sé seo ach amháin le do ciorcal Cairde. Is féidir leat athrú go i Socruithe × Ábhar."
+
+#, machine, plain1
+msgid "Private posting is on."
+msgstr "Tá postáil príobháideach ar."
+
+#, machine, plain1
 msgid "Pro Wrestling"
 msgstr "Pro Gabháil"
 
@@ -15107,6 +15179,10 @@ msgid "Sensitive media"
 msgstr "Meáin íogaire"
 
 #, machine, plain1
+msgid "Sensitive posts, guilds and accounts are not against the rules, but All and For You leave them out unless you turn this on. You can always open a sensitive guild or profile, search for it or follow it."
+msgstr "Níl poist íogair, guilds agus cuntais i gcoinne na rialacha, ach All and For You leave them out but you turn this on. Is féidir leat a oscailt i gcónaí guild íogair nó próifíl, cuardach a dhéanamh air nó é a leanúint."
+
+#, machine, plain1
 msgid "September equinox"
 msgstr "Meán Fómhair equinox"
 
@@ -16323,6 +16399,10 @@ msgid "Thanks. An admin will look at the bot soon; you will get a notification. 
 msgstr "Go raibh maith agat. Beidh admin breathnú ar an buidéal go luath; gheobhaidh tú fógra. Níorbh fhéidir an pictiúr a stóráil; bain triail as arís ó leathanach an bhuidéil."
 
 #, machine, plain1
+msgid "Thanks. Your account no longer has the child lock, and Private posting is off. Posts you made before stay as they were: use Who can see this on a post to change who sees it."
+msgstr "Go raibh maith agat. Tá do chuntas a thuilleadh an glas leanbh, agus tá postáil Príobháideacha as. Poist a rinne tú roimh fanacht mar a bhí siad: úsáid Cé is féidir a fheiceáil ar an bpost a athrú a fheiceann sé."
+
+#, machine, plain1
 msgid "That Discord account is already in use by another user."
 msgstr "Sin Discord Tá cuntas in úsáid cheana féin ag úsáideoir eile."
 
@@ -16827,6 +16907,18 @@ msgstr "Coinníonn na cuntais ar an liosta seo iad féin."
 #, machine, plain1, python-format
 msgid "The admins said: %(note)s"
 msgstr "An admins dúirt: %(note)s"
+
+#, machine, plain1
+msgid "The age check didn't finish. Nothing has changed, and you can try again."
+msgstr "Ní raibh an seiceáil aois chríochnú. Ní dhéanfaidh aon ní athrú, agus is féidir leat triail arís."
+
+#, machine, plain1
+msgid "The age check found that you are under the youngest age allowed to have an account where you are."
+msgstr "Fuair an seic aoise go bhfuil tú faoin aois is óige a cheadaítear cuntas a bheith agat nuair atá tú."
+
+#, machine, plain1
+msgid "The age check found that you're under 18, so the child lock stays on."
+msgstr "Fuair an seic aoise go bhfuil tú faoi 18, mar sin fanann an glas leanbh ar."
 
 #, machine, plain1
 msgid "The author"
@@ -17893,8 +17985,20 @@ msgid "This is too much like what was posted automatically today."
 msgstr "Tá sé seo i bhfad ró mar a cuireadh i bpost go huathoibríoch inniu."
 
 #, machine, plain1
+msgid "This isn't available while your account is age-restricted. You can confirm your age in Settings > Content."
+msgstr "Níl sé seo ar fáil cé go bhfuil do chuntas aois- srianta. Is féidir leat a dheimhniú d'aois i Socruithe × Ábhar."
+
+#, machine, plain1
 msgid "This isn't shown at your current word filter level. You can review your word filter in your content settings."
 msgstr "Níl sé seo léirithe ag do leibhéal scagaire focal reatha. Is féidir leat athbhreithniú a dhéanamh ar do scagaire focal i do suímh ábhar."
+
+#, machine, plain1
+msgid "This isn't shown where you are until your age has been confirmed. Sign in to do that in your content settings."
+msgstr "Níl sé seo léirithe áit a bhfuil tú go dtí go bhfuil do aois deimhnithe. Sínigh isteach chun é sin a dhéanamh i do suímh ábhar."
+
+#, machine, plain1
+msgid "This isn't shown while your account is age-restricted."
+msgstr "Níl sé seo léirithe cé go bhfuil do chuntas aois- srianta."
 
 #, machine, plain1, python-format
 msgid "This live thread ended a moment ago. It can go live again in %(num)s min."
@@ -18285,6 +18389,10 @@ msgid "To store your uploads, tick the box that lets this site manage the files 
 msgstr "Chun do uaslódáil a stóráil, cuir tic sa bhosca a ligeann an suíomh seo a bhainistiú na comhaid a chruthaíonn sé i do Google Drive."
 
 #, machine, plain1
+msgid "To take the child lock off, confirm that you're 18 or over."
+msgstr "Chun an leanbh a chur faoi ghlas, a dheimhniú go bhfuil tú 18 nó os a chionn."
+
+#, machine, plain1
 msgid "To take this site's access away at Microsoft, remove it under your Microsoft account's app permissions."
 msgstr "Chun rochtain an tsuímh seo a chur ar shiúl ag Microsoft, é a bhaint faoi cheadanna app do chuntais Microsoft."
 
@@ -18430,6 +18538,10 @@ msgstr "Fógraí a mhúchadh ó + %(guild)s"
 #, machine, plain1, python-format
 msgid "Turn off notifications from @%(name)s"
 msgstr "Ag tabhairt freagra ar @%(name)s"
+
+#, machine, plain1
+msgid "Turn on if much of what you post would be rated 15, R or 16+. Your profile shows a Sensitive content badge, your new posts are blurred, and your posts are left out of All and For You for anyone who hasn't chosen to see sensitive content."
+msgstr "Cas ar más rud é go mbeadh i bhfad ar an méid a phost tú a rátáil 15, R nó 16+. Taispeánann do phróifíl suaitheantas ábhar Sensitive, do phoist nua blurred, agus do phoist atá fágtha amach as Gach agus Do tú do dhuine ar bith nach bhfuil roghnaithe a fheiceáil ábhar íogair."
 
 #, machine, plain1
 msgid "Turn on media storage to upload."
@@ -19393,6 +19505,10 @@ msgid "We're sorry something here is wrong."
 msgstr "Tá brón orainn rud éigin anseo mícheart."
 
 #, machine, plain1
+msgid "We've changed the Age section of our [Terms](/help/terms). An account for someone under 18 now has a child lock, and in the UK, the EU and Australia your age has to be confirmed with an age-check service before the lock comes off or you can see sensitive content. You can say whether you're 18 or over in Settings > Content."
+msgstr "Táimid tar éis athrú ar an rannóg Aois ar ár [Téarmaí](/help/terms). Tá cuntas ag duine faoi 18 anois glas linbh, agus sa Ríocht Aontaithe, ní mór an AE agus an Astráil do aois a dhaingniú le seirbhís aoise sula dtagann an glas amach nó is féidir leat ábhar íogair a fheiceáil. Is féidir leat a rá cibé an bhfuil tú 18 nó os a chionn i Socruithe × Ábhar."
+
+#, machine, plain1
 msgid "Web Development"
 msgstr "Forbairt ar an nGréasán"
 
@@ -19581,6 +19697,22 @@ msgstr "Cá háit le postáil"
 #, machine, plain1
 msgid "Where you are, in your words"
 msgstr "Cá bhfuil tú, i do chuid focal"
+
+#, machine, plain1
+msgid "Where you are, the law means you have to confirm that you're 18 or over with an age-check service, in your Settings after you sign up. Until then your account has the child lock on, which hides profanity and sensitive content and turns some features off."
+msgstr "Sa chás go bhfuil tú, ciallaíonn an dlí go bhfuil tú a dheimhniú go bhfuil tú 18 nó os a chionn le seirbhís aoise-seiceáil, i do Socruithe tar éis duit clárú. Go dtí sin tá do chuntas an glas leanbh ar, a seithí profanity agus ábhar íogair agus casadh roinnt gnéithe as."
+
+#, machine, plain1
+msgid "Where you are, the law means your age has to be confirmed with an age-check service before the child lock comes off."
+msgstr "Sa chás go bhfuil tú, ciallaíonn an dlí go bhfuil d'aois a dhaingniú le seirbhís aoise-seiceáil sula dtagann an glas leanbh as."
+
+#, machine, plain1
+msgid "Where you are, the law means your age has to be confirmed with an age-check service before you can see sensitive content or strong language."
+msgstr "Sa chás go bhfuil tú, ciallaíonn an dlí go bhfuil do aois a dhaingniú le seirbhís aoise-seiceáil sular féidir leat a fheiceáil ábhar íogair nó teanga láidir."
+
+#, machine, plain1
+msgid "Where you are, your age has to be confirmed with an age-check service."
+msgstr "Sa chás go bhfuil tú, tá do aois a bheith deimhnithe le seirbhís aoise-seiceáil."
 
 #, machine, plain1
 msgid "Whether a video site's player may load before you press play. While it may not, Automatic above has no effect."
@@ -19779,6 +19911,10 @@ msgid "With Premium you see how each of your posts is doing: views per day, how 
 msgstr "Le Premium tú a fheiceáil conas gach ceann de do phoist ag déanamh: tuairimí in aghaidh an lae, cé mhéad sínithe-i daoine a tháinig, vótaí, tuairimí, leabharmharcanna, aghaidheanna agus reposts, conas a dhéanann sé i ngach guild cuireadh ar aghaidh chuig, agus na torthaí a vótaíochta."
 
 #, machine, plain1
+msgid "With Private posting on, a circle can only hold people who follow you and whom you follow."
+msgstr "Le postáil Príobháideacha ar, Is féidir le ciorcal a shealbhú ach daoine a leanann tú, agus a bhfuil tú a leanúint."
+
+#, machine, plain1
 msgid "With a link"
 msgstr "Le nasc"
 
@@ -19975,6 +20111,10 @@ msgstr "Lá Uisce an Domhain"
 #, machine, plain1
 msgid "World Wildlife Day"
 msgstr "Lá Domhanda na Fiadhúlra"
+
+#, machine, plain1
+msgid "Would a film with this be rated 15 or R? Blur this post until viewers click to reveal it."
+msgstr "Ar mhaith scannán leis seo a rátáil 15 nó R? Blur an post seo go dtí go lucht féachana cliceáil chun é a nochtadh."
 
 #, machine, plain1
 msgid "Write a username."
@@ -20529,6 +20669,10 @@ msgid "You can't do that while your account balance is negative. Visit your acco
 msgstr "Ní féidir leat a dhéanamh go cé go bhfuil do iarmhéid cuntas diúltach. Tabhair cuairt ar do suímh chuntais a thabhairt do chothromaíocht suas go dtí nialas."
 
 #, machine, plain1
+msgid "You can't do that with this account."
+msgstr "Ní féidir leat é sin a dhéanamh leis an gcuntas seo."
+
+#, machine, plain1
 msgid "You can't edit this page."
 msgstr "Ní féidir leat in eagar an leathanach seo."
 
@@ -20892,6 +21036,10 @@ msgstr "Ní fhéadfadh tú guilds éileamh táthcheangail go bhfuil tú exiled �
 msgid "You may not use Ruqqus to engage in or plan unlawful activity."
 msgstr "Ní féidir leat úsáid a bhaint as Ruqqus chun dul i mbun nó a phleanáil gníomhaíocht neamhdhleathach."
 
+#, machine, plain1, python-format
+msgid "You must be at least %(min)s to have an account where you are."
+msgstr "Ní mór duit a bheith ar a laghad %(min)s go bhfuil cuntas áit a bhfuil tú."
+
 #, machine, plain1
 msgid "You must have a verified email address to upload images via Tor."
 msgstr "Ní mór seoladh ríomhphoist fíoraithe a bheith agat chun íomhánna a uaslódáil trí Tor."
@@ -21253,6 +21401,18 @@ msgstr "Tá do chuntas a sheiceáil agus tá sé réidh: is féidir leat post an
 msgid "Your account has been deleted"
 msgstr "Scriostar do chuntas"
 
+#, machine, plain1, python-format
+msgid "Your account has the child lock on, since %(date)s."
+msgstr "Tá do chuntas an glas leanbh ar, ós rud é %(date)s."
+
+#, machine, plain1
+msgid "Your account is age-restricted, so its word filter stays on Child until you confirm your age in Settings."
+msgstr "Tá do chuntas aois-srianta, mar sin fanann a scagaire focal ar Leanaí go dtí go ndeimhníonn tú d'aois i Socruithe."
+
+#, machine, plain1
+msgid "Your account is age-restricted, so sensitive content stays hidden until you confirm your age in Settings."
+msgstr "Tá do chuntas aois-srianta, mar sin fanann ábhar íogair i bhfolach go dtí go ndeimhníonn tú do aois i Socruithe."
+
 #, machine, plain1
 msgid "Your account is being checked"
 msgstr "Tá do chuntas á sheiceáil"
@@ -21309,6 +21469,10 @@ msgstr "Do chuntas a thuilleadh poist go huathoibríoch. A phoist fanacht."
 msgid "Your account posts from these feeds from now on."
 msgstr "Do phoist cuntas ó na fothaí ó anois ar."
 
+#, machine, plain1
+msgid "Your account was closed"
+msgstr "Dúnadh do chuntas"
+
 #, machine, plain1, python-format
 msgid "Your account's automated posting has been paused: %(reason)s"
 msgstr "Tá postáil uathoibrithe do chuntas sos: %(reason)s"
@@ -21324,6 +21488,10 @@ msgstr "Do chuntas postála uathoibrithe stop léamh %(url)s tar éis %(fails)s 
 #, machine, plain1
 msgid "Your account's automated posting was approved. Your feeds' new posts appear on your profile, marked as automated, within a few minutes. Manage it in [Settings > Bots](/settings/bots)."
 msgstr "Ceadaíodh postáil uathoibrithe do chuntais. Do phoist nua Fothaí le feiceáil ar do phróifíl, marcáilte mar uathoibrithe, laistigh de chúpla nóiméad. Bainistigh é i [Socruithe ^ Bots](/settings/bots)."
+
+#, machine, plain1, python-format
+msgid "Your age was confirmed on %(date)s."
+msgstr "Deimhníodh do aois ar %(date)s."
 
 #, machine, plain1
 msgid "Your answer"
@@ -21534,6 +21702,10 @@ msgstr[1] ""
 msgstr[2] ""
 msgstr[3] ""
 msgstr[4] ""
+
+#, machine, plain1
+msgid "Your parent or guardian has to agree before Private posting can be turned off."
+msgstr "Tá do thuismitheoir nó caomhnóir a aontú sula féidir postáil Príobháideacha a mhúchadh."
 
 #, machine, plain1
 msgid "Your password"

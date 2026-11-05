@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ruqqus VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-31 05:16+0000\n"
+"POT-Creation-Date: 2026-11-05 16:56+1100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: ko\n"
@@ -3106,6 +3106,10 @@ msgid "A search can hold at most %(num)s word and operator."
 msgid_plural "A search can hold at most %(num)s words and operators."
 msgstr[0] "검색은 대부분의 %(num)s 단어와 연산자를 파악할 수 있습니다."
 
+#, machine, plain1
+msgid "A sensitive guild's posts are left out of All and For You for anyone who hasn't chosen to see sensitive content. Enable if your guild allows content that a film or game would rate 15, R or 16+, such as strong sexual content, graphic violence or self-harm - not a rule violation, just a heads-up. Every post in this guild will be blurred by default."
+msgstr "민감한 길드의 게시물은 모두 왼쪽과 민감한 콘텐츠를 볼 수 없었던 사람을 위해 당신을 위해. 당신의 길드가 영화 또는 게임이 15, R 또는 16 +를 평가 할 수 있다면, 강한 성적 내용과 같은 그래픽 폭력 또는 자기 바람 - 규칙 위반이 아닌, 머리 위로. 이 길드의 모든 게시물은 기본적으로 흐릅니다."
+
 #, machine, python-format
 msgid "A shared draft can have at most %(num)s author."
 msgid_plural "A shared draft can have at most %(num)s authors."
@@ -3616,6 +3620,10 @@ msgid "After %(date)s"
 msgstr "%(date)s 후"
 
 #, machine, plain1
+msgid "Age confirmation isn't available yet."
+msgstr "연령 확인은 아직 사용할 수 없습니다."
+
+#, machine, plain1
 msgid "Alert"
 msgstr "제품정보"
 
@@ -3783,9 +3791,17 @@ msgstr "Amurian 오리엔트"
 msgid "An account with that username or email already exists."
 msgstr "사용자 이름 또는 이메일이 이미 존재합니다."
 
+#, machine, plain1
+msgid "An admin confirmed that you are 18 or over. Your account no longer has the child lock. Your word filter hasn't changed: you can change it in Settings > Content, and turning the Child filter down needs your password."
+msgstr "관리자는 18 이상임을 확인했습니다. 당신의 계정은 더 이상 아이 자물쇠가 없습니다. 워드 필터가 변경되지 않았습니다: 설정에서 변경할 수 있습니다 > 콘텐츠 및 어린이 필터를 설정하면 비밀번호가 필요합니다."
+
 #, machine, python-format
 msgid "An admin marked +%(guild)s sensitive: its posts are left out of All and For You unless someone chooses to see sensitive content. Only an admin can change this."
 msgstr "관리자는 +%(guild)s 민감한 것으로 표시되어 있습니다. 그 메시지는 모든 것을 남았고 누군가가 민감한 콘텐츠를 볼 수 없으면됩니다. 관리자 만이 변경할 수 있습니다."
+
+#, machine, plain1
+msgid "An admin marked this as a child account. It has the child lock: the Child word filter, which hides profanity and anything marked sensitive, and some features are off. You can lift it by confirming your age in Settings > Content."
+msgstr "관리자는 아이 계정으로 표시됩니다. 그것은 아이 자물쇠가 있습니다: 아이 낱말 여과기, 이는 profanity를 숨기고 아무것도 과민한 표시하고, 몇몇 특징은 떨어져 있습니다. 설정에서 나이를 확인하여 들 수 있습니다 > 이름 *."
 
 #, machine
 msgid "An admin marked this sensitive, so it can't be switched off here."
@@ -5607,6 +5623,14 @@ msgstr "새 비밀번호"
 msgid "Confirm Password"
 msgstr "비밀번호"
 
+#, machine, plain1
+msgid "Confirm my age"
+msgstr "내 나이"
+
+#, machine, plain1
+msgid "Confirm your age"
+msgstr "이름 *"
+
 #, glossary, machine, plain1
 msgid "Connect"
 msgstr "소셜"
@@ -6982,6 +7006,10 @@ msgstr "모두가 서로의 변화가 그들이 유형으로 볼 수 있으며, 
 msgid "Everything from your guilds and accounts, newest first."
 msgstr "당신의 길드 및 계정에서 모두, 최신."
 
+#, machine, plain1
+msgid "Everything you post goes only to your Friends circle, the people you follow who follow you back, so nothing is public by accident. Your circles can only hold people like that, and you can't forward, repost or write a shared draft. Comments on other people's posts are still public."
+msgstr "당신이 게시물의 모든 것은 친구에게만 간다, 당신이 뒤를 따르는 사람들을 따라, 그래서 사고에 의해 공개되지 않습니다. 당신의 원은 그와 같은 사람들을 보유 할 수 있으며, 앞으로 다시 게시하거나 공유 된 초안을 작성할 수 없습니다. 다른 사람들의 게시물에 대한 의견은 여전히 공개."
+
 #. %(typed)s is exactly what a reader types into the field; it stays as it is
 #, machine, plain1, python-format
 msgid "Example: %(typed)s · a public curation works too: %(curation)s"
@@ -8211,6 +8239,10 @@ msgstr "표준 및 어린이 필터에 숨겨진"
 msgid "Hidden page"
 msgstr "숨겨진 페이지"
 
+#, machine, plain1
+msgid "Hidden until you confirm your age"
+msgstr "당신이 당신의 나이를 확인 때까지 숨겨지은"
+
 #, glossary, machine, plain1
 msgid "Hide"
 msgstr "숨기기"
@@ -8429,6 +8461,14 @@ msgstr "나는 동의 <a href=\"%(url)s\" target=\"_blank\">기간 및 조건</a
 msgid "I agree to the rules below."
 msgstr "아래 규칙에 동의합니다."
 
+#, machine, plain1, python-format
+msgid "I'm %(min)s or over"
+msgstr "나는 %(min)s 이상"
+
+#, machine, plain1, python-format
+msgid "I'm %(min)s to 17"
+msgstr "나는 %(min)s에 17"
+
 #, machine, plain1
 msgid "Ice Hockey"
 msgstr "아이스 하키"
@@ -8472,6 +8512,10 @@ msgstr "당신은 길드 모더레이터로 내려가는 경우, 당신은이 �
 #, machine, plain1
 msgid "If you're having trouble with the button above, copy and paste the URL below into your web browser."
 msgstr "위의 버튼과 문제가 있으면 웹 브라우저에서 URL을 복사하고 붙여넣으십시오."
+
+#, machine, plain1
+msgid "If you're under 18 you can still sign up. Your account will have the child lock on, which hides profanity and sensitive content and turns some features off, until you confirm your age in your Settings."
+msgstr "18세 미만이면 여전히 가입할 수 있습니다. 당신의 계정은 아이 자물쇠가 있습니다, 이는 profanity와 민감한 콘텐츠를 숨기고 설정에서 당신의 나이를 확인 때까지, 일부 기능을 해제합니다."
 
 #, machine, plain1
 msgid "If you’re having trouble with the button above, copy and paste the URL below into your web browser."
@@ -8822,6 +8866,10 @@ msgstr "그것은 단지 당신이 볼 수있는 게시물 만."
 #, machine, plain1
 msgid "It shows, in full, every word and phrase the word filter looks for, in every language it covers. That includes slurs and other extremely offensive language."
 msgstr "그것은 전체에서, 모든 단어와 단어 필터를 구문, 모든 언어에서 그것은 커버. 그것은 slurs와 다른 극단적으로 공격적인 언어를 포함합니다."
+
+#, machine, plain1
+msgid "It stays on the Child word filter, which hides profanity and anything marked sensitive. Chat, Spaces, coins, anonymous posting and starting a guild are off, and others can't start a chat or tip you. Your posts go to your Friends circle only unless you turn Private posting off."
+msgstr "그것은 아이 워드 필터에 머물, 이는 profanity를 숨기고 아무것도 민감한. 채팅, 공간, 동전, 익명 게시 및 guild 시작, 다른 사람은 채팅 또는 팁을 시작할 수 없습니다. 귀하의 게시물은 개인 게시물을 끄지 않고 친구 원으로 이동합니다."
 
 #, machine, python-format
 msgid "It was not approved last time. The admins said: %(note)s"
@@ -9594,6 +9642,10 @@ msgstr "3 월 equinox"
 #, glossary, machine, plain1
 msgid "Mark Sensitive Content"
 msgstr "민감한 콘텐츠로 표시"
+
+#, machine, plain1
+msgid "Mark a post Sensitive if a film or game with the same content would be rated 15, R or 16+, or given a content warning. That means strong sexual content or nudity, graphic violence or injury, strong drug use, self-harm or suicide, or very distressing or frightening scenes. If you're not sure, mark it Sensitive."
+msgstr "동일한 내용으로 영화 또는 게임이 15, R 또는 16 +를 평가하거나 콘텐츠 경고를 부여하는 경우 게시물 감지를 표시하십시오. 그것은 강한 성적인 내용 또는 nudity, 도표 폭력 또는 상해, 강한 약 사용, 각자 바람개비 또는 suicide, 또는 아주 옹호 또는 frightening 장면을 의미합니다. 당신이 확실하지 않은 경우, 그것을 감지합니다."
 
 #, machine
 msgid "Mark as Sensitive Content (blurred until clicked)"
@@ -12630,6 +12682,26 @@ msgid "Private post, visible to you because you are an approved contributor in +
 msgstr "+%(guild)s에서 승인 된 기여자이기 때문에 개인 게시물."
 
 #, machine, plain1
+msgid "Private posting"
+msgstr "자주 묻는 질문"
+
+#, machine, plain1
+msgid "Private posting is off."
+msgstr "자주 묻는 질문."
+
+#, machine, plain1
+msgid "Private posting is on, so this can only go to your Friends circle. You can change that in Settings > Content."
+msgstr "개인 게시물이 켜져 있으므로 친구에게만 갈 수 있습니다. 설정 > 내용에서 변경할 수 있습니다."
+
+#, machine, plain1
+msgid "Private posting is on, so this goes only to your Friends circle. You can change that in Settings > Content."
+msgstr "개인 게시물에, 그래서 이것은 친구 원에만 간다. 설정 > 내용에서 변경할 수 있습니다."
+
+#, machine, plain1
+msgid "Private posting is on."
+msgstr "자주 묻는 질문."
+
+#, machine, plain1
 msgid "Pro Wrestling"
 msgstr "프로 레슬링"
 
@@ -14064,6 +14136,10 @@ msgid "Sensitive media"
 msgstr "Sensitive 미디어"
 
 #, machine, plain1
+msgid "Sensitive posts, guilds and accounts are not against the rules, but All and For You leave them out unless you turn this on. You can always open a sensitive guild or profile, search for it or follow it."
+msgstr "민감한 게시물, 길드 및 계정은 규칙에 대해하지 않습니다, 그러나 당신이 이것을 켜지 않는 한 모든 그리고 당신은 그들을 떠나. 당신은 항상 민감한 길드 또는 프로파일을 열고, 그것을 검색하거나 그것을 따르십시오."
+
+#, machine, plain1
 msgid "September equinox"
 msgstr "9월 equinox"
 
@@ -15233,6 +15309,10 @@ msgstr "감사합니다. 관리자는 봇을 곧 볼 것; 당신은 알림을 �
 msgid "Thanks. An admin will look at the bot soon; you will get a notification. The picture could not be stored; try again from the bot's page."
 msgstr "감사합니다. 관리자는 봇을 곧 볼 것; 당신은 알림을 얻을 것이다. 그림은 저장되지 않을 수 있습니다; 봇의 페이지에서 다시 시도하십시오."
 
+#, machine, plain1
+msgid "Thanks. Your account no longer has the child lock, and Private posting is off. Posts you made before stay as they were: use Who can see this on a post to change who sees it."
+msgstr "감사합니다. 귀하의 계정은 더 이상 어린이 자물쇠가 없으며 개인 게시물이 꺼집니다. 당신이 숙박하기 전에 만든 게시물 : 당신이 그것을 볼 수있는 게시물에 누가 볼 수 있습니다."
+
 #, machine
 msgid "That Discord account is already in use by another user."
 msgstr "즉 Discord 계정은 다른 사용자에 의해 이미 사용됩니다."
@@ -15738,6 +15818,18 @@ msgstr "이 목록에 계정은 스스로 유지."
 #, machine, python-format
 msgid "The admins said: %(note)s"
 msgstr "관리자는 말했다 : %(note)s"
+
+#, machine, plain1
+msgid "The age check didn't finish. Nothing has changed, and you can try again."
+msgstr "나이 체크가 완료되지 않았습니다. 아무것도 변경하지 않고 다시 시도 할 수 있습니다."
+
+#, machine, plain1
+msgid "The age check found that you are under the youngest age allowed to have an account where you are."
+msgstr "나이 체크는 당신이있는 계정이있는 가장 젊은 연령의 밑에 있음을 발견했습니다."
+
+#, machine, plain1
+msgid "The age check found that you're under 18, so the child lock stays on."
+msgstr "만 18세 미만의 아동용 잠금이 켜져 있음을 발견했습니다."
 
 #, machine
 msgid "The author"
@@ -16747,9 +16839,21 @@ msgstr "이것은 guild의 사용자 정의 CSS 파일입니다."
 msgid "This is too much like what was posted automatically today."
 msgstr "오늘 자동으로 게시 된 것과 같이 너무 많이."
 
+#, machine, plain1
+msgid "This isn't available while your account is age-restricted. You can confirm your age in Settings > Content."
+msgstr "계정이 연령 제한되는 동안 사용할 수 없습니다. 설정에서 나이를 확인할 수 있습니다 > 이름 *."
+
 #, machine
 msgid "This isn't shown at your current word filter level. You can review your word filter in your content settings."
 msgstr "현재 단어 필터 레벨에 표시되지 않습니다. 콘텐츠 설정에서 워드 필터를 검토 할 수 있습니다."
+
+#, machine, plain1
+msgid "This isn't shown where you are until your age has been confirmed. Sign in to do that in your content settings."
+msgstr "이것은 당신이 나이가 확인 될 때까지 어디에 표시되지 않습니다. 콘텐츠 설정에서 그에 로그인하십시오."
+
+#, machine, plain1
+msgid "This isn't shown while your account is age-restricted."
+msgstr "계정이 연령 제한되는 동안 표시되지 않습니다."
 
 #, machine, plain1, python-format
 msgid "This live thread ended a moment ago. It can go live again in %(num)s min."
@@ -17115,6 +17219,10 @@ msgstr "저자가 되려면 초안을 남겨주세요."
 msgid "To store your uploads, tick the box that lets this site manage the files it creates in your Google Drive."
 msgstr "업로드를 저장하려면,이 사이트를 관리 할 수있는 상자를 tick a files it create in your Google Drive."
 
+#, machine, plain1
+msgid "To take the child lock off, confirm that you're 18 or over."
+msgstr "어린이 잠금을 해제하려면 18 이상임을 확인하십시오."
+
 #, machine
 msgid "To take this site's access away at Microsoft, remove it under your Microsoft account's app permissions."
 msgstr "Microsoft에서이 사이트에 액세스하려면 Microsoft 계정의 앱 권한을 제거하십시오."
@@ -17261,6 +17369,10 @@ msgstr "+%(guild)s에서 알림 해제"
 #, machine, plain1, python-format
 msgid "Turn off notifications from @%(name)s"
 msgstr "@%(name)s에서 알림 설정"
+
+#, machine, plain1
+msgid "Turn on if much of what you post would be rated 15, R or 16+. Your profile shows a Sensitive content badge, your new posts are blurred, and your posts are left out of All and For You for anyone who hasn't chosen to see sensitive content."
+msgstr "당신이 포스트의 다량이 15, R 또는 16+를 평가할 것이라는 점을 켜십시오. 귀하의 프로필은 민감한 콘텐츠 배지를 보여줍니다, 당신의 새로운 게시물은 blurred이며, 귀하의 게시물은 모두 왼쪽과 민감한 콘텐츠를 볼 수 없습니다 누구를위한 당신을 위해."
 
 #, machine
 msgid "Turn on media storage to upload."
@@ -18208,6 +18320,10 @@ msgid "We're sorry something here is wrong."
 msgstr "죄송합니다."
 
 #, machine, plain1
+msgid "We've changed the Age section of our [Terms](/help/terms). An account for someone under 18 now has a child lock, and in the UK, the EU and Australia your age has to be confirmed with an age-check service before the lock comes off or you can see sensitive content. You can say whether you're 18 or over in Settings > Content."
+msgstr "[약관](/help/terms)의 나이 섹션을 변경했습니다. 18의 밑에 누군가를 위한 계정은 지금 아이 자물쇠가 있고, 영국에서는, EU와 호주 당신의 나이는 자물쇠가 떨어져 옵니다 또는 당신은 과민한 내용을 볼 수 있습니다 전에 나이 검사 서비스로 확인되어야 합니다. 설정에서 18 이상인지 말할 수 있습니다 > 이름 *."
+
+#, machine, plain1
 msgid "Web Development"
 msgstr "웹 개발"
 
@@ -18408,6 +18524,22 @@ msgid "Where you are, in your words"
 msgstr "어디, 당신의 말에"
 
 #, machine, plain1
+msgid "Where you are, the law means you have to confirm that you're 18 or over with an age-check service, in your Settings after you sign up. Until then your account has the child lock on, which hides profanity and sensitive content and turns some features off."
+msgstr "여기서, 법은 당신이 가입 한 후 설정에서 18 세 이상인지 확인해야합니다. 그 때 귀하의 계정은 아이 잠금을 가지고, 이는 profanity와 민감한 콘텐츠를 숨기고 일부 기능을 해제합니다."
+
+#, machine, plain1
+msgid "Where you are, the law means your age has to be confirmed with an age-check service before the child lock comes off."
+msgstr "어디, 법은 자녀 자물쇠가 꺼져 오기 전에 연령 확인 서비스로 확인해야합니다."
+
+#, machine, plain1
+msgid "Where you are, the law means your age has to be confirmed with an age-check service before you can see sensitive content or strong language."
+msgstr "당신이 어디에, 법은 당신이 민감한 내용 또는 강한 언어를 볼 수 있기 전에 연령 검사 서비스로 확인해야합니다."
+
+#, machine, plain1
+msgid "Where you are, your age has to be confirmed with an age-check service."
+msgstr "당신이 어디에, 당신의 나이는 나이 체크 서비스로 확인되어야 합니다."
+
+#, machine, plain1
 msgid "Whether a video site's player may load before you press play. While it may not, Automatic above has no effect."
 msgstr "비디오 사이트 플레이어가 재생하기 전에로드 할 수 있는지 여부. 그렇지 않을 때, 위의 자동 효과가 없습니다."
 
@@ -18602,6 +18734,10 @@ msgstr "Premium 당신은 당신이 만드는 모든 것을 위해 하나 장소
 #, machine, plain1
 msgid "With Premium you see how each of your posts is doing: views per day, how many signed-in people came, votes, comments, bookmarks, forwards and reposts, how it does in each guild it was forwarded to, and the results of its poll."
 msgstr "Premium 당신은 당신의 게시물의 각 방법을 볼 수 있습니다: 하루, 얼마나 많은 서명 된 사람들이 와서, 투표, 코멘트, 북마크, 전달 및 재포스트, 각 길드에서 수행하는 방법, 그리고 그것의 설문 조사의 결과."
+
+#, machine, plain1
+msgid "With Private posting on, a circle can only hold people who follow you and whom you follow."
+msgstr "개인 게시로, 원은 당신을 따르고 누가 따라 사람들을 보유 할 수 있습니다."
 
 #, machine
 msgid "With a link"
@@ -18800,6 +18936,10 @@ msgstr "세계 물의 날"
 #, machine, plain1
 msgid "World Wildlife Day"
 msgstr "세계 야생의 날"
+
+#, machine, plain1
+msgid "Would a film with this be rated 15 or R? Blur this post until viewers click to reveal it."
+msgstr "영화는 15 또는 R을 평가할 수 있습니까? Blur 이 게시물을 볼 때까지 시청자는 그것을 공개합니다."
 
 #, machine
 msgid "Write a username."
@@ -19257,6 +19397,10 @@ msgstr "지금 당장 할 수 없습니다."
 msgid "You can't do that while your account balance is negative. Visit your account settings to bring your balance up to zero."
 msgstr "계정 잔액이 부정적인 경우 할 수 없습니다. 계정 설정을 방문하여 잔액을 0까지 가져보세요."
 
+#, machine, plain1
+msgid "You can't do that with this account."
+msgstr "이 계정으로 할 수 없습니다."
+
 #, machine
 msgid "You can't edit this page."
 msgstr "이 페이지를 편집 할 수 없습니다."
@@ -19603,6 +19747,10 @@ msgstr "당신은 당신이 exiled guilds 주장 할 수 없습니다."
 msgid "You may not use Ruqqus to engage in or plan unlawful activity."
 msgstr "Ruqqus를 사용할 수 없습니다."
 
+#, machine, plain1, python-format
+msgid "You must be at least %(min)s to have an account where you are."
+msgstr "당신은 적어도해야합니다 %(min)s 당신이 어디에 계정을 가지고."
+
 #, machine
 msgid "You must have a verified email address to upload images via Tor."
 msgstr "Tor를 통해 이미지를 업로드 할 수있는 확인 된 이메일 주소를해야합니다."
@@ -19944,6 +20092,18 @@ msgstr "귀하의 계정이 검사되고 준비가되어 있습니다 : 지금 �
 msgid "Your account has been deleted"
 msgstr "계정이 삭제되었습니다"
 
+#, machine, plain1, python-format
+msgid "Your account has the child lock on, since %(date)s."
+msgstr "귀하의 계정은 %(date)s 이후 어린이 자물쇠가 있습니다."
+
+#, machine, plain1
+msgid "Your account is age-restricted, so its word filter stays on Child until you confirm your age in Settings."
+msgstr "귀하의 계정은 연령 제한이므로, 그 단어 필터는 설정에서 나이를 확인 때까지 어린이에 머물 수 있습니다."
+
+#, machine, plain1
+msgid "Your account is age-restricted, so sensitive content stays hidden until you confirm your age in Settings."
+msgstr "귀하의 계정은 연령 제한이므로 민감한 콘텐츠는 설정에서 나이를 확인 할 때까지 숨겨집니다."
+
 #, machine, plain1
 msgid "Your account is being checked"
 msgstr "계정 확인"
@@ -20000,6 +20160,10 @@ msgstr "귀하의 계정은 더 이상 게시물이 자동으로 없습니다. �
 msgid "Your account posts from these feeds from now on."
 msgstr "현재 이러한 피드에서 귀하의 계정 게시물."
 
+#, machine, plain1
+msgid "Your account was closed"
+msgstr "계정이 닫혔습니다"
+
 #, machine, python-format
 msgid "Your account's automated posting has been paused: %(reason)s"
 msgstr "귀하의 계정의 자동화 된 게시물은 일시 중지되었습니다 : %(reason)s"
@@ -20015,6 +20179,10 @@ msgstr "귀하의 계정의 자동화된 게시물은 %(url)s %(fails)s가 실�
 #, machine
 msgid "Your account's automated posting was approved. Your feeds' new posts appear on your profile, marked as automated, within a few minutes. Manage it in [Settings > Bots](/settings/bots)."
 msgstr "계정의 자동화된 게시물이 승인되었습니다. 당신의 피드의 새로운 게시물은 프로필에 나타납니다, 자동화 된로 표시, 몇 분 안에. [Settings > Bots](/settings/bots)에서 관리합니다."
+
+#, machine, plain1, python-format
+msgid "Your age was confirmed on %(date)s."
+msgstr "당신의 나이는 %(date)s에 확인되었습니다."
 
 #, machine
 msgid "Your answer"
@@ -20217,6 +20385,10 @@ msgstr "당신의 자신의 혼합"
 msgid "Your own mix ranks the newest %(num)s matching post. 0 switches a part off, 10 makes it count the most."
 msgid_plural "Your own mix ranks the newest %(num)s matching posts. 0 switches a part off, 10 makes it count the most."
 msgstr[0] "당신의 자신의 혼합은 최신 %(num)s 일치하는 게시물을 순위. 0개의 스위치는 떨어져, 10 그것을 가장 조사합니다."
+
+#, machine, plain1
+msgid "Your parent or guardian has to agree before Private posting can be turned off."
+msgstr "귀하의 부모 또는 보호자는 개인 게시물이 꺼질 때까지 동의해야합니다."
 
 #, machine
 msgid "Your password"

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ruqqus VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-31 05:16+0000\n"
+"POT-Creation-Date: 2026-11-05 16:56+1100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: fi\n"
@@ -3286,6 +3286,10 @@ msgid_plural "A search can hold at most %(num)s words and operators."
 msgstr[0] "Haku voi pitää enintään yhden sanan ja operaattorin."
 msgstr[1] "Haku voi kestää enintään %(num)s sanaa ja operaattorit."
 
+#, machine, plain1
+msgid "A sensitive guild's posts are left out of All and For You for anyone who hasn't chosen to see sensitive content. Enable if your guild allows content that a film or game would rate 15, R or 16+, such as strong sexual content, graphic violence or self-harm - not a rule violation, just a heads-up. Every post in this guild will be blurred by default."
+msgstr "Herkkä kilta on jätetty kaikkien ulkopuolelle ja sinulle kaikille, jotka eivät ole päättäneet nähdä herkkää sisältöä. Ota käyttöön, jos kilta sallii sisällön, että elokuvan tai pelin arvo olisi 15, R tai 16+, kuten vahva seksuaalinen sisältö, graafinen väkivalta tai itsensä vahingoittaminen - ei sääntörikkomus, pelkkä varoitus. Jokainen asema tässä killassa hämärtyy oletusarvoisesti."
+
 #, machine, plain1, python-format
 msgid "A shared draft can have at most %(num)s author."
 msgid_plural "A shared draft can have at most %(num)s authors."
@@ -3803,6 +3807,10 @@ msgid "After %(date)s"
 msgstr "%(date)s jälkeen"
 
 #, machine, plain1
+msgid "Age confirmation isn't available yet."
+msgstr "Ikää ei ole vielä vahvistettu."
+
+#, machine, plain1
 msgid "Alert"
 msgstr "Varoitus"
 
@@ -3971,9 +3979,17 @@ msgstr "Amurian Orient"
 msgid "An account with that username or email already exists."
 msgstr "Käyttäjätunnuksella tai sähköpostilla varustettu tili on jo olemassa."
 
+#, machine, plain1
+msgid "An admin confirmed that you are 18 or over. Your account no longer has the child lock. Your word filter hasn't changed: you can change it in Settings > Content, and turning the Child filter down needs your password."
+msgstr "Hallintoviranomainen vahvisti, että olet 18 tai yli. Tililläsi ei ole enää lapsen lukkoa. Sanasuodatin ei ole muuttunut: voit muuttaa sitä Asetuksissa > Sisältö, ja kääntämällä lapsi suodatin alas tarvitsee salasanan."
+
 #, machine, plain1, python-format
 msgid "An admin marked +%(guild)s sensitive: its posts are left out of All and For You unless someone chooses to see sensitive content. Only an admin can change this."
 msgstr "Admin merkitty +%(guild)s herkkä: sen viestit jätetään pois kaikista ja sinulle, ellei joku halua nähdä herkkää sisältöä. Vain ylläpitäjä voi muuttaa tämän."
+
+#, machine, plain1
+msgid "An admin marked this as a child account. It has the child lock: the Child word filter, which hides profanity and anything marked sensitive, and some features are off. You can lift it by confirming your age in Settings > Content."
+msgstr "Hallintoviranomainen merkitsi tämän lapsitiliksi. Siinä on lapsilukko: Lapsi-sanasuodatin, joka kätkee hävyttömyyden ja kaiken herkän, ja jotkin ominaisuudet ovat pois päältä. Voit nostaa sen vahvistamalla ikäsi Asetuksissa > Sisältö."
 
 #, machine, plain1
 msgid "An admin marked this sensitive, so it can't be switched off here."
@@ -5810,6 +5826,14 @@ msgstr "Vahvista uusi salasana"
 msgid "Confirm Password"
 msgstr "Vahvista salasana"
 
+#, machine, plain1
+msgid "Confirm my age"
+msgstr "Vahvista ikäni"
+
+#, machine, plain1
+msgid "Confirm your age"
+msgstr "Vahvista ikäsi"
+
 #, glossary, machine, plain1
 msgid "Connect"
 msgstr "Seuraa meitä"
@@ -7191,6 +7215,10 @@ msgstr "Kaikki näkevät toistensa muutokset niiden mukaan, ja jokainen merkki o
 msgid "Everything from your guilds and accounts, newest first."
 msgstr "Kaikki killasta ja tileistä, uusin ensin."
 
+#, machine, plain1
+msgid "Everything you post goes only to your Friends circle, the people you follow who follow you back, so nothing is public by accident. Your circles can only hold people like that, and you can't forward, repost or write a shared draft. Comments on other people's posts are still public."
+msgstr "Kaikki mitä lähetät menee vain Ystäväpiirillesi, ihmiset jotka seuraavat sinua takaisin, joten mikään ei ole sattumalta julkista. Ympyräsi voivat vain pitää ihmisiä tuollaisina, etkä voi lähettää, lähettää takaisin tai kirjoittaa yhteistä luonnosta. Kommentit muiden ihmisten viroista ovat edelleen julkisia."
+
 #. %(typed)s is exactly what a reader types into the field; it stays as it is
 #, machine, plain1, python-format
 msgid "Example: %(typed)s · a public curation works too: %(curation)s"
@@ -8429,6 +8457,10 @@ msgstr "Piilotettu standardin ja lasten suodattimet"
 msgid "Hidden page"
 msgstr "Piilotettu sivu"
 
+#, machine, plain1
+msgid "Hidden until you confirm your age"
+msgstr "Piilotettu, kunnes vahvistat ikäsi"
+
 #, glossary, machine, plain1
 msgid "Hide"
 msgstr "Piilota"
@@ -8648,6 +8680,14 @@ msgstr "Hyväksyn <a href=\"%(url)s\" target=\"_blank\">ehdot</a>"
 msgid "I agree to the rules below."
 msgstr "Hyväksyn alla olevat säännöt."
 
+#, machine, plain1, python-format
+msgid "I'm %(min)s or over"
+msgstr "Olen. %(min)s tai yli"
+
+#, machine, plain1, python-format
+msgid "I'm %(min)s to 17"
+msgstr "Olen. %(min)s 17"
+
 #, machine, plain1
 msgid "Ice Hockey"
 msgstr "Jääkiekko"
@@ -8691,6 +8731,10 @@ msgstr "Jos astut alas guldenin moderaattorina, menetät täydet oikeudet hillit
 #, machine, plain1
 msgid "If you're having trouble with the button above, copy and paste the URL below into your web browser."
 msgstr "Jos sinulla on ongelmia yllä olevan painikkeen kanssa, kopioi ja liitä alla oleva URL selaimeesi."
+
+#, machine, plain1
+msgid "If you're under 18 you can still sign up. Your account will have the child lock on, which hides profanity and sensitive content and turns some features off, until you confirm your age in your Settings."
+msgstr "Jos olet alle 18-vuotias, voit ilmoittautua. Tilisi lukitsee lapsen, joka kätkee hävyttömyyden ja herkän sisällön ja sammuttaa joitakin ominaisuuksia, kunnes vahvistat ikäsi Asetuksissa."
 
 #, machine, plain1
 msgid "If you’re having trouble with the button above, copy and paste the URL below into your web browser."
@@ -9043,6 +9087,10 @@ msgstr "Se on vain käskyjä saat nähdä."
 #, machine, plain1
 msgid "It shows, in full, every word and phrase the word filter looks for, in every language it covers. That includes slurs and other extremely offensive language."
 msgstr "Se näyttää, kokonaisuudessaan, jokainen sana ja sanonta sana suodatin etsii, jokaisella kielellä se kattaa. Se koskee myös liejua ja muuta erittäin loukkaavaa kieltä."
+
+#, machine, plain1
+msgid "It stays on the Child word filter, which hides profanity and anything marked sensitive. Chat, Spaces, coins, anonymous posting and starting a guild are off, and others can't start a chat or tip you. Your posts go to your Friends circle only unless you turn Private posting off."
+msgstr "Se pysyy lasten sanasuodattimessa, joka kätkee hävyttömyyden ja kaiken herkän. Chat, Spaces, kolikot, anonyymi lähettämistä ja aloittaa killan ovat pois, ja toiset eivät voi aloittaa chat tai kärki sinulle. Sinun viestit menevät Ystävät ympyrän vain ellet sammuta Private lähettämistä pois."
 
 #, machine, plain1, python-format
 msgid "It was not approved last time. The admins said: %(note)s"
@@ -9827,6 +9875,10 @@ msgstr "Maaliskuun päiväntasaus"
 #, glossary, machine, plain1
 msgid "Mark Sensitive Content"
 msgstr "Merkitse arkaluonteiseksi"
+
+#, machine, plain1
+msgid "Mark a post Sensitive if a film or game with the same content would be rated 15, R or 16+, or given a content warning. That means strong sexual content or nudity, graphic violence or injury, strong drug use, self-harm or suicide, or very distressing or frightening scenes. If you're not sure, mark it Sensitive."
+msgstr "Merkitse viesti Herkkä, jos samansisältöinen elokuva tai peli olisi luokiteltu 15, R tai 16+, tai antaa sisällön varoitus. Se tarkoittaa vahvaa seksuaalista sisältöä tai alastomuutta, graafista väkivaltaa tai vammaa, vahvaa huumeiden käyttöä, itsetuhoa tai itsemurhaa tai hyvin ahdistavia tai pelottavia kohtauksia. Jos et ole varma, merkitse se herkäksi."
 
 #, machine, plain1
 msgid "Mark as Sensitive Content (blurred until clicked)"
@@ -12884,6 +12936,26 @@ msgid "Private post, visible to you because you are an approved contributor in +
 msgstr "Yksityinen posti, näkyvissä sinulle, koska olet hyväksytty avustaja +%(guild)s."
 
 #, machine, plain1
+msgid "Private posting"
+msgstr "Yksityinen lähettäminen"
+
+#, machine, plain1
+msgid "Private posting is off."
+msgstr "Yksityislähetys on peruttu."
+
+#, machine, plain1
+msgid "Private posting is on, so this can only go to your Friends circle. You can change that in Settings > Content."
+msgstr "Yksityinen postitus on päällä, joten tämä voi mennä vain Ystävien piiriin. Voit muuttaa sen Asetuksissa > Content."
+
+#, machine, plain1
+msgid "Private posting is on, so this goes only to your Friends circle. You can change that in Settings > Content."
+msgstr "Yksityinen postitus on käynnissä, joten tämä menee vain Ystäväpiirillesi. Voit muuttaa sen Asetuksissa > Content."
+
+#, machine, plain1
+msgid "Private posting is on."
+msgstr "Yksityinen virka on käynnissä."
+
+#, machine, plain1
 msgid "Pro Wrestling"
 msgstr "Pro Wrestling"
 
@@ -14326,6 +14398,10 @@ msgid "Sensitive media"
 msgstr "Herkkä media"
 
 #, machine, plain1
+msgid "Sensitive posts, guilds and accounts are not against the rules, but All and For You leave them out unless you turn this on. You can always open a sensitive guild or profile, search for it or follow it."
+msgstr "Arat virat, killat ja tilit eivät ole vastoin sääntöjä, mutta kaikki ja Te jätätte ne pois, ellette käynnistä tätä. Voit aina avata herkän killan tai profiilin, etsiä sitä tai seurata sitä."
+
+#, machine, plain1
 msgid "September equinox"
 msgstr "Syyskuun päiväntasaus"
 
@@ -15506,6 +15582,10 @@ msgid "Thanks. An admin will look at the bot soon; you will get a notification. 
 msgstr "Kiitos. Hallintoviranomainen katsoo bottia pian; saat ilmoituksen. Kuvaa ei voitu tallentaa; yritä uudelleen botin sivulta."
 
 #, machine, plain1
+msgid "Thanks. Your account no longer has the child lock, and Private posting is off. Posts you made before stay as they were: use Who can see this on a post to change who sees it."
+msgstr "Kiitos. Tililläsi ei ole enää lapsilukkoa, ja yksityisetsivä ei toimi. Viestit teit ennen jäädä sellaisina kuin ne olivat: käyttää Kuka voi nähdä tämän postitse muuttaa kuka näkee sen."
+
+#, machine, plain1
 msgid "That Discord account is already in use by another user."
 msgstr "Että Discord tili on jo käytössä toisen käyttäjän."
 
@@ -16010,6 +16090,18 @@ msgstr "Listan tilit pitävät sen omana tietonaan."
 #, machine, plain1, python-format
 msgid "The admins said: %(note)s"
 msgstr "Hallintoviranomaiset sanoivat: %(note)s"
+
+#, machine, plain1
+msgid "The age check didn't finish. Nothing has changed, and you can try again."
+msgstr "Ikätarkastus ei päättynyt. Mikään ei ole muuttunut. Voit yrittää uudelleen."
+
+#, machine, plain1
+msgid "The age check found that you are under the youngest age allowed to have an account where you are."
+msgstr "Ikätarkastus osoitti, että olet alle nuorin ikä saa olla tili missä olet."
+
+#, machine, plain1
+msgid "The age check found that you're under 18, so the child lock stays on."
+msgstr "Ikätarkastuksen mukaan olet alle 18-vuotias, joten lapsilukko pysyy päällä."
 
 #, machine, plain1
 msgid "The author"
@@ -17034,8 +17126,20 @@ msgid "This is too much like what was posted automatically today."
 msgstr "Tämä muistuttaa liikaa sitä, mikä lähetettiin tänään automaattisesti."
 
 #, machine, plain1
+msgid "This isn't available while your account is age-restricted. You can confirm your age in Settings > Content."
+msgstr "Tämä ei ole käytettävissä, kun tilisi on ikärajoitettu. Voit vahvistaa ikäsi Asetuksissa > Sisältö."
+
+#, machine, plain1
 msgid "This isn't shown at your current word filter level. You can review your word filter in your content settings."
 msgstr "Tätä ei näytetä nykyisellä suodatintasolla. Voit tarkistaa sanasuodattimen sisältöasetuksissasi."
+
+#, machine, plain1
+msgid "This isn't shown where you are until your age has been confirmed. Sign in to do that in your content settings."
+msgstr "Tämä näkyy vasta, kun ikäsi on varmistettu. Kirjaudu sisään tehdäksesi sen sisältöasetuksissasi."
+
+#, machine, plain1
+msgid "This isn't shown while your account is age-restricted."
+msgstr "Tätä ei näytetä, kun tilisi on ikärajoitettu."
 
 #, machine, plain1, python-format
 msgid "This live thread ended a moment ago. It can go live again in %(num)s min."
@@ -17408,6 +17512,10 @@ msgid "To store your uploads, tick the box that lets this site manage the files 
 msgstr "Voit tallentaa lataukset, rasti ruutuun, jonka avulla tämä sivusto hallita tiedostoja se luo Google Drive."
 
 #, machine, plain1
+msgid "To take the child lock off, confirm that you're 18 or over."
+msgstr "Ottaaksesi lapsen lukko pois, vahvista, että olet 18 tai yli."
+
+#, machine, plain1
 msgid "To take this site's access away at Microsoft, remove it under your Microsoft account's app permissions."
 msgstr "Voit poistaa tämän sivuston käyttöoikeuden Microsoftilta Microsoft-tilin käyttöoikeuksilla."
 
@@ -17553,6 +17661,10 @@ msgstr "Sammuta ilmoitukset +%(guild)s"
 #, machine, plain1, python-format
 msgid "Turn off notifications from @%(name)s"
 msgstr "Sammuta ilmoitukset @%(name)s"
+
+#, machine, plain1
+msgid "Turn on if much of what you post would be rated 15, R or 16+. Your profile shows a Sensitive content badge, your new posts are blurred, and your posts are left out of All and For You for anyone who hasn't chosen to see sensitive content."
+msgstr "Laita päälle, jos suuri osa siitä, mitä post olisi mitoitettu 15, R tai 16+. Profiilisi näyttää Sensitive sisältöä merkki, uudet viestit ovat hämäriä, ja virkasi jätetään pois All ja Sinulle kaikille, jotka eivät ole valinneet nähdä herkkää sisältöä."
 
 #, machine, plain1
 msgid "Turn on media storage to upload."
@@ -18504,6 +18616,10 @@ msgid "We're sorry something here is wrong."
 msgstr "Anteeksi, että jokin on vialla."
 
 #, machine, plain1
+msgid "We've changed the Age section of our [Terms](/help/terms). An account for someone under 18 now has a child lock, and in the UK, the EU and Australia your age has to be confirmed with an age-check service before the lock comes off or you can see sensitive content. You can say whether you're 18 or over in Settings > Content."
+msgstr "Olemme muuttaneet ikäosiota [Ehdot][/help/terms). Alle 18-vuotiaan tilillä on nyt lapsilukko, ja Yhdistyneessä kuningaskunnassa, EU:ssa ja Australiassa ikäsi on vahvistettava ikätarkistuksella ennen lukon irtoamista tai voit nähdä arkaluontoista sisältöä. Voit sanoa, oletko 18 tai yli Asetukset > Sisältö."
+
+#, machine, plain1
 msgid "Web Development"
 msgstr "Web-kehitys"
 
@@ -18704,6 +18820,22 @@ msgid "Where you are, in your words"
 msgstr "Missä olet, sanoissasi"
 
 #, machine, plain1
+msgid "Where you are, the law means you have to confirm that you're 18 or over with an age-check service, in your Settings after you sign up. Until then your account has the child lock on, which hides profanity and sensitive content and turns some features off."
+msgstr "Missä olet, laki tarkoittaa sinun täytyy vahvistaa, että olet 18 tai yli iän tarkistus palvelu, asetukset jälkeen rekisteröityä. Siihen asti tilisi on lapsi lukittu, joka kätkee hävyttömyyttä ja herkkää sisältöä ja sammuttaa joitakin ominaisuuksia."
+
+#, machine, plain1
+msgid "Where you are, the law means your age has to be confirmed with an age-check service before the child lock comes off."
+msgstr "Missä olet, laki tarkoittaa, että ikäsi on vahvistettava ikätarkastuspalvelulla ennen kuin lapsilukko irtoaa."
+
+#, machine, plain1
+msgid "Where you are, the law means your age has to be confirmed with an age-check service before you can see sensitive content or strong language."
+msgstr "Missä olet, laki tarkoittaa, että ikäsi on vahvistettava ikätarkistuksella, ennen kuin näet arkaluontoista sisältöä tai vahvaa kieltä."
+
+#, machine, plain1
+msgid "Where you are, your age has to be confirmed with an age-check service."
+msgstr "Missä olet, ikäsi on vahvistettava iän tarkistuspalvelulla."
+
+#, machine, plain1
 msgid "Whether a video site's player may load before you press play. While it may not, Automatic above has no effect."
 msgstr "Voisiko videosivuston pelaaja ladata ennen kuin painat pelata. Vaikka ei, Automaattinen yllä ei vaikuta."
 
@@ -18898,6 +19030,10 @@ msgstr "Premium: %(site)s:"
 #, machine, plain1
 msgid "With Premium you see how each of your posts is doing: views per day, how many signed-in people came, votes, comments, bookmarks, forwards and reposts, how it does in each guild it was forwarded to, and the results of its poll."
 msgstr "Kanssa Premium näet, miten jokainen virassa on: näkemyksiä päivässä, kuinka monta allekirjoitettu-in ihmisiä tuli, äänet, kommentteja, kirjanmerkkejä, eteenpäin ja kommentit, miten se tekee jokaisessa guldenissa se on lähetetty, ja tulokset sen kyselyn."
+
+#, machine, plain1
+msgid "With Private posting on, a circle can only hold people who follow you and whom you follow."
+msgstr "Kun Private lähettämistä, ympyrän voi vain pitää ihmisiä, jotka seuraavat sinua ja joita seuraat."
 
 #, machine, plain1
 msgid "With a link"
@@ -19096,6 +19232,10 @@ msgstr "Maailman vesipäivä"
 #, machine, plain1
 msgid "World Wildlife Day"
 msgstr "Maailman villieläinpäivä"
+
+#, machine, plain1
+msgid "Would a film with this be rated 15 or R? Blur this post until viewers click to reveal it."
+msgstr "Olisiko tämän kanssa 15 vai R? Sumenna tätä viestiä kunnes katsojat klikkaa paljastaa sen."
 
 #, machine, plain1
 msgid "Write a username."
@@ -19578,6 +19718,10 @@ msgid "You can't do that while your account balance is negative. Visit your acco
 msgstr "Et voi tehdä sitä, kun tilisi on negatiivinen. Vieraile tilin asetuksissa nostaa saldon nollaan."
 
 #, machine, plain1
+msgid "You can't do that with this account."
+msgstr "Et voi tehdä sitä tällä tilillä."
+
+#, machine, plain1
 msgid "You can't edit this page."
 msgstr "Et voi muokata tätä sivua."
 
@@ -19925,6 +20069,10 @@ msgstr "Ette saa vaatia, että teidät karkotetaan."
 msgid "You may not use Ruqqus to engage in or plan unlawful activity."
 msgstr "Et saa käyttää Ruqqusia laittoman toiminnan suunnitteluun."
 
+#, machine, plain1, python-format
+msgid "You must be at least %(min)s to have an account where you are."
+msgstr "Sinun täytyy olla vähintään %(min)s, jotta sinulla on tili siellä, missä olet."
+
 #, machine, plain1
 msgid "You must have a verified email address to upload images via Tor."
 msgstr "Sinulla täytyy olla vahvistettu sähköpostiosoite, jotta voit ladata kuvia Torin kautta."
@@ -20271,6 +20419,18 @@ msgstr "Tilisi on tarkistettu ja valmis: voit nyt postittaa, kommentoida, ääne
 msgid "Your account has been deleted"
 msgstr "Tilisi on poistettu"
 
+#, machine, plain1, python-format
+msgid "Your account has the child lock on, since %(date)s."
+msgstr "Tilisi on lukinnut lapsen %(date)s."
+
+#, machine, plain1
+msgid "Your account is age-restricted, so its word filter stays on Child until you confirm your age in Settings."
+msgstr "Tilisi on ikärajoitettu, joten sen sanasuodatin pysyy Lapsella kunnes vahvistat ikäsi Asetuksissa."
+
+#, machine, plain1
+msgid "Your account is age-restricted, so sensitive content stays hidden until you confirm your age in Settings."
+msgstr "Tilisi on ikärajoitettu, joten herkkä sisältö pysyy piilossa, kunnes vahvistat ikäsi Asetuksissa."
+
 #, machine, plain1
 msgid "Your account is being checked"
 msgstr "Tiliäsi tarkistetaan"
@@ -20327,6 +20487,10 @@ msgstr "Tilisi ei enää toimi automaattisesti. Sen asemapaikat pysyvät."
 msgid "Your account posts from these feeds from now on."
 msgstr "Tiliasemanne näistä syötteistä."
 
+#, machine, plain1
+msgid "Your account was closed"
+msgstr "Tilisi oli suljettu"
+
 #, machine, plain1, python-format
 msgid "Your account's automated posting has been paused: %(reason)s"
 msgstr "Tilisi automaattinen postitus on keskeytetty: %(reason)s"
@@ -20342,6 +20506,10 @@ msgstr "Tilisi automaattinen lähettäminen lakkasi lukemasta %(url)s %(fails)s 
 #, machine, plain1
 msgid "Your account's automated posting was approved. Your feeds' new posts appear on your profile, marked as automated, within a few minutes. Manage it in [Settings > Bots](/settings/bots)."
 msgstr "Tilisi automaattinen postitus hyväksyttiin. Syötteenne uudet viestit näkyvät profiilissanne, jotka on merkitty automatisoiduiksi muutamassa minuutissa. Hallitse sitä [Asetukset > Bots](/settings/bots)."
+
+#, machine, plain1, python-format
+msgid "Your age was confirmed on %(date)s."
+msgstr "Ikäsi vahvistettiin %(date)s."
 
 #, machine, plain1
 msgid "Your answer"
@@ -20546,6 +20714,10 @@ msgid "Your own mix ranks the newest %(num)s matching post. 0 switches a part of
 msgid_plural "Your own mix ranks the newest %(num)s matching posts. 0 switches a part off, 10 makes it count the most."
 msgstr[0] "Sinun oma sekoitus on uusin %(num)s matching post. 0 kytkee osan pois päältä, 10 tekee siitä eniten."
 msgstr[1] "Oma yhdistelmäsi on uusin nolla vastaavaa virkaa. %(num)s kytkee osan pois päältä, 10 tekee siitä eniten."
+
+#, machine, plain1
+msgid "Your parent or guardian has to agree before Private posting can be turned off."
+msgstr "Vanhempasi tai huoltajasi on suostuttava, ennen kuin yksityinen postitus voidaan sulkea."
 
 #, machine, plain1
 msgid "Your password"

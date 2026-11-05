@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ruqqus VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-31 05:16+0000\n"
+"POT-Creation-Date: 2026-11-05 16:56+1100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: fil\n"
@@ -3286,6 +3286,10 @@ msgid_plural "A search can hold at most %(num)s words and operators."
 msgstr[0] "Ang paghahanap ay maaaring humawak sa halos %(num)s salita at operator."
 msgstr[1] "Ang isang paghahanap ay maaaring humawak ng halos %(num)s salita at mga operator."
 
+#, machine, plain1
+msgid "A sensitive guild's posts are left out of All and For You for anyone who hasn't chosen to see sensitive content. Enable if your guild allows content that a film or game would rate 15, R or 16+, such as strong sexual content, graphic violence or self-harm - not a rule violation, just a heads-up. Every post in this guild will be blurred by default."
+msgstr "Ang mga puwesto ng isang sensitibong samahan ay hindi nakikita ng Lahat at ng Para sa Iyo para sa sinuman na hindi piniling makita ang sensitibong nilalaman. Kagyat kung ang iyong guild ay pumapayag sa nilalaman na ang isang pelikula o laro ay bibilang ng 15, R o 16+, tulad ng malakas na nilalamang seksuwal, detalyadong karahasan o self-harm - hindi isang paglabag sa tuntunin, isa lamang head-up. Ang bawat puwesto sa samahang ito ay magiging malabo dahil sa hindi pagtupad."
+
 #, machine, plain1, python-format
 msgid "A shared draft can have at most %(num)s author."
 msgid_plural "A shared draft can have at most %(num)s authors."
@@ -3803,6 +3807,10 @@ msgid "After %(date)s"
 msgstr "Pagkatapos ng %(date)s"
 
 #, machine, plain1
+msgid "Age confirmation isn't available yet."
+msgstr "Wala pang makukuhang kumpil sa edad."
+
+#, machine, plain1
 msgid "Alert"
 msgstr "Alisto"
 
@@ -3971,9 +3979,17 @@ msgstr "Silangang Amuriano"
 msgid "An account with that username or email already exists."
 msgstr "Mayroon nang ulat tungkol sa username o email na iyon."
 
+#, machine, plain1
+msgid "An admin confirmed that you are 18 or over. Your account no longer has the child lock. Your word filter hasn't changed: you can change it in Settings > Content, and turning the Child filter down needs your password."
+msgstr "Isang anunsiyo ang nagpatunay na ikaw ay 18 o higit pa. Ang inyong account ay hindi na naikandado ng bata. Hindi nagbago ang iyong salitang filter: mababago mo ito sa settings > Ang kasiyahan, at ang pagpatay sa Bata ay nangangailangan ng iyong password."
+
 #, machine, plain1, python-format
 msgid "An admin marked +%(guild)s sensitive: its posts are left out of All and For You unless someone chooses to see sensitive content. Only an admin can change this."
 msgstr "Isang admin na may markang +%(guild)s ang sensitibo: ang mga post nito ay hindi na buo at Para sa Iyo maliban kung may pumili sa sensitibong nilalaman. Tanging isang admin lamang ang makapagpapabago nito."
+
+#, machine, plain1
+msgid "An admin marked this as a child account. It has the child lock: the Child word filter, which hides profanity and anything marked sensitive, and some features are off. You can lift it by confirming your age in Settings > Content."
+msgstr "Minarkahan ito ng isang admin bilang isang salaysay na pambata. Ito ay may lock sa bata: ang salitang Bata na filter, na nagtatago ng kalaswaan at anumang bagay na kapansin-pansing sensitibo, at ang ilang mga katangian ay wala. Mapatataas mo ito sa pamamagitan ng pagpapatibay sa iyong edad sa mga setting > Kontento."
 
 #, machine, plain1
 msgid "An admin marked this sensitive, so it can't be switched off here."
@@ -5811,6 +5827,14 @@ msgstr "Tiyakin ang Bagong Pasawi"
 msgid "Confirm Password"
 msgstr "Patunayan ang Pasagot"
 
+#, machine, plain1
+msgid "Confirm my age"
+msgstr "Tiyakin ang aking edad"
+
+#, machine, plain1
+msgid "Confirm your age"
+msgstr "Tiyakin ang iyong edad"
+
 #, glossary, machine, plain1
 msgid "Connect"
 msgstr "Sundan kami"
@@ -7193,6 +7217,10 @@ msgstr "Nakikita ng lahat ang mga pagbabago ng bawat isa habang sila ay nagmakin
 msgid "Everything from your guilds and accounts, newest first."
 msgstr "Lahat ng bagay mula sa inyong mga samahan at mga kuwenta, una muna'y bago."
 
+#, machine, plain1
+msgid "Everything you post goes only to your Friends circle, the people you follow who follow you back, so nothing is public by accident. Your circles can only hold people like that, and you can't forward, repost or write a shared draft. Comments on other people's posts are still public."
+msgstr "Lahat ng inilalagay mo sa koreo ay para lamang sa iyong mga Kaibigan, ang mga taong sinusundan mo ay sumusunod sa iyo pabalik, kaya walang di - sinasadyang nakikita ng publiko. Ang iyong mga bilog ay maaari lamang maghawak ng gayong mga tao, at hindi mo maaaring isulong, baguhin o isulat ang isang kabahaging burador. Ang mga komento sa mga post ng ibang tao ay publiko pa rin."
+
 #. %(typed)s is exactly what a reader types into the field; it stays as it is
 #, machine, plain1, python-format
 msgid "Example: %(typed)s · a public curation works too: %(curation)s"
@@ -8431,6 +8459,10 @@ msgstr "Nakatago sa Pamantayan at mga Salaan ng Bata"
 msgid "Hidden page"
 msgstr "Natatagong pahina"
 
+#, machine, plain1
+msgid "Hidden until you confirm your age"
+msgstr "Natatago hanggang sa matiyak mo ang iyong edad"
+
 #, glossary, machine, plain1
 msgid "Hide"
 msgstr "Itago"
@@ -8650,6 +8682,14 @@ msgstr "Tinatanggap ko ang <a href=\"%(url)s\" target=\"_blank\">Mga termino at 
 msgid "I agree to the rules below."
 msgstr "Sumasang - ayon ako sa mga tuntunin sa ibaba."
 
+#, machine, plain1, python-format
+msgid "I'm %(min)s or over"
+msgstr "Ako'y %(min)s"
+
+#, machine, plain1, python-format
+msgid "I'm %(min)s to 17"
+msgstr "Ako ay %(min)s hanggang 17"
+
 #, machine, plain1
 msgid "Ice Hockey"
 msgstr "Ice Hockey"
@@ -8693,6 +8733,10 @@ msgstr "Kung ikaw ay bababa bilang tagapamagitan ng samahan, mawawalan ka ng gan
 #, machine, plain1
 msgid "If you're having trouble with the button above, copy and paste the URL below into your web browser."
 msgstr "Kung nahihirapan ka sa buton sa itaas, kopyahin at ihalo ang URL sa ibaba sa iyong web browser."
+
+#, machine, plain1
+msgid "If you're under 18 you can still sign up. Your account will have the child lock on, which hides profanity and sensitive content and turns some features off, until you confirm your age in your Settings."
+msgstr "Kung wala ka pang 18 anyos, puwede ka pa ring pumirma. Ilalagay ng iyong ulat ang bata na nakakandado, na itinatago ang kalaswaan at sensitibong nilalaman at pinapatay ang ilang bahagi, hanggang sa matiyak mo ang iyong edad sa iyong mga Pagtatakda."
 
 #, machine, plain1
 msgid "If you’re having trouble with the button above, copy and paste the URL below into your web browser."
@@ -9045,6 +9089,10 @@ msgstr "Ito'y nag - uutos lamang na makakita ka."
 #, machine, plain1
 msgid "It shows, in full, every word and phrase the word filter looks for, in every language it covers. That includes slurs and other extremely offensive language."
 msgstr "Ipinakikita nito, nang buo, ang bawat salita at parirala na hinahanap ng salitang pansala, sa bawat wika na sinasaklaw nito. Kasali na riyan ang mga pag - alipusta at iba pang lubhang nakasasakit na pananalita."
+
+#, machine, plain1
+msgid "It stays on the Child word filter, which hides profanity and anything marked sensitive. Chat, Spaces, coins, anonymous posting and starting a guild are off, and others can't start a chat or tip you. Your posts go to your Friends circle only unless you turn Private posting off."
+msgstr "Ito'y nananatili sa salitang Bata na pansala, na nagtatago ng kalaswaan at anumang bagay na kakikitaan ng sensitibong damdamin. Ang Chat, Spaces, mga barya, di - kilalang paglalagay at pagpapasimula ng isang samahan ay wala na, at ang iba ay hindi makapagsisimula ng isang chat o tip sa iyo. Ang iyong mga post ay nagtutungo lamang sa iyong mga Kaibigan malibang patayin mo ang Private posting."
 
 #, machine, plain1, python-format
 msgid "It was not approved last time. The admins said: %(note)s"
@@ -9829,6 +9877,10 @@ msgstr "Marso equinox"
 #, glossary, machine, plain1
 msgid "Mark Sensitive Content"
 msgstr "Markahan bilang Sensitibong Nilalaman"
+
+#, machine, plain1
+msgid "Mark a post Sensitive if a film or game with the same content would be rated 15, R or 16+, or given a content warning. That means strong sexual content or nudity, graphic violence or injury, strong drug use, self-harm or suicide, or very distressing or frightening scenes. If you're not sure, mark it Sensitive."
+msgstr "Markahan ang isang post Sensitive kung ang isang pelikula o laro na may parehong nilalaman ay iuuri 15, R o 16+, o mabigyan ng content warning. Nangangahulugan iyan ng malakas na nilalamang seksuwal o paghuhubo't hubad, detalyadong karahasan o pinsala, malakas na paggamit ng droga, self-harm o pagpapatiwakal, o napaka nakababalisa o nakakatakot na mga eksena. Kung hindi ka sigurado, markahan ito ng Sensitive."
 
 #, machine, plain1
 msgid "Mark as Sensitive Content (blurred until clicked)"
@@ -12886,6 +12938,26 @@ msgid "Private post, visible to you because you are an approved contributor in +
 msgstr "Pribadong post, nakikita sa iyo dahil ikaw ay isang sinang - ayunang taga-ambag sa +i%(guild)s."
 
 #, machine, plain1
+msgid "Private posting"
+msgstr "Pribadong paglalagay"
+
+#, machine, plain1
+msgid "Private posting is off."
+msgstr "Wala na ang pribadong paglalagay."
+
+#, machine, plain1
+msgid "Private posting is on, so this can only go to your Friends circle. You can change that in Settings > Content."
+msgstr "May pribadong paglalagay, kaya ito ay maaari lamang magtungo sa iyong mga Kaibigan. Maaari mong baguhin iyan sa settings > Content."
+
+#, machine, plain1
+msgid "Private posting is on, so this goes only to your Friends circle. You can change that in Settings > Content."
+msgstr "May pribadong paglalagay, kaya ito'y para lamang sa iyong mga Kaibigan. Maaari mong baguhin iyan sa settings > Content."
+
+#, machine, plain1
+msgid "Private posting is on."
+msgstr "May pribadong paglalagay."
+
+#, machine, plain1
 msgid "Pro Wrestling"
 msgstr "Pag - aanunsiyo"
 
@@ -14328,6 +14400,10 @@ msgid "Sensitive media"
 msgstr "Sensitive media"
 
 #, machine, plain1
+msgid "Sensitive posts, guilds and accounts are not against the rules, but All and For You leave them out unless you turn this on. You can always open a sensitive guild or profile, search for it or follow it."
+msgstr "Hindi naman labag sa mga tuntunin ang mga sensitive post, guild at account, ngunit lahat at Para sa Iyo ay hindi nagbibigay-diin sa kanila maliban na lamang kung buksan mo ito. Maaari mong buksan ang isang sensitibong samahan o profile, hanapin ito o sundin ito."
+
+#, machine, plain1
 msgid "September equinox"
 msgstr "Setyembre equinox"
 
@@ -15526,6 +15602,10 @@ msgid "Thanks. An admin will look at the bot soon; you will get a notification. 
 msgstr "Salamat. Malapit nang tingnan ng isang admin ang bot; magkakaroon ka ng nota. Ang larawan ay hindi maaaring itago; subukan muli mula sa pahina ng bot."
 
 #, machine, plain1
+msgid "Thanks. Your account no longer has the child lock, and Private posting is off. Posts you made before stay as they were: use Who can see this on a post to change who sees it."
+msgstr "Salamat. Hindi na naikandado ng inyong account ang bata, at wala na ang pribadong paglalagay. Mga Post na ginawa mo noon: Gamitin Kung sino ang makakita nito sa isang poste upang baguhin kung sino ang nakakakita nito."
+
+#, machine, plain1
 msgid "That Discord account is already in use by another user."
 msgstr "Ang ulat na iyan sa Discord ay ginagamit na ng ibang gumagamit."
 
@@ -16030,6 +16110,18 @@ msgstr "Ang mga ulat sa talaang ito ang nag - iingat nito sa kanilang sarili."
 #, machine, plain1, python-format
 msgid "The admins said: %(note)s"
 msgstr "Ang admins ay nagsabi: %(note)s"
+
+#, machine, plain1
+msgid "The age check didn't finish. Nothing has changed, and you can try again."
+msgstr "Hindi pa tapos ang age check. Walang nagbago, at maaari mong subuking muli."
+
+#, machine, plain1
+msgid "The age check found that you are under the youngest age allowed to have an account where you are."
+msgstr "Nasumpungan ng pagsusuri sa edad na ikaw ay nasa ilalim ng pinakabatang edad na pinapayagang magkaroon ng ulat kung nasaan ka."
+
+#, machine, plain1
+msgid "The age check found that you're under 18, so the child lock stays on."
+msgstr "Nasumpungan ng pagsusuri sa edad na ikaw ay wala pang 18, kaya ang bata ay nananatiling nakakandado."
 
 #, machine, plain1
 msgid "The author"
@@ -17054,8 +17146,20 @@ msgid "This is too much like what was posted automatically today."
 msgstr "Ito ay labis na katulad ng naipaskil nang kusa sa ngayon."
 
 #, machine, plain1
+msgid "This isn't available while your account is age-restricted. You can confirm your age in Settings > Content."
+msgstr "Ito ay hindi makukuha habang ang account mo ay age-fiund. Maaari mong tiyakin ang edad mo sa pagtatakda > Kontento."
+
+#, machine, plain1
 msgid "This isn't shown at your current word filter level. You can review your word filter in your content settings."
 msgstr "Hindi ito ipinapakita sa kasalukuyang antas ng iyong salitang filter. Maaari mong repasuhin ang iyong salita sa iyong nilalaman."
+
+#, machine, plain1
+msgid "This isn't shown where you are until your age has been confirmed. Sign in to do that in your content settings."
+msgstr "Ito'y hindi ipinakikita kung nasaan ka hanggang sa ang iyong edad ay mapatunayan. Magsenyas ka upang gawin iyan sa iyong mga nilalaman."
+
+#, machine, plain1
+msgid "This isn't shown while your account is age-restricted."
+msgstr "Ito ay hindi ipinapakita habang ang account mo ay age-fiund."
 
 #, machine, plain1, python-format
 msgid "This live thread ended a moment ago. It can go live again in %(num)s min."
@@ -17428,6 +17532,10 @@ msgid "To store your uploads, tick the box that lets this site manage the files 
 msgstr "Upang itago ang iyong mga kargada, i - click ang kahon na nagpapangyari sa site na ito na pangasiwaan ang mga file na nililikha nito sa iyong Google Drive."
 
 #, machine, plain1
+msgid "To take the child lock off, confirm that you're 18 or over."
+msgstr "Upang alisin ang bata, tiyakin na ikaw ay 18 o higit pa."
+
+#, machine, plain1
 msgid "To take this site's access away at Microsoft, remove it under your Microsoft account's app permissions."
 msgstr "Upang kunin ang akses ng site na ito sa Microsoft, alisin ito sa ilalim ng inyong mga pahintulot ng Microsoft account."
 
@@ -17573,6 +17681,10 @@ msgstr "Patayin ang mga notipikasyon sa +%(guild)s"
 #, machine, plain1, python-format
 msgid "Turn off notifications from @%(name)s"
 msgstr "Patayin ang mga nota mula sa @i%(name)s"
+
+#, machine, plain1
+msgid "Turn on if much of what you post would be rated 15, R or 16+. Your profile shows a Sensitive content badge, your new posts are blurred, and your posts are left out of All and For You for anyone who hasn't chosen to see sensitive content."
+msgstr "Buksan kung ang karamihan ng inilalagay mo ay uuriin na 15, R o 16+. Ang iyong profile ay nagpapakita ng Sensitive content badge, ang iyong mga bagong post ay malabo, at ang iyong mga post ay hindi na kasali sa Lahat at Para sa Iyo para sa sinuman na hindi piniling makita ang sensitibong nilalaman."
 
 #, machine, plain1
 msgid "Turn on media storage to upload."
@@ -18524,6 +18636,10 @@ msgid "We're sorry something here is wrong."
 msgstr "Ikinalulungkot namin na may problema rito."
 
 #, machine, plain1
+msgid "We've changed the Age section of our [Terms](/help/terms). An account for someone under 18 now has a child lock, and in the UK, the EU and Australia your age has to be confirmed with an age-check service before the lock comes off or you can see sensitive content. You can say whether you're 18 or over in Settings > Content."
+msgstr "Binago natin ang bahaging Age ng ating [Terms](/help/terms). Ang isang account para sa isa na wala pang 18 ngayon ay may lock ng bata, at sa UK, ang EU at Australia na iyong edad ay kailangang makumpirma sa pamamagitan ng isang age-check service bago ang lock ay bumaba o makikita mo ang sensitibong nilalaman. Masasabi mo kung ikaw ay 18 o higit pa sa mga setting > Kontento."
+
+#, machine, plain1
 msgid "Web Development"
 msgstr "Pag - unlad ng Web"
 
@@ -18724,6 +18840,22 @@ msgid "Where you are, in your words"
 msgstr "Nasaan ka, sa iyong pananalita"
 
 #, machine, plain1
+msgid "Where you are, the law means you have to confirm that you're 18 or over with an age-check service, in your Settings after you sign up. Until then your account has the child lock on, which hides profanity and sensitive content and turns some features off."
+msgstr "Kung nasaan ka, ang ibig sabihin ng batas ay dapat mong tiyakin na ikaw ay 18 o higit pa na may serbisyong age-check, sa iyong mga settings pagkatapos mong pumirma. Hanggang sa panahong iyon ay ipinakulong ng inyong ulat ang bata, na itinatago ang kalaswaan at sensitibong nilalaman at pinapatay ang ilang bahagi."
+
+#, machine, plain1
+msgid "Where you are, the law means your age has to be confirmed with an age-check service before the child lock comes off."
+msgstr "Kung nasaan ka, ang ibig sabihin ng batas ay ang edad mo ay kailangang kumpirmahin sa pamamagitan ng serbisyong age-check bago mag-hock ang bata."
+
+#, machine, plain1
+msgid "Where you are, the law means your age has to be confirmed with an age-check service before you can see sensitive content or strong language."
+msgstr "Kung nasaan ka, ang ibig sabihin ng batas ay ang edad mo ay kailangang kumpirmahin ng serbisyong age-check bago mo makita ang sensitibong nilalaman o malakas na wika."
+
+#, machine, plain1
+msgid "Where you are, your age has to be confirmed with an age-check service."
+msgstr "Kung nasaan ka, ang edad mo ay kailangang kumpirmahin ng serbisyong age-check."
+
+#, machine, plain1
 msgid "Whether a video site's player may load before you press play. While it may not, Automatic above has no effect."
 msgstr "Kung baga ang isang video site ay maaaring magkarga bago ka maglaro. Bagaman maaaring hindi, walang epekto ang awtomatikong paraan sa itaas."
 
@@ -18918,6 +19050,10 @@ msgstr "Sa pamamagitan ng Premium magkakaroon ka ng isang lugar para sa lahat ng
 #, machine, plain1
 msgid "With Premium you see how each of your posts is doing: views per day, how many signed-in people came, votes, comments, bookmarks, forwards and reposts, how it does in each guild it was forwarded to, and the results of its poll."
 msgstr "Sa pamamagitan ng Premium nakikita mo kung ano ang ginagawa ng bawat isa sa iyong mga post: mga pananaw araw-araw, kung gaano karaming mga pirmadong-in na tao ang dumating, boto, komento, pananda ng aklat, forwards at reposts, kung paano ito ginagawa sa bawat guild ito ay pasulong, at ang mga resulta ng poll nito."
+
+#, machine, plain1
+msgid "With Private posting on, a circle can only hold people who follow you and whom you follow."
+msgstr "Sa pamamagitan ng pribadong paglalagay, ang isang bilog ay maaari lamang maghawak sa mga taong sumusunod sa iyo at kung sino ang iyong sinusunod."
 
 #, machine, plain1
 msgid "With a link"
@@ -19116,6 +19252,10 @@ msgstr "Araw ng Tubig sa Daigdig"
 #, machine, plain1
 msgid "World Wildlife Day"
 msgstr "Araw ng Buhay - Iláng sa Daigdig"
+
+#, machine, plain1
+msgid "Would a film with this be rated 15 or R? Blur this post until viewers click to reveal it."
+msgstr "Ang isa bang pelikula na ganito ay maituturing na 15 o R? Pakuluin ang posteng ito hanggang sa mag - click ang mga manonood upang isiwalat ito."
 
 #, machine, plain1
 msgid "Write a username."
@@ -19598,6 +19738,10 @@ msgid "You can't do that while your account balance is negative. Visit your acco
 msgstr "Hindi mo magagawa iyan samantalang ang iyong kuwenta ay negatibo. Magpunta sa iyong account settings para maging balanse hanggang zero."
 
 #, machine, plain1
+msgid "You can't do that with this account."
+msgstr "Hindi mo magagawa iyan sa ulat na ito."
+
+#, machine, plain1
 msgid "You can't edit this page."
 msgstr "Hindi mo maaaring i - edit ang pahinang ito."
 
@@ -19945,6 +20089,10 @@ msgstr "Maaaring hindi mo pamahalaan ang pag - aangkin ng mga samahan na ikaw ay
 msgid "You may not use Ruqqus to engage in or plan unlawful activity."
 msgstr "Maaaring hindi mo gamitin si Ruqqus upang magsagawa o magplano ng ilegal na gawain."
 
+#, machine, plain1, python-format
+msgid "You must be at least %(min)s to have an account where you are."
+msgstr "Dapat na ikaw ay maging di - kukulangin sa %(min)s upang magkaroon ng ulat kung nasaan ka."
+
 #, machine, plain1
 msgid "You must have a verified email address to upload images via Tor."
 msgstr "Kailangang mayroon kang tiyak na direksiyon ng email sa mga larawan sa pamamagitan ng Tor."
@@ -20291,6 +20439,18 @@ msgstr "Sinuri ang inyong account at handa na: maaari na kayong magpaskil, magko
 msgid "Your account has been deleted"
 msgstr "Inalis na ang iyong account"
 
+#, machine, plain1, python-format
+msgid "Your account has the child lock on, since %(date)s."
+msgstr "Ang inyong kuwenta ay nakakandado sa bata, mula noong %(date)s."
+
+#, machine, plain1
+msgid "Your account is age-restricted, so its word filter stays on Child until you confirm your age in Settings."
+msgstr "Ang inyong account ay age-strained, kaya ang salitang filter nito ay nananatili sa Bata hanggang sa patunayan ninyo ang inyong edad sa settings."
+
+#, machine, plain1
+msgid "Your account is age-restricted, so sensitive content stays hidden until you confirm your age in Settings."
+msgstr "Ang iyong account ay age-strained, napaka sensitibo na nilalaman ay nananatiling nakatago hanggang sa matiyak mo ang iyong edad sa settings."
+
 #, machine, plain1
 msgid "Your account is being checked"
 msgstr "Sinusuri ang iyong account"
@@ -20347,6 +20507,10 @@ msgstr "Ang iyong ulat ay hindi na awtomatikong nakapaskil. Nananatili ang mga p
 msgid "Your account posts from these feeds from now on."
 msgstr "Ang iyong mga account post mula sa mga ito ay kumakain mula ngayon."
 
+#, machine, plain1
+msgid "Your account was closed"
+msgstr "Isinara ang inyong ulat"
+
 #, machine, plain1, python-format
 msgid "Your account's automated posting has been paused: %(reason)s"
 msgstr "Ang awtomatikong paglalagay ng inyong ulat ay itinigil: %(reason)s"
@@ -20362,6 +20526,10 @@ msgstr "Ang automated posting ng iyong account ay tumigil sa pagbabasa ng %(url)
 #, machine, plain1
 msgid "Your account's automated posting was approved. Your feeds' new posts appear on your profile, marked as automated, within a few minutes. Manage it in [Settings > Bots](/settings/bots)."
 msgstr "Ang awtomatikong paglalagay ng inyong ulat ay sinang - ayunan. Ang bagong mga poste ng iyong pagkain ay makikita sa iyong profile, minarkahan bilang automated, sa loob ng ilang minuto. Isalin ito sa [Settings > Bots](/settings/bots)."
+
+#, machine, plain1, python-format
+msgid "Your age was confirmed on %(date)s."
+msgstr "Kinumpirma ang edad mo sa %(date)s."
 
 #, machine, plain1
 msgid "Your answer"
@@ -20566,6 +20734,10 @@ msgid "Your own mix ranks the newest %(num)s matching post. 0 switches a part of
 msgid_plural "Your own mix ranks the newest %(num)s matching posts. 0 switches a part off, 10 makes it count the most."
 msgstr[0] ""
 msgstr[1] ""
+
+#, machine, plain1
+msgid "Your parent or guardian has to agree before Private posting can be turned off."
+msgstr "Ang iyong magulang o tagapag - alaga ay kailangang sumang - ayon bago ang pribadong paglalagay ay maaaring patayin."
 
 #, machine, plain1
 msgid "Your password"

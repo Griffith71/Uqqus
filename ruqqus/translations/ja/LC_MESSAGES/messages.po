@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ruqqus VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-31 05:16+0000\n"
+"POT-Creation-Date: 2026-11-05 16:56+1100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: ja\n"
@@ -3109,6 +3109,10 @@ msgid "A search can hold at most %(num)s word and operator."
 msgid_plural "A search can hold at most %(num)s words and operators."
 msgstr[0] "検索は、ほとんどの %(num)s 単語と演算子で保持できます."
 
+#, machine, plain1
+msgid "A sensitive guild's posts are left out of All and For You for anyone who hasn't chosen to see sensitive content. Enable if your guild allows content that a film or game would rate 15, R or 16+, such as strong sexual content, graphic violence or self-harm - not a rule violation, just a heads-up. Every post in this guild will be blurred by default."
+msgstr "敏感なギルドの投稿は、敏感なコンテンツを見るために選ばれていない人のために、すべてとあなたのために残っています。 あなたのギルドが映画やゲームが強い性的コンテンツ、グラフィックの暴力、または自己ハームなどの15、Rまたは16 +をレートするコンテンツを可能にするかどうかを有効にしてください - ルール違反ではなく、ヘッドアップだけ。 このギルドの全ての投稿はデフォルトでブルーレイドされます."
+
 #, machine, python-format
 msgid "A shared draft can have at most %(num)s author."
 msgid_plural "A shared draft can have at most %(num)s authors."
@@ -3619,6 +3623,10 @@ msgid "After %(date)s"
 msgstr "後に %(date)s"
 
 #, machine, plain1
+msgid "Age confirmation isn't available yet."
+msgstr "年齢確認はできません."
+
+#, machine, plain1
 msgid "Alert"
 msgstr "アラート"
 
@@ -3786,9 +3794,17 @@ msgstr "アミューリアンオリエント"
 msgid "An account with that username or email already exists."
 msgstr "既に存在するユーザー名またはメールのアカウント."
 
+#, machine, plain1
+msgid "An admin confirmed that you are 18 or over. Your account no longer has the child lock. Your word filter hasn't changed: you can change it in Settings > Content, and turning the Child filter down needs your password."
+msgstr "管理者は18歳以上であることを確認しました。 あなたのアカウントはもはや子供ロックを持っていません。 あなたの単語フィルタは変更されていません: 設定 > コンテンツ、チャイルドフィルタダウンの切り替えにはパスワードが必要です."
+
 #, machine, python-format
 msgid "An admin marked +%(guild)s sensitive: its posts are left out of All and For You unless someone chooses to see sensitive content. Only an admin can change this."
 msgstr "管理者は、+%(guild)sの機密性をマークしました。その投稿は、機密コンテンツを見るために選択しない限り、すべておよびあなたのために残されます。 管理者だけが変更できます."
+
+#, machine, plain1
+msgid "An admin marked this as a child account. It has the child lock: the Child word filter, which hides profanity and anything marked sensitive, and some features are off. You can lift it by confirming your age in Settings > Content."
+msgstr "管理者は子供アカウントとしてこれをマークしました。 それは子供のロックを持っています: 子の単語フィルタ, 不敬とマークされた敏感なものを隠す, そして、いくつかの機能はオフです. 設定の年齢を確認することにより、それを持ち上げることができます > コンテンツ."
 
 #, machine
 msgid "An admin marked this sensitive, so it can't be switched off here."
@@ -5611,6 +5627,14 @@ msgstr "新規パスワードの確認"
 msgid "Confirm Password"
 msgstr "パスワードの確認"
 
+#, machine, plain1
+msgid "Confirm my age"
+msgstr "年齢確認"
+
+#, machine, plain1
+msgid "Confirm your age"
+msgstr "年齢確認"
+
 #, glossary, machine, plain1
 msgid "Connect"
 msgstr "ソーシャル"
@@ -6986,6 +7010,10 @@ msgstr "みんながお互いの変化をタイプして見ているし、すべ
 msgid "Everything from your guilds and accounts, newest first."
 msgstr "あなたのギルドとアカウントからすべて、最初に最新です."
 
+#, machine, plain1
+msgid "Everything you post goes only to your Friends circle, the people you follow who follow you back, so nothing is public by accident. Your circles can only hold people like that, and you can't forward, repost or write a shared draft. Comments on other people's posts are still public."
+msgstr "あなたが投稿したすべてがあなたの友人のサークル、あなたが戻ってフォローしている人々だけに行きますので、事故で公然ありません。 あなたのサークルは、そのような人だけを保持することができます, あなたは転送することはできません, 再投稿または共有ドラフトを書きます. 他の人の投稿へのコメントはまだ公開されています."
+
 #. %(typed)s is exactly what a reader types into the field; it stays as it is
 #, machine, plain1, python-format
 msgid "Example: %(typed)s · a public curation works too: %(curation)s"
@@ -8213,6 +8241,10 @@ msgstr "標準および子フィルターに隠される"
 msgid "Hidden page"
 msgstr "隠しページ"
 
+#, machine, plain1
+msgid "Hidden until you confirm your age"
+msgstr "年齢確認まで隠し"
+
 #, glossary, machine, plain1
 msgid "Hide"
 msgstr "非表示にする"
@@ -8431,6 +8463,14 @@ msgstr "お問い合わせ <a href=\"%(url)s\" target=\"_blank\">利用規約</a
 msgid "I agree to the rules below."
 msgstr "以下のルールに同意します."
 
+#, machine, plain1, python-format
+msgid "I'm %(min)s or over"
+msgstr "お問い合わせ %(min)s または"
+
+#, machine, plain1, python-format
+msgid "I'm %(min)s to 17"
+msgstr "I'm %(min)s から 17"
+
 #, machine, plain1
 msgid "Ice Hockey"
 msgstr "アイスホッケー"
@@ -8474,6 +8514,10 @@ msgstr "ギルドモデレータとしてステップダウンすると、この
 #, machine, plain1
 msgid "If you're having trouble with the button above, copy and paste the URL below into your web browser."
 msgstr "上記のボタンでトラブルが発生した場合は、以下のURLをWebブラウザにコピーして貼り付けてください."
+
+#, machine, plain1
+msgid "If you're under 18 you can still sign up. Your account will have the child lock on, which hides profanity and sensitive content and turns some features off, until you confirm your age in your Settings."
+msgstr "18歳未満の方は、サインアップ可能です。 あなたのアカウントは、あなたの設定であなたの年齢を確認するまで、あなたのアカウントは、不貞と敏感なコンテンツを隠し、いくつかの機能をオフにする子ロックを持っています."
 
 #, machine, plain1
 msgid "If you’re having trouble with the button above, copy and paste the URL below into your web browser."
@@ -8824,6 +8868,10 @@ msgstr "あなたが見ることができる投稿を注文するだけです."
 #, machine, plain1
 msgid "It shows, in full, every word and phrase the word filter looks for, in every language it covers. That includes slurs and other extremely offensive language."
 msgstr "これは、すべての単語、単語のフィルタは、それがカバーするすべての言語で、見ます単語のフィルタを、示します。 これは、スラーや他の非常に攻撃的な言語を含みます."
+
+#, machine, plain1
+msgid "It stays on the Child word filter, which hides profanity and anything marked sensitive. Chat, Spaces, coins, anonymous posting and starting a guild are off, and others can't start a chat or tip you. Your posts go to your Friends circle only unless you turn Private posting off."
+msgstr "子供の単語フィルターに留まっています。これは、不敬とマークされた感度を隠します。 チャット、スペース、コイン、匿名投稿、およびギルド開始はオフであり、他の人はチャットやヒントを開始することはできません。 あなたの投稿はプライベート投稿をオフにしない限り、あなたの友人のサークルに行きます."
 
 #, machine, python-format
 msgid "It was not approved last time. The admins said: %(note)s"
@@ -9596,6 +9644,10 @@ msgstr "3月 エキノックス"
 #, glossary, machine, plain1
 msgid "Mark Sensitive Content"
 msgstr "センシティブに指定"
+
+#, machine, plain1
+msgid "Mark a post Sensitive if a film or game with the same content would be rated 15, R or 16+, or given a content warning. That means strong sexual content or nudity, graphic violence or injury, strong drug use, self-harm or suicide, or very distressing or frightening scenes. If you're not sure, mark it Sensitive."
+msgstr "同じ内容の映画やゲームが15、R、16+、またはコンテンツ警告を与えた場合、投稿感度をマークしてください。 つまり、強力な性的コンテンツや裸体、グラフィック暴力や怪我、強力な薬物使用、自己調和または自殺、または非常に苦難または恐ろしい場面を意味します。 わからない場合は、感度をマークしてください."
 
 #, machine
 msgid "Mark as Sensitive Content (blurred until clicked)"
@@ -12634,6 +12686,26 @@ msgid "Private post, visible to you because you are an approved contributor in +
 msgstr "+%(guild)s で承認されたコントリビューターであるので、プライベートポスト、あなたに表示されます."
 
 #, machine, plain1
+msgid "Private posting"
+msgstr "プライベート投稿"
+
+#, machine, plain1
+msgid "Private posting is off."
+msgstr "プライベート投稿はオフです."
+
+#, machine, plain1
+msgid "Private posting is on, so this can only go to your Friends circle. You can change that in Settings > Content."
+msgstr "プライベート投稿は上にあるので、友達のサークルにしか行けません。 設定 > 内容の変更ができます."
+
+#, machine, plain1
+msgid "Private posting is on, so this goes only to your Friends circle. You can change that in Settings > Content."
+msgstr "プライベート投稿がオンになっているので、友達のサークルにしか入りません。 設定 > 内容の変更ができます."
+
+#, machine, plain1
+msgid "Private posting is on."
+msgstr "プライベート投稿中です."
+
+#, machine, plain1
 msgid "Pro Wrestling"
 msgstr "プロレスリング"
 
@@ -14069,6 +14141,10 @@ msgid "Sensitive media"
 msgstr "敏感な媒体"
 
 #, machine, plain1
+msgid "Sensitive posts, guilds and accounts are not against the rules, but All and For You leave them out unless you turn this on. You can always open a sensitive guild or profile, search for it or follow it."
+msgstr "敏感な投稿、ギルド、アカウントはルールに反していませんが、これを有効にしない限り、すべておよびあなたがそれらを残します。 あなたは常に敏感なギルドまたはプロファイルを開くことができます, それを検索するか、それをフォロー."
+
+#, machine, plain1
 msgid "September equinox"
 msgstr "9月 エキノックス"
 
@@ -15235,6 +15311,10 @@ msgstr "ありがとうございます。 管理者はボットをすぐに見�
 msgid "Thanks. An admin will look at the bot soon; you will get a notification. The picture could not be stored; try again from the bot's page."
 msgstr "ありがとうございます。 管理者はボットをすぐに見ていきます。通知が表示されます。 写真は保存できません。ボットのページからもう一度お試しください."
 
+#, machine, plain1
+msgid "Thanks. Your account no longer has the child lock, and Private posting is off. Posts you made before stay as they were: use Who can see this on a post to change who sees it."
+msgstr "ありがとうございます。 あなたのアカウントはもはや子供ロックを持っていません, そして、プライベート投稿はオフです. 滞在前に行った投稿: 誰がそれを見ることができるかを投稿に使用して、誰がそれを見ているかを変更します."
+
 #, machine
 msgid "That Discord account is already in use by another user."
 msgstr "その Discord アカウントは、別のユーザが既に使用しています."
@@ -15740,6 +15820,18 @@ msgstr "このリストのアカウントはそれ自体に保つ."
 #, machine, python-format
 msgid "The admins said: %(note)s"
 msgstr "管理者は言いました: %(note)s"
+
+#, machine, plain1
+msgid "The age check didn't finish. Nothing has changed, and you can try again."
+msgstr "年齢チェックは終わりませんでした。 何も変更されず、もう一度試すことができます."
+
+#, machine, plain1
+msgid "The age check found that you are under the youngest age allowed to have an account where you are."
+msgstr "年齢チェックは、あなたが最も若い年齢の下にいることがわかりました."
+
+#, machine, plain1
+msgid "The age check found that you're under 18, so the child lock stays on."
+msgstr "年齢チェックは18歳未満であることが判明したので、お子様のロックは滞在します."
 
 #, machine
 msgid "The author"
@@ -16749,9 +16841,21 @@ msgstr "これは guild のカスタム CSS ファイルです."
 msgid "This is too much like what was posted automatically today."
 msgstr "今日に自動投稿されたものみたいな感じです."
 
+#, machine, plain1
+msgid "This isn't available while your account is age-restricted. You can confirm your age in Settings > Content."
+msgstr "アカウントが年齢制限されている場合は利用できません。 設定で年齢を確認することができます > コンテンツ."
+
 #, machine
 msgid "This isn't shown at your current word filter level. You can review your word filter in your content settings."
 msgstr "現在の単語フィルターレベルでは表示されません。 コンテンツ設定で単語フィルターを確認できます."
+
+#, machine, plain1
+msgid "This isn't shown where you are until your age has been confirmed. Sign in to do that in your content settings."
+msgstr "年齢が確認されるまで表示されません。 サインインして、コンテンツの設定を行います."
+
+#, machine, plain1
+msgid "This isn't shown while your account is age-restricted."
+msgstr "アカウントが年齢制限されている間に表示されません."
 
 #, machine, plain1, python-format
 msgid "This live thread ended a moment ago. It can go live again in %(num)s min."
@@ -17117,6 +17221,10 @@ msgstr "著者であることを停止するには、ドラフトを残します
 msgid "To store your uploads, tick the box that lets this site manage the files it creates in your Google Drive."
 msgstr "アップロードを保存するには、このサイトが作成するファイルをGoogle Driveで管理できるようにするボックスをオンにします."
 
+#, machine, plain1
+msgid "To take the child lock off, confirm that you're 18 or over."
+msgstr "お子様のロックを解除するには、18歳以上であることを確認してください."
+
 #, machine
 msgid "To take this site's access away at Microsoft, remove it under your Microsoft account's app permissions."
 msgstr "Microsoft でこのサイトにアクセスするには、Microsoft アカウントのアプリ権限で削除します."
@@ -17263,6 +17371,10 @@ msgstr "+%(guild)sから通知をオフにする"
 #, machine, plain1, python-format
 msgid "Turn off notifications from @%(name)s"
 msgstr "@%(name)s から通知をオフにする"
+
+#, machine, plain1
+msgid "Turn on if much of what you post would be rated 15, R or 16+. Your profile shows a Sensitive content badge, your new posts are blurred, and your posts are left out of All and For You for anyone who hasn't chosen to see sensitive content."
+msgstr "投稿の多くが15、R、16+と評価されるかどうかをオンにします。 あなたのプロフィールは敏感な内容のバッジ、あなたの新しい投稿がぼやけていて、あなたの投稿はすべてから残され、敏感な内容を見るために選ばれていない人のために."
 
 #, machine
 msgid "Turn on media storage to upload."
@@ -18210,6 +18322,10 @@ msgid "We're sorry something here is wrong."
 msgstr "申し訳ございません."
 
 #, machine, plain1
+msgid "We've changed the Age section of our [Terms](/help/terms). An account for someone under 18 now has a child lock, and in the UK, the EU and Australia your age has to be confirmed with an age-check service before the lock comes off or you can see sensitive content. You can say whether you're 18 or over in Settings > Content."
+msgstr "[Terms](/help/terms)のエイジセクションを変更しました。 18歳未満のお子様のアカウントには、子供用ロックがあり、英国では、EUとオーストラリアの年齢は、ロックがオフになる前に、年齢チェックサービスで確認しなければならないか、機密コンテンツを見ることができます。 設定で18以上あるかどうかを言うことができます > コンテンツ."
+
+#, machine, plain1
 msgid "Web Development"
 msgstr "ウェブ開発"
 
@@ -18410,6 +18526,22 @@ msgid "Where you are, in your words"
 msgstr "あなたがどこにいるか、あなたの言葉で"
 
 #, machine, plain1
+msgid "Where you are, the law means you have to confirm that you're 18 or over with an age-check service, in your Settings after you sign up. Until then your account has the child lock on, which hides profanity and sensitive content and turns some features off."
+msgstr "あなたがいるところ、法律は、あなたがサインアップした後、あなたの設定で、あなたが18歳以上であることを確認しなければならないことを意味します。 その後、あなたのアカウントに子供ロックがあります。, 不貞と敏感なコンテンツを隠し、いくつかの機能をオフにする."
+
+#, machine, plain1
+msgid "Where you are, the law means your age has to be confirmed with an age-check service before the child lock comes off."
+msgstr "あなたがいるところ、法律は、子供ロックが消える前に、あなたの年齢が年齢チェックサービスで確認しなければならないことを意味します."
+
+#, machine, plain1
+msgid "Where you are, the law means your age has to be confirmed with an age-check service before you can see sensitive content or strong language."
+msgstr "あなたがいるところ、法律は、あなたの年齢が敏感なコンテンツや強力な言語を見ることができます前に、年齢チェックサービスで確認しなければならないことを意味します."
+
+#, machine, plain1
+msgid "Where you are, your age has to be confirmed with an age-check service."
+msgstr "年齢確認サービスで年齢確認が必須です."
+
+#, machine, plain1
 msgid "Whether a video site's player may load before you press play. While it may not, Automatic above has no effect."
 msgstr "再生前にビデオサイトのプレーヤーが読み込まれる可能性があるかどうか。 それではないかもしれませんが、上記の自動は効果がありません."
 
@@ -18604,6 +18736,10 @@ msgstr "Premium で、%(site)s で作成し、獲得するすべての場所を 
 #, machine, plain1
 msgid "With Premium you see how each of your posts is doing: views per day, how many signed-in people came, votes, comments, bookmarks, forwards and reposts, how it does in each guild it was forwarded to, and the results of its poll."
 msgstr "Premium では、投稿のそれぞれがどのように行われるかを確認します: 1 日あたりのビュー数、署名付き人の数、投票、コメント、ブックマーク、フォワード、およびリポスト、それが転送された各ギルドでどのようにするか、およびその投票の結果."
+
+#, machine, plain1
+msgid "With Private posting on, a circle can only hold people who follow you and whom you follow."
+msgstr "プライベート投稿では、サークルがフォローしている人やフォローしている人だけを保持することができます."
 
 #, machine
 msgid "With a link"
@@ -18802,6 +18938,10 @@ msgstr "ワールドウォーターデー"
 #, machine, plain1
 msgid "World Wildlife Day"
 msgstr "世界の野生生物の日"
+
+#, machine, plain1
+msgid "Would a film with this be rated 15 or R? Blur this post until viewers click to reveal it."
+msgstr "このフィルムは15かRと評価されますか? 視聴者がそれを明らかにするためにクリックするまで、この投稿をBlurしてください."
 
 #, machine
 msgid "Write a username."
@@ -19259,6 +19399,10 @@ msgstr "今はそれを行うことはできません."
 msgid "You can't do that while your account balance is negative. Visit your account settings to bring your balance up to zero."
 msgstr "口座残高がマイナスである間はできない。 残高をゼロにするアカウント設定をご覧ください."
 
+#, machine, plain1
+msgid "You can't do that with this account."
+msgstr "このアカウントではできません."
+
 #, machine
 msgid "You can't edit this page."
 msgstr "このページを編集することはできません."
@@ -19615,6 +19759,10 @@ msgstr "あなたがから出ていると主張するギルドを奪うことは
 msgid "You may not use Ruqqus to engage in or plan unlawful activity."
 msgstr "Ruqqus を使用して、違法な活動に従事または計画することはできません."
 
+#, machine, plain1, python-format
+msgid "You must be at least %(min)s to have an account where you are."
+msgstr "あなたがいるアカウントを持っているために少なくとも%(min)sでなければなりません."
+
 #, machine
 msgid "You must have a verified email address to upload images via Tor."
 msgstr "Tor 経由で画像をアップロードするには、確認済みのメールアドレスが必要です."
@@ -19956,6 +20104,18 @@ msgstr "あなたのアカウントがチェックされ、準備が整ってい
 msgid "Your account has been deleted"
 msgstr "アカウントが削除されました"
 
+#, machine, plain1, python-format
+msgid "Your account has the child lock on, since %(date)s."
+msgstr "あなたのアカウントは、%(date)s 以降、子供がロックされています."
+
+#, machine, plain1
+msgid "Your account is age-restricted, so its word filter stays on Child until you confirm your age in Settings."
+msgstr "あなたのアカウントは年齢制限されているので、その単語フィルタは設定であなたの年齢を確認するまで子供に滞在します."
+
+#, machine, plain1
+msgid "Your account is age-restricted, so sensitive content stays hidden until you confirm your age in Settings."
+msgstr "あなたのアカウントは年齢制限されており、あなたの年齢が設定されていることを確認するまで機密性の高いコンテンツが隠されています."
+
 #, machine, plain1
 msgid "Your account is being checked"
 msgstr "あなたのアカウントがチェックされている"
@@ -20012,6 +20172,10 @@ msgstr "あなたのアカウントはもはや自動的に投稿しません。
 msgid "Your account posts from these feeds from now on."
 msgstr "これらのフィードからのアカウント投稿を今から."
 
+#, machine, plain1
+msgid "Your account was closed"
+msgstr "お客様のアカウントが閉鎖されました"
+
 #, machine, python-format
 msgid "Your account's automated posting has been paused: %(reason)s"
 msgstr "アカウントの自動投稿が未使用の場合:%(reason)s"
@@ -20027,6 +20191,10 @@ msgstr "あなたのアカウントの自動投稿は、%(fails)s が失敗し�
 #, machine
 msgid "Your account's automated posting was approved. Your feeds' new posts appear on your profile, marked as automated, within a few minutes. Manage it in [Settings > Bots](/settings/bots)."
 msgstr "アカウントの自動投稿が承認されました。 フィードの新しい投稿はプロフィールに表示され、数分以内に自動化されています。 [Settings > Bots](/settings/bots)で管理します."
+
+#, machine, plain1, python-format
+msgid "Your age was confirmed on %(date)s."
+msgstr "%(date)sで年齢が確認されました."
 
 #, machine
 msgid "Your answer"
@@ -20229,6 +20397,10 @@ msgstr "独自のミックス"
 msgid "Your own mix ranks the newest %(num)s matching post. 0 switches a part off, 10 makes it count the most."
 msgid_plural "Your own mix ranks the newest %(num)s matching posts. 0 switches a part off, 10 makes it count the most."
 msgstr[0] "独自のミックスは、最新の %(num)s マッチング投稿をランク付けします。 0 部分をオフにし、10 はそれを最もカウントします."
+
+#, machine, plain1
+msgid "Your parent or guardian has to agree before Private posting can be turned off."
+msgstr "親または保護者は、プライベート投稿がオフになる前に同意する必要があります."
 
 #, machine
 msgid "Your password"

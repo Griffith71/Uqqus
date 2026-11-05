@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ruqqus VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-31 05:16+0000\n"
+"POT-Creation-Date: 2026-11-05 16:56+1100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: pl\n"
@@ -3466,6 +3466,10 @@ msgstr[0] "Wyszukiwarka może pomieścić najwyżej %(num)s słowo i operatora."
 msgstr[1] "Wyszukiwarka może zawierać maksymalnie %(num)s słowa i operatorów."
 msgstr[2] "Wyszukiwanie może zawierać najwyżej %(num)s słów i operatorów."
 
+#, machine, plain1
+msgid "A sensitive guild's posts are left out of All and For You for anyone who hasn't chosen to see sensitive content. Enable if your guild allows content that a film or game would rate 15, R or 16+, such as strong sexual content, graphic violence or self-harm - not a rule violation, just a heads-up. Every post in this guild will be blurred by default."
+msgstr "Posty wrażliwej gildii są pomijane z wszystkich i dla Ciebie dla każdego, kto nie wybrał, aby zobaczyć wrażliwe treści. Włącz, jeśli gildia pozwala na zawartość, że film lub gra może ocenić 15, R lub 16 +, takich jak silna zawartość seksualna, przemoc graficzna lub samookaleczenia - nie naruszenie zasad, tylko głowy-up. Każdy post w tej gildii będzie zamazany domyślnie."
+
 #, machine, python-format
 msgid "A shared draft can have at most %(num)s author."
 msgid_plural "A shared draft can have at most %(num)s authors."
@@ -3990,6 +3994,10 @@ msgid "After %(date)s"
 msgstr "Po %(date)s"
 
 #, machine, plain1
+msgid "Age confirmation isn't available yet."
+msgstr "Potwierdzenie wieku nie jest jeszcze dostępne."
+
+#, machine, plain1
 msgid "Alert"
 msgstr "Alarm"
 
@@ -4159,9 +4167,17 @@ msgstr "Orient amuryjski"
 msgid "An account with that username or email already exists."
 msgstr "Konto z tą nazwą użytkownika lub e-mailem już istnieje."
 
+#, machine, plain1
+msgid "An admin confirmed that you are 18 or over. Your account no longer has the child lock. Your word filter hasn't changed: you can change it in Settings > Content, and turning the Child filter down needs your password."
+msgstr "Administrator potwierdził, że masz 18 lat lub więcej. Twoje konto nie ma już zamka dla dzieci. Filtr nie zmienił się: możesz zmienić go w Ustawieniach > Zawartość i odłączenie filtra Childa wymaga hasła."
+
 #, machine, python-format
 msgid "An admin marked +%(guild)s sensitive: its posts are left out of All and For You unless someone chooses to see sensitive content. Only an admin can change this."
 msgstr "Administrator oznaczone + %(guild)s wrażliwe: jego posty są pomijane ze wszystkich i dla Ciebie, chyba że ktoś zdecyduje się zobaczyć wrażliwe treści. Tylko administrator może to zmienić."
+
+#, machine, plain1
+msgid "An admin marked this as a child account. It has the child lock: the Child word filter, which hides profanity and anything marked sensitive, and some features are off. You can lift it by confirming your age in Settings > Content."
+msgstr "Administrator zaznaczył to jako konto dziecka. Posiada blokadę dziecięcą: filtr dziecięcy, który ukrywa bluźnierstwo i wszystko, co jest oznakowane wrażliwym i niektóre funkcje są wyłączone. Można go podnieść, potwierdzając swój wiek w Ustawieniach > Zawartość."
 
 #, machine
 msgid "An admin marked this sensitive, so it can't be switched off here."
@@ -6014,6 +6030,14 @@ msgstr "Potwierdź nowe hasło"
 msgid "Confirm Password"
 msgstr "Potwierdź hasło"
 
+#, machine, plain1
+msgid "Confirm my age"
+msgstr "Potwierdź mój wiek"
+
+#, machine, plain1
+msgid "Confirm your age"
+msgstr "Potwierdź swój wiek"
+
 #, glossary, machine, plain1
 msgid "Connect"
 msgstr "Obserwuj nas"
@@ -7403,6 +7427,10 @@ msgstr "Każdy widzi swoje zmiany, jak pisze, a każdy znak jest przypisany temu
 msgid "Everything from your guilds and accounts, newest first."
 msgstr "Wszystko z twoich gildii i kont."
 
+#, machine, plain1
+msgid "Everything you post goes only to your Friends circle, the people you follow who follow you back, so nothing is public by accident. Your circles can only hold people like that, and you can't forward, repost or write a shared draft. Comments on other people's posts are still public."
+msgstr "Wszystko, co zamieścisz, idzie tylko do kręgu Przyjaciół, do ludzi, za którymi podążasz, więc nic nie jest publiczne przez przypadek. Twoje kręgi mogą trzymać tylko takich ludzi, a ty nie możesz przenosić, repostować ani pisać wspólnego szkicu. Komentarze na posty innych osób są nadal publiczne."
+
 #. %(typed)s is exactly what a reader types into the field; it stays as it is
 #, machine, plain1, python-format
 msgid "Example: %(typed)s · a public curation works too: %(curation)s"
@@ -8649,6 +8677,10 @@ msgstr "Ukryte na filtrach standardowych i dziecięcych"
 msgid "Hidden page"
 msgstr "Ukryta strona"
 
+#, machine, plain1
+msgid "Hidden until you confirm your age"
+msgstr "Ukryty dopóki nie potwierdzisz swojego wieku"
+
 #, glossary, machine, plain1
 msgid "Hide"
 msgstr "Ukryj"
@@ -8869,6 +8901,14 @@ msgstr "Akceptuję <a href=\"%(url)s\" target=\"_blank\">warunki</a>"
 msgid "I agree to the rules below."
 msgstr "Zgadzam się na poniższe zasady."
 
+#, machine, plain1, python-format
+msgid "I'm %(min)s or over"
+msgstr "I 'm %(min)s or over"
+
+#, machine, plain1, python-format
+msgid "I'm %(min)s to 17"
+msgstr "Ja. %(min)s do 17"
+
 #, machine, plain1
 msgid "Ice Hockey"
 msgstr "Hokej na lodzie"
@@ -8912,6 +8952,10 @@ msgstr "Jeśli ustąpisz jako moderator gildii, stracisz pełne uprawnienia do u
 #, machine, plain1
 msgid "If you're having trouble with the button above, copy and paste the URL below into your web browser."
 msgstr "Jeśli masz problemy z powyższym przyciskiem, skopiuj i wklej poniżej URL do przeglądarki internetowej."
+
+#, machine, plain1
+msgid "If you're under 18 you can still sign up. Your account will have the child lock on, which hides profanity and sensitive content and turns some features off, until you confirm your age in your Settings."
+msgstr "Jeśli masz poniżej 18 lat, nadal możesz się zapisać. Twoje konto będzie mieć blokadę dziecka, która ukrywa bluźnierstwo i wrażliwą zawartość i wyłącza niektóre funkcje, aż potwierdzisz swój wiek w ustawieniach."
 
 #, machine, plain1
 msgid "If you’re having trouble with the button above, copy and paste the URL below into your web browser."
@@ -9266,6 +9310,10 @@ msgstr "Zamawia tylko posty, które można zobaczyć."
 #, machine, plain1
 msgid "It shows, in full, every word and phrase the word filter looks for, in every language it covers. That includes slurs and other extremely offensive language."
 msgstr "Pokazuje, w pełni, każde słowo i wyrażenie, którego szuka filtr słowa, w każdym języku, który obejmuje. Dotyczy to także slumsów i innego niezwykle obraźliwego języka."
+
+#, machine, plain1
+msgid "It stays on the Child word filter, which hides profanity and anything marked sensitive. Chat, Spaces, coins, anonymous posting and starting a guild are off, and others can't start a chat or tip you. Your posts go to your Friends circle only unless you turn Private posting off."
+msgstr "Pozostaje na filtrze dziecięcym, który ukrywa bluźnierstwo i wszystko, co jest wrażliwe. Czat, spacje, monety, anonimowy post i rozpoczęcie gildii są wyłączone, a inni nie mogą rozpocząć rozmowy lub napiwek. Twoje posty idą do kręgu przyjaciół, chyba że wyłączysz prywatne posty."
 
 #, machine, python-format
 msgid "It was not approved last time. The admins said: %(note)s"
@@ -10062,6 +10110,10 @@ msgstr "Marcowy równonoc"
 #, glossary, machine, plain1
 msgid "Mark Sensitive Content"
 msgstr "Oznacz jako treść wrażliwą"
+
+#, machine, plain1
+msgid "Mark a post Sensitive if a film or game with the same content would be rated 15, R or 16+, or given a content warning. That means strong sexual content or nudity, graphic violence or injury, strong drug use, self-harm or suicide, or very distressing or frightening scenes. If you're not sure, mark it Sensitive."
+msgstr "Zaznacz post Sensitive, jeśli film lub gra o tej samej zawartości będzie oceniony 15, R lub 16 +, lub dać ostrzeżenie o treści. Oznacza to silną zawartość seksualną lub nagość, przemoc graficzną lub uraz, silne zażywanie narkotyków, samookaleczenie lub samobójstwo, lub bardzo niepokojące lub przerażające sceny. Jeśli nie jesteś pewien, oznacz to."
 
 #, machine
 msgid "Mark as Sensitive Content (blurred until clicked)"
@@ -13138,6 +13190,26 @@ msgid "Private post, visible to you because you are an approved contributor in +
 msgstr "Prywatny post, widoczny dla Ciebie, ponieważ jesteś zatwierdzonym współpracownikiem w + %(guild)s."
 
 #, machine, plain1
+msgid "Private posting"
+msgstr "Prywatne delegowanie"
+
+#, machine, plain1
+msgid "Private posting is off."
+msgstr "Prywatne delegowanie odwołane."
+
+#, machine, plain1
+msgid "Private posting is on, so this can only go to your Friends circle. You can change that in Settings > Content."
+msgstr "Prywatne delegowanie jest włączone, więc to może przejść tylko do kręgu przyjaciół. Możesz to zmienić w Ustawieniach > Zawartość."
+
+#, machine, plain1
+msgid "Private posting is on, so this goes only to your Friends circle. You can change that in Settings > Content."
+msgstr "Prywatne delegowanie jest włączone, więc to idzie tylko do kręgu przyjaciół. Możesz to zmienić w Ustawieniach > Zawartość."
+
+#, machine, plain1
+msgid "Private posting is on."
+msgstr "Prywatne delegowanie."
+
+#, machine, plain1
 msgid "Pro Wrestling"
 msgstr "Pro Zapasy"
 
@@ -14587,6 +14659,10 @@ msgid "Sensitive media"
 msgstr "Wrażliwe media"
 
 #, machine, plain1
+msgid "Sensitive posts, guilds and accounts are not against the rules, but All and For You leave them out unless you turn this on. You can always open a sensitive guild or profile, search for it or follow it."
+msgstr "Wrażliwe posty, gildie i konta nie są wbrew zasadom, ale wszystko i dla Ciebie zostawić je, chyba że włączyć to. Zawsze można otworzyć delikatną gildię lub profil, szukać go lub śledzić."
+
+#, machine, plain1
 msgid "September equinox"
 msgstr "Wrzesień równonocy"
 
@@ -15778,6 +15854,10 @@ msgstr "Dzięki. Administrator wkrótce spojrzy na bota; otrzymasz powiadomienie
 msgid "Thanks. An admin will look at the bot soon; you will get a notification. The picture could not be stored; try again from the bot's page."
 msgstr "Dzięki. Administrator wkrótce spojrzy na bota; otrzymasz powiadomienie. Obraz nie mógł być przechowywany; spróbuj ponownie ze strony bota."
 
+#, machine, plain1
+msgid "Thanks. Your account no longer has the child lock, and Private posting is off. Posts you made before stay as they were: use Who can see this on a post to change who sees it."
+msgstr "Dzięki. Twoje konto nie ma już zamka na dzieci, a prywatne delegowanie jest wyłączone. Stanowiska, które wykonałeś przed pobytem, takie jakie były: użyj Kto widzi to na słupie, aby zmienić tego, kto to widzi."
+
 #, machine
 msgid "That Discord account is already in use by another user."
 msgstr "To konto Discord jest już używane przez innego użytkownika."
@@ -16283,6 +16363,18 @@ msgstr "Konta z tej listy trzymają to dla siebie."
 #, machine, python-format
 msgid "The admins said: %(note)s"
 msgstr "Administratorzy powiedzieli: %(note)s"
+
+#, machine, plain1
+msgid "The age check didn't finish. Nothing has changed, and you can try again."
+msgstr "Sprawdzian wieku się nie skończył. Nic się nie zmieniło i możesz spróbować ponownie."
+
+#, machine, plain1
+msgid "The age check found that you are under the youngest age allowed to have an account where you are."
+msgstr "Kontrola wieku wykazała, że jesteś poniżej najmłodszego wieku dozwolone mieć konto, gdzie jesteś."
+
+#, machine, plain1
+msgid "The age check found that you're under 18, so the child lock stays on."
+msgstr "Sprawdzenie wieku wykazało, że nie masz 18 lat, więc blokada dziecka jest włączona."
 
 #, machine
 msgid "The author"
@@ -17320,9 +17412,21 @@ msgstr "To jest plik użytkownika gildii CSS."
 msgid "This is too much like what was posted automatically today."
 msgstr "To jest zbyt podobne do tego, co zostało opublikowane dziś automatycznie."
 
+#, machine, plain1
+msgid "This isn't available while your account is age-restricted. You can confirm your age in Settings > Content."
+msgstr "To nie jest dostępne, gdy twoje konto jest ograniczone wiekiem. Możesz potwierdzić swój wiek w Ustawieniach > Zawartość."
+
 #, machine
 msgid "This isn't shown at your current word filter level. You can review your word filter in your content settings."
 msgstr "To nie jest pokazane na obecnym poziomie filtra słowa. W ustawieniach zawartości można przeglądać filtr słowny."
+
+#, machine, plain1
+msgid "This isn't shown where you are until your age has been confirmed. Sign in to do that in your content settings."
+msgstr "To nie jest pokazane tam, gdzie jesteś, dopóki twój wiek nie zostanie potwierdzony. Zaloguj się, aby to zrobić w ustawieniach zawartości."
+
+#, machine, plain1
+msgid "This isn't shown while your account is age-restricted."
+msgstr "To nie jest pokazane, gdy twoje konto jest ograniczone wiekiem."
 
 #, machine, plain1, python-format
 msgid "This live thread ended a moment ago. It can go live again in %(num)s min."
@@ -17700,6 +17804,10 @@ msgstr "Aby przestać być autorem, zostaw szkic."
 msgid "To store your uploads, tick the box that lets this site manage the files it creates in your Google Drive."
 msgstr "Aby przechowywać swoje pliki, należy zaznaczyć pole, które pozwala tej stronie zarządzać plikami, które tworzy w Twoim Google Drive."
 
+#, machine, plain1
+msgid "To take the child lock off, confirm that you're 18 or over."
+msgstr "Aby wyłączyć blokadę dziecka, potwierdzić, że masz 18 lat lub więcej."
+
 #, machine
 msgid "To take this site's access away at Microsoft, remove it under your Microsoft account's app permissions."
 msgstr "Aby usunąć dostęp tej strony do Microsoft, usuń ją pod uprawnieniami do aplikacji na koncie Microsoft."
@@ -17846,6 +17954,10 @@ msgstr "Wyłącz powiadomienia z + %(guild)s"
 #, machine, plain1, python-format
 msgid "Turn off notifications from @%(name)s"
 msgstr "Wyłącz powiadomienia z @ %(name)s"
+
+#, machine, plain1
+msgid "Turn on if much of what you post would be rated 15, R or 16+. Your profile shows a Sensitive content badge, your new posts are blurred, and your posts are left out of All and For You for anyone who hasn't chosen to see sensitive content."
+msgstr "Włącz, jeśli większość tego, co posta będzie oceniane 15, R lub 16 +. Twój profil pokazuje znacznik sensitive treści, nowe posty są zamazane, a posty są pomijane z wszystkich i dla Ciebie dla każdego, kto nie wybrał, aby zobaczyć wrażliwe treści."
 
 #, machine
 msgid "Turn on media storage to upload."
@@ -18801,6 +18913,10 @@ msgid "We're sorry something here is wrong."
 msgstr "Przykro nam, że coś tu jest nie tak."
 
 #, machine, plain1
+msgid "We've changed the Age section of our [Terms](/help/terms). An account for someone under 18 now has a child lock, and in the UK, the EU and Australia your age has to be confirmed with an age-check service before the lock comes off or you can see sensitive content. You can say whether you're 18 or over in Settings > Content."
+msgstr "Zmieniliśmy sekcję Wieku w naszych Warunkach (/help/terms). Konto dla osoby poniżej 18 roku życia posiada teraz blokadę dziecięcą, a w Wielkiej Brytanii, UE i Australii Twój wiek musi zostać potwierdzony serwisem sprawdzającym wiek przed wyłonieniem zamka lub można zobaczyć wrażliwe treści. Możesz powiedzieć, czy masz 18 lat lub więcej w Ustawieniach > Zawartość."
+
+#, machine, plain1
 msgid "Web Development"
 msgstr "Tworzenie stron internetowych"
 
@@ -18989,6 +19105,22 @@ msgstr "Gdzie opublikować"
 #, machine
 msgid "Where you are, in your words"
 msgstr "Gdzie jesteś, swoimi słowami"
+
+#, machine, plain1
+msgid "Where you are, the law means you have to confirm that you're 18 or over with an age-check service, in your Settings after you sign up. Until then your account has the child lock on, which hides profanity and sensitive content and turns some features off."
+msgstr "Tam, gdzie jesteś, prawo oznacza, że musisz potwierdzić, że masz 18 lub więcej lat z usługi kontroli wieku, w swoich Ustawienia po zalogowaniu. Do tego czasu Twoje konto ma blokadę dziecka, która ukrywa bluźnierstwo i wrażliwą zawartość i wyłącza niektóre funkcje."
+
+#, machine, plain1
+msgid "Where you are, the law means your age has to be confirmed with an age-check service before the child lock comes off."
+msgstr "Tam, gdzie jesteś, prawo oznacza, że twój wiek musi zostać potwierdzony z usługi kontroli wieku przed blokadą dziecka."
+
+#, machine, plain1
+msgid "Where you are, the law means your age has to be confirmed with an age-check service before you can see sensitive content or strong language."
+msgstr "Tam, gdzie jesteś, prawo oznacza, że Twój wiek musi być potwierdzony z usługi kontroli wieku, zanim można zobaczyć wrażliwe treści lub silny język."
+
+#, machine, plain1
+msgid "Where you are, your age has to be confirmed with an age-check service."
+msgstr "Tam gdzie jesteś, twój wiek musi być potwierdzony usługą kontroli wieku."
 
 #, machine, plain1
 msgid "Whether a video site's player may load before you press play. While it may not, Automatic above has no effect."
@@ -19185,6 +19317,10 @@ msgstr "Z Premium masz jedno miejsce na wszystko co robisz i zarabiasz na %(site
 #, machine, plain1
 msgid "With Premium you see how each of your posts is doing: views per day, how many signed-in people came, votes, comments, bookmarks, forwards and reposts, how it does in each guild it was forwarded to, and the results of its poll."
 msgstr "Z Premium widzisz jak każdy z Twoich postów robi: widoki dziennie, jak wiele osób signed- in przyszedł, głosy, komentarze, zakładki, do przodu i reposty, jak to robi w każdej gildii został przekazany, a wyniki jego ankiety."
+
+#, machine, plain1
+msgid "With Private posting on, a circle can only hold people who follow you and whom you follow."
+msgstr "Z prywatnym delegowaniem, krąg może trzymać tylko ludzi, którzy cię śledzą i których ty śledzisz."
 
 #, machine
 msgid "With a link"
@@ -19383,6 +19519,10 @@ msgstr "Światowy Dzień Wody"
 #, machine, plain1
 msgid "World Wildlife Day"
 msgstr "Światowy Dzień Dzikiej Przyrody"
+
+#, machine, plain1
+msgid "Would a film with this be rated 15 or R? Blur this post until viewers click to reveal it."
+msgstr "Czy film z tym będzie oceniany na 15 czy R? Rozmrozić ten post, aż widzowie klikną, aby go ujawnić."
 
 #, machine
 msgid "Write a username."
@@ -19888,6 +20028,10 @@ msgstr "Nie możesz tego teraz zrobić."
 msgid "You can't do that while your account balance is negative. Visit your account settings to bring your balance up to zero."
 msgstr "Nie możesz tego zrobić, gdy stan konta jest ujemny. Odwiedź ustawienia konta, aby zwiększyć saldo do zera."
 
+#, machine, plain1
+msgid "You can't do that with this account."
+msgstr "Nie możesz tego zrobić z tym kontem."
+
 #, machine
 msgid "You can't edit this page."
 msgstr "Nie możesz edytować tej strony."
@@ -20237,6 +20381,10 @@ msgstr "Nie możesz przejąć gildii, z której jesteś wygnany."
 #, machine
 msgid "You may not use Ruqqus to engage in or plan unlawful activity."
 msgstr "Nie możesz używać Ruqqus do angażowania się lub planowania nielegalnej działalności."
+
+#, machine, plain1, python-format
+msgid "You must be at least %(min)s to have an account where you are."
+msgstr "Musisz mieć przynajmniej %(min)s konto tam, gdzie jesteś."
 
 #, machine
 msgid "You must have a verified email address to upload images via Tor."
@@ -20589,6 +20737,18 @@ msgstr "Twoje konto zostało sprawdzone i jest gotowe: możesz teraz pisać, kom
 msgid "Your account has been deleted"
 msgstr "Twoje konto zostało usunięte"
 
+#, machine, plain1, python-format
+msgid "Your account has the child lock on, since %(date)s."
+msgstr "Twoje konto jest zablokowane od %(date)s."
+
+#, machine, plain1
+msgid "Your account is age-restricted, so its word filter stays on Child until you confirm your age in Settings."
+msgstr "Twoje konto jest ograniczone do wieku, więc jego filtr słowa pozostaje na Child aż potwierdzisz swój wiek w Ustawieniach."
+
+#, machine, plain1
+msgid "Your account is age-restricted, so sensitive content stays hidden until you confirm your age in Settings."
+msgstr "Twoje konto jest ograniczone do wieku, więc wrażliwe treści pozostają ukryte do czasu potwierdzenia swojego wieku w Ustawieniach."
+
 #, machine, plain1
 msgid "Your account is being checked"
 msgstr "Twoje konto jest sprawdzane"
@@ -20645,6 +20805,10 @@ msgstr "Twoje konto nie wysyła wiadomości automatycznie. Jego posty zostają."
 msgid "Your account posts from these feeds from now on."
 msgstr "Od teraz twoje konto będzie na tych kanałach."
 
+#, machine, plain1
+msgid "Your account was closed"
+msgstr "Twoje konto zostało zamknięte"
+
 #, machine, python-format
 msgid "Your account's automated posting has been paused: %(reason)s"
 msgstr "Automatyczne wysyłanie Twojego konta zostało wstrzymane: %(reason)s"
@@ -20660,6 +20824,10 @@ msgstr "Automatyczne wysyłanie Twojego konta przerwało czytanie %(url)s po nie
 #, machine
 msgid "Your account's automated posting was approved. Your feeds' new posts appear on your profile, marked as automated, within a few minutes. Manage it in [Settings > Bots](/settings/bots)."
 msgstr "Twoje konto zostało zatwierdzone. Nowe posty na Państwa profilu, oznaczone jako zautomatyzowane, pojawiają się w ciągu kilku minut. Zarządzaj nim w [Ustawienia > Buty] (/settings/bots)."
+
+#, machine, plain1, python-format
+msgid "Your age was confirmed on %(date)s."
+msgstr "Twój wiek został potwierdzony na %(date)s."
 
 #, machine
 msgid "Your answer"
@@ -20866,6 +21034,10 @@ msgid_plural "Your own mix ranks the newest %(num)s matching posts. 0 switches a
 msgstr[0] ""
 msgstr[1] ""
 msgstr[2] ""
+
+#, machine, plain1
+msgid "Your parent or guardian has to agree before Private posting can be turned off."
+msgstr "Twój rodzic lub opiekun musi się zgodzić, zanim prywatne delegowanie zostanie wyłączone."
 
 #, machine
 msgid "Your password"

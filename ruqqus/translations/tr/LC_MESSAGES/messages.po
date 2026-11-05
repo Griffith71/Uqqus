@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ruqqus VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-31 05:16+0000\n"
+"POT-Creation-Date: 2026-11-05 16:56+1100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: tr\n"
@@ -3099,6 +3099,10 @@ msgid "A search can hold at most %(num)s word and operator."
 msgid_plural "A search can hold at most %(num)s words and operators."
 msgstr[0] "Bir arama çoğu %(num)s kelime ve operatörleri tutabilir."
 
+#, machine, plain1
+msgid "A sensitive guild's posts are left out of All and For You for anyone who hasn't chosen to see sensitive content. Enable if your guild allows content that a film or game would rate 15, R or 16+, such as strong sexual content, graphic violence or self-harm - not a rule violation, just a heads-up. Every post in this guild will be blurred by default."
+msgstr "Hassas bir guild'in mesajları her şeyden ayrılır ve hassas içeriği görmek için seçmeyenler için. Enable if your guild allows content that a movie or game would rate 15, R veya 16+, such as strong cinsel içerik, grafik şiddet veya kendi kendine has – not a rulefr, just a head-up. Bu guilddeki her yazı varsayılan olarak bulanıklaşacaktır."
+
 #, machine, python-format
 msgid "A shared draft can have at most %(num)s author."
 msgid_plural "A shared draft can have at most %(num)s authors."
@@ -3609,6 +3613,10 @@ msgid "After %(date)s"
 msgstr ""
 
 #, machine, plain1
+msgid "Age confirmation isn't available yet."
+msgstr "Yaş onayı henüz mevcut değil."
+
+#, machine, plain1
 msgid "Alert"
 msgstr "Uyarı"
 
@@ -3776,9 +3784,17 @@ msgstr "Amurian Orient"
 msgid "An account with that username or email already exists."
 msgstr "Bu kullanıcı veya e-posta ile bir hesap zaten var."
 
+#, machine, plain1
+msgid "An admin confirmed that you are 18 or over. Your account no longer has the child lock. Your word filter hasn't changed: you can change it in Settings > Content, and turning the Child filter down needs your password."
+msgstr "Bir yönetici 18 veya üstü olduğunuzu doğruladı. Hesabınız artık çocuk kilidine sahip değil. Kelime filtreniz değişmedi: bunu Ayarlar > İçerik ve Çocuk filtresini aşağı çevirmek şifrenize ihtiyaç duyar."
+
 #, machine, python-format
 msgid "An admin marked +%(guild)s sensitive: its posts are left out of All and For You unless someone chooses to see sensitive content. Only an admin can change this."
 msgstr "Bir yönetici işaret etti +%(guild)s hassas: mesajları her şeyden dışarıda bırakılır ve biri hassas içerik görmeyi seçmez. Sadece bir yönetici bunu değiştirebilir."
+
+#, machine, plain1
+msgid "An admin marked this as a child account. It has the child lock: the Child word filter, which hides profanity and anything marked sensitive, and some features are off. You can lift it by confirming your age in Settings > Content."
+msgstr "Bir yönetici bunu bir çocuk hesabı olarak işaret etti. Çocuk kilitine sahiptir: Çocuk kelime filtresi, profanity ve işaretli hassas bir şey gizler ve bazı özellikler kapalıdır. Yaşınızı Ayarlar > İçerik."
 
 #, machine
 msgid "An admin marked this sensitive, so it can't be switched off here."
@@ -5598,6 +5614,14 @@ msgstr "Yeni Şifreyi Onaylayın"
 msgid "Confirm Password"
 msgstr "Şifreyi Onaylayın"
 
+#, machine, plain1
+msgid "Confirm my age"
+msgstr "Yaşımı Onaylayın"
+
+#, machine, plain1
+msgid "Confirm your age"
+msgstr "Yaşınızı Onaylayın"
+
 #, glossary, machine, plain1
 msgid "Connect"
 msgstr "Sosyal medya"
@@ -6971,6 +6995,10 @@ msgstr "Herkes birbirlerinin değişimlerini türü olarak görür ve her karakt
 msgid "Everything from your guilds and accounts, newest first."
 msgstr "Hayilds ve hesaplarınızdan her şey, ilk önce."
 
+#, machine, plain1
+msgid "Everything you post goes only to your Friends circle, the people you follow who follow you back, so nothing is public by accident. Your circles can only hold people like that, and you can't forward, repost or write a shared draft. Comments on other people's posts are still public."
+msgstr "Gönderi gönderdiğiniz her şey sadece arkadaşlarınıza gider, sizi takip eden insanları takip eder, bu yüzden hiçbir şey kazayla halk değildir. Çevreleriniz sadece insanlar gibi tutabilir ve ileri gidemez, yenidenpost veya paylaşılan bir taslak yazabilirsiniz. Diğer insanların yazıları hakkında yorumlar hala kamuoyudur."
+
 #. %(typed)s is exactly what a reader types into the field; it stays as it is
 #, machine, plain1, python-format
 msgid "Example: %(typed)s · a public curation works too: %(curation)s"
@@ -8200,6 +8228,10 @@ msgstr "Standart ve Çocuk filtrelerinde saklı"
 msgid "Hidden page"
 msgstr "Hidden page"
 
+#, machine, plain1
+msgid "Hidden until you confirm your age"
+msgstr "Yaşınızı onaylayana kadar"
+
 #, glossary, machine, plain1
 msgid "Hide"
 msgstr "Gizle"
@@ -8417,6 +8449,14 @@ msgstr "Kabul ediyorum, <a href=\"%(url)s\" target=\"_blank\">koşullar ve koşu
 msgid "I agree to the rules below."
 msgstr "Aşağıdaki kurallara katılıyorum."
 
+#, machine, plain1, python-format
+msgid "I'm %(min)s or over"
+msgstr "I'm %(min)s or over"
+
+#, machine, plain1, python-format
+msgid "I'm %(min)s to 17"
+msgstr "I'm %(min)s 17"
+
 #, machine, plain1
 msgid "Ice Hockey"
 msgstr "Buz Hokeyi"
@@ -8460,6 +8500,10 @@ msgstr "Eğer guild moderatörü olarak aşağı adım atarsanız, bu guild'i y�
 #, machine, plain1
 msgid "If you're having trouble with the button above, copy and paste the URL below into your web browser."
 msgstr "Yukarıdaki düğmeye sorun yaşıyorsanız, web tarayıcınıza aşağıdaki URL kopyalayın."
+
+#, machine, plain1
+msgid "If you're under 18 you can still sign up. Your account will have the child lock on, which hides profanity and sensitive content and turns some features off, until you confirm your age in your Settings."
+msgstr "18 yaşın altındaysanız hala kaydolabilirsiniz. Hesabınız, profanity ve hassas içeriği gizleyen ve bazı özellikleri kapatacak, Ayarlardaki yaşını onaylayana kadar."
 
 #, machine, plain1
 msgid "If you’re having trouble with the button above, copy and paste the URL below into your web browser."
@@ -8810,6 +8854,10 @@ msgstr "Görmenize izin verilen yalnızca siparişler."
 #, machine, plain1
 msgid "It shows, in full, every word and phrase the word filter looks for, in every language it covers. That includes slurs and other extremely offensive language."
 msgstr "Tam olarak, kelime filtrenin her kelimesini ve cümlesini gösterir, her dilde kapsar. Bu, arurs ve diğer son derece saldırgan dil içerir."
+
+#, machine, plain1
+msgid "It stays on the Child word filter, which hides profanity and anything marked sensitive. Chat, Spaces, coins, anonymous posting and starting a guild are off, and others can't start a chat or tip you. Your posts go to your Friends circle only unless you turn Private posting off."
+msgstr "Çocuk kelime filtresinde kalır, bu da profanity'yi gizler ve işaretli hassas bir şey. Chat, Uzaylar, paralar, anonim bir yayın ve bir guild çıkıyor ve diğerleri bir sohbet veya ipucu başlatamaz. Yazılarınız sadece Özel yayınını açmadığınız sürece arkadaşlarınıza gider."
 
 #, machine, python-format
 msgid "It was not approved last time. The admins said: %(note)s"
@@ -9578,6 +9626,10 @@ msgstr "Mart equinox"
 #, glossary, machine, plain1
 msgid "Mark Sensitive Content"
 msgstr "Hassas içerik olarak işaretle"
+
+#, machine, plain1
+msgid "Mark a post Sensitive if a film or game with the same content would be rated 15, R or 16+, or given a content warning. That means strong sexual content or nudity, graphic violence or injury, strong drug use, self-harm or suicide, or very distressing or frightening scenes. If you're not sure, mark it Sensitive."
+msgstr "Mark, aynı içeriğe sahip bir film veya oyun 15, R veya 16 + veya bir içerik uyarısı verecekse hassas bir post. Bu, güçlü cinsel içerik veya çıplaklık, grafik şiddet veya yaralanma, güçlü uyuşturucu kullanımı, kendini-harm veya intihar veya çok üzücü sahneler anlamına gelir. Emin değilseniz, onu hassaslaştırın."
 
 #, machine
 msgid "Mark as Sensitive Content (blurred until clicked)"
@@ -12610,6 +12662,26 @@ msgid "Private post, visible to you because you are an approved contributor in +
 msgstr "Özel posta, size görünür çünkü +%(guild)s.'de onaylanmış bir katılımcısınız."
 
 #, machine, plain1
+msgid "Private posting"
+msgstr "Özel yayın"
+
+#, machine, plain1
+msgid "Private posting is off."
+msgstr "Özel yayın kapalıdır."
+
+#, machine, plain1
+msgid "Private posting is on, so this can only go to your Friends circle. You can change that in Settings > Content."
+msgstr "Özel yayın bitti, bu yüzden sadece arkadaşlarınıza gidebilir. Bunu Ayarlar > Content'da değiştirebilirsiniz."
+
+#, machine, plain1
+msgid "Private posting is on, so this goes only to your Friends circle. You can change that in Settings > Content."
+msgstr "Özel yayın bitti, bu yüzden sadece arkadaşlarınıza gider. Bunu Ayarlar > Content'da değiştirebilirsiniz."
+
+#, machine, plain1
+msgid "Private posting is on."
+msgstr "Özel yayın devam ediyor."
+
+#, machine, plain1
 msgid "Pro Wrestling"
 msgstr "Pro Güreş"
 
@@ -14042,6 +14114,10 @@ msgid "Sensitive media"
 msgstr "Hassas medya"
 
 #, machine, plain1
+msgid "Sensitive posts, guilds and accounts are not against the rules, but All and For You leave them out unless you turn this on. You can always open a sensitive guild or profile, search for it or follow it."
+msgstr "Hassas mesajlar, guilds ve hesaplar kurallara karşı değildir, ancak All ve For You leave them out if you turn this on. Her zaman hassas bir guild veya profili açabilirsiniz, arayın veya takip edebilirsiniz."
+
+#, machine, plain1
 msgid "September equinox"
 msgstr "Eylül equinox"
 
@@ -15208,6 +15284,10 @@ msgstr "Teşekkürler. Bir yönetici yakında bota bakacaktır; bir bildirim ala
 msgid "Thanks. An admin will look at the bot soon; you will get a notification. The picture could not be stored; try again from the bot's page."
 msgstr "Teşekkürler. Bir yönetici yakında bota bakacaktır; bir bildirim alacaksınız. Resim depolanamaz; botun sayfasından tekrar deneyin."
 
+#, machine, plain1
+msgid "Thanks. Your account no longer has the child lock, and Private posting is off. Posts you made before stay as they were: use Who can see this on a post to change who sees it."
+msgstr "Teşekkürler. Hesabınız artık çocuk kilidine sahip değil ve Özel yayın kapalıdır. Onlar olduğu gibi kalmadan önce yaptığınız yazı: Bunu gören bir değişim için kim görebilir."
+
 #, machine
 msgid "That Discord account is already in use by another user."
 msgstr "Bu Discord hesabı zaten başka bir kullanıcı tarafından kullanılıyor."
@@ -15713,6 +15793,18 @@ msgstr "Bu listedeki hesaplar bunu kendilerine tutar."
 #, machine, python-format
 msgid "The admins said: %(note)s"
 msgstr "Yöneticiler şöyle dedi: %(note)s"
+
+#, machine, plain1
+msgid "The age check didn't finish. Nothing has changed, and you can try again."
+msgstr "Yaş kontrolü bitirmedi. Hiçbir şey değişmedi ve tekrar deneyebilirsiniz."
+
+#, machine, plain1
+msgid "The age check found that you are under the youngest age allowed to have an account where you are."
+msgstr "Yaş kontrolü, en genç yaşın altında olduğunuzu buldu."
+
+#, machine, plain1
+msgid "The age check found that you're under 18, so the child lock stays on."
+msgstr "Yaş kontrolü 18 yaşın altında olduğunuzu buldu, bu yüzden çocuk kilidi devam ediyor."
 
 #, machine
 msgid "The author"
@@ -16722,9 +16814,21 @@ msgstr "Bu, guild'in özel CSS dosyası."
 msgid "This is too much like what was posted automatically today."
 msgstr "Bu bugün otomatik olarak yayınlanan şey çok fazla."
 
+#, machine, plain1
+msgid "This isn't available while your account is age-restricted. You can confirm your age in Settings > Content."
+msgstr "Bu, hesabınız yaşlanmışken mevcut değildir. Yaşınızı Ayarlar > İçerik."
+
 #, machine
 msgid "This isn't shown at your current word filter level. You can review your word filter in your content settings."
 msgstr "Bu, mevcut filtre seviyesinde gösterilmez. Kelime filtrenizi içerik ayarlarınızda inceleyebilirsiniz."
+
+#, machine, plain1
+msgid "This isn't shown where you are until your age has been confirmed. Sign in to do that in your content settings."
+msgstr "Bu, yaşınız doğrulanana kadar nerede olduğunuzu göstermez. Bunu içerik ayarlarınızda yapmak için oturum açın."
+
+#, machine, plain1
+msgid "This isn't shown while your account is age-restricted."
+msgstr "Bu, hesabınız yaşlanmışken gösterilmez."
 
 #, machine, plain1, python-format
 msgid "This live thread ended a moment ago. It can go live again in %(num)s min."
@@ -17089,6 +17193,10 @@ msgstr "Bir yazar olmayı durdurmak için, taslağı bırakın."
 msgid "To store your uploads, tick the box that lets this site manage the files it creates in your Google Drive."
 msgstr "Yüklemelerinizi depolamak için, bu sitenin yarattığı dosyaları yönetmesine izin veren kutuyu tutun Google Drive."
 
+#, machine, plain1
+msgid "To take the child lock off, confirm that you're 18 or over."
+msgstr "Çocuk kilitlemesini almak için, 18 veya üstü olduğunuzu onaylayın."
+
 #, machine
 msgid "To take this site's access away at Microsoft, remove it under your Microsoft account's app permissions."
 msgstr "Bu siteye Microsoft'ta erişim almak için, Microsoft hesabınızın uygulama izni altında kaldırmak."
@@ -17235,6 +17343,10 @@ msgstr "+%(guild)s'den gelen bildirimleri kapatın"
 #, machine, plain1, python-format
 msgid "Turn off notifications from @%(name)s"
 msgstr "@%(name)s'den gelen bildirimleri kapatın"
+
+#, machine, plain1
+msgid "Turn on if much of what you post would be rated 15, R or 16+. Your profile shows a Sensitive content badge, your new posts are blurred, and your posts are left out of All and For You for anyone who hasn't chosen to see sensitive content."
+msgstr "Yazının 15, R veya 16+'yı dereceleneceğinden çok şey çık. Profiliniz hassas bir içerik kötüge gösteriyor, yeni mesajlarınız bulanıklaşıyor ve mesajlarınız her şeyden vazgeçiliyor ve hassas içerik görmeyen herkes için."
 
 #, machine
 msgid "Turn on media storage to upload."
@@ -18181,6 +18293,9 @@ msgstr "Bunu buradan alacağız."
 msgid "We're sorry something here is wrong."
 msgstr "Burada bir şey üzgünüz."
 
+msgid "We've changed the Age section of our [Terms](/help/terms). An account for someone under 18 now has a child lock, and in the UK, the EU and Australia your age has to be confirmed with an age-check service before the lock comes off or you can see sensitive content. You can say whether you're 18 or over in Settings > Content."
+msgstr ""
+
 #, machine, plain1
 msgid "Web Development"
 msgstr "Web Development"
@@ -18380,6 +18495,22 @@ msgid "Where you are, in your words"
 msgstr "Neredesiniz, sözlerinizde"
 
 #, machine, plain1
+msgid "Where you are, the law means you have to confirm that you're 18 or over with an age-check service, in your Settings after you sign up. Until then your account has the child lock on, which hides profanity and sensitive content and turns some features off."
+msgstr "Nerede olursanız olun, yasa, 18 veya üstü bir yaş kontrol servisiyle olduğunuzu doğrulamanız gerektiği anlamına gelir, ardından Ayarlarınızda. O zamana kadar hesabınız çocuk kilitine sahiptir, bu da profanity ve hassas içeriği gizler ve bazı özellikleri ortaya çıkarır."
+
+#, machine, plain1
+msgid "Where you are, the law means your age has to be confirmed with an age-check service before the child lock comes off."
+msgstr "Nerede olursanız olun, yasa yaşınızın çocuk kilitlemeden önce bir yaş kontrol servisi ile doğrulanması gerektiği anlamına gelir."
+
+#, machine, plain1
+msgid "Where you are, the law means your age has to be confirmed with an age-check service before you can see sensitive content or strong language."
+msgstr "Nerede olursanız olun, yasa, yaşınızın hassas içerik veya güçlü dili görmeden önce bir yaş kontrol servisi ile doğrulanması gerektiği anlamına gelir."
+
+#, machine, plain1
+msgid "Where you are, your age has to be confirmed with an age-check service."
+msgstr "Nerede olursanız olun, yaşınız bir yaş kontrol servisi ile doğrulanmalıdır."
+
+#, machine, plain1
 msgid "Whether a video site's player may load before you press play. While it may not, Automatic above has no effect."
 msgstr "Bir video sitesinin oyuncusu basın oyun başlamadan önce yüklenebilir. Bununla birlikte, yukarıda otomatik olarak hiçbir etkisi yoktur."
 
@@ -18572,6 +18703,10 @@ msgstr "Premium ile, yaptığınız her şey için bir yer elde edersiniz ve %(s
 #, machine, plain1
 msgid "With Premium you see how each of your posts is doing: views per day, how many signed-in people came, votes, comments, bookmarks, forwards and reposts, how it does in each guild it was forwarded to, and the results of its poll."
 msgstr "PremiumHer yazınızın nasıl yapıldığını görüyorsunuz: günde kaç kişi geldi, oy, yorum, kitap işaretleri, forwards ve reposts, her bir guild'de nasıl olduğunu ve anket sonuçlarını."
+
+#, machine, plain1
+msgid "With Private posting on, a circle can only hold people who follow you and whom you follow."
+msgstr "Özel yayınla, bir çember sadece sizi takip eden ve takip eden insanları tutabilir."
 
 #, machine
 msgid "With a link"
@@ -18770,6 +18905,10 @@ msgstr "Dünya Su Günü"
 #, machine, plain1
 msgid "World Wildlife Day"
 msgstr "Dünya Yaban Hayatı Günü"
+
+#, machine, plain1
+msgid "Would a film with this be rated 15 or R? Blur this post until viewers click to reveal it."
+msgstr "Bu ile bir film 15 veya R olarak değerlendirilecek mi? Blur bu yazıyı izleyicilerin onu ortaya çıkarmak için tıklayın."
 
 #, machine
 msgid "Write a username."
@@ -19226,6 +19365,10 @@ msgstr "Şu anda bunu yapamazsınız."
 msgid "You can't do that while your account balance is negative. Visit your account settings to bring your balance up to zero."
 msgstr "Bunu hesabınız dengesiniz olumsuz olsa da yapamazsınız. Hesap ayarlarınızı sıfıra getirmek için ziyaret edin."
 
+#, machine, plain1
+msgid "You can't do that with this account."
+msgstr "Bunu bu hesapla yapamazsınız."
+
 #, machine
 msgid "You can't edit this page."
 msgstr "Bu sayfayı düzenleyebilirsiniz."
@@ -19572,6 +19715,10 @@ msgstr "Bahsettiğinizi iddia edemezsin."
 msgid "You may not use Ruqqus to engage in or plan unlawful activity."
 msgstr "Ruqqus'ı yasadışı faaliyet yapmak veya planlamak için kullanamazsınız."
 
+#, machine, plain1, python-format
+msgid "You must be at least %(min)s to have an account where you are."
+msgstr "En az %(min)s olduğunuz bir hesaba sahip olmak zorundasınız."
+
 #, machine
 msgid "You must have a verified email address to upload images via Tor."
 msgstr "Tor aracılığıyla görüntüleri yüklemek için doğrulanmış bir e-posta adresiniz olmalıdır."
@@ -19913,6 +20060,18 @@ msgstr "Hesabınız kontrol edildi ve hazır: Şimdi post, yorum, oylama ve taki
 msgid "Your account has been deleted"
 msgstr "Hesabınız silindi"
 
+#, machine, plain1, python-format
+msgid "Your account has the child lock on, since %(date)s."
+msgstr "Hesabınızın çocuk kilidi var, çünkü %(date)s."
+
+#, machine, plain1
+msgid "Your account is age-restricted, so its word filter stays on Child until you confirm your age in Settings."
+msgstr "Hesabınız yaşlanır, bu yüzden kelime filtre, Ayarlardaki yaşını onaylayana kadar çocuk üzerinde kalır."
+
+#, machine, plain1
+msgid "Your account is age-restricted, so sensitive content stays hidden until you confirm your age in Settings."
+msgstr "Hesabınız yaşlanır, bu kadar hassas içerik Ayarlardaki yaşını onaylayana kadar saklı kalır."
+
 #, machine, plain1
 msgid "Your account is being checked"
 msgstr "Hesabınız kontrol ediliyor"
@@ -19969,6 +20128,10 @@ msgstr "Hesabınız artık otomatik olarak yayınlamıyor. Onun mesajları kalı
 msgid "Your account posts from these feeds from now on."
 msgstr "Bu yemlerden hesap mesajlarınız şu andan itibaren."
 
+#, machine, plain1
+msgid "Your account was closed"
+msgstr "Hesabınız kapalıydı"
+
 #, machine, python-format
 msgid "Your account's automated posting has been paused: %(reason)s"
 msgstr "Hesabınızın otomatik yayını duraklandı: %(reason)s"
@@ -19984,6 +20147,10 @@ msgstr "Hesabınızın otomatik yayını okumayı bıraktı %(url)s %(fails)s ba
 #, machine
 msgid "Your account's automated posting was approved. Your feeds' new posts appear on your profile, marked as automated, within a few minutes. Manage it in [Settings > Bots](/settings/bots)."
 msgstr "Hesabınızın otomatik yayını onaylandı. Beslenmelerinizin yeni mesajları profilinizde görünür, birkaç dakika içinde otomatik olarak işaretlenir. Bunu [Settings > Bots](/settings/bots) içinde yönetin."
+
+#, machine, plain1, python-format
+msgid "Your age was confirmed on %(date)s."
+msgstr "Yaşınız %(date)s. üzerinde doğrulandı."
 
 #, machine
 msgid "Your answer"
@@ -20186,6 +20353,10 @@ msgstr "Kendi karışımın"
 msgid "Your own mix ranks the newest %(num)s matching post. 0 switches a part off, 10 makes it count the most."
 msgid_plural "Your own mix ranks the newest %(num)s matching posts. 0 switches a part off, 10 makes it count the most."
 msgstr[0] "Kendi karışımınız en yeni %(num)s eşleştirme mesajlarını sıralar. 0 Bir parça kapat, 10 en çok sayıyor."
+
+#, machine, plain1
+msgid "Your parent or guardian has to agree before Private posting can be turned off."
+msgstr "Anneniz veya koruyucunuz Özel yayından önce kabul etmek zorundadır."
 
 #, machine
 msgid "Your password"

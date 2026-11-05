@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ruqqus VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-31 05:16+0000\n"
+"POT-Creation-Date: 2026-11-05 16:56+1100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: cs\n"
@@ -3466,6 +3466,10 @@ msgstr[0] "Hledání může držet maximálně %(num)s slovo a operátor."
 msgstr[1] "Hledání může mít maximálně %(num)s slova a operátory."
 msgstr[2] "Hledání může mít maximálně %(num)s slov a operátorů."
 
+#, machine, plain1
+msgid "A sensitive guild's posts are left out of All and For You for anyone who hasn't chosen to see sensitive content. Enable if your guild allows content that a film or game would rate 15, R or 16+, such as strong sexual content, graphic violence or self-harm - not a rule violation, just a heads-up. Every post in this guild will be blurred by default."
+msgstr "Pro každého, kdo se nerozhodl vidět citlivý obsah, jsou z All and For You vynechány citlivá místa cechu. Povolit, pokud vaše celička umožňuje obsah, že film nebo hra by hodnotila 15, R nebo 16 +, jako je silný sexuální obsah, grafické násilí nebo sebepoškození - ne porušení pravidel, jen heads- up. Každý příspěvek v této cechu bude ve výchozím nastavení rozmazaný."
+
 #, machine, plain1, python-format
 msgid "A shared draft can have at most %(num)s author."
 msgid_plural "A shared draft can have at most %(num)s authors."
@@ -3990,6 +3994,10 @@ msgid "After %(date)s"
 msgstr "Po %(date)s"
 
 #, machine, plain1
+msgid "Age confirmation isn't available yet."
+msgstr "Věkové potvrzení ještě není k dispozici."
+
+#, machine, plain1
 msgid "Alert"
 msgstr "Varování"
 
@@ -4159,9 +4167,17 @@ msgstr "Amurian Orient"
 msgid "An account with that username or email already exists."
 msgstr "Účet s tímto uživatelským jménem nebo e-mailem již existuje."
 
+#, machine, plain1
+msgid "An admin confirmed that you are 18 or over. Your account no longer has the child lock. Your word filter hasn't changed: you can change it in Settings > Content, and turning the Child filter down needs your password."
+msgstr "Admin potvrdil, že je vám 18 nebo více. Váš účet už nemá dětský zámek. Váš slovní filtr se nezměnil: můžete jej změnit v Nastavení > Obsah a vypnutí dětského filtru potřebuje vaše heslo."
+
 #, machine, plain1, python-format
 msgid "An admin marked +%(guild)s sensitive: its posts are left out of All and For You unless someone chooses to see sensitive content. Only an admin can change this."
 msgstr "Admin označený + %(guild)s citlivý: jeho příspěvky jsou vynechány ze všech a pro vás, pokud se někdo nerozhodne vidět citlivý obsah. Pouze admin to může změnit."
+
+#, machine, plain1
+msgid "An admin marked this as a child account. It has the child lock: the Child word filter, which hides profanity and anything marked sensitive, and some features are off. You can lift it by confirming your age in Settings > Content."
+msgstr "Admin to označil jako účet pro dítě. To má dětský zámek: Dětský slovník filtr, který skrývá nadávky a všechno označené citlivé, a některé funkce jsou vypnuty. Můžete ho zvednout potvrzením vašeho věku v Nastavení > Obsah."
 
 #, machine, plain1
 msgid "An admin marked this sensitive, so it can't be switched off here."
@@ -6014,6 +6030,14 @@ msgstr "Potvrdit nové heslo"
 msgid "Confirm Password"
 msgstr "Potvrdit heslo"
 
+#, machine, plain1
+msgid "Confirm my age"
+msgstr "Potvrdit můj věk"
+
+#, machine, plain1
+msgid "Confirm your age"
+msgstr "Potvrďte svůj věk"
+
 #, glossary, machine, plain1
 msgid "Connect"
 msgstr "Sledujte nás"
@@ -7403,6 +7427,10 @@ msgstr "Každý vidí změny toho druhého, jak píše, a každá postava je př
 msgid "Everything from your guilds and accounts, newest first."
 msgstr "Všechno z vašich cechů a účtů, nejdřív nejnovější."
 
+#, machine, plain1
+msgid "Everything you post goes only to your Friends circle, the people you follow who follow you back, so nothing is public by accident. Your circles can only hold people like that, and you can't forward, repost or write a shared draft. Comments on other people's posts are still public."
+msgstr "Všechno, co zveřejníte, jde jen do vašeho kruhu přátel, lidí, které sledujete, kteří vás sledují, takže nic není náhodou veřejné. Vaše kruhy mohou jen držet lidi takhle, a nemůžete dopředu, repost nebo napsat společný návrh. Komentáře k pracovním místům ostatních lidí jsou stále veřejné."
+
 #. %(typed)s is exactly what a reader types into the field; it stays as it is
 #, machine, plain1, python-format
 msgid "Example: %(typed)s · a public curation works too: %(curation)s"
@@ -8649,6 +8677,10 @@ msgstr "Skryté na standardních a dětských filtrech"
 msgid "Hidden page"
 msgstr "Skrytá stránka"
 
+#, machine, plain1
+msgid "Hidden until you confirm your age"
+msgstr "Skrytý, dokud nepotvrdíš svůj věk"
+
 #, glossary, machine, plain1
 msgid "Hide"
 msgstr "Skrýt"
@@ -8869,6 +8901,14 @@ msgstr "Přijímám <a href=\"%(url)s\" target=\"_blank\">podmínky</a>"
 msgid "I agree to the rules below."
 msgstr "Souhlasím s pravidly níže."
 
+#, machine, plain1, python-format
+msgid "I'm %(min)s or over"
+msgstr "Já. %(min)s nebo více"
+
+#, machine, plain1, python-format
+msgid "I'm %(min)s to 17"
+msgstr "Já. %(min)s až 17"
+
 #, machine, plain1
 msgid "Ice Hockey"
 msgstr "Ledový hokej"
@@ -8912,6 +8952,10 @@ msgstr "Pokud odstoupíte jako moderátor cechu, ztratíte plné oprávnění k 
 #, machine, plain1
 msgid "If you're having trouble with the button above, copy and paste the URL below into your web browser."
 msgstr "Pokud máte problém s tlačítkem výše, zkopírujte a vložte URL níže do svého webového prohlížeče."
+
+#, machine, plain1
+msgid "If you're under 18 you can still sign up. Your account will have the child lock on, which hides profanity and sensitive content and turns some features off, until you confirm your age in your Settings."
+msgstr "Pokud vám není 18, můžete se zapsat. Váš účet bude mít dítě zámek na, který skrývá nadávky a citlivý obsah a vypne některé funkce, dokud si potvrdit svůj věk v nastavení."
 
 #, machine, plain1
 msgid "If you’re having trouble with the button above, copy and paste the URL below into your web browser."
@@ -9266,6 +9310,10 @@ msgstr "To jen objednávky příspěvky můžete vidět."
 #, machine, plain1
 msgid "It shows, in full, every word and phrase the word filter looks for, in every language it covers. That includes slurs and other extremely offensive language."
 msgstr "Ukazuje, v plném rozsahu, každé slovo a fráze slovo filtr hledá, v každém jazyce, který pokrývá. To zahrnuje nadávky a další extrémně urážlivé řeči."
+
+#, machine, plain1
+msgid "It stays on the Child word filter, which hides profanity and anything marked sensitive. Chat, Spaces, coins, anonymous posting and starting a guild are off, and others can't start a chat or tip you. Your posts go to your Friends circle only unless you turn Private posting off."
+msgstr "Zůstává na slovním filtru pro dítě, který skrývá nadávky a cokoliv citlivého. Chat, prostor, mince, anonymní vysílání a založení cechu jsou vypnuté, a ostatní nemohou začít chat nebo spropitné. Vaše příspěvky jdou do vašeho přítele kruhu pouze pokud vypnete soukromé vysílání."
 
 #, machine, plain1, python-format
 msgid "It was not approved last time. The admins said: %(note)s"
@@ -10062,6 +10110,10 @@ msgstr "Březen equinox"
 #, glossary, machine, plain1
 msgid "Mark Sensitive Content"
 msgstr "Označit jako citlivý obsah"
+
+#, machine, plain1
+msgid "Mark a post Sensitive if a film or game with the same content would be rated 15, R or 16+, or given a content warning. That means strong sexual content or nudity, graphic violence or injury, strong drug use, self-harm or suicide, or very distressing or frightening scenes. If you're not sure, mark it Sensitive."
+msgstr "Označit příspěvek Citlivý, pokud film nebo hra se stejným obsahem by být hodnocen 15, R nebo 16 +, nebo dát obsah varování. To znamená silný sexuální obsah nebo nahotu, grafické násilí nebo zranění, silné užívání drog, sebepoškození nebo sebevraždu, nebo velmi stresující nebo děsivé scény. Pokud si nejste jistý, označte to citlivě."
 
 #, machine, plain1
 msgid "Mark as Sensitive Content (blurred until clicked)"
@@ -13138,6 +13190,26 @@ msgid "Private post, visible to you because you are an approved contributor in +
 msgstr "Soukromé místo, viditelné pro vás, protože jste schválený přispěvatel v + %(guild)s."
 
 #, machine, plain1
+msgid "Private posting"
+msgstr "Soukromé vysílání"
+
+#, machine, plain1
+msgid "Private posting is off."
+msgstr "Soukromé vysílání je vypnuté."
+
+#, machine, plain1
+msgid "Private posting is on, so this can only go to your Friends circle. You can change that in Settings > Content."
+msgstr "Soukromé vysílání je zapnuté, takže to může jít jen do vašeho kruhu přátel. To můžete změnit v Nastavení > Obsah."
+
+#, machine, plain1
+msgid "Private posting is on, so this goes only to your Friends circle. You can change that in Settings > Content."
+msgstr "Soukromé vysílání je zapnuté, takže to jde jen do vašeho kruhu přátel. To můžete změnit v Nastavení > Obsah."
+
+#, machine, plain1
+msgid "Private posting is on."
+msgstr "Soukromé vysílání začíná."
+
+#, machine, plain1
 msgid "Pro Wrestling"
 msgstr "Pro wrestling"
 
@@ -14587,6 +14659,10 @@ msgid "Sensitive media"
 msgstr "Citlivá média"
 
 #, machine, plain1
+msgid "Sensitive posts, guilds and accounts are not against the rules, but All and For You leave them out unless you turn this on. You can always open a sensitive guild or profile, search for it or follow it."
+msgstr "Citlivá místa, cechy a účty nejsou proti pravidlům, ale vše a pro vás je vynechte, pokud to nezapnete. Vždy můžete otevřít citlivý cech nebo profil, hledat ho nebo sledovat."
+
+#, machine, plain1
 msgid "September equinox"
 msgstr "September equinox"
 
@@ -15779,6 +15855,10 @@ msgid "Thanks. An admin will look at the bot soon; you will get a notification. 
 msgstr "Díky. Admin se brzy podívá na bota, dostanete oznámení. Obrázek nemohl být uložen, zkuste to znovu ze stránky robota."
 
 #, machine, plain1
+msgid "Thanks. Your account no longer has the child lock, and Private posting is off. Posts you made before stay as they were: use Who can see this on a post to change who sees it."
+msgstr "Díky. Váš účet už nemá dětský zámek a soukromé vysílání je vypnuté. Příspěvky, které jste dělal před pobytem tak, jak byly: použít Kdo to může vidět na příspěvek změnit, kdo to vidí."
+
+#, machine, plain1
 msgid "That Discord account is already in use by another user."
 msgstr "Tento účet Discord již používá jiný uživatel."
 
@@ -16283,6 +16363,18 @@ msgstr "Účty na tomto seznamu si to nechávají pro sebe."
 #, machine, plain1, python-format
 msgid "The admins said: %(note)s"
 msgstr "Administrátoři řekli: %(note)s"
+
+#, machine, plain1
+msgid "The age check didn't finish. Nothing has changed, and you can try again."
+msgstr "Věková kontrola neskončila. Nic se nezměnilo a můžeš to zkusit znovu."
+
+#, machine, plain1
+msgid "The age check found that you are under the youngest age allowed to have an account where you are."
+msgstr "Věková kontrola zjistila, že jste mladší, než je ten nejmladší, takže můžete mít účet tam, kde jste."
+
+#, machine, plain1
+msgid "The age check found that you're under 18, so the child lock stays on."
+msgstr "Věková kontrola zjistila, že ti není 18, takže dětský zámek zůstává."
 
 #, machine, plain1
 msgid "The author"
@@ -17321,8 +17413,20 @@ msgid "This is too much like what was posted automatically today."
 msgstr "Je to příliš podobné tomu, co bylo dnes automaticky odesláno."
 
 #, machine, plain1
+msgid "This isn't available while your account is age-restricted. You can confirm your age in Settings > Content."
+msgstr "Tohle není k dispozici, dokud je váš účet časově omezený. Váš věk můžete potvrdit v Nastavení > Obsah."
+
+#, machine, plain1
 msgid "This isn't shown at your current word filter level. You can review your word filter in your content settings."
 msgstr "Toto není zobrazeno na vaší současné úrovni slovního filtru. V nastavení obsahu si můžete zkontrolovat filtr slova."
+
+#, machine, plain1
+msgid "This isn't shown where you are until your age has been confirmed. Sign in to do that in your content settings."
+msgstr "Tohle se neukáže, kde jste, dokud nebude váš věk potvrzen. Přihlaste se k tomu v nastavení obsahu."
+
+#, machine, plain1
+msgid "This isn't shown while your account is age-restricted."
+msgstr "Tohle se neukazuje, dokud je váš účet ve stádiu."
 
 #, machine, plain1, python-format
 msgid "This live thread ended a moment ago. It can go live again in %(num)s min."
@@ -17701,6 +17805,10 @@ msgid "To store your uploads, tick the box that lets this site manage the files 
 msgstr "Chcete-li uložit uploads, zaškrtněte políčko, které umožní této stránce spravovat soubory, které vytvoří ve Vašem Google Drive."
 
 #, machine, plain1
+msgid "To take the child lock off, confirm that you're 18 or over."
+msgstr "Aby se dítě uzamklo, potvrďte, že je vám 18 nebo více."
+
+#, machine, plain1
 msgid "To take this site's access away at Microsoft, remove it under your Microsoft account's app permissions."
 msgstr "Chcete-li odebrat přístup k těmto stránkám v Microsoft, odeberte jej pod povolením aplikace Microsoft."
 
@@ -17846,6 +17954,10 @@ msgstr "Vypnout oznámení od + %(guild)s"
 #, machine, plain1, python-format
 msgid "Turn off notifications from @%(name)s"
 msgstr "Vypněte oznámení z @ %(name)s"
+
+#, machine, plain1
+msgid "Turn on if much of what you post would be rated 15, R or 16+. Your profile shows a Sensitive content badge, your new posts are blurred, and your posts are left out of All and For You for anyone who hasn't chosen to see sensitive content."
+msgstr "Zapněte, pokud by hodně z toho, co jste na místě by bylo hodnoceno 15, R nebo 16 +. Váš profil ukazuje citlivý obsah odznak, vaše nové příspěvky jsou rozmazané, a vaše příspěvky jsou ponechány ze All and For You pro každého, kdo se rozhodl vidět citlivý obsah."
 
 #, machine, plain1
 msgid "Turn on media storage to upload."
@@ -18800,6 +18912,9 @@ msgstr "Odtud to převezmeme."
 msgid "We're sorry something here is wrong."
 msgstr "Je nám líto, že se tu něco děje."
 
+msgid "We've changed the Age section of our [Terms](/help/terms). An account for someone under 18 now has a child lock, and in the UK, the EU and Australia your age has to be confirmed with an age-check service before the lock comes off or you can see sensitive content. You can say whether you're 18 or over in Settings > Content."
+msgstr ""
+
 #, machine, plain1
 msgid "Web Development"
 msgstr "Web Development"
@@ -18989,6 +19104,22 @@ msgstr "Kam zveřejnit"
 #, machine, plain1
 msgid "Where you are, in your words"
 msgstr "Kde jsi, slovy"
+
+#, machine, plain1
+msgid "Where you are, the law means you have to confirm that you're 18 or over with an age-check service, in your Settings after you sign up. Until then your account has the child lock on, which hides profanity and sensitive content and turns some features off."
+msgstr "Tam, kde jste, zákon znamená, že musíte potvrdit, že jste 18 nebo více s věkem-check služba, ve Vašem nastavení po registraci. Do té doby je váš účet zaměřen na dítě, které skrývá nadávky a citlivý obsah a některé funkce vypne."
+
+#, machine, plain1
+msgid "Where you are, the law means your age has to be confirmed with an age-check service before the child lock comes off."
+msgstr "Tam, kde jste, zákon znamená, že váš věk musí být potvrzen věkovou kontrolou, než se dětský zámek vypne."
+
+#, machine, plain1
+msgid "Where you are, the law means your age has to be confirmed with an age-check service before you can see sensitive content or strong language."
+msgstr "Pokud jste, zákon znamená, že váš věk musí být potvrzen věkem-check služby, než můžete vidět citlivý obsah nebo silný jazyk."
+
+#, machine, plain1
+msgid "Where you are, your age has to be confirmed with an age-check service."
+msgstr "Kde jste, váš věk musí být potvrzen věkovou kontrolou."
 
 #, machine, plain1
 msgid "Whether a video site's player may load before you press play. While it may not, Automatic above has no effect."
@@ -19187,6 +19318,10 @@ msgid "With Premium you see how each of your posts is doing: views per day, how 
 msgstr "S Premium vidíte, jak se každý z vašich pracovních míst dělá: názory na den, kolik signed- v lidech přišel, hlasy, komentáře, záložky, dopředu a repost, jak to dělá v každém cechu byl předán, a výsledky svého průzkumu."
 
 #, machine, plain1
+msgid "With Private posting on, a circle can only hold people who follow you and whom you follow."
+msgstr "S nasazením vojína může kruh držet jen lidi, kteří tě následují a ty je sleduješ."
+
+#, machine, plain1
 msgid "With a link"
 msgstr "S odkazem"
 
@@ -19383,6 +19518,10 @@ msgstr "Světový den vody"
 #, machine, plain1
 msgid "World Wildlife Day"
 msgstr "Světový den divočiny"
+
+#, machine, plain1
+msgid "Would a film with this be rated 15 or R? Blur this post until viewers click to reveal it."
+msgstr "Bude film s tímhle hodnocen 15 nebo R? Rozmazat tento příspěvek, dokud diváci klikněte na tlačítko odhalit."
 
 #, machine, plain1
 msgid "Write a username."
@@ -19889,6 +20028,10 @@ msgid "You can't do that while your account balance is negative. Visit your acco
 msgstr "To nemůžete, dokud je váš zůstatek na účtu záporný. Navštivte nastavení vašeho účtu, aby se váš zůstatek na nule."
 
 #, machine, plain1
+msgid "You can't do that with this account."
+msgstr "S tímhle účtem to nejde."
+
+#, machine, plain1
 msgid "You can't edit this page."
 msgstr "Nemůžeš tu stránku upravovat."
 
@@ -20237,6 +20380,10 @@ msgstr "Nesmíte převzít cechy, ze kterých jste vyhoštěn."
 #, machine, plain1
 msgid "You may not use Ruqqus to engage in or plan unlawful activity."
 msgstr "Nemůžete používat Ruqqus k provozování nebo plánování nezákonné činnosti."
+
+#, machine, plain1, python-format
+msgid "You must be at least %(min)s to have an account where you are."
+msgstr "Musíte být alespoň %(min)s mít účet, kde jste."
 
 #, machine, plain1
 msgid "You must have a verified email address to upload images via Tor."
@@ -20589,6 +20736,18 @@ msgstr "Váš účet byl zkontrolován a je připraven: nyní můžete zaslat, k
 msgid "Your account has been deleted"
 msgstr "Váš účet byl vymazán"
 
+#, machine, plain1, python-format
+msgid "Your account has the child lock on, since %(date)s."
+msgstr "Váš účet je zaměřen na dítě od doby %(date)s."
+
+#, machine, plain1
+msgid "Your account is age-restricted, so its word filter stays on Child until you confirm your age in Settings."
+msgstr "Váš účet je časově omezený, takže jeho slovní filtr zůstane na Dítě, dokud nepotvrdíte svůj věk v Nastavení."
+
+#, machine, plain1
+msgid "Your account is age-restricted, so sensitive content stays hidden until you confirm your age in Settings."
+msgstr "Váš účet je věkově omezený, takže citlivý obsah zůstane skrytý, dokud nepotvrdíte svůj věk v Nastavení."
+
 #, machine, plain1
 msgid "Your account is being checked"
 msgstr "Kontrolují váš účet"
@@ -20645,6 +20804,10 @@ msgstr "Váš účet už automaticky nezadává. Jeho příspěvky zůstávají.
 msgid "Your account posts from these feeds from now on."
 msgstr "Od nynějška je váš účet na těchto kanálech."
 
+#, machine, plain1
+msgid "Your account was closed"
+msgstr "Váš účet byl uzavřen"
+
 #, machine, plain1, python-format
 msgid "Your account's automated posting has been paused: %(reason)s"
 msgstr "Automatické vysílání vašeho účtu bylo pozastaveno: %(reason)s"
@@ -20660,6 +20823,10 @@ msgstr "Váš účet je automatizované vysílání přestal číst %(url)s po %
 #, machine, plain1
 msgid "Your account's automated posting was approved. Your feeds' new posts appear on your profile, marked as automated, within a few minutes. Manage it in [Settings > Bots](/settings/bots)."
 msgstr "Automatické vysílání vašeho účtu bylo schváleno. Nové příspěvky vašich kanálů se objeví na vašem profilu, označené jako automatizované, během několika minut. Správa v [Nastavení > Boty] (/settings/bots)."
+
+#, machine, plain1, python-format
+msgid "Your age was confirmed on %(date)s."
+msgstr "Váš věk byl potvrzen na %(date)s."
 
 #, machine, plain1
 msgid "Your answer"
@@ -20866,6 +21033,10 @@ msgid_plural "Your own mix ranks the newest %(num)s matching posts. 0 switches a
 msgstr[0] ""
 msgstr[1] ""
 msgstr[2] ""
+
+#, machine, plain1
+msgid "Your parent or guardian has to agree before Private posting can be turned off."
+msgstr "Váš rodič nebo opatrovník musí souhlasit, než bude soukromé vysílání vypnuto."
 
 #, machine, plain1
 msgid "Your password"

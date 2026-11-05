@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ruqqus VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-31 05:16+0000\n"
+"POT-Creation-Date: 2026-11-05 16:56+1100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: sw\n"
@@ -3275,6 +3275,10 @@ msgid_plural "A search can hold at most %(num)s words and operators."
 msgstr[0] "Utafutaji unaweza kushikilia zaidi ya %(num)s neno na operator."
 msgstr[1] "Utafutaji unaweza kushikilia maneno zaidi ya %(num)s na waendeshaji."
 
+#, machine, plain1
+msgid "A sensitive guild's posts are left out of All and For You for anyone who hasn't chosen to see sensitive content. Enable if your guild allows content that a film or game would rate 15, R or 16+, such as strong sexual content, graphic violence or self-harm - not a rule violation, just a heads-up. Every post in this guild will be blurred by default."
+msgstr "Machapisho ya kikundi nyeti yanaachwa nje ya Wote na Kwa Wewe kwa mtu yeyote ambaye hajachagua kuona maudhui nyeti. Kuwezesha kama chama chako inaruhusu maudhui kwamba filamu au mchezo itakuwa kiwango cha 15, R au 16 +, kama vile maudhui ya ngono yenye nguvu, vurugu za picha au kujidhuru - sio ukiukaji wa utawala, tu kichwa-up. Kila post katika chama hiki itakuwa blurred na default."
+
 #, machine, plain1, python-format
 msgid "A shared draft can have at most %(num)s author."
 msgid_plural "A shared draft can have at most %(num)s authors."
@@ -3790,6 +3794,10 @@ msgid "After %(date)s"
 msgstr ""
 
 #, machine, plain1
+msgid "Age confirmation isn't available yet."
+msgstr "Uthibitisho wa umri bado haujapatikana."
+
+#, machine, plain1
 msgid "Alert"
 msgstr "Tahadhari ya tahadhari"
 
@@ -3958,9 +3966,17 @@ msgstr "Mashariki ya Kati"
 msgid "An account with that username or email already exists."
 msgstr "Akaunti na jina la mtumiaji au barua pepe hiyo tayari ipo."
 
+#, machine, plain1
+msgid "An admin confirmed that you are 18 or over. Your account no longer has the child lock. Your word filter hasn't changed: you can change it in Settings > Content, and turning the Child filter down needs your password."
+msgstr "Mkuu huyo wa polisi alithibitisha kuwa ana umri wa miaka 18 au zaidi. Akaunti yako haina mtoto tena. Neno lako filter halijabadilika: unaweza kubadilisha katika Mipangilio Maudhui, na kugeuza mtoto filter chini inahitaji password yako."
+
 #, machine, plain1, python-format
 msgid "An admin marked +%(guild)s sensitive: its posts are left out of All and For You unless someone chooses to see sensitive content. Only an admin can change this."
 msgstr "Admin alama + %(guild)s nyeti: posts yake ni kushoto nje ya Wote na kwa ajili yenu isipokuwa mtu anachagua kuona maudhui nyeti. Ni kiongozi pekee anayeweza kubadilisha hili."
+
+#, machine, plain1
+msgid "An admin marked this as a child account. It has the child lock: the Child word filter, which hides profanity and anything marked sensitive, and some features are off. You can lift it by confirming your age in Settings > Content."
+msgstr "Akaunti hiyo iliweka alama kama akaunti ya mtoto. Ina kufuli mtoto: Neno la mtoto filter, ambayo huficha uchafu na kitu chochote cha alama nyeti, na baadhi ya vipengele ni mbali. Unaweza kuiinua kwa kuthibitisha umri wako katika mazingira Maudhui."
 
 #, machine, plain1
 msgid "An admin marked this sensitive, so it can't be switched off here."
@@ -5797,6 +5813,14 @@ msgstr "Kuweka password mpya"
 msgid "Confirm Password"
 msgstr "Kuonyesha Password"
 
+#, machine, plain1
+msgid "Confirm my age"
+msgstr "Kuthibitisha umri wangu"
+
+#, machine, plain1
+msgid "Confirm your age"
+msgstr "Kuthibitisha umri wako"
+
 #, glossary, machine, plain1
 msgid "Connect"
 msgstr "Ungana nasi"
@@ -7178,6 +7202,10 @@ msgstr "Kila mtu anaona mabadiliko ya kila mmoja kama wao ni aina, na kila tabia
 msgid "Everything from your guilds and accounts, newest first."
 msgstr "Kila kitu kutoka kwa makundi yako na akaunti, mpya kwanza."
 
+#, machine, plain1
+msgid "Everything you post goes only to your Friends circle, the people you follow who follow you back, so nothing is public by accident. Your circles can only hold people like that, and you can't forward, repost or write a shared draft. Comments on other people's posts are still public."
+msgstr "Kila kitu unachochapisha kinaenda tu kwa mzunguko wako wa Marafiki, watu unaowafuata wanaokufuata, kwa hivyo hakuna chochote ni cha umma kwa ajali. Duru zako zinaweza tu kushikilia watu kama hao, na huwezi kusonga mbele, kutuma au kuandika rasimu ya pamoja. Maoni juu ya machapisho ya watu wengine bado ni ya umma."
+
 #. %(typed)s is exactly what a reader types into the field; it stays as it is
 #, machine, plain1, python-format
 msgid "Example: %(typed)s · a public curation works too: %(curation)s"
@@ -8416,6 +8444,10 @@ msgstr "Kuingizwa kwenye filters za kawaida na za watoto"
 msgid "Hidden page"
 msgstr "Ukurasa wa siri"
 
+#, machine, plain1
+msgid "Hidden until you confirm your age"
+msgstr "Kusubiri mpaka wewe kuthibitisha umri wako"
+
 #, glossary, machine, plain1
 msgid "Hide"
 msgstr "Ficha"
@@ -8634,6 +8666,14 @@ msgstr "Ninakubali kuwa <a href=\"%(url)s\" target=\"_blank\">Vigezo na Masharti
 msgid "I agree to the rules below."
 msgstr "Nakubaliana na kanuni hapo chini."
 
+#, machine, plain1, python-format
+msgid "I'm %(min)s or over"
+msgstr "Mimi ni %(min)s Juu ya"
+
+#, machine, plain1, python-format
+msgid "I'm %(min)s to 17"
+msgstr "Mimi ni %(min)s kuwa 17"
+
 #, machine, plain1
 msgid "Ice Hockey"
 msgstr "Michezo ya Ice Hockey"
@@ -8677,6 +8717,10 @@ msgstr "Ikiwa unashuka chini kama msimamizi wa kikundi, utapoteza ruhusa kamili 
 #, machine, plain1
 msgid "If you're having trouble with the button above, copy and paste the URL below into your web browser."
 msgstr "Ikiwa una shida na kifungo hapo juu, nakala na kuweka URL chini kwenye kivinjari chako cha wavuti."
+
+#, machine, plain1
+msgid "If you're under 18 you can still sign up. Your account will have the child lock on, which hides profanity and sensitive content and turns some features off, until you confirm your age in your Settings."
+msgstr "Ikiwa una umri wa chini ya miaka 18, unaweza kujiandikisha. Akaunti yako itakuwa na lock mtoto juu, ambayo kujificha uchafu na maudhui nyeti na kugeuka baadhi ya vipengele mbali, mpaka kuthibitisha umri wako katika vipimo yako."
 
 #, machine, plain1
 msgid "If you’re having trouble with the button above, copy and paste the URL below into your web browser."
@@ -9029,6 +9073,10 @@ msgstr "Ni tu amri posts wewe ni kuruhusiwa kuona."
 #, machine, plain1
 msgid "It shows, in full, every word and phrase the word filter looks for, in every language it covers. That includes slurs and other extremely offensive language."
 msgstr "Inaonyesha, kwa ukamilifu, kila neno na maneno filter neno inaonekana kwa, katika kila lugha inashughulikia. Hii ni pamoja na lugha ya matusi na lugha nyingine mbaya."
+
+#, machine, plain1
+msgid "It stays on the Child word filter, which hides profanity and anything marked sensitive. Chat, Spaces, coins, anonymous posting and starting a guild are off, and others can't start a chat or tip you. Your posts go to your Friends circle only unless you turn Private posting off."
+msgstr "Inakaa kwenye Neno la Mtoto filter, ambayo huficha uchafu na kitu chochote kilichoonekana nyeti. Kuzungumza, nafasi, sarafu, bila majina posting na kuanza chama ni mbali, na wengine hawawezi kuanza kuzungumza au ncha wewe. Machapisho yako kwenda kwa rafiki yako mduara isipokuwa tu kugeuka binafsi posting mbali."
 
 #, machine, plain1, python-format
 msgid "It was not approved last time. The admins said: %(note)s"
@@ -9811,6 +9859,10 @@ msgstr "Mwezi wa equinox"
 #, glossary, machine, plain1
 msgid "Mark Sensitive Content"
 msgstr "Weka alama ya maudhui nyeti"
+
+#, machine, plain1
+msgid "Mark a post Sensitive if a film or game with the same content would be rated 15, R or 16+, or given a content warning. That means strong sexual content or nudity, graphic violence or injury, strong drug use, self-harm or suicide, or very distressing or frightening scenes. If you're not sure, mark it Sensitive."
+msgstr "Ikiwa filamu au mchezo na maudhui sawa utapimwa 15, R au 16 +, au kupewa onyo la maudhui. Hiyo inamaanisha maudhui yenye nguvu ya ngono au nudity, vurugu za picha au kuumia, matumizi makubwa ya madawa ya kulevya, kujidhuru au kujiua, au matukio ya kutisha sana au ya kutisha. Kama huna uhakika, kuwa makini."
 
 #, machine, plain1
 msgid "Mark as Sensitive Content (blurred until clicked)"
@@ -12860,6 +12912,26 @@ msgid "Private post, visible to you because you are an approved contributor in +
 msgstr "Makala ya kibinafsi, inayoonekana kwako kwa sababu wewe ni mchangiaji aliyeidhinishwa katika +%(guild)s."
 
 #, machine, plain1
+msgid "Private posting"
+msgstr "Uwasilishaji wa Binafsi"
+
+#, machine, plain1
+msgid "Private posting is off."
+msgstr "Akaunti ya kibinafsi imefungwa."
+
+#, machine, plain1
+msgid "Private posting is on, so this can only go to your Friends circle. You can change that in Settings > Content."
+msgstr "Kujiandikisha ni juu, hivyo hii inaweza tu kwenda kwa rafiki yako mduara. Unaweza kubadilisha hii katika Mipangilio > Maudhui."
+
+#, machine, plain1
+msgid "Private posting is on, so this goes only to your Friends circle. You can change that in Settings > Content."
+msgstr "Orodha ya watu binafsi ni juu, hivyo hii inakwenda tu kwa rafiki yako mduara. Unaweza kubadilisha hii katika Mipangilio > Maudhui."
+
+#, machine, plain1
+msgid "Private posting is on."
+msgstr "Akaunti ya kibinafsi iko tayari."
+
+#, machine, plain1
 msgid "Pro Wrestling"
 msgstr "Mchezo wa mieleka"
 
@@ -14300,6 +14372,10 @@ msgid "Sensitive media"
 msgstr "Vyombo vya habari vyema"
 
 #, machine, plain1
+msgid "Sensitive posts, guilds and accounts are not against the rules, but All and For You leave them out unless you turn this on. You can always open a sensitive guild or profile, search for it or follow it."
+msgstr "Machapisho yenye hisia, vikundi na akaunti sio dhidi ya sheria, lakini Wote na Kwa Wewe huwaacha nje isipokuwa unapogeuka hii. Unaweza daima kufungua chama nyeti au wasifu, kutafuta au kufuata."
+
+#, machine, plain1
 msgid "September equinox"
 msgstr "Mwezi wa equinox"
 
@@ -15478,6 +15554,10 @@ msgid "Thanks. An admin will look at the bot soon; you will get a notification. 
 msgstr "Ya kushukuru. Msimamizi ataangalia bot hivi karibuni; utapata taarifa. Picha haiwezi kuhifadhiwa; jaribu tena kutoka ukurasa wa bot."
 
 #, machine, plain1
+msgid "Thanks. Your account no longer has the child lock, and Private posting is off. Posts you made before stay as they were: use Who can see this on a post to change who sees it."
+msgstr "Ya kushukuru. Akaunti yako haina tena kufuli mtoto, na posting binafsi ni mbali. Makala uliyoifanya kabla ya kukaa kama ilivyokuwa: Tumia Nani anayeweza kuona hii kwenye chapisho ili kubadilisha nani anayeiona."
+
+#, machine, plain1
 msgid "That Discord account is already in use by another user."
 msgstr "Hii ni Discord Akaunti tayari inatumika na mtumiaji mwingine."
 
@@ -15982,6 +16062,18 @@ msgstr "Akaunti katika orodha hii ni kuweka yao wenyewe."
 #, machine, plain1, python-format
 msgid "The admins said: %(note)s"
 msgstr "Viongozi hao walisema %(note)s"
+
+#, machine, plain1
+msgid "The age check didn't finish. Nothing has changed, and you can try again."
+msgstr "Uchunguzi wa umri haukuishia hapo. Hakuna kilichobadilika, na unaweza kujaribu tena."
+
+#, machine, plain1
+msgid "The age check found that you are under the youngest age allowed to have an account where you are."
+msgstr "Ukaguzi wa umri uligundua kuwa wewe ni chini ya umri mdogo kuruhusiwa kuwa na akaunti ambapo wewe ni."
+
+#, machine, plain1
+msgid "The age check found that you're under 18, so the child lock stays on."
+msgstr "Uchunguzi wa umri uligundua kuwa wewe ni chini ya umri wa miaka 18, kwa hivyo mtoto anakaa."
 
 #, machine, plain1
 msgid "The author"
@@ -17006,8 +17098,20 @@ msgid "This is too much like what was posted automatically today."
 msgstr "Hii ni sawa na kile kilichochapishwa moja kwa moja leo."
 
 #, machine, plain1
+msgid "This isn't available while your account is age-restricted. You can confirm your age in Settings > Content."
+msgstr "Hii haiwezi kufanyika wakati akaunti yako inafunguliwa. Unaweza kuthibitisha umri wako katika mazingira Maudhui."
+
+#, machine, plain1
 msgid "This isn't shown at your current word filter level. You can review your word filter in your content settings."
 msgstr "Hii haionekani katika kiwango chako cha sasa cha neno filter. Unaweza kuchunguza chujio cha neno lako katika mipangilio yako ya maudhui."
+
+#, machine, plain1
+msgid "This isn't shown where you are until your age has been confirmed. Sign in to do that in your content settings."
+msgstr "Hii si kuonyesha ambapo wewe ni mpaka umri wako imethibitishwa. Ingia ili kufanya hivyo katika mipangilio yako ya maudhui."
+
+#, machine, plain1
+msgid "This isn't shown while your account is age-restricted."
+msgstr "Hii haionyeshwa wakati akaunti yako imezuiliwa."
 
 #, machine, plain1, python-format
 msgid "This live thread ended a moment ago. It can go live again in %(num)s min."
@@ -17379,6 +17483,10 @@ msgid "To store your uploads, tick the box that lets this site manage the files 
 msgstr "Ili kuhifadhi kupakia yako, bofya sanduku ambalo linaruhusu tovuti hii kusimamia faili zinazounda katika Google Drive yako."
 
 #, machine, plain1
+msgid "To take the child lock off, confirm that you're 18 or over."
+msgstr "Ili kuzuia mimba, hakikisha kuwa una umri wa miaka 18 au zaidi."
+
+#, machine, plain1
 msgid "To take this site's access away at Microsoft, remove it under your Microsoft account's app permissions."
 msgstr "Ili kuchukua ufikiaji wa tovuti hii kwenye Microsoft, uiondoe chini ya ruhusa ya akaunti yako ya Microsoft."
 
@@ -17524,6 +17632,10 @@ msgstr "Ondoa matangazo kutoka +%(guild)s"
 #, machine, plain1, python-format
 msgid "Turn off notifications from @%(name)s"
 msgstr "Kuondoa matangazo kutoka @%(name)s"
+
+#, machine, plain1
+msgid "Turn on if much of what you post would be rated 15, R or 16+. Your profile shows a Sensitive content badge, your new posts are blurred, and your posts are left out of All and For You for anyone who hasn't chosen to see sensitive content."
+msgstr "Badilisha ikiwa mengi ya yale unayoandika yatapimwa 15, R au 16 +. Wasifu wako unaonyesha ubaya wa maudhui ya hisia, machapisho yako mapya ni blurred, na machapisho yako ni kushoto nje ya Wote na Kwa Wewe kwa mtu yeyote ambaye hajachagua kuona maudhui nyeti."
 
 #, machine, plain1
 msgid "Turn on media storage to upload."
@@ -18472,6 +18584,9 @@ msgstr "Tutachukua kutoka hapa."
 msgid "We're sorry something here is wrong."
 msgstr "Tunasikitika kwamba hapa kuna makosa."
 
+msgid "We've changed the Age section of our [Terms](/help/terms). An account for someone under 18 now has a child lock, and in the UK, the EU and Australia your age has to be confirmed with an age-check service before the lock comes off or you can see sensitive content. You can say whether you're 18 or over in Settings > Content."
+msgstr ""
+
 #, machine, plain1
 msgid "Web Development"
 msgstr "Maendeleo ya Mtandao"
@@ -18661,6 +18776,22 @@ msgstr "Mahali pa kuchapisha"
 #, machine, plain1
 msgid "Where you are, in your words"
 msgstr "Ambapo wewe ni, katika maneno yako"
+
+#, machine, plain1
+msgid "Where you are, the law means you have to confirm that you're 18 or over with an age-check service, in your Settings after you sign up. Until then your account has the child lock on, which hides profanity and sensitive content and turns some features off."
+msgstr "Ambapo wewe ni, sheria ina maana wewe ni 18 au zaidi na huduma ya kuangalia umri, katika Mipangilio yako baada ya kujiandikisha. Mpaka wakati huo akaunti yako ina lock mtoto juu, ambayo kujificha uchafu na maudhui nyeti na kugeuka baadhi ya vipengele mbali."
+
+#, machine, plain1
+msgid "Where you are, the law means your age has to be confirmed with an age-check service before the child lock comes off."
+msgstr "Ambapo wewe ni, sheria ina maana umri wako lazima kuthibitishwa na huduma ya kuangalia umri kabla ya kufunga mtoto."
+
+#, machine, plain1
+msgid "Where you are, the law means your age has to be confirmed with an age-check service before you can see sensitive content or strong language."
+msgstr "Ambapo uko, sheria inamaanisha umri wako lazima uthibitishwe na huduma ya ukaguzi wa umri kabla ya kuona maudhui nyeti au lugha kali."
+
+#, machine, plain1
+msgid "Where you are, your age has to be confirmed with an age-check service."
+msgstr "Ambapo wewe ni, umri wako ni kuthibitishwa na huduma ya kuangalia umri."
 
 #, machine, plain1
 msgid "Whether a video site's player may load before you press play. While it may not, Automatic above has no effect."
@@ -18859,6 +18990,10 @@ msgid "With Premium you see how each of your posts is doing: views per day, how 
 msgstr "Kwa Premium unaona jinsi kila moja ya machapisho yako yanavyofanya: maoni kwa siku, ni watu wangapi waliotiwa saini walikuja, kura, maoni, alama, mbele na machapisho, jinsi inavyofanya katika kila kikundi kilichopelekwa, na matokeo ya kura yake."
 
 #, machine, plain1
+msgid "With Private posting on, a circle can only hold people who follow you and whom you follow."
+msgstr "Baada ya yote, unaweza tu kuwa na watu ambao wanakufuata."
+
+#, machine, plain1
 msgid "With a link"
 msgstr "Kuwa na link"
 
@@ -19055,6 +19190,10 @@ msgstr "Siku ya Maji Duniani"
 #, machine, plain1
 msgid "World Wildlife Day"
 msgstr "Siku ya Kimataifa ya Wanyamapori"
+
+#, machine, plain1
+msgid "Would a film with this be rated 15 or R? Blur this post until viewers click to reveal it."
+msgstr "Je, filamu hii itakuwa ya 15 au R? Bonyeza kitufe hiki hadi watazamaji waweze kubonyeza."
 
 #, machine, plain1
 msgid "Write a username."
@@ -19537,6 +19676,10 @@ msgid "You can't do that while your account balance is negative. Visit your acco
 msgstr "Huwezi kufanya hivyo wakati akaunti yako ni mbaya. Angalia mipangilio ya akaunti yako ili kuleta usawa wako hadi sifuri."
 
 #, machine, plain1
+msgid "You can't do that with this account."
+msgstr "Huwezi kufanya hivyo kwa akaunti."
+
+#, machine, plain1
 msgid "You can't edit this page."
 msgstr "Huwezi kufuta ukurasa huu."
 
@@ -19884,6 +20027,10 @@ msgstr "Huwezi kudai kwamba wewe ni kutoka."
 msgid "You may not use Ruqqus to engage in or plan unlawful activity."
 msgstr "Huwezi kutumia Ruqqus kushiriki au kupanga shughuli haramu."
 
+#, machine, plain1, python-format
+msgid "You must be at least %(min)s to have an account where you are."
+msgstr "Lazima uwe angalau %(min)s Kuwa na akaunti ambapo wewe ni."
+
 #, machine, plain1
 msgid "You must have a verified email address to upload images via Tor."
 msgstr "Lazima uwe na anwani ya barua pepe iliyothibitishwa ili kupakia picha kupitia Tor."
@@ -20230,6 +20377,18 @@ msgstr "Akaunti yako imekuwa checked na ni tayari: unaweza sasa post, maoni, kur
 msgid "Your account has been deleted"
 msgstr "Akaunti yako imefutwa"
 
+#, machine, plain1, python-format
+msgid "Your account has the child lock on, since %(date)s."
+msgstr "Akaunti yako ina lock mtoto, tangu %(date)s."
+
+#, machine, plain1
+msgid "Your account is age-restricted, so its word filter stays on Child until you confirm your age in Settings."
+msgstr "Akaunti yako ni ya muda mrefu, hivyo neno filter anakaa juu ya mtoto mpaka kuthibitisha umri wako katika vipimo."
+
+#, machine, plain1
+msgid "Your account is age-restricted, so sensitive content stays hidden until you confirm your age in Settings."
+msgstr "Akaunti yako ni ya muda mrefu, hivyo maudhui nyeti hukaa siri mpaka kuthibitisha umri wako katika vipimo."
+
 #, machine, plain1
 msgid "Your account is being checked"
 msgstr "Akaunti yako itaangaliwa"
@@ -20286,6 +20445,10 @@ msgstr "Akaunti yako haina tena posts moja kwa moja. Makala zake zinaishia hapo.
 msgid "Your account posts from these feeds from now on."
 msgstr "Akaunti yako ya barua pepe kutoka kwa vyanzo hivi sasa."
 
+#, machine, plain1
+msgid "Your account was closed"
+msgstr "Akaunti yako imefungwa"
+
 #, machine, plain1, python-format
 msgid "Your account's automated posting has been paused: %(reason)s"
 msgstr "Akaunti yako ya kibinafsi imesimamishwa: %(reason)s"
@@ -20300,6 +20463,10 @@ msgstr "Akaunti yako ya barua pepe iliacha kusoma %(url)s Baada ya baada ya %(fa
 
 msgid "Your account's automated posting was approved. Your feeds' new posts appear on your profile, marked as automated, within a few minutes. Manage it in [Settings > Bots](/settings/bots)."
 msgstr ""
+
+#, machine, plain1, python-format
+msgid "Your age was confirmed on %(date)s."
+msgstr "Umri wako umehakikishwa %(date)s."
 
 #, machine, plain1
 msgid "Your answer"
@@ -20504,6 +20671,10 @@ msgid "Your own mix ranks the newest %(num)s matching post. 0 switches a part of
 msgid_plural "Your own mix ranks the newest %(num)s matching posts. 0 switches a part off, 10 makes it count the most."
 msgstr[0] ""
 msgstr[1] ""
+
+#, machine, plain1
+msgid "Your parent or guardian has to agree before Private posting can be turned off."
+msgstr "Mzazi au mlezi wako lazima kukubaliana kabla ya kutuma binafsi inaweza kuwa akageuka mbali."
 
 #, machine, plain1
 msgid "Your password"

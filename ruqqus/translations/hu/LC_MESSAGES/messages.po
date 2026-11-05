@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ruqqus VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-31 05:16+0000\n"
+"POT-Creation-Date: 2026-11-05 16:56+1100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: hu\n"
@@ -3106,6 +3106,10 @@ msgid "A search can hold at most %(num)s word and operator."
 msgid_plural "A search can hold at most %(num)s words and operators."
 msgstr[0] "A keresés legfeljebb %(num)s szavakat és operátorokat tartalmazhat."
 
+#, machine, plain1
+msgid "A sensitive guild's posts are left out of All and For You for anyone who hasn't chosen to see sensitive content. Enable if your guild allows content that a film or game would rate 15, R or 16+, such as strong sexual content, graphic violence or self-harm - not a rule violation, just a heads-up. Every post in this guild will be blurred by default."
+msgstr "Az érzékeny céhek posztjait kihagyják az All and For You-ból bárkinek, aki még nem döntött úgy, hogy érzékeny tartalmat lát. Ha a céhed lehetővé teszi, hogy a film vagy a játék 15, R vagy 16 + besorolást kapjon, mint például az erős szexuális tartalom, grafikus erőszak vagy önkárosítás - nem szabályszegés, csak egy fej felfelé. A céhben minden bejegyzés elmosódik."
+
 #, machine, plain1, python-format
 msgid "A shared draft can have at most %(num)s author."
 msgid_plural "A shared draft can have at most %(num)s authors."
@@ -3616,6 +3620,10 @@ msgid "After %(date)s"
 msgstr "%(date)s után"
 
 #, machine, plain1
+msgid "Age confirmation isn't available yet."
+msgstr "Az életkor megerősítés még nem áll rendelkezésre."
+
+#, machine, plain1
 msgid "Alert"
 msgstr "Figyelmeztetés"
 
@@ -3783,9 +3791,17 @@ msgstr "Amurian Orient"
 msgid "An account with that username or email already exists."
 msgstr "Már létezik ilyen felhasználónév vagy e-mail."
 
+#, machine, plain1
+msgid "An admin confirmed that you are 18 or over. Your account no longer has the child lock. Your word filter hasn't changed: you can change it in Settings > Content, and turning the Child filter down needs your password."
+msgstr "Egy adminisztrátor megerősítette, hogy 18 éves vagy. A számláján már nincs zár. A szószűrő nem változott: megváltoztathatja a Beállítások > -ben A tartalomhoz, és a Gyermek szűrő kikapcsolásához kell a jelszó."
+
 #, machine, plain1, python-format
 msgid "An admin marked +%(guild)s sensitive: its posts are left out of All and For You unless someone chooses to see sensitive content. Only an admin can change this."
 msgstr "Egy admin jelölt + %(guild)s érzékeny: a hozzászólások kimaradnak minden és az Ön számára, hacsak valaki úgy nem dönt, hogy az érzékeny tartalom. Csak egy adminisztrátor változtathat ezen."
+
+#, machine, plain1
+msgid "An admin marked this as a child account. It has the child lock: the Child word filter, which hides profanity and anything marked sensitive, and some features are off. You can lift it by confirming your age in Settings > Content."
+msgstr "Egy adminisztrátor ezt gyermekszámlának jelölte. A gyermekzár: a gyermek szó szűrő, amely elrejti a káromkodást, és bármi jelölt érzékeny, és néhány funkció ki van kapcsolva. Megemelheti, ha megerősíti korát a Beállítások > Tartalom."
 
 #, machine, plain1
 msgid "An admin marked this sensitive, so it can't be switched off here."
@@ -5608,6 +5624,14 @@ msgstr "Új jelszó megerősítése"
 msgid "Confirm Password"
 msgstr "Jelszó megerősítése"
 
+#, machine, plain1
+msgid "Confirm my age"
+msgstr "Megerősítem a koromat"
+
+#, machine, plain1
+msgid "Confirm your age"
+msgstr "Igazolja a korát"
+
 #, glossary, machine, plain1
 msgid "Connect"
 msgstr "Kövess minket"
@@ -6983,6 +7007,10 @@ msgstr "Mindenki úgy látja egymás változásait, ahogy gépelnek, és minden 
 msgid "Everything from your guilds and accounts, newest first."
 msgstr "Minden a céh és a számlák közül, a legújabb."
 
+#, machine, plain1
+msgid "Everything you post goes only to your Friends circle, the people you follow who follow you back, so nothing is public by accident. Your circles can only hold people like that, and you can't forward, repost or write a shared draft. Comments on other people's posts are still public."
+msgstr "Minden, amit posztolsz, csak a barátaidnak szól, az emberek, akiket követsz, akik követnek, szóval semmi sem nyilvános véletlenül. A köreitek csak így tudnak tartani embereket, és nem tudtok előre, áthelyezni vagy közös vázlatot írni. Más emberek álláshelyeire vonatkozó észrevételek még mindig nyilvánosak."
+
 #. %(typed)s is exactly what a reader types into the field; it stays as it is
 #, machine, plain1, python-format
 msgid "Example: %(typed)s · a public curation works too: %(curation)s"
@@ -8213,6 +8241,10 @@ msgstr "A Standard és Child szűrőn elrejtve"
 msgid "Hidden page"
 msgstr "Rejtett oldal"
 
+#, machine, plain1
+msgid "Hidden until you confirm your age"
+msgstr "Elrejtve, amíg meg nem erősíted a korodat"
+
 #, glossary, machine, plain1
 msgid "Hide"
 msgstr "Elrejtés"
@@ -8431,6 +8463,14 @@ msgstr "Elfogadom a <a href=\"%(url)s\" target=\"_blank\">feltételek</a>"
 msgid "I agree to the rules below."
 msgstr "Egyetértek az alábbi szabályokkal."
 
+#, machine, plain1, python-format
+msgid "I'm %(min)s or over"
+msgstr "I 'm %(min)s or over"
+
+#, machine, plain1, python-format
+msgid "I'm %(min)s to 17"
+msgstr "I 'm %(min)s to 17"
+
 #, machine, plain1
 msgid "Ice Hockey"
 msgstr "Jégkorong"
@@ -8474,6 +8514,10 @@ msgstr "Ha lemond a guild moderátorról, elveszti a teljes engedélyét, hogy m
 #, machine, plain1
 msgid "If you're having trouble with the button above, copy and paste the URL below into your web browser."
 msgstr "Ha problémája van a fenti gombbal, másolja le és illessze be az URL -et a böngészőjébe."
+
+#, machine, plain1
+msgid "If you're under 18 you can still sign up. Your account will have the child lock on, which hides profanity and sensitive content and turns some features off, until you confirm your age in your Settings."
+msgstr "Ha 18 év alatti vagy, még jelentkezhetsz. A fiókodon lesz a gyermekzár, ami elrejti a káromkodást és az érzékeny tartalmat, és kikapcsolja néhány funkciót, amíg meg nem erősíted a korodat a Beállítások között."
 
 #, machine, plain1
 msgid "If you’re having trouble with the button above, copy and paste the URL below into your web browser."
@@ -8824,6 +8868,10 @@ msgstr "Csak olyan posztokat rendel, amiket láthatsz."
 #, machine, plain1
 msgid "It shows, in full, every word and phrase the word filter looks for, in every language it covers. That includes slurs and other extremely offensive language."
 msgstr "Teljes egészében megmutatja, minden szót és kifejezést, amit a szûrõ keres, minden nyelven. Ez magában foglalja a sturst és más rendkívül sértő nyelvet."
+
+#, machine, plain1
+msgid "It stays on the Child word filter, which hides profanity and anything marked sensitive. Chat, Spaces, coins, anonymous posting and starting a guild are off, and others can't start a chat or tip you. Your posts go to your Friends circle only unless you turn Private posting off."
+msgstr "A Gyermek szó szűrőn marad, ami elrejti a káromkodást, és mindent, ami érzékeny. Chat, Spaces, érmék, névtelen kiküldetés és a céh indítása lefújva, és mások nem tudnak elkezdeni egy beszélgetést vagy borravalót. A beosztásaid csak akkor mennek a Jóbarátok körére, ha nem kapcsolod ki a Közlegényt."
 
 #, machine, plain1, python-format
 msgid "It was not approved last time. The admins said: %(note)s"
@@ -9596,6 +9644,10 @@ msgstr "Március napéjegyenlőség"
 #, glossary, machine, plain1
 msgid "Mark Sensitive Content"
 msgstr "Megjelölés érzékenyként"
+
+#, machine, plain1
+msgid "Mark a post Sensitive if a film or game with the same content would be rated 15, R or 16+, or given a content warning. That means strong sexual content or nudity, graphic violence or injury, strong drug use, self-harm or suicide, or very distressing or frightening scenes. If you're not sure, mark it Sensitive."
+msgstr "Jelölje meg a posztérzékenységet, ha egy azonos tartalmú filmet vagy játékot 15, R vagy 16 + -osnak minősítenek, vagy tartalmi figyelmeztetést adnak. Ez erős szexuális tartalmat vagy meztelenséget, grafikus erőszakot vagy sérülést, erős droghasználatot, önkárt vagy öngyilkosságot, vagy nagyon nyomasztó vagy ijesztő jeleneteket jelent. Ha nem biztos benne, jelölje meg érzékenyen."
 
 #, machine, plain1
 msgid "Mark as Sensitive Content (blurred until clicked)"
@@ -12634,6 +12686,26 @@ msgid "Private post, visible to you because you are an approved contributor in +
 msgstr "Privát posta, látható az Ön számára, mert egy jóváhagyott közreműködő +%(guild)s."
 
 #, machine, plain1
+msgid "Private posting"
+msgstr "Privát kiküldetés"
+
+#, machine, plain1
+msgid "Private posting is off."
+msgstr "A privát kiküldetés lefújva."
+
+#, machine, plain1
+msgid "Private posting is on, so this can only go to your Friends circle. You can change that in Settings > Content."
+msgstr "Privát kiküldetés van, így ez csak megy a Jóbarátok kör. Ezen változtathat a Beállítások > Tartalom részben."
+
+#, machine, plain1
+msgid "Private posting is on, so this goes only to your Friends circle. You can change that in Settings > Content."
+msgstr "Privát kiküldetés van, így ez csak a Jóbarátok körére vonatkozik. Ezen változtathat a Beállítások > Tartalom részben."
+
+#, machine, plain1
+msgid "Private posting is on."
+msgstr "Privát kiküldetés van."
+
+#, machine, plain1
 msgid "Pro Wrestling"
 msgstr "Pro birkózás"
 
@@ -14069,6 +14141,10 @@ msgid "Sensitive media"
 msgstr "Érzékeny média"
 
 #, machine, plain1
+msgid "Sensitive posts, guilds and accounts are not against the rules, but All and For You leave them out unless you turn this on. You can always open a sensitive guild or profile, search for it or follow it."
+msgstr "Érzékeny posztok, céhek és számlák nem ellenkeznek a szabályokkal, de mindent és mindent kihagysz, hacsak nem kapcsolod be. Bármikor kinyithat egy érzékeny céhet vagy profilt, megkeresheti vagy követheti."
+
+#, machine, plain1
 msgid "September equinox"
 msgstr "Szeptember napéjegyenlőség"
 
@@ -15237,6 +15313,10 @@ msgid "Thanks. An admin will look at the bot soon; you will get a notification. 
 msgstr "Köszönöm. Egy adminisztrátor hamarosan megnézi a robotot; értesítést fog kapni. A képet nem lehetett tárolni; próbálja újra a bot oldaláról."
 
 #, machine, plain1
+msgid "Thanks. Your account no longer has the child lock, and Private posting is off. Posts you made before stay as they were: use Who can see this on a post to change who sees it."
+msgstr "Köszönöm. A számláján már nincs gyerekzár, és a privát kiküldetés lefújva. A hozzászólások, amiket azelőtt készítettél, hogy maradtatok volna: használd azt, aki látja ezt egy poszton, hogy megváltoztasd, aki látja."
+
+#, machine, plain1
 msgid "That Discord account is already in use by another user."
 msgstr "Ez Discord a fiókot már egy másik felhasználó használja."
 
@@ -15741,6 +15821,18 @@ msgstr "A listán lévő számlák maguktól tartják."
 #, machine, plain1, python-format
 msgid "The admins said: %(note)s"
 msgstr "Az adminisztrátorok azt mondták: %(note)s"
+
+#, machine, plain1
+msgid "The age check didn't finish. Nothing has changed, and you can try again."
+msgstr "Nem fejeződött be a korhatár. Semmi sem változott, és újra megpróbálhatod."
+
+#, machine, plain1
+msgid "The age check found that you are under the youngest age allowed to have an account where you are."
+msgstr "A korellenőrzés megállapította, hogy Ön a legfiatalabb kor alatt engedélyezett, hogy egy számla, ahol van."
+
+#, machine, plain1
+msgid "The age check found that you're under 18, so the child lock stays on."
+msgstr "A korhatár alapján 18 év alatti vagy, így a gyerekzár marad."
 
 #, machine, plain1
 msgid "The author"
@@ -16751,8 +16843,20 @@ msgid "This is too much like what was posted automatically today."
 msgstr "Ez túl sok ahhoz, amit ma automatikusan posztoltak."
 
 #, machine, plain1
+msgid "This isn't available while your account is age-restricted. You can confirm your age in Settings > Content."
+msgstr "Ez nem elérhető, amíg a számlád korhatáros. Megerősíti korát a Beállítások > -ban Tartalom."
+
+#, machine, plain1
 msgid "This isn't shown at your current word filter level. You can review your word filter in your content settings."
 msgstr "Ez nem jelenik meg a jelenlegi szó szűrő szinten. A tartalom beállításaiban megtekintheti a szószűrőt."
+
+#, machine, plain1
+msgid "This isn't shown where you are until your age has been confirmed. Sign in to do that in your content settings."
+msgstr "Ez nem mutatja, hol vagy, amíg a korodat meg nem erősítik. Jelentkezzen be, hogy ezt a tartalom beállítások."
+
+#, machine, plain1
+msgid "This isn't shown while your account is age-restricted."
+msgstr "Ez nem látható, amíg a számlád korhatáros."
 
 #, machine, plain1, python-format
 msgid "This live thread ended a moment ago. It can go live again in %(num)s min."
@@ -17119,6 +17223,10 @@ msgid "To store your uploads, tick the box that lets this site manage the files 
 msgstr "A feltöltések tárolásához jelölje meg azt a mezőt, amely lehetővé teszi, hogy ez az oldal kezelje a Google Drive -ban létrehozott fájlokat."
 
 #, machine, plain1
+msgid "To take the child lock off, confirm that you're 18 or over."
+msgstr "Ha le akarja zárni a gyereket, erősítse meg, hogy 18 éves vagy."
+
+#, machine, plain1
 msgid "To take this site's access away at Microsoft, remove it under your Microsoft account's app permissions."
 msgstr "Ha el szeretné venni az oldal hozzáférését a Microsoft-nál, törölje a Microsoft-fiók alkalmazásai alatt."
 
@@ -17264,6 +17372,10 @@ msgstr "Értesítések kikapcsolása +%(guild)s"
 #, python-format
 msgid "Turn off notifications from @%(name)s"
 msgstr ""
+
+#, machine, plain1
+msgid "Turn on if much of what you post would be rated 15, R or 16+. Your profile shows a Sensitive content badge, your new posts are blurred, and your posts are left out of All and For You for anyone who hasn't chosen to see sensitive content."
+msgstr "Kapcsold be, ha a posztod nagy része 15, R vagy 16 + -os. A profilod egy érzékeny tartalomjelvényt mutat, az új bejegyzéseid homályosak, és a posztjaid kimaradnak az All and For You-ból bárkinek, aki még nem döntött úgy, hogy érzékeny tartalmat lásson."
 
 #, machine, plain1
 msgid "Turn on media storage to upload."
@@ -18211,6 +18323,10 @@ msgid "We're sorry something here is wrong."
 msgstr "Sajnáljuk, hogy valami baj van."
 
 #, machine, plain1
+msgid "We've changed the Age section of our [Terms](/help/terms). An account for someone under 18 now has a child lock, and in the UK, the EU and Australia your age has to be confirmed with an age-check service before the lock comes off or you can see sensitive content. You can say whether you're 18 or over in Settings > Content."
+msgstr "Megváltoztattuk a [Feltételek] korosztályát (/help/terms). Egy 18 év alatti személy számláját most gyermekzárral látják el, és az Egyesült Királyságban, az EU-ban és Ausztráliában az Ön korosztályát korhatár-ellenőrző szolgáltatással kell igazolni, mielőtt a zárat kikapcsolják, vagy érzékeny tartalmat láthatnak. Meg lehet mondani, hogy 18 éves vagy idősebb a Beállítások > Tartalom."
+
+#, machine, plain1
 msgid "Web Development"
 msgstr "Webfejlesztés"
 
@@ -18399,6 +18515,22 @@ msgstr "Közzététel helye"
 #, machine, plain1
 msgid "Where you are, in your words"
 msgstr "Hol vagy, szavaiddal"
+
+#, machine, plain1
+msgid "Where you are, the law means you have to confirm that you're 18 or over with an age-check service, in your Settings after you sign up. Until then your account has the child lock on, which hides profanity and sensitive content and turns some features off."
+msgstr "Ahol Ön van, a törvény azt jelenti, hogy meg kell erősítenie, hogy 18 éves vagy idősebb egy kor- check szolgáltatással, a Beállítások után. Addig is a számláján van a gyermek zár, ami elrejti a káromkodást és az érzékeny tartalmat, és kikapcsolja néhány funkciót."
+
+#, machine, plain1
+msgid "Where you are, the law means your age has to be confirmed with an age-check service before the child lock comes off."
+msgstr "Ahol vagy, a törvény azt jelenti, hogy a korodat meg kell erősíteni egy korellenőrző szolgáltatással, mielőtt a gyermekzár leáll."
+
+#, machine, plain1
+msgid "Where you are, the law means your age has to be confirmed with an age-check service before you can see sensitive content or strong language."
+msgstr "Ahol Ön van, a törvény azt jelenti, hogy a korát meg kell erősíteni egy kor- check szolgáltatás, mielőtt látni érzékeny tartalom vagy erős nyelv."
+
+#, machine, plain1
+msgid "Where you are, your age has to be confirmed with an age-check service."
+msgstr "Ahol vagy, a korodat meg kell erősíteni egy korellenőrző szolgáltatással."
 
 #, machine, plain1
 msgid "Whether a video site's player may load before you press play. While it may not, Automatic above has no effect."
@@ -18597,6 +18729,10 @@ msgid "With Premium you see how each of your posts is doing: views per day, how 
 msgstr "A Premium -vel láthatja, hogy minden egyes hozzászólás hogyan működik: megtekintés naponta, hány aláírás érkezett az emberekben, szavazások, megjegyzések, könyvjelzők, előre és átiratok, hogyan működik minden céhben továbbították, és a közvélemény-kutatás eredményeit."
 
 #, machine, plain1
+msgid "With Private posting on, a circle can only hold people who follow you and whom you follow."
+msgstr "Private posztolással, egy kör csak azokat tartja, akik követnek, és akiket te követsz."
+
+#, machine, plain1
 msgid "With a link"
 msgstr "Kapcsolóval"
 
@@ -18793,6 +18929,10 @@ msgstr "A víz világnapja"
 #, machine, plain1
 msgid "World Wildlife Day"
 msgstr "A vadon élő állatok világnapja"
+
+#, machine, plain1
+msgid "Would a film with this be rated 15 or R? Blur this post until viewers click to reveal it."
+msgstr "Egy ilyen film 15-ös vagy R-es? Maszk ezt a bejegyzést, amíg a nézők kattintson, hogy felfedje."
 
 #, machine, plain1
 msgid "Write a username."
@@ -19251,6 +19391,10 @@ msgid "You can't do that while your account balance is negative. Visit your acco
 msgstr "Ezt nem teheted, amíg a számlaegyenleged negatív. Látogasson el a számlájára, hogy az egyenlege nullára emelkedjen."
 
 #, machine, plain1
+msgid "You can't do that with this account."
+msgstr "Ezt nem teheted ezzel a számlával."
+
+#, machine, plain1
 msgid "You can't edit this page."
 msgstr "Ezt az oldalt nem lehet szerkeszteni."
 
@@ -19596,6 +19740,10 @@ msgstr "Nem veheted át a céheket, amikből száműztek."
 msgid "You may not use Ruqqus to engage in or plan unlawful activity."
 msgstr "Nem használhatja a Ruqqus-okat jogellenes cselekményekre, vagy nem tervezheti meg azokat."
 
+#, machine, plain1, python-format
+msgid "You must be at least %(min)s to have an account where you are."
+msgstr "Legalább a %(min)s -nek kell lennie, hogy legyen egy számlája, ahol van."
+
 #, machine, plain1
 msgid "You must have a verified email address to upload images via Tor."
 msgstr "Meg kell egy hitelesített e-mail cím feltölteni képeket keresztül Tor."
@@ -19937,6 +20085,18 @@ msgstr "Számláját ellenőriztük, és készen áll: most már postázhatja, k
 msgid "Your account has been deleted"
 msgstr "A számláját törölték"
 
+#, machine, plain1, python-format
+msgid "Your account has the child lock on, since %(date)s."
+msgstr "A számláján van egy gyerekzár, %(date)s óta."
+
+#, machine, plain1
+msgid "Your account is age-restricted, so its word filter stays on Child until you confirm your age in Settings."
+msgstr "A fiókja korhatáros, így a szûrõ a Gyermeken marad, amíg meg nem erősíti a korát a Beállításokban."
+
+#, machine, plain1
+msgid "Your account is age-restricted, so sensitive content stays hidden until you confirm your age in Settings."
+msgstr "A fiók korhatáros, így az érzékeny tartalom rejtve marad, amíg meg nem erősíted korodat a Beállítások között."
+
 #, machine, plain1
 msgid "Your account is being checked"
 msgstr "Ellenőrzik a számláját"
@@ -19993,6 +20153,10 @@ msgstr "A számlája már nem automatikusan posztol. A helyei maradnak."
 msgid "Your account posts from these feeds from now on."
 msgstr "Mostantól kezdve a számlád a képekből."
 
+#, machine, plain1
+msgid "Your account was closed"
+msgstr "A számláját lezárták"
+
 #, machine, plain1, python-format
 msgid "Your account's automated posting has been paused: %(reason)s"
 msgstr "A fiókod automatikus kiküldésének leállítása megtörtént: %(reason)s"
@@ -20008,6 +20172,10 @@ msgstr "A fiókod automatikus posztolása leállt %(url)s után %(fails)s sikert
 #, machine, plain1
 msgid "Your account's automated posting was approved. Your feeds' new posts appear on your profile, marked as automated, within a few minutes. Manage it in [Settings > Bots](/settings/bots)."
 msgstr "A számlája automatikus kiküldését jóváhagyták. A híradód új bejegyzései néhány percen belül megjelennek a profilodon, automatizált jelöléssel. Kezelje [Beállítások > botok] (/settings/bots)."
+
+#, machine, plain1, python-format
+msgid "Your age was confirmed on %(date)s."
+msgstr "A korodat a %(date)s -en igazolták."
 
 #, machine, plain1
 msgid "Your answer"
@@ -20210,6 +20378,10 @@ msgstr "Saját mix"
 msgid "Your own mix ranks the newest %(num)s matching post. 0 switches a part off, 10 makes it count the most."
 msgid_plural "Your own mix ranks the newest %(num)s matching posts. 0 switches a part off, 10 makes it count the most."
 msgstr[0] "A saját mix rangsorolja a legújabb %(num)s megfelelő pozíciók. A 0 kikapcsolja a részt, a 10 számít a legjobban."
+
+#, machine, plain1
+msgid "Your parent or guardian has to agree before Private posting can be turned off."
+msgstr "A szüleinek vagy a gyámjuknak egyet kell érteniük, mielőtt a privát posztolást kikapcsolják."
 
 #, machine, plain1
 msgid "Your password"

@@ -4,6 +4,7 @@
     docker compose exec ruqqus sh -c 'PYTHONPATH=. venv/bin/python scripts/i18n_catalogs.py translate --lang es,de'
         [--domain messages] [--limit 200] [--workers 3] [--batch 20] [--report /tmp/report.json]
     ... translate --all
+    ... translate --all --only mine.json      # only the (msgid, context) pairs in that file, e.g. one piece of work's new strings
 
 Runs where LIBRETRANSLATE_URL reaches the service (inside the compose network) and only into languages it has loaded
 (`LT_LOAD_ONLY`: on a small machine, load a few at a time and run again). For each language and domain it brings the
@@ -496,7 +497,7 @@ def update_catalog(key, domain):
     return catalog, path
 
 
-def translate_catalog(key, domain, target, limit=None, batch=20, workers=3, flush_every=200):
+def translate_catalog(key, domain, target, limit=None, batch=20, workers=3, flush_every=200, only=None):
     catalog, path = update_catalog(key, domain)
     if catalog is None:
         return {"language": key, "domain": domain, "skipped": "no template"}
@@ -517,6 +518,8 @@ def translate_catalog(key, domain, target, limit=None, batch=20, workers=3, flus
             done = False
         if not done:
             todo.append(message)
+    if only is not None:                       # just these (msgid, context) pairs: the strings of one piece of work, not every old failure
+        todo = [m for m in todo if ((m.id if isinstance(m.id, str) else m.id[0]), m.context or None) in only]
     if limit:
         todo = todo[:limit]
     failed = []
@@ -571,7 +574,13 @@ def main(argv):
     parser.add_argument("--batch", type=int, default=20)
     parser.add_argument("--workers", type=int, default=3)
     parser.add_argument("--report", default="")
+    parser.add_argument("--only", default="", help="a JSON file of [msgid, context] pairs: translate only those (the rest of the "
+                                                 "to-do list, old failures included, is left for a full run)")
     args = parser.parse_args(argv)
+    only = None
+    if args.only:
+        with open(args.only, encoding="utf-8") as f:
+            only = {(m, c or None) for m, c in json.load(f)}
     if not lt_url():
         print("LIBRETRANSLATE_URL is not set: run this inside the compose network")
         return 1
@@ -588,7 +597,7 @@ def main(argv):
         for domain in [d.strip() for d in args.domain.split(",") if d.strip()]:
             started = time.time()
             result = translate_catalog(key, domain, codes[key], limit=args.limit or None, batch=args.batch,
-                                       workers=args.workers)
+                                       workers=args.workers, only=only)
             result["seconds"] = round(time.time() - started)
             report.append(result)
             print(f"{key} {domain}: {result.get('translated', 0)} translated, {result.get('failed', 0)} failed "

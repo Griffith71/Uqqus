@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ruqqus VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-31 05:16+0000\n"
+"POT-Creation-Date: 2026-11-05 16:56+1100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: zh_Hans\n"
@@ -3106,6 +3106,10 @@ msgid "A search can hold at most %(num)s word and operator."
 msgid_plural "A search can hold at most %(num)s words and operators."
 msgstr[0] "搜索最多可以持有%(num)s字和运算符."
 
+#, machine, plain1
+msgid "A sensitive guild's posts are left out of All and For You for anyone who hasn't chosen to see sensitive content. Enable if your guild allows content that a film or game would rate 15, R or 16+, such as strong sexual content, graphic violence or self-harm - not a rule violation, just a heads-up. Every post in this guild will be blurred by default."
+msgstr "任何没有选择看到敏感内容的人, 如果您的盾允许电影或游戏评分为15,R或16+的内容,例如强烈的性内容,图形暴力或自我伤害—不是违反规则,只是提醒. 此盾中的每个帖子默认都会模糊."
+
 #, machine, python-format
 msgid "A shared draft can have at most %(num)s author."
 msgid_plural "A shared draft can have at most %(num)s authors."
@@ -3616,6 +3620,10 @@ msgid "After %(date)s"
 msgstr "在%(date)s之后"
 
 #, machine, plain1
+msgid "Age confirmation isn't available yet."
+msgstr "年龄确认还没有."
+
+#, machine, plain1
 msgid "Alert"
 msgstr "警报"
 
@@ -3783,9 +3791,17 @@ msgstr "阿穆里亚东方"
 msgid "An account with that username or email already exists."
 msgstr "用户名或电子邮件的账户已经存在 ."
 
+#, machine, plain1
+msgid "An admin confirmed that you are 18 or over. Your account no longer has the child lock. Your word filter hasn't changed: you can change it in Settings > Content, and turning the Child filter down needs your password."
+msgstr "一个管理员确认你18岁或以上 你的账户已经没有锁了 您的单词过滤器没有改变: 您可以在设置中更改 > 内容, 关闭儿童过滤器需要您的密码 ."
+
 #, machine, python-format
 msgid "An admin marked +%(guild)s sensitive: its posts are left out of All and For You unless someone chooses to see sensitive content. Only an admin can change this."
 msgstr "标有 + 的管理员%(guild)s 敏感:除非有人选择看到敏感内容,否则其帖子将被排除在All and For You之外。 只有管理员才能改变这一点。"
+
+#, machine, plain1
+msgid "An admin marked this as a child account. It has the child lock: the Child word filter, which hides profanity and anything marked sensitive, and some features are off. You can lift it by confirming your age in Settings > Content."
+msgstr "一位管理员将此标为儿童账户。 它有儿童锁:儿童字过滤器,它隐藏着亵渎和任何标记敏感的东西,一些特性也关闭了. 您可以通过在设置中确认年龄来提升它 > 内容."
 
 #, machine
 msgid "An admin marked this sensitive, so it can't be switched off here."
@@ -5608,6 +5624,14 @@ msgstr "确认新密码"
 msgid "Confirm Password"
 msgstr "确认密码"
 
+#, machine, plain1
+msgid "Confirm my age"
+msgstr "确认我的年龄"
+
+#, machine, plain1
+msgid "Confirm your age"
+msgstr "确认你的年龄"
+
 #, glossary, machine, plain1
 msgid "Connect"
 msgstr "关注我们"
@@ -6983,6 +7007,10 @@ msgstr "每个人都在打字时看到对方的变化,每个角色都归于打�
 msgid "Everything from your guilds and accounts, newest first."
 msgstr "所有从你的盾和帐户, 最新的第一."
 
+#, machine, plain1
+msgid "Everything you post goes only to your Friends circle, the people you follow who follow you back, so nothing is public by accident. Your circles can only hold people like that, and you can't forward, repost or write a shared draft. Comments on other people's posts are still public."
+msgstr "你所贴的一切都只是朋友的圈子,你跟随你的人,所以没有什么是偶然公开的. 你的圈子只能牵着这样的人,你不能向前,不能重新张贴或者写一个共享的草稿. 对他人帖子的评论仍然公开."
+
 #. %(typed)s is exactly what a reader types into the field; it stays as it is
 #, machine, plain1, python-format
 msgid "Example: %(typed)s · a public curation works too: %(curation)s"
@@ -8213,6 +8241,10 @@ msgstr "隐藏在标准与儿童过滤器上"
 msgid "Hidden page"
 msgstr "隐藏页面"
 
+#, machine, plain1
+msgid "Hidden until you confirm your age"
+msgstr "藏起来,直到你确认你的年龄"
+
 #, glossary, machine, plain1
 msgid "Hide"
 msgstr "隐藏"
@@ -8431,6 +8463,14 @@ msgstr "我接受这个 <a href=\"%(url)s\" target=\"_blank\">条款和条件</a
 msgid "I agree to the rules below."
 msgstr "我同意以下规则."
 
+#, machine, plain1, python-format
+msgid "I'm %(min)s or over"
+msgstr "我是%(min)s或超过"
+
+#, machine, plain1, python-format
+msgid "I'm %(min)s to 17"
+msgstr "我是%(min)s到17号"
+
 #, machine, plain1
 msgid "Ice Hockey"
 msgstr "冰球"
@@ -8474,6 +8514,10 @@ msgstr "如果您下台担任盾牌主持人, 您将失去完全权限来调和�
 #, machine, plain1
 msgid "If you're having trouble with the button above, copy and paste the URL below into your web browser."
 msgstr "如果您对上面的按钮有困难, 请复制并粘贴下面的URL 到您的网页浏览器 ."
+
+#, machine, plain1
+msgid "If you're under 18 you can still sign up. Your account will have the child lock on, which hides profanity and sensitive content and turns some features off, until you confirm your age in your Settings."
+msgstr "如果你不满18岁,你还可以报名。 您的账户将锁定孩子的锁, 隐藏淫秽和敏感的内容并关闭一些功能, 直到您确认您的年龄在您的设置中 ."
 
 #, machine, plain1
 msgid "If you’re having trouble with the button above, copy and paste the URL below into your web browser."
@@ -8824,6 +8868,10 @@ msgstr "它只命令你看广告."
 #, machine, plain1
 msgid "It shows, in full, every word and phrase the word filter looks for, in every language it covers. That includes slurs and other extremely offensive language."
 msgstr "它用它覆盖的每一种语言, 完整地显示过滤器所寻找的每一个词和短语。 其中包括流言蜚语和其他极具攻击性的语言."
+
+#, machine, plain1
+msgid "It stays on the Child word filter, which hides profanity and anything marked sensitive. Chat, Spaces, coins, anonymous posting and starting a guild are off, and others can't start a chat or tip you. Your posts go to your Friends circle only unless you turn Private posting off."
+msgstr "它停留在童话过滤器上,它隐藏着亵渎和任何标记敏感的事物. 聊天 空间 硬币 匿名贴纸 启动盾牌 其他人无法启动聊天或提示 你的帖子只在朋友圈里 直到你关闭私人帖子为止."
 
 #, machine, python-format
 msgid "It was not approved last time. The admins said: %(note)s"
@@ -9596,6 +9644,10 @@ msgstr "三月正数"
 #, glossary, machine, plain1
 msgid "Mark Sensitive Content"
 msgstr "标记为敏感内容"
+
+#, machine, plain1
+msgid "Mark a post Sensitive if a film or game with the same content would be rated 15, R or 16+, or given a content warning. That means strong sexual content or nudity, graphic violence or injury, strong drug use, self-harm or suicide, or very distressing or frightening scenes. If you're not sure, mark it Sensitive."
+msgstr "如果具有相同内容的电影或游戏会被评为15、R或16+,或给予内容警告,则标记后敏感度。 这意味着强烈的性内容或裸体,生动的暴力或伤害,强烈的吸毒,自我伤害或自杀,或者非常令人痛苦或可怕的场景. 如果你不确定,请记下它敏感."
 
 #, machine
 msgid "Mark as Sensitive Content (blurred until clicked)"
@@ -12634,6 +12686,26 @@ msgid "Private post, visible to you because you are an approved contributor in +
 msgstr "私人职位,您可以看到,因为您是+的核定贡献者%(guild)s。"
 
 #, machine, plain1
+msgid "Private posting"
+msgstr "私人职位"
+
+#, machine, plain1
+msgid "Private posting is off."
+msgstr "私人职位被关闭."
+
+#, machine, plain1
+msgid "Private posting is on, so this can only go to your Friends circle. You can change that in Settings > Content."
+msgstr "私人广告已经开播了 所以这只能到你朋友圈去 您可以在设置 > 内容中更改 ."
+
+#, machine, plain1
+msgid "Private posting is on, so this goes only to your Friends circle. You can change that in Settings > Content."
+msgstr "私人职位已经上线了,所以这个只发给你的朋友圈. 您可以在设置 > 内容中更改 ."
+
+#, machine, plain1
+msgid "Private posting is on."
+msgstr "私人广告开始."
+
+#, machine, plain1
 msgid "Pro Wrestling"
 msgstr "职业摔跤"
 
@@ -14069,6 +14141,10 @@ msgid "Sensitive media"
 msgstr "敏感媒体"
 
 #, machine, plain1
+msgid "Sensitive posts, guilds and accounts are not against the rules, but All and For You leave them out unless you turn this on. You can always open a sensitive guild or profile, search for it or follow it."
+msgstr "敏感的帖子,盾牌和账号并不违反规则,但All and For For you leave them out 除非你打开它。 总是可以打开敏感的盾或剖面图,搜索或跟踪."
+
+#, machine, plain1
 msgid "September equinox"
 msgstr "九月正数"
 
@@ -15242,6 +15318,10 @@ msgstr "谢谢 管理员很快就会看机器人的,你会得到通知的."
 msgid "Thanks. An admin will look at the bot soon; you will get a notification. The picture could not be stored; try again from the bot's page."
 msgstr "谢谢 管理员很快就会看机器人的,你会得到通知的 图片无法存储; 从bot的页面再次尝试 ."
 
+#, machine, plain1
+msgid "Thanks. Your account no longer has the child lock, and Private posting is off. Posts you made before stay as they were: use Who can see this on a post to change who sees it."
+msgstr "谢谢 你的账户不再有孩子的锁, 私人的邮差关闭。 使用这幅画来改变谁的印象."
+
 #, machine
 msgid "That Discord account is already in use by another user."
 msgstr "此Discord 账户已被另一个用户使用 ."
@@ -15747,6 +15827,18 @@ msgstr "名单上的账户都保密."
 #, machine, python-format
 msgid "The admins said: %(note)s"
 msgstr "管理员说:%(note)s"
+
+#, machine, plain1
+msgid "The age check didn't finish. Nothing has changed, and you can try again."
+msgstr "年龄检查没有完成。 没有改变 你可以再试一次."
+
+#, machine, plain1
+msgid "The age check found that you are under the youngest age allowed to have an account where you are."
+msgstr "年龄调查发现,您年龄低于允许在您所在位置有账户的最小年龄."
+
+#, machine, plain1
+msgid "The age check found that you're under 18, so the child lock stays on."
+msgstr "年龄检查发现你不满18岁,所以孩子的锁仍开着."
 
 #, machine
 msgid "The author"
@@ -16756,9 +16848,21 @@ msgstr "这是盾的自定义CSS文件 ."
 msgid "This is too much like what was posted automatically today."
 msgstr "这太像今天自动发布的东西了."
 
+#, machine, plain1
+msgid "This isn't available while your account is age-restricted. You can confirm your age in Settings > Content."
+msgstr "这不可用 当你的账户是年龄限制的。 您可以在设置中确认年龄 > 内容."
+
 #, machine
 msgid "This isn't shown at your current word filter level. You can review your word filter in your content settings."
 msgstr "此未显示在您的当前单词过滤级别 。 您可以在内容设置中审查您的文字过滤器 ."
+
+#, machine, plain1
+msgid "This isn't shown where you are until your age has been confirmed. Sign in to do that in your content settings."
+msgstr "在确认你年龄之前,这里不会显示你在哪里 在您的内容设置中签名 ."
+
+#, machine, plain1
+msgid "This isn't shown while your account is age-restricted."
+msgstr "这不显示,而你的账户 年龄限制."
 
 #, machine, plain1, python-format
 msgid "This live thread ended a moment ago. It can go live again in %(num)s min."
@@ -17124,6 +17228,10 @@ msgstr "为了不再成为作者,留下草稿."
 msgid "To store your uploads, tick the box that lets this site manage the files it creates in your Google Drive."
 msgstr "要存储您的上传, 请选中允许此网站管理您Google Drive 中创建的文件的框 ."
 
+#, machine, plain1
+msgid "To take the child lock off, confirm that you're 18 or over."
+msgstr "把孩子锁上,确认你18岁或以上."
+
 #, machine
 msgid "To take this site's access away at Microsoft, remove it under your Microsoft account's app permissions."
 msgstr "要将该网站的访问权限从微软拿走,请在微软账户的应用权限下移除."
@@ -17270,6 +17378,10 @@ msgstr "从 + 关闭通知%(guild)s"
 #, machine, plain1, python-format
 msgid "Turn off notifications from @%(name)s"
 msgstr "从 @ 关闭通知%(name)s"
+
+#, machine, plain1
+msgid "Turn on if much of what you post would be rated 15, R or 16+. Your profile shows a Sensitive content badge, your new posts are blurred, and your posts are left out of All and For You for anyone who hasn't chosen to see sensitive content."
+msgstr "如果你的很多文章被评为15、R或16+,请打开。 您的简介显示一个敏感内容徽章, 您的新帖子是模糊的, 您的帖子被从 All and For You 中遗漏出来, 对于没有选择看到敏感内容的人来说."
 
 #, machine
 msgid "Turn on media storage to upload."
@@ -18217,6 +18329,10 @@ msgid "We're sorry something here is wrong."
 msgstr "我们很抱歉这里有些不对劲."
 
 #, machine, plain1
+msgid "We've changed the Age section of our [Terms](/help/terms). An account for someone under 18 now has a child lock, and in the UK, the EU and Australia your age has to be confirmed with an age-check service before the lock comes off or you can see sensitive content. You can say whether you're 18 or over in Settings > Content."
+msgstr "我们更改了我们的[术语](/help/terms)中的年龄部分. 在英国、欧盟和澳洲, 在锁关关掉或看到敏感内容之前, 您的年龄必须经过年龄检查确认。 您可以在设置中表示是否年满18岁 > 内容."
+
+#, machine, plain1
 msgid "Web Development"
 msgstr "网络开发"
 
@@ -18404,6 +18520,22 @@ msgstr "发布位置"
 #, machine
 msgid "Where you are, in your words"
 msgstr "你在哪里,用你的话"
+
+#, machine, plain1
+msgid "Where you are, the law means you have to confirm that you're 18 or over with an age-check service, in your Settings after you sign up. Until then your account has the child lock on, which hides profanity and sensitive content and turns some features off."
+msgstr "在你所在的地方,法律意味着你必须确认你已经18岁或18岁以上,在报名后,在你的设置中提供年龄检查服务. 在此之前,你的账户有 儿童锁定, 隐藏的亵渎和敏感的内容 并关闭一些功能."
+
+#, machine, plain1
+msgid "Where you are, the law means your age has to be confirmed with an age-check service before the child lock comes off."
+msgstr "在你所在的地方,法律意味着在孩子锁关关之前,你的年龄必须经过年龄检查服务确认."
+
+#, machine, plain1
+msgid "Where you are, the law means your age has to be confirmed with an age-check service before you can see sensitive content or strong language."
+msgstr "在您所在的地方,法律意味着您的年龄必须经过年龄检查服务才能看到敏感的内容或强壮的语言."
+
+#, machine, plain1
+msgid "Where you are, your age has to be confirmed with an age-check service."
+msgstr "您的年龄需通过年龄检查服务确认."
 
 #, machine, plain1
 msgid "Whether a video site's player may load before you press play. While it may not, Automatic above has no effect."
@@ -18600,6 +18732,10 @@ msgstr "使用 Premium 您可以在 %(site)s 上获得一个位置 :"
 #, machine, plain1
 msgid "With Premium you see how each of your posts is doing: views per day, how many signed-in people came, votes, comments, bookmarks, forwards and reposts, how it does in each guild it was forwarded to, and the results of its poll."
 msgstr "与 Premium 您可以看到您每个职位的运行情况: 每日观察, 有多少签名人来过, 投票,评论,书签, 前进和重贴, 如何在每一行被转发, 以及投票结果。"
+
+#, machine, plain1
+msgid "With Private posting on, a circle can only hold people who follow you and whom you follow."
+msgstr "随着私人的张贴,一个圈子 只能容纳跟随你的人和跟随你的人."
 
 #, machine
 msgid "With a link"
@@ -18798,6 +18934,10 @@ msgstr "世界水日"
 #, machine, plain1
 msgid "World Wildlife Day"
 msgstr "世界野生动物日"
+
+#, machine, plain1
+msgid "Would a film with this be rated 15 or R? Blur this post until viewers click to reveal it."
+msgstr "这部电影会被评为15还是R? 模糊此帖子直到观众点击显示为止 ."
 
 #, machine
 msgid "Write a username."
@@ -19255,6 +19395,10 @@ msgstr "你现在不能这么做."
 msgid "You can't do that while your account balance is negative. Visit your account settings to bring your balance up to zero."
 msgstr "你不能这样做,而你的账户余额是负数。 访问您的账户设置, 使您的余额达到零 ."
 
+#, machine, plain1
+msgid "You can't do that with this account."
+msgstr "你不能用这个账户来做."
+
 #, machine
 msgid "You can't edit this page."
 msgstr "不能编辑此页面."
@@ -19601,6 +19745,10 @@ msgstr "不得收买被流放的荷兰盾."
 msgid "You may not use Ruqqus to engage in or plan unlawful activity."
 msgstr "您不得使用Ruqqus从事或计划从事非法活动."
 
+#, machine, plain1, python-format
+msgid "You must be at least %(min)s to have an account where you are."
+msgstr "您必须至少 %(min)s 才能有一个账户 ."
+
 #, machine
 msgid "You must have a verified email address to upload images via Tor."
 msgstr "您必须有经过验证的电子邮件地址才能通过 Tor 上传图像 ."
@@ -19942,6 +20090,18 @@ msgstr "您的账户已被检查并准备就绪:您现在可以张贴、评论�
 msgid "Your account has been deleted"
 msgstr "您的账户已被删除"
 
+#, machine, plain1, python-format
+msgid "Your account has the child lock on, since %(date)s."
+msgstr "你的账户上锁着孩子,从%(date)s开始."
+
+#, machine, plain1
+msgid "Your account is age-restricted, so its word filter stays on Child until you confirm your age in Settings."
+msgstr "您的账户是年龄限制的, 因此它的字过滤器会留在 Child 上, 直到您在设置中确认您的年龄 ."
+
+#, machine, plain1
+msgid "Your account is age-restricted, so sensitive content stays hidden until you confirm your age in Settings."
+msgstr "您的账户是年龄限制的, 因此敏感的内容会隐藏, 直到您在设置中确认您的年龄 ."
+
 #, machine, plain1
 msgid "Your account is being checked"
 msgstr "正在检查您的账户"
@@ -19998,6 +20158,10 @@ msgstr "您的账户不再自动发布。 它的岗位不变."
 msgid "Your account posts from these feeds from now on."
 msgstr "从现在开始,你的账户帖子就有了."
 
+#, machine, plain1
+msgid "Your account was closed"
+msgstr "你的账户被关闭了"
+
 #, machine, python-format
 msgid "Your account's automated posting has been paused: %(reason)s"
 msgstr "您账户的自动发布已暂停 :%(reason)s"
@@ -20013,6 +20177,10 @@ msgstr "您的账户自动发送在 %(fails)s 失败后停止读取%(url)s 尝�
 #, machine
 msgid "Your account's automated posting was approved. Your feeds' new posts appear on your profile, marked as automated, within a few minutes. Manage it in [Settings > Bots](/settings/bots)."
 msgstr "你的帐户的自动寄出被批准。 您的新消息在几分钟内出现在您的档案中, 标记为自动化。 在 [地址 > Bots] (/settings/bots) 中管理它."
+
+#, machine, plain1, python-format
+msgid "Your age was confirmed on %(date)s."
+msgstr "您的年龄在 %(date)s 得到确认 ."
 
 #, machine
 msgid "Your answer"
@@ -20215,6 +20383,10 @@ msgstr "你自己的组合"
 msgid "Your own mix ranks the newest %(num)s matching post. 0 switches a part off, 10 makes it count the most."
 msgid_plural "Your own mix ranks the newest %(num)s matching posts. 0 switches a part off, 10 makes it count the most."
 msgstr[0] "您的组合排名为最新 %(num)s 匹配的 。 0开关一个部分, 10使其数最多."
+
+#, machine, plain1
+msgid "Your parent or guardian has to agree before Private posting can be turned off."
+msgstr "您的父母或监护人必须同意才能关闭私人职位."
 
 #, machine
 msgid "Your password"

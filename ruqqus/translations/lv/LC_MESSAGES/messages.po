@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ruqqus VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-31 05:16+0000\n"
+"POT-Creation-Date: 2026-11-05 16:56+1100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: lv\n"
@@ -3466,6 +3466,10 @@ msgstr[0] "Meklēšanā var turēt ne vairāk kā %(num)s vārdu un operatoru."
 msgstr[1] "Meklēšanā var turēt ne vairāk kā %(num)s vārdus un operatorus."
 msgstr[2] "Meklēšana var saturēt ne vairāk kā %(num)s vārdus un operatorus."
 
+#, machine, plain1
+msgid "A sensitive guild's posts are left out of All and For You for anyone who hasn't chosen to see sensitive content. Enable if your guild allows content that a film or game would rate 15, R or 16+, such as strong sexual content, graphic violence or self-harm - not a rule violation, just a heads-up. Every post in this guild will be blurred by default."
+msgstr "Jutīga ģildes amati tiek atstāti no visiem un jums ikvienam, kurš nav izvēlējies redzēt jutīgu saturu. Ieslēdziet, ja jūsu ģilde ļauj saturu, ka filma vai spēle varētu novērtēt 15, R vai 16+, piemēram, spēcīgu seksuālo saturu, grafisku vardarbību vai paškaitējumu - nav noteikumu pārkāpums, tikai galvas augšu. Katrs post šajā ģildē būs izplūdis pēc noklusējuma."
+
 #, machine, plain1, python-format
 msgid "A shared draft can have at most %(num)s author."
 msgid_plural "A shared draft can have at most %(num)s authors."
@@ -3990,6 +3994,10 @@ msgid "After %(date)s"
 msgstr "Pēc %(date)s"
 
 #, machine, plain1
+msgid "Age confirmation isn't available yet."
+msgstr "Vecuma apstiprinājums vēl nav pieejams."
+
+#, machine, plain1
 msgid "Alert"
 msgstr "Brīdinājums"
 
@@ -4159,9 +4167,17 @@ msgstr "Amūras Orient"
 msgid "An account with that username or email already exists."
 msgstr "Konts ar šo lietotājvārdu vai e-pastu jau eksistē."
 
+#, machine, plain1
+msgid "An admin confirmed that you are 18 or over. Your account no longer has the child lock. Your word filter hasn't changed: you can change it in Settings > Content, and turning the Child filter down needs your password."
+msgstr "Admin apstiprināja, ka jums ir 18 vai vairāk. Jūsu kontā vairs nav bērnu slēdzenes. Jūsu vārdu filtrs nav mainījies: jūs varat to mainīt sadaļā Iestatījumi > Saturs, un pagriežot bērnu filtrēt uz leju nepieciešama jūsu parole."
+
 #, machine, plain1, python-format
 msgid "An admin marked +%(guild)s sensitive: its posts are left out of All and For You unless someone chooses to see sensitive content. Only an admin can change this."
 msgstr "Admin atzīmēts + %(guild)s jutīgs: tās amati ir atstāti no visiem un Jums, ja vien kāds izvēlas redzēt jutīgu saturu. Tikai admin var mainīt šo."
+
+#, machine, plain1
+msgid "An admin marked this as a child account. It has the child lock: the Child word filter, which hides profanity and anything marked sensitive, and some features are off. You can lift it by confirming your age in Settings > Content."
+msgstr "Admin. Tam ir bērnu slēdzene: bērnu vārdu filtrs, kas slēpj rupjību un jebko, kas atzīmēts kā jutīgs, un dažas funkcijas ir izslēgtas. Jūs varat to pacelt, apstiprinot savu vecumu sadaļā Iestatījumi > Saturs."
 
 #, machine, plain1
 msgid "An admin marked this sensitive, so it can't be switched off here."
@@ -6014,6 +6030,14 @@ msgstr "Apstiprināt jaunu paroli"
 msgid "Confirm Password"
 msgstr "Apstiprināt paroli"
 
+#, machine, plain1
+msgid "Confirm my age"
+msgstr "Apstiprinu manu vecumu"
+
+#, machine, plain1
+msgid "Confirm your age"
+msgstr "Apstiprināt savu vecumu"
+
 #, glossary, machine, plain1
 msgid "Connect"
 msgstr "Sekojiet mums"
@@ -7403,6 +7427,10 @@ msgstr "Ikviens redz viena otra izmaiņas, jo viņi raksta, un katra rakstzīme 
 msgid "Everything from your guilds and accounts, newest first."
 msgstr "Viss no jūsu ģildēm un kontiem, jaunākais pirmais."
 
+#, machine, plain1
+msgid "Everything you post goes only to your Friends circle, the people you follow who follow you back, so nothing is public by accident. Your circles can only hold people like that, and you can't forward, repost or write a shared draft. Comments on other people's posts are still public."
+msgstr "Viss, ko jūs post iet tikai uz jūsu Draugi apli, cilvēki, kuri seko jums atpakaļ, tāpēc nekas nav publiski nejauši. Jūsu apļi var tikai turēt cilvēkus, piemēram, ka, un jūs nevarat uz priekšu, repost vai rakstīt kopīgu projektu. Komentāri par citu cilvēku amatiem joprojām ir publiski."
+
 #. %(typed)s is exactly what a reader types into the field; it stays as it is
 #, machine, plain1, python-format
 msgid "Example: %(typed)s · a public curation works too: %(curation)s"
@@ -8649,6 +8677,10 @@ msgstr "Slēpts uz standarta un bērnu filtriem"
 msgid "Hidden page"
 msgstr "Slēpta lapa"
 
+#, machine, plain1
+msgid "Hidden until you confirm your age"
+msgstr "Slēpts līdz vecumam"
+
 #, glossary, machine, plain1
 msgid "Hide"
 msgstr "Paslēpt"
@@ -8869,6 +8901,14 @@ msgstr "Es pieņemu <a href=\"%(url)s\" target=\"_blank\">Noteikumi</a>"
 msgid "I agree to the rules below."
 msgstr "Es piekrītu turpmāk minētajiem noteikumiem."
 
+#, machine, plain1, python-format
+msgid "I'm %(min)s or over"
+msgstr "Es esmu %(min)s vai vecāks"
+
+#, machine, plain1, python-format
+msgid "I'm %(min)s to 17"
+msgstr "Es esmu %(min)s līdz 17"
+
 #, machine, plain1
 msgid "Ice Hockey"
 msgstr "Hokejs"
@@ -8912,6 +8952,10 @@ msgstr "Ja jūs solis uz leju kā ģildes moderators, jūs zaudēsiet visas atļ
 #, machine, plain1
 msgid "If you're having trouble with the button above, copy and paste the URL below into your web browser."
 msgstr "Ja jums ir problēmas ar pogu iepriekš, kopēt un ielīmēt URL zemāk jūsu interneta pārlūkā."
+
+#, machine, plain1
+msgid "If you're under 18 you can still sign up. Your account will have the child lock on, which hides profanity and sensitive content and turns some features off, until you confirm your age in your Settings."
+msgstr "Ja esi jaunāks par 18 gadiem, vari pierakstīties. Jūsu kontam būs bērnu bloķēšana, kas slēpj rupjību un jutīgu saturu un izslēdz dažas funkcijas, līdz jūs apstiprināsiet savu vecumu iestatījumos."
 
 #, machine, plain1
 msgid "If you’re having trouble with the button above, copy and paste the URL below into your web browser."
@@ -9266,6 +9310,10 @@ msgstr "Tas tikai pavēl posts jums ir atļauts redzēt."
 #, machine, plain1
 msgid "It shows, in full, every word and phrase the word filter looks for, in every language it covers. That includes slurs and other extremely offensive language."
 msgstr "Tas pilnībā parāda katru vārdu un frāzi, kuru meklē vārds filtrs, katrā valodā, ko tas aptver. Tas ietver sluru un citu ārkārtīgi aizskarošu valodu."
+
+#, machine, plain1
+msgid "It stays on the Child word filter, which hides profanity and anything marked sensitive. Chat, Spaces, coins, anonymous posting and starting a guild are off, and others can't start a chat or tip you. Your posts go to your Friends circle only unless you turn Private posting off."
+msgstr "Tas paliek uz Bērna vārda filtra, kas slēpj rupjību un jebko, kas atzīmēts kā jutīgs. Tērzēšana, Telpas, monētas, anonīms norīkošanu un sākot ģilde ir off, un citi nevar sākt tērzēt vai tip jums. Jūsu ziņas iet uz jūsu Draugi aplis tikai tad, ja jūs izslēgt privāto norīkošanu off."
 
 #, machine, plain1, python-format
 msgid "It was not approved last time. The admins said: %(note)s"
@@ -10062,6 +10110,10 @@ msgstr "Marta ekvinokcija"
 #, glossary, machine, plain1
 msgid "Mark Sensitive Content"
 msgstr "Atzīmēt kā sensitīvu saturu"
+
+#, machine, plain1
+msgid "Mark a post Sensitive if a film or game with the same content would be rated 15, R or 16+, or given a content warning. That means strong sexual content or nudity, graphic violence or injury, strong drug use, self-harm or suicide, or very distressing or frightening scenes. If you're not sure, mark it Sensitive."
+msgstr "Atzīmēt post Jutīgs, ja filma vai spēle ar tādu pašu saturu tiktu vērtēta kā 15, R vai 16+, vai arī dotu satura brīdinājumu. Tas nozīmē spēcīgu seksuālo saturu vai kailumu, grafisku vardarbību vai ievainojumu, spēcīgu narkotiku lietošanu, paškaitējumu vai pašnāvību, vai ļoti satraucošas vai biedējošas ainas. Ja neesat pārliecināts, atzīmējiet to jūtīgi."
 
 #, machine, plain1
 msgid "Mark as Sensitive Content (blurred until clicked)"
@@ -13138,6 +13190,26 @@ msgid "Private post, visible to you because you are an approved contributor in +
 msgstr "Privāts raksts, kas jums redzams tāpēc, ka esat apstiprināts atbalstītājs +%(guild)s."
 
 #, machine, plain1
+msgid "Private posting"
+msgstr "Privāts norīkojums"
+
+#, machine, plain1
+msgid "Private posting is off."
+msgstr "Privāts norīkojums ir off."
+
+#, machine, plain1
+msgid "Private posting is on, so this can only go to your Friends circle. You can change that in Settings > Content."
+msgstr "Privātā norīkošanu ir par, tāpēc tas var iet tikai uz jūsu Draugi aplis. Iestatījumi > Saturs to var mainīt."
+
+#, machine, plain1
+msgid "Private posting is on, so this goes only to your Friends circle. You can change that in Settings > Content."
+msgstr "Privātā norīkošanu ir uz, tāpēc tas iet tikai uz jūsu Draugi aplis. Iestatījumi > Saturs to var mainīt."
+
+#, machine, plain1
+msgid "Private posting is on."
+msgstr "Privāts norīkošanu ir par."
+
+#, machine, plain1
 msgid "Pro Wrestling"
 msgstr "Pro cīkstēšanās"
 
@@ -14587,6 +14659,10 @@ msgid "Sensitive media"
 msgstr "Jutīgi plašsaziņas līdzekļi"
 
 #, machine, plain1
+msgid "Sensitive posts, guilds and accounts are not against the rules, but All and For You leave them out unless you turn this on. You can always open a sensitive guild or profile, search for it or follow it."
+msgstr "Jūtīgas ziņas, ģildes un konti nav pret noteikumiem, bet visi un jūs atstāt tos, ja vien jūs ieslēgt šo. Jūs vienmēr varat atvērt jutīgu ģildi vai profilu, meklēt to vai sekot tai."
+
+#, machine, plain1
 msgid "September equinox"
 msgstr "Septembra ekvinokcija"
 
@@ -15779,6 +15855,10 @@ msgid "Thanks. An admin will look at the bot soon; you will get a notification. 
 msgstr "Paldies. Admin izskatīs bot drīz; jūs saņemsiet paziņojumu. Attēlu neizdevās saglabāt; mēģiniet vēlreiz no bot lapas."
 
 #, machine, plain1
+msgid "Thanks. Your account no longer has the child lock, and Private posting is off. Posts you made before stay as they were: use Who can see this on a post to change who sees it."
+msgstr "Paldies. Jūsu kontā vairs nav bērnu slēdzenes, un Privātais norīkojums ir izslēgts. Posts jums pirms uzturēšanās, jo tie bija: izmantot Kas var redzēt šo uz amatu, lai mainītu, kas redz to."
+
+#, machine, plain1
 msgid "That Discord account is already in use by another user."
 msgstr "Ka Discord konts jau izmanto cits lietotājs."
 
@@ -16283,6 +16363,18 @@ msgstr "Šajā sarakstā esošie konti to glabā sev."
 #, machine, plain1, python-format
 msgid "The admins said: %(note)s"
 msgstr "Admins teica: %(note)s"
+
+#, machine, plain1
+msgid "The age check didn't finish. Nothing has changed, and you can try again."
+msgstr "Vecuma pārbaude nebeidzās. Nekas nav mainījies, un jūs varat mēģināt vēlreiz."
+
+#, machine, plain1
+msgid "The age check found that you are under the youngest age allowed to have an account where you are."
+msgstr "Vecuma pārbaude atklāja, ka jums ir jaunāki par vecumu, lai būtu konts, kur jūs esat."
+
+#, machine, plain1
+msgid "The age check found that you're under 18, so the child lock stays on."
+msgstr "Vecuma pārbaude atklāja, ka esat jaunāks par 18 gadiem, tāpēc bērnu slēdzene paliek ieslēgta."
 
 #, machine, plain1
 msgid "The author"
@@ -17321,8 +17413,20 @@ msgid "This is too much like what was posted automatically today."
 msgstr "Tas ir pārāk daudz, piemēram, kas tika ievietots automātiski šodien."
 
 #, machine, plain1
+msgid "This isn't available while your account is age-restricted. You can confirm your age in Settings > Content."
+msgstr "Tas nav pieejams, kamēr jūsu kontam ir vecuma ierobežojums. Jūs varat apstiprināt savu vecumu sadaļā Iestatījumi > Saturs."
+
+#, machine, plain1
 msgid "This isn't shown at your current word filter level. You can review your word filter in your content settings."
 msgstr "Šis netiek rādīts pašreizējā vārdu filtra līmenī. Jūs varat pārskatīt vārdu filtru satura iestatījumos."
+
+#, machine, plain1
+msgid "This isn't shown where you are until your age has been confirmed. Sign in to do that in your content settings."
+msgstr "Tas nav redzams, kur jūs esat, līdz jūsu vecums ir apstiprināts. Pieraksties, lai to izdarītu satura iestatījumos."
+
+#, machine, plain1
+msgid "This isn't shown while your account is age-restricted."
+msgstr "Tas netiek parādīts, kamēr jūsu konts ir vecuma ierobežojums."
 
 #, machine, plain1, python-format
 msgid "This live thread ended a moment ago. It can go live again in %(num)s min."
@@ -17701,6 +17805,10 @@ msgid "To store your uploads, tick the box that lets this site manage the files 
 msgstr "Lai saglabātu jūsu augšupielādes, atzīmējiet lodziņu, kas ļauj šai vietnei pārvaldīt jūsu Google Drive izveidotos failus."
 
 #, machine, plain1
+msgid "To take the child lock off, confirm that you're 18 or over."
+msgstr "Lai izslēgtu bērnu, apstiprini, ka tev ir 18 gadi vai vairāk."
+
+#, machine, plain1
 msgid "To take this site's access away at Microsoft, remove it under your Microsoft account's app permissions."
 msgstr "Lai noņemtu šo vietnes piekļuvi Microsoft, noņemiet to saskaņā ar Microsoft konta lietotņu atļaujām."
 
@@ -17846,6 +17954,10 @@ msgstr "Izslēgt paziņojumus no +%(guild)s"
 #, machine, plain1, python-format
 msgid "Turn off notifications from @%(name)s"
 msgstr "Izslēgt paziņojumus no @ %(name)s"
+
+#, machine, plain1
+msgid "Turn on if much of what you post would be rated 15, R or 16+. Your profile shows a Sensitive content badge, your new posts are blurred, and your posts are left out of All and For You for anyone who hasn't chosen to see sensitive content."
+msgstr "Ieslēdziet, ja liela daļa no tā, ko jūs post būtu novērtēta 15, R vai 16+. Jūsu profils parāda jūtīgu satura žetonu, jūsu jaunie amati ir izplūduši, un jūsu amati tiek atstāti ārpus visiem un Jums ikvienam, kurš nav izvēlējies redzēt jutīgu saturu."
 
 #, machine, plain1
 msgid "Turn on media storage to upload."
@@ -18801,6 +18913,10 @@ msgid "We're sorry something here is wrong."
 msgstr "Piedod, ka kaut kas nav kārtībā."
 
 #, machine, plain1
+msgid "We've changed the Age section of our [Terms](/help/terms). An account for someone under 18 now has a child lock, and in the UK, the EU and Australia your age has to be confirmed with an age-check service before the lock comes off or you can see sensitive content. You can say whether you're 18 or over in Settings > Content."
+msgstr "Mēs esam mainījuši vecuma sadaļu mūsu [Noteikumi](/help/terms). Kādam, kas ir jaunāks par 18 gadiem, tagad ir bērnu slēdzene, un Apvienotajā Karalistē, ES un Austrālijā jūsu vecums ir jāapstiprina ar vecuma pārbaudes dienestu, pirms slēdzenes iznākšanas, vai arī jūs varat redzēt jutīgu saturu. Jūs varat pateikt, vai jums ir 18 vai vairāk Iestatījumi > Saturs."
+
+#, machine, plain1
 msgid "Web Development"
 msgstr "Tīmekļa izstrāde"
 
@@ -19001,6 +19117,22 @@ msgid "Where you are, in your words"
 msgstr "Kur tu esi, savos vārdos"
 
 #, machine, plain1
+msgid "Where you are, the law means you have to confirm that you're 18 or over with an age-check service, in your Settings after you sign up. Until then your account has the child lock on, which hides profanity and sensitive content and turns some features off."
+msgstr "Tur, kur jūs esat, likums nozīmē, ka jums ir jāapstiprina, ka jums ir 18 gadi vai vairāk ar vecuma pārbaudes pakalpojumu, savos Iestatījumos pēc pierakstīšanās. Līdz tam jūsu konts ir bērnu bloķēt, kas slēpj rupjību un jutīgu saturu un izslēdz dažas funkcijas."
+
+#, machine, plain1
+msgid "Where you are, the law means your age has to be confirmed with an age-check service before the child lock comes off."
+msgstr "Tur, kur jūs esat, likums nozīmē, ka jūsu vecums ir jāapstiprina ar vecuma pārbaudes pakalpojumu, pirms bērns slēdzene nāk off."
+
+#, machine, plain1
+msgid "Where you are, the law means your age has to be confirmed with an age-check service before you can see sensitive content or strong language."
+msgstr "Ja jūs esat, likums nozīmē, ka jūsu vecums ir jāapstiprina ar vecuma pārbaudes pakalpojumu, pirms jūs varat redzēt jutīgu saturu vai spēcīgu valodu."
+
+#, machine, plain1
+msgid "Where you are, your age has to be confirmed with an age-check service."
+msgstr "Kur jūs esat, jūsu vecums ir jāapstiprina ar vecuma pārbaudes pakalpojumu."
+
+#, machine, plain1
 msgid "Whether a video site's player may load before you press play. While it may not, Automatic above has no effect."
 msgstr "Vai video vietnes atskaņotājs var ielādēt, pirms nospiežat atskaņošanu. Lai gan tas var nebūt, Automātisks iepriekš nav efekta."
 
@@ -19195,6 +19327,10 @@ msgstr "Ar Premium jūs saņemsiet vienu vietu visam, ko veicat un nopelnāt %(s
 #, machine, plain1
 msgid "With Premium you see how each of your posts is doing: views per day, how many signed-in people came, votes, comments, bookmarks, forwards and reposts, how it does in each guild it was forwarded to, and the results of its poll."
 msgstr "Ar Premium jūs redzat, kā katrs no jūsu amatiem dara: skatās dienā, cik parakstījušies cilvēki nāca, balsis, komentāri, grāmatzīmes, uz priekšu un reposts, kā tas notiek katrā ģildē tas tika nosūtīts, un tās aptaujas rezultāti."
+
+#, machine, plain1
+msgid "With Private posting on, a circle can only hold people who follow you and whom you follow."
+msgstr "Ar privāto norīkošanu, aplis var tikai turēt cilvēkus, kas seko jums un kuriem jūs sekot."
 
 #, machine, plain1
 msgid "With a link"
@@ -19393,6 +19529,10 @@ msgstr "Pasaules Ūdens diena"
 #, machine, plain1
 msgid "World Wildlife Day"
 msgstr "Pasaules dabas diena"
+
+#, machine, plain1
+msgid "Would a film with this be rated 15 or R? Blur this post until viewers click to reveal it."
+msgstr "Vai filma ar šo tiks novērtēta kā 15 vai R? Izdzēst šo ziņu, līdz skatītāji noklikšķiniet, lai to atklātu."
 
 #, machine, plain1
 msgid "Write a username."
@@ -19899,6 +20039,10 @@ msgid "You can't do that while your account balance is negative. Visit your acco
 msgstr "Jūs to nevarat darīt, kamēr jūsu konta bilance ir negatīva. Apmeklējiet sava konta iestatījumus, lai jūsu bilanci līdz nullei."
 
 #, machine, plain1
+msgid "You can't do that with this account."
+msgstr "Tu to nevari izdarīt ar šo kontu."
+
+#, machine, plain1
 msgid "You can't edit this page."
 msgstr "Jūs nevarat rediģēt šo lapu."
 
@@ -20253,6 +20397,10 @@ msgstr "Jūs nedrīkstat pārņemt ģildes, no kurām esat izsūtīts."
 msgid "You may not use Ruqqus to engage in or plan unlawful activity."
 msgstr "Jūs nedrīkstat izmantot Ruqqus, lai iesaistītos vai plānotu nelikumīgu darbību."
 
+#, machine, plain1, python-format
+msgid "You must be at least %(min)s to have an account where you are."
+msgstr "Jums jābūt vismaz %(min)s kontam, kur atrodaties."
+
 #, machine, plain1
 msgid "You must have a verified email address to upload images via Tor."
 msgstr "Jums jābūt pārbaudītai e- pasta adresei, lai augšupielādētu attēlus, izmantojot Tor."
@@ -20604,6 +20752,18 @@ msgstr "Jūsu konts ir pārbaudīts un ir gatavs: tagad jūs varat ievietot, kom
 msgid "Your account has been deleted"
 msgstr "Jūsu konts ir dzēsts"
 
+#, machine, plain1, python-format
+msgid "Your account has the child lock on, since %(date)s."
+msgstr "Jūsu kontam ir bērnu slēdzis kopš %(date)s."
+
+#, machine, plain1
+msgid "Your account is age-restricted, so its word filter stays on Child until you confirm your age in Settings."
+msgstr "Jūsu kontam ir vecuma ierobežojums, tāpēc tā vārdu filtrs paliek uz bērna, līdz jūs apstiprināt savu vecumu sadaļā Iestatījumi."
+
+#, machine, plain1
+msgid "Your account is age-restricted, so sensitive content stays hidden until you confirm your age in Settings."
+msgstr "Jūsu kontam ir vecuma ierobežojums, tāpēc jutīgs saturs paliek paslēpts, līdz jūs apstiprināt savu vecumu sadaļā Iestatījumi."
+
 #, machine, plain1
 msgid "Your account is being checked"
 msgstr "Jūsu konts tiek pārbaudīts"
@@ -20660,6 +20820,10 @@ msgstr "Jūsu konts vairs posts automātiski. Tās amati paliek."
 msgid "Your account posts from these feeds from now on."
 msgstr "Jūsu konta ziņas no šiem ziņu avotiem no šī brīža."
 
+#, machine, plain1
+msgid "Your account was closed"
+msgstr "Jūsu konts tika slēgts"
+
 #, machine, plain1, python-format
 msgid "Your account's automated posting has been paused: %(reason)s"
 msgstr "Jūsu konta automātiskā ievietošana ir apturēta: %(reason)s"
@@ -20675,6 +20839,10 @@ msgstr "Jūsu konta automātiskā ievietošana pārtraukta lasīšana %(url)s p�
 #, machine, plain1
 msgid "Your account's automated posting was approved. Your feeds' new posts appear on your profile, marked as automated, within a few minutes. Manage it in [Settings > Bots](/settings/bots)."
 msgstr "Jūsu konta automatizētā ievietošana tika apstiprināta. Jūsu ziņu avoti 'jaunas ziņas parādās savā profilā, atzīmēti kā automatizēti, dažu minūšu laikā. Pārvaldiet to [Iestatījumi > Boti](/settings/bots)."
+
+#, machine, plain1, python-format
+msgid "Your age was confirmed on %(date)s."
+msgstr "Jūsu vecums tika apstiprināts %(date)s."
 
 #, machine, plain1
 msgid "Your answer"
@@ -20881,6 +21049,10 @@ msgid_plural "Your own mix ranks the newest %(num)s matching posts. 0 switches a
 msgstr[0] ""
 msgstr[1] ""
 msgstr[2] ""
+
+#, machine, plain1
+msgid "Your parent or guardian has to agree before Private posting can be turned off."
+msgstr "Jūsu vecākiem vai aizbildnim ir jāvienojas, pirms privāto norīkošanu var izslēgt."
 
 #, machine, plain1
 msgid "Your password"
